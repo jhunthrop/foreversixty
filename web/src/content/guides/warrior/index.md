@@ -19,8 +19,6 @@ sources:
     kind: community
 ---
 
-Warrior is the pure melee class: plate, a weapon and a rage bar that fills from the hits you land and the hits you take. Nothing in the kit is free at the pull, so every warrior plays around rage: Charge or Bloodrage to start the fight with some, and nothing spent that a bigger button needs.
-
 ## What changed from 1.12
 
 - **Tactical Mastery** is baseline from level 14 and keeps 10 rage through a stance change; Improved Tactical Mastery adds 15 more.

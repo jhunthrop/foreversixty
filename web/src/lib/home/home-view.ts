@@ -35,6 +35,8 @@ export const homeCopy = {
   steps: [{ title: sharedHomeSignIn }, { title: ctaCopy.installAddonAndCompanion }],
   openBis: sharedHomeOpenBis,
   getIn: sharedHomeGetIn,
+  /** The signed-in home's head while the account read is in flight (a screen reader's heading). */
+  loadingTitle: 'Loading your character',
   checkAgain: sharedHomeCheckAgain,
   noCharacterYet: sharedHomeNoCharacterYet,
   checkAgainSub: sharedHomeCheckAgainSub,

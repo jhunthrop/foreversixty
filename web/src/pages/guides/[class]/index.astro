@@ -1,16 +1,15 @@
 ---
 // web/src/pages/guides/[class]/index.astro
 // The class landing (directions mock b2-guide-class, round 5): the title band (the crest, the
-// class name in its colour, the Updated stamp, the signed-in answer), the identity line on the
-// ground, a panel per spec (a link Row: icon, name, its one line, Read the guide ›; the header
-// character's spec marked after load), then What changed from 1.12 and the Sources on their
-// panels, with the Races and the raid or leveling notes boxed in the rail. index.md is split by
-// its fixed heading vocabulary (class-landing.ts).
+// class name in its colour, the Updated stamp, the signed-in answer), a panel per spec (a link
+// Row: icon, name, its role, Read the guide ›; the header character's
+// spec marked after load), then What changed from 1.12 and the Sources on their panels, with the
+// Races and the raid or leveling notes boxed in the rail. No intro paragraph and no card blurb
+// (owner 2026-11-09). index.md is split by its fixed heading vocabulary (class-landing.ts).
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ClassCrest from '../../../components/ClassCrest.astro';
 import GuideAnswer from '../../../components/guides/GuideAnswer.astro';
-import GuideLede from '../../../components/guides/GuideLede.astro';
 import GuideSources from '../../../components/guides/GuideSources.astro';
 import GuideSpecRow from '../../../components/guides/GuideSpecRow.astro';
 import Page from '../../../components/ui/Page.svelte';
@@ -24,12 +23,7 @@ import { articleLd, breadcrumbListLd } from '../../../lib/seo';
 import { searchCopy } from '../../../lib/search-copy';
 import type { ClassSlug } from '../../../lib/ui/primitives';
 import { guidesCopy } from '../../../lib/guides/copy';
-import {
-  CLASS_LANDING_PANELS,
-  cardLineFor,
-  proseLabels,
-  splitClassLanding,
-} from '../../../lib/guides/class-landing';
+import { CLASS_LANDING_PANELS, proseLabels, splitClassLanding } from '../../../lib/guides/class-landing';
 import { dayMonth } from '../../../lib/guides/guide-header';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { slugify } from '../../../lib/guides/sections';
@@ -79,7 +73,7 @@ const specs = readSpecCatalog()
       {
         key: `${classSlug}/${s.spec_slug}`,
         name: s.name,
-        line: cardLineFor(guide.body ?? '', `guides/${guide.id}.md`),
+        line: guidesCopy.roleLabel(guide.data.role),
         icon: dataUrl(build, `icons/${s.icon}.webp`),
         href: `/guides/${classSlug}/${s.spec_slug}`,
       },
@@ -108,7 +102,6 @@ const tone = { classSlug: classSlug as ClassSlug };
         <GuideAnswer slot="answer" page={{ classSlug }} />
       </PageHeader>
       <div class="guide-landing-top">
-        <GuideLede text={landing.identity} testid="guide-class-identity" />
         <div
           class="guide-landing-specs"
           role="region"

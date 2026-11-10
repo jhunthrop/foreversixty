@@ -21,7 +21,19 @@ PRIM_CSS = '''
 /* ---- PageHeader ---- */
 .ph-wrap{padding-bottom:0}
 .ph-title{display:flex;gap:16px;align-items:center;min-width:0}
+/* below 900 the side is no box: the answer, then the actions, each a row of the head's grid (16 px apart); a hidden
+   answer leaves no gap (web ui/PageHeader) */
+@media(max-width:899px){.ph-side{display:contents}.ph-side>.ans{order:1}.ph-side>.ph-actions{order:2}}
+@media(min-width:900px){.ph-side{display:flex;flex-direction:row;align-items:flex-end;gap:24px;min-width:0}.ph-side .ph-actions{justify-content:flex-end}.ph-side:has(>.ans)>.ph-actions{margin-bottom:-6px}.head .ans{max-width:26rem}}
 .ph-title .t-title{overflow-wrap:anywhere}
+/* the crumb (a way back) on the band above the title: it takes the row's top padding (web PageHeader .ui-page-header-crumb) */
+.ph-crumb{display:flex;align-items:center;min-height:32px;padding-top:4px}.ph-crumb+.head{padding-top:0}
+.ph-crumb a{display:inline-flex;align-items:center;min-height:32px;font-size:14px;color:var(--muted);text-decoration:none}
+/* the notice line under the row, one style (web .ui-page-header-notice: 10 px under the row, the head's 14 px under it) */
+.head:has(+.ph-notice){padding-bottom:0}.ph-notice{margin-top:10px;padding-bottom:14px}
+/* a pending title: the skeleton holds the title row, the heading is for a screen reader only */
+.ph-title-sk{display:block;width:280px;max-width:100%;height:30px}@media(max-width:767px){.ph-title-sk{height:25px}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 .ph-meta{display:flex;gap:6px 16px;flex-wrap:wrap;margin-top:6px}
 .ph-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .ph-tabs{margin-top:8px}
@@ -138,12 +150,22 @@ def TabStrip(tabs: list[str], active: str, counts: dict | None = None) -> str:
     return '<nav class="strip-tabs ph-tabs">' + ''.join(f'<a href="#" class="{"cur" if t == active else ""}">{t}{f"<span class=\"n\">{counts[t]}</span>" if counts and t in counts else ""}</a>' for t in tabs) + '</nav>'
 
 
-def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '') -> str:
+def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '',
+               crumb: str = '', notice: str = '', pending: bool = False) -> str:
+    """web ui/PageHeader: `crumb` a way back on the band above the title, `notice` one line under the row, `pending` a title
+    not known yet (a skeleton holds the row, the h1 is sr-only)."""
     m = f'<div class="ph-meta" data-region="{REGION["head_meta"]}">{"".join(f"<span class=\"t-small\">{x}</span>" for x in meta)}</div>' if meta else ''
     color = f' style="color:{title_color}"' if title_color else ''
-    right = f'<div class="ans" data-region="{REGION["head_answer"]}">{answer}</div>' if answer else (f'<div class="ph-actions">{actions}</div>' if actions else '')
+    ans = f'<div class="ans" data-region="{REGION["head_answer"]}">{answer}</div>' if answer else ''
+    acts = f'<div class="ph-actions">{actions}</div>' if actions else ''
+    right = f'<div class="ph-side">{acts}{ans}</div>' if (ans or acts) else ''
     # round 5: the title band (web ui/PageHeader): the painted band, full bleed, the head back in the column
-    return (f'<div class="band-r5 full-bleed"><div class="pc ph-wrap"><div data-region="{REGION["head"]}"><div class="head"><div class="ph-title" data-region="{REGION["head_title"]}">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div></div></div>')
+    h1 = (f'<span class="skel ph-title-sk" aria-hidden="true"></span><h1 class="sr-only">{title}</h1>' if pending
+          else f'<h1 class="t-title"{color}>{title}</h1>')
+    cr = f'<div class="ph-crumb t-small">{crumb}</div>' if crumb else ''
+    nt = f'<div class="ph-notice t-small">{notice}</div>' if notice else ''
+    busy = ' aria-busy="true"' if pending else ''
+    return (f'<div class="band-r5 full-bleed"><div class="pc ph-wrap"><div data-region="{REGION["head"]}"{busy}>{cr}<div class="head"><div class="ph-title" data-region="{REGION["head_title"]}">{crest}<div>{h1}{m}</div></div>{right}</div>{nt}{tabs}</div></div></div>')
 
 
 def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
@@ -902,7 +924,7 @@ PRIM_CSS += '''
 /* MUST 5 (guides): the open phone bar wraps a segmented control that does not fit, so the current choice is never cut off */
 .bar-m .seg{flex-wrap:wrap}.bar-m .seg a{min-width:max-content}
 .ans-box{display:flex;flex-direction:column;gap:6px;min-width:0}
-@media(min-width:900px){.ans-box{min-width:380px;min-height:96px;justify-content:flex-end;align-items:flex-end;text-align:right}}
+@media(min-width:900px){.ans-box{min-width:380px;min-height:72px;align-items:flex-end;text-align:right}}
 '''
 
 
@@ -911,9 +933,9 @@ _Page0 = Page
 
 
 def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '',
-               lead: str = '') -> str:
+               lead: str = '', crumb: str = '', notice: str = '', pending: bool = False) -> str:
     """PageHeader with the optional Lead sentence under the meta line (inside head-title, so the regions are unchanged)."""
-    html = _PageHeader0(title, title_color, crest, meta, answer, actions, tabs)
+    html = _PageHeader0(title, title_color, crest, meta, answer, actions, tabs, crumb=crumb, notice=notice, pending=pending)
     if not lead:
         return html
     at = re.search(r'<div class="ph-meta" data-region="head-meta">.*?</span></div>', html) if meta else None
@@ -1290,7 +1312,7 @@ def DatedGroup(title: str, meta: str, anchor: str, entries: str) -> str:
 def CharacterAnswer(label: str, state: str, crest: str = '', name: str = '', color: str = '', line: str = '', links: list[str] | None = None,
                     text: str = '', action: str = '') -> str:
     """PageHeader.answer for 'your character'. state: who | loading | message | error (message with role="alert")."""
-    lab = f'<span class="t-label">{label}</span>'
+    lab = f'<span class="sr-only">{label}</span>'   # the label is a screen reader's (ui/CharacterAnswer)
     if state == 'loading':
         return (f'<div class="ans-box" aria-busy="true">{lab}<span class="cans-row">{Skeleton(40, 40, True)}<span class="cans-who">{Skeleton(150, 22)}'
                 f'{Skeleton(190, 16)}</span></span>{Skeleton(220, 20)}</div>')
@@ -1432,7 +1454,6 @@ def RowGroup(label: str, count: int, rows: list[str]) -> str:
 
 PRIM_CSS += '''
 .sgr .st{min-height:20px}
-.backlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;color:var(--muted);text-decoration:underline}
 .sgr{border-bottom:1px solid var(--line-soft);padding-top:12px;list-style:none}.sgr:last-child{border-bottom:0}
 .sgr .g{display:grid;grid-template-columns:minmax(180px,1fr) auto minmax(200px,1.4fr);align-items:center;gap:4px 16px;min-height:68px}
 .sgr .who{display:flex;gap:12px;align-items:center;min-width:0}.sgr .who p{margin:0}.sgr .nm{font:700 14px/20px var(--font-body)}.sgr .ws{font-size:12px;color:var(--muted)}
@@ -1451,11 +1472,6 @@ def Section(title: str, body: str, action: str = '', meta: str = '', named: bool
         return html
     sid = region_slug(title)
     return html.replace('<section ', f'<section id="{sid}" aria-labelledby="{sid}-title" ', 1).replace('<h2 ', f'<h2 id="{sid}-title" ', 1)
-
-
-def BackLink(label: str) -> str:
-    """The way back to the page this one belongs to (a raid page's guild Raids tab), one 44 px line above the PageHeader."""
-    return f'<div class="pc"><a class="backlink" href="#">{label}</a></div>'
 
 
 def SignupRow(crest: str, name: str, color: str, who: str, segments: str, spec: str = '', note: str = 'Note for the officers (optional)') -> str:

@@ -32,13 +32,16 @@ const description = landing
 </Base>
 
 <style>
-  /* The guild views not yet on the primitives keep main's own 18 px phone gutter; the primitives'
-     Page and PageHeader would add their phone inset on top of it (36 px). The full-bleed
-     ControlBar escapes main's padding, so it keeps its inset and lines up at 18 px. */
+  /* The guild views not yet on the primitives keep main's own 18 px phone gutter; the primitive
+     Page would add its phone inset on top of it (36 px). The full-bleed PageHeader band and
+     ControlBar escape main's padding, so they keep their own inset and line up at 18 px, and a
+     view that opens on a band starts flush under the bar (the one head contract). */
   @media (max-width: 767.98px) {
-    .guild-main :global(.ui-page),
-    .guild-main :global(.ui-page-header) {
+    .guild-main :global(.ui-page) {
       padding-inline: 0;
+    }
+    :global(.guild-main:has(.ui-band)) {
+      padding-top: 0;
     }
   }
 </style>

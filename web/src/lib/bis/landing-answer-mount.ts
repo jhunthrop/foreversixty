@@ -16,6 +16,7 @@ import { button } from '../ui/button';
 import { LINK } from '../ui/primitives';
 import { writeFigure, writeMeter } from '../ui/figure-dom';
 import { landingAction, landingAnswerSpec } from './landing-answer';
+import { landingCopy } from './landing-copy';
 import {
   emptyAnswer,
   landingAnswerCharacter,
@@ -98,10 +99,17 @@ export function paintLandingAnswer(root: HTMLElement, answer: LandingAnswer, ret
   field('links').replaceChildren(...links);
   field('links').hidden = links.length === 0;
   if (body?.kind === 'count') {
-    writeFigure(field('figure'), String(body.worn), body.unit, body.caption);
+    writeFigure(field('figure'), String(body.worn), body.unit);
     writeMeter(field('figure'), body.bar);
-    field('note').textContent = body.note ?? '';
-    field('note').hidden = body.note === undefined;
+    // The head's compact contract (ui/PageHeader): one short line under the figure. After an old
+    // sync it says the count is from that sync (it changes what the number means), else it names
+    // the slots the range has no pick for; the caption and the note are the figure's tooltip. A
+    // short line takes no full stop, as the head's other short lines.
+    const stale = body.caption !== landingCopy.countLabel;
+    const line = (stale ? body.caption : body.note)?.replace(/\.$/, '');
+    field('note').textContent = line ?? '';
+    field('note').hidden = line === undefined;
+    field('figure').title = [body.caption, body.note].filter((part) => part !== undefined).join('. ');
   }
 }
 

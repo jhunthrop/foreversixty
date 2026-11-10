@@ -375,7 +375,7 @@ h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
 .crest{flex-shrink:0;object-fit:cover;border-radius:999px;box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 55%,transparent);background:var(--raised)}
 .bar-track{height:8px;border-radius:3px;background:var(--line-soft);overflow:hidden}.bar-track>i{display:block;height:100%;background:var(--gold);border-radius:3px}
 /* page head: crest + title left, the answer right */
-.head{display:grid;gap:16px;padding-block:16px 14px;grid-template-columns:minmax(0,1fr);align-items:end}
+.head{display:grid;gap:16px;padding-block:16px 14px;grid-template-columns:minmax(0,1fr);align-items:start}
 .head .id{display:flex;gap:16px;align-items:center;min-width:0}
 .head .id>div{min-width:0}
 .head .ans{display:flex;flex-direction:column;gap:4px}
@@ -439,7 +439,19 @@ main{padding-bottom:var(--section-gap)}
 /* ---- PageHeader ---- */
 .ph-wrap{padding-bottom:0}
 .ph-title{display:flex;gap:16px;align-items:center;min-width:0}
+/* below 900 the side is no box: the answer, then the actions, each a row of the head's grid (16 px apart); a hidden
+   answer leaves no gap (web ui/PageHeader) */
+@media(max-width:899px){.ph-side{display:contents}.ph-side>.ans{order:1}.ph-side>.ph-actions{order:2}}
+@media(min-width:900px){.ph-side{display:flex;flex-direction:row;align-items:flex-end;gap:24px;min-width:0}.ph-side .ph-actions{justify-content:flex-end}.ph-side:has(>.ans)>.ph-actions{margin-bottom:-6px}.head .ans{max-width:26rem}}
 .ph-title .t-title{overflow-wrap:anywhere}
+/* the crumb (a way back) on the band above the title: it takes the row's top padding (web PageHeader .ui-page-header-crumb) */
+.ph-crumb{display:flex;align-items:center;min-height:32px;padding-top:4px}.ph-crumb+.head{padding-top:0}
+.ph-crumb a{display:inline-flex;align-items:center;min-height:32px;font-size:14px;color:var(--muted);text-decoration:none}
+/* the notice line under the row, one style (web .ui-page-header-notice: 10 px under the row, the head's 14 px under it) */
+.head:has(+.ph-notice){padding-bottom:0}.ph-notice{margin-top:10px;padding-bottom:14px}
+/* a pending title: the skeleton holds the title row, the heading is for a screen reader only */
+.ph-title-sk{display:block;width:280px;max-width:100%;height:30px}@media(max-width:767px){.ph-title-sk{height:25px}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 .ph-meta{display:flex;gap:6px 16px;flex-wrap:wrap;margin-top:6px}
 .ph-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .ph-tabs{margin-top:8px}
@@ -762,7 +774,7 @@ code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}
 /* MUST 5 (guides): the open phone bar wraps a segmented control that does not fit, so the current choice is never cut off */
 .bar-m .seg{flex-wrap:wrap}.bar-m .seg a{min-width:max-content}
 .ans-box{display:flex;flex-direction:column;gap:6px;min-width:0}
-@media(min-width:900px){.ans-box{min-width:380px;min-height:96px;justify-content:flex-end;align-items:flex-end;text-align:right}}
+@media(min-width:900px){.ans-box{min-width:380px;min-height:72px;align-items:flex-end;text-align:right}}
 
 .row.slim{min-height:44px;padding-block:6px}
 .cdn{position:relative;min-width:0;padding:20px 24px;border:1px solid var(--line);border-radius:8px;background:var(--raised)}
@@ -919,7 +931,6 @@ table.gridm thead th{height:33px;box-sizing:border-box;padding-block:8px}table.g
 table.gridm .ld{display:flex;gap:8px;align-items:center;min-width:0}table.gridm .ld img{width:24px;height:24px;flex:none}
 
 .sgr .st{min-height:20px}
-.backlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;color:var(--muted);text-decoration:underline}
 .sgr{border-bottom:1px solid var(--line-soft);padding-top:12px;list-style:none}.sgr:last-child{border-bottom:0}
 .sgr .g{display:grid;grid-template-columns:minmax(180px,1fr) auto minmax(200px,1.4fr);align-items:center;gap:4px 16px;min-height:68px}
 .sgr .who{display:flex;gap:12px;align-items:center;min-width:0}.sgr .who p{margin:0}.sgr .nm{font:700 14px/20px var(--font-body)}.sgr .ws{font-size:12px;color:var(--muted)}
@@ -1044,6 +1055,15 @@ section>.sec-h:has(+ .sbox){border-bottom:0}
 .band-r5{background:var(--band);border-bottom:1px solid #000}
 .fs-chrome:not(.fs-foot){padding-top:16px;background:var(--band)}
 @media(max-width:1023px){.fs-chrome:not(.fs-foot){padding-top:8px}}
+/* the last band piece fades into the ground over --band-fade (web ui/band.css); over a last control bar the band above
+   it carries the fade under the bar, so a stuck bar keeps a clean foot */
+:root{--band-fade:120px;--band-bar-reach:calc(var(--bar-h) + 1px)}
+@media(max-width:767px){:root{--band-fade:64px;--band-bar-reach:49px}}
+body{isolation:isolate}
+:is(.band-r5:not(:has(~ .band-r5,~ .cbar)),.band-r5:has(~ .cbar):not(:has(~ .cbar ~ .band-r5)),body:not(:has(main .band-r5,main .cbar)) .fs-chrome:not(.fs-foot),body:not(:has(main .band-r5)):has(main .cbar) .fs-chrome:not(.fs-foot)){--band-reach:var(--band-fade);position:relative;background:none;border-bottom:0}
+:is(.band-r5:not(:has(~ .band-r5,~ .cbar)),.band-r5:has(~ .cbar):not(:has(~ .cbar ~ .band-r5)),body:not(:has(main .band-r5,main .cbar)) .fs-chrome:not(.fs-foot),body:not(:has(main .band-r5)):has(main .cbar) .fs-chrome:not(.fs-foot))::before{content:"";position:absolute;inset:0 0 calc(-1*var(--band-reach));z-index:-1;pointer-events:none;background:var(--band);mask-image:linear-gradient(#000 calc(100% - var(--band-fade)),rgba(0,0,0,.82) calc(100% - var(--band-fade)*.75),rgba(0,0,0,.5) calc(100% - var(--band-fade)*.5),rgba(0,0,0,.18) calc(100% - var(--band-fade)*.25),transparent)}
+:is(.band-r5:has(~ .cbar):not(:has(~ .cbar ~ .band-r5)),body:not(:has(main .band-r5)):has(main .cbar) .fs-chrome:not(.fs-foot)){--band-reach:calc(var(--band-bar-reach) + var(--band-fade))}
+.cbar:not(:has(~ .band-r5)){border-bottom:0}
 .plate{background:var(--raised);border:1px solid #000;border-radius:10px;box-shadow:0 0 0 1px rgba(130,112,91,.55)}
 .cbar{background:var(--band);border-block:1px solid rgba(255,255,255,.14)}
 .cbar .pc{row-gap:12px}

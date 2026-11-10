@@ -234,9 +234,13 @@
 </script>
 
 {#snippet headSkeleton()}
-  <div class="character-head-skeleton" data-region={REGION.head} role="status" aria-busy="true">
-    <span class="skeleton-block h-14 w-14 rounded-full" aria-hidden="true"></span>
-    <span class="skeleton-block h-8 w-[280px] max-w-full" aria-hidden="true"></span>
+  <div role="status" class="contents">
+    <PageHeader title={unloggedName} pending={unloggedName === ''} testid="character-head-loading">
+      {#snippet crest()}<span class="skeleton-block block size-14 rounded-full" aria-hidden="true"
+        ></span>{/snippet}
+      {#snippet meta()}<span class="skeleton-block block h-4 w-[320px] max-w-full" aria-hidden="true"
+        ></span>{/snippet}
+    </PageHeader>
   </div>
 {/snippet}
 
@@ -409,13 +413,6 @@
 {/if}
 
 <style>
-  .character-head-skeleton {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    min-height: 96px;
-    padding: 20px var(--page-inset) 16px;
-  }
   .character-summary {
     padding-inline: var(--page-inset);
   }

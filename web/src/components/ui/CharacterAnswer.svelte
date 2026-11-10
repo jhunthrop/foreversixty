@@ -9,7 +9,8 @@
      from 900, the name and level line right-aligned beside it. With `testid`, the detail, next
      and action fields carry `<testid>-detail`, `-next` and `-action`. `figure` (the /bis landing,
      design/specs/2026-11-07-bis-landing.md) puts a Figure over a Meter between the name and the
-     links, reserved in the skeleton with the 44 px button the page paints into its links. -->
+     links, on one line with the Meter, reserved in the skeleton with the 44 px button the page
+     paints into its links. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { LINK } from '../../lib/ui/primitives';
@@ -47,7 +48,7 @@
   data-figure={figure === undefined ? undefined : ''}
   data-testid={testid}
 >
-  <span class="text-label text-muted font-bold">{label}</span>
+  <span class="sr-only">{label}</span>
   <div class="ui-cans-sk" data-answer-skeleton aria-hidden="true">
     <span class="ui-cans-row">
       <span class="skeleton-block ui-cans-sk-crest"></span>
@@ -129,24 +130,46 @@
     width: 220px;
     height: 20px;
   }
+  /* The figure (and its Meter and one short line): the count, the bar beside it from 900 (under it
+     on a phone), the line under both. The who row is a screen reader's: the header's selector and
+     the page's own "Yours" say whose it is. */
+  .ui-cans[data-figure] [data-field='who'],
+  .ui-cans[data-figure] .ui-cans-sk > .ui-cans-row {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .ui-cans-sk-fig,
   .ui-cans-fig {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
     width: 100%;
     max-width: 380px;
   }
-  .ui-cans-sk-num {
-    width: 160px;
-    height: 50px;
-  }
+  .ui-cans-fig :global(.ui-meter),
   .ui-cans-sk-bar {
-    width: 100%;
-    height: 8px;
+    flex: 1 0 100%;
+    height: 6px;
   }
-  .ui-cans-fig :global(.ui-meter) {
-    align-self: stretch;
+  /* The empty track reads on the band. */
+  .ui-cans-fig :global(.ui-meter.ui-meter) {
+    background: rgb(255 255 255 / 0.16);
+  }
+  .ui-cans-fig :global([data-field='note']) {
+    flex: 1 0 100%;
+  }
+  .ui-cans-sk-num {
+    width: 120px;
+    height: 32px;
+  }
+  .ui-cans[data-figure] .ui-cans-sk-link {
+    width: 240px;
+    height: 44px;
   }
   /* The answer is left-aligned under the title below 900 px: so is its figure. */
   @media (max-width: 899px) {
@@ -155,17 +178,10 @@
       text-align: left;
     }
   }
-  .ui-cans[data-figure] .ui-cans-sk-link {
-    width: 240px;
-    height: 44px;
-  }
-  /* The figure's reserve at every width: the filled answer (name, figure, caption, meter, note,
-     button) is 224 px, so the skeleton holds it and the page below never moves. */
+  /* The figure's reserve below 900: the filled answer (figure, Meter, line, button) is 120 px, so
+     the skeleton holds it and the page below never moves. */
   .ui-cans[data-figure] {
-    min-height: 224px;
-  }
-  .ui-cans[data-figure] .ui-cans-links {
-    padding-top: 4px;
+    min-height: 120px;
   }
   .ui-cans-crest {
     width: 40px;
@@ -202,9 +218,45 @@
   @media (min-width: 900px) {
     .ui-cans {
       min-width: 380px;
-      min-height: 96px;
-      justify-content: flex-end;
+      min-height: 72px;
       align-items: flex-end;
+      text-align: right;
+    }
+    /* With a figure: the figure and its line at the right, the button beside the figure's line. */
+    .ui-cans[data-figure] {
+      min-height: 56px;
+    }
+    .ui-cans[data-figure]:not(:has([data-field='figure'][hidden])) .ui-cans-sk,
+    .ui-cans[data-figure]:not(:has([data-field='figure'][hidden])) .ui-cans-body {
+      display: grid;
+      grid-template-columns: auto auto;
+      column-gap: 20px;
+      row-gap: 6px;
+      align-items: start;
+    }
+    .ui-cans[data-figure] .ui-cans-sk > *,
+    .ui-cans[data-figure] .ui-cans-body > * {
+      grid-column: 2;
+    }
+    .ui-cans[data-figure] .ui-cans-sk > :last-child,
+    .ui-cans[data-figure] .ui-cans-body > .ui-cans-links {
+      grid-column: 1;
+      grid-row: 1;
+      margin-top: -2px;
+    }
+    .ui-cans[data-figure] .ui-cans-links {
+      padding-top: 0;
+    }
+    .ui-cans-fig :global(.ui-meter),
+    .ui-cans-sk-bar {
+      flex: 1 1 140px;
+    }
+    /* The figure's line holds its count and Meter side by side; the short line runs under both. */
+    .ui-cans[data-figure] .ui-cans-fig,
+    .ui-cans[data-figure] .ui-cans-sk-fig {
+      width: 360px;
+    }
+    .ui-cans-fig :global([data-field='note']) {
       text-align: right;
     }
     .ui-cans-sk,
@@ -220,7 +272,7 @@
     }
     .ui-cans-sk-fig,
     .ui-cans-fig {
-      align-items: flex-end;
+      flex-direction: row-reverse;
     }
     .ui-cans-next {
       flex-basis: 100%;

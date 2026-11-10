@@ -19,8 +19,6 @@ sources:
     kind: community
 ---
 
-Two healing specs and one shadow caster, as always. Shadow is also how a priest levels. What changed is how much every priest now carries.
-
 ## What changed from 1.12
 
 - **Every priest now has** Fear Ward, Devouring Plague, Shadow Word: Death, Divine Spirit and Lightwell from the trainer.

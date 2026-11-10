@@ -1,6 +1,6 @@
 // web/src/lib/guides/overview.test.ts
 import { describe, expect, it } from 'vitest';
-import { specCardLine, splitOverview } from './overview';
+import { splitOverview } from './overview';
 
 const SECTION = `## Overview
 
@@ -41,25 +41,5 @@ describe('splitOverview', () => {
   it('ignores a heading it does not know rather than folding it into a block', () => {
     const parts = splitOverview('## Overview\n\nS.\n\n### Strengths\n\n- a\n\n### Other\n\n- b');
     expect(parts.strengths).toBe('- a');
-  });
-});
-
-describe('specCardLine', () => {
-  it('is the summary as plain text', () => {
-    expect(specCardLine('## Overview\n\nArms is the **two-handed** warrior.\n\n### Strengths\n\n- a')).toBe(
-      'Arms is the two-handed warrior.',
-    );
-  });
-
-  it('drops a sentence that only points at another guide', () => {
-    const section =
-      '## Overview\n\nThe cat opens with Ravage. Bear tanking has [its own guide](/guides/druid/feral-bear).';
-    expect(specCardLine(section)).toBe('The cat opens with Ravage.');
-  });
-
-  it('keeps a sentence whose colon list runs on with Shadow Word: Death', () => {
-    expect(
-      specCardLine('## Overview\n\nShadow hits Shadow Word: Death on cooldown, all from Shadowform.'),
-    ).toBe('Shadow hits Shadow Word: Death on cooldown, all from Shadowform.');
   });
 });

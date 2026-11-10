@@ -64,8 +64,8 @@ section>.sec-h+*{margin-top:12px}
 .body .t-small{max-width:72ch}
 .hand{display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--line-soft)}
 .hand .acts{gap:20px}
-.ans-who{display:flex;align-items:center;gap:12px}.ans-who b{font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap}
-@media(min-width:900px){.head .ans:has(.ans-who){min-width:300px}.ans-who{justify-content:flex-end}.ans-links{justify-content:flex-end}}
+.ans-who{display:flex;align-items:center;gap:12px}.ans-who b{display:block;font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap;font-size:16px}  /* the links take the page head's 16 px */
+@media(min-width:900px){.head .ans:has(>.ans-who){min-width:300px}.ans-who{justify-content:flex-end;text-align:right}.ans-links{justify-content:flex-end}}
 .pair{display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding-top:12px;border-top:1px solid var(--line-soft)}
 .paste textarea{width:100%;min-height:72px;resize:vertical;font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace}
 .kv code.c{font-size:14px}.kv dd .t-small{font-weight:400}
@@ -78,8 +78,8 @@ section>.sec-h+*{margin-top:12px}
 /* the built sm Button is a 44 px target below 1024 (web/src/lib/ui/button.ts BUTTON_SM) */@media(max-width:1023px){.btn.sm{height:44px}}
 .tm{display:inline-flex;align-items:center;gap:12px}
 .dl{display:flex;flex-direction:column;gap:4px}.dl .acts{column-gap:16px;row-gap:8px}.dl-meta{min-height:20px}
-.dl-copy{gap:8px;align-items:flex-start}.ans-links~.dl-head{margin-top:8px}
-@media(min-width:900px){.head .ans .dl{align-items:flex-end}.head .ans .dl .acts{justify-content:flex-end}}
+.dl-copy{gap:8px;align-items:flex-start}
+@media(min-width:900px){.head .ph-actions .dl{align-items:flex-end}.head .ph-actions .dl .acts{justify-content:flex-end}}
 .dl-other summary{cursor:pointer;color:var(--gold);display:inline-flex;align-items:center}@media(max-width:767px){.dl-other summary{min-height:44px}}.dl-other ul{margin-top:8px;display:flex;flex-direction:column;gap:4px;list-style:none;padding:0}
 .mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;background:var(--kill);flex:none}
 </style>'''
@@ -153,14 +153,13 @@ def character_answer(state: str) -> str:
     links = arrow(a['open']['label']) + (arrow(a['bis']['label']) if a['bis'] else '')
     return (f'<span class="ans-who">{crest_img(cls, 40)}<span><b style="color:{CLASS_COLOR[cls]}">{escape(a["name"])}</b>'
             f'<span class="t-small" style="display:block">{escape(a["levelLine"])}</span></span></span>'
-            f'<span class="t-small">{escape(a["imported"] or "")}</span>'
             f'<span class="ans-links">{links}</span>')
 
 
-def answer(state: str) -> str:
-    """The head's answer: the character when there is one, then the companion's download in every state (owner
-    2026-11-08: "a download link at the top"), never gold (the plate keeps the page's one primary)."""
-    return character_answer(state) + f'<div class="dl-head">{download_block(state, primary=False)}</div>'
+def download_actions(state: str) -> str:
+    """The head's actions: the companion's download in every state (owner 2026-11-08: "a download link at the top"), beside
+    the answer from 900, never gold (the plate keeps the page's one primary)."""
+    return f'<div class="dl-head">{download_block(state, primary=False)}</div>'
 
 
 def row_done(state: str, n: int) -> bool:
@@ -258,7 +257,8 @@ SIGNED_IN = ('none', 'importing', 'failed', 'bnet', 'addon', 'pairing', 'done', 
 def setup_page(state: str) -> str:
     paste_state = state if state in ('export', 'paste-error') else ''
     plate_state = 'out' if state == 'paste-error' else state
-    head = PageHeader(escape(A['setupPageTitle']), meta=[escape(A['setupSubline'])], answer=answer(state))
+    # The answer column is always in the row (SetupPage.svelte passes it in every state), empty with no character.
+    head = PageHeader(escape(A['setupPageTitle']), answer=character_answer(state) or ' ', actions=download_actions(state))
     main = Plate(Steps(step_rows(plate_state)), 'Your setup') + addon_section(plate_state) + companion_section(plate_state) + surfaces_section()
     rail = paste_section(paste_state) + commands_section() + handshake_section() + flows_section()
     body = head + Page('split', main, rail)

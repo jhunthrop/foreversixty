@@ -97,14 +97,12 @@
       <claimLazy.current path={claimPath} />
     {:else}
       <!-- The view's own wrapper and h1 (the guild's name is not known yet), so the swap moves nothing. -->
-      <div class="flex flex-col gap-4 {GUILD_BANDLESS_TOP}">
-        <a
-          class="text-nav w-fit text-[13px]"
-          href={guildHref(claimPath.region, claimPath.ruleset, claimPath.slug)}
-        >
-          ← {guildClaimCopy.backToGuild('')}
-        </a>
-        <PageHeader title={guildClaimCopy.heading('')} />
+      <div class="flex flex-col gap-4">
+        <PageHeader title={guildClaimCopy.heading('')}>
+          {#snippet crumb()}<a href={guildHref(claimPath.region, claimPath.ruleset, claimPath.slug)}
+              >‹ {guildClaimCopy.backToGuild('')}</a
+            >{/snippet}
+        </PageHeader>
         {@render chunkPending(claimLazy, 'guild-claim-chunk', GUILD_LOADING.claim.minHeight)}
       </div>
     {/if}
@@ -112,7 +110,7 @@
     {#if settingsLazy.current}
       <settingsLazy.current path={settingsPath} />
     {:else}
-      <div class="flex flex-col gap-6 {GUILD_BANDLESS_TOP}">
+      <div class="flex flex-col gap-6">
         <PageHeader title={guildSettingsCopy.heading} />
         {@render chunkPending(settingsLazy, 'guild-settings-chunk', GUILD_LOADING.settings.minHeight)}
       </div>

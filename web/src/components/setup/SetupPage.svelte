@@ -177,7 +177,7 @@
   ];
   const settled = $derived(mounted && session !== 'loading');
   const signedIn = $derived(session === 'in' && me !== null);
-  const answer = $derived(signedIn ? setupAnswer(me, current, now) : null);
+  const answer = $derived(signedIn ? setupAnswer(me, current) : null);
   const addonDone = $derived(rows[1]?.mark === 'ok');
 </script>
 
@@ -187,8 +187,11 @@
   {:else if !settled}
     <span class="setup-answer-reserve" aria-hidden="true"></span>
   {/if}
-  <!-- The companion's download at the top, in every state (owner 2026-11-08), never gold: the plate
-       keeps the page's one primary. -->
+{/snippet}
+
+<!-- The companion's download at the top, in every state (owner 2026-11-08), never gold (the plate
+     keeps the page's one primary): the head's actions, beside the answer (ui/PageHeader). -->
+{#snippet downloadContent()}
   <div class="setup-head-download">
     <CompanionDownload
       {platform}
@@ -204,9 +207,12 @@
 
 <Page layout="split" testid="setup-grid">
   {#snippet header()}
-    <PageHeader title={addonCopy.setupPageTitle} answer={answerContent} testid="setup-head">
-      {#snippet meta()}<span>{addonCopy.setupSubline}</span>{/snippet}
-    </PageHeader>
+    <PageHeader
+      title={addonCopy.setupPageTitle}
+      answer={answerContent}
+      actions={downloadContent}
+      testid="setup-head"
+    ></PageHeader>
     <SetupBackToClaim />
   {/snippet}
 
@@ -273,12 +279,7 @@
   :global(html[data-session='1'][data-pointer='1']) .setup-answer-reserve {
     display: block;
     width: 300px;
-    height: 94px;
-  }
-  /* Under the character (or its reserved box), the download sits apart from the answer's links. */
-  :global(.setup-answer-links) ~ .setup-head-download,
-  :global(html[data-session='1'][data-pointer='1']) .setup-answer-reserve ~ .setup-head-download {
-    margin-top: 8px;
+    height: 70px;
   }
   /* The Sections' shared body: a column, reading lines, quiet link rows. */
   :global(.setup-body) {

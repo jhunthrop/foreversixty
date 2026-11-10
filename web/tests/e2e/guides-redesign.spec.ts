@@ -1,28 +1,15 @@
 // web/tests/e2e/guides-redesign.spec.ts
 // Acceptance sweep for the guides in the flat system (design/specs/2026-11-08-guides.md §4): the
 // /guides class picker (nine crests, 28 spec rows), the class landing's one Plate of spec rows
-// with the full card line, the spec guide's At a glance plate, and the Leveling lane's level
+// (name and role, no date and no blurb), the spec guide's At a glance plate, and the Leveling lane's level
 // slider and planner link -- at desktop and phone, with the site's own "nothing scrolls
 // sideways" sweep every page-level spec runs (layout.spec.ts's own convention).
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
-import { cardLineFor } from '../../src/lib/guides/class-landing';
 import { SPEC_BY_KEY } from '../../src/lib/sim/specs';
 import { expect, test } from './support/test';
 
 const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };
-
-/** The card line the class landing shows: the spec guide's own Overview summary, read through
- *  the same helper the page uses, so the test and the page share one source of truth. */
-function cardLine(classSlug: string, specSlug: string): string {
-  const path = fileURLToPath(
-    new URL(`../../src/content/guides/${classSlug}/${specSlug}.md`, import.meta.url),
-  );
-  const body = readFileSync(path, 'utf8').split(/^---$/m).slice(2).join('---');
-  return cardLineFor(body, path);
-}
 
 function iconOfSrc(src: string | null): string | undefined {
   return src?.match(/\/icons\/([a-z0-9_]+)\.webp$/)?.[1];
@@ -79,13 +66,12 @@ test.describe('desktop', () => {
     await expect(page.getByTestId('guide-class-spec-cards')).not.toContainText(/DPS at 60|per second/);
   });
 
-  test('every spec row says how the spec plays, from its guide’s Overview', async ({ page }) => {
+  test('every spec row names its role, with no date, no blurb and no class intro', async ({ page }) => {
     await page.goto('/guides/warrior');
-    for (const specSlug of ['arms', 'fury', 'protection']) {
-      await expect(page.getByTestId(`guide-spec-row-warrior/${specSlug}`)).toContainText(
-        cardLine('warrior', specSlug),
-      );
-    }
+    await expect(page.getByTestId('guide-spec-row-warrior/protection')).toContainText('Tank');
+    await expect(page.getByTestId('guide-class-spec-cards')).not.toContainText('Updated');
+    await expect(page.getByTestId('guide-class-spec-cards')).not.toContainText(/ is the /);
+    await expect(page.getByTestId('guide-class-identity')).toHaveCount(0);
   });
 
   test('the class facts follow the spec rows under their own headings, with no sourcing caveat', async ({

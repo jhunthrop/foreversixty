@@ -75,10 +75,9 @@ export const simPageCopy = {
     serverRunning: (done: string, total: string): string => `Running · ${done} of ${total} runs`,
     runningBrowser: 'Running in your browser',
     runningCaption: (band: string, done: string, total: string): string =>
-      `± ${band} (95%) · ${done} of ${total} runs`,
-    resultLabel: (lane: 'browser' | 'server'): string =>
-      lane === 'server' ? 'Run on our servers' : 'Run in your browser',
-    savedLabel: (runs: string): string => `Saved sim · ${runs} runs`,
+      `± ${band} DPS · ${done} of ${total} runs`,
+    /** A finished result names no lane: the band says how sure it is. */
+    resultLabel: '',
     stoppedLabel: (done: string, total: string): string => `Stopped at ${done} of ${total} runs`,
     stoppedFigure: (estimate: string): string => `about ${estimate}`,
     stoppedCaption: (done: string, estimate: string, band: string): string =>

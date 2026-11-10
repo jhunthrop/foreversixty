@@ -6,7 +6,6 @@ export const notFoundCopy = {
   docTitle: 'Page not found',
   description: 'No page exists at this address.',
   title: 'No page here',
-  job: 'Nothing exists at this address. It may have moved as the game changes.',
   pick: 'Pick your class',
   didYouMean: 'Did you mean',
   /** The signed-in answer's third, smaller link (ruling Q6). */

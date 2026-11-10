@@ -19,8 +19,6 @@ sources:
     kind: community
 ---
 
-The druid is the class that fills any role from one character: a caster in Moonkin Form, a cat in melee, a bear on the boss, or a healer.
-
 ## What changed from 1.12
 
 - **Forms keep your consumables.** Almost every potion works in a form without breaking it, rage potions and Thistle Tea work for druids, and weapon stones, enchants and Windfury Totem reach your paw. Most old Engineering bombs still cannot be thrown in form, but Forever's SAF-T and EZ-Thro recipes can.

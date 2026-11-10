@@ -24,6 +24,13 @@ describe('home B view', () => {
       label: 'Simmed on import',
       caption: 'Simmed 6 Nov',
     });
+    expect(
+      simFigure(
+        { state: 'done', dps: 122.1, simmed_at: '2026-11-06T04:00:00Z', sim_id: 'imp34' },
+        new Date('2026-11-06T18:00:00Z'),
+      ).link,
+    ).toEqual({ label: 'Sim 14 h ago', href: '/sim/imp34' });
+    expect(simFigure({ state: 'done', dps: 1, simmed_at: null, sim_id: null }).link).toBeUndefined();
     expect(simFigure({ state: 'pending', dps: null, simmed_at: null, sim_id: null }).value).toBe(
       'Sim pending',
     );

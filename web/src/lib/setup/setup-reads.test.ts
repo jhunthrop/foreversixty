@@ -23,18 +23,16 @@ vi.mock('../account/api', async (importOriginal) => ({
 }));
 const { loadSetupState } = await import('./state');
 
-const NOW = new Date('2026-11-06T10:00:00Z');
 const me34 = me34Json as unknown as Me;
 const meNew = meNewJson as unknown as Me;
 
 describe('setupAnswer', () => {
-  it('is the character: name, class slug, the level line in the client order, imported, two links', () => {
-    const answer = setupAnswer(me34, null, NOW);
+  it('is the character: name, class slug, the level line in the client order, two links', () => {
+    const answer = setupAnswer(me34, null);
     expect(answer).toMatchObject({
       name: 'Felsnap',
       classSlug: 'hunter',
       levelLine: 'Level 34 Beast Mastery Hunter',
-      imported: 'Updated 1 h ago from Battle.net',
       open: { label: addonCopy.setupOpenCharacter('Felsnap') },
     });
     expect(answer?.open.href).toContain('felsnap');
@@ -42,8 +40,8 @@ describe('setupAnswer', () => {
   });
 
   it('is nothing signed out or with no character', () => {
-    expect(setupAnswer(null, null, NOW)).toBeNull();
-    expect(setupAnswer(meNew, null, NOW)).toBeNull();
+    expect(setupAnswer(null, null)).toBeNull();
+    expect(setupAnswer(meNew, null)).toBeNull();
   });
 });
 

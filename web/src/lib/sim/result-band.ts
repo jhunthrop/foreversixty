@@ -62,6 +62,14 @@ export function variationPercent(variation: number): number {
   return Math.round(variation * 100);
 }
 
+/** The head's save day: "4 Nov", with the year only when it is not this year's ("4 Nov 2025"),
+ *  in UTC. Null when unreadable. */
+export function savedDay(iso: string | undefined, now: Date = new Date()): string | null {
+  const full = savedDate(iso);
+  if (full === null || iso === undefined) return null;
+  return new Date(iso).getUTCFullYear() === now.getUTCFullYear() ? full.replace(/ \d{4}$/, '') : full;
+}
+
 /** "4 Nov 2026" in UTC, so every viewer reads one date for one save. Null when unreadable. */
 export function savedDate(iso: string | undefined): string | null {
   if (iso === undefined || iso === '') return null;

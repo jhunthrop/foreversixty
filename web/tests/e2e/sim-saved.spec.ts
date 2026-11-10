@@ -87,9 +87,8 @@ test.describe('a saved sim from the prerendered fixture', () => {
       new RegExp(`^\\s*${figure.replace('.', '\\.')}\\s*DPS\\s*$`),
     );
     await expect(page.getByTestId('sim-head-meta')).toContainText('3:00');
-    await expect(page.getByTestId('sim-answer-label')).toHaveText(
-      `Saved sim · ${fixtureResult.iterations_run.toLocaleString('en-US')} runs`,
-    );
+    // A saved result names no lane and no label: its date is the meta's, its runs the report's.
+    await expect(page.getByTestId('sim-answer-label')).toHaveText('');
 
     await expect(page.getByTestId('sim-damage-card')).toBeVisible();
     await expect(page.getByTestId('sim-section-nav')).toHaveCount(0);
@@ -119,7 +118,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-spread-plot')).toBeVisible();
     await expect(page.getByTestId('sim-spread-bar').first()).toBeVisible();
     await expect(page.getByTestId('sim-spread-caption')).toHaveCount(0);
-    await expect(page.getByTestId('sim-head-source')).toHaveText(/4 Nov 2026/);
+    await expect(page.getByTestId('sim-head-source')).toHaveText(/^Saved 4 Nov( 2026)?$/);
 
     // Below 1024 the table is three columns with no heads (spec §4.7, phone), so the sort
     // heads are a desktop control: a press on Crit sorts it, a second press flips it.
@@ -243,7 +242,7 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
   // The fixture's warrior-fury row is not validated, so the note is there, pill linking the spec list.
   const note = page.getByTestId('sim-answer').getByTestId('spec-fidelity-note');
   await expect(note).toBeVisible();
-  await expect(note.getByRole('link')).toHaveAttribute('href', '/sim/specs');
+  await expect(note.getByRole('link')).toHaveAttribute('href', '/sim/specs#warrior-fury');
 });
 
 // A validated spec renders no note at all, rather than a green "all is well" line: dropping the
@@ -458,9 +457,9 @@ test.describe('saving a browser run from /sim', () => {
     await page.route('**/v1/sims', (route) => route.fulfill(envelope({ sim_id: 'simnew234567' }, 201)));
     await page.getByTestId('sim-save-confirm').click();
 
-    // The Button becomes Copy link, the answer says Saved, and the link is the new sim's.
+    // The Button becomes Copy link, the head's actions say Saved, and the link is the new sim's.
     await expect(page.getByTestId('sim-save-copy')).toHaveText('Copy link');
-    await expect(page.getByTestId('sim-answer')).toContainText('Saved');
+    await expect(page.getByTestId('sim-head')).toContainText('Saved');
     await expect(page.getByTestId('sim-save-link')).toHaveAttribute('href', /\/sim\/simnew234567$/);
     await expect(page).toHaveURL(/\/sim(\?.*)?$/);
     await expect(page.getByTestId('sim-view')).toBeVisible();

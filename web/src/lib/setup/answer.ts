@@ -3,7 +3,6 @@
 // Mastery Hunter"): the header selector's character, never switched from here.
 import type { Me } from '../account/api';
 import { selectedCharacter } from '../account/hero-character';
-import { characterListCopy } from '../account/character-list-copy';
 import { addonCopy } from '../addon/copy';
 import { bisHref } from '../character-profile';
 import { characterHref } from '../characters';
@@ -14,16 +13,11 @@ export interface SetupAnswer {
   /** Lower-case class slug for the crest and the class colour; null when Battle.net has not said. */
   classSlug: string | null;
   levelLine: string;
-  imported: string | null;
   open: { label: string; href: string };
   bis: { label: string; href: string } | null;
 }
 
-export function setupAnswer(
-  me: Me | null,
-  current: CurrentCharacter | null,
-  now: Date = new Date(),
-): SetupAnswer | null {
+export function setupAnswer(me: Me | null, current: CurrentCharacter | null): SetupAnswer | null {
   if (me === null || me.characters.length === 0) return null;
   const character = selectedCharacter(current, me);
   if (character === null) return null;
@@ -38,8 +32,6 @@ export function setupAnswer(
     name: character.name,
     classSlug: cls === '' ? null : cls.toLowerCase(),
     levelLine,
-    imported:
-      me.bnet_imported_at === undefined ? null : characterListCopy.updatedFrom(me.bnet_imported_at, now),
     open: {
       label: addonCopy.setupOpenCharacter(character.name),
       href: characterHref(character.region, character.ruleset, character.name),

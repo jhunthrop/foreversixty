@@ -43,7 +43,6 @@ const STRING_COPY_KEYS = [
   'flowInBody',
   'setupStep2Title',
   'setupStep3Title',
-  'setupSubline',
   'setupCompanionNote',
   'installDataHint',
   'setupTryExport',
@@ -90,7 +89,6 @@ describe('/setup', () => {
     expect(html).toContain('data-testid="setup-page"');
     expect(html).toContain('data-region="head"');
     expect(html).toContain(`>${addonCopy.setupPageTitle}</h1>`);
-    expect(html).toContain(addonCopy.setupSubline);
     // No eyebrow, no progress chips, no step cards, no character bar.
     expect(html).not.toMatch(/setup-chip|setup-step-tag|setup-btn|data-setup-first|current-character-bar/);
   });
@@ -123,7 +121,8 @@ describe('/setup', () => {
   });
 
   it('offers the companion at the top and right under The companion heading, never gold (owner 2026-11-08)', () => {
-    const head = html.slice(html.indexOf('data-region="head-answer"'), html.indexOf('data-region="plate"'));
+    // The download is the head's actions, beside its answer (ui/PageHeader).
+    const head = html.slice(html.indexOf('data-region="head"'), html.indexOf('data-region="plate"'));
     const companionSection = section('setup-companion');
     for (const markup of [head, companionSection]) {
       for (const build of COMPANION_DOWNLOADS)

@@ -30,4 +30,18 @@ describe('the simulator head meta', () => {
     expect(line2).toBe('Gear from the addon, 4 Nov');
     expect(dayMonth('')).toBeNull();
   });
+
+  it('says nothing of an addon export with no capture date (the default)', () => {
+    const lines = characterMeta(
+      {
+        race: 'troll',
+        spec: 'warrior-fury',
+        level: 60,
+        talents: '05-32-2',
+        source: { kind: 'addon', ref: '', captured_at: '' },
+      },
+      null,
+    );
+    expect(lines).toHaveLength(1);
+  });
 });

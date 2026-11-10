@@ -1,7 +1,7 @@
 ---
 // web/src/pages/changelog.astro
 // The changelog in the flat system (design/specs/2026-11-08-pages.md §4.1 and rulings 0A): a
-// reading page with no Plate. The PageHeader (What changed, the one Updated stamp, the lead),
+// reading page with no Plate. The PageHeader (What changed, the one Updated stamp),
 // the bar (Show All, Game or Site as `?show=`, the months below 1760), Coming up (the roadmap's
 // dates ahead), then one DatedGroup per month, newest first: each entry a Dated with its full
 // text from launch on, a title row that opens in place before it (CL1), its sources or the
@@ -67,7 +67,7 @@ const hideCss = (['game', 'site'] as const satisfies readonly ChangelogShow[])
   {hideCss !== '' && <style slot="head" is:inline set:html={`${hideCss}{display:none}`}></style>}
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="changelog">
     <Page layout="reading" tocFrom={1760} tocLabel={guidesCopy.tocBarLabel} testid="changelog-body">
-      <PageHeader slot="header" title={changelogCopy.title} lead={changelogCopy.description}>
+      <PageHeader slot="header" title={changelogCopy.title}>
         <span slot="meta" data-testid="updated-stamp">
           Updated {formatDate(updated)}
         </span>

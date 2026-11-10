@@ -119,7 +119,8 @@ test('the download sits at the top and right under The companion heading, the sa
   await openSetupState(page, 'out');
   const own = downloadFor('windows');
   if (own === null) throw new Error('companion.json lists no windows build');
-  const head = page.locator('[data-region="head-answer"]');
+  // The download is the head's actions, beside its answer (ui/PageHeader).
+  const head = page.locator('[data-region="head"]');
   const section = page.getByTestId('setup-companion');
   for (const [scope, place] of [
     [head, 'setup-head'],

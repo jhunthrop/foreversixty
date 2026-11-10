@@ -20,6 +20,18 @@
 .pl-acts.pl-end {
   align-items: flex-end;
 }
+/* The send label names the character and what it replaces: it wraps inside its card, never past it. */
+.pl-acts {
+  max-width: 100%;
+}
+.pl-acts [data-testid='planner-send'] {
+  max-width: 100%;
+  height: auto;
+  min-height: 44px;
+  padding-block: 8px;
+  white-space: normal;
+  text-align: center;
+}
 .pl-line {
   font-size: 15px;
   line-height: 22px;

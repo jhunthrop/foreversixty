@@ -25,8 +25,6 @@ sources:
     kind: datamined
 ---
 
-Hunter is a pure damage class in Forever. All three specs deal damage, and they no longer play the same way: Beast Mastery shoots with a pet at its side, Marksmanship raids with no pet through Lone Wolf, and Survival fights in melee with no pet.
-
 ## What changed from 1.12
 
 - **Pets are reworked.** A pet copies 10% of your attack power and all of your crit, and it takes no stat buffs from other players; your own Heart of the Lion still reaches it. Your gear is what makes it hit.

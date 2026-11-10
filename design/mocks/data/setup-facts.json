@@ -436,6 +436,12 @@
       "text": "",
       "tone": "muted",
       "skeleton": true
+     },
+     {
+      "text": "",
+      "tone": "muted",
+      "skeleton": true,
+      "phoneOnly": true
      }
     ],
     "action": null
@@ -462,6 +468,12 @@
       "text": "",
       "tone": "muted",
       "skeleton": true
+     },
+     {
+      "text": "",
+      "tone": "muted",
+      "skeleton": true,
+      "phoneOnly": true
      }
     ],
     "action": null
@@ -811,28 +823,26 @@
   "name": "Felsnap",
   "classSlug": "hunter",
   "levelLine": "Level 34 Beast Mastery Hunter",
-  "imported": "Updated 1 h ago from Battle.net",
   "open": {
    "label": "Open Felsnap",
    "href": "/character/us/normal/felsnap"
   },
   "bis": {
    "label": "Best in slot",
-   "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+   "href": "/bis/hunter/beast-mastery/30-39"
   }
  },
  "answer_bnet": {
   "name": "Felsnap",
   "classSlug": "hunter",
   "levelLine": "Level 34 Beast Mastery Hunter",
-  "imported": "Updated 1 h ago from Battle.net",
   "open": {
    "label": "Open Felsnap",
    "href": "/character/us/normal/felsnap"
   },
   "bis": {
    "label": "Best in slot",
-   "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+   "href": "/bis/hunter/beast-mastery/30-39"
   }
  },
  "me": {
@@ -1059,7 +1069,6 @@
  "device_status": [
   "JHUNT-PC · Windows · last seen 3 minutes ago"
  ],
- "imported": "Updated 1 h ago from Battle.net",
  "companion": {
   "downloads": [
    {
@@ -1272,7 +1281,6 @@
   "setupSignInBody": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
   "setupSignInAction": "Sign in with Battle.net",
   "setupCompanionNote": "Optional. Sends bags, bank and live logs after every session.",
-  "setupSubline": "Signing in with Battle.net brings your characters. The addon and companion are optional.",
   "setupCompanionBody": "The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.",
   "setupPageTitle": "Get set up",
   "setupAddonDoneLine": "An export is loaded; the site is pointed at that character.",
@@ -1344,13 +1352,13 @@
    {
     "section": "4.3",
     "title": "Item tooltip",
-    "body": "Every item tooltip gains a Forever Sixty section that says whether the item is an upgrade and by how much, the next upgrade for that slot and where it comes from, and two alternatives.",
+    "body": "Every item tooltip gains one line saying whether the item is an upgrade and by how much, or on what you wear, the next upgrade and where it drops, with the details under Shift.",
     "images": [
      {
       "src": "/addon/item-tooltip-ranged.jpg",
       "width": 910,
       "height": 615,
-      "alt": "A level 24 hunter’s worn Short Ash Bow tooltip on the character panel, ending in the Forever Sixty section: “Forever Sixty · Beast Mastery · Estimate”, “Equipped”, “Next upgrade: Ranger Bow +3.5 DPS”, “(+1 Agi, +3.4 weapon DPS)”, “Planned for your build”, “World drop · check the AH”, and “Also good:” Lil Timmy’s Peashooter +2.2 (needs bullets) and Cracked Blacksmith Hammer +0.8, with the Ranger Bow’s own tooltip beside it."
+      "alt": "A level 24 hunter’s worn Short Ash Bow tooltip on the character panel. Straight after the game’s own lines, one white line, “Next upgrade: Ranger Bow +3.5 DPS”, and under it “World drop”, with the Ranger Bow’s own tooltip beside it. Held Shift adds “+1 Agi”, “Also good: Lil Timmy’s Peashooter +2.2 (gun)” and “Cracked Blacksmith Hammer +0.8 (thrown)”."
      }
     ]
    },

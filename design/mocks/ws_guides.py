@@ -56,7 +56,7 @@ def points_line(decoded: list[dict]) -> str:
 
 def answer(kind: str, me: dict | None = None, page: dict | None = None) -> str:
     """The signed-in answer (PageHeader.answer). kind: same | other | loading | unknown | error | nochar."""
-    lab = f'<span class="t-label">{PROPOSED["answerLabel"]}</span>'
+    lab = f'<span class="sr-only">{PROPOSED["answerLabel"]}</span>'   # a screen reader's label (ui/CharacterAnswer)
     if kind == 'loading':
         return f'<div class="ans-box">{lab}<span class="ans-row">{Skeleton(40, 40, True)}<span class="ans-who">{Skeleton(150, 22)}{Skeleton(190, 16)}</span></span>{Skeleton(220, 20)}</div>'
     if kind == 'unknown':
@@ -317,7 +317,7 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
                    boxed=True)
     ans = '' if kind == 'out' else answer(kind, me)
     head = PageHeader(e(L['title']), CLASS_COLOR[cls], crest_img(cls, 56), [f'Updated {e(L["updated"])}'], ans)
-    html = head + Page('ledger', f'<div class="g-ledger">{lede(L["identity"])}{specs}</div>') + Page('split', main + srcs, rail) + PAGE_CSS
+    html = head + Page('ledger', f'<div class="g-ledger">{specs}</div>') + Page('split', main + srcs, rail) + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     return build_page(f'{L["title"]} guides', html, 'Guides', who, f'Class landing mock (design/specs/2026-11-08-guides.md); data guides-facts.json, build {F["build"]}.')
 
@@ -378,8 +378,8 @@ PAGE_CSS = '''<style>
 @media(min-width:900px){.ans-row{flex-direction:row-reverse}.ans-who{align-items:flex-end}.ans-links{justify-content:flex-end}}
 .g-read{padding-top:28px}.layout-reading{row-gap:var(--section-gap)}.g-top{grid-column:1/-1;display:flex;flex-direction:column;gap:22px;min-width:0}
 .g-lede{margin:0;max-width:var(--measure-reading);font-size:16px;line-height:25px;color:var(--text)}
-.g-ledger{display:flex;flex-direction:column}
-.g-specs{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:22px}
+.g-ledger{display:flex;flex-direction:column;gap:22px}
+.g-specs{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 @media(min-width:1024px){.g-specs{grid-template-columns:repeat(var(--specs),minmax(0,1fr))}}
 main{padding-bottom:40px}
 .sw{display:grid;gap:20px var(--gap);grid-template-columns:minmax(0,1fr)}@media(min-width:768px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}

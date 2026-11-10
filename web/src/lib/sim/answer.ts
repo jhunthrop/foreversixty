@@ -3,7 +3,7 @@
 // run line's one primary Button for the same state. One pure function, so every state is a unit
 // test and the page only draws the model.
 //
-// One ± everywhere (ruling S2): the 95% band, 1.96 × the standard error, labelled "(95%)" once,
+// One ± everywhere (ruling S2): the 95% band, 1.96 × the standard error, in DPS and unlabelled (a veteran reads ±),
 // in the answer. Data gaps stay hidden (G1, G15): no "since your last sim" line and no last sim
 // on the landing until a saved-sim row carries a character key and its error. The server lane
 // reports no failure reason (G8 and the job reason are not on the progress read), so a server
@@ -77,7 +77,7 @@ function runningAnswer(input: AnswerInput): AnswerModel {
     label: copy.answer.runningBrowser,
     figure: hasFigure ? { value: grouped(estimate.mean), tone: 'gold', unit: true } : undefined,
     caption: hasFigure
-      ? { bold: `± ${band(estimate)} (95%)`, rest: ` · ${grouped(done)} of ${grouped(total)} runs` }
+      ? { bold: `± ${band(estimate)} DPS`, rest: ` · ${grouped(done)} of ${grouped(total)} runs` }
       : { rest: `${grouped(done)} of ${grouped(total)} runs` },
     meter: { value: fraction(done, total), tone: 'gold' },
     primary: 'stop',
@@ -138,9 +138,9 @@ function failedAnswer(input: AnswerInput): AnswerModel {
 export function resultAnswer(result: SimResult): AnswerModel {
   return {
     state: 'result',
-    label: copy.answer.resultLabel(result.lane === 'server' ? 'server' : 'browser'),
+    label: copy.answer.resultLabel,
     figure: { value: oneDecimal(result.dps.mean), tone: 'gold', unit: true },
-    caption: { bold: `± ${band(result.dps)} (95%)` },
+    caption: { bold: `± ${band(result.dps)} DPS` },
     primary: 'run-again',
   };
 }

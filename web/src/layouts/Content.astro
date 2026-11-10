@@ -2,7 +2,7 @@
 // web/src/layouts/Content.astro
 // A `pages` collection entry (the legal pages, About, Data sources) in the flat system
 // (design/specs/2026-11-08-pages.md §4.2, §4.3): a reading page with no Plate. The PageHeader
-// (the title, the one Updated stamp; the description as the lead only when the body opens on a
+// (the title and the one Updated stamp, no lead sentence; the description is the page's meta only. When the body opens on a
 // heading, L3; the legal tabs on Terms, Privacy and Refunds, L2), then the prose before the first
 // heading (`intro`) and one ReadingSection per heading at the reading measure. With two sections
 // or more, the contents rail from 1024 and a closed On this page Disclosure below it. The text is
@@ -47,7 +47,7 @@ const tocItems = sections.map((section) => ({ title: section.title, id: section.
   <meta slot="head" property="article:modified_time" content={updated.toISOString()} />
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="content-page">
     <Page layout="reading" tocFrom={tocFrom} tocLabel={guidesCopy.tocBarLabel} testid="content-body">
-      <PageHeader slot="header" title={title} lead={intro === '' ? description : undefined}>
+      <PageHeader slot="header" title={title}>
         <span slot="meta" data-testid="updated-stamp">
           Updated {formatDate(updated)}
         </span>

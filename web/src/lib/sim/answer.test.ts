@@ -47,16 +47,16 @@ describe('simAnswer', () => {
       }),
     );
     expect(a.figure).toEqual({ value: '905', tone: 'gold', unit: true });
-    expect(a.caption).toEqual({ bold: '± 2.6 (95%)', rest: ' · 1,357 of 10,000 runs' });
+    expect(a.caption).toEqual({ bold: '± 2.6 DPS', rest: ' · 1,357 of 10,000 runs' });
     expect(a.meter?.value).toBeCloseTo(0.1357);
     expect(a.primary).toBe('stop');
   });
 
-  it('the result labels its band once, as 95%, and its lane', () => {
+  it('the result reads its band in DPS, with no lane label', () => {
     const a = simAnswer(input({ phase: 'done', result }));
     expect(a.state).toBe('result');
-    expect(a.label).toBe(`Run ${result.lane === 'server' ? 'on our servers' : 'in your browser'}`);
-    expect(a.caption?.bold).toMatch(/^± [\d.]+ \(95%\)$/);
+    expect(a.label).toBe('');
+    expect(a.caption?.bold).toMatch(/^± [\d.]+ DPS$/);
     expect(a.caption?.rest).toBeUndefined();
     expect(a.primary).toBe('run-again');
   });

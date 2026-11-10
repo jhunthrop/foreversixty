@@ -16,7 +16,7 @@ import sys
 from html import escape
 from pathlib import Path
 
-from ws_prims import (Button, Meter, Page, PageHeader, Row, Rows, Section, Spark, StatRow, StatTable, TabStrip, build_page, write)
+from ws_prims import (Button, Figure, Meter, Page, PageHeader, Row, Rows, Section, Spark, StatRow, StatTable, TabStrip, build_page, write)
 
 MOCKDATA = Path(__file__).resolve().parent / 'data'
 FACTS = json.loads(Path(os.environ.get('FS_RANKINGS_FACTS') or MOCKDATA / 'rankings-facts.json').read_text())
@@ -31,9 +31,7 @@ PAGE_CSS = '''<style>
 /* the built open Section sets its body 12 px under the hairline (ui/Section.svelte pt-3) */
 section>.sec-h{padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.14)}section>.sec-h+*,section>.sec-h+.rows{margin-top:12px}section>.sec-h+.prose{padding-top:0}
 .figs3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 24px}.figs3>div{display:flex;flex-direction:column;gap:2px;min-width:0}
-.score-fig{font:700 36px/40px var(--font-body);font-variant-numeric:tabular-nums}.score-fig small{margin-left:4px;font-size:13px;font-weight:600;color:var(--muted)}
 .tier{font-size:19px;line-height:24px}.tiers .row.cur{background:color-mix(in srgb,var(--c) 12%,transparent);box-shadow:inset 3px 0 0 var(--c)}
-.ans-col{display:flex;flex-direction:column;gap:4px;align-items:flex-end;text-align:right;min-width:360px;min-height:96px}
 </style>'''
 
 
@@ -50,9 +48,10 @@ def head() -> str:
     labels = {c['key']: c['label'] for c in SC['components']}
     gaps = sorted(((R['component_max'][k] - v, k) for k, v in R['sample']['components'].items()), reverse=True)
     key = gaps[0][1]
-    ans = (f'<div class="ans-col"><span class="t-label">{escape(SC["samplePill"])} &middot; {escape(SC["explainerHeading"])}</span>'
-           f'<span class="score-fig" style="color:{TIER_HEX[tier]}">{score:,}<small>of {total:,} &middot; {tier.capitalize()}</small></span>'
-           f'<span class="t-small">{escape(SC["mostToGainLead"])} {labels[key]}{escape(R["most_to_gain_rest"][key])}</span></div>')
+    # The answer is a Figure (big, in the tier's colour) and one short line under it (RatingsPage.svelte), no spacer column.
+    fig = Figure(f'{score:,}', f'{escape(SC["samplePill"])} &middot; {escape(SC["explainerHeading"])}',
+                 f'of {total:,} &middot; {tier.capitalize()}', size='big').replace('<span class="v">', f'<span class="v" style="color:{TIER_HEX[tier]}">', 1)
+    ans = fig + f'<span class="t-small">{escape(SC["mostToGainLead"])} {labels[key]}{escape(R["most_to_gain_rest"][key])}</span>'
     return PageHeader(escape(SC['explainerPageTitle']), meta=[escape(SC['explainerScoreCaption']), escape(SC['explainerRatingCaption'])],
                       answer=ans, tabs=TabStrip([SC['explainerHeading'], SC['explainerRatingHeading']], SC['explainerHeading']))
 

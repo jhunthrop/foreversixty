@@ -960,7 +960,7 @@
      "kind": "site"
     }
    ],
-   "html": "<p>Forever Sixty helps you play your class better in World of Warcraft: Forever. It is built and run by Commish LLC, an Arkansas company founded by players, and written and checked by players.</p>\n<p>Every page says when it was last updated, under its title. Where a fact comes from is shown where it matters: a source pill on each news row, a Sources list at the foot of a page, and a pill beside any claim that only one outlet has reported. The pill says whether it comes from Blizzard, from the game client, from player reports, or from this site’s own work.</p>\n<p>The site is not affiliated with or endorsed by Blizzard Entertainment.</p>\n<p>To report an error, use Report a bug in the footer. To talk about a guide or offer to help write one, join the Discord from the footer.</p>\n",
+   "html": "<p>Forever Sixty helps you play your class better in World of Warcraft: Forever. It is built and run by Commish LLC, an Arkansas company founded by players, and written and checked by players.</p>\n<p>Every page says when it was last updated, under its title. Where a fact comes from is shown where it matters: a source pill on each news row, a Sources list at the foot of a page, and a pill beside any claim that only one outlet has reported. The pill says whether it comes from Blizzard, from the game client, from player reports, or from this site’s own work.</p>\n<p>Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc. Forever Sixty is a registered trade name of Commish LLC. © Commish LLC.</p>\n<p>To report an error, use Report a bug in the footer. To talk about a guide or offer to help write one, join the Discord from the footer.</p>\n",
    "headings": [],
    "sectionsMeta": "0 sections"
   },
@@ -1107,7 +1107,7 @@
      "kind": "site"
     }
    ],
-   "html": "<h2 id=\"what-premium-and-the-guild-plan-are\">What Premium and the guild plan are</h2>\n<p>Premium and the guild plan sell server compute and storage: running simulations on our\nservers, keeping raw logs and saved sims longer, and (for the guild plan) tools for a raid\ngroup. Nothing from Battle.net — your characters, your sign-in, anything the game itself\ntells us about you — is ever sold or gated behind a subscription.</p>\n<h2 id=\"billing-and-auto-renewal\">Billing and auto-renewal</h2>\n<p>Premium is $6 a month or $50 a year; Guild is $15 a month or $150 a year; Raid guild is $25 a\nmonth or $250 a year. Founder prices apply until 6 January 2027, as stated on the pricing page. A subscription renews automatically at the end of each billing period until you\ncancel. Stripe processes every payment; we never see or store your card.</p>\n<h2 id=\"cancelling\">Cancelling</h2>\n<p>Cancelling stops the renewal and keeps your access through the end of the period you already\npaid for; a period is paid up front and is not refunded in part (see the\n<a href=\"/refunds\">refund policy</a>). After that, the account works exactly like a free one — nothing is\ndeleted.</p>\n<h2 id=\"price-changes\">Price changes</h2>\n<p>If a price changes, you are told before it affects you, and the new price applies only from\nyour next renewal after that notice. Nothing you have already paid for is repriced.</p>\n<h2 id=\"account-termination-for-abuse\">Account termination for abuse</h2>\n<p>An account or guild found to be abusing the guild plan (for example, an inflated or\nfabricated roster meant to split one subscription among unrelated players) may have its\nentitlement revoked.</p>\n<h2 id=\"the-company\">The company</h2>\n<p>This service is provided by Commish LLC d/b/a Forever Sixty: Commish LLC, an Arkansas limited\nliability company, doing business as Forever Sixty, a fictitious name registered in Arkansas.</p>\n<ul>\n<li>Email: <a href=\"mailto:help@foreversixty.gg\">help@foreversixty.gg</a></li>\n<li>Phone: (479) 227-2208</li>\n<li>Mail: Commish LLC, c/o Northwest Registered Agent, LLC, 701 South St., STE 100, Mountain\nHome, AR 72653, United States</li>\n</ul>\n<p>These terms are governed by the laws of the State of Arkansas. Any dispute that cannot be\nsettled by email is heard in the state or federal courts located in Arkansas.</p>\n<h2 id=\"battlenet-sourced-data\">Battle.net-sourced data</h2>\n<p>Battle.net-sourced data is never sold. Blizzard’s Developer API Terms of Use\nforbid paywalling data or features that come from their API, and this site would keep that\nrule even if it did not have to.</p>\n",
+   "html": "<h2 id=\"what-premium-and-the-guild-plan-are\">What Premium and the guild plan are</h2>\n<p>Premium and the guild plan sell server compute and storage: running simulations on our\nservers, keeping raw logs and saved sims longer, and (for the guild plan) tools for a raid\ngroup. Nothing from Battle.net — your characters, your sign-in, anything the game itself\ntells us about you — is ever sold or gated behind a subscription.</p>\n<h2 id=\"billing-and-auto-renewal\">Billing and auto-renewal</h2>\n<p>Premium is $6 a month or $50 a year; Guild is $15 a month or $150 a year; Raid guild is $25 a\nmonth or $250 a year. Founder prices apply until 6 January 2027, as stated on the pricing page. A subscription renews automatically at the end of each billing period until you\ncancel. Stripe processes every payment; we never see or store your card.</p>\n<h2 id=\"cancelling\">Cancelling</h2>\n<p>Cancelling stops the renewal and keeps your access through the end of the period you already\npaid for; a period is paid up front and is not refunded in part (see the\n<a href=\"/refunds\">refund policy</a>). After that, the account works exactly like a free one — nothing is\ndeleted.</p>\n<h2 id=\"price-changes\">Price changes</h2>\n<p>If a price changes, you are told before it affects you, and the new price applies only from\nyour next renewal after that notice. Nothing you have already paid for is repriced.</p>\n<h2 id=\"account-termination-for-abuse\">Account termination for abuse</h2>\n<p>An account or guild found to be abusing the guild plan (for example, an inflated or\nfabricated roster meant to split one subscription among unrelated players) may have its\nentitlement revoked.</p>\n<h2 id=\"the-company\">The company</h2>\n<p>This service is provided by Commish LLC d/b/a Forever Sixty: Commish LLC, an Arkansas limited\nliability company, doing business as Forever Sixty, a fictitious name registered in Arkansas.</p>\n<ul>\n<li>Email: <a href=\"mailto:help@foreversixty.gg\">help@foreversixty.gg</a></li>\n<li>Phone: (479) 227-2208</li>\n<li>Mail: Commish LLC, c/o Northwest Registered Agent, LLC, 701 South St., STE 100, Mountain\nHome, AR 72653, United States</li>\n</ul>\n<p>These terms are governed by the laws of the State of Arkansas. Any dispute that cannot be\nsettled by email is heard in the state or federal courts located in Arkansas.</p>\n<h2 id=\"battlenet-sourced-data\">Battle.net-sourced data</h2>\n<p>Battle.net-sourced data is never sold. Blizzard’s Developer API Terms of Use\nforbid paywalling data or features that come from their API, and this site would keep that\nrule even if it did not have to.</p>\n<h2 id=\"trademarks\">Trademarks</h2>\n<p>Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.</p>\n<p>Forever Sixty is a registered trade name of Commish LLC. © Commish LLC.</p>\n",
    "headings": [
     {
      "id": "what-premium-and-the-guild-plan-are",
@@ -1136,9 +1136,13 @@
     {
      "id": "battlenet-sourced-data",
      "title": "Battle.net-sourced data"
+    },
+    {
+     "id": "trademarks",
+     "title": "Trademarks"
     }
    ],
-   "sectionsMeta": "7 sections"
+   "sectionsMeta": "8 sections"
   }
  },
  "copy": {
@@ -1158,6 +1162,7 @@
   "lookup": {
    "pageTitle": "Characters",
    "heading": "Look up a character",
+   "yourCharacters": "Your characters",
    "aside": "See any character’s Forever Score.",
    "nameLabel": "Character name",
    "namePlaceholder": "Character name",
@@ -1275,7 +1280,6 @@
    "docTitle": "Page not found",
    "description": "No page exists at this address.",
    "title": "No page here",
-   "job": "Nothing exists at this address. It may have moved as the game changes.",
    "pick": "Pick your class",
    "didYouMean": "Did you mean",
    "yourCharacter": "Your character"

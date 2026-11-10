@@ -53,26 +53,3 @@ export function splitOverview(sectionMarkdown: string): OverviewParts {
   }
   return parts;
 }
-
-/** A sentence carrying a Markdown link points at another page rather than saying how the
- *  spec plays (the feral guides' "Bear tanking has its own guide"). */
-const LINK = /\]\(/;
-const SENTENCE_BREAK = /(?<=[.!?])\s+(?=[A-Z])/;
-
-/** The class landing card's one line on how the spec plays: the Overview's summary, as plain
- *  text, minus any sentence that only links to another guide. */
-export function specCardLine(sectionMarkdown: string): string {
-  const summary = sectionMarkdown
-    .split(/\r?\n/)
-    .slice(1)
-    .join('\n')
-    .split(/^###\s/m)[0]!
-    .replace(/\s+/g, ' ')
-    .trim();
-  return plainText(
-    summary
-      .split(SENTENCE_BREAK)
-      .filter((sentence) => !LINK.test(sentence))
-      .join(' '),
-  );
-}

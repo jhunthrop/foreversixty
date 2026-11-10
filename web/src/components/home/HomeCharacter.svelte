@@ -178,12 +178,12 @@
 </div>
 
 <style>
+  /* The head's answer column sets the side (left under the title on a phone, right from 900). */
   .home-answer {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: inherit;
     gap: 2px;
-    min-height: 40px;
   }
   /* Guild sims with Your spec this week beside it, on the columns of the feed and the rail above. */
   .home-foot-pair {

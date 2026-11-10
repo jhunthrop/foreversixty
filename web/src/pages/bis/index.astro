@@ -60,9 +60,9 @@ const pickerClasses: PickerClass[] = cards.map((card) => ({
           {updated !== null && <span data-testid="bis-landing-updated">Updated {dayMonth(updated)}</span>}
         </Fragment>
         <BisLandingAnswer slot="answer" />
+        <div slot="notice" class="bis-finished" data-bis-finished data-testid="bis-finished"></div>
       </PageHeader>
       <Fragment slot="bar">
-        <div class="bis-finished" data-bis-finished data-testid="bis-finished"></div>
         <ControlBar groups={groups} label={landingCopy.bandGroupLabel} testid="bis-landing-bar">
           <span slot="end" class="bis-tier">
             <span class="text-small text-muted">{landingCopy.tierQuestion}</span>
@@ -135,7 +135,6 @@ const pickerClasses: PickerClass[] = cards.map((card) => ({
   .bis-finished {
     --ch-foot-h: 44px;
     --ch-foot-phone-h: 56px;
-    margin-bottom: 12px;
   }
   /* Empty until the finished server sim line mounts; Base.astro's pre-paint script stamps
      data-finished when the cached account has a finished run waiting, so the line's room is held

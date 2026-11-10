@@ -41,7 +41,6 @@ CHAR_CSS = '''
 .ans-figs{display:flex;align-items:flex-end;gap:24px;justify-content:flex-end}
 .ans-links{display:flex;gap:16px;justify-content:flex-end;font-size:14px}
 .pct{font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums;width:32px;text-align:right}
-.head-sk{display:flex;align-items:center;gap:16px;padding-block:20px 16px;min-height:96px}
 .plate.pad{padding:16px}
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
@@ -420,7 +419,10 @@ def state_missing(elsewhere: bool) -> str:
 
 
 def state_loading() -> str:
-    head_ = f'<div class="pc"><div data-region="{REGION["head"]}" class="head-sk" role="status" aria-busy="true">{Skeleton(56, 56, True)}{Skeleton(280, 32)}</div></div>'
+    # The loading head is the PageHeader (Character.svelte headSkeleton): the name from the URL, a 56 px crest skeleton and a
+    # meta skeleton line, the whole head one status.
+    head_ = (f'<div role="status" style="display:contents">'
+             f'{PageHeader("Elyra Duskvale", crest=Skeleton(56, 56, True), meta=[Skeleton(320, 16)])}</div>')
     frame = PaperdollFrame([], '', '', None, '', 'Gear', heading='h2')
     return head_ + split(panel('Gear', f'<div class="doll-c" aria-busy="true"><div class="doll-w">{frame}</div></div>', frame='framed'), '')
 

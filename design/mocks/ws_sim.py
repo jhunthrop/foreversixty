@@ -210,10 +210,10 @@ def band(runs: int) -> float:
 
 BAND = Z95 * ERR
 FIGURE = fnum(MEAN)
-ERR_LINE = f'<b>&plusmn; {BAND:.1f} (95%)</b>'   # the one place "(95%)" is written
+ERR_LINE = f"<b>&plusmn; {BAND:.1f} DPS</b>"   # the 95% band, in DPS, unlabelled (2026-11-09 head contract)
 PRECISION = {500: 'Fast', 3000: 'Normal', 10000: 'High'}[REQ['iterations']]          # lib/sim/precision.ts PRECISION_ITERATIONS
 PRECISION_LABEL = f"{PRECISION}, {REQ['iterations']:,} runs"
-LANE_LABEL = {'server': 'Run on our servers', 'browser': 'Run in your browser'}[RES['lane']]
+LANE_LABEL = ''   # the one head contract (2026-11-09): a finished result names no lane; the label's row is held
 DAMAGE_KEYS = {a['name'] for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 DAMAGE_SCHOOLS = {'physical' if (a.get('school') or 1) & 1 else 'other' for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 SPLIT = '/'.join(str(sum(int(c) for c in part)) for part in CHAR['talents'].split('-'))
@@ -720,10 +720,11 @@ def run_bar(state: str = 'ready', open_m: bool = False) -> str:
 FIGHT_STYLE = 'Patchwerk'   # the request's profile is empty: the shipped styleLabel of the default style
 
 
-def you_header(answer: str) -> str:
-    meta = [f'{RACE} {SPEC_LABEL} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; item level {ilvl():.1f}',
-            'Gear from the addon']   # the parity gate's character: a linked addon export (`who=`), which claims no capture date
-    return PageHeader('Thandrel', crest=crest_img(CLS, 56), meta=meta, answer=answer, tabs=TabStrip(TOOLS, 'Quick sim'))
+def you_header(answer: str, actions: str = '') -> str:
+    # The parity gate's character: a linked addon export (`who=`) with no capture date, the default source: no source line.
+    meta = [f'{RACE} {SPEC_LABEL} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; item level {ilvl():.1f}']
+    return PageHeader('Thandrel', CLASS_COLOR[CLS], crest=crest_img(CLS, 56), meta=meta, answer=answer, actions=actions,
+                      tabs=TabStrip(TOOLS, 'Quick sim'))
 
 
 def since_last(last: tuple = LAST_SIM) -> str:
@@ -740,10 +741,14 @@ def since_last(last: tuple = LAST_SIM) -> str:
 def answer_result(signed_in: bool = True, last: tuple | None = None) -> str:
     """The live result. `last` draws the change since the character's last sim: hidden on the shipped page (gaps G1 and G15,
     no character key and no error on a saved-sim row), so only the states sheet passes it."""
-    save = Button('Save this sim', small=True) if signed_in else Button('Sign in to save', small=True)
     return (f'<span class="t-label">{LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="big")}'
-            f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in and last else ""}'
-            f'<span class="ans-acts">{save}{Link("Find upgrades in Top Gear &rsaquo;")}</span>')
+            f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in and last else ""}')
+
+
+def result_actions(signed_in: bool = True) -> str:
+    """The result's actions, beside the answer on its last line (PageHeader `actions`)."""
+    save = Button('Save this sim', small=True) if signed_in else Button('Sign in to save', small=True)
+    return f'{save}{Link("Find upgrades in Top Gear &rsaquo;")}'
 
 
 def answer_none() -> str:
@@ -759,7 +764,7 @@ def answer_last() -> str:
 def answer_running() -> str:
     est, done = LIVE
     return (f'<span class="t-label">Running in your browser</span>{Figure(f"{est:,.0f}", unit="DPS", tone="gold", size="big")}'
-            f'<span class="fig-cap"><b>&plusmn; {band(done):.1f} (95%)</b> &middot; {done:,} of {REQ["iterations"]:,} runs</span><span class="ans-meter">{Meter(done / REQ["iterations"])}</span>')
+            f'<span class="fig-cap"><b>&plusmn; {band(done):.1f} DPS</b> &middot; {done:,} of {REQ["iterations"]:,} runs</span><span class="ans-meter">{Meter(done / REQ["iterations"])}</span>')
 
 
 def answer_stopped() -> str:
@@ -783,7 +788,7 @@ PAGE_CSS = '''<style>
 main{padding-bottom:40px}  /* the page's own bottom space (sim.astro .sim-page), above the site footer */
 /* page-level layout only: no border, background, radius or shadow (the guard reads inline styles; this block keeps to layout too) */
 /* the answer slot keeps the result's size from the first state to the last (no layout shift): label, figure, error, change, actions */
-.head .ans{min-width:0;min-height:152px}@media(min-width:900px){.head .ans{min-width:360px;min-height:169px}}
+.head .ans .t-label{min-height:16px}.head .ans .fig-cap{min-height:24px;display:flex;align-items:center;justify-content:inherit}
 .statesheet .head .ans{min-height:0}
 .fig-cap{font-size:13px;line-height:20px;color:var(--muted)}.fig-cap b{color:var(--text);font-weight:600}.fig-cap.kill{color:var(--kill);font-weight:600}.fig-cap.wipe{color:var(--wipe)}
 .ans-acts{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:6px}@media(min-width:900px){.ans-acts{justify-content:flex-end}}
@@ -896,15 +901,15 @@ def running() -> str:
 
 # ---- 4. the live result on /sim
 def result_live() -> str:
-    return finish('Simulator, result', you_header(answer_result()) + run_bar('done') + worth_knowing() + result_page_body(saved=False), YOU)
+    return finish('Simulator, result', you_header(answer_result(), result_actions()) + run_bar('done') + worth_knowing() + result_page_body(saved=False), YOU)
 
 
 # ---- 5. /sim/<id>, a saved run, signed out
 def result_saved() -> str:
-    meta = [f'{RACE} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; {FIGHT_LEN} fight, raid buffs, {len(CHAR["consumes"])} consumables', 'Saved 4 Nov 2026']
-    ans = (f'<span class="t-label">Saved sim &middot; {RES["iterations_run"]:,} runs</span>{Figure(FIGURE, unit="DPS", tone="gold", size="big")}'
-           f'<span class="fig-cap">{ERR_LINE}</span><span class="ans-acts">{_Button("Open in the sim", primary=True)}{Button("Copy link")}</span>')
-    head = PageHeader(SPEC_LABEL, crest=crest_img(CLS, 56), meta=meta, answer=ans)
+    meta = [f'{RACE} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; {FIGHT_LEN} fight, raid buffs, {len(CHAR["consumes"])} consumables', 'Saved 4 Nov']   # the current year goes unsaid (2026-11-09 head contract)
+    ans = f'<span class="t-label"></span>{Figure(FIGURE, unit="DPS", tone="gold", size="big")}<span class="fig-cap">{ERR_LINE}</span>'
+    head = PageHeader(SPEC_LABEL, CLASS_COLOR[CLS], crest=crest_img(CLS, 56), meta=meta, answer=ans,
+                      actions=f'{_Button("Open in the sim", primary=True)}{Button("Copy link")}')
     return finish(f'{SPEC_LABEL}, saved sim', head + worth_knowing() + result_page_body(saved=True), None)
 
 
@@ -969,7 +974,7 @@ def more_settings() -> str:
     body = (rows + IconList(consume_items(), f'Consumables &middot; {len(CHAR["consumes"])}') + f'<p class="t-small rail-cap">{Link("Change consumables &rsaquo;")}</p>'
             + f'<h3 class="t-label il-l">Request</h3><p class="t-small rail-cap">The whole request this run sends, as JSON. {Link("Show it &rsaquo;")}</p>')
     sheet = Sheet('More settings', body, Button('Back to the preset') + Button('Done', primary=True))
-    return finish('Simulator, more settings', you_header(answer_result()) + run_bar('done') + worth_knowing() + result_page_body(saved=False) + sheet, YOU)
+    return finish('Simulator, more settings', you_header(answer_result(), result_actions()) + run_bar('done') + worth_knowing() + result_page_body(saved=False) + sheet, YOU)
 
 
 PAGES = {'web-sim': landing_out, 'web-sim-you': landing_you, 'web-sim-running': running, 'web-sim-result': result_live,

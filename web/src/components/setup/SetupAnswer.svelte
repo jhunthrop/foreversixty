@@ -25,7 +25,6 @@
     <span class="text-small text-muted block">{answer.levelLine}</span>
   </span>
 </span>
-{#if answer.imported !== null}<span class="text-small text-muted">{answer.imported}</span>{/if}
 <span class="setup-answer-links">
   <a class={LINK} href={answer.open.href} data-testid="setup-answer-open">{answer.open.label} ›</a>
   {#if answer.bis !== null}<a class={LINK} href={answer.bis.href} data-testid="setup-answer-bis"

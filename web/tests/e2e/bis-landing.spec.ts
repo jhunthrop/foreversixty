@@ -198,7 +198,8 @@ test.describe('signed in, desktop', () => {
 
   test('a stale sync relabels the count', async ({ page }) => {
     await openSignedIn(page, [{ ...FURY, buildDaysAgo: 19 }]);
-    await expect(page.getByTestId('bis-answer-figure')).toContainText('Pieces you wore at the last sync');
+    // The answer's one short line says the count is from the last sync (the head's compact contract).
+    await expect(page.getByTestId('bis-answer-note')).toHaveText('Pieces you wore at the last sync');
   });
 
   test('with no gear on file the count is one sentence and a link, never a zero', async ({ page }) => {

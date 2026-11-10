@@ -73,8 +73,8 @@ CSS = '''<style>
 .pcol .rprose.ruled li{padding-block:8px}.pcol .rprose.lane{font-size:15px;line-height:22px}
 .pcol .btn{align-self:flex-start}
 @media(max-width:767px){.pcol .btn{align-self:stretch}}
-.ans-who{display:flex;align-items:center;gap:12px}.ans-who b{font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap}
-@media(min-width:900px){.head .ans{min-width:300px}.ans-who{justify-content:flex-end}.ans-links{justify-content:flex-end}}
+.ans-who{display:flex;align-items:center;gap:12px}.ans-who b{display:block;font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap;font-size:16px}  /* the links take the page head's 16 px */
+@media(min-width:900px){.head .ans:has(>.ans-plan),.head .ans:has(>.ans-who){min-width:300px}.ans-who{justify-content:flex-end;text-align:right}.ans-links{justify-content:flex-end}}
 .ans-plan{display:flex;flex-direction:column;gap:2px}
 @media(min-width:900px){.ans-plan{align-items:flex-end}}
 .coach .opening{font-size:15px;line-height:23px}
@@ -209,7 +209,7 @@ PREMIUM_STATES = {
 def premium_page(state: str) -> str:
     st = PREMIUM_STATES[state]
     key = st.get('signed')
-    head = PageHeader(e(P['title']), answer=premium_answer(key), lead=e(P['band']['lede']))
+    head = PageHeader(e(P['title']), answer=premium_answer(key))
     iv = seg([(e(P['interval']['labels']['yearly']), st['interval'] == 'yearly', None, ''), (e(P['interval']['labels']['monthly']), st['interval'] == 'monthly', None, '')], label=e(P['interval']['groupLabel']))
     end = f'<span class="t-small">{e(P["band"]["guildLead"])}</span>{Link(e(P["band"]["guildLink"]) + " &rsaquo;")}'
     bar = control_bar([(e(P['interval']['groupLabel']), iv)], f'{e(P["interval"]["labels"][st["interval"]])}', end, label=e(P['interval']['groupLabel']))

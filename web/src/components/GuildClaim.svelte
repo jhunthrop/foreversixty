@@ -206,20 +206,15 @@
 </script>
 
 {#snippet header()}
-  <!-- One block: the back link sits right above the head. -->
-  <div>
-    <div>
-      <a
-        class="text-muted inline-flex min-h-11 items-center text-[13px] underline"
+  <PageHeader
+    title={holdsClaim ? guildClaimCopy.headingHeld(guildName) : guildClaimCopy.heading(guildName)}
+    testid="guild-claim-heading"
+  >
+    {#snippet crumb()}<a
         href={guildHref(path.region, path.ruleset, guildName || path.slug)}
         data-testid="guild-claim-back">‹ {guildClaimCopy.backToGuild(guildName)}</a
-      >
-    </div>
-    <PageHeader
-      title={holdsClaim ? guildClaimCopy.headingHeld(guildName) : guildClaimCopy.heading(guildName)}
-      testid="guild-claim-heading"
-    />
-  </div>
+      >{/snippet}
+  </PageHeader>
 {/snippet}
 
 <div class="reveal" data-testid="guild-claim">

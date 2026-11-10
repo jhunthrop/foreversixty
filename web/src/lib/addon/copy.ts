@@ -133,7 +133,6 @@ export const addonCopy = {
   setupSignInAction: 'Sign in with Battle.net',
   /** Under the step 3 title: which of the three steps can be skipped. */
   setupCompanionNote: 'Optional. Sends bags, bank and live logs after every session.',
-  setupSubline: 'Signing in with Battle.net brings your characters. The addon and companion are optional.',
   /** Advanced Combat Logging is a setting that applies at once (no restart); /combatlog turns off
    *  when you log out, so it is typed each time you log in (setup rulings 2026-11-07). */
   setupCompanionBody:

@@ -36,6 +36,7 @@ Copy:
 20. Fake social proof, invented stats or testimonials.
 21. Em dashes, triple-adjective lists, and sentences that explain the obvious to a veteran player.
 22. Qualifiers on labels and numbers that the context already makes clear ("212.4 DPS, this set", "Upgrade +0.3 DPS over your current item", "Simmed on import, 6 Nov"). A number takes its unit and nothing else unless the qualifier changes what the number means. Owner: "Adding unnecessary explanations" is "a dead giveaway it's AI".
+23. Definitional blurbs: "<X> is the <Y>: a, b and c" ("Warrior is the pure melee class: plate, a weapon and a rage bar", "Fury is the dual-wield warrior: ...", "Protection is the shield tank: ..."), repeated across sibling cards or pages and telling a veteran what a class, spec or feature is. On an index, landing or card surface it is filler: a card is its icon, its name and its link, plus real data (role, rank, date). Owner 2026-11-09: "AI slop". Grep the copy for "is the" and "are the" followed by a colon.
 
 ## What a real developer's work looks like (look for it, and credit it)
 - Hierarchy that is uneven on purpose: one thing clearly matters most on the page.
