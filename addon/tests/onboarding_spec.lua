@@ -150,6 +150,19 @@ describe("Onboarding, the pure model", function()
 		assert.is_nil(TourExample.dataPick(data, "hunter-beast-mastery", 6, nil))
 		assert.is_nil(TourExample.example({}))
 	end)
+
+	-- The example is read from the shipped Data.lua at runtime, so a nightly refresh redraws it. This
+	-- pins the shape only (data contracts are floors), never which item the nightly picked.
+	it("reads a named main hand from the shipped data for a level 6 Beast Mastery hunter", function()
+		local Data = require("Data")
+		local pick = TourExample.dataPick(Data, "hunter-beast-mastery", 6, "alliance")
+		assert.is_table(pick)
+		assert.are.equal(Data.bis["hunter-beast-mastery"][20].alliance.main_hand:match("^(%d+)"), tostring(pick.itemId))
+		assert.are.equal(Data.bisNames[pick.itemId], pick.name)
+		assert.is_string(pick.name)
+		assert.is_true(pick.upcoming)
+		assert.is_string(TourExample.example({ pick = pick }).lines[2][1])
+	end)
 end)
 
 describe("Onboarding, the frame", function()

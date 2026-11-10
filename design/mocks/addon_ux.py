@@ -819,14 +819,23 @@ def tooltip_card(name, quality, lines):
             f'{name}</div>{body}</div>')
 
 
+def example_card():
+    """TourExample for Bow Jackzon (level 6, no build, no upgrade): the Beast Mastery band-20 main hand
+    from the shipped BiS data, never a hand-typed item, so a nightly refresh redraws it."""
+    pick = next(s for s in BAND20['slots'] if s['slot'] == 'main_hand')
+    place, boss = pick['source'].split(': ', 1)
+    source = f'{place} · {boss} · {round(pick["chance"] * 100)}% drop' if pick.get('chance') else pick['source']
+    return tooltip_card(pick['item_name'], ITEMS[pick['item_id']]['quality'],
+                        [(f'Best in slot at level {BAND20["band"]}', C['gold']), (source, '#b8b8b8')])
+
+
 def board_onboarding_2():
     rows = (icon_row(ARROW_ICON, 'The green arrow', 'On a bag item, a quest reward or a loot roll that beats what '
                      'you wear.', 'BiS pages')
             # Level 6 Beast Mastery, alliance, no upgrade yet: Data.lua bis band 20 main_hand, item 5200.
             + icon_row(icon_uri('inv_weapon_bow_02'), 'One line on every item', '+2.2 DPS, Best in slot or Not for '
                        'you. Shift shows the rest.', 'Spec weights or your sim',
-                       tooltip_card('Impaling Harpoon', 3, [('Best in slot at level 20', C['gold']),
-                                    ('The Deadmines · Captain Greenskin · 30% drop', '#b8b8b8')]))
+                       example_card())
             + icon_row(icon_uri('ability_searingarrow'), 'The gold talent ring', "Your next point, in that build's "
                        'order.', 'Class guide build')
             + icon_row(icon_uri('inv_spear_07'), 'Rotation in your panel', 'The buttons to press at your level, and '
