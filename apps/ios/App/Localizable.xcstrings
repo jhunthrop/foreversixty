@@ -2634,6 +2634,18 @@
         }
       }
     },
+    "gear.sheet.replaces": {
+      "comment": "Arguments: 1 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replaces %1$@"
+          }
+        }
+      }
+    },
     "gear.sheet.runnerUp": {
       "extractionState": "manual",
       "localizations": {
@@ -2665,6 +2677,18 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "gear.sheet.vendor": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, vendor"
           }
         }
       }
@@ -2756,7 +2780,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Worn"
+            "value": "Equipped"
           }
         }
       }

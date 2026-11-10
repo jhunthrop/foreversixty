@@ -123,7 +123,8 @@ fun FlowRow(
 /** A gold link at the end of a row's line (`None in your bags · Auction house`), round 5's inline fix. */
 data class FlowSubLink(val label: String, val onClick: () -> Unit)
 
-private fun subWithLink(sub: String?, link: FlowSubLink) = buildAnnotatedString {
+/** A line ending in its gold [link] (`60 raid · Alliance · Change`), for a row's line or any lead line. */
+fun subWithLink(sub: String?, link: FlowSubLink) = buildAnnotatedString {
     if (!sub.isNullOrBlank()) append("$sub · ")
     withLink(LinkAnnotation.Clickable(link.label, TextLinkStyles(SpanStyle(color = FsColor.gold, fontWeight = FontWeight.SemiBold))) { link.onClick() }) {
         append(link.label)

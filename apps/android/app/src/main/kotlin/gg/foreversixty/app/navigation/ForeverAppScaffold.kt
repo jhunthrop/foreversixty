@@ -275,7 +275,8 @@ private fun GearTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?
     val character = phase?.let { session.currentCharacter(it, picked) }
     val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
     val deps = remember(home) { GearDeps(home.catalog, home.cache, home.client) }
-    GearRoute(bis, deps, GearOwner(character?.key, character?.guild?.id, waiting), onSearch) { ProfileBar(session) }
+    val title = stringResource(R.string.tab_gear)
+    GearRoute(bis, deps, GearOwner(character?.key, character?.guild?.id, waiting, character?.avatarUrl), onSearch) { ProfileBar(session, title) }
 }
 
 /** Raid (lane F4) for the session's current character's guild. */

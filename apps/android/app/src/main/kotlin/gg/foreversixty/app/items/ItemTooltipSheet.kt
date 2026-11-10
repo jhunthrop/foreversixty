@@ -196,12 +196,15 @@ private fun Header(look: ItemLook, meta: String, build: String, showsName: Boole
     }
 }
 
-/** The game-tooltip panel: near-black, `#3a4256` hairline, the client's line order. */
+/**
+ * The game-tooltip panel: near-black, `#3a4256` hairline, the client's line order. [footer] closes
+ * it under the client's lines (the Gear sheet's gain, as an addon writes its line into the tooltip).
+ */
 @Composable
-fun ItemTooltipPanel(model: ItemTooltipModel) {
+fun ItemTooltipPanel(model: ItemTooltipModel, modifier: Modifier = Modifier, footer: (@Composable () -> Unit)? = null) {
     val shape = RoundedCornerShape(FsRadius.legacyControl)
     Column(
-        Modifier.fillMaxWidth().background(GameColors.tooltipPanel, shape).border(1.dp, GameColors.iconLine, shape)
+        modifier.fillMaxWidth().background(GameColors.tooltipPanel, shape).border(1.dp, GameColors.iconLine, shape)
             .padding(horizontal = 14.dp, vertical = 12.dp).semantics(mergeDescendants = true) {},
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
@@ -233,6 +236,7 @@ fun ItemTooltipPanel(model: ItemTooltipModel) {
             model.setBonuses.forEach { bonus -> Line(bonus, FsColor.muted) }
         }
         model.itemLevel?.let { Line(it, FsColor.parseGold) }
+        footer?.invoke()
     }
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +38,7 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -83,7 +85,9 @@ data class PaperdollListSlot(
  * form): under 36 dp slots the frame gives way to its one-line header strip (the medallion with the
  * character's [portrait], or the LX seal; the [title]; the set's [figure]) and the slots in two
  * columns on the panel. A tap on a filled slot calls [onSelect]. [icon] draws a slot's item icon
- * (the app's item icon), which sits in the 44 dp socket. iOS: `PaperdollHeader`.
+ * (the app's item icon), which sits in the 44 dp socket. [lead] is a line under the strip (Gear's
+ * band, faction and Change). A name clamps to two lines; a gain never shares its line with a cut
+ * slot word, it drops under it whole. iOS: `PaperdollHeader`.
  */
 @Composable
 fun PaperdollHeader(
@@ -95,20 +99,25 @@ fun PaperdollHeader(
     unit: String = "DPS",
     selected: String? = null,
     onSelect: ((String) -> Unit)? = null,
+    lead: (@Composable () -> Unit)? = null,
     icon: @Composable (PaperdollListSlot.Item) -> Unit,
 ) {
     Column(modifier.fillMaxWidth().panel()) {
         Strip(title, figure, unit, portrait)
+        // The line that names the list (the band, the faction, how much of it is worn), under the strip.
+        if (lead != null) Box(Modifier.fillMaxWidth().padding(start = FsSpace.space3, end = FsSpace.space3, top = FsSpace.space3)) { lead() }
         Column(
             Modifier.padding(FsSpace.space3).parityRegion(ParityRegion.SLOTS),
             verticalArrangement = Arrangement.spacedBy(ROW_GAP),
         ) {
-            slots.chunked(2).forEach { pair ->
+            // Large text gets one slot per row, so a name never breaks inside a word.
+            val columns = if (LocalDensity.current.fontScale >= ONE_COLUMN_SCALE) 1 else 2
+            slots.chunked(columns).forEach { pair ->
                 Row(horizontalArrangement = Arrangement.spacedBy(COLUMN_GAP)) {
                     pair.forEach { slot ->
                         Box(Modifier.weight(1f)) { Cell(slot, slot.id == selected, onSelect, icon) }
                     }
-                    if (pair.size == 1) Spacer(Modifier.weight(1f))
+                    if (pair.size < columns) Spacer(Modifier.weight(1f))
                 }
             }
         }
@@ -126,7 +135,7 @@ private fun Strip(title: String, figure: String?, unit: String, portrait: Painte
         horizontalArrangement = Arrangement.spacedBy(STRIP_GAP),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        PaperdollMedallion(portrait, MEDALLION_SIZE)
+        PaperdollMedallion(portrait, MEDALLION_SIZE, ring = true)
         Text(
             title,
             modifier = Modifier.weight(1f).semantics { heading() },
@@ -165,7 +174,7 @@ private fun Cell(
         Modifier
             .clickable(role = Role.Button) { onSelect(slot.id) }
             .clearAndSetSemantics {
-                contentDescription = "${item.name}, ${slot.label}"
+                contentDescription = listOfNotNull(item.name, slot.label, item.detail).joinToString(", ")
                 this.selected = selected
             }
     } else {
@@ -183,6 +192,8 @@ private fun Cell(
                     item.name,
                     style = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, lineHeight = 16.sp),
                     color = item.quality,
+                    maxLines = NAME_LINES,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Sub(slot.label, item.detail, item.isGain)
             } else {
@@ -193,23 +204,27 @@ private fun Cell(
     }
 }
 
+/**
+ * The slot's word and its detail (`Main Hand · +5.9 DPS`). Each part keeps its words together, so
+ * when both do not fit the detail wraps under the word whole and never runs into the next column.
+ */
 @Composable
 private fun Sub(label: String, detail: String?, gain: Boolean) {
-    Text(
-        buildAnnotatedString {
-            append(label)
-            if (detail != null) {
-                append(" · ")
-                withStyle(SpanStyle(color = if (gain) FsColor.gain else FsColor.muted, fontWeight = if (gain) FontWeight.Bold else null)) {
-                    append(detail)
-                }
-            }
-        },
-        style = TextStyle(fontFamily = FsFont.body, fontSize = 12.sp, lineHeight = 16.sp),
-        color = FsColor.muted,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-    )
+    val style = TextStyle(fontFamily = FsFont.body, fontSize = 12.sp, lineHeight = 16.sp)
+    if (detail == null) {
+        Text(label, style = style, color = FsColor.muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        return
+    }
+    FlowRow(Modifier.fillMaxWidth()) {
+        Text("${label.replace(' ', NBSP)}$NBSP·$NBSP", style = style, color = FsColor.muted, maxLines = 1, softWrap = false)
+        Text(
+            detail.replace(' ', NBSP),
+            style = style.copy(fontWeight = if (gain) FontWeight.Bold else null),
+            color = if (gain) FsColor.gain else FsColor.muted,
+            maxLines = 1,
+            softWrap = false,
+        )
+    }
 }
 
 @Composable
@@ -261,16 +276,22 @@ private fun Modifier.greyscale(): Modifier = drawWithCache {
  * 2026-11-08), never the class crest. A circle at [size].
  */
 @Composable
-fun PaperdollMedallion(portrait: Painter?, size: Dp) {
+fun PaperdollMedallion(portrait: Painter?, size: Dp, ring: Boolean = false) {
+    // The strip's medallion wears the frame's thin gold ring (ux-designer, lane M0).
+    val edge = if (ring) Modifier.border(MEDALLION_RING, FsColor.goldDeep, CircleShape).padding(MEDALLION_RING) else Modifier
     Image(
         portrait ?: painterResource(BrandArt.Seal.res),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = Modifier.size(size).clip(CircleShape),
+        modifier = Modifier.size(size).clip(CircleShape).then(edge).clip(CircleShape),
     )
 }
 
 private val MEDALLION_SIZE = 40.dp
+private val MEDALLION_RING = 1.5.dp
+private const val NAME_LINES = 2
+private const val ONE_COLUMN_SCALE = 1.5f
+private const val NBSP = '\u00a0'
 private val CELL_SIZE = 44.dp
 private val ICON_INSET = 3.dp
 private val ROW_GAP = 6.dp

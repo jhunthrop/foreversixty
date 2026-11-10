@@ -6,49 +6,35 @@
  "regions": {
   "controls": {
    "box": [
-    16,
-    8,
-    380,
-    90
+    26,
+    85,
+    360,
+    20
+   ],
+   "inventory": {}
+  },
+  "slots": {
+   "box": [
+    26,
+    117,
+    360,
+    490
    ],
    "inventory": {
-    "row": 1
+    "row": 17,
+    "image": 17
    }
   },
   "section-where-to-go-tonight": {
    "box": [
-    16,
-    126,
-    380,
-    233
+    14,
+    639,
+    384,
+    249
    ],
    "inventory": {
     "row": 3,
     "image": 3
-   }
-  },
-  "section-every-slot": {
-   "box": [
-    16,
-    387,
-    380,
-    1141
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 17
-   }
-  },
-  "slots": {
-   "box": [
-    16,
-    422,
-    380,
-    1106
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 17
    }
   }
  }

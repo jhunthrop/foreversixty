@@ -661,7 +661,7 @@
     "gear.change": "Change",
     "gear.whereTonight": "Where to go tonight",
     "gear.everySlot": "Every slot",
-    "gear.worn": "Worn",
+    "gear.worn": "Equipped",
     "gear.where.drop": "{items} · {boss}, {chance}",
     "gear.where.boss": "{items} · {boss}",
     "gear.where.ask": "{items} · ask a {crafter}",
@@ -685,6 +685,8 @@
     "gear.sheet.nobody": "Nobody in the guild has it on their list.",
     "gear.sheet.unknown": { "count": "n", "one": "1 guildmate has not shared their gear yet", "other": "{n} guildmates have not shared their gear yet" },
     "gear.sheet.dropChance": "{chance} drop chance",
+    "gear.sheet.replaces": "Replaces {item}",
+    "gear.sheet.vendor": "{name}, vendor",
 
     "you.title": "You",
     "you.signedInWith": "Signed in with Battle.net",

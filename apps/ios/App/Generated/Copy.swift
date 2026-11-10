@@ -2229,7 +2229,7 @@ enum Copy {
     /// Every slot
     static var gearEverySlot: String { text("gear.everySlot") }
 
-    /// Worn
+    /// Equipped
     static var gearWorn: String { text("gear.worn") }
 
     /// {items} · {boss}, {chance}
@@ -2317,6 +2317,16 @@ enum Copy {
     /// {chance} drop chance
     static func gearSheetDropChance(chance: String) -> String {
         format("gear.sheet.dropChance", chance)
+    }
+
+    /// Replaces {item}
+    static func gearSheetReplaces(item: String) -> String {
+        format("gear.sheet.replaces", item)
+    }
+
+    /// {name}, vendor
+    static func gearSheetVendor(name: String) -> String {
+        format("gear.sheet.vendor", name)
     }
 
     /// You

@@ -229,7 +229,7 @@ private val SHEET_SLOTS = SHEET_GEAR.mapIndexed { index, gear ->
             id = index,
             name = gear.name,
             quality = ItemQuality(gear.quality).text,
-            detail = gear.gain?.let { "$it DPS" } ?: "Worn",
+            detail = gear.gain?.let { "$it DPS" } ?: "Equipped",
             isGain = gear.gain != null,
         ),
     )

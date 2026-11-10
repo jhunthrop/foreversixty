@@ -3,9 +3,7 @@ package gg.foreversixty.app.gear.flows
 import android.content.res.Resources
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,42 +14,49 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.BisListBuilder
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpace
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ParityRegion
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.classColor
-import gg.foreversixty.app.flows.FlowItemRow
+import gg.foreversixty.app.designsystem.parityRegion
+import gg.foreversixty.app.flows.FlowBlock
 import gg.foreversixty.app.flows.FlowLead
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowRow
-import gg.foreversixty.app.flows.FlowSection
 import gg.foreversixty.app.gear.ItemSource
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemQuality
 import gg.foreversixty.app.items.ItemTooltipModel
+import gg.foreversixty.app.items.ItemTooltipPanel
 import gg.foreversixty.app.model.ItemNeeds
 
-/** One line of the sheet's lists: a lead, the title in its colour, its line. */
-data class GearSheetLine(val title: String, val line: String, val lead: FlowLead, val titleColor: Color? = null)
+/** One line of the sheet's list: a lead, the title in its colour, its line. */
+data class GearSheetLine(val title: String, val line: String?, val lead: FlowLead, val titleColor: Color? = null)
 
-/** The item sheet (spec F5, mock `item-sheet`): the item, the client's tooltip lines, where, the runner-up, the guild. */
+/**
+ * The item sheet (spec F5, round 5 mock `m-android-item`): the client's tooltip with the gain closing
+ * it, then where it comes from, what it replaces, the runner-up and who in the guild needs or has it.
+ */
 data class GearSheetContent(
-    val look: ItemLook,
-    val slot: String,
+    /** The tooltip; while the static file loads, the name alone. */
+    val tooltip: ItemTooltipModel,
+    /** `+12.6 DPS` over what is equipped, or null when it is equipped or not measured. */
     val gain: String?,
-    val unitWord: String,
-    /** The tooltip's lines in the client's order; green ones are the item's effects. */
-    val tooltip: List<Pair<String, Boolean>>,
-    val where: List<GearSheetLine>,
+    /** `Skum, Wailing Caverns (15-24), 50%`, one line per source. */
+    val sources: List<GearSheetLine>,
+    /** `Replaces Ironwood Blade`, Equipped: what the character wears in the slot today. */
+    val replaces: GearSheetLine?,
     val runnerUp: GearSheetLine?,
-    /** Null while the guild's answer loads, or for a player with no guild (the section is left out). */
+    /** Null while the guild's answer loads, or for a player with no guild (left out). */
     val guild: List<GearSheetLine>?,
     val guildNote: String?,
-)
+) {
+    val lines: List<GearSheetLine> get() = sources + listOfNotNull(replaces, runnerUp) + guild.orEmpty()
+}
 
 /** Words the sheet from what Gear already holds and the guild's needs answer. */
 class GearSheetComposer(private val res: Resources, private val build: String) {
@@ -63,21 +68,23 @@ class GearSheetComposer(private val res: Resources, private val build: String) {
         needs: ItemNeeds?,
     ): GearSheetContent {
         val pick = requireNotNull(row.row.pick) { "a sheet opens on a pick" }
-        val lead = FlowLead.Item(row.look, build)
+        val look = requireNotNull(row.look) { "a sheet opens on a pick" }
+        val itemLead = FlowLead.Item(look, build)
         return GearSheetContent(
-            look = row.look,
-            slot = row.row.slotLabel,
-            gain = row.gain,
-            unitWord = unitWord,
-            tooltip = tooltip?.let(::lines).orEmpty(),
-            where = sources.map { GearSheetLine(sourceTitle(it), sourceLine(it), lead) },
+            // The client's tooltip has no item level (spec 2026-11-08, round 4 cut), so the sheet drops it.
+            tooltip = (tooltip ?: ItemTooltipModel(look = look, headerMeta = "", known = true)).copy(itemLevel = null),
+            gain = row.gain?.let { "$it $unitWord" },
+            sources = sources.map { GearSheetLine(sourceLine(it), null, it.icon?.let { icon -> FlowLead.Icon(icon, build) } ?: itemLead) },
+            replaces = row.equipped?.let { worn ->
+                GearSheetLine(res.getString(R.string.gear_sheet_replaces, worn.name.orEmpty()), res.getString(R.string.gear_worn), FlowLead.Item(worn, build))
+            },
             runnerUp = pick.runnersUp.firstOrNull()?.let { alt ->
                 val delta = BisListBuilder.signedDelta(alt.dpsDelta)?.let { "$it $unitWord" }
-                val look = ItemLook(alt.item.id, alt.item.name, alt.item.quality, alt.item.icon)
+                val altLook = ItemLook(alt.item.id, alt.item.name, alt.item.quality, alt.item.icon)
                 GearSheetLine(
                     alt.item.name,
-                    listOfNotNull(alt.source.takeIf { it.isNotBlank() }, delta).joinToString(SEPARATOR),
-                    FlowLead.Item(look, build),
+                    listOfNotNull(res.getString(R.string.gear_sheet_runnerUp), alt.source.takeIf { it.isNotBlank() }, delta).joinToString(SEPARATOR),
+                    FlowLead.Item(altLook, build),
                     ItemQuality(alt.item.quality).text,
                 )
             },
@@ -86,23 +93,25 @@ class GearSheetComposer(private val res: Resources, private val build: String) {
         )
     }
 
-    private fun lines(model: ItemTooltipModel): List<Pair<String, Boolean>> = listOfNotNull(
-        model.binds,
-        listOfNotNull(model.slotName, model.typeName).joinToString(SEPARATOR).ifBlank { null },
-        model.armor,
-        listOfNotNull(model.weaponDamage, model.weaponSpeed).joinToString(SEPARATOR).ifBlank { null },
-        model.weaponDps,
-    ).map { it to false } + model.stats.map { it to false } + model.equipLines.map { it to true } +
-        listOfNotNull(model.effect).map { it to true } + listOfNotNull(model.requiresLevel).map { it to false }
+    /** `Skum, Wailing Caverns (15-24), 50%`; `Blacksmithing`; `Stormpike Guard, revered`; `Pix Xizzix, vendor`. */
+    fun sourceLine(source: ItemSource): String {
+        val place = when (source.kind) {
+            VENDOR -> res.getString(R.string.gear_sheet_vendor, source.name)
+            else -> source.name + source.levels.orEmpty()
+        }
+        return listOfNotNull(
+            source.boss?.trim()?.takeIf { it.isNotEmpty() },
+            place,
+            source.chance?.let { GearComposer.chanceWord(it) },
+            source.standing?.lowercase(),
+        ).joinToString(", ")
+    }
 
-    private fun sourceTitle(source: ItemSource): String =
-        source.boss?.trim()?.takeIf { it.isNotEmpty() }?.let { "$it, ${source.name}" } ?: source.name
-
-    private fun sourceLine(source: ItemSource): String = listOfNotNull(
-        source.chance?.let { res.getString(R.string.gear_sheet_dropChance, GearComposer.chanceWord(it)) },
-        source.kind.replace('_', ' '),
-        source.standing?.lowercase(),
-    ).joinToString(SEPARATOR)
+    private fun IntRange?.orEmpty(): String = when {
+        this == null -> ""
+        first == last -> " ($first)"
+        else -> " ($first-$last)"
+    }
 
     private fun guild(needs: ItemNeeds): List<GearSheetLine> =
         needs.needs.map { need ->
@@ -121,55 +130,45 @@ class GearSheetComposer(private val res: Resources, private val build: String) {
 
     private companion object {
         const val SEPARATOR = " · "
+        const val VENDOR = "vendor"
     }
 }
 
 /** The sheet over Gear: partly open, dragging to full. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GearItemSheet(content: GearSheetContent, build: String, onDismiss: () -> Unit) {
+fun GearItemSheet(content: GearSheetContent, onDismiss: () -> Unit) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
         containerColor = FsColor.raised,
     ) {
-        Column(Modifier.verticalScroll(rememberScrollState())) { GearSheetBody(content, build) }
+        Column(Modifier.verticalScroll(rememberScrollState())) { GearSheetBody(content) }
     }
 }
 
 /** The sheet's body, pure so the parity test draws it under its grab bar. */
 @Composable
-fun GearSheetBody(content: GearSheetContent, build: String) {
+fun GearSheetBody(content: GearSheetContent) {
     Column(Modifier.fillMaxWidth().background(FsColor.raised).padding(start = FsSpace.space4, end = FsSpace.space4, bottom = FsSpace.space6)) {
-        val overWorn = stringResource(R.string.gear_sheet_overWorn)
-        FlowItemRow(content.look, build, content.slot, content.gain, content.gain?.let { content.unitWord }, content.gain?.let { overWorn }) {}
-        if (content.tooltip.isNotEmpty()) {
-            Column(Modifier.padding(top = FsSpace.space2)) {
-                content.tooltip.forEach { (line, effect) ->
-                    Text(line, style = FsType.small, color = if (effect) FsColor.kill else FsColor.text)
-                }
-            }
+        ItemTooltipPanel(content.tooltip, Modifier.parityRegion(ParityRegion.INSPECTOR)) {
+            content.gain?.let { Text(it, style = ScaledType.tooltip.copy(fontWeight = FontWeight.SemiBold), color = FsColor.gold) }
         }
-        Spacer(Modifier.height(FsSpace.space2))
-        if (content.where.isNotEmpty()) Lines(stringResource(R.string.gear_sheet_where), content.where)
-        content.runnerUp?.let { Lines(stringResource(R.string.gear_sheet_runnerUp), listOf(it)) }
-        content.guild?.let { guild ->
-            FlowSection(stringResource(R.string.gear_sheet_needs), top = 0.dp) {
-                guild.forEachIndexed { i, line -> SheetRow(line, last = i == guild.lastIndex && content.guildNote == null) }
+        val lines = content.lines
+        if (lines.isNotEmpty() || content.guildNote != null) {
+            FlowBlock(SHEET_LINES, top = FsSpace.space3) {
+                lines.forEachIndexed { i, line ->
+                    FlowRow(
+                        line.title, line.line, line.lead,
+                        titleColor = line.titleColor ?: FsColor.strong,
+                        last = i == lines.lastIndex && content.guildNote == null,
+                    )
+                }
                 content.guildNote?.let { FlowNote(it, Modifier.padding(vertical = FsSpace.space2)) }
             }
         }
     }
 }
 
-@Composable
-private fun Lines(title: String, lines: List<GearSheetLine>) {
-    FlowSection(title, top = 0.dp) {
-        lines.forEachIndexed { i, line -> SheetRow(line, last = i == lines.lastIndex) }
-    }
-}
-
-@Composable
-private fun SheetRow(line: GearSheetLine, last: Boolean) {
-    FlowRow(line.title, line.line, line.lead, titleColor = line.titleColor ?: FsColor.strong, last = last)
-}
+/** The region of the sheet's list under the tooltip. */
+private const val SHEET_LINES = "section-where-to-get-it"

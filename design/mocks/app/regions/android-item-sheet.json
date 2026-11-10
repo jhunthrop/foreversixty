@@ -4,40 +4,25 @@
   "height": 915
  },
  "regions": {
+  "inspector": {
+   "box": [
+    16,
+    143,
+    380,
+    256
+   ],
+   "inventory": {}
+  },
   "section-where-to-get-it": {
    "box": [
     16,
-    356,
+    411,
     380,
-    95
+    304
    ],
    "inventory": {
-    "row": 1,
-    "image": 1
-   }
-  },
-  "section-runner-up": {
-   "box": [
-    16,
-    451,
-    380,
-    95
-   ],
-   "inventory": {
-    "row": 1,
-    "image": 1
-   }
-  },
-  "section-who-in-the-guild-needs-it": {
-   "box": [
-    16,
-    546,
-    380,
-    156
-   ],
-   "inventory": {
-    "row": 2,
-    "image": 2
+    "row": 5,
+    "image": 5
    }
   }
  }

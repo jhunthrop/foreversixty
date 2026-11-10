@@ -678,7 +678,7 @@
     <string name="gear_change">Change</string>
     <string name="gear_whereTonight">Where to go tonight</string>
     <string name="gear_everySlot">Every slot</string>
-    <string name="gear_worn">Worn</string>
+    <string name="gear_worn">Equipped</string>
     <string name="gear_where_drop">%1$s · %2$s, %3$s</string>
     <string name="gear_where_boss">%1$s · %2$s</string>
     <string name="gear_where_ask">%1$s · ask a %2$s</string>
@@ -705,6 +705,8 @@
         <item quantity="other">%1$d guildmates have not shared their gear yet</item>
     </plurals>
     <string name="gear_sheet_dropChance">%1$s drop chance</string>
+    <string name="gear_sheet_replaces">Replaces %1$s</string>
+    <string name="gear_sheet_vendor">%1$s, vendor</string>
     <string name="you_title">You</string>
     <string name="you_signedInWith">Signed in with Battle.net</string>
     <string name="you_plan">Plan</string>

@@ -11,8 +11,8 @@ states say so); the guild's raid is Onyxia's Lair, Wed 6 Jan, 8:00 pm CST, four 
 from __future__ import annotations
 
 from mocklib import CLASS_COLOR
-from ws_app_frame import DEFAULT, app_page, glyph, portrait
-from ws_lib import region_slug
+from ws_app_frame import AVATAR, DEFAULT, app_page, glyph, portrait
+from ws_lib import QCOL, region_slug
 from ws_prims import (Button, Checklist, Countdown, Figures, ItemRow, PageHeader, Row, Rows, Section, Skeleton, Switch,
                       Tag, Tally, build_page, crest_img, icon)
 
@@ -542,10 +542,99 @@ DOLL = [  # slot label, pick, icon, quality, source, gain or None when worn
 ]
 
 
+# Round 5 on Android's Gear tab and item sheet (lane M3a; spec 2026-11-09-directions.md Paperdoll "Mobile Gear tab", mocks
+# directions/png/m-android-gear-frame.png and m-android-item.png): the paperdoll's phone form (the strip with the portrait in
+# its gold-ringed medallion, the spec and the set's DPS; the line naming the list with Change; the slots in two columns, each
+# its gain or Equipped), then Where to go tonight on a plain panel. Greenhammer unlocks with the first raids, so the off hand is
+# the Persuader he wears (the directions mock's GATED). The sheet is the client's tooltip with the gain closing it, then one
+# list: where it drops, what it replaces, the runner-up and the guild. Android only until lane M3i. Line heights are the
+# Pixel 9's rounding (see RAID_R5_CSS); Open Sans sets wider there, so the lines it breaks carry the break here (<br>).
+GEAR_R5_CSS = """
+.ap.r5gear{padding:16px 14px 22px}
+.ap.r5gear>*{margin-top:0}.ap.r5gear>*+*{margin-top:20px}
+.r5gear .pd{background:#170e09;border-radius:10px;box-shadow:0 0 0 1px #000;overflow:hidden}
+.r5gear .strip{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0b2f3b;border-bottom:1px solid #000}
+.r5gear .strip .med{width:40px;height:40px;flex:none;border-radius:50%;box-sizing:border-box;border:1.5px solid #b8a24a;padding:1.5px}
+.r5gear .strip .med img{display:block;width:100%;height:100%;border-radius:50%}
+.r5gear .strip h1{flex:1;margin:0;font:400 19px/23px var(--font-title);color:#f3eee2}
+.r5gear .strip b{font:600 17px/23px var(--font-body);color:#fff}.r5gear .strip b small{font-size:11px;color:var(--text)}
+.r5gear .lead{margin:0;padding:12px 12px 0;font:400 14px/20px var(--font-body);color:var(--text)}.r5gear .lead span{display:block}
+.r5gear .lead a{font-weight:600;color:var(--gold)}
+.r5gear .ls{padding:12px}.r5gear .ls>div{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+.r5gear .cell{display:flex;align-items:center;gap:8px;min-height:48px;min-width:0;padding:0;border:0}
+.r5gear .sk{width:44px;height:44px;flex:none;box-sizing:border-box;padding:3px;border:1px solid var(--line);border-radius:3px;background:#100a06}
+.r5gear .sk img{display:block;width:38px;height:38px}
+.r5gear .cell .n{display:block;font:600 13px/16px var(--font-body)}
+.r5gear .cell .s{display:block;font:400 12px/16px var(--font-body);color:var(--muted)}.r5gear .cell .g{font-weight:700;color:var(--gain,#32ae88)}
+.r5gear .sh{display:flex;align-items:center;height:26px;margin-bottom:8px}
+.r5gear .sh h2{margin:0;font:400 21px/26px var(--font-title);color:#f3eee2}
+.r5gear .pn{background:#170e09;border-radius:10px;padding:8px 16px;box-shadow:0 0 0 1px #000}
+.r5gear .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.r5gear .row:last-child{border-bottom:0}
+.r5gear .row img{width:40px;height:40px;flex:none}
+.r5gear b.t{display:block;font:700 15px/20.57px var(--font-body);color:#fff}
+.r5gear .row .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.sheetp.r5item{padding:0 16px 24px;border-top:0;border-radius:16px 16px 0 0}
+.r5item .sheet-grab{margin:9px auto}
+.r5item .tip{background:#060914;border:1px solid #3a4256;border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;
+  font:400 16px/22px var(--font-body);color:#fff}
+.r5item .tip .nm{font-weight:700;font-size:17px;color:#b866f5}.r5item .tip .sp{display:flex;justify-content:space-between}
+.r5item .tip .gr{color:#1eff00}.r5item .tip .gn{font-weight:600;color:var(--gold)}.r5item .tip .gap{height:4px;margin:-4px 0 0}
+.r5item .lines{margin-top:12px}
+.r5item .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.r5item .row:last-child{border-bottom:0}
+.r5item .row img{width:40px;height:40px;flex:none}
+.r5item b.t{display:block;font:700 15px/20.57px var(--font-body);color:#fff}
+.r5item .row .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+"""
+
+R5_DOLL = [r if r[1] != 'Greenhammer' else ('Off hand', 'Persuader', 'inv_hammer_08', 4, 'Blacksmithing', None) for r in DOLL]
+R5_WHERE = [('Blackrock Spire', 'Blackcrow &middot; Shadow Hunter Vosh&rsquo;gajin, 8%', 'inv_weapon_crossbow_04', 3),
+            ('Blacksmithing', 'Lionheart Helm, Ironwood Blade &middot; ask a blacksmith', 'inv_helmet_36', 4),
+            ('Stormpike Guard', 'Don Julio&rsquo;s Band, needs revered', 'inv_jewelry_ring_35', 4)]
+
+
+def _r5_gear_row(title: str, sub: str, lead: str, color: str = '#fff') -> str:
+    s = f'<span class="s">{sub}</span>' if sub else ''
+    return f'<div class="row">{lead}<div><b class="t" style="color:{color}">{title}</b>{s}</div></div>'
+
+
+def _gear_page_r5() -> str:
+    """The Android Gear tab's body in round 5 (GEAR_R5_CSS)."""
+    cells = ''.join(f'<div class="cell"><span class="sk">{icon(ic, 38, f"q{q}")}</span><div><span class="n" style="color:{QCOL[q]}">{name}</span>'
+                    f'<span class="s">{slot} &middot; ' + ('Equipped' if g is None else f'<span class="g">{g} DPS</span>') + '</span></div></div>'
+                    for slot, name, ic, q, _, g in R5_DOLL)
+    doll = (f'<div class="pd"><div class="strip"><span class="med"><img src="{AVATAR.format(name="thandrel")}" alt=""></span>'
+            f'<h1>Fury Warrior</h1><b>1004.2 <small>DPS</small></b></div>'
+            '<p class="lead"><span data-region="controls">60 raid &middot; Alliance &middot; 4 of 17 slots on the list &middot; <a href="#">Change</a></span></p>'
+            f'<div class="ls"><div data-region="slots">{cells}</div></div></div>')
+    where = ''.join(_r5_gear_row(t, s, icon(ic, 40, f'q{q}')) for t, s, ic, q in R5_WHERE)
+    body = doll + (f'<section data-region="{region_slug("Where to go tonight")}"><div class="sh"><h2>Where to go tonight</h2></div>'
+                   f'<div class="pn">{where}</div></section>')
+    return build_page('Gear', f'<div class="ap r5gear">{body}</div><style>{FLOWS_CSS}{GEAR_R5_CSS}</style>',
+                      note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5 on Android.')
+
+
+def _item_sheet_r5() -> str:
+    """Deathbringer on Android in round 5 (GEAR_R5_CSS): the tooltip in the client's order, the gain closing it, then the list."""
+    tip = ('<div class="tip" data-region="inspector"><span class="nm">Deathbringer</span><span>Binds when picked up</span>'
+           '<span class="sp"><span>One-Hand</span><span>Axe</span></span><span class="sp"><span>114 - 213 Damage</span><span>Speed 2.90</span></span>'
+           '<span>(56.4 damage per second)</span><span class="gap"></span><span>Requires Level 60</span>'
+           '<span class="gr">Chance on hit: Sends a shadowy bolt at the<br>enemy causing 125 Shadow damage.</span><span class="gn">+12.6 DPS</span></div>')
+    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair (60), 8%', '', icon(ONY, 40))
+             + _r5_gear_row('Replaces Ironwood Blade', 'Equipped', icon('inv_sword_07', 40, 'q4'))
+             + _r5_gear_row('Vis&rsquo;kag the Bloodletter', 'Runner-up &middot; Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'), QCOL[4])
+             + _r5_gear_row('Grunvald', 'Protection Warrior &middot; needs it, the pick on their list', crest_img('warrior', 40), WARRIOR)
+             + _r5_gear_row('Torvak', 'Enhancement Shaman &middot; has it', crest_img('shaman', 40), CLASS_COLOR['shaman']))
+    sheet = ('<div class="dim" style="height:120px"></div><div class="sheetp r5item" role="dialog" aria-label="Deathbringer"><span class="sheet-grab"></span>'
+             f'{tip}<div class="lines" data-region="section-where-to-get-it">{lines}</div></div>')
+    return build_page('Deathbringer', sheet + f'<style>{FLOWS_CSS}{GEAR_R5_CSS}</style>', note='Item sheet mock, round 5 on Android.')
+
+
 def gear(state: str):
     """Gear (owner, 2026-11-08): your gear against your band's list. The summary line names the list (your spec, band and
     faction, preselected; Change opens the picker); then where to go tonight; then every slot (Home holds the top three)."""
     def b(platform: str) -> str:
+        if platform == 'android' and state == 'in':
+            return app_page(platform, _gear_page_r5(), 'gear', title='Gear', badges=MEMBER)
         if state == 'out':
             body = (PageHeader('Best in slot for your class', meta=['Pick a class, then a spec and a level range.'])
                     + Section('Classes', Rows([Row(c.capitalize(), '', crest_img(c, 40), title_color=CLASS_COLOR[c])
@@ -722,6 +811,8 @@ def notification_settings(platform: str) -> str:
 def item_sheet(platform: str) -> str:
     """Deathbringer from Onyxia (data/builds 1.60.1.70790: 8%, item level 75): the client's tooltip lines, where it drops,
     the runner-up from the same boss, and who in the guild has it or needs it (review S1)."""
+    if platform == 'android':
+        return app_page(platform, _item_sheet_r5(), 'gear', navbar=False)
     tooltip = ('<div class="t-small" style="margin-top:8px;line-height:20px">Binds when picked up<br>One-Hand &middot; Axe<br>'
                '114 - 213 Damage &middot; Speed 2.90<br>(56.4 damage per second)<br>'
                '<span style="color:var(--kill)">Chance on hit: Sends a shadowy bolt at the enemy causing 125 Shadow damage.</span><br>'
