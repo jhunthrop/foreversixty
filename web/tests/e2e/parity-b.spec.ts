@@ -102,14 +102,9 @@ const HEIGHT = 1000;
 const MOCK_HEAD_INSET =
   'below 768 the mock puts the 18 px page inset outside the head region (.pc), PageHeader inside it; ' +
   'a primitive/mock-library question, the same drift parity-planner.spec.ts and parity-setup.spec.ts list';
-// The API's server-rendered missing-build page (api/internal/site/page.go) now draws its head on the
-// round-5 title band, as the mock does; its own page shell still puts the footer 16 px lower.
-const API_PAGE_FOOTER =
-  "the API's /b missing page shell sets its footer 16 px lower than the mock's (api/internal/site/page.go)";
 const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> = {
   'b-390': { failures: ['head:box'], why: MOCK_HEAD_INSET },
   'b-missing-390': { failures: ['head:box'], why: MOCK_HEAD_INSET },
-  'b-missing-1440': { failures: ['site-footer:box'], why: API_PAGE_FOOTER },
   'b-unavailable-390': { failures: ['head:box'], why: MOCK_HEAD_INSET },
 };
 

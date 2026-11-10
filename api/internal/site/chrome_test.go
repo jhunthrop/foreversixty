@@ -4,8 +4,10 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"html"
 	"io/fs"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -30,19 +32,49 @@ or, when the site is built in another worktree, from api/ with
   go test ./internal/site -run TestChromeSnapshot -update -site <that worktree>/web/dist/about.html
 then run go test ./internal/site again without -update. -->`
 
-// extractChrome pulls the site's chrome out of a built page. The site header
-// is the first <header> in the document; the site footer is the last
-// <footer>, because a content page can carry its own (the /about page ends
+// The top of Base.astro's body: the skip link, then the band the bar floats over
+// (.site-top, ui/band.css) closing right after the site <header> it holds.
+const (
+	skipLinkStart = `<a href="#main"`
+	siteTopStart  = `<div class="site-top`
+	siteTopEnd    = "</header></div>"
+)
+
+// extractChrome pulls the site's chrome out of a built page. The header half is
+// the skip link and the .site-top band around the first <header> in the
+// document, so /b/{id} wears the same band under its bar; the footer is the
+// last <footer>, because a content page can carry its own (the /about page ends
 // with a sources <footer> inside its article).
 func extractChrome(page string) (header, footer string, err error) {
-	headerStart := strings.Index(page, "<header")
-	headerEnd := strings.Index(page, "</header>")
+	headerStart := strings.Index(page, skipLinkStart)
+	bandStart := strings.Index(page, siteTopStart)
+	headerEnd := strings.Index(page, siteTopEnd)
 	footerStart := strings.LastIndex(page, "<footer")
 	footerEnd := strings.LastIndex(page, "</footer>")
-	if headerStart < 0 || headerEnd < headerStart || footerStart < 0 || footerEnd < footerStart {
-		return "", "", fmt.Errorf("site: no <header>...</header> and <footer>...</footer> pair in the page")
+	if headerStart < 0 || bandStart < headerStart || headerEnd < bandStart {
+		return "", "", fmt.Errorf("site: no skip link and %s...%s band in the page", siteTopStart, siteTopEnd)
 	}
-	return page[headerStart : headerEnd+len("</header>")], page[footerStart : footerEnd+len("</footer>")], nil
+	if footerStart < 0 || footerEnd < footerStart {
+		return "", "", fmt.Errorf("site: no <footer>...</footer> in the page")
+	}
+	art, err := rootArt(page)
+	if err != nil {
+		return "", "", err
+	}
+	return art + page[headerStart:headerEnd+len(siteTopEnd)], page[footerStart : footerEnd+len("</footer>")], nil
+}
+
+// rootArtAttr is Base.astro's <html> style: the painted art the band and the ground draw
+// (lib/ui/assets.ts ART_CSS_VARS). An API page has its own <html>, so the header half carries the same
+// properties as a :root rule.
+var rootArtAttr = regexp.MustCompile(`<html[^>]*\sstyle="([^"]*--art-[^"]*)"`)
+
+func rootArt(page string) (string, error) {
+	m := rootArtAttr.FindStringSubmatch(page)
+	if m == nil {
+		return "", fmt.Errorf("site: the page's <html> carries no --art-* style")
+	}
+	return "<style>:root{" + html.UnescapeString(m[1]) + "}</style>", nil
 }
 
 // TestChromeTemplateMatchesTheSnapshot always runs: it proves the markup the

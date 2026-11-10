@@ -59,7 +59,7 @@ func (d Deps) page(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case errors.Is(err, builds.ErrNotFound):
 		d.writeMessage(w, r, http.StatusNotFound, "Build not found",
-			"That link does not point at a saved build. It may have been mistyped.")
+			"That link does not point at a saved build.")
 		return
 	case err != nil:
 		d.logger().Error("site", "id", httpx.RequestIDFrom(r.Context()), "op", "page", "err", err)
