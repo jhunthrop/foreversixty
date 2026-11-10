@@ -48,6 +48,9 @@ private fun heading(size: TextUnit) = styled(FsFont.title, FontWeight.Normal, si
 
 private fun body(size: TextUnit) = styled(FsFont.body, FontWeight.Normal, size)
 
+/** The mock's Android top app bar title (`.android .navb .t`, Marcellus 22). */
+private val TOP_BAR_TITLE = 22.sp
+
 private val ForeverTypography = Typography(
     headlineMedium = heading(FsTextSize.h1Phone),
     headlineSmall = heading(FsTextSize.h2),
@@ -60,9 +63,6 @@ private val ForeverTypography = Typography(
     labelMedium = body(FsTextSize.meta).copy(fontWeight = FontWeight.SemiBold),
     labelSmall = body(FsTextSize.micro).copy(fontWeight = FontWeight.SemiBold),
 )
-
-/** The mock's Android top app bar title (`.android .navb .t`, Marcellus 22). */
-private val TOP_BAR_TITLE = 22.sp
 
 @Composable
 fun ForeverTheme(content: @Composable () -> Unit) {

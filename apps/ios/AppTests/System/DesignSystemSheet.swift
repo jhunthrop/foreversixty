@@ -174,8 +174,8 @@ private enum SheetGear {
     /// The row behind an item's id (its index), for its icon and quality.
     static func row(_ id: Int) -> (icon: String, quality: Int) { (rows[id].icon, rows[id].quality) }
 
-    static let slots: [PaperdollSlot] = rows.enumerated().map { index, row in
-        PaperdollSlot(id: row.slot, label: row.label, item: PaperdollSlot.Item(
+    static let slots: [PaperdollListSlot] = rows.enumerated().map { index, row in
+        PaperdollListSlot(id: row.slot, label: row.label, item: PaperdollListSlot.Item(
             id: index, name: row.name, quality: ItemQuality(value: row.quality).text,
             detail: row.gain.map { "\($0) DPS" } ?? "Worn", isGain: row.gain != nil
         ))

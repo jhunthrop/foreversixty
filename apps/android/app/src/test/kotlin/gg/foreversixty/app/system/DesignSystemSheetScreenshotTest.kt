@@ -36,7 +36,7 @@ import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.PanelFrame
 import gg.foreversixty.app.designsystem.PaperdollHeader
 import gg.foreversixty.app.designsystem.PaperdollMedallion
-import gg.foreversixty.app.designsystem.PaperdollSlot
+import gg.foreversixty.app.designsystem.PaperdollListSlot
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.StaleStrip
 import gg.foreversixty.app.designsystem.Tag
@@ -222,10 +222,10 @@ private val SHEET_GEAR = listOf(
 )
 
 private val SHEET_SLOTS = SHEET_GEAR.mapIndexed { index, gear ->
-    PaperdollSlot(
+    PaperdollListSlot(
         id = gear.slot,
         label = gear.label,
-        item = PaperdollSlot.Item(
+        item = PaperdollListSlot.Item(
             id = index,
             name = gear.name,
             quality = ItemQuality(gear.quality).text,
@@ -236,4 +236,4 @@ private val SHEET_SLOTS = SHEET_GEAR.mapIndexed { index, gear ->
 }
 
 /** Pixel 9's width, tall enough for the whole sheet above the shell's navigation bar. */
-private const val PIXEL_9_SHEET = "w412dp-h2400dp-normal-long-notround-any-420dpi-keyshidden-nonav"
+private const val PIXEL_9_SHEET = "w412dp-h1340dp-normal-long-notround-any-420dpi-keyshidden-nonav"

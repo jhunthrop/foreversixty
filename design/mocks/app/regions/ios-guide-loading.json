@@ -9,7 +9,7 @@
     16,
     0,
     361,
-    198
+    176
    ],
    "inventory": {
     "image": 1
@@ -30,7 +30,7 @@
    "box": [
     88,
     60,
-    225,
+    224,
     20
    ],
    "inventory": {}
@@ -40,14 +40,14 @@
     16,
     96,
     361,
-    88
+    66
    ],
    "inventory": {}
   },
   "controls": {
    "box": [
     0,
-    198,
+    176,
     393,
     50
    ],
@@ -60,7 +60,7 @@
   "plate": {
    "box": [
     16,
-    398,
+    376,
     361,
     1077
    ],
@@ -73,18 +73,18 @@
   "section-overview": {
    "box": [
     17,
-    1524,
+    1502,
     359,
-    822
+    950
    ],
    "inventory": {}
   },
   "section-talents-and-builds": {
    "box": [
     17,
-    2346,
+    2452,
     359,
-    1914
+    1958
    ],
    "inventory": {
     "row": 9,
@@ -94,9 +94,9 @@
   "section-rotation-and-priority": {
    "box": [
     17,
-    4260,
+    4410,
     359,
-    2375
+    2505
    ],
    "inventory": {
     "row": 12,
@@ -106,18 +106,18 @@
   "section-stat-priority": {
    "box": [
     17,
-    6635,
+    6915,
     359,
-    1329
+    1251
    ],
    "inventory": {}
   },
   "section-best-in-slot": {
    "box": [
     17,
-    7964,
+    8166,
     359,
-    1773
+    1859
    ],
    "inventory": {
     "row": 17,
@@ -127,9 +127,9 @@
   "section-enchants-and-consumables": {
    "box": [
     17,
-    9737,
+    10025,
     359,
-    1481
+    1543
    ],
    "inventory": {
     "row": 16,
@@ -139,7 +139,7 @@
   "section-races": {
    "box": [
     17,
-    11218,
+    11568,
     359,
     1457
    ],
@@ -151,7 +151,7 @@
   "section-professions": {
    "box": [
     17,
-    12675,
+    13025,
     359,
     365
    ],
@@ -160,9 +160,9 @@
   "section-leveling": {
    "box": [
     17,
-    13040,
+    13390,
     359,
-    3195
+    3403
    ],
    "inventory": {
     "button": 2,
@@ -172,9 +172,9 @@
   "section-sources": {
    "box": [
     16,
-    16284,
+    16842,
     361,
-    484
+    493
    ],
    "inventory": {
     "row": 10
@@ -183,7 +183,7 @@
   "footer-note": {
    "box": [
     16,
-    16816,
+    17383,
     361,
     56
    ],

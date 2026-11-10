@@ -24,8 +24,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -51,7 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /** One slot of the phone paperdoll's list: the slot's word, and the item in it or nothing. */
-data class PaperdollSlot(
+data class PaperdollListSlot(
     /** The slot key (`head`, `finger1`, `off_hand`). */
     val id: String,
     /** The slot's word (`Head`, `Off Hand`). */
@@ -86,12 +90,12 @@ fun PaperdollHeader(
     title: String,
     figure: String?,
     portrait: Painter?,
-    slots: List<PaperdollSlot>,
+    slots: List<PaperdollListSlot>,
     modifier: Modifier = Modifier,
     unit: String = "DPS",
     selected: String? = null,
     onSelect: ((String) -> Unit)? = null,
-    icon: @Composable (PaperdollSlot.Item) -> Unit,
+    icon: @Composable (PaperdollListSlot.Item) -> Unit,
 ) {
     Column(modifier.fillMaxWidth().panel()) {
         Strip(title, figure, unit, portrait)
@@ -151,10 +155,10 @@ private fun Strip(title: String, figure: String?, unit: String, portrait: Painte
 
 @Composable
 private fun Cell(
-    slot: PaperdollSlot,
+    slot: PaperdollListSlot,
     selected: Boolean,
     onSelect: ((String) -> Unit)?,
-    icon: @Composable (PaperdollSlot.Item) -> Unit,
+    icon: @Composable (PaperdollListSlot.Item) -> Unit,
 ) {
     val item = slot.item
     val tap = if (item != null && onSelect != null) {
@@ -209,27 +213,35 @@ private fun Sub(label: String, detail: String?, gain: Boolean) {
 }
 
 @Composable
-private fun Socket(item: PaperdollSlot.Item?, covered: Boolean, selected: Boolean, icon: @Composable (PaperdollSlot.Item) -> Unit) {
+private fun Socket(item: PaperdollListSlot.Item?, covered: Boolean, selected: Boolean, icon: @Composable (PaperdollListSlot.Item) -> Unit) {
     val shape = RoundedCornerShape(FsRadius.pill)
-    val ring = if (selected) {
-        Modifier.border(SELECTED_RING, FsColor.cream, RoundedCornerShape(FsRadius.pill + SELECTED_GAP)).padding(SELECTED_GAP)
-    } else {
-        Modifier
-    }
-    Box(ring) {
-        Box(
-            Modifier
-                .size(CELL_SIZE)
-                .clip(shape)
-                .background(FsColor.bg)
-                .border(1.dp, FsColor.line, shape)
-                .padding(ICON_INSET),
-        ) {
-            if (item != null) {
-                Box(if (covered) Modifier.alpha(COVERED_ALPHA).greyscale() else Modifier) { icon(item) }
-            }
+    // The selected ring sits outside the socket (`outline-offset: 1px`), so selecting moves nothing.
+    val ring = if (selected) Modifier.drawBehind { drawSelectedRing() } else Modifier
+    Box(
+        ring
+            .size(CELL_SIZE)
+            .clip(shape)
+            .background(FsColor.bg)
+            .border(1.dp, FsColor.line, shape)
+            .padding(ICON_INSET),
+    ) {
+        if (item != null) {
+            Box(if (covered) Modifier.alpha(COVERED_ALPHA).greyscale() else Modifier) { icon(item) }
         }
     }
+}
+
+/** The cream ring around a selected socket, [SELECTED_GAP] outside its edge. */
+private fun DrawScope.drawSelectedRing() {
+    val stroke = SELECTED_RING.toPx()
+    val outset = SELECTED_GAP.toPx() + stroke / 2
+    drawRoundRect(
+        FsColor.cream,
+        topLeft = Offset(-outset, -outset),
+        size = Size(size.width + outset * 2, size.height + outset * 2),
+        cornerRadius = CornerRadius(FsRadius.pill.toPx() + outset),
+        style = Stroke(stroke),
+    )
 }
 
 /** The covered off hand draws its icon without colour, as the client greys it. */

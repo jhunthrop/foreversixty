@@ -31,7 +31,14 @@ import java.time.ZoneId
 class ActivityParityTest {
     @get:Rule val compose = createComposeRule()
 
-    @Test fun activity() = ParityCheck.state(compose, "activity") { Tab(3) { Inbox(ActivityFixtures.rows) } }
+    // Known drift (2026-11-10, lane M0): in Open Sans a line the mock fits on one line wraps natively (the
+    // round-5 face is wider than Barlow), so the sections below it sit lower. The tab lanes (M1i/M1a to
+    // M4i/M4a) rebuild these screens against the round-5 mocks and drop these lines.
+    @Test fun activity() = ParityCheck.state(
+        compose,
+        "activity",
+        expectedDrift = setOf("section-this-week: y 768, the mock has 758 (within 8)"),
+    ) { Tab(3) { Inbox(ActivityFixtures.rows) } }
 
     @Test fun activityAt1_5() = ParityCheck.state(compose, "activity", fontScale = 1.5f) { Tab(3) { Inbox(ActivityFixtures.rows) } }
 

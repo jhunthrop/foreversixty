@@ -41,8 +41,11 @@ targets:
     sources:
       - path: App
       # Lane F14: the snapshot, figures, intents and widget views the app and the widget
-      # extension share (the app snapshot-tests the same views the extension draws).
-      - path: Widgets/Shared
+      # extension share (the app snapshot-tests the same views the extension draws). Listed as the
+      # Widgets folder with only Shared included, so the app and the extension share one Widgets
+      # group: Xcode 27.2 refuses a project whose Shared group sits in two groups.
+      - path: Widgets
+        includes: ["Shared/**"]
       # The contract fixtures for fixture mode. A folder reference keeps its on-disk name, so they
       # land in the bundle as `app/` (FixtureTransport.bundledFolder); `name` labels the group only.
       - path: ../../docs/contracts/fixtures/app

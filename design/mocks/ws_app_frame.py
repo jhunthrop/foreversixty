@@ -68,7 +68,8 @@ def glyph(name: str, size: int = 24, stroke: float = 1.8) -> str:
 
 APP_CSS = '''
 /* ---- native deltas over the web system (spec 3.3: N1 to N4) ---- */
-:root{--page-inset:16px!important}
+/* round 5 (lane M0): the apps set Open Sans, so their mocks do too */
+:root{--page-inset:16px!important;--font-body:'Open Sans',Arial,sans-serif!important}
 @media(min-width:0px){.pc{padding-inline:16px!important}}
 .t-label,.cdn .eb,.frow .wh .k,.rgrp>h3,.menu .mg,.rprose .glabel,.gridm .h,.cdn .clk>span>span{text-transform:none!important;letter-spacing:.01em!important}
 .cdn .clk>span>span,.frow .wh .k{font-size:12px!important}
@@ -85,11 +86,11 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .cds{grid-template-columns:minmax(0,1fr)!important}
 /* ---- the frame ---- */
 .app-status{position:relative;flex:none;height:var(--status);z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 28px 0 32px;
-  font:600 16px/1 -apple-system,'SF Pro Text','Barlow',sans-serif;color:var(--strong);background:var(--bg)}
+  font:600 16px/1 -apple-system,'SF Pro Text','Open Sans',sans-serif;color:var(--strong);background:var(--bg)}
 .app-status .island{position:absolute;left:50%;top:11px;width:124px;height:36px;margin-left:-62px;border-radius:20px;background:#000}
 .app-status .sys{display:flex;gap:6px;align-items:center}.app-status .sys i{display:block;width:17px;height:11px;border-radius:2px;background:var(--strong)}
 .app-status .sys i.b{width:25px;height:12px;border-radius:3px}
-[data-platform=android] .app-status{padding:0 20px;font:500 14px/1 'Roboto','Barlow',sans-serif}
+[data-platform=android] .app-status{padding:0 20px;font:500 14px/1 'Roboto','Open Sans',sans-serif}
 .app-nav{position:relative;flex:none;height:var(--nav);z-index:49;display:flex;align-items:center;gap:8px;padding:0 8px;background:var(--bg)}
 .app-nav a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:44px;color:var(--gold);font:400 17px/1 var(--font-body);gap:2px}
 .app-nav .ttl{flex:1;text-align:center;font:600 17px/22px var(--font-body);color:var(--strong);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

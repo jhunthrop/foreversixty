@@ -5,14 +5,13 @@
 // and Arial without a word (2026-11-08).
 import { readFileSync } from "node:fs";
 
-// The apps still set Barlow (round 5 moved only the site to Open Sans; the mobile lane follows), so the app mocks keep
-// the Barlow subsets the site shipped until then, kept beside the mocks in data/fonts.
+// The apps set Open Sans and Marcellus since lane M0 (round 5), the site's own faces, so the app mocks take the same
+// subsets the site serves.
 const SITE_FONTS = new URL("../../web/src/assets/fonts/", import.meta.url);
-const APP_FONTS = new URL("./data/fonts/", import.meta.url);
 const FACES = [
-  ["Barlow", 400, "barlow-400-subset.woff2", APP_FONTS],
-  ["Barlow", 600, "barlow-600-subset.woff2", APP_FONTS],
-  ["Barlow", 700, "barlow-700-subset.woff2", APP_FONTS],
+  ["Open Sans", 400, "open-sans-400-subset.woff2", SITE_FONTS],
+  ["Open Sans", 600, "open-sans-600-subset.woff2", SITE_FONTS],
+  ["Open Sans", 700, "open-sans-700-subset.woff2", SITE_FONTS],
   ["Marcellus", 400, "marcellus-400-subset.woff2", SITE_FONTS],
 ];
 const CSS = FACES.map(([family, weight, file, dir]) => {

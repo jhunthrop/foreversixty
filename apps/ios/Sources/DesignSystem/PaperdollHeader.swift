@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 /// One slot of the phone paperdoll's list: the slot's word, and the item in it or nothing.
-public struct PaperdollSlot: Identifiable, Sendable {
+public struct PaperdollListSlot: Identifiable, Sendable {
     /// What a filled slot shows.
     public struct Item: Sendable {
         public let id: Int
@@ -52,10 +52,10 @@ public struct PaperdollHeader<Icon: View>: View {
     private let figure: String?
     private let unit: String
     private let portrait: UIImage?
-    private let slots: [PaperdollSlot]
+    private let slots: [PaperdollListSlot]
     private let selected: String?
     private let onSelect: ((String) -> Void)?
-    private let icon: (PaperdollSlot.Item) -> Icon
+    private let icon: (PaperdollListSlot.Item) -> Icon
 
     static var medallionSize: CGFloat { 40 }
     static var cellSize: CGFloat { 44 }
@@ -69,10 +69,10 @@ public struct PaperdollHeader<Icon: View>: View {
         figure: String?,
         unit: String = "DPS",
         portrait: UIImage?,
-        slots: [PaperdollSlot],
+        slots: [PaperdollListSlot],
         selected: String? = nil,
         onSelect: ((String) -> Void)? = nil,
-        @ViewBuilder icon: @escaping (PaperdollSlot.Item) -> Icon
+        @ViewBuilder icon: @escaping (PaperdollListSlot.Item) -> Icon
     ) {
         self.title = title
         self.figure = figure
@@ -132,7 +132,7 @@ public struct PaperdollHeader<Icon: View>: View {
     }
 
     @ViewBuilder
-    private func cell(_ slot: PaperdollSlot) -> some View {
+    private func cell(_ slot: PaperdollListSlot) -> some View {
         let shown = slot.item ?? slot.coveredBy
         let row = HStack(spacing: FSSpace.space2) {
             socket(shown, covered: slot.item == nil, selected: slot.id == selected)
@@ -174,7 +174,7 @@ public struct PaperdollHeader<Icon: View>: View {
             .lineLimit(1)
     }
 
-    private func socket(_ item: PaperdollSlot.Item?, covered: Bool, selected: Bool) -> some View {
+    private func socket(_ item: PaperdollListSlot.Item?, covered: Bool, selected: Bool) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: Theme.Radius.icon).fill(Theme.Palette.well)
             RoundedRectangle(cornerRadius: Theme.Radius.icon).strokeBorder(FSColor.line, lineWidth: FSStroke.hairline)

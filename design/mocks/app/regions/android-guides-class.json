@@ -30,7 +30,7 @@
    "box": [
     88,
     60,
-    103,
+    104,
     20
    ],
    "inventory": {}
@@ -38,9 +38,9 @@
   "plate": {
    "box": [
     16,
-    571,
+    338,
     380,
-    146
+    94
    ],
    "inventory": {
     "row": 1,
@@ -50,18 +50,18 @@
   "section-what-changed-from-1-12": {
    "box": [
     16,
-    745,
+    460,
     380,
-    629
+    681
    ],
    "inventory": {}
   },
   "section-sources": {
    "box": [
     16,
-    1422,
+    1189,
     380,
-    308
+    317
    ],
    "inventory": {
     "row": 6
@@ -70,9 +70,9 @@
   "section-races": {
    "box": [
     16,
-    1754,
+    1530,
     380,
-    131
+    155
    ],
    "inventory": {}
   }
