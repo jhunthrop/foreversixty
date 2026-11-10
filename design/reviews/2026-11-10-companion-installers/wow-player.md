@@ -119,3 +119,31 @@ Applied fix 2: the first-run line is in body ink, not muted. Fixes 1 and 3 belon
    - Also move the icons about 40px lower, or shorten the window, so the content is centred.
 
 **What works and should not change.** The one-window flow on both platforms is a single decision with a single button. The upgrade state says "Replaces the copy already installed. Your settings stay." Uninstall reassures with "Your reports on foreversixty.gg stay." and "Keep my settings". The red Remove button is correctly alarming. Both setup pages mark the companion as "Optional", and the Download buttons are detected per OS.
+
+# Round 5
+
+**SHIP.** The blocker is fixed, and the declines are reasonable except that two of them need a ticket.
+
+**What I checked in the fresh captures**
+- **`win-2-installing.png`:**
+  - It now shows the "Installing…" title, a greyed-out "Start with Windows" toggle, a progress bar and the step line "Starting Forever Sixty". A player sees something working instead of an empty box. The blocker is gone.
+  - I only saw a single frame, with the bar part-full. I can't confirm the 1.2 s hold you describe.
+  - The step list in `round-4-applied.md` ("Copying files", "Removing files") fits what the screen shows.
+- **`win-4-upgrade.png`:** "Update Forever Sixty?" with an "Update" button and "Replaces the copy already installed. Your settings stay." This is what a player expects. Keeping their Start with Windows choice on update is the right call, since resetting it would have felt naggy.
+- **`win-7-removed.png`:** "Forever Sixty is removed." with "Your reports on foreversixty.gg stay." is good. Minimize and maximize are gone from these dialogs, which is correct for a one-question window.
+- **Copy:**
+  - `companion/ui/copy.js` now reads "This download goes in the Trash." That is clear enough.
+  - `web/src/data/companion.json` opens with "Verified publisher: Commish LLC." That is SmartScreen's own wording, so the player can match it. Good.
+
+**Declines I accept**
+- **No "drag" line on the DMG.** The owner has ruled on it, and the drag window with its arrow reads without text.
+- **No "change it later in Settings" line.** Don't promise a setting that doesn't exist.
+- **Brand items (the painted ground, the seal, the band).** Those are the owner's call, not mine.
+
+**Two items I would not let drop**
+1. **The `/setup` hand-install path shows Windows backslashes on the Mac page.** `World of Warcraft\_forever_\Interface\AddOns` appears under "Installing by hand" on `setup-mac-1440.png`. Mac players follow that text. Log it as a real follow-up for the lane that owns `addonCopy`, not a nice-to-have.
+2. **The combat-log menu path "Options > Network > Advanced Combat Logging" is still unverified against the Forever client.** It sits in the companion's three-step list, so every new companion user reads it. If the checkbox lives elsewhere, the player is stuck at step 2. Someone should check the client and fix the string once.
+
+**One small remaining nit, not a blocker:** the "removed" window still has only the X to close it. A Close button or an auto-close after a few seconds would finish it.
+
+I did not reply to the other session. Everything above is for you.

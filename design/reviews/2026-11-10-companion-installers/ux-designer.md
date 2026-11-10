@@ -312,3 +312,58 @@ Files touched by the fixes:
 - Mac: the move prompt and a failed state.
 - Both DMG windows, light and dark.
 - `/setup` at 1440 for both platforms.
+
+# Round 5
+
+**Verdict: SHIP WITH FIXES.** Two small items remain, and neither blocks the owner's brief. The round-4 fixes I could verify are in. I read the code but not the declined items' captures.
+
+**Round-4 items checked**
+
+| Item | Result |
+|---|---|
+| 1. Blank frame | Fixed. `win-2-installing.png` now shows the title, bar and "Starting Forever Sixty". |
+| 2. Title turns to "Installing…" | Fixed (`win-2`). |
+| 3. Update keeps the startup choice | Fixed in code and tested. |
+| 4. "Update Forever Sixty?" with an Update button | Fixed (`win-4-upgrade.png`). |
+| 5. Failure copy names the button | Fixed (`page-setup-failed.png`). |
+| 11. Done state keeps the lede | Fixed (`win-7-removed.png`). |
+| 12. Caption has close only | Fixed (`win-2`, `win-4`, `win-6`, `win-7`). |
+| 6. Uninstall focus | Not fixed in the capture. See item 1 below. |
+
+**Remaining fixes**
+
+1. **The uninstall still focuses Remove. Must fix, `companion/ui/install.js`, lines 36–41.**
+   - `win-6-uninstall.png` shows the gold focus ring on the red Remove button, and none on the toggle. Enter would still remove the app.
+   - The code sets `button.autofocus = false` and calls `toggle.focus()`, but the HTML `autofocus` attribute on `#move` in `install.html` still takes effect when the page loads in the webview.
+   - Delete `autofocus` from `install.html` line 27.
+   - In `install.js`, add `button.autofocus = true` only for the setup and move modes. Alternatively, call `toggle.focus()` inside `requestAnimationFrame` so it runs after the page's initial focus.
+   - Re-capture `win-6` with the ring on the toggle and none on Remove.
+
+2. **The bar is full while a step is still running. Must fix, `companion/ui/install.js`, `fsDone`, and `setup_window.go`, `runInWindow`.**
+   - `win-2` shows the track filled to 100% under "Starting Forever Sixty", with the title still "Installing…".
+   - Your own notes say the bar shows steps already done and fills only at `fsDone`. The step formula gives 80% at step 5 of 5.
+   - So either `fsDone` fired before the capture, or the capture is at the 1.2 s hold's end.
+   - If it is the hold, add `fsDone`'s title change for setup too: "Installed." for 300 ms before the close.
+   - If it is not, a 100% bar next to an unfinished step line is a lie. Re-capture to show the bar at about 80% beside "Starting Forever Sixty".
+
+**Polish, no re-review needed**
+
+3. **The Update button in `win-4` is a lighter teal than Install in `win-1`.** It was the same in round 4. If it is hover from the runner's pointer, ignore it. Park the pointer before the capture if you can.
+
+4. **The declined items are accepted.**
+   - Keeping the owner's painted seal, ground, band and lead panel is correct for this lane.
+   - The cream DMG without a band is justified by Finder's dark labels.
+   - The Mac line "open it, then open Forever Sixty, which offers to move itself" is the owner's call, so my drag wording is withdrawn.
+   - "Verified publisher: Commish LLC" is better than my wording.
+   - "This download goes in the Trash." is fine.
+
+**Facts, unchanged:** per-user, no UAC; Start menu shortcut and Start with Windows; Apps & Features entry from Commish LLC; uninstall in the same window with "Keep my settings".
+
+I did not re-read the Mac captures, since you say the DMG windows and `mac-1-move-window.png` are unchanged. Review the new move lede in `page-move.png` after item 1 lands.
+
+Files, all under `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/`:
+- `companion/ui/install.html`
+- `companion/ui/install.js`
+- `companion/internal/install/setup_window.go`
+- `design/reviews/2026-11-10-companion-installers/win-2-installing.png`
+- `design/reviews/2026-11-10-companion-installers/win-6-uninstall.png`

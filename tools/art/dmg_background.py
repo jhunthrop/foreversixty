@@ -2,15 +2,15 @@
 
     python3 tools/art/dmg_background.py
 
-Writes companion/packaging/macos/dmg-background.png (660 x 400) and dmg-background@2x.png (1320 x 800): the cream
-ground, the painted seal and "Forever Sixty" in Marcellus small at the top left, and one brass arrow from where the
-app sits to where Applications sits. Nothing else.
+Writes companion/packaging/macos/dmg-background.png (660 x 400) and dmg-background@2x.png (1320 x 800): the white
+ground, the painted seal and "Forever Sixty" in Marcellus small at the top left, and one short teal arrow from where
+the app sits to where Applications sits. Nothing else.
 
 The ground is light on purpose. Finder draws icon labels over a background picture in dark ink in light and dark
 appearance alike (checked on macOS 26, 2026-11-10: a dark ground left "Forever Sixty" unreadable in both), so the
-labels need a light ground, as Discord's white one. The cream is the site's display-type token, the ink its card
-brown-black, the arrow the legacy deep gold: all from design/tokens/tokens.json. In dark appearance Finder's dark
-title bar sits over the cream; that is expected. The seal beside the name follows the owner's reference (Discord's
+labels need a light ground: white, as the owner's Discord reference. The ground is the site's white (--color-strong),
+the ink its card brown-black, the short arrow the primary button's teal: all from design/tokens/tokens.json. In dark
+appearance Finder's dark title bar sits over the white; that is expected. The seal beside the name follows the owner's reference (Discord's
 logo and wordmark at the top left). The build is deterministic.
 
 Also writes companion/packaging/macos/dmg-layout.sh, the window and icon places in the shell's terms, so the image
@@ -39,7 +39,7 @@ SEAL_PT = 28
 NAME_PT = 16
 NAME_GAP = 8
 # The arrow runs between the two icons with this much air at each end, at the icons' centre line.
-ARROW_AIR = 54
+ARROW_AIR = 70
 ARROW_STROKE = 4
 ARROW_HEAD = 12
 SUPERSAMPLE = 4
@@ -57,7 +57,7 @@ def token(*path: str) -> str:
 def render(scale: int) -> Image.Image:
     s = scale * SUPERSAMPLE
     w, h = WINDOW[0] * s, WINDOW[1] * s
-    im = Image.new('RGB', (w, h), token('forever', 'cream'))
+    im = Image.new('RGB', (w, h), token('base', 'strong'))
     draw = ImageDraw.Draw(im)
 
     seal = Image.open(SEAL).convert('RGBA').resize((SEAL_PT * s, SEAL_PT * s), Image.LANCZOS)
@@ -67,16 +67,16 @@ def render(scale: int) -> Image.Image:
     ink = token('base', 'raised')
     draw.text((x + (SEAL_PT + NAME_GAP) * s, y + SEAL_PT * s / 2), 'Forever Sixty', font=font, fill=ink, anchor='lm')
 
-    brass = token('legacy', 'goldDeep')
+    arrow = token('forever', 'teal')
     half = ICON_PT / 2
     x0, x1 = (APP_X + half + ARROW_AIR) * s, (DROP_X - half - ARROW_AIR) * s
     cy, stroke, head = ICON_Y * s, round(ARROW_STROKE * s), ARROW_HEAD * s
-    draw.line((x0, cy, x1 - stroke, cy), fill=brass, width=stroke)
-    draw.line((x1 - head, cy - head, x1, cy), fill=brass, width=stroke, joint='curve')
-    draw.line((x1 - head, cy + head, x1, cy), fill=brass, width=stroke, joint='curve')
+    draw.line((x0, cy, x1 - stroke, cy), fill=arrow, width=stroke)
+    draw.line((x1 - head, cy - head, x1, cy), fill=arrow, width=stroke, joint='curve')
+    draw.line((x1 - head, cy + head, x1, cy), fill=arrow, width=stroke, joint='curve')
     for px, py in ((x0, cy), (x1 - head, cy - head), (x1 - head, cy + head), (x1, cy)):
         r = stroke / 2
-        draw.ellipse((px - r, py - r, px + r, py + r), fill=brass)  # round caps and the tip
+        draw.ellipse((px - r, py - r, px + r, py + r), fill=arrow)  # round caps and the tip
     return im.resize((WINDOW[0] * scale, WINDOW[1] * scale), Image.LANCZOS)
 
 

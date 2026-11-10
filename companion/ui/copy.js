@@ -238,7 +238,7 @@ const COPY = {
     // The Windows setup download (setup.go); an upgrade when a copy is installed already.
     setup: {
       title: 'Install Forever Sixty?',
-      lede: 'For your Windows account. No admin needed.',
+      lede: 'Installs in your own Programs folder. No admin needed.',
       titleUpgrade: 'Update Forever Sixty?',
       ledeUpgrade: 'Replaces the copy already installed. Your settings stay.',
       toggle: 'Start with Windows',
@@ -246,6 +246,8 @@ const COPY = {
       actionUpgrade: 'Update',
       busy: 'Installing…',
       busyUpgrade: 'Updating…',
+      done: 'Forever Sixty is installed.',
+      doneUpgrade: 'Forever Sixty is updated.',
       failed: 'Install failed. Press Install to try again.',
     },
     // Apps & Features' Uninstall (setup.go).

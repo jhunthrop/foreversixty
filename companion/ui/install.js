@@ -25,7 +25,7 @@
   const error = $('move-error');
   const progress = $('move-progress');
   // The words in force: an upgrade swaps the setup's title, button and busy line.
-  let words = { title: C.title, lede: C.lede, action: C.action, busy: C.busy };
+  let words = { title: C.title, lede: C.lede, action: C.action, busy: C.busy, done: C.done };
 
   const show = () => {
     title.textContent = words.title;
@@ -34,12 +34,10 @@
   };
   $('move-login-label').textContent = C.toggle;
   show();
-  if (mode === 'uninstall') {
-    // Enter must not remove the app: the focus starts on the toggle, not the red button.
-    button.classList.replace('primary', 'danger');
-    button.autofocus = false;
-    toggle.focus();
-  }
+  if (mode === 'uninstall') button.classList.replace('primary', 'danger');
+  // The keyboard starts on the one button, except in the uninstall: Enter must not remove the
+  // app, so there it starts on the toggle. After the first frame, when the web view takes focus.
+  requestAnimationFrame(() => (mode === 'uninstall' ? toggle : button).focus());
 
   const busy = () => {
     error.hidden = true;
@@ -79,7 +77,7 @@
   toggleRow.hidden = false;
   window.fsSetupInfo?.().then((info) => {
     if (mode !== 'setup' || !info || !info.upgrade) return;
-    words = { title: C.titleUpgrade, lede: C.ledeUpgrade, action: C.actionUpgrade, busy: C.busyUpgrade };
+    words = { title: C.titleUpgrade, lede: C.ledeUpgrade, action: C.actionUpgrade, busy: C.busyUpgrade, done: C.doneUpgrade };
     toggle.checked = !!info.startup;
     show();
   });
@@ -89,10 +87,12 @@
     $('move-step').textContent = COPY.install.steps[key] || words.busy;
   };
   window.fsFailed = showFailed;
+  // Done: the bar full, the title says so, and the window closes a moment later.
   window.fsDone = () => {
     $('move-bar').style.width = '100%';
+    $('move-step').textContent = '';
+    title.textContent = words.done;
     if (mode !== 'uninstall') return;
-    title.textContent = C.done;
     lede.textContent = C.lede;
     lede.hidden = false;
     toggleRow.hidden = true;

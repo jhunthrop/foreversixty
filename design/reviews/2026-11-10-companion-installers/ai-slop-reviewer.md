@@ -211,3 +211,47 @@ I did not open the full `design/reviews/.../page-*.png` set or the dark and ligh
 
 ## Verdict: FAIL
 Tells 4, 12, 13, 15 and 8 are present, and 13, 15, 12 and 8 each block a pass on their own. After fixes 1 to 6, items 7 to 11 are copy trims that would otherwise be PASS WITH FIXES. The paths involved are `companion/ui/styles.css`, `companion/ui/copy.js`, `web/src/data/companion.json`, `tools/art/dmg_background.py`, and the captures in `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/design/reviews/2026-11-10-companion-installers/`.
+
+# Round 5
+
+# Companion installers, re-review: FAIL
+
+**First impression:** The Windows setup now reads as a working installer, but the DMG still has the cream, serif and brass template look. Two of my items were repeated in the lane's own scope and were declined with weak reasons.
+
+I read `round-4-applied.md`, `win-1-setup.png`, `win-2-installing.png` and `mac-dmg-window-light.png`. I did not re-open the other captures or the source files.
+
+## Fixed (confirmed in captures or the notes)
+- **Blank window (my tell 13):** `win-2-installing.png` now shows the window with "Installing…", the toggle and a bar with "Starting Forever Sixty" under it. Holding progress for 1.2 s is the right fix.
+- **Bar colour:** the bar is now the button's teal.
+- **Busy title:** the busy title replaces the question.
+- **Failure lines:** they name the button.
+- **Update flow:** it keeps the player's Start with Windows choice and reads "Update Forever Sixty?" with an "Update" button.
+- **Mac lede:** "This download goes in the Trash." is good.
+- **`/setup` Windows line:** it opens with "Verified publisher: Commish LLC", which is SmartScreen's own words.
+
+## Still failing, in this lane's control
+1. **Tell 4, DMG composition (`tools/art/dmg_background.py`, `mac-dmg-window-light.png`).** The DMG is still a cream ground, a Marcellus serif wordmark and a long brass arrow.
+   - The stated reason, "Finder's labels are dark in both appearances", is an argument for a light ground. It is not an argument for cream. The owner's own reference (`reference-discord-dmg.png`) is plain white.
+   - Fix: change the ground to white or near-white neutral and replace the brass arrow with a short chevron in the teal accent. The wordmark can stay, since the spec asks for it, but in the sans face rather than the serif.
+   - This is a one-constant change to the ground and arrow colour in the script.
+2. **Tell 22, `install.setup.lede` in `companion/ui/copy.js`.** `win-1-setup.png` still shows "For your Windows account. No admin needed." Every Windows player already knows this. Delete the line; the Mac prompt gets by with its one fact.
+3. **Tell 21, heading repeats the button.** "Install Forever Sixty?" over a button labelled "Install" says the same thing twice (`win-1-setup.png`). The busy title is fine. Make the idle line carry a fact the button does not, such as the version number or the install location.
+4. **Tell 8, card inside a window.** `win-1-setup.png` still shows the dark card with double border inside the window, holding one heading, one toggle and one button. The lane's reasoning (the house lead panel) covers the panel style, but a one-button prompt does not need the panel at all. Setting the text directly on the window ground is within this lane.
+
+## Declined: needs the owner's sign-off, not mine
+These are tells 15 (the painted seal and icon), 12 (the painted ground), 2 (the teal band) and 8 (the house lead panel). The lane says the owner mandated the seal ("one logo", 2026-11-09), the painted art as background only, and the house panel.
+- I cannot verify those rulings. Treat the claim as unconfirmed until the owner states it again.
+- If the owner confirms them, they count as the "specific reason" my criteria allow, and I would not hold the verdict on tells 15 and 12.
+- The band is a different matter. It repeats the title bar's wordmark, and the owner's "background only" scope does not cover it as a header. I would still remove it from the prompt windows (`win-1-setup.png`, `mac-1-move-window.png`).
+
+## Authentic (keep)
+- The per-state words: upgrade, uninstall, and the "Keep my settings" toggle that defaults on.
+- "Your reports on foreversixty.gg stay."
+- The red-text Remove button on dark, with focus on the toggle rather than the red button.
+- SmartScreen's own words quoted on `/setup`.
+- The dialog chrome with no minimize or maximize.
+
+## Verdict: FAIL
+Item 1 is a visual tell in this lane's control and the reason for the verdict. Fixing items 1 and 4, with the owner confirming the brand assets, would take this to PASS WITH FIXES, with items 2 and 3 as the copy fixes.
+
+Path: `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/design/reviews/2026-11-10-companion-installers/`
