@@ -159,8 +159,7 @@ export const guildClaimCopy = {
   // /setup's Notice over that link, once the account knows a character in the guild (setup spec 4.6).
   setupClaimReady: (guildName: string): string => `You have a character in ${guildName}.`,
   // Signed in, but no character of theirs in this guild as far as the site knows.
-  notAMember:
-    'None of your characters is in this guild. Add one on Get set up.',
+  notAMember: 'None of your characters is in this guild. Add one on Get set up.',
   // The state as a member may read it: the home says claimed, but never by whom.
   claimedByAnOfficer: 'This guild has been claimed by one of its officers.',
   backToGuild: (guildName: string): string => (guildName === '' ? 'Guild page' : guildName),
@@ -198,8 +197,7 @@ export const guildSettingsCopy = {
   rotateConfirmLine:
     'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
   rotateCancel: 'Cancel',
-  tokenShownOnce:
-    'Copy it now. It cannot be shown again.',
+  tokenShownOnce: 'Copy it now. It cannot be shown again.',
   linkLabel: 'Invite link',
   copyButton: uiCopy.copyLink,
   copied: uiCopy.copiedLink,
