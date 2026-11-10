@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, it } from 'vitest';
-import { FOOTER_COLUMNS, FOOTER_FAN_LINE, FOOTER_LINKS } from '../lib/footer-copy';
+import { FOOTER_COLUMNS, FOOTER_FAN_LINE, FOOTER_LINKS, footerOperatorLine } from '../lib/footer-copy';
 import { LEGAL_OPERATOR, LEGAL_TRADEMARK } from '../lib/legal-notice';
 import Footer from './Footer.astro';
 
@@ -35,6 +35,7 @@ describe('Footer', () => {
     ]);
     expect(html).toContain(FOOTER_FAN_LINE);
     expect(FOOTER_FAN_LINE).toBe('A fan-made player tool. Not affiliated with Blizzard.');
+    expect(footerOperatorLine(2026)).toBe('© 2026 Commish LLC d/b/a Forever Sixty');
     expect(html).not.toContain('Play your class better');
     for (const column of FOOTER_COLUMNS) expect(html).not.toContain(`>${column.heading}</p>`);
   });
