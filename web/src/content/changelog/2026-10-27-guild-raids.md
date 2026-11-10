@@ -1,5 +1,5 @@
 ---
-title: 'Guilds can now plan raids and members sign up in one tap.'
+title: 'Guilds can now plan raids, and members sign up on the raid page.'
 date: 2026-10-27
 kind: site
 updated: 2026-10-27
@@ -10,4 +10,4 @@ sources:
     kind: site
 ---
 
-Added raid sign-ups. Officers plan raids on the guild's Raids tab and members sign up in one tap, from the raid page or the guild page.
+Added raid sign-ups. Officers plan raids on the guild's Raids tab and members sign up from the raid page or the guild page.

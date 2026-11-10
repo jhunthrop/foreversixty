@@ -55,7 +55,7 @@ export interface ItemTooltipModel {
    *  none. */
   effectText: string | null;
   setName: string | null;
-  /** "Molten Core — Ragnaros", "Sweet Amber (Alliance)", "Argent Dawn — Exalted", … one
+  /** "Molten Core: Ragnaros", "Sweet Amber (Alliance)", "Argent Dawn: Exalted", … one
    *  line per place the item is known to come from; empty when loot.json has none. */
   sourceLines: string[];
   unique: boolean;

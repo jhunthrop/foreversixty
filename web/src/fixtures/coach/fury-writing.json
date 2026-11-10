@@ -16,7 +16,7 @@
   },
   "reviewed_at": "2026-10-25T02:10:00Z",
   "review": {
-    "opening": "Here is what your log shows for Onyxia.",
+    "opening": "Your Onyxia pull, from the log.",
     "fixFirst": {
       "finding": "f1",
       "title": "Bloodthirst: 9 casts lost",

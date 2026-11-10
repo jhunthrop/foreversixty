@@ -1,0 +1,32 @@
+# AI-slop copy patterns: the tells from .claude/agents/ai-slop-reviewer.md that a grep can find.
+# One pattern per line: <id> TAB <flags> TAB <regex>. Flags: i = ignore case, - = none.
+# The regex must be valid in JavaScript and in Go RE2 (no lookarounds, no backreferences).
+# The comment line above each pattern names the tell. Read by scan.mjs, the web vitest
+# (web/src/slop-copy.test.ts) and the api Go test (api/internal/slopguard).
+
+# tell 21: em dash in copy (owner rule: no em dashes). A lone '—' standing for an empty cell is notation, not prose.
+# The escaped forms are Lua's \226\128\148 and the JavaScript or Go \u2014.
+em-dash	-	[A-Za-z0-9,.)]\s*—|—\s*[A-Za-z0-9(]|[A-Za-z0-9,.)]\s*(\\226\\128\\148|\\u2014)|(\\226\\128\\148|\\u2014)\s*[A-Za-z0-9(]
+# tell 23: definitional blurb "<X> is the <Y>: a, b and c"
+is-the-colon	i	\b(is|are) the [^.:;"`]{1,40}:\s
+# tell 21/22: "Next:" / "Tip:" style nudge prefixes
+nudge-prefix	-	\b(Next|Tip|Pro tip|Hint|Next step|Heads up|Psst|Fun fact|Remember):
+# tell 19/21: generated openers "Here is what", "Here's how", "Let's"
+here-is-what	i	\b(here's|here is|here are) (what|how|your|everything|a look)\b
+lets	-	\bLet's\b
+# tell 18: marketing buzzwords
+buzzword	i	\b(seamless(ly)?|effortless(ly)?|elevates?|elevating|unlock your|unlocks your|level up your|harness(es|ing)?|delve|delves|unleash(es)?|empowers?|empowering|supercharge[sd]?|game[- ]changer|to the next level|dive (in|into)|look no further)\b
+# tell 18/19: stock promises
+stock-promise	i	\b(everything you need|all in one place|all-in-one|at a glance|with ease|in one click|in just a few|hassle[- ]free)\b
+# tell 21: "simply" / "just" + verb
+simply-just	i	\b(simply|just) (click|tap|open|type|pick|paste|drag|drop|select|enter|hit|press|run|install|log in|sign in|choose|add|use|head|go|grab|follow)\b
+# tell 18/21: exclamation marks in UI copy
+exclamation	-	[A-Za-z]\s[A-Za-z']+!+(["'`<]|\s|$)|["'`>]\s*[A-Z][a-z]+!+["'`<]
+# tell 18/22: grade and hype lines ("is graded D this week")
+grade-hype	i	\b(is graded|graded [A-F][+-]? this week|this week's (hottest|best|top))\b
+# tell 21: explaining the obvious to a veteran ("Click X to Y", "This page shows")
+explain-obvious	i	\b(click|tap) (the |this |a |on )?[A-Za-z ]{0,30} to (see|open|view|get|start|go|change|pick|add)\b|\bthis (page|tool|panel|section) (shows|lists|lets you|helps|is where)\b|\bbelow you'll find\b|\bon this page you\b
+# tell 19: "Whether you're a ..."
+whether-youre	i	\bwhether you're\b
+# tell 21: "not X but Y" and "more than just" cadences
+not-just	i	\bnot (just|only) [^.,;]{1,40},? but\b|\bmore than just\b

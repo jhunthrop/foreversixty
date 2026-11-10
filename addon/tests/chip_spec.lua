@@ -60,7 +60,7 @@ local LAST_RAID = { date = "2026-12-08", bosses = {
 
 describe("Chip.model", function()
 	-- L3.2 fix round 4: the one function for the talent and its rank, read
-	-- by the chip's line and the talent strip's "Next: …".
+	-- by the chip's line and the talent strip's leading talent.
 	it("labels the next talent with its rank where the plan wants more than one", function()
 		assert.are.equal("Improved Heroic Strike (1 of 3)", Chip.pointLabel("Improved Heroic Strike", { have = 0, want = 3 }))
 		assert.are.equal("Improved Heroic Strike (2 of 3)", Chip.pointLabel("Improved Heroic Strike", { have = 1, want = 3 }))

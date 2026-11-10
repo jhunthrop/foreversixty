@@ -67,7 +67,7 @@ Once the tank has the boss: Curse of the Elements first if you hold it, since ev
 
 Bane of Doom is your bane on a boss. It hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute of the fight left never lands, so once the last one has fired, press Amplify Curse and put Bane of Agony up instead. Improved Bane of Agony and Pandemic make that last Agony count.
 
-Never clip a DoT. A recast throws away whatever was left on the old one, and Bane of Agony saves its biggest ticks for the end. Recast Corruption and Siphon Life when they fall off. While you level without the sacrifice, Immolate is the one exception: start its cast with about 3 seconds left. It lands a moment before the old one ends, and the fresh direct hit is worth the tick you give up.
+Never clip a DoT. A recast throws away whatever was left on the old one, and Bane of Agony saves its biggest ticks for the end. Recast Corruption and Siphon Life when they fall off. While you level without the sacrifice, Immolate breaks that rule: start its cast with about 3 seconds left. It lands a moment before the old one ends, and the fresh direct hit is worth the tick you give up.
 
 Wrack is your filler. Once Corruption, your bane and Siphon Life are up, Soul Siphon adds 36% to it, and while it channels your Corruption and Bane of Agony take 10% more. It does more than Shadow Bolt for a fraction of the mana, so channel it whenever nothing needs refreshing. When Nightfall gives you a Shadow Trance, cast the instant Shadow Bolt once your current Wrack ends, before the next one: a crit puts up Improved Shadow Bolt, and for 12 seconds your Wrack and DoTs take 20% more.
 

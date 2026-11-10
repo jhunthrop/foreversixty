@@ -74,13 +74,11 @@ sources:
 - **Focused Rage** (3 points): every offensive ability costs 3 less, which makes Revenge nearly free.
 - **Last Stand** (1 point): 30% of your maximum health for 20 seconds, lost again when it ends. Your emergency button.
 - **Improved Bloodrage** (2 points): half again as much rage from every Bloodrage.
-- **Concussion Blow** (1 point): a 5 second stun, and the point that unlocks Shield Slam.
+- **Concussion Blow** (1 point): a 5 second stun, and the point that opens Shield Slam.
 
 The Arms points go to **Deflection** for 5% parry, **Improved Heroic Strike** for a cheaper rage dump, and **Improved Rend** into **Deep Wounds**. Improved Tactical Mastery and Anger Management are left out: a tank who stays in Defensive Stance gets more from Bastion's last ranks and Improved Bloodrage.
 
 Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you pull with Charge, **Improved Shield Bash** for a boss with a cast you must silence, and **Iron Will** for a fight full of stuns and fears. On progression bosses, take two points of **Improved Shield Wall** out of Improved Thunder Clap: Shield Wall comes back every 4 minutes instead of every 15, so a long fight gets it two or three times, and each Thunder Clap only costs 4 more rage.
-
-[Open the planner](/planner?class=warrior) to change the build.
 
 ## Rotation and priority
 

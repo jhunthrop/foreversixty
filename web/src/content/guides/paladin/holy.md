@@ -112,7 +112,7 @@ Holy Light and Seal of Righteousness come at 1, Judgement at 4, Holy Strike at 6
 
 At 12, the class quest from your trainer teaches Redemption. A healer without it is a long corpse run for the group.
 
-Most Holy paladins level as Retribution and respec for raids; the Retribution guide has those points. If you level as Holy, your first five points, 10 to 14, go into Spiritual Focus: at 5/5, 70% of the hits you take do not push back Holy Light, or Flash of Light once you learn it at 20. Reverence comes first, at 15 and 16, keeping 30% of your mana regen going while you cast, then Healing Light from 17 to 19 for 12% bigger heals.
+Most Holy paladins level as [Retribution](/guides/paladin/retribution) and respec for raids. If you level as Holy, your first five points, 10 to 14, go into Spiritual Focus: at 5/5, 70% of the hits you take do not push back Holy Light, or Flash of Light once you learn it at 20. Reverence comes first, at 15 and 16, keeping 30% of your mana regen going while you cast, then Healing Light from 17 to 19 for 12% bigger heals.
 
 You still kill things with your weapon and your Seal, so take quest rewards over vendor gear and replace your Battleworn Hammer with the first better slow two-hander you find. Paladins cannot use wands. You wear mail until plate at 40.
 

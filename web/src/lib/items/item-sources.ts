@@ -42,7 +42,7 @@ export interface ItemSourceRow {
   min_level?: number;
   /** True for a named boss kill or a quest reward -- the row a player goes and does. */
   primary: boolean;
-  /** The one-line form the site tooltip prints ("Blackrock Depths — Houndmaster Grebmar"). */
+  /** The one-line form the site tooltip prints ("Blackrock Depths: Houndmaster Grebmar"). */
   text: string;
 }
 
@@ -83,7 +83,7 @@ function bossRows(source: LootSource, itemId: number): ItemSourceRow[] {
         place: source.name,
         ...(chance === undefined ? {} : { chance }),
         primary: true,
-        text: `${source.name} — ${title}`,
+        text: `${source.name}: ${title}`,
       };
     });
 }

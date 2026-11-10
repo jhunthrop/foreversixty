@@ -696,7 +696,7 @@ function BuildDialog.copyTabLabel(link)
 	return L.dialogCopy
 end
 
---- The chat line after Use: "Now following Arms raid. Next: Deflection (1 of 2).", the
+--- The chat line after Use: "Now following Arms raid. Take Deflection (1 of 2).", the
 --- name's pipes doubled so a site-sent name cannot render as markup.
 function BuildDialog.chatLine(name, nextLabel, atLevel)
 	local safe = escaped(name)

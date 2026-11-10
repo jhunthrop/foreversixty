@@ -63,7 +63,7 @@ The leveling build spends 31 points in Arcane for Arcane Power, then goes to Fro
 
 The raid build puts 32 points in Arcane and takes its second tree from Fire. Both ranks of **Arcane Subtlety** cut 30% of the threat from your Arcane spells, which is what lets you press Arcane Power early in a pull. They and Arcane Wrath are paid for by a rank of Improved Channeling, the point of Arcane Geometry and one point brought over from Frost, which makes 32 in Arcane. Bosses do not push back your casts the way packs of mobs do, and a boss you already reach from 30 yards needs no extra range, so neither of those two costs you anything. All three ranks of Arcane Meditation stay in, since a raid fight is paid for in mana. Sixteen go into Fire: five ranks of Incineration for Fire Blast and Arcane Blast crit, two of **Accelerant** to take 0.2 seconds off Fireball and Arcane Wrath, then Ignite, Pyroblast, Improved Fire Blast and Heating Up. Precision's three points are all it keeps in Frost.
 
-Neither build takes Fire's Impact: its stun does nothing to a boss. [Open the planner](/planner?class=mage) to change the build.
+Neither build takes Fire's Impact: its stun does nothing to a boss.
 
 ## Rotation and priority
 
@@ -93,11 +93,11 @@ Arcane casts spells of two schools, Arcane and Fire in a raid and Arcane and Fro
 
 ## Races
 
-**Gnome** is the best Alliance Arcane mage: Eureka! makes your damage spells, all but Arcane Wrath, hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Arcane Power on the pull and again the moment it is back. **Human** is close behind with 1% crit and 10% Spirit, and Arcane Meditation and Mage Armor keep all of that Spirit's regeneration running while you cast. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Orc** is next: Blood Fury adds 10% spell power for 15 seconds every 2 minutes, so press it with Arcane Power on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Arcane Power. **Skyborne** can be mages only on the Alliance. Played without Read Leyline (50% more health and mana regeneration for 15 seconds, 2 minute cooldown), Wind Blessed's 2% haste alone does less damage than a Gnome or a Human.
+On the Alliance, take a **Gnome**: Eureka! makes your damage spells, all but Arcane Wrath, hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Arcane Power on the pull and again the moment it is back. **Human** is close behind with 1% crit and 10% Spirit, and Arcane Meditation and Mage Armor keep all of that Spirit's regeneration running while you cast. On the Horde, take **Undead**: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Orc** is next: Blood Fury adds 10% spell power for 15 seconds every 2 minutes, so press it with Arcane Power on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Arcane Power. **Skyborne** can be mages only on the Alliance. Played without Read Leyline (50% more health and mana regeneration for 15 seconds, 2 minute cooldown), Wind Blessed's 2% haste alone does less damage than a Gnome or a Human.
 
 ## Professions
 
-Tailoring and Enchanting are the standard pair: Tailoring makes the early cloth sets and Enchanting puts the spell power enchants on your own gear. Alchemy pays for itself once you raid every week, because you will drink a Major Mana Potion every boss. Gnomes who want the explosives take Engineering.
+Take Tailoring and Enchanting. Tailoring makes the early cloth sets and Enchanting puts the spell power enchants on your own gear. Alchemy pays for itself once you raid every week, because you will drink a Major Mana Potion every boss. Gnomes who want the explosives take Engineering.
 
 ## Leveling
 

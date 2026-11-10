@@ -117,9 +117,9 @@
     "shared.standing.role.dps": "DPS",
     "shared.standing.role.healer": "healers",
     "shared.standing.role.tank": "tanks",
-    "shared.standing.graded": "{spec} is graded {grade} this week",
+    "shared.standing.graded": "{spec}: {grade} on the tier list",
     "shared.standing.place": {
-      "text": "{spec} is #{place} of {of} this week",
+      "text": "{spec}: #{place} of {of} on the tier list",
       "notPlural": true,
       "args": { "place": "int", "of": "int" }
     },

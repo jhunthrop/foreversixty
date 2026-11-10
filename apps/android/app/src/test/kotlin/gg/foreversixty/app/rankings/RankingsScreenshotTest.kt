@@ -243,7 +243,7 @@ class RankingsScreenshotTest {
         val blocker = GearModel.offHandBlocker(home, emptyMap(), sources.items, ItemTooltipModel.band(probe, sources.bis))
         GearList(
             GearModel.rows(home, emptyMap(), sources.items, res, blocker),
-            "What you wear, and the pick for 60 · raid. Tap an item for its tooltip.",
+            "What you wear, and the pick for 60 · raid.",
             home.dataBuild,
         )
     }

@@ -1,8 +1,8 @@
 {
   "spec": "priest-holy",
   "build": "1.60.1.70790",
-  "engine_version": "bf727699f",
-  "generated_at": "2026-11-06T17:02:07Z",
+  "engine_version": "fe29dfbd2",
+  "generated_at": "2026-11-07T07:38:44Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -1482,6 +1482,39 @@
       ],
       "set_dps": 867.2916734202473,
       "set_dps_error": 0.5261640715183469,
+      "race_sweep": {
+        "guide_race": "human",
+        "best_race": "human",
+        "margin": 0,
+        "margin_pct": 0,
+        "error": 0,
+        "beyond_error": false,
+        "score_unit": "heal_score",
+        "iterations": 3003,
+        "seed": 7,
+        "races": [
+          {
+            "race": "human",
+            "score": 867.0436822043985,
+            "error": 0.5261640715183469
+          },
+          {
+            "race": "dwarf",
+            "score": 838.5096745195785,
+            "error": 0.504284600950688
+          },
+          {
+            "race": "night-elf",
+            "score": 840.9193420437666,
+            "error": 0.4957618663899001
+          },
+          {
+            "race": "gnome",
+            "score": 852.4141752641972,
+            "error": 0.5244999281823081
+          }
+        ]
+      },
       "target_level": 63,
       "filtered_set_dps": {
         "all": {
@@ -1530,8 +1563,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 17.616605301,
-      "verify_run_seconds": 487.063057166,
+      "weights_run_seconds": 22.134600746,
+      "verify_run_seconds": 625.205148793,
       "coverage": {
         "back": {
           "eligible": 456,

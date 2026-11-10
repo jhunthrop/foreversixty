@@ -89,7 +89,7 @@ Hit matters up to the cap and adds nothing past it: a bolt that misses does noth
 
 ## Best in slot
 
-Your raid set leans on crafts. Frozen Heart of the Mountain and Totem of Thunder are Enchanting crafts that bind on pickup, so you make those yourself; every other craft in it binds when equipped, so you can buy it. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
+Your raid set leans on crafts. Frozen Heart of the Mountain and Totem of Thunder are Enchanting crafts that bind on pickup, so you make those yourself; every other craft in it binds when equipped, so you can buy it.
 
 ## Enchants and consumables
 
@@ -99,11 +99,11 @@ Your weapon imbues only proc on melee swings, so an Elemental's weapon carries B
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit is the racial that matters for Elemental, since every point of hit counts until your gear reaches the cap. Stoneform's physical damage cut is a nice extra on trash and in PvP.
 
-On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% for 15 seconds every 2 minutes. Press it with Lightning Mastery on the pull and on its own cooldown after that. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes outside Lightning Mastery: inside it your bolts are already a 1.5 second cast, and casting speed never shortens the 1.5 second global cooldown. Windshaper Skyborne brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
+On the Horde, take Orc for Blood Fury: it raises your spell power by 10% for 15 seconds every 2 minutes. Press it with Lightning Mastery on the pull and on its own cooldown after that. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes outside Lightning Mastery: inside it your bolts are already a 1.5 second cast, and casting speed never shortens the 1.5 second global cooldown. Windshaper Skyborne brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
 
 ## Professions
 
-Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Every other craft in your set binds when equipped and can be bought, so keep your second profession for Alchemy or gathering.
+Take Enchanting. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Every other craft in your set binds when equipped and can be bought, so keep your second profession for Alchemy or gathering.
 
 ## Leveling
 

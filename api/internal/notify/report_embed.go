@@ -27,8 +27,7 @@ const (
 // reportCopy is the words of the report_ready post.
 var reportCopy = struct {
 	TitlePrefix string
-	Description string
-	// CoachSentence follows Description after one space when a raider has the log coach: it
+	// CoachSentence is the description when a raider has the log coach: it
 	// names and counts nobody (R-A3; experience spec 2026-10-28-log-coach §8.3 raidNight).
 	CoachSentence string
 	KillsName     string
@@ -49,7 +48,6 @@ var reportCopy = struct {
 	ParseLine     string // %s the raider, %d the figure, %s the metric, %s the boss
 }{
 	TitlePrefix:   "Report: ",
-	Description:   "",
 	CoachSentence: "Coach reviews of tonight's pulls are in the report and /report.",
 	KillsName:     "Kills",
 	KillLine:      "%s %s",
@@ -149,7 +147,7 @@ func reportDescription(coachReady bool) string {
 	if coachReady {
 		return reportCopy.CoachSentence
 	}
-	return reportCopy.Description
+	return ""
 }
 
 func killsValue(kills []ReportKill) string {

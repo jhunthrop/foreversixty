@@ -38,13 +38,12 @@ export const GLOSSARY: readonly GlossaryTerm[] = [
   },
   {
     term: 'Uptime',
-    meaning:
-      'The share of the window an aura was up on that unit. A damage-over-time debuff at 95% uptime was on the boss nearly the whole fight.',
+    meaning: 'The share of the window an aura was up on that unit.',
   },
   {
     term: 'Applied',
     meaning:
-      'How many times an aura was put on that unit inside the window, refreshes not counted. Under Auras applied, Events adds a "refreshed" line wherever the client wrote its own refresh event; a spell that re-applies itself instead of refreshing — Renewing Mist on this client — shows as applied again, so no "refreshed" line for a spell does not mean it never rolled.',
+      'How many times an aura was put on that unit inside the window, refreshes not counted. Under Auras applied, Events adds a "refreshed" line wherever the client wrote its own refresh event; a spell that re-applies itself instead of refreshing (Renewing Mist on this client) shows as applied again, so no "refreshed" line for a spell does not mean it never rolled.',
   },
   {
     term: 'Damage · DPS',
@@ -88,7 +87,7 @@ export const GLOSSARY: readonly GlossaryTerm[] = [
   {
     term: 'Cancelled casts',
     meaning:
-      'On the Casts tab, casts with a cast bar that were started and never went off: the player moved, was interrupted, or cancelled it. Instants have none. A cancelled hardcast is time spent for nothing, the gap a rotation can close.',
+      'On the Casts tab, casts with a cast bar that were started and never went off: the player moved, was interrupted, or cancelled it. Instants have none.',
   },
   {
     term: 'Failed casts',
@@ -137,7 +136,7 @@ export const GLOSSARY: readonly GlossaryTerm[] = [
   {
     term: 'Kill · Wipe 59% · pull 1 of 2',
     meaning:
-      'How a boss pull ended, and which attempt it was when a boss took more than one. The percentage after a wipe is the boss’s health when the pull ended: how far the pull got.',
+      'How a boss pull ended, and which attempt it was when a boss took more than one. The percentage after a wipe is the boss’s health when the pull ended.',
   },
   {
     term: 'Source',
@@ -238,7 +237,7 @@ export const GLOSSARY: readonly GlossaryTerm[] = [
   {
     term: 'At cap',
     meaning:
-      'On the Resources tab: the share of the window a bar sat at its maximum. A rage or energy bar at its cap is generating nothing, so time at cap is time a resource was going to waste. Measured from the window’s own seconds.',
+      'On the Resources tab: the share of the window a bar sat at its maximum. Measured from the window’s own seconds.',
   },
   {
     term: 'Wasted',

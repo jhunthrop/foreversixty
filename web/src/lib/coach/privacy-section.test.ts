@@ -20,7 +20,7 @@ describe('the privacy page Log coach section', () => {
     expect(text()).toContain('Vercel AI Gateway, which keeps nothing');
     expect(text()).toContain(COACH_MODEL_PROVIDER);
     expect(text()).toContain(
-      "one fight's numbers — spec, class, role, boss, raid size, kill or wipe, duration, level and the spells cast —",
+      "one fight's numbers (spec, class, role, boss, raid size, kill or wipe, duration, level and the spells cast)",
     );
     expect(text().match(/numbers/g)).toHaveLength(1);
     expect(text()).toMatch(/no character name, account, guild, realm or Battle\.net data/);

@@ -54,7 +54,7 @@ export const bisCopy = {
   bandHeading: (band: number): string => `Best gear at level ${band}`,
   newAtBand: (band: number): string => `New at ${band}`,
   newAtBandEmpty: 'Nothing changed from the previous level range.',
-  newAtBandFirst: 'The first level range -- everything here is new.',
+  newAtBandFirst: 'The first level range: everything here is new.',
   noKnownSourceForSlot: 'No sourced item at this level yet',
   slotHeading: 'Slot',
   itemHeading: 'Item',
@@ -130,7 +130,7 @@ export const bisCopy = {
   bandNewCount: (count: number): string => `${count} new`,
   changedSinceHeading: (previousBand: number): string => `What changed since level ${previousBand}`,
   changedSinceEmpty: 'Nothing changed from the previous level range.',
-  changedSinceFirst: 'The first level range -- everything here is new.',
+  changedSinceFirst: 'The first level range: everything here is new.',
   wasLabel: 'Was',
   nowLabel: 'Now',
   newRowMarker: 'New',
@@ -142,9 +142,7 @@ export const bisCopy = {
   newAtBandCount: (count: number): string => `${count} new`,
   newPillLabel: 'New',
   newPillTitle: (replaced: string | undefined): string =>
-    replaced === undefined
-      ? 'New this level range -- nothing was equipped here before.'
-      : `Replaces ${replaced}.`,
+    replaced === undefined ? 'New this level range.' : `Replaces ${replaced}.`,
   verifiedGlyphTitle: 'Confirmed by a Top Gear simulation pass at this level range.',
   unverifiedGlyphTitle: 'Ranked by stat weights only; not yet settled by a Top Gear pass.',
   upgradesSinceHeading: (count: number, previousBand: number): string =>
@@ -192,7 +190,7 @@ export const bisCopy = {
    *  line today (only one exists in real data); a future, more specific code gets its own
    *  line only when a person writes one, never a fabricated one in the meantime. */
   weightsUnmeasuredLine:
-    "Weights couldn't be measured for this gear set. The picks below are still real sim results.",
+    "Weights couldn't be measured for this gear set. The picks are still ranked by the sim.",
   /** The scale rail's own first line (this lane's brief, bis-weights-simc, owner: "we need
    *  to make the stat weights align with simcraft stat weights output"): `topLabel` is
    *  `scale_reference_stat`'s own display label -- the single highest-weighted PER-POINT
@@ -390,7 +388,6 @@ export const bisCopy = {
   presetDebuffsHeading: 'Debuffs',
   presetConsumesHeading: 'Consumables',
   theListHeading: 'The list',
-  hoverOrTapCaption: 'Hover or tap an item for its stats',
   slotHeaderLabel: 'Slot',
   pickHeaderLabel: 'Best in slot · where it comes from',
   runnersUpHeaderLabel: (unit: RateUnit = 'DPS'): string => `Runners-up · ${unit} vs the pick`,
@@ -404,7 +401,7 @@ export const bisCopy = {
    *  items rather than one row. */
   worldDropGroupLabel: 'World drop (auction house)',
   groupCountSuffix: (count: number): string => `×${count}`,
-  firstBandEveryPickNew: 'This is the first level range — every pick here is new.',
+  firstBandEveryPickNew: 'The first level range: every pick here is new.',
   /** Sentence 1 of "New at this band" (spec §4.E) for every band past the first -- `parts`
    *  is the already-built, ordered list of instance names and `"the <faction> rewards"`
    *  clauses (`joinWithAnd` below joins them into one clause). */

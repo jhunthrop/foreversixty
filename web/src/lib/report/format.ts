@@ -315,12 +315,12 @@ export function parseTitle(value: number | string, ranked = 0): string {
     const note = ranked === 1 ? '; the only kill of its kind ranked so far, so it stands first of one' : '';
     return `${ordinal(Math.round(value))} percentile among ${among} of this boss by this spec on this ruleset${note}`;
   }
-  if (value === TRASH_PARSE) return 'No parse for trash; parses are made for boss fights.';
+  if (value === TRASH_PARSE) return 'No parse for trash.';
   if (value === 'wipe') return 'A wipe is not ranked';
   if (value === '–') return 'Nothing of this spec has been ranked on this boss yet';
   if (value === '?')
     return 'The rankings could not be reached, so this parse is unknown; the figure beside it is right. Retry from the line above the table';
-  if (value === 'none') return 'Damage taken has no parse: taking more is not doing better';
+  if (value === 'none') return 'Damage taken has no parse';
   if (value === '…') return 'Asking the rankings where this sits';
   if (value === 'window') return 'A parse is for the whole fight; clear the window to read it';
   if (value === 'filter')

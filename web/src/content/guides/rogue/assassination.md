@@ -63,8 +63,6 @@ The raid build goes 31/20/0: down Assassination to Mutilate, with Seal Fate, Ven
 
 Those Combat points are worth more to the raid build than Improved Poisons and Opportunity: a cheaper, harder Eviscerate and fewer dodged Mutilates beat more poison procs and 20% on Mutilate. Blood Splatter keeps your opening Garrote ticking 9 seconds longer, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Two points each of Lightning Reflexes and Endurance are the toll to reach the Aggression row, and Composure on the way takes another 10 energy off your opener.
 
-[Open the planner](/planner?class=rogue) to change the build.
-
 ## Rotation and priority
 
 ### The pull
@@ -112,7 +110,7 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ## Professions
 
-**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make; your best in slot table shows which of them your set wants. **Engineering** gives you grenades and dynamite for trash. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
+**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make. **Engineering** gives you grenades and dynamite for trash. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
 
 ## Leveling
 

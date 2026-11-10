@@ -98,7 +98,7 @@ func TestPool_NineteenPlayersIsNoBasis(t *testing.T) {
 	}
 	in := withPool(furyInput(t), Refs{PoolCount: n})
 	_, b, thin := comparison(in, func(p Profile) (float64, bool) { return p.CastsPerMinOf("Bloodthirst") }, nil, false)
-	want := "not enough logs yet — 19 Fury kills of Onyxia (40) on the site, the coach needs 20."
+	want := "Not enough logs yet: 19 Fury kills of Onyxia (40) on the site, and the coach needs 20."
 	if b != nil || thin != want {
 		t.Fatalf("basis %v thin %q; want %q", b, thin, want)
 	}

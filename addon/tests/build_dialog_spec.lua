@@ -166,7 +166,7 @@ describe("BuildDialog, a good paste is never applied until Use", function()
 			said = {}
 			BuildDialog.onPaste(fifteen)
 			BuildDialog.useCurrent()
-			assert.is_truthy(said[1]:find("^Now following Arms build%. Next: "), said[1])
+			assert.is_truthy(said[1]:find("^Now following Arms build%. Take "), said[1])
 			Talents.readStagedRanks, Compat.playerLevel = realRanks, realLevel
 		end)
 
@@ -891,7 +891,7 @@ describe("BuildDialog, copy mode's model", function()
 		local queued = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued" }
 		local done = model({ ack = queued, simInUse = true, nextStep = "Take Deflection (1 of 2)" })
 		assert.are.equal("Sim done · your sim weights are in use", done.sim)
-		assert.are.equal("Your next step: Take Deflection (1 of 2)", done.simNext)
+		assert.are.equal("Take Deflection (1 of 2)", done.simNext)
 		assert.are.equal(L.dialogSimDone, model({ ack = ACK, simInUse = true }).sim)
 		assert.are.equal(L.dialogSimDone, model({ simInUse = true }).sim)
 		assert.is_nil(model({ simInUse = true, nextStep = "" }).simNext)
@@ -1346,7 +1346,7 @@ describe("BuildDialog, the gear row's source and the build's title (A.2)", funct
 		assert.are.equal("Now following Beast Mastery build. Next point at level 25: Focused Fire (1 of 3).",
 			BuildDialog.chatLine("Beast Mastery build", "Focused Fire (1 of 3)", 25))
 		-- With a point to spend now (no level given) the old line: the talent to take.
-		assert.are.equal("Now following Arms raid. Next: Deflection (1 of 2).",
+		assert.are.equal("Now following Arms raid. Take Deflection (1 of 2).",
 			BuildDialog.chatLine("Arms raid", "Deflection (1 of 2)"))
 		assert.are.equal("Now following Arms raid.", BuildDialog.chatLine("Arms raid", nil))
 	end)

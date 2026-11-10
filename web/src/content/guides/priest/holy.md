@@ -25,7 +25,7 @@ sources:
 
 ### Strengths
 
-- Prayer of Mending is the cheapest healing you can cast all fight: up to five heals for one cast
+- Prayer of Mending: up to five heals for one cast, the cheapest healing you have all fight
 - Prayer of Healing heals any five-player group at once, not only your own
 - Spiritual Guidance and Meditation turn Spirit into both healing and mana
 - Lightwell heals the melee while you heal the tank, and Holy Binding heals you every time you Flash Heal someone else
@@ -57,7 +57,7 @@ Deep Holy for Prayer of Mending, with 17 points in Discipline for stronger, chea
 - **Twin Disciplines** (5 points) and **Mental Agility** (3 points): Renew heals 5% more, and Renew and Power Word: Shield cost 10% less.
 - **Meditation** (3 points), **Mental Strength** (5 points) and **Inner Focus** (1 point): regeneration while casting, a deeper bar, and a free spell every 3 minutes.
 
-Spirit of Redemption is the step to Prayer of Mending, and if you die it gives you 15 seconds of free heals: keep casting, a death in the last seconds of a hard pull still heals the raid through. [Open the planner](/planner?class=priest) to change the build.
+Spirit of Redemption is the step to Prayer of Mending, and if you die it gives you 15 seconds of free heals: keep casting, a death in the last seconds of a hard pull still heals the raid through.
 
 ## Rotation and priority
 
@@ -125,4 +125,4 @@ Heal rank 1 is the filler through most of your twenties and early thirties: it k
 
 Renew steps down too: through your twenties the tank's Renew is rank 1, a fraction of the top rank's cost that still keeps most of your healing bonus. Rank 2 and then rank 3 take over between 28 and 36, at levels that differ a little by race, so you finish the dungeon with mana to spare. From there Renew keeps stepping: rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep Renew up all dungeon; rank 7 takes over at 59, already at 58 as a Human.
 
-Greater Heal is the same story: keep rank 1 as the filler all the way to 60, even after rank 4 arrives at 58. A dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. At 60, rank 3 and rank 4 heal about the same for their mana.
+Greater Heal works the same way: keep rank 1 as the filler all the way to 60, even after rank 4 arrives at 58. A dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. At 60, rank 3 and rank 4 heal about the same for their mana.

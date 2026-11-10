@@ -55,9 +55,9 @@ sources:
 
 The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build moves Reverence's two points into the third rank of Precision and Unsealed Wrath.
 
-- **Benediction** (5 points): your Seals, Judgement, Holy Strike, Consecration and Exorcism cost 10% less. Hammer of Wrath is the exception: Champion of the Light makes it instant, but Benediction still does not discount it.
+- **Benediction** (5 points): your Seals, Judgement, Holy Strike, Consecration and Exorcism cost 10% less. Not Hammer of Wrath: Champion of the Light makes it instant, but Benediction still does not discount it.
 - **Improved Judgement** (2 points): Judgement every 8 seconds instead of 10.
-- **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs, Judgements and Consecration's ticks. Exorcism is the exception: it never crits in Forever.
+- **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs, Judgements and Consecration's ticks. Exorcism never crits in Forever.
 - **Sanctified Judgement** (3 points): every Judgement hands back 60% of the judged Seal's cost. This is what pays for your Seals, and for the twist at 60.
 - **Sacred Arbiter** (1 point): Holy Strike hits 20% harder and refreshes every Judgement on the target.
 - **Two-Handed Weapon Specialization** (3 points): 6% more Physical and Holy damage with a two-hander, and 20% less threat. That reaches your Holy Seal procs and Judgements as well as your swings.
@@ -86,7 +86,7 @@ Your swings and Holy Strike keep the Crusader debuff up, so that one Judgement a
 5. **Holy Strike** on cooldown.
 6. **Consecration** with whatever mana is spare.
 
-**Seals while leveling.** After the opening Crusader Judgement, stay in Seal of Righteousness at the top rank you have trained. It fires on every swing, it scales with your weapon speed and your spell damage, and its Judgement hits hard. Train rank 8 at 58: every rank takes the same share of your spell damage, so the newest rank always hits hardest. Do not twist the way 1.12 guides tell you: in Forever a new Seal simply replaces the old one, no swing gets both, and every swap costs a global and a Seal's worth of mana. Spend those globals on Holy Strike instead.
+**Seals while leveling.** After the opening Crusader Judgement, stay in Seal of Righteousness at the top rank you have trained. It fires on every swing, it scales with your weapon speed and your spell damage, and its Judgement hits hard. Train rank 8 at 58: every rank takes the same share of your spell damage, so the newest rank always hits hardest. Do not twist the way 1.12 guides tell you: in Forever a new Seal replaces the old one, no swing gets both, and every swap costs a global and a Seal's worth of mana. Spend those globals on Holy Strike instead.
 
 **The Seal twist.** With Unsealed Wrath, Seal of Command is your main Seal while you can afford the twist. Let three swings land under Seal of Command, so Unsealed Wrath shows three stacks. Switch to Seal of Righteousness for exactly one swing: that swing releases all three stored Commands, each with its normal chance to fire. As soon as it lands (Unsealed Wrath's timer jumps back to 15 seconds), switch back to Seal of Command, and the next swing releases the stored Righteousness hit. Repeat. One rule keeps it from costing you: twist only while your mana keeps pace with the fight: at least four fifths of the fight still to come, so 80% at the pull, 40% halfway and 20% with a quarter left. Fall behind and stay in Seal of Righteousness until you catch up, because every swap costs a global and a Seal's worth of mana. A swing timer and a stack counter on Unsealed Wrath make this easy.
 
@@ -112,7 +112,7 @@ Strength is attack power on every swing, every Holy Strike and every Seal of Com
 
 ## Professions
 
-Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and Elixirs of Holy Power, Forever's 40 Holy damage elixir, which reaches every Seal proc, Judgement and Consecration tick. Enchanting is the one your best gear asks for: Frozen Heart of the Mountain binds when picked up, so only an enchanter can wear one. Otherwise pick two that pay for your consumables.
+Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and Elixirs of Holy Power, Forever's 40 Holy damage elixir, which reaches every Seal proc, Judgement and Consecration tick. Your best gear asks for Enchanting: Frozen Heart of the Mountain binds when picked up, so only an enchanter can wear one. Otherwise pick two that pay for your consumables.
 
 ## Leveling
 

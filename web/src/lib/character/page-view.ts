@@ -47,7 +47,7 @@ export const characterPageCopy = {
   since: (date: string): string => `Since ${dayMonth(`${date}T00:00:00Z`)}`,
   noLogsOwner: 'No logs yet. Upload a log to get a rating.',
   noLogs: 'No logs yet.',
-  noScoreYet: 'No Forever Score yet. It is worked out from the rated fights below.',
+  noScoreYet: 'No Forever Score yet.',
   best: 'Best per encounter',
   allFights: (count: number): string => `All fights (${count})`,
   builds: 'Builds seen',
@@ -155,12 +155,20 @@ export function topUpgrade(slots: readonly PaperdollSlot[]): PaperdollSlot | nul
   return top;
 }
 
-/** C11: the owner's one Next line, most urgent first: unspent talent points, then the top upgrade. */
-export function characterNextStep(input: {
+/** One fact waiting on the owner, and where to act on it. */
+export interface WaitingFact {
+  key: 'talents' | 'upgrade';
+  text: string;
+  href: string | null;
+}
+
+/** C11: what waits on the owner, as plain facts (owner 2026-11-09: no "Next:" nudge): unspent
+ *  talent points, then the top upgrade. Empty with neither. */
+export function characterWaiting(input: {
   own: MeCharacter;
   top: { name: string; source: string } | null;
   bisHref: string | null;
-}): { text: string; action: { label: string; href: string } | null } {
+}): WaitingFact[] {
   const { own, top, bisHref } = input;
   const points = own.build?.talents?.points;
   const level = own.level;
@@ -168,19 +176,19 @@ export function characterNextStep(input: {
     points === undefined || level === undefined
       ? 0
       : Math.max(0, pointsEarnedAt(level) - points.reduce((sum, count) => sum + count, 0));
-  if (toSpend > 0) {
-    const then = top === null ? '' : `, then get ${top.name}`;
-    return {
-      text: `Next: spend your ${toSpend} talent ${toSpend === 1 ? 'point' : 'points'}${then}.`,
-      action: { label: 'Open the planner', href: homeHrefs.planner(own.key) },
-    };
-  }
-  if (top !== null)
-    return {
-      text: `Next: get ${top.name} from ${top.source}.`,
-      action: bisHref === null ? null : { label: 'Open best in slot', href: bisHref },
-    };
-  return { text: 'Nothing waiting.', action: null };
+  const talents: WaitingFact[] =
+    toSpend > 0
+      ? [
+          {
+            key: 'talents',
+            text: `${toSpend} talent ${toSpend === 1 ? 'point' : 'points'} unspent`,
+            href: homeHrefs.planner(own.key),
+          },
+        ]
+      : [];
+  const upgrade: WaitingFact[] =
+    top === null ? [] : [{ key: 'upgrade', text: `Upgrade: ${top.name}, ${top.source}`, href: bisHref }];
+  return [...talents, ...upgrade];
 }
 
 /** `3 Nov`, or `3 Nov 2026` with the year. */

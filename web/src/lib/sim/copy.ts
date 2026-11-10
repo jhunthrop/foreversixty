@@ -123,11 +123,6 @@ export const simCopy = {
   stopped: 'Stopped.',
   failed: 'The engine could not run this character.',
 
-  // Task 8: the /sim empty state, shown before a character is loaded. Tasks 11-19 add to
-  // this block as they build the sections it currently stands in for.
-  emptyPrompt:
-    'Load a character to see what it does and why. Nothing you load here leaves your device unless you save the result.',
-
   // --- Task 6: the three refusal sentences characterFromFs1 raises. ---
   /** An addon export whose class is not the talent file's. */
   classMismatch: (exported: string, loaded: string): string =>
@@ -331,8 +326,8 @@ export const simCopy = {
   specValidated: 'Validated',
   specInProgress: 'In progress',
   specNotYet: 'Not yet',
-  specValidatedNote: 'Within 5% of the top 50 parses. Numbers from this spec are trustworthy.',
-  specInProgressNote: 'Being corrected against real parses. Treat the number as a direction, not a figure.',
+  specValidatedNote: 'Within 5% of the top 50 parses.',
+  specInProgressNote: 'Being corrected against real parses. Treat the number as a direction.',
   specNotYetNote:
     "No parses have measured this spec yet. It runs; treat the number as the rotation's own, uncorrected.",
   specMedianGap: 'Median gap',
@@ -496,7 +491,6 @@ export const simCopy = {
     unknown: 'No creature type',
   } as Record<string, string>,
   dummyTarget: 'Target dummy',
-  dummyNote: 'No debuffs, no execute window and no armor reduction, the way a dummy fights back.',
 
   // --- Design 4.3: the full buff, debuff and consumable panel, behind "Custom". ---
   buffPanel: 'Everything applied',
@@ -656,13 +650,12 @@ export const simCopy = {
    * same way, moved here since a description is a user-visible string like any other.
    */
   gearDescription:
-    'Simulate every combination of the gear, enchants, talents and sets you have for your damage spec, and see which one is actually best.',
+    'Simulate every combination of the gear, enchants, talents and sets you have for your damage spec, and see which one is best.',
   dropsDescription:
     'Simulate every item a boss drops against your damage spec’s current set, and see which drops are upgrades.',
   talentsDescription:
-    'Simulate your damage spec’s talent builds against each other on the gear you are wearing, and see which tree actually wins.',
-  weightsDescription:
-    'What one point of each stat is worth for your damage spec, with the caveat that comes with it.',
+    'Simulate your damage spec’s talent builds against each other on the gear you are wearing, and see which tree wins.',
+  weightsDescription: 'What one point of each stat is worth for your damage spec.',
   /**
    * Task 3 (healer review MAJOR): RotationCard's honest branch for a spec
    * `isSimulatedSpec` says no to -- replaces "Default for <name>" and the dead "what it
@@ -670,7 +663,7 @@ export const simCopy = {
    * form `rotationCardBody` already takes, so the two read as one voice with only the verb
    * changed.
    */
-  rotationNotSimulated: (name: string): string => `No rotation yet — ${name} is not simulated.`,
+  rotationNotSimulated: (name: string): string => `No rotation yet: ${name} is not simulated.`,
   /**
    * Task 3 (healer review MAJOR/BLOCKER): the line beside a Run control disabled for an
    * unsimulated spec -- RunControl's single button and BulkRunBar's four tool pages alike,
@@ -749,9 +742,8 @@ export const simCopy = {
     'cleave-5':
       'Five targets, all present and taking damage for the whole fight, sharing the same 25% execute threshold as Patchwerk.',
     dungeon:
-      'One target that becomes three at 40 seconds, five at 80, back to three at 130 and one at 160 — a fixed schedule, not a repeating pull. No execute phase at any point, and the count stays at one for the rest of the fight if Fight length runs past 160 seconds.',
-    dummy:
-      'One target that takes no debuffs, no execute phase and no armor reduction — a plain damage check, not a boss fight.',
+      'One target that becomes three at 40 seconds, five at 80, back to three at 130 and one at 160, on a fixed schedule. No execute phase at any point, and the count stays at one for the rest of the fight if Fight length runs past 160 seconds.',
+    dummy: 'One target that takes no debuffs, no execute phase and no armor reduction.',
   } as Record<string, string>,
   fightLengthHelp:
     'How long each iteration runs, in seconds. Every iteration is exactly this length unless "Length varies by" adds a random band around it.',
@@ -772,7 +764,6 @@ export const simCopy = {
    */
   buffsHelp:
     'Which buffs and consumables the run applies. Raid-buffed applies the full standard set: raid, party and self buffs, target debuffs, and the consumables in your own bags. Bare applies only your class’s own buffs and weapon imbues, such as a rogue’s poisons. Custom lets you build your own list. A new character starts on the preset its level’s published numbers use: Bare below 60, Raid-buffed at 60. "What\'s in it" shows exactly what the selected preset applies.',
-  targetLevelHelp: 'The boss level the run’s numbers — armor, resistances — are drawn from.',
   /**
    * Newcomer MINOR (213-216): the field showed 3,731 as placeholder text with a `title=`
    * of the same string, so a player could not tell whether that figure was in effect or
@@ -826,8 +817,7 @@ export const bulkCopy = {
    * anchor markup is authored here, never user data), the same way `TOOL_SKELETONS` and
    * `Base.astro`'s own JSON-LD script already render trusted static HTML.
    */
-  needsJs: (tool: string): string =>
-    `${tool} needs JavaScript: it runs the engine in your browser rather than on our servers. The <a href="/sim">simulator</a> says the same.`,
+  needsJs: (tool: string): string => `${tool} runs in your browser and needs JavaScript.`,
 
   // --- candidates ---
   equipped: 'Equipped',
@@ -1200,10 +1190,10 @@ export const toolFixCopy = {
    * Fix round, Minor 3: the original "Here is when each one does" promised a date for every
    * line under it, but `gateLabel` can also answer `opensLater` ("Not open yet; no date
    * announced.") for a `later`-phase source -- a date-shaped promise the line does not keep.
-   * Reworded to a claim true of both: the list says what is known, which for a `later`
-   * source is "no date yet" rather than a date.
+   * Reworded to a claim true of both: the list under it says what is known, which for a
+   * `later` source is "no date yet" rather than a date.
    */
-  sourcesAllGated: 'Nothing here has opened yet. Here is what is known about each:',
+  sourcesAllGated: 'Nothing here has opened yet.',
   /**
    * SettingsBar.svelte, task 4a (tank MAJOR, review.md:325-327): under a timeline style
    * (currently only Dungeon pull) the TARGETS control shows this instead of a `<select>`,

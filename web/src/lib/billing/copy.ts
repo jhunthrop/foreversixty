@@ -13,7 +13,7 @@ export const checkoutCopy = {
   notOpenYet: 'Purchases are not open yet. Nothing was charged. Check back soon.',
   genericFailure: 'That did not work; try again.',
   processing: 'Confirming your payment…',
-  confirmed: "You're all set.",
+  confirmed: 'Payment confirmed.',
   confirmationSlow: 'This can take a moment; refresh if it does not update.',
   retry: 'Try again',
   whichGuild: 'Which guild?',

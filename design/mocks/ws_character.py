@@ -46,6 +46,7 @@ CHAR_CSS = '''
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
 .stand{display:flex;flex-wrap:wrap;gap:4px 20px;padding-bottom:4px;font-size:15px;line-height:24px}
+.sum-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:20px}.notice.facts{gap:4px 20px}
 .frow .st{color:var(--strong)}
 /* round 5 (lane P9): the split from 1280, the frame centred at 640, the answer's sim link beside its figure, the parts' bars */
 @media(max-width:1279px){.char-pg .layout-split{grid-template-columns:minmax(0,1fr)}}
@@ -81,7 +82,17 @@ def sec(title: str, body: str, action: str = '', meta: str = '') -> str:
 def summary(text: str, action: str = '', tone: str = 'gold', standing: list[str] | None = None) -> str:
     act = f'<a class="link" href="#">{action} &rsaquo;</a>' if action else ''
     stand = ('<p class="stand">' + ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in standing) + '</p>') if standing else ''
-    return f'<div class="pc"><div data-region="{REGION["summary"]}"><p class="notice {tone}">{text}{act}</p>{stand}</div></div>'
+    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}"><p class="notice {tone}">{text}{act}</p>{stand}</div></div>'
+
+
+def waiting_summary(facts: list[str], standing: list[str] | None = None) -> str:
+    """The owner's waiting facts (web characterWaiting), each a link, on one row with the standing links."""
+    links = ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in facts)
+    first = f'<p class="notice gold facts">{links}</p>' if facts else ''
+    stand = ('<p class="stand">' + ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in standing) + '</p>') if standing else ''
+    if not first and not stand:
+        return ''
+    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}">{first}{stand}</div></div>'
 
 
 # ------------------------------------------------------------------------------------------------ the alive pass (section 6)
@@ -130,7 +141,7 @@ def standing(home: str | None, guild: bool, spec: str) -> list[str]:
             out.append(f"#{own['rank']} of {gs['of']} {ROLE_WORD[gs['role']]} in {gs['guild_name']}, {band}{' raid' if gs['preset'] == 'raid' else ''}")
     w = a.get('spec_week')
     if w:
-        out.append(f"{spec} is graded {w['grade']} this week" if w['grade'] else f"{spec} is #{w['place']} of {w['of']} this week")
+        out.append(f"{spec}: {w['grade']} on the tier list" if w['grade'] else f"{spec}: #{w['place']} of {w['of']} on the tier list")
     if guild:
         r = J(HOME / 'guild-home-60.json')['next_raid']
         left = datetime.fromisoformat(r['starts_at'].replace('Z', '+00:00')) - NOW
@@ -349,16 +360,12 @@ def owner_sections(premium: bool, coach: str | None = None) -> str:
     return history + panel('Coach history', Disclosure('Every review the coach wrote for this character', body, open_=coach is not None))
 
 
-def next_line(ch: Char, owner: dict) -> tuple[str, str]:
+def waiting(ch: Char, owner: dict) -> list[str]:
     earned = max(0, owner['level'] - 9)
     to_spend = earned - sum(owner['build']['talents']['points'])
     top = ch.top()
-    if to_spend > 0:
-        then = f", then get {top['name']}" if top else ''
-        return f'Next: spend your {to_spend} talent points{then}.', 'Open the planner'
-    if top:
-        return f"Next: get {top['name']} from {top['source']}.", 'Open best in slot'
-    return 'Nothing waiting.', ''
+    talents = [f"{to_spend} talent {'point' if to_spend == 1 else 'points'} unspent"] if to_spend > 0 else []
+    return talents + ([f"Upgrade: {top['name']}, {top['source']}"] if top else [])
 
 
 # ------------------------------------------------------------------------------------------------ the states
@@ -380,7 +387,7 @@ def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | Non
     owner = J(FIX / me)['characters'][0] if me else None
     body = head(ch, owner)
     if owner:
-        body += summary(*next_line(ch, owner), standing=standing(home, 'guild' in owner, SPEC[ch.cls]))
+        body += waiting_summary(waiting(ch, owner), standing(home, 'guild' in owner, SPEC[ch.cls]))
     logged = bool(ch.page.get('score'))
     main = (gear_section(ch) + (fights_section(ch) if ch.page['best'] else '') + activity_section(feed)
             + (owner_sections(premium, coach) if owner and logged else ''))

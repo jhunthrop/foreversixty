@@ -75,8 +75,6 @@ sources:
 
 The build also puts two points in **Improved Berserker Rage**, so every Berserker Rage brings 10 rage and breaks any slow on you, and two in **Improved Charge**, part of the points the rows above Deep Wounds ask for; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry.
 
-[Open the planner](/planner?class=warrior) to change the build.
-
 ## Rotation and priority
 
 **The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: the Bloodrage you pressed before the pull has already put you in combat, so there is no Charge to take, and with Improved Bloodrage it brings more rage than a Charge would. On trash and while leveling, Charge or Intercept in freely.
@@ -113,7 +111,7 @@ The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% cri
 
 ## Professions
 
-Enchanting is the one that changes your gear: Frozen Heart of the Mountain, and on the Alliance Molten Heart of the Mountain beside it, are bind-on-pickup trinkets only an enchanter can make. Blacksmithing makes melee weapons and armor, but the ones on your list bind when equipped, so buy them rather than train it. Engineering brings Goblin Sapper Charges and Dense Dynamite for every trash pack, and grenades in PvP.
+Enchanting changes your gear: Frozen Heart of the Mountain, and on the Alliance Molten Heart of the Mountain beside it, are bind-on-pickup trinkets only an enchanter can make. Blacksmithing makes melee weapons and armor, but the ones on your list bind when equipped, so buy them rather than train it. Engineering brings Goblin Sapper Charges and Dense Dynamite for every trash pack, and grenades in PvP.
 
 ## Leveling
 

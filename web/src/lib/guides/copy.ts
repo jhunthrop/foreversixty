@@ -183,7 +183,7 @@ export const guidesCopy = {
   barLabel: 'Guide choices',
   specGroupLabel: 'Spec',
   /** The At a glance plate's accessible name. */
-  glance: 'At a glance',
+  glance: 'Summary',
   /** A healer's At a glance rotation column (MUST 2). */
   healingPriorityRailTitle: 'Healing priority',
   /** The At a glance filler line when the filler is below the first four (MUST 1). */

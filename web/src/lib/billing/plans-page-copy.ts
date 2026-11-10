@@ -70,13 +70,13 @@ export const plansPageCopy = {
   band: {
     eyebrow: 'PLANS',
     heading: 'What is free, and what the plans add',
-    lede: 'Everything a player needs is free, and the free list never shrinks. Premium and the guild plans pay for the site. There are no ads for anyone.',
+    lede: 'The free list never shrinks. Premium and the guild plans pay for the site, and there are no ads for anyone.',
     guildLead: 'Running a guild?',
-    guildLink: 'Guild and Raid guild are further down',
+    guildLink: 'Guild plans',
   },
   guildRegion: {
     heading: 'For guild leaders',
-    lede: 'One officer pays, and the whole guild gets raids, sign-ups and attendance. Members never pay to sign up.',
+    lede: 'One officer pays, and the whole guild gets raids, sign-ups and attendance.',
     members:
       'Plans count verified members: players with a Forever Sixty account whose character the guild has confirmed. People in your Discord without an account do not count.',
   },
@@ -173,7 +173,7 @@ export const plansPageCopy = {
     fixFirst: coachCopy.labelFixFirst,
     then: coachCopy.labelThen,
     doingWell: coachCopy.labelWell,
-    caption: 'A sample review. Yours is written from your own log after every raid you upload.',
+    caption: 'From your own log, after each raid you upload.',
     ariaLabel: 'A sample coach review',
   },
   historyPromise:
@@ -187,7 +187,7 @@ export const plansPageCopy = {
     },
     {
       term: 'Size',
-      sentence: `Guild counts verified members each day, the leader included. Above ${GUILD_TIER_MEMBER_LIMIT} the officer is told before renewal and offered Raid guild. Nothing switches off mid-plan.`,
+      sentence: `Guild counts verified members each day, the leader included. Above ${GUILD_TIER_MEMBER_LIMIT} the officer is told before renewal and offered Raid guild.`,
     },
     {
       term: 'Paying together',
@@ -213,7 +213,7 @@ export const plansPageCopy = {
     },
     {
       term: 'Renewals',
-      sentence: `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in one click; the plan runs to the end of the period you paid for.`,
+      sentence: `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in Manage billing; the plan runs to the end of the period you paid for.`,
     },
     {
       term: 'A new guild leader',
@@ -236,7 +236,7 @@ export const plansPageCopy = {
     {
       question: 'Is anything from Battle.net ever paid?',
       answer:
-        "No. Your characters, your sign-in, and everything the game itself tells us about you stays free, always. Blizzard's own rules for using their data require this, and we would want it that way regardless.",
+        "No. Your characters, your sign-in, and everything the game itself tells us about you stays free, always. Blizzard's own rules for using their data require this.",
     },
     {
       question: 'Are there ads?',

@@ -9,7 +9,7 @@ import (
 func TestRenderRules_MapsThePackMechanically(t *testing.T) {
 	drill := "On trash pulls, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn."
 	doc := RenderRules(examplePack(), map[string]string{"drill.core_casts": drill})
-	if doc.Opening != "Here is what your log shows for Onyxia." || doc.FixFirst.Finding != "f1" ||
+	if doc.Opening != "Your Onyxia pull, from the log." || doc.FixFirst.Finding != "f1" ||
 		doc.FixFirst.Why != examplePack().Findings[0].Detail || doc.FixFirst.DrillText != drill || len(doc.ThenFix) != 2 {
 		t.Fatalf("%+v", doc)
 	}

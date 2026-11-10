@@ -123,12 +123,12 @@ describe('/guides/warrior/fury (the page structure)', () => {
     ]);
   });
 
-  it('draws one Plate, At a glance, with the described build’s trees and its Load and Sim buttons', async () => {
+  it('draws one Plate, Summary, with the described build’s trees and its Load and Sim buttons', async () => {
     const entry = loadGuideEntry('warrior/fury');
     const html = await pageHtml('warrior/fury');
     const main = mainOf(html);
     expect(main.match(/data-region="plate"/g)).toHaveLength(1);
-    expect(main).toMatch(/role="region" aria-label="At a glance" data-testid="guide-glance"/);
+    expect(main).toMatch(/role="region" aria-label="Summary" data-testid="guide-glance"/);
     const glance = blockOf(main, 'guide-glance-build', 200_000).split(
       'data-testid="guide-glance-rotation"',
     )[0]!;

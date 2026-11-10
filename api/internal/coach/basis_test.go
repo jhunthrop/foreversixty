@@ -26,9 +26,9 @@ func TestComparison_Order(t *testing.T) {
 		{name: "no pool, a validated sim, allowed", refs: withSim(noPool(7)), simAllowed: true,
 			wantRef: 10.2, wantKind: BasisSim, wantLabel: "The written Fury rotation, simulated at level 60: "},
 		{name: "no pool, sim not allowed", refs: withSim(noPool(7)), simAllowed: false,
-			wantThin: "not enough logs yet — 7 Fury kills of Onyxia (40) on the site, the coach needs 20."},
+			wantThin: "Not enough logs yet: 7 Fury kills of Onyxia (40) on the site, and the coach needs 20."},
 		{name: "no pool, no sim", refs: noPool(19), simAllowed: true,
-			wantThin: "not enough logs yet — 19 Fury kills of Onyxia (40) on the site, the coach needs 20."},
+			wantThin: "Not enough logs yet: 19 Fury kills of Onyxia (40) on the site, and the coach needs 20."},
 		// Ruling A3: no finding, and a draft line, never the thin-pool line (it would be false).
 		{name: "a pool without this measurement says so, never thin", refs: poolUptime(6673, 97, 25), simAllowed: false,
 			wantThin: "Top Fury logs on Onyxia (40) don't record this."},

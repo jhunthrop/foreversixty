@@ -128,9 +128,9 @@
     {
       "slot": "waist",
       "worn": {
-        "id": 20090,
-        "name": "Highlander's Chain Girdle",
-        "item_level": 33
+        "id": 252521,
+        "name": "Stalker's Leather Belt",
+        "item_level": 35
       },
       "pick": {
         "id": 252521,
@@ -138,7 +138,7 @@
         "source": "Leatherworking",
         "chance": null
       },
-      "gap": 12.5
+      "gap": 0
     },
     {
       "slot": "legs",

@@ -114,7 +114,7 @@ Defense takes hits away and lowers the boss's chance to crit you. Stamina is you
 
 ## Races
 
-**Dwarf** is the Alliance tank. Dwarf and Human take hits and hold threat about the same, so Stoneform tips it: it takes physical damage off for a few seconds, a defensive that costs no mana on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Will to Survive, which breaks a stun so you get back to holding the boss, and Ruthless, 1% crit for a little more threat. The Human Spirit does little for a tank. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
+On the Alliance, take a **Dwarf**. Dwarf and Human take hits and hold threat about the same, so Stoneform tips it: it takes physical damage off for a few seconds, a defensive that costs no mana on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Will to Survive, which breaks a stun so you get back to holding the boss, and Ruthless, 1% crit for a little more threat. The Human Spirit does little for a tank. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
 
 ## Professions
 
@@ -128,7 +128,7 @@ Devotion Aura comes at 1, Judgement at 4, Holy Strike at 6 and Hammer of Justice
 
 At 12, the class quest from your trainer teaches Redemption. Holy Strike rank 2 also arrives at 12: put it on your bar straight away, the extra threat is worth its mana.
 
-Most tanks level as Retribution and pick these up when they respec; the Retribution guide has those points. If you level as Protection, your first point at 10 is Divine Intellect for 2% Intellect. Redoubt takes 11 to 15: hits on you can give 30% more block chance for 10 seconds or 5 blocks. Precision takes 16 to 18 for 3% hit, and the first point of Sacred Duty at 19 takes 30 seconds off Divine Protection.
+Most tanks level as [Retribution](/guides/paladin/retribution) and pick these up when they respec. If you level as Protection, your first point at 10 is Divine Intellect for 2% Intellect. Redoubt takes 11 to 15: hits on you can give 30% more block chance for 10 seconds or 5 blocks. Precision takes 16 to 18 for 3% hit, and the first point of Sacred Duty at 19 takes 30 seconds off Divine Protection.
 
 Take quest rewards over vendor gear. To tank, pair a one-hander with a shield as soon as you have both, since Seal of Fury's absorb needs the shield. Paladins cannot use wands. You wear mail until plate at 40.
 

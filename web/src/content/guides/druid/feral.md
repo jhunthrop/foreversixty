@@ -96,11 +96,11 @@ Forever changed the old cat rules: almost every potion works in Cat Form without
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and it works in Cat Form. Racials are usable while shapeshifted in Forever, so line it up with your potion and trinkets. Tauren is the Horde pick: Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, which is for trash, not damage. Skyborne bring Wind Blessed on either faction: 2% haste that never turns off, which in Cat Form is faster swings.
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and it works in Cat Form. Racials are usable while shapeshifted in Forever, so line it up with your potion and trinkets. On the Horde, Tauren's Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, which is for trash, not damage. Skyborne bring Wind Blessed on either faction: 2% haste that never turns off, which in Cat Form is faster swings.
 
 ## Professions
 
-Enchanting is the one profession your raid set asks for: Molten Heart of the Mountain, and on the Alliance Frozen Heart of the Mountain beside it, are bind-on-pickup trinkets only an enchanter can make. The Leatherworking pieces in your set bind when equipped, so buy them; Skinning and Leatherworking still pay for themselves. Engineering works for a cat in Forever: the EZ-Thro and SAF-T bombs and grenades throw from Cat Form, though the old bombs still do not.
+Your raid set asks for one profession, Enchanting. Molten Heart of the Mountain, and on the Alliance Frozen Heart of the Mountain beside it, are bind-on-pickup trinkets only an enchanter can make. The Leatherworking pieces in your set bind when equipped, so buy them; Skinning and Leatherworking still pay for themselves. Engineering works for a cat in Forever: the EZ-Thro and SAF-T bombs and grenades throw from Cat Form, though the old bombs still do not.
 
 ## Leveling
 

@@ -16,6 +16,6 @@ sources:
     kind: community
 ---
 
-When a bind-on-pickup uncommon or rare item drops in a dungeon, its appearance is granted to every eligible looter, so nobody has to roll against an upgrade just to collect the look. Epic raid drops are the exception: only the player the item binds to gets the appearance.
+When a bind-on-pickup uncommon or rare item drops in a dungeon, its appearance is granted to every eligible looter, so nobody has to roll against an upgrade just to collect the look. Epic raid drops do not: only the player the item binds to gets the appearance.
 
 Poor and common items grant their appearance as soon as they are looted, without binding. Armour type rules apply, so plate transmogs to plate and cloth to cloth, and low-level characters cannot use high-level appearances until 60, when level restrictions lift. PvP gear still requires its rank. Cosmetic-only items exist but will be rare.
