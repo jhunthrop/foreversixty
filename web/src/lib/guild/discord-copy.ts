@@ -11,7 +11,7 @@ export const guildDiscordCopy = {
   connectedTag: 'Connected',
   switchedOffTag: 'Switched off',
   explanation:
-    "Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post this guild's raids there. You must manage webhooks in it. We keep only that webhook, encrypted.",
+    'Pick a server and a text channel. You need Manage Webhooks there. We store only the webhook, encrypted.',
   destination: { lead: 'Posts raids to', name: 'a Discord channel' },
   /** The guild keeps its own Remove: the account card's is Unlink Discord (player ruling, polish task 4). */
   remove: 'Remove',

@@ -32,7 +32,7 @@ export function joinPermissions(missing: readonly string[]): string {
 export const guildBotCopy = {
   add: 'Add the Forever Sixty bot',
   addExplanation:
-    'Raid posts get In, Late, Bench and Out buttons, and members can ask /raid, /bis and /char in the server. Discord asks which server; you need Manage Server in it.',
+    'Raid posts get In, Late, Bench and Out buttons; /raid, /bis and /char work in the server. Needs Manage Server.',
   webhookPath: 'Connect a channel without the bot',
   webhookPathNote: 'Raids post there, and members sign up on Forever Sixty.',
   offer:
@@ -90,7 +90,7 @@ export const guildBotCopy = {
       `${failures === 1 ? 'The last post' : `The last ${failures} posts`} to #${shortServerName(channel)} failed. Send a test message to check.`,
     permissions: (channel: string): string =>
       `Discord refused it for a missing permission. In Discord, give the Forever Sixty role View Channel, Send Messages and Embed Links in #${shortServerName(channel)}.`,
-    noAnswer: 'Discord did not answer, so the post is tried again on its own.',
+    noAnswer: 'Discord did not answer. Retrying.',
   },
 
   removedInDiscord: {

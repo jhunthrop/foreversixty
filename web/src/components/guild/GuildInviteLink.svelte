@@ -126,7 +126,6 @@
             {url}
             label={copy.linkLabel}
             shareTitle={copy.inviteShareTitle}
-            shareText={copy.inviteShareText}
             testid={TESTID}
             copiedMs={COPIED_LONG_MS}
           />

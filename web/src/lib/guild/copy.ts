@@ -121,9 +121,8 @@ export const guildClaimCopy = {
   // Once the viewer holds the claim the page is about the claim, not about making one.
   headingHeld: (guildName: string): string => (guildName === '' ? 'Your claim' : `${guildName} · your claim`),
   unclaimed: 'Nobody has claimed this guild yet.',
-  // What an officer who may claim reads: what claiming gets them.
-  unclaimedForOfficer:
-    'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
+  // What an officer who may claim reads.
+  unclaimedForOfficer: 'Nobody has claimed this guild.',
   // Claiming asks first; the rules sit in their own card right below, so the question is bare.
   claimConfirmLine: (guildName: string): string => `Claim ${guildName === '' ? 'this guild' : guildName}?`,
   claimConfirmButton: 'Yes, claim it',
@@ -151,17 +150,17 @@ export const guildClaimCopy = {
   notEligible: 'Only an officer or the guild master of this guild can claim it.',
   // A claim link made for a plan (spec 2026-10-27 section 9.3): what the link is for, then the order.
   planLine: (guildName: string, planName: string, price: string): string =>
-    `This link is for subscribing ${guildName} to the ${planName} plan (${price}). Claim the guild first; then the plan is one step.`,
+    `This link is for subscribing ${guildName} to the ${planName} plan (${price}). Claim the guild first, then subscribe.`,
   // A plain member, the common visitor here: what is true, then what to do with the link below.
   memberHandoff: (guildName: string): string =>
     `You are a member of ${guildName}, so only its guild master can claim it. Send them this page's link.`,
   // After a save on /setup that came from a claim link (spec section 9.3).
   backToClaim: (guildName: string): string => `Back to ${possessive(guildName)} claim`,
   // /setup's Notice over that link, once the account knows a character in the guild (setup spec 4.6).
-  setupClaimReady: (guildName: string): string => `The site knows a character of yours in ${guildName}.`,
+  setupClaimReady: (guildName: string): string => `You have a character in ${guildName}.`,
   // Signed in, but no character of theirs in this guild as far as the site knows.
   notAMember:
-    'The site does not know a character of yours in this guild. Save one on Get set up and this page will know your rank.',
+    'None of your characters is in this guild. Add one on Get set up.',
   // The state as a member may read it: the home says claimed, but never by whom.
   claimedByAnOfficer: 'This guild has been claimed by one of its officers.',
   backToGuild: (guildName: string): string => (guildName === '' ? 'Guild page' : guildName),
@@ -200,14 +199,13 @@ export const guildSettingsCopy = {
     'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
   rotateCancel: 'Cancel',
   tokenShownOnce:
-    'Copy it now. For safety we keep only a fingerprint, so it cannot be shown again after you leave this page.',
+    'Copy it now. It cannot be shown again.',
   linkLabel: 'Invite link',
   copyButton: uiCopy.copyLink,
   copied: uiCopy.copiedLink,
   copyFailed: uiCopy.copyLinkFailed,
   shareButton: uiCopy.shareLink,
   inviteShareTitle: 'Join our guild on Forever Sixty',
-  inviteShareText: 'Use this link to join our guild on Forever Sixty.',
   currentLinkMade: (date: string): string =>
     `Made ${date}. It still works, but it cannot be shown again. Make a new one to copy it.`,
   /** A kept link's line: `Made 12 Nov.`, or `Made 12 Nov by` + the maker's name + `.`. */

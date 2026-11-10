@@ -267,7 +267,7 @@ Site strings live in `web/src/lib/guild/discord-bot-copy.ts` and `web/src/lib/ac
 | Where | String |
 |---|---|
 | Add button | `Add the Forever Sixty bot`; pending `Opening Discord…` |
-| Add explanation | `Raid posts get In, Late, Bench and Out buttons, and members can ask /raid, /bis and /char in the server. Discord asks which server; you need Manage Server in it.` |
+| Add explanation | `Raid posts get In, Late, Bench and Out buttons; /raid, /bis and /char work in the server. Needs Manage Server.` |
 | Webhook path | `Connect a channel without the bot` / `Raids post there, and members sign up on Forever Sixty.` |
 | Bot offer (state 4) | `Add the bot and raid posts get In, Late, Bench and Out buttons. This channel stays as the fallback.` |
 | Picker | `Bot added to` `{Server}` (the first pick after the install), else `Raid channel in` `{Server}`; label `Raid channel`; placeholder `Choose a channel`; helper `Text channels the bot can post in.`; `Save channel` (`Saving…`); `Remove the bot`; `Cancel`; `Choose a channel.` (empty press) |
@@ -276,7 +276,7 @@ Site strings live in `web/src/lib/guild/discord-bot-copy.ts` and `web/src/lib/ac
 | Installed | `Posts raids to` `#{channel}` `in` `{Server}` / `With sign-up buttons` · `Open in Discord`; `Send test message` (`Sending…`), `Change channel`, `Remove` (`Removing…`); `Saved. Raids post here with sign-up buttons.` |
 | Linked members | `{linked} of {members} members have linked Discord. The others get a link when they press a button.` (one member: `1 of 31 members has linked Discord.`; none: `No member has linked Discord yet. Members get a link when they press a button.`; everyone, amended 2026-11-05: `3 of 3 members have linked Discord.`, the second sentence dropped) |
 | Fallback note | `Your webhook channel stays as the fallback if the bot is removed.` |
-| Failure warning | `The last post to #{channel} failed. Send a test message to check.` (`The last {n} posts to #{channel} failed.`); cause `Discord refused it for a missing permission. In Discord, give the Forever Sixty role View Channel, Send Messages and Embed Links in #{channel}.` (a 403, or Discord code 50001 or 50013) or `Discord did not answer, so the post is tried again on its own.` (a 5xx or no answer); any other refusal has no cause line |
+| Failure warning | `The last post to #{channel} failed. Send a test message to check.` (`The last {n} posts to #{channel} failed.`); cause `Discord refused it for a missing permission. In Discord, give the Forever Sixty role View Channel, Send Messages and Embed Links in #{channel}.` (a 403, or Discord code 50001 or 50013) or `Discord did not answer. Retrying.` (a 5xx or no answer); any other refusal has no cause line |
 | Removed in Discord | `The bot is no longer in {Server}.` / `It was removed in Discord.` + ` Raids post through your webhook channel again.` or ` Raids stop posting to Discord until the bot is added again.` |
 | Remove question | `Remove the bot from {Server}? Raid posts lose their buttons and the commands stop.` + ` Raids post through your webhook channel again.` or ` Raids stop posting to Discord.` (`Remove`, `Cancel`); `Removed.`; `Could not remove it. Try again.` |
 | Read-only | G1 gate sentence verbatim (`Planning and running raids are part of the guild plan. Subscribe your guild.`, link to `#billing`); `Members can still sign up with the buttons on posted raids and use the commands.`; `Not saved. This guild's officer tools have ended.` |

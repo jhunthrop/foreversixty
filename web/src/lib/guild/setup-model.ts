@@ -67,7 +67,7 @@ export function scheduleParts(setup: Pick<GuildSetup, 'schedule' | 'plan'>): Set
 }
 
 export function recruitingLine(r: GuildSetup['recruiting']): string {
-  const parts = [r.open ? setupCopy.recruiting.open : setupCopy.recruiting.closed];
+  const parts: string[] = [r.open ? setupCopy.recruiting.open : setupCopy.recruiting.closed];
   if (r.nights !== '') parts.push(r.nights);
   if (r.wanted.length > 0) parts.push(setupCopy.recruiting.wanted(r.wanted));
   return parts.join(' · ');
@@ -83,7 +83,7 @@ export function discordLine(d: GuildSetup['discord']): string {
 
 /** The schedule's line; `when` words the next raid's start in the viewer's zone. */
 export function scheduleLine(s: GuildSetup['schedule'], when: (iso: string) => string): string {
-  const parts = [s.timezone ?? setupCopy.schedule.noTimezone];
+  const parts: string[] = [s.timezone ?? setupCopy.schedule.noTimezone];
   if (s.next === null) parts.push(setupCopy.schedule.nothing);
   else
     parts.push(

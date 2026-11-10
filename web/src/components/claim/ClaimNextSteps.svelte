@@ -10,6 +10,7 @@
   import { fetchGuildSetup, type GuildSetup, type SetupStepKey } from '../../lib/guild/setup-api';
   import { setupCopy } from '../../lib/guild/setup-copy';
   import { nextStep, stepMark } from '../../lib/guild/setup-model';
+  import { ROW_ITEM } from '../../lib/ui/primitives';
   import Button from '../ui/Button.svelte';
   import Section from '../ui/Section.svelte';
   import StepMark from '../ui/StepMark.svelte';
@@ -65,7 +66,7 @@
 >
   <ol class="grid gap-x-8 md:grid-cols-2" data-testid="guild-claim-setup-steps">
     {#each rows as row (row.key)}
-      <li class="border-line-soft flex min-h-10 items-center gap-3 border-b py-1.5 text-[14px]">
+      <li class="{ROW_ITEM} flex min-h-10 items-center gap-3 py-1.5 text-[14px]">
         <StepMark n={row.n} mark={row.mark} />
         <span class="text-strong flex-1">{setupCopy.titles[row.key]}</span>
         <span class="text-muted text-[13px]">{setupCopy.states[row.state]}</span>

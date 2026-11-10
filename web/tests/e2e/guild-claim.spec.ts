@@ -73,7 +73,7 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
   await openClaim(page);
   await expect(page.getByTestId('guild-claim')).toBeVisible();
   await expect(page.getByTestId('guild-claim-state')).toHaveText(
-    'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
+    'Nobody has claimed this guild.',
   );
   await expect(page.getByTestId('guild-claim-button')).toBeVisible();
   // Nothing to contest: the claim does not exist yet.

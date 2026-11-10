@@ -9,7 +9,7 @@ import { guildClaimCopy, guildConsentCopy, guildGateCopy, guildJoinCopy, guildSe
 describe('guildClaimCopy', () => {
   it('says what claiming gets an officer of an unclaimed guild', () => {
     expect(guildClaimCopy.unclaimedForOfficer).toBe(
-      'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
+      'Nobody has claimed this guild.',
     );
   });
 
@@ -81,7 +81,7 @@ describe('guildSettingsCopy invite block', () => {
       'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
     );
     expect(guildSettingsCopy.tokenShownOnce).toBe(
-      'Copy it now. For safety we keep only a fingerprint, so it cannot be shown again after you leave this page.',
+      'Copy it now. It cannot be shown again.',
     );
     expect(guildSettingsCopy.copyButton).toBe('Copy link');
     expect(guildSettingsCopy.copied).toBe('Copied');

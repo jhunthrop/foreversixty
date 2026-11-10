@@ -553,7 +553,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 
 | Key | Copy |
 |---|---|
-| Claim page, with `plan` | `This link is for subscribing {Guild} to the {Plan} plan ({price}). Claim the guild first; then the plan is one step.` |
+| Claim page, with `plan` | `This link is for subscribing {Guild} to the {Plan} plan ({price}). Claim the guild first, then subscribe.` |
 | Claim page, member | `You are a member of {Guild}, so only its guild master can claim it. Send them this page's link.` |
 | Claim page, not a member | today's `notAMember` + `Get set up` |
 | `/setup` after a save with `next` to a claim | `Back to {Guild}'s claim` |
