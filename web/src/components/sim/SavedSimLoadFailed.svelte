@@ -10,7 +10,7 @@
   let { onRetry }: { onRetry: () => void } = $props();
 </script>
 
-<div class="px-[18px] pt-[22px] md:px-0 md:pt-8">
+<div class="px-(--page-inset) pt-[22px] md:pt-8">
   <Plate flush={false} label={copy.label} testid="sim-saved-error">
     <div class="flex flex-col items-start gap-3" role="alert">
       <h2 class="text-strong text-[17px] leading-6 font-bold">{copy.title}</h2>

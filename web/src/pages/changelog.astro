@@ -63,7 +63,7 @@ const hideCss = (['game', 'site'] as const satisfies readonly ChangelogShow[])
   .join(',');
 ---
 
-<Base title={changelogCopy.docTitle} description={changelogCopy.description} path="/changelog" wide>
+<Base title={changelogCopy.docTitle} description={changelogCopy.description} path="/changelog">
   <script slot="head" is:inline set:html={SHOW_HEAD_SCRIPT}></script>
   {hideCss !== '' && <style slot="head" is:inline set:html={`${hideCss}{display:none}`}></style>}
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="changelog">

@@ -431,12 +431,11 @@
       justify-self: start;
     }
   }
-  /* The wide column (from 1760): the frame grows, the side keeps a reading width, and the pair
-     sits centred over the itinerary. */
+  /* The wide frame (from 1760): the doll grows to 760 and the side takes the rest of the frame, so
+     the pair sits on the frame's edges as the bar above and the itinerary below do. */
   @media (min-width: 1760px) {
     .bis-top {
-      grid-template-columns: minmax(0, 760px) minmax(0, 560px);
-      justify-content: center;
+      grid-template-columns: minmax(0, 760px) minmax(0, 1fr);
       column-gap: 64px;
     }
     .bis-doll {

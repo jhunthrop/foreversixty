@@ -30,7 +30,7 @@ const laneOf = (id: string) => copy.lanes.find((lane) => lane.section === id);
 const examples = earningsRows(founderOpen(new Date()));
 ---
 
-<Base title={copy.pageTitle} description={copy.pageDescription} path="/creators" wide>
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/creators">
   <main id="main" tabindex="-1" data-testid="creators-program">
     <Page layout="reading" tocFrom={1024} tocLabel={copy.contentsLabel} testid="creators-program-body">
       <PageHeader slot="header" title={copy.pageTitle}>

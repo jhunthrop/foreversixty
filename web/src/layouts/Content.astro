@@ -44,7 +44,7 @@ const tabs = FOOTER_LEGAL_LINKS.map((link) => ({ id: link.href, label: link.labe
 const tocItems = sections.map((section) => ({ title: section.title, id: section.id }));
 ---
 
-<Base title={title} description={description} path={path} jsonLd={jsonLd} wide>
+<Base title={title} description={description} path={path} jsonLd={jsonLd}>
   <meta slot="head" property="article:modified_time" content={updated.toISOString()} />
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="content-page">
     <Page layout="reading" tocFrom={tocFrom} tocLabel={guidesCopy.tocBarLabel} testid="content-body">

@@ -47,7 +47,7 @@
 </script>
 
 <div
-  class="bg-bg sticky top-0 z-20 flex flex-wrap items-start gap-3 px-[18px] py-3 md:static md:gap-5 md:px-0"
+  class="bg-bg sticky top-0 z-20 flex flex-wrap items-start gap-3 px-(--page-inset) py-3 md:static md:gap-5"
 >
   <div class="flex flex-col gap-1">
     <label class="quiet-label" for="planner-summary-class">Class</label>

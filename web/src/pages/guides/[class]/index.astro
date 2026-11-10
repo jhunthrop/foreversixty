@@ -106,7 +106,7 @@ const jsonLd = [
 const tone = { classSlug: classSlug as ClassSlug };
 ---
 
-<Base title={searchCopy.classGuideTitle(classEntry.name)} {description} {path} {jsonLd} wide>
+<Base title={searchCopy.classGuideTitle(classEntry.name)} {description} {path} {jsonLd}>
   <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
   <main id="main" tabindex="-1" class="guide-landing" data-testid="guide-class-landing">
     <Page layout="ledger">

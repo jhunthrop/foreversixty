@@ -306,8 +306,6 @@
 
   @media (min-width: 768px) {
     .ui-cbar-inner {
-      /* The page column's own gutter: the phone inset above would otherwise replace it. */
-      padding-inline: var(--page-gutter);
       display: flex;
       align-items: center;
       min-height: var(--bar-h);
