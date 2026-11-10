@@ -1,6 +1,5 @@
 Thandrel
-Level 60 Fury Warrior
-Olympus XXVII
+Level 60 Fury Warrior · Olympus XXVII
 Last night
 Deathbringer, You got it from Onyxia · main hand, +12.6 DPS over your worn
 Onyxia’s Lair report, 87th percentile, your best on Onyxia · the coach has 2 notes
@@ -8,8 +7,8 @@ Sim again with Deathbringer, Your sim is from before it dropped
 Next upgrades
 Gear ›
 Lionheart Helm, Head · Blacksmithing, +14.5, DPS
-Greenhammer, Off hand · Blacksmithing, +9.7, DPS
 Don Julio’s Band, Finger · Stormpike Guard, needs revered, +6.8, DPS
+Timbermaw Tunic, Chest · Leatherworking, +5.3, DPS
 Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%
 New for you
 All activity (3) ›

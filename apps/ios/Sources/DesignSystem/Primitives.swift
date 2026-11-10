@@ -10,22 +10,28 @@ import UIKit
 public struct FSButtonStyle: ButtonStyle {
     public enum Kind: Sendable { case primary, secondary, danger, ghost }
 
-    private static let padX: CGFloat = 18
+    public static let padX: CGFloat = 18
+    /// The side padding of a button in a row of equal buttons.
+    public static let padXTight: CGFloat = 4
     private static let labelSize: CGFloat = 13
     private static let labelTracking: CGFloat = 0.01
 
     private let kind: Kind
     private let fullWidth: Bool
     private let small: Bool
+    private let padX: CGFloat
     @Environment(\.isEnabled) private var isEnabled
 
     /// `.btn.sm`: a chip in a row of filters, 36 high inside its 44 pt target.
-    static let smallHeight: CGFloat = 36
+    public static let smallHeight: CGFloat = 36
 
-    public init(_ kind: Kind = .secondary, fullWidth: Bool = true, small: Bool = false) {
+    /// `padX`: the label's side padding; a row of equal buttons (the raid's four answers) sets 4 so a
+    /// word like `Bench` keeps one line at 393 pt.
+    public init(_ kind: Kind = .secondary, fullWidth: Bool = true, small: Bool = false, padX: CGFloat = Self.padX) {
         self.kind = kind
         self.fullWidth = fullWidth
         self.small = small
+        self.padX = padX
     }
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -34,7 +40,7 @@ public struct FSButtonStyle: ButtonStyle {
             .tracking(Self.labelTracking * Self.labelSize)
             .multilineTextAlignment(.center)
             .foregroundStyle(foreground.opacity(isEnabled ? 1 : 0.5))
-            .padding(.horizontal, Self.padX)
+            .padding(.horizontal, padX)
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: small ? Self.smallHeight : FSTarget.min)
             .background(background(pressed: configuration.isPressed), in: .rect(cornerRadius: Theme.Radius.control))
             .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control).strokeBorder(border, lineWidth: FSStroke.hairline))
@@ -194,11 +200,14 @@ public struct SmallText: View {
 /// action at the right. Reports `section-<slug of the title>`.
 public struct FSSection<Content: View, Trailing: View>: View {
     private let title: String
+    private let meta: String?
     private let trailing: Trailing
     private let content: Content
 
-    public init(_ title: String, @ViewBuilder trailing: () -> Trailing, @ViewBuilder content: () -> Content) {
+    /// `meta`: the small muted words beside the title (`6 open`, `4 of 31, healers first`).
+    public init(_ title: String, meta: String? = nil, @ViewBuilder trailing: () -> Trailing, @ViewBuilder content: () -> Content) {
         self.title = title
+        self.meta = meta
         self.trailing = trailing()
         self.content = content()
     }
@@ -207,6 +216,7 @@ public struct FSSection<Content: View, Trailing: View>: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .firstTextBaseline, spacing: FSSpace.space3) {
                 Text(title).type(FSType.section).foregroundStyle(Theme.Palette.title).accessibilityAddTraits(.isHeader)
+                if let meta { SmallText(meta) }
                 Spacer(minLength: 0)
                 trailing
             }
@@ -221,8 +231,8 @@ public struct FSSection<Content: View, Trailing: View>: View {
 }
 
 public extension FSSection where Trailing == EmptyView {
-    init(_ title: String, @ViewBuilder content: () -> Content) {
-        self.init(title, trailing: { EmptyView() }, content: content)
+    init(_ title: String, meta: String? = nil, @ViewBuilder content: () -> Content) {
+        self.init(title, meta: meta, trailing: { EmptyView() }, content: content)
     }
 }
 

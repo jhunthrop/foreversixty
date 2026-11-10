@@ -10,6 +10,8 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     static let shared = RaidNotificationCenter()
 
     private var answerer: RaidPushAnswerer?
+    /// Declines an application from the applicant push; true when the API took it.
+    private var decline: (@Sendable (_ guild: Int64, _ application: Int64) async -> Bool)?
     /// The app's router; a tap that arrives before it is set (a cold launch) waits in `pending`.
     var onOpen: ((IntentDestination) -> Void)? {
         didSet {
@@ -19,8 +21,9 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     private var pending: IntentDestination?
 
     /// Installs the delegate and the categories, once at launch.
-    func install(answerer: RaidPushAnswerer) {
+    func install(answerer: RaidPushAnswerer, decline: @escaping @Sendable (_ guild: Int64, _ application: Int64) async -> Bool) {
         self.answerer = answerer
+        self.decline = decline
         let center = UNUserNotificationCenter.current()
         center.delegate = self
         center.setNotificationCategories(Self.categories)
@@ -33,10 +36,14 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
         let out = UNNotificationAction(identifier: RaidPushCategory.actionOut, title: Copy.pushActionOut, options: [])
         let askSpec = UNNotificationAction(identifier: RaidPushCategory.actionAskSpec, title: Copy.pushActionAskSpec, options: [.foreground])
         let choose = UNNotificationAction(identifier: RaidPushCategory.actionChoose, title: Copy.pushActionChoose, options: [.foreground])
+        let declineAction = UNNotificationAction(
+            identifier: RaidPushCategory.actionDecline, title: Copy.pushActionDecline, options: [.destructive, .authenticationRequired]
+        )
         return [
             UNNotificationCategory(identifier: RaidPushCategory.signup, actions: [signIn, late, bench, out], intentIdentifiers: []),
             UNNotificationCategory(identifier: RaidPushCategory.askSpec, actions: [askSpec, out], intentIdentifiers: []),
             UNNotificationCategory(identifier: RaidPushCategory.choose, actions: [choose], intentIdentifiers: []),
+            UNNotificationCategory(identifier: RaidPushCategory.applicant, actions: [declineAction], intentIdentifiers: []),
         ]
     }
 
@@ -52,10 +59,23 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
         let content = request.content
         let payload = RaidPushPayload(userInfo: content.userInfo)
         let landing = PushLanding.destination(userInfo: content.userInfo)
+        if response.actionIdentifier == RaidPushCategory.actionDecline {
+            await declineApplicant(data: PushLanding.data(userInfo: content.userInfo), landing: landing)
+            return
+        }
         await handle(
             payload: payload, landing: landing, action: response.actionIdentifier,
             identifier: request.identifier, thread: content.threadIdentifier
         )
+    }
+
+    /// Decline from the applicant push; a refused or failed decline opens the review instead.
+    private func declineApplicant(data: [String: String], landing: IntentDestination?) async {
+        if let application = PushLanding.applicant(data: data), let decline,
+           await decline(application.guild, application.application) {
+            return
+        }
+        if let landing { open(landing) }
     }
 
     /// A background answer posts in place; a tap lands on the event's answer (flows spec F4).

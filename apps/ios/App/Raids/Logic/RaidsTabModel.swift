@@ -3,30 +3,20 @@ import Models
 import Networking
 import Observation
 
-/// The guild head (spec F4.1 item 1).
+/// The character's guild as the Raid tab names it (the guild head itself is retired: flows spec
+/// appendix C; its name titles the guild's pages).
 struct GuildHead: Equatable, Sendable {
     let id: Int64
     let name: String
-    let crestURL: URL?
-    let faction: String?
-    /// `Horde · US Normal · 38 on the roster`, or nil when the account's guild row is missing.
-    let line: String?
     /// The guild's page on the site (`/guild/{region}/{ruleset}/{slug}`), when the account row has it.
     let webURL: URL?
+    /// The roster's size, for the Roster row.
+    let members: Int?
 
     init(character: CharacterGuild, guild: AccountGuild?) {
         id = character.id
+        members = guild.map { $0.rosterCount ?? $0.verifiedCount }
         name = guild?.name ?? character.name
-        crestURL = guild?.crestUrl.flatMap(URL.init(string:))
-        faction = guild?.faction
-        line = guild.map { guild in
-            Copy.raidsGuildLine(
-                faction: guild.faction.map(\.capitalized) ?? "",
-                region: guild.region.uppercased(),
-                ruleset: guild.rulesetLabel ?? guild.ruleset.capitalized,
-                n: guild.rosterCount ?? guild.verifiedCount
-            )
-        }
         webURL = guild.flatMap { guild in
             guild.slug.map { StaticSite.url.appending(path: "guild/\(guild.region)/\(guild.ruleset)/\($0)") }
         }
@@ -37,7 +27,8 @@ struct GuildHead: Equatable, Sendable {
 enum RaidsTabState: Equatable {
     case loading
     case signedOut
-    case noGuild(name: String)
+    /// No guild (or no character): the guilds recruiting its spec.
+    case noGuild(character: AccountCharacter?)
     case waiting(head: GuildHead, character: AccountCharacter)
     case loaded(RaidsTabContent)
     case failed
@@ -105,8 +96,8 @@ final class RaidsTabModel {
 
     private func load(for me: Me) async {
         let character = me.characters.first { $0.key == currentKey } ?? me.mainCharacter
-        guard let character else { state = .noGuild(name: ""); return }
-        guard let membership = character.guild else { state = .noGuild(name: character.name); return }
+        guard let character else { state = .noGuild(character: nil); return }
+        guard let membership = character.guild else { state = .noGuild(character: character); return }
         let head = GuildHead(character: membership, guild: me.guilds.first { $0.id == membership.id })
         guard membership.verified else { state = .waiting(head: head, character: character); return }
         let key = "guild-\(membership.id)-raids"

@@ -71,51 +71,84 @@ struct LiveLeadBar: View {
     }
 }
 
-/// The raid countdown on the lock screen (board F14.3): the zone and guild, the countdown with
-/// `until invites at 7:45 pm`, the lead bar, and `You are In · DPS · {name}` with `38 of 40`.
+/// Raid night on the lock screen (round 5, m-ios-lock; flows F2): the zone's icon, the raid, the
+/// guild and your answer, the countdown in gold; `Starts 8:00 pm CST · 18 in, 3 late · 2 tanks, 5 heals`;
+/// then In, Late, Bench and Out, the current answer teal, each answering without opening the app.
 struct RaidLiveLockView: View {
     let attributes: RaidActivityAttributes
     let state: RaidActivityAttributes.ContentState
     var fixedNow: Date?
     var zone: TimeZone = .current
+    var icons: WidgetIcons = .shared
+
+    static let iconSize: CGFloat = 44
+    static let answers = ["in", "late", "bench", "out"]
+    static let buttonHeight: CGFloat = 36
 
     var body: some View {
-        let figures = WidgetFigures(.live(attributes, state), now: fixedNow ?? .now, zone: zone)
         VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
-                SealMark()
-                Text(attributes.zoneName).font(ScaledType.name).foregroundStyle(FSColor.strong).lineLimit(1)
-                Spacer()
-                Text(attributes.guildName).font(ScaledType.meta).foregroundStyle(FSColor.muted).lineLimit(1)
-            }
-            if state.status == "cancelled" {
-                Text(Copy.widgetCancelled).font(ScaledType.stat).foregroundStyle(FSColor.wipe)
-            } else {
-                HStack(alignment: .firstTextBaseline, spacing: 10) {
-                    LiveCountdown(target: state.targetDate, fixedNow: fixedNow, font: .system(size: 36, weight: .semibold, design: .monospaced))
-                    Text(figures.liveUntil ?? "").font(ScaledType.body).foregroundStyle(FSColor.text).lineLimit(2)
+            HStack(spacing: 10) {
+                zoneIcon
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(attributes.zoneName).font(.custom(FSFont.bodyBold, size: 17, relativeTo: .headline))
+                        .foregroundStyle(FSColor.strong).lineLimit(1)
+                    Text(Self.answerLine(attributes, state)).font(.custom(FSFont.body, size: 13, relativeTo: .footnote))
+                        .foregroundStyle(FSColor.text).lineLimit(1)
                 }
-                LiveLeadBar(target: state.targetDate, fixedNow: fixedNow)
-            }
-            HStack {
-                // A cancelled raid has no answer to report; the count stays.
-                if state.status != "cancelled" {
-                    Text(Self.you(attributes, state)).font(ScaledType.body).foregroundStyle(FSColor.text).lineLimit(1)
+                Spacer(minLength: 8)
+                if state.status == "cancelled" {
+                    Text(Copy.widgetCancelled).font(ScaledType.name).foregroundStyle(FSColor.wipe)
+                } else {
+                    LiveCountdown(target: state.targetDate, fixedNow: fixedNow, font: .custom(FSFont.bodyBold, size: 28, relativeTo: .title))
                 }
-                Spacer()
-                if let signed = figures.signedUp { Text(signed).font(ScaledType.mono).foregroundStyle(FSColor.text) }
+            }
+            Text(Self.factLine(state, zone: zone)).font(.custom(FSFont.body, size: 13, relativeTo: .footnote))
+                .foregroundStyle(FSColor.text).lineLimit(2)
+            if state.status != "cancelled" {
+                HStack(spacing: 6) {
+                    ForEach(Self.answers, id: \.self) { answer in
+                        Button(intent: RaidLiveAnswerIntent(state: answer)) {
+                            Text(WidgetFigures.stateWord(answer) ?? answer)
+                                .font(.custom(FSFont.bodyBold, size: 13, relativeTo: .footnote))
+                                .foregroundStyle(FSColor.strong)
+                                .frame(maxWidth: .infinity, minHeight: Self.buttonHeight)
+                                .background(answer == state.myState ? FSColor.tealEdge : Color.white.opacity(0.1), in: .capsule)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
             }
         }
-        .padding(16)
-        .accessibilityElement(children: .ignore)
+        .padding(14)
+        .accessibilityElement(children: .contain)
         .accessibilityLabel(Self.spoken(attributes, state, now: fixedNow ?? .now))
     }
 
-    static func you(_ attributes: RaidActivityAttributes, _ state: RaidActivityAttributes.ContentState) -> String {
-        Copy.liveYou(
-            state: WidgetFigures.stateWord(state.myState) ?? Copy.widgetNotSignedUp,
-            role: WidgetFigures.roleWord(state.role), name: attributes.characterName
-        )
+    @ViewBuilder
+    private var zoneIcon: some View {
+        if let icon = attributes.zoneIcon, let image = icons.image(icon) {
+            Image(uiImage: image).resizable().scaledToFill()
+                .frame(width: Self.iconSize, height: Self.iconSize)
+                .clipShape(.rect(cornerRadius: 6))
+                .overlay(RoundedRectangle(cornerRadius: 6).stroke(FSColor.line, lineWidth: 1))
+                .accessibilityHidden(true)
+        } else {
+            SealMark().frame(width: Self.iconSize, height: Self.iconSize)
+        }
+    }
+
+    /// `Olympus XXVII · You are In`.
+    static func answerLine(_ attributes: RaidActivityAttributes, _ state: RaidActivityAttributes.ContentState) -> String {
+        Copy.liveAnswer(guild: attributes.guildName, state: WidgetFigures.stateWord(state.myState) ?? Copy.widgetNotSignedUp)
+    }
+
+    /// `Starts 8:00 pm CST · 18 in, 3 late · 2 tanks, 5 heals` (invites first when the raid has them);
+    /// the counts are left out by a server that does not send them.
+    static func factLine(_ state: RaidActivityAttributes.ContentState, zone: TimeZone) -> String {
+        let clock = WidgetClock(zone: zone)
+        let when = state.inviteDate.map { Copy.liveInvitesAt(time: clock.zonedTime($0)) } ?? Copy.liveStartsAt(time: clock.zonedTime(state.startDate))
+        guard let inCount = state.inCount, let late = state.late, let tanks = state.tanks, let healers = state.healers else { return when }
+        return "\(when) · \(Copy.liveCounts(in: inCount, late: late, tanks: tanks, healers: healers))"
     }
 
     /// `Invites for Onyxia's Lair in 38 minutes. You are In.`; the countdown is not read per tick.
@@ -126,6 +159,14 @@ struct RaidLiveLockView: View {
         return state.inviteAt == nil
             ? Copy.liveA11yRaidPull(zone: attributes.zoneName, span: span, state: word)
             : Copy.liveA11yRaid(zone: attributes.zoneName, span: span, state: word)
+    }
+
+    /// `You are In · DPS · Thandrel`: the Island's expanded line.
+    static func you(_ attributes: RaidActivityAttributes, _ state: RaidActivityAttributes.ContentState) -> String {
+        Copy.liveYou(
+            state: WidgetFigures.stateWord(state.myState) ?? Copy.widgetNotSignedUp,
+            role: WidgetFigures.roleWord(state.role), name: attributes.characterName
+        )
     }
 }
 

@@ -4,32 +4,16 @@
   "height": 852
  },
  "regions": {
-  "head": {
+  "section-activity": {
    "box": [
+    14,
     16,
-    8,
-    361,
-    114
+    365,
+    145
    ],
-   "inventory": {}
-  },
-  "head-title": {
-   "box": [
-    16,
-    24,
-    361,
-    84
-   ],
-   "inventory": {}
-  },
-  "head-meta": {
-   "box": [
-    16,
-    68,
-    361,
-    40
-   ],
-   "inventory": {}
+   "inventory": {
+    "button": 1
+   }
   }
  }
 }

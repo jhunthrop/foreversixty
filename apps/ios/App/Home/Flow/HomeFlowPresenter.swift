@@ -12,6 +12,8 @@ extension ReadyCheck {
 
 /// A pending guild applicant (F3), from `GET /v1/guilds/{id}/applications`.
 struct ApplicantLine: Equatable, Sendable {
+    /// The application's id (the applicant screen opens it).
+    let id: Int64
     let name: String
     /// `Holy Priest`.
     let kind: String
@@ -105,7 +107,7 @@ struct HomeFlowPresenter {
     func bestRunLine(_ run: BestRun, unit: String) -> String {
         let gain = Copy.homeUpgradesGain(figure: ItemNumbers.signedTenths(run.gain), unit: unit)
         guard let chance = run.chance else { return Copy.homeBestRun(place: run.place, item: run.item, gain: gain) }
-        return Copy.homeBestRunChance(place: run.place, item: run.item, gain: gain, chance: "\(Int(chance.rounded()))%")
+        return Copy.homeBestRunChance(place: run.place, item: run.item, gain: gain, chance: ItemNumbers.percent(chance))
     }
 
     // MARK: The next raid
@@ -113,24 +115,31 @@ struct HomeFlowPresenter {
     func nextRaid(_ inputs: HomeFlowInputs) -> NextRaidContent? {
         guard let raid = inputs.raid else { return nil }
         let viewer = raid.viewer.characters.first { $0.characterKey == inputs.character.key } ?? raid.viewer.characters.first
-        let name = viewer?.name ?? inputs.character.name
-        let role = Self.roleWord(viewer?.role)
-        let who = Copy.homeRaidAs(name: name, role: role)
+        let named = Self.namedCharacter(raid, key: inputs.character.key)
+        let name = named?.name ?? ""
+        let role = Self.roleWord(named?.role)
         let selected = inputs.answer ?? viewer?.state.flatMap(SignupState.init(rawValue:))
         let zone = TimeZone(identifier: raid.guildTimezone) ?? clock.zone
-        let time = Copy.homeRaidWhen(date: clock.shortDate(raid.startsAt), time: clock.guildClock(raid.startsAt, guildZone: zone))
+        let clockTime = clock.guildClock(raid.startsAt, guildZone: zone).replacingOccurrences(of: " ", with: Self.noBreak)
+        let time = Copy.homeRaidWhen(date: clock.shortDate(raid.startsAt), time: clockTime)
         let counts = Copy.homeRaidCounts(in: raid.counts.signedIn, late: raid.counts.late)
-        let answer = selected.map { Copy.homeRaidAnswered(answer: $0.label, name: name, role: role) } ?? Copy.homeRaidNotAnswered(name: name, role: role)
-        return NextRaidContent(
+        let answer: String = switch (selected, named) {
+        case let (state?, nil): Copy.homeRaidAnsweredAlone(answer: state.label)
+        case let (state?, _?): Copy.homeRaidAnswered(answer: state.label, name: name, role: role)
+        case (nil, nil): Copy.homeRaidNotAnsweredAlone
+        case (nil, _?): Copy.homeRaidNotAnswered(name: name, role: role)
+        }
+        let open = named == nil ? Copy.homeRaidLineSubAlone(counts: counts) : Copy.homeRaidLineSub(counts: counts, name: name, role: role)
+        let guild = inputs.character.guild ?? ""
+        let minutes = selected == .late ? raid.signups.first { $0.own && $0.characterKey == viewer?.characterKey }?.lateMinutes : nil
+        var content = NextRaidContent(
             guildID: inputs.character.guildID ?? 0, raidID: raid.id, characterKey: viewer?.characterKey ?? inputs.character.key,
-            eyebrow: Copy.homeRaidTonight(guild: inputs.character.guild ?? "", raid: raid.zoneName),
+            zone: raid.zoneName,
+            place: Copy.homeRaidPlace(guild: guild, when: time),
             clock: clockParts(to: raid.startsAt),
-            when: time,
-            line: HomeLine(
-                title: Copy.homeRaidLineTitle(raid: raid.zoneName, when: time),
-                sub: selected == nil ? Copy.homeRaidLineOpen(counts: counts, who: who) : answer
-            ),
-            icon: raid.zoneIcon ?? RaidIcons.generic,
+            clockLabel: clockLabel(to: raid.startsAt),
+            line: HomeLine(title: Copy.homeRaidLineTitle(raid: raid.zoneName, when: time), sub: selected == nil ? open : answer),
+            icon: raid.zoneIcon ?? RaidIcons.of(zone: raid.zone),
             answer: answer,
             selected: selected,
             lateOpen: inputs.lateOpen && selected == .late,
@@ -138,6 +147,45 @@ struct HomeFlowPresenter {
             ready: ready(inputs.ready),
             officer: officer(inputs, raid: raid)
         )
+        content.headLine = headLine(to: raid.startsAt, zone: zone, when: time)
+        content.who = named.map { Copy.raidTabAs(name: $0.name, role: role) }
+        content.chip = selected.map { Self.answerWord($0, lateMinutes: minutes) }
+        content.lateMinutes = minutes
+        return content
+    }
+
+    /// `In`, or `Late · 30 min` when a Late answer said how late (F1).
+    static func answerWord(_ state: SignupState, lateMinutes: Int?) -> String {
+        guard state == .late, let lateMinutes else { return state.label }
+        return Copy.raidAnswerLateMinutes(n: lateMinutes)
+    }
+
+    /// Within a day: `8:00 pm CST · pull in 2 h 48 min`; further out the date and time.
+    func headLine(to start: Date, zone: TimeZone, when: String) -> String {
+        let seconds = max(0, Int(start.timeIntervalSince(now)))
+        guard seconds < Self.day else { return when }
+        let hours = seconds / 3600
+        let minutes = (seconds % 3600) / 60
+        let until = hours > 0 ? Copy.raidTabUntilHours(h: hours, m: minutes) : Copy.raidTabUntilMinutes(m: minutes)
+        return Copy.raidTabPullIn(time: clock.guildClock(start, guildZone: zone), until: until)
+    }
+
+    static let day = 86_400
+    /// Keeps `7:00 pm CST` together when a raid's line wraps.
+    static let noBreak = "\u{00A0}"
+
+    /// E7 (owner, 2026-11-09): the character an answer is for, named only when the account has more
+    /// than one character in the raid's guild; nil when the answer alone says it.
+    static func namedCharacter(_ raid: RaidView, key: String) -> RaidViewerCharacter? {
+        let mine = raid.viewer.characters
+        guard mine.count > 1 else { return nil }
+        return mine.first { $0.characterKey == key } ?? mine.first
+    }
+
+    /// The clock read aloud as one timer (`2 hours, 48 minutes`).
+    func clockLabel(to start: Date) -> String {
+        let seconds = max(0, Int(start.timeIntervalSince(now)))
+        return Copy.homeRaidClock(h: seconds / 3600, m: (seconds % 3600) / 60)
     }
 
     /// `02 hours`, `48 min` until the pull; none once it has started.
@@ -170,9 +218,9 @@ struct HomeFlowPresenter {
     }
 
     /// The officer's open items (F3): who has not answered with the short role, and the applicants.
-    func officer(_ inputs: HomeFlowInputs, raid: RaidView) -> OfficerContent? {
+    func officer(_ inputs: HomeFlowInputs, raid: RaidView?) -> OfficerContent? {
         guard let badge = inputs.badge, badge.officer else { return nil }
-        let unanswered: HomeLine? = badge.unanswered > 0 ? unansweredLine(badge.unanswered, raid: raid) : nil
+        let unanswered: HomeLine? = if let raid, badge.unanswered > 0 { unansweredLine(badge.unanswered, raid: raid) } else { nil }
         let applicants: HomeLine? = badge.applicants > 0 ? HomeLine(
             title: Copy.homeOfficerApplicants(n: badge.applicants),
             sub: inputs.applicants.first.map { applicant in
@@ -208,13 +256,14 @@ struct HomeFlowPresenter {
     func raidLive(_ inputs: HomeFlowInputs) -> RaidLiveContent? {
         guard let raid = inputs.raid, let next = nextRaid(inputs) else { return nil }
         let counts = Copy.homeRaidCounts(in: raid.counts.signedIn, late: raid.counts.late)
-        let viewer = raid.viewer.characters.first { $0.characterKey == next.characterKey }
-        let who = Copy.homeRaidAs(name: viewer?.name ?? inputs.character.name, role: Self.roleWord(viewer?.role))
-        let state = next.selected?.label ?? Copy.raidChipNotSigned
-        return RaidLiveContent(
-            eyebrow: Copy.homeRaidInProgress(guild: inputs.character.guild ?? "", zone: raid.zoneName),
-            line: Copy.homeRaidPulled(span: RaidClock.span(max(0, now.timeIntervalSince(raid.startsAt))), counts: counts, state: state, who: who)
-        )
+        let age = RelativeAge(from: raid.startsAt, to: now).phrase
+        let named = Self.namedCharacter(raid, key: inputs.character.key)
+        let line: String = switch (next.selected, named) {
+        case (nil, _): Copy.homeLiveLineNoAnswer(age: age, counts: counts)
+        case let (state?, nil): Copy.homeLiveLineAlone(age: age, counts: counts, answer: state.label)
+        case let (state?, who?): Copy.homeLiveLine(age: age, counts: counts, answer: state.label, name: who.name, role: Self.roleWord(who.role))
+        }
+        return RaidLiveContent(eyebrow: Copy.homeRaidInProgress(guild: inputs.character.guild ?? "", zone: raid.zoneName), line: line)
     }
 
     // MARK: Last night

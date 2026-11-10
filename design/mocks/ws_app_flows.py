@@ -13,7 +13,7 @@ from __future__ import annotations
 from mocklib import CLASS_COLOR
 from ws_app_frame import AVATAR, BADGE, DEFAULT, FACTION_MARK, FACTION_RING, app_page, glyph, portrait
 from ws_lib import QCOL, region_slug
-from ws_prims import (Button, Checklist, Countdown, Figures, ItemRow, PageHeader, Row, Rows, Section, Skeleton, Switch,
+from ws_prims import (Button, Countdown, Figures, ItemRow, PageHeader, Row, Rows, Section, Skeleton, Switch,
                       Tag, Tally, build_page, crest_img, icon)
 
 WARRIOR, HUNTER = CLASS_COLOR['warrior'], CLASS_COLOR['hunter']
@@ -85,62 +85,65 @@ FLOWS_CSS = '''
 '''
 
 
-# Round 5 on Android's Home (lane M1a; spec 2026-11-09-directions.md Mobile, mock directions/png/m-android-home.png): the
+# Round 5 on Home (lanes M1a and M1i; spec 2026-11-09-directions.md Mobile, mocks directions/png/m-<platform>-home.png): the
 # hero behind the bar and the head, the blocks as panels on the ground, 16 under the hero, 14 at the sides and 20 apart;
-# the raid card titles the zone and puts its answers in one segmented pill. Scoped to Android until lane M1i takes it to
-# iOS, so the iOS region files stay as they are. The words stay the app-flows mock's; only the geometry is round 5's.
+# the raid card titles the zone and puts its answers in one segmented pill on Android, four 44 pt buttons on iOS
+# (the closing [data-platform=ios] rules). The words stay the app-flows mock's; only the geometry is round 5's.
 HOME_R5_CSS = '''
-[data-platform=android] .ap.home{padding:0 14px 22px}
-[data-platform=android] .ap.home .r5{display:block}
-[data-platform=android] .ap.home .band-r5{margin:0 -14px;width:auto;padding:6px 16px 18px;background:#071d2e}
-[data-platform=android] .ap.home .ph-wrap,[data-platform=android] .ap.home .head{display:block;padding:0}
-[data-platform=android] .ap.home .ph-title{gap:12px}[data-platform=android] .ap.home .ph-title>div{flex:1}
-[data-platform=android] .ap.home .t-title{font-size:30px;line-height:34px;letter-spacing:0}
-[data-platform=android] .ap.home .ph-meta{display:block;margin-top:0;line-height:20px}
-[data-platform=android] .ap.home .ph-meta .t-small{font-size:14px;line-height:20px}
-[data-platform=android] .ap.home .ph-meta .t-small+.t-small::before{content:" \\00b7 "}
-[data-platform=android] .ap.home>.blk,[data-platform=android] .ap.home>section{margin-top:20px}
-[data-platform=android] .ap.home>.band-r5+*{margin-top:16px}
-[data-platform=android] .ap.home .blk{background:#170e09;border-radius:10px;padding:8px 16px}
-[data-platform=android] .ap.home .blk[data-region=section-loading]{background:none;padding:0}
-[data-platform=android] .ap.home .blk[data-region=section-loading]>div:first-child{margin-top:0!important}
-[data-platform=android] .ap.home .blk[data-region=section-loading] .skel{display:block;width:100%!important}
-[data-platform=android] .ap.home .blk[data-region=section-loading]>div:first-child .skel{height:365px!important}
-[data-platform=android] .ap.home .blk .row .trail .btn{min-height:48px}
-[data-platform=android] .ap.home .blk:has(.cdn){padding:18px 18px 16px}
-[data-platform=android] .ap.home .cdn{padding:0;border:0;background:none;border-radius:0}
-[data-platform=android] .ap.home .cdn:has(.clk) .eb,[data-platform=android] .ap.home .cdn:has(.clk) .as{display:none}
-[data-platform=android] .ap.home .cdn .eb{font:600 15px/22px var(--font-body);color:var(--strong)}
-[data-platform=android] .ap.home .cdn .rw{margin-top:8px;gap:8px}
-[data-platform=android] .ap.home .cdn .as{flex-basis:100%}
-[data-platform=android] .ap.home .cdn .as p+p{margin-top:8px!important}
-[data-platform=android] .ap.home .r5z{font:400 24px/30px var(--font-title);margin:0}
-[data-platform=android] .ap.home .r5p{font-size:13px;line-height:20px;margin:0}
-[data-platform=android] .ap.home .cdn .clk{gap:18px}[data-platform=android] .ap.home .cdn .clk>span{align-items:flex-start}
-[data-platform=android] .ap.home .cdn .clk b{font:600 36px/38px var(--font-body)}
-[data-platform=android] .ap.home .cdn .clk>span>span{font-size:12px;line-height:16px}
-[data-platform=android] .ap.home .blk .me{margin-top:12px;line-height:20px}
-[data-platform=android] .ap.home .blk .btns{margin-top:8px;gap:0;border:1px solid var(--line);border-radius:24px;overflow:hidden}
-[data-platform=android] .ap.home .blk .btns .btn{height:48px;min-height:48px;border:0;border-radius:0}
-[data-platform=android] .ap.home .blk .me+.chips{margin-top:0}
-[data-platform=android] .ap.home .blk .tally{margin-top:14px}
-[data-platform=android] .ap.home .blk:has(.cdn) .tally+.rows{margin-top:14px;border-top:1px solid var(--line)}
-[data-platform=android] .ap.home .blk:has(.cdn) .rows+.rows{margin-top:4px}
-[data-platform=android] .ap.home .blk:not(:has(.cdn)) .rows{margin-top:0}
-[data-platform=android] .ap.home .blk:not(:has(.cdn)) .btns{margin:4px 0 8px}
-[data-platform=android] .ap.home .blk .vstack{margin:12px 0}
-[data-platform=android] .ap.home .blk>p.t-small:first-child{margin-top:8px}
-[data-platform=android] .ap.home section .sec-h{padding-bottom:0;border-bottom:0;margin-bottom:8px;align-items:center}
-[data-platform=android] .ap.home section .sec-h h2{font:400 21px/26px var(--font-title)}
-[data-platform=android] .ap.home section>.sec-h+*{margin-top:0}
-[data-platform=android] .ap.home section>.rows,[data-platform=android] .ap.home section>.irow-box{background:#170e09;padding:0 16px}
-[data-platform=android] .ap.home section>.sec-h+*{padding-top:8px;border-radius:10px 10px 0 0}
-[data-platform=android] .ap.home section>:last-child{padding-bottom:8px;border-radius:0 0 10px 10px}
-[data-platform=android] .ap.home section>.sec-h+:last-child{border-radius:10px}
-[data-platform=android] .ap.home section>.irow-box+*{border-top:1px solid var(--line)}
-[data-platform=android] .ap.home .irow{padding-inline:0}
+.ap.home{padding:0 14px 22px}
+.ap.home .r5{display:block}
+.ap.home .band-r5{margin:0 -14px;width:auto;padding:6px 16px 18px;background:#071d2e}
+.ap.home .ph-wrap,.ap.home .head{display:block;padding:0}
+.ap.home .ph-title{gap:12px}.ap.home .ph-title>div{flex:1}
+.ap.home .t-title{font-size:30px;line-height:34px;letter-spacing:0}
+.ap.home .ph-meta{display:block;margin-top:0;line-height:20px}
+.ap.home .ph-meta .t-small{font-size:14px;line-height:20px}
+.ap.home .ph-meta .t-small+.t-small::before{content:" \\00b7 "}
+.ap.home>.blk,.ap.home>section{margin-top:20px}
+.ap.home>.band-r5+*{margin-top:16px}
+.ap.home .blk{background:#170e09;border-radius:10px;padding:8px 16px}
+.ap.home .blk[data-region=section-loading]{background:none;padding:0}
+.ap.home .blk[data-region=section-loading]>div:first-child{margin-top:0!important}
+.ap.home .blk[data-region=section-loading] .skel{display:block;width:100%!important}
+.ap.home .blk[data-region=section-loading]>div:first-child .skel{height:365px!important}
+.ap.home .blk .row .trail .btn{min-height:48px}
+.ap.home .blk:has(.cdn){padding:18px 18px 16px}
+.ap.home .cdn{padding:0;border:0;background:none;border-radius:0}
+.ap.home .cdn:has(.clk) .eb,.ap.home .cdn:has(.clk) .as{display:none}
+.ap.home .cdn .eb{font:600 15px/22px var(--font-body);color:var(--strong)}
+.ap.home .cdn .rw{margin-top:8px;gap:8px}
+.ap.home .cdn .as{flex-basis:100%}
+.ap.home .cdn .as p+p{margin-top:8px!important}
+.ap.home .r5z{font:400 24px/30px var(--font-title);margin:0}
+.ap.home .r5p{font-size:13px;line-height:20px;margin:0}
+.ap.home .cdn .clk{gap:18px}.ap.home .cdn .clk>span{align-items:flex-start}
+.ap.home .cdn .clk b{font:600 36px/38px var(--font-body)}
+.ap.home .cdn .clk>span>span{font-size:12px;line-height:16px}
+.ap.home .blk .me{margin-top:12px;line-height:20px}
+.ap.home .blk .btns{margin-top:8px;gap:0;border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.ap.home .blk .btns .btn{height:48px;min-height:48px;border:0;border-radius:0}
+.ap.home .blk .me+.chips{margin-top:0}
+.ap.home .blk .tally{margin-top:14px}
+.ap.home .blk:has(.cdn) .tally+.rows{margin-top:14px;border-top:1px solid var(--line)}
+.ap.home .blk:has(.cdn) .rows+.rows{margin-top:4px}
+.ap.home .blk:not(:has(.cdn)) .rows{margin-top:0}
+.ap.home .blk:not(:has(.cdn)) .btns{margin:4px 0 8px}
+.ap.home .blk .vstack{margin:12px 0}
+.ap.home .blk>p.t-small:first-child{margin-top:8px}
+.ap.home section .sec-h{padding-bottom:0;border-bottom:0;margin-bottom:8px;align-items:center}
+.ap.home section .sec-h h2{font:400 21px/26px var(--font-title)}
+.ap.home section>.sec-h+*{margin-top:0}
+.ap.home section>.rows,.ap.home section>.irow-box{background:#170e09;padding:0 16px}
+.ap.home section>.sec-h+*{padding-top:8px;border-radius:10px 10px 0 0}
+.ap.home section>:last-child{padding-bottom:8px;border-radius:0 0 10px 10px}
+.ap.home section>.sec-h+:last-child{border-radius:10px}
+.ap.home section>.irow-box+*{border-top:1px solid var(--line)}
+.ap.home .irow{padding-inline:0}
 /* a row's lines as the Pixel 9 rounds them (420 dpi: a 20 sp line is 54 px, 20.57 dp; 18 sp is 48 px, 18.29 dp) */
-[data-platform=android] .ap.home section .row .ttl{line-height:20.57px}[data-platform=android] .ap.home section .row .sub{line-height:18.29px}
+.ap.home section .row .ttl{line-height:20.57px}.ap.home section .row .sub{line-height:18.29px}
+[data-platform=ios] .ap.home .blk .btns{gap:8px;border:0;border-radius:0;overflow:visible}
+[data-platform=ios] .ap.home .blk .btns .btn{height:44px;min-height:44px;border:1px solid var(--line);border-radius:6px}
+[data-platform=ios] .ap.home .blk .row .trail .btn{min-height:44px}
 '''
 
 
@@ -168,7 +171,7 @@ def _raid_card(officer: bool = False, answered: str = '', late: bool = False) ->
     me = f'<p class="t-small me">{"You are " + answered if answered else "You have not answered"}, {AS_ME}</p>'
     how_late = '<p class="t-small me">How late?</p>' + _late_chips() if late else ''
     ready = Rows([Row('2 things before you pull', 'No flask in your bags; boots not enchanted &middot; from your last log-out, 9 h ago', slim=True)], open_=True)
-    # round 5 (Android Home, HOME_R5_CSS): the card titles the zone and puts the guild before the time
+    # round 5 (HOME_R5_CSS): the card titles the zone and puts the guild before the time
     r5 = f'<h2 class="r5 r5z">{RAID}</h2><p class="r5 r5p">Olympus XXVII &middot; {WHEN}</p>'
     return r5 + cd + me + _signup_buttons(answered) + how_late + Tally(ROLES) + ready + (_needs_you() if officer else '')
 
@@ -202,10 +205,10 @@ ACCOUNT = [('Notifications', 'Raids, gear and sims, logs on'), ('Plan', 'Premium
            ('Offline data', '26.6 MB on this phone'), ('Settings', 'Sign out, delete account')]
 
 
-# Round 5 on Android's profile drawer (lane M5a; spec 2026-11-09-directions.md Mobile, mock directions/png/m-android-menu.png):
+# Round 5 on the profile drawer (lanes M5a, M5i; spec 2026-11-09-directions.md Mobile, mock directions/png/m-android-menu.png):
 # You on the painted band (the portrait at 56, the name in the display face at 26 in the class colour, the line, Main, the
 # stamp with Refresh), then on the drawer's panel Switch character, Tools as labels alone (owner ruling 2026-11-09) and
-# Account, each under a cream display title at 16. 18 at the sides. Android only until lane M5i.
+# Account, each under a cream display title at 16. 18 at the sides. iOS since lane M5i.
 MENU_R5_CSS = """
 .drawer.r5menu{padding:0}
 .r5menu .you{padding:18px 18px 12px;background:#0c3a52;border-bottom:1px solid #000}
@@ -227,11 +230,14 @@ MENU_R5_CSS = """
 .r5menu .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
 .r5menu .fold{display:flex;align-items:center;min-height:48px;font:600 15px/20px var(--font-body);color:var(--gold)}
 .r5menu .foot{margin:24px 0;display:flex;flex-direction:column;gap:4px}
+/* iOS (lane M5i, m-ios-menu): the band runs under the status bar, You 18 under it; a label row is 44 */
+[data-platform=ios] .r5menu .you{padding-top:calc(var(--status) + 18px)}
+[data-platform=ios] .r5menu .row:not(:has(.s)){min-height:44px}
 """
 
 
 def _r5_portrait(faction: str, avatar: str | None, cls: str, px: int) -> str:
-    """portrait() in round 5 on Android: a character with no Battle.net portrait shows its class crest in the faction ring."""
+    """portrait() in round 5: a character with no Battle.net portrait shows its class crest in the faction ring."""
     if avatar:
         return portrait(faction, avatar, px)
     b = round(px * BADGE)
@@ -241,7 +247,7 @@ def _r5_portrait(faction: str, avatar: str | None, cls: str, px: int) -> str:
 
 
 def _menu_r5(state: str) -> str:
-    """The Android drawer's body in round 5 (MENU_R5_CSS); the characters, tools and account rows are menu()'s."""
+    """The drawer's body in round 5 (MENU_R5_CSS); the characters, tools and account rows are menu()'s."""
     def section(title: str, rows: str) -> str:
         return f'<section data-region="{region_slug(title)}"><h3>{title}</h3>{rows}</section>'
 
@@ -277,31 +283,8 @@ def _menu_r5(state: str) -> str:
 def menu(state: str):
     """state: in (6 characters), one (just the main), low (the low-level fold open), out (signed out)."""
     def b(platform: str) -> str:
-        if platform == 'android':
-            html = build_page('Menu', f'<div class="drawer-wrap"><div class="drawer r5menu" role="dialog" aria-label="Menu">{_menu_r5(state)}</div>'
-                              f'<div class="dim" aria-hidden="true"></div></div><style>{FLOWS_CSS}{MENU_R5_CSS}</style>', note='Profile menu mock, round 5 on Android.')
-            return app_page(platform, html, None, navbar=False, who=None if state == 'out' else 'warrior')
-        if state == 'out':
-            you = (PageHeader('Forever Sixty', meta=['Sign in and your characters arrive with their gear, talents and guild.'])
-                   + '<div class="vstack">' + Button('Sign in with Battle.net', primary=True) + '</div>')
-            body = you + Section('Tools', Rows([Row(n, s) for n, s, out in TOOLS if out], open_=True))
-        else:
-            me = CHARACTERS[0]
-            you = (PageHeader(me[0], WARRIOR, portrait(me[5], me[4], 56), [me[2], Tag('Main')])
-                   + '<p class="t-small stamp">Updated 2 h ago from Battle.net &middot; <a class="link" href="#">Refresh</a></p>')
-            others = CHARACTERS[1:] if state != 'one' else []
-            rows = [Row(n, s, portrait(f, av, 40), '', CLASS_COLOR[c]) for n, c, s, _, av, f in others]
-            if state == 'low':
-                rows += [Row(n, s, crest_img(c, 40), '', CLASS_COLOR[c]) for n, c, s in LOW]
-            fold = (f'<a class="rowbtn" href="#">{"Hide low-level characters" if state == "low" else "Show low-level characters (2)"}</a>'
-                    if state != 'one' else '')
-            chars = Section('Switch character', Rows(rows, open_=True) + fold) if others else ''
-            body = (you + chars + Section('Tools', Rows([Row(n, s) for n, s, _ in TOOLS], open_=True))
-                    + Section('Account', Rows([Row(n, s) for n, s in ACCOUNT], open_=True)))
-        foot = ('<div class="foot"><span class="t-small">Version 0.1.0 (7) &middot; data 1.60.1.70790</span>'
-                '<span class="t-small"><a class="link" href="#">Help</a> &middot; <a class="link" href="#">Privacy</a></span></div>')
-        html = build_page('Menu', f'<div class="drawer-wrap"><div class="drawer" role="dialog" aria-label="Menu">{body}{foot}</div>'
-                          f'<div class="dim" aria-hidden="true"></div></div><style>{FLOWS_CSS}</style>', note='Profile menu mock.')
+        html = build_page('Menu', f'<div class="drawer-wrap"><div class="drawer r5menu" role="dialog" aria-label="Menu">{_menu_r5(state)}</div>'
+                          f'<div class="dim" aria-hidden="true"></div></div><style>{FLOWS_CSS}{MENU_R5_CSS}</style>', note='Profile menu mock, round 5.')
         return app_page(platform, html, None, navbar=False, who=None if state == 'out' else 'warrior')
     return b
 
@@ -415,11 +398,11 @@ HOME = {
 }
 
 
-# Round 5 on Android's Raid tab (lane M2a; spec 2026-11-09-directions.md Mobile, mocks directions/png/m-android-raid.png
+# Round 5 on the Raid tab (lanes M2a, M2i; spec 2026-11-09-directions.md Mobile, mocks directions/png/m-android-raid.png
 # and m-android-signup.png): the blue band behind the bar, then on the ground the one-line raid head (the zone's icon, the
 # raid, its time and the pull, who the answer is for, the answer chip) over the four answers as one 48 dp segmented pill,
 # Late's minutes inline under them; Who is coming, Before you pull, Needs you and the guild's pages as panels with display
-# titles. Android only until lane M2i: the iOS raid mocks keep the app-flows body. Line heights are the Pixel 9's rounding
+# titles. iOS since lane M2i, with 44 pt buttons. Line heights are the Pixel 9's rounding
 # (420 dpi: 13/18/20/22/24 sp lines are 20.57/18.29/20.57/22.1/24.38 dp). Open Sans sets wider on the Pixel 9 than in
 # Chromium, so the two lines it breaks there carry the break here (<br>) and the head's lines hold to one line as they do there.
 RAID_R5_CSS = """
@@ -458,6 +441,10 @@ RAID_R5_CSS = """
 .r5raid .lvh span{font:600 15px/22.1px var(--font-body);color:#fff}
 .r5raid .lvh+.note{margin:4px 0 8px}
 .r5raid .rule{border-top:1px solid var(--line)}
+[data-platform=ios] .r5raid .btn{height:44px;min-height:44px}
+[data-platform=ios] .r5raid .seg{gap:8px;border:0;border-radius:0;overflow:visible}
+[data-platform=ios] .r5raid .seg .btn{border:1px solid #5a5d70;border-radius:6px}
+[data-platform=ios] .r5raid .seg .btn+.btn{border-left:1px solid #5a5d70}
 """
 
 R5_COMING = [('Tanks', 2, 2, 'Grunvald, Brakka'), ('Healers', 5, 8, 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen &middot; 3 short'),
@@ -511,7 +498,7 @@ def _r5_lone(title: str, lines: list[str], button: str, primary: bool = False) -
 
 
 def _raid_r5(state: str) -> str:
-    """The Android Raid tab's body in round 5 (RAID_R5_CSS); the states and words are raid()'s."""
+    """The Raid tab's body in round 5 (RAID_R5_CSS); the states and words are raid()'s."""
     pages = _r5_section('Olympus XXVII', ''.join(_r5_row(t, sub) for t, sub in R5_PAGES))
     coming = _r5_section('Who is coming', _r5_roles(R5_COMING), action='Roster &rsaquo;')
     if state in ('member', 'officer', 'signup'):
@@ -540,7 +527,7 @@ def _raid_r5(state: str) -> str:
 
 def _raid_page_r5(state: str) -> str:
     return build_page('Raid', f'<div class="ap r5raid">{_raid_r5(state)}</div><style>{FLOWS_CSS}{RAID_R5_CSS}</style>',
-                      note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5 on Android.')
+                      note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5.')
 
 
 # ------------------------------------------------------------------------------------------------ Raid (the tab)
@@ -548,50 +535,10 @@ def raid(state: str):
     """The Raid tab (owner, 2026-11-08): the next raid first with your answer, then for an officer what needs you, then the
     guild's raid pages. Live: raid night leads. No guild: find, join or claim one. Signed out: sign in, then the same."""
     def b(platform: str) -> str:
-        if platform == 'android':
-            badges = {'member': ANSWERED, 'signup': ANSWERED, 'officer': OFFICER, 'noraid': ANSWERED, 'live': ANSWERED,
-                      'none': {'activity': 2}, 'leveler': {'activity': 1}, 'out': {}}[state]
-            who = {'out': None, 'leveler': 'hunter'}.get(state, 'warrior')
-            return app_page(platform, _raid_page_r5(state), 'raid', title='Raid', badges=badges, who=who)
-        pages = Section('Olympus XXVII', Rows([Row('Roster', '38 members, 31 at 60'), Row('Calendar', 'Onyxia Wed, Barrow Deeps Sat'),
-                                               Row('Loot history', 'Last raid: 4 pieces'), Row('Guild sims', 'You are #7 of 14 DPS')], open_=True))
-        if state in ('member', 'officer', 'signup'):
-            needs = Section('Needs you', _needs_you(), meta='6 open') if state == 'officer' else ''
-            card = _raid_card(answered='Late', late=True) if state == 'signup' else _raid_card()
-            body = Section('Next raid', _blk(card)) + needs + pages
-            badges = OFFICER if state == 'officer' else MEMBER
-        elif state == 'noraid':
-            body = (Section('Next raid', '<p class="t-small" style="padding-top:8px">No raid planned yet. Your officers plan raids on the site; '
-                            'a push tells you the moment one is posted.</p>') + pages)
-            badges = ANSWERED
-        elif state == 'live':
-            ready = (Checklist([('ok', 'Drakefire Amulet', 'Attuned', None), ('miss', 'Flask of the Titans', 'None in your bags', 'Auction house'),
-                                ('warn', 'Boots not enchanted', 'Enchant Boots: Greater Agility', 'Where to get it')])
-                     + '<p class="t-small stampl">From your last log-out, 9 h ago</p>')
-            body = (Section('Raid night', _raid_live().replace('<p style="margin-top:8px"><a class="link" href="#">Open raid night &rsaquo;</a></p>', '')
-                            + Rows([Row('Tanks 2 of 2', 'Grunvald, Brakka', link=False, slim=True),
-                                    Row('Healers 5 of 8', 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late, 15 min)', link=False, slim=True)], open_=True))
-                    + Section('Ready check', ready) + pages)
-            badges = ANSWERED
-        elif state == 'none':
-            body = (PageHeader('Raid with a guild', meta=['Guilds that plan their raids here'])
-                    + Section('Guilds recruiting a Fury Warrior', Rows([
-                        Row('Olympus XXVII', 'Alliance &middot; Wed and Sat, 8:00 pm CST &middot; needs damage', trail=Button('Apply', small=True), link=False),
-                        Row('Dawnbreak', 'Alliance &middot; Tue and Thu, 9:00 pm EST &middot; needs damage', trail=Button('Apply', small=True), link=False)], open_=True))
-                    + Section('Your guild is not here?', '<p class="t-small" style="padding-top:8px">Claim it: a guild master or an officer '
-                              'confirms with the addon or Battle.net.</p><div class="vstack">' + Button('Claim your guild') + '</div>'))
-            badges = {'activity': 2}
-        elif state == 'leveler':
-            body = (PageHeader('Raids start at 60', meta=['26 levels to go'])
-                    + '<p class="t-small" style="margin-top:8px">Onyxia&rsquo;s Lair, Barrow Deeps and Hyjal Summit open at 60. '
-                    'Join a guild on the way and its raids show here.</p>'
-                    + '<div class="vstack">' + Button('Find a guild') + '</div>')
-            return app_page(platform, _page(body, 'Raid'), 'raid', badges={'activity': 1}, who='hunter')
-        else:  # out
-            body = (PageHeader('Raid with a guild', meta=['Sign up for your guild&rsquo;s raids from your phone.'])
-                    + '<div class="vstack">' + Button('Sign in with Battle.net', primary=True) + '</div>')
-            badges = {}
-        return app_page(platform, _page(body, 'Raid'), 'raid', badges=badges, who=None if state == 'out' else 'warrior')
+        badges = {'member': ANSWERED, 'signup': ANSWERED, 'officer': OFFICER, 'noraid': ANSWERED, 'live': ANSWERED,
+                  'none': {'activity': 2}, 'leveler': {'activity': 1}, 'out': {}}[state]
+        who = {'out': None, 'leveler': 'hunter'}.get(state, 'warrior')
+        return app_page(platform, _raid_page_r5(state), 'raid', title='Raid', badges=badges, who=who)
     return b
 
 
@@ -618,12 +565,12 @@ DOLL = [  # slot label, pick, icon, quality, source, gain or None when worn
 ]
 
 
-# Round 5 on Android's Gear tab and item sheet (lane M3a; spec 2026-11-09-directions.md Paperdoll "Mobile Gear tab", mocks
+# Round 5 on the Gear tab and item sheet (lanes M3a, M3i; spec 2026-11-09-directions.md Paperdoll "Mobile Gear tab", mocks
 # directions/png/m-android-gear-frame.png and m-android-item.png): the paperdoll's phone form (the strip with the portrait in
 # its gold-ringed medallion, the spec and the set's DPS; the line naming the list with Change; the slots in two columns, each
 # its gain or Equipped), then Where to go tonight on a plain panel. Greenhammer unlocks with the first raids, so the off hand is
 # the Persuader he wears (the directions mock's GATED). The sheet is the client's tooltip with the gain closing it, then one
-# list: where it drops, what it replaces, the runner-up and the guild. Android only until lane M3i. Line heights are the
+# list: where it drops, what it replaces, the runner-up and the guild. iOS since lane M3i. Line heights are the
 # Pixel 9's rounding (see RAID_R5_CSS); Open Sans sets wider there, so the lines it breaks carry the break here (<br>).
 GEAR_R5_CSS = """
 .ap.r5gear{padding:16px 14px 22px}
@@ -674,7 +621,7 @@ def _r5_gear_row(title: str, sub: str, lead: str, color: str = '#fff') -> str:
 
 
 def _gear_page_r5() -> str:
-    """The Android Gear tab's body in round 5 (GEAR_R5_CSS)."""
+    """The Gear tab's body in round 5 (GEAR_R5_CSS)."""
     cells = ''.join(f'<div class="cell"><span class="sk">{icon(ic, 38, f"q{q}")}</span><div><span class="n" style="color:{QCOL[q]}">{name}</span>'
                     f'<span class="s">{slot} &middot; ' + ('Equipped' if g is None else f'<span class="g">{g} DPS</span>') + '</span></div></div>'
                     for slot, name, ic, q, _, g in R5_DOLL)
@@ -686,46 +633,38 @@ def _gear_page_r5() -> str:
     body = doll + (f'<section data-region="{region_slug("Where to go tonight")}"><div class="sh"><h2>Where to go tonight</h2></div>'
                    f'<div class="pn">{where}</div></section>')
     return build_page('Gear', f'<div class="ap r5gear">{body}</div><style>{FLOWS_CSS}{GEAR_R5_CSS}</style>',
-                      note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5 on Android.')
+                      note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5.')
 
 
-def _item_sheet_r5() -> str:
-    """Deathbringer on Android in round 5 (GEAR_R5_CSS): the tooltip in the client's order, the gain closing it, then the list."""
+def _item_sheet_r5(platform: str) -> str:
+    """Deathbringer in round 5 (GEAR_R5_CSS): the tooltip in the client's order, the gain closing it, then the list. iOS
+    adds the guild's next raid to the drop's zone under the source (needs.next_raid; it opens that raid; Android to follow)."""
     tip = ('<div class="tip" data-region="inspector"><span class="nm">Deathbringer</span><span>Binds when picked up</span>'
            '<span class="sp"><span>One-Hand</span><span>Axe</span></span><span class="sp"><span>114 - 213 Damage</span><span>Speed 2.90</span></span>'
            '<span>(56.4 damage per second)</span><span class="gap"></span><span>Requires Level 60</span>'
            '<span class="gr">Chance on hit: Sends a shadowy bolt at the<br>enemy causing 125 Shadow damage.</span><span class="gn">+12.6 DPS</span></div>')
-    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', icon(ONY, 40))
+    next_raid = _r5_gear_row('Next raid: Onyxia&rsquo;s Lair, Wed 8:00 PM', '', '') if platform == 'ios' else ''
+    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', icon(ONY, 40)) + next_raid
              + _r5_gear_row('Replaces Ironwood Blade', 'Equipped', icon('inv_sword_07', 40, 'q4'))
              + _r5_gear_row('Vis&rsquo;kag the Bloodletter', 'Runner-up &middot; Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'), QCOL[4])
              + _r5_gear_row('Grunvald', 'Protection Warrior &middot; needs it, the pick on their list', crest_img('warrior', 40), WARRIOR)
              + _r5_gear_row('Torvak', 'Enhancement Shaman &middot; has it', crest_img('shaman', 40), CLASS_COLOR['shaman']))
     sheet = ('<div class="dim" style="height:120px"></div><div class="sheetp r5item" role="dialog" aria-label="Deathbringer"><span class="sheet-grab"></span>'
              f'{tip}<div class="lines" data-region="section-where-to-get-it">{lines}</div></div>')
-    return build_page('Deathbringer', sheet + f'<style>{FLOWS_CSS}{GEAR_R5_CSS}</style>', note='Item sheet mock, round 5 on Android.')
+    return build_page('Deathbringer', sheet + f'<style>{FLOWS_CSS}{GEAR_R5_CSS}</style>', note='Item sheet mock, round 5.')
 
 
 def gear(state: str):
     """Gear (owner, 2026-11-08): your gear against your band's list. The summary line names the list (your spec, band and
     faction, preselected; Change opens the picker); then where to go tonight; then every slot (Home holds the top three)."""
     def b(platform: str) -> str:
-        if platform == 'android' and state == 'in':
+        if state == 'in':
             return app_page(platform, _gear_page_r5(), 'gear', title='Gear', badges=MEMBER)
         if state == 'out':
             body = (PageHeader('Best in slot for your class', meta=['Pick a class, then a spec and a level range.'])
                     + Section('Classes', Rows([Row(c.capitalize(), '', crest_img(c, 40), title_color=CLASS_COLOR[c])
                                                for c in ('warrior', 'paladin', 'hunter', 'rogue', 'priest', 'shaman', 'mage', 'warlock', 'druid')], open_=True)))
             return app_page(platform, _page(body, 'Gear'), 'gear', who=None)
-        summary = Rows([Row('Fury Warrior &middot; 60 raid &middot; Alliance', '4 of 17 slots on the list', trail='<a class="link" href="#">Change</a>', link=False)], open_=True)
-        where = Rows([Row('Blackrock Spire', 'Blackcrow &middot; Shadow Hunter Vosh&rsquo;gajin, 8%', icon('inv_weapon_crossbow_04', 40, 'q3')),
-                      Row('Blacksmithing', 'Lionheart Helm, Greenhammer, Ironwood Blade &middot; ask a blacksmith', icon('inv_helmet_36', 40, 'q4')),
-                      Row('Stormpike Guard', 'Don Julio&rsquo;s Band, needs revered', icon('inv_jewelry_ring_35', 40, 'q4'))], open_=True)
-        cells = [ItemRow(name, q, icon(ic, 40, f'q{q}'), f'{slot} &middot; {src}', gain=('Worn', '', '') if g is None else (g, 'DPS', ''))
-                 for slot, name, ic, q, src, g in DOLL]
-        body = ('<div data-region="controls">' + summary + '</div>'
-                + Section('Where to go tonight', where)
-                + Section('Every slot', '<div data-region="slots">' + ''.join(cells) + '</div>'))
-        return app_page(platform, _page(body, 'Gear'), 'gear', badges=MEMBER)
     return b
 
 
@@ -744,10 +683,10 @@ GROUPS = ['All', 'Raids', 'Gear and sims', 'Logs', 'Guild ladder', 'Tiers']
 # The rows about a class wear its crest (one crest language, lane M4a): a guildmate's spec icon, a spec's tier move.
 ACTIVITY_CRESTS = {'ability_warrior_innerrage': 'warrior', 'Fury Warrior moved to S': 'warrior'}
 
-# Round 5 on Android's Activity tab (lane M4a; spec 2026-11-09-directions.md Mobile, mock directions/png/m-android-activity.png):
+# Round 5 on the Activity tab (lanes M4a, M4i; spec 2026-11-09-directions.md Mobile, mock directions/png/m-android-activity.png):
 # the blue band carries the bar and the group chips (36 faces in 48 dp targets, the first teal), then a panel per day on the
 # ground with its display title and Mark all read on the first; each row its lead (the crest for a row about a class), title,
-# line and time. Android only until lane M4i. Line heights are the Pixel 9's rounding (see RAID_R5_CSS).
+# line and time. iOS since lane M4i. Line heights are the Pixel 9's rounding (see RAID_R5_CSS).
 ACTIVITY_R5_CSS = """
 .ap.r5act{padding:0 14px 22px}
 .r5act .bandc{margin:0 -14px;padding-left:16px;background:#0c3a52;border-bottom:1px solid #000}
@@ -777,7 +716,7 @@ def _act_lead(ic: str, title: str) -> str:
 
 
 def _activity_r5(state: str) -> str:
-    """The Android Activity tab's body in round 5 (ACTIVITY_R5_CSS); the rows and words are activity()'s."""
+    """The Activity tab's body in round 5 (ACTIVITY_R5_CSS); the rows and words are activity()'s."""
     if state == 'out':
         return ('<div class="blk-r5" data-region="section-activity"><div class="pn"><p class="note">What changed for your characters: loot, sims, '
                 'reports, raids.</p><a class="btn wide" href="#">Sign in with Battle.net</a></div></div>')
@@ -796,31 +735,15 @@ def _activity_r5(state: str) -> str:
 
 def _activity_page_r5(state: str) -> str:
     return build_page('Activity', f'<div class="ap r5act">{_activity_r5(state)}</div><style>{FLOWS_CSS}{ACTIVITY_R5_CSS}</style>',
-                      note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5 on Android.')
+                      note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5.')
 
 
 def activity(state: str):
     """Activity (owner, 2026-11-08): every notification event, newest first, read state, the six groups as filters (All
     preselected); every row opens its answer. The push inbox: a player with pushes off sees the same list."""
     def b(platform: str) -> str:
-        if platform == 'android':
-            badges = {'in': {'raid': 0, 'activity': 3}}.get(state, {})
-            return app_page(platform, _activity_page_r5(state), 'activity', title='Activity', badges=badges, who=None if state == 'out' else 'warrior')
-        if state == 'out':
-            body = (PageHeader('Activity', meta=['What changed for your characters: loot, sims, reports, raids.'])
-                    + '<div class="vstack">' + Button('Sign in with Battle.net', primary=True) + '</div>')
-            return app_page(platform, _page(body, 'Activity'), 'activity', who=None)
-        chips = '<div class="chiprow" data-region="controls">' + ''.join(Button(g, primary=(g == 'All'), small=True) for g in GROUPS) + '</div>'
-        if state == 'empty':
-            body = (PageHeader('Activity') + chips
-                    + '<p class="t-small" style="margin-top:16px">Nothing yet. Loot, sims, reports and raids land here.</p>')
-            return app_page(platform, _page(body, 'Activity'), 'activity')
-        secs = ''
-        for when, rows in ACTIVITY:
-            secs += Section(when, Rows([_act_row(i, t, f'{s}<span class="when">{at}</span>', u)
-                                        for i, t, s, g, at, u in rows], open_=True), action='Mark all read' if when == 'Today' else '')
-        body = PageHeader('Activity') + chips + secs
-        return app_page(platform, _page(body, 'Activity'), 'activity', badges={'raid': 0, 'activity': 3})
+        badges = {'in': {'raid': 0, 'activity': 3}}.get(state, {})
+        return app_page(platform, _activity_page_r5(state), 'activity', title='Activity', badges=badges, who=None if state == 'out' else 'warrior')
     return b
 
 
@@ -939,6 +862,12 @@ def notification_settings(platform: str) -> str:
             + Switch('', on) + '</div>' for n, s, on in groups]
     nudge = Rows([Row('Raid-day reminder', 'If you have not answered: 3:00 pm your time', trail='<a class="link" href="#">Change</a>', link=False)], open_=True)
     body = PageHeader('Notifications') + Section('Send me', Rows(rows, open_=True)) + Section('When', nudge)
+    if platform == 'ios':
+        # officer_dms (D16, off by default; built on iOS, Android to follow): channel mentions are the default; on, the
+        # officers' Not answered row gets a DM link.
+        body += Section('Discord', Rows(['<div class="row setrow"><div class="b"><div class="ttl">Let officers DM me on Discord</div>'
+                                         '<div class="sub">When you have not answered a raid; off, they mention you in the channel</div></div>'
+                                         + Switch('', False) + '</div>'], open_=True))
     return app_page(platform, _page(body, 'Notifications'), 'home', back='Home', title='Notifications')
 
 
@@ -946,23 +875,7 @@ def notification_settings(platform: str) -> str:
 def item_sheet(platform: str) -> str:
     """Deathbringer from Onyxia (data/builds 1.60.1.70790: 8%, item level 75): the client's tooltip lines, where it drops,
     the runner-up from the same boss, and who in the guild has it or needs it (review S1)."""
-    if platform == 'android':
-        return app_page(platform, _item_sheet_r5(), 'gear', navbar=False)
-    tooltip = ('<div class="t-small" style="margin-top:8px;line-height:20px">Binds when picked up<br>One-Hand &middot; Axe<br>'
-               '114 - 213 Damage &middot; Speed 2.90<br>(56.4 damage per second)<br>'
-               '<span style="color:var(--kill)">Chance on hit: Sends a shadowy bolt at the enemy causing 125 Shadow damage.</span><br>'
-               'Requires Level 60</div><div style="height:8px"></div>')
-    where = Rows([Row('Onyxia, Onyxia&rsquo;s Lair', '8% drop chance &middot; raid &middot; Wed with Olympus XXVII', icon(ONY, 40), link=False)], open_=True)
-    runners = Rows([Row('Vis&rsquo;kag the Bloodletter', 'Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'),
-                        title_color='#b866f5', link=False)], open_=True)
-    needs = Rows([Row('Grunvald', 'Protection Warrior &middot; needs it, also on his list', crest_img('warrior', 40), title_color=WARRIOR, link=False),
-                  Row('Torvak', 'Enhancement Shaman &middot; has it', crest_img('shaman', 40), title_color=CLASS_COLOR['shaman'], link=False)], open_=True)
-    sheet = ('<div class="dim" style="height:120px"></div><div class="sheetp" role="dialog" aria-label="Deathbringer"><span class="sheet-grab"></span>'
-             + ItemRow('Deathbringer', 4, icon(DEATHBRINGER[1], 40, 'q4'), 'Main hand', gain=('+12.6', 'DPS', 'over your worn'))
-             + tooltip + Section('Where to get it', where) + Section('Runner-up', runners) + Section('Who in the guild needs it', needs) + '</div>')
-    html = build_page('Deathbringer', sheet + f'<style>{FLOWS_CSS}</style>', note='Item sheet mock.')
-    return app_page(platform, html, 'gear', navbar=False)
-
+    return app_page(platform, _item_sheet_r5(platform), 'gear', navbar=False)
 
 SCREENS = {
     'menu': menu('in'),

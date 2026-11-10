@@ -78,13 +78,15 @@ final class WidgetRefresher {
         }
     }
 
-    /// The extension cannot fetch while it draws, so the upgrade rows' icons go in the container.
+    /// The extension cannot fetch while it draws, so the upgrade rows' icons and the next raid's
+    /// zone icon (the raid night Live Activity's) go in the container.
     private func saveIcons(_ widget: Widget) async {
-        guard let build = iconBuild(), let rows = widget.upgrades?.rows else { return }
-        for row in rows {
-            let url = store.iconURL(row.pick.icon)
+        guard let build = iconBuild() else { return }
+        let names = (widget.upgrades?.rows ?? []).map(\.pick.icon) + [widget.nextRaid.map { RaidIcons.of(zone: $0.zone) }].compactMap(\.self)
+        for name in names {
+            let url = store.iconURL(name)
             guard !FileManager.default.fileExists(atPath: url.path),
-                  let image = await icons.load(icon: row.pick.icon, build: build), let data = image.pngData() else { continue }
+                  let image = await icons.load(icon: name, build: build), let data = image.pngData() else { continue }
             try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
             try? data.write(to: url, options: .atomic)
         }

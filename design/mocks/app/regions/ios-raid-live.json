@@ -6,41 +6,32 @@
  "regions": {
   "section-raid-night": {
    "box": [
+    14,
     16,
-    36,
-    361,
-    286
-   ],
-   "inventory": {
-    "row": 2
-   }
-  },
-  "countdowns": {
-   "box": [
-    16,
-    95,
-    361,
-    108
-   ],
-   "inventory": {}
-  },
-  "section-ready-check": {
-   "box": [
-    16,
-    350,
-    361,
-    303
+    365,
+    335
    ],
    "inventory": {
     "row": 3
    }
   },
+  "section-ready-check": {
+   "box": [
+    14,
+    371,
+    365,
+    326
+   ],
+   "inventory": {
+    "row": 4
+   }
+  },
   "section-olympus-xxvii": {
    "box": [
-    16,
-    681,
-    361,
-    270
+    14,
+    717,
+    365,
+    288
    ],
    "inventory": {
     "row": 4

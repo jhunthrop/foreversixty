@@ -17,25 +17,25 @@ struct HomeFlowActions {
     var retry: () -> Void = {}
 }
 
-/// The time-aware Home (flows spec 4.1; mocks ios-home-*): one head, then the server's blocks in
-/// its order, so the moment's 3-second answer follows the head directly.
+/// The time-aware Home (flows spec 4.1) in the round-5 look (mocks ios-home-*, m-ios-home): the
+/// camp-road hero behind the bar and the head, then the server's blocks in its order as panels on the
+/// ground, so the moment's 3-second answer follows the head directly.
 struct HomeFlowView: View {
     let content: HomeFlowContent
     let build: String
     var actions = HomeFlowActions()
 
-    /// `.ap section { margin-top: 28px }`; `.blk { margin-top: 24px }`.
-    static let sectionGap: CGFloat = 28
-    static let blockGap: CGFloat = 24
-    static let skeletons = 5
-    static let skeletonHeight: CGFloat = 56
+    /// The raid card's height first, then four rows (the mock's loading state): nothing shifts when they fill.
+    static let skeletons: [CGFloat] = [365, 56, 56, 56, 56]
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
+            BandPage(art: .hero) {
+                HomeHeroHead(title: content.head.name, facts: content.head.facts, className: content.head.className)
+            } notice: {
                 if let stamp = content.offlineStamp { OfflineStrip(text: Copy.offlineStrip(time: stamp)) }
                 if let stale = content.staleStamp { StaleStrip(time: stale, retry: actions.retry) }
-                HomeHeadView(head: content.head)
+            } content: {
                 switch content.phase {
                 case .loading: loading
                 case .failed: failed
@@ -43,32 +43,29 @@ struct HomeFlowView: View {
                     ForEach(blocks) { block in self.block(block) }
                 }
             }
-            .padding(.top, FSSpace.space2)
-            .padding(.horizontal, FSSpace.gutterPhone)
-            .padding(.bottom, FSSpace.space6)
-            .parityContent()
         }
-        .background(FSColor.bg)
+        .environment(\.panelRowTrailCell, true)
+        .screenGround()
     }
 
     private var loading: some View {
         VStack(spacing: FSSpace.space3) {
-            ForEach(0 ..< Self.skeletons, id: \.self) { _ in FSSkeleton(height: Self.skeletonHeight) }
+            ForEach(Array(Self.skeletons.enumerated()), id: \.offset) { _, height in FSSkeleton(height: height) }
         }
         .parityRegion(ParityRegionName("section-loading"))
-        .padding(.top, Self.blockGap)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Copy.homeAnswerLoading)
     }
 
     private var failed: some View {
-        FSRow(title: Copy.homeErrorTitle, sub: Copy.homeErrorLine, inset: 0, trailPlacement: .below) {
-            EmptyView()
-        } trail: {
-            Button(Copy.commonTryAgain, action: actions.retry).buttonStyle(FSButtonStyle(fullWidth: false, small: true))
+        PanelBlock {
+            PanelRow(Copy.homeErrorTitle, sub: Text(Copy.homeErrorLine), last: true) {
+                EmptyView()
+            } trail: {
+                Button(Copy.commonTryAgain, action: actions.retry).buttonStyle(FSButtonStyle(fullWidth: false))
+            }
         }
         .parityRegion(ParityRegionName("section-error"))
-        .padding(.top, Self.blockGap)
     }
 
     @ViewBuilder
@@ -76,43 +73,66 @@ struct HomeFlowView: View {
         switch block {
         case let .upgrades(upgrades):
             HomeUpgradesSection(content: upgrades, build: build, open: actions.openItem, openGear: actions.openGear)
-                .padding(.top, Self.sectionGap)
         case let .raidCard(raid):
-            NextRaidCardView(content: raid, actions: actions.raid).padding(.top, Self.blockGap)
+            NextRaidCardView(content: raid, actions: actions.raid)
         case let .raidLine(raid):
-            NextRaidLineView(content: raid, build: build, actions: actions.raid).padding(.top, Self.blockGap)
+            NextRaidLineView(content: raid, build: build, actions: actions.raid)
         case let .raidLive(live):
-            RaidLiveCard(content: live, open: actions.openRaidNight).padding(.top, Self.blockGap)
+            RaidLiveCard(content: live, open: actions.openRaidNight)
         case let .lastNight(night):
-            LastNightSection(content: night, build: build, actions: actions).padding(.top, Self.sectionGap)
+            LastNightSection(content: night, build: build, actions: actions)
         case let .newForYou(new):
             NewForYouSection(content: new, build: build, open: actions.openActivity, all: actions.allActivity)
-                .padding(.top, Self.sectionGap)
         case let .findGuild(line):
-            FindGuildBlock(line: line, find: actions.findGuild).padding(.top, Self.blockGap)
+            FindGuildBlock(line: line, find: actions.findGuild)
         case let .notice(text):
-            SmallText(text).padding(.top, Self.blockGap)
+            PanelBlock { PanelRow(text, last: true) }.parityRegion(ParityRegionName("section-notice"))
         }
     }
 }
 
-/// The head: the class crest, the name in the class colour, the fact line (`Level 60 Fury Warrior`,
-/// `Olympus XXVII`; a leveler's levels to the next band).
-struct HomeHeadView: View {
-    let head: HomeHeadContent
+/// One head on every Home (flows spec 4.1) on the hero: the class crest, the name in the class
+/// colour in the display face, the fact line (`Level 60 Fury Warrior · Olympus XXVII`; a leveler's
+/// levels to the next band). Without a class (no character yet) the title stands alone in cream.
+struct HomeHeroHead: View {
+    let title: String
+    let facts: [String]
+    let className: String?
+
+    static let top: CGFloat = 6
+    static let bottom: CGFloat = 18
+    static let factSeparator = " · "
 
     var body: some View {
-        PageHeader(title: head.name, titleColor: ClassColor.of(head.className)) {
-            ClassCrest(className: head.className, size: FSSize.crest56, flat: true)
-        } meta: {
-            WrapLayout(spacing: FSSpace.space4, lineSpacing: 6) {
-                ForEach(head.facts, id: \.self) { SmallText($0) }
+        HStack(spacing: FSSpace.space3) {
+            if let className {
+                ClassCrest(className: className, size: FSSize.crest56, flat: true)
+            }
+            VStack(alignment: .leading, spacing: 0) {
+                Text(title)
+                    .type(TypeRole(face: FSFont.title, size: 30, lineHeight: 34, scalesWith: .title))
+                    .foregroundStyle(className.map { ClassColor.of($0) } ?? FSColor.cream)
+                    .shadow(color: .black.opacity(PanelShadow.opacity), radius: PanelShadow.radius, y: PanelShadow.drop)
+                    .accessibilityAddTraits(.isHeader)
+                if !facts.isEmpty {
+                    Text(facts.joined(separator: HomeHeroHead.factSeparator))
+                        .type(TypeRole(face: FSFont.body, size: 14, lineHeight: 20, scalesWith: .subheadline))
+                        .foregroundStyle(FSColor.text)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .parityRegion(.headMeta)
+                }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .parityRegion(.headTitle)
+        .parityRegion(.head)
+        .padding(.horizontal, FSSpace.space4)
+        .padding(.top, Self.top)
+        .padding(.bottom, Self.bottom)
     }
 }
 
-/// Next upgrades (F5): three rows with their gain and source, and the Best run line.
+/// Next upgrades (F5) on the plain-framed panel: three items with their gain and source, the Best run line.
 struct HomeUpgradesSection: View {
     let content: HomeUpgradesContent
     let build: String
@@ -120,31 +140,149 @@ struct HomeUpgradesSection: View {
     let openGear: () -> Void
 
     var body: some View {
-        FSSection(Copy.homeUpgradesNext) {
-            SectionLink(title: Copy.homeUpgradesGear, action: openGear)
-        } content: {
-            VStack(alignment: .leading, spacing: 0) {
-                ForEach(content.rows) { row in
-                    Button { open(row) } label: {
-                        ItemLineView(
-                            name: row.look.name ?? Copy.itemsNotInData, quality: row.look.quality, icon: row.look.icon,
-                            source: row.source, gain: row.gain.map { ($0.figure, $0.unit) }, build: build
-                        )
-                    }
-                    .buttonStyle(RowPressStyle())
+        PanelSection(Copy.homeUpgradesNext, action: (Copy.homeUpgradesGear, openGear), frame: .plain) {
+            ForEach(Array(content.rows.enumerated()), id: \.element.id) { index, row in
+                if index > 0 { Hairline(FSColor.line) }
+                Button { open(row) } label: {
+                    ItemLineView(
+                        name: row.look.name ?? Copy.itemsNotInData, quality: row.look.quality, icon: row.look.icon,
+                        source: row.source, gain: row.gain.map { ($0.figure, $0.unit) }, build: build, inset: 0
+                    )
                 }
-                if let note = content.note {
-                    FSRow(title: note, density: .slim, inset: 0) { EmptyView() }
-                }
-                if let bestRun = content.bestRun {
-                    FSRow(title: bestRun, density: .slim, inset: 0) { EmptyView() }
-                }
+                .buttonStyle(RowPressStyle())
+            }
+            ForEach([content.note, content.bestRun].compactMap { $0 }, id: \.self) { line in
+                Hairline(FSColor.line)
+                Button(action: openGear) { PanelRow(line, slim: true, last: true) }.buttonStyle(RowPressStyle())
             }
         }
     }
 }
 
-/// A section's action at the right (`Gear ›`, `All activity (3) ›`).
+/// Raid live (F2, mock ios-home-raid-live) on the lead panel: the green dot, the guild and zone, the
+/// pull and your answer, Open raid night.
+struct RaidLiveCard: View {
+    let content: RaidLiveContent
+    /// Open raid night; nil where the card is raid night already (the Raid tab).
+    let open: (() -> Void)?
+
+    static let liveDot: CGFloat = 8
+    /// The link's line (`.link`, 15/24).
+    static let linkLine: CGFloat = 24
+
+    var body: some View {
+        LeadPanel {
+            HStack(spacing: FSSpace.space2) {
+                Circle().fill(FSColor.kill).frame(width: Self.liveDot, height: Self.liveDot)
+                    .accessibilityHidden(true)
+                Text(content.eyebrow).type(FSType.bodyStrong).foregroundStyle(FSColor.strong)
+            }
+            Text(content.line).type(FSType.small).foregroundStyle(FSColor.text).padding(.top, FSSpace.space2)
+            if let open {
+                Button(Copy.homeRaidOpenNight, action: open)
+                    .font(.custom(FSFont.bodySemibold, size: 15, relativeTo: .body))
+                    .foregroundStyle(FSColor.gold)
+                    .frame(minHeight: FSTarget.min)
+                    .contentShape(.rect)
+                    .padding(.vertical, -(FSTarget.min - Self.linkLine) / 2)
+                    .padding(.top, FSSpace.space2)
+            }
+        }
+        .parityRegion(.countdowns)
+    }
+}
+
+/// Last night (F2, mock ios-home-after-raid) on the plain-framed panel: your loot with its gain, the
+/// report, Sim again.
+struct LastNightSection: View {
+    let content: LastNightContent
+    let build: String
+    let actions: HomeFlowActions
+
+    var body: some View {
+        PanelSection(Copy.homeLastNight, frame: .plain) {
+            ForEach(content.loot) { loot in
+                Button { actions.openLoot(loot) } label: {
+                    PanelRow(loot.look.name ?? "", titleColor: ItemQuality(value: loot.look.quality).text, sub: Text(loot.line)) {
+                        ItemIconView(icon: loot.look.icon, quality: loot.look.quality, build: build, size: FSSize.icon40).parityItem(.image)
+                    }
+                }
+                .buttonStyle(RowPressStyle())
+                .accessibilityHint(Copy.itemsA11yHint)
+            }
+            if let report = content.report, let reportID = content.reportID {
+                Button { actions.openReport(reportID) } label: {
+                    PanelRow(report.title, sub: report.sub.isEmpty ? nil : Text(report.sub), last: content.simAgain == nil) {
+                        ItemIconView(icon: content.reportIcon, quality: nil, build: build, size: FSSize.icon40).parityItem(.image)
+                    }
+                }
+                .buttonStyle(RowPressStyle())
+            }
+            if let sim = content.simAgain {
+                Button(action: actions.simAgain) { PanelRow(sim.title, sub: Text(sim.sub), slim: true, last: true) }
+                    .buttonStyle(RowPressStyle())
+            }
+        }
+    }
+}
+
+/// New for you (F4, M7) on a plain panel: the three newest Activity rows, unread dotted, All activity (N).
+struct NewForYouSection: View {
+    let content: NewForYouContent
+    let build: String
+    let open: (ActivityRow) -> Void
+    let all: () -> Void
+
+    var body: some View {
+        let link = content.unread > 0 ? Copy.homeNewForYouAllUnread(n: content.unread) : Copy.homeNewForYouAll
+        PanelSection(Copy.homeNewForYou, action: (link, all)) {
+            ForEach(Array(content.rows.enumerated()), id: \.element.id) { index, item in
+                Button { open(item.row) } label: {
+                    PanelRow(
+                        item.row.title, sub: Text(item.line), unread: item.row.read ? nil : Copy.activityUnread,
+                        last: index == content.rows.count - 1
+                    ) {
+                        ActivityLead(row: item.row, build: build)
+                    }
+                }
+                .buttonStyle(RowPressStyle())
+            }
+        }
+    }
+}
+
+/// Find a guild (no guild at 60) on a plain panel: the one line, with the first raids date before
+/// they open, and the button.
+struct FindGuildBlock: View {
+    let line: String
+    let find: () -> Void
+
+    var body: some View {
+        PanelBlock {
+            Text(line).type(FSType.small).foregroundStyle(FSColor.text).padding(.top, FSSpace.space2)
+            FSButton(Copy.homeFindGuildButton, action: find).padding(.vertical, FSSpace.space3)
+        }
+        .parityRegion(.section(Copy.homeFindGuildTitle))
+    }
+}
+
+/// Signed in with no character yet (mock ios-home-new): the title on the hero, then the one thing to do.
+struct HomeNoCharacterView: View {
+    let checkAgain: () -> Void
+
+    var body: some View {
+        ScrollView {
+            BandPage(art: .hero) {
+                HomeHeroHead(title: Copy.homeNewTitle, facts: [Copy.homeNewLine], className: nil)
+            } content: {
+                FSButton(Copy.homeNewCheck, kind: .primary, action: checkAgain)
+            }
+        }
+        .screenGround()
+    }
+}
+
+/// A pre-round-5 section's action at the right (`Roster ›`): the raid pages not yet restyled.
 struct SectionLink: View {
     let title: String
     let action: () -> Void
@@ -153,128 +291,5 @@ struct SectionLink: View {
         Button(title, action: action)
             .font(.custom(FSFont.bodySemibold, size: FSType.small.size, relativeTo: .footnote))
             .foregroundStyle(FSColor.strong)
-    }
-}
-
-/// Raid live (F2, mock ios-home-raid-live): pulled how long ago, the counts, your answer, Open raid night.
-struct RaidLiveCard: View {
-    let content: RaidLiveContent
-    let open: () -> Void
-
-    var body: some View {
-        FSCountdown(eyebrow: content.eyebrow, live: true) {
-            VStack(alignment: .leading, spacing: FSSpace.space2) {
-                SmallText(content.line)
-                Button(Copy.homeRaidOpenNight, action: open)
-                    .font(.custom(FSFont.bodySemibold, size: 15, relativeTo: .body))
-                    .foregroundStyle(FSColor.gold)
-            }
-        }
-        .parityRegion(.countdowns)
-    }
-}
-
-/// Last night (F2, mock ios-home-after-raid): your loot with its gain, the report, Sim again.
-struct LastNightSection: View {
-    let content: LastNightContent
-    let build: String
-    let actions: HomeFlowActions
-
-    var body: some View {
-        FSSection(Copy.homeLastNight) {
-            VStack(spacing: 0) {
-                ForEach(content.loot) { loot in
-                    Button { actions.openLoot(loot) } label: {
-                        FSRow(title: loot.look.name ?? "", titleColor: ItemQuality(value: loot.look.quality).text, sub: loot.line, inset: 0) {
-                            ItemIconView(icon: loot.look.icon, quality: loot.look.quality, build: build, size: FSSize.icon40)
-                                .parityItem(.image)
-                        }
-                    }
-                    .buttonStyle(RowPressStyle())
-                    .accessibilityHint(Copy.itemsA11yHint)
-                }
-                if let report = content.report, let reportID = content.reportID {
-                    Button { actions.openReport(reportID) } label: {
-                        FSRow(title: report.title, sub: report.sub.isEmpty ? nil : report.sub, inset: 0) {
-                            ItemIconView(icon: content.reportIcon, quality: nil, build: build, size: FSSize.icon40).parityItem(.image)
-                        }
-                    }
-                    .buttonStyle(RowPressStyle())
-                }
-                if let sim = content.simAgain {
-                    Button(action: actions.simAgain) {
-                        FSRow(title: sim.title, sub: sim.sub, density: .slim, inset: 0) { EmptyView() }
-                    }
-                    .buttonStyle(RowPressStyle())
-                }
-            }
-        }
-    }
-}
-
-/// New for you (F4, M7): the three newest Activity rows, unread dotted, All activity (N).
-struct NewForYouSection: View {
-    let content: NewForYouContent
-    let build: String
-    let open: (ActivityRow) -> Void
-    let all: () -> Void
-
-    var body: some View {
-        FSSection(Copy.homeNewForYou) {
-            SectionLink(title: content.unread > 0 ? Copy.homeNewForYouAllUnread(n: content.unread) : Copy.homeNewForYouAll, action: all)
-        } content: {
-            VStack(spacing: 0) {
-                ForEach(content.rows) { item in
-                    Button { open(item.row) } label: {
-                        FSRow(title: item.row.title, sub: item.line, inset: 0) {
-                            ItemIconView(icon: item.row.icon, quality: nil, build: build, size: FSSize.icon40)
-                                .parityItem(.image)
-                        }
-                        .overlay(alignment: .topLeading) {
-                            if !item.row.read {
-                                Circle().fill(FSColor.gold)
-                                    .frame(width: ActivityView.dotSize, height: ActivityView.dotSize)
-                                    .offset(x: -ActivityView.dotInset, y: 24)
-                                    .accessibilityHidden(true)
-                            }
-                        }
-                        .accessibilityValue(item.row.read ? "" : Copy.activityUnread)
-                    }
-                    .buttonStyle(RowPressStyle())
-                }
-            }
-        }
-    }
-}
-
-/// Find a guild (no guild at 60): the one line, with the first raids date before they open.
-struct FindGuildBlock: View {
-    let line: String
-    let find: () -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            SmallText(line)
-            FSButton(Copy.homeFindGuildButton, action: find).padding(.top, FSSpace.space5)
-        }
-        .parityRegion(.section(Copy.homeFindGuildTitle))
-    }
-}
-
-/// Signed in with no character yet (mock ios-home-new): the one thing to do.
-struct HomeNoCharacterView: View {
-    let checkAgain: () -> Void
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                PageHeader(title: Copy.homeNewTitle) { SmallText(Copy.homeNewLine) }
-                FSButton(Copy.homeNewCheck, kind: .primary, action: checkAgain).padding(.top, FSSpace.space5)
-            }
-            .padding(.top, FSSpace.space2)
-            .padding(.horizontal, FSSpace.gutterPhone)
-            .parityContent()
-        }
-        .background(FSColor.bg)
     }
 }

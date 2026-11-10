@@ -7,9 +7,9 @@
   "head": {
    "box": [
     16,
-    8,
+    6,
     361,
-    120
+    76
    ],
    "inventory": {
     "image": 1
@@ -18,9 +18,9 @@
   "head-title": {
    "box": [
     16,
-    24,
+    6,
     361,
-    90
+    76
    ],
    "inventory": {
     "image": 1
@@ -28,19 +28,19 @@
   },
   "head-meta": {
    "box": [
-    88,
-    68,
-    289,
-    46
+    84,
+    40,
+    293,
+    42
    ],
    "inventory": {}
   },
   "section-next-upgrades": {
    "box": [
-    16,
-    156,
-    361,
-    285
+    14,
+    116,
+    365,
+    292
    ],
    "inventory": {
     "row": 4,
@@ -49,10 +49,10 @@
   },
   "section-new-for-you": {
    "box": [
-    16,
-    469,
-    361,
-    219
+    14,
+    428,
+    365,
+    232
    ],
    "inventory": {
     "row": 3,

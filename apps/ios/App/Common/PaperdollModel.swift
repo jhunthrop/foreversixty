@@ -101,20 +101,6 @@ enum PaperdollModel {
         entry.pick != nil && (entry.gap ?? 0) > 0
     }
 
-    /// Home's Your gear (F2.7): the same 17 rows `GearModel` builds, a dot on every upgrade that gains.
-    static func home(_ rows: [GearRow]) -> [PaperdollSlot] {
-        rows.map { row in
-            let state: PaperdollSlot.State = if let worn = row.worn {
-                worn.name == nil && worn.icon == nil ? .unknown(worn.id) : .item(worn)
-            } else if row.blockedByTwoHand {
-                .twoHandOff
-            } else {
-                .empty
-            }
-            return PaperdollSlot(slot: row.slot, state: state, better: row.gains)
-        }
-    }
-
     /// The socket's name line: the item, `Wrist · Item 288887` for an item our data does not
     /// know (owner ruling, 2026-11-01), `Empty`, or the two-hand words.
     static func name(_ slot: PaperdollSlot) -> String {

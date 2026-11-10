@@ -210,4 +210,9 @@ enum ItemNumbers {
         return value < 0 ? "\u{2212}\(magnitude)" : "+\(magnitude)"
     }
 
+    /// A drop chance as the client words it: `8%`, rounded to the whole percent.
+    static func percent(_ value: Double) -> String {
+        "\(Int(value.rounded()))%"
+    }
+
 }

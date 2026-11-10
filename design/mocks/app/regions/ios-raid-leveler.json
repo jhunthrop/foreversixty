@@ -4,32 +4,16 @@
   "height": 852
  },
  "regions": {
-  "head": {
+  "section-raids-start-at-60": {
    "box": [
+    14,
     16,
-    8,
-    361,
-    94
+    365,
+    196
    ],
-   "inventory": {}
-  },
-  "head-title": {
-   "box": [
-    16,
-    24,
-    361,
-    64
-   ],
-   "inventory": {}
-  },
-  "head-meta": {
-   "box": [
-    16,
-    68,
-    246,
-    20
-   ],
-   "inventory": {}
+   "inventory": {
+    "button": 1
+   }
   }
  }
 }

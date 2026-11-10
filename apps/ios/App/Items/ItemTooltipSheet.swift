@@ -152,11 +152,13 @@ struct ItemTooltipContent: View {
 /// The game-tooltip panel: near-black, `#3a4256` hairline, the client's line order.
 struct ItemTooltipPanel: View {
     let model: ItemTooltipModel
+    /// `+12.6 DPS` over what is equipped, closing the panel in gold (the item sheet); nil for none.
+    var gain: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(model.look.name ?? Copy.itemsNotInData).foregroundStyle(ItemQuality(value: model.look.quality).text)
-                .font(Font.custom(FSFont.bodyBold, size: 17))
+                .type(TypeRole(face: FSFont.bodyBold, size: 17, lineHeight: 22, scalesWith: .body))
             if !model.known {
                 line(Copy.itemsNotInData, color: FSColor.muted)
             }
@@ -187,19 +189,23 @@ struct ItemTooltipPanel: View {
             }
             if let dps = model.weaponDPS { line(dps) }
             ForEach(model.stats, id: \.self) { line($0) }
-            if let effect = model.effect { line(effect, color: FSColor.parseGreen) }
             if let requires = model.requiresLevel { line(requires).padding(.top, 6) }
             // The client's order, as Android draws it: Requires Level, the green `Equip:`
-            // sentences, then the set block, then the item level.
+            // sentences and the effect, then the set block, then the item level.
             ForEach(model.equipLines, id: \.self) { line($0, color: FSColor.parseGreen) }
+            if let effect = model.effect { line(effect, color: FSColor.parseGreen) }
             if let set = model.setName {
                 line(set, color: FSColor.parseGold).padding(.top, 6)
                 ForEach(model.setBonuses, id: \.self) { line($0, color: FSColor.muted) }
             }
             if let level = model.itemLevel { line(level, color: FSColor.parseGold) }
+            if let gain {
+                Text(gain).font(ScaledType.tooltip.weight(.semibold)).foregroundStyle(FSColor.gold)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 12)
+        // The mock's 12 and its 1 pt border.
+        .padding(.vertical, 14)
         .padding(.horizontal, 14)
         .background(GameColors.tooltipPanel, in: .rect(cornerRadius: FSRadius.legacyControl))
         .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(GameColors.iconLine))
@@ -207,6 +213,9 @@ struct ItemTooltipPanel: View {
     }
 
     private func line(_ text: String, color: Color = FSColor.strong) -> some View {
-        Text(text).font(ScaledType.tooltip).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+        Text(text).type(Self.lineBox).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
     }
+
+    /// The client's tooltip line: 16 on 22.
+    static var lineBox: TypeRole { TypeRole(face: FSFont.body, size: 16, lineHeight: 22, scalesWith: .body) }
 }

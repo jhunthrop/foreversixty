@@ -36,6 +36,14 @@ struct BisContext: Equatable, Sendable {
         return (characterName, own)
     }
 
+    /// The classes in the game's order (the CDN's classes file), else the catalog's.
+    func classSlugs(_ catalog: SpecCatalog) -> [String] {
+        if !classes.isEmpty { return classes.map(\.slug) }
+        var seen: [String] = []
+        for spec in catalog.specs where !seen.contains(spec.classSlug) { seen.append(spec.classSlug) }
+        return seen
+    }
+
     func className(_ slug: String) -> String {
         classes.first { $0.slug == slug }?.name ?? slug.capitalized
     }
@@ -46,15 +54,13 @@ struct BisContext: Equatable, Sendable {
     }
 }
 
-/// Remembers the last list and whether the signed-out picker has opened once.
+/// Remembers the last list.
 protocol BisPreferences: Sendable {
     var lastSelection: BisSelection? { get nonmutating set }
-    var hasOpenedPicker: Bool { get nonmutating set }
 }
 
 struct UserDefaultsBisPreferences: BisPreferences {
     private static let selectionKey = "gg.foreversixty.bis.selection"
-    private static let pickerKey = "gg.foreversixty.bis.pickerOpened"
     // UserDefaults is documented thread-safe.
     private nonisolated(unsafe) let defaults: UserDefaults
 
@@ -65,11 +71,6 @@ struct UserDefaultsBisPreferences: BisPreferences {
     var lastSelection: BisSelection? {
         get { defaults.data(forKey: Self.selectionKey).flatMap { try? JSONDecoder().decode(BisSelection.self, from: $0) } }
         nonmutating set { defaults.set(newValue.flatMap { try? JSONEncoder().encode($0) }, forKey: Self.selectionKey) }
-    }
-
-    var hasOpenedPicker: Bool {
-        get { defaults.bool(forKey: Self.pickerKey) }
-        nonmutating set { defaults.set(newValue, forKey: Self.pickerKey) }
     }
 }
 
@@ -88,6 +89,17 @@ final class BisModel {
     private(set) var build: String?
     private var worn: Set<Int> = []
     private var generation = 0
+    /// The band the shown list was built from, for Gear's places.
+    private(set) var band: BisBand?
+    /// The character's home answer (its gains) and the build's loot file, for Gear.
+    private(set) var home: CharacterHome?
+    private(set) var loot: LootFile?
+    private(set) var character: AccountCharacter?
+
+    /// What Gear compares the shown list with; nil before a list is drawn.
+    var gearInputs: GearInputs? {
+        band.map { GearInputs(band: $0, home: home, loot: loot, level: character?.level) }
+    }
 
     init(source: any BisDataSource, catalog: SpecCatalog, preferences: any BisPreferences) {
         self.source = source
@@ -96,24 +108,37 @@ final class BisModel {
         context = BisContext(selection: preferences.lastSelection ?? .signedOutDefault(catalog))
     }
 
-    /// The first load: the character, then the saved list at once, then the network.
+    /// The first load: the character, then the saved list at once, then the network, with the
+    /// character's answer and the loot file beside it for Gear.
     func start() async {
         let character = await source.currentCharacter()
+        self.character = character
         let own = character.flatMap { BisSelection.forCharacter($0, catalog: catalog) }
         worn = Set(character?.build?.gear.map { Array($0.values) } ?? [])
         context.characterSelection = own
         context.characterName = own == nil ? nil : character?.name
-        if let own {
-            context.selection = own
-        } else if character == nil, !preferences.hasOpenedPicker {
-            preferences.hasOpenedPicker = true
-            isPickerPresented = true
-        }
+        if let own { context.selection = own }
         let build = await source.activeBuild()
         self.build = build
         context.raidsOpening = await RaidsOpening(source.keyDates())
         drawSaved(build: build)
-        await load()
+        async let list: Void = load()
+        async let gear: Void = loadGear(build: build, character: character)
+        _ = await (list, gear)
+    }
+
+    /// Signed out, a class from Gear's class rows: its first spec, and the picker for the spec and
+    /// the level range.
+    func pickClass(_ slug: String) async {
+        isPickerPresented = true
+        await select(context.selection.withClass(slug, catalog: catalog))
+    }
+
+    private func loadGear(build: String, character: AccountCharacter?) async {
+        async let lootFile = source.loot(build: build)
+        let answer: CharacterHome? = if let character { await source.characterHome(character) } else { nil }
+        loot = await lootFile
+        home = answer
     }
 
     /// Lane F15: a newer build found while the list is open; `Update` applies it.
@@ -200,8 +225,10 @@ final class BisModel {
     private func present(_ file: BisFile, items: [Item], offlineSince: Date?) -> BisPhase {
         let selection = context.selection
         guard let band = file.band(for: selection.range, faction: selection.faction) else {
+            self.band = nil
             return .noList(offlineSince: offlineSince)
         }
+        self.band = band
         let list = BisListBuilder(items: items, worn: worn).list(
             file: file,
             band: band,

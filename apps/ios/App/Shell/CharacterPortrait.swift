@@ -38,11 +38,14 @@ extension EnvironmentValues {
 /// A character on the profile button and in the menu (flows spec 3, the owner's exception to the
 /// one crest language): the Battle.net portrait in a 2 pt ring of the faction colour, the faction
 /// emblem as a badge on its top right (40% of the diameter). Without a portrait the person glyph
-/// fills the ring; never the class crest.
+/// fills the ring; in the drawer's Switch character rows (`crestClass`, round 5) the class crest does,
+/// so a row tells its characters apart.
 struct CharacterPortrait: View {
     let avatarURL: URL?
     let faction: String?
     let size: CGFloat
+    /// The class whose crest stands in for a missing portrait; nil keeps the person glyph.
+    var crestClass: String?
 
     @Environment(\.portraitSource) private var source
     @State private var image: UIImage?
@@ -58,6 +61,8 @@ struct CharacterPortrait: View {
             Circle().fill(FSColor.raised)
             if let shown = image ?? avatarURL.flatMap(source.cached) {
                 Image(uiImage: shown).resizable().scaledToFill().parityItem(.image)
+            } else if let crestClass, let crest = BrandImages.crest(crestClass) {
+                Image(uiImage: crest).resizable().scaledToFill().parityItem(.image)
             } else {
                 Image(systemName: "person")
                     .resizable()
@@ -97,8 +102,11 @@ struct CharacterPortrait: View {
 }
 
 extension CharacterPortrait {
-    init(_ character: AccountCharacter, size: CGFloat) {
-        self.init(avatarURL: character.avatarUrl.flatMap(URL.init(string:)), faction: character.faction, size: size)
+    init(_ character: AccountCharacter, size: CGFloat, crestFallback: Bool = false) {
+        self.init(
+            avatarURL: character.avatarUrl.flatMap(URL.init(string:)), faction: character.faction, size: size,
+            crestClass: crestFallback ? character.className : nil
+        )
     }
 }
 

@@ -6,19 +6,19 @@
  "regions": {
   "section-next-raid": {
    "box": [
+    14,
     16,
-    36,
-    361,
-    83
+    365,
+    73
    ],
    "inventory": {}
   },
   "section-olympus-xxvii": {
    "box": [
-    16,
-    147,
-    361,
-    270
+    14,
+    109,
+    365,
+    288
    ],
    "inventory": {
     "row": 4

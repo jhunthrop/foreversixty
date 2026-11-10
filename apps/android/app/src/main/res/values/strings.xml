@@ -402,6 +402,49 @@
     <string name="raid_menu_calendar">Add to calendar</string>
     <string name="raid_menu_share">Share the raid</string>
     <string name="raid_menu_web">Open on foreversixty.gg</string>
+    <string name="raid_pages_calendar">Calendar</string>
+    <string name="raid_pages_loot">Loot history</string>
+    <string name="raid_pages_sims">Guild sims</string>
+    <plurals name="raid_pages_members">
+        <item quantity="one">1 member</item>
+        <item quantity="other">%1$d members</item>
+    </plurals>
+    <string name="raid_pages_membersAtCap" tools:ignore="PluralsCandidate">%1$s, %2$d at 60</string>
+    <string name="raid_pages_calendarItem">%1$s %2$s</string>
+    <plurals name="raid_pages_lootLast">
+        <item quantity="one">Last raid: 1 piece</item>
+        <item quantity="other">Last raid: %1$d pieces</item>
+    </plurals>
+    <string name="raid_pages_simsRank" tools:ignore="PluralsCandidate">#%1$d of %2$d in guild sims</string>
+    <string name="raid_noRaid">No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.</string>
+    <string name="raid_needsYou">Needs you</string>
+    <string name="raid_needsYouOpen" tools:ignore="PluralsCandidate">%1$d open</string>
+    <string name="raid_night_title">Raid night</string>
+    <string name="raid_night_role" tools:ignore="PluralsCandidate">%1$s %2$d of %3$d</string>
+    <string name="raid_night_lateName" tools:ignore="PluralsCandidate">%1$s (Late, %2$d min)</string>
+    <string name="raid_night_lateNameOnly">%1$s (Late)</string>
+    <string name="raid_ready_title">Ready check</string>
+    <string name="raid_ready_stamp">From your last log-out, %1$s</string>
+    <string name="raid_ready_ok">Done</string>
+    <string name="raid_ready_warn">To do</string>
+    <string name="raid_ready_miss">Missing</string>
+    <string name="raid_recruit_meta">Guilds that plan their raids here</string>
+    <string name="raid_recruit_heading">Guilds recruiting a %1$s</string>
+    <string name="raid_recruit_headingVowel">Guilds recruiting an %1$s</string>
+    <string name="raid_recruit_apply">Apply</string>
+    <string name="raid_recruit_none">No guild here is recruiting your spec right now.</string>
+    <string name="raid_claim_title">Your guild is not here?</string>
+    <string name="raid_claim_line">Claim it: a guild master or an officer confirms with the addon or Battle.net.</string>
+    <string name="raid_claim_button">Claim your guild</string>
+    <string name="raid_leveler_title">Raids start at 60</string>
+    <plurals name="raid_leveler_toGo">
+        <item quantity="one">1 level to go</item>
+        <item quantity="other">%1$d levels to go</item>
+    </plurals>
+    <string name="raid_leveler_line">Onyxia\'s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.</string>
+    <string name="raid_out_line">Sign up for your guild\'s raids from your phone.</string>
+    <string name="raid_na_noBot">This guild has no Discord bot yet. Connect it on the raid\'s page.</string>
+    <string name="raid_na_throttled">They were mentioned a moment ago. Try again later.</string>
     <string name="officer_label">Officer</string>
     <string name="officer_lock">Lock sign-ups</string>
     <string name="officer_unlock">Unlock sign-ups</string>
@@ -676,6 +719,9 @@
     <string name="notifications_reminder">Raid-day reminder</string>
     <string name="notifications_reminderLine">If you have not answered: %1$s your time</string>
     <string name="notifications_change">Change</string>
+    <string name="notifications_discord">Discord</string>
+    <string name="notifications_officerDms">Let officers DM me on Discord</string>
+    <string name="notifications_officerDmsLine">When you have not answered a raid; off, they mention you in the channel</string>
     <string name="gear_onList" tools:ignore="PluralsCandidate">%1$d of %2$d slots on the list</string>
     <string name="gear_change">Change</string>
     <string name="gear_whereTonight">Where to go tonight</string>
@@ -1831,6 +1877,10 @@
     <string name="home_findGuild_title">Raid with a guild</string>
     <string name="home_findGuild_button">Find a guild</string>
     <string name="home_error_line">Check your connection</string>
+    <string name="gear_bandRaid">%1$s raid</string>
+    <string name="gear_crafter_other">a crafter</string>
+    <string name="items_sheet_nextRaid">Next raid: %1$s, %2$s</string>
+    <string name="items_sheet_guildFailed">Who needs it did not load.</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>
     <string name="shared_cta_installAddonAndCompanionInline">install the addon and the companion</string>

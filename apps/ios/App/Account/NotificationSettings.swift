@@ -20,6 +20,7 @@ struct LiveNotificationSettingsService: NotificationSettingsService {
     func save(_ patch: NotificationsPatch) async throws(APIError) -> NotificationSettings {
         try await client.send(.updateNotificationSettings(patch))
     }
+
 }
 
 /// The notification groups in the order the settings and Activity's filters list them (flows
@@ -115,10 +116,30 @@ final class NotificationSettingsModel {
         guard case let .loaded(settings) = phase else { return }
         saveFailed = false
         phase = .loaded(NotificationSettings(
-            timeZone: settings.timeZone, quietHours: settings.quietHours, raidReminder: hhmm, events: settings.events
+            timeZone: settings.timeZone, quietHours: settings.quietHours, officerDms: settings.officerDms, raidReminder: hhmm,
+            events: settings.events
         ))
         do {
             phase = .loaded(try await service.save(NotificationsPatch(raidReminder: hhmm)))
+        } catch {
+            phase = .loaded(settings)
+            saveFailed = true
+        }
+    }
+
+    /// Officers may DM the player on Discord (`officer_dms`, off by default).
+    var officerDMs: Bool {
+        if case let .loaded(settings) = phase { return settings.officerDms ?? false }
+        return false
+    }
+
+    /// Let officers DM me on Discord, drawn at once; a refused save puts it back with the line.
+    func setOfficerDMs(_ on: Bool) async {
+        guard case let .loaded(settings) = phase else { return }
+        saveFailed = false
+        phase = .loaded(settings.with(officerDMs: on))
+        do {
+            phase = .loaded(try await service.save(NotificationsPatch(officerDms: on)))
         } catch {
             phase = .loaded(settings)
             saveFailed = true
@@ -147,8 +168,15 @@ final class NotificationSettingsModel {
             return event.withPush(on)
         }
         return NotificationSettings(
-            timeZone: settings.timeZone, quietHours: settings.quietHours, raidReminder: settings.raidReminder, events: events
+            timeZone: settings.timeZone, quietHours: settings.quietHours, officerDms: settings.officerDms,
+            raidReminder: settings.raidReminder, events: events
         )
+    }
+}
+
+private extension NotificationSettings {
+    func with(officerDMs on: Bool) -> NotificationSettings {
+        NotificationSettings(timeZone: timeZone, quietHours: quietHours, officerDms: on, raidReminder: raidReminder, events: events)
     }
 }
 
@@ -172,8 +200,9 @@ struct NotificationSettingsScreen: View {
 
     var body: some View {
         NotificationSettingsView(
-            phase: model.phase, saveFailed: model.saveFailed,
+            phase: model.phase, saveFailed: model.saveFailed, officerDMs: model.officerDMs,
             set: { group, on in Task { await model.set(group, on: on) } },
+            setOfficerDMs: { on in Task { await model.setOfficerDMs(on) } },
             setReminder: { hhmm in Task { await model.setReminder(hhmm) } },
             retry: { Task { await model.load() } }
         )
@@ -184,7 +213,9 @@ struct NotificationSettingsScreen: View {
 struct NotificationSettingsView: View {
     let phase: NotificationSettingsModel.Phase
     var saveFailed = false
+    var officerDMs = false
     var set: (NotificationGroup, Bool) -> Void = { _, _ in }
+    var setOfficerDMs: (Bool) -> Void = { _ in }
     var setReminder: (String) -> Void = { _ in }
     var retry: () -> Void = {}
 
@@ -215,14 +246,7 @@ struct NotificationSettingsView: View {
         FSSection(Copy.notificationsSendMe) {
             VStack(spacing: 0) {
                 ForEach(summary.rows) { row in
-                    FSRow(title: row.group.title, sub: row.group.line, inset: 0) {
-                        EmptyView()
-                    } trail: {
-                        Toggle(row.group.title, isOn: Binding(get: { row.on }, set: { set(row.group, $0) }))
-                            .labelsHidden()
-                            .tint(FSColor.gold)
-                            .frame(minHeight: FSTarget.min)
-                    }
+                    SwitchRow(title: row.group.title, sub: row.group.line, on: row.on) { set(row.group, $0) }
                 }
                 if saveFailed {
                     SmallText(Copy.commonFailed, color: FSColor.wipe).padding(.top, FSSpace.space2)
@@ -242,6 +266,32 @@ struct NotificationSettingsView: View {
             }
         }
         .padding(.top, FSSpace.space7)
+        // A guild member's: officers may DM them about a raid they have not answered (F3).
+        if summary.rows.contains(where: { $0.group == .raids }) {
+            FSSection(Copy.notificationsDiscord) {
+                SwitchRow(title: Copy.notificationsOfficerDms, sub: Copy.notificationsOfficerDmsLine, on: officerDMs, set: setOfficerDMs)
+            }
+            .padding(.top, FSSpace.space7)
+        }
+    }
+}
+
+/// A setting's row: its title and line, the switch on the title row.
+struct SwitchRow: View {
+    let title: String
+    let sub: String
+    let on: Bool
+    let set: (Bool) -> Void
+
+    var body: some View {
+        FSRow(title: title, sub: sub, inset: 0) {
+            EmptyView()
+        } trail: {
+            Toggle(title, isOn: Binding(get: { on }, set: set))
+                .labelsHidden()
+                .tint(FSColor.gold)
+                .frame(minHeight: FSTarget.min)
+        }
     }
 }
 
