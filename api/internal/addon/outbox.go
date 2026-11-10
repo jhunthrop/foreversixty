@@ -188,7 +188,7 @@ func exportProblem(e *OutboxExport) string {
 	if !validUnit(e.Character) {
 		return "export.character must be Name-Realm"
 	}
-	return ""
+	return preLiveProblem(e.Character, e.Code)
 }
 
 // readSimRequest decodes and checks the sim request; invalid is true when

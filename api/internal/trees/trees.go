@@ -296,11 +296,11 @@ func (d *Data) Skipped() []string {
 	return append([]string(nil), d.skipped...)
 }
 
-// isClientBuild reports whether a version looks like a client build string
+// IsClientBuild reports whether a version looks like a client build string
 // ("1.60.1.69893") rather than a named data set ("forever-prebeta"). Only
 // client builds are comparable as version numbers, and the newest-folder
 // fallback (resolveActive) must not pick a named data set over client data.
-func isClientBuild(version string) bool {
+func IsClientBuild(version string) bool {
 	segments := strings.Split(version, ".")
 	if len(segments) < 2 {
 		return false
@@ -320,28 +320,28 @@ func isClientBuild(version string) bool {
 func newestVersion(versions []string) string {
 	best := versions[0]
 	for _, v := range versions[1:] {
-		bestIsBuild, vIsBuild := isClientBuild(best), isClientBuild(v)
+		bestIsBuild, vIsBuild := IsClientBuild(best), IsClientBuild(v)
 		if bestIsBuild != vIsBuild {
 			if vIsBuild {
 				best = v
 			}
 			continue
 		}
-		if compareVersions(v, best) > 0 {
+		if CompareVersions(v, best) > 0 {
 			best = v
 		}
 	}
 	return best
 }
 
-// compareVersions orders two dot-separated version strings segment by
+// CompareVersions orders two dot-separated version strings segment by
 // segment: a pair of segments that both parse as non-negative integers is
 // compared numerically ("9" < "10"), and any other pair is compared as
 // plain text, so a non-numeric segment never panics, it just orders
 // lexicographically. A version with fewer segments than the other is
 // lower once the shared segments are equal, the way "1.15" sorts below
 // "1.15.1". It returns -1, 0, or 1 the way strings.Compare does.
-func compareVersions(a, b string) int {
+func CompareVersions(a, b string) int {
 	as := strings.Split(a, ".")
 	bs := strings.Split(b, ".")
 	n := len(as)

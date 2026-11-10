@@ -113,12 +113,12 @@ The **Reports** page lists the newest reports the moment they have an id, live o
 |---|---|
 | New reports are | public, unlisted, private or guild — the visibility a report starts with |
 | Keep the addon up to date | on by default. Installs new Forever Sixty addon and data versions into every game folder here, when the game is closed (see below). CurseForge and Wago users can leave it on; they get the same files |
-| Game folders | the folders it found on its own, and any you add with **Add a folder...** (the system folder dialog); only the ones you add are saved, and **Remove** takes one back out. Pick the `_forever_` folder (or `_classic_beta_` on the beta) or the folder above it |
+| Game folders | the folders it found on its own, and any you add with **Add a folder...** (the system folder dialog); only the ones you add are saved, and **Remove** takes one back out. Pick the `_forever_` folder or the folder above it; the ended Classic beta's `_classic_beta_` is refused |
 | Reports are credited to | Automatic by default: the companion reads who is logging from the combat log itself (the game marks the logging player's own units in every line), then finds that character among the ones the addon has exported, so a report is credited to the right region and ruleset with nothing to pick. If the addon has not exported the character yet, the report is credited the moment it has (log out once with the addon loaded). Pick a character from the list only if Automatic is wrong; the Status page and this setting both show who it currently reads |
 
 The companion watches the install you played most recently; the Status page tags it Watching.
 It knows a game folder by the `.flavor.info` file the game writes in it (`wowf` is the live game,
-`wow_classic_beta` the beta), so a renamed or custom install path works; a folder without that file is
+`wow_classic_beta` the ended beta, which it refuses), so a renamed or custom install path works; a folder without that file is
 known by its name.
 
 Where the companion keeps its files:
@@ -184,7 +184,7 @@ the addon and the data addon from the signed releases (it refuses while that gam
 while you are not connected, and they go up as soon as you connect, so a missed sign-in costs nothing.
 
 **"No WoW Forever install found."** Add the game's `_forever_` folder, the one containing `WTF`
-and `Logs`, on the Settings page. The folder above it works too. Beta testers can add `_classic_beta_`.
+and `Logs`, on the Settings page. The folder above it works too.
 
 **"Advanced logging: OFF."** The report will be accepted, marked, and will lose the views that
 need the advanced fields: deaths with health, item level, resources, and positions. Turn it on

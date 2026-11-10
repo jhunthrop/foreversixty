@@ -37,7 +37,11 @@ func TestCandidatesOnLinuxAreTheWinePrefixes(t *testing.T) {
 // The Mac layout: the Battle.net folder holds the launcher's .app, Data and
 // one flavour folder per game, and each flavour folder holds its client's
 // .app beside WTF and Logs (the owner's /Applications/World of Warcraft).
-func TestDetectFindsTheBetaInAMacLayout(t *testing.T) {
+// The live game's folder is found by its WTF and Logs, not by the name of
+// the client's .app inside it, so this layout carries no .app in _forever_
+// at all. The ended beta beside it is not found, so its saved variables
+// are never read.
+func TestDetectFindsOnlyTheLiveGameInAMacLayout(t *testing.T) {
 	root := filepath.Join(t.TempDir(), "World of Warcraft")
 	for _, p := range []string{
 		filepath.Join(root, "World of Warcraft Launcher.app", "Contents", "MacOS"),
@@ -49,46 +53,24 @@ func TestDetectFindsTheBetaInAMacLayout(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	beta := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
+	fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
+	live := fakeInstall(t, root, "_forever_", "ACCOUNT#1")
 	fakeInstall(t, root, "_retail_", "ACCOUNT#1")
 
 	got := detectIn([]string{filepath.Join(t.TempDir(), "absent"), root, root})
-	if len(got) != 1 || got[0].Path != beta.Path {
-		t.Fatalf("detect = %+v, want only %s", got, beta.Path)
+	if len(got) != 1 || got[0].Path != live.Path {
+		t.Fatalf("detect = %+v, want only %s", got, live.Path)
 	}
-	if got[0].Logs != filepath.Join(beta.Path, "Logs") || got[0].WTF != filepath.Join(beta.Path, "WTF") {
+	if got[0].Logs != filepath.Join(live.Path, "Logs") || got[0].WTF != filepath.Join(live.Path, "WTF") {
 		t.Errorf("install = %+v", got[0])
 	}
 	sv, err := got[0].SavedVariables("ForeverSixty")
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := filepath.Join(beta.Path, "WTF", "Account", "ACCOUNT#1", "SavedVariables", "ForeverSixty.lua")
+	want := filepath.Join(live.Path, "WTF", "Account", "ACCOUNT#1", "SavedVariables", "ForeverSixty.lua")
 	if len(sv) != 1 || sv[0] != want {
 		t.Errorf("saved variables = %q, want %q", sv, want)
-	}
-}
-
-// The live game's folder is found by its WTF and Logs, not by the name of
-// the client's .app inside it, so this layout carries no .app in _forever_
-// at all. With the beta beside it, the live game comes first.
-func TestDetectFindsTheLiveGameFirstInAMacLayout(t *testing.T) {
-	root := filepath.Join(t.TempDir(), "World of Warcraft")
-	for _, p := range []string{
-		filepath.Join(root, "World of Warcraft Launcher.app", "Contents", "MacOS"),
-		filepath.Join(root, "_classic_beta_", "World of Warcraft Beta.app", "Contents", "MacOS"),
-	} {
-		if err := os.MkdirAll(p, 0o755); err != nil {
-			t.Fatal(err)
-		}
-	}
-	beta := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
-	live := fakeInstall(t, root, "_forever_", "ACCOUNT#1")
-	fakeInstall(t, root, "_retail_", "ACCOUNT#1")
-
-	got := detectIn([]string{root})
-	if len(got) != 2 || got[0].Path != live.Path || got[1].Path != beta.Path {
-		t.Fatalf("detect = %+v, want %s then %s", got, live.Path, beta.Path)
 	}
 	if FlavorName(got[0].Flavor) != "WoW Forever" {
 		t.Errorf("live install named %q", FlavorName(got[0].Flavor))
