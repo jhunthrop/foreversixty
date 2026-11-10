@@ -105,16 +105,27 @@ def member_profile() -> dict:
               'best_parse': _parse(*gd.PROFILE_PARSE)}
     readiness = {'character_key': _char_key(name), 'name': name, 'class': cls, 'spec': spec, 'consent': 'gear_bags', 'level': 60, 'gear_gap': gd.PROFILE_GAP,
                  'enchants': {'missing_slots': [], 'checked': True}, 'consumables': {'state': 'stocked'}, 'talent_points_unspent': 0, 'talent_points_read': True,
-                 'item_level': ilvl, 'item_level_delta': 0, 'logged_at': gd.NOW, 'failing': 0}
+                 'item_level': ilvl, 'item_level_delta': 0, 'logged_at': gd.NOW, 'failing': 0,
+                 'attuned': True, 'flask_food': {'flask_or_elixir': True, 'food': True}}
     present = sum(1 for _, o in gd.PROFILE_NIGHTS if o == 'present')
     nights = [{'raid_id': gd.LAST_RAID_ID, 'starts_at': at, 'outcome': o, 'excused': False} for at, o in gd.PROFILE_NIGHTS]
-    loot = [{'item_id': d['item_id'], 'name': d['item_name'], 'icon': d['icon'], 'quality': d['quality'], 'raid_id': gd.LAST_RAID_ID, 'awarded_at': d['at']}
-            for d in profile_loot()]
+    loot = [{'item_id': d['item_id'], 'name': d['item_name'], 'icon': d['icon'], 'quality': d['quality'], 'raid_id': gd.LAST_RAID_ID, 'awarded_at': d['at'],
+             **{k: d[k] for k in ('ms_os', 'reason', 'votes_yes', 'votes_no', 'votes_officers')}} for d in profile_loot()]
+    # The guild's one logged night: one award among its raiders puts the median at none; the award came that night, so no
+    # raid since; the run is the nights in a row they came (member_profile_history.go).
+    streak = 0
+    for _at, outcome in reversed(gd.PROFILE_NIGHTS):  # newest first
+        if outcome not in ('present', 'late'):
+            break
+        streak += 1
     notes = [{'id': i, 'body': body, 'author': _ref(who), 'created_at': at, 'may_delete': mine} for i, body, who, at, mine in gd.PROFILE_NOTES]
-    return {'account_key': gd.PROFILE_ACCOUNT, 'member': member, 'characters': [{'character_key': _char_key(name), 'name': name, 'class': cls, 'is_main': True}],
+    return {'account_key': gd.PROFILE_ACCOUNT, 'member': member, 'characters': [{'character_key': _char_key(name), 'name': name, 'class': cls, 'is_main': True},
+                                                                              {'character_key': _char_key(gd.PROFILE_ALT[0]), 'name': gd.PROFILE_ALT[0], 'class': gd.PROFILE_ALT[1], 'is_main': False}],
             'attendance': {'source': 'raids', 'last_4': {'present': present, 'nights': len(nights)},
-                           'last_30': {'present': gd.PROFILE_LAST_30[0], 'nights': gd.PROFILE_LAST_30[1]}, 'nights': nights},
-            'loot': {'count': len(loot), 'items': loot}, 'readiness': readiness, 'notes': notes}
+                           'last_30': {'present': gd.PROFILE_LAST_30[0], 'nights': gd.PROFILE_LAST_30[1]}, 'nights': nights, 'streak': streak},
+            'loot': {'count': len(loot), 'items': loot, 'guild_median': 0, 'nights_since': 0}, 'readiness': readiness,
+            'upgrades': [{'slot': slot, 'item_id': item_id, 'name': name, 'source': source, 'gain_dps': gain}
+                         for slot, item_id, name, source, gain, _icon in gd.PROFILE_UPGRADES], 'notes': notes}
 
 
 def profile_loot() -> list[dict]:

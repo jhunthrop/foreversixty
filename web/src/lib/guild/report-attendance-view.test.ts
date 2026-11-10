@@ -3,7 +3,7 @@
 // and under a fix who set it and what the log said; the attendance groups' order.
 import { describe, expect, it } from 'vitest';
 import { attendanceRow } from '../../test-support/report-fixtures';
-import { fixOptions, fixRowModel, fixRows, logOutcomeText } from './report-attendance-view';
+import { fixOptions, fixRowModel, fixRows, logOutcomeText, nightNames } from './report-attendance-view';
 
 const FIX = { by_name: 'Kraggor', at: '2026-12-11T06:00:00Z' };
 
@@ -50,5 +50,19 @@ describe('fixRows', () => {
 
   it('offers present, absent, bench and excused', () => {
     expect(fixOptions().map((o) => o.label)).toEqual(['Present', 'Absent', 'Bench', 'Excused']);
+  });
+});
+
+describe('nightNames', () => {
+  it('names who was not in the log, late or joined, in shorthand, and nobody present', () => {
+    const groups = nightNames([
+      attendanceRow({ character_key: 'a', name: 'Absent', signed: 'in', outcome: 'no_show' }),
+      attendanceRow({ character_key: 'b', name: 'Here', signed: 'in', outcome: 'present' }),
+      attendanceRow({ character_key: 'c', name: 'Walkin', signed: null, outcome: 'present' }),
+    ]);
+    expect(groups.map((group) => [group.label, group.rows.map((row) => row.name)])).toEqual([
+      ['Not in the log', ['Absent']],
+      ['Joined', ['Walkin']],
+    ]);
   });
 });

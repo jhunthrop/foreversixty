@@ -21,6 +21,19 @@ export const reportNightCopy = {
     melee: 'Melee',
   },
   result: { kill: 'Kill', wipe: 'Wipe', clear: 'Clear' } satisfies Record<PullResult, string>,
+  deaths: {
+    head: 'Deaths',
+    meta: (n: number): string => `${n} ${n === 1 ? 'raider' : 'raiders'}`,
+    count: (wipes: number, kills: number): string =>
+      [
+        wipes === 0 ? '' : wipes === 1 ? '1 on a wipe' : `${wipes} on wipes`,
+        kills === 0 ? '' : kills === 1 ? '1 on a kill' : `${kills} on kills`,
+      ]
+        .filter((part) => part !== '')
+        .join(SEP),
+    line: (ability: string, pull: string, clock: string): string => `${ability}, ${pull} at ${clock}`,
+    unknown: 'Not read from the log',
+  },
   output: {
     head: 'DPS and HPS',
     meta: 'Boss kills',
@@ -41,6 +54,8 @@ export const reportNightCopy = {
   },
   attendance: {
     head: 'Attendance',
+    /** The officer's names under the summary, in a raid leader's shorthand. */
+    names: { noShow: 'Not in the log', late: 'Late', joined: 'Joined' } as Readonly<Record<string, string>>,
     fix: 'Fix attendance',
     fixLabel: (name: string): string => `Fix ${name}'s attendance`,
     fixPlaceholder: 'Fix',
@@ -56,6 +71,9 @@ export const reportNightCopy = {
   loot: {
     head: 'Loot awarded',
     to: (boss: string, name: string): string => `${boss}${SEP}to ${name}`,
+    /** "to Shiverknife · 3 of 3 yes", the boss first when the night had several. */
+    line: (boss: string, name: string, why: string): string =>
+      [boss, `to ${name}`, why].filter((part) => part !== '').join(SEP),
   },
   discord: {
     head: 'Discord summary',
@@ -96,6 +114,10 @@ export const ratedOf = (rating: number): string => `rated ${Math.round(rating)} 
 
 /** `Onyxia, pull 1: not read from the log yet.` */
 export const unknownPullLine = (title: string, reason: string): string => `${title}: ${reason}.`;
+
+/** "a, b and c": names in one sentence, no serial comma. */
+export const listWords = (names: readonly string[]): string =>
+  new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(names);
 
 /** `Bench, set by Kraggor`. */
 export const fixedBy = (status: string, by: string): string => `${status}, set by ${by}`;

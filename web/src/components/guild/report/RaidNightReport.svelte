@@ -3,8 +3,8 @@
      needs a word?", mock web-guild-report, built only from the ui/ primitives. Page split: the back link
      and the head (the raid, its Done Tag and date, the answer: kills, wipes, attempts, deaths, the
      guild tabs, as the planner's), then for a
-     member Your night, Pulls (the one Plate, each pull's deaths in the Inspector), DPS and HPS by
-     boss kill and the consumables by pull. Rail: Attendance (the match line, the summary, and for
+     member Your night, Pulls (each pull's deaths in the Inspector), for officers the deaths
+     by raider, DPS and HPS by boss kill and the consumables by pull. Rail: Attendance (the match line, the summary, and for
      officers the fix rows behind Fix attendance), Loot awarded, the Discord summary (officers), the
      notes. A member's report carries only their own deaths,
      output and consumables (the API scopes it), and nothing here lists other raiders worst first.
@@ -21,6 +21,7 @@
   import { plannerStatusTag } from '../../../lib/guild/raid-planner-view';
   import { headlineFigures } from '../../../lib/guild/report-night-view';
   import { reportUrlOf } from '../../../lib/guild/report-view';
+  import FactionCrest from '../../character/FactionCrest.svelte';
   import Figure from '../../ui/Figure.svelte';
   import Page from '../../ui/Page.svelte';
   import PageHeader from '../../ui/PageHeader.svelte';
@@ -31,6 +32,7 @@
   import RaidDoneBand from '../RaidDoneBand.svelte';
   import ReportAttendance from './ReportAttendance.svelte';
   import ReportConsumables from './ReportConsumables.svelte';
+  import ReportDeaths from './ReportDeaths.svelte';
   import ReportDiscord from './ReportDiscord.svelte';
   import ReportLoot from './ReportLoot.svelte';
   import ReportOutput from './ReportOutput.svelte';
@@ -68,7 +70,6 @@
   const kind = $derived(kindOf(raid));
   const when = $derived(raidWhen(raid, now, viewerTimezone, locale));
   const status = $derived(plannerStatusTag(flags.status));
-  const titleTone = $derived(c.guild?.faction ? { faction: c.guild.faction } : ('strong' as const));
   const guildTimezone = $derived(raid.guild_timezone ?? viewerTimezone);
   const report = $derived(raid.report);
   const night = $derived(raid.night);
@@ -121,7 +122,11 @@
 {/snippet}
 
 {#snippet header()}
-  <PageHeader title={raid.title} tone={titleTone} {meta} {answer} testid="raid-head">
+  <PageHeader title={raid.title} tone="strong" {meta} {answer} testid="raid-head">
+    {#snippet crest()}<FactionCrest
+        faction={c.guild?.faction ?? null}
+        src={c.guild?.mark ?? null}
+      />{/snippet}
     {#snippet crumb()}<a href={`${guildPath}#raids`} data-testid="raid-back-link"
         >{raidCopy.backLink(guildName)}</a
       >{/snippet}
@@ -157,7 +162,7 @@
   <p class="sr-only" role="status" data-testid="raid-live-region">
     {c.logMatched ? attendanceCopy.liveRegion : ''}
   </p>
-  <Page layout="split" {header} testid="raid-page">
+  <Page layout="split" panels {header} testid="raid-page">
     {#if report === null || night === null}{@render matchLine()}{/if}
     {#if officer && !c.officerTools}
       <GuildPlanGate tab="raids" facts={gateFacts} id={gateId} testid="guild-raids-plan-gate-report" />
@@ -168,6 +173,7 @@
     {#if report !== null && night !== null}
       {#if showYourNight}<ReportYourNight {raid} currentKey={c.currentKey} {locale} />{/if}
       <ReportPulls {report} />
+      {#if officer}<ReportDeaths {report} />{/if}
       <ReportOutput
         parses={report.parses}
         {officer}
@@ -208,7 +214,7 @@
         {/if}
       {/if}
       {#if raid.notes_html.trim() !== ''}
-        <Section title={raidCopy.subheads.notes} anchor="raid-notes" testid="raid-notes">
+        <Section title={raidCopy.subheads.notes} anchor="raid-notes" panel testid="raid-notes">
           <div
             class="prose-forever [&_a]:text-gold [&_li]:marker:text-muted text-[14px] leading-[1.6] [&_ol]:list-decimal [&_ul]:list-disc"
             data-testid="raid-notes-prose"

@@ -12,7 +12,18 @@ export type Vote = 'yes' | 'no';
 export type DropKind = 'gear' | 'quest' | 'bag' | 'skinned';
 
 /** An award's decision record. The vote counts are null for a member and on an old award. */
-export interface LootDecision {
+/** An award's decision record (migration 0073): every field null on an award made before the
+ *  council kept records. The loot tab's decisions, the night report's awards and the member
+ *  profile's loot all carry it (api AwardRecord). */
+export interface AwardRecord {
+  ms_os: MsOs | null;
+  reason: string | null;
+  votes_yes: number | null;
+  votes_no: number | null;
+  votes_officers: number | null;
+}
+
+export interface LootDecision extends AwardRecord {
   award_id: number;
   item_id: number;
   item_name: string;
@@ -21,11 +32,6 @@ export interface LootDecision {
   character_key: string;
   name: string;
   class: string;
-  ms_os: MsOs | null;
-  reason: string | null;
-  votes_yes: number | null;
-  votes_no: number | null;
-  votes_officers: number | null;
   /** The officer's character; "an officer" when unnamed, "" when none is recorded. */
   awarded_by: string;
   at: string;

@@ -2,8 +2,8 @@
 <!-- The bare `/guild` page (web layout spec 2026-11-05 §6.1 Landing, §7.1 signed-in landing): where
      the header's Guild door lands a visitor with no guild of their own. PageHeader, then a split
      Page: Open a guild (a FormRow) and Top guilds (the one Plate); the rail holds Your guilds when
-     the account has any, then Run a guild? (with the sign-in button signed out) or the claim the
-     account holds. A signed-in visitor whose current character has a guild, or whose account has
+     the account has any, then the claim the account holds, or, with no guild, Run a guild? (with
+     the sign-in button signed out). A signed-in visitor whose current character has a guild, or whose account has
      exactly one, is sent on to it once `/v1/me` answers; the lookup is already on screen meanwhile,
      and starts on the account's first guild's region and ruleset (guild round 3). -->
 <script lang="ts">
@@ -100,21 +100,24 @@
   {/snippet}
   {#snippet rail()}
     <GuildLandingMine rows={mine} />
-    <Section
-      title={held === null ? copy.runHeading : copy.heldHeading}
-      panel
-      anchor="claim"
-      testid="guild-landing-claim"
-    >
-      <div class="flex flex-col items-start gap-3">
-        <p class="text-text text-[14px] leading-[22px]" data-testid="guild-landing-claim-line">
-          {held === null ? copy.officerLine : copy.holdsClaim(held.name)}
-        </p>
-        {#if signedIn === false}
-          <Button href={battlenetStartUrl(next)} testid="guild-landing-sign-in">{copy.signIn}</Button>
-        {/if}
-      </div>
-    </Section>
+    <!-- A player already in a guild is not asked to run one; the claim they hold still shows. -->
+    {#if held !== null || mine.length === 0}
+      <Section
+        title={held === null ? copy.runHeading : copy.heldHeading}
+        panel
+        anchor="claim"
+        testid="guild-landing-claim"
+      >
+        <div class="flex flex-col items-start gap-3">
+          <p class="text-text text-[14px] leading-[22px]" data-testid="guild-landing-claim-line">
+            {held === null ? copy.officerLine : copy.holdsClaim(held.name)}
+          </p>
+          {#if signedIn === false}
+            <Button href={battlenetStartUrl(next)} testid="guild-landing-sign-in">{copy.signIn}</Button>
+          {/if}
+        </div>
+      </Section>
+    {/if}
   {/snippet}
   <Page layout="split" panels {header} {rail} testid="guild-landing-page">
     <Section title={copy.lookupHeading} panel frame="framed" testid="guild-lookup-card">
@@ -128,27 +131,30 @@
           bind:value={name}
           grow
         />
-        <div class="flex flex-col gap-[6px]">
-          <label class={FIELD_LABEL} for="guild-lookup-region">{copy.regionLabel}</label>
-          <Select
-            id="guild-lookup-region"
-            name="region"
-            size="compact"
-            bind:value={region}
-            onchange={() => (placeTouched = true)}
-            options={regionOptions}
-          />
-        </div>
-        <div class="flex flex-col gap-[6px]">
-          <label class={FIELD_LABEL} for="guild-lookup-ruleset">{copy.rulesetLabel}</label>
-          <Select
-            id="guild-lookup-ruleset"
-            name="ruleset"
-            size="compact"
-            bind:value={ruleset}
-            onchange={() => (placeTouched = true)}
-            options={rulesetOptions}
-          />
+        <!-- One child of the FormRow, so a phone keeps region and ruleset side by side under the name. -->
+        <div class="flex gap-3 [&>*]:flex-1 md:[&>*]:flex-none">
+          <div class="flex flex-col gap-[6px]">
+            <label class={FIELD_LABEL} for="guild-lookup-region">{copy.regionLabel}</label>
+            <Select
+              id="guild-lookup-region"
+              name="region"
+              size="compact"
+              bind:value={region}
+              onchange={() => (placeTouched = true)}
+              options={regionOptions}
+            />
+          </div>
+          <div class="flex flex-col gap-[6px]">
+            <label class={FIELD_LABEL} for="guild-lookup-ruleset">{copy.rulesetLabel}</label>
+            <Select
+              id="guild-lookup-ruleset"
+              name="ruleset"
+              size="compact"
+              bind:value={ruleset}
+              onchange={() => (placeTouched = true)}
+              options={rulesetOptions}
+            />
+          </div>
         </div>
         {#snippet submit()}
           <Button tone="primary" type="submit">{copy.submit}</Button>
@@ -156,7 +162,7 @@
       </FormRow>
       <p class="text-strong min-h-[1lh] pt-2 text-[13px] empty:hidden" role="status">{status}</p>
     </Section>
-    <Section title={copy.topHeading} boxed testid="guild-landing-top">
+    <Section title={copy.topHeading} panel testid="guild-landing-top">
       <HomeTopGuilds label={copy.topHeading} />
     </Section>
   </Page>

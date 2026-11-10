@@ -129,11 +129,7 @@ func medianItemLevel(roster []RosterRow) *int {
 	if len(levels) == 0 {
 		return nil
 	}
-	sort.Ints(levels)
-	mid := levels[len(levels)/2]
-	if len(levels)%2 == 0 {
-		mid = (levels[len(levels)/2-1] + levels[len(levels)/2]) / 2
-	}
+	mid := medianOf(levels)
 	return &mid
 }
 

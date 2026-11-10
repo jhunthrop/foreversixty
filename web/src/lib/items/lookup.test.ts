@@ -33,3 +33,23 @@ describe('readItemTooltipModel', () => {
     expect(readItemTooltipModel(BUILD, 'warrior', 21995)?.name).toBe('Boots of Heroism');
   });
 });
+
+describe('fetchItemRow', () => {
+  it("reads the class file's own row for an id, null for one it lacks", async () => {
+    const { fetchItemRow } = await import('./lookup');
+    const body = JSON.stringify({
+      items: [{ id: 19595, name: "Dryad's Wrist Bindings", icon: 'inv_bracer_13', quality: 4 }],
+    });
+    const real = globalThis.fetch;
+    globalThis.fetch = (async () => new Response(body, { status: 200 })) as typeof fetch;
+    try {
+      expect(await fetchItemRow('row-test-build', 'mage', 19595)).toMatchObject({
+        icon: 'inv_bracer_13',
+        quality: 4,
+      });
+      expect(await fetchItemRow('row-test-build', 'mage', 1)).toBeNull();
+    } finally {
+      globalThis.fetch = real;
+    }
+  });
+});

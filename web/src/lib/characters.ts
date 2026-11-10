@@ -113,6 +113,13 @@ export function characterHref(region: string, ruleset: string, name: string): st
   return `/character/${characterKey(region, ruleset, name)}`;
 }
 
+/** A character page from the API's `character_key` (`us/pvp/frostquill`) and the name it carries;
+ *  undefined for a key without its region and ruleset (a log name the night could not map). */
+export function characterHrefOfKey(key: string, name: string): string | undefined {
+  const [region, ruleset] = key.split('/');
+  return region && ruleset ? characterHref(region, ruleset, name) : undefined;
+}
+
 export function guildHref(region: string, ruleset: string, name: string): string {
   return `/guild/${characterKey(region, ruleset, name)}`;
 }

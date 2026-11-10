@@ -51,11 +51,23 @@ func VerdictFor(pick Slot, wornItemID int, hasWorn bool) SlotVerdict {
 }
 
 // GearGap is the readiness board's own gear_gap object: how many of a band's slots are an
-// upgrade, the DPS sum of the ones with a known gain, and how many have none.
+// upgrade, the DPS sum of the ones with a known gain, and how many have none. Pieces names each
+// upgrade, in the band's slot order: the member profile lists them (item, gain, where it drops).
 type GearGap struct {
 	Upgrades      int
 	GainDps       float64
 	NotSimChecked int
+	Pieces        []GapPiece
+}
+
+// GapPiece is one upgrade slot: the band's pick for it, where it comes from and, when a listed
+// alternative measured the worn item, the pick's DPS gain over it (nil when not sim-checked).
+type GapPiece struct {
+	Slot     string
+	ItemID   int
+	ItemName string
+	Source   string
+	GainDps  *float64
 }
 
 // GapFor sums VerdictFor over every slot band names a real pick for (ItemID > 0 - the BiS
@@ -73,6 +85,8 @@ func GapFor(band Band, gear map[string]int) GearGap {
 			continue
 		}
 		out.Upgrades++
+		out.Pieces = append(out.Pieces, GapPiece{Slot: slot.Slot, ItemID: slot.ItemID, ItemName: slot.ItemName,
+			Source: slot.Source, GainDps: v.GainDps})
 		switch {
 		case v.NotSimChecked:
 			out.NotSimChecked++

@@ -34,7 +34,6 @@ export default {
   },
   admin: {
     copy: strip(c),
-    meta: c.tableMeta(testers.length),
     buttons: PLATFORM_ORDER.map((p) => c.copyEmails(p, counts[p])),
     rows: testerRows(testers),
   },

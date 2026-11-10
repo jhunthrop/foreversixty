@@ -17,8 +17,10 @@ import {
   hitModel,
   outputGroups,
   pullRows,
+  raiderDeaths,
 } from './report-night-view';
-import { reportNightCopy as copy } from './report-night-copy';
+import { pullTitle, reportNightCopy as copy } from './report-night-copy';
+import { killTimeLabel } from './attendance-copy';
 
 const report = raidReport();
 
@@ -111,13 +113,18 @@ describe('causes', () => {
 });
 
 describe('outputGroups', () => {
-  it('groups by kill in the API order, the guild unit, the rating only when computed', () => {
+  it('groups by kill in the API order, the guild unit, the rating only when computed, the role only when the unit hides it', () => {
     const [group] = outputGroups(report.parses);
     expect(group.boss).toBe('Onyxia');
     expect(group.rows.map((r) => [r.name, r.figure, r.unit, r.sub])).toEqual([
-      ['Pyrewisp', '812', 'DPS', 'DPS · rated 96 of 100'],
-      ['Menda', '1,204', 'HPS', 'Healer'],
+      ['Pyrewisp', '812', 'DPS', 'rated 96 of 100'],
+      ['Menda', '1,204', 'HPS', ''],
     ]);
+  });
+
+  it('names the role when the figure does not, as for a tank on DPS', () => {
+    const [tank] = outputGroups([{ ...report.parses[0], role: 'tank', rating: null }])[0].rows;
+    expect(tank.sub).toBe('Tank');
   });
 });
 
@@ -170,6 +177,41 @@ describe('consumablesModel', () => {
     ]);
     expect(none.rows).toEqual([]);
     expect(none.unknown).toEqual(['Onyxia, pull 1: not read from the log yet.']);
+  });
+
+  it('says one reason once, naming every pull it covers', () => {
+    const unread = (attempt: number): RaidPullConsumables => ({
+      fight_index: attempt,
+      name: 'Onyxia',
+      attempt,
+      reason: 'no_character_sheet',
+      rows: null,
+    });
+    expect(consumablesModel([unread(1), unread(2), unread(3)]).unknown).toEqual([
+      'Onyxia, pull 1, Onyxia, pull 2 and Onyxia, pull 3: the log carried no character sheet, so nothing can be said.',
+    ]);
+  });
+});
+
+describe('raiderDeaths', () => {
+  it('lists each raider who died in the API order, each death with its pull and time', () => {
+    const rows = raiderDeaths(report);
+    expect(rows.map((row) => row.name)).toEqual(report.deaths.map((row) => row.name));
+    rows.forEach((model, index) => {
+      const row = report.deaths[index];
+      const total = row.on_wipes + row.on_kills;
+      expect(model.count).toBe(total > 1 ? copy.deaths.count(row.on_wipes, row.on_kills) : '');
+    });
+    const pull = report.pulls.find((p) => (p.death_causes ?? []).length > 0)!;
+    const death = pull.death_causes![0];
+    const model = rows.find((row) => row.key === death.character_key)!;
+    expect(model.deaths).toContain(`${pullTitle(pull.name, pull.attempt)} at ${killTimeLabel(death.at_ms)}`);
+  });
+
+  it('words the counts as a raider would', () => {
+    expect(copy.deaths.count(2, 1)).toBe('2 on wipes · 1 on a kill');
+    expect(copy.deaths.count(1, 0)).toBe('1 on a wipe');
+    expect(copy.deaths.count(0, 3)).toBe('3 on kills');
   });
 });
 

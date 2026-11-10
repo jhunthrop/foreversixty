@@ -6,5 +6,7 @@ describe('homeTopGuildsCopy.bosses', () => {
     expect(homeTopGuildsCopy.bosses(1)).toBe('1 boss');
     expect(homeTopGuildsCopy.bosses(0)).toBe('0 bosses');
     expect(homeTopGuildsCopy.bosses(12)).toBe('12 bosses');
+    expect(homeTopGuildsCopy.bossesDown(1)).toBe('1 boss down');
+    expect(homeTopGuildsCopy.bossesDown(4)).toBe('4 bosses down');
   });
 });

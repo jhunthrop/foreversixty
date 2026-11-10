@@ -23,6 +23,8 @@ RULESET_WORD = {'pvp': 'PvP', 'hardcore': 'Hardcore', 'normal': 'Normal'}
 
 # landing-in: the account's guilds (name, region, ruleset, rank) and the alt the header points at.
 MINE = [(gd.GUILD, 'us', 'pvp', 'officer'), ('The Last Watch', 'us', 'hardcore', 'member')]
+# Each of the account's guilds' faction and roster count, as /v1/me's MeGuild sends them (the landing's Your guilds row).
+MINE_SEEN = {gd.GUILD: (gd.FACTION, gd.RAIDERS), 'The Last Watch': ('horde', 31)}
 ALT = ('Briarwick', 'druid', 23)
 
 # join: the joining player's character, and the officer who made the link.
@@ -55,8 +57,8 @@ def me_in() -> dict:
     alt = {'key': _key(name), 'region': gd.REGION, 'ruleset': gd.RULESET, 'name': name, 'class': cls.title(), 'level': level, 'faction': gd.FACTION}
     main = {'key': _key(CLAIMANT), 'region': gd.REGION, 'ruleset': gd.RULESET, 'name': CLAIMANT, 'class': 'Hunter', 'level': 60, 'faction': gd.FACTION,
             'guild': {'id': gd.GUILD_ID, 'name': gd.GUILD, 'verified': True}}
-    guilds = [{'id': gd.GUILD_ID if n == gd.GUILD else 501, 'region': r, 'ruleset': rs, 'name': n, 'rank': rank, 'verified': True}
-              for n, r, rs, rank in MINE]
+    guilds = [{'id': gd.GUILD_ID if n == gd.GUILD else 501, 'region': r, 'ruleset': rs, 'name': n, 'rank': rank, 'verified': True,
+               'faction': MINE_SEEN[n][0], 'roster_count': MINE_SEEN[n][1]} for n, r, rs, rank in MINE]
     return {'user': _user(5, 'Dunmaro#1105'), 'characters': [alt, main], 'main_character_key': _key(CLAIMANT), 'guilds': guilds}
 
 

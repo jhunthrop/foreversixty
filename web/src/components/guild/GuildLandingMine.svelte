@@ -1,8 +1,8 @@
 <!-- web/src/components/guild/GuildLandingMine.svelte -->
 <!-- The guild landing's `Your guilds` (guild round 3; web layout spec 2026-11-05 §6.1 rail): every
      guild any of the account's characters is in, so a player on an alt with no guild still lands one
-     click from their raid guild. Open link Rows: the name, where it lives, the account's rank as a
-     Tag. Not drawn signed out or with no guild. -->
+     click from their raid guild. Open link Rows: the guild's mark, the name, where it lives and its roster, the
+     account's rank as a Tag. Not drawn signed out or with no guild. -->
 <script lang="ts">
   import { guildLandingCopy as copy } from '../../lib/guild/copy';
   import type { MyGuildRow } from '../../lib/guild/landing-mine';
@@ -17,6 +17,13 @@
   <Section title={copy.mineHeading} panel testid="guild-landing-mine">
     {#each rows as row (row.key)}
       <Row title={row.name} sub={row.where} href={row.href} open>
+        {#snippet lead()}{#if row.mark !== null}<img
+              src={row.mark}
+              alt=""
+              width="28"
+              height="28"
+              class="h-7 w-7 object-contain"
+            />{/if}{/snippet}
         {#snippet trail()}
           {#if row.rank !== null}<Tag tone="muted">{row.rank}</Tag>{/if}
         {/snippet}

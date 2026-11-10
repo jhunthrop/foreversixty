@@ -80,6 +80,8 @@ type ReportLootAward struct {
 	Class        string `json:"class"`
 	ByName       string `json:"by_name"`
 	At           string `json:"at"`
+	// AwardRecord is why the drop went to them: MS or OS, the votes and the reason.
+	AwardRecord
 }
 
 // ReportLootBoss groups a boss's awards.

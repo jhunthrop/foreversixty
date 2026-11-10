@@ -78,6 +78,10 @@ func TestTheReportFollowsTheLog(t *testing.T) {
 		rep.Loot[0].Awards[0].ItemName != testOnyxiaLoot[0].Name || rep.Loot[0].Awards[0].Name != "Thornhide" {
 		t.Fatalf("loot = %+v", rep.Loot)
 	}
+	// The award keeps its decision record: the council's snapshot of the votes when it was made.
+	if r := rep.Loot[0].Awards[0].AwardRecord; r.VotesYes == nil || r.VotesNo == nil || r.VotesOfficers == nil {
+		t.Fatalf("award record = %+v", r)
+	}
 	m := rep.Moves
 	if m.Previous == nil || m.Previous.ID != prev.ID || len(m.Rows) != 2 {
 		t.Fatalf("moves = %+v", m)
