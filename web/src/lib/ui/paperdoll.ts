@@ -56,7 +56,11 @@ export interface DollCell {
 
 /** The order a doll opens in: head to ranged down the character panel's left, then hands to the
  *  trinkets down its right. */
-const OPEN_ORDER: readonly string[] = [...FRAME_LEFT, ...FRAME_BOTTOM, ...FRAME_RIGHT];
+const OPEN_ORDER: readonly string[] = /* @__PURE__ */ ([] as string[]).concat(
+  FRAME_LEFT,
+  FRAME_BOTTOM,
+  FRAME_RIGHT,
+);
 
 /** Whether a cell can be selected: an empty slot cannot (§4.4 Disabled). */
 export function selectable(cell: DollCell): boolean {

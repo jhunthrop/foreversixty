@@ -56,7 +56,9 @@ export interface TalentFile {
 export type Slot = Exclude<FrameSlot, CosmeticSlot>;
 
 /** The 17 planner gear slots, in the client's paperdoll order (lib/gear/slots.ts). */
-export const SLOTS: readonly Slot[] = FRAME_SLOTS.filter((slot): slot is Slot => !COSMETIC_SLOTS.has(slot));
+export const SLOTS: readonly Slot[] = /* @__PURE__ */ FRAME_SLOTS.filter(
+  (slot): slot is Slot => !COSMETIC_SLOTS.has(slot),
+);
 
 /** Item files say `finger` and `trinket`; the planner maps each to both numbered slots. */
 export const SLOT_ALIASES: Record<string, Slot[]> = {

@@ -41,7 +41,7 @@ export function filterKindOfSource(sourceKind: string): SourceFilterKind | undef
 
 /** The second slot of each pair (the rings, the trinkets, the off hand), mapped to the first. */
 const PAIR_FIRST: Readonly<Record<string, string>> = {
-  ...Object.fromEntries(Object.entries(PAIR_OF).filter(([slot]) => slot.endsWith('2'))),
+  .../* @__PURE__ */ Object.fromEntries(Object.entries(PAIR_OF).filter(([slot]) => slot.endsWith('2'))),
   off_hand: 'main_hand',
 };
 
