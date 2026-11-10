@@ -24,6 +24,8 @@
 
 <style>
   .home-grid {
+    /* The rail: five upgrade rows with their names on one line; the foot pair shares it. */
+    --home-rail: 400px;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'lead' 'rail' 'feed' 'foot';
@@ -51,9 +53,18 @@
   }
   @media (min-width: 1100px) {
     .home-grid {
-      /* the mock's rail: five item rows with their gains, unwrapped */
-      grid-template-columns: minmax(0, 1fr) 400px;
+      grid-template-columns: minmax(0, 1fr) var(--home-rail);
       grid-template-areas: 'lead lead' 'feed rail' 'foot foot';
+    }
+  }
+  @media (min-width: 1280px) {
+    .home-grid {
+      --home-rail: 440px;
+    }
+  }
+  @media (min-width: 1800px) {
+    .home-grid {
+      --home-rail: 480px;
     }
   }
   @media (max-width: 767px) {

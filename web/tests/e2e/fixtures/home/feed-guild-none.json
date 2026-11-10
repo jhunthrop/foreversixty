@@ -8,7 +8,7 @@
       "icon": null,
       "crest": "warrior",
       "quality": null,
-      "href": "/sim/s9",
+      "href": "/sim/g1",
       "date_only": false,
       "segments": [
         {
@@ -17,7 +17,14 @@
           "class": "warrior"
         },
         {
-          "text": " simmed 987.1 DPS, #2 of 14 DPS in Olympus XXVII (Fury Warrior, 60 raid)"
+          "text": " simmed 987 DPS, #2 of 14 DPS in "
+        },
+        {
+          "text": "Olympus XXVII",
+          "style": "strong"
+        },
+        {
+          "text": " (Fury Warrior, 60 raid)"
         }
       ]
     },
@@ -29,7 +36,7 @@
       "icon": null,
       "crest": "mage",
       "quality": null,
-      "href": "/sim/s8",
+      "href": "/sim/g3",
       "date_only": false,
       "segments": [
         {
@@ -38,7 +45,14 @@
           "class": "mage"
         },
         {
-          "text": " simmed 1,012.3 DPS, #1 of 14 DPS in Olympus XXVII (Fire Mage, 60 raid)"
+          "text": " simmed 1012 DPS, #1 of 14 DPS in "
+        },
+        {
+          "text": "Olympus XXVII",
+          "style": "strong"
+        },
+        {
+          "text": " (Fire Mage, 60 raid)"
         }
       ]
     },

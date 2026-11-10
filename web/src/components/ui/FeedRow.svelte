@@ -1,6 +1,7 @@
 <!-- web/src/components/ui/FeedRow.svelte -->
 <!-- One feed line (home B spec 2026-11-07 P11): an icon or crest, a sentence in the body face with
-     its names in their colours, and at the right the time and a caps kind. A link to the thing it
+     its names in their colours, and at the right the time and a caps kind (under the sentence on a
+     phone). A link to the thing it
      is about, on a --color-line-soft hairline, no box; hover is the S2 ground. `fresh` slides the
      newest line in when the reader allows motion. -->
 <script lang="ts">
@@ -75,6 +76,19 @@
     letter-spacing: 0;
     font-weight: 700;
     color: var(--color-muted);
+  }
+  /* A phone: the time drops under the sentence, which keeps the whole width. */
+  @media (max-width: 559px) {
+    .ui-feed-row {
+      grid-template-columns: 40px minmax(0, 1fr);
+      row-gap: 2px;
+    }
+    .ui-feed-lead {
+      grid-row: span 2;
+    }
+    .ui-feed-when {
+      text-align: left;
+    }
   }
   @media (prefers-reduced-motion: no-preference) {
     .ui-feed-row.fresh {

@@ -17,6 +17,7 @@
   import { signupRole } from '../../lib/home/plaque';
   import { factsCopy, guildSummaryFacts, standingFacts } from '../../lib/home/home-facts';
   import { bandOf, type FeedRow } from '../../lib/home/feed';
+  import type { RaidFact } from '../../lib/home/raid-facts';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import type { ClassSlug } from '../../lib/ui/primitives';
   import { LINK } from '../../lib/ui/primitives';
@@ -39,7 +40,9 @@
     character,
     floor,
     raidsOpen,
-  }: { me: Me; character: MeCharacter; floor: FeedRow[]; raidsOpen: string | null } = $props();
+    raids,
+  }: { me: Me; character: MeCharacter; floor: FeedRow[]; raidsOpen: string | null; raids: RaidFact[] } =
+    $props();
 
   const CREST_PX = 48;
 
@@ -146,7 +149,12 @@
           raidHref={links.raid}
         />
       {:else}
-        <HomeFirstRaids {raidsOpen} build={activeBuild.build}>
+        <HomeFirstRaids
+          {raidsOpen}
+          {raids}
+          viewer={character.class ? { slug: classSlug, name: character.class } : undefined}
+          build={activeBuild.build}
+        >
           {#snippet foot()}
             {#if character.guild === undefined}
               {homeBCopy.findGuildSub} <a class={LINK} href={homeBHrefs.guilds}>{homeBCopy.guildsLink} ›</a>
@@ -154,7 +162,7 @@
               {homeBCopy.guildNone(character.guild.name)}
               {#if links.guild !== null}· <a class={LINK} href={links.guild}>{homeBCopy.raidPageLink} ›</a
                 >{/if}
-              {#if guildFacts.length > 0}<div class="mt-2">
+              {#if guildFacts.length > 0}<div class="mt-3">
                   <HomeFacts facts={guildFacts} testid="home-guild-facts" />
                 </div>{/if}
             {/if}
@@ -173,7 +181,15 @@
         <HomeSpecWeek week={answer.spec_week} movers={answer.movers} />
       {/if}
     {/snippet}
-    <HomeFeed signedIn spec={specKey} {band} raidOnPlaque={raid !== null} {floor} build={activeBuild.build} />
+    <HomeFeed
+      signedIn
+      spec={specKey}
+      {band}
+      raidOnPlaque={raid !== null}
+      guild={character.guild?.name}
+      {floor}
+      build={activeBuild.build}
+    />
   </HomeGrid>
 </div>
 
@@ -194,7 +210,7 @@
   }
   @media (min-width: 1100px) {
     .home-foot-pair {
-      grid-template-columns: minmax(0, 1fr) 400px;
+      grid-template-columns: minmax(0, 1fr) var(--home-rail);
     }
   }
 </style>

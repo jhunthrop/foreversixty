@@ -80,6 +80,8 @@
       (hasLead ? 'max-[600px]:grid-cols-[auto_minmax(0,1fr)]' : 'max-[600px]:grid-cols-[minmax(0,1fr)]'),
     density === 'slim' ? 'min-h-11 py-[6px]' : 'min-h-[var(--row-h)] py-[10px]',
     open && !selected ? 'px-0' : 'px-4',
+    // Open and selected: the gold band reaches into the panel's padding, the content stays on the column.
+    open && selected && '-mx-4',
     element === 'a' &&
       'hover:bg-hover active:bg-pressed focus-visible:outline-gold focus-visible:outline-2 focus-visible:-outline-offset-2',
     selected && 'bg-selected shadow-[inset_3px_0_0_var(--color-accent)]',

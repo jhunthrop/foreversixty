@@ -1,8 +1,8 @@
 <!-- web/src/components/home/HomeGuildSims.svelte -->
-<!-- Guild sims (round 5: under the feed, two columns from 900 px of its own width): the guild's ladder for
+<!-- Guild sims (round 5: under the feed, one column, a ladder read top to bottom): the guild's ladder for
      the viewer's role, band and preset, the viewer's own row pinned last when it is below the cut.
-     Each row carries a bar in its class colour against the top of the ladder and, beside the figure,
-     its gap to your sim (ahead or behind). Boxed: the names are class colours. -->
+     Each row carries a bar in its class colour against the top of the ladder (as wide as the panel
+     allows) and, under the name, its gap to your sim (`12.8 DPS ahead of you`). Boxed: the names are class colours. -->
 <script lang="ts">
   import type { GuildSimRow, GuildSims } from '../../lib/home/home-answer';
   import {
@@ -32,9 +32,10 @@
 </script>
 
 {#snippet simRow(row: GuildSimRow)}
-  {@const gap = simGap(row, you)}
+  {@const gap = simGap(row, you, sims.unit)}
   <Row
     title={row.name}
+    sub={gap ?? undefined}
     titleTone={{ classSlug: row.class as ClassSlug }}
     rank={String(row.rank)}
     href={characterLink(row.key, row.name)}
@@ -53,7 +54,6 @@
             color={titleColor({ classSlug: row.class as ClassSlug })}
           /></span
         >
-        <span class="home-sims-gap" data-testid="home-guild-sim-gap">{gap ?? ''}</span>
         <span class="home-sims-figure"
           ><Figure value={figureText(row.value)} unit={sims.unit} size="sm" align="end" /></span
         >
@@ -80,25 +80,25 @@
   .home-sims-box {
     container-type: inline-size;
   }
-  .home-sims-ladder > :global(*) {
-    break-inside: avoid;
+  /* The gap under the name stays on one line. */
+  .home-sims-ladder :global([data-testid='home-guild-sim'] .text-muted) {
+    white-space: nowrap;
   }
   .home-sims-trail {
     display: flex;
     align-items: center;
     gap: 14px;
   }
+  /* The bar grows with the panel, so a wide screen reads the ladder rather than empty space. */
   .home-sims-bar {
     display: block;
-    width: 120px;
+    width: clamp(56px, 36cqi, 360px);
   }
-  .home-sims-gap {
-    width: 96px;
-    font-size: 13px;
-    line-height: 18px;
-    text-align: right;
-    color: var(--color-muted);
-    font-variant-numeric: tabular-nums;
+  /* A phone panel: the name, its gap and the figure keep the row; the bar gives way. */
+  @container (max-width: 519px) {
+    .home-sims-bar {
+      display: none;
+    }
   }
   .home-sims-figure {
     display: flex;
@@ -110,26 +110,5 @@
     font-size: 15px;
     line-height: 22px;
     color: var(--color-text);
-  }
-  @container (min-width: 900px) {
-    .home-sims-ladder {
-      columns: 2;
-      column-gap: 48px;
-    }
-  }
-  /* Two narrow columns: the bar shortens and the gap gives way to it. */
-  @media (max-width: 1099px) {
-    .home-sims-bar {
-      width: 56px;
-    }
-    .home-sims-gap {
-      display: none;
-    }
-  }
-  /* A phone keeps the name and the figure; the bar would sit on a long name. */
-  @media (max-width: 767px) {
-    .home-sims-bar {
-      display: none;
-    }
   }
 </style>

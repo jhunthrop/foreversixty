@@ -27,6 +27,9 @@ SAMPLES = {
 }
 GUILD = {'id': 2, 'name': 'Olympus XXVII', 'slug': 'olympus-xxvii', 'region': 'us', 'ruleset': 'normal'}
 CAPTURED = '2026-11-04T19:30:00Z'
+# Slots a sample wears its band's own pick in: the leveler's first waist alternative is Highlander's Chain Girdle, leather in
+# this client but a mail name a level 34 hunter would never read as legal (wow-player, 2026-11-09).
+WORN_PICK = {'34': {'waist': 252521}}
 IMPORTED = '2026-11-06T09:00:00Z'
 
 
@@ -49,7 +52,7 @@ def trimmed_items(class_slug: str, ids: set[int]) -> dict:
     return {**items, 'items': [i for i in items['items'] if i['id'] in ids]}
 
 
-def character(sample: dict, gear: dict, guild: bool) -> dict:
+def character(sample: dict, gear: dict, guild: bool, attendance: bool = True) -> dict:
     key = f"us/normal/{sample['name'].lower()}"
     talents_points = sample['points']  # the spec is read from the tree with the most points (lib/character-spec.ts)
     row = {
@@ -60,7 +63,9 @@ def character(sample: dict, gear: dict, guild: bool) -> dict:
                   'talents': {'trees': ['0' * 16, '0' * 17, '0' * 18], 'points': talents_points}},
     }
     if guild:
-        row['guild'] = {'id': GUILD['id'], 'name': GUILD['name'], 'rank': 'Officer', 'verified': True, 'attendance': {'present': 3, 'nights': 4}}
+        row['guild'] = {'id': GUILD['id'], 'name': GUILD['name'], 'rank': 'Officer', 'verified': True}
+        if attendance:
+            row['guild']['attendance'] = {'present': 3, 'nights': 4}
     return row
 
 
@@ -68,6 +73,11 @@ def me(characters: list[dict], guilds: list[dict]) -> dict:
     user = {'id': 7, 'battletag': 'Hunthrop#1894', 'email': None, 'role': 'user', 'anonymize': False}
     return {'user': user, 'characters': characters, 'guilds': guilds, 'bnet_imported_at': IMPORTED,
             'main_character_key': characters[0]['key'] if characters else None}
+
+
+def guild_entry() -> dict:
+    return {'id': GUILD['id'], 'region': 'us', 'ruleset': 'normal', 'name': GUILD['name'], 'slug': GUILD['slug'], 'rank': 'Officer',
+            'verified': True, 'verified_count': 18, 'faction': 'alliance'}
 
 
 def write(name: str, value: dict) -> None:
@@ -79,13 +89,16 @@ def main() -> None:
     for state, sample in SAMPLES.items():
         bis = json.loads((DATA / 'bis' / f"{sample['spec_key']}.json").read_text())
         band = band_of(bis, 60 if sample['level'] >= 60 else sample['level'] // 10 * 10, sample['faction'], sample['preset'])
-        gear = worn_gear(band)
+        gear = {**worn_gear(band), **WORN_PICK.get(state, {})}
         ids = set(gear.values()) | {s['item_id'] for s in band['slots'] if 'item_id' in s}
         write(f"bis-{sample['spec_key']}.json", {**bis, 'bands': [band]})
         write(f"items-{sample['class_slug']}.json", trimmed_items(sample['class_slug'], ids))
-        guilds = [{'id': GUILD['id'], 'region': 'us', 'ruleset': 'normal', 'name': GUILD['name'], 'slug': GUILD['slug'], 'rank': 'Officer',
-                   'verified': True, 'verified_count': 18, 'faction': 'alliance'}] if state == '60' else []
+        guilds = [guild_entry()] if state == '60' else []
         write(f'me-{state}.json', me([character(sample, gear, state == '60')], guilds))
+        if state == '34':
+            # The same leveler in the guild (the owner's own state, 2026-11-09): no raid planned yet, so no
+            # raid nights attended, and several sims.
+            write('me-34-guild.json', me([character(sample, gear, True, attendance=False)], [guild_entry()]))
     write('me-new.json', me([], []))
     guild_home = {
         'guild': {'id': GUILD['id'], 'name': GUILD['name'], 'region': 'us', 'ruleset': 'normal', 'slug': GUILD['slug'], 'faction': 'alliance'},
@@ -105,6 +118,9 @@ def main() -> None:
     write('guild-home-60.json', guild_home)
     # The same guild with no raid planned (the plaque falls back to the first raids).
     write('guild-home-none.json', {k: v for k, v in guild_home.items() if k != 'next_raid'})
+    standing_34 = {'spec': 'Beast Mastery', 'class': 'Hunter', 'same_spec_count': 3, 'rank_by_item_level': 2, 'item_level': 31,
+                   'needs_before_next_raid': [], 'needs_raid': None}
+    write('guild-home-34.json', {**{k: v for k, v in guild_home.items() if k != 'next_raid'}, 'standing': standing_34})
     write_feeds()
     write('home-34.json', {
         'import_sim': {'state': 'done', 'dps': 58.4, 'simmed_at': '2026-11-06T09:04:00Z', 'sim_id': 'imp34'},
@@ -113,6 +129,19 @@ def main() -> None:
         'movers': {'spec': 'hunter-beast-mastery', 'band': 30, 'baseline': True, 'rows': [
             mover(3, 'Pawsworth', 'hunter', 6), mover(5, 'Ellowen', 'hunter', 4), mover(9, 'Gritfang', 'hunter', 11)]},
         'guild_sims': None,
+    })
+    write('home-34-guild.json', {
+        'import_sim': {'state': 'done', 'dps': 58.4, 'simmed_at': '2026-11-06T09:04:00Z', 'sim_id': 'imp34'},
+        'spec_week': {'spec': 'hunter-beast-mastery', 'band': 30, 'faction': 'alliance', 'role': 'dps', 'grade': 'A',
+                      'last_week_grade': 'B', 'place': 4, 'of': 23},
+        'movers': {'spec': 'hunter-beast-mastery', 'band': 30, 'baseline': True, 'rows': [
+            mover(3, 'Pawsworth', 'hunter', 6), mover(5, 'Ellowen', 'hunter', 4), mover(9, 'Gritfang', 'hunter', 11)]},
+        'guild_sims': {'guild_id': GUILD['id'], 'guild_name': GUILD['name'], 'role': 'dps', 'band': 30, 'preset': 'bare',
+                       'unit': 'DPS', 'of': 6, 'rows': [
+                           guild_sim(1, 'Vessa', 'rogue', 71.2), guild_sim(2, 'Kaelra', 'mage', 66.9),
+                           guild_sim(3, 'Morrigan', 'warlock', 61.5), guild_sim(4, 'Felsnap', 'hunter', 58.4, you=True),
+                           guild_sim(5, 'Brindle', 'warrior', 55.0)],
+                       'you': guild_sim(4, 'Felsnap', 'hunter', 58.4, you=True)},
     })
     write('home-60.json', {
         'import_sim': {'state': 'done', 'dps': 948.6, 'simmed_at': '2026-11-06T09:04:00Z', 'sim_id': 'imp60'},
@@ -133,9 +162,15 @@ def mover(rank: int, name: str, cls: str, delta: int | None) -> dict:
     return {'rank': rank, 'name': name, 'class': cls, 'key': f'us/normal/{name.lower()}', 'delta': delta}
 
 
-def guild_sim(rank: int, name: str, cls: str, value: float) -> dict:
+def guild_sim(rank: int, name: str, cls: str, value: float, you: bool = False) -> dict:
     return {'rank': rank, 'name': name, 'class': cls, 'key': f'us/normal/{name.lower()}', 'value': value, 'delta': None,
-            'simmed_at': '2026-11-06T08:00:00Z', 'you': False}
+            'simmed_at': '2026-11-06T08:00:00Z', 'you': you}
+
+
+def sim_row(i: str, minutes: int, name: str, cls: str, figure: str, spec: str, band: str, place: str = '') -> dict:
+    """A guild sim in the API's own words (api/internal/activity guildSimEvent): the guild is its own strong segment."""
+    return feed_row(i, 'guild_sim', minutes, 'your_guild', [seg(name, 'name', **{'class': cls}), seg(f' simmed {figure} DPS{place} in '),
+                    seg(GUILD['name'], 'strong'), seg(f' ({spec}, {band})')], crest=cls, href=f'/sim/{i}')
 
 
 def seg(text: str, style: str = '', **extra) -> dict:
@@ -166,18 +201,31 @@ def write_feeds() -> None:
     write('feed-out.json', page(PUBLIC))
     hunter = [
         feed_row('h1', 'ranking_climb', 9, 'your_spec', [seg('Beast Mastery Hunter, 30 to 39:', 'strong'), seg(' '), seg('Pawsworth', 'name', **{'class': 'hunter'}), seg(' climbed 6 places to #3')], crest='hunter', href='/rankings'),
-        feed_row('h2', 'bis_change', 48, 'your_spec', [seg('Best in slot changed', 'strong'), seg(' for Beast Mastery Hunter 30 to 39: a new ranged pick')], icon='inv_weapon_bow_08', quality=3, href='/bis/hunter/beast-mastery'),
+        # One changed pick names its item, as the API writes it (api/internal/activity bisdiff.go).
+        feed_row('h2', 'bis_change', 48, 'your_spec', [seg('Best in slot changed', 'strong'), seg(' for Beast Mastery Hunter 30 to 39: '), seg('Golemsight Long Gun', 'item', quality=3, item_id=273029), seg(' is the new ranged')], icon='inv_musket_02', quality=3, href='/bis/hunter/beast-mastery'),
     ]
     write('feed-34.json', page(hunter + PUBLIC[:5]))
     guild = [
-        feed_row('g1', 'guild_sim', 12, 'your_guild', [seg('Thalrin', 'name', **{'class': 'warrior'}), seg(' simmed 987.1 DPS, #2 of 14 DPS in Olympus XXVII (Fury Warrior, 60 raid)')], crest='warrior', href='/sim/s9'),
+        sim_row('g1', 12, 'Thalrin', 'warrior', '987', 'Fury Warrior', '60 raid', ', #2 of 14 DPS'),
         feed_row('g2', 'guild_raid', 70, 'your_guild', [seg('Olympus XXVII', 'strong'), seg(" posted Onyxia's Lair, Wed 9 Dec: 18 in, 3 late")], icon='inv_misc_head_dragon_black', href='/guild/us/normal/olympus-xxvii/raids/41'),
-        feed_row('g3', 'guild_sim', 180, 'your_guild', [seg('Kaelra', 'name', **{'class': 'mage'}), seg(' simmed 1,012.3 DPS, #1 of 14 DPS in Olympus XXVII (Fire Mage, 60 raid)')], crest='mage', href='/sim/s8'),
+        sim_row('g3', 180, 'Kaelra', 'mage', '1012', 'Fire Mage', '60 raid', ', #1 of 14 DPS'),
     ]
     write('feed-60.json', page(guild + PUBLIC[:4]))
     # The guild with no raid planned posts no raid.
     write('feed-guild-none.json', page([g for g in guild if g['kind'] != 'guild_raid'] + PUBLIC[:5]))
     write('feed-empty.json', page([]))
+    # The owner's 2026-11-09 feed: the API puts the guild's own rows first within each hour, so a busy guild fills the
+    # page with sims, the same member twice.
+    sims = [
+        sim_row('s1', 3, 'Vessa', 'rogue', '71.2', 'Combat Rogue', '30 to 39'),
+        sim_row('s2', 6, 'Kaelra', 'mage', '66.9', 'Frost Mage', '30 to 39'),
+        sim_row('s3', 22, 'Vessa', 'rogue', '68.0', 'Combat Rogue', '30 to 39'),
+        sim_row('s4', 31, 'Morrigan', 'warlock', '61.5', 'Affliction Warlock', '30 to 39'),
+        sim_row('s5', 44, 'Felsnap', 'hunter', '58.4', 'Beast Mastery Hunter', '30 to 39'),
+        sim_row('s6', 52, 'Kaelra', 'mage', '64.1', 'Frost Mage', '30 to 39'),
+        sim_row('s7', 58, 'Brindle', 'warrior', '55.0', 'Arms Warrior', '30 to 39'),
+    ]
+    write('feed-34-guild.json', page(sims + hunter + PUBLIC))
 
 
 if __name__ == '__main__':

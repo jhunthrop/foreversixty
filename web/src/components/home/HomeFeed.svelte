@@ -17,6 +17,7 @@
     type FeedFilter,
     type FeedRow,
   } from '../../lib/home/feed';
+  import { HOME_FEED_FETCH, signedInRows } from '../../lib/home/feed-mix';
   import { API_BASE_URL } from '../../lib/planner/config';
   import { LINK } from '../../lib/ui/primitives';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
@@ -32,6 +33,7 @@
     spec,
     band,
     raidOnPlaque = false,
+    guild,
     floor,
     build,
   }: {
@@ -41,6 +43,8 @@
     band?: number;
     /** The guild's raid is on the plaque above: its post is left out here. */
     raidOnPlaque?: boolean;
+    /** The viewer's own guild: its name is left off its members' sims. */
+    guild?: string;
     floor: FeedRow[];
     build: string;
   } = $props();
@@ -54,10 +58,12 @@
   const filter: FeedFilter = 'all';
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let rows = $state<FeedRow[]>([]);
+  /** Signed in, enough rows that seven survive the sims folding (lib/home/feed-mix.ts). */
+  const limit = untrack(() => (signedIn ? HOME_FEED_FETCH : undefined));
 
   function load(): void {
     status = 'loading';
-    fetchFeed({ filter, spec, band, signedIn })
+    fetchFeed({ filter, spec, band, signedIn, limit })
       .then((page) => {
         rows = page.rows;
         status = 'ready';
@@ -68,7 +74,7 @@
   }
 
   function retry(): void {
-    invalidate(`${API_BASE_URL}${feedPath({ filter, spec, band })}`);
+    invalidate(`${API_BASE_URL}${feedPath({ filter, spec, band, limit })}`);
     load();
   }
 
@@ -76,7 +82,11 @@
     untrack(load);
   });
 
-  const shown = $derived(withFloor(homeRows(rows, raidOnPlaque), floor, filter, spec));
+  const shown = $derived(
+    signedIn
+      ? signedInRows({ rows, floor, spec, ownGuild: guild, raidOnPlaque })
+      : withFloor(homeRows(rows, raidOnPlaque), floor, filter, spec),
+  );
   const freshCut = $derived(clock.now.getTime() - FRESH_MS);
 </script>
 

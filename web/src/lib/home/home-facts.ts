@@ -25,12 +25,16 @@ export const factsCopy = {
   raiders: (n: number) => (n === 1 ? 'raider' : 'raiders'),
   bossesDown: (named: number) => `of ${named} bosses down`,
   upgradesIn: (n: number) => `in ${n} ${n === 1 ? 'upgrade' : 'upgrades'}`,
+  /** An upgrade row's worn piece: `over Mantle of Thieves`. */
+  over: 'over',
+  emptySlot: 'Empty slot',
+  seeAll: (n: number) => `See all ${n}`,
   slotsBis: 'best in slot',
   climbing: 'Climbing this week',
   top: 'Top this week',
   places: 'places',
-  ahead: 'ahead',
-  behind: 'behind',
+  ahead: 'ahead of you',
+  behind: 'behind you',
 } as const;
 
 const UNIT_WORDS: Record<SlotScoreUnit, string> = { dps: 'DPS', hps: 'HPS', tank_score: 'score' };
@@ -96,11 +100,12 @@ export function moverDelta(row: MoverRow): string | null {
   return row.delta === null || row.delta <= 0 ? null : `+${row.delta}`;
 }
 
-/** A guild sim's gap to yours: `63.7 ahead`, `4.2 behind`; null on your own row or with no sim. */
-export function simGap(row: GuildSimRow, you: GuildSimRow | null): string | null {
+/** A guild sim's gap to yours: `63.7 DPS ahead of you`, `4.2 DPS behind you`; null on your own row or
+ *  with no sim. */
+export function simGap(row: GuildSimRow, you: GuildSimRow | null, unit: string): string | null {
   if (you === null || row.you) return null;
   const gap = row.value - you.value;
-  return `${figureText(Math.abs(gap))} ${gap >= 0 ? factsCopy.ahead : factsCopy.behind}`;
+  return `${figureText(Math.abs(gap))} ${unit} ${gap >= 0 ? factsCopy.ahead : factsCopy.behind}`;
 }
 
 /** The ladder's bar: the row's value against the top of the ladder, 0 to 1. */
