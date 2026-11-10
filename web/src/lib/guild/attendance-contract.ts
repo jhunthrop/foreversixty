@@ -210,6 +210,8 @@ export interface RaidReportParse {
   metric: MoveMetric;
   value: number;
   rating: number | null;
+  /** Value's place among every ranked kill of the encounter for the spec and metric, 0 to 100; null with no digest yet. */
+  percentile?: number | null;
 }
 
 export interface RaidLootAward {

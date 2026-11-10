@@ -1,0 +1,115 @@
+{
+  "night": "raid:44",
+  "item_id": 16955,
+  "name": "Judgement Crown",
+  "icon": "inv_helmet_74",
+  "quality": 4,
+  "kind": "gear",
+  "officers": 3,
+  "closed": false,
+  "award": null,
+  "candidates": [
+    {
+      "character_key": "us/pvp/valomira",
+      "name": "Valomira",
+      "class": "paladin",
+      "spec": "Holy",
+      "gain_dps": 14.0,
+      "gain_unit": "hps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Lawbringer Helm",
+      "replaces_item": {
+        "item_id": 16854,
+        "name": "Lawbringer Helm",
+        "icon": "inv_helmet_05",
+        "quality": 4
+      },
+      "items_won": 0,
+      "bis_for_them": true,
+      "ms_os": "ms",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 1,
+        "no": 0,
+        "voters": 3,
+        "mine": null
+      }
+    },
+    {
+      "character_key": "us/pvp/sunmantle",
+      "name": "Sunmantle",
+      "class": "paladin",
+      "spec": "Holy",
+      "gain_dps": 11.2,
+      "gain_unit": "hps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 2,
+        "nights": 2
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Lawbringer Helm",
+      "replaces_item": {
+        "item_id": 16854,
+        "name": "Lawbringer Helm",
+        "icon": "inv_helmet_05",
+        "quality": 4
+      },
+      "items_won": 0,
+      "bis_for_them": false,
+      "ms_os": "ms",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 0,
+        "no": 0,
+        "voters": 3,
+        "mine": null
+      }
+    },
+    {
+      "character_key": "us/pvp/seraphine",
+      "name": "Seraphine",
+      "class": "paladin",
+      "spec": "Retribution",
+      "gain_dps": 6.4,
+      "gain_unit": "dps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Lionheart Helm",
+      "replaces_item": {
+        "item_id": 12640,
+        "name": "Lionheart Helm",
+        "icon": "inv_helmet_36",
+        "quality": 4
+      },
+      "items_won": 0,
+      "bis_for_them": false,
+      "ms_os": "os",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 0,
+        "no": 0,
+        "voters": 3,
+        "mine": null
+      }
+    }
+  ]
+}

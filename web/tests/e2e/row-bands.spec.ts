@@ -11,6 +11,7 @@ import { expect, test } from './support/test';
 import { CHICAGO, NOW, stubGuildRaids, threePlanned } from './support/guild-raids';
 import { gotoHydrated } from './support/hydrated';
 import { GUILD_PAGE, litBandRooms, stubGuild } from './support/row-band-pages';
+import { openRosterAccounts } from './support/guild-roster-accounts';
 
 const ROOM_PX = 12;
 const RADIUS = '6px';
@@ -35,7 +36,8 @@ for (const width of WIDTHS) {
 
     test('the roster own row is a rounded band holding its content', async ({ page }) => {
       await stubGuild(page, 'member');
-      await gotoHydrated(page, `${GUILD_PAGE}#roster`, 'guild-roster-rows');
+      await gotoHydrated(page, `${GUILD_PAGE}#roster`, 'guild-raid-roster');
+      await openRosterAccounts(page);
       await expectRoomyBands(page, 1);
     });
   });

@@ -2215,6 +2215,7 @@ components:
         role: { type: string }
         spec_name: { type: string, description: "W3-C16: the full spec name (\"Fury Warrior\"), withheld with spec." }
         spec_icon: { type: string, description: "W3-C16: the spec's talent-tab icon stem, withheld with spec." }
+        group: { type: string, enum: [tank, healer, melee, ranged], description: "The raid group the row fights in (raidspec.Group, as the raid page's sign-ups), withheld with spec." }
         item_level: { type: integer, description: Withheld without gear consent. }
         level: { type: [integer, "null"], description: "The export's level, else the addon roster's; null when neither carries one or without gear consent." }
         attendance_30: { $ref: '#/components/schemas/GuildAttendance' }
@@ -3160,7 +3161,7 @@ components:
           items:
             type: object
             title: RaidReportParse
-            required: [character_key, name, class, role, encounter_id, encounter, fight_index, metric, value, rating]
+            required: [character_key, name, class, role, encounter_id, encounter, fight_index, metric, value, rating, percentile]
             properties:
               character_key: { type: string }
               name: { type: string }
@@ -3172,6 +3173,12 @@ components:
               metric: { type: string, enum: [dps, hps] }
               value: { type: number }
               rating: { type: [number, "null"] }
+              percentile:
+                type: [number, "null"]
+                description: >-
+                  Where value stands among every ranked kill of the encounter for the raider's
+                  spec and metric, 0 to 100 (the rankings' figure); null when that bracket has no
+                  digest yet.
         kill_order:
           type: array
           items:

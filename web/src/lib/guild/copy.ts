@@ -20,7 +20,7 @@ export const guildHomeCopy = {
   /** Day one: a guild exists on the site only once a member's character brings it (an addon
    *  sync or a Battle.net import names the guild), so a right name can still miss. */
   notHereYet:
-    'Spelled right? Then it is not on Forever Sixty yet. A guild shows up once one of its members signs in and imports a character, or syncs the addon.',
+    'Not on Forever Sixty yet. A guild shows up once a member signs in and imports a character, or syncs the addon.',
   notHereYetAction: 'Get set up',
   notHereYetHref: '/setup',
   /** `Did you mean ` + up to three links `{Guild} ({where})`, joined `, ` and ` or `, + `?`
@@ -32,7 +32,7 @@ export const guildHomeCopy = {
     if (index === 0) return '';
     return index === count - 1 ? ' or ' : ', ';
   },
-  lede: "A guild's progression per boss, pull counts, kill dates and roster bests. Its roster, raid nights and loot sit in the tabs once it has loaded.",
+  lede: 'Progression, roster, raid nights and loot.',
   reportsHeading: "This week's reports",
   // The public block's own reports heading (UX review defect 2, 2026-09-28): distinguishes
   // it from the member section's "This week's reports" above -- both can render on the same
@@ -122,8 +122,7 @@ export const guildClaimCopy = {
   headingHeld: (guildName: string): string => (guildName === '' ? 'Your claim' : `${guildName} · your claim`),
   unclaimed: 'Nobody has claimed this guild yet.',
   // What an officer who may claim reads: what claiming gets them.
-  unclaimedForOfficer:
-    'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
+  unclaimedForOfficer: 'Unclaimed. Claim it to approve members, set report visibility and run billing.',
   // Claiming asks first; the rules sit in their own card right below, so the question is bare.
   claimConfirmLine: (guildName: string): string => `Claim ${guildName === '' ? 'this guild' : guildName}?`,
   claimConfirmButton: 'Yes, claim it',
@@ -163,10 +162,9 @@ export const guildClaimCopy = {
   // After a save on /setup that came from a claim link (spec section 9.3).
   backToClaim: (guildName: string): string => `Back to ${possessive(guildName)} claim`,
   // /setup's Notice over that link, once the account knows a character in the guild (setup spec 4.6).
-  setupClaimReady: (guildName: string): string => `The site knows a character of yours in ${guildName}.`,
+  setupClaimReady: (guildName: string): string => `You have a character in ${guildName}.`,
   // Signed in, but no character of theirs in this guild as far as the site knows.
-  notAMember:
-    'The site does not know a character of yours in this guild. Save one on Get set up and this page will know your rank.',
+  notAMember: 'No character of yours is on this roster. Save one on Get set up to show your rank.',
   // The state as a member may read it: the home says claimed, but never by whom.
   claimedByAnOfficer: 'This guild has been claimed by one of its officers.',
   backToGuild: (guildName: string): string => (guildName === '' ? 'Guild page' : guildName),
@@ -204,15 +202,14 @@ export const guildSettingsCopy = {
   rotateConfirmLine:
     'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
   rotateCancel: 'Cancel',
-  tokenShownOnce:
-    'Copy it now. For safety we keep only a fingerprint, so it cannot be shown again after you leave this page.',
+  tokenShownOnce: 'Copy it now: it cannot be shown again once you leave this page.',
   linkLabel: 'Invite link',
   copyButton: uiCopy.copyLink,
   copied: uiCopy.copiedLink,
   copyFailed: uiCopy.copyLinkFailed,
   shareButton: uiCopy.shareLink,
   inviteShareTitle: 'Join our guild on Forever Sixty',
-  inviteShareText: 'Use this link to join our guild on Forever Sixty.',
+  inviteShareText: 'Join our guild on Forever Sixty.',
   currentLinkMade: (date: string): string =>
     `Made ${date}. It still works, but it cannot be shown again. Make a new one to copy it.`,
   /** A kept link's line: `Made 12 Nov.`, or `Made 12 Nov by` + the maker's name + `.`. */

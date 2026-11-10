@@ -24,7 +24,9 @@ export interface StatFigure {
   /** A dash or a missing figure, drawn muted. */
   muted?: boolean;
   /** A signed difference: a gain in the kill colour, a loss in the wipe colour. */
-  tone?: 'kill' | 'wipe';
+  tone?: 'kill' | 'wipe' | 'gold';
+  /** A colour the figure takes from data (a parse percentile), over the tone. */
+  color?: string;
   /** The cell's testid, for a test that reads one figure. */
   testid?: string;
 }

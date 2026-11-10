@@ -214,7 +214,6 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
     expect(raidCopy.loadErrors.raid).toBe(str('Load errors', 0));
     expect(raidCopy.loadErrors.planned).toBe(str('Load errors', 1));
     expect(raidCopy.backLink('Olympus XXVII')).toBe(str('Back link', 0, { Guild: 'Olympus XXVII' }));
-    expect(raidCopy.changelog).toBe(str('Changelog'));
   });
 
   it('has the raid page lines of 3.2, 3.7 and 4, each quoted in the spec', () => {

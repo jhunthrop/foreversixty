@@ -85,6 +85,8 @@ function guildAnswers(s: StateSpec): ReadonlyArray<[RegExp, string]> {
     [/^\/officer\/actions$/, 'states-actions.json'],
     [/^\/attendance\/recent$/, 'states-attendance.json'],
     [/^\/recruit$/, 'overview-recruit.json'],
+    [/^\/loot\/nights$/, 'states-loot-nights.json'],
+    [/^\/applications$/, 'states-applications.json'],
   ];
 }
 
@@ -95,6 +97,16 @@ async function answer(route: Route, s: StateSpec): Promise<void> {
   if (url.pathname === `/v1${GUILD_PATH.replace('/guild', '/guilds')}`)
     return route.fulfill(envelope(fixture('overview-page.json')));
   const prefix = `/v1/guilds/${GUILD_ID}`;
+  if (/^\/members\/[^/]+\/profile$/.test(url.pathname.slice(prefix.length)))
+    return route.fulfill({
+      status: 404,
+      json: {
+        ok: false,
+        data: null,
+        error: { code: 'not_found', message: 'no profile' },
+        request_id: 'guild-parity',
+      },
+    });
   if (url.pathname.startsWith(prefix)) {
     const rest = url.pathname.slice(prefix.length);
     const hit = guildAnswers(s).find(([pattern]) => pattern.test(rest));

@@ -1,0 +1,149 @@
+{
+  "night": "raid:44",
+  "item_id": 17075,
+  "name": "Vis'kag the Bloodletter",
+  "icon": "inv_sword_18",
+  "quality": 4,
+  "kind": "gear",
+  "officers": 3,
+  "closed": false,
+  "award": null,
+  "candidates": [
+    {
+      "character_key": "us/pvp/duskfang",
+      "name": "Duskfang",
+      "class": "rogue",
+      "spec": "Combat",
+      "gain_dps": 16.8,
+      "gain_unit": "dps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 4,
+        "nights": 5
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Skullforge Reaver",
+      "replaces_item": {
+        "item_id": 13361,
+        "name": "Skullforge Reaver",
+        "icon": "inv_sword_12",
+        "quality": 3
+      },
+      "items_won": 0,
+      "bis_for_them": true,
+      "ms_os": "ms",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 2,
+        "no": 0,
+        "voters": 3,
+        "mine": "yes"
+      }
+    },
+    {
+      "character_key": "us/pvp/shiverknife",
+      "name": "Shiverknife",
+      "class": "rogue",
+      "spec": "Assassination",
+      "gain_dps": 9.8,
+      "gain_unit": "dps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Dal'Rend's Sacred Charge",
+      "replaces_item": {
+        "item_id": 12940,
+        "name": "Dal'Rend's Sacred Charge",
+        "icon": "inv_sword_43",
+        "quality": 3
+      },
+      "items_won": 2,
+      "bis_for_them": false,
+      "ms_os": "ms",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 1,
+        "no": 0,
+        "voters": 3,
+        "mine": null
+      }
+    },
+    {
+      "character_key": "us/pvp/gorehowl",
+      "name": "Gorehowl",
+      "class": "warrior",
+      "spec": "Fury",
+      "gain_dps": 7.1,
+      "gain_unit": "dps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Mirah's Song",
+      "replaces_item": {
+        "item_id": 15806,
+        "name": "Mirah's Song",
+        "icon": "inv_sword_34",
+        "quality": 3
+      },
+      "items_won": 1,
+      "bis_for_them": false,
+      "ms_os": "ms",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 0,
+        "no": 0,
+        "voters": 3,
+        "mine": null
+      }
+    },
+    {
+      "character_key": "us/pvp/axebreaker",
+      "name": "Axebreaker",
+      "class": "warrior",
+      "spec": "Fury",
+      "gain_dps": 5.3,
+      "gain_unit": "dps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Mirah's Song",
+      "replaces_item": {
+        "item_id": 15806,
+        "name": "Mirah's Song",
+        "icon": "inv_sword_34",
+        "quality": 3
+      },
+      "items_won": 0,
+      "bis_for_them": false,
+      "ms_os": "ms",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 0,
+        "no": 0,
+        "voters": 3,
+        "mine": null
+      }
+    }
+  ]
+}

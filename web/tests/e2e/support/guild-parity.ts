@@ -7,7 +7,6 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
-import { OVERVIEW_OPENERS } from './guild-parity/overview';
 import { RAID_OPENERS } from './guild-parity/raid';
 import { RECRUIT_OPENERS } from './guild-parity/recruit';
 import { openReport } from './guild-parity/report';
@@ -16,11 +15,11 @@ import { RAIDS_OPENERS } from './guild-parity/raids';
 import { SETTINGS_OPENERS } from './guild-parity/settings';
 import { STATES_OPENERS } from './guild-parity/states';
 import { TABS_OPENERS } from './guild-parity/tabs';
+import { DENSE_OPENERS } from './guild-parity/dense';
 
 export type GuildStateOpener = (page: Page) => Promise<void>;
 
 const OPENERS: Readonly<Record<string, GuildStateOpener>> = {
-  ...OVERVIEW_OPENERS,
   ...RAID_OPENERS,
   report: openReport,
   ...RECRUIT_OPENERS,
@@ -29,6 +28,7 @@ const OPENERS: Readonly<Record<string, GuildStateOpener>> = {
   ...RAIDS_OPENERS,
   ...SETTINGS_OPENERS,
   ...DIRECTORY_OPENERS,
+  ...DENSE_OPENERS,
 };
 
 const BUILDS = fileURLToPath(new URL('../../../../data/builds/', import.meta.url));

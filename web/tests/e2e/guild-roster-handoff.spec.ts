@@ -8,6 +8,7 @@ import { GUILD_ID, VIEWER_MEMBER, buildMockHome } from '../../src/fixtures/guild
 import { gotoHydrated } from './support/hydrated';
 import { heldRoute } from './support/held-route';
 import { GUILD_PAGE, envelope, stubGuild } from './support/row-band-pages';
+import { openRosterAccounts } from './support/guild-roster-accounts';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
@@ -19,7 +20,8 @@ test.skip(() => test.info().project.name !== 'desktop', 'one width, set here');
 
 test('a row with no export the simulator reads holds no handoff slot', async ({ page }) => {
   await stubGuild(page, 'member');
-  await gotoHydrated(page, `${GUILD_PAGE}#roster`, 'guild-roster-rows');
+  await gotoHydrated(page, `${GUILD_PAGE}#roster`, 'guild-raid-roster');
+  await openRosterAccounts(page);
   await expect(page.getByTestId('guild-roster-handoff')).toHaveCount(0);
 });
 
@@ -37,7 +39,9 @@ test('a row whose export the simulator reads holds the slot at first paint, at i
     route.fulfill(envelope({ source: 'addon', gear: FS1_CODE, spec: '', talents: '', buffs: [] })),
   );
 
-  await gotoHydrated(page, `${GUILD_PAGE}#roster`, 'guild-roster-rows');
+  await gotoHydrated(page, `${GUILD_PAGE}#roster`, 'guild-raid-roster');
+
+  await openRosterAccounts(page);
   await lookup.started;
   const slots = page.getByTestId('guild-roster-handoff');
   await expect(slots).toHaveCount(1);

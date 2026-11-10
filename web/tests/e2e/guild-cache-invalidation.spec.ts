@@ -12,6 +12,7 @@ import {
   buildMockGuildPage,
   buildMockHome,
 } from '../../src/fixtures/guild/mock-guild';
+import { openRosterAccounts } from './support/guild-roster-accounts';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
@@ -107,6 +108,7 @@ test('joining by invite lands on the member view, not the cached stranger view',
 
   // 1. The stranger view is read, and /v1/me is remembered in localStorage.
   await page.goto(`${GUILD_PATH}#roster`);
+  await openRosterAccounts(page);
   await expect(page.getByTestId('guild-roster-gate')).toContainText('Roster is for members of this guild');
   expect(
     await page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('fs.q.')).length),
@@ -125,6 +127,7 @@ test('joining by invite lands on the member view, not the cached stranger view',
 
   // 3. The member view, from the refetched answer: the Roster tab opens with rows, no gate.
   await page.getByTestId('guild-tab-roster').click();
+  await openRosterAccounts(page);
   await expect(page.getByTestId('guild-roster-rows').locator('.guild-roster-row').first()).toBeVisible();
   await expect(page.getByTestId('guild-roster-gate')).toHaveCount(0);
   expect(meCalls).toBeGreaterThan(1);
@@ -180,6 +183,7 @@ test('approving a character changes the band count and survives the next visit',
 
   // The roster tab's approve buttons are the waiting count.
   await page.goto(`${GUILD_PATH}#roster`);
+  await openRosterAccounts(page);
   const approve = page.getByTestId('guild-roster-approve');
   await expect(approve.first()).toBeVisible();
   const first = await approve.count();
@@ -190,5 +194,6 @@ test('approving a character changes the band count and survives the next visit',
   // The next visit renders the new count, not the persisted pre-approval answer.
   await page.goto(GUILD_PATH);
   await page.goto(`${GUILD_PATH}#roster`);
+  await openRosterAccounts(page);
   await expect(approve).toHaveCount(first - 1);
 });

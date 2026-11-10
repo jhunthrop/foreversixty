@@ -196,8 +196,6 @@ export const raidCopy = {
     /** Between the start and end clocks: `8:00 pm to 11:00 pm`. */
     timeTo: 'to',
   },
-  changelog:
-    "Added raid sign-ups. Officers plan raids on the guild's Raids tab and members sign up in one tap, from the raid page or the guild page.",
 } as const;
 
 /** What each kind of night is called in a sentence (guild events spec 3.5). */

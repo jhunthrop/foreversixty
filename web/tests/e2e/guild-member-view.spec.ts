@@ -14,6 +14,7 @@ import {
 } from '../../src/fixtures/guild/mock-guild';
 import { guildHomeCopy } from '../../src/lib/guild/copy';
 import { expectNoAxeViolations } from './support/officer-tools';
+import { openRosterAccounts } from './support/guild-roster-accounts';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
@@ -141,6 +142,7 @@ test.describe('the guild page', () => {
   test('shows a verified member the roster at #roster, and the claim entry', async ({ page }) => {
     await stub(page, 'member');
     await page.goto(`${GUILD_PATH}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-tab')).toBeVisible();
     await expect(page.getByTestId('guild-roster-rows').locator('.guild-roster-row').first()).toBeVisible();
     await expect(page.getByTestId('guild-roster-gate')).toHaveCount(0);
@@ -153,6 +155,7 @@ test.describe('the guild page', () => {
   test('tells a member still waiting on an officer what opens the roster, with no rows', async ({ page }) => {
     await stub(page, 'unverified');
     await page.goto(`${GUILD_PATH}#roster`);
+    await openRosterAccounts(page);
     const gate = page.getByTestId('guild-roster-gate');
     await expect(gate).toContainText('waiting for an officer to verify');
     await expect(gate).toBeInViewport();
@@ -198,6 +201,7 @@ test.describe('the guild page', () => {
   test('tells a visitor the roster is for members, with no rows and no claim entry', async ({ page }) => {
     await stub(page, 'visitor');
     await page.goto(`${GUILD_PATH}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-gate')).toContainText(
       'Roster is for members. Sign in with the account your addon syncs to.',
     );
@@ -217,6 +221,7 @@ test.describe('the guild page', () => {
   }) => {
     await stub(page, 'member');
     await page.goto(`${GUILD_PATH}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-counts')).toContainText('on the roster');
     await expect(page.getByTestId('guild-roster-counts')).toContainText('in game without an account');
     await expect(page.getByTestId('guild-roster-entries')).toContainText('No account yet');

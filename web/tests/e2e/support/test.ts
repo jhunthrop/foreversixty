@@ -91,6 +91,10 @@ export const GUILD_OVERVIEW_READS: readonly string[] = [
   '**/v1/guilds/*/officer/actions',
   '**/v1/guilds/*/attendance/recent*',
   '**/v1/guilds/*/recruit',
+  // the dense week (guild dense spec 5.1, 5.2): the tier's loot nights, the open applications, your profile
+  '**/v1/guilds/*/loot/nights*',
+  '**/v1/guilds/*/applications*',
+  '**/v1/guilds/*/members/*/profile',
 ];
 
 export async function apiUnreachable(page: Page, ...globs: readonly string[]): Promise<void> {

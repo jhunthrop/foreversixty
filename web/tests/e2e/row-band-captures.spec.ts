@@ -63,7 +63,7 @@ const hoverFirst =
 const GUILD_TABS = ['overview', 'roster', 'raids', 'progression', 'readiness', 'loot', 'settings'] as const;
 const GUILD_TAB_FOCUS: Partial<Record<(typeof GUILD_TABS)[number], string[]>> = {
   roster: ['guild-roster-card'],
-  readiness: ['guild-readiness-rows'],
+  readiness: ['guild-readiness-board'],
 };
 
 const SHOTS: Shot[] = [
