@@ -9,7 +9,12 @@ app sits to where Applications sits. Nothing else.
 The ground is light on purpose. Finder draws icon labels over a background picture in dark ink in light and dark
 appearance alike (checked on macOS 26, 2026-11-10: a dark ground left "Forever Sixty" unreadable in both), so the
 labels need a light ground, as Discord's white one. The cream is the site's display-type token, the ink its card
-brown-black, the arrow the legacy deep gold: all from design/tokens/tokens.json. The build is deterministic.
+brown-black, the arrow the legacy deep gold: all from design/tokens/tokens.json. In dark appearance Finder's dark
+title bar sits over the cream; that is expected. The seal beside the name follows the owner's reference (Discord's
+logo and wordmark at the top left). The build is deterministic.
+
+Also writes companion/packaging/macos/dmg-layout.sh, the window and icon places in the shell's terms, so the image
+and the layout share one set of numbers.
 """
 import json
 from pathlib import Path
@@ -22,19 +27,21 @@ SEAL = REPO / 'design/assets/logo/lx-seal-v4.png'
 FONT = REPO / 'api/internal/brand/fonts/Marcellus-Regular.ttf'
 OUT = REPO / 'companion/packaging/macos'
 
-# The window, in points; package-mac-companion.sh places the icons on these same numbers.
+# The window's content, in points. The icons sit a little above the middle so each one with its label below
+# reads centred. dmg-layout.sh hands these numbers to package-mac-companion.sh, which adds the title bar.
 WINDOW = (660, 400)
-APP_X, DROP_X, ICON_Y = 180, 480, 200
+TITLE_BAR_PT = 32
+APP_X, DROP_X, ICON_Y = 180, 480, 188
 ICON_PT = 128
 # The wordmark: the seal and the name, small, at the top left.
 MARK_AT = (24, 22)
 SEAL_PT = 28
-NAME_PT = 19
-NAME_GAP = 9
+NAME_PT = 16
+NAME_GAP = 8
 # The arrow runs between the two icons with this much air at each end, at the icons' centre line.
-ARROW_AIR = 34
-ARROW_STROKE = 3.5
-ARROW_HEAD = 13
+ARROW_AIR = 54
+ARROW_STROKE = 4
+ARROW_HEAD = 12
 SUPERSAMPLE = 4
 
 
@@ -77,6 +84,12 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     render(1).save(OUT / 'dmg-background.png', optimize=True)
     render(2).save(OUT / 'dmg-background@2x.png', optimize=True)
+    (OUT / 'dmg-layout.sh').write_text(
+        '# Written by tools/art/dmg_background.py; package-mac-companion.sh sources it. Points; the window\n'
+        '# height adds the title bar to the background\'s, since Finder\'s bounds include it.\n'
+        f'DMG_WINDOW=({WINDOW[0]} {WINDOW[1] + TITLE_BAR_PT})\n'
+        f'DMG_APP=({APP_X} {ICON_Y})\n'
+        f'DMG_DROP=({DROP_X} {ICON_Y})\n')
     print(f'wrote {OUT.relative_to(REPO)}/dmg-background.png and @2x')
 
 

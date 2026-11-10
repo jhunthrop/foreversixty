@@ -119,10 +119,12 @@ notarize() { # notarize <file>: submits, waits, and prints Apple's log when it i
 	fi
 }
 
-# The disk image's window (tools/art/dmg_background.py draws its background on the same numbers):
-# 660 by 400 points, the app at the left, Applications at the right, 128 px icons, 13 pt labels.
+# The disk image's window: the background tools/art/dmg_background.py draws, and the window size and
+# icon places it writes beside it (dmg-layout.sh), the app at the left, Applications at the right;
+# 128 px icons, 13 pt labels.
 readonly DMG_BACKGROUND=companion/packaging/macos/dmg-background
-readonly DMG_WINDOW=(660 400) DMG_APP=(180 200) DMG_DROP=(480 200)
+# shellcheck source=../companion/packaging/macos/dmg-layout.sh
+source "$ROOT/companion/packaging/macos/dmg-layout.sh"
 
 disk_image() { # disk_image <dmg>: the designed drag window, under the seal as the volume icon
 	local stage=$work/dmg background=$work/background.tiff
