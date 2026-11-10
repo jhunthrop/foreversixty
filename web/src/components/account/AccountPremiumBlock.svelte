@@ -193,8 +193,12 @@
 </Section>
 
 <style>
-  /* In the rail a label stays on one line; the value beside it wraps instead. */
-  .account-premium-rows :global(.ui-row > .min-w-0 > span:first-child) {
-    white-space: nowrap;
+  /* In the rail (from 1024) each value sits under its label, as the phone stacks them: the rail is too
+     narrow for a label and a long link side by side. */
+  @media (min-width: 1024px) {
+    .account-premium-rows :global(.ui-row > :last-child) {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
   }
 </style>
