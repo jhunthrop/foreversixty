@@ -115,9 +115,9 @@ def status() -> str:
             ('Addon', 'Addon 2.0.16 · up to date<small>Data 2026.11.09 · up to date</small>'),
             ('Characters sent', '2 characters, 4 minutes ago')]
     panel = '<section class="card rows">' + ''.join(f'<div class="r"><span class="k">{k}</span><span class="v">{v}</span></div>' for k, v in rows) + '</section>'
-    inst = ('<h2>Game folders</h2><section class="card"><div class="inst"><div class="l1"><span><b>Classic beta</b><span class="tag">Watching</span></span>'
+    inst = ('<h2>Game folders</h2><section class="card"><div class="inst"><div class="l1"><span><b>WoW Forever</b><span class="tag">Watching</span></span>'
             f'<span class="ok">{ui_icon("check", 14)} Advanced logging on</span></div><span class="muted" style="font-size:13px">Last played today at 20:41</span>'
-            '<span class="path mono">C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_</span></div></section>')
+            '<span class="path mono">C:\\Program Files (x86)\\World of Warcraft\\_forever_</span></div></section>')
     return window('Status', lead + panel + inst)
 
 
@@ -151,8 +151,8 @@ def settings() -> str:
             '<div class="grp"><span class="sw"><i></i>Keep the addon up to date</span><p class="help">Installs new addon and data versions into every game folder here, when the game is closed.</p></div>'
             '<div class="grp"><label>Reports are credited to</label><div class="sel">Automatic (currently Thandrel)' + ui_icon('chevron-down', 16) + '</div></div>'
             '<div class="grp"><div class="h2l"><span class="lab">Game folders</span><a class="ghost">Add a folder...</a></div><div class="fl">'
-            '<div class="f"><span><b style="color:#fff;font-weight:600">Classic beta</b> <span class="muted" style="font-size:12px">Found automatically</span><br>'
-            '<span class="mono muted">C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_</span></span></div></div></div></section>')
+            '<div class="f"><span><b style="color:#fff;font-weight:600">WoW Forever</b> <span class="muted" style="font-size:12px">Found automatically</span><br>'
+            '<span class="mono muted">C:\\Program Files (x86)\\World of Warcraft\\_forever_</span></span></div></div></div></section>')
     save = '<div class="save"><div class="w"><span class="muted">No changes</span><a class="btn" style="opacity:.45">Save changes</a></div></div>'
     return window('Settings', body, save)
 

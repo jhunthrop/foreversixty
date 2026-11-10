@@ -35,8 +35,8 @@ This lists every screen and state of the desktop companion. The window opens at 
 
 | State | What shows | Capture |
 |---|---|---|
-| No install found | Status shows a red headline, "No Classic beta install found", and **Open Settings**. | `no-folder-status` |
-| Settings with no folder | "No Classic beta install found yet." and **Add a folder...** | `no-folder-settings` |
+| No install found | Status shows a red headline, "No WoW Forever install found", "Pick its _forever_ folder in Settings." and **Open Settings**. | `no-folder-status` |
+| Settings with no folder | "No WoW Forever install found yet. Add its _forever_ folder." and **Add a folder…** | `no-folder-settings` |
 | Folder added | The new folder row, plus "Added." in the good tone. | `folder-added` |
 | Not a WoW folder | The error in the bad tone under the list. | `folder-not-wow` |
 
@@ -66,7 +66,7 @@ This lists every screen and state of the desktop companion. The window opens at 
 
 | State | Capture |
 |---|---|
-| Addon missing: the **Install the addon into Classic beta** button | `addon-missing` |
+| Addon missing: the **Install the addon into WoW Forever** button | `addon-missing` |
 | Installing (spinner, "Installing…") | `addon-installing` |
 | Install refused while the game runs | `addon-install-game-running` |
 | Installed, takes effect at next login | `addon-installed` |

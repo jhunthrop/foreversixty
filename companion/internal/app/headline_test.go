@@ -115,8 +115,8 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 	// base is a paired companion that is logging a report credited to credit.
 	base := func(credit Credit) Snapshot {
 		installs := []InstallStatus{
-			{Path: `C:\Program Files (x86)\World of Warcraft\_classic_beta_`, Flavor: "_classic_beta_",
-				FlavorName: "Classic beta", Watching: true, Added: true, LastPlayed: &watched,
+			{Path: `C:\Program Files (x86)\World of Warcraft\_forever_`, Flavor: "_forever_",
+				FlavorName: "WoW Forever", Watching: true, Added: true, LastPlayed: &watched,
 				Advanced: true, AdvancedKnown: true},
 		}
 		s := Snapshot{

@@ -447,8 +447,8 @@ test('the Addon row shows the version line for each state and the install button
   assert.deepStrictEqual(rows('status-addon-ready.json').lines.map((l) => l.text),
     ['Addon 2.0.16 ready · installs when the game closes', 'Data 2026.10.21 ready · installs when the game closes']);
   const missing = rows('status-addon-missing.json');
-  assert.deepStrictEqual(missing.lines, [{ text: 'Addon not found in Classic beta', muted: true }]);
-  assert.deepStrictEqual(missing.offers.map((o) => o.label), ['Install the addon into Classic beta']);
+  assert.deepStrictEqual(missing.lines, [{ text: 'Addon not found in WoW Forever', muted: true }]);
+  assert.deepStrictEqual(missing.offers.map((o) => o.label), ['Install the addon into WoW Forever']);
   assert.strictEqual(rows('status-addon-current.json').offers.length, 0);
 });
 
