@@ -45,7 +45,7 @@ sources:
 
 ## Overview
 
-Your cat does a big share of the damage, Bestial Wrath is the burst, and your shots fill every gap.
+Bestial Wrath and Rapid Fire together on the pull, Bestial Wrath again at two minutes, and Auto Shot never stops while the cat bites.
 
 ### Strengths
 

@@ -32,8 +32,7 @@ during that process.
 ## Cookies
 
 `fs_session` and `fs_csrf` are functional cookies only: they keep you signed in and protect
-state-changing requests. There are no tracking or advertising cookies, consistent with this
-site never running ads, for anyone, ever.
+state-changing requests. There are no tracking or advertising cookies.
 
 ## Data retention
 
@@ -72,6 +71,6 @@ holds a guild's claim or pays for a guild's plan, release that first; the page s
 
 To see, export or correct what the site holds about you, or to have your account deleted for
 you instead, email [help@foreversixty.gg](mailto:help@foreversixty.gg) from the address or
-Battle.net account the request is about. You get an answer within thirty days, and usually
-much sooner. Those rights are yours wherever you live; the site runs no advertising, sells no
-data and builds no profiles, so there is nothing to opt out of beyond deleting your account.
+Battle.net account the request is about. You get an answer within thirty days. Those rights
+are yours wherever you live. The site runs no advertising, sells no data and builds no
+profiles.

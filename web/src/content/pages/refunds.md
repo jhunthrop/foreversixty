@@ -15,8 +15,8 @@ on and we will sort it out.
 
 ## What happens to your subscription
 
-When a refund is approved, the owner cancels the subscription in the same step as issuing
-the refund, and access ends then.
+When a refund is approved, the owner cancels the subscription by hand in the same step as
+issuing the refund, and access ends then.
 
 ## Partial-period refunds
 

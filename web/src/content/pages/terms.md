@@ -55,8 +55,7 @@ settled by email is heard in the state or federal courts located in Arkansas.
 ## Battle.net-sourced data
 
 Battle.net-sourced data is never sold. Blizzard's Developer API Terms of Use
-forbid paywalling data or features that come from their API, and this site would keep that
-rule even if it did not have to.
+forbid paywalling data or features that come from their API.
 
 ## Trademarks
 
