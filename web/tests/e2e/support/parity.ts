@@ -33,6 +33,8 @@ export interface ParityState {
   id: string;
   path: string;
   mock: string;
+  /** In a review-capture config (guild-dense.json): the state is also a parity state. */
+  parity?: boolean;
 }
 
 export interface ParityConfig {

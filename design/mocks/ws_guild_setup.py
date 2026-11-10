@@ -253,7 +253,9 @@ def setup_mixed():
 # ---- the claim page after a claim -----------------------------------------------------------------------------------------------
 def setup_list(steps: list[Step]) -> str:
     items = ''.join(f'<li>{mark(s.n, s.state)}{s.title}<span class="st">{STATE_TAG[s.state][0]}</span></li>' for s in steps)
-    start = f'<div class="gs-start">{_act("Start setup", primary=True, small=False)}</div>'
+    # ClaimNextSteps: Start setup and the roster's approvals are links (Button href).
+    start = (f'<div class="gs-start">{Button("Start setup", primary=True)}'
+             f'{Button("Approve your officers and members", tone="ghost")}</div>')
     return Section(f'Set up {GUILD}', f'<ol class="gs-ol">{items}</ol>{start}', meta=done_line(steps), panel=True)
 
 

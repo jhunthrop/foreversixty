@@ -1,7 +1,7 @@
 // web/tests/e2e/support/guild-parity/recruit.ts
 // The recruitment states of the guild parity gate (design/mocks/ws_guild2.py recruitment,
-// applications, member_profile): the public recruiting card signed out, the officer's open
-// applications and Frostquill's profile with the officers' notes, both read by Dunmaro. Every read
+// member_profile): the public recruiting card signed out and Frostquill's profile with the
+// officers' notes, read by Dunmaro (the officers' applications are the dense state). Every read
 // answers from tests/e2e/fixtures/guild-parity/recruit-*.json (design/mocks/guild_fixtures.py
 // recruit_fixtures), the same values the mocks are drawn from.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
@@ -70,16 +70,6 @@ const openRecruit: GuildStateOpener = async (page) => {
   await expect(page.getByTestId('guild-recruit-card')).toBeVisible();
 };
 
-const openApplications: GuildStateOpener = async (page) => {
-  await signInOfficer(page);
-  await routeGuild(page);
-  await page.route(`${API}/applications`, (route) =>
-    route.fulfill(envelope(fixture('recruit-applications.json'))),
-  );
-  await page.goto(`${GUILD_PATH}/applications`);
-  await expect(page.getByTestId('guild-applications-plate')).toBeVisible();
-};
-
 /** The repository's newest real build: the fixture build ships two class item files, and the
  *  profile's Next upgrades read the raider's own class file for their icons and quality. */
 const REAL_BUILDS = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../../data/builds');
@@ -116,6 +106,5 @@ const openProfile: GuildStateOpener = async (page) => {
 
 export const RECRUIT_OPENERS: Readonly<Record<string, GuildStateOpener>> = {
   recruit: openRecruit,
-  applications: openApplications,
   profile: openProfile,
 };

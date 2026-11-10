@@ -59,7 +59,7 @@
     <span class="xl:hidden">{applicantFacts(character)}</span><span class="hidden xl:inline"
       >{character.spec_name ?? ''}</span
     >{#if fill !== null}&#32;<span
-        class="block whitespace-nowrap xl:inline {fill.short ? 'text-gold' : 'text-muted'}"
+        class="block whitespace-nowrap xl:ml-1 xl:inline {fill.short ? 'text-gold' : 'text-muted'}"
         data-testid="guild-application-fills">{fill.text}</span
       >{/if}<span class="block"
       >{#if application.availability !== ''}<span data-testid="guild-application-availability"
