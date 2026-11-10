@@ -344,6 +344,9 @@ export const guildLandingCopy = {
   heading: 'Guilds',
   lookupHeading: 'Open a guild',
   mineHeading: 'Your guilds',
+  /** A Your guilds row's line: where the guild lives and, when the API counts it, its roster. */
+  mineWhere: (where: string, members: number | null): string =>
+    members === null ? where : `${where} · ${members === 1 ? '1 member' : `${members} members`}`,
   namePlaceholder: 'Guild name',
   nameLabel: 'Guild name',
   regionLabel: 'Region',

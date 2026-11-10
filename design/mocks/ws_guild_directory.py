@@ -2,8 +2,8 @@
 is guild_directory_fixtures.py's, which guild_fixtures.py writes for the build. Registered in ws_guild2.all_pages().
 
 - Landing (web layout spec 2026-11-05 section 6.1): PageHeader "Guilds" with the shipped lead, then Page split. Main: Open a guild (a
-  FormRow: name Field, region and ruleset Selects, one primary Button) and Top guilds (the page's one Plate, ranked link Rows with a
-  Meter against the leader). Rail: Your guilds (signed in with guilds: open link Rows with the rank Tag), then Run a guild? (signed
+  FormRow: name Field, region and ruleset Selects side by side, one primary Button) and Top guilds (a panel, ranked link Rows with a
+  Meter against the leader). Rail: Your guilds (signed in with guilds: open link Rows, the guild's mark, its roster, the rank Tag), then Run a guild? (signed
   out: the line and the sign-in Button).
 - Join: the guild's PageHeader (faction crest, the faction-colour name, the realm line), then the form measure with one Section, Your
   invite: who invited you, the character you join as (an open Row), what joining does, Join and Not now.
@@ -13,7 +13,7 @@ is guild_directory_fixtures.py's, which guild_fixtures.py writes for the build. 
 import guild_data as gd
 import guild_directory_fixtures as D
 from guild_data import ALLIANCE, C, GUILD
-from ws_prims import (Button, Emblem, Meter, Page, PageForm, PageHeader, Plate, Row, Rows, Section, Tag, build_page, crest_img)
+from ws_prims import (Button, Emblem, Meter, Page, PageForm, PageHeader, Row, Rows, Section, Tag, build_page, crest_img, emblem)
 
 _OFFICER_LINE = 'Sign in and import your character, then open the guild page and choose Claim this guild.'
 _PROSE = 'style="font-size:14px;line-height:22px"'
@@ -26,6 +26,7 @@ _CSS = ('<style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin
         'form.formrow input.field,form.formrow select.field{font:inherit;color:var(--strong)}form.formrow select.field{width:120px}'
         '.dir-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:22px;list-style:disc}'
         '.dir-col{display:flex;flex-direction:column;align-items:flex-start;gap:16px}.dir-btns{display:flex;flex-wrap:wrap;gap:12px}'
+        '.dir-place{display:flex;gap:12px}@media(max-width:767px){.dir-place>*{flex:1}.dir-place select.field{width:100%}}'
         '.dir-trail{display:flex;align-items:center;gap:12px}.dir-trail .meter{width:96px}.dir-trail b{width:72px;text-align:right;font-weight:600;font-size:14px}'
         '.backlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;color:var(--muted);text-decoration:underline}'
         'button.backlink{background:none;border:0;padding:0;font-family:inherit;cursor:pointer}</style>')
@@ -55,7 +56,8 @@ def _select(label: str, value: str, ident: str) -> str:
 
 def lookup(ruleset: str) -> str:
     name = '<label class="f grow"><span class="t-label">Guild name</span><input class="field grow" placeholder="Guild name"></label>'
-    form = (f'<form class="formrow" aria-label="Open a guild">{name}{_select("Region", "US", "r")}{_select("Ruleset", ruleset, "s")}'
+    place = f'<div class="dir-place">{_select("Region", "US", "r")}{_select("Ruleset", ruleset, "s")}</div>'
+    form = (f'<form class="formrow" aria-label="Open a guild">{name}{place}'
             f'<span>{_act("Open guild", primary=True, submit=True)}</span></form>')
     return Section('Open a guild', form, panel=True, frame='framed')
 
@@ -65,14 +67,16 @@ def top_guilds() -> str:
     rows = [Row(n, f'{r.upper()} {D.RULESET_WORD[rs]}', rank=str(i + 1),
                 trail=f'<span class="dir-trail">{Meter(v / lead, "", f"{n}: {v} bosses" if v != 1 else f"{n}: 1 boss")}<b>{v} {"boss" if v == 1 else "bosses"}</b></span>')
             for i, (n, r, rs, v) in enumerate(D.TOP)]
-    return Section('Top guilds', Plate(Rows(rows), 'Top guilds'), boxed=True)
+    return Section('Top guilds', f'<div role="group" aria-label="Top guilds">{Rows(rows)}</div>', panel=True)
 
 
 def landing(signed_in: bool):
     """Signed in, the lookup starts on the account's first guild's region and ruleset (US PvP)."""
     rail = ''
     if signed_in:
-        rows = [Row(n, f'{r.upper()} {D.RULESET_WORD[rs]}', trail=Tag(rank.title(), 'muted')) for n, r, rs, rank in D.MINE]
+        rows = [Row(n, f'{r.upper()} {D.RULESET_WORD[rs]} &middot; {D.MINE_SEEN[n][1]} members', trail=Tag(rank.title(), 'muted'),
+                    lead=f'<img src="{emblem(D.MINE_SEEN[n][0])}" alt="" width="28" height="28" style="width:28px;height:28px;object-fit:contain">')
+                for n, r, rs, rank in D.MINE]
         rail += Section('Your guilds', Rows(rows, open_=True), panel=True)
     sign_in = '' if signed_in else Button('Sign in with Battle.net')
     rail += Section('Run a guild?', f'<div class="dir-col"><p {_PROSE}>{_OFFICER_LINE}</p>{sign_in}</div>', panel=True)

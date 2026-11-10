@@ -21,6 +21,7 @@
   import { plannerStatusTag } from '../../../lib/guild/raid-planner-view';
   import { headlineFigures } from '../../../lib/guild/report-night-view';
   import { reportUrlOf } from '../../../lib/guild/report-view';
+  import FactionCrest from '../../character/FactionCrest.svelte';
   import Figure from '../../ui/Figure.svelte';
   import Page from '../../ui/Page.svelte';
   import PageHeader from '../../ui/PageHeader.svelte';
@@ -68,7 +69,6 @@
   const kind = $derived(kindOf(raid));
   const when = $derived(raidWhen(raid, now, viewerTimezone, locale));
   const status = $derived(plannerStatusTag(flags.status));
-  const titleTone = $derived(c.guild?.faction ? { faction: c.guild.faction } : ('strong' as const));
   const guildTimezone = $derived(raid.guild_timezone ?? viewerTimezone);
   const report = $derived(raid.report);
   const night = $derived(raid.night);
@@ -121,7 +121,11 @@
 {/snippet}
 
 {#snippet header()}
-  <PageHeader title={raid.title} tone={titleTone} {meta} {answer} testid="raid-head">
+  <PageHeader title={raid.title} tone="strong" {meta} {answer} testid="raid-head">
+    {#snippet crest()}<FactionCrest
+        faction={c.guild?.faction ?? null}
+        src={c.guild?.mark ?? null}
+      />{/snippet}
     {#snippet crumb()}<a href={`${guildPath}#raids`} data-testid="raid-back-link"
         >{raidCopy.backLink(guildName)}</a
       >{/snippet}
@@ -157,7 +161,7 @@
   <p class="sr-only" role="status" data-testid="raid-live-region">
     {c.logMatched ? attendanceCopy.liveRegion : ''}
   </p>
-  <Page layout="split" {header} testid="raid-page">
+  <Page layout="split" panels {header} testid="raid-page">
     {#if report === null || night === null}{@render matchLine()}{/if}
     {#if officer && !c.officerTools}
       <GuildPlanGate tab="raids" facts={gateFacts} id={gateId} testid="guild-raids-plan-gate-report" />
@@ -208,7 +212,7 @@
         {/if}
       {/if}
       {#if raid.notes_html.trim() !== ''}
-        <Section title={raidCopy.subheads.notes} anchor="raid-notes" testid="raid-notes">
+        <Section title={raidCopy.subheads.notes} anchor="raid-notes" panel testid="raid-notes">
           <div
             class="prose-forever [&_a]:text-gold [&_li]:marker:text-muted text-[14px] leading-[1.6] [&_ol]:list-decimal [&_ul]:list-disc"
             data-testid="raid-notes-prose"

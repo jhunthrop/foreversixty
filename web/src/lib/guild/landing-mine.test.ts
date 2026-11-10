@@ -3,6 +3,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { Me } from '../account/api';
 import GuildLanding from '../../components/GuildLanding.svelte';
+import { factionLogoSrc } from '../faction-mark';
 import { heldClaimRow, lookupDefaults, myGuildRows } from './landing-mine';
 
 /** An account whose current character is an alt with no guild: its guilds come from its other characters. */
@@ -17,19 +18,22 @@ const ME = {
       rank: 'officer',
       verified: true,
       verified_count: 3,
+      faction: 'alliance',
+      roster_count: 24,
     },
     { id: 9, region: 'eu', ruleset: 'hardcore', name: 'The Last Watch', verified: false, verified_count: 0 },
   ],
 } as unknown as Me;
 
 describe('myGuildRows', () => {
-  it('lists every guild of the account with where it lives', () => {
+  it('lists every guild of the account with its mark, where it lives and its roster', () => {
     expect(myGuildRows(ME)).toEqual([
       {
         key: 'us-pvp-7',
         name: 'Lifecycle Test',
         href: '/guild/us/pvp/lifecycle-test',
-        where: 'US PvP',
+        where: 'US PvP · 24 members',
+        mark: factionLogoSrc('alliance'),
         rank: 'Officer',
       },
       {
@@ -37,6 +41,7 @@ describe('myGuildRows', () => {
         name: 'The Last Watch',
         href: '/guild/eu/hardcore/the-last-watch',
         where: 'EU Hardcore',
+        mark: null,
         rank: null,
       },
     ]);

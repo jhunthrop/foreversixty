@@ -2,8 +2,8 @@
 <!-- The owner's /admin/links: every tracked link (foreversixty.gg/go/<slug>) with its funnel,
      clicks to the accounts it brought to the accounts with a character to Premium, each step
      with its share of the one before; and the form that makes a new link. A split Page: the
-     page's one Plate holds a Row per link (its four Figures and Copy in the trail, under the name
-     below 768) and the All links Row; the rail is the New link Section (Fields). Anyone but the
+     links panel holds a Row per link (its four Figures and Copy in the trail, under the name
+     below 768) and the All links Row; the rail is the New link panel (Fields). Anyone but the
      owner sees one line saying so: the API answers 403 for them whatever this page shows. -->
 <script lang="ts">
   import { AccountError, fetchMeOnce } from '../../lib/account/api';
@@ -25,7 +25,6 @@
   import Figure from '../ui/Figure.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Page from '../ui/Page.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -195,13 +194,13 @@
     <LoadError message={copy.loadFailed} onRetry={() => void load()} testid="links-load-error" />
   </div>
 {:else}
-  <Page layout="split" testid="links-page-body">
-    <Section title={copy.tableTitle} meta={copy.tableMeta(rows.length)} testid="links-table">
+  <Page layout="split" panels testid="links-page-body">
+    <Section title={copy.tableTitle} meta={copy.tableMeta(rows.length)} panel flush testid="links-table">
       <div>
         {#if rows.length === 0}
           <p data-testid="links-empty">{copy.empty}</p>
         {:else}
-          <Plate label={copy.tableTitle}>
+          <div role="group" aria-label={copy.tableTitle}>
             {#each rows as row (row.slug)}
               <Row title={row.label} wrapTrail testid={`links-row-${row.slug}`}>
                 {#snippet subContent()}
@@ -220,12 +219,12 @@
                 <span class="w-[76px] shrink-0" aria-hidden="true"></span>
               {/snippet}
             </Row>
-          </Plate>
+          </div>
         {/if}
       </div>
     </Section>
     {#snippet rail()}
-      <Section title={copy.formTitle} testid="links-form-card">
+      <Section title={copy.formTitle} panel testid="links-form-card">
         <div class="flex flex-col gap-3">
           <p class="text-muted text-[14px]">{copy.formJob}</p>
           <form class="flex flex-col gap-3" onsubmit={onCreate} novalidate data-testid="links-form">

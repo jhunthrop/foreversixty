@@ -22,7 +22,15 @@ import {
   wantedLabel,
   withRow,
 } from './applications-view';
-import { attendanceView, gearGapLines, lootRows, noteSub, profileFigures, profileHead } from './profile-view';
+import {
+  attendanceView,
+  characterRows,
+  lootRows,
+  noteSub,
+  profileFigures,
+  profileHead,
+  readyFacts,
+} from './profile-view';
 import {
   applicationLine,
   applyErrorLine,
@@ -220,20 +228,53 @@ describe('the member profile', () => {
     ]);
   });
 
-  it('writes the gear gap in the BiS unit, and the counts alone for a healer', () => {
+  it('reads Raid ready: the gear gap in the BiS unit, then enchants, bags, talents and item level', () => {
     const base = profile.readiness!;
-    const at = (gap: NonNullable<typeof base.gear_gap>) =>
-      gearGapLines({ ...profile, readiness: { ...base, gear_gap: gap } });
-    expect(at({ upgrades: 3, gain_dps: 12.44, not_sim_checked: 1, unit: 'dps' })?.map((l) => l.text)).toEqual(
-      ['3 upgrades on their BiS list', '+12.4 DPS over what they wear', '1 not sim-checked'],
+    const facts = (row: Partial<typeof base>) =>
+      readyFacts({ ...profile, readiness: { ...base, ...row } }, TZ, LOCALE)!;
+    const value = (row: Partial<typeof base>, id: string) => facts(row).find((f) => f.id === id);
+    expect(
+      value({ gear_gap: { upgrades: 3, gain_dps: 12.44, not_sim_checked: 1, unit: 'dps' } }, 'gear'),
+    ).toMatchObject({
+      value: '3 upgrades',
+      sub: '+12.4 DPS over what they wear · 1 not sim-checked',
+    });
+    expect(
+      value({ gear_gap: { upgrades: 2, gain_dps: 0, not_sim_checked: 0, unit: null } }, 'gear')?.sub,
+    ).toBeUndefined();
+    expect(
+      value({ gear_gap: { upgrades: 0, gain_dps: 0, not_sim_checked: 0, unit: 'dps' } }, 'gear')?.value,
+    ).toBe('Best in slot');
+    expect(
+      value({ enchants: { checked: true, missing_slots: ['main_hand', 'legs'] } }, 'enchants')?.value,
+    ).toBe('Missing: Main Hand, Legs');
+    expect(value({ enchants: { checked: false, missing_slots: [] } }, 'enchants')).toMatchObject({
+      value: 'Not read',
+      muted: true,
+    });
+    expect(value({ flask_food: { flask_or_elixir: false, food: true } }, 'bags')?.value).toBe(
+      'No flask or raid elixir',
     );
-    expect(at({ upgrades: 2, gain_dps: 0, not_sim_checked: 0, unit: null })?.map((l) => l.text)).toEqual([
-      '2 upgrades on their BiS list',
+    expect(value({ flask_food: null, consumables: { state: 'short' } }, 'bags')?.value).toBe('Short');
+    expect(value({ talent_points_unspent: 3, talent_points_read: true }, 'talents')?.value).toBe('3 unspent');
+    expect(value({ item_level: 64, item_level_delta: -4 }, 'ilvl')?.sub).toBe('4 under the guild median');
+    expect(value({ attuned: false }, 'attuned')?.value).toBe('Not attuned');
+    expect(value({ attuned: null }, 'attuned')).toBeUndefined();
+    expect(readyFacts({ ...profile, readiness: null }, TZ, LOCALE)).toBeNull();
+  });
+
+  it('lists their characters, the main first, each linked to its page', () => {
+    const rows = characterRows({
+      ...profile,
+      characters: [
+        { character_key: 'us/pvp/alt', name: 'Alt', class: 'priest', is_main: false },
+        { character_key: 'us/pvp/zulmara', name: 'Zulmara', class: 'hunter', is_main: true },
+      ],
+    });
+    expect(rows.map((row) => [row.name, row.main, row.href])).toEqual([
+      ['Zulmara', true, '/character/us/pvp/zulmara'],
+      ['Alt', false, '/character/us/pvp/alt'],
     ]);
-    expect(at({ upgrades: 0, gain_dps: 0, not_sim_checked: 0, unit: 'dps' })?.[0].text).toBe(
-      'Nothing on their BiS list beats what they wear.',
-    );
-    expect(gearGapLines({ ...profile, readiness: null })).toBeNull();
   });
 
   it('draws the last 4 raids oldest first with the 30-raid line, and the reports mode line', () => {

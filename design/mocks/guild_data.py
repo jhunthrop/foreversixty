@@ -87,6 +87,8 @@ DECIDED = [(39, 'Hexmarrow', 'warlock', 'Destruction', 3, 'Ironbrand', 'granted'
 DISCORD_ROLE_ID = '123456789012345678'
 PROFILE = 'Frostquill'
 PROFILE_ACCOUNT = 'u:1016'
+# The profile raider's alt on the same account (the profile's Characters rail; not on the raid roster).
+PROFILE_ALT = ('Quillstep', 'priest')
 # The raid nights so far (UTC starts) and the outcome of each, oldest first: the first night only.
 PROFILE_NIGHTS = [(LAST_RAID_AT, 'present')]
 PROFILE_LAST_30 = (1, 1)

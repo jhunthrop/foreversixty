@@ -2,10 +2,11 @@
 <!-- /guild/{region}/{ruleset}/{slug}/members/{account} (web layout spec 2026-11-05 §7.2 Member
      profile, "What do I know about this raider?"), an officer's read of anyone or a member's of
      themselves; mock web-guild-profile. The head names the raider in class colour with their figures
-     (no guild tabs: the page is about one raider); Sections hold the
-     gear gap in the BiS page's unit, the last 4 raids as a Grid and the 30-raid figure, and loot
-     this tier. The rail, officers only, is Officer notes: a member's own read carries no notes and
-     draws no trace of them. GuildShell loads this file as its own chunk. -->
+     over the guild's tabs (Roster current). Main: Raid ready (the gear gap in the BiS page's unit,
+     enchants, bags, talents, item level against the guild, the last export) framed, the last 4
+     raids as a Grid with the 30-raid figure, and loot this tier. The rail: their characters, then,
+     officers only, Officer notes: a member's own read carries no notes and draws no trace of them.
+     GuildShell loads this file as its own chunk. -->
 <script lang="ts">
   import activeBuild from '../../../data/active-build.json';
   import { characterHref, guildHref, type CharacterPath } from '../../../lib/characters';
@@ -13,10 +14,11 @@
   import { ProfilePage } from '../../../lib/guild/profile-page.svelte';
   import {
     attendanceView,
-    gearGapLines,
+    characterRows,
     lootRows,
     profileFigures,
     profileHead,
+    readyFacts,
   } from '../../../lib/guild/profile-view';
   import { viewerLocale } from '../../../lib/guild/raid-time';
   import { profileCopy as copy } from '../../../lib/guild/recruit-copy';
@@ -24,6 +26,7 @@
   import { untrack } from 'svelte';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import SignInPrompt from '../../SignInPrompt.svelte';
+  import Facts from '../../ui/Facts.svelte';
   import Figure from '../../ui/Figure.svelte';
   import Grid from '../../ui/Grid.svelte';
   import ItemRow from '../../ui/ItemRow.svelte';
@@ -33,6 +36,7 @@
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
   import Skeleton from '../../ui/Skeleton.svelte';
+  import Tag from '../../ui/Tag.svelte';
   import GuildViewHeader from './GuildViewHeader.svelte';
   import OfficerNotes from './OfficerNotes.svelte';
 
@@ -92,7 +96,8 @@
     {@const context = p.context}
     {@const profile = p.profile}
     {@const head = profileHead(profile)}
-    {@const gap = gearGapLines(profile)}
+    {@const ready = readyFacts(profile, viewerTimezone, locale)}
+    {@const characters = characterRows(profile)}
     {@const attendance = attendanceView(profile, viewerTimezone, locale)}
     {@const loot = lootRows(profile, viewerTimezone, locale)}
     {@const member = profile.member}
@@ -118,10 +123,32 @@
         lead={crest}
         facts={head.facts}
         answer={figures}
+        tabRole={p.notes === null ? 'member' : 'officer'}
         testid="guild-profile-head"
       />
     {/snippet}
     {#snippet rail()}
+      {#if characters.length > 0}
+        <Section title={copy.characters} panel testid="guild-profile-characters">
+          <ul>
+            {#each characters as character (character.key)}
+              <li>
+                <Row
+                  title={character.name}
+                  titleTone={classTone(character.classSlug)}
+                  href={character.href ?? undefined}
+                  density="slim"
+                  open
+                  testid="guild-profile-character"
+                >
+                  {#snippet lead()}<ClassCrestRing characterClass={character.classSlug} size={28} />{/snippet}
+                  {#snippet trail()}{#if character.main}<Tag tone="muted">{copy.main}</Tag>{/if}{/snippet}
+                </Row>
+              </li>
+            {/each}
+          </ul>
+        </Section>
+      {/if}
       {#if p.notes !== null}
         <OfficerNotes
           notes={p.notes}
@@ -139,7 +166,7 @@
       layout="split"
       panels
       {header}
-      rail={p.notes === null ? undefined : rail}
+      rail={p.notes === null && characters.length === 0 ? undefined : rail}
       testid="guild-profile-page"
     >
       {#if member === null}
@@ -147,19 +174,17 @@
       {/if}
       <Section
         panel
-        title={copy.gearGap}
-        meta={copy.gearGapMeta}
+        frame="framed"
+        title={copy.ready.head}
         action={member === null
           ? undefined
           : { label: copy.openCharacter, href: characterHref(member.region, member.ruleset, member.name) }}
-        testid="guild-profile-gear-gap"
+        testid="guild-profile-ready"
       >
-        {#if gap === null}
-          <p class="text-muted text-[14px]">{copy.noGearShared}</p>
+        {#if ready === null}
+          <p class="text-muted text-[14px]">{copy.ready.noData}</p>
         {:else}
-          {#each gap as line (line.key)}
-            <Row title={line.text} open density="slim" testid={`guild-profile-gap-${line.key}`} />
-          {/each}
+          <Facts items={ready} testid="guild-profile-ready-facts" />
         {/if}
       </Section>
       <Section title={copy.attendance} panel testid="guild-profile-attendance">

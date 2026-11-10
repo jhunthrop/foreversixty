@@ -1,7 +1,7 @@
 <!-- web/src/components/HomeTopGuilds.svelte -->
 <!-- The guild landing's Top guilds (web layout spec 2026-11-05 §6.1): the top five guilds by
      progression, from `GET /v1/rankings/guilds?kind=progress` (the one guild leaderboard kind that
-     needs no `encounter`), as ranked Rows with a Meter against the leader in the page's one Plate.
+     needs no `encounter`), as ranked Rows with a Meter against the leader, in the landing's Top guilds panel.
      Loading holds the five rows' height; a failure and an empty board are open lines. -->
 <script lang="ts">
   import { guildHref, rulesetLabel } from '../lib/characters';
@@ -9,7 +9,6 @@
   import { homeTopGuildsCopy } from '../lib/rankings/copy';
   import LoadError from './ui/LoadError.svelte';
   import Meter from './ui/Meter.svelte';
-  import Plate from './ui/Plate.svelte';
   import Row from './ui/Row.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
@@ -57,7 +56,7 @@
 {:else if rows.length === 0}
   <p class="text-muted text-[14px]" data-testid="home-top-guilds-empty">{homeTopGuildsCopy.empty}</p>
 {:else}
-  <Plate {label} testid="home-top-guilds">
+  <div role="group" aria-label={label} data-testid="home-top-guilds">
     {#each rows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
       {@const bosses = homeTopGuildsCopy.bosses(Math.round(row.value))}
       <Row
@@ -74,5 +73,5 @@
         {/snippet}
       </Row>
     {/each}
-  </Plate>
+  </div>
 {/if}

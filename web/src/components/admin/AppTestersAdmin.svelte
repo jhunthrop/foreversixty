@@ -91,8 +91,8 @@
   </div>
 {:else}
   <Page layout="ledger" testid="testers-page-body">
-    <Section title={copy.tableTitle} meta={copy.tableMeta(rows.length)} testid="testers-table">
-      <div class="flex flex-col gap-4 pt-3">
+    <Section title={copy.tableTitle} meta={copy.tableMeta(rows.length)} panel testid="testers-table">
+      <div class="flex flex-col gap-4">
         {#if rows.length === 0}
           <p data-testid="testers-empty">{copy.empty}</p>
         {:else}

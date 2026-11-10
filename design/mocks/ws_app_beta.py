@@ -107,7 +107,7 @@ def admin_testers() -> str:
     buttons = '<div class="acts">' + ''.join(Btn(e(label), small=True) for label in D['buttons']) + '</div>'
     rows = [(e(r['label']), '', [('none', e(cell['text'])) for cell in r['cells']]) for r in D['rows']]
     grid = Grid([e(col) for col in c['columns']], rows, caption=e(c['caption']), label_header=e(c['emailHeader']))
-    main = Section(e(c['tableTitle']), f'<div class="stack">{buttons}{grid}</div>', meta=e(D['meta']))
+    main = Section(e(c['tableTitle']), f'<div class="stack">{buttons}{grid}</div>', meta=e(D['meta']), panel=True)
     body = PageHeader(e(c['pageTitle']), lead=e(c['job'])) + f'<div class="page-foot">{Page("ledger", main)}</div>'
     return render(f'{e(c["pageTitle"])} · Forever Sixty', body,
                   '/admin/testers mock (the owner); data app-beta-facts.json (admin.ts over fixtures/app-beta/testers.json).', OWNER)

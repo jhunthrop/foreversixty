@@ -372,7 +372,7 @@ def raid_report():
     deaths = Entries([(f'<b style="color:{C[d["class"]]}">{d["name"]}</b> <span class="t-small">{rd.clock(d["at_ms"])} in</span>',
                        f'<b>{d["killing_blow"]["ability"]}</b> from {d["killing_blow"]["source"]}, 4,210 (1,050 overkill)') for d in shown['death_causes']])
     insp = Inspector(rd.pull_title(shown), [('Deaths', deaths)], rd.pull_title(shown), rd.pull_sub(shown))
-    pulls = Plate(Split(Rows(rows), insp), 'Every pull of the night')
+    pulls = f'<div role="group" aria-label="Every pull of the night">{Split(Rows(rows), insp)}</div>'
     output = Rows([Row(p['name'], f'DPS &middot; rated {p["rating"]} of 100', lead=crest_img(p['class'], 24), title_color=C[p['class']],
                        trail=Figure(str(p['value']), '', 'DPS', size='sm'), link=False, selected=p['name'] == rd.VIEWER, slim=True) for p in rep['parses']], open_=True)
     unknown = ''.join(f'<p class="t-small" style="margin-top:4px">{rd.pull_title(b)}: the log carried no character sheet, so nothing can be said.</p>' for b in rep['consumables']['by_pull'])
@@ -388,14 +388,16 @@ def raid_report():
     lines = rd.discord_lines(raid)
     discord = (''.join(f'<p class="t-small">{"<b>" + x + "</b>" if i == 0 else x}</p>' for i, x in enumerate(lines))
                + f'<div style="display:flex;gap:12px;padding-top:12px">{Button("Post to Discord", primary=True, small=True, act=True)}{Button("Copy for Discord", small=True, act=True)}{Live()}</div>')
-    main = Section('Pulls', pulls, meta=f'{len(rep["pulls"])} fights') + Section('DPS and HPS', _section_body(output), meta='Boss kills') + Section('Consumables by pull', _section_body(unknown))
-    rail = Section('Attendance', att) + Section('Loot awarded', _section_body(lootr)) + Section('Discord summary', _section_body(discord))
+    # Round 5 (lane h-edges): every section on its panel, the pulls framed and edge to edge for the Inspector.
+    main = (Section('Pulls', pulls, meta=f'{len(rep["pulls"])} fights', panel=True, frame='framed', flush=True)
+            + Section('DPS and HPS', output, meta='Boss kills', panel=True) + Section('Consumables by pull', unknown, panel=True))
+    rail = Section('Attendance', att, panel=True) + Section('Loot awarded', lootr, panel=True) + Section('Discord summary', _section_body(discord))  # ReportDiscord: lane f-content's file, still open
     h = rep['headline']
     fig = Figures([(str(h['kills']), 'Kills', '', 'kill'), (str(h['wipes']), 'Wipes', '', 'wipe'), (str(h['attempts']), 'Attempts', '', ''), (str(h['deaths']), 'Deaths', '', '')])
     # One raid page: the crumb back and the guild tabs as the planner's (raid_planner).
-    head = PageHeader(raid['title'], ALLIANCE, meta=[Tag('Done', 'muted'), rd.when_line(raid)], answer=fig,
+    head = PageHeader(raid['title'], '', Emblem(gd.FACTION, 56), meta=[Tag('Done', 'muted'), rd.when_line(raid)], answer=fig,
                       tabs=TabStrip(TABS, 'Raids'), crumb=f'<a href="#">&lsaquo; {GUILD} &middot; Raids</a>')
-    return build_page('Raid report', _view(head + Page('split', main, rail, sticky_rail=True)), 'Guild',
+    return build_page('Raid report', _view(head + Page('split', main, rail, sticky_rail=True, panels=True)), 'Guild',
                       (rd.VIEWER, viewer[1], f'{viewer[2]} {viewer[1].title()} &middot; 60'))
 
 
@@ -523,15 +525,26 @@ def applications():
     return build_page('Applications', _view(head + Page('split', main, rail, panels=True)) + _ROLE_CSS, 'Guild', (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
+def _ready_facts(ilvl):
+    """Raid ready (profile-view readyFacts): the gear gap in the BiS unit, enchants, bags, talents, attunement, item level against the
+    guild's median and the last export, as ui/Facts draws them (the sub line muted under the value)."""
+    gap = gd.PROFILE_GAP
+    sub = lambda text: f'<small class="t-small" style="display:block;font-weight:400">{text}</small>'
+    rows = [('Gear', f'{gap["upgrades"]} upgrades' + sub(f'+{gap["gain_dps"]:.1f} {gap["unit"].upper()} over what they wear')),
+            ('Enchants', 'All enchanted'), ('Bags', 'Flask and food'), ('Talents', 'All spent'), ('Attunement', 'Attuned'),
+            ('Item level', f'{ilvl}' + sub('The guild median')), ('Last logged', _day(gd.NOW))]
+    return '<dl class="gfacts">' + ''.join(f'<dt>{k}</dt><dd>{v}</dd>' for k, v in rows) + '</dl>'
+
+
 def member_profile():
+    """The member profile as an officer reads it (round 5, lane h-edges): the raider in class colour over the guild's tabs (Roster),
+    Raid ready framed, the last raids and loot this tier; the rail holds their characters, then Officer notes."""
     name, cls, spec, _role, ilvl, _st = ch(gd.PROFILE)
     from guild_fixtures import profile_loot
     won = [(d['item_id'], d['item_name'], d['icon'], d['quality'], d['at']) for d in profile_loot()]
     present = sum(1 for _at, o in gd.PROFILE_NIGHTS if o == 'present')
     figs = Figures([(f'{present} of {len(gd.PROFILE_NIGHTS)}', 'Attendance', '', ''), (str(round(gd.PROFILE_PARSE[1])), f'Top {gd.PROFILE_PARSE[0].upper()}', '', ''),
                     (str(ilvl), 'Item level', '', ''), (str(len(won)), 'Items this tier', '', '')])
-    gap = gd.PROFILE_GAP
-    gear = Rows([Row(f'{gap["upgrades"]} upgrades on their BiS list', link=False, slim=True), Row(f'+{gap["gain_dps"]:.1f} {gap["unit"].upper()} over what they wear', link=False, slim=True)], open_=True)
     mark = {'present': ('ok', '&#10003;'), 'late': ('warn', 'L'), 'absent': ('miss', '&times;')}
     last = 'Last raid' if len(gd.PROFILE_NIGHTS) == 1 else f'Last {len(gd.PROFILE_NIGHTS)} raids'  # recruit-copy lastNights
     att = (_grid_table(last, [_day(at) for at, _o in gd.PROFILE_NIGHTS], [(last, [mark[o] for _at, o in gd.PROFILE_NIGHTS])])
@@ -539,12 +552,16 @@ def member_profile():
     loot = '<ul>' + ''.join(f'<li>{ItemRow(n, q, icon(ic, 32, f"q{q}"), f"Awarded {_day(at)}")}</li>' for _i, n, ic, q, at in won) + '</ul>'
     notes = Rows([Row(body, f'{who} &middot; {_day(at)}', foot=Tag('Officers only', 'muted') + (f'<span style="margin-left:auto">{_act("Delete")}</span>' if mine else ''), link=False) for _i, body, who, at, mine in gd.PROFILE_NOTES], open_=True)
     addn = f'<div style="padding-top:12px">{_form("Add a note", [("Add a note", "Only officers see notes")], "Save note", floor=False)}</div>'
-    main = (Section('Gear gap', gear, Link('Open their character'), meta='Same units as the BiS page', panel=True) + Section('Attendance', att, panel=True)
+    characters = Rows([Row(n, lead=crest_img(c, 28), title_color=C[c], trail=Tag('Main', 'muted') if main else '', slim=True)
+                       for n, c, main in [(name, cls, True), (*gd.PROFILE_ALT, False)]], list_=True)
+    main = (Section('Raid ready', _ready_facts(ilvl), Link('Open their character'), panel=True, frame='framed') + Section('Attendance', att, panel=True)
             + Section('Loot this tier', loot, panel=True))
-    rail = Section('Officer notes', notes + addn, meta='Private: members never see these', panel=True)
-    # No character switcher (owner decision, no source) and no "member since" (the roster carries no join date): the rank instead.
-    head = PageHeader(name, C[cls], crest_img(cls, 56), meta=[' &middot; '.join([f'{spec} {cls.title()}', 'Level 60', 'Member'])], answer=figs)
-    return build_page('Member profile', _view(head + Page('split', main, rail, panels=True)) + _ROLE_CSS, 'Guild', (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    rail = Section('Characters', characters, panel=True) + Section('Officer notes', notes + addn, meta='Private: members never see these', panel=True)
+    # No "member since" (the roster carries no join date): the rank instead.
+    head = PageHeader(name, C[cls], crest_img(cls, 56), meta=[' &middot; '.join([f'{spec} {cls.title()}', 'Level 60', 'Member'])], answer=figs,
+                      tabs=TabStrip(TABS, 'Roster'))
+    return build_page('Member profile', _view(head + Page('split', main, rail, panels=True)) + _ROLE_CSS + _FACTS_CSS, 'Guild',
+                      (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 PAGES = {'web-guild-member': landing_member, 'web-guild-officer': landing_officer, 'web-guild-raid': raid_planner, 'web-guild-loot': loot_council, 'web-guild-report': raid_report,

@@ -128,27 +128,30 @@
           bind:value={name}
           grow
         />
-        <div class="flex flex-col gap-[6px]">
-          <label class={FIELD_LABEL} for="guild-lookup-region">{copy.regionLabel}</label>
-          <Select
-            id="guild-lookup-region"
-            name="region"
-            size="compact"
-            bind:value={region}
-            onchange={() => (placeTouched = true)}
-            options={regionOptions}
-          />
-        </div>
-        <div class="flex flex-col gap-[6px]">
-          <label class={FIELD_LABEL} for="guild-lookup-ruleset">{copy.rulesetLabel}</label>
-          <Select
-            id="guild-lookup-ruleset"
-            name="ruleset"
-            size="compact"
-            bind:value={ruleset}
-            onchange={() => (placeTouched = true)}
-            options={rulesetOptions}
-          />
+        <!-- One child of the FormRow, so a phone keeps region and ruleset side by side under the name. -->
+        <div class="flex gap-3 [&>*]:flex-1 md:[&>*]:flex-none">
+          <div class="flex flex-col gap-[6px]">
+            <label class={FIELD_LABEL} for="guild-lookup-region">{copy.regionLabel}</label>
+            <Select
+              id="guild-lookup-region"
+              name="region"
+              size="compact"
+              bind:value={region}
+              onchange={() => (placeTouched = true)}
+              options={regionOptions}
+            />
+          </div>
+          <div class="flex flex-col gap-[6px]">
+            <label class={FIELD_LABEL} for="guild-lookup-ruleset">{copy.rulesetLabel}</label>
+            <Select
+              id="guild-lookup-ruleset"
+              name="ruleset"
+              size="compact"
+              bind:value={ruleset}
+              onchange={() => (placeTouched = true)}
+              options={rulesetOptions}
+            />
+          </div>
         </div>
         {#snippet submit()}
           <Button tone="primary" type="submit">{copy.submit}</Button>
@@ -156,7 +159,7 @@
       </FormRow>
       <p class="text-strong min-h-[1lh] pt-2 text-[13px] empty:hidden" role="status">{status}</p>
     </Section>
-    <Section title={copy.topHeading} boxed testid="guild-landing-top">
+    <Section title={copy.topHeading} panel testid="guild-landing-top">
       <HomeTopGuilds label={copy.topHeading} />
     </Section>
   </Page>

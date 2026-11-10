@@ -205,7 +205,10 @@ def default_pull(rep: dict) -> dict | None:
 
 
 def attendance_summary(n: dict) -> str:
-    parts = [f"{n['came']} of {n['signed']} came"] + ([f"{n['joined']} more joined"] if n['joined'] else [])
+    # attendance-copy attendanceSummary: came, late, not in the log, more joined, excused.
+    parts = ([f"{n['came']} of {n['signed']} came"] + ([f"{n['late']} late"] if n.get('late') else [])
+             + ([f"{n['not_in_log']} not in the log"] if n.get('not_in_log') else []) + ([f"{n['joined']} more joined"] if n['joined'] else [])
+             + ([f"{n['excused']} excused"] if n.get('excused') else []))
     return SEP.join(parts)
 
 

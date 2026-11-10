@@ -63,7 +63,7 @@
     (FIX_STATUSES as readonly string[]).includes(value);
 </script>
 
-<Section title={copy.attendance.head} anchor="attendance" testid="raid-attendance">
+<Section title={copy.attendance.head} anchor="attendance" panel testid="raid-attendance">
   {#if log}<div class="mb-2">{@render log()}</div>{/if}
   <p class="text-text text-[14px]" data-testid="raid-attendance-summary">{attendanceSummary(night)}</p>
   {#if models.length > 0}

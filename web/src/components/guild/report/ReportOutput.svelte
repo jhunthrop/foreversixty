@@ -28,7 +28,7 @@
   const groups = $derived(outputGroups(parses));
 </script>
 
-<Section title={copy.output.head} meta={copy.output.meta} anchor="raid-output" testid="raid-output">
+<Section title={copy.output.head} meta={copy.output.meta} anchor="raid-output" panel testid="raid-output">
   {#if groups.length === 0}
     <p class="text-muted text-[14px]" data-testid="raid-output-empty">
       {officer ? copy.output.officerEmpty : copy.output.memberEmpty}

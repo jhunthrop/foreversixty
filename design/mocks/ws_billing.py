@@ -1,6 +1,6 @@
 """Web-layout reference mocks for the billing lane (RESTYLE-REST, 2026-11-07), composed ONLY from ws_prims:
   - web-account-discord-paste: the account's Discord paste form (the notifications Section when connect is off);
-  - web-admin-links: the owner's /admin/links (PageHeader, a split Page: the links' Plate of Rows, the New link rail).
+  - web-admin-links: the owner's /admin/links (PageHeader, a split Page: the links' panel of Rows, the New link panel in the rail).
 Data and copy are read at render time from design/mocks/data/billing-facts.json (node design/mocks/billing_facts.mjs),
 never retyped:
 
@@ -78,13 +78,13 @@ def admin_links() -> str:
     rows = [Row(e(r['label']), f'/go/{e(r["slug"])}' + (f' &rarr; {e(r["target"])}' if r['target'] != '/' else ''),
                 trail=figures(r['steps']) + Btn(e(c['copy'])), link=False) for r in A['rows']]
     rows.append(Row(e(c['totals']), trail=figures(A['totals']) + '<span class="spacer"></span>', link=False))
-    main = Section(e(c['tableTitle']), Plate(Rows(rows), e(c['tableTitle'])), meta=e(A['meta']))
+    main = Section(e(c['tableTitle']), f'<div role="group" aria-label="{e(c["tableTitle"])}">{Rows(rows)}</div>', meta=e(A['meta']), panel=True, flush=True)
     form = (f'<div class="stack"><p class="t-small">{e(c["formJob"])}</p>'
             + ''.join(f'<label class="f"><span class="t-label">{e(c[k + "Label"])}</span>{Input(e(ph))}<span class="t-small">{e(c[k + "Hint"])}</span></label>'
                       for k, ph in (('slug', 'reddit-classicwow'), ('target', '/'), ('label', 'Reddit: r/classicwow')))
             + f'<div class="acts">{Btn(e(c["create"]), primary=True, small=False)}</div><div class="status" aria-live="polite"></div></div>')
     # The page's foot: the built <main> ends a section gap (48 px) above the site footer.
-    body = PageHeader(e(c['pageTitle']), lead=e(c['job'])) + f'<div class="page-foot">{Page("split", main, Section(e(c["formTitle"]), form))}</div>'
+    body = PageHeader(e(c['pageTitle']), lead=e(c['job'])) + f'<div class="page-foot">{Page("split", main, Section(e(c["formTitle"]), form, panel=True), panels=True)}</div>'
     return render('Links · Forever Sixty', body, '', '/admin/links mock (the owner); data billing-facts.json (admin-copy.ts, funnel.ts over the e2e links).')
 
 

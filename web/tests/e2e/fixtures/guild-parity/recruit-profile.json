@@ -31,6 +31,12 @@
       "name": "Frostquill",
       "class": "mage",
       "is_main": true
+    },
+    {
+      "character_key": "us/pvp/quillstep",
+      "name": "Quillstep",
+      "class": "priest",
+      "is_main": false
     }
   ],
   "attendance": {
@@ -90,7 +96,12 @@
     "item_level": 68,
     "item_level_delta": 0,
     "logged_at": "2026-12-12T22:00:00Z",
-    "failing": 0
+    "failing": 0,
+    "attuned": true,
+    "flask_food": {
+      "flask_or_elixir": true,
+      "food": true
+    }
   },
   "notes": [
     {

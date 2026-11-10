@@ -17,7 +17,7 @@
   const model = $derived(consumablesModel(byPull));
 </script>
 
-<Section title={copy.consumables.head} anchor="raid-consumables" testid="raid-consumables">
+<Section title={copy.consumables.head} anchor="raid-consumables" panel testid="raid-consumables">
   {#if byPull.length === 0}
     <p class="text-muted text-[14px]" data-testid="raid-consumables-none">{copy.consumables.none}</p>
   {:else}

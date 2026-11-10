@@ -1,19 +1,29 @@
 ---
 // web/src/components/character/CharacterNoScript.astro
-// The character page with JavaScript off (L8.4 fix round 3 item 9). Character.svelte fetches
-// the character in the browser, so the server HTML is its loading skeleton alone; without
-// JavaScript that would shimmer forever. This hides it (an inline style inside <noscript>
-// applies only when scripting is off) and says why, with the Planner as the way on. Both
-// character shells mount it beside the island.
-import { characterNoScriptCopy } from '../../lib/character-profile';
+// The character page with JavaScript off (L8.4 fix round 3 item 9; round 5, lane h-edges).
+// Character.svelte fetches the character in the browser, so the server HTML is its loading
+// skeleton alone; without JavaScript that would shimmer forever. This hides the skeleton and its
+// head (an inline style inside <noscript> applies only when scripting is off) and draws the page
+// from the primitives instead: the title band, then one panel saying why, with the Planner as the
+// way on. Both character shells mount it beside the island.
+import Page from '../ui/Page.svelte';
+import PageHeader from '../ui/PageHeader.svelte';
+import Plate from '../ui/Plate.svelte';
+import { characterNoScriptCopy as copy } from '../../lib/character-profile';
 ---
 
 <noscript>
   <style is:inline>
-    [data-testid='character-skeleton'] {
+    [data-testid='character-skeleton'],
+    [data-testid='character-head-loading'] {
       display: none !important;
     }
   </style>
-  <!-- prettier-ignore -->
-  <p class="text-[14px] leading-[22px]" data-testid="character-noscript">{characterNoScriptCopy.lead}{' '}<a class="text-gold underline underline-offset-2" href={characterNoScriptCopy.href}>{characterNoScriptCopy.link}</a>{characterNoScriptCopy.tail}</p>
+  <Page layout="ledger" testid="character-noscript-page">
+    <PageHeader slot="header" title={copy.title} />
+    <Plate flush={false} label={copy.title}>
+      <!-- prettier-ignore -->
+      <p class="text-text text-[15px] leading-6" data-testid="character-noscript">{copy.lead}{' '}<a class="text-gold underline underline-offset-2" href={copy.href}>{copy.link}</a>{copy.tail}</p>
+    </Plate>
+  </Page>
 </noscript>
