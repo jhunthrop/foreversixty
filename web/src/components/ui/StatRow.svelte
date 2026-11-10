@@ -65,5 +65,5 @@
         >{/if}</span
     >
   {/each}
-  {#if action}<span class="ui-st-action">{@render action()}</span>{/if}
+  {#if action}<span class="ui-st-action" role="cell">{@render action()}</span>{/if}
 </div>

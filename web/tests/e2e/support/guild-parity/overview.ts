@@ -1,6 +1,7 @@
 // web/tests/e2e/support/guild-parity/overview.ts
-// Lane A of the guild parity states: the role-aware Overview as a member (Hollowmend, Holy Priest)
-// and as an officer (Dunmaro, Beast Mastery Hunter), and the officer's Loot tab with Vis'kag picked.
+// The guild's routing as a member (Hollowmend, Holy Priest) or an officer (Dunmaro, Beast Mastery
+// Hunter), which the Progression tab state opens on (guild-parity/tabs.ts); the Overview, Roster,
+// Readiness and Loot states are the dense ones (guild-parity/dense.ts).
 // Every read the page makes is answered from tests/e2e/fixtures/guild-parity (written by
 // design/mocks/guild_overview_fixtures.py, the data ws_guild2.py draws the mocks from); anything
 // else falls through to the test fixture's guard, which fails the test.
@@ -8,15 +9,11 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Page, Route } from '@playwright/test';
-import { expect } from '../test';
 import { storePointer } from '../selector';
-import type { GuildStateOpener } from '../guild-parity';
 
 const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../fixtures/guild-parity');
 const GUILD_PATH = '/guild/us/pvp/olympus-xxvii';
 const GUILD_ID = 2;
-/** guild_overview_data.SELECTED_DROP: the drop the loot state opens. */
-const SELECTED_DROP = 17075;
 
 export type Viewer = 'member' | 'officer';
 
@@ -85,34 +82,3 @@ export async function routeGuild(
   });
   await page.route('**/v1/**', (route) => answer(route, viewer, home));
 }
-
-async function openOverview(page: Page, viewer: Viewer): Promise<void> {
-  await routeGuild(page, viewer);
-  await page.goto(GUILD_PATH);
-  if (viewer === 'member') {
-    await expect(page.getByTestId('guild-next-raid-you')).toBeVisible();
-    await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();
-    await expect(page.getByTestId('guild-overview-checklist')).toBeVisible();
-    await expect(page.getByTestId('guild-your-week')).toBeVisible();
-  } else {
-    await expect(page.getByTestId('guild-overview-actions')).toBeVisible();
-    await expect(page.getByTestId('guild-week-wednesday')).toBeVisible();
-    await expect(page.getByTestId('guild-overview-cover')).toBeVisible();
-  }
-  await page.waitForLoadState('networkidle');
-}
-
-async function openLoot(page: Page): Promise<void> {
-  await routeGuild(page, 'officer');
-  await page.goto(`${GUILD_PATH}#loot`);
-  await page.getByTestId(`guild-loot-drop-${SELECTED_DROP}`).click();
-  await expect(page.locator('[data-testid^="guild-loot-candidate-"]').first()).toBeVisible();
-  await expect(page.getByTestId('guild-loot-decisions')).toBeVisible();
-  await page.waitForLoadState('networkidle');
-}
-
-export const OVERVIEW_OPENERS: Readonly<Record<string, GuildStateOpener>> = {
-  member: (page) => openOverview(page, 'member'),
-  officer: (page) => openOverview(page, 'officer'),
-  loot: openLoot,
-};

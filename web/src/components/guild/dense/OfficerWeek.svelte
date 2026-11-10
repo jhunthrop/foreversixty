@@ -5,6 +5,7 @@
      the buff cover and who is slipping. Reads the next raid (given), its readiness board, the last
      two logged raids, the attendance grid, the loot history and the open applications. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import type {
     GuildRaidView,
     GuildRaidsPage,
@@ -66,6 +67,7 @@
     now,
     onSelectTab,
     onRaidChanged,
+    lead,
   }: {
     guildId: number;
     next: NextRaidView | null;
@@ -79,6 +81,8 @@
     now: Date;
     onSelectTab: (tab: GuildTabId) => void;
     onRaidChanged: () => void;
+    /** The pre-raid lead (the countdown, the first week, the activity), heading the main column. */
+    lead?: Snippet;
   } = $props();
 
   const NIGHTS = 5;
@@ -195,7 +199,7 @@
   }
 </script>
 
-{#if actions !== null}
+{#if actions !== null && (actions.approvals.count > 0 || (actions.applications?.count ?? 0) > 0 || (actions.drops_to_award?.count ?? 0) > 0)}
   <div
     class="flex flex-wrap items-center gap-x-4 gap-y-1 px-(--page-inset) pb-5"
     data-testid="guild-overview-actions"
@@ -206,7 +210,7 @@
       >
     {/if}
     {#if (actions.applications?.count ?? 0) > 0}
-      <Button tone="ghost" size="sm" href={guildApplicationsHref(guildPath)}
+      <Button tone="ghost" size="sm" href={guildApplicationsHref(guildPath)} testid="guild-open-applications"
         >{counted(actions.applications?.count ?? 0, 'application')}</Button
       >
     {/if}
@@ -219,6 +223,7 @@
 {/if}
 
 <Page layout="split" panels testid="guild-overview-page">
+  {@render lead?.()}
   {#if next !== null && raid !== null}
     <WednesdayPanel {guildId} {next} {raid} {ready} {planHref} {viewerTz} {now} onChanged={onRaidChanged} />
   {/if}

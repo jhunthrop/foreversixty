@@ -131,6 +131,8 @@ def fixtures() -> dict[str, object]:
         'states-progression.json': empty_progression(),
         'states-raids.json': {'rows': [], 'next_cursor': None},
         'states-readiness.json': readiness(),
+        'states-loot-nights.json': {'officers': 2, 'nights': []},
+        'states-applications.json': {'rows': [], 'pending': 0, 'discord_role_id': None},
     }
 
 

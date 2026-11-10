@@ -205,15 +205,19 @@
 
 <Page layout="ledger" testid="guild-roster-page">
   {#if officer && pending.length > 0}
-    <div data-testid="guild-roster-waiting">
+    <div data-testid="guild-raid-roster-waiting">
       <p class="text-gold flex flex-wrap items-center gap-x-3 gap-y-2 text-[15px]">
         {pending.length} waiting for approval: {pending.map((p) => p.name).join(', ')}
         <Button tone="secondary" size="sm" onclick={() => (reviewing = !reviewing)} pressed={reviewing}
           >Review</Button
         >
         {#if canApprove}
-          <Button tone="primary" size="sm" disabled={busy} onclick={onApproveAll} testid="guild-approve-all"
-            >Approve all</Button
+          <Button
+            tone="primary"
+            size="sm"
+            disabled={busy}
+            onclick={onApproveAll}
+            testid="guild-raid-roster-approve-all">Approve all</Button
           >
         {/if}
       </p>

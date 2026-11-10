@@ -198,9 +198,9 @@
       {@render lastRaid()}
     </Page>
   {:else if officer}
-    {@render lead?.()}
     {#if guildId !== null}
       <OfficerWeek
+        {lead}
         {guildId}
         next={nextRaid}
         {raid}

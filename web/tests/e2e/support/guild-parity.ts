@@ -7,7 +7,6 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
-import { OVERVIEW_OPENERS } from './guild-parity/overview';
 import { RAID_OPENERS } from './guild-parity/raid';
 import { RECRUIT_OPENERS } from './guild-parity/recruit';
 import { openReport } from './guild-parity/report';
@@ -21,7 +20,6 @@ import { DENSE_OPENERS } from './guild-parity/dense';
 export type GuildStateOpener = (page: Page) => Promise<void>;
 
 const OPENERS: Readonly<Record<string, GuildStateOpener>> = {
-  ...OVERVIEW_OPENERS,
   ...RAID_OPENERS,
   report: openReport,
   ...RECRUIT_OPENERS,
