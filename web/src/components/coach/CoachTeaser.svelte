@@ -6,7 +6,7 @@
   import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
   import type { CoachNames } from '../../lib/coach/names';
   import type { CoachTeaser } from '../../lib/coach/types';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let { answer, names }: { answer: CoachTeaser; names: CoachNames } = $props();
 
@@ -26,7 +26,11 @@
     </h3>
     {#if answer.fix_first !== null}
       <div class="border-gold mt-2 flex items-center gap-2 border-l-2 pl-4">
-        <SpellIcon url={names.iconUrl(answer.fix_first.spell_id)} size={32} />
+        <SpellIcon
+          url={names.iconUrl(answer.fix_first.spell_id)}
+          size={32}
+          tip={answer.fix_first.spell_id ?? undefined}
+        />
         <p class="text-strong text-[20px] leading-7 font-bold" data-testid="coach-teaser-first">
           {fill(coachCopy.teaserFirst, { title: answer.fix_first.title })}
         </p>

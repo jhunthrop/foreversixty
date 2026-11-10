@@ -281,8 +281,7 @@
       >
         {#snippet icon()}<SpellIcon
             url={icons.of(track.spell_id, track.name)}
-            spellId={track.spell_id}
-            tip
+            tip={track.spell_id}
           />{/snippet}
         {#snippet name()}
           <!-- The anchor a rating moment's link lands on (lib/rating/moments.ts); a row on several
@@ -359,8 +358,8 @@
       {#each bySpell as entry (entry.name)}
         <StatRow figures={[{ value: formatPercent(entry.pct) }]}>
           {#snippet icon()}<SpellIcon
+              tip={entry.spellId}
               url={icons.of(entry.spellId, entry.name)}
-              spellId={entry.spellId}
             />{/snippet}
           {#snippet name()}{entry.name}{/snippet}
           {#snippet sub()}<span>on {entry.targets} {kind === 'DEBUFF' ? 'bosses' : 'players'}</span>{/snippet}

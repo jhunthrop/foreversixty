@@ -3,10 +3,11 @@
 // The Talents and builds lane (guides spec 2026-11-08 §4.3, G2): one slim Row per build (its
 // points per tree, Load this build and Sim this build as links), the raid diff line, then the
 // key talents (icon, the names with their ranks opening the talent tooltip, the why line).
+import { iconUrl } from '../../lib/ui/assets';
+import SpellIcon from '../ui/SpellIcon.astro';
 import LaneBlock from '../ui/LaneBlock.svelte';
 import Row from '../ui/Row.svelte';
 import { LINK } from '../../lib/ui/primitives';
-import { dataUrl } from '../../lib/planner/load';
 import { guidesCopy } from '../../lib/guides/copy';
 import { loadBuildHref, simBuildHref } from '../../lib/guides/build-links';
 import type { DecodedTreeView } from '../../lib/guides/build-tree';
@@ -82,15 +83,7 @@ const rankText = (talent: KeyTalentRef): string =>
           >
             <Fragment slot="lead">
               {leadTalent?.icon !== undefined ? (
-                <img
-                  src={dataUrl(build, `icons/${leadTalent.icon}.webp`)}
-                  alt=""
-                  width="32"
-                  height="32"
-                  loading="lazy"
-                  decoding="async"
-                  class="guide-key-icon"
-                />
+                <SpellIcon url={iconUrl(build, leadTalent.icon)} size={32} />
               ) : (
                 <span class="guide-key-icon" aria-hidden="true" />
               )}

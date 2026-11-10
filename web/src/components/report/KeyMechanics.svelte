@@ -11,7 +11,7 @@
   import type { Summary } from '../../lib/report/types';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let { summary, spellIcon, tabHref }: { summary: Summary; spellIcon: SpellIconOf; tabHref: string } =
     $props();
@@ -73,6 +73,8 @@
     {#each lines as line (line.key)}
       <Row title={line.name} sub={line.sub} open density="slim">
         {#snippet lead()}<SpellIcon
+            tip={line.spellId}
+            size={24}
             url={spellIcon(line.spellId, line.name, schoolOf.get(line.spellId))}
           />{/snippet}
         {#snippet trail()}<span

@@ -27,7 +27,7 @@
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
   import GearList from './GearList.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   type ActorTab = 'damage-done' | 'healing' | 'damage-taken';
 
@@ -258,6 +258,7 @@
               phone={`${formatRate(ability.effective / seconds)} ${RATE[tab]}`}
             >
               {#snippet icon()}<SpellIcon
+                  tip={ability.spell_id}
                   url={spellIcon(ability.spell_id, ability.name, ability.school)}
                   size={28}
                 />{/snippet}

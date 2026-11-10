@@ -17,7 +17,7 @@
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   type Metric = 'done' | 'taken' | 'healing';
 
@@ -184,7 +184,11 @@
         {#if detail}
           <!-- On a phone the detail columns fold into the sub line under the name. -->
           <StatRow {figures} {phone}>
-            {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
+            {#snippet icon()}<SpellIcon
+                tip={row.spellId}
+                size={24}
+                url={spellIcon(row.spellId, row.name, row.school)}
+              />{/snippet}
             {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
             {#snippet sub()}{#each details as id, i (id)}<span class="ui-st-phone"
                   >{i > 0 ? ' · ' : ''}{detailValue(row, id)} {phoneLabel(row, id)}</span
@@ -193,7 +197,11 @@
           </StatRow>
         {:else}
           <StatRow {figures} {phone}>
-            {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
+            {#snippet icon()}<SpellIcon
+                tip={row.spellId}
+                size={24}
+                url={spellIcon(row.spellId, row.name, row.school)}
+              />{/snippet}
             {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
             {#snippet meter()}<Meter value={row.share} tone={TONE[metric]} />{/snippet}
           </StatRow>

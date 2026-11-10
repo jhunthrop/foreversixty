@@ -4,6 +4,7 @@
      uptime and times applied; what stayed up is an IconList, the ones with no effect on this spec's
      damage dimmed and last (lib/sim/buff-effect.ts, the same rule as This run). -->
 <script lang="ts">
+  import { spellTipKey } from '../../lib/tooltips/game-tip';
   import activeBuild from '../../data/active-build.json';
   import { loadWeights } from '../../lib/planner/load';
   import type { ActionNames } from '../../lib/sim/action-names';
@@ -65,13 +66,16 @@
     }),
   );
 
+  const tipKeyOf = (spell: number | undefined): string | undefined =>
+    spell === undefined ? undefined : spellTipKey(spell);
+
   function iconItem(entry: AuraEntry, dim: boolean): IconListItem {
     return {
       id: entry.key,
       name: entry.stacks > 1 ? `${entry.name} ${copy.stacks(entry.stacks)}` : entry.name,
       icon: resolveIconUrl(entry.actionKey, tables.visuals, entry.buffIcon),
       dim,
-      tip: actionTip(entry.actionKey, (id) => tables.spells.fact(id) !== undefined).tip,
+      tip: tipKeyOf(actionTip(entry.actionKey, (id) => tables.spells.fact(id) !== undefined).spell),
     };
   }
 

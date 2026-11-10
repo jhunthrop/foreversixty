@@ -4,6 +4,7 @@
      rows by kind. Each row is the item's own full name; ticking one replaces whatever its
      slot held, because a slot is one enchant (imbue-rows.ts). -->
 <script lang="ts">
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import { buffIcon, imbueLabel, type BuffNames } from '../../lib/sim/buff-names';
   import { simCopy } from '../../lib/sim/copy';
   import type { ImbueSection } from '../../lib/sim/imbue-rows';
@@ -39,10 +40,7 @@
             {@const label = imbueLabel(row.id, names)}
             {@const icon = buffIcon(build, row.id, names)}
             <li class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-9">
-              {#if icon !== null}
-                <!-- The name beside it carries the row, so the icon is decorative. -->
-                <img src={icon} alt="" width="20" height="20" class="rounded-[2px]" loading="lazy" />
-              {/if}
+              <SpellIcon url={icon} size={20} />
               <label class="flex min-w-0 flex-1 items-center gap-2">
                 <input
                   type="checkbox"

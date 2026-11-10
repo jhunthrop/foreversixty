@@ -18,7 +18,7 @@
     type ZoomWindow,
   } from '../../lib/sim/timeline';
   import { timelineCopy } from '../../lib/sim/timeline-copy';
-  import ActionIcon from './ActionIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let {
     model,
@@ -70,7 +70,7 @@
             {#snippet lead()}<span class="text-muted w-[72px] text-[14px] tabular-nums"
                 >{preciseClock(press.atMs)}</span
               ><span class="inline-flex h-6 w-6"
-                ><ActionIcon url={visuals(press.action).icon} loaded={visualsLoaded} size={24} /></span
+                ><SpellIcon url={visuals(press.action).icon} loading={!visualsLoaded} size={24} /></span
               >{/snippet}
             {#snippet trail()}{#if press.resource !== null}<span class="text-muted text-[14px] tabular-nums"
                   >{resourceLabel} {Math.round(press.resource)}</span

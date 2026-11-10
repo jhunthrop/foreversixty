@@ -11,7 +11,7 @@
   import { ICON_CLOSE } from '../../lib/ui/ui-icons';
   import Divided from '../ui/Divided.svelte';
   import Overlay from '../ui/Overlay.svelte';
-  import ActionIcon from './ActionIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let {
     readout,
@@ -69,7 +69,7 @@
           <ul class="flex w-full flex-col">
             {#each readout.casts as cast, index (`${cast.action}-${cast.agoMs}-${index}`)}
               <li class="flex h-[26px] items-center gap-2 text-[14px]" data-testid="timeline-readout-cast">
-                <ActionIcon url={visuals(cast.action).icon} loaded={visualsLoaded} size={20} />
+                <SpellIcon url={visuals(cast.action).icon} loading={!visualsLoaded} size={20} />
                 <span class="text-text min-w-0 truncate">{cast.name}</span>
                 <span class="numeric text-muted ml-auto shrink-0 text-[13px]"
                   >{timelineCopy.secondsAgo(seconds(cast.agoMs))}</span

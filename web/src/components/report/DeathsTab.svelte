@@ -32,7 +32,7 @@
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
   import ClassIcon from './ClassIcon.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import type { CastRow, CombatantRow, DamageRef, Death, HealRef, PullMark } from '../../lib/report/types';
   import { deathWindow, type TimeWindow } from '../../lib/report/window';
@@ -394,7 +394,11 @@
               {#if event.kind === 'heal'}
                 {@const heal = event.heal}
                 <StatRow figures={healFigures(heal)} phone={healFigures(heal)[1]?.value} testid="death-heal">
-                  {#snippet icon()}<SpellIcon url={spellIcon(heal.spell_id, heal.spell_name)} />{/snippet}
+                  {#snippet icon()}<SpellIcon
+                      tip={heal.spell_id}
+                      size={24}
+                      url={spellIcon(heal.spell_id, heal.spell_name)}
+                    />{/snippet}
                   {#snippet name()}<b class="text-kill">{heal.spell_name}</b>{/snippet}
                   {#snippet sub()}{formatDurationPrecise(heal.at_ms)} · from {splitUnitName(heal.source_name)
                       .name}{/snippet}
@@ -410,7 +414,11 @@
                 {@const shown = hitFigures(death, hit, lethal)}
                 {@const blow = lethal && !lethalHitMissing(death, card)}
                 <StatRow figures={shown} phone={shown[1]?.value} testid={blow ? 'death-blow' : undefined}>
-                  {#snippet icon()}<SpellIcon url={spellIcon(hit.spell_id, hit.spell_name)} />{/snippet}
+                  {#snippet icon()}<SpellIcon
+                      tip={hit.spell_id}
+                      size={24}
+                      url={spellIcon(hit.spell_id, hit.spell_name)}
+                    />{/snippet}
                   {#snippet name()}<b class={blow ? 'text-death' : 'text-strong'}
                       >{hit.spell_name === '' ? 'Melee' : hit.spell_name}</b
                     >{#if blow}<span class="ml-2 align-middle"><Tag tone="danger">Killing blow</Tag></span

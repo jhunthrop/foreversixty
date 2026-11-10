@@ -1,0 +1,49 @@
+---
+// web/src/components/ui/SpellIcon.astro
+// The static twin of ui/SpellIcon.svelte (component audit 2026-11-10 cluster 1) for the server
+// rendered pages (guides, the Premium coach sample): the same frame, sizes and socket. With no
+// script to catch a failed image, socket.css draws the socket over a broken one. A caller fills a
+// Row's lead with slot="lead".
+import {
+  SPELL_ICON_FRAME,
+  SPELL_ICON_IMAGE,
+  spellIconA11y,
+  type SpellIconSize,
+} from '../../lib/ui/spell-icon';
+import { spellTipKey } from '../../lib/tooltips/game-tip';
+
+interface Props {
+  /** The icon's url (lib/ui/assets iconUrl); null draws the socket. */
+  url: string | null;
+  size?: SpellIconSize;
+  /** The spell whose tooltip opens on hover. */
+  tip?: number;
+  /** The name, for an icon with no printed name beside it. */
+  label?: string;
+  /** Extra classes on the frame, for the caller's layout only. */
+  class?: string;
+  testid?: string;
+}
+const { url, size = 28, tip, label = '', class: extra, testid } = Astro.props;
+---
+
+<span
+  class:list={[SPELL_ICON_FRAME, extra]}
+  style={`width:${size}px;height:${size}px`}
+  {...spellIconA11y(label)}
+  data-game-tip={tip !== undefined && tip > 0 ? spellTipKey(tip) : undefined}
+  data-icon-socket={url === null ? '' : undefined}
+  data-testid={testid}
+>
+  {url !== null && (
+    <img
+      src={url}
+      alt=""
+      width={size}
+      height={size}
+      loading="lazy"
+      decoding="async"
+      class={SPELL_ICON_IMAGE}
+    />
+  )}
+</span>

@@ -212,7 +212,7 @@ describe('ControlBar compact class picker', () => {
     const body = html(ControlBar, { groups: plain, label: 'x' });
     expect(body).not.toContain('ui-seg--compact');
     expect(body).not.toContain('aria-label="A"');
-    expect(body).toContain('class="rounded-[4px]"');
+    expect(body).toContain('ui-spell-icon');
     expect(body).toContain('<span>A</span>');
   });
 });

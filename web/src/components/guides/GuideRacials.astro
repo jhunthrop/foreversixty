@@ -2,7 +2,8 @@
 // web/src/components/guides/GuideRacials.astro
 // One race's racials under its row in the Races lane (GuideRacesLane): each the racial's icon,
 // its name opening the racial tooltip, and what it does.
-import { dataUrl } from '../../lib/planner/load';
+import SpellIcon from '../ui/SpellIcon.astro';
+import { iconUrl } from '../../lib/ui/assets';
 import { racialKeyFor } from '../../lib/guides/guide-tips';
 import type { GuideRaceRow } from '../../lib/guides/race-table';
 import type { GuideTipBundle } from '../../lib/tooltips/game-tip';
@@ -18,14 +19,7 @@ const { build, racials, tips } = Astro.props;
 {racials.map((racial) => (
   <span class="guide-racial">
     {racial.icon !== undefined ? (
-      <img
-        src={dataUrl(build, `icons/${racial.icon}.webp`)}
-        alt=""
-        width="20"
-        height="20"
-        loading="lazy"
-        decoding="async"
-      />
+      <SpellIcon url={iconUrl(build, racial.icon)} size={20} />
     ) : (
       <span class="guide-racial-gap" aria-hidden="true" />
     )}
@@ -51,7 +45,6 @@ const { build, racials, tips } = Astro.props;
     line-height: 18px;
     color: var(--color-muted);
   }
-  .guide-racial img,
   .guide-racial-gap {
     flex: none;
     width: 20px;

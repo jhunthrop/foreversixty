@@ -7,6 +7,7 @@
      this only draws them. Icons and rank arrive through `decorate` once their files load, inside a
      fixed box, so nothing moves. Below 1024 the figures join the sub line (StatRow's phone parts). -->
 <script lang="ts" module>
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import type { AbilityRow } from '../../lib/report/ability-table';
 
   export interface AbilityWeapon {
@@ -110,24 +111,13 @@
   <StatRow figures={figuresOf(row)} phone={`${fixedOne(row.share)}%`} testid={`ability-row-${row.key}`}>
     {#snippet icon()}
       <!-- The icon opens the same tooltip as the name: the spell's, or a swing row's weapon. -->
-      <span
-        class="block h-7 w-7 overflow-hidden rounded-[4px]"
-        data-game-tip={extras.tip ? spellTipKey(row.spellId) : undefined}
-        data-bis-item={extras.weapon?.id}
-        data-testid="ability-icon"
-      >
-        {#if iconUrl !== null}
-          <img
-            src={iconUrl}
-            alt=""
-            width="28"
-            height="28"
-            loading="lazy"
-            decoding="async"
-            class="block h-full w-full"
-          />
-        {/if}
-      </span>
+      <SpellIcon
+        url={iconUrl}
+        size={28}
+        tip={extras.tip ? row.spellId : undefined}
+        item={extras.weapon?.id}
+        testid="ability-icon"
+      />
     {/snippet}
     {#snippet name()}
       <!-- The name is the keyboard's stop for the tooltip; a phone gets the 44 px hit area. -->

@@ -9,7 +9,7 @@
   import type { ExchangeRow } from '../../lib/report/types';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let {
     dispels,
@@ -39,7 +39,11 @@
         density="slim"
         open
       >
-        {#snippet lead()}<SpellIcon url={spellIcon(row.extra_spell_id, row.extra_spell_name)} />{/snippet}
+        {#snippet lead()}<SpellIcon
+            tip={row.extra_spell_id}
+            size={24}
+            url={spellIcon(row.extra_spell_id, row.extra_spell_name)}
+          />{/snippet}
         {#snippet trail()}<span class="text-strong text-[14px] font-semibold tabular-nums">{row.count}</span
           >{/snippet}
       </Row>

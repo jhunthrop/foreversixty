@@ -11,7 +11,7 @@
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let {
     summary,
@@ -91,7 +91,11 @@
       <StatTable columns={COLUMNS} nameHead="Buff" label="Buffs">
         {#each rows as row (row.name)}
           <StatRow figures={[{ value: formatPercent(row.share * 100) }]}>
-            {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
+            {#snippet icon()}<SpellIcon
+                tip={row.spellId}
+                size={24}
+                url={spellIcon(row.spellId, row.name, row.school)}
+              />{/snippet}
             {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
             {#snippet meter()}<Meter value={row.share} tone="gold" />{/snippet}
           </StatRow>

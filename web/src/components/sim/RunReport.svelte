@@ -10,6 +10,7 @@
      The one body for a saved run (/sim/<id>, SavedSim.svelte) and a finished run on /sim
      (SimView.svelte, `live`). The head and its answer are the page's own. -->
 <script lang="ts">
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import { iconUrl } from '../../lib/ui/assets';
   import { onMount, type Snippet } from 'svelte';
   import activeBuild from '../../data/active-build.json';
@@ -281,14 +282,7 @@
           testid={`sim-note-${note.id}`}
         >
           {#snippet lead()}
-            <span class="block h-5 w-5 overflow-hidden rounded-[4px]"
-              >{#if icon !== null}<img
-                  src={icon}
-                  alt=""
-                  width={WARNING_ICON}
-                  height={WARNING_ICON}
-                />{/if}</span
-            >
+            <SpellIcon url={icon} size={WARNING_ICON} />
           {/snippet}
           {#snippet tail()}{#if note.action === 'sim' && onrerun !== undefined}<button
                 type="button"

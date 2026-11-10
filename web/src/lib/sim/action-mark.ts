@@ -18,14 +18,14 @@ export function resolveIconUrl(
   return iconUrl(activeBuild.build, fallback);
 }
 
-/** The tooltip an action opens: a spell the build has a tooltip for, or an item. */
+/** The tooltip an action opens: a spell the build has a tooltip for, or an item (their ids). */
 export function actionTip(
   action: string | null,
   spellKnown: (spellId: number) => boolean,
-): { tip: string | undefined; item: number | undefined } {
+): { spell: number | undefined; item: number | undefined } {
   const parsed = action === null ? null : parseActionKey(action);
   return {
-    tip: parsed?.kind === 'spell' && spellKnown(parsed.id) ? `spell:${parsed.id}` : undefined,
+    spell: parsed?.kind === 'spell' && spellKnown(parsed.id) ? parsed.id : undefined,
     item: parsed?.kind === 'item' ? parsed.id : undefined,
   };
 }
