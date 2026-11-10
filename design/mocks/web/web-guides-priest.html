@@ -1046,6 +1046,11 @@ table.gridm.edge :is(th,td):last-child{padding-right:20px}
 .plate.framed{position:relative}
 .plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
 
+.rd-more{display:none}.rd-more:not(:empty){display:block;margin-top:24px;padding-top:16px;border-top:1px solid var(--line-soft);columns:340px;column-gap:28px}
+.rd-more [data-wrapped]{break-inside:avoid}
+@media(max-width:1279.98px){.rd[data-prose-first]{grid-template-areas:'prose' 'lane'}}
+@media(min-width:1280px){.rd{align-items:start}.rd[data-lane-sticky]>.rd-lane{position:sticky;top:12px}}
+
 .cspick{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 @media(min-width:768px){.cspick{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:1024px){.cspick{grid-template-columns:repeat(3,minmax(0,1fr))}}

@@ -22,7 +22,7 @@ from pathlib import Path
 from mocklib import CLASS_COLOR
 from ws_prims import (Button, ClassSpecPicker, Facts, ItemRow, LaneBlock, LevelSlider, Link, Menu, Page, PageHeader, Plate, PlateColumns,
                       Prose, ReadingPanel, ReadingSection, Row, RowGrid, Rows, RowsSlim, Section, Skeleton, StatRow, StatTable, Tag, TalentTrees, Toc,
-                      build_page, control_bar, crest_img, icon, seg, sel, write, REGION, Meter, QCOL, ItemTip, PaperdollFrame)
+                      build_page, control_bar, crest_img, icon, seg, sel, write, REGION, Meter, QCOL, ItemTip, PaperdollFrame, reading_wrap_script)
 
 HERE = Path(__file__).resolve().parent
 F = json.loads(Path(os.environ.get('FS_GUIDES_FACTS') or HERE / 'data' / 'guides-facts.json').read_text())
@@ -137,7 +137,7 @@ def talents(g: dict) -> str:
     for k in t['keyTalents']:
         names = ' &middot; '.join(f'{e(x["name"])} <span class="t-small">{" &middot; ".join(e(r) for r in x["rankText"])}</span>' for x in k['talents'])
         keys.append(Row(names, e(k['why']), lead=icon(k['talents'][0].get('icon') or '', 32), link=False))
-    lane = LaneBlock(PROPOSED['builds'], RowsSlim(rows) + diff) + LaneBlock(e(C['keyTalents']), Rows(keys, True))
+    lane = LaneBlock(PROPOSED['builds'], RowsSlim(rows) + diff) + LaneBlock(e(C['keyTalents']), wrap_list(Rows(keys, True)))
     return ReadingSection(SEC['talents-and-builds'], Prose(t['prose']), lane, 'talents-and-builds')
 
 
@@ -150,7 +150,7 @@ def rotation(g: dict, lists: dict | None = None) -> str:
         if any(x.get('raidBuildOnly') for k in ('opener', 'priority', 'cooldowns') for x in lists[k]):
             notes += f'<p class="t-small">{e(C["raidBuildLegend"])}</p>'
         blocks = [(C['opener'], lists['opener'], True), (C['priority'], lists['priority'], True), (C['cooldowns'], lists['cooldowns'], False)]
-        lane = notes + ''.join(LaneBlock(e(t), RowsSlim([spell_row(x, str(i + 1) if num else '') for i, x in enumerate(items)])) for t, items, num in blocks if items)
+        lane = notes + ''.join(LaneBlock(e(t), wrap_list(RowsSlim([spell_row(x, str(i + 1) if num else '') for i, x in enumerate(items)]))) for t, items, num in blocks if items)
     return ReadingSection(SEC['rotation-and-priority'], Prose(r['prose']), lane, 'rotation-and-priority')
 
 
@@ -167,10 +167,13 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
             cap += f'<p class="t-small">{e(t["expertiseCap"]["text"])}</p>'
         table = StatTable([('', False), (e(F['markup']['statHead']), False), ('', False), (e(t['weightHead']), True), (e(t['perPointHead']), True)],
                           stat_rows(rows, False, True), 2, open_=True)
+        # the built StatTable `wrap`: its rows may wrap under the prose, the head row repeated
+        table = wrap_list(table).replace('<div class="st-h stc" role="row">', '<div class="st-h stc" role="row" data-wrap-repeat>', 1)
         notes = ''.join(f'<p class="t-small">{e(x)}</p>' for x in [t.get('unitLine'), t.get('ratingNote'), *t['notes']] if x)
-        lane = LaneBlock(e(C['statPriorityRailLabel']), cap + table + notes)
+        notes = f'<div class="gnotes" data-wrap-list>{notes}</div>' if notes else ''
+        lane = f'<div class="gstat">{LaneBlock(e(C["statPriorityRailLabel"]), cap + table + notes)}</div>'
     else:   # no weights for the spec: the guide's own order, unnumbered weights absent (the shipped fallback)
-        lane = LaneBlock(e(C['statPriorityRailLabel']), RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g['statPriority'])]))
+        lane = LaneBlock(e(C['statPriorityRailLabel']), wrap_list(RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g['statPriority'])])))
     return ReadingSection(SEC['stat-priority'], Prose(s['prose']), lane, 'stat-priority')
 
 
@@ -194,7 +197,14 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
     # Every band's own BiS page and the role's tier list (SEO lane 2026-11-08), one quiet block under the full list.
     bands = ''.join(Link(e(s)) for s in F['fns']['bandSlugs'])
     lane += f'<p class="t-small gbands">{e(C["bisByLevelLabel"])}{bands}</p><p class="gtier">{Link(rsaquo(C["tierListLink"]))}</p>'
-    return ReadingSection(SEC['best-in-slot'], Prose(b['prose']) + guide_doll(g, faction) if data and b['data'] else Prose(b['prose']), lane, 'best-in-slot')
+    return ReadingSection(SEC['best-in-slot'], Prose(b['prose']) + guide_doll(g, faction) if data and b['data'] else Prose(b['prose']), lane, 'best-in-slot',
+                          prose_first=True)
+
+
+def wrap_list(html: str) -> str:
+    """Marks the list whose rows may wrap under the prose (the built lanes' `data-wrap-list`)."""
+    i = html.index('>')
+    return html[:i] + ' data-wrap-list' + html[i:]
 
 
 QUALITY_NAME = {0: 'poor', 1: 'common', 2: 'uncommon', 3: 'rare', 4: 'epic', 5: 'legendary'}
@@ -228,8 +238,8 @@ def extras(g: dict, data: bool = True) -> str:
             else:
                 r = line['row']
                 rows.append(Row(e(r['name']), e(r['gives']), lead=icon(r.get('icon') or '', 28), link=False))
-        lane = (LaneBlock(e(C['enchants']), f'<p class="t-small">{e(C["enchantsNote"])}</p>' + ench)
-                + LaneBlock(e(C['consumables']), RowsSlim(rows)))
+        lane = (LaneBlock(e(C['enchants']), f'<p class="t-small">{e(C["enchantsNote"])}</p>' + wrap_list(ench))
+                + LaneBlock(e(C['consumables']), wrap_list(RowsSlim(rows))))
     return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables')
 
 
@@ -243,7 +253,7 @@ def races(g: dict) -> str:
             rows.append(Row(e(x['name']), title_color=FACTION[x['faction']],
                             trail=Tag(e(C['recommendedTag'])) if x['recommended'] else '', link=False, foot=foot))
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
-        body += f'<h4 class="t-label sub-h">{e(head)}</h4>' + Rows(rows, True)
+        body += f'<div class="grace"><h4 class="t-label sub-h">{e(head)}</h4>' + wrap_list(Rows(rows, True)) + '</div>'
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
     return ReadingSection(SEC['races'], Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races')
 
@@ -313,7 +323,7 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     note = (f'Guide mock (design/specs/2026-11-08-guides.md), built only from ws_prims, read from guides-facts.json (build {F["build"]}). '
             + ('Partial-data state: rotation, weights, BiS and extras removed (FORCED; no spec lacks them at this build). ' if partial else '')
             + (f'Signed in: {me["name"]} ({me["identity"]}, {me["level_line"]}), a home fixture' + (' (derived, see guides_facts.mjs).' if me_key in ('survival34', 'mage60') else '.') if me else ''))
-    return build_page(f'{g["title"]} guide', html, 'Guides', who, note)
+    return build_page(f'{g["title"]} guide', html + reading_wrap_script(), 'Guides', who, note)
 
 
 # ------------------------------------------------------------------------------------------------ the class landing

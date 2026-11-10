@@ -8,13 +8,13 @@ const PROSE_PX = 100;
 /** A section: a lane of `rows` rows in a labelled block (the list marked), the prose beside it. */
 function section(rows: number, extra = ''): HTMLElement {
   document.body.innerHTML = `
-    <div class="ui-rd">
-      <div class="ui-rd-lane">
+    <div class="ui-rd" data-reading>
+      <div class="ui-rd-lane" data-reading-lane>
         <div class="block" data-testid="block"><h3 class="head">Key talents</h3>
           <div class="list" data-wrap-list>${Array.from({ length: rows }, (_, i) => `<div class="row" data-testid="r${i}">${i}</div>`).join('')}</div>
         </div>${extra}
       </div>
-      <div class="ui-rd-prose"><p>Why</p><div class="ui-rd-more"></div></div>
+      <div class="ui-rd-prose" data-reading-prose><p>Why</p><div class="ui-rd-more" data-reading-more></div></div>
     </div>`;
   return document.querySelector<HTMLElement>('.ui-rd')!;
 }

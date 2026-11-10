@@ -6,6 +6,10 @@
 // until both columns end within a row of each other. Below 1280, on a resize or when a lane swaps
 // its content, every row goes back where it was first.
 //
+// The section's parts are found by their markup contract, not their classes, so the parity mocks
+// (design/mocks/ws_prims.py) run this same code: `[data-reading]` (with `data-solo` when it has no
+// lane), `[data-reading-lane]`, `[data-reading-prose]` and its `[data-reading-more]`.
+//
 // What can move is marked in the markup, never guessed: a `[data-wrap-list]` element's children
 // are rows; an element holding a list is opened up the same way, so a block's own label moves
 // with its rows only once every row has gone. A moved row keeps its classes; each ancestor up to
@@ -117,9 +121,9 @@ interface SectionParts {
 }
 
 function partsOf(section: HTMLElement): SectionParts | undefined {
-  const prose = section.querySelector<HTMLElement>(':scope > .ui-rd-prose');
-  const lane = section.querySelector<HTMLElement>(':scope > .ui-rd-lane');
-  const more = prose?.querySelector<HTMLElement>(':scope > .ui-rd-more') ?? null;
+  const prose = section.querySelector<HTMLElement>(':scope > [data-reading-prose]');
+  const lane = section.querySelector<HTMLElement>(':scope > [data-reading-lane]');
+  const more = prose?.querySelector<HTMLElement>(':scope > [data-reading-more]') ?? null;
   return prose && lane && more ? { prose, lane, more } : undefined;
 }
 
@@ -171,7 +175,7 @@ export function wrapSection(section: HTMLElement, viewportWidth: number, viewpor
   if (state.moved.length === 0) unwrapSection(section);
 }
 
-const SECTION = '.ui-rd:not([data-solo])';
+const SECTION = '[data-reading]:not([data-solo])';
 
 /** Re-wraps the section holding `element` around `change` (a lane that swaps its rows). */
 export function rewrapAround(element: Element, change: () => void): void {

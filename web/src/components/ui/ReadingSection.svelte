@@ -41,11 +41,16 @@
   <div class="border-line-soft border-b pb-[10px]">
     <h2 class="ui-rsec-title">{title}</h2>
   </div>
-  <div class="ui-rd" data-solo={lane ? undefined : ''} data-prose-first={proseFirst ? '' : undefined}>
-    {#if lane}<div class="ui-rd-lane">{@render lane()}</div>{/if}
-    <div class="ui-rd-prose">
+  <div
+    class="ui-rd"
+    data-reading
+    data-solo={lane ? undefined : ''}
+    data-prose-first={proseFirst ? '' : undefined}
+  >
+    {#if lane}<div class="ui-rd-lane" data-reading-lane>{@render lane()}</div>{/if}
+    <div class="ui-rd-prose" data-reading-prose>
       {@render children()}
-      {#if lane}<div class="ui-rd-more"></div>{/if}
+      {#if lane}<div class="ui-rd-more" data-reading-more></div>{/if}
     </div>
   </div>
 </section>

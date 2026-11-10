@@ -956,12 +956,15 @@ def Prose(html: str, *mods: str) -> str:
     return f'<div class="rprose {" ".join(mods)}">{html}</div>'
 
 
-def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '') -> str:
+def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '', prose_first: bool = False) -> str:
     """A section of a reading page: the Section head (22/28), then prose and lane (lane first in the DOM: one column reads it first)."""
     a = f'<span class="act">{action}</span>' if action else ''
-    lane_html = f'<div class="rd-lane">{lane}</div>' if lane else ''
+    lane_html = f'<div class="rd-lane" data-reading-lane>{lane}</div>' if lane else ''
+    more = '<div class="rd-more" data-reading-more></div>' if lane else ''
+    solo = '' if lane else ' data-solo'
     return (f'<section class="rsec" data-region="{region_slug(title)}" id="{anchor}"><div class="sec-h"><h2>{title}</h2>{a}</div>'
-            f'<div class="rd{"" if lane else " solo"}">{lane_html}<div class="rd-prose">{prose}</div></div></section>')
+            f'<div class="rd{"" if lane else " solo"}" data-reading{solo}{prose_first and " data-prose-first" or ""}>{lane_html}'
+            f'<div class="rd-prose" data-reading-prose>{prose}{more}</div></div></section>')
 
 
 def LaneBlock(label: str, body: str, meta: str = '') -> str:
@@ -1814,6 +1817,29 @@ PRIM_CSS += """
 
 def ReadingPanel(sections: str) -> str:
     return f'<div class="rpanel">{sections}</div>'
+
+
+# The lane wraps under its prose, and a short lane is pinned, by the shipped code itself (web/src/lib/ui/reading-wrap.ts,
+# bundled once per run with the web's esbuild), so the mock and the build place every row alike.
+PRIM_CSS += '''
+.rd-more{display:none}.rd-more:not(:empty){display:block;margin-top:24px;padding-top:16px;border-top:1px solid var(--line-soft);columns:340px;column-gap:28px}
+.rd-more [data-wrapped]{break-inside:avoid}
+@media(max-width:1279.98px){.rd[data-prose-first]{grid-template-areas:'prose' 'lane'}}
+@media(min-width:1280px){.rd{align-items:start}.rd[data-lane-sticky]>.rd-lane{position:sticky;top:12px}}
+'''
+_READING_WRAP: list[str] = []
+
+
+def reading_wrap_script() -> str:
+    """The shipped reading wrap as an inline script, mounted on the page (a page with reading sections appends it)."""
+    if not _READING_WRAP:
+        import subprocess
+        web = _WEB
+        out = subprocess.run([str(web / 'node_modules/.bin/esbuild'), str(web / 'src/lib/ui/reading-wrap.ts'), '--bundle', '--format=iife',
+                              '--global-name=FSReadingWrap', '--target=es2022', '--log-level=error'],
+                             capture_output=True, text=True, check=True).stdout
+        _READING_WRAP.append(out)
+    return f'<script>{_READING_WRAP[0]}FSReadingWrap.mountReadingWrap();</script>'
 
 
 _PlateColumns0 = PlateColumns

@@ -257,7 +257,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
   it('lays the Overview out as strengths and weaknesses beside the raid role lane', () => {
     const overview = sectionOf(mainOf(frost), 'overview');
     expect(overview).toMatch(
-      /class="ui-rd-lane[^"]*"><div class="ui-lane-block[^"]*" data-testid="guide-overview-raid"/,
+      /class="ui-rd-lane[^"]*"[^>]*><div class="ui-lane-block[^"]*" data-testid="guide-overview-raid"/,
     );
     expect(overview).toContain(`>${guidesCopy.inARaid}</h3>`);
     expect(overview).toMatch(/class="ui-prose ui-prose--plus[^"]*" data-testid="guide-strengths"/);
