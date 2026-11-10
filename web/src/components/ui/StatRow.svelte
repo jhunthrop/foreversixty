@@ -19,6 +19,7 @@
     bar = true,
     phone,
     total = false,
+    action,
     testid,
   }: {
     icon?: Snippet;
@@ -32,6 +33,8 @@
     /** The primary figure's phone line ("14.6%" under the DPS). */
     phone?: string;
     total?: boolean;
+    /** The row's action, in the table's action column (StatTable `action`). */
+    action?: Snippet;
     testid?: string;
     /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
     children?: Snippet;
@@ -62,4 +65,5 @@
         >{/if}</span
     >
   {/each}
+  {#if action}<span class="ui-st-action">{@render action()}</span>{/if}
 </div>

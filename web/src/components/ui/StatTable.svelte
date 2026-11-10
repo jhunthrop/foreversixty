@@ -17,6 +17,7 @@
     bar = true,
     open = false,
     dense = false,
+    action = false,
     sort,
     onsort,
     label,
@@ -34,6 +35,8 @@
     open?: boolean;
     /** 40 px rows at 14 px, for a table of forty raiders (guild roster, readiness, loot). */
     dense?: boolean;
+    /** A last fixed-width column for each row's one action (StatRow `action`): Nudge on the guild readiness board. */
+    action?: boolean;
     sort?: StatSort;
     /** A sortable head was pressed. */
     onsort?: (column: string) => void;
@@ -51,6 +54,7 @@
   aria-label={label}
   data-open={open ? 'true' : undefined}
   data-dense={dense ? 'true' : undefined}
+  data-action={action ? 'true' : undefined}
   data-bar={bar ? 'true' : 'false'}
   style:--st-n={columns.length}
   data-testid={testid}
@@ -86,6 +90,7 @@
           {:else}{column.label}{/if}
         </span>
       {/each}
+      {#if action}<span aria-hidden="true"></span>{/if}
     </div>
   {/if}
   {@render children()}

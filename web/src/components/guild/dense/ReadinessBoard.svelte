@@ -64,7 +64,8 @@
     { id: 'ilvl', label: median === null ? 'Item level' : `Item level vs ${median}` },
     { id: 'bis', label: 'To BiS' },
     { id: 'enchants', label: 'Enchants' },
-    { id: 'stock', label: 'Flask, food' },
+    { id: 'flask', label: 'Flask' },
+    { id: 'food', label: 'Food' },
     { id: 'talents', label: 'Talents' },
     ...(fireShown ? [{ id: 'fire', label: 'Fire res' }] : []),
     ...(anyStale ? [{ id: 'synced', label: 'Synced' }] : []),
@@ -82,7 +83,6 @@
     const delta = row.item_level_delta;
     const days = daysOf(row);
     const missing = row.enchants.missing_slots;
-    const stocked = row.flask_food == null ? null : row.flask_food.flask_or_elixir && row.flask_food.food;
     return [
       shortfalls.length > 0
         ? { value: `${missingCount(row, shortfalls)} missing`, tone: 'wipe' }
@@ -97,7 +97,8 @@
             value: `+${Math.round(row.gear_gap.gain_dps)}${row.gear_gap.unit === null ? '' : ` ${row.gear_gap.unit.toUpperCase()}`}`,
           },
       row.enchants.checked ? check(missing.length === 0, missing.map(enchantSlotLabel).join(', ')) : UNKNOWN,
-      check(stocked, '×'),
+      check(row.flask_food == null ? null : row.flask_food.flask_or_elixir, '×'),
+      check(row.flask_food == null ? null : row.flask_food.food, '×'),
       row.talent_points_read === false
         ? UNKNOWN
         : check(row.talent_points_unspent === 0, `${row.talent_points_unspent} pts`),
@@ -119,8 +120,26 @@
   }
 </script>
 
-<StatTable {columns} nameHead="Raider" bar={false} dense label="Readiness" testid="guild-readiness-board">
+<StatTable
+  {columns}
+  nameHead="Raider"
+  bar={false}
+  dense
+  action={officer}
+  label="Readiness"
+  testid="guild-readiness-board"
+>
   {#each entries as { row, shortfalls }, index (row.character_key)}
+    {#snippet nudge()}<button
+        type="button"
+        class="nudge"
+        disabled={readOnly}
+        aria-describedby={describedBy}
+        onclick={() => onNudge(row)}
+        aria-label={`Nudge ${row.name}`}
+        data-testid={`guild-readiness-nudge-${row.character_key}`}
+        >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
+      >{/snippet}
     {#if index === short.length && short.length > 0 && ready.length > 0}
       <StatRow total bar={false} figures={blank}
         >{#snippet name()}<button
@@ -135,23 +154,13 @@
     {#if index < short.length || showReady || short.length === 0}
       <StatRow
         bar={false}
+        action={officer && shortfalls.length > 0 ? nudge : undefined}
         figures={figures(row, shortfalls)}
         testid={`guild-readiness-row-${row.character_key}`}
       >
         {#snippet icon()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
         {#snippet name()}<span style:color={classColorVar(row.class)}>{row.name}</span>{/snippet}
-        {#snippet sub()}<span class="sub-line"
-            ><span>{row.spec} · {row.item_level ?? '–'} ilvl</span
-            >{#if officer && shortfalls.length > 0}<button
-                type="button"
-                class="nudge"
-                disabled={readOnly}
-                aria-describedby={describedBy}
-                onclick={() => onNudge(row)}
-                aria-label={`Nudge ${row.name}`}
-                data-testid={`guild-readiness-nudge-${row.character_key}`}
-                >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
-              >{/if}</span
+        {#snippet sub()}<span class="sub-line"><span>{row.spec} · {row.item_level ?? '–'} ilvl</span></span
           >{#if shortfalls.length > 0}<span class="reasons text-wipe" data-testid="guild-readiness-shortfalls"
               >{shortfalls.join(', ')}</span
             >{/if}{/snippet}

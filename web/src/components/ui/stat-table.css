@@ -156,6 +156,18 @@
   padding-inline: 0;
 }
 
+/* An action column (a row's one button), fixed width at the end of the grid. */
+.ui-st[data-action='true'] .ui-st-c {
+  grid-template-columns: var(--st-icon) var(--st-name) var(--st-bar) repeat(var(--st-n), var(--st-fig)) 72px;
+}
+.ui-st[data-action='true'][data-bar='false'] .ui-st-c {
+  grid-template-columns: var(--st-icon) var(--st-name) repeat(var(--st-n), var(--st-fig)) 72px;
+}
+.ui-st-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* Dense (the guild roster, readiness and loot): 40 px rows at 14 px, for tables of forty raiders. */
 .ui-st[data-dense='true'] .ui-st-h {
   min-height: 34px;
@@ -189,6 +201,10 @@
   .ui-st .ui-st-c,
   .ui-st[data-bar='false'] .ui-st-c {
     grid-template-columns: var(--st-icon) minmax(0, 1fr) auto;
+  }
+  .ui-st[data-action='true'] .ui-st-c,
+  .ui-st[data-action='true'][data-bar='false'] .ui-st-c {
+    grid-template-columns: var(--st-icon) minmax(0, 1fr) auto auto;
   }
   .ui-st-r .ui-st-bar,
   .ui-st-r .ui-st-f:not([data-primary='true']) {

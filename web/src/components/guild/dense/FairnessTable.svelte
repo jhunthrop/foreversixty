@@ -121,7 +121,7 @@
       {/each}
     </StatTable>
     {#if total > FIRST}
-      <div class="px-5 pt-2 pb-4">
+      <div class="pt-2 pr-5 pb-4 pl-[56px]">
         <Button tone="ghost" size="sm" onclick={() => (all = !all)} pressed={all}
           >{all ? `First ${FIRST}` : `All ${total}`}</Button
         >
