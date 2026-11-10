@@ -5,9 +5,12 @@
 // slider and planner link -- at desktop and phone, with the site's own "nothing scrolls
 // sideways" sweep every page-level spec runs (layout.spec.ts's own convention).
 import type { Page } from '@playwright/test';
+import activeBuild from '../../src/data/active-build.json' with { type: 'json' };
+import { buildRacesForClass, raceIconsFor } from '../../src/lib/guides/build-races';
 import { SPEC_BY_KEY } from '../../src/lib/sim/specs';
 import { expect, test } from './support/test';
 
+const ACTIVE_BUILD = activeBuild.build;
 const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };
 
@@ -87,6 +90,23 @@ test.describe('desktop', () => {
     await expect(changes.first()).toBeVisible();
     expect(await changes.count()).toBeGreaterThanOrEqual(8);
     await expect(page.getByTestId('confidence-footer-note')).toHaveCount(0);
+  });
+
+  test('the Races panel lists every race the class can be, each with its client portrait', async ({
+    page,
+  }) => {
+    await page.goto('/guides/warrior');
+    const races = buildRacesForClass(ACTIVE_BUILD, 'warrior');
+    const list = page.getByTestId('guide-class-races');
+    await expect(list.locator('li')).toHaveCount(races.length);
+    const portraits = raceIconsFor(ACTIVE_BUILD);
+    for (const race of races) {
+      const row = list.getByTestId(`guide-class-race-${race.slug}`);
+      await expect(row).toContainText(race.name);
+      await expect(row.locator(`[data-race-icon="${race.name}"]`)).toHaveCount(
+        portraits.has(race.slug) ? 1 : 0,
+      );
+    }
   });
 
   test('druid gives Feral and Feral Bear their own form icons from the spec-icon map', async ({ page }) => {

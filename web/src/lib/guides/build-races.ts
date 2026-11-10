@@ -5,7 +5,9 @@
 // the two-tree warrior fixture (four classic mage races, no racial sentences); a guide shows
 // the build's races whatever the planner tests run against, so it never reads them there.
 import type { ClassRow, Combo, RaceRow } from '../planner/types';
-import { requireBuildJson } from './build-files';
+import { buildIconExists } from '../data/build-files';
+import { dataUrl } from '../planner/load';
+import { readBuildJson, requireBuildJson } from './build-files';
 
 interface BuildReference {
   classes: readonly ClassRow[];
@@ -46,5 +48,17 @@ export function buildRacesForClass(build: string, classSlug: string): RaceRow[] 
   if (classRow === undefined) return [];
   return reference.races.filter((race) =>
     reference.combos.some((combo) => combo.race_id === race.id && combo.class_id === classRow.id),
+  );
+}
+
+/** The build's race portraits (`data/builds/<build>/raceicons.json`, race slug to icon stem) as
+ *  urls, keeping only those whose art the build ships; empty before the build's first icons run
+ *  writes the file, so a race then shows its name alone. */
+export function raceIconsFor(build: string): ReadonlyMap<string, string> {
+  const file = readBuildJson<Record<string, string>>(build, 'raceicons.json') ?? {};
+  return new Map(
+    Object.entries(file)
+      .filter(([, icon]) => buildIconExists(build, icon))
+      .map(([slug, icon]) => [slug, dataUrl(build, `icons/${icon}.webp`)]),
   );
 }

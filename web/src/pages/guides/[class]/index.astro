@@ -10,6 +10,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ClassCrest from '../../../components/ClassCrest.astro';
 import GuideAnswer from '../../../components/guides/GuideAnswer.astro';
+import GuideRaceList from '../../../components/guides/GuideRaceList.astro';
 import GuideSources from '../../../components/guides/GuideSources.astro';
 import GuideSpecRow from '../../../components/guides/GuideSpecRow.astro';
 import Page from '../../../components/ui/Page.svelte';
@@ -136,6 +137,7 @@ const tone = { classSlug: classSlug as ClassSlug };
       <Fragment slot="rail">
         {railSections.map((section) => (
           <Section title={section.heading} anchor={section.id} boxed testid={`class-landing-${section.id}`}>
+            {section.heading === 'Races' && <GuideRaceList build={build} classSlug={classSlug} />}
             <Prose html={section.html} mods={['lane']} />
           </Section>
         ))}

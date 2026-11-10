@@ -1,0 +1,74 @@
+---
+// web/src/components/guides/GuideRaceList.astro
+// The races a class can be, on the class landing's Races panel above its prose: Alliance then
+// Horde, each race its portrait (RaceIcon) and its name in the faction's colour, in the build's
+// order (build-races.ts: the build's own combos). A race the build ships no portrait for shows
+// its name alone.
+import RaceIcon from '../ui/RaceIcon.svelte';
+import { buildRacesForClass, raceIconsFor } from '../../lib/guides/build-races';
+import { guidesCopy } from '../../lib/guides/copy';
+import { titleColor } from '../../lib/ui/primitives';
+
+interface Props {
+  build: string;
+  classSlug: string;
+}
+const { build, classSlug } = Astro.props;
+const races = buildRacesForClass(build, classSlug);
+const icons = raceIconsFor(build);
+const groups = (['alliance', 'horde'] as const)
+  .map((faction) => ({ faction, races: races.filter((race) => race.faction === faction) }))
+  .filter((group) => group.races.length > 0);
+---
+
+<div class="guide-race-list" data-testid="guide-class-races">
+  {groups.map((group) => (
+    <div class="guide-race-list-group" data-faction={group.faction}>
+      <h4 class="text-label text-muted m-0 font-bold">
+        {group.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading}
+      </h4>
+      <ul class="guide-race-list-items">
+        {group.races.map((race) => (
+          <li
+            data-testid={`guide-class-race-${race.slug}`}
+            style={`color: ${titleColor({ faction: group.faction })}`}
+          >
+            {icons.has(race.slug) && <RaceIcon url={icons.get(race.slug)!} name={race.name} size={24} />}
+            <span>{race.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>
+
+<style>
+  .guide-race-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .guide-race-list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .guide-race-list-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 6px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .guide-race-list-items li {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    min-height: 24px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18px;
+  }
+</style>
