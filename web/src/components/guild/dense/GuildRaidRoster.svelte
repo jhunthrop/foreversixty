@@ -168,8 +168,8 @@
         : row.short === 0
           ? { value: '✓', tone: 'kill' }
           : { value: `${row.short} missing`, tone: 'wipe' },
-      seenText(row.seenDays) === ''
-        ? { value: '', muted: true }
+      row.seenDays === null || row.seenDays < 2
+        ? { value: seenText(row.seenDays), muted: true }
         : {
             value: seenText(row.seenDays),
             tone: (row.seenDays ?? 0) >= STALE_DAYS ? 'wipe' : undefined,
@@ -300,7 +300,14 @@
                 >{/if}
             {/snippet}
             {#snippet sub()}{row.spec}{rankWord(row.rank)}{#if row.cells.length > 0}<span class="ui-st-phone"
-                  ><span class="block pt-0.5"><AttendanceStrip cells={row.cells} /></span></span
+                  ><span class="block pt-0.5"
+                    ><AttendanceStrip cells={row.cells} />{#if row.short}<span class="text-wipe ml-2"
+                        >{row.short} missing</span
+                      >{/if}{#if (row.seenDays ?? 0) >= 2}<span
+                        class={['ml-2', (row.seenDays ?? 0) >= STALE_DAYS ? 'text-wipe' : 'text-muted']}
+                        >{seenText(row.seenDays)}</span
+                      >{/if}</span
+                  ></span
                 >{/if}{/snippet}
             {#snippet meter()}<AttendanceStrip cells={row.cells} />{/snippet}
           </StatRow>

@@ -167,6 +167,13 @@ export function readinessShortfalls(
 
 /** The board's three lists: who is short of something (worst first), who is ready, and who is still
  *  leveling. A raider the site could read nothing for is short of their export. */
+/** How many things a raider is missing for the raid: every unenchanted slot counts, as does each
+ *  other shortfall (flask, food, talents, attunement, the export). */
+export function missingCount(row: GuildReadinessRow, shortfalls: readonly string[]): number {
+  const slots = row.enchants.checked ? row.enchants.missing_slots.length : 0;
+  return shortfalls.length + Math.max(0, slots - 1);
+}
+
 export function readinessLists(
   rows: readonly GuildReadinessRow[],
   raid: { attunement?: boolean } | null = null,

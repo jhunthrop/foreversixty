@@ -81,7 +81,7 @@
       <span class="ml-auto flex items-center gap-2">
         <span class="text-small text-muted" data-testid="guild-loot-majority"
           >{candidate.votes.yes >= majority
-            ? 'Majority'
+            ? 'Majority reached'
             : `${majority - candidate.votes.yes} more yes for a majority`}</span
         >
         <span class={candidate.votes.yes >= majority ? '' : 'opacity-50'}

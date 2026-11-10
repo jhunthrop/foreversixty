@@ -43,8 +43,9 @@
     let left = FIRST;
     return allRows.flatMap((r) => {
       if (left <= 0) return [];
-      const raiders = r.raiders.slice(0, left);
-      left -= raiders.length;
+      const shared = r.items === 0 && r.raiders.length >= 3;
+      const raiders = shared ? r.raiders : r.raiders.slice(0, left);
+      left -= shared ? 1 : raiders.length;
       return [{ ...r, raiders }];
     });
   });
@@ -87,20 +88,36 @@
             {#snippet name()}{counted(row.since, 'night')} since an item{/snippet}
           </StatRow>
         {/if}
-        {#each row.raiders as one (one.key)}
+        {#if row.items === 0 && row.raiders.length >= 3 && row.raiders.every((r) => r.present === row.raiders[0].present && r.nights === row.raiders[0].nights)}
           <StatRow
             bar={false}
-            figures={figures(one)}
-            phone={counted(one.items, 'item')}
-            testid={`guild-fair-${one.name.toLowerCase()}`}
+            figures={[
+              { value: '–', muted: true },
+              { value: `${row.raiders[0].present}/${row.raiders[0].nights}` },
+            ]}
           >
-            {#snippet icon()}<ClassCrestRing characterClass={one.cls} size={28} />{/snippet}
-            {#snippet name()}<span style:color={classColorVar(one.cls)}>{one.name}</span>{/snippet}
-            {#snippet sub()}{one.spec}{one.last === null
-                ? ''
-                : ` · last ${one.last.item}, ${day(one.last.at)}`}{/snippet}
+            {#snippet name()}{row.raiders.length} raiders, no item yet{/snippet}
+            {#snippet sub()}{#each row.raiders as r, i (r.key)}<b
+                  class="whitespace-nowrap"
+                  style:color={classColorVar(r.cls)}>{r.name}</b
+                >{i < row.raiders.length - 1 ? ', ' : ''}{/each}{/snippet}
           </StatRow>
-        {/each}
+        {:else}
+          {#each row.raiders as one (one.key)}
+            <StatRow
+              bar={false}
+              figures={figures(one)}
+              phone={counted(one.items, 'item')}
+              testid={`guild-fair-${one.name.toLowerCase()}`}
+            >
+              {#snippet icon()}<ClassCrestRing characterClass={one.cls} size={28} />{/snippet}
+              {#snippet name()}<span style:color={classColorVar(one.cls)}>{one.name}</span>{/snippet}
+              {#snippet sub()}{one.spec}{one.last === null
+                  ? ''
+                  : ` · last ${one.last.item}, ${day(one.last.at)}`}{/snippet}
+            </StatRow>
+          {/each}
+        {/if}
       {/each}
     </StatTable>
     {#if total > FIRST}

@@ -5,7 +5,7 @@
 // tier and the readiness board's checks. Grouped by the raid group the API sends, each group head
 // with the comp target's seats. Pure: the component draws what this returns.
 import type { GuildRaidGroup, GuildReadinessRow, GuildRosterRow } from '../api';
-import { readinessShortfalls } from '../readiness-view';
+import { missingCount, readinessShortfalls } from '../readiness-view';
 import type { LootDecision, LootNights } from '../loot-council-api';
 import type { AttendanceCell, GuildCompTarget, GuildRecentAttendance } from '../overview-api';
 
@@ -130,7 +130,10 @@ function boardRow(
     cells: cellsByAccount.get(row.account_key ?? '') ?? [],
     attendancePct: percentOf(row.attendance_30 ?? row.attendance),
     items: itemsByKey.get(row.character_key) ?? 0,
-    short: ready === undefined ? null : readinessShortfalls(ready, { attunement: true }, false).length,
+    short:
+      ready === undefined
+        ? null
+        : missingCount(ready, readinessShortfalls(ready, { attunement: true }, false)),
     seenDays: daysSince(row.logged_at, inputs.now),
   };
 }
@@ -200,7 +203,8 @@ export function filterBoard(
 
 /** The Seen cell: blank under SEEN_FROM_DAYS, else `3 d`. */
 export function seenText(days: number | null): string {
-  return days === null || days < SEEN_FROM_DAYS ? '' : `${days} d`;
+  if (days === null) return '–';
+  return days < 1 ? 'today' : `${days} d`;
 }
 
 /** `Tanks 3 · need 3 · median item level 63`'s parts after the title. */

@@ -7,7 +7,7 @@
 <script lang="ts">
   import type { GuildReadinessRow } from '../../../lib/guild/api';
   import { classColorVar } from '../../../lib/report/format';
-  import { enchantSlotLabel } from '../../../lib/guild/readiness-view';
+  import { enchantSlotLabel, missingCount } from '../../../lib/guild/readiness-view';
   import type { StatFigure } from '../../../lib/ui/stat-table';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import StatRow from '../../ui/StatRow.svelte';
@@ -85,7 +85,7 @@
     const stocked = row.flask_food == null ? null : row.flask_food.flask_or_elixir && row.flask_food.food;
     return [
       shortfalls.length > 0
-        ? { value: `${shortfalls.length} missing`, tone: 'wipe' }
+        ? { value: `${missingCount(row, shortfalls)} missing`, tone: 'wipe' }
         : { value: '', muted: true },
       check(row.attuned, '×'),
       delta === null
@@ -100,7 +100,7 @@
       check(stocked, '×'),
       row.talent_points_read === false
         ? UNKNOWN
-        : check(row.talent_points_unspent === 0, String(row.talent_points_unspent)),
+        : check(row.talent_points_unspent === 0, `${row.talent_points_unspent} pts`),
       ...(!fireShown || fireKeys === null
         ? []
         : [
@@ -140,21 +140,21 @@
       >
         {#snippet icon()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
         {#snippet name()}<span style:color={classColorVar(row.class)}>{row.name}</span>{/snippet}
-        {#snippet sub()}{row.spec} · {row.item_level ?? '–'} ilvl{#if shortfalls.length > 0}<div
-              class="text-wipe whitespace-normal"
-              data-testid="guild-readiness-shortfalls"
-            >
-              {shortfalls.join(', ')}{#if officer}<button
-                  type="button"
-                  class="nudge"
-                  disabled={readOnly}
-                  aria-describedby={describedBy}
-                  onclick={() => onNudge(row)}
-                  aria-label={`Nudge ${row.name}`}
-                  data-testid={`guild-readiness-nudge-${row.character_key}`}
-                  >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
-                >{/if}
-            </div>{/if}{/snippet}
+        {#snippet sub()}<span class="sub-line"
+            ><span>{row.spec} · {row.item_level ?? '–'} ilvl</span
+            >{#if officer && shortfalls.length > 0}<button
+                type="button"
+                class="nudge"
+                disabled={readOnly}
+                aria-describedby={describedBy}
+                onclick={() => onNudge(row)}
+                aria-label={`Nudge ${row.name}`}
+                data-testid={`guild-readiness-nudge-${row.character_key}`}
+                >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
+              >{/if}</span
+          >{#if shortfalls.length > 0}<span class="reasons text-wipe" data-testid="guild-readiness-shortfalls"
+              >{shortfalls.join(', ')}</span
+            >{/if}{/snippet}
       </StatRow>
     {/if}
   {/each}
@@ -166,10 +166,25 @@
     color: var(--color-gold);
     cursor: pointer;
   }
+  .sub-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .reasons {
+    display: block;
+    white-space: normal;
+  }
+  @media (min-width: 1024px) {
+    .reasons {
+      display: none;
+    }
+  }
   .nudge {
     display: inline-block;
     min-height: 32px;
-    margin-left: 12px;
+    flex: none;
     padding: 0;
     font: 600 13px/32px var(--font-body);
     color: var(--color-gold);

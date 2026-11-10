@@ -59,9 +59,7 @@
         titleTone={{ classSlug: (app.character.class ?? 'warrior') as never }}
         sub={[
           app.character.spec_name ?? '',
-          parse === null || parse.percentile === null
-            ? ''
-            : `parse ${Math.floor(parse.percentile)} ${parse.metric.toUpperCase()}`,
+          parse === null || parse.percentile === null ? '' : `parse ${Math.floor(parse.percentile)}`,
         ]
           .filter((p) => p !== '')
           .join(' · ')}

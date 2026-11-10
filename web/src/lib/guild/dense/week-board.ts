@@ -225,6 +225,11 @@ export function needsAWord(inputs: WordInputs): Word[] {
       r.cells.slice(-SLIP_WINDOW).filter((c) => c === 'absent').length,
     ]),
   );
+  /** The misses the strip beside the name shows: every night of the grid. */
+  const shownMisses = new Map(
+    (inputs.grid?.rows ?? []).map((r) => [r.name, r.cells.filter((c) => c === 'absent').length] as const),
+  );
+  const nightsShown = inputs.grid?.raids.length ?? SLIP_WINDOW;
   const rosterByKey = new Map(inputs.roster.map((r) => [r.character_key, r] as const));
   for (const n of inputs.view?.not_signed_raiders ?? []) {
     const misses = missesByName.get(n.name) ?? 0;
@@ -232,7 +237,13 @@ export function needsAWord(inputs: WordInputs): Word[] {
     const row = rosterByKey.get(n.character_key);
     const stale = daysSince(row?.logged_at, inputs.now);
     add(n.character_key, n.name, n.class, 'Not answered', n.discord_linked ? 'ping' : 'profile');
-    add(n.character_key, n.name, n.class, `missed ${misses} of the last ${SLIP_WINDOW}`, 'ping');
+    add(
+      n.character_key,
+      n.name,
+      n.class,
+      `missed ${shownMisses.get(n.name) ?? misses} of the last ${nightsShown}`,
+      'ping',
+    );
     if (stale !== null && stale >= WORD_STALE_DAYS)
       add(n.character_key, n.name, n.class, `last log ${stale} d ago`, 'ping');
     if (!n.discord_linked) add(n.character_key, n.name, n.class, 'no Discord', 'profile');

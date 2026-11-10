@@ -197,7 +197,8 @@ describe('rosterBoard', () => {
   it('reads the small figures', () => {
     expect(median([3, 1, 2, 10])).toBe(2.5);
     expect(median([])).toBeNull();
-    expect(seenText(1)).toBe('');
+    expect(seenText(0)).toBe('today');
+    expect(seenText(null)).toBe('–');
     expect(seenText(9)).toBe('9 d');
   });
 });
@@ -402,7 +403,7 @@ describe('ratingMovers and needsAWord', () => {
       now: NOW,
     });
     expect(words.map((w) => [w.name, w.action, w.reasons.join(', ')])).toEqual([
-      ['Bo', 'profile', 'Not answered, missed 3 of the last 4, last log 9 d ago, no Discord'],
+      ['Bo', 'profile', 'Not answered, missed 3 of the last 5, last log 9 d ago, no Discord'],
       ['Cy', 'nudge', '1 enchant missing, no flask or elixir, not attuned'],
       ['Ana', 'report', 'Rating 91 to 72 · survival 40'],
     ]);
