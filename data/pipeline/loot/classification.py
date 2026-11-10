@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from pipeline.csvio import read_csv
+from pipeline.hotfix_merge import merge_hotfix_table
 from pipeline.loot import constants
 from pipeline.loot.sources import instance_types, pvp_ranks
 
@@ -37,14 +38,16 @@ class LootClassification:
     #: AreaTable zone id -> the client's `Map.InstanceType` (1 dungeon, 2 raid,
     #: 3 battleground, ...), through `pipeline.loot.sources.instance_types`.
     instance_types: dict[int, int]
-    #: Item id -> the client's `ItemSparse.RequiredPVPRank`.
+    #: Item id -> the client's `ItemSparse.RequiredPVPRank`, hotfix rows included.
     pvp_ranks: dict[int, int]
 
 
 def classification_from_raw(raw: Path, zone_rows: list[dict]) -> LootClassification:
     return LootClassification(
         instance_types=instance_types(read_csv(raw / "Map.csv"), zone_rows),
-        pvp_ranks=pvp_ranks(read_csv(raw / "ItemSparse.csv")),
+        # The hotfix rows too: Forever's re-itemised honor rewards (Marshal's
+        # Plate Legguards 231540) exist only there, and carry the rank.
+        pvp_ranks=pvp_ranks(merge_hotfix_table(raw, "ItemSparse")),
     )
 
 
