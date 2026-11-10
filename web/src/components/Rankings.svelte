@@ -499,14 +499,9 @@
           {/if}
         </Section>
       {/if}
-      {#if nothingRanked}
-        <Section title={scoreCopy.explainerLogsHeading} panel testid="rankings-companion">
-          <p class="text-small text-muted">{scoreCopy.explainerLogsBody}</p>
-          <p class="mt-3">
-            <Button href={scoreCopy.explainerLogsHref}>{scoreCopy.explainerLogsButton}</Button>
-          </p>
-        </Section>
-      {/if}
+      <!-- From 1280, beside the board. Below it the rail stacks first, and this arriving after the
+           board answered pushed the board down (CLS 0.09 at 360): there it follows the board. -->
+      {#if nothingRanked}<div class="max-xl:hidden">{@render companion('rankings-companion')}</div>{/if}
       <!-- The tier list pointer sits beside the board; below 1280, where the rail stacks first,
            it would push the board down for a link the bar's Tier list door already gives. -->
       <div class="max-xl:hidden" data-region={REGION.summary}>
@@ -701,8 +696,18 @@
         {/if}
       </Section>
     {/if}
+    {#if nothingRanked}<div class="xl:hidden">{@render companion('rankings-companion-below')}</div>{/if}
   </Page>
 </div>
+
+{#snippet companion(testid: string)}
+  <Section title={scoreCopy.explainerLogsHeading} panel {testid}>
+    <p class="text-small text-muted">{scoreCopy.explainerLogsBody}</p>
+    <p class="mt-3">
+      <Button href={scoreCopy.explainerLogsHref}>{scoreCopy.explainerLogsButton}</Button>
+    </p>
+  </Section>
+{/snippet}
 
 {#snippet rankRow(row: RankingRowData, you: boolean, testid: string, label?: string)}
   {#if boardView !== null}
