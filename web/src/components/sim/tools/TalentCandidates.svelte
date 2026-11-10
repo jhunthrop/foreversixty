@@ -220,9 +220,7 @@
 {#snippet loadoutRow(loadout: TalentLoadout, testid: string)}
   {#if plate && index !== null}
     <!-- /sim/talents: the build's three trees beside its tick, so the page shows what it compares. -->
-    <div
-      class="{ROW_ITEM} grid gap-x-6 gap-y-1 py-3 md:grid-cols-[260px_minmax(0,1fr)] md:items-start"
-    >
+    <div class="{ROW_ITEM} grid gap-x-6 gap-y-1 py-3 md:grid-cols-[260px_minmax(0,1fr)] md:items-start">
       {@render loadoutCheck(loadout, testid)}
       <!-- The trees size to their track (TalentTrees reads its box's width): 600 px with the diff
            beside them from 1024, the full width with the diff under them below; cells up to 44 px. -->

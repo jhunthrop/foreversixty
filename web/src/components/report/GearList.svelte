@@ -128,39 +128,42 @@
       />
     </div>
     {#if worn.length > 0}
-      <div class="gear-at-pull-list"><Ruled edge="bottom" testid="gear-list-rows">
-        {#each worn as cell (cell.slot)}
-          {#snippet facts()}{cell.label}{#if cell.source}{FACT_SEPARATOR}{cell.source}{/if}{/snippet}
-          {#snippet enchant()}<span class="text-rarity-uncommon">{cell.enchant}</span>{/snippet}
-          {#if cell.item}<ItemRow
-              item={cell.item}
-              build={dataBuild}
-              sourceContent={facts}
-              detail={cell.enchant ? enchant : undefined}
-              unknown={cell.unknown}
-              iconSize={28}
-              bare
-              testid={`gear-list-row-${cell.slot}`}
-            />{:else if cell.coveredBy}
-            <!-- The off hand a two-hander covers: its icon greyed, as the frame and the client draw it. -->
-            <div class="gear-at-pull-covered" data-testid={`gear-list-row-${cell.slot}`}>
-              <span class="gear-at-pull-covered-icon"
-                ><ItemIcon
-                  icon={cell.coveredBy.icon}
-                  quality={cell.coveredBy.quality}
-                  build={dataBuild}
-                  size={28}
-                /></span
-              >
-              <span class="min-w-0">
-                <span class="text-muted block text-[15px] leading-5">{cell.label}</span>
-                <span class="text-muted block text-[13px] leading-[18px]">{gearCopy.paperdoll.twoHanded}</span
+      <div class="gear-at-pull-list">
+        <Ruled edge="bottom" testid="gear-list-rows">
+          {#each worn as cell (cell.slot)}
+            {#snippet facts()}{cell.label}{#if cell.source}{FACT_SEPARATOR}{cell.source}{/if}{/snippet}
+            {#snippet enchant()}<span class="text-rarity-uncommon">{cell.enchant}</span>{/snippet}
+            {#if cell.item}<ItemRow
+                item={cell.item}
+                build={dataBuild}
+                sourceContent={facts}
+                detail={cell.enchant ? enchant : undefined}
+                unknown={cell.unknown}
+                iconSize={28}
+                bare
+                testid={`gear-list-row-${cell.slot}`}
+              />{:else if cell.coveredBy}
+              <!-- The off hand a two-hander covers: its icon greyed, as the frame and the client draw it. -->
+              <div class="gear-at-pull-covered" data-testid={`gear-list-row-${cell.slot}`}>
+                <span class="gear-at-pull-covered-icon"
+                  ><ItemIcon
+                    icon={cell.coveredBy.icon}
+                    quality={cell.coveredBy.quality}
+                    build={dataBuild}
+                    size={28}
+                  /></span
                 >
-              </span>
-            </div>
-          {/if}
-        {/each}
-      </Ruled></div>
+                <span class="min-w-0">
+                  <span class="text-muted block text-[15px] leading-5">{cell.label}</span>
+                  <span class="text-muted block text-[13px] leading-[18px]"
+                    >{gearCopy.paperdoll.twoHanded}</span
+                  >
+                </span>
+              </div>
+            {/if}
+          {/each}
+        </Ruled>
+      </div>
     {/if}
   </div>
 </div>
