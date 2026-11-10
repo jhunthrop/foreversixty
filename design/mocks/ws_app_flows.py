@@ -202,9 +202,75 @@ ACCOUNT = [('Notifications', 'Raids, gear and sims, logs on'), ('Plan', 'Premium
            ('Offline data', '26.6 MB on this phone'), ('Settings', 'Sign out, delete account')]
 
 
+# Round 5 on Android's profile drawer (lane M5a; spec 2026-11-09-directions.md Mobile, mock directions/png/m-android-menu.png):
+# You on the painted band (the portrait at 56, the name in the display face at 26 in the class colour, the line, Main, the
+# stamp with Refresh), then on the drawer's panel Switch character, Tools as labels alone (owner ruling 2026-11-09) and
+# Account, each under a cream display title at 16. 18 at the sides. Android only until lane M5i.
+MENU_R5_CSS = """
+.drawer.r5menu{padding:0}
+.r5menu .you{padding:18px 18px 12px;background:#0c3a52;border-bottom:1px solid #000}
+.r5menu .yt{display:flex;align-items:center;gap:16px}
+.r5menu .yt h2{margin:0;font:400 26px/32px var(--font-title)}
+.r5menu .yt .ln{display:block;font:400 13px/20.57px var(--font-body);color:var(--text)}
+.r5menu .yt .tag{display:inline-block;margin-top:4px;padding:1px 8px;border:1px solid var(--gold);border-radius:4px;color:var(--gold);font:600 12px/16px var(--font-body)}
+.r5menu .yt .sub{display:block;margin-top:4px;font:400 13px/20.57px var(--font-body);color:var(--text)}
+.r5menu .stamp{display:flex;align-items:center;min-height:48px;margin:4px 0 0;font:400 12px/16px var(--font-body);color:var(--text)}
+.r5menu .stamp a{font-weight:600;color:var(--gold)}
+.r5menu .wide{display:flex;align-items:center;justify-content:center;height:48px;margin:16px 0 4px;border-radius:4px;background:#0f6064;border:1px solid #408076;
+  color:#fff;font:700 15px/20px var(--font-body)}
+.r5menu .bd{padding:0 18px}
+.r5menu section{margin:0}
+.r5menu h3{margin:0;padding:14px 0 6px;font:400 16px/22.1px var(--font-title);color:#f3eee2}
+.r5menu .row{display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;min-height:48px;padding:7px 0;border-bottom:1px solid var(--line)}
+.r5menu .row:last-child{border-bottom:0}.r5menu .row.ch{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px}
+.r5menu b.t{display:block;font:700 15px/20.57px var(--font-body);color:#fff}
+.r5menu .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5menu .fold{display:flex;align-items:center;min-height:48px;font:600 15px/20px var(--font-body);color:var(--gold)}
+.r5menu .foot{margin:24px 0;display:flex;flex-direction:column;gap:4px}
+"""
+
+
+def _menu_r5(state: str) -> str:
+    """The Android drawer's body in round 5 (MENU_R5_CSS); the characters, tools and account rows are menu()'s."""
+    def section(title: str, rows: str) -> str:
+        return f'<section data-region="{region_slug(title)}"><h3>{title}</h3>{rows}</section>'
+
+    def row(title: str, sub: str = '') -> str:
+        return f'<div class="row"><b class="t">{title}</b>' + (f'<span class="s">{sub}</span>' if sub else '') + '</div>'
+
+    if state == 'out':
+        you = ('<div class="you"><div data-region="head"><div data-region="head-title"><div class="yt" style="display:block">'
+               '<h2 style="color:#f3eee2">Forever Sixty</h2><span class="sub" data-region="head-meta">Sign in and your characters arrive with their gear, '
+               'talents and guild.</span></div></div><a class="btn wide" href="#">Sign in with Battle.net</a></div></div>')
+        body = section('Tools', ''.join(row(n) for n, _, out in TOOLS if out))
+    else:
+        me = CHARACTERS[0]
+        you = (f'<div class="you"><div data-region="head"><div class="yt" data-region="head-title">{portrait(me[5], me[4], 56)}'
+               f'<div style="flex:1"><h2 style="color:{CLASS_COLOR[me[1]]}">{me[0]}</h2><div data-region="head-meta"><span class="ln">{me[2]}</span>'
+               '<span class="tag">Main</span></div></div></div>'
+               '<p class="stamp">Updated 2 h ago from Battle.net&nbsp;&middot;&nbsp;<a href="#">Refresh</a></p></div></div>')
+        others = CHARACTERS[1:] if state != 'one' else []
+        chars = [f'<div class="row ch">{portrait(f, av, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{s}</span></div></div>'
+                 for n, c, s, _, av, f in others]
+        if state == 'low':
+            chars += [f'<div class="row ch">{portrait("alliance", None, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{s}</span></div></div>'
+                      for n, c, s in LOW]
+        fold = (f'<a class="fold" href="#">{"Hide low-level characters" if state == "low" else "Show low-level characters (2)"}</a>' if others else '')
+        body = ((section('Switch character', ''.join(chars) + fold) if others else '')
+                + section('Tools', ''.join(row(n) for n, _, _ in TOOLS))
+                + section('Account', ''.join(row(n, s) for n, s in ACCOUNT)))
+    foot = ('<div class="foot"><span class="t-small">Version 0.1.0 (7) &middot; data 1.60.1.70790</span>'
+            '<span class="t-small"><a class="link" href="#">Help</a> &middot; <a class="link" href="#">Privacy</a></span></div>')
+    return you + f'<div class="bd">{body}{foot}</div>'
+
+
 def menu(state: str):
     """state: in (6 characters), one (just the main), low (the low-level fold open), out (signed out)."""
     def b(platform: str) -> str:
+        if platform == 'android':
+            html = build_page('Menu', f'<div class="drawer-wrap"><div class="drawer r5menu" role="dialog" aria-label="Menu">{_menu_r5(state)}</div>'
+                              f'<div class="dim" aria-hidden="true"></div></div><style>{FLOWS_CSS}{MENU_R5_CSS}</style>', note='Profile menu mock, round 5 on Android.')
+            return app_page(platform, html, None, navbar=False, who=None if state == 'out' else 'warrior')
         if state == 'out':
             you = (PageHeader('Forever Sixty', meta=['Sign in and your characters arrive with their gear, talents and guild.'])
                    + '<div class="vstack">' + Button('Sign in with Battle.net', primary=True) + '</div>')
@@ -665,12 +731,72 @@ ACTIVITY = [
                    ('inv_misc_book_09', 'Fury Warrior BiS changed', 'A new pick for Hands: Theramore Gauntlets', 'Gear and sims', 'Tue', False)]),
 ]
 GROUPS = ['All', 'Raids', 'Gear and sims', 'Logs', 'Guild ladder', 'Tiers']
+# The rows about a class wear its crest (one crest language, lane M4a): a guildmate's spec icon, a spec's tier or BiS move.
+ACTIVITY_CRESTS = {'ability_warrior_innerrage': 'warrior', 'Fury Warrior moved to S': 'warrior', 'Fury Warrior BiS changed': 'warrior'}
+
+# Round 5 on Android's Activity tab (lane M4a; spec 2026-11-09-directions.md Mobile, mock directions/png/m-android-activity.png):
+# the blue band carries the bar and the group chips (36 faces in 48 dp targets, the first teal), then a panel per day on the
+# ground with its display title and Mark all read on the first; each row its lead (the crest for a row about a class), title,
+# line and time. Android only until lane M4i. Line heights are the Pixel 9's rounding (see RAID_R5_CSS).
+ACTIVITY_R5_CSS = """
+.ap.r5act{padding:0 14px 22px}
+.r5act .bandc{margin:0 -14px;padding-left:16px;background:#0c3a52;border-bottom:1px solid #000}
+.r5act .chips{display:flex;gap:8px;padding:2px 16px 8px 0;overflow:hidden;white-space:nowrap}
+.r5act .chips .btn{flex:none;display:flex;align-items:center;box-sizing:border-box;height:36px;min-height:36px;margin:6px 0;padding:0 16px;
+  border:1px solid #5a5d70;border-radius:8px;background:none;color:#fff;font:600 14px/20px var(--font-body)}
+.r5act .chips .btn.on{background:#408076}
+.ap.r5act>section,.ap.r5act>.blk-r5{margin-top:20px}.ap.r5act>.bandc+*{margin-top:16px}.ap.r5act>.blk-r5:first-child{margin-top:16px}
+.r5act .sh{display:flex;align-items:center;height:26px;margin-bottom:8px}
+.r5act .sh h2{margin:0;font:400 21px/26px var(--font-title);color:#f3eee2}
+.r5act .sh .act{margin-left:auto;font:600 14px/24.38px var(--font-body);color:var(--gold)}
+.r5act .pn{background:#170e09;border-radius:10px;padding:8px 16px;box-shadow:0 0 0 1px #000}
+.r5act .row{position:relative;display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.r5act .row:last-child{border-bottom:0}
+.r5act .row img{width:40px;height:40px;flex:none}
+.r5act .row.dot::before{content:"";position:absolute;left:-10px;top:50%;width:6px;height:6px;margin-top:-6px;border-radius:50%;background:var(--gold)}
+.r5act b.t{display:block;font:700 15px/20.57px var(--font-body);color:#fff}
+.r5act .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5act .note{margin:0;padding:8px 0;font:400 13px/20.57px var(--font-body);color:var(--text)}
+.r5act .wide{display:flex;align-items:center;justify-content:center;height:48px;margin:12px 0;border-radius:4px;background:#0f6064;border:1px solid #408076;
+  color:#fff;font:700 15px/20px var(--font-body)}
+"""
+
+
+def _act_lead(ic: str, title: str) -> str:
+    crest = ACTIVITY_CRESTS.get(ic) or ACTIVITY_CRESTS.get(title)
+    return crest_img(crest, 40) if crest else icon(ic, 40)
+
+
+def _activity_r5(state: str) -> str:
+    """The Android Activity tab's body in round 5 (ACTIVITY_R5_CSS); the rows and words are activity()'s."""
+    if state == 'out':
+        return ('<div class="blk-r5" data-region="section-activity"><div class="pn"><p class="note">What changed for your characters: loot, sims, '
+                'reports, raids.</p><a class="btn wide" href="#">Sign in with Battle.net</a></div></div>')
+    chips = ''.join(f'<a class="btn{" on" if g == "All" else ""}" href="#">{g}</a>' for g in GROUPS)
+    band = f'<div class="bandc"><div class="chips" data-region="controls">{chips}</div></div>'
+    if state == 'empty':
+        return band + ('<div class="blk-r5" data-region="section-empty"><div class="pn"><p class="note">Nothing yet. Loot, sims, reports and '
+                       'your guild&rsquo;s raids arrive here as they happen.</p></div></div>')
+    days = ''
+    for when, rows in ACTIVITY:
+        act = '<span class="act">Mark all read</span>' if when == 'Today' else ''
+        lines = ''.join(f'<div class="row{" dot" if u else ""}">{_act_lead(i, t)}<div><b class="t">{t}</b><span class="s">{s}</span>'
+                        f'<span class="s">{at}</span></div></div>' for i, t, s, _, at, u in rows)
+        days += f'<section data-region="{region_slug(when)}"><div class="sh"><h2>{when}</h2>{act}</div><div class="pn">{lines}</div></section>'
+    return band + days
+
+
+def _activity_page_r5(state: str) -> str:
+    return build_page('Activity', f'<div class="ap r5act">{_activity_r5(state)}</div><style>{FLOWS_CSS}{ACTIVITY_R5_CSS}</style>',
+                      note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5 on Android.')
 
 
 def activity(state: str):
     """Activity (owner, 2026-11-08): every notification event, newest first, read state, the six groups as filters (All
     preselected); every row opens its answer. The push inbox: a player with pushes off sees the same list."""
     def b(platform: str) -> str:
+        if platform == 'android':
+            badges = {'in': {'raid': 0, 'activity': 3}}.get(state, {})
+            return app_page(platform, _activity_page_r5(state), 'activity', title='Activity', badges=badges, who=None if state == 'out' else 'warrior')
         if state == 'out':
             body = (PageHeader('Activity', meta=['What changed for your characters: loot, sims, reports, raids.'])
                     + '<div class="vstack">' + Button('Sign in with Battle.net', primary=True) + '</div>')

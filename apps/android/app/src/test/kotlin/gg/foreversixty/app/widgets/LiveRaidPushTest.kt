@@ -28,14 +28,15 @@ class LiveRaidPushTest {
     }
 
     @Test fun aStartMessageDrawsTheCountdown() {
-        val content = figures.pushedLive(start, Instant.ofEpochSecond(1796954400L - 42 * 60))
-        assertEquals("Onyxia's Lair starts in 42 minutes", content?.title)
-        assertEquals("OLYMPUS XXVII", content?.guild)
+        val content = figures.pushedLive(start)
+        assertEquals("Onyxia's Lair", content?.title)
+        assertEquals("OLYMPUS XXVII · You are In", content?.text)
         assertEquals(Instant.ofEpochSecond(1796954400L), content?.countdownTo)
-        assertEquals("36 in, 2 late · 2 tanks, 5 heals", content?.bigText?.lines()?.last())
+        assertEquals("Starts 8:00 pm CST · 36 in, 2 late · 2 tanks, 5 heals", content?.line)
+        assertEquals("inv_misc_head_dragon_black", content?.zoneIcon)
     }
 
     @Test fun nobodyOutGetsACountdown() {
-        assertNull(figures.pushedLive(start + ("my_state" to "out"), Instant.ofEpochSecond(1796954400L - 600)))
+        assertNull(figures.pushedLive(start + ("my_state" to "out")))
     }
 }

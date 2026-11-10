@@ -741,19 +741,12 @@
     <string name="menu_showLow" tools:ignore="PluralsCandidate">Show low-level characters (%1$d)</string>
     <string name="menu_hideLow">Hide low-level characters</string>
     <string name="menu_guides">Guides</string>
-    <string name="menu_guides_line">Your spec\'s guide, then every class</string>
     <string name="menu_tiers">Tiers</string>
-    <string name="menu_tiers_line">Every spec, this week</string>
     <string name="menu_patchNotes">Patch notes</string>
-    <string name="menu_patchNotes_line">The game and the site</string>
     <string name="menu_sims">Sims</string>
-    <string name="menu_sims_line">Your server runs and saved sims</string>
     <string name="menu_logs">Logs and reports</string>
-    <string name="menu_logs_line">Your reports and the coach</string>
     <string name="menu_planner">Planner</string>
-    <string name="menu_planner_line">Your builds and the guide builds</string>
     <string name="menu_rankings">Rankings</string>
-    <string name="menu_rankings_line">Your spec and your guild</string>
     <string name="menu_offlineData">Offline data</string>
     <string name="menu_offlineData_line">%1$s on this phone</string>
     <string name="menu_out_title">Forever Sixty</string>
@@ -1166,7 +1159,6 @@
     <string name="widget_updated" tools:ignore="PluralsCandidate">Updated %1$d h ago</string>
     <string name="widget_chooseSpec">Choose a spec</string>
     <string name="widget_notSaved">Not saved</string>
-    <string name="widget_signedUp" tools:ignore="PluralsCandidate">%1$d of %2$d signed up</string>
     <string name="widget_ofSize" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
     <string name="widget_signedUpLabel">signed up</string>
     <string name="widget_noGear">Add the addon to see your upgrades.</string>
@@ -1222,6 +1214,9 @@
     <string name="live_pullTitle" tools:ignore="PluralsCandidate">%1$s starts in %2$d minutes</string>
     <string name="live_pullTitleNow">%1$s starts now</string>
     <string name="live_counts" tools:ignore="PluralsCandidate">%1$d in, %2$d late · %3$d tanks, %4$d heals</string>
+    <string name="live_startsAt">Starts %1$s</string>
+    <string name="live_invitesAt">Invites %1$s</string>
+    <string name="live_answer">%1$s · You are %2$s</string>
     <string name="live_sim" tools:ignore="PluralsCandidate">%1$d of %2$d combinations</string>
     <plurals name="live_simLeft">
         <item quantity="one">about 1 min left</item>

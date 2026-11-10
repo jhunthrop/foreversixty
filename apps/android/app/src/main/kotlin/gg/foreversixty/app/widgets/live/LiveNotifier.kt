@@ -8,6 +8,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.view.View
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
@@ -21,6 +24,7 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.raids.push.RaidNotificationActions
 import gg.foreversixty.app.raids.push.RaidPushCategory
+import gg.foreversixty.app.raids.logic.SignupState
 import gg.foreversixty.app.widgets.logic.RaidLiveContent
 import gg.foreversixty.app.widgets.logic.SimLive
 import gg.foreversixty.app.widgets.logic.SimLiveContent
@@ -33,14 +37,14 @@ import gg.foreversixty.app.widgets.logic.SimLiveContent
 class LiveNotifier(private val context: Context) {
     private val manager = NotificationManagerCompat.from(context)
 
-    fun showRaid(content: RaidLiveContent) {
+    fun showRaid(content: RaidLiveContent, zoneIcon: Bitmap? = null) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
             return
         }
         ensureChannels()
-        manager.notify(RAID_TAG, RAID_ID, raidNotification(context, content))
+        manager.notify(RAID_TAG, RAID_ID, raidNotification(context, content, zoneIcon))
     }
 
     fun cancelRaid() = manager.cancel(RAID_TAG, RAID_ID)
@@ -72,15 +76,19 @@ class LiveNotifier(private val context: Context) {
 
         fun simTag(simId: String) = "live-sim-$simId"
 
-        /** The raid countdown: Late and Out answer in place through the raids lane's receiver. */
-        fun raidNotification(context: Context, content: RaidLiveContent): Notification {
+        /**
+         * Raid night (spec F2, mock m-android-lock): the zone with its icon, `Olympus XXVII · You are In`,
+         * the time and who is coming, the countdown in the header, and In, Late, Bench and Out answering
+         * in place through the raids lane's receiver.
+         */
+        fun raidNotification(context: Context, content: RaidLiveContent, zoneIcon: Bitmap? = null): Notification {
+            val expanded = listOfNotNull(content.text, content.line).joinToString("\n")
             val builder = NotificationCompat.Builder(context, CHANNEL_RAID)
                 .setSmallIcon(R.drawable.ic_notification_seal)
                 .setColor(FsColor.gold.toArgb())
                 .setContentTitle(content.title)
                 .setContentText(content.text)
-                .setSubText(content.guild)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(content.bigText))
+                .setStyle(NotificationCompat.BigTextStyle().bigText(expanded))
                 .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setTicker(content.description)
@@ -92,9 +100,31 @@ class LiveNotifier(private val context: Context) {
             }
             builder.setWhen(target.toEpochMilli()).setShowWhen(true).setUsesChronometer(true).setChronometerCountDown(true).setOngoing(true)
             val data = mapOf("guild_id" to content.guildId.toString(), "raid_id" to content.raidId.toString())
-            RaidNotificationActions.actions(context, RaidPushCategory.LIVE, data, RAID_TAG, RAID_ID).forEach(builder::addAction)
+            val answers = RaidNotificationActions.actions(context, RaidPushCategory.LIVE, data, RAID_TAG, RAID_ID)
+            // Android draws three action buttons at most; the four answers are pills in the expanded body.
+            builder.setStyle(NotificationCompat.DecoratedCustomViewStyle()).setCustomBigContentView(liveBody(context, content, zoneIcon, answers))
             return builder.build()
         }
+
+        /** The expanded raid-night body (layout notification_raid_live): the four answers in SignupState's order. */
+        private fun liveBody(context: Context, content: RaidLiveContent, zoneIcon: Bitmap?, answers: List<NotificationCompat.Action>): RemoteViews =
+            RemoteViews(context.packageName, R.layout.notification_raid_live).apply {
+                if (zoneIcon != null) setImageViewBitmap(R.id.live_icon, zoneIcon) else setViewVisibility(R.id.live_icon, View.GONE)
+                setTextViewText(R.id.live_title, content.title)
+                setTextViewText(R.id.live_text, content.text)
+                if (content.line != null) setTextViewText(R.id.live_line, content.line) else setViewVisibility(R.id.live_line, View.GONE)
+                SignupState.entries.zip(ANSWER_VIEWS).zip(answers) { (state, view), action ->
+                    setTextViewText(view, action.title)
+                    setOnClickPendingIntent(view, action.actionIntent)
+                    if (state == content.answer) {
+                        setInt(view, "setBackgroundResource", R.drawable.bg_live_answer_on)
+                        setTextColor(view, Color.WHITE)
+                    }
+                }
+            }
+
+        /** The answer pills, in SignupState's order (In, Late, Bench, Out). */
+        private val ANSWER_VIEWS = listOf(R.id.live_in, R.id.live_late, R.id.live_bench, R.id.live_out)
 
         fun simNotification(context: Context, sim: SimLive, content: SimLiveContent): Notification {
             val builder = NotificationCompat.Builder(context, CHANNEL_SIMS)

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
@@ -27,6 +28,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.LocalParityRecorder
+import gg.foreversixty.app.model.AccountCharacter
 
 /** Opens the profile menu; provided by the app shell on the tab roots, null elsewhere. */
 val LocalOpenMenu = staticCompositionLocalOf<(() -> Unit)?> { null }
@@ -38,19 +41,13 @@ val LocalOpenMenu = staticCompositionLocalOf<(() -> Unit)?> { null }
  */
 @Composable
 fun ProfileButton(session: SessionManager?, modifier: Modifier = Modifier) {
-    val open = LocalOpenMenu.current ?: return
-    if (session == null) {
-        PortraitButton(null, null, open, modifier)
-        return
-    }
-    val phase by session.phase.collectAsStateWithLifecycle()
-    val picked by session.pickedKey.collectAsStateWithLifecycle()
-    val current = session.currentCharacter(phase, picked)
-    PortraitButton(current?.avatarUrl, current?.faction, open, modifier)
+    CharacterButton(currentCharacter(session), modifier)
 }
 
+/** The profile button for [character]: its portrait, else its class crest, in its faction ring; the glyph signed out. */
 @Composable
-private fun PortraitButton(avatarUrl: String?, faction: String?, open: () -> Unit, modifier: Modifier) {
+fun CharacterButton(character: AccountCharacter?, modifier: Modifier = Modifier) {
+    val open = LocalOpenMenu.current ?: return
     val label = stringResource(R.string.menu_a11y_open)
     Box(
         modifier
@@ -60,8 +57,20 @@ private fun PortraitButton(avatarUrl: String?, faction: String?, open: () -> Uni
             .clickable(role = Role.Button, onClick = open)
             .semantics { contentDescription = label },
     ) {
-        CharacterPortrait(avatarUrl, faction, SIZE, Modifier.padding((TOUCH - SIZE) / 2))
+        // The bar is chrome above the content, as the mocks' nav sits outside `main`: its images never count.
+        CompositionLocalProvider(LocalParityRecorder provides null) {
+            CharacterPortrait(character?.avatarUrl, character?.faction, SIZE, Modifier.padding((TOUCH - SIZE) / 2), className = character?.className)
+        }
     }
+}
+
+/** The session's selected character; null signed out or with no session. */
+@Composable
+private fun currentCharacter(session: SessionManager?): AccountCharacter? {
+    if (session == null) return null
+    val phase by session.phase.collectAsStateWithLifecycle()
+    val picked by session.pickedKey.collectAsStateWithLifecycle()
+    return session.currentCharacter(phase, picked)
 }
 
 /**
@@ -71,8 +80,14 @@ private fun PortraitButton(avatarUrl: String?, faction: String?, open: () -> Uni
  */
 @Composable
 fun ProfileBar(session: SessionManager?, title: String? = null) {
+    CharacterBar(currentCharacter(session), title)
+}
+
+/** [ProfileBar] for a known [character] (the shell resolves it from the session; tests pass a fixture). */
+@Composable
+fun CharacterBar(character: AccountCharacter?, title: String? = null) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        ProfileButton(session)
+        CharacterButton(character)
         if (title != null) Text(title, style = BAR_TITLE, color = FsColor.strong, modifier = Modifier.semantics { heading() })
     }
 }

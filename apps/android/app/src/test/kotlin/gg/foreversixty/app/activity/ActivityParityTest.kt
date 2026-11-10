@@ -1,12 +1,15 @@
 package gg.foreversixty.app.activity
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import gg.foreversixty.app.menu.LocalOpenMenu
-import gg.foreversixty.app.menu.ProfileBar
+import gg.foreversixty.app.menu.CharacterBar
+import gg.foreversixty.app.menu.LocalPortraitPainter
+import gg.foreversixty.app.menu.MenuFixtures
+import gg.foreversixty.app.home.HomeFixtures
+import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
@@ -31,30 +34,35 @@ import java.time.ZoneId
 class ActivityParityTest {
     @get:Rule val compose = createComposeRule()
 
-    // Known drift (2026-11-10, lane M0): in Open Sans a line the mock fits on one line wraps natively (the
-    // round-5 face is wider than Barlow), so the sections below it sit lower. The tab lanes (M1i/M1a to
-    // M4i/M4a) rebuild these screens against the round-5 mocks and drop these lines.
-    @Test fun activity() = ParityCheck.state(
-        compose,
-        "activity",
-        expectedDrift = setOf("section-this-week: y 768, the mock has 758 (within 8)"),
-    ) { Tab(3) { Inbox(ActivityFixtures.rows) } }
+    @Test fun activity() = ParityCheck.state(compose, "activity") { Tab(3) { Inbox(ActivityFixtures.rows) } }
 
     @Test fun activityAt1_5() = ParityCheck.state(compose, "activity", fontScale = 1.5f) { Tab(3) { Inbox(ActivityFixtures.rows) } }
 
     @Test fun activityAt2() = ParityCheck.state(compose, "activity", fontScale = 2f) { Tab(3) { Inbox(ActivityFixtures.rows) } }
 
-    @Test fun activityEmpty() = ParityCheck.state(compose, "activity-empty") { Tab(0) { Inbox(emptyList()) } }
+    @Test fun activityEmpty() = ParityCheck.state(compose, "activity-empty") { Tab(0) { Inbox(emptyList(), ActivityFixtures.noPortrait) } }
 
-    @Test fun activityOut() = ParityCheck.state(compose, "activity-out") { Tab(0) { ActivitySignedOut {} } }
+    @Test fun activityOut() = ParityCheck.state(compose, "activity-out") { Tab(0) { ActivitySignedOut({ CharacterBar(null, TITLE) }) {} } }
 
-    @Test fun activityOutAt2() = ParityCheck.state(compose, "activity-out", fontScale = 2f) { Tab(0) { ActivitySignedOut {} } }
+    @Test fun activityOutAt2() = ParityCheck.state(compose, "activity-out", fontScale = 2f) { Tab(0) { ActivitySignedOut({ CharacterBar(null, TITLE) }) {} } }
 
     @Test fun rowsFallInTheirDays() {
         val sections = Activity.sections(Activity.items(ActivityFixtures.rows), ActivityFixtures.NOW, ActivityFixtures.ZONE)
         assertEquals(listOf(ActivityDay.Today, ActivityDay.Yesterday, ActivityDay.ThisWeek), sections.map { it.day })
         assertEquals(listOf(3, 3, 2), sections.map { it.items.size })
         assertEquals(ActivityDay.Earlier, Activity.dayOf(LocalDate.of(2026, 10, 30), LocalDate.of(2026, 11, 6)))
+    }
+
+    @Test fun rowsAboutAClassWearItsCrest() {
+        val specs = gg.foreversixty.app.bis.bundledSpecCatalog(androidx.test.core.app.ApplicationProvider.getApplicationContext())
+        val crests = ActivityFixtures.rows.associate { it.kind to Activity.crestClass(it, specs) }
+        assertEquals("warrior", crests["guildsim.passed"])
+        assertEquals("warrior", crests["tier.moved"])
+        assertEquals("warrior", crests["bis.changed"])
+        assertEquals(null, crests["loot.awarded"])
+        assertEquals(null, crests["report.ready"])
+        val hunter = ActivityFixtures.rows.first { it.kind == "tier.moved" }.copy(title = "Beast Mastery Hunter moved to A")
+        assertEquals("hunter", Activity.crestClass(hunter, specs))
     }
 
     @Test fun rowsLandOnTheirAnswer() {
@@ -69,16 +77,20 @@ class ActivityParityTest {
     @Composable
     private fun Tab(unread: Int, content: @Composable () -> Unit) {
         ForeverTabScaffold(selected = ForeverTab.Activity, onSelect = {}, badges = TabBadges(activity = unread)) {
-            Column {
-                CompositionLocalProvider(LocalOpenMenu provides {}) { ProfileBar(null) }
-                content()
-            }
+            // The game icons from the repo's build data, as Home's parity test paints them.
+            CompositionLocalProvider(LocalOpenMenu provides {}, LocalItemIconPainter provides HomeFixtures.repoIcons, LocalPortraitPainter provides MenuFixtures.repoPortraits) { content() }
         }
     }
 
     @Composable
-    private fun Inbox(rows: List<ActivityRow>) {
-        ActivityScreen(ActivityState.Loaded(rows, null), ActivityFilter.All, ActivityFixtures.BUILD, ActivityFixtures.NOW, ActivityFixtures.ZONE, ActivityActions())
+    private fun Inbox(rows: List<ActivityRow>, me: gg.foreversixty.app.model.AccountCharacter = MenuFixtures.thandrel) {
+        ActivityScreen(
+            ActivityState.Loaded(rows, null), ActivityFilter.All, ActivityFixtures.BUILD, ActivityFixtures.NOW, ActivityFixtures.ZONE, ActivityActions(),
+        ) { CharacterBar(me, TITLE) }
+    }
+
+    private companion object {
+        const val TITLE = "Activity"
     }
 }
 
@@ -87,6 +99,9 @@ object ActivityFixtures {
     val NOW: Instant = Instant.parse("2026-11-06T18:00:00Z")
     val ZONE: ZoneId = ZoneId.of("America/Chicago")
     const val BUILD = "1.60.1.70790"
+
+    /** Thandrel before his Battle.net portrait arrives: the bar draws his crest. */
+    val noPortrait = MenuFixtures.thandrel.copy(avatarUrl = null)
 
     private fun row(id: Long, kind: String, group: String, title: String, body: String, at: String, read: Boolean, icon: String) =
         ActivityRow(id = id, kind = kind, group = group, title = title, body = body, link = "", occurredAt = at, read = read, icon = icon)

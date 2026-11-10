@@ -106,7 +106,8 @@ object RaidNotificationActions {
 
     fun actions(context: Context, category: String, data: Map<String, String>, tag: String?, id: Int): List<NotificationCompat.Action> {
         val ids = when (category) {
-            RaidPushCategory.SIGNUP -> listOf(
+            // Raid night's countdown carries the same four answers (spec F2, mock m-android-lock).
+            RaidPushCategory.SIGNUP, RaidPushCategory.LIVE -> listOf(
                 RaidPushCategory.ACTION_IN to context.getString(R.string.push_action_in),
                 RaidPushCategory.ACTION_LATE to context.getString(R.string.push_action_late),
                 RaidPushCategory.ACTION_BENCH to context.getString(R.string.push_action_bench),
@@ -117,10 +118,6 @@ object RaidNotificationActions {
                 RaidPushCategory.ACTION_OUT to context.getString(R.string.push_action_out),
             )
             RaidPushCategory.CHOOSE -> listOf(RaidPushCategory.ACTION_CHOOSE to context.getString(R.string.push_action_choose))
-            RaidPushCategory.LIVE -> listOf(
-                RaidPushCategory.ACTION_LATE to context.getString(R.string.push_action_late),
-                RaidPushCategory.ACTION_OUT to context.getString(R.string.push_action_out),
-            )
             else -> emptyList()
         }
         return build(context, ids, data, tag, id, slot = 0)

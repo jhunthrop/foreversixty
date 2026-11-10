@@ -2436,44 +2436,23 @@ enum Copy {
     /// Guides
     static var menuGuides: String { text("menu.guides") }
 
-    /// Your spec's guide, then every class
-    static var menuGuidesLine: String { text("menu.guides.line") }
-
     /// Tiers
     static var menuTiers: String { text("menu.tiers") }
-
-    /// Every spec, this week
-    static var menuTiersLine: String { text("menu.tiers.line") }
 
     /// Patch notes
     static var menuPatchNotes: String { text("menu.patchNotes") }
 
-    /// The game and the site
-    static var menuPatchNotesLine: String { text("menu.patchNotes.line") }
-
     /// Sims
     static var menuSims: String { text("menu.sims") }
-
-    /// Your server runs and saved sims
-    static var menuSimsLine: String { text("menu.sims.line") }
 
     /// Logs and reports
     static var menuLogs: String { text("menu.logs") }
 
-    /// Your reports and the coach
-    static var menuLogsLine: String { text("menu.logs.line") }
-
     /// Planner
     static var menuPlanner: String { text("menu.planner") }
 
-    /// Your builds and the guide builds
-    static var menuPlannerLine: String { text("menu.planner.line") }
-
     /// Rankings
     static var menuRankings: String { text("menu.rankings") }
-
-    /// Your spec and your guild
-    static var menuRankingsLine: String { text("menu.rankings.line") }
 
     /// Offline data
     static var menuOfflineData: String { text("menu.offlineData") }
@@ -3890,11 +3869,6 @@ enum Copy {
     /// Not saved
     static var widgetNotSaved: String { text("widget.notSaved") }
 
-    /// {n} of {size} signed up
-    static func widgetSignedUp(n: Int, size: Int) -> String {
-        format("widget.signedUp", n, size)
-    }
-
     /// {n} of {size}
     static func widgetOfSize(n: Int, size: Int) -> String {
         format("widget.ofSize", n, size)
@@ -4088,6 +4062,21 @@ enum Copy {
     /// {in} in, {late} late · {tanks} tanks, {healers} heals
     static func liveCounts(`in`: Int, late: Int, tanks: Int, healers: Int) -> String {
         format("live.counts", `in`, late, tanks, healers)
+    }
+
+    /// Starts {time}
+    static func liveStartsAt(time: String) -> String {
+        format("live.startsAt", time)
+    }
+
+    /// Invites {time}
+    static func liveInvitesAt(time: String) -> String {
+        format("live.invitesAt", time)
+    }
+
+    /// {guild} · You are {state}
+    static func liveAnswer(guild: String, state: String) -> String {
+        format("live.answer", guild, state)
     }
 
     /// {n} of {m} combinations

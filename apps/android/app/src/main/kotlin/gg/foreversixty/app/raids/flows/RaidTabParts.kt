@@ -47,6 +47,7 @@ import gg.foreversixty.app.designsystem.PanelFrame
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.parityItem
+import gg.foreversixty.app.flows.FlowChip
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowPanel
 import gg.foreversixty.app.flows.FlowRule
@@ -129,21 +130,7 @@ private fun LateMinuteChips(selected: Int?, onLate: (Int) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(FsSpace.space2),
     ) {
         LATE_MINUTES.forEach { minutes ->
-            val on = minutes == selected
-            val shape = RoundedCornerShape(LATE_RADIUS)
-            Box(
-                Modifier
-                    .heightIn(min = FsTarget.min)
-                    .parityItem(ParityItemKind.Button)
-                    .background(if (on) FsColor.tealEdge else Color.Transparent, shape)
-                    .border(1.dp, FsColor.rule, shape)
-                    .clickable(role = Role.Button) { onLate(minutes) }
-                    .semantics { this.selected = on }
-                    .padding(horizontal = FsSpace.space4),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(stringResource(R.string.push_late_minutes, minutes), style = ScaledType.segment, color = FsColor.strong, maxLines = 1)
-            }
+            FlowChip(stringResource(R.string.push_late_minutes, minutes), minutes == selected, { onLate(minutes) })
         }
     }
 }
@@ -205,7 +192,6 @@ private val LATE_MINUTES = listOf(15, 30, 60)
 private val HEAD_ICON = 40.dp
 private const val CHIP_BESIDE_MAX_SCALE = 1.3f
 private val CHIP_RADIUS = 4.dp
-private val LATE_RADIUS = 8.dp
 private val CHIP_PAD_X = 10.dp
 private val CHIP_PAD_Y = 3.dp
 private val ROLE_PAD = 10.dp

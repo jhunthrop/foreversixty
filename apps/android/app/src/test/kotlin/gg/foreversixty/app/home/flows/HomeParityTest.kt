@@ -154,7 +154,7 @@ object HomeFixtures {
         listOf(
             HomeBlock.LastNight(
                 listOf(
-                    act(7, "inv_axe_09", "You got Deathbringer", "You got it from Onyxia · main hand, +12.6 DPS over your worn Ravencrest's Legacy", true),
+                    act(7, "inv_axe_09", "You got Deathbringer", "Onyxia · main hand, +12.6 DPS over your worn Ravencrest's Legacy", true),
                     act(6, ONY, "Onyxia's Lair report ready", "87th percentile, your best on Onyxia so far · the coach has 2 notes", true),
                 ),
                 simAgain = true,

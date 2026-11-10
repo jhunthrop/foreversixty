@@ -202,7 +202,8 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
         } ?: Unavailable(tab)
         ForeverTab.Gear -> features.bis?.let { GearTab(it, features.home, account, onSearch) } ?: Unavailable(tab)
         ForeverTab.Activity -> features.activity?.let { activity ->
-            ActivityTab(activity, account, onOpen = { landing -> openLanding(features, landing, select) }) { ProfileBar(session) }
+            val title = stringResource(R.string.tab_activity)
+            ActivityTab(activity, account, onOpen = { landing -> openLanding(features, landing, select) }) { ProfileBar(session, title) }
         } ?: Unavailable(tab)
     }
 }
@@ -342,7 +343,7 @@ fun ForeverTabScaffold(
                         selected = tab == selected,
                         onClick = { onSelect(tab) },
                         icon = {
-                            BadgedBox(badge = { if (count > 0) Badge(containerColor = FsColor.wipe, contentColor = FsColor.bg) { Text(count.toString(), style = FsType.tab) } }) {
+                            BadgedBox(badge = { if (count > 0) TabBadge(count) }) {
                                 Icon(painterResource(tab.icon), contentDescription = null, modifier = Modifier.size(TAB_ICON_SIZE))
                             }
                         },
@@ -380,12 +381,25 @@ private val TAB_ICON_SIZE = 24.dp
 /** A tab label on one line whatever the font scale: the scale is capped, the icon carries the rest. */
 @Composable
 private fun TabLabel(text: String) {
+    CappedTabScale { Text(text, style = FsType.tab, maxLines = 1, softWrap = false) }
+}
+
+/** A tab's unread count: capped as the label is, so at large text it never outgrows the icon it sits on. */
+@Composable
+private fun TabBadge(count: Int) {
+    CappedTabScale {
+        Badge(containerColor = FsColor.wipe, contentColor = FsColor.bg) { Text(count.toString(), style = FsType.tab, maxLines = 1) }
+    }
+}
+
+/** The tab bar's text at most [TAB_LABEL_MAX_FONT_SCALE]: the bar's height is fixed, its words fit it. */
+@Composable
+private fun CappedTabScale(content: @Composable () -> Unit) {
     val density = LocalDensity.current
     CompositionLocalProvider(
         LocalDensity provides Density(density.density, density.fontScale.coerceAtMost(TAB_LABEL_MAX_FONT_SCALE)),
-    ) {
-        Text(text, style = FsType.tab, maxLines = 1, softWrap = false)
-    }
+        content = content,
+    )
 }
 
 /** A tab whose feature switch is off. */

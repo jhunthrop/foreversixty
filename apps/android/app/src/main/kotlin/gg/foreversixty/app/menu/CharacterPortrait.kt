@@ -1,5 +1,6 @@
 package gg.foreversixty.app.menu
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -11,15 +12,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
 import coil3.compose.AsyncImage
+import gg.foreversixty.app.common.crestOf
 import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ParityItemKind
@@ -28,12 +33,12 @@ import gg.foreversixty.app.designsystem.parityItem
 /**
  * The Battle.net portrait in a faction-coloured ring with the faction emblem as a badge on its top right:
  * the profile button and the menu's characters only (DESIGN-SYSTEM.md tenet 2, the owner's scoped
- * exception; everywhere else is the class crest). Without a portrait, the person glyph fills the ring
- * and the badge stays. With no faction (signed out, no character), the glyph alone in a muted ring.
+ * exception; everywhere else is the class crest). Without a portrait, the [className]'s crest fills the
+ * ring (the profile button), else the person glyph (the menu's rows, as the mock draws Ashmantle); the badge stays. With no faction (signed out, no character), the glyph alone in a muted ring.
  * The parity inventory counts the portrait and the badge as images, as the mock's two `img`s.
  */
 @Composable
-fun CharacterPortrait(avatarUrl: String?, faction: String?, size: Dp, modifier: Modifier = Modifier) {
+fun CharacterPortrait(avatarUrl: String?, faction: String?, size: Dp, modifier: Modifier = Modifier, className: String? = null) {
     val ring = faction?.let(::ringOf) ?: FsColor.muted
     Box(modifier.size(size)) {
         Box(
@@ -44,15 +49,24 @@ fun CharacterPortrait(avatarUrl: String?, faction: String?, size: Dp, modifier: 
                 .background(FsColor.raised),
             contentAlignment = Alignment.Center,
         ) {
-            if (avatarUrl.isNullOrBlank()) {
+            val crest = crestOf(className)
+            if (avatarUrl.isNullOrBlank() && crest != null) {
+                // No portrait yet: the class crest says which character, never a generic glyph.
+                Image(painterResource(crest), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image))
+            } else if (avatarUrl.isNullOrBlank()) {
                 Icon(Icons.Outlined.Person, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(size * GLYPH_RATIO))
             } else {
-                AsyncImage(
-                    model = avatarUrl,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image),
-                )
+                val local = LocalPortraitPainter.current?.painter(avatarUrl)
+                if (local != null) {
+                    Image(local, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image))
+                } else {
+                    AsyncImage(
+                        model = avatarUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image),
+                    )
+                }
             }
         }
         if (faction != null) {
@@ -69,6 +83,15 @@ fun CharacterPortrait(avatarUrl: String?, faction: String?, size: Dp, modifier: 
         }
     }
 }
+
+/** Paints a Battle.net portrait from somewhere other than the network (the screenshot tests' repo avatars). */
+fun interface PortraitPainterSource {
+    @Composable
+    fun painter(avatarUrl: String): Painter?
+}
+
+/** A portrait source that wins over the network when it has the picture, as [gg.foreversixty.app.items.LocalItemIconPainter] does for icons. */
+val LocalPortraitPainter = staticCompositionLocalOf<PortraitPainterSource?> { null }
 
 /** The ring is the faction's bar colour (tokens `color.faction.allianceBar`, `hordeBar`). */
 private fun ringOf(faction: String): Color = if (faction == "horde") FsColor.hordeBar else FsColor.allianceBar

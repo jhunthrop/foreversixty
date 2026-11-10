@@ -21,6 +21,7 @@ import gg.foreversixty.app.flows.FlowButton
 import gg.foreversixty.app.flows.FlowButtonRow
 import gg.foreversixty.app.flows.FlowGap
 import gg.foreversixty.app.flows.FlowItemRow
+import gg.foreversixty.app.activity.activityLead
 import gg.foreversixty.app.flows.FlowLead
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowPanel
@@ -157,7 +158,7 @@ private fun LastNight(block: HomeBlock.LastNight, build: String?, actions: HomeA
     FlowSection(stringResource(R.string.home_lastNight), top = 0.dp, panel = PanelFrame.Plain) {
         block.rows.forEachIndexed { index, item ->
             val row = item.row
-            FlowRow(row.title, item.line, FlowLead.Icon(row.icon, build), last = index == block.rows.lastIndex && !block.simAgain, onClick = { actions.onActivityRow(row) })
+            FlowRow(row.title, item.line, activityLead(row, build), last = index == block.rows.lastIndex && !block.simAgain, onClick = { actions.onActivityRow(row) })
         }
         if (block.simAgain) {
             FlowRow(stringResource(R.string.home_lastNight_sim), stringResource(R.string.home_lastNight_simSub), slim = true, last = true, onClick = actions.onSimAgain)
@@ -171,7 +172,7 @@ private fun NewForYou(block: HomeBlock.Activity, build: String?, actions: HomeAc
     FlowSection(stringResource(R.string.home_newForYou), action = link, onAction = actions.onAllActivity, top = 0.dp, panel = PanelFrame.None) {
         block.rows.forEachIndexed { index, item ->
             val row = item.row
-            FlowRow(row.title, item.line, FlowLead.Icon(row.icon, build), unread = !row.read, last = index == block.rows.lastIndex, onClick = { actions.onActivityRow(row) })
+            FlowRow(row.title, item.line, activityLead(row, build), unread = !row.read, last = index == block.rows.lastIndex, onClick = { actions.onActivityRow(row) })
         }
     }
 }
