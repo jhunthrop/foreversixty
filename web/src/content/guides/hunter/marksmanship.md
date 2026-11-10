@@ -83,24 +83,22 @@ There are two builds. You level with the pet: thirty-one points in Marksmanship 
 
 Improved Tracking only works while you track the target's type, and Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead. Most raid bosses are one of those; the boss's tooltip names its type, and on a boss of any other type the talent does nothing. Set it before the pull, and swap on trash with mixed types.
 
-In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Sniper Shot, the last ranks of Barrage, Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. Sniper Shot, the capstone, is your biggest shot: weapon damage plus 590 at rank 3, on its own 15 second cooldown. Your auto shots keep firing through its 4 second cast, so start it the moment it comes up. While leveling, keep the pet: it holds what you pull, the leveling build keeps its talents, and the leveling build puts its Marksmanship points into Rapid Killing and Rapid Recuperation where the raid build has Sniper Shot.
+In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull.
 
 ## Rotation and priority
 
-Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Mark the boss with Hunter's Mark first, so the mana is back by the pull (one hunter's mark per target is enough, they do not stack), then put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Track the boss's type for Improved Tracking if Track covers it. Time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
+**Before the pull.** In a raid, dismiss your pet: Lone Wolf only works with no pet out. Mark the boss with Hunter's Mark first, so the mana is back by the pull, then put up Aspect of the Hawk and leave it up: under Falcon, Deadly Aspects only procs from melee swings, never from your auto shots.
 
-On the pull, press Rapid Fire with your trinkets and your racial (Elune's Light, Berserking or Blood Fury), just as an auto shot leaves and the shared cooldown is about to come back, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
+**The opener.** Time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more.
 
-Then work the shared six second cooldown: cast Aimed Shot every time it comes up. In Forever your auto shots keep firing while you cast it, so neither Aimed Shot nor Sniper Shot costs you an auto shot, and Aimed Shot outhits Multi-Shot by a wide margin. With the raid build, Sniper Shot comes next: start it the moment it is ready and the shared cooldown is not. Multi-Shot is for packs and for when you have to move. Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever: every Arcane Shot adds 15% of it and every sting tick 5%, so they grow with your gear the way your auto shots do.
-
-Auto Shot does more damage than any button you press, so protect it:
+**Auto Shot.** It does more damage than any button you press, so protect it:
 
 - Stand still. Moving while an auto shot winds up cancels it.
 - Fire your instants right after an auto shot leaves, so they never push the next one back.
 - Stay outside 8 yards. Inside it you cannot shoot at all.
 - On a movement phase, fire Arcane Shot and Multi-Shot on the run while the mana holds, and plant your feet the moment you can.
 
-When mana gets low, hold Multi-Shot first: it is the worst damage for its mana you fire, so under a quarter of your mana let Aimed Shot have the shared cooldown. Keep Sniper Shot and Arcane Shot going, and keep Serpent Sting rolling to the end: with the attack power they carry, the sting is the best damage for its mana you have and Arcane Shot is next. Drink a Major Mana Potion before you need it.
+**Mana.** Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever. When the mana runs low, Multi-Shot goes first; keep Sniper Shot and Arcane Shot going and the sting rolling to the end, since the sting is the best damage for its mana you have and Arcane Shot is next. Drink a Major Mana Potion before you need it.
 
 **The pet.** Level with a cat and train it the top ranks of Claw, Bite and Growl as you go. In a raid with the raid build, leave it dismissed. If you raid with the leveling build instead, turn off Growl (right-click it on the pet bar) and send the cat to the boss's back.
 
@@ -108,17 +106,15 @@ When mana gets low, hold Multi-Shot first: it is the worst damage for its mana y
 
 **Trash.** Multi-Shot hits three targets. Volley is a mana-heavy channel, worth it only on a big pack that lives through it. Lay Freezing Trap before the pull. Explosive Trap under a pack the tank is holding hits everything within 10 yards, and at 60 it costs even more than Volley, so save it for the same big packs.
 
-There is no execute phase for a hunter: the priority holds to the end.
-
 **Utility.** Tranquilizing Shot (bought from your trainer at 60, so you do not wait on Lucifron's tome) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot puts a big lump of threat on a loose add, enough to pull it off a healer and onto you. Bring it to your tank and let him take it from you. Freezing Trap takes care of anything loose in the back line.
 
 ## Stat priority
 
-Hit matters up to 9%, the cap against a raid boss, because every miss throws away a whole shot, auto shots included, and auto shot is more of your damage than any button you press. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit matters until you reach it. Agility is attack power and crit together. Crit is strong with Mortal Shots, which makes your ranged crits hit harder. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
+Hit matters up to 9%, the cap against a raid boss, auto shots included. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit matters until you reach it. Mortal Shots makes your ranged crits hit harder. Intellect is attack power through Careful Aim and mana on top. Plain attack power counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it.
 
 ## Best in slot
 
-Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Your ranged weapon is your real weapon, the melee weapon is there for its stats.
+A strong leather piece often beats the mail you can get, so your list mixes both at 60. Your ranged weapon is your real weapon, the melee weapon is there for its stats.
 
 ## Enchants and consumables
 
@@ -130,11 +126,9 @@ Forever's damage potions share the two-minute potion cooldown with mana potions,
 
 ## Races
 
-Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds and lines up with Rapid Fire on the pull. Human is next with Ruthless's 1% crit all fight, and Dwarf's 1% hit and Big Game Hunter come last.
+Night Elf for the Alliance: Elune's Light lines up with Rapid Fire on the pull. Human's Ruthless is next, and Dwarf comes last.
 
-Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull, and more auto shots is what Marksmanship lives on. Orc is close behind: Blood Fury is 10% attack power for 15 seconds every two minutes, but Command does nothing for you with the pet dismissed.
-
-Skyborne's Wind Blessed is 2% haste and speeds every auto shot you fire.
+Troll for the Horde: Berserking stacks with Rapid Fire on the pull, and more auto shots is what Marksmanship lives on. Orc is close behind, but Command does nothing for you with the pet dismissed.
 
 ## Professions
 
@@ -156,12 +150,26 @@ Take quest rewards over vendor gear, Agility first. Replace your starting bow or
 
 ### Levels 20 to 60
 
-Marksmanship levels well, a little slower than Beast Mastery because more of the work is yours. Keep a pet out all the way: it holds what you pull while you shoot. Switch to the raid build and dismiss the pet when you start raiding at 60. Rapid Killing at 25 and 26 takes two minutes off Rapid Fire, which you train at 26, so you have it for most hard pulls, and Rapid Recuperation at 33 and 34 keeps your mana coming back while you shoot, once your Serpent Sting is on the target. From 41 the points go into Deadly Aspects, then Focused Fire at 46 and 47, ahead of the Endurance Training points that only open Unleashed Fury.
+Marksmanship levels well, a little slower than Beast Mastery because more of the work is yours. Keep a pet out all the way: it holds what you pull while you shoot. Switch to the raid build and dismiss the pet when you start raiding at 60.
+
+- **25 and 26:** Rapid Killing takes two minutes off Rapid Fire, which you train at 26, so you have it for most hard pulls.
+- **33 and 34:** Rapid Recuperation keeps your mana coming back while you shoot, once your Serpent Sting is on the target.
+- **From 41:** Deadly Aspects, then Focused Fire at 46 and 47, ahead of the Endurance Training points that only open Unleashed Fury.
 
 Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out of the 8 yard dead zone. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
-Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. When rank 2 arrives at 28, leave it in your spellbook and keep rank 1 on your bar all the way to 60 out in the world. Training a new rank upgrades the bar button on its own, so drag rank 1 back from the book each time, at 28, 36, 44, 52 and 60. Out in the world you run dry over a chain of pulls. Rank 1 still hits for most of what the newer ranks do, because most of the shot is your weapon, and it costs a fraction of the mana. Since you fire Aimed Shot every time the shared cooldown comes up, the expensive ranks drain you fastest of all. In a raid at 60, with Judgement of Wisdom on the boss and a mana potion, cast the top rank.
+Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. Out in the world, keep rank 1 on your bar all the way to 60: training a new rank upgrades the bar button on its own, so drag rank 1 back from the book each time, at 28, 36, 44, 52 and 60. Rank 1 still hits for most of what the newer ranks do, because most of the shot is your weapon, for a fraction of the mana, and since you fire it every time the shared cooldown comes up, the expensive ranks drain you fastest of all over a chain of pulls. In a raid at 60, with Judgement of Wisdom on the boss and a mana potion, cast the top rank.
 
-Arcane Shot and Serpent Sting work the same way. Both add a share of your ranged attack power on every rank, so a low rank keeps most of the damage for a fraction of the mana. Until 14, shoot the newest ranks you have; a Troll already does a little better with rank 1 Arcane Shot at 13. At 14 and 15, drag rank 1 of Arcane Shot back onto your bar from the book and keep the newest Serpent Sting; at 16 and 17, shoot the newest of both. From 18 to 29, drag rank 1 of both back onto your bar; each new rank takes over the bar button, so drag it back again after every visit to the trainer. At 30, put your newest Serpent Sting back on the bar and leave it there, and swap Arcane Shot to rank 3, the one you trained at 20. From 33, with Rapid Recuperation in, your mana holds up: let the newest Arcane Shot take the button. At 42 the new Serpent Sting costs more, so step Arcane Shot down to rank 4, the one from 28. At 48 move it up to rank 5 (a Dwarf keeps rank 4 for that level) and keep rank 5 through 59; rank 6 is a touch better at 57, and for a Dwarf from 54. At 60, out in the world, go back to rank 4. In a raid, cast the top rank of both.
+Arcane Shot and Serpent Sting work the same way: both add a share of your ranged attack power on every rank, so a low rank keeps most of the damage for a fraction of the mana. Each new rank takes over the bar button, so drag the old one back after every visit to the trainer.
+
+- **Until 13:** the newest ranks of both, though a Troll already does a little better with rank 1 Arcane Shot at 13.
+- **14 and 15:** Arcane Shot rank 1, the newest Serpent Sting.
+- **16 and 17:** the newest of both.
+- **18 to 29:** rank 1 of both.
+- **30 to 32:** your newest Serpent Sting from here on, and Arcane Shot rank 3, the one you trained at 20.
+- **33 to 41:** with Rapid Recuperation in, your mana holds up: the newest Arcane Shot.
+- **42 to 47:** the new Serpent Sting costs more, so Arcane Shot steps down to rank 4, the one from 28.
+- **48 to 59:** Arcane Shot rank 5 (a Dwarf keeps rank 4 at 48); rank 6 is a touch better at 57, and for a Dwarf from 54.
+- **60:** Arcane Shot rank 4 out in the world. In a raid, cast the top rank of both.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get.

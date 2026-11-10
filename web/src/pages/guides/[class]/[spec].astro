@@ -427,6 +427,27 @@ const jsonLd = [
     flex-direction: column;
     gap: 22px;
   }
+  /* A section with no lane (Professions, Leveling) runs the panel's full width from 1280 in two
+     columns, so no empty rail stands beside it; Leveling's talent tree spans both above its prose. */
+  @media (min-width: 1280px) {
+    .guide-page :global(.ui-rd[data-solo]) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .guide-page :global(.ui-rd[data-solo] > .ui-rd-prose) {
+      columns: 2 320px;
+      column-gap: var(--gap);
+    }
+    .guide-page :global(.ui-rd[data-solo] .ui-lane-block) {
+      column-span: all;
+      margin-bottom: 24px;
+    }
+    .guide-page :global(.ui-rd[data-solo] li) {
+      break-inside: avoid;
+    }
+    .guide-page :global(.ui-rd[data-solo] h3) {
+      break-after: avoid;
+    }
+  }
   .guide-sw {
     display: grid;
     gap: 20px var(--gap);

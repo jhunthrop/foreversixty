@@ -62,38 +62,31 @@ Bane of Havoc is the path to Incinerate, and it only earns a cast on fights with
 
 ## Rotation and priority
 
-Before the pull: Demon Armor on, Succubus out, at least one shard spare for Shadowburn, a Healthstone, and Life Tap to full while the healers top you off. You have no Demonology talents, but the Succubus still earns her shard: her melee and Lash of Pain out-damage the Imp's Firebolt.
+**Pre-pull.** Demon Armor on, Succubus out, at least one shard spare for Shadowburn, a Healthstone, and Life Tap to full while the healers top you off. You have no Demonology talents, but the Succubus still earns her shard: her melee and Lash of Pain out-damage the Imp's Firebolt.
 
-Opener: when your tank pulls on a timer and opens hard, start Immolate 1.5 seconds before the pull so it lands with the tank. That precast is worth a little damage over the fight. If your tank needs a second to settle, start Immolate as the tank reaches the boss instead. Then Curse of the Elements if it is yours, so the whole raid gets it from the first global, then Corruption, Bane of Doom, Conflagrate, Shadowburn, and Incinerate from there.
+**Opener.** When your tank pulls on a timer and opens hard, start Immolate 1.5 seconds before the pull so it lands with the tank; that precast is worth a little damage over the fight. If your tank needs a second to settle, start Immolate as the tank reaches the boss instead. Then Curse of the Elements if it is yours, so the whole raid gets it from the first global.
 
-Priority after that:
+**DoTs.** Corruption ticks for 18 seconds off one global. Bane of Doom the moment the last one fires; in the last minute of the fight a new Doom would never land, so use Bane of Agony instead. Immolate when about 3 seconds are left on it, so it never drops.
 
-1. Corruption whenever it has fallen off. It is instant and ticks for 18 seconds off one global.
-2. Bane of Doom the moment the last one fires. In the last minute of the fight a new Doom would never land, so use Bane of Agony instead.
-3. Immolate when about 3 seconds are left on it. It lands a moment before the old one ends, so it never drops.
-4. Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.
-5. Shadowburn on cooldown, at any boss health.
-6. Incinerate.
+**Shadow and Flame.** Conflagrate and Shadowburn on cooldown keep both halves of Shadow and Flame running the whole fight: Conflagrate's Shadow buff feeds Corruption, Doom and Shadowburn, and Shadowburn's Fire buff feeds Immolate, Conflagrate and Incinerate. Shadowburn's shard comes straight back, so do not save it for the execute. Incinerate fills every other global.
 
-Conflagrate and Shadowburn on cooldown keep both halves of Shadow and Flame running the whole fight: Conflagrate's Shadow buff feeds Corruption, Doom and Shadowburn, and Shadowburn's Fire buff feeds Immolate, Conflagrate and Incinerate. Do not save Shadowburn for the execute. Its shard comes straight back.
+**Curses.** When another warlock holds Curse of the Elements, your curse slot is free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 
-Curses and banes have their own slots in Forever, so Curse of the Elements and Bane of Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
+**Searing Pain.** A threat spell, not a damage spell, and Incinerate does more. Keep it off your bars in raids.
 
-Searing Pain is a threat spell, not a damage spell, and Incinerate does more. Keep it off your bars in raids.
+**Mana.** Life Tap whenever you have to move; Improved Life Tap adds 20%. Major Mana Potion and Demonic Rune have separate cooldowns, so use both once you are low enough that none of it is wasted.
 
-Life Tap below about 10% mana and whenever you have to move. Each tap converts its base amount plus your Spirit, and Improved Life Tap adds 20%. Major Mana Potion and Demonic Rune have separate cooldowns, so use both once you are low enough that none of it is wasted.
+**Soul Shards.** Walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Firestone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill. Shadowburn needs one in your bag to cast, even though Shadow and Flame hands it straight back.
 
-Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Firestone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill. Shadowburn needs one in your bag to cast, even though Shadow and Flame hands it straight back.
+**Threat.** You crit big and often, and Conflagrate and Shadowburn come early in the fight. If you climb to the top of the threat meter, stop casting Incinerate and let Corruption and your DoTs tick until the tank pulls ahead.
 
-Threat: you crit big and often, and Conflagrate and Shadowburn come early in the fight. If you climb to the top of the threat meter, stop casting Incinerate and let Corruption and your DoTs tick until the tank pulls ahead.
+**Movement.** Corruption, both banes, Conflagrate, Shadowburn and Life Tap are all instant. When you know a move is coming in the next second or two, hold Conflagrate and Shadowburn for it.
 
-Movement: Corruption, both banes, Conflagrate, Shadowburn and Life Tap are all instant. When you know a move is coming in the next second or two, hold Conflagrate and Shadowburn for it.
-
-Adds and AoE: on two targets, spend your casts on the one that must die and put Bane of Havoc on the other: 15% of everything you deal also lands on it. Havoc takes your bane slot, so no Doom on that target. Rain of Fire for trash packs that stay put. Hellfire burns you as well.
+**Adds and AoE.** On two targets, spend your casts on the one that must die and put Bane of Havoc on the other: 15% of everything you deal also lands on it. Havoc takes your bane slot, so no Doom on that target. Rain of Fire for trash packs that stay put. Hellfire burns you as well.
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Incinerate is a whole cast lost. Spell power feeds every spell you cast. Fire power feeds Incinerate, Immolate and Conflagrate, which are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need, plus a little crit, which Ruin doubles like any other. Spirit only matters through Life Tap.
+Suppression gives you 5% of the hit cap, and a resisted Incinerate is a whole cast lost. Fire power feeds Incinerate, Immolate and Conflagrate, which are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect adds a little crit, which Ruin doubles like any other. Spirit only matters through Life Tap.
 
 ## Best in slot
 
@@ -105,7 +98,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, and with Ruin every Destruction crit lands for double the usual bonus; The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, Immolate's first hit, Conflagrate and Shadowburn among them, but Corruption, the banes and Immolate's burn get nothing from it. Press it as Conflagrate and Shadowburn come off cooldown; Incinerate gets nothing from it, so cast it as you always do. Expansive Mind's 5% more mana means fewer Life Taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder: press Blood Fury at the pull with your trinkets. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is close behind Orc: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds.
+Human and Orc are the picks. Ruthless crits land for double the usual bonus with Ruin, and The Human Spirit makes every Life Tap bigger. Orc's Command makes your demon hit harder; press Blood Fury at the pull with your trinkets. Gnome is a step behind: Eureka! reaches Immolate's first hit, Conflagrate and Shadowburn but not Incinerate, so press it as Conflagrate and Shadowburn come off cooldown and cast Incinerate as you always do; Expansive Mind means fewer Life Taps. Troll's Berserking is a step behind Orc, and Undead is close behind Orc.
 
 ## Professions
 
@@ -117,10 +110,33 @@ Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting a
 
 Train Immolate at 1, Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10. Drain Life at 14 is your heal.
 
-Your points from 10 to 14 go into Bane, which cuts half a second off Shadow Bolt and Immolate, so every mob dies sooner. Aftermath follows from 15 to 17 for a harder first hit on every Immolate, then Cataclysm at 18 and 19 for cheaper spells. Destructive Reach and Molten Skin wait until the deeper rows need their points: range and a little less damage taken never kill a mob faster.
+- **10 to 14:** Bane, which cuts half a second off Shadow Bolt and Immolate, so every mob dies sooner.
+- **15 to 17:** Aftermath, for a harder first hit on every Immolate.
+- **18 and 19:** Cataclysm, for cheaper spells.
+
+Destructive Reach and Molten Skin wait until the deeper rows need their points: range and a little less damage taken never kill a mob faster.
 
 Wand the mob down once Immolate and Corruption are ticking; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 from an enchanter carry you to 20. Swap your starting weapon for the first quest staff or dagger with Intellect or Stamina.
 
 ### Levels 20 to 60
 
-Destruction kills single mobs fast but has little sustain: no Siphon Life and no talented drains, so Drain Life, and Death Coil from 42, are your only heals. Pull one at a time. Before 40, Shadow Bolt is your filler: Immolate, Corruption and Bane of Agony on the mob, Shadow Bolt it down, and from 20, when you take the talent, finish with Shadowburn. A mob that dies within 8 seconds of Shadowburn gives the shard back, so as a finisher it is free; on a dungeon boss, cast it on cooldown for as long as you have shards to spend. From 20 to 23 cast Shadow Bolt rank 2, not ranks 3 and 4: on level 20 gear the cheap bolt keeps you casting through the whole pull, and from 24 it starts to lose its damage to your level. Shadow Bolt rank 5 arrives at 28, but keep casting rank 4 for that level and move up at 29. On level 30 gear your mana cannot carry rank 5 as well as the cheaper rank 4, so cast rank 4 at 30 and 31 and go back to rank 5 at 32. Bane of Havoc at 30 opens the row Incinerate needs. Conflagrate comes at 31 and eats your Immolate every time until you take Shadow and Flame; on its own it costs more burn than it deals, so Fire and Brimstone follows right away from 32 to 34. Until then cast it once Immolate has 6 seconds or less left and recast Immolate right after. Shadow and Flame takes 35 to 38, and from 35 you cast Conflagrate on cooldown: each point gives it a 20% chance to keep your Immolate, so the extra Conflagrates deal more than the burn they cost. Drain Soul the last few percent of a mob when you need shards for stones and summons. Put every point into Destruction until Shadow and Flame is full at 44, with Incinerate at 40 on the way, and only then go back for Improved Life Tap, Suppression and Improved Corruption. From 40, Incinerate replaces Shadow Bolt, and Conflagrate rank 3 and Immolate rank 5 arrive with it. On level 40 gear your mana runs short, so at 41 drop Corruption from rank 4 back to rank 3 for that one level. It is a small gain that costs you nothing, and from 42 the top rank wins again. Keep the Voidwalker out when pulls get messy, and Life Tap between pulls instead of drinking.
+Destruction kills single mobs fast but has little sustain: no Siphon Life and no talented drains, so Drain Life, and Death Coil from 42, are your only heals. Pull one at a time, keep the Voidwalker out when pulls get messy, and Life Tap between pulls instead of drinking. Drain Soul the last few percent of a mob when you need shards for stones and summons.
+
+Before 40, Shadow Bolt is your filler: Immolate, Corruption and Bane of Agony on the mob, Shadow Bolt it down, and from 20, when you take the talent, finish with Shadowburn. A mob that dies within 8 seconds of Shadowburn gives the shard back, so as a finisher it is free; on a dungeon boss, cast it on cooldown for as long as you have shards to spend.
+
+Your mana decides some ranks. Cast these and move up after:
+
+- **20 to 23:** cast Shadow Bolt rank 2, not ranks 3 and 4: on level 20 gear the cheap bolt keeps you casting through the whole pull, and from 24 it starts to lose its damage to your level.
+- **28:** Shadow Bolt rank 5 arrives, but keep casting rank 4 for that level and move up at 29.
+- **30 and 31:** on level 30 gear your mana cannot carry Shadow Bolt rank 5 as well as the cheaper rank 4, so cast rank 4 and go back to rank 5 at 32.
+- **41:** on level 40 gear your mana runs short, so drop Corruption from rank 4 back to rank 3 for that one level. It is a small gain that costs you nothing, and from 42 the top rank wins again.
+
+Talents from 30:
+
+- **30:** Bane of Havoc, which opens the row Incinerate needs.
+- **31:** Conflagrate. It eats your Immolate every time until you take Shadow and Flame, and on its own it costs more burn than it deals, so until then cast it once Immolate has 6 seconds or less left and recast Immolate right after.
+- **32 to 34:** Fire and Brimstone, right away.
+- **35 to 38:** Shadow and Flame. From 35 you cast Conflagrate on cooldown: each point gives it a 20% chance to keep your Immolate, so the extra Conflagrates deal more than the burn they cost.
+- **To 44:** every point into Destruction until Shadow and Flame is full, with Incinerate at 40 on the way, and only then back for Improved Life Tap, Suppression and Improved Corruption.
+
+From 40, Incinerate replaces Shadow Bolt, and Conflagrate rank 3 and Immolate rank 5 arrive with it.

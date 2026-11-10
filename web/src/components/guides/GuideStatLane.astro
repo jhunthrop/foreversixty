@@ -17,6 +17,8 @@ interface Props {
   fallback: readonly string[];
 }
 const { stats, fallback } = Astro.props;
+// A stat no item carries is not a choice the player makes: the table lists only what gear offers.
+const rows = stats?.rows.filter((row) => row.reading !== 'not-on-items') ?? [];
 ---
 
 <div class="guide-stat-lane">
@@ -45,7 +47,7 @@ const { stats, fallback } = Astro.props;
           open
           label={guidesCopy.statPriorityRailLabel}
         >
-          {stats.rows.map((row, index) => (
+          {rows.map((row, index) => (
             <StatRow
               figures={[
                 { value: row.valueText, muted: row.reading !== 'value' },
@@ -85,6 +87,10 @@ const { stats, fallback } = Astro.props;
   /* A stat's name stays on one line ("Healing power"); the bar takes what is left of the lane. */
   :global(.guide-stat-lane .ui-st) {
     --st-name: minmax(max-content, 2fr);
+  }
+  /* No stat has an icon: the lead track takes no width, so no empty socket sits before a name. */
+  :global(.guide-stat-lane .ui-st) {
+    --st-icon: 0px;
   }
   :global(.guide-stat-lane .ui-st-icon) {
     height: auto;

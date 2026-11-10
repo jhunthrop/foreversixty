@@ -30,4 +30,3 @@ sources:
 - **Hit and crit on gear count everywhere.** A hit or crit piece raises your melee and your spells alike, which Enhancement feels most. Agility still gives melee crit and Intellect spell crit.
 
 ## Races
-

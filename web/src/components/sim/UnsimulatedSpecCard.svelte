@@ -1,7 +1,7 @@
 <!-- web/src/components/sim/UnsimulatedSpecCard.svelte -->
 <!-- One of /sim/specs' healer and tank specs (mock design/mocks/ws_simtools.py `web-sim-specs`): the
-     class crest and the spec's name in its class colour, a link to its guide, set inline with the
-     others on one wrapping line under their heading (h-audit 2026-11-09: eight rows of "Guide ›"
+     class crest and the spec's name in its class colour, a link to its guide, set in one column on a phone (name left, role right, 44 px rows) and four across from 768,
+     under their heading (h-audit 2026-11-09: eight rows of "Guide ›"
      said nothing a link line does not). No state tag, engine stamp or rotation. -->
 <script lang="ts">
   import { classCrestSrc } from '../../lib/class-crest';
@@ -17,7 +17,7 @@
 <span id={spec.spec} class="flex min-h-11 min-w-0 items-center" data-testid={`spec-unsimulated-${spec.spec}`}>
   <a
     href={`/guides/${classSpecPath(spec.spec)}`}
-    class="inline-flex min-w-0 items-center gap-2 text-[15px] font-bold hover:underline md:whitespace-nowrap"
+    class="flex w-full min-w-0 items-center gap-2 text-[15px] font-bold whitespace-nowrap hover:underline md:inline-flex md:w-auto"
     style:color={classColorVar(classOfSpec(spec.spec))}
     data-testid={`spec-guide-${spec.spec}`}
     ><img
@@ -26,7 +26,7 @@
       width="20"
       height="20"
       class="rounded-full"
-    />{specLabel(spec.spec)}<span class="text-muted text-[13px] font-normal"
+    />{specLabel(spec.spec)}<span class="text-muted ml-auto text-[13px] font-normal md:ml-0"
       >{simCopy.specsRole[spec.role]}</span
     ></a
   >

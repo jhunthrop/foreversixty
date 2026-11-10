@@ -328,12 +328,12 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(lane).toContain('DPS per point');
     // No "1 point of hit = 0.79 DPS at level 60" line: the per-point column already says it.
     expect(lane).not.toMatch(/>1 (?:point of [a-z][a-z ]*|[a-z][a-z ]* rating) = /);
-    // No footnotes under the table: a row no item carries says "Not on any item" itself, and a
-    // veteran knows what a rating point is (h-audit 2026-11-09).
+    // No footnotes under the table, and no row for a stat no item carries: gear is the only
+    // choice the table speaks to; a veteran knows what a rating point is (h-guide-spec 2026-11-10).
     expect(lane).not.toMatch(/>[^<]*per rating point/);
     expect(lane).not.toContain('but no item at level 60 has it');
     expect(lane).not.toContain('from school');
-    expect(lane).toContain('Not on any item');
+    expect(lane).not.toContain('Not on any item');
     // The band is the build alone: the Rotation and Stat priority sections own their lists.
     expect(main).not.toContain('data-testid="guide-glance-stats"');
     expect(main).not.toContain('data-testid="guide-glance-rotation"');

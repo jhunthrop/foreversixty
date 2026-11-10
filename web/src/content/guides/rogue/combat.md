@@ -64,36 +64,32 @@ In the raid build, Lethality takes Backstab crits from 200% to 220%, and with Pu
 
 ### The pull
 
-Check your poisons and stones before the pull. Stealth before the pull, walk in behind the boss, and open with **Garrote** once the tank has the boss. Garrote is a bleed, so the boss having no Sunders on it yet costs it nothing, and it gives you the combo point for Slice and Dice. Ambush and Backstab from stealth both hit into armor that has no shred on it yet, and neither leaves a bleed behind. Cheap Shot is for trash: bosses are immune to stuns.
+Check your poisons and stones. Stealth before the pull, walk in behind the boss, and open with **Garrote** once the tank has the boss. Garrote is a bleed, so the boss having no Sunders on it yet costs it nothing, and it gives you the combo point for Slice and Dice. Ambush and Backstab from stealth both hit into armor that has no shred on it yet, and neither leaves a bleed behind. Cheap Shot is for trash: bosses are immune to stuns.
 
-Every rogue picks up **Poised** at 18: at full energy out of combat, your next ability costs less. Stand at full energy in stealth before you open; with Composure in the raid build, Poised takes 20 off that opener.
+**Poised**, from 18, takes 10 energy off your opener at full energy out of combat, 20 with Composure in the raid build.
 
 ### The priority
 
-**Shank** on cooldown while you are under 80 energy, right behind any damage racial and your trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Near the cap that refund is wasted, so spend first. Put Slice and Dice back up with whatever combo points you have every time it drops, unless the boss has under 6 seconds left, Eviscerate at four, and Backstab in between. Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early. Let it fall and put your points back into it. Rupture is not worth a global on a boss.
+**Shank** sits right behind any damage racial and your trinket. Put Slice and Dice back up with whatever combo points you have every time it drops, unless the boss has under 6 seconds left, and do not refresh it early. Eviscerate takes the rest. Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder. Rupture is not worth a global on a boss.
 
-### Energy
+### Energy and cooldowns
 
-Backstab costs 60 and you are energy-limited all fight, so you spend the moment you can and wait on energy rather than clip anything. Never sit at full energy: anything over the cap is lost. Press **Adrenaline Rush** low on energy, never at the cap: on the pull, Garrote and one Backstab first, then Adrenaline Rush. Blade Flurry costs 25 and can go at any energy. Shank is energy too: below 80 energy never let it sit ready, and press it before Backstab when both are up. Before an add you know is coming, let energy climb a little so the first cleaved swings have Backstabs behind them.
+Backstab costs 60 and you are energy-limited all fight. Press **Adrenaline Rush** low on energy, never at the cap: on the pull, Garrote and one Backstab first, then Adrenaline Rush with Blade Flurry, any damage racial, a trinket and a potion. A 3 minute kill gets two Blade Flurries and one Adrenaline Rush, so do not hold them. With Shank and Backstab both up under 80 energy, Shank first. Drink **Thistle Tea** near empty.
 
-**Thistle Tea** gives 100 energy on a 5 minute cooldown. Drink it when you are near empty, so none of the 100 is lost to the cap.
+### Adds
 
-### Cooldowns and adds
-
-On a single target, Adrenaline Rush goes a few seconds into the pull with Blade Flurry, any damage racial, a trinket and a potion. On a 3 minute kill you get two Blade Flurries and one Adrenaline Rush, so do not hold them. If a fight brings adds in the first minute, hold Blade Flurry for them and keep Adrenaline Rush with it.
-
-Blade Flurry hits anything next to your target. Never turn it on next to a Sapped, Polymorphed, Shackled or Feared mob: one cleave breaks it and the pull goes wrong. Cancel the buff if you have to.
+If a fight brings adds in the first minute, hold Blade Flurry for them and keep Adrenaline Rush with it, and let energy climb a little first so the cleaved swings have Backstabs behind them. Never turn Blade Flurry on next to a Sapped, Polymorphed, Shackled or Feared mob: one cleave breaks it. Cancel the buff if you have to.
 
 ### Trash, threat and survival
 
-- **Kidney Shot** costs 25 energy, sits on a 20 second cooldown and stuns longer per combo point, up to 6 seconds at five. Use it on casters and on the mob beating on your healer. **Kick** stops a cast for 25 energy. **Gouge** buys a few seconds on a loose add.
+- **Kidney Shot** on casters and on the mob beating on your healer. **Kick** stops a cast for 25 energy. **Gouge** buys a few seconds on a loose add.
 - **Redirect** (trained at level 1) lifts your combo points off a target and hands them to the next enemy you hit within 15 seconds. When a trash mob is about to die with points on it, Redirect and finish the next one.
-- **Feint** on cooldown on any boss where you sit near the tank's threat. **Vanish** drops you from the threat table entirely, but a bleed or DoT ticking on you puts you straight back in combat, so make it your emergency button.
+- **Feint** on cooldown on any boss where you sit near the tank's threat. **Vanish** is your emergency button: a bleed or DoT ticking on you puts you straight back in combat.
 - **Evasion** does nothing against spells. Pop it when a melee trash mob turns on you and walk it back to the tank.
 
 ## Stat priority
 
-Hit counts until your attacks stop missing, and adds nothing past that: a missed Backstab is a wasted global and a lost combo point, Precision only gets you part of the way, and your white swings with two weapons miss far more often than your specials. Agility gives attack power and crit together. Strength and attack power add straight damage to every swing, and in Forever to every poison hit and tick as well. A crit makes one hit bigger, and Lethality makes your Backstab crits bigger still, but Combat has no Seal Fate, so a crit never adds a combo point, and no bleed of yours runs all fight for a crit to tick on. Haste is rare on gear and good when you find it.
+Precision only gets you part of the way to the hit cap, and your white swings with two weapons miss far more often than your specials. Lethality makes your Backstab crits bigger, but Combat has no Seal Fate, so a crit never adds a combo point, and no bleed of yours runs all fight for a crit to tick on. Strength and attack power also grow every poison hit and tick in Forever.
 
 ## Best in slot
 
@@ -101,11 +97,11 @@ Combat wants **daggers at 60**. Hack and Slash gives daggers crit, and Backstab,
 
 ## Enchants and consumables
 
-Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **Deadly Poison** on the main hand, **Instant Poison** on the off hand, and a stone on each hand. Deadly Poison on the main hand stacks fast off your Backstabs and stays up; Instant Poison goes on the off hand. Two Instants lose to that pair, and so does the same pair the other way round. Both poisons scale with your attack power in Forever, so they keep pace with your gear. A shaman's Windfury Totem is an aura on you, not a weapon enchant, so it stacks with poisons and stones.
+Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **Deadly Poison** on the main hand, where it stacks fast off your Backstabs and stays up, **Instant Poison** on the off hand, and a stone on each hand. Two Instants lose to that pair, and so does the same pair the other way round. A shaman's Windfury Totem is an aura on you, not a weapon enchant, so it stacks with poisons and stones.
 
 ## Races
 
-Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damaging abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** makes your energy bar 5% bigger. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc, Troll and Night Elf all land a step behind, level with each other. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
+Gnome on Alliance, for **Eureka!** and **Expansive Mind**'s bigger energy bar. Undead on Horde: **Touch of the Grave** is free damage, and that puts it first for Horde. Orc, Troll and Night Elf all land a step behind, level with each other. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
 
 ## Professions
 
@@ -115,14 +111,23 @@ Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damag
 
 ### Levels 1 to 19
 
-Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Slice and Dice trains at 10, but leave it alone while you level: on a single mob your white swings miss too often for the attack speed to pay back its energy and points, so build up and Eviscerate every time, at five points until 30 and at four from then on, whether you hold a dagger or a sword.
+Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Leave Slice and Dice off while you level: build up and Eviscerate every time, at five points until 30 and at four from then on, whether you hold a dagger or a sword. From 18, never pull half empty.
 
-Poised at 18 takes 10 Energy off your first ability when you start a pull at full Energy out of combat, so never pull half empty.
+Your talents, in order:
 
-Your points from 10 to 12 go into Coup de Grace for 20% more Eviscerate damage. Efficient Strikes at 13 takes 3 Energy off Sinister Strike, and a first point of Lightning Reflexes at 14 opens the next row. Precision from 15 to 17 makes every swing and strike miss less, with a sword or a dagger. Puncturing Wounds from 18 to 20 only pays off when you have a dagger in the main hand and get behind the mob for Backstab, and Lightning Reflexes finishes from 21 to 24 for 5% dodge.
+- **10 to 12:** Coup de Grace, 20% more Eviscerate damage.
+- **13:** Efficient Strikes, 3 Energy off Sinister Strike.
+- **14:** a first point of Lightning Reflexes to open the next row.
+- **15 to 17:** Precision, with a sword or a dagger.
+- **18 to 20:** Puncturing Wounds, which only pays off with a dagger in the main hand and you behind the mob for Backstab.
+- **21 to 24:** the rest of Lightning Reflexes, for 5% dodge.
 
-Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger with the first quest sword, axe or mace that beats it, and keep throwing knives for pulling.
+Replace the Worn Dagger with the first quest sword, axe or mace that beats it, and keep throwing knives for pulling.
 
 ### Levels 20 to 60
 
-Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on, a dagger and Backstab beat the sword. Open with Garrote from stealth, or with Cheap Shot once you train it at 26, then Eviscerate at five every time until 30 and at four from then on, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on whenever you are under 80 energy. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and, from 22, Vanish get you out of the pulls that go wrong. Slice and Dice joins the rotation at 60, when your gear and the raid's buffs make every white swing count.
+Level with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on a dagger and Backstab beat the sword. With a dagger in the main hand, Gouge to step behind. Open with Garrote from stealth, or with Cheap Shot once you train it at 26.
+
+Shank comes at 24: press it on cooldown from then on whenever you are under 80 energy. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls.
+
+Sprint, Evasion and, from 22, Vanish get you out of the pulls that go wrong. Slice and Dice joins the rotation at 60, when your gear and the raid's buffs make every white swing count.

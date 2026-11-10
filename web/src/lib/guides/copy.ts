@@ -76,7 +76,6 @@ export const guidesCopy = {
   notSimChecked: 'Ranked by stats only',
   enchants: 'Enchants',
   consumables: 'Consumables',
-  racialsColumn: 'Racials',
 
   /** The Stat priority headline's cap: "Hit cap: 16%". Caps arrive formatted with their own
    *  "%" (or as `capReached`); the breakdown joins through `capWithDetail`. */

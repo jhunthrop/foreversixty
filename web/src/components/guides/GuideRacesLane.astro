@@ -6,7 +6,6 @@
 // that matter for this spec under it (GuideRacials); a line for a recommended race the prose
 // does not name. A race the build ships no portrait for takes a Row with no lead, so its name
 // never sits behind an empty lead column.
-import LaneBlock from '../ui/LaneBlock.svelte';
 import RaceIcon from '../ui/RaceIcon.svelte';
 import Row from '../ui/Row.svelte';
 import GuideRacials from './GuideRacials.astro';
@@ -27,7 +26,7 @@ const groups = racesByFaction(rows);
 const raceIcons = raceIconsFor(build);
 ---
 
-<LaneBlock label={guidesCopy.racialsColumn} testid="guide-race-table">
+<div class="guide-race-lane" data-testid="guide-race-table" data-wrap-list>
   {groups.map((group) => (
     <div class="guide-race-group" data-faction={group.faction}>
       <h4 class="guide-race-sub">
@@ -59,9 +58,17 @@ const raceIcons = raceIconsFor(build);
   {lines.map((line) => (
     <p class="text-small text-muted m-0">{line}</p>
   ))}
-</LaneBlock>
+</div>
 
 <style>
+  /* The section heading names the lane (Races): the faction names head its two groups, with no
+     lane title above them. */
+  .guide-race-lane {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
   /* The faction label and its rows are the lane block's own items (8 px apart), as the
      Consumables label is not: a faction is a group of the lane, not a line of a list. */
   .guide-race-group {
@@ -70,7 +77,7 @@ const raceIcons = raceIconsFor(build);
   /* The faction's name in the lane heading's cream, not a grey caps eyebrow. */
   .guide-race-sub {
     margin: 0;
-    padding: 12px 0 2px;
+    padding: 4px 0 2px;
     font-size: 15px;
     font-weight: 600;
     line-height: 20px;

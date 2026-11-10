@@ -77,23 +77,21 @@ The build also puts two points in **Improved Berserker Rage**, so every Berserke
 
 ## Rotation and priority
 
-**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: the Bloodrage you pressed before the pull has already put you in combat, so there is no Charge to take, and with Improved Bloodrage it brings more rage than a Charge would. On trash and while leveling, Charge or Intercept in freely.
+**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: the early Bloodrage has already put you in combat, so there is no Charge to take, and with Improved Bloodrage it brings more rage than a Charge would. On trash and while leveling, Charge or Intercept in freely.
 
-**The priority.** Bloodthirst on cooldown. Whirlwind on cooldown right behind it, every time it is ready, even on a single target. Reckless Swings on cooldown right behind Whirlwind: your next four white swings bring 5 more rage each, and the quarter of your base health it costs is the healers' to cover, so never hold it. Berserker Rage right behind Reckless Swings whenever you are under 80 rage: with Improved Berserker Rage it is 10 rage every 30 seconds. Bloodrage on cooldown whenever you are under 80 rage.
+**Rage.** Never hold Reckless Swings; the health it costs is the healers' to cover. Below 60 rage, hold it for Bloodthirst and Whirlwind instead of queueing Heroic Strike. Fury does not Hamstring, with or without a Windfury Totem: Heroic Strike already spends that rage better.
 
-**Heroic Strike.** Queue it whenever you are above 60 rage. It replaces your next main-hand swing and costs no global cooldown, so it never delays Bloodthirst or Whirlwind. Below 60, hold the rage for those two. Fury does not Hamstring, with or without a Windfury Totem: Heroic Strike already spends that rage better.
+**Fears.** Berserker Rage breaks fear and keeps you immune to it for 10 seconds, which is why it waits on Magmadar, Onyxia and Nefarian for Panic, Bellowing Roar and the fear. Death Wish can be pressed while you are feared too: it breaks the fear and keeps you immune for its 30 seconds, so if Berserker Rage is down and you have the 10 rage, it is your second fear break.
 
-**Execute.** From 25%, stop queueing Heroic Strike and let the bar fill. At 20%, Execute goes ahead of everything, including Bloodthirst, and every point of rage you hold goes into the hit.
+**Cooldowns.** Recklessness goes with Death Wish at 20%. Trinkets, Blood Fury, Berserking and Eureka! go on cooldown from the pull; when one comes up close to Death Wish, wait the few seconds and press them together. Elune's Light the same, but never inside Recklessness.
 
-**Cooldowns.** Death Wish lasts 30 seconds on a 3 minute cooldown. Press it at the pull only when a second one still fits before the boss dies; otherwise hold it for the execute phase, or for the last 30 seconds when that phase will be shorter than the buff. Berserker Rage breaks fear and keeps you immune to it for 10 seconds. Press it for rage everywhere except Magmadar, Onyxia and Nefarian, where you hold it for Panic, Bellowing Roar and the fear. Death Wish can be pressed while you are feared too: it breaks the fear and keeps you immune for its 30 seconds, so if Berserker Rage is down and you have the 10 rage, it is your second fear break. Recklessness is once a fight: press it at 20% with Death Wish, or in the last 15 seconds when the execute phase is shorter than that. Trinkets, Blood Fury and Berserking go on cooldown from the pull; when one comes up close to Death Wish, wait the few seconds and press them together. Elune's Light the same, but never inside Recklessness.
+**Two or more targets.** Swap Heroic Strike for Cleave with two or more mobs in front of you.
 
-**Two or more targets.** Whirlwind hits up to four targets with both weapons. Swap Heroic Strike for Cleave with two or more mobs in front of you.
-
-**Moving.** Intercept closes the gap in Berserker Stance. Bloodthirst first when you land, because it is the button you lose the most by delaying.
+**Moving.** Intercept closes the gap in Berserker Stance. Bloodthirst first when you land.
 
 ## Stat priority
 
-Hit matters up to the hit cap, and dual wielding has two caps: your specials reach theirs long before your white swings do, and past the special cap every point still trims your white misses, which are rage. Every point of Strength is two attack power for a warrior. Crit feeds Flurry, Deep Wounds and Impale, and a critical swing brings twice the rage. Agility carries crit and armor with it. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
+Hit matters up to the hit cap, and dual wielding has two caps: your specials reach theirs long before your white swings do, and past the special cap every point still trims your white misses, which are rage. Crit feeds Flurry, Deep Wounds and Impale, and a critical swing brings twice the rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
 
 ## Best in slot
 
@@ -105,9 +103,9 @@ Mighty Rage Potion goes on the pull and again when it comes back. Enchant and sh
 
 ## Races
 
-Night Elf is the Alliance pick and Undead the Horde pick among the Classic races. Elune's Light is 10% crit for 15 seconds every 3 minutes, which Flurry turns into extra swings: press it on the pull and every time it comes back, with Death Wish when they line up, and never inside Recklessness, which already makes every hit crit. On the Alliance, Skyborne's Wind Blessed, 2% haste that never turns off, is level with Night Elf. On the Horde, Skyborne and Undead are level. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds; with two weapons hitting, it comes back almost as soon as it can.
+Night Elf is the Alliance pick and Undead the Horde pick among the Classic races. Flurry turns Elune's Light's crit into extra swings: press it on the pull and every time it comes back, with Death Wish when they line up, and never inside Recklessness, which already makes every hit crit. On the Alliance, Skyborne is level with Night Elf; on the Horde, Skyborne and Undead are level. With two weapons hitting, Touch of the Grave comes back almost as soon as it can.
 
-The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage and 10% less rage on your non-periodic damaging abilities for 8 seconds every 2 minutes, are next, and Dwarf's Artisan's Precision, 1% hit, comes in behind them. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes. Troll's Berserking is 10% attack speed for only 15 seconds in every 3 minutes, so it trails Undead and Orc, and Tauren brings nothing for damage and comes last. If your race has a damage racial, Elune's Light, Blood Fury, Berserking or Eureka!, press it on cooldown and line it up with Death Wish when the timers allow. Blood Fury and Berserking also stack with Recklessness; a crit racial does not.
+The gap between races is small. On the Alliance, Human and Gnome are next, and Dwarf comes in behind them. On the Horde, Orc is next. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails Undead and Orc, and Tauren brings nothing for damage and comes last. Blood Fury and Berserking also stack with Recklessness; a crit racial does not.
 
 ## Professions
 
@@ -121,10 +119,21 @@ Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 1
 
 At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander worth keeping for when you dual wield.
 
-Your first five points, 10 to 14, go into Cruelty for 5% melee crit, then Unbridled Wrath from 15 to 19 gives your white swings a 60% chance at an extra Rage. Furious Precision starts at 20, the level you can first dual wield, for off-hand hit.
+- **10 to 14:** Cruelty, 5% melee crit.
+- **15 to 19:** Unbridled Wrath, a 60% chance at an extra Rage on your white swings.
+- **20:** Furious Precision starts, for off-hand hit, at the level Dual Wield trains.
 
-Dual Wield trains at 20. Until then, swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
+Until then, swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 
-Fury levels fastest once Bloodthirst and Whirlwind are in, but it needs two good one-handers to get there. Until Whirlwind arrives at 36 you fight in Battle Stance, so Overpower is still in your bar: press it whenever it lights. Charge every pull, and Victory Rush whenever it is up: it heals 10%, works for 20 seconds after a kill and comes back every 30 seconds, so when the next mob is close, press it right after the Charge. Bloodrage on cooldown. Berserker Stance and Berserker Rage train at 30, but Berserker Rage only works in that stance, so leave it on the bar until 36: from there Whirlwind makes Berserker Stance your home, Berserker Rage joins the rotation, and pulls of two or three go quick. Your talents from 35 go into Flurry, then Improved Whirlwind at 38 and 39 for the Whirlwind you train at 36, and Bloodthirst at 40. The second point of Improved Berserker Rage waits for 41, once Berserker Rage is in the rotation. In Arms, take Anger Management and Deep Wounds before the second point of Improved Charge, which only pays the row for Impale.
+Fury levels fastest once Bloodthirst and Whirlwind are in, but it needs two good one-handers to get there. Charge every pull, Bloodrage on cooldown, and Victory Rush whenever it is up: it heals 10%, works for 20 seconds after a kill and comes back every 30 seconds, so when the next mob is close, press it right after the Charge.
+
+Until Whirlwind arrives at 36 you fight in Battle Stance, so press Overpower whenever it lights. Berserker Stance and Berserker Rage train at 30, but Berserker Rage only works in that stance, so leave it on the bar until 36: from there Whirlwind makes Berserker Stance your home, Berserker Rage joins the rotation, and pulls of two or three go quick.
+
+- **From 35:** Flurry.
+- **38 and 39:** Improved Whirlwind, for the Whirlwind you train at 36.
+- **40:** Bloodthirst.
+- **41:** the second point of Improved Berserker Rage, once Berserker Rage is in the rotation.
+
+In Arms, take Anger Management and Deep Wounds before the second point of Improved Charge, which only pays the row for Impale.
