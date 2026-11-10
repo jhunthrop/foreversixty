@@ -1,8 +1,8 @@
 <!-- web/src/components/guild/recruit/OfficerNotes.svelte -->
 <!-- Officer notes, the profile's rail for officers only (web layout spec 2026-11-05 §7.2; mock
      web-guild-profile): each note a Row, who wrote it and when, a quiet Delete on the viewer's own (the
-     guild master on any); a one-line FormRow adds one. The panel's meta says once that members
-     never see them. Never mounted for a member. -->
+     guild master on any); a one-line FormRow adds one. The heading says whose notes they are.
+     Never mounted for a member. -->
 <script lang="ts">
   import { NOTE_MAX, noteSub } from '../../../lib/guild/profile-view';
   import type { MemberNote } from '../../../lib/guild/recruit-api';
@@ -43,7 +43,7 @@
   }
 </script>
 
-<Section title={copy.notes} panel meta={copy.notesMeta} testid="guild-profile-notes">
+<Section title={copy.notes} panel testid="guild-profile-notes">
   {#if notes.length === 0}
     <p class="text-muted text-[14px]" data-testid="guild-profile-notes-empty">{copy.noNotes}</p>
   {/if}

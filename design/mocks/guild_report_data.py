@@ -107,7 +107,8 @@ def attendance() -> list[dict]:
     for r in R:
         name, _, spec, _, _, state = r
         here = name not in AWAY
-        outcome = 'present' if here else 'absent'
+        # Signed up and not in the log is a no-show (attendance spec); away without a sign-up, or benched, is out.
+        outcome = 'present' if here else ('no_show' if state in ('in', 'late') else 'absent')
         out.append({**who(name), 'spec': spec, 'signed': signed_state(state), 'role': member(name)['role'], 'outcome': outcome, 'came_as': None,
                     'first_seen_offset_s': 0 if here else None, 'pulls_present': len(PULLS) if here else 0, 'pulls_total': len(PULLS),
                     'excused': False, 'own': name == VIEWER, 'auto_outcome': outcome, 'auto_excused': False, 'override': None})

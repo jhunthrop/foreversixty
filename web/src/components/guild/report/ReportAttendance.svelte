@@ -1,6 +1,6 @@
 <!-- web/src/components/guild/report/ReportAttendance.svelte -->
 <!-- Attendance in the report's rail (web layout spec 2026-11-05 §7.2 "Raid report"): the night's
-     summary sentence for everyone; for officers every raider's row with the night every count
+     summary sentence for everyone; for officers who was not in the log, late or joined by name, then every raider's row with the night every count
      reads, and under a fix who set it and what the log said, muted. The fix is a small select
      (Present, Absent, Bench, Excused; bench counts as attended) and `Back to the log` clears it.
      While a fix saves the select shows it; a refusal keeps the row and says so under it. A member
@@ -14,9 +14,9 @@
   } from '../../../lib/guild/attendance-contract';
   import { attendanceSummary } from '../../../lib/guild/attendance-copy';
   import type { AttendanceFix } from '../../../lib/guild/night-actions.svelte';
-  import { fixOptions, fixRows, FIX_STATUSES } from '../../../lib/guild/report-attendance-view';
+  import { fixOptions, fixRows, FIX_STATUSES, nightNames } from '../../../lib/guild/report-attendance-view';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
-  import { classTone, LINK } from '../../../lib/ui/primitives';
+  import { classTone, LINK, titleColor } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Disclosure from '../../ui/Disclosure.svelte';
   import Row from '../../ui/Row.svelte';
@@ -66,6 +66,17 @@
 <Section title={copy.attendance.head} anchor="attendance" panel testid="raid-attendance">
   {#if log}<div class="mb-2">{@render log()}</div>{/if}
   <p class="text-text text-[14px]" data-testid="raid-attendance-summary">{attendanceSummary(night)}</p>
+  {#if officer}
+    {#each nightNames(rows) as group (group.key)}
+      <p class="text-muted mt-1 text-[13px] leading-[18px]" data-testid="raid-attendance-names">
+        {group.label}:
+        {#each group.rows as row, index (row.character_key)}<span
+            class="font-semibold"
+            style:color={titleColor(classTone(row.class))}>{row.name}</span
+          >{index < group.rows.length - 1 ? ', ' : ''}{/each}
+      </p>
+    {/each}
+  {/if}
   {#if models.length > 0}
     <Disclosure
       summary={copy.attendance.fix}

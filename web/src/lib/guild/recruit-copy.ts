@@ -192,7 +192,6 @@ export const profileCopy = {
   noLoot: 'Nothing awarded this tier.',
   awarded: (day: string) => `Awarded ${day}`,
   notes: 'Officer notes',
-  notesMeta: 'Private: members never see these',
   noNotes: 'No notes yet.',
   addNote: 'Add a note',
   saveNote: 'Save note',

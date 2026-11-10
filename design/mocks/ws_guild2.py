@@ -404,7 +404,16 @@ def raid_report():
               'text-decoration:underline;cursor:pointer">Not this log</button></div>')
     fix = RowsSlim([Row(a['name'], 'Present' if a['outcome'] == 'present' else 'Out', lead=crest_img(a['class'], 24), title_color=C[a['class']],
                         trail=Select('Fix'), link=False, selected=a['own']) for a in raid['attendance']])
-    att = logged + f'<p>{rd.attendance_summary(raid["night"])}</p>' + Disclosure('Fix attendance', fix)
+    # The officer's names under the summary (report-attendance-view nightNames): not in the log, late, joined, by name.
+    signed_in = {'in', 'late'}
+    groups = [('Signed up, not in the log', [x for x in raid['attendance'] if x['outcome'] == 'no_show']),
+              ('Late', [x for x in raid['attendance'] if x['outcome'] == 'late']),
+              ('Joined from the bench or without a sign-up',
+               [x for x in raid['attendance'] if x['outcome'] in ('present', 'late') and x['signed'] not in signed_in])]
+    names = ''.join(f'<p class="t-small" style="margin-top:4px">{label}: '
+                    + ', '.join(f'<b style="color:{C[x["class"]]}">{x["name"]}</b>' for x in rows) + '</p>'
+                    for label, rows in groups if rows)
+    att = logged + f'<p>{rd.attendance_summary(raid["night"])}</p>' + names + Disclosure('Fix attendance', fix)
     lootr = ''.join(ItemRow(a['item_name'], a['quality'], icon(a['icon'], 32, f'q{a["quality"]}'), f'{g["boss"]} &middot; to {a["name"]}')
                     for g in rep['loot'] for a in g['awards'])
     lines = rd.discord_lines(raid)
@@ -583,7 +592,7 @@ def member_profile():
     ready = Section('Raid ready', _ready_facts(ilvl), Link('Open their character'), panel=True)
     main = (ready + Section('Attendance', att, panel=True)
             + Section('Loot this tier', loot, panel=True))
-    rail = Section('Characters', characters, panel=True) + Section('Officer notes', notes + addn, meta='Private: members never see these', panel=True)
+    rail = Section('Characters', characters, panel=True) + Section('Officer notes', notes + addn, panel=True)
     # No "member since" (the roster carries no join date): the rank instead.
     head = PageHeader(name, C[cls], crest_img(cls, 56), meta=[' &middot; '.join([f'{spec} {cls.title()}', 'Level 60', 'Member'])], answer=figs,
                       tabs=TabStrip(TABS, 'Roster'))
