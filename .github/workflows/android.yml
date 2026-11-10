@@ -64,9 +64,12 @@ jobs:
         with:
           config: ${{ secrets.GOOGLE_SERVICES_JSON }}
       # The Android SDK on the runner is the image's; AGP downloads the platform it is missing.
-      - name: Unit, contract-fixture and screenshot tests
+      # One Gradle invocation, so the configuration is computed once and lint's analysis runs
+      # alongside the unit and screenshot tests (the configuration cache lets tasks of one project
+      # run in parallel); --continue reports every failing task, not just the first.
+      - name: Unit, contract-fixture and screenshot tests, lint and the debug APK
         if: inputs.record != true
-        run: ./gradlew test :app:verifyRoborazziDebug
+        run: ./gradlew --continue test :app:verifyRoborazziDebug lint assembleDebug
       # A failing non-screenshot test must not lose the recording: the goldens are uploaded
       # whatever the run's other tests did (as ios.yml's record mode).
       - name: Record the screenshot and text goldens
@@ -80,10 +83,9 @@ jobs:
           name: android-snapshots
           path: apps/android/app/src/test/screenshots/
           retention-days: 7
-      - name: Lint
-        run: ./gradlew lint
-      - name: Debug APK
-        run: ./gradlew assembleDebug
+      - name: Lint and the debug APK
+        if: inputs.record == true
+        run: ./gradlew --continue lint assembleDebug
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
