@@ -82,6 +82,10 @@ object CharacterCard {
     /** False when the owner hid the Forever Score from this viewer: no score card at all, not a "no logs" one. */
     fun showsScoreSection(profile: CharacterProfile): Boolean = profile.scoreHidden != true
 
+    /** A character with ranked fights (a leveling dungeon boss, say) has logs: its unscored card reads
+     *  `No Forever Score yet.`, never `No logs yet.` (the web's `fought`). */
+    fun hasFights(profile: CharacterProfile): Boolean = profile.best.isNotEmpty()
+
     fun isYours(profile: CharacterProfile, viewer: RankingsViewer): Boolean = profile.character.key in viewer.accountKeys
 
     /** `Parse history` shows only on your own character with `entitlements.history`. */

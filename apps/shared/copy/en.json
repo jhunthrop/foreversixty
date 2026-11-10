@@ -1000,6 +1000,7 @@
     "char.gap": "Gear gap",
     "char.builds": "Builds seen",
     "char.noLogs": "No logs yet.",
+    "char.noScoreYet": "No Forever Score yet.",
     "char.noScore": "{name} has no rated fight in a public report, so there is no score to show.",
     "char.noGear": "{name} has not sent gear to Forever Sixty.",
     "char.notFound": "We have no character called {name}.",

@@ -31,8 +31,10 @@ const (
 )
 
 // matchGuildOf is the SQL for the guild the reports row aliased alias is read as by the matcher:
-// the officer's guild_id, else the guild its owner's standing named (matched_guild_id). Only
-// Lane G2's readers use it; everything older reads guild_id alone.
+// the officer's guild_id, else the guild its owner's standing named (matched_guild_id). The
+// matcher and a member's own figures (memberLogIs) read it; what an officer vouches for (the
+// guild's nights, attendance, loot, progression, leaderboards, log verification) reads guild_id
+// alone.
 func matchGuildOf(alias string) string {
 	return "coalesce(" + alias + ".guild_id, " + alias + ".matched_guild_id)"
 }
@@ -42,6 +44,15 @@ func matchGuildOf(alias string) string {
 func matchGuildIs(alias, param string) string {
 	return "(" + alias + ".guild_id = " + param + " or (" + alias + ".guild_id is null and " +
 		alias + ".matched_guild_id = " + param + "))"
+}
+
+// memberLogIs is the condition that the reports row aliased alias is a log of the guild in param
+// as a member's own figures read it (roster best, rating, last log, the member profile): the
+// officer's guild_id, or the guild its owner's standing named (matchGuildIs) when the report is
+// evidence (presence.EvidenceReport), so an attributed private log never reaches a guildmate.
+func memberLogIs(alias, param string) string {
+	return "(" + alias + ".guild_id = " + param + " or (" + alias + ".guild_id is null and " +
+		alias + ".matched_guild_id = " + param + " and " + presence.EvidenceReport(alias) + "))"
 }
 
 // pgUniqueViolation is the SQLSTATE of a unique index refusing a row.

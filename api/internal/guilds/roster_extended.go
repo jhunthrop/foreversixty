@@ -124,7 +124,7 @@ func (s *Store) attendance(ctx context.Context, guildID int64, keys []string, wi
 }
 
 // bestParses is character_key -> that character's single best BOSS kill parse across the
-// guild's own reports that are evidence (presence.EvidenceReport: not private, not flagged) -
+// guild's own reports (memberLogIs: a member's attributed log counts) that are evidence (presence.EvidenceReport: not private, not flagged) -
 // dps for every role but healer, hps for healer, matching
 // rankings.Store's own metricOf convention without importing that package.
 //
@@ -134,7 +134,7 @@ func (s *Store) attendance(ctx context.Context, guildID int64, keys []string, wi
 // encounter, ordered by the role's own metric), so a raider's roster figure is the largest of
 // the Progression rows against their name - one number, not two (round 8, P8-7).
 func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestParse, error) {
-	return s.bestParsesWhere(ctx, "r.guild_id = $1", guildID)
+	return s.bestParsesWhere(ctx, memberLogIs("r", "$1"), guildID)
 }
 
 // bestParsesWhere is bestParses over the reports and rows scope selects ($1 its one argument):
@@ -220,13 +220,13 @@ type ratingComponentScore struct {
 }
 
 // latestRatings is character_key -> its latest sufficient rating_scores row's overall and
-// six named components, for the guild's own reports that are evidence (presence.EvidenceReport).
+// six named components, for the guild's own reports (memberLogIs) that are evidence (presence.EvidenceReport).
 func (s *Store) latestRatings(ctx context.Context, guildID int64) (map[string]RatingView, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select distinct on (rs.player_key) rs.player_key, rs.overall, rs.components
 		from rating_scores rs
 		join reports r on r.id = rs.report_id
-		where r.guild_id = $1 and not coalesce(rs.insufficient, false) and `+presence.EvidenceReport("r")+`
+		where `+memberLogIs("r", "$1")+` and not coalesce(rs.insufficient, false) and `+presence.EvidenceReport("r")+`
 		order by rs.player_key, rs.fought_at desc`, guildID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: latest ratings: %w", err)
@@ -270,11 +270,11 @@ func (s *Store) latestRatings(ctx context.Context, guildID int64) (map[string]Ra
 }
 
 // lastReportAtByOwner is user_id -> the newest created_at of any report that account owns
-// in this guild.
+// in this guild (memberLogIs: an attributed log only when it is evidence).
 func (s *Store) lastReportAtByOwner(ctx context.Context, guildID int64) (map[int64]time.Time, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select owner_id, max(created_at) from reports
-		 where guild_id = $1 and owner_id is not null group by owner_id`, guildID)
+		`select r.owner_id, max(r.created_at) from reports r
+		 where `+memberLogIs("r", "$1")+` and r.owner_id is not null group by r.owner_id`, guildID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: last report at: %w", err)
 	}

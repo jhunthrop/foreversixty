@@ -246,13 +246,15 @@ private fun Head(profile: CharacterProfile, state: CharacterScreenState, specNam
     }
 }
 
-/** The Forever Score (spec F11.4); a character with no rated fight shows `No logs yet.`, never a zero. */
+/** The Forever Score (spec F11.4); a character with no rated fight shows `No logs yet.` (or `No Forever Score yet.`
+ *  when it has ranked fights), never a zero. */
 @Composable
 private fun ScoreCard(profile: CharacterProfile, copy: CharacterCopy, actions: CharacterActions) {
     val score = profile.score
     if (score == null) {
         Column(Modifier.fillMaxWidth().quietCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(stringResource(R.string.char_noLogs), style = ScaledType.lead, color = FsColor.strong)
+            val title = if (CharacterCard.hasFights(profile)) R.string.char_noScoreYet else R.string.char_noLogs
+            Text(stringResource(title), style = ScaledType.lead, color = FsColor.strong)
             Text(stringResource(R.string.char_noScore, profile.character.name), style = ScaledType.meta, color = FsColor.muted)
         }
         return
