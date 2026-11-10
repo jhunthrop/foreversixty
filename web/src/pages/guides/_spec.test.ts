@@ -307,7 +307,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     );
   });
 
-  it('gives the stat lane the hit line as its headline, a weights table and its notes; the plate ranks the same order', () => {
+  it('gives the stat lane the hit line as its headline and a weights table; the plate ranks the same order', () => {
     const main = mainOf(frost);
     const lane = blockOf(main, 'guide-stat-table', 60_000).split('class="ui-rd-prose')[0]!;
     // The line names every source the band's figure counts: the BiS gear and buffs, and each
@@ -334,9 +334,43 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(lane).not.toContain('but no item at level 60 has it');
     expect(lane).not.toContain('from school');
     expect(lane).not.toContain('Not on any item');
-    // The band is the build alone: the Rotation and Stat priority sections own their lists.
-    expect(main).not.toContain('data-testid="guide-glance-stats"');
-    expect(main).not.toContain('data-testid="guide-glance-rotation"');
+
+    // The plate ranks exactly the rows the table gives a number, in the table's order.
+    const glance = blockOf(main, 'guide-glance-stats', 60_000).split(
+      'data-testid="guide-glance-hit-cap"',
+    )[0]!;
+    const ranked = [
+      ...glance.matchAll(
+        /guide-glance-rank[^>]*>(\d+)<\/span>[\s\S]*?class="ui-st-name" role="cell"><span[^>]*>([^<]+)</g,
+      ),
+    ].map((m) => m[2]);
+    const numberedRows = [
+      ...lane.matchAll(
+        /data-testid="guide-stat-table-row-\d+">([\s\S]*?)(?=data-testid="guide-stat-table-row-|$)/g,
+      ),
+    ]
+      .filter((m) => !m[1]!.includes('data-muted'))
+      .map((m) => /class="ui-st-name" role="cell"><span[^>]*>([^<]+)</.exec(m[1]!)?.[1]);
+    expect(ranked.length).toBeGreaterThan(3);
+    expect(ranked).toEqual(numberedRows);
+    // A row a player cannot gear for is in neither.
+    expect(glance).not.toContain('Not on any item');
+    // The plate keeps the hit cap under its ranks.
+    expect(blockOf(main, 'guide-glance-hit-cap', 400)).toContain(`>${line!.cap}</b>`);
+  });
+
+  it('gives the plate a Rotation column: the first four priority lines and a Full priority link', () => {
+    const main = mainOf(frost);
+    const column = blockOf(main, 'guide-glance-rotation', 60_000).split(
+      'data-testid="guide-glance-stats"',
+    )[0]!;
+    expect(column).toContain(`>${guidesCopy.rotationRailTitle}</h2>`);
+    const rows = column.split('data-testid="guide-full-priority"')[0]!;
+    expect(rows.match(/class="guide-spell-icon/g)).toHaveLength(4);
+    expect(column).toMatch(/href="#rotation-and-priority"[^>]*data-testid="guide-full-priority"/);
+    expect(column).toContain(guidesCopy.fullPriorityLink);
+    // Each line reads at its level 60 clause: no rank swap a leveller makes.
+    expect(rows).not.toMatch(/\b(?:at|to|from) \d{2}\b/);
   });
 
   it('puts the level 60 best in slot in the lane, every other band and faction ready as a template', () => {

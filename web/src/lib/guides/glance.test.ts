@@ -1,13 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
   atLevel60,
+  fillerOf,
+  glanceRotation,
+  glanceStatRows,
   isCheapRank,
+  isRaceOnlyRow,
   level60Clause,
   markCheapRanks,
   nextTalentPoint,
   racesByFaction,
 } from './glance';
 import type { RotationItem } from './rotation-lists';
+import type { RailStatRow } from './rail-stats';
 import type { GuideRaceRow } from './race-table';
 
 const item = (name: string, clause: string, extra: Partial<RotationItem> = {}): RotationItem => ({
@@ -15,6 +20,7 @@ const item = (name: string, clause: string, extra: Partial<RotationItem> = {}): 
   clause,
   ...extra,
 });
+const RACES = ['Human', 'Undead', 'Night Elf'];
 
 describe('level60Clause', () => {
   it('drops the rank swaps a leveller makes', () => {
@@ -31,6 +37,53 @@ describe('level60Clause', () => {
   it('keeps a clause that names no level', () => {
     const clause = 'To build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left';
     expect(level60Clause(clause)).toBe(clause);
+  });
+});
+
+describe('glanceRotation', () => {
+  const priority = [
+    item('Dark Sacrifice', 'Undead only, once you are under 70% mana'),
+    item('Evocation', 'When dry'),
+    item('Scorch', 'To build stacks'),
+    item('Pyroblast', 'On Heating Up'),
+    item('Fire Blast', 'Every time it is off cooldown'),
+    item('Fireball', 'The filler once you have Arcane Blast, which the leveling build takes at 57', {
+      spellId: 1,
+    }),
+  ];
+
+  it('never gives a race-only row a top spot, and adds the filler below them', () => {
+    const glance = glanceRotation(priority, RACES);
+    expect(glance.rows.map((row) => row.name)).toEqual(['Evocation', 'Scorch', 'Pyroblast', 'Fire Blast']);
+    expect(glance.filler?.name).toBe('Fireball');
+  });
+
+  it('has no filler line when the filler is already shown', () => {
+    expect(glanceRotation(priority.slice(3), RACES).filler).toBeUndefined();
+  });
+
+  it('reads each row at its level 60 clause', () => {
+    const rows = [
+      item('Raptor Strike', 'On every swing it is ready, with an older rank on your bar at 26 to 29'),
+    ];
+    expect(glanceRotation(rows, RACES).rows[0]!.clause).toBe('On every swing it is ready');
+  });
+
+  it('finds race-only rows and the filler', () => {
+    expect(isRaceOnlyRow(priority[0]!, RACES)).toBe(true);
+    expect(isRaceOnlyRow(priority[1]!, RACES)).toBe(false);
+    expect(fillerOf(priority)?.name).toBe('Fireball');
+  });
+});
+
+describe('glanceStatRows', () => {
+  it('keeps every stat a player can gear for', () => {
+    const rows = [
+      { label: 'Hit', reading: 'value', value: 1 },
+      { label: 'Attack speed', reading: 'not-on-items', value: 8 },
+      { label: 'Spell penetration', reading: 'not-significant' },
+    ] as RailStatRow[];
+    expect(glanceStatRows(rows).map((row) => row.label)).toEqual(['Hit', 'Spell penetration']);
   });
 });
 

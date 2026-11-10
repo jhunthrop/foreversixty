@@ -20,6 +20,8 @@ function iconOfSrc(src: string | null): string | undefined {
 }
 
 const specRows = (page: Page) => page.locator('[data-testid^="guide-spec-row-"]');
+const glanceRotationRows = (page: Page) =>
+  page.getByTestId('guide-glance-rotation').locator('.guide-glance-rows > .ui-row');
 
 async function noSidewaysScroll(page: Page): Promise<void> {
   const { scrollWidth, clientWidth } = await page.evaluate(() => ({
@@ -110,17 +112,22 @@ test.describe('desktop', () => {
     expect(cat).not.toBe(bear);
   });
 
-  // The plate is the build alone (h-audit 2026-11-09): the Rotation and Stat priority sections
-  // below own their lists, so the plate never repeats them.
-  test('/guides/warrior/fury At a glance is the build with Load and Sim, no rotation or stats', async ({
+  test('/guides/warrior/fury At a glance shows four rotation lines with icons, Load/Sim and the ranked stats', async ({
     page,
   }) => {
     await page.goto('/guides/warrior/fury');
-    await expect(page.getByTestId('guide-glance-build')).toBeVisible();
+    await expect(glanceRotationRows(page)).toHaveCount(4);
+    for (const line of await glanceRotationRows(page).all()) {
+      await expect(line.locator('img')).toHaveCount(1);
+    }
+    await expect(page.getByTestId('guide-full-priority')).toHaveAttribute('href', '#rotation-and-priority');
     await expect(page.getByTestId('guide-load-build')).toBeVisible();
     await expect(page.getByTestId('guide-sim-build')).toBeVisible();
-    await expect(page.getByTestId('guide-glance-rotation')).toHaveCount(0);
-    await expect(page.getByTestId('guide-glance-stats')).toHaveCount(0);
+    const stats = page
+      .getByTestId('guide-glance-stats')
+      .getByRole('row')
+      .filter({ hasText: /Attack power|Strength|Agility|Critical strike|Hit|Haste/ });
+    expect(await stats.count()).toBeGreaterThanOrEqual(4);
   });
 
   // The rail's summary Load and the full tree's Load were two buttons that needed distinct
@@ -131,6 +138,22 @@ test.describe('desktop', () => {
     await expect(page.getByTestId('guide-load-build')).toHaveCount(1);
     await expect(page.getByTestId('guide-load-build')).toHaveAccessibleName('Load this build');
     await expect(page.getByTestId('guide-glance-build').getByTestId('guide-load-build')).toHaveCount(1);
+  });
+
+  test('/guides/warrior/protection shows the Build, Rotation and Stat priority columns and runs 3-up', async ({
+    page,
+  }) => {
+    // The plate draws a column only when it has real data (a spec with nothing to show has it
+    // omitted and the plate narrows to 2-up or 1-up). Protection publishes a ranked tank BiS
+    // file and a rotation, so it carries all three.
+    await page.goto('/guides/warrior/protection');
+    await expect(page.getByTestId('guide-glance-build')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-rotation')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
+    await expect(page.getByTestId('guide-glance').locator('.ui-pcols')).toHaveCSS(
+      'grid-template-columns',
+      /^[\d.]+px [\d.]+px [\d.]+px$/,
+    );
   });
 
   test('the leveling tree walks 10 to 60 from the keyboard and the buttons', async ({ page }) => {
@@ -179,9 +202,18 @@ test.describe('desktop', () => {
 test.describe('phone', () => {
   test.use({ viewport: PHONE });
 
-  test('/guides/warrior/fury At a glance fits the phone with no sideways scroll', async ({ page }) => {
+  test('/guides/warrior/fury At a glance stacks to one column, Build first, every line intact', async ({
+    page,
+  }) => {
     await page.goto('/guides/warrior/fury');
-    await expect(page.getByTestId('guide-glance')).toBeVisible();
+    await expect(glanceRotationRows(page)).toHaveCount(4);
+    await expect(page.getByTestId('guide-glance').locator('.ui-pcols')).toHaveCSS(
+      'grid-template-columns',
+      /^[\d.]+px$/,
+    );
+    const build = await page.getByTestId('guide-glance-build').boundingBox();
+    const rotation = await page.getByTestId('guide-glance-rotation').boundingBox();
+    expect(build!.y).toBeLessThan(rotation!.y);
     await noSidewaysScroll(page);
   });
 

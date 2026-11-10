@@ -41,7 +41,8 @@ import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { describedBuildTrees, guideRotation } from '../../../lib/guides/guide-rotation';
 import { rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
-import { atLevel60, markCheapRanks, topRankAt60 } from '../../../lib/guides/glance';
+import { atLevel60, glanceRotation, markCheapRanks, topRankAt60 } from '../../../lib/guides/glance';
+import { buildRaces } from '../../../lib/guides/build-races';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { splitSpecSections, slugify, SPEC_SECTIONS, type SpecSection } from '../../../lib/guides/sections';
 import { diffBuilds, buildDiffLine } from '../../../lib/guides/build-diff';
@@ -177,6 +178,13 @@ const rotation =
         (name) => topRankAt60(build, classSlug, name),
         proseOnly('Rotation and priority'),
       );
+const glance =
+  rotation === undefined
+    ? { rows: [] }
+    : glanceRotation(
+        rotation.priority,
+        buildRaces(build).map((race) => race.name),
+      );
 
 // The Best in slot doll: the lane's level 60 picks on the shared paperdoll, each with its tooltip.
 const itemTooltip = (itemId: number) => readItemTooltipModel(build, classSlug, itemId) ?? undefined;
@@ -265,6 +273,11 @@ const jsonLd = [
           code={describedCode}
           trees={talentTreesOf(describedTrees, tipBundle)}
           isRaidBuild={raidTrees !== undefined}
+          rotation={glance}
+          rotationTitle={
+            role === 'healer' ? guidesCopy.healingPriorityRailTitle : guidesCopy.rotationRailTitle
+          }
+          stats={statLane}
         />
       </div>
       <Toc

@@ -4,10 +4,11 @@
   "loadThisBuild": "Load this build",
   "simThisBuild": "Sim this build",
   "signedInCallout": "[fn]",
-  "readTheGuide": "Read the guide",
   "yourSpecPill": "Your spec",
   "classLandingSpecsHeading": "Specs",
   "buildRailLabel": "Build",
+  "rotationRailTitle": "Rotation",
+  "fullPriorityLink": "Full priority ↓",
   "statPriorityRailLabel": "Stat priority",
   "loadInPlanner": "Load in planner",
   "rotationForRaidBuild": "For the raid build.",
@@ -87,6 +88,8 @@
   "barLabel": "Guide choices",
   "specGroupLabel": "Spec",
   "glance": "Summary",
+  "healingPriorityRailTitle": "Healing priority",
+  "glanceFiller": "[fn]",
   "rankLabel": "[fn]",
   "builds": "Builds",
   "sources": "Sources",
@@ -611,7 +614,7 @@
      "kind": "community"
     },
     {
-     "label": "Talents Forever, talent data from the beta client",
+     "label": "Talents Forever",
      "url": "https://talentsforever.com/data.json",
      "kind": "community"
     }
@@ -718,7 +721,7 @@
      "kind": "community"
     },
     {
-     "label": "Talents Forever, talent data from the beta client",
+     "label": "Talents Forever",
      "url": "https://talentsforever.com/data.json",
      "kind": "community"
     }
@@ -2074,7 +2077,106 @@
       ],
       "points": 33
      }
-    ]
+    ],
+    "rotationTitle": "Rotation",
+    "rotation": [
+     {
+      "spellId": 14325,
+      "name": "Hunter's Mark",
+      "rank": 4,
+      "icon": "ability_hunter_snipershot",
+      "clause": "When Hunter's Mark is not on the target",
+      "tipKey": "spell:14325",
+      "rankText": "Rank 4"
+     },
+     {
+      "spellId": 14266,
+      "name": "Raptor Strike",
+      "rank": 8,
+      "icon": "ability_meleedamage",
+      "clause": "On cooldown",
+      "tipKey": "spell:14266",
+      "rankText": "Rank 8"
+     },
+     {
+      "spellId": 14271,
+      "name": "Mongoose Bite",
+      "rank": 4,
+      "icon": "ability_hunter_swiftstrike",
+      "clause": "When it lights up, after a dodge or a hit on a marked target",
+      "tipKey": "spell:14271",
+      "rankText": "Rank 4"
+     },
+     {
+      "spellId": 1299332,
+      "name": "Lacerate",
+      "rank": 4,
+      "icon": "ability_gouge",
+      "clause": "When Lacerate is not ticking on the target",
+      "tipKey": "spell:1299332",
+      "rankText": "Rank 4"
+     }
+    ],
+    "filler": null,
+    "stats": [
+     {
+      "label": "Hit",
+      "ratingFactor": 10,
+      "reading": "value",
+      "value": 1,
+      "perPoint": 0.6580327304821489,
+      "valueText": "1.00",
+      "perPointText": "0.66"
+     },
+     {
+      "label": "Agility",
+      "reading": "value",
+      "value": 0.9730540367432133,
+      "perPoint": 0.640301404704814,
+      "valueText": "0.97",
+      "perPointText": "0.64"
+     },
+     {
+      "label": "Critical strike",
+      "ratingFactor": 14,
+      "reading": "value",
+      "value": 0.9275438638108013,
+      "perPoint": 0.6103542213453841,
+      "valueText": "0.93",
+      "perPointText": "0.61"
+     },
+     {
+      "label": "Intellect",
+      "reading": "value",
+      "value": 0.5576536495033371,
+      "perPoint": 0.3669543536460162,
+      "valueText": "0.56",
+      "perPointText": "0.37"
+     },
+     {
+      "label": "Strength",
+      "reading": "value",
+      "value": 0.5317429850680337,
+      "perPoint": 0.3499042883790468,
+      "valueText": "0.53",
+      "perPointText": "0.35"
+     },
+     {
+      "label": "Attack power",
+      "reading": "value",
+      "value": 0.4394570124529149,
+      "perPoint": 0.2891770978339193,
+      "valueText": "0.44",
+      "perPointText": "0.29"
+     }
+    ],
+    "hitCap": {
+     "text": "Hit cap: reached (special attacks), 28% (white swings), 16% (spells) · 7.9% hit from BiS gear and buffs, 3% from Surefooted, 5.1% still to find for spells",
+     "title": "Hit is worth its full weight until the cap and nothing past it for your weapon attacks. Your damage spells miss until 16% against a boss three levels up, so past the weapon cap the same hit still lands more of them. The weights above are per rating point: 10 hit rating and 14 crit rating are 1%.",
+     "cap": "Hit cap: reached (special attacks), 28% (white swings), 16% (spells)",
+     "detail": "7.9% hit from BiS gear and buffs, 3% from Surefooted, 5.1% still to find for spells"
+    },
+    "unitLine": "1 hit rating = 0.66 DPS at level 60."
    },
    "overview": {
     "strengths": "<ul>\n<li>Lone Wolf’s 20% damage on every attack, with no pet to keep alive</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> opens <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> off your own hits on a marked target, so it fires even on a boss that never swings at you</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span> takes 60% off your melee and trap costs, so you do not run dry</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> speeds your melee swings</li>\n</ul>\n",
@@ -10707,7 +10809,103 @@
       ],
       "points": 3
      }
-    ]
+    ],
+    "rotationTitle": "Rotation",
+    "rotation": [
+     {
+      "spellId": 12051,
+      "name": "Evocation",
+      "icon": "spell_nature_purge",
+      "clause": "Below 5% mana, with over 30 s left",
+      "tipKey": "spell:12051"
+     },
+     {
+      "spellId": 11129,
+      "name": "Combustion",
+      "icon": "spell_fire_sealoffire",
+      "clause": "At 5 Improved Scorch stacks on the target",
+      "tipKey": "spell:11129"
+     },
+     {
+      "spellId": 10207,
+      "name": "Scorch",
+      "rank": 7,
+      "icon": "spell_fire_soulburn",
+      "clause": "To 5 Improved Scorch stacks or under 5 s left",
+      "tipKey": "spell:10207",
+      "rankText": "Rank 7"
+     },
+     {
+      "spellId": 18809,
+      "name": "Pyroblast",
+      "rank": 8,
+      "icon": "spell_fire_fireball02",
+      "clause": "At 3 Heating Up stacks",
+      "needs": [
+       "Heating Up"
+      ],
+      "tipKey": "spell:18809",
+      "rankText": "Rank 8"
+     }
+    ],
+    "filler": null,
+    "stats": [
+     {
+      "label": "Hit",
+      "ratingFactor": 10,
+      "reading": "value",
+      "value": 1,
+      "perPoint": 0.870166603708938,
+      "valueText": "1.00",
+      "perPointText": "0.87"
+     },
+     {
+      "label": "Spell power",
+      "reading": "value",
+      "value": 0.6669356585183344,
+      "perPoint": 0.5803451368652831,
+      "valueText": "0.67",
+      "perPointText": "0.58"
+     },
+     {
+      "label": "Critical strike",
+      "ratingFactor": 14,
+      "reading": "value",
+      "value": 0.5925140064812909,
+      "perPoint": 0.5155859006698006,
+      "valueText": "0.59",
+      "perPointText": "0.52"
+     },
+     {
+      "label": "Fire power",
+      "reading": "value",
+      "value": 0.5771992266375658,
+      "perPoint": 0.5022594907066363,
+      "valueText": "0.58",
+      "perPointText": "0.50"
+     },
+     {
+      "label": "Intellect",
+      "reading": "value",
+      "value": 0.37819723526573495,
+      "perPoint": 0.32909460374329474,
+      "valueText": "0.38",
+      "perPointText": "0.33"
+     },
+     {
+      "label": "Spell penetration",
+      "reading": "not-significant",
+      "valueText": "Not significant",
+      "perPointText": ""
+     }
+    ],
+    "hitCap": {
+     "text": "Hit cap: 16% · 6% hit from BiS gear and buffs, 6% from Precision, 4% still to find",
+     "title": "Spell hit is worth its full weight until the cap and nothing past it: spells miss 17% of the time against a boss three levels up, and 1% always remains. School talents such as Shadow Focus add hit to their own spells only. The weights above are per rating point: 10 hit rating is 1%.",
+     "cap": "Hit cap: 16%",
+     "detail": "6% hit from BiS gear and buffs, 6% from Precision, 4% still to find"
+    },
+    "unitLine": "1 hit rating = 0.87 DPS at level 60."
    },
    "overview": {
     "strengths": "<ul>\n<li>Five points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105795:5\">Accelerant</span> make <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> a 3 second cast, and with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> has a 20% chance at a free, fast <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25345\">Arcane Missiles</span></li>\n<li>Every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> crit pays twice, once through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and once through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span></li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105782:3\">Fire Power</span> rewards you for every burn you keep on the boss</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> is instant and a 3-stack <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> is short enough to cast between steps, so you keep doing damage through movement</li>\n</ul>\n",
@@ -19280,7 +19478,7 @@
      "kind": "blizzard"
     },
     {
-     "label": "Talents Forever, talent data from the beta client",
+     "label": "Talents Forever",
      "url": "https://talentsforever.com/data.json",
      "kind": "community"
     },
@@ -20680,7 +20878,92 @@
       ],
       "points": 0
      }
-    ]
+    ],
+    "rotationTitle": "Healing priority",
+    "rotation": [
+     {
+      "spellId": 1277328,
+      "name": "Dark Sacrifice",
+      "rank": 5,
+      "icon": "spell_holy_powerinfusion_shadow",
+      "clause": "Below 70% mana and above 70% health, Undead only",
+      "tipKey": "spell:1277328",
+      "rankText": "Rank 5"
+     },
+     {
+      "spellId": 1240827,
+      "name": "Prayer of Mending",
+      "rank": 3,
+      "icon": "spell_holy_prayerofmendingtga",
+      "clause": "On cooldown, on the tank",
+      "tipKey": "spell:1240827",
+      "rankText": "Rank 3"
+     },
+     {
+      "spellId": 10927,
+      "name": "Renew",
+      "rank": 7,
+      "icon": "spell_holy_renew",
+      "clause": "When Renew is not on the tank",
+      "tipKey": "spell:10927",
+      "cheapRank": true,
+      "rankText": "Rank 7 (cheap rank)"
+     },
+     {
+      "spellId": 10917,
+      "name": "Flash Heal",
+      "rank": 7,
+      "icon": "spell_holy_flashheal",
+      "clause": "On the tank below 35% · on a party member below 30%",
+      "tipKey": "spell:10917",
+      "rankText": "Rank 7"
+     }
+    ],
+    "filler": null,
+    "stats": [
+     {
+      "label": "MP5",
+      "reading": "value",
+      "value": 1,
+      "perPoint": 0.5691510905350896,
+      "valueText": "1.00",
+      "perPointText": "0.57"
+     },
+     {
+      "label": "Healing power",
+      "reading": "value",
+      "value": 0.7322512039460818,
+      "perPoint": 0.4167615712715447,
+      "valueText": "0.73",
+      "perPointText": "0.42"
+     },
+     {
+      "label": "Spirit",
+      "reading": "value",
+      "value": 0.5479137946374532,
+      "perPoint": 0.31184573373712554,
+      "valueText": "0.55",
+      "perPointText": "0.31"
+     },
+     {
+      "label": "Intellect",
+      "reading": "value",
+      "value": 0.37592996529490635,
+      "perPoint": 0.2139609497124143,
+      "valueText": "0.38",
+      "perPointText": "0.21"
+     },
+     {
+      "label": "Critical strike",
+      "ratingFactor": 14,
+      "reading": "value",
+      "value": 0.3000604501938129,
+      "perPoint": 0.1707797324542585,
+      "valueText": "0.30",
+      "perPointText": "0.17"
+     }
+    ],
+    "unitLine": "1 point of mp5 = 0.57 HPS at level 60"
    },
    "overview": {
     "strengths": "<ul>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span>: up to five heals for one cast, the cheapest healing you have all fight</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25316\">Prayer of Healing</span> heals any five-player group at once, not only your own</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span> turn Spirit into both healing and mana</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:27871\">Lightwell</span> heals the melee while you heal the tank, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105856:1\">Holy Binding</span> heals you every time you <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10917\">Flash Heal</span> someone else</li>\n</ul>\n",
@@ -27981,7 +28264,7 @@
      "kind": "blizzard"
     },
     {
-     "label": "Talents Forever, talent data from the beta client",
+     "label": "Talents Forever",
      "url": "https://talentsforever.com/data.json",
      "kind": "community"
     },

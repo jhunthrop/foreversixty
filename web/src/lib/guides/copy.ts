@@ -25,6 +25,8 @@ export const guidesCopy = {
   classLandingSpecsHeading: 'Specs',
   buildRailLabel: 'Build',
   /** The rail's Rotation card title; its band label is the head's meta (site alignment §5.4). */
+  rotationRailTitle: 'Rotation',
+  fullPriorityLink: 'Full priority ↓',
   statPriorityRailLabel: 'Stat priority',
   loadInPlanner: 'Load in planner',
   /** Under "Rotation and priority" when the guide has its own raid build: the cards are worked
@@ -180,6 +182,9 @@ export const guidesCopy = {
   /** The At a glance plate's accessible name. */
   glance: 'Summary',
   /** A healer's At a glance rotation column (MUST 2). */
+  healingPriorityRailTitle: 'Healing priority',
+  /** The At a glance filler line when the filler is below the first four (MUST 1). */
+  glanceFiller: (spell: string): string => `Filler: ${spell}`,
   /** A row cast below its top rank on purpose: "Rank 7 (cheap rank)". */
   rankLabel: (rank: number, cheap = false): string => `Rank ${rank}${cheap ? ' (cheap rank)' : ''}`,
   /** The Talents and builds lane's label over the build rows. */

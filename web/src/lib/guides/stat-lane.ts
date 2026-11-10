@@ -5,6 +5,7 @@
 // carry no figure. Both blocks read this, so they can never disagree.
 import { band60Weights } from './class-dps';
 import { guidesCopy } from './copy';
+import { glanceStatRows } from './glance';
 import { guideExpertiseCapLine, guideHitCapLine, type GuideHitCapLine } from './hit-cap-line';
 import { railStatRows, railStatValueText, type RailStatRow } from './rail-stats';
 import { bandTalentHits } from './talent-hit';
@@ -21,6 +22,8 @@ export interface StatLaneRow extends RailStatRow {
 export interface StatLane {
   role: GuideRole;
   rows: StatLaneRow[];
+  /** The rows a player can gear for (glance.ts): the plate's column and the lane's table. */
+  glanceRows: StatLaneRow[];
   hitCap?: GuideHitCapLine;
   expertiseCap?: { text: string };
   weightHead: string;
@@ -77,6 +80,7 @@ export function guideStatLane(
   return {
     role,
     rows,
+    glanceRows: glanceStatRows(rows),
     ...(hitCap === undefined ? {} : { hitCap }),
     ...(expertiseCap === undefined ? {} : { expertiseCap }),
     weightHead: guidesCopy.weightColumn,

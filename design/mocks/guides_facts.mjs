@@ -82,8 +82,8 @@ import { guideStatLane } from ${src("src/lib/guides/stat-lane.ts")};
 import { bandTalentHits } from ${src("src/lib/guides/talent-hit.ts")};
 import { CLASS_LANDING_PANELS, specCardLine, splitClassLanding } from ${src("src/lib/guides/class-landing.ts")};
 import { joinPriorityRuns, litTalentsOf, markRaidBuildRows, raidBuildOnlyTalents, talentNamesOf } from ${src("src/lib/guides/rotation-lists.ts")};
-import { atLevel60, markCheapRanks, nextTalentPoint, racesByFaction, topRankAt60 } from ${src("src/lib/guides/glance.ts")};
-import { buildRacesForClass, newRaceSlugsForClass, raceIconsFor } from ${src("src/lib/guides/build-races.ts")};
+import { atLevel60, glanceRotation, markCheapRanks, nextTalentPoint, racesByFaction, topRankAt60 } from ${src("src/lib/guides/glance.ts")};
+import { buildRaces, buildRacesForClass, newRaceSlugsForClass, raceIconsFor } from ${src("src/lib/guides/build-races.ts")};
 
 const build = activeBuild.build;
 const catalog = readSpecCatalog();
@@ -180,6 +180,7 @@ async function specPage(entry) {
   // Each row's rank as the page prints it ("Rank 7 (cheap rank)").
   const ranked_ = (items) => items.map((x) => (x.rank === undefined ? x : { ...x, rankText: guidesCopy.rankLabel(x.rank, x.cheapRank === true) }));
   if (rotation !== undefined) for (const k of ['opener', 'priority', 'cooldowns']) rotation[k] = ranked_(rotation[k]);
+  const glance = rotation === undefined ? { rows: [] } : glanceRotation(rotation.priority, buildRaces(build).map((r) => r.name));
   const ranked = rankedBisFile(build, fullSpecId);
   // The page's own stat model (lib/guides/stat-lane.ts): the plate's rows and the lane's table, caps and notes.
   const lane = guideStatLane(build, classSlug, fullSpecId, entry.data.recommendedRaces, entry.data.statPriority);
@@ -204,7 +205,10 @@ async function specPage(entry) {
   return {
     id: entry.id, classSlug, specSlug, className, specName, role, title: specName + ' ' + className, description: entry.data.description,
     meta: guidesCopy.headerMeta(role, dayMonth(pageUpdatedAt(entry.data.updated, ranked?.generated_at))), tabs,
-    band: { isRaidBuild: raidTrees !== undefined, code: describedCode, trees: describedTrees },
+    band: { isRaidBuild: raidTrees !== undefined, code: describedCode, trees: describedTrees,
+      rotationTitle: role === 'healer' ? guidesCopy.healingPriorityRailTitle : guidesCopy.rotationRailTitle,
+      rotation: glance.rows, filler: glance.filler ? guidesCopy.glanceFiller(glance.filler.name) : null,
+      stats: lane?.glanceRows ?? [], hitCap, unitLine: statTable.unitLine },
     overview: { strengths: await prose(overview.strengths), weaknesses: await prose(overview.weaknesses), raid: await prose(overview.raid) },
     talents: { blocks, raidDiffLine, keyTalents: strip(keyTalents.map((k) => ({ ...k, talents: k.talents.map((t) => ({ ...t, rankText: t.buildRanks
       ? [guidesCopy.keyTalentBuildRank('leveling', t.buildRanks.leveling, t.maxRank), guidesCopy.keyTalentBuildRank('raid', t.buildRanks.raid, t.maxRank)]

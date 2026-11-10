@@ -1,12 +1,17 @@
 // web/src/lib/guides/glance.ts
-// The guide's lane rules (design/specs/2026-11-08-guides.md, rulings 0A): the leveller's next
-// talent point, the cheap ranks, the level 60 rows and the Racials lane in faction groups. The At a
-// glance plate is the build alone (h-audit 2026-11-09: the Rotation and Stat priority sections own
-// those lists). Pure over the page's own models, so the page and the mock draw one truth.
+// The guide's At a glance plate and the lane rules it shares (design/specs/2026-11-08-guides.md,
+// rulings 0A): which priority lines the plate's Rotation column shows, at their level 60 clause,
+// with the spec's filler always there; which stats a player can gear for; the leveller's next
+// talent point; the cheap ranks; the Racials lane in faction groups. Pure over the page's own
+// models, so the page and the mock draw one truth.
 import { readBuildJson } from './build-files';
 import type { GuideRaceRow } from './race-table';
 import type { RotationItem } from './rotation-lists';
+import type { RailStatRow } from './rail-stats';
 import type { LadderStep } from './leveling-builds';
+
+/** How many priority lines the plate shows. */
+export const GLANCE_ROTATION_ROWS = 4;
 
 /** A clause segment that names a level (`at 26 to 29`, `from 35`, `to 49`) is levelling advice. */
 const LEVEL_WORDS = /\b(?:at|to|from)\s+\d{2}\b/;
@@ -19,6 +24,45 @@ const LEVEL_WORDS = /\b(?:at|to|from)\s+\d{2}\b/;
 export function level60Clause(clause: string): string {
   const [first = '', ...rest] = clause.split(', ');
   return [first, ...rest.filter((segment) => !LEVEL_WORDS.test(segment))].join(', ');
+}
+
+/** A row only one race casts ("Undead only, once you are under 70% mana"): its clause opens
+ *  with that race's name and "only". */
+export function isRaceOnlyRow(item: RotationItem, raceNames: readonly string[]): boolean {
+  return raceNames.some((race) => item.clause.startsWith(`${race} only`));
+}
+
+/** The spec's filler: the first priority line its clause calls the filler. */
+export function fillerOf(priority: readonly RotationItem[]): RotationItem | undefined {
+  return priority.find((item) => /\bthe filler\b/i.test(item.clause));
+}
+
+export interface GlanceRotation {
+  /** The first lines every character casts, at their level 60 clause. */
+  rows: RotationItem[];
+  /** The filler when it is not among `rows` (shown as `Filler: <spell>`). */
+  filler?: RotationItem;
+}
+
+export function glanceRotation(
+  priority: readonly RotationItem[],
+  raceNames: readonly string[],
+  count = GLANCE_ROTATION_ROWS,
+): GlanceRotation {
+  const rows = priority
+    .filter((item) => !isRaceOnlyRow(item, raceNames))
+    .slice(0, count)
+    .map((item) => ({ ...item, clause: level60Clause(item.clause) }));
+  const filler = fillerOf(priority);
+  const shown =
+    filler !== undefined && rows.some((row) => row.spellId === filler.spellId && row.name === filler.name);
+  return filler === undefined || shown ? { rows } : { rows, filler };
+}
+
+/** The stats a player can gear for: a stat no item carries ("Not on any item") is not a choice,
+ *  so neither the plate nor the Stat priority table lists it. */
+export function glanceStatRows<T extends RailStatRow>(rows: readonly T[]): T[] {
+  return rows.filter((row) => row.reading !== 'not-on-items');
 }
 
 /** The next level after `level` whose point the ladder places, or undefined at the end. */

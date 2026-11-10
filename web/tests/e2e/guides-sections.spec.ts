@@ -157,8 +157,13 @@ for (const [label, viewport] of [
       await imagesLoaded(page, '[data-testid^="guide-rotation-"] img');
     });
 
-    test('gives the stat lane the hit headline and the weights table', async ({ page }) => {
+    // The plate's Stat priority column is the ranked summary: it ranks the same stats, in the
+    // same order, as the lane's weights table.
+    test('gives the stat lane the hit headline and the weights table, ranked as the plate', async ({
+      page,
+    }) => {
       await page.goto(PAGE);
+      await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
       await expect(page.getByTestId('guide-stat-table')).toBeVisible();
       // The cap, then each source the band's figure counts on the same line; the unit test in
       // src/pages/guides/_spec.test.ts pins the exact line.
@@ -166,9 +171,10 @@ for (const [label, viewport] of [
         /^Hit cap: \d+(\.\d)?%(?: · (?:\d+(\.\d)?% hit from BiS gear and buffs, )?(?:\d+(\.\d)?% from [^,]+, )*\d+(\.\d)?% still to find)?$/,
       );
       await expect(page.getByTestId('guide-stat-table')).toContainText('DPS per point');
-      expect((await rankedStatNames(page, '[data-testid^="guide-stat-table-row-"]')).length).toBeGreaterThan(
-        0,
-      );
+      const plate = await rankedStatNames(page, '[data-testid="guide-glance-stats"] .ui-st-r');
+      const table = await rankedStatNames(page, '[data-testid^="guide-stat-table-row-"]');
+      expect(plate.length).toBeGreaterThan(0);
+      expect(plate).toEqual(table);
     });
 
     // The level and faction pills retire (G5): the guide shows one band, the level 60 picks for
@@ -288,23 +294,22 @@ for (const [label, viewport] of [
 }
 
 test.describe('the plate', () => {
-  test('phone: the band is the build alone; Rotation and Stat priority are their own sections', async ({
+  test('phone: Rotation and Stat priority stack under the Build column with no disclosure', async ({
     page,
   }) => {
     await page.setViewportSize(PHONE);
     await page.goto(PAGE);
     await expect(page.getByTestId('guide-glance').locator('details, [aria-expanded]')).toHaveCount(0);
-    await expect(page.getByTestId('guide-glance-build')).toBeVisible();
-    await expect(page.getByTestId('guide-glance-rotation')).toHaveCount(0);
-    await expect(page.getByTestId('guide-glance-stats')).toHaveCount(0);
+    await expect(page.getByTestId('guide-glance-rotation')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
   });
 
-  test('desktop: the plate is the build alone, as on a phone', async ({ page }) => {
+  test('desktop: the plate shows all three columns', async ({ page }) => {
     await page.setViewportSize(DESKTOP);
     await page.goto(PAGE);
     await expect(page.getByTestId('guide-glance-build')).toBeVisible();
-    await expect(page.getByTestId('guide-glance-rotation')).toHaveCount(0);
-    await expect(page.getByTestId('guide-glance-stats')).toHaveCount(0);
+    await expect(page.getByTestId('guide-glance-rotation')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
   });
 });
 

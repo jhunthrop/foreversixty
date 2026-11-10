@@ -18,7 +18,7 @@ interface Props {
 }
 const { stats, fallback } = Astro.props;
 // A stat no item carries is not a choice the player makes: the table lists only what gear offers.
-const rows = stats?.rows.filter((row) => row.reading !== 'not-on-items') ?? [];
+const rows = stats?.glanceRows ?? [];
 ---
 
 <div class="guide-stat-lane">

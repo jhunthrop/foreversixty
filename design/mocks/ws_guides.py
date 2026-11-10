@@ -104,13 +104,26 @@ def stat_rows(rows: list[dict], numbered: bool, per_point: bool) -> list[str]:
 
 # ------------------------------------------------------------------------------------------------ the spec guide
 def band(g: dict) -> str:
-    """web GuideGlance: the build alone, its trees with Load and Sim (the sections own Rotation and Stat priority)."""
+    """web GuideGlance: Build (trees, Load and Sim), Rotation (the first four lines, Full priority) and Stat priority
+    (the gearable ranks, the hit cap and unit lines); a column with no data is left out, with none no plate."""
     b = g['band']
-    if not b['trees']:
+    cols = []
+    if b['trees']:
+        cols.append((e(C['raidBuild'] if b['isRaidBuild'] else C['buildRailLabel']), '', TalentTrees(trees_of(b['trees'])),
+                     Button(e(C['loadThisBuild']), primary=True) + Button(e(C['simThisBuild']))))
+    if b['rotation']:
+        filler = f'<p class="t-small gl-fill">{e(b["filler"])}</p>' if b.get('filler') else ''   # MUST 1
+        cols.append((e(b['rotationTitle']), e(F['fns']['levelRangeLabel']['60']), RowsSlim([spell_row(x) for x in b['rotation']]) + filler,
+                     Link(e(C['fullPriorityLink']))))
+    if b['stats']:
+        cap = b.get('hitCap')
+        lines = (f'<p class="t-small"><b class="strong">{e(cap["cap"])}</b>' + (f' &middot; {e(cap["detail"])}' if cap.get('detail') else '') + '</p>') if cap else ''
+        lines += f'<p class="t-small">{e(b["unitLine"])}</p>' if b.get('unitLine') else ''   # MUST 4
+        cols.append((e(C['statPriorityRailLabel']), e(g['stats']['table']['weightHead']),
+                     StatTable([('', False), ('', False), ('', False), ('', True)], stat_rows(b['stats'], True, False), 1, open_=True) + lines, ''))
+    if not cols:
         return ''
-    col = (e(C['raidBuild'] if b['isRaidBuild'] else C['buildRailLabel']), '', TalentTrees(trees_of(b['trees'])),
-           Button(e(C['loadThisBuild']), primary=True) + Button(e(C['simThisBuild'])))
-    return f'<div class="g-glance">{PlateColumns([col], PROPOSED["glance"], frame="framed")}</div>'
+    return f'<div class="g-glance">{PlateColumns(cols, PROPOSED["glance"], frame="framed")}</div>'
 
 def overview(g: dict) -> str:
     o = g['overview']
@@ -429,6 +442,8 @@ def states_page() -> str:
     block('Talents by level: at 10 (previous off), 34, 60 (next off)', ''.join(f'<div class="st-lv">{LevelSlider(v, 10, 60, "Level")}</div>' for v in (10, 34, 60)))
     block('Talents by level: loading (the island hydrates when visible; the slider row and the trees are reserved)',
           f'<div class="st-lv">{Skeleton(360, 44)}</div><div class="st-lv">{Skeleton(390, 190)}</div>')
+    block('At a glance: a spec with no rotation entry and no weights (one column; the plate keeps its full width)',
+          f'<div class="st-plate">{PlateColumns([(e(C["buildRailLabel"]), "", TalentTrees(trees_of(g["band"]["trees"])), Button(e(C["loadThisBuild"]), primary=True) + Button(e(C["simThisBuild"])))], PROPOSED["glance"])}</div>')
     block('Best in slot lane: an empty slot and an item whose icon is missing', '<div class="items">'
           + ItemRow('<span class="muted">Nothing better yet</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', 'Trinket')
           + ItemRow('Mark of Fordring', 3, '<span class="ic q3" style="width:36px;height:36px"></span>', 'Quest: In Dreams', 'Neck') + '</div>')

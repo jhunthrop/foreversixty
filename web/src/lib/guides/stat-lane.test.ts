@@ -132,6 +132,8 @@ describe('guideStatLane', () => {
         `${row.label}: ${row.value!.toFixed(1)} DPS per 1%, but no item at level 60 has it.`,
       );
     }
+    expect(lane.glanceRows.every((row) => row.reading !== 'not-on-items')).toBe(true);
+    expect(lane.glanceRows).toHaveLength(lane.rows.length - offItems.length);
   });
 
   it('is undefined for a spec with no ranked BiS file', () => {
