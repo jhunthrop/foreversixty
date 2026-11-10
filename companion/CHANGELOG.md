@@ -1,5 +1,9 @@
 # Companion changelog
 
+## Unreleased
+
+- The companion reads and uploads only the live game, `_forever_`. The Classic beta ended at launch, and its `_classic_beta_` folder is now treated like any other game: never found, never offered, and refused by name if you pick it, so beta characters no longer reach the site beside your live ones. A stored beta folder is dropped at start.
+
 ## 0.2.44
 
 - The window takes the site's new look: the painted blue band with the seal and the four pages, the brown ground, the framed headline, the teal buttons, and the site's own type and icons.

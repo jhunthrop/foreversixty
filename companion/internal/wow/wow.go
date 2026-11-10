@@ -21,41 +21,34 @@ import (
 // timestamped siblings behind.
 const LogGlob = "WoWCombatLog*.txt"
 
-// ForeverFlavors are the flavour folders Forever Sixty runs on, and the
-// only ones the companion lists, watches or writes to, most preferred
-// first: the live game's _forever_ (since 4 November 2026), then the
-// Classic beta's _classic_beta_ for the testers still on it. Retail,
-// Anniversary and Era are other games, and a private server's folder is
-// not ours to touch.
-var ForeverFlavors = []string{LiveFlavor, "_classic_beta_"}
-
-// LiveFlavor is the live game's flavour folder, the one every message
-// tells the player to pick.
+// LiveFlavor is the live game's flavour folder (live since 4 November
+// 2026), the one every message tells the player to pick, and the single
+// source of truth for which folder is Forever's.
 const LiveFlavor = "_forever_"
 
-// flavorRank is a Forever flavour's place in ForeverFlavors, so a scan
-// lists the live game before the beta.
-func flavorRank(folder string) int {
-	for i, f := range ForeverFlavors {
-		if strings.EqualFold(f, folder) {
-			return i
-		}
-	}
-	return len(ForeverFlavors)
-}
+// ForeverFlavors are the flavour folders Forever Sixty runs on, and the
+// only ones the companion lists, watches, uploads from or writes to: the
+// live game's alone. The Classic beta's _classic_beta_ ended at launch and
+// its characters are not live ones, so it is another game now, like
+// Retail, Anniversary and Era; a private server's folder is not ours.
+var ForeverFlavors = []string{LiveFlavor}
 
 // FlavorInfo is the file the game writes in every flavour folder, naming
 // the client's product: "Product Flavor!STRING:0" and then the product,
-// "wowf" for the live game and "wow_classic_beta" for the beta.
+// "wowf" for the live game and "wow_classic_beta" for the ended beta.
 const FlavorInfo = ".flavor.info"
 
 // foreverProducts maps each Forever product to the flavour it is, so an
-// install in a renamed or custom folder is still the live game or the beta.
-var foreverProducts = map[string]string{"wowf": LiveFlavor, "wow_classic_beta": "_classic_beta_"}
+// install in a renamed or custom folder is still the live game.
+var foreverProducts = map[string]string{"wowf": LiveFlavor}
 
 // otherProducts are the other games a player may have beside Forever, so
-// a refusal names the game the file says, not the folder it sits in.
-var otherProducts = map[string]string{"wow": "_retail_", "wow_anniversary": "_anniversary_", "wow_classic_era": "_classic_era_"}
+// a refusal names the game the file says, not the folder it sits in. The
+// ended Classic beta is one of them.
+var otherProducts = map[string]string{
+	"wow": "_retail_", "wow_anniversary": "_anniversary_", "wow_classic_era": "_classic_era_",
+	"wow_classic_beta": "_classic_beta_",
+}
 
 // productAt is the product a flavour folder's .flavor.info names, lower
 // case, or "" when the file is missing or says nothing.
@@ -190,9 +183,9 @@ func installAt(dir string) Install {
 	return in
 }
 
-// Scan returns the Forever installs at or one level below root, the live
-// game's first and then by path, so two runs agree and a tie between
-// installs goes to _forever_. Other games' folders are not returned.
+// Scan returns the Forever installs at or one level below root, by path,
+// so two runs agree. Other games' folders, the ended beta's among them,
+// are not returned.
 func Scan(root string) []Install {
 	var out []Install
 	for _, in := range scanAll(root) {
@@ -200,7 +193,6 @@ func Scan(root string) []Install {
 			out = append(out, in)
 		}
 	}
-	sort.SliceStable(out, func(i, j int) bool { return flavorRank(out[i].Flavor) < flavorRank(out[j].Flavor) })
 	return out
 }
 
