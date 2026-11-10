@@ -173,12 +173,8 @@ describe('upgradeFor (§3.4)', () => {
 describe('copy', () => {
   it('writes the note once: one unknown, several, or a failed file', () => {
     expect(paperdollNote(0, false)).toBeNull();
-    expect(paperdollNote(1, false)).toBe(
-      '1 item is not in our item data yet. It is new in the beta, and it gets a name and icon when the client lists it. Item level shows once every item is known.',
-    );
-    expect(paperdollNote(3, false)).toBe(
-      '3 items are not in our item data yet. They are new in the beta, and they get names and icons when the client lists them. Item level shows once every item is known.',
-    );
+    expect(paperdollNote(1, false)).toBe('1 item is not in our item data yet, so no item level.');
+    expect(paperdollNote(3, false)).toBe('3 items are not in our item data yet, so no item level.');
     expect(paperdollNote(2, true)).toBe('Item icons and colours did not load. Reload the page to try again.');
   });
 });

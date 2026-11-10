@@ -48,7 +48,7 @@ describe('the sim shell', () => {
 
   it('says what the page needs and offers the planner when there is no JavaScript', async () => {
     const html = await container.renderToString(Sim);
-    expect(html).toContain('runs the engine in your browser');
+    expect(html).toContain('runs in your browser and needs JavaScript');
     expect(html).toContain('href="/planner"');
   });
 

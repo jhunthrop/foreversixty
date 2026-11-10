@@ -23,7 +23,7 @@ sources:
 
 ## Overview
 
-Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal through the group, and Water Shield and Mana Tide to keep the mana coming.
+Riptide on the tank, Chain Heal through the group, and Water Shield and Mana Tide to keep the mana coming.
 
 ### Strengths
 
@@ -93,7 +93,7 @@ Healing power makes every heal bigger, from any source, including items that add
 
 ## Best in slot
 
-Your raid set leans on crafts. Dormant Heart of the Mountain is an Enchanting craft that binds on pickup, so you make that one yourself; every other craft in it binds when equipped, so you can buy it. Carry a healing staff, or a one-hander with a shield or held off-hand item, and at 60 the staff usually wins. The full list, with alternatives for every slot, is on the [Restoration BiS page](/bis/shaman/restoration).
+Your raid set leans on crafts. Dormant Heart of the Mountain is an Enchanting craft that binds on pickup, so you make that one yourself; every other craft in it binds when equipped, so you can buy it. Carry a healing staff, or a one-hander with a shield or held off-hand item, and at 60 the staff usually wins.
 
 ## Enchants and consumables
 
@@ -103,11 +103,11 @@ Brilliant Mana Oil on your weapon: mp5 and healing in one. Use your Major Mana P
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Stoneform cuts physical damage by 10% and clears poisons, diseases and bleeds, which keeps you alive through a cleave or a stray add.
 
-On the Horde, Orc is the healing pick: Blood Fury increases attack power and spell power by 10% for 15 seconds every 2 minutes, and its spell power covers your heals. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, heals a little less. Tauren's Endurance, 5% more health, is the pick when you are the one taking the damage. Windshaper Skyborne brings Wind Blessed's 2% haste, always on.
+On the Horde, take Orc: Blood Fury increases attack power and spell power by 10% for 15 seconds every 2 minutes, and its spell power covers your heals. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, heals a little less. Tauren's Endurance, 5% more health, is the pick when you are the one taking the damage. Windshaper Skyborne brings Wind Blessed's 2% haste, always on.
 
 ## Professions
 
-Enchanting is the one profession your raid set asks for: Dormant Heart of the Mountain binds on pickup, so nobody can make it for you. Pair it with Herbalism or Alchemy for Major Mana Potions and flasks, which is most of what a healer spends gold on. Every other craft in your set binds when equipped and can be bought.
+Your raid set asks for one profession, Enchanting: Dormant Heart of the Mountain binds on pickup, so nobody can make it for you. Pair it with Herbalism or Alchemy for Major Mana Potions and flasks, which is most of what a healer spends gold on. Every other craft in your set binds when equipped and can be bought.
 
 ## Leveling
 

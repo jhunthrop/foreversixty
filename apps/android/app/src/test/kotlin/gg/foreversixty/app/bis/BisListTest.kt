@@ -79,8 +79,8 @@ class BisListTest {
     @Test
     fun `the next line is a signed gap with a true minus, same below 0_05, or nothing else ranked`() {
         val rows = raidList().rows
-        assertEquals("Next: Champion's Plate Helm, −15.0 DPS", rows[0].pick?.next)
-        assertEquals("Next: Warlord's Plate Shoulders, same DPS", rows[2].pick?.next)
+        assertEquals("Runner-up: Champion's Plate Helm, −15.0 DPS", rows[0].pick?.next)
+        assertEquals("Runner-up: Warlord's Plate Shoulders, same DPS", rows[2].pick?.next)
         assertEquals("Nothing else ranked", BisListBuilder(res, emptyList(), emptySet()).nextLine(null, BisUnit.Dps))
         assertNull(BisListBuilder.signedDelta(-0.049))
         assertEquals("+0.1", BisListBuilder.signedDelta(0.05))

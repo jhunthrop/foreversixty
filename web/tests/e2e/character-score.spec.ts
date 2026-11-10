@@ -95,9 +95,7 @@ test('a character with ranked fights and no score yet says so and draws no Figur
   await page.goto(CHARACTER_PATH);
 
   await expect(page.getByTestId('character')).toBeVisible();
-  await expect(page.getByTestId('character-no-logs')).toHaveText(
-    'No Forever Score yet. It is worked out from the rated fights below.',
-  );
+  await expect(page.getByTestId('character-no-logs')).toHaveText('No Forever Score yet.');
   await expect(page.getByTestId('character-score-figure')).toHaveCount(0);
   await expect(page.getByTestId('character-score')).not.toContainText(/\b0\b/);
 });

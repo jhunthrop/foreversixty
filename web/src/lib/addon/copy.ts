@@ -239,7 +239,7 @@ export const addonCopy = {
           src: '/addon/talent-marks-trees.jpg',
           width: 504,
           height: 298,
-          alt: 'A hunter’s talent window, Beast Mastery, Marksmanship and Survival, with small order marks on the planned talents, one ringed in gold in Marksmanship, and the strip along the bottom: “Next: Lethal Attacks (1 of 5) · 12 of 51 points · 3 off plan”, the last part in red.',
+          alt: 'A hunter’s talent window, Beast Mastery, Marksmanship and Survival, with small order marks on the planned talents, one ringed in gold in Marksmanship, and the strip along the bottom naming Lethal Attacks (1 of 5) as the next talent, 12 of 51 points spent and 3 off plan, the last part in red.',
         },
       ],
     },

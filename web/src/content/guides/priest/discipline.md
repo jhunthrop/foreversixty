@@ -57,7 +57,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 - **Holy Specialization** (5 points), **Divine Fury** (5 points) and **Improved Healing** (3 points): more crits for Divine Aegis, faster Heal and Greater Heal, and 15% off Lesser Heal, Heal, Greater Heal and Penance.
 - **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and most raid hits no longer push back your casts.
 
-**Power Infusion** is not in the build. It works on yourself, 15 seconds of 20% more healing every 3 minutes, but on a mage or warlock's burst it is worth far more to the raid. When you have a caster worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to them on their burst. [Open the planner](/planner?class=priest) to change the build.
+**Power Infusion** is not in the build. It works on yourself, 15 seconds of 20% more healing every 3 minutes, but on a mage or warlock's burst it is worth far more to the raid. When you have a caster worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to them on their burst.
 
 ## Rotation and priority
 
@@ -101,7 +101,7 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 **Gnome** heals as well as a Human at 60, so take whichever you would rather play there. Eureka! makes your direct heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Penance's heals too (never Renew), so put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
 
-**Undead** is the Horde pick for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
+On the Horde, take **Undead** for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
 
 **Night Elf** has Elune's Light for 10% crit (more Divine Aegis), **Troll** Berserking, and **Dwarf** Stoneform and Desperate Prayer. All three heal clearly less than a Human or a Gnome.
 

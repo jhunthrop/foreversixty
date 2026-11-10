@@ -232,16 +232,16 @@ describe("the idle chip's words", function()
 		return base
 	end
 
-	it("reads Next: the talent and its rank when a build is followed and the next talent is known", function()
+	it("reads the talent and its rank when a build is followed and the next talent is known", function()
 		local chosen = Chip.model(idleInputs()).chosen
 		assert.are.equal("idle", chosen.kind)
-		assert.are.equal("Next: Endurance Training (1 of 5)", chosen.text)
+		assert.are.equal("Endurance Training (1 of 5)", chosen.text)
 		assert.are.equal("talents", chosen.action)
 	end)
 
 	it("reads the talent alone when the plan wants one rank of it", function()
 		local model = Chip.model(idleInputs({ pointRank = { have = 0, want = 1 } }))
-		assert.are.equal("Next: Endurance Training", model.chosen.text)
+		assert.are.equal("Endurance Training", model.chosen.text)
 	end)
 
 	it("reads Pick a build: /fs, and a click opens the build window, when nothing is followed", function()

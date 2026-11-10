@@ -60,7 +60,7 @@ You go deep Shadow for Shadowform and spend the rest in Discipline for mana and 
 - **Shadow Focus** (5 points): 5% Shadow hit, the cheapest hit you will ever get.
 - **Spirit Tap** (5 points leveling, none in the raid build): after every kill your Spirit doubles for 15 seconds, with half your regeneration running while you cast. It is your drink between pulls; on a raid boss nothing dies, so the raid build leaves it.
 - **Blackout** (2 points leveling, none in the raid build): a 4% chance for your Shadow spells to stun for 3 seconds, which stops a mob that reaches you. Bosses cannot be stunned, so the raid build drops it.
-- **Vampiric Embrace** (1 point): the group heal you keep on the boss in a raid. See the rotation for what it costs you.
+- **Vampiric Embrace** (1 point): the group heal you keep on the boss in a raid.
 - **Early Demise** (2 points): 30% more Shadow Word: Death crit chance below 20%, the raid build's execute.
 - **Devouring Contagion** (2 points, raid build): Devouring Plague costs half as much, and a target that dies with it jumps it to two enemies within 10 yards.
 - **Silence** (1 point, raid build): a 5 second silence that interrupts a cast, for the add your raid needs stopped.
@@ -70,7 +70,7 @@ You go deep Shadow for Shadowform and spend the rest in Discipline for mana and 
 - **Meditation** (3 points) and **Mental Strength** (5 points): half your regeneration keeps running while you cast, and 10% more Intellect for a deeper bar.
 - **Silent Resolve** (1 point): 10% less threat. Take more of it if you keep pulling aggro.
 
-The leveling build opens with two points in Wand Specialization for the wand that finishes your mobs, and its last points go to Discipline. The raid build trades Wand Specialization, Blackout and Spirit Tap for Early Demise, Devouring Contagion, Silence, both points of Shadow Reach, one of Dark Inspiration and the last point of Improved Mind Blast. [Open the planner](/planner?class=priest) to change the build.
+The leveling build opens with two points in Wand Specialization for the wand that finishes your mobs, and its last points go to Discipline. The raid build trades Wand Specialization, Blackout and Spirit Tap for Early Demise, Devouring Contagion, Silence, both points of Shadow Reach, one of Dark Inspiration and the last point of Improved Mind Blast.
 
 ## Rotation and priority
 

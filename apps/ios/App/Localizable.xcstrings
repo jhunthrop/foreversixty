@@ -498,7 +498,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Next: %1$@, %2$@ %3$@"
+            "value": "Runner-up: %1$@, %2$@ %3$@"
           }
         }
       }
@@ -510,7 +510,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Next: %1$@, same %2$@"
+            "value": "Runner-up: %1$@, same %2$@"
           }
         }
       }
@@ -810,7 +810,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tank lists rank by score, the tank sim's blend of mitigation, risk and threat. Higher is better · Updated %1$@"
+            "value": "Ranked by tank score: mitigation, risk and threat · Updated %1$@"
           }
         }
       }
@@ -2167,7 +2167,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Revoke signs a device out at once. To sign this one out, use Sign out on You."
+            "value": "To sign this phone out, use Sign out on You."
           }
         }
       }
@@ -2503,7 +2503,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "What you wear, and the pick for %1$@. Tap an item for its tooltip."
+            "value": "What you wear, and the pick for %1$@."
           }
         }
       }
@@ -2882,7 +2882,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "At a glance"
+            "value": "Summary"
           }
         }
       }
@@ -3720,7 +3720,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The addon sends your gear when you log out. Get the addon opens foreversixty.gg/setup in your browser."
+            "value": "The addon sends your gear when you log out."
           }
         }
       }
@@ -4409,7 +4409,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Not available yet: no talent export for this character. Open the addon once to send it."
+            "value": "No talent export for this character yet. Open the addon once to send it."
           }
         }
       }
@@ -9940,7 +9940,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dashed: your rank differs from the shared build. +n is points over it, −n points under it. Tap a talent for both ranks and its text."
+            "value": "Dashed: your rank differs from the shared build. +n is points over it, −n points under it."
           }
         }
       }
@@ -11711,7 +11711,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You were %1$@ as %2$@. Nothing else to do."
+            "value": "You were %1$@ as %2$@."
           }
         }
       }
@@ -13589,7 +13589,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ is not in a guild on Forever Sixty. When your guild's officers add it, its raids show here and you sign up in one tap."
+            "value": "%1$@ is not in a guild on Forever Sixty. When your guild's officers add it, its raids show here."
           }
         }
       }
@@ -14925,7 +14925,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Meters, casts and deaths for every fight are on foreversixty.gg. Tap Open on foreversixty.gg."
+            "value": "Meters, casts and deaths for every fight are on foreversixty.gg."
           }
         }
       }
@@ -15404,7 +15404,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Newest first. Logs come from the companion on your PC; the app reads them, it does not upload."
+            "value": "Logs upload from the companion on your PC, not from the app."
           }
         }
       }
@@ -15764,7 +15764,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Attendance is the last 8 raid nights with a log. Tap a raider for their page."
+            "value": "Attendance is the last 8 raid nights with a log."
           }
         }
       }
@@ -18043,7 +18043,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ is graded %2$@ this week"
+            "value": "%1$@: %2$@ on the tier list"
           }
         }
       }
@@ -18055,7 +18055,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ is #%2$lld of %3$lld this week"
+            "value": "%1$@: #%2$lld of %3$lld on the tier list"
           }
         }
       }
@@ -18357,7 +18357,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pick your class opens best in slot, talents and sims for any spec, no account needed."
+            "value": "Best in slot, talents and sims for any spec, no account needed."
           }
         }
       }
@@ -19298,7 +19298,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dashed: your rank differs from the guide. +n is points over it, −n points under it. Tap a talent for both ranks and its text."
+            "value": "Dashed: your rank differs from the guide. +n is points over it, −n points under it."
           }
         }
       }
@@ -19401,7 +19401,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "We do not know this character's spec yet, so there is no guide build to compare. Open the addon once to send it."
+            "value": "No spec for this character yet, so no guide build to compare. Open the addon once to send it."
           }
         }
       }
@@ -20401,7 +20401,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your next upgrades, measured for your character."
+            "value": "Your next upgrades and what each one gains."
           }
         }
       }

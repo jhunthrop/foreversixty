@@ -42,7 +42,7 @@ sources:
 
 ## Overview
 
-Balance is the Moonkin: two DoTs on the boss, Wrath to bank Eclipse charges, and fast Starfires to spend them, all from a form that gives your group crit.
+Two DoTs on the boss, Wrath to bank Eclipse charges and fast Starfires to spend them, all from a form that gives your group crit.
 
 ### Strengths
 
@@ -88,7 +88,7 @@ From Restoration, Nature's Focus saves your Starfire from pushback 70% of the ti
 2. With no Eclipse charge banked, cast **Wrath**. A Wrath and two quick Starfires do more damage per second than plain Starfires.
 3. **Starfire** everything else, spending the charges.
 
-**Clearcasting.** Wrath never uses up a Clearcasting proc in Forever, so it always lands on a Starfire or a DoT. You do not need to do anything about it.
+**Clearcasting.** Wrath never uses up a Clearcasting proc in Forever, so it always lands on a Starfire or a DoT.
 
 **End of the fight.** Once there is less time left than a Starfire takes, cast Wrath. Once there is less than a Wrath, cast Moonfire for its instant hit.
 
@@ -112,7 +112,7 @@ Potions work in Moonkin Form in Forever, so you never shift out to drink. On a l
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren is the Horde pick: Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, so its racials bring survival and a stun, not damage. Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour: Attuned doubles Read Leyline's regeneration wherever you are, but entering a raid removes it for good. Press it when your mana starts to run low. Innervate replaces it, so press it between Innervates.
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. On the Horde, Tauren's Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds: survival and a stun, no damage. Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour: Attuned doubles Read Leyline's regeneration wherever you are, but entering a raid removes it for good. Press it when your mana starts to run low. Innervate replaces it, so press it between Innervates.
 
 ## Professions
 

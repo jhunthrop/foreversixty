@@ -1,0 +1,33 @@
+# Where player-facing copy lives, for the slop scan (scan.mjs, the web vitest and the api Go test).
+# "+ <path>" scans a file or a directory tree; "- <regex>" drops repo-relative paths that match.
+# Only files with a copy extension are read: .ts .js .mjs .svelte .astro .md .json .go .lua.
+# A file whose first five lines say "generated" or "DO NOT EDIT" is skipped as generated data.
+
++ web/src/lib
++ web/src/components
++ web/src/pages
++ web/src/layouts
++ web/src/content
++ apps/shared/copy
++ api/internal/refusal
++ api/internal/discordbot
++ api/internal/notify
++ api/internal/coach
++ api/internal/guilds
++ api/internal/billing
++ api/internal/billingmail
++ api/internal/digest
++ addon/ForeverSixty
++ companion/ui/copy.js
++ companion/internal/app/copy.go
+
+# Tests, fixtures and test helpers are not copy.
+- (^|/)[^/]*[._-](test|spec)\.[a-z]+$
+- _test\.go$
+- (^|/)(testdata|fixtures|test-support|__tests__|e2e)/
+# Generated game data: item and spell names are Blizzard's, not ours.
+- ^addon/ForeverSixty/Data\.lua$
+# Engineering notes beside the api code are not player copy.
+- ^api/.*\.md$
+# The coach's LLM prompt and schema are instructions to a model, not player copy.
+- ^api/internal/coach/(prompt_rules\.txt|schema\.json)$

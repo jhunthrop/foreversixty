@@ -27,7 +27,6 @@ interface Props {
   panel?: boolean;
 }
 const { panel = false } = Astro.props;
-const HINT_ID = 'home-character-search-hint';
 const ERROR_ID = 'home-character-search-error';
 /** The name field's clear button: the icon set's close, as a mask. */
 const clearMask = iconMaskUrl(ICON_CLOSE);
@@ -63,7 +62,7 @@ const clearMask = iconMaskUrl(ICON_CLOSE);
         autocomplete="off"
         spellcheck="false"
         placeholder={copy.namePlaceholder}
-        aria-describedby={panel ? ERROR_ID : `${HINT_ID} ${ERROR_ID}`}
+        aria-describedby={ERROR_ID}
         aria-keyshortcuts="/"
         role="combobox"
         aria-autocomplete="list"
@@ -116,21 +115,11 @@ const clearMask = iconMaskUrl(ICON_CLOSE);
     </button>
   </span>
 </form>
-<Fragment>
-  {!panel && (
-    <p id={HINT_ID} class="text-small text-muted cs-hint">
-      {copy.hint}
-    </p>
-  )}
-</Fragment>
 <p id="home-character-search-error" class="text-wipe min-h-[1lh] text-[13px]" role="status"></p>
 
 <style define:vars={{ clearMask }}>
   .cs-aside {
     margin: 0 0 16px;
-  }
-  .cs-hint {
-    margin: 10px 0 0;
   }
   input[type='search']::-webkit-search-cancel-button {
     -webkit-appearance: none;

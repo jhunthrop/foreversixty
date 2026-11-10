@@ -97,8 +97,8 @@ local L = {
 	-- Shown only while the plan has more to take, so something could still go off it.
 	talentStripNoneOffPlan = "none off plan",
 	-- L3.2 fix round 4: the strip's leading segment while the open window
-	-- hides the chip, the chip's own label: "Next: Improved Heroic Strike (1 of 3)".
-	talentStripNextTalent = "Next: %s",
+	-- hides the chip, the chip's own label, the talent and its rank: "Improved Heroic Strike (1 of 3)".
+	talentStripNextTalent = "%s",
 	-- A run of the plan's points at a cell, en dash: a badge names the next
 	-- run ("8–11", then "36"), the node tooltip lists every one.
 	talentBadgeRange = "%d–%d",
@@ -390,7 +390,7 @@ local L = {
 	overviewGearSlots = "%d of %d slots filled",
 	overviewGearNeedsBuild = "Load a build to compare what you wear with what you planned, "
 		.. "and to score what is in your bags.",
-	overviewGearUpgrades = "%d upgrades waiting in your bags, by our stat weights.",
+	overviewGearUpgrades = "%d upgrades waiting in your bags.",
 	overviewGearNoUpgrades = "Nothing in your bags beats what you are wearing.",
 	overviewGearMatched = "%d of %d planned pieces equipped",
 	overviewGearOpen = "See gear",
@@ -498,7 +498,7 @@ local L = {
 	-- carries no item level or spec per guild member yet -- the gap half
 	-- is this addon's own Gear.upgrades, real the instant a build loads.
 	guildStandingNoRank = "Your item-level rank among guildmates is not available yet.",
-	guildStandingGap = "Your biggest gear gap: %s, +%.0f by our weights.",
+	guildStandingGap = "Your biggest gear gap: %s, +%.0f.",
 	guildStandingGapNone = "Nothing in your gear is behind your plan right now.",
 	guildStandingGapNoBuild = "Load a build on the Talents page to see your gear gap.",
 
@@ -784,7 +784,7 @@ local L = {
 	-- Level 1 to 9 on a default build (spec section 5.1): the class icon and
 	-- this line; a click opens a card with one button per spec.
 	chipPath = "Pick a path",
-	-- A.1: the idle chip says something at a first login. "Next: <talent>" reuses talentStripNextTalent.
+	-- A.1: the idle chip says something at a first login. "<talent> (1 of 5)" reuses talentStripNextTalent.
 	chipIdlePick = "Pick a build: /fs",
 	chipIdleInbox = "Build waiting: /fs",
 	chipHintBuildWindow = "Click: Open the build window",
@@ -860,30 +860,30 @@ local L = {
 		["druid-feral"] = "Cat form, bleeds and Berserk",
 		["druid-feral-bear"] = "Bear form tank, Leader of the Pack",
 		["druid-restoration"] = "Heals over time, Wild Growth for groups",
-		["hunter-beast-mastery"] = "Your pet fights, Bestial Wrath makes it deadly",
+		["hunter-beast-mastery"] = "Your pet fights, Bestial Wrath",
 		["hunter-marksmanship"] = "Bows and guns, Barrage and Sniper Shot",
 		["hunter-survival"] = "Melee hunter, traps and Lacerating Strikes",
-		["mage-arcane"] = "Arcane Missiles, Arcane Power, watch your mana",
+		["mage-arcane"] = "Arcane Missiles and Arcane Power",
 		["mage-fire"] = "Fireball crits, Blast Wave and Combustion",
 		["mage-frost"] = "Frostbolt, Fingers of Frost, slows and freezes",
 		["paladin-holy"] = "Plate healer, Holy Shock and Holy Light",
 		["paladin-protection"] = "Shield tank, Holy Shield and Consecration",
 		["paladin-retribution"] = "Two-handed weapons, seals and Twist of Light",
 		["priest-discipline"] = "Shields first, Penance and Power Infusion",
-		["priest-holy"] = "Group healer, Prayer of Mending, big heals",
+		["priest-holy"] = "Group healer, Prayer of Mending",
 		["priest-shadow"] = "Shadowform, Shadow Word: Pain and drains",
 		["rogue-assassination"] = "Daggers, poisons, Mutilate and Seal Fate",
-		["rogue-combat"] = "Swords or maces, Blade Flurry, steady damage",
+		["rogue-combat"] = "Swords or maces, Blade Flurry",
 		["rogue-subtlety"] = "Daggers, stealth openers, Backstab",
 		["shaman-elemental"] = "Lightning Bolt, Lightning Overload and Lightning Mastery",
 		["shaman-enhancement"] = "Two-handed melee, Stormstrike and Maelstrom Weapon",
 		["shaman-restoration"] = "Chain Heal, totems and Water Shield",
-		["warlock-affliction"] = "Curses, Corruption and Siphon Life, slow kills",
-		["warlock-demonology"] = "A stronger demon, Soul Link keeps you alive",
+		["warlock-affliction"] = "Curses, Corruption and Siphon Life",
+		["warlock-demonology"] = "A stronger demon and Soul Link",
 		["warlock-destruction"] = "Shadow Bolt, Incinerate and Fire and Brimstone",
 		["warrior-arms"] = "Two-handers, Sweeping Strikes and Mortal Strike",
 		["warrior-fury"] = "Dual wield, Flurry and Bloodthirst",
-		["warrior-protection"] = "Shield and plate, Shield Slam, holds attention",
+		["warrior-protection"] = "Shield tank, Shield Slam",
 	},
 }
 
@@ -965,9 +965,9 @@ L.dialogUsingPaste = "Using your paste. Your %s build is kept; /fs build %s swit
 L.buildSwitched = "Now following %s (%s slot)."
 L.buildSlotEmpty = "Nothing is saved in the %s slot."
 L.buildUsage = "/fs build raid, leveling or pvp switches between your saved builds."
--- One chat line after a build is used: "Now following Arms raid. Next: Deflection (1 of 2)."
+-- One chat line after a build is used: "Now following Arms raid. Take Deflection (1 of 2)."
 L.dialogNowFollowing = "Now following %s."
-L.dialogNowFollowingNext = "Now following %s. Next: %s."
+L.dialogNowFollowingNext = "Now following %s. Take %s."
 -- A.2: with no point to spend now, the level the next one arrives at, and the plan's talent for it.
 L.dialogNowFollowingLater = "Now following %s. Next point at level %d."
 L.dialogNowFollowingLaterTalent = "Now following %s. Next point at level %d: %s."
@@ -1034,7 +1034,7 @@ L.dialogSimDoneFrom = "Sim done from %s · your sim weights are in use"
 L.dialogSimDoneQueued = "Sim done from %s · a new sim is queued"
 L.dialogCopyThe = "the %s copy"
 L.dialogCopyYesterday = "yesterday's %s copy"
-L.dialogNextStep = "Your next step: %s"
+L.dialogNextStep = "%s"
 L.dialogSimState = {
 	needs_premium = "Sim needs a premium account",
 	duplicate = "Sim already running this hour",
@@ -1084,7 +1084,6 @@ L.guildTabHeader = L.addonName .. " · Guild"
 -- The button's hover, muted under "Forever Sixty" in gold (as the panel tab's).
 L.guildTabHint = {
 	"Your guild's Forever Scores, gear and live builds.",
-	"Click to open or close.",
 }
 L.guildTabOnlineOnly = "Online only"
 -- The window's title: the guild's name first.
@@ -1187,7 +1186,6 @@ L.groupPanelHeader = L.addonName .. " · Group"
 -- The button's hover, muted under "Forever Sixty" in gold (as the guild tab's).
 L.groupPanelHint = {
 	"Your group's specs, gear, scores and buffs.",
-	"Click to open or close.",
 }
 -- Out of a group, the flyout's one line and nothing else (ruling 1). Fix round 4 (E): a second
 -- muted line under it says what a group shows and that /fs ready tries the check alone: one line
@@ -1424,7 +1422,7 @@ L.diagExportNone = "Export: not built yet"
 L.diagNotSeenHeadline = "Addon running; the site has not seen this character yet."
 L.diagSiteSeen = "Site: has your save from %s (%d characters)"
 L.diagSiteSeenOne = "Site: has your save from %s (1 character)"
-L.diagSiteNever = "Site: not seen yet \226\128\148 is the companion running and signed in?"
+L.diagSiteNever = "Site: not seen yet. Is the companion running and signed in?"
 L.diagSiteOld = "Site: last seen %s, %d days ago"
 L.diagSiteOldOne = "Site: last seen %s, 1 day ago"
 -- X.5: the inbox is read at login only, so an empty one says when (the client clock at login, in the

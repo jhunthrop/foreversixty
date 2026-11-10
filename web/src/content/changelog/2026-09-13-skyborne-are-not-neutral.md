@@ -19,4 +19,4 @@ sources:
 
 The announcement-day comparison to Pandaren was ours, not Blizzard's. The panel transcript is explicit: "the Skyborne are not a neutral race. At character creation, players will choose whether their Skyborne joins the Horde or the Alliance."
 
-The distinction matters because the two halves are not the same race with a different tabard. Horde-aligned Skyborne work with the Earthen Ring and gain Shaman; Alliance-aligned Skyborne work with the Kirin Tor and gain Mage. A demo transcription also records different second active racials for each: Skysight on the Horde side, Read Ley Line on the Alliance side.
+Horde-aligned Skyborne work with the Earthen Ring and gain Shaman; Alliance-aligned Skyborne work with the Kirin Tor and gain Mage. A demo transcription also records different second active racials for each: Skysight on the Horde side, Read Ley Line on the Alliance side.

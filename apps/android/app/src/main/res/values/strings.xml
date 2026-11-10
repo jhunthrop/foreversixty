@@ -27,7 +27,7 @@
     <string name="signin_body">Sign in and your characters arrive with their gear, talents and guild.</string>
     <string name="signin_button">Sign in with Battle.net</string>
     <string name="signin_pickClass">Pick your class</string>
-    <string name="signin_pickClassNote">Pick your class opens best in slot, talents and sims for any spec, no account needed.</string>
+    <string name="signin_pickClassNote">Best in slot, talents and sims for any spec, no account needed.</string>
     <string name="signin_importTitle">Bringing in your characters</string>
     <string name="signin_importBody">Reading Battle.net. This takes a few seconds.</string>
     <string name="signin_error_bnet">Battle.net could not confirm that sign-in. Try again.</string>
@@ -55,7 +55,7 @@
     </plurals>
     <string name="home_answer_synced_addon">Synced %1$s from the addon</string>
     <string name="home_answer_noGear">Add the addon to see which slots you can upgrade.</string>
-    <string name="home_answer_noGearNote">The addon sends your gear when you log out. Get the addon opens foreversixty.gg/setup in your browser.</string>
+    <string name="home_answer_noGearNote">The addon sends your gear when you log out.</string>
     <string name="home_answer_listButton">%1$s %2$s list</string>
     <string name="home_answer_under20">Best in slot starts at 20.</string>
     <string name="home_answer_pickSpec">Set a spec in the planner to see this.</string>
@@ -79,13 +79,13 @@
     <string name="home_next_differs">Differs</string>
     <string name="home_next_talentsMatch">Your build is the %1$s %2$s guide build</string>
     <string name="home_next_talentsDiffer" tools:ignore="PluralsCandidate">%1$d of your %2$d points differ from the %3$s guide build</string>
-    <string name="home_next_talentsNone">Not available yet: no talent export for this character. Open the addon once to send it.</string>
+    <string name="home_next_talentsNone">No talent export for this character yet. Open the addon once to send it.</string>
     <string name="home_next_sims">Sims</string>
     <string name="home_next_simFinished">Your %1$s sim finished: %2$s DPS</string>
     <string name="home_next_noSim">No sim yet.</string>
     <string name="home_next_raid">Next raid</string>
     <string name="gear_title">Your gear</string>
-    <string name="gear_intro">What you wear, and the pick for %1$s. Tap an item for its tooltip.</string>
+    <string name="gear_intro">What you wear, and the pick for %1$s.</string>
     <string name="gear_bis">BiS</string>
     <string name="gear_emptySlot">Empty</string>
     <string name="tooltip_bind_pickup">Binds when picked up</string>
@@ -211,8 +211,8 @@
     <string name="bis_title">Best in slot</string>
     <string name="bis_yours">Yours</string>
     <string name="bis_setDps">%1$s %2$s at best in slot for your level range · Updated %3$s</string>
-    <string name="bis_next">Next: %1$s, %2$s %3$s</string>
-    <string name="bis_nextSame">Next: %1$s, same %2$s</string>
+    <string name="bis_next">Runner-up: %1$s, %2$s %3$s</string>
+    <string name="bis_nextSame">Runner-up: %1$s, same %2$s</string>
     <string name="bis_youWear">You wear it</string>
     <string name="bis_offHandTwoHand">Off hand · none: %1$s is two-handed.</string>
     <string name="bis_noPick">%1$s · no pick for this range.</string>
@@ -225,7 +225,7 @@
     <string name="bis_picker_back">Back to %1$s\'s list</string>
     <string name="bis_range_p1">60 · Phase 1 raid</string>
     <string name="bis_range_p1Opens">60 · Phase 1 raid · opens %1$s</string>
-    <string name="bis_tankLine">Tank lists rank by score, the tank sim\'s blend of mitigation, risk and threat. Higher is better · Updated %1$s</string>
+    <string name="bis_tankLine">Ranked by tank score: mitigation, risk and threat · Updated %1$s</string>
     <string name="bis_notCached">This list is not on your phone yet. Connect once to save it.</string>
     <string name="bis_failed">This list did not load.</string>
     <string name="bis_loading">Loading this list…</string>
@@ -260,7 +260,7 @@
     </plurals>
     <string name="raids_pendingLine">Approve them on foreversixty.gg.</string>
     <string name="raids_noGuild_title">No guild yet</string>
-    <string name="raids_noGuild_body">%1$s is not in a guild on Forever Sixty. When your guild\'s officers add it, its raids show here and you sign up in one tap.</string>
+    <string name="raids_noGuild_body">%1$s is not in a guild on Forever Sixty. When your guild\'s officers add it, its raids show here.</string>
     <string name="raids_noGuild_note">Your guild is on Forever Sixty once one officer claims it at foreversixty.gg/guilds.</string>
     <string name="raids_waiting">You are waiting for approval. Planned raids show once an officer approves you.</string>
     <string name="raids_empty">No raid planned yet.</string>
@@ -373,7 +373,7 @@
     <string name="raid_moved">%1$s moved to Bench.</string>
     <string name="raid_locked">Sign-ups are locked. An officer can still change yours.</string>
     <string name="raid_cancelled">This raid was cancelled.</string>
-    <string name="raid_cancelledYou">You were %1$s as %2$s. Nothing else to do.</string>
+    <string name="raid_cancelledYou">You were %1$s as %2$s.</string>
     <string name="raid_ended">This raid has ended.</string>
     <string name="raid_offline">You are offline. Sign-ups need a connection.</string>
     <string name="raid_race_locked">This raid was locked while you were signing up.</string>
@@ -511,7 +511,7 @@
     </plurals>
     <string name="talents_guide">Guide build</string>
     <string name="talents_yours">Your build</string>
-    <string name="talents_legend">Dashed: your rank differs from the guide. +n is points over it, −n points under it. Tap a talent for both ranks and its text.</string>
+    <string name="talents_legend">Dashed: your rank differs from the guide. +n is points over it, −n points under it.</string>
     <string name="talents_rank">Rank %1$d/%2$d</string>
     <string name="talents_nextRank">Next rank</string>
     <string name="talents_footer">Change talents in the game; the addon sends them on your next logout.</string>
@@ -530,7 +530,7 @@
     <string name="talents_guideRank" tools:ignore="PluralsCandidate">Guide build: rank %1$d/%2$d</string>
     <string name="talents_planLink">Plan a build on foreversixty.gg/planner</string>
     <string name="talents_staleExport">Your talent export is from an older game build. Open the addon once to send it again.</string>
-    <string name="talents_pickSpec">We do not know this character\'s spec yet, so there is no guide build to compare. Open the addon once to send it.</string>
+    <string name="talents_pickSpec">No spec for this character yet, so no guide build to compare. Open the addon once to send it.</string>
     <string name="talents_loading">Loading talents…</string>
     <string name="talents_failed">Your talents did not load.</string>
     <string name="talents_guideFailed">The guide build did not load.</string>
@@ -796,7 +796,7 @@
     <string name="devices_revoke_title">Revoke %1$s?</string>
     <string name="devices_revoke_body">It is signed out of Forever Sixty at once.</string>
     <string name="devices_revoke_failed">Could not revoke that device. Try again.</string>
-    <string name="devices_footer">Revoke signs a device out at once. To sign this one out, use Sign out on You.</string>
+    <string name="devices_footer">To sign this phone out, use Sign out on You.</string>
     <string name="account_deviceWord">phone</string>
     <string name="account_selector_detail" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
     <string name="account_switcher_detail" tools:ignore="PluralsCandidate">%1$s · Level %2$d</string>
@@ -1058,7 +1058,7 @@
     <string name="reports_visibility_guild">Guild</string>
     <string name="reports_visibility_private">Private</string>
     <string name="reports_refresh">Refresh</string>
-    <string name="reports_footer">Newest first. Logs come from the companion on your PC; the app reads them, it does not upload.</string>
+    <string name="reports_footer">Logs upload from the companion on your PC, not from the app.</string>
     <string name="reports_empty">No reports yet. Upload a log, or let the companion send your next raid.</string>
     <string name="reports_getCompanion">Get the companion</string>
     <string name="reports_failed">Your reports did not load.</string>
@@ -1103,7 +1103,7 @@
         <item quantity="other">%1$d pulls</item>
     </plurals>
     <string name="report_inProgress">In progress</string>
-    <string name="report_footer">Meters, casts and deaths for every fight are on foreversixty.gg. Tap Open on foreversixty.gg.</string>
+    <string name="report_footer">Meters, casts and deaths for every fight are on foreversixty.gg.</string>
     <string name="report_failed">This report did not load.</string>
     <string name="report_parsesFailed">Your parses did not load.</string>
     <string name="report_live_title" tools:ignore="PluralsCandidate">Live. Updated %1$d s ago.</string>
@@ -1192,7 +1192,7 @@
     <string name="widget_characterSetting">Character</string>
     <string name="widget_currentCharacter">Current character</string>
     <string name="widget_gallery_raid">Your guild\'s next raid and your answer. Answer In, Late or Out from here.</string>
-    <string name="widget_gallery_upgrade">Your next upgrades, measured for your character.</string>
+    <string name="widget_gallery_upgrade">Your next upgrades and what each one gains.</string>
     <string name="widget_a11y_raid">Next raid, %1$s, %2$s, %3$s.</string>
     <string name="widget_a11y_you">You are %1$s as %2$s.</string>
     <string name="widget_a11y_signedUp" tools:ignore="PluralsCandidate">%1$d of %2$d signed up.</string>
@@ -1284,7 +1284,7 @@
     <string name="guides_section_races">Races</string>
     <string name="guides_a11y_section" tools:ignore="PluralsCandidate">%1$s, section %2$d of %3$d</string>
     <string name="guides_a11y_stat" tools:ignore="PluralsCandidate">Priority %1$d, %2$s</string>
-    <string name="guides_glance">At a glance</string>
+    <string name="guides_glance">Summary</string>
     <string name="guides_role">Role</string>
     <string name="guides_statPriority">Stat priority</string>
     <string name="guides_strengths">Strengths</string>
@@ -1358,7 +1358,7 @@
     <string name="roster_noNights">No logged nights yet.</string>
     <string name="roster_empty_title">No raiders match.</string>
     <string name="roster_empty_body">Change the role or clear the search.</string>
-    <string name="roster_footer">Attendance is the last 8 raid nights with a log. Tap a raider for their page.</string>
+    <string name="roster_footer">Attendance is the last 8 raid nights with a log.</string>
     <string name="roster_error">The roster did not load.</string>
     <string name="roster_search">Search the roster</string>
     <string name="roster_a11y_attended" tools:ignore="PluralsCandidate">attended %1$d of %2$d recent raid nights</string>
@@ -1525,7 +1525,7 @@
         <item quantity="other">The shared build takes %1$d points you have not.</item>
     </plurals>
     <string name="plan_cmp_beyond" tools:ignore="PluralsCandidate">+%1$d beyond the shared build</string>
-    <string name="plan_cmp_legend">Dashed: your rank differs from the shared build. +n is points over it, −n points under it. Tap a talent for both ranks and its text.</string>
+    <string name="plan_cmp_legend">Dashed: your rank differs from the shared build. +n is points over it, −n points under it.</string>
     <string name="plan_cmp_rank" tools:ignore="PluralsCandidate">Shared build: rank %1$d/%2$d</string>
     <string name="plan_cmp_a11yTab" tools:ignore="PluralsCandidate">%1$d points. Talents that differ from the shared build: %2$d.</string>
     <string name="plan_cmp_a11yCell" tools:ignore="PluralsCandidate">%1$s, rank %2$d of %3$d, shared build rank %4$d</string>
@@ -1904,8 +1904,8 @@
     <string name="shared_standing_role_dps">DPS</string>
     <string name="shared_standing_role_healer">healers</string>
     <string name="shared_standing_role_tank">tanks</string>
-    <string name="shared_standing_graded">%1$s is graded %2$s this week</string>
-    <string name="shared_standing_place" tools:ignore="PluralsCandidate">%1$s is #%2$d of %3$d this week</string>
+    <string name="shared_standing_graded">%1$s: %2$s on the tier list</string>
+    <string name="shared_standing_place" tools:ignore="PluralsCandidate">%1$s: #%2$d of %3$d on the tier list</string>
     <string name="shared_standing_raid">%1$s in %2$s</string>
     <string name="shared_standing_raidSigned" tools:ignore="PluralsCandidate">%1$s in %2$s, %3$d in</string>
     <string name="shared_bisLanding_answerLabel">Your character</string>

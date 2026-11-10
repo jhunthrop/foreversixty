@@ -1,0 +1,6 @@
+# Hits the slop guard accepts: <pattern-id> TAB <path regex> TAB <literal text on the line>.
+# Each entry says why. Keep it short: a real game name, or legal text that needs the phrase.
+# Eureka! is the Gnome racial's own name in the Forever client.
+exclamation	.	Eureka!
+# Guide parsers that accept an em dash in hand-written notes; the pattern is code, not copy.
+em-dash	^web/src/lib/guides/(key-talents|rotation-lists)\.ts$	—

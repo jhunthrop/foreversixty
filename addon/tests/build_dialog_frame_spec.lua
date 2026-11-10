@@ -881,7 +881,7 @@ describe("BuildDialog, round 6 frame checks", function()
 		BuildDialog.open("copy")
 		local copy = BuildDialog.copyTab
 		assert.are.equal(L.dialogSimDone, copy.sim:GetText())
-		assert.are.equal("Your next step: Take Deflection (1 of 2)", copy.simNext:GetText())
+		assert.are.equal("Take Deflection (1 of 2)", copy.simNext:GetText())
 	end)
 
 	it("measures a row's name in its own font string, to the width the icon leaves (fix 6, 10; X.5)", function()

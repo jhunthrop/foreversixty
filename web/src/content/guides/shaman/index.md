@@ -25,7 +25,7 @@ sources:
 - **Totems reach further.** Strength of Earth, Grace of Air and Windfury Totem now cover every raid member within 30 yards, not just your party, so one shaman can cover a whole melee group. Mana Spring, Healing Stream and Mana Tide still only reach your party, and two Mana Springs do not stack. Call of the Elements at 20 drops a set of totems you choose in one cast, and Totemic Call at 22 relocates your active totems to your location, every 30 seconds. Windfury Totem's bonus no longer lingers after the totem is replaced, so there is nothing to twist.
 - **Lightning Bolt and Chain Lightning** are both 2.5 second casts before any talents.
 - **Fire Nova** is an instant spell that bursts from your active Fire totem, not a totem of its own.
-- **Lightning Mastery** is the 31-point Elemental talent: for 15 seconds every 3 minutes Lightning Bolt casts half a second faster and Chain Lightning has no cooldown. Call of Thunder, 5% crit on both lightning spells, is the talent that opens it.
+- **Lightning Mastery**, the 31-point Elemental talent: for 15 seconds every 3 minutes Lightning Bolt casts half a second faster and Chain Lightning has no cooldown. Call of Thunder, 5% crit on both lightning spells, is the talent that opens it.
 - **Maelstrom Weapon and Water Shield** are new talents; Enhancement ends in Rage of the Farseer and Restoration in Riptide, a heal over time that makes your Chain Heal stronger on its target. Stormstrike hits for 150% weapon damage.
 - **Hit and crit on gear count everywhere.** A hit or crit piece raises your melee and your spells alike, which Enhancement feels most. Agility still gives melee crit and Intellect spell crit.
 

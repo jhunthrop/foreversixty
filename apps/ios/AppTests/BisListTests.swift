@@ -55,8 +55,8 @@ struct BisListTests {
     @Test("the next line: a signed gap with a true minus, same below 0.05, nothing else ranked")
     func nextLine() throws {
         let rows = try raidList().rows
-        #expect(rows[0].pick?.next == "Next: Champion's Plate Helm, \u{2212}15.0 DPS")
-        #expect(rows[2].pick?.next == "Next: Warlord's Plate Shoulders, same DPS")
+        #expect(rows[0].pick?.next == "Runner-up: Champion's Plate Helm, \u{2212}15.0 DPS")
+        #expect(rows[2].pick?.next == "Runner-up: Warlord's Plate Shoulders, same DPS")
         let none = BisListBuilder.nextLine(nil, unit: .dps)
         #expect(none == "Nothing else ranked")
         #expect(BisListBuilder.signedDelta(-0.049) == nil)

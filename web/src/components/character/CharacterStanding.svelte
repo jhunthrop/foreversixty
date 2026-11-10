@@ -1,6 +1,6 @@
 <!-- web/src/components/character/CharacterStanding.svelte -->
-<!-- The owner's standing line under the Next line (character spec 2026-11-06 section 6, C16, C19,
-     C21): the place in the guild's sim ladder, the spec's grade this week as a link to the tier
+<!-- The owner's standing line under the waiting fact (character spec 2026-11-06 section 6, C16, C19,
+     C21): the place in the guild's sim ladder, the spec's tier as a link to the tier
      list, and the next guild raid as a short clock to its raid page. Each piece shows only when it
      has something true to say; with none, the line is left out. Home keeps the ladder, the tile and
      the countdown panels; this only links to them. -->

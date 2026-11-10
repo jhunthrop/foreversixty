@@ -14,7 +14,7 @@ import { ctaCopy } from '../addon/cta-copy';
  *  rewritten for a player: how your fights rank, never "percentile"). The fifth part's key
  *  stays `discipline` (the API field); its label is "Preparation" (fix round 2 item 11). */
 const MOVES: Readonly<Record<string, string>> = {
-  gear: 'How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60). Every upgrade for your spec moves it up.',
+  gear: 'How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60).',
   experience:
     '25 for each different dungeon cleared and 40 for each different raid boss killed, across your main and the alts the site has linked to it.',
   parses:

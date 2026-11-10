@@ -62,7 +62,7 @@ How to read a line:
 | marks-l20-run-badges.jpg | 4.2 non-consecutive runs, "8 to 11" then "36" | captured: hunter-15-lethal-attacks-badge-8-11.jpg, hunter-15-lethal-attacks-tooltip-runs.jpg (level 24 hunter) |
 | marks-l20-node-tooltip.jpg | 4.2 node tooltip lists the runs | captured: marks4-node-tooltip.jpg, hunter-15-lethal-attacks-tooltip-runs.jpg |
 | marks-l20-off-plan.jpg | 4.2 point off plan, count warning-coloured | captured: marks4-offplan-strip.jpg, marks4-offplan-node-tooltip.jpg, marks3-staged-off-build-strip.jpg |
-| marks-l20-zero-unspent-next.jpg | 4.2 strip with 0 unspent | captured: hunter-11-talents-saved-build.jpg (level 24 hunter, "Next: Lethal Attacks") |
+| marks-l20-zero-unspent-next.jpg | 4.2 strip with 0 unspent | captured: hunter-11-talents-saved-build.jpg (level 24 hunter, "Lethal Attacks") |
 | marks-l20-no-build.jpg | 4.2 with no build followed | captured: hunter-4-talents-no-build.jpg |
 | marks-l20-switch-off.jpg | 4.11 "Marks on the talent window" off | captured: settings2-6-talents-no-marks.jpg, settings2-6-talents-marks-back.jpg |
 | marks-l20-first-open-after-reload.jpg | 4.2 first open finds the buttons; row 22 | captured: marks2-screen.jpg (fixed in round 2), marks1-second-open-trees.jpg (the pre-fix miss) |

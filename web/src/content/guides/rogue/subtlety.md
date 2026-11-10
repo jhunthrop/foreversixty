@@ -26,7 +26,7 @@ sources:
 
 ## Overview
 
-Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and Boot Knife Shanks to build, Rupture as the main finisher and Death Mark to cash the bleeds in.
+A Premeditation opener, Hemorrhage and Boot Knife Shanks to build, Rupture as the main finisher and Death Mark to cash the bleeds in.
 
 ### Strengths
 
@@ -60,8 +60,6 @@ One build does everything: 12 in Assassination for Malice, Ruthlessness, Improve
 - **Initiative** (3 points): Garrote, Ambush and Cheap Shot add a combo point.
 
 Opportunity (5 points) adds 20% to Garrote, and to Ambush and Backstab when you hold a dagger. Blood Splatter keeps Rupture up 6 seconds longer and every Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. Both points of Dirty Deeds take 20 energy off Garrote and Cheap Shot, on the opener and on every Garrote after a Ghostly Strike, and let Garrote go in from the front. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. Improved Ambush is skipped: Ambush is not your boss opener.
-
-[Open the planner](/planner?class=rogue) to change the build.
 
 ## Rotation and priority
 
@@ -114,13 +112,13 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ## Professions
 
-**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make. **Engineering** is the PvP and trash pick: grenades, dynamite and gadgets. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
+**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make. **Engineering** brings grenades, dynamite and gadgets for PvP and trash. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
 
 ## Leveling
 
 ### Levels 1 to 19
 
-Combat levels faster with a sword, so if you only want Subtlety for raids, level Combat and respec at 60. If you level Subtlety, here is how it starts. You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. Keep a dagger in the main hand while you level: Backstab and Ambush need one, and they are what your first talents build on until Hemorrhage at 30.
+Combat levels faster with a sword, so if you only want Subtlety for raids, level Combat and respec at 60. You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. Keep a dagger in the main hand while you level: Backstab and Ambush need one, and they are what your first talents build on until Hemorrhage at 30.
 
 Poised at 18 takes 10 Energy off your opener when you are at full Energy out of combat, so Ambush from stealth costs 50.
 

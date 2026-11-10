@@ -14,7 +14,6 @@ export const homeCharacterSearchCopy = {
   aside: 'See any character’s Forever Score.',
   nameLabel: 'Character name',
   namePlaceholder: 'Character name',
-  hint: 'Type the name, then pick the region and ruleset.',
   regionLabel: 'Region',
   rulesetLabel: 'Ruleset',
   submit: 'Look up',

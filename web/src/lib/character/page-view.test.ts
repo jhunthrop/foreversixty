@@ -7,7 +7,7 @@ import type { CharacterPage } from '../rankings/api';
 import {
   bestRows,
   buildRows,
-  characterNextStep,
+  characterWaiting,
   characterPageCopy,
   headFacts,
   pageSpec,
@@ -71,35 +71,27 @@ describe('the upgrade total', () => {
   });
 });
 
-describe('characterNextStep', () => {
+describe('characterWaiting', () => {
   const own = {
     key: 'us/normal/felsnap',
     level: 34,
     build: { talents: { points: [23, 0, 0] } },
   } as unknown as MeCharacter;
+  const top = { name: 'Hood', source: 'Wailing Caverns' };
 
-  it('puts unspent talent points first, then the top upgrade', () => {
-    const step = characterNextStep({
-      own,
-      top: { name: 'Hood', source: 'Wailing Caverns' },
-      bisHref: '/bis',
-    });
-    expect(step.text).toBe('Next: spend your 2 talent points, then get Hood.');
-    expect(step.action?.href).toBe('/planner?character=us%2Fnormal%2Ffelsnap');
+  it('reads unspent talent points, then the top upgrade, as plain facts', () => {
+    expect(characterWaiting({ own, top, bisHref: '/bis' })).toEqual([
+      { key: 'talents', text: '2 talent points unspent', href: '/planner?character=us%2Fnormal%2Ffelsnap' },
+      { key: 'upgrade', text: 'Upgrade: Hood, Wailing Caverns', href: '/bis' },
+    ]);
   });
 
-  it('names the top upgrade when every point is spent', () => {
+  it('names only the upgrade when every point is spent, and nothing with neither', () => {
     const spent = { ...own, build: { talents: { points: [25, 0, 0] } } } as unknown as MeCharacter;
-    const step = characterNextStep({
-      own: spent,
-      top: { name: 'Hood', source: 'Wailing Caverns' },
-      bisHref: '/bis',
-    });
-    expect(step).toEqual({
-      text: 'Next: get Hood from Wailing Caverns.',
-      action: { label: 'Open best in slot', href: '/bis' },
-    });
-    expect(characterNextStep({ own: spent, top: null, bisHref: null }).text).toBe('Nothing waiting.');
+    expect(characterWaiting({ own: spent, top, bisHref: null })).toEqual([
+      { key: 'upgrade', text: 'Upgrade: Hood, Wailing Caverns', href: null },
+    ]);
+    expect(characterWaiting({ own: spent, top: null, bisHref: null })).toEqual([]);
   });
 });
 

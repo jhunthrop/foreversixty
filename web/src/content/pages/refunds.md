@@ -15,16 +15,14 @@ on and we will sort it out.
 
 ## What happens to your subscription
 
-When a refund is approved, the owner cancels the subscription in the same action as issuing
-the refund — access ends at that point, not automatically the instant the refund is issued,
-since the two happen together. This is not an automated instant cutoff; it is a short manual
-step the owner takes personally.
+When a refund is approved, the owner cancels the subscription by hand in the same step as
+issuing the refund, and access ends then.
 
 ## Partial-period refunds
 
 A subscription is paid up front for its period. Cancelling stops the renewal and your access
 runs to the end of the period you paid for; we do not refund part of a period. If something
-went wrong on our side — you were charged twice, or paid for something that did not work —
+went wrong on our side (you were charged twice, or paid for something that did not work),
 email us and we will put it right.
 
 ## Who processes the refund

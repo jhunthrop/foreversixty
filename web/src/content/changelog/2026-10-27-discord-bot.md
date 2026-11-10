@@ -1,5 +1,5 @@
 ---
-title: 'The Forever Sixty Discord bot is here.'
+title: 'Raid sign-up buttons and slash commands in your guild Discord.'
 date: 2026-10-27
 kind: site
 updated: 2026-10-27

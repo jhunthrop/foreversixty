@@ -88,7 +88,7 @@ func TestCoreCasts_NoComparisonSaysWhyInCouldNotCheck(t *testing.T) {
 	in := furyFight(t, 60_000, 23881, []int64{0, 6000, 12000, 18000, 24000}, repeat(500, 60))
 	in.Refs = noPool(7)
 	o := coreCasts(in, CountedTime(in))
-	want := "not enough logs yet — 7 Fury kills of Onyxia (40) on the site, the coach needs 20."
+	want := "Not enough logs yet: 7 Fury kills of Onyxia (40) on the site, and the coach needs 20."
 	if o.Finding == nil || o.Finding.Comparison != nil || len(o.CouldNotCheck) != 1 || o.CouldNotCheck[0] != want {
 		t.Fatalf("finding %+v couldn't check %q", o.Finding, o.CouldNotCheck)
 	}

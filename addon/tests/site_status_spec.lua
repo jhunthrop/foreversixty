@@ -134,7 +134,7 @@ describe("what the site has and what the inbox holds", function()
 		it("says the site has not seen the character when no ack exists", function()
 			inbox()
 			assert.are.equal(L.diagSiteNever, SiteStatus.siteLine(SiteStatus.facts()))
-			assert.are.equal("Site: not seen yet \226\128\148 is the companion running and signed in?", L.diagSiteNever)
+			assert.are.equal("Site: not seen yet. Is the companion running and signed in?", L.diagSiteNever)
 		end)
 
 		it("says when the newest ack was and how many characters the site has", function()

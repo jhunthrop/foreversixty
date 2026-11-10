@@ -167,9 +167,8 @@
       {/if}
     {/snippet}
     <p class="text-muted h-5 truncate text-[13px]" data-testid="raid-cooldowns-readout">
-      {#if hovered !== ''}<span class="text-strong">{hovered}</span>{:else if pulls.length > 0}Hover or tap a
-        lane for the pull and the nearest use · alternate shading is one pull each · a red top edge is a wipe{:else}Hover
-        or tap a lane for the nearest use{/if}
+      {#if hovered !== ''}<span class="text-strong">{hovered}</span>{:else if pulls.length > 0}Alternate
+        shading is one pull each · a red top edge is a wipe{/if}
     </p>
     <ul class="mt-2 flex flex-col gap-1">
       {#each rows as row (row.name)}

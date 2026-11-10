@@ -39,7 +39,7 @@ sources:
 
 ## Overview
 
-Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stance, a stance swap for Recklessness, and a full bar of rage spent on one huge Execute.
+Rend, Overpower and Mortal Strike in Battle Stance, a stance swap for Recklessness, and a full bar of rage spent on one huge Execute.
 
 ### Strengths
 
@@ -78,8 +78,6 @@ The level 60 build puts one point in **Improved Heroic Strike**, three in **Defl
 
 The raid build drops Iron Will, Deflection and Improved Charge. Two more points of **Improved Heroic Strike** make Heroic Strike, your rage dump, cost 3 less. **Spearing Strike** is a second weapon strike, 15 rage on a 20 second cooldown in Battle Stance, that hits twice as hard on dragons and giants. Fifteen points in Fury reach **Reckless Swings**: for 8 seconds your white swings bring 5 more rage each, which is two or three swings with a slow two-hander, at a quarter of your base health. The same points reach **Improved Execute**, which takes Execute down to 10 rage. **Enrage** is the way there, and it pays whenever raid damage lands on you. One point of **Improved Bloodrage** stays.
 
-[Open the planner](/planner?class=warrior) to change the build.
-
 ## Rotation and priority
 
 **The pull.** Charge on the pull. In a raid that means once the tank has engaged the boss, never before. Out in the world, Charge is how you pull. Charge only works out of combat, and Bloodrage puts you in combat, so a Bloodrage before the pull costs you the Charge. Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you; then press Bloodrage as your first swing lands. That is a shout, a Rend and a Mortal Strike in your first three globals, or Rend and Mortal Strike in the first two when another warrior's shout is already on you.
@@ -112,7 +110,7 @@ If you want a different look, the gap is small. On the Alliance, Dwarf comes out
 
 ## Professions
 
-Enchanting is the one that changes your gear: Frozen Heart of the Mountain is a bind-on-pickup trinket only an enchanter can make. Blacksmithing and Mining are the other pair, but Arcanite Champion binds when equipped, so buy one rather than train it for the sword. Engineering brings Goblin Sapper Charges and Dense Dynamite for every trash pack, and grenades in PvP.
+Enchanting changes your gear: Frozen Heart of the Mountain is a bind-on-pickup trinket only an enchanter can make. Blacksmithing and Mining are the other pair, but Arcanite Champion binds when equipped, so buy one rather than train it for the sword. Engineering brings Goblin Sapper Charges and Dense Dynamite for every trash pack, and grenades in PvP.
 
 ## Leveling
 

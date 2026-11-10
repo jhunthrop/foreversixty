@@ -172,7 +172,7 @@ end
 --- not yet full (`rank` is { have, want } from Progress.cells, counting a
 --- click staged in the talent window: "(2 of 3)" after one); else the name.
 --- The one function for it: the chip's point line and the talent strip's
---- "Next: …" both read it.
+--- leading talent both read it.
 function Chip.pointLabel(name, rank)
 	if type(rank) == "table" and (rank.want or 0) > 1 and (rank.have or 0) < rank.want then
 		return string.format(L.chipPointRank, name, (rank.have or 0) + 1, rank.want)
@@ -509,7 +509,7 @@ Chip.STATES = {
 }
 
 --- The idle chip (A.1): what is true when nothing else is. With a build followed and its next talent
---- known, the line is the chip's own label, "Next: Endurance Training (1 of 5)"; with no build, the
+--- known, the line is the chip's own label, "Endurance Training (1 of 5)"; with no build, the
 --- short "Pick a build: /fs" (a click opens the build window); a finished build has nothing to say
 --- and stays the class icon alone. Words, so a first look at the minimap reads a next step and not a
 --- dimmed icon that is easy to miss.

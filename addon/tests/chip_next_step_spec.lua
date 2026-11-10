@@ -88,7 +88,7 @@ describe("the chip's words once every point is spent (A.2)", function()
 		assert.are.equal("Next at 25: Focused Fire (1 of 3)", chosen.text)
 		assert.are.equal(string.format(L.chipNextAt, 25, "Focused Fire (1 of 3)"), chosen.text)
 		-- At the cap no level follows: the old form.
-		assert.are.equal("Next: Focused Fire (1 of 3)", Chip.model(inputs({ nextLevel = false })).chosen.text)
+		assert.are.equal("Focused Fire (1 of 3)", Chip.model(inputs({ nextLevel = false })).chosen.text)
 	end)
 
 	it("says Build complete with the next point's level, and Build complete alone when none follows", function()

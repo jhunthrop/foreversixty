@@ -622,7 +622,7 @@ function Follow.buildName(data, build)
 end
 
 --- /fs diag's one line for the build in force: "Build: Marksmanship leveling (default for
---- Marksmanship)", "Build: Arms raid (saved)", or "Build: none — <why>" (Follow.noBuildReason,
+--- Marksmanship)", "Build: Arms raid (saved)", or "Build: none: <why>" (Follow.noBuildReason,
 --- else "not worked out yet").
 function Follow.diagLine(data)
 	local build = Follow.build

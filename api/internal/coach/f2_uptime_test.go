@@ -78,7 +78,7 @@ func TestUptime_TankNeverUsesTheSim(t *testing.T) {
 	in := protShieldBlock(t, 42_000, 232_000, noPool(3))
 	in.Refs.Sim = &SimRef{Band: 60, Uptime: map[int64]float64{f2ShieldBlockID: 95}}
 	o := uptime(in, CountedTime(in))
-	if o.Finding != nil || len(o.CouldNotCheck) != 1 || !strings.HasPrefix(o.CouldNotCheck[0], "not enough logs yet — 3 Protection") {
+	if o.Finding != nil || len(o.CouldNotCheck) != 1 || !strings.HasPrefix(o.CouldNotCheck[0], "Not enough logs yet: 3 Protection") {
 		t.Fatalf("finding %+v, couldn't check %q", o.Finding, o.CouldNotCheck)
 	}
 }
@@ -116,7 +116,7 @@ func TestUptime_ThinPoolSaysTheRealCount(t *testing.T) {
 	if o.Finding != nil {
 		t.Fatal("thin basis means no finding")
 	}
-	want := "not enough logs yet — 19 Fury kills of Onyxia (40) on the site, the coach needs 20."
+	want := "Not enough logs yet: 19 Fury kills of Onyxia (40) on the site, and the coach needs 20."
 	if !slices.Contains(o.CouldNotCheck, want) {
 		t.Fatalf("couldn't check = %q", o.CouldNotCheck)
 	}
@@ -125,7 +125,7 @@ func TestUptime_ThinPoolSaysTheRealCount(t *testing.T) {
 func TestUptime_NoPoolNoSimIsCouldntCheck(t *testing.T) {
 	in := furyRendLow(t, noPool(0)) // not validated: Refs.Sim nil, SimPreparing false
 	o := uptime(in, CountedTime(in))
-	want := "not enough logs yet — 0 Fury kills of Onyxia (40) on the site, the coach needs 20."
+	want := "Not enough logs yet: 0 Fury kills of Onyxia (40) on the site, and the coach needs 20."
 	if o.Finding != nil || !slices.Contains(o.CouldNotCheck, want) {
 		t.Fatalf("finding %+v, couldn't check %q", o.Finding, o.CouldNotCheck)
 	}
@@ -144,7 +144,7 @@ func TestUptime_PoolWithoutTheAuraSaysSoAndNeverTheThinPoolLine(t *testing.T) {
 	if o.Finding != nil || !slices.Contains(o.CouldNotCheck, want) {
 		t.Fatalf("finding %+v, couldn't check %q", o.Finding, o.CouldNotCheck)
 	}
-	if strings.Contains(textOf(o), "not enough logs yet") {
+	if strings.Contains(textOf(o), "Not enough logs yet") {
 		t.Fatal("a pool of 25 is not a thin pool")
 	}
 }

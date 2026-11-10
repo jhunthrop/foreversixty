@@ -20,7 +20,7 @@ func onyxiaReport() ReportReady {
 }
 
 func TestReportReadyEmbedMatchesTheCopyTable(t *testing.T) {
-	want := `{"title":"Report: Onyxia's Lair · Thursday 10 December","description":"Kill times, loot and the biggest changes on Forever Sixty.",` +
+	want := `{"title":"Report: Onyxia's Lair · Thursday 10 December",` +
 		`"url":"https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#report",` +
 		`"fields":[{"name":"Kills","value":"Onyxia 1:42","inline":true},{"name":"Wipes","value":"3","inline":true},` +
 		`{"name":"Came","value":"22 of 23","inline":true},{"name":"Deaths","value":"0","inline":true},{"name":"Loot","value":"6 items","inline":true}],` +
@@ -91,15 +91,14 @@ func TestReportReadyEmbedEdges(t *testing.T) {
 func TestReportReadyEmbed_CoachSentenceNamesNobody(t *testing.T) {
 	in := onyxiaReport()
 	in.CoachReady = true
-	want := "Kill times, loot and the biggest changes on Forever Sixty. " +
-		spectable.Collapse(spectable.Cell(t, coachSpecPath, "### 8.3 Discord", "raidNight")[0])
+	want := spectable.Collapse(spectable.Cell(t, coachSpecPath, "### 8.3 Discord", "raidNight")[0])
 	if got := ReportReadyEmbed(in, fixedFinish).Description; got != want {
 		t.Fatalf("description = %q, want %q", got, want)
 	}
 }
 
 func TestReportReadyEmbed_NoSentenceWithoutCoachReady(t *testing.T) {
-	if got := ReportReadyEmbed(onyxiaReport(), fixedFinish).Description; got != "Kill times, loot and the biggest changes on Forever Sixty." {
+	if got := ReportReadyEmbed(onyxiaReport(), fixedFinish).Description; got != "" {
 		t.Fatal(got)
 	}
 }

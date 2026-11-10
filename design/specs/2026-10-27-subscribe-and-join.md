@@ -478,9 +478,9 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | Size line, Raid guild | `Any size. For guilds over 25 verified members.` |
 | Lead, one or more `ready` | `Choose the guild this plan is for.` |
 | Lead, none `ready`, every guild unclaimed | one guild: `A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. Your guild has not been claimed yet, so the next step is theirs.`; two: `A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. Neither of your guilds has been claimed yet, so the next step is theirs.`; three or more: `A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. None of your guilds has been claimed yet, so the next step is theirs.` |
-| Lead, none `ready`, a card the viewer can claim from (`claim`, `start_claim`, `confirm_claim`, `claim_link_bnet`, `claim_pending_yours`) | `You can claim a guild here. Each card below has its next step.` |
-| Lead, none `ready`, some claimed and some not | `A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. Here is the next step for each of your guilds.` |
-| Lead, none `ready`, every guild claimed or on a plan | `Whoever holds a guild's claim subscribes it. Here is where each of your guilds stands.` |
+| Lead, none `ready`, a card the viewer can claim from (`claim`, `start_claim`, `confirm_claim`, `claim_link_bnet`, `claim_pending_yours`) | `You can claim a guild here.` |
+| Lead, none `ready`, some claimed and some not | `A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it.` |
+| Lead, none `ready`, every guild claimed or on a plan | `Whoever holds a guild's claim subscribes it.` |
 | Rank words | `Guild master`; `Officer`; `Member` |
 | Verify mark | `Verified`; `Not verified` |
 | More characters | `+{n} more` |
@@ -607,7 +607,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | # | State | 360 | 390 | 1440 | 2000 |
 |---|---|---|---|---|---|
 | 1 | **The owner's account, exactly as production holds it**: signed in, header `Obnoxious Yell` (Fury Warrior, 21), guilds OLYMPUS XXVII and Employed Millennials, rank member in both, not verified, 0 verified members in each, unclaimed, no plan, open-ended operator Premium grant, no Stripe customer. `/premium/checkout?plan=guild&interval=yearly` | x | x | x | x |
-| 1b | The same account after an addon save that makes the owner guild master of OLYMPUS XXVII (Decision 11): that card reads `claim` and sorts first; Employed Millennials stays `ask_leader`; the lead reads `Choose the guild this plan is for.` only once a card is `ready`, so here it reads the can-claim lead (`You can claim a guild here. Each card below has its next step.`, gate round 2). Also the card after `Yes, claim it` (`ready`, `Start the 7-day trial`) | x | x | x | x |
+| 1b | The same account after an addon save that makes the owner guild master of OLYMPUS XXVII (Decision 11): that card reads `claim` and sorts first; Employed Millennials stays `ask_leader`; the lead reads `Choose the guild this plan is for.` only once a card is `ready`, so here it reads the can-claim lead (`You can claim a guild here.`, gate round 2). Also the card after `Yes, claim it` (`ready`, `Start the 7-day trial`) | x | x | x | x |
 | 2 | Same account, `/premium/checkout?plan=premium&interval=yearly` (grant panel) | x | x | x | |
 | 3 | Same account, `/account#plan` (grant headline, rows On, no billing button) | x | x | x | |
 | 4 | Same account, `/premium` (Premium card in its grant state) | x | x | x | |

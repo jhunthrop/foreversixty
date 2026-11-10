@@ -18,6 +18,6 @@ sources:
 
 Talent trees keep the familiar layout: seven rows per tree, 51 points to spend, and the one-point "gold medal" talents at 11, 21 and 31 points. Forever adds a fourth, at the 16-point mark, so every tree has four of them.
 
-Principal Designer Kris Zierhut put it plainly in an interview: "We still have what we call them gold medal talents. 11, 21, 31 point, one point talents. Those are all still there. We did add a new one point talent at the 16 point mark."
+Principal Designer Kris Zierhut, in an interview: "We still have what we call them gold medal talents. 11, 21, 31 point, one point talents. Those are all still there. We did add a new one point talent at the 16 point mark."
 
 Talents that existed mainly to unlock a group buff are becoming baseline abilities instead: Divine Spirit, Blessing of Kings, Improved Mark of the Wild and Improved Battle Shout among them. Some talents are unchanged from 1.12.

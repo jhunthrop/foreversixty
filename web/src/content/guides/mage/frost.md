@@ -62,7 +62,7 @@ Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, 
 
 One build does it all at 60, in a raid or out. Frost takes 31 points to Ice Barrier, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, the toll to reach the 30 points Ice Barrier asks for; each Frostbolt then has a 40% chance to add a stack for your next Cone of Cold. Fifteen go into Arcane: **Arcane Concentration** (a free spell 10% of the time), Missile Barrage, and three ranks of **Arcane Impact** for 6% more crit on the Missiles it fires, with Wand Specialization and Improved Channeling as the toll to get there. The last five go into Fire for five ranks of **Incineration**, which adds 10% crit to Ice Lance.
 
-If a boss lets you stand within 10 yards, more points in Winter's Chill and Improved Cone of Cold turn Cone of Cold into a real nuke. Most bosses cleave, breathe or stomp at that range, so the build stays at range. [Open the planner](/planner?class=mage) to change the build.
+If a boss lets you stand within 10 yards, more points in Winter's Chill and Improved Cone of Cold turn Cone of Cold into a real nuke. Most bosses cleave, breathe or stomp at that range, so the build stays at range.
 
 ## Rotation and priority
 
@@ -96,11 +96,11 @@ Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell po
 
 ## Races
 
-**Gnome** is the best Alliance Frost mage among the Classic races: Eureka! makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit and plays about the same as a Gnome. **Skyborne**, Alliance only for mages, is level with a Gnome: Wind Blessed is 2% haste that never turns off, so pick either. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Troll** and **Orc** are close behind: Berserking adds 10% cast speed for 15 seconds every 3 minutes and Blood Fury 10% spell power for 15 seconds every 2 minutes, so press either on the pull and on cooldown after that.
+Of the Classic Alliance races, take a **Gnome**: Eureka! makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit and plays about the same as a Gnome. **Skyborne**, Alliance only for mages, is level with a Gnome: Wind Blessed is 2% haste that never turns off, so pick either. On the Horde, take **Undead**: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Troll** and **Orc** are close behind: Berserking adds 10% cast speed for 15 seconds every 3 minutes and Blood Fury 10% spell power for 15 seconds every 2 minutes, so press either on the pull and on cooldown after that.
 
 ## Professions
 
-Tailoring and Enchanting are the standard pair, and your raid set needs both: Robe of the Archmage is a Tailoring craft and Frozen Heart of the Mountain an Enchanting one, and both bind on pickup, so nobody can make them for you. Enchanting also puts the spell power enchants on your own gear. The goggles in the head slot need 270 Engineering to wear: without it, take the best head you can wear and keep your two professions. Frost drinks fewer potions than the other specs, so it can skip Alchemy.
+Take Tailoring and Enchanting, since your raid set needs both: Robe of the Archmage is a Tailoring craft and Frozen Heart of the Mountain an Enchanting one, and both bind on pickup, so nobody can make them for you. Enchanting also puts the spell power enchants on your own gear. The goggles in the head slot need 270 Engineering to wear: without it, take the best head you can wear and keep your two professions. Frost drinks fewer potions than the other specs, so it can skip Alchemy.
 
 ## Leveling
 

@@ -71,30 +71,30 @@ export const ratingCopy = {
   /** Spec §1.2's two exact basis sentences. */
   percentileBasis: (spec: string, klass: string, role: string, pct: number, n: number): string =>
     `Compared with other ${[spec, roleNoun(klass, role)].filter((part) => part !== '').join(' ')} on this fight (${n} logs).`,
-  absoluteBasis: 'Measured against the encounter’s own numbers — not enough logs yet to compare players.',
+  absoluteBasis: 'Measured against the encounter’s own numbers: not enough logs yet to compare players.',
   /** Spec §7.4's fixed excluded-reason strings, by the `reason` code the API returns. */
   excludedReason: (componentLabel: string, reason: string): string => {
     switch (reason) {
       case 'no_mechanics_table':
-        return `${componentLabel} — not scored. This fight’s encounter has no curated mechanics table yet.`;
+        return `${componentLabel}: not scored. This fight’s encounter has no curated mechanics table yet.`;
       case 'spec_not_modeled':
-        return `${componentLabel} — not scored. The simulator does not model this spec yet; scores return once it does.`;
+        return `${componentLabel}: not scored. The simulator does not model this spec yet; scores return once it does.`;
       case 'no_utility_table':
-        return `${componentLabel} — not scored. No curated utility table exists for this spec yet.`;
+        return `${componentLabel}: not scored. No curated utility table exists for this spec yet.`;
       case 'no_consumable_catalogue':
-        return `${componentLabel} — not scored. No consumable catalogue exists for this role yet.`;
+        return `${componentLabel}: not scored. No consumable catalogue exists for this role yet.`;
       case 'no_character_sheet':
-        return `${componentLabel} — no character sheet in this log.`;
+        return `${componentLabel}: no character sheet in this log.`;
       case 'unclaimed_and_unranked':
-        return `${componentLabel} — not scored. This character is not signed in, and the bracket has too few logs to compare against.`;
+        return `${componentLabel}: not scored. This character is not signed in, and the bracket has too few logs to compare against.`;
       default:
-        return `${componentLabel} — not scored.`;
+        return `${componentLabel}: not scored.`;
     }
   },
-  threatNotModeled: 'Threat — not modeled yet. This does not count for or against Utility.',
+  threatNotModeled: 'Threat: not modeled yet. It does not count for or against Utility.',
   /** Spec §6.4's exact capped-score sentence. */
   cappedNote:
-    'capped from a higher weighted average — a costly avoidable death outweighs the rest of the fight. See Survival.',
+    'capped from a higher weighted average: a costly avoidable death outweighs the rest of the fight. See Survival.',
   /** Spec §1.5's exact rule sentence, published on /ratings. */
   cappedRule:
     'An avoidable death early in a fight caps the overall score at 40, because nothing else in the fight makes up for it.',
@@ -132,8 +132,7 @@ const COMPONENT_DEFINITIONS: Record<string, string> = {
     'Mechanics: the interrupts and dispels you made, and how long you carried a debuff that should have been dispelled.',
   utility:
     'Utility: the average uptime of the buffs, debuffs and cooldowns your spec keeps running for the raid.',
-  preparation:
-    'Preparation: the flask, food, weapon oil or stone and world buffs at the pull, and potions in the fight.',
+  preparation: 'Preparation: the flask, food, weapon oil or stone at the pull, and potions in the fight.',
   activity:
     'Activity: the share of the fight you spent doing something rather than idle, leaving out the times the fight expects you to wait.',
 };

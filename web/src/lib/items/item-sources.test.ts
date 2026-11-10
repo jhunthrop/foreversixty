@@ -81,6 +81,6 @@ describe('itemSourceRows', () => {
         ] as LootFile['sources'],
       }),
     );
-    expect(sourceRowLine(row)).toBe('Scholomance — Gandling (<1%)');
+    expect(sourceRowLine(row)).toBe('Scholomance: Gandling (<1%)');
   });
 });
