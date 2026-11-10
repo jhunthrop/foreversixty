@@ -166,7 +166,7 @@ class ReportsLogicTest {
 
     @Test fun `parse row words`() {
         val row = Parses.rows(ReportsTestData.me()).single()
-        assertEquals("Kill 4:28 · Obnoxious Yell, Fury", copy().parseMeta(row))
+        assertEquals("Kill 4:28 · Gorvash, Fury", copy().parseMeta(row))
         assertEquals("712", Parses.figure(row.fight.value))
         assertEquals("DPS", copy().unit(row.fight.unit))
         assertEquals("Onyxia, kill, 4 minutes, 28 seconds, 712 damage per second, 91st percentile", copy().parseLabel(row))
@@ -181,7 +181,7 @@ class ReportsLogicTest {
         val mine = rows.single { it.player.mine }
         assertEquals(6, mine.rank)
         assertEquals((mine.player.dps / rows.first().player.dps).toFloat(), mine.fraction)
-        assertEquals("Rank 6, Obnoxious Yell, Fury Warrior, 712, your character", copy().meterLabel(mine))
+        assertEquals("Rank 6, Gorvash, Fury Warrior, 712, your character", copy().meterLabel(mine))
     }
 
     @Test fun `eleven rows then show all, four at the largest text with your row after them`() {

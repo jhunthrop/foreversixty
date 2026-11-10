@@ -20,7 +20,7 @@ class TalentsModelTest {
     private val warrior = TalentTestData.warrior()
     private val fury = TalentTestData.fury()
     private val catalog = BisTestData.catalog()
-    private val yell = HomeCharacter.from(BisTestData.me().characters.first { it.name == "Obnoxious Yell" })
+    private val yell = HomeCharacter.from(BisTestData.me().characters.first { it.name == "Gorvash" })
 
     private class FakeSource(
         val talents: ApiResult<CachedFile<TalentsFile>>,

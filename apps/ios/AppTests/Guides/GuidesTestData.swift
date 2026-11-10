@@ -27,8 +27,8 @@ enum GuidesTestData {
     static let lightningbolltz = character(name: "Lightningbolltz", className: "shaman", spec: "Elemental", race: "orc")
     /// The tier board's sample player: Emberquill, a Troll Fire Mage at 60.
     static let emberquill = character(name: "Emberquill", className: "mage", spec: "Fire", race: "troll")
-    /// A spec that is first: Obnoxious Yell, the `me` fixture's Fury Warrior.
-    static let obnoxiousYell = character(name: "Obnoxious Yell", className: "warrior", spec: "Fury", race: "troll")
+    /// A spec that is first: Gorvash, the `me` fixture's Fury Warrior.
+    static let gorvash = character(name: "Gorvash", className: "warrior", spec: "Fury", race: "troll")
     /// A Protection Warrior, for the tank list.
     static let tank = character(name: "Shieldwall", className: "warrior", spec: "Protection", race: "tauren")
     /// A Holy Priest, for the healer list.

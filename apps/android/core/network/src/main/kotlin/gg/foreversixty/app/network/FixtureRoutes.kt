@@ -95,4 +95,18 @@ object FixtureRoutes {
         val named = params.entries.fold(stem) { acc, (key, value) -> acc.replace("{$key}", value) }
         return "${variants[stem]?.file(named) ?: named}.json"
     }
+
+    /**
+     * A character's own answer (`character.home.gorvash.json`) for a route with a `{name}`, so each
+     * fixture character reads its own class and spec. Null under a variant or without a `{name}`;
+     * the engine falls back to [fileName] when the file is absent.
+     */
+    fun characterFileName(method: HttpMethod, path: String, variants: Map<String, FixtureVariant> = emptyMap()): String? {
+        val (route, params) = resolve(method, path) ?: return null
+        val stem = route.fixture ?: return null
+        val name = params["name"] ?: return null
+        if (variants.containsKey(stem)) return null
+        val named = params.entries.fold(stem) { acc, (key, value) -> acc.replace("{$key}", value) }
+        return "$named.$name.json"
+    }
 }

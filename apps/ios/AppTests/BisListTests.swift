@@ -142,12 +142,12 @@ struct BisListTests {
     @Test("Yours and the way back follow the character's list")
     func yoursAndBack() throws {
         let own = BisTestData.raid
-        var context = BisContext(selection: own, characterSelection: own, characterName: "Obnoxious Yell")
+        var context = BisContext(selection: own, characterSelection: own, characterName: "Gorvash")
         #expect(context.isYours)
         #expect(context.backTarget == nil)
         context.selection = own.withFaction("alliance")
         #expect(!context.isYours)
-        #expect(context.backTarget?.name == "Obnoxious Yell")
+        #expect(context.backTarget?.name == "Gorvash")
         let signedOut = BisContext(selection: own)
         #expect(!signedOut.isYours)
         #expect(signedOut.backTarget == nil)

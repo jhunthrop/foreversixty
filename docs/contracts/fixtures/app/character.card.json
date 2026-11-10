@@ -23,13 +23,13 @@
       }
     ],
     "character": {
-      "key": "us/pvp/obnoxious-yell",
+      "key": "us/pvp/gorvash",
       "region": "us",
       "ruleset": "pvp",
-      "name": "Obnoxious Yell",
+      "name": "Gorvash",
       "class": "Warrior",
-      "avatar_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/obnoxious-yell-avatar.jpg",
-      "render_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/obnoxious-yell-main-raw.png",
+      "avatar_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/gorvash-avatar.jpg",
+      "render_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/gorvash-main-raw.png",
       "guild": {
         "name": "OLYMPUS XXVII",
         "rank": "officer"

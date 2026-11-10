@@ -236,7 +236,7 @@ struct SystemSnapshotTests {
     func compareScreen() throws {
         let file = try TalentTestData.warrior()
         let content = try sharedContent(file)
-        let character = try SystemStory.obnoxiousYell()
+        let character = try SystemStory.gorvash()
         let presenter = SharedBuildCompare.presenter(content: content, file: file, character: character)
         let screen = NavigationStack { SharedBuildCompareScreen(presenter: presenter, characterName: character.name) }
         both(screen, "f15-shared-build-compare")

@@ -11,8 +11,8 @@ enum GuildFixture {
     static func planned() throws -> [RaidView] { try RaidFixture.load(GuildRaids.self, "guild.raids").planned ?? [] }
     static func feed(_ name: String = "calendar.feed") throws -> CalendarFeed { try RaidFixture.load(CalendarFeed.self, name) }
 
-    /// The roster fixture's viewer, me.json's Obnoxious Yell.
-    static let viewerKey = "us/pvp/obnoxious-yell"
+    /// The roster fixture's viewer, me.json's Gorvash.
+    static let viewerKey = "us/pvp/gorvash"
 
     /// "Your characters": every character on the account (me.json), as the app reads them.
     static func yourKeys() throws -> Set<String> { Set(try RaidFixture.load(Me.self, "me").characters.map(\.key)) }

@@ -157,8 +157,8 @@
     },
     "signups": [
       {
-        "character_key": "us/pvp/obnoxious-yell",
-        "name": "Obnoxious Yell",
+        "character_key": "us/pvp/gorvash",
+        "name": "Gorvash",
         "class": "warrior",
         "spec": "warrior-fury",
         "role": "dps",
@@ -203,8 +203,8 @@
     "viewer": {
       "characters": [
         {
-          "character_key": "us/pvp/obnoxious-yell",
-          "name": "Obnoxious Yell",
+          "character_key": "us/pvp/gorvash",
+          "name": "Gorvash",
           "class": "warrior",
           "spec": "warrior-fury",
           "verified": true,
@@ -279,8 +279,8 @@
     },
     "attendance": [
       {
-        "character_key": "us/pvp/obnoxious-yell",
-        "name": "Obnoxious Yell",
+        "character_key": "us/pvp/gorvash",
+        "name": "Gorvash",
         "class": "warrior",
         "spec": "warrior-fury",
         "signed": "in",
@@ -313,8 +313,8 @@
       },
       "deaths": [
         {
-          "character_key": "us/pvp/obnoxious-yell",
-          "name": "Obnoxious Yell",
+          "character_key": "us/pvp/gorvash",
+          "name": "Gorvash",
           "class": "warrior",
           "on_kills": 1,
           "on_wipes": 2
@@ -324,8 +324,8 @@
         "log_has_buffs": true,
         "rows": [
           {
-            "character_key": "us/pvp/obnoxious-yell",
-            "name": "Obnoxious Yell",
+            "character_key": "us/pvp/gorvash",
+            "name": "Gorvash",
             "class": "warrior",
             "before": "ready",
             "flask": "Flask of the Titans",
@@ -343,8 +343,8 @@
         },
         "rows": [
           {
-            "character_key": "us/pvp/obnoxious-yell",
-            "name": "Obnoxious Yell",
+            "character_key": "us/pvp/gorvash",
+            "name": "Gorvash",
             "class": "warrior",
             "encounter": "Onyxia",
             "metric": "dps",

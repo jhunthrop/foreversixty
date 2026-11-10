@@ -120,7 +120,7 @@ enum ReportsCopy {
 
     // MARK: F10.2 report
 
-    /// `Tuesday 15 December 2026 · logged by Obnoxious Yell`.
+    /// `Tuesday 15 December 2026 · logged by Gorvash`.
     static func reportMeta(_ report: Report, clock: ReportsClock) -> String {
         Copy.reportMeta(
             weekday: clock.weekday(report.createdAt), date: clock.longDate(report.createdAt),
@@ -185,7 +185,7 @@ enum ReportsCopy {
         }
     }
 
-    /// `Kill 4:28 · Obnoxious Yell, Fury`.
+    /// `Kill 4:28 · Gorvash, Fury`.
     static func parseMeta(_ row: ParseRow) -> String {
         Copy.reportParseMeta(time: duration(row.fight.durationMs), name: row.character.name, spec: row.character.specName)
     }

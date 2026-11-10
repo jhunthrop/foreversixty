@@ -159,8 +159,8 @@
       },
       "signups": [
         {
-          "character_key": "us/pvp/obnoxious-yell",
-          "name": "Obnoxious Yell",
+          "character_key": "us/pvp/gorvash",
+          "name": "Gorvash",
           "class": "warrior",
           "spec": "warrior-fury",
           "role": "dps",
@@ -207,8 +207,8 @@
       "viewer": {
         "characters": [
           {
-            "character_key": "us/pvp/obnoxious-yell",
-            "name": "Obnoxious Yell",
+            "character_key": "us/pvp/gorvash",
+            "name": "Gorvash",
             "class": "warrior",
             "spec": "warrior-fury",
             "verified": true,
@@ -605,7 +605,7 @@
     "moved": null,
     "confirmation": {
       "title": "You're In for Onyxia's Lair",
-      "body": "Obnoxious Yell, pull at 7:00 pm CST."
+      "body": "Gorvash, pull at 7:00 pm CST."
     }
   },
   "error": null,

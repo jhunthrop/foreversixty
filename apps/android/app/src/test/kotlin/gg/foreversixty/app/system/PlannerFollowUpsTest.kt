@@ -50,15 +50,15 @@ class PlannerFollowUpsTest {
     )
 
     private val lightningbolltz = character("us/normal/lightningbolltz", "Lightningbolltz", "shaman", TalentTestData.SHAMAN_YOURS)
-    private val obnoxiousyell = character("us/normal/obnoxiousyell", "Obnoxiousyell", "warrior", TalentTestData.BAND_60)
+    private val gorvash = character("us/normal/gorvash", "Gorvashyell", "warrior", TalentTestData.BAND_60)
     private val noExport = character("us/normal/quietone", "Quietone", "shaman", null)
 
     @Test fun `the button shows with an export of the build's class, else not`() {
-        assertEquals(lightningbolltz, SharedCompare.exportFor("shaman", lightningbolltz, listOf(lightningbolltz, obnoxiousyell)))
+        assertEquals(lightningbolltz, SharedCompare.exportFor("shaman", lightningbolltz, listOf(lightningbolltz, gorvash)))
         // The current character is a warrior: the account's shaman with an export is compared.
-        assertEquals(lightningbolltz, SharedCompare.exportFor("shaman", obnoxiousyell, listOf(obnoxiousyell, lightningbolltz)))
-        assertNull(SharedCompare.exportFor("shaman", noExport, listOf(noExport, obnoxiousyell)))
-        assertNull(SharedCompare.exportFor("mage", lightningbolltz, listOf(lightningbolltz, obnoxiousyell)))
+        assertEquals(lightningbolltz, SharedCompare.exportFor("shaman", gorvash, listOf(gorvash, lightningbolltz)))
+        assertNull(SharedCompare.exportFor("shaman", noExport, listOf(noExport, gorvash)))
+        assertNull(SharedCompare.exportFor("mage", lightningbolltz, listOf(lightningbolltz, gorvash)))
         assertNull(SharedCompare.exportFor("shaman", null, emptyList()))
     }
 

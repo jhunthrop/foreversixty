@@ -152,14 +152,22 @@ class BisListTest {
     }
 
     @Test
+    fun `a character with no reported spec opens on its class's first list`() {
+        val catalog = BisTestData.catalog()
+        val hunter = requireNotNull(BisTestData.me().mainCharacter).copy(className = "hunter", spec = null, level = 31)
+        val first = catalog.specsOf("hunter").first().spec
+        assertEquals(BisSelection("hunter", first, BisRange.forLevel(31), "horde"), BisSelection.forCharacter(hunter, catalog))
+    }
+
+    @Test
     fun `Yours and the way back follow the character's list`() {
         val own = BisTestData.raid
-        val context = BisContext(selection = own, characterSelection = own, characterName = "Obnoxious Yell")
+        val context = BisContext(selection = own, characterSelection = own, characterName = "Gorvash")
         assertTrue(context.isYours)
         assertNull(context.backTarget)
         val away = context.copy(selection = own.copy(faction = "alliance"))
         assertFalse(away.isYours)
-        assertEquals("Obnoxious Yell", away.backTarget?.first)
+        assertEquals("Gorvash", away.backTarget?.first)
         val signedOut = BisContext(selection = own)
         assertFalse(signedOut.isYours)
         assertNull(signedOut.backTarget)

@@ -26,7 +26,7 @@ class RaidRoleLinesTest {
     }
 
     @Test fun `your own character leads its role`() {
-        assertEquals(true, lines.of(raid)[2].names.startsWith("Obnoxious Yell, "))
+        assertEquals(true, lines.of(raid)[2].names.startsWith("Gorvash, "))
     }
 
     @Test fun `a Late answer carries its minutes`() {

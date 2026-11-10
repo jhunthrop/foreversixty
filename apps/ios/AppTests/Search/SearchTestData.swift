@@ -19,7 +19,7 @@ enum SearchTestData {
     )
 
     static let fury = AccountCharacter(
-        key: "us/pvp/obnoxious-yell", region: "us", ruleset: "pvp", name: "Obnoxious Yell",
+        key: "us/pvp/gorvash", region: "us", ruleset: "pvp", name: "Gorvash",
         source: "bnet", className: "warrior", level: 60, faction: "horde", spec: "Fury"
     )
 

@@ -18,7 +18,7 @@ enum TalentTestData {
     static let band50 = "34200000000000000-05153105022011501-000000000000000000"
     /// The Fury BiS file's level-60 raid guide build (51 points).
     static let band60 = "34320003002000000-05153105022011501-200000000000000000"
-    /// Obnoxious Yell's build in `me.json`: the level-60 path less Improved Bloodrage, 49 points.
+    /// Gorvash's build in `me.json`: the level-60 path less Improved Bloodrage, 49 points.
     static let yoursTrees: [[Int]] = ["34320003002", "05153105022011501", "0"].map { TalentRules.ranks(ofTree: $0) }
     /// `band60` without Fury's 5-point second talent: 46 points, 5 of `band50`'s missing, 10 stray.
     static let strayAndShort = "34320003002000000-00153105022011501-200000000000000000"

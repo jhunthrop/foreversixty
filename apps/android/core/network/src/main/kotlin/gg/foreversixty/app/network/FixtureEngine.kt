@@ -51,7 +51,8 @@ object FixtureEngine {
             val status = route.fixture?.let { variants[it]?.status } ?: route.status
             val file = FixtureRoutes.fileName(request.method, path, variants)
                 ?: return@MockEngine respond("", status)
-            val body = source.read(file)
+            val own = FixtureRoutes.characterFileName(request.method, path, variants)?.let(source::read)
+            val body = own ?: source.read(file)
                 ?: return@MockEngine respond(notFoundBody("$path -> $file"), HttpStatusCode.NotFound, jsonHeaders)
             respond(body, status, jsonHeaders)
         }

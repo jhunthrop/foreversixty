@@ -611,8 +611,8 @@
           "spec_key": "hunter-marksmanship",
           "also": [
             {
-              "character_key": "us/pvp/obnoxious-yell",
-              "name": "Obnoxious Yell",
+              "character_key": "us/pvp/gorvash",
+              "name": "Gorvash",
               "class": "warrior",
               "spec": "warrior-fury",
               "spec_key": "warrior-fury",
@@ -660,8 +660,8 @@
       "viewer": {
         "characters": [
           {
-            "character_key": "us/pvp/obnoxious-yell",
-            "name": "Obnoxious Yell",
+            "character_key": "us/pvp/gorvash",
+            "name": "Gorvash",
             "class": "warrior",
             "spec": "warrior-fury",
             "verified": true,
@@ -1123,10 +1123,10 @@
         }
       ]
     },
-    "moved": "Obnoxious Yell",
+    "moved": "Gorvash",
     "confirmation": {
       "title": "You're In for Onyxia's Lair",
-      "body": "Yellfury, pull at 7:00 pm CST. Obnoxious Yell moved to Bench."
+      "body": "Yellfury, pull at 7:00 pm CST. Gorvash moved to Bench."
     }
   },
   "error": null,

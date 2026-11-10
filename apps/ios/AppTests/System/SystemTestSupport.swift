@@ -65,7 +65,7 @@ enum SystemStory {
     }
 
     /// Your characters: the story's Lightningbolltz first, then me.json's own as the API names
-    /// them (lead ruling: `Obnoxious Yell`, level 58).
+    /// them (lead ruling: `Gorvash`, level 58).
     static func ownCharacters() throws -> [AccountCharacter] {
         let me = try RaidFixture.load(Me.self, "me")
         var json = try JSONSerialization.jsonObject(with: WireFormat.encoder().encode(try #require(me.characters.first))) as? [String: Any] ?? [:]
@@ -112,8 +112,8 @@ enum SystemStory {
     /// The compare's shared side (agreed with Android): builds.get.compare.json, `Fury raid`, 51 points.
     static func sharedBuild() throws -> Build { try RaidFixture.load(Build.self, "builds.get.compare") }
 
-    /// The compare's your side: me.json's Obnoxious Yell and his talent export.
-    static func obnoxiousYell() throws -> AccountCharacter {
+    /// The compare's your side: me.json's Gorvash and his talent export.
+    static func gorvash() throws -> AccountCharacter {
         try #require(try RaidFixture.load(Me.self, "me").characters.first)
     }
 

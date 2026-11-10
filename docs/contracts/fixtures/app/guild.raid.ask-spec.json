@@ -299,8 +299,8 @@
         "also": []
       },
       {
-        "character_key": "us/pvp/obnoxious-yell",
-        "name": "Obnoxious Yell",
+        "character_key": "us/pvp/gorvash",
+        "name": "Gorvash",
         "class": "warrior",
         "spec": "warrior-fury",
         "role": "dps",

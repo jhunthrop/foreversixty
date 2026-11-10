@@ -49,7 +49,7 @@ struct PlannerFollowupTests {
         )
         #expect(summary.totals == [17, 34, 0])
         let presenter = SharedBuildCompare.presenter(
-            content: SharedBuildContent(summary: summary, file: file), file: file, character: try SystemStory.obnoxiousYell()
+            content: SharedBuildContent(summary: summary, file: file), file: file, character: try SystemStory.gorvash()
         )
         #expect(presenter.status.tag == "Differs")
         #expect(presenter.status.sentence == "3 of your 49 points differ from the shared build.")

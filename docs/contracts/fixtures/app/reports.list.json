@@ -13,8 +13,8 @@
         "kill_count": 0,
         "boss_count": 0,
         "logging_character": {
-          "key": "us/pvp/obnoxious-yell",
-          "name": "Obnoxious Yell"
+          "key": "us/pvp/gorvash",
+          "name": "Gorvash"
         },
         "last_upload_at": "2026-12-16T00:31:12Z",
         "heartbeat_at": "2026-12-16T00:31:40Z",
@@ -31,8 +31,8 @@
         "kill_count": 1,
         "boss_count": 1,
         "logging_character": {
-          "key": "us/pvp/obnoxious-yell",
-          "name": "Obnoxious Yell"
+          "key": "us/pvp/gorvash",
+          "name": "Gorvash"
         },
         "last_upload_at": "2026-12-15T02:55:40Z",
         "heartbeat_at": "2026-12-15T02:55:30Z",
@@ -49,8 +49,8 @@
         "kill_count": 0,
         "boss_count": 0,
         "logging_character": {
-          "key": "us/pvp/obnoxious-yell",
-          "name": "Obnoxious Yell"
+          "key": "us/pvp/gorvash",
+          "name": "Gorvash"
         },
         "last_upload_at": "2026-12-12T04:02:10Z",
         "heartbeat_at": null,
@@ -67,8 +67,8 @@
         "kill_count": 0,
         "boss_count": 0,
         "logging_character": {
-          "key": "us/pvp/obnoxious-yell",
-          "name": "Obnoxious Yell"
+          "key": "us/pvp/gorvash",
+          "name": "Gorvash"
         },
         "last_upload_at": "2026-11-29T21:40:00Z",
         "heartbeat_at": null,

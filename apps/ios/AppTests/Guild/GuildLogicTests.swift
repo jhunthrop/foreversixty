@@ -65,7 +65,7 @@ struct RosterListTests {
     @Test("attendance sorts most nights present first; no attendance sorts last")
     func sortAttendance() throws {
         let sorted = try list().visible(role: .all, query: "", sort: .attendance)
-        #expect(sorted.first?.name == "Obnoxious Yell")
+        #expect(sorted.first?.name == "Gorvash")
         #expect(sorted.first?.standing == .attendance(present: 3, nights: 8))
         let tail = sorted.suffix(6)
         #expect(tail.allSatisfy { $0.standing == .waiting || $0.standing == .noAccount })
@@ -127,7 +127,7 @@ struct RosterListTests {
     @Test("rows with the same sort key keep name order")
     func tieOrder() throws {
         let byRank = try list().visible(role: .all, query: "", sort: .rank).map(\.name)
-        #expect(Array(byRank.prefix(5)) == ["Kraggor", "Draknar", "Mendara", "Obnoxious Yell", "Thokgar"])
+        #expect(Array(byRank.prefix(5)) == ["Kraggor", "Draknar", "Gorvash", "Mendara", "Thokgar"])
         let eights = try list().visible(role: .all, query: "", sort: .attendance)
             .filter { $0.standing == .attendance(present: 2, nights: 8) }.map(\.name)
         #expect(eights == eights.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending })

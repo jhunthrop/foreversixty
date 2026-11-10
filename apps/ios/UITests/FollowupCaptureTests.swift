@@ -25,7 +25,7 @@ final class FollowupCaptureTests: XCTestCase {
         try XCUIScreen.main.screenshot().pngRepresentation.write(to: Self.out.appending(path: "\(name)-ios.png"))
     }
 
-    /// Home and Gear for Obnoxious Yell (level 58): both on `50 to 59`.
+    /// Home and Gear for Gorvash (level 58): both on `50 to 59`.
     func testHomeAndBisShareTheBand() throws {
         let app = CaptureLaunch.signedIn(tab: "home")
         sleep(5)
@@ -53,7 +53,7 @@ final class FollowupCaptureTests: XCTestCase {
             app.tabBars.buttons["Home"].tap()
             sleep(4)
             try save("selector-home-\(size)")
-            CaptureLaunch.switchCharacter(app, to: "Obnoxious Yell")
+            CaptureLaunch.switchCharacter(app, to: "Gorvash")
             app.terminate()
         }
     }

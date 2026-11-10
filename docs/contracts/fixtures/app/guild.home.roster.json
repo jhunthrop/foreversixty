@@ -267,7 +267,7 @@
         "character_key": "us/pvp/grimtusk"
       },
       {
-        "name": "Obnoxious Yell",
+        "name": "Gorvash",
         "state": "approved",
         "rank": "officer",
         "class": "warrior",
@@ -277,7 +277,7 @@
         "role": "dps",
         "spec_name": "Fury Warrior",
         "spec_icon": "ability_warrior_innerrage",
-        "character_key": "us/pvp/obnoxious-yell"
+        "character_key": "us/pvp/gorvash"
       },
       {
         "name": "Korrakh",
@@ -542,7 +542,7 @@
         "ranged": 6
       },
       "own": {
-        "character_key": "us/pvp/obnoxious-yell",
+        "character_key": "us/pvp/gorvash",
         "state": "in",
         "role": "dps",
         "note": ""
@@ -1299,7 +1299,7 @@
           "present": 3,
           "nights": 8
         },
-        "character_key": "us/pvp/obnoxious-yell",
+        "character_key": "us/pvp/gorvash",
         "class": "warrior",
         "consent": "gear",
         "last_report_at": "2026-12-19T03:28:00Z",
@@ -1309,7 +1309,7 @@
         "is_main": false,
         "sim_export": false,
         "may_remove": false,
-        "name": "Obnoxious Yell",
+        "name": "Gorvash",
         "rank": "officer",
         "region": "us",
         "role": "dps",
@@ -1932,7 +1932,7 @@
     },
     "viewer": {
       "role": "officer",
-      "character_key": "us/pvp/obnoxious-yell",
+      "character_key": "us/pvp/gorvash",
       "verified": true,
       "officer_tools": false,
       "raid_guild_tools": false,

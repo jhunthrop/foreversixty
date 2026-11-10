@@ -85,7 +85,7 @@ class ShortcutLogicTest {
         val service = FakeRaidService()
         assertEquals(SignupShortcutResult.Signed("Onyxia's Lair"), runner(service).run())
         val (key, request) = service.signups.single()
-        assertEquals("us/pvp/obnoxious-yell", key)
+        assertEquals("us/pvp/gorvash", key)
         assertEquals("in", request.state)
         assertEquals(onyxia.signups.firstOrNull { it.characterKey == key }?.note.orEmpty(), request.note)
     }

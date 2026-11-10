@@ -200,7 +200,7 @@ struct RosterTests {
 @MainActor
 @Suite("Sign-up")
 struct SignupControllerTests {
-    let key = "us/pvp/obnoxious-yell"
+    let key = "us/pvp/gorvash"
 
     @Test("a press draws at once, saves, says Saved. and plays selection then success")
     func pressSaves() async throws {
@@ -303,7 +303,7 @@ struct SignupControllerTests {
         await controller.press("us/pvp/yellfury", .signedIn)
         #expect(controller.block("us/pvp/yellfury").shown == .signedIn)
         #expect(controller.block(key).shown == .bench)
-        #expect(controller.block(key).status == .info("Obnoxious Yell moved to Bench."))
+        #expect(controller.block(key).status == .info("Gorvash moved to Bench."))
     }
 
     @Test("a locked raid disables a member's segments and keeps an officer's")
@@ -451,7 +451,7 @@ struct RaidPushTests {
     func parse() throws {
         let push = try payload()
         #expect(push.guild == 2 && push.raid == 31)
-        #expect(push.characterKey == "us/pvp/obnoxious-yell")
+        #expect(push.characterKey == "us/pvp/gorvash")
         #expect(!push.askSpec)
         #expect(RaidPushCategory.signup(forAction: "signup_late") == PushSignup(state: "late"))
         #expect(RaidPushCategory.signup(forAction: "signup_bench") == PushSignup(state: "bench"))
@@ -464,10 +464,10 @@ struct RaidPushTests {
     func answersIn() async throws {
         let service = FakeRaidService()
         let outcome = try await answer(service, PushSignup(state: "in"))
-        #expect(service.signups.first?.key == "us/pvp/obnoxious-yell")
+        #expect(service.signups.first?.key == "us/pvp/gorvash")
         #expect(service.signups.first?.request.state == "in")
         #expect(service.signups.first?.request.lateMinutes == nil)
-        #expect(outcome == .answered(.init(title: "You're In for Onyxia's Lair", body: "Obnoxious Yell, pull at 7:00 pm CST.")))
+        #expect(outcome == .answered(.init(title: "You're In for Onyxia's Lair", body: "Gorvash, pull at 7:00 pm CST.")))
     }
 
     @Test("a Late chip sends its minutes")
@@ -487,7 +487,7 @@ struct RaidPushTests {
             Issue.record("not answered")
             return
         }
-        #expect(confirmation.body.hasSuffix(" Obnoxious Yell moved to Bench."))
+        #expect(confirmation.body.hasSuffix(" Gorvash moved to Bench."))
     }
 
     @Test("a locked raid posts the locked line; a failure posts the failed one")
@@ -514,7 +514,7 @@ struct RaidPushTests {
     @Test("with no pick and two unsigned characters, the tap opens the page")
     func noPick() throws {
         let push = try payload(["character_key": ""])
-        #expect(RaidPushAnswerer.character(for: push, in: try RaidFixture.raid("guild.raid.two-characters"))?.characterKey == "us/pvp/obnoxious-yell")
+        #expect(RaidPushAnswerer.character(for: push, in: try RaidFixture.raid("guild.raid.two-characters"))?.characterKey == "us/pvp/gorvash")
         #expect(RaidPushAnswerer.character(for: push, in: try RaidFixture.raid("guild.raid.ask-spec"))?.characterKey == "us/pvp/lightningbolltz")
     }
 }

@@ -89,7 +89,7 @@ class GuildLogicTest {
     @Test
     fun `rank sort is leader, officers, members, each by name`() {
         val sorted = names(RosterQuery(sort = RosterSort.Rank))
-        assertEquals(listOf("Kraggor", "Draknar", "Mendara", "Obnoxious Yell", "Thokgar"), sorted.take(5))
+        assertEquals(listOf("Kraggor", "Draknar", "Gorvash", "Mendara", "Thokgar"), sorted.take(5))
         val members = sorted.drop(5)
         assertTrue(members.all { entry(it).rank == GuildRank.Member })
         assertEquals(members.sortedWith(String.CASE_INSENSITIVE_ORDER), members)
@@ -115,7 +115,7 @@ class GuildLogicTest {
     fun `name, attendance and level sorts`() {
         assertEquals("Arrowmane", names(RosterQuery(sort = RosterSort.Name)).first())
         val byAttendance = RosterList.apply(entries, RosterQuery(sort = RosterSort.Attendance))
-        assertEquals("Obnoxious Yell", byAttendance.first().name)
+        assertEquals("Gorvash", byAttendance.first().name)
         assertEquals(RosterStanding.Attended(3, 8), byAttendance.first().standing)
         assertEquals(RosterStanding.Attended(0, 8), byAttendance.first { it.name == "Quillara" }.standing)
         assertTrue(byAttendance.indexOfFirst { it.name == "Quillara" } < byAttendance.indexOfFirst { it.name == "Voidsong" })
