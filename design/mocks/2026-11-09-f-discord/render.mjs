@@ -18,7 +18,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "../../..");
-const REVIEW = path.join(ROOT, "design/reviews/2026-11-09-f-discord");
+// REVIEW_DIR points the boards at another review's payloads/ (and writes its discord/ beside them).
+const REVIEW = process.env.REVIEW_DIR ?? path.join(ROOT, "design/reviews/2026-11-09-f-discord");
 const PAYLOADS = path.join(REVIEW, "payloads");
 const OUT = path.join(REVIEW, "discord");
 const NODE_MODULES = process.argv[2] ?? path.join(ROOT, "web/node_modules");

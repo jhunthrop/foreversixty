@@ -21,7 +21,7 @@ var appConfirmCopy = struct {
 	Heading:  "Sign in to the app",
 	Body:     "Sign in on Battle.net and the app picks it up from there.",
 	Button:   "Continue to Battle.net",
-	NotYou:   "Didn't start this sign-in from the app? Close this page.",
+	NotYou:   "Didn’t start this sign-in from the app? Close this page.",
 	Wordmark: "Forever Sixty",
 }
 
