@@ -22,6 +22,18 @@ enum ParityCheck {
     /// on the phone, moving New for you 13 down.
     static let expectedDrift: [String: [Drift]] = [
         "home-34": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "M1i")],
+        // The runner's Chromium sets a low-level row's crest inline, on the line's baseline, so each such
+        // row is 4 to 5 taller in the mock than the 48 pt row the drawer draws.
+        "menu-low": [
+            Drift(prefix: "section-tools: y", since: "2026-11-10", lane: "M5i"),
+            Drift(prefix: "section-account: y", since: "2026-11-10", lane: "M5i"),
+        ],
+        // The web system's rows set the mock's Send me 12 shorter since batch H; Notifications keeps its
+        // rows until the secondary screens' restyle.
+        "notification-settings": [
+            Drift(prefix: "section-when: y", since: "2026-11-10", lane: "secondary restyle"),
+            Drift(prefix: "section-discord: y", since: "2026-11-10", lane: "secondary restyle"),
+        ],
     ]
 
     /// Room under the content for the safe area and the screen's own bottom padding.

@@ -149,12 +149,12 @@ struct ActivityFilterChips: View {
                         .accessibilityAddTraits(item == filter ? .isSelected : [])
                 }
             }
-            .padding(.leading, FSSpace.space4)
             .padding(.trailing, FSSpace.space4)
             .padding(.top, 2)
             .padding(.bottom, FSSpace.space2)
         }
         .parityRegion(.controls)
+        .padding(.leading, FSSpace.space4)
     }
 
     private struct ChipStyle: ButtonStyle {

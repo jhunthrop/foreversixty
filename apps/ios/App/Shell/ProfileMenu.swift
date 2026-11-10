@@ -179,15 +179,15 @@ struct ProfileMenuView: View {
                         .foregroundStyle(ClassColor.of(you.className))
                         .accessibilityAddTraits(.isHeader)
                     VStack(alignment: .leading, spacing: FSSpace.space1) {
-                        Text(AccountCopy.characterLine(you)).type(FSType.small).foregroundStyle(FSColor.text)
+                        Text(AccountCopy.characterLine(you)).type(MenuType.line).foregroundStyle(FSColor.text)
                         if summary.isMain { MainTag() }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .parityRegion(.headMeta)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .parityRegion(.headTitle)
-            .parityRegion(.head)
             if let stamp = summary.stamp {
                 HStack(spacing: 0) {
                     Text(stamp + " · ").type(TypeRole(face: FSFont.body, size: 12, lineHeight: 16, scalesWith: .caption))
@@ -196,25 +196,30 @@ struct ProfileMenuView: View {
                         .foregroundStyle(FSColor.gold)
                 }
                 .foregroundStyle(FSColor.text)
-                .frame(minHeight: FSTarget.min + FSSpace.space1)
+                .frame(minHeight: Self.rowMin)
                 .padding(.top, FSSpace.space1)
             }
         }
+        .parityRegion(.head)
     }
 
     private var signedOut: some View {
-        VStack(alignment: .leading, spacing: FSSpace.space1) {
-            Text(Copy.appName)
-                .type(TypeRole(face: FSFont.title, size: 26, lineHeight: 32, scalesWith: .title2))
-                .foregroundStyle(FSColor.cream)
-                .accessibilityAddTraits(.isHeader)
-            Text(Copy.signinBody).type(FSType.small).foregroundStyle(FSColor.text).parityRegion(.headMeta)
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: FSSpace.space1) {
+                Text(Copy.appName)
+                    .type(TypeRole(face: FSFont.title, size: 26, lineHeight: 32, scalesWith: .title2))
+                    .foregroundStyle(FSColor.cream)
+                    .accessibilityAddTraits(.isHeader)
+                Text(Copy.signinBody).type(MenuType.line).foregroundStyle(FSColor.text)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .parityRegion(.headMeta)
+            }
+            .parityRegion(.headTitle)
             FSButton(Copy.signinButton, kind: .primary, action: actions.signIn)
                 .disabled(signingIn)
-                .padding(.top, FSSpace.space3)
+                .padding(.top, FSSpace.space4)
                 .padding(.bottom, FSSpace.space1)
         }
-        .parityRegion(.headTitle)
         .parityRegion(.head)
     }
 
@@ -228,7 +233,7 @@ struct ProfileMenuView: View {
                         MenuRow(
                             title: character.name, titleColor: ClassColor.of(character.className), sub: AccountCopy.characterLine(character),
                             last: index == shown.count - 1 && summary.lowLevel.isEmpty
-                        ) { CharacterPortrait(character, size: Self.rowPortrait) }
+                        ) { CharacterPortrait(character, size: Self.rowPortrait, crestFallback: true) }
                     }
                     .buttonStyle(RowPressStyle())
                 }
@@ -319,8 +324,8 @@ private struct MenuRow<Lead: View>: View {
         HStack(spacing: FSSpace.space3) {
             lead
             VStack(alignment: .leading, spacing: 0) {
-                Text(title).type(FSType.item).foregroundStyle(titleColor)
-                if let sub { Text(sub).type(RowType.sub).foregroundStyle(FSColor.muted) }
+                Text(title).type(MenuType.title).foregroundStyle(titleColor)
+                if let sub { Text(sub).type(MenuType.sub).foregroundStyle(FSColor.muted) }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -331,4 +336,11 @@ private struct MenuRow<Lead: View>: View {
         .accessibilityElement(children: .combine)
         .parityItem(.row)
     }
+}
+
+/// The drawer's line boxes (MENU_R5_CSS): a row's title 15/20.57 and line 13/18.29, You's line 13/20.57.
+private enum MenuType {
+    static var title: TypeRole { TypeRole(face: FSFont.bodyBold, size: 15, lineHeight: 20.57, scalesWith: .body) }
+    static var sub: TypeRole { TypeRole(face: FSFont.body, size: 13, lineHeight: 18.29, scalesWith: .footnote) }
+    static var line: TypeRole { TypeRole(face: FSFont.body, size: 13, lineHeight: 20.57, scalesWith: .footnote) }
 }

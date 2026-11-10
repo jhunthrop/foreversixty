@@ -27,7 +27,7 @@
     16,
     104,
     361,
-    371
+    359
    ],
    "inventory": {
     "row": 5
@@ -36,9 +36,20 @@
   "section-when": {
    "box": [
     16,
-    503,
+    491,
     361,
     125
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-discord": {
+   "box": [
+    16,
+    644,
+    361,
+    111
    ],
    "inventory": {
     "row": 1
