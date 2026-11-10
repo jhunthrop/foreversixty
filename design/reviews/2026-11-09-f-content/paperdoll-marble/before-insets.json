@@ -1,0 +1,50 @@
+{
+ "bis@1024": {
+  "centre": {
+   "x": 331,
+   "w": 376
+  },
+  "tipLeftInset": 26,
+  "tipRightInset": 26
+ },
+ "guide@1024": {
+  "centre": {
+   "x": 436,
+   "w": 376
+  },
+  "tipLeftInset": 26,
+  "tipRightInset": 26
+ },
+ "bis@1440": {
+  "centre": {
+   "x": 235,
+   "w": 376
+  },
+  "tipLeftInset": 26,
+  "tipRightInset": 26
+ },
+ "guide@1440": {
+  "centre": {
+   "x": 468,
+   "w": 332
+  },
+  "tipLeftInset": 23,
+  "tipRightInset": 23
+ },
+ "bis@2000": {
+  "centre": {
+   "x": 473,
+   "w": 446
+  },
+  "tipLeftInset": 30,
+  "tipRightInset": 30
+ },
+ "guide@2000": {
+  "centre": {
+   "x": 564,
+   "w": 376
+  },
+  "tipLeftInset": 26,
+  "tipRightInset": 26
+ }
+}

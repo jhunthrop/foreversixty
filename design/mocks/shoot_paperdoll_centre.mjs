@@ -42,6 +42,10 @@ for (const width of [390, 1024, 1440, 2000]) {
       await page.setViewportSize({ width, height: 1300 });
       continue;
     }
+    // No slot hovered: the doll's default selection, as a reader first sees it.
+    await page.mouse.move(0, 0);
+    await page.waitForTimeout(200);
+    await frame.screenshot({ path: `${OUT}${TAG}-${name}-${width}-idle.png` });
     await slot.hover();
     await page.waitForTimeout(300);
     if (OLD_ART) {
