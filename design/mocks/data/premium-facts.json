@@ -9,13 +9,13 @@
   "band": {
    "eyebrow": "PLANS",
    "heading": "What is free, and what the plans add",
-   "lede": "Everything a player needs is free, and the free list never shrinks. Premium and the guild plans pay for the site. There are no ads for anyone.",
+   "lede": "The free list never shrinks. Premium and the guild plans pay for the site, and there are no ads for anyone.",
    "guildLead": "Running a guild?",
-   "guildLink": "Guild and Raid guild are further down"
+   "guildLink": "Guild plans"
   },
   "guildRegion": {
    "heading": "For guild leaders",
-   "lede": "One officer pays, and the whole guild gets raids, sign-ups and attendance. Members never pay to sign up.",
+   "lede": "The Discord bot, raid posts, sign-ups and the recruiting channel are free for every claimed guild. A plan adds the officer tools. Members never pay.",
    "members": "Plans count verified members: players with a Forever Sixty account whose character the guild has confirmed. People in your Discord without an account do not count."
   },
   "founder": {
@@ -83,9 +83,9 @@
    "name": "Guild",
    "audience": "Up to 25 verified members",
    "features": [
-    "Raids posted on the site and in Discord, one-tap sign-ups.",
+    "Comp targets, a ping for whoever has not signed, boss assignments.",
     "Attendance and a report for every raid night from its log.",
-    "The Forever Sixty bot in Discord: raid posts, /bis and /char.",
+    "Logs matched to raids, attendance fixes, the night's report in Discord.",
     "1 Premium seat to give a member.",
     "Fits a guild that runs 10- or 20-person raids."
    ]
@@ -123,7 +123,7 @@
    "fixFirst": "Fix first",
    "then": "Then",
    "doingWell": "Doing well",
-   "caption": "A sample review. Yours is written from your own log after every raid you upload.",
+   "caption": "From your own log, after each raid you upload.",
    "ariaLabel": "A sample coach review"
   },
   "historyPromise": "If a guild plan ends, its raids, attendance, loot and reports stay readable for good, and officers can export attendance and loot as CSV at any time.",
@@ -135,7 +135,7 @@
    },
    {
     "term": "Size",
-    "sentence": "Guild counts verified members each day, the leader included. Above 25 the officer is told before renewal and offered Raid guild. Nothing switches off mid-plan."
+    "sentence": "Guild counts verified members each day, the leader included. Above 25 the officer is told before renewal and offered Raid guild."
    },
    {
     "term": "Paying together",
@@ -159,7 +159,7 @@
    },
    {
     "term": "Renewals",
-    "sentence": "We email 7 days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in one click; the plan runs to the end of the period you paid for."
+    "sentence": "We email 7 days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in Manage billing; the plan runs to the end of the period you paid for."
    },
    {
     "term": "A new guild leader",
@@ -178,7 +178,7 @@
    },
    {
     "question": "Is anything from Battle.net ever paid?",
-    "answer": "No. Your characters, your sign-in, and everything the game itself tells us about you stays free, always. Blizzard's own rules for using their data require this, and we would want it that way regardless."
+    "answer": "No. Your characters, your sign-in, and everything the game itself tells us about you stays free, always. Blizzard's own rules for using their data require this."
    },
    {
     "question": "Are there ads?",
@@ -451,7 +451,7 @@
   "notOpenYet": "Purchases are not open yet. Nothing was charged. Check back soon.",
   "genericFailure": "That did not work; try again.",
   "processing": "Confirming your payment…",
-  "confirmed": "You're all set.",
+  "confirmed": "Payment confirmed.",
   "confirmationSlow": "This can take a moment; refresh if it does not update.",
   "retry": "Try again",
   "whichGuild": "Which guild?",
@@ -564,9 +564,9 @@
   "lead": {
    "ready": "Choose the guild this plan is for.",
    "allUnclaimed": "[fn]",
-   "someClaimed": "A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. Here is the next step for each of your guilds.",
-   "canClaim": "You can claim a guild here. Each card below has its next step.",
-   "allClaimed": "Whoever holds a guild's claim subscribes it. Here is where each of your guilds stands."
+   "someClaimed": "A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it.",
+   "canClaim": "You can claim a guild here.",
+   "allClaimed": "Whoever holds a guild's claim subscribes it."
   },
   "rank": {
    "leader": "Guild master",
@@ -806,8 +806,11 @@
  },
  "account": {
   "title": "Your account",
-  "signedInWithBattlenet": "Signed in with Battle.net",
-  "signedInByEmail": "Signed in by email",
+  "battletagLabel": "BattleTag",
+  "emailLabel": "Email",
+  "signInLabel": "Sign-in",
+  "signInBattlenet": "Battle.net",
+  "signInEmail": "Email",
   "signOut": "Sign out",
   "devicesLabel": "Devices",
   "youLabel": "You",
@@ -879,6 +882,7 @@
  },
  "characters_copy": {
   "heading": "Characters",
+  "itemLevel": "[fn]",
   "empty": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.",
   "emptyLead": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.",
   "emptyKorea": "Playing in Korea? Install the addon and the companion, or paste an export.",
@@ -976,8 +980,8 @@
   "test": "Send test message",
   "testing": "Sending…",
   "testAndSwitchOn": "Test and switch on",
-  "remove": "Unlink Discord",
-  "removing": "Unlinking…",
+  "remove": "Remove channel",
+  "removing": "Removing…",
   "removeQuestionPasted": "Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.",
   "removeQuestionConnected": "Remove this connection? Posts stop and we delete its webhook from Discord.",
   "replace": "Use a different webhook",
@@ -988,6 +992,7 @@
   "connectInstead": "Connect a Discord channel instead",
   "reconnect": "Connect a different channel",
   "reconnectNote": "Connecting again replaces this channel and removes its webhook from Discord.",
+  "reconnectAside": "The old channel stops getting posts.",
   "returnConnected": "Connected. Send a test message to see it in your channel.",
   "returnDenied": "Cancelled in Discord. Nothing was connected.",
   "returnFailed": "Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.",
@@ -1083,20 +1088,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1105,7 +1096,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1154,7 +1146,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": null,
    "characters": [],
    "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
@@ -1202,20 +1193,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1224,7 +1201,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     },
     {
      "name": "Brisa",
@@ -1233,7 +1211,8 @@
      "guild": null,
      "main": false,
      "source": null,
-     "level": 19
+     "level": 19,
+     "itemLevel": null
     },
     {
      "name": "Korrin",
@@ -1242,7 +1221,8 @@
      "guild": null,
      "main": false,
      "source": "addon",
-     "level": 27
+     "level": 27,
+     "itemLevel": null
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1294,20 +1274,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Thandrel",
-    "classSlug": "warrior",
-    "levelLine": "Level 60 Fury Warrior",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Thandrel",
-     "href": "/character/us/normal/thandrel"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/warrior/fury/60"
-    }
-   },
    "characters": [
     {
      "name": "Thandrel",
@@ -1316,7 +1282,8 @@
      "guild": "Olympus XXVII",
      "main": true,
      "source": "addon",
-     "level": 60
+     "level": 60,
+     "itemLevel": "Item level 61"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1411,20 +1378,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1433,7 +1386,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1504,20 +1458,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1526,7 +1466,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1594,20 +1535,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1616,7 +1543,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1685,20 +1613,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1707,7 +1621,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1786,20 +1701,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1808,7 +1709,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1886,20 +1788,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1908,7 +1796,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1960,20 +1849,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1982,7 +1857,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -2050,20 +1926,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Thandrel",
-    "classSlug": "warrior",
-    "levelLine": "Level 60 Fury Warrior",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Thandrel",
-     "href": "/character/us/normal/thandrel"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/warrior/fury/60"
-    }
-   },
    "characters": [
     {
      "name": "Thandrel",
@@ -2072,7 +1934,8 @@
      "guild": "Olympus XXVII",
      "main": true,
      "source": "addon",
-     "level": 60
+     "level": 60,
+     "itemLevel": "Item level 61"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -2226,7 +2089,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -2339,7 +2202,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -2601,7 +2464,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -2691,7 +2554,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -2781,7 +2644,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -2871,7 +2734,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -2982,7 +2845,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -3081,7 +2944,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -3169,7 +3032,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,

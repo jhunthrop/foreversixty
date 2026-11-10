@@ -13,7 +13,12 @@ var ColorBaseHover = color.NRGBA{R: 0x24, G: 0x1B, B: 0x15, A: 0xFF}
 
 var ColorBasePressed = color.NRGBA{R: 0x2E, G: 0x24, B: 0x1D, A: 0xFF}
 
-var ColorBaseSelected = color.NRGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0x12}
+// The one selected state's ground (owner 2026-11-09, design/reviews/2026-11-09-selected): on the
+// web the accent tint under a selected row, cell or tab and the viewer's own row, with the accent
+// bar or underline (elevation.selectedBar, selectedUnderline). Keyboard focus stays the gold ring,
+// so the two never read alike. The apps keep the gold wash until the mobile lane adopts the
+// palette.
+var ColorBaseSelected = color.NRGBA{R: 0x00, G: 0x93, B: 0xB2, A: 0x29}
 
 var ColorBaseLine = color.NRGBA{R: 0x3D, G: 0x34, B: 0x2D, A: 0xFF}
 
@@ -33,29 +38,19 @@ var ColorBaseGoldHover = color.NRGBA{R: 0xF7, G: 0xB9, B: 0x0A, A: 0xFF}
 
 var ColorBaseNight = color.NRGBA{R: 0x07, G: 0x1D, B: 0x2E, A: 0xFF}
 
-var ColorLegacyCardTop = color.NRGBA{R: 0x17, G: 0x0E, B: 0x09, A: 0xFF}
+var ColorLegacyCardTop = color.NRGBA{R: 0x13, G: 0x18, B: 0x24, A: 0xFF}
 
-var ColorLegacyLineWarm = color.NRGBA{R: 0x4A, G: 0x3F, B: 0x34, A: 0xFF}
+var ColorLegacyLineWarm = color.NRGBA{R: 0x3A, G: 0x33, B: 0x26, A: 0xFF}
 
-var ColorLegacyLineWarmStrong = color.NRGBA{R: 0x82, G: 0x70, B: 0x5B, A: 0xFF}
+var ColorLegacyLineWarmStrong = color.NRGBA{R: 0x4A, G: 0x40, B: 0x30, A: 0xFF}
 
-var ColorLegacyLineCard = color.NRGBA{R: 0x82, G: 0x70, B: 0x5B, A: 0x8C}
+var ColorLegacyLineCard = color.NRGBA{R: 0xE5, G: 0xB9, B: 0x55, A: 0x2B}
 
-var ColorLegacyGoldDeep = color.NRGBA{R: 0xB8, G: 0xA2, B: 0x4A, A: 0xFF}
+var ColorLegacyGoldDeep = color.NRGBA{R: 0xA8, G: 0x76, B: 0x2A, A: 0xFF}
 
-var ColorLegacyGoldLight = color.NRGBA{R: 0xFF, G: 0xF6, B: 0xC4, A: 0xFF}
+var ColorLegacyGoldLight = color.NRGBA{R: 0xFB, G: 0xE7, B: 0xA1, A: 0xFF}
 
 var ColorLegacyEmber = color.NRGBA{R: 0xD6, G: 0x6E, B: 0x28, A: 0xFF}
-
-var ColorLegacyRowHover = color.NRGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0x0D}
-
-// A link row's hover band (global.css .row-band-hover): a raised ground with a hairline ring, so
-// the rounded band reads on the dark card at every width.
-var ColorLegacyRowBandHover = color.NRGBA{R: 0x24, G: 0x1B, B: 0x15, A: 0xFF}
-
-var ColorLegacyTile = color.NRGBA{R: 0xFF, G: 0xEC, B: 0x71, A: 0x1F}
-
-var ColorLegacyTileInk = color.NRGBA{R: 0xFF, G: 0xEC, B: 0x71, A: 0xFF}
 
 var ColorOutcomeKill = color.NRGBA{R: 0x7F, G: 0xD4, B: 0x8A, A: 0xFF}
 
@@ -182,7 +177,8 @@ var ColorForeverTeal = color.NRGBA{R: 0x0F, G: 0x60, B: 0x64, A: 0xFF}
 // c: the primary button's edge and Premium (their Subscribe, exactly).
 var ColorForeverTealEdge = color.NRGBA{R: 0x40, G: 0x80, B: 0x76, A: 0xFF}
 
-// s: the current tab's underline and the chart accent.
+// s: the current tab's underline and the chart accent; as --color-selected-mark, every selected,
+// current and own mark (the bar, the underline, the Yours tag's edge).
 var ColorForeverAccent = color.NRGBA{R: 0x00, G: 0x93, B: 0xB2, A: 0xFF}
 
 // c: the secondary button (their Upgrade Now).
@@ -228,6 +224,10 @@ var ColorForeverTooltipInner = color.NRGBA{R: 0x2B, G: 0x30, B: 0x40, A: 0xFF}
 
 // The client tooltip yellow: descriptions, the gain line.
 var ColorForeverTooltipYellow = color.NRGBA{R: 0xFF, G: 0xD1, B: 0x00, A: 0xFF}
+
+// A warning's ink: a slow checkout, a busy coach, a warning tag, the sim timeline's warn mark
+// (Direction B's ember, kept by the P15 sweep).
+var ColorForeverWarn = color.NRGBA{R: 0xD6, G: 0x6E, B: 0x28, A: 0xFF}
 
 const Space1 = 4
 
@@ -293,9 +293,9 @@ const RadiusWidget = 22
 
 const RadiusSheet = 12
 
-const RadiusLegacyPanel = 10
+const RadiusLegacyPanel = 12
 
-const RadiusLegacyControl = 6
+const RadiusLegacyControl = 8
 
 const RadiusLegacyPill = 6
 

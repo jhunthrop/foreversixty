@@ -182,14 +182,14 @@ def class_picker() -> str:
 def lookup() -> str:
     L = C['lookup']
     ruleset = next(r['label'] for r in C['rulesets'] if r['id'] == 'normal') if isinstance(C['rulesets'][0], dict) else 'Normal'
-    # FormRow as the shipped lookup is built: a form, the name a combobox (the typeahead), a submit button, then the hint and
+    # FormRow as the shipped lookup is built: a form, the name a combobox (the typeahead), a submit button, then
     # the status line its two validation sentences are written into (empty until a submit)
     name = f'<span class="field grow" role="combobox" aria-label="{e(L["nameLabel"])}">{e(L["namePlaceholder"])}</span>'
     form = (FormRow([(e(L['nameLabel']), name, True), (e(L['regionLabel']), Select(C['regions'][0].upper()), False),
                      (e(L['rulesetLabel']), Select(e(ruleset)), False)], Button(e(L['submit']), primary=True))
             .replace('<div class="formrow">', f'<form class="formrow" aria-label="{e(L["heading"])}">', 1).removesuffix('</div>') + '</form>')
     form = form.replace('<a class="btn primary" href="#">', '<button type="submit" class="btn primary">', 1).replace(f'{e(L["submit"])}</a>', f'{e(L["submit"])}</button>', 1)
-    return Section(e(L['heading']), f'<p class="t-small nf-aside">{e(L["aside"])}</p>{form}<p class="t-small nf-hint">{e(L["hint"])}</p>'
+    return Section(e(L['heading']), f'<p class="t-small nf-aside">{e(L["aside"])}</p>{form}'
                    '<p class="t-small nf-status" role="status"></p>')
 
 
