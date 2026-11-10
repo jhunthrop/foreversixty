@@ -29,7 +29,7 @@ struct OfflineDataView: View {
                 switches
                 actions
                 Text(words.footer(checkedAt: checkedAt, now: now))
-                    .font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    .font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .padding(FSSpace.space4)

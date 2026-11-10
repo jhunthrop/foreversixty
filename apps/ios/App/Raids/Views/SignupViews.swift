@@ -2,72 +2,21 @@ import DesignSystem
 import Models
 import SwiftUI
 
-/// The four segments (spec F4.3): In, Late, Bench, Out; 2 x 2 from AX1.
+/// The four answers (spec F4.3): In, Late, Bench, Out, drawn as the tab roots' answers
+/// (`RaidAnswerButtons`), so an answer looks the same on Home, the Raid tab, the raid page and raid
+/// night; 2 x 2 at the accessibility sizes.
 struct SegmentsView: View {
     let characterName: String
     let block: SignupBlock
     let enabled: Bool
     let press: (SignupState) -> Void
-    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        Group {
-            if typeSize >= .accessibility1 {
-                Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-                    GridRow { segment(.signedIn); segment(.late) }
-                    GridRow { segment(.bench); segment(.out) }
-                }
-            } else {
-                HStack(spacing: 0) { ForEach(SignupState.allCases) { segment($0) } }
-            }
-        }
-        .background(FSColor.raised)
-        .clipShape(RoundedRectangle(cornerRadius: FSRadius.legacyControl))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line))
-        .opacity(enabled ? 1 : 0.5)
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel(Copy.raidsA11ySegments(name: characterName))
-    }
-
-    private func segment(_ state: SignupState) -> some View {
-        let checked = block.shown == state
-        let pending = block.pending == state
-        return Button { press(state) } label: {
-            Text(state.label)
-                .font(ScaledType.segment)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
-                .foregroundStyle(checked ? FSColor.strong : FSColor.muted)
-                .frame(maxWidth: .infinity, minHeight: 48)
-                .background(checked ? (state.isComing ? FSColor.kill.opacity(0.15) : FSColor.lineWarm) : .clear)
-                .overlay(alignment: .bottom) {
-                    if checked { Rectangle().fill(state.isComing ? FSColor.kill : FSColor.muted).frame(height: 2) }
-                }
-                .overlay {
-                    if pending {
-                        RoundedRectangle(cornerRadius: FSRadius.legacyControl - 2)
-                            .strokeBorder(FSColor.gold, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
-                            .padding(4)
-                    }
-                }
-                .overlay(alignment: .trailing) {
-                    if state != .out { Rectangle().fill(FSColor.line).frame(width: 1) }
-                }
-        }
-        .buttonStyle(SegmentPressStyle(state: state))
-        .disabled(!enabled)
-        .accessibilityAddTraits(checked ? .isSelected : [])
-        .accessibilityValue(checked && block.busy ? Copy.raidsA11ySaving : pending ? Copy.raidsA11yPending : "")
-    }
-}
-
-private struct SegmentPressStyle: ButtonStyle {
-    let state: SignupState
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label.background(
-            configuration.isPressed ? (state.isComing ? FSColor.kill.opacity(0.09) : FSColor.lineWarm.opacity(0.6)) : .clear
+        RaidAnswerButtons(
+            selected: block.shown, pending: block.pending, busy: block.busy,
+            accessibilityLabel: Copy.raidsA11ySegments(name: characterName), answer: press
         )
+        .disabled(!enabled)
     }
 }
 

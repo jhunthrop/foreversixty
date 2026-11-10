@@ -29,7 +29,7 @@ struct SimsListView: View {
             SimsTitle(text: Copy.simsTitle)
             switch phase {
             case .loading: SimsSkeleton()
-            case .failed: errorBlock(Copy.simsFailedLoad)
+            case .failed: errorCard(Copy.simsFailedLoad)
             case let .loaded(content): loaded(content)
             }
         }
@@ -139,17 +139,7 @@ struct SimsListView: View {
     }
 
     private func errorCard(_ text: String) -> some View {
-        errorBlock(text).quietCard()
-    }
-
-    private func errorBlock(_ text: String) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(text).font(ScaledType.lead).foregroundStyle(FSColor.wipe)
-                .accessibilityAddTraits(.isStaticText)
-            SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: actions.retry)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        LoadError(text, retryLabel: Copy.commonTryAgain, retry: actions.retry)
     }
 }
 

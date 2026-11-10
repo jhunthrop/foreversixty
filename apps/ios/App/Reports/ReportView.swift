@@ -67,7 +67,7 @@ struct ReportView: View {
                         CoachCard(state: coach, clock: clock)
                     }
                 }
-                Text(Copy.reportFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(Copy.reportFooter).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -82,7 +82,7 @@ struct ReportView: View {
                 Label12(Copy.reportTag, color: FSColor.gold)
                 TagView(text: ReportsCopy.visibility(ReportVisibility(report.visibility)), color: FSColor.nav)
             }
-            Text(ReportsCopy.reportMeta(report, clock: clock)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(ReportsCopy.reportMeta(report, clock: clock)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .dynamicTypeSize(...ReportsLayout.rowTypeCap)

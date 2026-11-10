@@ -34,6 +34,16 @@ enum ParityCheck {
             Drift(prefix: "section-when: y", since: "2026-11-10", lane: "secondary restyle"),
             Drift(prefix: "section-discord: y", since: "2026-11-10", lane: "secondary restyle"),
         ],
+        // Raid night's answers are the tab roots' 44 pt answer control (one answer control everywhere);
+        // the mock still draws the old 36 pt chips, so the sign-up section is 8 taller.
+        "raid-night-live": nightAnswersDrift,
+        "raid-night-signup": nightAnswersDrift,
+    ]
+
+    private static let nightAnswersDrift = [
+        Drift(prefix: "section-your-sign-up: height", since: "2026-11-10", lane: "secondary restyle"),
+        Drift(prefix: "section-who-is-coming: y", since: "2026-11-10", lane: "secondary restyle"),
+        Drift(prefix: "section-before-you-pull: y", since: "2026-11-10", lane: "secondary restyle"),
     ]
 
     /// Room under the content for the safe area and the screen's own bottom padding.

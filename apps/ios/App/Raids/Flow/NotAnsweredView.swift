@@ -52,8 +52,9 @@ struct NotAnsweredView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: FSSpace.space2) {
                 ForEach(content.chips) { chip in
+                    // The status filters are choice chips, never primary buttons (one primary a screen).
                     Button(chip.title) { actions.select(chip.filter) }
-                        .buttonStyle(FSButtonStyle(chip.filter == content.filter ? .primary : .secondary, fullWidth: false, small: true))
+                        .buttonStyle(MinuteChipStyle(on: chip.filter == content.filter, height: FSButtonStyle.smallHeight, fillsWidth: false))
                         .accessibilityAddTraits(chip.filter == content.filter ? .isSelected : [])
                 }
             }

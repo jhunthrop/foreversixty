@@ -146,13 +146,21 @@ struct NextRaidLineView: View {
 }
 
 /// In, Late, Bench, Out: four 44 pt buttons 8 apart (iOS, m-ios-home), the current answer in teal (a
-/// change of plan is one tap; flows spec appendix C, "the answered state without answers"). `small`:
-/// the 36 pt chips of the raid night page, not yet restyled.
+/// change of plan is one tap; flows spec appendix C, "the answered state without answers"). The one
+/// answer control: Home, the Raid tab, the raid page and raid night all draw it. `pending` rings the
+/// answer waiting to send; `busy` reads the shown one as saving.
 struct RaidAnswerButtons: View {
     let selected: SignupState?
-    var small = false
+    var pending: SignupState?
+    var busy = false
+    var accessibilityLabel = Copy.homeRaidAnswers
     let answer: (SignupState) -> Void
     @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// The pending ring's inset, dash and width inside a button.
+    private static let pendingInset: CGFloat = 4
+    private static let pendingDash: [CGFloat] = [4, 3]
+    private static let pendingLine: CGFloat = 1.5
 
     var body: some View {
         // At the accessibility sizes the answers go two by two, so no word breaks.
@@ -160,13 +168,22 @@ struct RaidAnswerButtons: View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: FSSpace.space2), count: columns), spacing: FSSpace.space2) {
             ForEach(SignupState.allCases) { state in
                 Button(state.label) { answer(state) }
-                    .buttonStyle(FSButtonStyle(state == selected ? .primary : .secondary, small: small, padX: FSButtonStyle.padXTight))
+                    .buttonStyle(FSButtonStyle(state == selected ? .primary : .secondary, padX: FSButtonStyle.padXTight))
                     .lineLimit(1)
+                    .overlay {
+                        if state == pending {
+                            RoundedRectangle(cornerRadius: Theme.Radius.control - Self.pendingInset / 2)
+                                .strokeBorder(FSColor.gold, style: StrokeStyle(lineWidth: Self.pendingLine, dash: Self.pendingDash))
+                                .padding(Self.pendingInset)
+                                .allowsHitTesting(false)
+                        }
+                    }
                     .accessibilityAddTraits(state == selected ? .isSelected : [])
+                    .accessibilityValue(state == selected && busy ? Copy.raidsA11ySaving : state == pending ? Copy.raidsA11yPending : "")
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(Copy.homeRaidAnswers)
+        .accessibilityLabel(accessibilityLabel)
     }
 }
 
@@ -204,9 +221,11 @@ struct LateMinutesRow: View {
 }
 
 /// A choice chip (round 5): the rule's outline, 8 radius, the chosen one filled in the teal edge.
+/// `fillsWidth`: the minute chips share their row; a filter chip (Not answered) hugs its label.
 struct MinuteChipStyle: ButtonStyle {
     let on: Bool
     let height: CGFloat
+    var fillsWidth = true
 
     static let radius: CGFloat = 8
 
@@ -215,7 +234,7 @@ struct MinuteChipStyle: ButtonStyle {
             .font(.custom(FSFont.bodySemibold, size: 14, relativeTo: .subheadline))
             .foregroundStyle(FSColor.strong)
             .padding(.horizontal, FSSpace.space4)
-            .frame(maxWidth: .infinity, minHeight: height)
+            .frame(maxWidth: fillsWidth ? .infinity : nil, minHeight: height)
             .background(on || configuration.isPressed ? FSColor.tealEdge : .clear, in: .rect(cornerRadius: Self.radius))
             .overlay(RoundedRectangle(cornerRadius: Self.radius).strokeBorder(FSColor.rule, lineWidth: FSStroke.hairline))
             .contentShape(.rect)

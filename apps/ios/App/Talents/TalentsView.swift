@@ -89,7 +89,7 @@ struct TalentsView: View {
                     open: openTalent
                 )
                 .padding(.top, 16)
-                Text(presenter.legend(shown)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(presenter.legend(shown)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
             } header: {

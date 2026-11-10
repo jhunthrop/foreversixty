@@ -138,24 +138,6 @@ struct FiltersView: View {
     }
 }
 
-private extension View {
-    /// A filter chip's capsule: the fill and a 1 pt ring cut from a filled capsule. A stroked
-    /// capsule draws stray tick marks at its ends in off-screen renders (fix round 1, F11.2).
-    func chipSurface(fill: Color, line: Color) -> some View {
-        background {
-            ZStack {
-                Capsule().fill(fill)
-                ZStack {
-                    Capsule().fill(line)
-                    Capsule().padding(1).blendMode(.destinationOut)
-                }
-                .compositingGroup()
-            }
-        }
-        .contentShape(.capsule)
-    }
-}
-
 /// A drawn switch (the system one draws no thumb in an off-screen capture): 51 x 31, gold when
 /// on, the thumb sliding over 150 ms; the whole row is the target.
 struct BrandSwitchStyle: ToggleStyle {

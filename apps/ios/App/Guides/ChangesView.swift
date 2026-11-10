@@ -83,7 +83,7 @@ struct ChangelogEntryView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(GuideDates.long(entry.date)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(GuideDates.long(entry.date)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
             Text(entry.title).font(ScaledType.h2).foregroundStyle(FSColor.strong)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)

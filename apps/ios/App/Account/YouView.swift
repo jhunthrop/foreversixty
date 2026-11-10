@@ -124,7 +124,7 @@ struct YouView: View {
                         .contentShape(.rect)
                 }
                 .padding(.top, FSSpace.space2)
-                Text(summary.version).font(ScaledType.label).foregroundStyle(FSColor.muted)
+                Text(summary.version).font(ScaledType.label).foregroundStyle(FSColor.mutedGround)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.plain)
@@ -157,25 +157,10 @@ struct YouView: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// Lane F8: the gold Premium tag sits beside the name, or under it when the name needs the room.
+    /// The account's head on the ground. The plan row under it already says Premium, so the head
+    /// carries no Premium tag of its own (round 2, the duplicate pill cut).
     private var accountHead: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: FSSpace.space2) {
-                identity
-                Spacer(minLength: FSSpace.space2)
-                premiumTag
-            }
-            VStack(alignment: .leading, spacing: FSSpace.space2) {
-                identity
-                premiumTag
-            }
-        }
-        .accessibilityElement(children: .combine)
-    }
-
-    @ViewBuilder
-    private var premiumTag: some View {
-        if summary.plan.isPremium { TagView(text: Copy.planPremium, color: FSColor.gold) }
+        identity.accessibilityElement(children: .combine)
     }
 
     private var identity: some View {
@@ -188,7 +173,7 @@ struct YouView: View {
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(summary.battletag).font(ScaledType.name).foregroundStyle(FSColor.strong)
-                Text(Copy.youSignedInWith).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(Copy.youSignedInWith).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
             }
         }
     }
@@ -204,7 +189,7 @@ struct AboutView: View {
                 Seal(size: 64)
                 Text(Copy.appName).font(ScaledType.wordmark).tracking(2).foregroundStyle(FSColor.strong)
                 Text(version).font(ScaledType.body).foregroundStyle(FSColor.text)
-                Text(Copy.aboutNotAffiliated).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(Copy.aboutNotAffiliated).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

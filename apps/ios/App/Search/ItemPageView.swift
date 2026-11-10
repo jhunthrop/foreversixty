@@ -259,13 +259,13 @@ struct ItemPageView: View {
             case .failed:
                 failure(Copy.itemPageUsesFailed)
             case let .loaded(rows) where rows.isEmpty:
-                Text(Copy.itemPageNoSources).font(ScaledType.body).foregroundStyle(FSColor.muted)
+                Text(Copy.itemPageNoSources).font(ScaledType.body).foregroundStyle(FSColor.mutedGround)
             case let .loaded(rows):
                 SearchCard {
                     ForEach(rows) { ItemSourceRowView(row: $0) }
                 }
                 if let footnote = ItemPageLogic.chanceFootnote(rows) {
-                    Text(footnote).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    Text(footnote).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                 }
             }
         }
@@ -280,7 +280,7 @@ struct ItemPageView: View {
             case .failed:
                 failure(Copy.itemPageBisForFailed)
             case let .loaded(rows) where rows.isEmpty:
-                Text(Copy.itemPageBisForNone).font(ScaledType.body).foregroundStyle(FSColor.muted)
+                Text(Copy.itemPageBisForNone).font(ScaledType.body).foregroundStyle(FSColor.mutedGround)
             case let .loaded(rows):
                 let shown = ItemPageLogic.visible(rows, expanded: specsExpanded)
                 SearchCard {
@@ -329,10 +329,7 @@ struct ItemPageView: View {
     }
 
     private func failure(_ text: String) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(text).font(ScaledType.body).foregroundStyle(FSColor.wipe)
-            SecondaryButton(title: Copy.commonTryAgain, action: retry)
-        }
+        LoadError(text, retryLabel: Copy.commonTryAgain, retry: retry)
     }
 }
 

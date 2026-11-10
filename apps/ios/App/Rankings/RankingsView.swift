@@ -371,6 +371,8 @@ struct RankingsSkeleton: View {
 }
 
 enum RankingsLayout {
+    /// The page's side margin, and the band head's padding under the bar.
+    static let gutter: CGFloat = 16
     static let row: CGFloat = 68
     static let crest: CGFloat = 28
     static let numeralWidth: CGFloat = 30

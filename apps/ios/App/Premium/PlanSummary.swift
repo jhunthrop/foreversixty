@@ -20,6 +20,14 @@ struct PlanSummary: Equatable {
         case none
     }
 
+    /// The Plan card's head when the own plan renews at a price (the web's plan head): the amount as
+    /// a gold Figure, its period beside it, then when it renews.
+    struct PriceLine: Equatable {
+        let amount: String
+        let period: String
+        let renews: String
+    }
+
     /// The Plan screen's billing line.
     enum BillingLine: Equatable {
         case manageButton
@@ -33,6 +41,8 @@ struct PlanSummary: Equatable {
     /// The Plan card's line: the site's full plan line, price included.
     let line: String
     let line2: String?
+    /// Set when the own plan renews at a known price; the card then draws it in place of `line`.
+    let priceLine: PriceLine?
     let founder: Bool
     let includes: [String]
     let billing: Billing?
@@ -52,6 +62,7 @@ struct PlanSummary: Equatable {
         row = Self.words(source, me: me, withPrice: false).line
         line = words.line
         line2 = words.line2
+        priceLine = source == .own ? PremiumSource.liveBilling(me).flatMap(Self.priceLine) : nil
         founder = source.isOwn && me.entitlements.billing?.founder == true
         includes = Self.includes(me.entitlements)
         billing = source.isOwn ? .manage : nil
@@ -69,12 +80,30 @@ struct PlanSummary: Equatable {
 
     /// The site's `formatCents`: `$50 a year`, `$4.99 a month`; nil for an interval it does not know.
     static func price(cents: Int64, interval: String) -> String? {
-        let amount = cents % 100 == 0 ? "$\(cents / 100)" : String(format: "$%lld.%02lld", cents / 100, cents % 100)
+        let amount = amount(cents: cents)
         switch interval {
         case "yearly": return Copy.planPriceYearly(amount: amount)
         case "monthly": return Copy.planPriceMonthly(amount: amount)
         default: return nil
         }
+    }
+
+    /// `$50`, `$4.99`: the amount alone, as the site's `formatCents` writes it.
+    static func amount(cents: Int64) -> String {
+        cents % 100 == 0 ? "$\(cents / 100)" : String(format: "$%lld.%02lld", cents / 100, cents % 100)
+    }
+
+    /// `a year`, `a month`: the price's words without the amount; nil for an interval it does not know.
+    static func period(interval: String) -> String? {
+        price(cents: 0, interval: interval).map { $0.replacingOccurrences(of: amount(cents: 0), with: "").trimmingCharacters(in: .whitespaces) }
+    }
+
+    /// The renewing own plan's price line; nil when it ends, or its price or date is unknown.
+    private static func priceLine(_ billing: Models.Billing) -> PriceLine? {
+        guard !billing.cancelAtPeriodEnd, let end = billing.currentPeriodEnd.flatMap(date), let cents = billing.amountCents,
+              let interval = billing.interval, let period = period(interval: interval)
+        else { return nil }
+        return PriceLine(amount: amount(cents: cents), period: period, renews: Copy.planRenews(date: AccountCopy.longDate(end)))
     }
 
     // MARK: The site's words per source

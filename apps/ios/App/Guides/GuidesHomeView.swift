@@ -28,7 +28,7 @@ struct GuidesHomeView: View {
             GuideSectionLabel(text: Copy.guidesClasses)
             ClassGrid(cells: GuidesIndexLogic.cells(home.index), open: openClass)
             Text(home.saved.footer(home.index))
-                .font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                .font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 12)
         }
@@ -139,7 +139,7 @@ struct GuideClassView: View {
             }
             .padding(.horizontal, GuidesLayout.gutter)
             if offlineSince != nil, specs.contains(where: { !home.saved.isSaved($0.spec) }) {
-                Text(Copy.guidesNotCached).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(Copy.guidesNotCached).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, GuidesLayout.gutter).padding(.top, 12)
             }

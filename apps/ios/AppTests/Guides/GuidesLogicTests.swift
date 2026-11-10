@@ -38,7 +38,7 @@ struct GuidesLogicTests {
         let saved = GuidesTestData.saved()
         #expect(saved.isSaved("shaman-elemental"))
         #expect(!saved.isSaved("shaman-enhancement"))
-        #expect(saved.footer(index) == "Saved on this phone: Warrior, Shaman · 32 KB. Guides update by themselves when the game data does.")
+        #expect(saved.footer(index) == "Saved on this phone: Warrior, Shaman · 32 KB")
         #expect(SavedGuides(bytes: [:]).footer(index) == "Nothing is saved on this phone yet. Open a guide once and it stays.")
     }
 

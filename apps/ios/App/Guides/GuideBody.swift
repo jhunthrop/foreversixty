@@ -186,7 +186,7 @@ struct GuideRotationSection: View {
                     GuideCardRows(items: group.rows) { GuideRotationRow(row: $0, build: build) }
                 }
             }
-            Text(Copy.guidesRotationFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(Copy.guidesRotationFooter).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }

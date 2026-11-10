@@ -57,7 +57,7 @@ struct ReportsListView: View {
             VStack(alignment: .leading, spacing: 22) {
                 if !sections.thisWeek.isEmpty { section(Copy.reportsThisWeek, sections.thisWeek, content: content) }
                 if !sections.earlier.isEmpty { section(Copy.reportsEarlier, sections.earlier, content: content) }
-                Text(Copy.reportsFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(Copy.reportsFooter).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .dynamicTypeSize(...ReportsLayout.rowTypeCap)
@@ -229,21 +229,13 @@ struct LiveTag: View {
     }
 }
 
-/// An error in the failing region only: the sentence in wipe red and `Try again`.
+/// An error in the failing region only: the shared `LoadError` Plate.
 struct ReportsErrorCard: View {
     let text: String
     let retry: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(text).font(ScaledType.lead).foregroundStyle(FSColor.wipe)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isStaticText)
-            SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: retry)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .quietCard()
+        LoadError(text, retryLabel: Copy.commonTryAgain, retry: retry)
     }
 }
 

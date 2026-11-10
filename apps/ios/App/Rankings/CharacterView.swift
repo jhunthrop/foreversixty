@@ -38,7 +38,7 @@ struct CharacterView: View {
             case .loading:
                 CharacterSkeleton()
             case .failed:
-                ReportsErrorCard(text: Copy.charError, retry: actions.retry).padding(16)
+                LoadError(Copy.charError, retryLabel: Copy.commonTryAgain, retry: actions.retry).padding(RankingsLayout.gutter)
             case .notFound:
                 notFound.padding(16)
             case let .loaded(content):
@@ -56,25 +56,41 @@ struct CharacterView: View {
     }
 
     private func loaded(_ profile: CharacterProfile) -> some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: 0) {
+            // The head continues the band under the bar, as the web's page head.
             CharacterHead(
                 profile: profile, specs: specs,
                 yours: CharacterPage.isYours(profile.character, keys: Set(account.characterKeys))
             )
+            .padding(.horizontal, RankingsLayout.gutter)
+            .padding(.top, FSSpace.space2)
+            .padding(.bottom, RankingsLayout.gutter)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .surfaceBand()
+            sections(profile)
+                .padding(.horizontal, RankingsLayout.gutter)
+                .padding(.top, RankingsLayout.gutter)
+        }
+        .dynamicTypeSize(...RankingsLayout.rowTypeCap)
+    }
+
+    /// Spec ruling R7: Gear, then the fights, then Forever Score below them on a phone.
+    private func sections(_ profile: CharacterProfile) -> some View {
+        VStack(alignment: .leading, spacing: 22) {
             if watchFailed {
                 Text(Copy.charWatchFailed(name: profile.character.name)).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            section(Copy.charGear) { gear(profile) }
+            let bests = CharacterPage.bests(profile, now: now)
+            if !bests.isEmpty { section(Copy.charBests) { fights(bests, recent: false) } }
+            let recent = CharacterPage.recent(profile, now: now)
+            if !recent.isEmpty { section(Copy.charRecent) { fights(recent, recent: true) } }
             if CharacterPage.hasScore(profile) {
                 ScoreCard(profile: profile, openHow: actions.openHow)
             } else if CharacterPage.showsScoreSection(profile) {
                 ReportStateCard(title: Copy.charNoLogs, detail: Copy.charNoScore(name: profile.character.name), color: FSColor.strong)
             }
-            let bests = CharacterPage.bests(profile, now: now)
-            if !bests.isEmpty { section(Copy.charBests) { fights(bests, recent: false) } }
-            let recent = CharacterPage.recent(profile, now: now)
-            if !recent.isEmpty { section(Copy.charRecent) { fights(recent, recent: true) } }
-            section(Copy.charGear) { gear(profile) }
             let builds = CharacterPage.builds(profile, clock: clock)
             if !builds.isEmpty {
                 let planner = actions.openPlanner.flatMap { open in CharacterPage.plannerLink(profile).map { link in { open(link) } } }
@@ -84,9 +100,6 @@ struct CharacterView: View {
                 linkRow(Copy.charParseHistory, action: actions.openHistory)
             }
         }
-        .dynamicTypeSize(...RankingsLayout.rowTypeCap)
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
     }
 
     private var notFound: some View {
@@ -243,9 +256,9 @@ struct CharacterHead: View {
                     if yours { TagView(text: Copy.charYou, color: FSColor.gold) }
                     if profile.supporter { TagView(text: Copy.sharedPremiumSupporterChip, color: FSColor.goldHover, systemImage: "heart.fill") }
                 }
-                Text(CharacterPage.descriptor(profile, specs: specs)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(CharacterPage.descriptor(profile, specs: specs)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
-                Text(CharacterPage.whereLine(profile.character)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(CharacterPage.whereLine(profile.character)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

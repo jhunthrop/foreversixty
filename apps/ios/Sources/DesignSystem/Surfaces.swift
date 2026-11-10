@@ -229,13 +229,17 @@ public struct FrameCorners: View {
 
 /// The band ground (`.surfaceBand`): the painted band under its veil, with the black bottom edge
 /// when `bottomLine` (the mock's `.band`). Home's hero bands (with the line) and the signed-out
-/// screens' full-bleed ground (without).
+/// screens' full-bleed ground (without). `underTopEdge`: the art runs on under the status bar, for a
+/// head at the top of a screen with no navigation bar (signed out).
 struct SurfaceBand: ViewModifier {
     let bottomLine: Bool
+    let underTopEdge: Bool
 
     func body(content: Content) -> some View {
         content
-            .background { BandArt() }
+            .background {
+                if underTopEdge { BandArt().ignoresSafeArea(edges: .top) } else { BandArt() }
+            }
             .overlay(alignment: .bottom) {
                 if bottomLine { Color.black.frame(height: FSStroke.hairline) }
             }
@@ -249,7 +253,9 @@ public extension View {
     func primaryCard() -> some View { panel(frame: .plain) }
     /// A list card: the plain panel.
     func quietCard() -> some View { panel() }
-    func surfaceBand(bottomLine: Bool = true) -> some View { modifier(SurfaceBand(bottomLine: bottomLine)) }
+    func surfaceBand(bottomLine: Bool = true, underTopEdge: Bool = false) -> some View {
+        modifier(SurfaceBand(bottomLine: bottomLine, underTopEdge: underTopEdge))
+    }
     /// The screen's painted ground behind the content; lines on it take `mutedGround` (a panel restores `muted`).
     func screenGround() -> some View { background { ScreenGround() }.environment(\.subInk, FSColor.mutedGround) }
 }
@@ -270,5 +276,15 @@ public extension View {
         background { Capsule().fill(fill) }
             .overlay { Capsule().strokeBorder(line, lineWidth: 1) }
             .contentShape(.capsule)
+    }
+
+    /// A filter chip's ground (search scopes, roster roles, rankings filters, the guides' choices):
+    /// filled with `fill` and its 1 pt border on the control radius, as the web's chips. Tags take
+    /// the field radius (`TagView`); only a pill that is not a filter stays a capsule.
+    func chipSurface(fill: Color, line: Color) -> some View {
+        let shape = RoundedRectangle(cornerRadius: FSRadius.control)
+        return background { shape.fill(fill) }
+            .overlay { shape.strokeBorder(line, lineWidth: FSStroke.hairline) }
+            .contentShape(shape)
     }
 }

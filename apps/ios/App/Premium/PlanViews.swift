@@ -119,7 +119,12 @@ struct PlanView: View {
                 }
             }
             VStack(alignment: .leading, spacing: FSSpace.space1) {
-                Text(plan.line).font(ScaledType.body).foregroundStyle(FSColor.text)
+                if let price = plan.priceLine {
+                    priceFigure(price)
+                    Text(price.renews).font(ScaledType.body).foregroundStyle(FSColor.text)
+                } else {
+                    Text(plan.line).font(ScaledType.body).foregroundStyle(FSColor.text)
+                }
                 if let line2 = plan.line2 { muted(line2) }
             }
             if !plan.includes.isEmpty { includes }
@@ -128,6 +133,15 @@ struct PlanView: View {
         .padding(FSSpace.space4)
         .frame(maxWidth: .infinity, alignment: .leading)
         .primaryCard()
+    }
+
+    /// The price as a Figure (spec 3.4): the amount in gold tabular figures, its period beside it.
+    private func priceFigure(_ price: PlanSummary.PriceLine) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: FSSpace.space2) {
+            Text(price.amount).type(FSType.figure).foregroundStyle(FSColor.gold)
+            Text(price.period).font(ScaledType.bodyStrong).foregroundStyle(FSColor.muted)
+        }
+        .accessibilityElement(children: .combine)
     }
 
     private var heading: some View {

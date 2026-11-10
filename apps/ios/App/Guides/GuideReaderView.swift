@@ -91,7 +91,7 @@ struct GuideHead: View {
                     .foregroundStyle(ClassColor.of(guide.classSlug))
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
-                Text(GuideCopy.headMeta(guide)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(GuideCopy.headMeta(guide)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

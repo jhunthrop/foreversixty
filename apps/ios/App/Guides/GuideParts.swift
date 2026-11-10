@@ -15,8 +15,8 @@ enum GuidesLayout {
     static let chipDisc: CGFloat = 22
     static let yourCard: CGFloat = 80
     static let tierRow: CGFloat = 68
-    static let tierChip: CGFloat = 28
-    static let tierBar: CGFloat = 8
+    /// The skeleton's stand-in for a row's figure column.
+    static let tierFigure: CGFloat = 56
     static let yoursEdge: CGFloat = 3
     static let dateBlock = CGSize(width: 56, height: 48)
     static let factionMark: CGFloat = 24
@@ -27,7 +27,6 @@ enum GuidesLayout {
     static let currentThreshold: CGFloat = 80
     static let tabBarClearance: CGFloat = 96
     static let chipNumberSize: CGFloat = 12
-    static let tierLetterSize: CGFloat = 14
 }
 
 /// A section label with the spec's 22 pt above it.

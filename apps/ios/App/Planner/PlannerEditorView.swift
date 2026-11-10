@@ -369,7 +369,7 @@ struct PlannerStrip: View {
     }
 }
 
-/// Reset (secondary) and Share (primary, the screen's one gold button), 48 pt.
+/// Reset (the quiet outline) and Share (primary, the screen's one teal button), 48 pt.
 struct PlannerActionBar: View {
     let reset: () -> Void
     let share: () -> Void

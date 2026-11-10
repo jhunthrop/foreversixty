@@ -97,7 +97,7 @@ struct GuildFooter: View {
     let text: String
 
     var body: some View {
-        Text(text).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+        Text(text).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.top, 6)
     }

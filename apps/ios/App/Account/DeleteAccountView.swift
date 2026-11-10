@@ -37,28 +37,14 @@ struct DeleteAccountView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: FSSpace.space4) {
-                Text(Copy.sharedAccountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.text)
+                Text(Copy.sharedAccountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.strong)
                 group(Copy.sharedAccountDeleteDeletedTitle, Self.deletedItems, glyph: "minus")
                 group(Copy.sharedAccountDeleteKeptTitle, Self.keptItems, glyph: "checkmark", tint: FSColor.muted)
                 if !consequenceLines.isEmpty {
                     group(Copy.sharedAccountDeleteLoseTitle, consequenceLines, glyph: "exclamationmark.circle")
                 }
-                confirmField
-                if let failure = AccountCopy.deletionFailure(outcome) {
-                    Text(failure).font(ScaledType.body).foregroundStyle(FSColor.wipe)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Button(action: onDelete) {
-                    if isDeleting {
-                        ProgressView().tint(FSColor.wipe).frame(width: 20, height: 20)
-                    } else {
-                        Text(Copy.sharedAccountDeleteButton)
-                    }
-                }
-                .buttonStyle(BrandButtonStyle(.destructive))
-                .disabled(!canDelete)
-                .accessibilityLabel(Copy.sharedAccountDeleteButton)
-                Text(Copy.sharedAccountDeleteEmail).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                confirmation
+                Text(Copy.sharedAccountDeleteEmail).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
             }
             .padding(FSSpace.space4)
         }
@@ -68,9 +54,34 @@ struct DeleteAccountView: View {
 
     private var confirmLabel: String { AccountCopy.deletionPrompt(battleTag: battleTag) }
 
+    /// The confirmation on one Plate: the field, its failure in wipe and the button read on the
+    /// panel's dark, never loose on the painted ground.
+    private var confirmation: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space3) {
+            confirmField
+            if let failure = AccountCopy.deletionFailure(outcome) {
+                Text(failure).font(ScaledType.body).foregroundStyle(FSColor.wipe)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Button(action: onDelete) {
+                if isDeleting {
+                    ProgressView().tint(FSColor.wipe).frame(width: 20, height: 20)
+                } else {
+                    Text(Copy.sharedAccountDeleteButton)
+                }
+            }
+            .buttonStyle(BrandButtonStyle(.destructive))
+            .disabled(!canDelete)
+            .accessibilityLabel(Copy.sharedAccountDeleteButton)
+        }
+        .padding(FSSpace.space4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .panel()
+    }
+
     private var confirmField: some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
-            Label12(confirmLabel)
+            Label12(confirmLabel, color: FSColor.text)
             TextField("", text: $typed)
                 .font(ScaledType.body)
                 .foregroundStyle(FSColor.strong)
@@ -89,7 +100,6 @@ struct DeleteAccountView: View {
                 Text(AccountCopy.deletionMismatch(battleTag: battleTag)).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
             }
         }
-        .padding(.top, FSSpace.space2)
     }
 
     private func group(_ title: String, _ lines: [String], glyph: String, tint: Color = FSColor.wipe) -> some View {

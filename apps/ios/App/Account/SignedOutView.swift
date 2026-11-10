@@ -16,14 +16,18 @@ struct SignedOutView: View {
     let onSignIn: () -> Void
     let onPickClass: () -> Void
 
+    /// The head's top padding: clear of the toast when a notice shows.
+    static let headTop: CGFloat = 48
+    static let headTopWithNotice: CGFloat = 108
+
     var body: some View {
+        // The web's signed-out page: a band head, then one Plate on the ground with the one primary.
         ZStack(alignment: .top) {
-            Color.clear.surfaceBand(bottomLine: false).ignoresSafeArea()
             ScrollView {
-                content
-                    .padding(.horizontal, FSSpace.space4)
-                    .padding(.top, notice == nil ? 60 : 120)
-                    .padding(.bottom, FSSpace.space6)
+                VStack(alignment: .leading, spacing: 0) {
+                    head
+                    plate.padding(FSSpace.space4)
+                }
             }
             .scrollBounceBehavior(.basedOnSize)
             if let notice {
@@ -33,9 +37,10 @@ struct SignedOutView: View {
                     .accessibilitySortPriority(1)
             }
         }
+        .screenGround()
     }
 
-    private var content: some View {
+    private var head: some View {
         VStack(alignment: .leading, spacing: FSSpace.space4) {
             Seal(size: 64)
             Text(Copy.appName)
@@ -45,21 +50,31 @@ struct SignedOutView: View {
                 .font(ScaledType.title)
                 .foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
+        }
+        .padding(.horizontal, FSSpace.space4)
+        .padding(.top, notice == nil ? Self.headTop : Self.headTopWithNotice)
+        .padding(.bottom, FSSpace.space6)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .surfaceBand(underTopEdge: true)
+    }
+
+    private var plate: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space4) {
             Text(line)
                 .font(ScaledType.body)
                 .foregroundStyle(FSColor.text)
                 .fixedSize(horizontal: false, vertical: true)
-            VStack(spacing: FSSpace.space3) {
-                signInButton
-                Button(Copy.signinPickClass, action: onPickClass)
-                    .buttonStyle(BrandButtonStyle(.secondary))
-            }
-            .padding(.top, FSSpace.space2)
+            signInButton
+            Button(Copy.signinPickClass, action: onPickClass)
+                .buttonStyle(BrandButtonStyle(.quiet))
             Text(Copy.signinPickClassNote)
                 .font(ScaledType.meta)
                 .foregroundStyle(FSColor.muted)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .padding(FSSpace.space4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .panel()
     }
 
     private var signInButton: some View {
