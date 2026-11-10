@@ -18043,7 +18043,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ tier %2$@"
+            "value": "%1$@: %2$@ on the tier list"
           }
         }
       }
@@ -18055,7 +18055,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ #%2$lld of %3$lld on the tier list"
+            "value": "%1$@: #%2$lld of %3$lld on the tier list"
           }
         }
       }

@@ -8,10 +8,10 @@ export const sharedStandingRoleDps = 'DPS';
 export const sharedStandingRoleHealer = 'healers';
 /** tanks */
 export const sharedStandingRoleTank = 'tanks';
-/** {spec} tier {grade} */
-export const sharedStandingGraded = '{spec} tier {grade}';
-/** {spec} #{place} of {of} on the tier list */
-export const sharedStandingPlace = '{spec} #{place} of {of} on the tier list';
+/** {spec}: {grade} on the tier list */
+export const sharedStandingGraded = '{spec}: {grade} on the tier list';
+/** {spec}: #{place} of {of} on the tier list */
+export const sharedStandingPlace = '{spec}: #{place} of {of} on the tier list';
 /** {raid} in {clock} */
 export const sharedStandingRaid = '{raid} in {clock}';
 /** {raid} in {clock}, {n} in */

@@ -423,7 +423,12 @@
 {/if}
 
 <style>
+  /* The waiting facts and the standing links share one wrapping row. */
   .character-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 20px;
     padding-inline: var(--page-inset);
   }
 </style>

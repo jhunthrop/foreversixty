@@ -132,8 +132,7 @@ const COMPONENT_DEFINITIONS: Record<string, string> = {
     'Mechanics: the interrupts and dispels you made, and how long you carried a debuff that should have been dispelled.',
   utility:
     'Utility: the average uptime of the buffs, debuffs and cooldowns your spec keeps running for the raid.',
-  preparation:
-    'Preparation: the flask, food, weapon oil or stone and world buffs at the pull, and potions in the fight.',
+  preparation: 'Preparation: the flask, food, weapon oil or stone at the pull, and potions in the fight.',
   activity:
     'Activity: the share of the fight you spent doing something rather than idle, leaving out the times the fight expects you to wait.',
 };

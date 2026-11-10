@@ -58,7 +58,7 @@ export const ratingsPageCopy = {
     },
     {
       part: 'Preparation',
-      body: "Showing up ready: the right flask, food, weapon oil or stone and world buffs at the pull, and your class's potions during the fight, each weighed by how much it matters for your role.",
+      body: "Showing up ready: the right flask, food, weapon oil or stone at the pull, and your class's potions during the fight, each weighed by how much it matters for your role.",
     },
     {
       part: 'Activity',

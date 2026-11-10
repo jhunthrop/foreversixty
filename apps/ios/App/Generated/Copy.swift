@@ -6364,12 +6364,12 @@ enum Copy {
     /// tanks
     static var sharedStandingRoleTank: String { text("shared.standing.role.tank") }
 
-    /// {spec} tier {grade}
+    /// {spec}: {grade} on the tier list
     static func sharedStandingGraded(spec: String, grade: String) -> String {
         format("shared.standing.graded", spec, grade)
     }
 
-    /// {spec} #{place} of {of} on the tier list
+    /// {spec}: #{place} of {of} on the tier list
     static func sharedStandingPlace(spec: String, place: Int, of: Int) -> String {
         format("shared.standing.place", spec, place, of)
     }

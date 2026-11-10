@@ -47,7 +47,7 @@ export const characterPageCopy = {
   since: (date: string): string => `Since ${dayMonth(`${date}T00:00:00Z`)}`,
   noLogsOwner: 'No logs yet. Upload a log to get a rating.',
   noLogs: 'No logs yet.',
-  noScoreYet: 'No Forever Score yet. It is worked out from the rated fights below.',
+  noScoreYet: 'No Forever Score yet.',
   best: 'Best per encounter',
   allFights: (count: number): string => `All fights (${count})`,
   builds: 'Builds seen',

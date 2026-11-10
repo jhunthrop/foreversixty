@@ -340,8 +340,8 @@ The rule extends `lib/items/tooltip-position.ts`. It is shown on the `tip-*` boa
 | Gain (desktop line 2, phone row) | the pick's name, then `+18.4` |
 | Already the best | `Best in slot` |
 | Unknown worn item with a pick | the pick's name, then `Not scored` |
-| Note, one unknown | `1 item is not in our item data yet. It is new in the beta, and it gets a name and icon when the client lists it. Item level shows once every item is known.` |
-| Note, several | `3 items are not in our item data yet. They are new in the beta, and they get names and icons when the client lists them. Item level shows once every item is known.` |
+| Note, one unknown | `1 item is not in our item data yet, so no item level.` |
+| Note, several | `3 items are not in our item data yet, so no item level.` |
 | Note, items file failed | `Item icons and colours did not load. Reload the page to try again.` |
 | Centre | `Level 60`, `Item level` (uppercase on desktop by CSS) |
 | Report detail | `Item level 66`, plus ` · Enchanted` |

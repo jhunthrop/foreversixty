@@ -80,10 +80,8 @@ export const gearCopy = {
     /** The average over the equipped slots, beside the heading. */
     averageItemLevel: (level: string): string => `Item level ${level}`,
     simHead: 'Character',
-    noteOne:
-      '1 item is not in our item data yet. It is new in the beta, and it gets a name and icon when the client lists it. Item level shows once every item is known.',
-    noteMany: (count: number): string =>
-      `${count} items are not in our item data yet. They are new in the beta, and they get names and icons when the client lists them. Item level shows once every item is known.`,
+    noteOne: '1 item is not in our item data yet, so no item level.',
+    noteMany: (count: number): string => `${count} items are not in our item data yet, so no item level.`,
     noteFailed: 'Item icons and colours did not load. Reload the page to try again.',
     /** The report's slot detail: "Item level 66 · Enchanted". */
     reportDetail: (itemLevel: number, enchanted: boolean): string =>

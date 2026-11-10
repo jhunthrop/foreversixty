@@ -122,7 +122,7 @@ test.describe('the Gear frame at 1440', () => {
     await expect(upgrades).toContainText('+1.8 DPS');
     await expect(upgrades).toContainText('+2.0 DPS');
     await expect(page.getByTestId('character-doll-note')).toHaveText(
-      '1 item is not in our item data yet. It is new in the beta, and it gets a name and icon when the client lists it. Item level shows once every item is known.',
+      '1 item is not in our item data yet, so no item level.',
     );
     // The band's answer is the sum of the priced gains.
     await expect(page.getByTestId('character-answer')).toHaveText('+3.8DPS from upgrades');

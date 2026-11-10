@@ -28,7 +28,7 @@ const envelope = (data) => ({
 async function stubOwner(page) {
   const { createJiti } = require("jiti");
   const fixture = new URL("../../web/tests/e2e/support/character-fixture.ts", import.meta.url).pathname;
-  const { CHARACTER, GEAR } = await createJiti(import.meta.url).import(fixture);
+  const { CHARACTER, GEAR, GEAR_ITEMS, routeGearIcons } = await createJiti(import.meta.url).import(fixture);
   await page.route("**/v1/me", (route) =>
     route.fulfill(
       envelope({
@@ -59,6 +59,10 @@ async function stubOwner(page) {
     ),
   );
   await page.route(`**/v1/characters/${KEY}`, (route) => route.fulfill(envelope({ ...CHARACTER.data, ...GEAR })));
+  await page.route("**/data/*/items/priest.json", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(GEAR_ITEMS) }),
+  );
+  await routeGearIcons(page);
 }
 
 const browser = await chromium.launch();
