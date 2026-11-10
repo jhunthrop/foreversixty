@@ -60,6 +60,8 @@ ArchitecturesInstallIn64BitMode=x64compatible
 WizardStyle=modern
 WizardSizePercent=100
 SetupIconFile=..\..\internal\icon\assets\seal.ico
+; The seal in the page's corner, where Inno's own box would be.
+WizardSmallImageFile=..\..\ui\seal-64.png
 UninstallDisplayName={#AppName}
 UninstallDisplayIcon={app}\{#ExeName}
 OutputBaseFilename=foreversixty-companion-setup
@@ -112,6 +114,13 @@ begin
   Exec(ExpandConstant('{sys}\taskkill.exe'), '/IM {#ExeName}', '', SW_HIDE, ewWaitUntilTerminated, Code);
   Sleep(StopWaitMs);
   Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /IM {#ExeName}', '', SW_HIDE, ewWaitUntilTerminated, Code);
+end;
+
+{ The one page's button installs, so it says so (Inno labels it Next without a ready page). }
+procedure CurPageChanged(CurPageID: Integer);
+begin
+  if CurPageID = wpSelectTasks then
+    WizardForm.NextButton.Caption := SetupMessage(msgButtonInstall);
 end;
 
 function PrepareToInstall(var NeedsRestart: Boolean): String;
