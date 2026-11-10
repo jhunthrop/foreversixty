@@ -4,17 +4,18 @@
      lib/gear/doll-cells.ts, then the note (an item not in our data, or a failed items file) once
      under the doll.
      - The frame (`form="auto"`): the selected slot's client tooltip stands in the centre, the worn
-       enchant on its green line, and it ends on what the slot says: the report's "Item level 66 ·
-       Enchanted", or the worn doll's upgrade ("+1.8 DPS vs <pick>", "Best in slot"). It opens on
-       the first upgrade, else the first item. Under the frame's minimum it is the list form.
-     - The list (`form="list"`): every slot with its line 2 and gain; the page's tooltip host opens
-       each item. -->
+       enchant on its green line as the client prints it, ending on the worn doll's upgrade ("+1.8
+       DPS vs <pick>", "Best in slot") when there is one. It opens on the first upgrade, else the
+       first item. Under the frame's minimum it is the list form.
+     - The list (either form): every slot as "Head · Item level 61 · Crusader" (the enchant green)
+       and its gain; the page's tooltip host opens each item by the row it was tapped on. -->
 <script lang="ts">
   import { dollCellsFromSlots, type WornDollMode } from '../../lib/gear/doll-cells';
   import { paperdollNote, unknownCount, type PaperdollSlot } from '../../lib/gear/paperdoll';
   import type { ItemTooltipModel } from '../../lib/items/tooltip';
   import { rarityClassFor } from '../../lib/planner/items';
   import { defaultSelection, type DollCell } from '../../lib/ui/paperdoll';
+  import { FACT_SEPARATOR, type GainFigure } from '../../lib/ui/primitives';
   import type ItemTooltipComponent from '../ItemTooltip.svelte';
   import ItemRow from '../ui/ItemRow.svelte';
   import Overlay from '../ui/Overlay.svelte';
@@ -90,35 +91,35 @@
   });
 </script>
 
-{#snippet slotTail(cell: DollCell)}
-  {#if mode === 'report'}
-    {#if cell.source}<p data-testid={`${testid}-detail`}>{cell.source}</p>{/if}
-  {:else if cell.gain}
-    <p data-testid={`${testid}-gain`}>
-      <b class="tabular-nums">{cell.gain.value}{cell.gain.unit ? ` ${cell.gain.unit}` : ''}</b>
-      {#if cell.gain.basis}{cell.gain.basis.prefix}
-        {#if cell.gain.basis.item}<span class={rarityClassFor(cell.gain.basis.item.quality)}
-            >{cell.gain.basis.item.name}</span
-          >{/if}{/if}
-    </p>
-  {/if}
+{#snippet gainLine(gain: GainFigure)}
+  <p data-testid={`${testid}-gain`}>
+    <b class="tabular-nums">{gain.value}{gain.unit ? ` ${gain.unit}` : ''}</b>
+    {#if gain.basis}{gain.basis.prefix}
+      {#if gain.basis.item}<span class={rarityClassFor(gain.basis.item.quality)}>{gain.basis.item.name}</span
+        >{/if}{/if}
+  </p>
 {/snippet}
 
 {#snippet centre(cell: DollCell | undefined)}
   {#if cell?.item}
     {@const tip = tips[cell.item.id]}
-    {#if tip && ItemTooltip}
-      <ItemTooltip
-        model={tip}
-        {build}
-        floating={false}
-        enchant={cell.sourceTone === 'enchant' ? cell.source : undefined}
-      >
-        {#snippet tail()}{@render slotTail(cell)}{/snippet}
+    {@const gain = cell.gain}
+    {#if tip && ItemTooltip && gain}
+      <ItemTooltip model={tip} {build} floating={false} enchant={cell.enchant}>
+        {#snippet tail()}{@render gainLine(gain)}{/snippet}
       </ItemTooltip>
+    {:else if tip && ItemTooltip}
+      <ItemTooltip model={tip} {build} floating={false} enchant={cell.enchant} />
     {:else}
       <Overlay kind="tooltip" role="group" label={cell.label} class="w-full px-3 py-[10px]">
-        <ItemRow item={cell.item} {build} source={cell.source} unknown={cell.unknown} iconSize={28} bare />
+        <ItemRow
+          item={cell.item}
+          {build}
+          source={[cell.source, cell.enchant].filter(Boolean).join(FACT_SEPARATOR)}
+          unknown={cell.unknown}
+          iconSize={28}
+          bare
+        />
       </Overlay>
     {/if}
   {/if}
@@ -134,6 +135,7 @@
   {form}
   {head}
   facts
+  listCentre={false}
   selected={form === 'list' ? null : shownSlot}
   onselect={(slot) => (chosen = slot)}
   centre={form === 'list' ? undefined : centre}

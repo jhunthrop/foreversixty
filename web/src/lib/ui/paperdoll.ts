@@ -38,8 +38,8 @@ export interface DollCell {
   source?: string;
   /** A source-kind key for the line's glyph (`dungeon`, `crafted`, ...). */
   sourceKind?: string;
-  /** Line 2 is the worn item's enchant: the game's green. */
-  sourceTone?: 'enchant';
+  /** The worn item's enchant in the client's words ("Crusader"), after line 2 in the game's green. */
+  enchant?: string;
   /** Detail only: line 2 of the cell is the source alone (owner decision, option C). */
   note?: DollNote;
   gain?: GainFigure;

@@ -114,18 +114,32 @@ describe('PaperdollFrame', () => {
         slot: 'head',
         label: 'Head',
         item: { id: 1, name: 'Lionheart Helm', quality: 4, icon: 'a' },
-        source: 'Stamina +10',
-        sourceTone: 'enchant',
+        source: 'Item level 61',
+        enchant: 'Stamina +10',
         gain: { value: '+1.8', unit: 'DPS', tone: 'gold', basis: { prefix: 'vs', item: HARPOON } },
       },
       { slot: 'neck', label: 'Neck', item: { id: 2, name: 'Mark of Fordring', quality: 3, icon: 'b' } },
     ];
     const body = doll({ cells, form: 'list', facts: true });
-    expect(body).toMatch(/Head · <\/span><span[^>]*class="text-rarity-uncommon"[^>]*>Stamina \+10<\/span>/);
+    expect(body).toMatch(
+      /Head · <\/span><span[^>]*>Item level 61<\/span> · <span class="text-rarity-uncommon"[^>]*>Stamina \+10<\/span>/,
+    );
     expect(body).toMatch(
       /data-testid="paperdoll-list-gain-head"[\s\S]*data-icon="inv_spear_04"[\s\S]*\+1\.8 DPS/,
     );
     expect(body).not.toContain('paperdoll-list-gain-neck');
     expect(doll({ cells, form: 'list' })).not.toContain('Stamina +10');
+  });
+
+  it('keeps the centre to the frame with listCentre={false}: the list opens the page tooltip', () => {
+    const centre = createRawSnippet(() => ({ render: () => '<p>centre</p>' }));
+    const body = doll({ selected: 'head', centre, listCentre: false });
+    expect(body).toMatch(/class="pdf-frame[^"]*"[^>]*data-inline-tip/);
+    expect(body).not.toMatch(/class="pdf[^-][^>]*data-inline-tip/);
+    expect(body).not.toContain('pdf-list-centre');
+  });
+
+  it('draws a headless list straight on the page panel', () => {
+    expect(doll({ form: 'list', head: false })).toMatch(/class="pdf-items[^"]*pdf-headless/);
   });
 });

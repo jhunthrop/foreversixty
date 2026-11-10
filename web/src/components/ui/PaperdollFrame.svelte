@@ -22,9 +22,11 @@
      DollCells (lib/bis/doll-view.ts for BiS, lib/gear/doll-cells.ts for a worn set).
      - `form="list"` draws the list form at every width (the sim, which lists what it ran: one job
        per page, the BiS page owns the frame); `head={false}` drops its strip where the page already
-       names the character; `facts` gives each list row the cell's line 2 after the slot (the worn
-       enchant in the client's green, a report's "Item level 66 · Enchanted") and its gain at the
-       right. With no `centre` the page's own tooltip host opens each item. -->
+       names the character, and the slots sit straight on the page's panel; `facts` gives each list
+       row the cell's line 2 after the slot and its enchant in the client's green ("Head · Item
+       level 61 · Crusader") and its gain at the right. With no `centre`, or `listCentre={false}`
+       (the centre in the frame only), the page's own tooltip host opens each listed item by the
+       row it was tapped on. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { PAPERDOLL_FRAME } from '../../lib/ui/assets';
@@ -63,6 +65,7 @@
     form = 'auto',
     head = true,
     facts = false,
+    listCentre = true,
     testid = 'paperdoll-frame',
   }: {
     cells: readonly DollCell[];
@@ -93,8 +96,10 @@
     form?: 'auto' | 'list';
     /** The list form's header strip (medallion, title, figure). */
     head?: boolean;
-    /** List rows carry the cell's line 2 and its gain. */
+    /** List rows carry the cell's line 2, its enchant and its gain. */
     facts?: boolean;
+    /** False: the centre shows in the frame only; the list form's items open the page's tooltip. */
+    listCentre?: boolean;
     testid?: string;
   } = $props();
 
@@ -172,10 +177,12 @@
 
 {#snippet rowFacts(cell: DollCell)}
   <span class="pdf-sub"
-    >{#if cell.source}<span class="pdf-fact-slot">{cell.label}{FACT_SEPARATOR}</span><span
-        class:text-rarity-uncommon={cell.sourceTone === 'enchant'}
-        data-testid="paperdoll-list-line2-{cell.slot}">{cell.source}</span
-      >{:else}{cell.label}{/if}</span
+    >{#if cell.source || cell.enchant}<span class="pdf-fact-slot">{cell.label}{FACT_SEPARATOR}</span
+      >{#if cell.source}<span data-testid="paperdoll-list-line2-{cell.slot}">{cell.source}</span
+        >{/if}{#if cell.source && cell.enchant}{FACT_SEPARATOR}{/if}{#if cell.enchant}<span
+          class="text-rarity-uncommon"
+          data-testid="paperdoll-list-enchant-{cell.slot}">{cell.enchant}</span
+        >{/if}{:else}{cell.label}{/if}</span
   >
 {/snippet}
 
@@ -194,12 +201,13 @@
   data-testid={testid}
   role="group"
   aria-label={label ?? title}
-  data-inline-tip={centre === undefined ? undefined : ''}
+  data-inline-tip={centre !== undefined && listCentre ? '' : undefined}
 >
   {#if form !== 'list'}
     <!-- The frame (423 px and wider). -->
     <div
       class="pdf-frame"
+      data-inline-tip={centre !== undefined && !listCentre ? '' : undefined}
       style="aspect-ratio:{FRAME_SIZE.width}/{FRAME_SIZE.height};{frameVar}"
       data-region={REGION.slots}
     >
@@ -268,7 +276,7 @@
             <button
               type="button"
               class="pdf-item"
-              class:pdf-sel={slot === selected && centre !== undefined}
+              class:pdf-sel={slot === selected && centre !== undefined && listCentre}
               aria-pressed={slot === selected}
               data-bis-item={face.item.id}
               data-testid="paperdoll-list-slot-{slot}"
@@ -294,7 +302,9 @@
         </li>
       {/each}
     </ul>
-    {#if centre && selectedCell}<div class="pdf-list-centre">{@render centre(selectedCell, 'list')}</div>{/if}
+    {#if centre && listCentre && selectedCell}<div class="pdf-list-centre">
+        {@render centre(selectedCell, 'list')}
+      </div>{/if}
   </div>
 </div>
 
@@ -484,9 +494,13 @@
     background: var(--color-raised);
     box-shadow: 0 0 0 1px var(--color-panel-edge);
   }
+  /* Headless, the list is the page panel's own content: no second box inside it. */
   .pdf-headless {
-    border-top: 1px solid black;
-    border-radius: var(--radius-plate);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
   }
   .pdf-item {
     display: grid;

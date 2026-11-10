@@ -10,6 +10,8 @@ export const gearCardCopy = {
     `${worn} of ${total} slots · ${enchants === 0 ? 'no enchants' : `${enchants} ${enchants === 1 ? 'enchant' : 'enchants'}`}`,
   itemLevel: (level: string) => `item level ${level}`,
   statsHead: (level: number) => `In the fight, against a level ${level} boss.`,
+  /** A run from before the engine reported its stats sheet. */
+  statsNeedNewerRun: 'The stats sheet needs a newer run.',
   stats: {
     attackPower: 'Attack power',
     hit: 'Hit',
@@ -25,7 +27,7 @@ export const gearCardCopy = {
   missedWhite: (share: string) => `${share} of white swings`,
   setLine: (name: string, worn: number, total: number) => `Set: ${name} ${worn} of ${total}`,
   bonus: (pieces: number, text: string) => `(${pieces}) ${text}`,
-  bisLink: 'Upgrades for this character on Best in slot',
+  bisLink: 'Upgrades on Best in slot',
   /** The landing's plated doll: its Section action. */
   bisAction: 'Upgrades on Best in slot',
   noGear: 'This run had no gear on file.',

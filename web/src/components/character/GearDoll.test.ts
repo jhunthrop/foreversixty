@@ -13,7 +13,7 @@ const HELM = {
   twoHand: false,
 };
 const SLOTS: PaperdollSlot[] = [
-  { slot: 'head', state: 'item', item: HELM, enchant: 'Stamina +10', detail: 'Item level 66 · Enchanted' },
+  { slot: 'head', state: 'item', item: HELM, enchant: 'Stamina +10', detail: 'Item level 66' },
   { slot: 'neck', state: 'empty' },
 ];
 
@@ -32,10 +32,10 @@ function doll(props: { mode: 'worn' | 'report' } & Record<string, unknown>): str
 }
 
 describe('GearDoll', () => {
-  it('draws a report set on the frame, opening on the first item with its log detail in the centre', () => {
+  it('draws a report set on the frame, opening on the first item with its log item level and enchant', () => {
     const body = doll({ mode: 'report', meta: 'Warrior', figure: { value: '182.4', unit: 'DPS' } });
     expect(body).toContain('data-testid="paperdoll-frame-slot-head"');
-    expect(body).toMatch(/class="pdf-centre[\s\S]*Lionheart Helm[\s\S]*Item level 66 · Enchanted/);
+    expect(body).toMatch(/class="pdf-centre[\s\S]*Lionheart Helm[\s\S]*Item level 66 · Stamina \+10/);
     expect(body).toContain('182.4 <small');
   });
 
@@ -43,7 +43,9 @@ describe('GearDoll', () => {
     const body = doll({ mode: 'worn', form: 'list', head: false });
     expect(body).not.toContain('paperdoll-frame-slot-head');
     expect(body).not.toContain('class="pdf-strip');
-    expect(body).toMatch(/Head · <\/span><span[^>]*class="text-rarity-uncommon"[^>]*>Stamina \+10/);
+    expect(body).toMatch(
+      /Head · <\/span><span[^>]*>Item level 66<\/span> · <span class="text-rarity-uncommon"[^>]*>Stamina \+10/,
+    );
     expect(body).not.toContain('data-inline-tip');
   });
 

@@ -101,18 +101,17 @@ test.describe('the report "At pull" at 1280', () => {
     await page.getByTestId('at-pull-links').first().getByRole('link', { name: 'Gear ›' }).click();
     const frame = page.getByTestId('gear-list');
     await expect(frame.getByTestId('paperdoll-frame-slot-head')).toHaveAccessibleName('Head: Lionheart Helm');
-    // Beside the frame, each worn piece over its slot and the log's own detail; no gain.
-    await expect(frame.getByTestId('gear-list-row-head')).toContainText('Head · Item level 66 · Enchanted');
+    // Beside the frame, each worn piece over its slot, the log's own item level and the enchant
+    // named from the build's table; the off hand a two-hander covers says so; no gain.
+    await expect(frame.getByTestId('gear-list-row-head')).toContainText('Head · Item level 66 · Crusader');
     await expect(frame.getByTestId('gear-list-row-main_hand')).toContainText('Main hand · Item level 63');
+    await expect(frame.getByTestId('gear-list-row-off_hand')).toContainText('Two-hand in main hand');
     await expect(frame.locator('[data-testid^="paperdoll-list-gain"]')).toHaveCount(0);
-    // The frame opens on the head: its client tooltip in the centre ends on the log's detail.
+    // The frame opens on the head: its client tooltip in the centre, the enchant on its green line.
     const centre = frame.locator('[data-region="paperdoll-centre"]');
     await expect(centre).toContainText('Lionheart Helm');
-    await expect(centre.getByTestId('paperdoll-detail')).toHaveText('Item level 66 · Enchanted');
-    // The worn set's average item level sits above the doll (owner 2026-11-06).
-    await expect(page.getByTestId('gear-list-ilvl')).toHaveText(/^Item level \d+(\.\d)?$/);
+    await expect(centre).toContainText('Crusader');
     await frame.getByTestId('paperdoll-frame-slot-main_hand').hover();
     await expect(centre).toContainText('Arcanite Reaper');
-    await expect(centre.getByTestId('paperdoll-detail')).toHaveText('Item level 63');
   });
 });

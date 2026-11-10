@@ -139,10 +139,10 @@ async function sectionsKeepGutter(page: Page): Promise<void> {
 
 /**
  * The shared paperdoll's list form (design/specs/2026-11-09-directions.md, Paperdoll; the b2 sim
- * mock): the frame is never drawn on the sim, and the slots run in two columns in the client's
- * order -- head, then neck beside it on the same row.
+ * mock): the frame is never drawn on the sim, and the slots run in the client's order -- neck
+ * after head, beside it in two columns or under it where the panel is too narrow for two names.
  */
-async function gearListIsTwoColumns(page: Page): Promise<void> {
+async function gearListInClientOrder(page: Page): Promise<void> {
   const doll = page.getByTestId('sim-gear-doll');
   await expect(doll.locator('.pdf-frame')).toHaveCount(0);
   // One read of both, so a scroll still settling cannot move one between them.
@@ -154,8 +154,9 @@ async function gearListIsTwoColumns(page: Page): Promise<void> {
   );
   expect(head, 'the head row is missing').toBeDefined();
   expect(neck, 'the neck row is missing').toBeDefined();
-  expect(Math.round(neck!.y), 'neck is not beside head').toBe(Math.round(head!.y));
-  expect(neck!.x, 'neck is not right of head').toBeGreaterThan(head!.x);
+  const beside = Math.round(neck!.y) === Math.round(head!.y) && neck!.x > head!.x;
+  const under = neck!.y > head!.y && Math.round(neck!.x) === Math.round(head!.x);
+  expect(beside || under, 'neck does not follow head').toBe(true);
 }
 
 // The landing's paste Plate pastes and runs in one click (SimView.svelte's `runPastedInput`),
@@ -179,7 +180,7 @@ test('nothing scrolls sideways and every target clears 44px on an empty /sim', a
   await sectionsKeepGutter(page);
 });
 
-test('a loaded character reaches the run button and the DPS figure without a scroll after pressing run, in a two-column gear list, with no sideways scroll', async ({
+test('a loaded character reaches the run button and the DPS figure without a scroll after pressing run, in the gear list, with no sideways scroll', async ({
   page,
 }) => {
   // A code link loads the character without running it: the doll is the page's one Plate.
@@ -192,7 +193,7 @@ test('a loaded character reaches the run button and the DPS figure without a scr
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);
   await sectionsKeepGutter(page);
-  await gearListIsTwoColumns(page);
+  await gearListInClientOrder(page);
 
   // The secondary controls are in More settings; the audit measures them open, as a player
   // opens them.
