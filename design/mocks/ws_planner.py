@@ -283,7 +283,8 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
     plate = TalentEditor(trees(st), lead_tree, tree_foot(st, status, status_tone, reset_open))
     send = F['send'][send_key] if send_key else None
     main = Ordered(plate, 1, span=True) + Ordered(order(st), 6, span=True)
-    rail = (Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + Ordered(guide_builds(st), 4) + Ordered(share(st, share_mode), 7)
+    gb = guide_builds(st)
+    rail = (Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + (Ordered(gb, 4) if gb else '') + Ordered(share(st, share_mode), 7)
             + Ordered(importer(st, import_mode), 8))
     # Ruling MUST 1: the build's origin is said once; the gold origin line drops whenever the note shows.
     body = (head(st, signed != 'out', st.get('origin', '') if origin and not note else '') + bar(st, open_m) + notes(note, note_short)
