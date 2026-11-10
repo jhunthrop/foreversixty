@@ -136,6 +136,7 @@
               item={cell.item}
               build={dataBuild}
               sourceContent={facts}
+              sourceTitle={[cell.label, cell.source, cell.enchant].filter(Boolean).join(FACT_SEPARATOR)}
               unknown={cell.unknown}
               iconSize={28}
               bare
@@ -153,7 +154,8 @@
               >
               <span class="min-w-0">
                 <span class="text-muted block text-[15px] leading-5">{cell.label}</span>
-                <span class="text-muted block text-[13px] leading-[18px]">{gearCopy.paperdoll.twoHand}</span>
+                <span class="text-muted block text-[13px] leading-[18px]">{gearCopy.paperdoll.twoHanded}</span
+                >
               </span>
             </div>
           {/if}
@@ -189,6 +191,11 @@
   }
   .gear-at-pull-covered-icon {
     filter: grayscale(1) brightness(0.55);
+  }
+  .gear-at-pull-list :global(.ui-item-row-src) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .gear-at-pull-list > :global(*) {
     border-bottom: 1px solid var(--color-line-soft);

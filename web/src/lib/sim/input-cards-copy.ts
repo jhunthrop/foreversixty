@@ -11,7 +11,7 @@ export const gearCardCopy = {
   itemLevel: (level: string) => `item level ${level}`,
   statsHead: (level: number) => `In the fight, against a level ${level} boss.`,
   /** A run from before the engine reported its stats sheet. */
-  statsNeedNewerRun: 'The stats sheet needs a newer run.',
+  statsNeedNewerRun: 'Your stats in the fight show after a run on a newer engine.',
   stats: {
     attackPower: 'Attack power',
     hit: 'Hit',

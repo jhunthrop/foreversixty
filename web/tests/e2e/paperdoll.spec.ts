@@ -105,7 +105,7 @@ test.describe('the report "At pull" at 1280', () => {
     // named from the build's table; the off hand a two-hander covers says so; no gain.
     await expect(frame.getByTestId('gear-list-row-head')).toContainText('Head · Item level 66 · Crusader');
     await expect(frame.getByTestId('gear-list-row-main_hand')).toContainText('Main hand · Item level 63');
-    await expect(frame.getByTestId('gear-list-row-off_hand')).toContainText('Two-hand in main hand');
+    await expect(frame.getByTestId('gear-list-row-off_hand')).toContainText('Two-handed');
     await expect(frame.locator('[data-testid^="paperdoll-list-gain"]')).toHaveCount(0);
     // The frame opens on the head: its client tooltip in the centre, the enchant on its green line.
     const centre = frame.locator('[data-region="paperdoll-centre"]');

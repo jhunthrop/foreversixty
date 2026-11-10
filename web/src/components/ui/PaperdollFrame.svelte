@@ -46,6 +46,7 @@
   import { FACT_SEPARATOR, type ItemRef } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
   import { SLOT_DISPLAY_LABELS } from '../../lib/bis/slot-display-labels';
+  import { gearCopy } from '../../lib/gear/copy';
   import type { Slot } from '../../lib/planner/types';
 
   let {
@@ -176,7 +177,7 @@
 {/snippet}
 
 {#snippet rowFacts(cell: DollCell)}
-  <span class="pdf-sub"
+  <span class="pdf-sub" title={[cell.label, cell.source, cell.enchant].filter(Boolean).join(FACT_SEPARATOR)}
     >{#if cell.source || cell.enchant}<span class="pdf-fact-slot">{cell.label}{FACT_SEPARATOR}</span
       >{#if cell.source}<span data-testid="paperdoll-list-line2-{cell.slot}">{cell.source}</span
         >{/if}{#if cell.source && cell.enchant}{FACT_SEPARATOR}{/if}{#if cell.enchant}<span
@@ -285,7 +286,9 @@
               <span class="pdf-cell">{@render icon(face)}</span>
               <span class="min-w-0">
                 {#if face.covered}
-                  <span class="pdf-sub">{cell.label}</span><span class="pdf-sub">Two-handed</span>
+                  <span class="pdf-sub">{cell.label}</span><span class="pdf-sub"
+                    >{gearCopy.paperdoll.twoHanded}</span
+                  >
                 {:else}
                   <span class="pdf-name {rarityClassFor(face.item.quality)}">{face.item.name}</span>
                   {#if facts}{@render rowFacts(cell)}{:else}<span class="pdf-sub">{cell.label}</span>{/if}
@@ -549,9 +552,15 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  /* A row's facts wrap rather than truncate: the enchant and the report's detail are the point. */
+  /* A row's facts wrap on a phone, where the enchant would otherwise be cut; from 560 px (two wide
+     columns) every row keeps one line, the whole line in its title and the item's tooltip. */
   .pdf-facts .pdf-sub {
     white-space: normal;
+  }
+  @container (min-width: 560px) {
+    .pdf-facts .pdf-sub {
+      white-space: nowrap;
+    }
   }
   /* A phone's half column keeps the facts and drops the slot word before them (the name says it). */
   @container (min-width: 360px) and (max-width: 559.98px) {
