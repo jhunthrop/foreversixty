@@ -140,7 +140,7 @@ PLANS_CSS = '''<style>
 @media(min-width:1024px){.pmore{grid-template-columns:minmax(0,1fr) 340px;column-gap:28px;align-items:start}}
 @media(min-width:1760px){.pmore{grid-template-columns:minmax(0,1fr) var(--rail-w)}}
 .pc.plans{padding-top:28px}.pc.plans>.pstack{display:flex;flex-direction:column;gap:22px}
-.pmain>section>.sec-h+*{margin-top:12px}.phist{padding-top:12px}.pmain p.t-small.phist{max-width:none}.pmem{padding-bottom:4px}.pmain .rgrid>.row{padding-inline:0}
+.prules{padding-top:20px}.prules-t{margin:0;padding-bottom:4px;font:400 20px/26px var(--font-title);letter-spacing:-.015em;color:var(--cream)}@media(max-width:1023px){.pmore>:last-child{order:-1}}.pmain .rgrid>.row{padding-inline:0}.phist{padding-top:12px}.pmain p.t-small.phist{max-width:none}.pmem{padding-bottom:4px}.pmain .rgrid>.row{padding-inline:0}
 @media(max-width:767px){.plan{padding:18px 16px}}
 .plan .plh .fig{margin-bottom:4px}   /* PlanPrice's figure keeps 4 px under it */
 main{padding-bottom:40px}@media(min-width:1024px){main{padding-bottom:64px}}   /* Base's page body above the footer */
@@ -257,10 +257,13 @@ def premium_page(state: str) -> str:
     notes = f'<div class="pc"><div data-region="{REGION["notes"]}">{inner}</div></div>' if notices else ''
     grid = (f'<div class="pgrid" role="group" aria-label="{e(P["title"])}">'
             + free_column(st) + premium_column(st) + guild_column('guild', st) + guild_column('raid_guild', st) + '</div>')
-    faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2), meta=e(P['foot']), panel=True)
-    rules = Section(e(P['howItWorks']), RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2)
-                    + f'<p class="t-small phist">{e(P["historyPromise"])}</p>', panel=True)
-    more = f'<div class="pmore"><div class="pmain">{faq}{rules}</div>{coach_rail()}</div>'
+    # The guild rules under the questions on one panel (the redesign review: one prose panel on the page).
+    rules = (f'<div class="prules" id="guild-leaders"><h3 class="prules-t">{e(P["howItWorks"])}</h3>'
+             + RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2)
+             + f'<p class="t-small phist">{e(P["historyPromise"])}</p></div>')
+    faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2) + rules,
+                  meta=e(P['foot']), panel=True)
+    more = f'<div class="pmore"><div class="pmain">{faq}</div>{coach_rail()}</div>'
     body = head + bar + notes + f'<div class="pc plans"><div class="pstack">{grid}{more}</div></div>' + PLANS_CSS
     note = f'/premium mock, {state}. Data: premium-facts.json (plans-page-copy.ts, components/premium/model.ts on plans.ts; accounts DERIVED from home fixtures at 2026-11-08T10:00Z).'
     return render(f'{P["title"]} · Forever Sixty', body, 'Premium', who_of(key), chrome_of(key), note)

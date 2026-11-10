@@ -192,16 +192,17 @@ const guildPlans = [
                 <Row title={entry.question} sub={entry.answer} open />
               ))}
             </RowGrid>
-          </Section>
-          <Section title={copy.howItWorks} anchor="guild-leaders" testid="guild-rules" panel>
-            <RowGrid cols={2}>
-              {copy.rules.map((rule) => (
-                <Row title={rule.term} sub={rule.sentence} open />
-              ))}
-            </RowGrid>
-            <p class="text-small text-muted plans-history m-0" data-testid="history-promise">
-              {copy.historyPromise}
-            </p>
+            <div class="plans-rules" id="guild-leaders" data-testid="guild-rules">
+              <h3 class="plans-rules-title">{copy.howItWorks}</h3>
+              <RowGrid cols={2}>
+                {copy.rules.map((rule) => (
+                  <Row title={rule.term} sub={rule.sentence} open />
+                ))}
+              </RowGrid>
+              <p class="text-small text-muted plans-history m-0" data-testid="history-promise">
+                {copy.historyPromise}
+              </p>
+            </div>
           </Section>
         </div>
         <CoachSample />
@@ -401,6 +402,24 @@ const guildPlans = [
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: var(--section-gap);
+  }
+  /* The guild rules under the questions, on the same panel: one prose panel on the page. */
+  .plans-rules {
+    padding-top: 20px;
+    scroll-margin-top: calc(var(--bar-h) + 12px);
+  }
+  .plans-rules-title {
+    margin: 0;
+    padding-bottom: 4px;
+    font: 400 20px/26px var(--font-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-cream);
+  }
+  /* On a phone the coach sample comes before the long prose. */
+  @media (max-width: 1023px) {
+    .plans-more > :global(:last-child) {
+      order: -1;
+    }
   }
   .plans-more-main {
     display: flex;
