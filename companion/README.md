@@ -117,6 +117,9 @@ The **Reports** page lists the newest reports the moment they have an id, live o
 | Reports are credited to | Automatic by default: the companion reads who is logging from the combat log itself (the game marks the logging player's own units in every line), then finds that character among the ones the addon has exported, so a report is credited to the right region and ruleset with nothing to pick. If the addon has not exported the character yet, the report is credited the moment it has (log out once with the addon loaded). Pick a character from the list only if Automatic is wrong; the Status page and this setting both show who it currently reads |
 
 The companion watches the install you played most recently; the Status page tags it Watching.
+It knows a game folder by the `.flavor.info` file the game writes in it (`wowf` is the live game,
+`wow_classic_beta` the beta), so a renamed or custom install path works; a folder without that file is
+known by its name.
 
 Where the companion keeps its files:
 

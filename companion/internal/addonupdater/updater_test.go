@@ -367,6 +367,36 @@ func TestNewerComparesSemverAndDates(t *testing.T) {
 
 // ---- is the game running -----------------------------------------------
 
+// The owner's Windows install (2026-11-09): the live game's Wow.exe in
+// _forever_ and the beta's WowB.exe in _classic_beta_, side by side. Each
+// holds its own install's addon updates and not the other's.
+func TestTheLiveAndBetaClientsHoldTheirOwnInstalls(t *testing.T) {
+	root := filepath.Join(string(filepath.Separator)+"Program Files (x86)", "World of Warcraft")
+	live, beta := filepath.Join(root, "_forever_"), filepath.Join(root, "_classic_beta_")
+	for _, name := range []string{"Wow.exe", "WowB.exe"} {
+		if !IsClientName(name) {
+			t.Errorf("IsClientName(%q) = false", name)
+		}
+	}
+	liveProc := []Proc{{Name: "Wow.exe", Path: filepath.Join(live, "Wow.exe")}}
+	betaProc := []Proc{{Name: "WowB.exe", Path: filepath.Join(beta, "WowB.exe")}}
+	for _, c := range []struct {
+		name    string
+		install string
+		procs   []Proc
+		want    bool
+	}{
+		{"Wow.exe holds _forever_", live, liveProc, true},
+		{"Wow.exe leaves _classic_beta_", beta, liveProc, false},
+		{"WowB.exe holds _classic_beta_", beta, betaProc, true},
+		{"WowB.exe leaves _forever_", live, betaProc, false},
+	} {
+		if got := GameRunning(c.install, c.procs); got != c.want {
+			t.Errorf("%s: GameRunning = %v, want %v", c.name, got, c.want)
+		}
+	}
+}
+
 func TestGameRunningGate(t *testing.T) {
 	era := filepath.Join(string(filepath.Separator)+"games", "World of Warcraft", "_classic_era_")
 	anni := filepath.Join(string(filepath.Separator)+"games", "World of Warcraft", "_anniversary_")
