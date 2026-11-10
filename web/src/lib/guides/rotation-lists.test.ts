@@ -884,8 +884,8 @@ describe('sayRepeatedRulesOnce', () => {
     ]);
     expect(rows.map((row) => row.clause)).toEqual([
       rules,
-      'Same as above',
-      'Same as above',
+      'At the same thresholds',
+      'At the same thresholds',
       'When Renew is not on the tank',
     ]);
   });

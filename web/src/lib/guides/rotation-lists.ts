@@ -301,7 +301,7 @@ export function joinSpellRuns(items: readonly RotationItem[]): RotationItem[] {
   }, []);
 }
 
-/** A rule shorter than this ("On cooldown") reads faster than "Same as above". */
+/** A rule shorter than this ("On cooldown") reads faster said again. */
 const SAME_RULE_MIN_CHARS = 40;
 
 /** Rows whose rules repeat the row above's word for word say so instead of the rules again:

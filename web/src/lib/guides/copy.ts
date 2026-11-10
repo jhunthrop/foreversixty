@@ -62,7 +62,7 @@ export const guidesCopy = {
   raidBuildTag: 'Raid build only',
   /** A priority row whose rules are word for word the row above's (a cheaper rank, then a
    *  cheaper spell, at the same thresholds): said once, on the first. */
-  sameRulesAsAbove: 'Same as above',
+  sameRulesAsAbove: 'At the same thresholds',
   /** "Picks for a Human (Alliance).", "Picks for an Undead (Horde)." */
   bisCaption: (race: string, faction: string): string =>
     `Picks for ${/^[AEIOU]/i.test(race) ? 'an' : 'a'} ${race} (${faction}).`,

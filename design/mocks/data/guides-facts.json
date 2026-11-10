@@ -29,7 +29,7 @@
   "priority": "Priority",
   "cooldowns": "Cooldowns",
   "raidBuildTag": "Raid build only",
-  "sameRulesAsAbove": "Same as above",
+  "sameRulesAsAbove": "At the same thresholds",
   "bisCaption": "[fn]",
   "fullListLink": "Full list and alternatives",
   "bisByLevelLabel": "Best in slot by level:",
@@ -22324,7 +22324,7 @@
        "name": "Greater Heal",
        "rank": 1,
        "icon": "spell_holy_greaterheal",
-       "clause": "Same as above",
+       "clause": "At the same thresholds",
        "tipKey": "spell:2060",
        "cheapRank": true,
        "rankText": "Rank 1 (cheap rank)"
@@ -22334,7 +22334,7 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "Same as above",
+       "clause": "At the same thresholds",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       }
