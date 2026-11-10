@@ -176,7 +176,7 @@ export function simAnswer(input: AnswerInput): AnswerModel {
   if (input.result !== null) return resultAnswer(input.result, input.benchmark ?? null);
   return {
     state: 'none',
-    label: copy.answer.noSim,
+    label: '',
     primary: 'run',
   };
 }

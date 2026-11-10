@@ -22,6 +22,8 @@ export interface RankFigure {
   bare?: boolean;
   /** The value's own colour (a percentile on the parse scale); the strong text without. */
   color?: string;
+  /** Drawn below 768 only: a fact the wide row has a column for (the tier list's vs #1). */
+  phoneOnly?: boolean;
   testid?: string;
 }
 

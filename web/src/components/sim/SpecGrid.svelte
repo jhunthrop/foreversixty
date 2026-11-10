@@ -121,7 +121,7 @@
     </div>
   </Section>
   <Section title={simCopy.specsUnsimulatedHeading} panel testid="specs-unsimulated">
-    <div data-testid="specs-grid-unsimulated">
+    <div class="flex flex-wrap gap-x-6" data-testid="specs-grid-unsimulated">
       {#each unsimulatedSpecs as spec (spec.spec)}
         <UnsimulatedSpecCard {spec} />
       {/each}

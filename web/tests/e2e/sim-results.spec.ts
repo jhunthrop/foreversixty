@@ -99,6 +99,6 @@ test('a plain code link still waits for the press', async ({ page }) => {
 
   await expect(simCharacter(page)).toBeVisible();
   await expect(page.getByTestId('sim-run-button')).toHaveText(simPageCopy.bar.runSim);
-  await expect(page.getByTestId('sim-answer-label')).toHaveText(simPageCopy.answer.noSim);
+  await expect(page.getByTestId('sim-answer-label')).toHaveText('');
   await expect(page.getByTestId('sim-live-report')).toHaveCount(0);
 });

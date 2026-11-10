@@ -50,6 +50,18 @@ export function ranksTrees(ranks: readonly (readonly number[])[]): string {
   return ranks.map((tree) => tree.join('').replace(/0+$/, '')).join('/');
 }
 
+/** The points a guide build spends where the build on screen does not, talent by talent (two
+ *  tree ranks segments in the `codeTrees` form): how far the build on screen is from the guide's. */
+export function treesOff(guide: string, mine: string): number {
+  const mineTrees = mine.split('/');
+  return guide.split('/').reduce((sum, tree, at) => {
+    const own = mineTrees[at] ?? '';
+    return (
+      sum + [...tree].reduce((off, digit, i) => off + Math.max(0, Number(digit) - Number(own[i] ?? 0)), 0)
+    );
+  }, 0);
+}
+
 /** Points per tree of a tree ranks segment. */
 export function treesSplit(trees: string): number[] {
   return trees.split('/').map((tree) => [...tree].reduce((sum, digit) => sum + Number(digit), 0));

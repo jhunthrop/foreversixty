@@ -38,7 +38,8 @@ FLOOR_MIN, FEED_ROWS, UPGRADES_SHOWN, GUILD_SHOWN = 5, 7, 5, 5
 FRAME_LINE = 'rgba(243,238,226,.42)'  # web --color-frame-line
 GUILD_SIM_TAIL = re.compile(r', #(\d+) of (\d+) DPS in [^,(]+ \([^)]*\)$')  # web lib/home/feed.ts homeRows
 HOME_CSS = f'''
-.ph-wrap>[data-region="head"]{{padding-top:16px}}@media(min-width:900px){{.ph-wrap>[data-region="head"]{{padding-top:40px}}}}
+.ph-wrap>[data-region="head"]{{display:flex;flex-direction:column;justify-content:flex-end;min-height:120px;padding-top:8px}}
+@media(min-width:900px){{.ph-wrap>[data-region="head"]{{min-height:160px}}}}
 .ph-meta .t-small+.t-small::before{{content:none}}
 .pad16{{padding:16px}}
 .hans{{display:flex;flex-direction:column;align-items:inherit;gap:2px}}.hans .link{{font-size:13px}}
@@ -46,7 +47,7 @@ HOME_CSS = f'''
 .hgrid>div{{min-width:0}}.hg-lead{{grid-area:lead}}.hg-feed{{grid-area:feed}}.hg-rail{{grid-area:rail;display:flex;flex-direction:column;gap:var(--gap)}}.hg-foot{{grid-area:foot}}
 @media(min-width:1100px){{.hgrid{{grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"lead lead" "feed rail" "foot foot"}}}}
 .pq{{display:grid;gap:16px 34px}}
-@media(min-width:900px){{.pq{{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}.pq .prep{{border-top:0;border-left:1px solid {FRAME_LINE};padding:0 0 0 28px}}}}
+@media(min-width:900px){{.pq{{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}}.pq .prep{{border-top:0;border-left:1px solid {FRAME_LINE};padding:0 0 0 28px}}}}
 .pt{{font:400 30px/34px var(--font-title);margin:0}}.psub{{margin-top:4px;font-size:15px;line-height:22px}}
 .bigf{{display:flex;flex-wrap:wrap;gap:12px 26px;margin-top:16px}}.bigf .g{{display:flex;gap:26px}}.bigf .rule{{width:1px;background:{FRAME_LINE}}}
 .bigf .f{{display:flex;flex-direction:column}}.bigf b{{font-weight:600;font-size:44px;line-height:1;color:var(--strong)}}
@@ -191,13 +192,15 @@ def guild_plaque(char: dict, guild_home: dict) -> str:
     standing = standing_facts(char, guild_home)
     d = iso(r['starts_at']) - timedelta(hours=6)
     when = f"{d.strftime('%A')} {d.day} {d.strftime('%B')} &middot; 8 pm"  # web lib/home/plaque.ts raidWhen, the viewer's time
-    roles = ''.join(f'<span><b>{c[k]}</b> {k}</span>' for k in ('tanks', 'healers', 'melee', 'ranged'))
+    # the countdown alone is big (h-audit 2026-11-09); signed up and late lead the role line at body size
+    roles = (f'<span><b>{c["in"]}</b> signed up</span><span><b>{c["late"]}</b> late</span>'
+             + ''.join(f'<span><b>{c[k]}</b> {k}</span>' for k in ('tanks', 'healers', 'melee', 'ranged')))
     own = r['own']['state'] if r['own'] else None
     buttons = ''.join(f'<button type="button" class="btn{" primary" if k == "in" else ""} sm" aria-pressed="{str(own == k).lower()}">{label}</button>'
                       for k, label in (('in', "I'm in"), ('late', 'Late'), ('out', "Can't come")))
     prep = (f'<div class="prep"><h3>Before the pull</h3><ul>{"".join(f"<li>{n}</li>" for n in needs)}</ul></div>') if needs else ''
     main = (f'<div style="min-width:0">{plaque_title(r["zone_name"], f"{char["guild"]["name"]} &middot; {when}")}'
-            f'{big_figures([clock_to(r["starts_at"]), [(str(c["in"]), "signed up"), (str(c["late"]), "late")]], True)}'
+            f'{big_figures([clock_to(r["starts_at"])], True)}'
             f'<p class="roles">{roles}</p>'
             + (f'<div style="margin-top:6px">{facts_line(standing)}</div>' if standing else '')
             + f'<div class="acts">{buttons}</div></div>')
@@ -288,10 +291,10 @@ def feed_section(rows: list[dict] | None, state: str = 'ready') -> str:
     return sec('Latest on Forever', body)
 
 
-def frame_section(title: str, body: str, action: str = '') -> str:
+def frame_section(title: str, body: str, action: str = '', plain: bool = False) -> str:
     """A featured rail panel with its title inside (Your upgrades, How to start), carrying the section's region."""
     a = Link(f'{action} &rsaquo;') if action else ''
-    return Frame(f'<div class="fhd"><h2>{title}</h2>{a}</div>{body}', region=region_slug(title))
+    return Frame(f'<div class="fhd"><h2>{title}</h2>{a}</div>{body}', region=region_slug(title), plain=plain)
 
 
 # ------------------------------------------------------------------------------------------------ signed out
@@ -310,11 +313,11 @@ def how_to_start() -> str:
     return frame_section('How to start', Rows([
         Row('Sign in with Battle.net', rank='1'),
         Row('Install the addon and the companion', rank='2'),
-    ], open_=True))
+    ], open_=True), plain=True)
 
 
 def state_out() -> str:
-    head = PageHeader('Pick your class', actions=Button('Sign in with Battle.net', True))
+    head = PageHeader('Pick your class')
     rows = home_rows(J('feed-out.json')['rows'], False)
     return head + grid(class_picker(headless=True), feed_section(rows), how_to_start() + first_raids_plaque())
 
@@ -431,7 +434,7 @@ def spec_week_section(w: dict, movers: dict | None) -> str:
         sub = f'{move}, {place}'
     else:
         sub = place
-    row = Row(f"{spec_name(w['spec'])} at {band_words(w['band'])}", sub, lead=GradeTile(w['grade']), link=False)
+    row = Row(f"{spec_name(w['spec'])} at {band_words(w['band'])}", sub, lead=GradeTile(w['grade'], bare=True), link=False)
     body = f'<div class="sp">{Rows([row], open_=True)}{movers_block(movers)}</div>'
     return sec('Your spec this week', body, 'Tier list')
 

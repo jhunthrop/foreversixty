@@ -59,9 +59,6 @@ export const warningsCopy = {
     `${spell} was never pressed in this run. Check the talents in Open in the sim.`,
   missingTalent: (spell: string, spec: string) =>
     `${spell} is in the ${spec} rotation, but these talents do not take it.`,
-  /** `every` reads as a noun ("30 minutes"). */
-  longCooldown: (spell: string, every: string) =>
-    `${spell} counts once a pull here. In a raid it is back every ${every}.`,
   atCap: (amount: string, resource: string, percent: string) =>
     `${amount} ${resource} (${percent}%) was lost at the cap.`,
   atCapRage: 'Queue Heroic Strike sooner so swings do not land at full rage.',

@@ -698,7 +698,7 @@ PRIM_CSS += '''
 .menu .mi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:8px 16px;border-bottom:1px solid var(--line-soft)}
 .menu .mi b{font:700 15px/20px var(--font-body);color:var(--strong)}.menu .mi span{font-size:13px;line-height:18px;color:var(--muted)}
 .menu .mi .r{text-align:right}.menu .mi.cur{background:#e5b9551a;box-shadow:inset 3px 0 0 var(--gold)}.menu .mi:hover{background:var(--hover)}
-.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:168px;padding:20px;border:1px dashed var(--line);border-radius:6px;text-align:center;color:var(--muted);font-size:14px}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:96px;padding:16px 20px;border:1px dashed var(--line);border-radius:6px;text-align:center;color:var(--muted);font-size:14px}
 .drop.off{opacity:.55}
 .disc>summary{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;list-style:none;font:600 14px/20px var(--font-body);color:var(--strong)}
 .disc>summary::-webkit-details-marker{display:none}.disc>summary .chg{margin-left:auto;color:var(--gold);font-size:13px}
@@ -1028,7 +1028,8 @@ PRIM_CSS += '''
 '''
 
 TIER_TONES = {'S': '#ff8000', 'A': '#b866f5', 'B': '#3d94f0', 'C': '#1eff00', 'D': '#9d9d9d'}
-PRIM_CSS += ''.join(f'.grade.t{k}{{background:{v}}}' for k, v in TIER_TONES.items()) + '\n'
+PRIM_CSS += ''.join(f'.grade.t{k}{{background:{v}}}.grade.bare.t{k}{{background:none;color:{v}}}' for k, v in TIER_TONES.items()) + '\n'
+PRIM_CSS += '.grade.bare{font-size:40px}\n'
 
 
 def Countdown(eyebrow: str, clock: list[tuple[str, str]] | None, aside: str = '', tone: str = 'neutral', live: bool = False) -> str:
@@ -1050,8 +1051,9 @@ def FeedSkeleton(rows: int = 5) -> str:
     return '<div class="fsk" role="status" aria-busy="true">' + ''.join(f'<span aria-hidden="true">{Skeleton(40, 40)}{Skeleton(480, 16)}</span>' for _ in range(rows)) + '</div>'
 
 
-def GradeTile(letter: str) -> str:
-    return f'<span class="grade t{letter}" role="img" aria-label="Tier {letter}">{letter}</span>'
+def GradeTile(letter: str, bare: bool = False) -> str:
+    """web ui/GradeTile: the letter on its tier colour, or `bare`, the letter in its colour with no tile."""
+    return f'<span class="grade{" bare" if bare else ""} t{letter}" role="img" aria-label="Tier {letter}">{letter}</span>'
 
 # ------------------------------------------------ primitives added by the planner round (2026-11-08; design/specs/2026-11-08-planner.md section 3A)
 # Additive only: no earlier mock changes. `Page('workbench')` is L3 Workbench (3.7) with the split at 1280 (main | 340 rail;
@@ -1564,14 +1566,16 @@ PRIM_CSS += '''
 .frame{position:relative;min-width:0;overflow:hidden;padding:22px 24px;background:var(--raised);border:1px solid #000;border-radius:10px;
 box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
 .frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+.frame.plain::before{content:none}
 @media(max-width:767px){.frame{padding:18px 16px}}
 '''
 
 
-def Frame(inner: str, ornate: bool = False, region: str = '') -> str:
-    """web ui/Frame: `region` is the parity region it carries, when it is one (REGION values)."""
+def Frame(inner: str, ornate: bool = False, region: str = '', plain: bool = False) -> str:
+    """web ui/Frame: `region` is the parity region it carries, when it is one (REGION values); `plain` drops the inset line."""
     r = f' data-region="{region}"' if region else ''
-    return f'<div class="frame{" ornate" if ornate else ""}"{r}>{inner}</div>'
+    mod = " ornate" if ornate else " plain" if plain else ""
+    return f'<div class="frame{mod}"{r}>{inner}</div>'
 
 
 # The panel form (web ui/Section `panel`, `frame`, `flush`; ui/Page `panels`): the logs and report mocks' prims.panel, the
@@ -1830,7 +1834,7 @@ def PlateColumns(cols: list[tuple[str, str, str, str]], label: str = '', frame: 
 # from 768: the class crest and name in the class colour (a link on /guides), then its specs as slim link rows, no role tag.
 # classes: (slug, name, colour, [(key, name, icon_html)]); `yours` marks the header character's spec with `yours_label`.
 PRIM_CSS += """
-.cspick{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.cspick{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
 @media(min-width:768px){.cspick{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:1024px){.cspick{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .cspick-c{padding-bottom:8px;min-width:0}

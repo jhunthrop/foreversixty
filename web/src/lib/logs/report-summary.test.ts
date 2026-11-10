@@ -169,14 +169,15 @@ describe('ownReportRow (logs spec 2026-11-07 section 5)', () => {
     loggingCharacter: null,
   };
 
-  it('falls back from the title to the zone, then to the night it logged', () => {
-    expect(ownReportRow(base).title).toBe('17 Sep 2026');
+  it('falls back from the title to the zone, then to what the night held', () => {
+    expect(ownReportRow(base).title).toBe('Trash only');
+    expect(ownReportRow({ ...base, bossCount: 3 }).title).toBe('3 bosses');
     expect(ownReportRow({ ...base, zone: 'Molten Core' }).title).toBe('Molten Core');
     expect(ownReportRow({ ...base, title: 'Tuesday raid', zone: 'Molten Core' }).title).toBe('Tuesday raid');
   });
 
   it('reads the pulls, the bosses or Trash only, and the credit when there is one (directions b1)', () => {
-    expect(ownReportRow(base).sub).toBe('42 pulls · Trash only');
+    expect(ownReportRow(base).sub).toBe('42 pulls');
     expect(
       ownReportRow({
         ...base,

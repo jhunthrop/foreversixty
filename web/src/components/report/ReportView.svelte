@@ -170,7 +170,7 @@
     reportFigure,
     reportMeta,
     thisPullFacts,
-    reportPlayersTail,
+    reportMetaTail,
   } from '../../lib/report/frame';
   import { pullNumbers } from '../../lib/report/fights';
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
@@ -1639,17 +1639,7 @@
           (row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet) || row.guid === state.source,
         ),
   );
-  /** The scope's word for the head's caption. */
-  const scopeWord = $derived(
-    state.source === SOURCE_EVERYONE || (!groupScopeNow.scoped && groupScopeNow.crowded)
-      ? reportCopy.everyoneInRange
-      : state.source === SOURCE_FRIENDLIES && groupScopeNow.scoped
-        ? groupScopeNow.noun === 'raid'
-          ? reportCopy.yourRaid
-          : reportCopy.yourGroup
-        : 'Group',
-  );
-  /** The players and deaths in the Source scope, for the answer and This pull. */
+  /** The players and deaths in the Source scope, for the band's answer and its players tail. */
   const scopeRoster = $derived(
     (wholeScoped?.roster ?? []).filter((row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet)),
   );
@@ -1675,15 +1665,7 @@
         }),
   );
   const pullFacts = $derived(
-    fight === null || nightMode
-      ? []
-      : thisPullFacts({
-          fight,
-          scope: scopeWord,
-          players: scopeRoster.length,
-          deaths: scopeDeaths.length,
-          phases: summary?.phases ?? [],
-        }),
+    fight === null || nightMode ? [] : thisPullFacts({ fight, phases: summary?.phases ?? [] }),
   );
   const isTrashPull = $derived(fight !== null && fight.kind !== 'encounter');
   /** A pull a rating can exist for: a boss pull of a report the API keeps (never the bundled sample). */
@@ -1701,8 +1683,8 @@
           .filter((part) => part !== '')
           .join(' · '),
   );
-  /** The players count after the meta: a desktop fact (This pull counts them on a phone). */
-  const headTail = $derived(fight !== null && !nightMode ? reportPlayersTail(fight, scopeRoster.length) : '');
+  /** The meta's last fact (players, or mobs died): a desktop fact, so a phone's meta is one line. */
+  const headTail = $derived(fight !== null && !nightMode ? reportMetaTail(fight, scopeRoster.length) : '');
   /** One player as the Source on an actor tab: the player's own view (decision R5). */
   const playerView = $derived(sourcePlayer !== undefined && ACTOR_TABS.has(state.tab) && !nightMode);
   const playerRow = $derived(base?.roster.find((row) => row.guid === sourcePlayer));
@@ -1798,6 +1780,7 @@
       onOpenDeath={openDeaths}
       extra={chartedAbility === null ? null : { label: chartedAbility.label, series: chartedAbility.series }}
       {noun}
+      openOnPhone={state.tab === 'deaths'}
     />
   {/if}
 {/snippet}
@@ -1922,6 +1905,8 @@
           title={heading}
           line={headLine}
           lineTail={headTail}
+          {simHref}
+          pullActions={fight !== null && !nightMode}
           sample={isSampleReport(reportId)}
           {credit}
           {live}

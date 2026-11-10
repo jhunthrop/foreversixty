@@ -1,6 +1,6 @@
 // The raid plaque's facts (lib/home/raid-facts.ts).
 import { describe, expect, it } from 'vitest';
-import { raidFacts, raidLine } from './raid-facts';
+import { raidFacts, raidLine, raidLines } from './raid-facts';
 
 const ONYXIA = { kind: 'raid', name: "Onyxia's Lair", bosses: [{ items: [1, 2, 3, 3] }] };
 const CLASSES = new Map([
@@ -21,5 +21,15 @@ describe('raid facts', () => {
     expect(raidLine(onyxia, { slug: 'hunter', name: 'Hunter' })).toBe('1 boss · 2 Hunter drops');
     expect(raidLine(onyxia)).toBe('1 boss · 3 drops');
     expect(raidLine(barrow, { slug: 'hunter', name: 'Hunter' })).toBeUndefined();
+  });
+
+  it('lines every raid or none', () => {
+    const some = raidFacts([ONYXIA], CLASSES);
+    expect(raidLines(some)).toEqual([undefined, undefined, undefined]);
+    const all = raidFacts(
+      ['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"].map((name) => ({ ...ONYXIA, name })),
+      CLASSES,
+    );
+    expect(raidLines(all)).toEqual(['1 boss · 3 drops', '1 boss · 3 drops', '1 boss · 3 drops']);
   });
 });

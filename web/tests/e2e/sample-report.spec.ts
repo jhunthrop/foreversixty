@@ -119,7 +119,8 @@ test.describe('the sample report’s chart', () => {
       // The Section head with its title and figure, the legend and the brush; the Window choice
       // is the control bar's (logs spec 6.1).
       await expect(chart.getByText('Damage over the fight', { exact: true }).first()).toBeVisible();
-      await expect(chart.getByTestId('chart-head-meta')).toContainText('DPS');
+      // The whole fight's figure is the band's answer: the head carries no meta of its own.
+      await expect(chart.getByTestId('chart-head-meta')).toHaveCount(0);
       await expect(chart.getByTestId('chart-legend')).toBeVisible();
       await expect(fieldBox(page, 'window-select')).toBeVisible();
       await expect(chart.getByTestId('overview-brush')).toBeVisible();
@@ -176,10 +177,10 @@ test.describe('the sample’s counts say what they count', () => {
     await page.goto('/reports/sample');
     const source = page.getByTestId('source-scope');
     await expect(source.locator('option:checked')).toHaveText('Your group');
-    await expect(page.getByTestId('report-this-pull')).toContainText(/In your group\s*5\s*Deaths\s*0/);
+    await expect(page.getByTestId('report-this-pull')).not.toContainText('Deaths');
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
-    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Group [\d.,]+ DPS$/);
+    await expect(chart.getByTestId('chart-head-meta')).toHaveCount(0);
     await expect(chart.getByTestId('chart-legend')).toContainText('Group median');
     await expect(chart).not.toContainText('Raid');
     // Nobody died on the boss pull: the group's chart marks no death.
@@ -190,12 +191,11 @@ test.describe('the sample’s counts say what they count', () => {
       /· 10 mobs died/,
     );
     // The band (directions b1): the pull in the meta line, the group's DPS as its figure; This pull
-    // says the group's count and deaths.
+    // repeats neither.
     await expect(page.getByTestId('report-subtitle')).toHaveText(
       'Excavation Site: Wetlands · Pull 11, Saltspine #1 · Kill · 0:39 · 5 players',
     );
     await expect(page.getByTestId('report-answer')).toHaveText(/345\s*group DPS/);
-    await expect(page.getByTestId('report-this-pull')).toContainText(/In your group\s*5\s*Deaths\s*0/);
   });
 
   test('Everyone in range counts the players seen and totals, not a raid', async ({ page }) => {
@@ -204,14 +204,13 @@ test.describe('the sample’s counts say what they count', () => {
     await expect(page.getByTestId('summary-tab').getByTestId(/^roster-Player-/)).toHaveCount(57);
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
-    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Total [\d.,]+ DPS$/);
+    await expect(chart.getByTestId('chart-head-meta')).toHaveCount(0);
     await expect(fieldBox(chart, 'players')).toContainText(/Top 4, bottom 4 of \d+ players seen/);
     // The longer field still shows its value whole (the dropdown's fitted-field rule).
     const label = fieldBox(chart, 'players').locator('.sel-label');
     expect(await label.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
     await expect(chart.getByTestId('death-marker').first()).toBeVisible();
     await expect(chart.getByTestId('chart-legend')).toContainText('Median player');
-    await expect(page.getByTestId('report-this-pull')).toContainText(/In range\s*57\s*Deaths\s*2/);
   });
 
   test('a pull the group was not in is everyone in range, said so', async ({ page }) => {
@@ -232,8 +231,7 @@ test.describe('the sample’s counts say what they count', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/reports/sample?fight=7');
     await expect(page.getByTestId('source-scope').locator('option:checked')).toHaveText('Everyone in range');
-    await expect(page.getByTestId('report-this-pull')).toContainText('In range');
     await expect(page.getByTestId('report-group-missing')).toHaveText('Your group wasn’t in this pull.');
-    await expect(page.getByTestId('time-chart').getByTestId('chart-head-meta')).toHaveText(/^Total /);
+    await expect(page.getByTestId('time-chart').getByTestId('chart-legend')).toContainText('Median player');
   });
 });

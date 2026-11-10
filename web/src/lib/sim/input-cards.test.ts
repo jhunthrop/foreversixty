@@ -47,9 +47,9 @@ describe('resourceCard', () => {
     const summary = full.summary.resources[0]!;
     expect(card.title).toBe('Rage');
     expect(card.tiles.map((tile) => tile.label)).toEqual(['Gained', 'Spent', 'Lost at the cap']);
-    expect(card.tiles[0]!.value).toBe(`${Math.round(summary.gained).toLocaleString('en-US')} rage`);
+    expect(card.tiles[0]!.value).toBe(Math.round(summary.gained).toLocaleString('en-US'));
     const share = ((summary.wasted! / summary.gained) * 100).toFixed(1);
-    expect(card.tiles[2]!.value).toBe(`${summary.wasted} rage · ${share}%`);
+    expect(card.tiles[2]!.value).toBe(`${summary.wasted} · ${share}%`);
   });
 
   it('lists that sum to the tiles within 0.5', () => {

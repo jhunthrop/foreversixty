@@ -22,8 +22,11 @@
     devices,
     onCode,
     onPaired,
+    note = true,
   }: {
     devices: readonly Device[];
+    /** The companion-first line above the code button; /logs leaves it out (its card says Get the companion). */
+    note?: boolean;
     /** The code while it is out and unused; null once used, expired or never asked for. */
     onCode?: (code: string | null) => void;
     onPaired?: (device: Device) => void;
@@ -84,9 +87,9 @@
       {pairingCopy.codeLine(Math.round(pairing.expires_in / SECONDS_PER_MINUTE))}
     </p>
   {:else}
-    <p class="text-muted text-[14px] leading-5" data-testid="pairing-companion-first">
-      {pairingCopy.companionFirst}
-    </p>
+    {#if note}<p class="text-muted text-[14px] leading-5" data-testid="pairing-companion-first">
+        {pairingCopy.companionFirst}
+      </p>{/if}
     <Button size="sm" onclick={() => void pair()} disabled={busy} testid="pairing-start"
       >{pairingCopy.action}</Button
     >

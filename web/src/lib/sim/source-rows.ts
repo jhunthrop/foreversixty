@@ -12,6 +12,8 @@ export interface SourceItemStats {
   count: number;
   /** The highest item level among them; 0 with none. */
   bestIlvl: number;
+  /** That item, the row's icon and (for a PvP reward) its name; null with none. */
+  best: Item | null;
 }
 
 export function sourceItemStats(
@@ -20,14 +22,36 @@ export function sourceItemStats(
   known: ReadonlySet<number> | null,
 ): SourceItemStats {
   let count = 0;
-  let bestIlvl = 0;
+  let best: Item | null = null;
   for (const id of itemIds) {
     const item = items.get(id);
     if (item === undefined || !isKnownItem(id, known)) continue;
     count += 1;
-    bestIlvl = Math.max(bestIlvl, item.item_level);
+    if (best === null || item.item_level > best.item_level) best = item;
   }
-  return { count, bestIlvl };
+  return { count, bestIlvl: best?.item_level ?? 0, best };
+}
+
+/** Kinds whose sources the picker leaves out when this class can use nothing from them. */
+const HIDE_EMPTY: ReadonlySet<string> = new Set([
+  'dungeon',
+  'crafted',
+  'rep',
+  'pvp',
+  'world_drop',
+  'zone',
+  'vendor',
+]);
+
+/** Whether a source's row is worth drawing: anything with a usable item, and every raid, world boss and quest. */
+export function showsSource(kind: string, count: number): boolean {
+  return count > 0 || !HIDE_EMPTY.has(kind);
+}
+
+/** How many of a kind's sources have a tick on them, whole or by boss (picks are `<source id>|<boss id>`). */
+export function tickedSources(sources: readonly LootSource[], picked: readonly string[]): number {
+  const ids = new Set(sources.map((source) => source.id));
+  return new Set(picked.map((key) => key.slice(0, key.indexOf('|'))).filter((id) => ids.has(id))).size;
 }
 
 export interface FactionGroup {

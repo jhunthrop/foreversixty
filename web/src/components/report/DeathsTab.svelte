@@ -344,6 +344,15 @@
   }
 </script>
 
+{#snippet windowButton(death: Death)}
+  <button
+    type="button"
+    class="text-gold text-[14px] font-semibold whitespace-nowrap [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
+    data-testid="death-window"
+    onclick={() => onWindow(deathWindow(death.at_ms, durationMs))}>The 20 s before it ›</button
+  >
+{/snippet}
+
 <Section title="Deaths" testid="deaths-tab" panel flush>
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
@@ -363,6 +372,7 @@
             ><ClassIcon className={death.class ?? classOf.get(death.guid)} size={32} />{/snippet}
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(death.name).text}</span>{/snippet}
           {#snippet trail()}
+            <!-- One control a row: the fold toggle while deaths fold, else the window. -->
             {#if foldAll}
               <button
                 type="button"
@@ -371,13 +381,9 @@
                 data-testid="death-toggle"
                 onclick={() => toggle(death)}>{isOpen(death) ? 'Fold' : 'Open'}</button
               >
+            {:else}
+              {@render windowButton(death)}
             {/if}
-            <button
-              type="button"
-              class="text-gold text-[14px] font-semibold whitespace-nowrap [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
-              data-testid="death-window"
-              onclick={() => onWindow(deathWindow(death.at_ms, durationMs))}>The 20 s before it ›</button
-            >
           {/snippet}
         </Row>
         {#if isOpen(death)}
@@ -432,6 +438,7 @@
                 >{/if}
             </p>
           {/if}
+          {#if foldAll}<div class="px-4 pb-3">{@render windowButton(death)}</div>{/if}
         {/if}
       </div>
     {/each}

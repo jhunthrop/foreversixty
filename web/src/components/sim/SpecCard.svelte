@@ -33,6 +33,10 @@
   import type { SpecFidelity } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
   import { classCrestSrc } from '../../lib/class-crest';
+  import activeBuild from '../../data/active-build.json';
+  import { dataUrl } from '../../lib/planner/load';
+  import { SPEC_BY_KEY } from '../../lib/sim/specs';
+  import Meter from '../ui/Meter.svelte';
   import type { SpecTopSet } from '../../lib/sim/bis-benchmark';
 
   let {
@@ -77,32 +81,40 @@
   );
   const rotationSteps = $derived(rotationNotesFor(row.spec, notes));
   const showRotation = $derived(!compact && rotationSteps.length > 0);
+  /** The spec's own talent-tab icon; the class crest when the build has not published it. */
+  const specIcon = $derived(SPEC_BY_KEY[row.spec]?.icon);
+  let iconFailed = $state(false);
+  const leadSrc = $derived(
+    specIcon === undefined || iconFailed
+      ? classCrestSrc(classOfSpec(row.spec))
+      : dataUrl(activeBuild.build, `icons/${specIcon}.webp`),
+  );
 </script>
 
 {#snippet title()}
-  <!-- What it does sits on the name's line (ux-designer, round 5); opened, its steps take the
-       line under the name. -->
-  <span class="flex flex-wrap items-center gap-x-4 [&_details[open]]:basis-full">
-    <span>{specLabel(row.spec)}</span>
-    {#if showRotation}
-      <span class="contents font-normal">
-        <Disclosure
-          summary={simCopy.rotationLink}
-          testid={`spec-rotation-panel-${row.spec}`}
-          summaryTestid={`spec-rotation-trigger-${row.spec}`}
+  <!-- The spec's name is its own toggle for the rotation steps (h-audit 2026-11-09: a "What it
+       does" beside every row was the same words eighteen times); opened, the steps take the line
+       under the name. -->
+  {#if showRotation}
+    <span class="sim-spec-name block font-bold">
+      <Disclosure
+        summary={specLabel(row.spec)}
+        testid={`spec-rotation-panel-${row.spec}`}
+        summaryTestid={`spec-rotation-trigger-${row.spec}`}
+      >
+        <ol
+          class="text-text m-0 flex list-decimal flex-col gap-1 pl-5 text-[14px] font-normal"
+          data-testid={`spec-rotation-steps-${row.spec}`}
         >
-          <ol
-            class="m-0 flex list-decimal flex-col gap-1 pl-5 text-[14px]"
-            data-testid={`spec-rotation-steps-${row.spec}`}
-          >
-            {#each rotationSteps as step, index (index)}
-              <li>{step}</li>
-            {/each}
-          </ol>
-        </Disclosure>
-      </span>
-    {/if}
-  </span>
+          {#each rotationSteps as step, index (index)}
+            <li>{step}</li>
+          {/each}
+        </ol>
+      </Disclosure>
+    </span>
+  {:else}
+    <span>{specLabel(row.spec)}</span>
+  {/if}
 {/snippet}
 
 {#snippet status()}
@@ -132,7 +144,14 @@
 {/snippet}
 
 {#snippet crest()}
-  <img src={classCrestSrc(classOfSpec(row.spec))} alt="" width="28" height="28" class="rounded-full" />
+  <img
+    src={leadSrc}
+    alt=""
+    width="28"
+    height="28"
+    class={specIcon === undefined || iconFailed ? 'rounded-full' : 'rounded-[5px]'}
+    onerror={() => (iconFailed = true)}
+  />
 {/snippet}
 
 <Row
@@ -160,12 +179,24 @@
         <span class="text-muted w-8 text-right text-[13px] tabular-nums" data-testid="spec-top-rank"
           >{simCopy.specsTopSetRank(top.rank)}</span
         >
+        <!-- The section's meta names the figure and its unit once ("Raid BiS DPS at 60"). -->
+        <span class="hidden w-[240px] md:block" aria-hidden="true"><Meter value={top.share} /></span>
         <span
-          class="text-strong w-[92px] text-right text-[15px] font-bold tabular-nums"
-          data-testid="spec-top-dps"
-          >{oneDecimal(top.dps)} <span class="text-muted text-[13px] font-normal">DPS</span></span
+          class="text-strong w-[64px] text-right text-[15px] font-bold tabular-nums"
+          data-testid="spec-top-dps">{oneDecimal(top.dps)}</span
         >
       {/if}
     </span>
   {/snippet}
 </Row>
+
+<style>
+  /* The name keeps its class colour and the row's 15 px bold as the toggle; one line at 390. */
+  .sim-spec-name :global(.ui-disclosure > summary) {
+    min-height: 0;
+    color: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+</style>

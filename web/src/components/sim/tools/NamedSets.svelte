@@ -92,7 +92,10 @@
       {#each rows as set (set.name)}
         <Row title={set.name} open density="slim" testid={`sim-set-${set.name}`}>
           {#snippet trail()}
-            <Button size="sm" onclick={() => (isAdded(set.name) ? onremove(set.name) : onadd(set))}
+            <Button
+              tone="ghost"
+              size="sm"
+              onclick={() => (isAdded(set.name) ? onremove(set.name) : onadd(set))}
               >{isAdded(set.name) ? bulkCopy.setsRemove : bulkCopy.setsAdd}</Button
             >
           {/snippet}
@@ -114,7 +117,7 @@
       testid="sim-set-input"
       bind:value={code}
     />
-    <Button size="md" testid="sim-set-add" onclick={add}>{bulkCopy.setsAdd}</Button>
+    <Button tone="ghost" size="md" testid="sim-set-add" onclick={add}>{bulkCopy.setsAdd}</Button>
   </div>
   {#if error !== ''}
     <p class="text-wipe pt-2 text-[13px]" role="alert" data-testid="sim-set-error">{error}</p>

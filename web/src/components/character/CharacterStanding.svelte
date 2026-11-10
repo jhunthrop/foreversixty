@@ -10,7 +10,13 @@
   import { fetchGuildHome, type NextRaidView } from '../../lib/guild/api';
   import { fetchHomeAnswer, type HomeAnswer } from '../../lib/home/home-answer';
   import { guildLinks } from '../../lib/home/home-view';
-  import { gradeLine, guildRankLine, raidLine, standingCopy } from '../../lib/character/standing';
+  import {
+    gradeRow,
+    guildRankRow,
+    raidRow,
+    standingCopy,
+    type StandingRow,
+  } from '../../lib/character/standing';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
@@ -43,10 +49,10 @@
   const links = $derived(guildLinks(me, own.guild?.id ?? -1, raid?.id ?? null));
   const pieces = $derived(
     [
-      { key: 'rank', text: guildRankLine(answer?.guild_sims ?? null), href: links.guild ?? '/guild' },
-      { key: 'grade', text: gradeLine(answer?.spec_week ?? null, specName), href: '/tiers' },
-      { key: 'raid', text: raidLine(raid, now), href: links.raid ?? links.guild ?? '/guild' },
-    ].filter((piece): piece is { key: string; text: string; href: string } => piece.text !== null),
+      { key: 'rank', row: guildRankRow(answer?.guild_sims ?? null), href: links.guild ?? '/guild' },
+      { key: 'grade', row: gradeRow(answer?.spec_week ?? null, specName), href: '/tiers' },
+      { key: 'raid', row: raidRow(raid, now), href: links.raid ?? links.guild ?? '/guild' },
+    ].filter((piece): piece is { key: string; row: StandingRow; href: string } => piece.row !== null),
   );
 </script>
 
@@ -54,12 +60,17 @@
   <Section title={standingCopy.standing} panel testid="character-standing">
     {#each pieces as piece (piece.key)}
       <Row
-        title={piece.text}
+        title={piece.row.label}
         href={piece.href}
         density="slim"
         open
         testid={`character-standing-${piece.key}`}
-      />
+      >
+        {#snippet titleContent()}<span class="font-normal">{piece.row.label}</span>{/snippet}
+        {#snippet trail()}<span class="text-strong text-[14px] font-semibold tabular-nums"
+            >{piece.row.value}</span
+          >{/snippet}
+      </Row>
     {/each}
   </Section>
 {/if}

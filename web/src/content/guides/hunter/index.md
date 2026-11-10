@@ -27,7 +27,7 @@ sources:
 
 ## What changed from 1.12
 
-- **Pets are reworked.** A pet copies 10% of your attack power and all of your crit. It takes no stat buffs from other players, but your own Heart of the Lion still reaches it.
+- **Pets copy 10% of your attack power and all of your crit.** No buffs from other players reach them; your Heart of the Lion does.
 - **Aimed Shot:** trained, 2 second cast, one 6 second cooldown shared with Multi-Shot. Auto shots keep firing while you cast it.
 - **Aimed Shot over Multi-Shot** every time the cooldown comes up. Multi-Shot is for packs and for when you have to move.
 - **Heart of the Lion** from level 1: 10% stats and 280 melee and ranged attack power at 60 for everyone near you, and another 10% stats for you.
@@ -36,5 +36,3 @@ sources:
 - **Mail from 40.**
 
 ## Races
-
-Human hunters are new in Forever. Skyborne hunt on both sides, as the High Order and the Windshapers.

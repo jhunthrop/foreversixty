@@ -77,19 +77,29 @@ describe('characterWaiting', () => {
     level: 34,
     build: { talents: { points: [23, 0, 0] } },
   } as unknown as MeCharacter;
-  const top = { name: 'Hood', source: 'Wailing Caverns' };
+  const top = { name: 'Hood', source: 'Wailing Caverns', icon: 'inv_helmet_01', quality: 3 };
 
   it('reads unspent talent points, then the top upgrade, as plain facts', () => {
     expect(characterWaiting({ own, top, bisHref: '/bis' })).toEqual([
       { key: 'talents', text: '2 talent points unspent', href: '/planner?character=us%2Fnormal%2Ffelsnap' },
-      { key: 'upgrade', text: 'Upgrade: Hood, Wailing Caverns', href: '/bis' },
+      {
+        key: 'upgrade',
+        text: 'Upgrade: Hood, Wailing Caverns',
+        href: '/bis',
+        item: { icon: 'inv_helmet_01', quality: 3 },
+      },
     ]);
   });
 
   it('names only the upgrade when every point is spent, and nothing with neither', () => {
     const spent = { ...own, build: { talents: { points: [25, 0, 0] } } } as unknown as MeCharacter;
     expect(characterWaiting({ own: spent, top, bisHref: null })).toEqual([
-      { key: 'upgrade', text: 'Upgrade: Hood, Wailing Caverns', href: null },
+      {
+        key: 'upgrade',
+        text: 'Upgrade: Hood, Wailing Caverns',
+        href: null,
+        item: { icon: 'inv_helmet_01', quality: 3 },
+      },
     ]);
     expect(characterWaiting({ own: spent, top: null, bisHref: null })).toEqual([]);
   });
@@ -118,6 +128,7 @@ describe('fights and builds', () => {
       value: '1,012',
     });
     expect(rows[0].color).toBe('var(--color-parse-orange)');
+    expect(bestRows([{ ...row, execution_score: 0.9 } as never])[0].sub).toBe('3 Nov · Holy · Execution 90%');
     expect(characterPageCopy.allFights(7)).toBe('All fights (7)');
   });
 

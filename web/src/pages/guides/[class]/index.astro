@@ -34,6 +34,7 @@ import { dayMonth } from '../../../lib/guides/guide-header';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { slugify } from '../../../lib/guides/sections';
 import { readSpecCatalog } from '../../../lib/bis/load';
+import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { dataUrl } from '../../../lib/planner/load';
 
 export async function getStaticPaths() {
@@ -67,6 +68,9 @@ const sections = await Promise.all(
 const mainSections = sections.filter((s) => !CLASS_LANDING_PANELS.includes(s.heading));
 const railSections = sections.filter((s) => CLASS_LANDING_PANELS.includes(s.heading));
 
+/** A spec guide's build as its trees (the plate's point split); none for a code that does not decode. */
+const specTrees = (code: string | undefined) =>
+  code === undefined ? [] : (decodeBuildTrees(build, code) ?? []);
 // Tree order (`tree_index` ascending), the order the talent frame shows.
 const specGuideBySlug = new Map(specGuides.map((g) => [g.data.spec, g]));
 const specs = readSpecCatalog()
@@ -79,7 +83,7 @@ const specs = readSpecCatalog()
       {
         key: `${classSlug}/${s.spec_slug}`,
         name: s.name,
-        line: specCardLine(guide.data.role),
+        line: specCardLine(guide.data.role, specTrees(guide.data.raidBuild ?? guide.data.build)),
         icon: dataUrl(build, `icons/${s.icon}.webp`),
         href: `/guides/${classSlug}/${s.spec_slug}`,
       },
@@ -143,7 +147,7 @@ const tone = { classSlug: classSlug as ClassSlug };
         {railSections.map((section) => (
           <Section title={section.heading} anchor={section.id} boxed testid={`class-landing-${section.id}`}>
             {section.heading === 'Races' && <GuideRaceList build={build} classSlug={classSlug} />}
-            <Prose html={section.html} mods={['lane']} />
+            {section.html !== '' && <Prose html={section.html} mods={['lane']} />}
           </Section>
         ))}
       </Fragment>

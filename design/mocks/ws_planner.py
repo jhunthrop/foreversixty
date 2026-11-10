@@ -182,14 +182,15 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
     """The addon handoff. send: a sendActionFor result (signed in) or None (signed out: Copy for the game is the primary)."""
     copy_label = {'idle': C['addon']['copyForGame'], 'copied': C['addon']['copiedForGame'], 'failed': C['addon']['copyForGame']}[copy_state]
     # Q6: signed in, Send is the gold primary and Copy sits under it; Copy is the primary signed out or on another class's build.
-    copy_btn = Button(e(copy_label), primary=send is None or bool(send.get('otherClass'))).replace('class="btn', 'class="btn is-off' if st['spent'] == 0 else 'class="btn', 1)
+    # h-audit 2026-11-09: no Copy for the game until a point is spent (a dim button read as unstyled).
+    copy_btn = Button(e(copy_label), primary=send is None or bool(send.get('otherClass'))) if st['spent'] else ''
     failed = ''
     if copy_state == 'failed':
         failed = f'<p class="t-small" role="status">{e(C["addon"]["copyFailed"])}</p>{CodeField("FSB1:hunter:5/005005201/500230230050222151", label=C["addon"]["buildCodeLabel"], short=True)}'
     body = ''
     if send is not None and plain_block and send.get('otherClass'):
         # Ruling MUST 5 (premium round): another class's build is one plain line above Copy for the game.
-        body += f'<p class="pl-line">{e(send["label"])}</p><div class="pl-acts">{copy_btn}</div>{failed}'
+        body += f'<p class="pl-line">{e(send["label"])}</p>' + (f'<div class="pl-acts">{copy_btn}</div>' if copy_btn else '') + failed
     elif send is not None:
         btn = Button(e(send['label']), primary=not send.get('otherClass')).replace('class="btn', 'class="btn is-off' if send.get('disabled') else 'class="btn', 1)
         sec = send.get('secondary') or {}
@@ -202,9 +203,9 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
             role = ' role="alert"' if n['tone'] == 'error' else ' role="status"'
             note = f'<p class="pl-note {tone}"{role}>{e(n["text"])}{link}</p>' + (f'<p class="t-small">{e(n["detail"])}</p>' if n.get('detail') else '')
         body += f'<div class="pl-acts">{btn}{sec_btn}</div>{note}'
-        body += f'<div class="pl-acts">{copy_btn}</div>{failed}'
+        body += (f'<div class="pl-acts">{copy_btn}</div>' if copy_btn else '') + failed
     else:
-        body += f'<div class="pl-acts">{copy_btn}</div>{failed}'
+        body += (f'<div class="pl-acts">{copy_btn}</div>' if copy_btn else '') + failed
         body += f'<p>{Link(r(C["cta"]["getAddonAndCompanion"]))}</p>'
     return Section(e(P['inGameTitle']), f'<div class="pl-sec">{body}</div>')
 
@@ -270,7 +271,8 @@ def guide_builds(st: dict) -> str:
     def sub(b: dict) -> str:
         loaded = Tag(e(P['guideBuildLoaded']), 'muted') if b['current'] else ''
         return f'<span class="gb-sub">{e(b["label"])} &middot; {"/".join(str(x) for x in b["split"])}{loaded}</span>'
-    rows = [Row(e(b['name']), sub(b), lead=icon(b['icon'], 28) if b.get('icon') else '', slim=True) for b in st['guide_builds']]
+    rows = [Row(e(b['name']), sub(b), lead=icon(b['icon'], 28) if b.get('icon') else '',
+                trail=f'<span class="t-small">{e(b["off"])}</span>' if b.get('off') else '', slim=True) for b in st['guide_builds']]
     return Section(e(P['guideBuildsTitle']), Rows(rows, open_=True)) if rows else ''
 
 
@@ -283,7 +285,8 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
     plate = TalentEditor(trees(st), lead_tree, tree_foot(st, status, status_tone, reset_open))
     send = F['send'][send_key] if send_key else None
     # Share and Import under Point order (h-audit 2026-11-09): the rail ended 300 px below main.
-    main = (Ordered(plate, 1, span=True) + Ordered(order(st), 6, span=True) + Ordered(share(st, share_mode), 7)
+    main = (Ordered(plate, 1, span=True) + (Ordered(order(st), 6, span=True) if st['points'] else '')
+            + (Ordered(share(st, share_mode), 7) if st['spent'] else '')
             + Ordered(importer(st, import_mode), 8))
     gb = guide_builds(st)
     rail = Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + (Ordered(gb, 4) if gb else '')

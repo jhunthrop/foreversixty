@@ -10,6 +10,7 @@ import {
   customLoadouts,
   guideLoadout,
   hasUnaddedBuild,
+  loadoutDiff,
   loadoutTrees,
   savedBuildsMessage,
 } from './talent-loadouts';
@@ -139,5 +140,22 @@ describe('loadoutTrees', () => {
   it('never draws a rank past the talent’s own maximum', () => {
     const [first] = loadoutTrees(index, '9');
     expect(first.talents[0].rank).toBe(index.trees[0].talents[0].max_rank);
+  });
+});
+
+describe('loadoutDiff', () => {
+  const index = indexTalents(talentsFixture as unknown as TalentFile);
+  const [first, second] = index.trees[0].talents;
+
+  it('lists each talent whose rank differs, gains first', () => {
+    const changes = loadoutDiff(index, '01', '10');
+    expect(changes).toEqual([
+      { name: second.name, delta: 1 },
+      { name: first.name, delta: -1 },
+    ]);
+  });
+
+  it('is empty for the same build', () => {
+    expect(loadoutDiff(index, '23', '23')).toEqual([]);
   });
 });

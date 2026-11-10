@@ -60,6 +60,7 @@ import { pillLabelFor } from ${src("src/lib/sources.ts")};
 import { addonCopy } from ${src("src/lib/addon/copy.ts")};
 import { answerCopy } from ${src("src/lib/account/answer-copy.ts")};
 import { descriptorLines } from ${src("src/lib/character-header/descriptor.ts")};
+import { answerDetail } from ${src("src/lib/guides/guide-answer.ts")};
 import { decodeBuildTrees } from ${src("src/lib/guides/build-tree.ts")};
 import { describedBuildTrees, guideRotation } from ${src("src/lib/guides/guide-rotation.ts")};
 import { band60Weights, rankedBisFile } from ${src("src/lib/guides/class-dps.ts")};
@@ -107,7 +108,7 @@ export async function run(entries, SPECS, CLASSES) {
       html: (await renderGuideMarkdown(s.markdown)).replace(/<p><strong>([^<]+)<\\/strong><\\/p>/g, '<p class="glabel">$1</p>') });
     const specGuides = entries.filter((g) => g.data.classSlug === cls && g.data.spec !== undefined);
     const cards = specsOf(cls).flatMap((s) => { const g = specGuides.find((x) => x.data.spec === s.spec_slug); if (!g || !g.data.role) return [];
-      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: specCardLine(g.data.role) ?? '' }]; });
+      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: specCardLine(g.data.role, decodeBuildTrees(build, g.data.raidBuild ?? g.data.build ?? '') ?? []) ?? '' }]; });
     landings[cls] = { title: classes.find((c) => c.slug === cls).name, sections, cards, sources: e.data.sources,
       updated: dayMonth(e.data.updated) };
   }
@@ -134,7 +135,7 @@ export async function run(entries, SPECS, CLASSES) {
   // ---- the signed-in answer's lines, from the fixtures; the Survival and Fire accounts are the derived guide fixtures
   // (web/tests/e2e/fixtures/guides/README.md), the same files the guides parity spec serves.
   const nextOf = (g, level) => { const n = nextTalentPoint(g.leveling.ladder, level); return n === undefined ? null : guidesCopy.nextPointAt(n.level, n.name); };
-  const who = (me) => { const c = me.characters[0]; const d = descriptorLines(c); return { name: c.name, class: c.class, spec: c.spec, level: c.level, race: c.race, faction: c.faction, identity: d.identity, level_line: d.level, talents_at: guidesCopy.talentsAtLevel(c.level) }; };
+  const who = (me) => { const c = me.characters[0]; const d = descriptorLines(c); return { name: c.name, class: c.class, spec: c.spec, level: c.level, race: c.race, faction: c.faction, identity: d.identity, level_line: d.level, detail: answerDetail(c.level, d.identity, c.class), talents_at: guidesCopy.talentsAtLevel(c.level) }; };
   return { build, copy: strip(guidesCopy), tier_answer: strip(answerCopy), sections: [...SPEC_SECTIONS].map((s) => ({ title: s, id: slugify(s) })),
     index, landings, guides, coverage, me: { hunter34: who(me34), survival34: { ...who(meSurvival), next: nextOf(guides['hunter/survival'], 34) }, survival60: who(meSurvival60), warrior60: who(me60), mage60: who(meMage) },
     source_labels: Object.fromEntries(['blizzard', 'datamined', 'community', 'site'].map((k) => [k, pillLabelFor(k)])), setup_title: addonCopy.setupPageTitle,

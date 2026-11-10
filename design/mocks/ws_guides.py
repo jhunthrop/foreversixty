@@ -67,7 +67,7 @@ def answer(kind: str, me: dict | None = None, page: dict | None = None) -> str:
         return f'<div class="ans-box">{lab}<span class="t-small">{PROPOSED["noCharacter"]}</span>{Link(rsaquo(F["setup_title"]))}</div>'
     cls = me['class'].lower()
     who = (f'<span class="ans-row">{crest_img(cls, 40)}<span class="ans-who"><b class="ans-name" style="color:{CLASS_COLOR[cls]}">{e(me["name"])}</b>'
-           f'<span class="t-small">{e(me["level_line"])} &middot; {e(me["identity"])}</span></span></span>')
+           f'<span class="t-small">{e(me["detail"])}</span></span></span>')
     if kind == 'same':
         first = me['talents_at'] if me['level'] < 60 else TA['bis']
         second = TA['bis'] if me['level'] < 60 else TA['sim']
@@ -249,7 +249,7 @@ def sources(g: dict) -> str:
             continue
         seen.add(s['url'])
         rows.append(Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')))
-    return Section(PROPOSED['sources'], RowsSlim(rows), boxed=True)
+    return Section(PROPOSED['sources'], RowsSlim(rows))
 
 
 def lede(text: str) -> str:
@@ -313,8 +313,7 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
              f'{"".join(cards)}</div>')
     main = ''.join(Section(e(s['heading']), Prose(s['html']), boxed=True) for s in L['sections'] if not s['panel'])
     rail = ''.join(Section(e(s['heading']), Prose(s['html'], 'lane'), boxed=True) for s in L['sections'] if s['panel'])
-    srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]),
-                   boxed=True)
+    srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]))
     ans = '' if kind == 'out' else answer(kind, me)
     head = PageHeader(e(L['title']), CLASS_COLOR[cls], crest_img(cls, 56), [f'Updated {e(L["updated"])}'], ans)
     html = head + Page('ledger', f'<div class="g-ledger">{specs}</div>') + Page('split', main + srcs, rail) + PAGE_CSS

@@ -89,12 +89,11 @@ test.describe('/setup and /logs first-run copy', () => {
     );
   });
 
-  test('/logs puts the Battle.net line above the pairing-code button', async ({ page }) => {
+  test('/logs offers the pairing-code button with no explainer over it', async ({ page }) => {
     await signInWith(page, []);
     await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
     await page.goto('/logs');
-    const line = page.getByTestId('pairing-companion-first');
-    await expect(line).toHaveText('Press Sign in with Battle.net in the companion. A code is the fallback.');
+    await expect(page.getByTestId('pairing-companion-first')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Get a pairing code' })).toBeVisible();
   });
 });

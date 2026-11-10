@@ -43,7 +43,7 @@
   import { encounterSlug, fetchCharacter, RankingsError, type CharacterPage } from '../lib/rankings/api';
   import { classSlugFromName } from '../lib/report/tree-sizes';
   import { foreverOf, hasScore, ownCharacter } from '../lib/score/score';
-  import { signedFigure, LINK, type ClassSlug } from '../lib/ui/primitives';
+  import { signedFigure, LINK, PLATE_SURFACE, type ClassSlug } from '../lib/ui/primitives';
   import { REGION } from '../lib/ui/regions';
   import BisTooltipHost from './BisTooltipHost.svelte';
   import CharacterActivity from './character/CharacterActivity.svelte';
@@ -60,6 +60,7 @@
   import PaperdollFrame from './ui/PaperdollFrame.svelte';
   import PageHeader from './ui/PageHeader.svelte';
   import Plate from './ui/Plate.svelte';
+  import ItemIcon from './ui/ItemIcon.svelte';
   import Row from './ui/Row.svelte';
   import Section from './ui/Section.svelte';
 
@@ -212,9 +213,12 @@
     if (own === null || context === undefined || unread) return [];
     const top = topUpgrade(slots);
     const pick = top === null ? null : gear.find((slot) => slot.slot === top.slot)?.pick;
+    const ref = top?.upgrade?.kind === 'gain' ? top.upgrade.pick : null;
     return characterWaiting({
       own,
-      top: pick ? { name: pick.name, source: pick.source } : null,
+      top: pick
+        ? { name: pick.name, source: pick.source, icon: ref?.icon ?? null, quality: ref?.quality ?? 1 }
+        : null,
       bisHref: specBis,
     });
   });
@@ -231,6 +235,9 @@
   );
   const unloggedName = $derived(resolved === null ? '' : nameFromSlug(decodeURIComponent(resolved.slug)));
 </script>
+
+{#snippet waitingText(text: string)}<span class="text-gold block truncate font-semibold">{text}</span
+  >{/snippet}
 
 {#snippet headSkeleton()}
   <div role="status" class="contents">
@@ -322,18 +329,45 @@
         <div class="character-summary" data-region={REGION.summary}>
           {#if notReadLine}<div data-testid="character-next-step">
               <Notice text={`${notReadCopy.lead} ${notReadCopy.steps}`} tone="neutral" />
-            </div>{:else if waiting.length > 0}<p
-              class="text-gold flex flex-wrap gap-x-5 gap-y-1 pt-[14px] pb-1 text-[15px] leading-6"
+            </div>{:else if waiting.length > 0}
+            <!-- The waiting facts on a plate (h-audit 2026-11-09): one row each, the upgrade led by its
+                 item in its quality ring, one line that truncates on a phone. -->
+            <div
+              class="{PLATE_SURFACE} mt-4 w-full max-w-[var(--measure-reading)] px-4"
               data-testid="character-next-step"
             >
               {#each waiting as fact (fact.key)}
-                {#if fact.href !== null}<a
-                    class={LINK}
-                    href={fact.href}
-                    data-testid={`character-waiting-${fact.key}`}>{fact.text} ›</a
-                  >{:else}<span data-testid={`character-waiting-${fact.key}`}>{fact.text}</span>{/if}
+                {@const item = fact.item}
+                {#if item !== undefined}
+                  <Row
+                    title={fact.text}
+                    href={fact.href ?? undefined}
+                    density="slim"
+                    open
+                    testid={`character-waiting-${fact.key}`}
+                  >
+                    {#snippet lead()}<ItemIcon
+                        icon={item.icon ?? undefined}
+                        quality={item.quality}
+                        {build}
+                        size={28}
+                        eager
+                      />{/snippet}
+                    {#snippet titleContent()}{@render waitingText(fact.text)}{/snippet}
+                  </Row>
+                {:else}
+                  <Row
+                    title={fact.text}
+                    href={fact.href ?? undefined}
+                    density="slim"
+                    open
+                    testid={`character-waiting-${fact.key}`}
+                  >
+                    {#snippet titleContent()}{@render waitingText(fact.text)}{/snippet}
+                  </Row>
+                {/if}
               {/each}
-            </p>{/if}
+            </div>{/if}
         </div>
       {/if}
     {/snippet}

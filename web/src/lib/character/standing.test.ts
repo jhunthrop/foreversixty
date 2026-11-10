@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import type { NextRaidView } from '../guild/api';
 import type { GuildSims, SpecWeek } from '../home/home-answer';
-import { activityPath, gradeLine, guildRankLine, ownActivitySegments, raidLine } from './standing';
+import { activityPath, gradeRow, guildRankRow, ownActivitySegments, raidRow } from './standing';
 
 describe('ownActivitySegments', () => {
   const name = { text: 'Elyra Duskvale', style: 'name' as const, class: 'priest' };
@@ -58,21 +58,22 @@ const sims: GuildSims = {
   you: null,
 };
 
-describe('the standing line', () => {
+describe('the standing rows', () => {
   it('reads the place in the guild ladder', () => {
-    expect(guildRankLine(sims)).toBe('#3 of 14 DPS in Olympus XXVII, 60 raid');
-    expect(guildRankLine({ ...sims, role: 'healer', band: 30, preset: 'bare' })).toBe(
-      '#3 of 14 healers in Olympus XXVII, 30 to 39',
-    );
-    expect(guildRankLine({ ...sims, rows: [{ ...row, you: false }] })).toBeNull();
-    expect(guildRankLine(null)).toBeNull();
+    expect(guildRankRow(sims)).toEqual({ label: 'Olympus XXVII · 60 raid', value: '#3 of 14 DPS' });
+    expect(guildRankRow({ ...sims, role: 'healer', band: 30, preset: 'bare' })).toEqual({
+      label: 'Olympus XXVII · 30 to 39',
+      value: '#3 of 14 healers',
+    });
+    expect(guildRankRow({ ...sims, rows: [{ ...row, you: false }] })).toBeNull();
+    expect(guildRankRow(null)).toBeNull();
   });
 
   it('names the grade, or the place for a list with no letter', () => {
     const week = { grade: 'A', place: 4, of: 23 } as SpecWeek;
-    expect(gradeLine(week, 'Holy')).toBe('Holy: A on the tier list');
-    expect(gradeLine({ ...week, grade: null }, 'Holy')).toBe('Holy: #4 of 23 on the tier list');
-    expect(gradeLine(null, 'Holy')).toBeNull();
+    expect(gradeRow(week, 'Holy')).toEqual({ label: 'Holy tier', value: 'A' });
+    expect(gradeRow({ ...week, grade: null }, 'Holy')).toEqual({ label: 'Holy tier', value: '#4 of 23' });
+    expect(gradeRow(null, 'Holy')).toBeNull();
   });
 
   it('counts down to the next guild raid until it starts', () => {
@@ -81,8 +82,11 @@ describe('the standing line', () => {
       starts_at: '2026-11-08T20:30:00Z',
       counts: { in: 18 },
     } as NextRaidView;
-    expect(raidLine(raid, new Date('2026-11-06T18:00:00Z'))).toBe("Onyxia's Lair in 2 days, 2 hours");
-    expect(raidLine(raid, new Date('2026-11-09T00:00:00Z'))).toBeNull();
+    expect(raidRow(raid, new Date('2026-11-06T18:00:00Z'))).toEqual({
+      label: "Onyxia's Lair",
+      value: '2 days, 2 hours',
+    });
+    expect(raidRow(raid, new Date('2026-11-09T00:00:00Z'))).toBeNull();
   });
 
   it('asks the feed for one character', () => {

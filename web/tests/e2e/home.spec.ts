@@ -26,7 +26,7 @@ test('signed out: Pick your class with Sign in, the nine classes, the feed, how 
   await expect(plaque.getByTestId('home-raid-zone')).toHaveText([
     /^\s*Barrow Deeps\s*$/,
     /^\s*Hyjal Summit\s*$/,
-    /Onyxia's Lair\s*1 boss · \d+ drops/,
+    /^\s*Onyxia's Lair\s*$/,
   ]);
   await expect(out.getByTestId('home-feed-row')).toHaveCount(7);
   await expect(out.getByTestId('home-feed').getByRole('radiogroup')).toHaveCount(0);
@@ -127,7 +127,8 @@ test('signed in at 34 in a guild with no raid: one row per sim, the guild beside
   await expect(rows.filter({ hasText: 'uploaded' }).first()).toBeVisible();
   const plaque = page.getByTestId('home-signed-in-root').getByTestId('home-raids-countdown');
   await expect(plaque.getByTestId('home-raids-guild')).toContainText('Olympus XXVII: no raid planned');
-  await expect(plaque.getByTestId('home-raid-zone').last()).toContainText(/1 boss · \d+ Hunter drops/);
+  // Barrow Deeps and Hyjal Summit have no loot rows yet, so no raid carries a line.
+  await expect(plaque.getByTestId('home-raid-zone').last()).toHaveText(/^\s*Onyxia's Lair\s*$/);
   await expect(page.getByTestId('home-upgrade')).toHaveCount(5);
   await expect(page.getByTestId('home-upgrade-over').first()).toContainText(/^over \S/);
   await expect(page.getByTestId('home-upgrades-all')).toHaveText('See all 13 ›');

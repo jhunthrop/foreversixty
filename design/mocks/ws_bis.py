@@ -44,7 +44,7 @@ main{padding-bottom:40px}  /* the page's own bottom space ([spec].astro .bis-pag
 .bis-side-line{margin-top:10px;color:var(--muted);font-size:13px;line-height:20px}
 .bis-side-link{margin-top:12px;font-size:14px;font-weight:600}
 .bis-stop-link{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0;font-size:14px;line-height:20px;border-bottom:1px solid var(--line-soft)}
-.bis-stop-link a{display:inline-flex;align-items:center;min-height:44px;font-weight:600}.bis-stop-link span{color:var(--muted)}
+.bis-stop-link a{display:inline-flex;align-items:center;min-height:44px;font-weight:600}.bis-stop-link span{color:var(--muted);white-space:nowrap}
 .bis-sim-link{font-size:14px;font-weight:600;white-space:nowrap}
 .bis-route{margin-top:var(--section-gap)}
 .bis-route .plate{padding:16px}

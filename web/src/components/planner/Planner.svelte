@@ -1318,13 +1318,16 @@
     {/snippet}
     <Ordered order={1} span>{@render plate()}</Ordered>
     {#if status === 'ready'}
-      <Ordered order={6} span
-        ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
-      >
+      <!-- Point order shows once a point is spent (h-audit 2026-11-09): before that it is one empty line. -->
+      {#if store.spent > 0}
+        <Ordered order={6} span
+          ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
+        >
+      {/if}
       <!-- Share and Import sit under Point order from 1280 (h-audit 2026-11-09): the rail ran 300 px
            past the trees while main ended at the order; below 1280 they pair up in the flow. -->
       {#if !store.readOnly}
-        <Ordered order={7}><SharePanel {store} /></Ordered>
+        {#if store.spent > 0}<Ordered order={7}><SharePanel {store} /></Ordered>{/if}
         <Ordered order={8}>{@render importSection()}</Ordered>
       {/if}
     {/if}

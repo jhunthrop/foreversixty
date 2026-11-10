@@ -50,9 +50,9 @@ export const resourceCardCopy = {
   /** The engine's rage refund: 80% of a special's cost back when it misses, is dodged or parried. */
   refunded: 'Refunded on a miss, dodge or parry',
   lost: (amount: string) => `−${amount} lost`,
-  /** A figure takes its unit: "57 rage · 2.7%". */
-  amount: (amount: string, power: string) => `${amount} ${power}`,
-  capValue: (amount: string, power: string, percent: string) => `${amount} ${power} · ${percent}%`,
+  /** The panel's title ("Rage") carries the unit, once: the tiles read "2,127" and "57 · 2.7%". */
+  amount: (amount: string) => amount,
+  capValue: (amount: string, percent: string) => `${amount} · ${percent}%`,
   needsNewerRun: (resource: string) => `Where the ${resource} came from and went needs a newer run.`,
 } as const;
 

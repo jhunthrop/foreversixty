@@ -36,7 +36,6 @@ SPECS = json.loads((DATA_ROOT / 'data/curated/specs.json').read_text())
 CLASS_NAME = S.CLASS_NAME
 QUALITY = S.QUALITY
 
-SCOPE = 'Damage specs only.'
 TITLES = {'gear': 'Top gear', 'talents': 'Talents', 'drops': 'Droptimizer', 'weights': 'Weights', 'specs': 'Spec support'}
 
 
@@ -65,7 +64,7 @@ def split(main: list[str], rail: list[str]) -> str:
 
 
 def head(tool: str) -> str:
-    return PageHeader(TITLES[tool], meta=[SCOPE], tabs=TabStrip(TOOLS, TITLES[tool]))
+    return PageHeader(TITLES[tool], tabs=TabStrip(TOOLS, TITLES[tool]))
 
 
 def item_name(iid: int) -> str:
@@ -87,7 +86,7 @@ def check(label: str = '', checked: bool = False, disabled: bool = False) -> str
 def run_bar(tool: str) -> str:
     bar = S.run_bar('disabled' if tool != 'weights' else 'ready')
     # Nothing ticked: the count reads muted and the stage ladder waits for a count (BulkRunBar `hasCount`).
-    line = '<span class="t-small">3,120 iterations</span>' if tool == 'weights' else '<span class="t-small">Nothing ticked yet.</span>'
+    line = '<span class="t-small">3,120 iterations</span>' if tool == 'weights' else '<span class="t-small">0 valid combinations</span>'
     return bar + f'<div class="pc run-notes"><p>{line}</p></div>'
 
 
@@ -95,8 +94,8 @@ def run_bar(tool: str) -> str:
 def character_line() -> str:
     level = sum(ITEMS[i]['item_level'] for i in WORN.values()) / len(WORN)
     return (f'<div class="tool-who" data-region="summary"><p class="who-line">{S.crest_img("warrior", 24)}<span>Orc Fury Warrior &middot; Level {LEVEL}</span>'
-            f'<span class="t-small">Item level {level:.1f}</span><span class="t-small">Entered by hand</span>'
-            f'<span class="t-small num">20 of 51 talent points</span>'
+            f'<span class="t-small">Item level {level:.1f}</span>'
+            f'<span class="t-small num">20 talent points</span>'
             f'<span class="who-acts"><a class="link" href="#">Open in planner &rsaquo;</a>{btn("Change source")}</span></p></div>')
 
 
@@ -168,6 +167,21 @@ def loadout_trees(per_tree: list[str]) -> str:
     return TalentTrees(trees)
 
 
+def loadout_ranks(per_tree: list[str]) -> list[tuple[str, int]]:
+    file = json.loads((B / 'talents' / 'warrior.json').read_text())
+    out = []
+    for i, tree in enumerate(sorted(file['trees'], key=lambda t: t['position'])):
+        digits = per_tree[i] if i < len(per_tree) else ''
+        out += [(x['name'], min(x['max_rank'], int(digits[p]) if p < len(digits) else 0)) for p, x in enumerate(tree['talents'])]
+    return out
+
+
+def loadout_diff(talents: list[str], other: list[str]) -> list[tuple[str, int]]:
+    """web lib/sim/talent-loadouts.ts loadoutDiff: each talent whose rank differs, gains first, then by size."""
+    changes = [(n, r - o) for (n, r), (_, o) in zip(loadout_ranks(talents), loadout_ranks(other)) if r != o]
+    return sorted(changes, key=lambda c: (-(c[1] > 0), -abs(c[1])))
+
+
 def talent_builds(plated: bool = False) -> str:
     # The published set's own talents at the character's band (web lib/sim/talent-loadouts.ts guideLoadout)
     own_split = '/'.join(str(sum(int(c) for c in t)) for t in OWN_TALENTS)
@@ -175,8 +189,10 @@ def talent_builds(plated: bool = False) -> str:
     guide = f'<label class="opt">{check()}<span class="grow-n">Guide build, level {LEVEL} &middot; {guide_split()}</span></label>'
     if plated:
         # /sim/talents: each build's three trees beside its tick (TalentCandidates `plate`)
-        own = f'<div class="tb-row">{own}{loadout_trees(OWN_TALENTS)}</div>'
-        guide = f'<div class="tb-row">{guide}{loadout_trees(guide_talents())}</div>'
+        own = f'<div class="tb-row">{own}<div class="tb-t">{loadout_trees(OWN_TALENTS)}</div></div>'
+        diff = ''.join(f'<li class="{"kill" if d > 0 else "wipe"}">{"+" if d > 0 else "&minus;"}{abs(d)} <span>{n}</span></li>'
+                       for n, d in loadout_diff(guide_talents(), OWN_TALENTS))
+        guide = f'<div class="tb-row">{guide}<div class="tb-t">{loadout_trees(guide_talents())}<ul class="tb-d">{diff}</ul></div></div>'
     body = (f'<div class="tb">{own}{guide}'
             f'<h3 class="t-h4">Your saved builds</h3>'
             f'<p class="t-small">Saved builds did not load.</p><div class="bt">{btn("Add a build")}</div></div>')
@@ -222,6 +238,12 @@ def drops() -> str:
     present = {s['kind'] for s in loot}
     toggles = ''.join(f'<label class="opt">{check(checked=k in on)}{label}</label>' for k, label in labels if k in present)
     toggles += f'<label class="opt">{check()}Show unreleased content</label>'
+    hide_empty = {'dungeon', 'crafted', 'rep', 'pvp', 'world_drop', 'zone', 'vendor'}   # lib/sim/source-rows.ts showsSource
+
+    def usable(src: dict) -> list[dict]:
+        ids = list(src.get('items', [])) + [i for b in src.get('bosses') or [] for i in b.get('items', [])] + list(src.get('trash', []))
+        return [ITEMS[i] for i in dict.fromkeys(ids) if i in ITEMS]
+
     groups = []
     for kind, label in kinds:
         srcs = [s for s in loot if s['kind'] == kind]
@@ -229,13 +251,13 @@ def drops() -> str:
         if kind == 'pvp':
             # The character's own side (lib/sim/source-rows.ts pvpForFaction): an Orc is Horde.
             shown = [s for s in shown if s.get('faction') in (None, 'horde')]
+        shown = [s for s in shown if usable(s) or kind not in hide_empty]
         if not srcs:
             continue
         if not shown:
-            # One line (SourcePicker's gated kind): the dated sources with their date, the rest named once.
+            # The gated kind's heading, then one line per dated source and the rest named once (SourcePicker).
             undated = ', '.join(s['name'] for s in srcs)
-            groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3>'
-                          f'<p class="t-small">Nothing here has opened yet. <span>No date yet: {undated}.</span></p></div>')
+            groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3><div class="gl"><span class="t-small">No date yet: {undated}</span></div></div>')
             continue
         rows = ''
         if kind == 'rep':
@@ -244,24 +266,32 @@ def drops() -> str:
             for s in shown:
                 factions.setdefault(s['name'], []).append(s)
             for name, standings in factions.items():
-                ticks = ''.join(f'<label class="opt sm">{check()}{(s.get("standing") or "").title()} <span class="t-small num">{len(s.get("items", []))}</span></label>'
+                ticks = ''.join(f'<label class="opt sm">{check()}{(s.get("standing") or "").title()} <span class="t-small num">{len(usable(s))}</span></label>'
                                 for s in standings)
                 rows += f'<div class="src"><b class="rep-n">{name}</b><span class="rep-t">{ticks}</span></div>'
         else:
             for s in shown:
                 bosses = s.get('bosses') or []
-                rows += (f'<div class="src"><label class="opt">{check()}<b class="grow-n">{s["name"]}</b>'
-                         f'<span class="t-small num">{len(s.get("items", []))} items</span></label>')
-                if kind == 'dungeon' and bosses:
-                    rows += f'<div class="indent"><details class="disc"><summary>Bosses <span class="t-small">{len(bosses)}</span></summary></details></div>'
-                elif bosses:
+                items = usable(s)
+                best = max(items, key=lambda it: it.get('item_level', 0)) if items else None
+                icon = S.gicon(best['icon'], 24, best['quality']) if best else ''
+                reward = f' <span class="t-small">{best["name"]}</span>' if kind == 'pvp' and best else ''
+                count = (f'<button type="button" class="t-small bcount" aria-expanded="false">{len(bosses)} {"boss" if len(bosses) == 1 else "bosses"}</button>'
+                         if kind == 'dungeon' and bosses else '')
+                ilvl = f'<span class="pl">ilvl {best["item_level"]}</span>' if best else ''
+                rows += (f'<div class="src"><div class="src-l"><label class="opt grow-n">{check()}{icon}<span class="grow-n"><b>{s["name"]}</b>{reward}</span></label>'
+                         f'{count}<span class="t-small num">{len(items)} items{ilvl}</span></div>')
+                if kind != 'dungeon' and bosses:
                     rows += ''.join(f'<label class="opt indent">{check()}<span class="grow-n">{x.get("name") or s["name"]}</span></label>' for x in bosses)
                 rows += '</div>'
         note = '<p class="t-small">All professions</p>' if kind == 'crafted' else ''
-        groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3>{note}<div class="src-cols">{rows}</div></div>')
+        # Each kind is a Disclosure titled with its ticked count, open when the list is short (OPEN_UP_TO).
+        opened = ' open' if len(shown) <= 8 else ''
+        inner = f'<div class="disc-b">{note}<div class="src-cols">{rows}</div></div>' if opened else ''
+        groups.append(f'<div class="src-g"><details class="disc"{opened}><summary>{label} <span class="t-small">0 of {len(shown)} ticked</span></summary>{inner}</details></div>')
     body = f'<div><div class="kinds">{toggles}</div>{"".join(groups)}</div>'
     return finish('Droptimizer', head('drops') + run_bar('drops')
-                  + ledger(character_line(), '<p class="t-small">No source ticked yet.</p>', Section('Sources', body, frame='framed')))
+                  + ledger(character_line(), Section('Sources', body, frame='framed')))
 
 
 # ---- Weights: the caution, the stats to weigh in the rail; the scale factors arrive with a run
@@ -269,10 +299,9 @@ def weights() -> str:
     row = next(w for w in json.loads((B / 'stat-weights.json').read_text()) if w['spec'] == SPEC)
     stats = row.get('stats') or list(row['weights'])
     picks = ''.join(f'<li><label class="opt">{check(checked=True, disabled=i == 0)}{s}</label></li>' for i, s in enumerate(stats))
-    caution = '<p class="notice">Weights hold near the gear you have on. For a real choice, sim the items. <a class="link" href="#">Open Top Gear &rsaquo;</a></p>'
     # The stats to weigh as one row of ticks over the table (StatWeights.svelte); the reference is its locked tick.
-    pick = Section('Stats to weigh', f'<ul class="opts row">{picks}</ul>')
-    return finish('Weights', head('weights') + run_bar('weights') + ledger(character_line(), caution, pick, published_weights()))
+    pick = Section('Stats to weigh', f'<ul class="opts row">{picks}</ul>', action=S.Link('Open Top Gear &rsaquo;'))
+    return finish('Weights', head('weights') + run_bar('weights') + ledger(character_line(), pick, published_weights()))
 
 
 # Before a run, the weights the ranker published for the character's band (web lib/sim/published-weights.ts): the level 60
@@ -331,22 +360,22 @@ def specs() -> str:
     notes = json.loads((DATA_ROOT / 'data/curated/rotation-notes.json').read_text()) if (DATA_ROOT / 'data/curated/rotation-notes.json').exists() else {}
     top = top_raid_sets()
     rows = []
+    best = max((v[0] for v in top.values()), default=0)
     for s in [s for s in SPECS if s['role'] == 'dps']:
         label = f"{s['name']} {CLASS_NAME[s['class_slug']]}"
-        foot = '<details class="disc"><summary>What it does</summary></details>' if notes.get(s['spec'], True) else ''
-        # SpecCard: the crest, What it does on the name's line; no parses, so no Tag; the raid BiS set at 60 and its place
+        # SpecCard: the spec's name is the toggle for its rotation steps; no parses, so no Tag; the raid BiS set at 60,
+        # its place and its bar, the unit once in the section's meta
+        title = f'<details class="disc spec-n"><summary>{label}</summary></details>' if notes.get(s['spec'], True) else label
         fig = top.get(s['spec'])
-        trail = (f'<span class="spec-fig"><span class="t-small num rk">#{fig[1]}</span><span class="num dps">{fig[0]:,.1f} '
-                 f'<span class="t-small">DPS</span></span></span>') if fig else ''
-        rows.append(Row(f'<span class="spec-t"><span>{label}</span>{foot}</span>', '', lead=S.crest_img(s['class_slug'], 28),
-                        trail=trail, title_color=CLASS_COLOR[s['class_slug']], link=False, slim=True))
-    # UnsimulatedSpecCard: the crest, the spec in its class colour, its guide the trail's action; the heading says why
-    others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", lead=S.crest_img(s['class_slug'], 28), trail=f'<span class="alink">{S.Link("Guide &rsaquo;")}</span>',
-                  title_color=CLASS_COLOR[s['class_slug']], link=False, slim=True)
-              for s in SPECS if s['role'] != 'dps']
+        trail = (f'<span class="spec-fig"><span class="t-small num rk">#{fig[1]}</span><span class="sbar">{S.Meter(fig[0] / best)}</span>'
+                 f'<span class="num dps">{fig[0]:,.1f}</span></span>') if fig else ''
+        rows.append(Row(title, '', lead=S.crest_img(s['class_slug'], 28), trail=trail, title_color=CLASS_COLOR[s['class_slug']], link=False, slim=True))
+    # UnsimulatedSpecCard: one wrapping line of links, each the crest and the spec in its class colour, to its guide
+    others = ''.join(f'<a class="un-l" href="#" style="color:{CLASS_COLOR[s["class_slug"]]}">{S.crest_img(s["class_slug"], 20)}{s["name"]} {CLASS_NAME[s["class_slug"]]}</a>'
+                     for s in SPECS if s['role'] != 'dps')
     meta = 'Raid BiS DPS at 60' if top else ''
     return finish('Spec support', head('specs') + ledger(Section('Damage specs', Rows(rows), meta=meta, frame='framed', flush=True),
-                                                         Section('Healers and tanks', Rows(others, open_=True))))
+                                                         Section('Healers and tanks', f'<div class="un">{others}</div>')))
 
 
 def top_raid_sets() -> dict[str, tuple[float, int]]:
@@ -390,7 +419,9 @@ TOOL_CSS = '''<style>
 .opts.row{display:flex;flex-wrap:wrap;gap:0 24px}.opts.cols3{display:grid;grid-template-columns:1fr;gap:0 24px}@media(min-width:768px){.opts.cols3{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.opts.cols3{grid-template-columns:1fr 1fr 1fr}}
 .src-cols{display:grid;grid-template-columns:1fr;column-gap:32px}@media(min-width:768px){.src-cols{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.src-cols{grid-template-columns:1fr 1fr 1fr}}.rep-n{padding-top:8px;font-size:14px;line-height:20px}.rep-t{display:flex;flex-wrap:wrap;gap:0 16px}.opt.sm{font-size:13px}
 .tb-row{display:grid;gap:4px 24px;padding:12px 0;border-bottom:1px solid var(--line-soft,var(--line));align-self:stretch}.tb-row:last-of-type{border-bottom:0}@media(min-width:768px){.tb-row{grid-template-columns:260px minmax(0,1fr);align-items:start}}
-.spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:32px;text-align:right}.spec-fig .dps{width:92px;text-align:right;font-weight:700}</style>'''
+.src-l{display:flex;align-items:center;gap:8px;min-height:44px}.src-l .opt{min-width:0}.bcount{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}.pl{padding-left:8px}.gl{display:flex;flex-direction:column;padding-top:4px;font-size:14px;line-height:24px}.disc-b{padding:4px 0 8px}
+.tb-t{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 32px;min-width:0}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
+.spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:32px;text-align:right}.spec-fig .dps{width:64px;text-align:right;font-weight:700}.sbar{display:none;width:240px}@media(min-width:768px){.sbar{display:block}}.spec-n>summary{color:inherit;font-size:15px;font-weight:700;white-space:nowrap}.un{display:flex;flex-wrap:wrap;column-gap:24px}.un-l{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:700;text-decoration:none}</style>'''
 
 
 def finish(title: str, body: str) -> str:

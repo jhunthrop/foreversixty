@@ -91,7 +91,7 @@
         <Ruled edge="bottom">
           {#each stops as stop (stop.key)}
             <p class="bis-stop-link">
-              <a href={`#${stop.anchor}`}>{stop.title}</a><span class="tabular-nums"
+              <a href={`#${stop.anchor}`}>{stop.title}</a><span class="whitespace-nowrap tabular-nums"
                 >{bisCopy.stopPieces(stop.rows.length)}</span
               >
             </p>

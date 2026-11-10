@@ -3,7 +3,9 @@
      its radius, their bordered square elements made soft. `ornate` adds the corner flourishes and
      is the page's one lead panel (home's raid plaque, BiS's paperdoll, the tier list's spec
      panel). Two or three framed panels a page, never more; everything else is a plain Plate.
-     `art` puts a painted background behind the content under its veil (the raid plaque's cave). -->
+     `art` puts a painted background behind the content under its veil (the raid plaque's cave).
+     `plain` drops the inset line: a rail panel in the frame's padding that is never a card inside a
+     card (home's How to start, h-audit 2026-11-09). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { frameClass } from '../../lib/ui/primitives';
@@ -11,6 +13,7 @@
 
   let {
     ornate = false,
+    plain = false,
     art,
     label,
     testid,
@@ -18,6 +21,8 @@
     children,
   }: {
     ornate?: boolean;
+    /** No inset line (ignored with `ornate`). */
+    plain?: boolean;
     /** A painted background (lib/ui/assets.ts), cover, under the cave veil. */
     art?: 'cave';
     /** The panel's accessible name, when it is a landmark of its own. */
@@ -30,7 +35,7 @@
 </script>
 
 <div
-  class="ui-frame ui-surface {frameClass(ornate ? 'lead' : 'framed')}"
+  class="ui-frame ui-surface {frameClass(ornate ? 'lead' : plain ? 'plain' : 'framed')}"
   data-art={art}
   role={label ? 'region' : undefined}
   aria-label={label}

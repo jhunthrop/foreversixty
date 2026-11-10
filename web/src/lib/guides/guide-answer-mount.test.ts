@@ -83,7 +83,7 @@ describe('paintGuideAnswer', () => {
     );
     expect(field(root, 'name').textContent).toBe('Bow');
     expect(field(root, 'name').style.color).toContain('--color-class-hunter');
-    expect(field(root, 'detail').textContent).toBe('Level 34 · Dwarf Survival Hunter');
+    expect(field(root, 'detail').textContent).toBe('34 Dwarf Survival');
     expect(field(root, 'next').hidden).toBe(false);
     expect(field(root, 'next').textContent).toBe('Next point at 36: Expose Prey');
     const links = [...field(root, 'links').querySelectorAll('a')];

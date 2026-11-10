@@ -10,13 +10,8 @@ import type { FeedPage, FeedSegment } from '../home/feed';
 import type { GuildSims, SpecWeek } from '../home/home-answer';
 import { API_BASE_URL } from '../planner/config';
 import { clockLabel, clockParts } from '../ui/countdown';
-import { fillShared } from '../copy/shared';
 import { sharedCharacterActivity, sharedCharacterActivityFailed } from '../copy/shared/character.generated';
 import {
-  sharedStandingGraded,
-  sharedStandingPlace,
-  sharedStandingRaid,
-  sharedStandingRank,
   sharedStandingRoleDps,
   sharedStandingRoleHealer,
   sharedStandingRoleTank,
@@ -37,6 +32,8 @@ export const standingCopy = {
   activity: sharedCharacterActivity,
   /** The rail panel holding the guild place, the tier grade and the raid clock. */
   standing: 'Standing',
+  /** The tier list row's label after the spec: "Holy tier". */
+  tierWord: 'tier',
   failed: sharedCharacterActivityFailed,
 } as const;
 
@@ -64,42 +61,45 @@ export function fetchActivity(
   );
 }
 
-/** C16: "#3 of 14 DPS in Olympus XXVII, 60 raid"; null with no own row on the ladder. */
-export function guildRankLine(sims: GuildSims | null): string | null {
+/** One Standing row: what it is on the left, the figure on the right (h-audit 2026-11-09: three
+ *  whole sentences wrapped and read as unlabelled lines). */
+export interface StandingRow {
+  label: string;
+  value: string;
+}
+
+/** C16: "Olympus XXVII · 60 raid" | "#3 of 14 DPS"; null with no own row on the ladder. */
+export function guildRankRow(sims: GuildSims | null): StandingRow | null {
   if (sims === null) return null;
   const own = sims.you ?? sims.rows.find((row) => row.you) ?? null;
   if (own === null) return null;
   const band = sims.band >= MAX_LEVEL ? String(MAX_LEVEL) : `${sims.band} to ${sims.band + 9}`;
   const preset = sims.preset === 'raid' ? ' raid' : '';
-  return fillShared(sharedStandingRank, {
-    rank: own.rank,
-    of: sims.of,
-    role: ROLE_WORD[sims.role],
-    guild: sims.guild_name,
-    band: `${band}${preset}`,
-  });
+  return {
+    label: `${sims.guild_name} · ${band}${preset}`,
+    value: `#${own.rank} of ${sims.of} ${ROLE_WORD[sims.role]}`,
+  };
 }
 
-/** C19: "Holy: A on the tier list", linked to it; a tank or healer list has no letter: "Holy: #4 of 9 on the tier list". */
-export function gradeLine(week: SpecWeek | null, specName: string | null): string | null {
+/** C19: "Holy tier" | "A", linked to the tier list; a tank or healer list has no letter: "#4 of 9". */
+export function gradeRow(week: SpecWeek | null, specName: string | null): StandingRow | null {
   if (week === null || specName === null) return null;
-  return week.grade === null
-    ? fillShared(sharedStandingPlace, { spec: specName, place: week.place, of: week.of })
-    : fillShared(sharedStandingGraded, { spec: specName, grade: week.grade });
+  return {
+    label: `${specName} ${standingCopy.tierWord}`,
+    value: week.grade === null ? `#${week.place} of ${week.of}` : week.grade,
+  };
 }
 
-/** C21: "Onyxia's Lair in 33 days, 8 hours", the clock to its two largest units; null once it has
- *  started. The sign-up count stays on the raid's own page: after the clock it read as part of it
- *  (review 2026-11-09). */
-/** The standing line's raid clock keeps its two largest units. */
+/** The raid clock keeps its two largest units. */
 const CLOCK_UNITS = 2;
 
-export function raidLine(raid: NextRaidView | null, now: Date): string | null {
+/** C21: "Onyxia's Lair" | "33 days, 8 hours", the clock to its two largest units; null once it has
+ *  started. The sign-up count stays on the raid's own page (review 2026-11-09). */
+export function raidRow(raid: NextRaidView | null, now: Date): StandingRow | null {
   if (raid === null) return null;
   const parts = clockParts(new Date(raid.starts_at), now);
   if (parts === null) return null;
-  const values = { raid: raid.title, clock: clockLabel(parts.slice(0, CLOCK_UNITS)) };
-  return fillShared(sharedStandingRaid, values);
+  return { label: raid.title, value: clockLabel(parts.slice(0, CLOCK_UNITS)) };
 }
 
 /** A feed sentence on the character's own page: the character's own name drops out (the page is

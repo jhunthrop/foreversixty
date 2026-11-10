@@ -172,7 +172,7 @@ def landing() -> str:
     lead = FACTS['landing']['leaders']
     body = (landing_rows(lead['damage'], landing_heads(escape(FACTS['fns']['damageHead']), 'DPS'))
             + landing_rows(lead['healing'], landing_heads(escape(FACTS['fns']['healingHead']), 'HPS')))
-    leaders = Section(escape(FACTS['fns']['leadersHeading']), body, meta=escape(leader['name']), panel=True, frame='framed', flush=True)
+    leaders = Section(escape(FACTS['fns']['leadersHeading']), body, meta=escape(leader['name']), panel=True, frame='plain', flush=True)
     return picker + leaders
 
 

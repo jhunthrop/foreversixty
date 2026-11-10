@@ -33,5 +33,3 @@ sources:
 - **New talents** include Bloodthrill, Weaponmaster and Spearing Strike in Arms, Reckless Swings and Furious Precision in Fury, and Vanguard and Master of Defense in Protection.
 
 ## Races
-
-Skyborne can be warriors on either faction.

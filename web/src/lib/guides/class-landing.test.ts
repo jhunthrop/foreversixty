@@ -75,10 +75,25 @@ describe('proseLabels', () => {
   });
 });
 
+describe('an empty section', () => {
+  it('is allowed for Races alone, whose race list is its content', () => {
+    expect(splitClassLanding('## Races\n', 'x.md').sections).toEqual([{ heading: 'Races', markdown: '' }]);
+    expect(() => splitClassLanding('## What changed from 1.12\n\n## Races\n\na', 'x.md')).toThrow(
+      /no content/,
+    );
+  });
+});
+
 describe('specCardLine', () => {
   it('names the role only when the spec heals or tanks', () => {
     expect(specCardLine('dps')).toBeUndefined();
     expect(specCardLine('healer')).toBe('Healer');
     expect(specCardLine('tank')).toBe('Tank');
+  });
+
+  it('adds the build point split', () => {
+    const trees = [{ points: 5 }, { points: 13 }, { points: 33 }];
+    expect(specCardLine('dps', trees)).toBe('5/13/33');
+    expect(specCardLine('healer', trees)).toBe('Healer · 5/13/33');
   });
 });

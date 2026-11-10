@@ -118,3 +118,22 @@ export function loadoutTrees(index: TalentIndex, talents: string): LoadoutTree[]
     return { name: tree.name, points: cells.reduce((sum, cell) => sum + cell.rank, 0), talents: cells };
   });
 }
+
+export interface TalentChange {
+  name: string;
+  /** Ranks this build has over the one it is read against: +3, or -2. */
+  delta: number;
+}
+
+/**
+ * Where a loadout's talents differ from another's (/sim/talents reads every build against the
+ * character's own): one entry per talent whose rank differs, gains first, then by size.
+ */
+export function loadoutDiff(index: TalentIndex, talents: string, against: string): TalentChange[] {
+  const mine = loadoutTrees(index, talents).flatMap((tree) => tree.talents);
+  const theirs = loadoutTrees(index, against).flatMap((tree) => tree.talents);
+  return mine
+    .map((talent, at) => ({ name: talent.name, delta: talent.rank - (theirs[at]?.rank ?? 0) }))
+    .filter((change) => change.delta !== 0)
+    .sort((a, b) => Math.sign(b.delta) - Math.sign(a.delta) || Math.abs(b.delta) - Math.abs(a.delta));
+}

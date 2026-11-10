@@ -10,9 +10,10 @@ const FIGHT = '/reports/fixture2abcd?fight=3';
 
 test('the summary tab lists the roster with specs and deaths', async ({ page }) => {
   await page.goto(FIGHT);
-  // The band says the pull and its players; This pull counts the deaths (directions b1).
+  // The band says the pull and its players; the Deaths plate lists who died (This pull repeats neither).
   await expect(page.getByTestId('report-subtitle')).toContainText('5 players');
-  await expect(page.getByTestId('report-this-pull')).toContainText(/Deaths\s*1/);
+  await expect(page.getByTestId('panel-deaths')).toBeVisible();
+  await expect(page.getByTestId('report-this-pull')).not.toContainText('Deaths');
   await expect(page.getByTestId('roster-Player-4184-000000A1')).toContainText('Protection');
   await expect(page.getByTestId('at-pull-card')).toContainText('ilvl 183');
 });

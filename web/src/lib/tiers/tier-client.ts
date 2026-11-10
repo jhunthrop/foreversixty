@@ -76,13 +76,18 @@ function paint(
   field('name').textContent = name;
   field('standing').textContent = line;
   for (const button of BUTTONS) field(button).hidden = !shown.includes(button);
+  // An empty line (the spec on its own list, its row marked) takes no room.
+  const row = field('standing').parentElement;
+  if (row !== null) row.hidden = line === '' && field('other').hidden;
 }
 
 function showSpec(field: (name: CardField) => HTMLElement, view: TierSpecView, config: ClientConfig): void {
   field('bis').setAttribute('href', view.bisHref);
   field('guide').setAttribute('href', view.guideHref);
+  field('name').style.color = `var(--color-class-${view.classSlug})`;
   if (view.role === config.role) {
-    paint(field, view.fullName, view.standing, ['bis', 'guide']);
+    // The row is marked on the list beside it: its tier, place and figure are not repeated here.
+    paint(field, view.fullName, '', ['bis', 'guide']);
     return;
   }
   // On another role's list: where it stands is that list's answer, one tab away.
@@ -93,6 +98,7 @@ function showSpec(field: (name: CardField) => HTMLElement, view: TierSpecView, c
 
 function showMessage(field: (name: CardField) => HTMLElement, me: TierMe): void {
   const { card } = tiersCopy;
+  field('name').style.color = '';
   if (me.kind === 'error') paint(field, card.heading, card.error, ['retry']);
   else if (me.kind === 'unknown') paint(field, card.heading, card.unknown(me.name), ['choose']);
   else paint(field, card.heading, card.none, ['choose']);

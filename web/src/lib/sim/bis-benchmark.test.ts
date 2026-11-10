@@ -112,8 +112,9 @@ describe('topRaidSets', () => {
 
   it('takes the better faction raid set at the band and ranks the specs high to low', () => {
     const top = topRaidSets(table, 60);
-    expect(top.get('rogue-combat')).toEqual({ dps: 1100, rank: 1 });
-    expect(top.get('warrior-fury')).toEqual({ dps: 1004.21, rank: 2 });
+    expect(top.get('rogue-combat')).toEqual({ dps: 1100, rank: 1, share: 1 });
+    expect(top.get('warrior-fury')).toMatchObject({ dps: 1004.21, rank: 2 });
+    expect(top.get('warrior-fury')?.share).toBeCloseTo(1004.21 / 1100, 6);
   });
 
   it('leaves out a spec with no raid set at that band', () => {

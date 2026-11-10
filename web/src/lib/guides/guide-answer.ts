@@ -86,6 +86,14 @@ export function guideCharacterOf(raw: MeCharacter): GuideCharacter | undefined {
   };
 }
 
+/** The answer's one line under the name: "34 Dwarf Survival". The name is in the class colour
+ *  and the spec names the class, so "Level" and "Hunter" are dropped (h-audit 2026-11-09). */
+export function answerDetail(level: number | undefined, identity: string, className: string): string {
+  const suffix = ` ${className}`;
+  const who = identity.endsWith(suffix) ? identity.slice(0, -suffix.length) : identity;
+  return [level === undefined ? undefined : String(level), who].filter(Boolean).join(' ');
+}
+
 function linksFor(character: GuideCharacter, page: GuideAnswerPage): { links: AnswerLink[]; next?: string } {
   const own = page.classSlug === character.classSlug && page.specSlug === character.specSlug;
   const guideHref = `/guides/${character.classSlug}/${character.specSlug}`;

@@ -31,4 +31,3 @@ sources:
 
 ## Races
 
-**Dwarf shamans are new**, and the only Alliance shamans. On the Horde the Windshaper Skyborne join Orc, Tauren and Troll. Alliance Skyborne cannot be shamans.

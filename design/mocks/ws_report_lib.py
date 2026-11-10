@@ -267,8 +267,7 @@ def head(R: Report, fi: int, tab: str, source: str, viewer: str = '', sample: bo
     sample = sample or AS_SAMPLE
     rc = COPY['reportCopy']
     meta = [head_line(R, fi, source), Tag(rc['sampleBadge' if sample else 'notCreditedTag'], 'muted')]
-    if sample:   # the sample says why its numbers are small (launch polish), as ReportHead does
-        meta.append(f'<span class="ph-note">{escape(rc["sampleNote"])}</span>')
+    # the sample's why (launch polish) is the Sample report tag's title in ReportHead: no line of its own
     strip = TabStripMore([t for t in TABS if t != 'Coach' or viewer], tab, TAB_MD, TAB_XL - (0 if viewer else 1)) if tabs else ''
     return PageHeader(escape(R.title), meta=meta, answer=figure(R, fi, tab, source, player), tabs=strip)
 
@@ -337,10 +336,7 @@ def this_pull(R: Report, fi: int, source: str = 'All friendlies', note: str = ''
     """This pull (directions b1, report/ThisPull.svelte): only what the band does not say, then one muted line (`note`: on the
     Summary of a pull with no rating, the honest state), then Sim this fight and Copy link."""
     f, s = R.fight(fi), R.summary(fi)
-    fr = friendlies(R, s, source)
-    scope = 'In range' if source.startswith('Everyone') else f'In {source.lower()}'
-    items = [('Started', clock(f['start'])), (scope, f'{len(in_scope(R, s, source)):,}'),
-             ('Deaths', str(sum(1 for d in s['deaths'] if d['guid'] in fr)))]
+    items = [('Started', clock(f['start']))]   # the scope's count and deaths are the band's and the tables' (h-audit)
     items += [(escape(p['name']), f'{mmss(p["start_ms"])}&ndash;{mmss(p["end_ms"])}') for p in s.get('phases', [])]
     line = f'<p class="t-small muted pull-note">{escape(note)}</p>' if note else ''
     acts = f'<div class="pull-acts">{_Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</div>'
@@ -355,7 +351,8 @@ def chart(R: Report, fi: int, metric: str, source: str) -> str:
     rows = sorted([a for a in s[key] if a['guid'] in fr and a['total'] > 0], key=lambda a: -a['total'])[:5]
     dur = s['duration_ms'] / 1000
     unit = {'damage': 'DPS', 'healing': 'HPS', 'taken': 'taken / s'}[metric]
-    series = [(split_name(a['name'])[0], colour(ros.get(a['guid'])), a['series'], f'<span class="num">{rate(a["effective"] / dur)}</span> {unit}') for a in rows]
+    # At rest a legend chip names its line only: the table beside the chart carries the figures (report/TimeChart.svelte).
+    series = [(split_name(a['name'])[0], colour(ros.get(a['guid'])), a['series'], '') for a in rows]
     total = sum(a['effective'] for a in s[key] if a['guid'] in fr) / dur
     title = {'damage': 'Damage over the fight', 'healing': 'Healing over the fight', 'taken': 'Damage taken over the fight'}[metric]
     meta = f'{"Your group" if source == "Your group" else "Group"} {rate(total)} {unit}'
@@ -364,8 +361,9 @@ def chart(R: Report, fi: int, metric: str, source: str) -> str:
     phases = [(p['name'], p['start_ms'] / 1000, p['end_ms'] / 1000) for p in s.get('phases', [])]
     marks = [(d['at_ms'] / 1000, '#f0736b') for d in s['deaths'] if d['guid'] in fr]
     lc = LineChart(series, dur, 180, phases, marks, label=f'{title}, per player', step_ms=1000)
-    phone = Disclosure(f'<span class="t-small">{meta}</span>', LineChart(series, dur, 140, phases, marks, label=title, step_ms=1000))
-    return Section(title, f'<div class="lc-only-d">{lc}</div><div class="lc-only-m">{phone}</div>', meta=f'<span class="lc-only-d">{meta}</span>', panel=True)
+    # The whole fight's figure is the band's answer: no head meta; the phone's fold reads Show chart, the figure after it.
+    phone = Disclosure(f'Show chart <span class="t-small muted">{meta}</span>', LineChart(series, dur, 140, phases, marks, label=title, step_ms=1000))
+    return Section(title, f'<div class="lc-only-d">{lc}</div><div class="lc-only-m">{phone}</div>', panel=True)
 
 
 def notices(lines: list[str]) -> str:

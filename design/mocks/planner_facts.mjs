@@ -48,7 +48,7 @@ import classes from ${data("classes.json")};
 import races from ${data("races.json")};
 import combos from ${data("combos.json")};
 import me34 from ${src("tests/e2e/fixtures/home/me-34.json")};
-import { guideBuildRows, ranksTrees } from ${src("src/lib/planner/guide-builds.ts")};
+import { guideBuildRows, ranksTrees, treesOff } from ${src("src/lib/planner/guide-builds.ts")};
 import { aheadOf, pointOrderRows } from ${src("src/lib/planner/point-order.ts")};
 import { decodeFS1, orderFromRanks } from ${src("src/lib/planner/fs1.ts")};
 import { indexTalents, canAddPoint, messages } from ${src("src/lib/planner/rules.ts")};
@@ -150,7 +150,12 @@ function state({ cls, race, order = [], level = null, spec = null }) {
   const orderView = pointOrderRows(index, order, level, me34.characters[0].name, (icon) => icon,
     aheadPoints.length > 0 ? { specName: specRow.name, points: aheadPoints } : null);
   const currentTrees = order.length > 0 ? ranksTrees(index.trees.map((tree) => tree.talents.map((t) => ranks.get(t.id) ?? 0))) : null;
-  const guideBuilds = guideBuildRows(GUIDE_BUILDS, cls).map((row) => ({ ...row, current: row.trees === currentTrees }));
+  const guideBuilds = guideBuildRows(GUIDE_BUILDS, cls).map((row) => ({
+    ...row,
+    current: row.trees === currentTrees,
+    // A row's points the build on screen lacks (GuideBuilds.svelte's trail), once a point is spent.
+    off: currentTrees !== null && row.trees !== currentTrees ? plannerCopy.guideBuildOff(treesOff(row.trees, currentTrees)) : '',
+  }));
   const points = order.map((id, i) => { const t = index.byId.get(id); const r = order.slice(0, i + 1).filter((x) => x === id).length;
     return { level: levelForIndex(i), name: t.name, icon: t.icon, rank: r, max: t.max_rank, planned: level !== null && i >= available, tip: plannerCopy.pointAt(levelForIndex(i), t.name, r) }; });
   return {

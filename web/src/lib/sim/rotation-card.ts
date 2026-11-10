@@ -43,6 +43,9 @@ interface Pressed {
 }
 
 /** A key the rotation counts as a button press: an untagged spell or item. */
+/** "Other cooldowns as they come up" names no one spell: the game's pocket watch stands for it. */
+export const OTHER_COOLDOWNS_ICON = 'inv_misc_pocketwatch_01';
+
 function pressKey(action: string): string | null {
   const parsed = parseActionKey(action);
   if (parsed === null || parsed.kind === 'other' || parsed.kind === 'unknown' || parsed.tag !== 0)

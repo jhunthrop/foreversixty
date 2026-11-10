@@ -5,7 +5,6 @@
 
 export const simPageCopy = {
   title: 'Simulator',
-  landingMeta: 'Damage specs only.',
   sections: {
     simYourCharacter: 'Sim your character',
     otherWaysIn: 'Other ways in',
@@ -62,7 +61,6 @@ export const simPageCopy = {
     saved: (date: string): string => `Saved ${date}`,
   },
   answer: {
-    noSim: 'No sim yet',
     notSimulated: 'Not simulated yet',
     notSimulatedCaption: (spec: string): string => `${spec} is not simulated yet; there is nothing to run.`,
     specSupport: 'Spec support ›',

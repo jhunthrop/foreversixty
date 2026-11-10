@@ -77,14 +77,6 @@ test('Save keeps the sign-in requirement after a cold-paste run', async ({ page 
   await expect(page.getByTestId('sim-save-title')).toHaveCount(0);
 });
 
-// The reassurance moved into the landing head's one meta line (spec §4.2: "its 'nothing leaves
-// your device' clause moves into the meta line").
-test('the reassurance line says the run stays local', async ({ page }) => {
-  await page.goto('/sim');
-  await expect(page.getByTestId('sim-head')).toContainText(simPageCopy.landingMeta);
-  await expect(page.getByTestId('sim-head')).toContainText('Nothing is uploaded until you save');
-});
-
 // Build item 3: phone -- the paste box is the first thing after the title, every control
 // is a real 44px hit target, and nothing overflows at 390 (sim.astro's own documented
 // measurement width). A literal override rather than the shared mobile project's Pixel 7

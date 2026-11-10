@@ -59,7 +59,7 @@ def answer(acct: dict | None, loading: bool = False) -> str:
     if body['kind'] == 'count':
         note = body.get('note')
         line = f'<span class="t-small bl-note">{e(note.removesuffix("."))}</span>' if note else ''
-        mid = f'<span class="bl-fig">{Figure(str(body["worn"]), unit=e(body["unit"]))}{Meter(body["bar"])}{line}</span>'
+        mid = f'<span class="bl-fig">{Figure(str(body["worn"]), unit=e(body["unit"]), size="sm")}{Meter(body["bar"])}{line}</span>'
     elif body['kind'] == 'failed':
         mid = f'<span class="t-small" role="alert">{e(body["text"])}</span>'
     else:

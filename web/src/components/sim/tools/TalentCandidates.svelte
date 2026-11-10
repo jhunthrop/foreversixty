@@ -24,6 +24,7 @@
     customLoadouts,
     guideLoadout,
     hasUnaddedBuild,
+    loadoutDiff,
     loadoutTrees,
     savedBuildsMessage,
   } from '../../../lib/sim/talent-loadouts';
@@ -216,7 +217,24 @@
       class="border-line-soft grid gap-x-6 gap-y-1 border-b py-3 last:border-b-0 md:grid-cols-[260px_minmax(0,1fr)] md:items-start"
     >
       {@render loadoutCheck(loadout, testid)}
-      <TalentTrees trees={loadoutTrees(index, loadout.talents)} build={character.tree_version} />
+      <div class="flex min-w-0 flex-wrap items-start gap-x-8 gap-y-2">
+        <TalentTrees trees={loadoutTrees(index, loadout.talents)} build={character.tree_version} />
+        {#if own !== null && loadout.name !== own.name}
+          {@const changes = loadoutDiff(index, loadout.talents, own.talents)}
+          <!-- Against the character's own build: what this one takes more of, then less. -->
+          <ul
+            class="m-0 flex list-none flex-col p-0 text-[13px] leading-5 tabular-nums"
+            data-testid={`${testid}-diff`}
+          >
+            {#each changes as change (change.name)}
+              <li class={change.delta > 0 ? 'text-kill' : 'text-wipe'}>
+                {change.delta > 0 ? '+' : '−'}{Math.abs(change.delta)}
+                <span class="text-text">{change.name}</span>
+              </li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
     </div>
   {:else}
     {@render loadoutCheck(loadout, testid)}
@@ -258,6 +276,7 @@
 
     <div class="pt-3">
       <Button
+        tone="ghost"
         size="sm"
         testid="sim-loadout-add"
         onclick={() => {

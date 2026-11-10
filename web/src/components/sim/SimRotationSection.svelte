@@ -11,7 +11,12 @@
   import { createCardTables } from '../../lib/sim/card-tables.svelte';
   import { classSpecPath } from '../../lib/sim/gear-card';
   import { rotationCardCopy as copy } from '../../lib/sim/input-cards-copy';
-  import { plannedRotationRows, rotationActionKeys, rotationRows } from '../../lib/sim/rotation-card';
+  import {
+    OTHER_COOLDOWNS_ICON,
+    plannedRotationRows,
+    rotationActionKeys,
+    rotationRows,
+  } from '../../lib/sim/rotation-card';
   import { loadRotationLines, type RotationLines } from '../../lib/sim/rotations';
   import { specDisplayName } from '../../lib/sim/spec-label';
   import type { SimRequest, SimResult } from '../../lib/sim/types';
@@ -63,9 +68,14 @@
   const level = $derived(request.character.level);
   const rows = $derived.by(() => {
     if (lines === null || lines === undefined) return null;
-    return result === null
-      ? plannedRotationRows(lines, tables.names, level)
-      : rotationRows(result, lines, tables.names);
+    if (result === null) return plannedRotationRows(lines, tables.names, level);
+    // After a run the card lists what the run pressed: a step it never cast is left out (h-audit 2026-11-09).
+    const ran = rotationRows(result, lines, tables.names);
+    return {
+      ...ran,
+      prepull: ran.prepull.filter((row) => row.cast !== false),
+      priority: ran.priority.filter((row) => !row.dimmed).map((row, at) => ({ ...row, number: at + 1 })),
+    };
   });
 
   function rankOf(action: string | null): number {
@@ -74,7 +84,7 @@
 </script>
 
 {#snippet title(name: string, action: string | null)}
-  <ActionMark {action} {tables} size={24}
+  <ActionMark {action} {tables} size={24} fallbackIcon={action === null ? OTHER_COOLDOWNS_ICON : null}
     >{name}{#if rankOf(action) > 0}<span class="text-muted ml-1 text-[13px] font-normal whitespace-nowrap"
         >{copy.rank(rankOf(action))}</span
       >{/if}</ActionMark

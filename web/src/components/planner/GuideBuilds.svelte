@@ -5,10 +5,12 @@
 <!-- web/src/components/planner/GuideBuilds.svelte -->
 <!-- Guide builds (lane P7): the class's published guide builds in the rail, one row per build,
      the spec's icon, its name, the build and its split; the row opens it in the guide's levelling
-     order. The build on screen carries a Loaded tag. Nothing draws when the class has no guide. -->
+     order. The build on screen carries a Loaded tag; every other row, once a point is spent, says how
+     many of its points the build on screen lacks (h-audit 2026-11-09). Nothing draws when the class has
+     no guide. -->
 <script lang="ts">
   import { ranksByTalent } from '../../lib/planner/derive';
-  import { guideBuildRows, ranksTrees, type GuideBuild } from '../../lib/planner/guide-builds';
+  import { guideBuildRows, ranksTrees, treesOff, type GuideBuild } from '../../lib/planner/guide-builds';
   import { plannerCopy } from '../../lib/planner/copy';
   import { dataUrl } from '../../lib/planner/load';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
@@ -52,6 +54,13 @@
                 decoding="async"
               />
             {/if}
+          {/snippet}
+          {#snippet trail()}
+            {#if current !== null && row.trees !== current}<span
+                class="text-muted text-[13px] whitespace-nowrap tabular-nums"
+                data-testid={`planner-guide-build-off-${row.key}`}
+                >{plannerCopy.guideBuildOff(treesOff(row.trees, current))}</span
+              >{/if}
           {/snippet}
           {#snippet subContent()}
             <span class="gb-sub"

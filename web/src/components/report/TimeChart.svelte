@@ -53,6 +53,7 @@
     syncKey,
     onOpenDeath,
     noun = 'raid',
+    openOnPhone = false,
     testid = 'time-chart',
   }: {
     metric: RateMetric;
@@ -88,6 +89,8 @@
     onOpenDeath?: (deaths: readonly ChartEvent[]) => void;
     /** What the drawn players are (lib/report/group.ts): it names the head's figure and the median. */
     noun?: ScopeNoun;
+    /** The phone's chart starts open whatever was remembered (Deaths: the markers are the point). */
+    openOnPhone?: boolean;
     testid?: string;
   } = $props();
 
@@ -106,6 +109,10 @@
   let chartOpen = $state(false);
   let chartOpenRead = $state(false);
   $effect(() => {
+    if (openOnPhone) {
+      chartOpen = true;
+      return;
+    }
     try {
       chartOpen = globalThis.localStorage?.getItem(CHART_OPEN_KEY) === 'true';
     } catch {
@@ -144,6 +151,8 @@
         };
       }),
   );
+  /** One player in scope: no Players choice and no median, they would only repeat the one line. */
+  const lone = $derived(players.length <= 1);
   const youClass = $derived(
     players.find((player) => player.guid === (sourcePlayer ?? youGuid))?.className ?? null,
   );
@@ -164,7 +173,8 @@
       chosen:
         sourcePlayer !== undefined && chosen === null ? new Set() : chosen === null ? null : new Set(chosen),
       preset,
-      compare: { raid: raidMedianOn && !enemies, className: enemies ? null : classMedian },
+      // One source: its median is the same line, so none is drawn.
+      compare: { raid: raidMedianOn && !enemies && !lone, className: enemies || lone ? null : classMedian },
       deadSpans: spans,
       single: sourcePlayer,
       noun,
@@ -208,6 +218,9 @@
       return chartCopy.playerMeta(metric, single.label, formatRate(single.figure), span, targetName);
     return chartCopy.rateMeta(metric, formatRate(model.raidFigure), span, targetName, noun);
   });
+  /** The head's meta only says what the band does not: a window, one player or a target. The whole
+   *  fight's group figure is the band's own answer (h-audit 2026-11-09). */
+  const headMeta = $derived(whole && single === undefined && targetName === undefined ? undefined : meta);
 
   function choose(id: string): void {
     onChoose([...togglePlayer(chosen === null ? null : new Set(chosen), model.entries, id)]);
@@ -229,6 +242,8 @@
   const title = $derived(chartCopy.title[metric]);
   const choice = $derived<PlayersChoice>(chosen !== null ? 'custom' : preset);
   const PRESETS: readonly DrawPreset[] = ['split', 'top', 'bottom'];
+  /** At rest a legend chip names its line only: the table beside the chart carries the figures. */
+  const blank = (): string => '';
   const notDrawn = $derived(model.entries.filter((entry: PlayerEntry) => !entry.drawn).length);
 </script>
 
@@ -239,7 +254,7 @@
     class="flex flex-wrap items-center justify-end gap-x-2 gap-y-2 max-md:grid max-md:w-full max-md:grid-cols-[64px_minmax(0,1fr)] max-md:justify-items-stretch max-md:text-left"
     data-testid="chart-head-controls"
   >
-    {#if !enemies}
+    {#if !enemies && !lone}
       <span class="text-small text-muted">{chartCopy.players}</span>
       <PlayersControl
         id="chart-players"
@@ -270,8 +285,8 @@
     {notDrawn}
     {coarse}
     scrubMs={legend.scrubMs}
-    formatValue={formatRate}
-    unit={chartCopy.unit(metric)}
+    formatValue={legend.scrubMs === null ? blank : formatRate}
+    unit={legend.scrubMs === null ? '' : chartCopy.unit(metric)}
     onToggle={(id) => legend.toggle(id)}
     onOnly={(id) => legend.only(id, series)}
     onHighlight={(id) => legend.highlight(id)}
@@ -305,7 +320,7 @@
 
 <Section
   title={SECTION_TITLE[metric]}
-  meta={wide.current ? meta : undefined}
+  meta={wide.current ? headMeta : undefined}
   metaTestid="chart-head-meta"
   {testid}
   panel
@@ -314,7 +329,7 @@
   {#if wide.current}
     {@render plot()}
   {:else}
-    <Disclosure summary={meta} bind:open={chartOpen} testid="chart-collapsed">
+    <Disclosure summary={chartCopy.showChart} {meta} bind:open={chartOpen} testid="chart-collapsed">
       {@render controls()}
       {@render plot()}
     </Disclosure>

@@ -1,8 +1,8 @@
 ---
 // web/src/components/guides/GuideSources.astro
 // A guide's Sources (guides spec 2026-11-08 §4.3): one slim link Row per unique source, the kind
-// as a muted Tag and the label in gold, on the panel. Provenance stays here, at the foot of the
-// content.
+// as a muted Tag and the label in gold, a plain list on the ground, not another boxed plate under
+// the boxed sections (h-audit 2026-11-09). Provenance stays here, at the foot of the content.
 import Row from '../ui/Row.svelte';
 import Section from '../ui/Section.svelte';
 import Tag from '../ui/Tag.svelte';
@@ -17,7 +17,7 @@ const unique = [...new Map(sources.map((source) => [source.url, source])).values
 ---
 
 {unique.length > 0 && (
-  <Section title={guidesCopy.sources} boxed testid="guide-sources">
+  <Section title={guidesCopy.sources} testid="guide-sources">
     <div class="guide-sources">
       {unique.map((source) => (
         <Row title={source.label} href={source.url} density="slim" open>

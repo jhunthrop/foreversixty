@@ -413,7 +413,8 @@ def this_run_section() -> str:
 def rot_title(key: str, name: str, rank: int = 0) -> str:
     """The built rotation title (ActionMark): the 24 px icon, then the name and its rank."""
     rk = f'<span class="rk-s">Rank {rank}</span>' if rank else ''   # glued, as the built ActionMark: the rank never takes a line alone
-    return f'<span class="am">{act_icon(key, 24) if key else ""}<span>{name}{rk}</span></span>'
+    icon = act_icon(key, 24) if key else gicon('inv_misc_pocketwatch_01', 24)   # Other cooldowns: OTHER_COOLDOWNS_ICON
+    return f'<span class="am">{icon}<span>{name}{rk}</span></span>'
 
 
 def rotation_section(ran: bool = True) -> str:
@@ -429,7 +430,8 @@ def rotation_section(ran: bool = True) -> str:
         cast = key in sample_pre
         r = Row(rot_title(key, spell_name(sid), rank_of(sid)), '', lead=f'<span class="pre-t num">{p["doAtValue"]["const"]["val"].replace("s", " s")}</span>',
                 trail=(f'<span class="cnt">{"Cast" if cast else "Not cast in this run"}</span>' if ran else ''), link=False)
-        pre.append(r if cast or not ran else f'<div class="dim">{r}</div>')
+        if cast or not ran:   # after a run, a step it never cast is left out (SimRotationSection)
+            pre.append(r)
     named = {f"spell:{(p['action'].get('castSpell') or {}).get('spellId', {}).get('spellId')}" for p in rot['priorityList']}
     named |= {f"spell:{p['action']['castSpell']['spellId']['spellId']}" for p in rot['prepullActions']}
     other = [k for k, v in CASTS.items() if v and not k.startswith('other:') and '/' not in k and k not in named]
@@ -440,17 +442,19 @@ def rotation_section(ran: bool = True) -> str:
             total = round(sum(CASTS[k] for k in other))
             sub = f'This run: {", ".join(act_name(k) for k in other)}.' if ran else 'Trinkets, racials and potions, as each comes off cooldown.'
             cnt = (f'{total} cast{"s" if total != 1 else ""}' if total else 'Not cast in this run')
-            r = Row(rot_title(other[0] if ran and other else '', 'Other cooldowns as they come up'), sub if ran else '', rank=str(i + 1), slim=not ran,
+            r = Row(rot_title(other[0] if ran and other else '', 'Other cooldowns as they come up'), sub if ran else '', rank=str(len(lines) + 1), slim=not ran,
                     trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
-            lines.append(r if total or not ran else f'<div class="dim">{r}</div>')
+            if total or not ran:
+                lines.append(r)
             continue
         sid = a['castSpell']['spellId']['spellId']
         key = f'spell:{sid}'
         n = CASTS.get(key, 0)
         cnt = f'{n} cast{"s" if n != 1 else ""}' if n else 'Not cast in this run'
         r = Row(rot_title(key, spell_name(sid), rank_of(sid)), notes.get(i, p.get('notes', '')) if ran else '', slim=not ran,
-                rank=str(i + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
-        lines.append(r if n or not ran else f'<div class="dim">{r}</div>')
+                rank=str(len(lines) + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
+        if n or not ran:
+            lines.append(r)
     body = (f'<div class="rot"><h3 class="t-label rot-l">Before the pull</h3>{Rows(pre, open_=True)}<h3 class="t-label rot-l">Then, from the top at every decision</h3>'
             f'{Rows(lines, open_=True)}</div>')
     return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'))
@@ -753,7 +757,7 @@ def result_actions(signed_in: bool = True) -> str:
 
 def answer_none() -> str:
     """Signed in, the character loaded, not run: the shipped answer while G1 is open (no saved sim can be matched to a character)."""
-    return '<span class="t-label">No sim yet</span>'
+    return '<span class="t-label"></span>'
 
 
 def answer_last() -> str:
@@ -864,7 +868,7 @@ def finish(title: str, body: str, who) -> str:
 
 # ---- 1. /sim, signed out, no character
 def landing_out() -> str:
-    head = PageHeader('Simulator', meta=['Damage specs only.'], tabs=TabStrip(TOOLS, 'Quick sim'))
+    head = PageHeader('Simulator', tabs=TabStrip(TOOLS, 'Quick sim'))
     paste = (Form('Addon export or build code', [('', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
              + f'<p class="t-small paste-hint">In game: /fs copy, then paste here. {Link("Get set up &rsaquo;")}</p>')
     # ui/Row `fillTrail`: a 180 px label column, the control filling the rest (the field grows, Load beside it)
@@ -925,7 +929,7 @@ def states() -> str:
         return f'<section class="st-blk"><h2 class="t-h3">{t}</h2>{html}</section>'
     hdr = lambda ans, title='Thandrel', cls=CLS, meta=f'{RACE} {SPEC_LABEL} &middot; Level 60': PageHeader(title, crest=crest_img(cls, 56), meta=[meta], answer=ans)
     sheet = [
-        blk('No sim yet for this character', hdr('<span class="t-label">No sim yet</span>') + run_bar()),
+        blk('No sim yet for this character', hdr('<span class="t-label"></span>') + run_bar()),
         blk('Engine loading (the first run on this device)', hdr(f'<span class="t-label">Loading the engine</span><span class="fig-cap">The engine is about 4 MB. It loads once and is cached after that.</span><span class="ans-meter">{Meter(.35)}</span>') + run_bar('engine')),
         blk('On our servers: queued (Premium)', hdr(f'<span class="t-label">On our servers</span><span class="fig-cap"><b>Starting</b></span><span class="ans-meter">{Meter(0, "muted")}</span>') + run_bar('server')),
         blk('On our servers: running', hdr(f'<span class="t-label">On our servers</span><span class="fig-cap"><b>Running</b> &middot; takes about 2 minutes</span><span class="ans-meter">{Meter(.4)}</span>') + run_bar('server')),

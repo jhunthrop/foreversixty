@@ -145,6 +145,13 @@
       .join(' · ');
   }
 
+  /** The phone's line under the amount: the rate with its unit, but Taken / s reads as the number
+   *  alone (the plate's title says what was taken). */
+  function phoneRate(actor: Actor): string {
+    const rate = formatRate(timeOf(actor) === 0 ? 0 : actor.effective / (timeOf(actor) / 1000));
+    return tab === 'damage-taken' ? rate : `${rate} ${RATE[tab]}`;
+  }
+
   const totalSeconds = $derived(Math.max(durationMs, 1) / 1000);
   const totalFigures = $derived<StatFigure[]>([
     ...(parse ? [{ value: '' }] : []),
@@ -244,7 +251,7 @@
   );
 </script>
 
-{#snippet totalName()}Total, {actors.length} {actors.length === 1 ? 'player' : 'players'}{/snippet}
+{#snippet totalName()}Total{/snippet}
 <!-- Divs, not spans: the sub line keeps each span's "Label value" pair on one line, and these are
      sentences that must wrap at 390. -->
 {#snippet absentSub()}{#if mitigatedLine !== ''}<div data-testid="actor-mitigated">
@@ -266,7 +273,7 @@
             subLine={subLine(actor)}
             figures={figures(actor)}
             ofTop={top === 0 ? 0 : actor.effective / top}
-            phone={`${formatRate(timeOf(actor) === 0 ? 0 : actor.effective / (timeOf(actor) / 1000))} ${RATE[tab]}`}
+            phone={phoneRate(actor)}
             href={players.has(actor.guid) ? playerHref(actor.guid) : undefined}
             selected={selected === actor.guid}
             onSelect={onSelectPlayer}

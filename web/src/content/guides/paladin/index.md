@@ -34,4 +34,4 @@ sources:
 
 ## Races
 
-**Undead Paladin** is new in Forever: the Horde has paladins for the first time, so Horde raids get Blessings and paladin tanks too. Skyborne cannot be paladins.
+**Undead Paladin** is new in Forever: the Horde has paladins for the first time, so Horde raids get Blessings and paladin tanks too.

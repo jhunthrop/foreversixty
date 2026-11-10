@@ -17,7 +17,6 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { simCopy } from '../../src/lib/sim/copy';
 import { curatedRotationNotes } from './support/rotation-notes';
 import { gotoSim, simCharacter } from './support/sim-page';
 
@@ -157,6 +156,6 @@ test('/sim/specs carries the same rotation prose on the mage-frost card', async 
   await card.getByTestId('spec-rotation-trigger-mage-frost').click();
   const steps = card.getByTestId('spec-rotation-steps-mage-frost');
   for (const note of curatedRotationNotes('mage-frost')) await expect(steps).toContainText(note);
-  // Same trigger text as RotationCard's own -- one voice for "what does this rotation do".
-  await expect(card.getByTestId('spec-rotation-trigger-mage-frost')).toHaveText(simCopy.rotationLink);
+  // h-audit 2026-11-09: the spec's own name is the trigger, not a "What it does" on every row.
+  await expect(card.getByTestId('spec-rotation-trigger-mage-frost')).toHaveText('Frost Mage');
 });

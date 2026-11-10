@@ -76,7 +76,7 @@
 
 {#snippet figure(item: RankFigure, first: boolean)}
   <span
-    class="ui-rr-fig"
+    class={['ui-rr-fig', item.phoneOnly && 'md:hidden']}
     data-first={first ? 'true' : undefined}
     data-best={item.best ? 'true' : undefined}
     title={item.best ? item.bestTitle : undefined}
@@ -114,7 +114,8 @@
       ><a class="ui-rr-link" {href} data-testid={nameTestid ?? 'rank-name'}>{name}</a
       >{#if tag}{@render tag()}{/if}</span
     >
-    {#if sub}<span class="ui-rr-sub">{sub}</span>{/if}
+    <!-- One line: a guild and spec that do not fit end in an ellipsis, the whole line on hover. -->
+    {#if sub}<span class="ui-rr-sub block truncate" title={sub}>{sub}</span>{/if}
     {#if note}<span class="ui-rr-note" title={note.title} data-testid="rank-note">{note.text}</span>{/if}
   </span>
   <span class="ui-rr-bar">

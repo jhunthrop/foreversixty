@@ -145,6 +145,8 @@ def abilities_panel(R, fi, source, metric: str, link: bool = True) -> str:
     tot = sum(v['total'] for _, v in ranked) or 1
     dur = max(s['duration_ms'], 1) / 1000
     detail = ABILITY_DETAIL[metric] if not link else ()
+    # Overheal is left out when every row reads 0% (report/SummaryPanels.svelte `details`).
+    detail = tuple(d for d in detail if d != 'overheal' or any(ability_detail(v, d) != '0%' for _, v in ranked))
     shown = ranked if detail else ranked[:8]
 
     def sub(v: dict) -> str:
@@ -156,7 +158,7 @@ def abilities_panel(R, fi, source, metric: str, link: bool = True) -> str:
             for k, v in shown]
     heads = [('', False), ('Ability', False), ('', False), ('Share', True), ('Per sec', True), ('Amount', True)] + [(DETAIL_LABEL[d], True) for d in detail]
     body = StatTable(heads, rows, 3 + len(detail)) if rows else '<p class="empty">Nothing in this window.</p>'
-    return Section(ABILITY_TITLE[metric], body, action=Link(f'{ABILITY_TAB[metric]} &rsaquo;') if link else '', panel=True, flush=True)
+    return Section(ABILITY_TITLE[metric], body, action=Link('&rsaquo;') if link else '', panel=True, flush=True)
 
 
 def healed(R, s, source) -> bool:
@@ -268,11 +270,11 @@ def actor_table(R, fi, source, key, unit, head_amt):
         extra = f'{n0(a["overheal"])} overheal ({a["overheal"] / a["total"] * 100:.0f}%)' if key == 'healing' and a.get('overheal') and round(a["overheal"] / a["total"] * 100) > 0 else ''
         figs = [n0(a['effective']), rate(a['effective'] / dur), f'{a["effective"] / tot * 100:.1f}%', f'{a["active_ms"] / s["duration_ms"] * 100:.1f}%']
         rows.append(StatRow(crest(r, 28), plink(r, a['name']), player_sub(r, extra) or '&nbsp;', figs, MeterClass(a['effective'] / top, colour(r)),
-                            primary_phone=f'{figs[1]} {unit}'))
+                            primary_phone=figs[1] if key == 'damage_taken' else f'{figs[1]} {unit}'))
     foot = mitigated_line(s, fr) if key == 'damage_taken' else ''
     # One player's row is its own total (report/ActorTable.svelte): no foot row, its mitigated line under the table.
     if len(acts) > 1:
-        rows.append(StatRow('', f'Total, {plural(len(acts), "player")}', foot, [n0(sum(a['effective'] for a in acts)), rate(sum(a['effective'] for a in acts) / dur), '100%', ''], total=True))
+        rows.append(StatRow('', 'Total', foot, [n0(sum(a['effective'] for a in acts)), rate(sum(a['effective'] for a in acts) / dur), '100%', ''], total=True))
     heads = [('', False), ('Player', False), ('', False), (head_amt, True), (unit, True), ('Share', True), ('Active', True)]
     if not acts:
         return '<p class="empty">Nothing in this window.</p>'
@@ -447,9 +449,11 @@ def tab_deaths(R, fi, source):
     for index, d in enumerate(died):
         r = ros.get(d['guid'])
         kb = d['killing_blow']
-        toggle = (f'<button type="button" class="link">{"Fold" if index == 0 else "Open"}</button>' if fold else '')
+        window_link = '<button type="button" class="link">The 20 s before it &rsaquo;</button>'
+        # One control a row (report/DeathsTab.svelte): the fold toggle while deaths fold, the window inside the open card.
+        toggle = f'<button type="button" class="link">{"Fold" if index == 0 else "Open"}</button>' if fold else window_link
         head_row = Row(pname(r, d['name']), f'Killed by {escape(kb["source_name"])} &middot; {escape(melee(kb["spell_id"], kb["spell_name"]))} &middot; {n0(kb["amount"])} ({n0(kb.get("overkill", 0))} overkill) &middot; {n0(kb["max_hp"])} health',
-                       lead=f'<span class="num muted">{at(d["at_ms"])}</span>{crest(r, 32)}', trail=toggle + '<button type="button" class="link">The 20 s before it &rsaquo;</button>', link=False)
+                       lead=f'<span class="num muted">{at(d["at_ms"])}</span>{crest(r, 32)}', trail=toggle, link=False)
         if fold and index > 0:
             blocks.append(f'<div class="dblock">{Rows([head_row])}</div>')
             continue
@@ -468,7 +472,8 @@ def tab_deaths(R, fi, source):
                                      [f'&minus;{n0(h["amount"])}', hp], Meter(h.get('hp_after', 0) / mx, 'wipe'), primary_phone=hp))
         foot = death_foot(d, [e for e in s['deaths'] if e['guid'] in fr])
         body = StatTable([('', False), ('Last hits and heals', False), ('Health after', False), ('Amount', True), ('Health', True)], lines, 2, sort='', sortable=())
-        blocks.append(f'<div class="dblock">{Rows([head_row])}{body}' + (f'<p class="t-small dfoot">{foot}</p>' if foot else '') + '</div>')
+        blocks.append(f'<div class="dblock">{Rows([head_row])}{body}' + (f'<p class="t-small dfoot">{foot}</p>' if foot else '')
+                      + (f'<div class="dfoot">{window_link}</div>' if fold else '') + '</div>')
     plate = Section('Deaths', ''.join(blocks) if blocks else '<p class="empty">Nobody died.</p>',
                     action=COPY_CSV if blocks else '', panel=True, flush=True)
     rail = this_pull(R, fi, source) + (key_mechanics(R, fi) if R.fight(fi)['kind'] != 'trash' else '')

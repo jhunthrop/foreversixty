@@ -57,7 +57,7 @@
         title={label.title}
         aria-current={selected ? 'true' : undefined}
         data-testid="row-name"
-        onclick={follow}>{label.name}</a
+        onclick={follow}>{label.name}<span class="text-gold ml-1" aria-hidden="true">›</span></a
       >{:else}<b style:color={colour} title={label.title} data-testid="row-name">{label.name}</b
       >{/if}{#if label.realm !== ''}<span class="text-muted ml-1 text-[12px]">· {label.realm}</span
       >{/if}{/snippet}

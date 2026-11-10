@@ -153,7 +153,8 @@
         </p>
       {/if}
     {/if}
-    <CopyForGame code={store.spent === 0 ? '' : addonCode} primary={character === null || otherClass} />
+    <!-- No Copy for the game until a point is spent (h-audit 2026-11-09: a dim button read as unstyled). -->
+    {#if store.spent > 0}<CopyForGame code={addonCode} primary={character === null || otherClass} />{/if}
     {#if character === null}
       <p>
         <a class={LINK} href={cardCopy.getTheAddonHref} data-testid="planner-get-addon"

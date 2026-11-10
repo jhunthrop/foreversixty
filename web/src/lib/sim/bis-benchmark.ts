@@ -89,6 +89,8 @@ export interface SpecTopSet {
   dps: number;
   /** 1 for the highest set DPS of the band. */
   rank: number;
+  /** Its DPS over the highest's, 0 to 1: the row's bar. */
+  share: number;
 }
 
 /**
@@ -103,5 +105,8 @@ export function topRaidSets(table: BisBenchmarks, band: number): Map<string, Spe
     return raid.length === 0 ? [] : [{ spec, dps: Math.max(...raid) }];
   });
   best.sort((a, b) => b.dps - a.dps);
-  return new Map(best.map(({ spec, dps }, index) => [spec, { dps, rank: index + 1 }]));
+  const top = best[0]?.dps ?? 0;
+  return new Map(
+    best.map(({ spec, dps }, index) => [spec, { dps, rank: index + 1, share: top > 0 ? dps / top : 0 }]),
+  );
 }

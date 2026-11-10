@@ -33,10 +33,18 @@ export interface ClassLanding {
   sections: ClassLandingSection[];
 }
 
-/** A spec card's line under its name: the role, for a healer or a tank only. Every class has a
- *  damage spec, so "DPS" under each one tells a veteran nothing (h-audit 2026-11-09). */
-export function specCardLine(role: 'dps' | 'healer' | 'tank'): string | undefined {
-  return role === 'dps' ? undefined : guidesCopy.roleLabel(role);
+/** A spec card's line under its name: the role for a healer or a tank only (every class has a
+ *  damage spec, so "DPS" under each one tells a veteran nothing), then the guide build's point
+ *  split, "5/13/33", when its code decodes (h-audit 2026-11-09). */
+export function specCardLine(
+  role: 'dps' | 'healer' | 'tank',
+  trees: readonly { points: number }[] = [],
+): string | undefined {
+  const parts = [
+    role === 'dps' ? undefined : guidesCopy.roleLabel(role),
+    trees.length === 0 ? undefined : trees.map((tree) => tree.points).join('/'),
+  ].filter((part): part is string => part !== undefined);
+  return parts.length === 0 ? undefined : parts.join(' · ');
 }
 
 const HEADING = /^##[ \t]+(.+?)[ \t]*$/gm;
@@ -60,7 +68,9 @@ function parseSections(markdown: string, file: string): ClassLandingSection[] {
       `${file}: headings out of order or repeated (${sections.map((s) => s.heading).join(', ')})`,
     );
   }
-  if (sections.some((s) => s.markdown === '')) throw new Error(`${file}: a section has no content`);
+  // Races may be the heading alone: the page draws the class's race list under it (GuideRaceList).
+  if (sections.some((s) => s.markdown === '' && s.heading !== 'Races'))
+    throw new Error(`${file}: a section has no content`);
   return sections;
 }
 

@@ -26,7 +26,12 @@
 </script>
 
 {#if rows.length > 0}
-  <Section title="Dispelled" action={{ label: 'Dispels', href: tabHref }} panel testid="dispels-rail">
+  <Section
+    title="Dispelled"
+    action={{ label: 'Dispels', href: tabHref, arrow: true }}
+    panel
+    testid="dispels-rail"
+  >
     {#each rows as row (`${row.source_guid}-${row.target_guid}-${row.spell_id}-${row.extra_spell_id}`)}
       <Row
         title={row.extra_spell_name || `Spell #${row.extra_spell_id}`}

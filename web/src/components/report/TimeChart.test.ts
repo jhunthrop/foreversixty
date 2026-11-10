@@ -61,16 +61,11 @@ const PROPS = {
 };
 
 describe('TimeChart (controls and charts spec §B5)', () => {
-  it('heads its Section with the metric and the raid figure, every player added before rounding', () => {
+  it('heads its Section with the metric, and leaves the whole fight’s figure to the band', () => {
     const { body } = render(TimeChart, { props: PROPS });
     expect(body).toContain('Damage over the fight');
     expect(body).toContain('data-region="section-damage-over-the-fight"');
-    const exact = actors.reduce(
-      (total, actor) => total + actor.series.reduce((sum, value) => sum + value, 0) / 60,
-      0,
-    );
-    const sum = Math.round(exact);
-    expect(body).toContain(`Raid ${sum.toLocaleString('en-US')} DPS<`);
+    expect(body).not.toContain('data-testid="chart-head-meta"');
   });
 
   it('draws the raid median, the top 4 and the bottom 4 of 40, and names it in the Players field', () => {
@@ -79,8 +74,8 @@ describe('TimeChart (controls and charts spec §B5)', () => {
     expect(body).toContain('Raid median');
     expect(body).toContain('Top 4, bottom 4 of 40');
     expect(body).toContain('+32 more');
-    // Every chip says what its figure is.
-    expect(body.match(/<span class="unit[^"]*">DPS<\/span>/g)).toHaveLength(9);
+    // At rest a chip names its line only: the table beside the chart carries the figures.
+    expect(body).not.toMatch(/<span class="unit[^"]*">DPS<\/span>/);
   });
 
   it('names the Top 8 and Bottom 8 presets, and says All N on a roster of 8 or fewer', () => {

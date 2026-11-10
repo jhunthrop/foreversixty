@@ -46,7 +46,7 @@
   import type { CompareSession } from '../../lib/bis/compare-session';
   import { readStoredSources, storeSources } from '../../lib/bis/source-store';
   import type { BisPresetId, Faction, SourceFilterKind } from '../../lib/bis/types';
-  import type { ControlGroup, ControlOption } from '../../lib/ui/primitives';
+  import { controlSummary, type ControlGroup, type ControlOption } from '../../lib/ui/primitives';
   import { bisContext, presetLabel } from '../../lib/bis/page-context';
   import { bandSlug, bisBandPath } from '../../lib/bis/band-path';
   import { bisSeoCopy } from '../../lib/bis/seo-copy';
@@ -233,6 +233,11 @@
     });
     return list;
   });
+  /** The phone line: range, faction and profile. The spec is the doll's title and the race sits in
+   *  the open stack, so the line fits 390 without cutting a word. */
+  const barSummary = $derived(
+    controlSummary(groupsBar.filter((group) => group.param !== 'spec' && group.param !== 'race')),
+  );
 
   function apply(next: BisPageState, push = true): void {
     if (data.models[bandModelKey(next.faction, next.band, next.preset)] === undefined) return;
@@ -339,6 +344,7 @@
     {#snippet bar()}
       <ControlBar
         groups={groupsBar}
+        summary={barSummary}
         label="Best in slot controls"
         labelsFrom={1920}
         onchange={onControl}

@@ -626,24 +626,15 @@ export const simCopy = {
   /** The strip's short label for `KIND_TITLES.weights` ("Stat weights"). */
   tabWeights: 'Weights',
   tabSpecs: 'Spec support',
-  /**
-   * Task 2: the site never said the simulator is DPS-only (healer/tank persona review
-   * BLOCKERs). One sentence, one key, rendered in every simulator page's static Astro
-   * shell -- near the `<h1>`, above the fold at 390x844 -- plus LandingState.svelte and
-   * SourceSwitcher.svelte, since those are what a signed-out visitor reads first.
-   */
   /** The eyebrow over every simulator page's h1. */
   pageEyebrow: 'Tools',
-  scopeNote: 'Damage specs only.',
   /** `/sim/specs`: heading over the 20 dps cards the grid has always shown. */
   specsSimulatedHeading: 'Damage specs',
   /** `/sim/specs`: heading over the 8 healer/tank cards, grouped below rather than
    *  interleaved, so the page reads as "these 20 work, these 8 do not". */
   specsUnsimulatedHeading: 'Healers and tanks',
-  /** A healer or tank row's way on: its guide. */
-  specsGuide: 'Guide',
   /** A tool page's character line when the talents stop short of the level. */
-  talentPointsOf: (points: number, max: number): string => `${points} of ${max} talent points`,
+  talentPoints: (points: number): string => `${points} talent points`,
   /** `/sim/specs`: the damage list's meta, naming what each row's figure is. */
   specsTopSetMeta: 'Raid BiS DPS at 60',
   /** A damage spec's place among the specs by that figure. */
@@ -909,7 +900,7 @@ export const bulkCopy = {
   talentsLoadouts: 'In-game loadouts',
   talentsAddCustom: 'Add a build',
   talentsNoSaved: 'No saved builds for this class yet.',
-  talentsSavedUnavailable: 'Saved builds did not load.',
+  talentsSavedUnavailable: 'No saved builds',
   setsTitle: 'Whole sets',
   setsIntro: 'A set replaces every slot at once. Paste a second export string to add one.',
   setsPaste: 'Paste an export string',
@@ -922,7 +913,7 @@ export const bulkCopy = {
   combinations: (n: number): string =>
     `${n.toLocaleString('en-US')} valid ${n === 1 ? 'combination' : 'combinations'}`,
   combinationsCounting: 'Counting combinations…',
-  combinationsNone: 'Nothing ticked yet.',
+  combinationsNone: '0 valid combinations',
   precisionLabel: 'Precision',
   precisionFast: 'Fast',
   precisionNormal: 'Normal',
@@ -1009,6 +1000,9 @@ export const bulkCopy = {
   sourceItems: (count: number): string =>
     `${count.toLocaleString('en-US')} ${count === 1 ? 'item' : 'items'}`,
   sourceBestIlvl: (ilvl: number): string => `ilvl ${ilvl}`,
+  sourceBosses: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'}`,
+  /** A kind's summary: how many of its sources carry a tick. */
+  sourcesTicked: (ticked: number, total: number): string => `${ticked} of ${total} ticked`,
   /** A ticked kind whose every source is gated: the undated ones named in one line. */
   sourcesNoDate: (names: readonly string[]): string => `No date yet: ${names.join(', ')}`,
   /** A dungeon's folded boss list (mock design/mocks/ws_simtools.py). */

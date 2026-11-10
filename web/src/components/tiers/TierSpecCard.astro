@@ -1,9 +1,9 @@
 ---
 // web/src/components/tiers/TierSpecCard.astro
 // The spec panel beside the tier list (directions mock g-tiers; a framed panel, as the mock draws it): signed
-// out, the sign-in line; signed in, the visitor's spec, where it stands ("Tier A · #2 ·
-// 1,004.2 DPS") or, for a spec on another role, a link to that list, then its Best in slot and
-// Guide. The signed-in half is a template lib/tiers/tier-client.ts fills after load, reserved at its final size while the
+// out, one quiet link (no panel: there is nothing to show yet); signed in, the visitor's spec in its
+// class colour, its row marked on the list (so no standing line repeats it) or, for a spec on another
+// role, a link to that list, then its Best in slot and Guide. The signed-in half is a template lib/tiers/tier-client.ts fills after load, reserved at its final size while the
 // account loads, so nothing under it moves.
 import Frame from '../ui/Frame.svelte';
 import { button } from '../../lib/ui/button';
@@ -22,18 +22,14 @@ const PRIMARY = button('primary');
 const SECONDARY = button('secondary');
 ---
 
-<Frame region={REGION.headAnswer} testid="tier-card">
-  <div class="tier-card" id="tier-answer">
-    <div class="tier-card-body" data-signed-out-only data-testid="tier-card-signed-out">
-      <h2 class="text-section">{copy.heading}</h2>
-      <p class="tier-card-line">{copy.signedOut}</p>
-      <div class="tier-card-actions">
-        <a class={PRIMARY} href={copy.signInHref(path)}>
-          {copy.signIn}
-        </a>
-      </div>
-    </div>
-    <div class="tier-card-in" data-signed-in-only>
+<div data-region={REGION.headAnswer} data-testid="tier-card" id="tier-answer">
+  <p class="tier-card-quiet" data-signed-out-only data-testid="tier-card-signed-out">
+    <a class={LINK} href={copy.signInHref(path)}>
+      {copy.signedOut} ›
+    </a>
+  </p>
+  <div data-signed-in-only>
+    <Frame>
       <div class="tier-card-skeleton" role="status" aria-busy="true" data-answer-skeleton>
         <span class="sr-only">Loading</span>
         <span class="skeleton-block tier-sk-name" aria-hidden="true"></span>
@@ -61,9 +57,9 @@ const SECONDARY = button('secondary');
           </button>
         </div>
       </div>
-    </div>
+    </Frame>
   </div>
-</Frame>
+</div>
 
 <style>
   .tier-card-body,
@@ -78,8 +74,14 @@ const SECONDARY = button('secondary');
   .tier-card-body[hidden],
   .tier-card-skeleton[hidden],
   .tier-card-actions [hidden],
+  .tier-card-line[hidden],
   .tier-card-line [hidden] {
     display: none;
+  }
+  .tier-card-quiet {
+    margin: 0;
+    font-size: 15px;
+    line-height: 24px;
   }
   .tier-card-line {
     margin: 0;

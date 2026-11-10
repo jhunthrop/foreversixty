@@ -2,7 +2,14 @@
 import { describe, expect, it } from 'vitest';
 import type { Item } from '../planner/types';
 import type { LootSource } from './loot';
-import { gatedLine, groupByFaction, pvpForFaction, sourceItemStats } from './source-rows';
+import {
+  gatedLine,
+  groupByFaction,
+  pvpForFaction,
+  showsSource,
+  sourceItemStats,
+  tickedSources,
+} from './source-rows';
 
 const item = (id: number, itemLevel: number): Item => ({ id, item_level: itemLevel }) as unknown as Item;
 const source = (over: Partial<LootSource>): LootSource => ({ id: 'x', kind: 'rep', name: 'X', ...over });
@@ -13,12 +20,16 @@ describe('sourceItemStats', () => {
       [1, item(1, 58)],
       [2, item(2, 63)],
     ]);
-    expect(sourceItemStats([1, 2, 3], items, null)).toEqual({ count: 2, bestIlvl: 63 });
+    expect(sourceItemStats([1, 2, 3], items, null)).toMatchObject({
+      count: 2,
+      bestIlvl: 63,
+      best: { id: 2 },
+    });
   });
 
   it('leaves out an item the engine does not know', () => {
     const items = new Map([[1, item(1, 58)]]);
-    expect(sourceItemStats([1], items, new Set([2]))).toEqual({ count: 0, bestIlvl: 0 });
+    expect(sourceItemStats([1], items, new Set([2]))).toEqual({ count: 0, bestIlvl: 0, best: null });
   });
 });
 
@@ -60,5 +71,24 @@ describe('gatedLine', () => {
       dated: ["Onyxia's Lair: First raids, 9 December 2026"],
       undated: ['Molten Core'],
     });
+  });
+});
+
+describe('showsSource', () => {
+  it('hides an empty PvP rank or standing, never a raid or quest', () => {
+    expect(showsSource('pvp', 0)).toBe(false);
+    expect(showsSource('rep', 0)).toBe(false);
+    expect(showsSource('raid', 0)).toBe(true);
+    expect(showsSource('quest', 0)).toBe(true);
+    expect(showsSource('pvp', 2)).toBe(true);
+  });
+});
+
+describe('tickedSources', () => {
+  it('counts each ticked source once, whole or by boss', () => {
+    const rows = [source({ id: 'raid:mc' }), source({ id: 'raid:bwl' }), source({ id: 'raid:ony' })];
+    expect(tickedSources(rows, ['raid:mc|', 'raid:mc|raid:mc:1', 'raid:ony|raid:ony:2', 'dungeon:x|'])).toBe(
+      2,
+    );
   });
 });

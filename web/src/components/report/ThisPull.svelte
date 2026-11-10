@@ -1,9 +1,10 @@
 <!-- web/src/components/report/ThisPull.svelte -->
 <!-- The rail's This pull panel (directions b1): only what the band does not say (when it started,
-     the scope's count, its deaths; a boss pull's phases), then the pull's two actions, Sim this
-     fight and Copy link (a link to exactly this view). -->
+     a boss pull's phases), then the pull's two actions, Sim this fight and Copy link (a link to
+     exactly this view); below 768 those two live in the band's Report actions menu. -->
 <script lang="ts">
   import { reportCopy } from '../../lib/report/copy';
+  import { COPIED_FOR_MS, copyReportLink } from '../../lib/report/copy-link';
   import { simCopy } from '../../lib/sim/copy';
   import { button as buttonClass } from '../../lib/ui/button';
   import type { Fact } from '../../lib/ui/facts';
@@ -21,16 +22,10 @@
     note?: string;
   } = $props();
 
-  const COPIED_FOR_MS = 2000;
   let copied = $state('');
 
   async function copyLink(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      copied = reportCopy.copied;
-    } catch {
-      copied = reportCopy.copyFailed;
-    }
+    copied = await copyReportLink(window.location.href);
     setTimeout(() => (copied = ''), COPIED_FOR_MS);
   }
 </script>
@@ -38,7 +33,8 @@
 <Section title="This pull" panel testid="report-this-pull">
   <Facts items={facts} />
   {#if note !== ''}<p class="text-small text-muted pt-3" data-testid="report-this-pull-note">{note}</p>{/if}
-  <div class="flex flex-wrap gap-2 pt-4">
+  <!-- Below 768 the band's Report actions menu holds these two (ReportActions). -->
+  <div class="flex flex-wrap gap-2 pt-4 max-md:hidden">
     {#if simHref !== null}
       <a class={buttonClass('secondary', 'sm')} href={simHref} data-testid="report-sim-fight"
         >{simCopy.simThisFight}</a

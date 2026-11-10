@@ -25,7 +25,11 @@ These sit in files another in-flight lane owns tonight, so h-audit lists them in
 - ui/PointOrder.svelte: the yellow dash marker before "Felsnap is level 34…".
 - ui/TalentEditor.svelte: "Client build 1.60.1.70790" in the talent plate footer.
 
+- ui/Toc.svelte: the guide spec page's 390 sticky bar reads "On this page" + "Change"; label it "Jump to".
+
 ## f-content
+- ui/SpellIcon.svelte: a missing spell icon shows the browser's broken-image glyph on the guide spec page (Lightning Reflexes, Resourcefulness, Strider Kick, Aspect of the Beast, Rapid Fire, tree nodes); swap to the bordered placeholder on error.
+- The guide spec footer "Numbers from client build 1.60.1.70790, checked against launch logs…" is site meta talk.
 - planner/TreeGrid.svelte and TalentCell.svelte: a tier-gate gutter and a "n more to tier k" line.
 - SimTimeline.svelte: the timeline "Off / On" toggle has no label.
 - lib/guides/copy.ts:

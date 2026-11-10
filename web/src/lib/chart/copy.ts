@@ -108,6 +108,8 @@ export const chartCopy = {
   only: 'Only',
   hide: (name: string): string => `Hide ${name}`,
   show: (name: string): string => `Show ${name}`,
+  /** The phone's folded chart: its summary, the figure after it in muted words. */
+  showChart: 'Show chart',
   showOnly: (name: string): string => `Show only ${name}`,
   sheetMeta: (drawn: number, total: number): string => `${drawn} of ${total} drawn`,
   sheetDrawn: 'Drawn',

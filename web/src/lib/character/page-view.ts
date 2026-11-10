@@ -18,6 +18,7 @@ import type { PaperdollSlot } from '../gear/paperdoll';
 import { homeHrefs } from '../home/home-view';
 import { PREMIUM_LINKS } from '../billing/premium-links';
 import { percentileToken } from '../report/format';
+import { executionLabel } from '../sim/execution';
 import type { BuildSeen, CharacterFight, CharacterPage } from '../rankings/api';
 import { pointsEarnedAt } from '../leveling/leveling-plan';
 
@@ -40,7 +41,6 @@ export const characterPageCopy = {
   gearAction: 'Best in slot',
   score: 'Forever Score',
   scoreFigure: 'Score',
-  tier: 'Tier',
   rating: 'Rating',
   ratingValue: (overall: number): string => `${overall} of 100`,
   /** The score trend's label: "Since 20 Oct". */
@@ -49,6 +49,8 @@ export const characterPageCopy = {
   noLogs: 'No logs yet.',
   noScoreYet: 'No Forever Score yet.',
   best: 'Best per encounter',
+  /** A best fight's execution against the sim, in its sub: "Execution 90%". */
+  execution: (score: number): string => `Execution ${executionLabel(score)}`,
   allFights: (count: number): string => `All fights (${count})`,
   builds: 'Builds seen',
   /** A build seen row's sub: the spec and the date it was first seen ("Holy · 3 Nov"). */
@@ -161,13 +163,15 @@ export interface WaitingFact {
   key: 'talents' | 'upgrade';
   text: string;
   href: string | null;
+  /** The upgrade's item, drawn as its icon in its quality ring. */
+  item?: { icon: string | null; quality: number };
 }
 
 /** C11: what waits on the owner, as plain facts (owner 2026-11-09: no "Next:" nudge): unspent
  *  talent points, then the top upgrade. Empty with neither. */
 export function characterWaiting(input: {
   own: MeCharacter;
-  top: { name: string; source: string } | null;
+  top: { name: string; source: string; icon: string | null; quality: number } | null;
   bisHref: string | null;
 }): WaitingFact[] {
   const { own, top, bisHref } = input;
@@ -188,7 +192,16 @@ export function characterWaiting(input: {
         ]
       : [];
   const upgrade: WaitingFact[] =
-    top === null ? [] : [{ key: 'upgrade', text: `Upgrade: ${top.name}, ${top.source}`, href: bisHref }];
+    top === null
+      ? []
+      : [
+          {
+            key: 'upgrade',
+            text: `Upgrade: ${top.name}, ${top.source}`,
+            href: bisHref,
+            item: { icon: top.icon, quality: top.quality },
+          },
+        ];
   return [...talents, ...upgrade];
 }
 
@@ -219,7 +232,13 @@ export function bestRows(best: readonly CharacterFight[]): FightRowView[] {
   return best.slice(0, FIGHTS_SHOWN).map((row) => ({
     key: `${row.encounter_id}-${row.difficulty}-${row.metric}`,
     boss: row.encounter,
-    sub: [dayMonth(row.fought_at), row.spec].filter(Boolean).join(' · '),
+    sub: [
+      dayMonth(row.fought_at),
+      row.spec,
+      typeof row.execution_score === 'number' ? characterPageCopy.execution(row.execution_score) : '',
+    ]
+      .filter(Boolean)
+      .join(' · '),
     percentile: row.percentile === undefined ? null : String(Math.round(row.percentile)),
     color: row.percentile === undefined ? null : percentileToken(row.percentile),
     value: Math.round(row.value).toLocaleString('en-US'),

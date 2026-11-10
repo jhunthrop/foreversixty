@@ -136,9 +136,15 @@
     healing: ['overheal', 'hits', 'crit', 'max'],
   };
   const DETAIL_LABEL = { overheal: 'Overheal', hits: 'Hits', crit: 'Crit', avg: 'Avg', max: 'Max' } as const;
+  /** The metric's detail columns, less Overheal when every row reads 0%: a column of zeros says nothing. */
+  const details = $derived(
+    DETAIL[metric].filter(
+      (id) => id !== 'overheal' || byAbility.some((row) => detailValue(row, id) !== '0%'),
+    ),
+  );
   const columns = $derived([
     ...BASE_COLUMNS,
-    ...(detail ? DETAIL[metric].map((id) => ({ id, label: DETAIL_LABEL[id] })) : []),
+    ...(detail ? details.map((id) => ({ id, label: DETAIL_LABEL[id] })) : []),
   ]);
   /** One detail figure; a prorated window marks the amounts it scales, as the Amount column does. */
   function detailValue(row: AbilityTotal, id: (typeof DETAIL)[Metric][number]): string {
@@ -154,7 +160,7 @@
 
 <Section
   title={TITLE[metric]}
-  action={tabHref === undefined ? undefined : { label: TAB[metric], href: tabHref }}
+  action={tabHref === undefined ? undefined : { label: TAB[metric], href: tabHref, arrow: true }}
   panel
   flush
   testid={`panel-${metric}`}
@@ -168,7 +174,7 @@
           { value: `${(row.share * 100).toFixed(1)}%` },
           { value: formatRate(row.total / seconds) },
           { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
-          ...(detail ? DETAIL[metric].map((id) => ({ value: detailValue(row, id) })) : []),
+          ...(detail ? details.map((id) => ({ value: detailValue(row, id) })) : []),
         ]}
         {@const phone = formatAmount(row.total)}
         {#if detail}
@@ -176,7 +182,7 @@
           <StatRow {figures} {phone}>
             {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
             {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
-            {#snippet sub()}{#each DETAIL[metric] as id, i (id)}<span class="ui-st-phone"
+            {#snippet sub()}{#each details as id, i (id)}<span class="ui-st-phone"
                   >{i > 0 ? ' · ' : ''}{detailValue(row, id)} {DETAIL_LABEL[id].toLowerCase()}</span
                 >{/each}{/snippet}
             {#snippet meter()}<Meter value={row.share} tone={TONE[metric]} />{/snippet}

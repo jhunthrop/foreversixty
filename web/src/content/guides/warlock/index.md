@@ -30,8 +30,6 @@ sources:
 
 ## Races
 
-Troll warlocks are new for the Horde. Skyborne cannot be warlocks.
-
 ## In a raid
 
 Bring a curse when assigned (Curse of the Elements, or Recklessness, Tongues or Weakness for a second warlock), Healthstones for everyone, a Soulstone on a healer, and summons.

@@ -77,6 +77,8 @@ export const plannerCopy = {
   guideBuildsTitle: 'Guide builds',
   /** The guide build row that is the build on screen. */
   guideBuildLoaded: 'Loaded',
+  /** A guide build row's distance from the build on screen: "3 points off". */
+  guideBuildOff: (points: number): string => `${points} ${points === 1 ? 'point' : 'points'} off`,
   /** The guide's own build names (guidesCopy.levelingBuild, raidBuild; guide-builds.test.ts holds them equal):
    *  repeated here so the planner island does not carry the guides' whole copy. */
   guideLevelingBuild: 'Level 60 build',
@@ -87,7 +89,7 @@ export const plannerCopy = {
   levelLine: (name: string, level: number): string => `${name} is level ${level}.`,
   /** The same line when the spec guide's order fills the sockets past the character's level. */
   aheadLine: (name: string, level: number, specName: string): string =>
-    `${name} is level ${level}. Then the ${specName} guide's order.`,
+    `${name} is ${level}. Then ${specName} guide order.`,
   /** A talent cell whose last points are planned past the character's level: its accessible name's tail. */
   plannedCell: (level: number): string => `planned past level ${level}`,
   /** Point order's row labels: "Levels 20 to 29", "Level 60". */
@@ -234,7 +236,7 @@ export const bandCompareCopy = {
   /** The count leads in gold, this text follows it. */
   differsSuffix: 'of your points differ from this build',
   /** A build inside the band's, only short of it: the count leads, this text follows it. */
-  toTakeSuffix: "of this build's points still to take",
+  toTakeSuffix: 'points left',
   matches: 'Matches',
   /** The quiet note under the line when the build holds points past the band's own total. */
   beyondGuide: (n: number): string => `+${n} beyond the build`,

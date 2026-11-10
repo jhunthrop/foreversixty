@@ -80,7 +80,13 @@
 </script>
 
 {#if rows.length > 0}
-  <Section title="Buffs" action={{ label: 'Buffs', href: tabHref }} panel flush testid="panel-buffs">
+  <Section
+    title="Buffs"
+    action={{ label: 'Buffs', href: tabHref, arrow: true }}
+    panel
+    flush
+    testid="panel-buffs"
+  >
     <div class="group-buffs">
       <StatTable columns={COLUMNS} nameHead="Buff" label="Buffs">
         {#each rows as row (row.name)}

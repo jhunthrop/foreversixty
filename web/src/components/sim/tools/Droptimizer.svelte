@@ -12,7 +12,6 @@
   import type { Me } from '../../../lib/account/api';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
-  import { bulkCopy } from '../../../lib/sim/copy';
   import { pickedWithNothingTried } from '../../../lib/sim/drop-picks';
   import { factionOfRace } from '../../../lib/race-faction';
   import type { Snippet } from 'svelte';
@@ -70,12 +69,10 @@
       onpin={pin}
     />
   {/if}
-  {#if store.result === null && store.pickedBosses.length === 0}
-    <p class="text-small text-muted m-0" data-testid="sim-drops-nothing">{bulkCopy.dropsNothing}</p>
-  {/if}
   {#if store.character !== null}
     <SourcePicker
       faction={factionOfRace(store.character.race_slug)}
+      treeVersion={store.character.tree_version}
       plate
       loot={store.loot}
       phases={store.phases}

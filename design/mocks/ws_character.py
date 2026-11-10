@@ -45,7 +45,7 @@ CHAR_CSS = '''
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
-.stand{display:flex;flex-wrap:wrap;gap:4px 20px;padding-bottom:4px;font-size:15px;line-height:24px}
+.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
 .sum-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:20px}.notice.facts{gap:4px 20px}
 .frow .st{color:var(--strong)}
 /* round 5 (lane P9): the split from 1280, the frame centred at 640, the answer's sim link beside its figure, the parts' bars */
@@ -84,17 +84,20 @@ def summary(text: str, action: str = '', tone: str = 'gold') -> str:
     return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}"><p class="notice {tone}">{text}{act}</p></div></div>'
 
 
-def waiting_summary(facts: list[str]) -> str:
-    """The owner's waiting facts (web characterWaiting), each a link, on one row."""
+def waiting_summary(facts: list[tuple[str, str]]) -> str:
+    """The owner's waiting facts (web characterWaiting) on a plate (h-audit 2026-11-09): a slim link Row each, the upgrade led by
+    its item's icon, the text one gold line that truncates."""
     if not facts:
         return ''
-    links = ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in facts)
-    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}"><p class="notice gold facts">{links}</p></div></div>'
+    rows = RowsSlim([Row(f'<span class="wait">{t}</span>', lead=lead, slim=True) for t, lead in facts])
+    return (f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}">'
+            f'<div class="plate wait-plate">{rows}</div></div></div>')
 
 
-def standing_section(lines: list[str]) -> str:
-    """The owner's standing in the rail (character/CharacterStanding, h-audit 2026-11-09): one slim link Row a line."""
-    return panel('Standing', RowsSlim([Row(t, slim=True) for t in lines])) if lines else ''
+def standing_section(lines: list[tuple[str, str]]) -> str:
+    """The owner's standing in the rail (character/CharacterStanding, h-audit 2026-11-09): a slim link Row a line, label left, value right."""
+    return panel('Standing', RowsSlim([Row(f'<span class="nb">{label}</span>', trail=f'<b class="st">{value}</b>', slim=True)
+                                       for label, value in lines])) if lines else ''
 
 
 # ------------------------------------------------------------------------------------------------ the alive pass (section 6)
@@ -144,7 +147,7 @@ def activity_section(feed: str | None, name: str) -> str:
                                      for r in rows))
 
 
-def standing(home: str | None, guild: bool, spec: str) -> list[str]:
+def standing(home: str | None, guild: bool, spec: str) -> list[tuple[str, str]]:
     if not home:
         return []
     a = J(FIX / home)
@@ -154,15 +157,15 @@ def standing(home: str | None, guild: bool, spec: str) -> list[str]:
         own = gs['you'] or next((r for r in gs['rows'] if r['you']), None)
         if own:
             band = '60' if gs['band'] >= 60 else f"{gs['band']} to {gs['band'] + 9}"
-            out.append(f"#{own['rank']} of {gs['of']} {ROLE_WORD[gs['role']]} in {gs['guild_name']}, {band}{' raid' if gs['preset'] == 'raid' else ''}")
+            out.append((f"{gs['guild_name']} &middot; {band}{' raid' if gs['preset'] == 'raid' else ''}", f"#{own['rank']} of {gs['of']} {ROLE_WORD[gs['role']]}"))
     w = a.get('spec_week')
     if w:
-        out.append(f"{spec}: {w['grade']} on the tier list" if w['grade'] else f"{spec}: #{w['place']} of {w['of']} on the tier list")
+        out.append((f"{spec} tier", w['grade'] if w['grade'] else f"#{w['place']} of {w['of']}"))
     if guild:
         r = J(HOME / 'guild-home-60.json')['next_raid']
         left = datetime.fromisoformat(r['starts_at'].replace('Z', '+00:00')) - NOW
         d, rem = divmod(int(left.total_seconds()) // 60, 1440)
-        out.append(f"{r['title']} in {d} days, {rem // 60} hours")
+        out.append((r['title'], f"{d} days, {rem // 60} hours"))
     return out
 
 
@@ -282,7 +285,7 @@ def head(ch: Char, owner: dict | None, answer: bool = True) -> str:
     if ch.page.get('supporter'):
         meta.append('Supporter')
     if owner:
-        meta.append('Addon &middot; 1 day ago')
+        meta.append('Synced 1 day ago')
     total = ch.total()
     figure = Figure(figure_text(total), '', f'{ch.unit} from upgrades') if total > 0 else ''
     ans = f'<span class="ans-row">{Button("Sim this character", small=True)}{figure}</span>' if answer else ''
@@ -310,7 +313,7 @@ def spark_fact(values: list[float], text: str) -> str:
 
 
 def score_section(ch: Char, owner: bool) -> str:
-    """The rail's Forever Score (character/CharacterScore): Score, Tier, Rating as Facts, then the parts on one scale."""
+    """The rail's Forever Score (character/CharacterScore): Score (in its tier's colour, with the tier word) and Rating as Facts, then the parts."""
     p = ch.page
     if not p.get('score'):
         line = 'No logs yet. Upload a log to get a rating.' if owner else 'No logs yet.'
@@ -321,8 +324,9 @@ def score_section(ch: Char, owner: bool) -> str:
     trend = ([(f"Since {short_date(history[0]['date'] + 'T00:00:00Z')}",
                spark_fact([x['score'] for x in history], f"+{history[-1]['score'] - history[0]['score']:,}".replace(',', '')))]
              if len(history) > 1 else [])
-    facts = Facts([('Score', f"{p['score']:,}"), *trend, ('Tier', f'<span style="color:{tier["color"]}">{tier["label"]}</span>'),
-                   ('Rating', f"{rating['latest']['overall']} of 100")])
+    # The tier is the score's colour and its word on the Score row (h-audit 2026-11-09), never a row of its own.
+    score = f'<span style="color:{tier["color"]}">{p["score"]:,} <span class="t-small" style="color:inherit;font-weight:600">{tier["label"]}</span></span>'
+    facts = Facts([('Score', score), *trend, ('Rating', f"{rating['latest']['overall']} of 100")])
     comps = p['components']
     label = {x['key']: x['label'] for x in LABELS['components']}
     longest = max(PART_MAX.values())
@@ -345,7 +349,8 @@ def fights_section(ch: Char) -> str:
     for f in p['best'][:FIGHTS_SHOWN]:
         trail = (f'<span class="pct" style="color:{parse_color(f["percentile"])}">{round(f["percentile"])}</span>'
                  + Figure(f"{f['value']:,}", '', ch.unit, size='sm'))
-        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])} &middot; {f['spec']}", trail=trail, slim=True))
+        ex = f" &middot; Execution {round(f['execution_score'] * 100)}%" if f.get('execution_score') is not None else ''
+        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])} &middot; {f['spec']}{ex}", trail=trail, slim=True))
     return panel('Best per encounter', RowsSlim(rows), f"All fights ({len(p['history'])})")
 
 
@@ -377,12 +382,14 @@ def owner_sections(premium: bool, fights: int, coach: str | None = None) -> str:
                  + Disclosure('Coach reviews', body, open_=coach is not None))
 
 
-def waiting(ch: Char, owner: dict) -> list[str]:
+def waiting(ch: Char, owner: dict) -> list[tuple[str, str]]:
+    """(text, lead icon html): the upgrade carries its item's icon."""
     earned = max(0, owner['level'] - 9)
     to_spend = earned - sum(owner['build']['talents']['points'])
     top = ch.top()
-    talents = [f"{to_spend} talent {'point' if to_spend == 1 else 'points'} unspent"] if to_spend > 0 else []
-    return talents + ([f"Upgrade: {top['name']}, {top['source']}"] if top else [])
+    talents = [(f"{to_spend} talent {'point' if to_spend == 1 else 'points'} unspent", '')] if to_spend > 0 else []
+    item = ch.items.get(top['id'], {}) if top else {}
+    return talents + ([(f"Upgrade: {top['name']}, {top['source']}", icon(item.get('icon'), 28))] if top else [])
 
 
 # ------------------------------------------------------------------------------------------------ the states

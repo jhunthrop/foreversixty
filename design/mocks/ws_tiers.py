@@ -206,17 +206,10 @@ def bar(role: str, faction: str, open_m: bool = False) -> str:
                        labels_from=1920)
 
 
-def standing(me: dict, role: str) -> str:
-    """tier-callout.ts standingOf: "Tier A · #2 · 1,004.2 DPS"."""
-    place = f"={me['rank']}" if role == 'healer' and me['tie'] else f"#{me['rank']}"
-    tier = [f"Tier {me['tier']}"] if me.get('tier') else []
-    return ' &middot; '.join([*tier, place, f"{fnum(me['metric'], role)} {UNIT[role]}"])
-
-
 def card(role: str, lists: dict, signed_in: bool, state: str = 'ready') -> str:
     """The spec panel in the rail (TierSpecCard.astro). state: ready | loading | unknown."""
-    if not signed_in:
-        return f'<h2>Your spec</h2><p class="cl">Sign in to mark your spec on the list.</p><div class="ca">{Button("Sign in", True)}</div>'
+    if not signed_in:   # a quiet link, no panel (TierSpecCard.astro)
+        return f'<p class="tier-quiet">{Link("Sign in to mark your spec &rsaquo;")}</p>'
     if state == 'loading':
         return f'<div class="sk">{Skeleton(180, 28)}{Skeleton(220, 24)}{Skeleton(230, 44)}</div>'
     if state == 'unknown':
@@ -227,8 +220,9 @@ def card(role: str, lists: dict, signed_in: bool, state: str = 'ready') -> str:
     if me_role != role:
         return (f'<h2>{full_name(me)}</h2><p class="cl">{Link(f"On the {TAB_LABEL[me_role]} list &rsaquo;")}</p>'
                 f'<div class="ca">{Button("Best in slot", True)}{Button("Guide")}</div>')
-    return (f'<h2>{full_name(me)}</h2><p class="cl">{standing(me, role)}</p>'
-            f'<div class="ca">{Button("Best in slot", True)}{Button("Guide")}</div>')
+    # The row is marked on the list beside it: no standing line repeats its tier, place and figure.
+    return (f'<div class="cb"><h2 style="color:var(--class-{YOU[1]})">{full_name(me)}</h2>'
+            f'<div class="ca">{Button("Best in slot", True)}{Button("Guide")}</div></div>')
 
 
 PAGE_CSS = '''<style>
@@ -236,7 +230,8 @@ PAGE_CSS = '''<style>
 .frame h2{font:400 22px/28px var(--font-title);letter-spacing:-.015em}
 .frame .cl{margin-top:6px;font:600 15px/24px var(--font-body);color:var(--strong)}
 .frame .ca{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}.frame .btn{height:44px;display:inline-flex;align-items:center}
-.frame .sk{display:flex;flex-direction:column;gap:6px;min-height:114px}
+.frame .sk,.frame .cb{display:flex;flex-direction:column;gap:6px;min-height:114px}.frame .cb .ca{margin-top:10px}
+.tier-quiet{margin:0;font:400 15px/24px var(--font-body)}
 .tiers-end{padding-bottom:var(--section-gap)}
 .statesheet{display:grid;gap:32px}.statesheet h2{margin-bottom:10px}
 </style>'''
@@ -250,7 +245,9 @@ def tiers_page(role: str, faction: str = 'alliance', signed_in: bool = False, op
     lst, ranked_ = lists[role]
     header = PageHeader('Tier list at 60', meta=[meta_line(role, meta)])
     plate = Plate(the_list(lst, role, ranked_, YOU_SPEC if signed_in else '', hover_spec), list_label(role, faction))
-    rail = Frame(card(role, lists, signed_in, answer_state), False, REGION['head_answer'])
+    inner = card(role, lists, signed_in, answer_state)
+    rail = (Frame(inner, False, REGION['head_answer']) if signed_in
+            else f'<div data-region="{REGION["head_answer"]}">{inner}</div>')
     body = header + bar(role, faction, open_m) + f'<div class="tiers-end">{Page("split", plate, rail)}</div>' + PAGE_CSS
     note = (f'Tier list mock (directions mock g-tiers, round 5), built only from ws_prims. Data: build {BUILD}, band 60, preset raid, '
             f'{faction}; ranked by the shipped tier rules. Signed-in character "Thandrel" is a sample.')

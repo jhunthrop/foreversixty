@@ -47,15 +47,12 @@ async function loadWeights(page: Page): Promise<void> {
   await expect(page.getByTestId('sim-character')).toBeVisible();
 }
 
-test('the page opens with the warning, above everything else', async ({ page }) => {
+test('the stats to weigh link to Top Gear for a real choice', async ({ page }) => {
+  // h-audit 2026-11-09: the explainer notice is gone; its link sits on the Stats to weigh panel.
   await page.goto('/sim/weights');
-  const warning = page.getByTestId('sim-weights-warning');
-  await expect(warning).toBeVisible();
-  await expect(warning).toContainText(bulkCopy.weightsWarning);
-  await expect(warning.getByRole('link', { name: bulkCopy.weightsWarningLink })).toHaveAttribute(
-    'href',
-    '/sim/gear',
-  );
+  await expect(
+    page.getByTestId('sim-weights-pick').getByRole('link', { name: bulkCopy.weightsWarningLink }),
+  ).toHaveAttribute('href', '/sim/gear');
 });
 
 // Residual regressions fix, Finding 1: BulkRunBar mounts SettingsBar with `spec=''` (no

@@ -56,3 +56,13 @@ export function raidLine(fact: RaidFact, viewer?: { slug: string; name: string }
       : raidFactsCopy.usable(usable, viewer.name);
   return `${raidFactsCopy.bosses(fact.bosses)} · ${drops}`;
 }
+
+/** The plaque's lines, every raid's or none: one raid with a count beside two without reads as a
+ *  placeholder (h-audit 2026-11-09), so a list any raid lacks loot rows for shows names alone. */
+export function raidLines(
+  facts: readonly RaidFact[],
+  viewer?: { slug: string; name: string },
+): (string | undefined)[] {
+  const lines = facts.map((fact) => raidLine(fact, viewer));
+  return lines.every((line) => line !== undefined) ? lines : facts.map(() => undefined);
+}
