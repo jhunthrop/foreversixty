@@ -129,7 +129,7 @@ test.describe('the checklist', () => {
       'href',
       `${E2E_API_BASE}/v1/guilds/${SETTINGS_GUILD.id}/discord/bot/install?return=setup`,
     );
-    await expect(page.getByTestId('setup-plan')).toContainText(setupCopy.plan.freeHeading);
+    await expect(page.getByTestId('setup-plan')).toContainText(setupCopy.plan.compare);
     await expect(page.getByTestId('setup-plan').getByRole('button')).toHaveCount(0);
     await expectNoAxeViolations(page, '[data-testid="guild-setup"]');
     await capture(page, `setup-todo-${test.info().project.name}`);
@@ -193,6 +193,7 @@ test.describe('the checklist', () => {
       done: 8,
       finished: true,
       plan: 'raid_guild',
+      discord: { ...mixedSetup().discord, recruit_channel_name: 'recruitment' },
       schedule: { timezone: 'America/Chicago', planned: 3, next },
     });
     await gotoHydrated(page, SETUP_PATH, 'guild-setup-steps');

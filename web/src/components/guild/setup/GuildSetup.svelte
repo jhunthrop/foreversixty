@@ -197,7 +197,6 @@
             {@const step = stepOf(item.key)}
             {#if step !== undefined}
               <span class="flex items-center gap-3">
-                >
                 {#if step.state === 'skipped'}
                   <span class="text-muted text-[13px]" data-testid={`setup-step-${item.key}-state`}
                     >{setupCopy.states.skipped}</span
