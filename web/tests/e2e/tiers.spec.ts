@@ -137,7 +137,8 @@ test('tank list sorts on damage taken, not effective health, and the best of eac
   const dtps = expected.map((row) => row.band.metrics!.dtps);
   expect(dtps).toEqual([...dtps].sort((a, b) => a - b));
   const leader = activePanel(page).locator('[data-testid^="tier-row-"]').first();
-  await expect(leader.getByTestId('rank-gap')).toHaveText('');
+  // The top spec reads "best" in the gap column (h-audit round 2; tier-copy.ts leaderGap).
+  await expect(leader.getByTestId('rank-gap')).toHaveText('best');
   await expect(leader.getByTestId('tier-number')).toHaveCSS('color', 'rgb(127, 212, 138)');
   const bestHealth = Math.max(...expected.map((row) => row.band.metrics!.effective_health));
   const bestRow = expected.findIndex((row) => row.band.metrics!.effective_health === bestHealth);

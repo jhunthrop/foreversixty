@@ -237,17 +237,20 @@ test.describe('15 · fix by saving the same channel', () => {
   });
 });
 
-test.describe('16 · officer-read-only and frozen', () => {
-  for (const [name, gate] of [
-    ['officer-read-only', { officerTools: false }],
-    ['frozen', { frozen: true }],
-  ] as const) {
-    test(`${name}: Choose a channel is disabled, Open in Discord works`, async ({ page }) => {
-      await open(page, { discord: unusable(permissions(['Send Messages'])), ...gate });
-      await expect(id(page, 'bot-choose-channel')).toBeDisabled();
-      await expect(id(page, 'bot-open')).toHaveAttribute('href', /^https:\/\/discord\.com\/channels\//);
-    });
-  }
+test.describe('16 · no plan and frozen', () => {
+  // Owner ruling 2026-11-09: the bot is free for any claimed guild's officers, so a guild with no
+  // plan chooses a channel; only a frozen claim turns it off.
+  test('no plan: Choose a channel works, Open in Discord works', async ({ page }) => {
+    await open(page, { discord: unusable(permissions(['Send Messages'])), officerTools: false });
+    await expect(id(page, 'bot-choose-channel')).toBeEnabled();
+    await expect(id(page, 'bot-open')).toHaveAttribute('href', /^https:\/\/discord\.com\/channels\//);
+  });
+
+  test('frozen: Choose a channel is disabled, Open in Discord works', async ({ page }) => {
+    await open(page, { discord: unusable(permissions(['Send Messages'])), frozen: true });
+    await expect(id(page, 'bot-choose-channel')).toBeDisabled();
+    await expect(id(page, 'bot-open')).toHaveAttribute('href', /^https:\/\/discord\.com\/channels\//);
+  });
 });
 
 test.describe('17 · axe, 44 px targets, caps and layout', () => {
