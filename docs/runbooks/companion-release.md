@@ -19,6 +19,11 @@ installed companion updates itself from the feed's `latest.json`.
   every platform. That is why `build-mac` runs on every release, not only on hand-pushed tags,
   and why `release` waits for it. A macOS runner bills at ten times the Linux rate, but it runs
   only when a release is cut (a handful a week), never for tests.
+- A dispatch with `dry_run: true` builds, signs and notarizes everything as the next version and
+  stops before `release`: no tag, no GitHub release, no feed entry. The builds stay as the run's
+  artifacts, and the Windows job installs the setup on the runner, logs what it left behind,
+  uninstalls it and keeps two screens as `dryrun-windows-captures`. Any branch may dispatch one:
+  `gh workflow run companion.yml --ref <branch> -f dry_run=true`.
 
 ## Windows: Azure Artifact Signing
 
@@ -29,6 +34,13 @@ with the certificate profile the repository variable `AZURE_SIGNING_PROFILE` nam
 name Commish LLC. With the variable unset, Windows builds ship unsigned with a notice.
 Secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` (environment `signing`);
 variables `AZURE_SIGNING_ENDPOINT`, `AZURE_SIGNING_ACCOUNT`, `AZURE_SIGNING_PROFILE`.
+
+The same step signs the setup program. `build` compiles
+`companion/packaging/windows/companion.iss` with Inno Setup 6 (`ISCC.exe`, on the hosted image;
+choco installs it if an image drops it) around the signed exe, producing
+`foreversixty-companion-setup.exe`, signs that, and checks both signatures. The setup is what
+`/setup` offers; the bare exe stays in every release because installed companions update from it.
+The setup's `AppId` keys the Apps & Features entry and must never change.
 
 If signing fails with AADSTS700213, GitHub changed the OIDC subject format again: add a federated
 credential on the `foreversixty-companion-signing` app registration that matches the subject in
@@ -46,7 +58,8 @@ the error.
    and validates it;
 4. zips the stapled app as `foreversixty-companion_darwin_universal.app.zip` (the updater's asset);
 5. makes `foreversixty-companion_darwin_universal.dmg` (the app beside a link to Applications),
-   signs, notarizes and staples it;
+   signs, notarizes and staples it. `/setup` offers the zip, which opens in fewer steps; the app
+   moves itself to Applications on its first launch from either (`companion/internal/install`);
 6. checks both with `spctl`, the way Gatekeeper will on a player's Mac.
 
 Secrets and variables it reads:
@@ -115,8 +128,8 @@ then add the entry to `companion.json`'s `downloads` and land it:
 ```json
 {
   "platform": "Mac",
-  "asset": "foreversixty-companion_darwin_universal.dmg",
-  "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications."
+  "asset": "foreversixty-companion_darwin_universal.app.zip",
+  "firstRun": "Signed by Commish LLC and notarized by Apple. Open the download and Forever Sixty moves itself to Applications, then sets itself up. macOS 12 or later."
 }
 ```
 

@@ -7,21 +7,29 @@ It never modifies the game's log and never sees your Battle.net password.
 
 ## Install
 
-Download the binary for your machine from [foreversixty.gg/setup](https://foreversixty.gg/setup)
-and put it anywhere you like.
+Download the build for your machine from [foreversixty.gg/setup](https://foreversixty.gg/setup)
+and open it.
 
-| Platform | Asset |
-|---|---|
-| Windows | `foreversixty-companion_windows_amd64.exe` |
-| macOS 12 or later (Apple silicon and Intel) | `foreversixty-companion_darwin_universal.dmg` |
-| Linux | `foreversixty-companion_linux_amd64` |
+| Platform | What /setup offers | Also in the release |
+|---|---|---|
+| Windows | `foreversixty-companion-setup.exe` | `foreversixty-companion_windows_amd64.exe`, the bare exe the updater uses |
+| macOS 12 or later (Apple silicon and Intel) | `foreversixty-companion_darwin_universal.app.zip` | `foreversixty-companion_darwin_universal.dmg`, the same app on a disk image |
+| Linux | | `foreversixty-companion_linux_amd64` |
 
-On a Mac, open the disk image and drag **Forever Sixty** to Applications, then open it from there.
-The app is signed with Commish LLC's Developer ID and notarized by Apple, so it opens without a
-Gatekeeper warning. It finds the game in `/Applications/World of Warcraft` (or the same folder
-under your own Applications) by itself. The release also carries
-`foreversixty-companion_darwin_universal.app.zip`, the same app zipped, which is what an installed
-companion updates itself from.
+On Windows the setup (`packaging/windows/companion.iss`, Inno Setup) installs for your account
+alone, to `%LOCALAPPDATA%\Programs\Forever Sixty`, with no admin rights. Its one screen has
+"Start with Windows" (on) and a desktop shortcut (off); it then opens the companion. Apps &
+Features lists it under Commish LLC, and its uninstaller asks before deleting the settings, logs
+and unsent fights in `%APPDATA%\ForeverSixty`.
+
+On a Mac, open the app wherever the download put it (or from the disk image). Its first window
+asks to move it to Applications: it copies itself to `/Applications` (or `~/Applications` on an
+account that cannot write there), replacing an older copy, starts again from there, ejects the
+disk image and puts the download in the Trash (`internal/install`). "Open at login" is on by
+default and uses SMAppService, so it needs macOS 13; on macOS 12 the toggle is not shown. The app
+is signed with Commish LLC's Developer ID and notarized by Apple, so it opens without a Gatekeeper
+warning. It finds the game in `/Applications/World of Warcraft` (or the same folder under your own
+Applications) by itself.
 
 Every asset is published beside a `.minisig` signature. To check one:
 
@@ -44,8 +52,8 @@ the `sha256` the manifest lists, verifies the signature against the public key b
 stages the binary in `update/`. The signature is verified again at the next launch, just before
 the new binary takes the old one's place. On a Mac the update is the whole signed app, and it
 replaces the app it runs from (`/Applications/Forever Sixty.app`) in one step, so the app's
-signature and notarization stay intact; an app run straight from the disk image, or from a folder
-you cannot write to, stays on its version and says so in the log. A download from anywhere but foreversixty.gg is refused,
+signature and notarization stay intact; an app in a folder you cannot write to stays on its
+version and says so in the log. A download from anywhere but foreversixty.gg is refused,
 nothing unverified is ever installed, and a build without a public key never updates itself.
 
 The Windows build is signed through Azure Artifact Signing in the name of Commish LLC, the
