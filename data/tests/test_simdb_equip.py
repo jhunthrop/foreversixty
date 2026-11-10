@@ -203,6 +203,23 @@ def test_an_unclassified_aura_is_an_error_not_a_guess():
         spell_bonus([900006], effects())
 
 
+@pytest.mark.parametrize(
+    ("spell_id", "aura", "misc"),
+    [
+        (1301707, "120", "0"),  # Briarwood Reed, untrackable
+        (14824, "557", "0"),  # a quiver's ranged attack speed
+        (1308769, "189", "16"),  # Talusguard, 5 block rating: not converted yet
+        (17328, "24", "0"),  # Aura of Penitence, mana a second: not converted yet
+    ],
+)
+def test_the_70790_push_auras_are_classified_and_add_no_stat(spell_id, aura, misc):
+    """1.60.1.70790's full hotfix push linked new equip spells; their auras are
+    classified, so the run does not stop on them, and none adds a stat."""
+    row = {"Effect": "6", "EffectAura": aura, "EffectBasePointsF": "5",
+           "EffectMiscValue_0": misc, "EffectIndex": "0"}  # fmt: skip
+    assert spell_bonus([spell_id], {spell_id: [row]}).stats == {}
+
+
 def test_an_unclassified_skill_line_is_an_error_not_a_guess():
     with pytest.raises(EquipEffectError, match="7777"):
         spell_bonus([900007], effects())

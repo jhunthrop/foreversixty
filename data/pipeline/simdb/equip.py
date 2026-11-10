@@ -205,8 +205,30 @@ STAT_AURAS: dict[int, str] = {
 #: stat modifier like 69, 80 and 598 above, not a flat amount. Every aura this
 #: build puts on a kept item's or an enchant's equip spell is in this set or
 #: in STAT_AURAS.
+#: Eleven were added for build 1.60.1.70790 once the full hotfix push brought
+#: new ItemXItemEffect links, each read off wowhead Forever's tooltip for the
+#: spell: 32 mounted speed (1314065 "Mount Speed"), 45 minimap detection (4152
+#: "Detect Elven Gems"), 61 and 153 melee range (1306686 "Greathelm of the
+#: Colossus", +1 yd), 72 percentage mana cost (1306650 "Efficiency - Mana 01"),
+#: 84 health regen in Swamp areas only (1306672 "Sporebloom"), 113 flat ranged
+#: damage taken (1306759 "Skywarden Pedant"), 120 untrackable (1301707
+#: "Briarwood Reed"), 183 crit against targets below 25% health (1306900, a
+#: conditional modifier like 168), 245 dispel-type duration (1294777 poison,
+#: 1306607 disease, like 232) and 557 percentage ranged attack speed (the
+#: quivers' 14824 to 14828 "Haste", which the engine models itself, like 140).
 IGNORED_AURAS = frozenset(
     {
+        32,
+        45,
+        61,
+        72,
+        84,
+        113,
+        120,
+        153,
+        183,
+        245,
+        557,
         3,
         4,
         8,
@@ -281,6 +303,19 @@ IGNORED_AURAS = frozenset(
         608,
     }
 )
+
+#: Auras that DO state a stat, but in a unit this module does not convert yet,
+#: so they add nothing here (a known gap, not a reviewed non-stat). 189 is
+#: MOD_RATING: a combat-rating amount by rating mask (16 block: 1308769
+#: "Talusguard", 5 rating "1.0% block"; 1792 melee/ranged/spell crit: 1308816
+#: "Stillwater Striders", 14 rating "1.0% crit"), while every STAT_AURAS amount
+#: is already a percentage; converting it needs simdb's rating factors
+#: (`pipeline.simdb.ratings`). 24 is PERIODIC_ENERGIZE (17328 "Aura of
+#: Penitence", 3 mana a second), mana regeneration on a tick rather than mp5.
+UNCONVERTED_STAT_AURAS = frozenset({24, 189})
+
+#: Every aura `spell_bonus` accepts without raising.
+_CLASSIFIED_AURAS = frozenset(STAT_AURAS) | IGNORED_AURAS | UNCONVERTED_STAT_AURAS
 
 _BY_MISC_VALUE = frozenset(
     {AURA_DAMAGE_DONE, AURA_RESISTANCE, AURA_ARMOR, AURA_MOD_STAT, AURA_MOD_SKILL}
@@ -495,10 +530,11 @@ def spell_bonus(
             if row["Effect"] != APPLY_AURA:
                 continue
             aura = int(row["EffectAura"])
-            if aura not in STAT_AURAS and aura not in IGNORED_AURAS and aura not in _BY_MISC_VALUE:
+            if aura not in _CLASSIFIED_AURAS and aura not in _BY_MISC_VALUE:
                 raise EquipEffectError(
                     f"spell {spell_id} applies unclassified aura {aura}; classify it in "
-                    f"STAT_AURAS or IGNORED_AURAS in pipeline/simdb/equip.py"
+                    f"STAT_AURAS, IGNORED_AURAS or UNCONVERTED_STAT_AURAS in "
+                    f"pipeline/simdb/equip.py"
                 )
             amount = float(effect_amount(row))
             misc = int(row["EffectMiscValue_0"])
