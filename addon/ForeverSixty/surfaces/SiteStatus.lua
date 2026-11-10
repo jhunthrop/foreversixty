@@ -254,18 +254,6 @@ function SiteStatus.loginLine(data, facts)
 	return nil
 end
 
---- The first-login welcome's lines (X.7), the text after the addon's prefix.
-function SiteStatus.welcomeLines()
-	-- A.1: the first sentence names the line beside the minimap only when it is drawn.
-	local chip = ns.Chip
-	if chip == nil and type(require) == "function" then
-		local loaded, module = pcall(require, "Chip")
-		chip = loaded and module or nil
-	end
-	local drawn = chip ~= nil and type(chip.isDrawn) == "function" and chip.isDrawn()
-	return { drawn and L.welcomeOn or L.welcomeOnNoLine, L.welcomeNext, L.welcomeSite }
-end
-
 --- Whether this client has not been welcomed yet: ForeverSixtyDB.welcomedAt, one stamp for the
 --- account, is not set; and not already waiting to say it this session.
 function SiteStatus.welcomeDue()
@@ -275,14 +263,6 @@ function SiteStatus.welcomeDue()
 	return type(ForeverSixtyDB) ~= "table" or ForeverSixtyDB.welcomedAt == nil
 end
 
---- Say the welcome and stamp the account, so no later login repeats it.
-function SiteStatus.welcome()
-	for _, line in ipairs(SiteStatus.welcomeLines()) do
-		Theme.say(line)
-	end
-	ForeverSixtyDB = type(ForeverSixtyDB) == "table" and ForeverSixtyDB or {}
-	ForeverSixtyDB.welcomedAt = type(time) == "function" and time() or 0
-end
 
 --- PLAYER_ENTERING_WORLD (`initial`: a login from the character screen, `reloading`: a /reload; both
 --- false: a loading screen in the world, which says nothing): five seconds in (after the export's
@@ -309,8 +289,9 @@ function SiteStatus.afterEnteringWorld(data, initial, reloading)
 		remembered.loginAt = BuildDialog.liveClock().now
 	end
 	Theme.after(SiteStatus.LOGIN_DELAY, function()
-		if welcoming then
-			SiteStatus.welcome()
+		-- The first login's welcome is the tour now (design/specs/2026-11-08-addon-ux.md 3.1): no chat lines.
+		if welcoming and SiteStatus.openTour ~= nil then
+			SiteStatus.openTour()
 		end
 		local line, kind = SiteStatus.loginLine(data)
 		local again = not login and line == remembered.said

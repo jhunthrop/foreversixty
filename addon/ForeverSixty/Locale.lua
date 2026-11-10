@@ -85,34 +85,29 @@ local L = {
 	-- count), else the level the next point arrives at (none at the cap),
 	-- or "complete"; then the points off plan (muted at 0, a warning from 1).
 	talentStripSeparator = " · ",
-	talentStripCount = "%d of %d points",
-	talentStripSpend = "spend %d now",
-	talentStripNext = "next point at level %d",
-	-- A.2: with the plan's next talent named ("next at level 25: Focused Fire"), and a finished
-	-- plan below the cap, which still gets a point at the next level.
-	talentStripNextAt = "next at level %d: %s",
-	talentStripDoneNext = "complete · next point at level %d",
-	talentStripDone = "complete",
+	-- design/specs/2026-11-08-addon-ux.md 1.8: "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan".
+	talentStripLead = "Next at %d: %s",
+	talentStripSpendOn = "Spend %d now: %s",
+	talentStripCount = "%d of %d",
+	talentStripSpend = "Spend %d now",
+	talentStripNext = "Next point at level %d",
+	talentStripDoneNext = "Build complete · next point at level %d",
+	talentStripDone = "Build complete",
 	talentStripOffPlan = "%d off plan",
-	-- Shown only while the plan has more to take, so something could still go off it.
-	talentStripNoneOffPlan = "none off plan",
 	-- L3.2 fix round 4: the strip's leading segment while the open window
 	-- hides the chip, the chip's own label, the talent and its rank: "Improved Heroic Strike (1 of 3)".
 	talentStripNextTalent = "%s",
 	-- A run of the plan's points at a cell, en dash: a badge names the next
 	-- run ("8–11", then "36"), the node tooltip lists every one.
 	talentBadgeRange = "%d–%d",
-	-- One line on the client's own node tooltip, after a blank one: the
-	-- addon's name in gold ("Forever Sixty:"), then the plan's ranks and
-	-- every run of its points there in body colour ("Your build: 5 ranks,
-	-- points 8–11 and 36", "points 8–11, 20 and 36", "points 8–12"); or, on
-	-- a node holding a point the plan never wanted, one warning line.
-	talentNodeLabel = "%s:",
-	talentNodeLine = "Your build: %d ranks, points %s",
+	-- One line on the client's own node tooltip: every run of the plan's points there ("Your build:
+	-- points 8–11 and 36", "Your build: point 12"); on a node holding a point the plan never wanted,
+	-- one warning line (design/specs/2026-11-08-addon-ux.md 1.8).
+	talentNodeLine = "Your build: points %s",
 	talentNodeRunsSeparator = ", ",
 	talentNodeRunsLast = " and ",
 	talentNodeLineOne = "Your build: point %d",
-	talentNodeOffPlan = "%s: not in your build",
+	talentNodeOffPlan = "Not in your build",
 
 	-- Export
 	exportTitle = "Send your character to the site",
@@ -317,6 +312,10 @@ local L = {
 	-- only the tooltip lines.
 	settingsTooltipsOnly = "Tooltips only",
 	settingsTooltipsOnlyHint = "Turns off everything but the tooltip lines.",
+	-- The owner's ruling (2026-11-08): a player can hide their own score from others.
+	settingsShowScore = "Show my Forever Score to others",
+	settingsShowScoreHint = "Off: other players see no score for you on tooltips, in chat or in their guild and group "
+		.. "panels. You still see your own. Takes effect after the companion app sends your next save.",
 	settingsSlotMarks = "Marks on your bags and character pane",
 	settingsSlotMarksHint = "A green arrow on gear that beats yours, a gold corner on a slot with an upgrade to chase.",
 	settingsCombatHide = "Hide the Forever Sixty line in combat",
@@ -1093,14 +1092,10 @@ L.guildTabTitle = "%s \194\183 " .. L.addonName
 -- "4–23 of 97"; then "1 running Forever Sixty" (online guildmates whose addon answered, and the
 -- player), or "sharing off" while "Share my build with my guild" is off. No date: the roster is
 -- live. Its hover says what running means.
-L.guildTabOnlineOf = "%d online of %d"
 L.guildTabMembers = "%d members"
 L.guildTabOnline = "%d online"
-L.guildTabRunning = "%d running Forever Sixty"
-L.guildTabRange = "%d–%d of %d"
-L.guildTabSharingOff = "sharing off"
 L.guildTabCountsJoin = " · "
-L.guildTabCountsHint = "Running Forever Sixty: guildmates whose addon answered share their spec and gear gap."
+L.guildTabCountsHint = "Guildmates who run Forever Sixty share their spec and gear gap in the rows below."
 -- Under the header, once, while the record is readable and no row shown has a score.
 L.guildTabNobodyLogs = "Nobody here has logs on the site yet. Scores appear after a member's logs are uploaded."
 -- A row's hover: why its cells are dashes, and what the gap is measured against.
@@ -1117,10 +1112,8 @@ L.guildTabColumns = {
 	name = "Name", level = "Level", spec = "Spec", gear = "Gear", score = "Score", attendance = "Attendance",
 	gap = "Gap",
 }
--- Cells: a member a readable nightly record has no logs for (never a zero), attendance as a
--- percent, and a live gear gap in its sender's unit (fix round 1, item 3: DPS where the data
--- has a DPS per point for their spec, else score points). A value nobody has is blank.
-L.guildTabNoLogs = "no logs"
+-- Cells: attendance as a percent, and a live gear gap in its sender's unit (DPS where the data has a
+-- DPS per point for their spec, else score points). A value nobody has is a muted dash.
 L.guildTabPercent = "%d%%"
 L.guildTabGapDps = "%d DPS"
 L.guildTabGapHps = "%d HPS"
@@ -1190,10 +1183,10 @@ L.groupPanelHint = {
 -- Out of a group, the flyout's one line and nothing else (ruling 1). Fix round 4 (E): a second
 -- muted line under it says what a group shows and that /fs ready tries the check alone: one line
 -- where it fits the flyout, else a sentence a line (GroupPanel.soloHint).
-L.groupNotInGroup = "Not in a group."
-L.groupSoloHint = {
-	"Invite someone and their row appears here.",
-}
+-- design/specs/2026-11-08-addon-ux.md 1.9: one sentence.
+L.groupNotInGroup = "Join a group to see its specs, gear and buffs."
+L.groupSoloHint = {}
+
 -- The Raid tab's button while the player is alone: it opens the panel with the player's own row.
 L.groupPanelSoloLabel = L.addonName .. " \194\183 solo"
 -- /fs group and /fs panel while alone: where the panel is and when it fills.
@@ -1452,13 +1445,6 @@ L.siteLoginGear = "your gear is on its way to the site; check it after your next
 -- X.5: the ack is newer than the export's build time, so the earlier "on its way" is settled (once).
 L.siteLoginGearSeen = "the site has your gear (saved %s)."
 L.siteLoginSelf = "this character"
--- X.7: the first login's welcome, once per account, one chat line per sentence (/fs welcome says it again).
-L.welcomeOn = "Forever Sixty is on. The line beside your minimap shows your next step."
--- A.1: said instead of welcomeOn when the line is not drawn (hidden, turned itself off, or not built yet).
-L.welcomeOnNoLine = "Forever Sixty is on. Your next step is waiting in the build window."
-L.welcomeNext = "/fs opens the build window; builds you send from the site wait there. /fs help lists the commands."
-L.welcomeSite = "Install the companion on your PC and it sends your character to " .. SITE
-	.. " when you log out."
 L.siteLoginBuild = "a build for %s is waiting: %s. /fs opens it."
 L.siteLoginBuilds = "%d builds for %s are waiting: %s. /fs opens them."
 L.siteLoginSilent = "the companion has not picked up your data since %s. "
@@ -1472,6 +1458,93 @@ L.timeTwentyFour = "%02d:%02d"
 L.timeTwelve = "%02d:%02d %s"
 L.timeAm = "am"
 L.timePm = "pm"
+
+-- The first-run tour (surfaces/Onboarding.lua, design/specs/2026-11-08-addon-ux.md 3.1).
+L.tourTitle = "Welcome to Forever Sixty"
+L.tourLoopHeading = "How Forever Sixty works"
+L.tourSiteHeading = "The site, in your game"
+L.tourBackHeading = "Your game, back to the site"
+L.tourGuildHeading = "Your guild, everywhere"
+L.tourSetupHeading = "Set it up"
+L.tourCharacter = "Your character"
+L.tourCharacterLine = "Sign in with Battle.net; it comes to the site."
+L.tourSite = "foreversixty.gg"
+L.tourSiteLine = "Best in slot for your level, the sim on your gear, guides, tiers."
+L.tourGame = "In game"
+L.tourGameLine = "The arrow on your bags, the talent ring, your panel."
+L.tourFights = "Your fights"
+L.tourFightsLine = "The companion app uploads each one."
+L.tourBack = "Back on the site"
+L.tourBackLine = "Your fights rated, the coach, your Forever Score."
+L.tourGuild = "Your guild"
+L.tourGuildLine = "Raids from the site, in your Discord and in game."
+L.tourArrowRight = ">"
+L.tourArrowLeft = "<"
+L.tourArrowDown = "v"
+L.tourLoopCaption = "What you plan on the site shows up here. What you do here goes back to the site, and to your "
+	.. "guild."
+L.tourLoopCaptionSolo = "What you plan on the site shows up here. What you do here goes back to the site."
+L.tourSiteBis = "Best in slot for your level, on the site's BiS pages"
+L.tourArrow = "The green arrow"
+L.tourArrowLine = "On a bag item, a quest reward or a loot roll that beats what you wear."
+L.tourSiteWeights = "Those picks, scored by your spec's weights or your own sim"
+L.tourOneLine = "One line on every item"
+L.tourOneLineText = "Upgrade, best in slot, or no. Hold Shift for the details."
+L.tourSiteBuild = "The build in your class guide, or one you plan"
+L.tourRing = "The gold talent ring"
+L.tourRingLine = "Your next point, in that build's order."
+L.tourSiteRotation = "The rotation in your class guide, for your level"
+L.tourRotation = "Rotation in your panel"
+L.tourRotationLine = "The buttons to press at your level, and what changes next."
+L.tourUpload = "The companion uploads your fights"
+L.tourUploadLine = "A small app on your PC reads the combat log and sends each fight as it ends. Turn on Advanced "
+	.. "Combat Logging once (Options, Network), then type /combatlog when you play."
+L.tourRated = "The site rates them and coaches you"
+L.tourRatedLine = "Each fight gets a report, a percentile and the one thing that cost you most, like \"biggest loss: "
+	.. "standing in fire\"."
+L.tourScore = "Your Forever Score"
+L.tourScoreLine = "Gear, experience, parses, attendance and preparation, in one number. Players with Forever Sixty "
+	.. "and the Forever Sixty Data addon (beside it on CurseForge and Wago) see it on your tooltip."
+-- The coordinator's ruling (2026-11-08): one short line that the score can be hidden.
+L.tourScoreHide = "You can turn this off in Settings."
+L.tourGuildIntro = "Your officers post a raid on the site (and in your Discord, if your guild has linked it). On raid "
+	.. "day, it is here:"
+L.tourGuildRaid = "Onyxia's Lair"
+L.tourGuildChipNote = "The line by your minimap, on raid day."
+L.tourGuildJob = "Whelps, west cave"
+L.tourGuildJobNote = "In your panel, and in chat when you zone in."
+L.tourAnswer = "Answer In, Late, Bench or Out"
+L.tourAnswerSite = "On foreversixty.gg"
+L.tourAnswerDiscord = "In Discord, on the raid post"
+L.tourAnswerLater = "In game and on the phone app"
+L.tourAnswerSame = "Wherever you answer, it is the same answer."
+L.tourComing = "coming"
+L.tourPathLeveling = "loads its leveling build: talent order, gear picks, rotation"
+L.tourPathRaid = "loads its raid build: talent order, gear picks, rotation"
+L.tourYourPath = "Your path: %s"
+L.tourNextPoint = "Next point at level %d: %s"
+L.tourSignIn = "Sign in on the site"
+L.tourSignInLine = "Sign in with Battle.net. Upgrades, talents and rotation work without it."
+L.tourCompanion = "Get the companion for your PC"
+L.tourCompanionLine = "Uploads your fights for reports and the coach, and keeps your builds in step with the site."
+L.tourCompanionRan = "The companion has run"
+L.tourSiteSaw = "The site saw %s %s."
+L.tourSiteSilent = "The site has not seen %s in %d days. Is the companion running?"
+L.tourHourAgo = "%d hour ago"
+L.tourHoursAgo = "%d hours ago"
+L.tourMinutesAgo = "%d minutes ago"
+L.tourLinks = "Addons cannot open links: click a box, then Ctrl+C."
+L.tourAgain = "/fs help opens this again. Want less? Settings, AddOns, Forever Sixty, Tooltips only."
+-- The coordinator's ruling (2026-11-08): a small QR for the tester sign-up until the apps ship.
+L.tourAppBeta = "Join the app beta"
+L.tourSkip = "Skip tour"
+L.tourJustTooltips = "Just the tooltips"
+L.tourNext = "Next"
+L.tourBackButton = "Back"
+L.tourDone = "Done"
+L.tourOpenPanel = "Open my panel"
+L.tourDot = "\226\128\162"
+L.diagOnboardingFailed = "The first-run tour failed once: %s"
 
 -- The addon panel, the in-game home (surfaces/Panel.lua, design/specs/2026-11-08-addon-ux.md section 4).
 -- The title band's number: the Forever Score in its tier colour, then this unit in bone-dim.

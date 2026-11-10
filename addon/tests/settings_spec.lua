@@ -26,13 +26,13 @@ describe("SettingsPage, the switches", function()
 	end)
 
 	-- design/specs/2026-11-08-addon-ux.md 3.3: "Tooltips only" first, the slot marks after the talent marks.
-	it("lists eleven switches in page order, Tooltips only first", function()
+	it("lists twelve switches in page order, Tooltips only first", function()
 		local keys = {}
 		for index, switch in ipairs(SettingsPage.switches()) do
 			keys[index] = switch.key
 		end
 		assert.are.same({ "tooltipsOnly", "chip.shown", "chip.combatHide", "talentMarks", "slotMarks", "minimap.shown",
-			"tooltip", "badges", "broadcast", "autoSave", "lootRares" }, keys)
+			"tooltip", "badges", "showScore", "broadcast", "autoSave", "lootRares" }, keys)
 	end)
 
 	it("turns the chip, the talent marks and the slot marks off in one step with Tooltips only", function()
@@ -85,6 +85,9 @@ describe("SettingsPage, the switches", function()
 				"Hold Shift for the details. Off also hides player scores and the quest and roll marks." },
 			{ "Score badges in chat",
 				"Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers." },
+			{ "Show my Forever Score to others", "Off: other players see no score for you on tooltips, in chat or in their "
+				.. "guild and group panels. You still see your own. Takes effect after the companion app sends your next "
+				.. "save." },
 			{ "Share my build with my guild",
 				"Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see nothing." },
 			{ "Save my character for the companion app",

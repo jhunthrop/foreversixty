@@ -652,7 +652,7 @@ describe("GuildTab", function()
 			open()
 			local text = GuildTab.countsLine:GetText()
 			assert.is_nil(text:find("as of", 1, true), text)
-			assert.are.equal("4 members \194\183 2 online \194\183 1 running Forever Sixty", text)
+			assert.are.equal("4 members \194\183 2 online", text)
 		end)
 
 		it("leaves Online only off at 40 or fewer", function()
@@ -1023,9 +1023,9 @@ describe("GuildTab", function()
 				assert.are.equal("14 DPS", drawn.cells.gap:GetText())
 				assert.are.equal("1240", drawn.cells.score:GetText())
 				assert.are.equal("90%", drawn.cells.attendance:GetText())
-				-- It counts in the live tally.
+				-- It counts in the live tally, which stays out of the count line (spec 1.9).
 				assert.are.equal(1, GuildTab.last.counts.live)
-				assert.is_truthy(GuildTab.countsLine:GetText():find("1 running Forever Sixty", 1, true))
+				assert.is_nil(GuildTab.countsLine:GetText():find("running", 1, true))
 			end)
 
 			it("reads its spec from the build's own spec, the plan's tree, else the talents", function()
@@ -1556,23 +1556,22 @@ describe("GuildTab", function()
 				return #(text:gsub("[\128-\191]", ""))
 			end
 
-			it("reads online of total with Online only on, members and online with it off; the range once scrolled; sharing off",
-				function()
+			-- design/specs/2026-11-08-addon-ux.md 1.9: "97 members · 3 online", the pipeline counters cut.
+			it("reads members and online, and nothing else", function()
 				start()
-				local ON = { shown = 14, total = 773, live = 1, online = 14, onlineOnly = true }
-				assert.are.equal("14 online of 773 \194\183 1 running Forever Sixty", GuildTab.countsText(ON, true, 1, 14, 14))
-				assert.are.equal("773 members \194\183 14 online \194\183 1 running Forever Sixty",
-					GuildTab.countsText({ shown = 773, total = 773, live = 1, online = 14 }, true, 1, 20, 773))
-				assert.are.equal("4–23 of 97 \194\183 2 running Forever Sixty",
-					GuildTab.countsText(COUNTS, true, 4, 23, 97))
-				assert.are.equal("14 online of 773 \194\183 sharing off", GuildTab.countsText(ON, false, 1, 14, 14))
-				assert.are.equal("4–23 of 97 \194\183 sharing off", GuildTab.countsText(COUNTS, false, 4, 23, 97))
+				assert.are.equal("773 members \194\183 14 online",
+					GuildTab.countsText({ shown = 773, total = 773, live = 1, online = 14 }))
+				assert.are.equal("773 members \194\183 14 online",
+					GuildTab.countsText({ shown = 14, total = 773, live = 1, online = 14, onlineOnly = true }))
+				assert.is_nil(L.guildTabRunning)
+				assert.is_nil(L.guildTabRange)
+				assert.is_nil(L.guildTabSharingOff)
 			end)
 
 			-- A.3 ruling 3: "as of 22 Oct" goes, the roster is live; the line takes no date.
 			it("carries no date at all", function()
 				start()
-				local text = GuildTab.countsText(COUNTS, true, 1, 20, 97, "12 Oct")
+				local text = GuildTab.countsText(COUNTS)
 				assert.is_nil(text:find("as of", 1, true), text)
 				assert.is_nil(text:find("12 Oct", 1, true), text)
 			end)
@@ -1581,12 +1580,8 @@ describe("GuildTab", function()
 				start()
 				assert.are.equal(62, math.floor((GuildTab.innerWidth() - Theme.SIZES.guildToggleRoom) / 6))
 				local big = { shown = 1000, total = 1000, live = 1000, online = 1000 }
-				for _, text in ipairs({ GuildTab.countsText({ shown = 1000, total = 1000, live = 1000, online = 1000,
-					onlineOnly = true }, true, 1, 20, 1000), GuildTab.countsText(big, true, 1, 20, 1000),
-					GuildTab.countsText(big, true, 981, 1000, 1000), GuildTab.countsText(big, false, 1, 20, 1000),
-					GuildTab.countsText(big, false, 981, 1000, 1000) }) do
-					assert.is_true(width(text) <= 62, width(text) .. ": " .. text)
-				end
+				local text = GuildTab.countsText(big)
+				assert.is_true(width(text) <= 62, width(text) .. ": " .. text)
 			end)
 
 			it("follows the wheel in the flyout, and says on hover what live means", function()
@@ -1596,10 +1591,10 @@ describe("GuildTab", function()
 				end
 				start({ roster = many, sharingOff = true, data = false })
 				open()
-				assert.are.equal("30 members \194\183 30 online \194\183 sharing off", GuildTab.countsLine:GetText())
+				assert.are.equal("30 members \194\183 30 online", GuildTab.countsLine:GetText())
 				local wheel = GuildTab.holder:GetScript("OnMouseWheel")
 				wheel(GuildTab.holder, -1)
-				assert.are.equal("4–23 of 30 · sharing off", GuildTab.countsLine:GetText())
+				assert.are.equal("30 members \194\183 30 online", GuildTab.countsLine:GetText())
 				local hover = GuildTab.countsHover
 				assert.are.equal(1, mock.countCalls(hover, "EnableMouse"))
 				local before = mock.countCalls(_G.GameTooltip, "AddLine")
@@ -2164,13 +2159,14 @@ describe("GuildTab", function()
 			assert.are.same({ "Fear Dapriestt", "Carla Delianco" }, names(rows))
 		end)
 
-		it("keeps the date off the count line and reads 'N online of M · K running Forever Sixty'", function()
+		it("keeps the date off the count line and reads 'M members · N online' either way", function()
 			start({ data = emptyRecord(), roster = YOUNG })
 			open()
 			GuildTab.setOnlineOnly(true)
-			assert.are.equal("4 online of 5 \194\183 1 running Forever Sixty", GuildTab.countsLine:GetText())
+			assert.are.equal("5 members \194\183 4 online", GuildTab.countsLine:GetText())
 			GuildTab.setOnlineOnly(false)
-			assert.are.equal("5 members \194\183 4 online \194\183 1 running Forever Sixty", GuildTab.countsLine:GetText())
+			assert.are.equal("5 members \194\183 4 online", GuildTab.countsLine:GetText())
+
 		end)
 
 		it("titles the window with the guild's name", function()

@@ -41,6 +41,7 @@ SettingsPage.SWITCHES = {
 	{ key = "minimap.shown", label = L.settingsMinimap, hint = L.settingsMinimapHint },
 	{ key = "tooltip", label = L.settingsTooltip, hint = L.settingsTooltipHint },
 	{ key = "badges", label = L.settingsBadges, hint = L.settingsBadgesHint },
+	{ key = "showScore", label = L.settingsShowScore, hint = L.settingsShowScoreHint },
 	{ key = "broadcast", label = L.settingsBroadcast, hint = L.settingsBroadcastHint },
 	{ key = "autoSave", label = L.settingsAutoSave, hint = L.settingsAutoSaveHint },
 	{ key = "lootRares", label = L.settingsLootRares, hint = L.settingsLootRaresHint },
