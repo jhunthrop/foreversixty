@@ -1,6 +1,6 @@
 <!-- web/src/components/ui/Band.svelte -->
 <!-- A section band (round 5, ui/band.css): full bleed, the owner's painted blue band under its veil
-     (or home's camp-road `hero`), the content back in the page column, their black rule under it.
+     (or home's camp-road `hero`), the content back in the page column; the last band on a page fades into the ground.
      PageHeader and ControlBar already sit on it; a page reaches for Band only for a band of its own
      under the title band (a strip of controls, a plaque). `y` is the band's distance from the top of
      the page in CSS, so the image continues from the band above it. -->

@@ -228,7 +228,7 @@
     align-items: center;
     gap: 10px;
     width: 100%;
-    min-height: 48px;
+    min-height: var(--bar-h-phone);
     font-size: 14px;
     line-height: 20px;
     font-weight: 600;

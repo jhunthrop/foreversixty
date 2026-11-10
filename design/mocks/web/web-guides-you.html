@@ -1050,6 +1050,15 @@ section>.sec-h:has(+ .sbox){border-bottom:0}
 .band-r5{background:var(--band);border-bottom:1px solid #000}
 .fs-chrome:not(.fs-foot){padding-top:16px;background:var(--band)}
 @media(max-width:1023px){.fs-chrome:not(.fs-foot){padding-top:8px}}
+/* the last band piece fades into the ground over --band-fade (web ui/band.css); over a last control bar the band above
+   it carries the fade under the bar, so a stuck bar keeps a clean foot */
+:root{--band-fade:120px;--band-bar-reach:calc(var(--bar-h) + 1px)}
+@media(max-width:767px){:root{--band-fade:64px;--band-bar-reach:49px}}
+body{isolation:isolate}
+:is(.band-r5:not(:has(~ .band-r5,~ .cbar)),.band-r5:has(~ .cbar):not(:has(~ .cbar ~ .band-r5)),body:not(:has(main .band-r5,main .cbar)) .fs-chrome:not(.fs-foot),body:not(:has(main .band-r5)):has(main .cbar) .fs-chrome:not(.fs-foot)){--band-reach:var(--band-fade);position:relative;background:none;border-bottom:0}
+:is(.band-r5:not(:has(~ .band-r5,~ .cbar)),.band-r5:has(~ .cbar):not(:has(~ .cbar ~ .band-r5)),body:not(:has(main .band-r5,main .cbar)) .fs-chrome:not(.fs-foot),body:not(:has(main .band-r5)):has(main .cbar) .fs-chrome:not(.fs-foot))::before{content:"";position:absolute;inset:0 0 calc(-1*var(--band-reach));z-index:-1;pointer-events:none;background:var(--band);mask-image:linear-gradient(#000 calc(100% - var(--band-fade)),rgba(0,0,0,.82) calc(100% - var(--band-fade)*.75),rgba(0,0,0,.5) calc(100% - var(--band-fade)*.5),rgba(0,0,0,.18) calc(100% - var(--band-fade)*.25),transparent)}
+:is(.band-r5:has(~ .cbar):not(:has(~ .cbar ~ .band-r5)),body:not(:has(main .band-r5)):has(main .cbar) .fs-chrome:not(.fs-foot)){--band-reach:calc(var(--band-bar-reach) + var(--band-fade))}
+.cbar:not(:has(~ .band-r5)){border-bottom:0}
 .plate{background:var(--raised);border:1px solid #000;border-radius:10px;box-shadow:0 0 0 1px rgba(130,112,91,.55)}
 .cbar{background:var(--band);border-block:1px solid rgba(255,255,255,.14)}
 .cbar .pc{row-gap:12px}

@@ -116,9 +116,14 @@ border:0;border-radius:var(--r-sm)}
 @media(max-width:700px){.topnav{padding:8px 14px 0}.bar{height:56px}.brand{font-size:19px;padding:0 12px;border-right:0}.brand img{width:34px;height:34px}
 .acct .nm,.acct .lv,.srch{display:none}.tools{gap:12px}}
 /* the section band: the owner's painted band, navy at the top into soft teal cloud, stretched with cover (never tiled) */
-.band{background:linear-gradient(rgba(5,58,84,.38),rgba(5,58,84,.38)),var(--band) url(''' + band_uri() + ''') center 30%/cover no-repeat;border-bottom:1px solid #000}
+.band{--band-paint:linear-gradient(rgba(5,58,84,.38),rgba(5,58,84,.38)),var(--band) url(''' + band_uri() + ''') center 30%/cover no-repeat;background:var(--band-paint)}
+/* the last band fades into the ground over --band-fade, no rule (web ui/band.css): its art is painted once on a layer that runs
+   on past its foot and fades out there, under the content */
+:root{--band-fade:120px}@media(max-width:700px){:root{--band-fade:64px}}body{isolation:isolate}
+.band:not(:has(~ .band)){position:relative;background:none}
+.band:not(:has(~ .band))::before{content:"";position:absolute;inset:0 0 calc(-1*var(--band-fade));z-index:-1;pointer-events:none;background:var(--band-paint);mask-image:linear-gradient(#000 calc(100% - var(--band-fade)),rgba(0,0,0,.82) calc(100% - var(--band-fade)*.75),rgba(0,0,0,.5) calc(100% - var(--band-fade)*.5),rgba(0,0,0,.18) calc(100% - var(--band-fade)*.25),transparent)}
 /* home only: the owner's camp-road art behind the title, under one flat veil of their night blue so type stays AA */
-.band.hero{--veil:rgba(7,29,46,.16);background:linear-gradient(var(--veil),var(--veil)),url(''' + hero_uri() + ''') var(--art-pos,0 44%)/var(--art-size,124% auto) no-repeat,var(--night)}
+.band.hero{--veil:rgba(7,29,46,.16);--band-paint:linear-gradient(var(--veil),var(--veil)),url(''' + hero_uri() + ''') var(--art-pos,0 44%)/var(--art-size,124% auto) no-repeat,var(--night)}
 .band.hero .row{min-height:150px;align-items:flex-end;padding-bottom:22px}
 @media(max-width:700px){.band.hero{--art-pos:84% 60%;--art-size:cover}.band.hero .row{min-height:160px;padding-bottom:16px}}
 .titlebar .row{display:flex;align-items:center;gap:14px;padding:16px 0 14px}.titlebar .txt{min-width:0}

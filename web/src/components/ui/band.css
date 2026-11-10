@@ -4,43 +4,106 @@
    never tiled. It runs from the top of the page: Base.astro's .site-top (the floating bar's
    ground), then ui/PageHeader's title band and ui/ControlBar's controls, each drawing the same
    image at the same size offset by its own distance from the top (--band-y), so the three read as
-   one band. `data-art="hero"` is home's camp road under the night veil instead. A band's last
-   piece takes their black rule underneath. Imported by global.css. */
+   one band. `data-art="hero"` is home's camp road under the night veil instead. The band's last
+   piece fades its art into the earth ground over --band-fade, as their hero dissolves into their
+   ground: no rule, and the content below may sit over the fade. Imported by global.css. */
 
 @layer components {
+  :root {
+    /* How far the last band piece's art runs on past its foot, fading to the ground. */
+    --band-fade: 120px;
+    /* The closed phone control bar (ui/ControlBar's 48 px line), which the fade runs on under. */
+    --bar-h-phone: 48px;
+    /* The fade's reach under a control bar: its row and its 1 px light rule. */
+    --band-bar-reach: calc(var(--bar-h) + 1px);
+  }
+  /* The fade lies under the content: the ground, then the fade, then everything in flow. */
+  body {
+    isolation: isolate;
+  }
   .ui-band {
     --band-size: max(100%, 1440px) auto;
-    background:
+    --band-paint:
       linear-gradient(var(--color-veil-band), var(--color-veil-band)),
       var(--art-band, none) center calc(-96px - var(--band-y, 0px)) / var(--band-size) no-repeat,
       var(--color-band);
+    background: var(--band-paint);
   }
   .ui-band[data-art='hero'] {
-    background:
+    --band-paint:
       linear-gradient(var(--color-veil-night), var(--color-veil-night)),
-      var(--art-hero, none) 0 calc(-10vw - var(--band-y, 0px)) / 124% auto no-repeat,
-      var(--color-night);
+      var(--art-hero, none) 0 calc(-10vw - var(--band-y, 0px)) / 124% auto no-repeat, var(--color-night);
   }
   .ui-band-end {
     border-bottom: 1px solid black;
   }
-  /* The bar's band hands its rule to a title band below it, the title band to the controls. */
+  /* A piece hands its foot to the band below it: the bar's band to a title band, the title band
+     to the controls. */
   .ui-band-end:has(+ .ui-band),
   body:has(.ui-band:not(.site-top)) .site-top {
     border-bottom: 0;
   }
+
+  /* The fading piece: the last band on the page, or the band over a last control bar. A sticky
+     bar keeps its own clean foot when it is stuck, so the fade belongs to the band above it and
+     stays at the top of the page. The piece paints its art once, on a layer that runs
+     --band-fade (plus the bar under it) past its foot and fades out there; the content follows
+     over it. */
+  :is(
+    .ui-band:not(.site-top, .ui-cbar):not(:has(~ .ui-band)),
+    body:not(:has(.ui-band:not(.site-top))) .site-top,
+    .ui-band:not(.ui-cbar):has(~ .ui-cbar):not(:has(~ .ui-cbar ~ .ui-band)),
+    body:not(:has(.ui-band:not(.site-top, .ui-cbar))):has(.ui-cbar) .site-top
+  ) {
+    --band-reach: var(--band-fade);
+    position: relative;
+    background: none;
+    border-bottom: 0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 calc(-1 * var(--band-reach));
+      z-index: -1;
+      pointer-events: none;
+      background: var(--band-paint);
+      /* An eased ramp: a straight one shows its start as a line. */
+      mask-image: linear-gradient(
+        to bottom,
+        black calc(100% - var(--band-fade)),
+        rgb(0 0 0 / 0.82) calc(100% - var(--band-fade) * 0.75),
+        rgb(0 0 0 / 0.5) calc(100% - var(--band-fade) * 0.5),
+        rgb(0 0 0 / 0.18) calc(100% - var(--band-fade) * 0.25),
+        transparent
+      );
+    }
+  }
+  /* Over a last control bar the layer runs on under the bar first. */
+  :is(
+    .ui-band:not(.ui-cbar):has(~ .ui-cbar):not(:has(~ .ui-cbar ~ .ui-band)),
+    body:not(:has(.ui-band:not(.site-top, .ui-cbar))):has(.ui-cbar) .site-top
+  ) {
+    --band-reach: calc(var(--band-bar-reach) + var(--band-fade));
+  }
+  .ui-cbar:not(:has(~ .ui-band)) {
+    border-bottom: 0;
+  }
+
   @media (max-width: 767px) {
+    :root {
+      --band-fade: 64px;
+      --band-bar-reach: calc(var(--bar-h-phone) + 1px);
+    }
     .ui-band {
       --band-size: cover;
-      background-image:
-        linear-gradient(var(--color-veil-band), var(--color-veil-band)), var(--art-band-phone, none);
-      background-position: center;
+      --band-paint:
+        linear-gradient(var(--color-veil-band), var(--color-veil-band)),
+        var(--art-band-phone, none) center / cover no-repeat, var(--color-band);
     }
     .ui-band[data-art='hero'] {
-      background:
+      --band-paint:
         linear-gradient(var(--color-veil-night), var(--color-veil-night)),
-        var(--art-hero-phone, none) 84% 60% / cover no-repeat,
-        var(--color-night);
+        var(--art-hero-phone, none) 84% 60% / cover no-repeat, var(--color-night);
     }
   }
 }
