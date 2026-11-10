@@ -242,6 +242,10 @@ object FsSize {
     val rowSlim = 44.dp
     val barH = 56.dp
     val barPhone = 48.dp
+    // How far a page's last band piece runs its art on past its foot, fading into the ground (web
+    // ui/band.css --band-fade: 120 on the site, 64 on a phone, the apps' value). The apps' tab
+    // roots draw it under the bars (iOS BandPage, Android FlowBandPage).
+    val bandFade = 64.dp
     val segment = 44.dp
     val icon28 = 28.dp
     val icon32 = 32.dp
@@ -299,6 +303,20 @@ object FsStroke {
 object FsElevation {
     // Overlays and tooltips. Native sheets use the platform's own scrim and no extra shadow.
     val overlay = FsShadow(Color(0x99000000), 0.dp, 12.dp, 32.dp, 0.dp)
+}
+
+// Opacity ramps a surface masks its art with: stops of black at an alpha, positions from the top
+// (0) to the foot (1).
+object FsGradient {
+    // The band's fade into the ground over size.bandFade: an eased ramp, since a straight one shows
+    // its start as a line (web ui/band.css mask-image, which tokens.test.mjs holds to these stops).
+    val bandFade: List<Pair<Float, Color>> = listOf(
+        0f to Color(0xFF000000),
+        0.25f to Color(0xD1000000),
+        0.5f to Color(0x80000000),
+        0.75f to Color(0x2E000000),
+        1f to Color(0x00000000),
+    )
 }
 
 // Every animation is skipped under Reduce Motion / Remove animations.

@@ -42,12 +42,12 @@ import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.PanelFrame
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ParityRegion
+import gg.foreversixty.app.designsystem.fadingBand
 import gg.foreversixty.app.designsystem.parityContent
 import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.designsystem.parityRegion
 import gg.foreversixty.app.designsystem.panel
 import gg.foreversixty.app.designsystem.screenGround
-import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.items.GameIconImage
 
 /**
@@ -68,8 +68,8 @@ fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
 
 /**
  * A tab root in the round-5 look (spec Mobile): the painted [band] behind [topBar] (and [head] on
- * Home's hero), then [notice] and the blocks on the ground, 16 under the band, 14 at the sides and 20
- * apart. Parity regions are measured from the bottom of [topBar], as the mocks' are from the nav bar.
+ * Home's hero), fading into the ground below its foot as the site's head does (`fadingBand`), then
+ * [notice] and the blocks over the fade, 16 under the band, 14 at the sides and 20 apart. Parity regions are measured from the bottom of [topBar], as the mocks' are from the nav bar.
  */
 @Composable
 fun FlowBandPage(
@@ -80,7 +80,7 @@ fun FlowBandPage(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
-        Column(Modifier.fillMaxWidth().surfaceBand(kind = band)) {
+        Column(Modifier.fillMaxWidth().fadingBand(band)) {
             topBar()
             Spacer(Modifier.fillMaxWidth().height(0.dp).parityContent())
             head()
