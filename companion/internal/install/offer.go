@@ -55,10 +55,25 @@ type System interface {
 	Trash(path string) error
 }
 
-// Prompter shows the window at url until close is called or the player
-// closes it. bind gives the functions the page may call, by name; it gets
-// the window's close so a binding can end it.
-type Prompter func(url string, bind func(closeWindow func()) map[string]any) error
+// Window is what a binding may do to its window, from any goroutine.
+type Window interface {
+	// Close ends the window.
+	Close()
+	// Eval runs JavaScript in the page (the progress the Go side reports).
+	Eval(js string)
+}
+
+// Prompter shows the window at url until it is closed. bind gives the
+// functions the page may call, by name.
+type Prompter func(url string, bind func(win Window) map[string]any) error
+
+// The page's modes (ui/install.js): the Mac's move, the Windows setup and
+// its uninstall.
+const (
+	ModeMove      = "move"
+	ModeSetup     = "setup"
+	ModeUninstall = "uninstall"
+)
 
 // OfferOptions is what Offer needs.
 type OfferOptions struct {
@@ -80,13 +95,13 @@ type OfferOptions struct {
 // false and the window's error when the window could not be shown (a
 // headless build): the companion then runs from where it is.
 func Offer(o OfferOptions) (bool, error) {
-	srv, url, err := serve()
+	srv, url, err := serve(ModeMove)
 	if err != nil {
 		return false, err
 	}
 	defer srv.Close()
 	installed := false
-	err = o.Prompt(url, func(closeWindow func()) map[string]any {
+	err = o.Prompt(url, func(win Window) map[string]any {
 		return map[string]any{
 			"fsInstallInfo": func() map[string]any {
 				return map[string]any{"loginItems": o.System.LoginItems()}
@@ -98,7 +113,7 @@ func Offer(o OfferOptions) (bool, error) {
 					return nil, err
 				}
 				installed = true
-				go closeWindow()
+				win.Close()
 				return map[string]any{"path": target}, nil
 			},
 		}
@@ -129,7 +144,7 @@ func Move(o OfferOptions, openAtLogin bool) (string, error) {
 
 // serve answers the embedded assets on a loopback port. The page holds
 // nothing private: what it can do is the bindings', not the server's.
-func serve() (*http.Server, string, error) {
+func serve(mode string) (*http.Server, string, error) {
 	assets, err := fs.Sub(ui.Assets, ".")
 	if err != nil {
 		return nil, "", err
@@ -140,7 +155,7 @@ func serve() (*http.Server, string, error) {
 	}
 	srv := &http.Server{Handler: http.FileServerFS(assets), ReadHeaderTimeout: 5 * time.Second}
 	go func() { _ = srv.Serve(ln) }()
-	return srv, "http://" + ln.Addr().String() + "/" + PromptPage, nil
+	return srv, "http://" + ln.Addr().String() + "/" + PromptPage + "?mode=" + mode, nil
 }
 
 // Finish is what the installed copy is told to do after a move.

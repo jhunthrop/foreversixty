@@ -21,8 +21,9 @@ installed companion updates itself from the feed's `latest.json`.
   only when a release is cut (a handful a week), never for tests.
 - A dispatch with `dry_run: true` builds, signs and notarizes everything as the next version and
   stops before `release`: no tag, no GitHub release, no feed entry. The builds stay as the run's
-  artifacts, and the Windows job installs the setup on the runner, logs what it left behind,
-  uninstalls it and keeps two screens as `dryrun-windows-captures`. Any branch may dispatch one:
+  artifacts, and the Windows job installs the setup on the runner, runs it again over the running
+  install, uninstalls it, logs what each step left behind and keeps the screens as
+  `dryrun-windows-captures`. Any branch may dispatch one:
   `gh workflow run companion.yml --ref <branch> -f dry_run=true`.
 
 ## Windows: Azure Artifact Signing
@@ -35,17 +36,13 @@ name Commish LLC. With the variable unset, Windows builds ship unsigned with a n
 Secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` (environment `signing`);
 variables `AZURE_SIGNING_ENDPOINT`, `AZURE_SIGNING_ACCOUNT`, `AZURE_SIGNING_PROFILE`.
 
-The same profile signs the setup program. `build` compiles
-`companion/packaging/windows/companion.iss` with Inno Setup 6 (`ISCC.exe`, on the hosted image;
-choco installs it if an image drops it) around the signed exe, producing
-`foreversixty-companion-setup.exe`. Inno signs as it compiles, through
-`companion/packaging/windows/sign.ps1` (the ArtifactSigning module the signing action installed,
-the Azure CLI login): the uninstaller it embeds, then the setup. The check step installs the setup
-silently on the runner and verifies all three signatures (exe, setup, `unins000.exe`). The setup is
-what `/setup` offers; the bare exe stays in every release because installed companions update from
-it. The setup's `AppId` keys the Apps & Features entry, must never change, and is the updater's
-`SetupAppID` too: each launch of an installed companion writes its version there
-(`internal/updater/installed.go`), so Apps & Features follows self-updates.
+The setup /setup offers, `foreversixty-companion-setup.exe` (saved as ForeverSixtySetup.exe), is
+the same signed exe under a setup name: run from anywhere but the install folder it installs itself
+(`companion/internal/install`, setup.go), and the installed copy's `-uninstall` is what Apps &
+Features runs. One binary, one signature, checked with its version-info resource (Commish LLC,
+Forever Sixty). The bare exe name stays in every release because installed companions update from
+it. The Apps & Features entry is `HKCU\...\Uninstall\ForeverSixty`; each launch of an installed
+companion writes its version there (`internal/updater/installed.go`), so it follows self-updates.
 
 If signing fails with AADSTS700213, GitHub changed the OIDC subject format again: add a federated
 credential on the `foreversixty-companion-signing` app registration that matches the subject in

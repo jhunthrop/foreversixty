@@ -1,6 +1,6 @@
 // companion/internal/updater/installed.go
 // Apps & Features shows the version the Windows setup wrote into its
-// uninstall entry (packaging/windows/companion.iss). The companion updates
+// uninstall entry (internal/install, setup.go). The companion updates
 // itself without the setup, so each launch brings that entry up to the
 // running version: only when the setup made the entry, and only for the
 // copy it installed.
@@ -12,13 +12,9 @@ import (
 	"strings"
 )
 
-// SetupAppID is the setup's AppId (companion.iss), the name of its
-// uninstall entry with Inno Setup's "_is1" after it. A test holds the two
-// equal.
-const SetupAppID = "{FAC9C192-8284-4AEC-867A-1BF33AD93B7B}"
-
-// UninstallKey is the setup's entry under HKEY_CURRENT_USER.
-const UninstallKey = `Software\Microsoft\Windows\CurrentVersion\Uninstall\` + SetupAppID + "_is1"
+// UninstallKey is the setup's Apps & Features entry under HKEY_CURRENT_USER
+// (internal/install writes it, this keeps its version current).
+const UninstallKey = `Software\Microsoft\Windows\CurrentVersion\Uninstall\ForeverSixty`
 
 // The values the entry carries that this reads and writes.
 const (

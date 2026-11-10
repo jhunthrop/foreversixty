@@ -16,10 +16,12 @@ and open it.
 | macOS 12 or later (Apple silicon and Intel) | `foreversixty-companion_darwin_universal.dmg` (saved as ForeverSixty.dmg) | `foreversixty-companion_darwin_universal.app.zip`, the app the updater installs |
 | Linux | | `foreversixty-companion_linux_amd64` |
 
-On Windows the setup (`packaging/windows/companion.iss`, Inno Setup) installs for your account
-alone, to `%LOCALAPPDATA%\Programs\Forever Sixty`, with no admin rights. Its one screen has
-"Start with Windows" (on) and a desktop shortcut (off); it then opens the companion. Apps &
-Features lists it under Commish LLC, and its uninstaller asks before deleting the settings, logs
+On Windows the setup is the companion itself under a setup name (`internal/install`, setup.go).
+Opened, it shows one window in the companion's own look: "Start with Windows" (on) and Install.
+It installs for your account alone, to `%LOCALAPPDATA%\Programs\Forever Sixty`, with no admin
+rights, adds the Start menu shortcut and the Apps & Features entry (Commish LLC), and starts the
+companion, which opens into its own first run. Apps & Features' Uninstall shows the same window,
+"Remove Forever Sixty?", with "Keep my settings" on; unticked, it also deletes the settings, logs
 and unsent fights in `%APPDATA%\ForeverSixty`.
 
 On a Mac, open the disk image and drag Forever Sixty to Applications, or just open it. Its first window

@@ -324,67 +324,37 @@ jobs:
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
 
-      # foreversixty-companion-setup.exe (companion/packaging/windows/companion.iss): the
-      # download /setup offers, a one-screen install for the player's own account. The bare exe
-      # beside it stays in the release for the updater and for installs made before the setup
-      # existed. Inno Setup 6 is on the hosted Windows image; it is installed if an image drops it.
-      # With signing set up, Inno signs as it compiles (packaging/windows/sign.ps1, the module the
-      # step above installed): the uninstaller it embeds, then the setup itself.
-      - name: Build the Windows setup
+      # foreversixty-companion-setup.exe: the download /setup offers (saved as ForeverSixtySetup.exe).
+      # It is the signed companion itself under a setup name: run from anywhere but the install
+      # folder it shows its own install window and installs itself (companion/internal/install,
+      # setup.go). The bare exe beside it stays in the release for the updater.
+      - name: The Windows setup
         if: matrix.goos == 'windows'
-        shell: pwsh
-        env:
-          AZURE_SIGNING_ENDPOINT: ${{ vars.AZURE_SIGNING_ENDPOINT }}
-          AZURE_SIGNING_ACCOUNT: ${{ vars.AZURE_SIGNING_ACCOUNT }}
-          AZURE_SIGNING_PROFILE: ${{ vars.AZURE_SIGNING_PROFILE }}
-        run: |
-          $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'
-          if (-not (Test-Path $iscc)) {
-            choco install innosetup -y --no-progress
-            if ($LASTEXITCODE -ne 0) { throw "could not install Inno Setup" }
-          }
-          $version = $env:TAG -replace '^companion-v', ''
-          $flags = @("/DAppVersion=$version", "/DSourceExe=$PWD\dist\$env:ASSET", "/O$PWD\dist")
-          if ($env:AZURE_SIGNING_PROFILE) {
-            $sign = Join-Path $PWD 'packaging\windows\sign.ps1'
-            $flags += '/DSign'
-            # $q is Inno's own quote: a literal " here reaches iscc escaped as \" (PowerShell 7's
-            # native argument passing), and Inno then runs a path that starts with a backslash.
-            $flags += '/Sazure=pwsh -NoProfile -ExecutionPolicy Bypass -File $q' + $sign + '$q $f'
-          }
-          & $iscc @flags packaging\windows\companion.iss
-          if ($LASTEXITCODE -ne 0) { throw "iscc failed ($LASTEXITCODE)" }
-          Get-Item dist\foreversixty-companion-setup.exe | Format-List Name, Length
+        run: cp "dist/${ASSET}" dist/foreversixty-companion-setup.exe
 
       - name: Check the Windows signatures
         # A release never carries a binary the OS would call unsigned: each signature must
-        # verify and name the company, the companion's, the setup's and the uninstaller's. The
-        # uninstaller exists only once installed, so the setup installs silently into a folder of
-        # the runner's, is checked and is uninstalled again.
+        # verify and name the company.
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
         shell: pwsh
         run: |
-          $probe = Join-Path $env:RUNNER_TEMP 'setup-probe'
-          Start-Process dist\foreversixty-companion-setup.exe -Wait `
-            -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', "/DIR=$probe", '/MERGETASKS=!startup'
-          $files = @("dist/$env:ASSET", "dist/foreversixty-companion-setup.exe", "$probe\unins000.exe")
-          foreach ($file in $files) {
+          foreach ($file in @("dist/$env:ASSET", "dist/foreversixty-companion-setup.exe")) {
             $sig = Get-AuthenticodeSignature $file
             "${file}: status $($sig.Status); signer $($sig.SignerCertificate.Subject)"
             if ($sig.Status -ne 'Valid') { throw "$file is not validly signed: $($sig.StatusMessage)" }
             if ($sig.SignerCertificate.Subject -notmatch 'Commish LLC') { throw "unexpected signer on ${file}: $($sig.SignerCertificate.Subject)" }
           }
-          Start-Process "$probe\unins000.exe" -Wait -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES'
-          Start-Sleep 5
+          $info = (Get-Item "dist/$env:ASSET").VersionInfo
+          "version info: $($info.ProductName) / $($info.FileDescription) / $($info.CompanyName) / $($info.LegalCopyright) / $($info.ProductVersion)"
 
       - name: Unsigned Windows build
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE == ''
         run: echo "::notice::AZURE_SIGNING_PROFILE is not set, so this Windows build is unsigned."
 
-      # A dry run installs the setup on the runner as a player would: the one screen, Install,
-      # the companion's first run, then what the install left behind, and the uninstaller. The
-      # two screens are kept as the run's dryrun-windows-captures artifact (never companion-*,
-      # so a release could not pick them up).
+      # A dry run plays a player on the runner: install, the companion's first run, the setup
+      # again over the running install (an upgrade), the light theme, then Apps & Features'
+      # uninstall, logging what each left behind. The screens are kept as the run's
+      # dryrun-windows-captures artifact (never companion-*, so a release could not pick them up).
       - name: Try the setup on the runner (dry run)
         if: matrix.goos == 'windows' && github.event.inputs.dry_run == 'true'
         shell: pwsh
@@ -397,25 +367,51 @@ jobs:
             [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
             $bmp.Save("$PWD\captures\$name.png")
           }
-          $run = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+          $shell = New-Object -ComObject WScript.Shell
+          function Press([System.Diagnostics.Process]$p) {
+            $null = $shell.AppActivate($p.Id); Start-Sleep 1; $shell.SendKeys('{ENTER}')
+          }
+          function State([string]$when) {
+            $run = (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -ErrorAction SilentlyContinue).'Forever Sixty'
+            $entry = Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\ForeverSixty' -ErrorAction SilentlyContinue
+            $lnk = Test-Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Forever Sixty.lnk"
+            $running = @(Get-Process foreversixty-companion -ErrorAction SilentlyContinue).Count
+            "${when}: exe $(Test-Path "$dir\foreversixty-companion.exe"); shortcut $lnk; startup '$run'; running $running"
+            if ($entry) { $entry | Format-List DisplayName, DisplayVersion, Publisher, DisplayIcon, EstimatedSize, UninstallString, URLInfoAbout }
+          }
           $dir = Join-Path $env:LOCALAPPDATA 'Programs\Forever Sixty'
+
           $setup = Start-Process dist\foreversixty-companion-setup.exe -PassThru
           Start-Sleep 8; Snap 'win-1-setup'
-          $shell = New-Object -ComObject WScript.Shell
-          $null = $shell.AppActivate($setup.Id); Start-Sleep 1; $shell.SendKeys('{ENTER}')
-          Start-Sleep 25; Snap 'win-2-first-run'
-          Get-ChildItem $dir | Format-Table Name, Length
-          "start with windows: $((Get-ItemProperty $run -ErrorAction SilentlyContinue).'Forever Sixty')"
-          "start menu shortcut: $(Test-Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Forever Sixty.lnk")"
-          "desktop shortcut: $(Test-Path "$([Environment]::GetFolderPath('Desktop'))\Forever Sixty.lnk")"
-          Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*' |
-            Where-Object DisplayName -eq 'Forever Sixty' |
-            Format-List DisplayName, DisplayVersion, Publisher, DisplayIcon, InstallLocation
-          Get-Process foreversixty-companion -ErrorAction SilentlyContinue | Format-Table Id, Path
-          if (-not (Test-Path "$dir\foreversixty-companion.exe")) { throw "the setup installed nothing" }
-          Start-Process "$dir\unins000.exe" -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES' -Wait
+          $clicked = Get-Date; Press $setup
+          Start-Sleep 1; Snap 'win-2-installing'
+          $setup.WaitForExit(30000) | Out-Null
+          "setup finished $([int]((Get-Date) - $clicked).TotalMilliseconds) ms after the click"
+          Start-Sleep 12; Snap 'win-3-first-run'
+          State 'after install'
+
+          $upgrade = Start-Process dist\foreversixty-companion-setup.exe -PassThru
+          Start-Sleep 8; Snap 'win-4-upgrade'
+          Press $upgrade; $upgrade.WaitForExit(30000) | Out-Null
           Start-Sleep 10
-          "after the uninstaller: exe $(Test-Path "$dir\foreversixty-companion.exe"), start with windows '$((Get-ItemProperty $run -ErrorAction SilentlyContinue).'Forever Sixty')', running $(@(Get-Process foreversixty-companion -ErrorAction SilentlyContinue).Count)"
+          State 'after the upgrade'
+
+          Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' AppsUseLightTheme 1
+          Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' SystemUsesLightTheme 1
+          $light = Start-Process dist\foreversixty-companion-setup.exe -PassThru
+          Start-Sleep 8; Snap 'win-5-setup-light-theme'
+          Stop-Process -Id $light.Id
+          Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' AppsUseLightTheme 0
+          Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' SystemUsesLightTheme 0
+
+          $remove = Start-Process "$dir\foreversixty-companion.exe" -ArgumentList '-uninstall' -PassThru
+          Start-Sleep 8; Snap 'win-6-uninstall'
+          Press $remove
+          Start-Sleep 1; Snap 'win-7-removed'
+          $remove.WaitForExit(30000) | Out-Null
+          Start-Sleep 8
+          State 'after the uninstall'
+          if (Test-Path "$dir\foreversixty-companion.exe") { throw "the uninstall left the companion behind" }
 
       - name: Keep the setup's screens (dry run)
         if: always() && matrix.goos == 'windows' && github.event.inputs.dry_run == 'true'

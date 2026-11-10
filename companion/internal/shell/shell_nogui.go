@@ -18,11 +18,17 @@ func Run(ctx context.Context, o Options) error { return wait(ctx) }
 // ErrNoWindow says this build has no window to show.
 var ErrNoWindow = errors.New("shell: this build has no window")
 
+// PromptWindow is what a binding may do to its window (prompt_gui.go).
+type PromptWindow interface {
+	Close()
+	Eval(js string)
+}
+
 // PromptOptions configures a Prompt window (prompt_gui.go).
 type PromptOptions struct {
 	URL, Title    string
 	Width, Height int
-	Bind          func(closeWindow func()) map[string]any
+	Bind          func(win PromptWindow) map[string]any
 }
 
 // Prompt has no window to show in the headless build.

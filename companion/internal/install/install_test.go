@@ -290,7 +290,7 @@ func TestOfferServesTheWindowAndMovesOnTheButton(t *testing.T) {
 	h := t.TempDir()
 	sys := &fakeSystem{loginItems: true}
 	closed := make(chan struct{})
-	prompt := func(url string, bind func(func()) map[string]any) error {
+	prompt := func(url string, bind func(Window) map[string]any) error {
 		res, err := http.Get(url)
 		if err != nil {
 			return err
@@ -300,7 +300,7 @@ func TestOfferServesTheWindowAndMovesOnTheButton(t *testing.T) {
 		if res.StatusCode != http.StatusOK || !strings.Contains(string(page), "install.js") {
 			t.Errorf("the window's page: %d %.80s", res.StatusCode, page)
 		}
-		fns := bind(func() { close(closed) })
+		fns := bind(fakeWindow{closed: closed})
 		if info := fns["fsInstallInfo"].(func() map[string]any)(); info["loginItems"] != true {
 			t.Errorf("info = %v", info)
 		}
@@ -326,5 +326,23 @@ func TestALaunchThatWasNotAMoveDoesNothing(t *testing.T) {
 	sys := &fakeSystem{loginItems: true}
 	if err := (Finish{Trash: home + "/Downloads/fs.dmg"}).Complete(context.Background(), sys, home, quiet); err != nil || len(sys.calls) != 0 {
 		t.Errorf("err %v, calls %v", err, sys.calls)
+	}
+}
+
+// fakeWindow records what a binding does to its window.
+type fakeWindow struct {
+	closed chan struct{}
+	evals  *[]string
+}
+
+func (w fakeWindow) Close() {
+	if w.closed != nil {
+		close(w.closed)
+	}
+}
+
+func (w fakeWindow) Eval(js string) {
+	if w.evals != nil {
+		*w.evals = append(*w.evals, js)
 	}
 }

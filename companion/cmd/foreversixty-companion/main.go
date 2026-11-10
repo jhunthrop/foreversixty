@@ -58,11 +58,18 @@ func run(args []string, out *os.File) error {
 	debug := fs.Bool("debug", false, "log at debug level")
 	version := fs.Bool("version", false, "print the version and exit")
 	finish := install.RegisterFlags(fs)
+	uninstall := fs.Bool(install.FlagUninstall, false, "remove the companion from this Windows account (Apps & Features runs this)")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
 	if *version {
 		fmt.Fprintln(out, updater.Version)
+		return nil
+	}
+	// The uninstall opens no log: removing the settings removes the folder
+	// the log would be held open in.
+	if *uninstall {
+		runSetup(slog.New(slog.DiscardHandler), install.ModeUninstall)
 		return nil
 	}
 
@@ -81,6 +88,14 @@ func run(args []string, out *os.File) error {
 	}
 	defer logFile.Close()
 	log.Info("launching", "component", "main", "version", updater.Version, "pid", os.Getpid())
+
+	// The Windows download (ForeverSixtySetup.exe) is this same companion under a setup
+	// name: it installs itself and starts the installed copy. It comes before the
+	// one-copy claim, which an installed companion that is running holds.
+	if !*headless && isSetupDownload() {
+		runSetup(log, install.ModeSetup)
+		return nil
+	}
 
 	// One companion per home directory: two would tail the same log and
 	// upload every fight twice. The claim comes before the update swap,
@@ -208,13 +223,10 @@ func offerInstall(log *slog.Logger, release func()) bool {
 	if !install.Supported {
 		return false
 	}
-	exe, err := os.Executable()
-	if err != nil {
-		return false
-	}
 	// hdiutil and App Translocation name real paths (/private/var, not /var).
-	if real, err := filepath.EvalSymlinks(exe); err == nil {
-		exe = real
+	exe := executable()
+	if exe == "" {
+		return false
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -239,10 +251,53 @@ func offerInstall(log *slog.Logger, release func()) bool {
 	return true
 }
 
+// isSetupDownload reports whether this is the Windows setup download.
+func isSetupDownload() bool {
+	if !install.SetupSupported {
+		return false
+	}
+	folders, err := install.WindowsFolders()
+	if err != nil {
+		return false
+	}
+	return install.SetupMode(executable(), folders.Install)
+}
+
+// runSetup shows the Windows setup or uninstall window and runs what it asks.
+func runSetup(log *slog.Logger, mode string) {
+	if !install.SetupSupported {
+		return
+	}
+	folders, err := install.WindowsFolders()
+	if err != nil {
+		log.Warn("could not find this account's folders", "component", "main", "err", err.Error())
+		return
+	}
+	if err := install.ShowSetup(install.SetupOptions{
+		Mode: mode, System: install.NewWinSystem(), Folders: folders,
+		Self: executable(), Version: updater.Version, Log: log, Prompt: promptWindow,
+	}); err != nil {
+		log.Warn("could not show the "+mode+" window", "component", "main", "err", err.Error())
+	}
+}
+
+// executable is this program's real path, or "" when the system cannot say.
+func executable() string {
+	exe, err := os.Executable()
+	if err != nil {
+		return ""
+	}
+	if real, err := filepath.EvalSymlinks(exe); err == nil {
+		return real
+	}
+	return exe
+}
+
 // promptWindow is install's window: small, fixed, and the companion's own look.
-func promptWindow(url string, bind func(closeWindow func()) map[string]any) error {
+func promptWindow(url string, bind func(install.Window) map[string]any) error {
 	return shell.Prompt(shell.PromptOptions{
-		URL: url, Title: "Forever Sixty", Width: install.WindowWidth, Height: install.WindowHeight, Bind: bind,
+		URL: url, Title: install.ProductName, Width: install.WindowWidth, Height: install.WindowHeight,
+		Bind: func(win shell.PromptWindow) map[string]any { return bind(win) },
 	})
 }
 

@@ -10,7 +10,8 @@
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="styles.css">
 </head>
-<!-- The Mac's first launch from a download (internal/install): one question, one button. -->
+<!-- The install windows (internal/install): the Mac's move, the Windows setup and its uninstall
+     (?mode=move|setup|uninstall). One question, one toggle, one button, then the progress. -->
 <body class="prompt">
 <div class="top">
   <header class="col">
@@ -24,6 +25,10 @@
       <p class="lede" id="move-lede"></p>
       <label class="switch" id="move-login-row" hidden><input type="checkbox" id="move-login" checked><span id="move-login-label"></span></label>
       <button class="action primary big" id="move" type="button" autofocus></button>
+      <div class="progress" id="move-progress" hidden>
+        <div class="progress-track"><span id="move-bar"></span></div>
+        <p class="fine" id="move-step" aria-live="polite"></p>
+      </div>
       <p class="reason" id="move-error" role="alert" hidden></p>
     </div>
   </div>

@@ -41,7 +41,7 @@ func TestAnUpdateSwapsTheSetupsInstalledExeInPlace(t *testing.T) {
 		t.Errorf("the installed exe holds %q", b)
 	}
 	// Only the exe and the copy it replaced are in the install folder: the
-	// uninstaller removes exactly these (packaging/windows/companion.iss).
+	// uninstall removes the whole folder after it ends (internal/install).
 	entries, _ := os.ReadDir(install)
 	names := map[string]bool{}
 	for _, e := range entries {
@@ -138,17 +138,5 @@ func TestTheSetupsEntryFollowsTheRunningVersion(t *testing.T) {
 				t.Errorf("wrote %v", tc.key.set)
 			}
 		})
-	}
-}
-
-// The entry's name is the setup's AppId: one GUID in two files.
-func TestTheUninstallKeyIsTheSetupsAppID(t *testing.T) {
-	iss, err := os.ReadFile(filepath.Join("..", "..", "packaging", "windows", "companion.iss"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	// Inno writes a literal brace doubled: AppId={{GUID}.
-	if want := "AppId={" + SetupAppID; !strings.Contains(string(iss), want) {
-		t.Errorf("companion.iss has no %q", want)
 	}
 }
