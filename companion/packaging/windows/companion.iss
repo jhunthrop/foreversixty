@@ -70,6 +70,12 @@ SolidCompression=yes
 ; The companion is stopped in PrepareToInstall below; this catches anything else holding the exe.
 CloseApplications=force
 RestartApplications=no
+#ifdef Sign
+; companion.yml compiles with /DSign and /Sazure=...sign.ps1 $f once Azure signing is set up:
+; Inno signs the uninstaller it embeds (unins000.exe in Apps & Features) and the setup itself.
+SignTool=azure
+SignedUninstaller=yes
+#endif
 
 [Messages]
 SelectTasksLabel2=

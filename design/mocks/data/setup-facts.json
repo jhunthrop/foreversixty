@@ -1048,14 +1048,14 @@
    {
     "os": "windows",
     "platform": "Windows",
-    "asset": "foreversixty-companion_windows_amd64.exe",
-    "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway."
+    "asset": "foreversixty-companion-setup.exe",
+    "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway."
    },
    {
     "os": "mac",
     "platform": "Mac",
-    "asset": "foreversixty-companion_darwin_universal.dmg",
-    "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later."
+    "asset": "foreversixty-companion_darwin_universal.app.zip",
+    "firstRun": "Notarized by Apple. Open the download and it moves itself to Applications. macOS 12 or later."
    }
   ]
  },
@@ -1064,18 +1064,18 @@
    "own": {
     "os": "windows",
     "platform": "Windows",
-    "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway.",
+    "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway.",
     "label": "Download for Windows",
-    "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_windows_amd64.exe",
+    "href": "/dl/companion/companion-v0.2.37/foreversixty-companion-setup.exe",
     "meta": "Version 0.2.37 · 16.4 MB"
    },
    "others": [
     {
      "os": "mac",
      "platform": "Mac",
-     "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later.",
+     "firstRun": "Notarized by Apple. Open the download and it moves itself to Applications. macOS 12 or later.",
      "label": "Download for Mac",
-     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.dmg",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.app.zip",
      "meta": "Version 0.2.37 · 16.8 MB"
     }
    ]
@@ -1084,18 +1084,18 @@
    "own": {
     "os": "mac",
     "platform": "Mac",
-    "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later.",
+    "firstRun": "Notarized by Apple. Open the download and it moves itself to Applications. macOS 12 or later.",
     "label": "Download for Mac",
-    "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.dmg",
+    "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.app.zip",
     "meta": "Version 0.2.37 · 16.8 MB"
    },
    "others": [
     {
      "os": "windows",
      "platform": "Windows",
-     "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway.",
+     "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway.",
      "label": "Download for Windows",
-     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_windows_amd64.exe",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion-setup.exe",
      "meta": "Version 0.2.37 · 16.4 MB"
     }
    ]
@@ -1106,17 +1106,17 @@
     {
      "os": "windows",
      "platform": "Windows",
-     "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway.",
+     "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway.",
      "label": "Download for Windows",
-     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_windows_amd64.exe",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion-setup.exe",
      "meta": "Version 0.2.37 · 16.4 MB"
     },
     {
      "os": "mac",
      "platform": "Mac",
-     "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later.",
+     "firstRun": "Notarized by Apple. Open the download and it moves itself to Applications. macOS 12 or later.",
      "label": "Download for Mac",
-     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.dmg",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.app.zip",
      "meta": "Version 0.2.37 · 16.8 MB"
     }
    ]
@@ -1127,17 +1127,17 @@
     {
      "os": "windows",
      "platform": "Windows",
-     "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway.",
+     "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway.",
      "label": "Download for Windows",
-     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_windows_amd64.exe",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion-setup.exe",
      "meta": "Version 0.2.37 · 16.4 MB"
     },
     {
      "os": "mac",
      "platform": "Mac",
-     "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later.",
+     "firstRun": "Notarized by Apple. Open the download and it moves itself to Applications. macOS 12 or later.",
      "label": "Download for Mac",
-     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.dmg",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.app.zip",
      "meta": "Version 0.2.37 · 16.8 MB"
     }
    ]

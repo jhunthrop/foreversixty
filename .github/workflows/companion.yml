@@ -328,9 +328,15 @@ jobs:
       # download /setup offers, a one-screen install for the player's own account. The bare exe
       # beside it stays in the release for the updater and for installs made before the setup
       # existed. Inno Setup 6 is on the hosted Windows image; it is installed if an image drops it.
+      # With signing set up, Inno signs as it compiles (packaging/windows/sign.ps1, the module the
+      # step above installed): the uninstaller it embeds, then the setup itself.
       - name: Build the Windows setup
         if: matrix.goos == 'windows'
         shell: pwsh
+        env:
+          AZURE_SIGNING_ENDPOINT: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+          AZURE_SIGNING_ACCOUNT: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+          AZURE_SIGNING_PROFILE: ${{ vars.AZURE_SIGNING_PROFILE }}
         run: |
           $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'
           if (-not (Test-Path $iscc)) {
@@ -338,34 +344,36 @@ jobs:
             if ($LASTEXITCODE -ne 0) { throw "could not install Inno Setup" }
           }
           $version = $env:TAG -replace '^companion-v', ''
-          & $iscc "/DAppVersion=$version" "/DSourceExe=$PWD\dist\$env:ASSET" "/O$PWD\dist" packaging\windows\companion.iss
+          $flags = @("/DAppVersion=$version", "/DSourceExe=$PWD\dist\$env:ASSET", "/O$PWD\dist")
+          if ($env:AZURE_SIGNING_PROFILE) {
+            $sign = Join-Path $PWD 'packaging\windows\sign.ps1'
+            $flags += '/DSign'
+            $flags += '/Sazure=pwsh -NoProfile -ExecutionPolicy Bypass -File "' + $sign + '" $f'
+          }
+          & $iscc @flags packaging\windows\companion.iss
           if ($LASTEXITCODE -ne 0) { throw "iscc failed ($LASTEXITCODE)" }
           Get-Item dist\foreversixty-companion-setup.exe | Format-List Name, Length
 
-      - name: Sign the Windows setup
-        if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
-        uses: azure/artifact-signing-action@v2
-        with:
-          endpoint: ${{ vars.AZURE_SIGNING_ENDPOINT }}
-          signing-account-name: ${{ vars.AZURE_SIGNING_ACCOUNT }}
-          certificate-profile-name: ${{ vars.AZURE_SIGNING_PROFILE }}
-          files: ${{ github.workspace }}\companion\dist\foreversixty-companion-setup.exe
-          file-digest: SHA256
-          timestamp-rfc3161: http://timestamp.acs.microsoft.com
-          timestamp-digest: SHA256
-
       - name: Check the Windows signatures
         # A release never carries a binary the OS would call unsigned: each signature must
-        # verify and name the company, the companion's and the setup program's alike.
+        # verify and name the company, the companion's, the setup's and the uninstaller's. The
+        # uninstaller exists only once installed, so the setup installs silently into a folder of
+        # the runner's, is checked and is uninstalled again.
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
         shell: pwsh
         run: |
-          foreach ($file in @("dist/$env:ASSET", "dist/foreversixty-companion-setup.exe")) {
+          $probe = Join-Path $env:RUNNER_TEMP 'setup-probe'
+          Start-Process dist\foreversixty-companion-setup.exe -Wait `
+            -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', "/DIR=$probe", '/MERGETASKS=!startup'
+          $files = @("dist/$env:ASSET", "dist/foreversixty-companion-setup.exe", "$probe\unins000.exe")
+          foreach ($file in $files) {
             $sig = Get-AuthenticodeSignature $file
             "${file}: status $($sig.Status); signer $($sig.SignerCertificate.Subject)"
             if ($sig.Status -ne 'Valid') { throw "$file is not validly signed: $($sig.StatusMessage)" }
             if ($sig.SignerCertificate.Subject -notmatch 'Commish LLC') { throw "unexpected signer on ${file}: $($sig.SignerCertificate.Subject)" }
           }
+          Start-Process "$probe\unins000.exe" -Wait -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES'
+          Start-Sleep 5
 
       - name: Unsigned Windows build
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE == ''

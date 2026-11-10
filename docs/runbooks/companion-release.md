@@ -35,12 +35,17 @@ name Commish LLC. With the variable unset, Windows builds ship unsigned with a n
 Secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` (environment `signing`);
 variables `AZURE_SIGNING_ENDPOINT`, `AZURE_SIGNING_ACCOUNT`, `AZURE_SIGNING_PROFILE`.
 
-The same step signs the setup program. `build` compiles
+The same profile signs the setup program. `build` compiles
 `companion/packaging/windows/companion.iss` with Inno Setup 6 (`ISCC.exe`, on the hosted image;
 choco installs it if an image drops it) around the signed exe, producing
-`foreversixty-companion-setup.exe`, signs that, and checks both signatures. The setup is what
-`/setup` offers; the bare exe stays in every release because installed companions update from it.
-The setup's `AppId` keys the Apps & Features entry and must never change.
+`foreversixty-companion-setup.exe`. Inno signs as it compiles, through
+`companion/packaging/windows/sign.ps1` (the ArtifactSigning module the signing action installed,
+the Azure CLI login): the uninstaller it embeds, then the setup. The check step installs the setup
+silently on the runner and verifies all three signatures (exe, setup, `unins000.exe`). The setup is
+what `/setup` offers; the bare exe stays in every release because installed companions update from
+it. The setup's `AppId` keys the Apps & Features entry, must never change, and is the updater's
+`SetupAppID` too: each launch of an installed companion writes its version there
+(`internal/updater/installed.go`), so Apps & Features follows self-updates.
 
 If signing fails with AADSTS700213, GitHub changed the OIDC subject format again: add a federated
 credential on the `foreversixty-companion-signing` app registration that matches the subject in

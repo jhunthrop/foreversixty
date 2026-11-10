@@ -117,6 +117,7 @@ func run(args []string, out *os.File) error {
 		}) {
 			return nil
 		}
+		syncInstalledVersion(log, exe)
 	}
 
 	cfg, err := config.Load(dirs.ConfigFile())
@@ -185,6 +186,19 @@ func run(args []string, out *os.File) error {
 	stop()
 	<-done
 	return err
+}
+
+// syncInstalledVersion keeps the Windows setup's Apps & Features entry on the
+// running version once a self-update has replaced the exe it installed.
+func syncInstalledVersion(log *slog.Logger, exe string) {
+	wrote, err := updater.SyncInstalledVersion(updater.OpenUserKey, exe, updater.Version)
+	if err != nil {
+		log.Warn("could not update the version Apps & Features shows", "component", "main", "err", err.Error())
+		return
+	}
+	if wrote {
+		log.Info("Apps & Features now shows this version", "component", "main", "version", updater.Version)
+	}
 }
 
 // offerInstall shows the Mac's "Move Forever Sixty to Applications?" when
