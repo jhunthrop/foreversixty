@@ -54,7 +54,7 @@ struct SimsListView: View {
             }
             mineSection(content)
             if let footer = footer(content) {
-                Text(footer).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(footer).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }

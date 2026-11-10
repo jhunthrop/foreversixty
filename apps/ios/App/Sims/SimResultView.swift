@@ -118,9 +118,6 @@ struct SimResultView: View {
             ) {
                 ForEach(model.gear) { cell in gearIcon(cell) }
             }
-            if model.showsChangedLegend {
-                Text(Copy.simsChanged).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-            }
         }
     }
 

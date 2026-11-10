@@ -108,7 +108,7 @@ struct TalentsView: View {
 
     private var footer: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(compareFooter ?? Copy.talentsFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(compareFooter ?? Copy.talentsFooter).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                 .fixedSize(horizontal: false, vertical: true)
             if compareFooter != nil {
                 EmptyView()

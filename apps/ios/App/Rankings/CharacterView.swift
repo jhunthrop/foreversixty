@@ -141,8 +141,6 @@ struct CharacterView: View {
                         frame: PaperdollModel.frame(PaperdollModel.character(gear: profile.gear, items: items, classSlug: profile.character.className?.lowercased())),
                         build: build, open: actions.openSocket
                     )
-                    Text(Copy.charGoldDot).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 14)
@@ -409,7 +407,7 @@ struct FightLineView: View {
             }
             if !recent, let percentile = line.percentile {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(percentile)").font(ReportsLayout.parseNumber).foregroundStyle(ParseLadder.color(ParseTier(percentile)))
+                    Text(ReportsCopy.ordinal(percentile)).font(ReportsLayout.parseNumber).foregroundStyle(ParseLadder.color(ParseTier(percentile)))
                     Text(Copy.charPercentile).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 }
             }

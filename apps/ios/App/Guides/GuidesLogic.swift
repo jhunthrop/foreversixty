@@ -4,9 +4,9 @@ import Models
 /// The guide files' `YYYY-MM-DD` stamps as the spec prints them: `1 Nov 2026` and `1 Nov`.
 enum GuideDates {
     private static let isoFormat = "yyyy-MM-dd"
-    private static let longFormat = "d MMM yyyy"
+    private static let longFormat = "d MMM"
     private static let shortFormat = "d MMM"
-    private static let monthDayFormat = "MM/dd"
+    private static let monthDayFormat = "d MMM"
 
     /// `1 Nov 2026`; the stamp itself when it is not a date.
     static func long(_ iso: String) -> String { reformat(iso, longFormat) }

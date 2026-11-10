@@ -97,8 +97,6 @@ struct PlanView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: FSSpace.space4) {
                 card
-                Text(Copy.planFreeForAll).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(FSSpace.space4)
         }
@@ -123,7 +121,6 @@ struct PlanView: View {
             VStack(alignment: .leading, spacing: FSSpace.space1) {
                 Text(plan.line).font(ScaledType.body).foregroundStyle(FSColor.text)
                 if let line2 = plan.line2 { muted(line2) }
-                if plan.founder { muted(Copy.planFounderNote) }
             }
             if !plan.includes.isEmpty { includes }
             billing

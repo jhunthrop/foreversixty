@@ -18,8 +18,10 @@ struct OfficerRow: View {
                 HStack(spacing: 10) { lockButton(locked: locked, ended: ended); copyButton(ended: ended) }
                 VStack(alignment: .leading, spacing: 10) { lockButton(locked: locked, ended: ended); copyButton(ended: ended) }
             }
-            Text(ended ? Copy.officerGate : locked ? Copy.officerLockedNote : Copy.officerLockNote)
-                .font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            // The state notes only; how locking works is not explained.
+            if ended || locked {
+                Text(ended ? Copy.officerGate : Copy.officerLockedNote).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
+            }
             if let error = controller.officerError {
                 Text(error).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
             }

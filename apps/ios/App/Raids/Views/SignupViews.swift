@@ -260,7 +260,6 @@ struct SpecSheet: View {
                     }
                 }
                 .raidCardBox(0).quietCard()
-                Text(Copy.specCloseNote).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
             .padding(16)
         }

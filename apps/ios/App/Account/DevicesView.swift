@@ -23,7 +23,6 @@ struct DevicesView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: FSSpace.space4) {
                 content
-                Text(Copy.devicesFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
             .padding(FSSpace.space4)
         }

@@ -201,7 +201,7 @@ struct ParseRowView: View {
             }
             if let percentile = row.fight.percentile {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(percentile)").font(ReportsLayout.parseNumber).foregroundStyle(ParseLadder.color(ParseTier(percentile)))
+                    Text(ReportsCopy.ordinal(percentile)).font(ReportsLayout.parseNumber).foregroundStyle(ParseLadder.color(ParseTier(percentile)))
                     Text(Copy.reportPercentile).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 }
             }
