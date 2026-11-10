@@ -142,61 +142,59 @@
           caption={runOf === null || runOf === att.nights ? undefined : `streak ${runOf}`}
         />
       {/if}
-      {#if profile !== null}<Figure
-          value={String(profile.loot.count)}
-          label="Items"
-          caption="this tier"
-        />{/if}
+      {#if profile !== null}<Figure value={String(profile.loot.count)} label="Items this tier" />{/if}
     </div>
   </Section>
 {:else if part === 'nights'}
   {#if nights.length > 0}
     <Section title={`Your ${last?.boss ?? 'nights'}`} panel flush testid="guild-your-nights">
-      <StatTable
-        columns={[
-          { id: 'value', label: (last?.metric ?? 'dps').toUpperCase() },
-          { id: 'rating', label: 'Rating' },
-          { id: 'pct', label: 'Parse %' },
-          { id: 'deaths', label: 'Deaths' },
-          { id: 'vs', label: `${(last?.metric ?? 'dps').toUpperCase()} vs last` },
-        ]}
-        nameHead="Night"
-        bar={false}
-        dense
-        label="Your nights"
-      >
-        {#each nights as n, i (n.raidId)}
-          {@const prev = nights[i + 1]}
-          <StatRow
-            bar={false}
-            phone={[
-              n.rating === null ? '' : `rating ${Math.round(n.rating)}`,
-              n.percentile === null ? '' : `parse ${Math.floor(n.percentile)}`,
-            ]
-              .filter((p) => p !== '')
-              .join(' · ')}
-            figures={[
-              n.value === null
-                ? { value: '–', muted: true }
-                : { value: Math.round(n.value).toLocaleString('en-US') },
-              n.rating === null ? { value: '–', muted: true } : { value: String(Math.round(n.rating)) },
-              n.percentile === null
-                ? { value: '–', muted: true }
-                : { value: String(Math.floor(n.percentile)), color: percentileToken(n.percentile) },
-              { value: String(n.deaths), tone: n.deaths > 0 ? 'wipe' : undefined },
-              prev?.value == null || n.value === null
-                ? { value: '–', muted: true }
-                : {
-                    value: signed(Math.round(n.value - prev.value)),
-                    tone: n.value >= prev.value ? 'kill' : 'wipe',
-                  },
-            ]}
-          >
-            {#snippet name()}{day(n.startsAt)}{/snippet}
-            {#snippet sub()}{n.boss} {mins(n.killMs)}{/snippet}
-          </StatRow>
-        {/each}
-      </StatTable>
+      <div class="no-gutter">
+        <StatTable
+          columns={[
+            { id: 'value', label: (last?.metric ?? 'dps').toUpperCase() },
+            { id: 'rating', label: 'Rating' },
+            { id: 'pct', label: 'Parse %' },
+            { id: 'deaths', label: 'Deaths' },
+            { id: 'vs', label: `${(last?.metric ?? 'dps').toUpperCase()} vs last` },
+          ]}
+          nameHead="Night"
+          bar={false}
+          dense
+          label="Your nights"
+        >
+          {#each nights as n, i (n.raidId)}
+            {@const prev = nights[i + 1]}
+            <StatRow
+              bar={false}
+              phone={[
+                n.rating === null ? '' : `rating ${Math.round(n.rating)}`,
+                n.percentile === null ? '' : `parse ${Math.floor(n.percentile)}`,
+              ]
+                .filter((p) => p !== '')
+                .join(' · ')}
+              figures={[
+                n.value === null
+                  ? { value: '–', muted: true }
+                  : { value: Math.round(n.value).toLocaleString('en-US') },
+                n.rating === null ? { value: '–', muted: true } : { value: String(Math.round(n.rating)) },
+                n.percentile === null
+                  ? { value: '–', muted: true }
+                  : { value: String(Math.floor(n.percentile)), color: percentileToken(n.percentile) },
+                { value: String(n.deaths), tone: n.deaths > 0 ? 'wipe' : undefined },
+                prev?.value == null || n.value === null
+                  ? { value: '–', muted: true }
+                  : {
+                      value: signed(Math.round(n.value - prev.value)),
+                      tone: n.value >= prev.value ? 'kill' : 'wipe',
+                    },
+              ]}
+            >
+              {#snippet name()}{day(n.startsAt)}{/snippet}
+              {#snippet sub()}{n.boss} {mins(n.killMs)}{/snippet}
+            </StatRow>
+          {/each}
+        </StatTable>
+      </div>
     </Section>
   {/if}
 {:else if profile !== null && profile.loot.count > 0}
@@ -219,3 +217,9 @@
     {/if}
   </Section>
 {/if}
+
+<style>
+  .no-gutter :global(.ui-st) {
+    --st-icon: 0px;
+  }
+</style>

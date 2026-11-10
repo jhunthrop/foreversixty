@@ -122,12 +122,6 @@
 
   const movers = $derived(ratingMovers(last?.report?.parses ?? [], before?.report?.parses ?? [], roster));
   const gaps = $derived(raid === null ? [] : compGaps(raid));
-  const words = $derived(needsAWord({ view: raid, roster, grid, readiness, movers, now }));
-  const ready = $derived(
-    readiness.length === 0
-      ? null
-      : { ready: readiness.filter((r) => r.failing === 0).length, coming: readiness.length },
-  );
   const tz = $derived(next?.guild_timezone ?? viewerTz);
   const dayOf = (iso: string) =>
     new Date(iso).toLocaleDateString('en-GB', {
@@ -136,6 +130,22 @@
       month: 'short',
       timeZone: tz,
     });
+  const words = $derived(
+    needsAWord({
+      view: raid,
+      roster,
+      grid,
+      readiness,
+      movers,
+      now,
+      lastRaidLabel: last === null ? undefined : dayOf(last.starts_at),
+    }),
+  );
+  const ready = $derived(
+    readiness.length === 0
+      ? null
+      : { ready: readiness.filter((r) => r.failing === 0).length, coming: readiness.length },
+  );
   const lastMeta = $derived.by(() => {
     if (last === null || last.report === null) return '';
     const kill = last.report.kill_order[0];

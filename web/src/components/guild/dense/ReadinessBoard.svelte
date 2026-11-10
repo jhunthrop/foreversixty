@@ -85,7 +85,7 @@
     const stocked = row.flask_food == null ? null : row.flask_food.flask_or_elixir && row.flask_food.food;
     return [
       shortfalls.length > 0
-        ? { value: `${shortfalls.length} short`, tone: 'wipe' }
+        ? { value: `${shortfalls.length} missing`, tone: 'wipe' }
         : { value: '', muted: true },
       check(row.attuned, '×'),
       delta === null
@@ -167,9 +167,9 @@
     cursor: pointer;
   }
   .nudge {
-    display: block;
+    display: inline-block;
     min-height: 32px;
-    margin-top: 2px;
+    margin-left: 12px;
     padding: 0;
     font: 600 13px/32px var(--font-body);
     color: var(--color-gold);

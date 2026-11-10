@@ -84,12 +84,14 @@
             ? 'Majority'
             : `${majority - candidate.votes.yes} more yes for a majority`}</span
         >
-        <Button
-          size="sm"
-          tone={candidate.votes.yes >= majority ? 'primary' : 'ghost'}
-          disabled={!canAct || busy}
-          onclick={onAsk}
-          testid="guild-loot-award">Award</Button
+        <span class={candidate.votes.yes >= majority ? '' : 'opacity-50'}
+          ><Button
+            size="sm"
+            tone={candidate.votes.yes >= majority ? 'primary' : 'ghost'}
+            disabled={!canAct || busy}
+            onclick={onAsk}
+            testid="guild-loot-award">Award</Button
+          ></span
         >
       </span>
     {/if}

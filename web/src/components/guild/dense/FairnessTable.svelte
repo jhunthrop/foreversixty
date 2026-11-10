@@ -34,7 +34,21 @@
     { id: 'items', label: 'Items' },
     { id: 'nights', label: 'Nights' },
   ];
-  const rows = $derived(fairnessRows(roster, loot, grid));
+  /** Rows shown before All: the most overdue. */
+  const FIRST = 12;
+  let all = $state(false);
+  const allRows = $derived(fairnessRows(roster, loot, grid));
+  const rows = $derived.by(() => {
+    if (all) return allRows;
+    let left = FIRST;
+    return allRows.flatMap((r) => {
+      if (left <= 0) return [];
+      const raiders = r.raiders.slice(0, left);
+      left -= raiders.length;
+      return [{ ...r, raiders }];
+    });
+  });
+  const total = $derived(allRows.reduce((n, r) => n + r.raiders.length, 0));
   const perNight = $derived(guildItemsPerNight(roster, loot, grid));
   const meta = $derived(`${perNight.toFixed(2)} items per raider night`);
 
@@ -89,5 +103,12 @@
         {/each}
       {/each}
     </StatTable>
+    {#if total > FIRST}
+      <div class="px-5 pt-2 pb-4">
+        <Button tone="ghost" size="sm" onclick={() => (all = !all)} pressed={all}
+          >{all ? `First ${FIRST}` : `All ${total}`}</Button
+        >
+      </div>
+    {/if}
   </div>
 </Section>

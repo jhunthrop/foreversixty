@@ -135,7 +135,7 @@
     { id: 'nights', label: 'Nights', sortable: true },
     { id: 'loot', label: 'Loot', sortable: true },
     { id: 'ready', label: 'Ready', sortable: true },
-    { id: 'seen', label: 'Seen', sortable: true },
+    { id: 'seen', label: 'Last log', sortable: true },
   ];
   const meta = $derived(
     [`${roster.length} raiders`, readiness === null ? '' : `median item level ${readiness.median_item_level}`]
@@ -167,7 +167,7 @@
         ? dash
         : row.short === 0
           ? { value: '✓', tone: 'kill' }
-          : { value: `${row.short} short`, tone: 'wipe' },
+          : { value: `${row.short} missing`, tone: 'wipe' },
       seenText(row.seenDays) === ''
         ? { value: '', muted: true }
         : {

@@ -195,6 +195,8 @@ export interface WordInputs {
   readiness: readonly GuildReadinessRow[];
   movers: { up: Mover[]; down: Mover[] };
   now: Date;
+  /** `Wed 6 Jan`: the raid the rating falls are from. */
+  lastRaidLabel?: string;
 }
 
 /** What the raider is short of for the raid, as the readiness board words it; the gain to BiS is
@@ -243,7 +245,8 @@ export function needsAWord(inputs: WordInputs): Word[] {
   for (const m of inputs.movers.down) {
     if (-m.change < WORD_RATING_FALL || words.has(m.key)) continue;
     const part = m.weakest === null ? '' : ` · ${m.weakest.part} ${m.weakest.value}`;
-    add(m.key, m.name, m.cls, `Rating ${m.rating - m.change} to ${m.rating}${part}`, 'report');
+    const when = inputs.lastRaidLabel === undefined ? '' : `, ${inputs.lastRaidLabel}`;
+    add(m.key, m.name, m.cls, `Rating ${m.rating - m.change} to ${m.rating}${when}${part}`, 'report');
   }
   return [...words.values()];
 }

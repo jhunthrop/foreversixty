@@ -179,7 +179,7 @@
   </div>
   {#if stillShort.length > 0}
     <p class="text-muted px-5 pt-2 text-[14px]" data-testid="guild-week-still-short">
-      If all answer: <b class="text-wipe"
+      With every filler in: <b class="text-wipe"
         >{stillShort.map((r) => `${GROUP_WORD[r.group]} ${r.stillShort} short`).join(', ')}</b
       >
     </p>
