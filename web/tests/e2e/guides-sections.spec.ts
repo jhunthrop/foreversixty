@@ -238,7 +238,10 @@ for (const [label, viewport] of [
     test('has a racials lane with the recommended races marked', async ({ page }) => {
       await page.goto(PAGE);
       const lane = page.getByTestId('guide-race-table');
-      await expect(lane.locator('[data-testid^="guide-race-"]')).toHaveCount(6);
+      // From 1280 the lane's last rows may wrap under the prose (lib/ui/reading-wrap.ts): count the section's.
+      await expect(
+        page.locator('#races [data-testid^="guide-race-"]:not([data-testid="guide-race-table"])'),
+      ).toHaveCount(6);
       const gnome = page.getByTestId('guide-race-gnome');
       await expect(gnome).toContainText('Recommended');
       await expect(gnome).toContainText('Eureka!');

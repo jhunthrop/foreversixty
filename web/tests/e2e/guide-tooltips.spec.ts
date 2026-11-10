@@ -74,13 +74,15 @@ test.describe('a spec guide opens the game tooltip for every name it shows', () 
     await pick.scrollIntoViewIfNeeded();
     const pickName = (await pick.innerText()).trim();
     await pick.hover();
-    const itemTip = page.getByTestId('item-tooltip');
+    // The floating tooltip; the Best in slot doll's centre holds its own in-flow one.
+    const itemTip = page.getByRole('tooltip').and(page.getByTestId('item-tooltip'));
     await expect(itemTip).toBeVisible();
     await expect(itemTip).toContainText(pickName);
     await page.mouse.move(0, 0);
     await expect(itemTip).toBeHidden();
 
-    const consumable = page.locator('[data-testid="guide-consumables"] [data-bis-item]').first();
+    // The consumables may wrap under the prose from 1280 (lib/ui/reading-wrap.ts): the section holds them.
+    const consumable = page.locator('#enchants-and-consumables [data-bis-item]').first();
     await consumable.scrollIntoViewIfNeeded();
     await consumable.hover();
     await expect(itemTip).toContainText(/^[\s\S]*Use: /);
