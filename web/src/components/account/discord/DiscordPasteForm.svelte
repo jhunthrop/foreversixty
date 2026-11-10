@@ -11,7 +11,8 @@
   import { button } from '../../../lib/ui/button';
   import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, FIELD_LABEL, fieldEdge } from '../../../lib/ui/field';
   import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../../lib/ui/link';
-  import Glyph from '../../ui/Glyph.svelte';
+  import Icon from '../../ui/Icon.svelte';
+  import { ICON_CHEVRON_RIGHT } from '../../../lib/ui/ui-icons';
   import Spinner from '../../ui/Spinner.svelte';
   import DiscordEventRows from './DiscordEventRows.svelte';
 
@@ -125,7 +126,7 @@
         onclick={onConnect}
         data-testid="discord-connect-instead"
       >
-        {notificationsCopy.connectInstead}<Glyph name="chevron" class={ACTION_LINK_CHEVRON} />
+        {notificationsCopy.connectInstead}<Icon icon={ICON_CHEVRON_RIGHT} class={ACTION_LINK_CHEVRON} />
       </button>
     {/if}
   </div>

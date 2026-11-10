@@ -4,6 +4,8 @@
      buttons. It is the section's primary element and doubles as the tooltip, so nothing
      floats over the chart. -->
 <script lang="ts">
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_CHEVRON_RIGHT } from '../../lib/ui/ui-icons';
   import type { Readout } from '../../lib/character/history-chart';
 
   let {
@@ -36,15 +38,7 @@
 </script>
 
 {#snippet chevron(direction: 'left' | 'right')}
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path
-      d={direction === 'left' ? 'M10 3 5 8l5 5' : 'M6 3l5 5-5 5'}
-      stroke="currentColor"
-      stroke-width="1.75"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
+  <Icon icon={ICON_CHEVRON_RIGHT} size={16} class={direction === 'left' ? 'rotate-180' : ''} />
 {/snippet}
 
 <div class="flex min-h-14 items-center justify-between gap-3" data-testid={testid}>

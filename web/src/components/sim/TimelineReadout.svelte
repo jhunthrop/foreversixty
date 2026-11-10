@@ -7,7 +7,8 @@
   import type { ActionVisuals } from '../../lib/sim/action-visuals';
   import { seconds, type Readout } from '../../lib/sim/timeline';
   import { timelineCopy } from '../../lib/sim/timeline-copy';
-  import Glyph from '../ui/Glyph.svelte';
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_CLOSE } from '../../lib/ui/ui-icons';
   import Divided from '../ui/Divided.svelte';
   import Overlay from '../ui/Overlay.svelte';
   import ActionIcon from './ActionIcon.svelte';
@@ -47,7 +48,7 @@
           }}
           data-testid="timeline-readout-close"
         >
-          <Glyph name="close" size={16} />
+          <Icon icon={ICON_CLOSE} size={16} />
         </button>
       {/if}
     </div>

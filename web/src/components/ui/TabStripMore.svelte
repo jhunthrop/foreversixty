@@ -8,6 +8,8 @@
 <script lang="ts">
   import { TAB_STRIP, tabClass, type TabItem } from '../../lib/ui/tabs';
   import Overlay from './Overlay.svelte';
+  import Icon from './Icon.svelte';
+  import { ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
 
   let {
     tabs,
@@ -115,7 +117,7 @@
         data-more={which}
         data-testid={testid === undefined ? undefined : `${testid}-more`}
         onclick={() => (open = open === which ? null : which)}
-        >{moreText(list)}<span aria-hidden="true" class="ml-[6px] text-[11px]">▾</span></button
+        >{moreText(list)}<Icon icon={ICON_CHEVRON_DOWN} size={14} class="ml-[6px]" /></button
       >
     {/each}
   </nav>

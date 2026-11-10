@@ -102,8 +102,15 @@
   .site-door {
     display: inline-flex;
     align-items: center;
+    gap: 8px;
     min-height: 44px;
     color: var(--color-nav);
+  }
+  /* A door's custom icon (lib/ui/ui-icons.ts) leads its label in currentColor, so hover, open and
+     current colour it with the label. The bar shows it only where the doors keep one row with it
+     (the container query below); the labels never shrink to make room. */
+  .site-door-icon {
+    display: none;
   }
   /* A plain door (no sub-pages) fills its group's bar height, as a door with a panel does. */
   .site-door-plain {
@@ -194,7 +201,6 @@
     place-items: center;
     width: 24px;
     height: 24px;
-    margin: 0 -2px;
     border-radius: 6px;
     background: rgb(88 101 242 / 0.16);
     color: #9aa4ff;
@@ -308,6 +314,21 @@
     }
   }
 
+  /* The door icons need about 200 px the bar only has when it is this wide (measured signed in
+     with an 18-letter name on the wide column, design/reviews/2026-11-09-nav-icons): below it the
+     bar is the labels alone. A size container from 1024 only: below that the account sheet is
+     fixed to the viewport, which a container would capture. */
+  @media (min-width: 1024px) {
+    .site-header {
+      container: site-bar / inline-size;
+    }
+  }
+  @container site-bar (min-width: 1620px) {
+    .site-door-icon {
+      display: block;
+    }
+  }
+
   /* The phone bar: wordmark, selector crest, Menu button; the doors open beneath. */
   @media (max-width: 1023px) {
     .site-header {
@@ -417,12 +438,23 @@
     .site-group-plain > .site-door-plain {
       display: flex;
       align-items: center;
+      gap: 10px;
       min-height: 44px;
       font-size: 16px;
       color: var(--color-strong);
     }
-    .site-menu-heading {
+    /* Every Menu row leads with its door's icon: the plain doors' rows and the headed groups. */
+    .site-door-icon {
       display: block;
+    }
+    /* The headed groups' icons match the plain doors' rows: the same size and ink. */
+    .site-menu-heading .site-door-icon {
+      color: var(--color-strong);
+    }
+    .site-menu-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-family: var(--font-body);
       text-shadow: none;
       margin: 0 0 4px;
@@ -460,6 +492,13 @@
     }
     .site-group[data-group='guides'] .site-menu-list {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  /* A phone's Menu lists the Logs and Guild rows one to a line, so a row's line under its title
+     never wraps to four; the Guides grid keeps its three classes a row. */
+  @media (max-width: 559px) {
+    .site-group:not([data-group='guides']) .site-menu-list {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 

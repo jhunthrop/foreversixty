@@ -3,6 +3,8 @@
      roster sit below Attendance as native disclosures. The summary is a 44 px row holding the h2,
      an optional mono count and a 16 px chevron that turns when the section opens. -->
 <script lang="ts">
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
   import type { Snippet } from 'svelte';
 
   let {
@@ -31,11 +33,7 @@
   >
     <h2 id={headingId} class={headingClass}>{heading}</h2>
     {#if count !== null}<span class="text-muted numeric text-[13px]">{count}</span>{/if}
-    <svg
-      class="text-muted size-4 shrink-0 transition-transform group-open:rotate-180"
-      viewBox="0 0 16 16"
-      aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg
-    >
+    <Icon icon={ICON_CHEVRON_DOWN} size={16} class="text-muted transition-transform group-open:rotate-180" />
   </summary>
   <div class="pt-3">{@render children()}</div>
 </details>

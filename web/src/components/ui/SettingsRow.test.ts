@@ -1,6 +1,7 @@
 import { createRawSnippet } from 'svelte';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import { ICON_MANAGE, ICON_SIM } from '../../lib/ui/ui-icons';
 import SettingsRow from './SettingsRow.svelte';
 
 function row(props: Record<string, unknown>): string {
@@ -15,7 +16,7 @@ describe('SettingsRow', () => {
     const body = row({ value: 'On' });
     expect(body).toMatch(/^<!--\[-->?.*?<div class="border-line-soft/s);
     expect(body).not.toContain('hover:bg-row-hover');
-    expect(body).not.toContain('data-glyph="chevron"');
+    expect(body).not.toContain('data-icon="chevron-right"');
   });
 
   it('is an anchor with a chevron and the row hover when it has an href', () => {
@@ -23,7 +24,7 @@ describe('SettingsRow', () => {
     expect(first(body, 'a')).toContain('href="/sim"');
     expect(body).toContain('hover:bg-row-hover');
     expect(body).toContain('focus-visible:-outline-offset-2');
-    expect(body).toContain('data-glyph="chevron"');
+    expect(body).toContain('data-icon="chevron-right"');
   });
 
   it('opens an external link in a new tab with noopener', () => {
@@ -44,8 +45,8 @@ describe('SettingsRow', () => {
   });
 
   it('draws its glyph open in a 32 px slot, no tile ground', () => {
-    const body = row({ glyph: 'server' });
-    expect(body).toContain('data-glyph="server"');
+    const body = row({ glyph: ICON_SIM });
+    expect(body).toContain('data-icon="sim"');
     expect(body).toContain('h-8 w-8');
     expect(body).not.toContain('bg-tile');
   });
@@ -69,13 +70,13 @@ describe('SettingsRow', () => {
   });
 
   it('a nested row with a tile indents the tile to 46 px', () => {
-    expect(row({ nested: true, glyph: 'lock' })).toContain('padding-left: 46px');
+    expect(row({ nested: true, glyph: ICON_MANAGE })).toContain('padding-left: 46px');
   });
 
   it('muted value: --muted ink and no chevron even with a link', () => {
     const body = row({ value: 'Premium only', muted: true, href: '/premium' });
     expect(body).toMatch(/text-muted"[^>]*data-testid="settings-row-value">Premium only/);
-    expect(body).not.toContain('data-glyph="chevron"');
+    expect(body).not.toContain('data-icon="chevron-right"');
   });
 
   it('disabled: muted label, not a link, no chevron, aria-disabled', () => {
@@ -83,7 +84,7 @@ describe('SettingsRow', () => {
     expect(body).not.toContain('href=');
     expect(body).toContain('aria-disabled="true"');
     expect(body).toContain('text-muted');
-    expect(body).not.toContain('data-glyph="chevron"');
+    expect(body).not.toContain('data-icon="chevron-right"');
   });
 
   it('loading: a 96 x 12 skeleton bar instead of the value, marked busy', () => {
@@ -101,7 +102,7 @@ describe('SettingsRow', () => {
   it('error: the failure colour and the caller words, no chevron', () => {
     const body = row({ error: 'Could not load', href: '/x' });
     expect(body).toMatch(/text-wipe[^>]*data-testid="settings-row-value">Could not load/);
-    expect(body).not.toContain('data-glyph="chevron"');
+    expect(body).not.toContain('data-icon="chevron-right"');
   });
 
   it('hands its label id to a trailing control so a Switch can name itself by it', () => {

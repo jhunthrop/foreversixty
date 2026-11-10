@@ -9,7 +9,8 @@
   import { rarityBorderColorFor } from '../../lib/planner/items';
   import { dataUrl } from '../../lib/planner/load';
   import { itemIconFace } from '../../lib/ui/item-icon';
-  import Glyph from './Glyph.svelte';
+  import Icon from './Icon.svelte';
+  import { ICON_CHECK, ICON_UPGRADE } from '../../lib/ui/ui-icons';
 
   let {
     icon,
@@ -51,8 +52,8 @@
   });
 
   const BADGE = {
-    upgrade: { glyph: 'upgrade', title: 'Upgrade', tone: 'bg-gold text-bg' },
-    worn: { glyph: 'check', title: 'You wear the pick', tone: 'bg-kill text-bg' },
+    upgrade: { glyph: ICON_UPGRADE, title: 'Upgrade', tone: 'bg-gold text-bg' },
+    worn: { glyph: ICON_CHECK, title: 'You wear the pick', tone: 'bg-kill text-bg' },
   } as const;
 </script>
 
@@ -95,7 +96,7 @@
         badge
       ].tone}"
       title={BADGE[badge].title}
-      data-badge={badge}><Glyph name={BADGE[badge].glyph} size={11} /></span
+      data-badge={badge}><Icon icon={BADGE[badge].glyph} size={11} /></span
     >
   {/if}
 </span>

@@ -9,7 +9,14 @@
   import { button, type ButtonTone } from '../../lib/ui/button';
   import { PLATE_SURFACE } from '../../lib/ui/primitives';
   import ActionLink from './ActionLink.svelte';
-  import Glyph from './Glyph.svelte';
+  import {
+    ICON_LINK,
+    ICON_LOGS,
+    ICON_MANAGE,
+    ICON_PREMIUM,
+    ICON_RANKINGS,
+    ICON_SIM,
+  } from '../../lib/ui/ui-icons';
   import SettingsRow from './SettingsRow.svelte';
   import SelectSheet from './SelectSheet.svelte';
   import Spinner from './Spinner.svelte';
@@ -65,7 +72,7 @@
               <button class={button(tone)} disabled>{TONE_WORDS[tone]}</button>
             {:else}
               <button class="{button(tone)} {FORCED[tone][state] ?? ''}" data-state={state}
-                ><Glyph name="card" />{TONE_WORDS[tone]}</button
+                >{TONE_WORDS[tone]}</button
               >
             {/if}
           </div>
@@ -119,37 +126,47 @@
       <div class="flex flex-col gap-2">
         {@render label('default, hover, focus-visible, active')}
         <div class="{PLATE_SURFACE} overflow-hidden" data-testid="sheet-rows">
-          <SettingsRow label="Server sims" glyph="server" value="On · 3 runs this month" href="#sim" />
+          <SettingsRow label="Server sims" glyph={ICON_SIM} value="On · 3 runs this month" href="#sim" />
           <div data-force="hover">
             <SettingsRow
               label="History charts"
-              glyph="chart"
+              glyph={ICON_RANKINGS}
               value="Open on your main character"
               href="#history"
             />
           </div>
           <div data-force="focus-visible">
-            <SettingsRow label="Supporter mark" glyph="star" value="Shown on your characters" href="#mark" />
+            <SettingsRow
+              label="Supporter mark"
+              glyph={ICON_PREMIUM}
+              value="Shown on your characters"
+              href="#mark"
+            />
           </div>
           <div data-force="active">
-            <SettingsRow label="Discord notifications" glyph="bell" value="On · 2 events" href="#discord" />
+            <SettingsRow
+              label="Discord notifications"
+              glyph={ICON_LINK}
+              value="On · 2 events"
+              href="#discord"
+            />
           </div>
         </div>
       </div>
       <div class="flex flex-col gap-2">
         {@render label('muted, loading, empty, error, disabled')}
         <div class="{PLATE_SURFACE} overflow-hidden">
-          <SettingsRow label="Quiet value" glyph="bell" value="Premium only" muted />
-          <SettingsRow label="Loading value" glyph="star" loading />
-          <SettingsRow label="Empty value" glyph="star" empty />
-          <SettingsRow label="Error value" glyph="star" error="Could not load" />
-          <SettingsRow label="Disabled row" glyph="star" value="Off" disabled />
+          <SettingsRow label="Quiet value" glyph={ICON_LINK} value="Premium only" muted />
+          <SettingsRow label="Loading value" glyph={ICON_SIM} loading />
+          <SettingsRow label="Empty value" glyph={ICON_RANKINGS} empty />
+          <SettingsRow label="Error value" glyph={ICON_LOGS} error="Could not load" />
+          <SettingsRow label="Disabled row" glyph={ICON_MANAGE} value="Off" disabled />
         </div>
       </div>
       <div class="flex flex-col gap-2">
         {@render label('with switches, nested')}
         <div class="{PLATE_SURFACE} overflow-hidden">
-          <SettingsRow label="A server sim finishes" glyph="server">
+          <SettingsRow label="A server sim finishes" glyph={ICON_SIM}>
             {#snippet control(labelId)}
               <Switch
                 checked={simSwitch}
@@ -161,7 +178,7 @@
           </SettingsRow>
           <SettingsRow
             label="Include private logs"
-            glyph="lock"
+            glyph={ICON_MANAGE}
             sub="Off: private logs are never posted."
             nested
           >

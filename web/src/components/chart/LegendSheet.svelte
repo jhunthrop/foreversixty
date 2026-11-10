@@ -14,7 +14,8 @@
   import PresetChips from './PresetChips.svelte';
   import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
-  import Glyph from '../ui/Glyph.svelte';
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_PIN } from '../../lib/ui/ui-icons';
   import Overlay from '../ui/Overlay.svelte';
   import Row from '../ui/Row.svelte';
   import Switch from '../ui/Switch.svelte';
@@ -140,7 +141,7 @@
     {#snippet titleContent()}<span class="block truncate" style:color={entry.colour}>{entry.label}</span
       >{/snippet}
     {#snippet trail()}
-      {#if entry.pinned}<Glyph name="pin" size={12} class="text-muted" />{/if}
+      {#if entry.pinned}<Icon icon={ICON_PIN} size={12} class="text-muted" />{/if}
       <span class="text-muted numeric text-[13px]">{formatValue(entry.figure)}</span>
       <Switch
         checked={entry.drawn}

@@ -8,7 +8,8 @@
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import { button } from '../../../lib/ui/button';
   import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../../lib/ui/link';
-  import Glyph from '../../ui/Glyph.svelte';
+  import Icon from '../../ui/Icon.svelte';
+  import { ICON_CHEVRON_RIGHT } from '../../../lib/ui/ui-icons';
   import DiscordConnectLink from './DiscordConnectLink.svelte';
   import DiscordStatusLine from './DiscordStatusLine.svelte';
 
@@ -42,7 +43,7 @@
     <p class="text-muted mt-2 text-[13px]">{notificationsCopy.connectExplanation}</p>
     <div class="w-full"><DiscordStatusLine {status} /></div>
     <button type="button" class={ACTION_LINK} onclick={onPaste} data-testid="discord-paste-instead">
-      {notificationsCopy.pasteInstead}<Glyph name="chevron" class={ACTION_LINK_CHEVRON} />
+      {notificationsCopy.pasteInstead}<Icon icon={ICON_CHEVRON_RIGHT} class={ACTION_LINK_CHEVRON} />
     </button>
     {#if replacing}
       <button type="button" class={button('ghost')} onclick={onCancel} data-testid="discord-cancel">

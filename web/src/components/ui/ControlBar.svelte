@@ -14,7 +14,8 @@
   import { REGION } from '../../lib/ui/regions';
   import { checkRadio } from '../../lib/ui/control-bar';
   import { controlSummary, type ControlGroup, type ControlOption } from '../../lib/ui/primitives';
-  import Glyph from './Glyph.svelte';
+  import Icon from './Icon.svelte';
+  import { ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
   import './segmented.css';
   import Select from './Select.svelte';
 
@@ -100,7 +101,7 @@
     >
       <span class="min-w-0 truncate">{line}</span>
       <span class="text-gold ml-auto flex items-center gap-1 text-[13px]"
-        >Change <Glyph name="chevron" size={14} class="rotate-90" /></span
+        >Change <Icon icon={ICON_CHEVRON_DOWN} size={14} /></span
       >
     </button>
     <div

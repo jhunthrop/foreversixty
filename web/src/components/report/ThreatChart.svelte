@@ -19,7 +19,8 @@
   import PlayersControl from '../chart/PlayersControl.svelte';
   import TimeSeriesChart from '../chart/TimeSeriesChart.svelte';
   import Button from '../ui/Button.svelte';
-  import Glyph from '../ui/Glyph.svelte';
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_CLOSE } from '../../lib/ui/ui-icons';
   import Section from '../ui/Section.svelte';
 
   let {
@@ -127,7 +128,7 @@
     {/if}
     {#if !whole}
       <Button tone="ghost" size="sm" onclick={() => onWindow(null)} testid="window-reset">
-        <Glyph name="close" size={14} />{chartCopy.wholeFight}
+        <Icon icon={ICON_CLOSE} size={14} />{chartCopy.wholeFight}
       </Button>
     {/if}
   </div>

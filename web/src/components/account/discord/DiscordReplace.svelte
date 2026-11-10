@@ -10,7 +10,8 @@
   import { LINK_BUTTON } from '../../../lib/account/discord-styles';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import { ROW, ROW_INTERACTIVE, ROW_LABEL, ROW_SUB } from '../../../lib/ui/row';
-  import Glyph from '../../ui/Glyph.svelte';
+  import Icon from '../../ui/Icon.svelte';
+  import { ICON_CHEVRON_RIGHT, ICON_REFRESH } from '../../../lib/ui/ui-icons';
   import SettingsRow from '../../ui/SettingsRow.svelte';
   import DiscordConnectLink from './DiscordConnectLink.svelte';
 
@@ -49,13 +50,13 @@
   >
     {#snippet content(text)}
       <span class="text-muted inline-flex h-8 w-8 shrink-0 items-center justify-center" aria-hidden="true"
-        ><Glyph name="refresh" size={16} /></span
+        ><Icon icon={ICON_REFRESH} size={16} /></span
       >
       <span class="flex min-w-0 flex-1 flex-col">
         <span class="text-strong {ROW_LABEL}">{text}</span>
         <span class={ROW_SUB} data-testid="discord-replace-note">{notificationsCopy.reconnectNote}</span>
       </span>
-      <Glyph name="chevron" class="text-muted" />
+      <Icon icon={ICON_CHEVRON_RIGHT} class="text-muted" />
     {/snippet}
   </DiscordConnectLink>
 {:else if source === 'connected'}
@@ -75,7 +76,7 @@
 {:else if variant === 'row'}
   <SettingsRow
     label={notificationsCopy.replace}
-    glyph="refresh"
+    glyph={ICON_REFRESH}
     {disabled}
     onclick={onReplace}
     testid="discord-replace"

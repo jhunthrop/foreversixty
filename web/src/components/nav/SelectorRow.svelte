@@ -9,7 +9,8 @@
   import { rowLineThree, rowLineTwo, type SelectorRow } from '../../lib/character-selector/rows';
   import { classColorVar } from '../../lib/report/format';
   import { button } from '../../lib/ui/button';
-  import Glyph from '../ui/Glyph.svelte';
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_CHECK } from '../../lib/ui/ui-icons';
   import SelectorCrest from './SelectorCrest.svelte';
 
   let {
@@ -71,7 +72,7 @@
         </span>
       {/if}
     </span>
-    {#if row.current}<Glyph name="check" size={18} class="csel-check" />{/if}
+    {#if row.current}<Icon icon={ICON_CHECK} size={18} class="csel-check" />{/if}
   </button>
   {#if row.status === 'failed'}
     <button

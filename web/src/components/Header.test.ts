@@ -28,8 +28,8 @@ describe('Header', () => {
     expect(last.hasAttribute('aria-current')).toBe(false);
     expect(last.classList.contains('site-door-premium')).toBe(true);
     expect(last.textContent?.trim()).toBe(PREMIUM_NAV_ITEM.label);
-    expect(last.querySelectorAll('svg, i')).toHaveLength(0);
-    expect(PREMIUM_NAV_ITEM).toEqual({ label: 'Premium', href: '/premium' });
+    expect([...last.querySelectorAll('svg, i')].map((el) => el.getAttribute('data-icon'))).toEqual(['premium']);
+    expect(PREMIUM_NAV_ITEM).toEqual({ label: 'Premium', href: '/premium', icon: 'premium' });
   });
 
   it('carries the pre-paint hint script inside the header, before the doors (so /b/{id} has it)', async () => {

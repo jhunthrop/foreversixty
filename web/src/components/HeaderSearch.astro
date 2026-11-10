@@ -13,6 +13,8 @@
 import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
 import { button } from '../lib/ui/button';
 import { FIELD_CONTROL, FIELD_FOCUS, fieldEdge } from '../lib/ui/field';
+import { ICON_SEARCH } from '../lib/ui/ui-icons';
+import Icon from './ui/Icon.astro';
 
 interface Props {
   /** `bar` is the desktop button and its panel; `menu` is the Menu's own row. */
@@ -38,20 +40,7 @@ const SUBMIT = `${button('secondary', 'md')} shrink-0`;
       data-header-search-toggle
       data-testid="site-search-toggle"
     >
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
-      </svg>
+      <Icon icon={ICON_SEARCH} size={20} />
       <kbd class="site-search-kbd" aria-hidden="true">
         {copy.slashKey}
       </kbd>
@@ -77,21 +66,11 @@ const SUBMIT = `${button('secondary', 'md')} shrink-0`;
           {copy.nameLabel}
         </label>
         <span class="relative min-w-0 flex-1">
-          <svg
+          <Icon
+            icon={ICON_SEARCH}
+            size={18}
             class="text-gold pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-3.5-3.5" />
-          </svg>
+          />
           <input
             id={`${id}-name`}
             name="name"
@@ -139,21 +118,11 @@ const SUBMIT = `${button('secondary', 'md')} shrink-0`;
         {copy.nameLabel}
       </label>
       <span class="relative min-w-0 flex-1">
-        <svg
+        <Icon
+          icon={ICON_SEARCH}
+          size={18}
           class="text-gold pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.5-3.5" />
-        </svg>
+        />
         <input
           id={`${id}-name`}
           name="name"

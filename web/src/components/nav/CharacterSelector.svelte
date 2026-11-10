@@ -9,6 +9,8 @@
      Base.astro's pre-paint script has already filled from the stored pointer, so the box, the
      crest and the name are where they will be when the island swaps in the button. -->
 <script lang="ts">
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_ACCOUNT, ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
   import { tick } from 'svelte';
   import { battlenetStartUrl, signOut } from '../../lib/account/api';
   import { browserChooseDeps, chooseCharacter, choosePointer } from '../../lib/character-selector/choose';
@@ -201,36 +203,11 @@
           <span class="csel-sub-short" data-csel-sub-short></span>
           <span class="csel-level" data-csel-level></span>
         </span>
-        <svg
-          class="csel-chev"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.4"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M6 9l6 6 6-6"></path>
-        </svg>
+        <Icon icon={ICON_CHEVRON_DOWN} size={14} class="csel-chev" />
       </span>
       <span class="csel-pre-out">
         <span class="csel-ghost">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="8" r="4"></circle>
-            <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"></path>
-          </svg>
+          <Icon icon={ICON_ACCOUNT} size={20} />
         </span>
         <span class="csel-text">
           <span class="csel-name">{selectorCopy.closedSignedOut}</span>
@@ -238,20 +215,7 @@
         </span>
         <!-- The same chevron the hydrated signed-out button draws, so "Sign in" looks the same
              before and after the island loads (Forever Score fix round 2 item 9). -->
-        <svg
-          class="csel-chev csel-pre-out-chev"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.4"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M6 9l6 6 6-6"></path>
-        </svg>
+        <Icon icon={ICON_CHEVRON_DOWN} size={14} class="csel-chev csel-pre-out-chev" />
       </span>
       <span class="csel-pre-skel">
         <span class="csel-skeleton csel-skeleton-ring"></span>
@@ -279,19 +243,7 @@
         <SelectorCrest classSlug={current.classSlug} size={32} />
         {#if mark !== null}<i class="csel-mark" data-mark={mark} data-testid="selector-mark"></i>{/if}
         <span class="csel-badge">
-          <svg
-            width="8"
-            height="8"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="4"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M6 9l6 6 6-6"></path>
-          </svg>
+          <Icon icon={ICON_CHEVRON_DOWN} size={8} />
         </span>
       </span>
       <span class="csel-name-bar" style:color={classColorVar(current.classSlug)}>{current.name}</span>
@@ -305,20 +257,7 @@
             >{current.level}</span
           >{/if}
       </span>
-      <svg
-        class="csel-chev"
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.4"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M6 9l6 6 6-6"></path>
-      </svg>
+      <Icon icon={ICON_CHEVRON_DOWN} size={14} class="csel-chev" />
     </button>
     {#if mark !== null}
       <span class="csel-tip ui-overlay" data-kind="tooltip" role="tooltip" id={TIP_ID}
@@ -338,38 +277,13 @@
       data-testid="character-selector"
     >
       <span class="csel-ghost">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          aria-hidden="true"
-        >
-          <circle cx="12" cy="8" r="4"></circle>
-          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"></path>
-        </svg>
+        <Icon icon={ICON_ACCOUNT} size={20} />
       </span>
       <span class="csel-text">
         <span class="csel-name" data-testid="selector-name">{selector.accountName}</span>
         <span class="csel-sub" data-testid="selector-sub">{selectorCopy.accountSub}</span>
       </span>
-      <svg
-        class="csel-chev"
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.4"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M6 9l6 6 6-6"></path>
-      </svg>
+      <Icon icon={ICON_CHEVRON_DOWN} size={14} class="csel-chev" />
     </button>
   {:else}
     <button
@@ -384,38 +298,13 @@
       data-testid="character-selector"
     >
       <span class="csel-ghost">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          aria-hidden="true"
-        >
-          <circle cx="12" cy="8" r="4"></circle>
-          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"></path>
-        </svg>
+        <Icon icon={ICON_ACCOUNT} size={20} />
       </span>
       <span class="csel-text">
         <span class="csel-name">{selectorCopy.closedSignedOut}</span>
         <span class="csel-sub">{selectorCopy.closedSignedOutSub}</span>
       </span>
-      <svg
-        class="csel-chev"
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.4"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M6 9l6 6 6-6"></path>
-      </svg>
+      <Icon icon={ICON_CHEVRON_DOWN} size={14} class="csel-chev" />
     </button>
   {/if}
 

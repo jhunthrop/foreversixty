@@ -7,6 +7,8 @@
      before the island hydrates. It is rendered by CharacterSelector.svelte (one island, one
      state) and CSS places it in the Menu beneath the bar. -->
 <script lang="ts">
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_ACCOUNT, ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { closedSecondLine, type SelectorRow } from '../../lib/character-selector/rows';
   import type { ClosedKind } from '../../lib/character-selector/selector-state.svelte';
@@ -22,37 +24,12 @@
 </script>
 
 {#snippet chevron()}
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2.4"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-    style="color: var(--color-muted)"
-  >
-    <path d="M6 9l6 6 6-6"></path>
-  </svg>
+  <Icon icon={ICON_CHEVRON_DOWN} size={14} class="text-muted" />
 {/snippet}
 
 {#snippet ghost()}
   <span class="csel-ghost" style="width:36px;height:36px">
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="8" r="4"></circle>
-      <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"></path>
-    </svg>
+    <Icon icon={ICON_ACCOUNT} size={20} />
   </span>
 {/snippet}
 

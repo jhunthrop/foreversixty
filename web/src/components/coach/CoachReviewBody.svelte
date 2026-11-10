@@ -6,6 +6,8 @@
      lines and the empty Then and Doing well slots stay, so the model's text swaps in with no
      shift. Evidence anchors become chips through coachAnchorHref. -->
 <script lang="ts">
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_ARROW_RIGHT } from '../../lib/ui/ui-icons';
   import { chipsFor, firstSpellId } from '../../lib/coach/chips';
   import { coachCopy } from '../../lib/coach/copy';
   import { withAnchorNames, type CoachNames } from '../../lib/coach/names';
@@ -61,9 +63,9 @@
     <ul class="mt-2 flex flex-col gap-1 {slotClass('links', held)}" data-testid="coach-link-lines">
       {#each lines as line (line)}
         <li class="text-muted flex gap-2 text-[13px] leading-5">
-          <svg class="text-gold mt-1 h-3 w-3 shrink-0" viewBox="0 0 12 12" aria-hidden="true">
-            <path d="M2 6h8M7 3l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.5" />
-          </svg><span><CoachText text={line} {names} {build} {classSlug} /></span>
+          <Icon icon={ICON_ARROW_RIGHT} size={12} class="text-gold mt-1" /><span
+            ><CoachText text={line} {names} {build} {classSlug} /></span
+          >
         </li>
       {/each}
     </ul>

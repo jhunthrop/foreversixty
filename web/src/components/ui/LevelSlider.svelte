@@ -3,7 +3,8 @@
      level range (a slider whose value text is "Level 34"; arrows move one level, PageUp/PageDown
      ten, Home and End the ends), next (off at the last level). -->
 <script lang="ts">
-  import Glyph from './Glyph.svelte';
+  import Icon from './Icon.svelte';
+  import { ICON_CHEVRON_RIGHT } from '../../lib/ui/ui-icons';
 
   let {
     level,
@@ -57,7 +58,7 @@
     onclick={() => onchange(clamp(level - 1))}
     data-testid={`${testid}-previous`}
   >
-    <Glyph name="chevron" size={16} class="rotate-180" />
+    <Icon icon={ICON_CHEVRON_RIGHT} size={16} class="rotate-180" />
   </button>
   <input
     type="range"
@@ -85,7 +86,7 @@
     onclick={() => onchange(clamp(level + 1))}
     data-testid={`${testid}-next`}
   >
-    <Glyph name="chevron" size={16} />
+    <Icon icon={ICON_CHEVRON_RIGHT} size={16} />
   </button>
 </div>
 
