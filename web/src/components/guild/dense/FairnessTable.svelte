@@ -50,12 +50,19 @@
     });
   }
 
+  /** A shared row's nights: the median raider's. */
+  function medianNights(row: FairnessRow): string {
+    const sorted = [...row.raiders].sort((a, b) => a.present - b.present);
+    const mid = sorted[Math.floor(sorted.length / 2)];
+    return `${mid.present}/${mid.nights}`;
+  }
+
   function figures(row: FairnessRow) {
     const one = row.raiders.length === 1 ? row.raiders[0] : null;
     return [
       { value: String(row.since) },
       { value: String(row.items) },
-      one === null ? { value: '–', muted: true } : { value: `${one.present}/${one.nights}` },
+      one === null ? { value: medianNights(row) } : { value: `${one.present}/${one.nights}` },
     ];
   }
 </script>
@@ -77,6 +84,7 @@
           {#if one !== null}{one.spec}{one.last === null
               ? ' · no item yet'
               : ` · last ${one.last.item}, ${day(one.last.at)}`}{:else}{#each row.raiders as r, i (r.key)}{#if i > 0},&#32;{/if}<b
+                class="whitespace-nowrap"
                 style:color={classColorVar(r.cls)}>{r.name}</b
               >{/each}{/if}
         {/snippet}

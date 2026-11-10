@@ -5,13 +5,14 @@
 <script lang="ts">
   import activeBuild from '../../../data/active-build.json';
   import type { OfficerApplication } from '../../../lib/guild/recruit-api';
-  import type { LootNight } from '../../../lib/guild/loot-council-api';
+  import type { LootCouncilCandidate, LootNight } from '../../../lib/guild/loot-council-api';
+  import { classColorVar } from '../../../lib/report/format';
+  import ItemRow from '../../ui/ItemRow.svelte';
   import { GROUP_WORD } from '../../../lib/guild/dense/roster-board';
   import type { RecruitGap, SlipRow } from '../../../lib/guild/dense/week-board';
   import { lootIconOf } from '../../../lib/guild/loot-icon';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Button from '../../ui/Button.svelte';
-  import ItemIcon from '../../ui/ItemIcon.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
   import AttendanceStrip from './AttendanceStrip.svelte';
@@ -25,6 +26,7 @@
     nightLabel,
     lootHref,
     slipping,
+    topOf = new Map(),
   }: {
     gaps: readonly RecruitGap[];
     applications: readonly OfficerApplication[];
@@ -35,6 +37,8 @@
     nightLabel: string;
     lootHref: string;
     slipping: readonly SlipRow[];
+    /** Each open drop's leading candidate (the council's first). */
+    topOf?: ReadonlyMap<number, LootCouncilCandidate>;
   } = $props();
 
   const build = activeBuild.build;
@@ -50,15 +54,20 @@
       </Row>
     {/each}
     {#each pending as app (app.id)}
+      {@const parse = app.character.best_parse}
       <Row
         title={app.character.name}
         titleTone={{ classSlug: (app.character.class ?? 'warrior') as never }}
         sub={[
           app.character.spec_name ?? '',
           app.character.item_level === null ? '' : `${app.character.item_level} ilvl`,
+          parse === null || parse.percentile === null
+            ? ''
+            : `${Math.floor(parse.percentile)}% ${parse.metric.toUpperCase()}`,
         ]
           .filter((p) => p !== '')
           .join(' · ')}
+        wrapTrail
         open
       >
         {#snippet lead()}<ClassCrestRing characterClass={app.character.class ?? ''} size={32} />{/snippet}
@@ -77,17 +86,27 @@
     testid="guild-week-loot"
   >
     {#each night.drops as drop (drop.item_id)}
-      <Row title={drop.name} sub={drop.award === null ? 'Open' : drop.award.name} open>
-        {#snippet lead()}<ItemIcon
-            icon={lootIconOf(drop) ?? undefined}
-            quality={drop.quality}
-            {build}
-            size={32}
-          />{/snippet}
-        {#snippet trail()}
-          {#if drop.award === null}<Button tone="secondary" size="sm" href={lootHref}>Council</Button>{/if}
+      {@const top = topOf.get(drop.item_id) ?? null}
+      <ItemRow
+        item={{
+          id: drop.item_id,
+          name: drop.name,
+          quality: drop.quality,
+          icon: lootIconOf(drop) ?? undefined,
+        }}
+        {build}
+        iconSize={32}
+        testid={`guild-week-drop-${drop.item_id}`}
+      >
+        {#snippet sourceContent()}
+          {#if drop.award !== null}<b style:color={classColorVar(drop.award.class)}>{drop.award.name}</b
+            >{:else if top !== null}Open · <b style:color={classColorVar(top.class)}>{top.name}</b
+            >{#if top.gain_dps !== null}{` +${top.gain_dps} ${(top.gain_unit ?? 'dps').toUpperCase()}`}{/if}{:else}Open{/if}
         {/snippet}
-      </Row>
+        {#snippet trail()}
+          {#if drop.award === null}<Button tone="ghost" size="sm" href={lootHref}>Council</Button>{/if}
+        {/snippet}
+      </ItemRow>
     {/each}
   </Section>
 {/if}

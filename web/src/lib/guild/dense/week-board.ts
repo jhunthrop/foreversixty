@@ -20,8 +20,6 @@ export const FILLERS_SHOWN = 3;
 /** Missed nights among the last SLIP_WINDOW that make a raider slipping (attendance_recent.go). */
 export const SLIP_MISSES = 2;
 export const SLIP_WINDOW = 4;
-/** Benched this many nights or more puts a raider on the Slipping list too. */
-export const BENCH_NIGHTS = 2;
 /** How many raiders each side of last night's rating changes lists. */
 export const MOVERS_EACH = 3;
 /** A rating fall of this many points is worth a word. */
@@ -66,12 +64,12 @@ export function compGaps(view: GuildRaidView): CompGapRow[] {
     const late = groupCount(view, group, 'late');
     const gap = Math.max(0, need - inCount - late);
     const fillers: Filler[] = [
-      ...view.not_signed
-        .filter((n) => (n.group ?? 'ranged') === group)
-        .map((n) => ({ key: n.character_key, name: n.name, cls: n.class, kind: 'ping' as const })),
       ...view.signups
         .filter((s) => s.state === 'bench' && (s.group ?? 'ranged') === group)
         .map((s) => ({ key: s.character_key, name: s.name, cls: s.class, kind: 'bench' as const })),
+      ...view.not_signed
+        .filter((n) => (n.group ?? 'ranged') === group)
+        .map((n) => ({ key: n.character_key, name: n.name, cls: n.class, kind: 'ping' as const })),
     ];
     return {
       group,
@@ -163,15 +161,13 @@ export interface SlipRow {
   nights: number;
 }
 
-/** Raiders who missed SLIP_MISSES of the last SLIP_WINDOW nights, or sat on the bench often; most misses first. */
+/** Raiders who missed SLIP_MISSES of the last SLIP_WINDOW nights; most misses first. A bench is the officers' call. */
 export function slipping(grid: GuildRecentAttendance | null): SlipRow[] {
   if (grid === null) return [];
   const misses = (cells: readonly AttendanceCell[]) =>
     cells.slice(-SLIP_WINDOW).filter((c) => c === 'absent').length;
   return grid.rows
-    .filter(
-      (r) => misses(r.cells) >= SLIP_MISSES || r.cells.filter((c) => c === 'bench').length >= BENCH_NIGHTS,
-    )
+    .filter((r) => misses(r.cells) >= SLIP_MISSES)
     .map((r) => ({
       name: r.name,
       cls: r.class,

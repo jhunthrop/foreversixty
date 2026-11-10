@@ -323,10 +323,10 @@
           "items_won": 2
         },
         {
-          "character_key": "us/pvp/steelmane",
-          "name": "Steelmane",
+          "character_key": "us/pvp/gorehowl",
+          "name": "Gorehowl",
           "class": "warrior",
-          "spec": "Arms",
+          "spec": "Fury",
           "gain_dps": 7.1,
           "gain_unit": "dps",
           "tier": 0,
@@ -345,13 +345,13 @@
             "icon": "inv_sword_34",
             "quality": 3
           },
-          "items_won": 0
+          "items_won": 1
         },
         {
-          "character_key": "us/pvp/thornwicke",
-          "name": "Thornwicke",
+          "character_key": "us/pvp/axebreaker",
+          "name": "Axebreaker",
           "class": "warrior",
-          "spec": "Protection",
+          "spec": "Fury",
           "gain_dps": 5.3,
           "gain_unit": "dps",
           "tier": 0,
@@ -370,7 +370,7 @@
             "icon": "inv_sword_34",
             "quality": 3
           },
-          "items_won": 2
+          "items_won": 0
         }
       ],
       "copies": 1,

@@ -54,7 +54,6 @@
 
 <Section
   panel
-  frame="framed"
   anchor="guild-loot-candidates"
   title={`Candidates for ${itemName}`}
   testid="guild-loot-candidates"

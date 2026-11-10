@@ -53,7 +53,7 @@ function answers(viewer: Viewer): ReadonlyArray<[RegExp, (url: URL) => string]> 
     [/^\/loot$/, () => 'dense-loot-table.json'],
     [/^\/loot\/nights$/, () => 'dense-loot-nights.json'],
     [/^\/members\/[^/]+\/profile$/, () => 'dense-profile-member.json'],
-    [/^\/loot\/drops\/\d+\/candidates$/, () => 'dense-loot-drop.json'],
+    [/^\/loot\/drops\/\d+\/candidates$/, (url) => `dense-loot-drop-${url.pathname.split('/').at(-2)}.json`],
   ];
 }
 

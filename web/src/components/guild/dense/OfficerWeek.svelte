@@ -19,7 +19,12 @@
     guildRaidHref,
     guildRecruitHref,
   } from '../../../lib/characters';
-  import { fetchLootNights, type LootNights } from '../../../lib/guild/loot-council-api';
+  import {
+    fetchDropCandidates,
+    fetchLootNights,
+    type LootCouncilCandidate,
+    type LootNights,
+  } from '../../../lib/guild/loot-council-api';
   import {
     fetchRecentAttendance,
     pingRaid,
@@ -145,6 +150,23 @@
     return parts.filter((p) => p !== '').join(' · ');
   });
   const lootNight = $derived(loot?.nights[0] ?? null);
+  let topOf = $state<ReadonlyMap<number, LootCouncilCandidate>>(new Map());
+  $effect(() => {
+    const night = lootNight;
+    if (night === null) return;
+    const open = night.drops.filter((d) => d.state === 'open');
+    void Promise.all(
+      open.map((d) =>
+        fetchDropCandidates(guildId, d.item_id, night.night)
+          .then((drop) => [d.item_id, drop.candidates[0]] as const)
+          .catch(() => null),
+      ),
+    ).then((pairs) => {
+      topOf = new Map(
+        pairs.flatMap((p) => (p === null || p[1] === undefined ? [] : [[p[0], p[1]] as const])),
+      );
+    });
+  });
   const rosterByKey = $derived(new Map(roster.map((r) => [r.character_key, r] as const)));
 
   function hrefOf(word: Word, action: WordAction): string {
@@ -169,17 +191,17 @@
     data-testid="guild-overview-actions"
   >
     {#if actions.approvals.count > 0}
-      <Button tone="secondary" size="sm" onclick={() => onSelectTab('roster')}
+      <Button tone="ghost" size="sm" onclick={() => onSelectTab('roster')}
         >{actions.approvals.count} waiting for approval</Button
       >
     {/if}
     {#if (actions.applications?.count ?? 0) > 0}
-      <Button tone="secondary" size="sm" href={guildApplicationsHref(guildPath)}
+      <Button tone="ghost" size="sm" href={guildApplicationsHref(guildPath)}
         >{counted(actions.applications?.count ?? 0, 'application')}</Button
       >
     {/if}
     {#if (actions.drops_to_award?.count ?? 0) > 0}
-      <Button tone="secondary" size="sm" onclick={() => onSelectTab('loot')}
+      <Button tone="ghost" size="sm" onclick={() => onSelectTab('loot')}
         >{actions.drops_to_award?.count} drops to award</Button
       >
     {/if}
@@ -210,6 +232,7 @@
       nightLabel={lootNight === null ? '' : dayOf(lootNight.at)}
       lootHref="#loot"
       slipping={slipping(grid)}
+      {topOf}
     />
     {#if raid?.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}
   {/snippet}

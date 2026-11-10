@@ -137,15 +137,8 @@
     { id: 'ready', label: 'Ready', sortable: true },
     { id: 'seen', label: 'Seen', sortable: true },
   ];
-  const lastNight = $derived(attendance === null ? null : (attendance.raids.at(-1) ?? null));
   const meta = $derived(
-    [
-      `${roster.length} raiders`,
-      readiness === null ? '' : `item level vs guild median ${readiness.median_item_level}`,
-      lastNight === null || attendance === null
-        ? ''
-        : `${attendance.rows.filter((r) => r.cells.at(-1) === 'present').length} at the last raid`,
-    ]
+    [`${roster.length} raiders`, readiness === null ? '' : `median item level ${readiness.median_item_level}`]
       .filter((p) => p !== '')
       .join(' · '),
   );
@@ -162,7 +155,9 @@
                 ? String(row.itemLevel)
                 : `${row.itemLevel} ${signed(row.itemLevelDelta)}`,
           },
-      row.gap === null ? dash : { value: `+${Math.round(row.gap)}` },
+      row.gap === null
+        ? dash
+        : { value: `+${Math.round(row.gap)}${row.gapUnit === null ? '' : ` ${row.gapUnit.toUpperCase()}`}` },
       row.bestPercentile === null
         ? dash
         : { value: String(Math.floor(row.bestPercentile)), color: percentileToken(row.bestPercentile) },
@@ -250,7 +245,7 @@
       <Button tone="ghost" size="sm" onclick={() => void copyCsv()}>Copy CSV</Button>
     {/snippet}
     <div class="flex flex-wrap items-center gap-3 px-5 pb-3">
-      <div class="max-w-full min-w-0 overflow-x-auto">
+      <div class="filter-scroll max-w-full min-w-0 overflow-x-auto">
         <Segmented
           options={filterOptions}
           value={only}
@@ -305,7 +300,7 @@
                 >{/if}
             {/snippet}
             {#snippet sub()}{row.spec}{rankWord(row.rank)}{#if row.cells.length > 0}<span class="ui-st-phone"
-                  >&#32;· {row.attendancePct ?? '–'}% <AttendanceStrip cells={row.cells} /></span
+                  ><span class="block pt-0.5"><AttendanceStrip cells={row.cells} /></span></span
                 >{/if}{/snippet}
             {#snippet meter()}<AttendanceStrip cells={row.cells} />{/snippet}
           </StatRow>
@@ -323,3 +318,12 @@
     </Disclosure>
   {/if}
 </Page>
+
+<style>
+  @media (max-width: 1023.98px) {
+    .filter-scroll {
+      mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+      scroll-snap-type: x proximity;
+    }
+  }
+</style>

@@ -20,5 +20,5 @@ async function openTab(page: Page, hash: string, ready: string, home?: string): 
 export const TABS_OPENERS: Readonly<Record<string, GuildStateOpener>> = {
   roster: (page) => openTab(page, 'roster', 'guild-roster-waiting', 'tabs-home-officer.json'),
   progression: (page) => openTab(page, 'progression', 'guild-progression-encounter'),
-  readiness: (page) => openTab(page, 'readiness', 'guild-readiness-rows'),
+  readiness: (page) => openTab(page, 'readiness', 'guild-readiness-board'),
 };

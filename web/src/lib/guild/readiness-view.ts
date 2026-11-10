@@ -155,8 +155,8 @@ export function readinessShortfalls(
   // without a name only when it does not.
   const flaskFood = row.flask_food;
   const lacks: string[] = [];
-  if (flaskFood != null && !flaskFood.flask_or_elixir) lacks.push('no flask or raid elixir');
-  if (flaskFood != null && !flaskFood.food) lacks.push('no buff food');
+  if (flaskFood != null && !flaskFood.flask_or_elixir) lacks.push('no flask or elixir');
+  if (flaskFood != null && !flaskFood.food) lacks.push('no food');
   if (lacks.length > 0) out.push(...lacks);
   else if (row.consumables.state === 'short') out.push('consumables short');
   if (row.talent_points_unspent > 0)

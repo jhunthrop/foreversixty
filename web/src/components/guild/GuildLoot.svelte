@@ -168,9 +168,6 @@
         onSelect={pick}
         onOpen={council.open}
       />
-      {#if officer && grid !== null && council.nights !== null && roster.length > 0}
-        <FairnessTable {roster} loot={council.nights} {grid} {timeZone} />
-      {/if}
       {#snippet rail()}
         <div id="guild-loot-rail" class="flex scroll-mt-[96px] flex-col gap-[22px]">
           {#if council.selected === null}
@@ -226,6 +223,11 @@
         </div>
       {/snippet}
     </Page>
+    {#if officer && grid !== null && council.nights !== null && roster.length > 0}
+      <div class="pt-[22px]">
+        <Page layout="ledger" panels><FairnessTable {roster} loot={council.nights} {grid} {timeZone} /></Page>
+      </div>
+    {/if}
   {/if}
   <BisTooltipHost
     {build}

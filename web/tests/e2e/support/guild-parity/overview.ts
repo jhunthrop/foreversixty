@@ -93,10 +93,10 @@ async function openOverview(page: Page, viewer: Viewer): Promise<void> {
     await expect(page.getByTestId('guild-next-raid-you')).toBeVisible();
     await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();
     await expect(page.getByTestId('guild-overview-checklist')).toBeVisible();
-    await expect(page.getByTestId('guild-overview-numbers')).toBeVisible();
+    await expect(page.getByTestId('guild-your-week')).toBeVisible();
   } else {
     await expect(page.getByTestId('guild-overview-actions')).toBeVisible();
-    await expect(page.getByTestId('guild-next-raid-figures')).toBeVisible();
+    await expect(page.getByTestId('guild-week-wednesday')).toBeVisible();
     await expect(page.getByTestId('guild-overview-cover')).toBeVisible();
   }
   await page.waitForLoadState('networkidle');

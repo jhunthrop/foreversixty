@@ -150,7 +150,12 @@ describe('rosterBoard', () => {
     {
       character_key: 'us/pvp/ana',
       failing: 2,
+      no_export: false,
       gear_gap: { upgrades: 2, gain_dps: 12.5, not_sim_checked: 0, unit: 'dps' },
+      enchants: { missing_slots: ['hands'], checked: true },
+      consumables: { state: 'short' },
+      flask_food: { flask_or_elixir: false, food: true },
+      talent_points_unspent: 0,
     },
   ] as unknown as GuildReadinessRow[];
   const groups = rosterBoard({
@@ -398,17 +403,14 @@ describe('ratingMovers and needsAWord', () => {
     });
     expect(words.map((w) => [w.name, w.action, w.reasons.join(', ')])).toEqual([
       ['Bo', 'profile', 'Not answered, missed 3 of the last 4, last log 9 d ago, no Discord'],
-      ['Cy', 'nudge', '1 enchant missing, no flask or raid elixir, not attuned'],
+      ['Cy', 'nudge', '1 enchant missing, no flask or elixir, not attuned'],
       ['Ana', 'report', 'Rating 91 to 72 · survival 40'],
     ]);
     expect(shortReasons(readiness[0])).toHaveLength(3);
   });
 
-  it('lists the slipping and the often benched', () => {
-    expect(slipping(grid).map((r) => [r.name, r.present, r.nights])).toEqual([
-      ['Bo', 2, 5],
-      ['Cy', 2, 5],
-    ]);
+  it('lists the slipping, never for a bench', () => {
+    expect(slipping(grid).map((r) => [r.name, r.present, r.nights])).toEqual([['Bo', 2, 5]]);
     expect(slipping(null)).toEqual([]);
   });
 });

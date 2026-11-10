@@ -51,13 +51,13 @@
         {#snippet lead()}<ClassCrestRing characterClass={word.cls} size={32} />{/snippet}
         {#snippet trail()}
           {#if word.action === 'ping'}
-            <Button tone="secondary" size="sm" onclick={onPing}>{LABEL.ping}</Button>
+            <Button tone="ghost" size="sm" onclick={onPing}>{LABEL.ping}</Button>
           {:else if word.action === 'nudge'}
-            <Button tone="secondary" size="sm" onclick={() => void nudge(word)}
+            <Button tone="ghost" size="sm" onclick={() => void nudge(word)}
               >{copied === word.key ? 'Copied' : LABEL.nudge}</Button
             >
           {:else}
-            <Button tone="secondary" size="sm" href={hrefOf(word, word.action)}>{LABEL[word.action]}</Button>
+            <Button tone="ghost" size="sm" href={hrefOf(word, word.action)}>{LABEL[word.action]}</Button>
           {/if}
         {/snippet}
       </Row>

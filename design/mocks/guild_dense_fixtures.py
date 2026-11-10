@@ -265,8 +265,7 @@ def readiness(for_raid: bool) -> dict:
     out = {'median_item_level': D.MEDIAN_ILVL, 'generated_at': D.UPDATED_AT, 'rows': [readiness_row(r) for r in rows]}
     nr = {'id': D.NEXT_RAID_ID, 'title': ZONE_NAME, 'zone_name': ZONE_NAME, 'starts_at': D.NEXT_RAID_AT}
     if for_raid:
-        out['raid'] = {**nr, 'cutoff_at': D.NEXT_RAID_AT, 'attunement': {'kind': 'quest', 'key_item': {'id': 16309, 'name': 'Drakefire Amulet', 'quality': 3}},
-                       'fire_resistance': None}
+        out['raid'] = {**nr, 'cutoff_at': D.NEXT_RAID_AT, 'attunement': True, 'fire_resistance': True}
     else:
         out['next_raid'] = nr
     return out
@@ -326,7 +325,8 @@ def loot_nights() -> dict:
 def candidate(c: tuple, council: bool) -> dict:
     name, gain, worn, bis, ms_os, yes = c
     r = D.BY_NAME[name]
-    out = {'character_key': r.key, 'name': name, 'class': r.cls, 'spec': r.spec, 'gain_dps': gain, 'gain_unit': 'dps', 'tier': 0,
+    unit = 'hps' if r.group == 'Healer' else 'dps'
+    out = {'character_key': r.key, 'name': name, 'class': r.cls, 'spec': r.spec, 'gain_dps': gain, 'gain_unit': unit, 'tier': 0,
            'not_sim_checked': False, 'ilvl_delta': None, 'attendance': {'present': r.present, 'nights': r.nights},
            'already_equivalent': False, 'fills_empty_slot': False, 'replaces': worn[1],
            'replaces_item': {'item_id': worn[0], 'name': worn[1], 'icon': worn[2], 'quality': worn[3]}, 'items_won': len(D.items_won(name))}
@@ -336,10 +336,10 @@ def candidate(c: tuple, council: bool) -> dict:
     return out
 
 
-def loot_drop() -> dict:
-    d = next(x for x in D.OPEN_DROPS if x[0] == D.SELECTED_DROP)
+def loot_drop(item_id: int, council: list) -> dict:
+    d = next(x for x in D.OPEN_DROPS if x[0] == item_id)
     return {'night': f'raid:{D.LAST_RAID_ID}', 'item_id': d[0], 'name': d[1], 'icon': d[2], 'quality': 4, 'kind': 'gear',
-            'officers': gd.VOTERS, 'closed': False, 'award': None, 'candidates': [candidate(c, True) for c in D.CANDIDATES]}
+            'officers': gd.VOTERS, 'closed': False, 'award': None, 'candidates': [candidate(c, True) for c in council]}
 
 
 def loot_table() -> dict:
@@ -373,7 +373,8 @@ def dense_fixtures() -> dict[str, object]:
             'dense-raids.json': raids_page(), 'dense-progression.json': progression(), 'dense-page.json': guild_page(),
             'dense-readiness.json': readiness(False), 'dense-readiness-raid.json': readiness(True),
             'dense-attendance.json': attendance(), 'dense-actions.json': officer_actions(), 'dense-checklist.json': checklist(),
-            'dense-loot-nights.json': loot_nights(), 'dense-loot-drop.json': loot_drop(), 'dense-loot-table.json': loot_table(),
+            'dense-loot-nights.json': loot_nights(), 'dense-loot-drop-17075.json': loot_drop(17075, D.CANDIDATES),
+            'dense-loot-drop-16955.json': loot_drop(16955, D.CROWN_CANDIDATES), 'dense-loot-table.json': loot_table(),
             'dense-profile-member.json': member_profile(D.MEMBER)}
 
 

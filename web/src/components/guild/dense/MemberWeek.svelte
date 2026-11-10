@@ -105,7 +105,7 @@
 </script>
 
 {#if part === 'week'}
-  <Section title="Your week" panel frame="framed" testid="guild-your-week">
+  <Section title="Your week" panel testid="guild-your-week">
     {#if next !== null}<NextRaidRow
         {next}
         durationMinutes={raid?.duration_minutes ?? 180}
@@ -136,7 +136,6 @@
         <Figure
           value={String(Math.floor(last.percentile))}
           label="Parse %"
-          caption={`${last.boss}, ${day(last.startsAt)}`}
           color={percentileToken(last.percentile)}
         />
       {/if}
@@ -145,7 +144,7 @@
           value={`${att.present}/${att.nights}`}
           label="Nights"
           tone="kill"
-          caption={runOf === null ? undefined : `streak ${runOf}`}
+          caption={runOf === null || runOf === att.nights ? undefined : `streak ${runOf}`}
         />
       {/if}
       {#if profile !== null}<Figure
@@ -175,6 +174,12 @@
           {@const prev = nights[i + 1]}
           <StatRow
             bar={false}
+            phone={[
+              n.rating === null ? '' : `rating ${Math.round(n.rating)}`,
+              n.percentile === null ? '' : `parse ${Math.floor(n.percentile)}`,
+            ]
+              .filter((p) => p !== '')
+              .join(' · ')}
             figures={[
               n.value === null
                 ? { value: '–', muted: true }

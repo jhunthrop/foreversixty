@@ -39,16 +39,24 @@
 
   const STALE_DAYS = 7;
   const DAY_MS = 86_400_000;
-  const columns = [
+  /** From this many days without a log the Synced cell shows the age. */
+  const SEEN_FROM_DAYS = 2;
+  const daysOf = (row: GuildReadinessRow): number =>
+    Math.floor((now.getTime() - new Date(row.logged_at).getTime()) / DAY_MS);
+  const entries = $derived([...short, ...ready.map((row) => ({ row, shortfalls: [] as string[] }))]);
+  /** The Synced column shows only when someone has not logged for SEEN_FROM_DAYS. */
+  const anyStale = $derived(entries.some(({ row }) => daysOf(row) >= SEEN_FROM_DAYS));
+  const columns = $derived([
     { id: 'state', label: 'State' },
     { id: 'attuned', label: 'Attuned' },
-    { id: 'ilvl', label: 'Item level' },
+    { id: 'ilvl', label: median === null ? 'Item level' : `Item level vs ${median}` },
     { id: 'bis', label: 'To BiS' },
     { id: 'enchants', label: 'Enchants' },
     { id: 'stock', label: 'Flask, food' },
     { id: 'talents', label: 'Talents' },
-    { id: 'synced', label: 'Synced' },
-  ];
+    ...(anyStale ? [{ id: 'synced', label: 'Synced' }] : []),
+  ]);
+  const blank = $derived(columns.map(() => ({ value: '' })));
   const PASS: StatFigure = { value: '✓', muted: true };
   const UNKNOWN: StatFigure = { value: '–', muted: true };
 
@@ -59,7 +67,7 @@
 
   function figures(row: GuildReadinessRow, shortfalls: readonly string[]): StatFigure[] {
     const delta = row.item_level_delta;
-    const days = Math.floor((now.getTime() - new Date(row.logged_at).getTime()) / DAY_MS);
+    const days = daysOf(row);
     const missing = row.enchants.missing_slots;
     const stocked = row.flask_food == null ? null : row.flask_food.flask_or_elixir && row.flask_food.food;
     return [
@@ -70,23 +78,32 @@
       delta === null
         ? UNKNOWN
         : { value: delta > 0 ? `+${delta}` : delta === 0 ? '±0' : `−${-delta}`, muted: true },
-      row.gear_gap?.gain_dps == null ? UNKNOWN : { value: `+${Math.round(row.gear_gap.gain_dps)}` },
+      row.gear_gap?.gain_dps == null
+        ? UNKNOWN
+        : {
+            value: `+${Math.round(row.gear_gap.gain_dps)}${row.gear_gap.unit === null ? '' : ` ${row.gear_gap.unit.toUpperCase()}`}`,
+          },
       row.enchants.checked ? check(missing.length === 0, missing.map(enchantSlotLabel).join(', ')) : UNKNOWN,
       check(stocked, '×'),
       row.talent_points_read === false
         ? UNKNOWN
         : check(row.talent_points_unspent === 0, String(row.talent_points_unspent)),
-      days >= STALE_DAYS
-        ? { value: `${days} d`, tone: 'wipe' }
-        : { value: days < 1 ? 'today' : `${days} d`, muted: true },
+      ...(anyStale
+        ? [
+            days >= STALE_DAYS
+              ? { value: `${days} d`, tone: 'wipe' as const }
+              : { value: days < SEEN_FROM_DAYS ? '' : `${days} d`, muted: true },
+          ]
+        : []),
     ];
   }
-
-  const entries = $derived([...short, ...ready.map((row) => ({ row, shortfalls: [] as string[] }))]);
 </script>
 
 <StatTable {columns} nameHead="Raider" bar={false} dense label="Readiness" testid="guild-readiness-board">
-  {#each entries as { row, shortfalls } (row.character_key)}
+  {#each entries as { row, shortfalls }, index (row.character_key)}
+    {#if index === short.length && short.length > 0 && ready.length > 0}
+      <StatRow total bar={false} figures={blank}>{#snippet name()}Ready {ready.length}{/snippet}</StatRow>
+    {/if}
     <StatRow
       bar={false}
       figures={figures(row, shortfalls)}
@@ -94,25 +111,24 @@
     >
       {#snippet icon()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
       {#snippet name()}<span style:color={classColorVar(row.class)}>{row.name}</span>{/snippet}
-      {#snippet sub()}{row.spec} · {row.item_level ?? '–'} ilvl{#if shortfalls.length > 0}<span
-            class="text-wipe"
-            data-testid="guild-readiness-shortfalls">{` · ${shortfalls.join(', ')}`}</span
-          >{/if}{#if officer && shortfalls.length > 0}<button
-            type="button"
-            class="nudge"
-            disabled={readOnly}
-            aria-describedby={describedBy}
-            onclick={() => onNudge(row)}
-            aria-label={`Nudge ${row.name}`}
-            data-testid={`guild-readiness-nudge-${row.character_key}`}
-            >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
-          >{/if}{/snippet}
+      {#snippet sub()}{row.spec} · {row.item_level ?? '–'} ilvl{#if shortfalls.length > 0}<div
+            class="text-wipe whitespace-normal"
+            data-testid="guild-readiness-shortfalls"
+          >
+            {shortfalls.join(', ')}{#if officer}<button
+                type="button"
+                class="nudge"
+                disabled={readOnly}
+                aria-describedby={describedBy}
+                onclick={() => onNudge(row)}
+                aria-label={`Nudge ${row.name}`}
+                data-testid={`guild-readiness-nudge-${row.character_key}`}
+                >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
+              >{/if}
+          </div>{/if}{/snippet}
     </StatRow>
   {/each}
 </StatTable>
-{#if median !== null}<p class="text-small text-muted px-5 pt-2 pb-4">
-    Item level against the guild median, {median}
-  </p>{/if}
 
 <style>
   .nudge {

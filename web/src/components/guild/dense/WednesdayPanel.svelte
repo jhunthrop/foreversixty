@@ -50,7 +50,7 @@
     { id: 'need', label: 'Need' },
     { id: 'in', label: 'In' },
     { id: 'late', label: 'Late' },
-    { id: 'gap', label: 'Open' },
+    { id: 'gap', label: 'Gap' },
   ] as const;
 
   let pingedAt = $state<Date | null>(null);
@@ -111,7 +111,6 @@
 <Section
   title="Wednesday"
   panel
-  frame="framed"
   flush
   action={{ label: 'Edit target', href: planHref }}
   testid="guild-week-wednesday"
@@ -123,7 +122,7 @@
     <Figure value={String(raid.counts.bench)} label="Bench" />
     <Figure value={String(raid.counts.out)} label="Out" />
     <Figure value={String(notAnswered)} label="Not answered" tone="wipe" />
-    {#if ready !== null}<Figure value={String(ready.ready)} label={`Ready of ${ready.coming} coming`} />{/if}
+    {#if ready !== null}<Figure value={`${ready.ready}/${ready.coming}`} label="Ready" />{/if}
   </div>
   <p class="text-small text-muted px-5 pb-3" data-testid="guild-week-names">
     {#if named('late').length > 0}Late {@render people(named('late'))}{/if}

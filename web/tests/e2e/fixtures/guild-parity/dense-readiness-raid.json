@@ -1227,14 +1227,7 @@
     "zone_name": "Onyxia's Lair",
     "starts_at": "2027-01-14T02:00:00Z",
     "cutoff_at": "2027-01-14T02:00:00Z",
-    "attunement": {
-      "kind": "quest",
-      "key_item": {
-        "id": 16309,
-        "name": "Drakefire Amulet",
-        "quality": 3
-      }
-    },
-    "fire_resistance": null
+    "attunement": true,
+    "fire_resistance": true
   }
 }

@@ -186,8 +186,14 @@ SELECTED_DROP = 17075
 # Its council: name, gain in DPS, worn main hand (id, name, icon, quality), BiS for them, MS/OS, yes votes.
 CANDIDATES = [('Duskfang', 16.8, (13361, 'Skullforge Reaver', 'inv_sword_12', 3), True, 'ms', 2),
               ('Shiverknife', 9.8, (12940, "Dal'Rend's Sacred Charge", 'inv_sword_43', 3), False, 'ms', 1),
-              ('Steelmane', 7.1, (15806, "Mirah's Song", 'inv_sword_34', 3), False, 'ms', 0),
-              ('Thornwicke', 5.3, (15806, "Mirah's Song", 'inv_sword_34', 3), False, 'os', 0)]
+              ('Gorehowl', 7.1, (15806, "Mirah's Song", 'inv_sword_34', 3), False, 'ms', 0),
+              ('Axebreaker', 5.3, (15806, "Mirah's Song", 'inv_sword_34', 3), False, 'ms', 0)]
+
+
+# Judgement Crown's council: the paladins without it (gain in HPS for the Holy, DPS for the Retribution).
+CROWN_CANDIDATES = [('Valomira', 14.0, (16854, 'Lawbringer Helm', 'inv_helmet_05', 4), True, 'ms', 1),
+                    ('Sunmantle', 11.2, (16854, 'Lawbringer Helm', 'inv_helmet_05', 4), False, 'ms', 0),
+                    ('Seraphine', 6.4, (12640, 'Lionheart Helm', 'inv_helmet_36', 4), False, 'os', 0)]
 
 
 def items_won(name: str) -> list[tuple]:
