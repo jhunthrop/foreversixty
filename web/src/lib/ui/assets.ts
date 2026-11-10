@@ -35,7 +35,7 @@ export const CAVE_ART = art('cave', 800, 1600);
 /** The link preview's background, 1200 x 630 (lib/og.ts). */
 export const OG_ART = `${DIR}/og-art.jpg`;
 
-/** The LX seal, v3 (design/assets/logo/lx-seal-v3.png): one logo everywhere, nav, footer and
+/** The LX seal, v4 (design/assets/logo/lx-seal-v4.png): one logo everywhere, nav, footer and
  *  favicons alike (owner 2026-11-09). Its bold rim holds down to 16 px, so there is no flat seal. */
 export const SEAL = {
   painted88: `${DIR}/seal-88.webp`,
