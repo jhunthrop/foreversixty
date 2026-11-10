@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -24,11 +25,19 @@ from pathlib import Path
 #: "No silent catalogue shrink against the previous build" tolerance.
 CROSS_BUILD_ITEMS_RATIO = 0.98
 
-#: The items whose stats come from wowhead's feed (`stats_source == "wowhead"`) may
-#: not fall below 90% of the reference run's. A wowhead item that falls back to
-#: classic-db keeps the item count level while its stats roll back to 1.12, so the
-#: count gate alone cannot see it.
+#: Of the reference run's items whose stats came from wowhead's feed
+#: (`stats_source == "wowhead"`), at least 90% must still take live-game stats. A
+#: wowhead item that falls back to classic-db keeps the item count level while its
+#: stats roll back to 1.12, so the count gate alone cannot see it. An item that now
+#: takes its stats from the client's own row (`stats_source` None: a hotfix brought
+#: its ItemSparse row in) is not a fallback: 1.60.1.70790's hotfixed ItemSparse
+#: took over 186 of the 288 items wowhead had carried, which a bare count of
+#: wowhead-sourced items read as a lost feed.
 WOWHEAD_ITEMS_FLOOR_RATIO = 0.9
+
+#: The `stats_source` values that are live-game stats: wowhead's feed, or the
+#: client's own row (None).
+LIVE_STATS_SOURCES = frozenset({"wowhead", None})
 
 #: `fetch-wowhead` carries the seeded records a live feed no longer lists (70707's
 #: refetch listed 397 of 689, 58%), and refuses a carried catalogue that keeps fewer
@@ -85,9 +94,25 @@ def committed_items(build_dir: Path) -> list[dict]:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
 
 
-def wowhead_item_count(items: list[dict]) -> int:
-    """How many items take their stats from wowhead's feed."""
-    return sum(1 for item in items if item.get("stats_source") == "wowhead")
+def wowhead_item_ids(items: Iterable[dict]) -> set[int]:
+    """The ids of the items that take their stats from wowhead's feed."""
+    return {item["id"] for item in items if item.get("stats_source") == "wowhead"}
+
+
+def wowhead_items_kept(
+    previous: Iterable[dict], sources: Mapping[int, str | None]
+) -> tuple[int, int]:
+    """Of `previous`'s wowhead-sourced items, how many `sources` (item id ->
+    `stats_source` of the new run) still gives live-game stats, and how many there
+    were. An id missing from `sources` is lost."""
+    ids = wowhead_item_ids(previous)
+    kept = sum(1 for item_id in ids if sources.get(item_id, "missing") in LIVE_STATS_SOURCES)
+    return kept, len(ids)
+
+
+def stats_sources(items: Iterable[dict]) -> dict[int, str | None]:
+    """Item id -> `stats_source`, for committed item dicts."""
+    return {item["id"]: item.get("stats_source") for item in items}
 
 
 def class_item_counts(build_dir: Path) -> dict[str, int]:
@@ -100,8 +125,8 @@ def class_item_counts(build_dir: Path) -> dict[str, int]:
 
 def floor_problems(build_dir: Path, reference_dir: Path) -> list[str]:
     """Why `build_dir`'s committed items fall below `reference_dir`'s floors, if they
-    do: the item count and the wowhead-sourced count, both with the cross-build
-    ratios. Empty when both hold."""
+    do: the item count and the wowhead-sourced items still on live-game stats, both
+    with the cross-build ratios. Empty when both hold."""
     new, old = committed_items(build_dir), committed_items(reference_dir)
     problems = []
     if len(new) < len(old) * CROSS_BUILD_ITEMS_RATIO:
@@ -109,10 +134,10 @@ def floor_problems(build_dir: Path, reference_dir: Path) -> list[str]:
             f"{build_dir.name} has {len(new)} items, below {CROSS_BUILD_ITEMS_RATIO:.0%} "
             f"of {reference_dir.name}'s {len(old)}"
         )
-    new_wowhead, old_wowhead = wowhead_item_count(new), wowhead_item_count(old)
-    if new_wowhead < old_wowhead * WOWHEAD_ITEMS_FLOOR_RATIO:
+    kept, old_wowhead = wowhead_items_kept(old, stats_sources(new))
+    if kept < old_wowhead * WOWHEAD_ITEMS_FLOOR_RATIO:
         problems.append(
-            f"{build_dir.name} takes {new_wowhead} items' stats from wowhead, below "
-            f"{WOWHEAD_ITEMS_FLOOR_RATIO:.0%} of {reference_dir.name}'s {old_wowhead}"
+            f"{build_dir.name} keeps live-game stats on {kept} of {reference_dir.name}'s "
+            f"{old_wowhead} wowhead-sourced items, below {WOWHEAD_ITEMS_FLOOR_RATIO:.0%}"
         )
     return problems

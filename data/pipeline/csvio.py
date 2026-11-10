@@ -1,12 +1,13 @@
 import csv
 import logging
+from collections.abc import Mapping
 from pathlib import Path
 
 from pipeline.build_floors import (
     WOWHEAD_ITEMS_FLOOR_RATIO,
     committed_items,
     reference_for,
-    wowhead_item_count,
+    wowhead_items_kept,
 )
 
 logger = logging.getLogger(__name__)
@@ -76,30 +77,35 @@ def check_item_sparse_completeness(
 
 def check_wowhead_items_floor(
     build_dir: Path,
-    new_count: int,
+    sources: Mapping[int, str | None],
     *,
     allow_shrink: bool = False,
 ) -> None:
-    """Refuse a `normalize` run in which fewer than
-    `build_floors.WOWHEAD_ITEMS_FLOOR_RATIO` of the reference run's items
-    take their stats from wowhead's feed (the build's own last run, else the
-    previous build's). A wowhead item that falls back to classic-db keeps
-    the item count level while its stats roll back to 1.12, so the count
-    gate above cannot see it: 70685 kept 7 of 70658's 688. A floor, never an
-    exact count. `allow_shrink=True` skips it, loudly."""
+    """Refuse a `normalize` run that leaves fewer than
+    `build_floors.WOWHEAD_ITEMS_FLOOR_RATIO` of the reference run's wowhead-sourced
+    items (the build's own last run, else the previous build's) on live-game stats.
+    `sources` is the new run's item id -> `stats_source`. A wowhead item that falls
+    back to classic-db keeps the item count level while its stats roll back to 1.12,
+    so the count gate above cannot see it: 70685 kept 7 of 70658's 688. One the
+    client's own (hotfixed) row now carries is kept. A floor, never an exact count.
+    `allow_shrink=True` skips it, loudly."""
     reference = reference_for(build_dir, "items.json")
-    previous = wowhead_item_count(committed_items(reference.build_dir)) if reference else 0
+    if reference is None:
+        return
+    kept, previous = wowhead_items_kept(committed_items(reference.build_dir), sources)
     if previous == 0:
         return
     if allow_shrink:
         logger.warning("wowhead items floor skipped (--allow-shrink) for %s", build_dir)
         return
-    if new_count < previous * WOWHEAD_ITEMS_FLOOR_RATIO:
+    if kept < previous * WOWHEAD_ITEMS_FLOOR_RATIO:
         raise SystemExit(
-            f"{build_dir.name} would take {new_count} items' stats from wowhead, below "
-            f"{WOWHEAD_ITEMS_FLOOR_RATIO:.0%} of {reference.build_dir.name}'s {previous}; "
-            "wowhead's feed has likely lost items -- check raw/wowhead/items.json's "
-            "carry, or pass --allow-shrink to force a deliberate re-baseline"
+            f"{build_dir.name} keeps wowhead or client stats on {kept} of "
+            f"{reference.build_dir.name}'s {previous} wowhead-sourced items, below "
+            f"{WOWHEAD_ITEMS_FLOOR_RATIO:.0%}; the rest fell back to classic-db or left "
+            "the catalogue, so wowhead's feed has likely lost items -- check "
+            "raw/wowhead/items.json's carry, or pass --allow-shrink to force a "
+            "deliberate re-baseline"
         )
 
 

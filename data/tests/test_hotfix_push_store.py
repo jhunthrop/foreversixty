@@ -240,18 +240,62 @@ def test_a_crawl_that_cannot_finish_fails_and_keeps_the_saved_file(store):
     assert store.read_bytes() == before
 
 
+# --- the cached copy (data.yml's actions/cache) -----------------------------
+
+
+def test_a_finished_crawl_is_kept_in_the_cache(store, tmp_path):
+    cache = tmp_path / "cache"
+    (cache / "1.60.1.70755").mkdir(parents=True)  # another build's copy is pruned
+    crawl(store, history(), cache_dir=cache)
+    assert (cache / BUILD / STORE).read_bytes() == store.read_bytes()
+    assert sorted(p.name for p in cache.iterdir()) == [BUILD]
+
+
+def test_a_build_with_no_saved_file_starts_from_the_cached_copy(store, tmp_path):
+    """Run 42739221308: the crawl finished, normalize failed, nothing was
+    committed. The next run's fresh checkout starts from the cached copy."""
+    cache = tmp_path / "cache"
+    crawl(store, history(), cache_dir=cache)
+    store.unlink()
+    pushed, wago = crawl(store, history(), cache_dir=cache)
+    assert ids(pushed) == enus_ids(history())
+    assert wago.searches == ["70790 spell"]
+
+
+def test_a_committed_saved_file_wins_over_the_cached_copy(store, tmp_path):
+    cache = tmp_path / "cache"
+    crawl(store, history()[:100], cache_dir=cache)
+    stale_cache = (cache / BUILD / STORE).read_bytes()
+    crawl(store, history())  # a later run that kept no copy
+    (cache / BUILD / STORE).write_bytes(stale_cache)
+    pushed, wago = crawl(store, history(), cache_dir=cache)
+    assert ids(pushed) == enus_ids(history())
+    assert wago.searches == ["70790 spell"]  # read over the committed file, not the stale copy
+
+
+def test_the_cache_dir_comes_from_the_env(monkeypatch, tmp_path):
+    from pipeline.hotfix_push_store import CACHE_ENV, cache_dir_from_env
+
+    monkeypatch.delenv(CACHE_ENV, raising=False)
+    assert cache_dir_from_env() is None
+    monkeypatch.setenv(CACHE_ENV, str(tmp_path))
+    assert cache_dir_from_env() == tmp_path
+
+
 def test_the_layer_reads_the_push_over_the_saved_file_by_default(tmp_path, monkeypatch):
     raw = tmp_path / BUILD / "raw"
     raw.mkdir(parents=True)
     (raw / "SpellEffect.csv").write_text("ID,V\n1000,3\n")
     asked: list[tuple] = []
 
-    def fake(build, tables, store, full=False):
-        asked.append((build, tables, store, full))
+    def fake(build, tables, store, full=False, cache_dir=None):
+        asked.append((build, tables, store, full, cache_dir))
         return {"SpellEffect": []}
 
     monkeypatch.setattr("pipeline.hotfix_push_store.fetch_saved", fake)
+    monkeypatch.setenv("HOTFIX_PUSH_CACHE", str(tmp_path / "cache"))
     layer_hotfix_push(
         BUILD, root=tmp_path, tables=("SpellEffect",), totals=lambda b, t: {}, full=True
     )
-    assert asked == [(BUILD, ("SpellEffect",), raw / "wago-push" / STORE, True)]
+    store = raw / "wago-push" / STORE
+    assert asked == [(BUILD, ("SpellEffect",), store, True, tmp_path / "cache")]

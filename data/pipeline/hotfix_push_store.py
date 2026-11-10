@@ -19,6 +19,13 @@ does not cover every table asked for is not trusted: the run logs FULL CRAWL
 and crawls everything. A fetch that cannot finish still fails
 (`pipeline.hotfix_push`'s rule: never leave the build shipped-only) and the
 file is only written after a complete one.
+
+The saved file reaches main only with the build's commit at the end of data.yml,
+so a later step failing used to lose a finished crawl (data run 42739221308: a
+66-minute full crawl, then normalize failed). A run with HOTFIX_PUSH_CACHE set
+also keeps a copy at `<HOTFIX_PUSH_CACHE>/<build>/entries.json`, which data.yml
+saves with actions/cache straight after the fetch step whatever happens next;
+a build with no committed file starts from that copy.
 """
 
 from __future__ import annotations
@@ -26,6 +33,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import shutil
 from collections.abc import Callable, Iterable, Mapping
 from pathlib import Path
 from typing import Any
@@ -49,11 +57,44 @@ STORE = "entries.json"
 STORE_FORMAT = 1
 #: Set to 1 (or true) to force the full crawl.
 FULL_ENV = "HOTFIX_PUSH_FULL"
+#: A directory outside the build that keeps a copy of each saved push
+#: (data.yml's actions/cache path); unset, no copy is kept.
+CACHE_ENV = "HOTFIX_PUSH_CACHE"
 _TRUE = frozenset({"1", "true", "yes"})
 
 
 def full_requested(flag: bool) -> bool:
     return flag or os.environ.get(FULL_ENV, "").strip().lower() in _TRUE
+
+
+def cache_dir_from_env() -> Path | None:
+    value = os.environ.get(CACHE_ENV, "").strip()
+    return Path(value) if value else None
+
+
+def _cached_copy(cache_dir: Path | None, build: str) -> Path | None:
+    return cache_dir / build / STORE if cache_dir is not None else None
+
+
+def _start_from_cache(store: Path, cached: Path | None, build: str) -> None:
+    """Put the cached copy in place when the build has no saved file of its own."""
+    if store.exists() or cached is None or not cached.exists():
+        return
+    logger.info("hotfix push %s: starting from the cached push %s", build, cached)
+    store.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(cached, store)
+
+
+def _keep_in_cache(store: Path, cache_dir: Path | None, build: str) -> None:
+    """Copy the saved file into the cache, which holds this build's push only."""
+    if cache_dir is None:
+        return
+    for stale in cache_dir.iterdir() if cache_dir.is_dir() else ():
+        if stale.name != build:
+            shutil.rmtree(stale, ignore_errors=True)
+    cached = cache_dir / build / STORE
+    cached.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(store, cached)
 
 
 def _entry_line(e: PushEntry) -> str:
@@ -138,10 +179,13 @@ def fetch_saved(
     store: Path,
     full: bool = False,
     client: httpx.Client | None = None,
+    cache_dir: Path | None = None,
 ) -> dict[str, list[PushEntry]]:
     """The build's push for `tables` (enUS), crawled where it moved since the
     push saved at `store` (all of it when nothing is saved or `full`), and
-    saved back."""
+    saved back. With `cache_dir`, a missing `store` starts from the copy kept
+    there, and the saved file is copied back into it."""
+    _start_from_cache(store, _cached_copy(cache_dir, build), build)
     saved = read_store(store)
     if saved is not None and saved["build"] != build:
         raise SystemExit(f"{store} is the push of {saved['build']}, not {build}")
@@ -158,10 +202,15 @@ def fetch_saved(
             client.close()
     pushed = collector.by_table()
     write_store(store, build, tables, {**known, **observed}, pushed)
+    _keep_in_cache(store, cache_dir, build)
     logger.info("hotfix push %s: %s crawl, %d wago.tools requests", build, mode, requests[0])
     return pushed
 
 
 def saved_fetcher(store_of: Callable[[str], Path], full: bool = False) -> PushFetcher:
-    """A `layer_hotfix_push` fetcher over the saved push at `store_of(build)`."""
-    return lambda build, tables: fetch_saved(build, tables, store_of(build), full=full)
+    """A `layer_hotfix_push` fetcher over the saved push at `store_of(build)`,
+    kept in HOTFIX_PUSH_CACHE too when that is set."""
+    cache_dir = cache_dir_from_env()
+    return lambda build, tables: fetch_saved(
+        build, tables, store_of(build), full=full, cache_dir=cache_dir
+    )

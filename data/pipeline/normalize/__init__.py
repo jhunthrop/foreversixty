@@ -473,7 +473,7 @@ def normalize_build(
     check_item_sparse_completeness(build_dir, len(items), allow_shrink=allow_shrink)
     check_wowhead_items_floor(
         build_dir,
-        sum(1 for item in items if item.stats_source == "wowhead"),
+        {item.id: item.stats_source for item in items},
         allow_shrink=allow_shrink,
     )
     write_json(items, build_dir / "items.json")

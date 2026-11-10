@@ -135,6 +135,7 @@ data/builds/*/raw/client/*
 data/builds/*/raw/wago-push/*
 !data/builds/*/raw/wago-push/entries.json
 data/.icon-cache/
+data/.wago-push-cache/
 
 # git worktrees for parallel plan execution
 .worktrees/

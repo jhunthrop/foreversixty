@@ -17,11 +17,21 @@ from pipeline.csvio import check_item_sparse_completeness, check_wowhead_items_f
 from pipeline.normalize import previous_class_item_counts
 
 
-def _items(build_dir: Path, total: int, wowhead: int = 0) -> None:
+def _source(i: int, wowhead: int, classicdb: int) -> str | None:
+    if i < wowhead:
+        return "wowhead"
+    return "classic-db" if i < wowhead + classicdb else None
+
+
+def _sources(total: int, wowhead: int = 0, classicdb: int = 0) -> dict[int, str | None]:
+    """Ids [0, wowhead) from wowhead, the next `classicdb` fallen back to classic-db,
+    the rest the client's own rows."""
+    return {i: _source(i, wowhead, classicdb) for i in range(total)}
+
+
+def _items(build_dir: Path, total: int, wowhead: int = 0, classicdb: int = 0) -> None:
     build_dir.mkdir(parents=True, exist_ok=True)
-    rows = [
-        {"id": i, "stats_source": "wowhead" if i < wowhead else None} for i in range(total)
-    ]
+    rows = [{"id": i, "stats_source": s} for i, s in _sources(total, wowhead, classicdb).items()]
     (build_dir / "items.json").write_text(json.dumps(rows))
 
 
@@ -64,25 +74,43 @@ def test_a_builds_own_last_run_still_may_not_lose_one_item(tmp_path: Path) -> No
 def test_the_very_first_build_has_nothing_to_compare_with(tmp_path: Path) -> None:
     (tmp_path / "1.60.1.1").mkdir()
     check_item_sparse_completeness(tmp_path / "1.60.1.1", 1)
-    check_wowhead_items_floor(tmp_path / "1.60.1.1", 0)
+    check_wowhead_items_floor(tmp_path / "1.60.1.1", {})
 
 
-def test_the_wowhead_sourced_count_has_a_floor_against_the_previous_build(
+def test_the_wowhead_sourced_items_have_a_floor_against_the_previous_build(
     tmp_path: Path,
 ) -> None:
     _items(tmp_path / "1.60.1.70658", 25678, wowhead=688)
     new = tmp_path / "1.60.1.70685"
     new.mkdir()
-    check_wowhead_items_floor(new, 620)  # a floor, not an exact count: 90% of 688
-    with pytest.raises(SystemExit, match="7 .*688"):
-        check_wowhead_items_floor(new, 7)  # 70685's own figure
-    check_wowhead_items_floor(new, 7, allow_shrink=True)
+    # a floor, not an exact count: 90% of 688
+    check_wowhead_items_floor(new, _sources(25678, wowhead=620, classicdb=68))
+    fell_back = _sources(25678, wowhead=7, classicdb=681)  # 70685's own figure
+    with pytest.raises(SystemExit, match="7 of .*688"):
+        check_wowhead_items_floor(new, fell_back)
+    check_wowhead_items_floor(new, fell_back, allow_shrink=True)
 
 
 def test_the_wowhead_floor_holds_against_the_builds_own_last_run(tmp_path: Path) -> None:
     _items(tmp_path / "1.60.1.70707", 25534, wowhead=688)
     with pytest.raises(SystemExit, match="396"):
-        check_wowhead_items_floor(tmp_path / "1.60.1.70707", 396)
+        check_wowhead_items_floor(
+            tmp_path / "1.60.1.70707", _sources(25534, wowhead=396, classicdb=292)
+        )
+
+
+def test_an_item_the_clients_hotfixed_row_now_carries_is_not_lost(tmp_path: Path) -> None:
+    """1.60.1.70790: wago's hotfixed ItemSparse took over 186 of the 288 items wowhead
+    carried, so 102 take wowhead's stats and 186 the client's own. Nothing fell back."""
+    _items(tmp_path / "1.60.1.70790", 25855, wowhead=288)
+    check_wowhead_items_floor(tmp_path / "1.60.1.70790", _sources(25855, wowhead=102))
+
+
+def test_a_wowhead_item_gone_from_the_catalogue_is_lost(tmp_path: Path) -> None:
+    _items(tmp_path / "1.60.1.70790", 1000, wowhead=288)
+    missing = {i: None for i in range(500, 1000)}  # none of the 288 ids
+    with pytest.raises(SystemExit, match="0 of .*288"):
+        check_wowhead_items_floor(tmp_path / "1.60.1.70790", missing)
 
 
 def test_class_items_fall_back_to_the_previous_builds_files(tmp_path: Path) -> None:
@@ -95,7 +123,7 @@ def test_class_items_fall_back_to_the_previous_builds_files(tmp_path: Path) -> N
 
 def test_floor_problems_names_both_floors(tmp_path: Path) -> None:
     _items(tmp_path / "1.60.1.70658", 25678, wowhead=688)
-    _items(tmp_path / "1.60.1.70707", 25534, wowhead=396)
+    _items(tmp_path / "1.60.1.70707", 25534, wowhead=396, classicdb=292)
     _items(tmp_path / "1.60.1.70800", 25700, wowhead=700)
     problems = build_floors.floor_problems(tmp_path / "1.60.1.70707", tmp_path / "1.60.1.70658")
     assert len(problems) == 1 and "396" in problems[0] and "688" in problems[0]
@@ -110,7 +138,7 @@ def test_the_build_floors_command_refuses_a_build_below_the_active_ones(
     from pipeline.__main__ import main
 
     _items(tmp_path / "builds" / "1.60.1.70658", 25678, wowhead=688)
-    _items(tmp_path / "builds" / "1.60.1.70707", 25534, wowhead=396)
+    _items(tmp_path / "builds" / "1.60.1.70707", 25534, wowhead=396, classicdb=292)
     _items(tmp_path / "builds" / "1.60.1.70800", 25700, wowhead=700)
     monkeypatch.chdir(tmp_path)
     assert main(["build-floors", "--build", "1.60.1.70707", "--against", "1.60.1.70658"]) == 1

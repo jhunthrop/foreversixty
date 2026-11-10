@@ -1522,3 +1522,22 @@ def test_client_rows_carry_their_limit_category():
     items = {i.id: i for r in build_with_sparse(rows) for i in r.items}
     assert items[16866].limit_category == 714
     assert items[19325].limit_category is None
+
+
+def test_the_mace_skill_modifier_is_known_and_carries_no_planner_stat():
+    """Taran Icebreaker (2915) on 1.60.1.70790's hotfixed ItemSparse: slot 0 is
+    modifier 100, "Equip: Increased Maces +1" on wowhead Forever. Known (the
+    item is emitted, not refused), and no planner stat, like 101's polearms."""
+    from pipeline.normalize.gear import STAT_BY_MODIFIER_ID, _stats
+
+    # and the four others the 70790 hotfixed rows brought: axes, bows, spell
+    # damage against Humanoids and against Dragonkin
+    assert all(STAT_BY_MODIFIER_ID[i] is None for i in (93, 94, 100, 133, 137))
+    row = {
+        "ID": "2915",
+        "StatModifier_bonusStat_0": "100",
+        "StatModifier_bonusAmount_0": "1",
+        "StatModifier_bonusStat_1": "7",
+        "StatModifier_bonusAmount_1": "14",
+    }
+    assert _stats(row) == {"stamina": 14}

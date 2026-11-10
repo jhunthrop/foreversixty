@@ -172,11 +172,23 @@ jobs:
       # The push read is saved in builds/<build>/raw/wago-push/entries.json, which
       # the commit step's `git add builds` commits (a .gitignore exception), so the
       # next run starts from it (pipeline/hotfix_push_store.py).
+      # That commit is the job's last step, so a later step failing lost a finished
+      # crawl (run 42739221308: 66 minutes, then normalize failed). The fetch also
+      # keeps a copy in data/.wago-push-cache (HOTFIX_PUSH_CACHE), saved with
+      # actions/cache straight after it whatever happens next and restored here, so
+      # a rerun of a build with no committed file starts from the last finished crawl.
+      - name: Restore the saved hotfix push
+        uses: actions/cache/restore@v4
+        with:
+          path: data/.wago-push-cache
+          key: wago-push-${{ inputs.product }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: wago-push-${{ inputs.product }}-
       - name: Fetch build
         env:
           PRODUCT: ${{ inputs.product }}
           BUILD_IN: ${{ inputs.build }}
           ALLOW_SHRINK: ${{ inputs.allow_shrink }}
+          HOTFIX_PUSH_CACHE: .wago-push-cache
         run: |
           # A deliberate re-baseline (dropping rows on purpose) passes --allow-shrink
           # to every gated stage below; the default keeps the no-shrink gates armed.
@@ -188,6 +200,12 @@ jobs:
           BUILD=$(uv run python -m pipeline fetch "${ARGS[@]}" | tail -1)
           echo "BUILD=$BUILD" >> "$GITHUB_ENV"
           echo "PRODUCT=$PRODUCT" >> "$GITHUB_ENV"
+      - name: Save the hotfix push
+        if: always() && hashFiles('data/.wago-push-cache/**') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: data/.wago-push-cache
+          key: wago-push-${{ inputs.product }}-${{ github.run_id }}-${{ github.run_attempt }}
       # A build directory that has never been built starts with none of the
       # nightly fill-in caches (bis.yml's quest-levels, item-sources and
       # loot-merge commit them under raw/ over many nights) nor the hotfix

@@ -253,6 +253,15 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     # StatModifier slot; 139, "Increases damage done to Beasts..." on item
     # 4771 "Harvest Cloak") -- none of which this Classic-style planner's
     # stat vocabulary has a key for.
+    # 93, 94, 100, 133 and 137 surfaced once wago's hotfixed ItemSparse carried
+    # the rows (1.60.1.70790), each read off wowhead Forever's `rtg<id>` tag for
+    # the item: 93 "Increased Axes +1" (Edgemaster's Handguards 14551, beside 96
+    # daggers and 103 swords), 94 "Increased Bows +1" (Albinofur Grips 280026),
+    # 100 "Increased Maces +1" (Taran Icebreaker 2915), 133 spell damage against
+    # Humanoids (Atal'ai Gloves 10787), 137 against Dragonkin (Drakestone 10796).
+    93: None,
+    94: None,
+    100: None,
     101: None,
     103: None,
     112: None,
@@ -273,9 +282,11 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     129: None,
     131: None,
     132: None,
+    133: None,
     134: None,
     135: None,
     136: None,
+    137: None,
     139: None,
 }
 
