@@ -54,7 +54,7 @@ export const ratingsPageCopy = {
     },
     {
       part: 'Utility',
-      body: 'The average uptime of every buff, debuff and cooldown your class and spec are expected to keep up for the raid. One dropped buff does not sink the score; broad coverage is what counts. Threat is not scored yet.',
+      body: 'The average uptime of every buff, debuff and cooldown your class and spec are expected to keep up for the raid. One dropped buff does not sink the score. Threat is not scored yet.',
     },
     {
       part: 'Preparation',
@@ -67,7 +67,7 @@ export const ratingsPageCopy = {
   ],
   roles: "A healer's Output is effective healing only; overheal does not count.",
   adjustable:
-    "A guild's officers can change the weights and the cap for their own guild. This page shows the defaults.",
+    "These are the default weights and cap. A guild's officers can change them for their own guild.",
   rankedOrAbsolute: [
     'With at least 20 kills of the same encounter, difficulty, spec, role and kill speed logged, a component is ranked against players of your spec in those logs: "better than 71% of Fury Warriors on this fight." With fewer, the score is measured against the encounter\'s own numbers and says so.',
     "A new boss, or a kill speed nobody has matched yet, starts on that absolute standard. It moves to ranked once its speed band (fast, typical or slow, judged against the encounter's own kill times) reaches 20 comparable logs.",

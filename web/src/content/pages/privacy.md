@@ -12,7 +12,7 @@ sources:
 
 Your Battle.net sign-in identity; an email address only for an account first opened with the
 email sign-in link, which we no longer offer; combat logs and addon exports you upload; and, if you subscribe, a Stripe Customer id. We
-never collect, see, or store your card number, its expiry, or your CVC — Stripe holds all of
+never collect, see, or store your card number, its expiry, or your CVC; Stripe holds all of
 that directly.
 
 We count visits and clicks on our links without cookies or any personal data, and record
@@ -31,7 +31,7 @@ during that process.
 
 ## Cookies
 
-`fs_session` and `fs_csrf` are functional cookies only — they keep you signed in and protect
+`fs_session` and `fs_csrf` are functional cookies only: they keep you signed in and protect
 state-changing requests. There are no tracking or advertising cookies, consistent with this
 site never running ads, for anyone, ever.
 

@@ -39,9 +39,8 @@ describe('CharacterSearch', () => {
     }
   });
 
-  it('says how to use it, with the muted aside and hint', () => {
-    expect(copy.hint).toBe('Type the name, then pick the region and ruleset.');
-    expect(html).toContain(copy.hint);
+  it('carries the muted aside and no how-to hint', () => {
+    expect(html).not.toContain('home-character-search-hint');
     expect(copy.aside).toBe('See any character’s Forever Score.');
     expect(html).toMatch(/class="text-small text-muted[^"]*" data-testid="home-character-search-aside"/);
   });

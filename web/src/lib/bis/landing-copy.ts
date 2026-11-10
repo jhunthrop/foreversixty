@@ -23,8 +23,6 @@ import {
 
 export const landingCopy = {
   title: 'Best in slot',
-  description:
-    'The best gear you can wear at every level range, from the simulator: one list per class and spec, built once and never per character.',
   tierQuestion: 'Which spec is strongest?',
   tierLink: 'Tier list',
   tierHref: '/tiers',

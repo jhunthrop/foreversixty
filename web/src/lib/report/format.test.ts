@@ -153,7 +153,7 @@ describe('formatAmountLike', () => {
 describe('the trash parse', () => {
   it('is a muted dash that says parses are for bosses, not an error', () => {
     expect(TRASH_PARSE).toBe('—');
-    expect(parseTitle(TRASH_PARSE)).toBe('No parse for trash; parses are made for boss fights.');
+    expect(parseTitle(TRASH_PARSE)).toBe('No parse for trash.');
     expect(parseTitle(TRASH_PARSE)).not.toMatch(/could not be reached/);
   });
 });

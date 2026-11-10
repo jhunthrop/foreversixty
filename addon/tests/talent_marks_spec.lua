@@ -138,7 +138,7 @@ describe("the strip's line (TalentMarks.stripSegments)", function()
 		assert.are.equal("Arms leveling · 0 of 51 points · next point at level 10 · " .. MUTED .. "none off plan|r", text)
 		local led = stripLine("Arms leveling", progress(12, 51, 25, 3),
 			{ unspent = 0, allowed = 15, next = "Lethal Attacks (1 of 5)" })
-		assert.is_truthy(led:find("Next: Lethal Attacks (1 of 5) · Arms leveling · 12 of 15 points", 1, true))
+		assert.is_truthy(led:find("Lethal Attacks (1 of 5) · Arms leveling · 12 of 15 points", 1, true))
 	end)
 
 	it("has nothing to say without a build", function()
@@ -149,9 +149,9 @@ describe("the strip's line (TalentMarks.stripSegments)", function()
 	it("leads with the chip's next talent while the window hides the chip", function()
 		local text = stripLine("Arms / Fury build", progress(0, 51, 21, 0),
 			{ unspent = 12, next = "Improved Heroic Strike (1 of 3)" })
-		assert.are.equal("Next: Improved Heroic Strike (1 of 3) · Arms / Fury build · 0 of 51 points · spend 12 now · "
+		assert.are.equal("Improved Heroic Strike (1 of 3) · Arms / Fury build · 0 of 51 points · spend 12 now · "
 			.. MUTED .. "none off plan|r", text)
-		assert.are.equal("Next: %s", L.talentStripNextTalent)
+		assert.are.equal("%s", L.talentStripNextTalent)
 	end)
 
 	it("keeps its wording in Locale", function()
@@ -165,7 +165,7 @@ end)
 
 -- Fix round 3 (seen in game: "click Apply Chan…" cut by the pill's cap): a
 -- segment fits whole or is dropped, the action first, then the build name;
--- fix round 4: then the leading "Next: …".
+-- fix round 4: then the leading next talent.
 describe("TalentMarks.fitStrip", function()
 	local function measure(text)
 		return #text
@@ -211,7 +211,7 @@ describe("TalentMarks.fitStrip", function()
 	it("gives up the leading Next segment after the none off plan, before the name", function()
 		local led = TalentMarks.stripSegments("Arms / Fury build", progress(1, 51, 21, 0),
 			{ unspent = 11, next = "Improved Heroic Strike (2 of 3)" })
-		local ledNoNone = "Next: Improved Heroic Strike (2 of 3) \194\183 Arms / Fury build \194\183 1 of 51 points "
+		local ledNoNone = "Improved Heroic Strike (2 of 3) \194\183 Arms / Fury build \194\183 1 of 51 points "
 			.. "\194\183 spend 11 now"
 		assert.are.equal(ledNoNone, TalentMarks.fitStrip(led, measure, #ledNoNone))
 		local noNext = "Arms / Fury build \194\183 1 of 51 points \194\183 spend 11 now"

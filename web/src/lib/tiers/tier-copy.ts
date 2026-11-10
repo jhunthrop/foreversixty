@@ -141,8 +141,8 @@ function dpsColumns(ctx: NoteContext): ReadColumn[] {
 /** The healer list's rule in plain words: why a pair ties and how a shared rank counts, or,
  *  with no measured error published yet, that the ranks are still to come. */
 function healerOrderNote(measured: boolean): string {
-  if (!measured) return ' Ranks appear once the next ranking publishes the measured error.';
-  return ' ≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error. Tied healers share a rank: =2, =2, then 4.';
+  if (!measured) return 'Ranks appear once the next ranking publishes the measured error.';
+  return '≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error. Tied healers share a rank: =2, =2, then 4.';
 }
 
 function healerColumns(ctx: NoteContext): ReadColumn[] {
@@ -169,7 +169,7 @@ function healerColumns(ctx: NoteContext): ReadColumn[] {
       label: 'Ties and ranks',
       body: [
         {
-          text: `Gap to the top is less healing in this fight, not a verdict on the class.${healerOrderNote(ctx.healerOrderMeasured !== false)}`,
+          text: healerOrderNote(ctx.healerOrderMeasured !== false),
         },
       ],
     },

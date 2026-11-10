@@ -170,7 +170,7 @@ Each pack finding renders as four parts from one copy table (`api/internal/coach
 4. **Evidence anchors.**
 
 The rule-only rendering maps the pack onto the review shape mechanically. The opening is
-`Here is what your log shows for {Boss}.` Fix first is pack rank 1, with its detail as the
+`Your {Boss} pull, from the log.` Fix first is pack rank 1, with its detail as the
 why, and the drill is the persona file's drill for that finding code. Then is ranks 2 to 4.
 Doing well is the top two strengths. Couldn't check is copied as is.
 
@@ -613,8 +613,8 @@ For each comparison, the first that exists wins:
 3. **Spell data**: cooldowns, costs and ranks. `Measured against {Spell}'s {n}-second cooldown…`.
 
 Uncompared facts carry `From your log`. If a comparison finding has no basis at its level, it
-isn't a finding. "Couldn't check" says `not enough logs yet — {n} {Spec} kills of {Boss}
-({size}) on the site, the coach needs 20.`
+isn't a finding. "Couldn't check" says `Not enough logs yet: {n} {Spec} kills of {Boss}
+({size}) on the site, and the coach needs 20.`
 
 ### 11.1 `coach_profiles`, the pool
 

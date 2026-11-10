@@ -38,8 +38,8 @@ describe('the standing line', () => {
 
   it('names the grade, or the place for a list with no letter', () => {
     const week = { grade: 'A', place: 4, of: 23 } as SpecWeek;
-    expect(gradeLine(week, 'Holy')).toBe('Holy is graded A this week');
-    expect(gradeLine({ ...week, grade: null }, 'Holy')).toBe('Holy is #4 of 23 this week');
+    expect(gradeLine(week, 'Holy')).toBe('Holy tier A');
+    expect(gradeLine({ ...week, grade: null }, 'Holy')).toBe('Holy #4 of 23 on the tier list');
     expect(gradeLine(null, 'Holy')).toBeNull();
   });
 

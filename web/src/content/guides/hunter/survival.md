@@ -88,13 +88,13 @@ In a raid, dismiss your pet before the pull; Lone Wolf only works with no pet ou
 
 Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
 
-Then work through your melee priority: Raptor Strike, Mongoose Bite, Lacerate, Strider Kick, Immolation Trap. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Mongoose Bite is the button you watch for: Expose Prey opens it off your own hits. Keep Lacerate's bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and Strider Kick and Immolation Trap fill what is left. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
+Then work through your melee priority: Raptor Strike, Mongoose Bite, Lacerate, Strider Kick, Immolation Trap. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Watch for Mongoose Bite: Expose Prey opens it off your own hits. Keep Lacerate's bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and Strider Kick and Immolation Trap fill what is left. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
 
 You fire no shots in this spec. Your bow or gun is there for its stats.
 
 **Threat.** You sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. Feign Death drops all of your threat if it lands; check the message, because either can miss or be resisted. Feign Death is also your answer when something turns on you.
 
-**Trash.** Survival has little cleave of its own. Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest. Freezing Trap is your crowd control, laid before the pull.
+**Trash.** Survival has little cleave of its own. Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest. Lay Freezing Trap before the pull.
 
 **Movement.** Stay on the boss's back. Every second you are not swinging is lost white damage and lost Expose Prey procs.
 
@@ -104,7 +104,7 @@ Hit matters up to 9%, the cap for your special attacks against a raid boss; Sure
 
 ## Best in slot
 
-Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Survival dual-wields, and Predator's Edge's 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick. The full lists by level are on the [Survival best in slot page](/bis/hunter/survival).
+Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Survival dual-wields, and Predator's Edge's 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick.
 
 ## Enchants and consumables
 
@@ -122,7 +122,7 @@ Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds both o
 
 ## Professions
 
-Enchanting is the profession your best in slot list asks for. Molten Heart of the Mountain and Frozen Heart of the Mountain are Enchanting trinkets that bind on pickup, so nobody can make them for you. Heartseeker, the blacksmith's dagger in your off hand, binds when equipped, so buy one and do not train Blacksmithing for it. Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning pays for your leveling.
+Your raid set asks for Enchanting. Molten Heart of the Mountain and Frozen Heart of the Mountain are Enchanting trinkets that bind on pickup, so nobody can make them for you. Heartseeker, the blacksmith's dagger in your off hand, binds when equipped, so buy one and do not train Blacksmithing for it. Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning pays for your leveling.
 
 ## Leveling
 
@@ -146,7 +146,7 @@ Spend 25 to 29 on Predator's Edge and take Strider Kick at 30, then Resourcefuln
 
 At 26 Immolation Trap rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep Raptor Strike rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.
 
-At 31 you have only the first point of Resourcefulness, and for that one level Raptor Strike rank 1 is the better button: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.
+At 31 you have only the first point of Resourcefulness, and for that one level Raptor Strike rank 1 does more: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.
 
 Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.
 

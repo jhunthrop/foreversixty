@@ -17,4 +17,4 @@ Because there are no realms to scope a name to, Forever characters have a first 
 
 Players also choose a language preference at creation, which the game uses along with faction to lean toward grouping and phasing you with players who share it.
 
-Blizzard frames two-part names as more room for an original name. Wowhead's read of the same change is the opposite, that a region-wide namespace means more competition for any given name. Both follow from the same rule.
+Blizzard frames two-part names as more room for an original name. Wowhead's read of the same change is the opposite, that a region-wide namespace means more competition for any given name.

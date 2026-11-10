@@ -237,12 +237,12 @@ describe('itemTooltipModel', () => {
       ],
     };
     const sources: ItemTooltipSources = { loot, sets: [] };
-    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual(['Molten Core — Ragnaros']);
+    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual(['Molten Core: Ragnaros']);
     expect(itemTooltipModel(item({ id: 2 }), sources).sourceLines).toEqual(['Some Vendor']);
     expect(itemTooltipModel(item({ id: 3 }), sources).sourceLines).toEqual([
       'Crafted: Blacksmithing · Made item',
     ]);
-    expect(itemTooltipModel(item({ id: 4 }), sources).sourceLines).toEqual(['Argent Dawn — Exalted']);
+    expect(itemTooltipModel(item({ id: 4 }), sources).sourceLines).toEqual(['Argent Dawn: Exalted']);
     // Rank 10 is Blizzard's client RequiredPVPRank; Horde's own in-game title for it is
     // "Stone Guard" (pvpRankTitle(horde, 10) === HORDE_PVP_TITLES[5]).
     expect(itemTooltipModel(item({ id: 5 }), sources).sourceLines).toEqual([
@@ -374,7 +374,7 @@ describe('itemTooltipModel', () => {
       ],
     };
     const sources: ItemTooltipSources = { loot, sets: [] };
-    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual(['Molten Core — Ragnaros (20%)']);
+    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual(['Molten Core: Ragnaros (20%)']);
   });
 
   it('ranks bosses and quests ahead of vendor/crafted/rep/pvp lines, known chance descending within that group', () => {
@@ -392,7 +392,7 @@ describe('itemTooltipModel', () => {
     };
     const sources: ItemTooltipSources = { loot, sets: [] };
     expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual([
-      'Molten Core — Low Chance (5%)',
+      'Molten Core: Low Chance (5%)',
       'A Reward (Alliance)',
       'Some Vendor',
     ]);
@@ -419,8 +419,8 @@ describe('itemTooltipModel', () => {
     };
     const sources: ItemTooltipSources = { loot, sets: [] };
     expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual([
-      'Blackwing Lair — High Chance (40%)',
-      'Molten Core — Low Chance (5%)',
+      'Blackwing Lair: High Chance (40%)',
+      'Molten Core: Low Chance (5%)',
     ]);
   });
 
@@ -478,7 +478,7 @@ describe('statLines sign', () => {
       ],
     };
     expect(itemTooltipModel(item({ id: 1 }), { loot, sets: [] }).sourceLines).toEqual([
-      'Molten Core — Lucifron (<1%)',
+      'Molten Core: Lucifron (<1%)',
     ]);
   });
 

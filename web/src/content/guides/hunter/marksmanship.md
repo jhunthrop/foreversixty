@@ -108,7 +108,7 @@ When mana gets low, hold Multi-Shot first: it is the worst damage for its mana y
 
 **Threat.** Feign Death when you get close to the tank's threat, not after the boss turns. It can be resisted: if it says Resisted, you still have all your threat.
 
-**Trash.** Multi-Shot hits three targets. Volley is a mana-heavy channel, worth it only on a big pack that lives through it. Freezing Trap is your crowd control, laid before the pull. Explosive Trap under a pack the tank is holding hits everything within 10 yards, and at 60 it costs even more than Volley, so save it for the same big packs.
+**Trash.** Multi-Shot hits three targets. Volley is a mana-heavy channel, worth it only on a big pack that lives through it. Lay Freezing Trap before the pull. Explosive Trap under a pack the tank is holding hits everything within 10 yards, and at 60 it costs even more than Volley, so save it for the same big packs.
 
 There is no execute phase for a hunter: the priority holds to the end.
 
@@ -120,7 +120,7 @@ Hit matters up to 9%, the cap against a raid boss, because every miss throws awa
 
 ## Best in slot
 
-Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Your ranged weapon is your real weapon, the melee weapon is there for its stats. The full lists by level are on the [Marksmanship best in slot page](/bis/hunter/marksmanship).
+Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Your ranged weapon is your real weapon, the melee weapon is there for its stats.
 
 ## Enchants and consumables
 
@@ -140,7 +140,7 @@ Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every 
 
 ## Professions
 
-Enchanting is the profession your best in slot list asks for. The Heart of the Mountain trinkets are Enchanting crafts that bind on pickup, so nobody can make them for you. Legionite Glaive is a Blacksmithing polearm that also binds on pickup. If you are not a blacksmith, take the next two-hander on your best in slot page. Every other craft in your set binds when equipped, the Engineering rifle and the Leatherworking mail included, so buy them. Engineering is the trash pick: Thorium Grenades and the explosives that save a bad pull. Skinning pays for your leveling.
+Your raid set asks for Enchanting. The Heart of the Mountain trinkets are Enchanting crafts that bind on pickup, so nobody can make them for you. Legionite Glaive is a Blacksmithing polearm that also binds on pickup. If you are not a blacksmith, take the next two-hander on your list. Every other craft in your set binds when equipped, the Engineering rifle and the Leatherworking mail included, so buy them. Engineering brings Thorium Grenades for trash and the explosives that save a bad pull. Skinning pays for your leveling.
 
 ## Leveling
 

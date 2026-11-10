@@ -70,7 +70,7 @@ export const plansPageCopy = {
   band: {
     eyebrow: 'PLANS',
     heading: 'What is free, and what the plans add',
-    lede: 'Everything a player needs is free, and the free list never shrinks. Premium and the guild plans pay for the site. There are no ads for anyone.',
+    lede: 'The free list never shrinks. Premium and the guild plans pay for the site, and there are no ads for anyone.',
     guildLead: 'Running a guild?',
     guildLink: 'Guild and Raid guild are further down',
   },
@@ -231,7 +231,7 @@ export const plansPageCopy = {
     },
     {
       term: 'Renewals',
-      sentence: `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in one click; the plan runs to the end of the period you paid for.`,
+      sentence: `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in Manage billing; the plan runs to the end of the period you paid for.`,
     },
     {
       term: 'A new guild leader',
@@ -258,12 +258,11 @@ export const plansPageCopy = {
     {
       question: 'Is anything from Battle.net ever paid?',
       answer:
-        "No. Your characters, your sign-in, and everything the game itself tells us about you stays free, always. Blizzard's own rules for using their data require this, and we would want it that way regardless.",
+        "No. Your characters, your sign-in, and everything the game itself tells us about you stays free, always. Blizzard's own rules for using their data require this.",
     },
     {
       question: 'Are there ads?',
-      answer:
-        'No. Not for anyone, paying or not. The site is paid for by Premium and the guild plans, not by ads, and that is not a perk you are buying. It is true for everyone.',
+      answer: 'No, for anyone, paying or not. Premium and the guild plans pay for the site.',
     },
     {
       question: 'Who am I paying?',

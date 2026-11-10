@@ -109,11 +109,9 @@ describe('sourceLabel', () => {
    */
   it('appends the standing to a reputation source, so four standings read as four rows', () => {
     expect(sourceLabel(repSource('rep:cenarion-circle:friendly', 'friendly'))).toBe(
-      'Cenarion Circle — Friendly',
+      'Cenarion Circle: Friendly',
     );
-    expect(sourceLabel(repSource('rep:cenarion-circle:revered', 'revered'))).toBe(
-      'Cenarion Circle — Revered',
-    );
+    expect(sourceLabel(repSource('rep:cenarion-circle:revered', 'revered'))).toBe('Cenarion Circle: Revered');
   });
 
   it('leaves every non-reputation source exactly as named', () => {

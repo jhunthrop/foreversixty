@@ -18,6 +18,6 @@ sources:
 
 At the Deep Dive panel Blizzard said Forever is realmless. Instead of choosing from a realm list, a player picks one of four rulesets: Normal, where player-versus-player combat requires mutual consent; PvP; Roleplaying; and Hardcore, which arrives after launch.
 
-Each ruleset is its own large ecosystem rather than a single realm, and it is not one giant realm for everyone. You can only group, run dungeons and raid with players who chose the same ruleset, and Horde and Alliance still cannot group together. Hardcore is fully enclosed, but a Hardcore character that dies can transfer to another ruleset, including PvP.
+Each ruleset is a large ecosystem of its own, not one giant realm for everyone. You can only group, run dungeons and raid with players who chose the same ruleset, and Horde and Alliance still cannot group together. Hardcore is fully enclosed, but a Hardcore character that dies can transfer to another ruleset, including PvP.
 
 Collections and Legacy Points are account-wide across rulesets, with Hardcore as the exception: what you earn in Hardcore can become available elsewhere, but progress made elsewhere never flows into Hardcore. The PvP ruleset will carry faction-balance systems along the lines of Season of Discovery.

@@ -135,7 +135,7 @@ Touch and keyboard parity: every control is 44 px tall on phone; nothing is hove
 
 ### 6.2 In Discord: `report_ready` (G1 §6.2 grammar)
 
-Title `Report: {Title} · Thursday 10 December`, linking to the raid page's report anchor. Colour `8377482` (`#7fd48a`, the Done mark). Inline fields: `Kills` (one line per kill, `Onyxia 1:42`, at most 6, then `+{n} more`); `Wipes` `3`; `Came` `22 of 23`; `Loot` `6 items`. Description: `Kill times, loot and the biggest changes on Forever Sixty.` No raider names (R-A3). It posts only from an officer's `Post to Discord` (R-A6) and is never edited.
+Title `Report: {Title} · Thursday 10 December`, linking to the raid page's report anchor. Colour `8377482` (`#7fd48a`, the Done mark). Inline fields: `Kills` (one line per kill, `Onyxia 1:42`, at most 6, then `+{n} more`); `Wipes` `3`; `Came` `22 of 23`; `Loot` `6 items`. No description. No raider names (R-A3). It posts only from an officer's `Post to Discord` (R-A6) and is never edited.
 
 ## 7. Phone and desktop
 

@@ -12,8 +12,8 @@ sources:
 
 Premium and the guild plan sell server compute and storage: running simulations on our
 servers, keeping raw logs and saved sims longer, and (for the guild plan) tools for a raid
-group. Nothing from Battle.net — your characters, your sign-in, anything the game itself
-tells us about you — is ever sold or gated behind a subscription.
+group. Nothing from Battle.net (your characters, your sign-in, anything the game itself
+tells us about you) is ever sold or gated behind a subscription.
 
 ## Billing and auto-renewal
 
@@ -25,7 +25,7 @@ cancel. Stripe processes every payment; we never see or store your card.
 
 Cancelling stops the renewal and keeps your access through the end of the period you already
 paid for; a period is paid up front and is not refunded in part (see the
-[refund policy](/refunds)). After that, the account works exactly like a free one — nothing is
+[refund policy](/refunds)). After that, the account works exactly like a free one; nothing is
 deleted.
 
 ## Price changes

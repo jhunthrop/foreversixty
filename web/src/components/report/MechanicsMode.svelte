@@ -509,8 +509,8 @@
             >){#if melee.others.players > 0}, the other
               <span class="tabular-nums">{formatAmount(melee.others.damage)}</span> on
               <span class="tabular-nums">{melee.others.players}</span>
-              {melee.others.players === 1 ? 'other player' : 'other players'}{/if}{/if}. A swing lands on
-          whoever holds the enemy, so no table judges it; the Damage taken tab splits it by source.
+              {melee.others.players === 1 ? 'other player' : 'other players'}{/if}{/if}. No table judges
+          melee; the Damage taken tab splits it by source.
           <a
             href={hrefFor(damageTakenPatch(0))}
             class={linkClass}

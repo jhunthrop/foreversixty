@@ -45,7 +45,7 @@ sources:
 
 ## Overview
 
-Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial Wrath is the burst, and your shots fill every gap.
+Your cat does a big share of the damage, Bestial Wrath is the burst, and your shots fill every gap.
 
 ### Strengths
 
@@ -78,7 +78,7 @@ Thirty-one points in Beast Mastery buys every talent that makes the pet hit hard
 - **Careful Aim** (5 points): attack power equal to your Intellect, so a mail Intellect piece is an attack power piece for you and the pet
 - **Mortal Shots** (2 points): your shot crits hit for 212% of a normal hit instead of double, 224% with the 4 points in the raid build
 
-Endurance Training (4 points) keeps the pet alive through raid damage, Bestial Discipline (2 points) keeps half your mana regeneration running while you shoot, and Intimidation (1 point) is the way to Bestial Wrath and a stun on trash: press it to stop a runner or to peel an add off a healer, since bosses cannot be stunned. Bestial Swiftness gets the cat to the target sooner after every pull. Improved Stings (2 points) adds Serpent Sting damage and, in the raid build, is the way down to Trueshot Aura and Mortal Shots. The level 60 build's point in Rapid Killing takes a minute off Rapid Fire and makes your next shot after a kill hit 10% harder, which is worth more out in the world than in a raid. Hawk Eye, Improved Concussive Shot and Deflection add nothing to raid damage, so the build skips them.
+Endurance Training (4 points) keeps the pet alive through raid damage, Bestial Discipline (2 points) keeps half your mana regeneration running while you shoot, and Intimidation (1 point) opens Bestial Wrath and stuns trash: press it to stop a runner or to peel an add off a healer, since bosses cannot be stunned. Bestial Swiftness gets the cat to the target sooner after every pull. Improved Stings (2 points) adds Serpent Sting damage and, in the raid build, is the way down to Trueshot Aura and Mortal Shots. The level 60 build's point in Rapid Killing takes a minute off Rapid Fire and makes your next shot after a kill hit 10% harder, which is worth more out in the world than in a raid. Hawk Eye, Improved Concussive Shot and Deflection add nothing to raid damage, so the build skips them.
 
 The raid build moves one point out of Efficiency and the point in Rapid Killing into Mortal Shots. With Judgement of Wisdom on the boss and a Major Mana Potion you do not run dry, and two more ranks of Mortal Shots beat the mana. Out in the world, keep the level 60 build: you will run out of mana long before you run out of targets.
 
@@ -98,11 +98,11 @@ Auto Shot does more damage than any button you press, so protect it:
 
 When mana gets low, hold Multi-Shot first: it is the worst damage for its mana you fire, so under a quarter of your mana let Aimed Shot have the shared cooldown. Keep Arcane Shot going, and keep Serpent Sting rolling to the end: with the attack power they carry, the sting is the best damage for its mana you have and Arcane Shot is next. Drink a Major Mana Potion before you need it, not at 5%.
 
-**The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Other players' stat buffs do not reach your pet in Forever, so your own gear is what makes it stronger. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
+**The pet.** Raid with a cat: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Other players' stat buffs do not reach your pet in Forever, so your own gear is what makes it stronger. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
 
 **Threat.** A Beast Mastery hunter with Bestial Wrath up can pass a fresh tank in the opening seconds. Watch your threat and Feign Death before you reach the tank, not after the boss turns. Feign Death can be resisted: if it says Resisted, you still have all your threat. The pet keeps its own threat, which is fine, since it sits behind the boss.
 
-**Trash.** Multi-Shot hits three targets and is your AoE on most packs. Volley is a channel, costs a lot of mana, and is worth it only on a big pack that will live through the whole channel. Freezing Trap is the hunter's crowd control: lay it before the pull, and remember any damage breaks it. Explosive Trap under a pack the tank is holding hits everything within 10 yards, and at 60 it costs even more than Volley, so save it for the same big packs.
+**Trash.** Multi-Shot hits three targets and is your AoE on most packs. Volley is a channel, costs a lot of mana, and is worth it only on a big pack that will live through the whole channel. Lay Freezing Trap before the pull; any damage breaks it. Explosive Trap under a pack the tank is holding hits everything within 10 yards, and at 60 it costs even more than Volley, so save it for the same big packs.
 
 There is no execute phase for a hunter: the priority holds to the end.
 
@@ -114,7 +114,7 @@ Hit matters up to 9%, the cap against a raid boss, because every miss throws awa
 
 ## Best in slot
 
-Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Your ranged weapon is your real weapon, the melee weapon is there for its stats, so a two-hander with Agility or Intellect beats a fast one-hander with damage. The full lists by level are on the [Beast Mastery best in slot page](/bis/hunter/beast-mastery).
+Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Your ranged weapon is your real weapon, the melee weapon is there for its stats, so a two-hander with Agility or Intellect beats a fast one-hander with damage.
 
 ## Enchants and consumables
 
@@ -134,7 +134,7 @@ Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every 
 
 ## Professions
 
-Enchanting is the profession your best in slot list asks for. Frozen Heart of the Mountain is an Enchanting trinket that binds on pickup, so nobody can make it for you. Legionite Glaive is a Blacksmithing polearm that also binds on pickup. If you are not a blacksmith, take the next two-hander on your best in slot page. Every other craft in your set binds when equipped, the Engineering rifle and the Leatherworking mail included, so buy them. Engineering is the trash and utility pick: Thorium Grenades, and the target dummies and explosives that save wipes. Skinning pays for your leveling, since you kill beasts all day.
+Your raid set asks for Enchanting. Frozen Heart of the Mountain is an Enchanting trinket that binds on pickup, so nobody can make it for you. Legionite Glaive is a Blacksmithing polearm that also binds on pickup. If you are not a blacksmith, take the next two-hander on your list. Every other craft in your set binds when equipped, the Engineering rifle and the Leatherworking mail included, so buy them. Engineering brings Thorium Grenades for trash, and the target dummies and explosives that save wipes. Skinning pays for your leveling, since you kill beasts all day.
 
 ## Leveling
 

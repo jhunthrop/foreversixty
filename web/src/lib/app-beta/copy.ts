@@ -16,7 +16,7 @@ export const appBetaCopy = {
     'The Forever Sixty apps for iPhone and Android are coming soon: raid sign-ups from the notification, raid night on your lock screen, loot and sim pushes. Sign up to test them.',
   heading: 'Forever Sixty for iPhone and Android',
   soon: 'Coming soon',
-  lead: 'Your raid, your loot and your next upgrade, in your pocket.',
+  lead: 'Raid sign-ups and loot when you are away from the PC.',
   featuresTitle: 'What the apps do',
   features: [
     'Answer a raid sign-up straight from the notification: In, Late, Bench or Out.',

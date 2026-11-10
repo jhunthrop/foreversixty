@@ -44,9 +44,9 @@ export const checkoutGuildCopy = {
             : 'None of your guilds has been claimed yet';
       return `${CLAIM_RULE} ${status}, so the next step is theirs.`;
     },
-    someClaimed: `${CLAIM_RULE} Here is the next step for each of your guilds.`,
-    canClaim: 'You can claim a guild here. Each card below has its next step.',
-    allClaimed: "Whoever holds a guild's claim subscribes it. Here is where each of your guilds stands.",
+    someClaimed: CLAIM_RULE,
+    canClaim: 'You can claim a guild here.',
+    allClaimed: "Whoever holds a guild's claim subscribes it.",
   },
   rank: { leader: 'Guild master', officer: 'Officer', member: 'Member' },
   verifyMark: { verified: 'Verified', notVerified: 'Not verified' },

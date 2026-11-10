@@ -17,7 +17,7 @@
     bestRows,
     buildRows,
     characterHrefs,
-    characterNextStep,
+    characterWaiting,
     characterPageCopy as copy,
     headFacts,
     pageSpec,
@@ -207,19 +207,18 @@
   const note = $derived(
     context === undefined || unread ? null : paperdollNote(unknownCount(slots), table === null),
   );
-  const step = $derived.by(() => {
-    if (own === null || context === undefined) return null;
-    if (unread)
-      return { text: `${notReadCopy.lead} ${notReadCopy.steps}`, action: null, tone: 'neutral' as const };
+  /** The owner's waiting facts; an export that carried nothing reads one neutral line instead. */
+  const waiting = $derived.by(() => {
+    if (own === null || context === undefined || unread) return [];
     const top = topUpgrade(slots);
     const pick = top === null ? null : gear.find((slot) => slot.slot === top.slot)?.pick;
-    const next = characterNextStep({
+    return characterWaiting({
       own,
       top: pick ? { name: pick.name, source: pick.source } : null,
       bisHref: specBis,
     });
-    return { ...next, tone: 'gold' as const };
   });
+  const notReadLine = $derived(own !== null && context !== undefined && unread);
   const bandLevel = $derived(level === null ? null : bandForLevel(level));
   /** Nothing to show a viewer who does not hold the character: the not-found page (C10). */
   const bare = $derived(
@@ -319,11 +318,22 @@
       </PageHeader>
     {/snippet}
     {#snippet bar()}
-      {#if step !== null || (own !== null && meRead !== null)}
+      {#if notReadLine || waiting.length > 0 || (own !== null && meRead !== null)}
         <div class="character-summary" data-region={REGION.summary}>
-          {#if step !== null}<div data-testid="character-next-step">
-              <Notice text={step.text} action={step.action ?? undefined} tone={step.tone} />
-            </div>{/if}
+          {#if notReadLine}<div data-testid="character-next-step">
+              <Notice text={`${notReadCopy.lead} ${notReadCopy.steps}`} tone="neutral" />
+            </div>{:else if waiting.length > 0}<p
+              class="text-gold flex flex-wrap gap-x-5 gap-y-1 pt-[14px] pb-1 text-[15px] leading-6"
+              data-testid="character-next-step"
+            >
+              {#each waiting as fact (fact.key)}
+                {#if fact.href !== null}<a
+                    class={LINK}
+                    href={fact.href}
+                    data-testid={`character-waiting-${fact.key}`}>{fact.text} ›</a
+                  >{:else}<span data-testid={`character-waiting-${fact.key}`}>{fact.text}</span>{/if}
+              {/each}
+            </p>{/if}
           {#if own !== null && meRead !== null}
             <CharacterStanding me={meRead} {own} specName={pageSpec(data, own)} {now} />
           {/if}

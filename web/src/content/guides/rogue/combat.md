@@ -27,7 +27,7 @@ sources:
 
 ## Overview
 
-Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from behind, Eviscerate at four points and Adrenaline Rush with Blade Flurry for the burst.
+A dagger in each hand, Backstab from behind, Eviscerate at four points and Adrenaline Rush with Blade Flurry for the burst.
 
 ### Strengths
 
@@ -49,7 +49,7 @@ Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from be
 
 ## Talents and builds
 
-The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of Flash of Steel, Assassination for Malice, Ruthlessness, Improved Slice and Dice and Lethality, and five points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: 14/34/3: Improved Gouge and Remorseless Attacks in place of Lethality and two points of Improved Slice and Dice, Master of Deception in place of Opportunity, a third point of Ruthlessness, and a point of Efficient Strikes plus the fifth points of Hack and Slash and Lightning Reflexes in place of the fifth Flash of Steel and both points of Composure. That pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
+The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of Flash of Steel, Assassination for Malice, Ruthlessness, Improved Slice and Dice and Lethality, and five points of Opportunity for Backstab. You level and run dungeons with the level 60 build, 14/34/3: Improved Gouge and Remorseless Attacks in place of Lethality and two points of Improved Slice and Dice, Master of Deception in place of Opportunity, a third point of Ruthlessness, and a point of Efficient Strikes plus the fifth points of Hack and Slash and Lightning Reflexes in place of the fifth Flash of Steel and both points of Composure. That pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
 
 - **Adrenaline Rush** (1 point): double energy regeneration for 15 seconds on a 5 minute cooldown: 150 extra energy, two and a half Backstabs' worth.
 - **Blade Flurry** (1 point): 20% attack speed for 15 seconds, and every melee hit also strikes a second nearby enemy. Two-target fights are where Combat beats the other trees.
@@ -61,8 +61,6 @@ The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of F
 - **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
 In the raid build, Lethality takes Backstab crits from 200% to 220%, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes 3 energy off Sinister Strike at one point: your builder's discount in the level 60 build. The raid build never presses Sinister Strike, so it skips Efficient Strikes and puts two points in Composure instead: Poised takes 20 energy off your opener, not 10, so the opening Garrote costs 30. Those two points and four of Lightning Reflexes are the toll to reach Flawless Execution, Weapon Expertise and Aggression.
-
-[Open the planner](/planner?class=rogue) to change the build.
 
 ## Rotation and priority
 
@@ -113,7 +111,7 @@ Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damag
 
 ## Professions
 
-**Enchanting** is the one that changes your gear: Molten Heart of the Mountain and Frozen Heart of the Mountain are bind-on-pickup trinkets only an enchanter can make. **Engineering** brings grenades and dynamite for trash. **Skinning** and **Leatherworking** pay for themselves, since Devilsaur and the Stormshroud pieces are leatherworking crafts. Heartseeker is a blacksmith's dagger that binds when equipped: when it is on your list, buy one, do not train the profession for it.
+**Enchanting** changes your gear: Molten Heart of the Mountain and Frozen Heart of the Mountain are bind-on-pickup trinkets only an enchanter can make. **Engineering** brings grenades and dynamite for trash. **Skinning** and **Leatherworking** pay for themselves, since Devilsaur and the Stormshroud pieces are leatherworking crafts. Heartseeker is a blacksmith's dagger that binds when equipped: when it is on your list, buy one, do not train the profession for it.
 
 ## Leveling
 
@@ -129,4 +127,4 @@ Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger wi
 
 ### Levels 20 to 60
 
-Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on, a dagger and Backstab beat the sword, which is what your best in slot table lists. Open with Garrote from stealth, or with Cheap Shot once you train it at 26, then Eviscerate at five every time until 30 and at four from then on, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on whenever you are under 80 energy. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and, from 22, Vanish get you out of the pulls that go wrong. Slice and Dice joins the rotation at 60, when your gear and the raid's buffs make every white swing count.
+Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on, a dagger and Backstab beat the sword. Open with Garrote from stealth, or with Cheap Shot once you train it at 26, then Eviscerate at five every time until 30 and at four from then on, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on whenever you are under 80 energy. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and, from 22, Vanish get you out of the pulls that go wrong. Slice and Dice joins the rotation at 60, when your gear and the raid's buffs make every white swing count.

@@ -25,7 +25,7 @@ const (
 	SharedDebuff      = "Your share of {Aura}: {n} {classPlural} applied it, and the log merges them."
 	FoodIncomplete    = "Food: the coach's food list isn't complete yet."
 	NoSheet           = "Consumables and enchants: your log has no character sheet for this pull."
-	ThinPool          = "not enough logs yet — {n} {Spec} kills of {Boss} ({size}) on the site, the coach needs 20."
+	ThinPool          = "Not enough logs yet: {n} {Spec} kills of {Boss} ({size}) on the site, and the coach needs 20."
 
 	// BasisTop's template differs from §11's `Top {n} {Spec} {class} on {Boss} ({size}): …`
 	// in field names only; the pin is §5.3's filled form.
@@ -47,7 +47,7 @@ const (
 	FromYourLog       = "From your log"
 	LowerRanks        = "Lower ranks cost less mana."
 
-	RulesOpening = "Here is what your log shows for {Boss}."
+	RulesOpening = "Your {Boss} pull, from the log."
 	RulesNothing = "Nothing to fix on this pull that the log can show."
 
 	TitleCoreCasts     = "{Spell}: {n} casts lost"

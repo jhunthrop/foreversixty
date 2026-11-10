@@ -75,7 +75,7 @@ TalentMarks.settled = true
 --- the level allows (Progress.pointsAllowed: the count reads "12 of 15 points", not the plan's 51), and the
 --- chip's label for the next talent while the open window hides the chip
 --- (Chip.pointLabel). Each segment is { kind, text }: "next", leading,
---- "Next: Improved Heroic Strike (1 of 3)" when `next` is given; "name";
+--- "Improved Heroic Strike (1 of 3)" when `next` is given; "name";
 --- "count", "N of M points"; "action", "complete"
 --- for a finished build, else "spend N now" while points wait (the window
 --- shows the same count), else "next point at level N" (none at the level
@@ -142,7 +142,7 @@ local function joinSegments(segments, dropped)
 end
 
 --- The order segments give way in when the line is wider than the pill
---- may grow: the muted "none off plan", then the leading "Next: …", then
+--- may grow: the muted "none off plan", then the leading next talent, then
 --- the build name, then the action ("next at level 25: …"). The count and
 --- a warning off-plan count always stay.
 TalentMarks.STRIP_SACRIFICE = { "noneOffPlan", "next", "name", "action" }

@@ -20,7 +20,7 @@ BUSY = ("Your coach is busy right now. This is the review from your log alone; t
 ERROR = "The coach couldn't read this pull just now."
 STARTER_HINT = "This coach reads your log against our guide's {spec} rotation."
 RULES_NOTHING = 'Nothing to fix on this pull that the log can show.'
-RULES_OPENING = 'Here is what your log shows for {boss}.'
+RULES_OPENING = 'Your {boss} pull, from the log.'
 
 LAST_RAID_PREMIUM = 'Last raid · {zone}, {date} · Fix first: {stem}, on {n} of {m} bosses · Open review'
 LAST_RAID_FREE = 'Last raid · {zone}, {date} · {count} things to fix · First: {stem} · Read the full review with Premium'

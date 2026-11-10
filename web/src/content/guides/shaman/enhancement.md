@@ -27,7 +27,7 @@ sources:
 
 ## Overview
 
-Enhancement is the shaman's melee spec: one weapon and its imbue, Stormstrike on cooldown, and a free instant Lightning Bolt whenever Maelstrom Weapon reaches five stacks.
+One weapon and its imbue, Stormstrike on cooldown, and a free instant Lightning Bolt whenever Maelstrom Weapon reaches five stacks.
 
 ### Strengths
 
@@ -94,7 +94,7 @@ Strength is attack power twice over. Intellect does more for you than for any ot
 
 ## Best in slot
 
-Your raid set leans on crafts. Frozen Heart of the Mountain is an Enchanting craft that binds on pickup, and an Alliance set adds Molten Heart of the Mountain, which does too, so you make those yourself; every other craft in it binds when equipped, so you can buy it. Shamans learn mail at 40, but a leather piece with better stats still wins its slot. Carry a two-hander, or a one-hander with a shield or a held item; never a second weapon. The full list, with alternatives for every slot, is on the [Enhancement BiS page](/bis/shaman/enhancement).
+Your raid set leans on crafts. Frozen Heart of the Mountain is an Enchanting craft that binds on pickup, and an Alliance set adds Molten Heart of the Mountain, which does too, so you make those yourself; every other craft in it binds when equipped, so you can buy it. Shamans learn mail at 40, but a leather piece with better stats still wins its slot. Carry a two-hander, or a one-hander with a shield or a held item; never a second weapon.
 
 ## Enchants and consumables
 
@@ -104,7 +104,7 @@ Your imbue is your weapon's temporary enchant, Rockbiter Weapon under a raid's W
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit with spells and attacks is your racial. Stoneform's physical damage cut is a free cooldown for cleaves and add phases.
 
-On the Horde, Orc is the pick: Blood Fury is 10% attack power for 15 seconds every 2 minutes. Press it with Rage of the Farseer on the pull and on its own cooldown after that. Troll's Berserking adds 10% attack speed for 15 seconds every 3 minutes and lines up with Rage of the Farseer just as well. Windshaper Skyborne brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
+On the Horde, take Orc: Blood Fury is 10% attack power for 15 seconds every 2 minutes. Press it with Rage of the Farseer on the pull and on its own cooldown after that. Troll's Berserking adds 10% attack speed for 15 seconds every 3 minutes and lines up with Rage of the Farseer just as well. Windshaper Skyborne brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
 
 ## Professions
 

@@ -92,7 +92,7 @@ enum Copy {
     /// Pick your class
     static var signinPickClass: String { text("signin.pickClass") }
 
-    /// Pick your class opens best in slot, talents and sims for any spec, no account needed.
+    /// Best in slot, talents and sims for any spec, no account needed.
     static var signinPickClassNote: String { text("signin.pickClassNote") }
 
     /// Bringing in your characters
@@ -170,7 +170,7 @@ enum Copy {
     /// Add the addon to see which slots you can upgrade.
     static var homeAnswerNoGear: String { text("home.answer.noGear") }
 
-    /// The addon sends your gear when you log out. Get the addon opens foreversixty.gg/setup in your browser.
+    /// The addon sends your gear when you log out.
     static var homeAnswerNoGearNote: String { text("home.answer.noGearNote") }
 
     /// {spec} {band} list
@@ -249,7 +249,7 @@ enum Copy {
         format("home.next.talentsDiffer", n, m, band)
     }
 
-    /// Not available yet: no talent export for this character. Open the addon once to send it.
+    /// No talent export for this character yet. Open the addon once to send it.
     static var homeNextTalentsNone: String { text("home.next.talentsNone") }
 
     /// Sims
@@ -269,7 +269,7 @@ enum Copy {
     /// Your gear
     static var gearTitle: String { text("gear.title") }
 
-    /// What you wear, and the pick for {band}. Tap an item for its tooltip.
+    /// What you wear, and the pick for {band}.
     static func gearIntro(band: String) -> String {
         format("gear.intro", band)
     }
@@ -695,12 +695,12 @@ enum Copy {
         format("bis.setDps", dps, unit, date)
     }
 
-    /// Next: {item}, {delta} {unit}
+    /// Runner-up: {item}, {delta} {unit}
     static func bisNext(item: String, delta: String, unit: String) -> String {
         format("bis.next", item, delta, unit)
     }
 
-    /// Next: {item}, same {unit}
+    /// Runner-up: {item}, same {unit}
     static func bisNextSame(item: String, unit: String) -> String {
         format("bis.nextSame", item, unit)
     }
@@ -749,7 +749,7 @@ enum Copy {
         format("bis.range.p1Opens", date)
     }
 
-    /// Tank lists rank by score, the tank sim's blend of mitigation, risk and threat. Higher is better · Updated {date}
+    /// Ranked by tank score: mitigation, risk and threat · Updated {date}
     static func bisTankLine(date: String) -> String {
         format("bis.tankLine", date)
     }
@@ -871,7 +871,7 @@ enum Copy {
     /// No guild yet
     static var raidsNoGuildTitle: String { text("raids.noGuild.title") }
 
-    /// {name} is not in a guild on Forever Sixty. When your guild's officers add it, its raids show here and you sign up in one tap.
+    /// {name} is not in a guild on Forever Sixty. When your guild's officers add it, its raids show here.
     static func raidsNoGuildBody(name: String) -> String {
         format("raids.noGuild.body", name)
     }
@@ -1260,7 +1260,7 @@ enum Copy {
     /// This raid was cancelled.
     static var raidCancelled: String { text("raid.cancelled") }
 
-    /// You were {state} as {role}. Nothing else to do.
+    /// You were {state} as {role}.
     static func raidCancelledYou(state: String, role: String) -> String {
         format("raid.cancelledYou", state, role)
     }
@@ -1696,7 +1696,7 @@ enum Copy {
     /// Your build
     static var talentsYours: String { text("talents.yours") }
 
-    /// Dashed: your rank differs from the guide. +n is points over it, −n points under it. Tap a talent for both ranks and its text.
+    /// Dashed: your rank differs from the guide. +n is points over it, −n points under it.
     static var talentsLegend: String { text("talents.legend") }
 
     /// Rank {n}/{max}
@@ -1762,7 +1762,7 @@ enum Copy {
     /// Your talent export is from an older game build. Open the addon once to send it again.
     static var talentsStaleExport: String { text("talents.staleExport") }
 
-    /// We do not know this character's spec yet, so there is no guide build to compare. Open the addon once to send it.
+    /// No spec for this character yet, so no guide build to compare. Open the addon once to send it.
     static var talentsPickSpec: String { text("talents.pickSpec") }
 
     /// Loading talents…
@@ -2627,7 +2627,7 @@ enum Copy {
     /// Could not revoke that device. Try again.
     static var devicesRevokeFailed: String { text("devices.revoke.failed") }
 
-    /// Revoke signs a device out at once. To sign this one out, use Sign out on You.
+    /// To sign this phone out, use Sign out on You.
     static var devicesFooter: String { text("devices.footer") }
 
     /// iPhone
@@ -3534,7 +3534,7 @@ enum Copy {
     /// Refresh
     static var reportsRefresh: String { text("reports.refresh") }
 
-    /// Newest first. Logs come from the companion on your PC; the app reads them, it does not upload.
+    /// Logs upload from the companion on your PC, not from the app.
     static var reportsFooter: String { text("reports.footer") }
 
     /// No reports yet. Upload a log, or let the companion send your next raid.
@@ -3661,7 +3661,7 @@ enum Copy {
     /// In progress
     static var reportInProgress: String { text("report.inProgress") }
 
-    /// Meters, casts and deaths for every fight are on foreversixty.gg. Tap Open on foreversixty.gg.
+    /// Meters, casts and deaths for every fight are on foreversixty.gg.
     static var reportFooter: String { text("report.footer") }
 
     /// This report did not load.
@@ -3987,7 +3987,7 @@ enum Copy {
     /// Your guild's next raid and your answer. Answer In, Late or Out from here.
     static var widgetGalleryRaid: String { text("widget.gallery.raid") }
 
-    /// Your next upgrades, measured for your character.
+    /// Your next upgrades and what each one gains.
     static var widgetGalleryUpgrade: String { text("widget.gallery.upgrade") }
 
     /// Next raid, {zone}, {when}, {countdown}.
@@ -4301,7 +4301,7 @@ enum Copy {
         format("guides.a11y.stat", n, stat)
     }
 
-    /// At a glance
+    /// Summary
     static var guidesGlance: String { text("guides.glance") }
 
     /// Role
@@ -4529,7 +4529,7 @@ enum Copy {
     /// Change the role or clear the search.
     static var rosterEmptyBody: String { text("roster.empty.body") }
 
-    /// Attendance is the last 8 raid nights with a log. Tap a raider for their page.
+    /// Attendance is the last 8 raid nights with a log.
     static var rosterFooter: String { text("roster.footer") }
 
     /// The roster did not load.
@@ -5039,7 +5039,7 @@ enum Copy {
         format("plan.cmp.beyond", n)
     }
 
-    /// Dashed: your rank differs from the shared build. +n is points over it, −n points under it. Tap a talent for both ranks and its text.
+    /// Dashed: your rank differs from the shared build. +n is points over it, −n points under it.
     static var planCmpLegend: String { text("plan.cmp.legend") }
 
     /// Shared build: rank {g}/{max}
@@ -6364,12 +6364,12 @@ enum Copy {
     /// tanks
     static var sharedStandingRoleTank: String { text("shared.standing.role.tank") }
 
-    /// {spec} is graded {grade} this week
+    /// {spec} tier {grade}
     static func sharedStandingGraded(spec: String, grade: String) -> String {
         format("shared.standing.graded", spec, grade)
     }
 
-    /// {spec} is #{place} of {of} this week
+    /// {spec} #{place} of {of} on the tier list
     static func sharedStandingPlace(spec: String, place: Int, of: Int) -> String {
         format("shared.standing.place", spec, place, of)
     }

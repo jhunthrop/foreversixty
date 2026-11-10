@@ -78,7 +78,7 @@ export function guildRankLine(sims: GuildSims | null): string | null {
   });
 }
 
-/** C19: "Holy is graded A this week"; a tank or healer list has no letter: "Holy is #4 of 9 this week". */
+/** C19: "Holy tier A", linked to the tier list; a tank or healer list has no letter: "Holy #4 of 9 on the tier list". */
 export function gradeLine(week: SpecWeek | null, specName: string | null): string | null {
   if (week === null || specName === null) return null;
   return week.grade === null

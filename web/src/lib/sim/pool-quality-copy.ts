@@ -33,7 +33,7 @@ export const poolQualityCopy = {
    * row saying which is which ("Brood of Nozdormu" x4). `standing` already travels on
    * every `rep` source (`loot.ts`'s `LootSource.standing`); this only needed saying.
    */
-  sourceWithStanding: (name: string, standingLabel: string): string => `${name} — ${standingLabel}`,
+  sourceWithStanding: (name: string, standingLabel: string): string => `${name}: ${standingLabel}`,
   standingLabel: {
     hated: 'Hated',
     hostile: 'Hostile',
@@ -85,7 +85,7 @@ export const poolQualityCopy = {
    * automatic add could not un-surprise a player who wanted to review the build first.
    */
   talentsPendingCustomBuild:
-    'The build in the editor has not been added to the comparison yet — click “Add this build to the comparison” first, or RUN will leave it out.',
+    'The build in the editor is not in the comparison yet. Add it first, or RUN will leave it out.',
 
   /**
    * combos.ts's `closestOverlappingPair`, dps D25-pattern (round 3 Top Gear, round 4
@@ -108,12 +108,12 @@ export const poolQualityCopy = {
    * wearing"). Neither number is wrong; only the editor's own preview needed saying so,
    * since it is the one number on the page that is NOT your current gear.
    */
-  plannerDpsOwnGearNote: 'With the gear shown above — the comparison below always uses your current gear.',
+  plannerDpsOwnGearNote: 'With the gear shown above. The comparison below uses your current gear.',
   /**
    * ComboResults.svelte, same finding: the other half of the same explanation, said once
    * near the table itself rather than only in the page's own standfirst
    * (`bulkCopy.talentsIntro`, easy to scroll past before a result exists to compare it
    * against).
    */
-  talentsGearLockedNote: 'Every row above uses your current gear — only the talent tree changes.',
+  talentsGearLockedNote: 'Every row above uses your current gear; only the talent tree changes.',
 } as const;
