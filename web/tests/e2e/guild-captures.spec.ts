@@ -6,7 +6,8 @@
 //
 // Every guild parity state (design/mocks/web/guild-parity.json: each role, tab and flow) opened as the
 // parity spec opens it (the parity fixtures, their clock and zone), full page at each width, into
-// <GUILD_CAPTURE_DIR>/build-<state>-<width>.png. GUILD_CAPTURE_WIDTHS (comma list, default 390,1440)
+// <GUILD_CAPTURE_DIR>/build-<state>-<width>.png. GUILD_CAPTURE_CONFIG picks the state list (default
+// guild-parity.json; guild-dense.json for the dense pages). GUILD_CAPTURE_WIDTHS (comma list, default 390,1440)
 // and GUILD_CAPTURE_STATES (comma list, default every state) narrow the run.
 import { mkdirSync } from 'node:fs';
 import path from 'node:path';
@@ -21,7 +22,7 @@ const OUT = path.join(
 );
 const WIDTHS = (process.env.GUILD_CAPTURE_WIDTHS ?? '390,1440').split(',').map(Number);
 const ONLY = process.env.GUILD_CAPTURE_STATES?.split(',');
-const STATES = readParityConfig('guild-parity.json').states.filter(
+const STATES = readParityConfig(process.env.GUILD_CAPTURE_CONFIG ?? 'guild-parity.json').states.filter(
   (state) => ONLY === undefined || ONLY.includes(state.id),
 );
 

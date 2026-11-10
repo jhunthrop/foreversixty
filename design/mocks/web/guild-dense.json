@@ -1,0 +1,34 @@
+{
+  "comment": "The dense guild states (design/specs/2026-11-09-guild-dense.md): the review captures read these (web/tests/e2e/guild-captures.spec.ts with GUILD_CAPTURE_CONFIG=guild-dense.json). Their parity against design/mocks/ws_guild_dense.py is not wired yet: the mocks are the round-3 agreement, the build moved on in review.",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "states": [
+    {
+      "id": "dense-officer",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-dense-officer.html"
+    },
+    {
+      "id": "dense-member",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-dense-member.html"
+    },
+    {
+      "id": "dense-roster",
+      "path": "/guild/us/pvp/olympus-xxvii#roster",
+      "mock": "web-guild-dense-roster.html"
+    },
+    {
+      "id": "dense-readiness",
+      "path": "/guild/us/pvp/olympus-xxvii#readiness",
+      "mock": "web-guild-dense-readiness.html"
+    },
+    {
+      "id": "dense-loot",
+      "path": "/guild/us/pvp/olympus-xxvii#loot",
+      "mock": "web-guild-dense-loot.html"
+    }
+  ]
+}
