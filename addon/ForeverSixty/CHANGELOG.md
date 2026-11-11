@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.39
+
+- An item tooltip no longer opens on its own after your mouse has left it, after looting, or when another addon reads an item in the background. Thanks to Nick.
+
 ## 2.0.38
 
 - A short tour on your first login, in the panel's frame: what the site puts in your game, what your fights send back, your guild's raids, and setting your character up. Skip it any time; /fs help opens it again. "Tooltips only" on its first page turns the rest off.
