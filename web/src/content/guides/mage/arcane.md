@@ -128,6 +128,6 @@ Every point goes into Arcane up to 40, then Frost and Fire for the Frostbolt fil
 - **40:** Arcane Power.
 - **41 on:** Precision first, 6% more spell hit, then Incineration, Improved Frostbolt, Ice Shards and Frost Channeling.
 
-From 24 to 27 cast Frostbolt rank 1: it slows as well as any rank and leaves the mana for your Missiles and Blasts. From 28 go back to rank 4 and keep it until Mage Armor at 34, though rank 5 arrives at 26: the bigger bolt costs more mana than leveling gear can carry. From 34 wear Mage Armor for the mana, and Ice Armor when you are taking melee hits in the open world.
+Rank 5 Frostbolt arrives at 26, but skip it. From 24 to 27 cast rank 1 and spend the mana on Missiles and Blasts; from 28 cast rank 4 until Mage Armor at 34, because the bigger bolt costs more mana than leveling gear can carry. From 34 wear Mage Armor for the mana, and Ice Armor when you are taking melee hits in the open world.
 
 Arcane levels fast on single pulls but burns mana, so drink after every two or three mobs and keep Frost Nova and Blink for anything that reaches you. Frostbolt's slow is your kiting tool at every level. From 22 to the 40s, AoE grinding with Arcane Explosion after a Frost Nova is the fastest way to level, but it needs gear with Stamina and a careful pull.

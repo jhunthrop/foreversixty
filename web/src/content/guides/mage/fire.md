@@ -128,9 +128,9 @@ Pyroblast comes at 20 and Ignite's last point at 21, then three more points of A
 
 On leveling mana the cheap ranks win from here, because each one earns the same Heating Up stack for less:
 
-- Scorch rank 1 from 28 to 39.
+- Scorch rank 1 from 28 to 39, rank 2 from 40 to 45, rank 3 from 46 to 51 and rank 4 from 52 to 55, then the newest rank.
 - Fire Blast rank 2 to 35 and rank 3 from 36 to 39.
-- Pyroblast rank 2 to 37, except rank 3 at 34 and 35.
+- Pyroblast rank 2 to 37, except rank 3 at 34 and 35. Rank 3 from 38 to 40 and rank 4 at 41 and 42; from 43 the newest rank.
 
 Open on a mob with Pyroblast from range, Fireball (Scorch from 30) as it closes, and finish it with Fire Blast. Keep Frost Nova and Blink for anything that reaches you, and Frostbolt for kiting: none of your Fire spells slow until Frostfire Bolt at 40, and Frostbolt is still the cheaper slow after that. Flamestrike into Arcane Explosion clears packs once you have the Stamina for it. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.
 
@@ -143,5 +143,3 @@ After Combustion at 40:
 - **55 and 56:** Missile Barrage turns its procs into fast Arcane Missiles.
 - **57:** Accelerant's last point makes that Fireball a 3 second cast.
 - **58 to 60:** two points of **Burning Soul**, then a point of Arcane Subtlety, finish the build.
-
-The cheap Scorch ranks keep winning after 40: rank 2 to 45, rank 3 from 46 to 51 and rank 4 from 52 to 55. Pyroblast rank 4 at 41 and 42 (only at 42 for an Orc, a Troll or an Undead), then the newest rank.
