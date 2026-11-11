@@ -111,6 +111,16 @@ Looked 2026-11-11 13:00 to 14:30 UTC.
 - Warcraft Logs: no Forever zone on any host.
 - Still needed: any level-60 Affliction log after 10 Nov (Wrack's tick and the DoT speed-up), and a level-60 Succubus log.
 
+## Gates
+
+- Fork, on the box: `go test` for sim/warlock/... and sim/core (ok).
+- Site, on the box:
+  - sim/request: the warlock ladder goldens match, and the Affliction audit test passes;
+  - apl-check;
+  - `npm test` on the guide and APL suites (40 files, 1,253 tests);
+  - `astro check` (0 errors).
+- **Already red on origin/main (975c2ce93), not this lane's:** 15 non-warlock ladder goldens differ when run on the box. Their level 38 ranged item moved from 13064 to 10766 in the data, and the goldens were never regenerated. The warlock three are regenerated here.
+
 ## For the owner
 
 - The site serves 1.60.1.70790 while the live client is 1.60.1.70888. The data move is blocked (issue #21, data.yml's fetch of 70862 failed). Until it moves, this lane's hand rows carry the 10 Nov push; no other class was checked against 70888.
