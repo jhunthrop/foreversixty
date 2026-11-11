@@ -30,14 +30,14 @@ the current surface.
 2. **Your panel.** Tonight's raid, your next upgrades with where they drop, your next talent and your rotation at your level, in one frame.
 3. **Item tooltips.** One line says what the item means for you, "+2.2 DPS", "Best in slot" or "Sidegrade", and Shift shows the rest.
 4. **The talent window.** Numbers on the points you still have to take, the next one ringed in gold, and "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan" under the trees.
-5. **Bags and paper doll.** A green arrow on the slot and on the bag item that beats it, a gold corner on a slot with an upgrade to chase.
+5. **Bags and paperdoll.** A green arrow on the slot and on the bag item that beats it, a gold corner on a slot with an upgrade to chase.
 6. **Quest rewards and rolls.** The green arrow on the reward or roll that is an upgrade, and "Sells for most" on the reward to vendor when none is.
 7. **The player tooltip.** Just "Forever Score 1240" in the tier's colour, with the five parts on Shift.
 8. **Chat badges.** "FS 1240 ·" before a sender's line in guild chat, Trade, LookingForGroup and whispers.
 9. **The guild tab.** Your roster's level, spec, gear, score, attendance and gear gap, sortable, live for guildmates who run the addon.
 10. **The group panel.** Each member's spec, item level, gear gap, score and missing enchants before the pull, and who lacks flask, food or a buff after a ready check.
 11. **The build dialog.** Builds you pick on the site wait here, a code from the planner pastes in, and Copy my character sends your character back.
-12. **Settings.** Twelve switches on the game's own Settings page, "Tooltips only" first.
+12. **Settings.** "Tooltips only" and one switch per surface, on the game's own Settings page.
 
 ## Uploading the gallery
 
@@ -63,30 +63,35 @@ The owner uploads by hand; nothing here logs in to either dashboard.
 
 ## Description
 
-## Play your class better, in game
+### The green arrow and one line on every item
 
-Forever Sixty puts the next thing that makes your character better where you act on it: the item tooltip, the talent window, your bags, the quest reward, the raid tab. A new character follows the default leveling build for its spec from the first level and the raid build from 60, so there is nothing to set up. Anything with nothing to say stays quiet.
+![A green arrow on the character slot and the bag item that beats it](https://foreversixty.gg/addon/bag-arrow.jpg)
 
-It is the in-game half of **[foreversixty.gg](https://foreversixty.gg)**, the planner, simulator and log site for World of Warcraft: Forever. The numbers in game are the site's numbers: the same stat weights, the same best in slot lists, the same Forever Score. Fan-made, not affiliated with Blizzard.
+One line under any item says what it means for you, such as "+2.2 DPS", "Best in slot" or "Sidegrade". A green arrow marks the bag item, quest reward or loot roll that beats what you wear. The talent window rings your next point, and one panel shows your next upgrades, your rotation at your level and tonight's raid.
 
-### What's new in 2.0.38
-
-- A short tour on your first login. Skip it any time; `/fs help` opens it again. "Tooltips only" on its first page turns off everything but the tooltip lines.
-- A new switch, "Show my Forever Score to others". Off, other players see no score for you; you still see yours.
-- The talent window numbers only the points you still have to take, and its strip reads "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan".
-- A talent's tooltip names its points in your build in one line, "Your build: point 12".
-- The guild tab's count line is just "97 members · 3 online". Alone, the group panel says "Join a group to see its specs, gear and buffs."
-- The minimap button wears the flat seal.
+A new character follows the default leveling build for its spec, and the raid build from 60, so there is nothing to set up. The numbers are the ones on **[foreversixty.gg](https://foreversixty.gg)**, the planner, simulator and log site for World of Warcraft: Forever: the same stat weights, best in slot lists and Forever Score. Fan-made, not affiliated with Blizzard.
 
 ### Install
 
-1. Install **Forever Sixty** and **Forever Sixty Data**, the nightly ratings pack. It is a required dependency, so the CurseForge and Wago apps add it for you. By hand, put both folders in `Interface\AddOns`; the `ForeverSixtyInbox` folder in the same download is for the companion app and does nothing on its own.
-2. Log in. A short tour shows what goes where; skip it if you like.
-3. For a build of your own, make it in the **[planner](https://foreversixty.gg/planner)**, press Copy for the game, type `/fs` in game and paste it.
+1. Install **Forever Sixty**.
+2. The CurseForge and Wago apps install **Forever Sixty Data**, the nightly ratings pack, with it.
+3. By hand, put the `ForeverSixty` and `ForeverSixtyData` folders in `Interface\AddOns`. The `ForeverSixtyInbox` folder in the same download is for the companion app.
+4. Log in. A short tour shows what goes where.
+
+For a build of your own, make it in the **[planner](https://foreversixty.gg/planner)**, press Copy for the game, then type `/fs` in game and paste it.
+
+### What's new in 2.0.38
+
+- A short tour on your first login: what the site puts in your game, what your fights send back, your guild's raids, and setting your character up. Skip it any time; `/fs help` opens it again. "Tooltips only" on its first page turns off everything but the tooltip lines.
+- A new switch, "Show my Forever Score to others". Off, other players see no score for you; you still see yours.
+- The talent window numbers only the points you still have to take, and its strip reads like "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan".
+- A talent's tooltip names its points in your build in one line, for example "Your build: point 12".
+- The guild tab's count line is just members and online, for example "97 members · 3 online". Alone, the group panel says "Join a group to see its specs, gear and buffs."
+- The minimap button wears the flat seal, sharp at its small size.
 
 ### The Forever Sixty line
 
-One line beside the minimap with your next step. It always has words: your next talent ("Next talent at 25"), an upgrade in your bags ("Equip Chausses of Westfall, +4.2 DPS"), loot for you in the dungeon you are in, what a ready check found missing, or "Forever Sixty" when there is nothing to do. On raid day, from the evening before, it leads with your raid: tonight, the start time and the instance.
+One line beside the minimap with your next step. It always has words: your next talent ("Next talent at 25"), an upgrade in your bags to equip, with its gain, loot for you in the dungeon you are in, what a ready check found missing, or "Forever Sixty" when there is nothing to do. On raid day, from the evening before, it leads with your raid: tonight, the start time and the instance.
 
 - **Click it** to open your panel.
 - **Right-click it** to hide it until your next level; `/fs chip` brings it back.
@@ -102,11 +107,11 @@ Click the line, the Forever Sixty button on your character pane, or your keybind
 - **Talents**: points on plan, your next talent, and Change and Talents buttons. Under level 10 with no build, Pick your path loads a spec's leveling build.
 - **Rotation at your level**: when to press each button, in plain words, never a spell you do not have yet. At 60 it folds away until you open it.
 
-Opened from the character pane it docks to the pane. Drag its top to move it. It never opens in combat.
+Opened from the character pane it docks to the pane. Drag its top to move it.
 
 ### Item tooltips
 
-Hover any item, in your bags, at a vendor, in the auction house or linked in chat, and one line under it says what it means for you: the green arrow and "+2.2 DPS", "Best in slot", "Best in slot until level 30", "Sidegrade", or "Mail armor at level 40". Rings and trinkets name the one they replace, "+1.3 DPS over Ring of Scorn". Healers read HPS.
+One line under the item says what it means for you: the green arrow and the gain ("+2.2 DPS"), "Best in slot", "Best in slot until level 30", "Sidegrade", or the level you can wear it, such as "Mail armor at level 40". Rings and trinkets name the one they replace. Healers read HPS.
 
 At most one more line follows, the next upgrade for the slot or a better pick and where it drops. **Hold Shift** for the rest: the stat breakdown, "Also good:" alternatives, and where the weights came from (the spec's, or your own sim).
 
@@ -114,9 +119,7 @@ At most one more line follows, the next upgrade for the slot or a better pick an
 
 Open your talents and your build is drawn on them: a number on every point you still have to take, the next one ringed in gold, and a strip under the trees, "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan". A talent's own tooltip names its points in your build. The client's talent buttons work exactly as before.
 
-### Bags, paper doll, quest rewards and rolls
-
-![A green arrow on the character slot and the bag item that beats it](https://foreversixty.gg/addon/bag-arrow.jpg)
+### Bags, paperdoll, quest rewards and rolls
 
 - **A green arrow** on a character slot and on the bag item that beats it or fills it.
 - **A gold corner** on a slot with an upgrade to chase; hover the slot and it names the pick.
@@ -148,11 +151,10 @@ On the Raid tab of the Social window (O), or with `/fs group`, one row per membe
 - After a ready check it lists who lacks flask, food or a weapon buff, and in Molten Core, Onyxia's Lair and Blackwing Lair which buffs, debuffs and resistances the bosses want and who brings them.
 - **`/fs ready`** runs the check now, for your eyes only.
 - **`/fs floor 1200`** tags the members scored under 1200.
-- It informs the leader. It never kicks, declines or whispers anyone.
 
 ### Loot council
 
-When an epic drops and you are the master looter, the addon asks the group what it is worth to each member who can wear it and lists the answers as they come in, with a 10 second countdown. "Ask the group about rare drops too" adds rares. For yourself, `/fs loot` and a shift-clicked item answers "Ranger Bow (Ranged): +3.5 DPS over Short Ash Bow, on your list".
+When an epic drops and you are the master looter, the addon asks the group what it is worth to each member who can wear it and lists the answers as they come in, with a 10 second countdown. "Ask the group about rare drops too" adds rares. For yourself, `/fs loot` and a shift-clicked item gives its gain over what you wear and whether it is on your list.
 
 ### Builds and your character
 
@@ -164,7 +166,7 @@ On raid day `/fs job` prints your jobs for the raid, and a line names them when 
 
 ### Settings
 
-Escape, Options, AddOns, Forever Sixty; or `/fs options`. Twelve switches, each with one line saying what it does. The minimap button is off on a new install.
+`/fs options` opens the addon's page on the game's Settings. The minimap button is off on a new install.
 
 | Switch | What it does |
 |---|---|
@@ -214,8 +216,6 @@ The companion app from **[foreversixty.gg/setup](https://foreversixty.gg/setup)*
 - **No marks in your bags**: another bag addon owns them. The marks on your character pane still show.
 - Anything else: **[open an issue](https://github.com/jhunthrop/foreversixty/issues)** with the `/fs diag` output, or ask on **[Discord](https://discord.gg/NZhBtPwvHt)**.
 
-### What it never does
-
-It never connects to the internet; only the companion app talks to the site, outside the game. It never reads your account, never kicks or whispers anyone for you, and opens nothing in combat. Every surface has a switch on the game's Settings page.
+No network (only the companion app talks to the site), no messages or kicks sent for you, and nothing opens in combat.
 
 **[foreversixty.gg](https://foreversixty.gg)** · [Get set up](https://foreversixty.gg/setup) · [Discord](https://discord.gg/NZhBtPwvHt) · [Source and changelog](https://github.com/jhunthrop/foreversixty)

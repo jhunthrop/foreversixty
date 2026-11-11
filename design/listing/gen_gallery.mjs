@@ -19,6 +19,7 @@ import { existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { INK } from './brand-ink.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(here, '..', '..');
@@ -94,8 +95,6 @@ const escapeHtml = (text) => text.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<'
 const ART = path.join(repo, 'web', 'public', 'art');
 /** The painted seal in the foot, at 48 CSS px (96 device px): the painted seal from 64 px up. */
 const SEAL = path.join(repo, 'design', 'assets', 'logo', 'lx-seal-v4-128.png');
-/** The token values the plate paints (design/tokens/tokens.json; the page has no site CSS). */
-const INK = { bg: '#100a06', cream: '#f3eee2', text: '#e3dfd9', muted: '#b8b1a6', hairline: 'rgba(243, 238, 226, 0.14)' };
 
 async function plateHtml(capture, { title, text }) {
   const [marcellus, openSans, ground, band, seal, shot] = await Promise.all([
@@ -117,14 +116,14 @@ body{position:relative;color:${INK.text};font-family:'Open Sans',sans-serif;disp
 body::before{content:'';position:absolute;inset:0 0 auto;height:62%;background:url(${band}) center top/cover;
   -webkit-mask-image:linear-gradient(#000 50%,transparent);mask-image:linear-gradient(#000 50%,transparent)}
 .stage{position:relative;height:${STAGE_HEIGHT}px}
-.frame{position:absolute;background:${INK.bg};border:1px solid ${INK.hairline};border-radius:6px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.frame{position:absolute;background:${INK.bg};border:1px solid ${INK.line};border-radius:6px;overflow:hidden}
 .shot{display:block}
-.foot{position:relative;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;margin-top:40px;padding-top:26px;border-top:1px solid ${INK.hairline}}
+.foot{position:relative;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;margin-top:40px;padding-top:26px;border-top:1px solid ${INK.line}}
 .mark{display:flex;align-items:center;gap:14px;font-family:Marcellus,serif;font-size:28px;color:${INK.cream};white-space:nowrap}
 .mark img{width:48px;height:48px}
 .text{min-width:0}
 h1{margin:0 0 6px;font-family:Marcellus,serif;font-weight:400;font-size:32px;line-height:1.1;color:${INK.cream}}
-p{margin:0;font-size:20px;line-height:1.4;color:${INK.muted};max-width:1100px}
+p{margin:0;font-size:20px;line-height:1.4;color:${INK.mutedGround};max-width:1100px}
 </style></head><body>
 <div class="stage"><div class="frame"><img class="shot" src="${shot}" alt=""></div></div>
 <div class="foot">

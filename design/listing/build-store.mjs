@@ -8,7 +8,7 @@
 //   play/feature-graphic.png               Play feature graphic, 1024x500, opaque
 //   play/screenshots/NN-<capture>.jpg      phone screenshots, 1080x1920 (9:16) (--only play)
 // Each screenshot is a plate in the site's page head: the band art fading into the ground, the
-// caption in Marcellus, and the capture below it, never enlarged. Captions come from
+// caption in Marcellus, and the whole screen below it, never enlarged. Captions come from
 // store-screens.json; the captures from capture-apps.sh (app-captures/<platform>/<capture>.png).
 // Run from anywhere: node design/listing/build-store.mjs
 // sharp and @playwright/test resolve from web/node_modules.
@@ -17,6 +17,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PNG, renderTile } from '../../web/scripts/brand-art.mjs';
+import { INK } from './brand-ink.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(here, '..', '..');
@@ -26,9 +27,8 @@ const { chromium } = require('@playwright/test');
 
 const { screens } = JSON.parse(readFileSync(path.join(here, 'store-screens.json'), 'utf8'));
 
-/** The token values the plates paint (design/tokens/tokens.json; a browser page with no site CSS). */
-const INK = { bg: '#100a06', cream: '#f3eee2', cream2: '#fcedcf', text: '#e3dfd9', hairline: 'rgba(243, 238, 226, 0.14)' };
-const TAGLINE = 'Play your class better.';
+/** The feature graphic's line: what the app does, in the store's own words. */
+const FEATURE_LINE = 'Raid sign-ups, the roster and your next upgrade';
 const FAN_LINE = 'Fan-made player tool for WoW: Forever';
 
 /** Each store's screenshot: its required pixel size, drawn as a CSS layout at `scale`.
@@ -72,22 +72,34 @@ async function buildIcons() {
   report('play/icon-512.png', MAX_BYTES.playIcon);
 }
 
-/** A plate: the band over the ground, the caption, and the capture at the plate's width less its
- *  margins, its corners rounded as a phone's screen. */
-function plateHtml({ width, height }, caption, capture) {
-  const margin = Math.round(width * 0.09);
+/** The plate's layout as shares of its height: the caption block, and the margin under the screen. */
+const PLATE = { caption: 0.15, foot: 0.035 };
+
+/** The screen's box on a plate: the whole capture (status bar to home indicator), fitted under the
+ *  caption and centred, so nothing is cut through. */
+function screenBox(store, capture) {
+  const top = Math.round(store.height * PLATE.caption);
+  const height = store.height - top - Math.round(store.height * PLATE.foot);
+  return { top, height, width: Math.round((height * capture.width) / capture.height) };
+}
+
+/** A plate: the band over the ground, the caption, and the whole screen under it with a phone
+ *  screen's rounded corners. */
+function plateHtml(store, caption, capture, box) {
+  const { width, height } = store;
   return `<!doctype html><meta charset="utf-8"><style>${FONTS}
 html,body{margin:0;width:${width}px;height:${height}px;overflow:hidden;background:${INK.bg}}
 .p{position:relative;width:100%;height:100%;background:url(${art('ground.webp')}) 0 0/1600px auto repeat,${INK.bg}}
-.band{position:absolute;left:0;right:0;top:0;height:${Math.round(height * 0.42)}px;
+.band{position:absolute;left:0;right:0;top:0;height:${Math.round(height * 0.4)}px;
 background:url(${art('band-1200.webp')}) center top/cover;
 -webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
-h1{position:relative;margin:0;padding:${Math.round(height * 0.06)}px ${margin}px 0;font:400 ${Math.round(width * 0.082)}px/1.15 Marcellus,serif;
-color:${INK.cream};text-align:center;text-wrap:balance;text-shadow:0 1px 8px rgba(0,0,0,.55)}
-.s{position:absolute;left:${margin}px;right:${margin}px;bottom:0;top:${Math.round(height * 0.24)}px;overflow:hidden;
-border-radius:${Math.round(width * 0.08)}px ${Math.round(width * 0.08)}px 0 0;border:1px solid ${INK.hairline};border-bottom:0}
-.s img{display:block;width:100%;height:auto}
-</style><div class="p"><div class="band"></div><h1>${caption}</h1><div class="s"><img src="${capture}"></div></div>`;
+h1{position:absolute;left:0;right:0;top:0;height:${box.top}px;margin:0;padding:0 ${Math.round(width * 0.07)}px;box-sizing:border-box;
+display:flex;align-items:center;justify-content:center;font:400 ${Math.round(width * 0.075)}px/1.15 Marcellus,serif;
+color:${INK.cream};text-align:center;text-wrap:balance}
+.s{position:absolute;top:${box.top}px;left:${Math.round((width - box.width) / 2)}px;width:${box.width}px;height:${box.height}px;
+overflow:hidden;border-radius:${Math.round(box.width * 0.11)}px;border:1px solid ${INK.line}}
+.s img{display:block;width:100%;height:100%}
+</style><div class="p"><div class="band"></div><h1>${caption}</h1><div class="s"><img src="${capture.uri}"></div></div>`;
 }
 
 /** The page `html` at `size`, as an opaque PNG at the page's device scale. */
@@ -98,11 +110,15 @@ async function render(page, html, size) {
   return sharp(await page.screenshot({ type: 'png' })).flatten({ background: INK.bg }).png().toBuffer();
 }
 
-/** Fails when a capture would be enlarged: its pixels must cover the plate's screen box. */
-async function checkCapture(file, store) {
-  const { width } = await sharp(file).metadata();
-  const box = Math.round(store.width * (1 - 2 * 0.09)) * store.scale;
-  if (width < box) throw new Error(`${file} is ${width} px wide; the plate draws it at ${box}, so it would be enlarged`);
+/** The capture, with its size; fails when the plate would enlarge it. */
+async function loadCapture(file, store) {
+  const { width, height } = await sharp(file).metadata();
+  const capture = { width, height, uri: dataUri(file, 'image/png') };
+  const box = screenBox(store, capture);
+  if (width < box.width * store.scale) {
+    throw new Error(`${file} is ${width} px wide; the plate draws it at ${box.width * store.scale}, so it would be enlarged`);
+  }
+  return { capture, box };
 }
 
 /** `--only app-store` or `--only play` builds one store's screenshots. */
@@ -115,11 +131,11 @@ async function buildScreenshots(browser) {
     const dir = `${name}/screenshots`;
     rmSync(path.join(here, dir), { recursive: true, force: true });
     const page = await browser.newPage({ deviceScaleFactor: store.scale });
-    for (const [index, { capture, caption }] of screens.entries()) {
-      const source = path.join(here, 'app-captures', store.platform, `${capture}.png`);
-      await checkCapture(source, store);
-      const rel = `${dir}/${String(index + 1).padStart(2, '0')}-${capture}.jpg`;
-      const plate = await render(page, plateHtml(store, caption, dataUri(source, 'image/png')), store);
+    const listed = screens.filter(({ platforms }) => !platforms || platforms.includes(store.platform));
+    for (const [index, { capture: name, caption }] of listed.entries()) {
+      const { capture, box } = await loadCapture(path.join(here, 'app-captures', store.platform, `${name}.png`), store);
+      const rel = `${dir}/${String(index + 1).padStart(2, '0')}-${name}.jpg`;
+      const plate = await render(page, plateHtml(store, caption, capture, box), store);
       writeFileSync(out(rel), await sharp(plate).jpeg(JPEG).toBuffer());
       const { width, height } = await sharp(path.join(here, rel)).metadata();
       if (width !== store.width * store.scale || height !== store.height * store.scale) {
@@ -140,11 +156,11 @@ function featureHtml() {
 html,body{margin:0;width:${FEATURE.width}px;height:${FEATURE.height}px;overflow:hidden}
 .f{width:100%;height:100%;display:flex;align-items:center;justify-content:center;gap:34px;
 background:linear-gradient(rgba(7,29,46,.5),rgba(7,29,46,.5)),url(${road}) center/cover}
-img{width:150px;height:150px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+img{width:150px;height:150px;}
 h1{margin:0;font:400 76px/1.05 Marcellus,serif;color:${INK.cream2};letter-spacing:-1px;text-shadow:0 2px 12px rgba(0,0,0,.6)}
 p{margin:12px 0 0;font:400 28px/1.3 'Open Sans',sans-serif;color:${INK.text};text-shadow:0 1px 8px rgba(0,0,0,.7)}
 small{display:block;margin-top:6px;font:400 17px/1.3 'Open Sans',sans-serif;color:${INK.text};opacity:.85}
-</style><div class="f"><img src="${seal}"><div><h1>Forever Sixty</h1><p>${TAGLINE}</p><small>${FAN_LINE}</small></div></div>`;
+</style><div class="f"><img src="${seal}"><div><h1>Forever Sixty</h1><p>${FEATURE_LINE}</p><small>${FAN_LINE}</small></div></div>`;
 }
 
 async function buildFeatureGraphic(browser) {

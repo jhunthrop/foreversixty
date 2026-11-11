@@ -159,7 +159,7 @@ The mark is the owner's LX seal, the unit-frame level badge with sixty as the Ro
 - **Flat seal** at 44px and under (`design/assets/brand/seal-flat`, `tools/art/flat_seal.py`): the nav, favicons, tray icons, the minimap button, role icons.
 - **The tile**, the painted seal on the owner's painted blue ground (`web/scripts/brand-art.mjs`), is the square identity image: the app icon, the store icons, the Discord server icon and the bot avatar.
 
-The wordmark is "Forever Sixty" in Marcellus, sentence case. Every identity image is generated (`build-app-icon.mjs`, `design/community/discord/build-assets.mjs`, `design/listing/build-store.mjs`), never placed by hand. The Cinzel seal on a dark disc in `design/logo/*.svg` is retired and read only by older mock boards.
+The wordmark is "Forever Sixty" in Marcellus, sentence case. Every identity image is generated (`web/scripts/build-app-icon.mjs`, `design/community/discord/build-assets.mjs`, `design/listing/build-store.mjs`), never placed by hand. The Cinzel seal on a dark disc in `design/logo/*.svg` is retired and read only by older mock boards.
 
 ## Icons
 

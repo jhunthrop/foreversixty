@@ -2,12 +2,14 @@
 // Builds every Discord image from the brand sources, so none is placed by hand:
 //   assets/icon.png       server icon: the painted tile (the app icon) at 512 px
 //   assets/avatar.png     the bot's avatar (Developer Portal app icon): the same tile at 1024 px
-//   assets/premium.png    Premium role icon: the flat seal, drawn at 64 px (Discord shows it at
-//                         about 20 px beside a name, so the flat seal's size rule applies)
+//   assets/premium.png    Premium role icon: the flat seal's tiny bold drawing at 64 px (Discord
+//                         shows it at about 20 px beside a name, the size that drawing is for)
 //   assets/crest-<class>.png  class role icons and onboarding emoji: the HD crests at 128 px
 //   assets/<faction>.png  onboarding emoji: the faction logos at 128 px
-//   assets/banner.jpg     server banner and invite splash, 1920x1080: the tavern art, the painted
-//                         seal and "Forever Sixty" in Marcellus (design/assets/art/discord-banner.html)
+//   assets/banner.jpg     server banner, 1920x1080: the tavern art and the painted seal. Discord
+//                         draws the server's name over the banner, so the banner carries no name
+//   assets/splash.jpg     invite background, 1920x1080: the same with "Forever Sixty" in Marcellus
+//                         (the layout is design/assets/art/discord-banner.html)
 // Run from anywhere: node design/community/discord/build-assets.mjs
 // sharp and @playwright/test resolve from web/node_modules. Deterministic for the PNGs; the banner
 // is a browser render.
@@ -43,7 +45,7 @@ function checkSize(name, limit) {
 async function buildIdentity() {
   await sharp(await renderTile(SIZE.icon)).png(PNG).toFile(out('icon.png'));
   await sharp(await renderTile(SIZE.avatar)).png(PNG).toFile(out('avatar.png'));
-  await sharp(await renderFlatSeal(SIZE.roleIcon)).png(PNG).toFile(out('premium.png'));
+  await sharp(await renderFlatSeal(SIZE.roleIcon, 'tiny')).png(PNG).toFile(out('premium.png'));
   checkSize('icon.png', MAX_BYTES.banner);
   checkSize('avatar.png', MAX_BYTES.banner);
   checkSize('premium.png', MAX_BYTES.roleIcon);
@@ -61,15 +63,21 @@ async function buildEmoji() {
 
 const dataUri = (path, type) => `data:${type};base64,${readFileSync(path).toString('base64')}`;
 
+/** Over the layout: a lighter veil, so the room reads at Discord's 240 px sidebar size. The banner
+ *  drops the name (Discord prints it over the banner) and shows the seal larger. */
+const VEIL = '.v{background:radial-gradient(ellipse at center,rgba(23,14,9,.1),rgba(23,14,9,.55))}';
+const BANNER_ONLY = 'h1{display:none}img{width:200px;height:200px}';
+
 /** The banner layout with its three files inlined, so the render needs no server. */
-function bannerHtml() {
+function bannerHtml(extraCss) {
   return readFileSync(repo('design/assets/art/discord-banner.html'), 'utf8')
     .replace('url(marcellus.woff2)', `url(${dataUri(repo('apps/shared/fonts/Marcellus-Regular.ttf'), 'font/ttf')})`)
     .replace('url(tavern.jpeg)', `url(${dataUri(repo('design/assets/art/discord-banner-tavern.jpeg'), 'image/jpeg')})`)
-    .replace('src="seal.png"', `src="${dataUri(repo('design/assets/logo/lx-seal-v4-512.png'), 'image/png')}"`);
+    .replace('src="seal.png"', `src="${dataUri(repo('design/assets/logo/lx-seal-v4-512.png'), 'image/png')}"`)
+    .replace('</style>', `${extraCss}</style>`);
 }
 
-async function buildBanner() {
+async function buildBanners() {
   const { chromium } = require('@playwright/test');
   const browser = await chromium.launch();
   try {
@@ -77,11 +85,13 @@ async function buildBanner() {
       viewport: { width: BANNER.width, height: BANNER.height },
       deviceScaleFactor: BANNER.scale,
     });
-    await page.setContent(bannerHtml(), { waitUntil: 'load' });
-    await page.evaluate(() => document.fonts.ready);
-    const shot = await page.locator('.b').screenshot({ type: 'png' });
-    writeFileSync(out('banner.jpg'), await sharp(shot).jpeg({ quality: BANNER.quality, mozjpeg: true }).toBuffer());
-    checkSize('banner.jpg', MAX_BYTES.banner);
+    for (const [name, css] of [['banner.jpg', VEIL + BANNER_ONLY], ['splash.jpg', VEIL]]) {
+      await page.setContent(bannerHtml(css), { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      const shot = await page.locator('.b').screenshot({ type: 'png' });
+      writeFileSync(out(name), await sharp(shot).jpeg({ quality: BANNER.quality, mozjpeg: true }).toBuffer());
+      checkSize(name, MAX_BYTES.banner);
+    }
   } finally {
     await browser.close();
   }
@@ -90,4 +100,4 @@ async function buildBanner() {
 mkdirSync(ASSETS, { recursive: true });
 await buildIdentity();
 await buildEmoji();
-await buildBanner();
+await buildBanners();

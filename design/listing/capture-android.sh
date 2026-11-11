@@ -30,6 +30,23 @@ x1, y1, x2, y2 = map(int, re.findall(r"\d+", sys.argv[1]))
 print((x1 + x2) // 2, (y1 + y2) // 2)' "$bounds" | { read -r x y; "$ADB" shell input tap "$x" "$y"; }
 }
 
+# Scrolls until the first node whose text is $1 (case-insensitive) sits $2 px from the top, so the
+# shot opens on a section heading and never on the tail of the one above it.
+scroll_to() {
+	local y
+	"$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null
+	y=$("$ADB" exec-out cat /sdcard/ui.xml | python3 -c '
+import re, sys
+want = sys.argv[1].lower()
+for node in re.findall(r"<node [^>]*>", sys.stdin.read()):
+    attrs = dict(re.findall(r"(\w[\w-]*)=\"([^\"]*)\"", node))
+    if attrs.get("text", "").lower() == want:
+        print(re.findall(r"\d+", attrs["bounds"])[1]); break' "$1")
+	[ -n "$y" ] || { echo "capture-android: no '$1' to scroll to" >&2; return 1; }
+	# A slow drag (2 s) does not fling, so the page moves by the drag's length.
+	"$ADB" shell input swipe 540 "$y" 540 "$2" 2000
+}
+
 demo() { "$ADB" shell am broadcast -a com.android.systemui.demo -e command "$@" >/dev/null; }
 
 font_scale=$("$ADB" shell settings get system font_scale | tr -d '\r')
@@ -65,6 +82,7 @@ shot gear
 "$ADB" shell am start -W -a android.intent.action.VIEW -d "$RAID_LINK" "$PKG" >/dev/null
 sleep "$SETTLES"
 shot raid
-"$ADB" shell input swipe 540 1800 540 780 400
+"$ADB" shell input swipe 540 1800 540 1300 2000
+scroll_to "Raid composition" 330
 sleep "$SETTLES"
 shot raid-roster

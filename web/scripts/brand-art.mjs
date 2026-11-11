@@ -15,7 +15,11 @@ import sharp from 'sharp';
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const GROUND_ART = join(ROOT, 'design/assets/art/app-icon-background.jpeg');
 const SEAL_PNG = join(ROOT, 'design/assets/logo/lx-seal-v4.png');
-const FLAT_SVG = join(ROOT, 'design/assets/brand/seal-flat/seal-flat-small.svg');
+/** The flat seal's drawings: `small` for 24 to 44 px, `tiny` (bold, fewer details) for 20 px and under. */
+const FLAT_SVG = {
+  small: join(ROOT, 'design/assets/brand/seal-flat/seal-flat-small.svg'),
+  tiny: join(ROOT, 'design/assets/brand/seal-flat/seal-flat-tiny-bold.svg'),
+};
 /** The tile's master size: the App Store's 1024 px icon. */
 export const TILE_SIZE = 1024;
 /** The painted blue inside the ground art's brass frame, as a share of its side (the companion's
@@ -53,8 +57,8 @@ export const renderSeal = (diameter) =>
   sharp(SEAL_PNG).resize(diameter, diameter, { kernel: 'lanczos3' }).png().toBuffer();
 
 /** The flat seal at `diameter`, on transparency, rendered from its SVG (never a downscale). */
-export const renderFlatSeal = (diameter) =>
-  sharp(FLAT_SVG, { density: 1200 }).resize(diameter, diameter).png().toBuffer();
+export const renderFlatSeal = (diameter, drawing = 'small') =>
+  sharp(FLAT_SVG[drawing], { density: 1200 }).resize(diameter, diameter).png().toBuffer();
 
 /** The seal a placement `px` wide shows: flat at FLAT_SEAL_MAX_PX and under, painted above. */
 export const renderSealFor = (px) => (px <= FLAT_SEAL_MAX_PX ? renderFlatSeal(px) : renderSeal(px));

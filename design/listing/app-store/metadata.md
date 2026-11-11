@@ -15,23 +15,22 @@ Play your class better
 
 ## Promotional text
 
-Raid night on your phone: sign up In, Late, Bench or Out from the notification, see who is coming, and check your next upgrade before the first pull.
+Sign up In, Late, Bench or Out from the notification, see who is coming, and check your next upgrade before the first pull.
 
 ## Keywords
 
-raid,guild,signup,roster,bis,gear,upgrade,talents,sim,dps,loot,classic,mmo,rpg,companion,parse
+raid,guild,signup,roster,bis,gear,upgrade,talents,sim,dps,loot,mmo,rpg,companion,parse,healer,tank
 
 ## Description
 
 Raid night, away from your PC.
 
-Forever Sixty is the phone half of foreversixty.gg, the planner, simulator and log site for World of Warcraft: Forever. It shows the raid you signed up for, who is coming, and the gear that makes your character better, and tells you when any of it changes.
+Forever Sixty is the phone half of foreversixty.gg, the planner, simulator and log site for World of Warcraft: Forever. It carries your raid sign-ups, your guild's roster and your next upgrade.
 
 Raids
-- Answer a sign-up straight from the notification: In, Late, Bench or Out. Change your mind later on the raid's page.
+- Answer a sign-up straight from the notification: In, Late, Bench or Out.
 - The raid's page: the start in your own time zone, your role, and who is coming as tanks, healers and damage.
-- Raid night on your lock screen.
-- Add the raid to your calendar in one tap.
+- Raid night on your lock screen: the time to invites, your answer, and how many tanks and healers are in.
 
 Gear
 - Your next upgrades, each with the DPS it adds and where it drops.
@@ -39,16 +38,15 @@ Gear
 
 Activity
 - A push when the roster posts, when you get loot, and when your sim or raid report is ready.
-- One list of everything new for your characters and your guild.
 
 Your characters
-- Sign in with Battle.net and your characters come with you. Switch between them from the profile menu.
+- Sign in with Battle.net and every character comes with you.
 
 Forever Sixty is fan-made. It is not made by or affiliated with Blizzard Entertainment.
 
 ## What's new
 
-The new look: the site's painted band and seal, and every tab's head fading into the page.
+A new app icon, the painted LX seal. Home, Raid, Gear and Activity now match the site.
 
 ## URLs
 
@@ -62,8 +60,8 @@ The new look: the site's painted band and seal, and every tab's head fading into
 
 | Field | Value |
 |---|---|
-| Primary category | Reference |
-| Secondary category | Utilities |
+| Primary category | Utilities |
+| Secondary category | Reference |
 | Age rating | Answer the questionnaire. Guild and character names come from players, so answer the user-generated content question with that in mind. |
 | Copyright | 2026 Commish LLC |
 

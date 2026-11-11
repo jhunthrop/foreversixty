@@ -57,11 +57,11 @@ calm, dark backdrop (an inn or a city at night) so the frames read clearly.
 
 | # | `<name>` | Frame | What must show |
 |---|---|---|---|
-| 1 | `forever-sixty-line` | The Forever Sixty line beside the minimap, hovered | The line and the whole minimap, with its two-line hover open. Shoot on raid day if you can, so it reads "Tonight 20:00: Onyxia's Lair"; otherwise a next talent ("Next talent at 25: ..."). |
+| 1 | `forever-sixty-line` | The Forever Sixty line beside the minimap, hovered | The line and the whole minimap, with its two-line hover open. Shoot on raid day if you can, so it leads with tonight's raid; otherwise a next talent ("Next talent at 25: ..."). |
 | 2 | `addon-panel` | The panel (click the line) | The title band (crest, name, level, score) and every region with something in it: Tonight or Last raid, Upgrades with an Equip button, Talents with Change and Talents, and the rotation, nothing cut off. |
 | 3 | `item-tooltip-verdict` | Bags (B), hovering an upgrade | The item tooltip with its one verdict line (the green arrow and "+2.2 DPS") and its one support line. If you can, a second shot with Shift held (`item-tooltip-verdict-shift.png`). |
 | 4 | `talent-window-marks` | Talent window (N) | All three trees with numbers on the points still to take, the next one ringed, and the strip ("Next at 25: ... · 12 of 15 · 3 off plan"). Use a build with some points off plan. |
-| 5 | `bag-arrow` | Character pane (C) and bags (B) open together | The green arrow on a paper-doll slot and on the bag item that beats it, plus a gold corner on a slot with an upgrade to chase. |
+| 5 | `bag-arrow` | Character pane (C) and bags (B) open together | The green arrow on a paperdoll slot and on the bag item that beats it, plus a gold corner on a slot with an upgrade to chase. |
 | 6 | `quest-reward-marks` | A quest's reward choices | The green arrow on the reward that is an upgrade and "Best in slot" under the pick; or, on a quest where nothing helps, "Sells for most". A group loot roll with its line is a good second shot (`roll-line.png`). |
 | 7 | `player-tooltip` | Hovering another player | The unit tooltip with "Forever Score 1240" in the tier's colour. A second shot with Shift held shows the five parts (`player-tooltip-shift.png`); Claude uses whichever reads better. |
 | 8 | `chat-badge-guild` | Chat frame | Make the chat window wider and taller first. Several guild, Trade or whisper lines with "FS 1240 ·" before the senders, not one line on its own. |

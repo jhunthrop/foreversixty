@@ -62,6 +62,21 @@ def stack(rows: list[Image.Image], out: Path) -> None:
     sheet.save(out, optimize=True)
 
 
+def discord_sidebar() -> Image.Image:
+    """The banner as Discord's channel sidebar shows it: 240x135 at 2x, the server name drawn over
+    its top-left on a shade, as the client does."""
+    scale = 2
+    banner = Image.open(DISCORD / 'banner.jpg').convert('RGB').resize((240 * scale, 135 * scale), Image.LANCZOS)
+    shade = Image.new('L', banner.size, 0)
+    draw = ImageDraw.Draw(shade)
+    for y in range(48 * scale):
+        draw.line([(0, y), (banner.width, y)], fill=int(150 * (1 - y / (48 * scale))))
+    banner.paste((0, 0, 0), (0, 0, *banner.size), shade)
+    name = ImageFont.truetype(str(REPO / 'apps/shared/fonts/OpenSans-Bold.ttf'), 16 * scale)
+    ImageDraw.Draw(banner).text((16 * scale, 12 * scale), 'Forever Sixty', font=name, fill=(255, 255, 255))
+    return banner
+
+
 def identity(og: Path) -> None:
     icons = row([
         (tile(DISCORD / 'icon.png', 160, 'circle'), 'Discord server icon'),
@@ -75,10 +90,14 @@ def identity(og: Path) -> None:
     ], min_cell=190)
     crests = row([(tile(p, 64), p.stem.replace('crest-', '')) for p in sorted(DISCORD.glob('crest-*.png'))]
                  + [(tile(DISCORD / f'{f}.png', 64), f) for f in ('alliance', 'horde')])
-    art = row([(fit(DISCORD / 'banner.jpg', 960), 'Discord banner and invite splash (1920x1080)'),
+    discord = row([
+        (discord_sidebar(), 'banner in the sidebar, 240x135 at 2x, name drawn by Discord'),
+        (tile(DISCORD / 'premium.png', 20).resize((80, 80), Image.NEAREST), 'Premium at 20 px, 4x'),
+    ], min_cell=120)
+    art = row([(fit(DISCORD / 'splash.jpg', 960), 'Discord invite background (1920x1080); banner.jpg is the same without the name'),
                (fit(LISTING / 'play/feature-graphic.png', 820), 'Play feature graphic (1024x500)')])
     ogs = row([(fit(og / f'{name}.png', 600), f'live link preview /og/{name}.png') for name in ('index', 'bis', 'app')])
-    stack([icons, crests, art, ogs], HERE / 'identity-sheet.png')
+    stack([icons, crests, discord, art, ogs], HERE / 'identity-sheet.png')
 
 
 def store(name: str, width: int) -> None:

@@ -11,19 +11,18 @@ Forever Sixty
 
 ## Short description
 
-Raid sign-ups, the roster and your next upgrade for WoW: Forever. Fan-made.
+Raid sign-ups from the notification, the roster and your next upgrade. Fan-made.
 
 ## Full description
 
 Raid night, away from your PC.
 
-Forever Sixty is the phone half of foreversixty.gg, the planner, simulator and log site for World of Warcraft: Forever. It shows the raid you signed up for, who is coming, and the gear that makes your character better, and tells you when any of it changes.
+Forever Sixty is the phone half of foreversixty.gg, the planner, simulator and log site for World of Warcraft: Forever. It carries your raid sign-ups, your guild's roster and your next upgrade.
 
 <b>Raids</b>
-• Answer a sign-up straight from the notification: In, Late, Bench or Out. Change your mind later on the raid's page.
+• Answer a sign-up straight from the notification: In, Late, Bench or Out.
 • The raid's page: the start in your own time zone, your role, and who is coming as tanks, healers and damage.
-• Raid night on your lock screen.
-• Add the raid to your calendar in one tap.
+• Raid night on your lock screen: the time to invites, your answer, and how many tanks and healers are in.
 
 <b>Gear</b>
 • Your next upgrades, each with the DPS it adds and where it drops.
@@ -31,10 +30,9 @@ Forever Sixty is the phone half of foreversixty.gg, the planner, simulator and l
 
 <b>Activity</b>
 • A push when the roster posts, when you get loot, and when your sim or raid report is ready.
-• One list of everything new for your characters and your guild.
 
 <b>Your characters</b>
-• Sign in with Battle.net and your characters come with you. Switch between them from the profile menu.
+• Sign in with Battle.net and every character comes with you.
 
 Forever Sixty is fan-made. It is not made by or affiliated with Blizzard Entertainment.
 

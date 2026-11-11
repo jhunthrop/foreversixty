@@ -7,7 +7,7 @@ pictures are the main listing's captures, served from foreversixty.gg/addon/.
 | Field | Value |
 |---|---|
 | Project name | **Forever Sixty Data** (rename from "ForeverSixtyData"; the folder stays `ForeverSixtyData`) |
-| One line (CurseForge summary, Wago tagline) | The nightly Forever Scores and guild standings from foreversixty.gg, for the Forever Sixty addon. |
+| One line (CurseForge summary, Wago tagline) | Forever Scores on player tooltips, score badges in chat and the guild tab's scores for the Forever Sixty addon, updated nightly. |
 | Categories | Data Export, Guild, Tooltip |
 | Game version | 1.60.1 (World of Warcraft: Forever) |
 | License | All Rights Reserved |
@@ -21,9 +21,9 @@ pictures are the main listing's captures, served from foreversixty.gg/addon/.
 
 ## The Forever Score, in game
 
-Forever Sixty Data is the ratings pack the **[Forever Sixty](https://foreversixty.gg/setup)** addon reads. It carries every public character's Forever Score and every verified guild's standing from **[foreversixty.gg](https://foreversixty.gg)** into the game, so a player tooltip, a chat line, the guild tab and the group panel can show how someone performs without anyone leaving the game.
+Forever Sixty Data is the ratings pack the **[Forever Sixty](https://foreversixty.gg/setup)** addon reads. It carries every public character's Forever Score and every verified guild's standing from **[foreversixty.gg](https://foreversixty.gg)** into the game, so a player tooltip, a chat line, the guild tab and the group panel can show how someone performs.
 
-It holds no code. Install it beside Forever Sixty and the addon reads it; on its own it does nothing.
+Data only. Install it beside Forever Sixty and the addon reads it; on its own it does nothing.
 
 ### Install
 
@@ -57,8 +57,6 @@ A new version is published each night after the site rates the day's logs, and t
 
 Every score comes from combat logs uploaded to foreversixty.gg with public visibility, rated by the same engine the site uses. Private and guild-only logs are never included, and a player who turns off "Show my Forever Score to others" in the addon is left out. The site's **[ratings page](https://foreversixty.gg/ratings)** explains each part and how small samples are handled.
 
-### What it never does
-
-It never connects to the internet and reads nothing from your account. It is a file the game loads, updated by your addon manager.
+No network and nothing read from your account: it is a file the game loads, updated by your addon manager.
 
 **[foreversixty.gg](https://foreversixty.gg)** · [Get set up](https://foreversixty.gg/setup) · [Discord](https://discord.gg/NZhBtPwvHt)

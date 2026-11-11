@@ -45,5 +45,6 @@ final class StoreCaptureTests: XCTestCase {
         raid.swipeUp()
         sleep(Self.settles)
         try save("raid-roster")
+        raid.terminate()
     }
 }

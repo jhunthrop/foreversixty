@@ -18,13 +18,13 @@ Each command prints one line per file and ends each line in `ok`.
 Files are in `design/community/discord/assets/`.
 
 - [ ] **Server icon.** Server Settings > Overview > Server icon: upload `icon.png` (512 px, the painted tile).
-- [ ] **Server banner.** Server Settings > Overview > Server banner (needs boost level 2): upload `banner.jpg` (1920x1080).
-- [ ] **Invite background.** Server Settings > Overview > Invite background, if the server has it: upload `banner.jpg`.
+- [ ] **Server banner.** Server Settings > Overview > Server banner (needs boost level 2): upload `banner.jpg` (1920x1080). It has no name on it because Discord draws the server name over the banner.
+- [ ] **Invite background.** Server Settings > Overview > Invite background, if the server has it: upload `splash.jpg`, the same art with "Forever Sixty" on it.
 - [ ] **Bot avatar.** Developer Portal > the Forever Sixty application > General Information > App icon: upload `avatar.png` (1024 px, the same tile). Then Bot > Icon: the same file.
-- [ ] **Premium role icon.** Server Settings > Roles > Premium > Role icon (needs boost level 2): upload `premium.png` (the flat seal; Discord shows it at about 20 px).
+- [ ] **Premium role icon.** Server Settings > Roles > Premium > Role icon (needs boost level 2): upload `premium.png` (the flat seal's tiny bold drawing; Discord shows it at about 20 px).
 - [ ] **Class crests and faction emoji** are unchanged in look and only rebuilt; re-upload only if Discord shows an old one.
-- [ ] Or run `node design/community/discord/apply.mjs --images` with the bot token. It sets the server icon, banner and role icons, but not the bot avatar.
-- [ ] Check: the server in the sidebar shows the painted seal, and the banner shows "Forever Sixty" in sentence case.
+- [ ] Or run `node design/community/discord/apply.mjs --images` with the bot token. It sets the server icon, banner and role icons, but not the invite background or the bot avatar.
+- [ ] Check: the server list shows the painted seal, and the banner reads at the sidebar's size under the server name.
 
 ## CurseForge and Wago
 
@@ -35,6 +35,22 @@ The text is in `curseforge-description.md` (Forever Sixty) and `data-addon-descr
 - [ ] **Summary or tagline:** paste the "One line" field from each file.
 - [ ] **Description.** For CurseForge, paste `curseforge-description.html` (or `data-addon-description.html`) into the editor's HTML source view. For Wago, paste the Markdown under "## Description".
 - [ ] **Gallery: wait.** It needs two things first. BA1 must have shipped the addon's new look, and the owner must take the twelve in-game shots in `RECAPTURE.md`. Then run `gen_gallery.mjs` and follow "Uploading the gallery". Delete the old navy plates from both dashboards when the new ones go up, not before.
+
+## Before the store screenshots go up
+
+The store plates show the apps exactly as they are on the fixtures today. Four things in the apps
+should change first; each is the apps' own work, and none is an image fix. After them, rerun
+`design/listing/capture-apps.sh` and `build-store.mjs`.
+
+- [ ] Android: the profile button and the gear header's medallion draw an empty ring when the
+      portrait does not load (`GearRoute.kt` passes a portrait painter with no fallback). iOS falls
+      back to the LX seal.
+- [ ] The retired forced caps on the raid page ("ONYXIA'S LAIR", "YOUR SIGN-UP", "NOTES", "SIGN-UPS"
+      on iOS, the title on Android): queued lane F.
+- [ ] Home's activity row says "Sign up In, Late or Out." Bench is missing.
+- [ ] The fixture character: a level 58 Fury Warrior with hunter pants and an engineering gun as its
+      next upgrades, "2 levels to band 60", and "0 of 17 slots on the list" on Gear. A level 60
+      character with real picks and a part-done list would read right to a player.
 
 ## App Store Connect
 
@@ -51,7 +67,7 @@ The text is in `app-store/metadata.md` and the images are in `app-store/`.
 The text is in `play/metadata.md` and the images are in `play/`.
 
 - [ ] **Main store listing:** app name, short description and full description.
-- [ ] **Graphics:** the app icon is `play/icon-512.png`, and the feature graphic is `play/feature-graphic.png`.
+- [ ] **Graphics:** the app icon is `play/icon-512.png` (the full square; Play rounds it, and the round one on the review sheet is only a preview). The feature graphic is `play/feature-graphic.png`.
 - [ ] **Phone screenshots:** upload `play/screenshots/01-home.jpg` to `04-gear.jpg` in order.
 - [ ] **Store settings:** category, contact email, website and privacy policy.
 
