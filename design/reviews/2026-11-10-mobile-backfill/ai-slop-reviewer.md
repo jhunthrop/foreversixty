@@ -189,3 +189,66 @@ Tell 8, the plain card stamped on every list block, remains. It is a blocking te
 
 VERDICT: FAIL
 
+## Round 4 (2026-11-11, base 693e7a952)
+
+**Round 4 review (ai-slop)**
+
+**1. First impression.** The apps now read as made by someone who plays. The item rows, the Kings/Might/Wisdom line and the push bodies are written in a player's voice. What's left is stale data in the captures and two lines of copy that explain things a veteran already knows.
+
+**2. Tells found, most damaging first**
+
+- **Tell 22 and 21, qualifier and obvious-explainer copy on the Raid tab's "Before you pull" row.**
+  - `android-r4/raid-01-top.png` shows "Boots not enchanted", then "No enchant on it · An enchanter or the auction house".
+  - The title already says the boots have no enchant, so "No enchant on it" repeats it. Telling a veteran where enchants come from is the sort of line the owner calls a giveaway.
+  - Sources: `api/internal/guilds/ready_check.go:41` (`EnchantWhere`), `docs/contracts/fixtures/app/character.ready.json:21` and `me.raid-night.before.json:76`. The "No enchant on it" detail is in the same files.
+  - Real developer: the row is "Boots not enchanted" with nothing under it, or only the slot and the missing item. Drop the where-to-get line and the restated detail.
+- **Tell 8, panels (my round-3 must-fix 1).** I withdraw the contest. Your ruling answers it. The web shows the same panels (`web/web-home-*`, `web/web-guild-*`), and the brand reviewer holds the apps to the site. The panels are used by role, not stamped everywhere: one panel per list block, the single framed Plate on Home as the only double border, and different panel contents (list, tally, segmented control). I am not treating tell 8 as open.
+- **Tell 13, stale captures.**
+  - `ios/home-01-top.png` and `ios/gear-01-top.png` still show "Synced 12 d ago" in warning orange on every frame. The stale tone is correct. The problem is that every capture shows it, so a reviewer, and a store listing, sees a broken-looking app.
+  - Re-shoot with a fresh stamp and keep one capture of the stale state.
+- **Tell 22, dangling age on feed rows.**
+  - `ios/activity-01-top.png` and the Home "New for you" row put "Thu" or "Sat" alone on its own line.
+  - On the Molten Core row, "Thu" sits under "Thu 24 Dec" and reads as a duplicate.
+  - I flagged this in round 3 and it is still there. Put the age on the title line or in the right margin, and drop it when the body already carries the day.
+- **Tell 22, mixed precision on the DPS figures.** In `ios/activity-01-top.png`, "204 DPS" and "190 DPS" are integers beside "+12.2 over your 191.4".
+  - The scale now agrees (191.4 + 12.2 is about 204), and the sim row at 190 sits near the Gear header's 182.0.
+  - It would read better if the trailing figures used one decimal like everything else.
+  - Polish only. The numbers are not wrong.
+- **Raid page header, polish.** `android-r4/raid-01-top.png` has "Invites 6:45 pm CST · 40", where the bare "40" has no noun. Veterans can read it, but a bare "40" invites the question. Show "40-man", or drop it.
+- **Covered line, polish.** The "Missing" line puts one icon, before "Kings", and none before "Might" or "Wisdom". That is honest and meets the round-3 rule, so no must-fix. It does read as the icon belonging to the whole line, so you could give all three names art or put none on the line.
+- **Copy keys.**
+  - `raid.noRaid` in `apps/shared/copy/en.json:397` is now "No raid posted yet." with the pitch gone. I found no pitch variants left.
+  - `raid.noRaid` and `raid.tab.noRaid` carry the same text. I did not find where either is rendered, so check and delete the unused one.
+  - `home.answer.noGearNote` is gone.
+
+**3. What reads as authentic, keep**
+- The item rows and the iOS Gear paperdoll grid: real quality colours, real names, "Off hand · Crafted: Blacksmithing", and the slot-and-DPS line under each item.
+- The Gear counter. "3 of 17 slots match the list" is consistent: Head, Neck and Main hand are Equipped, Shoulder reads "+0.0 DPS", and the other 12 slots have gains, about +17 visible against the +18.0 header, with a slot off-screen.
+- The Home to Gear to Activity DPS scale. "+18.0 DPS" on Home matches Gear's header. Activity's 190 and 204 are close to Gear's 182.0 and "your 191.4".
+- No empty icon frames. Names without art draw none.
+- The "Who is coming" tally (Tanks 3, Healers 6, "Damage 15 · 7 melee, 8 ranged"), class-coloured names and "Bring flasks".
+- The In / Late / Bench / Out control.
+- Hero line "Level 58 Fury Warrior · 2 levels to the 60 list".
+- "Loot awarded: Gorvash was awarded Deathbringer by OLYMPUS XXVII", with the guild name left as typed.
+- The push bodies. Raid-short reads "Healers 5 of 8, 5 not answered. 21 of 40 signed, 24 hours out." with a single "Mention healers" action. The applicant push is a player's voice. `raid-starting` reads "Starts in 60 minutes. No flask in your bags."
+
+**4. Must-fix versus polish**
+
+Must-fix:
+1. Cut the "No enchant on it" detail and the "An enchanter or the auction house" line from the ready-check rows. Files: `api/internal/guilds/ready_check.go:41`, `docs/contracts/fixtures/app/character.ready.json`, `docs/contracts/fixtures/app/me.raid-night.before.json`, and the Android parity goldens for the raid screen.
+2. Re-shoot the headline captures with a fresh sync stamp: `ios/home-01-top.png`, `ios/gear-01-top.png` and the `android-r4` equivalents.
+
+Polish:
+- The orphan day-of-week age on feed rows: `ios/activity-01-top.png` and `ios/home-01-top.png`.
+- Decimal precision on the Activity sim rows.
+- The bare "40" in "Invites 6:45 pm CST · 40".
+- One of `raid.noRaid` and `raid.tab.noRaid` in `apps/shared/copy/en.json` is a duplicate. Delete the unused key.
+
+I did not open the other iOS captures (raid, menu, push tap-throughs), most of the `android-r4` set, or the Android parity goldens. My read of those screens rests on the sampled captures and the fixtures I checked.
+
+None of the blocking visual tells (1, 2, 5, 8, 12, 13, 15) is present now. Must-fix 1 is a copy tell, and must-fix 2 is capture hygiene, which I rate as tell 13 only in the sense that a stale stamp looks like a broken state.
+
+VERDICT: FAIL
+
+The fails are two small items, so a round 5 should clear them. Delete the enchant detail lines and re-shoot the captures, and this passes with the polish items listed.
+

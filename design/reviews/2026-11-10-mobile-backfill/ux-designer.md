@@ -224,3 +224,76 @@ VERDICT: NO SHIP
 
 The blockers are must-fixes 1 to 3. All three are small. Fix them, attach the CI snapshots and the in-flight drawer frames, and this ships.
 
+## Round 4 (2026-11-11, base 693e7a952)
+
+# ux-designer, round 4: Forever Sixty mobile backfill
+
+All three round-3 must-fixes are cleared. Two small new defects, found in the officer evidence you added, block the verdict. A third item is missing evidence.
+
+I judged from the `ios/r4-*` and `android-r4/` captures. I did not open the iOS flow snapshots (run 42938631285 is in flight) or the Android `flows/` steps, so none of the sign-up findings below come from them.
+
+## Round-3 must-fixes
+
+| # | Item | Result |
+|---|---|---|
+| 1 | One stale tone | PASS on Home and the drawer, both apps. Home's `Synced 49 d ago` (iOS) and `Synced 12 d ago` (Android) draw in the warning orange under Next upgrades. Both drawers draw `Updated … d ago from Battle.net` in the same orange, with `Refreshing…` in the muted tone. Gear is not verified: `android-r4/gear-01-top.png` is the notification shade, not Gear. Recapture it (polish 1). |
+| 2 | Covered, no empty frames | PASS. The line reads `Missing [Kings icon] Kings · Might · Wisdom and 2 more` on both apps. Might and Wisdom close up with no frame and no gap. Each name stays on one line. The separator is the same ` · ` on both. The remaining ragged edge, an icon on the first name only, is the known fixture limit. |
+| 3 | Notification fixture | PASS. The iOS landing (`r4-push-raid-02-landing`) is the Onyxia's Lair raid page: `Saturday 19 December`, pull 7:00 pm, 24 of 40, Your sign-up with In selected and the Raid tab badge visible. The title, body and landing agree. The Home Molten Core row now reads `Thu 24 Dec`, after the raid. |
+
+## Must fix
+
+1. **The not-synced line has a different tone and affordance on each app.**
+   - What shipped: iOS (`r4-officer-raid-02-scrolled`) draws `Not synced this week: Draknar, Skarn, Zekra, Lightningbolltz` in the primary text colour with a trailing chevron. Android (`raid-officer-02-covered-notsynced`) draws the same line in warning red with no chevron.
+   - Why it matters: the Android line is the same tap target that opens the filtered roster, and nothing on the line says it is tappable.
+   - Fix: match iOS on Android. Draw the chevron at the right edge, centred on the first line, with a 48 dp row. Then pick one tone for the line on both apps. I recommend the primary text colour. The warning tone is already used for stale stamps, and red reads as an error.
+   - Files: `RaidTabParts.kt` (Android) and the iOS Raid tab's not-synced row.
+
+2. **The filtered roster does not show that it is filtered.**
+   - What shipped: on both apps (`r4-officer-raid-06-roster-settled`, `raid-officer-03-roster-not-synced`) the tap lands on four rows (Draknar, Lightningbolltz, Skarn, Zekra).
+   - The stat plate still reads `38 on the roster`.
+   - The `All` chip is selected.
+   - Nothing says why only four people are shown or how to see the rest.
+   - The roster screen is another lane's. Its filtered state is the direct result of a tap on this tab, though, so the brief's rule for main-tab interactions applies.
+   - Fix: when the route carries the not-synced filter, draw a chip row item `Not synced this week · 4` in the selected style, with a clear control (`×`, 44 pt / 48 dp), and deselect `All`. Do not keep `All` selected.
+   - Files: the shared roster filter state on both apps. The change is the filter chip only, not a roster redesign.
+
+## Evidence still missing (not blockers)
+
+- **iOS officer push results.** `ios/r4-push-short-03-result.png` is Home with the Onyxia's Lair card, not a result frame. It does not show that Mention happened. The Android equivalent (`push-raid-short-03-mention-result`) does: `Mentioned 3 healers in Discord.` / `Onyxia's Lair`. Show the iOS result as the banner or the in-app confirmation. If iOS has neither, say so in the brief and I will accept it from `AppTests`.
+- **Drawer Refreshing.** Both in-flight frames are present and correct. `Refreshing…` replaces the link, in the muted tone, with no layout jump.
+- **iOS flow snapshots.** Still pending on run 42938631285. Accepted on the condition from round 3: pressed Late, chips, saving, failed with Try again, and offline.
+
+## Polish
+
+1. **Android Gear capture.** `android-r4/gear-01-top.png` shows the notification shade. Recapture Gear so the stale tone on its `synced … ago` line and the `Not modelled` / `+0.0 DPS` cells can be checked.
+2. **Android drawer, `drawer-02-refreshing`.** A speckled teal patch sits behind `Refreshing…`. It reads as a leftover ripple or a loading shimmer clipped to the link bounds. The iOS frame shows none. Clip it to the 48 dp link rect, or remove it while disabled.
+3. **Drawer stamp clock.** The stamps read 12 d on iOS and 49 d on Android because the fixture clocks differ. This is not a defect, but use one fixture date when you attach both for the same review.
+4. **Home meta rows.** The Molten Core row reads `just now` on Android and `4 h ago` on iOS. The same fixture clock gap causes it. Use one clock.
+5. **Android roster, `raid-officer-03-roster-not-synced`.** The row name column wraps `Elemental Shaman · 60 · Member` and the nights column stays right-aligned. The first row of the pair is shorter than the others. This is the roster lane's. I mention it only because the filtered view makes it visible.
+
+## Kept as ruled
+
+- Panels on the list blocks.
+- Home's Damage without the split.
+- The three notification actions on Android.
+- The Android tap-through landing on the raid page.
+
+## Checklist
+
+- [x] Stale tone is one rule on Home and the drawer, both apps.
+- [ ] Stale tone on Gear (needs the recapture).
+- [x] Covered has no empty frames.
+- [x] Covered uses the ruled labels.
+- [x] Notification title, body and landing agree.
+- [x] iOS landing captured.
+- [x] `Refreshing…` frames on both apps.
+- [x] Android officer push steps and results.
+- [ ] iOS officer push result.
+- [ ] Not-synced line matches across apps (must-fix 1).
+- [ ] Filtered roster shows its filter (must-fix 2).
+- [ ] iOS CI flow snapshots attached.
+
+The remaining blockers are the two small must-fixes above. Neither touches the data or the logic. Fix them, recapture Gear on Android and the iOS result frame, and attach the snapshots from the CI run. I will check those frames only.
+
+VERDICT: NO SHIP
+

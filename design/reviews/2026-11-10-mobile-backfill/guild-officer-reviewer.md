@@ -256,3 +256,75 @@ Key files:
 
 VERDICT: WORTH PAYING FOR
 
+## Round 4 (2026-11-11, base 693e7a952)
+
+# Round 4 verdict: Raid tab, Home raid card and officer pushes
+
+**The page's job:** the officer runs raid week from the phone (who is short, who hasn't answered, who to chase, who to accept). The member gets raid time, their sign-up, and one tap to answer.
+
+I read BRIEF.md and round-4-decisions.md first, then the captures and the code behind P1 and P3.
+
+## Round-3 findings re-checked
+
+| # | Finding | Status |
+|---|---|---|
+| P1 | Mention and Needs you name different roles | **Fixed in code, and the capture agrees.** `ShortRoles` in `api/internal/notify/raid_roster.go` walks the groups in tank, healer, melee, ranged order. It returns the first short role, not the biggest raw gap. The Android capture `push-raid-short-02-expanded.png` leads with `Healers 5 of 8` and offers `Mention healers`. The result reads `Mentioned 3 healers in Discord.`, which matches the 3-short on the Needs you card. |
+| P3 | `Not synced` was built on a login | **Fixed.** Android (`RaidTabFacts.kt:84, 120`) and iOS (`RaidFlowPresenter.swift:258-261`) both read the addon's `logged_at` against the seven-day rule. The stale tone on Home (`Synced 49 d ago`, warning colour) is consistent with that rule. |
+| P2 | Officer pushes had no captures | **Mostly fixed.** Android has a collapsed and an expanded `raid.short`, the Mention result, and the applicant collapsed, expanded and Accept-result captures. iOS has delivered, actions and result steps for short, applicant Accept and Decline, and raid Late. Two gaps remain, see P2' below. |
+| P4 | Filtered roster unseen | **Captured, but it fails what I asked for.** See P4' below. |
+| N9 | No iOS officer captures | **Fixed.** `r4-officer-raid-01..06` show Needs you, `3 have not answered` with `Preview mention`, the applicant line, and Who is coming with the Damage row in the `Damage 15 · 7 melee, 8 ranged` form. |
+
+No regressions found. The round-3 passes still hold:
+- The count-first `raid.short` body.
+- Accept before Decline on the applicant push.
+- Three-name `Not synced` line with `and N more`.
+- The answer control.
+- The Covered line.
+- Stale tone.
+
+## Findings
+
+**SHOULD**
+
+**P4'. The filtered roster still reads as unfiltered, on both platforms.**
+- Evidence: `android-r4/raid-officer-03-roster-not-synced.png` and `ios/r4-officer-raid-06-roster-settled.png`.
+- Both screens show the header `38 on the roster`, the `All` chip selected, and a list of only four raiders (Draknar, Lightningbolltz, Skarn, Zekra). There is no filter label and no clear action.
+- Officer cost: an officer who taps `Not synced this week: …` lands on a list that looks like the full guild is four people. The header contradicts the list, and there is no way back to the full roster except back-navigation.
+- Fix: a header chip reading something like `Not synced this week · 4`, with a clear button (`Roster(guild, keys)` already carries the keys). Show `4 of 38` in the stat panel when filtered.
+- The roster screen belongs to another lane, but this entry point is the Raid tab's, so the tab owns the empty explanation.
+
+**P2'. The iOS Mention result is not visible, and the Android applicant Decline has no capture.**
+- `ios/r4-push-short-03-result.png` is Home with no result banner. `r4-push-short-02-actions.png` does show the banner with the `Mention in Discord` action.
+- I cannot confirm from the capture what text an iOS officer sees after tapping. For the feature that replaces Discord, I need to see `Mentioned 3 healers in Discord.` on iOS the way Android shows it.
+- Android shows the Accept result only, not Decline. The iOS Decline captures exist.
+- Fix: capture the iOS result as a banner or a notification replacement, and add the Android Decline.
+
+**NICE**
+
+- **P5 (from round 3).** Android's three-action limit still drops Out. This is a documented platform ruling. I accept it, with Out one tap away on the raid page.
+- **P6 (from round 3).** The Android shade captures still show the `Serial console enabled` emulator notification beside the raid one. Retake them on a clean emulator before they go in the record.
+- **P7 (from round 3).** Home's officer card and the Raid tab's Needs you repeat the same count. This is fine.
+- The iOS officer capture's tally has no comp target, so it reads `Healers 6` and `Tanks 3`. That is the fixture limit the brief names. The tank, healer, dps order on screen is therefore proven only by Android's captured push and by code. An iOS capture with a target would close it.
+
+## Value test
+
+Would a guild pay $15 or $25 a month for this? For the officer's phone, yes. The loop works end to end:
+- A day out, the server names the first short role and how many haven't answered.
+- One tap in the shade pings those players in Discord, and the notification says what happened.
+- The applicant push accepts or declines from the lock screen.
+- Inside the app, Needs you sits under the head, and the sync line names raiders using a rule that is true.
+
+The sheet still wins for loot fairness, attendance trends and per-raider performance. Those live on the site, and this is a raid-day, away-from-PC tool, so they don't block the switch.
+
+What would still cost trust is P4'. An officer chasing unsynced raiders lands on a four-row list under a `38 on the roster` header and wonders whether the roster broke. It is a one-line fix to the header and a clear action.
+
+Key files:
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/api/internal/notify/raid_roster.go`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/main/kotlin/gg/foreversixty/app/raids/flows/RaidTabFacts.kt`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/ios/App/Raids/Flow/RaidFlowPresenter.swift`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/android-r4/raid-officer-03-roster-not-synced.png`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/ios/r4-officer-raid-06-roster-settled.png`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/ios/r4-push-short-03-result.png`
+
+VERDICT: WORTH PAYING FOR
+

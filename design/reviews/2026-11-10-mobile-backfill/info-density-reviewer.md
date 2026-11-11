@@ -245,3 +245,57 @@ Worth making soon, ranked:
 2. F2: a value on the silent Gear cell, and restore the not-modelled count.
 3. F5 and F4: the Loot row figure and the Notifications value in the emulator build.
 
+## Round 4 (2026-11-11, base 693e7a952)
+
+# info-density-reviewer: round 4, Android tab roots and drawer
+
+I judged these on the current build:
+- `android-r4/`: raid-01-top, raid-officer-02, home-01-top, light-gear, drawer-02-open.
+- The parity goldens and `.txt` files: gear, activity, menu.
+- `GearComposer.kt`, `GearCountsTest.kt`, `GearHeaderTest.kt`, `MenuScreens.kt` and `ProfileMenu.kt`.
+
+I did not re-check the BRIEF's known items: the Might and Wisdom art, the 12 d stamps, the tally without a target, Late snapping back, and the three notification actions.
+
+## Round-3 findings
+
+| # | Round-3 finding | Status |
+|---|---|---|
+| F1 | Covered line draws icons unevenly | FIXED, with a fixture limit. In `raid-01-top` and `raid-officer-02` the line reads `Missing [icon] Kings · Might · Wisdom and 2 more`. The names have short labels, there is no gap where Might and Wisdom would have an icon, and the text closes up. One icon in three still looks uneven. That is the known fixture limit, not app behaviour. I raise N2 about the `and 2 more` tail. |
+| F2 | Silent Gear cell, and the not-modelled count | FIXED. In `light-gear` the Shoulder cell reads `Shoulder · +0.0 DPS`, so no cell is blank. The counts reconcile: 3 Equipped, 13 gains, 1 at +0.0, which makes 17. The 13 gains sum to the header's +18.0. `GearCountsTest` pins it as "no cell is silent". The header keeps `· N gains not modelled yet`, and `GearHeaderTest` covers it. No golden or capture shows the `Not modelled` cell or the header suffix, because the fixture has `notModelledCount` 0, so I judged that path from the tests only. |
+| F3 | Home's tally has no melee/ranged split | KEPT by ruling. Home reads `Tanks 3 · Healers 6 · Damage 15`, and the Raid tab carries `7 melee, 8 ranged`. I did not reopen it. |
+| F4 | Drawer Notifications row has no value in the emulator | STILL OPEN, and it is a real bug. `drawer-02-open` shows a bare `Notifications`. The goldens (`android-menu.txt` line 28: `Raids, gear and sims, logs on`) only show it because `MenuParityTest.kt:122` hard-codes the string. `MenuScreens.kt:117` never sets `MenuLines.notifications`, so production always passes null. The string `menu_notifications_on` (`%1$s on`) is not used anywhere in `app/src/main`, so the real row is dead code. The golden shows a value the app never draws. See N1. |
+| F5 | Loot row lacks a per-kind figure | FIXED. The golden reads `Onyxia · main hand, +12.6 DPS` on the Deathbringer row. The figure sits in the body, not in the trailing column the sim row uses. That is acceptable. |
+
+## New findings, ranked
+
+**SHOULD**
+- **N1: Wire the Notifications row.** In `MenuScreens.kt:117` build `notifications` from the per-group on/off state, which comes from the `app.notifications.json` contract that the Notifications screen already loads. Render it with `menu_notifications_on` or `menu_notifications_off`. A raider checks `Raids, gear and sims on` before a raid night. Then make the golden's value come from the same builder, so the golden and the emulator cannot disagree again.
+- **N2: Cap `and 2 more` on the Covered line.** The line shows three gaps and hides the rest. For an officer, the hidden gaps may be the ones that matter (Judgement, Windfury). Show every gap name, which costs one or two wrapped lines. If it must stay capped, make the `and N more` tail a tap target into the raid page's cover list. The source is `guild.raid.cover[]` (`state`), which the Raid tab already reads.
+
+**NICE**
+- **N3: Sim rows have no trailing figure.** `Kaelra passed you` carries `1,196 DPS` on the right. `Sim done: 948.6 DPS ±6` has its figure only in the title, and `+21 vs your last` is in the body. Use the same trailing column for sim rows (`feed.rows[].segments[].figure`).
+- **N4: Raid footer.** The footer is below the fold, so I could not judge whether the Raid tab still has the per-row figures from round 2.
+
+## Evidence defects (not the app's)
+`android-r4/gear-01-top.png` and `activity-01-top.png` are captures of the system notification shade, not the app. The Gear and Activity emulator captures that carry weight are `light-gear` (the same state) and the parity goldens. Re-shoot those two before the next round.
+
+## Phones and font scale
+Nothing new collapses at 390. At fs2, N2 would cost one or two lines on Raid. Check `fs2-raid` when N2 lands.
+
+## Needs data
+- Per-group unread counts for the Activity chips, as a field on `/v1/feed` or a client tally.
+- A founder end date, if the Plan row is ever to show one.
+- A cached `total_gain` per character, so the Switch rows can show a gain.
+- A last-pulls or progress figure for the Raid tab.
+- The reputation standing number for `needs revered` rows.
+- Spell art for Might and Wisdom on the fixture build, which is a fixture limit.
+
+## Verdict
+
+**DENSE WITH ADDITIONS**
+
+Worth making soon, ranked:
+1. N1: wire the Notifications row in production and drive the golden from the same builder.
+2. N2: show every Covered gap, or make `and N more` a link.
+3. N3: put the sim figure in the trailing column. Also re-shoot the two notification-shade captures.
+

@@ -282,3 +282,67 @@ The KEEPs hold, and I do not contest them:
 
 VERDICT: DRIFT
 
+## Round 4 (2026-11-11, base 693e7a952)
+
+Round 4 verdict on the four tab roots, the profile drawer and the raid notification, judged against the web. I read the iOS captures, the Android r4 captures, the code and the web tokens. I did not open the Android parity goldens or the round-4 mocks.
+
+Two Android captures are not usable: `android-r4/gear-01-top.png` and `android-r4/activity-01-top.png` show the system notification shade, not the app. I judged Android Gear and Activity from `light-gear.png` and `light-activity.png`. The `light-*` sets are still the dark app, which matches the brief's "dark only". Redo the two bad frames.
+
+## Round-3 findings
+
+| # | Status | Evidence |
+|---|---|---|
+| N1 Activity chip teal | FIXED | iOS `activity-01-top.png` fills the selected `All` chip with `teal` inside a `tealEdge` hairline. It matches Android and the Segmented. |
+| N2 Stale tone | FIXED | Home `Synced 12 d ago` and Gear `synced 12 d ago` are warning orange on both apps, and the drawer matches. |
+| N3 Covered line | FIXED, one NICE residue | iOS `light-raid.png` reads `Missing [Kings icon] Kings · Might · Wisdom and 2 more` with no empty frames and one separator. Might and Wisdom lose their art, which is the known fixture limit. The Kings label sits a few pixels lower than Might and Wisdom, so the baseline shifts when an icon is present. Align the icon on the text baseline. |
+| N4 Type residue | FIXED on the files I could check | The named Android sites (`FlowFigures.kt`, `FlowLayout.kt`, `ForeverTheme.kt`) no longer have literal `.sp` sizes. One remains: `FlowRows.kt:348` has `FsType.small.copy(lineHeight = 18.sp)`. That is a role with a line-height override. Fold the 18 into a token role (NICE). I could not find `GearListView.swift` at the cited path and did not re-verify it. |
+| N5 Large-text stack | FIXED in code, not seen | The mock rulings and `fs2-raid.png` use the 2×2 form at radius 4. I did not open `ax5-raid.png` on iOS. |
+| N6 Damage split | FIXED | `Damage 15 · 7 melee, 8 ranged` is one line on both apps, with the names under it. |
+| N7 iOS tally spacing | FIXED | There is a gap above the Segmented on iOS Home, as on Android. |
+| N8 Show older | FIXED | It is left-aligned under the list on both apps. |
+| Carried: `OLYMPUS XXVII` | KEPT | Both apps still read `by OLYMPUS XXVII.` Round-4 decisions KEEP it as the guild's own typing, and I accept that. |
+
+## New findings
+
+**SHOULD**
+
+**R4-1. Preview mention is a blue button on iOS and a neutral grey outline on Android (DRIFT).**
+- **iOS:** `NextRaidBlock.swift:144` uses `FSButtonStyle`, whose `.secondary` kind is `blue` with a `blueEdge` hairline. That is the web's secondary button, per `web/src/styles/tokens.css:119`.
+- **Android:** `FlowRows.kt:269-276` draws every non-primary `FlowButton` as `raised` with a `line` border. `HomeFlowScreen.kt:132` uses it for the same action. It is the same job and the same screen, and `raid-officer-01-top.png` shows the two differ.
+- **Fix:** add a secondary kind to `FlowButton` that reads the generated `FsColor.blue` and `FsColor.blueEdge` tokens. Make `FlowButton`'s non-primary default that kind.
+
+**R4-2. Android's primary button is a gold gradient (DRIFT).**
+- **Where:** `FlowRows.kt:269` fills primary buttons with `Brush.verticalGradient(goldHover, gold)` and `bg` text. `ApplicantScreen.kt:85` (Accept) and `NotAnsweredScreen.kt:108` (the role Mention button) use it.
+- **Web and iOS:** the web primary is `teal` with a `tealEdge` border. iOS `FSButtonStyle.primary` uses the same. The web draws no gradients.
+- **Scope:** the screens that use it are secondary, but the notification actions land there. This is a shared component, so it will spread.
+- **Fix:** primary becomes `FsColor.teal` fill, `FsColor.tealEdge` border and `strong` text, with no brush.
+
+**R4-3. The iOS Activity tab badge does not show at launch (DRIFT).**
+- **iOS:** `RootView.swift:195` sets `shell.badges[.activity]` only from `ActivityScreen`'s `onUnread`. iOS Home, Raid and Gear show no badge on Activity, although Home's own link reads `All activity (3)`.
+- **Android:** the badge `3` shows on every tab.
+- **Fix:** load the unread count at shell start, the way line 117 loads the Raid badge. `RaidBadgeCount.load` is the pattern.
+
+**NICE**
+
+**R4-4. The Raid badge reads 6 on Android's officer view and 1 on iOS's.** I cannot say whether these are different states. `ios/r4-officer-raid-01-top.png` shows 1 and `android-r4/raid-officer-01-top.png` shows 6, both on the officer state. Check that both build the count from the same rule.
+
+**R4-5. The two apps use different clocks in the captures.**
+- **Android:** `Today / Molten Core / just now`, then `This week`.
+- **iOS:** one `This week` group, with `Thu`.
+- **Fix:** pin one fixture clock so the grouping and stamps compare.
+
+**R4-6. The stamp meta sits alone on its own line on both apps in the Activity rows.** It reads `…CST.` then `Thu`. The web keeps the meta on the same line when it fits. This is the same on both apps, so it is consistent with the brief's ruling and I do not list it as drift.
+
+## ALLOWED
+
+- The floating glass iOS tab bar against the M3 `NavigationBar` and its pill indicator: spec 4.1, rule 8.
+- The iOS large title against the Android bar title at rest: rule 8.
+- The M3 pill answer control and the three notification actions: rule 8, the round-5 mock ruling.
+- The person glyph in the faction ring: the owner exception.
+- The `OLYMPUS XXVII` loot body: the round-4 KEEP.
+- The `Panels` on list blocks: the round-4 KEEP, and the web home and guild pages draw the same.
+
+The two button findings are real component drift. A regular who opens the app after the site will feel both. Only CONSISTENT passes the gate.
+
+VERDICT: DRIFT
+
