@@ -55,7 +55,8 @@ struct SignedOutView: View {
         .padding(.top, notice == nil ? Self.headTop : Self.headTopWithNotice)
         .padding(.bottom, FSSpace.space6)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .surfaceBand(underTopEdge: true)
+        // The band runs up under the status bar, as every head's (N3).
+        .bandUnderBars()
     }
 
     private var plate: some View {

@@ -35,11 +35,9 @@ struct GuidesSnapshotTests {
         )
     }
 
-    /// The tab's root in its stack, as GuidesScreen draws it.
+    /// The Guides root as the menu pushes it, on the N3 bar, as GuidesScreen draws it.
     private func root(_ view: GuidesRootView) -> some View {
-        NavigationStack {
-            view.navigationTitle(Copy.guidesTitle).navigationBarTitleDisplayMode(.inline).toolbar(removing: .title)
-        }
+        PushedScreen(back: AppTab.home.title) { view.pushedBandBar(Copy.guidesTitle) }
     }
 
     /// A screen pushed over the Guides root, so the back control shows.

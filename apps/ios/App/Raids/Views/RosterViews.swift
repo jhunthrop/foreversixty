@@ -28,6 +28,7 @@ struct OfficerRow: View {
         }
     }
 
+    /// Lock sign-ups is the officer row's one primary; Copy the list beside it is the outline.
     private func lockButton(locked: Bool, ended: Bool) -> some View {
         Button { Task { await controller.toggleLock() } } label: {
             HStack(spacing: 8) {
@@ -39,9 +40,8 @@ struct OfficerRow: View {
                 Text(locked ? Copy.officerUnlock : Copy.officerLock)
             }
         }
-        .buttonStyle(BrandButtonStyle(.quiet, height: 48, fullWidth: false))
+        .buttonStyle(BrandButtonStyle(.primary, height: 48, fullWidth: false))
         .disabled(ended || !controller.facts.canLock || controller.offline)
-        .opacity(ended ? 0.5 : 1)
     }
 
     private func copyButton(ended: Bool) -> some View {
@@ -55,7 +55,6 @@ struct OfficerRow: View {
         }
         .buttonStyle(BrandButtonStyle(.quiet, height: 48, fullWidth: false))
         .disabled(ended)
-        .opacity(ended ? 0.5 : 1)
     }
 }
 

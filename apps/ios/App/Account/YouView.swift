@@ -138,14 +138,13 @@ struct YouView: View {
             .quietCard()
             Button(Copy.youSignOut) { confirmingSignOut = true }
                 .buttonStyle(BrandButtonStyle(.quiet, height: 48))
+            // The destructive action on a panel, as Android's AccountCard: wipe reads on the dark, not loose on the ground.
             NavigationLink(value: YouRoute.deleteAccount) {
                 Text(Copy.sharedAccountDeleteTitle)
-                    .font(ScaledType.bodyStrong)
-                    .foregroundStyle(FSColor.wipe)
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .contentShape(.rect)
             }
-            .padding(.top, FSSpace.space2)
+            .buttonStyle(BrandButtonStyle(.destructive, height: 48))
+            .padding(FSSpace.space4)
+            .quietCard()
             Text(summary.version).font(ScaledType.label).foregroundStyle(FSColor.mutedGround)
                 .frame(maxWidth: .infinity)
         }

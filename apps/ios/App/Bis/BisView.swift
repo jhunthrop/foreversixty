@@ -78,7 +78,8 @@ struct BisView: View {
     /// replaces the stacked pills, as the web's control bar.
     private var controlBar: some View {
         let selection = context.selection
-        let range = context.rangeLabel(selection.range, now: now)
+        // The short label (`60 · Phase 1 raid`) keeps the bar on one line; the picker keeps the opening date.
+        let range = BisLabels.range(selection.range)
         let faction = BisLabels.faction(selection.faction)
         return Button(action: onOpenPicker) {
             HStack(spacing: Theme.Spacing.sm) {

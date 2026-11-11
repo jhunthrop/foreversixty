@@ -198,8 +198,8 @@ struct SpecSheet: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Text(Copy.specTitle).font(ScaledType.sec).foregroundStyle(FSColor.strong)
-                    .accessibilityAddTraits(.isHeader)
+                // The sheet's title row, as the BiS picker's.
+                SectionTitle(Copy.specTitle, color: FSColor.strong)
                 Text(lead).font(ScaledType.body).foregroundStyle(FSColor.text)
                 VStack(spacing: 0) {
                     ForEach(character.specOptions ?? [], id: \.spec) { option in

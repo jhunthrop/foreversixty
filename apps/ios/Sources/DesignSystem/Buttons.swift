@@ -48,7 +48,8 @@ public struct BrandButtonStyle: ButtonStyle {
 
     private var foreground: Color {
         switch kind {
-        case .primary, .secondary, .quiet: FSColor.strong
+        case .primary, .secondary: FSColor.strong
+        case .quiet: FSColor.cream
         case .accent: FSColor.gold
         case .destructive: FSColor.wipe
         }
@@ -66,7 +67,8 @@ public struct BrandButtonStyle: ButtonStyle {
         switch kind {
         case .primary: FSColor.tealEdge
         case .secondary: FSColor.blueEdge
-        case .quiet: FSColor.rule
+        // The cream frame line: the rule's slate disappears on the painted ground.
+        case .quiet: FSColor.frameLine
         case .accent: FSColor.gold
         case .destructive: FSColor.wipe.opacity(0.45)
         }

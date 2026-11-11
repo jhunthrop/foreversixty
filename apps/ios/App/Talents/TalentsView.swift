@@ -168,7 +168,7 @@ struct TalentStatusBlock: View {
                 SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: retry).padding(.top, 4)
             }
             ForEach(notes, id: \.self) { note in
-                Text(note).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(note).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -358,7 +358,7 @@ struct TalentsSkeleton: View {
             }
             .frame(height: TalentGeometry.height)
             .padding(.top, 16)
-            Text(Copy.talentsLoading).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(Copy.talentsLoading).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
         }
         .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
         .accessibilityElement(children: .ignore)

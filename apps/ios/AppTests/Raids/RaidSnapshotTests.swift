@@ -130,17 +130,25 @@ struct RaidSnapshotTests {
 
     // MARK: Sheets and Your raid night (F4.3, F4.22, F4.23)
 
-    private func sheet(_ raid: String, ask: SpecAsk, key: String) throws -> some View {
+    /// The spec sheet at its medium detent over the raid page, with the grabber, as it presents.
+    private func sheet(_ raid: String, ask: SpecAsk, key: String, height: CGFloat = Self.sheetHeight) throws -> some View {
         let controller = try makeController(try RaidFixture.raid(raid))
-        return SpecSheet(ask: ask, character: try #require(controller.character(key)), raidTitle: "Onyxia's Lair", date: "Sat 19 Dec") { _ in }
+        let character = try #require(controller.character(key))
+        return SheetFrame(height: height, behind: page(controller)) {
+            SpecSheet(ask: ask, character: character, raidTitle: "Onyxia's Lair", date: "Sat 19 Dec") { _ in }
+        }
     }
+
+    /// The medium detent on the 874 pt phone, and the sheet's height on the taller AX5 canvas.
+    static let sheetHeight: CGFloat = 520
+    static let sheetHeightLarge: CGFloat = 1300
 
     @Test func specSheet_ask() throws {
         snap(try sheet("guild.raid.ask-spec", ask: .ask(characterKey: "us/pvp/lightningbolltz", state: .signedIn), key: "us/pvp/lightningbolltz"), "spec-sheet-ask-ios")
     }
 
     @Test func specSheet_ask_xl() throws {
-        snap(try sheet("guild.raid.ask-spec", ask: .ask(characterKey: "us/pvp/lightningbolltz", state: .signedIn), key: "us/pvp/lightningbolltz"), "spec-sheet-ask-xl-ios", height: 1600, large: true)
+        snap(try sheet("guild.raid.ask-spec", ask: .ask(characterKey: "us/pvp/lightningbolltz", state: .signedIn), key: "us/pvp/lightningbolltz", height: Self.sheetHeightLarge), "spec-sheet-ask-xl-ios", height: 1600, large: true)
     }
 
     @Test func specSheet_change() throws {

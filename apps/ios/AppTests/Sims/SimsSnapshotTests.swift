@@ -47,8 +47,7 @@ struct SimsSnapshotTests {
                 )
             }
             .screenGround()
-            .navigationTitle(Copy.simsTitle)
-            .navigationBarTitleDisplayMode(.inline)
+            .pushedBandBar(Copy.simsTitle)
         }
     }
 
@@ -65,8 +64,7 @@ struct SimsSnapshotTests {
                 SimResultView(phase: phase, looks: looks, build: SimsTestData.build, now: now)
             }
             .screenGround()
-            .navigationTitle(resultTitle(phase))
-            .navigationBarTitleDisplayMode(.inline)
+            .pushedBandBar(resultTitle(phase))
         }
     }
 

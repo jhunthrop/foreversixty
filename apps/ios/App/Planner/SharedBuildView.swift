@@ -63,7 +63,7 @@ struct SharedBuildView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(summary.head).font(ScaledType.name).foregroundStyle(FSColor.strong)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text(summary.viewerMeta(timeZone: timeZone)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    Text(summary.viewerMeta(timeZone: timeZone)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }

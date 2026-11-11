@@ -18,15 +18,27 @@ struct GuideReaderView: View {
     var newData: NewDataState = .none
     let now: Date
     var actions = GuideActions()
+    /// The guide's name while it is not drawn (loading, not saved, failed): the band head says it, as
+    /// the character page's states do (N3).
+    var title = Copy.guidesTitle
 
     var body: some View {
         switch phase {
         case .loading:
-            ScrollView { GuideSkeleton().padding(.horizontal, GuidesLayout.gutter).padding(.top, 12) }
+            ScrollView {
+                BandHead(title: title)
+                GuideSkeleton().padding(.horizontal, GuidesLayout.gutter).padding(.top, BandReach.gap)
+            }
         case .notCached:
-            ScrollView { GuidesNotCached(text: Copy.guidesNotCached).padding(GuidesLayout.gutter) }
+            ScrollView {
+                BandHead(title: title)
+                GuidesNotCached(text: Copy.guidesNotCached).padding(GuidesLayout.gutter)
+            }
         case .failed:
-            ScrollView { ReportsErrorCard(text: Copy.guidesError, retry: actions.retry).padding(GuidesLayout.gutter) }
+            ScrollView {
+                BandHead(title: title)
+                LoadError(Copy.guidesError, retryLabel: Copy.commonTryAgain, retry: actions.retry).padding(GuidesLayout.gutter)
+            }
         case let .loaded(content, since):
             GuideScroll(content: content, actions: actions) {
                 NewDataStrip(newData, action: actions.update)

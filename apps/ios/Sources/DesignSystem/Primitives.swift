@@ -51,7 +51,8 @@ public struct FSButtonStyle: ButtonStyle {
 
     private var foreground: Color {
         switch kind {
-        case .primary, .secondary, .quiet: FSColor.strong
+        case .primary, .secondary: FSColor.strong
+        case .quiet: FSColor.cream
         case .danger: FSColor.wipe
         case .ghost: FSColor.gold
         }
@@ -69,7 +70,8 @@ public struct FSButtonStyle: ButtonStyle {
         switch kind {
         case .primary: FSColor.tealEdge
         case .secondary: FSColor.blueEdge
-        case .quiet: FSColor.rule
+        // The cream frame line: the rule's slate disappears on the painted ground.
+        case .quiet: FSColor.frameLine
         case .danger: FSColor.wipe.opacity(0.4)
         case .ghost: .clear
         }

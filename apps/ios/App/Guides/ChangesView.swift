@@ -82,11 +82,15 @@ struct ChangelogEntryView: View {
     let entry: ChangelogEntry
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // The entry's title and date on the band under the clear bar (N3).
+            BandHead(title: entry.title) { BandFact(GuideDates.long(entry.date)) }
+            details
+        }
+    }
+
+    private var details: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(GuideDates.long(entry.date)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
-            Text(entry.title).font(ScaledType.h2).foregroundStyle(FSColor.strong)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isHeader)
             VStack(alignment: .leading, spacing: 10) {
                 ForEach(Array(entry.blocks.enumerated()), id: \.offset) { _, block in ChangelogBlockView(block: block) }
             }

@@ -140,7 +140,7 @@ struct YourBuildRow: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(summary.rowTitle).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text(summary.rowMeta(timeZone: timeZone)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    Text(summary.rowMeta(timeZone: timeZone)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                         .fixedSize(horizontal: false, vertical: true)
                     if isLarge { views }
                 }
