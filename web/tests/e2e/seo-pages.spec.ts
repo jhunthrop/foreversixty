@@ -44,8 +44,8 @@ test.describe('without JavaScript, as a crawler fetches', () => {
     await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
   });
 
-  for (const path of ['/account', '/connect', '/login', '/reports', '/premium/checkout', '/sources']) {
-    test(`${path} is personal, a step in a flow or a trust page: noindex`, async ({ page }) => {
+  for (const path of ['/account', '/connect', '/login', '/reports', '/premium/checkout']) {
+    test(`${path} is personal or a step in a flow: noindex`, async ({ page }) => {
       await page.goto(path);
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
     });
