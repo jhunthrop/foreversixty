@@ -131,9 +131,9 @@ Once you wear healing gear, your everyday Healing Wave in a dungeon is not your 
 - **23 and 24:** rank 3.
 - **25:** rank 2 (a dwarf stays on rank 3).
 - **26 to 36:** rank 3.
-- **37 to 39:** rank 6, the newest.
-- **40 to 43:** rank 5.
-- **44 to 55:** rank 6.
+- **37 to 39:** rank 6, trained at 32: with your talents at these levels it heals enough more than rank 4 to pay for its mana.
+- **40 to 43:** rank 5. Rank 7 arrives at 40 and costs more than it gives back, and rank 5 is cheaper than 6 for the same job.
+- **44 to 55:** rank 6 again, once your healing bonus outgrows rank 5.
 - **56 to 58:** rank 7.
 - **59:** rank 8.
 
