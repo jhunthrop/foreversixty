@@ -36,10 +36,10 @@
     onOpen: (atMs: number) => void;
   } = $props();
 
-  const span = $derived(model.endMs - model.startMs);
+  const spanMs = $derived(model.endMs - model.startMs);
   const path = $derived(width > 0 ? brushLine(model.resource, model, width, STRIP_HEIGHT) : '');
-  const xFor = (atMs: number): number => (span <= 0 ? 0 : ((atMs - model.startMs) / span) * width);
-  const msPerPx = $derived(width <= 0 ? 0 : span / width);
+  const xFor = (atMs: number): number => (spanMs <= 0 ? 0 : ((atMs - model.startMs) / spanMs) * width);
+  const msPerPx = $derived(width <= 0 ? 0 : spanMs / width);
 
   type Grip = 'pan' | 'start' | 'end';
   let drag: { grip: Grip; fromX: number; from: ZoomWindow } | null = null;

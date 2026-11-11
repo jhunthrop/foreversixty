@@ -116,7 +116,12 @@ const PAGE_ISLAND_BUDGETS = [
   // +256 bytes (row-band sweep, 2026-11-01): the fight tables' marked and addressed rows are the
   // shared row band (lib/ui/row.ts), now a chunk of its own; the entry gains only the preload
   // entries naming it (+38 bytes gzipped measured, 18,424 -> 18,462), with the slack restored.
-  { component: 'Character', limitBytes: 18 * 1024 + 256, closureLimitBytes: 138149 },
+  // Closure 138,149 -> 140,000 (house formats, lane B, 2026-11-10): the page's dates, clock,
+  // numbers, durations, parse figures and countdown now read the shared modules (lib/dates.ts with
+  // the zoned calendar and the locale clock, lib/format/number.ts, lib/format/duration.ts,
+  // lib/ui/countdown.ts) instead of local copies. Measured on the real-data build: 138,302 on
+  // the base (already over) -> 139,451, +1,149 bytes, with the usual ~0.5 KB slack.
+  { component: 'Character', limitBytes: 18 * 1024 + 256, closureLimitBytes: 140000 },
   // +512 bytes (guild round 3, 2026-11-05): the guild page's first view now carries the week-one
   // card's raider step, the plan gate on the band, the unknown-guild panel and the landing's
   // Your guilds card. Measured 16,564 gzipped against 16,022 at round 2 (main moved too). Lazy

@@ -12,7 +12,7 @@ import {
   RAID_SIZES,
   RENEWAL_REMINDER_DAYS,
   TRIAL_REMINDER_DAYS,
-  formatAmount,
+  formatUsd,
   perMonthLine,
 } from './plans';
 import { plansPageCopy as copy, perMemberLine, perRaiderLine } from './plans-page-copy';
@@ -75,8 +75,8 @@ describe('plansPageCopy against spec 6.1', () => {
       'Founder price until 6 Jan 2027, then {list}.',
       'Founder price until 6 Jan 2027, then {list} a month.',
       '{perMonth} a month, billed yearly',
-      formatAmount(PLANS.premium.founderYearly / 12),
-      formatAmount(PLANS.guild.founderYearly / 12),
+      formatUsd(PLANS.premium.founderYearly / 12),
+      formatUsd(PLANS.guild.founderYearly / 12),
       'Or {yearly price}.',
     ]);
     // Ruling MUST 1 (design/specs/2026-11-08-premium-account.md 0A) replaces the line's words.

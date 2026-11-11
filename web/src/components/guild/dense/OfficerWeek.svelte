@@ -49,6 +49,8 @@
   import Page from '../../ui/Page.svelte';
   import BuffCover from '../overview/BuffCover.svelte';
   import type { GuildTabId } from '../GuildTabs.svelte';
+  import { weekdayDayMonth } from '../../../lib/dates';
+  import { clockDuration } from '../../../lib/format/duration';
   import LastNightMovers from './LastNightMovers.svelte';
   import NeedsAWord from './NeedsAWord.svelte';
   import OfficerRail from './OfficerRail.svelte';
@@ -127,13 +129,7 @@
   const movers = $derived(ratingMovers(last?.report?.parses ?? [], before?.report?.parses ?? [], roster));
   const gaps = $derived(raid === null ? [] : compGaps(raid));
   const tz = $derived(next?.guild_timezone ?? viewerTz);
-  const dayOf = (iso: string) =>
-    new Date(iso).toLocaleDateString('en-GB', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      timeZone: tz,
-    });
+  const dayOf = (iso: string) => weekdayDayMonth(new Date(iso), tz);
   const words = $derived(
     needsAWord({
       view: raid,
@@ -154,9 +150,7 @@
     if (last === null || last.report === null) return '';
     const kill = last.report.kill_order[0];
     const parts = [
-      kill === undefined || kill.kill_ms === null
-        ? ''
-        : `${kill.name} ${Math.floor(kill.kill_ms / 60000)}:${String(Math.floor(kill.kill_ms / 1000) % 60).padStart(2, '0')}`,
+      kill === undefined || kill.kill_ms === null ? '' : `${kill.name} ${clockDuration(kill.kill_ms)}`,
       counted(last.report.headline.wipes, 'wipe'),
       counted(last.report.headline.deaths, 'death'),
       last.night === null ? '' : counted(last.night.came, 'raider'),

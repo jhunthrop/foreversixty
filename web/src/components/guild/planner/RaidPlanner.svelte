@@ -43,8 +43,9 @@
     type PlannerGrouping,
   } from '../../../lib/guild/raid-planner-view';
   import { raidQuiet } from '../../../lib/guild/planned-row';
-  import { clockText, dateLabel } from '../../../lib/guild/raid-time';
+
   import type { RaidStatusAction } from '../../../lib/guild/raids-api';
+  import { clock, weekdayDayMonth } from '../../../lib/dates';
   import CompTally from '../overview/CompTally.svelte';
   import GuildTabs from '../GuildTabs.svelte';
   import RaidDoneBand from '../RaidDoneBand.svelte';
@@ -153,12 +154,12 @@
     history.replaceState(history.state, '', `${location.pathname}${search}${location.hash}`);
   }
 
-  const nextPingClock = (at: Date): string => clockText(at, viewerTimezone, locale);
+  const nextPingClock = (at: Date): string => clock(at, viewerTimezone, { locale });
   /** Owner ruling 2026-11-09: the raid calendar and the sign-ups are free for any claimed guild's
    *  officers (they feed the free Discord bot); the plan gates only the raid tools below them. */
   const CALENDAR_FREE = true;
   const postedWhen = (at: Date): string =>
-    `${dateLabel(at, viewerTimezone, locale)}, ${clockText(at, viewerTimezone, locale)}`;
+    `${weekdayDayMonth(at, viewerTimezone)}, ${clock(at, viewerTimezone, { locale })}`;
 </script>
 
 {#snippet meta()}

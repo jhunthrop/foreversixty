@@ -17,7 +17,7 @@
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
   import { bandCopy } from '../../lib/sim/result-copy';
   import { bandHeading, buffsFact, savedDay, talentSplit, variationPercent } from '../../lib/sim/result-band';
-  import { durationLabel } from '../../lib/sim/settings';
+  import { clockSeconds } from '../../lib/format/duration';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import type { BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
@@ -68,10 +68,7 @@
 
   const lines = $derived.by(() => {
     const { character, encounter } = result.request;
-    const fight = bandCopy.fight(
-      durationLabel(encounter.duration_sec),
-      variationPercent(encounter.variation),
-    );
+    const fight = bandCopy.fight(clockSeconds(encounter.duration_sec), variationPercent(encounter.variation));
     const buffs = buffsFact(result, null);
     const buffsWords =
       buffs === bandCopy.buffsRaid ? 'raid buffs' : buffs === bandCopy.none ? 'no buffs' : 'custom buffs';

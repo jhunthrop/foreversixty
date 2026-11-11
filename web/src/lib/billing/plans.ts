@@ -93,7 +93,7 @@ export function entryPrice(entry: Plan, interval: Interval, founder: boolean): n
 }
 
 /** `$3.33`, `$10`, `$12.50`: cents only when the amount is not whole. */
-export function formatAmount(usd: number): string {
+export function formatUsd(usd: number): string {
   const cents = Math.round(usd * CENTS_PER_DOLLAR);
   const dollars = cents / CENTS_PER_DOLLAR;
   return cents % CENTS_PER_DOLLAR === 0 ? `$${dollars}` : `$${dollars.toFixed(2)}`;
@@ -106,11 +106,11 @@ export function intervalUnit(interval: Interval): string {
 
 /** Running-text price: `$40 a year`, `$5 a month`. */
 export function formatPrice(usd: number, interval: Interval): string {
-  return `${formatAmount(usd)}${intervalUnit(interval)}`;
+  return `${formatUsd(usd)}${intervalUnit(interval)}`;
 }
 
 export function perMonthLine(yearlyUsd: number): string {
-  return `${formatAmount(yearlyUsd / MONTHS_PER_YEAR)} a month, billed yearly`;
+  return `${formatUsd(yearlyUsd / MONTHS_PER_YEAR)} a month, billed yearly`;
 }
 
 export function formatCents(cents: number, interval: Interval): string {

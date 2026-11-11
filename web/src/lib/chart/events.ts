@@ -2,7 +2,7 @@
 // The moments a chart marks (controls and charts spec §B5.6, §B8): their lines of text, the ±2 s
 // event list a tooltip reads, and the marker lane's collision and collapse rules.
 import { splitUnitName } from '../characters';
-import { formatAmount } from '../report/format';
+import { compact } from '../format/number';
 import type { Death, Taunt, TargetChange } from '../report/types';
 import type { ChartEvent, ChartPhase } from './types';
 
@@ -23,11 +23,11 @@ export function deathEvent(death: Death, href: string): ChartEvent {
   const blow = death.killing_blow;
   const base = { key: `death-${death.guid}-${death.at_ms}`, kind: 'death' as const, atMs: death.at_ms, href };
   if (blow === undefined) return { ...base, text: who, shortText: who, clusterText: short(death.name) };
-  const overkill = (blow.overkill ?? 0) > 0 ? ` (${formatAmount(blow.overkill ?? 0)} overkill)` : '';
+  const overkill = (blow.overkill ?? 0) > 0 ? ` (${compact(blow.overkill ?? 0)} overkill)` : '';
   return {
     ...base,
-    text: `${who} · ${blow.spell_name} from ${short(blow.source_name)} · ${formatAmount(blow.amount)}${overkill}`,
-    shortText: `${who} · ${blow.spell_name} · ${formatAmount(blow.amount)}`,
+    text: `${who} · ${blow.spell_name} from ${short(blow.source_name)} · ${compact(blow.amount)}${overkill}`,
+    shortText: `${who} · ${blow.spell_name} · ${compact(blow.amount)}`,
     clusterText: `${short(death.name)} · ${blow.spell_name}`,
   };
 }

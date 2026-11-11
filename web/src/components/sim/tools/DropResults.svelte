@@ -32,6 +32,7 @@
   import SubstitutionChips from './SubstitutionChips.svelte';
   import ToolSection from './ToolSection.svelte';
 
+  import { grouped } from '../../../lib/format/number';
   let {
     result,
     items,
@@ -126,7 +127,7 @@
     <p class="text-muted text-[13px]" data-testid="sim-drops-note">{bulkCopy.dropsNoChance}</p>
 
     <p class="text-strong text-[15px] tabular-nums" data-testid="sim-equipped-line">
-      {bulkCopy.resultsEquipped}: {Math.round(result.equipped.mean).toLocaleString('en-US')}
+      {bulkCopy.resultsEquipped}: {grouped(result.equipped.mean)}
       ± {formatMargin(confidenceBand(result.equipped))}
     </p>
 

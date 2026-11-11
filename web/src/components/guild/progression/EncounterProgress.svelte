@@ -8,10 +8,11 @@
   import type { GuildProgressionEncounter } from '../../../lib/guild/api';
   import { progressionNightDay } from '../../../lib/guild/overview-view';
   import { fasterSinceFirst, progressionNights, slowestKillMs } from '../../../lib/guild/progression-nights';
-  import { deltaWords, killClock } from '../../../lib/guild/raid-nights-table';
+  import { deltaWords } from '../../../lib/guild/raid-nights-table';
   import { counted } from '../../../lib/plural';
   import { SEP } from '../../../lib/guild/raid-copy';
   import type { StatFigure } from '../../../lib/ui/stat-table';
+  import { clockDuration } from '../../../lib/format/duration';
   import Meter from '../../ui/Meter.svelte';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
@@ -37,7 +38,7 @@
     [
       counted(encounter.kills, 'kill'),
       typeof encounter.best_kill_ms === 'number'
-        ? `best ${killClock(encounter.best_kill_ms)}${bestNight === null ? '' : `, ${progressionNightDay(bestNight.date, now)}`}`
+        ? `best ${clockDuration(encounter.best_kill_ms)}${bestNight === null ? '' : `, ${progressionNightDay(bestNight.date, now)}`}`
         : '',
       faster !== null && faster > 0 ? `${faster} s faster than the first` : '',
       `${encounter.deaths_per_pull.toFixed(1)} deaths a pull`,
@@ -55,7 +56,7 @@
           figures={[
             night.killMs === null
               ? DASH
-              : { value: killClock(night.killMs), tone: night.best ? 'gold' : undefined },
+              : { value: clockDuration(night.killMs), tone: night.best ? 'gold' : undefined },
             night.deltaS === null ? DASH : deltaWords(night.deltaS),
             { value: String(night.pulls) },
             { value: String(night.wipes) },

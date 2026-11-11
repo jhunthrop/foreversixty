@@ -4,12 +4,14 @@
 // strings describe the rules; a figure that moves nightly is passed in from the published
 // files, never written here (the owner's "prose never quotes nightly numbers" rule).
 import { answerCopy } from '../account/answer-copy';
-import classes from '../../data/classes.json';
 import { SPEC_BY_KEY } from '../sim/specs';
 import type { BisRole, Faction } from '../bis/types';
 import { TIE_MARGIN_PERCENT, TIER_BANDS, type TierLetter } from './tier-rules';
 import type { TierRow } from './tier-list';
 
+import { grouped, oneDecimal } from '../format/number';
+import { classDisplayName } from '../sim/spec-label';
+import { isClassSlug } from '../ui/primitives';
 /** One piece of a note: plain text or a link. */
 export interface NoteSegment {
   text: string;
@@ -205,11 +207,11 @@ export function readColumns(ctx: NoteContext): ReadColumn[] {
   return ctx.role === 'healer' ? healerColumns(ctx) : dpsColumns(ctx);
 }
 
-/** "Warrior": a class slug as the game names it. Fails fast on a slug classes.json lacks. */
+/** "Warrior": a class slug as the game names it (lib/sim/spec-label.ts). Fails fast on a slug
+ *  that is not a playable class. */
 export function classNameOf(classSlug: string): string {
-  const found = classes.find((c) => c.slug === classSlug);
-  if (found === undefined) throw new Error(`tier list: no class named ${classSlug} in classes.json`);
-  return found.name;
+  if (!isClassSlug(classSlug)) throw new Error(`tier list: no class named ${classSlug}`);
+  return classDisplayName(classSlug);
 }
 
 /** "Fury Warrior", "Feral Druid (Bear)": the catalogue's full name. Fails fast on a spec the
@@ -219,17 +221,6 @@ export function specFullName(spec: Pick<TierRow, 'classSlug' | 'specSlug'>): str
   const found = SPEC_BY_KEY[key];
   if (found === undefined) throw new Error(`tier list: no spec ${key} in the catalogue`);
   return found.full_name;
-}
-
-const ORDINAL_SUFFIXES: Readonly<Record<number, string>> = { 1: 'st', 2: 'nd', 3: 'rd' };
-const ORDINAL_TEEN_FLOOR = 10;
-const ORDINAL_TEEN_CEILING = 20;
-const ORDINAL_BASE = 100;
-const ORDINAL_DIGIT_BASE = 10;
-
-export function ordinal(n: number): string {
-  const teen = n % ORDINAL_BASE >= ORDINAL_TEEN_FLOOR && n % ORDINAL_BASE <= ORDINAL_TEEN_CEILING;
-  return `${n}${teen ? 'th' : (ORDINAL_SUFFIXES[n % ORDINAL_DIGIT_BASE] ?? 'th')}`;
 }
 
 /** The role tabs on the band: the list each one opens, in the mock's words. */
@@ -359,13 +350,10 @@ export const tiersCopy = {
   },
 } as const;
 
-const WHOLE_NUMBER = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
-const ONE_DECIMAL = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-
 /** A tank figure is a per-second average over thousands of runs, so it is written whole; a
  *  damage or healing rate keeps its one decimal. */
 export function formatMetric(role: BisRole, value: number): string {
-  return (role === 'tank' ? WHOLE_NUMBER : ONE_DECIMAL).format(value);
+  return role === 'tank' ? grouped(value) : oneDecimal(value);
 }
 
 /** The gap column's text for a row: "Top"/"Least" on the leader, "−4.8%"/"+15.2%" below. */

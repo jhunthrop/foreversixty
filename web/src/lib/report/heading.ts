@@ -1,8 +1,8 @@
 // web/src/lib/report/heading.ts
 // A report's title: the uploader's own, else the zone, else the log's date, so an untitled
-// upload of a log with no zone reads "17 Sept 2026 · 42 fights" and not blank, and leads with
-// the logging character when the report is credited ("Bow Jackzon · 17 Sept 2026 · 42 fights").
-import { formatDate } from './format';
+// upload of a log with no zone reads "17 Sep 2026 · 42 fights" and not blank, and leads with
+// the logging character when the report is credited ("Bow Jackzon · 17 Sep 2026 · 42 fights").
+import { utcDayMonthYear } from '../dates';
 import type { ReportMeta } from './types';
 
 export function reportHeading(
@@ -11,7 +11,7 @@ export function reportHeading(
 ): string {
   if (meta.title !== '') return meta.title;
   if (meta.zone !== '') return meta.zone;
-  const date = formatDate(meta.fights[0]?.start ?? meta.created_at) || formatDate(meta.created_at);
+  const date = utcDayMonthYear(meta.fights[0]?.start ?? meta.created_at) || utcDayMonthYear(meta.created_at);
   const count = `${meta.fights.length} ${meta.fights.length === 1 ? 'fight' : 'fights'}`;
   const when = date === '' ? count : `${date} · ${count}`;
   return character ? `${character} · ${when}` : when;
@@ -30,7 +30,7 @@ export function reportFacts(
   const kills = meta.fights.filter((fight) => fight.kind === 'encounter' && fight.kill).length;
   return {
     zone: meta.zone,
-    date: formatDate(meta.fights[0]?.start ?? meta.created_at),
+    date: utcDayMonthYear(meta.fights[0]?.start ?? meta.created_at),
     fights: `${meta.fights.length} ${meta.fights.length === 1 ? 'fight' : 'fights'}`,
     bosses: kills === 0 ? '' : `${kills} ${kills === 1 ? 'boss' : 'bosses'}`,
   };

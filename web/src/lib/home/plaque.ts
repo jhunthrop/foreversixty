@@ -5,10 +5,8 @@
 // read it, the unit tests pin it.
 import type { GuildRaidRole, GuildSignupState, NextRaidView } from '../guild/api';
 import { roleForSpec, rolesForClass } from '../guild/raid-roles';
-
-const MINUTE = 60_000;
-const HOUR = 60 * MINUTE;
-const DAY = 24 * HOUR;
+import { clock, longDay, viewerLocale } from '../dates';
+import { clockParts } from '../ui/countdown';
 
 /** One big figure on the plaque: `32` over `days`. */
 export interface PlaqueFigure {
@@ -25,29 +23,16 @@ export const plaqueCopy = {
   beforePull: 'Before the pull',
   signedUp: 'signed up',
   late: 'late',
-  days: 'days',
-  hours: 'hours',
-  min: 'min',
   firstRaids: 'First raids open',
   raidsOpen: 'Raids open now',
   signUpFailed: 'Could not save your sign-up. Try again.',
   roles: { tanks: 'tanks', healers: 'healers', melee: 'melee', ranged: 'ranged' },
 } as const;
 
-/** The clock as the plaque reads it: days and hours, minutes in the final hour; empty once passed. */
-export function plaqueClock(target: Date, now: Date): PlaqueFigure[] {
-  const left = target.getTime() - now.getTime();
-  if (left <= 0) return [];
-  if (left < HOUR) return [{ value: String(Math.ceil(left / MINUTE)), label: plaqueCopy.min }];
-  return [
-    { value: String(Math.floor(left / DAY)), label: plaqueCopy.days },
-    { value: String(Math.floor((left % DAY) / HOUR)), label: plaqueCopy.hours },
-  ];
-}
-
-/** The clock read aloud: `32 days, 5 hours`. */
-export function plaqueClockLabel(parts: readonly PlaqueFigure[]): string {
-  return parts.map((part) => `${part.value} ${part.label}`).join(', ');
+/** The one countdown (lib/ui/countdown.ts) as the plaque's big figures: `32` over `days`; empty
+ *  once passed. Read aloud through `countdownText`. */
+export function countdownFigures(target: Date, now: Date): PlaqueFigure[] {
+  return clockParts(target, now).map((part) => ({ value: part.value, label: part.unit }));
 }
 
 /** Signed up and late. */
@@ -93,31 +78,9 @@ export function choiceOf(state: GuildSignupState | null): PlaqueChoice | null {
     : null;
 }
 
-/** The day as the mock writes it, weekday first and the month whole: `Wednesday 9 December`. */
-const DAY_LOCALE = 'en-GB';
-
-function dayIn(at: Date, timeZone: string): string {
-  return at.toLocaleDateString(DAY_LOCALE, { weekday: 'long', day: 'numeric', month: 'long', timeZone });
-}
-
-/** `Wednesday 9 December`, a date-only instant read as that calendar day. */
-export function longDay(iso: string): string {
-  return dayIn(new Date(iso), 'UTC');
-}
-
-/** The raid's start in the viewer's own time, 12-hour as US players read it, with no zone label:
- *  `Wednesday 9 December · 8 pm`, `· 8:30 pm` off the hour. */
-export function raidWhen(iso: string, timeZone: string): string {
+/** The raid's start on the viewer's own calendar and clock, with no zone label:
+ *  `Wednesday 9 December · 8 pm` (`· 20:00` for a 24-hour locale). */
+export function raidWhen(iso: string, timeZone: string, locale: string = viewerLocale()): string {
   const at = new Date(iso);
-  const minutes = Number(at.toLocaleString('en-US', { minute: 'numeric', timeZone }));
-  const time = at
-    .toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: minutes === 0 ? undefined : '2-digit',
-      hour12: true,
-      timeZone,
-    })
-    // A no-break space: "8 pm" never splits across lines on a phone.
-    .replace(/\s?([AP]M)$/, (_, half: string) => `\u00a0${half.toLowerCase()}`);
-  return `${dayIn(at, timeZone)} · ${time}`;
+  return `${longDay(at, timeZone)} · ${clock(at, timeZone, { locale })}`;
 }

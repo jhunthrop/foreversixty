@@ -1,39 +1,33 @@
 {
  "build": "1.60.1.70790",
- "updated": "7 Nov",
- "raidLabel": "raid-ready, Phase 1",
+ "updated": "10 Nov",
  "bands": [
   {
    "band": 20,
-   "label": "20 to 29",
-   "summary": ""
+   "label": "20 to 29"
   },
   {
    "band": 30,
-   "label": "30 to 39",
-   "summary": ""
+   "label": "30 to 39"
   },
   {
    "band": 40,
-   "label": "40 to 49",
-   "summary": ""
+   "label": "40 to 49"
   },
   {
    "band": 50,
-   "label": "50 to 59",
-   "summary": ""
+   "label": "50 to 59"
   },
   {
    "band": 60,
-   "label": "60",
-   "summary": "60: full raid-ready, Phase 1 gear."
+   "label": "60"
   }
  ],
  "classes": [
   {
    "slug": "warrior",
    "name": "Warrior",
-   "color": "#c69b6d",
+   "color": "var(--color-class-warrior)",
    "specs": [
     {
      "key": "warrior-arms",
@@ -64,7 +58,7 @@
   {
    "slug": "paladin",
    "name": "Paladin",
-   "color": "#f48cba",
+   "color": "var(--color-class-paladin)",
    "specs": [
     {
      "key": "paladin-holy",
@@ -95,7 +89,7 @@
   {
    "slug": "hunter",
    "name": "Hunter",
-   "color": "#aad372",
+   "color": "var(--color-class-hunter)",
    "specs": [
     {
      "key": "hunter-beast-mastery",
@@ -126,7 +120,7 @@
   {
    "slug": "rogue",
    "name": "Rogue",
-   "color": "#fff468",
+   "color": "var(--color-class-rogue)",
    "specs": [
     {
      "key": "rogue-assassination",
@@ -157,7 +151,7 @@
   {
    "slug": "priest",
    "name": "Priest",
-   "color": "#ffffff",
+   "color": "var(--color-class-priest)",
    "specs": [
     {
      "key": "priest-discipline",
@@ -188,7 +182,7 @@
   {
    "slug": "shaman",
    "name": "Shaman",
-   "color": "#3f8fe0",
+   "color": "var(--color-class-shaman)",
    "specs": [
     {
      "key": "shaman-elemental",
@@ -219,7 +213,7 @@
   {
    "slug": "mage",
    "name": "Mage",
-   "color": "#3fc7eb",
+   "color": "var(--color-class-mage)",
    "specs": [
     {
      "key": "mage-arcane",
@@ -250,7 +244,7 @@
   {
    "slug": "warlock",
    "name": "Warlock",
-   "color": "#8788ee",
+   "color": "var(--color-class-warlock)",
    "specs": [
     {
      "key": "warlock-affliction",
@@ -281,7 +275,7 @@
   {
    "slug": "druid",
    "name": "Druid",
-   "color": "#ff7c0a",
+   "color": "var(--color-class-druid)",
    "specs": [
     {
      "key": "druid-balance",
@@ -356,10 +350,10 @@
     },
     "body": {
      "kind": "count",
-     "worn": 0,
+     "worn": 1,
      "unit": "of 14 slots",
      "caption": "Best-in-slot pieces you wear",
-     "bar": 0,
+     "bar": 0.07142857142857142,
      "note": "Trinkets and Off hand have no pick at this level range."
     },
     "action": {
@@ -382,10 +376,10 @@
     },
     "body": {
      "kind": "count",
-     "worn": 4,
+     "worn": 1,
      "unit": "of 17 slots",
      "caption": "Best-in-slot pieces you wear",
-     "bar": 0.23529411764705882
+     "bar": 0.058823529411764705
     },
     "action": {
      "label": "Fury gear for 60",
@@ -564,7 +558,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -799,7 +793,6 @@
  },
  "copy": {
   "title": "Best in slot",
-  "tierQuestion": "Which spec is strongest?",
   "tierLink": "Tier list",
   "answerLabel": "Your character",
   "bandGroupLabel": "Level range",

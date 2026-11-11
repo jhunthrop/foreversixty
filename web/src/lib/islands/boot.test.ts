@@ -75,7 +75,11 @@ describe('scheduleBoot', () => {
       return new real(...args);
     });
     const boot = vi.fn(() => order.push('boot'));
-    scheduleBoot(boot, 'interactive');
+    // A fresh module graph: the shared number format is built once per page, so an earlier test's
+    // warm-up must not have built it already.
+    vi.resetModules();
+    const fresh = await import('./boot');
+    fresh.scheduleBoot(boot, 'interactive');
     await vi.runAllTimersAsync();
     expect(order).toEqual(['intl', 'boot']);
   });

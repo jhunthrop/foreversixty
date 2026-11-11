@@ -19,6 +19,8 @@ import type {
   MsOs,
 } from './loot-council-api';
 import { candidateGainLabel } from './loot-view';
+import { viewerZone, weekdayDayMonth } from '../dates';
+import { upperFirst } from '../text';
 
 /** A decision's reason, as the API caps it. */
 export const REASON_MAX = 200;
@@ -31,14 +33,11 @@ export const MEMBER_FLAG_HELP = 'Tell the officers how you want it. Only officer
 export const MEMBER_FLAG_NONE = 'None of your characters can use this drop.';
 export const CLOSED_LINE = 'Awarded. Voting on this drop is closed.';
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
 /** "Tue 8 Dec" from the night's YYYY-MM-DD (already the guild's raid day, so read as UTC). */
 export function nightDay(date: string): string {
   const d = new Date(`${date}T00:00:00Z`);
   if (Number.isNaN(d.getTime())) return date;
-  return `${WEEKDAYS[d.getUTCDay()]} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
+  return weekdayDayMonth(d, 'UTC');
 }
 
 /** The night chooser: one option per night, newest first. */
@@ -235,12 +234,8 @@ export function msOsTag(candidate: LootCouncilCandidate): MsOsTag | null {
   return {
     label: candidate.ms_os === 'ms' ? 'MS' : 'OS',
     declared,
-    title: declared ? `They flagged it ${word}` : `Not flagged. ${capitalized(word)} by their BiS list`,
+    title: declared ? `They flagged it ${word}` : `Not flagged. ${upperFirst(word)} by their BiS list`,
   };
-}
-
-function capitalized(text: string): string {
-  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 /** "Eskhandar's Collar to Hollowmend". */
@@ -252,7 +247,7 @@ export function decisionTitle(decision: LootDecision): string {
  *  named), then "3 yes, 0 no of 4"; a part the award never kept is left out. */
 export function recordParts(record: AwardRecord): string[] {
   const parts: string[] = [];
-  if (record.ms_os === 'os') parts.push(capitalized(MS_OS_WORD[record.ms_os]));
+  if (record.ms_os === 'os') parts.push(upperFirst(MS_OS_WORD[record.ms_os]));
   if (record.votes_yes !== null && record.votes_no !== null) {
     const of = record.votes_officers === null ? '' : ` of ${record.votes_officers}`;
     parts.push(`${record.votes_yes} yes, ${record.votes_no} no${of}`);
@@ -274,7 +269,7 @@ function votesShort(record: AwardRecord): string {
  *  before the council kept records. */
 export function recordLine(record: AwardRecord): string {
   const reason = record.reason?.trim() ?? '';
-  return [record.ms_os === 'os' ? capitalized(MS_OS_WORD.os) : '', votesShort(record), reason]
+  return [record.ms_os === 'os' ? upperFirst(MS_OS_WORD.os) : '', votesShort(record), reason]
     .filter((part) => part !== '')
     .join(' · ');
 }
@@ -284,12 +279,7 @@ export function decisionSub(decision: LootDecision, timeZone?: string): string {
   const parts = recordParts(decision);
   if (decision.awarded_by !== '') parts.push(`by ${decision.awarded_by}`);
   const at = new Date(decision.at);
-  if (!Number.isNaN(at.getTime()))
-    parts.push(
-      at
-        .toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone })
-        .replace(',', ''),
-    );
+  if (!Number.isNaN(at.getTime())) parts.push(weekdayDayMonth(at, timeZone ?? viewerZone()));
   return parts.join(' · ');
 }
 

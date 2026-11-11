@@ -9,8 +9,11 @@ describe('ownActivitySegments', () => {
 
   it('drops the leading own name and capitalises the verb', () => {
     expect(
-      ownActivitySegments([name, { text: ' uploaded Molten Core, 10 bosses in 92 min' }], 'Elyra Duskvale'),
-    ).toEqual([{ text: 'Uploaded Molten Core, 10 bosses in 92 min' }]);
+      ownActivitySegments(
+        [name, { text: ' uploaded Molten Core, 10 bosses in 1 h 32 min' }],
+        'Elyra Duskvale',
+      ),
+    ).toEqual([{ text: 'Uploaded Molten Core, 10 bosses in 1 h 32 min' }]);
   });
 
   it('drops a name mid-sentence without capitalising', () => {
@@ -84,7 +87,7 @@ describe('the standing rows', () => {
     } as NextRaidView;
     expect(raidRow(raid, new Date('2026-11-06T18:00:00Z'))).toEqual({
       label: "Onyxia's Lair",
-      value: '2 days, 2 hours',
+      value: '2 days, 2 hours, 30 min',
     });
     expect(raidRow(raid, new Date('2026-11-09T00:00:00Z'))).toBeNull();
   });

@@ -4,6 +4,7 @@
 // says what was chosen, states the default rule in one line, and decides which set figure the
 // head shows: the sim's own figure for the chosen sources when the file publishes one
 // (`filtered_set_dps`), otherwise the unfiltered figure, labelled as the unfiltered one.
+import { oneDecimal } from '../format/number';
 import type { BisBandModel } from './page-model';
 import { MAX_BAND } from './page-state';
 import { SOURCE_FILTER_KINDS } from './source-filter';
@@ -111,9 +112,9 @@ export function setFigureFor(
   if (measured !== undefined) {
     const under = Number(answer.figure) - measured.dps;
     return {
-      value: measured.dps.toFixed(1),
+      value: oneDecimal(measured.dps),
       label: `Set: ${choiceWords(on, model.band)}`,
-      caption: `${Math.abs(under).toFixed(1)} ${model.unit} ${under >= 0 ? 'under' : 'over'} the best set`,
+      caption: `${oneDecimal(Math.abs(under))} ${model.unit} ${under >= 0 ? 'under' : 'over'} the best set`,
       error: measured.error,
     };
   }

@@ -9,7 +9,8 @@
      the browser snap the end handle down a second short of the end. Drags snap in lib/chart/brush. -->
 <script lang="ts">
   import { brushSnap } from '../../lib/chart/brush';
-  import { clockLabel, endClockLabel } from '../../lib/chart/time-axis';
+  import { clockLabel } from '../../lib/chart/time-axis';
+  import { clockDuration } from '../../lib/format/duration';
   import { BUCKET_MS, type TimeWindow } from '../../lib/report/window';
 
   let {
@@ -37,7 +38,7 @@
   const shown = $derived(draft ?? current);
   const zoomed = $derived(shown.startMs > 0 || shown.endMs < domainMs);
   /** An edge on the clock: the fight's end reads as the fight list reads its length. */
-  const edgeLabel = (ms: number): string => (ms >= domainMs ? endClockLabel(domainMs) : clockLabel(ms));
+  const edgeLabel = (ms: number): string => (ms >= domainMs ? clockDuration(domainMs) : clockLabel(ms));
   const pct = (ms: number): number =>
     domainMs <= 0 ? 0 : (Math.max(0, Math.min(domainMs, ms)) / domainMs) * 100;
 
@@ -190,7 +191,7 @@
         data-testid="brush-end-label">{edgeLabel(shown.endMs)}</span
       >
     {/if}
-    <span class="text-muted absolute right-0" data-testid="brush-domain-label">{endClockLabel(domainMs)}</span
+    <span class="text-muted absolute right-0" data-testid="brush-domain-label">{clockDuration(domainMs)}</span
     >
   </div>
 </div>

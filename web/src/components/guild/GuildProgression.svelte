@@ -7,7 +7,7 @@
   import { characterHref, splitUnitName, type Region, type Ruleset } from '../../lib/characters';
   import type { GuildProgressionPage } from '../../lib/guild/api';
   import { classColorVar } from '../../lib/report/format';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { bossesDownMeta, progressionEmpty, progressionZones } from '../../lib/guild/progression-view';
   import { rosterBestLabels } from '../../lib/guild/roster-best';
   import { counted } from '../../lib/plural';

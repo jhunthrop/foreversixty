@@ -3,12 +3,18 @@
   {
    "id": 9001,
    "name": "Onyxia",
-   "slug": "onyxia"
+   "slug": "onyxia",
+   "zone": "Onyxia's Lair",
+   "size": 40,
+   "kills": 212
   },
   {
    "id": 9002,
    "name": "Warden Kelthas",
-   "slug": "warden-kelthas"
+   "slug": "warden-kelthas",
+   "zone": null,
+   "size": 5,
+   "kills": 3
   }
  ],
  "board_signed_out": {
@@ -23,7 +29,7 @@
     },
     "value": 888,
     "size": 40,
-    "fought_at": "2026-11-05T22:58:52.643Z",
+    "fought_at": "2026-11-09T23:50:00.452Z",
     "duration_ms": 161000,
     "talent_split": "31/20/0",
     "build_id": "b1",
@@ -49,7 +55,7 @@
     },
     "value": 876,
     "size": 40,
-    "fought_at": "2026-11-04T22:58:52.644Z",
+    "fought_at": "2026-11-08T23:50:00.453Z",
     "duration_ms": 162000,
     "talent_split": "31/20/0",
     "build_id": "b2",
@@ -70,7 +76,7 @@
     },
     "value": 864,
     "size": 40,
-    "fought_at": "2026-11-03T22:58:52.644Z",
+    "fought_at": "2026-11-07T23:50:00.453Z",
     "duration_ms": 163000,
     "talent_split": "31/20/0",
     "build_id": "b3",
@@ -100,7 +106,7 @@
     },
     "value": 888,
     "size": 40,
-    "fought_at": "2026-11-05T22:58:52.644Z",
+    "fought_at": "2026-11-09T23:50:00.453Z",
     "duration_ms": 161000,
     "talent_split": "31/20/0",
     "build_id": "b1",
@@ -126,7 +132,7 @@
     },
     "value": 876,
     "size": 40,
-    "fought_at": "2026-11-04T22:58:52.644Z",
+    "fought_at": "2026-11-08T23:50:00.453Z",
     "duration_ms": 162000,
     "talent_split": "31/20/0",
     "build_id": "b2",
@@ -147,7 +153,7 @@
     },
     "value": 864,
     "size": 40,
-    "fought_at": "2026-11-03T22:58:52.644Z",
+    "fought_at": "2026-11-07T23:50:00.453Z",
     "duration_ms": 163000,
     "talent_split": "31/20/0",
     "build_id": "b3",
@@ -173,7 +179,7 @@
     },
     "value": 852,
     "size": 40,
-    "fought_at": "2026-11-02T22:58:52.644Z",
+    "fought_at": "2026-11-06T23:50:00.453Z",
     "duration_ms": 164000,
     "talent_split": "31/20/0",
     "build_id": "b4",
@@ -194,7 +200,7 @@
     },
     "value": 840,
     "size": 40,
-    "fought_at": "2026-11-01T22:58:52.644Z",
+    "fought_at": "2026-11-05T23:50:00.453Z",
     "duration_ms": 165000,
     "talent_split": "31/20/0",
     "build_id": "b5",
@@ -220,7 +226,7 @@
     },
     "value": 828,
     "size": 40,
-    "fought_at": "2026-10-31T22:58:52.644Z",
+    "fought_at": "2026-11-04T23:50:00.453Z",
     "duration_ms": 166000,
     "talent_split": "31/20/0",
     "build_id": "b6",
@@ -241,7 +247,7 @@
     },
     "value": 816,
     "size": 40,
-    "fought_at": "2026-10-30T22:58:52.644Z",
+    "fought_at": "2026-11-03T23:50:00.453Z",
     "duration_ms": 167000,
     "talent_split": "31/20/0",
     "build_id": "b7",
@@ -267,7 +273,7 @@
     },
     "value": 804,
     "size": 40,
-    "fought_at": "2026-10-29T22:58:52.644Z",
+    "fought_at": "2026-11-02T23:50:00.453Z",
     "duration_ms": 168000,
     "talent_split": "31/20/0",
     "build_id": "b8",
@@ -288,7 +294,7 @@
     },
     "value": 792,
     "size": 40,
-    "fought_at": "2026-10-28T22:58:52.644Z",
+    "fought_at": "2026-11-01T23:50:00.453Z",
     "duration_ms": 169000,
     "talent_split": "31/20/0",
     "build_id": "b9",
@@ -314,7 +320,7 @@
     },
     "value": 780,
     "size": 40,
-    "fought_at": "2026-10-27T22:58:52.644Z",
+    "fought_at": "2026-10-31T23:50:00.453Z",
     "duration_ms": 170000,
     "talent_split": "31/20/0",
     "build_id": "b10",
@@ -335,7 +341,7 @@
     },
     "value": 768,
     "size": 40,
-    "fought_at": "2026-10-26T22:58:52.644Z",
+    "fought_at": "2026-10-30T23:50:00.453Z",
     "duration_ms": 171000,
     "talent_split": "31/20/0",
     "build_id": "b11",
@@ -361,7 +367,7 @@
     },
     "value": 756,
     "size": 40,
-    "fought_at": "2026-10-25T22:58:52.644Z",
+    "fought_at": "2026-10-29T23:50:00.453Z",
     "duration_ms": 172000,
     "talent_split": "31/20/0",
     "build_id": "b12",
@@ -382,7 +388,7 @@
     },
     "value": 744,
     "size": 40,
-    "fought_at": "2026-10-24T22:58:52.644Z",
+    "fought_at": "2026-10-28T23:50:00.453Z",
     "duration_ms": 173000,
     "talent_split": "31/20/0",
     "build_id": "b13",
@@ -408,7 +414,7 @@
     },
     "value": 732,
     "size": 40,
-    "fought_at": "2026-10-23T22:58:52.644Z",
+    "fought_at": "2026-10-27T23:50:00.453Z",
     "duration_ms": 174000,
     "talent_split": "31/20/0",
     "build_id": "b14",
@@ -429,7 +435,7 @@
     },
     "value": 720,
     "size": 40,
-    "fought_at": "2026-10-22T22:58:52.644Z",
+    "fought_at": "2026-10-26T23:50:00.453Z",
     "duration_ms": 175000,
     "talent_split": "31/20/0",
     "build_id": "b15",
@@ -463,7 +469,7 @@
     },
     "value": 732,
     "size": 40,
-    "fought_at": "2026-10-23T22:58:52.644Z",
+    "fought_at": "2026-10-27T23:50:00.453Z",
     "duration_ms": 174000,
     "talent_split": "31/20/0",
     "build_id": "b14",
@@ -488,7 +494,7 @@
     },
     "value": 888,
     "size": 40,
-    "fought_at": "2026-11-05T22:58:52.644Z",
+    "fought_at": "2026-11-09T23:50:00.453Z",
     "duration_ms": 161000,
     "talent_split": "31/20/0",
     "build_id": "b1",
@@ -514,7 +520,7 @@
     },
     "value": 876,
     "size": 40,
-    "fought_at": "2026-11-04T22:58:52.644Z",
+    "fought_at": "2026-11-08T23:50:00.453Z",
     "duration_ms": 162000,
     "talent_split": "31/20/0",
     "build_id": "b2",
@@ -535,7 +541,7 @@
     },
     "value": 864,
     "size": 40,
-    "fought_at": "2026-11-03T22:58:52.644Z",
+    "fought_at": "2026-11-07T23:50:00.453Z",
     "duration_ms": 163000,
     "talent_split": "31/20/0",
     "build_id": "b3",
@@ -561,7 +567,7 @@
     },
     "value": 852,
     "size": 40,
-    "fought_at": "2026-11-02T22:58:52.644Z",
+    "fought_at": "2026-11-06T23:50:00.453Z",
     "duration_ms": 164000,
     "talent_split": "31/20/0",
     "build_id": "b4",
@@ -582,7 +588,7 @@
     },
     "value": 840,
     "size": 40,
-    "fought_at": "2026-11-01T22:58:52.644Z",
+    "fought_at": "2026-11-05T23:50:00.453Z",
     "duration_ms": 165000,
     "talent_split": "31/20/0",
     "build_id": "b5",
@@ -608,7 +614,7 @@
     },
     "value": 828,
     "size": 40,
-    "fought_at": "2026-10-31T22:58:52.644Z",
+    "fought_at": "2026-11-04T23:50:00.453Z",
     "duration_ms": 166000,
     "talent_split": "31/20/0",
     "build_id": "b6",
@@ -629,7 +635,7 @@
     },
     "value": 816,
     "size": 40,
-    "fought_at": "2026-10-30T22:58:52.644Z",
+    "fought_at": "2026-11-03T23:50:00.453Z",
     "duration_ms": 167000,
     "talent_split": "31/20/0",
     "build_id": "b7",
@@ -655,7 +661,7 @@
     },
     "value": 804,
     "size": 40,
-    "fought_at": "2026-10-29T22:58:52.644Z",
+    "fought_at": "2026-11-02T23:50:00.453Z",
     "duration_ms": 168000,
     "talent_split": "31/20/0",
     "build_id": "b8",
@@ -676,7 +682,7 @@
     },
     "value": 792,
     "size": 40,
-    "fought_at": "2026-10-28T22:58:52.644Z",
+    "fought_at": "2026-11-01T23:50:00.453Z",
     "duration_ms": 169000,
     "talent_split": "31/20/0",
     "build_id": "b9",
@@ -702,7 +708,7 @@
     },
     "value": 780,
     "size": 40,
-    "fought_at": "2026-10-27T22:58:52.644Z",
+    "fought_at": "2026-10-31T23:50:00.453Z",
     "duration_ms": 170000,
     "talent_split": "31/20/0",
     "build_id": "b10",
@@ -723,7 +729,7 @@
     },
     "value": 768,
     "size": 40,
-    "fought_at": "2026-10-26T22:58:52.644Z",
+    "fought_at": "2026-10-30T23:50:00.453Z",
     "duration_ms": 171000,
     "talent_split": "31/20/0",
     "build_id": "b11",
@@ -749,7 +755,7 @@
     },
     "value": 756,
     "size": 40,
-    "fought_at": "2026-10-25T22:58:52.644Z",
+    "fought_at": "2026-10-29T23:50:00.453Z",
     "duration_ms": 172000,
     "talent_split": "31/20/0",
     "build_id": "b12",
@@ -770,13 +776,39 @@
     },
     "value": 744,
     "size": 40,
-    "fought_at": "2026-10-24T22:58:52.644Z",
+    "fought_at": "2026-10-28T23:50:00.453Z",
     "duration_ms": 173000,
     "talent_split": "31/20/0",
     "build_id": "b13",
     "trinkets": [],
     "buff_count": 8,
     "report_id": "report13",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 14,
+    "player": {
+     "key": "us/normal/grimhollow",
+     "name": "Grimhollow",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 732,
+    "size": 40,
+    "fought_at": "2026-10-27T23:50:00.453Z",
+    "duration_ms": 174000,
+    "talent_split": "31/20/0",
+    "build_id": "b14",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report14",
     "fight_index": 1,
     "state": "ok",
     "execution_score": 0.9
@@ -791,7 +823,7 @@
     },
     "value": 720,
     "size": 40,
-    "fought_at": "2026-10-22T22:58:52.644Z",
+    "fought_at": "2026-10-26T23:50:00.453Z",
     "duration_ms": 175000,
     "talent_split": "31/20/0",
     "build_id": "b15",
@@ -823,10 +855,10 @@
      "ruleset": "normal",
      "region": "us"
     },
-    "value": -1548,
+    "value": 300,
     "size": 40,
-    "fought_at": "2026-04-16T22:58:52.644Z",
-    "duration_ms": 364000,
+    "fought_at": "2026-10-11T23:50:00.453Z",
+    "duration_ms": 200000,
     "talent_split": "31/20/0",
     "build_id": "b204",
     "trinkets": [],
@@ -881,12 +913,10 @@
    "heading": "Recent public reports",
    "placeholderLabel": "Recent reports",
    "failed": "Recent reports did not load.",
-   "empty": "No public reports yet. The first raid logs land in December; dungeon logs are welcome now.",
    "older": "Older reports"
   },
   "logsBandCopy": {
-   "h1": "Logs",
-   "jobLine": "Upload a combat log or log live, then read every pull."
+   "h1": "Logs"
   },
   "logsCompanionCopy": {
    "pointer": "Log live while you raid.",
@@ -897,8 +927,12 @@
   },
   "pairingCopy": {
    "signedOut": "Live logging needs a signed-in account.",
-   "companionFirst": "Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.",
-   "success": "[fn]"
+   "companionFirst": "Press Sign in with Battle.net in the companion. A code is the fallback.",
+   "success": "[fn]",
+   "action": "Get a pairing code",
+   "failed": "The pairing code did not load. Try again.",
+   "codeLine": "[fn]",
+   "waiting": "Waiting for the companion to use the code"
   },
   "myReportsCopy": {
    "failed": "Your reports did not load.",
@@ -909,7 +943,6 @@
   },
   "yourReportsPageCopy": {
    "title": "Your reports",
-   "job": "Every fight you logged, newest first.",
    "empty": "No logs yet. Upload a log, or let the companion send your next raid.",
    "signedOut": "Sign in to see every report you logged.",
    "sessionFailed": "Your account did not load.",
@@ -946,6 +979,29 @@
    "spec": "Spec",
    "everySpec": "Every spec",
    "window": "Window",
+   "fight": "Fight",
+   "tabsLabel": "Report tabs",
+   "fightsLabel": "Fights",
+   "onePullLabel": "One pull only",
+   "copyLink": "Copy link",
+   "actionsLabel": "Report actions",
+   "copied": "Copied",
+   "copyFailed": "Copy failed",
+   "reportActions": "Report actions",
+   "filters": "Filters",
+   "clearFilters": "Clear filters",
+   "nothingInWindow": "Nothing in this window.",
+   "reportFailed": "Report data did not load.",
+   "reportMissing": "No report with that id.",
+   "openYourReports": "Open your reports",
+   "viewFailed": "This view did not load.",
+   "tryAgain": "Try again",
+   "onePullOnly": "This tab is one pull’s. Pick a pull from the Fight list to see it.",
+   "groupMissing": "Your group wasn’t in this pull.",
+   "ratingNight": "Ratings are one pull’s. Pick a boss pull from the list to see one.",
+   "parsesUnknown": "Parses didn’t load.",
+   "liveTag": "Live",
+   "loggingNow": "Logging now",
    "yourUpload": "Your upload",
    "parsing": "Parsing your log… this takes a minute or two for a long night",
    "parseFailed": "This log could not be parsed.",
@@ -956,14 +1012,12 @@
    "eyebrow": "Report",
    "sampleBadge": "Sample report",
    "notCreditedTag": "Not credited",
-   "sampleNote": "A real beta night with the names changed. Level 10 to 30 players, so the numbers are small. Your own reports look like this."
+   "sampleNote": "A real dungeon night, names changed."
   },
   "rankingsCopy": {
    "eyebrow": "Characters",
    "h1": "Rankings",
-   "jobSignedIn": "Where your character stands among characters like it.",
-   "jobSignedOut": "How characters rank on each encounter, kill by kill.",
-   "tierQuestion": "Comparing specs, not characters?",
+   "lead": "Logged boss kills on Forever, ranked by DPS and HPS for each spec, class, ruleset and guild. The companion uploads your combat log as you play, so your kills join the board.",
    "tierLink": "Tier list",
    "tierHref": "/tiers",
    "updated": "[fn]",
@@ -975,10 +1029,10 @@
    "answerNote": "[fn]",
    "answerUnranked": "[fn]",
    "everyClassAndSpec": "Every class and spec",
-   "anotherBoard": "Another class or spec",
+   "widen": "Every class and spec",
    "showingNote": "[fn]",
    "backTo": "[fn]",
-   "legendLead": "Rank colour is the percentile:",
+   "legendLead": "Percentile",
    "legendUnderLast": "under 25",
    "ownBest": "Your best kill",
    "removed": "Removed by a moderator",
@@ -999,24 +1053,43 @@
    "allRegions": "All regions",
    "allPhases": "All phases",
    "everyClass": "Every class",
+   "everyEncounter": "Every encounter",
    "everySpec": "Every spec",
    "bothFactions": "Both",
    "todayOnly": "Today only",
-   "sizeMan": "[fn]"
+   "percentileLabel": "Percentile",
+   "openReport": "Open the kill in its report",
+   "reportLink": "Report",
+   "guildTitle": {
+    "progress": "Most bosses killed",
+    "speed": "Fastest kills",
+    "execution": "Fewest deaths"
+   },
+   "deaths": "[fn]"
   },
   "rankingsEmptyCopy": {
-   "message": "No ranked fights yet for this filter. Rankings fill in as reports are uploaded.",
+   "board": "[fn]",
+   "boardFill": "Upload a log with the kill and it ranks here.",
+   "guilds": "[fn]",
+   "guildsAnywhere": "No guild has a ranked boss kill yet.",
+   "guildsFill": "A guild ranks once a member uploads a log of the kill.",
    "action": "Upload a log",
-   "href": "/logs"
+   "href": "/logs",
+   "widen": "Every class and spec",
+   "elsewhere": "Bosses with ranked kills"
   },
   "encounterPickerCopy": {
-   "heading": "Choose an encounter",
-   "failed": "Encounters did not load.",
-   "noneYet": "No encounters have been ranked yet.",
-   "tryGuildsProgress": "The Guilds board ranks guild progress across every encounter and needs none.",
-   "openGuildsBoard": "Open the Guilds board",
-   "openProgressBoard": "Open the Progress board",
-   "noEncountersOption": "No encounters yet"
+   "heading": "Encounters",
+   "noneYet": "No boss kills are ranked yet.",
+   "fill": "A boss gets its board when the first log of its kill is uploaded.",
+   "where": "[fn]",
+   "ranked": "[fn]",
+   "topFailed": "Top parses did not load.",
+   "topNone": "No ranked kill on this board yet.",
+   "leadersHeading": "Leaders by spec",
+   "damageHead": "Damage",
+   "healingHead": "Healing",
+   "more": "More encounters"
   },
   "scoreCopy": {
    "heading": "Forever Score",
@@ -1029,7 +1102,7 @@
     {
      "key": "gear",
      "label": "Gear",
-     "moves": "How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60). Every upgrade for your spec moves it up."
+     "moves": "How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60)."
     },
     {
      "key": "experience",
@@ -1118,10 +1191,8 @@
    "explainerJumpLabel": "On this page",
    "explainerHeading": "Forever Score",
    "explainerRatingHeading": "Performance Rating",
-   "explainerScoreCaption": "Forever Score: your whole record, 0 to 2100.",
+   "explainerScoreCaption": "Forever Score: your whole record, 0 to 2,100.",
    "explainerRatingCaption": "Performance Rating: one fight, 0 to 100.",
-   "explainerLead": "Use it to see how your character compares and which part to work on.",
-   "explainerWhat": "The Forever Score is one number for a character, made of five parts that add up to it. It comes only from the logs the site has: fights in public reports, and the gear those logs show. The addon shows the same number on the character’s tooltip in game, dated with the day of the newest fight it counts. A character with no logs here has no score, not a score of zero.",
    "explainerLaunch": "Parses, attendance and raid bosses count once raids open.",
    "samplePill": "Sample",
    "explainerPartsHeading": "What moves each part",
@@ -1132,13 +1203,11 @@
    "tierBetween": "[fn]",
    "tierFrom": "[fn]",
    "tierShort": "[fn]",
-   "tiersNote": "The tiers take the colours of item quality in game. The ranges may change as more players are logged.",
+   "tiersNote": "The tiers take the colours of item quality.",
    "explainerLogsHeading": "How to get your logs here",
-   "explainerLogsBody": "The companion uploads your fights automatically. The companion is a small desktop app that runs beside the game and sends the site your combat log and what the addon saved.",
+   "explainerLogsBody": "The companion uploads your combat log as you play.",
    "explainerLogsButton": "Get the companion",
-   "explainerLogsHref": "/setup",
-   "explainerRatingBridge": "A rating scores one fight. The Forever Score counts all of them.",
-   "explainerPreparationShared": "Both use the word Preparation for the same thing: the flask, food and enchants you bring to a pull."
+   "explainerLogsHref": "/setup"
   },
   "ratingCopy": {
    "tabLabel": "Rating",
@@ -1165,17 +1234,17 @@
    "insufficient": "Not rated",
    "insufficientNote": "[fn]",
    "tabEmpty": "No ratings for this fight yet. Ratings are computed after a report finishes processing, and some encounters do not have a curated table yet.",
-   "noRatingForTrash": "No rating for trash. Ratings are made for boss fights.",
+   "noRatingForTrash": "Ratings come with boss kills in raids.",
    "fetchFailed": "Ratings did not load.",
    "flagged": "This report is flagged and not rated.",
    "nightNotOnePull": "Ratings are one pull’s. Pick a boss pull from the list to see one.",
    "enemiesHaveNone": "Ratings are for your raid, not the enemy.",
    "noMatchingRow": "This player has no rating for this fight.",
    "percentileBasis": "[fn]",
-   "absoluteBasis": "Measured against the encounter’s own numbers — not enough logs yet to compare players.",
+   "absoluteBasis": "Measured against the encounter’s own numbers: not enough logs yet to compare players.",
    "excludedReason": "[fn]",
-   "threatNotModeled": "Threat — not modeled yet. This does not count for or against Utility.",
-   "cappedNote": "capped from a higher weighted average — a costly avoidable death outweighs the rest of the fight. See Survival.",
+   "threatNotModeled": "Threat: not modeled yet. It does not count for or against Utility.",
+   "cappedNote": "capped from a higher weighted average: a costly avoidable death outweighs the rest of the fight. See Survival.",
    "cappedRule": "An avoidable death early in a fight caps the overall score at 40, because nothing else in the fight makes up for it.",
    "trendTooFew": "[fn]",
    "characterEmpty": "Nothing rated yet. Ratings appear after your first ranked fight.",
@@ -1304,43 +1373,59 @@
    }
   ],
   "copy": {
-   "visibility": "A rating comes only from a public report, the same way a Warcraft Logs parse does. There is no cross-guild leaderboard of ratings — a rating is one fight's roster, or one character's own history, never a ranked list of players against each other site-wide.",
-   "oneNumberFirst": [
-    "Every rating starts with one overall number, 0 to 100. That number is a weighted average of six components — Output, Survival, Mechanics, Utility, Preparation, Activity — each also scored 0 to 100. A parse is not a performance: someone who tops the meter while dying to avoidable damage and skipping consumables does not rate well here, because Output is a fraction of the score, not the whole of it.",
-    "A component the engine cannot score for a given fight — no curated table for this encounter, the simulator does not model this spec yet, too few logs to compare against — is left out and said so in plain words, never silently zeroed and never faked. Its weight is redistributed across the components that did score."
-   ],
+   "visibility": "Rated from public reports only.",
    "components": [
     {
      "part": "Output",
-     "body": "Damage or healing done. For a DPS spec the simulator already models, Output is judged against how well the fight could have gone with your gear — rotation, GCD usage, cooldown timing — not just the raw number on the meter. A healer's Output counts effective healing only; overheal never adds to it. A tank still deals damage, but Output carries little weight for that role, since holding threat and staying alive are the job."
+     "body": "Damage, or effective healing, against what the fight allowed with your gear."
     },
     {
      "part": "Survival",
-     "body": "Whether you died — an avoidable death early in a fight costs far more than one near the very end — blended with how much avoidable damage you took without dying. Tanks are judged on avoidable damage alone: taking damage on purpose is the job, so a fight's expected hits never count against them."
+     "body": "Avoidable deaths, an early one costing most, and avoidable damage taken."
     },
     {
      "part": "Mechanics",
-     "body": "Three things, averaged: the interrupts you made, valued by how much damage the interrupted cast would have done; the dispels you made, valued by the healing or damage they denied the enemy; and how long you personally carried a debuff that should have been dispelled, where less time carrying it scores better. That last part is scored on the person carrying the debuff, not on whoever should have cleansed it."
+     "body": "Interrupts, dispels, and debuffs carried that should have been cleansed."
     },
     {
      "part": "Utility",
-     "body": "The average uptime across every buff, debuff, and cooldown your class and spec are expected to keep running for the raid — not the single worst one. One dropped buff does not sink the whole score the way judging by your worst upkeep would; this rewards broad coverage instead. (Threat is not scored yet — not modeled yet, not silently left out.)"
+     "body": "Uptime of the buffs and debuffs your class keeps up for the raid."
     },
     {
      "part": "Preparation",
-     "body": "Showing up ready: the right flask, food, weapon oil or stone, and world buffs at the pull, plus using your class's potions during the fight — each weighed by how much it matters for your role."
+     "body": "Flask, food, oil or stone at the pull, potions in the fight."
     },
     {
      "part": "Activity",
-     "body": "The share of the fight you spent actively doing something rather than idle, after fairly excluding any period the fight itself expects you to do nothing — a scripted phase transition, for instance — so it is not just raw uptime."
+     "body": "Time spent casting or swinging, scripted downtime left out."
     }
    ],
-   "roles": "Neither of the two non-DPS roles uses the DPS weights above: tanks and healers are each rated by their own column in that table, since a tank's Output is worth little (10 of 100) and its Survival a lot (35), because taking damage on purpose is the job. A healer's Output is measured on effective healing, never raw — overheal does not count toward it.",
-   "adjustable": "The weight table above, and the cap below, are both settings a guild's officers can change — this page always describes the site-wide defaults.",
-   "rankedOrAbsolute": [
-    "When at least 20 kills of the same encounter, difficulty, spec, role and roughly the same kill speed exist, a component is ranked against players of your spec in those other logs — \"better than 71% of Fury Warriors on this fight.\" Below that, there are not enough logs yet to compare players fairly, so the score is measured against the encounter's own numbers instead and says so plainly, rather than presenting a ranking built on noise.",
-    "A brand-new boss, or a kill speed nobody has repeated yet, starts on the absolute standard and moves to being ranked against players of your spec once its own speed band (fast, typical, or slow, judged against the encounter's own kill times, not a fixed expectation) reaches 20 comparable logs.",
-    "A wipe scores differently than a kill: Survival and Mechanics are still computed — a wipe is exactly where avoidable deaths and missed interrupts matter most — but Output, Utility, Preparation and Activity are not, since a wipe's damage window is cut short and is not a fair comparison to a full kill's."
+   "parts": {
+    "gear": "Your gear against your spec’s best set for your level",
+    "experience": "25 a dungeon cleared, 40 a raid boss killed, alts included",
+    "parses": "Your best boss parses against your spec",
+    "attendance": "Your guild’s raid nights logged in the last 90 days",
+    "discipline": "Flask, food and enchants on every logged pull"
+   },
+   "adjustable": "Defaults; guild officers can change them",
+   "sampleNote": "Sample raider, after raids open",
+   "rules": [
+    {
+     "title": "Ranked",
+     "body": "With at least 20 kills of the same encounter, difficulty, spec, role and kill speed logged, a component is ranked against players of your spec in those logs: \"better than 71% of Fury Warriors on this fight.\""
+    },
+    {
+     "title": "Absolute",
+     "body": "With fewer, a component is measured against the encounter's own numbers. A new boss or an unmatched kill speed starts here and moves to ranked at 20 comparable logs (fast, typical or slow, against the encounter's own kill times)."
+    },
+    {
+     "title": "Wipes",
+     "body": "A wipe scores Survival and Mechanics only. Output, Utility, Preparation and Activity are left out: a wipe's damage window is cut short."
+    },
+    {
+     "title": "A part left out",
+     "body": "A component that cannot be scored for a fight is named and its weight goes to the ones that did: an encounter with no mechanics table yet, a spec the simulator does not model yet, too few logs to compare."
+    }
    ]
   }
  }

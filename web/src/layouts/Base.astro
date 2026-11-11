@@ -51,6 +51,7 @@ import {
   SESSION_START_POINTER_KEY,
 } from '../lib/character-selector/restored';
 import { POINTER_HEALED_KEY } from '../lib/account/session-pointer';
+import { CLASS_SLUGS } from '../lib/ui/primitives';
 import { HEADER_GEARED, HEADER_GEAR_HINT_KEY } from '../lib/character-header/gear-hint';
 import {
   LIVE_STORAGE_KEY as SERVER_RUNS_LIVE_KEY,
@@ -128,6 +129,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       data-pointer-healed-key={POINTER_HEALED_KEY}
       data-header-gear-key={HEADER_GEAR_HINT_KEY}
       data-header-geared={HEADER_GEARED}
+      data-class-slugs={CLASS_SLUGS.join(' ')}
     >
       // The hints the stylesheet keys off, before first paint. The readable half of the session
       // cookie (fs_csrf) means someone is signed in: anything marked data-session-hide (the
@@ -136,25 +138,15 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       // (lib/data/query.ts's sessionHinted). A stored pointer (lib/current-character.ts's
       // STORAGE_KEY, repeated here because an inline script cannot import) sets data-pointer,
       // which /setup's step hints key off (global.css), and data-pointer-class, which nav.css
-      // maps to the selector's crest. The class list is the
-      // crest files under public/icons/hd/crests (lib/class-crest.test.ts checks it).
+      // maps to the selector's crest. The class list is lib/ui/primitives.ts CLASS_SLUGS, handed
+      // in as data-class-slugs (an inline script cannot import); class-crest.test.ts checks the crests.
       if (/(?:^|;\s*)fs_csrf=[^;]+/.test(document.cookie)) document.documentElement.dataset.session = '1';
       try {
         const raw = localStorage.getItem('fs.currentCharacter');
         if (raw) {
           document.documentElement.dataset.pointer = '1';
           const slug = JSON.parse(raw).classSlug;
-          const CLASSES = [
-            'warrior',
-            'paladin',
-            'hunter',
-            'rogue',
-            'priest',
-            'shaman',
-            'mage',
-            'warlock',
-            'druid',
-          ];
+          const CLASSES = (document.currentScript.dataset.classSlugs || '').split(' ');
           if (CLASSES.indexOf(slug) !== -1) document.documentElement.dataset.pointerClass = slug;
         }
       } catch {

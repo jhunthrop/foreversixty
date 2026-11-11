@@ -1,15 +1,6 @@
 // The raid plaque's facts and words (lib/home/plaque.ts, round 5 home).
 import { describe, expect, it } from 'vitest';
-import {
-  choiceOf,
-  longDay,
-  plaqueClock,
-  plaqueClockLabel,
-  raidWhen,
-  roleCounts,
-  signupFigures,
-  signupRole,
-} from './plaque';
+import { choiceOf, countdownFigures, raidWhen, roleCounts, signupFigures, signupRole } from './plaque';
 import type { NextRaidView } from '../guild/api';
 
 const NOW = new Date('2026-11-06T18:00:00Z');
@@ -24,15 +15,13 @@ const COUNTS: NextRaidView['counts'] = {
 };
 
 describe('the raid plaque', () => {
-  it('counts days and hours, minutes in the final hour, nothing once passed', () => {
-    const parts = plaqueClock(new Date('2026-12-10T02:00:00Z'), NOW);
-    expect(parts).toEqual([
+  it('reads the one countdown as big figures, nothing once passed', () => {
+    expect(countdownFigures(new Date('2026-12-10T02:00:00Z'), NOW)).toEqual([
       { value: '33', label: 'days' },
       { value: '8', label: 'hours' },
     ]);
-    expect(plaqueClockLabel(parts)).toBe('33 days, 8 hours');
-    expect(plaqueClock(new Date('2026-11-06T18:20:30Z'), NOW)).toEqual([{ value: '21', label: 'min' }]);
-    expect(plaqueClock(NOW, NOW)).toEqual([]);
+    expect(countdownFigures(new Date('2026-11-06T18:20:30Z'), NOW)).toEqual([{ value: '21', label: 'min' }]);
+    expect(countdownFigures(NOW, NOW)).toEqual([]);
   });
 
   it('reads signed up, late and the four roles', () => {
@@ -63,13 +52,12 @@ describe('the raid plaque', () => {
     expect(choiceOf(null)).toBeNull();
   });
 
-  it("reads the raid's start whole, in the viewer's own 12-hour time with no zone", () => {
-    expect(raidWhen('2026-12-10T02:00:00Z', 'America/Chicago')).toBe('Wednesday 9 December · 8\u00a0pm');
-    expect(raidWhen('2026-12-10T02:30:00Z', 'America/Chicago')).toBe('Wednesday 9 December · 8:30\u00a0pm');
-    expect(raidWhen('2026-12-10T02:00:00Z', 'Europe/London')).toBe('Thursday 10 December · 2\u00a0am');
-  });
-
-  it('reads the first raids day whole', () => {
-    expect(longDay('2026-12-09T00:00:00Z')).toBe('Wednesday 9 December');
+  it("reads the raid's start whole, on the viewer's own clock with no zone", () => {
+    expect(raidWhen('2026-12-10T02:00:00Z', 'America/Chicago', 'en-US')).toBe('Wednesday 9 December · 8 pm');
+    expect(raidWhen('2026-12-10T02:30:00Z', 'America/Chicago', 'en-US')).toBe(
+      'Wednesday 9 December · 8:30 pm',
+    );
+    expect(raidWhen('2026-12-10T02:00:00Z', 'Europe/London', 'en-US')).toBe('Thursday 10 December · 2 am');
+    expect(raidWhen('2026-12-10T02:00:00Z', 'Europe/London', 'en-GB')).toBe('Thursday 10 December · 02:00');
   });
 });

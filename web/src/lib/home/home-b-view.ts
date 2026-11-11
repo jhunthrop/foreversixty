@@ -3,7 +3,6 @@
 // sim figure, the plaque's guild lines, Your spec this week and Guild sims. Pure: the island
 // (components/home/HomeCharacter.svelte) and the unit tests read them.
 import { characterHref } from '../characters';
-import { SPECS } from '../sim/specs';
 import type { ImportSim, SpecWeek } from './home-answer';
 import { bandWords, shortDate } from './home-view';
 import { fillShared } from '../copy/shared';
@@ -32,6 +31,8 @@ import {
   sharedHomeYouNoSim,
 } from '../copy/shared/home.generated';
 
+import { oneDecimal } from '../format/number';
+import { specLabel } from '../sim/spec-label';
 /** The guild ladder's rows above the viewer's pinned row (ruling R2). */
 export const GUILD_SIMS_SHOWN = 5;
 
@@ -78,9 +79,6 @@ export interface HeadFigure {
   link?: { label: string; href: string };
 }
 
-const oneDecimal = (n: number) =>
-  n.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-
 /** The finished import sim's one line in the head: which sim and how old, linking that result. */
 function simLine(sim: ImportSim, now: Date): HeadFigure['link'] {
   if (sim.sim_id === null) return undefined;
@@ -124,16 +122,11 @@ export function simFigure(sim: ImportSim | null, now: Date = new Date()): HeadFi
   };
 }
 
-/** `Fury Warrior` from `warrior-fury`. */
-export function specName(specKey: string): string {
-  return SPECS.find((row) => row.spec === specKey)?.full_name ?? specKey;
-}
-
 const ROLE_WORDS = { dps: 'damage specs', tank: 'tank specs', healer: 'healer specs' } as const;
 
 /** Your spec this week: the title and the line under it (ruling R3). No delta without last week. */
 export function specWeekView(week: SpecWeek): { title: string; sub: string } {
-  const title = `${specName(week.spec)} at ${bandWords(week.band)}`;
+  const title = `${specLabel(week.spec)} at ${bandWords(week.band)}`;
   const place = `#${week.place} of ${week.of} ${ROLE_WORDS[week.role]}`;
   if (week.grade === null || week.last_week_grade === null) return { title, sub: place };
   const order = 'SABCD';

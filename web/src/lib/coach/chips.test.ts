@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { FIXTURE_GUID } from '../../test-support/coach-fixtures';
 import { coachAnchorHref } from './anchors';
-import { chipsFor, clock, firstSpellId } from './chips';
+import { chipsFor, firstSpellId, pullClock as clock } from './chips';
 import type { CoachAnchor } from './types';
 
 const anchors: Record<string, CoachAnchor> = {

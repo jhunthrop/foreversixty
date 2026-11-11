@@ -6,7 +6,7 @@
 import type { Me, MeCharacter } from '../account/api';
 import { accountPlanLine, premiumSource, type AccountPlanLine } from '../account/plan-line';
 import type { PremiumSource } from '../billing/contract';
-import { CENTS_PER_DOLLAR, formatAmount } from '../billing/plans';
+import { CENTS_PER_DOLLAR, formatUsd } from '../billing/plans';
 import { characterHref } from '../characters';
 import { zonedDayMonthYear } from '../dates';
 import { selectorCopy } from './copy';
@@ -58,7 +58,7 @@ function ownPlanWords(me: Me): { sub: string; sub2: string } | null {
   }
   const { account } = selectorCopy;
   const unit = billing.interval === 'monthly' ? account.perMonth : account.perYear;
-  const price = `${formatAmount(billing.amount_cents / CENTS_PER_DOLLAR)}${unit}`;
+  const price = `${formatUsd(billing.amount_cents / CENTS_PER_DOLLAR)}${unit}`;
   const lead = billing.cancel_at_period_end ? account.ends : account.renews;
   return { sub: account.planOwn(price), sub2: `${lead} ${zonedDayMonthYear(end)}` };
 }

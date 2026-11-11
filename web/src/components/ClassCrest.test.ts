@@ -9,7 +9,7 @@ describe('ClassCrest', () => {
     expect(html).toContain('src="/icons/hd/crests/hunter.webp"');
     expect(html).toContain('width="56"');
     expect(html).toContain('height="56"');
-    expect(html).toContain('--c: #aad372');
+    expect(html).toContain('--c: var(--color-class-hunter)');
     expect(html).toContain('class="crest rounded-full ');
   });
 

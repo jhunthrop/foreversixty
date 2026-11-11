@@ -62,8 +62,8 @@ describe('the colour legend', () => {
       'var(--color-parse-gold)',
       'var(--color-parse-pink)',
       'var(--color-parse-orange)',
-      'var(--color-parse-purple)',
-      'var(--color-parse-blue)',
+      'var(--color-rarity-epic-text)',
+      'var(--color-rarity-rare-text)',
       'var(--color-parse-green)',
       'var(--color-parse-grey-text)',
     ]);
@@ -72,7 +72,7 @@ describe('the colour legend', () => {
   it('colours a rank from its percentile in the board', () => {
     expect(rankPercentile(1, 200)).toBe(100);
     expect(rankPercentile(101, 200)).toBe(50);
-    expect(rankColor(14, 212)).toBe('var(--color-parse-purple)');
+    expect(rankColor(14, 212)).toBe('var(--color-rarity-epic-text)');
     // The WCL scale, floored (spec 2026-11-07 MUST 3, bug B4): rank 1 of 212 is the 100th
     // percentile and gold; ranks 2 and 3 (99.53, 99.06) are pink, never rounded up to gold;
     // rank 4 (98.58) is orange.

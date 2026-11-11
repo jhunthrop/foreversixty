@@ -49,7 +49,7 @@ describe('ownRankAnswer', () => {
     expect(answer).toEqual({
       kind: 'figures',
       label: 'Your rank',
-      figures: [{ value: '14th', unit: 'of 212 Fury Warriors', color: 'var(--color-parse-purple)' }],
+      figures: [{ value: '14th', unit: 'of 212 Fury Warriors', color: 'var(--color-rarity-epic-text)' }],
       note: { text: 'On Onyxia, Normal ruleset' },
     });
   });

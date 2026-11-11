@@ -11,10 +11,11 @@
   import { bisPageHref } from '../../lib/bis/hover';
   import type { BenchmarkMatch } from '../../lib/sim/bis-benchmark';
   import { confidenceBand } from '../../lib/sim/estimate';
-  import { grouped, oneDecimal, spreadCopy } from '../../lib/sim/result-copy';
+  import { spreadCopy } from '../../lib/sim/result-copy';
   import { spreadOf, type SpreadBar } from '../../lib/sim/spread';
   import type { DpsHistogram, Estimate } from '../../lib/sim/types';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
+  import { grouped, oneDecimal } from '../../lib/format/number';
   import Figure from '../ui/Figure.svelte';
   import Row from '../ui/Row.svelte';
 

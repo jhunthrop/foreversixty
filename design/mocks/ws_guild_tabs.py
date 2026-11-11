@@ -11,7 +11,7 @@ from ws_prims import Page, Section, Plate, Rows, Row, Button, Meter, Tag, build_
 import guild_overview_data as O
 import guild_overview_fixtures as F
 import guild_tabs_fixtures as T
-from guild_data import C
+from guild_data import C, house_clock
 from ws_guild2 import RAID_ICON, hdr, band_line, _view, pad, guild_time, day_label
 
 WHO = ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60')
@@ -38,7 +38,7 @@ def _p8(text):
 
 
 def _hour(at):
-    return f"{at.hour % 12 or 12}:{at.minute:02d} {'am' if at.hour < 12 else 'pm'}"
+    return house_clock(at)
 
 
 def _spec(r):

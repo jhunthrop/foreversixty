@@ -23,6 +23,9 @@ import {
   sharedHomeSignIn,
 } from '../copy/shared/home.generated';
 
+import { oneDecimal } from '../format/number';
+import { dayMonth, utcDayMonth } from '../dates';
+import { titleCase } from '../text';
 /** How many upgrades home lists (round 5 mock: five in the framed rail). */
 export const UPGRADES_SHOWN = 5;
 const MAX_LEVEL = 60;
@@ -58,13 +61,8 @@ export function bandWords(band: number): string {
 }
 
 /** `4 Nov`, in the viewer's own calendar; a date with no time (`2026-12-09`) is that calendar day. */
-export function shortDate(iso: string, locale = 'en-GB'): string {
-  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(iso);
-  return new Date(iso).toLocaleDateString(locale, {
-    day: 'numeric',
-    month: 'short',
-    ...(dateOnly ? { timeZone: 'UTC' } : {}),
-  });
+export function shortDate(iso: string): string {
+  return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? utcDayMonth(iso) : dayMonth(new Date(iso));
 }
 
 /** The head's one line, as the client's character pane reads it: `Level 60 Human Fury Warrior`.
@@ -100,7 +98,7 @@ export function upgradeLine(upgrade: Pick<SlotUpgrade, 'slot' | 'pick'>): string
 
 /** `+5.1` */
 export function gainText(dps: number): string {
-  return `+${dps.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}`;
+  return `+${oneDecimal(dps)}`;
 }
 
 /** The character's guild page and the raid page, from the account's guild entry. */
@@ -113,12 +111,4 @@ export function guildLinks(
   if (entry === undefined) return { guild: null, raid: null };
   const guild = guildHref(entry.region, entry.ruleset, entry.name);
   return { guild, raid: raidId === null ? guild : guildRaidHref(guild, raidId) };
-}
-
-function titleCase(words: string): string {
-  return words.split(' ').map(capitalise).join(' ');
-}
-
-function capitalise(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1);
 }

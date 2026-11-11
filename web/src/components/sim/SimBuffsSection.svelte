@@ -13,7 +13,7 @@
   import { CATALOGUE } from '../../lib/sim/buffs';
   import { createCardTables } from '../../lib/sim/card-tables.svelte';
   import { aurasCardCopy as copy } from '../../lib/sim/input-cards-copy';
-  import { oneDecimal } from '../../lib/sim/result-copy';
+  import { oneDecimal } from '../../lib/format/number';
   import { loadSimBuffs, type SimBuffRow } from '../../lib/sim/sim-buffs';
   import type { SimResult } from '../../lib/sim/types';
   import type { IconListItem } from '../../lib/ui/facts';

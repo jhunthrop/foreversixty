@@ -5,6 +5,7 @@
 import { coachAnchorHref } from './anchors';
 import { coachCopy, fill } from './copy';
 import type { CoachAnchor } from './types';
+import { clockSeconds, SECOND_MS } from '../format/duration';
 
 export interface Chip {
   id: string;
@@ -13,10 +14,9 @@ export interface Chip {
   spellId: number | null;
 }
 
-/** `m:ss` from the pull's start. */
-export function clock(ms: number): string {
-  const total = Math.max(0, Math.floor(ms / 1000));
-  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+/** `m:ss` from the pull's start, to the whole second (lib/format/duration.ts). */
+export function pullClock(ms: number): string {
+  return clockSeconds(Math.floor(Math.max(0, ms) / SECOND_MS));
 }
 
 /** A legacy death anchor's own time: the engine's `death-<guid>-<ms>` form ends in the millisecond. */
@@ -26,11 +26,11 @@ function deathMs(death: string | undefined): number | null {
 }
 
 /** `m:ss`, or `m:ss–m:ss` when the anchor names a window that ends after it starts. */
-function span(anchor: CoachAnchor): string {
+function anchorSpan(anchor: CoachAnchor): string {
   const start = anchor.at_ms ?? 0;
   return anchor.to_ms !== undefined && anchor.to_ms > start
-    ? `${clock(start)}–${clock(anchor.to_ms)}`
-    : clock(start);
+    ? `${pullClock(start)}–${pullClock(anchor.to_ms)}`
+    : pullClock(start);
 }
 
 const SPELL_LEAD = '{Spell} · ';
@@ -52,12 +52,12 @@ export function chipLabel(anchor: CoachAnchor, spellName: (id: number) => string
     case 'healing':
       return spellChip(coachCopy.anchorHealing, spell);
     case 'time':
-      return anchor.at_ms === undefined ? null : fill(coachCopy.anchorTime, { t: span(anchor) });
+      return anchor.at_ms === undefined ? null : fill(coachCopy.anchorTime, { t: anchorSpan(anchor) });
     case 'resource':
-      return anchor.at_ms === undefined ? null : fill(coachCopy.anchorResource, { t: span(anchor) });
+      return anchor.at_ms === undefined ? null : fill(coachCopy.anchorResource, { t: anchorSpan(anchor) });
     case 'death': {
       const at = anchor.at_ms ?? deathMs(anchor.death);
-      return at === null ? null : fill(coachCopy.anchorDeath, { t: clock(at) });
+      return at === null ? null : fill(coachCopy.anchorDeath, { t: pullClock(at) });
     }
     default:
       return null;

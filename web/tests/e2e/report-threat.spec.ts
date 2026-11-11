@@ -66,7 +66,7 @@ test('the picked enemy rides in the URL, so the link opens on it', async ({ page
 test('a taunt says who took what and when, and opens the window around it', async ({ page }) => {
   await page.goto(FIGHT);
   const taunts = page.getByTestId('threat-taunts');
-  await expect(taunts).toContainText('8.5s');
+  await expect(taunts).toContainText('0:08.5');
   await expect(taunts).toContainText('Baelgrim taunted Warden Kelthas');
   await expect(taunts).toContainText('Taunt');
 
@@ -135,7 +135,7 @@ test('a brushed window reads standing and built from the series, measured', asyn
   const shares = await page.getByTestId('threat-share').allTextContents();
   for (const text of shares) expect(Number.parseFloat(text)).toBeLessThanOrEqual(100);
   // The taunt keeps the pull's clock, so the same taunt reads the same time from either side.
-  await expect(page.getByTestId('threat-taunts')).toContainText('8.5s');
+  await expect(page.getByTestId('threat-taunts')).toContainText('0:08.5');
 });
 
 test('the whole fight is unchanged: standing at the end is the total', async ({ page }) => {

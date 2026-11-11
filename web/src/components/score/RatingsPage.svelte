@@ -18,7 +18,14 @@
     WEIGHTS,
     ratingsPageCopy,
   } from '../../lib/score/ratings-page';
-  import { COMPONENT_MAX, TIER_FROM, tierRanges, type Tier } from '../../lib/score/score';
+  import {
+    COMPONENT_MAX,
+    TIER_FROM,
+    tierColor,
+    tierLabel,
+    tierRanges,
+    type Tier,
+  } from '../../lib/score/score';
   import Button from '../ui/Button.svelte';
   import Figure from '../ui/Figure.svelte';
   import Meter from '../ui/Meter.svelte';
@@ -29,22 +36,14 @@
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
   import TabStrip from '../ui/TabStrip.svelte';
+  import { grouped } from '../../lib/format/number';
 
-  /** The game's item quality colours, exactly (tokens.css --color-rarity-*). */
-  const TIER_COLOR: Readonly<Record<Tier, string>> = {
-    common: 'var(--color-rarity-common)',
-    uncommon: 'var(--color-rarity-uncommon)',
-    rare: 'var(--color-rarity-rare)',
-    epic: 'var(--color-rarity-epic)',
-    legendary: 'var(--color-rarity-legendary)',
-  };
   const RATING_TOP = 100;
-  const count = (n: number): string => n.toLocaleString('en-US');
 
   const parts = scoreCopy.components;
   const maxTotal = Object.values(COMPONENT_MAX).reduce((sum, max) => sum + max, 0);
   const tier = SAMPLE_SCORE.tier as Tier;
-  const tierName = tier.charAt(0).toUpperCase() + tier.slice(1);
+  const tierName = tierLabel(tier) ?? tier;
   const gap = parts
     .map((part) => ({ part, gap: COMPONENT_MAX[part.key] - SAMPLE_SCORE.components[part.key] }))
     .sort((a, b) => b.gap - a.gap)[0];
@@ -55,7 +54,7 @@
   const toNext =
     nextTier === undefined
       ? ''
-      : `${count(TIER_FROM[nextTier] - SAMPLE_SCORE.score)} to ${nextTier.charAt(0).toUpperCase()}${nextTier.slice(1)}`;
+      : `${grouped(TIER_FROM[nextTier] - SAMPLE_SCORE.score)} to ${tierLabel(nextTier) ?? nextTier}`;
   const tabsList = [
     { id: 'forever-score', label: scoreCopy.explainerHeading, href: '#forever-score' },
     { id: 'performance-rating', label: scoreCopy.explainerRatingHeading, href: '#performance-rating' },
@@ -71,9 +70,9 @@
       {#snippet answer()}
         <Figure
           label="{scoreCopy.samplePill} · {scoreCopy.explainerHeading}"
-          value={count(SAMPLE_SCORE.score)}
-          unit="of {count(maxTotal)} · {tierName}"
-          color={TIER_COLOR[tier]}
+          value={grouped(SAMPLE_SCORE.score)}
+          unit="of {grouped(maxTotal)} · {tierName}"
+          color={tierColor(tier) ?? undefined}
           size="big"
           align="end"
           testid="ratings-sample-score"
@@ -116,8 +115,8 @@
         {#each parts as part (part.key)}
           <StatRow
             figures={[
-              { value: count(SAMPLE_SCORE.components[part.key]) },
-              { value: count(COMPONENT_MAX[part.key]) },
+              { value: grouped(SAMPLE_SCORE.components[part.key]) },
+              { value: grouped(COMPONENT_MAX[part.key]) },
             ]}
             phone={`of ${COMPONENT_MAX[part.key]}`}
             testid={`ratings-forever-score-${part.key}`}
@@ -202,11 +201,11 @@
         <div
           class="ratings-tier"
           data-current={each === tier ? 'true' : undefined}
-          style:--tier={TIER_COLOR[each]}
+          style:--tier={tierColor(each)}
         >
           <Row title={each} sub={range}>
-            {#snippet titleContent()}<span class="text-[19px] leading-6" style:color={TIER_COLOR[each]}
-                >{each.charAt(0).toUpperCase() + each.slice(1)}</span
+            {#snippet titleContent()}<span class="text-[19px] leading-6" style:color={tierColor(each)}
+                >{tierLabel(each)}</span
               >{/snippet}
             {#snippet trail()}{#if each === tier && toNext !== ''}<span
                   class="text-small text-text text-right tabular-nums"

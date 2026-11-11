@@ -14,7 +14,6 @@ import {
   joinSpellRuns,
   sayRepeatedRulesOnce,
   cutCooldown,
-  formatCooldown,
   litTalentsOf,
   loadApl,
   markRaidBuildRows,
@@ -115,14 +114,6 @@ describe('clauseOf', () => {
 
   it('is empty when the note is', () => {
     expect(clauseOf('', 'Spell')).toBe('');
-  });
-});
-
-describe('formatCooldown', () => {
-  it('writes seconds under a minute and minutes after', () => {
-    expect(formatCooldown(30_000)).toBe('30 s');
-    expect(formatCooldown(120_000)).toBe('2 min');
-    expect(formatCooldown(90_000)).toBe('1 min 30 s');
   });
 });
 

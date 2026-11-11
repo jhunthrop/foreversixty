@@ -13,6 +13,7 @@
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
+  import { counted } from '../../lib/format/number';
 
   let {
     casts,
@@ -29,8 +30,6 @@
   } = $props();
 
   const rows = $derived(castsByPlayer(casts, players, durationMs));
-  const plural = (n: number, one: string): string =>
-    `${n.toLocaleString('en-US')} ${n === 1 ? one : `${one}s`}`;
 </script>
 
 {#if rows.length > 0}
@@ -41,9 +40,9 @@
         title={splitUnitName(names.get(row.guid) ?? row.guid).name}
         titleTone={classTone(slug)}
         sub={[
-          plural(row.casts, 'cast'),
+          counted(row.casts, 'cast'),
           row.failed > 0 ? `${row.failed} failed` : '',
-          plural(row.spells, 'spell'),
+          counted(row.spells, 'spell'),
         ]
           .filter((part) => part !== '')
           .join(' · ')}

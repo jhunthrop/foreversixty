@@ -8,7 +8,7 @@
      `Plan an event` (disabled with the gate sentence in officer-read-only; the cap line at 12 raids
      limits raids only, so the button stays live) and the form in place under the header row. One minute tick feeds every row's countdown. -->
 <script lang="ts">
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { tick } from 'svelte';
   import {
     fetchGuildProgression,
@@ -38,6 +38,7 @@
   import { planRaid } from '../../lib/guild/raids-tab-controller';
   import { button } from '../../lib/ui/button';
   import type { GateFacts } from '../../lib/guild/plan-gate';
+  import { viewerZone } from '../../lib/dates';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import GuildPlannedRaids from './GuildPlannedRaids.svelte';
   import RaidForm from './RaidForm.svelte';
@@ -87,7 +88,7 @@
     gateFacts,
     guildPath = '',
     now,
-    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    viewerTimezone = viewerZone(),
     onPlanned = () => Promise.resolve(),
     onPlanRefused = () => {},
     openForm = false,

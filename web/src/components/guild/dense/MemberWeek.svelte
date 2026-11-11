@@ -12,8 +12,11 @@
   import { fetchGuildRaid } from '../../../lib/guild/raids-api';
   import { fetchLootNights } from '../../../lib/guild/loot-council-api';
   import { lootIconOf } from '../../../lib/guild/loot-icon';
-  import { percentileToken } from '../../../lib/report/format';
+  import { parseLabel, parseText, percentileToken } from '../../../lib/report/format';
   import { guildPerNight, myNight, streak, type MyNight } from '../../../lib/guild/dense/member-week';
+  import { weekdayDayMonth } from '../../../lib/dates';
+  import { grouped } from '../../../lib/format/number';
+  import { clockDuration } from '../../../lib/format/duration';
   import Figure from '../../ui/Figure.svelte';
   import ItemIcon from '../../ui/ItemIcon.svelte';
   import Row from '../../ui/Row.svelte';
@@ -82,13 +85,7 @@
   const last = $derived(nights[0] ?? null);
   const before = $derived(nights[1] ?? null);
   const tz = $derived(next?.guild_timezone ?? viewerTz);
-  const day = (iso: string) =>
-    new Date(iso).toLocaleDateString('en-GB', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      timeZone: tz,
-    });
+  const day = (iso: string) => weekdayDayMonth(new Date(iso), tz);
   const ratingChange = $derived(
     last?.rating == null || before?.rating == null ? null : Math.round(last.rating - before.rating),
   );
@@ -99,10 +96,7 @@
   );
   const guildRate = $derived(tierItems === null ? null : guildPerNight(roster, tierItems));
   const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0');
-  const mins = (ms: number | null) =>
-    ms === null
-      ? ''
-      : `kill ${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}`;
+  const mins = (ms: number | null) => (ms === null ? '' : `kill ${clockDuration(ms)}`);
 </script>
 
 {#if part === 'week'}
@@ -128,11 +122,7 @@
         />
       {/if}
       {#if last?.percentile != null}
-        <Figure
-          value={String(Math.floor(last.percentile))}
-          label="Parse %"
-          color={percentileToken(last.percentile)}
-        />
+        <Figure value={parseText(last.percentile)} label="Parse %" color={percentileToken(last.percentile)} />
       {/if}
       {#if att !== null}
         <Figure
@@ -168,18 +158,20 @@
               bar={false}
               phone={[
                 n.rating === null ? '' : `rating ${Math.round(n.rating)}`,
-                n.percentile === null ? '' : `parse ${Math.floor(n.percentile)}`,
+                n.percentile === null ? '' : `parse ${parseText(n.percentile)}`,
               ]
                 .filter((p) => p !== '')
                 .join(' · ')}
               figures={[
-                n.value === null
-                  ? { value: '–', muted: true }
-                  : { value: Math.round(n.value).toLocaleString('en-US') },
+                n.value === null ? { value: '–', muted: true } : { value: grouped(n.value) },
                 n.rating === null ? { value: '–', muted: true } : { value: String(Math.round(n.rating)) },
                 n.percentile === null
                   ? { value: '–', muted: true }
-                  : { value: String(Math.floor(n.percentile)), color: percentileToken(n.percentile) },
+                  : {
+                      value: parseText(n.percentile),
+                      color: percentileToken(n.percentile),
+                      label: parseLabel(n.percentile),
+                    },
                 { value: String(n.deaths), tone: n.deaths > 0 ? 'wipe' : undefined },
                 prev?.value == null || n.value === null
                   ? { value: '–', muted: true }

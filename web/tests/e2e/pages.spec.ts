@@ -46,7 +46,7 @@ test.describe('the changelog', () => {
   }) => {
     await page.goto('/changelog');
     const launch = page.locator('[id="2026-11-04-launch"]');
-    await expect(launch).toContainText('3:00 p.m. PST');
+    await expect(launch).toContainText('3 pm PST');
     await expect(launch.getByRole('link', { name: 'Blizzard, pre-purchase and beta dates' })).toBeVisible();
     const guild = page.locator('[id="2026-11-05-guild-events"]');
     await expect(guild.getByRole('link', { name: 'Open the guild page ›' })).toHaveAttribute(

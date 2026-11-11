@@ -59,7 +59,7 @@
   import { bandCodeGear, earnedOrder, estimateCharacter } from '../../lib/planner/estimate';
   import type { LadderOrderFor, LadderOrderForRanks } from '../../lib/planner/ladder-load';
   import { dataUrl } from '../../lib/planner/load';
-  import { classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
+  import { classColor, classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
   import { openTreeIndex, type TalentTreesCopy } from '../../lib/ui/talent-tree';
   import classRows from '../../data/classes.json';
@@ -1030,7 +1030,7 @@
         value: row.slug,
         label: row.name,
         icon: classCrestSrc(row.slug),
-        ring: row.color,
+        ring: classColor(row.slug),
         disabled: store.readOnly,
         disabledReason: READ_ONLY_REASON,
       })),

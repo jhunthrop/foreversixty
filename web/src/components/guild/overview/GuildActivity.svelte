@@ -4,7 +4,7 @@
      floors with site events: with no rows, or a read that fails, the section is not drawn. -->
 <script lang="ts">
   import activeBuild from '../../../data/active-build.json';
-  import { minuteClock } from '../../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../../lib/ui/minute-clock.svelte';
   import { feedCopy, fetchFeed, whenText, type FeedRow } from '../../../lib/home/feed';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import FeedSentence from '../../home/FeedSentence.svelte';

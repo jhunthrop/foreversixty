@@ -11,7 +11,7 @@ import {
 } from '../../lib/billing/plans-page-copy';
 import {
   GUILD_TRIAL_DAYS,
-  formatAmount,
+  formatUsd,
   formatPrice,
   type Interval,
   type PlanKey,
@@ -71,7 +71,7 @@ export function priceCell(plan: PlanKey, interval: Interval, founder: boolean): 
   const { price } = plansPageCopy;
   const yearly = priceFor(plan, 'yearly', founder);
   return {
-    amount: formatAmount(priceFor(plan, interval, founder)),
+    amount: formatUsd(priceFor(plan, interval, founder)),
     suffix: price.suffix[interval],
     secondLine:
       interval === 'yearly' ? price.perMonth(yearly) : price.orYearly(formatPrice(yearly, 'yearly')),

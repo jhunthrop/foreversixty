@@ -9,7 +9,7 @@
      pass 2026-11-09), Overheal on Healing, no Crit on Damage taken. -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
-  import { formatAmount } from '../../lib/report/format';
+  import { compact, grouped } from '../../lib/format/number';
   import { formatRate } from '../../lib/report/frame';
   import type { Actor, Summary } from '../../lib/report/types';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
@@ -153,10 +153,10 @@
   /** One detail figure; a prorated window marks the amounts it scales, as the Amount column does. */
   function detailValue(row: AbilityTotal, id: (typeof DETAIL)[Metric][number]): string {
     const mark = approximate ? '~' : '';
-    if (id === 'hits') return `${mark}${row.landed.toLocaleString('en-US')}`;
+    if (id === 'hits') return `${mark}${grouped(row.landed)}`;
     if (id === 'crit') return row.landed === 0 ? '0%' : `${Math.round((row.crits / row.landed) * 100)}%`;
-    if (id === 'avg') return row.landed === 0 ? '0' : formatAmount(Math.round(row.total / row.landed));
-    if (id === 'max') return formatAmount(row.max);
+    if (id === 'avg') return row.landed === 0 ? '0' : compact(Math.round(row.total / row.landed));
+    if (id === 'max') return compact(row.max);
     const raw = row.total + row.overheal;
     return raw === 0 ? '0%' : `${Math.round((row.overheal / raw) * 100)}%`;
   }
@@ -177,10 +177,10 @@
         {@const figures = [
           { value: `${(row.share * 100).toFixed(1)}%` },
           { value: formatRate(row.total / seconds) },
-          { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
+          { value: `${approximate ? '~' : ''}${compact(row.total)}` },
           ...(detail ? details.map((id) => ({ value: detailValue(row, id) })) : []),
         ]}
-        {@const phone = formatAmount(row.total)}
+        {@const phone = compact(row.total)}
         {#if detail}
           <!-- On a phone the detail columns fold into the sub line under the name. -->
           <StatRow {figures} {phone}>

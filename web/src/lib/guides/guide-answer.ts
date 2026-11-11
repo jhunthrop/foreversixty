@@ -15,7 +15,7 @@ import { descriptorLines } from '../character-header/descriptor';
 import { classSlugFromName } from '../report/tree-sizes';
 import { guidesCopy } from './copy';
 import { bandForLevel, MAX_LEVEL } from './guide-character';
-import classes from '../../data/classes.json';
+import { classDisplayName } from '../sim/spec-label';
 
 /** What the page tells the answer about itself. */
 export interface GuideAnswerPage {
@@ -63,10 +63,6 @@ export type GuideAnswer =
 
 const SETUP_HREF = '/setup';
 
-function classNameOf(slug: string): string | undefined {
-  return classes.find((c) => c.slug === slug)?.name;
-}
-
 /** The answer's character, or undefined while its class or spec is not known. */
 export function guideCharacterOf(raw: MeCharacter): GuideCharacter | undefined {
   const character = withRuleSpec(raw);
@@ -77,7 +73,7 @@ export function guideCharacterOf(raw: MeCharacter): GuideCharacter | undefined {
     name: character.name,
     classSlug,
     specSlug: classSlugFromName(character.spec),
-    className: classNameOf(classSlug) ?? character.class,
+    className: classDisplayName(classSlug),
     specName: character.spec,
     level: character.level,
     faction: character.faction,

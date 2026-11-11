@@ -11,6 +11,7 @@ import type { GuideClass } from '../lib/nav-guides';
 import DiscordMark from './DiscordMark.astro';
 import { UI_ICONS } from '../lib/ui/ui-icons';
 import Icon from './ui/Icon.astro';
+import { classColor } from '../lib/ui/primitives';
 
 interface Props {
   group: NavGroup;
@@ -85,7 +86,7 @@ const swapOf = (tab: string | undefined) => (tab === undefined ? undefined : GUI
           href={`/guides/${guideClass.slug}`}
           class="site-panel-class"
           role={itemRole}
-          style={`--c: ${guideClass.color}`}
+          style={`--c: ${classColor(guideClass.slug)}`}
           data-testid={`${testScope}-class-${guideClass.slug}`}
         >
           <img

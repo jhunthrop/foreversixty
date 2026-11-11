@@ -56,7 +56,7 @@ def planned_row(raid: dict) -> str:
     c = raid['counts']
     signed = c['in'] + c['late']
     left = at - at_zone(D.NOW)
-    countdown_words = f'in {left.days} days {left.seconds // 3600} h'
+    countdown_words = f'in {gd.countdown_text(left)}'
     word = lambda n, one, many: f'{n} {one if n == 1 else many}'  # noqa: E731
     parts = [word(c['tanks'], 'tank', 'tanks'), word(c['healers'], 'healer', 'healers'), f"{c['melee']} melee", f"{c['ranged']} ranged"]
     late = sum(c['late_groups'].values())
@@ -65,7 +65,7 @@ def planned_row(raid: dict) -> str:
         parts.append(f'{late} late' + (f' ({heal} healer{"" if heal == 1 else "s"})' if heal else ''))
     return (f'<a class="prow" href="#"><span class="dt" aria-hidden="true"><span class="l">{at:%a}</span><span class="d">{at.day}</span>'
             f'<span class="l">{at:%b}</span></span><span><span class="tt">{raid["title"]}</span></span>'
-            f'<span><span class="sr-only">{at:%A} {at.day} {at:%B}, </span><span class="tm">{at.hour % 12 or 12}:{at.minute:02d} pm CST</span>'
+            f'<span><span class="sr-only">{at:%A} {at.day} {at:%B}, </span><span class="tm">{gd.house_clock(at)} CST</span>'
             f'<span class="cd gold">{countdown_words}</span></span>'
             f'<span style="display:flex;flex-direction:column;gap:4px"><span class="ct">{signed}/{raid["size"]}<span class="bar meter"><i style="width:{round(100 * signed / raid["size"])}%"></i></span></span>'
             f'<span class="sm">{" &middot; ".join(parts)}</span></span>'
@@ -252,10 +252,10 @@ def signup_groups(raid: dict, facts: dict, officer: bool) -> str:
 def planner_when(raid: dict) -> str:
     start = at_zone(raid['starts_at'])
     end = start + timedelta(minutes=raid['duration_minutes'])
-    clock_word = lambda t: t.strftime('%I:%M %p').lstrip('0').lower()  # noqa: E731
+    clock_word = gd.house_clock
     left = start - at_zone(D.NOW)
     return (f"{start:%A} {start.day} {start:%B} &middot; {clock_word(start)} to {clock_word(end)} CST &middot; "
-            f'<span class="gold">in {left.days} days {left.seconds // 3600} h</span>')
+            f'<span class="gold">in {gd.countdown_text(left)}</span>')
 
 
 def planner(officer: bool = True) -> str:
@@ -447,7 +447,7 @@ def applications() -> str:
                      trail=f'<span class="wipe" style="font-weight:700">{gap_of(g)} short</span>', link=False, slim=True)
                  for g in D.GROUPS if gap_of(g) > 0], list_=True)
     wanted = ', '.join(w[2] for w in WANTED)
-    card = Rows([Row('Looking for', wanted, trail=_act('Edit'), link=False), Row('Raid nights', 'Wed, 8:00 pm to 11:00 pm CST', trail=_act('Edit'), link=False)],
+    card = Rows([Row('Looking for', wanted, trail=_act('Edit'), link=False), Row('Raid nights', gd.RECRUIT_NIGHTS, trail=_act('Edit'), link=False)],
                 open_=True)
     record = Rows([Row(f"{a['character']['name']} {a['status']}", f"{a['votes']['yes']} yes, {a['votes']['no']} no of {a['votes']['voters']} officers &middot; by {a['decided_by']['name']}",
                        link=False, slim=True) for a in decided], open_=True)

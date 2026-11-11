@@ -2,6 +2,7 @@
 // The raid form's pure logic (design/specs/2026-10-26-guild-raids.md 3.5, 6.1): defaults from the
 // guild's last planned raid, the 6.1 field errors, the repeat helper under the cap, and the
 // payload in UTC from the guild's wall clock.
+import { spokenMinutes } from '../format/duration';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidDiscord, GuildRaidDiscordPost, GuildRaidView, GuildZoneView } from './api';
 import { NO_LOG_YET } from '../../test-support/raid-fixtures';
@@ -14,7 +15,6 @@ import {
   discordFormPart,
   discordHelper,
   discordSettingsHref,
-  durationLabel,
   durationOptions,
   editDefaults,
   forYou,
@@ -90,7 +90,7 @@ describe('durations', () => {
       '3 h 30 min',
       '4 h',
     ]);
-    expect(durationLabel(90)).toBe('1 h 30 min');
+    expect(spokenMinutes(90)).toBe('1 h 30 min');
   });
 });
 
@@ -297,12 +297,12 @@ describe('the repeat helper', () => {
 
 describe('forYou', () => {
   it('renders the guild wall time in the viewer zone', () => {
-    expect(forYou(values({ date: '2026-12-10' }), NEW_YORK, NOW)).toBe('For you: Thu 10 Dec, 9:00 pm.');
+    expect(forYou(values({ date: '2026-12-10' }), NEW_YORK, NOW)).toBe('For you: Thu 10 Dec, 9 pm.');
     expect(forYou(values({ date: '2026-12-10' }), CHICAGO, NOW)).toBe('For you: same time.');
   });
 
   it('reads an undated form as today on the guild calendar', () => {
-    expect(forYou(values({ date: '' }), NEW_YORK, NOW)).toBe('For you: Wed 2 Dec, 9:00 pm.');
+    expect(forYou(values({ date: '' }), NEW_YORK, NOW)).toBe('For you: Wed 2 Dec, 9 pm.');
   });
 });
 

@@ -36,7 +36,7 @@
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { gameCodeForSimResult } from '../../lib/sim/game-code';
   import { simPageCopy } from '../../lib/sim/page-copy';
-  import { grouped } from '../../lib/sim/result-copy';
+  import { grouped } from '../../lib/format/number';
   import { specLabel } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import type { ItemsStatus } from '../../lib/sim/store.svelte';

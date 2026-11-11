@@ -74,6 +74,7 @@
   import Section from './ui/Section.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import Tag from './ui/Tag.svelte';
+  import { grouped } from '../lib/format/number';
 
   // The prerendered fixture page passes the slug; the Worker-served shell has none, so the
   // island reads it out of the path. One component, both routes.
@@ -434,7 +435,7 @@
   const boardMeta = $derived(
     isGuild || page === null || page.total === 0 || (showYourRank && placement !== 'none')
       ? undefined
-      : `${page.total.toLocaleString('en-US')} ranked`,
+      : `${grouped(page.total)} ranked`,
   );
 
   /** The landing's boards each carry updated_at: the band's stamp shows the newest. */

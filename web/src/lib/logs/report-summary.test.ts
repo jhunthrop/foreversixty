@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
   accountReportSummary,
   creditedName,
-  formatReportLength,
   ownReportRow,
   ownReportSummary,
   publicReportRow,
@@ -13,35 +12,19 @@ import {
 
 const MINUTE = 60_000;
 
-describe('formatReportLength', () => {
-  it('prints minutes under an hour', () => {
-    expect(formatReportLength(48 * MINUTE)).toBe('48 m');
-  });
-
-  it('prints hours and a padded minute from an hour on', () => {
-    expect(formatReportLength(65 * MINUTE)).toBe('1 h 05 m');
-    expect(formatReportLength(130 * MINUTE)).toBe('2 h 10 m');
-    expect(formatReportLength(120 * MINUTE)).toBe('2 h 00 m');
-  });
-
-  it('rounds to the nearest minute', () => {
-    expect(formatReportLength(48 * MINUTE + 31_000)).toBe('49 m');
-  });
-});
-
 describe('ownReportSummary', () => {
   it('reads zone, bosses and length', () => {
     expect(ownReportSummary({ zone: 'Blackrock Depths', killCount: 4, durationMs: 130 * MINUTE })).toBe(
-      'Blackrock Depths · 4 bosses · 2 h 10 m',
+      'Blackrock Depths · 4 bosses · 2 h 10 min',
     );
   });
 
   it('counts one boss and zero bosses correctly', () => {
     expect(ownReportSummary({ zone: "Onyxia's Lair", killCount: 1, durationMs: 48 * MINUTE })).toBe(
-      "Onyxia's Lair · 1 boss · 48 m",
+      "Onyxia's Lair · 1 boss · 48 min",
     );
     expect(ownReportSummary({ zone: "Onyxia's Lair", killCount: 0, durationMs: 65 * MINUTE })).toBe(
-      "Onyxia's Lair · 0 bosses · 1 h 05 m",
+      "Onyxia's Lair · 0 bosses · 1 h 5 min",
     );
   });
 

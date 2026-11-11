@@ -39,7 +39,7 @@
     type BillingPreselect,
   } from '../../lib/guild/billing-handoff';
   import { readReserve, writeReserve } from '../../lib/layout-reserve';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import Section from '../ui/Section.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';

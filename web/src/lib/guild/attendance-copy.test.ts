@@ -7,10 +7,8 @@ import {
   cameGuildLine,
   PICKER_WINDOW_DAYS,
   cameAsOutcome,
-  durationLabel,
   lateOutcome,
   endedHint,
-  killTimeLabel,
   matchedElsewhereParts,
   moveDelta,
   nightLine,
@@ -24,6 +22,7 @@ import {
   syncedLine,
   uploadedLine,
 } from './attendance-copy';
+import { clockDuration, spokenDuration } from '../format/duration';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-guild-attendance.md', import.meta.url);
 const HEADING = '### 6.1 On the page';
@@ -150,12 +149,12 @@ describe('night line', () => {
   });
 
   it('formats durations and kill times', () => {
-    expect(durationLabel(161 * 60_000)).toBe('2 h 41 min');
-    expect(durationLabel(120 * 60_000)).toBe('2 h');
-    expect(durationLabel(41 * 60_000)).toBe('41 min');
-    expect(durationLabel(10_000)).toBe('1 min');
-    expect(killTimeLabel(102_000)).toBe('1:42');
-    expect(killTimeLabel(3_729_000)).toBe('1:02:09');
+    expect(spokenDuration(161 * 60_000)).toBe('2 h 41 min');
+    expect(spokenDuration(120 * 60_000)).toBe('2 h');
+    expect(spokenDuration(41 * 60_000)).toBe('41 min');
+    expect(spokenDuration(10_000)).toBe('10 s');
+    expect(clockDuration(102_000)).toBe('1:42');
+    expect(clockDuration(3_729_000)).toBe('1:02:09');
   });
 });
 

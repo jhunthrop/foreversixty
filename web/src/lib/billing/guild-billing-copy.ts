@@ -12,7 +12,7 @@ import {
   GUILD_TIER_MEMBER_LIMIT,
   GUILD_TRIAL_DAYS,
   PLANS,
-  formatAmount,
+  formatUsd,
   formatCents,
   formatPrice,
   type Interval,
@@ -49,7 +49,7 @@ const tierName = (tier: GuildTier): string => PLANS[tier].name;
 function planLine(state: GuildPlanLineState, zone?: string): string {
   switch (state.kind) {
     case 'trial':
-      return `Trial · first charge ${zonedDayMonthYear(state.firstCharge, zone)}: ${formatAmount(state.amountCents / CENTS_PER_DOLLAR)}`;
+      return `Trial · first charge ${zonedDayMonthYear(state.firstCharge, zone)}: ${formatUsd(state.amountCents / CENTS_PER_DOLLAR)}`;
     case 'active':
       return `Renews ${zonedDayMonthYear(state.renews, zone)} · ${formatCents(state.amountCents, state.interval)}`;
     case 'ending':
@@ -89,7 +89,7 @@ function upgradeParts(
   const period = interval === 'yearly' ? 'year' : 'month';
   return {
     before: UPGRADE_LEAD_IN,
-    amount: formatAmount(proratedCents / CENTS_PER_DOLLAR),
+    amount: formatUsd(proratedCents / CENTS_PER_DOLLAR),
     after: ` for the rest of this ${period}. From ${zonedDayMonthYear(from, zone)} it is ${formatCents(nextCents, interval)}.`,
   };
 }

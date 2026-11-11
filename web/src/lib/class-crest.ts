@@ -11,23 +11,12 @@
 // same 128px from the original scratchpad 256px sources, cuts every crest to 4-7KB (was
 // 17-30KB as PNG at the same 128px). The PNGs are gone from public/ entirely -- this is
 // the only path any caller reads.
+import { isClassSlug } from './ui/primitives';
 export function classCrestSrc(slug: string): string {
   return `/icons/hd/crests/${slug}.webp`;
 }
 
-/** The classes a crest is drawn for (public/icons/hd/crests/). */
-const CREST_CLASSES: ReadonlySet<string> = new Set([
-  'druid',
-  'hunter',
-  'mage',
-  'paladin',
-  'priest',
-  'rogue',
-  'shaman',
-  'warlock',
-  'warrior',
-]);
-
+/** A crest is drawn for every playable class (public/icons/hd/crests/, class-crest.test.ts). */
 export function hasClassCrest(slug: string): boolean {
-  return CREST_CLASSES.has(slug);
+  return isClassSlug(slug);
 }

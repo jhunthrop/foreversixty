@@ -16,12 +16,7 @@
   import CopyCsv from './CopyCsv.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { unitLabel } from '../../lib/report/names.svelte';
-  import {
-    classColorVar,
-    formatAmount,
-    formatDuration,
-    formatDurationPrecise,
-  } from '../../lib/report/format';
+  import { classColorVar } from '../../lib/report/format';
   import { believableHealth, healthPct } from '../../lib/report/death-health';
   import { plannerLinkFor } from '../../lib/report/planner-link';
   import type { StatFigure } from '../../lib/ui/stat-table';
@@ -36,6 +31,8 @@
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import type { CastRow, CombatantRow, DamageRef, Death, HealRef, PullMark } from '../../lib/report/types';
   import { deathWindow, type TimeWindow } from '../../lib/report/window';
+  import { clockDuration, clockDurationPrecise } from '../../lib/format/duration';
+  import { compact } from '../../lib/format/number';
 
   let {
     deaths,
@@ -74,7 +71,7 @@
     return [
       ['At', 'Player', 'Killing blow', 'From', 'Amount', 'Overkill', 'Pull'],
       ...ordered.map((death) => [
-        formatDurationPrecise(inPull(death)),
+        clockDurationPrecise(inPull(death)),
         death.name,
         death.killing_blow === undefined ? '' : death.killing_blow.spell_name || 'Melee',
         death.killing_blow === undefined ? '' : splitUnitName(death.killing_blow.source_name).name,
@@ -233,14 +230,14 @@
     if (firstPct === null) return null;
     const spanMs = death.at_ms - first.at_ms;
     const total = hits.reduce((sum, hit) => sum + landed(hit), 0);
-    const spanText = formatDuration(spanMs);
+    const spanText = clockDuration(spanMs);
     const healed = healingBefore(death);
     const healedText =
-      death.heals === undefined ? '' : healed > 0 ? ` ${formatAmount(healed)} healed.` : ' No heals.';
+      death.heals === undefined ? '' : healed > 0 ? ` ${compact(healed)} healed.` : ' No heals.';
     const peak = `Peaked at ${Math.round(firstPct)}%.`;
     if (spanMs <= 3000 && firstPct >= 60)
-      return `Burst: ${formatAmount(total)} in ${spanText}. ${peak}${healedText}`;
-    return `${formatAmount(total)} over ${spanText}. ${peak}${healedText}`;
+      return `Burst: ${compact(total)} in ${spanText}. ${peak}${healedText}`;
+    return `${compact(total)} over ${spanText}. ${peak}${healedText}`;
   }
   function linkFor(death: Death): ReturnType<typeof plannerLinkFor> {
     const combatant = combatants.find((row) => row.guid === death.guid);
@@ -279,22 +276,20 @@
 
   /** "74 / 114" after a hit or a heal; '' when the log carries no health reading. */
   function healthText(after: number | undefined, max: number | undefined): string {
-    return after === undefined || max === undefined || max === 0
-      ? ''
-      : `${formatAmount(after)} / ${formatAmount(max)}`;
+    return after === undefined || max === undefined || max === 0 ? '' : `${compact(after)} / ${compact(max)}`;
   }
   function hitFigures(death: Death, hit: DamageRef, lethal: boolean): StatFigure[] {
     const health =
       lethal && !lethalHitMissing(death, cardHealth(death)) ? 'dead' : healthText(hit.hp_after, hit.max_hp);
     return [
-      { value: `−${formatAmount(landed(hit))}`, muted: landed(hit) === 0 },
+      { value: `−${compact(landed(hit))}`, muted: landed(hit) === 0 },
       { value: health || '–', muted: health === '' },
     ];
   }
   function healFigures(heal: HealRef): StatFigure[] {
     const health = healthText(heal.hp_after, heal.max_hp);
     return [
-      { value: `+${formatAmount(heal.amount - (heal.overheal ?? 0))}` },
+      { value: `+${compact(heal.amount - (heal.overheal ?? 0))}` },
       { value: health || '–', muted: health === '' },
     ];
   }
@@ -311,13 +306,13 @@
         : blow.spell_name === ''
           ? 'Melee'
           : blow.spell_name;
-    const overkill = blow.overkill ? ` (${formatAmount(blow.overkill)} overkill)` : '';
+    const overkill = blow.overkill ? ` (${compact(blow.overkill)} overkill)` : '';
     const max = maxHealth(death);
     return [
       `${lethalHitMissing(death, card) ? 'Last hit by' : 'Killed by'} ${sourceName(blow.source_guid, blow.source_name)}`,
       spell,
-      `${formatAmount(blow.amount)}${overkill}`,
-      max > 0 ? `${formatAmount(max)} health` : '',
+      `${compact(blow.amount)}${overkill}`,
+      max > 0 ? `${compact(max)} health` : '',
     ]
       .filter((part) => part !== '')
       .join(' · ');
@@ -332,7 +327,7 @@
       held.length > 0 ? `Holding: ${held.join(', ')}.` : '',
       death.heals !== undefined && !healed ? 'No healing landed in the last 10 seconds.' : '',
       already.length > 0
-        ? `Already dead: ${already.map((entry) => `${splitUnitName(entry.name).name} (since ${formatDuration(inPull(entry))})`).join(', ')}.`
+        ? `Already dead: ${already.map((entry) => `${splitUnitName(entry.name).name} (since ${clockDuration(inPull(entry))})`).join(', ')}.`
         : '',
     ]
       .filter((part) => part !== '')
@@ -365,7 +360,7 @@
         <Row title={unitLabel(death.name).text} sub={killedBy(death, card)}>
           {#snippet lead()}<span class="text-muted text-[13px] tabular-nums" data-testid="death-label"
               >{#if death.label}{death.label} ·
-              {/if}{formatDuration(inPull(death))}</span
+              {/if}{clockDuration(inPull(death))}</span
             ><ClassIcon className={death.class ?? classOf.get(death.guid)} size={32} />{/snippet}
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(death.name).text}</span>{/snippet}
           {#snippet trail()}
@@ -396,7 +391,7 @@
                 <StatRow figures={healFigures(heal)} phone={healFigures(heal)[1]?.value} testid="death-heal">
                   {#snippet icon()}<SpellIcon url={spellIcon(heal.spell_id, heal.spell_name)} />{/snippet}
                   {#snippet name()}<b class="text-kill">{heal.spell_name}</b>{/snippet}
-                  {#snippet sub()}{formatDurationPrecise(heal.at_ms)} · from {splitUnitName(heal.source_name)
+                  {#snippet sub()}{clockDurationPrecise(heal.at_ms)} · from {splitUnitName(heal.source_name)
                       .name}{/snippet}
                   {#snippet meter()}{#if card.pcts[i] !== null}<Meter
                         value={(card.pcts[i] ?? 0) / 100}
@@ -415,7 +410,7 @@
                       >{hit.spell_name === '' ? 'Melee' : hit.spell_name}</b
                     >{#if blow}<span class="ml-2 align-middle"><Tag tone="danger">Killing blow</Tag></span
                       >{/if}{/snippet}
-                  {#snippet sub()}{formatDurationPrecise(hit.at_ms)} · from {sourceName(
+                  {#snippet sub()}{clockDurationPrecise(hit.at_ms)} · from {sourceName(
                       hit.source_guid,
                       hit.source_name,
                     )}{/snippet}

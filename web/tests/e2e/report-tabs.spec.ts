@@ -297,7 +297,7 @@ test('a phase is a window preset, so every table reads per phase in one click', 
   await openChartIfCollapsed(page);
   // The six-button preset row is a select now (design review 2026-09-26 finding 4); the
   // option labels are the old buttons' own names, unchanged.
-  await choose(page.getByTestId('window-select'), { label: 'Phase 2 · 14.0s to 1:00' });
+  await choose(page.getByTestId('window-select'), { label: 'Phase 2 · 0:14 to 1:00' });
   await expect(page).toHaveURL(/start=14000&end=60000/);
 });
 

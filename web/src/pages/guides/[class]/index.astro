@@ -30,7 +30,7 @@ import {
   specCardLine,
   splitClassLanding,
 } from '../../../lib/guides/class-landing';
-import { dayMonth } from '../../../lib/guides/guide-header';
+import UpdatedStamp from '../../../components/UpdatedStamp.astro';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { slugify } from '../../../lib/guides/sections';
 import { readSpecCatalog } from '../../../lib/bis/load';
@@ -112,7 +112,7 @@ const tone = { classSlug: classSlug as ClassSlug };
     <Page layout="ledger">
       <PageHeader slot="header" title={classEntry.name} tone={tone}>
         <ClassCrest slot="crest" slug={classSlug} size={56} priority />
-        <span slot="meta">Updated {dayMonth(entry.data.updated)}</span>
+        <UpdatedStamp slot="meta" date={entry.data.updated} />
         <GuideAnswer slot="answer" page={{ classSlug }} />
       </PageHeader>
       <div class="guide-landing-top">

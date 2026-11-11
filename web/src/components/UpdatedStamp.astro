@@ -1,9 +1,14 @@
 ---
-import { formatDate } from '../lib/dates';
+// web/src/components/UpdatedStamp.astro
+// The one "Updated 25 Sep" stamp (component audit cluster 3): every page head's freshness line
+// reads through lib/dates.ts `updatedLabel`, so the month is spelled one way on every page. It
+// inherits the page header's meta style; UpdatedStamp.svelte is its twin inside an island.
+import { updatedLabel } from '../lib/dates';
 interface Props {
   date: Date;
+  testid?: string;
 }
-const { date } = Astro.props;
+const { date, testid = 'updated-stamp' } = Astro.props;
 ---
 
-<span class="text-[12px] text-muted">Updated {formatDate(date)}</span>
+<span data-testid={testid}>{updatedLabel(date)}</span>

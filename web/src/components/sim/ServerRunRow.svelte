@@ -12,10 +12,11 @@
   import { serverRunsCopy } from '../../lib/sim/server-runs-copy';
   import type { RerunStatus } from '../../lib/sim/server-runs-poll';
   import { specLabel } from '../../lib/sim/spec-label';
-  import { dayMonth } from '../../lib/sim/head-meta';
+  import { runDay } from '../../lib/sim/head-meta';
   import type { SimListRow } from '../../lib/sim/types';
   import Button from '../ui/Button.svelte';
   import Row from '../ui/Row.svelte';
+  import { formatSyncStamp } from '../../lib/dates';
 
   let {
     row,
@@ -39,7 +40,7 @@
   const spec = $derived(specLabel(row.spec));
   const kind = $derived(simCopy.kindLabel[kindOf(row)] ?? '');
   const titleText = $derived(
-    row.title !== '' ? row.title : row.spec === pageSpec ? dayMonth(row.created_at) : spec,
+    row.title !== '' ? row.title : row.spec === pageSpec ? runDay(row.created_at) : spec,
   );
   /** The spec, unless it is the page's own (said once, in the head). */
   const otherSpec = $derived(row.spec === pageSpec ? '' : spec);
@@ -55,7 +56,7 @@
   const stampSource = $derived(inFlight || row.finished_at === undefined ? row.created_at : row.finished_at);
   const stampDate = $derived(new Date(stampSource));
   const age = $derived(ageWords(stampDate, now));
-  const stampTitle = $derived(stampDate.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }));
+  const stampTitle = $derived(formatSyncStamp(stampDate));
   const ageLine = $derived(
     inFlight
       ? serverRunsCopy.startedLine(age)

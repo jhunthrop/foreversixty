@@ -2,7 +2,7 @@
 // The Seats, Seat picker, Who pays and Receiver rows of design/specs/2026-10-27-launch-pricing.md
 // section 6.2, with a function for every {slot}. Dates arrive as stored: date-only values read as written, instants on the viewer calendar;
 // prices are built from ./plans.
-import { titleCase } from '../character-profile';
+import { titleCase } from '../text';
 import { settingsWords } from '../guild/settings-view';
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { formatCents, type Interval } from './plans';

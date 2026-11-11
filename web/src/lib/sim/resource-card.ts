@@ -3,11 +3,12 @@
 // summary, the two lists from `resource_sources`. Every figure is the engine's average per fight;
 // none is recomputed beyond a share and a rounding.
 import { attackHand, parseActionKey, resolveActionName, type ActionNames } from './action-names';
-import { damageCopy, grouped, powerCopy, oneDecimal } from './result-copy';
+import { damageCopy, powerCopy } from './result-copy';
 import { resourceCardCopy as copy } from './input-cards-copy';
 import { REFUND_KEY } from './action-mark';
 import { primaryPowerTrack, type PrimaryPower } from './primary-power';
 import type { ResourceSourceRow, SimResult } from './types';
+import { grouped, oneDecimal } from '../format/number';
 
 export interface ResourceRow {
   action: string;

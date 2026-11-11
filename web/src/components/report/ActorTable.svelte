@@ -8,15 +8,17 @@
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import type { Placement } from '../../lib/report/percentile';
-  import { formatAmount, formatDuration, formatPercent } from '../../lib/report/format';
+  import { compact, percent } from '../../lib/format/number';
   import { formatRate } from '../../lib/report/frame';
   import type { Actor, RosterRow } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
+  import { clockDuration } from '../../lib/format/duration';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
   import ActorRow from './ActorRow.svelte';
   import CopyCsv from './CopyCsv.svelte';
+  import { parseLabel, parseText, percentileToken } from '../../lib/report/format';
 
   type ActorTab = 'damage-done' | 'healing' | 'damage-taken';
 
@@ -114,13 +116,17 @@
         ? [
             placed === undefined
               ? { value: parseFallback || '–', muted: true }
-              : { value: String(Math.floor(placed.percentile)) },
+              : {
+                  value: parseText(placed.percentile),
+                  color: percentileToken(placed.percentile),
+                  label: parseLabel(placed.percentile),
+                },
           ]
         : []),
-      { value: `${mark}${formatAmount(actor.effective)}` },
+      { value: `${mark}${compact(actor.effective)}` },
       { value: formatRate(timeOf(actor) === 0 ? 0 : actor.effective / (timeOf(actor) / 1000)) },
-      { value: total === 0 ? '0%' : formatPercent((actor.effective / total) * 100) },
-      actor.active_unknown === true ? { value: '–', muted: true } : { value: formatPercent(activeOf(actor)) },
+      { value: total === 0 ? '0%' : percent((actor.effective / total) * 100) },
+      actor.active_unknown === true ? { value: '–', muted: true } : { value: percent(activeOf(actor)) },
     ];
   }
 
@@ -132,14 +138,14 @@
       actor.overheal !== undefined && actor.total > 0 ? Math.round((actor.overheal / actor.total) * 100) : 0;
     const overheal =
       tab === 'healing' && overhealPercent > 0
-        ? `${formatAmount(actor.overheal ?? 0)} overheal (${overhealPercent}%)`
+        ? `${compact(actor.overheal ?? 0)} overheal (${overhealPercent}%)`
         : '';
     const dead = deadAt.get(actor.guid);
     return [
       who,
       row?.item_level ? `ilvl ${row.item_level}` : '',
       overheal,
-      dead === undefined ? '' : `dead since ${formatDuration(dead)}`,
+      dead === undefined ? '' : `dead since ${clockDuration(dead)}`,
     ]
       .filter((part) => part !== '')
       .join(' · ');
@@ -155,7 +161,7 @@
   const totalSeconds = $derived(Math.max(durationMs, 1) / 1000);
   const totalFigures = $derived<StatFigure[]>([
     ...(parse ? [{ value: '' }] : []),
-    { value: `${mark}${formatAmount(total)}` },
+    { value: `${mark}${compact(total)}` },
     { value: formatRate(total / totalSeconds) },
     { value: '100%' },
     { value: '' },
@@ -197,8 +203,8 @@
       .map(([type, count]) => `${count} ${type.toLowerCase()}`)
       .join(', ');
     const parts = [
-      ...(absorbed > 0 ? [`${formatAmount(absorbed)} absorbed`] : []),
-      ...(blocked > 0 ? [`${formatAmount(blocked)} blocked`] : []),
+      ...(absorbed > 0 ? [`${compact(absorbed)} absorbed`] : []),
+      ...(blocked > 0 ? [`${compact(blocked)} blocked`] : []),
       ...(hits > 0 ? [`${hits} hits avoided (${byType})`] : []),
     ];
     return `Mitigated: ${parts.join(' · ')}`;
@@ -245,7 +251,7 @@
           .map((entry) =>
             entry.deadSince === null
               ? entry.name
-              : `${entry.name} (dead since ${formatDuration(entry.deadSince)})`,
+              : `${entry.name} (dead since ${clockDuration(entry.deadSince)})`,
           )
           .join(', ')}.`,
   );

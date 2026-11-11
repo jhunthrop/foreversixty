@@ -2,7 +2,7 @@
 title: 'Transmog is opt-out, not opt-in: it is on by default and can be disabled.'
 date: 2026-09-13
 kind: blizzard
-note: 'Supersedes the Sept 12 entry that recorded transmog as opt-in.'
+note: 'Supersedes the 12 Sep entry that recorded transmog as opt-in.'
 updated: 2026-09-14
 confidence: confirmed
 sources:
@@ -17,7 +17,7 @@ sources:
     kind: community
 ---
 
-This corrects what we published on Sept 12. One outlet reported transmog as opt-in; Blizzard's own Deep Dive recap describes a system that is on by default and can be turned off.
+This corrects what we published on 12 Sep. One outlet reported transmog as opt-in; Blizzard's own Deep Dive recap describes a system that is on by default and can be turned off.
 
 A mode selector appears the first time you log in, and choosing Classic Mode disables transmog automatically when you enter the world. You can change the setting later by talking to an NPC, and configure outfits at a transmogrifier in certain cities. Turning it off means you see everyone in the gear they are actually wearing.
 

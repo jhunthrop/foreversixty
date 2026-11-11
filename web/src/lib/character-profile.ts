@@ -11,17 +11,13 @@ import { factionOfRace } from './race-faction';
 import type { BuildSeen, CharacterFight, CharacterPage } from './rankings/api';
 import { scoreCopy } from './score/copy';
 import { shortDate } from './score/score';
+import { titleCase } from './text';
 
 /** The spec of the character's newest fight: `history[0]`, else the first best row that has
  *  one. Null when no fight names a spec (the header then shows the class alone). */
 export function newestSpec(page: Pick<CharacterPage, 'history' | 'best'>): string | null {
   const spec = page.history[0]?.spec ?? page.best.find((row) => row.spec !== undefined)?.spec;
   return spec === undefined || spec.trim() === '' ? null : spec;
-}
-
-/** "hunter" -> "Hunter", "death knight" -> "Death Knight": the API sends the class as it keys it. */
-export function titleCase(text: string): string {
-  return text.replace(/\b\p{L}/gu, (letter) => letter.toUpperCase());
 }
 
 /** "Holy Priest" when the spec is known, else "Priest"; empty with no class. */

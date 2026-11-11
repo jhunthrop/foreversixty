@@ -5,7 +5,7 @@
 // `Top HPS` per role, the roster chip `Top HPS 465`. The number is rounded and grouped by the one
 // formatter, so the same kill reads the same digits on all three. The API picks the figure by one
 // rule (api/internal/guilds/parse_source.go: boss kills only, the role's own metric).
-import { formatAmount } from '../report/format';
+import { compact } from '../format/number';
 import type { GuildRaidRow, GuildRaidTopParse } from './api';
 
 /** `HPS` or `DPS`, from the API's `metric`. */
@@ -15,7 +15,7 @@ export function outputUnit(metric: string): string {
 
 /** `465`, `1,204`: whole, grouped. */
 export function outputFigure(value: number): string {
-  return formatAmount(Math.round(value));
+  return compact(Math.round(value));
 }
 
 /** `Top HPS`, `Top DPS`; a tank's DPS on Progression reads `Top tank DPS`. */

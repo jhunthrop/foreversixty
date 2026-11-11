@@ -29,9 +29,9 @@ describe('utcDayMonth', () => {
 
 describe('formatDate', () => {
   it('uses the site month style', () => {
-    expect(formatDate(new Date('2026-09-17T00:00:00Z'))).toBe('17 Sept');
+    expect(formatDate(new Date('2026-09-17T00:00:00Z'))).toBe('17 Sep');
     expect(formatDate(new Date('2026-11-04T00:00:00Z'))).toBe('4 Nov');
-    expect(formatDate(new Date('2027-06-01T00:00:00Z'))).toBe('1 June');
+    expect(formatDate(new Date('2027-06-01T00:00:00Z'))).toBe('1 Jun');
   });
 });
 
@@ -102,9 +102,9 @@ describe('relativeDay', () => {
   });
 
   it('prints a short date from two weeks on', () => {
-    expect(relativeDay(new Date('2026-09-26T12:00:00Z'), now)).toBe('26 Sept');
-    expect(relativeDay(new Date('2026-09-15T12:55:13Z'), now)).toBe('15 Sept');
-    expect(relativeDay(new Date('2026-06-01T00:00:00Z'), now)).toBe('1 June');
+    expect(relativeDay(new Date('2026-09-26T12:00:00Z'), now)).toBe('26 Sep');
+    expect(relativeDay(new Date('2026-09-15T12:55:13Z'), now)).toBe('15 Sep');
+    expect(relativeDay(new Date('2026-06-01T00:00:00Z'), now)).toBe('1 Jun');
   });
 
   it('never reads a future timestamp as negative, and prints nothing for an invalid one', () => {
@@ -235,7 +235,7 @@ describe('compactAgo', () => {
     expect(compactAgo(ago(5 * 60_000), now)).toBe('5 min ago');
     expect(compactAgo(ago(2 * 3_600_000 + 60_000), now)).toBe('2 h ago');
     expect(compactAgo(ago(3 * 86_400_000), now)).toBe('3 d ago');
-    expect(compactAgo(new Date('2026-09-25T00:00:00Z'), now)).toBe('25 Sept');
+    expect(compactAgo(new Date('2026-09-25T00:00:00Z'), now)).toBe('25 Sep');
   });
   it('reads a timestamp ahead of the clock as just now, and an invalid one as nothing', () => {
     expect(compactAgo(new Date(now.getTime() + 60_000), now)).toBe('just now');

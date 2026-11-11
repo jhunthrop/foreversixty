@@ -37,7 +37,7 @@ describe('wornGain (§4.2 worn)', () => {
 
   it('a gain the rule cannot price says "Not sim-checked", never 0', () => {
     const { gain } = wornGain({ kind: 'gain', value: null, unit: 'dps', pick: PICK });
-    expect(gain).toMatchObject({ value: '—', basis: { prefix: 'Not sim-checked' }, tone: 'muted' });
+    expect(gain).toMatchObject({ value: '–', basis: { prefix: 'Not sim-checked' }, tone: 'muted' });
   });
 
   it('a gain under the tie floor is "Same" (doll-view isTie), not an upgrade', () => {

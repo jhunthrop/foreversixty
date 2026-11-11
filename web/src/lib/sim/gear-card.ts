@@ -9,7 +9,7 @@ import { attemptsOf } from '../report/ability-table';
 import { parseActionKey } from './action-names';
 import { withEnchants } from './enchant-names';
 import { gearCardCopy as copy } from './input-cards-copy';
-import { grouped, oneDecimal } from './result-copy';
+import { grouped, oneDecimal } from '../format/number';
 import type { FinalStats, GearSlot, SimResult } from './types';
 
 export { enchantNames } from './enchant-names';

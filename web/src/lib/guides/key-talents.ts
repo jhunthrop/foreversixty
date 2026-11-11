@@ -9,6 +9,7 @@
 // own strongest talents with each talent's description as the why, so the list is never empty
 // for a spec with a build.
 import type { DecodedTalentView, DecodedTreeView } from './build-tree';
+import { upperFirst } from '../text';
 
 export interface KeyTalentRef {
   /** The talent's id, absent when the build has no talent of that name. */
@@ -40,10 +41,6 @@ export interface ParsedBullet {
 
 const DASH_SPLIT =
   /^(.*?\*\*[^*]+\*\*(?:\s*\([^)]*\))?(?:,?\s*(?:and\s+)?\*\*[^*]+\*\*(?:\s*\([^)]*\))?)*)(?:\s+—\s+|:\s+)(.+)$/;
-
-function upperFirst(text: string): string {
-  return text === '' ? text : text[0]!.toUpperCase() + text.slice(1);
-}
 
 /** A key talent with no why: `- **Name** (n points)`. Its tooltip says what it does, so a blurb
  *  that only restated it is left out (h-audit 2026-11-09, ai-slop tell 23). */

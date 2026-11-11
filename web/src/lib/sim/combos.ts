@@ -9,6 +9,7 @@ import { confidenceBand, formatMargin } from './estimate';
 import type { CharacterSpec, Estimate, GearSlot } from './types';
 import type { Item, ItemSet } from '../planner/types';
 
+import { grouped } from '../format/number';
 export interface ComboRow {
   /** 1-based, and shared by every member of a within-error group (design 3.3). */
   rank: number;
@@ -52,7 +53,7 @@ export const MINUS = '−';
 export function gainLabel(magnitude: number): string {
   const abs = Math.abs(magnitude);
   const rounded = Math.round(abs * 10) / 10;
-  if (rounded === 0 || rounded >= 10) return Math.round(rounded).toLocaleString('en-US');
+  if (rounded === 0 || rounded >= 10) return grouped(rounded);
   return rounded.toFixed(1);
 }
 
