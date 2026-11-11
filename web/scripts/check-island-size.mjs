@@ -74,7 +74,10 @@ const BUDGETS = [
   // 86 KB since the redesign batch of 2026-11-09 (ship-fast mode): the planner's density pass
   // and the shared corner frame; the fixture build read 85,274 bytes against 84,992. Debt as above.
   { file: 'dist/planner-island.js', limitBytes: 86 * 1024, closureLimitBytes: 108347 },
-  { file: 'dist/report-island.js', limitBytes: 140 * 1024, closureLimitBytes: 161872 },
+  // Closure 165,000 since batch L lane E (2026-11-11): the report's empties, errors and filter
+  // popover moved onto the shared EmptyState, LoadError (the busy Button with its spinner) and
+  // FilterPopover; the fixture build read 163,673 against 161,872. One copy of each, site-wide.
+  { file: 'dist/report-island.js', limitBytes: 140 * 1024, closureLimitBytes: 165000 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
   // ceiling; sim.wasm is not counted, since it is a separate immutable asset fetched after
