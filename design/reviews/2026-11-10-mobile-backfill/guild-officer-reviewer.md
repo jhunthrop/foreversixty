@@ -430,3 +430,27 @@ My round-6 S1 (failure copy not naming the person or action) is closed.
 
 VERDICT: WORTH PAYING FOR
 
+## Round 8
+
+Round 8 confirmation, officer push failures (Mention, Decline) on Android and iOS. I read the four frames you named: the Android Decline and Mention failures, and the iOS decline-fail and short-fail result captures. I did not open the other r8 frames or the code.
+
+**What I verified**
+- **Decline failure (S2 from round 7):** Cleared. Both platforms show `Could not decline Mirelle` with `Mirelle, Holy Priest 60. Open Forever Sixty to try again.` The title names the applicant, and the body gives her class and level, so I know who is still pending. The iOS body wraps to two lines and stays readable. Nothing on screen says the applicant was declined, so I won't mistake a failure for a success.
+- **Mention title (nit):** Cleared. The title now reads `Could not mention the healers` and fits one line on both apps. The body, `Onyxia's Lair. Open the raid to try again.`, names the raid and what to do.
+- **S1, retry button:** The round-8 decisions KEEP no action buttons on a failure. The Android frames show no actions, so the KEEP is applied as written. Their reasoning holds. The body says what to do, and tapping opens the raid or the applications list. A failed push is rare. I accept the KEEP and am not contesting it.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+- None new. S1 stays as a KEEP.
+
+**NIT**
+- The Android Decline failure says "Open Forever Sixty", while the Mention failure says "Open the raid". The Decline wording is vaguer, and the brief says the tap lands on the applications list. Saying "Open applications to try again" would match the Mention wording. That is a wording change only.
+- The iOS Decline failure banner is two lines against the Mention banner's one line. That follows from the longer body and is fine.
+- The iOS captures show `Synced 37 d ago`, which the brief already lists as the pinned-clock capture and says not to re-report.
+
+My round-7 verdict stands. The officer pushes (Accept and Decline on applicants, Mention on a short raid) work from the lock screen. A failure now names the person or the group and says what to do next. A raid leader can recruit and fill healer gaps from a phone, which the spreadsheet and Discord can't do on one tap.
+
+VERDICT: WORTH PAYING FOR
+

@@ -437,3 +437,38 @@ All round 7 changes use shared keys and house formats, and the cross-platform di
 
 VERDICT: CONSISTENT
 
+## Round 8
+
+Round 8 holds up against the web. I found no BLOCKER and no SHOULD. I did not read the ios `r8-gear-sheet-upgrade` or the decline-failure frames.
+
+**What I checked**
+- iOS `r8-gear-sheet-crafted-boss-runner-up-settled` and `r8-push-short-fail-03-result`.
+- Android `gear-02-sheet-crafted-skill` and `gear-04-sheet-upgrade`.
+- Code: `apps/ios/App/Items/ItemVocabulary.swift`, `apps/ios/App/Items/ItemSheet.swift`, `apps/android/.../gear/flows/GearComposer.kt`, `GearItemSheet.kt`, and `apps/shared/copy/en.json`.
+
+**Source row (ALLOWED, round-7 nit closed)**
+- The row is now one anatomy on both apps: the source alone, with its figure and no caption or item icon, so it no longer reads as an item row.
+  - The crafted pick reads `Crafted: Blacksmithing (245)`. That is the shared key `bis.source.craftedSkill`, not a rewritten string.
+  - The vendor upgrade reads `Vendor: Lady Palanseer`, from `bis.source.vendor`.
+  - The boss-drop shape (`Onyxia, Onyxia's Lair, 8%`) is built in code on both apps. I confirmed it in `ItemSheet.swift:142`. I could not confirm it from a capture, because the brief says none shows a boss drop.
+- Both apps now carry the same row order and the same runner-up line. That answers the round-7 note on the Where row.
+
+**Drop chance (ALLOWED)**
+- iOS `ItemNumbers.percent` and Android `chanceWord` both match the web's `dropPercentLabel` in `web/src/lib/items/drop-chance.ts`.
+  - Both give a whole percent, half up, and `<1%` under one.
+  - Both cite the web function in their comments.
+- iOS uses `.toNearestOrAwayFromZero` and Android uses `roundToInt`. For positive chances both agree with the web's `Math.round`.
+
+**`No gain` (ALLOWED, round-7 nit closed)**
+- The text comes from `gear.cell.noGain` on both apps, and Gear's Shoulder cell reads `Shoulder · No gain`.
+- A real negative gain still prints with a true minus (`−1.3 DPS`), as the server writes it. That is consistent with `signedTenths`.
+
+**Mention failure (ALLOWED)**
+- The title `Could not mention the healers` fits one iOS banner line, from the changed `push.short.failed` key. The body keeps the raid name and the retry.
+
+**NIT**
+- No capture shows a boss-drop row with its chance. This is declared in the brief. The shape is covered by code and parity data, so it does not block.
+- Android's `Runner-up · PvP rank 11 · Blood Guard · Horde · Same DPS as the pick` wraps to a second line, and iOS wraps it too. That is the platform's width, not drift.
+
+VERDICT: CONSISTENT
+

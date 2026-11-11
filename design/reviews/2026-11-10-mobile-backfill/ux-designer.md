@@ -492,3 +492,47 @@ Files are under `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e
 
 VERDICT: SHIP
 
+## Round 8
+
+Round 8 clears both round-7 SHOULD items and the NIT on the zero gain. I found no blockers.
+
+**Round-7 items**
+- **S1, the Where row: cleared on both apps.** The row is one bold white line with no caption and no icon, and it matches the mocks' `Onyxia, Onyxia’s Lair, 8%` row. Android reads `Crafted: Blacksmithing (245)`, `Crafted: Blacksmithing (275)` and `Vendor: Lady Palanseer`. iOS reads `Crafted: Blacksmithing (245)`, `Crafted: Blacksmithing (275)` and `World drop`. The skill figure shows where the data carries it. The row can no longer be mistaken for an item row, because the item icon moved to the `Runner-up` row where it belongs.
+- **S2, the iOS Mention title: cleared.** `r8-push-short-fail-03-result` shows `Could not mention the healers` on one banner line, over `Onyxia's Lair. Open the raid to try again.`. Android carries the same strings.
+- **Zero gain: cleared.** `Shoulder · No gain` shows on both Gear grids.
+- **Android runner-up gain: cleared.** The rows read `−5.0 DPS` (Thorium Cestus), `−1.3 DPS` (Serpentskin Leggings) and `Same DPS as the pick` (Blood Guard's Plate Helm). iOS shows the same.
+- **iOS drawer from the top: cleared.** `r8-menu-notifications-some-off` shows the header, Switch character and Tools, with `Gear and sims, guild ladder, tiers off` on one line.
+- **Decline failure: matches on both apps.** The title reads `Could not decline Mirelle` and the body `Mirelle, Holy Priest 60. Open Forever Sixty to try again.`, with no action buttons, as the KEEP ruling says. iOS fits it in a three-line banner and Android in a two-line shade card.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+1. **The crafted runner-up words differ between apps.** In the crafted-upgrade sheet for Dawn's Edge, Android reads `Runner-up · Crafted: Blacksmithing · −5.0 DPS`. iOS reads `Runner-up · Blacksmithing · −5.0 DPS`. The heading above already says `Crafted:`, so I prefer iOS's shorter line. Take it from one shared string (`bis.source.*`) and apply it to both. Round 7's S1 was this same kind of drift.
+
+**NIT**
+- **The boss-drop row has no capture.** Neither app shows the `Onyxia, Onyxia's Lair, 8%` heading with its chance, or a boss-drop runner-up. I can only match it to the mock. The brief says the fixture cannot produce it, so there is no action beyond a golden when one exists.
+- **The iOS sheet frames still show no motion.** `r8-gear-sheet-*-t0`, `-t400` and `-settled` differ by about 2 px. I cannot judge presentation timing from them, and this is unchanged from round 7.
+- **The Android decline body leaves `again.` alone on its second line.** The wording is right. Short of the title and body changing, there is nothing to fix.
+- **The sheets cover the two fixtures differently.** Android's vendor-upgrade sheet has no iOS pair, and iOS's world-drop cape sheet has no Android pair. The anatomy matches in the frames I have.
+
+**Evidence limits**
+- I did not open `r8-menu-notifications-all-on` or `-all-off`, the iOS Decline steps 01, 02 and 04, the Mention steps 01, 02 and 04, or the Android item-sheet golden under `apps/android/app/src/test/screenshots/parity/`.
+- For the mocks I read only the `Onyxia, Onyxia’s Lair, 8%` source row in `android-item-sheet.html` and did not open `ios-item-sheet.html`.
+- The brief says the iOS goldens are still being re-recorded, so I judged iOS from the step captures.
+
+**Checklist**
+- [x] Source row identical in anatomy on both apps, with no caption and no icon
+- [x] Skill figure shown where the data has it
+- [x] Android runner-up carries its gain
+- [x] `No gain` on Gear cells
+- [x] Mention title fits one iOS line
+- [x] Decline failure names the applicant and the app, with no action buttons
+- [x] iOS drawer frames start from the top
+- [ ] Crafted runner-up copy identical across apps (SHOULD 1)
+- [ ] Boss-drop row captured (NIT)
+
+Files are under `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/`, in `android-r8/` and `ios/` (the `r8-*` files).
+
+VERDICT: SHIP
+

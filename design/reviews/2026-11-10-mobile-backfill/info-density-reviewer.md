@@ -424,3 +424,49 @@ Files:
 
 VERDICT: DENSE WITH ADDITIONS
 
+## Round 8
+
+Round 7's three additions (S1, S2, S3) have landed on both apps, and I have no blocker. I found no new gap that needs the owner's data. I did not open the Decline and Mention failure frames, the iOS All on and All off drawer frames, or the Home, Raid and Activity tabs. Those are unchanged by round 8's four rows, but I haven't re-checked them this round.
+
+**Round-7 additions, checked**
+- **S1, the Where row figure:** landed on both apps. `Crafted: Blacksmithing (275)` shows on the Dawn's Edge sheet (`android-r8/gear-03-sheet-crafted-upgrade.png`, `ios/r8-gear-sheet-crafted-upgrade-settled.png`) and `(245)` on the Helm. The boss-drop row reads `Onyxia, Onyxia's Lair, 8%` in `apps/android/app/src/test/screenshots/parity/android-item-sheet.png`. The world-drop cape keeps no figure because the data has none, which is the round-7 KEEP.
+- **S2, the Android gain line:** landed. The gold `+2.8 DPS` and `+2.2 DPS` sit under the tooltip on the crafted-upgrade and vendor-upgrade sheets. The golden shows `+12.6 DPS`. The tooltip, the source row and the gain line now match iOS in structure.
+- **S3, the runner-up gain:** landed. Android shows `Runner-up · Onyxia · 8% · −1.8 DPS`, `Crafted: Blacksmithing · −5.0 DPS` and `World drop · −1.3 DPS`, so the runner-up carries its source and its gain. The Blood Guard helm reads `Same DPS as the pick` because the data has no gain figure for it.
+- **Gear `No gain`:** shown on the Officer's Pauldrons cell on both apps (`android-r8/gear-01-top.png`, iOS Gear behind the sheet).
+- **Drawer Notifications value:** reads `Gear and sims, guild ladder, tiers off` (`ios/r8-menu-notifications-some-off.png`). Plan and Devices carry a value, `Free` and `3 signed in · newest iPhone`.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+1. **A runner-up's source repeats the row's own heading, and the two apps word it differently.**
+   - On a crafted pick the heading already reads `Crafted: Blacksmithing (275)`, and the runner-up row repeats it.
+   - Android reads `Runner-up · Crafted: Blacksmithing · −5.0 DPS`. iOS reads `Runner-up · Blacksmithing · −5.0 DPS`.
+   - The Cape's runner-up shows `World drop` under a `World drop` heading on both apps.
+   - Where the runner-up's source equals the pick's, show only `Runner-up · −0.3 DPS`. Where it differs, give both apps the same shared source words. That frees width on the Helm row, which currently wraps to a second line.
+2. **No frame exercises a boss-drop runner-up on a device.** The brief says the fixture's first head runner-up is a PvP helm, so the boss-drop row (`Runner-up · Onyxia · 8% · −1.8 DPS`) is proven only in the Android golden. iOS has no boss-drop capture. Once the iOS golden run lands, confirm iOS draws the same row from `docs/contracts/fixtures/app/cdn.loot.json`. This is a capture gap, not a drift.
+
+**NIT**
+- `Same DPS as the pick` is a sentence in a row of figures. `±0.0 DPS` would not match the `No gain` rule either, so the app could drop the tail and show `Runner-up · PvP rank 11 · Blood Guard · Horde` alone. This is optional.
+- The iOS Notifications value is clean at the top of the drawer. The value on Plan and Devices is tight but useful.
+- The `3 guildmates have not shared their gear yet` footer is honest and still useful.
+- Both apps' Gear cells stay without a source sub-line, which is the round-7 KEEP. A source row one tap away now carries the skill or chance, so I raise no new contest.
+
+**Needs data** (carried over, none new)
+- A per-character gain on `loot.awarded`.
+- Per-group unread counts for the Activity chips.
+- A cached `total_gain` per character for the Switch rows.
+- A last-pulls or progress figure for the Raid tab.
+- The reputation standing number for `needs revered` rows.
+- A founder end date for the Plan row.
+
+Files:
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/android-r8/gear-02-sheet-crafted-skill.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/android-r8/gear-03-sheet-crafted-upgrade.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/android-r8/gear-04-sheet-upgrade.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/ios/r8-gear-sheet-crafted-upgrade-settled.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/ios/r8-gear-sheet-crafted-boss-runner-up-settled.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/test/screenshots/parity/android-item-sheet.png
+
+VERDICT: DENSE WITH ADDITIONS
+

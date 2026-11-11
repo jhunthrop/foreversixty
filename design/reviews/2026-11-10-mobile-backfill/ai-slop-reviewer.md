@@ -395,3 +395,50 @@ None of 1, 2, 5, 8, 12, 13 or 15 is present. There are no glows, gradients, hero
 
 VERDICT: FAIL
 
+## Round 8
+
+The apps read as a developer's work, not a generated page. The Round 7 must-fix is cleared, and I found one new tell-22 item, which I'm calling must-fix.
+
+I did not open the iOS `r8-gear-sheet-crafted-upgrade` frame, the iOS Decline failure frames, the Android Mention failure frame, or the iOS all-on and all-off drawer frames. I read the strings in `apps/shared/copy/en.json`.
+
+**Round 7 must-fix: cleared**
+- The `Where to get it` caption is gone on Android in `android-r8/gear-02-sheet-crafted-skill.png`, `gear-03-sheet-crafted-upgrade.png`, `gear-04-sheet-upgrade.png` and the golden `android-item-sheet.png`.
+- The source row is now a bold line on its own: `Crafted: Blacksmithing (245)`, `Vendor: Lady Palanseer`, `Onyxia, Onyxia's Lair, 8%`.
+- It matches iOS (`ios/r8-gear-sheet-crafted-boss-runner-up-settled.png`, `ios/r8-gear-sheet-upgrade-settled.png`) and has no item icon beside it, so it cannot read as an item row. That also answers the "label it" note.
+- `(245)` is the profession skill, a real spec for a player.
+- `+0.0 DPS` is now `No gain` on Officer's Pauldrons in both Gear captures (`android-r8/gear-01-top.png`, `ios/r8-gear-sheet-*`).
+- The push failures stay short and specific, with no apology.
+  - iOS: `Could not mention the healers` fits one banner line (`ios/r8-push-short-fail-03-result.png`).
+  - Android: `Could not decline Mirelle`, then `Mirelle, Holy Priest 60. Open Forever Sixty to try again.` (`android-r8/push-applicant-decline-failed.png`).
+- The drawer Notifications value `Gear and sims, guild ladder, tiers off` is clean (`ios/r8-menu-notifications-some-off.png`).
+
+**Must-fix**
+1. **Tell 22, runner-up on the crafted helm sheet (`android-r8/gear-02-sheet-crafted-skill.png`, `ios/r8-gear-sheet-crafted-boss-runner-up-settled.png`).**
+   - Cause: the runner-up row reads `Runner-up · PvP rank 11 · Blood Guard · Horde · Same DPS as the pick`, from `items.sameDps` ("Same {unit} as the pick", en.json:202).
+   - Problem: the row has a runner-up label saying it is the alternative, and the sheet is about the pick, so `as the pick` is the qualifier your rule forbids. The line is also long enough to wrap to a second line on both platforms.
+   - Every other runner-up gives a bare figure, so this one is also the odd one out: `−5.0 DPS`, `−1.3 DPS`, `−1.8 DPS`, `−0.3 DPS`.
+   - Fix: render `±0 DPS`, or `Same DPS`, or `No gain` to match the Gear cells.
+   - Fix: drop `Horde`, since the whole app is Horde-only and the faction is already implied.
+
+**Polish**
+- The runner-up on the crafted-upgrade sheet repeats its own source: `Runner-up · Crafted: Blacksmithing · −5.0 DPS` sits directly under the same `Crafted: Blacksmithing (275)` heading (`android-r8/gear-03-sheet-crafted-upgrade.png`). Drop the source from the runner-up when it equals the heading. The same applies to `World drop` on the Serpentskin and Pridelord runner-ups, and `Onyxia · 8%` on the Vis'kag row (`android-r8/gear-04-sheet-upgrade.png`, `android-item-sheet.png`).
+- The `Replaces Ironwood Blade / Equipped` row carries an item icon, which makes it look like another runner-up (`android-item-sheet.png`). This is the same stutter I raised in Round 7 and it is milder now. `Equipped` after `Replaces …` is also redundant.
+- `gear.sheet.where` ("Where to get it", en.json:720) is no longer used by any screen I saw. The decisions file says it stays only as a heading "if anywhere", so delete the string if nothing references it.
+- `3 guildmates have not shared their gear yet` carries no info if the count is already shown elsewhere. It is fine as is.
+- The Home stamp `Synced 37 d ago` against the drawer's `Updated 10 h ago from Battle.net` is covered by your KEEP. The 37 d is the pinned-clock officer capture, so I am not counting it.
+- The `Molten Core` row on Home still repeats `Thu 24 Dec, 8 pm CST. 4 h ago`. Your Round 6 KEEP covers it.
+
+**Authentic, keep**
+- Quality-coloured item rows with per-slot DPS, and `3 of 17 slots match the list`.
+- `Level 58 Fury Warrior · 2 levels to the 60 list`.
+- `Dawn's Edge · Off hand · Crafted: Blacksmithing` on Home.
+- Home's `Next upgrades` list, with `Lady Palanseer` and `Creeg Bothunk` as sources.
+- The Tooltip plate with `+12.6 DPS` in yellow, the shadowbolt text in green, and the guild list `Kraggor · Fury Warrior · needs it, the pick on their list`.
+- The drawer's `Devices` line, `3 signed in · newest iPhone`.
+- The push failure copy.
+
+**Blocking visual tells**
+None of 1, 2, 5, 8, 12, 13 or 15 is present. There are no glows, gradients, hero slogans, frosted panels beyond the system iOS tab bar, or empty frames.
+
+VERDICT: FAIL
+
