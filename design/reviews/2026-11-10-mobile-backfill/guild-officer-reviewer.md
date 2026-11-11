@@ -375,3 +375,31 @@ The sheet still wins for loot fairness, attendance trends and per-raider perform
 
 VERDICT: WORTH PAYING FOR
 
+## Round 6
+
+**Round 6 officer review: S1 and S2 closed, S3 unchanged**
+
+**S1 (filtered roster plate mixing scopes) is closed.** Both platforms show `4 of 38 on the roster` and nothing else while "Not synced this week · 4" is on. The list shows 4 rows. The count, the chip and the list now agree. The code path is in `RosterScreen.swift` (line 119) and `roster.counts.onRoster` in `apps/shared/copy/en.json`. I did not trace the Android implementation, only the capture.
+
+**S2 (no failure frame for push results) is closed.** The failure lines are captured on both platforms.
+- **Android:** `android-r6/push-raid-short-02-mention-failed.png` shows "That did not save. Try again." with "Onyxia's Lair" beneath it. `push-applicant-02-accept-failed.png` shows the same headline with "Open the application." beneath it.
+- **iOS:** `ios/r6-push-short-fail-03-result.png` and `r6-push-applicant-accept-fail-03-result.png` match.
+- **What I read:** The failure is honest. It says the action did not save and where to go next, and it leaves the officer's status unchanged.
+
+**BLOCKER:** none.
+
+**SHOULD**
+1. **The Mention failure frame and the Accept failure frame say the same thing.** "That did not save. Try again." never names the person or the action.
+   - The Accept line says "Open the application." and the Mention line shows only the raid name. An officer who sees the banner a minute later cannot tell which applicant or which short-raid mention failed.
+   - They also cannot retry from the banner. "Try again" has no action on it, so they have to open the app and redo it.
+   - Fix: put the applicant's name in the Accept failure, for example "Accept for Mirelle did not save", from the push payload (`docs/contracts/fixtures/app/push.guild-applicant.json`). Put the raid name and the Mention in the Mention failure.
+2. **The filtered plate hides the guild-wide "in game, no account" and "waiting" figures.** That is the intended S1 fix, and it is right for the filter state. Those figures are still not visible on this screen once the filter is on. An officer working through the unsynced four has to clear the filter to see the recruiting and onboarding counts. This is acceptable, not a regression.
+
+**NIT**
+1. The Android filtered roster wraps "Elemental Shaman · 60 · Member" onto two lines for Lightningbolltz. Row heights are uneven next to the other three rows.
+2. S3 stands as before. The fixture raid has no comp target, so the iOS tally reads `Tanks 3 · Healers 6 · Damage 15`. The mocked states carry a target ("Healers 5 of 8 · 3 short"). Per the brief this is a fixture limit, not app behaviour.
+3. The iOS capture reads `Synced 37 d ago` because the clock is pinned to 17 Dec. The brief already flags this as the one stale capture kept.
+4. The Android push failure captures are notification-shade screenshots. The system "Serial console enabled" notification shows beneath them, which is emulator noise.
+
+VERDICT: WORTH PAYING FOR
+

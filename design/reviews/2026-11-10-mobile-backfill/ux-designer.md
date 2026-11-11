@@ -359,3 +359,77 @@ The open items are evidence and fixture polish, not defects in what renders. I k
 
 VERDICT: SHIP
 
+## Round 6
+
+Round 6 clears all four round-5 items (S1 to S4). I found no blockers, and round 7 is not needed to ship.
+
+I opened 14 captures and 2 iOS flow snapshots, listed in the Evidence limits section. I did not open the other Android goldens (about 40 flow frames) or the rest of the iOS flow snapshots.
+
+**Round-5 items**
+- **S1, stale Gear frame: cleared.**
+  - Android `gear-01-stale.png` and iOS `r6-gear-01-stale.png` both read `+18.0 DPS from 13 upgrades · synced 9 d ago`.
+  - The stale stamp is orange, set apart from the muted fresh tone, and the cell grid is unchanged. Both frames reconcile (13 gains, 3 of 17 slots match).
+- **S2, iOS flow snapshots: cleared.** 18 goldens are in `apps/ios/AppTests/Flows/__Snapshots__/FlowSnapshotTests`. They cover home-signup, raid-signup (late, saving, failed, offline), raid-link and segmented-answers, including `-ax5`.
+- **S3, drawer stamp: cleared.** Android and iOS both read `Updated 9 h ago from Battle.net`, with `Refresh` in the accent colour. This now agrees with Gear's `synced 9 d ago` in kind, since the two stamps come from different fields (drawer from `bnet_imported_at`, Gear from the character's `synced_at`).
+- **S4, filtered roster plate: cleared.**
+  - Android `raid-officer-02-roster-filtered.png` and iOS `r6-roster-01-filtered.png` show one plate, `4 of 38` over `on the roster`.
+  - The `in game, no account` and `waiting` figures are gone. The selected chip `Not synced this week · 4 ×` is intact, and four rows match the 4.
+- **Drawer Notifications value: cleared.**
+  - Android reads `All on` and iOS reads `Gear and sims, guild ladder, tiers off`. Both fit one line, which closes the round-5 stranded-`on` nit.
+  - The shared copy keys exist in `apps/shared/copy/en.json`.
+- **Activity in the house format: cleared.** `204 DPS`, `+12 over your 191 (Fury Warrior, 60).` and `190 DPS` read correctly on both apps.
+- **Push failure results: both apps captured, with the copy issues below.**
+  - Android and iOS both show a banner titled `That did not save. Try again.`.
+  - The Mention failure carries `Onyxia's Lair` under it. The Accept failure carries `Open the application.`.
+  - iOS has all four steps (delivered, actions, result, settled).
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+1. **The Mention failure says "save".**
+   - Posting a mention to Discord is not a save. `That did not save. Try again.` is the generic `common.failed` string.
+   - Use a mention-specific line such as `Could not mention the healers. Try again.`.
+   - It is one copy key, shared across both apps.
+2. **The Accept failure drops the applicant.**
+   - The success frame names the applicant (`New applicant: Mirelle, Holy Priest 60`). The failure body is `Open the application.` (`push.applicant.failed`), so the notification no longer says who is waiting.
+   - Keep the applicant line and put the instruction in a second line, or use `Open Forever Sixty to accept Mirelle.`.
+   - `the application` reads as a placeholder to a WoW player, so say the app's name.
+3. **The failed notification has no way to retry.**
+   - Both apps replace the actions with the failure line, on iOS and Android. Android's frame has an expand chevron but no actions, and iOS's banner has none.
+   - Tapping through to the raid or applicant list is the implied retry. State that in the body, or restore the action buttons on the failure.
+   - I rate this SHOULD because the player is stuck on a transient failure with no visible next step.
+4. **Drawer Notifications states are only partly shown.**
+   - Android captures only `All on`. iOS captures only a some-off value.
+   - `All off` is not captured, and the brief's `Logs, tiers off` form is not captured on either app.
+   - The copy keys exist and I accept the rest from code, but one frame per state would close it.
+
+**NIT**
+- iOS `home-signup-05-bench-failed.1.png` shows Late selected after a failed Bench save, with `That did not save. Try again.` and `Try again`. That reads as a revert to the prior answer, which is correct. The filename says bench, so the reader has to infer the revert.
+- iOS `raid-signup-08-offline.1.png` shows the segmented control dimmed under an `Offline. Showing what you had at 4:30 pm.` banner and a red `That did not save.` line. The raid page and its header band are another lane's, so I record this only.
+- Android Activity has `Today` and `This week` groups and iOS has `This week` only. Molten Core reads `just now` on Android and `Thu` on iOS. Both come from fixture clocks, not app behaviour.
+- iOS Gear `Main hand · Equipped` still wraps to three lines. This is a KEEP from round 6.
+- The iOS push frames pin the clock to 17 Dec, so Home reads `Synced 37 d ago` in the same frame as a fresh drawer stamp. The brief calls this the one kept stale capture.
+
+**Evidence limits**
+- I opened these round-6 captures:
+  - Android: `drawer-01-open`, `raid-officer-02-roster-filtered`, `push-raid-short-02-mention-failed`, `push-applicant-02-accept-failed`, `gear-01-stale`, `activity-01-top`.
+  - iOS: `r6-menu-01-open`, `r6-roster-01-filtered`, `r6-push-short-fail-03-result`, `r6-push-applicant-accept-fail-03-result`, `r6-gear-01-stale`, `r6-activity-01-top`.
+- Of the iOS flow snapshots I opened `home-signup-05-bench-failed` and `raid-signup-08-offline`.
+- I did not open `drawer-02-scrolled`, the expanded push frames, the iOS fail-01, fail-02 and fail-04 steps, or the `ax5` and `light` sets.
+- I judge the round-6 deltas only.
+
+**Checklist**
+- [x] Drawer value copy shipped (`All on`, some-off list)
+- [ ] `All off` and `Logs, tiers off` frames (SHOULD 4)
+- [x] Filtered roster one figure, both apps
+- [x] Drawer stamp fresh and consistent
+- [x] Stale Gear frame, both apps
+- [x] Activity in the house format
+- [x] Push failure frames exist, both apps
+- [ ] Push failure copy specific and recoverable (SHOULD 1 to 3)
+- [x] iOS flow snapshots attached
+- [x] Android flow goldens present
+
+VERDICT: SHIP
+

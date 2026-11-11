@@ -381,3 +381,32 @@ Round 5 brand-consistency verdict on the four tab roots, the profile drawer and 
 
 VERDICT: CONSISTENT
 
+## Round 6
+
+Round 6 holds up on every item it changed, and I found one carry-over figure in the stale Gear frame that breaks the brief's own house format. I checked each change against `apps/shared/copy/en.json`, the shared copy keys, the app code and the captures. I did not open the `web/` 390 px captures. The Gear comparison below is made against the house-format ruling in `BRIEF.md`.
+
+**What round 6 changed**
+- **Drawer Notifications value:** FIXED. It uses the shared keys `menu.notifications.allOn`, `.someOff` and `.off`.
+  - `NotificationsLine.kt` builds the value from those keys. The first group name stays capitalised, the rest are lowercased, and the old `menu.notifications.on` key is gone.
+  - The iOS drawer reads `Gear and sims, guild ladder, tiers off` and the Android drawer reads `All on`. The two differ only because the fixtures differ. The wording rule is the same on both.
+  - Type, hairline rows, the serif section heads and the gold `Refresh` link match between the two apps.
+  - Both drawers read `Updated 9 h ago from Battle.net`, so the stale-APK problem from round 5 is gone.
+- **Filtered roster plate:** FIXED. Both apps show one population, `4 of 38` with `on the roster`, and the guild-wide `in game, no account` and `waiting` figures are gone. The gold filter chip with its close glyph, the crest tiles, the quality-coloured names and the attendance pips are identical across the two apps. The back and search controls are platform idiom (rule 8).
+- **Push failure notifications:** FIXED. Both apps print `That did not save. Try again.` (`common.failed`) with `Open the application.` (`push.applicant.failed`). That is the shared copy, with no rewritten strings and no em dashes. The LX seal is used as the notification icon.
+- **Stale Gear frame:** FIXED for the stale state. Both apps show a warning-coloured `synced 9 d ago` on the meta line. The same warning colour shows on iOS Home as `Synced 37 d ago`, a stale age the brief already dates. Item names carry their quality colours and the icons have quality borders.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+1. **`182.0 DPS` in the Gear header on both apps** (`android-r6/gear-01-stale.png`, `ios/r6-gear-01-stale.png`). The brief says figures are whole from 100, and Activity now reads `204 DPS`. Gear is a three-digit figure and still prints one decimal.
+   - Fix: route the Gear header through the same house number formatter that Activity uses (`apps/shared/formats.json`, `numbers`).
+   - Round 6 did not touch this code. It only shows up because the stale Gear frame is new.
+
+**NIT**
+1. The iOS Gear `Main hand · Equipped` cell wraps at phone width. This is a KEEP ruling and I am not counting it.
+2. The Android notification shade shows the emulator's `Serial console enabled` line. It belongs to the emulator, not the app.
+3. The app clocks still read `7:00 pm`. The brief assigns that to the format lane.
+
+VERDICT: CONSISTENT
+

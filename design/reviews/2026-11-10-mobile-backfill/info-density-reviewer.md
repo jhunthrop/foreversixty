@@ -341,3 +341,44 @@ Files:
 
 VERDICT: DENSE WITH ADDITIONS
 
+## Round 6
+
+Round 6 landed S2 on both platforms. S1 stays a KEEP I accept, and S3 got no ruling and is still open. There are no blockers.
+
+I read the round-6 decisions, my round-5 verdicts, `android-r6/` (drawer, Activity, stale Gear, filtered roster) and `ios/r6-menu-01-open.png`. I did not open the iOS `r6-activity`, `r6-gear` or push-failure frames, or any fs2 captures.
+
+### Round-5 additions
+
+| Addition | Status |
+|---|---|
+| S2: drawer Notifications value | LANDED. Android `drawer-01-open` reads `All on`, and iOS `r6-menu-01-open` reads `Gear and sims, guild ladder, tiers off`. The value is one short line on both. |
+| S1: loot figure | KEEP stands. `Loot awarded` has no trailing figure in `android-r6/activity-01-top.png` because `loot.awarded` carries no per-character gain on the server. The ruling answers my objection, so I list this as needs-data. |
+| S3: Gear source | Still open. The round-6 decisions do not list it. |
+| N4: house format | LANDED. Activity reads `204 DPS`, `+12 over your 191 (Fury Warrior, 60).` and `190 DPS`. Android `drawer-01-open` and iOS `r6-menu-01-open` both read `Updated 9 h ago from Battle.net`. |
+| Roster stat plate | LANDED. `android-r6/raid-officer-02-roster-filtered.png` shows `4 of 38 on the roster` alone, with the filter chip `Not synced this week · 4`. |
+
+### SHOULD
+1. **Gear source is still missing.** `android-r5/gear-03-sheet.png` shows the item tooltip and the guildmates who need it. The runner-up row carries its source (`PvP rank 11 · Blood Guard · Horde`), but the equipped piece and the upgrade cells carry none. The data exists: `apps/android/.../gear/WhereToGo.kt` builds sources from `/data/{build}/loot.json`, with kind, name, boss, drop chance and profession. Add a `Where` line to the sheet for the selected item, and show a source column or sub-line on cells with a gain. Home's Best run line already shows this data, so no invented data is needed. Source text collapses to one wrapped line at 390.
+2. **The two platforms show different Notifications states.** Android reads `All on` and iOS reads `Gear and sims, guild ladder, tiers off`. If both read the same `app.notifications.json`, one platform has a bug. If the fixtures differ, say so in the brief. I could not tell which from the captures.
+3. **The roster row carries more figure than the Activity rows.** Roster rows show an 8-night pip bar and `2 of 8 nights`. Activity rows show no per-row context beyond the day. That is acceptable, but the `Show older` row sits above about 400 px of empty ground in `android-r6/activity-01-top.png`. With one page of three rows, the empty state is honest and fine.
+
+### NIT
+- The stale Gear frame (`android-r6/gear-01-stale.png`) reads `synced 9 d ago` in orange, which is good. The Main hand cell wraps at the phone width (`Main hand · Equipped`). This is the KEEP.
+- `android-r6/raid-officer-02-roster-filtered.png` shows `Attendance is the last 8 raid nights with a log.` as grey explainer copy. It is on the roster screen, which is another lane's, so I only note it.
+
+### Needs data
+- A per-character gain on `loot.awarded`, which would put a trailing figure on loot rows. This is already in the round-6 KEEP.
+- Per-group unread counts for the Activity chips.
+- A cached `total_gain` per character for the Switch rows.
+- A last-pulls or progress figure for the Raid tab.
+- The reputation standing number for `needs revered` rows.
+- A founder end date for the Plan row.
+
+Files:
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/android-r6/
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/ios/r6-menu-01-open.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/main/kotlin/gg/foreversixty/app/gear/WhereToGo.kt
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/docs/contracts/fixtures/app/app.notifications.json
+
+VERDICT: DENSE WITH ADDITIONS
+

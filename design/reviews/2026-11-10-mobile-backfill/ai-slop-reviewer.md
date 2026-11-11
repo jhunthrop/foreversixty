@@ -292,3 +292,55 @@ I did not open the iOS push or officer step frames, the Android parity goldens, 
 
 VERDICT: FAIL
 
+## Round 6
+
+**Round 6 AI-slop review: Forever Sixty iOS and Android main tabs, drawer and notifications**
+
+**First impression.** It reads as made by a player. The item rows with quality colours and per-slot DPS, the class-coloured roster, and the push and failure copy all use a player's words. The round-5 must-fix is cleared, and nothing round 6 changed adds a tell.
+
+I opened the Android drawer, Activity, stale Gear, filtered roster and Mention-failed frames, and the iOS drawer, stale Gear and filtered roster. I did not open the Android `drawer-02-scrolled`, `push-applicant-*` or `push-raid-short-01` frames, or any iOS `r6-push-*` frame. I did not re-check the iOS Activity capture (`ios/r6-activity-01-top.png`) or the round-5 sets for anything unchanged.
+
+**Round-5 items checked**
+- **Must-fix 1, Android drawer stamp: cleared.**
+  - `android-r6/drawer-01-open.png` reads `Updated 9 h ago from Battle.net · Refresh`.
+  - iOS `r6-menu-01-open.png` reads the same.
+  - The drawer now agrees with Home's stamp, and the contradiction is gone.
+- **Notifications row value: cleared.**
+  - Android reads `All on`, and iOS reads `Gear and sims, guild ladder, tiers off`.
+  - Each says what the player is missing, and nothing wraps to a lone word.
+  - The iOS variant is a real state and not filler.
+- **Activity in the house format: cleared.** `android-r6/activity-01-top.png` reads `204 DPS`, `190 DPS` and `+12 over your 191 (Fury Warrior, 60).`. The orphan `Sat` age line under feed rows stays under your KEEP. The Molten Core row's `Thu 24 Dec` plus `just now` is a mild stutter, which I left in polish.
+
+**Round-6 changes checked**
+- **Filtered roster plate.** It reads `4 of 38 on the roster` alone, on both platforms. That is one population and one number. The big figure is the point of the screen while a filter is on, so tell 16 does not apply. The rest of the screen is real: rank, class-coloured names, a crown, an `n of 8 nights` pip bar, and the line `Attendance is the last 8 raid nights with a log.`. The active filter chip is yellow with an X, and the other chips are neutral, so the filter state is clear and no chip is decorative.
+- **Failure frame.** `android-r6/push-raid-short-02-mention-failed.png` reads `That did not save. Try again.` over `Onyxia's Lair`. It is short, plain, and names the raid. The `Serial console enabled` line is the emulator's, and your KEEP covers it.
+- **Stale Gear frame.** `synced 9 d ago` is in warning orange on both platforms. It is deliberate, labelled by age, and not an empty or broken state, so tell 13 does not apply.
+
+**Must-fix**
+1. **Gear header decimals contradict the house format.** The stale Gear frames, `android-r6/gear-01-stale.png` and `ios/r6-gear-01-stale.png`, print `182.0 DPS`. Activity in the same round prints `204 DPS`. The house format is whole from 100, so this should be `182 DPS`.
+   - I flagged this as a check in round 5, and it is still open.
+   - It is the same class of problem as the drawer stamp, one screen disagreeing with another.
+   - Check whether the capture predates the format change or the Gear header bypasses the shared formatter.
+   - The `+18.0 DPS from 13 upgrades` line is under 100, so decimals are fine there.
+   - Per-slot `+0.0 DPS` on `Officer's Pauldrons` is acceptable as an honest zero. Consider `+0 DPS` for consistency.
+
+**Polish**
+- **`Updated 9 h ago` on the drawer and `Synced 8 h ago` on Home are still two wordings for the same fact.** This is minor. Pick one verb.
+- **Gear subhead.** `50 to 59 · Horde · 3 of 17 slots match the list · Change` is dense but reads as a player's line. Leave it.
+- **Duplicate day on the Activity Molten Core row.** The body carries `Thu 24 Dec` and the age line is `just now`. Where the body already holds the date, drop the age line.
+
+**Reads as authentic, keep**
+- Item rows with quality-coloured names, `Main hand · Equipped`, `Finger 1`, and per-slot DPS in green.
+- `3 of 17 slots match the list`.
+- The roster rows, with class-coloured names, officer crown, attendance pips and `Combat Rogue · 60 · Member`.
+- Drawer head `Fury Warrior · 58 · Officer` with the `Main` tag, and `Devices: 3 signed in · newest Pixel 9` (iOS: `newest iPhone`).
+- `Brakka passed you in the guild ladder` with `+12 over your 191`.
+- `Loot awarded` with `Deathbringer` in purple.
+- Plain panels with one framed plate where it matters.
+
+None of the blocking visual tells (1, 2, 5, 8, 12, 13, 15) is present: no glow, gradient, hero slogan, frosted panel beyond the system iOS tab bar (KEEP), or empty frame.
+
+**Verdict.** The must-fix is a one-line formatter fix plus a re-shoot of the two stale Gear frames. I am holding the verdict on it because the same round shows `204 DPS` on Activity and `182.0 DPS` on Gear.
+
+VERDICT: FAIL
+
