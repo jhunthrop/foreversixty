@@ -19,7 +19,6 @@ import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.paperdoll.Paperdoll
 import gg.foreversixty.app.paperdoll.PaperdollFrame
-import java.util.Locale
 
 /**
  * F2.7 Your gear: all 17 slots on the Paperdoll (lane F11, tenet 10), from GearModel's rows, with
@@ -31,7 +30,7 @@ fun GearList(rows: List<GearRow>, intro: String, build: String, open: (ItemLook,
     val slots = Paperdoll.fromGear(rows, LocalResources.current)
     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
-            stringResource(R.string.gear_title).uppercase(Locale.ROOT),
+            stringResource(R.string.gear_title),
             style = ScaledType.title,
             color = FsColor.strong,
             modifier = Modifier.semantics { heading() },

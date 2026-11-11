@@ -79,7 +79,7 @@ class AppConfigRepository(private val client: ApiClient, private val cache: AppC
 
     /** Whether the storefront country may show See plans (`web_checkout_regions`). */
     fun mayLinkToWebCheckout(storefront: String): Boolean =
-        current?.webCheckoutRegions?.contains(storefront.uppercase()) ?: false
+        current?.webCheckoutRegions?.any { it.equals(storefront, ignoreCase = true) } ?: false
 
     private fun decode(json: String): AppConfig? = try {
         ApiJson.decodeFromString(AppConfig.serializer(), json)

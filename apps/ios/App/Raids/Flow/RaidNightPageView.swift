@@ -24,10 +24,9 @@ struct RaidNightPageView: View {
 
     var body: some View {
         RaidFlowScroll {
-            RaidFlowHead(title: content.title, facts: content.facts) {
+            RaidFlowHead(title: content.title, facts: content.facts, inset: Self.headInset) {
                 ItemIconView(icon: content.icon, quality: nil, build: build, size: FSSize.crest56).parityItem(.image)
             }
-            .padding(.horizontal, Self.headInset)
             FSCountdown(eyebrow: content.eyebrow, clock: content.clock, live: content.clock.isEmpty) {
                 VStack(alignment: .leading, spacing: Self.tagTop) {
                     SmallText(content.aside)
@@ -36,7 +35,7 @@ struct RaidNightPageView: View {
             }
             FSSection(Copy.raidYourSignup) {
                 VStack(alignment: .leading, spacing: 0) {
-                    RaidAnswerButtons(selected: content.selected, small: true, answer: actions.answer)
+                    RaidAnswerButtons(selected: content.selected, answer: actions.answer)
                     if content.lateOpen { LateMinutesChips(late: actions.late) }
                     if let error { SmallText(error, color: FSColor.wipe).padding(.top, RaidFlowSpacing.line) }
                 }

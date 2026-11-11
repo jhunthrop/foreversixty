@@ -28,24 +28,42 @@ struct RaidFlowParityTests {
 
     @Test("ios-raid-unanswered")
     func unanswered() async throws {
-        let view = NotAnsweredView(content: T.notAnswered, build: HomeFlowTestData.build).environment(\.itemIconSource, RepoItemIconSource())
+        let view = Self.pushed(T.notAnswered.title) {
+            NotAnsweredView(content: T.notAnswered, build: HomeFlowTestData.build)
+        }
         try await ParityCheck.assert(view, screen: "raid-unanswered", size: Self.device)
     }
 
     @Test("ios-raid-applicant")
     func applicant() async throws {
-        try await ParityCheck.assert(ApplicantView(content: T.applicant(accepted: false)), screen: "raid-applicant", size: Self.device)
+        let content = T.applicant(accepted: false)
+        try await ParityCheck.assert(Self.pushed(content.name) { ApplicantView(content: content) }, screen: "raid-applicant", size: Self.device)
     }
 
     @Test("ios-raid-applicant-accepted")
     func applicantAccepted() async throws {
-        try await ParityCheck.assert(ApplicantView(content: T.applicant(accepted: true)), screen: "raid-applicant-accepted", size: Self.device)
+        let content = T.applicant(accepted: true)
+        try await ParityCheck.assert(Self.pushed(content.name) { ApplicantView(content: content) }, screen: "raid-applicant-accepted", size: Self.device)
     }
 
     private func night(_ answered: Bool, _ screen: String, testName: String = #function) async throws {
-        let view = RaidNightPageView(content: T.night(answered: answered), build: HomeFlowTestData.build)
-            .environment(\.itemIconSource, RepoItemIconSource())
+        let content = T.night(answered: answered)
+        let view = Self.pushed(content.title) {
+            RaidNightPageView(content: content, build: HomeFlowTestData.build)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {} label: { Label(Copy.raidMenuShare, systemImage: "square.and.arrow.up") }
+                    }
+                }
+        }
         try await ParityCheck.assert(view, screen: screen, size: Self.device, testName: testName)
+    }
+
+    /// A raid flow page as the app pushes it over the Raid tab: in its stack, on the N3 bar with the back
+    /// control (Android's RaidPagesParityTest wraps FlowBackBar the same way), with the repo's icons.
+    private static func pushed(_ title: String, @ViewBuilder _ content: @escaping () -> some View) -> some View {
+        PushedScreen(back: AppTab.raid.title) { content().pushedBandBar(title) }
+            .environment(\.itemIconSource, RepoItemIconSource())
     }
 
     @Test("ios-raid-night-live") func nightLive() async throws { try await night(true, "raid-night-live") }

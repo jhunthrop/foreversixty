@@ -128,9 +128,9 @@ object Guides {
 
 /** The data's ISO days in the app's words, read as calendar days (no zone shift). */
 object GuideDates {
-    private val LONG: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.US)
+    private val LONG: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", Locale.US)
     private val SHORT: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", Locale.US)
-    private val MONTH_DAY: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd", Locale.US)
+    private val MONTH_DAY: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", Locale.US)
 
     /** `24 Sep 2026`. */
     fun long(iso: String): String = format(iso, LONG)

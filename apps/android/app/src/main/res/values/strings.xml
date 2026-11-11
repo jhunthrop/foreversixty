@@ -447,7 +447,7 @@
     <string name="raid_na_throttled">They were mentioned a moment ago. Try again later.</string>
     <string name="officer_label">Officer</string>
     <string name="officer_lock">Lock sign-ups</string>
-    <string name="officer_unlock">Unlock sign-ups</string>
+    <string name="officer_unlock">Open sign-ups</string>
     <string name="officer_copy">Copy the list</string>
     <string name="officer_copied">Copied</string>
     <string name="officer_lockNote">Locking tells everyone signed up whether they are In or on the Bench.</string>
@@ -520,7 +520,7 @@
     <string name="sims_premiumLine">Server sims are part of Premium.</string>
     <string name="sims_gear">The gear it ran</string>
     <string name="sims_breakdown">Full breakdown on foreversixty.gg</string>
-    <string name="sims_error">± %1$s · %2$s iterations · engine %3$s</string>
+    <string name="sims_error">± %1$s · %2$s iterations</string>
     <string name="sims_kind_run">Sim</string>
     <string name="sims_kind_gear">Top Gear</string>
     <string name="sims_kind_talents">Talent compare</string>
@@ -855,7 +855,7 @@
     <string name="account_ruleset_hardcore">Hardcore</string>
     <string name="account_version_noData">Version %1$s (%2$s)</string>
     <string name="search_button">Search</string>
-    <string name="search_placeholder">Search items, characters, guides, talents</string>
+    <string name="search_placeholder">Search items, characters, guides</string>
     <string name="search_cancel">Cancel</string>
     <string name="search_clear">Clear the search</string>
     <string name="search_scope_all">All</string>
@@ -1308,7 +1308,7 @@
     <string name="guides_savedShort">Saved</string>
     <string name="guides_notSaved">Not saved</string>
     <string name="guides_classes">All classes</string>
-    <string name="guides_footer">Saved on this phone: %1$s · %2$s. Guides update by themselves when the game data does.</string>
+    <string name="guides_footer">Saved on this phone: %1$s · %2$s</string>
     <string name="guides_footerNone">Nothing is saved on this phone yet. Open a guide once and it stays.</string>
     <string name="guides_notCached">This guide is not on your phone yet. Connect once to save it.</string>
     <string name="guides_listNotCached">This list is not on your phone yet. Connect once to save it.</string>

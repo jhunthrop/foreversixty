@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.flows
 
+import gg.foreversixty.app.designsystem.Codes
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.session.RelativeAge
@@ -97,7 +98,7 @@ class ApplicantPresenter(private val res: Resources, private val clock: RaidCloc
 
     private fun figures(sheet: ApplicantSheet?, itemLevel: Int?): List<FlowFigure> = listOfNotNull(
         sheet?.score?.let { FlowFigure(res.getString(R.string.raid_applicant_score), it.toString()) },
-        sheet?.sim?.let { FlowFigure(res.getString(R.string.raid_applicant_sim), String.format(Locale.US, "%,.0f", it.value), it.unit.uppercase()) },
+        sheet?.sim?.let { FlowFigure(res.getString(R.string.raid_applicant_sim), String.format(Locale.US, "%,.0f", it.value), Codes.unit(it.unit)) },
         itemLevel?.let { FlowFigure(res.getString(R.string.raid_applicant_itemLevel), it.toString()) },
     )
 

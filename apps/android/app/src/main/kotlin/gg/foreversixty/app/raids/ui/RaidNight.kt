@@ -1,5 +1,7 @@
 package gg.foreversixty.app.raids.ui
 
+import gg.foreversixty.app.designsystem.FsTopBar
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import gg.foreversixty.app.items.ItemQuality
 import gg.foreversixty.app.designsystem.GameColors
@@ -62,16 +64,8 @@ import kotlinx.coroutines.launch
 fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant, openReport: ((String) -> Unit)? = null, back: () -> Unit) {
     val scope = rememberCoroutineScope()
     LaunchedEffect(model) { model.load() }
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-        TopAppBar(
-            title = { Text(stringResource(R.string.night_title).uppercase(), style = ScaledType.sec, color = FsColor.strong) },
-            navigationIcon = {
-                IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-            // The app scaffold already pads for the status bar.
-            windowInsets = WindowInsets(0, 0, 0, 0),
-        )
+    Column(Modifier.fillMaxSize().screenGround()) {
+        FsTopBar(stringResource(R.string.night_title), stringResource(R.string.common_back), back)
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             model.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), model.stale, onRetry = { scope.launch { model.load() } }) }
             Column(verticalArrangement = Arrangement.spacedBy(22.dp), modifier = Modifier.padding(16.dp)) {
@@ -96,7 +90,7 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock, openReport: 
     Text(
         stringResource(R.string.night_meta, night.zoneName, clock.weekday(startsAt), clock.dayMonth(startsAt), night.guildName),
         style = ScaledType.meta,
-        color = FsColor.muted,
+        color = FsColor.mutedGround,
     )
     val figures = @Composable {
         // Before the log (phase before or live) the figures are null and stay off the card.
@@ -133,7 +127,7 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock, openReport: 
             notes.forEachIndexed { index, note ->
                 if (index > 0) Divider()
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(14.dp)) {
-                    Text("${index + 1}", style = ScaledType.mono, color = FsColor.gold)
+                    Text("${index + 1}", style = ScaledType.tabular, color = FsColor.gold)
                     Text(note, style = ScaledType.body, color = FsColor.text)
                 }
             }
@@ -197,7 +191,7 @@ private fun BestRow(best: RaidNightBest) {
             Text(stringResource(R.string.night_bestLine, killTime(best.killMs)), style = ScaledType.meta, color = FsColor.muted)
         }
         Column(horizontalAlignment = Alignment.End) {
-            Text(stringResource(R.string.raids_night_dps, String.format(Locale.US, "%.1f", best.dps)), style = ScaledType.mono, color = FsColor.strong)
+            Text(stringResource(R.string.raids_night_dps, String.format(Locale.US, "%.1f", best.dps)), style = ScaledType.tabular, color = FsColor.strong)
             best.percentile?.let { Text(stringResource(R.string.night_percentile, ordinal(it)), style = ScaledType.meta, color = GameColors.parse(it)) }
         }
     }

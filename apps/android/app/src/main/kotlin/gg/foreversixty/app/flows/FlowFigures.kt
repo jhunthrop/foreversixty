@@ -38,11 +38,11 @@ fun FlowFigures(figures: List<FlowFigure>, modifier: Modifier = Modifier) {
 @Composable
 private fun Figure(figure: FlowFigure, modifier: Modifier) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(LABEL_GAP)) {
-        Text(figure.label.uppercase(), style = LABEL, color = FsColor.muted)
+        Text(figure.label, style = LABEL, color = FsColor.mutedGround)
         Text(
             buildAnnotatedString {
                 append(figure.value)
-                figure.unit?.let { withStyle(SpanStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = FsColor.muted)) { append(" $it") } }
+                figure.unit?.let { withStyle(SpanStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = FsColor.mutedGround)) { append(" $it") } }
             },
             style = FsType.figure,
             color = FsColor.strong,
@@ -52,4 +52,4 @@ private fun Figure(figure: FlowFigure, modifier: Modifier) {
 
 private const val COLUMNS = 2
 private val LABEL_GAP = 2.dp
-private val LABEL = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.12.em)
+private val LABEL = FsType.label

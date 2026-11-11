@@ -1,5 +1,7 @@
 package gg.foreversixty.app.raids.ui
 
+import gg.foreversixty.app.designsystem.SectionTitle
+import gg.foreversixty.app.designsystem.LoadError
 import androidx.compose.foundation.Image
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.GameColors
@@ -63,6 +65,7 @@ import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.designsystem.primaryCard
 import gg.foreversixty.app.designsystem.FsFont
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.raids.logic.RaidChip
 import gg.foreversixty.app.raids.logic.RaidClock
@@ -112,13 +115,15 @@ fun GameIcon(
     }
 }
 
-/** `micro` uppercase section label, with an optional mono count. */
+/**
+ * A section's head over the painted ground in the round-5 look: [SectionTitle] (the display face,
+ * cream, as the tab roots' sections) with an optional tabular count in mutedGround.
+ */
 @Composable
-fun SectionLabel(text: String, color: Color = FsColor.muted, trailing: String? = null) {
-    val tracking = if (isLargeText()) 0.sp else ScaledType.micro.letterSpacing
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.semantics { heading() }) {
-        Text(text.uppercase(), style = ScaledType.micro.copy(letterSpacing = tracking), color = color, maxLines = 1, softWrap = false)
-        trailing?.let { Text(it, style = ScaledType.monoMeta, color = color) }
+fun SectionLabel(text: String, color: Color = FsColor.cream, trailing: String? = null) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        SectionTitle(text, color = color)
+        trailing?.let { Text(it, style = ScaledType.tabular, color = FsColor.mutedGround) }
     }
 }
 
@@ -149,9 +154,9 @@ fun DateBlock(at: Instant, clock: RaidClock, width: Dp = 52.dp, height: Dp = 56.
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .clearAndSetSemantics {},
     ) {
-        Text(weekday, style = ScaledType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
-        Text(day, style = ScaledType.monoDay, color = FsColor.strong)
-        Text(month, style = ScaledType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
+        Text(weekday, style = FsType.label, color = FsColor.muted)
+        Text(day, style = ScaledType.tabularDay, color = FsColor.strong)
+        Text(month, style = FsType.label, color = FsColor.muted)
     }
 }
 
@@ -166,7 +171,7 @@ fun FillBar(fill: Float, width: Dp?, muted: Boolean = false) {
 
 /** The count block (spec F4.1): the bar, `24 of 40 signed up`, and the role breakdown. */
 @Composable
-fun CountBlock(facts: RaidFacts, muted: Boolean = false) {
+fun CountBlock(facts: RaidFacts, muted: Boolean = false, ink: Color = FsColor.muted) {
     val res = androidx.compose.ui.platform.LocalResources.current
     val line = facts.countLine(res)
     val breakdown = facts.breakdown(res)
@@ -182,7 +187,7 @@ fun CountBlock(facts: RaidFacts, muted: Boolean = false) {
                 Text(line, style = ScaledType.bodyStrong, color = FsColor.strong)
             }
         }
-        Text(breakdown, style = ScaledType.meta, color = FsColor.muted)
+        Text(breakdown, style = ScaledType.meta, color = ink)
     }
 }
 
@@ -219,8 +224,5 @@ fun GoldLink(text: String, onClick: () -> Unit, trailing: Boolean = false) {
 /** An error region (spec 5.0): the sentence in wipe red and Try again. */
 @Composable
 fun ErrorRegion(message: String, retry: () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.raidQuietCard().padding(16.dp)) {
-        Text(message, style = ScaledType.body, color = FsColor.wipe)
-        RaidSecondaryButton(stringResource(R.string.common_tryAgain), retry)
-    }
+    LoadError(message, stringResource(R.string.common_tryAgain), retry)
 }

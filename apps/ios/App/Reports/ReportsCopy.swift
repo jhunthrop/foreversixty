@@ -236,7 +236,7 @@ enum ReportsCopy {
 
     /// `Fury Warrior`.
     static func specClass(_ player: MeterPlayer) -> String {
-        let className = player.className.prefix(1).uppercased() + player.className.dropFirst()
+        let className = player.className.prefix(1).capitalized + player.className.dropFirst()
         return player.specName.isEmpty ? className : "\(player.specName) \(className)"
     }
 

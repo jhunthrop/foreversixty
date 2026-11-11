@@ -1,5 +1,8 @@
 package gg.foreversixty.app.guild.ui
 
+import gg.foreversixty.app.R
+import androidx.compose.ui.res.stringResource
+import gg.foreversixty.app.designsystem.FsTopBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,16 +49,7 @@ import gg.foreversixty.app.designsystem.ScaledType
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GuildTopBar(title: String, back: () -> Unit, actions: @Composable () -> Unit = {}) {
-    TopAppBar(
-        title = { Text(title.uppercase(), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() }) },
-        navigationIcon = {
-            IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
-        },
-        actions = { actions() },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-        // The app scaffold already pads for the status bar.
-        windowInsets = WindowInsets(0, 0, 0, 0),
-    )
+    FsTopBar(title, stringResource(R.string.common_back), back) { actions() }
 }
 
 /**

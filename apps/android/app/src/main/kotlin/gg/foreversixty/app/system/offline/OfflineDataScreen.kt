@@ -1,5 +1,7 @@
 package gg.foreversixty.app.system.offline
 
+import gg.foreversixty.app.designsystem.screenGround
+import gg.foreversixty.app.designsystem.SectionTitle
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalDensity
@@ -53,7 +55,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.guild.ui.GuildTopBar
 import java.time.Instant
@@ -113,10 +114,10 @@ fun OfflineDataRoute(model: OfflineDataModel, back: () -> Unit) {
 @Composable
 fun OfflineDataScreen(state: OfflineDataState, now: Instant, actions: OfflineDataActions) {
     val copy = OfflineDataCopy(LocalResources.current)
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         GuildTopBar(stringResource(R.string.offlineData_title), actions.back)
         Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = FsSpace.space4).padding(bottom = FsSpace.space6),
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = FsSpace.space4).padding(top = FsSpace.space4, bottom = FsSpace.space6),
             verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
         ) {
             val report = state.report
@@ -127,7 +128,7 @@ fun OfflineDataScreen(state: OfflineDataState, now: Instant, actions: OfflineDat
             }
             Updates(state, actions)
             UpdateButtons(state, report?.isEmpty != false, actions)
-            Text(copy.footer(state.checkedAt, now), style = ScaledType.meta, color = FsColor.muted)
+            Text(copy.footer(state.checkedAt, now), style = ScaledType.meta, color = FsColor.mutedGround)
         }
     }
     if (state.confirmingRemove) RemoveDialog(actions)
@@ -177,7 +178,7 @@ private const val STACK_BUTTONS_SCALE = 1.3f
 @Composable
 private fun Saved(report: OfflineReport, copy: OfflineDataCopy, now: Instant) {
     Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
-        MicroLabel(copy.section(report))
+        SectionTitle(copy.section(report))
         Card {
             report.rows.forEachIndexed { index, row ->
                 if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
@@ -200,7 +201,7 @@ private fun EmptyCard() {
 @Composable
 private fun Updates(state: OfflineDataState, actions: OfflineDataActions) {
     Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
-        MicroLabel(stringResource(R.string.offlineData_updates))
+        SectionTitle(stringResource(R.string.offlineData_updates))
         Card {
             SwitchRow(stringResource(R.string.offlineData_keep), stringResource(R.string.offlineData_keepNote), state.keepClassesReady, actions.keep)
             HorizontalDivider(color = FsColor.lineSoft)

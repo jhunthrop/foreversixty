@@ -1,3 +1,4 @@
+import DesignSystem
 import Foundation
 import Models
 
@@ -50,7 +51,7 @@ enum SearchWords {
     /// `Warrior · Level 58 · US PvP`; the class or level the API does not know is left out.
     static func characterMeta(_ row: CharacterSearchRow) -> String {
         let className = row.className.map(className) ?? ""
-        let region = row.region.uppercased()
+        let region = Codes.region(row.region)
         let ruleset = AccountCopy.ruleset(row.ruleset)
         let meta = row.level.map { Copy.searchCharacterMeta(className: className, level: $0, region: region, ruleset: ruleset) }
             ?? Copy.searchCharacterMetaNoLevel(className: className, region: region, ruleset: ruleset)

@@ -111,7 +111,7 @@ private fun Label(text: String, modifier: GlanceModifier = GlanceModifier) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Image(ImageProvider(R.drawable.brand_seal), contentDescription = null, modifier = GlanceModifier.size(WidgetDesign.sealSize))
         Spacer(GlanceModifier.width(6.dp))
-        Text(WidgetDesign.tracked(text), style = widgetStyles().micro, maxLines = 1)
+        Text(text, style = widgetStyles().micro, maxLines = 1)
     }
 }
 

@@ -72,66 +72,18 @@ struct YouView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpace.space5) {
-                accountHead
-                VStack(spacing: 0) {
-                    PlanRow(plan: summary.plan, mayLink: mayLink)
-                    if let character = summary.character {
-                        Divider().overlay(FSColor.lineSoft)
-                        characterRow(character)
-                    }
-                    Divider().overlay(FSColor.lineSoft)
-                    NavigationLink(value: YouRoute.devices) {
-                        AccountRow(icon: "iphone", title: Copy.youDevices, subtitle: summary.devices, chevron: true)
-                    }
-                    if showsLiveSurfaces {
-                        Divider().overlay(FSColor.lineSoft)
-                        NavigationLink(value: YouRoute.liveSurfaces) {
-                            AccountRow(icon: "rectangle.stack", title: Copy.liveSettings, chevron: true)
-                        }
-                    }
-                    if showsCalendar {
-                        Divider().overlay(FSColor.lineSoft)
-                        NavigationLink(value: YouRoute.calendar) {
-                            AccountRow(icon: "calendar", title: Copy.calendarTitle, subtitle: Copy.calendarYouRowSub, chevron: true)
-                        }
-                    }
-                    if showsOfflineData {
-                        Divider().overlay(FSColor.lineSoft)
-                        NavigationLink(value: YouRoute.offlineData) {
-                            AccountRow(icon: "arrow.down.circle", title: Copy.offlineDataTitle, subtitle: Copy.offlineDataYouRowSub, chevron: true)
-                        }
-                    }
+            VStack(alignment: .leading, spacing: 0) {
+                // The head names the screen and the account on the band (N3); the bar has no title at rest.
+                BandHead(title: Copy.youTitle) {
+                    Text(summary.battletag).font(ScaledType.name).foregroundStyle(FSColor.strong)
+                    BandFact(Copy.youSignedInWith)
                 }
-                .quietCard()
-                VStack(spacing: 0) {
-                    Button { openURL(AccountLinks.privacy) } label: { AccountRow(icon: "hand.raised", title: Copy.youPrivacy, external: true) }
-                    Divider().overlay(FSColor.lineSoft)
-                    Button { openURL(AccountLinks.terms) } label: { AccountRow(icon: "doc.text", title: Copy.youTerms, external: true) }
-                    Divider().overlay(FSColor.lineSoft)
-                    NavigationLink(value: YouRoute.about) {
-                        AccountRow(icon: "info.circle", title: Copy.youAbout, chevron: true)
-                    }
-                }
-                .quietCard()
-                Button(Copy.youSignOut) { confirmingSignOut = true }
-                    .buttonStyle(BrandButtonStyle(.quiet, height: 48))
-                NavigationLink(value: YouRoute.deleteAccount) {
-                    Text(Copy.sharedAccountDeleteTitle)
-                        .font(ScaledType.bodyStrong)
-                        .foregroundStyle(FSColor.wipe)
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .contentShape(.rect)
-                }
-                .padding(.top, FSSpace.space2)
-                Text(summary.version).font(ScaledType.micro).foregroundStyle(FSColor.muted)
-                    .frame(maxWidth: .infinity)
+                .accessibilityElement(children: .combine)
+                rows
             }
-            .buttonStyle(.plain)
-            .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
-        .navigationTitle(Copy.youTitle)
+        .screenGround()
+        .pushedBandBar(Copy.youTitle)
         .confirmationDialog(
             Copy.youSignOutConfirm(device: Copy.accountDeviceWord),
             isPresented: $confirmingSignOut,
@@ -140,6 +92,64 @@ struct YouView: View {
             Button(Copy.accountSignOutAction, role: .destructive, action: onSignOut)
             Button(Copy.commonCancel, role: .cancel) {}
         }
+    }
+
+    private var rows: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space5) {
+            VStack(spacing: 0) {
+                PlanRow(plan: summary.plan, mayLink: mayLink)
+                if let character = summary.character {
+                    Divider().overlay(FSColor.lineSoft)
+                    characterRow(character)
+                }
+                Divider().overlay(FSColor.lineSoft)
+                NavigationLink(value: YouRoute.devices) {
+                    AccountRow(icon: "iphone", title: Copy.youDevices, subtitle: summary.devices, chevron: true)
+                }
+                if showsLiveSurfaces {
+                    Divider().overlay(FSColor.lineSoft)
+                    NavigationLink(value: YouRoute.liveSurfaces) {
+                        AccountRow(icon: "rectangle.stack", title: Copy.liveSettings, chevron: true)
+                    }
+                }
+                if showsCalendar {
+                    Divider().overlay(FSColor.lineSoft)
+                    NavigationLink(value: YouRoute.calendar) {
+                        AccountRow(icon: "calendar", title: Copy.calendarTitle, subtitle: Copy.calendarYouRowSub, chevron: true)
+                    }
+                }
+                if showsOfflineData {
+                    Divider().overlay(FSColor.lineSoft)
+                    NavigationLink(value: YouRoute.offlineData) {
+                        AccountRow(icon: "arrow.down.circle", title: Copy.offlineDataTitle, subtitle: Copy.offlineDataYouRowSub, chevron: true)
+                    }
+                }
+            }
+            .quietCard()
+            VStack(spacing: 0) {
+                Button { openURL(AccountLinks.privacy) } label: { AccountRow(icon: "hand.raised", title: Copy.youPrivacy, external: true) }
+                Divider().overlay(FSColor.lineSoft)
+                Button { openURL(AccountLinks.terms) } label: { AccountRow(icon: "doc.text", title: Copy.youTerms, external: true) }
+                Divider().overlay(FSColor.lineSoft)
+                NavigationLink(value: YouRoute.about) {
+                    AccountRow(icon: "info.circle", title: Copy.youAbout, chevron: true)
+                }
+            }
+            .quietCard()
+            Button(Copy.youSignOut) { confirmingSignOut = true }
+                .buttonStyle(BrandButtonStyle(.quiet, height: 48))
+            // The destructive action on a panel, as Android's AccountCard: wipe reads on the dark, not loose on the ground.
+            NavigationLink(value: YouRoute.deleteAccount) {
+                Text(Copy.sharedAccountDeleteTitle)
+            }
+            .buttonStyle(BrandButtonStyle(.destructive, height: 48))
+            .padding(FSSpace.space4)
+            .quietCard()
+            Text(summary.version).font(ScaledType.label).foregroundStyle(FSColor.mutedGround)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.plain)
+        .padding(FSSpace.space4)
     }
 
     private func characterRow(_ character: YouSummary.CharacterLine) -> some View {
@@ -157,41 +167,6 @@ struct YouView: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// Lane F8: the gold Premium tag sits beside the name, or under it when the name needs the room.
-    private var accountHead: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: FSSpace.space2) {
-                identity
-                Spacer(minLength: FSSpace.space2)
-                premiumTag
-            }
-            VStack(alignment: .leading, spacing: FSSpace.space2) {
-                identity
-                premiumTag
-            }
-        }
-        .accessibilityElement(children: .combine)
-    }
-
-    @ViewBuilder
-    private var premiumTag: some View {
-        if summary.plan.isPremium { TagView(text: Copy.planPremium, color: FSColor.gold) }
-    }
-
-    private var identity: some View {
-        HStack(spacing: FSSpace.space3) {
-            Image(systemName: "person")
-                .font(.title3)
-                .foregroundStyle(FSColor.gold)
-                .frame(width: 44, height: 44)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyControl))
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(summary.battletag).font(ScaledType.name).foregroundStyle(FSColor.strong)
-                Text(Copy.youSignedInWith).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-            }
-        }
-    }
 }
 
 /// You › About Forever Sixty: the version, the build and the site footer's Blizzard line.
@@ -200,18 +175,25 @@ struct AboutView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpace.space4) {
-                Seal(size: 64)
-                Text(Copy.appName).font(ScaledType.wordmark).textCase(.uppercase).tracking(2).foregroundStyle(FSColor.strong)
-                Text(version).font(ScaledType.body).foregroundStyle(FSColor.text)
-                Text(Copy.aboutNotAffiliated).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.youAbout)
+                about
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
-        .navigationTitle(Copy.youAbout)
+        .screenGround()
+        .pushedBandBar(Copy.youAbout)
+    }
+
+    private var about: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space4) {
+            Seal(size: 64)
+            Text(Copy.appName).font(ScaledType.wordmark).tracking(2).foregroundStyle(FSColor.strong)
+            Text(version).font(ScaledType.body).foregroundStyle(FSColor.text)
+            Text(Copy.aboutNotAffiliated).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(FSSpace.space4)
     }
 }
 

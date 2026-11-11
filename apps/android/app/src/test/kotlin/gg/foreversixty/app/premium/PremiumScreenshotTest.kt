@@ -1,5 +1,8 @@
 package gg.foreversixty.app.premium
 
+import androidx.compose.ui.test.swipeUp
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
@@ -60,6 +63,10 @@ class PremiumScreenshotTest {
     @Test fun `you premium at font scale 2`() {
         RuntimeEnvironment.setFontScale(2f)
         capture("you-premium-ax5") { You("me.premium.json", mayLink = true) }
+        // The same screen scrolled to its end, so Sign out and Delete account are on screen at 2x.
+        compose.onNode(hasScrollAction()).performTouchInput { repeat(SCROLL_SWIPES) { swipeUp() } }
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("src/test/screenshots/premium_you-premium-ax5-end.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     @Test fun `plan in a link region`() = capture("plan-us") { Plan("me.premium.json", mayLink = true) }
@@ -87,11 +94,12 @@ class PremiumScreenshotTest {
             ),
             actions = YouActions({}, {}, {}, {}, {}, {}, {}, {}),
             mayLink = mayLink,
+            back = {},
         )
     }
 
     @Composable
-    private fun Plan(file: String, mayLink: Boolean) = PlanScreen(PlanSummary.of(me(file), NOW), mayLink) {}
+    private fun Plan(file: String, mayLink: Boolean) = PlanScreen(PlanSummary.of(me(file), NOW), mayLink, back = {}) {}
 
     private fun capture(name: String, screen: @Composable () -> Unit) {
         compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) { screen() } } }
@@ -100,6 +108,9 @@ class PremiumScreenshotTest {
 }
 
 private val NOW: Instant = Instant.parse("2025-11-01T00:00:00Z")
+
+/** Enough swipes to reach the end of You at 2x. */
+private const val SCROLL_SWIPES = 4
 
 
 private const val VERSION = "Version 0.1.0 (1) · data 1.60.1.70658"

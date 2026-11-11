@@ -54,11 +54,11 @@ struct GuideGlance: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(Copy.guidesRole)
+            Label12(Copy.guidesRole)
             Text(guide.roleLine ?? GuideRole.label(guide.role))
                 .font(ScaledType.lead).foregroundStyle(FSColor.strong)
                 .fixedSize(horizontal: false, vertical: true)
-            MicroLabel(Copy.guidesStatPriority).padding(.top, 6)
+            Label12(Copy.guidesStatPriority).padding(.top, 6)
             StatChips(chips: GuideCopy.statChips(guide))
         }
         .padding(GuidesLayout.cardPadding)
@@ -150,7 +150,7 @@ struct GuideTalentRow: View {
     @ViewBuilder
     private var ranks: some View {
         if let ranks = GuideCopy.ranks(talent) {
-            Text(ranks).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+            Text(ranks).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
         }
     }
 }
@@ -165,7 +165,7 @@ struct GuideBuildRowView: View {
                 Text(Copy.guidesBuildLevel).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            Text(row.totals).font(ScaledType.mono).foregroundStyle(FSColor.text)
+            Text(row.totals).font(ScaledType.tabular).foregroundStyle(FSColor.text)
         }
         .padding(GuidesLayout.cardPadding)
         .frame(minHeight: 56)
@@ -173,7 +173,7 @@ struct GuideBuildRowView: View {
     }
 }
 
-/// Opener, Priority, Cooldowns: numbered rows of the guide's own lists, then the footer.
+/// Opener, Priority, Cooldowns: numbered rows of the guide's own lists.
 struct GuideRotationSection: View {
     let rotation: GuideRotation?
     let build: String
@@ -182,12 +182,10 @@ struct GuideRotationSection: View {
         VStack(alignment: .leading, spacing: 12) {
             ForEach(RotationRows.groups(rotation)) { group in
                 VStack(alignment: .leading, spacing: 8) {
-                    MicroLabel(group.title).accessibilityAddTraits(.isHeader)
+                    Label12(group.title, color: FSColor.mutedGround).accessibilityAddTraits(.isHeader)
                     GuideCardRows(items: group.rows) { GuideRotationRow(row: $0, build: build) }
                 }
             }
-            Text(Copy.guidesRotationFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
@@ -198,7 +196,7 @@ struct GuideRotationRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Text("\(row.number)").font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+            Text("\(row.number)").font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
                 .frame(minWidth: 16, alignment: .leading)
                 .padding(.top, 11)
             if row.hasTile { SpecIcon(icon: row.spell.icon, build: build, size: GuidesLayout.rowIcon) }
@@ -221,7 +219,7 @@ struct GuideRotationRow: View {
 
     @ViewBuilder
     private var rank: some View {
-        if let rank = row.rankText { Text(rank).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted) }
+        if let rank = row.rankText { Text(rank).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted) }
     }
 }
 

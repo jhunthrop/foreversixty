@@ -32,15 +32,11 @@ struct SimResultView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SimsTitle(text: title)
+            BandHead(title: title)
             switch phase {
             case .loading: SimResultSkeleton()
             case .failed:
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(Copy.simsResultFailed).font(ScaledType.lead).foregroundStyle(FSColor.wipe)
-                    SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: retry)
-                }
-                .padding(16)
+                LoadError(Copy.simsResultFailed, retryLabel: Copy.commonTryAgain, retry: retry).padding(16)
             case let .loaded(model, since):
                 if let since { OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now))) }
                 if let staleSince { StaleStrip(time: OfflineStamp.format(staleSince, now: now), retry: retry) }
@@ -53,11 +49,7 @@ struct SimResultView: View {
 
     private func content(_ model: SimResultModel) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            MicroLabel(model.kind)
-            meta(model).padding(.top, 4)
-            answer(model.answer).padding(.top, 12)
-            Text(model.errorLine).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
-                .fixedSize(horizontal: false, vertical: true).padding(.top, 4)
+            plate(model)
             if !model.gear.isEmpty { gear(model).padding(.top, 22) }
             Button { openBreakdown(model.breakdownURL) } label: {
                 HStack(spacing: 6) {
@@ -72,7 +64,21 @@ struct SimResultView: View {
             .padding(.top, 8)
         }
         .padding(.horizontal, 16)
-        .padding(.top, 4)
+        .padding(.top, 16)
+    }
+
+    /// The answer on the page's one Plate (web /sim result): the kind, who ran, the figure and its error.
+    private func plate(_ model: SimResultModel) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Label12(model.kind)
+            meta(model).padding(.top, 4)
+            answer(model.answer).padding(.top, 12)
+            Text(model.errorLine).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
+                .fixedSize(horizontal: false, vertical: true).padding(.top, 4)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .panel()
     }
 
     private func meta(_ model: SimResultModel) -> some View {
@@ -80,7 +86,7 @@ struct SimResultView: View {
         let className = Text(model.className).foregroundStyle(ClassColor.of(model.classSlug))
         return Text("\(model.specName) \(className)\(level)")
             .font(ScaledType.meta)
-            .foregroundStyle(FSColor.muted)
+            .foregroundStyle(FSColor.text)
     }
 
     @ViewBuilder
@@ -93,33 +99,28 @@ struct SimResultView: View {
             }
             .accessibilityElement(children: .combine)
         case let .sentence(text):
-            Text(text).font(ScaledType.stat).foregroundStyle(FSColor.strong)
+            Text(text).type(FSType.itemLg).foregroundStyle(FSColor.strong)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
 
+    /// A Figure (spec 3.4): tabular Open Sans with its unit, never the display face.
     private func figure(_ value: String) -> some View {
-        Text(value).font(SimResultView.figureFont).foregroundStyle(FSColor.strong)
+        Text(value).type(FSType.figureXl).foregroundStyle(FSColor.strong)
     }
 
     private var dpsWord: some View {
-        Text(Copy.bisUnitDps).font(ScaledType.body).foregroundStyle(FSColor.muted)
+        Text(Copy.bisUnitDps).font(ScaledType.bodyStrong).foregroundStyle(FSColor.muted)
     }
-
-    /// The 52 pt figure, growing with the text size (to 64 at AX5, spec F5.3).
-    static let figureFont = Font.custom(FSFont.bodyBold, size: 52, relativeTo: .largeTitle)
 
     private func gear(_ model: SimResultModel) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(Copy.simsGear)
+            SectionTitle(Copy.simsGear)
             LazyVGrid(
                 columns: Array(repeating: GridItem(.fixed(Self.gearIcon), spacing: Self.gridGap), count: Self.gridColumns),
                 alignment: .leading, spacing: Self.gridGap
             ) {
                 ForEach(model.gear) { cell in gearIcon(cell) }
-            }
-            if model.showsChangedLegend {
-                Text(Copy.simsChanged).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
         }
     }

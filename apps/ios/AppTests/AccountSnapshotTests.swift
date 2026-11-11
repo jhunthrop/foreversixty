@@ -40,27 +40,27 @@ struct AccountSnapshotTests {
 
     @Test func youFree() throws {
         let summary = try Self.summary("me.json")
-        snap(NavigationStack { YouView(summary: summary) {} }, "you-free")
+        snap(PushedScreen(back: AppTab.home.title) { YouView(summary: summary) {} }, "you-free")
     }
 
     @Test func youPremium() throws {
         let summary = try Self.summary("me.premium.json")
-        snap(NavigationStack { YouView(summary: summary) {} }, "you-premium")
+        snap(PushedScreen(back: AppTab.home.title) { YouView(summary: summary) {} }, "you-premium")
     }
 
     @Test func about() {
-        snap(NavigationStack { AboutView(version: Self.version) }, "about-default")
+        snap(PushedScreen(back: Copy.youTitle) { AboutView(version: Self.version) }, "about-default")
     }
 
     @Test func devices() throws {
         let rows = try Self.deviceRows()
-        snap(NavigationStack { DevicesView(state: .loaded(rows), failedRevoke: nil, onRevoke: { _ in }, onRetry: {}) }, "devices-default")
+        snap(PushedScreen(back: Copy.youTitle) { DevicesView(state: .loaded(rows), failedRevoke: nil, onRevoke: { _ in }, onRetry: {}) }, "devices-default")
     }
 
     @Test func devicesRevokeFailed() throws {
         let rows = try Self.deviceRows()
         let view = DevicesView(state: .loaded(rows), failedRevoke: rows[1].id, onRevoke: { _ in }, onRetry: {})
-        snap(NavigationStack { view }, "devices-revoke-failed")
+        snap(PushedScreen(back: Copy.youTitle) { view }, "devices-revoke-failed")
     }
 
     @Test func deleteFree() throws { snap(try deleteView("me.json"), "delete-free") }
@@ -83,9 +83,23 @@ struct AccountSnapshotTests {
 
     @Test func deleteReady() throws { snap(try deleteView("me.json", typed: "yell#1604"), "delete-ready") }
 
+    // To the end, as Android's scrolled captures: the whole page on a tall canvas, so the field, its
+    // failure and the button show (an off-screen scroll to the bottom renders blank).
+
+    @Test func deleteMismatchEnd() throws {
+        snap(try deleteView("me.json", typed: "Yell#16", outcome: .confirmMismatch), "delete-mismatch-end", height: Self.wholePage)
+    }
+
+    @Test func deleteReadyEnd() throws { snap(try deleteView("me.json", typed: "yell#1604"), "delete-ready-end", height: Self.wholePage) }
+
+    @Test func deleteFailedEnd() throws { snap(try deleteView("me.json", outcome: .failed), "delete-failed-end", height: Self.wholePage) }
+
+    /// A canvas tall enough for the whole delete page.
+    static let wholePage: CGFloat = 1600
+
     private func deleteView(_ file: String, typed: String = "", outcome: AccountActionOutcome? = nil) throws -> some View {
         let me = try Self.me(file)
-        return NavigationStack {
+        return PushedScreen(back: Copy.youTitle) {
             DeleteAccountView(
                 consequences: DeletionConsequence.of(me),
                 battleTag: me.user.battletag,
@@ -110,17 +124,23 @@ struct AccountSnapshotTests {
         SignedOutView(notice: notice, noticeIsFailure: failure, isSigningIn: signingIn, onSignIn: {}, onPickClass: {})
     }
 
-    private func snap(_ view: some View, _ name: String, size: DynamicTypeSize = .large) {
+    private func snap(_ view: some View, _ name: String, size: DynamicTypeSize = .large, height: CGFloat? = nil) {
         let traits = UITraitCollection { traits in
             traits.userInterfaceStyle = .dark
             traits.preferredContentSizeCategory = UIContentSizeCategory(size)
         }
         assertSnapshot(
             of: view.environment(\.dynamicTypeSize, size).preferredColorScheme(.dark),
-            as: .image(precision: SnapshotTolerance.precision, perceptualPrecision: SnapshotTolerance.perceptualPrecision, layout: .device(config: Self.iPhone17), traits: traits),
+            as: .image(precision: SnapshotTolerance.precision, perceptualPrecision: SnapshotTolerance.perceptualPrecision, layout: .device(config: Self.device(height: height)), traits: traits),
             named: name,
             testName: "account"
         )
+    }
+
+    /// iPhone 17, or the same width at `height` for a whole-page capture.
+    static func device(height: CGFloat?) -> ViewImageConfig {
+        guard let height else { return iPhone17 }
+        return ViewImageConfig(safeArea: iPhone17.safeArea, size: CGSize(width: iPhone17.size?.width ?? 0, height: height), traits: iPhone17.traits)
     }
 
     /// iPhone 17: 402 x 874 pt with its safe area.

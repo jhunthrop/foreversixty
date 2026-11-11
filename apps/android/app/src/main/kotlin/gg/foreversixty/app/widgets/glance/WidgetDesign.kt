@@ -39,12 +39,6 @@ internal object WidgetDesign {
 
     fun styles(fontScale: Float): WidgetStyles = WidgetStyles(if (fontScale > MAX_SCALE) MAX_SCALE / fontScale else 1f, 1f / fontScale)
 
-    /**
-     * Tracked caps for the micro labels (`N E X T  R A I D` on the board): Glance's TextStyle has
-     * no letter-spacing, so a hair space sits between the letters. The widget's description carries
-     * the plain words for TalkBack.
-     */
-    fun tracked(text: String): String = text.uppercase().toList().joinToString("\u200A")
 }
 
 /**
@@ -56,8 +50,8 @@ internal class WidgetStyles(private val fit: Float, private val unscaled: Float)
     private fun style(size: Float, color: Color, weight: FontWeight = FontWeight.Normal, family: FontFamily = FontFamily.SansSerif) =
         TextStyle(color = WidgetDesign.color(color), fontSize = (size * fit).sp, fontWeight = weight, fontFamily = family)
 
-    /** `NEXT RAID`: micro, gold, tracked caps. */
-    val micro = style(11f, FsColor.gold, FontWeight.Bold)
+    /** `Next raid`: the 12 label, gold, sentence case (ruling N1). */
+    val micro = style(12f, FsColor.gold, FontWeight.Bold)
 
     val title = style(16f, FsColor.strong, FontWeight.Medium)
     val body = style(13f, FsColor.text)

@@ -18,7 +18,7 @@ struct GuidesLogicTests {
         let mine = try #require(GuidesIndexLogic.yourGuide(index, character: GuidesTestData.lightningbolltz))
         #expect(mine.spec == "shaman-elemental")
         #expect(mine.title == "Elemental Shaman")
-        #expect(GuideCopy.cardMeta(mine) == "DPS · Updated 1 Nov 2026")
+        #expect(GuideCopy.cardMeta(mine) == "DPS · Updated 1 Nov")
         #expect(GuidesIndexLogic.yourGuide(index, character: nil) == nil)
     }
 
@@ -38,7 +38,7 @@ struct GuidesLogicTests {
         let saved = GuidesTestData.saved()
         #expect(saved.isSaved("shaman-elemental"))
         #expect(!saved.isSaved("shaman-enhancement"))
-        #expect(saved.footer(index) == "Saved on this phone: Warrior, Shaman · 32 KB. Guides update by themselves when the game data does.")
+        #expect(saved.footer(index) == "Saved on this phone: Warrior, Shaman · 32 KB")
         #expect(SavedGuides(bytes: [:]).footer(index) == "Nothing is saved on this phone yet. Open a guide once and it stays.")
     }
 
@@ -54,7 +54,7 @@ struct GuidesLogicTests {
     @Test func head_namesTheRecommendedRaces() throws {
         let guide = try GuidesTestData.elemental()
         #expect(GuideCopy.title(guide) == "Elemental Shaman")
-        #expect(GuideCopy.headMeta(guide) == "Updated 1 Nov 2026 · Recommended races: Dwarf, Orc")
+        #expect(GuideCopy.headMeta(guide) == "Updated 1 Nov · Recommended races: Dwarf, Orc")
         #expect(GuideCopy.shareURL(guide).absoluteString == "https://foreversixty.gg/guides/shaman/elemental")
     }
 
@@ -174,7 +174,7 @@ struct GuidesLogicTests {
 
     @Test func changelog_rowsCarryDateAndTag() throws {
         let rows = ChangelogLogic.rows(try GuidesTestData.changelog())
-        #expect(rows.first?.date == "10/28")
+        #expect(rows.first?.date == "28 Oct")
         #expect(rows.first?.title == "The log coach is here.")
         #expect(rows.first?.tag == "Site")
         #expect(ChangelogLogic.tag("game") == "Game")

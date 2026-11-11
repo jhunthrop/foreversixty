@@ -74,9 +74,15 @@ struct PremiumTests {
         #expect(plan.billing == .manage)
     }
 
+    @Test func renewingPlanSplitsThePriceForItsFigure() throws {
+        let plan = PlanSummary(me: try AccountSnapshotTests.me("me.premium.json"), now: Self.now)
+        #expect(plan.priceLine == PlanSummary.PriceLine(amount: "$40", period: "a year", renews: Copy.planRenews(date: "27 Oct 2027")))
+    }
+
     @Test func cancellingPlanReadsItsEnd() {
         let plan = PlanSummary(me: Self.me(billing: Self.stripe(cancelling: true)), now: Self.now)
         #expect(plan.line == Copy.planEnds(date: "27 Oct 2027"))
+        #expect(plan.priceLine == nil)
     }
 
     @Test func ownThenSeatNamesTheSeat() {

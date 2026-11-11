@@ -1,5 +1,7 @@
 package gg.foreversixty.app.talents
 
+import gg.foreversixty.app.designsystem.FsTopBar
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.common.rememberHaptics
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -172,16 +174,8 @@ fun TalentsPage(
     /** Lane F15: `Compare with mine` titles the same screen over a shared build. */
     title: String = stringResource(R.string.talents_title),
 ) {
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-        TopAppBar(
-            title = { Text(title.uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong) },
-            navigationIcon = {
-                IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-            // The app scaffold already pads for the status bar.
-            windowInsets = WindowInsets(0, 0, 0, 0),
-        )
+    Column(Modifier.fillMaxSize().screenGround()) {
+        FsTopBar(title, stringResource(R.string.common_back), back)
         TalentsContent(phase, build, offlineStamp, shown, tree, onShow, onTree, selectedId, openTalent, retry, openPlanner, planner)
     }
 }
@@ -244,7 +238,7 @@ private fun TalentsContent(
                         )
                     }
                     item {
-                        Text(presenter.legend(shown, res), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp))
+                        Text(presenter.legend(shown, res), style = ScaledType.meta, color = FsColor.mutedGround, modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp))
                     }
                 }
             }
@@ -363,7 +357,7 @@ private fun FittingTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> 
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val widths = tabs.map { tab ->
             val name = measurer.measure(tab.name, if (tab.index == tree) ScaledType.bodyStrong else ScaledType.body).size.width
-            val points = measurer.measure(tab.points.toString(), ScaledType.mono).size.width
+            val points = measurer.measure(tab.points.toString(), ScaledType.tabular).size.width
             val dot = if (tab.differing > 0) with(density) { (DOT_GAP + DOT_SIZE).roundToPx() } else 0
             name + points + dot + with(density) { (LABEL_GAP + TAB_PADDING * 2).roundToPx() }
         }
@@ -406,7 +400,7 @@ private fun TabLabel(tab: TalentTabModel, selected: Boolean) {
     val color = if (selected) FsColor.strong else FsColor.nav
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(tab.name, style = if (selected) ScaledType.bodyStrong else ScaledType.body, color = color, softWrap = false)
-        Text(tab.points.toString(), style = ScaledType.mono, color = color, softWrap = false)
+        Text(tab.points.toString(), style = ScaledType.tabular, color = color, softWrap = false)
         if (tab.differing > 0) DiffDot()
     }
 }
@@ -437,7 +431,7 @@ private fun StackedTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> 
                     color = if (selected) FsColor.strong else FsColor.nav,
                     modifier = Modifier.weight(1f).padding(start = 11.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
                 )
-                Text(tab.points.toString(), style = ScaledType.mono, color = if (selected) FsColor.strong else FsColor.nav)
+                Text(tab.points.toString(), style = ScaledType.tabular, color = if (selected) FsColor.strong else FsColor.nav)
                 if (tab.differing > 0) {
                     Spacer(Modifier.width(6.dp))
                     DiffDot()
@@ -457,7 +451,6 @@ private fun DiffDot() {
 @Composable
 private fun TalentsFooter(openPlanner: () -> Unit, planner: TalentsPlannerLinks?) {
     Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(stringResource(R.string.talents_footer), style = ScaledType.meta, color = FsColor.muted)
         if (planner != null) {
             PlannerLinkRow(stringResource(R.string.plan_planBuild), planner.plan)
             planner.builds?.let { PlannerLinkRow(stringResource(R.string.plan_yourBuilds), it) }

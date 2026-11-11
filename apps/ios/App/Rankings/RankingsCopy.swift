@@ -1,4 +1,5 @@
 import Auth
+import DesignSystem
 import Foundation
 import Models
 
@@ -101,7 +102,7 @@ enum RankingsCopy {
 
     /// `Shaman` from `shaman`.
     static func className(_ slug: String) -> String {
-        slug.prefix(1).uppercased() + slug.dropFirst().lowercased()
+        slug.prefix(1).capitalized + slug.dropFirst().lowercased()
     }
 
     /// The filter line (spec F11.1): `Onyxia · Normal · All regions · Phase 1 · Damage`, then a
@@ -110,7 +111,7 @@ enum RankingsCopy {
         [
             encounterName,
             ruleset(filters.ruleset),
-            filters.region.isEmpty ? Copy.rankLineAllRegions : filters.region.uppercased(),
+            filters.region.isEmpty ? Copy.rankLineAllRegions : Codes.region(filters.region),
             filters.phase.isEmpty ? "" : phase(filters.phase),
             metric(filters.metric),
             filters.faction.isEmpty ? "" : faction(filters.faction),

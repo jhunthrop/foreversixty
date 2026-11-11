@@ -45,14 +45,14 @@ struct CoachCard: View {
     }
 
     private func title(_ review: CoachReview) -> some View {
-        Text(Copy.coachTitle(spec: review.spec).uppercased()).font(ScaledType.sec).foregroundStyle(FSColor.strong)
+        Text(Copy.coachTitle(spec: review.spec)).font(ScaledType.sec).foregroundStyle(FSColor.strong)
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityAddTraits(.isHeader)
     }
 
     private func sectionView(_ section: CoachSection) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            MicroLabel(ReportsCopy.coachSection(section.kind))
+            Label12(ReportsCopy.coachSection(section.kind))
             ForEach(Array(section.lines.enumerated()), id: \.offset) { _, line in
                 VStack(alignment: .leading, spacing: 2) {
                     if let title = line.title {

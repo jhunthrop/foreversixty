@@ -1,5 +1,13 @@
 package gg.foreversixty.app.guides.ui
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import gg.foreversixty.app.designsystem.FsTopBar
+import gg.foreversixty.app.designsystem.surfaceBand
+import gg.foreversixty.app.designsystem.screenGround
+import gg.foreversixty.app.designsystem.Label12
 import gg.foreversixty.app.system.logic.ShareMessage
 import gg.foreversixty.app.system.logic.ShareText
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -37,13 +45,11 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.NewDataStrip
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.primaryCard
 import gg.foreversixty.app.designsystem.quietCard
-import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.guides.logic.GuideSection
 import gg.foreversixty.app.guides.logic.Guides
 import gg.foreversixty.app.guides.logic.GuidesCopy
@@ -56,7 +62,6 @@ import gg.foreversixty.app.reports.ui.ReportsBar
 import gg.foreversixty.app.reports.ui.SkeletonBar
 import gg.foreversixty.app.reports.ui.scaledSize
 import java.time.Instant
-import java.util.Locale
 import kotlinx.coroutines.launch
 
 /** The new-data strip's state over an open guide (spec §5.7). */
@@ -93,12 +98,19 @@ fun GuideReader(state: GuideReaderState, now: Instant, actions: GuideReaderActio
     val res = LocalResources.current
     val title = guide?.let { specTitle(it.specName, it.className) } ?: state.title
     val share = guide?.let { file -> BarAction(stringResource(R.string.guides_share), { rememberVectorPainter(Icons.Filled.Share) }) { actions.share(ShareText.guide(res, file.classSlug, file.specSlug, file.specName, file.className)) } }
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-        ReportsBar(title, stringResource(R.string.guides_title), actions.back, share, titleColor = classColor(guide?.classSlug ?: state.classSlug))
+    Column(Modifier.fillMaxSize().screenGround()) {
+        // The bar is Back and Share on the band; the head under it names the guide (or the bar does, before it loads).
+        val named = state.phase is Loadable.Loaded || state.phase == Loadable.Loading
+        FsTopBar(
+            title.takeUnless { named || it.isEmpty() }, stringResource(R.string.guides_title), actions.back,
+            classColor(guide?.classSlug ?: state.classSlug), bottomLine = !named,
+        ) {
+            share?.let { action -> IconButton(onClick = action.run) { Icon(action.icon(), contentDescription = action.label, tint = FsColor.strong) } }
+        }
         state.newData?.let { NewDataStrip(stringResource(if (it.failed) R.string.offline_updateFailed else R.string.offline_newData), stringResource(R.string.offline_update), actions.update, it.failed) }
         when (val phase = state.phase) {
             Loadable.Loading -> ReaderSkeleton()
-            Loadable.NotCached -> Text(stringResource(R.string.guides_notCached), style = ScaledType.body, color = FsColor.muted, modifier = Modifier.padding(GuideSpace.margin))
+            Loadable.NotCached -> Text(stringResource(R.string.guides_notCached), style = ScaledType.body, color = FsColor.mutedGround, modifier = Modifier.padding(GuideSpace.margin))
             Loadable.Failed -> ErrorRegion(stringResource(R.string.guides_error), actions.retry)
             is Loadable.Loaded -> {
                 phase.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now))) }
@@ -147,14 +159,15 @@ private fun stripBottom(info: List<androidx.compose.foundation.lazy.LazyListItem
 @Composable
 private fun Head(guide: GuideFile) {
     val copy = GuidesCopy(LocalResources.current)
+    // The head continues the bar's band: the icon, the spec's name in its class colour and the facts (the web's page head).
     Row(
-        Modifier.fillMaxWidth().surfaceBand().padding(GuideSpace.margin),
+        Modifier.fillMaxWidth().surfaceBand().padding(start = GuideSpace.margin, end = GuideSpace.margin, bottom = GuideSpace.margin),
         horizontalArrangement = Arrangement.spacedBy(GuideSpace.inCard),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SpecIcon(guide.icon, guide.build, scaledSize(HEAD_ICON, HEAD_ICON_CAP))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(specTitle(guide.specName, guide.className).uppercase(Locale.ROOT), style = ScaledType.h2, color = classColor(guide.classSlug))
+            Text(specTitle(guide.specName, guide.className), style = ScaledType.h2, color = classColor(guide.classSlug), modifier = Modifier.semantics { heading() })
             Text(copy.headMeta(guide), style = ScaledType.meta, color = FsColor.nav)
         }
     }
@@ -191,11 +204,11 @@ private fun Glance(guide: GuideFile) {
         verticalArrangement = Arrangement.spacedBy(GuideSpace.labelGap),
     ) {
         guide.roleLine?.let { line ->
-            MicroLabel(stringResource(R.string.guides_role))
+            Label12(stringResource(R.string.guides_role))
             Text(line, style = ScaledType.lead.copy(fontWeight = ScaledType.body.fontWeight), color = FsColor.strong)
         }
         if (guide.statPriority.isNotEmpty()) {
-            MicroLabel(stringResource(R.string.guides_statPriority), Modifier.padding(top = 6.dp))
+            Label12(stringResource(R.string.guides_statPriority), Modifier.padding(top = 6.dp))
             NumberedChips(guide.statPriority, copy::statLabel)
         }
     }
@@ -205,7 +218,7 @@ private fun Glance(guide: GuideFile) {
 @Composable
 private fun ReaderSkeleton() {
     Column(Modifier.fillMaxWidth()) {
-        Row(Modifier.fillMaxWidth().surfaceBand().padding(GuideSpace.margin), horizontalArrangement = Arrangement.spacedBy(GuideSpace.inCard)) {
+        Row(Modifier.fillMaxWidth().surfaceBand().padding(start = GuideSpace.margin, end = GuideSpace.margin, bottom = GuideSpace.margin), horizontalArrangement = Arrangement.spacedBy(GuideSpace.inCard)) {
             SkeletonBar(HEAD_ICON, HEAD_ICON)
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 SkeletonBar(200.dp, 24.dp)

@@ -1,5 +1,17 @@
 package gg.foreversixty.app.guides
 
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Spacer
+import gg.foreversixty.app.designsystem.surfaceBand
+import gg.foreversixty.app.designsystem.ScaledType
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Row
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.system.logic.TierRole
 import gg.foreversixty.app.system.logic.ShareText
 import gg.foreversixty.app.common.rememberHaptics
@@ -52,7 +64,6 @@ import gg.foreversixty.app.guides.ui.screenMargins
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.GuideFile
 import gg.foreversixty.app.planner.PlannerFeature
-import gg.foreversixty.app.sims.ui.ScreenTitle
 import kotlinx.coroutines.launch
 
 /**
@@ -66,7 +77,7 @@ fun GuidesRoute(
     character: AccountCharacter?,
     openBis: (GuideFile) -> Unit,
     planner: PlannerFeature? = null,
-    selector: @Composable () -> Unit = {},
+    selector: (@Composable () -> Unit)? = null,
 ) {
     val store = feature.store
     LaunchedEffect(feature) { if (store.build == null) store.start() }
@@ -81,7 +92,7 @@ fun GuidesRoute(
 }
 
 @Composable
-private fun GuidesRoot(feature: GuidesFeature, character: AccountCharacter?, selector: @Composable () -> Unit) {
+private fun GuidesRoot(feature: GuidesFeature, character: AccountCharacter?, selector: (@Composable () -> Unit)?) {
     val store = feature.store
     val haptics = rememberHaptics()
     val scope = rememberCoroutineScope()
@@ -134,19 +145,21 @@ private fun GuidesRoot(feature: GuidesFeature, character: AccountCharacter?, sel
     }
 }
 
-/** The root: the selector row, `GUIDES`, the segments, then the segment's content, scrolling as one. */
+/** The root: the band bar (Back and `Guides`), the segments, then the segment's content, scrolling as one. */
 @Composable
 fun GuidesRootLayout(
     segments: List<GuidesSegment>,
     segment: GuidesSegment,
     onSegment: (GuidesSegment) -> Unit,
-    selector: @Composable () -> Unit = {},
+    selector: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     val res = LocalResources.current
-    Column(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
-        selector()
-        ScreenTitle(stringResource(R.string.guides_title))
+    Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
+        Row(Modifier.fillMaxWidth().surfaceBand().heightIn(min = BAR_HEIGHT), verticalAlignment = Alignment.CenterVertically) {
+            if (selector != null) selector() else Spacer(Modifier.width(16.dp))
+            Text(stringResource(R.string.guides_title), style = ScaledType.barTitle, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        }
         Column(Modifier.screenMargins().padding(vertical = SEGMENT_GAP)) {
             EqualSegments(segments.map { res.getString(it.label) }, segments.indexOf(segment)) { onSegment(segments[it]) }
         }
@@ -199,3 +212,6 @@ private val GuidesSegment.label: Int
     }
 
 private val SEGMENT_GAP = 8.dp
+
+/** Material 3's small top app bar height, as `FsTopBar` draws it. */
+private val BAR_HEIGHT = 64.dp

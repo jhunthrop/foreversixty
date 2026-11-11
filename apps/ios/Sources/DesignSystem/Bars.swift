@@ -28,12 +28,15 @@ public enum BarAppearance {
         return titled(appearance)
     }
 
-    /// A round-5 tab root's bar at rest (`BandBar`): clear, so the page's band art shows behind the
-    /// profile button and the large title, with the same title faces.
-    public static func clearEdge() -> UINavigationBarAppearance {
+    /// A round-5 bar at rest (`BandBar`): clear, so the page's band art shows behind the back or profile
+    /// button and the large title, with the same title faces. `hidesTitle`: a pushed screen's bar shows
+    /// no title at rest, its head names the screen (N3).
+    public static func clearEdge(hidesTitle: Bool = false) -> UINavigationBarAppearance {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
-        return titled(appearance)
+        let titled = titled(appearance)
+        if hidesTitle { titled.titleTextAttributes[.foregroundColor] = UIColor.clear }
+        return titled
     }
 
     private static func titled(_ appearance: UINavigationBarAppearance) -> UINavigationBarAppearance {

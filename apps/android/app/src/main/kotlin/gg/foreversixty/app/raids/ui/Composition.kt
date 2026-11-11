@@ -52,7 +52,7 @@ fun CompositionBlock(read: CompositionRead) {
                         maxLines = 1,
                         softWrap = false,
                     )
-                    Text("${line.count}", style = ScaledType.monoMeta, color = if (line.count == 0) FsColor.muted else FsColor.strong)
+                    Text("${line.count}", style = ScaledType.tabularMeta, color = if (line.count == 0) FsColor.muted else FsColor.strong)
                 }
             }
         }

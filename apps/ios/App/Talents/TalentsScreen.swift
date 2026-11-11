@@ -42,10 +42,7 @@ struct TalentsScreen: View {
             openPlanner: { openURL(TalentLinks.planner(classSlug: character.className, race: character.race)) },
             planner: plannerEntry
         )
-        .navigationTitle(Copy.talentsTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(FSColor.bg, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
+        .pushedBandBar(Copy.talentsTitle)
         .sheet(item: $sheet) { TalentRankSheet(model: $0, build: model.build ?? "") }
         .safeAreaInset(edge: .top, spacing: 0) {
             NewDataStrip(newData) {

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.flows
 
+import gg.foreversixty.app.flows.FlowChip
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -95,7 +96,7 @@ private fun Chips(content: NotAnsweredContent, select: (NotAnsweredFilter) -> Un
         ParityScrollRegion(ParityRegion.CONTROLS) {
             content.chips.forEach { chip ->
                 val on = chip.filter == content.filter
-                FlowButton(chip.title, { select(chip.filter) }, primary = on, selectedState = on)
+                FlowChip(chip.title, on, { select(chip.filter) }, minHeight = FILTER_HEIGHT)
             }
         }
     }
@@ -172,3 +173,6 @@ private val PREVIEW = FsType.body.copy(fontSize = 14.sp, lineHeight = 20.sp)
 private val PREVIEW_RULE = 3.dp
 private val PREVIEW_PAD = 10.dp
 private val LINK = FsType.small.copy(fontWeight = FontWeight.SemiBold)
+
+/** The status filters at Activity's filter height (36, 48 to the touch), as the mock's chips. */
+private val FILTER_HEIGHT = 36.dp

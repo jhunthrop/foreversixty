@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guides.ui
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,6 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.guides.logic.BuildRow
@@ -70,7 +70,7 @@ private fun Overview(guide: GuideFile) {
 private fun LabelledLines(label: String, lines: List<String>) {
     if (lines.isEmpty()) return
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        MicroLabel(label)
+        Label12(label)
         Lines(lines, bulleted = true)
     }
 }
@@ -117,7 +117,7 @@ private fun BuildRowView(row: BuildRow, copy: GuidesCopy) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(copy.build(row.kind), style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
-        Text(row.totals, style = ScaledType.mono, color = FsColor.text)
+        Text(row.totals, style = ScaledType.tabular, color = FsColor.text)
         if (row.kind == BuildKind.Raid) Text(stringResource(R.string.guides_buildLevel), style = ScaledType.meta, color = FsColor.muted)
     }
 }
@@ -134,10 +134,10 @@ private fun Rotation(rotation: GuideRotation?, build: String, copy: GuidesCopy) 
 @Composable
 private fun RotationGroupView(group: RotationGroup, build: String, copy: GuidesCopy) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        MicroLabel(copy.rotation(group.kind))
+        Label12(copy.rotation(group.kind))
         QuietRows(group.rows) { row ->
             Row(Modifier.fillMaxWidth().padding(start = GuideSpace.margin), verticalAlignment = Alignment.CenterVertically) {
-                Text(row.number.toString(), style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.widthIn(min = NUMBER_WIDTH))
+                Text(row.number.toString(), style = ScaledType.tabular, color = FsColor.muted, modifier = Modifier.widthIn(min = NUMBER_WIDTH))
                 SpellRow(row.spell, build, copy)
             }
         }
@@ -211,7 +211,7 @@ private fun IconRow(icon: String?, build: String, inset: Boolean = true, tile: B
 private fun NameAndFigure(name: String, figure: String?) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), itemVerticalAlignment = Alignment.Bottom) {
         Text(name, style = ScaledType.bodyStrong, color = FsColor.strong)
-        figure?.let { Text(it, style = ScaledType.monoMeta, color = FsColor.muted) }
+        figure?.let { Text(it, style = ScaledType.tabularMeta, color = FsColor.muted) }
     }
 }
 

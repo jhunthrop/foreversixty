@@ -21,7 +21,10 @@ struct RaidSnapshotTests {
             traits.preferredContentSizeCategory = large ? .accessibilityExtraExtraExtraLarge : .large
         }
         let config = ViewImageConfig(safeArea: Self.safeArea, size: CGSize(width: Self.phone.width, height: height), traits: traits)
+        // The repo's game icons, as the raid flows' tests paint them.
         let sized = view
+            .environment(\.itemIconSource, RepoItemIconSource())
+            .environment(\.raidIconBuild, HomeFlowTestData.build)
             .environment(\.dynamicTypeSize, large ? .accessibility5 : .large)
             .preferredColorScheme(.dark)
         assertSnapshot(
@@ -34,7 +37,7 @@ struct RaidSnapshotTests {
     // MARK: Raid page (F4.2, F4.6 to F4.12, F4.18 to F4.21)
 
     private func page(_ controller: SignupController, offline: Date? = nil) -> some View {
-        NavigationStack {
+        PushedScreen(back: AppTab.raid.title) {
             RaidPageContent(
                 controller: controller, clock: RaidTime.clock, now: { RaidTime.now }, currentKey: nil,
                 offlineSince: offline, guildName: "OLYMPUS XXVII", openNight: { _ in }
@@ -127,17 +130,25 @@ struct RaidSnapshotTests {
 
     // MARK: Sheets and Your raid night (F4.3, F4.22, F4.23)
 
-    private func sheet(_ raid: String, ask: SpecAsk, key: String) throws -> some View {
+    /// The spec sheet at its medium detent over the raid page, with the grabber, as it presents.
+    private func sheet(_ raid: String, ask: SpecAsk, key: String, height: CGFloat = Self.sheetHeight) throws -> some View {
         let controller = try makeController(try RaidFixture.raid(raid))
-        return SpecSheet(ask: ask, character: try #require(controller.character(key)), raidTitle: "Onyxia's Lair", date: "Sat 19 Dec") { _ in }
+        let character = try #require(controller.character(key))
+        return SheetFrame(height: height, behind: page(controller)) {
+            SpecSheet(ask: ask, character: character, raidTitle: "Onyxia's Lair", date: "Sat 19 Dec") { _ in }
+        }
     }
+
+    /// The medium detent on the 874 pt phone, and the sheet's height on the taller AX5 canvas.
+    static let sheetHeight: CGFloat = 520
+    static let sheetHeightLarge: CGFloat = 1300
 
     @Test func specSheet_ask() throws {
         snap(try sheet("guild.raid.ask-spec", ask: .ask(characterKey: "us/pvp/lightningbolltz", state: .signedIn), key: "us/pvp/lightningbolltz"), "spec-sheet-ask-ios")
     }
 
     @Test func specSheet_ask_xl() throws {
-        snap(try sheet("guild.raid.ask-spec", ask: .ask(characterKey: "us/pvp/lightningbolltz", state: .signedIn), key: "us/pvp/lightningbolltz"), "spec-sheet-ask-xl-ios", height: 1600, large: true)
+        snap(try sheet("guild.raid.ask-spec", ask: .ask(characterKey: "us/pvp/lightningbolltz", state: .signedIn), key: "us/pvp/lightningbolltz", height: Self.sheetHeightLarge), "spec-sheet-ask-xl-ios", height: 1600, large: true)
     }
 
     @Test func specSheet_change() throws {
@@ -147,7 +158,7 @@ struct RaidSnapshotTests {
     private func night(_ fixture: String) throws -> some View {
         let night = try RaidFixture.load(RaidNightSummary.self, fixture)
         let model = RaidNightModel(raid: 29, service: FakeRaidService(), cache: NoRaidCache(), now: { RaidTime.now }, initial: .loaded(night))
-        return NavigationStack { RaidNightView(model: model, clock: RaidTime.clock, now: { RaidTime.now }) }
+        return PushedScreen(back: AppTab.raid.title) { RaidNightView(model: model, clock: RaidTime.clock, now: { RaidTime.now }) }
     }
 
     @Test func raidNight_premium() throws { snap(try night("me.raid-night"), "raid-night-premium-ios") }

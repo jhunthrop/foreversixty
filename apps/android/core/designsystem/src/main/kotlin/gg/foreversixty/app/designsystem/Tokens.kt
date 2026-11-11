@@ -180,6 +180,10 @@ object FsType {
     val body = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 15.sp, lineHeight = 22.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     val bodyStrong = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 22.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     val small = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 13.sp, lineHeight = 20.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The 12 px label: caps at .12em on the web, sentence case at .01em in the apps (ruling N1).
+    val label = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.01.em, lineHeightStyle = CenteredLines)
+    // Caps at .07em on the web, sentence case in the apps.
+    val button = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The tab bar label (ruling N4).
     val tab = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, lineHeight = 14.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     val figureSm = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 20.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines, fontFeatureSettings = "tnum")

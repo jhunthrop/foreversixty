@@ -22,7 +22,7 @@ struct SimResultTests {
         #expect(model.kind == "Sim")
         #expect(model.meta == "Fury Warrior · level 60")
         #expect(model.answer == .figure("101.4"))
-        #expect(model.errorLine == "± 0.1 · 3,000 iterations · engine 1f542def3")
+        #expect(model.errorLine == "± 0.1 · 3,000 iterations")
         #expect(model.breakdownURL.absoluteString == "https://foreversixty.gg/sim/km3xibdrsiyr")
     }
 

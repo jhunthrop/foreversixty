@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.Icons
@@ -30,7 +31,6 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.model.Report
@@ -100,10 +100,10 @@ private fun Loaded(report: Report, state: ReportScreenState, now: Instant, copy:
     Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(22.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MicroLabel(stringResource(R.string.report_tag), color = FsColor.gold)
+                Label12(stringResource(R.string.report_tag), color = FsColor.gold)
                 Tag(copy.visibility(report.visibility), FsColor.nav)
             }
-            Text(copy.reportMeta(report), style = ScaledType.meta, color = FsColor.muted)
+            Text(copy.reportMeta(report), style = ScaledType.meta, color = FsColor.mutedGround)
         }
         when (ReportState.of(report.status)) {
             ReportState.Processing -> {
@@ -123,7 +123,7 @@ private fun Loaded(report: Report, state: ReportScreenState, now: Instant, copy:
         ParsesCard(state.parses, copy, actions.retryParses)
         FightsCard(report, copy, actions.openMeters)
         CoachCard(state.coach, copy, actions.retryCoach)
-        Text(stringResource(R.string.report_footer), style = ScaledType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.report_footer), style = ScaledType.meta, color = FsColor.mutedGround)
     }
 }
 

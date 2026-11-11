@@ -52,8 +52,11 @@ struct NotAnsweredView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: FSSpace.space2) {
                 ForEach(content.chips) { chip in
+                    // The status filters are choice chips, never primary buttons (one primary a screen).
                     Button(chip.title) { actions.select(chip.filter) }
-                        .buttonStyle(FSButtonStyle(chip.filter == content.filter ? .primary : .secondary, fullWidth: false, small: true))
+                        .buttonStyle(MinuteChipStyle(on: chip.filter == content.filter, height: FSButtonStyle.smallHeight, fillsWidth: false))
+                        // Each chip keeps its whole label; the row scrolls sideways instead of clipping.
+                        .fixedSize()
                         .accessibilityAddTraits(chip.filter == content.filter ? .isSelected : [])
                 }
             }
@@ -67,7 +70,8 @@ struct NotAnsweredView: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(spacing: FSSpace.space3) {
                 if let role = mention.role { FSButton(role, kind: .primary, action: actions.mentionRole) }
-                FSButton(mention.all, kind: mention.role == nil ? .primary : .secondary, action: actions.mentionAll)
+                // The role's mention is the one primary; Mention all is always the outline.
+                FSButton(mention.all, kind: .quiet, action: actions.mentionAll)
             }
             .disabled(mentioning)
             .padding(.top, RaidFlowSpacing.buttons)
@@ -125,10 +129,10 @@ struct NotAnsweredView: View {
                         Button(SignupState.bench.label) { actions.mark(row, .bench) }
                         if let dm = row.dm { Button(Copy.raidNaDiscordDM) { actions.message(dm) } }
                     }
-                    .buttonStyle(FSButtonStyle(fullWidth: true, small: true))
+                    .buttonStyle(FSButtonStyle(.quiet, fullWidth: true, small: true))
                 case .markIn:
                     Button(Copy.raidNaMarkIn) { actions.mark(row, .signedIn) }
-                        .buttonStyle(FSButtonStyle(fullWidth: false, small: true))
+                        .buttonStyle(FSButtonStyle(.quiet, fullWidth: false, small: true))
                 case .none:
                     EmptyView()
                 }

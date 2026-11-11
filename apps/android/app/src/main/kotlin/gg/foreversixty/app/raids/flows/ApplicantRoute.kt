@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.flows
 
+import gg.foreversixty.app.designsystem.screenGround
 import android.content.ClipData
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,7 +32,7 @@ fun ApplicantRoute(model: ApplicantModel, clock: RaidClock, guildName: String, n
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
     LaunchedEffect(model) { model.load() }
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         FlowBackBar(stringResource(R.string.tab_raids), back)
         when (val phase = model.phase) {
             ApplicantModel.Phase.Loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

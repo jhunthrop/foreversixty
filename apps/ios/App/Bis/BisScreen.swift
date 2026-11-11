@@ -65,7 +65,7 @@ struct BisScreen: View {
                 .toolbarTitleDisplayMode(.large)
                 .tabRootChrome()
                 .navigationDestination(isPresented: $listShown) {
-                    list.refreshable { await model.refresh() }
+                    list.refreshable { await model.refresh() }.pushedBandBar(Copy.bisTitle)
                 }
                 .navigationDestination(item: $itemPage) { route in
                     if let search {

@@ -34,7 +34,34 @@ enum ParityCheck {
             Drift(prefix: "section-when: y", since: "2026-11-10", lane: "secondary restyle"),
             Drift(prefix: "section-discord: y", since: "2026-11-10", lane: "secondary restyle"),
         ],
+        // Raid night's answers are the tab roots' 44 pt answer control (one answer control everywhere);
+        // the mock still draws the old 36 pt chips, so the sign-up section is 8 taller.
+        "raid-night-live": nightAnswersDrift + [bandHead("section-your-sign-up")],
+        "raid-night-signup": nightAnswersDrift + [bandHead("section-your-sign-up")],
+        // The raid flows' heads sit on the band under the clear bar (N3), 16 above the content; the
+        // mocks draw the head on the ground under an opaque bar, so every region below is ~20 lower.
+        "raid-unanswered": ["controls", "section-not-answered", "section-healers-on-the-bench"].map(bandHead),
+        // Home's raid-day card draws the one answer control (44 pt and its 1 pt ring, lane mobile-rest's
+        // brand ruling: one answer control everywhere); the mock's older answers are shorter, so New for
+        // you sits 8 to 9 lower. Clears when the Home mock draws the segmented answers.
+        "home-raid-day": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
+        "home-raid-day-late": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
+        "home-raid-day-officer": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
+        "raid-applicant": applicantBandDrift,
     ]
+
+    private static let nightAnswersDrift = [
+        Drift(prefix: "section-your-sign-up: height", since: "2026-11-10", lane: "secondary restyle"),
+        Drift(prefix: "section-who-is-coming: y", since: "2026-11-10", lane: "secondary restyle"),
+        Drift(prefix: "section-before-you-pull: y", since: "2026-11-10", lane: "secondary restyle"),
+    ]
+
+    private static let applicantBandDrift = ["section-raid-ready", "section-their-note", "section-guild-history"].map(bandHead)
+
+    /// A region moved down only because its screen's head now sits on the band (N3, iOS round 1).
+    private nonisolated static func bandHead(_ region: String) -> Drift {
+        Drift(prefix: "\(region): y", since: "2026-11-10", lane: "N3 band head")
+    }
 
     /// Room under the content for the safe area and the screen's own bottom padding.
     static let textSlack: CGFloat = 200

@@ -95,15 +95,13 @@ struct PlanView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpace.space4) {
-                card
-                Text(Copy.planFreeForAll).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.youPlan)
+                card.padding(FSSpace.space4)
             }
-            .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
-        .navigationTitle(Copy.youPlan)
+        .screenGround()
+        .pushedBandBar(Copy.youPlan)
     }
 
     private var card: some View {
@@ -121,9 +119,13 @@ struct PlanView: View {
                 }
             }
             VStack(alignment: .leading, spacing: FSSpace.space1) {
-                Text(plan.line).font(ScaledType.body).foregroundStyle(FSColor.text)
+                if let price = plan.priceLine {
+                    priceFigure(price)
+                    Text(price.renews).font(ScaledType.body).foregroundStyle(FSColor.text)
+                } else {
+                    Text(plan.line).font(ScaledType.body).foregroundStyle(FSColor.text)
+                }
                 if let line2 = plan.line2 { muted(line2) }
-                if plan.founder { muted(Copy.planFounderNote) }
             }
             if !plan.includes.isEmpty { includes }
             billing
@@ -133,8 +135,17 @@ struct PlanView: View {
         .primaryCard()
     }
 
+    /// The price as a Figure (spec 3.4): the amount in gold tabular figures, its period beside it.
+    private func priceFigure(_ price: PlanSummary.PriceLine) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: FSSpace.space2) {
+            Text(price.amount).type(FSType.figure).foregroundStyle(FSColor.gold)
+            Text(price.period).font(ScaledType.bodyStrong).foregroundStyle(FSColor.muted)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
     private var heading: some View {
-        Text(Copy.planPremium).font(ScaledType.h2).textCase(.uppercase).foregroundStyle(FSColor.strong)
+        Text(Copy.planPremium).font(ScaledType.h2).foregroundStyle(FSColor.strong)
             .accessibilityAddTraits(.isHeader)
     }
 
@@ -146,7 +157,7 @@ struct PlanView: View {
     private var includes: some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
             Divider().overlay(FSColor.lineSoft)
-            MicroLabel(Copy.planIncludes)
+            Label12(Copy.planIncludes)
             ForEach(plan.includes, id: \.self) { line in
                 HStack(alignment: .firstTextBaseline, spacing: FSSpace.space2) {
                     Image(systemName: "checkmark").font(.footnote.weight(.bold)).foregroundStyle(FSColor.kill)

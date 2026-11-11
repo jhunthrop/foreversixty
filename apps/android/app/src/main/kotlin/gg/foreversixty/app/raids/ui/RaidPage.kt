@@ -1,5 +1,9 @@
 package gg.foreversixty.app.raids.ui
 
+import androidx.compose.ui.graphics.Color
+import gg.foreversixty.app.designsystem.surfaceBand
+import gg.foreversixty.app.designsystem.FsTopBar
+import gg.foreversixty.app.designsystem.screenGround
 import android.content.Intent
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.ScaledType
@@ -60,6 +64,7 @@ import androidx.core.net.toUri
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.SavedAnswerStrip
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.raids.logic.NotesText
@@ -116,14 +121,8 @@ fun RaidPageScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PageMessage(back: () -> Unit, content: @Composable () -> Unit) {
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-        TopAppBar(
-            title = {},
-            navigationIcon = { BackButton(back) },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-            // The app scaffold already pads for the status bar.
-            windowInsets = WindowInsets(0, 0, 0, 0),
-        )
+    Column(Modifier.fillMaxSize().screenGround()) {
+        FsTopBar(null, stringResource(R.string.tab_raids), back)
         Box(Modifier.padding(16.dp)) { content() }
     }
 }
@@ -161,12 +160,9 @@ fun RaidPageContent(
     var menu by remember { mutableStateOf(false) }
     val location = if (guildName.isEmpty()) raid.zoneName else stringResource(R.string.raids_calendarLocation, guildName, raid.zoneName)
     val addToCalendar = { context.startActivity(calendarIntent(raid, facts, location, share)) }
-    Box(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Box(Modifier.fillMaxSize().screenGround()) {
         Column(Modifier.fillMaxSize()) {
-            TopAppBar(
-                title = { Text(raid.title.uppercase(), style = ScaledType.sec, color = FsColor.strong) },
-                navigationIcon = { BackButton(back) },
-                actions = {
+            FsTopBar(raid.title, stringResource(R.string.tab_raids), back, bottomLine = false) {
                     IconButton(onClick = addToCalendar) {
                         Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.raid_menu_calendar), tint = FsColor.strong)
                     }
@@ -181,16 +177,14 @@ fun RaidPageContent(
                             DropdownMenuItem(text = { Text(stringResource(R.string.raid_menu_web)) }, onClick = { menu = false; uri.openUri(web) })
                         }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-                // The app scaffold already pads for the status bar.
-                windowInsets = WindowInsets(0, 0, 0, 0),
-            )
+            }
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                Box(Modifier.fillMaxWidth().surfaceBand().padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+                    RaidHead(raid, facts, clock, now, guildName)
+                }
                 offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), stale, retry) }
                 Column(verticalArrangement = Arrangement.spacedBy(22.dp), modifier = Modifier.padding(16.dp)) {
-                    RaidHead(raid, facts, clock, now, guildName)
-                    CountBlock(facts, muted = facts.chip == RaidChip.Cancelled)
+                    CountBlock(facts, muted = facts.chip == RaidChip.Cancelled, ink = FsColor.mutedGround)
                     if (facts.showsOfficerTools && facts.isSignable) OfficerRow(controller, clock)
                     SignupCard(controller, facts, clock, currentKey, requestPermission)
                     if (raid.viewer.raidNight == true) NightRow { openNight(raid.id) }
@@ -214,34 +208,34 @@ private fun calendarIntent(raid: RaidView, facts: RaidFacts, location: String, l
         .putExtra(CalendarContract.Events.EVENT_LOCATION, location)
         .putExtra(CalendarContract.Events.DESCRIPTION, link)
 
-/** The page head (spec F4.2 items 1 to 3). */
+/** The page head (spec F4.2 items 1 to 3), on the band: secondary ink is `mutedGround`, AA on the painted art. */
 @Composable
 fun RaidHead(raid: RaidView, facts: RaidFacts, clock: RaidClock, now: () -> Instant, guildName: String?) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         val large = isLargeText()
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.raid_eyebrow).uppercase(), style = ScaledType.micro, color = FsColor.gold, maxLines = 1, softWrap = false)
+            Text(stringResource(R.string.raid_eyebrow), style = FsType.label, color = FsColor.gold, maxLines = 1, softWrap = false)
             ChipTag(facts.chip)
-            if (!large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.muted, maxLines = 1) }
+            if (!large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.mutedGround, maxLines = 1) }
         }
         // Large text: the guild name drops to its own line.
-        if (large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
+        if (large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.mutedGround) }
         if (raid.title != raid.zoneName) {
-            Text(stringResource(R.string.raids_zoneSuffix, raid.zoneName).trim(), style = ScaledType.body, color = FsColor.muted)
+            Text(stringResource(R.string.raids_zoneSuffix, raid.zoneName).trim(), style = ScaledType.body, color = FsColor.mutedGround)
         }
-        Text(clock.longDate(facts.startsAt), style = ScaledType.body, color = FsColor.text)
-        TimesLine(facts, clock, showsEnd = true)
+        Text(clock.longDate(facts.startsAt), style = ScaledType.body, color = FsColor.strong)
+        TimesLine(facts, clock, showsEnd = true, ink = FsColor.mutedGround)
         CountdownLine(facts, clock, now)
         val guildZone = runCatching { ZoneId.of(raid.guildTimezone) }.getOrNull()
         if (guildZone != null && clock.offsetDiffers(facts.startsAt, guildZone)) {
-            Text(stringResource(R.string.raid_guildTime, clock.guildClock(facts.startsAt, guildZone)), style = ScaledType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.raid_guildTime, clock.guildClock(facts.startsAt, guildZone)), style = ScaledType.meta, color = FsColor.mutedGround)
         }
     }
 }
 
-/** `Invites 7:45 pm · Pull 8:00 pm · Ends 11:00 pm`, labels muted and times in mono. */
+/** `Invites 7:45 pm · Pull 8:00 pm · Ends 11:00 pm`: labels in [ink] (muted on a panel, mutedGround on the band), times tabular. */
 @Composable
-fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean) {
+fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean, ink: Color = FsColor.muted) {
     val parts = buildList {
         facts.inviteAt?.let { add(R.string.raid_invites to clock.clock(it)) }
         add(R.string.raid_pull to clock.clock(facts.startsAt))
@@ -251,14 +245,14 @@ fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean) {
     Text(
         buildAnnotatedString {
             templates.forEachIndexed { index, (template, time) ->
-                if (index > 0) withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(RaidFacts.SEPARATOR) }
+                if (index > 0) withStyle(androidx.compose.ui.text.SpanStyle(color = ink)) { append(RaidFacts.SEPARATOR) }
                 val (head, tail) = template.split(MARK, limit = 2).let { it[0] to it.getOrElse(1) { "" } }
-                withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(head) }
+                withStyle(androidx.compose.ui.text.SpanStyle(color = ink)) { append(head) }
                 // Only the digits are mono; `pm` stays in the body face (UX should 2).
                 val digits = time.substringBefore(' ')
-                withStyle(ScaledType.mono.toSpanStyle().copy(color = FsColor.strong)) { append(digits) }
+                withStyle(ScaledType.tabular.toSpanStyle().copy(color = FsColor.strong)) { append(digits) }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.strong)) { append(time.removePrefix(digits)) }
-                withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(tail) }
+                withStyle(androidx.compose.ui.text.SpanStyle(color = ink)) { append(tail) }
             }
         },
         style = ScaledType.body,
@@ -297,7 +291,7 @@ fun CountdownLine(facts: RaidFacts, clock: RaidClock, now: () -> Instant) {
 @Composable
 fun SignupCard(controller: SignupController, facts: RaidFacts, clock: RaidClock, currentKey: String?, requestPermission: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.raidPrimaryCard()) {
-        Text(stringResource(R.string.raid_yourSignup).uppercase(), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(stringResource(R.string.raid_yourSignup), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         when (facts.chip) {
             RaidChip.Cancelled -> {
                 Text(stringResource(R.string.raid_cancelled), style = ScaledType.body, color = FsColor.text)
@@ -347,7 +341,7 @@ private fun NightRow(open: () -> Unit) {
 @Composable
 private fun Notes(raid: RaidView) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(stringResource(R.string.raid_notes).uppercase(), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(stringResource(R.string.raid_notes), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         if (raid.notesHtml.isBlank()) {
             Text(stringResource(R.string.raid_notesEmpty), style = ScaledType.body, color = FsColor.muted)
         } else {

@@ -1,5 +1,8 @@
 package gg.foreversixty.app.premium
 
+import gg.foreversixty.app.account.AccountCopy
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,10 +44,8 @@ import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.primaryCard
-import java.util.Locale
 
 /** From this font scale up the Plan row stacks, so nothing truncates (spec 5.8.1). */
 private const val STACK_FONT_SCALE = 1.5f
@@ -116,17 +117,27 @@ private fun SeePlans() {
     }
 }
 
+/** The price as a Figure (spec 3.4): the amount in gold tabular figures, its period beside it. */
+@Composable
+private fun PriceFigure(price: PlanPrice) {
+    val period = stringResource(if (price.yearly) R.string.plan_price_yearly else R.string.plan_price_monthly, "").trim()
+    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
+        Text(price.amount, style = FsType.figure, color = FsColor.gold)
+        Text(period, style = ScaledType.bodyStrong, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
+    }
+}
+
 /** F8.4 Plan: the card with the site's plan line, what it includes, and billing where allowed. */
 @Composable
-fun PlanScreen(plan: PlanSummary, mayLink: Boolean, onManageBilling: () -> Unit) {
-    AccountPage(stringResource(R.string.you_plan)) {
+fun PlanScreen(plan: PlanSummary, mayLink: Boolean, back: (() -> Unit)? = null, onManageBilling: () -> Unit) {
+    AccountPage(stringResource(R.string.you_plan), back) {
         Column(
             Modifier.fillMaxWidth().primaryCard().padding(FsSpace.space4),
             verticalArrangement = Arrangement.spacedBy(FsSpace.space3),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    stringResource(R.string.plan_premium).uppercase(Locale.ROOT),
+                    stringResource(R.string.plan_premium),
                     style = ScaledType.h2,
                     color = FsColor.strong,
                     modifier = Modifier.weight(1f).semantics { heading() },
@@ -134,9 +145,15 @@ fun PlanScreen(plan: PlanSummary, mayLink: Boolean, onManageBilling: () -> Unit)
                 if (plan.founder) Tag(stringResource(R.string.plan_founder), FsColor.gold)
             }
             Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space1)) {
-                Text(PlanCopy.line(plan.line), style = ScaledType.body, color = FsColor.text)
+                when (val line = plan.line) {
+                    // The web's plan head: the price as a gold Figure with its period, then when it renews.
+                    is PlanLine.RenewsPrice -> {
+                        PriceFigure(line.price)
+                        Text(stringResource(R.string.plan_renews, AccountCopy.longDate(line.date)), style = ScaledType.body, color = FsColor.text)
+                    }
+                    else -> Text(PlanCopy.line(line), style = ScaledType.body, color = FsColor.text)
+                }
                 plan.line2?.let { Text(PlanCopy.given(it), style = ScaledType.meta, color = FsColor.muted) }
-                if (plan.founder) Text(stringResource(R.string.plan_founderNote), style = ScaledType.meta, color = FsColor.muted)
             }
             if (plan.includes.isNotEmpty()) Includes(plan.includes)
             when (plan.billingLine(mayLink)) {
@@ -145,7 +162,6 @@ fun PlanScreen(plan: PlanSummary, mayLink: Boolean, onManageBilling: () -> Unit)
                 PlanBillingLine.Nothing -> Unit
             }
         }
-        Text(stringResource(R.string.plan_freeForAll), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -153,7 +169,7 @@ fun PlanScreen(plan: PlanSummary, mayLink: Boolean, onManageBilling: () -> Unit)
 private fun Includes(features: List<PlanFeature>) {
     Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
         HorizontalDivider(color = FsColor.lineSoft)
-        MicroLabel(stringResource(R.string.plan_includes))
+        Label12(stringResource(R.string.plan_includes))
         // The tick grows with the text, up to the scale where the row stacks.
         val tick = 16.dp * LocalDensity.current.fontScale.coerceAtMost(STACK_FONT_SCALE)
         features.forEach { feature ->

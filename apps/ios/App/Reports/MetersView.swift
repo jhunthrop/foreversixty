@@ -19,7 +19,7 @@ struct MetersView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                Text(title.uppercased()).font(ScaledType.sec).foregroundStyle(FSColor.strong)
+                Text(title).font(ScaledType.sec).foregroundStyle(FSColor.strong)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                     .padding(.horizontal, 16)
@@ -153,7 +153,7 @@ struct MeterRowView: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 10) {
-            Text("\(rank)").font(ScaledType.monoMeta).foregroundStyle(FSColor.muted).frame(minWidth: 20, alignment: .leading)
+            Text("\(rank)").font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted).frame(minWidth: 20, alignment: .leading)
             mark
             if typeSize.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: 2) { name; value }
@@ -200,8 +200,8 @@ struct MeterRowView: View {
 
     private var value: some View {
         HStack(alignment: .firstTextBaseline, spacing: 4) {
-            Text(ReportsCopy.figure(metric.value(player))).font(ScaledType.mono).foregroundStyle(FSColor.strong)
-            Text(ReportsCopy.unit(metric.unit)).font(ScaledType.micro).foregroundStyle(FSColor.muted)
+            Text(ReportsCopy.figure(metric.value(player))).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
+            Text(ReportsCopy.unit(metric.unit)).font(ScaledType.label).foregroundStyle(FSColor.muted)
         }
         .fixedSize()
     }

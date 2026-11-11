@@ -23,15 +23,13 @@ struct ReportsListView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            BandHead(title: Copy.reportsTitle)
             switch phase {
             case .signedOut:
-                SimsTitle(text: Copy.reportsTitle)
                 signedOut
             case .loading:
-                SimsTitle(text: Copy.reportsTitle)
                 ReportsSkeleton()
             case .failed:
-                SimsTitle(text: Copy.reportsTitle)
                 ReportsErrorCard(text: Copy.reportsFailed, retry: actions.retry).padding(.horizontal, 16).padding(.top, 12)
             case let .loaded(content):
                 if let since = content.offlineSince {
@@ -40,7 +38,6 @@ struct ReportsListView: View {
                 if let since = content.staleSince {
                     StaleStrip(time: OfflineStamp.format(since, now: now), retry: actions.retry)
                 }
-                SimsTitle(text: Copy.reportsTitle)
                 loaded(content)
             }
         }
@@ -57,7 +54,7 @@ struct ReportsListView: View {
             VStack(alignment: .leading, spacing: 22) {
                 if !sections.thisWeek.isEmpty { section(Copy.reportsThisWeek, sections.thisWeek, content: content) }
                 if !sections.earlier.isEmpty { section(Copy.reportsEarlier, sections.earlier, content: content) }
-                Text(Copy.reportsFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(Copy.reportsFooter).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .dynamicTypeSize(...ReportsLayout.rowTypeCap)
@@ -68,7 +65,7 @@ struct ReportsListView: View {
 
     private func section(_ title: String, _ rows: [ReportRow], content: ReportsContent) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(title)
+            SectionTitle(title)
             VStack(spacing: 0) {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
                     if index > 0 { Divider().overlay(FSColor.lineSoft) }
@@ -218,7 +215,7 @@ struct LiveTag: View {
         HStack(spacing: ReportsLayout.liveDotGap) {
             Circle().fill(FSColor.kill).frame(width: ReportsLayout.liveDot, height: ReportsLayout.liveDot)
                 .accessibilityHidden(true)
-            Text(Copy.reportsStateLive.uppercased()).font(ScaledType.micro).tracking(1)
+            Text(Copy.reportsStateLive).font(ScaledType.label)
         }
         .foregroundStyle(FSColor.kill)
         .padding(.horizontal, FSSpace.space2)
@@ -229,21 +226,13 @@ struct LiveTag: View {
     }
 }
 
-/// An error in the failing region only: the sentence in wipe red and `Try again`.
+/// An error in the failing region only: the shared `LoadError` Plate.
 struct ReportsErrorCard: View {
     let text: String
     let retry: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(text).font(ScaledType.lead).foregroundStyle(FSColor.wipe)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isStaticText)
-            SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: retry)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .quietCard()
+        LoadError(text, retryLabel: Copy.commonTryAgain, retry: retry)
     }
 }
 
@@ -304,6 +293,6 @@ enum ReportsLayout {
     static let mineEdge: CGFloat = 3
     /// The meter bar's class colour strength (spec §4 Meter row).
     static let barOpacity = 0.22
-    static let figure = Font.system(.title3, design: .monospaced, weight: .semibold)
-    static let parseNumber = Font.system(.subheadline, design: .monospaced, weight: .bold)
+    static let figure = Font.custom(FSFont.bodySemibold, size: 20, relativeTo: .title3).monospacedDigit()
+    static let parseNumber = Font.custom(FSFont.bodyBold, size: 15, relativeTo: .subheadline).monospacedDigit()
 }

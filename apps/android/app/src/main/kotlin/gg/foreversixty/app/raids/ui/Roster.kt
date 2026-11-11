@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.ui
 
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import android.content.ClipData
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.classColor
@@ -79,6 +80,8 @@ fun OfficerRow(controller: SignupController, clock: RaidClock) {
                 enabled = !ended && facts.canLock && !controller.offline,
                 leadingIcon = Icons.Filled.Lock,
                 busy = controller.officerBusy,
+                // The officer's main action is the one teal primary; Copy the list beside it is the outline.
+                kind = BrandButtonKind.Primary,
             )
             RaidSecondaryButton(
                 text = stringResource(if (controller.copied) R.string.officer_copied else R.string.officer_copy),
@@ -88,19 +91,15 @@ fun OfficerRow(controller: SignupController, clock: RaidClock) {
                 },
                 enabled = !ended,
                 leadingIcon = if (controller.copied) Icons.Filled.Check else Icons.AutoMirrored.Filled.List,
+                kind = BrandButtonKind.Quiet,
             )
         }
-        Text(
-            stringResource(
-                when {
-                    ended -> R.string.officer_gate
-                    locked -> R.string.officer_lockedNote
-                    else -> R.string.officer_lockNote
-                },
-            ),
-            style = ScaledType.meta,
-            color = FsColor.muted,
-        )
+        // The state notes only; how locking works is not explained (round 1, cut as an explainer).
+        when {
+            ended -> R.string.officer_gate
+            locked -> R.string.officer_lockedNote
+            else -> null
+        }?.let { note -> Text(stringResource(note), style = ScaledType.meta, color = FsColor.mutedGround) }
         controller.officerError?.let { Text(it, style = ScaledType.meta, color = FsColor.wipe) }
     }
 }
@@ -117,8 +116,8 @@ fun Roster(controller: SignupController, facts: RaidFacts) {
     val move: (RosterRow, SignupState) -> Unit = { row, state -> scope.launch { controller.move(row, state) } }
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
-            Text(stringResource(R.string.raid_signups).uppercase(), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-            Text(facts.ratio, style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
+            Text(stringResource(R.string.raid_signups), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+            Text(facts.ratio, style = ScaledType.tabular, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
         }
         val res = androidx.compose.ui.platform.LocalResources.current
         gg.foreversixty.app.raids.logic.CompositionRead.of(controller.raid.composition, res)?.let { CompositionBlock(it) }

@@ -55,7 +55,7 @@ struct SystemSnapshotTests {
         }
         .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     @Test("F15.1 the voice confirmation, the answer, the refusal and the two questions")
@@ -109,12 +109,12 @@ struct SystemSnapshotTests {
     // MARK: F15.4 Offline data
 
     private func offlineData(_ report: OfflineReport, online: Bool = true, update: OfflineUpdateState = .idle) -> some View {
-        NavigationStack {
+        PushedScreen(back: Copy.youTitle) {
             OfflineDataView(
                 report: report, update: update, online: online, checkedAt: now, words: OfflineWords(calendar: chicago), now: now,
                 keepClassesReady: .constant(true), wifiOnly: .constant(true), updateNow: {}, remove: {}
             )
-            .navigationTitle(Copy.offlineDataTitle).navigationBarTitleDisplayMode(.inline).toolbar(removing: .title)
+            .pushedBandBar(Copy.offlineDataTitle)
         }
     }
 
@@ -162,7 +162,7 @@ struct SystemSnapshotTests {
                     phase: .loaded(GuideContent(guide: guide, build: GuidesTestData.build), offlineSince: nil),
                     newData: .ready("1.60.1.70800"), now: GuidesTestData.now
                 )
-                .background(FSColor.bg)
+                .screenGround()
                 .guideBar(guide)
             }
         }
@@ -202,7 +202,7 @@ struct SystemSnapshotTests {
                     now: RankingsTestData.now, clock: RankingsTestData.clock, actions: CharacterActions(openPlanner: { _ in })
                 )
             }
-            .background(FSColor.bg)
+            .screenGround()
             .defaultScrollAnchor(.bottom)
         }
         both(page, "f15-char-open-planner")
@@ -219,9 +219,9 @@ struct SystemSnapshotTests {
     }
 
     private func viewer(_ content: SharedBuildContent, compare: Bool) -> some View {
-        NavigationStack {
+        PushedScreen(back: Copy.planBuildsTitle) {
             SharedBuildView(phase: .loaded(content), tree: .constant(0), timeZone: .gmt, compare: compare ? {} : nil)
-                .toolbarBackground(FSColor.bg, for: .navigationBar)
+                .pushedBandBar(Copy.planSharedTitle)
         }
     }
 
@@ -267,7 +267,7 @@ private struct SpotlightPreview: View {
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     /// A fixed 16 pt glyph in the 40 pt tile, the crests' size, at every text size.

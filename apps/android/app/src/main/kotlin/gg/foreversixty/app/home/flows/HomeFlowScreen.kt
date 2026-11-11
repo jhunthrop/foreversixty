@@ -128,9 +128,7 @@ internal fun RaidOfficerItems(raidId: Long, officer: OfficerItems, actions: Home
 @Composable
 fun RaidAnswerButtons(selected: SignupState?, modifier: Modifier = Modifier, onAnswer: (SignupState) -> Unit) {
     val labels = SignupState.entries.map { stringResource(it.label) }
-    Column(modifier) {
-        FlowButtonRow(labels, selected?.let { stringResource(it.label) }) { onAnswer(SignupState.entries[it]) }
-    }
+    FlowSegmented(labels, selected?.let { stringResource(it.label) }, modifier) { onAnswer(SignupState.entries[it]) }
 }
 
 /** How late? with the 15, 30 and 60 min chips, shown after Late (F1). */

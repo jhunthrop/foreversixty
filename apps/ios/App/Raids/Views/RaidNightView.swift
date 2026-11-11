@@ -84,6 +84,10 @@ struct RaidNightView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                // The head names the night on the band (N3), its meta line in the band's secondary ink.
+                BandHead(title: Copy.nightTitle) {
+                    if case let .loaded(night) = model.state { BandFact(meta(night)) }
+                }
                 if let since = model.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: clock.stripTime(since, now: now())))
                 }
@@ -93,9 +97,8 @@ struct RaidNightView: View {
                 VStack(alignment: .leading, spacing: 22) { content }.padding(16)
             }
         }
-        .background(FSColor.bg)
-        .navigationTitle(Copy.nightTitle)
-        .navigationBarTitleDisplayMode(.large)
+        .screenGround()
+        .pushedBandBar(Copy.nightTitle)
         .task { await model.load() }
         .refreshable { await model.load() }
     }
@@ -118,10 +121,12 @@ struct RaidNightView: View {
         }
     }
 
+    private func meta(_ night: RaidNightSummary) -> String {
+        Copy.nightMeta(zone: night.zoneName, weekday: clock.weekday(night.startsAt), date: clock.dayMonth(night.startsAt), guild: night.guildName)
+    }
+
     @ViewBuilder
     private func loaded(_ night: RaidNightSummary) -> some View {
-        Text(Copy.nightMeta(zone: night.zoneName, weekday: clock.weekday(night.startsAt), date: clock.dayMonth(night.startsAt), guild: night.guildName))
-            .font(ScaledType.meta).foregroundStyle(FSColor.muted)
         ViewThatFits(in: .horizontal) {
             HStack(alignment: .center, spacing: 16) {
                 figures(night)
@@ -149,7 +154,7 @@ struct RaidNightView: View {
             section(Copy.nightCoach) {
                 ForEach(Array(notes.enumerated()), id: \.offset) { index, note in
                     HStack(alignment: .top, spacing: 10) {
-                        Text("\(index + 1)").font(ScaledType.mono).foregroundStyle(FSColor.gold)
+                        Text("\(index + 1)").font(ScaledType.tabular).foregroundStyle(FSColor.gold)
                         Text(note).font(ScaledType.body).foregroundStyle(FSColor.text)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -244,7 +249,7 @@ struct RaidNightView: View {
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
                 Text(Copy.raidsNightDps(dps: best.dps.formatted(.number.precision(.fractionLength(1)))))
-                    .font(ScaledType.mono).foregroundStyle(FSColor.strong)
+                    .font(ScaledType.tabular).foregroundStyle(FSColor.strong)
                 if let percentile = best.percentile {
                     Text(Copy.nightPercentile(ordinal: Self.ordinal(percentile)))
                         .font(ScaledType.meta).foregroundStyle(GameColors.parse(percentile))

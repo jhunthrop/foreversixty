@@ -42,6 +42,7 @@ struct TalentsView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: isLarge ? [] : [.sectionHeaders]) {
+                    BandHead(title: Copy.talentsTitle)
                     if let offlineStamp { OfflineStrip(text: Copy.offlineStrip(time: offlineStamp)) }
                     content
                 }
@@ -53,7 +54,7 @@ struct TalentsView: View {
                 withAnimation { proxy.scrollTo(TalentTreeView.anchor(tier: tier), anchor: Self.sheetClearAnchor) }
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     @ViewBuilder
@@ -63,12 +64,8 @@ struct TalentsView: View {
             TalentsSkeleton()
             footer
         case .failed:
-            VStack(alignment: .leading, spacing: 12) {
-                Text(Copy.talentsFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
-                    .accessibilityAddTraits(.isStaticText)
-                SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: retry)
-            }
-            .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
+            LoadError(Copy.talentsFailed, retryLabel: Copy.commonTryAgain, retry: retry)
+                .padding(EdgeInsets(top: BandReach.gap, leading: 16, bottom: 0, trailing: 16))
             footer
         case let .loaded(presenter, _):
             loaded(presenter)
@@ -89,7 +86,7 @@ struct TalentsView: View {
                     open: openTalent
                 )
                 .padding(.top, 16)
-                Text(presenter.legend(shown)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(presenter.legend(shown)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
             } header: {
@@ -108,7 +105,7 @@ struct TalentsView: View {
 
     private var footer: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(compareFooter ?? Copy.talentsFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(compareFooter ?? Copy.talentsFooter).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                 .fixedSize(horizontal: false, vertical: true)
             if compareFooter != nil {
                 EmptyView()
@@ -171,7 +168,7 @@ struct TalentStatusBlock: View {
                 SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: retry).padding(.top, 4)
             }
             ForEach(notes, id: \.self) { note in
-                Text(note).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(note).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -224,7 +221,7 @@ struct TalentCompareBar: View {
             }
         }
         .padding(EdgeInsets(top: 12, leading: 16, bottom: 8, trailing: 16))
-        .background(FSColor.bg)
+        .screenGround()
         .overlay(alignment: .bottom) { if !isLarge { FSColor.lineSoft.frame(height: 1) } }
         .haptic(.selection, trigger: shown)
         .haptic(.selection, trigger: tree)
@@ -289,7 +286,7 @@ struct TalentCompareBar: View {
                         Text(tab.name).font(ScaledType.bodyStrong)
                             .foregroundStyle(tree == tab.index ? FSColor.strong : FSColor.nav)
                         Spacer(minLength: 8)
-                        Text("\(tab.points)").font(ScaledType.mono)
+                        Text("\(tab.points)").font(ScaledType.tabular)
                             .foregroundStyle(tree == tab.index ? FSColor.strong : FSColor.nav)
                         if tab.differing > 0 { DiffDot() }
                     }
@@ -312,7 +309,7 @@ struct TalentCompareBar: View {
         let selected = tree == tab.index
         return HStack(spacing: 6) {
             Text(tab.name).font(selected ? ScaledType.bodyStrong : ScaledType.body)
-            Text("\(tab.points)").font(ScaledType.mono)
+            Text("\(tab.points)").font(ScaledType.tabular)
             if tab.differing > 0 { DiffDot() }
         }
         .foregroundStyle(selected ? FSColor.strong : FSColor.nav)
@@ -361,7 +358,7 @@ struct TalentsSkeleton: View {
             }
             .frame(height: TalentGeometry.height)
             .padding(.top, 16)
-            Text(Copy.talentsLoading).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(Copy.talentsLoading).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
         }
         .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
         .accessibilityElement(children: .ignore)

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.ui
 
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.background
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.GameColors
@@ -84,27 +85,32 @@ import kotlinx.coroutines.launch
 /** The font scale from which the segments go 2 x 2 (spec 10, XL.2). */
 private const val GRID_FONT_SCALE = 1.5f
 
-/** The four segments (spec F4.3): In, Late, Bench, Out, in a selectable group; 2 x 2 from 1.5x. */
+/**
+ * The four segments (spec F4.3): In, Late, Bench, Out, in a selectable group; 2 x 2 from 1.5x. Drawn
+ * as the tab roots' answers (FlowSegmented, round 5): one pill on the rule, the selected segment on
+ * the teal edge, so an answer looks the same on Home, the Raid tab, the raid page and raid night.
+ */
 @Composable
 fun Segments(characterName: String, block: SignupBlock, enabled: Boolean, press: (SignupState) -> Unit) {
     val grid = LocalDensity.current.fontScale >= GRID_FONT_SCALE
     val label = stringResource(R.string.raids_a11y_segments, characterName)
-    val shape = RoundedCornerShape(FsRadius.legacyControl)
+    val shape = if (grid) RoundedCornerShape(FsRadius.field) else RoundedCornerShape(percent = 50)
     Column(
         Modifier
             .fillMaxWidth()
             .alpha(if (enabled) 1f else 0.5f)
-            .background(FsColor.raised, shape)
-            .border(1.dp, FsColor.line, shape)
+            .clip(shape)
+            .background(FsColor.raised)
+            .border(1.dp, FsColor.rule, shape)
             .semantics { contentDescription = label }
             .selectableGroup(),
     ) {
         val rows = if (grid) SignupState.entries.chunked(2) else listOf(SignupState.entries)
         rows.forEachIndexed { index, row ->
-            if (index > 0) HorizontalDivider(color = FsColor.line)
+            if (index > 0) HorizontalDivider(color = FsColor.rule)
             Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
                 row.forEachIndexed { i, state ->
-                    if (i > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(FsColor.line))
+                    if (i > 0) Box(Modifier.width(1.dp).fillMaxHeight().background(FsColor.rule))
                     Segment(state, block, enabled, press)
                 }
             }
@@ -118,11 +124,7 @@ private fun RowScope.Segment(state: SignupState, block: SignupBlock, enabled: Bo
     val pending = block.pending == state
     val saving = stringResource(R.string.raids_a11y_saving)
     val pendingText = stringResource(R.string.raids_a11y_pending)
-    val ground = when {
-        !checked -> FsColor.raised
-        state.isComing -> FsColor.kill.copy(alpha = 0.15f)
-        else -> FsColor.lineWarm
-    }
+    val ground = if (checked) FsColor.tealEdge else FsColor.raised
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -137,14 +139,6 @@ private fun RowScope.Segment(state: SignupState, block: SignupBlock, enabled: Bo
                 }
             }
             .drawBehind {
-                if (checked) {
-                    val line = 2.dp.toPx()
-                    drawRect(
-                        color = if (state.isComing) FsColor.kill else FsColor.muted,
-                        topLeft = androidx.compose.ui.geometry.Offset(0f, size.height - line),
-                        size = androidx.compose.ui.geometry.Size(size.width, line),
-                    )
-                }
                 if (pending) {
                     val inset = 4.dp.toPx()
                     drawRoundRect(
@@ -157,7 +151,7 @@ private fun RowScope.Segment(state: SignupState, block: SignupBlock, enabled: Bo
                 }
             },
     ) {
-        Text(stringResource(state.label), style = ScaledType.segment, color = if (checked) FsColor.strong else FsColor.muted, maxLines = 1, softWrap = false)
+        Text(stringResource(state.label), style = ScaledType.segment, color = if (checked) FsColor.strong else FsColor.text, maxLines = 1, softWrap = false)
     }
 }
 
@@ -305,7 +299,7 @@ private fun NoteField(controller: SignupController, key: String, block: SignupBl
             block.noteFailed -> Text(stringResource(R.string.raid_note_failed), style = ScaledType.meta, color = FsColor.wipe)
             text.length >= SignupController.NOTE_COUNTER_FROM -> Text(
                 stringResource(R.string.raid_note_left, SignupController.NOTE_LIMIT - text.length),
-                style = ScaledType.monoMeta,
+                style = ScaledType.tabularMeta,
                 color = FsColor.muted,
             )
         }
@@ -369,7 +363,7 @@ fun SpecSheetContent(ask: SpecAsk, character: RaidViewerCharacter, raidTitle: St
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.padding(16.dp)) {
-        Text(stringResource(R.string.spec_title).uppercase(), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(stringResource(R.string.spec_title), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         Text(lead, style = ScaledType.body, color = FsColor.text)
         Column(Modifier.raidQuietCard()) {
             val options = character.specOptions.orEmpty()
@@ -398,7 +392,6 @@ fun SpecSheetContent(ask: SpecAsk, character: RaidViewerCharacter, raidTitle: St
                 }
             }
         }
-        Text(stringResource(R.string.spec_closeNote), style = ScaledType.meta, color = FsColor.muted)
         Spacer(Modifier.height(8.dp))
     }
 }

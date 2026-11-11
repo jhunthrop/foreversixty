@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.flows
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,7 +42,7 @@ fun RaidNightRoute(
     }
     val res = LocalResources.current
     val scope = rememberCoroutineScope()
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         FlowBackBar(stringResource(R.string.tab_raids), back)
         RaidNightPageScreen(
             RaidNightPagePresenter(res, clock, now()).content(night, target, model.pressed, model.lateOpen),

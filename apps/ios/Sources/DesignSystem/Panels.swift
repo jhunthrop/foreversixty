@@ -42,7 +42,7 @@ public struct BandPage<Head: View, Notice: View, Content: View>: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             // The band fades into the ground below its foot, as the site's last band piece does; the
             // notice and the blocks draw over the fade.
-            .background { FadingBand(art: art, reachUp: Self.underBars) }
+            .background { FadingBand(art: art, reachUp: BandReach.underBars) }
             notice
             VStack(alignment: .leading, spacing: FSSpace.space5) { content }
                 .padding(.horizontal, Self.side)
@@ -51,9 +51,6 @@ public struct BandPage<Head: View, Notice: View, Content: View>: View {
         }
         .parityContent()
     }
-
-    /// How far the art reaches above the head: past any navigation bar, status bar and island.
-    static var underBars: CGFloat { 240 }
 }
 
 /// The head fade (web ui/band.css, the page's last band piece): the band art runs `reachUp` above its
@@ -85,18 +82,33 @@ public extension BandPage where Notice == EmptyView {
     }
 }
 
-/// A tab root's bars over the band (round 5): at rest the navigation bar is clear, so `BandPage`'s art
-/// shows behind the profile button and the large title; once the page scrolls under it the bar takes
-/// the band's own ground (the app's standard appearance). Set on the screen's navigation item, so the
-/// title faces of `BarAppearance` stay and pushed screens keep the standard bar.
+/// A screen's bars over the band (round 5): at rest the navigation bar is clear, so the page's band art
+/// shows behind the back or profile button; once the page scrolls under it the bar takes the band's own
+/// ground (the app's standard appearance). Set on the screen's navigation item, so the title faces of
+/// `BarAppearance` stay. `hidesTitleAtRest`: a pushed screen's head names it, so the bar's title shows
+/// only once the head has scrolled under (N3).
 public struct BandBar: UIViewControllerRepresentable {
-    public init() {}
+    private let hidesTitleAtRest: Bool
 
-    public func makeUIViewController(context: Context) -> Controller { Controller() }
+    public init(hidesTitleAtRest: Bool = false) {
+        self.hidesTitleAtRest = hidesTitleAtRest
+    }
+
+    public func makeUIViewController(context: Context) -> Controller { Controller(hidesTitleAtRest: hidesTitleAtRest) }
 
     public func updateUIViewController(_ controller: Controller, context: Context) {}
 
     public final class Controller: UIViewController {
+        private let hidesTitleAtRest: Bool
+
+        init(hidesTitleAtRest: Bool) {
+            self.hidesTitleAtRest = hidesTitleAtRest
+            super.init(nibName: nil, bundle: nil)
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) { nil }
+
         override public func didMove(toParent parent: UIViewController?) {
             super.didMove(toParent: parent)
             applyEdge()
@@ -112,7 +124,7 @@ public struct BandBar: UIViewControllerRepresentable {
             var current: UIViewController? = self
             while let controller = current {
                 if let navigation = controller.navigationController, navigation.viewControllers.contains(controller) {
-                    let edge = BarAppearance.clearEdge()
+                    let edge = BarAppearance.clearEdge(hidesTitle: hidesTitleAtRest)
                     controller.navigationItem.scrollEdgeAppearance = edge
                     controller.navigationItem.compactScrollEdgeAppearance = edge
                     return

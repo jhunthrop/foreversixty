@@ -22,7 +22,7 @@ struct RaidFlowScroll<Content: View>: View {
                 .padding(.bottom, FSSpace.space6)
                 .parityContent()
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 }
 
@@ -95,14 +95,18 @@ struct RaidRoleRows: View {
     }
 }
 
-/// A head with a lead (the zone icon, a crest) and its facts wrapping under the title.
+/// A head with a lead (the zone icon, a crest) and its facts wrapping under the title, on the band
+/// under the clear bar (N3), 16 above the content.
 struct RaidFlowHead<Lead: View>: View {
     let title: String
     var titleColor: Color = FSColor.strong
     let facts: [String]
+    /// How far in from the scroll's gutter the head sits (raid night's `.ph`).
+    var inset: CGFloat = 0
     @ViewBuilder let lead: () -> Lead
 
     var body: some View {
+        // On the band under the clear bar (N3): the art runs up under the bars and out to the edges.
         PageHeader(title: title, titleColor: titleColor) {
             lead()
         } meta: {
@@ -110,5 +114,14 @@ struct RaidFlowHead<Lead: View>: View {
                 ForEach(facts, id: \.self) { SmallText($0) }
             }
         }
+        .padding(.horizontal, inset)
+        .bandUnderBars(bleed: FSSpace.gutterPhone + inset)
+        .padding(.bottom, BandReach.gap)
+    }
+}
+
+extension RaidFlowHead where Lead == EmptyView {
+    init(title: String, facts: [String] = []) {
+        self.init(title: title, facts: facts, lead: { EmptyView() })
     }
 }

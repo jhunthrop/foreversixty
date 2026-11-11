@@ -1,6 +1,8 @@
 package gg.foreversixty.app.flows
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -48,6 +50,7 @@ import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.PanelFrame
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.designsystem.fadingBand
@@ -58,6 +61,12 @@ import gg.foreversixty.app.designsystem.panel
 import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.items.GameIconImage
+
+/**
+ * The secondary ink of the surface a flow row sits on: the panel's `muted` by default; a section
+ * without a panel (rows on the painted ground) provides `mutedGround`, AA there.
+ */
+val LocalSubInk = compositionLocalOf { FsColor.muted }
 
 /**
  * The flows screens' layout (design/mocks/ws_app_flows.py `.ap`, spec 2026-11-08): one scrolling column
@@ -171,7 +180,7 @@ fun FlowHead(
                         horizontalArrangement = Arrangement.spacedBy(FsSpace.space4),
                         verticalArrangement = Arrangement.spacedBy(META_GAP),
                     ) {
-                        facts.forEach { Text(it, style = FsType.small, color = FsColor.muted) }
+                        facts.forEach { Text(it, style = FsType.small, color = FsColor.mutedGround) }
                     }
                 }
             }
@@ -216,12 +225,12 @@ fun FlowSection(
         ) {
             Text(
                 title,
-                style = if (round5) PANEL_TITLE else FsType.section,
+                style = if (round5) ScaledType.sectionTitle else FsType.section,
                 color = if (round5) FsColor.cream else FsColor.strong,
                 modifier = Modifier.semantics { heading() },
             )
             // The meta sits beside the title (`Needs you  6 open`); the action at the far end.
-            if (meta != null) Text(meta, style = FsType.small, color = FsColor.muted, modifier = Modifier.padding(start = FsSpace.space3, top = ACTION_DROP))
+            if (meta != null) Text(meta, style = FsType.small, color = FsColor.mutedGround, modifier = Modifier.padding(start = FsSpace.space3, top = ACTION_DROP))
             Spacer(Modifier.weight(1f))
             if (action != null) {
                 Text(
@@ -234,7 +243,7 @@ fun FlowSection(
         }
         if (panel == null) {
             HorizontalDivider(color = FsColor.line)
-            content()
+            CompositionLocalProvider(LocalSubInk provides FsColor.mutedGround) { content() }
         } else {
             FlowPanel(frame = panel, content = content)
         }
@@ -258,9 +267,9 @@ fun FlowBlock(region: String, top: Dp = FsSpace.space6, content: @Composable Col
     Column(Modifier.padding(top = top).fillMaxWidth().parityRegion(region), content = content)
 }
 
-/** A small line of text (`.t-small`, 13/20, muted). */
+/** A small line of text on the ground (`.t-small`, 13/20, mutedGround: AA on the painted art). */
 @Composable
-fun FlowNote(text: String, modifier: Modifier = Modifier, color: Color = FsColor.muted) {
+fun FlowNote(text: String, modifier: Modifier = Modifier, color: Color = FsColor.mutedGround) {
     Text(text, style = FsType.small, color = color, modifier = modifier)
 }
 
@@ -291,6 +300,3 @@ private val SECTION_TITLE_GAP = 10.dp
 private val ACTION_DROP = 2.dp
 private val SKELETON_RADIUS = 6.dp
 private val ACTION = FsType.bodyStrong.copy(fontSize = 14.sp, lineHeight = 24.sp)
-
-/** A round-5 section title over the ground: the display face at 21 (the mock's `.sh h2`). */
-private val PANEL_TITLE = FsType.sectionReading.copy(fontSize = 21.sp, lineHeight = 26.sp)

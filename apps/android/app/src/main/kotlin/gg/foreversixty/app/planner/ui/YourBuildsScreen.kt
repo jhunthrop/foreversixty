@@ -1,5 +1,7 @@
 package gg.foreversixty.app.planner.ui
 
+import gg.foreversixty.app.designsystem.screenGround
+import gg.foreversixty.app.designsystem.SectionTitle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +43,6 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.planner.logic.BuildRow
 import gg.foreversixty.app.planner.logic.BuildsProblem
@@ -72,7 +73,7 @@ class BuildsActions(
 /** F13.6 Your builds: the rows (swipe to remove), the footer, then `Plan a new build`. */
 @Composable
 fun YourBuildsPage(state: BuildsPageState, actions: BuildsActions, snackbar: SnackbarHostState = remember { SnackbarHostState() }) {
-    Box(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Box(Modifier.fillMaxSize().screenGround()) {
         Column(Modifier.fillMaxSize()) {
             ReportsBar(stringResource(R.string.plan_builds_title), stringResource(R.string.talents_title), actions.back)
             when (val phase = state.phase) {
@@ -102,10 +103,10 @@ private fun BuildsList(phase: YourBuildsPhase.Loaded, state: BuildsPageState, ac
             }
         }
         if (phase.rows.isNotEmpty()) {
-            item { Text(stringResource(R.string.plan_builds_footer), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp)) }
+            item { Text(stringResource(R.string.plan_builds_footer), style = ScaledType.meta, color = FsColor.mutedGround, modifier = Modifier.padding(top = 4.dp)) }
         }
         state.newBuild?.let { new ->
-            item { MicroLabel(stringResource(R.string.plan_builds_newHeader), Modifier.padding(top = 18.dp)) }
+            item { SectionTitle(stringResource(R.string.plan_builds_newHeader), Modifier.padding(top = 18.dp)) }
             item { NewBuild(new, actions) }
         }
     }
@@ -163,9 +164,9 @@ private fun BuildRowView(row: BuildRow, zone: ZoneId, open: () -> Unit) {
             val meta = if (title != null) stringResource(R.string.plan_builds_meta, row.raceName, row.className, totals, date) else date
             // Each `·` keeps to the part after it, so no line ends on a dangling dot.
             Text(meta.replace(SEPARATOR, SEPARATOR_KEPT), style = ScaledType.meta, color = FsColor.muted)
-            if (large) Text(viewsText, style = ScaledType.monoMeta, color = FsColor.text)
+            if (large) Text(viewsText, style = ScaledType.tabularMeta, color = FsColor.text)
         }
-        if (!large) Text(viewsText, style = ScaledType.monoMeta, color = FsColor.text)
+        if (!large) Text(viewsText, style = ScaledType.tabularMeta, color = FsColor.text)
         Chevron(20.dp)
     }
 }

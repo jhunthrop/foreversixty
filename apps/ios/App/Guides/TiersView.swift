@@ -19,7 +19,7 @@ struct TiersView: View {
             switch phase {
             case .loading: TiersSkeleton()
             case .notCached: GuidesNotCached(text: Copy.guidesListNotCached)
-            case .failed: ReportsErrorCard(text: Copy.tiersError, retry: retry)
+            case .failed: LoadError(Copy.tiersError, retryLabel: Copy.commonTryAgain, retry: retry)
             case let .loaded(file, _): loaded(TiersLogic.list(file, choice: choice), build: file.build)
             }
         }
@@ -30,8 +30,17 @@ struct TiersView: View {
             if let callout = TiersLogic.callout(list, yourSpec: yourSpec) {
                 TierCalloutCard(callout: callout, build: build)
             }
-            GuideCardRows(items: TiersLogic.rows(list, yourSpec: yourSpec)) { model in
-                Button { open(model.row) } label: { TierRowView(model: model, build: build) }
+            let rows = TiersLogic.rows(list, yourSpec: yourSpec)
+            if let unit = rows.first?.row.unit, !unit.isEmpty {
+                // The figures' column head, as the web's table head.
+                Label12(unit, color: FSColor.mutedGround)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.trailing, GuidesLayout.cardPadding)
+            }
+            // The web's anatomy: the tier letter once, at the head of its group.
+            let heads = Set(rows.indices.filter { $0 == 0 || rows[$0 - 1].letter != rows[$0].letter }.map { rows[$0].id })
+            GuideCardRows(items: rows) { model in
+                Button { open(model.row) } label: { TierRowView(model: model, build: build, showsLetter: heads.contains(model.id)) }
                     .buttonStyle(RowPressStyle())
                     .accessibilityLabel(model.a11y)
                     .accessibilityHint(Copy.tiersA11yOpens)
@@ -40,7 +49,7 @@ struct TiersView: View {
     }
 }
 
-/// `DPS`, `Tank`, `Healer` and the faction chip with its mark (40 pt pills).
+/// `DPS`, `Tank`, `Healer` and the faction chip with its mark (40 pt chips on the control radius).
 struct TierChips: View {
     let choice: TierChoice
     let select: (TierChoice) -> Void
@@ -69,7 +78,7 @@ struct TierChips: View {
                 .foregroundStyle(isOn ? FSColor.gold : FSColor.strong)
                 .padding(.horizontal, 16)
                 .frame(minHeight: BisChip<EmptyView>.height)
-                .pillSurface(fill: isOn ? FSColor.gold.opacity(0.12) : GameColors.controlFill, line: isOn ? FSColor.gold : FSColor.lineCard)
+                .chipSurface(fill: isOn ? FSColor.gold.opacity(0.12) : GameColors.controlFill, line: isOn ? FSColor.gold : FSColor.lineCard)
                 .frame(minHeight: 44)
         }
         .buttonStyle(.plain)
@@ -87,7 +96,7 @@ struct TierCalloutCard: View {
             HStack(alignment: .top, spacing: 12) {
                 TierSpecIcon(row: callout.row, build: build, size: GuidesLayout.rowIcon)
                 VStack(alignment: .leading, spacing: 4) {
-                    MicroLabel(Copy.tiersYours, color: FSColor.gold)
+                    Label12(Copy.tiersYours, color: FSColor.gold)
                     Text(callout.row.title).font(ScaledType.lead).foregroundStyle(FSColor.strong)
                         .fixedSize(horizontal: false, vertical: true)
                     Text(callout.row.detail).font(ScaledType.meta).foregroundStyle(FSColor.nav)
@@ -100,7 +109,7 @@ struct TierCalloutCard: View {
             .primaryCard()
             .accessibilityElement(children: .combine)
             if let note = callout.note {
-                Text(note).font(ScaledType.meta).foregroundStyle(FSColor.muted).fixedSize(horizontal: false, vertical: true)
+                Text(note).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround).fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -122,14 +131,22 @@ struct TierSpecIcon: View {
     }
 }
 
-/// One row (68 pt min): rank, icon, name in the class colour, race, the 8 pt bar; right, the
-/// tier chip and the gap (DPS) or the metric (tank, healer). At the accessibility sizes the
-/// rank, icon and tag lead a line of their own, and the name, race, bar, chip and gap stack
-/// under it at the full width, so a name never breaks inside a word.
+/// One row (68 pt min), the web's anatomy: on a DPS list the tier letter in a left column at its
+/// group's head, then rank, the ringed crest, the name in the class colour and race; right, the
+/// figure over the gap (DPS) or the metric (tank, healer). No bars and no tier chips. At the
+/// accessibility sizes the letter, rank, crest and tag lead a line of their own, and the name,
+/// race and figures stack under it at the full width, so a name never breaks inside a word.
 struct TierRowView: View {
     let model: TierRowModel
     let build: String
+    /// True on the first row of its tier: the letter shows once per group.
+    var showsLetter = false
     @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// The letter's column, so every group's rows line up under it.
+    static let letterWidth: CGFloat = 24
+    /// The tier letter: the display face at 24, as the web's tier column.
+    static let letterFont = Font.custom(FSFont.title, size: 24, relativeTo: .title3)
 
     private var row: TierRow { model.row }
     private var color: Color { TierColors.of(model.letter) }
@@ -147,16 +164,16 @@ struct TierRowView: View {
     }
 
     private var inline: some View {
-        HStack(alignment: .top, spacing: 12) {
-            rank.padding(.top, 9)
-            TierSpecIcon(row: row, build: build, size: GuidesLayout.tierIcon)
+        HStack(alignment: .center, spacing: 12) {
+            letterColumn
+            rank
+            crest
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     name
                     if model.isYours { yours }
                 }
                 race
-                bar
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             trailing(alignment: .trailing)
@@ -166,20 +183,36 @@ struct TierRowView: View {
     private var stacked: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 12) {
+                letterColumn
                 rank
-                TierSpecIcon(row: row, build: build, size: GuidesLayout.tierIcon)
+                crest
                 if model.isYours { yours }
             }
             name
             race
-            bar
             trailing(alignment: .leading).padding(.top, 4)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    /// The letter's column on a lettered (DPS) list; nothing on tank and healer lists.
+    @ViewBuilder
+    private var letterColumn: some View {
+        if let letter = model.letter {
+            Text(showsLetter ? letter : "")
+                .font(Self.letterFont)
+                .foregroundStyle(color)
+                .frame(width: Self.letterWidth, alignment: .leading)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private var crest: some View {
+        ClassCrest(className: row.classSlug, size: GuidesLayout.tierIcon, flat: true).accessibilityHidden(true)
+    }
+
     private var rank: some View {
-        Text("\(row.rank)").font(ScaledType.monoMeta).foregroundStyle(FSColor.muted).frame(minWidth: 20, alignment: .leading)
+        Text("\(row.rank)").font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted).frame(minWidth: 20, alignment: .leading)
     }
 
     private var name: some View {
@@ -195,50 +228,20 @@ struct TierRowView: View {
         TagView(text: Copy.tiersYoursTag, color: FSColor.gold)
     }
 
-    private var bar: some View {
-        GeometryReader { proxy in
-            Capsule().fill(FSColor.cardTop)
-                .overlay(alignment: .leading) {
-                    Capsule().fill(model.letter == nil ? FSColor.gold : color).frame(width: proxy.size.width * min(1, max(0, row.fraction)))
-                }
-        }
-        .frame(height: GuidesLayout.tierBar)
-        .accessibilityHidden(true)
-    }
-
     @ViewBuilder
     private func trailing(alignment: HorizontalAlignment) -> some View {
-        if let letter = model.letter {
-            let layout = alignment == .leading ? AnyLayout(HStackLayout(spacing: 8)) : AnyLayout(VStackLayout(alignment: .trailing, spacing: 4))
-            layout {
-                TierChip(letter: letter, color: color)
-                Text(model.gap).font(ScaledType.monoMeta).foregroundStyle(FSColor.text)
+        if model.letter != nil {
+            VStack(alignment: alignment, spacing: 2) {
+                Text(model.metric).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
+                Text(model.gap).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
             }
         } else {
             VStack(alignment: alignment, spacing: 2) {
-                Text(model.metric).font(ScaledType.mono).foregroundStyle(FSColor.strong)
+                Text(model.metric).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
                 Text(row.unit).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                Text(model.gap).font(ScaledType.monoMeta).foregroundStyle(FSColor.text)
+                Text(model.gap).font(ScaledType.tabularMeta).foregroundStyle(FSColor.text)
             }
         }
-    }
-}
-
-/// The tier chip (spec §4): 28 pt, pill radius, 1.5 pt border and letter in the tier colour.
-struct TierChip: View {
-    let letter: String
-    let color: Color
-    /// The chip and its letter grow with the text, so the letter stays readable at AX5.
-    @ScaledMetric(relativeTo: .subheadline) private var size = GuidesLayout.tierChip
-    @ScaledMetric(relativeTo: .subheadline) private var letterSize = GuidesLayout.tierLetterSize
-
-    var body: some View {
-        Text(letter)
-            .font(.system(size: letterSize, weight: .bold, design: .monospaced))
-            .foregroundStyle(color)
-            .frame(width: size, height: size)
-            .overlay(Capsule().strokeBorder(color, lineWidth: 1.5))
-            .accessibilityHidden(true)
     }
 }
 
@@ -266,8 +269,9 @@ struct TiersSkeleton: View {
                 ForEach(0..<Self.rows, id: \.self) { _ in
                     HStack(spacing: 12) {
                         SkeletonBar(width: GuidesLayout.tierIcon, height: GuidesLayout.tierIcon)
-                        VStack(alignment: .leading, spacing: 8) { SkeletonBar(width: 160, height: 15); SkeletonBar(width: nil, height: 8) }
-                        SkeletonBar(width: GuidesLayout.tierChip, height: GuidesLayout.tierChip)
+                        VStack(alignment: .leading, spacing: 8) { SkeletonBar(width: 160, height: 15); SkeletonBar(width: 90, height: 12) }
+                        Spacer(minLength: 0)
+                        SkeletonBar(width: GuidesLayout.tierFigure, height: 15)
                     }
                     .padding(.horizontal, GuidesLayout.cardPadding)
                     .frame(height: GuidesLayout.tierRow)

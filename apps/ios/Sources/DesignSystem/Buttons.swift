@@ -5,13 +5,15 @@ import SwiftUI
 /// on), destructive the wipe outline and quiet the rule outline, each a white or tone label in
 /// sentence case on the 6 pt control radius. Full width by default; `fullWidth: false` hugs the
 /// label. Pressed: 0.98 over 120 ms (spec section 8), except under Reduce Motion and on a disabled
-/// button, which never scale.
+/// button, which never scale. Disabled: the whole button at 50%, as on Android and the web.
 public struct BrandButtonStyle: ButtonStyle {
     public enum Kind: Sendable { case primary, secondary, accent, destructive, quiet }
 
     private static let horizontalPadding: CGFloat = 18
     private static let pressedScale: CGFloat = 0.98
     private static let pressDuration: Double = 0.12
+    /// A disabled button's opacity.
+    public static let disabledOpacity: Double = 0.5
 
     private let kind: Kind
     private let height: CGFloat
@@ -34,6 +36,7 @@ public struct BrandButtonStyle: ButtonStyle {
             .foregroundStyle(foreground)
             .background(background, in: .rect(cornerRadius: Theme.Radius.control))
             .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control).strokeBorder(border, lineWidth: FSStroke.hairline))
+            .opacity(isEnabled ? 1 : Self.disabledOpacity)
             .scaleEffect(Self.scale(pressed: configuration.isPressed, reduceMotion: reduceMotion, enabled: isEnabled))
             .animation(.easeOut(duration: Self.pressDuration), value: configuration.isPressed)
     }
@@ -45,7 +48,8 @@ public struct BrandButtonStyle: ButtonStyle {
 
     private var foreground: Color {
         switch kind {
-        case .primary, .secondary, .quiet: FSColor.strong
+        case .primary, .secondary: FSColor.strong
+        case .quiet: FSColor.cream
         case .accent: FSColor.gold
         case .destructive: FSColor.wipe
         }
@@ -63,7 +67,8 @@ public struct BrandButtonStyle: ButtonStyle {
         switch kind {
         case .primary: FSColor.tealEdge
         case .secondary: FSColor.blueEdge
-        case .quiet: FSColor.rule
+        // The cream frame line: the rule's slate disappears on the painted ground.
+        case .quiet: FSColor.frameLine
         case .accent: FSColor.gold
         case .destructive: FSColor.wipe.opacity(0.45)
         }

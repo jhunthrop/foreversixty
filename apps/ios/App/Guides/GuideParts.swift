@@ -15,8 +15,8 @@ enum GuidesLayout {
     static let chipDisc: CGFloat = 22
     static let yourCard: CGFloat = 80
     static let tierRow: CGFloat = 68
-    static let tierChip: CGFloat = 28
-    static let tierBar: CGFloat = 8
+    /// The skeleton's stand-in for a row's figure column.
+    static let tierFigure: CGFloat = 56
     static let yoursEdge: CGFloat = 3
     static let dateBlock = CGSize(width: 56, height: 48)
     static let factionMark: CGFloat = 24
@@ -27,16 +27,15 @@ enum GuidesLayout {
     static let currentThreshold: CGFloat = 80
     static let tabBarClearance: CGFloat = 96
     static let chipNumberSize: CGFloat = 12
-    static let tierLetterSize: CGFloat = 14
 }
 
-/// A section label with the spec's 22 pt above it.
+/// A group's head over the ground (Overview, All classes, Rotation, What changed): `SectionTitle`, as
+/// Android's, with the spec's 22 pt above it.
 struct GuideSectionLabel: View {
     let text: String
 
     var body: some View {
-        MicroLabel(text)
-            .accessibilityAddTraits(.isHeader)
+        SectionTitle(text)
             .padding(.top, GuidesLayout.sectionGap)
             .padding(.bottom, 8)
     }
@@ -54,7 +53,7 @@ struct StatChipView: View {
         let shape = RoundedRectangle(cornerRadius: GuidesLayout.chip / 2)
         HStack(spacing: 8) {
             Text("\(chip.number)")
-                .font(.system(size: number, weight: .semibold, design: .monospaced))
+                .font(Font.custom(FSFont.bodySemibold, size: number).monospacedDigit())
                 .foregroundStyle(FSColor.strong)
                 .frame(width: disc, height: disc)
                 .background(FSColor.cardTop, in: .circle)
@@ -86,18 +85,26 @@ struct StatChips: View {
     }
 }
 
-/// Plain lines of a guide (strengths, weaknesses, a raid's notes).
+/// Bulleted lines of a guide inside a panel (strengths, weaknesses, a raid's notes): a Label12 head,
+/// never a display-face heading inside a Plate, then each line after its dot.
 struct GuideLines: View {
     let title: String
     let lines: [String]
 
+    static let dot: CGFloat = 5
+
     var body: some View {
         if !lines.isEmpty {
             VStack(alignment: .leading, spacing: 6) {
-                MicroLabel(title).accessibilityAddTraits(.isHeader)
+                Label12(title).accessibilityAddTraits(.isHeader)
                 ForEach(lines, id: \.self) { line in
-                    Text(line).font(ScaledType.body).foregroundStyle(FSColor.text)
-                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(alignment: .firstTextBaseline, spacing: FSSpace.space2) {
+                        Circle().fill(FSColor.muted).frame(width: Self.dot, height: Self.dot)
+                            .alignmentGuide(.firstTextBaseline) { $0[.bottom] + Self.dot }
+                            .accessibilityHidden(true)
+                        Text(line).font(ScaledType.body).foregroundStyle(FSColor.text)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
             }
         }

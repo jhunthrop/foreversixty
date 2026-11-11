@@ -36,12 +36,22 @@ struct CharacterView: View {
         VStack(alignment: .leading, spacing: 0) {
             switch phase {
             case .loading:
+                // Every state names the character on the band (N3): the bar carries no title at rest.
+                BandHead(title: ref.name)
                 CharacterSkeleton()
             case .failed:
-                ReportsErrorCard(text: Copy.charError, retry: actions.retry).padding(16)
+                BandHead(title: ref.name)
+                LoadError(Copy.charError, retryLabel: Copy.commonTryAgain, retry: actions.retry).padding(RankingsLayout.gutter)
             case .notFound:
+                BandHead(title: ref.name)
                 notFound.padding(16)
             case let .loaded(content):
+                CharacterHead(
+                    profile: content.profile, specs: specs,
+                    yours: CharacterPage.isYours(content.profile.character, keys: Set(account.characterKeys))
+                )
+                .dynamicTypeSize(...RankingsLayout.rowTypeCap)
+                // The strips sit under the band, never under the bars.
                 if let since = content.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now)))
                 }
@@ -56,25 +66,29 @@ struct CharacterView: View {
     }
 
     private func loaded(_ profile: CharacterProfile) -> some View {
+        sections(profile)
+            .padding(.horizontal, RankingsLayout.gutter)
+            .padding(.top, BandReach.gap)
+            .dynamicTypeSize(...RankingsLayout.rowTypeCap)
+    }
+
+    /// Spec ruling R7: Gear, then the fights, then Forever Score below them on a phone.
+    private func sections(_ profile: CharacterProfile) -> some View {
         VStack(alignment: .leading, spacing: 22) {
-            CharacterHead(
-                profile: profile, specs: specs,
-                yours: CharacterPage.isYours(profile.character, keys: Set(account.characterKeys))
-            )
             if watchFailed {
                 Text(Copy.charWatchFailed(name: profile.character.name)).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            section(Copy.charGear) { gear(profile) }
+            let bests = CharacterPage.bests(profile, now: now)
+            if !bests.isEmpty { section(Copy.charBests) { fights(bests, recent: false) } }
+            let recent = CharacterPage.recent(profile, now: now)
+            if !recent.isEmpty { section(Copy.charRecent) { fights(recent, recent: true) } }
             if CharacterPage.hasScore(profile) {
                 ScoreCard(profile: profile, openHow: actions.openHow)
             } else if CharacterPage.showsScoreSection(profile) {
                 ReportStateCard(title: CharacterPage.noScoreTitle(profile), detail: Copy.charNoScore(name: profile.character.name), color: FSColor.strong)
             }
-            let bests = CharacterPage.bests(profile, now: now)
-            if !bests.isEmpty { section(Copy.charBests) { fights(bests, recent: false) } }
-            let recent = CharacterPage.recent(profile, now: now)
-            if !recent.isEmpty { section(Copy.charRecent) { fights(recent, recent: true) } }
-            section(Copy.charGear) { gear(profile) }
             let builds = CharacterPage.builds(profile, clock: clock)
             if !builds.isEmpty {
                 let planner = actions.openPlanner.flatMap { open in CharacterPage.plannerLink(profile).map { link in { open(link) } } }
@@ -84,9 +98,6 @@ struct CharacterView: View {
                 linkRow(Copy.charParseHistory, action: actions.openHistory)
             }
         }
-        .dynamicTypeSize(...RankingsLayout.rowTypeCap)
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
     }
 
     private var notFound: some View {
@@ -106,7 +117,7 @@ struct CharacterView: View {
 
     private func section(_ title: String, @ViewBuilder _ body: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(title).accessibilityAddTraits(.isHeader)
+            SectionTitle(title).accessibilityAddTraits(.isHeader)
             body()
         }
     }
@@ -141,8 +152,6 @@ struct CharacterView: View {
                         frame: PaperdollModel.frame(PaperdollModel.character(gear: profile.gear, items: items, classSlug: profile.character.className?.lowercased())),
                         build: build, open: actions.openSocket
                     )
-                    Text(Copy.charGoldDot).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 14)
@@ -155,7 +164,7 @@ struct CharacterView: View {
                     layout {
                         Text(Copy.charGap).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                         if !typeSize.isAccessibilitySize { Spacer() }
-                        Text(gap).font(ScaledType.mono).foregroundStyle(FSColor.strong).fixedSize()
+                        Text(gap).font(ScaledType.tabular).foregroundStyle(FSColor.strong).fixedSize()
                     }
                     .padding(.vertical, typeSize.isAccessibilitySize ? 10 : 0)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -180,7 +189,7 @@ struct CharacterView: View {
                         .background(GameColors.controlFill, in: .rect(cornerRadius: FSRadius.legacyControl))
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(build.trees).font(ScaledType.mono.weight(.bold)).foregroundStyle(FSColor.strong)
+                        Text(build.trees).font(ScaledType.tabular.weight(.bold)).foregroundStyle(FSColor.strong)
                         Text(build.meta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -234,23 +243,18 @@ struct CharacterHead: View {
     let yours: Bool
 
     var body: some View {
-        HStack(alignment: .center, spacing: 14) {
+        // The head continues the band from under the bars, as the web's page head (N3).
+        BandHead(title: profile.character.name, titleColor: ClassColor.of(profile.character.className)) {
             ClassCrest(className: profile.character.className, size: RankingsLayout.headCrest)
-            VStack(alignment: .leading, spacing: 2) {
+        } facts: {
+            if yours || profile.supporter {
                 HStack(spacing: 8) {
-                    Text(profile.character.name.uppercased()).font(ScaledType.h2)
-                        .foregroundStyle(ClassColor.of(profile.character.className))
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityAddTraits(.isHeader)
                     if yours { TagView(text: Copy.charYou, color: FSColor.gold) }
                     if profile.supporter { TagView(text: Copy.sharedPremiumSupporterChip, color: FSColor.goldHover, systemImage: "heart.fill") }
                 }
-                Text(CharacterPage.descriptor(profile, specs: specs)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(CharacterPage.whereLine(profile.character)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            BandFact(CharacterPage.descriptor(profile, specs: specs))
+            BandFact(CharacterPage.whereLine(profile.character))
         }
         .accessibilityElement(children: .combine)
     }
@@ -266,7 +270,7 @@ struct ScoreCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 2) {
-                    MicroLabel(Copy.charScore, color: FSColor.gold)
+                    Label12(Copy.charScore, color: FSColor.gold)
                     ViewThatFits(in: .horizontal) {
                         HStack(alignment: .firstTextBaseline, spacing: 8) { figure; tier }
                         VStack(alignment: .leading, spacing: 4) { figure; tier }
@@ -332,7 +336,7 @@ struct ScoreBarRow: View {
                     }
                 }
                 .frame(height: RankingsLayout.bar)
-                Text("\(bar.value)").font(ScaledType.monoMeta.weight(.semibold)).foregroundStyle(FSColor.strong)
+                Text("\(bar.value)").font(ScaledType.tabularMeta.weight(.semibold)).foregroundStyle(FSColor.strong)
                     .frame(minWidth: 34, alignment: .trailing)
                     .fixedSize()
             }
@@ -404,12 +408,12 @@ struct FightLineView: View {
     private func figure(_ alignment: HorizontalAlignment) -> some View {
         VStack(alignment: alignment, spacing: 2) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(line.value).font(ScaledType.mono).foregroundStyle(FSColor.strong)
-                Text(line.unit).font(ScaledType.micro).foregroundStyle(FSColor.muted)
+                Text(line.value).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
+                Text(line.unit).font(ScaledType.label).foregroundStyle(FSColor.muted)
             }
             if !recent, let percentile = line.percentile {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(percentile)").font(ReportsLayout.parseNumber).foregroundStyle(ParseLadder.color(ParseTier(percentile)))
+                    Text(ReportsCopy.ordinal(percentile)).font(ReportsLayout.parseNumber).foregroundStyle(ParseLadder.color(ParseTier(percentile)))
                     Text(Copy.charPercentile).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 }
             }

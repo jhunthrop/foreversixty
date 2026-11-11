@@ -1,5 +1,6 @@
 package gg.foreversixty.app.rankings.logic
 
+import gg.foreversixty.app.designsystem.Codes
 import gg.foreversixty.app.navigation.DeepLink
 import android.content.res.Resources
 import androidx.annotation.StringRes
@@ -147,7 +148,7 @@ class CharacterCopy(private val res: Resources, private val zone: ZoneId = ZoneI
     /** `Hordebreakers · US Normal`. */
     fun where(profile: CharacterProfile): String {
         val c = profile.character
-        val region = c.region.uppercase(Locale.ROOT)
+        val region = Codes.region(c.region)
         val ruleset = rankings.rulesetLabel(c.ruleset)
         return c.guild?.name?.let { res.getString(R.string.char_where, it, region, ruleset) } ?: res.getString(R.string.char_whereNoGuild, region, ruleset)
     }
@@ -179,7 +180,7 @@ class CharacterCopy(private val res: Resources, private val zone: ZoneId = ZoneI
     }
 
     /** The unit word under a fight's value. */
-    fun unit(metric: String): String = Measure.of(metric)?.let(rankings::unit) ?: metric.uppercase(Locale.ROOT)
+    fun unit(metric: String): String = Measure.of(metric)?.let(rankings::unit) ?: Codes.unit(metric)
 
     /** A fight's value as the board prints it. */
     fun value(fight: CharacterFight): String = when (Measure.of(fight.metric)) {

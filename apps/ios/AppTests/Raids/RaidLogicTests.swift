@@ -9,12 +9,12 @@ import Testing
 struct RaidClockTests {
     let clock = RaidTime.clock
 
-    @Test("clocks read 7:45 pm in the viewer's zone, and the date block THU 10 DEC")
+    @Test("clocks read 7:45 pm in the viewer's zone, and the date block Thu 10 Dec")
     func clocks() throws {
         let invite = RaidTime.date("2026-12-20T00:45:00Z")
         #expect(clock.clock(invite) == "6:45 pm")
         let block = clock.dateBlock(invite)
-        #expect(block.weekday == "SAT" && block.day == "19" && block.month == "DEC")
+        #expect(block.weekday == "Sat" && block.day == "19" && block.month == "Dec")
         #expect(clock.longDate(invite) == "Saturday 19 December")
     }
 
@@ -61,7 +61,7 @@ struct RaidFactsTests {
         let facts = RaidFacts(raid: try RaidFixture.raid(), now: RaidTime.now)
         #expect(facts.countLine == "24 of 40 signed up")
         #expect(facts.ratio == "24/40")
-        #expect(facts.breakdown == "3 tanks · 6 healers · 14 DPS · 1 late")
+        #expect(facts.breakdown == "3 tanks · 6 healers · 15 DPS · 1 late")
         let barrow = try #require(RaidFixture.load(GuildRaids.self, "guild.raids").planned?[1])
         let noSize = RaidFacts(raid: barrow, now: RaidTime.now)
         #expect(noSize.countLine == "11 signed up")
@@ -74,6 +74,7 @@ struct RaidFactsTests {
         var object = try #require(try JSONSerialization.jsonObject(with: RaidFixture.data("guild.raid")) as? [String: Any])
         var data = try #require(object["data"] as? [String: Any])
         data["counts"] = ["in": 8, "late": 0, "bench": 0, "out": 0, "tanks": 1, "healers": 2, "dps": 5, "melee": 3, "ranged": 2]
+        data["signups"] = [] // A list row: counts only, so damage is everyone coming less the tanks and healers.
         object["data"] = data
         let patched = try JSONSerialization.data(withJSONObject: object)
         struct Envelope: Decodable { let data: RaidView }
@@ -191,7 +192,7 @@ struct RosterTests {
         let text = RosterCopy.text(raid: try RaidFixture.raid(), clock: RaidTime.clock, now: RaidTime.now)
         let lines = text.components(separatedBy: "\n")
         #expect(lines[0].hasPrefix("Onyxia's Lair · Sat 19 Dec, 7:00 pm CST · <t:"))
-        #expect(lines[1] == "24 of 40: 3 tanks, 6 healers, 14 DPS, 1 late")
+        #expect(lines[1] == "24 of 40: 3 tanks, 6 healers, 15 DPS, 1 late")
         #expect(lines[2] == "Tanks: Ironhide, Kraggor, Bramblehoof")
         #expect(lines.last == "Out: Wyrmtalon, Snaggle, Felgrin")
     }

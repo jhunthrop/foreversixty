@@ -1,5 +1,8 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.designsystem.LoadError
+import gg.foreversixty.app.designsystem.panel
+import gg.foreversixty.app.designsystem.FsTopBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,9 +49,8 @@ import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.reports.logic.ParseTier
 import gg.foreversixty.app.reports.logic.Visibility
-import java.util.Locale
 
-/** A pushed screen's bar: back with its label, the uppercase title (a guide's in its class colour), and one trailing action. */
+/** A pushed screen's bar: back with its label, the title (a guide's in its class colour), and one trailing action. */
 @Composable
 fun ReportsBar(title: String, backLabel: String, back: () -> Unit, trailing: BarAction? = null, titleColor: Color = FsColor.strong) {
     ReportsBar(title, backLabel, back, titleColor) {
@@ -68,21 +70,7 @@ fun ReportsBar(
     titleColor: Color = FsColor.strong,
     actions: @Composable RowScope.() -> Unit,
 ) {
-    TopAppBar(
-        title = {
-            Text(
-                title.uppercase(Locale.ROOT), style = ScaledType.h2, color = titleColor, maxLines = 2, overflow = TextOverflow.Clip,
-                modifier = Modifier.semantics { heading() },
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = backLabel, tint = FsColor.strong) }
-        },
-        actions = actions,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-        // The app scaffold already pads for the status bar.
-        windowInsets = WindowInsets(0, 0, 0, 0),
-    )
+    FsTopBar(title.ifEmpty { null }, backLabel, back, titleColor, actions = actions)
 }
 
 /** A bar's trailing icon button. */
@@ -99,10 +87,7 @@ class BarAction(val label: String, val icon: @Composable () -> Painter, val run:
 /** The failing region's sentence in wipe red with Try again (v1 §5.0). */
 @Composable
 fun ErrorRegion(text: String, retry: () -> Unit, inset: Boolean = true) {
-    Column(Modifier.fillMaxWidth().padding(if (inset) 16.dp else 0.dp),verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(text, style = ScaledType.lead, color = FsColor.wipe, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
-        BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
-    }
+    LoadError(text, stringResource(R.string.common_tryAgain), retry, Modifier.padding(if (inset) 16.dp else 0.dp))
 }
 
 /** [base] grown with the font scale, never past [cap] (spec W3 §9: crests, glyphs and icons scale with text). */

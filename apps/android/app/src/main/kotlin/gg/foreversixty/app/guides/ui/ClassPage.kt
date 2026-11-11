@@ -45,7 +45,7 @@ fun ClassPage(classSlug: String, index: Loadable<GuideIndex>, saved: Map<String,
                 QuietRows(cls.specs) { spec -> SpecRow(spec, loaded.value.build, spec.spec in saved) { open(spec.spec) } }
                 // Offline with a guide not on the phone: say so under the card (board F9.6).
                 if (loaded.offlineSince != null && cls.specs.any { it.spec !in saved }) {
-                    Text(stringResource(R.string.guides_notCached), style = ScaledType.meta, color = FsColor.muted)
+                    Text(stringResource(R.string.guides_notCached), style = ScaledType.meta, color = FsColor.mutedGround)
                 }
             }
         }

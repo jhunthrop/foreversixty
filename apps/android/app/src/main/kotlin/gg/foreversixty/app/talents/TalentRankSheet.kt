@@ -1,5 +1,6 @@
 package gg.foreversixty.app.talents
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +29,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.MicroLabel
 
 /** From font scale 1.5 the sheet opens full height (spec F6 §7, point 3). */
 private const val FULL_SHEET_SCALE = 1.5f
@@ -67,7 +67,7 @@ fun TalentRankContent(model: TalentSheetModel, build: String) {
             TalentIconTile(model.talent, face, build, size = 56.dp)
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(model.talent.name, style = ScaledType.name, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-                Text(stringResource(R.string.talents_rank, model.rank, model.talent.maxRank), style = ScaledType.monoMeta, color = FsColor.muted)
+                Text(stringResource(R.string.talents_rank, model.rank, model.talent.maxRank), style = ScaledType.tabularMeta, color = FsColor.muted)
             }
         }
         val panel = RoundedCornerShape(FsRadius.legacyControl)
@@ -78,7 +78,7 @@ fun TalentRankContent(model: TalentSheetModel, build: String) {
             model.current?.let { Text(it, style = ScaledType.body, color = FsColor.text) }
             model.next?.let { next ->
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    MicroLabel(stringResource(R.string.talents_nextRank))
+                    Label12(stringResource(R.string.talents_nextRank))
                     Text(next, style = ScaledType.body, color = FsColor.muted)
                 }
             }

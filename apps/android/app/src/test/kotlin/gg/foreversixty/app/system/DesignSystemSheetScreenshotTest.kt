@@ -31,7 +31,7 @@ import gg.foreversixty.app.designsystem.FrameCorners
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.FsType
-import gg.foreversixty.app.designsystem.MicroLabel
+import gg.foreversixty.app.designsystem.Label12
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.PanelFrame
 import gg.foreversixty.app.designsystem.PaperdollHeader
@@ -190,7 +190,7 @@ private fun Tags() {
             Tag("Wiped", FsColor.wipe)
             Tag("In", FsColor.kill, checked = true)
         }
-        MicroLabel("New for you", color = FsColor.mutedGround)
+        Label12("New for you", color = FsColor.mutedGround)
         OfflineStrip("Offline · showing Tuesday's raid")
         StaleStrip("Couldn't refresh the roster", action = "Retry", onAction = {})
     }

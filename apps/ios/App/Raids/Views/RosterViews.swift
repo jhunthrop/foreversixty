@@ -18,14 +18,17 @@ struct OfficerRow: View {
                 HStack(spacing: 10) { lockButton(locked: locked, ended: ended); copyButton(ended: ended) }
                 VStack(alignment: .leading, spacing: 10) { lockButton(locked: locked, ended: ended); copyButton(ended: ended) }
             }
-            Text(ended ? Copy.officerGate : locked ? Copy.officerLockedNote : Copy.officerLockNote)
-                .font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            // The state notes only; how locking works is not explained.
+            if ended || locked {
+                Text(ended ? Copy.officerGate : Copy.officerLockedNote).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
+            }
             if let error = controller.officerError {
                 Text(error).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
             }
         }
     }
 
+    /// Lock sign-ups is the officer row's one primary; Copy the list beside it is the outline.
     private func lockButton(locked: Bool, ended: Bool) -> some View {
         Button { Task { await controller.toggleLock() } } label: {
             HStack(spacing: 8) {
@@ -37,9 +40,8 @@ struct OfficerRow: View {
                 Text(locked ? Copy.officerUnlock : Copy.officerLock)
             }
         }
-        .buttonStyle(BrandButtonStyle(.secondary, height: 48, fullWidth: false))
+        .buttonStyle(BrandButtonStyle(.primary, height: 48, fullWidth: false))
         .disabled(ended || !controller.facts.canLock || controller.offline)
-        .opacity(ended ? 0.5 : 1)
     }
 
     private func copyButton(ended: Bool) -> some View {
@@ -51,9 +53,8 @@ struct OfficerRow: View {
                 Text(controller.copied ? Copy.officerCopied : Copy.officerCopy)
             }
         }
-        .buttonStyle(BrandButtonStyle(.secondary, height: 48, fullWidth: false))
+        .buttonStyle(BrandButtonStyle(.quiet, height: 48, fullWidth: false))
         .disabled(ended)
-        .opacity(ended ? 0.5 : 1)
     }
 }
 
@@ -68,9 +69,9 @@ struct RosterView: View {
         let officer = facts.canMove && facts.isSignable
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(Copy.raidSignups.uppercased()).font(ScaledType.h2).foregroundStyle(FSColor.strong)
+                Text(Copy.raidSignups).font(ScaledType.h2).foregroundStyle(FSColor.strong)
                     .accessibilityAddTraits(.isHeader)
-                Text(facts.ratio).font(ScaledType.mono).foregroundStyle(FSColor.muted)
+                Text(facts.ratio).font(ScaledType.tabular).foregroundStyle(FSColor.mutedGround)
             }
             if let read = CompositionRead(controller.raid.composition) { CompositionView(read: read) }
             ForEach(roster.groups) { group in

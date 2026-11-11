@@ -16,14 +16,18 @@ struct SignedOutView: View {
     let onSignIn: () -> Void
     let onPickClass: () -> Void
 
+    /// The head's top padding: clear of the toast when a notice shows.
+    static let headTop: CGFloat = 48
+    static let headTopWithNotice: CGFloat = 108
+
     var body: some View {
+        // The web's signed-out page: a band head, then one Plate on the ground with the one primary.
         ZStack(alignment: .top) {
-            Color.clear.surfaceBand(bottomLine: false).ignoresSafeArea()
             ScrollView {
-                content
-                    .padding(.horizontal, FSSpace.space4)
-                    .padding(.top, notice == nil ? 60 : 120)
-                    .padding(.bottom, FSSpace.space6)
+                VStack(alignment: .leading, spacing: 0) {
+                    head
+                    plate.padding(FSSpace.space4)
+                }
             }
             .scrollBounceBehavior(.basedOnSize)
             if let notice {
@@ -33,36 +37,45 @@ struct SignedOutView: View {
                     .accessibilitySortPriority(1)
             }
         }
+        .screenGround()
     }
 
-    private var content: some View {
+    private var head: some View {
         VStack(alignment: .leading, spacing: FSSpace.space4) {
             Seal(size: 64)
             Text(Copy.appName)
                 .font(ScaledType.wordmark)
-                .textCase(.uppercase)
-                .tracking(2)
                 .foregroundStyle(FSColor.strong)
             Text(heading)
                 .font(ScaledType.title)
-                .textCase(.uppercase)
                 .foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
+        }
+        .padding(.horizontal, FSSpace.space4)
+        .padding(.top, notice == nil ? Self.headTop : Self.headTopWithNotice)
+        .padding(.bottom, FSSpace.space6)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        // The band runs up under the status bar, as every head's (N3).
+        .bandUnderBars()
+    }
+
+    private var plate: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space4) {
             Text(line)
                 .font(ScaledType.body)
                 .foregroundStyle(FSColor.text)
                 .fixedSize(horizontal: false, vertical: true)
-            VStack(spacing: FSSpace.space3) {
-                signInButton
-                Button(Copy.signinPickClass, action: onPickClass)
-                    .buttonStyle(BrandButtonStyle(.secondary))
-            }
-            .padding(.top, FSSpace.space2)
+            signInButton
+            Button(Copy.signinPickClass, action: onPickClass)
+                .buttonStyle(BrandButtonStyle(.quiet))
             Text(Copy.signinPickClassNote)
                 .font(ScaledType.meta)
                 .foregroundStyle(FSColor.muted)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .padding(FSSpace.space4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .panel()
     }
 
     private var signInButton: some View {
@@ -102,7 +115,6 @@ struct ImportView: View {
                 Seal(size: 64)
                 Text(Copy.signinImportTitle)
                     .font(ScaledType.h2)
-                    .textCase(.uppercase)
                     .foregroundStyle(FSColor.strong)
                     .multilineTextAlignment(.center)
                 Text(Copy.signinImportBody)
@@ -125,21 +137,20 @@ struct NoCharactersView: View {
     let onGetAddon: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: FSSpace.space4) {
-            Text(Copy.signinNoCharsTitle)
-                .font(ScaledType.h2)
-                .textCase(.uppercase)
-                .foregroundStyle(FSColor.strong)
-                .accessibilityAddTraits(.isHeader)
-            Text(Copy.signinNoCharsBody)
-                .font(ScaledType.body)
-                .foregroundStyle(FSColor.text)
-                .fixedSize(horizontal: false, vertical: true)
-            Button(Copy.sharedCtaGetAddonAndCompanion, action: onGetAddon)
-                .buttonStyle(BrandButtonStyle(.secondary))
+        VStack(alignment: .leading, spacing: 0) {
+            // The head on the band under the bars (N3), then the line and the one action.
+            BandHead(title: Copy.signinNoCharsTitle)
+            VStack(alignment: .leading, spacing: FSSpace.space4) {
+                Text(Copy.signinNoCharsBody)
+                    .font(ScaledType.body)
+                    .foregroundStyle(FSColor.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button(Copy.sharedCtaGetAddonAndCompanion, action: onGetAddon)
+                    .buttonStyle(BrandButtonStyle(.secondary))
+            }
+            .padding(FSSpace.space4)
         }
-        .padding(FSSpace.space4)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(FSColor.bg)
+        .screenGround()
     }
 }

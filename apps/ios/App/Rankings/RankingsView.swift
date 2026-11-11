@@ -28,13 +28,13 @@ struct RankingsView: View {
     var body: some View {
         ScrollViewReader { proxy in
             VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.rankTitle)
                 if case let .loaded(content) = phase, let since = content.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now)))
                 }
                 if case let .loaded(content) = phase, let since = content.staleSince {
                     StaleStrip(time: OfflineStamp.format(since, now: now), retry: actions.retry)
                 }
-                SimsTitle(text: Copy.rankTitle)
                 VStack(alignment: .leading, spacing: 12) {
                     switch phase {
                     case .loading:
@@ -96,7 +96,7 @@ struct RankingsView: View {
 
     private func pinnedSection(_ row: RankingRow, content: BoardContent, filters: RankingsFilters) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            MicroLabel(Copy.rankPin)
+            SectionTitle(Copy.rankPin)
             rowButton(row, content: content, filters: filters, mine: true, crests: RankingsBoard.showsCrests(content.rows))
                 .clipShape(RoundedRectangle(cornerRadius: FSRadius.legacyPanel))
                 .quietCard()
@@ -220,7 +220,7 @@ struct AnswerCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            MicroLabel(Copy.rankLabel, color: FSColor.gold)
+            Label12(Copy.rankLabel, color: FSColor.gold)
             switch answer {
             case let .ranked(ordinal, tier, unit, meta, name):
                 ViewThatFits(in: .horizontal) {
@@ -318,15 +318,15 @@ struct RankRowView: View {
     }
 
     private var rankNumeral: some View {
-        Text("\(row.rank)").font(ScaledType.mono.weight(.bold))
+        Text("\(row.rank)").font(ScaledType.tabular.weight(.bold))
             .foregroundStyle(ParseLadder.color(RankColor.tier(rank: row.rank, total: total)))
             .fixedSize()
     }
 
     private func value(alignment: HorizontalAlignment) -> some View {
         VStack(alignment: alignment, spacing: 0) {
-            Text(RankingsCopy.value(row, metric: metric)).font(ScaledType.mono).foregroundStyle(FSColor.strong)
-            Text(RankingsCopy.unit(metric)).font(ScaledType.micro).foregroundStyle(FSColor.muted)
+            Text(RankingsCopy.value(row, metric: metric)).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
+            Text(RankingsCopy.unit(metric)).font(ScaledType.label).foregroundStyle(FSColor.muted)
         }
         .fixedSize()
     }
@@ -371,6 +371,8 @@ struct RankingsSkeleton: View {
 }
 
 enum RankingsLayout {
+    /// The page's side margin, and the band head's padding under the bar.
+    static let gutter: CGFloat = 16
     static let row: CGFloat = 68
     static let crest: CGFloat = 28
     static let numeralWidth: CGFloat = 30

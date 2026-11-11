@@ -1,5 +1,7 @@
 package gg.foreversixty.app.rankings.ui
 
+import gg.foreversixty.app.designsystem.Label12
+import gg.foreversixty.app.designsystem.SectionTitle
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.BorderStroke
@@ -62,8 +64,8 @@ import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.primaryCard
@@ -160,7 +162,7 @@ private fun Loaded(board: Board, filters: RankingsFilters, state: RankingsScreen
     val crests = Rankings.showsCrests(board.rows)
     if (own is OwnRow.Pinned) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            MicroLabel(stringResource(R.string.rank_pin))
+            SectionTitle(stringResource(R.string.rank_pin))
             Column(Modifier.fillMaxWidth().quietCard()) {
                 RankRow(own.rank.row.copy(rank = own.rank.rank), board.total, filters, crests, own = true, now, copy, state, actions)
             }
@@ -182,7 +184,7 @@ private fun Loaded(board: Board, filters: RankingsFilters, state: RankingsScreen
 @Composable
 private fun AnswerCard(board: Board, filters: RankingsFilters, state: RankingsScreenState, copy: RankingsCopy) {
     Column(Modifier.fillMaxWidth().primaryCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        MicroLabel(stringResource(R.string.rank_label))
+        Label12(stringResource(R.string.rank_label))
         val placed = board.characterRank
         if (placed == null) {
             Text(copy.unranked(filters, state.encounterNames), style = ScaledType.lead, color = FsColor.strong)
@@ -323,8 +325,8 @@ private fun Name(row: RankingRow, yours: Boolean) {
 @Composable
 private fun Value(row: RankingRow, filters: RankingsFilters, copy: RankingsCopy, align: Alignment.Horizontal) {
     Column(horizontalAlignment = align) {
-        Text(Rankings.valueText(row, filters.measure), style = ScaledType.mono.copy(fontSize = 17.sp), color = FsColor.strong)
-        Text(copy.unit(filters.measure), style = ScaledType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
+        Text(Rankings.valueText(row, filters.measure), style = ScaledType.tabular.copy(fontSize = 17.sp), color = FsColor.strong)
+        Text(copy.unit(filters.measure), style = FsType.label, color = FsColor.muted)
     }
 }
 
@@ -414,4 +416,4 @@ private fun Skeleton(signedIn: Boolean) {
 /** The rank numeral: mono 700. */
 private val MENU_OFFSET = DpOffset(56.dp, 0.dp)
 
-private val RankNumeral = ScaledType.mono.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+private val RankNumeral = ScaledType.tabular.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp)

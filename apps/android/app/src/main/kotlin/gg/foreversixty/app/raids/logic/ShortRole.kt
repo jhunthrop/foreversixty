@@ -26,6 +26,12 @@ data class ShortRole(val wire: String, @param:StringRes val group: Int, @param:S
             ).filter { it.missing > 0 }.maxByOrNull { it.missing }
         }
 
+        /** A sign-up's role group: tank, healer, else damage (melee and ranged). */
+        fun group(role: String): String = when (role) {
+            TANK, HEALER -> role
+            else -> DPS
+        }
+
         /** `2 healers`, `1 tank`, `3 DPS`. */
         fun people(res: Resources, role: String?, n: Int): String = when (role) {
             TANK -> res.getQuantityString(R.plurals.raids_part_tanks, n, n)

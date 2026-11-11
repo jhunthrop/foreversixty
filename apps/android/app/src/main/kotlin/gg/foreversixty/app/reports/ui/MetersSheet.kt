@@ -43,6 +43,7 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.classColor
@@ -55,7 +56,6 @@ import gg.foreversixty.app.reports.logic.Metric
 import gg.foreversixty.app.reports.logic.Parses
 import gg.foreversixty.app.reports.logic.ReportsCopy
 import java.time.ZoneId
-import java.util.Locale
 
 /** What the sheet draws: its target, segment, answer and whether Show all was pressed. */
 data class MetersSheetState(val target: MetersTarget, val metric: Metric, val phase: MetersPhase, val showAll: Boolean)
@@ -102,7 +102,7 @@ fun MetersSheetContent(state: MetersSheetState, specs: SpecCatalog, build: Strin
     Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
         Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(
-                copy.metersTitleFor(state.target, state.metric).uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong,
+                copy.metersTitleFor(state.target, state.metric), style = ScaledType.sec, color = FsColor.strong,
                 modifier = Modifier.semantics { heading() },
             )
             Head(state.target, copy)
@@ -207,7 +207,7 @@ private fun MeterRowView(row: MeterRow, metric: Metric, specs: SpecCatalog, buil
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Text(row.rank.toString(), style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.widthIn(min = 20.dp))
+            Text(row.rank.toString(), style = ScaledType.tabularMeta, color = FsColor.muted, modifier = Modifier.widthIn(min = 20.dp))
             PlayerMark(player.spec, player.className, specs, build)
             if (stacked) {
                 Column(Modifier.weight(1f)) {
@@ -225,8 +225,8 @@ private fun MeterRowView(row: MeterRow, metric: Metric, specs: SpecCatalog, buil
 @Composable
 private fun Figure(row: MeterRow, metric: Metric, copy: ReportsCopy) {
     Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(Parses.figure(row.value), style = ScaledType.mono, color = FsColor.strong)
-        Text(copy.unit(metric.unit), style = ScaledType.micro, color = FsColor.muted, modifier = Modifier.padding(bottom = 2.dp))
+        Text(Parses.figure(row.value), style = ScaledType.tabular, color = FsColor.strong)
+        Text(copy.unit(metric.unit), style = FsType.label, color = FsColor.muted, modifier = Modifier.padding(bottom = 2.dp))
     }
 }
 

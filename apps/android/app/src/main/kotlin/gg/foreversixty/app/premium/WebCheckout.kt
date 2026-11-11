@@ -20,7 +20,7 @@ object WebCheckoutPolicy {
     }
 
     /** Play Billing names the country in ISO 3166-1 alpha-2 (`US`); anything else is not a region. */
-    fun alpha2(code: String): String? = code.uppercase(Locale.ROOT).takeIf { it in ISO_REGIONS }
+    fun alpha2(code: String): String? = ISO_REGIONS.firstOrNull { it.equals(code, ignoreCase = true) }
 }
 
 /** Where the storefront country comes from: Play Billing in the app, a fixed answer in tests. */

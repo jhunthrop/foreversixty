@@ -5,10 +5,11 @@ import UIKit
 // finds all three. Each reads tokens only and reports its parity region or item.
 
 /// `ui/Button` (round 5, web lib/ui/button.ts): 44 pt, 13/16 700 in sentence case, the 6 pt control
-/// radius; primary their teal with the teal edge, secondary their blue, ghost the gold text, danger
-/// the wipe outline. One primary per screen.
+/// radius; primary their teal with the teal edge, secondary their blue, quiet the rule outline (the
+/// action beside a primary, as Android's), ghost the gold text, danger the wipe outline. One primary
+/// per screen.
 public struct FSButtonStyle: ButtonStyle {
-    public enum Kind: Sendable { case primary, secondary, danger, ghost }
+    public enum Kind: Sendable { case primary, secondary, quiet, danger, ghost }
 
     public static let padX: CGFloat = 18
     /// The side padding of a button in a row of equal buttons.
@@ -51,6 +52,7 @@ public struct FSButtonStyle: ButtonStyle {
     private var foreground: Color {
         switch kind {
         case .primary, .secondary: FSColor.strong
+        case .quiet: FSColor.cream
         case .danger: FSColor.wipe
         case .ghost: FSColor.gold
         }
@@ -60,7 +62,7 @@ public struct FSButtonStyle: ButtonStyle {
         switch kind {
         case .primary: pressed ? FSColor.tealEdge : FSColor.teal
         case .secondary: pressed ? FSColor.blueEdge : FSColor.blue
-        case .danger, .ghost: pressed ? FSColor.pressed : .clear
+        case .quiet, .danger, .ghost: pressed ? FSColor.pressed : .clear
         }
     }
 
@@ -68,6 +70,8 @@ public struct FSButtonStyle: ButtonStyle {
         switch kind {
         case .primary: FSColor.tealEdge
         case .secondary: FSColor.blueEdge
+        // The cream frame line: the rule's slate disappears on the painted ground.
+        case .quiet: FSColor.frameLine
         case .danger: FSColor.wipe.opacity(0.4)
         case .ghost: .clear
         }
@@ -181,18 +185,33 @@ public extension PageHeader where Lead == EmptyView, Meta == EmptyView {
     }
 }
 
-/// Small muted text (`t-small`, 13/20).
+/// The secondary ink of the surface a line sits on (round 5): the panel's `muted` by default; the
+/// painted ground (`screenGround()`) provides `mutedGround`, AA there, and a panel restores `muted`.
+/// Android: `LocalSubInk`.
+private struct SubInkKey: EnvironmentKey {
+    static let defaultValue = FSColor.muted
+}
+
+public extension EnvironmentValues {
+    var subInk: Color {
+        get { self[SubInkKey.self] }
+        set { self[SubInkKey.self] = newValue }
+    }
+}
+
+/// Small secondary text (`t-small`, 13/20), in the surface's secondary ink unless given a colour.
 public struct SmallText: View {
     private let text: String
-    private let color: Color
+    private let color: Color?
+    @Environment(\.subInk) private var subInk
 
-    public init(_ text: String, color: Color = FSColor.muted) {
+    public init(_ text: String, color: Color? = nil) {
         self.text = text
         self.color = color
     }
 
     public var body: some View {
-        Text(text).type(FSType.small).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+        Text(text).type(FSType.small).foregroundStyle(color ?? subInk).fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -267,6 +286,7 @@ public struct FSRow<Lead: View, Trail: View>: View {
     private let trailPlacement: TrailPlacement
     private let lead: Lead
     private let trail: Trail
+    @Environment(\.subInk) private var subInk
 
     public init(
         title: String,
@@ -299,10 +319,10 @@ public struct FSRow<Lead: View, Trail: View>: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(title).type(FSType.item).foregroundStyle(titleColor)
                     if let sub {
-                        Text(sub).type(RowType.sub).foregroundStyle(FSColor.muted)
+                        Text(sub).type(RowType.sub).foregroundStyle(subInk)
                     }
                     if let detail {
-                        Text(detail).type(RowType.detail).foregroundStyle(FSColor.muted).padding(.top, 2)
+                        Text(detail).type(RowType.detail).foregroundStyle(subInk).padding(.top, 2)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

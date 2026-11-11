@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.designsystem.SectionTitle
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,16 +32,15 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import java.util.Locale
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.pillSurface
 import gg.foreversixty.app.designsystem.quietCard
@@ -116,7 +116,7 @@ private fun Loaded(content: ReportsContent, pageFailed: Boolean, viewer: Reports
         Section(stringResource(R.string.reports_thisWeek), sections.thisWeek, viewer, now, copy, actions)
         Section(stringResource(R.string.reports_earlier), sections.earlier, viewer, now, copy, actions)
         Footer(content, pageFailed, actions)
-        Text(stringResource(R.string.reports_footer), style = ScaledType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.reports_footer), style = ScaledType.meta, color = FsColor.mutedGround)
     }
 }
 
@@ -124,7 +124,7 @@ private fun Loaded(content: ReportsContent, pageFailed: Boolean, viewer: Reports
 private fun Section(title: String, rows: List<ReportRow>, viewer: ReportsViewer, now: Instant, copy: ReportsCopy, actions: ReportsListActions) {
     if (rows.isEmpty()) return
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MicroLabel(title)
+        SectionTitle(title)
         Column(Modifier.fillMaxWidth().quietCard()) {
             rows.forEachIndexed { index, row ->
                 if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
@@ -232,7 +232,7 @@ private fun LiveTag(text: String) {
         horizontalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         Box(Modifier.size(7.dp).background(FsColor.kill, CircleShape))
-        Text(text.uppercase(Locale.ROOT), style = ScaledType.micro.copy(letterSpacing = 0.08.em), color = FsColor.kill)
+        Text(text, style = FsType.label, color = FsColor.kill)
     }
 }
 
@@ -244,7 +244,7 @@ private const val TAG_LINE = 0.35f
 @Composable
 private fun Skeleton() {
     Column(Modifier.padding(horizontal = 16.dp).padding(top = 8.dp).clearAndSetSemantics {}, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MicroLabel(stringResource(R.string.reports_thisWeek))
+        SectionTitle(stringResource(R.string.reports_thisWeek))
         Column(Modifier.fillMaxWidth().quietCard()) {
             repeat(ReportsLayout.SKELETON_ROWS) { index ->
                 if (index > 0) HorizontalDivider(color = FsColor.lineSoft)

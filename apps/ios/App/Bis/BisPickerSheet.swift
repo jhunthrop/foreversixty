@@ -2,7 +2,7 @@ import DesignSystem
 import Models
 import SwiftUI
 
-/// A BiS chip (spec F3.1): 40 tall, pill, the 4.5% fill, the card border and a chevron.
+/// A filter chip with a chevron (spec F3.1): 40 tall on the control radius, the 4.5% fill and the card border.
 struct BisChip<Leading: View>: View {
     let label: String
     var isOpen = false
@@ -28,7 +28,7 @@ struct BisChip<Leading: View>: View {
             .padding(.trailing, Theme.Spacing.sm + Theme.Spacing.xs)
             .padding(.vertical, Theme.Spacing.xs)
             .frame(minHeight: Self.height)
-            .pillSurface(fill: GameColors.controlFill, line: isOpen ? FSColor.gold : FSColor.lineCard)
+            .chipSurface(fill: GameColors.controlFill, line: isOpen ? FSColor.gold : FSColor.lineCard)
         }
         .buttonStyle(.plain)
     }
@@ -55,10 +55,7 @@ struct BisPickerSheet: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                Text(Copy.bisPickerTitle.uppercased())
-                    .font(ScaledType.sec)
-                    .foregroundStyle(FSColor.strong)
-                    .accessibilityAddTraits(.isHeader)
+                SectionTitle(Copy.bisPickerTitle, color: FSColor.strong)
                 section(Copy.bisPickerClass) { classGrid }
                 section(Copy.bisPickerSpec) { specs }
                 if showsListChoices {
@@ -155,7 +152,7 @@ struct BisPickerSheet: View {
             }
             .padding(.horizontal, Theme.Spacing.md)
             .frame(minHeight: 48)
-            .pillSurface(
+            .chipSurface(
                 fill: isCurrent ? GameColors.pressedWash : GameColors.controlFill,
                 line: isCurrent ? FSColor.gold : FSColor.lineCard
             )
@@ -166,11 +163,7 @@ struct BisPickerSheet: View {
 
     private func section(_ title: String, @ViewBuilder _ body: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm + 2) {
-            Text(title.uppercased())
-                .font(ScaledType.micro)
-                .tracking(1.5)
-                .foregroundStyle(FSColor.muted)
-                .accessibilityAddTraits(.isHeader)
+            Label12(title).accessibilityAddTraits(.isHeader)
             body()
         }
     }

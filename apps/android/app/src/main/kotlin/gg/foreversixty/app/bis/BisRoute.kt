@@ -1,5 +1,6 @@
 package gg.foreversixty.app.bis
 
+import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.common.NewBuildStrip
 import gg.foreversixty.app.network.StaticDataStore
 import androidx.compose.runtime.getValue
@@ -86,13 +87,16 @@ fun BisRoute(
     LaunchedEffect(model, owner) { if (!owner.waiting) model.start() }
 
     Column(Modifier.fillMaxSize()) {
-        if (onSearch != null) {
-            RootSearchBar(onSearch, selector)
-        } else {
-            SearchBar(searching, query, selector, onQuery = { query = it }, onToggle = {
-                searching = !searching
-                if (!searching) query = ""
-            })
+        // The bar on the painted band, which the list's head continues (round 5, the tab roots' bar).
+        Box(Modifier.fillMaxWidth().surfaceBand(bottomLine = false)) {
+            if (onSearch != null) {
+                RootSearchBar(onSearch, selector)
+            } else {
+                SearchBar(searching, query, selector, onQuery = { query = it }, onToggle = {
+                    searching = !searching
+                    if (!searching) query = ""
+                })
+            }
         }
         // Lane F15: a newer build waits behind the strip; the list moves only on Update.
         NewBuildStrip(model) { scope.launch { model.update() } }

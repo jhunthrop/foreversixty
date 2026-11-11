@@ -166,7 +166,7 @@ struct HistoryNightTests {
     @Test("the date block is the night's start, created_at minus its length, in the device zone")
     func start() throws {
         let block = clock.dateBlock(try night(9).start)
-        #expect(block.weekday == "MON" && block.day == "14" && block.month == "DEC")
+        #expect(block.weekday == "Mon" && block.day == "14" && block.month == "Dec")
     }
 
     @Test("You were there when one of your characters is in present[]")

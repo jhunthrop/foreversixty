@@ -1,5 +1,7 @@
 package gg.foreversixty.app.guild.ui
 
+import gg.foreversixty.app.designsystem.FsRadius
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.common.rememberHaptics
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
@@ -104,7 +106,7 @@ fun RosterContent(
     back: () -> Unit,
 ) {
     val copy = RosterCopy(LocalResources.current)
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         GuildTopBar(stringResource(R.string.roster_title), back) {
             IconButton(onClick = { controls.searching = !controls.searching }) {
                 Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.roster_search), tint = FsColor.strong)
@@ -255,7 +257,7 @@ private fun SortMenu(controls: RosterControls) {
 /** A 40 dp pill in a 48 dp target: gold ring and wash when selected (spec 7, Scope chip). */
 @Composable
 private fun Chip(text: String, selected: Boolean, trailing: Boolean = false, onClick: () -> Unit) {
-    val shape = CircleShape
+    val shape = RoundedCornerShape(FsRadius.control)
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -276,7 +278,7 @@ private fun Chip(text: String, selected: Boolean, trailing: Boolean = false, onC
     }
 }
 
-/** One roster row (64 min): spec icon, name and meta, attendance, chevron. */
+/** One roster row (64 min): the class crest, name and meta, attendance, chevron. */
 @Composable
 fun RosterRowView(entry: RosterEntry, copy: RosterCopy, open: (RosterEntry) -> Unit) {
     val large = isLargeText()
@@ -293,7 +295,7 @@ fun RosterRowView(entry: RosterEntry, copy: RosterCopy, open: (RosterEntry) -> U
             .semantics(mergeDescendants = true) { contentDescription = label },
     ) {
         Box(Modifier.clearAndSetSemantics {}) {
-            if (entry.specIcon != null) GameIcon(entry.specIcon, 32.dp) else ClassCrest(entry.className, 32.dp)
+            ClassCrest(entry.className, 32.dp)
         }
         Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.weight(1f).clearAndSetSemantics {}) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {

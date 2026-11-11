@@ -47,12 +47,9 @@ struct TalentsSnapshotTests {
     }
 
     private func screen(_ phase: TalentsPhase, shown: TalentBuildKind = .yours, tree: Int = 0, offline: String? = nil) -> some View {
-        NavigationStack {
+        PushedScreen(back: AppTab.home.title) {
             TalentsView(phase: phase, build: BisTestData.build, offlineStamp: offline, shown: .constant(shown), tree: .constant(tree))
-                .navigationTitle(Copy.talentsTitle)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(FSColor.bg, for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
+                .pushedBandBar(Copy.talentsTitle)
         }
     }
 

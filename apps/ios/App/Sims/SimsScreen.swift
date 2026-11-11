@@ -41,10 +41,9 @@ struct SimsScreen: View {
                 build: build, now: dependencies.now(), actions: actions
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store.load() }
-        .navigationTitle(Copy.simsTitle)
-        .navigationBarTitleDisplayMode(.inline)
+        .pushedBandBar(Copy.simsTitle)
         .navigationDestination(item: $router.result) { route in
             SimResultScreen(route: route, dependencies: dependencies) { id in await store.markSeen(id) }
         }
@@ -126,9 +125,8 @@ struct SimResultScreen: View {
                 staleSince: store.staleSince
             )
         }
-        .background(FSColor.bg)
-        .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
+        .screenGround()
+        .pushedBandBar(title)
         .sheet(item: $tooltip) { request in ItemTooltipSheet(request: request, catalog: dependencies.catalog) }
         .task {
             build = await dependencies.iconBuild()

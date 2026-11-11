@@ -84,7 +84,7 @@ export function flatten(doc) {
         value: node.$value,
         description: node.$description,
         ext,
-        native: ext.native ?? inherited.native,
+        native: gate(ext.native, inherited.native),
         name,
         group: path.slice(0, -1).join('.'),
       });
@@ -93,7 +93,7 @@ export function flatten(doc) {
     groups.set(path.join('.'), node.$description);
     const next = {
       type,
-      native: ext.native ?? inherited.native,
+      native: gate(ext.native, inherited.native),
       flattened: ext.flatten ? [...inherited.flattened, path.length - 1] : inherited.flattened,
     };
     for (const [key, child] of Object.entries(node)) {
@@ -200,6 +200,14 @@ function nativeRole(t, resolve, byPath) {
     tabular: t.ext.tabular === true,
     description: t.description,
   };
+}
+
+/**
+ * A token's platform gate: `true`, `false` or a platform name. An object under `native` is the
+ * role's native overrides (a type role's letter spacing), not a gate, so the inherited gate stands.
+ */
+function gate(own, inherited) {
+  return own === undefined || typeof own === 'object' ? inherited : own;
 }
 
 const isNative = (t, platform) => t.native === true || t.native === platform;

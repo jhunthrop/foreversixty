@@ -105,7 +105,7 @@ private val HORIZONTAL_PADDING = 18.dp
 private val VERTICAL_PADDING = 12.dp
 private val ICON_SIZE = 16.dp
 private val ICON_TEXT_SIZE = 16.sp
-private const val DISABLED_ALPHA = 0.38f
+private const val DISABLED_ALPHA = 0.5f
 
 /** The filled kinds' ground; the outlined kinds have none. */
 private fun containerColor(kind: BrandButtonKind): Color? = when (kind) {

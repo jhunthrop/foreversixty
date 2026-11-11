@@ -84,7 +84,7 @@ struct SimStateText: View {
             let suffix = Text(SimsCopy.stateSuffix(face.row, state: face.state, now: now)).foregroundStyle(FSColor.muted)
             Text("\(running)\(suffix)").font(ScaledType.meta)
         case .done, .doneUnseen:
-            Text(face.headline).font(SimsLayout.isFigure(face.headline) ? ScaledType.mono : ScaledType.bodyStrong)
+            Text(face.headline).font(SimsLayout.isFigure(face.headline) ? ScaledType.tabular : ScaledType.bodyStrong)
                 .foregroundStyle(FSColor.strong)
         case .failed:
             Text(SimsCopy.failedLine(face.row)).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
@@ -110,7 +110,7 @@ struct SimStateLine: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        let age = Text(SimAge.line(face, now: now)).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+        let age = Text(SimAge.line(face, now: now)).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
             .fixedSize(horizontal: false, vertical: true)
         if typeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: 2) { SimStateText(face: face, now: now); age }
@@ -138,7 +138,7 @@ struct SimProgressBar: View {
                 }
                 .frame(height: 8)
                 Text(Copy.simsCombos(done: progress.combosDone, total: progress.combosTotal))
-                    .font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+                    .font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.top, 8)

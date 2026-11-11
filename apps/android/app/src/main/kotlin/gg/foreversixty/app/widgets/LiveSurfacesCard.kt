@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountCard
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.widgets.data.LiveKind
@@ -52,7 +53,7 @@ fun LiveSurfacesCard(settings: LiveSurfaceSettings) {
 fun LiveSurfacesSection(raidOn: Boolean, simOn: Boolean, showsSim: Boolean, onRaid: (Boolean) -> Unit, onSim: (Boolean) -> Unit) {
     Column {
         Text(
-            stringResource(R.string.live_settings).uppercase(), style = ScaledType.micro, color = FsColor.muted,
+            stringResource(R.string.live_settings), style = FsType.label, color = FsColor.muted,
             modifier = Modifier.padding(start = FsSpace.space4, bottom = FsSpace.space2),
         )
         AccountCard {

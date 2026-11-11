@@ -135,7 +135,7 @@ struct RosterChips: View {
                         .foregroundStyle(selected ? FSColor.gold : FSColor.text)
                         .padding(.horizontal, 14)
                         .frame(minHeight: 36)
-                        .guildPill(fill: selected ? GameColors.pressedWash : GameColors.controlFill, line: selected ? FSColor.gold : FSColor.line)
+                        .chipSurface(fill: selected ? GameColors.pressedWash : GameColors.controlFill, line: selected ? FSColor.gold : FSColor.line)
                         .padding(.vertical, 4)
                         .contentShape(.rect)
                 }
@@ -154,7 +154,7 @@ struct RosterChips: View {
                 .foregroundStyle(FSColor.muted)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 36)
-                .guildPill(fill: GameColors.controlFill, line: FSColor.line)
+                .chipSurface(fill: GameColors.controlFill, line: FSColor.line)
                 .padding(.vertical, 4)
                 .contentShape(.rect)
             }
@@ -162,7 +162,7 @@ struct RosterChips: View {
     }
 }
 
-/// A roster row (64 min): spec icon, name and meta, attendance, chevron.
+/// A roster row (64 min): the ringed class crest, name and meta, attendance, chevron.
 struct GuildRosterRowView: View {
     let entry: RosterEntry
     /// False on a screen narrower than `barMinWidth`.
@@ -213,7 +213,7 @@ struct GuildRosterRowView: View {
     }
 
     private var icon: some View {
-        SpecOrCrest(icon: entry.specIcon, className: entry.className, size: 32)
+        ClassCrest(className: entry.className, size: 32, flat: true).accessibilityHidden(true)
     }
 
     private var nameLine: some View {

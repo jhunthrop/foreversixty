@@ -49,9 +49,7 @@ struct GuidesScreen: View {
             dates: changes.dates, changelog: changes.changelog, now: dependencies.now(), actions: rootActions
         )
         .refreshable { await load(segment) }
-        .navigationTitle(Copy.guidesTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(removing: .title)
+        .pushedBandBar(Copy.guidesTitle)
         .toolbar {
             if segment == .tiers {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -94,6 +92,11 @@ struct GuidesScreen: View {
         }
     }
 
+    /// A guide's name from the index (`Elemental Shaman`), for its head before the guide is drawn.
+    private func guideTitle(_ spec: String) -> String {
+        home.phase.value.flatMap { GuidesIndexLogic.spec(spec, in: $0.index)?.title } ?? Copy.guidesTitle
+    }
+
     /// One pushed screen; `push` opens the next one over it.
     @ViewBuilder
     private func destination(_ route: GuidesRoute, push: @escaping (GuidesRoute) -> Void) -> some View {
@@ -108,18 +111,18 @@ struct GuidesScreen: View {
                     GuidesHomeSkeleton().padding(GuidesLayout.gutter)
                 }
             }
-            .background(FSColor.bg)
-            .navigationBarTitleDisplayMode(.inline)
+            .screenGround()
+            .pushedBandBar(GameClass(rawValue: slug)?.name ?? slug)
         case let .guide(spec):
-            GuideScreen(spec: spec, dependencies: dependencies, openGear: openBis) { home.refreshSaved() }
+            GuideScreen(spec: spec, title: guideTitle(spec), dependencies: dependencies, openGear: openBis) { home.refreshSaved() }
         case let .entry(id):
             ScrollView {
                 if let entry = changes.changelog.value?.entries.first(where: { $0.id == id }) {
                     ChangelogEntryView(entry: entry)
                 }
             }
-            .background(FSColor.bg)
-            .navigationBarTitleDisplayMode(.inline)
+            .screenGround()
+            .pushedBandBar(changes.changelog.value?.entries.first(where: { $0.id == id })?.title ?? Copy.guidesTitle)
         }
     }
 }
@@ -165,10 +168,10 @@ struct GuidesRootView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.guidesTitle)
                 if segment == .guides, case let .loaded(_, since) = homePhase {
                     GuidesOfflineStrip(since: since, now: now)
                 }
-                SimsTitle(text: Copy.guidesTitle)
                 SegmentBar(items: GuidesSegment.available(tiersOn: tiersOn), selection: segment, title: \.title, select: actions.selectSegment)
                     .padding(.horizontal, GuidesLayout.gutter)
                     .padding(.bottom, 14)
@@ -177,7 +180,7 @@ struct GuidesRootView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.bottom, GuidesLayout.tabBarClearance)
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     @ViewBuilder
@@ -218,7 +221,14 @@ struct GuideScreen: View {
     /// Lane F13: the talents section's planner row.
     @Environment(PlannerRouter.self) private var planner: PlannerRouter?
 
-    init(spec: String, dependencies: GuidesDependencies, openGear: @escaping (GuideGear) -> Void, onLoaded: @escaping () -> Void) {
+    /// The guide's name from the index, for the head before the guide itself is drawn.
+    let title: String
+
+    init(
+        spec: String, title: String, dependencies: GuidesDependencies, openGear: @escaping (GuideGear) -> Void,
+        onLoaded: @escaping () -> Void
+    ) {
+        self.title = title
         self.dependencies = dependencies
         self.openGear = openGear
         self.onLoaded = onLoaded
@@ -233,9 +243,10 @@ struct GuideScreen: View {
                 retry: { Task { await store.load() } },
                 update: { Task { await store.update() } },
                 openPlanner: openPlanner
-            )
+            ),
+            title: title
         )
-        .background(FSColor.bg)
+        .screenGround()
         .guideBar(store.phase.value?.guide)
         .task {
             await store.load()
@@ -249,14 +260,11 @@ struct GuideScreen: View {
 }
 
 extension View {
-    /// A guide's bar (spec F9.2): back, the spec in the class colour, share.
+    /// A guide's bar (spec F9.2, N3): back and share on the clear bar; the band head names the guide.
     func guideBar(_ guide: GuideFile?) -> some View {
-        navigationBarTitleDisplayMode(.inline)
+        pushedBandBar(guide.map(GuideCopy.title) ?? Copy.guidesTitle)
             .toolbar {
                 if let guide {
-                    ToolbarItem(placement: .principal) {
-                        Text(guide.specName).font(ScaledType.name).foregroundStyle(ClassColor.of(guide.classSlug))
-                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         ShareButton(ShareText.guide(guide), accessibility: Copy.guidesShare)
                     }

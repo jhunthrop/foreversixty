@@ -49,7 +49,7 @@ struct FiltersView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text(Copy.rankFilters.uppercased()).font(ScaledType.sec).foregroundStyle(FSColor.strong)
+            Text(Copy.rankFilters).font(ScaledType.sec).foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
             section(Copy.rankFilterEncounter) { encounterRow }
             section(Copy.rankFilterMeasure) {
@@ -63,7 +63,7 @@ struct FiltersView: View {
                 }
             }
             section(Copy.rankFilterRegion) {
-                chips([("", Copy.rankRegionAll)] + RankingsCopy.regions.map { ($0, $0.uppercased()) }, selected: filters.region) { id in
+                chips([("", Copy.rankRegionAll)] + RankingsCopy.regions.map { ($0, Codes.region($0)) }, selected: filters.region) { id in
                     change { $0.region = id }
                 }
             }
@@ -132,27 +132,9 @@ struct FiltersView: View {
 
     private func section(_ title: String, @ViewBuilder _ body: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(title).accessibilityAddTraits(.isHeader)
+            Label12(title).accessibilityAddTraits(.isHeader)
             body()
         }
-    }
-}
-
-private extension View {
-    /// A filter chip's capsule: the fill and a 1 pt ring cut from a filled capsule. A stroked
-    /// capsule draws stray tick marks at its ends in off-screen renders (fix round 1, F11.2).
-    func chipSurface(fill: Color, line: Color) -> some View {
-        background {
-            ZStack {
-                Capsule().fill(fill)
-                ZStack {
-                    Capsule().fill(line)
-                    Capsule().padding(1).blendMode(.destinationOut)
-                }
-                .compositingGroup()
-            }
-        }
-        .contentShape(.capsule)
     }
 }
 

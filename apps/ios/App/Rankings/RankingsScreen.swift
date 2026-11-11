@@ -41,7 +41,7 @@ struct RankingsScreen: View {
                 watching: watchList.keys, pageFailed: store.pageFailed, now: dependencies.now(), actions: actions
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store.load() }
         .reportsBar(title: Copy.rankTitle) { EmptyView() }
         .haptic(.success, trigger: watchList.confirmed)
@@ -130,7 +130,7 @@ struct CharacterScreen: View {
                 now: dependencies.now(), clock: dependencies.clock, actions: actions
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store?.load() }
         .characterBar(
             title: route.ref.name, share: shareItem,
@@ -225,9 +225,7 @@ extension View {
     /// The character page's bar (board F11.4): back, then the Watch star and share, each a
     /// 44 pt target drawn without the shared glass ground so the two read as one group.
     func characterBar(title: String, share: ShareItem, star: WatchStarState?, toggle: @escaping () -> Void) -> some View {
-        navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(removing: .title)
+        pushedBandBar(title)
             .toolbar {
                 if let star {
                     ToolbarItem(placement: .topBarTrailing) {

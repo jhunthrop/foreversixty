@@ -54,7 +54,7 @@ class RaidLogicTest {
     fun `clocks read in the viewer's zone, and the date block`() {
         val invite = Instant.parse("2026-12-20T00:45:00Z")
         assertEquals("6:45 pm", clock().clock(invite))
-        assertEquals(Triple("SAT", "19", "DEC"), clock().dateBlock(invite))
+        assertEquals(Triple("Sat", "19", "Dec"), clock().dateBlock(invite))
         assertEquals("Saturday 19 December", clock().longDate(invite))
     }
 
@@ -102,7 +102,7 @@ class RaidLogicTest {
         val facts = RaidFacts(RaidFixture.raid(), RaidTime.now)
         assertEquals("24 of 40 signed up", facts.countLine(resources()))
         assertEquals("24/40", facts.ratio)
-        assertEquals("3 tanks · 6 healers · 14 DPS · 1 late", facts.breakdown(resources()))
+        assertEquals("3 tanks · 6 healers · 15 DPS · 1 late", facts.breakdown(resources()))
         val barrow = RaidFixture.load(GuildRaids.serializer(), "guild.raids").planned.orEmpty()[1]
         assertEquals("11 signed up", RaidFacts(barrow, RaidTime.now).countLine(resources()))
         assertNull(RaidFacts(barrow, RaidTime.now).fill)
@@ -111,7 +111,7 @@ class RaidLogicTest {
     @Test
     fun `one tank reads 1 tank, no late clause when nobody is late`() {
         val ony = RaidFixture.load(GuildRaids.serializer(), "guild.raids").planned.orEmpty()[2]
-        val small = ony.copy(counts = ony.counts.copy(tanks = 1, healers = 2, dps = 5, late = 0))
+        val small = ony.copy(counts = ony.counts.copy(signedIn = 8, tanks = 1, healers = 2, dps = 5, late = 0))
         assertEquals("1 tank · 2 healers · 5 DPS", RaidFacts(small, RaidTime.now).breakdown(resources()))
     }
 
@@ -203,7 +203,7 @@ class RaidLogicTest {
     fun `Copy the list - header, count, then each group's names`() {
         val lines = RosterCopy.text(RaidFixture.raid(), clock(), resources(), RaidTime.now).lines()
         assertTrue(lines[0], lines[0].startsWith("Onyxia's Lair · Sat 19 Dec, 7:00 pm CST · <t:"))
-        assertEquals("24 of 40: 3 tanks, 6 healers, 14 DPS, 1 late", lines[1])
+        assertEquals("24 of 40: 3 tanks, 6 healers, 15 DPS, 1 late", lines[1])
         assertEquals("Tanks: Ironhide, Kraggor, Bramblehoof", lines[2])
         assertEquals("Out: Wyrmtalon, Snaggle, Felgrin", lines.last())
     }

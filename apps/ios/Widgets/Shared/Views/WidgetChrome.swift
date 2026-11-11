@@ -66,7 +66,7 @@ struct WidgetHeader: View {
             if let seal = BrandImages.seal {
                 Image(uiImage: seal).resizable().scaledToFit().frame(width: 16, height: 16).accessibilityHidden(true)
             }
-            MicroLabel(title, color: color).lineLimit(1)
+            Label12(title, color: color).lineLimit(1)
         }
     }
 }

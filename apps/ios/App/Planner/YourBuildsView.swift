@@ -27,13 +27,13 @@ struct YourBuildsView: View {
 
     var body: some View {
         List {
-            Text(Copy.planBuildsTitle).font(ScaledType.title).foregroundStyle(FSColor.strong)
-                .textCase(.uppercase)
-                .accessibilityAddTraits(.isHeader)
-                .plainRow(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
+            BandHead(title: Copy.planBuildsTitle)
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             content
             if let newBuild {
-                MicroLabel(Copy.planBuildsNewHeader)
+                SectionTitle(Copy.planBuildsNewHeader)
                     .accessibilityAddTraits(.isHeader)
                     .plainRow(EdgeInsets(top: 22, leading: 16, bottom: 8, trailing: 16))
                 newRow(newBuild).plainRow(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
@@ -41,7 +41,7 @@ struct YourBuildsView: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
-        .background(FSColor.bg)
+        .screenGround()
         .safeAreaInset(edge: .bottom) { snackbar }
     }
 
@@ -55,11 +55,8 @@ struct YourBuildsView: View {
             }
             .accessibilityHidden(true)
         case .failed:
-            VStack(alignment: .leading, spacing: 12) {
-                Text(Copy.planBuildsFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
-                SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: retry)
-            }
-            .plainRow(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+            LoadError(Copy.planBuildsFailed, retryLabel: Copy.commonTryAgain, retry: retry)
+                .plainRow(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
         case let .loaded(rows) where rows.isEmpty:
             Text(Copy.planBuildsEmpty).font(ScaledType.body).foregroundStyle(FSColor.text)
                 .fixedSize(horizontal: false, vertical: true)
@@ -82,7 +79,7 @@ struct YourBuildsView: View {
             if let error {
                 Text(error).font(ScaledType.meta).foregroundStyle(FSColor.wipe).fixedSize(horizontal: false, vertical: true)
             }
-            Text(Copy.planBuildsFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(Copy.planBuildsFooter).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .plainRow(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
@@ -143,7 +140,7 @@ struct YourBuildRow: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(summary.rowTitle).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text(summary.rowMeta(timeZone: timeZone)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    Text(summary.rowMeta(timeZone: timeZone)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                         .fixedSize(horizontal: false, vertical: true)
                     if isLarge { views }
                 }
@@ -160,14 +157,14 @@ struct YourBuildRow: View {
     }
 
     private var views: some View {
-        Text(Copy.planBuildsViews(n: Int(summary.build.views))).font(ScaledType.monoMeta).foregroundStyle(FSColor.nav)
+        Text(Copy.planBuildsViews(n: Int(summary.build.views))).font(ScaledType.tabularMeta).foregroundStyle(FSColor.nav)
     }
 }
 
 private extension View {
     func plainRow(_ insets: EdgeInsets, separator: Bool = false) -> some View {
         listRowInsets(insets)
-            .listRowBackground(FSColor.bg)
+            .listRowBackground(Color.clear)
             .listRowSeparator(separator ? .visible : .hidden)
             .listRowSeparatorTint(FSColor.lineSoft)
     }
@@ -199,9 +196,7 @@ struct YourBuildsScreen: View {
             },
             retry: { Task { await model.load() } }
         )
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(FSColor.bg, for: .navigationBar)
+        .pushedBandBar(Copy.planBuildsTitle)
         .navigationDestination(item: $shown) { id in
             SharedBuildScreen(id: id, dependencies: dependencies, router: router)
         }

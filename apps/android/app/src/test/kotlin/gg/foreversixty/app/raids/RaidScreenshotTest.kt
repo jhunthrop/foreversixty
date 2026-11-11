@@ -1,5 +1,9 @@
 package gg.foreversixty.app.raids
 
+import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
+import androidx.compose.runtime.CompositionLocalProvider
+import gg.foreversixty.app.items.LocalItemIconPainter
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,7 +59,11 @@ class RaidScreenshotTest {
     private fun capture(name: String, large: Boolean = false, screen: @Composable () -> Unit) {
         if (large) RuntimeEnvironment.setFontScale(2f)
         compose.setContent {
-            ForeverTheme { Box(Modifier.fillMaxSize().background(FsColor.bg)) { screen() } }
+            ForeverTheme {
+                CompositionLocalProvider(LocalItemIconPainter provides gg.foreversixty.app.home.HomeFixtures.repoIcons, LocalRaidIconBuild provides gg.foreversixty.app.home.HomeFixtures.BUILD) {
+                    Box(Modifier.fillMaxSize().screenGround()) { screen() }
+                }
+            }
         }
         compose.onRoot().captureRoboImage("src/test/screenshots/raids/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }

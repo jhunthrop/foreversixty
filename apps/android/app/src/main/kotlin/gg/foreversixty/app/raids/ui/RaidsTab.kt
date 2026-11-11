@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.ui
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.ScaledType
@@ -73,7 +74,7 @@ fun RaidsTabContentView(
     requestPermission: () -> Unit,
     guildRows: @Composable (RaidsTabContent) -> Unit = {},
 ) {
-    Column(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
+    Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
         (state as? RaidsTabState.Loaded)?.content?.let { content ->
             content.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), content.stale, retry) }
         }
@@ -117,7 +118,7 @@ private fun Message(title: String, body: String, note: String?) {
             contentAlignment = Alignment.Center,
             modifier = Modifier.size(44.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.legacyControl)),
         ) { Icon(Icons.Filled.DateRange, contentDescription = null, tint = FsColor.gold) }
-        Text(title.uppercase(), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(title, style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         Text(body, style = ScaledType.body, color = FsColor.text)
         note?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
     }
@@ -199,7 +200,7 @@ fun GuildHeadView(head: GuildHead) {
     }
     val text = @Composable {
         Column {
-            Text(head.name.uppercase(), style = ScaledType.cardHead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+            Text(head.name, style = ScaledType.cardHead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
             head.line?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
         }
     }
@@ -231,7 +232,7 @@ fun NextRaidCard(
             val heading = @Composable {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = a11y }) {
                     SectionLabel(stringResource(R.string.raids_next), color = FsColor.gold)
-                    Text(raid.title.uppercase(), style = ScaledType.cardHead, color = FsColor.strong)
+                    Text(raid.title, style = ScaledType.cardHead, color = FsColor.strong)
                     TimesLine(facts, clock, showsEnd = false)
                     CountdownLine(facts, clock, now)
                 }
@@ -284,7 +285,7 @@ fun PlannedRow(raid: RaidView, clock: RaidClock, now: Instant, currentKey: Strin
             Text(raid.title, style = ScaledType.bodyStrong, color = FsColor.strong, maxLines = 2)
             Text(clock.whenPhrase(facts.startsAt, now), style = ScaledType.meta, color = FsColor.muted)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(if (raid.size == null) facts.countLine(res) else facts.ratio, style = ScaledType.monoMeta, color = FsColor.strong)
+                Text(if (raid.size == null) facts.countLine(res) else facts.ratio, style = ScaledType.tabularMeta, color = FsColor.strong)
                 if (!large) facts.fill?.let { FillBar(it, 64.dp) }
             }
             // Large text: the chip moves under the title.

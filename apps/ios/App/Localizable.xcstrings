@@ -2906,7 +2906,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Saved on this phone: %1$@ · %2$@. Guides update by themselves when the game data does."
+            "value": "Saved on this phone: %1$@ · %2$@"
           }
         }
       }
@@ -9378,7 +9378,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unlock sign-ups"
+            "value": "Open sign-ups"
           }
         }
       }
@@ -16956,7 +16956,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Search items, characters, guides, talents"
+            "value": "Search items, characters, guides"
           }
         }
       }
@@ -19160,13 +19160,13 @@
       }
     },
     "sims.error": {
-      "comment": "Arguments: 1 error (string), 2 n (string), 3 version (string)",
+      "comment": "Arguments: 1 error (string), 2 n (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "± %1$@ · %2$@ iterations · engine %3$@"
+            "value": "± %1$@ · %2$@ iterations"
           }
         }
       }

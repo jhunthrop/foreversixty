@@ -40,7 +40,7 @@ struct ReportsSnapshotTests {
         NavigationStack(path: .constant([1])) {
             Color.clear.navigationTitle(back).navigationDestination(for: Int.self) { _ in
                 ScrollView { content() }
-                    .background(FSColor.bg)
+                    .screenGround()
                     .reportsBar(title: back) { Button {} label: { Image(systemName: trailing) } }
             }
         }
@@ -191,11 +191,11 @@ struct ReportsSnapshotTests {
                 switch step {
                 case .list:
                     ScrollView { ReportsListView(phase: .loaded(content), account: account, now: now, clock: clock) }
-                        .background(FSColor.bg)
+                        .screenGround()
                         .reportsBar(title: Copy.reportsBack) { Button {} label: { Image(systemName: "arrow.clockwise") } }
                 case .report:
                     ScrollView { ReportView(phase: phase, parses: .loaded(me), coach: .hidden, now: now, clock: clock) }
-                        .background(FSColor.bg)
+                        .screenGround()
                         .reportsBar(title: Copy.reportsBack) { Button {} label: { Image(systemName: "arrow.up.right.square") } }
                 }
             }

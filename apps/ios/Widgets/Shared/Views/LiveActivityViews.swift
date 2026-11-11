@@ -191,7 +191,7 @@ struct RaidIslandExpandedView: View {
                         Text(RaidLiveLockView.you(attributes, state)).font(ScaledType.meta).foregroundStyle(FSColor.text).lineLimit(1)
                     }
                     if let signed = figures.signedUp {
-                        Text(signed).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+                        Text(signed).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
                     }
                 }
                 Spacer()

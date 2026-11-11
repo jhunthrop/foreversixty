@@ -39,14 +39,13 @@ struct ReportView: View {
     @ViewBuilder
     private func loaded(_ content: ReportContent) -> some View {
         let report = content.report
+        BandHead(title: report.zone ?? report.title) { header(report) }
         if let since = content.offlineSince {
             OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now)))
         }
         if let since = content.staleSince {
             StaleStrip(time: OfflineStamp.format(since, now: now), retry: actions.retry)
         }
-        SimsTitle(text: report.zone ?? report.title)
-        header(report)
         VStack(alignment: .leading, spacing: 22) {
             switch report.status {
             case ReportStatus.processing:
@@ -63,11 +62,11 @@ struct ReportView: View {
                 FightsCard(report: report, rows: content.fightRows, open: actions.openFight)
                 if coach != .hidden {
                     VStack(alignment: .leading, spacing: 8) {
-                        MicroLabel(Copy.reportCoach)
+                        SectionTitle(Copy.reportCoach)
                         CoachCard(state: coach, clock: clock)
                     }
                 }
-                Text(Copy.reportFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(Copy.reportFooter).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -79,10 +78,10 @@ struct ReportView: View {
     private func header(_ report: Report) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
-                MicroLabel(Copy.reportTag, color: FSColor.gold)
+                Label12(Copy.reportTag, color: FSColor.gold)
                 TagView(text: ReportsCopy.visibility(ReportVisibility(report.visibility)), color: FSColor.nav)
             }
-            Text(ReportsCopy.reportMeta(report, clock: clock)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(ReportsCopy.reportMeta(report, clock: clock)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .dynamicTypeSize(...ReportsLayout.rowTypeCap)
@@ -122,7 +121,7 @@ struct ParsesCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            MicroLabel(Copy.reportYourParses, color: FSColor.gold)
+            Label12(Copy.reportYourParses, color: FSColor.gold)
                 .padding(.horizontal, 16).padding(.top, 14).padding(.bottom, 4)
             switch state {
             case .hidden:
@@ -197,11 +196,11 @@ struct ParseRowView: View {
         VStack(alignment: alignment, spacing: 2) {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text(ReportsCopy.figure(row.fight.value)).font(ReportsLayout.figure).foregroundStyle(FSColor.strong)
-                Text(ReportsCopy.unit(row.fight.unit)).font(ScaledType.micro).foregroundStyle(FSColor.muted)
+                Text(ReportsCopy.unit(row.fight.unit)).font(ScaledType.label).foregroundStyle(FSColor.muted)
             }
             if let percentile = row.fight.percentile {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(percentile)").font(ReportsLayout.parseNumber).foregroundStyle(ParseLadder.color(ParseTier(percentile)))
+                    Text(ReportsCopy.ordinal(percentile)).font(ReportsLayout.parseNumber).foregroundStyle(ParseLadder.color(ParseTier(percentile)))
                     Text(Copy.reportPercentile).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 }
             }
@@ -254,11 +253,11 @@ struct FightsCard: View {
 
     @ViewBuilder
     private var header: some View {
-        let count = MicroLabel(ReportsCopy.bossPulls(FightRows.bossPulls(report))).fixedSize()
+        let count = Label12(ReportsCopy.bossPulls(FightRows.bossPulls(report))).fixedSize()
         if typeSize.isAccessibilitySize {
-            VStack(alignment: .leading, spacing: 4) { MicroLabel(Copy.reportFights); count }
+            VStack(alignment: .leading, spacing: 4) { Label12(Copy.reportFights); count }
         } else {
-            HStack(alignment: .firstTextBaseline) { MicroLabel(Copy.reportFights); Spacer(); count }
+            HStack(alignment: .firstTextBaseline) { Label12(Copy.reportFights); Spacer(); count }
         }
     }
 }

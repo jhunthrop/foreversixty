@@ -58,10 +58,15 @@ struct RaidPageScreen: View {
                 }
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
         .task { await model.load() }
         .task { await model.stayLive() }
     }
+}
+
+/// The raid page's spacing.
+enum RaidPageLayout {
+    static let gutter: CGFloat = 16
 }
 
 /// The raid page's content, pure over the controller so snapshot tests draw every state.
@@ -88,6 +93,13 @@ struct RaidPageContent: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
+                    // The head continues the band from under the clear bar, as the web's page head (N3).
+                    RaidHead(raid: raid, facts: facts, clock: clock, now: now, guildName: guildName)
+                        .padding(.horizontal, RaidPageLayout.gutter)
+                        .padding(.top, FSSpace.space2)
+                        .padding(.bottom, RaidPageLayout.gutter)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .bandUnderBars()
                     if let offlineSince {
                         OfflineStrip(text: Copy.offlineStrip(time: clock.stripTime(offlineSince, now: now())))
                     }
@@ -95,7 +107,6 @@ struct RaidPageContent: View {
                         StaleStrip(time: clock.stripTime(staleSince, now: now()), retry: retry)
                     }
                     VStack(alignment: .leading, spacing: 22) {
-                        RaidHead(raid: raid, facts: facts, clock: clock, now: now, guildName: guildName)
                         CountBlock(facts: facts, muted: facts.chip == .cancelled)
                         if facts.showsOfficerTools, facts.isSignable {
                             OfficerRow(controller: controller, clock: clock)
@@ -106,15 +117,14 @@ struct RaidPageContent: View {
                         notes
                         RosterView(controller: controller, facts: facts).id("roster")
                     }
-                    .padding(16)
+                    .padding(RaidPageLayout.gutter)
                 }
             }
             .onAppear { if scrollToRoster { proxy.scrollTo("roster", anchor: .top) } }
         }
-        .background(FSColor.bg)
+        .screenGround()
         .overlay(alignment: .bottom) { toast }
-        .navigationTitle(raid.title)
-        .navigationBarTitleDisplayMode(.inline)
+        .pushedBandBar(raid.title)
         .toolbar { toolbar }
         .sheet(isPresented: $showsCalendar) {
             CalendarSheet(event: CalendarEvent(raid: raid, guildName: guildName, guild: controller.guild))
@@ -170,10 +180,10 @@ struct RaidPageContent: View {
     @ViewBuilder
     private var notes: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(Copy.raidNotes.uppercased()).font(ScaledType.h2).foregroundStyle(FSColor.strong)
+            Text(Copy.raidNotes).font(ScaledType.h2).foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
             if raid.notesHtml.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                Text(Copy.raidNotesEmpty).font(ScaledType.body).foregroundStyle(FSColor.muted)
+                Text(Copy.raidNotesEmpty).font(ScaledType.body).foregroundStyle(FSColor.mutedGround)
             } else {
                 Text(NotesText.attributed(raid.notesHtml, base: ScaledType.body, bold: ScaledType.bodyStrong, link: FSColor.gold))
                     .foregroundStyle(FSColor.text)
@@ -201,7 +211,8 @@ struct RaidPageContent: View {
     }
 }
 
-/// The page head (spec F4.2 items 1 to 3): eyebrow, chip, guild, title, when lines, countdown.
+/// The page head (spec F4.2 items 1 to 3): eyebrow, chip, guild, title, when lines, countdown. On
+/// the band its secondary ink is the surface's (`subInk`: mutedGround, AA on the painted art).
 struct RaidHead: View {
     let raid: RaidView
     let facts: RaidFacts
@@ -209,44 +220,47 @@ struct RaidHead: View {
     let now: () -> Date
     var guildName: String?
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.subInk) private var subInk
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
-                Text(Copy.raidEyebrow.uppercased()).font(ScaledType.micro)
+                Text(Copy.raidEyebrow).font(ScaledType.label)
                     .tracking(typeSize.isAccessibilitySize ? 0 : 1.5).lineLimit(1).minimumScaleFactor(0.5).foregroundStyle(FSColor.gold)
                 TagView(chip: facts.chip)
                 if let guildName, !typeSize.isAccessibilitySize {
-                    Text(guildName).font(ScaledType.meta).foregroundStyle(FSColor.muted).lineLimit(1)
+                    Text(guildName).font(ScaledType.meta).foregroundStyle(subInk).lineLimit(1)
                 }
             }
             if let guildName, typeSize.isAccessibilitySize {
                 // Large text: the guild name drops to its own line.
-                Text(guildName).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(guildName).font(ScaledType.meta).foregroundStyle(subInk)
             }
             HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Text(raid.title.uppercased()).font(ScaledType.title).foregroundStyle(facts.chip == .cancelled ? FSColor.muted : FSColor.strong)
+                Text(raid.title).font(ScaledType.title).foregroundStyle(facts.chip == .cancelled ? FSColor.muted : FSColor.strong)
                     .accessibilityAddTraits(.isHeader)
                 if raid.title != raid.zoneName {
-                    Text(Copy.raidsZoneSuffix(zone: raid.zoneName)).font(ScaledType.body).foregroundStyle(FSColor.muted)
+                    Text(Copy.raidsZoneSuffix(zone: raid.zoneName)).font(ScaledType.body).foregroundStyle(subInk)
                 }
             }
-            Text(clock.longDate(raid.startsAt)).font(ScaledType.body).foregroundStyle(FSColor.text)
+            Text(clock.longDate(raid.startsAt)).font(ScaledType.body).foregroundStyle(FSColor.strong)
             TimesLine(raid: raid, clock: clock, showsEnd: true)
             CountdownLine(raid: raid, facts: facts, clock: clock, now: now)
             if let zone = TimeZone(identifier: raid.guildTimezone), clock.offsetDiffers(at: raid.startsAt, guildZone: zone) {
                 Text(Copy.raidGuildTime(clock: clock.guildClock(raid.startsAt, guildZone: zone)))
-                    .font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    .font(ScaledType.meta).foregroundStyle(subInk)
             }
         }
     }
 }
 
-/// `Invites 7:45 pm · Pull 8:00 pm · Ends 11:00 pm`, labels muted and times in mono.
+/// `Invites 7:45 pm · Pull 8:00 pm · Ends 11:00 pm`: labels in the surface's secondary ink (muted on
+/// a panel, mutedGround on the band), times tabular.
 struct TimesLine: View {
     let raid: RaidView
     let clock: RaidClock
     let showsEnd: Bool
+    @Environment(\.subInk) private var subInk
 
     var body: some View {
         let end = raid.startsAt.addingTimeInterval(TimeInterval(raid.durationMinutes * 60))
@@ -257,13 +271,13 @@ struct TimesLine: View {
         return parts.enumerated().reduce(Text("")) { line, item in
             let (label, time) = item.element
             let pieces = label.components(separatedBy: "{}")
-            let separator = item.offset == 0 ? Text("") : Text(" · ").foregroundStyle(FSColor.muted)
-            let head = Text(pieces.first ?? "").foregroundStyle(FSColor.muted)
+            let separator = item.offset == 0 ? Text("") : Text(" · ").foregroundStyle(subInk)
+            let head = Text(pieces.first ?? "").foregroundStyle(subInk)
             // Only the digits are mono; `pm` stays in the body face (UX should 2).
             let digits = time.split(separator: " ", maxSplits: 1).map(String.init)
-            let figure = Text(digits.first ?? time).font(ScaledType.mono).foregroundStyle(FSColor.strong)
+            let figure = Text(digits.first ?? time).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
             let unit = Text(digits.count > 1 ? " " + digits[1] : "").foregroundStyle(FSColor.strong)
-            let tail = Text(pieces.dropFirst().joined()).foregroundStyle(FSColor.muted)
+            let tail = Text(pieces.dropFirst().joined()).foregroundStyle(subInk)
             return Text("\(line)\(separator)\(head)\(figure)\(unit)\(tail)")
         }
         .font(ScaledType.body)
@@ -306,7 +320,7 @@ struct SignupCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(Copy.raidYourSignup.uppercased()).font(ScaledType.sec).foregroundStyle(FSColor.strong)
+            Text(Copy.raidYourSignup).font(ScaledType.sec).foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
             if facts.chip == .cancelled {
                 cancelled

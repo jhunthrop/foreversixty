@@ -1483,7 +1483,7 @@ enum Copy {
     /// Lock sign-ups
     static var officerLock: String { text("officer.lock") }
 
-    /// Unlock sign-ups
+    /// Open sign-ups
     static var officerUnlock: String { text("officer.unlock") }
 
     /// Copy the list
@@ -1709,9 +1709,9 @@ enum Copy {
     /// Full breakdown on foreversixty.gg
     static var simsBreakdown: String { text("sims.breakdown") }
 
-    /// ± {error} · {n} iterations · engine {version}
-    static func simsError(error: String, n: String, version: String) -> String {
-        format("sims.error", error, n, version)
+    /// ± {error} · {n} iterations
+    static func simsError(error: String, n: String) -> String {
+        format("sims.error", error, n)
     }
 
     /// Sim
@@ -2817,7 +2817,7 @@ enum Copy {
     /// Search
     static var searchButton: String { text("search.button") }
 
-    /// Search items, characters, guides, talents
+    /// Search items, characters, guides
     static var searchPlaceholder: String { text("search.placeholder") }
 
     /// Cancel
@@ -4370,7 +4370,7 @@ enum Copy {
     /// All classes
     static var guidesClasses: String { text("guides.classes") }
 
-    /// Saved on this phone: {classes} · {size}. Guides update by themselves when the game data does.
+    /// Saved on this phone: {classes} · {size}
     static func guidesFooter(classes: String, size: String) -> String {
         format("guides.footer", classes, size)
     }

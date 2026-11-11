@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,12 +26,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.util.Locale
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.primaryCard
 import gg.foreversixty.app.designsystem.quietCard
@@ -57,7 +57,7 @@ object ReportCardLayout {
 fun ParsesCard(phase: ParsesPhase, copy: ReportsCopy, retry: () -> Unit) {
     if (phase == ParsesPhase.Hidden) return
     Column(Modifier.fillMaxWidth().primaryCard().padding(vertical = 14.dp)) {
-        MicroLabel(stringResource(R.string.report_yourParses), Modifier.padding(horizontal = 16.dp), color = FsColor.gold)
+        Label12(stringResource(R.string.report_yourParses), Modifier.padding(horizontal = 16.dp), color = FsColor.gold)
         when (phase) {
             ParsesPhase.Hidden -> Unit
             ParsesPhase.Loading -> Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -110,13 +110,13 @@ private fun Figure(row: ParseRow, copy: ReportsCopy, alignment: Alignment.Horizo
                 append(Parses.figure(fight.value))
                 withStyle(SpanStyle(fontSize = ScaledType.meta.fontSize, color = FsColor.muted)) { append(" " + copy.unit(fight.unit)) }
             },
-            style = ScaledType.mono.copy(fontSize = ReportCardLayout.figureSize), color = FsColor.strong,
+            style = ScaledType.tabular.copy(fontSize = ReportCardLayout.figureSize), color = FsColor.strong,
         )
         fight.percentile?.let { percentile ->
             Text(
                 buildAnnotatedString {
-                    withStyle(SpanStyle(color = parseColor(ParseTier.of(percentile)), fontFamily = ScaledType.mono.fontFamily, fontWeight = FontWeight.Bold)) {
-                        append(percentile.toString())
+                    withStyle(SpanStyle(color = parseColor(ParseTier.of(percentile)), fontFamily = ScaledType.tabular.fontFamily, fontFeatureSettings = ScaledType.tabular.fontFeatureSettings, fontWeight = FontWeight.Bold)) {
+                        append(gg.foreversixty.app.raids.ui.ordinal(percentile))
                     }
                     append(" " + stringResource(R.string.report_percentile))
                 },
@@ -135,13 +135,13 @@ fun FightsCard(report: Report, copy: ReportsCopy, open: (MetersTarget) -> Unit) 
         // Largest text: the label sits over the count, and the count never splits.
         if (isLargeText()) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                MicroLabel(stringResource(R.string.report_fights))
-                Text(count.uppercase(Locale.ROOT), style = ScaledType.micro, color = FsColor.muted, maxLines = 1, softWrap = false)
+                Label12(stringResource(R.string.report_fights))
+                Text(count, style = FsType.label, color = FsColor.muted, maxLines = 1, softWrap = false)
             }
         } else {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                MicroLabel(stringResource(R.string.report_fights), Modifier.weight(1f))
-                MicroLabel(count)
+                Label12(stringResource(R.string.report_fights), Modifier.weight(1f))
+                Label12(count)
             }
         }
         if (rows.isEmpty()) return@Column

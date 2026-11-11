@@ -39,7 +39,7 @@ struct RaidClock: Sendable {
 
     /// The date block: `THU`, `10`, `DEC`.
     func dateBlock(_ date: Date) -> (weekday: String, day: String, month: String) {
-        (format("EEE", date).uppercased(), format("d", date), format("MMM", date).uppercased())
+        (format("EEE", date), format("d", date), format("MMM", date))
     }
 
     /// `Thursday 10 December`.

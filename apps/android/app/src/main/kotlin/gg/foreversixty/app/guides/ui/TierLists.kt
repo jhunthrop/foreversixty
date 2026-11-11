@@ -1,5 +1,8 @@
 package gg.foreversixty.app.guides.ui
 
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.width
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.IconButton
 import androidx.compose.foundation.background
@@ -55,7 +58,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.FsFont
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
@@ -99,7 +101,7 @@ fun TierListContent(state: TierListState, now: Instant, actions: TierListActions
             Chips(state.choice, actions.choose, actions.share)
             when (val tiers = state.tiers) {
                 Loadable.Loading -> TierSkeleton()
-                Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = ScaledType.body, color = FsColor.muted, modifier = Modifier.padding(top = GuideSpace.rowGap))
+                Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = ScaledType.body, color = FsColor.mutedGround, modifier = Modifier.padding(top = GuideSpace.rowGap))
                 Loadable.Failed -> ErrorRegion(stringResource(R.string.tiers_error), actions.retry, inset = false)
                 is Loadable.Loaded -> Loaded(tiers.value, state, actions)
             }
@@ -113,7 +115,14 @@ private fun Loaded(file: TiersFile, state: TierListState, actions: TierListActio
     val rows = Tiers.rows(list, state.yourSpec)
     Column(Modifier.padding(top = GuideSpace.rowGap, bottom = GuideSpace.section), verticalArrangement = Arrangement.spacedBy(GuideSpace.rowGap)) {
         Tiers.callout(list, state.yourSpec)?.let { Callout(it, file.build) }
-        QuietRows(rows) { row -> TierRowView(row, rows.size, file.build) { actions.open(row.row.spec) } }
+        // The web's anatomy: the tier letter once at the head of its group, then rank, crest, name and the figures.
+        rows.firstOrNull()?.row?.unit?.takeIf { it.isNotEmpty() }?.let { unit ->
+            Box(Modifier.fillMaxWidth().padding(end = 16.dp), contentAlignment = Alignment.CenterEnd) { Label12(unit, color = FsColor.mutedGround) }
+        }
+        val heads = rows.indices.filter { i -> i == 0 || rows[i - 1].row.tier != rows[i].row.tier }.toSet()
+        QuietRows(rows.withIndex().toList()) { (i, row) ->
+            TierRowView(row, rows.size, file.build, letter = row.row.tier.takeIf { i in heads }) { actions.open(row.row.spec) }
+        }
     }
 }
 
@@ -160,18 +169,18 @@ private fun Callout(callout: TierCallout, build: String) {
         ) {
             SpecTile(callout.row.icon, callout.row.classSlug, build, CALLOUT_ICON)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                MicroLabel(stringResource(R.string.tiers_yours), color = FsColor.gold)
+                Label12(stringResource(R.string.tiers_yours), color = FsColor.gold)
                 Text(callout.row.title, style = ScaledType.bodyStrong, color = FsColor.strong)
                 Text(callout.row.detail, style = ScaledType.meta, color = FsColor.muted)
             }
         }
-        callout.note?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
+        callout.note?.let { Text(it, style = ScaledType.meta, color = FsColor.mutedGround) }
     }
 }
 
-/** One row (68 min): rank, icon, name, race and bar; the tier chip and gap (or the metric) at the right. */
+/** One row (68 min): the tier [letter] at its group's head, rank, icon, name and race; the metric over the gap at the right. */
 @Composable
-private fun TierRowView(model: TierRowModel, count: Int, build: String, open: () -> Unit) {
+private fun TierRowView(model: TierRowModel, count: Int, build: String, letter: String?, open: () -> Unit) {
     val copy = GuidesCopy(LocalResources.current)
     val row = model.row
     val label = copy.tierLabel(model, count)
@@ -192,15 +201,19 @@ private fun TierRowView(model: TierRowModel, count: Int, build: String, open: ()
         horizontalArrangement = Arrangement.spacedBy(GuideSpace.rowGap),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(row.rank.toString(), style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.widthIn(min = RANK_WIDTH))
-        SpecTile(row.icon, row.classSlug, build, ROW_ICON)
+        if (model.tone != null) {
+            Box(Modifier.width(LETTER_WIDTH)) {
+                letter?.let { Text(it, style = LETTER, color = toneColor(model.tone) ?: FsColor.muted) }
+            }
+        }
+        Text(row.rank.toString(), style = ScaledType.tabular, color = FsColor.muted, modifier = Modifier.widthIn(min = RANK_WIDTH))
+        ClassCrest(row.classSlug, ROW_ICON)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(row.name, style = ScaledType.bodyStrong, color = classColor(row.classSlug), modifier = Modifier.weight(1f, fill = false))
                 if (model.isYours) Tag(stringResource(R.string.tiers_yoursTag), FsColor.gold)
             }
             Text(row.race, style = ScaledType.meta, color = FsColor.muted)
-            Bar(row.fraction.toFloat(), toneColor(model.tone) ?: classColor(row.classSlug))
             if (stacked) Figure(model, inline = true)
         }
         if (!stacked) Figure(model, inline = false)
@@ -217,10 +230,10 @@ private fun Figure(model: TierRowModel, inline: Boolean) {
         val row = model.row
         val tone = model.tone
         if (tone != null && row.tier != null) {
-            TierChip(row.tier.orEmpty(), tone)
-            Text(model.gap, style = ScaledType.mono, color = FsColor.text, textAlign = TextAlign.End)
+            Text(row.metricText, style = ScaledType.tabular, color = FsColor.strong, textAlign = TextAlign.End)
+            Text(model.gap, style = ScaledType.tabularMeta, color = FsColor.muted, textAlign = TextAlign.End)
         } else {
-            Text(row.metricText, style = ScaledType.mono, color = FsColor.text)
+            Text(row.metricText, style = ScaledType.tabular, color = FsColor.text)
             Text(row.unit, style = ScaledType.meta, color = FsColor.muted)
         }
     }
@@ -229,25 +242,6 @@ private fun Figure(model: TierRowModel, inline: Boolean) {
     } else {
         // A fixed minimum width keeps every row's bar on the same scale.
         Column(Modifier.widthIn(min = FIGURE_WIDTH), horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) { parts() }
-    }
-}
-
-/** The tier chip (spec §4): 28 dp, pill radius, a 1.5 dp border and the letter in the tier colour. */
-@Composable
-private fun TierChip(letter: String, tone: TierTone) {
-    val color = toneColor(tone) ?: FsColor.muted
-    val shape = RoundedCornerShape(percent = PILL_PERCENT)
-    // 28 dp, growing with the letter at large text so it is never cut.
-    Box(Modifier.defaultMinSize(CHIP, CHIP).border(1.5.dp, color, shape).padding(horizontal = 4.dp), contentAlignment = Alignment.Center) {
-        Text(letter, style = ScaledType.bodyStrong.copy(fontFamily = FsFont.body), color = color)
-    }
-}
-
-/** The 8 dp bar: the fraction of the top spec, in the tier colour. */
-@Composable
-private fun Bar(fraction: Float, color: Color) {
-    Box(Modifier.fillMaxWidth(BAR_WIDTH).height(8.dp).clip(CircleShape).background(FsColor.lineSoft)) {
-        Box(Modifier.fillMaxHeight().fillMaxWidth(fraction.coerceIn(0f, 1f)).clip(CircleShape).background(color))
     }
 }
 
@@ -291,10 +285,11 @@ private val ROW_MIN = 68.dp
 private val ROW_ICON = 36.dp
 private val CALLOUT_ICON = 40.dp
 private val FACTION_MARK = 20.dp
-private val CHIP = 28.dp
 private val RANK_WIDTH = 20.dp
 private val FIGURE_WIDTH = 72.dp
+private val LETTER_WIDTH = 24.dp
+
+/** The tier letter: the display face, as the web's tier column. */
+private val LETTER = ScaledType.sectionTitle.copy(fontSize = 24.sp, lineHeight = 28.sp)
 private val GOLD_EDGE = 3.dp
-private const val BAR_WIDTH = 0.85f
-private const val PILL_PERCENT = 50
 private const val SKELETON_ROWS = 6

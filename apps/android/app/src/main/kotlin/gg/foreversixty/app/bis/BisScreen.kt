@@ -1,5 +1,10 @@
 package gg.foreversixty.app.bis
 
+import gg.foreversixty.app.designsystem.LoadError
+import gg.foreversixty.app.designsystem.classColor
+import gg.foreversixty.app.designsystem.surfaceBand
+import gg.foreversixty.app.designsystem.ScaledType
+import gg.foreversixty.app.designsystem.screenGround
 import android.content.res.Resources
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -93,17 +98,16 @@ fun BisContent(
         is BisPhase.NoList -> phase.offlineSinceMillis
         else -> null
     }
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
+        BandHead(state.context, catalog, state.build.orEmpty(), onOpenPicker)
         offlineSince?.let { saved ->
             OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(Instant.ofEpochMilli(saved), Instant.ofEpochMilli(nowMillis))))
         }
         LazyColumn(
             Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
-            item { TitleRow(state.context.isYours) }
-            item { Chips(state.context, catalog, state.build.orEmpty(), nowMillis, onOpenPicker) }
             when (phase) {
                 BisPhase.Loading -> item { Skeleton() }
                 is BisPhase.Loaded -> {
@@ -126,56 +130,64 @@ fun BisContent(
                         }
                     }
                 }
-                is BisPhase.NoList -> item { StateNotice(stringResource(R.string.home_answer_noList), FsColor.muted, onTryAgain = null) }
-                BisPhase.NotCached -> item { StateNotice(stringResource(R.string.bis_notCached), FsColor.muted, onTryAgain) }
-                BisPhase.Failed -> item { StateNotice(stringResource(R.string.bis_failed), FsColor.wipe, onTryAgain) }
+                is BisPhase.NoList -> item { StateNotice(stringResource(R.string.home_answer_noList), FsColor.mutedGround, onTryAgain = null) }
+                BisPhase.NotCached -> item { LoadError(stringResource(R.string.bis_notCached), stringResource(R.string.common_tryAgain), onTryAgain, Modifier.padding(top = 10.dp)) }
+                BisPhase.Failed -> item { LoadError(stringResource(R.string.bis_failed), stringResource(R.string.common_tryAgain), onTryAgain, Modifier.padding(top = 10.dp)) }
             }
         }
     }
 }
 
+/**
+ * The list's head on the painted band (the web's /bis page head): the spec's icon, its name in the
+ * class colour in the display face and `Best in slot`; then the control bar, one 48 dp row with the
+ * selection in words and `Change` (spec 3.4, ControlBar, phone form), which opens the picker.
+ */
 @Composable
-private fun TitleRow(isYours: Boolean) {
-    Row(
-        Modifier.padding(top = 8.dp, bottom = 14.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            stringResource(R.string.bis_title).uppercase(),
-            style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold),
-            color = FsColor.strong,
-            modifier = Modifier.weight(1f, fill = false).semantics { heading() },
-        )
-        if (isYours) Tag(stringResource(R.string.bis_yours), FsColor.gold)
-    }
-}
-
-@Composable
-private fun Chips(context: BisContext, catalog: SpecCatalog, build: String, nowMillis: Long, onOpenPicker: () -> Unit) {
+private fun BandHead(context: BisContext, catalog: SpecCatalog, build: String, onOpenPicker: () -> Unit) {
     val res = LocalResources.current
     val selection = context.selection
     val spec = catalog.spec(selection.spec)
     val specLabel = stringResource(R.string.bis_specChip, spec?.name ?: selection.spec, context.className(selection.classSlug))
-    val range = context.rangeLabel(res, selection.range, nowMillis)
+    // One line in the control bar: the short range (`60 · Phase 1 raid`); the opening date stays in the picker.
+    val range = BisLabels.range(res, selection.range)
     val faction = BisLabels.faction(res, selection.faction)
-    val description = stringResource(R.string.bis_a11y_picker, specLabel, range, faction)
-    FlowRow(
-        Modifier
-            .padding(bottom = 14.dp)
-            .clearAndSetSemantics {
-                contentDescription = description
-                role = Role.Button
-                onClick { onOpenPicker(); true }
-            },
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Chip(specLabel, onOpenPicker) { spec?.let { SpecIcon(it.icon, build, 28.dp) } }
-        Chip(range, onOpenPicker) {}
-        Chip(faction, onOpenPicker) { FactionMark(selection.faction, size = 24.dp) }
+    Column(Modifier.fillMaxWidth().surfaceBand()) {
+        Row(
+            Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            spec?.let { SpecIcon(it.icon, build, 44.dp) }
+            Column(Modifier.weight(1f).semantics(mergeDescendants = true) { heading() }) {
+                Text(specLabel, style = ScaledType.barTitle, color = classColor(selection.classSlug))
+                Text(stringResource(R.string.bis_title), style = ScaledType.meta, color = FsColor.mutedGround)
+            }
+        }
+        val description = stringResource(R.string.bis_a11y_picker, specLabel, range, faction)
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp)
+                .clearAndSetSemantics {
+                    contentDescription = description
+                    role = Role.Button
+                    onClick { onOpenPicker(); true }
+                }
+                .clickable(onClick = onOpenPicker)
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            FactionMark(selection.faction, size = 20.dp)
+            Text(listOf(range, faction).joinToString(SUMMARY_SEPARATOR), style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.gear_change), style = ScaledType.bodyStrong, color = FsColor.gold)
+            Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(18.dp))
+        }
     }
 }
+
+private const val SUMMARY_SEPARATOR = " · "
 
 /** A BiS chip (spec F3.1): 40 tall, pill, the 4.5% fill, the card border and a chevron. */
 @Composable
@@ -200,12 +212,12 @@ fun Chip(label: String, onClick: () -> Unit, leading: @Composable () -> Unit) {
 private fun SetDpsLine(line: String) {
     val figureEnd = line.indexOf(' ').coerceAtLeast(0)
     val text = buildAnnotatedString {
-        withStyle(SpanStyle(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.SemiBold, color = FsColor.strong)) {
+        withStyle(ScaledType.tabular.toSpanStyle().copy(color = FsColor.strong)) {
             append(line.substring(0, figureEnd))
         }
         append(line.substring(figureEnd))
     }
-    Text(text, style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal), color = FsColor.muted, modifier = Modifier.padding(bottom = 14.dp))
+    Text(text, style = ScaledType.meta, color = FsColor.mutedGround, modifier = Modifier.padding(bottom = 14.dp))
 }
 
 /** One cell of the quiet card: the card's ground, rounded at its ends, divided between rows. */

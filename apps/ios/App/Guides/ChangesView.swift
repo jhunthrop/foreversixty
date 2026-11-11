@@ -13,7 +13,7 @@ struct ChangesView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if let dates, !dates.isEmpty {
-                MicroLabel(Copy.changesDates).accessibilityAddTraits(.isHeader).padding(.bottom, 8)
+                SectionTitle(Copy.changesDates).accessibilityAddTraits(.isHeader).padding(.bottom, 8)
                 GuideCardRows(items: dates) { KeyDateRowView(row: $0) }
             }
             GuideSectionLabel(text: Copy.changesList)
@@ -38,7 +38,7 @@ struct KeyDateRowView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Text(row.key)
-                .font(ScaledType.monoMeta.weight(.semibold))
+                .font(ScaledType.tabularMeta.weight(.semibold))
                 .foregroundStyle(FSColor.strong)
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.7)
@@ -64,7 +64,7 @@ struct ChangelogRowView: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Text(row.date).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted).padding(.top, 2)
+            Text(row.date).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted).padding(.top, 2)
             Text(row.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -82,11 +82,15 @@ struct ChangelogEntryView: View {
     let entry: ChangelogEntry
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // The entry's title and date on the band under the clear bar (N3).
+            BandHead(title: entry.title) { BandFact(GuideDates.long(entry.date)) }
+            details
+        }
+    }
+
+    private var details: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(GuideDates.long(entry.date)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-            Text(entry.title).font(ScaledType.h2).foregroundStyle(FSColor.strong)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isHeader)
             VStack(alignment: .leading, spacing: 10) {
                 ForEach(Array(entry.blocks.enumerated()), id: \.offset) { _, block in ChangelogBlockView(block: block) }
             }

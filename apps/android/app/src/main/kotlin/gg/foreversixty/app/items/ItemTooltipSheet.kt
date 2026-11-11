@@ -1,5 +1,6 @@
 package gg.foreversixty.app.items
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
@@ -50,7 +51,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 
 /** The sheet's phases: the fallback header while the static files load, then the model. */
 sealed interface ItemTooltipPhase {
@@ -135,13 +135,13 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
     ItemTooltipPanel(model)
     model.source?.let { source ->
         Column(Modifier.semantics(mergeDescendants = true) {}, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            MicroLabel(stringResource(R.string.tooltip_source))
+            Label12(stringResource(R.string.tooltip_source))
             Text(source, style = ScaledType.body, color = FsColor.strong)
         }
     }
     if (model.pickFooter != null || model.alternatives.isNotEmpty()) {
         Column {
-            MicroLabel(stringResource(R.string.tooltip_nextBest))
+            Label12(stringResource(R.string.tooltip_nextBest))
             Spacer(Modifier.height(8.dp))
             if (model.alternatives.isEmpty()) {
                 Text(stringResource(R.string.tooltip_nothingElse), style = ScaledType.meta, color = FsColor.muted)

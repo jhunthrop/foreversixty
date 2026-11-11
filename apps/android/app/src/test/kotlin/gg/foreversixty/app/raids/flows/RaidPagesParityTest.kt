@@ -1,5 +1,11 @@
 package gg.foreversixty.app.raids.flows
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import gg.foreversixty.app.designsystem.screenGround
+import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
+import androidx.compose.runtime.CompositionLocalProvider
+import gg.foreversixty.app.items.LocalItemIconPainter
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -38,11 +44,18 @@ class RaidPagesParityTest {
         ApplicantScreen(RaidPagesFixtures.applicant(accepted = true), ApplicantActions())
     }
 
-    @Test fun nightLive() = pushed("raid-night-live", "Raid", share = true) {
+    // 2026-11-10, lane mobile-rest: the same answers' drift as nightSignup below.
+    @Test fun nightLive() = pushed("raid-night-live", "Raid", share = true, drift = ANSWERS_DRIFT) {
         RaidNightPageScreen(RaidPagesFixtures.night(answered = true), BUILD, RaidNightPageActions())
     }
 
-    @Test fun nightSignup() = pushed("raid-night-signup", "Raid", share = true) {
+    // 2026-11-10, lane mobile-rest: the answers are FlowSegmented (48, one control everywhere, brand round 2); the
+    // mock still draws the old small buttons (ws_app_flows `_signup_buttons`, shared with the iOS Home mocks
+    // lane ios-restyle owns), so the sections under them sit 11 to 14 lower until that generator moves.
+    @Test fun nightSignup() = pushed(
+        "raid-night-signup", "Raid", share = true,
+        drift = ANSWERS_DRIFT,
+    ) {
         RaidNightPageScreen(RaidPagesFixtures.night(answered = false), BUILD, RaidNightPageActions())
     }
 
@@ -54,15 +67,24 @@ class RaidPagesParityTest {
         content: @Composable () -> Unit,
     ) =
         ParityCheck.state(compose, screen, expectedDrift = drift) {
-            ForeverTabScaffold(selected = ForeverTab.Raid, onSelect = {}, badges = TabBadges(raid = 6, activity = 3)) {
-                Column {
-                    FlowBackBar(backTo, {}, if (share) ({}) else null)
-                    content()
+            // The repo's game icons, as the tab roots' parity tests paint them (never an empty square).
+            CompositionLocalProvider(LocalItemIconPainter provides gg.foreversixty.app.home.HomeFixtures.repoIcons, LocalRaidIconBuild provides gg.foreversixty.app.home.HomeFixtures.BUILD) {
+                ForeverTabScaffold(selected = ForeverTab.Raid, onSelect = {}, badges = TabBadges(raid = 6, activity = 3)) {
+                    Column(Modifier.fillMaxSize().screenGround()) {
+                        FlowBackBar(backTo, {}, if (share) ({}) else null)
+                        content()
+                    }
                 }
             }
         }
 
     private companion object {
+        /** The sections under the answers, 11 to 14 lower than the mock's small buttons (see nightSignup). */
+        val ANSWERS_DRIFT = setOf(
+            "section-before-you-pull: y 666, the mock has 652 (within 8)",
+            "section-who-is-coming: y 446, the mock has 435 (within 8)",
+        )
+
         const val BUILD = "1.60.1.70790"
     }
 }

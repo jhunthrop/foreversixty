@@ -26,10 +26,10 @@ struct SimsListView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SimsTitle(text: Copy.simsTitle)
+            BandHead(title: Copy.simsTitle)
             switch phase {
             case .loading: SimsSkeleton()
-            case .failed: errorBlock(Copy.simsFailedLoad)
+            case .failed: errorCard(Copy.simsFailedLoad)
             case let .loaded(content): loaded(content)
             }
         }
@@ -53,24 +53,15 @@ struct SimsListView: View {
                 serverSection(content)
             }
             mineSection(content)
-            if let footer = footer(content) {
-                Text(footer).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
         }
         .padding(.horizontal, 16)
-        .padding(.top, 12)
-    }
-
-    private func footer(_ content: SimsContent) -> String? {
-        guard !content.mine.isEmpty else { return nil }
-        return entitled ? Copy.simsFooterPremium : Copy.simsFooterFree
+        .padding(.top, BandReach.gap)
     }
 
     @ViewBuilder
     private func serverSection(_ content: SimsContent) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(Copy.simsServer)
+            SectionTitle(Copy.simsServer)
             if content.serverFailed {
                 errorCard(Copy.simsServerFailed)
             } else if content.serverRows.isEmpty {
@@ -98,7 +89,7 @@ struct SimsListView: View {
     @ViewBuilder
     private func mineSection(_ content: SimsContent) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(Copy.simsMine)
+            SectionTitle(Copy.simsMine)
             if content.mineFailed {
                 errorCard(Copy.simsFailedLoad)
             } else if content.mine.isEmpty {
@@ -139,29 +130,7 @@ struct SimsListView: View {
     }
 
     private func errorCard(_ text: String) -> some View {
-        errorBlock(text).quietCard()
-    }
-
-    private func errorBlock(_ text: String) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(text).font(ScaledType.lead).foregroundStyle(FSColor.wipe)
-                .accessibilityAddTraits(.isStaticText)
-            SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: actions.retry)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-/// A pushed screen's title in the brand's condensed caps (as Your gear and the raid page).
-struct SimsTitle: View {
-    let text: String
-
-    var body: some View {
-        Text(text.uppercased()).font(ScaledType.title).foregroundStyle(FSColor.strong)
-            .fixedSize(horizontal: false, vertical: true)
-            .accessibilityAddTraits(.isHeader)
-            .padding(.horizontal, 16).padding(.top, 8).padding(.bottom, 4)
+        LoadError(text, retryLabel: Copy.commonTryAgain, retry: actions.retry)
     }
 }
 

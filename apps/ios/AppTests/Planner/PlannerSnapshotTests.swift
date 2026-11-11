@@ -95,7 +95,7 @@ struct PlannerSnapshotTests {
             PlannerShareSheet(title: .constant("Elemental raid"), signedIn: true, state: .idle, proceed: {}, cancel: {})
         }
         .frame(height: 560)
-        .background(FSColor.bg)
+        .screenGround()
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: 22, topTrailingRadius: 22))
         let composed = ZStack(alignment: .bottom) {
             editor(twoLeft)
@@ -114,20 +114,14 @@ struct PlannerSnapshotTests {
     }
 
     private func viewer(_ phase: SharedBuildPhase) -> some View {
-        NavigationStack {
+        PushedScreen(back: Copy.tabHome) {
             SharedBuildView(phase: phase, tree: .constant(0), timeZone: .gmt)
-                .navigationTitle("")
-                .navigationBarTitleDisplayMode(.inline)
+                .pushedBandBar(Copy.planSharedTitle)
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {} label: { Label(Copy.tabHome, systemImage: "chevron.left").labelStyle(.titleAndIcon) }
-                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {} label: { Image(systemName: "square.and.arrow.up") }
                     }
                 }
-                .toolbarBackground(FSColor.bg, for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
         }
     }
 
@@ -144,14 +138,12 @@ struct PlannerSnapshotTests {
     }
 
     private func builds(_ phase: YourBuildsPhase, removed: RemovedBuild? = nil) -> some View {
-        NavigationStack {
+        PushedScreen(back: Copy.talentsTitle) {
             YourBuildsView(
                 phase: phase, removed: removed,
                 newBuild: PlannerNewBuild(classSlug: "shaman", className: "Shaman", raceSlug: "orc", level: 60), timeZone: .gmt
             )
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(FSColor.bg, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .pushedBandBar(Copy.planBuildsTitle)
         }
     }
 

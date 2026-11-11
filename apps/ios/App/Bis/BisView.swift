@@ -16,17 +16,23 @@ struct BisView: View {
     var newData: NewDataState = .none
     var onUpdate: () -> Void = {}
 
+    /// The spec icon in the band head, as the guide head's.
+    static let headIcon: CGFloat = 44
+    /// The control bar's height (spec 3.4, ControlBar, phone form).
+    static let controlBarHeight: CGFloat = 48
+    static let factionMark: CGFloat = 20
+
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
-                titleRow
-                chips
-                content
+            VStack(alignment: .leading, spacing: 0) {
+                bandHead
+                VStack(alignment: .leading, spacing: 14) {
+                    content
+                }
+                .padding(Theme.Spacing.md)
             }
-            .padding(.horizontal, Theme.Spacing.md)
-            .padding(.vertical, Theme.Spacing.sm)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .safeAreaInset(edge: .top, spacing: 0) {
             VStack(spacing: 0) {
                 if let offlineSince { OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(offlineSince, now: now))) }
@@ -42,35 +48,56 @@ struct BisView: View {
         }
     }
 
-    private var titleRow: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.sm + Theme.Spacing.xs) {
-            Text(Copy.bisTitle.uppercased())
-                .font(ScaledType.title)
-                .foregroundStyle(FSColor.strong)
+    /// The list's head on the band under the bar (the web's /bis page head): the spec's icon, its
+    /// name in the class colour in the display face and `Best in slot`; then the control bar.
+    private var bandHead: some View {
+        let selection = context.selection
+        return VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: Theme.Spacing.sm + Theme.Spacing.xs) {
+                if let spec = catalog.spec(selection.spec) { SpecIcon(icon: spec.icon, build: build ?? "", size: Self.headIcon) }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(specChipLabel).font(ScaledType.cardHead).foregroundStyle(ClassColor.of(selection.classSlug))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(Copy.bisTitle).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
-            if context.isYours { TagView(text: Copy.bisYours, color: FSColor.gold) }
+            }
+            .padding(.horizontal, Theme.Spacing.md)
+            .padding(.top, Theme.Spacing.sm)
+            .padding(.bottom, Theme.Spacing.sm + Theme.Spacing.xs)
+            controlBar
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        // The band runs up under the bar and the status bar (N3).
+        .bandUnderBars()
     }
 
-    private var chips: some View {
+    /// One row: the range and faction in words, then a gold `Change` that opens the picker. It
+    /// replaces the stacked pills, as the web's control bar.
+    private var controlBar: some View {
         let selection = context.selection
-        return WrapLayout(spacing: Theme.Spacing.sm) {
-            BisChip(label: specChipLabel, isOpen: false, action: onOpenPicker) {
-                if let spec = catalog.spec(selection.spec) { SpecIcon(icon: spec.icon, build: build ?? "", size: 28) }
+        // The short label (`60 · Phase 1 raid`) keeps the bar on one line; the picker keeps the opening date.
+        let range = BisLabels.range(selection.range)
+        let faction = BisLabels.faction(selection.faction)
+        return Button(action: onOpenPicker) {
+            HStack(spacing: Theme.Spacing.sm) {
+                FactionMark(faction: selection.faction, size: Self.factionMark)
+                Text([range, faction].joined(separator: GearPresenter.separator))
+                    .font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(Copy.gearChange).font(ScaledType.bodyStrong).foregroundStyle(FSColor.gold)
+                Image(systemName: "chevron.down").font(.system(size: 11, weight: .bold)).foregroundStyle(FSColor.gold)
             }
-            BisChip(label: context.rangeLabel(selection.range, now: now), action: onOpenPicker) { EmptyView() }
-            BisChip(label: BisLabels.faction(selection.faction), action: onOpenPicker) {
-                FactionMark(faction: selection.faction, size: 24)
-            }
+            .padding(.horizontal, Theme.Spacing.md)
+            .frame(maxWidth: .infinity, minHeight: Self.controlBarHeight)
+            .contentShape(.rect)
         }
+        .buttonStyle(RowPressStyle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Copy.bisA11yPicker(
-            spec: specChipLabel,
-            range: context.rangeLabel(selection.range, now: now),
-            faction: BisLabels.faction(selection.faction)
-        ))
+        .accessibilityLabel(Copy.bisA11yPicker(spec: specChipLabel, range: range, faction: faction))
         .accessibilityAddTraits(.isButton)
-        .accessibilityAction { onOpenPicker() }
     }
 
     private var specChipLabel: String {
@@ -92,11 +119,11 @@ struct BisView: View {
                 BisRowsCard(rows: rows, list: list, context: context, build: build, onOpenItem: onOpenItem)
             }
         case .noList:
-            StateNotice(text: Copy.homeAnswerNoList, color: FSColor.muted)
+            StateNotice(text: Copy.homeAnswerNoList)
         case .notCached:
-            StateNotice(text: Copy.bisNotCached, color: FSColor.muted, onTryAgain: onTryAgain)
+            LoadError(Copy.bisNotCached, retryLabel: Copy.commonTryAgain, retry: onTryAgain)
         case .failed:
-            StateNotice(text: Copy.bisFailed, color: FSColor.wipe, onTryAgain: onTryAgain)
+            LoadError(Copy.bisFailed, retryLabel: Copy.commonTryAgain, retry: onTryAgain)
         }
     }
 }
@@ -108,7 +135,7 @@ private struct SetDpsLine: View {
     var body: some View {
         Text(attributed)
             .font(ScaledType.meta)
-            .foregroundStyle(FSColor.muted)
+            .foregroundStyle(FSColor.mutedGround)
     }
 
     private var attributed: AttributedString {
@@ -116,7 +143,7 @@ private struct SetDpsLine: View {
         let figureEnd = line.firstIndex(of: " ").map { line.distance(from: line.startIndex, to: $0) } ?? 0
         if figureEnd > 0 {
             let range = text.startIndex..<text.index(text.startIndex, offsetByCharacters: figureEnd)
-            text[range].font = ScaledType.mono
+            text[range].font = ScaledType.tabular
             text[range].foregroundColor = FSColor.strong
         }
         return text
@@ -282,23 +309,16 @@ private struct Notice: View {
     }
 }
 
-/// A state of the list region (not saved, no list, error): its sentence, 24 below the chips, and
-/// `Try again` where a retry can help (spec §5.0).
+/// The no-list state of the list region: its sentence on the ground (spec 5.0). The failing states
+/// are the shared `LoadError` Plate.
 private struct StateNotice: View {
     let text: String
-    let color: Color
-    var onTryAgain: (() -> Void)?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
-            Text(text)
-                .font(ScaledType.body)
-                .foregroundStyle(color)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            if let onTryAgain { SecondaryButton(title: Copy.commonTryAgain, fullWidth: true, action: onTryAgain) }
-        }
-        // 24 below the chips: the stack's 14 plus 10.
-        .padding(.top, 10)
+        Text(text)
+            .font(ScaledType.body)
+            .foregroundStyle(FSColor.mutedGround)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guild.ui
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -84,7 +85,7 @@ class CalendarActions(
 @Composable
 fun CalendarContent(state: CalendarScreenState, actions: CalendarActions, back: () -> Unit, confirmingReset: Boolean = false) {
     var confirming by remember { mutableStateOf(confirmingReset) }
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         GuildTopBar(stringResource(R.string.calendar_title), back)
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),

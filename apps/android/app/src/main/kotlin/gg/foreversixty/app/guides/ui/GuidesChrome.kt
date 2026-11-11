@@ -95,8 +95,8 @@ internal fun EqualSegments(labels: List<String>, selected: Int, onSelect: (Int) 
                     activeContainerColor = GameColors.pressedWash,
                     activeContentColor = FsColor.strong,
                     activeBorderColor = FsColor.line,
-                    inactiveContainerColor = GameColors.controlFill,
-                    inactiveContentColor = FsColor.muted,
+                    inactiveContainerColor = FsColor.raised,
+                    inactiveContentColor = FsColor.text,
                     inactiveBorderColor = FsColor.line,
                 ),
             ) {
@@ -150,7 +150,7 @@ internal fun NumberedChips(items: List<String>, label: (Int, String) -> String) 
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(Modifier.size(scaledSize(DISC, DISC_CAP)).background(FsColor.cardTop, CircleShape), contentAlignment = Alignment.Center) {
-                    Text((index + 1).toString(), style = ScaledType.mono.copy(fontSize = DISC_TEXT), color = FsColor.gold)
+                    Text((index + 1).toString(), style = ScaledType.tabular.copy(fontSize = DISC_TEXT), color = FsColor.gold)
                 }
                 Text(item, style = ScaledType.body, color = FsColor.text)
             }
@@ -170,7 +170,7 @@ internal fun SavedMark(saved: Boolean, long: Boolean = false) {
     } else {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(painterResource(R.drawable.ic_cloud_download), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(18.dp))
-            Text(stringResource(R.string.guides_notSaved), style = ScaledType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.guides_notSaved), style = ScaledType.meta, color = FsColor.mutedGround)
         }
     }
 }

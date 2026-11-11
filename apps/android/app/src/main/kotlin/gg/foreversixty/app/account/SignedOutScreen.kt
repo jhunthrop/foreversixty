@@ -1,5 +1,7 @@
 package gg.foreversixty.app.account
 
+import gg.foreversixty.app.designsystem.panel
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,32 +49,39 @@ fun SignedOutScreen(
     variant: SignedOutVariant = SignedOutVariant.Home,
     noticeIsFailure: Boolean = true,
 ) {
-    Box(Modifier.fillMaxSize().surfaceBand(bottomLine = false)) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = FsSpace.space4)
-                .padding(top = if (notice == null) 60.dp else 120.dp, bottom = FsSpace.space6),
-            verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
-        ) {
-            Seal(64.dp)
-            Text(stringResource(R.string.app_name).uppercase(), style = ScaledType.wordmark, color = FsColor.strong)
+    // The web's signed-out page: a band head, then one Plate on the ground with the one primary.
+    Box(Modifier.fillMaxSize().screenGround()) {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             val (heading, line) = when (variant) {
                 SignedOutVariant.Home -> R.string.signin_line to R.string.signin_body
                 SignedOutVariant.Raids -> R.string.raids_signedOut_title to R.string.raids_signedOut_body
             }
-            Text(
-                stringResource(heading).uppercase(),
-                style = ScaledType.title,
-                color = FsColor.strong,
-                modifier = Modifier.semantics { this.heading() },
-            )
-            Text(stringResource(line), style = ScaledType.body, color = FsColor.text)
-            Spacer(Modifier.height(FsSpace.space1))
-            BrandButton(stringResource(R.string.signin_button), BrandButtonKind.Primary, onSignIn, busy = signingIn)
-            BrandButton(stringResource(R.string.signin_pickClass), BrandButtonKind.Secondary, onPickClass)
-            Text(stringResource(R.string.signin_pickClassNote), style = ScaledType.meta, color = FsColor.muted)
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .surfaceBand()
+                    .padding(horizontal = FsSpace.space4)
+                    .padding(top = if (notice == null) 48.dp else 108.dp, bottom = FsSpace.space6),
+                verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
+            ) {
+                Seal(64.dp)
+                Text(stringResource(R.string.app_name), style = ScaledType.wordmark, color = FsColor.strong)
+                Text(
+                    stringResource(heading),
+                    style = ScaledType.title,
+                    color = FsColor.strong,
+                    modifier = Modifier.semantics { this.heading() },
+                )
+            }
+            Column(
+                Modifier.padding(FsSpace.space4).fillMaxWidth().panel().padding(FsSpace.space4),
+                verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
+            ) {
+                Text(stringResource(line), style = ScaledType.body, color = FsColor.text)
+                BrandButton(stringResource(R.string.signin_button), BrandButtonKind.Primary, onSignIn, busy = signingIn)
+                BrandButton(stringResource(R.string.signin_pickClass), BrandButtonKind.Quiet, onPickClass)
+                Text(stringResource(R.string.signin_pickClassNote), style = ScaledType.meta, color = FsColor.muted)
+            }
         }
         if (notice != null) {
             NoticeToast(notice, Modifier.padding(horizontal = FsSpace.space4, vertical = FsSpace.space3), isFailure = noticeIsFailure)
@@ -89,7 +98,7 @@ fun ImportScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Seal(64.dp)
-        Text(stringResource(R.string.signin_importTitle).uppercase(), style = ScaledType.h2, color = FsColor.strong, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.signin_importTitle), style = ScaledType.h2, color = FsColor.strong, textAlign = TextAlign.Center)
         Text(stringResource(R.string.signin_importBody), style = ScaledType.body, color = FsColor.text, textAlign = TextAlign.Center)
         LinearProgressIndicator(Modifier.width(160.dp).height(8.dp), color = FsColor.gold, trackColor = FsColor.lineSoft)
     }
@@ -99,11 +108,11 @@ fun ImportScreen() {
 @Composable
 fun NoCharactersScreen(onGetAddon: () -> Unit) {
     Column(
-        Modifier.fillMaxSize().background(FsColor.bg).padding(FsSpace.space4),
+        Modifier.fillMaxSize().screenGround().padding(FsSpace.space4),
         verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
     ) {
         Text(
-            stringResource(R.string.signin_noChars_title).uppercase(),
+            stringResource(R.string.signin_noChars_title),
             style = ScaledType.h2,
             color = FsColor.strong,
             modifier = Modifier.semantics { heading() },

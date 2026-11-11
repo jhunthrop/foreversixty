@@ -1,5 +1,6 @@
 package gg.foreversixty.app.system
 
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.bis.BisTestData
@@ -105,10 +106,10 @@ class SystemScreenshotTest {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
                     if (tab == null) {
-                        Box(Modifier.fillMaxSize().background(FsColor.bg)) { screen() }
+                        Box(Modifier.fillMaxSize().screenGround()) { screen() }
                     } else {
                         ForeverTabScaffold(selected = tab, onSelect = {}) {
-                            Box(Modifier.fillMaxSize().background(FsColor.bg)) { screen() }
+                            Box(Modifier.fillMaxSize().screenGround()) { screen() }
                         }
                     }
                 }

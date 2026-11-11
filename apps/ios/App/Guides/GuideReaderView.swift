@@ -18,36 +18,46 @@ struct GuideReaderView: View {
     var newData: NewDataState = .none
     let now: Date
     var actions = GuideActions()
+    /// The guide's name while it is not drawn (loading, not saved, failed): the band head says it, as
+    /// the character page's states do (N3).
+    var title = Copy.guidesTitle
 
     var body: some View {
         switch phase {
         case .loading:
-            ScrollView { GuideSkeleton().padding(.horizontal, GuidesLayout.gutter).padding(.top, 12) }
+            ScrollView {
+                BandHead(title: title)
+                GuideSkeleton().padding(.horizontal, GuidesLayout.gutter).padding(.top, BandReach.gap)
+            }
         case .notCached:
-            ScrollView { GuidesNotCached(text: Copy.guidesNotCached).padding(GuidesLayout.gutter) }
+            ScrollView {
+                BandHead(title: title)
+                GuidesNotCached(text: Copy.guidesNotCached).padding(GuidesLayout.gutter)
+            }
         case .failed:
-            ScrollView { ReportsErrorCard(text: Copy.guidesError, retry: actions.retry).padding(GuidesLayout.gutter) }
+            ScrollView {
+                BandHead(title: title)
+                LoadError(Copy.guidesError, retryLabel: Copy.commonTryAgain, retry: actions.retry).padding(GuidesLayout.gutter)
+            }
         case let .loaded(content, since):
-            GuideScroll(content: content, actions: actions)
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    VStack(spacing: 0) {
-                        NewDataStrip(newData, action: actions.update)
-                        GuidesOfflineStrip(since: since, now: now)
-                    }
-                }
+            GuideScroll(content: content, actions: actions) {
+                NewDataStrip(newData, action: actions.update)
+                GuidesOfflineStrip(since: since, now: now)
+            }
         }
     }
 }
 
 /// The loaded guide: the head band scrolls away, the section strip sticks under the bar, and
-/// the strip follows the scroll.
-struct GuideScroll: View {
+/// the strip follows the scroll. `strips` (new data, offline) sit under the band.
+struct GuideScroll<Strips: View>: View {
     let content: GuideContent
     var actions = GuideActions()
+    @ViewBuilder var strips: () -> Strips
 
     @State private var tops: [GuideSection: CGFloat] = [:]
 
-    private static let space = "guide"
+    private static var space: String { "guide" }
 
     private var sections: [GuideSection] { GuideSection.of(content.guide) }
 
@@ -61,6 +71,7 @@ struct GuideScroll: View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
                     GuideHead(guide: content.guide, build: content.build)
+                    strips()
                     Section {
                         GuideBody(content: content, space: Self.space, actions: actions) { tops[$0] = $1 }
                         .padding(.bottom, GuidesLayout.tabBarClearance)
@@ -72,7 +83,7 @@ struct GuideScroll: View {
                 }
             }
             .coordinateSpace(.named(Self.space))
-            .background(FSColor.bg)
+            .screenGround()
         }
     }
 }
@@ -86,19 +97,20 @@ struct GuideHead: View {
         HStack(alignment: .top, spacing: 14) {
             SpecIcon(icon: guide.icon, build: build, size: GuidesLayout.headIcon)
             VStack(alignment: .leading, spacing: 4) {
-                Text(GuideCopy.title(guide).uppercased())
+                Text(GuideCopy.title(guide))
                     .font(ScaledType.h2)
                     .foregroundStyle(ClassColor.of(guide.classSlug))
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
-                Text(GuideCopy.headMeta(guide)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(GuideCopy.headMeta(guide)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(GuidesLayout.gutter)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .surfaceBand()
+        // The band runs up under the clear bar and the status bar (N3).
+        .bandUnderBars()
     }
 }
 
@@ -126,7 +138,7 @@ struct GuideSectionStrip: View {
                 withAnimation { proxy.scrollTo(section, anchor: .center) }
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
         .overlay(alignment: .bottom) { FSColor.lineSoft.frame(height: 1) }
         .haptic(.selection, trigger: current)
     }

@@ -205,6 +205,10 @@ public enum FSType {
     public static let body = FSTextRole(face: FSFont.body, size: 15, lineHeight: 22, tracking: 0, scalesWith: .body, tabular: false)
     public static let bodyStrong = FSTextRole(face: FSFont.bodySemibold, size: 15, lineHeight: 22, tracking: 0, scalesWith: .body, tabular: false)
     public static let small = FSTextRole(face: FSFont.body, size: 13, lineHeight: 20, tracking: 0, scalesWith: .footnote, tabular: false)
+    /// The 12 px label: caps at .12em on the web, sentence case at .01em in the apps (ruling N1).
+    public static let label = FSTextRole(face: FSFont.bodyBold, size: 12, lineHeight: 16, tracking: 0.01, scalesWith: .caption, tabular: false)
+    /// Caps at .07em on the web, sentence case in the apps.
+    public static let button = FSTextRole(face: FSFont.bodyBold, size: 13, lineHeight: 16, tracking: 0, scalesWith: .subheadline, tabular: false)
     /// The tab bar label (ruling N4).
     public static let tab = FSTextRole(face: FSFont.bodySemibold, size: 12, lineHeight: 14, tracking: 0, scalesWith: .caption, tabular: false)
     public static let figureSm = FSTextRole(face: FSFont.bodyBold, size: 16, lineHeight: 20, tracking: 0, scalesWith: .title2, tabular: true)

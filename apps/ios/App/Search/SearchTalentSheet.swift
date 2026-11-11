@@ -59,7 +59,7 @@ private struct SearchTalentPlaceholder: View {
                 SearchTalentIcon(icon: talent.icon, name: talent.name, build: build, size: 56)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(talent.name).font(ScaledType.name).foregroundStyle(FSColor.strong)
-                    Text(Copy.searchTalentRank(rank: 0, max: talent.maxRank)).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+                    Text(Copy.searchTalentRank(rank: 0, max: talent.maxRank)).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
                 }
             }
             if failed {

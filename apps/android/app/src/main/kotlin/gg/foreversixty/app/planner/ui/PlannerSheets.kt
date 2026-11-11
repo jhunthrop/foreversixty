@@ -1,5 +1,6 @@
 package gg.foreversixty.app.planner.ui
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,12 +47,10 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.model.RaceInfo
 import gg.foreversixty.app.planner.logic.PlannerEditor
 import gg.foreversixty.app.planner.logic.PlannerRules
 import gg.foreversixty.app.planner.logic.PlannerShare
-import java.util.Locale
 
 /** The sheets' frame: the app's bottom sheet on the raised ground. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,7 +63,7 @@ fun PlannerSheet(onDismiss: () -> Unit, content: @Composable () -> Unit) {
 
 @Composable
 private fun SheetTitle(text: String) {
-    Text(text.uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+    Text(text, style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
 }
 
 /** The Race chip's sheet: the class's legal races (combos.json), the current one ticked. */
@@ -94,7 +93,7 @@ fun LevelSheetContent(level: Int, minLevel: Int, change: (Int) -> Unit) {
         SheetTitle(stringResource(R.string.plan_levelSheet))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             StepButton(painterResource(R.drawable.ic_minus), stringResource(R.string.plan_level, level - 1), level > minLevel, { change(level - 1) })
-            Text(level.toString(), style = ScaledType.monoDay, color = FsColor.strong)
+            Text(level.toString(), style = ScaledType.tabularDay, color = FsColor.strong)
             StepButton(rememberVectorPainter(Icons.Filled.Add), stringResource(R.string.plan_level, level + 1), level < PlannerEditor.MAX_LEVEL, { change(level + 1) })
         }
         Text(stringResource(R.string.plan_levelSheetLine, PlannerRules.pointsAvailable(level)), style = ScaledType.meta, color = FsColor.muted)
@@ -155,7 +154,7 @@ fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed
             Bullet(stringResource(R.string.plan_shareFieldTalents))
             title?.let { Bullet(stringResource(R.string.plan_shareFieldTitle, it)) }
         }
-        MicroLabel(stringResource(R.string.plan_shareTitleField))
+        Label12(stringResource(R.string.plan_shareTitleField))
         OutlinedTextField(
             value = state.title,
             onValueChange = { onTitle(it.take(PlannerShare.TITLE_MAX)) },
@@ -165,7 +164,7 @@ fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed
             trailingIcon = {
                 Text(
                     stringResource(R.string.plan_shareTitleCount, state.title.length, PlannerShare.TITLE_MAX),
-                    style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(end = 12.dp),
+                    style = ScaledType.tabularMeta, color = FsColor.muted, modifier = Modifier.padding(end = 12.dp),
                 )
             },
             colors = OutlinedTextFieldDefaults.colors(
@@ -175,7 +174,7 @@ fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed
             modifier = Modifier.fillMaxWidth(),
         )
         BrandButton(stringResource(R.string.plan_shareProceed), BrandButtonKind.Primary, proceed, busy = state.sharing, height = 48.dp)
-        BrandButton(stringResource(R.string.common_cancel), BrandButtonKind.Secondary, cancel, enabled = !state.sharing, height = 48.dp)
+        BrandButton(stringResource(R.string.common_cancel), BrandButtonKind.Quiet, cancel, enabled = !state.sharing, height = 48.dp)
         if (state.signedIn) Text(stringResource(R.string.plan_shareSignedIn), style = ScaledType.meta, color = FsColor.muted)
     }
 }

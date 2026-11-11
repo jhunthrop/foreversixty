@@ -32,7 +32,7 @@ struct ReportsScreen: View {
                 now: dependencies.now(), clock: dependencies.clock, actions: actions
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store.load() }
         .reportsBar(title: Copy.reportsBack) {
             Button { Task { await store.load() } } label: { Image(systemName: "arrow.clockwise") }
@@ -88,7 +88,7 @@ struct ReportScreen: View {
                 )
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store.load() }
         .reportsBar(title: store.report?.zone ?? Copy.reportsBack) {
             if let share = store.report.flatMap(ShareText.report) {
@@ -145,13 +145,11 @@ struct MetersSheet: View {
 }
 
 extension View {
-    /// The F10 bar (board F10.1, F10.2): back and one trailing glass button; the condensed caps
-    /// title is in the content, and `title` names the back button of the screen pushed over it.
+    /// The F10 bar (board F10.1, F10.2, N3): back and one trailing button on the clear bar; the
+    /// title is the band head's, and `title` names the back button of the screen pushed over it.
     func reportsBar(title: String, @ViewBuilder trailing: () -> some View) -> some View {
         let button = trailing()
-        return navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(removing: .title)
+        return pushedBandBar(title)
             .toolbar { ToolbarItem(placement: .topBarTrailing) { button } }
     }
 }

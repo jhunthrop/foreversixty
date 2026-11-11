@@ -65,15 +65,15 @@ struct ApplicantView: View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
             HStack(spacing: FSSpace.space3) {
                 FSButton(Copy.raidApplicantAccept, kind: .primary, action: actions.accept)
-                FSButton(Copy.raidApplicantDecline, action: actions.decline)
+                FSButton(Copy.raidApplicantDecline, kind: .quiet, action: actions.decline)
             }
             .disabled(busy)
-            SmallText(error ?? Copy.raidApplicantRole, color: error == nil ? FSColor.muted : FSColor.wipe)
+            SmallText(error ?? Copy.raidApplicantRole, color: error == nil ? nil : FSColor.wipe)
         }
         .padding(.top, FSSpace.space3)
         .padding(.bottom, FSSpace.space1)
         .padding(.horizontal, FSSpace.gutterPhone)
-        .background(FSColor.bg)
+        .screenGround()
         .overlay(alignment: .top) { Hairline() }
     }
 
@@ -121,13 +121,14 @@ struct ApplicantFigures: View {
 
     private func cell(_ figure: ApplicantFigure) -> some View {
         VStack(alignment: .leading, spacing: 2) {
+            // The figures sit on the painted ground: the label and unit in mutedGround (Android FlowFigures).
             Text(figure.label)
-                .type(TypeRole(face: FSFont.bodyBold, size: 12, lineHeight: 16, scalesWith: .caption))
-                .foregroundStyle(FSColor.muted)
+                .type(FSType.label)
+                .foregroundStyle(FSColor.mutedGround)
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(figure.value).type(FSType.figure).foregroundStyle(FSColor.strong).frame(height: figureLine)
                 if let unit = figure.unit {
-                    Text(unit).font(.custom(FSFont.bodySemibold, size: 13, relativeTo: .footnote)).foregroundStyle(FSColor.muted)
+                    Text(unit).font(.custom(FSFont.bodySemibold, size: 13, relativeTo: .footnote)).foregroundStyle(FSColor.mutedGround)
                 }
             }
         }

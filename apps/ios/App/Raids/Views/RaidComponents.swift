@@ -34,23 +34,21 @@ struct GameIcon: View {
     }
 }
 
-/// `micro` uppercase .14em section label; at accessibility sizes the tracking drops and the label
-/// shrinks rather than breaking.
+/// A section's head over the painted ground in the round-5 look: `SectionTitle` (the display face,
+/// cream, as the tab roots' sections) with an optional tabular count in the surface's secondary ink.
 struct SectionLabel: View {
     let text: String
-    var color: Color = FSColor.muted
+    var color: Color = FSColor.cream
     var trailing: String?
-    @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.subInk) private var subInk
 
     var body: some View {
-        HStack(spacing: 6) {
-            Text(text.uppercased()).font(ScaledType.micro).tracking(typeSize.isAccessibilitySize ? 0 : 1.5)
-                .lineLimit(1).minimumScaleFactor(0.5).foregroundStyle(color)
+        HStack(alignment: .firstTextBaseline, spacing: FSSpace.space2) {
+            SectionTitle(text, color: color)
             if let trailing {
-                Text(trailing).font(ScaledType.monoMeta).foregroundStyle(color)
+                Text(trailing).font(ScaledType.tabular).foregroundStyle(subInk)
             }
         }
-        .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -80,9 +78,9 @@ struct DateBlock: View {
     var body: some View {
         let parts = clock.dateBlock(date)
         VStack(spacing: 0) {
-            Text(parts.weekday).font(ScaledType.micro).foregroundStyle(FSColor.muted)
-            Text(parts.day).font(ScaledType.monoDay).foregroundStyle(FSColor.strong)
-            Text(parts.month).font(ScaledType.micro).foregroundStyle(FSColor.muted)
+            Text(parts.weekday).font(ScaledType.label).foregroundStyle(FSColor.muted)
+            Text(parts.day).font(ScaledType.tabularDay).foregroundStyle(FSColor.strong)
+            Text(parts.month).font(ScaledType.label).foregroundStyle(FSColor.muted)
         }
         // The block keeps its width at every size; its words shrink, never break.
         .lineLimit(1)
@@ -132,6 +130,8 @@ struct CountBlock: View {
     let facts: RaidFacts
     var muted = false
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// The breakdown takes the surface's secondary ink: mutedGround on the raid page's ground.
+    @Environment(\.subInk) private var subInk
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -145,7 +145,7 @@ struct CountBlock: View {
                     Text(facts.countLine).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                 }
             }
-            Text(facts.breakdown).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(facts.breakdown).font(ScaledType.meta).foregroundStyle(subInk)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Copy.raidsA11yCount(count: facts.countLine, breakdown: facts.breakdown.replacingOccurrences(of: " · ", with: ", ")))
@@ -172,18 +172,13 @@ struct GoldLinkStyle: ButtonStyle {
     }
 }
 
-/// An error region (spec 5.0): the sentence in wipe red, read as an alert, and Try again.
+/// An error region (spec 5.0): the shared `LoadError` Plate with Try again.
 struct ErrorRegion: View {
     let message: String
     let retry: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(message).font(ScaledType.body).foregroundStyle(FSColor.wipe)
-                .accessibilityAddTraits(.isStaticText)
-            SecondaryButton(title: Copy.commonTryAgain, action: retry)
-        }
-        .raidCardBox(16).quietCard()
+        LoadError(message, retryLabel: Copy.commonTryAgain, retry: retry)
     }
 }
 
@@ -195,7 +190,7 @@ struct WrappingTag: View {
     let color: Color
 
     var body: some View {
-        Text(text.uppercased()).font(ScaledType.micro).tracking(1)
+        Text(text).font(ScaledType.label)
             .fixedSize(horizontal: false, vertical: true)
             .foregroundStyle(color)
             .padding(.horizontal, FSSpace.space2).padding(.vertical, 2)

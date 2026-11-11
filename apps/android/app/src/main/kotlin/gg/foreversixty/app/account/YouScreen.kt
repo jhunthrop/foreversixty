@@ -1,5 +1,7 @@
 package gg.foreversixty.app.account
 
+import gg.foreversixty.app.designsystem.FsTopBar
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,6 +52,7 @@ import gg.foreversixty.app.common.Seal
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.ScaledType
@@ -106,16 +109,17 @@ fun YouScreen(
     confirmingSignOut: Boolean = false,
     /** Lane F14: the Live surfaces card, drawn while the `widgets` switch is on. */
     liveSurfaces: (@Composable () -> Unit)? = null,
+    /** Back to the screen under this one: the title moves into the band bar (round 5). */
+    back: (() -> Unit)? = null,
 ) {
     var confirming by rememberSaveable { mutableStateOf(confirmingSignOut) }
-    AccountPage(stringResource(R.string.you_title)) {
+    AccountPage(stringResource(R.string.you_title), back) {
         Row(horizontalArrangement = Arrangement.spacedBy(FsSpace.space3), verticalAlignment = Alignment.CenterVertically) {
             Tile(rememberVectorPainter(Icons.Filled.Person), 44.dp)
             Column(Modifier.weight(1f)) {
                 Text(summary.battletag, style = ScaledType.name, color = FsColor.strong)
-                Text(stringResource(R.string.you_signedInWith), style = ScaledType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.you_signedInWith), style = ScaledType.meta, color = FsColor.mutedGround)
             }
-            if (summary.plan.isPremium) Tag(stringResource(R.string.plan_premium), FsColor.gold)
         }
         AccountCard {
             PlanRow(summary.plan, mayLink, actions.onSeePlans, actions.onPlan)
@@ -155,10 +159,13 @@ fun YouScreen(
             AccountRow(rememberVectorPainter(Icons.Filled.Info), stringResource(R.string.you_about), chevron = true, onClick = actions.onAbout)
         }
         BrandButton(stringResource(R.string.you_signOut), BrandButtonKind.Quiet, { confirming = true }, height = 48.dp)
-        TextButton(actions.onDeleteAccount, Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-            Text(stringResource(R.string.shared_account_delete_title), style = ScaledType.bodyStrong, color = FsColor.wipe)
+        // The destructive row on a panel, so its wipe ink reads (never faint on the painted ground).
+        AccountCard {
+            TextButton(actions.onDeleteAccount, Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                Text(stringResource(R.string.shared_account_delete_title), style = ScaledType.bodyStrong, color = FsColor.wipe)
+            }
         }
-        Text(summary.version, style = ScaledType.micro, color = FsColor.muted, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Text(summary.version, style = FsType.label, color = FsColor.mutedGround, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     }
     if (confirming) {
         ConfirmDialog(
@@ -197,28 +204,34 @@ private fun CharacterRow(character: CharacterLine) {
 
 /** You › About Forever Sixty: the version, the build and the site footer's Blizzard line. */
 @Composable
-fun AboutScreen(version: String) {
-    AccountPage(stringResource(R.string.you_about)) {
+fun AboutScreen(version: String, back: (() -> Unit)? = null) {
+    AccountPage(stringResource(R.string.you_about), back) {
         Seal(64.dp)
-        Text(stringResource(R.string.app_name).uppercase(), style = ScaledType.wordmark, color = FsColor.strong)
-        Text(version, style = ScaledType.body, color = FsColor.text)
-        Text(stringResource(R.string.about_notAffiliated), style = ScaledType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.app_name), style = ScaledType.wordmark, color = FsColor.strong)
+        Text(version, style = ScaledType.body, color = FsColor.strong)
+        Text(stringResource(R.string.about_notAffiliated), style = ScaledType.meta, color = FsColor.mutedGround)
     }
 }
 
-/** A pushed or root account page: its title, then the content on the ground, scrolling. */
+/**
+ * An account page on the ground, scrolling. Pushed ([back] set), its title is the band bar's, as on
+ * every pushed screen (round 5, spec Mobile: Material 3's bar carries the title, never doubled); as
+ * a root, the title heads the page.
+ */
 @Composable
-fun AccountPage(title: String, content: @Composable ColumnScope.() -> Unit) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(FsColor.bg)
-            .verticalScroll(rememberScrollState())
-            .padding(FsSpace.space4),
-        verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
-    ) {
-        Text(title.uppercase(), style = ScaledType.title, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-        content()
+fun AccountPage(title: String, back: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
+    Column(Modifier.fillMaxSize().screenGround()) {
+        if (back != null) FsTopBar(title, stringResource(R.string.common_back), back)
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(FsSpace.space4),
+            verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
+        ) {
+            if (back == null) Text(title, style = ScaledType.title, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+            content()
+        }
     }
 }
 

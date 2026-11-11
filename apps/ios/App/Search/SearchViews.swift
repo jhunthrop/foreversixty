@@ -87,7 +87,7 @@ struct SearchChrome<Content: View>: View {
             ScrollView { content() }
                 .scrollDismissesKeyboard(.interactively)
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 }
 
@@ -127,10 +127,11 @@ struct SearchChip: View {
                 .padding(.vertical, 8)
                 .frame(minHeight: SearchLayout.target)
                 .background {
-                    RingedCapsule(fill: isOn ? GameColors.pressedWash : GameColors.controlFill, ring: isOn ? FSColor.gold : FSColor.line)
+                    Color.clear
+                        .chipSurface(fill: isOn ? GameColors.pressedWash : GameColors.controlFill, line: isOn ? FSColor.gold : FSColor.line)
                         .padding(.vertical, (SearchLayout.target - SearchLayout.chipHeight) / 2)
                 }
-                .contentShape(.capsule)
+                .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isOn ? .isSelected : [])
@@ -297,12 +298,9 @@ struct SearchContentView: View {
     private var indexStatus: some View {
         switch index {
         case .loading:
-            Text(Copy.searchIndexLoading).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(Copy.searchIndexLoading).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
         case .failed:
-            VStack(alignment: .leading, spacing: 10) {
-                Text(Copy.searchIndexFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
-                SecondaryButton(title: Copy.searchTryAgain, action: actions.retryIndex)
-            }
+            LoadError(Copy.searchIndexFailed, retryLabel: Copy.searchTryAgain, retry: actions.retryIndex)
         case .ready:
             EmptyView()
         }
@@ -312,9 +310,8 @@ struct SearchContentView: View {
     private var charactersStatus: some View {
         if scope.shows(.characters), characters == .failed {
             VStack(alignment: .leading, spacing: 10) {
-                MicroLabel(Copy.searchGroupCharacters)
-                Text(Copy.searchCharactersFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
-                SecondaryButton(title: Copy.searchTryAgain, action: actions.retryCharacters)
+                SectionTitle(Copy.searchGroupCharacters)
+                LoadError(Copy.searchCharactersFailed, retryLabel: Copy.searchTryAgain, retry: actions.retryCharacters)
             }
         }
     }

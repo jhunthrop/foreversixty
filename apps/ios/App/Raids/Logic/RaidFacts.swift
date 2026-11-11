@@ -114,10 +114,35 @@ struct RaidFacts: Sendable {
     var breakdown: String { breakdownParts.joined(separator: " · ") }
 
     var breakdownParts: [String] {
-        let counts = raid.counts
-        let parts = [Copy.raidsPartTanks(n: counts.tanks), Copy.raidsPartHealers(n: counts.healers), Copy.raidsPartDps(n: counts.dps)]
-        return counts.late > 0 ? parts + [Copy.raidsPartLate(n: counts.late)] : parts
+        let coming = self.coming
+        let parts = [Copy.raidsPartTanks(n: coming.tanks), Copy.raidsPartHealers(n: coming.healers), Copy.raidsPartDps(n: coming.damage)]
+        return coming.late > 0 ? parts + [Copy.raidsPartLate(n: coming.late)] : parts
     }
+
+    /// Who is coming (In plus Late): tanks, healers, damage (melee and ranged) and how many are late.
+    private struct Coming {
+        let tanks: Int
+        let healers: Int
+        let damage: Int
+        let late: Int
+    }
+
+    /// Counted from the sign-ups when the raid carries them (owner, 2026-11-10: never `raid.counts.dps`). A list
+    /// row without its sign-ups takes damage as everyone coming less the tanks and healers. Android: `RaidFacts.coming`.
+    private var coming: Coming {
+        let counts = raid.counts
+        guard !raid.signups.isEmpty else {
+            return Coming(tanks: counts.tanks, healers: counts.healers, damage: max(0, signedUp - counts.tanks - counts.healers), late: counts.late)
+        }
+        let coming = raid.signups.filter { SignupState(rawValue: $0.state)?.isComing == true }
+        let tanks = coming.filter { $0.role == Self.tank }.count
+        let healers = coming.filter { $0.role == Self.healer }.count
+        let late = raid.signups.filter { SignupState(rawValue: $0.state) == .late }.count
+        return Coming(tanks: tanks, healers: healers, damage: coming.count - tanks - healers, late: late)
+    }
+
+    private static let tank = "tank"
+    private static let healer = "healer"
 
     /// `24/40`, beside the roster heading.
     var ratio: String { raid.size.map { "\(signedUp)/\($0)" } ?? "\(signedUp)" }

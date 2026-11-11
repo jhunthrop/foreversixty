@@ -14,47 +14,47 @@ import UIKit
 struct PremiumSnapshotTests {
     @Test func youFreeLinkRegion() throws {
         let summary = try summary("me.json")
-        snap(NavigationStack { YouView(summary: summary, mayLink: true) {} }, "you-free-us")
+        snap(PushedScreen(back: AppTab.home.title) { YouView(summary: summary, mayLink: true) {} }, "you-free-us")
     }
 
     @Test func youFreeElsewhere() throws {
         let summary = try summary("me.json")
-        snap(NavigationStack { YouView(summary: summary, mayLink: false) {} }, "you-free-gb")
+        snap(PushedScreen(back: AppTab.home.title) { YouView(summary: summary, mayLink: false) {} }, "you-free-gb")
     }
 
     @Test func youFreeLinkRegionLargest() throws {
         let summary = try summary("me.json")
-        snap(NavigationStack { YouView(summary: summary, mayLink: true) {} }, "you-free-us-ax5", size: .accessibility5)
+        snap(PushedScreen(back: AppTab.home.title) { YouView(summary: summary, mayLink: true) {} }, "you-free-us-ax5", size: .accessibility5)
     }
 
     @Test func youPremiumLargest() throws {
         let summary = try summary("me.premium.json")
-        snap(NavigationStack { YouView(summary: summary, mayLink: true) {} }, "you-premium-ax5", size: .accessibility5)
+        snap(PushedScreen(back: AppTab.home.title) { YouView(summary: summary, mayLink: true) {} }, "you-premium-ax5", size: .accessibility5)
     }
 
     @Test func youSeat() throws {
         let summary = try summary("me.seat.json")
-        snap(NavigationStack { YouView(summary: summary, mayLink: false) {} }, "you-seat")
+        snap(PushedScreen(back: AppTab.home.title) { YouView(summary: summary, mayLink: false) {} }, "you-seat")
     }
 
     @Test func planLinkRegion() throws {
         let plan = try plan("me.premium.json")
-        snap(NavigationStack { PlanView(plan: plan, mayLink: true) }, "plan-us")
+        snap(PushedScreen(back: Copy.youTitle) { PlanView(plan: plan, mayLink: true) }, "plan-us")
     }
 
     @Test func planElsewhere() throws {
         let plan = try plan("me.premium.json")
-        snap(NavigationStack { PlanView(plan: plan, mayLink: false) }, "plan-gb")
+        snap(PushedScreen(back: Copy.youTitle) { PlanView(plan: plan, mayLink: false) }, "plan-gb")
     }
 
     @Test func planSeat() throws {
         let plan = try plan("me.seat.json")
-        snap(NavigationStack { PlanView(plan: plan, mayLink: true) }, "plan-seat")
+        snap(PushedScreen(back: Copy.youTitle) { PlanView(plan: plan, mayLink: true) }, "plan-seat")
     }
 
     @Test func planLargest() throws {
         let plan = try plan("me.premium.json")
-        snap(NavigationStack { PlanView(plan: plan, mayLink: true) }, "plan-us-ax5", size: .accessibility5)
+        snap(PushedScreen(back: Copy.youTitle) { PlanView(plan: plan, mayLink: true) }, "plan-us-ax5", size: .accessibility5)
     }
 
     private func summary(_ file: String) throws -> YouSummary {

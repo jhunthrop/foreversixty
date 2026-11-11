@@ -25,7 +25,7 @@ struct PlannedRow: View {
                     Text(clock.when(raid.startsAt, now: now)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     HStack(spacing: 8) {
                         Text(raid.size == nil ? facts.countLine : facts.ratio)
-                            .font(ScaledType.monoMeta).foregroundStyle(FSColor.strong)
+                            .font(ScaledType.tabularMeta).foregroundStyle(FSColor.strong)
                         if let fill = facts.fill, !large { FillBar(fill: fill, width: 64) }
                     }
                     // Large text: the chip moves under the title and wraps inside the row.

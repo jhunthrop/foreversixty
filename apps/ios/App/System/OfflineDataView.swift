@@ -21,24 +21,30 @@ struct OfflineDataView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpace.space4) {
-                SimsTitle(text: Copy.offlineDataTitle).padding(.horizontal, -16)
-                SectionLabel(text: Copy.offlineDataSection(size: OfflineWords.size(report.totalBytes)))
-                if report.isEmpty { empty } else { rows }
-                SectionLabel(text: Copy.offlineDataUpdates).padding(.top, FSSpace.space2)
-                switches
-                actions
-                Text(words.footer(checkedAt: checkedAt, now: now))
-                    .font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.offlineDataTitle)
+                page
             }
-            .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .alert(Copy.offlineDataRemoveConfirm, isPresented: $confirmingRemove) {
             Button(Copy.offlineDataRemoveAction, role: .destructive, action: remove)
             Button(Copy.commonCancel, role: .cancel) {}
         }
+    }
+
+    private var page: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space4) {
+            SectionLabel(text: Copy.offlineDataSection(size: OfflineWords.size(report.totalBytes)))
+            if report.isEmpty { empty } else { rows }
+            SectionLabel(text: Copy.offlineDataUpdates).padding(.top, FSSpace.space2)
+            switches
+            actions
+            Text(words.footer(checkedAt: checkedAt, now: now))
+                .font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(FSSpace.space4)
     }
 
     private var rows: some View {
@@ -178,9 +184,7 @@ struct OfflineDataScreen: View {
             updateNow: { Task { await model.updateNow() } },
             remove: { Task { await model.removeAll() } }
         )
-        .navigationTitle(Copy.offlineDataTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(removing: .title)
+        .pushedBandBar(Copy.offlineDataTitle)
         .task { await model.load() }
     }
 }

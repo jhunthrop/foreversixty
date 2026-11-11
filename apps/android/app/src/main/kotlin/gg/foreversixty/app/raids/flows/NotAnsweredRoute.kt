@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.flows
 
+import gg.foreversixty.app.designsystem.screenGround
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -42,7 +43,7 @@ fun NotAnsweredRoute(
     LaunchedEffect(model) { model.load() }
     val share = RaidLinks.share(model.guild, model.raidId)
     val page = guildUrl?.let { "$it/raids/${model.raidId}" } ?: share
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         FlowBackBar(stringResource(R.string.tab_raids), back) {
             context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, share), null))
         }

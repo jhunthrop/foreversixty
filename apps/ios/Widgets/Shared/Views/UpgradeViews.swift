@@ -21,7 +21,7 @@ struct UpgradeSmallView: View {
                     .foregroundStyle(ItemQuality(value: row.quality).text)
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)
-                Text(row.gain).font(ScaledType.mono).foregroundStyle(FSColor.strong)
+                Text(row.gain).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
             } else {
                 UpgradeSentence(figures: figures)
             }
@@ -54,7 +54,7 @@ struct UpgradeMediumView: View {
                             .foregroundStyle(ItemQuality(value: row.quality).text)
                             .lineLimit(1)
                         Spacer(minLength: 4)
-                        Text(row.gain).font(ScaledType.mono).foregroundStyle(FSColor.strong).lineLimit(1).fixedSize()
+                        Text(row.gain).font(ScaledType.tabular).foregroundStyle(FSColor.strong).lineLimit(1).fixedSize()
                     }
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Copy.widgetA11yUpgrade(slot: row.slot, item: row.name, gain: row.gain))
@@ -97,7 +97,7 @@ struct UpgradeHeader: View {
     var body: some View {
         HStack(spacing: 6) {
             ClassCrest(className: className, size: 16).accessibilityHidden(true)
-            MicroLabel(title, color: FSColor.gold).lineLimit(1)
+            Label12(title, color: FSColor.gold).lineLimit(1)
         }
     }
 }

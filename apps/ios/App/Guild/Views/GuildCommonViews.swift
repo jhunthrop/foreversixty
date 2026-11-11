@@ -1,8 +1,8 @@
 import DesignSystem
 import SwiftUI
 
-/// A pushed guild screen's frame: the offline strip, the condensed-caps title (v1 §4, as Sims
-/// and the raid page) with an optional trailing control, then the padded content.
+/// A pushed guild screen's frame: the band head with the title and an optional trailing control,
+/// the offline and stale strips under the band, then the padded content (N3, as every pushed screen).
 struct GuildScreenScroll<Content: View, Trailing: View>: View {
     let title: String
     let offlineStrip: String?
@@ -14,22 +14,16 @@ struct GuildScreenScroll<Content: View, Trailing: View>: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: title, lead: { EmptyView() }, facts: { EmptyView() }, trailing: trailing)
                 if let offlineStrip { OfflineStrip(text: offlineStrip) }
                 if let stale { stale }
                 VStack(alignment: .leading, spacing: 16) {
-                    HStack(alignment: .center, spacing: 12) {
-                        Text(title.uppercased()).font(ScaledType.title).foregroundStyle(FSColor.strong)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .accessibilityAddTraits(.isHeader)
-                        Spacer(minLength: 0)
-                        trailing()
-                    }
                     content()
                 }
                 .padding(16)
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 }
 
@@ -40,12 +34,10 @@ extension GuildScreenScroll where Trailing == EmptyView {
 }
 
 extension View {
-    /// A pushed guild screen's bar: the back control only; the title draws in the content. The
-    /// title still names the next screen's back button.
+    /// A pushed guild screen's bar (N3): the back control on the clear bar; the band head names the
+    /// screen, and the title still names the next screen's back button.
     func guildPushedBar(_ title: String) -> some View {
-        navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(removing: .title)
+        pushedBandBar(title)
     }
 }
 
@@ -97,7 +89,7 @@ struct GuildFooter: View {
     let text: String
 
     var body: some View {
-        Text(text).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+        Text(text).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.top, 6)
     }

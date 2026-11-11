@@ -30,9 +30,9 @@ class RaidClock(
     /** `8:00 pm CST` in the guild's zone. */
     fun guildClock(at: Instant, guildZone: ZoneId): String = format("h:mm a zzz", at, guildZone)
 
-    /** The date block: `THU`, `10`, `DEC`. */
+    /** The date block: `Thu`, `10`, `Dec` (sentence case, ruling N1). */
     fun dateBlock(at: Instant): Triple<String, String, String> =
-        Triple(format("EEE", at).uppercase(locale), format("d", at), format("MMM", at).uppercase(locale))
+        Triple(format("EEE", at), format("d", at), format("MMM", at))
 
     /** `Thursday 10 December`. */
     fun longDate(at: Instant): String = format("EEEE d MMMM", at)

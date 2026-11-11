@@ -28,7 +28,7 @@ struct GuidesHomeView: View {
             GuideSectionLabel(text: Copy.guidesClasses)
             ClassGrid(cells: GuidesIndexLogic.cells(home.index), open: openClass)
             Text(home.saved.footer(home.index))
-                .font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                .font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 12)
         }
@@ -47,13 +47,18 @@ struct YourGuideCard: View {
             HStack(alignment: .center, spacing: 14) {
                 SpecIcon(icon: spec.icon, build: build, size: GuidesLayout.headIcon)
                 VStack(alignment: .leading, spacing: 4) {
-                    MicroLabel(Copy.guidesYours, color: FSColor.gold)
-                    Text(spec.title.uppercased()).font(ScaledType.sec).foregroundStyle(ClassColor.of(spec.classSlug))
+                    Label12(Copy.guidesYours, color: FSColor.gold)
+                    Text(spec.title).font(ScaledType.sec).foregroundStyle(ClassColor.of(spec.classSlug))
                         .fixedSize(horizontal: false, vertical: true)
                     Text(GuideCopy.cardMeta(spec)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                         .fixedSize(horizontal: false, vertical: true)
                     if saved {
-                        TagView(text: Copy.guidesSaved, color: FSColor.kill, systemImage: "checkmark").padding(.top, 4)
+                        // The one-line tag while it fits; at the largest sizes it wraps, never widening the page.
+                        ViewThatFits(in: .horizontal) {
+                            TagView(text: Copy.guidesSaved, color: FSColor.kill, systemImage: "checkmark")
+                            WrappingTag(text: Copy.guidesSaved, color: FSColor.kill)
+                        }
+                        .padding(.top, 4)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -124,22 +129,20 @@ struct GuideClassView: View {
     let open: (GuideSpecRef) -> Void
 
     private var specs: [GuideSpecRef] { GuidesIndexLogic.specs(of: classSlug, in: home.index) }
+    private var className: String { specs.first?.className ?? classSlug }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            BandHead(title: className, titleColor: ClassColor.of(classSlug))
             GuidesOfflineStrip(since: offlineSince, now: now)
-            Text((specs.first?.className ?? classSlug).uppercased())
-                .font(ScaledType.title)
-                .foregroundStyle(ClassColor.of(classSlug))
-                .accessibilityAddTraits(.isHeader)
-                .padding(.horizontal, GuidesLayout.gutter).padding(.top, 8).padding(.bottom, 12)
+            Color.clear.frame(height: BandReach.gap)
             GuideCardRows(items: specs) { spec in
                 Button { open(spec) } label: { GuideSpecRow(spec: spec, build: home.build, saved: home.saved.isSaved(spec.spec)) }
                     .buttonStyle(RowPressStyle())
             }
             .padding(.horizontal, GuidesLayout.gutter)
             if offlineSince != nil, specs.contains(where: { !home.saved.isSaved($0.spec) }) {
-                Text(Copy.guidesNotCached).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(Copy.guidesNotCached).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, GuidesLayout.gutter).padding(.top, 12)
             }
