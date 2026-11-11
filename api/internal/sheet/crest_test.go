@@ -121,10 +121,11 @@ func mustCrest(t *testing.T, slug string) []byte {
 	return png
 }
 
-// No Go file outside this package builds a bare web crest URL: every Discord crest is the ringed
-// PNG from CrestURL (brand audit 2026-11-10 hand-off D).
-func TestNoBareCrestURLOutsideSheet(t *testing.T) {
-	root := "../.."
+// bareCrestPattern is the web crest path a Go file must never build by hand.
+const bareCrestPattern = "icons/hd/crests"
+
+// bareCrestFiles lists the non-test Go files under root that build a bare web crest URL.
+func bareCrestFiles(root string) ([]string, error) {
 	var found []string
 	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil || d.IsDir() || !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
@@ -134,15 +135,42 @@ func TestNoBareCrestURLOutsideSheet(t *testing.T) {
 		if readErr != nil {
 			return readErr
 		}
-		if strings.Contains(string(body), "icons/hd/crests") {
+		if strings.Contains(string(body), bareCrestPattern) {
 			found = append(found, path)
 		}
 		return nil
 	})
+	return found, err
+}
+
+// No Go file outside this package builds a bare web crest URL: every Discord crest is the ringed
+// PNG from CrestURL (brand audit 2026-11-10 hand-off D). The guard walks the whole api tree.
+func TestNoBareCrestURLOutsideSheet(t *testing.T) {
+	found, err := bareCrestFiles("../..")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if len(found) > 0 {
 		t.Fatalf("bare crest URLs, use sheet.CrestURL: %v", found)
+	}
+}
+
+// The guard's self-check: a planted file with the pattern is found; a test file is not.
+func TestBareCrestGuardCatchesItsPattern(t *testing.T) {
+	dir := t.TempDir()
+	planted := filepath.Join(dir, "embed.go")
+	body := []byte("package x\n\nconst u = \"/" + bareCrestPattern + "/mage.png\"\n")
+	if err := os.WriteFile(planted, body, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "embed_test.go"), body, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	found, err := bareCrestFiles(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(found) != 1 || found[0] != planted {
+		t.Fatalf("guard found %v, want only %s", found, planted)
 	}
 }
