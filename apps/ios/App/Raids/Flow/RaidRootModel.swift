@@ -118,7 +118,7 @@ struct RaidRootComposer {
     /// The pages the Guild tab's sections do not already open (spec 2.1, 2.2): Roster has its
     /// section, Loot history too at 60, Guild sims is a 60's page.
     static func pages(_ pages: GuildPagesContent, tab: GuildTabContent) -> GuildPagesContent {
-        let leveler = tab.spread != nil
+        let leveler = tab.leveler
         let rows = pages.rows.filter { row in
             switch row.page {
             case .roster: false

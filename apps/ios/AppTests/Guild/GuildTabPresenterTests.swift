@@ -55,6 +55,14 @@ struct GuildTabPresenterTests {
         #expect(member.officer.isEmpty)
     }
 
+    @Test("the pages left: Guild sims at 60, Loot history under 60, never Roster")
+    func pagesLeft() {
+        let atCap = RaidRootComposer.pages(RaidFlowTestData.pages, tab: GuildTabTestData.tab(leveler: false)).rows.map(\.page)
+        let leveler = RaidRootComposer.pages(RaidFlowTestData.pages, tab: GuildTabTestData.tab(leveler: true)).rows.map(\.page)
+        #expect(atCap == [.calendar, .sims])
+        #expect(leveler == [.calendar, .loot])
+    }
+
     @Test("seen_at reads the member's local clock in the viewer's zone")
     func seenAt() {
         let utc = TimeZone(identifier: "UTC")!

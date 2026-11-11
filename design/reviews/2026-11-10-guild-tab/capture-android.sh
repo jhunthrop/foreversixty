@@ -135,7 +135,7 @@ for mode in dark light; do
 	# No guild, under 60: switch to Yellfury in the drawer.
 	launch "" Yellfury
 	shot noguild-01-top
-	if reveal "Search guilds on the site"; then steps "Search guilds on the site" noguild-02-search-site || true; front; fi
+	if reveal "Search guilds"; then steps "Search guilds" noguild-02-search-site || true; front; fi
 	if reveal "Claim your guild"; then steps "Claim your guild" noguild-03-claim-site || true; front; fi
 	pick Gorvash
 

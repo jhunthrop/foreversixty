@@ -175,10 +175,11 @@ struct GuildLineRow<Lead: View>: View {
             lead()
             VStack(alignment: .leading, spacing: 0) {
                 Text(title).type(FSType.item).foregroundStyle(titleColor)
+                // The line wraps rather than truncates (the trail keeps its own width).
                 if let styledSub {
-                    styledSub.type(RowType.sub)
+                    styledSub.type(RowType.sub).fixedSize(horizontal: false, vertical: true)
                 } else if !sub.isEmpty {
-                    Text(sub).type(RowType.sub).foregroundStyle(subColor)
+                    Text(sub).type(RowType.sub).foregroundStyle(subColor).fixedSize(horizontal: false, vertical: true)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -189,6 +190,7 @@ struct GuildLineRow<Lead: View>: View {
                         : RowType.sub)
                     .foregroundStyle(trailStrong ? FSColor.strong : FSColor.muted)
                     .multilineTextAlignment(.trailing)
+                    .fixedSize()
             }
             if chevron {
                 Image(systemName: "chevron.right")

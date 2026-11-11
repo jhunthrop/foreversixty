@@ -122,7 +122,7 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
             needsFirst = officer,
             ready = ready,
             readyStamp = stamp,
-            pages = if (tab != null) GuildTabPresenter.pagesLeft(pages, leveler = tab.spread != null) else pages,
+            pages = if (tab != null) GuildTabPresenter.pagesLeft(pages, leveler = tab.leveler) else pages,
             pagesTitle = if (tab != null) res.getString(R.string.guild_tab_pages) else null,
         )
     }
