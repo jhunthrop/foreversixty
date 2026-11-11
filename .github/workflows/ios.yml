@@ -37,8 +37,10 @@ jobs:
     if: vars.LAUNCH_MODE != 'true' || github.event_name == 'workflow_dispatch'
     runs-on: xcode-27
     # A green run with a runtime download and a first boot takes ~36 minutes (run 42512503765);
-    # the headroom covers a boot retry (tools/ios-ci-simulator.sh).
-    timeout-minutes: 60
+    # the headroom covers a boot retry (tools/ios-ci-simulator.sh). A record run writes and attaches
+    # every failing golden, which roughly doubles the test step (run 42908207505 was cut off before
+    # its upload), so it gets twice the time.
+    timeout-minutes: ${{ inputs.record == true && 120 || 60 }}
     defaults:
       run:
         working-directory: apps/ios
@@ -47,6 +49,19 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: ${{ env.XCODE_VERSION }}
+      # A record run writes and attaches every failing golden; two of them filled the runner's disk
+      # mid-test and lost their upload (runs 42908207505 and 42925826117, "No space left on
+      # device"). Before one, the Xcodes this job does not use go.
+      - name: Free disk for a record run
+        if: inputs.record == true
+        working-directory: .
+        run: |
+          df -h / | tail -1
+          selected=$(xcode-select -p | sed 's#/Contents/Developer##')
+          for app in /Applications/Xcode*.app; do
+            [ "$app" = "$selected" ] || [ -L "$app" ] || sudo rm -rf "$app"
+          done
+          df -h / | tail -1
       # The runtime build, not just its version: 26.5 resolves to 23F73 while the lanes run 23F77.
       # tools/ios-ci-simulator.sh picks (or downloads) that runtime, makes its own iPhone 17 on it,
       # boots it with retries and exports SIMULATOR (id=, never a name: installing a runtime creates
