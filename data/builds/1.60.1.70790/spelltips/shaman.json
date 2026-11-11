@@ -55,7 +55,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 39.",
+      "description": "Heals a friendly target for 37 to 47.",
       "icon": "spell_nature_magicimmunity"
     },
     "332": {
@@ -69,7 +69,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 71.",
+      "description": "Heals a friendly target for 69 to 83.",
       "icon": "spell_nature_magicimmunity"
     },
     "370": {
@@ -97,7 +97,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 16 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 15 to 18 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "421": {
@@ -111,7 +111,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 215 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
+      "description": "Hurls a lightning bolt at the enemy, dealing 208 to 236 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
       "icon": "spell_nature_chainlightning"
     },
     "526": {
@@ -139,7 +139,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 30 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 28 to 33 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "546": {
@@ -167,7 +167,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 131.",
+      "description": "Heals a friendly target for 127 to 150.",
       "icon": "spell_nature_magicimmunity"
     },
     "548": {
@@ -181,7 +181,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 52 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 49 to 58 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "556": {
@@ -195,7 +195,7 @@
       "passive": false,
       "cooldown_ms": 900000,
       "range_yd": 0.0,
-      "description": "Yanks the caster through the twisting nether back to $z.  Speak to an Innkeeper in a different place to change your home location.",
+      "description": "Yanks the caster through the twisting nether back to Hearthstone Location.  Speak to an Innkeeper in a different place to change your home location.",
       "icon": "spell_nature_astralrecal"
     },
     "905": {
@@ -223,7 +223,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 256.",
+      "description": "Heals a friendly target for 246 to 289.",
       "icon": "spell_nature_magicimmunity"
     },
     "915": {
@@ -237,7 +237,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 73 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 71 to 80 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "930": {
@@ -251,7 +251,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 348 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
+      "description": "Hurls a lightning bolt at the enemy, dealing 339 to 379 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
       "icon": "spell_nature_chainlightning"
     },
     "939": {
@@ -265,7 +265,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 342.",
+      "description": "Heals a friendly target for 329 to 382.",
       "icon": "spell_nature_magicimmunity"
     },
     "943": {
@@ -279,7 +279,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 109 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 105 to 120 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "945": {
@@ -307,7 +307,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 484.",
+      "description": "Heals a friendly target for 465 to 536.",
       "icon": "spell_nature_magicimmunity"
     },
     "974": {
@@ -321,7 +321,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Protects the target with an earthen shield, reducing casting or channeling time lost when damaged by 30%  and causing attacks to heal the shielded target for $<heal>.  This effect can only occur once every few seconds.  6 charges.  Lasts 10 min.  Earth Shield can only be placed on one target at a time and only one Elemental Shield can be active on a target at a time.",
+      "description": "Protects the target with an earthen shield, reducing casting or channeling time lost when damaged by 30% and causing attacks to heal the shielded target for .  This effect can only occur once every few seconds.  6 charges.  Lasts 10 min.  Earth Shield can only be placed on one target at a time and only one Elemental Shield can be active on a target at a time.",
       "icon": "spell_nature_skinofearth"
     },
     "1064": {
@@ -335,7 +335,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals the friendly target for 251, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is 50% as effective as the previous target.  Heals 3 total targets.",
+      "description": "Heals the friendly target for 246 to 281, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is 50% as effective as the previous target.  Heals 3 total targets.",
       "icon": "spell_nature_healingwavegreater"
     },
     "2008": {
@@ -391,7 +391,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 428 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
+      "description": "Hurls a lightning bolt at the enemy, dealing 417 to 466 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
       "icon": "spell_nature_chainlightning"
     },
     "2870": {
@@ -419,7 +419,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Searing Totem with 5 health at your feet for 30 sec that repeatedly attacks an enemy within 20 yards for 10 Fire damage.",
+      "description": "Summons a Searing Totem with 5 health at your feet for 30 sec that repeatedly attacks an enemy within 20 yards for 9 to 11 Fire damage.",
       "icon": "spell_fire_searingtotem"
     },
     "3606": {
@@ -475,7 +475,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Summons a Stoneclaw Totem with 50 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
+      "description": "Summons a Stoneclaw Totem with 206 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
       "icon": "spell_nature_stoneclawtotem"
     },
     "6041": {
@@ -489,7 +489,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 148 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 144 to 162 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "6196": {
@@ -559,7 +559,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Searing Totem with 5 health at your feet for 35 sec that repeatedly attacks an enemy within 20 yards for 15 Fire damage.",
+      "description": "Summons a Searing Totem with 5 health at your feet for 35 sec that repeatedly attacks an enemy within 20 yards for 13 to 17 Fire damage.",
       "icon": "spell_fire_searingtotem"
     },
     "6364": {
@@ -573,7 +573,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Searing Totem with 5 health at your feet for 40 sec that repeatedly attacks an enemy within 20 yards for 22 Fire damage.",
+      "description": "Summons a Searing Totem with 5 health at your feet for 40 sec that repeatedly attacks an enemy within 20 yards for 19 to 25 Fire damage.",
       "icon": "spell_fire_searingtotem"
     },
     "6365": {
@@ -587,7 +587,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Searing Totem with 5 health at your feet for 45 sec that repeatedly attacks an enemy within 20 yards for 30 Fire damage.",
+      "description": "Summons a Searing Totem with 5 health at your feet for 45 sec that repeatedly attacks an enemy within 20 yards for 26 to 34 Fire damage.",
       "icon": "spell_fire_searingtotem"
     },
     "6375": {
@@ -629,7 +629,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Summons a Stoneclaw Totem with 150 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
+      "description": "Summons a Stoneclaw Totem with 276 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
       "icon": "spell_nature_stoneclawtotem"
     },
     "6391": {
@@ -643,7 +643,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Summons a Stoneclaw Totem with 220 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
+      "description": "Summons a Stoneclaw Totem with 316 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
       "icon": "spell_nature_stoneclawtotem"
     },
     "6392": {
@@ -657,7 +657,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Summons a Stoneclaw Totem with 280 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
+      "description": "Summons a Stoneclaw Totem with 346 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
       "icon": "spell_nature_stoneclawtotem"
     },
     "6495": {
@@ -685,7 +685,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 153.",
+      "description": "Heals a friendly target for 151 to 172.",
       "icon": "spell_nature_healingwavelesser"
     },
     "8005": {
@@ -699,7 +699,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 685.",
+      "description": "Heals a friendly target for 656 to 753.",
       "icon": "spell_nature_magicimmunity"
     },
     "8008": {
@@ -713,7 +713,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 224.",
+      "description": "Heals a friendly target for 220 to 249.",
       "icon": "spell_nature_healingwavelesser"
     },
     "8010": {
@@ -727,7 +727,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 304.",
+      "description": "Heals a friendly target for 298 to 335.",
       "icon": "spell_nature_healingwavelesser"
     },
     "8012": {
@@ -755,7 +755,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon, increasing melee attack power by 29 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon, increasing melee attack power by 49 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
       "icon": "spell_nature_rockbiter"
     },
     "8018": {
@@ -769,7 +769,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon, increasing melee attack power by 58 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon, increasing melee attack power by 79 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
       "icon": "spell_nature_rockbiter"
     },
     "8019": {
@@ -783,7 +783,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon, increasing melee attack power by 88 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon, increasing melee attack power by 118 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
       "icon": "spell_nature_rockbiter"
     },
     "8024": {
@@ -797,7 +797,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with fire. Each hit causes 3.234 to 13.04 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with fire. Each hit causes 5 to 18 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
       "icon": "spell_fire_flametounge"
     },
     "8027": {
@@ -811,7 +811,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with fire. Each hit causes 5.221 to 19.16 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with fire. Each hit causes 7 to 26 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
       "icon": "spell_fire_flametounge"
     },
     "8030": {
@@ -825,7 +825,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with fire. Each hit causes 8.299 to 28.64 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with fire. Each hit causes 13 to 42 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
       "icon": "spell_fire_flametounge"
     },
     "8033": {
@@ -839,7 +839,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 32 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 45 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
       "icon": "spell_frost_frostbrand"
     },
     "8038": {
@@ -853,7 +853,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 48 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 72 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
       "icon": "spell_frost_frostbrand"
     },
     "8042": {
@@ -867,7 +867,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 20 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 21 to 24 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "8044": {
@@ -881,7 +881,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 36 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 38 to 41 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "8045": {
@@ -895,7 +895,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 67 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 69 to 74 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "8046": {
@@ -909,7 +909,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 130 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 131 to 140 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "8050": {
@@ -923,7 +923,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 25 Fire damage immediately and 28 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 29 Fire damage immediately and 28 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "8052": {
@@ -937,7 +937,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 51 Fire damage immediately and 48 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 56 Fire damage immediately and 48 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "8053": {
@@ -951,7 +951,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 95 Fire damage immediately and 96 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 101 Fire damage immediately and 96 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "8056": {
@@ -965,7 +965,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with frost, causing 98 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
+      "description": "Instantly shocks the target with frost, causing 99 to 106 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
       "icon": "spell_frost_frostshock"
     },
     "8058": {
@@ -979,7 +979,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with frost, causing 222 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
+      "description": "Instantly shocks the target with frost, causing 221 to 236 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
       "icon": "spell_frost_frostshock"
     },
     "8071": {
@@ -1189,7 +1189,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enchants all party or raid members' main-hand weapons with fire if they are within 30 yards. Each hit causes ${548/77*$<mult>-1} to ${548/25*$<mult>} additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+      "description": "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enchants all party or raid members' main-hand weapons with fire if they are within 30 yards. Each hit causes 6 to 22 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
       "icon": "spell_nature_guardianward"
     },
     "8232": {
@@ -1203,7 +1203,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with wind.  Each hit has a 20% chance of granting you 2 extra attacks with 46 extra melee attack power. When applied to main hand, disables any benefit you personally receive from Windfury Totem. Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with wind.  Each hit has a 20% chance of granting you 2 extra attacks with 104 extra melee attack power. When applied to main hand, disables any benefit you personally receive from Windfury Totem. Lasts for 60 minutes.",
       "icon": "spell_nature_cyclone"
     },
     "8235": {
@@ -1217,7 +1217,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with wind.  Each hit has a 20% chance of granting you 2 extra attacks with 119 extra melee attack power. When appied to main hand, disables any benefit you personally receive from Windfury Totem. Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with wind.  Each hit has a 20% chance of granting you 2 extra attacks with 221 extra melee attack power. When appied to main hand, disables any benefit you personally receive from Windfury Totem. Lasts for 60 minutes.",
       "icon": "spell_nature_cyclone"
     },
     "8249": {
@@ -1231,7 +1231,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit causes  ${781/77*$<mult>-1} to ${781/25*$<mult>} additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+      "description": "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit causes 9 to 31 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
       "icon": "spell_nature_guardianward"
     },
     "8512": {
@@ -1245,7 +1245,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards.  Each main hand hit has a 20% chance of granting the attacker 1 extra attack with ${95*$<mult>} extra melee attack power. Lasts 5 min.",
+      "description": "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards.  Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 95 extra melee attack power. Lasts 5 min.",
       "icon": "spell_nature_windfury"
     },
     "8835": {
@@ -1273,7 +1273,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 194 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 188 to 210 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "10392": {
@@ -1287,7 +1287,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 240 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 234 to 261 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "10395": {
@@ -1301,7 +1301,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 972.",
+      "description": "Heals a friendly target for 929 to 1062.",
       "icon": "spell_nature_magicimmunity"
     },
     "10396": {
@@ -1315,7 +1315,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1344.",
+      "description": "Heals a friendly target for 1277 to 1455.",
       "icon": "spell_nature_magicimmunity"
     },
     "10399": {
@@ -1329,7 +1329,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon, increasing melee attack power by 129 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon, increasing melee attack power by 194 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
       "icon": "spell_nature_rockbiter"
     },
     "10406": {
@@ -1385,7 +1385,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 242 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 241 to 256 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "10413": {
@@ -1399,7 +1399,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 383 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 380 to 402 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "10414": {
@@ -1413,7 +1413,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 531 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 517 to 545 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "10427": {
@@ -1427,7 +1427,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Summons a Stoneclaw Totem with 390 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
+      "description": "Summons a Stoneclaw Totem with 426 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
       "icon": "spell_nature_stoneclawtotem"
     },
     "10428": {
@@ -1441,7 +1441,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Summons a Stoneclaw Totem with 480 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
+      "description": "Summons a Stoneclaw Totem with 486 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it.",
       "icon": "spell_nature_stoneclawtotem"
     },
     "10431": {
@@ -1511,7 +1511,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Searing Totem with 5 health at your feet for 50 sec that repeatedly attacks an enemy within 20 yards for 39 Fire damage.",
+      "description": "Summons a Searing Totem with 5 health at your feet for 50 sec that repeatedly attacks an enemy within 20 yards for 33 to 45 Fire damage.",
       "icon": "spell_fire_searingtotem"
     },
     "10438": {
@@ -1525,7 +1525,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Searing Totem with 5 health at your feet for 55 sec that repeatedly attacks an enemy within 20 yards for 47 Fire damage.",
+      "description": "Summons a Searing Totem with 5 health at your feet for 55 sec that repeatedly attacks an enemy within 20 yards for 40 to 54 Fire damage.",
       "icon": "spell_fire_searingtotem"
     },
     "10442": {
@@ -1553,7 +1553,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 164 Fire damage immediately and 168 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 171 Fire damage immediately and 168 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "10448": {
@@ -1567,7 +1567,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 245 Fire damage immediately and 256 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 254 Fire damage immediately and 256 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "10456": {
@@ -1581,7 +1581,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 77 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 117 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
       "icon": "spell_frost_frostbrand"
     },
     "10462": {
@@ -1623,7 +1623,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 426.",
+      "description": "Heals a friendly target for 416 to 466.",
       "icon": "spell_nature_healingwavelesser"
     },
     "10467": {
@@ -1637,7 +1637,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 608.",
+      "description": "Heals a friendly target for 592 to 660.",
       "icon": "spell_nature_healingwavelesser"
     },
     "10468": {
@@ -1651,7 +1651,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 820.",
+      "description": "Heals a friendly target for 775 to 865.",
       "icon": "spell_nature_healingwavelesser"
     },
     "10472": {
@@ -1665,7 +1665,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with frost, causing 355 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
+      "description": "Instantly shocks the target with frost, causing 352 to 373 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
       "icon": "spell_frost_frostshock"
     },
     "10473": {
@@ -1679,7 +1679,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with frost, causing 506 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
+      "description": "Instantly shocks the target with frost, causing 495 to 524 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
       "icon": "spell_frost_frostshock"
     },
     "10478": {
@@ -1721,7 +1721,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with wind.  Each hit has a 20% chance of granting you 2 extra attacks with 249 extra melee attack power. When applied to main hand, disables any benefit you personally receive from Windfury Totem. Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with wind.  Each hit has a 20% chance of granting you 2 extra attacks with 315 extra melee attack power. When applied to main hand, disables any benefit you personally receive from Windfury Totem. Lasts for 60 minutes.",
       "icon": "spell_nature_cyclone"
     },
     "10495": {
@@ -1777,7 +1777,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit causes  ${1061/77*$<mult>-1} to ${1061/25*$<mult>} additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+      "description": "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit causes 13 to 42 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
       "icon": "spell_nature_guardianward"
     },
     "10537": {
@@ -1903,7 +1903,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 510 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
+      "description": "Hurls a lightning bolt at the enemy, dealing 495 to 552 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
       "icon": "spell_nature_chainlightning"
     },
     "10613": {
@@ -1917,7 +1917,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with ${179*$<mult>} extra melee attack power. Lasts 5 min.",
+      "description": "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 179 extra melee attack power. Lasts 5 min.",
       "icon": "spell_nature_windfury"
     },
     "10614": {
@@ -1931,7 +1931,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with ${246*$<mult>} extra melee attack power. Lasts 5 min.",
+      "description": "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 246 extra melee attack power. Lasts 5 min.",
       "icon": "spell_nature_windfury"
     },
     "10622": {
@@ -1945,7 +1945,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals the friendly target for 335, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is 50% as effective as the previous target.  Heals 3 total targets.",
+      "description": "Heals the friendly target for 326 to 372, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is 50% as effective as the previous target.  Heals 3 total targets.",
       "icon": "spell_nature_healingwavegreater"
     },
     "10623": {
@@ -1959,7 +1959,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals the friendly target for 490, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is 50% as effective as the previous target.  Heals 3 total targets.",
+      "description": "Heals the friendly target for 474 to 539, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is 50% as effective as the previous target.  Heals 3 total targets.",
       "icon": "spell_nature_healingwavegreater"
     },
     "10627": {
@@ -2029,7 +2029,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 295 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 286 to 320 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "15208": {
@@ -2043,7 +2043,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 353 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 342 to 381 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "16164": {
@@ -2113,7 +2113,7 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for ${13 sec-1} sec that restores 88 mana every 3 seconds to group members within 30 yards.",
+      "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores 88 mana every 3 seconds to group members within 30 yards.",
       "icon": "spell_frost_summonwaterelemental"
     },
     "16268": {
@@ -2141,7 +2141,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon, increasing melee attack power by 211 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon, increasing melee attack power by 355 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
       "icon": "spell_nature_rockbiter"
     },
     "16315": {
@@ -2155,7 +2155,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon, increasing melee attack power by 393 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon, increasing melee attack power by 522 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
       "icon": "spell_nature_rockbiter"
     },
     "16316": {
@@ -2169,7 +2169,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon, increasing melee attack power by 554 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon, increasing melee attack power by 653 and allowing melee attacks to cause additional threat when using that weapon.  Lasts for 60 minutes.",
       "icon": "spell_nature_rockbiter"
     },
     "16339": {
@@ -2183,7 +2183,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with fire. Each hit causes 13.857 to 45.76 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with fire. Each hit causes 21 to 69 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
       "icon": "spell_fire_flametounge"
     },
     "16341": {
@@ -2197,7 +2197,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with fire. Each hit causes 23.364 to 75.04 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with fire. Each hit causes 30 to 95 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
       "icon": "spell_fire_flametounge"
     },
     "16342": {
@@ -2211,7 +2211,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with fire.  Each hit causes 31.442 to 99.92 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with fire.  Each hit causes 35 to 112 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. When applied to main hand, disables any benefit you personally receive from Flametongue Totem. Lasts for 60 minutes.",
       "icon": "spell_fire_flametounge"
     },
     "16355": {
@@ -2225,7 +2225,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 127 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 159 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
       "icon": "spell_frost_frostbrand"
     },
     "16356": {
@@ -2239,7 +2239,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 158 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
+      "description": "Imbue the Shaman's weapon with frost.  Each hit has a chance of causing 169 additional Frost damage and slowing the target's movement speed by 25% for 8 sec.  Lasts for 60 minutes.",
       "icon": "spell_frost_frostbrand"
     },
     "16362": {
@@ -2267,7 +2267,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit causes ${1363/77*$<mult>-1} to ${1363/25*$<mult>} additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+      "description": "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party or raid members within 30 yards. Each main hand hit causes 17 to 55 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
       "icon": "spell_nature_guardianward"
     },
     "17354": {
@@ -2281,7 +2281,7 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for ${13 sec-1} sec that restores 133 mana every 3 seconds to group members within 30 yards.",
+      "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores 133 mana every 3 seconds to group members within 30 yards.",
       "icon": "spell_frost_summonwaterelemental"
     },
     "17359": {
@@ -2295,7 +2295,7 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for ${13 sec-1} sec that restores 197 mana every 3 seconds to group members within 30 yards.",
+      "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores 197 mana every 3 seconds to group members within 30 yards.",
       "icon": "spell_frost_summonwaterelemental"
     },
     "17364": {
@@ -2421,7 +2421,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1615.",
+      "description": "Heals a friendly target for 1508 to 1722.",
       "icon": "spell_nature_magicimmunity"
     },
     "25359": {
@@ -2463,7 +2463,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 0.0,
-      "description": "Summons a Fire Nova Totem that has 5 health and lasts 5 sec.  Unless it is destroyed within 4 sec., the totem inflicts 419 fire damage to enemies within 10 yd.",
+      "description": "Summons a Fire Nova Totem that has 5 health and lasts 5 sec.  Unless it is destroyed within 4 sec., the totem inflicts 413 to 459 fire damage to enemies within 10 yd.",
       "icon": "spell_fire_sealoffire"
     },
     "29082": {
@@ -2617,7 +2617,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Instantly inflicts 33 fire damage to enemies within 10 yd of your active Fire totem.",
+      "description": "Instantly inflicts 32 to 38 fire damage to enemies within 10 yd of your active Fire totem.",
       "icon": "spell_fire_sealoffire"
     },
     "408342": {
@@ -2631,7 +2631,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Instantly inflicts 55 fire damage to enemies within 10 yd of your active Fire totem.",
+      "description": "Instantly inflicts 54 to 62 fire damage to enemies within 10 yd of your active Fire totem.",
       "icon": "spell_fire_sealoffire"
     },
     "408343": {
@@ -2645,7 +2645,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Instantly inflicts 130 fire damage to enemies within 10 yd of your active Fire totem.",
+      "description": "Instantly inflicts 127 to 142 fire damage to enemies within 10 yd of your active Fire totem.",
       "icon": "spell_fire_sealoffire"
     },
     "408344": {
@@ -2659,7 +2659,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Instantly inflicts 179 fire damage to enemies within 10 yd of your active Fire totem.",
+      "description": "Instantly inflicts 174 to 195 fire damage to enemies within 10 yd of your active Fire totem.",
       "icon": "spell_fire_sealoffire"
     },
     "408345": {
@@ -2673,7 +2673,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Instantly inflicts 239 fire damage to enemies within 10 yd of your active Fire totem.",
+      "description": "Instantly inflicts 232 to 259 fire damage to enemies within 10 yd of your active Fire totem.",
       "icon": "spell_fire_sealoffire"
     },
     "408521": {
@@ -2757,7 +2757,7 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for ${13 sec-1} sec that restores 290 mana every 3 seconds to group members within 30 yards.",
+      "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores 290 mana every 3 seconds to group members within 30 yards.",
       "icon": "spell_frost_summonwaterelemental"
     }
   }

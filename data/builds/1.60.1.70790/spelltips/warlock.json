@@ -55,7 +55,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${8*$<mult>} Fire damage and then an additional 15 Fire damage over 15 sec.",
+      "description": "Burns the enemy for 11 Fire damage and then an additional 15 Fire damage over 15 sec.",
       "icon": "spell_fire_immolation"
     },
     "603": {
@@ -83,7 +83,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 13 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 12 to 16 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "687": {
@@ -167,7 +167,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 23 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 22 to 27 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "696": {
@@ -265,7 +265,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 40 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 40 to 46 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "706": {
@@ -293,7 +293,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${17*$<mult>} Fire damage and then an additional 30 Fire damage over 15 sec.",
+      "description": "Burns the enemy for 21 Fire damage and then an additional 30 Fire damage over 15 sec.",
       "icon": "spell_fire_immolation"
     },
     "709": {
@@ -419,7 +419,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 58 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 58 to 66 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "1094": {
@@ -433,7 +433,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${32*$<mult>} Fire damage and then an additional 60 Fire damage over 15 sec.",
+      "description": "Burns the enemy for 38 Fire damage and then an additional 60 Fire damage over 15 sec.",
       "icon": "spell_fire_immolation"
     },
     "1098": {
@@ -447,7 +447,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Subjugates the target demon, up to level 32, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt.",
+      "description": "Subjugates the target demon, up to level 45, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt.",
       "icon": "spell_shadow_enslavedemon"
     },
     "1106": {
@@ -461,7 +461,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 78 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 79 to 89 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "1108": {
@@ -517,7 +517,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(20+$SPI*1)*(1+0/100)} Health into ${(20+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "description": "Converts (30 + Spirit) Health into (30 + Spirit) Mana for you. Spirit increases the amount converted.",
       "icon": "spell_shadow_burningspirit"
     },
     "1455": {
@@ -531,7 +531,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(65+$SPI*1)*(1+0/100)} Health into ${(65+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "description": "Converts (75 + Spirit) Health into (75 + Spirit) Mana for you. Spirit increases the amount converted.",
       "icon": "spell_shadow_burningspirit"
     },
     "1456": {
@@ -545,7 +545,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(130+$SPI*1)*(1+0/100)} Health into ${(130+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "description": "Converts (140 + Spirit) Health into (140 + Spirit) Mana for you. Spirit increases the amount converted.",
       "icon": "spell_shadow_burningspirit"
     },
     "1714": {
@@ -573,7 +573,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Ignites the area surrounding the caster, causing 82 Fire damage to himself or herself and 82 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec.",
+      "description": "Ignites the area surrounding the caster, causing 86 Fire damage to himself or herself and 86 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec.",
       "icon": "spell_fire_incinerate"
     },
     "2362": {
@@ -601,7 +601,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${56*$<mult>} Fire damage and then an additional 95 Fire damage over 15 sec.",
+      "description": "Burns the enemy for 64 Fire damage and then an additional 95 Fire damage over 15 sec.",
       "icon": "spell_fire_immolation"
     },
     "2970": {
@@ -671,7 +671,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 42 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
+      "description": "Transfers 44 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
       "icon": "spell_shadow_siphonmana"
     },
     "5484": {
@@ -713,7 +713,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 23 Fire damage.  Causes a high amount of threat.",
+      "description": "Inflict searing pain on the enemy target, causing 24 to 29 Fire damage.  Causes a high amount of threat.",
       "icon": "spell_fire_soulburn"
     },
     "5697": {
@@ -755,7 +755,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a fiery rain to burn enemies in the area of effect for 160 Fire damage over 8 sec.",
+      "description": "Calls down a fiery rain to burn enemies in the area of effect for 166 Fire damage over 8 sec.",
       "icon": "spell_shadow_rainoffire"
     },
     "5782": {
@@ -867,7 +867,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a fiery rain to burn enemies in the area of effect for 364 Fire damage over 8 sec.",
+      "description": "Calls down a fiery rain to burn enemies in the area of effect for 372 Fire damage over 8 sec.",
       "icon": "spell_shadow_rainoffire"
     },
     "6222": {
@@ -909,7 +909,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 68 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
+      "description": "Transfers 71 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
       "icon": "spell_shadow_siphonmana"
     },
     "6229": {
@@ -937,7 +937,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 30.0,
-      "description": "Burn the enemy's soul, causing 377 Fire damage.",
+      "description": "Burn the enemy's soul, causing 344 to 430 Fire damage.",
       "icon": "spell_fire_fireball02"
     },
     "6366": {
@@ -965,7 +965,7 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 30.0,
-      "description": "Causes the enemy target to run in horror for 3 sec and causes 272 Shadow damage.  The caster gains 100% of the damage caused in health.",
+      "description": "Causes the enemy target to run in horror for 3 sec and causes 285 Shadow damage.  The caster gains 100% of the damage caused in health.",
       "icon": "spell_shadow_deathcoil"
     },
     "7641": {
@@ -979,7 +979,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 101 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 101 to 113 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "7646": {
@@ -1091,7 +1091,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 141 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 140 to 156 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "11660": {
@@ -1105,7 +1105,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 191 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 188 to 210 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "11661": {
@@ -1119,7 +1119,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 251 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 237 to 265 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "11665": {
@@ -1133,7 +1133,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${72*$<mult>} Fire damage and then an additional 125 Fire damage over 15 sec.",
+      "description": "Burns the enemy for 80 Fire damage and then an additional 125 Fire damage over 15 sec.",
       "icon": "spell_fire_immolation"
     },
     "11667": {
@@ -1147,7 +1147,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${106*$<mult>} Fire damage and then an additional 190 Fire damage over 15 sec.",
+      "description": "Burns the enemy for 116 Fire damage and then an additional 190 Fire damage over 15 sec.",
       "icon": "spell_fire_immolation"
     },
     "11668": {
@@ -1161,7 +1161,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${146*$<mult>} Fire damage and then an additional 260 Fire damage over 15 sec.",
+      "description": "Burns the enemy for 146 Fire damage and then an additional 260 Fire damage over 15 sec.",
       "icon": "spell_fire_immolation"
     },
     "11671": {
@@ -1217,7 +1217,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a fiery rain to burn enemies in the area of effect for 596 Fire damage over 8 sec.",
+      "description": "Calls down a fiery rain to burn enemies in the area of effect for 606 Fire damage over 8 sec.",
       "icon": "spell_shadow_rainoffire"
     },
     "11678": {
@@ -1231,7 +1231,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a fiery rain to burn enemies in the area of effect for 880 Fire damage over 8 sec.",
+      "description": "Calls down a fiery rain to burn enemies in the area of effect for 885 Fire damage over 8 sec.",
       "icon": "spell_shadow_rainoffire"
     },
     "11683": {
@@ -1245,7 +1245,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Ignites the area surrounding the caster, causing 137 Fire damage to himself or herself and 137 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec.",
+      "description": "Ignites the area surrounding the caster, causing 142 Fire damage to himself or herself and 142 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec.",
       "icon": "spell_fire_incinerate"
     },
     "11684": {
@@ -1259,7 +1259,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Ignites the area surrounding the caster, causing 206 Fire damage to himself or herself and 206 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec.",
+      "description": "Ignites the area surrounding the caster, causing 210 Fire damage to himself or herself and 210 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec.",
       "icon": "spell_fire_incinerate"
     },
     "11687": {
@@ -1273,7 +1273,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(210+$SPI*1)*(1+0/100)} Health into ${(210+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "description": "Converts (220 + Spirit) Health into (220 + Spirit) Mana for you. Spirit increases the amount converted.",
       "icon": "spell_shadow_burningspirit"
     },
     "11688": {
@@ -1287,7 +1287,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(300+$SPI*1)*(1+0/100)} Health into ${(300+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "description": "Converts (310 + Spirit) Health into (310 + Spirit) Mana for you. Spirit increases the amount converted.",
       "icon": "spell_shadow_burningspirit"
     },
     "11689": {
@@ -1301,7 +1301,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(420+$SPI*1)*(1+0/100)} Health into ${(420+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "description": "Converts (424 + Spirit) Health into (424 + Spirit) Mana for you. Spirit increases the amount converted.",
       "icon": "spell_shadow_burningspirit"
     },
     "11693": {
@@ -1385,7 +1385,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 99 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
+      "description": "Transfers 102 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
       "icon": "spell_shadow_siphonmana"
     },
     "11704": {
@@ -1399,7 +1399,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 136 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
+      "description": "Transfers 139 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
       "icon": "spell_shadow_siphonmana"
     },
     "11707": {
@@ -1511,7 +1511,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Subjugates the target demon, up to level 47, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt.",
+      "description": "Subjugates the target demon, up to level 59, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt.",
       "icon": "spell_shadow_enslavedemon"
     },
     "11726": {
@@ -1525,7 +1525,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Subjugates the target demon, up to level 62, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt.",
+      "description": "Subjugates the target demon, up to level 64, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt.",
       "icon": "spell_shadow_enslavedemon"
     },
     "11729": {
@@ -1679,7 +1679,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 66 Shadow damage.  If a non-trivial target dies within 8 sec of being hit with Shadowburn, the caster gains a Soul Shard.",
+      "description": "Instantly blasts the target for 65 to 74 Shadow damage.  If a non-trivial target dies within 8 sec of being hit with Shadowburn, the caster gains a Soul Shard.",
       "icon": "spell_shadow_scourgebuild"
     },
     "17919": {
@@ -1693,7 +1693,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 33 Fire damage.  Causes a high amount of threat.",
+      "description": "Inflict searing pain on the enemy target, causing 34 to 40 Fire damage.  Causes a high amount of threat.",
       "icon": "spell_fire_soulburn"
     },
     "17920": {
@@ -1707,7 +1707,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 44 Fire damage.  Causes a high amount of threat.",
+      "description": "Inflict searing pain on the enemy target, causing 45 to 53 Fire damage.  Causes a high amount of threat.",
       "icon": "spell_fire_soulburn"
     },
     "17921": {
@@ -1721,7 +1721,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 62 Fire damage.  Causes a high amount of threat.",
+      "description": "Inflict searing pain on the enemy target, causing 62 to 73 Fire damage.  Causes a high amount of threat.",
       "icon": "spell_fire_soulburn"
     },
     "17922": {
@@ -1735,7 +1735,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 85 Fire damage.  Causes a high amount of threat.",
+      "description": "Inflict searing pain on the enemy target, causing 84 to 98 Fire damage.  Causes a high amount of threat.",
       "icon": "spell_fire_soulburn"
     },
     "17923": {
@@ -1749,7 +1749,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 114 Fire damage.  Causes a high amount of threat.",
+      "description": "Inflict searing pain on the enemy target, causing 107 to 126 Fire damage.  Causes a high amount of threat.",
       "icon": "spell_fire_soulburn"
     },
     "17924": {
@@ -1763,7 +1763,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 30.0,
-      "description": "Burn the enemy's soul, causing 431 Fire damage.",
+      "description": "Burn the enemy's soul, causing 390 to 487 Fire damage.",
       "icon": "spell_fire_fireball02"
     },
     "17925": {
@@ -1777,7 +1777,7 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 30.0,
-      "description": "Causes the enemy target to run in horror for 3 sec and causes 359 Shadow damage.  The caster gains 100% of the damage caused in health.",
+      "description": "Causes the enemy target to run in horror for 3 sec and causes 375 Shadow damage.  The caster gains 100% of the damage caused in health.",
       "icon": "spell_shadow_deathcoil"
     },
     "17926": {
@@ -1791,7 +1791,7 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 30.0,
-      "description": "Causes the enemy target to run in horror for 3 sec and causes 454 Shadow damage.  The caster gains 100% of the damage caused in health.",
+      "description": "Causes the enemy target to run in horror for 3 sec and causes 460 Shadow damage.  The caster gains 100% of the damage caused in health.",
       "icon": "spell_shadow_deathcoil"
     },
     "17928": {
@@ -1861,7 +1861,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 146 Fire damage and consuming your Immolate effect.",
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 134 to 170 Fire damage and consuming your Immolate effect.",
       "icon": "spell_fire_fireball"
     },
     "18094": {
@@ -1987,7 +1987,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 80 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "description": "Instantly blasts the target for 81 to 91 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
       "icon": "spell_shadow_scourgebuild"
     },
     "18868": {
@@ -2001,7 +2001,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 118 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "description": "Instantly blasts the target for 119 to 133 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
       "icon": "spell_shadow_scourgebuild"
     },
     "18869": {
@@ -2015,7 +2015,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 148 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "description": "Instantly blasts the target for 147 to 164 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
       "icon": "spell_shadow_scourgebuild"
     },
     "18870": {
@@ -2029,7 +2029,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 203 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "description": "Instantly blasts the target for 201 to 224 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
       "icon": "spell_shadow_scourgebuild"
     },
     "18871": {
@@ -2043,7 +2043,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 266 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "description": "Instantly blasts the target for 259 to 288 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
       "icon": "spell_shadow_scourgebuild"
     },
     "18879": {
@@ -2099,7 +2099,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 194 Fire damage and consuming your Immolate effect.",
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 179 to 222 Fire damage and consuming your Immolate effect.",
       "icon": "spell_fire_fireball"
     },
     "18931": {
@@ -2113,7 +2113,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 239 Fire damage and consuming your Immolate effect.",
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 220 to 273 Fire damage and consuming your Immolate effect.",
       "icon": "spell_fire_fireball"
     },
     "18932": {
@@ -2127,7 +2127,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 282 Fire damage and consuming your Immolate effect.",
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 251 to 313 Fire damage and consuming your Immolate effect.",
       "icon": "spell_fire_fireball"
     },
     "19028": {
@@ -2225,7 +2225,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 268 Shadow damage.",
+      "description": "Sends a shadowy bolt at the enemy, causing 253 to 283 Shadow damage.",
       "icon": "spell_shadow_shadowbolt"
     },
     "25309": {
@@ -2239,7 +2239,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${158*$<mult>} Fire damage and then an additional 275 Fire damage over 15 sec.",
+      "description": "Burns the enemy for 158 Fire damage and then an additional 275 Fire damage over 15 sec.",
       "icon": "spell_fire_immolation"
     },
     "25311": {
@@ -2281,7 +2281,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Send a ghostly soul to assault your current target, dealing 125 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target.",
+      "description": "Send a ghostly soul to assault your current target, dealing 115 to 135 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target.",
       "icon": "ability_warlock_haunt"
     },
     "412758": {
@@ -2295,7 +2295,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Deals 97 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate.",
+      "description": "Deals 100 to 114 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate.",
       "icon": "spell_fire_burnout"
     },
     "427717": {
@@ -2393,7 +2393,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Send a ghostly soul to assault your current target, dealing 163 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target.",
+      "description": "Send a ghostly soul to assault your current target, dealing 150 to 176 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target.",
       "icon": "ability_warlock_haunt"
     },
     "1293694": {
@@ -2407,7 +2407,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Send a ghostly soul to assault your current target, dealing 212 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target.",
+      "description": "Send a ghostly soul to assault your current target, dealing 195 to 229 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target.",
       "icon": "ability_warlock_haunt"
     },
     "1293812": {
@@ -2421,7 +2421,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Deals 145 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate.",
+      "description": "Deals 146 to 168 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate.",
       "icon": "spell_fire_burnout"
     },
     "1293813": {
@@ -2435,7 +2435,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Deals 217 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate.",
+      "description": "Deals 201 to 233 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate.",
       "icon": "spell_fire_burnout"
     },
     "1293817": {
@@ -2449,7 +2449,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 95 Fire damage and consuming your Immolate effect.",
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 88 to 111 Fire damage and consuming your Immolate effect.",
       "icon": "spell_fire_fireball"
     },
     "1293818": {
@@ -2463,7 +2463,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 122 Fire damage and consuming your Immolate effect.",
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 113 to 142 Fire damage and consuming your Immolate effect.",
       "icon": "spell_fire_fireball"
     },
     "1311676": {
@@ -2519,7 +2519,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Tears the target apart from within, inflicting 36 Shadow damage every 1 sec and increasing the damage they take from your other Shadow damage over time effects by 10% for 6 sec.",
+      "description": "Tears the target apart from within, inflicting 86 Shadow damage every 1 sec and increasing the damage they take from your other Shadow damage over time effects by 10% for 6 sec.",
       "icon": "ability_deathknight_hemorrhagicfever"
     }
   }

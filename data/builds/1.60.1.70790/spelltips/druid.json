@@ -13,7 +13,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The druid roars, decreasing nearby enemies' melee attack power by 46.  Lasts 30 sec.",
+      "description": "The druid roars, decreasing nearby enemies' melee attack power by 56.  Lasts 30 sec.",
       "icon": "ability_druid_demoralizingroar"
     },
     "339": {
@@ -55,7 +55,7 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Regenerates all nearby party members within 20 yards for 87 every 2 sec for 10 sec.  Druid must channel to maintain the spell.",
+      "description": "Regenerates all nearby party members within 20 yards for 91 every 2 sec for 10 sec.  Druid must channel to maintain the spell.",
       "icon": "spell_nature_tranquility"
     },
     "768": {
@@ -69,7 +69,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shapeshift into Cat Form, increasing Attack Power by 12 plus Agility.  Also protects the caster from Polymorph effects and allows the use of various cat abilities.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
+      "description": "Shapeshift into Cat Form, increasing Attack Power by 120 plus Agility.  Also protects the caster from Polymorph effects and allows the use of various cat abilities.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
       "icon": "ability_druid_catform"
     },
     "769": {
@@ -251,7 +251,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(4+$b1)} damage over 12 sec.\r\n   2 points: ${6*(4+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(4+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(4+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(4+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : 57 damage over 12 sec.\r\n   2 points: 90 damage over 12 sec.\r\n   3 points: 123 damage over 12 sec.\r\n   4 points: 156 damage over 12 sec.\r\n   5 points: 189 damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "1082": {
@@ -321,7 +321,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The druid roars, decreasing nearby enemies' melee attack power by 74.  Lasts 30 sec.",
+      "description": "The druid roars, decreasing nearby enemies' melee attack power by 88.  Lasts 30 sec.",
       "icon": "ability_druid_demoralizingroar"
     },
     "1822": {
@@ -475,7 +475,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 113 Arcane damage to the target.",
+      "description": "Causes 111 to 133 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "3025": {
@@ -545,7 +545,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 15 Nature damage to the target.",
+      "description": "Causes 15 to 17 Nature damage to the target.",
       "icon": "spell_nature_abolishmagic"
     },
     "5177": {
@@ -559,7 +559,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 21 Nature damage to the target.",
+      "description": "Causes 21 to 24 Nature damage to the target.",
       "icon": "spell_nature_abolishmagic"
     },
     "5178": {
@@ -573,7 +573,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 30 Nature damage to the target.",
+      "description": "Causes 30 to 36 Nature damage to the target.",
       "icon": "spell_nature_abolishmagic"
     },
     "5179": {
@@ -587,7 +587,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 37 Nature damage to the target.",
+      "description": "Causes 38 to 43 Nature damage to the target.",
       "icon": "spell_nature_abolishmagic"
     },
     "5180": {
@@ -601,7 +601,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 45 Nature damage to the target.",
+      "description": "Causes 46 to 52 Nature damage to the target.",
       "icon": "spell_nature_abolishmagic"
     },
     "5185": {
@@ -615,7 +615,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 44.",
+      "description": "Heals a friendly target for 40 to 54.",
       "icon": "spell_nature_healingtouch"
     },
     "5186": {
@@ -629,7 +629,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 100.",
+      "description": "Heals a friendly target for 95 to 118.",
       "icon": "spell_nature_healingtouch"
     },
     "5187": {
@@ -643,7 +643,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 201.",
+      "description": "Heals a friendly target for 188 to 233.",
       "icon": "spell_nature_healingtouch"
     },
     "5188": {
@@ -657,7 +657,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 362.",
+      "description": "Heals a friendly target for 339 to 412.",
       "icon": "spell_nature_healingtouch"
     },
     "5189": {
@@ -671,7 +671,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 546.",
+      "description": "Heals a friendly target for 511 to 616.",
       "icon": "spell_nature_healingtouch"
     },
     "5195": {
@@ -797,7 +797,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "Instantly generates 10 Rage and another 20 Rage over 10 sec, but  reduces base armor by 27% in Bear Form and 16% in Dire Bear Form. The druid is considered in combat for the duration.",
+      "description": "Instantly generates 10 Rage and another 20 Rage over 10 sec, but reduces base armor by 27% in Bear Form and 16% in Dire Bear Form. The druid is considered in combat for the duration.",
       "icon": "ability_druid_enrage"
     },
     "5232": {
@@ -853,7 +853,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shapeshift into Bear Form, increasing Attack Power by 30, Armor contribution from items by 180%, and Health by 20.  Also protects the caster from Polymorph effects and allows the use of various bear abilities.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
+      "description": "Shapeshift into Bear Form, increasing Attack Power by 120, Armor contribution from items by 180%, and Health by 560.  Also protects the caster from Polymorph effects and allows the use of various bear abilities.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
       "icon": "ability_racial_bearform"
     },
     "5570": {
@@ -895,7 +895,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 707.",
+      "description": "Heals a friendly target for 661 to 793.",
       "icon": "spell_nature_healingtouch"
     },
     "6780": {
@@ -909,7 +909,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 54 Nature damage to the target.",
+      "description": "Causes 56 to 63 Nature damage to the target.",
       "icon": "spell_nature_abolishmagic"
     },
     "6783": {
@@ -1049,7 +1049,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 898.",
+      "description": "Heals a friendly target for 840 to 1001.",
       "icon": "spell_nature_healingtouch"
     },
     "8905": {
@@ -1063,7 +1063,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 68 Nature damage to the target.",
+      "description": "Causes 70 to 77 Nature damage to the target.",
       "icon": "spell_nature_abolishmagic"
     },
     "8907": {
@@ -1119,7 +1119,7 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Regenerates all nearby party members within 20 yards for 129 every 2 sec for 10 sec.  Druid must channel to maintain the spell.",
+      "description": "Regenerates all nearby party members within 20 yards for 133 every 2 sec for 10 sec.  Druid must channel to maintain the spell.",
       "icon": "spell_nature_tranquility"
     },
     "8921": {
@@ -1133,7 +1133,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 8 Arcane damage and then an additional 12 Arcane damage over 9 sec.",
+      "description": "Burns the enemy for 10 to 12 Arcane damage and then an additional 12 Arcane damage over 9 sec.",
       "icon": "spell_nature_starfall"
     },
     "8924": {
@@ -1147,7 +1147,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 13 Arcane damage and then an additional 24 Arcane damage over 12 sec.",
+      "description": "Burns the enemy for 15 to 19 Arcane damage and then an additional 24 Arcane damage over 12 sec.",
       "icon": "spell_nature_starfall"
     },
     "8925": {
@@ -1161,7 +1161,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 22 Arcane damage and then an additional 36 Arcane damage over 12 sec.",
+      "description": "Burns the enemy for 25 to 29 Arcane damage and then an additional 36 Arcane damage over 12 sec.",
       "icon": "spell_nature_starfall"
     },
     "8926": {
@@ -1175,7 +1175,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 32 Arcane damage and then an additional 52 Arcane damage over 12 sec.",
+      "description": "Burns the enemy for 37 to 42 Arcane damage and then an additional 52 Arcane damage over 12 sec.",
       "icon": "spell_nature_starfall"
     },
     "8927": {
@@ -1189,7 +1189,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 47 Arcane damage and then an additional 76 Arcane damage over 12 sec.",
+      "description": "Burns the enemy for 50 to 59 Arcane damage and then an additional 76 Arcane damage over 12 sec.",
       "icon": "spell_nature_starfall"
     },
     "8928": {
@@ -1203,7 +1203,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 59 Arcane damage and then an additional 92 Arcane damage over 12 sec.",
+      "description": "Burns the enemy for 62 to 72 Arcane damage and then an additional 92 Arcane damage over 12 sec.",
       "icon": "spell_nature_starfall"
     },
     "8929": {
@@ -1217,7 +1217,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 73 Arcane damage and then an additional 124 Arcane damage over 12 sec.",
+      "description": "Burns the enemy for 75 to 88 Arcane damage and then an additional 124 Arcane damage over 12 sec.",
       "icon": "spell_nature_starfall"
     },
     "8936": {
@@ -1231,7 +1231,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 87 and another 91 over 21 sec.",
+      "description": "Heals a friendly target for 89 to 103 and another 91 over 21 sec.",
       "icon": "spell_nature_resistnature"
     },
     "8938": {
@@ -1245,7 +1245,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 164 and another 154 over 21 sec.",
+      "description": "Heals a friendly target for 165 to 188 and another 154 over 21 sec.",
       "icon": "spell_nature_resistnature"
     },
     "8939": {
@@ -1259,7 +1259,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 235 and another 224 over 21 sec.",
+      "description": "Heals a friendly target for 235 to 266 and another 224 over 21 sec.",
       "icon": "spell_nature_resistnature"
     },
     "8940": {
@@ -1273,7 +1273,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 311 and another 294 over 21 sec.",
+      "description": "Heals a friendly target for 310 to 348 and another 294 over 21 sec.",
       "icon": "spell_nature_resistnature"
     },
     "8941": {
@@ -1287,7 +1287,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 394 and another 364 over 21 sec.",
+      "description": "Heals a friendly target for 391 to 438 and another 364 over 21 sec.",
       "icon": "spell_nature_resistnature"
     },
     "8946": {
@@ -1315,7 +1315,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 154 Arcane damage to the target.",
+      "description": "Causes 151 to 182 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "8950": {
@@ -1329,7 +1329,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 201 Arcane damage to the target.",
+      "description": "Causes 196 to 232 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "8951": {
@@ -1343,7 +1343,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 277 Arcane damage to the target.",
+      "description": "Causes 268 to 316 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "8955": {
@@ -1455,7 +1455,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The druid roars, decreasing nearby enemies' melee attack power by 95.  Lasts 30 sec.",
+      "description": "The druid roars, decreasing nearby enemies' melee attack power by 105.  Lasts 30 sec.",
       "icon": "ability_druid_demoralizingroar"
     },
     "9492": {
@@ -1469,7 +1469,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(5+$b1)} damage over 12 sec.\r\n   2 points: ${6*(5+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(5+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(5+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(5+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : 84 damage over 12 sec.\r\n   2 points: 138 damage over 12 sec.\r\n   3 points: 192 damage over 12 sec.\r\n   4 points: 246 damage over 12 sec.\r\n   5 points: 300 damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9493": {
@@ -1483,7 +1483,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(8+$b1)} damage over 12 sec.\r\n   2 points: ${6*(8+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(8+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(8+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(8+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : 111 damage over 12 sec.\r\n   2 points: 174 damage over 12 sec.\r\n   3 points: 237 damage over 12 sec.\r\n   4 points: 300 damage over 12 sec.\r\n   5 points: 363 damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9634": {
@@ -1497,7 +1497,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shapeshift into Dire Bear Form, increasing Attack Power by 120, Armor contribution from items by 360%, and Health by 600.  Also protects the caster from Polymorph effects and allows the use of various bear abilities.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
+      "description": "Shapeshift into Dire Bear Form, increasing Attack Power by 180, Armor contribution from items by 360%, and Health by 1240.  Also protects the caster from Polymorph effects and allows the use of various bear abilities.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
       "icon": "ability_racial_bearform"
     },
     "9635": {
@@ -1539,7 +1539,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The druid roars, decreasing nearby enemies' melee attack power by 144.  Lasts 30 sec.",
+      "description": "The druid roars, decreasing nearby enemies' melee attack power by 158.  Lasts 30 sec.",
       "icon": "ability_druid_demoralizingroar"
     },
     "9749": {
@@ -1567,7 +1567,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 504 and another 476 over 21 sec.",
+      "description": "Heals a friendly target for 498 to 557 and another 476 over 21 sec.",
       "icon": "spell_nature_resistnature"
     },
     "9752": {
@@ -1581,7 +1581,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(10+$b1)} damage over 12 sec.\r\n   2 points: ${6*(10+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(10+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(10+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(10+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : 155 damage over 12 sec.\r\n   2 points: 250 damage over 12 sec.\r\n   3 points: 344 damage over 12 sec.\r\n   4 points: 439 damage over 12 sec.\r\n   5 points: 534 damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9754": {
@@ -1623,7 +1623,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1173.",
+      "description": "Heals a friendly target for 1097 to 1301.",
       "icon": "spell_nature_healingtouch"
     },
     "9821": {
@@ -1707,7 +1707,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 91 Arcane damage and then an additional 156 Arcane damage over 12 sec.",
+      "description": "Burns the enemy for 97 to 112 Arcane damage and then an additional 156 Arcane damage over 12 sec.",
       "icon": "spell_nature_starfall"
     },
     "9834": {
@@ -1721,7 +1721,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 111 Arcane damage and then an additional 196 Arcane damage over 12 sec.",
+      "description": "Burns the enemy for 112 to 131 Arcane damage and then an additional 196 Arcane damage over 12 sec.",
       "icon": "spell_nature_starfall"
     },
     "9835": {
@@ -1735,7 +1735,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for 135 Arcane damage and then an additional 240 Arcane damage over 12 sec.",
+      "description": "Burns the enemy for 129 to 150 Arcane damage and then an additional 240 Arcane damage over 12 sec.",
       "icon": "spell_nature_starfall"
     },
     "9839": {
@@ -1847,7 +1847,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 645 and another 616 over 21 sec.",
+      "description": "Heals a friendly target for 635 to 708 and another 616 over 21 sec.",
       "icon": "spell_nature_resistnature"
     },
     "9857": {
@@ -1861,7 +1861,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 817 and another 791 over 21 sec.",
+      "description": "Heals a friendly target for 801 to 893 and another 791 over 21 sec.",
       "icon": "spell_nature_resistnature"
     },
     "9858": {
@@ -1875,7 +1875,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1021 and another 994 over 21 sec.",
+      "description": "Heals a friendly target for 965 to 1077 and another 994 over 21 sec.",
       "icon": "spell_nature_resistnature"
     },
     "9862": {
@@ -1889,7 +1889,7 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Regenerates all nearby party members within 20 yards for 196 every 2 sec for 10 sec.  Druid must channel to maintain the spell.",
+      "description": "Regenerates all nearby party members within 20 yards for 201 every 2 sec for 10 sec.  Druid must channel to maintain the spell.",
       "icon": "spell_nature_tranquility"
     },
     "9863": {
@@ -1945,7 +1945,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 372 Arcane damage to the target.",
+      "description": "Causes 359 to 421 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "9876": {
@@ -1959,7 +1959,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 471 Arcane damage to the target.",
+      "description": "Causes 439 to 516 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "9880": {
@@ -2029,7 +2029,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1516.",
+      "description": "Heals a friendly target for 1417 to 1674.",
       "icon": "spell_nature_healingtouch"
     },
     "9889": {
@@ -2043,7 +2043,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1920.",
+      "description": "Heals a friendly target for 1788 to 2105.",
       "icon": "spell_nature_healingtouch"
     },
     "9892": {
@@ -2071,7 +2071,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(14+$b1)} damage over 12 sec.\r\n   2 points: ${6*(14+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(14+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(14+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(14+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : 219 damage over 12 sec.\r\n   2 points: 354 damage over 12 sec.\r\n   3 points: 489 damage over 12 sec.\r\n   4 points: 624 damage over 12 sec.\r\n   5 points: 759 damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9896": {
@@ -2085,7 +2085,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(19+$b1)} damage over 12 sec.\r\n   2 points: ${6*(19+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(19+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(19+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(19+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : 305 damage over 12 sec.\r\n   2 points: 497 damage over 12 sec.\r\n   3 points: 688 damage over 12 sec.\r\n   4 points: 880 damage over 12 sec.\r\n   5 points: 1071 damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9898": {
@@ -2099,7 +2099,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The druid roars, decreasing nearby enemies' melee attack power by 193.  Lasts 30 sec.",
+      "description": "The druid roars, decreasing nearby enemies' melee attack power by 204.  Lasts 30 sec.",
       "icon": "ability_druid_demoralizingroar"
     },
     "9901": {
@@ -2183,7 +2183,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 91 Nature damage to the target.",
+      "description": "Causes 92 to 102 Nature damage to the target.",
       "icon": "spell_nature_abolishmagic"
     },
     "9913": {
@@ -2211,7 +2211,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "The next 1 melee attack that $Lstrikes:strike; the caster will afflict the attacker with Entangling Roots (Rank 1). Castable while shapeshifted. Lasts 45 sec.",
+      "description": "The next 1 melee attack that strikes the caster will afflict the attacker with Entangling Roots (Rank 1). Castable while shapeshifted. Lasts 45 sec.",
       "icon": "spell_nature_natureswrath"
     },
     "16810": {
@@ -2225,7 +2225,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "The next 1 melee attack that $Lstrikes:strike; the caster will afflict the attacker with Entangling Roots (Rank 2). Castable while shapeshifted. Lasts 45 sec.",
+      "description": "The next 1 melee attack that strikes the caster will afflict the attacker with Entangling Roots (Rank 2). Castable while shapeshifted. Lasts 45 sec.",
       "icon": "spell_nature_natureswrath"
     },
     "16811": {
@@ -2239,7 +2239,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "The next 1 melee attack that $Lstrikes:strike; the caster will afflict the attacker with Entangling Roots (Rank 3). Castable while shapeshifted. Lasts 45 sec.",
+      "description": "The next 1 melee attack that strikes the caster will afflict the attacker with Entangling Roots (Rank 3). Castable while shapeshifted. Lasts 45 sec.",
       "icon": "spell_nature_natureswrath"
     },
     "16812": {
@@ -2253,7 +2253,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "The next 1 melee attack that $Lstrikes:strike; the caster will afflict the attacker with Entangling Roots (Rank 4). Castable while shapeshifted. Lasts 45 sec.",
+      "description": "The next 1 melee attack that strikes the caster will afflict the attacker with Entangling Roots (Rank 4). Castable while shapeshifted. Lasts 45 sec.",
       "icon": "spell_nature_natureswrath"
     },
     "16813": {
@@ -2267,7 +2267,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "The next 1 melee attack that $Lstrikes:strike; the caster will afflict the attacker with Entangling Roots (Rank 5). Castable while shapeshifted. Lasts 45 sec.",
+      "description": "The next 1 melee attack that strikes the caster will afflict the attacker with Entangling Roots (Rank 5). Castable while shapeshifted. Lasts 45 sec.",
       "icon": "spell_nature_natureswrath"
     },
     "16864": {
@@ -2295,7 +2295,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Creates a violent storm in the target area causing 68 Nature damage to enemies every 1 sec, and increasing the time between attacks of enemies by 20%. Lasts 10 sec. Druid must channel to maintain the spell.",
+      "description": "Creates a violent storm in the target area causing 69 Nature damage to enemies every 1 sec, and increasing the time between attacks of enemies by 20%. Lasts 10 sec. Druid must channel to maintain the spell.",
       "icon": "spell_nature_cyclone"
     },
     "16929": {
@@ -2309,7 +2309,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "While in Bear Form, Cat Form, Dire Bear Form, or Moonkin Form, you gain 3 additional base Armor per level and another 1 base Armor for each point of defense skill beyond five times your level. This amount can be further increased by multipliers from those forms.",
+      "description": "While in Bear Form, Cat Form, Dire Bear Form, or Moonkin Form, you gain 180 additional base Armor per level and another 2.00 base Armor for each point of defense skill beyond five times your level. This amount can be further increased by multipliers from those forms.",
       "icon": "inv_misc_pelt_bear_03"
     },
     "17116": {
@@ -2337,7 +2337,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "The next 1 melee attack that $Lstrikes:strike; the caster will afflict the attacker with Entangling Roots (Rank 6). Castable while shapeshifted. Lasts 45 sec.",
+      "description": "The next 1 melee attack that strikes the caster will afflict the attacker with Entangling Roots (Rank 6). Castable while shapeshifted. Lasts 45 sec.",
       "icon": "spell_nature_natureswrath"
     },
     "17401": {
@@ -2351,7 +2351,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Creates a violent storm in the target area causing 98 Nature damage to enemies every 1 sec, and increasing the time between attacks by 20%. Lasts 10 sec. Druid must channel to maintain the spell.",
+      "description": "Creates a violent storm in the target area causing 99 Nature damage to enemies every 1 sec, and increasing the time between attacks by 20%. Lasts 10 sec. Druid must channel to maintain the spell.",
       "icon": "spell_nature_cyclone"
     },
     "17402": {
@@ -2715,7 +2715,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 2332.",
+      "description": "Heals a friendly target for 2139 to 2525.",
       "icon": "spell_nature_healingtouch"
     },
     "25298": {
@@ -2729,7 +2729,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 533 Arcane damage to the target.",
+      "description": "Causes 490 to 576 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "25299": {
@@ -2799,7 +2799,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 40.0,
-      "description": "Heals the target and their party for 280 over 7 sec. Party members must be within 43.5 yards of target. The amount healed is applied quickly at first, and slows down as Wild Growth reaches its full duration.",
+      "description": "Heals the target and their party for 336 over 7 sec. Party members must be within 43.5 yards of target. The amount healed is applied quickly at first, and slows down as Wild Growth reaches its full duration.",
       "icon": "ability_druid_flourish"
     },
     "414644": {
@@ -2953,7 +2953,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 25.0,
-      "description": "|CFFFF2020Requires Bear Form, Dire Bear Form|R\r\nCharge an enemy, immobilizing them and interrupting any spell they are casting for 4 sec.\r\n\r\n$@spelltooltip414924",
+      "description": "Requires Bear Form, Dire Bear Form\r\nCharge an enemy, immobilizing them and interrupting any spell they are casting for 4 sec.\r\n\r\nFeral Charge (Cat)\r\nLeap behind an enemy.",
       "icon": "ability_hunter_pet_bear"
     },
     "1238214": {
@@ -2967,7 +2967,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 40.0,
-      "description": "Heals the target and their party for 420 over 7 sec. Party members must be within 43.5 yds of target. The amount healed is applied quickly at first, and slows down as Wild Growth reaches its full duration.",
+      "description": "Heals the target and their party for 490 over 7 sec. Party members must be within 43.5 yds of target. The amount healed is applied quickly at first, and slows down as Wild Growth reaches its full duration.",
       "icon": "ability_druid_flourish"
     },
     "1238215": {
@@ -2995,7 +2995,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 0.0,
-      "description": "Instantly convert $c Mana into $s2 Energy. Shifting Power's cost is reduced by effects that reduce the cost of Shapeshifting.",
+      "description": "Instantly convert 0 Mana into 40 Energy. Shifting Power's cost is reduced by effects that reduce the cost of Shapeshifting.",
       "icon": "spell_druid_displacement"
     },
     "1328616": {

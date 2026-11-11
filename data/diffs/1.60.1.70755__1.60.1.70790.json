@@ -220,6 +220,22 @@
           "superseded_by": null
         },
         {
+          "id": 12871,
+          "name": "Chromatic Carapace",
+          "quality": 4,
+          "item_level": 1,
+          "required_level": 0,
+          "class_id": 15,
+          "subclass_id": 0,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 13173,
           "name": "Flightblade Throwing Axe",
           "quality": 3,
@@ -567,6 +583,22 @@
           "superseded_by": null
         },
         {
+          "id": 22267,
+          "name": "Spellweaver's Turban",
+          "quality": 3,
+          "item_level": 63,
+          "required_level": 60,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 1,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 22270,
           "name": "Entrenching Boots",
           "quality": 3,
@@ -719,6 +751,22 @@
           "class_id": 12,
           "subclass_id": 0,
           "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 226697,
+          "name": "Red Bag",
+          "quality": 1,
+          "item_level": 60,
+          "required_level": 0,
+          "class_id": 1,
+          "subclass_id": 0,
+          "inventory_type": 18,
           "suffixes": [],
           "faction_restriction": "",
           "required_level_source": null,
@@ -1655,6 +1703,22 @@
           "superseded_by": null
         },
         {
+          "id": 276071,
+          "name": "The Black Helm",
+          "quality": 3,
+          "item_level": 59,
+          "required_level": 54,
+          "class_id": 4,
+          "subclass_id": 4,
+          "inventory_type": 1,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 276188,
           "name": "Eluvi'ana",
           "quality": 2,
@@ -1807,6 +1871,22 @@
           "class_id": 4,
           "subclass_id": 2,
           "inventory_type": 10,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 276456,
+          "name": "Plague Defiled Buckler",
+          "quality": 3,
+          "item_level": 60,
+          "required_level": 55,
+          "class_id": 4,
+          "subclass_id": 6,
+          "inventory_type": 14,
           "suffixes": [],
           "faction_restriction": "",
           "required_level_source": null,
@@ -3095,6 +3175,22 @@
           "superseded_by": null
         },
         {
+          "id": 280029,
+          "name": "Cinderedge Crescent",
+          "quality": 3,
+          "item_level": 63,
+          "required_level": 58,
+          "class_id": 2,
+          "subclass_id": 0,
+          "inventory_type": 13,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 280031,
           "name": "Sparklance Wand",
           "quality": 3,
@@ -3543,6 +3639,54 @@
           "superseded_by": null
         },
         {
+          "id": 280081,
+          "name": "Sad-Sack Sandals",
+          "quality": 3,
+          "item_level": 57,
+          "required_level": 52,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 8,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 280082,
+          "name": "Staff of Sorrow",
+          "quality": 3,
+          "item_level": 57,
+          "required_level": 52,
+          "class_id": 2,
+          "subclass_id": 10,
+          "inventory_type": 17,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 280083,
+          "name": "Truesight Rifle",
+          "quality": 3,
+          "item_level": 57,
+          "required_level": 52,
+          "class_id": 2,
+          "subclass_id": 3,
+          "inventory_type": 26,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 280084,
           "name": "Furbolg Rib Protector",
           "quality": 3,
@@ -3599,6 +3743,22 @@
           "class_id": 4,
           "subclass_id": 0,
           "inventory_type": 2,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 281599,
+          "name": "Ragged Colors",
+          "quality": 2,
+          "item_level": 60,
+          "required_level": 55,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 16,
           "suffixes": [],
           "faction_restriction": "",
           "required_level_source": null,
@@ -3759,6 +3919,22 @@
           "class_id": 4,
           "subclass_id": 4,
           "inventory_type": 8,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 282085,
+          "name": "Dragonblood Greatsword",
+          "quality": 3,
+          "item_level": 62,
+          "required_level": 57,
+          "class_id": 2,
+          "subclass_id": 8,
+          "inventory_type": 17,
           "suffixes": [],
           "faction_restriction": "",
           "required_level_source": null,
@@ -3967,6 +4143,22 @@
           "class_id": 4,
           "subclass_id": 0,
           "inventory_type": 11,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 282707,
+          "name": "Arcanum of Binding",
+          "quality": 2,
+          "item_level": 50,
+          "required_level": 0,
+          "class_id": 12,
+          "subclass_id": 0,
+          "inventory_type": 0,
           "suffixes": [],
           "faction_restriction": "",
           "required_level_source": null,
@@ -4343,6 +4535,22 @@
           "superseded_by": null
         },
         {
+          "id": 284231,
+          "name": "Sayaad Charm",
+          "quality": 3,
+          "item_level": 63,
+          "required_level": 58,
+          "class_id": 4,
+          "subclass_id": 0,
+          "inventory_type": 12,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 284283,
           "name": "Horn of Antilos",
           "quality": 2,
@@ -4479,6 +4687,22 @@
           "class_id": 4,
           "subclass_id": 4,
           "inventory_type": 8,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 285066,
+          "name": "Ooze Rummagers",
+          "quality": 3,
+          "item_level": 59,
+          "required_level": 54,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 10,
           "suffixes": [],
           "faction_restriction": "",
           "required_level_source": null,
@@ -5399,6 +5623,22 @@
           "superseded_by": null
         },
         {
+          "id": 287031,
+          "name": "Spearfisher's Waders",
+          "quality": 3,
+          "item_level": 58,
+          "required_level": 53,
+          "class_id": 4,
+          "subclass_id": 3,
+          "inventory_type": 7,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 287032,
           "name": "Den Champion's Binding",
           "quality": 3,
@@ -5487,6 +5727,102 @@
           "class_id": 4,
           "subclass_id": 1,
           "inventory_type": 5,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287040,
+          "name": "Dinosaur Hide Belt",
+          "quality": 3,
+          "item_level": 61,
+          "required_level": 56,
+          "class_id": 4,
+          "subclass_id": 2,
+          "inventory_type": 6,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287041,
+          "name": "Time-Forgotten Bindings",
+          "quality": 3,
+          "item_level": 60,
+          "required_level": 55,
+          "class_id": 4,
+          "subclass_id": 3,
+          "inventory_type": 9,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287042,
+          "name": "Pauldrons of the Stone Guardian",
+          "quality": 3,
+          "item_level": 61,
+          "required_level": 56,
+          "class_id": 4,
+          "subclass_id": 4,
+          "inventory_type": 3,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287043,
+          "name": "Predaceous Band",
+          "quality": 3,
+          "item_level": 60,
+          "required_level": 55,
+          "class_id": 4,
+          "subclass_id": 0,
+          "inventory_type": 11,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287044,
+          "name": "Predator's Shroud",
+          "quality": 3,
+          "item_level": 60,
+          "required_level": 55,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 16,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287045,
+          "name": "Ancient Mattock",
+          "quality": 3,
+          "item_level": 61,
+          "required_level": 56,
+          "class_id": 2,
+          "subclass_id": 0,
+          "inventory_type": 13,
           "suffixes": [],
           "faction_restriction": "",
           "required_level_source": null,
@@ -6143,13 +6479,15 @@
             "inventory_type": 17,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -8519,20 +8857,24 @@
             "id": 9375,
             "name": "Expert Goldminer's Helmet",
             "quality": 3,
-            "item_level": 38,
-            "required_level": 33,
+            "item_level": 40,
+            "required_level": 35,
             "class_id": 4,
             "subclass_id": 2,
             "inventory_type": 1,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "item_level",
+            "required_level",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -9593,13 +9935,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -18806,13 +19150,15 @@
             "inventory_type": 20,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -19701,13 +20047,15 @@
             "inventory_type": 16,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -20137,13 +20485,15 @@
             "inventory_type": 6,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -20175,13 +20525,15 @@
             "inventory_type": 13,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -20220,6 +20572,45 @@
           },
           "fields": [
             "client_unconfirmed"
+          ]
+        },
+        {
+          "id": 12602,
+          "before": {
+            "id": 12602,
+            "name": "Draconian Deflector",
+            "quality": 3,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 12602,
+            "name": "Draconian Deflector",
+            "quality": 3,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -20291,13 +20682,15 @@
             "inventory_type": 1,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -20450,13 +20843,15 @@
             "inventory_type": 5,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -20756,7 +21151,7 @@
           },
           "after": {
             "id": 12709,
-            "name": "Finkle's Skinner",
+            "name": "Pip's Skinner",
             "quality": 3,
             "item_level": 63,
             "required_level": 58,
@@ -20765,13 +21160,16 @@
             "inventory_type": 21,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "name",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21111,13 +21509,15 @@
             "inventory_type": 16,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21169,13 +21569,15 @@
               2076
             ],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21247,13 +21649,15 @@
             "inventory_type": 2,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21325,13 +21729,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21363,13 +21769,15 @@
             "inventory_type": 9,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21401,13 +21809,15 @@
             "inventory_type": 22,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21439,13 +21849,15 @@
             "inventory_type": 21,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21598,13 +22010,15 @@
               1505
             ],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21658,13 +22072,15 @@
               1505
             ],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21696,13 +22112,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21774,13 +22192,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21932,13 +22352,15 @@
             "inventory_type": 17,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21970,13 +22392,15 @@
             "inventory_type": 11,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -22008,13 +22432,54 @@
             "inventory_type": 2,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 13142,
+          "before": {
+            "id": 13142,
+            "name": "Brigam Girdle",
+            "quality": 3,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 6,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 13142,
+            "name": "Brigam Girdle",
+            "quality": 3,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 6,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -22642,13 +23107,15 @@
             "inventory_type": 10,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -23970,13 +24437,15 @@
             "inventory_type": 8,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -24540,6 +25009,46 @@
           ]
         },
         {
+          "id": 13353,
+          "before": {
+            "id": 13353,
+            "name": "Book of the Dead",
+            "quality": 4,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 23,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 13353,
+            "name": "Book of the Dead",
+            "quality": 4,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 23,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
           "id": 13358,
           "before": {
             "id": 13358,
@@ -24689,13 +25198,15 @@
             "inventory_type": 13,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -24927,13 +25438,15 @@
             "inventory_type": 14,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -25045,13 +25558,15 @@
             "inventory_type": 26,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -25700,13 +26215,15 @@
             "inventory_type": 17,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -25731,20 +26248,24 @@
             "id": 13394,
             "name": "Skul's Cold Embrace",
             "quality": 3,
-            "item_level": 59,
-            "required_level": 54,
+            "item_level": 60,
+            "required_level": 55,
             "class_id": 4,
             "subclass_id": 4,
             "inventory_type": 5,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "item_level",
+            "required_level",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -25811,20 +26332,65 @@
             "id": 13396,
             "name": "Skul's Ghastly Touch",
             "quality": 3,
-            "item_level": 57,
-            "required_level": 52,
+            "item_level": 60,
+            "required_level": 55,
             "class_id": 2,
             "subclass_id": 19,
             "inventory_type": 26,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "item_level",
+            "required_level",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 13397,
+          "before": {
+            "id": 13397,
+            "name": "Stoneskin Gargoyle Cape",
+            "quality": 3,
+            "item_level": 61,
+            "required_level": 56,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 13397,
+            "name": "Stoneskin Gargoyle Cape",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level",
+            "required_level",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -26346,13 +26912,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -26384,13 +26952,15 @@
             "inventory_type": 6,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -26422,13 +26992,15 @@
             "inventory_type": 17,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -26856,7 +27428,7 @@
           "after": {
             "id": 13532,
             "name": "Darkspinner Claws",
-            "quality": 2,
+            "quality": 3,
             "item_level": 61,
             "required_level": 56,
             "class_id": 4,
@@ -26864,13 +27436,16 @@
             "inventory_type": 10,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "quality",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -26975,7 +27550,7 @@
           "after": {
             "id": 13535,
             "name": "Coldtouch Phantom Wraps",
-            "quality": 2,
+            "quality": 3,
             "item_level": 60,
             "required_level": 55,
             "class_id": 4,
@@ -26983,13 +27558,16 @@
             "inventory_type": 20,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "quality",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -27054,7 +27632,7 @@
           "after": {
             "id": 13538,
             "name": "Windshrieker Pauldrons",
-            "quality": 2,
+            "quality": 3,
             "item_level": 60,
             "required_level": 55,
             "class_id": 4,
@@ -27062,13 +27640,16 @@
             "inventory_type": 3,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "quality",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -27221,13 +27802,15 @@
             "inventory_type": 26,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -29135,13 +29718,15 @@
             "inventory_type": 6,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -36969,13 +37554,15 @@
             "inventory_type": 16,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -39792,13 +40379,15 @@
             "inventory_type": 21,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -39951,13 +40540,15 @@
             "inventory_type": 11,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -39989,13 +40580,15 @@
             "inventory_type": 6,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -40281,6 +40874,46 @@
           ]
         },
         {
+          "id": 18296,
+          "before": {
+            "id": 18296,
+            "name": "Marksman Bands",
+            "quality": 3,
+            "item_level": 56,
+            "required_level": 51,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18296,
+            "name": "Marksman Bands",
+            "quality": 3,
+            "item_level": 56,
+            "required_level": 51,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
           "id": 18298,
           "before": {
             "id": 18298,
@@ -40309,13 +40942,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -40713,13 +41348,15 @@
             "inventory_type": 13,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -41414,13 +42051,15 @@
             "inventory_type": 6,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -41584,6 +42223,46 @@
           ]
         },
         {
+          "id": 18340,
+          "before": {
+            "id": 18340,
+            "name": "Eidolon Talisman",
+            "quality": 3,
+            "item_level": 59,
+            "required_level": 54,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18340,
+            "name": "Eidolon Talisman",
+            "quality": 3,
+            "item_level": 59,
+            "required_level": 54,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
           "id": 18341,
           "before": {
             "id": 18341,
@@ -41688,13 +42367,15 @@
             "inventory_type": 11,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -41726,13 +42407,56 @@
             "inventory_type": 10,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 18345,
+          "before": {
+            "id": 18345,
+            "name": "Murmuring Ring",
+            "quality": 2,
+            "item_level": 60,
+            "required_level": 55,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18345,
+            "name": "Murmuring Ring",
+            "quality": 3,
+            "item_level": 60,
+            "required_level": 55,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "quality",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -41756,7 +42480,7 @@
           "after": {
             "id": 18346,
             "name": "Threadbare Trousers",
-            "quality": 2,
+            "quality": 3,
             "item_level": 60,
             "required_level": 55,
             "class_id": 4,
@@ -41764,13 +42488,16 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "quality",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -41920,6 +42647,47 @@
             "class_id": 4,
             "subclass_id": 1,
             "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "quality",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 18351,
+          "before": {
+            "id": 18351,
+            "name": "Magically Sealed Bracers",
+            "quality": 2,
+            "item_level": 61,
+            "required_level": 56,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18351,
+            "name": "Magically Sealed Bracers",
+            "quality": 3,
+            "item_level": 61,
+            "required_level": 56,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 9,
             "suffixes": [],
             "faction_restriction": "",
             "required_level_source": null,
@@ -42445,13 +43213,15 @@
             "inventory_type": 13,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -42523,13 +43293,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -42641,13 +43413,15 @@
             "inventory_type": 2,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -42771,13 +43545,15 @@
             "inventory_type": 3,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -42809,13 +43585,15 @@
             "inventory_type": 20,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -43499,6 +44277,47 @@
           ]
         },
         {
+          "id": 18425,
+          "before": {
+            "id": 18425,
+            "name": "Kreeg's Mug",
+            "quality": 2,
+            "item_level": 60,
+            "required_level": 55,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 23,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18425,
+            "name": "Kreeg's Mug",
+            "quality": 3,
+            "item_level": 60,
+            "required_level": 55,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 23,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "quality",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
           "id": 18438,
           "before": {
             "id": 18438,
@@ -44044,13 +44863,55 @@
             "inventory_type": 12,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 18469,
+          "before": {
+            "id": 18469,
+            "name": "Royal Seal of Eldre'Thalas",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 12,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18469,
+            "name": "Royal Seal of Eldre'Thalas",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 12,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -44122,6 +44983,46 @@
             "inventory_type": 12,
             "suffixes": [],
             "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 18472,
+          "before": {
+            "id": 18472,
+            "name": "Royal Seal of Eldre'Thalas",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 12,
+            "suffixes": [],
+            "faction_restriction": "alliance_only",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18472,
+            "name": "Royal Seal of Eldre'Thalas",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 12,
+            "suffixes": [],
+            "faction_restriction": "alliance_only",
             "required_level_source": null,
             "stats_source": null,
             "client_unconfirmed": false,
@@ -44562,13 +45463,15 @@
             "inventory_type": 13,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -44760,13 +45663,15 @@
             "inventory_type": 3,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -44838,13 +45743,15 @@
             "inventory_type": 16,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -44876,13 +45783,15 @@
             "inventory_type": 9,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -45898,6 +46807,46 @@
           ]
         },
         {
+          "id": 18538,
+          "before": {
+            "id": 18538,
+            "name": "Treant's Bane",
+            "quality": 4,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 2,
+            "subclass_id": 1,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18538,
+            "name": "Treant's Bane",
+            "quality": 4,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 2,
+            "subclass_id": 1,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
           "id": 18541,
           "before": {
             "id": 18541,
@@ -46350,13 +47299,15 @@
             "inventory_type": 15,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -46388,13 +47339,15 @@
             "inventory_type": 3,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -46874,13 +47827,15 @@
             "inventory_type": 14,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -46990,13 +47945,15 @@
             "inventory_type": 3,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -47312,6 +48269,45 @@
           },
           "fields": [
             "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 18722,
+          "before": {
+            "id": 18722,
+            "name": "Death Grips",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18722,
+            "name": "Death Grips",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
             "required_level_source",
             "stats_source"
           ]
@@ -47941,13 +48937,15 @@
             "inventory_type": 3,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -47979,13 +48977,15 @@
             "inventory_type": 16,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -48017,13 +49017,15 @@
             "inventory_type": 10,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -59458,13 +60460,15 @@
             "inventory_type": 8,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -61173,13 +62177,15 @@
             "inventory_type": 5,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -67522,7 +68528,2644 @@
     "sets": {
       "added": [],
       "removed": [],
-      "changed": []
+      "changed": [
+        {
+          "id": 141,
+          "before": {
+            "id": 141,
+            "name": "Volcanic Armor",
+            "item_ids": [
+              15053,
+              15054,
+              15055
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "5% chance of dealing 40 Fire damage on a successful melee attack."
+              }
+            ]
+          },
+          "after": {
+            "id": 141,
+            "name": "Volcanic Armor",
+            "item_ids": [
+              15053,
+              15054,
+              15055
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "5% chance of dealing 30 to 50 Fire damage on a successful melee attack."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 142,
+          "before": {
+            "id": 142,
+            "name": "Stormshroud Armor",
+            "item_ids": [
+              15056,
+              15057,
+              15058,
+              21278
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "10% chance of dealing 20 Nature damage on a successful melee attack."
+              },
+              {
+                "pieces": 3,
+                "description": "4% chance on melee attack of restoring 30 energy."
+              },
+              {
+                "pieces": 4,
+                "description": "+14 Attack Power."
+              }
+            ]
+          },
+          "after": {
+            "id": 142,
+            "name": "Stormshroud Armor",
+            "item_ids": [
+              15056,
+              15057,
+              15058,
+              21278
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "10% chance of dealing 15 to 25 Nature damage on a successful melee attack."
+              },
+              {
+                "pieces": 3,
+                "description": "4% chance on melee attack of restoring 30 energy."
+              },
+              {
+                "pieces": 4,
+                "description": "+14 Attack Power."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 161,
+          "before": {
+            "id": 161,
+            "name": "Defias Leather",
+            "item_ids": [
+              10399,
+              10400,
+              10401,
+              10402,
+              10403
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+5 Arcane Resistance."
+              },
+              {
+                "pieces": 3,
+                "description": "+15 Attack Power against Humanoids."
+              },
+              {
+                "pieces": 4,
+                "description": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+              },
+              {
+                "pieces": 5,
+                "description": "Increased Daggers +1."
+              }
+            ]
+          },
+          "after": {
+            "id": 161,
+            "name": "Defias Leather",
+            "item_ids": [
+              10399,
+              10400,
+              10401,
+              10402,
+              10403
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+5 Arcane Resistance."
+              },
+              {
+                "pieces": 3,
+                "description": "+15 Attack Power against Humanoids."
+              },
+              {
+                "pieces": 4,
+                "description": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 65 to 85 Physical damage over 5 sec."
+              },
+              {
+                "pieces": 5,
+                "description": "Increased Daggers +1."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 163,
+          "before": {
+            "id": 163,
+            "name": "Chain of the Scarlet Crusade",
+            "item_ids": [
+              10328,
+              10329,
+              10330,
+              10331,
+              10332,
+              10333
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+10 Shadow Resistance."
+              },
+              {
+                "pieces": 3,
+                "description": "+30 Attack Power against Undead."
+              },
+              {
+                "pieces": 4,
+                "description": "Taking damage has a 15% chance to grant Enraging Light for 10 sec, causing your melee attacks to deal 20 Holy damage. Deals 3 times as much damage to Undead."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to hit by 1%."
+              },
+              {
+                "pieces": 6,
+                "description": "Taking damage while at or below 20% health grants you a shield, absorbing $1293733s2 damage for 10 sec. This effect can only trigger once every 4 min."
+              }
+            ]
+          },
+          "after": {
+            "id": 163,
+            "name": "Chain of the Scarlet Crusade",
+            "item_ids": [
+              10328,
+              10329,
+              10330,
+              10331,
+              10332,
+              10333
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+10 Shadow Resistance."
+              },
+              {
+                "pieces": 3,
+                "description": "+30 Attack Power against Undead."
+              },
+              {
+                "pieces": 4,
+                "description": "Taking damage has a 15% chance to grant Enraging Light for 10 sec, causing your melee attacks to deal 20 Holy damage. Deals 3 times as much damage to Undead."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to hit by 1%."
+              },
+              {
+                "pieces": 6,
+                "description": "Taking damage while at or below 20% health grants you a shield, absorbing 480 damage for 10 sec. This effect can only trigger once every 4 min."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 183,
+          "before": {
+            "id": 183,
+            "name": "Dreadmist Raiment",
+            "item_ids": [
+              16698,
+              16699,
+              16700,
+              16701,
+              16702,
+              16703,
+              16704,
+              16705
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 3,
+                "description": "Increases damage and healing done by magical spells and effects by up to 18."
+              },
+              {
+                "pieces": 4,
+                "description": "When struck in combat has a 2% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every 60 sec."
+              },
+              {
+                "pieces": 5,
+                "description": "Your spellcasts have a 5% chance to heal you for 300."
+              },
+              {
+                "pieces": 6,
+                "description": "Restores 8 mana per 5 sec."
+              }
+            ]
+          },
+          "after": {
+            "id": 183,
+            "name": "Dreadmist Raiment",
+            "item_ids": [
+              16698,
+              16699,
+              16700,
+              16701,
+              16702,
+              16703,
+              16704,
+              16705
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 3,
+                "description": "Increases damage and healing done by magical spells and effects by up to 18."
+              },
+              {
+                "pieces": 4,
+                "description": "When struck in combat has a 2% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every 60 sec."
+              },
+              {
+                "pieces": 5,
+                "description": "Your spellcasts have a 5% chance to heal you for 270 to 330."
+              },
+              {
+                "pieces": 6,
+                "description": "Restores 8 mana per 5 sec."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 189,
+          "before": {
+            "id": 189,
+            "name": "Battlegear of Valor",
+            "item_ids": [
+              16730,
+              16731,
+              16732,
+              16733,
+              16734,
+              16735,
+              16736,
+              16737
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 3,
+                "description": "+15 Strength."
+              },
+              {
+                "pieces": 4,
+                "description": "When struck in combat, has a 10% chance to remove a Disarm effect from yourself. Can only occur once every 60 sec."
+              },
+              {
+                "pieces": 5,
+                "description": "Chance on melee attack to heal for 110 and generate 10 Rage"
+              },
+              {
+                "pieces": 6,
+                "description": "Restores 15 health per 5 sec."
+              }
+            ]
+          },
+          "after": {
+            "id": 189,
+            "name": "Battlegear of Valor",
+            "item_ids": [
+              16730,
+              16731,
+              16732,
+              16733,
+              16734,
+              16735,
+              16736,
+              16737
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 3,
+                "description": "+15 Strength."
+              },
+              {
+                "pieces": 4,
+                "description": "When struck in combat, has a 10% chance to remove a Disarm effect from yourself. Can only occur once every 60 sec."
+              },
+              {
+                "pieces": 5,
+                "description": "Chance on melee attack to heal for 88 to 132 and generate 10 Rage"
+              },
+              {
+                "pieces": 6,
+                "description": "Restores 15 health per 5 sec."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 208,
+          "before": {
+            "id": 208,
+            "name": "Lawbringer Armor",
+            "item_ids": [
+              16853,
+              16854,
+              16855,
+              16856,
+              16857,
+              16858,
+              16859,
+              16860
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the chance of triggering a Judgement of Light heal by 10%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to get a critical strike with spells by 1%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to get a critical strike with melee attacks by 1%."
+              },
+              {
+                "pieces": 8,
+                "description": "Gives the Paladin a chance on every melee hit to heal your party for 200."
+              }
+            ]
+          },
+          "after": {
+            "id": 208,
+            "name": "Lawbringer Armor",
+            "item_ids": [
+              16853,
+              16854,
+              16855,
+              16856,
+              16857,
+              16858,
+              16859,
+              16860
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the chance of triggering a Judgement of Light heal by 10%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to get a critical strike with spells by 1%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to get a critical strike with melee attacks by 1%."
+              },
+              {
+                "pieces": 8,
+                "description": "Gives the Paladin a chance on every melee hit to heal your party for 189 to 211."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 210,
+          "before": {
+            "id": 210,
+            "name": "Netherwind Regalia",
+            "item_ids": [
+              16818,
+              16912,
+              16913,
+              16914,
+              16915,
+              16916,
+              16917,
+              16918
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Reduces the threat generated by your Scorch,  Arcane Missiles, Fireball, and Frostbolt spells."
+              },
+              {
+                "pieces": 5,
+                "description": "Increases the radius of Arcane Explosion, Flamestrike, and Blizzard by 25%."
+              },
+              {
+                "pieces": 8,
+                "description": "10% chance after casting Arcane Missiles, Fireball, or Frostbolt that your next spell with a casting time under 10 seconds cast instantly."
+              }
+            ]
+          },
+          "after": {
+            "id": 210,
+            "name": "Netherwind Regalia",
+            "item_ids": [
+              16818,
+              16912,
+              16913,
+              16914,
+              16915,
+              16916,
+              16917,
+              16918
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Reduces the threat generated by your Scorch, Arcane Missiles, Fireball, and Frostbolt spells."
+              },
+              {
+                "pieces": 5,
+                "description": "Increases the radius of Arcane Explosion, Flamestrike, and Blizzard by 25%."
+              },
+              {
+                "pieces": 8,
+                "description": "10% chance after casting Arcane Missiles, Fireball, or Frostbolt that your next spell with a casting time under 10 seconds cast instantly."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 213,
+          "before": {
+            "id": 213,
+            "name": "Bloodfang Armor",
+            "item_ids": [
+              16832,
+              16905,
+              16906,
+              16907,
+              16908,
+              16909,
+              16910,
+              16911
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the chance to apply poisons to your target by 5%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves the threat reduction of Feint by 25%."
+              },
+              {
+                "pieces": 8,
+                "description": "Gives the Rogue a chance to inflict 300 damage on the target and heal the Rogue for 50 health every 1 sec. for 6 sec. on a melee hit."
+              }
+            ]
+          },
+          "after": {
+            "id": 213,
+            "name": "Bloodfang Armor",
+            "item_ids": [
+              16832,
+              16905,
+              16906,
+              16907,
+              16908,
+              16909,
+              16910,
+              16911
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the chance to apply poisons to your target by 5%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves the threat reduction of Feint by 25%."
+              },
+              {
+                "pieces": 8,
+                "description": "Gives the Rogue a chance to inflict 283 to 317 damage on the target and heal the Rogue for 50 health every 1 sec. for 6 sec. on a melee hit."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 217,
+          "before": {
+            "id": 217,
+            "name": "Judgement Armor",
+            "item_ids": [
+              16951,
+              16952,
+              16953,
+              16954,
+              16955,
+              16956,
+              16957,
+              16958
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the radius of a Paladin's auras by 10."
+              },
+              {
+                "pieces": 5,
+                "description": "Increases damage and healing done by magical spells and effects by up to 47."
+              },
+              {
+                "pieces": 8,
+                "description": "Inflicts 63 additional Holy damage on the target of a Paladin's Judgement."
+              }
+            ]
+          },
+          "after": {
+            "id": 217,
+            "name": "Judgement Armor",
+            "item_ids": [
+              16951,
+              16952,
+              16953,
+              16954,
+              16955,
+              16956,
+              16957,
+              16958
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the radius of a Paladin's auras by 10."
+              },
+              {
+                "pieces": 5,
+                "description": "Increases damage and healing done by magical spells and effects by up to 47."
+              },
+              {
+                "pieces": 8,
+                "description": "Inflicts 60 to 66 additional Holy damage on the target of a Paladin's Judgement."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 345,
+          "before": {
+            "id": 345,
+            "name": "Champion's Threads",
+            "item_ids": [
+              272548,
+              272549,
+              272552,
+              272553,
+              272630,
+              272643
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "after": {
+            "id": 345,
+            "name": "Champion's Threads",
+            "item_ids": [
+              272548,
+              272549,
+              272552,
+              272553,
+              272630,
+              272643
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 346,
+          "before": {
+            "id": 346,
+            "name": "Lieutenant Commander's Threads",
+            "item_ids": [
+              272657,
+              272671,
+              272794,
+              272796,
+              272800,
+              272801
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "after": {
+            "id": 346,
+            "name": "Lieutenant Commander's Threads",
+            "item_ids": [
+              272657,
+              272671,
+              272794,
+              272796,
+              272800,
+              272801
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 391,
+          "before": {
+            "id": 391,
+            "name": "Warlord's Threads",
+            "item_ids": [
+              272554,
+              272556,
+              272558,
+              272559,
+              272560,
+              272561
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+20 Stamina."
+              },
+              {
+                "pieces": 3,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "after": {
+            "id": 391,
+            "name": "Warlord's Threads",
+            "item_ids": [
+              272554,
+              272556,
+              272558,
+              272559,
+              272560,
+              272561
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+20 Stamina."
+              },
+              {
+                "pieces": 3,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 392,
+          "before": {
+            "id": 392,
+            "name": "Field Marshal's Threads",
+            "item_ids": [
+              272802,
+              272803,
+              272804,
+              272805,
+              272807,
+              272808
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+20 Stamina."
+              },
+              {
+                "pieces": 3,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "after": {
+            "id": 392,
+            "name": "Field Marshal's Threads",
+            "item_ids": [
+              272802,
+              272803,
+              272804,
+              272805,
+              272807,
+              272808
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+20 Stamina."
+              },
+              {
+                "pieces": 3,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 511,
+          "before": {
+            "id": 511,
+            "name": "Battlegear of Heroism",
+            "item_ids": [
+              21994,
+              21995,
+              21996,
+              21997,
+              21998,
+              21999,
+              22000,
+              22001
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 4,
+                "description": "Chance on melee attack to heal you for 110."
+              },
+              {
+                "pieces": 6,
+                "description": "+40 Attack Power."
+              },
+              {
+                "pieces": 8,
+                "description": "+200 Armor."
+              }
+            ]
+          },
+          "after": {
+            "id": 511,
+            "name": "Battlegear of Heroism",
+            "item_ids": [
+              21994,
+              21995,
+              21996,
+              21997,
+              21998,
+              21999,
+              22000,
+              22001
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 4,
+                "description": "Chance on melee attack to heal you for 88 to 132."
+              },
+              {
+                "pieces": 6,
+                "description": "+40 Attack Power."
+              },
+              {
+                "pieces": 8,
+                "description": "+200 Armor."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 521,
+          "before": {
+            "id": 521,
+            "name": "Dreamwalker Raiment",
+            "item_ids": [
+              22488,
+              22489,
+              22490,
+              22491,
+              22492,
+              22493,
+              22494,
+              22495,
+              23064
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Rejuvenation ticks have a chance to restore 60 mana, 8 energy, or 2 rage to your target."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the mana cost of your Healing Touch, Regrowth, Rejuvenation,  and Tranquility spells by 3%."
+              },
+              {
+                "pieces": 6,
+                "description": "Your initial cast and Regrowth ticks will increase the maximum health of your target by up to 50, stacking up to 7 times."
+              },
+              {
+                "pieces": 8,
+                "description": "On Healing Touch critical hits, you regain 30% of the mana cost of the spell."
+              }
+            ]
+          },
+          "after": {
+            "id": 521,
+            "name": "Dreamwalker Raiment",
+            "item_ids": [
+              22488,
+              22489,
+              22490,
+              22491,
+              22492,
+              22493,
+              22494,
+              22495,
+              23064
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Rejuvenation ticks have a chance to restore 60 mana, 8 energy, or 2 rage to your target."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the mana cost of your Healing Touch, Regrowth, Rejuvenation, and Tranquility spells by 3%."
+              },
+              {
+                "pieces": 6,
+                "description": "Your initial cast and Regrowth ticks will increase the maximum health of your target by up to 50, stacking up to 7 times."
+              },
+              {
+                "pieces": 8,
+                "description": "On Healing Touch critical hits, you regain 30% of the mana cost of the spell."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 524,
+          "before": {
+            "id": 524,
+            "name": "Bonescythe Armor",
+            "item_ids": [
+              22476,
+              22477,
+              22478,
+              22479,
+              22480,
+              22481,
+              22482,
+              22483,
+              23060
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your normal melee swings have a chance to Invigorate you, healing you for 100."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Backstab, Sinister Strike, and Hemorrhage critical hits cause you to regain 5 energy."
+              },
+              {
+                "pieces": 6,
+                "description": "Reduces the threat from your Backstab, Sinister Strike, Hemorrhage, and Eviscerate abilities."
+              },
+              {
+                "pieces": 8,
+                "description": "Your Eviscerate has a chance per combo point to reveal a flaw in your opponent's armor, granting a 100% critical hit chance for your next Backstab, Sinister Strike, or Hemorrhage."
+              }
+            ]
+          },
+          "after": {
+            "id": 524,
+            "name": "Bonescythe Armor",
+            "item_ids": [
+              22476,
+              22477,
+              22478,
+              22479,
+              22480,
+              22481,
+              22482,
+              22483,
+              23060
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your normal melee swings have a chance to Invigorate you, healing you for 90 to 110."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Backstab, Sinister Strike, and Hemorrhage critical hits cause you to regain 5 energy."
+              },
+              {
+                "pieces": 6,
+                "description": "Reduces the threat from your Backstab, Sinister Strike, Hemorrhage, and Eviscerate abilities."
+              },
+              {
+                "pieces": 8,
+                "description": "Your Eviscerate has a chance per combo point to reveal a flaw in your opponent's armor, granting a 100% critical hit chance for your next Backstab, Sinister Strike, or Hemorrhage."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 529,
+          "before": {
+            "id": 529,
+            "name": "Plagueheart Raiment",
+            "item_ids": [
+              22504,
+              22505,
+              22506,
+              22507,
+              22508,
+              22509,
+              22510,
+              22511,
+              23063
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Shadow Bolts now have a chance to heal you for 300."
+              },
+              {
+                "pieces": 4,
+                "description": "Increases damage caused by your Corruption by 12%."
+              },
+              {
+                "pieces": 6,
+                "description": "Your spell critical hits generate 25% less threat.  In addition, Corruption, Immolate, Curse of Agony, and Siphon Life generate 25% less threat."
+              },
+              {
+                "pieces": 8,
+                "description": "Reduces health cost of your Life Tap by 12%."
+              }
+            ]
+          },
+          "after": {
+            "id": 529,
+            "name": "Plagueheart Raiment",
+            "item_ids": [
+              22504,
+              22505,
+              22506,
+              22507,
+              22508,
+              22509,
+              22510,
+              22511,
+              23063
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Shadow Bolts now have a chance to heal you for 270 to 330."
+              },
+              {
+                "pieces": 4,
+                "description": "Increases damage caused by your Corruption by 12%."
+              },
+              {
+                "pieces": 6,
+                "description": "Your spell critical hits generate 25% less threat.  In addition, Corruption, Immolate, Curse of Agony, and Siphon Life generate 25% less threat."
+              },
+              {
+                "pieces": 8,
+                "description": "Reduces health cost of your Life Tap by 12%."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 541,
+          "before": {
+            "id": 541,
+            "name": "Champion's Dreadgear",
+            "item_ids": [
+              22855,
+              22865,
+              22881,
+              22884,
+              23255,
+              23256
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "after": {
+            "id": 541,
+            "name": "Champion's Dreadgear",
+            "item_ids": [
+              22855,
+              22865,
+              22881,
+              22884,
+              23255,
+              23256
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 547,
+          "before": {
+            "id": 547,
+            "name": "Lieutenant Commander's Dreadgear",
+            "item_ids": [
+              23282,
+              23283,
+              23296,
+              23297,
+              23310,
+              23311
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "after": {
+            "id": 547,
+            "name": "Lieutenant Commander's Dreadgear",
+            "item_ids": [
+              23282,
+              23283,
+              23296,
+              23297,
+              23310,
+              23311
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1680,
+          "before": {
+            "id": 1680,
+            "name": "Dreadmist Raiment",
+            "item_ids": [
+              226756,
+              226757,
+              226758,
+              226759,
+              226760,
+              226761,
+              226762,
+              226763
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+200 Armor."
+              },
+              {
+                "pieces": 4,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 6,
+                "description": "Your spellcasts have a 5% chance to heal you for 300."
+              },
+              {
+                "pieces": 8,
+                "description": "+8 All Resistances."
+              }
+            ]
+          },
+          "after": {
+            "id": 1680,
+            "name": "Dreadmist Raiment",
+            "item_ids": [
+              226756,
+              226757,
+              226758,
+              226759,
+              226760,
+              226761,
+              226762,
+              226763
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+200 Armor."
+              },
+              {
+                "pieces": 4,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 6,
+                "description": "Your spellcasts have a 5% chance to heal you for 270 to 330."
+              },
+              {
+                "pieces": 8,
+                "description": "+8 All Resistances."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1681,
+          "before": {
+            "id": 1681,
+            "name": "Deathmist Raiment",
+            "item_ids": [
+              226921,
+              226922,
+              226923,
+              226924,
+              226925,
+              226926,
+              226927,
+              226928
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 3,
+                "description": "Restores 8 mana per 5 sec."
+              },
+              {
+                "pieces": 4,
+                "description": "Your spellcasts have a 5% chance to heal you for 300."
+              },
+              {
+                "pieces": 5,
+                "description": "When struck in combat has a 2% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every 60 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "after": {
+            "id": 1681,
+            "name": "Deathmist Raiment",
+            "item_ids": [
+              226921,
+              226922,
+              226923,
+              226924,
+              226925,
+              226926,
+              226927,
+              226928
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 3,
+                "description": "Restores 8 mana per 5 sec."
+              },
+              {
+                "pieces": 4,
+                "description": "Your spellcasts have a 5% chance to heal you for 270 to 330."
+              },
+              {
+                "pieces": 5,
+                "description": "When struck in combat has a 2% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every 60 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1682,
+          "before": {
+            "id": 1682,
+            "name": "Battlegear of Valor",
+            "item_ids": [
+              226764,
+              226765,
+              226766,
+              226767,
+              226768,
+              226769,
+              226770,
+              226771
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+200 Armor."
+              },
+              {
+                "pieces": 4,
+                "description": "+40 Attack Power."
+              },
+              {
+                "pieces": 6,
+                "description": "Chance on melee attack to heal for 110 and generate 10 Rage"
+              },
+              {
+                "pieces": 8,
+                "description": "+8 All Resistances."
+              }
+            ]
+          },
+          "after": {
+            "id": 1682,
+            "name": "Battlegear of Valor",
+            "item_ids": [
+              226764,
+              226765,
+              226766,
+              226767,
+              226768,
+              226769,
+              226770,
+              226771
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+200 Armor."
+              },
+              {
+                "pieces": 4,
+                "description": "+40 Attack Power."
+              },
+              {
+                "pieces": 6,
+                "description": "Chance on melee attack to heal for 88 to 132 and generate 10 Rage"
+              },
+              {
+                "pieces": 8,
+                "description": "+8 All Resistances."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1706,
+          "before": {
+            "id": 1706,
+            "name": "Lawbringer Mercy",
+            "item_ids": [
+              226588,
+              226589,
+              226590,
+              226591,
+              226592,
+              226593,
+              226594,
+              226610
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases the chance for allies to trigger your Judgement of Light or Judgement of Wisdom to 70%."
+              },
+              {
+                "pieces": 4,
+                "description": "Increases your critical strike chance with spells and attacks by 2%."
+              },
+              {
+                "pieces": 6,
+                "description": "Whenever your Flash of Light, Holy Light, or Beacon of Light heals a target to full health, you also heal all members of their party for 200 health."
+              }
+            ]
+          },
+          "after": {
+            "id": 1706,
+            "name": "Lawbringer Mercy",
+            "item_ids": [
+              226588,
+              226589,
+              226590,
+              226591,
+              226592,
+              226593,
+              226594,
+              226610
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases the chance for allies to trigger your Judgement of Light or Judgement of Wisdom to 70%."
+              },
+              {
+                "pieces": 4,
+                "description": "Increases your critical strike chance with spells and attacks by 2%."
+              },
+              {
+                "pieces": 6,
+                "description": "Whenever your Flash of Light, Holy Light, or Beacon of Light heals a target to full health, you also heal all members of their party for 189 to 211 health."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1708,
+          "before": {
+            "id": 1708,
+            "name": "Lawbringer Will",
+            "item_ids": [
+              226595,
+              226603,
+              226604,
+              226605,
+              226606,
+              226607,
+              226608,
+              226609
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases the block value of your shield by 30."
+              },
+              {
+                "pieces": 4,
+                "description": "Heal for 200 when you Block. Can only heal once every few seconds."
+              },
+              {
+                "pieces": 6,
+                "description": "Holy Shield no longer has charges and instead always lasts its full duration. In addition, its damage is increased by 80% of your shield block value."
+              }
+            ]
+          },
+          "after": {
+            "id": 1708,
+            "name": "Lawbringer Will",
+            "item_ids": [
+              226595,
+              226603,
+              226604,
+              226605,
+              226606,
+              226607,
+              226608,
+              226609
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases the block value of your shield by 30."
+              },
+              {
+                "pieces": 4,
+                "description": "Heal for 189 to 211 when you Block. Can only heal once every few seconds."
+              },
+              {
+                "pieces": 6,
+                "description": "Holy Shield no longer has charges and instead always lasts its full duration. In addition, its damage is increased by 80% of your shield block value."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1711,
+          "before": {
+            "id": 1711,
+            "name": "Nightslayer Thrill",
+            "item_ids": [
+              226440,
+              226441,
+              226442,
+              226443,
+              226444,
+              226445,
+              226446,
+              226447
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Feint also grants Avoidance for 6 sec, reducing all damage taken from area of effect attacks from non-players by 50%."
+              },
+              {
+                "pieces": 4,
+                "description": "Increases the critical strike damage bonus of your Poisons by 100%."
+              },
+              {
+                "pieces": 6,
+                "description": "Your finishing moves have a $b1% chance per combo point to make your next ability cost no energy."
+              }
+            ]
+          },
+          "after": {
+            "id": 1711,
+            "name": "Nightslayer Thrill",
+            "item_ids": [
+              226440,
+              226441,
+              226442,
+              226443,
+              226444,
+              226445,
+              226446,
+              226447
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Feint also grants Avoidance for 6 sec, reducing all damage taken from area of effect attacks from non-players by 50%."
+              },
+              {
+                "pieces": 4,
+                "description": "Increases the critical strike damage bonus of your Poisons by 100%."
+              },
+              {
+                "pieces": 6,
+                "description": "Your finishing moves have a 5% chance per combo point to make your next ability cost no energy."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1712,
+          "before": {
+            "id": 1712,
+            "name": "Nightslayer Battlearmor",
+            "item_ids": [
+              226473,
+              226474,
+              226475,
+              226476,
+              226477,
+              226478,
+              226479,
+              226480
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "While Just a Flesh Wound and Blade Dance are active, Crimson Tempest, Blunderbuss, and Fan of Knives cost 20  less Energy and generate 100% increased threat."
+              },
+              {
+                "pieces": 4,
+                "description": "Vanish now reduces all Magic damage you take by 50% for its duration, but it no longer grants Stealth or breaks movement impairing effects."
+              },
+              {
+                "pieces": 6,
+                "description": "Your finishing moves have a $b1% chance per combo point to make you take 50% less Physical damage from the next melee attack that hits you within 10 sec."
+              }
+            ]
+          },
+          "after": {
+            "id": 1712,
+            "name": "Nightslayer Battlearmor",
+            "item_ids": [
+              226473,
+              226474,
+              226475,
+              226476,
+              226477,
+              226478,
+              226479,
+              226480
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "While Just a Flesh Wound and Blade Dance are active, Crimson Tempest, Blunderbuss, and Fan of Knives cost 20 less Energy and generate 100% increased threat."
+              },
+              {
+                "pieces": 4,
+                "description": "Vanish now reduces all Magic damage you take by 50% for its duration, but it no longer grants Stealth or breaks movement impairing effects."
+              },
+              {
+                "pieces": 6,
+                "description": "Your finishing moves have a 20% chance per combo point to make you take 50% less Physical damage from the next melee attack that hits you within 10 sec."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1734,
+          "before": {
+            "id": 1734,
+            "name": "Warlord's Threads",
+            "item_ids": [
+              231588,
+              231589,
+              231590,
+              231591,
+              231592,
+              231593
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+20 Stamina."
+              },
+              {
+                "pieces": 3,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "after": {
+            "id": 1734,
+            "name": "Warlord's Threads",
+            "item_ids": [
+              231588,
+              231589,
+              231590,
+              231591,
+              231592,
+              231593
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+20 Stamina."
+              },
+              {
+                "pieces": 3,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1746,
+          "before": {
+            "id": 1746,
+            "name": "Field Marshal's Threads",
+            "item_ids": [
+              231582,
+              231583,
+              231584,
+              231585,
+              231586,
+              231587
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+20 Stamina."
+              },
+              {
+                "pieces": 3,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "after": {
+            "id": 1746,
+            "name": "Field Marshal's Threads",
+            "item_ids": [
+              231582,
+              231583,
+              231584,
+              231585,
+              231586,
+              231587
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+20 Stamina."
+              },
+              {
+                "pieces": 3,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1760,
+          "before": {
+            "id": 1760,
+            "name": "Champion's Threads",
+            "item_ids": [
+              227090,
+              227092,
+              227094,
+              227097,
+              227098,
+              227099
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "after": {
+            "id": 1760,
+            "name": "Champion's Threads",
+            "item_ids": [
+              227090,
+              227092,
+              227094,
+              227097,
+              227098,
+              227099
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1774,
+          "before": {
+            "id": 1774,
+            "name": "Lieutenant Commander's Threads",
+            "item_ids": [
+              227091,
+              227093,
+              227095,
+              227096,
+              227100,
+              227101
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2  sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "after": {
+            "id": 1774,
+            "name": "Lieutenant Commander's Threads",
+            "item_ids": [
+              227091,
+              227093,
+              227095,
+              227096,
+              227100,
+              227101
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Increases damage and healing done by magical spells and effects by up to 23."
+              },
+              {
+                "pieces": 4,
+                "description": "Reduces the casting time of your Immolate spell by 0.2 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Stamina."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1778,
+          "before": {
+            "id": 1778,
+            "name": "Battlegear of Heroism",
+            "item_ids": [
+              226873,
+              226874,
+              226875,
+              226876,
+              226877,
+              226878,
+              226879,
+              226880
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 3,
+                "description": "Restores 15 health per 5 sec."
+              },
+              {
+                "pieces": 4,
+                "description": "Chance on melee attack to heal for 110 and generate 10 Rage"
+              },
+              {
+                "pieces": 5,
+                "description": "When struck in combat, has a 10% chance to remove a Disarm effect from yourself. Can only occur once every 60 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Strength."
+              }
+            ]
+          },
+          "after": {
+            "id": 1778,
+            "name": "Battlegear of Heroism",
+            "item_ids": [
+              226873,
+              226874,
+              226875,
+              226876,
+              226877,
+              226878,
+              226879,
+              226880
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 3,
+                "description": "Restores 15 health per 5 sec."
+              },
+              {
+                "pieces": 4,
+                "description": "Chance on melee attack to heal for 88 to 132 and generate 10 Rage"
+              },
+              {
+                "pieces": 5,
+                "description": "When struck in combat, has a 10% chance to remove a Disarm effect from yourself. Can only occur once every 60 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "+20 Strength."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1789,
+          "before": {
+            "id": 1789,
+            "name": "Volcanic Armor",
+            "item_ids": [
+              227866,
+              227867,
+              227868
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+10 Fire Resistance."
+              },
+              {
+                "pieces": 3,
+                "description": "5% chance of dealing 40 Fire damage on a successful melee attack."
+              }
+            ]
+          },
+          "after": {
+            "id": 1789,
+            "name": "Volcanic Armor",
+            "item_ids": [
+              227866,
+              227867,
+              227868
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+10 Fire Resistance."
+              },
+              {
+                "pieces": 3,
+                "description": "5% chance of dealing 30 to 50 Fire damage on a successful melee attack."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1821,
+          "before": {
+            "id": 1821,
+            "name": "Wicked Nemesis",
+            "item_ids": [
+              231090,
+              231091,
+              231092,
+              231093,
+              231095,
+              231096,
+              231097,
+              231098
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "While you are targeting an enemy within 30 yards, Life Tap grants you mana at the expense of your target's health but deals 50% reduced damage to them. Mana gained remains unchanged."
+              },
+              {
+                "pieces": 4,
+                "description": "While Metamorphosis is active, your offensive abilities and Demon summons cost no Soul Shards. In addition, you heal for 15% of your maximum health when you damage a target with Shadowburn."
+              },
+              {
+                "pieces": 6,
+                "description": "Any excess healing you deal to yourself  is converted into a shield that absorbs damage. This shield can absorb up to 30% of your maximum health, and stacks from multiple heals."
+              }
+            ]
+          },
+          "after": {
+            "id": 1821,
+            "name": "Wicked Nemesis",
+            "item_ids": [
+              231090,
+              231091,
+              231092,
+              231093,
+              231095,
+              231096,
+              231097,
+              231098
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "While you are targeting an enemy within 30 yards, Life Tap grants you mana at the expense of your target's health but deals 50% reduced damage to them. Mana gained remains unchanged."
+              },
+              {
+                "pieces": 4,
+                "description": "While Metamorphosis is active, your offensive abilities and Demon summons cost no Soul Shards. In addition, you heal for 15% of your maximum health when you damage a target with Shadowburn."
+              },
+              {
+                "pieces": 6,
+                "description": "Any excess healing you deal to yourself is converted into a shield that absorbs damage. This shield can absorb up to 30% of your maximum health, and stacks from multiple heals."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1897,
+          "before": {
+            "id": 1897,
+            "name": "Frostfire Vestments",
+            "item_ids": [
+              236087,
+              236088,
+              236089,
+              236090,
+              236091,
+              236092,
+              236093,
+              236094,
+              236095
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Allies with your Temporal Beacon heal for ${$SPA*67/1000+$<healpower>*8/100} health every 1 sec."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Regeneration ability grants your target 60% increased movement speed while you are channeling, and each time it heals your target, they have a chance to gain $1218695s2% increased attack and casting speed for 15 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Damage you deal to Undead causes 25% more chronomantic healing, and you gain mana equal to 5% of the chronomantic healing you generate from damaging Undead."
+              }
+            ]
+          },
+          "after": {
+            "id": 1897,
+            "name": "Frostfire Vestments",
+            "item_ids": [
+              236087,
+              236088,
+              236089,
+              236090,
+              236091,
+              236092,
+              236093,
+              236094,
+              236095
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Allies with your Temporal Beacon heal for (Arcane spell power * 67 / 1000 + 53.858) health every 1 sec."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Regeneration ability grants your target 60% increased movement speed while you are channeling, and each time it heals your target, they have a chance to gain 10% increased attack and casting speed for 15 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Damage you deal to Undead causes 25% more chronomantic healing, and you gain mana equal to 5% of the chronomantic healing you generate from damaging Undead."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1933,
+          "before": {
+            "id": 1933,
+            "name": "Lightbreaker's Battlegear",
+            "item_ids": [
+              239520,
+              239521,
+              239522,
+              239523,
+              239524,
+              239525,
+              239526,
+              239527
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Shockwave deals 35% increased damage and its cooldown is reduced by 2 sec each time you hit a target with Heroic Strike or Cleave."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Recklessness, Retaliation, and Shield Wall abilities no longer share a cooldown. Additionally, your Recklessness ability lasts 15 sec longer, and while it is active you gain 50% of your Defense Skill over 300 as Strength."
+              },
+              {
+                "pieces": 6,
+                "description": "Your abilities no longer have stance requirements. In addition, hits from Revenge, Devastate, or Shield Slam increase the damage done by your next Whirlwind or Execute by $1234067s3%, stacking up to 5 times."
+              }
+            ]
+          },
+          "after": {
+            "id": 1933,
+            "name": "Lightbreaker's Battlegear",
+            "item_ids": [
+              239520,
+              239521,
+              239522,
+              239523,
+              239524,
+              239525,
+              239526,
+              239527
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Shockwave deals 35% increased damage and its cooldown is reduced by 2 sec each time you hit a target with Heroic Strike or Cleave."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Recklessness, Retaliation, and Shield Wall abilities no longer share a cooldown. Additionally, your Recklessness ability lasts 15 sec longer, and while it is active you gain 50% of your Defense Skill over 300 as Strength."
+              },
+              {
+                "pieces": 6,
+                "description": "Your abilities no longer have stance requirements. In addition, hits from Revenge, Devastate, or Shield Slam increase the damage done by your next Whirlwind or Execute by 20%, stacking up to 5 times."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1935,
+          "before": {
+            "id": 1935,
+            "name": "Duskwraith Leathers",
+            "item_ids": [
+              239547,
+              239548,
+              239549,
+              239550,
+              239551,
+              239552,
+              239553,
+              239554
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your stacks of Rolling with the Punches also increase all damage you deal by 1%."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Blade Flurry now also strikes a third target and increases your attack speed by an additional 10%. In addition, each combo point you spend reduces the remaining cooldown on your Blade Flurry by 0.5 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Your Rolling with the Punches now grants 2% more health and 1% more damage per stack. At 5 stacks, each time you Dodge or Parry you will gain $1226957s3 Energy."
+              }
+            ]
+          },
+          "after": {
+            "id": 1935,
+            "name": "Duskwraith Leathers",
+            "item_ids": [
+              239547,
+              239548,
+              239549,
+              239550,
+              239551,
+              239552,
+              239553,
+              239554
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your stacks of Rolling with the Punches also increase all damage you deal by 1%."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Blade Flurry now also strikes a third target and increases your attack speed by an additional 10%. In addition, each combo point you spend reduces the remaining cooldown on your Blade Flurry by 0.5 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Your Rolling with the Punches now grants 2% more health and 1% more damage per stack. At 5 stacks, each time you Dodge or Parry you will gain 10 Energy."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1945,
+          "before": {
+            "id": 1945,
+            "name": "Waywatcher Ferocity",
+            "item_ids": [
+              240060,
+              240061,
+              240062,
+              240063,
+              240064,
+              240065,
+              240066,
+              240067
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "You gain 2 Energy each time Rake or Rip deals periodic damage."
+              },
+              {
+                "pieces": 4,
+                "description": "Multiplies the damage bonus from Tiger's Fury by ${1+$m2/100}.0."
+              },
+              {
+                "pieces": 6,
+                "description": "Your Finishing Moves have a 20% chance per combo point spent to trigger Clearcasting and extend the duration of your active Tiger's Fury by 6 sec."
+              }
+            ]
+          },
+          "after": {
+            "id": 1945,
+            "name": "Waywatcher Ferocity",
+            "item_ids": [
+              240060,
+              240061,
+              240062,
+              240063,
+              240064,
+              240065,
+              240066,
+              240067
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "You gain 2 Energy each time Rake or Rip deals periodic damage."
+              },
+              {
+                "pieces": 4,
+                "description": "Multiplies the damage bonus from Tiger's Fury by 2."
+              },
+              {
+                "pieces": 6,
+                "description": "Your Finishing Moves have a 20% chance per combo point spent to trigger Clearcasting and extend the duration of your active Tiger's Fury by 6 sec."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1955,
+          "before": {
+            "id": 1955,
+            "name": "Fallen Regality",
+            "item_ids": [
+              236343,
+              240853
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "$?s21184[Damaging finishing moves have a $1231492b1% chance per combo point to restore 20 energy.]?s446658[If Cleave hits fewer than its maximum number of targets, it deals 25% more damage for each unused bounce.]?s446374[Flanking Strike's damage buff is increased by an additional 2% per stack. When striking from behind, your target takes 150% increased damage from Flanking Strike.][The blades will never accept you as their master.]"
+              }
+            ]
+          },
+          "after": {
+            "id": 1955,
+            "name": "Fallen Regality",
+            "item_ids": [
+              236343,
+              240853
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "The blades will never accept you as their master."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1963,
+          "before": {
+            "id": 1963,
+            "name": "Inquisition Shockplate",
+            "item_ids": [
+              246055,
+              246056,
+              246057,
+              246058,
+              246059,
+              246060,
+              246061,
+              246062
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "While Shock and Awe is active, Crusader Strike and Exorcism grant you Holy Power, increasing all Holy damage you deal by 20%, stacking up to 3 times."
+              },
+              {
+                "pieces": 4,
+                "description": "Divine Storm, Holy Shock, and Holy Wrath consume all your Holy Power, dealing 100% increased damage per Holy Power you have accumulated, 50% effective against player controlled targets."
+              },
+              {
+                "pieces": 6,
+                "description": "Consuming Holy Power increases your Spell Power by 13% per Holy Power consumed for 10 sec."
+              }
+            ]
+          },
+          "after": {
+            "id": 1963,
+            "name": "Inquisition Shockplate",
+            "item_ids": [
+              246055,
+              246056,
+              246057,
+              246058,
+              246059,
+              246060,
+              246061,
+              246062
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "While Shock and Awe is active, Crusader Strike and Exorcism grant you Holy Power, increasing all Holy damage you deal by 20%, stacking up to 3 times."
+              },
+              {
+                "pieces": 4,
+                "description": "Divine Storm, Holy Shock, and Holy Wrath consume all your Holy Power, dealing 100% increased damage per Holy Power you have accumulated, 50% effective against player controlled targets."
+              },
+              {
+                "pieces": 6,
+                "description": "Consuming Holy Power increases your Spell Power by 8 to 18% per Holy Power consumed for 10 sec."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 2135,
+          "before": {
+            "id": 2135,
+            "name": "Krol'dok Battlegear",
+            "item_ids": [
+              275005,
+              275006,
+              287012,
+              287013,
+              287014
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+100 Armor."
+              },
+              {
+                "pieces": 3,
+                "description": "Increased Defense +5."
+              },
+              {
+                "pieces": 4,
+                "description": "Chance on block to heal for 18. Healing is doubled in Strongholds and Cities."
+              },
+              {
+                "pieces": 5,
+                "description": "Taking damage has a high chance to increase your Stamina by 1 for 30 sec, stacking up to 20 times."
+              }
+            ]
+          },
+          "after": {
+            "id": 2135,
+            "name": "Krol'dok Battlegear",
+            "item_ids": [
+              275005,
+              275006,
+              287012,
+              287013,
+              287014
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+100 Armor."
+              },
+              {
+                "pieces": 3,
+                "description": "Increased Defense +5."
+              },
+              {
+                "pieces": 4,
+                "description": "Chance on block to heal for 14 to 23. Healing is doubled in Strongholds and Cities."
+              },
+              {
+                "pieces": 5,
+                "description": "Taking damage has a high chance to increase your Stamina by 1 for 30 sec, stacking up to 20 times."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 2145,
+          "before": {
+            "id": 2145,
+            "name": "Lawbringer Armor",
+            "item_ids": [
+              288879,
+              288880,
+              288881,
+              288882,
+              288883,
+              288884,
+              288885,
+              288886
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the chance of triggering a Judgement of Light heal by 10%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to get a critical strike with spells by 1%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to get a critical strike with melee attacks by 1%."
+              },
+              {
+                "pieces": 8,
+                "description": "Gives the Paladin a chance on every melee hit to heal your party for 200."
+              }
+            ]
+          },
+          "after": {
+            "id": 2145,
+            "name": "Lawbringer Armor",
+            "item_ids": [
+              288879,
+              288880,
+              288881,
+              288882,
+              288883,
+              288884,
+              288885,
+              288886
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the chance of triggering a Judgement of Light heal by 10%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to get a critical strike with spells by 1%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to get a critical strike with melee attacks by 1%."
+              },
+              {
+                "pieces": 8,
+                "description": "Gives the Paladin a chance on every melee hit to heal your party for 189 to 211."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        }
+      ]
     }
   }
 }
