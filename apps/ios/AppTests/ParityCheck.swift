@@ -55,12 +55,7 @@ enum ParityCheck {
         // by the last section, inside each section's own tolerance.
         "raid": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
         "raid-signup": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
-        "raid-officer": [
-            Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29"),
-            // Round-4 mock: the officer's Who is coming sits 8 pt lower in the mock (its Covered and
-            // not-synced lines); exactly at the 8 pt edge.
-            Drift(prefix: "section-before-you-pull: y", since: "2026-11-10", lane: "round-4 mocks"),
-        ],
+        "raid-officer": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
         // Round-4 mock: Home's raid line title (`Onyxia's Lair · Sat 19 Dec, 7:00 pm CST`) holds one
         // line in the runner's Chromium and wraps on the phone, so the block is 16 pt taller.
         "home-60": [
