@@ -71,7 +71,7 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 **Demoralizing Roar.** Demoralizing Roar whenever the boss does not have it, and again in its last 3 seconds, unless a warrior's Demoralizing Shout is already on it.
 
-**Rage.** At levels 40 to 53 rage is short: queue Maul only at 30 rage, so Primal Bite seldom waits on rage when it comes off cooldown.
+**Rage.** Maul only replaces a white swing, so don't queue it on every 15 rage once you have better places for the rage. From 25, queue it at 20 so Lacerate stays fed. From 30 to 35, and again from 40, hold it until you have 45 rage: Lacerate and Primal Bite get your rage first and seldom wait on it. From 36 to 39 queue it at 25, so Frenzied Regeneration still has rage when you need it. At 60, 25 is enough.
 
 **Adds.** In a raid at 60, on three or more targets, Swipe goes to the top. On two targets, and while leveling, keep it below Primal Bite, Lacerate and Maul. Put Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.
 
