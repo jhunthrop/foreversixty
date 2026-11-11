@@ -58,10 +58,16 @@ export function pickerClasses(
   }));
 }
 
+/** A class's specs, one per talent tree (Feral Bear folds into Feral): what every picker lists. */
+export function treeSpecs(pickerClass: PickerClass): PickerSpec[] {
+  return pickerClass.specs.filter(
+    (spec, index, all) => all.findIndex((other) => other.tree === spec.tree) === index,
+  );
+}
+
 /** A class's spec names, one per talent tree ("Balance, Feral, Restoration"). */
 export function specSummary(pickerClass: PickerClass, separator: string): string {
-  return pickerClass.specs
-    .filter((spec, index, all) => all.findIndex((other) => other.tree === spec.tree) === index)
+  return treeSpecs(pickerClass)
     .map((spec) => spec.name)
     .join(separator);
 }

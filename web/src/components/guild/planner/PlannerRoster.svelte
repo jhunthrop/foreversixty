@@ -55,6 +55,8 @@
       ?.focus();
     return true;
   }
+  /** The last-nights strip has data for someone; without it its column head stays blank. */
+  const nightsKnown = $derived(facts !== null && [...facts.values()].some((f) => f.cells !== null));
 </script>
 
 <div class={closed ? 'opacity-60' : undefined} data-testid="raid-roster">
@@ -64,10 +66,10 @@
     {:else}
       {#if facts !== null}
         <div class="hidden items-center justify-between gap-4 pt-1 lg:flex">
-          {#if [...facts.values()].some((f) => f.cells !== null)}<AttendanceStrip legend />{:else}<span
-            ></span>{/if}
+          {#if nightsKnown}<AttendanceStrip legend />{:else}<span></span>{/if}
           <span class="{PLANNER_FACT_COLUMNS} text-label text-muted grid font-bold" aria-hidden="true">
-            {#each PLANNER_FACT_HEADS as head (head)}<span>{head}</span>{/each}
+            {#each PLANNER_FACT_HEADS as head, i (head)}<span>{i === 0 && !nightsKnown ? '' : head}</span
+              >{/each}
           </span>
         </div>
       {/if}

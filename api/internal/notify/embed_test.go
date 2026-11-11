@@ -11,6 +11,7 @@ var fixedFinish = time.Date(2026, 10, 25, 18, 30, 0, 0, time.UTC)
 
 const (
 	testBase   = "https://foreversixty.gg"
+	testAPI    = "https://api.foreversixty.gg"
 	testAvatar = "https://foreversixty.gg/seal-400.png"
 )
 
@@ -39,18 +40,18 @@ func TestEmbedsMatchTheCopyTable(t *testing.T) {
 			`{"title":"Test message from Forever Sixty","description":"Your webhook works. You will get a message here when a server sim finishes or a combat log you upload finishes parsing.","url":"https://foreversixty.gg/account#discord",` + common + `}`,
 		},
 		"sim": {
-			SimFinishedEmbed(testBase, SimFinished{
+			SimFinishedEmbed(testBase, testAPI, SimFinished{
 				SimID: "abc123", Spec: "mage-frost", Character: "Frostbolt", DPS: 1204.4, Title: "Phase 1 BiS check",
 				CreatedAt: fixedFinish.Add(-192 * time.Second), FinishedAt: fixedFinish,
 			}),
-			`{"title":"Frostbolt's Frost Mage sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"1,204 DPS","inline":true},{"name":"Run","value":"Phase 1 BiS check","inline":true},{"name":"Run time","value":"3 min 12 s","inline":true}],` + footer + `"thumbnail":{"url":"https://foreversixty.gg/icons/hd/crests/mage.webp"},` + stamp + `}`,
+			`{"title":"Frostbolt's Frost Mage sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"1,204 DPS","inline":true},{"name":"Run","value":"Phase 1 BiS check","inline":true},{"name":"Run time","value":"3 min 12 s","inline":true}],` + footer + `"thumbnail":{"url":"https://api.foreversixty.gg/v1/discord/tiles/crest/mage.png"},` + stamp + `}`,
 		},
 		"sim headline, no run": {
-			SimFinishedEmbed(testBase, SimFinished{
+			SimFinishedEmbed(testBase, testAPI, SimFinished{
 				SimID: "abc123", Spec: "warrior-fury", DPS: 900, Headline: "+41 DPS from Vis'kag",
 				CreatedAt: fixedFinish.Add(-48 * time.Second), FinishedAt: fixedFinish,
 			}),
-			`{"title":"Your Fury Warrior sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"+41 DPS from Vis'kag","inline":true},{"name":"Run time","value":"48 s","inline":true}],` + footer + `"thumbnail":{"url":"https://foreversixty.gg/icons/hd/crests/warrior.webp"},` + stamp + `}`,
+			`{"title":"Your Fury Warrior sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"+41 DPS from Vis'kag","inline":true},{"name":"Run time","value":"48 s","inline":true}],` + footer + `"thumbnail":{"url":"https://api.foreversixty.gg/v1/discord/tiles/crest/warrior.png"},` + stamp + `}`,
 		},
 		"log": {
 			UploadParsedEmbed(testBase, UploadParsed{
@@ -74,10 +75,10 @@ func TestEmbedsMatchTheCopyTable(t *testing.T) {
 			`{"title":"Test message from Forever Sixty","description":"Your webhook works. You will get a message here when a server sim finishes.","url":"https://foreversixty.gg/account#discord",` + common + `}`,
 		},
 		"sim, unnamed": {
-			SimFinishedEmbed(testBase, SimFinished{
+			SimFinishedEmbed(testBase, testAPI, SimFinished{
 				SimID: "abc123", Spec: "mage-frost", DPS: 10, CreatedAt: fixedFinish.Add(-time.Hour - 5*time.Minute), FinishedAt: fixedFinish,
 			}),
-			`{"title":"Your Frost Mage sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"10 DPS","inline":true},{"name":"Run time","value":"1 h 5 min","inline":true}],` + footer + `"thumbnail":{"url":"https://foreversixty.gg/icons/hd/crests/mage.webp"},` + stamp + `}`,
+			`{"title":"Your Frost Mage sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"10 DPS","inline":true},{"name":"Run time","value":"1 h 5 min","inline":true}],` + footer + `"thumbnail":{"url":"https://api.foreversixty.gg/v1/discord/tiles/crest/mage.png"},` + stamp + `}`,
 		},
 		"log, bare": {
 			UploadParsedEmbed(testBase, UploadParsed{
@@ -111,7 +112,7 @@ func TestFightsAndVisibilityWording(t *testing.T) {
 }
 
 func TestRelativeBaseOmitsLinksAndThumbnail(t *testing.T) {
-	e := SimFinishedEmbed("/relative", SimFinished{SimID: "x", Spec: "mage-frost", FinishedAt: fixedFinish})
+	e := SimFinishedEmbed("/relative", "/relative", SimFinished{SimID: "x", Spec: "mage-frost", FinishedAt: fixedFinish})
 	if e.URL != "" || e.Thumbnail != "" || AvatarURL("/relative") != "" {
 		t.Fatalf("%+v", e)
 	}
@@ -123,7 +124,7 @@ func TestLongMemberTextStaysInsideDiscordLimits(t *testing.T) {
 	if n := len([]rune(e.Title)); n > maxTitleRunes {
 		t.Errorf("title %d runes", n)
 	}
-	s := SimFinishedEmbed(testBase, SimFinished{Spec: "mage-frost", Title: long, Headline: long})
+	s := SimFinishedEmbed(testBase, testAPI, SimFinished{Spec: "mage-frost", Title: long, Headline: long})
 	for _, f := range append(e.Fields, s.Fields...) {
 		if len([]rune(f.Value)) > maxValueRunes {
 			t.Errorf("%s: %d runes", f.Name, len([]rune(f.Value)))
@@ -156,7 +157,7 @@ func TestEscapeMarkdown(t *testing.T) {
 }
 
 func TestTheCharacterNameIsEscapedInTheSimTitle(t *testing.T) {
-	e := SimFinishedEmbed(testBase, SimFinished{Spec: "mage-frost", Character: "A*b_c"})
+	e := SimFinishedEmbed(testBase, testAPI, SimFinished{Spec: "mage-frost", Character: "A*b_c"})
 	if want := `A\*b\_c's Frost Mage sim finished`; e.Title != want {
 		t.Fatalf("title = %q, want %q", e.Title, want)
 	}

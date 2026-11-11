@@ -4,7 +4,7 @@
      colour and its specs. Each row links its class guide; with `specLinks` the class name and each
      spec are their own links instead. The caller frames it (a Plate or a Section). -->
 <script lang="ts">
-  import { pickerClasses, specSummary, type PickerClass } from '../../lib/class-picker';
+  import { pickerClasses, specSummary, treeSpecs, type PickerClass } from '../../lib/class-picker';
   import Crest from './Crest.svelte';
   import Row from './Row.svelte';
   import RowGrid from './RowGrid.svelte';
@@ -31,7 +31,7 @@
       <Row title={c.name} titleTone={{ classSlug: c.slug }} testid={`${testidPrefix}${c.slug}`}>
         {#snippet lead()}<Crest cls={c.slug} size={CREST_PX} />{/snippet}
         {#snippet titleContent()}<a class="cpick-class" href={c.href}>{c.name}</a>{/snippet}
-        {#snippet subContent()}{#each c.specs as spec, i (spec.key)}{#if i > 0}{SPEC_SEPARATOR}{/if}<a
+        {#snippet subContent()}{#each treeSpecs(c) as spec, i (spec.key)}{#if i > 0}{SPEC_SEPARATOR}{/if}<a
               class="cpick-spec"
               href={spec.href}>{spec.name}</a
             >{/each}{/snippet}
@@ -57,6 +57,10 @@
   .cpick-spec {
     display: inline-block;
     line-height: 24px;
+  }
+  /* The class name keeps its class colour (the Row's title tone), never the link gold. */
+  .cpick-class {
+    color: inherit;
   }
   .cpick-class:hover {
     text-decoration: underline;

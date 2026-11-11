@@ -5,6 +5,7 @@
      the pull at the right. A choice saves at once through the one sign-up save
      (lib/guild/signup-save.ts); with no role to sign as, the raid page instead. -->
 <script lang="ts">
+  import { raidCopy } from '../../lib/guild/raid-copy';
   import type { GuildRaidRole, GuildSignupState, NextRaidView } from '../../lib/guild/api';
   import { pressSignup } from '../../lib/guild/signup-save';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
@@ -108,6 +109,9 @@
             onChange={(state) => void choose(state)}
             testid="home-raid-signup"
           />
+          <span class="text-muted text-[14px]" data-testid="home-raid-role"
+            >{raidCopy.signingAs(raidCopy.roleLabels[role])}</span
+          >
         {:else if raidHref !== null}
           <a class={LINK} href={raidHref}>{homeBCopy.signUpLink} ›</a>
         {/if}

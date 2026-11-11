@@ -3,9 +3,11 @@ package sheet
 import (
 	"image"
 	"image/color"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
@@ -117,4 +119,30 @@ func mustCrest(t *testing.T, slug string) []byte {
 		t.Fatal(err)
 	}
 	return png
+}
+
+// No Go file outside this package builds a bare web crest URL: every Discord crest is the ringed
+// PNG from CrestURL (brand audit 2026-11-10 hand-off D).
+func TestNoBareCrestURLOutsideSheet(t *testing.T) {
+	root := ".."
+	var found []string
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() || !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
+			return err
+		}
+		body, readErr := os.ReadFile(path)
+		if readErr != nil {
+			return readErr
+		}
+		if strings.Contains(string(body), "icons/hd/crests") {
+			found = append(found, path)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(found) > 0 {
+		t.Fatalf("bare crest URLs, use sheet.CrestURL: %v", found)
+	}
 }

@@ -42,6 +42,8 @@ export const raidPostCopy = {
 } as const;
 
 export const raidCopy = {
+  /** A raider's unmet raid requirements, the one word on every board ("2 missing"). */
+  missing: (count: number): string => `${count} missing`,
   planButton: 'Plan an event',
   cap: 'A guild plans at most 12 raids ahead.',
   subheads: {
@@ -61,6 +63,8 @@ export const raidCopy = {
   },
   segments: { in: 'In', late: 'Late', bench: 'Bench', out: 'Out' },
   roleLabels: { tank: 'Tank', healer: 'Healer', dps: 'DPS' } satisfies Record<GuildRaidRole, string>,
+  /** Beside a sign-up control: the role the answer carries ("as DPS"). */
+  signingAs: (role: string): string => `as ${role}`,
   emptyPlanned: {
     member: 'Nothing planned yet. Officers post dungeon runs, events and raids here.',
     officer: 'Nothing planned yet. Post a dungeon run or a guild event and the guild can sign up.',

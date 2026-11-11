@@ -6,6 +6,7 @@
      While a change saves the control shows it pressed; a refusal reverts it. From 1024 the row
      also carries its figures (PlannerFacts) in fixed columns under the roster's one head line. -->
 <script lang="ts">
+  import { raidCopy } from '../../../lib/guild/raid-copy';
   import type { GuildSignupState } from '../../../lib/guild/api';
   import { rowSub, stateTag } from '../../../lib/guild/raid-planner-view';
   import type { RosterRow } from '../../../lib/guild/raid-roster';
@@ -84,6 +85,7 @@
           >{refusal}</span
         >{/if}
     {/snippet}
+    <!-- In is the roster's default: a raider's row carries a Tag only for Late, Bench and Out. -->
     {#snippet trail()}
       {#if officer}
         <SignupSegments
@@ -95,7 +97,7 @@
           onChange={(state) => void change(state)}
           testid={`raid-roster-state-${row.character_key}`}
         />
-      {:else if row.state !== null}
+      {:else if row.state !== null && row.state !== 'in'}
         {@const tag = stateTag(row.state)}
         <Tag tone={tag.tone} testid="raid-roster-state">{tag.text}</Tag>
       {/if}
@@ -110,7 +112,8 @@
           </span>
           {#if facts.short === null}<span class="text-muted">–</span>
           {:else if facts.short === 0}<span class="text-kill" aria-label="Ready">✓</span>
-          {:else}<span class="text-wipe" title={facts.why.join(', ')}>{facts.short} short</span>{/if}
+          {:else}<span class="text-wipe" title={facts.why.join(', ')}>{raidCopy.missing(facts.short)}</span
+            >{/if}
           <span>{facts.rating ?? '–'}</span>
           <span>{facts.attendancePct === null ? '–' : `${facts.attendancePct}%`}</span>
         </span>

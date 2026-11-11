@@ -6,6 +6,7 @@
      on every figure, filters by group and name. Waiting approvals sit above it on one line. Reads the
      home it is given plus the attendance grid (officers), the loot history and the readiness board. -->
 <script lang="ts">
+  import { raidCopy } from '../../../lib/guild/raid-copy';
   import CharacterName from '../../ui/CharacterName.svelte';
   import { onMount, type ComponentProps } from 'svelte';
   import GuildRosterTable from '../GuildRosterTable.svelte';
@@ -172,7 +173,7 @@
         ? dash
         : row.short === 0
           ? { value: '✓', tone: 'kill' }
-          : { value: `${row.short} missing`, tone: 'wipe' },
+          : { value: raidCopy.missing(row.short), tone: 'wipe' },
       row.seenDays === null || row.seenDays < 2
         ? { value: seenText(row.seenDays), muted: true }
         : {
@@ -309,7 +310,7 @@
             {#snippet sub()}{row.spec}{rankWord(row.rank)}{#if row.cells.length > 0}<span class="ui-st-phone"
                   ><span class="block pt-0.5"
                     ><AttendanceStrip cells={row.cells} />{#if row.short}<span class="text-wipe ml-2"
-                        >{row.short} missing</span
+                        >{raidCopy.missing(row.short)}</span
                       >{/if}{#if (row.seenDays ?? 0) >= 2}<span
                         class={['ml-2', (row.seenDays ?? 0) >= STALE_DAYS ? 'text-wipe' : 'text-muted']}
                         >{seenText(row.seenDays)}</span

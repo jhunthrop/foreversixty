@@ -1,13 +1,13 @@
 package notify
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
 	"github.com/jhunthrop/foreversixty/api/internal/copygen"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
@@ -19,7 +19,6 @@ const (
 	accountDiscordPath = "/account#discord"
 	simPathPrefix      = "/sim/"
 	reportPathPrefix   = "/reports/"
-	crestPathFormat    = "/icons/hd/crests/%s.webp"
 	// sealPath is the raster Forever Sixty seal the web serves; Discord
 	// does not draw SVG avatars.
 	sealPath = brand.SealPath
@@ -161,8 +160,9 @@ type SimFinished struct {
 	FinishedAt time.Time
 }
 
-// SimFinishedEmbed is the "Server sim finished" message.
-func SimFinishedEmbed(publicBaseURL string, in SimFinished) Embed {
+// SimFinishedEmbed is the "Server sim finished" message. Its thumbnail is the ringed crest the API
+// renders (sheet.CrestURL), the web's one crest; without an absolute API origin it has none.
+func SimFinishedEmbed(publicBaseURL, apiBaseURL string, in SimFinished) Embed {
 	spec, known := specs.ByKey[in.Spec]
 	title := simTitle(in.Character, spec, known)
 	e := baseEmbed(title, absoluteURL(publicBaseURL, simPathPrefix+in.SimID), in.FinishedAt)
@@ -179,8 +179,8 @@ func SimFinishedEmbed(publicBaseURL string, in SimFinished) Embed {
 	e.Fields = append(e.Fields, EmbedField{
 		Name: embedCopy.SimTookName, Value: textfmt.Duration(in.FinishedAt.Sub(in.CreatedAt)), Inline: true,
 	})
-	if known {
-		e.Thumbnail = absoluteURL(publicBaseURL, fmt.Sprintf(crestPathFormat, spec.ClassSlug))
+	if known && isAbsolute(strings.TrimSpace(apiBaseURL)) {
+		e.Thumbnail = sheet.CrestURL(apiBaseURL, spec.ClassSlug)
 	}
 	return e
 }

@@ -42,4 +42,9 @@ describe('trySignup', () => {
     expect(outcome).toEqual({ ok: false, line: raidCopy.stripStatus.failed });
     expect(isRaceLine(raidCopy.stripStatus.failed)).toBe(false);
   });
+
+  it("names a lock race on the officer's Move to In (WednesdayPanel's guild-move-error line)", async () => {
+    const send = () => Promise.reject(new GuildApiError('x', 409, 'raid_locked'));
+    expect(await trySignup(2, 41, 'k', BODY, send)).toEqual({ ok: false, line: raidCopy.races.locked });
+  });
 });

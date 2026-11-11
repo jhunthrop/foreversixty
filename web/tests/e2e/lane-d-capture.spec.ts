@@ -14,6 +14,7 @@ import { FRAME_PAGES, openFramePage, type FramePage } from './support/frame-page
 import { openGuildState } from './support/guild-parity';
 import { openHome } from './support/home-page';
 import { REPO_ROOT } from './support/parity';
+import { routeRealIcons } from './support/real-icons';
 
 const SET = process.env.LANE_D_CAPTURE ?? '';
 const ONLY = process.env.LANE_D_PAGES?.split(',');
@@ -46,6 +47,7 @@ test.describe('lane D capture', () => {
         const context = await browser.newContext({ viewport: { width, height: HEIGHT }, baseURL });
         const page = await context.newPage();
         try {
+          await routeRealIcons(page);
           await openFramePage(page, framePage);
           await page.screenshot({
             path: path.join(OUT, `${framePage.id}-${width}.jpg`),
