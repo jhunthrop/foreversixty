@@ -299,8 +299,8 @@ test('a finished run can be saved, and the saved page renders its table', async 
   );
   await page.getByTestId('sim-save-confirm').click();
 
-  await expect(page.getByTestId('sim-save-link')).toBeVisible();
-  await expect(page.getByTestId('sim-save-link')).toHaveValue(new RegExp(`/sim/${id}$`));
+  await expect(page.getByTestId('sim-save-url')).toBeVisible();
+  await expect(page.getByTestId('sim-save-url')).toHaveValue(new RegExp(`/sim/${id}$`));
 
   // Opening the saved link: the shell and the fetch it triggers both have to be stubbed --
   // `astro preview` carries no Worker to rewrite a fresh, non-prerendered id onto sim.html

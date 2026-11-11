@@ -32,6 +32,7 @@
   import { bandRangeLabel } from '../../lib/planner/band-title';
   import { bandForLevel } from '../../lib/bis/hover';
   import { plannerCopy } from '../../lib/planner/copy';
+  import { uiCopy } from '../../lib/ui/copy';
   import { levelReached, ranksByTalent } from '../../lib/planner/derive';
   import {
     decodeFS1,
@@ -1273,9 +1274,10 @@
 
 {#snippet railSkeleton(title: string)}
   <Section {title} panel>
-    <div class="pl-sec" aria-busy="true">
-      <span class="skeleton-block block max-w-full" style="width:260px;height:20px"></span>
-      <span class="skeleton-block block max-w-full" style="width:200px;height:44px"></span>
+    <div class="pl-sec" role="status" aria-busy="true">
+      <span class="sr-only">{uiCopy.loading}</span>
+      <span class="skeleton-block block max-w-full" style="width:260px;height:20px" aria-hidden="true"></span>
+      <span class="skeleton-block block max-w-full" style="width:200px;height:44px" aria-hidden="true"></span>
     </div>
   </Section>
 {/snippet}
@@ -1284,8 +1286,9 @@
      rail, so without it the level build and everything under it jumped down on load. -->
 {#snippet orderSkeleton()}
   <Section title={plannerCopy.pointOrderTitle} panel>
-    <p class="pl-pad" aria-busy="true">
-      <span class="skeleton-block block max-w-full" style="width:160px;height:20px"></span>
+    <p class="pl-pad" role="status" aria-busy="true">
+      <span class="sr-only">{uiCopy.loading}</span>
+      <span class="skeleton-block block max-w-full" style="width:160px;height:20px" aria-hidden="true"></span>
     </p>
   </Section>
 {/snippet}
@@ -1319,8 +1322,9 @@
         {/snippet}
         {#snippet answer()}
           {#if status === 'loading'}
-            <div class="pl-ans-skel" aria-busy="true">
-              <span class="skeleton-block block" style="width:150px;height:68px"></span>
+            <div class="pl-ans-skel" role="status" aria-busy="true">
+              <span class="sr-only">{uiCopy.loading}</span>
+              <span class="skeleton-block block" style="width:150px;height:68px" aria-hidden="true"></span>
             </div>
           {:else}
             <PlannerAnswer {store} simHref={simLinkShown ? simHref : undefined} />

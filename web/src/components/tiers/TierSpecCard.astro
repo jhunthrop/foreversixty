@@ -10,6 +10,7 @@ import Plate from '../ui/Plate.svelte';
 import { LINK } from '../../lib/ui/primitives';
 import { REGION } from '../../lib/ui/regions';
 import { tiersCopy } from '../../lib/tiers/tier-copy';
+import { uiCopy } from '../../lib/ui/copy';
 
 interface Props {
   /** The page's own path, where sign-in returns. */
@@ -29,7 +30,7 @@ const copy = tiersCopy.card;
   <div data-signed-in-only>
     <Plate flush={false}>
       <div class="tier-card-skeleton" role="status" aria-busy="true" data-answer-skeleton>
-        <span class="sr-only">Loading</span>
+        <span class="sr-only">{uiCopy.loading}</span>
         <span class="skeleton-block tier-sk-name" aria-hidden="true"></span>
         <span class="skeleton-block tier-sk-line" aria-hidden="true"></span>
       </div>

@@ -5,6 +5,7 @@
      says `Choose a channel.`; a 422 `channel_unusable` refetches, clears the select and says so.
      The remove question replaces the actions row, as everywhere else in the section. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { onMount, tick } from 'svelte';
   import {
     GuildApiError,
@@ -159,7 +160,7 @@
 </p>
 
 {#if listState === 'empty'}
-  <p class="text-[14px]" data-testid="bot-channels-empty">{guildBotCopy.picker.empty(server)}</p>
+  <EmptyState message={guildBotCopy.picker.empty(server)} testid="bot-channels-empty" />
 {:else if listState === 'error'}
   <div class="flex flex-col gap-2">
     <span class="quiet-label">{guildBotCopy.picker.label}</span>

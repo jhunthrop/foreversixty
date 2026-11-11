@@ -23,8 +23,6 @@
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { classTone } from '../lib/ui/primitives';
-  import { BUSY_CLASS } from '../lib/ui/busy';
-  import { button } from '../lib/ui/button';
   import ClassCrestRing from './character/ClassCrestRing.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import GuildJoinedBlock from './guild/GuildJoinedBlock.svelte';
@@ -198,15 +196,16 @@
               </p>
             </div>
             <div class="flex w-full flex-col gap-3 md:flex-row md:items-center">
-              <button
-                class="{button('primary', 'md')} w-full md:w-fit {busy ? BUSY_CLASS : ''}"
+              <Button
+                tone="primary"
+                class="w-full md:w-fit"
                 onclick={() => void onJoin()}
-                disabled={busy}
-                aria-busy={busy}
-                data-testid="guild-join-button"
+                {busy}
+                busyLabel={guildJoinCopy.joining}
+                testid="guild-join-button"
               >
-                {busy ? guildJoinCopy.joining : guildJoinCopy.joinButton(guild.name)}
-              </button>
+                {guildJoinCopy.joinButton(guild.name)}
+              </Button>
               <Button
                 tone="ghost"
                 href={guildHref(guild.region, guild.ruleset, guild.name)}

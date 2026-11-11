@@ -40,7 +40,6 @@
   import { accountPlanLine, onPremium } from '../../lib/account/plan-line';
   import { compareSnapshot, takeSnapshot, type RefreshResult } from '../../lib/account/refresh-snapshot';
   import { openPortal } from '../../lib/billing/api';
-  import { checkoutCopy } from '../../lib/billing/copy';
   import type { MeSeatOffer } from '../../lib/billing/contract';
   import { accountNameOf } from '../../lib/character-selector/rows';
   import {
@@ -56,7 +55,7 @@
   import { leaveGuild, updateConsent, type GuildConsent } from '../../lib/guild/api';
   import { API_BASE_URL } from '../../lib/planner/config';
   import { createPairingPoll, type PairingPoll } from '../../lib/reports/pairing-poll';
-  import { button } from '../../lib/ui/button';
+  import LoadError from '../ui/LoadError.svelte';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
@@ -389,15 +388,12 @@
     <Page layout="split" panels testid="account-grid">
       {#snippet header()}<PageHeader title={accountPageCopy.title} testid="account-head" />{/snippet}
       <Section title={characterListCopy.heading} panel frame="framed">
-        <div class="flex flex-col items-start gap-3" data-testid="account-load-error">
-          <p class="text-strong text-[15px] leading-6" role="alert">{ACCOUNT_FAILED}</p>
-          <button
-            type="button"
-            class={button('primary')}
-            onclick={() => session.refresh()}
-            data-testid="account-load-error-retry">{checkoutCopy.retry}</button
-          >
-        </div>
+        <LoadError
+          message={ACCOUNT_FAILED}
+          variant="panel"
+          onRetry={() => session.refresh()}
+          testid="account-load-error"
+        />
       </Section>
     </Page>
   {:else if me === null}

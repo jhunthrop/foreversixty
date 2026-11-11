@@ -7,6 +7,7 @@
      all; on a real page they come from the pointer and the keyboard. -->
 <script lang="ts">
   import { button, type ButtonTone } from '../../lib/ui/button';
+  import Button from './Button.svelte';
   import { PLATE_SURFACE } from '../../lib/ui/primitives';
   import ActionLink from './ActionLink.svelte';
   import {
@@ -20,7 +21,6 @@
   } from '../../lib/ui/ui-icons';
   import SettingsRow from './SettingsRow.svelte';
   import SelectSheet from './SelectSheet.svelte';
-  import Spinner from './Spinner.svelte';
   import StatTile from './StatTile.svelte';
   import Switch from './Switch.svelte';
   import Tag from './Tag.svelte';
@@ -68,7 +68,7 @@
           <div class="flex flex-col gap-2">
             {@render label(state)}
             {#if state === 'loading'}
-              <button class={button(tone)} disabled aria-busy="true"><Spinner />{TONE_WORDS[tone]}</button>
+              <Button {tone} busy busyLabel={TONE_WORDS[tone]}>{TONE_WORDS[tone]}</Button>
             {:else if state === 'disabled'}
               <button class={button(tone)} disabled>{TONE_WORDS[tone]}</button>
             {:else}

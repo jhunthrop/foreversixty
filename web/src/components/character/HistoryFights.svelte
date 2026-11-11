@@ -8,8 +8,8 @@
   import { historyCopy, type ListKind } from '../../lib/character/history-copy';
   import type { HistoryFight } from '../../lib/character/history-api';
   import { afterLayout, opensOnSelection, scrollRowIntoView } from '../../lib/character/history-layout';
-  import { listWindow } from '../../lib/character/history-select';
-  import { LINK } from '../../lib/ui/primitives';
+  import { COLLAPSED_ROWS, listWindow } from '../../lib/character/history-select';
+  import ShowAll from '../ui/ShowAll.svelte';
   import CharacterFightTable from './CharacterFightTable.svelte';
 
   let {
@@ -73,15 +73,13 @@
     selected={marked}
     note={visibilityNote}
   />
-  {#if view.button !== 'none'}
-    <button
-      type="button"
-      class="{LINK} inline-flex min-h-11 items-center self-start text-[14px]"
-      aria-expanded={expanded}
-      data-testid={`${testid}-toggle`}
-      onclick={() => (expanded = !expanded)}
-    >
-      {view.button === 'show-all' ? historyCopy.showAll(view.shownTotal, kind) : historyCopy.showFewer}
-    </button>
-  {/if}
+  <ShowAll
+    shown={Math.min(view.shownTotal, COLLAPSED_ROWS)}
+    total={view.shownTotal}
+    {expanded}
+    onToggle={() => (expanded = !expanded)}
+    label={historyCopy.showAll(view.shownTotal, kind)}
+    fewerLabel={historyCopy.showFewer}
+    testid={`${testid}-toggle`}
+  />
 </div>

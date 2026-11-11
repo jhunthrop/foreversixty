@@ -1,4 +1,4 @@
-<!-- web/src/components/sim/Disclosure.svelte -->
+<!-- web/src/components/sim/SimFold.svelte -->
 <!-- Task 4, Ruling 3 (task-4-brief.md round 2, controller): the one show/hide primitive
      every tappable "more" control in this lane builds on. Task 4's own "what's in it" is
      the first caller; Task 7 lands a help note on the same Buffs control this task already

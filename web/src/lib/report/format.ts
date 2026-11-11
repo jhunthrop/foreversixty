@@ -7,6 +7,7 @@ import { killCounts, killCountsLabel } from './kill-counts';
 import type { FightEntry, Phase, Taunt } from './types';
 import { compact, ordinal, percent, thousands } from '../format/number';
 import { CLASS_SLUGS } from '../ui/primitives';
+import { uiCopy } from '../ui/copy';
 
 /**
  * An `<a>` is inline: its own box is only as tall as its text, not the `min-h-11` row it
@@ -219,7 +220,7 @@ export function parseTitle(value: number | string, ranked = 0): string {
   if (value === 'wipe') return 'A wipe is not ranked';
   if (value === '–') return 'Nothing of this spec has been ranked on this boss yet';
   if (value === '?')
-    return 'The rankings could not be reached, so this parse is unknown; the figure beside it is right. Retry from the line above the table';
+    return `The rankings could not be reached, so this parse is unknown; the figure beside it is right. ${uiCopy.retry} from the line above the table`;
   if (value === 'none') return 'Damage taken has no parse';
   if (value === '…') return 'Asking the rankings where this sits';
   if (value === 'window') return 'A parse is for the whole fight; clear the window to read it';

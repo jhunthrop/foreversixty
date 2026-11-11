@@ -2,6 +2,7 @@ import { ctaCopy } from '../addon/cta-copy';
 import { compactAgo } from '../dates';
 import { fillShared } from '../copy/shared';
 import { sharedCharactersUpdatedFrom } from '../copy/shared/characters.generated';
+import { uiCopy } from '../ui/copy';
 // web/src/lib/account/character-list-copy.ts
 // Every visible string CharacterList.svelte and Account.svelte's ?refreshed=1 toast use.
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the thing and stop.
@@ -12,6 +13,8 @@ function characterCount(count: number): string {
 
 const EMPTY_LEAD =
   'No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.';
+const EMPTY_BY_EMAIL_LEAD = 'No characters yet.';
+const EMPTY_BY_EMAIL_FILL = `Sign in with Battle.net to bring your Forever characters here, or ${ctaCopy.installAddonAndCompanionInline}.`;
 const EMPTY_KOREA = `Playing in Korea? ${ctaCopy.installAddonAndCompanion}, or paste an export.`;
 
 export const characterListCopy = {
@@ -25,7 +28,9 @@ export const characterListCopy = {
   /** /setup splits the line: the lead in the warning colour, the Korea route muted (rulings Q2). */
   emptyLead: EMPTY_LEAD,
   emptyKorea: EMPTY_KOREA,
-  emptyByEmail: `No characters yet. Sign in with Battle.net to bring your Forever characters here, or ${ctaCopy.installAddonAndCompanionInline}.`,
+  emptyByEmail: `${EMPTY_BY_EMAIL_LEAD} ${EMPTY_BY_EMAIL_FILL}`,
+  emptyByEmailLead: EMPTY_BY_EMAIL_LEAD,
+  emptyByEmailFill: EMPTY_BY_EMAIL_FILL,
   getSetUp: 'Get set up',
   getSetUpHref: '/setup',
   pasteAnExport: 'Paste an export',
@@ -48,7 +53,7 @@ export const characterListCopy = {
   refreshing: 'Refreshing…',
   refreshingAnnounce: 'Refreshing from Battle.net.',
   refreshError: 'Battle.net did not answer. Nothing changed.',
-  tryAgain: 'Try again',
+  tryAgain: uiCopy.retry,
   updatedJustNow: (count: number, added: number): string =>
     `Updated just now · ${characterCount(count)}${added > 0 ? ` · ${added} new` : ''}`,
   noChanges: (count: number): string => `No changes · ${characterCount(count)}`,

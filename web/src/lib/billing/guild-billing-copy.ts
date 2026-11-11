@@ -18,6 +18,7 @@ import {
   type Interval,
 } from './plans';
 import { plansPageCopy } from './plans-page-copy';
+import { withRetry } from '../ui/copy';
 
 const CENTS_PER_DOLLAR = 100;
 const EXTRA_RAID_SEATS = PLANS.raid_guild.seats - PLANS.guild.seats;
@@ -115,7 +116,7 @@ const tierMemberLine = (tier: GuildTier): string => {
 };
 
 export const guildBillingCopy = {
-  loadFailed: 'Billing did not load. Try again.',
+  loadFailed: withRetry('Billing did not load.'),
   planLine,
   founderPill: 'Founder',
   line2,
@@ -135,7 +136,7 @@ export const guildBillingCopy = {
     trialLine: plansPageCopy.trial,
     founderLine: 'Founder price until 6 January 2027, kept while the plan stays active.',
     opening: 'Opening checkout…',
-    failed: 'Checkout did not open. Try again.',
+    failed: withRetry('Checkout did not open.'),
   },
   size: {
     line: (count: number): string =>
@@ -154,7 +155,7 @@ export const guildBillingCopy = {
     committing: 'Moving…',
     keep: 'Keep Guild',
     done: `Moved. Loot council, readiness and ${EXTRA_RAID_SEATS} more seats are on now.`,
-    failed: 'That did not go through. Nothing was charged. Try again.',
+    failed: withRetry('That did not go through. Nothing was charged.'),
   },
   records: {
     heading: 'Records',
@@ -162,7 +163,7 @@ export const guildBillingCopy = {
     attendance: 'Download attendance (CSV)',
     loot: 'Download loot (CSV)',
     preparing: 'Preparing…',
-    failed: 'The file did not download. Try again.',
+    failed: withRetry('The file did not download.'),
     fileName: (guildSlug: string, kind: 'attendance' | 'loot'): string => `${guildSlug}-${kind}.csv`,
   },
   /** An officer who may not bill (spec 6.2, Read-only officer; controller's 2026-10-27 persona round). */

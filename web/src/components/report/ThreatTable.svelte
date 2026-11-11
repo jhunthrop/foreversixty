@@ -19,6 +19,7 @@
      pull -- which is why url.ts reads `target` as any printable string and not as a GUID
      pattern. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { approximateMark, classColorVar } from '../../lib/report/format';
   import { classSlugOf } from '../../lib/report/planner-link';
@@ -448,7 +449,7 @@
     {/if}
     <div>
       {#if lines.length === 0}
-        <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">No threat in this window.</p>
+        <EmptyState inset message="No threat in this window." testid="table-empty" />
       {:else}
         <StatTable
           {columns}

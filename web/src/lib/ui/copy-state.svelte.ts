@@ -4,11 +4,18 @@
 // or failed, and `key` names which of several things was copied, so a list lights one row.
 // The owner disposes it on destroy: `$effect(() => () => copy.dispose())`.
 import { uiCopy } from './copy';
-import { createCopyFeedback, writeClipboard, type CopyFeedback, type CopyFeedbackState } from './copy-feedback';
+import {
+  createCopyFeedback,
+  writeClipboard,
+  type CopyFeedback,
+  type CopyFeedbackState,
+} from './copy-feedback';
 
 export class CopyState {
   state = $state<CopyFeedbackState>('idle');
   key = $state<string | null>(null);
+  /** The last text asked for: a failure's fallback shows it to select by hand. */
+  text = $state('');
   readonly #feedback: CopyFeedback;
 
   constructor(writeText: (text: string) => Promise<void> = writeClipboard) {
@@ -21,6 +28,7 @@ export class CopyState {
   /** Writes `text`; `key` marks which row or control asked. */
   copy(text: string, key: string | null = null): Promise<void> {
     this.key = key;
+    this.text = text;
     return this.#feedback.copy(text);
   }
 
@@ -39,6 +47,13 @@ export class CopyState {
     if (this.copied(key)) return uiCopy.copied;
     if (this.failed(key)) return uiCopy.copyFailed;
     return idle;
+  }
+
+  /** Back to idle now (the copied thing went stale: the build it described changed). */
+  reset(): void {
+    this.#feedback.dispose();
+    this.state = 'idle';
+    this.key = null;
   }
 
   dispose(): void {

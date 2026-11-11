@@ -93,6 +93,7 @@
   } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
+  import LoadError from './ui/LoadError.svelte';
   import PageHeader from './ui/PageHeader.svelte';
   import Plate from './ui/Plate.svelte';
   import TabStrip from './ui/TabStrip.svelte';
@@ -1164,15 +1165,6 @@
 
 {#snippet lazyFallback(lazy: LazyLoadState)}
   {#if lazy.error !== ''}
-    <p class="text-muted text-[13px]" role="alert">
-      {lazy.error}
-      <button
-        type="button"
-        class="text-strong ml-1 inline-flex items-center underline"
-        onclick={() => lazy.load()}
-      >
-        Try again
-      </button>
-    </p>
+    <LoadError message={lazy.error} onRetry={() => lazy.load()} testid="guild-lazy-error" />
   {/if}
 {/snippet}

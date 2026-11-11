@@ -10,13 +10,11 @@
   import { tick } from 'svelte';
   import { accountPageCopy } from '../../lib/account/account-page-copy';
   import { confirmMatches, confirmWordFor, lineParts } from '../../lib/account/delete-confirm';
-  import { button } from '../../lib/ui/button';
   import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, fieldEdge } from '../../lib/ui/field';
   import { LINK } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
   import Button from '../ui/Button.svelte';
   import Overlay from '../ui/Overlay.svelte';
-  import Spinner from '../ui/Spinner.svelte';
 
   let {
     battletag,
@@ -163,14 +161,13 @@
           </p>{/if}
       </div>
       <div class="account-delete-actions ui-overlay-rule-t">
-        <!-- A busy button keeps its look (aria-busy), the spinner in front of the busy word. -->
-        <button
+        <Button
           type="submit"
-          class={button('danger')}
-          disabled={!ready || busy}
-          aria-busy={busy ? 'true' : undefined}
-          data-testid="account-delete-submit"
-          >{#if busy}<Spinner />{copy.busy}{:else}{copy.confirm}{/if}</button
+          tone="danger"
+          disabled={!ready}
+          {busy}
+          busyLabel={copy.busy}
+          testid="account-delete-submit">{copy.confirm}</Button
         >
         <Button onclick={close} disabled={busy} testid="account-delete-cancel">{copy.cancel}</Button>
       </div>

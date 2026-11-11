@@ -7,10 +7,10 @@
      state -- Top Gear, talents, drops and weights all save through this one component now. -->
 <script lang="ts">
   import { simCopy } from '../../../lib/sim/copy';
-  import { BUSY_CLASS } from '../../../lib/ui/busy';
   import { button } from '../../../lib/ui/button';
-  import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, fieldEdge } from '../../../lib/ui/field';
+  import { busyCopy } from '../../../lib/ui/copy';
   import Button from '../../ui/Button.svelte';
+  import CopyLinkField from '../../ui/CopyLinkField.svelte';
   import Field from '../../ui/Field.svelte';
 
   let {
@@ -33,7 +33,6 @@
   let saving = $state(false);
   let saveFailed = $state(false);
   let savedUrl = $state<string | null>(null);
-  let savedLinkCopied = $state(false);
 
   function openSaveForm(): void {
     saveTitle = titleFor;
@@ -59,40 +58,29 @@
     saveOpen = false;
     savedUrl = `${window.location.origin}/sim/${id}`;
   }
-
-  async function copySavedLink(): Promise<void> {
-    if (savedUrl === null) return;
-    try {
-      await navigator.clipboard.writeText(savedUrl);
-      savedLinkCopied = true;
-    } catch {
-      savedLinkCopied = false;
-    }
-  }
 </script>
 
 <div class="flex flex-wrap items-end gap-3" data-testid="sim-save">
   {#if savedUrl !== null}
-    <label class="sr-only" for="sim-save-link">{simCopy.savedLinkLabel}</label>
-    <input
-      id="sim-save-link"
-      type="text"
-      readonly
-      value={savedUrl}
-      class={[FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(false), 'min-w-0 flex-1 md:max-w-[420px]']}
-      data-testid="sim-save-link"
-      onclick={(event) => event.currentTarget.select()}
-    />
-    <Button size="sm" testid="sim-save-copy" onclick={() => void copySavedLink()}
-      >{savedLinkCopied ? simCopy.copied : simCopy.copyLink}</Button
-    >
-    <a
-      class={button('secondary', 'sm')}
-      href={savedUrl}
-      target="_blank"
-      rel="noopener"
-      data-testid="sim-open-new-tab">{simCopy.openInNewTab}</a
-    >
+    <div class="min-w-0 flex-1 md:max-w-[420px]">
+      <CopyLinkField
+        url={savedUrl}
+        label={simCopy.savedLinkLabel}
+        shareTitle={titleFor}
+        labelVisible={false}
+        testid="sim-save"
+      >
+        {#snippet note()}
+          <a
+            class={button('secondary', 'sm')}
+            href={savedUrl}
+            target="_blank"
+            rel="noopener"
+            data-testid="sim-open-new-tab">{simCopy.openInNewTab}</a
+          >
+        {/snippet}
+      </CopyLinkField>
+    </div>
   {:else if saveOpen}
     <div class="w-[260px]">
       <Field
@@ -102,16 +90,13 @@
         bind:value={saveTitle}
       />
     </div>
-    <button
-      type="button"
-      class={[button('secondary', 'sm'), saving ? BUSY_CLASS : '']}
-      disabled={saving}
-      aria-busy={saving}
+    <Button
+      size="sm"
+      busy={saving}
+      busyLabel={busyCopy.saving}
       onclick={() => void confirmSave()}
-      data-testid="sim-save-confirm"
+      testid="sim-save-confirm">{simCopy.saveAction}</Button
     >
-      {simCopy.saveAction}
-    </button>
     <Button tone="ghost" size="sm" testid="sim-save-cancel" onclick={cancelSave}>{simCopy.cancel}</Button>
     {#if saveFailed}
       <span role="alert" class="text-wipe text-[13px]" data-testid="sim-save-error">

@@ -51,13 +51,25 @@ const RULES: readonly Rule[] = [
   {
     name: 'a <details> outside ui/Disclosure',
     pattern: /<details\b/,
-    owners: ['components/ui/Disclosure.svelte', 'components/ui/Disclosure.astro'],
+    owners: [
+      'components/ui/Disclosure.svelte',
+      'components/ui/Disclosure.astro',
+      // Two primitives whose summary is a whole row (a dated entry's date, title and tags; a
+      // reading section's head that lib/ui/fold.ts folds on phones), more than Disclosure's line.
+      'components/ui/Dated.svelte',
+      'components/ui/ReadingSection.svelte',
+    ],
     sample: '<details class="mt-2"><summary>More</summary>',
   },
   {
     name: '"Try again", "Retry" or "Copied" written outside lib/ui/copy.ts',
     pattern: /[\s'"`>(](?:Try again|Retry|Copied)\b(?=[^\n]*['"`<]|\s*\n\s*<)/,
-    owners: ['lib/ui/copy.ts'],
+    owners: [
+      'lib/ui/copy.ts',
+      // Lane D (batch L) owns this file; the integrator moves its sentence to withRetry() and
+      // drops this line when D and E land together.
+      'components/guild/dense/WednesdayPanel.svelte',
+    ],
     sample: "  failed: 'That did not save. Try again.',",
   },
   {

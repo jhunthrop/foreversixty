@@ -2,6 +2,7 @@
 // The words the report's tables use, in one place a phone can open (the report's "What these
 // mean ›" help, components/report/Glossary.svelte). Every column head carries the same text as a
 // hover title, which a touch screen never shows; this is the tap version.
+import { uiCopy } from '../ui/copy';
 
 export interface GlossaryTerm {
   term: string;
@@ -13,8 +14,7 @@ export interface GlossaryTerm {
 export const GLOSSARY: readonly GlossaryTerm[] = [
   {
     term: 'Parse',
-    meaning:
-      'Where a kill sits among every ranked kill of the same boss by the same spec, on this ruleset, as a percentile: 100 is the best, 0 the lowest. A wipe is not ranked; a dash means nothing of this spec has been ranked on this boss yet; a question mark means the rankings could not be reached (Try again asks once more); the whole night has none, since a parse is per kill.',
+    meaning: `Where a kill sits among every ranked kill of the same boss by the same spec, on this ruleset, as a percentile: 100 is the best, 0 the lowest. A wipe is not ranked; a dash means nothing of this spec has been ranked on this boss yet; a question mark means the rankings could not be reached (${uiCopy.retry} asks once more); the whole night has none, since a parse is per kill.`,
   },
   {
     term: 'Parse, by role',

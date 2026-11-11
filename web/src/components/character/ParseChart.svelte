@@ -4,6 +4,7 @@
      boss's kills, the net change and that boss's kills list. A boss with one kill is a sentence
      and a one-row list; a character with no kill at all is one sentence. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import type { CharacterHistory } from '../../lib/character/history-api';
   import {
     bossPills,
@@ -84,9 +85,9 @@
   <h3 class="text-strong font-body text-[15px] font-semibold">{historyCopy.parseHeading}</h3>
 
   {#if pill === undefined}
-    <p class="text-muted wide:row-span-4 min-h-11 text-[14px]" data-testid="history-parse-empty">
-      {historyCopy.parseNoKills}
-    </p>
+    <div class="wide:row-span-4">
+      <EmptyState message={historyCopy.parseNoKills} testid="history-parse-empty" />
+    </div>
   {:else}
     <BossPicker {pills} activeId={pill.id} onpick={pickBoss} />
 

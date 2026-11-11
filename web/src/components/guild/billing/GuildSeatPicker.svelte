@@ -3,6 +3,7 @@
      seat here, the payer note when a member who pays for Premium is chosen, focus on the select,
      Escape is handled by the row. Presentational: the row loads the candidates and sends the choice. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import { button } from '../../../lib/ui/button';
   import type { SeatCandidate } from '../../../lib/billing/contract';
   import { seatsCopy as copy } from '../../../lib/billing/seats-copy';
@@ -14,7 +15,7 @@
   } from '../../../lib/guild/billing-styles';
   import { focusOnMount } from '../../../lib/guild/focus-now';
   import { sortedByName } from '../../../lib/guild/seat-view';
-  import { BUSY_CLASS } from '../../../lib/ui/busy';
+  import Spinner from '../../ui/Spinner.svelte';
   import Skeleton from '../../ui/Skeleton.svelte';
   import Select from '../../ui/Select.svelte';
 
@@ -61,7 +62,7 @@
   {#if candidates === null}
     <Skeleton lines={1} rowHeight="h-11" label="Loading members" testid={`guild-seat-${slot}-loading`} />
   {:else if options.length === 0}
-    <p class="text-[14px]" data-testid={`guild-seat-${slot}-empty`}>{copy.picker.everyoneHasPremium}</p>
+    <EmptyState message={copy.picker.everyoneHasPremium} testid={`guild-seat-${slot}-empty`} />
     <button type="button" class={BILLING_SAFE_TEXT_BUTTON} use:focusOnMount onclick={onCancel}>
       {copy.picker.cancel}
     </button>
@@ -96,14 +97,14 @@
     <div class={CONFIRM_ACTIONS}>
       <button
         type="button"
-        class="{button('primary')} {CONFIRM_ACTION_WIDTH} {busy ? BUSY_CLASS : ''}"
+        class="{button('primary')} {CONFIRM_ACTION_WIDTH}"
         disabled={busy || chosen === null}
-        aria-busy={busy}
+        aria-busy={busy ? 'true' : undefined}
         onclick={() => chosen !== null && onSubmit(chosen)}
         data-seat-submit
         data-testid={`guild-seat-${slot}-submit`}
       >
-        {submitText}
+        {#if busy}<Spinner />{/if}{submitText}
       </button>
       <button type="button" class="{BILLING_SAFE_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH}" onclick={onCancel}
         >{copy.picker.cancel}</button

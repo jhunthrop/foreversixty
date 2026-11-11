@@ -4,6 +4,7 @@
      guild master on any); a one-line FormRow adds one. The heading says whose notes they are.
      Never mounted for a member. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import { NOTE_MAX, noteSub } from '../../../lib/guild/profile-view';
   import type { MemberNote } from '../../../lib/guild/recruit-api';
   import { profileCopy as copy } from '../../../lib/guild/recruit-copy';
@@ -43,7 +44,7 @@
 
 <Section title={copy.notes} panel testid="guild-profile-notes">
   {#if notes.length === 0}
-    <p class="text-muted text-[14px]" data-testid="guild-profile-notes-empty">{copy.noNotes}</p>
+    <EmptyState message={copy.noNotes} testid="guild-profile-notes-empty" />
   {/if}
   {#each notes as note (note.id)}
     <Row title={note.body} sub={noteSub(note, viewerTimezone)} open testid="guild-profile-note">

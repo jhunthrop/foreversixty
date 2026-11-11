@@ -1,12 +1,13 @@
 <!-- web/src/components/report/Glossary.svelte -->
 <!-- The report's help (logs spec 2026-11-07, coordinator ruling: the glossary stays): a quiet
      "What these mean ›" line at the foot of the main column that opens the words the tables use
-     in place, a native disclosure that reads as what it is. No box. The terms are their own chunk,
+     in place, the shared Disclosure (a native details element) that reads as what it is. No box. The terms are their own chunk,
      fetched the first time it opens, so a reader who never asks pays nothing. A link to an entry
      (the threat chart's "What it leaves out") opens it and scrolls to the entry. -->
 <script lang="ts">
   import type { GlossaryTerm } from '../../lib/report/glossary';
   import { REGION } from '../../lib/ui/regions';
+  import Disclosure from '../ui/Disclosure.svelte';
 
   let open = $state(false);
   let terms = $state<readonly GlossaryTerm[]>([]);
@@ -34,13 +35,8 @@
 </script>
 
 <div data-region={REGION.footerNote}>
-  <details bind:open data-testid="glossary">
-    <summary
-      class="text-gold focus-visible:outline-gold inline-flex min-h-11 cursor-pointer list-none items-center text-[14px] font-semibold select-none focus-visible:outline-2 md:min-h-9 [&::-webkit-details-marker]:hidden"
-    >
-      {open ? 'Hide what these mean' : 'What these mean ›'}
-    </summary>
-    <dl class="grid grid-cols-1 gap-x-6 gap-y-3 pt-2 pb-2 text-[14px] leading-5 md:grid-cols-2">
+  <Disclosure bind:open summary={open ? 'Hide what these mean' : 'What these mean'} link testid="glossary">
+    <dl class="grid grid-cols-1 gap-x-6 gap-y-3 pb-2 text-[14px] leading-5 md:grid-cols-2">
       {#each terms as entry (entry.term)}
         <div class="flex scroll-mt-4 flex-col gap-0.5" id={entry.id}>
           <dt class="text-strong font-semibold">{entry.term}</dt>
@@ -48,5 +44,5 @@
         </div>
       {/each}
     </dl>
-  </details>
+  </Disclosure>
 </div>

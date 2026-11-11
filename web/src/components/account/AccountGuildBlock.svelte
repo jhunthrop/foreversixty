@@ -16,7 +16,7 @@
   import { guildHref } from '../../lib/characters';
   import { FACTION_BAR_COLOR, factionLogoSrc } from '../../lib/faction-mark';
   import { guildConsentCopy } from '../../lib/guild/copy';
-  import { COPIED_LONG_MS, createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
+  import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import { LINK } from '../../lib/ui/primitives';
   import communityLinks from '../../data/links.json';
   import type { SelectOption } from '../../lib/ui/listbox-model';
@@ -76,11 +76,7 @@
   );
 
   let copyState = $state<CopyFeedbackState>('idle');
-  const feedback = createCopyFeedback(
-    (text) => navigator.clipboard.writeText(text),
-    (next) => (copyState = next),
-    COPIED_LONG_MS,
-  );
+  const feedback = createCopyFeedback((next) => (copyState = next));
   $effect(() => () => feedback.dispose());
 </script>
 

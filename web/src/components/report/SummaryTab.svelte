@@ -24,6 +24,8 @@
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
+  import { reportCopy } from '../../lib/report/copy';
+  import ShowAll from '../ui/ShowAll.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
@@ -196,14 +198,17 @@
         </StatRow>
       {/each}
     </StatTable>
-    {#if shown.length < rows.length}
-      <button
-        type="button"
-        class="text-nav hover:text-strong min-h-11 px-4 text-left text-[14px]"
-        data-testid="roster-show-all"
-        onclick={() => (showEveryone = true)}>Show all {rows.length} players</button
-      >
-    {/if}
+    <div class="px-4">
+      <ShowAll
+        shown={shown.length}
+        total={rows.length}
+        expanded={showEveryone}
+        collapsible={false}
+        onToggle={() => (showEveryone = true)}
+        label={reportCopy.showAllPlayers(rows.length)}
+        testid="roster-show-all"
+      />
+    </div>
   </div>
   {#if approximate}
     <p class="text-small text-muted px-5 pt-2" data-testid="summary-wholefight-note">

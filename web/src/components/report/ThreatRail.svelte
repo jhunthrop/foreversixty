@@ -5,6 +5,7 @@
      sets the window to the span around the taunt (not on the night, which has no one clock). With
      an enemy picked, its taunts alone: the list answers "who took this one off me". -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar, tauntKey } from '../../lib/report/format';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
@@ -68,7 +69,7 @@
   {#if taunts === undefined}
     <p class="text-small text-muted">This report was parsed before taunts were kept; parse it again.</p>
   {:else if rows.length === 0}
-    <p class="text-small text-muted" data-testid="threat-taunts-empty">{empty}</p>
+    <EmptyState message={empty} testid="threat-taunts-empty" />
   {:else}
     <div>
       {#each rows as taunt (tauntKey(taunt))}

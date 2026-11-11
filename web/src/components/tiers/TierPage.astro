@@ -12,6 +12,7 @@ import UpdatedStamp from '../UpdatedStamp.astro';
 import TierRankRow from './TierRankRow.astro';
 import TierSpecCard from './TierSpecCard.astro';
 import ControlBar from '../ui/ControlBar.astro';
+import EmptyState from '../ui/EmptyState.astro';
 import Page from '../ui/Page.svelte';
 import PageHeader from '../ui/PageHeader.svelte';
 import Plate from '../ui/Plate.svelte';
@@ -142,13 +143,9 @@ const metaLine = tiersCopy.metaLine({ role, healSeconds: data.healSeconds });
           <div class="tier-faction" data-faction={faction} data-testid={`tier-faction-panel-${faction}`}>
             <Plate label={tiersCopy.listLabel(role, faction)} testid="tier-plate">
               {!hasData ? (
-                <p class="tier-empty" data-testid="tier-no-data">
-                  {tiersCopy.noData}
-                </p>
+                <EmptyState inset message={tiersCopy.noData} testid="tier-no-data" />
               ) : rows.length === 0 ? (
-                <p class="tier-empty" data-testid="tier-empty">
-                  {tiersCopy.emptyRole(role)}
-                </p>
+                <EmptyState inset message={tiersCopy.emptyRole(role)} testid="tier-empty" />
               ) : (
                 <RankList
                   heads={heads}
@@ -208,11 +205,5 @@ const metaLine = tiersCopy.metaLine({ role, healSeconds: data.healSeconds });
   :global(html:not([data-tier-faction='horde'])) .tier-faction[data-faction='horde'],
   :global(html[data-tier-faction='horde']) .tier-faction[data-faction='alliance'] {
     display: none;
-  }
-  .tier-empty {
-    margin: 0;
-    padding: 20px 16px;
-    font-size: 15px;
-    color: var(--color-muted);
   }
 </style>

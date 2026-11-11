@@ -361,6 +361,6 @@ test('the winner can be saved, with a title composed from the result rather than
   );
   await page.getByTestId('sim-save-confirm').click();
 
-  await expect(page.getByTestId('sim-save-link')).toBeVisible();
-  await expect(page.getByTestId('sim-save-link')).toHaveValue(/\/sim\/simnew234567$/);
+  await expect(page.getByTestId('sim-save-url')).toBeVisible();
+  await expect(page.getByTestId('sim-save-url')).toHaveValue(/\/sim\/simnew234567$/);
 });

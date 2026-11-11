@@ -7,6 +7,7 @@ import ReportSkeleton from '../components/report/ReportSkeleton.svelte';
 // the "Your reports" list (reports.astro); the shell keeps its own name so nothing links to it.
 import Base from '../layouts/Base.astro';
 import IslandScript from '../components/IslandScript.astro';
+import EmptyState from '../components/ui/EmptyState.astro';
 ---
 
 <Base
@@ -22,9 +23,13 @@ import IslandScript from '../components/IslandScript.astro';
     <div id="report" data-report-mount>
       <ReportSkeleton />
       <noscript>
-        <p class="text-muted px-(--page-inset) text-[14px]">
-          No report is open. Upload a log or start the companion from <a href="/logs">Logs</a>.
-        </p>
+        <div class="px-(--page-inset)">
+          <EmptyState
+            message="No report is open."
+            action={{ label: 'Upload a log or start the companion on Logs', href: '/logs' }}
+            testid="report-none-open"
+          />
+        </div>
       </noscript>
     </div>
     <IslandScript src="/report-island.js" />

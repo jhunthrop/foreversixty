@@ -33,7 +33,10 @@
     type BoardSortKey,
   } from '../../../lib/guild/dense/roster-board';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import { toCsv } from '../../../lib/report/csv';
   import Button from '../../ui/Button.svelte';
+  import CopyButton from '../../ui/CopyButton.svelte';
+  import Field from '../../ui/Field.svelte';
   import Page from '../../ui/Page.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
@@ -197,13 +200,9 @@
   function csv(): string {
     const head = ['Raider', 'Class', 'Spec', ...columns.map((c) => c.label)];
     const lines = groups.flatMap((g) =>
-      g.rows.map((r) => [r.name, r.cls, r.spec, ...figures(r).map((f) => f.value)].join(',')),
+      g.rows.map((r) => [r.name, r.cls, r.spec, ...figures(r).map((f) => f.value)]),
     );
-    return [head.join(','), ...lines].join('\n');
-  }
-
-  async function copyCsv(): Promise<void> {
-    await navigator.clipboard?.writeText(csv());
+    return toCsv([head, ...lines]);
   }
 </script>
 
@@ -250,7 +249,7 @@
 
   <Section title="Roster" {meta} panel flush testid="guild-raid-roster">
     {#snippet head()}
-      <Button tone="ghost" size="sm" onclick={() => void copyCsv()}>Copy CSV</Button>
+      <CopyButton tone="ghost" text={csv} label="Copy CSV" testid="guild-roster-copy-csv" />
     {/snippet}
     <div class="flex flex-wrap items-center gap-3 px-5 pb-3">
       <div class="filter-scroll max-w-full min-w-0 overflow-x-auto">
@@ -262,14 +261,16 @@
           onChange={(value) => (only = value)}
         />
       </div>
-      <input
-        class="border-muted/50 text-text h-8 w-[200px] rounded-[6px] border bg-transparent px-3 text-[14px]"
-        type="search"
-        placeholder="Find a raider"
-        aria-label="Find a raider"
-        bind:value={find}
-        data-testid="guild-roster-find"
-      />
+      <div class="w-[220px]">
+        <Field
+          id="guild-roster-find"
+          type="search"
+          label="Find a raider"
+          labelHidden
+          bind:value={find}
+          testid="guild-roster-find"
+        />
+      </div>
       {#if hasCells}<span class="ml-auto hidden lg:inline"><AttendanceStrip legend /></span>{/if}
     </div>
     <StatTable

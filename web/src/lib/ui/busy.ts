@@ -1,5 +1,4 @@
-// The one shared look every island's request-triggering button (Run, Save, Submit,
-// Upload, Join, Claim...) takes on while its own request is in flight: dimmed, a progress
-// cursor, no spinner glyph and no label swap (design 2026-09-22 spec section 3.2). Applied
-// alongside `aria-busy` and the button's existing `disabled` flag, never instead of them.
+// Retired (owner ruling 2026-11-10: a busy button shows the spinner plus a busy word, through
+// ui/Button's `busy` and ui/ConfirmButtons). The dimmed look below survives only for lane D's
+// guild/billing/GuildSeatRow.svelte, and goes when that file moves to Button busy.
 export const BUSY_CLASS = 'opacity-60 cursor-progress';

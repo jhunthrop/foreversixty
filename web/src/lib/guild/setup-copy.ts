@@ -2,6 +2,7 @@
 // The guild setup checklist's words (design/specs/2026-11-09-guild-onboarding.md §6, verbatim).
 // Functions take the data, so no number or name is typed into prose.
 import type { SetupStepKey } from './setup-api';
+import { withRetry } from '../ui/copy';
 
 export const setupCopy = {
   docTitle: 'Setup',
@@ -27,7 +28,7 @@ export const setupCopy = {
   skip: 'Skip',
   undo: 'Undo',
   change: 'Change',
-  actionFailed: 'That did not save. Try again.',
+  actionFailed: withRetry('That did not save.'),
   ranks: {
     line: (rank: number, members: number): string => `Rank ${rank} · ${members}`,
     officers: (max: number, n: number): string =>
@@ -87,7 +88,6 @@ export const setupCopy = {
       `Join ${guild} on Forever Sixty and sign up for raids: ${url}`,
     posted: 'I posted it',
     copy: 'Copy',
-    copied: 'Copied',
   },
   sync: {
     line: (synced: number, accounts: number, days: number): string =>

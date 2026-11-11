@@ -8,6 +8,7 @@
      to brush, is not the answer to "what went wrong".
      The arithmetic lives in lib/report/mechanics.ts; this file is the words and the links. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
   import {
@@ -285,7 +286,7 @@
 </script>
 
 {#snippet line(text: string, testid: string)}
-  <p class="text-muted px-4 py-4 text-[14px]" data-testid={testid}>{text}</p>
+  <EmptyState inset message={text} {testid} />
 {/snippet}
 
 {#snippet problemLinks(problem: Problem)}
@@ -347,9 +348,7 @@
       {:else if !block.table_found && nightMode}
         {@render line('No boss of the night has a table yet.', 'mechanics-no-table')}
       {:else if !block.table_found && bossAbilities.length === 0}
-        <p class="text-muted px-4 py-4 text-[14px]" data-testid="mechanics-no-table">
-          No mechanics for this boss yet.
-        </p>
+        {@render line('No mechanics for this boss yet.', 'mechanics-no-table')}
       {:else if !block.table_found}
         <!-- A boss no table covers yet: what its side did to whom, ability by ability, from damage taken. -->
         <div class="px-5 py-2" data-testid="mechanics-boss-abilities">

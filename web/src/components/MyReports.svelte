@@ -17,9 +17,10 @@
   import { LOG_OUT_HINT, creditedName, ownReportRow } from '../lib/logs/report-summary';
   import { logsCopy } from '../lib/reports/copy';
   import { myReportsCopy } from '../lib/reports/my-reports-copy';
-  import { LINK } from '../lib/ui/primitives';
   import ReportRow from './ReportRow.svelte';
-  import Button from './ui/Button.svelte';
+  import EmptyState from './ui/EmptyState.svelte';
+  import LoadError from './ui/LoadError.svelte';
+  import LoadOlder from './ui/LoadOlder.svelte';
   import Plate from './ui/Plate.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import TabStrip from './ui/TabStrip.svelte';
@@ -95,6 +96,9 @@
   const emptyMessage = $derived(
     activeGuild === null ? ownEmptyMessage : logsCopy.guildEmpty(activeGuildName),
   );
+  /** The designed empty: its first sentence leads, the rest says what fills it. */
+  const emptyLead = $derived(emptyMessage.split(/(?<=\.)\s/, 1)[0]);
+  const emptyFill = $derived(emptyMessage.slice(emptyLead.length).trim());
   const tabs = $derived([
     { id: YOURS, label: 'Yours' },
     ...guilds.map((guild) => ({ id: String(guild.id), label: guild.name, testid: 'my-reports-guild-tab' })),
@@ -131,24 +135,25 @@
   {#if status === 'loading' && rows.length === 0}
     <div class="p-4"><Skeleton lines={3} rowHeight="h-11" testid="my-reports-skeleton" /></div>
   {:else if status === 'failed' && rows.length === 0}
-    <div class="text-muted p-4 text-[14px] leading-5" role="alert" data-testid="my-reports-error">
-      <p>{myReportsCopy.failed}</p>
-      <div class="mt-3 flex flex-wrap items-center gap-4">
-        <Button size="sm" onclick={() => void load(attemptedPage)}>Try again</Button>
-      </div>
+    <div class="p-4">
+      <LoadError
+        message={myReportsCopy.failed}
+        onRetry={() => void load(attemptedPage)}
+        testid="my-reports-error"
+      />
     </div>
   {:else if rows.length === 0}
-    <div class="text-muted p-4 text-[14px] leading-5" data-testid="my-reports-empty">
-      <p>{emptyMessage}</p>
-      {#if activeGuild === null && (emptyAction || emptySecondary)}
-        <div class="mt-3 flex flex-wrap items-center gap-4">
-          {#if emptyAction}<Button tone="primary" href={emptyAction.href}>{emptyAction.label}</Button>{/if}
-          {#if emptySecondary}<a
-              class={LINK}
-              href={emptySecondary.href}
-              data-testid="my-reports-empty-secondary">{emptySecondary.label} ›</a
-            >{/if}
-        </div>
+    <div class="p-4">
+      {#if activeGuild === null && emptyAction}
+        <EmptyState
+          message={emptyLead}
+          fill={emptyFill === '' ? undefined : emptyFill}
+          action={emptyAction}
+          secondary={emptySecondary}
+          testid="my-reports-empty"
+        />
+      {:else}
+        <EmptyState message={emptyMessage} testid="my-reports-empty" />
       {/if}
     </div>
   {:else}
@@ -176,8 +181,12 @@
     {@render state()}
   {/if}
   {#if hasMore}
-    <div>
-      <Button size="sm" onclick={() => void load(page + 1)} testid="my-reports-older">Older reports</Button>
-    </div>
+    <LoadOlder
+      label={myReportsCopy.older}
+      loading={status === 'loading'}
+      failed={status === 'failed'}
+      onLoad={() => void load(status === 'failed' ? attemptedPage : page + 1)}
+      testid="my-reports-older"
+    />
   {/if}
 </div>

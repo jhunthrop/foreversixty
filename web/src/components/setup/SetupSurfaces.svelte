@@ -2,7 +2,7 @@
 <!-- /setup's Section "What it does in the game" (setup spec 4, rulings U5): the eleven in-game
      surfaces as open Rows in a RowGrid (two columns from 768), each with its
      sentence and its client captures in the Row's foot (240 px high, lazy, each a link to its
-     file). On a phone the grid folds behind one summary row (`surfacesShow`); open from 768. -->
+     file). On a phone the grid folds behind one button (`surfacesShow`, aria-expanded); open from 768. -->
 <script lang="ts">
   import { addonCopy } from '../../lib/addon/copy';
   import { button } from '../../lib/ui/button';
@@ -12,13 +12,24 @@
   import Section from '../ui/Section.svelte';
 
   const SURFACE_CAPTURE_MAX_PX = 240;
+  const GRID_ID = 'setup-surfaces-grid';
+
+  /** The phone's fold: closed until the button opens it (from 768 the grid always shows). */
+  let shown = $state(false);
 </script>
 
 <Section title={addonCopy.surfacesTitle} testid="setup-surfaces" panel>
-  <details class="setup-surf-fold">
-    <summary class={button('secondary')}>{addonCopy.surfacesShow}</summary>
-  </details>
-  <div class="setup-surf">
+  {#if !shown}
+    <button
+      type="button"
+      class="{button('secondary')} setup-surf-fold"
+      aria-expanded="false"
+      aria-controls={GRID_ID}
+      data-testid="setup-surfaces-show"
+      onclick={() => (shown = true)}>{addonCopy.surfacesShow}</button
+    >
+  {/if}
+  <div class="setup-surf" id={GRID_ID} data-shown={shown || undefined}>
     <RowGrid cols={2}>
       {#each addonCopy.surfaces as surface (surface.section)}
         <Row title={surface.title} sub={surface.body} testid="setup-surface-{surface.section}">
@@ -51,20 +62,11 @@
   .setup-surf-fold {
     display: none;
   }
-  /* The fold is the button that opens the grid: no disclosure marker. */
-  .setup-surf-fold summary {
-    min-height: 44px;
-    list-style: none;
-    cursor: pointer;
-  }
-  .setup-surf-fold summary::-webkit-details-marker {
-    display: none;
-  }
   @media (max-width: 767px) {
     .setup-surf-fold {
-      display: block;
+      display: inline-flex;
     }
-    .setup-surf-fold:not([open]) + .setup-surf {
+    .setup-surf:not([data-shown]) {
       display: none;
     }
   }

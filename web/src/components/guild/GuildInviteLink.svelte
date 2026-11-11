@@ -11,10 +11,9 @@
   import { rotateInvite, type ClaimHolder, type GuildInviteView } from '../../lib/guild/api';
   import { guildSettingsCopy as copy } from '../../lib/guild/copy';
   import { formatMadeOn, inviteUrl } from '../../lib/guild/invite-link';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
   import { button } from '../../lib/ui/button';
   import { CONFIRM_BLOCK } from '../../lib/guild/billing-styles';
-  import { COPIED_LONG_MS } from '../../lib/ui/copy-feedback';
+  import Button from '../ui/Button.svelte';
   import CopyLinkField from '../ui/CopyLinkField.svelte';
   import GuildCharacterName from './GuildCharacterName.svelte';
 
@@ -99,15 +98,16 @@
       <div class="{CONFIRM_BLOCK} w-full" onkeydown={onConfirmKey} data-testid={`${TESTID}-rotate-confirm`}>
         <p class="text-[13px]">{copy.rotateConfirmLine}</p>
         <div class="flex gap-3">
-          <button
-            class="{button('primary', 'sm')} {busy ? BUSY_CLASS : ''}"
+          <Button
+            tone="primary"
+            size="sm"
             onclick={() => void make()}
-            disabled={busy}
-            aria-busy={busy}
-            data-testid={`${TESTID}-rotate-confirm-button`}
+            {busy}
+            busyLabel={copy.making}
+            testid={`${TESTID}-rotate-confirm-button`}
           >
-            {busy ? copy.making : copy.newLinkButton}
-          </button>
+            {copy.newLinkButton}
+          </Button>
           <button
             bind:this={cancelButton}
             class={button('ghost', 'sm')}
@@ -122,13 +122,7 @@
     {:else if url !== null}
       <div class="w-full">
         {#key url}
-          <CopyLinkField
-            {url}
-            label={copy.linkLabel}
-            shareTitle={copy.inviteShareTitle}
-            testid={TESTID}
-            copiedMs={COPIED_LONG_MS}
-          />
+          <CopyLinkField {url} label={copy.linkLabel} shareTitle={copy.inviteShareTitle} testid={TESTID} />
         {/key}
       </div>
       {#if kept}
@@ -169,15 +163,16 @@
     {:else}
       <p class="text-muted text-[13px]" data-testid={`${TESTID}-none`}>{copy.noLinkYet}</p>
       <!-- Secondary: the plan card holds the page's one fill (guild round 2). -->
-      <button
-        class="{button('secondary', 'sm')} {busy ? BUSY_CLASS : ''}"
+      <Button
+        size="sm"
         onclick={() => void make()}
-        disabled={busy || disabled}
-        aria-busy={busy}
-        data-testid={`${TESTID}-make`}
+        {busy}
+        busyLabel={copy.making}
+        {disabled}
+        testid={`${TESTID}-make`}
       >
-        {busy ? copy.making : copy.firstLinkButton}
-      </button>
+        {copy.firstLinkButton}
+      </Button>
     {/if}
     {#if failed}
       <p class="text-wipe text-[13px]" role="alert" data-testid={`${TESTID}-error`}>{copy.inviteFailed}</p>

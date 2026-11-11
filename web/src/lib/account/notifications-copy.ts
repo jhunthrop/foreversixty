@@ -2,6 +2,7 @@
 // Every string of experience spec 2026-10-25-discord-notifications section 6.1 for the account
 // page's Discord block and the Premium row. Functions take the data and return the string; the
 // channel id, counts and Discord's error text come from /v1/me, never from prose.
+import { uiCopy, withRetry } from '../ui/copy';
 
 /** Discord's own words are shown as plain text, cut to this many characters (spec 6.1). */
 export const DISCORD_TEXT_LIMIT = 140;
@@ -102,7 +103,7 @@ export const notificationsCopy = {
   returnDenied: 'Cancelled in Discord. Nothing was connected.',
   returnFailed:
     'Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.',
-  connectStuck: 'Discord did not open. Try again, or paste a webhook URL instead.',
+  connectStuck: `Discord did not open. ${uiCopy.retry}, or paste a webhook URL instead.`,
   openInDiscord: 'Open in Discord',
   /** A connected or unnamed webhook: no channel id is shown (player ruling, polish task 4). */
   destinationChannel: 'Posts to a channel in your Discord server',
@@ -114,10 +115,10 @@ export const notificationsCopy = {
   testSentSwitchedOn: 'Sent. Posts are on again.',
   testFailed: (error: string): string => `Discord said: ${withFullStop(shortenDiscordText(error))}`,
   testRateLimited: 'Wait a minute before sending another test.',
-  testOurError: 'Could not send the test. Try again.',
+  testOurError: withRetry('Could not send the test.'),
   removed: 'Removed.',
-  removeFailed: 'Could not remove it. Try again.',
-  saveFailed: 'Could not save that. Try again.',
+  removeFailed: withRetry('Could not remove it.'),
+  saveFailed: withRetry('Could not save that.'),
   emptyField: 'Paste a Discord webhook URL.',
   invalidUrl: 'That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/.',
   notEntitled: 'Discord messages are part of Premium.',

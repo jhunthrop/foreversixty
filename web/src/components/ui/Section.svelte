@@ -15,6 +15,7 @@
   import { sectionRegion } from '../../lib/ui/regions';
   import { LINK, type PanelFrame } from '../../lib/ui/primitives';
   import Plate from './Plate.svelte';
+  import SectionTitle from './SectionTitle.svelte';
 
   let {
     title,
@@ -76,17 +77,14 @@
       !boxed && !panel && 'ui-section-rule',
     ]}
   >
-    <svelte:element
-      this={level === 3 ? 'h3' : 'h2'}
+    <SectionTitle
+      {level}
+      {reading}
       id={focusId ?? (id ? `${id}-title` : undefined)}
-      tabindex={focusId ? -1 : undefined}
-      class={[
-        'ui-section-title',
-        reading ? 'text-section-reading' : 'text-section',
-        focusId && 'outline-none',
-      ]}
-      data-testid={titleTestid}>{title}</svelte:element
-    >
+      focusable={focusId !== undefined}
+      testid={titleTestid}
+      {title}
+    />
     {#if meta}<span class="text-small text-muted" data-testid={metaTestid}>{meta}</span>{/if}
     {#if head || action}
       <span class="ml-auto flex items-center gap-4">
@@ -130,13 +128,6 @@
 <style>
   .ui-section-rule {
     border-bottom: 1px solid rgb(255 255 255 / 0.14);
-  }
-  .ui-section-title {
-    font-family: var(--font-heading);
-    font-weight: 400;
-    letter-spacing: var(--tracking-heading);
-    color: var(--color-cream);
-    text-shadow: 0 1px 2px rgb(0 0 0 / 0.45);
   }
   .ui-section-box {
     margin-top: 12px;

@@ -48,7 +48,7 @@
   import GuildNotFound from './guild/GuildNotFound.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
-  import { BUSY_CLASS } from '../lib/ui/busy';
+  import Button from './ui/Button.svelte';
 
   let { path }: { path: CharacterPath } = $props();
 
@@ -250,10 +250,9 @@
             {#if membership !== null && claimState === 'claimed'}
               {#if !showContestConfirm}
                 <button
-                  class={`${button('secondary')} w-fit ${busy ? BUSY_CLASS : ''}`}
+                  class={`${button('secondary')} w-fit`}
                   onclick={() => (showContestConfirm = true)}
                   disabled={busy}
-                  aria-busy={busy}
                   data-testid="guild-claim-contest-button"
                 >
                   {guildHomeCopy.contestButton}
@@ -266,23 +265,21 @@
                     {/each}
                   </ul>
                   <div class="flex gap-3">
-                    <button
-                      class={`${button('secondary')} w-fit ${busy ? BUSY_CLASS : ''}`}
+                    <Button
+                      tone="secondary"
+                      class="w-fit"
                       onclick={onContest}
-                      disabled={busy}
-                      aria-busy={busy}
-                      data-testid="guild-claim-contest-confirm-button"
+                      {busy}
+                      busyLabel={guildHomeCopy.contesting}
+                      testid="guild-claim-contest-confirm-button">{guildHomeCopy.contestConfirmButton}</Button
                     >
-                      {guildHomeCopy.contestConfirmButton}
-                    </button>
                     <button
-                      class={`${button('secondary')} w-fit ${busy ? BUSY_CLASS : ''}`}
+                      class={`${button('secondary')} w-fit`}
                       onclick={() => {
                         showContestConfirm = false;
                         error = '';
                       }}
                       disabled={busy}
-                      aria-busy={busy}
                     >
                       {guildHomeCopy.cancel}
                     </button>
@@ -302,10 +299,9 @@
               <p class="text-[16px]" data-testid="guild-claim-state">{guildClaimCopy.youHold(guildName)}</p>
               {#if !showReleaseConfirm}
                 <button
-                  class={`text-muted inline-flex min-h-11 w-fit items-center text-[13px] underline ${busy ? BUSY_CLASS : ''}`}
+                  class="text-muted inline-flex min-h-11 w-fit items-center text-[13px] underline"
                   onclick={() => (showReleaseConfirm = true)}
                   disabled={busy}
-                  aria-busy={busy}
                   data-testid="guild-claim-release"
                 >
                   {guildClaimCopy.releaseButton}
@@ -314,15 +310,15 @@
                 <div class="flex flex-col gap-3" data-testid="guild-claim-release-confirm">
                   <p class="text-[13px]">{guildClaimCopy.releaseConfirmLine(guildName)}</p>
                   <div class="flex gap-3">
-                    <button
-                      class={`${button('secondary')} w-fit ${busy ? BUSY_CLASS : ''}`}
+                    <Button
+                      tone="secondary"
+                      class="w-fit"
                       onclick={onRelease}
-                      disabled={busy}
-                      aria-busy={busy}
-                      data-testid="guild-claim-release-confirm-button"
+                      {busy}
+                      busyLabel={guildClaimCopy.releasing}
+                      testid="guild-claim-release-confirm-button"
+                      >{guildClaimCopy.releaseConfirmButton}</Button
                     >
-                      {guildClaimCopy.releaseConfirmButton}
-                    </button>
                     <button
                       class={`${button('ghost')} w-fit`}
                       onclick={() => (showReleaseConfirm = false)}
@@ -347,15 +343,14 @@
               {guildClaimCopy.pending(settings.claim_pending.expires_at)}
             </p>
             {#if eligible}
-              <button
-                class={`${button('secondary')} w-fit ${busy ? BUSY_CLASS : ''}`}
+              <Button
+                tone="secondary"
+                class="w-fit"
                 onclick={onConfirm}
-                disabled={busy}
-                aria-busy={busy}
-                data-testid="guild-claim-confirm"
+                {busy}
+                busyLabel={guildClaimCopy.confirming}
+                testid="guild-claim-confirm">{guildClaimCopy.confirmButton}</Button
               >
-                {guildClaimCopy.confirmButton}
-              </button>
             {:else}
               <p class="text-[14px]" data-testid="guild-claim-not-eligible">{guildClaimCopy.notEligible}</p>
             {/if}
@@ -382,10 +377,9 @@
             {#if eligible && (claimState === 'unclaimed' || claimState === null)}
               {#if !showClaimConfirm}
                 <button
-                  class={`${button('primary')} w-fit ${busy ? BUSY_CLASS : ''}`}
+                  class={`${button('primary')} w-fit`}
                   onclick={() => (showClaimConfirm = true)}
                   disabled={busy}
-                  aria-busy={busy}
                   data-testid="guild-claim-button"
                 >
                   {guildClaimCopy.claimButton}
@@ -394,15 +388,14 @@
                 <div class="flex flex-col gap-3" data-testid="guild-claim-confirm-box">
                   <p class="text-[13px]">{guildClaimCopy.claimConfirmLine(guildName)}</p>
                   <div class="flex gap-3">
-                    <button
-                      class={`${button('secondary')} w-fit ${busy ? BUSY_CLASS : ''}`}
+                    <Button
+                      tone="secondary"
+                      class="w-fit"
                       onclick={onClaim}
-                      disabled={busy}
-                      aria-busy={busy}
-                      data-testid="guild-claim-confirm-claim"
+                      {busy}
+                      busyLabel={guildClaimCopy.claiming}
+                      testid="guild-claim-confirm-claim">{guildClaimCopy.claimConfirmButton}</Button
                     >
-                      {guildClaimCopy.claimConfirmButton}
-                    </button>
                     <button
                       class={`${button('ghost')} w-fit`}
                       onclick={() => (showClaimConfirm = false)}

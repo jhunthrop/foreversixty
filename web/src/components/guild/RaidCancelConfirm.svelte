@@ -1,10 +1,9 @@
 <!-- web/src/components/guild/RaidCancelConfirm.svelte -->
 <!-- The cancel confirm (raids spec 4 "Cancel confirm"): it replaces the officer row with the
      question, the `Post the cancellation to Discord` box (ticked when the raid posts by default), `Cancel the raid` and `Keep it`.
-     Focus lands on Keep it, which stays live while the cancel is in flight; Escape acts as Keep it. -->
+     ui/ConfirmButtons draws the pair: focus lands on Keep it and Escape acts as Keep it. -->
 <script lang="ts">
-  import { focusOnMount } from '../../lib/guild/focus-now';
-  import { RAID_BUTTON, RAID_WIPE_BUTTON } from '../../lib/guild/raid-buttons';
+  import ConfirmButtons from '../ui/ConfirmButtons.svelte';
   import type { GuildZoneKind } from '../../lib/guild/api';
   import { cancelConfirmOf, cancelQuestionOf, raidCopy } from '../../lib/guild/raid-copy';
 
@@ -25,12 +24,6 @@
     onConfirm: () => void;
     onKeep: () => void;
   } = $props();
-
-  function onKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Escape') return;
-    event.preventDefault();
-    onKeep();
-  }
 </script>
 
 <div
@@ -38,7 +31,6 @@
   role="group"
   aria-labelledby="raid-cancel-question"
   aria-busy={busy}
-  onkeydown={onKeydown}
   data-testid="raid-cancel-confirm"
 >
   <p id="raid-cancel-question" class="text-strong text-[14px]">{cancelQuestionOf(kind)}</p>
@@ -53,16 +45,18 @@
     {raidCopy.cancelConfirm.postToDiscord}
   </label>
   <div class="flex flex-wrap gap-2">
-    <button
-      type="button"
-      class={RAID_WIPE_BUTTON}
-      disabled={busy}
-      onclick={onConfirm}
-      data-testid="raid-cancel-confirm-button"
-      >{busy ? raidCopy.cancelConfirm.confirming : cancelConfirmOf(kind)}</button
-    >
-    <button type="button" class={RAID_BUTTON} use:focusOnMount onclick={onKeep} data-testid="raid-cancel-keep"
-      >{raidCopy.cancelConfirm.keep}</button
-    >
+    <ConfirmButtons
+      size="md"
+      cancelWhileBusy
+      confirm={cancelConfirmOf(kind)}
+      cancel={raidCopy.cancelConfirm.keep}
+      {busy}
+      busyLabel={raidCopy.cancelConfirm.confirming}
+      onconfirm={onConfirm}
+      oncancel={onKeep}
+      testid="raid-cancel"
+      confirmTestid="raid-cancel-confirm-button"
+      cancelTestid="raid-cancel-keep"
+    />
   </div>
 </div>

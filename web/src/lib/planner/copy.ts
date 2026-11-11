@@ -6,6 +6,7 @@ import { itemNotInDataLine } from '../items/unknown-item-copy';
 import { ctaCopy } from '../addon/cta-copy';
 
 import { grouped } from '../format/number';
+import { uiCopy, withRetry } from '../ui/copy';
 /** "Level 60" or "Levels 20 to 29": the band's label (`60`, `20 to 29`) as a phrase that reads in a sentence. */
 export const bandPhrase = (bandLabel: string): string =>
   /^\d+$/.test(bandLabel) ? `Level ${bandLabel}` : `Levels ${bandLabel}`;
@@ -34,13 +35,13 @@ export const plannerCopy = {
   shareConfirmProceed: 'Share anyway',
   shareConfirmCancel: 'Cancel',
   shareConfirmCopyUnsaved: 'Copy an unsaved link instead',
-  copiedUnsavedLink: 'Copied',
+  copiedUnsavedLink: uiCopy.copied,
   /** Rebuild spec §4.H, review finding 8: a plain-text summary for someone with no account
    *  and no addon, beside "Copy for the game". Always computed from real data, never a
    *  placeholder-filled template. */
   /** Share's own copy: the build as one line for chat, beside In the game's "Copy for the game". */
   copyAsText: 'Copy for chat',
-  copiedText: 'Copied',
+  copiedText: uiCopy.copied,
   shareTextSummary: (
     raceName: string,
     className: string,
@@ -131,8 +132,8 @@ export const plannerCopy = {
   shareTitleLabel: 'Title',
   shareTitlePlaceholder: 'Optional',
   copyLink: 'Copy link',
-  copied: 'Copied',
-  retry: 'Retry',
+  copied: uiCopy.copied,
+  retry: uiCopy.retry,
   loadFailedDetail: (build: string): string => `Build ${build} did not return the files the planner needs.`,
   reloadTalents: 'Reload talents',
 } as const;
@@ -162,7 +163,7 @@ export const plannerCharacterCardCopy = {
   noDevice: 'Run the companion once so builds can reach your addon.',
   noDeviceLink: 'Set up the companion',
   noDeviceHref: '/setup#companion',
-  failed: 'Could not send just now. Try again.',
+  failed: withRetry('Could not send just now.'),
   /** The API refused the save and said why: the first field's message, never a generic retry. */
   refused: (reason: string): string => `The site refused this build: ${reason.replace(/[.s]+$/, '')}.`,
   /** Worn pieces the planner has no item for: named by slot (the character's export carries only ids). */

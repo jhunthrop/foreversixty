@@ -40,8 +40,8 @@
   import Section from './ui/Section.svelte';
   import Select from './ui/Select.svelte';
   import SettingsRow from './ui/SettingsRow.svelte';
-  import { BUSY_CLASS } from '../lib/ui/busy';
-  import { button } from '../lib/ui/button';
+  import { busyCopy } from '../lib/ui/copy';
+  import Button from './ui/Button.svelte';
 
   // The Discord section (raids spec 3.8) is its own chunk: GuildShell's entry is at its budget.
   const discordLazy = createLazyComponent(() => import('./guild/GuildDiscordSection.svelte'));
@@ -230,23 +230,23 @@
             type="number"
             min="0"
             aria-labelledby={labelId}
-            class="rounded-field text-strong h-11 w-[72px] border border-white/15 bg-white/[.045] px-3 text-[15px] font-semibold disabled:opacity-45 {busy
-              ? BUSY_CLASS
-              : ''}"
+            class="rounded-field text-strong h-11 w-[72px] border border-white/15 bg-white/[.045] px-3 text-[15px] font-semibold disabled:opacity-45"
             bind:value={rankDraft}
             oninput={() => (rankSaved = false)}
             disabled={busy || frozen}
             aria-busy={busy}
             data-testid="guild-officer-threshold-input"
           />
-          <button
-            class="{button('secondary', 'sm')} {busy ? BUSY_CLASS : ''}"
+          <Button
+            size="sm"
             onclick={() => onSave('officer_max_rank_index', String(rankDraft))}
+            busy={busy && rankChanged}
+            busyLabel={busyCopy.saving}
             disabled={busy || frozen || !rankChanged}
-            data-testid="guild-officer-threshold-save"
+            testid="guild-officer-threshold-save"
           >
             Save
-          </button>
+          </Button>
         </div>
       {/snippet}
       {#snippet below()}

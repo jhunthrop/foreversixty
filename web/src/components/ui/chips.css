@@ -56,3 +56,11 @@
   height: 10px;
   border-radius: 2px;
 }
+.ui-chip-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-muted);
+}
+.ui-chip[aria-pressed='true'] .ui-chip-count {
+  color: inherit;
+  opacity: 0.8;
+}

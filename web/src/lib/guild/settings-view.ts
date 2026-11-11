@@ -6,6 +6,7 @@ import type { GuildBillingView } from '../account/api';
 import { utcDayMonthYear } from '../dates';
 import type { SelectOption } from '../ui/listbox-model';
 import type { GuildVisibility } from './api';
+import { uiCopy } from '../ui/copy';
 
 /** Report visibility in the settings' words, the order the select lists them. */
 export const VISIBILITY_OPTIONS: readonly (SelectOption & { value: GuildVisibility })[] = [
@@ -28,8 +29,8 @@ export const settingsWords = {
   officerTools: 'Officer tools',
   noBillingContact: 'No billing contact yet',
   grantedByUs: 'Granted by Forever Sixty.',
-  billingUnavailable: 'Billing is not available right now. Try again in a few minutes.',
-  tryAgain: 'Try again',
+  billingUnavailable: `Billing is not available right now. ${uiCopy.retry} in a few minutes.`,
+  tryAgain: uiCopy.retry,
   guildSettingsLink: 'Guild settings',
 } as const;
 

@@ -28,7 +28,6 @@
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
   import { focusOnMountIf } from '../../lib/guild/focus-now';
   import type { AttendanceSource } from '../../lib/guild/attendance-contract';
-  import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
   import { professionName } from '../../lib/guild/professions';
   import { rosterHoldsHandoff } from '../../lib/guild/roster-links';
   import {
@@ -71,7 +70,10 @@
   import Page from '../ui/Page.svelte';
   import Ruled from '../ui/Ruled.svelte';
   import Section from '../ui/Section.svelte';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
+  import Button from '../ui/Button.svelte';
+  import Chips from '../ui/Chips.svelte';
+  import Select from '../ui/Select.svelte';
+  import { upperFirst } from '../../lib/text';
   import FactLine from './FactLine.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
 
@@ -215,15 +217,26 @@
   function toggle(key: 'verifiedOnly' | 'belowFloorOnly'): void {
     filters = { ...filters, [key]: !filters[key] };
   }
-  function cycleRole(): void {
-    const order: RosterRoleFilter[] = ['all', 'tank', 'healer', 'dps'];
-    const next = order[(order.indexOf(filters.role) + 1) % order.length];
-    filters = { ...filters, role: next };
-  }
-  function cycleClass(): void {
-    const order = ['all', ...classOptions];
-    const next = order[(order.indexOf(filters.classFilter) + 1) % order.length];
-    filters = { ...filters, classFilter: next };
+  const ROLE_OPTIONS: readonly { value: RosterRoleFilter; label: string }[] = [
+    { value: 'all', label: 'All roles' },
+    { value: 'tank', label: 'Tank' },
+    { value: 'healer', label: 'Healer' },
+    { value: 'dps', label: 'Damage' },
+  ];
+  const classSelectOptions = $derived([
+    { value: 'all', label: 'All classes' },
+    ...classOptions.map((cls) => ({ value: cls, label: upperFirst(cls) })),
+  ]);
+  /** The on/off filters, as the shared chips. */
+  const toggleChips = $derived([
+    { id: 'verified', label: 'Verified only', on: filters.verifiedOnly },
+    { id: 'noaccount', label: guildRosterModelCopy.noAccountFilter, on: noAccountOnly },
+    { id: 'floor', label: 'Below rating floor', on: filters.belowFloorOnly },
+  ]);
+  function onToggleChip(id: string): void {
+    if (id === 'verified') toggle('verifiedOnly');
+    else if (id === 'floor') toggle('belowFloorOnly');
+    else noAccountOnly = !noAccountOnly;
   }
 
   /** Approve all goes straight through unless an officer is waiting, then it asks first. */
@@ -406,19 +419,21 @@
         {/if}
         <div class="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-3">
           {#if canApprove}
-            <button
-              class={`${button('secondary', 'sm')} ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+            <Button
+              size="sm"
               onclick={() => onApprove(row)}
-              disabled={rosterBusy === row.character_key || frozen}
-              aria-label={`Approve ${row.name}`}
-              data-testid="guild-roster-approve"
+              busy={rosterBusy === row.character_key}
+              busyLabel={guildRosterModelCopy.approving}
+              disabled={frozen}
+              label={`Approve ${row.name}`}
+              testid="guild-roster-approve"
             >
               Approve
-            </button>
+            </Button>
           {/if}
           {#if canRemove && row.may_remove}
             <button
-              class={`${button('ghost', 'sm')} ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+              class={`${button('ghost', 'sm')}`}
               onclick={() => (decliningKey = row.character_key)}
               disabled={rosterBusy === row.character_key || (frozen && !removeOverridesFrozen(row))}
               aria-label={`Decline ${row.name}`}
@@ -502,53 +517,49 @@
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
           <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
             <span class="quiet-label">Filter</span>
-            <button class={FILTER_BTN} onclick={cycleRole} data-testid="guild-roster-filter-role">
-              Role: {filters.role === 'all' ? 'All' : filters.role}
-            </button>
-            <button class={FILTER_BTN} onclick={cycleClass} data-testid="guild-roster-filter-class">
-              Class: {filters.classFilter === 'all' ? 'All' : filters.classFilter}
-            </button>
-            <button
-              class={`${FILTER_BTN} ${filters.verifiedOnly ? FILTER_BTN_ON : ''}`}
-              onclick={() => toggle('verifiedOnly')}
-              data-testid="guild-roster-filter-verified"
-            >
-              Verified only
-            </button>
-            <button
-              class={`${FILTER_BTN} ${noAccountOnly ? FILTER_BTN_ON : ''}`}
-              onclick={() => (noAccountOnly = !noAccountOnly)}
-              data-testid="guild-roster-filter-noaccount"
-            >
-              {guildRosterModelCopy.noAccountFilter}
-            </button>
-            <button
-              class={`${FILTER_BTN} ${filters.belowFloorOnly ? FILTER_BTN_ON : ''}`}
-              onclick={() => toggle('belowFloorOnly')}
-              data-testid="guild-roster-filter-floor"
-            >
-              Below rating floor
-            </button>
+            <Select
+              id="guild-roster-filter-role"
+              size="dense"
+              label="Role"
+              value={filters.role}
+              options={ROLE_OPTIONS}
+              testid="guild-roster-filter-role"
+              onchange={(event) =>
+                (filters = {
+                  ...filters,
+                  role: (event.currentTarget as HTMLSelectElement).value as RosterRoleFilter,
+                })}
+            />
+            <Select
+              id="guild-roster-filter-class"
+              size="dense"
+              label="Class"
+              value={filters.classFilter}
+              options={classSelectOptions}
+              testid="guild-roster-filter-class"
+              onchange={(event) =>
+                (filters = { ...filters, classFilter: (event.currentTarget as HTMLSelectElement).value })}
+            />
+            <Chips
+              chips={toggleChips}
+              label="Filter"
+              onToggle={onToggleChip}
+              chipTestid="guild-roster-filter"
+            />
           </div>
 
-          <div
-            class="flex flex-wrap items-center gap-2"
-            role="group"
-            aria-label="Sort"
-            data-testid="guild-roster-sort"
-          >
+          <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-sort">
             <span class="quiet-label">Sort</span>
-            {#each sortChips as chip (chip.key)}
-              <button
-                class={`${FILTER_BTN} ${sortKey === chip.key ? FILTER_BTN_ON : ''}`}
-                onclick={() => (sortKey = chip.key)}
-                aria-pressed={sortKey === chip.key}
-                aria-sort={sortKey === chip.key ? 'descending' : undefined}
-                data-testid={`guild-roster-sort-${chip.key}`}
-              >
-                {chip.label}{sortKey === chip.key ? ' ▾' : ''}
-              </button>
-            {/each}
+            <Chips
+              chips={sortChips.map((chip) => ({
+                id: chip.key,
+                label: sortKey === chip.key ? `${chip.label} ▾` : chip.label,
+                on: sortKey === chip.key,
+              }))}
+              label="Sort"
+              onToggle={(id) => (sortKey = id as RosterSortKey)}
+              chipTestid="guild-roster-sort"
+            />
           </div>
         </div>
         <!-- Only while no rank is known: a roster row's rank is the addon's, so the line would read
@@ -693,7 +704,7 @@
                         {/if}
                         {#if canRemove && row.may_remove}
                           <button
-                            class={`${button('secondary', 'sm')} ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+                            class={`${button('secondary', 'sm')}`}
                             onclick={() => (removingKey = row.character_key)}
                             disabled={rosterBusy === row.character_key ||
                               (frozen && !removeOverridesFrozen(row))}
@@ -767,7 +778,7 @@
                           data-testid="guild-roster-entry-actions"
                         >
                           <button
-                            class={`${button('secondary', 'sm')} ${rosterBusy === accountKey ? BUSY_CLASS : ''}`}
+                            class={`${button('secondary', 'sm')}`}
                             onclick={() => (removingKey = accountKey)}
                             disabled={rosterBusy === accountKey || frozen}
                             aria-label={`Remove ${entry.name}`}

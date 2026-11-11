@@ -16,6 +16,12 @@
     tone = 'danger',
     busy = false,
     size = 'sm',
+    disabled = false,
+    focusCancel = true,
+    cancelWhileBusy = false,
+    width = '',
+    confirmTestid,
+    cancelTestid,
     onconfirm,
     oncancel,
     testid,
@@ -28,37 +34,48 @@
     tone?: 'danger' | 'primary';
     busy?: boolean;
     size?: ButtonSize;
+    /** The confirm waits (a re-read in flight); Cancel stays live. */
+    disabled?: boolean;
+    /** False where the ask opens on a field that takes focus itself (the transfer's officer pick). */
+    focusCancel?: boolean;
+    /** Cancel stays live while the confirm is in flight (the raid's Keep it). */
+    cancelWhileBusy?: boolean;
+    /** Layout only, on both buttons (`w-full` in a card's foot, a fixed width). */
+    width?: string;
+    /** A caller whose tests already name the two buttons keeps its ids. */
+    confirmTestid?: string;
+    cancelTestid?: string;
     onconfirm: () => void;
     oncancel: () => void;
-    /** `<testid>-confirm` and `<testid>-cancel`. */
+    /** `<testid>-confirm` and `<testid>-cancel`, unless the two ids above are given. */
     testid: string;
   } = $props();
 
   /** Focus on Cancel, drawn as keyboard focus: the ask follows a press, and the ring says where it went. */
   function focusOnMount(node: HTMLElement): void {
-    node.focus({ focusVisible: true });
+    if (focusCancel) node.focus({ focusVisible: true });
   }
 
   function onKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape' && !busy) oncancel();
+    if (event.key === 'Escape' && (!busy || cancelWhileBusy)) oncancel();
   }
 </script>
 
 <svelte:window onkeydown={onKeydown} />
 <button
   type="button"
-  class={button(tone, size)}
-  disabled={busy}
+  class={width === '' ? button(tone, size) : `${button(tone, size)} ${width}`}
+  disabled={busy || disabled}
   aria-busy={busy ? 'true' : undefined}
   onclick={onconfirm}
-  data-testid="{testid}-confirm"
+  data-testid={confirmTestid ?? `${testid}-confirm`}
   >{#if busy}<Spinner />{busyLabel ?? confirm}{:else}{confirm}{/if}</button
 >
 <button
   type="button"
-  class={button('secondary', size)}
-  disabled={busy}
+  class={width === '' ? button('secondary', size) : `${button('secondary', size)} ${width}`}
+  disabled={busy && !cancelWhileBusy}
   onclick={oncancel}
   use:focusOnMount
-  data-testid="{testid}-cancel">{cancel}</button
+  data-testid={cancelTestid ?? `${testid}-cancel`}>{cancel}</button
 >

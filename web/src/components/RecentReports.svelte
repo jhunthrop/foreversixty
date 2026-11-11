@@ -13,6 +13,7 @@
   import { SAMPLE_FALLBACK_ROW, SAMPLE_REPORT_ID, loadSampleRow } from '../lib/logs/sample-row';
   import ReportRow from './ReportRow.svelte';
   import Button from './ui/Button.svelte';
+  import LoadError from './ui/LoadError.svelte';
   import Section from './ui/Section.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
@@ -60,9 +61,12 @@
       testid="recent-reports-skeleton"
     />
   {:else if status === 'failed' && rows.length === 0}
-    <div class="text-muted p-4 text-[14px] leading-5" role="alert" data-testid="recent-reports-error">
-      <p>{recentReportsCopy.failed}</p>
-      <div class="mt-3"><Button size="sm" onclick={() => void load(attemptedCursor)}>Try again</Button></div>
+    <div class="p-4">
+      <LoadError
+        message={recentReportsCopy.failed}
+        onRetry={() => void load(attemptedCursor)}
+        testid="recent-reports-error"
+      />
     </div>
   {/if}
   <div class="flex flex-col" data-testid="recent-reports-list">

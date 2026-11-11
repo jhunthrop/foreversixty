@@ -6,7 +6,7 @@
      weights result keeps its own view (SavedKind.svelte). Opening a result marks that server run
      seen, once (experience spec 2026-10-24 3.6). -->
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
   import activeBuild from '../../data/active-build.json';
   import { resultAnswer } from '../../lib/sim/answer';
@@ -21,8 +21,8 @@
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import type { BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
-  import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import Button from '../ui/Button.svelte';
+  import CopyButton from '../ui/CopyButton.svelte';
   import RunReport from './RunReport.svelte';
   import SimAnswer from './SimAnswer.svelte';
   import SimCharacterHead from './SimCharacterHead.svelte';
@@ -83,30 +83,6 @@
     const saved = savedDay(result.created_at);
     return saved === null ? [line1] : [line1, copy.head.saved(saved)];
   });
-
-  /** How long "Copy failed" shows before the label returns. */
-  const COPY_FAILED_MS = 3000;
-  let copyState = $state<CopyFeedbackState>('idle');
-  let failedTimer: ReturnType<typeof setTimeout> | undefined;
-  const copier = createCopyFeedback(
-    (text) => navigator.clipboard.writeText(text),
-    (next) => {
-      copyState = next;
-      clearTimeout(failedTimer);
-      if (next === 'failed') failedTimer = setTimeout(() => (copyState = 'idle'), COPY_FAILED_MS);
-    },
-  );
-  onDestroy(() => {
-    copier.dispose();
-    clearTimeout(failedTimer);
-  });
-  const copyLabel = $derived(
-    copyState === 'copied'
-      ? copy.answer.copied
-      : copyState === 'failed'
-        ? copy.answer.copyFailed
-        : copy.answer.copyLink,
-  );
 </script>
 
 {#if kind === 'run'}
@@ -121,9 +97,7 @@
         <Button tone="primary" size="sm" href={openHref} onclick={onrerun} testid="sim-run-yourself"
           >{copy.answer.openInSim}</Button
         >
-        <Button size="sm" onclick={() => void copier.copy(window.location.href)} testid="sim-saved-copy"
-          ><span aria-live="polite">{copyLabel}</span></Button
-        >
+        <CopyButton text={() => window.location.href} label={copy.answer.copyLink} testid="sim-saved-copy" />
       {/snippet}
     </SimCharacterHead>
     <RunReport {result} onrerun={openInSim} {initialNotes} {bisBenchmarks} />

@@ -4,6 +4,7 @@
      Grid of address, phone and day. Anyone but the owner sees one line saying so: the API answers
      401 or 403 for them whatever this page shows. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { AccountError, fetchMeOnce } from '../../lib/account/api';
   import {
     adminTestersCopy as copy,
@@ -33,13 +34,10 @@
   let copied = $state<Platform | null>(null);
   let copyFailed = $state(false);
   let copying: Platform | null = null;
-  const copier = createCopyFeedback(
-    (text) => navigator.clipboard.writeText(text),
-    (state) => {
-      copied = state === 'copied' ? copying : null;
-      copyFailed = state === 'failed';
-    },
-  );
+  const copier = createCopyFeedback((state) => {
+    copied = state === 'copied' ? copying : null;
+    copyFailed = state === 'failed';
+  });
   $effect(() => copier.dispose);
 
   function phaseForError(error: unknown): Phase {
@@ -94,7 +92,7 @@
     <Section title={copy.tableTitle} panel testid="testers-table">
       <div class="flex flex-col gap-4">
         {#if rows.length === 0}
-          <p data-testid="testers-empty">{copy.empty}</p>
+          <EmptyState message={copy.empty} testid="testers-empty" />
         {:else}
           <div class="flex flex-wrap items-center gap-3">
             {#each PLATFORM_ORDER as platform (platform)}

@@ -12,7 +12,8 @@
   import SettingsRow from '../../ui/SettingsRow.svelte';
   import Tag from '../../ui/Tag.svelte';
   import { canManageBilling, officerToolsExplanation, settingsWords } from '../../../lib/guild/settings-view';
-  import { BUSY_CLASS } from '../../../lib/ui/busy';
+  import { checkoutGuildBusy } from '../../../lib/billing/checkout-guild-errors';
+  import Button from '../../ui/Button.svelte';
 
   let {
     guildId,
@@ -94,16 +95,15 @@
   {#if manageable || (payer && showMove)}
     <div class="flex flex-wrap items-center gap-3 pt-3">
       {#if manageable}
-        <button
-          type="button"
-          class="{button('secondary', 'sm')} {busy ? BUSY_CLASS : ''}"
-          disabled={busy}
-          aria-busy={busy}
+        <Button
+          size="sm"
+          {busy}
+          busyLabel={checkoutGuildBusy.portal}
           onclick={() => void manage()}
-          data-testid={failure === 'retry' ? 'guild-billing-retry' : 'guild-manage-billing'}
+          testid={failure === 'retry' ? 'guild-billing-retry' : 'guild-manage-billing'}
         >
           {failure === 'retry' ? settingsWords.tryAgain : billingBlockCopy.manageBilling}
-        </button>
+        </Button>
       {/if}
       {#if payer && showMove}
         <button

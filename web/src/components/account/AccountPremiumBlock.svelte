@@ -22,7 +22,8 @@
   import Figure from '../ui/Figure.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import Spinner from '../ui/Spinner.svelte';
+  import Button from '../ui/Button.svelte';
+  import { checkoutGuildBusy } from '../../lib/billing/checkout-guild-errors';
   import Tag from '../ui/Tag.svelte';
 
   const SIM_HREF = '/sim';
@@ -166,18 +167,17 @@
     {#if showBilling || showSeePlans}
       <div class="flex flex-wrap items-center gap-x-4 gap-y-[10px]">
         {#if showBilling}
-          <button
-            type="button"
-            class={button(pastDue ? 'primary' : 'secondary')}
+          <Button
+            tone={pastDue ? 'primary' : 'secondary'}
             onclick={onBilling}
-            disabled={busy}
-            aria-busy={busy ? 'true' : undefined}
-            data-testid="account-billing-button"
+            {busy}
+            busyLabel={checkoutGuildBusy.portal}
+            testid="account-billing-button"
           >
-            {#if busy}<Spinner />{/if}{plan?.billingButton === 'manage'
+            {plan?.billingButton === 'manage'
               ? premiumSourceCopy.buttons.manage
               : premiumSourceCopy.buttons.history}
-          </button>
+          </Button>
         {/if}
         {#if showSeePlans}
           <a class={button('primary')} href={PREMIUM_LINKS.card} data-testid="account-see-plans"

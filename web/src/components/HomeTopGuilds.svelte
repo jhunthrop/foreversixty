@@ -5,6 +5,7 @@
      Top guilds panel.
      Loading holds the five rows' height; a failure and an empty board are open lines. -->
 <script lang="ts">
+  import EmptyState from './ui/EmptyState.svelte';
   import { guildHref, rulesetLabel } from '../lib/characters';
   import { fetchGuildRankings, type GuildRankingRow } from '../lib/rankings/api';
 
@@ -57,7 +58,7 @@
     testid="home-top-guilds-error"
   />
 {:else if rows.length === 0}
-  <p class="text-muted text-[14px]" data-testid="home-top-guilds-empty">{homeTopGuildsCopy.empty}</p>
+  <EmptyState message={homeTopGuildsCopy.empty} testid="home-top-guilds-empty" />
 {:else}
   <div role="group" aria-label={label} data-testid="home-top-guilds">
     {#each rows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}

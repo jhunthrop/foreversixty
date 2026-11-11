@@ -5,6 +5,7 @@
      the shortfall in the wipe colour; a pass is a muted tick. The shortfall words also ride the
      raider's sub line, so a phone keeps them when the columns fold. -->
 <script lang="ts">
+  import { uiCopy } from '../../../lib/ui/copy';
   import type { GuildReadinessRow } from '../../../lib/guild/api';
   import { classColorVar } from '../../../lib/report/format';
   import { enchantSlotLabel, missingCount } from '../../../lib/guild/readiness-view';
@@ -139,7 +140,7 @@
           onclick={() => onNudge(row)}
           aria-label={`Nudge ${row.name}`}
           data-testid={`guild-readiness-nudge-${row.character_key}`}
-          >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
+          >{copiedKey === row.character_key ? uiCopy.copied : 'Nudge'}</button
         >{/snippet}
       {#if index === short.length && short.length > 0 && ready.length > 0}
         <StatRow total bar={false} figures={blank}

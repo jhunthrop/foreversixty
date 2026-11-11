@@ -5,6 +5,7 @@
      caps label with its count over its rows, never a Section (a Plate holds no headed section).
      After an officer's change moves a row to another group, focus follows it to its new place. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import { tick } from 'svelte';
   import type { GuildRaidView, GuildSignupState } from '../../../lib/guild/api';
   import { kindCountsRoles, kindOf } from '../../../lib/guild/raid-copy';
@@ -60,7 +61,7 @@
 <div class={closed ? 'opacity-60' : undefined} data-testid="raid-roster">
   <div role="region" aria-label="Sign-ups">
     {#if empty}
-      <p class="text-muted py-3 text-[14px]" data-testid="raid-roster-empty">Nobody has signed up yet.</p>
+      <EmptyState message="Nobody has signed up yet." testid="raid-roster-empty" />
     {:else}
       {#if facts !== null}
         <div class="hidden items-center justify-between gap-4 pt-1 lg:flex">

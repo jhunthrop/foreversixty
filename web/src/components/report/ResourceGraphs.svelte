@@ -12,6 +12,7 @@
      total under every window, the same lie Interrupts and Dispels tell. It carries the
      `†` mark unconditionally, exactly as ExchangeTable's Count does. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { clearChartCursor, cursorMsFor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel } from '../../lib/chart/time-axis';
@@ -223,9 +224,7 @@
       />{/if}{/snippet}
   <div>
     {#if rows.length === 0}
-      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
-        No resource changes in this window.
-      </p>
+      <EmptyState inset message="No resource changes in this window." testid="table-empty" />
     {:else}
       <StatTable
         {columns}

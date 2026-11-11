@@ -13,6 +13,7 @@ import {
   checkoutGuildPortalError,
 } from './checkout-guild-errors';
 import { GUILD_TIER_MEMBER_LIMIT, GUILD_TRIAL_DAYS, PLANS, type PlanKey } from './plans';
+import { uiCopy } from '../ui/copy';
 
 export type GuildTier = Extract<PlanKey, 'guild' | 'raid_guild'>;
 
@@ -181,7 +182,7 @@ export const checkoutGuildCopy = {
     labelPerson: (name: string): string => `Link for ${name}`,
     labelSecondOfficer: 'Link for a second officer',
     copy: 'Copy link',
-    copied: 'Copied',
+    copied: uiCopy.copied,
     share: 'Share',
     failed: 'Could not copy. Select the link and copy it.',
   },
@@ -197,7 +198,7 @@ export const checkoutGuildCopy = {
   checkoutErrors: checkoutGuildCheckoutErrors,
   portalError: checkoutGuildPortalError,
   loading: 'Loading your guilds',
-  loadError: { title: 'Your guilds did not load.', retry: 'Try again' },
+  loadError: { title: 'Your guilds did not load.', retry: uiCopy.retry },
   emptyA: {
     title: 'We do not know your guild yet.',
     body: 'Your guilds come from your characters. Save a character with the addon on Get set up, and its guild shows here.',

@@ -14,6 +14,7 @@
   import { isRaidCooldown } from '../../lib/report/raid-cooldowns';
   import type { AuraTrack, CastRow, Death, PullMark } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
+  import Disclosure from '../ui/Disclosure.svelte';
 
   let {
     tracks,
@@ -264,18 +265,15 @@
       </li>
     </ul>
     {#if pulls.length > 0 && rows.some((row) => pullsUsed(row.uses).missed.length > 0)}
-      <details class="text-muted text-[13px]" data-testid="raid-cooldowns-missed">
-        <summary class="text-text min-h-11 cursor-pointer font-semibold md:min-h-0"
-          >Pulls each cooldown was not used on</summary
-        >
-        <ul class="mt-1 flex flex-col gap-1">
+      <Disclosure summary="Pulls each cooldown was not used on" testid="raid-cooldowns-missed">
+        <ul class="text-muted flex flex-col gap-1 text-[13px]">
           {#each rows.filter((row) => pullsUsed(row.uses).missed.length > 0) as row (row.name)}
             <li>
               <span class="text-text font-semibold">{row.name}</span>: {pullsUsed(row.uses).missed.join(', ')}
             </li>
           {/each}
         </ul>
-      </details>
+      </Disclosure>
     {/if}
   </Section>
 {/if}

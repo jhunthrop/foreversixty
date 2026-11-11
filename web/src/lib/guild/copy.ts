@@ -4,7 +4,7 @@
 // tool. Wording quoted directly from the spec is marked as such below.
 import { GUILD_TRIAL_DAYS } from '../billing/plans';
 import { counted } from '../plural';
-import { uiCopy } from '../ui/copy';
+import { uiCopy, withRetry } from '../ui/copy';
 import { possessive } from '../possessive';
 
 export const guildHomeCopy = {
@@ -71,7 +71,7 @@ export const guildHomeCopy = {
     officer: (guildName: string): string =>
       `Nobody has claimed ${guildName} here yet. Your guild master claims it.`,
     copyLink: 'Copy the claim link for your guild master',
-    copied: 'Copied',
+    copied: uiCopy.copied,
     pending: (guildName: string): string => `A claim on ${guildName} is waiting for a second officer.`,
     open: 'Open the claim',
   },
@@ -102,6 +102,7 @@ export const guildHomeCopy = {
     'Officer tools freeze until a moderator reviews the contest. Members can still read and upload.',
   ] as readonly string[],
   contestConfirmButton: 'Yes, contest this claim',
+  contesting: 'Contesting…',
   cancel: 'Cancel',
   frozenNotice: 'This guild’s claim is contested. Officer actions are frozen until a moderator resolves it.',
   // The contest call itself succeeded but the page's own follow-up refresh failed -- a
@@ -126,6 +127,7 @@ export const guildClaimCopy = {
   // Claiming asks first; the rules sit in their own card right below, so the question is bare.
   claimConfirmLine: (guildName: string): string => `Claim ${guildName === '' ? 'this guild' : guildName}?`,
   claimConfirmButton: 'Yes, claim it',
+  claiming: 'Claiming…',
   // After the claim: the page says what the viewer holds and where to go next.
   youHold: (guildName: string): string => `You hold ${guildName === '' ? 'this guild' : guildName}.`,
   nextHeading: 'Next',
@@ -133,6 +135,7 @@ export const guildClaimCopy = {
   releaseConfirmLine: (guildName: string): string =>
     `Release your claim on ${guildName === '' ? 'this guild' : guildName}? Officers will have to claim it again.`,
   releaseConfirmButton: 'Release',
+  releasing: 'Releasing…',
   cancel: 'Cancel',
   claimedBySomeoneElse: (name: string, since?: string): string =>
     since === undefined ? `Claimed by ${name}.` : `Claimed by ${name} since ${since}.`,
@@ -146,6 +149,7 @@ export const guildClaimCopy = {
       : `A claim is pending, confirmed by a second officer or the guild master. Expires ${expiresAt.slice(0, 10)}.`,
   claimButton: 'Claim this guild',
   confirmButton: 'Confirm this claim',
+  confirming: 'Confirming…',
   releaseButton: 'Release claim',
   notEligible: 'Only an officer or the guild master of this guild can claim it.',
   // A claim link made for a plan (spec 2026-10-27 section 9.3): what the link is for, then the order.
@@ -193,7 +197,7 @@ export const guildSettingsCopy = {
   firstLinkButton: 'Make the invite link',
   making: 'Making…',
   noLinkYet: 'Make a link to share in guild chat or Discord.',
-  inviteFailed: 'That did not work. Try again.',
+  inviteFailed: withRetry('That did not work.'),
   rotateConfirmLine:
     'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
   rotateCancel: 'Cancel',
@@ -387,6 +391,7 @@ export const guildRosterModelCopy = {
   /** The roster's column heads from lg: the units the cells leave out. */
   heads: { raider: 'Raider', level: 'Item level', raids: 'Raids', best: 'Top output', rating: 'Rating' },
   decline: 'Decline',
+  approving: 'Approving…',
   /** Asked before a verified character is taken off the roster. */
   removeQuestion: (name: string): string => `Remove ${name} from the roster?`,
   removeButton: 'Remove',

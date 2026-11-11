@@ -3,18 +3,14 @@
 // result. This project's vitest config hands components Svelte's server entry (see
 // sim/HelpNote.test.ts), so there is no client-side click to simulate: the static render
 // proves the button's label, test id and disabled state, and the click's whole behaviour --
-// clipboard, the 3 s "Copied" and the failure fallback -- lives in `copy-for-game.ts`'s
+// clipboard, the two-second "Copied" and the failure fallback -- lives in `copy-for-game.ts`'s
 // controller, which the component calls and which runs here against a stubbed clipboard
 // and fake timers.
 import { render } from 'svelte/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { addonCopy } from '../lib/addon/copy';
-import {
-  COPIED_FOR_GAME_MS,
-  copyForGameLabel,
-  createCopyForGame,
-  type CopyForGameState,
-} from '../lib/addon/copy-for-game';
+import { COPIED_VISIBLE_MS as COPIED_FOR_GAME_MS } from '../lib/ui/copy-feedback';
+import { copyForGameLabel, createCopyForGame, type CopyForGameState } from '../lib/addon/copy-for-game';
 import CopyForGame from './CopyForGame.svelte';
 
 const CODE = 'FSB1:1.60.1.69893:paladin:111:head=12640:stamina=17';
@@ -63,7 +59,7 @@ describe('CopyForGame (the click)', () => {
     vi.unstubAllGlobals();
   });
 
-  it('copies the code and reads "Copied, paste it in game with /fs" for 3 s', async () => {
+  it('copies the code and reads "Copied, paste it in game with /fs" for 2 s', async () => {
     const copier = createCopyForGame((state) => states.push(state));
     await copier.copy(CODE);
     expect(writeText).toHaveBeenCalledWith(CODE);
@@ -76,17 +72,17 @@ describe('CopyForGame (the click)', () => {
     vi.advanceTimersByTime(1);
     expect(states).toEqual(['copied', 'idle']);
     expect(copyForGameLabel('idle')).toBe(addonCopy.copyForGame);
-    expect(COPIED_FOR_GAME_MS).toBe(3000);
+    expect(COPIED_FOR_GAME_MS).toBe(2000);
   });
 
-  it('a second copy inside the 3 s restarts the window rather than reverting early', async () => {
+  it('a second copy inside the 2 s restarts the window rather than reverting early', async () => {
     const copier = createCopyForGame((state) => states.push(state));
     await copier.copy(CODE);
-    vi.advanceTimersByTime(2000);
+    vi.advanceTimersByTime(1500);
     await copier.copy(CODE);
-    vi.advanceTimersByTime(2000);
+    vi.advanceTimersByTime(1500);
     expect(states).toEqual(['copied', 'copied']);
-    vi.advanceTimersByTime(1000);
+    vi.advanceTimersByTime(500);
     expect(states).toEqual(['copied', 'copied', 'idle']);
   });
 

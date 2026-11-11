@@ -6,6 +6,7 @@
      drop of the loot table that is not on the night yet, grouped by raid then boss; a raid the
      game client does not carry yet reads "Not in the game client yet". -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import type { GuildLootItem, GuildLootRaid } from '../../../lib/guild/api';
   import { pickOptions, type DropRow } from '../../../lib/guild/loot-council-view';
   import ItemRow from '../../ui/ItemRow.svelte';
@@ -63,7 +64,7 @@
         {/snippet}
       </ItemRow>
     {:else}
-      <p class="text-muted py-3 text-[14px]" data-testid="guild-loot-empty">{emptyText}</p>
+      <EmptyState message={emptyText} testid="guild-loot-empty" />
     {/each}
   </div>
   {#if openable.length > 0}

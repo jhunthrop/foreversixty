@@ -2,6 +2,7 @@
 // The simulator page's frame copy (spec 2026-11-06-sim §5.1, §6): the landing, the head's answer
 // in every state, the run line and More settings. Verbatim from the spec; figures arrive as
 // arguments, never typed here (prose never quotes a nightly number).
+import { uiCopy } from '../ui/copy';
 
 export const simPageCopy = {
   title: 'Simulator',
@@ -67,7 +68,7 @@ export const simPageCopy = {
     notSimulatedCaption: (spec: string): string => `${spec} is not simulated yet; there is nothing to run.`,
     specSupport: 'Spec support ›',
     specSupportHref: '/sim/specs',
-    loadingEngine: 'Loading the engine',
+    loadingEngine: 'Loading the engine…',
     loadingEngineCaption: 'The engine is about 4 MB. It loads once and is cached after that.',
     onServers: 'On our servers',
     starting: 'Starting',
@@ -92,8 +93,6 @@ export const simPageCopy = {
     signInToSave: 'Sign in to save',
     saved: 'Saved',
     copyLink: 'Copy link',
-    copied: 'Copied',
-    copyFailed: 'Copy failed',
     topGear: 'Find upgrades in Top Gear ›',
     openInSim: 'Open in the sim',
   },
@@ -116,7 +115,7 @@ export const simPageCopy = {
     moreSettings: 'More settings',
     runSim: 'Run sim',
     runAgain: 'Run again',
-    tryAgain: 'Try again',
+    tryAgain: uiCopy.retry,
     stop: 'Stop',
     loadingEngine: 'Loading engine…',
     runningOnServers: 'Running on our servers…',

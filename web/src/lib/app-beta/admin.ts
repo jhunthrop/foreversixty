@@ -8,6 +8,7 @@ import type { GridRowModel } from '../ui/cells';
 import type { AppTester } from './api';
 import { PLATFORM_NAMES } from './copy';
 import type { Platform } from './platform';
+import { uiCopy } from '../ui/copy';
 
 export const PLATFORM_ORDER: readonly Platform[] = ['ios', 'android'];
 
@@ -25,7 +26,7 @@ export const adminTestersCopy = {
   empty: 'No sign-ups yet. foreversixty.gg/app is where they come from.',
   copyEmails: (platform: Platform, count: number): string =>
     `Copy ${count} ${PLATFORM_NAMES[platform]} ${count === 1 ? 'email' : 'emails'}`,
-  copied: 'Copied',
+  copied: uiCopy.copied,
   copyFailed: 'Couldn’t copy; select the addresses by hand.',
 } as const;
 

@@ -4,6 +4,7 @@
      for the raid, the readiness board's nudge) or Report (rating fell). -->
 <script lang="ts">
   import type { Word, WordAction } from '../../../lib/guild/dense/week-board';
+  import { CopyState } from '../../../lib/ui/copy-state.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
@@ -14,21 +15,22 @@
     words,
     hrefOf,
     onPing,
-    onNudge,
+    nudgeTextOf,
   }: {
     words: readonly Word[];
     /** Where Profile and Report go for a raider. */
     hrefOf: (word: Word, action: WordAction) => string;
     onPing: () => void;
-    /** Copies the raid's nudge for the raider. */
-    onNudge: (word: Word) => Promise<void>;
+    /** The raid's nudge for the raider, which Nudge copies ('' when there is none to send). */
+    nudgeTextOf: (word: Word) => string;
   } = $props();
 
-  let copied = $state<string | null>(null);
+  const nudges = new CopyState();
+  $effect(() => () => nudges.dispose());
 
-  async function nudge(word: Word): Promise<void> {
-    await onNudge(word);
-    copied = word.key;
+  function nudge(word: Word): void {
+    const text = nudgeTextOf(word);
+    if (text !== '') void nudges.copy(text, word.key);
   }
 
   const LABEL: Readonly<Record<WordAction, string>> = {
@@ -53,8 +55,8 @@
           {#if word.action === 'ping'}
             <Button tone="ghost" size="sm" onclick={onPing}>{LABEL.ping}</Button>
           {:else if word.action === 'nudge'}
-            <Button tone="ghost" size="sm" onclick={() => void nudge(word)}
-              >{copied === word.key ? 'Copied' : LABEL.nudge}</Button
+            <Button tone="ghost" size="sm" onclick={() => nudge(word)}
+              >{nudges.label(LABEL.nudge, word.key)}</Button
             >
           {:else}
             <Button tone="ghost" size="sm" href={hrefOf(word, word.action)}>{LABEL[word.action]}</Button>

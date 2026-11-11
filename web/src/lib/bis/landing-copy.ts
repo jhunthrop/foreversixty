@@ -20,6 +20,7 @@ import {
   sharedBisLandingSetupLink,
   sharedBisLandingUnder20,
 } from '../copy/shared/bisLanding.generated';
+import { uiCopy } from '../ui/copy';
 
 export const landingCopy = {
   title: 'Best in slot',
@@ -32,7 +33,7 @@ export const landingCopy = {
   countLabel: sharedBisLandingCountLabel,
   countLabelStale: sharedBisLandingCountLabelStale,
   countFailed: sharedBisLandingCountFailed,
-  retry: 'Try again',
+  retry: uiCopy.retry,
   noSync: sharedBisLandingNoSync,
   noSyncLink: ctaCopy.getAddonAndCompanion,
   noSyncHref: '/setup',
