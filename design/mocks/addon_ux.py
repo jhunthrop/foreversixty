@@ -604,8 +604,9 @@ def panel(name, fact, sections, width=340, score=''):
     muted fact line, the Forever Score on the right in its tier colour, then the sections."""
     body = '<div class="rule"></div>'.join(sections)
     return (f'<div class="plate" style="width:{width}px"><div class="band">{medallion()}'
-            f'<div style="flex:1;min-width:0"><div class="t">{name}</div><div class="m">{fact}</div></div>'
-            f'{score}</div><div class="x">×</div><div class="body">{body}</div></div>')
+            f'<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;'
+            f'align-items:baseline;gap:8px"><div class="t">{name}</div>{score}</div><div class="m">{fact}</div></div>'
+            f'</div><div class="x">×</div><div class="body">{body}</div></div>')
 
 
 def score_fact(score, tier):
@@ -767,7 +768,8 @@ def onboarding(page, heading, content, next_label='Next', extra_right='', total=
             f'<div style="flex:1;min-width:0"><div style="font-family:Title,serif;font-size:19px;color:{U["bone"]};'
             f'text-shadow:1px 1px 0 #000;line-height:22px">{heading}</div>'
             f'<div style="font-size:12px;color:{U["muted"]};margin-top:3px">Welcome to Forever Sixty</div></div>'
-            f'<div style="white-space:nowrap"><span style="font-family:Site,sans-serif;font-weight:600;font-size:17px;'
+            f'<div style="white-space:nowrap;align-self:flex-start;margin-top:12px"><span style="font-family:Site,'
+            f'sans-serif;font-weight:600;font-size:17px;'
             f'color:{U["ink"]}">{page}</span><span style="font-size:12px;color:{U["bone_dim"]}"> of {total}'
             f'</span></div></div>')
     return (f'<style>@font-face {{ font-family: Title; src: url({TITLE_FONT}); }}</style>'

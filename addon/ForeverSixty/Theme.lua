@@ -391,6 +391,9 @@ Theme.SIZES = {
 	medallionGap = 12,
 	titleBandPad = 12,
 	titleBandPadRight = 42,
+	--- The number's top on the title's line, and the room kept for its unit until the unit is measured.
+	titleBandNumberTop = 14,
+	titleBandUnitRoom = 36,
 	titleText = Tokens.type.addon.title.size,
 	headingText = Tokens.type.addon.heading.size,
 	clientButtonHeight = 20,

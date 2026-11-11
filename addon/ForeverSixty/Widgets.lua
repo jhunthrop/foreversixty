@@ -1060,18 +1060,20 @@ function Widgets.titleBand(frame, onDragStop)
 	end)
 	local medallion = Widgets.medallion(band, S.medallion)
 	medallion:SetPoint("LEFT", band, "LEFT", S.titleBandPad, 0)
+	-- The number sits on the title's line, so the meta line under both takes the band's full width
+	-- (a guild name is never cut for the score's sake).
 	local unit = Widgets.label(band, "", "boneDim", "small")
-	unit:SetPoint("RIGHT", band, "RIGHT", -S.titleBandPadRight, -2)
+	unit:SetPoint("TOPRIGHT", band, "TOPRIGHT", -S.titleBandPadRight, -S.titleBandNumberTop - 4)
 	-- A figure, so the site's body face (the large role), never the title face's old-style digits.
 	local number = Widgets.label(band, "", "ink", "large")
-	number:SetPoint("RIGHT", unit, "LEFT", -3, 2)
+	number:SetPoint("TOPRIGHT", band, "TOPRIGHT", -S.titleBandPadRight - S.titleBandUnitRoom, -S.titleBandNumberTop)
 	local left = S.titleBandPad + S.medallion + S.medallionGap
 	local title = Theme.titleFont(Widgets.label(band, "", "bone", "large"), S.titleText)
 	title:SetPoint("TOPLEFT", band, "TOPLEFT", left, -12)
 	title:SetPoint("RIGHT", number, "LEFT", -8, 0)
 	local meta = Widgets.label(band, "", "umberMuted", "small")
 	meta:SetPoint("TOPLEFT", band, "TOPLEFT", left, -36)
-	meta:SetPoint("RIGHT", number, "LEFT", -8, 0)
+	meta:SetPoint("RIGHT", band, "RIGHT", -S.titleBandPadRight, 0)
 	for _, region in ipairs({ title, meta }) do
 		if type(region.SetWordWrap) == "function" then
 			region:SetWordWrap(false)
@@ -1102,6 +1104,12 @@ function Widgets.setTitleBand(band, head)
 		band.foreverSixtyNumber:SetTextColor(Theme.rgb(Theme.HEX.ink))
 	end
 	band.foreverSixtyUnit:SetText(number ~= "" and (head.unit or "") or "")
+	-- The unit ends at the band's right pad and the number ends just before it.
+	local unitWidth = band.foreverSixtyUnit:GetStringWidth()
+	band.foreverSixtyNumber:ClearAllPoints()
+	band.foreverSixtyNumber:SetPoint("TOPRIGHT", band, "TOPRIGHT",
+		-Theme.SIZES.titleBandPadRight - ((type(unitWidth) == "number" and unitWidth > 0) and unitWidth + 3 or 0),
+		-Theme.SIZES.titleBandNumberTop)
 	return band
 end
 
