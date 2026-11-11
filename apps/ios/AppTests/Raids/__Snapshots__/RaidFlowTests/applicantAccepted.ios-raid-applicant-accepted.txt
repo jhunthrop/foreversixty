@@ -6,3 +6,5 @@ Accepted into Olympus XXVII. Invite Mirelle in game:
 /ginvite Mirelle
 Copy
 Mirelle shows on the roster once the addon or Battle.net sees the character in the guild.
+Raid
+Mirelle
