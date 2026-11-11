@@ -38,6 +38,8 @@ const FILES = [
   'addon-data.json',
   'bis/',
   'loot.json',
+  // The race portraits GuideRaceList and GuideRacesLane lead each race with.
+  'raceicons.json',
   'spellranks.json',
   'trainables/',
   // Read by design/mocks/planner_facts.mjs and served by support/planner-page.ts (the planner
