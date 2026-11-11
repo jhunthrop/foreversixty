@@ -309,12 +309,18 @@
           },
           {
             "from_level": 49,
-            "to_level": 56,
+            "to_level": 55,
             "rank": 6,
             "note": "Sim-accuracy round 19: the tank Rejuvenation judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren). Rank 6 beats rank 4 by 1.2 to 1.4% at 49 and the top rank by 1.0 to 2.7% at 50 to 56 (round 16 had kept the top rank at 53 to 56)."
           },
           {
-            "from_level": 57,
+            "from_level": 56,
+            "to_level": 58,
+            "rank": 9,
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). Rank 9 beats rank 6 by 1.8 to 2.0% at 56 and rank 8 by 0.3 to 0.4% at 57 and 58."
+          },
+          {
+            "from_level": 59,
             "to_level": 59,
             "rank": 8,
             "note": "Sim-accuracy round 19: the tank Rejuvenation judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren). Rank 8 beats rank 9 by 0.8 to 1.0% at 57; round 16 wave 2: rank 8 beats rank 10 by 2.0 to 2.2% at 58 and 59, and at bare 60 they tie."
@@ -406,6 +412,22 @@
           },
           {
             "from_level": 43,
+            "to_level": 43,
+            "rank": 1
+          },
+          {
+            "from_level": 44,
+            "to_level": 44,
+            "rank": 4,
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). With the round 29 order rank 4 beats rank 1 at 44 by 2.5 to 2.6%, and rank 5 wins at 45 to 48 (+1.0 to +2.7%); at 43 and from 49 rank 1 holds."
+          },
+          {
+            "from_level": 45,
+            "to_level": 48,
+            "rank": 5
+          },
+          {
+            "from_level": 49,
             "to_level": 59,
             "rank": 1
           },
@@ -1222,24 +1244,8 @@
           {
             "from_level": 35,
             "to_level": 35,
-            "rank": 2,
-            "races": [
-              "gnome",
-              "dwarf",
-              "night-elf",
-              "undead",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 2 holds through 34 (+0.8% to +1.6% over rank 3 at 34) and at 35 for every race but a Human (+0.2% to +0.6%; a Human ties); rank 3 from 36 (rank 2 -0.6% to -1.7%). Rank 4 from 40 to 43, except at 42: Human +0.4% and Undead +0.1% on rank 5, and a Troll heals most on the default rank 6 (+1.3%). At 44 rank 5 for a Dwarf, Gnome, Night Elf or Undead (+0.4% to +0.8% over rank 4); a Human and a Troll heal most with rank 7 (Troll +1.1%). From 45 to 47 a Gnome, Troll or Human casts rank 7 (+0.2% to +0.5% over rank 5), an Undead rank 6 at 46 and 47 (+0.1% to +0.3%), a Dwarf and Night Elf keep rank 5. At 48 and 49 a Human (+0.4% to +0.6%) and a Troll (+0.3%) cast rank 7; the rest keep rank 5."
-          },
-          {
-            "from_level": 35,
-            "to_level": 35,
             "rank": 3,
-            "races": [
-              "human"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 2 holds through 34 (+0.8% to +1.6% over rank 3 at 34) and at 35 for every race but a Human (+0.2% to +0.6%; a Human ties); rank 3 from 36 (rank 2 -0.6% to -1.7%). Rank 4 from 40 to 43, except at 42: Human +0.4% and Undead +0.1% on rank 5, and a Troll heals most on the default rank 6 (+1.3%). At 44 rank 5 for a Dwarf, Gnome, Night Elf or Undead (+0.4% to +0.8% over rank 4); a Human and a Troll heal most with rank 7 (Troll +1.1%). From 45 to 47 a Gnome, Troll or Human casts rank 7 (+0.2% to +0.5% over rank 5), an Undead rank 6 at 46 and 47 (+0.1% to +0.3%), a Dwarf and Night Elf keep rank 5. At 48 and 49 a Human (+0.4% to +0.6%) and a Troll (+0.3%) cast rank 7; the rest keep rank 5."
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). Every race casts rank 3 at 35 (+0.3 to +0.7% over rank 2)."
           },
           {
             "from_level": 36,
@@ -1249,9 +1255,30 @@
           },
           {
             "from_level": 40,
-            "to_level": 41,
+            "to_level": 40,
             "rank": 4,
             "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 2 holds through 34 (+0.8% to +1.6% over rank 3 at 34) and at 35 for every race but a Human (+0.2% to +0.6%; a Human ties); rank 3 from 36 (rank 2 -0.6% to -1.7%). Rank 4 from 40 to 43, except at 42: Human +0.4% and Undead +0.1% on rank 5, and a Troll heals most on the default rank 6 (+1.3%). At 44 rank 5 for a Dwarf, Gnome, Night Elf or Undead (+0.4% to +0.8% over rank 4); a Human and a Troll heal most with rank 7 (Troll +1.1%). From 45 to 47 a Gnome, Troll or Human casts rank 7 (+0.2% to +0.5% over rank 5), an Undead rank 6 at 46 and 47 (+0.1% to +0.3%), a Dwarf and Night Elf keep rank 5. At 48 and 49 a Human (+0.4% to +0.6%) and a Troll (+0.3%) cast rank 7; the rest keep rank 5."
+          },
+          {
+            "from_level": 41,
+            "to_level": 41,
+            "rank": 4,
+            "races": [
+              "gnome",
+              "dwarf",
+              "night-elf",
+              "undead",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). A Human casts rank 5 at 41 (+0.2 to +0.3%) and the newest rank at 42 (rank 6, +0.3% over rank 5); every other race casts rank 4 at 41 and 42 (a Troll +1.7%, an Undead +0.1% over the newest at 42)."
+          },
+          {
+            "from_level": 41,
+            "to_level": 41,
+            "rank": 5,
+            "races": [
+              "human"
+            ]
           },
           {
             "from_level": 42,
@@ -1260,19 +1287,10 @@
             "races": [
               "gnome",
               "dwarf",
-              "night-elf"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 2 holds through 34 (+0.8% to +1.6% over rank 3 at 34) and at 35 for every race but a Human (+0.2% to +0.6%; a Human ties); rank 3 from 36 (rank 2 -0.6% to -1.7%). Rank 4 from 40 to 43, except at 42: Human +0.4% and Undead +0.1% on rank 5, and a Troll heals most on the default rank 6 (+1.3%). At 44 rank 5 for a Dwarf, Gnome, Night Elf or Undead (+0.4% to +0.8% over rank 4); a Human and a Troll heal most with rank 7 (Troll +1.1%). From 45 to 47 a Gnome, Troll or Human casts rank 7 (+0.2% to +0.5% over rank 5), an Undead rank 6 at 46 and 47 (+0.1% to +0.3%), a Dwarf and Night Elf keep rank 5. At 48 and 49 a Human (+0.4% to +0.6%) and a Troll (+0.3%) cast rank 7; the rest keep rank 5."
-          },
-          {
-            "from_level": 42,
-            "to_level": 42,
-            "rank": 5,
-            "races": [
-              "human",
-              "undead"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 2 holds through 34 (+0.8% to +1.6% over rank 3 at 34) and at 35 for every race but a Human (+0.2% to +0.6%; a Human ties); rank 3 from 36 (rank 2 -0.6% to -1.7%). Rank 4 from 40 to 43, except at 42: Human +0.4% and Undead +0.1% on rank 5, and a Troll heals most on the default rank 6 (+1.3%). At 44 rank 5 for a Dwarf, Gnome, Night Elf or Undead (+0.4% to +0.8% over rank 4); a Human and a Troll heal most with rank 7 (Troll +1.1%). From 45 to 47 a Gnome, Troll or Human casts rank 7 (+0.2% to +0.5% over rank 5), an Undead rank 6 at 46 and 47 (+0.1% to +0.3%), a Dwarf and Night Elf keep rank 5. At 48 and 49 a Human (+0.4% to +0.6%) and a Troll (+0.3%) cast rank 7; the rest keep rank 5."
+              "night-elf",
+              "undead",
+              "troll"
+            ]
           },
           {
             "from_level": 43,
@@ -1599,205 +1617,89 @@
         "bands": [
           {
             "from_level": 14,
-            "to_level": 15,
-            "rank": 1,
-            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). Rank 1 holds at 14 and 15. Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 17,
-            "to_level": 27,
-            "rank": 1,
-            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). At 16, the level Heal arrives, rank 2 heals 0.6 to 0.7% more for a Human and an Undead, so the row skips it; rank 1 holds again from 17. Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 28,
-            "to_level": 28,
-            "rank": 1,
-            "races": [
-              "human",
-              "gnome",
-              "dwarf",
-              "night-elf",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 28,
-            "to_level": 28,
-            "rank": 2,
-            "races": [
-              "undead"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 29,
             "to_level": 29,
             "rank": 1,
-            "races": [
-              "human",
-              "gnome",
-              "night-elf",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 29,
-            "to_level": 29,
-            "rank": 2,
-            "races": [
-              "dwarf",
-              "undead"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). At 16, the level Heal arrives, rank 2 heals 0.6 to 0.7% more for a Human and an Undead, so the row skips it; rank 1 holds again from 17. Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there. Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). With the round 29 order (Spirit of Redemption and the toll points later), rank 1 beats rank 2 at 16 by 3.2 to 4.6% (an Undead 0.3%) and at 28 and 29 every race casts rank 1 (an Undead +1.8 to +3.7% over rank 2, a Dwarf +3.3% at 29)."
           },
           {
             "from_level": 30,
             "to_level": 30,
             "rank": 1,
             "races": [
-              "human",
+              "troll",
               "undead"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+            ]
           },
           {
             "from_level": 30,
             "to_level": 30,
             "rank": 2,
             "races": [
-              "gnome",
-              "dwarf",
-              "night-elf",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 31,
-            "to_level": 31,
-            "rank": 1,
-            "races": [
+              "human",
               "gnome",
               "dwarf",
               "night-elf"
             ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there. Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). At 30 rank 2 for a Human, Gnome, Dwarf or Night Elf (a Human +2.7% over rank 1), rank 1 for a Troll (+0.8%) or an Undead."
           },
           {
             "from_level": 31,
             "to_level": 31,
             "rank": 2,
-            "races": [
-              "undead",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 31,
-            "to_level": 31,
-            "rank": 3,
-            "races": [
-              "human"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). Every race casts rank 2 at 31 (a Dwarf, Gnome or Night Elf +4.7 to +5.5% over rank 1, a Human +2.4% over rank 3)."
           },
           {
             "from_level": 32,
             "to_level": 32,
             "rank": 1,
             "races": [
-              "undead"
+              "human",
+              "gnome",
+              "dwarf",
+              "night-elf"
             ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). At 32 rank 1 for a Human, Gnome, Dwarf or Night Elf (+0.2 to +2.0%), rank 2 for a Troll or an Undead (an Undead +1.9% over rank 1)."
           },
           {
             "from_level": 32,
             "to_level": 32,
             "rank": 2,
             "races": [
-              "human",
-              "gnome",
-              "dwarf",
-              "night-elf",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+              "troll",
+              "undead"
+            ]
           },
           {
             "from_level": 33,
             "to_level": 33,
             "rank": 2,
-            "races": [
-              "gnome",
-              "night-elf",
-              "undead",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). Every race casts rank 2 at 33 (a Dwarf +1.9% and a Human +0.6% over rank 3)."
           },
           {
-            "from_level": 33,
-            "to_level": 33,
-            "rank": 3,
+            "from_level": 34,
+            "to_level": 34,
+            "rank": 1,
             "races": [
-              "human",
               "dwarf"
             ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). At 34 a Dwarf casts rank 1 (+0.1% over rank 3), every other race rank 3 (a Human +0.9%, a Troll +0.3% over rank 2)."
           },
           {
             "from_level": 34,
             "to_level": 34,
-            "rank": 2,
+            "rank": 3,
             "races": [
               "human",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 34,
-            "to_level": 34,
-            "rank": 3,
-            "races": [
               "gnome",
-              "dwarf",
-              "night-elf",
-              "undead"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 35,
-            "to_level": 35,
-            "rank": 2,
-            "races": [
-              "human"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
-          },
-          {
-            "from_level": 35,
-            "to_level": 35,
-            "rank": 3,
-            "races": [
-              "gnome",
-              "dwarf",
               "night-elf",
               "undead",
               "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+            ]
           },
           {
-            "from_level": 36,
+            "from_level": 35,
             "to_level": 39,
-            "rank": 3,
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every priest race; a row is taken on any gain beyond error at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 through 27 for every race. Rank 2 takes over race by race as the talents arrive: an Undead at 28 and 29 (+0.5%, +1.7%), a Dwarf at 29 (+2.4%), a Dwarf, Gnome, Night Elf or Troll at 30 (+2.8% to +13.4%), a Troll or Undead at 31 (+0.6% to +3.9%; a Human rank 3, +0.5%), every race but an Undead at 32 (+0.5% to +5.1%), every race but a Dwarf or Human at 33 (+0.1% to +3.1% over rank 3), a Human or Troll at 34 (+0.4% to +0.7%) and a Human at 35 (+0.6%). Rank 3 everywhere else from 33 to 39; rank 2 loses 0.2% to 1.7% there."
+            "rank": 3
           },
           {
             "from_level": 40,
@@ -2602,6 +2504,16 @@
           {
             "from_level": 22,
             "to_level": 22,
+            "rank": 3,
+            "races": [
+              "dwarf",
+              "windshaper-skyborne"
+            ],
+            "note": "Sim-accuracy round 29 (walks-heal): re-judged on the new leveling order's talents at the level (spec-breakdown -level N -rank, bare, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-07-sim-audit-round29/walksheal.md). At 22 rank 3 beats rank 2 by 0.12% for a dwarf and 0.08% for a Windshaper, both seeds."
+          },
+          {
+            "from_level": 22,
+            "to_level": 22,
             "rank": 2,
             "races": [
               "orc",
@@ -2611,19 +2523,17 @@
             "note": "Sim-accuracy round 29 (walks-heal): re-judged on the new leveling order's talents at the level (spec-breakdown -level N -rank, bare, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-07-sim-audit-round29/walksheal.md). At 22 rank 2 beats rank 1 by 0.9 to 1.1% for an Orc, Tauren or Troll; an Orc ties rank 3."
           },
           {
-            "from_level": 22,
-            "to_level": 22,
-            "rank": 3,
-            "races": [
-              "dwarf",
-              "windshaper-skyborne"
-            ],
-            "note": "Sim-accuracy round 29 (walks-heal): re-judged on the new leveling order's talents at the level (spec-breakdown -level N -rank, bare, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-07-sim-audit-round29/walksheal.md). At 22 rank 3 beats rank 2 by 0.12% for a dwarf and 0.08% for a Windshaper, both seeds."
-          },
-          {
             "from_level": 23,
             "to_level": 24,
             "rank": 3
+          },
+          {
+            "from_level": 25,
+            "to_level": 25,
+            "rank": 3,
+            "races": [
+              "dwarf"
+            ]
           },
           {
             "from_level": 25,
@@ -2637,27 +2547,21 @@
             ]
           },
           {
-            "from_level": 25,
-            "to_level": 25,
-            "rank": 3,
-            "races": [
-              "dwarf"
-            ]
-          },
-          {
             "from_level": 26,
             "to_level": 36,
             "rank": 3
           },
           {
-            "from_level": 37,
-            "to_level": 41,
-            "rank": 4
+            "from_level": 40,
+            "to_level": 43,
+            "rank": 5,
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). With the round 29 order the newest rank (6) wins at 37 to 39 (+0.1 to +0.9% over rank 4), so the rank 4 row is gone; rank 5 beats rank 7 at 40 and 41 (+1.2 to +3.2%) and holds at 42 and 43."
           },
           {
-            "from_level": 42,
+            "from_level": 44,
             "to_level": 45,
-            "rank": 5
+            "rank": 6,
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). Rank 6 beats rank 5 at 44 and 45 (+0.2 to +1.8%), so the rank 6 row starts at 44."
           },
           {
             "from_level": 46,
