@@ -86,7 +86,6 @@ fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
 }
 
 /**
-/**
  * A tab root in the round-5 look (spec Mobile): the painted [band] behind the status bar, [topBar]
  * (and [head] on Home's hero), fading into the ground below its foot as the site's head does
  * (`fadingBand`), then [notice] and the blocks over the fade, 16 under the band, 14 at the sides and

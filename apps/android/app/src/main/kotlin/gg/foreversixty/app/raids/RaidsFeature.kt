@@ -7,7 +7,6 @@ import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -24,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalView
 import gg.foreversixty.app.common.Connectivity
-import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.guild.GuildExtrasFeature
 import gg.foreversixty.app.guild.GuildExtrasRows
 import gg.foreversixty.app.guild.HistoryRoute
