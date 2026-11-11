@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { relative } from 'node:path';
 import { describe, it } from 'node:test';
-import { COMMAND, HEADER, OUTPUTS, flatten, generate, parseColor } from './build.mjs';
+import { COMMAND, HEADER, OUTPUTS, flatten, generate, gradientStops, parseColor } from './build.mjs';
 
 const generated = generate();
 const repoPath = (file) => relative(new URL('../..', import.meta.url).pathname, file);
@@ -62,5 +62,36 @@ describe('design tokens', () => {
       alpha: 0.17,
     });
     assert.throws(() => parseColor('var(--x)'));
+  });
+});
+
+describe('the band fade', () => {
+  const doc = JSON.parse(readFileSync(new URL('./tokens.json', import.meta.url), 'utf8'));
+  const byPath = new Map(flatten(doc).tokens.map((t) => [t.path.join('.'), t]));
+  const bandCss = readFileSync(new URL('../../web/src/components/ui/band.css', import.meta.url), 'utf8');
+
+  it('holds the web mask ramp to gradient.bandFade', () => {
+    const mask = /mask-image:\s*linear-gradient\(\s*to bottom,([\s\S]*?)\);/.exec(bandCss);
+    assert.ok(mask, 'web/src/components/ui/band.css lost its fade mask-image');
+    const webStops = mask[1].split(/,\s*\n/).map((stop) => {
+      const s = stop.trim();
+      if (s.startsWith('black')) return { alpha: 1, position: 0 };
+      if (s === 'transparent') return { alpha: 0, position: 1 };
+      const m = /^rgb\(0 0 0 \/ ([\d.]+)\) calc\(100% - var\(--band-fade\) \* ([\d.]+)\)$/.exec(s);
+      assert.ok(m, `unexpected stop in band.css: ${s}`);
+      return { alpha: Number(m[1]), position: 1 - Number(m[2]) };
+    });
+    const tokenStops = gradientStops(byPath.get('gradient.bandFade')).map(({ alpha, position }) => ({
+      alpha,
+      position,
+    }));
+    assert.deepEqual(webStops, tokenStops);
+  });
+
+  it('holds the web fade lengths to size.bandFade', () => {
+    const t = byPath.get('size.bandFade');
+    const [desktop, phone] = [...bandCss.matchAll(/--band-fade:\s*(\d+px);/g)].map((m) => m[1]);
+    assert.equal(desktop, t.value);
+    assert.equal(phone, t.ext.phone);
   });
 });

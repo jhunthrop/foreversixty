@@ -40,9 +40,9 @@ public struct BandPage<Head: View, Notice: View, Content: View>: View {
                 head
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(alignment: .bottom) { BandArt(art).padding(.top, -Self.underBars) }
-            // The band's black edge (`.band`, `.bandc`); the hero has none.
-            .overlay(alignment: .bottom) { if art == .band { Color.black.frame(height: FSStroke.hairline) } }
+            // The band fades into the ground below its foot, as the site's last band piece does; the
+            // notice and the blocks draw over the fade.
+            .background { FadingBand(art: art, reachUp: Self.underBars) }
             notice
             VStack(alignment: .leading, spacing: FSSpace.space5) { content }
                 .padding(.horizontal, Self.side)
@@ -54,6 +54,29 @@ public struct BandPage<Head: View, Notice: View, Content: View>: View {
 
     /// How far the art reaches above the head: past any navigation bar, status bar and island.
     static var underBars: CGFloat { 240 }
+}
+
+/// The head fade (web ui/band.css, the page's last band piece): the band art runs `reachUp` above its
+/// host, under the status bar and the bars, and `FSSize.bandFade` past its foot, where it fades into
+/// the screen ground on the token ramp (`FSGradient.bandFade`). No rule at the foot. Decorative only.
+struct FadingBand: View {
+    let art: BandArt.Art
+    let reachUp: CGFloat
+
+    var body: some View {
+        BandArt(art)
+            .mask {
+                VStack(spacing: 0) {
+                    Color.black
+                    LinearGradient(stops: FSGradient.bandFade, startPoint: .top, endPoint: .bottom)
+                        .frame(height: FSSize.bandFade)
+                }
+            }
+            .padding(.top, -reachUp)
+            .padding(.bottom, -FSSize.bandFade)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+    }
 }
 
 public extension BandPage where Notice == EmptyView {
