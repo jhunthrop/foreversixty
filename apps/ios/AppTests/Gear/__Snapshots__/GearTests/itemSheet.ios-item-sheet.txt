@@ -1,7 +1,7 @@
 Deathbringer, Binds when picked up, One-Hand, Axe, 114 - 213 Damage, Speed 2.90, (56.4 damage per second), Requires Level 60, Chance on hit: Sends a shadowy bolt at the enemy causing 125 Shadow damage., +12.6 DPS
-Onyxia, Onyxia’s Lair, 8% drop chance
+Onyxia, Onyxia’s Lair, 8%
 Next raid: Onyxia’s Lair, Wed 8:00 PM
 Replaces Ironwood Blade, Equipped
-Vis’kag the Bloodletter, Runner-up · Onyxia · 8% · −1.8 DPS
+Vis’kag the Bloodletter, Runner-up · −1.8 DPS
 Grunvald, Protection Warrior · needs it, the pick on their list
 Torvak, Enhancement Shaman · has it
