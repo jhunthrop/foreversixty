@@ -15,15 +15,16 @@ with the app unchanged, as the site is. That is the expected result, not a gap.
   have no fixture character; their states are the parity renders (`guild-tab`, `guild-tab-none`).
 - The fixture raids carry no assignments (`assignments: null`), so Your job and Assignments show in the parity renders
   (`guild-tab`, `guild-tab-officer`) and are left out on the device, which is the app's rule with no pick.
-- The roster fixture's viewer is a member (`officer_tools: false`); the officer rows follow the officer badge too.
+- Both walks read the 38-member roster home (`guild.home` variant `roster`); its viewer is a member (`officer_tools: false`),
+  so the officer rows follow the officer badge. Full-page renders of every state: `parity/<ios|android>-full-*.png`.
 - Site links (Plan a raid, Setup, Search guilds, Claim) open the browser on the live site.
 
 ## Steps
 
 | Step | iOS | Android | What happens |
 |---|---|---|---|
-| Open the Guild tab | leveler-01-top | leveler-01-top | Under 60: the guild head (crest, name, members, faction) and the spread (at 60, 55 to 59, you) lead; the raid head answers live; `Raids open at 60 · you're 58` under it |
-| Answer Late, then In | leveler-02, -03 | leveler-02, -03 | The four answers work at any level (coordinator ruling 2026-11-10); the fixture echoes one canned answer |
+| Open the Guild tab | leveler-01-top | leveler-01-top | Under 60: the guild head (crest, name, members, faction) and the spread (at 60, 55 to 59, you) lead; the raid head answers live; `Raids open at 60 · you're 58` under it; Who is coming keeps its roles only, and Before you pull is left out (a 60's check, round 3) |
+| Answer Late, then In | leveler-02, -03 | leveler-02, -03 | The four answers work at any level (coordinator ruling 2026-11-10); the tapped answer selects and `Saved.` shows (round 3: fixture mode echoes the write, SignupEcho, as the server does) |
 | Roster › | leveler-04, -05 | leveler-04, -05 | Recently on and Close to 60 rows, then the roster page pushed on the Guild tab, back to the root |
 | Progression | leveler-06 | leveler-06 | The tier's line (`1 of 1 down · N pulls this tier`); a tap opens the guild page's Progression on the site |
 | Calendar | leveler-07 | leveler-07 | The planned raids pushed (iOS) or the site (Android, as before this lane) |
@@ -33,6 +34,7 @@ with the app unchanged, as the site is. That is the expected result, not a gap.
 | Officer: Setup | officer-04 | officer-04 | The site's setup checklist (`{guild page}/setup`) |
 | Officer: Plan a raid | officer-05 | officer-05 | The guild page's Raids tab on the site (`#raids`), where Plan a raid lives |
 | Officer: Assignments › Open in planner | parity `guild-tab-officer` | parity `guild-tab-officer` | The raid's page on the site (`{guild page}/raids/{raid}`); `Assigning is on the site for now.` |
+| Roster at 60 | parity `guild-tab`, `guild-tab-officer` | parity `guild-tab`, `guild-tab-officer` | Round 3: Your attendance (`7 of 8 nights`) for everyone; officers also get Missing raids and Gear gaps (the addon's gap, largest three); your own loot award is gold |
 | Your job | parity `guild-tab`, raid page | parity `guild-tab`, raid page | `Whelps, west cave with Kaelra and Thalrin`, `Onyxia · <purpose>`; gone with no slot |
 | No guild | noguild-01 | noguild-01 | `Raids open at 60 · you're 31`, the guilds recruiting the spec (Apply, or `Applied Mon`), Find your guild |
 | Search guilds on the site | noguild-02 | noguild-02 | The site's guild finder `/guild` (the app's old `/guilds` link was a 404) |
