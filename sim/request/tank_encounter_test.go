@@ -39,6 +39,7 @@ func TestEveryTankEncounterValueStatesItsReason(t *testing.T) {
 		"healers.cadence_sec":           f.Healers.CadenceSec.Reason,
 		"healers.cadence_variation_sec": f.Healers.CadenceVariationSec.Reason,
 		"healers.burst_window_sec":      f.Healers.BurstWindowSec.Reason,
+		"dungeon_fight.duration_sec":    f.DungeonFight.DurationSec.Reason,
 	}
 	for name, reason := range reasons {
 		if reason == "" {
@@ -179,5 +180,77 @@ func TestATrainingDummyKeepsItsPeacefulTarget(t *testing.T) {
 	}
 	if enc.Targets[0].SwingSpeed != 0 || len(raid.Tanks) != 0 || player.HealingModel != nil {
 		t.Error("a dummy does not fight back, so nothing of the tank fight applies")
+	}
+}
+
+// Sim-accuracy 2026-11-11 tanks below 45: below 60 the tank fight lasted the ranker's default
+// 180 seconds, a raid boss's length, against a dungeon band's hardest pull. Every logged Forever
+// dungeon fight on foreverlogs.gg is far shorter (bosses and trash pulls at 20 to 45 last about
+// half a minute), so a tank whose damage taken sat a little above the band's healing bled out
+// over three minutes it never fights: a bare bear at 30 to 35 died in 96% of fights. Below the
+// reference level the fight is now a dungeon pull of the curated length; level 60 keeps the
+// request's raid-length fight.
+func TestTankFightBelowTheReferenceLevelIsADungeonPull(t *testing.T) {
+	f, err := loadTankEncounter()
+	if err != nil {
+		t.Fatal(err)
+	}
+	pull := f.DungeonFight.DurationSec.Value
+	if pull <= 0 || pull >= float64(api.DefaultEncounter().DurationSec) {
+		t.Fatalf("dungeon_fight.duration_sec = %v, want a positive pull shorter than the %ds raid fight", pull, api.DefaultEncounter().DurationSec)
+	}
+	for _, level := range []int{10, 20, 29, 32, 45, 59} {
+		profile, err := TankProfileForLevel(level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if profile.FightSec != pull {
+			t.Errorf("level %d fight = %vs, want the dungeon pull %vs", level, profile.FightSec, pull)
+		}
+		req := tankRequest("druid-feral-bear", "druid", level)
+		enc := encounter(req.Encounter, level)
+		if err := applyTankFight(&proto.Player{}, &proto.Raid{}, enc, req); err != nil {
+			t.Fatal(err)
+		}
+		wantVariation := pull * req.Encounter.Variation
+		if enc.Duration != pull || math.Abs(enc.DurationVariation-wantVariation) > 1e-9 {
+			t.Errorf("level %d encounter = %vs +/- %v, want the pull %vs +/- %v (the request's share)", level, enc.Duration, enc.DurationVariation, pull, wantVariation)
+		}
+	}
+	raid, err := TankProfileForLevel(60)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if raid.FightSec != 0 {
+		t.Errorf("level 60 fight = %vs, want 0: the raid boss keeps the request's length", raid.FightSec)
+	}
+	req := tankRequest("druid-feral-bear", "druid", 60)
+	enc := encounter(req.Encounter, 60)
+	if err := applyTankFight(&proto.Player{}, &proto.Raid{}, enc, req); err != nil {
+		t.Fatal(err)
+	}
+	if enc.Duration != float64(req.Encounter.DurationSec) {
+		t.Errorf("level 60 encounter = %vs, want the request's %ds", enc.Duration, req.Encounter.DurationSec)
+	}
+}
+
+func TestFightSecondsIsThePullForATankBelowTheReferenceLevel(t *testing.T) {
+	f, _ := loadTankEncounter()
+	for _, c := range []struct {
+		spec, class string
+		level       int
+		want        float64
+	}{
+		{"druid-feral-bear", "druid", 32, f.DungeonFight.DurationSec.Value},
+		{"druid-feral-bear", "druid", 60, float64(api.DefaultEncounter().DurationSec)},
+		{"warrior-fury", "warrior", 32, float64(api.DefaultEncounter().DurationSec)},
+	} {
+		got, err := FightSeconds(tankRequest(c.spec, c.class, c.level))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != c.want {
+			t.Errorf("%s at %d fights %vs, want %vs", c.spec, c.level, got, c.want)
+		}
 	}
 }
