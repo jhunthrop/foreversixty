@@ -5,7 +5,19 @@ Every expected string is what Wowhead's Forever tooltip prints for that spell
 says otherwise. Effect values are the build's own SpellEffect rows.
 """
 
-from pipeline.spelltext import Effect, ExtraRows, SpellRow, SpellText, load_spell_text
+from pathlib import Path
+
+import pytest
+
+from pipeline.spelltext import (
+    Effect,
+    ExtraRows,
+    SpellRow,
+    SpellText,
+    SpellTextError,
+    load_spell_text,
+)
+from pipeline.spelltext_gaps import load_spelltext_gaps
 from pipeline.spelltext_grammar import (
     agree_plurals,
     condition_holds,
@@ -176,6 +188,7 @@ def test_a_formula_keeps_its_brackets_where_precedence_needs_them():
 def test_the_readers_level_is_sixty():
     # Blade Dance 400012: "beyond ${$PL*5}" prints "(60 * 5)"; worked out, 300.
     assert _spell("defense skill beyond ${$PL*5}.") == "defense skill beyond 300."
+    assert _spell("Level $PL target:") == "Level 60 target:"
 
 
 # --- one effect's facts -------------------------------------------------------------------
@@ -296,3 +309,61 @@ def test_an_enchant_reads_its_enchantments_amounts_and_item_level():
     assert text.describe(2833) == (
         "Stamina by 3 and armor by 24. Only usable on items level 15 and above."
     )
+
+
+def test_a_multiplier_token_multiplies_first():
+    # Execute 5308: "$*10;F1 additional damage" with a chain amplitude of 0.3 prints 3.
+    execute = _effect(125, chain_amplitude=0.30000001192)
+    assert _spell("into $*10;F1 additional damage.", execute) == "into 3 additional damage."
+
+
+def test_a_spell_that_lasts_until_cancelled():
+    # Find Treasure 2481 (SpellDuration -1): "Lasts until canceled."
+    spell = {"ID": "2481", "Description_lang": "Lasts $d."}
+    misc = {"SpellID": "2481", "DurationIndex": "21", "SpellIconFileDataID": "0"}
+    text = load_spell_text([spell], [misc], [], [{"ID": "21", "Duration": "-1"}])
+    assert text.describe(2481) == "Lasts until canceled."
+
+
+def test_a_periodic_total_without_a_tick_period_divides_by_five_point_two_seconds():
+    # Food 433 (17, 18 sec) prints 59 and Drink 1135 (332, 30 sec) 1915 on Wowhead.
+    assert _spell("Restores $o1 health over $d.", _effect(17), duration_ms=18_000) == (
+        "Restores 59 health over 18 sec."
+    )
+    assert _spell("Restores $o1 mana over $d.", _effect(332), duration_ms=30_000) == (
+        "Restores 1915 mana over 30 sec."
+    )
+
+
+def test_a_stat_comparison_reads_every_stat_at_nothing():
+    """Demonic Brand 1293695 prints `$cond($gt($SPFI,$SPS),$SPFI,$SPS)` as "Shadow spell
+    power" and `$pl` as 60: "[(((60 - 26) * 1.5) + 14 + (0.078 * ((Shadow spell power))))
+    * (1 * 1 * 1)]"."""
+    template = "deal ${((($pl-26)*1.5)+14+(0.078*($cond($gt(($SPFI),($SPS)),($SPFI),($SPS)))))}"
+    assert _spell(template) == "deal (65 + 0.078 * Shadow spell power)"
+    # Divine Aegis 431622: "Shields up to ${20*$pl} damage" prints "(20 * 60)".
+    assert _spell("Shields up to ${20*$pl} damage") == "Shields up to 1200 damage"
+
+
+def test_a_value_that_rounds_away_keeps_its_digits():
+    # Set bonus 1226378: `${$m1/-1000}` of 20 prints "0.0200 sec" on Wowhead.
+    assert _spell("reduced by ${$m1/-1000} sec", _effect(20)) == "reduced by 0.02 sec"
+
+
+def test_a_curated_gap_fills_a_token_no_client_table_carries():
+    # Berserking 20554 reads spell 26635, which no 1.60.1.70790 table has; Wowhead's Forever
+    # tooltip prints "for 15 sec" (curated/spelltext-gaps.json).
+    spell = {"ID": "20554", "Description_lang": "speed by 10% for $26635d."}
+    text = load_spell_text([spell], [], [], [], None, {20554: {"$26635d": "15 sec"}})
+    assert text.describe(20554) == "speed by 10% for 15 sec."
+
+
+def test_a_curated_gap_the_template_no_longer_holds_is_an_error():
+    spell = {"ID": "20554", "Description_lang": "speed by 10% for 15 sec."}
+    with pytest.raises(SpellTextError, match="20554"):
+        load_spell_text([spell], [], [], [], None, {20554: {"$26635d": "15 sec"}})
+
+
+def test_the_curated_gaps_file_loads_with_every_entry_sourced():
+    gaps = load_spelltext_gaps(Path("curated"))
+    assert gaps[20554] == {"$26635d": "15 sec"}

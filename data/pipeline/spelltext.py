@@ -26,6 +26,8 @@ runtime. We resolve the tokens whose value is in the tables we fetch:
   $z                   the reader's home, which the client names as Wowhead does
   $proccooldown        the proc's internal cooldown, in seconds
   $/<divisor>;s<n>     any of the above, divided first
+  $*<factor>;f<n>      any of the above, multiplied first (Execute 5308: `$*10;F1` with
+                       a chain amplitude of 0.3 prints "3 additional damage")
   $<spell id><token>   the same token read off a different spell
   $@spellicon<id>      dropped -- the client shows this spell's own icon
                        graphically; this text-only pipeline has nothing to
@@ -67,6 +69,7 @@ from dataclasses import dataclass, field, replace
 from pipeline.csvio import populated
 from pipeline.spelltext_grammar import (
     COLOUR_ESCAPE,
+    FUNCTIONS,
     MID_SENTENCE_SPACES,
     READER_LEVEL,
     STAT_WORDS,
@@ -99,7 +102,7 @@ class SpellTextError(ValueError):
 
 TOKEN = re.compile(
     r"\$"
-    r"(?:/(?P<divisor>\d+);)?"
+    r"(?:/(?P<divisor>\d+);|\*(?P<multiplier>\d+);)?"
     r"(?P<ref>\d+)?"
     r"(?P<kind>proccooldown|ecim|ec|bc|[sSoOtTdDmMaAxXqQrRhHnNuUiIbBeEfFvVzZ])"
     r"(?P<index>[1-9])?"
@@ -115,7 +118,11 @@ _CERTAIN = 100
 #: "by ${30/-10}." keeps its full stop and "${8*2.5}%" is untouched.
 _PLACES = re.compile(r"\.(?P<places>\d)(?!\d)")
 #: A stat the reader brings, or the reader's level, inside a `${..}`.
-_READER_TOKEN = re.compile(r"\$(?P<name>PL|[A-Za-z]+)(?![\w])")
+_READER_TOKEN = re.compile(r"\$(?P<name>[A-Za-z]+)(?![\w])")
+#: The reader's level, both spellings the client uses (Divine Aegis 431622 writes `$pl`).
+_LEVEL_TOKENS = frozenset({"PL", "pl"})
+#: The same, in a sentence ("Level $PL target:").
+_LEVEL_IN_TEXT = re.compile(r"\$(?:PL|pl)(?![A-Za-z\d])")
 #: The client's own typo `${$m2$*$<frostdamage>}` (Frostbolt 116): a `$` before an operator.
 _STRAY_DOLLAR = re.compile(r"\$(?=[\s*+\-/()])")
 #: `$@spellicon439510`, `$@spellname439510`, `$@spelldesc439510` -- a
@@ -132,11 +139,19 @@ _HOME = "Hearthstone Location"
 
 _MS_PER_SECOND = 1000
 _MS_PER_MINUTE = 60_000
+#: A spell that lasts until its reader ends it (SpellDuration -1): Find Treasure 2481's
+#: "Lasts $d." prints "Lasts until canceled." on Wowhead's Forever tooltip.
+_UNTIL_CANCELLED = "until canceled"
+#: `$o` on a periodic heal or mana return the client stores no tick period for. Wowhead's
+#: Forever tooltips divide its duration by 5.2 sec, on every food and drink checked on
+#: 2026-11-10: Food 433 (17, 18 sec) 59, 434 (58, 21 sec) 234, 435 (115, 24 sec) 531,
+#: 1127 (162, 27 sec) 841; Drink 1135 (332, 30 sec) 1915, 10250 (800, 30 sec) 4615.
+_UNTIMED_PERIOD_MS = 5200
 
 
 @dataclass(frozen=True)
 class Effect:
-    base_points: int
+    base_points: float
     die_sides: int
     period_ms: int
     #: Yards, from SpellRadius through EffectRadiusIndex_0 (else _1). None: no radius.
@@ -178,6 +193,8 @@ class SpellRow:
     max_targets: int = 0
     #: SpellTargetRestrictions.MaxTargetLevel, the `$v`; 0 without a cap.
     max_target_level: int = 0
+    #: The SpellDuration row says -1: the spell lasts until cancelled (`_UNTIL_CANCELLED`).
+    until_cancelled: bool = False
     #: The enchantment an enchant-item effect (53, 54) applies: SpellItemEnchantment's
     #: EffectPointsMin_0..2 (`$ec<n>`) and ItemLevelMin (`$ecim`).
     enchant_points: tuple[int, ...] = ()
@@ -221,7 +238,7 @@ def _render_duration(duration_ms: int) -> str:
     return f"{format_number(duration_ms / _MS_PER_SECOND)} sec"
 
 
-def _overridden(effects: dict[int, Effect], overrides: Mapping[int, int]) -> dict[int, Effect]:
+def _overridden(effects: dict[int, Effect], overrides: Mapping[int, float]) -> dict[int, Effect]:
     """The overridden effects, keeping each one's tick period.
 
     Die sides, variance and the per-level gain go to zero: a curve names one value per
@@ -298,7 +315,11 @@ def _amount(
         return _Amount(row.duration_ms, row.duration_ms, duration_ms=row.duration_ms)
     if kind == "a":
         radius = _radius_of(row, index)
-        return _Amount(radius, radius) if radius else None
+        if radius is None and not any(e.radius for e in row.effects.values()):
+            # Wowhead's Forever tooltip prints a radius the spell has none of as 0: Cloud
+            # of Chained Essence 12766 "a 0 yard radius".
+            radius = 0.0
+        return _Amount(radius, radius) if radius is not None else None
     effect = _effect_of(row, index)
     if effect is None:
         return None
@@ -310,13 +331,28 @@ def _amount(
         return _Amount(period, period) if period > 0 else None
     low, high = _bounds(effect, whole)
     if kind == "o":
-        if row.duration_ms is None or effect.period_ms <= 0:
+        if row.duration_ms is None:
             return None
-        ticks = row.duration_ms // effect.period_ms
+        if effect.period_ms > 0:
+            ticks: float = row.duration_ms // effect.period_ms
+        else:
+            ticks = row.duration_ms / _UNTIMED_PERIOD_MS
         low, high = low * ticks, high * ticks
+        if whole:
+            low, high = _half_up(low), _half_up(high)
     if kind == "m":
         low, high = (high, high) if upper else (low, low)
     return _Amount(low, high)
+
+
+def _scale(match: re.Match[str]) -> tuple[int, int]:
+    """A token's `$*N;` multiplier and `$/N;` divisor."""
+    multiplier = int(match["multiplier"]) if match["multiplier"] else 1
+    return multiplier, int(match["divisor"]) if match["divisor"] else 1
+
+
+def _scaled(match: re.Match[str]) -> bool:
+    return bool(match["multiplier"] or match["divisor"])
 
 
 def _with_reader_names(expression: str) -> str:
@@ -324,9 +360,9 @@ def _with_reader_names(expression: str) -> str:
 
     def reader(match: re.Match[str]) -> str:
         name = match["name"]
-        if name == "PL":
+        if name in _LEVEL_TOKENS:
             return str(READER_LEVEL)
-        return name if name in STAT_WORDS else match[0]
+        return name if name in STAT_WORDS or name in FUNCTIONS or name == "cond" else match[0]
 
     return _READER_TOKEN.sub(reader, expression)
 
@@ -342,7 +378,7 @@ class SpellText:
     def describe(
         self,
         spell_id: int,
-        overrides: Mapping[int, int] | None = None,
+        overrides: Mapping[int, float] | None = None,
         *,
         _chain: frozenset[int] = frozenset(),
     ) -> str:
@@ -377,6 +413,7 @@ class SpellText:
         resolved = resolve_conditions(self._write_in_variables(row, row.description))
         resolved = self._work_out_braces(row, resolved)
         resolved = TOKEN.sub(lambda match: self._substitute(row, match), resolved)
+        resolved = _LEVEL_IN_TEXT.sub(str(READER_LEVEL), resolved)
         resolved = agree_plurals(resolved)
         resolved = GENDER.sub(lambda m: f"{m['male']} or {m['female']}", resolved)
         resolved = COLOUR_ESCAPE.sub("", drop_unknown_variables(resolved))
@@ -451,12 +488,12 @@ class SpellText:
         amount = _amount(target, kind.lower(), kind == "M", index, whole=False)
         if amount is None:
             return match[0]
-        divisor = int(match["divisor"]) if match["divisor"] else 1
         # `$s` in a formula is the roll's middle; `$m` and `$M` already chose their end.
         value = (amount.low + amount.high) / 2
-        if amount.duration_ms is not None and not match["divisor"]:
+        if amount.duration_ms is not None and not _scaled(match):
             value = amount.duration_ms / _MS_PER_SECOND
-        number = format_number(value / divisor)
+        multiplier, divisor = _scale(match)
+        number = format_number(value * multiplier / divisor)
         return number if value >= 0 else f"({number})"
 
     def _substitute_at(self, match: re.Match[str], chain: frozenset[int]) -> str:
@@ -491,12 +528,15 @@ class SpellText:
             )
             return match[0]
         if spell_id not in self._spells:
+            # Wowhead's Forever tooltip prints nothing for a spell the client lacks: Libram
+            # of Banishment 211472's "Engrave your pants with the Aura Mastery rune:" stops
+            # there (its rune 407624 is a Season of Discovery spell).
             logger.warning(
-                "spelltext: $@%s%d names a spell this build has no row for; leaving the raw token",
+                "spelltext: $@%s%d names a spell this build has no row for; dropping it",
                 kind,
                 spell_id,
             )
-            return match[0]
+            return ""
         description = self.describe(spell_id, _chain=chain)
         name = self._names.get(spell_id)
         if kind == "spelltooltip" and name:
@@ -510,13 +550,15 @@ class SpellText:
         kind = match["kind"]
         if kind.lower() == "z":
             return _HOME
+        if kind.lower() == "d" and target.until_cancelled:
+            return _UNTIL_CANCELLED
         amount = _amount(target, kind.lower(), kind == "M", int(match["index"] or 1) - 1)
         if amount is None:
             return match[0]
-        divisor = int(match["divisor"]) if match["divisor"] else 1
-        if amount.duration_ms is not None and not match["divisor"]:
+        if amount.duration_ms is not None and not _scaled(match):
             return _render_duration(amount.duration_ms)
-        return _render(amount.low, amount.high, divisor)
+        multiplier, divisor = _scale(match)
+        return _render(amount.low * multiplier, amount.high * multiplier, divisor)
 
 
 def _base_points(row: dict[str, str]) -> int:
@@ -731,20 +773,48 @@ def _effects(
     return effects
 
 
+@dataclass(frozen=True)
+class _Misc:
+    """The SpellMisc facts a description reads."""
+
+    duration_ms: int | None = None
+    until_cancelled: bool = False
+    icon_file_id: int = 0
+    range_max: float | None = None
+
+
 def _misc(
     rows: list[dict[str, str]], durations: dict[int, int], ranges: dict[int, float]
-) -> dict[int, tuple[int | None, int, float | None]]:
-    misc: dict[int, tuple[int | None, int, float | None]] = {}
+) -> dict[int, _Misc]:
+    misc: dict[int, _Misc] = {}
     for row in _base_difficulty(rows):
         duration = durations.get(int(row["DurationIndex"] or 0))
-        if duration is not None and duration < 0:
-            duration = None
-        misc[int(row["SpellID"])] = (
-            duration,
-            int(row["SpellIconFileDataID"] or 0),
-            ranges.get(int(row.get("RangeIndex") or 0)),
+        misc[int(row["SpellID"])] = _Misc(
+            duration_ms=duration if duration is None or duration >= 0 else None,
+            until_cancelled=duration is not None and duration < 0,
+            icon_file_id=int(row["SpellIconFileDataID"] or 0),
+            range_max=ranges.get(int(row.get("RangeIndex") or 0)),
         )
     return misc
+
+
+def _fill_gaps(
+    descriptions: dict[int, str], gaps: Mapping[int, Mapping[str, str]]
+) -> dict[int, str]:
+    """`curated/spelltext-gaps.json`'s values written into their templates
+    (`pipeline.spelltext_gaps`); a gap the template no longer holds is an error."""
+    out = dict(descriptions)
+    for spell_id, tokens in gaps.items():
+        for token, value in tokens.items():
+            if token not in out.get(spell_id, ""):
+                raise SpellTextError(
+                    f"spell {spell_id} no longer reads {token!r}; drop it from "
+                    "curated/spelltext-gaps.json"
+                )
+            out[spell_id] = re.sub(
+                re.escape(token) + r"(?![A-Za-z\d])", value.replace("\\", r"\\"), out[spell_id]
+            )
+    return out
 
 
 def load_spell_text(
@@ -753,6 +823,7 @@ def load_spell_text(
     effect_rows: list[dict[str, str]],
     duration_rows: list[dict[str, str]],
     extra: ExtraRows | None = None,
+    gaps: Mapping[int, Mapping[str, str]] | None = None,
 ) -> SpellText:
     """Every spell the tables know. A spell with SpellMisc or SpellEffect rows but no Spell
     row (no text of its own) is still there, with an empty description, so another spell's
@@ -767,16 +838,19 @@ def load_spell_text(
     enchants = _enchants(effect_rows, extra.item_enchantments)
     effects = _effects(effect_rows, radii, _levels_gained(extra.levels))
     misc = _misc(misc_rows, durations, ranges)
-    descriptions = {int(row["ID"]): row["Description_lang"] for row in spell_rows}
+    descriptions = _fill_gaps(
+        {int(row["ID"]): row["Description_lang"] for row in spell_rows}, gaps or {}
+    )
     spells: dict[int, SpellRow] = {}
     for spell_id in descriptions.keys() | misc.keys() | effects.keys():
-        duration, icon_file_id, range_max = misc.get(spell_id, (None, 0, None))
+        facts = misc.get(spell_id, _Misc())
         spells[spell_id] = SpellRow(
             description=descriptions.get(spell_id, ""),
-            duration_ms=duration,
-            icon_file_id=icon_file_id,
+            duration_ms=facts.duration_ms,
+            icon_file_id=facts.icon_file_id,
             effects=effects.get(spell_id, {}),
-            range_max=range_max,
+            range_max=facts.range_max,
+            until_cancelled=facts.until_cancelled,
             variables=variables.get(spell_id, {}),
             **enchants.get(spell_id, {}),
             **targets.get(spell_id, {}),

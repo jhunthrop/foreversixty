@@ -49,6 +49,11 @@ STAT_WORDS: dict[str, str] = {
     "SPI": "Spirit",  # Dark Sacrifice 1277324
     "SPFR": "Frost spell power",  # Frost Ward 6143
     "SPH": "Spell Power",  # Seal of Righteousness 20154 prints its $SPH as "Spell Power"
+    "SPS": "Shadow spell power",  # Demonic Brand 1293695
+    # The other schools, named the way Wowhead names Frost and Shadow.
+    "SPFI": "Fire spell power",
+    "SPA": "Arcane spell power",
+    "SPN": "Nature spell power",
     "bh": "Healing",  # Prayer of Mending 401859
     # Death Mark 1316709: Wowhead prints the bare token; the spell's own sentence names it
     # "Critical Strike chance".
@@ -261,19 +266,51 @@ def _identity(op: type[ast.operator], left: Value, right: Value) -> Value | None
     return None
 
 
-def _fold(node: ast.expr, stats: Mapping[str, str]) -> Value:
+#: The client's formula functions. A comparison on a stat the reader brings is read with
+#: every stat at nothing, as Wowhead's Forever tooltips read it: Demonic Brand 1293695's
+#: `$cond($gt($SPFI,$SPS),$SPFI,$SPS)` prints "Shadow spell power".
+FUNCTIONS: dict[str, Callable[..., float]] = {
+    "gt": lambda a, b: float(a > b),
+    "lt": lambda a, b: float(a < b),
+    "ge": lambda a, b: float(a >= b),
+    "le": lambda a, b: float(a <= b),
+    "eq": lambda a, b: float(a == b),
+    "min": min,
+    "max": max,
+}
+
+
+def _call(node: ast.Call, stats: Mapping[str, str], zero: bool) -> Value:
+    name = node.func.id if isinstance(node.func, ast.Name) else ""
+    if node.keywords or (name not in FUNCTIONS and name != "cond"):
+        raise ValueError(f"not a formula function: {ast.dump(node)}")
+    at_zero = [_fold(arg, stats, zero=True) for arg in node.args]
+    if name == "cond":
+        if len(node.args) != 3:
+            raise ValueError("cond takes three arguments")
+        return _fold(node.args[1] if at_zero[0] else node.args[2], stats, zero)
+    if name in ("min", "max"):
+        chosen = at_zero.index(FUNCTIONS[name](*at_zero))
+        return _fold(node.args[chosen], stats, zero)
+    return FUNCTIONS[name](*at_zero)
+
+
+def _fold(node: ast.expr, stats: Mapping[str, str], zero: bool = False) -> Value:
+    """`node` worked out; a stat stays a word, or counts as nothing when `zero`."""
     if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
         return float(node.value)
     if isinstance(node, ast.Name) and node.id in stats:
-        return Formula(stats[node.id], 3)
+        return 0.0 if zero else Formula(stats[node.id], 3)
+    if isinstance(node, ast.Call):
+        return _call(node, stats, zero)
     if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.USub, ast.UAdd)):
-        value = _fold(node.operand, stats)
+        value = _fold(node.operand, stats, zero)
         if isinstance(node.op, ast.UAdd):
             return value
         return -value if isinstance(value, float) else Formula(f"-{_operand(value, 3, False)}", 3)
     if isinstance(node, ast.BinOp) and type(node.op) in _BINARY:
         apply, symbol, precedence = _BINARY[type(node.op)]
-        left, right = _fold(node.left, stats), _fold(node.right, stats)
+        left, right = _fold(node.left, stats, zero), _fold(node.right, stats, zero)
         if isinstance(left, float) and isinstance(right, float):
             return apply(left, right)
         if (kept := _identity(type(node.op), left, right)) is not None:
@@ -283,7 +320,7 @@ def _fold(node: ast.expr, stats: Mapping[str, str]) -> Value:
     raise ValueError(f"not arithmetic: {ast.dump(node)}")
 
 
-_ARITHMETIC = re.compile(r"[\w\s+\-*/().]+")
+_ARITHMETIC = re.compile(r"[\w\s+\-*/().,]+")
 
 
 def work_out(expression: str, places: int | None, stats: Mapping[str, str]) -> str | None:
@@ -303,7 +340,10 @@ def work_out(expression: str, places: int | None, stats: Mapping[str, str]) -> s
     if isinstance(value, Formula):
         return f"({value.text})"
     scale = 10 ** (places or 0)
-    return format_number(math.floor(abs(value) * scale + 0.5) / scale)
+    rounded = math.floor(abs(value) * scale + 0.5) / scale
+    # A value that rounds away to nothing keeps its own digits, as Wowhead's Forever
+    # tooltips print it: set bonus 1226378's `${$m1/-1000}` of 20 reads "0.0200 sec".
+    return format_number(rounded if rounded or not value else abs(value))
 
 
 # --- plurals ------------------------------------------------------------------------------

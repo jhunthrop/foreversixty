@@ -192,6 +192,7 @@ def normalize_build(
         ExtraRows,
         load_spell_text,
     )
+    from pipeline.spelltext_gaps import load_spelltext_gaps
 
     build_dir = root / build
     raw = build_dir / "raw"
@@ -310,6 +311,7 @@ def normalize_build(
             levels=optional("SpellLevels"),
             item_enchantments=optional("SpellItemEnchantment"),
         ),
+        load_spelltext_gaps(curated_dir),
     )
     icons = icon_names(t("ManifestInterfaceData"))
     spell_names = {int(r["ID"]): r["Name_lang"] for r in t("SpellName")}

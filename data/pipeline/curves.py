@@ -4,8 +4,10 @@ The 1.60 client has no per-rank spells. A talent is one `TraitDefinition`
 pointing at one spell, and `TraitDefinitionEffectPoints` says which curve
 drives each of that spell's effects; the curve's points are the ranks, with
 `Pos_0` the rank and `Pos_1` the value. Measured on build 1.60.1.69893: 640
-rows, `OperationType` 0 in every one, `Pos_0` always 1..5, every `Pos_1` a
-whole number, and every multi-rank talent covered.
+rows, `OperationType` 0 in every one, `Pos_0` always 1..5, and every multi-rank
+talent covered. `Pos_1` was a whole number in every row then; 1.60.1.70790 has one
+that is not (Gore Drinker's curve 125264: 0.5 at rank 1, "restore 0.5% of your
+maximum Health"), so a value keeps its fraction.
 
 `pipeline/normalize/traits.py` hands the values for one rank to
 `SpellText.describe` as effect overrides, which is how a rank gets its own
@@ -25,9 +27,9 @@ class CurveDataError(ValueError):
 class RankPoints:
     """definition id -> rank -> 0-based effect index -> the effect's value."""
 
-    by_definition: dict[int, dict[int, dict[int, int]]]
+    by_definition: dict[int, dict[int, dict[int, float]]]
 
-    def for_rank(self, definition_id: int, rank: int) -> dict[int, int]:
+    def for_rank(self, definition_id: int, rank: int) -> dict[int, float]:
         """The effect values at `rank`, or {} when this definition has no curve."""
         return self.by_definition.get(definition_id, {}).get(rank, {})
 
@@ -40,11 +42,14 @@ class RankPoints:
 def load_rank_points(
     effect_point_rows: list[dict[str, str]], curve_point_rows: list[dict[str, str]]
 ) -> RankPoints:
-    curves: dict[int, dict[int, int]] = {}
+    curves: dict[int, dict[int, float]] = {}
     for row in curve_point_rows:
         rank = round(float(row["Pos_0"]))
-        curves.setdefault(int(row["CurveID"]), {})[rank] = round(float(row["Pos_1"]))
-    by_definition: dict[int, dict[int, dict[int, int]]] = {}
+        value = float(row["Pos_1"])
+        curves.setdefault(int(row["CurveID"]), {})[rank] = (
+            int(value) if value.is_integer() else value
+        )
+    by_definition: dict[int, dict[int, dict[int, float]]] = {}
     for row in effect_point_rows:
         # 0 is "this curve gives the effect's value". Anything else would mean
         # the value is computed from the spell's own base points in a way this

@@ -62,14 +62,26 @@ DEFECT_PATTERNS: dict[str, re.Pattern[str]] = {
     "zero amount": _ZERO_AMOUNT,
 }
 
-#: Strings the client itself ships with the defect. Each entry names where the
-#: verbatim text was confirmed; the test suite keeps the list honest.
+#: Strings the client itself ships with the defect, or a token whose value no client table
+#: and no credible source carries. Each entry names where that was confirmed.
 CLIENT_VERBATIM: dict[str, str] = {
     # Booming Voice (12321): Spell.Description_lang in 1.60.1.70790's hotfix push reads
     # "...reduces the Rage cost by of your Shouts and Howls by $s2%."; Wowhead's Forever
     # tooltip (nether.wowhead.com/tooltip/spell/12321?dataEnv=16, 2026-11-10) prints the
     # same "by of".
     "reduces the Rage cost by of your Shouts and Howls": "client typo, Booming Voice 12321",
+    # Earth Shield (974): "heal the shielded target for $<heal>." names a variable no
+    # SpellXDescriptionVariables row gives it; Wowhead's Forever tooltip
+    # (nether.wowhead.com/tooltip/spell/974?dataEnv=16, 2026-11-10) prints "for .".
+    "heal the shielded target for .": "client gap, Earth Shield 974 has no $<heal>",
+    # Two set bonuses read a spell neither the 1.60.1.70790 client nor a credible source
+    # carries: Earthfury Resolve 2P (457540) names Flurry 16280, Immoveable Wrath 4P
+    # (468067) Flurry 12970. Wowhead's Forever tooltips print "1%" and "100 + (5 * Combo
+    # Points)% for the next 0 swings", which no shaman or warrior Flurry reads; they wait
+    # for a sourced value in curated/spelltext-gaps.json.
+    "$16280s1": "client gap, Earthfury Resolve 2P names Flurry 16280",
+    "$12970s1": "client gap, Immoveable Wrath 4P names Flurry 12970",
+    "$12970n": "client gap, Immoveable Wrath 4P names Flurry 12970",
 }
 
 
@@ -140,7 +152,10 @@ def defects_in(text: str) -> list[str]:
     """The defect classes one rendered string falls into, client typos excepted."""
     checked = text
     for verbatim in CLIENT_VERBATIM:
-        checked = checked.replace(verbatim, "verbatim")
+        # A plain word in its place, keeping a full stop it ends on so the spacing after
+        # it still reads as a sentence end.
+        sentence_end = verbatim[-1] if verbatim[-1] in ".!?" else ""
+        checked = checked.replace(verbatim, f"verbatim{sentence_end}")
     return [name for name, pattern in DEFECT_PATTERNS.items() if pattern.search(checked)]
 
 

@@ -42,6 +42,7 @@ from pipeline.normalize import write_model
 from pipeline.racialicons import RACIAL_LINE_WORD, RACIAL_SKILL_CATEGORY
 from pipeline.simconst import _by_spell_id, _int, _rank
 from pipeline.spelltext import ExtraRows, SpellText, load_spell_text
+from pipeline.spelltext_gaps import load_spelltext_gaps
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +137,7 @@ class SharedSpellTips(BaseModel):
 class _Tables:
     """The client rows a tooltip reads, indexed once."""
 
-    def __init__(self, raw: Path) -> None:
+    def __init__(self, raw: Path, gaps: dict[int, dict[str, str]] | None = None) -> None:
         spell_rows = read_csv(raw / "Spell.csv")
         name_rows = read_csv(raw / "SpellName.csv")
         misc_rows = read_csv(raw / "SpellMisc.csv")
@@ -165,6 +166,7 @@ class _Tables:
                 levels=_optional(raw / "SpellLevels.csv"),
                 item_enchantments=_optional(raw / "SpellItemEnchantment.csv"),
             ),
+            gaps,
         )
 
     def tip(self, spell_id: int) -> SpellTip | None:
@@ -367,7 +369,7 @@ def write_spell_tips(
         raise SystemExit(f"no {trainables_dir}; run `python -m pipeline trainables` first")
     hotfix_layer = require_layered(raw, INPUT_TABLES)
     overrides = load_tip_overrides(curated)
-    tables = _Tables(raw)
+    tables = _Tables(raw, load_spelltext_gaps(curated))
     talent_text = talent_rank_text(build_dir / "talents")
     records = []
     for path in sorted(trainables_dir.glob("*.json")):

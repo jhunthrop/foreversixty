@@ -74,16 +74,16 @@ def test_at_spelldesc_resolves_the_other_spells_own_tokens_recursively():
     assert text.describe(12282) == "Increases your Strength by 2%."
 
 
-def test_at_spellname_and_spelldesc_unresolvable_ids_stay_raw_and_warn(caplog):
-    """999998 is in neither Spell.csv nor SpellName.csv -- both tokens
-    must be left exactly as the client wrote them (tenet 8: an ability
-    this pipeline cannot verify is never invented), each with its own
-    logged warning, while the SAME string's `$@spellicon999998` still
-    drops with no warning at all (an icon needs no table to resolve)."""
+def test_at_spellname_stays_raw_and_spelldesc_drops_for_an_unknown_spell(caplog):
+    """999998 is in neither Spell.csv nor SpellName.csv. Its name is left exactly as the
+    client wrote it (tenet 8: an ability this pipeline cannot verify is never invented);
+    its description prints nothing, as Wowhead's Forever tooltip prints a missing rune
+    (Libram of Banishment 211472, 2026-11-10). Each warns; the SAME string's
+    `$@spellicon999998` drops with no warning at all (an icon needs no table)."""
     text = fixture_text()
     with caplog.at_level(logging.WARNING, logger="pipeline.spelltext"):
         result = text.describe(439512)
-    assert result == "Unlocks $@spellname999998 and $@spelldesc999998 and ."
+    assert result == "Unlocks $@spellname999998 and  and ."
     assert sum("999998" in message for message in caplog.messages) == 2
 
 
@@ -445,8 +445,13 @@ def test_the_same_tokens_read_off_another_spell():
 
 
 def test_a_value_the_tables_do_not_carry_leaves_its_token_alone():
-    raw = "a $h% chance, $n charges, $u stacks, within $a1 yards of $r, $x1 jumps, $proccooldown"
+    raw = "a $h% chance, $n charges, $u stacks, within yards of $r, $x1 jumps, $proccooldown"
     assert _proc_text(raw) == raw
+
+
+def test_a_radius_the_spell_has_none_of_prints_zero():
+    # Cloud of Chained Essence 12766: Wowhead's Forever tooltip reads "a 0 yard radius".
+    assert _proc_text("in a $a1 yard radius") == "in a 0 yard radius"
 
 
 def test_a_longer_token_is_never_read_as_a_shorter_one():
