@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70790:warlock:human:05520020135201351/0050203001/05:'
 recommendedRaces: [human, orc]
 statPriority: [Spell power, Shadow power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'
-updated: 2026-11-04
+updated: 2026-11-11
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -47,25 +47,25 @@ The leveling build carries you on Soul Siphon and Wrack while you quest, with tw
 
 - **Suppression** (5 points): 5% hit on every spell and 20% less threat. Every warlock build takes all five.
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
-- **Amplify Curse** (1 point): no global cooldown, a 3 minute cooldown and 30 seconds to use it. Your next Bane of Agony or Curse of Weakness is 50% stronger, or your next Curse of Exhaustion 20%. In a raid it goes on the Bane of Agony you put up in a boss's last minute.
+- **Amplify Curse** (1 point): no global cooldown, a 3 minute cooldown and 30 seconds to use it. Your next Bane of Agony or Curse of Weakness is 50% stronger, or your next Curse of Exhaustion 20%. In a raid it goes on your next Bane of Agony refresh once it is off cooldown; never clip a running Agony for it.
 - **Pandemic** (3 points): Corruption, both banes, Siphon Life, the drains and Wrack crit for double the usual bonus.
-- **Malevolence** (2 points leveling, 5 in a raid): 1% crit a point on your Shadow spells, DoT ticks and Wrack included, and Pandemic doubles the bonus on those. The leveling build takes two points at 34 and 35 instead of Nightfall. Between 34 and 39, while Shadow Bolt is still your filler, they are about level with Nightfall; from 40 they pull ahead. Wrack replaces Shadow Bolt then, and a Nightfall bolt is instant but still costs full mana, while Wrack does more for less.
+- **Malevolence** (2 points leveling, 5 in a raid): 1% crit a point on your Shadow spells, DoT ticks and Wrack included, and Pandemic doubles the bonus on those. The leveling build takes two points at 26 and 27 and skips Nightfall. While Shadow Bolt is still your filler they are about level with Nightfall; from 40 they pull ahead. Wrack replaces Shadow Bolt then, and a Nightfall bolt is instant but still costs full mana, while Wrack does more for less.
 - **Nightfall** (2 points, raid): Corruption and Wrack ticks have a 4% chance to give you a Shadow Trance, which makes your next Shadow Bolt instant, though it still costs full mana.
 - **Shadow Mastery** (5 points): 10% more Shadow damage on everything you cast.
 - **Siphon Life** (1 point): a 30 second DoT that heals you, and one more Affliction effect for Soul Siphon.
-- **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your Corruption and Bane of Agony; Siphon Life and Bane of Doom get nothing from it. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. With three of your effects on the boss it out-damages Shadow Bolt for a fraction of the mana, so both builds take it and it is your filler from 40.
+- **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second, and while it runs your Corruption, Siphon Life and Bane of Agony on that target tick twice as fast. They deal the same ticks, only sooner, so they also run out sooner. Bane of Doom and Immolate keep their own pace. Soul Siphon adds 12% to Wrack and the drains for each of those three on the target, up to 36%; Bane of Doom does not count. With three of your effects on the boss, Wrack and the faster DoTs out-damage Shadow Bolt for a fraction of the mana, so both builds take it and it is your filler from 40.
 - **Demonic Sacrifice** (1 point, raid): sacrifice the Imp before the pull for Burning Shadow, 15% more Shadow damage for two hours. Nearly everything you cast on a boss is Shadow, so it is worth more than any demon at your side. Summoning any demon ends it.
 - **Improved Shadow Bolt** (5 points, raid): each Shadow Bolt crit makes the boss take 20% more Shadow damage from you for 12 seconds, Wrack and your DoTs included.
 
-The raid build drops Soul Harvest and the three points of Improved Drains (a raid rotation casts no drain), Improved Life Tap, Improved Health Funnel and Improved Voidwalker. It takes the last three points of Malevolence, Nightfall and both points of Improved Bane of Agony, for 10% more damage on the Agony that covers the last minute, and keeps Grim Reach for range. In Demonology it takes Demonic Embrace and Fel Vitality on the way to Demonic Sacrifice, and Demonic Aegis for Demon Armor. With the Imp gone, Immolate is a slow Fire cast that Burning Shadow does nothing for, so the build skips Bane and Aftermath and drops Immolate from the rotation.
+The raid build drops Soul Harvest and the three points of Improved Drains (a raid rotation casts no drain), Improved Life Tap, Improved Health Funnel and Improved Voidwalker. It takes the last three points of Malevolence, Nightfall and both points of Improved Bane of Agony, for 10% more damage on the Agony you keep up all fight, and keeps Grim Reach for range. In Demonology it takes Demonic Embrace and Fel Vitality on the way to Demonic Sacrifice, and Demonic Aegis for Demon Armor. With the Imp gone, Immolate is a slow Fire cast that Burning Shadow does nothing for, so the build skips Bane and Aftermath and drops Immolate from the rotation.
 
 ## Rotation and priority
 
 **Pre-pull.** Demon Armor on and a Healthstone in your bag. Summon the Imp and sacrifice it with Demonic Sacrifice for Burning Shadow, then Life Tap to full while the healers top you off. Any demon you summon after that ends it, so leave the pet slot empty and sacrifice a fresh Imp after a wipe.
 
-**Curses.** Curse of the Elements goes up first if you hold it, since every spell the raid casts hits harder from that global on. When another warlock holds it, your curse slot is free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid (505 armor), Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard. Amplify Curse also strengthens Curse of Weakness and goes to whichever of the two you cast first, so if you hold Weakness, put your last Bane of Agony up before you refresh it.
+**Curses.** Curse of the Elements goes up first if you hold it, since every spell the raid casts hits harder from that global on. When another warlock holds it, your curse slot is free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid (505 armor), Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard. Amplify Curse also strengthens Curse of Weakness and goes to whichever of the two you cast first, so if you carry Weakness, press Amplify Curse on your Bane of Agony and cast Weakness after it.
 
-**DoTs.** Recast Bane of Doom the moment it fires. Never clip the others: a recast throws away whatever was left on the old one, and Bane of Agony saves its biggest ticks for the end, which Improved Bane of Agony and Pandemic make count. Immolate, while you level without the sacrifice, is the one you recast early.
+**DoTs.** Keep Corruption, Siphon Life and Bane of Agony up all fight, even at 60: Bane of Doom gets nothing from Wrack or Soul Siphon, so Agony stays your bane. From 40, each Wrack burns through about 12 seconds of those three. Check them before every channel and recast any with under 3 seconds left; one with a little more will lapse in the channel's last seconds, and you refresh it right after. Otherwise never clip them: a recast throws away whatever was left on the old one. Immolate, while you level without the sacrifice, is the one you recast early.
 
 **Nightfall.** When a Shadow Trance comes up mid-channel, let the current Wrack finish, then cast the instant Shadow Bolt before the next one.
 
@@ -73,7 +73,7 @@ The raid build drops Soul Harvest and the three points of Improved Drains (a rai
 
 **Soul Shards.** Walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
 
-**Execute.** Affliction has no execute spell. Near the end, stop refreshing any DoT that will not get half its ticks in before the boss dies; your last Bane of Agony wants most of its 24 seconds. Channel Wrack instead while your other DoTs are still up.
+**Execute.** Affliction has no execute spell. Near the end, stop refreshing any DoT that will not get half its ticks in before the boss dies; your last Bane of Agony wants most of its ticks. Channel Wrack instead while your other DoTs are still up.
 
 **Movement.** Refresh DoTs, or Life Tap with nothing to refresh.
 
@@ -115,7 +115,7 @@ Wands do most of your killing before 20: a Lesser Magic Wand at 5 and a Greater 
 
 Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit. Drain Life while the DoTs run, and wand the mob down when the DoTs are enough.
 
-From 22, press Amplify Curse before every Bane of Agony as soon as it is ready; until Bane of Doom at 60 there is nothing to hold it for. From 40, channel Wrack where you used to Drain Life: with Soul Siphon full, three of your effects on the target add 36% to both, and Wrack costs far less mana than the Shadow Bolts it replaces.
+From 22, press Amplify Curse before every Bane of Agony as soon as it is ready. From 40, channel Wrack where you used to Drain Life: with Soul Siphon full, Corruption, Siphon Life and Bane of Agony on the target add 36% to both, Wrack makes those three tick twice as fast, and it costs far less mana than the Shadow Bolts it replaces.
 
 Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards; from 34, Soul Harvest turns each of those kills into mana regeneration, so you drink less.
 

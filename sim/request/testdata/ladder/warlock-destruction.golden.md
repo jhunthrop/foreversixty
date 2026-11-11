@@ -103,7 +103,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 00000000000000000-0000000000000000000-0010000000000000 | main_hand:284287 ranged:286750 | 13.4 | 5 | other:mana_gain=35.9, spell:1454=35.9, spell:695=29.3, spell:172=14.4, spell:707=13.7 | {SpellID: 412758}, {SpellID: 603} |
 | 20 | 00000000000000000-0000000000000000000-0050230100000000 | main_hand:2567 ranged:5243 | 38.2 | 7 | spell:695=35.7, other:mana_gain=32.1, spell:1455=32.1, spell:1094=13.5, spell:6222=12.2 | {SpellID: 412758}, {SpellID: 603} |
 | 30 | 00000000000000000-0000000000000000000-1050235103001000 | main_hand:249392 ranged:5213 | 61.5 | 7 | other:mana_gain=32.8, spell:1456=32.8, spell:1088=25.1, spell:2941=13.3, spell:6223=10.7 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 426316, Tag: 1}, {SpellID: 603} |
-| 38 | 00000000000000000-0000000000000000000-1050235103101340 | main_hand:873 ranged:13064 | 104.7 | 8 | other:mana_gain=32.6, spell:11687=32.6, spell:7641=16.9, spell:2941=14.9, spell:1293818=13.8 | {SpellID: 412758}, {SpellID: 603} |
+| 38 | 00000000000000000-0000000000000000000-1050235103101340 | main_hand:873 ranged:10766 | 105.6 | 9 | other:mana_gain=32.6, spell:11687=32.6, spell:7641=16.4, spell:2941=14.9, spell:1293818=13.8 | {SpellID: 412758}, {SpellID: 603} |
 | 40 | 00000000000000000-0000000000000000000-2050235103101341 | main_hand:873 ranged:5216 | 114.6 | 8 | other:mana_gain=38.3, spell:11687=38.3, spell:412758=17.6, spell:11665=14.6, spell:17962=13.6 | {SpellID: 603} |
 | 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:873 ranged:249232 | 183.5 | 8 | other:mana_gain=32.7, spell:11688=32.7, spell:1293812=22.5, spell:18930=13.9, spell:11667=13.5 | {SpellID: 603} |
 | 60 | 25522000000000000-0000000000000000000-2053235103101351 | main_hand:22630 ranged:22821 | 353.7 | 9 | other:mana_gain=32.7, spell:11689=32.7, spell:1293813=25.7, spell:18932=14.4, spell:11668=13.5 | - |
@@ -211,7 +211,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - warlock-destruction level=20 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=30 kind=unresolved_id action={SpellID: 426316, Tag: 1}
 - warlock-destruction level=30 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
-- warlock-destruction level=38 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=60 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
