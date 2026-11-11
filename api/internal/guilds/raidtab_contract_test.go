@@ -25,5 +25,9 @@ func TestAppContractRaidTabReads(t *testing.T) {
 	}
 	w.as(w.member2)
 	res = w.h.do(http.MethodGet, "/v1/characters/us/hardcore/mirelle/ready?raid="+strconv.FormatInt(raid.ID, 10), "")
-	contract.AssertFixture(t, "character.ready", guildBody(t, res, http.StatusOK), contract.Options{})
+	// A line's icon is the item's icon when the build's data has it (openapi ReadyItem.icon, omitempty);
+	// this world loads no item data, so its chest line carries the item_id alone.
+	contract.AssertFixture(t, "character.ready", guildBody(t, res, http.StatusOK), contract.Options{
+		Optional: []string{"data.items[].icon"},
+	})
 }
