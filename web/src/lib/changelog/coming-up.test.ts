@@ -11,7 +11,7 @@ describe('Coming up', () => {
     const html = comingUpHtml(COMING_UP);
     expect(html.startsWith('<table><thead><tr><th>Date</th><th>Content</th></tr></thead><tbody>')).toBe(true);
     expect(html.match(/<tr><td>/g)).toHaveLength(COMING_UP.length);
-    expect(html).toContain("<td>Dec 9</td><td>Barrow Deeps, Hyjal Summit, and Onyxia's Lair open</td>");
+    expect(html).toContain("<td>9 Dec</td><td>Barrow Deeps, Hyjal Summit, and Onyxia's Lair open</td>");
     expect(comingUpHtml([{ id: 'x', when: '<b>', what: 'a & b' }])).toContain(
       '<td>&lt;b&gt;</td><td>a &amp; b</td>',
     );

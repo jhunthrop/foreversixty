@@ -10,6 +10,25 @@ from mocklib import CLASS_COLOR
 # hours before the next raid. The raids open Wed 9 Dec; the guild raids Wednesdays at 8:00 pm CST.
 NOW = '2026-12-12T22:00:00Z'
 ZONE = 'America/Chicago'
+
+
+def house_clock(at) -> str:
+    """The house clock (web/src/lib/dates.ts clock, en-US): `8 pm`, `8:30 pm`; minutes only off the hour."""
+    return f"{at.hour % 12 or 12}{'' if at.minute == 0 else f':{at.minute:02d}'} {'am' if at.hour < 12 else 'pm'}"
+
+
+def countdown_text(left) -> str:
+    """The one countdown (web/src/lib/ui/countdown.ts, apps/shared/formats.json `countdown`):
+    `4 days, 4 hours`, zero units left out, minutes rounded up; empty once passed."""
+    total = -(-int(left.total_seconds()) // 60)
+    if total <= 0:
+        return ''
+    days, hours, minutes = total // 1440, total % 1440 // 60, total % 60
+    word = lambda n, one, many: f'{n} {one if n == 1 else many}'  # noqa: E731
+    parts = [word(days, "day", "days")] if days else []
+    parts += [word(hours, "hour", "hours")] if hours else []
+    parts += [f"{minutes} min"] if minutes else []
+    return ", ".join(parts)
 # The guild's first raid night, Wed 9 Dec, 8:00 pm CST: Onyxia's first kill, the loot council's night and the last raid every
 # surface reads (raid 40, its report and its log). Nothing is logged, killed or looted before it.
 LAST_RAID_ID = 40
@@ -74,6 +93,7 @@ def rank_of(name: str) -> str:
 
 
 RECRUIT_PITCH = 'We raid Wednesday nights, bring flasks, and split loot by council with the numbers shown. New to Forever is fine.'
+# The API's own summary string (api recruit card raid_nights.summary, server-written; lane C).
 RECRUIT_NIGHTS = 'Wed, 8:00 pm to 11:00 pm CST'
 RECRUIT_UPCOMING = [NEXT_RAID_AT, SECOND_RAID_AT]
 # class, spec key, spec name, note

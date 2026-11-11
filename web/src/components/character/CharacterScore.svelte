@@ -25,6 +25,7 @@
   import Meter from '../ui/Meter.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
+  import { grouped } from '../../lib/format/number';
 
   let {
     path,
@@ -99,7 +100,7 @@
      never a row of its own. -->
 {#snippet scoreValue()}
   <span class="inline-flex items-baseline gap-2" style:color={tierTextColor(forever.tier) ?? undefined}>
-    <span>{(forever.score ?? 0).toLocaleString('en-US')}</span>
+    <span>{grouped(forever.score ?? 0)}</span>
     <span class="text-[13px] font-semibold" data-testid="character-tier">{tierLabel(forever.tier) ?? ''}</span
     >
   </span>

@@ -8,6 +8,7 @@
   import Overlay from '../ui/Overlay.svelte';
   import ActionIcon from './ActionIcon.svelte';
 
+  import { grouped } from '../../lib/format/number';
   let {
     lane,
     index,
@@ -50,10 +51,7 @@
       </p>
       {#if event.outcome !== undefined}
         <p class="text-text" data-testid="timeline-tick-outcome">
-          {timelineCopy.tipOutcome(
-            event.outcome,
-            event.amount === undefined ? null : event.amount.toLocaleString('en-US'),
-          )}
+          {timelineCopy.tipOutcome(event.outcome, event.amount === undefined ? null : grouped(event.amount))}
         </p>
       {/if}
     </div>

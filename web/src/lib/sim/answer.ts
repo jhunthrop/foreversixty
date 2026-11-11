@@ -11,7 +11,7 @@
 
 import { confidenceBand, formatMargin } from './estimate';
 import { simPageCopy as copy } from './page-copy';
-import { grouped, oneDecimal } from './result-copy';
+import { grouped, oneDecimal } from '../format/number';
 import type { SimPhase } from './store.svelte';
 import type { Estimate, SimResult } from './types';
 

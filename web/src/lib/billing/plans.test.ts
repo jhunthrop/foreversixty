@@ -8,7 +8,7 @@ import {
   RAID_SIZES,
   TRIAL_REMINDER_DAYS,
   founderOpen,
-  formatAmount,
+  formatUsd,
   formatCents,
   formatPrice,
   perMonthLine,
@@ -52,12 +52,12 @@ describe('the founder dates', () => {
   });
 });
 
-describe('formatAmount', () => {
+describe('formatUsd', () => {
   it('shows cents only when the amount is not whole', () => {
-    expect(formatAmount(50 / 12)).toBe('$4.17');
-    expect(formatAmount(150 / 12)).toBe('$12.50');
-    expect(formatAmount(40 / 12)).toBe('$3.33');
-    expect(formatAmount(120 / 12)).toBe('$10');
+    expect(formatUsd(50 / 12)).toBe('$4.17');
+    expect(formatUsd(150 / 12)).toBe('$12.50');
+    expect(formatUsd(40 / 12)).toBe('$3.33');
+    expect(formatUsd(120 / 12)).toBe('$10');
   });
 });
 

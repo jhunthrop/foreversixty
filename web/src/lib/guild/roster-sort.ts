@@ -27,7 +27,7 @@ export const DEFAULT_ROSTER_FILTERS: RosterFilters = {
 /** The API's rating floor rule (roster_extended.go belowRatingFloor), so the filter and the
  *  Overview's count agree: the 25th percentile, only once enough raiders are rated for it to
  *  mean something, and never while everyone sits within a few points of each other. */
-const RATING_FLOOR_PERCENTILE = 0.25;
+const RATING_FLOOR_QUANTILE = 0.25;
 const RATING_FLOOR_MIN_RATED = 8;
 const RATING_FLOOR_BAND = 5;
 
@@ -41,7 +41,7 @@ export function ratingFloor(rows: readonly GuildRosterRow[]): number | null {
     .sort((a, b) => a - b);
   if (values.length < RATING_FLOOR_MIN_RATED) return null;
   if (values[values.length - 1] - values[0] <= RATING_FLOOR_BAND) return null;
-  return values[Math.floor(values.length * RATING_FLOOR_PERCENTILE)];
+  return values[Math.floor(values.length * RATING_FLOOR_QUANTILE)];
 }
 
 /** A row with no rating is never counted as "below" -- that is a missing fact, not a

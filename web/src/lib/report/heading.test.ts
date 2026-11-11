@@ -19,7 +19,7 @@ describe('reportHeading', () => {
       created_at: '2026-10-19T00:00:00Z',
       fights: fights(42),
     });
-    expect(heading).toMatch(/^17 Sept? 2026 · 42 fights$/);
+    expect(heading).toMatch(/^17 Sep 2026 · 42 fights$/);
   });
   it('falls back to the upload date for a report with no fights yet', () => {
     expect(reportHeading({ title: '', zone: '', created_at: '2026-10-19T00:00:00Z', fights: [] })).toMatch(

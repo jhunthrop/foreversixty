@@ -9,6 +9,7 @@
 import { MARGIN_BELOW_THRESHOLD } from './copy';
 import type { Estimate } from './types';
 
+import { grouped } from '../format/number';
 export const EMPTY_ESTIMATE: Estimate = { mean: 0, stddev: 0, error: 0, min: 0, max: 0 };
 
 export interface ShardProgress {
@@ -71,5 +72,5 @@ export function formatMargin(value: number): string {
   // Decided off the *rounded* value, not the raw one: 9.96 and 9.99 both round to "10.0"
   // at one decimal, and must join the integer branch the same way an actual 10 does,
   // rather than printing a "10.0" no value ever should.
-  return parseFloat(oneDecimal) >= 10 ? Math.round(value).toLocaleString('en-US') : oneDecimal;
+  return parseFloat(oneDecimal) >= 10 ? grouped(value) : oneDecimal;
 }

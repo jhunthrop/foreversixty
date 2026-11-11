@@ -9,7 +9,7 @@
   import {
     PLAN_ORDER,
     founderOpen,
-    formatAmount,
+    formatUsd,
     INTERVALS,
     intervalUnit,
     type Interval,
@@ -90,7 +90,7 @@
             <span class="text-strong text-[15px] leading-5 font-bold">{copy.chooser.tierName(key)}</span>
             <span class="text-muted text-[13px]" data-testid={`guild-billing-option-${key}-price`}>
               <span class="text-strong text-[15px] font-bold tabular-nums"
-                >{formatAmount(priceFor(key, interval, founder))}</span
+                >{formatUsd(priceFor(key, interval, founder))}</span
               ><span>{intervalUnit(interval)}</span>
             </span>
             {#if founder}

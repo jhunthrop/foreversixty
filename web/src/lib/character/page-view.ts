@@ -17,11 +17,13 @@ import { isTie } from '../bis/doll-view';
 import type { PaperdollSlot } from '../gear/paperdoll';
 import { homeHrefs } from '../home/home-view';
 import { PREMIUM_LINKS } from '../billing/premium-links';
-import { percentileToken } from '../report/format';
+import { parseText, percentileToken } from '../report/format';
 import { executionLabel } from '../sim/execution';
 import { signedFigure } from '../ui/primitives';
 import type { BuildSeen, CharacterFight, CharacterPage } from '../rankings/api';
 import { pointsEarnedAt } from '../leveling/leveling-plan';
+import { utcDayMonth } from '../dates';
+import { grouped } from '../format/number';
 
 /** C6: the fights shown before the link to all of them. */
 export const FIGHTS_SHOWN = 5;
@@ -45,7 +47,7 @@ export const characterPageCopy = {
   rating: 'Rating',
   ratingValue: (overall: number): string => `${overall} of 100`,
   /** The score trend's label: "Since 20 Oct". */
-  since: (date: string): string => `Since ${dayMonth(`${date}T00:00:00Z`)}`,
+  since: (date: string): string => `Since ${utcDayMonth(`${date}T00:00:00Z`)}`,
   noLogsOwner: 'No logs yet. Upload a log to get a rating.',
   noLogs: 'No logs yet.',
   noScoreYet: 'No Forever Score yet.',
@@ -218,16 +220,6 @@ export function characterWaiting(input: {
   return [...talents, ...upgrade];
 }
 
-/** `3 Nov`, or `3 Nov 2026` with the year. */
-export function dayMonth(iso: string, year = false): string {
-  return new Date(iso).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    ...(year ? { year: 'numeric' } : {}),
-    timeZone: 'UTC',
-  });
-}
-
 export interface FightRowView {
   key: string;
   boss: string;
@@ -260,7 +252,7 @@ function sinceLast(row: CharacterFight, kills: readonly CharacterFight[]): strin
   const before = kills.filter((fight) => fight.fought_at < row.fought_at).at(-1);
   return before === undefined
     ? ''
-    : characterPageCopy.sinceKill(signedFigure(row.value - before.value, 0), dayMonth(before.fought_at));
+    : characterPageCopy.sinceKill(signedFigure(row.value - before.value, 0), utcDayMonth(before.fought_at));
 }
 
 /** C6: the best fight per encounter, five at most, each with its boss's trend from `history`. */
@@ -273,16 +265,16 @@ export function bestRows(
     key: `${row.encounter_id}-${row.difficulty}-${row.metric}`,
     boss: row.encounter,
     sub: [
-      dayMonth(row.fought_at),
+      utcDayMonth(row.fought_at),
       // The page's own spec goes without saying; another spec's fight names it.
       row.spec === pageSpecName ? '' : row.spec,
       typeof row.execution_score === 'number' ? characterPageCopy.execution(row.execution_score) : '',
     ]
       .filter(Boolean)
       .join(' · '),
-    percentile: row.percentile === undefined ? null : String(Math.round(row.percentile)),
+    percentile: row.percentile === undefined ? null : parseText(row.percentile),
     color: row.percentile === undefined ? null : percentileToken(row.percentile),
-    value: Math.round(row.value).toLocaleString('en-US'),
+    value: grouped(row.value),
     unit: row.metric === 'hps' ? 'HPS' : 'DPS',
     encounter: row.encounter,
     trend: trendOf(bossKills(row, history)),
@@ -309,6 +301,6 @@ export function buildRows(className: string | undefined, builds: readonly BuildS
     .map((build) => ({
       key: `${build.talent_split}-${build.first_seen}`,
       split: build.talent_split,
-      sub: characterPageCopy.buildSub(seenBuildSpec(className, build), dayMonth(build.first_seen)),
+      sub: characterPageCopy.buildSub(seenBuildSpec(className, build), utcDayMonth(build.first_seen)),
     }));
 }

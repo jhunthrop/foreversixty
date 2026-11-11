@@ -6,11 +6,12 @@ import type { Me } from '../account/me-types';
 import { rulesetLabel } from '../characters';
 import { classDisplayName } from '../sim/spec-label';
 import { GuildApiError } from './api';
-import { clockText, dateLabel } from './raid-time';
+
 import { recruitCopy as copy } from './recruit-copy';
 import { specClassName } from './spec-name';
 import type { Fact } from '../ui/facts';
 import type { GuildApplication, RecruitCard, RecruitOfficer, RecruitWanted } from './recruit-api';
+import { clock, weekdayDayMonth } from '../dates';
 
 const SEP = ' · ';
 
@@ -63,7 +64,7 @@ export function wantedRows(wanted: readonly RecruitWanted[]): WantedRow[] {
 export function upcomingNights(card: RecruitCard, viewerTz: string, locale: string): string[] {
   return card.raid_nights.upcoming.map((at) => {
     const d = new Date(at);
-    return `${dateLabel(d, viewerTz, locale)}, ${clockText(d, viewerTz, locale)}`;
+    return `${weekdayDayMonth(d, viewerTz)}, ${clock(d, viewerTz, { locale })}`;
   });
 }
 
@@ -177,10 +178,10 @@ export function applicationLine(app: GuildApplication, guildName: string): strin
 }
 
 /** "Sent Thu 10 Dec" or "Decided Fri 11 Dec", in the viewer's clock. */
-export function applicationStamp(app: GuildApplication, viewerTz: string, locale: string): string {
+export function applicationStamp(app: GuildApplication, viewerTz: string): string {
   if (app.decided_at !== null && app.status !== 'pending')
-    return copy.mine.decided(dateLabel(new Date(app.decided_at), viewerTz, locale));
-  return copy.mine.sent(dateLabel(new Date(app.created_at), viewerTz, locale));
+    return copy.mine.decided(weekdayDayMonth(new Date(app.decided_at), viewerTz));
+  return copy.mine.sent(weekdayDayMonth(new Date(app.created_at), viewerTz));
 }
 
 /** The API's refusal of an application in words; a field error names the field's rule. */

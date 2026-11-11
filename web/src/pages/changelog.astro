@@ -32,7 +32,8 @@ import {
   type ChangelogShow,
 } from '../lib/changelog/entries';
 import { barSyncScript, seenScript, SHOW_HEAD_SCRIPT } from '../lib/changelog/page-scripts';
-import { formatDate, latest } from '../lib/dates';
+import { latest } from '../lib/dates';
+import UpdatedStamp from '../components/UpdatedStamp.astro';
 import { guidesCopy } from '../lib/guides/copy';
 import { pageScript } from '../lib/guides/page-script';
 import { REGION } from '../lib/ui/regions';
@@ -69,9 +70,7 @@ const hideCss = (['game', 'site'] as const satisfies readonly ChangelogShow[])
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="changelog">
     <Page layout="reading" tocFrom={1760} tocLabel={guidesCopy.tocBarLabel} testid="changelog-body">
       <PageHeader slot="header" title={changelogCopy.title}>
-        <span slot="meta" data-testid="updated-stamp">
-          Updated {formatDate(updated)}
-        </span>
+        <UpdatedStamp slot="meta" date={updated} />
       </PageHeader>
       <Fragment slot="bar">
         <ChangelogBar counts={counts} months={months} />

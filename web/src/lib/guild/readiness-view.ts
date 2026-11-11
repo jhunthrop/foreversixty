@@ -5,6 +5,7 @@
 import type { GuildReadinessRow } from './api';
 import { SLOT_LABELS, type Slot } from '../planner/types';
 import { counted } from '../plural';
+import { upperFirst } from '../text';
 
 /** The level a character raids at: every readiness check is measured for it. */
 export const RAID_LEVEL = 60;
@@ -89,7 +90,7 @@ export function enchantSlotLabel(raw: string): string {
   // The client's own tooltip casing ("Main Hand"), the words the loot cards and the bot use.
   return label
     .split(/[\s_]+/)
-    .map((word) => capitalize(word))
+    .map((word) => upperFirst(word))
     .join(' ');
 }
 
@@ -130,10 +131,6 @@ export function nudgeText(row: GuildReadinessRow): string {
   const fails = readinessFails(row);
   if (fails.length === 0) return `${row.name}: every readiness check passes.`;
   return `${row.name}: ${fails.join('; ')}.`;
-}
-
-function capitalize(value: string): string {
-  return value.length === 0 ? value : value[0].toUpperCase() + value.slice(1);
 }
 
 /** The board by exception (batch 3): what a raider is short of, in a raid leader's words, worst

@@ -4,7 +4,7 @@
      who had it, the pull's full length counting as 100%. The buffs most of the group held
      come first (flasks, food, the class buffs), then by uptime. The top eight. -->
 <script lang="ts">
-  import { formatPercent } from '../../lib/report/format';
+  import { percent } from '../../lib/format/number';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import type { Summary } from '../../lib/report/types';
   import Meter from '../ui/Meter.svelte';
@@ -90,7 +90,7 @@
     <div class="group-buffs">
       <StatTable columns={COLUMNS} nameHead="Buff" label="Buffs">
         {#each rows as row (row.name)}
-          <StatRow figures={[{ value: formatPercent(row.share * 100) }]}>
+          <StatRow figures={[{ value: percent(row.share * 100) }]}>
             {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
             {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
             {#snippet meter()}<Meter value={row.share} tone="gold" />{/snippet}

@@ -6,14 +6,15 @@
 // kill in its report, the percentile, Executed, Length) and the date. The row carries no link strip:
 // a compact list beside the rail has no room for one, and the value is the way into the report.
 import { characterHref, parseCharacterKey, splitUnitName } from '../characters';
-import { formatAmount } from '../report/format';
+import { compact } from '../format/number';
 import { executionHref, executionLabel, executionTitle } from '../sim/execution';
 import type { RankFigure, RankGap, RankLink, RankNote } from '../ui/rank-list';
 import type { RankingRow } from './api';
 import { rankingsCopy } from './copy';
 import { moderationLine, rankColor, rankPercentile, rankingDate } from './row-view';
+import { parseText } from '../report/format';
+import { clockSeconds } from '../format/duration';
 
-const SECONDS_PER_MINUTE = 60;
 const MS_PER_SECOND = 1000;
 
 export interface RankRowView {
@@ -33,8 +34,7 @@ export interface RankRowView {
 
 /** "2:41": a kill's length in whole seconds. */
 export function killLength(durationMs: number): string {
-  const seconds = Math.max(0, Math.round(durationMs / MS_PER_SECOND));
-  return `${Math.floor(seconds / SECONDS_PER_MINUTE)}:${String(seconds % SECONDS_PER_MINUTE).padStart(2, '0')}`;
+  return clockSeconds(Math.round(durationMs / MS_PER_SECOND));
 }
 
 /** The board a row is read on: its size, its top value and the value's unit. `multiClass`
@@ -48,7 +48,7 @@ export interface RankBoardView {
 
 /** A rank's percentile on its board, floored to a whole number as the colour reads it: 100, 99, 95. */
 export function percentileLabel(rank: number, total: number): string {
-  return String(Math.max(0, Math.floor(rankPercentile(rank, total))));
+  return parseText(Math.max(0, rankPercentile(rank, total)));
 }
 
 export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView {
@@ -76,7 +76,7 @@ export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView 
     fraction: board.top > 0 ? row.value / board.top : 0,
     figures: [
       {
-        value: formatAmount(Math.round(row.value)),
+        value: compact(Math.round(row.value)),
         label: board.unit,
         href: reportHref(row),
         title: rankingsCopy.openReport,

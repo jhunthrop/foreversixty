@@ -5,6 +5,8 @@
 
 import { killCounts, killCountsLabel } from './kill-counts';
 import type { FightEntry, Phase, Taunt } from './types';
+import { compact, ordinal, percent, thousands } from '../format/number';
+import { CLASS_SLUGS } from '../ui/primitives';
 
 /**
  * An `<a>` is inline: its own box is only as tall as its text, not the `min-h-11` row it
@@ -22,16 +24,6 @@ export const rowLink = 'inline-flex min-h-11 items-center';
  */
 export function tauntKey(taunt: Taunt): string {
   return `${taunt.label ?? ''}|${taunt.at_ms}|${taunt.source_guid}|${taunt.target_guid}|${taunt.spell_id}`;
-}
-
-/** Under a minute, tenths tell you more than a leading zero does. */
-/** Like formatDuration but never drops the tenths: "1:01.4". For event lists. */
-export function formatDurationPrecise(ms: number): string {
-  const safe = Number.isFinite(ms) && ms > 0 ? ms : 0;
-  if (safe < 60_000) return `${(safe / 1000).toFixed(1)}s`;
-  const minutes = Math.floor(safe / 60_000);
-  const seconds = (safe - minutes * 60_000) / 1000;
-  return `${minutes}:${seconds.toFixed(1).padStart(4, '0')}`;
 }
 
 /** The colour token for a school mask's first school; melee (no school) is physical. */
@@ -68,66 +60,6 @@ export function schoolName(mask: number | undefined): string {
   return names.join('/');
 }
 
-export function formatDuration(ms: number): string {
-  const safe = Number.isFinite(ms) && ms > 0 ? ms : 0;
-  if (safe < 60_000) return `${(safe / 1000).toFixed(1)}s`;
-  const totalSeconds = Math.round(safe / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${minutes}:${String(seconds).padStart(2, '0')}`;
-}
-
-/**
- * The engine writes UTC instants. The report shows them in UTC too rather than the
- * viewer's zone: a raid leader comparing a log against a teammate's screenshot needs the
- * same clock on both, and the log file itself is the shared reference.
- */
-// Built once, on first use: constructing a DateTimeFormat loads locale data, tens of
-// milliseconds on a throttled phone. At module level it ran in the evaluation of every island
-// that imports this file for `classColorVar` alone (the planner's header card), inside the
-// mount task; here only a page that formats a date pays for it.
-let dayUtc: Intl.DateTimeFormat | undefined;
-function dayFormat(): Intl.DateTimeFormat {
-  dayUtc ??= new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
-  return dayUtc;
-}
-
-/** The calendar day of an instant, in UTC like formatClock: "26 Sep 2026". */
-export function formatDate(iso: string): string {
-  const at = new Date(iso);
-  if (Number.isNaN(at.getTime())) return '';
-  return dayFormat().format(at);
-}
-
-export function formatClock(iso: string): string {
-  const at = new Date(iso);
-  if (Number.isNaN(at.getTime())) return '--:--:--';
-  const pad = (n: number): string => String(n).padStart(2, '0');
-  return `${pad(at.getUTCHours())}:${pad(at.getUTCMinutes())}:${pad(at.getUTCSeconds())}`;
-}
-
-let grouped: Intl.NumberFormat | undefined;
-function groupedFormat(): Intl.NumberFormat {
-  grouped ??= new Intl.NumberFormat('en-US');
-  return grouped;
-}
-
-export function formatAmount(n: number): string {
-  const safe = Number.isFinite(n) ? n : 0;
-  const abs = Math.abs(safe);
-  if (abs >= 1_000_000_000) return `${trimZero(safe / 1_000_000_000)}B`;
-  if (abs >= 1_000_000) return `${trimZero(safe / 1_000_000)}M`;
-  // From 100k the grouped form is seven characters against a neighbour's "1.09M", and a
-  // column mixing the two reads the longer string as the bigger number.
-  if (abs >= 100_000) return `${(safe / 1000).toFixed(1).replace(/\.0$/, '')}k`;
-  return groupedFormat().format(Math.round(safe));
-}
-
 /**
  * An amount in the scale its column is read in: when the column's largest figure is
  * abbreviated (239.2k), every figure in it is (81k, not 80,993), or a five-digit row reads
@@ -135,15 +67,8 @@ export function formatAmount(n: number): string {
  */
 export function formatAmountLike(n: number, columnMax: number): string {
   const safe = Number.isFinite(n) ? n : 0;
-  if (Math.abs(columnMax) >= 100_000 && Math.abs(safe) < 100_000) {
-    return `${(safe / 1000).toFixed(1).replace(/\.0$/, '')}k`;
-  }
-  return formatAmount(safe);
-}
-
-/** 1.25 stays 1.25, 12.50 becomes 12.5, 3.00 becomes 3. */
-function trimZero(value: number): string {
-  return value.toFixed(2).replace(/\.?0+$/, '');
+  if (Math.abs(columnMax) >= 100_000 && Math.abs(safe) < 100_000) return thousands(safe);
+  return compact(safe);
 }
 
 /**
@@ -185,10 +110,6 @@ export function formatPerSecond(total: number, ms: number): string {
   return (total / (ms / 1000)).toFixed(1);
 }
 
-export function formatPercent(value: number): string {
-  return `${(Number.isFinite(value) ? value : 0).toFixed(1)}%`;
-}
-
 /**
  * A row's landed count. A sim row is a per-fight average rounded to a whole count, so an
  * action that dealt damage in a few fights out of a hundred (a Fire mage's wand) has a count
@@ -200,7 +121,7 @@ export function formatLanded(landed: number, amount: number): string {
 
 /** A share of a total; a share above zero too small for one decimal reads "<0.1%", not "0.0%". */
 export function formatShare(value: number): string {
-  return value > 0 && value < 0.05 ? '<0.1%' : formatPercent(value);
+  return value > 0 && value < 0.05 ? '<0.1%' : percent(value);
 }
 
 /**
@@ -209,22 +130,16 @@ export function formatShare(value: number): string {
  * can emit an inferred class from a future expansion -- gets the body colour rather than
  * a guess.
  */
-const CLASS_TOKENS = new Set([
-  'warrior',
-  'paladin',
-  'hunter',
-  'rogue',
-  'priest',
-  'shaman',
-  'mage',
-  'warlock',
-  'druid',
-  'monk',
-]);
+/** `Death Knight` -> `death-knight`: the one class name to slug rule (the API sends names). */
+export function classSlugFromName(className: string): string {
+  return className.toLowerCase().replace(/\s+/g, '-');
+}
+
+const CLASS_TOKENS: ReadonlySet<string> = new Set<string>([...CLASS_SLUGS, 'monk']);
 
 /** A known class's slug (`death-knight`), else undefined. */
 export function classSlug(className: string | undefined): string | undefined {
-  const slug = (className ?? '').toLowerCase().replace(/\s+/g, '-');
+  const slug = classSlugFromName(className ?? '');
   return CLASS_TOKENS.has(slug) ? slug : undefined;
 }
 
@@ -290,21 +205,6 @@ export function wholeFightAriaLabel(stale: boolean, text: string): string {
   return stale ? `${text}, the whole fight’s figure` : text;
 }
 
-/**
- * Parse percentiles use the item-rarity scale. This is the one place the design system's
- * "never repurpose the game's colours" rule is deliberately bent, and it is bent because
- * every player already reads a purple parse as epic: reusing the scale is what makes the
- * number legible at a glance. The two AA-safe text variants are used for rare and epic,
- * as the rarity text classes do elsewhere.
- */
-/** 1st, 2nd, 3rd, 4th … 11th, 12th, 13th … 21st. */
-export function ordinal(n: number): string {
-  const rest = n % 100;
-  if (rest >= 11 && rest <= 13) return `${n}th`;
-  const last = n % 10;
-  return `${n}${last === 1 ? 'st' : last === 2 ? 'nd' : last === 3 ? 'rd' : 'th'}`;
-}
-
 /** A Parse cell's fallback on a trash fight: not computed, which is not a failure. */
 export const TRASH_PARSE = '—';
 
@@ -313,7 +213,7 @@ export function parseTitle(value: number | string, ranked = 0): string {
   if (typeof value === 'number') {
     const among = ranked > 0 ? `${ranked} ranked ${ranked === 1 ? 'kill' : 'kills'}` : 'the ranked kills';
     const note = ranked === 1 ? '; the only kill of its kind ranked so far, so it stands first of one' : '';
-    return `${ordinal(Math.round(value))} percentile among ${among} of this boss by this spec on this ruleset${note}`;
+    return `${ordinal(Math.floor(value))} percentile among ${among} of this boss by this spec on this ruleset${note}`;
   }
   if (value === TRASH_PARSE) return 'No parse for trash.';
   if (value === 'wipe') return 'A wipe is not ranked';
@@ -330,18 +230,73 @@ export function parseTitle(value: number | string, ranked = 0): string {
   return '';
 }
 
+/**
+ * Parse percentiles use the item-rarity scale. This is the one place the design system's
+ * "never repurpose the game's colours" rule is deliberately bent, and it is bent because
+ * every player already reads a purple parse as epic: reusing the scale is what makes the
+ * number legible at a glance.
+ *
+ * The ladder every log reader already knows: grey under 25, green from 25, blue from 50, purple
+ * from 75, orange from 95, pink at 99, gold at 100. Floored, never rounded, for the colour and
+ * the number alike (Warcraft Logs' own rule, owner ruling 2026-11-10): 98.6 reads "98" in
+ * orange, 99.53 is pink, and only a whole 100 is gold.
+ */
+export type ParseTier = 'grey' | 'green' | 'blue' | 'purple' | 'orange' | 'pink' | 'gold';
+
+const PARSE_LADDER: readonly (readonly [number, ParseTier])[] = [
+  [100, 'gold'],
+  [99, 'pink'],
+  [95, 'orange'],
+  [75, 'purple'],
+  [50, 'blue'],
+  [25, 'green'],
+];
+
+const PARSE_TEXT_TOKEN: Readonly<Record<ParseTier, string>> = {
+  grey: 'var(--color-parse-grey-text)',
+  green: 'var(--color-parse-green)',
+  blue: 'var(--color-rarity-rare-text)',
+  purple: 'var(--color-rarity-epic-text)',
+  orange: 'var(--color-parse-orange)',
+  pink: 'var(--color-parse-pink)',
+  gold: 'var(--color-parse-gold)',
+};
+
+function flooredParse(percentile: number): number {
+  return Number.isFinite(percentile) ? Math.floor(percentile) : 0;
+}
+
+/** The ladder step a percentile sits on. */
+export function parseTier(percentile: number): ParseTier {
+  const p = flooredParse(percentile);
+  return PARSE_LADDER.find(([floor]) => p >= floor)?.[1] ?? 'grey';
+}
+
+/** The figure a parse cell prints: the floored whole percentile, "98". */
+export function parseText(percentile: number): string {
+  return String(flooredParse(percentile));
+}
+
+/** A parse read aloud: "98th percentile". */
+export function parseLabel(percentile: number): string {
+  return `${ordinal(flooredParse(percentile))} percentile`;
+}
+
+/** The colour a parse figure is printed in. */
 export function percentileToken(percentile: number): string {
-  // The ladder every log reader already knows: grey under 25, green from 25, blue from
-  // 50, purple from 75, orange from 95, pink at 99, gold at 100. Floored, never rounded
-  // (Warcraft Logs' own rule): 99.53 is pink, and only a whole 100 is gold.
-  const p = Number.isFinite(percentile) ? Math.floor(percentile) : 0;
-  if (p >= 100) return 'var(--color-parse-gold)';
-  if (p >= 99) return 'var(--color-parse-pink)';
-  if (p >= 95) return 'var(--color-parse-orange)';
-  if (p >= 75) return 'var(--color-parse-purple)';
-  if (p >= 50) return 'var(--color-parse-blue)';
-  if (p >= 25) return 'var(--color-parse-green)';
-  // --color-parse-grey-text, not --color-parse-grey: every caller uses this as a text
-  // color (see tokens.css), and the raw grey fails WCAG AA contrast as text.
-  return 'var(--color-parse-grey-text)';
+  // Every caller colours text, so the three steps whose raw colour fails WCAG AA as small text
+  // read their text variants: the grey's own, and the rare and epic text colours the rarity
+  // classes use (tokens.css), the same blue and purple a player reads.
+  return PARSE_TEXT_TOKEN[parseTier(percentile)];
+}
+
+/** Everything a parse cell needs: the floored figure, its colour and its screen-reader name. */
+export interface ParseFigure {
+  text: string;
+  color: string;
+  label: string;
+}
+
+export function parseFigure(percentile: number): ParseFigure {
+  return { text: parseText(percentile), color: percentileToken(percentile), label: parseLabel(percentile) };
 }

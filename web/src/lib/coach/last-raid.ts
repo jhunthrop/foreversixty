@@ -6,6 +6,7 @@
 import { PREMIUM_LINKS } from '../billing/premium-links';
 import { COACH_SEPARATOR, coachCopy, fill } from './copy';
 import type { CoachRecent, LastRaid } from './types';
+import { viewerZone, weekdayDayMonth } from '../dates';
 
 export type LastRaidRole = 'lead' | 'place' | 'plain' | 'link' | 'muted';
 
@@ -32,18 +33,9 @@ export const LAST_RAID_RETRY_CLASS =
   '-my-3 inline-flex min-h-11 items-center px-1 text-gold underline hover:text-gold-hover focus-visible:outline-2 focus-visible:outline-gold disabled:opacity-60';
 
 export const PREMIUM_HREF = PREMIUM_LINKS.coach;
-const DATE_LOCALE = 'en-GB';
-
 /** `ddd d MMM` in the viewer's zone (the browser's own unless `timeZone` is given). */
-export function formatRaidDate(iso: string, timeZone?: string): string {
-  const parts = new Intl.DateTimeFormat(DATE_LOCALE, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    timeZone,
-  }).formatToParts(new Date(iso));
-  const part = (type: string): string => parts.find((p) => p.type === type)?.value ?? '';
-  return `${part('weekday')} ${part('day')} ${part('month')}`;
+export function formatRaidDate(iso: string, timeZone: string = viewerZone(), now: Date = new Date()): string {
+  return weekdayDayMonth(new Date(iso), timeZone, now);
 }
 
 /** Splits a filled sentence on its separators: the lead, the place and date, then plain text, with the last one a link when asked. */

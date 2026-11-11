@@ -1,3 +1,4 @@
+import { upperFirst } from '../text';
 // web/src/lib/items/source-labels.ts
 // The two source-label functions the item tooltip (`tooltip.ts`, below) and the BiS panel's
 // own source cell (`lib/bis/copy.ts`'s `bisCopy.craftedSourceLabel`/`pvpSourceLabel`) say
@@ -12,11 +13,6 @@
 // (the tooltip, a future non-BiS source line) can import it without paying for a page it
 // never renders.
 
-/** `dwarf` -> `Dwarf`: the pipeline's own strings are not reliably capitalised. */
-function capitalise(word: string): string {
-  return word.length === 0 ? word : word[0]!.toUpperCase() + word.slice(1);
-}
-
 /** "Crafted: Blacksmithing" when the source's own name already IS the profession -- every
  *  real crafted source today (`loot.json`'s `name` "Blacksmithing" and `profession`
  *  "blacksmithing") is the same word, differently cased, so this must never print the
@@ -27,7 +23,7 @@ function capitalise(word: string): string {
 export function craftedSourceLabel(name: string, profession?: string): string {
   return profession === undefined || profession.toLowerCase() === name.toLowerCase()
     ? `Crafted: ${name}`
-    : `Crafted: ${capitalise(profession)} · ${name}`;
+    : `Crafted: ${upperFirst(profession)} · ${name}`;
 }
 
 // --- pvp rank titles (third wow-player sweep defect, 2026-09-29) --------------------------

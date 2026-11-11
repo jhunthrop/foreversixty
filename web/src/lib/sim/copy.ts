@@ -10,6 +10,7 @@ import { plannerSimCopy } from './planner-copy';
 import type { SpecRole } from './specs';
 import { itemNotInDataLine } from '../items/unknown-item-copy';
 
+import { grouped } from '../format/number';
 /**
  * One name per sim kind, for every site that names one: each tool page's `<title>`, `<h1>`
  * and `<noscript>`, the history filter and its rows, the saved page and the unfurl. A
@@ -928,8 +929,7 @@ export const bulkCopy = {
   setsBadCode: 'That is not an export string this build can read.',
 
   // --- the run bar ---
-  combinations: (n: number): string =>
-    `${n.toLocaleString('en-US')} valid ${n === 1 ? 'combination' : 'combinations'}`,
+  combinations: (n: number): string => `${grouped(n)} valid ${n === 1 ? 'combination' : 'combinations'}`,
   combinationsCounting: 'Counting combinations…',
   precisionLabel: 'Precision',
   precisionFast: 'Fast',
@@ -950,17 +950,17 @@ export const bulkCopy = {
   runBulkAgain: 'Run again',
   stopBulk: 'Stop',
   stageProgress: (stage: number, stages: number, done: number, total: number): string =>
-    `stage ${stage} of ${stages} · ${done.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} combinations`,
+    `stage ${stage} of ${stages} · ${grouped(done)} of ${grouped(total)} combinations`,
   partial: 'Stopped. These are the combinations that finished.',
   capNotice: (cap: number, combinations: number): string =>
-    `${combinations.toLocaleString('en-US')} combinations is past this browser’s limit of ${cap.toLocaleString('en-US')}. Untick ${(combinations - cap).toLocaleString('en-US')} of them, or run it on our servers.`,
+    `${grouped(combinations)} combinations is past this browser’s limit of ${grouped(cap)}. Untick ${grouped(combinations - cap)} of them, or run it on our servers.`,
   capPremium: 'Run on our servers',
   capPremiumNote: 'Premium lifts the limit to 5,000 combinations and any precision.',
   seePlans: seePlansLabel,
   serverCapNotice: (cap: number, combinations: number): string =>
-    `${combinations.toLocaleString('en-US')} combinations is past our servers’ limit of ${cap.toLocaleString('en-US')} too. Untick ${(combinations - cap).toLocaleString('en-US')} of them.`,
+    `${grouped(combinations)} combinations is past our servers’ limit of ${grouped(cap)} too. Untick ${grouped(combinations - cap)} of them.`,
   lowCoreNote: (cap: number): string =>
-    `This device reports four cores or fewer, so the limit here is ${cap.toLocaleString('en-US')} combinations.`,
+    `This device reports four cores or fewer, so the limit here is ${grouped(cap)} combinations.`,
 
   // --- results ---
   /** The Top gear, talents and Droptimizer results block's title. */
@@ -992,11 +992,7 @@ export const bulkCopy = {
   openInPlanner: 'Open in planner',
   keepFourPiece: 'Only combinations keeping a 4-piece set bonus',
   ranAtStages: (stages: { iterations: number; combos: number }[]): string =>
-    stages
-      .map(
-        (stage) => `${stage.combos.toLocaleString('en-US')} at ${stage.iterations.toLocaleString('en-US')}`,
-      )
-      .join(' · '),
+    stages.map((stage) => `${grouped(stage.combos)} at ${grouped(stage.iterations)}`).join(' · '),
 
   // --- droptimizer ---
   /** The Droptimizer source picker's title. */
@@ -1019,8 +1015,7 @@ export const bulkCopy = {
   /** A run asked for with no character loaded (bulk-store-request.ts). */
   needCharacter: 'Load a character first.',
   /** A source row's figures: the items this class can try, and the best item level among them. */
-  sourceItems: (count: number): string =>
-    `${count.toLocaleString('en-US')} ${count === 1 ? 'item' : 'items'}`,
+  sourceItems: (count: number): string => `${grouped(count)} ${count === 1 ? 'item' : 'items'}`,
   sourceBestIlvl: (ilvl: number): string => `ilvl ${ilvl}`,
   sourceBosses: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'}`,
   /** A kind's summary: how many of its sources carry a tick. */
@@ -1251,7 +1246,7 @@ export const toolFixCopy = {
    * selected. A function of the level and `settings.ts`'s `targetArmorField`'s `preset`.
    */
   targetArmorNote: (level: number, preset: number): string =>
-    `Blank or 0 uses the level ${level} preset: ${preset.toLocaleString('en-US')} armor.`,
+    `Blank or 0 uses the level ${level} preset: ${grouped(preset)} armor.`,
   /**
    * ComboResults.svelte, final whole-branch review, Important 2: `combos.ts`'s
    * `collapsedComboCount`, in words -- shown only when it is greater than zero, near the

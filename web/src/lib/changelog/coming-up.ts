@@ -12,7 +12,7 @@ export interface ComingUpRow {
   id: string;
   /** The UTC day Blizzard dates it (`2026-12-09`); the row shows through that day. */
   on?: string;
-  /** As Blizzard dates it: a day ("Dec 9") or a season ("Spring 2027"). */
+  /** As Blizzard dates it: a day ("9 Dec", the house date) or a season ("Spring 2027"). */
   when: string;
   what: string;
 }
@@ -24,7 +24,7 @@ export const COMING_UP = [
   {
     id: 'raids-dec-9',
     on: '2026-12-09',
-    when: 'Dec 9',
+    when: '9 Dec',
     what: "Barrow Deeps, Hyjal Summit, and Onyxia's Lair open",
   },
   { id: 'hardcore', when: 'Winter 2026/27', what: 'The Hardcore ruleset, exact date not yet announced' },

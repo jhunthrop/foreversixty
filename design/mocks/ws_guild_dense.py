@@ -94,7 +94,7 @@ def fig(value: str, label: str, cap: str = '', t: str = '') -> tuple:
 
 def countdown() -> str:
     left = at(D.NEXT_RAID_AT) - at(D.NOW)
-    return f'in {left.days} d {left.seconds // 3600} h'
+    return f'in {gd.countdown_text(left)}'
 
 
 def last_night_raiders() -> list[D.Raider]:

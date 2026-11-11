@@ -12,7 +12,6 @@ import {
   DEFAULT_TARGET_LEVEL,
   defaultSettings,
   defaultTargetLevel,
-  durationLabel,
   DURATIONS,
   encounterFor,
   executePhaseOn,
@@ -47,6 +46,7 @@ import {
 } from './settings';
 import { DEFAULT_ENCOUNTER } from './types';
 import { loadPresetSets } from './preset-sets';
+import { clockSeconds } from '../format/duration';
 
 // The Raid-buffed consumables are a chunk loaded on demand (preset-sets.ts).
 beforeAll(() => loadPresetSets());
@@ -256,7 +256,7 @@ describe('the Raid-buffed preset', () => {
   });
 });
 
-describe('DURATIONS and durationLabel', () => {
+describe('DURATIONS and clockSeconds', () => {
   it('runs from twenty seconds to ten minutes', () => {
     expect(DURATIONS[0]).toBe(MIN_DURATION_SEC);
     expect(MIN_DURATION_SEC).toBe(20);
@@ -270,9 +270,9 @@ describe('DURATIONS and durationLabel', () => {
   });
 
   it('reads as a clock, not as seconds', () => {
-    expect(durationLabel(20)).toBe('0:20');
-    expect(durationLabel(180)).toBe('3:00');
-    expect(durationLabel(600)).toBe('10:00');
+    expect(clockSeconds(20)).toBe('0:20');
+    expect(clockSeconds(180)).toBe('3:00');
+    expect(clockSeconds(600)).toBe('10:00');
   });
 });
 

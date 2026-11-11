@@ -10,7 +10,7 @@
   import EmptyLine from './EmptyLine.svelte';
   import CopyCsv from './CopyCsv.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
-  import { formatAmount, formatPercent, schoolName } from '../../lib/report/format';
+  import { schoolName } from '../../lib/report/format';
   import { formatRate } from '../../lib/report/frame';
   import type { ExactSplit } from '../../lib/report/exact';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
@@ -22,6 +22,7 @@
     type RosterRow,
   } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
+  import { compact, percent } from '../../lib/format/number';
   import Meter from '../ui/Meter.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -138,9 +139,9 @@
   function figures(ability: Ability): StatFigure[] {
     const hits = landed(ability);
     return [
-      { value: `${mark}${formatAmount(ability.effective)}` },
+      { value: `${mark}${compact(ability.effective)}` },
       { value: formatRate(ability.effective / seconds) },
-      { value: total === 0 ? '0%' : formatPercent((ability.effective / total) * 100) },
+      { value: total === 0 ? '0%' : percent((ability.effective / total) * 100) },
       { value: String(hits) },
       { value: hits === 0 ? '–' : `${Math.round((ability.crits / hits) * 100)}%`, muted: hits === 0 },
     ];
@@ -148,15 +149,15 @@
   /** What did not land, or how much of a heal was over: the old row expansion's notes column. */
   function notesOf(ability: Ability): string[] {
     const notes: string[] = [];
-    if (ability.absorbed) notes.push(`${formatAmount(ability.absorbed)} absorbed`);
+    if (ability.absorbed) notes.push(`${compact(ability.absorbed)} absorbed`);
     if (ability.overheal !== undefined && ability.total > 0) {
       if (ability.overheal > 0)
         notes.push(
-          `${formatPercent((ability.overheal / ability.total) * 100)} over · ${formatAmount(ability.overheal)}`,
+          `${percent((ability.overheal / ability.total) * 100)} over · ${compact(ability.overheal)}`,
         );
       return notes;
     }
-    if (ability.blocked) notes.push(`${formatAmount(ability.blocked)} blocked`);
+    if (ability.blocked) notes.push(`${compact(ability.blocked)} blocked`);
     for (const [type, count] of Object.entries(ability.misses ?? {}).sort(([a], [b]) => a.localeCompare(b)))
       notes.push(`${count} ${type.toLowerCase()}`);
     return notes;
@@ -190,8 +191,8 @@
     return [
       `${hits} ${hits === 1 ? 'hit' : 'hits'}`,
       `${ability.crits} ${ability.crits === 1 ? 'crit' : 'crits'}`,
-      ability.max > 0 ? `${formatAmount(ability.min)}–${formatAmount(ability.max)}` : '',
-      hits > 0 && ability.effective > 0 ? `${formatAmount(ability.effective / hits)} each` : '',
+      ability.max > 0 ? `${compact(ability.min)}–${compact(ability.max)}` : '',
+      hits > 0 && ability.effective > 0 ? `${compact(ability.effective / hits)} each` : '',
       ability.via ? `via ${ability.via}` : '',
       ...notesOf(ability),
     ]
@@ -229,10 +230,7 @@
 {#if part === 'abilities'}
   <Section
     title={`${name}’s ${NOUN[tab]}`}
-    meta={[
-      `${mark}${formatAmount(total)} ${NOUN[tab]} · ${formatRate(total / seconds)} ${RATE[tab]}`,
-      schools,
-    ]
+    meta={[`${mark}${compact(total)} ${NOUN[tab]} · ${formatRate(total / seconds)} ${RATE[tab]}`, schools]
       .filter((part) => part !== '')
       .join(' · ')}
     testid="report-table-card"

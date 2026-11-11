@@ -10,7 +10,7 @@
      pads it as the page's Plate content; open in a Section it runs flush. -->
 <script lang="ts">
   import { fetchMeOnce } from '../lib/account/api';
-  import { formatAmount } from '../lib/report/format';
+  import { compact } from '../lib/format/number';
   import { markJustUploaded } from '../lib/reports/just-uploaded';
   import {
     MAX_UPLOAD_BYTES,
@@ -200,7 +200,7 @@
       {:else}
         <span class="text-text font-mono break-all">{file.name}</span>
         <span class="numeric" data-testid="upload-size">
-          {formatAmount(file.size)} byte{file.size === 1 ? '' : 's'}
+          {compact(file.size)} byte{file.size === 1 ? '' : 's'}
         </span>
       {/if}
       <span class="text-small text-muted flex flex-wrap items-baseline justify-center gap-x-1">

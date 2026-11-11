@@ -4,7 +4,7 @@
 // invented player activity. Pure: lib/home/floor-load.ts gathers the inputs.
 import type { FeedRow } from './feed';
 import { FIRST_RAIDS } from '../first-raids';
-import { specName } from './home-b-view';
+import { specLabel } from '../sim/spec-label';
 
 export interface FloorInputs {
   /** The first raid opening, while it is still ahead (dates.json role `raids`). */
@@ -55,7 +55,7 @@ function specRows(inputs: FloorInputs): FeedRow[] {
       spec: file.spec,
       segments: [
         { text: 'Best in slot refreshed', style: 'strong' },
-        { text: ` for ${specName(file.spec)}` },
+        { text: ` for ${specLabel(file.spec)}` },
       ],
     }),
   );
@@ -68,7 +68,7 @@ function specRows(inputs: FloorInputs): FeedRow[] {
       icon: guide.icon,
       href: guide.href,
       spec: guide.spec,
-      segments: [{ text: `${specName(guide.spec)} guide`, style: 'strong' }, { text: ' updated' }],
+      segments: [{ text: `${specLabel(guide.spec)} guide`, style: 'strong' }, { text: ' updated' }],
     }),
   );
   return [...bis, ...guides];

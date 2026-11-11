@@ -270,7 +270,7 @@ describe('classRow', () => {
 describe('signupListText (spec 4.2)', () => {
   it('writes the count line, the class line and one line per group, names with spec and class', () => {
     expect(signupListText(ONYXIA, CHICAGO).split('\n')).toEqual([
-      "Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>",
+      "Onyxia's Lair · Thu 10 Dec, 8 pm CST · <t:1796954400:F>",
       '6 of 40: 2 tanks, 1 healer, 1 melee, 1 ranged, 1 late (healer)',
       'Classes: Warrior 2, Hunter 2, Priest 2',
       'Tanks: Brokk (Fury Warrior), Kraggor (Protection Warrior)',

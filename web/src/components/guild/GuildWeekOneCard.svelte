@@ -7,7 +7,7 @@
      `loading` and `error` hold the section's height so the page does not shift. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import {
     levelSpread,
     levelTally,
@@ -23,9 +23,10 @@
     type WeekOneCharacter,
   } from '../../lib/guild/week-one';
   import type { GuildRosterEntry, NextRaidView } from '../../lib/guild/api';
-  import { viewerLocale } from '../../lib/guild/raid-time';
+
   import { classColorVar } from '../../lib/report/format';
   import { REGION } from '../../lib/ui/regions';
+  import { viewerLocale } from '../../lib/dates';
   import RaidsCountdown from '../RaidsCountdown.svelte';
   import ActionLink from '../ui/ActionLink.svelte';
   import Button from '../ui/Button.svelte';

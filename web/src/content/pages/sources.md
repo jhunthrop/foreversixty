@@ -32,7 +32,7 @@ We correct it in place, say so on the page, and add a dated entry to the [change
 
 ## Panel recaps and transcripts
 
-- [Blizzard's What's Next panel recap](https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap) and [Deep Dive panel recap](https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap), Sept 12 and 13.
+- [Blizzard's What's Next panel recap](https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap) and [Deep Dive panel recap](https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap), 12 and 13 Sep.
 - [Blizzplanet's What's Next panel transcript](https://warcraft.blizzplanet.com/blog/comments/blizzcon-2026-world-of-warcraft-whats-next-panel-transcript/4), which quotes the stage directly where Blizzard's recap paraphrases.
 - Wowhead's liveblogs of the [What's Next](https://www.wowhead.com/forever/news/world-of-warcraft-forever-whats-next-liveblog-382824), [Deep Dive](https://www.wowhead.com/forever/news/world-of-warcraft-forever-deep-dive-liveblog-382862), and [Hardcore](https://www.wowhead.com/forever/news/whats-next-hardcore-panel-liveblog-382875) panels.
 - MMO-Champion's write-ups of the [Deep Dive](https://www.mmo-champion.com/content/14512-BlizzCon-2026-World-of-Warcraft-Forever-Deep-Dive-Panel) and [Hardcore](https://www.mmo-champion.com/content/14518-BlizzCon-2026-World-of-Warcraft-The-Past-Present-and-Future-of-Hardcore) panels.
@@ -53,4 +53,4 @@ The BlizzCon demo was playable on the show floor and streamed, so a lot of what 
 - **[Icy Veins](https://www.icy-veins.com/wow-forever/)** transcribed all nine races' racials from the demo.
 - **[Power Up Gaming](https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/)** counted the talent trees and published a per-class breakdown of what is new, changed, and unchanged.
 
-Demo transcriptions are marked community, and single-source unless two outlets independently read the same number. They will be replaced with datamined values once the beta client is available after Sept 17.
+Demo transcriptions are marked community, and single-source unless two outlets independently read the same number. They will be replaced with datamined values once the beta client is available after 17 Sep.

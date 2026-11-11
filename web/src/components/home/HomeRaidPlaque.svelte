@@ -7,13 +7,12 @@
 <script lang="ts">
   import type { GuildRaidRole, GuildSignupState, NextRaidView } from '../../lib/guild/api';
   import { putSignup } from '../../lib/guild/raids-api';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { homeBCopy } from '../../lib/home/home-b-view';
   import {
     PLAQUE_CHOICES,
     choiceOf,
-    plaqueClock,
-    plaqueClockLabel,
+    countdownFigures,
     raidWhen,
     plaqueCopy,
     roleCounts,
@@ -28,6 +27,8 @@
   import type { HomeFact } from '../../lib/home/home-facts';
   import HomeFacts from './HomeFacts.svelte';
   import HomePlaqueTitle from './HomePlaqueTitle.svelte';
+  import { viewerZone } from '../../lib/dates';
+  import { countdownText } from '../../lib/ui/countdown';
 
   let {
     guildId,
@@ -53,7 +54,7 @@
   } = $props();
 
   const clock = minuteClock(() => undefined);
-  const viewerTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const viewerTz = viewerZone();
 
   /** What a choice saved on this page, over the raid as it loaded. */
   let savedHere = $state<{ state: GuildSignupState; counts: NextRaidView['counts'] } | null>(null);
@@ -63,8 +64,8 @@
   const counts = $derived(savedHere?.counts ?? raid.counts);
   const chosen = $derived(choiceOf(savedHere?.state ?? raid.own?.state ?? null));
   const when = $derived(raidWhen(raid.starts_at, viewerTz));
-  const parts = $derived(plaqueClock(new Date(raid.starts_at), clock.now));
-  const timer = $derived(parts.length === 0 ? undefined : plaqueClockLabel(parts));
+  const parts = $derived(countdownFigures(new Date(raid.starts_at), clock.now));
+  const timer = $derived(parts.length === 0 ? undefined : countdownText(new Date(raid.starts_at), clock.now));
   const locked = $derived(raid.status === 'locked');
 
   async function choose(choice: PlaqueChoice): Promise<void> {

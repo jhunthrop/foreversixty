@@ -14,20 +14,11 @@ import type {
 import type { SelectOption } from '../ui/listbox-model';
 import { SEP, compCopy, copyList, kindCountsRoles, kindOf, raidCopy } from './raid-copy';
 import { specName } from './spec-name';
+import { CLASS_SLUGS } from '../ui/primitives';
 
 /** The game's class order (Warrior to Druid): the class row, every roster group, the copied list
  *  and the Discord post (`raidspec.ClassOrder`). */
-export const CLASS_ORDER: readonly string[] = [
-  'warrior',
-  'paladin',
-  'hunter',
-  'rogue',
-  'priest',
-  'shaman',
-  'mage',
-  'warlock',
-  'druid',
-];
+export const CLASS_ORDER: readonly string[] = CLASS_SLUGS;
 
 /** The roster's four In groups, in their order. */
 export const RAID_GROUPS: readonly GuildRaidGroup[] = ['tank', 'healer', 'melee', 'ranged'];

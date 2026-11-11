@@ -12,7 +12,7 @@
   import type { ReadinessRaid } from '../../lib/guild/attendance-contract';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
-  import { dateLabel } from '../../lib/guild/raid-time';
+
   import { fetchGuildRaid } from '../../lib/guild/raids-api';
   import EmptyState from '../ui/EmptyState.svelte';
   import Page from '../ui/Page.svelte';
@@ -27,6 +27,7 @@
     pinReadinessOwnRow,
     readinessLists,
   } from '../../lib/guild/readiness-view';
+  import { viewerZone, weekdayDayMonth } from '../../lib/dates';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import ReadinessBoard from './dense/ReadinessBoard.svelte';
 
@@ -42,7 +43,7 @@
     nextRaidOnly = false,
     onToggleNextRaid = () => {},
     guildTimezone = null,
-    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    viewerTimezone = viewerZone(),
     median = null,
     now = new Date(),
   }: {
@@ -71,7 +72,7 @@
 
   const filtered = $derived(raid !== null && nextRaidOnly);
   const raidDay = $derived(
-    raid === null ? '' : dateLabel(new Date(raid.starts_at), guildTimezone ?? viewerTimezone),
+    raid === null ? '' : weekdayDayMonth(new Date(raid.starts_at), guildTimezone ?? viewerTimezone),
   );
   const lists = $derived(readinessLists(rows, filtered ? raid : null, false));
   /** A member's own row leads the list it is in; an officer's board stays worst first. */

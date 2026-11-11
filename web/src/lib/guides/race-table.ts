@@ -10,6 +10,7 @@ import type { RaceRow } from '../planner/types';
 import { buildIconExists } from '../data/build-files';
 import { buildRace, buildRacesForClass } from './build-races';
 import { readBuildJson } from './build-files';
+import { upperFirst } from '../text';
 
 export type SpecKind = 'caster' | 'melee' | 'ranged' | 'healer' | 'tank';
 
@@ -300,10 +301,6 @@ export interface GuideRaceRow {
   recommended: boolean;
   /** The racials that matter for this spec; the ones the data does not describe are left out. */
   racials: GuideRacial[];
-}
-
-function upperFirst(text: string): string {
-  return text === '' ? text : text[0]!.toUpperCase() + text.slice(1);
 }
 
 export function raceTableFor(

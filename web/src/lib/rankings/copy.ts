@@ -1,3 +1,4 @@
+import { grouped } from '../format/number';
 // web/src/lib/rankings/copy.ts
 // Every visible string the /rankings encounter picker uses, in the site's own honest-copy
 // voice: never demands a choice the visitor cannot make.
@@ -12,7 +13,7 @@ export const encounterPickerCopy = {
       .filter((part) => part !== null && part !== '')
       .join(' · '),
   /** "212 ranked": the encounter's ranked kills. */
-  ranked: (kills: number): string => `${kills.toLocaleString('en-US')} ranked`,
+  ranked: (kills: number): string => `${grouped(kills)} ranked`,
   /** One line in place of an encounter's top parses, or of the spec leaders. */
   topFailed: 'Top parses did not load.',
   topNone: 'No ranked kill on this board yet.',

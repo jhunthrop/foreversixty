@@ -1,17 +1,6 @@
 // web/src/lib/guides/guide-header.test.ts
 import { describe, expect, it } from 'vitest';
-import { dayMonth, pageUpdatedAt } from './guide-header';
-
-describe('dayMonth', () => {
-  it('writes the day before the month, in UTC', () => {
-    expect(dayMonth(new Date('2026-10-22T23:19:15Z'))).toBe('22 Oct');
-    expect(dayMonth(new Date('2026-12-09T00:00:00Z'))).toBe('9 Dec');
-  });
-
-  it('renders nothing for an invalid date', () => {
-    expect(dayMonth(new Date('nope'))).toBe('');
-  });
-});
+import { pageUpdatedAt } from './guide-header';
 
 describe('pageUpdatedAt', () => {
   const updated = new Date('2026-10-07T00:00:00Z');

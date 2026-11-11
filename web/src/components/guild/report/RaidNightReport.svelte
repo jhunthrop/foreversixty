@@ -94,7 +94,6 @@
       night,
       report,
       reportUrl: reportUrlOf(location),
-      locale,
     });
   }
 </script>
@@ -171,7 +170,7 @@
         {raidCopy.poll}
       </p>{/if}
     {#if report !== null && night !== null}
-      {#if showYourNight}<ReportYourNight {raid} currentKey={c.currentKey} {locale} />{/if}
+      {#if showYourNight}<ReportYourNight {raid} currentKey={c.currentKey} />{/if}
       <ReportPulls {report} />
       {#if officer}<ReportDeaths {report} />{/if}
       <ReportOutput

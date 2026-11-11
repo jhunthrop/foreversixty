@@ -7,8 +7,9 @@ import { classSlugFromName } from '../report/tree-sizes';
 import type { BisRole } from '../bis/types';
 import { bisBandPath } from '../bis/band-path';
 import { MAX_BAND, MIN_BAND } from '../bis/band-levels';
-import { ROLE_LABELS, ROLE_PATHS, formatMetric, ordinal, specFullName, tiersCopy } from './tier-copy';
+import { ROLE_LABELS, ROLE_PATHS, formatMetric, specFullName, tiersCopy } from './tier-copy';
 import type { TierRow } from './tier-list';
+import { ordinal } from '../format/number';
 
 /** What the page needs to answer for one spec. Every field is final text or a path. */
 export interface TierSpecView {

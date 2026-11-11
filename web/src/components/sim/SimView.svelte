@@ -70,6 +70,7 @@
   import SimSaveActions from './SimSaveActions.svelte';
   import SimToolTabs from './SimToolTabs.svelte';
 
+  import { grouped } from '../../lib/format/number';
   let {
     simId = '',
     inlineResult = null,
@@ -268,12 +269,7 @@
     const key = `${finished.duration_ms}-${finished.iterations_run}`;
     if (key === notifiedFor) return;
     notifiedFor = key;
-    notifyFinished(
-      notifier,
-      notifyWanted,
-      store.reportTitle,
-      simCopy.notifyBody(Math.round(finished.dps.mean).toLocaleString('en-US')),
-    );
+    notifyFinished(notifier, notifyWanted, store.reportTitle, simCopy.notifyBody(grouped(finished.dps.mean)));
   });
 
   // The session decides the server lane and the history read; guarded against re-running for

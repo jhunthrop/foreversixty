@@ -20,7 +20,7 @@
      pattern. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { approximateMark, classColorVar, formatAmount, formatPercent } from '../../lib/report/format';
+  import { approximateMark, classColorVar } from '../../lib/report/format';
   import { classSlugOf } from '../../lib/report/planner-link';
   import { chartCopy } from '../../lib/chart/copy';
   import type { ThreatPlayer } from '../../lib/chart/threat';
@@ -28,6 +28,7 @@
   import type { Actor, Taunt, TargetChange, ThreatPair, ThreatRow } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+  import { compact, percent } from '../../lib/format/number';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Meter from '../ui/Meter.svelte';
   import Section from '../ui/Section.svelte';
@@ -373,7 +374,7 @@
       : []),
   ]);
   const DASH = '–';
-  const whole = (value: number): string => formatAmount(Math.round(value));
+  const whole = (value: number): string => compact(Math.round(value));
   function figuresOf(line: ThreatLine): StatFigure[] {
     const share = total === 0 ? 0 : (line.threat / total) * 100;
     return [
@@ -382,7 +383,7 @@
       ...(ranked
         ? [
             shares(line)
-              ? { value: formatPercent(share), testid: 'threat-share' }
+              ? { value: percent(share), testid: 'threat-share' }
               : { value: DASH, muted: true, testid: 'threat-no-share' },
             { value: `${peak === 0 ? 0 : Math.round((line.threat / peak) * 100)}%` },
           ]
@@ -394,7 +395,7 @@
     const noun = showBuilt ? 'standing' : 'threat';
     const built = showBuilt ? ` · ${whole(line.built ?? 0)} built` : '';
     const share =
-      ranked && shares(line) ? ` · ${formatPercent(total === 0 ? 0 : (line.threat / total) * 100)}` : '';
+      ranked && shares(line) ? ` · ${percent(total === 0 ? 0 : (line.threat / total) * 100)}` : '';
     return `${noun}${built}${share}`;
   }
   const subOf = (line: ThreatLine): string =>

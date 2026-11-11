@@ -5,16 +5,15 @@
 import type { ConsumableBefore, MoveMetric, RaidMatch, RaidNight, RaidRef } from './attendance-contract';
 import { NO_RAID_NIGHTS, nightsLabel } from './nights';
 import { SEP } from './raid-copy';
-import { DEFAULT_LOCALE, clockText, dateLabel, stampParts } from './raid-time';
+import { stampParts } from './raid-time';
+import { clock, weekdayDayMonth } from '../dates';
+import { SITE_LOCALE } from '../format/number';
+import { HOUR_MS, spokenDuration } from '../format/duration';
 
 export const SECONDS_PER_MINUTE = 60;
-const MINUTE_MS = 60_000;
-const SECOND_MS = 1000;
-const HOUR_MS = 60 * MINUTE_MS;
-export const DAY_MS = 24 * HOUR_MS;
+export { DAY_MS } from '../format/duration';
 /** The match picker lists logs uploaded within this many days. */
 export const PICKER_WINDOW_DAYS = 14;
-const MINUTES_PER_HOUR = 60;
 /** The auto-matcher's window after a raid ends; past it the page asks for an upload (spec 3.1). */
 export const ENDED_MATCH_WINDOW_MS = 6 * HOUR_MS;
 /** Discord's copied report is at most this many lines (spec 4 "Copy for Discord"). */
@@ -33,25 +32,6 @@ function unit(n: number, singular: string): string {
 export const kills = (n: number): string => unit(n, 'kill');
 export const wipes = (n: number): string => unit(n, 'wipe');
 export const deaths = (n: number): string => unit(n, 'death');
-
-/** `2 h 41 min`, `2 h`, `41 min`; a log under a minute reads `1 min`. */
-export function durationLabel(ms: number): string {
-  const total = Math.max(1, Math.round(ms / MINUTE_MS));
-  const hours = Math.floor(total / MINUTES_PER_HOUR);
-  const minutes = total % MINUTES_PER_HOUR;
-  if (hours === 0) return `${minutes} min`;
-  return minutes === 0 ? `${hours} h` : `${hours} h ${minutes} min`;
-}
-
-/** A kill's duration as the game's clock: `1:42`, `12:05`, `1:02:09`. */
-export function killTimeLabel(ms: number): string {
-  const totalSeconds = Math.round(ms / SECOND_MS);
-  const seconds = totalSeconds % SECONDS_PER_MINUTE;
-  const totalMinutes = Math.floor(totalSeconds / SECONDS_PER_MINUTE);
-  const pad = (n: number): string => String(n).padStart(2, '0');
-  if (totalMinutes < MINUTES_PER_HOUR) return `${totalMinutes}:${pad(seconds)}`;
-  return `${Math.floor(totalMinutes / MINUTES_PER_HOUR)}:${pad(totalMinutes % MINUTES_PER_HOUR)}:${pad(seconds)}`;
-}
 
 export const attendanceCopy = {
   cameWord: 'came',
@@ -168,7 +148,7 @@ export function nightFacts(night: RaidNight): string[] {
   if (night.kills > 0) facts.push(kills(night.kills));
   if (night.wipes > 0) facts.push(wipes(night.wipes));
   if (night.deaths > 0) facts.push(deaths(night.deaths));
-  if (night.duration_ms > 0) facts.push(durationLabel(night.duration_ms));
+  if (night.duration_ms > 0) facts.push(spokenDuration(night.duration_ms));
   return facts;
 }
 
@@ -193,7 +173,7 @@ export function stampLabel(
   at: Date,
   viewerTz: string,
   guildTz: string,
-  locale: string = DEFAULT_LOCALE,
+  locale: string = SITE_LOCALE,
 ): string {
   const { when, guildTime } = stampParts(at, viewerTz, guildTz, locale);
   return guildTime === null ? when : `${when} ${guildTime}`;
@@ -204,7 +184,7 @@ export function uploadedLine(
   match: Pick<RaidMatch, 'uploaded_at' | 'uploaded_by_name' | 'how'>,
   viewerTz: string,
   guildTz: string,
-  locale: string = DEFAULT_LOCALE,
+  locale: string = SITE_LOCALE,
 ): string {
   const when = stampLabel(new Date(match.uploaded_at), viewerTz, guildTz, locale);
   const how = match.how === 'hand' ? attendanceCopy.match.byOfficer : attendanceCopy.match.byTime;
@@ -244,19 +224,18 @@ export function pickerFigures(pulls: number, killCount: number): string {
 export function matchedElsewhereParts(
   ref: RaidRef,
   tz: string,
-  locale: string = DEFAULT_LOCALE,
 ): { lead: string; title: string; tail: string } {
   return {
     lead: 'Matched to ',
     title: ref.title,
-    tail: `${SEP}${dateLabel(new Date(ref.starts_at), tz, locale)}. Clear it there first.`,
+    tail: `${SEP}${weekdayDayMonth(new Date(ref.starts_at), tz)}. Clear it there first.`,
   };
 }
 
 export const postedLine = (time: string): string => `Posted to Discord at ${time}.`;
 
-export function postedTime(postedAt: string, tz: string, locale: string = DEFAULT_LOCALE): string {
-  return clockText(new Date(postedAt), tz, locale, true);
+export function postedTime(postedAt: string, tz: string, locale: string = SITE_LOCALE): string {
+  return clock(new Date(postedAt), tz, { locale });
 }
 
 /** `after 3 wipes`, or `first pull` for a kill with no wipe before it. */

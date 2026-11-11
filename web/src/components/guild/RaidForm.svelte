@@ -5,7 +5,6 @@
      select (guild events spec 3.3: a guild event, a dungeon or a raid) takes focus on open; Escape
      and Cancel close. -->
 <script lang="ts">
-  import { viewerLocale } from '../../lib/guild/raid-time';
   import { onMount } from 'svelte';
   import type { GuildRaidDiscord, GuildRaidView, GuildZoneView } from '../../lib/guild/api';
   import {
@@ -57,6 +56,7 @@
   import { FIELD_LABEL } from '../../lib/ui/field';
   import RaidFormDiscord from './RaidFormDiscord.svelte';
   import { selectCopy } from '../../lib/ui/copy';
+  import { viewerLocale } from '../../lib/dates';
   import Select from '../ui/Select.svelte';
   import ZoneKeyNote from './ZoneKeyNote.svelte';
 

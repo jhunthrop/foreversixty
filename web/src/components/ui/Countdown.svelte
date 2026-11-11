@@ -1,12 +1,13 @@
 <!-- web/src/components/ui/Countdown.svelte -->
-<!-- A countdown panel (home B spec 2026-11-07 §1): a caps eyebrow (with a live dot), a clock of
-     days, hours and minutes to a known instant (seconds only in the final hour, lib/ui/countdown.ts)
-     and the panel's own content at the right. It ticks in the browser from the instant it is given;
+<!-- A countdown panel (home B spec 2026-11-07 §1): a caps eyebrow (with a live dot), the one
+     countdown of days, hours and minutes to a known instant (lib/ui/countdown.ts) and the panel's
+     own content at the right. It ticks on the shared minute clock from the instant it is given;
      `now` freezes it (tests). With no instant, or once it has passed, only the content shows. The
      live dot pulses only when the reader allows motion. -->
 <script lang="ts">
-  import { onMount, type Snippet } from 'svelte';
-  import { clockLabel, clockParts, nextTickMs } from '../../lib/ui/countdown';
+  import type { Snippet } from 'svelte';
+  import { clockLabel, clockParts } from '../../lib/ui/countdown';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
 
   let {
     eyebrow,
@@ -27,20 +28,11 @@
     children?: Snippet;
   } = $props();
 
-  let ticking = $state(new Date());
-  const now = $derived(fixedNow ?? ticking);
-  const parts = $derived(target === null ? null : clockParts(new Date(target), now));
-
-  onMount(() => {
-    if (fixedNow !== undefined || target === null) return;
-    let timer: ReturnType<typeof setTimeout>;
-    const tick = () => {
-      ticking = new Date();
-      timer = setTimeout(tick, nextTickMs(new Date(target), ticking));
-    };
-    tick();
-    return () => clearTimeout(timer);
-  });
+  const clock = minuteClock(
+    () => fixedNow,
+    () => target !== null,
+  );
+  const parts = $derived(target === null ? [] : clockParts(new Date(target), clock.now));
 </script>
 
 <div class="ui-countdown" data-tone={tone} data-testid={testid}>
@@ -48,7 +40,7 @@
     {#if live}<span class="ui-countdown-live" aria-hidden="true"></span>{/if}{eyebrow}
   </p>
   <div class="ui-countdown-row">
-    {#if parts !== null}
+    {#if parts.length > 0}
       <div class="ui-countdown-clock" role="timer" aria-label={clockLabel(parts)}>
         {#each parts as part (part.unit)}
           <span class="ui-countdown-part" aria-hidden="true"><b>{part.value}</b><span>{part.unit}</span></span

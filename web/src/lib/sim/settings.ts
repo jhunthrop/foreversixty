@@ -1,8 +1,8 @@
-// durationLabel and encounterLabel live in encounter.ts, not here: the Worker's unfurl copy
+// encounterLabel lives in encounter.ts, not here: the Worker's unfurl copy
 // needs them too and it is built by a group that runs in parallel with this one. They are
 // re-exported so every caller has one import for "the settings vocabulary".
 import { MAX_LEVEL } from './character';
-import { durationLabel, encounterLabel } from './encounter';
+import { encounterLabel } from './encounter';
 import { applyFightStyle, DEFAULT_STYLE_ID, type FightStyleId } from './styles';
 import raidPreset from '../../data/generated/raid-preset.json';
 import { bareSetAt, raidSetAt } from './preset-sets';
@@ -13,8 +13,9 @@ import {
   type EncounterSpec,
   type RequestPreset,
 } from './types';
+import { clockSeconds } from '../format/duration';
 
-export { durationLabel, encounterLabel };
+export { encounterLabel };
 
 // Design 4.1 and contract A3, which ratifies both numbers on the Go side too
 // (`api.MinDurationSec = 20`, `api.MaxDurationSec = 600`). The old floor was a minute and
@@ -431,5 +432,5 @@ export function settingsLabel(settings: SimSettings): string {
   const preset = BUFF_PRESETS.find((row) => row.id === settings.preset)?.label ?? 'Custom';
   const targets =
     settings.encounter.targets === 1 ? 'single target' : `${settings.encounter.targets} targets`;
-  return `${preset}, ${durationLabel(settings.encounter.duration_sec)}, ${targets}`;
+  return `${preset}, ${clockSeconds(settings.encounter.duration_sec)}, ${targets}`;
 }

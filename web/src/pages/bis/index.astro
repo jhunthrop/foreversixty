@@ -20,7 +20,7 @@ import { loadLandingData } from '../../lib/bis/landing-build';
 import { DEFAULT_LANDING_BAND, LANDING_BANDS, bandLabel } from '../../lib/bis/landing-bands';
 import { BAND_PARAM, SPEC_ROW_PREFIX } from '../../lib/bis/landing-client';
 import { specLinkHref } from '../../lib/bis/landing-links';
-import { dayMonth } from '../../lib/guides/guide-header';
+import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import { REGION } from '../../lib/ui/regions';
 import { searchCopy } from '../../lib/search-copy';
 import { LINK, type ControlGroup } from '../../lib/ui/primitives';
@@ -53,7 +53,7 @@ const pickerClasses: PickerClass[] = cards.map((card) => ({
     <Page layout="ledger">
       <PageHeader slot="header" title={landingCopy.title} tone="strong">
         <Fragment slot="meta">
-          {updated !== null && <span data-testid="bis-landing-updated">Updated {dayMonth(updated)}</span>}
+          {updated !== null && <UpdatedStamp date={updated} testid="bis-landing-updated" />}
         </Fragment>
         <BisLandingAnswer slot="answer" />
         <div slot="notice" class="bis-finished" data-bis-finished data-testid="bis-finished"></div>

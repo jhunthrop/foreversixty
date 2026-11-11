@@ -3,6 +3,8 @@
 // spec §B5.4): `m:ss` under an hour, `h:mm:ss` from one, and the smallest of a short list of
 // steps, no finer than the chart's floor, that keeps two labels 64 px apart.
 
+import { clockSeconds } from '../format/duration';
+
 /** The steps a time axis may take, in seconds. */
 export const TIME_STEPS_S = [2, 5, 10, 15, 30, 60, 120, 300] as const;
 
@@ -12,25 +14,10 @@ export const TIME_STEP_FLOOR_S = 5;
 /** The least room between two time labels, in px. */
 export const MIN_LABEL_GAP_PX = 64;
 
-/** A fight time on the chart's clock: `2:07`, or `1:02:05` past an hour. */
+/** A fight time on the chart's clock, floored to the second so an axis never shows tenths:
+ *  `2:07`, or `1:02:05` past an hour (lib/format/duration.ts writes every clock). */
 export function clockLabel(ms: number): string {
-  const safe = Number.isFinite(ms) && ms > 0 ? ms : 0;
-  const total = Math.floor(safe / 1000);
-  const hours = Math.floor(total / 3600);
-  const minutes = Math.floor((total % 3600) / 60);
-  const seconds = String(total % 60).padStart(2, '0');
-  return hours > 0 ? `${hours}:${String(minutes).padStart(2, '0')}:${seconds}` : `${minutes}:${seconds}`;
-}
-
-/**
- * The fight's end on the chart's clock, as the fight list reads its length: to the tenth under a
- * minute (`0:09.9`, where a second is a tenth of the pull), else to the rounded second.
- */
-export function endClockLabel(ms: number): string {
-  const safe = Number.isFinite(ms) && ms > 0 ? ms : 0;
-  const tenths = Math.round(safe / 100);
-  if (tenths < 600 && tenths % 10 !== 0) return `0:${(tenths / 10).toFixed(1).padStart(4, '0')}`;
-  return clockLabel(Math.round(safe / 1000) * 1000);
+  return clockSeconds(Math.floor((Number.isFinite(ms) && ms > 0 ? ms : 0) / 1000));
 }
 
 /** The smallest listed step, at least `floorS`, whose labels sit at least 64 px apart across `widthPx`. */

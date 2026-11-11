@@ -6,6 +6,7 @@
 import type { GuildHomeStanding, GuildReadinessRow } from './api';
 import { RAID_LEVEL, isLeveling, passesEveryCheck, readinessFails } from './readiness-view';
 import { specName } from './spec-name';
+import { upperFirst } from '../text';
 
 /**
  * The header's own "where do I stand" clause (spec §4.A.1), unchanged mechanism from v1:
@@ -15,7 +16,7 @@ import { specName } from './spec-name';
  * the two read as a contradiction (round 8, P8-1).
  */
 export function standingSentence(standing: GuildHomeStanding): string {
-  const className = capitalize(standing.class);
+  const className = upperFirst(standing.class);
   const spec = specName(standing.spec);
   if (standing.same_spec_count <= 1) return '';
   return (
@@ -55,8 +56,4 @@ export function needsLine(row: GuildReadinessRow, before: string): NeedsLine | n
   return fails.length === 0
     ? null
     : { kind: 'needs', text: `What ${row.name} needs ${before}: ${fails.join('; ')}.` };
-}
-
-function capitalize(value: string): string {
-  return value.length === 0 ? value : value[0].toUpperCase() + value.slice(1);
 }

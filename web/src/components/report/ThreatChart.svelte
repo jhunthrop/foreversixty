@@ -11,7 +11,7 @@
   import { LegendState } from '../../lib/chart/legend-state.svelte';
   import { buildThreatModel, shareAt, type ThreatPlayer } from '../../lib/chart/threat';
   import type { ChartEvent, ChartPhase } from '../../lib/chart/types';
-  import { formatAmount, formatPercent } from '../../lib/report/format';
+  import { compact, percent } from '../../lib/format/number';
   import type { Actor, Taunt, TargetChange, ThreatPair } from '../../lib/report/types';
   import { isFullWindow, type TimeWindow } from '../../lib/report/window';
   import ChartLegend from '../chart/ChartLegend.svelte';
@@ -119,7 +119,7 @@
         entries={model.entries}
         choice={model.isDefault ? 'top' : 'custom'}
         presets={['top']}
-        formatValue={formatAmount}
+        formatValue={compact}
         onToggle={choose}
         onPreset={() => onChoose(null)}
         onCoarse={() => (legend.sheetOpen = true)}
@@ -160,7 +160,7 @@
     {notDrawn}
     {coarse}
     scrubMs={legend.scrubMs}
-    formatValue={formatAmount}
+    formatValue={compact}
     onToggle={(id) => legend.toggle(id)}
     onOnly={(id) => legend.only(id, model.series)}
     onHighlight={(id) => legend.highlight(id)}
@@ -184,8 +184,8 @@
     highlightId={legend.highlightId}
     {brushShape}
     tooltipWidth={300}
-    formatValue={formatAmount}
-    shareOf={(value, ms) => formatPercent(shareAt(model, value, ms) * 100)}
+    formatValue={compact}
+    shareOf={(value, ms) => percent(shareAt(model, value, ms) * 100)}
     onScrub={(ms) => (legend.scrubMs = ms)}
     {onOpenDeath}
     testid="threat-time-chart"
@@ -197,7 +197,7 @@
   entries={model.entries}
   choice={model.isDefault ? 'top' : 'custom'}
   presets={['top']}
-  formatValue={formatAmount}
+  formatValue={compact}
   onToggle={choose}
   onPreset={() => onChoose(null)}
   onClose={() => (legend.sheetOpen = false)}

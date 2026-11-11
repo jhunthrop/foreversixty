@@ -14,6 +14,6 @@ sources:
     kind: community
 ---
 
-This corrects what we published on Sept 12. One outlet reported that no new classes were being added. On the What's Next panel, Associate Production Director Clay Stone said nothing is off the table, not even a new class, next to a fan survey of 35,305 responses in which 42.2 percent wanted no new class and 47.3 percent wanted one in some form.
+This corrects what we published on 12 Sep. One outlet reported that no new classes were being added. On the What's Next panel, Associate Production Director Clay Stone said nothing is off the table, not even a new class, next to a fan survey of 35,305 responses in which 42.2 percent wanted no new class and 47.3 percent wanted one in some form.
 
 No new class is in the launch game.

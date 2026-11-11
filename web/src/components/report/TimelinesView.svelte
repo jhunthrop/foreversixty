@@ -14,13 +14,14 @@
      summary carries no per-player hit stream, so the lanes draw no hit marks. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, formatDuration, tauntKey } from '../../lib/report/format';
+  import { classColorVar, tauntKey } from '../../lib/report/format';
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { AuraTrack, Summary, Taunt } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
   import { clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
   import { CHART_INK, inkCss } from '../../lib/chart/theme';
+  import { clockDuration } from '../../lib/format/duration';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Chips from '../ui/Chips.svelte';
@@ -120,7 +121,7 @@
       if (under !== undefined) {
         picked = {
           at,
-          name: `${under.name} · ${formatDuration(under.start_ms)} to ${formatDuration(under.end_ms)}`,
+          name: `${under.name} · ${clockDuration(under.start_ms)} to ${clockDuration(under.end_ms)}`,
         };
         return;
       }
@@ -343,11 +344,11 @@
              the lanes out from under the pointer that is reading them. -->
         <p
           class="text-muted h-5 truncate text-[13px] leading-5"
-          title={picked === null ? undefined : `${picked.name} · at ${formatDuration(picked.at)}`}
+          title={picked === null ? undefined : `${picked.name} · at ${clockDuration(picked.at)}`}
         >
           {#if picked}
             <span class="text-strong font-semibold" data-testid="timeline-picked"
-              >{picked.name} · at {formatDuration(picked.at)}</span
+              >{picked.name} · at {clockDuration(picked.at)}</span
             >
           {:else}
             <span aria-hidden="true">&nbsp;</span>
@@ -415,14 +416,14 @@
                           style:top="{segment.band * BAND_PX}px"
                           style:left="{pct(segment.start_ms)}%"
                           style:width="{Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%"
-                          title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
+                          title={`${segment.name} · ${clockDuration(segment.start_ms)} to ${clockDuration(segment.end_ms)}`}
                         ></span>
                       {/each}
                       {#each shown.cast ? lane.casts : [] as cast, i (`${cast.at}-${i}`)}
                         <span
                           class="bg-gold absolute bottom-0 h-[10px] w-[2px]"
                           style:left="{pct(cast.at)}%"
-                          title={`${cast.name} · ${formatDuration(cast.at)}`}
+                          title={`${cast.name} · ${clockDuration(cast.at)}`}
                         ></span>
                       {/each}
                       {#each shown.taunt ? lane.taunts : [] as taunt (tauntKey(taunt))}
@@ -430,7 +431,7 @@
                           class="bg-accent absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
                           style:left="{pct(taunt.at_ms)}%"
                           data-testid="taunt-mark"
-                          title={`Taunt · ${formatDuration(taunt.at_ms)} · by ${splitUnitName(taunt.source_name).name}`}
+                          title={`Taunt · ${clockDuration(taunt.at_ms)} · by ${splitUnitName(taunt.source_name).name}`}
                         ></span>
                       {/each}
                       {@render crossing()}
@@ -465,21 +466,21 @@
                           style:top="{segment.band * BAND_PX}px"
                           style:left="{pct(segment.start_ms)}%"
                           style:width="{Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%"
-                          title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
+                          title={`${segment.name} · ${clockDuration(segment.start_ms)} to ${clockDuration(segment.end_ms)}`}
                         ></span>
                       {/each}
                       {#each shown.cast ? lane.casts : [] as cast, i (`${cast.at}-${i}`)}
                         <span
                           class="bg-gold absolute bottom-0 h-[10px] w-[2px]"
                           style:left="{pct(cast.at)}%"
-                          title={`${cast.name} · ${formatDuration(cast.at)}`}
+                          title={`${cast.name} · ${clockDuration(cast.at)}`}
                         ></span>
                       {/each}
                       {#each shown.death ? lane.deaths : [] as at, i (`${at}-${i}`)}
                         <span
                           class="bg-death absolute top-0 h-full w-[3px]"
                           style:left="{pct(at)}%"
-                          title={`died at ${formatDuration(at)}`}
+                          title={`died at ${clockDuration(at)}`}
                         ></span>
                       {/each}
                       {#each shown.taunt ? lane.taunts : [] as taunt (tauntKey(taunt))}
@@ -487,7 +488,7 @@
                           class="bg-accent absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
                           style:left="{pct(taunt.at_ms)}%"
                           data-testid="taunt-mark"
-                          title={`Taunt · ${formatDuration(taunt.at_ms)} · on ${splitUnitName(taunt.target_name).name}`}
+                          title={`Taunt · ${clockDuration(taunt.at_ms)} · on ${splitUnitName(taunt.target_name).name}`}
                         ></span>
                       {/each}
                       {@render crossing()}

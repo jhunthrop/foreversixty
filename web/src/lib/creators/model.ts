@@ -6,7 +6,7 @@ import {
   FOUNDER_LAST_DAY,
   PLANS,
   entryPrice,
-  formatAmount,
+  formatUsd,
   formatPrice,
   type Interval,
   type PlanKey,
@@ -47,9 +47,9 @@ export function earningsRows(founder: boolean): readonly EarningsRow[] {
   return EXAMPLE_PLANS.map(({ plan, interval }) => ({
     id: `${plan}-${interval}`,
     label: `${PLANS[plan].name}, ${formatPrice(entryPrice(PLANS[plan], interval, founder), interval)}`,
-    value: formatAmount(firstYearEarnings(plan, interval, founder)),
+    value: formatUsd(firstYearEarnings(plan, interval, founder)),
     ...(founder
-      ? { sub: `${formatAmount(firstYearEarnings(plan, interval, false))} after ${FOUNDER_LAST_DAY}` }
+      ? { sub: `${formatUsd(firstYearEarnings(plan, interval, false))} after ${FOUNDER_LAST_DAY}` }
       : {}),
   }));
 }

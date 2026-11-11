@@ -29,6 +29,7 @@
   import StatTable from '../ui/StatTable.svelte';
   import SubstitutionChips from './tools/SubstitutionChips.svelte';
 
+  import { grouped } from '../../lib/format/number';
   let { result, treeVersion }: { result: BulkResult; treeVersion: string } = $props();
 
   let items = $state<Map<number, Item>>(new Map());
@@ -52,7 +53,7 @@
    *  view shared with the live ComboResults.svelte (combos.ts's `closestOverlappingPair`). */
   const overlap = $derived(closestOverlappingPair(rows));
   const isTalentsMode = $derived(result.request.bulk?.mode === 'talents');
-  const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
+  const equippedFigure = $derived(grouped(result.equipped.mean));
   const equippedBand = $derived(formatMargin(confidenceBand(result.equipped)));
   const classSlug = $derived(result.request.character.class);
 
@@ -62,7 +63,6 @@
     { id: 'dps', label: bulkCopy.resultsDps },
     { id: 'percent', label: bulkCopy.resultsPercent },
   ];
-  const grouped = (value: number): string => Math.round(value).toLocaleString('en-US');
 </script>
 
 {#snippet withinErrorLine()}{bulkCopy.withinError}{/snippet}

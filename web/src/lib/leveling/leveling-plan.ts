@@ -76,11 +76,6 @@ export function levelingGuideHref(specKey: string): string | undefined {
   return spec === undefined ? undefined : `/guides/${spec.class_slug}/${spec.spec_slug}#leveling`;
 }
 
-/** The display name of a spec key ("Beast Mastery"). */
-export function specNameOf(specKey: string): string | undefined {
-  return SPECS.find((row) => row.spec === specKey)?.name;
-}
-
 /** Talent points a character of `level` has earned. */
 export function pointsEarnedAt(level: number): number {
   return Math.max(0, level - BASE_LEVEL);

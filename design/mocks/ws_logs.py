@@ -41,7 +41,7 @@ SAMPLE_META = json.loads((ROOT / 'web/public/sample-report/sample/meta.json').re
 ACCOUNT = ('Fixture#1234', None, 'No characters yet')
 RANK_YOU = ('Obnoxious Yell', 'warrior', 'Fury Warrior &middot; 60')
 UPDATED = datetime.strptime(FACTS['board_you']['updated_at'][:10], '%Y-%m-%d')
-MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 
 # A Button that navigates (sign in, the companion's step, the upload) is a link, as the build's is; one that acts on the

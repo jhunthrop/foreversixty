@@ -10,13 +10,14 @@
   import { guildApplicationsHref, guildHref, type CharacterPath } from '../../../lib/characters';
   import { fetchOfficerApplications } from '../../../lib/guild/recruit-api';
   import { liveRecruitDeps } from '../../../lib/guild/guild-view-deps';
-  import { viewerLocale } from '../../../lib/guild/raid-time';
+
   import { recruitCopy as copy } from '../../../lib/guild/recruit-copy';
   import { RecruitPage } from '../../../lib/guild/recruit-page.svelte';
   import { officerRows, realmLabel, wantedRows } from '../../../lib/guild/recruit-view';
   import { classTone } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import { battlenetStartUrl } from '../../../lib/account/api';
+  import { viewerLocale, viewerZone } from '../../../lib/dates';
   import Button from '../../ui/Button.svelte';
   import LoadError from '../../ui/LoadError.svelte';
   import Notice from '../../ui/Notice.svelte';
@@ -33,7 +34,7 @@
   let {
     path,
     page: given,
-    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    viewerTimezone = viewerZone(),
     locale = viewerLocale(),
   }: {
     path: CharacterPath;
@@ -159,7 +160,6 @@
           application={state.application}
           guildName={card.guild.name}
           {viewerTimezone}
-          {locale}
           busy={p.busy}
           error={p.error}
           onWithdraw={() => void p.withdraw()}

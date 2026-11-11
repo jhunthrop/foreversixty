@@ -23,10 +23,11 @@
     upgradeRows,
     readyTag,
   } from '../../../lib/guild/profile-view';
-  import { viewerLocale } from '../../../lib/guild/raid-time';
+
   import { profileCopy as copy } from '../../../lib/guild/recruit-copy';
   import { classTone } from '../../../lib/ui/primitives';
   import { untrack } from 'svelte';
+  import { viewerZone } from '../../../lib/dates';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import SignInPrompt from '../../SignInPrompt.svelte';
   import Facts from '../../ui/Facts.svelte';
@@ -48,15 +49,13 @@
     path,
     account,
     page: given,
-    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
-    locale = viewerLocale(),
+    viewerTimezone = viewerZone(),
   }: {
     path: CharacterPath;
     /** `me` or the roster's account key (`u:42`). */
     account: string;
     page?: ProfilePage;
     viewerTimezone?: string;
-    locale?: string;
   } = $props();
 
   // svelte-ignore state_referenced_locally
@@ -100,11 +99,11 @@
     {@const context = p.context}
     {@const profile = p.profile}
     {@const head = profileHead(profile)}
-    {@const ready = readyFacts(profile, viewerTimezone, locale)}
+    {@const ready = readyFacts(profile, viewerTimezone)}
     {@const readyState = readyTag(profile)}
     {@const characters = characterRows(profile)}
-    {@const attendance = attendanceView(profile, viewerTimezone, locale)}
-    {@const loot = lootRows(profile, viewerTimezone, locale)}
+    {@const attendance = attendanceView(profile, viewerTimezone)}
+    {@const loot = lootRows(profile, viewerTimezone)}
     {@const fairness = lootFairness(profile)}
     {@const upgrades = upgradeRows(profile)}
     {@const member = profile.member}
@@ -161,7 +160,6 @@
         <OfficerNotes
           notes={p.notes}
           {viewerTimezone}
-          {locale}
           saving={p.saving}
           deletingId={p.deletingId}
           error={p.noteError}

@@ -16,7 +16,6 @@
   let {
     notes,
     viewerTimezone,
-    locale,
     saving,
     deletingId,
     error,
@@ -25,7 +24,6 @@
   }: {
     notes: readonly MemberNote[];
     viewerTimezone: string;
-    locale: string;
     saving: boolean;
     deletingId: number | null;
     error: string;
@@ -48,7 +46,7 @@
     <p class="text-muted text-[14px]" data-testid="guild-profile-notes-empty">{copy.noNotes}</p>
   {/if}
   {#each notes as note (note.id)}
-    <Row title={note.body} sub={noteSub(note, viewerTimezone, locale)} open testid="guild-profile-note">
+    <Row title={note.body} sub={noteSub(note, viewerTimezone)} open testid="guild-profile-note">
       {#snippet trail()}
         {#if note.may_delete}
           <Button

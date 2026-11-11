@@ -17,6 +17,8 @@ import type { PaperdollSlotKey } from '../gear/paperdoll';
 import { encodeFS1 } from '../planner/fs1';
 import type { Gear, Slot } from '../planner/types';
 import type { CombatantRow, GearItem } from './types';
+import { classSlugFromName } from './format';
+import { isClassSlug, type ClassSlug } from '../ui/primitives';
 
 /**
  * COMBATANT_INFO's equipped-item order for the retail-v16 layout, mapped onto the
@@ -101,22 +103,10 @@ export function treeRanksFromTalents(talents: number[], treeSizes: number[]): nu
   return trees;
 }
 
-/** The nine classes the planner has data for. Anything else gets no link. */
-const CLASS_SLUGS = new Set([
-  'warrior',
-  'paladin',
-  'hunter',
-  'rogue',
-  'priest',
-  'shaman',
-  'mage',
-  'warlock',
-  'druid',
-]);
-
-export function classSlugOf(className: string | undefined): string | null {
-  const slug = (className ?? '').toLowerCase().replace(/\s+/g, '-');
-  return CLASS_SLUGS.has(slug) ? slug : null;
+/** The class's slug when it is one of the nine the planner has data for; anything else gets no link. */
+export function classSlugOf(className: string | undefined): ClassSlug | null {
+  const slug = classSlugFromName(className ?? '');
+  return isClassSlug(slug) ? slug : null;
 }
 
 export interface PlannerLinkInput {

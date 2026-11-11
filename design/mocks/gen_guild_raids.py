@@ -535,7 +535,7 @@ def form_panel(phone, errors=False, cap=False, webhook=True):
     date = lab_field('Date', field('mm/dd/yyyy', placeholder=True, bad=True), '<span class="wipe">Pick a date.</span>') if errors else lab_field('Date', field('Thu, Dec 10, 2026'))
     time_f = lab_field('Time', field('8:00 PM'))
     dur = lab_field('Duration', field('3 h', select=True))
-    tz = lab_field('Guild time zone', field('Central (Chicago)' + DOT + 'CST', select=True), 'For you: Thu 10 Dec, 9:00 pm.')
+    tz = lab_field('Guild time zone', field('Central (Chicago)' + DOT + 'CST', select=True), 'For you: Thu 10 Dec, 9 pm.')
     notes_box = (f'<div class="field" style="height:132px;align-items:flex-start;padding:10px 12px;line-height:1.5">'
                  f'Pull at 8:15. Invites from 7:45.<br>- Fire resistance potions for the tanks.</div>')
     nts = lab_field('Notes', notes_box, '<span style="font-size:12px">Markdown: bold, lists and links. Members see this on the raid page.</span>')
