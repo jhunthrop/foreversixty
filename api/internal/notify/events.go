@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"strconv"
 
 	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/events"
@@ -106,7 +105,7 @@ func UploadParsedEvent(publicBaseURL string, e UploadParsed) events.Event {
 	if name := collapse(e.Title); name != "" {
 		title = copygen.Fill(embedCopy.LogTitle, "{title}", name)
 	}
-	body := copygen.Fill(embedCopy.LogPushFights, "{n}", strconv.Itoa(e.Fights), "{kills}", killsPhrase(e.Kills))
+	body := copygen.Fill(embedCopy.LogPushFights, "{fights}", embedCopy.LogBossFights.For(e.Fights), "{kills}", killsPhrase(e.Kills))
 	if zone := collapse(e.Zone); zone != "" {
 		body = fmt.Sprintf(pushLogBody, zone, body)
 	}

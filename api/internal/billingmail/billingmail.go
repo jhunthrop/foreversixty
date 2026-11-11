@@ -86,7 +86,7 @@ func RenewalEmail(r Renewal, now time.Time) (mail.Message, error) {
 		Subject:   copygen.Fill(copygen.MailRenewalSubject, "{plan}", plan, "{date}", date),
 		Preheader: copygen.Fill(copygen.MailRenewalPreheader, "{price}", price, "{date}", date),
 		Heading:   copygen.Fill(copygen.MailRenewalHeading, "{plan}", plan, "{date}", date),
-		Lead:      copygen.Fill(copygen.MailRenewalLead, "{date}", date),
+		Lead:      copygen.MailRenewalLead,
 		Facts: []mail.Fact{
 			{Label: copygen.MailFactPlan, Value: planFact},
 			{Label: copygen.MailFactRenews, Value: date},

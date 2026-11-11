@@ -67,7 +67,7 @@ func TestEmailSubjectsAndLinks(t *testing.T) {
 func TestRenewalText(t *testing.T) {
 	m := allEmails()["renewal"]
 	want := "Your Guild plan renews on 18 Nov 2027\n\n" +
-		"To stop it, cancel before 18 Nov 2027 and nothing more is charged.\n\n" +
+		"To stop it, cancel before then and nothing more is charged.\n\n" +
 		"Plan: Guild for Olympus XXVII\nRenews: 18 Nov 2027\nPrice: $120 a year\n\n" +
 		"Founder price, kept while your plan stays active.\n\n" +
 		"Manage or cancel: https://x/m\n\n" +

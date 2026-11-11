@@ -824,8 +824,11 @@ const DiscordEmbedLogFightsName = "Boss fights"
 // DiscordEmbedLogFightsFormat is discord.embed.logFightsFormat: {n} · {kills}
 const DiscordEmbedLogFightsFormat = "{n} · {kills}"
 
-// PushEventLogFights is push.event.logFights: {n} boss fights · {kills}
-const PushEventLogFights = "{n} boss fights · {kills}"
+// PushEventLogFights is push.event.logFights: {fights} · {kills}
+const PushEventLogFights = "{fights} · {kills}"
+
+// PushEventBossFights is push.event.bossFights: {n} boss fights
+var PushEventBossFights = Plural{Count: "n", One: "1 boss fight", Other: "{n} boss fights"}
 
 // PushEventLogKillsNone is push.event.logKillsNone: no kills
 const PushEventLogKillsNone = "no kills"
@@ -1019,8 +1022,8 @@ const MailRenewalPreheader = "{price} on {date}. Cancel before then and nothing 
 // MailRenewalHeading is mail.renewal.heading: Your {plan} plan renews on {date}
 const MailRenewalHeading = "Your {plan} plan renews on {date}"
 
-// MailRenewalLead is mail.renewal.lead: To stop it, cancel before {date} and nothing more is charged.
-const MailRenewalLead = "To stop it, cancel before {date} and nothing more is charged."
+// MailRenewalLead is mail.renewal.lead: To stop it, cancel before then and nothing more is charged.
+const MailRenewalLead = "To stop it, cancel before then and nothing more is charged."
 
 // MailRenewalAction is mail.renewal.action: Manage or cancel
 const MailRenewalAction = "Manage or cancel"

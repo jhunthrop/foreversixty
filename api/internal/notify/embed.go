@@ -58,7 +58,8 @@ var embedCopy = struct {
 	LogZoneName      string
 	LogFightsName    string
 	LogFightsFormat  string // {n} fights, {kills} the kills phrase
-	LogPushFights    string // push's fights line: {n} fights, {kills} the kills phrase
+	LogPushFights    string // push's fights line: {fights} the counted fights, {kills} the kills phrase
+	LogBossFights    copygen.Plural
 	LogKillsNone     string
 	LogKills         copygen.Plural
 	LogVisibleName   string
@@ -87,6 +88,7 @@ var embedCopy = struct {
 	LogFightsName:   copygen.DiscordEmbedLogFightsName,
 	LogFightsFormat: copygen.DiscordEmbedLogFightsFormat,
 	LogPushFights:   copygen.PushEventLogFights,
+	LogBossFights:   copygen.PushEventBossFights,
 	LogKillsNone:    copygen.PushEventLogKillsNone,
 	LogKills:        copygen.PushEventKills,
 	LogVisibleName:  copygen.DiscordEmbedLogVisibleName,
