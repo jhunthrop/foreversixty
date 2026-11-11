@@ -125,7 +125,7 @@ func TestSimAndUploadEventsReadPlainly(t *testing.T) {
 		t.Fatalf("sim %+v", sim)
 	}
 	up := UploadParsedEvent("https://foreversixty.gg", sampleUpload(4, false))
-	if up.Title != "MC night finished parsing" || up.Body != "Molten Core · 10 boss fights · 9 kills" || !strings.HasSuffix(up.Link, "/reports/rep-1") {
+	if up.Title != "Your MC night report is ready" || up.Body != "Molten Core · 10 boss fights · 9 kills" || !strings.HasSuffix(up.Link, "/reports/rep-1") {
 		t.Fatalf("upload %+v", up)
 	}
 	named := SimFinished{UserID: 1, SimID: "s", Character: `**Bold**`, Spec: "nope"}

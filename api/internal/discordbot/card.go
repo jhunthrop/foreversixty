@@ -3,6 +3,8 @@ package discordbot
 import (
 	"context"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 )
 
 // cardVersion is the grammar version in every guided-card custom id.
@@ -19,7 +21,7 @@ const (
 )
 
 // cardFooter is the footer of every card embed.
-const cardFooter = "Forever Sixty"
+const cardFooter = copygen.AppName
 
 // cardMinFields is prefix, version and part: the fewest fields a card id has.
 const cardMinFields = 3

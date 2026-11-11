@@ -57,13 +57,13 @@ func TestEmbedsMatchTheCopyTable(t *testing.T) {
 				ReportID: "rep1", Title: "Tuesday Molten Core", Zone: "Molten Core",
 				Visibility: "unlisted", Fights: 9, Kills: 7, FinishedAt: fixedFinish,
 			}),
-			`{"title":"Tuesday Molten Core finished parsing","url":"https://foreversixty.gg/reports/rep1","fields":[{"name":"Zone","value":"Molten Core","inline":true},{"name":"Boss fights","value":"9 · 7 kills","inline":true},{"name":"Visible to","value":"Anyone with the link","inline":true}],` + common + `}`,
+			`{"title":"Your Tuesday Molten Core report is ready","url":"https://foreversixty.gg/reports/rep1","fields":[{"name":"Zone","value":"Molten Core","inline":true},{"name":"Boss fights","value":"9 · 7 kills","inline":true},{"name":"Visible to","value":"Anyone with the link","inline":true}],` + common + `}`,
 		},
 		"log, no boss fights": {
 			UploadParsedEmbed(testBase, UploadParsed{
 				ReportID: "rep3", Visibility: "public", FinishedAt: fixedFinish,
 			}),
-			`{"title":"Your log finished parsing","url":"https://foreversixty.gg/reports/rep3","fields":[{"name":"Visible to","value":"Everyone","inline":true}],` + common + `}`,
+			`{"title":"Your report is ready","url":"https://foreversixty.gg/reports/rep3","fields":[{"name":"Visible to","value":"Everyone","inline":true}],` + common + `}`,
 		},
 		"test, private logs included": {
 			TestEmbed(testBase, map[EventName]bool{EventSimFinished: true, EventUploadParsed: true, EventUploadPrivate: true}, fixedFinish),
@@ -83,7 +83,7 @@ func TestEmbedsMatchTheCopyTable(t *testing.T) {
 			UploadParsedEmbed(testBase, UploadParsed{
 				ReportID: "rep2", Visibility: "private", Fights: 1, Kills: 1, FinishedAt: fixedFinish,
 			}),
-			`{"title":"Your log finished parsing","url":"https://foreversixty.gg/reports/rep2","fields":[{"name":"Boss fights","value":"1 · 1 kill","inline":true},{"name":"Visible to","value":"Only you","inline":true}],` + common + `}`,
+			`{"title":"Your report is ready","url":"https://foreversixty.gg/reports/rep2","fields":[{"name":"Boss fights","value":"1 · 1 kill","inline":true},{"name":"Visible to","value":"Only you","inline":true}],` + common + `}`,
 		},
 	}
 	for name, c := range cases {

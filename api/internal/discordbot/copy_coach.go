@@ -1,5 +1,7 @@
 package discordbot
 
+import "github.com/jhunthrop/foreversixty/api/internal/copygen"
+
 // coachCopy is the log coach's words in Discord (experience spec 2026-10-28-log-coach §8.3, the
 // keys discordFieldName, discordLine*, discordPending and raidNight). The coach is named in the
 // third person: no surface outside the Coach panel speaks as the coach (§16).
@@ -16,11 +18,11 @@ var coachCopy = struct {
 	// notify package words the post, so notify pins its own copy of this string.
 	RaidNight string
 }{
-	FieldName: "Your coach",
-	Line:      "Fix first: {stem}, on {n} of {m} bosses. [Open your coach's review]({url})",
-	LineOne:   "Fix first: {stem}. [Open your coach's review]({url})",
-	LineAll:   "Fix first: {stem}, on all {m} bosses. [Open your coach's review]({url})",
-	Named:     "**{Character}** · {line}",
-	Pending:   "[Your coach's review is on the site.]({url})",
-	RaidNight: "Coach reviews of tonight's pulls are in the report and /report.",
+	FieldName: copygen.DiscordCoachFieldName,
+	Line:      copygen.DiscordCoachLine,
+	LineOne:   copygen.DiscordCoachLineOne,
+	LineAll:   copygen.DiscordCoachLineAll,
+	Named:     copygen.DiscordCoachNamed,
+	Pending:   copygen.DiscordCoachPending,
+	RaidNight: copygen.DiscordCoachRaidNight,
 }

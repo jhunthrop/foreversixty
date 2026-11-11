@@ -16,6 +16,14 @@ import (
 	"golang.org/x/image/webp"
 )
 
+// SiteOrigin is the live site. A surface the reader opens outside the site (an email, a Discord
+// post) loads the site's hosted art from here, whatever environment sent it.
+const SiteOrigin = "https://foreversixty.gg"
+
+// SealPath is the painted seal the site serves as a raster (web/public/seal-400.png, ArtSources):
+// the Discord avatar and the email header, since neither draws an SVG.
+const SealPath = "/seal-400.png"
+
 // The site's art, copied byte for byte by make sheet-assets (art_test.go compares the hashes).
 const (
 	sealFile    = "art/seal-400.png"

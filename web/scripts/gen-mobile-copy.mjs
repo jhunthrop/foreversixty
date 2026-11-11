@@ -5,6 +5,10 @@
 //   apps/ios/App/Localizable.xcstrings      the String Catalog (plurals as variations)
 //   apps/ios/App/Generated/Copy.swift       typed accessors, one per key
 //   apps/android/app/src/main/res/values/strings.xml   <string> and <plurals>, keyed with _ for .
+// and the server's words (Discord, push, email, the app sign-in page) from apps/shared/copy/server.json
+// (keys discord.*, mail.*, push.event.*, confirm.*), which only the Go target reads:
+//   api/internal/copygen/{app,shared,server}_gen.go   one Go constant per key of each source, so a
+//   word the site, an app and the server all show is the same key everywhere.
 // Run: node web/scripts/gen-mobile-copy.mjs   (src/lib/mobile/copy-codegen.test.ts fails CI when
 // the checked-in files differ from what this produces).
 //
@@ -21,13 +25,17 @@ import {
   docLine,
   fail,
   header,
+  pascal,
   readRepoFile,
   runIfMain,
 } from './mobile-codegen/shared.mjs';
 
 export const SOURCE = 'apps/shared/copy/en.json';
 export const SHARED_SOURCE = 'apps/shared/copy/shared.json';
+export const SERVER_SOURCE = 'apps/shared/copy/server.json';
 const SHARED_PREFIX = 'shared.';
+/** The server's own namespaces: only the Go target reads server.json, so its keys never reach an app. */
+export const SERVER_PREFIXES = ['discord.', 'mail.', 'push.event.', 'confirm.'];
 const SCRIPT = 'web/scripts/gen-mobile-copy.mjs';
 const PLATFORMS = ['ios', 'android'];
 const PLACEHOLDER = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
@@ -109,7 +117,10 @@ const placeholders = (text) => [...text.matchAll(PLACEHOLDER)].map((m) => m[1]);
 const unique = (list) => [...new Set(list)];
 
 /** One catalog entry, normalised: per-platform forms ({ text } or { one, other }) and its args. */
-export function parseEntry(key, value) {
+/** A printf verb: copy fills {name} placeholders, so a verb would mean a Sprintf over copy. */
+const PRINTF_VERB = /%[-+#0-9.]*[a-zA-Z%]/;
+
+export function parseEntry(key, value, { server = false } = {}) {
   if (!KEY.test(key)) fail(`${key}: keys are dotted lowerCamel segments`);
   const raw = typeof value === 'string' ? { text: value } : value;
   const ints = new Set(
@@ -137,7 +148,9 @@ export function parseEntry(key, value) {
   }
   const texts = PLATFORMS.flatMap((p) => Object.values(forms[p]));
   for (const text of texts) {
-    if (text.includes('%')) fail(`${key}: % is not allowed in copy`);
+    // The apps' catalogs are printf formats, so a bare % is not allowed there; the server fills
+    // {name} placeholders itself, so only a printf verb is refused ("{chance}% from" is fine).
+    if (server ? PRINTF_VERB.test(text) : text.includes('%')) fail(`${key}: % is not allowed in copy`);
     for (const banned of BANNED) if (banned.test(text)) fail(`${key}: "${text}" uses a banned word`);
   }
   const names = unique(placeholders(raw.count ? raw.other : texts[0]));
@@ -155,26 +168,52 @@ export function parseEntry(key, value) {
   }
   for (const n of ints) if (!names.includes(n)) fail(`${key}: args names {${n}}, which no text uses`);
   const args = names.map((name) => ({ name, type: ints.has(name) ? 'int' : 'string' }));
-  return { key, forms, args, plural: raw.count ?? null, notPlural: raw.notPlural === true };
+  return { key, forms, args, plural: raw.count ?? null, notPlural: raw.notPlural === true, server };
 }
 
-/** en.json's entries then shared.json's. Every shared key starts shared. and no app key does, so a
- *  word is in exactly one of the two files. */
-export function buildCatalog(json, sharedJson = '{"strings":{}}') {
+const EMPTY = '{"strings":{}}';
+const isServerKey = (key) => SERVER_PREFIXES.some((prefix) => key.startsWith(prefix));
+
+/** en.json's entries, then shared.json's, then server.json's. Every shared key starts shared., every
+ *  server key starts one of SERVER_PREFIXES, and no app key does either, so a word is in exactly
+ *  one of the three files. */
+export function buildCatalog(json, sharedJson = EMPTY, serverJson = EMPTY) {
   const own = Object.entries(JSON.parse(json).strings ?? {});
   const shared = Object.entries(JSON.parse(sharedJson).strings ?? {});
-  for (const [key] of own)
+  const server = Object.entries(JSON.parse(serverJson).strings ?? {});
+  for (const [key] of own) {
     if (key.startsWith(SHARED_PREFIX)) fail(`${key}: shared.* keys live in ${SHARED_SOURCE}`);
+    if (isServerKey(key)) fail(`${key}: ${SERVER_PREFIXES.join(' ')} keys live in ${SERVER_SOURCE}`);
+  }
   for (const [key] of shared)
     if (!key.startsWith(SHARED_PREFIX)) fail(`${key}: ${SHARED_SOURCE} keys start shared.`);
-  const entries = [...own, ...shared].map(([k, v]) => parseEntry(k, v));
+  for (const [key] of server)
+    if (!isServerKey(key)) fail(`${key}: ${SERVER_SOURCE} keys start ${SERVER_PREFIXES.join(' or ')}`);
+  const entries = [
+    ...[...own, ...shared].map(([k, v]) => parseEntry(k, v)),
+    ...server.map(([k, v]) => parseEntry(k, v, { server: true })),
+  ];
+  checkAndroidNames(clientEntries(entries));
+  const goNames = new Map();
+  for (const e of entries) {
+    const name = goName(e.key);
+    if (goNames.has(name)) fail(`${e.key} and ${goNames.get(name)} share the Go name ${name}`);
+    goNames.set(name, e.key);
+  }
+  return entries;
+}
+
+/** The entries an app or the site shows: everything but server.json's. */
+const clientEntries = (entries) => entries.filter((e) => !e.server);
+
+/** Checks the app and site keys for Android name clashes; server keys never reach Android. */
+function checkAndroidNames(entries) {
   const androidNames = new Map();
   for (const e of entries) {
     const name = androidName(e.key);
     if (androidNames.has(name)) fail(`${e.key} and ${androidNames.get(name)} share the Android name ${name}`);
     androidNames.set(name, e.key);
   }
-  return entries;
 }
 
 export const androidName = (key) => key.replaceAll('.', '_');
@@ -322,14 +361,58 @@ export function renderWeb(entries, banner) {
   );
 }
 
-export function generate(json = readRepoFile(SOURCE), sharedJson = readRepoFile(SHARED_SOURCE)) {
-  const entries = buildCatalog(json, sharedJson);
+// Go ----------------------------------------------------------------------------------------
+
+/** Where the server reads every key from: one file per source, package copygen. */
+export const GO_DIR = join(REPO_ROOT, 'api/internal/copygen');
+const GO_FILES = { [SOURCE]: 'app_gen.go', [SHARED_SOURCE]: 'shared_gen.go', [SERVER_SOURCE]: 'server_gen.go' };
+
+/** The key as an exported Go name: "discord.press.locked" is DiscordPressLocked. */
+export const goName = (key) => pascal(key.replaceAll('.', '_'));
+
+/** A Go string literal. JSON's escapes are all valid Go escapes. */
+const goString = (text) => JSON.stringify(text);
+
+/** One key as a Go declaration: a const for a single form, a Plural for a count. A word an app
+ *  writes differently per platform has no server form, so it is left out. */
+export function goDeclaration(e) {
+  const forms = e.forms.ios;
+  if (e.forms.ios.text !== e.forms.android.text) return null;
+  const doc = `// ${goName(e.key)} is ${e.key}: ${docLine(e.plural ? forms.other : forms.text)}`;
+  if (e.plural) {
+    return `${doc}\nvar ${goName(e.key)} = Plural{Count: ${goString(e.plural)}, One: ${goString(forms.one)}, Other: ${goString(forms.other)}}`;
+  }
+  return `${doc}\nconst ${goName(e.key)} = ${goString(forms.text)}`;
+}
+
+/** Each source's entries as one Go file. The header is Go's generated-code marker, so linters and
+ *  the server's copy guard (api/internal/copygen/guard_test.go) skip these files. */
+export function renderGo(entries) {
+  const bySource = (e) => (e.server ? SERVER_SOURCE : e.key.startsWith(SHARED_PREFIX) ? SHARED_SOURCE : SOURCE);
+  return Object.fromEntries(
+    Object.entries(GO_FILES).map(([source, file]) => {
+      const lines = entries.filter((e) => bySource(e) === source).map(goDeclaration).filter(Boolean);
+      const head = [`// Code generated by ${SCRIPT} from ${source}. DO NOT EDIT.`, '', 'package copygen', ''];
+      const text = [...head, ...(lines.length ? [lines.join('\n\n'), ''] : [])].join('\n');
+      return [join(GO_DIR, file), text];
+    }),
+  );
+}
+
+export function generate(
+  json = readRepoFile(SOURCE),
+  sharedJson = readRepoFile(SHARED_SOURCE),
+  serverJson = readRepoFile(SERVER_SOURCE),
+) {
+  const entries = buildCatalog(json, sharedJson, serverJson);
+  const client = clientEntries(entries);
   const banner = header(SCRIPT, [SOURCE, SHARED_SOURCE]);
   return {
-    [OUTPUTS.xcstrings]: renderXcstrings(entries),
-    [OUTPUTS.swift]: renderSwift(entries, banner),
-    [OUTPUTS.android]: renderAndroid(entries, banner),
-    ...renderWeb(entries, banner),
+    [OUTPUTS.xcstrings]: renderXcstrings(client),
+    [OUTPUTS.swift]: renderSwift(client, banner),
+    [OUTPUTS.android]: renderAndroid(client, banner),
+    ...renderWeb(client, banner),
+    ...renderGo(entries),
   };
 }
 

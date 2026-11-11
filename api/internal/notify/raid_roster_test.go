@@ -63,7 +63,7 @@ func TestRosterCopyMatchesTheSpec(t *testing.T) {
 		"roster.out": rosterCopy.Out, "roster.empty": rosterCopy.Empty, "roster.more": rosterCopy.More,
 	}
 	for key, got := range want {
-		cell := strings.NewReplacer("{n}", "%d").Replace(guidedCell(t, key)[0])
+		cell := guidedCell(t, key)[0]
 		if cell != got {
 			t.Errorf("%s = %q, spec %q", key, got, cell)
 		}
@@ -72,8 +72,8 @@ func TestRosterCopyMatchesTheSpec(t *testing.T) {
 		t.Errorf("outJoin %q", got)
 	}
 	signed := guidedCell(t, "roster.signed")
-	if signed[0] != "**{signed} of {size}**" || raidCopy.SignedLead != "**%d of %d**" ||
-		signed[1] != "**{n} signed up**" || raidCopy.SignedLeadOpen != "**%d signed up**" || signed[2] != raidCopy.SignedNone {
+	if signed[0] != raidCopy.SignedLead || strings.ReplaceAll(signed[1], "{n}", "{signed}") != raidCopy.SignedLeadOpen ||
+		signed[2] != raidCopy.SignedNone {
 		t.Errorf("roster.signed %q", signed)
 	}
 	text := guidedCell(t, "roster.textLine")
@@ -102,7 +102,7 @@ func TestRosterFieldsFollowTheLayout(t *testing.T) {
 		line("Garrowe", "warrior", "Arms", "dps", "out"),
 	}
 	e := rosterPost(roster, allMarks())
-	want := "When,Guild time,Signed up,Tanks · 1,Healers · 0,Melee · 2,Ranged · 2,Late · 1,Bench · 1,Out · 2"
+	want := "When,Signed up,Tanks · 1,Healers · 0,Melee · 2,Ranged · 2,Late · 1,Bench · 1,Out · 2"
 	if got := strings.Join(fieldNames(e), ","); got != want {
 		t.Fatalf("fields %s", got)
 	}
@@ -128,10 +128,10 @@ func TestRosterFieldsFollowTheLayout(t *testing.T) {
 
 func TestNobodyInOrLateDrawsNoGroups(t *testing.T) {
 	e := rosterPost([]RosterLine{line("Garrowe", "warrior", "Arms", "dps", "out"), line("Selwyn", "mage", "Frost", "dps", "bench")}, allMarks())
-	if got := strings.Join(fieldNames(e), ","); got != "When,Guild time,Signed up,Out · 1" || e.Fields[2].Value != "None yet" {
+	if got := strings.Join(fieldNames(e), ","); got != "When,Signed up,Out · 1" || e.Fields[1].Value != "None yet" {
 		t.Fatalf("fields %s", got)
 	}
-	if got := strings.Join(fieldNames(rosterPost(nil, allMarks())), ","); got != "When,Guild time,Signed up" {
+	if got := strings.Join(fieldNames(rosterPost(nil, allMarks())), ","); got != "When,Signed up" {
 		t.Fatalf("empty %s", got)
 	}
 }
@@ -170,14 +170,14 @@ func repeated(n int, class, spec, role, state string) []RosterLine {
 func TestRosterOverflow(t *testing.T) {
 	e := rosterPost(repeated(17, "mage", "Frost", "dps", "in"), allMarks())
 	names := fieldNames(e)
-	if names[6] != "Ranged · 17" || names[7] != "​" || !e.Fields[7].Inline ||
-		strings.Count(e.Fields[6].Value, "\n") != 8 || strings.Count(e.Fields[7].Value, "\n") != 7 {
+	if names[5] != "Ranged · 17" || names[6] != "\u200b" || !e.Fields[6].Inline ||
+		strings.Count(e.Fields[5].Value, "\n") != 8 || strings.Count(e.Fields[6].Value, "\n") != 7 {
 		t.Fatalf("17 lines: %v", names)
 	}
 	e = rosterPost(repeated(40, "mage", "Frost", "dps", "in"), allMarks())
-	value := e.Fields[6].Value + "\n" + e.Fields[7].Value
+	value := e.Fields[5].Value + "\n" + e.Fields[6].Value
 	ls := strings.Split(value, "\n")
-	if len(ls) != 32 || ls[31] != "and 9 more" || len(e.Fields) != 8 {
+	if len(ls) != 32 || ls[31] != "and 9 more" || len(e.Fields) != 7 {
 		t.Fatalf("40 lines: %d, last %q, %d fields", len(ls), ls[len(ls)-1], len(e.Fields))
 	}
 	bench := append(repeated(1, "mage", "Frost", "dps", "in"), repeated(11, "hunter", "Survival", "dps", "bench")...)

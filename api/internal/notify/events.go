@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strconv"
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
@@ -73,33 +75,21 @@ func (p *EventProducer) UploadParsed(ctx context.Context, e UploadParsed) {
 	events.Quietly(ctx, p.Publisher, p.Log, UploadParsedEvent(p.PublicBaseURL, e))
 }
 
-// pushCopy is the words of the push notifications built from notify facts.
-var pushCopy = struct {
-	SimTitle, SimTitleNamed, SimTitleNoSpec, SimBody             string
-	LogTitle, LogTitleNoTitle, LogBody, LogBodyNoZone, LogFights string
-}{
-	SimTitle:        "Your %s sim finished",
-	SimTitleNamed:   "%s's %s sim finished",
-	SimTitleNoSpec:  "Your sim finished",
-	SimBody:         "%s DPS",
-	LogTitle:        "%s finished parsing",
-	LogTitleNoTitle: "Your log finished parsing",
-	LogBody:         "%s · %s",
-	LogBodyNoZone:   "%s",
-	LogFights:       "%d boss fights · %s",
-}
+// pushLogBody is a parsed log's push body: the zone, then the fights line.
+const pushLogBody = "%s · %s"
 
-// SimFinishedEvent is the run as an event: plain text for push, the fact for Discord.
+// SimFinishedEvent is the run as an event: plain text for push, the fact for Discord. Push and
+// the webhook embed word the run with the same keys (embedCopy).
 func SimFinishedEvent(publicBaseURL string, e SimFinished) events.Event {
-	title := pushCopy.SimTitleNoSpec
+	title := embedCopy.SimTitleNoSpec
 	if spec, ok := specs.ByKey[e.Spec]; ok {
 		label := spec.FullName
-		title = fmt.Sprintf(pushCopy.SimTitle, label)
+		title = copygen.Fill(embedCopy.SimTitle, "{spec}", label)
 		if name := collapse(e.Character); name != "" {
-			title = fmt.Sprintf(pushCopy.SimTitleNamed, name, label)
+			title = copygen.Fill(embedCopy.SimTitleNamed, "{name}", name, "{spec}", label)
 		}
 	}
-	body := fmt.Sprintf(pushCopy.SimBody, textfmt.Grouped(e.DPS))
+	body := copygen.Fill(embedCopy.SimResultDPS, "{dps}", textfmt.Grouped(e.DPS))
 	if headline := collapse(e.Headline); headline != "" {
 		body = headline
 	}
@@ -112,14 +102,13 @@ func SimFinishedEvent(publicBaseURL string, e SimFinished) events.Event {
 
 // UploadParsedEvent is the parsed upload as an event to its owner.
 func UploadParsedEvent(publicBaseURL string, e UploadParsed) events.Event {
-	title := pushCopy.LogTitleNoTitle
+	title := embedCopy.LogTitleNoTitle
 	if name := collapse(e.Title); name != "" {
-		title = fmt.Sprintf(pushCopy.LogTitle, name)
+		title = copygen.Fill(embedCopy.LogTitle, "{title}", name)
 	}
-	fights := fmt.Sprintf(pushCopy.LogFights, e.Fights, killsPhrase(e.Kills))
-	body := fmt.Sprintf(pushCopy.LogBodyNoZone, fights)
+	body := copygen.Fill(embedCopy.LogPushFights, "{n}", strconv.Itoa(e.Fights), "{kills}", killsPhrase(e.Kills))
 	if zone := collapse(e.Zone); zone != "" {
-		body = fmt.Sprintf(pushCopy.LogBody, zone, fights)
+		body = fmt.Sprintf(pushLogBody, zone, body)
 	}
 	icon := ""
 	if zone := collapse(e.Zone); zone != "" {
@@ -134,11 +123,8 @@ func UploadParsedEvent(publicBaseURL string, e UploadParsed) events.Event {
 
 // killsPhrase is the kills as the embeds word them.
 func killsPhrase(kills int) string {
-	switch kills {
-	case 0:
+	if kills == 0 {
 		return embedCopy.LogKillsNone
-	case 1:
-		return embedCopy.LogOneKill
 	}
-	return fmt.Sprintf(embedCopy.LogManyKills, kills)
+	return embedCopy.LogKills.For(kills)
 }

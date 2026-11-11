@@ -188,7 +188,7 @@ func dumpOfficerFrames(d frameDumper) {
 	d.reply("report-pick", "a night picked", w.attendanceCard(t, repPickID, "6"))
 }
 
-// boardStart is the boards' raid: Thursday 10 December 2026, 8:00 pm in Chicago.
+// boardStart is the boards' raid: Thu 10 Dec 2026, 8:00 pm in Chicago.
 var boardStart = time.Date(2026, time.December, 11, 2, 0, 0, 0, time.UTC)
 
 // boardRaid pins the raid the post worlds hold to the boards' night.

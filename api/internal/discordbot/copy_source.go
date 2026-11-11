@@ -1,5 +1,7 @@
 package discordbot
 
+import "github.com/jhunthrop/foreversixty/api/internal/copygen"
+
 // sourceCopy is the site BiS page's source-line labels (web/src/lib/bis/copy.ts, the
 // questSourceLabel to worldDropSourceLabel block, and items/source-labels.ts), so an item
 // reads the same in Discord as on the page. A quest names the level a player must be to take
@@ -10,30 +12,30 @@ var sourceCopy = struct {
 	PvP, PvPUntitled, PvPReward, WorldDrop, WorldDropLevels string
 	AllianceQuest, HordeQuest                               string
 }{
-	Quest:           "Quest: {name}",
-	QuestLevel:      "requires level {min_level}",
-	Vendor:          "Vendor: {npc}",
-	Rep:             "{faction} ({standing})",
-	Crafted:         "Crafted: {name}",
-	CraftedNamed:    "Crafted: {Profession} · {name}",
-	Chance:          "{chance}% from {from}",
-	UnderOne:        "<1",
-	Trash:           "{instance} trash",
-	Unnamed:         "Unnamed source in {zone}",
-	PvP:             "PvP rank {rank} · {title} · {Faction}",
-	PvPUntitled:     "PvP rank {rank} · {Faction}",
-	PvPReward:       "PvP reward · {Faction}",
-	WorldDrop:       "World drop (BoE)",
-	WorldDropLevels: " · levels {min}-{max}",
-	AllianceQuest:   "Alliance quest",
-	HordeQuest:      "Horde quest",
+	Quest:           copygen.BisSourceQuest,
+	QuestLevel:      copygen.DiscordSourceQuestLevel,
+	Vendor:          copygen.DiscordSourceVendor,
+	Rep:             copygen.TooltipRepSource,
+	Crafted:         copygen.BisSourceCrafted,
+	CraftedNamed:    copygen.DiscordSourceCraftedNamed,
+	Chance:          copygen.DiscordSourceChance,
+	UnderOne:        copygen.DiscordSourceUnderOne,
+	Trash:           copygen.DiscordSourceTrash,
+	Unnamed:         copygen.DiscordSourceUnnamed,
+	PvP:             copygen.DiscordSourcePvP,
+	PvPUntitled:     copygen.DiscordSourcePvPUntitled,
+	PvPReward:       copygen.DiscordSourcePvPReward,
+	WorldDrop:       copygen.DiscordSourceWorldDrop,
+	WorldDropLevels: copygen.DiscordSourceWorldDropLevels,
+	AllianceQuest:   copygen.DiscordSourceAllianceQuest,
+	HordeQuest:      copygen.DiscordSourceHordeQuest,
 }
 
 // sourceKindWords are the page's badge words by kind (web/src/lib/sim/loot.ts
 // SOURCE_KIND_LABELS), the line a kind loot.json has nothing for falls back to.
 var sourceKindWords = map[string]string{
-	"raid": "Raids", "dungeon": "Dungeons", "world": "World bosses", "world_drop": "World drops",
-	"zone": "Zone drops", "vendor": "Vendors", "crafted": "Crafted", "rep": "Reputation", "pvp": "PvP",
+	"raid": copygen.NotifSectionRaids, "dungeon": copygen.DiscordSourceKindWordsDungeon, "world": copygen.DiscordSourceKindWordsWorld, "world_drop": copygen.DiscordSourceKindWordsWorldDrop,
+	"zone": copygen.DiscordSourceKindWordsZone, "vendor": copygen.DiscordSourceKindWordsVendor, "crafted": copygen.ItemPageKindCrafted, "rep": copygen.ItemPageKindRep, "pvp": copygen.AccountRulesetPvp,
 }
 
 // pvpRankOffset turns loot.json's rank (the client's RequiredPVPRank, 5 to 18) into a title

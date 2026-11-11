@@ -275,7 +275,7 @@ func encode(img *image.RGBA) ([]byte, error) {
 }
 
 // drawTitle draws the title in the large face, or the smaller one when it does not fit, cut
-// with "..." only when even that runs out of room.
+// with "…" only when even that runs out of room.
 func drawTitle(img draw.Image, f *faces, x, baseline int, title string, maxW int) {
 	face := f.title
 	if measure(face, title) > maxW {
@@ -308,8 +308,11 @@ func measure(face font.Face, s string) int {
 	return font.MeasureString(face, s).Ceil()
 }
 
-// fit trims s with an ellipsis until it draws within maxWidth. The faces are the site's Latin
-// subsets, so the ellipsis is three periods.
+// ellipsis ends a trimmed line, the one glyph the rest of the product uses (every face carries
+// U+2026).
+const ellipsis = "…"
+
+// fit trims s with an ellipsis until it draws within maxWidth.
 func fit(face font.Face, s string, maxWidth int) string {
 	s = strings.TrimSpace(s)
 	limit := fixed.I(maxWidth)
@@ -319,8 +322,8 @@ func fit(face font.Face, s string, maxWidth int) string {
 	r := []rune(s)
 	for len(r) > 0 {
 		r = r[:len(r)-1]
-		if font.MeasureString(face, string(r)+"...") <= limit {
-			return strings.TrimRight(string(r), " ") + "..."
+		if font.MeasureString(face, string(r)+ellipsis) <= limit {
+			return strings.TrimRight(string(r), " ") + ellipsis
 		}
 	}
 	return ""

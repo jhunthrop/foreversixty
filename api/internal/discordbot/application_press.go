@@ -1,18 +1,17 @@
 package discordbot
 
-// Accept and Decline on the recruiting channel's application post (guild onboarding spec
-// 2026-11-09 §2.3): a linked verified officer decides without leaving Discord, through the
-// site's own Decide (the recruit role, the applicant's DM and the votes all follow). The answer
-// is ephemeral, to the officer who pressed.
-
 import (
 	"context"
 	"errors"
 	"strconv"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
-)
+) // Accept and Decline on the recruiting channel's application post (guild onboarding spec
+// 2026-11-09 §2.3): a linked verified officer decides without leaving Discord, through the
+// site's own Decide (the recruit role, the applicant's DM and the votes all follow). The answer
+// is ephemeral, to the officer who pressed.
 
 const (
 	prefixApplication = "gapp"
@@ -24,16 +23,16 @@ const (
 var applicationCopy = struct {
 	Accept, Decline, Review, Character, Unlinked, OfficersOnly, Accepted, Declined, Closed, Failed string
 }{
-	Accept:       "Accept",
-	Decline:      "Decline",
-	Review:       "Review application",
-	Character:    "Gear and logs",
-	Unlinked:     "Link your Discord account to decide applications.",
-	OfficersOnly: "Only officers decide applications.",
-	Accepted:     "Accepted {Name}.",
-	Declined:     "Declined {Name}.",
-	Closed:       "This application was already decided or withdrawn.",
-	Failed:       "That did not save. Try again.",
+	Accept:       copygen.DiscordApplicationAccept,
+	Decline:      copygen.PushActionDecline,
+	Review:       copygen.DiscordApplicationReview,
+	Character:    copygen.DiscordApplicationCharacter,
+	Unlinked:     copygen.DiscordApplicationUnlinked,
+	OfficersOnly: copygen.DiscordApplicationOfficersOnly,
+	Accepted:     copygen.DiscordApplicationAccepted,
+	Declined:     copygen.DiscordApplicationDeclined,
+	Closed:       copygen.DiscordApplicationClosed,
+	Failed:       copygen.FirstPickMainFailed,
 }
 
 // applicationButtons are the post's row: Accept, Decline, the review link and the character's

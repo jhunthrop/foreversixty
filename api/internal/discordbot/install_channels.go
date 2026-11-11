@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
@@ -20,8 +21,8 @@ const (
 	maxTestErrorRunes = 140
 
 	removedInDiscordNote = "the bot was removed from the server"
-	unavailableMessage   = "Discord is not answering for that server just now"
-	noAnswerMessage      = "Discord did not answer"
+	unavailableMessage   = copygen.DiscordInstallChannelsUnavailableMessage
+	noAnswerMessage      = copygen.DiscordInstallChannelsNoAnswerMessage
 	channelUnusableText  = "the bot cannot post in that channel"
 )
 

@@ -38,7 +38,9 @@ func boldLead(line string) string {
 
 func TestReminderCopyMatchesTheSpec(t *testing.T) {
 	title := guidedCell(t, "post.tomorrowTitle")[0]
-	wantTitle := strings.NewReplacer("{Title}", "Onyxia's Lair", "{Weekday}", "Thursday", "{d}", "10", "{Month}", "December").Replace(title)
+	// The spec's full weekday and month gave way to the site's raid-row date (brand audit BA3,
+	// 2026-11-10): "Thu 10 Dec", as the raid list on the site reads.
+	wantTitle := strings.NewReplacer("{Title}", "Onyxia's Lair", "{Weekday}", "Thu", "{d}", "10", "{Month}", "Dec").Replace(title)
 	e := RaidPostEmbed(RaidPost{RaidPosted: onyxiaThursday(), State: PostTomorrow}, fixedFinish)
 	if e.Title != wantTitle {
 		t.Fatalf("title = %q, want %q", e.Title, wantTitle)
@@ -75,7 +77,7 @@ func TestReminderCopyMatchesTheSpec(t *testing.T) {
 func TestTomorrowEmbed(t *testing.T) {
 	e := RaidPostEmbed(RaidPost{RaidPosted: onyxiaThursday(), State: PostTomorrow}, fixedFinish)
 	open := RaidPostEmbed(RaidPost{RaidPosted: onyxiaThursday(), State: PostOpen}, fixedFinish)
-	if e.Title != "Tomorrow: Onyxia's Lair · Thursday 10 December" ||
+	if e.Title != "Tomorrow: Onyxia's Lair · Thu 10 Dec" ||
 		e.Description != "" {
 		t.Fatalf("embed = %q / %q", e.Title, e.Description)
 	}
@@ -175,7 +177,7 @@ func TestWebhookReminderPostsAndDeletes(t *testing.T) {
 	body := h.bodies[0]
 	// §P.9.7: the webhook post in the Tomorrow state rides under the line, with no components.
 	embeds, _ := body["embeds"].([]any)
-	if len(embeds) != 1 || embeds[0].(map[string]any)["title"] != "Tomorrow: Onyxia's Lair · Thursday 10 December" {
+	if len(embeds) != 1 || embeds[0].(map[string]any)["title"] != "Tomorrow: Onyxia's Lair · Thu 10 Dec" {
 		t.Fatalf("a reminder carries one Tomorrow embed: %v", body["embeds"])
 	}
 	if _, has := body["components"]; has {

@@ -2,10 +2,12 @@ package notify
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
@@ -32,40 +34,40 @@ var reportCopy = struct {
 	// names and counts nobody (R-A3; experience spec 2026-10-28-log-coach §8.3 raidNight).
 	CoachSentence string
 	KillsName     string
-	KillLine      string // %s the escaped boss, %s the kill time
-	MoreKills     string // %d the kills left out
+	KillLine      string // %s the escaped boss, %s the kill time (markup, no words)
+	MoreKills     string // {n} the kills left out
 	NoKills       string
 	WipesName     string
 	CameName      string
-	CameOf        string // %d came, %d signed
+	CameOf        string // {came} came, {of} signed
 	LootName      string
 	LootOne       string
-	LootMany      string // %d items
-	LootLine      string // %s the item, %s the raider
-	MoreLoot      string // %d awards left out
+	LootMany      string // {n} items
+	LootLine      string // {item} the item, {winner} the raider
+	MoreLoot      string // {n} awards left out
 	TimeName      string
 	DeathsName    string
 	ParsesName    string
-	ParseLine     string // %s the raider, %d the figure, %s the metric, %s the boss
+	ParseLine     string // {name} the raider, {value} the figure, {metric} the metric, {boss} the boss
 }{
-	TitlePrefix:   "Report: ",
-	CoachSentence: "Coach reviews of tonight's pulls are in the report and /report.",
-	KillsName:     "Kills",
+	TitlePrefix:   copygen.DiscordOfficerReportPrefix,
+	CoachSentence: copygen.DiscordCoachRaidNight,
+	KillsName:     copygen.DiscordRaidKillsName,
 	KillLine:      "%s %s",
-	MoreKills:     "+%d more",
-	NoKills:       "No kills",
-	WipesName:     "Wipes",
-	CameName:      "Came",
-	CameOf:        "%d of %d",
-	LootName:      "Loot",
-	LootOne:       "1 item",
-	LootMany:      "%d items",
-	LootLine:      "%s to %s",
-	MoreLoot:      "+%d more",
-	TimeName:      "Time",
-	DeathsName:    "Deaths",
-	ParsesName:    "Top parses",
-	ParseLine:     "%s %d %s on %s",
+	MoreKills:     copygen.DiscordReportMoreKills,
+	NoKills:       copygen.DiscordReportNoKills,
+	WipesName:     copygen.DiscordReportWipesName,
+	CameName:      copygen.DiscordRaidCameName,
+	CameOf:        copygen.DiscordRaidCameOf,
+	LootName:      copygen.DiscordOfficerLoot,
+	LootOne:       copygen.DiscordReportLootOne,
+	LootMany:      copygen.DiscordOfficerLootAll,
+	LootLine:      copygen.DiscordReportLootLine,
+	MoreLoot:      copygen.DiscordReportMoreKills,
+	TimeName:      copygen.DiscordReportTimeName,
+	DeathsName:    copygen.DiscordReportDeathsName,
+	ParsesName:    copygen.DiscordReportParsesName,
+	ParseLine:     copygen.DiscordReportParseLine,
 }
 
 // ReportKill is one boss killed on the night.
@@ -124,7 +126,7 @@ func ReportReadyEmbed(in ReportReady, now time.Time) Embed {
 		e.Fields = append(e.Fields, raidField(reportCopy.TimeName, textfmt.Duration(in.Time)))
 	}
 	e.Fields = append(e.Fields,
-		raidField(reportCopy.CameName, fmt.Sprintf(reportCopy.CameOf, in.Came, in.Signed)),
+		raidField(reportCopy.CameName, copygen.Fill(reportCopy.CameOf, "{came}", strconv.Itoa(in.Came), "{of}", strconv.Itoa(in.Signed))),
 		raidField(reportCopy.DeathsName, fmt.Sprint(in.Deaths)))
 	if len(in.TopParses) > 0 {
 		e.Fields = append(e.Fields, EmbedField{Name: reportCopy.ParsesName, Value: parsesValue(in.TopParses)})
@@ -136,8 +138,10 @@ func ReportReadyEmbed(in ReportReady, now time.Time) Embed {
 func parsesValue(parses []ReportParse) string {
 	lines := make([]string, len(parses))
 	for i, p := range parses {
-		lines[i] = fmt.Sprintf(reportCopy.ParseLine, escapedWithin(collapse(p.Name), maxNameRunes, maxNameRunes*2),
-			p.Value, strings.ToUpper(p.Metric), escapedWithin(collapse(p.Boss), maxBossRunes, maxBossRunes*2))
+		lines[i] = copygen.Fill(reportCopy.ParseLine,
+			"{name}", escapedWithin(collapse(p.Name), maxNameRunes, maxNameRunes*2),
+			"{value}", strconv.Itoa(p.Value), "{metric}", strings.ToUpper(p.Metric),
+			"{boss}", escapedWithin(collapse(p.Boss), maxBossRunes, maxBossRunes*2))
 	}
 	return strings.Join(lines, "\n")
 }
@@ -158,7 +162,7 @@ func killsValue(kills []ReportKill) string {
 	lines := make([]string, 0, reportMaxKills+1)
 	for i, k := range kills {
 		if i == reportMaxKills {
-			lines = append(lines, fmt.Sprintf(reportCopy.MoreKills, len(kills)-reportMaxKills))
+			lines = append(lines, counted(reportCopy.MoreKills, len(kills)-reportMaxKills))
 			break
 		}
 		boss := escapedWithin(collapse(k.Boss), maxBossRunes, maxBossRunes*2)
@@ -172,16 +176,17 @@ func lootValue(in ReportReady) string {
 		if in.LootItems == 1 {
 			return reportCopy.LootOne
 		}
-		return fmt.Sprintf(reportCopy.LootMany, in.LootItems)
+		return counted(reportCopy.LootMany, in.LootItems)
 	}
 	lines := make([]string, 0, reportMaxLoot+1)
 	for i, l := range in.Loot {
 		if i == reportMaxLoot {
-			lines = append(lines, fmt.Sprintf(reportCopy.MoreLoot, len(in.Loot)-reportMaxLoot))
+			lines = append(lines, counted(reportCopy.MoreLoot, len(in.Loot)-reportMaxLoot))
 			break
 		}
-		lines = append(lines, fmt.Sprintf(reportCopy.LootLine, escapedWithin(collapse(l.Item), maxNameRunes, maxNameRunes*2),
-			escapedWithin(collapse(l.Winner), maxNameRunes, maxNameRunes*2)))
+		lines = append(lines, copygen.Fill(reportCopy.LootLine,
+			"{item}", escapedWithin(collapse(l.Item), maxNameRunes, maxNameRunes*2),
+			"{winner}", escapedWithin(collapse(l.Winner), maxNameRunes, maxNameRunes*2)))
 	}
 	return strings.Join(lines, "\n")
 }

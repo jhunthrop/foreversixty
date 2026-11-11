@@ -20,7 +20,7 @@ func onyxiaReport() ReportReady {
 }
 
 func TestReportReadyEmbedMatchesTheCopyTable(t *testing.T) {
-	want := `{"title":"Report: Onyxia's Lair · Thursday 10 December",` +
+	want := `{"title":"Report: Onyxia's Lair · Thu 10 Dec",` +
 		`"url":"https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#report",` +
 		`"fields":[{"name":"Kills","value":"Onyxia 1:42","inline":true},{"name":"Wipes","value":"3","inline":true},` +
 		`{"name":"Came","value":"22 of 23","inline":true},{"name":"Deaths","value":"0","inline":true},{"name":"Loot","value":"6 items","inline":true}],` +

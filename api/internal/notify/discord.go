@@ -13,6 +13,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 )
 
 const (
@@ -161,7 +163,7 @@ type allowedMentions struct {
 }
 
 // Username is the name every message is posted under.
-const Username = "Forever Sixty"
+const Username = copygen.AppName
 
 func newMessage(avatarURL string, embed Embed) messageJSON {
 	return messageJSON{

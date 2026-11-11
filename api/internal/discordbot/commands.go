@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
@@ -19,8 +20,8 @@ var (
 	classChoices = choicesOf("Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior")
 	slotChoices  = slotChoicesOf(upgrades.Slots)
 	phaseChoices = []Choice{
-		{"Level 20", "20"}, {"Level 30", "30"}, {"Level 40", "40"}, {"Level 50", "50"},
-		{"Level 60", "60"}, {"Phase 1 raid", "p1"},
+		{copygen.DiscordCommandsPhaseLevel20, "20"}, {copygen.DiscordCommandsPhaseLevel30, "30"}, {copygen.DiscordCommandsPhaseLevel40, "40"}, {copygen.DiscordCommandsPhaseLevel50, "50"},
+		{copygen.DiscordCommandsPhaseLevel60, "60"}, {copygen.DiscordCommandsPhaseRaid, "p1"},
 	}
 	statusChoices = []Choice{{"In", "in"}, {"Late", "late"}, {"Bench", "bench"}, {"Out", "out"}}
 )
@@ -51,32 +52,32 @@ func stringOption(name, description string, required, autocomplete bool, choices
 // the rest register to the development server until they ship.
 func Commands() []Command {
 	return []Command{
-		{Name: "raid", Description: "Your guild's next raid. Sign up from the answer.", Released: true},
-		{Name: "signup", Description: "Sign up for a raid without the post.", Released: true, Options: []CommandOption{
+		{Name: "raid", Description: copygen.DiscordCommandsRaid, Released: true},
+		{Name: "signup", Description: copygen.DiscordCommandsSignup, Released: true, Options: []CommandOption{
 			stringOption("status", descSignupStatus, false, false, statusChoices),
 			stringOption("raid", descRaidOption, false, true, nil),
-			stringOption("character", "Which of your characters.", false, true, nil),
+			stringOption("character", copygen.DiscordCommandsSignupCharacter, false, true, nil),
 		}},
-		{Name: "char", Description: "Item level, readiness and the top 3 upgrades of a character.", Released: true, Options: []CommandOption{
+		{Name: "char", Description: copygen.DiscordCommandsChar, Released: true, Options: []CommandOption{
 			stringOption("name", descName, false, true, nil),
 		}},
-		{Name: "bis", Description: "Best in slot for a class and spec.", Released: true, Options: []CommandOption{
-			stringOption("class", "The class. Leave out to pick it.", false, false, classChoices),
-			stringOption("spec", "The spec. Leave out to pick it.", false, true, nil),
-			stringOption("slot", "One slot. The top five if left out.", false, false, slotChoices),
-			stringOption("phase", "Level band or Phase 1 raid.", false, false, phaseChoices),
+		{Name: "bis", Description: copygen.DiscordCommandsBis, Released: true, Options: []CommandOption{
+			stringOption("class", copygen.DiscordCommandsBisClass, false, false, classChoices),
+			stringOption("spec", copygen.DiscordCommandsBisSpec, false, true, nil),
+			stringOption("slot", copygen.DiscordCommandsBisSlot, false, false, slotChoices),
+			stringOption("phase", copygen.DiscordCommandsBisPhase, false, false, phaseChoices),
 		}},
-		{Name: "report", Description: "Kills and loot from the last logged raid.", Released: true, Options: []CommandOption{
+		{Name: "report", Description: copygen.DiscordCommandsReport, Released: true, Options: []CommandOption{
 			stringOption("raid", descReportRaidOption, false, true, nil),
 		}},
-		{Name: "attendance", Description: "Your attendance. Officers can name anyone.", Released: true, Options: []CommandOption{
-			stringOption("name", "Officers: a member of the guild.", false, true, nil),
+		{Name: "attendance", Description: copygen.DiscordCommandsAttendance, Released: true, Options: []CommandOption{
+			stringOption("name", copygen.DiscordCommandsAttendanceName, false, true, nil),
 		}},
-		{Name: "readiness", Description: "Officers: who is not ready for the next raid.", Released: true, Options: []CommandOption{
+		{Name: "readiness", Description: copygen.DiscordCommandsReadiness, Released: true, Options: []CommandOption{
 			stringOption("raid", descRaidOption, false, true, nil),
 		}},
-		{Name: "link", Description: "Link this Discord account to Forever Sixty.", Released: true},
-		{Name: "help", Description: "This list.", Released: true},
+		{Name: "link", Description: copygen.DiscordCommandsLink, Released: true},
+		{Name: "help", Description: copygen.DiscordCommandsHelp, Released: true},
 	}
 }
 

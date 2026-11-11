@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
@@ -67,7 +68,7 @@ func (s *Service) readinessReply(ctx context.Context, guildID int64, viewer *int
 		return Reply{}, fmt.Errorf("discordbot: readiness zone: %w", err)
 	}
 	board := s.d.PublicBaseURL + path + readinessTab
-	embeds := []notify.Embed{readinessEmbed(ans, board, zone)}
+	embeds := []notify.Embed{readinessEmbed(ans, board, zone, s.now())}
 	s.closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
 	link := Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.Board, URL: board}
 	raids, err := s.signableRaids(ctx, guildID)
@@ -124,10 +125,10 @@ func grantedPlanReply() Reply {
 
 // readinessEmbed is the board summary: who signed, who has something to fix, and the first ten
 // failing rows in the board's words.
-func readinessEmbed(ans guilds.ReadinessAnswer, board, zone string) notify.Embed {
+func readinessEmbed(ans guilds.ReadinessAnswer, board, zone string, now time.Time) notify.Embed {
 	z := zone
 	e := notify.Embed{
-		Title: officerCopy.ReadinessTitle + raidTitle(ans.Raid.Title, ans.Raid.StartsAt, &z), URL: board,
+		Title: officerCopy.ReadinessTitle + raidTitle(ans.Raid.Title, ans.Raid.StartsAt, &z, now), URL: board,
 		Color: accentColor, Description: readinessLead(ans),
 	}
 	if ans.Failing == 0 {

@@ -26,6 +26,15 @@ the web copy modules read `shared.json` through `web/src/lib/copy/shared.ts`, so
 and an app both show is edited once. A key lives in exactly one of the two files (the generator
 fails otherwise).
 
+`copy/server.json` holds the server's own words: Discord bot replies and embeds (`discord.*`),
+push notifications (`push.event.*`), email (`mail.*`) and the app sign-in page (`confirm.*`). The
+same generator writes every key of the three files as Go constants in
+`api/internal/copygen/{app,shared,server}_gen.go`, so a word the site, an app, Discord, push and
+email all show is one key. server.json keys never reach an app or the site. Its strings may hold
+a bare `%` ("{chance}% from"), never a printf verb: the server fills `{name}` with
+`copygen.Fill`. `api/internal/copygen/guard_test.go` fails when a sentence is written inline in
+the bot, notify, mail or billing mail packages.
+
 ## Fonts (`fonts/`)
 
 The OFL faces, as TTF: Open Sans 400/600/700 and Archivo 600 (`make brand-fonts` converts the

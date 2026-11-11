@@ -32,7 +32,7 @@ func TestRaidPostEmbedStates(t *testing.T) {
 	was := onyxiaThursday().StartsAt
 	moved := onyxiaThursday()
 	moved.StartsAt = was.Add(24 * time.Hour)
-	plain := []string{"When", "Guild time", "Signed up"}
+	plain := []string{"When", "Signed up"}
 	cases := []struct {
 		state  RaidPostState
 		post   RaidPosted
@@ -43,7 +43,7 @@ func TestRaidPostEmbedStates(t *testing.T) {
 	}{
 		{PostOpen, onyxiaThursday(), 37810, "", "", plain},
 		{PostLocked, onyxiaThursday(), 9144196, "", "Sign-ups are locked. An officer can still change yours.", plain},
-		{PostMoved, moved, 37810, "Moved: ", "Sign-ups carry over. Check you can still make it.", []string{"When", "Was", "Guild time", "Signed up"}},
+		{PostMoved, moved, 37810, "Moved: ", "Sign-ups carry over. Check you can still make it.", []string{"When", "Was", "Signed up"}},
 		{PostCancelled, onyxiaThursday(), 15758187, "Cancelled: ", "This raid was cancelled.", []string{"When", "Signed up"}},
 		{PostEnded, onyxiaThursday(), 9144196, "", "This raid has ended.", plain},
 		{PostDone, onyxiaThursday(), 8377482, "Done: ", "Logged as a raid night.", []string{"When", "Came", "Kills"}},

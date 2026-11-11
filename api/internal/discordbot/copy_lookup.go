@@ -1,6 +1,9 @@
 package discordbot
 
-import "github.com/jhunthrop/foreversixty/api/internal/upgrades"
+import (
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
+)
 
 // lookupCopy is the words of /char, /bis, the item embed and Share in channel (experience spec
 // §6.2); the tests read each string back out of the spec.
@@ -21,17 +24,17 @@ var lookupCopy = struct {
 	// Share is the button; Shared its label after a share; NoLongerPublic a share with nothing left.
 	Share, Shared, NoLongerPublic string
 }{
-	CharLine:       "Level {n} {Spec} {Class} · {Guild}",
-	CharFacts:      "-# Item level {ilvl} · Readiness: {word} · Synced <t:{unix}:R>",
-	NoGear:         "No gear shared yet. Upgrades show once the character is synced.",
-	CharacterPage:  "Character page",
-	BisOpen:        "Open on Forever Sixty",
-	BisAllSlots:    "All 17 slots",
-	ItemLineOne:    "{Slot} · {Quality} · item level {n}",
-	ItemLineTwo:    "{delta} · {source}",
-	Share:          "Share in channel",
-	Shared:         "Shared",
-	NoLongerPublic: "That is no longer public, so it was not shared.",
+	CharLine:       copygen.DiscordLookupCharLine,
+	CharFacts:      copygen.DiscordLookupCharFacts,
+	NoGear:         copygen.DiscordLookupNoGear,
+	CharacterPage:  copygen.DiscordLookupCharacterPage,
+	BisOpen:        copygen.DiscordLookupBisOpen,
+	BisAllSlots:    copygen.HomeUpgradesAllSlots,
+	ItemLineOne:    copygen.DiscordLookupItemLineOne,
+	ItemLineTwo:    copygen.DiscordLookupItemLineTwo,
+	Share:          copygen.DiscordLookupShare,
+	Shared:         copygen.DiscordLookupShared,
+	NoLongerPublic: copygen.DiscordLookupNoLongerPublic,
 }
 
 // panelCopy is the words of the gear panel and the shared sheet's message (spec 2026-10-29,
@@ -61,45 +64,45 @@ var panelCopy = struct {
 	SheetRangeRaid, SheetRangeBare, SheetRangeLevels string
 	SheetUpdated, SheetCharFooter                    string
 }{
-	BisHeadTitle:      "### {Spec} {Class}",
-	BisHeadLine:       "Best in slot · {band label} · {Faction}",
-	BisHeadPage:       "-# {Page range}, {n} of 17 slots. Each gain is over the next best item.",
-	BisPages:          [2]string{"Head to Legs", "Feet to Ranged"},
-	BisSlotTitle:      "### {Slot} · {Spec} {Class}",
-	BisAltDelta:       "{delta} vs the best pick",
-	BisSlotNext:       "-# The next best",
-	BisOffHandTwoHand: "**Off hand** · none: {main hand name} is two-handed.",
-	BisSlotNone:       "**{Slot}** · no pick for this range.",
+	BisHeadTitle:      copygen.DiscordPanelBisHeadTitle,
+	BisHeadLine:       copygen.DiscordPanelBisHeadLine,
+	BisHeadPage:       copygen.DiscordPanelBisHeadPage,
+	BisPages:          [2]string{copygen.DiscordPanelBisPages1, copygen.DiscordPanelBisPages2},
+	BisSlotTitle:      copygen.DiscordPanelBisSlotTitle,
+	BisAltDelta:       copygen.DiscordPanelBisAltDelta,
+	BisSlotNext:       copygen.DiscordPanelBisSlotNext,
+	BisOffHandTwoHand: copygen.DiscordPanelBisOffHandTwoHand,
+	BisSlotNone:       copygen.DiscordPanelBisSlotNone,
 	NotModelled:       upgrades.NotModelledWords,
-	BisTie:            "Same {unit} as the next best",
-	BisOnly:           "Nothing else ranked",
-	Replaces:          "-# Replaces {worn name}, item level {n}",
-	ReplacesNoLevel:   "-# Replaces {worn name}",
-	UpgradesTitle:     "**Top upgrades** · {band label}",
+	BisTie:            copygen.DiscordPanelBisTie,
+	BisOnly:           copygen.TooltipNothingElse,
+	Replaces:          copygen.DiscordPanelReplaces,
+	ReplacesNoLevel:   copygen.DiscordPanelReplacesNoLevel,
+	UpgradesTitle:     copygen.DiscordPanelUpgradesTitle,
 	UpgradesByDPS:     "",
-	UpgradesByScore:   "-# By Forever Score gained, against the guide build.",
-	UpgradesByLevel:   "-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.",
-	LevelGain:         "+{n} item levels",
-	LevelGainOne:      "+1 item level",
-	LevelEmpty:        "Fills an empty slot",
-	LevelOnList:       "On the BiS list",
-	AllUpgrades:       "All {n} upgrades",
-	UpgradesNone:      "Every slot already wears the guide's pick for {band label}.",
-	TileAlt:           "{Item name}, {Quality} {slot} item",
-	TileAltNoQuality:  "{Item name}, {slot} item",
-	CrestAlt:          "{Class} crest",
-	SheetRangeRaid:    "Phase 1 raid",
-	SheetRangeBare:    "No buffs or consumables",
-	SheetRangeLevels:  "Levels {n} to {n+9}",
-	SheetUpdated:      "Updated {d Mon yyyy}",
-	SheetCharFooter:   "Upgrades for {band label}",
+	UpgradesByScore:   copygen.DiscordPanelUpgradesByScore,
+	UpgradesByLevel:   copygen.DiscordPanelUpgradesByLevel,
+	LevelGain:         copygen.DiscordPanelLevelGain,
+	LevelGainOne:      copygen.DiscordPanelLevelGainOne,
+	LevelEmpty:        copygen.DiscordPanelLevelEmpty,
+	LevelOnList:       copygen.DiscordPanelLevelOnList,
+	AllUpgrades:       copygen.DiscordPanelAllUpgrades,
+	UpgradesNone:      copygen.DiscordPanelUpgradesNone,
+	TileAlt:           copygen.DiscordPanelTileAlt,
+	TileAltNoQuality:  copygen.DiscordPanelTileAltNoQuality,
+	CrestAlt:          copygen.DiscordPanelCrestAlt,
+	SheetRangeRaid:    copygen.ItemPagePresetRaid,
+	SheetRangeBare:    copygen.DiscordPanelSheetRangeBare,
+	SheetRangeLevels:  copygen.DiscordPanelSheetRangeLevels,
+	SheetUpdated:      copygen.DiscordPanelSheetUpdated,
+	SheetCharFooter:   copygen.DiscordPanelSheetCharFooter,
 }
 
 // bandLabels are /bis's band labels by phase choice value (spec §6.2).
 var bandLabels = map[string]string{
-	"20": "level 20", "30": "level 30", "40": "level 40", "50": "level 50",
-	"60": "level 60", "p1": "level 60 Phase 1 raid",
+	"20": copygen.DiscordBandLabelsK20, "30": copygen.DiscordBandLabelsK30, "40": copygen.DiscordBandLabelsK40, "50": copygen.DiscordBandLabelsK50,
+	"60": copygen.DiscordBandLabelsK60, "p1": copygen.DiscordBandLabelsP1,
 }
 
 // pointsWord is a gain in Forever Score points, the character page's own "+18.4 points".
-const pointsWord = "points"
+const pointsWord = copygen.DiscordLookupPointsWord

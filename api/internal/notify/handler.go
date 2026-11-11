@@ -12,6 +12,7 @@ import (
 	"unicode"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
@@ -27,8 +28,8 @@ const (
 	// maxWebhookNameRunes is the spec's cap on the stored webhook name.
 	maxWebhookNameRunes = 80
 
-	invalidURLMessage  = "That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/."
-	noAnswerMessage    = "Discord did not answer"
+	invalidURLMessage  = copygen.DiscordHandlerInvalidURLMessage
+	noAnswerMessage    = copygen.DiscordInstallChannelsNoAnswerMessage
 	invalidBodyMessage = "the body must be {webhook_url?, events: {sim_finished, upload_parsed, upload_private}}"
 )
 

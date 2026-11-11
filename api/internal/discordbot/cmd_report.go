@@ -8,8 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
@@ -116,7 +118,7 @@ func (s *Service) reportMessage(ctx context.Context, guildID int64, viewer *int6
 		}
 		link = s.d.PublicBaseURL + guilds.RaidPagePath(path, ans.Raid.ID) + reportAnchor
 	}
-	embeds := []notify.Embed{reportHead(ans, link)}
+	embeds := []notify.Embed{reportHead(ans, link, s.now())}
 	if ans.Member {
 		embeds = append(embeds, s.lootEmbeds(ans.Report, link)...)
 	}
@@ -126,23 +128,24 @@ func (s *Service) reportMessage(ctx context.Context, guildID int64, viewer *int6
 }
 
 // guildFooter closes a guild answer (spec §3.3.0).
-const guildFooter = "{Guild} · Forever Sixty"
+const guildFooter = copygen.DiscordCmdReportGuildFooter
 
-// raidTitle is "{Title} · Thursday 10 December" in the guild's raid zone.
-func raidTitle(title string, startsAt time.Time, zone *string) string {
+// raidTitle is "{Title} · Thu 10 Dec" in the guild's raid zone, the site's raid-row date (the
+// year only when the night falls in another year).
+func raidTitle(title string, startsAt time.Time, zone *string, now time.Time) string {
 	loc := time.UTC
 	if zone != nil {
 		loc = textfmt.Location(*zone)
 	}
-	return memberText(title) + lineJoin + textfmt.LongDay(startsAt, loc)
+	return memberText(title) + lineJoin + textfmt.WeekdayDayMonth(startsAt, loc, now)
 }
 
 // reportHead is the report's main embed: the night line and kill order, and for a member the
 // Loot count, with the officer rows before it for an officer.
-func reportHead(ans guilds.ReportAnswer, link string) notify.Embed {
+func reportHead(ans guilds.ReportAnswer, link string, now time.Time) notify.Embed {
 	v := ans.Raid
 	e := notify.Embed{
-		Title: officerCopy.ReportPrefix + raidTitle(v.Title, v.StartsAt, v.GuildTimezone), URL: link, Color: doneGreen,
+		Title: officerCopy.ReportPrefix + raidTitle(v.Title, v.StartsAt, v.GuildTimezone, now), URL: link, Color: doneGreen,
 		Description: nightLine(*v.Night),
 	}
 	if kills := boundedLines(killLines(ans.Report.KillOrder)); kills != "" {
@@ -344,8 +347,10 @@ func (s *Service) lootEmbeds(r *guilds.ReportView, link string) []notify.Embed {
 			if it, ok := s.d.Guilds.BuildItem(build, a.Class, a.ItemID); ok {
 				facts.ItemLevel = it.ItemLevel
 			}
+			// The framed tile (the site's quality-bordered icon), the item rows' own art: Discord
+			// cannot border a thumbnail, so the tiles route bakes the ring in.
 			if a.Icon != "" {
-				facts.Icon = s.d.PublicBaseURL + "/data/" + build + "/icons/" + a.Icon + ".webp"
+				facts.Icon = sheet.TileURL(s.d.APIBaseURL, build, a.ItemID)
 			}
 		}
 		out = append(out, ItemEmbed(facts, "", "", ""))

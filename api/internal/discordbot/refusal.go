@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 )
 
 // The permissions a raid channel needs, by name and in the order settings lists them. A post
@@ -17,9 +19,9 @@ var channelNeeds = []struct {
 	Perm Perm
 	Name string
 }{
-	{PermViewChannel, "View Channel"},
-	{PermSendMessages, "Send Messages"},
-	{PermEmbedLinks, "Embed Links"},
+	{PermViewChannel, copygen.DiscordRefusalViewChannel},
+	{PermSendMessages, copygen.DiscordRefusalSendMessages},
+	{PermEmbedLinks, copygen.DiscordRefusalEmbedLinks},
 }
 
 // channelVerdict is what a channel-level refusal turned out to mean.
