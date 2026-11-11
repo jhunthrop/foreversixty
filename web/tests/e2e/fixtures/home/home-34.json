@@ -1,47 +1,47 @@
 {
- "import_sim": {
-  "state": "done",
-  "dps": 58.4,
-  "simmed_at": "2026-11-06T09:04:00Z",
-  "sim_id": "imp34"
- },
- "spec_week": {
-  "spec": "hunter-beast-mastery",
-  "band": 30,
-  "faction": "alliance",
-  "role": "dps",
-  "grade": "A",
-  "last_week_grade": "B",
-  "place": 4,
-  "of": 23
- },
- "movers": {
-  "spec": "hunter-beast-mastery",
-  "band": 30,
-  "baseline": true,
-  "rows": [
-   {
-    "rank": 3,
-    "name": "Pawsworth",
-    "class": "hunter",
-    "key": "us/normal/pawsworth",
-    "delta": 6
-   },
-   {
-    "rank": 5,
-    "name": "Ellowen",
-    "class": "hunter",
-    "key": "us/normal/ellowen",
-    "delta": 4
-   },
-   {
-    "rank": 9,
-    "name": "Gritfang",
-    "class": "hunter",
-    "key": "us/normal/gritfang",
-    "delta": 11
-   }
-  ]
- },
- "guild_sims": null
+  "import_sim": {
+    "state": "done",
+    "dps": 58.4,
+    "simmed_at": "2026-11-06T09:04:00Z",
+    "sim_id": "imp34"
+  },
+  "spec_week": {
+    "spec": "hunter-beast-mastery",
+    "band": 30,
+    "faction": "alliance",
+    "role": "dps",
+    "grade": "A",
+    "last_week_grade": "B",
+    "place": 4,
+    "of": 23
+  },
+  "movers": {
+    "spec": "hunter-beast-mastery",
+    "band": 30,
+    "baseline": true,
+    "rows": [
+      {
+        "rank": 3,
+        "name": "Pawsworth",
+        "class": "hunter",
+        "key": "us/normal/pawsworth",
+        "delta": 6
+      },
+      {
+        "rank": 5,
+        "name": "Ellowen",
+        "class": "hunter",
+        "key": "us/normal/ellowen",
+        "delta": 4
+      },
+      {
+        "rank": 9,
+        "name": "Gritfang",
+        "class": "hunter",
+        "key": "us/normal/gritfang",
+        "delta": 11
+      }
+    ]
+  },
+  "guild_sims": null
 }

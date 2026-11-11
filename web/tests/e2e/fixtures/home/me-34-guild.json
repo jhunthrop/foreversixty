@@ -1,80 +1,72 @@
 {
- "user": {
-  "id": 7,
-  "battletag": "Hunthrop#1894",
-  "email": null,
-  "role": "user",
-  "anonymize": false
- },
- "characters": [
-  {
-   "key": "us/normal/felsnap",
-   "region": "us",
-   "ruleset": "normal",
-   "name": "Felsnap",
-   "class": "Hunter",
-   "spec": "Beast Mastery",
-   "race": "Dwarf",
-   "realm": "Skyborne",
-   "level": 34,
-   "faction": "alliance",
-   "item_level": 31,
-   "source": "bnet",
-   "build": {
-    "source": "addon",
-    "captured_at": "2026-11-04T19:30:00Z",
-    "level": 34,
-    "data_build": "1.60.1.70790",
-    "gear": {
-     "head": 252504,
-     "neck": 273049,
-     "shoulder": 2264,
-     "back": 14593,
-     "chest": 2041,
-     "wrist": 897,
-     "hands": 7358,
-     "waist": 252521,
-     "legs": 9509,
-     "feet": 10402,
-     "finger1": 6748,
-     "finger2": 6748,
-     "main_hand": 6679,
-     "ranged": 13137
-    },
-    "talents": {
-     "trees": [
-      "0000000000000000",
-      "00000000000000000",
-      "000000000000000000"
-     ],
-     "points": [
-      23,
-      0,
-      0
-     ]
+  "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+  },
+  "characters": [
+    {
+      "key": "us/normal/felsnap",
+      "region": "us",
+      "ruleset": "normal",
+      "name": "Felsnap",
+      "class": "Hunter",
+      "spec": "Beast Mastery",
+      "race": "Dwarf",
+      "realm": "Skyborne",
+      "level": 34,
+      "faction": "alliance",
+      "item_level": 31,
+      "source": "bnet",
+      "build": {
+        "source": "addon",
+        "captured_at": "2026-11-04T19:30:00Z",
+        "level": 34,
+        "data_build": "1.60.1.70790",
+        "gear": {
+          "head": 252504,
+          "neck": 273049,
+          "shoulder": 2264,
+          "back": 14593,
+          "chest": 2041,
+          "wrist": 897,
+          "hands": 7358,
+          "waist": 252521,
+          "legs": 9509,
+          "feet": 10402,
+          "finger1": 6748,
+          "finger2": 6748,
+          "main_hand": 6679,
+          "ranged": 13137
+        },
+        "talents": {
+          "trees": ["0000000000000000", "00000000000000000", "000000000000000000"],
+          "points": [23, 0, 0]
+        }
+      },
+      "guild": {
+        "id": 2,
+        "name": "Olympus XXVII",
+        "rank": "Officer",
+        "verified": true
+      }
     }
-   },
-   "guild": {
-    "id": 2,
-    "name": "Olympus XXVII",
-    "rank": "Officer",
-    "verified": true
-   }
-  }
- ],
- "guilds": [
-  {
-   "id": 2,
-   "region": "us",
-   "ruleset": "normal",
-   "name": "Olympus XXVII",
-   "slug": "olympus-xxvii",
-   "rank": "Officer",
-   "verified": true,
-   "verified_count": 18,
-   "faction": "alliance"
-  }
- ],
- "bnet_imported_at": "2026-11-06T09:00:00Z",
- "main_character_key": "us/normal/felsnap"
+  ],
+  "guilds": [
+    {
+      "id": 2,
+      "region": "us",
+      "ruleset": "normal",
+      "name": "Olympus XXVII",
+      "slug": "olympus-xxvii",
+      "rank": "Officer",
+      "verified": true,
+      "verified_count": 18,
+      "faction": "alliance"
+    }
+  ],
+  "bnet_imported_at": "2026-11-06T09:00:00Z",
+  "main_character_key": "us/normal/felsnap"
 }

@@ -1,181 +1,181 @@
 {
- "rows": [
-  {
-   "id": "g1",
-   "kind": "guild_sim",
-   "at": "2026-11-06T17:48:00Z",
-   "tag": "your_guild",
-   "icon": null,
-   "crest": "warrior",
-   "quality": null,
-   "href": "/sim/g1",
-   "date_only": false,
-   "segments": [
+  "rows": [
     {
-     "text": "Thalrin",
-     "style": "name",
-     "class": "warrior"
+      "id": "g1",
+      "kind": "guild_sim",
+      "at": "2026-11-06T17:48:00Z",
+      "tag": "your_guild",
+      "icon": null,
+      "crest": "warrior",
+      "quality": null,
+      "href": "/sim/g1",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Thalrin",
+          "style": "name",
+          "class": "warrior"
+        },
+        {
+          "text": " simmed 987 DPS, #2 of 14 DPS in "
+        },
+        {
+          "text": "Olympus XXVII",
+          "style": "strong"
+        },
+        {
+          "text": " (Fury Warrior, 60 raid)"
+        }
+      ]
     },
     {
-     "text": " simmed 987 DPS, #2 of 14 DPS in "
+      "id": "g3",
+      "kind": "guild_sim",
+      "at": "2026-11-06T15:00:00Z",
+      "tag": "your_guild",
+      "icon": null,
+      "crest": "mage",
+      "quality": null,
+      "href": "/sim/g3",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Kaelra",
+          "style": "name",
+          "class": "mage"
+        },
+        {
+          "text": " simmed 1012 DPS, #1 of 14 DPS in "
+        },
+        {
+          "text": "Olympus XXVII",
+          "style": "strong"
+        },
+        {
+          "text": " (Fire Mage, 60 raid)"
+        }
+      ]
     },
     {
-     "text": "Olympus XXVII",
-     "style": "strong"
+      "id": "e1",
+      "kind": "log_upload",
+      "at": "2026-11-06T17:56:00Z",
+      "tag": "logs",
+      "icon": null,
+      "crest": "warlock",
+      "quality": null,
+      "href": "/reports/r1",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Nightfall",
+          "style": "name",
+          "class": "warlock"
+        },
+        {
+          "text": " uploaded a full Shadowfang Keep, 8 bosses in 41 min"
+        }
+      ]
     },
     {
-     "text": " (Fury Warrior, 60 raid)"
+      "id": "e2",
+      "kind": "ranking_climb",
+      "at": "2026-11-06T17:43:00Z",
+      "tag": "rankings",
+      "icon": null,
+      "crest": "warrior",
+      "quality": null,
+      "href": "/rankings",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Fury Warrior, 20 to 29:",
+          "style": "strong"
+        },
+        {
+          "text": " "
+        },
+        {
+          "text": "Grukk",
+          "style": "name",
+          "class": "warrior"
+        },
+        {
+          "text": " climbed 6 places to #3"
+        }
+      ]
+    },
+    {
+      "id": "e3",
+      "kind": "bis_change",
+      "at": "2026-11-06T16:58:00Z",
+      "tag": "best_in_slot",
+      "icon": "inv_chest_leather_08",
+      "crest": null,
+      "quality": 3,
+      "href": "/bis/warrior/fury",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Best in slot changed",
+          "style": "strong"
+        },
+        {
+          "text": " for Fury Warrior 20 to 29: "
+        },
+        {
+          "text": "Blackened Defias Armor",
+          "style": "item",
+          "quality": 3,
+          "item_id": 10399
+        },
+        {
+          "text": " is the new chest"
+        }
+      ]
+    },
+    {
+      "id": "e4",
+      "kind": "log_upload",
+      "at": "2026-11-06T16:25:00Z",
+      "tag": "logs",
+      "icon": null,
+      "crest": "hunter",
+      "quality": null,
+      "href": "/reports/r1",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Ellowen",
+          "style": "name",
+          "class": "hunter"
+        },
+        {
+          "text": " uploaded Razorfen Kraul, 5 bosses in 52 min"
+        }
+      ]
+    },
+    {
+      "id": "e5",
+      "kind": "ranking_top",
+      "at": "2026-11-06T15:40:00Z",
+      "tag": "rankings",
+      "icon": null,
+      "crest": "warrior",
+      "quality": null,
+      "href": "/rankings",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Brakka",
+          "style": "name",
+          "class": "warrior"
+        },
+        {
+          "text": " took #1 for Arms Warrior, 30 to 39"
+        }
+      ]
     }
-   ]
-  },
-  {
-   "id": "g3",
-   "kind": "guild_sim",
-   "at": "2026-11-06T15:00:00Z",
-   "tag": "your_guild",
-   "icon": null,
-   "crest": "mage",
-   "quality": null,
-   "href": "/sim/g3",
-   "date_only": false,
-   "segments": [
-    {
-     "text": "Kaelra",
-     "style": "name",
-     "class": "mage"
-    },
-    {
-     "text": " simmed 1012 DPS, #1 of 14 DPS in "
-    },
-    {
-     "text": "Olympus XXVII",
-     "style": "strong"
-    },
-    {
-     "text": " (Fire Mage, 60 raid)"
-    }
-   ]
-  },
-  {
-   "id": "e1",
-   "kind": "log_upload",
-   "at": "2026-11-06T17:56:00Z",
-   "tag": "logs",
-   "icon": null,
-   "crest": "warlock",
-   "quality": null,
-   "href": "/reports/r1",
-   "date_only": false,
-   "segments": [
-    {
-     "text": "Nightfall",
-     "style": "name",
-     "class": "warlock"
-    },
-    {
-     "text": " uploaded a full Shadowfang Keep, 8 bosses in 41 min"
-    }
-   ]
-  },
-  {
-   "id": "e2",
-   "kind": "ranking_climb",
-   "at": "2026-11-06T17:43:00Z",
-   "tag": "rankings",
-   "icon": null,
-   "crest": "warrior",
-   "quality": null,
-   "href": "/rankings",
-   "date_only": false,
-   "segments": [
-    {
-     "text": "Fury Warrior, 20 to 29:",
-     "style": "strong"
-    },
-    {
-     "text": " "
-    },
-    {
-     "text": "Grukk",
-     "style": "name",
-     "class": "warrior"
-    },
-    {
-     "text": " climbed 6 places to #3"
-    }
-   ]
-  },
-  {
-   "id": "e3",
-   "kind": "bis_change",
-   "at": "2026-11-06T16:58:00Z",
-   "tag": "best_in_slot",
-   "icon": "inv_chest_leather_08",
-   "crest": null,
-   "quality": 3,
-   "href": "/bis/warrior/fury",
-   "date_only": false,
-   "segments": [
-    {
-     "text": "Best in slot changed",
-     "style": "strong"
-    },
-    {
-     "text": " for Fury Warrior 20 to 29: "
-    },
-    {
-     "text": "Blackened Defias Armor",
-     "style": "item",
-     "quality": 3,
-     "item_id": 10399
-    },
-    {
-     "text": " is the new chest"
-    }
-   ]
-  },
-  {
-   "id": "e4",
-   "kind": "log_upload",
-   "at": "2026-11-06T16:25:00Z",
-   "tag": "logs",
-   "icon": null,
-   "crest": "hunter",
-   "quality": null,
-   "href": "/reports/r1",
-   "date_only": false,
-   "segments": [
-    {
-     "text": "Ellowen",
-     "style": "name",
-     "class": "hunter"
-    },
-    {
-     "text": " uploaded Razorfen Kraul, 5 bosses in 52 min"
-    }
-   ]
-  },
-  {
-   "id": "e5",
-   "kind": "ranking_top",
-   "at": "2026-11-06T15:40:00Z",
-   "tag": "rankings",
-   "icon": null,
-   "crest": "warrior",
-   "quality": null,
-   "href": "/rankings",
-   "date_only": false,
-   "segments": [
-    {
-     "text": "Brakka",
-     "style": "name",
-     "class": "warrior"
-    },
-    {
-     "text": " took #1 for Arms Warrior, 30 to 39"
-    }
-   ]
-  }
- ],
- "next_cursor": null
+  ],
+  "next_cursor": null
 }

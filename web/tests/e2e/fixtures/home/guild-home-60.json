@@ -1,76 +1,72 @@
 {
- "guild": {
-  "id": 2,
-  "name": "Olympus XXVII",
-  "region": "us",
-  "ruleset": "normal",
-  "slug": "olympus-xxvii",
-  "faction": "alliance"
- },
- "claim": {
-  "state": "claimed"
- },
- "reports": [],
- "roster": [],
- "pending": [],
- "summary": {
-  "raiders": 14,
-  "waiting_for_approval": 0,
-  "below_rating_floor": 0,
-  "named_encounters_down": 0,
-  "pulls_this_tier": 0,
-  "tier": {
-   "name": "Tier 1",
-   "raids": [
-    "Barrow Deeps",
-    "Hyjal Summit",
-    "Onyxia's Lair"
-   ],
-   "named_encounters": 9,
-   "down": 0,
-   "pulls_total": 0
+  "guild": {
+    "id": 2,
+    "name": "Olympus XXVII",
+    "region": "us",
+    "ruleset": "normal",
+    "slug": "olympus-xxvii",
+    "faction": "alliance"
   },
-  "updated_at": "2026-11-06T08:00:00Z"
- },
- "standing": {
-  "spec": "Fury",
-  "class": "Warrior",
-  "same_spec_count": 4,
-  "rank_by_item_level": 2,
-  "item_level": 61,
-  "needs_before_next_raid": [
-   "Enchant your chest and boots",
-   "Bring a Flask of the Titans or Elixir of the Mongoose"
-  ],
-  "needs_raid": {
-   "title": "Onyxia's Lair",
-   "starts_at": "2026-12-10T02:00:00Z",
-   "character_key": "us/normal/thandrel"
-  }
- },
- "next_raid": {
-  "id": 41,
-  "zone": "onyxia",
-  "zone_name": "Onyxia's Lair",
-  "zone_kind": "raid",
-  "title": "Onyxia's Lair",
-  "starts_at": "2026-12-10T02:00:00Z",
-  "status": "planned",
-  "size": 40,
-  "guild_timezone": "America/Chicago",
-  "counts": {
-   "in": 18,
-   "late": 3,
-   "tanks": 3,
-   "healers": 6,
-   "dps": 12,
-   "melee": 7,
-   "ranged": 5
+  "claim": {
+    "state": "claimed"
   },
-  "own": {
-   "character_key": "us/normal/thandrel",
-   "state": "late",
-   "role": "dps"
+  "reports": [],
+  "roster": [],
+  "pending": [],
+  "summary": {
+    "raiders": 14,
+    "waiting_for_approval": 0,
+    "below_rating_floor": 0,
+    "named_encounters_down": 0,
+    "pulls_this_tier": 0,
+    "tier": {
+      "name": "Tier 1",
+      "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"],
+      "named_encounters": 9,
+      "down": 0,
+      "pulls_total": 0
+    },
+    "updated_at": "2026-11-06T08:00:00Z"
+  },
+  "standing": {
+    "spec": "Fury",
+    "class": "Warrior",
+    "same_spec_count": 4,
+    "rank_by_item_level": 2,
+    "item_level": 61,
+    "needs_before_next_raid": [
+      "Enchant your chest and boots",
+      "Bring a Flask of the Titans or Elixir of the Mongoose"
+    ],
+    "needs_raid": {
+      "title": "Onyxia's Lair",
+      "starts_at": "2026-12-10T02:00:00Z",
+      "character_key": "us/normal/thandrel"
+    }
+  },
+  "next_raid": {
+    "id": 41,
+    "zone": "onyxia",
+    "zone_name": "Onyxia's Lair",
+    "zone_kind": "raid",
+    "title": "Onyxia's Lair",
+    "starts_at": "2026-12-10T02:00:00Z",
+    "status": "planned",
+    "size": 40,
+    "guild_timezone": "America/Chicago",
+    "counts": {
+      "in": 18,
+      "late": 3,
+      "tanks": 3,
+      "healers": 6,
+      "dps": 12,
+      "melee": 7,
+      "ranged": 5
+    },
+    "own": {
+      "character_key": "us/normal/thandrel",
+      "state": "late",
+      "role": "dps"
+    }
   }
- }
 }
