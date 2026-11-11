@@ -65,7 +65,7 @@ def planned_row(raid: dict) -> str:
         parts.append(f'{late} late' + (f' ({heal} healer{"" if heal == 1 else "s"})' if heal else ''))
     return (f'<a class="prow" href="#"><span class="dt" aria-hidden="true"><span class="l">{at:%a}</span><span class="d">{at.day}</span>'
             f'<span class="l">{at:%b}</span></span><span><span class="tt">{raid["title"]}</span></span>'
-            f'<span><span class="sr-only">{at:%A} {at.day} {at:%B}, </span><span class="tm">{at.hour % 12 or 12}:{at.minute:02d} pm CST</span>'
+            f'<span><span class="sr-only">{at:%A} {at.day} {at:%B}, </span><span class="tm">{gd.house_clock(at)} CST</span>'
             f'<span class="cd gold">{countdown_words}</span></span>'
             f'<span style="display:flex;flex-direction:column;gap:4px"><span class="ct">{signed}/{raid["size"]}<span class="bar meter"><i style="width:{round(100 * signed / raid["size"])}%"></i></span></span>'
             f'<span class="sm">{" &middot; ".join(parts)}</span></span>'

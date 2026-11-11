@@ -191,9 +191,10 @@ def at(ms: float) -> str:
 
 
 def clock(iso: str) -> str:
-    """The pull's start as a time of day. The page shows the viewer's own clock; the mocks render UTC, as the captures did."""
+    """The pull's start as the log's own clock (web lib/dates.ts logClock): UTC, with seconds, en-US: `11:49:25 pm`."""
     from datetime import datetime, timezone
-    return datetime.fromisoformat(iso.replace('Z', '+00:00')).astimezone(timezone.utc).strftime('%H:%M:%S')
+    t = datetime.fromisoformat(iso.replace('Z', '+00:00')).astimezone(timezone.utc)
+    return f"{t.hour % 12 or 12}:{t.minute:02d}:{t.second:02d} {'am' if t.hour < 12 else 'pm'}"
 
 
 def outcome(f: dict) -> str:

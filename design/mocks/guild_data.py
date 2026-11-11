@@ -93,7 +93,8 @@ def rank_of(name: str) -> str:
 
 
 RECRUIT_PITCH = 'We raid Wednesday nights, bring flasks, and split loot by council with the numbers shown. New to Forever is fine.'
-RECRUIT_NIGHTS = 'Wed, 8 pm to 11 pm CST'
+# The API's own summary string (api recruit card raid_nights.summary, server-written; lane C).
+RECRUIT_NIGHTS = 'Wed, 8:00 pm to 11:00 pm CST'
 RECRUIT_UPCOMING = [NEXT_RAID_AT, SECOND_RAID_AT]
 # class, spec key, spec name, note
 RECRUIT_WANTED = [('warrior', 'warrior-protection', 'Protection Warrior', 'Off tank'), ('paladin', 'paladin-holy', 'Holy Paladin', 'For the heal rotation'),

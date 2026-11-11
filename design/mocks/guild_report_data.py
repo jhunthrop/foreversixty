@@ -181,7 +181,7 @@ def local(iso: str):
 
 
 def hour(t) -> str:
-    return f"{t.hour % 12 or 12}:{t.minute:02d} {'am' if t.hour < 12 else 'pm'}"
+    return gd.house_clock(t)
 
 
 def when_line(raid: dict) -> str:
