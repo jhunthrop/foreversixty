@@ -36,10 +36,19 @@ enum ParityCheck {
         "raid-unanswered": ["controls", "section-not-answered", "section-healers-on-the-bench"].map(bandHead),
         // Home's raid-day card draws the one answer control (44 pt and its 1 pt ring, lane mobile-rest's
         // brand ruling: one answer control everywhere); the mock's older answers are shorter, so New for
-        // you sits 8 to 9 lower. Clears when the Home mock draws the segmented answers.
-        "home-raid-day": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
-        "home-raid-day-late": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
-        "home-raid-day-officer": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
+        // you sits 8 to 9 lower and Next upgrades 13 to 14. Clears when the Home mock draws the segmented answers.
+        "home-raid-day": [
+            Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest"),
+            Drift(prefix: "section-next-upgrades: y", since: "2026-11-11", lane: "batch K one answer control"),
+        ],
+        "home-raid-day-late": [
+            Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest"),
+            Drift(prefix: "section-next-upgrades: y", since: "2026-11-11", lane: "batch K one answer control"),
+        ],
+        "home-raid-day-officer": [
+            Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest"),
+            Drift(prefix: "section-next-upgrades: y", since: "2026-11-11", lane: "batch K one answer control"),
+        ],
         "raid-applicant": applicantBandDrift,
         // Round 3 mocks set `.sub` lines at 18.29 and the Segmented inside a 1 px border; the app's row
         // line is RowType.sub's 18. Over the Raid tab's and Activity's ~30 lines that sums to 8 to 11 pt

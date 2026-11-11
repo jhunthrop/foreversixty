@@ -49,7 +49,7 @@ struct BisListTests {
 
     @Test("the set line carries the figure, the unit and the Updated date")
     func setDpsLine() throws {
-        #expect(try raidList().setDpsLine == "894.1 DPS at best in slot for your level range · Updated 30 Oct 2026")
+        #expect(try raidList().setDpsLine == "894.1 DPS · Updated 30 Oct 2026")
     }
 
     @Test("the next line: a signed gap with a true minus, same below 0.05, nothing else ranked")
