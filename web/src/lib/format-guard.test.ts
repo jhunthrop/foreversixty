@@ -117,7 +117,8 @@ function offenders(rule: Rule): string[] {
 }
 
 /** Hand-written prose (the changelog, the content pages) carries dates the formatters never see. */
-const PROSE_DATE = /\bSept\b(?!ember)|\b\d{1,2}:\d{2} [ap]\.m\.|\b[ap]\.m\. P[DS]T\b/g;
+const PROSE_DATE =
+  /\b(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}\b|\bSept\b(?!ember)|\b\d{1,2}:\d{2} [ap]\.m\.|\b[ap]\.m\. P[DS]T\b/g;
 
 function markdownFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -128,10 +129,10 @@ function markdownFiles(dir: string): string[] {
 }
 
 describe('format guard, prose', () => {
-  it('catches "Sept 17" and "10:00 a.m."', () => {
-    expect('on Sept 17 at 10:00 a.m. PDT'.match(PROSE_DATE)?.length).toBe(2);
+  it('catches "Sept 17", "10:00 a.m." and "October 21"', () => {
+    expect('on Sept 17 at 10:00 a.m. PDT, then October 21'.match(PROSE_DATE)?.length).toBe(3);
   });
-  it('finds no "Sept" or "a.m./p.m." in the content collections', () => {
+  it('finds no "Sept", "a.m./p.m." or month-first date in the content collections', () => {
     const found = markdownFiles(path.join(SRC, 'content')).flatMap((file) =>
       [...readFileSync(file, 'utf8').matchAll(PROSE_DATE)].map((match) => `${relative(file)}: ${match[0]}`),
     );

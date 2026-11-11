@@ -1,5 +1,5 @@
 ---
-title: 'Blizzard moves the Forever stress test to October 21, open to everyone.'
+title: 'Blizzard moves the Forever stress test to 21 Oct, open to everyone.'
 date: 2026-10-16
 kind: blizzard
 updated: 2026-10-16
