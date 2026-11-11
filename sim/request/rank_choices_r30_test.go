@@ -54,7 +54,7 @@ func TestRound30HealerRankRows(t *testing.T) {
 		{"Gnome Discipline Renew at 35", "priest-discipline", "priest", "gnome", 35, 6075, 6074},
 		{"Troll Discipline Renew at 42", "priest-discipline", "priest", "troll", 42, 6076, 6078},
 		{"Orc Restoration Healing Wave at 38", "shaman-restoration", "shaman", "orc", 38, 959, 913},
-		{"Tauren Restoration Healing Wave at 41", "shaman-restoration", "shaman", "tauren", 41, 939, 8005},
+		{"Tauren Restoration Healing Wave at 41", "shaman-restoration", "shaman", "tauren", 41, 939, 913},
 		{"Dwarf Restoration Healing Wave at 44", "shaman-restoration", "shaman", "dwarf", 44, 959, 939},
 		{"Night Elf Restoration Rejuvenation at 44", "druid-restoration", "druid", "night-elf", 44, 2090, 774},
 		{"Tauren Restoration Rejuvenation at 47", "druid-restoration", "druid", "tauren", 47, 2091, 774},

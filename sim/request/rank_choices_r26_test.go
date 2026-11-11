@@ -74,7 +74,7 @@ func TestRound26HolyPriestRenewAtSixteen(t *testing.T) {
 	const rn1, rn2 = 139, 6074
 	checkRankRows(t, "priest-holy", "priest", []rankRowCase{
 		{"15 keeps rank 1", "human", 15, []int32{rn1}, []int32{rn2}},
-		{"16 rank 2", "undead", 16, []int32{rn2}, []int32{rn1}},
+		{"16 rank 1 (round 30)", "undead", 16, []int32{rn1}, []int32{rn2}},
 		{"17 rank 1", "human", 17, []int32{rn1}, []int32{rn2}},
 	})
 }

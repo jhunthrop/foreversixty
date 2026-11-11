@@ -85,8 +85,9 @@ func TestPriestRenewRowsSwitchInsideBandThirty(t *testing.T) {
 		want  []int
 	}{
 		// Round 24 (on the talents at each level): rank 2 and 3 take over race by race.
-		{"priest-holy", 31, []int{1, 2, 3}},
-		{"priest-holy", 33, []int{2, 3}},
+		{"priest-holy", 30, []int{1, 2}}, // round 30: rank 2 for the Alliance races, rank 1 for a Troll or Undead
+		{"priest-holy", 31, []int{2}},
+		{"priest-holy", 33, []int{2}},
 		{"priest-holy", 39, []int{3}},
 		{"priest-discipline", 29, []int{1}},
 		{"priest-discipline", 30, []int{2}},

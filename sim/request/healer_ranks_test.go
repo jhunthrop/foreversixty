@@ -185,8 +185,8 @@ func TestRestorationShamanFillerHealingWaveByBand(t *testing.T) {
 	}{
 		{20, BarePreset, 2}, {21, BarePreset, 2}, {22, BarePreset, 2}, {23, BarePreset, 3}, {24, BarePreset, 3},
 		{25, BarePreset, 2}, {26, BarePreset, 3}, {30, BarePreset, 3}, {36, BarePreset, 3},
-		{37, BarePreset, 4}, {38, BarePreset, 4}, {41, BarePreset, 4}, {42, BarePreset, 5}, {44, BarePreset, 5},
-		{45, BarePreset, 5}, {46, BarePreset, 6}, {47, BarePreset, 6}, {50, BarePreset, 6}, {55, BarePreset, 6}, {56, BarePreset, 7}, {57, BarePreset, 7}, {58, BarePreset, 7}, {59, BarePreset, 8},
+		{37, BarePreset, 6}, {38, BarePreset, 6}, {41, BarePreset, 5}, {42, BarePreset, 5}, {44, BarePreset, 6},
+		{45, BarePreset, 6}, {46, BarePreset, 6}, {47, BarePreset, 6}, {50, BarePreset, 6}, {55, BarePreset, 6}, {56, BarePreset, 7}, {57, BarePreset, 7}, {58, BarePreset, 7}, {59, BarePreset, 8},
 		{60, BarePreset, 9}, {60, RaidPreset, 9},
 	} {
 		assertOnlyRank(t, filler, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)

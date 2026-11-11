@@ -314,10 +314,10 @@
             "note": "Sim-accuracy round 19: the tank Rejuvenation judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren). Rank 6 beats rank 4 by 1.2 to 1.4% at 49 and the top rank by 1.0 to 2.7% at 50 to 56 (round 16 had kept the top rank at 53 to 56)."
           },
           {
-            "from_level": 56,
+            "from_level": 58,
             "to_level": 58,
             "rank": 9,
-            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). Rank 9 beats rank 6 by 1.8 to 2.0% at 56 and rank 8 by 0.3 to 0.4% at 57 and 58."
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, level by level, every race named here (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). Rank 9 beats rank 6 by 1.8 to 2.0% at 56 and rank 8 by 0.3 to 0.4% at 57 and 58, so the rank 6 row ends at 55 and the rank 8 row at 57 is gone (rank 9 is what the rotation casts at 56 and 57); at 58, where rank 10 arrives, the row keeps rank 9."
           },
           {
             "from_level": 59,

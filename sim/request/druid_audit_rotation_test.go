@@ -228,7 +228,7 @@ func TestRestorationPartyRejuvenationAtTwentySevenToTwentyNine(t *testing.T) {
 // the low-rank penalty (10,000 iterations, seeds 1 and 50001, both factions):
 // rank 4 wins at 40-43, rank 5 at 44-48, rank 6 at 49-56 (it beats the top
 // rank by 1.0 to 2.7% at 53-56, where round 16 left the top rank) and rank 8
-// at 57-59.
+// at 57-59. Round 30 (on round 29's order): rank 6 to 55, rank 9 at 56 to 58, rank 8 at 59.
 // Round 20: at 38 and 39, on the band-30 gear those levels wear, rank 2 beats
 // rank 4 by 1.7 to 1.8% and 1.0 to 1.3%, so the rank-4 row starts at 40.
 func TestRestorationTankRejuvenationRanksByLevel(t *testing.T) {
@@ -237,7 +237,7 @@ func TestRestorationTankRejuvenationRanksByLevel(t *testing.T) {
 		level int
 		rank  int
 	}{
-		{38, 2}, {39, 2}, {40, 4}, {43, 4}, {44, 5}, {48, 5}, {49, 6}, {53, 6}, {56, 6}, {57, 8}, {59, 8},
+		{38, 2}, {39, 2}, {40, 4}, {43, 4}, {44, 5}, {48, 5}, {49, 6}, {53, 6}, {55, 6}, {56, 9}, {57, 9}, {58, 9}, {59, 8},
 	} {
 		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, "night-elf"))
 		for rank, id := range rejuvenation {
@@ -245,6 +245,10 @@ func TestRestorationTankRejuvenationRanksByLevel(t *testing.T) {
 			// (TestRestorationPartyRejuvenationAtFortyToFortyTwo), so its
 			// absence is only the tank's to assert below 40.
 			if rank == 2 && c.level >= 40 {
+				continue
+			}
+			// Round 30: the party line casts rank 4 at 44 and rank 5 at 45 to 48.
+			if (rank == 4 && c.level == 44) || (rank == 5 && c.level >= 45 && c.level <= 48) {
 				continue
 			}
 			if got, want := ids[id], rank == c.rank; got != want {
