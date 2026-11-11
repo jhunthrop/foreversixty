@@ -4,7 +4,8 @@
 //   apps/ios/Shared/DesignTokens.swift      FSColor, FSFont, FSType, FSSpace, FSRadius, ...
 //   apps/android/core/designsystem/.../Tokens.kt  FsColor, FsFont, FsType, FsSpace, FsShape, ...
 //   api/internal/brand/tokens_gen.go        the colours, radii, strokes and spaces the Go
-//                                           renderers (Discord cards, link previews) draw with
+//                                           renderers (Discord cards, link previews) draw with,
+//                                           and the font stacks and type roles its HTML pages set
 //   companion/ui/tokens.css                 the web's custom properties on :root, for the desktop companion
 // Run: node design/tokens/build.mjs. design/tokens/tokens.test.mjs fails CI on a stale output.
 // No dependencies: five outputs do not need Style Dictionary.
@@ -303,11 +304,11 @@ export function renderCss(model) {
   const breakpoint = resolve(byPath.get('layout.breakpointWide').value);
   out.push(
     ...wrapComment(
-      `The wide column (spec 3.2, owner decision 2026-11-05): a page built from the ui/ primitives sets \`data-column="wide"\` on <body> (Base.astro's \`wide\` prop) and from ${breakpoint} its column grows with the wider gutter, gaps and rails. Pages not yet migrated keep the narrow column until their own lane adopts the primitives.`,
+      `The wide frame (spec 3.2, owner decisions 2026-11-05 and 2026-11-10): from ${breakpoint} the one frame grows, with the wider gutter, gaps and rails, on every page alike ("consistent width for every experience").`,
       '',
     ),
     `@media (min-width: ${breakpoint}) {`,
-    "  [data-column='wide'] {",
+    '  :root {',
     ...wide.map((t) => `    ${t.ext.css}: ${resolve(t.ext.wide)};`),
     '  }',
     '}',
@@ -619,15 +620,37 @@ export function renderKotlin(model) {
 // ---------------------------------------------------------------------------------------------
 // Go (api/internal/brand): the web's values, since the Go renderers draw what the site shows.
 
-/** The groups the Go renderers read. */
-const GO_GROUPS = ['color', 'radius', 'stroke', 'space'];
+/** The groups the Go renderers read: the pixel renderers' colours and dimensions, and the font
+ *  stacks and type roles the server-rendered HTML pages (the app sign-in confirmation) set. */
+const GO_GROUPS = ['color', 'radius', 'stroke', 'space', 'font', 'type'];
 
 /** color.forever.accent to ColorForeverAccent, space.4 to Space4. */
 const goName = (path) => path.map((p) => p[0].toUpperCase() + p.slice(1)).join('');
 
 const goHex = (n) => `0x${n.toString(16).toUpperCase().padStart(2, '0')}`;
 
-function goDeclaration(t) {
+/** `{font.title}` to FontTitle. */
+function goFamilyRef(value) {
+  const ref = /^\{([^}]+)\}$/.exec(value);
+  if (!ref) throw new Error(`tokens.json: a type role's fontFamily must reference a font token, got ${value}`);
+  return goName(ref[1].split('.'));
+}
+
+/** A type role as the web sets it: its face, weight, size and line at both widths, tracking. */
+function goTypeRole(t, resolve) {
+  const { value, phone } = webValue(t);
+  const px = (v) => fmt(amount(resolve(v), 'px'));
+  return [
+    `var ${goName(t.path)} = TypeRole{`,
+    `\tFamily: ${goFamilyRef(value.fontFamily)}, Weight: ${value.fontWeight},`,
+    `\tSize: ${px(value.fontSize)}, LineHeight: ${px(value.lineHeight)},`,
+    `\tPhoneSize: ${px(phone.fontSize ?? value.fontSize)}, PhoneLineHeight: ${px(phone.lineHeight ?? value.lineHeight)},`,
+    `\tTrackingEm: ${fmt(amount(resolve(value.letterSpacing), 'em'))},`,
+    '}',
+  ].join('\n');
+}
+
+function goDeclaration(t, resolve) {
   const { value } = webValue(t);
   const name = goName(t.path);
   if (t.type === 'color') {
@@ -635,8 +658,26 @@ function goDeclaration(t) {
     const [r, g, b] = [rgb >> 16, (rgb >> 8) & 0xff, rgb & 0xff].map(goHex);
     return `var ${name} = color.NRGBA{R: ${r}, G: ${g}, B: ${b}, A: ${goHex(Math.round(alpha * 255))}}`;
   }
+  if (t.type === 'fontFamily') return `const ${name} = ${JSON.stringify(cssValue(t, value, resolve))}`;
+  if (t.type === 'typography') return goTypeRole(t, resolve);
   return `const ${name} = ${fmt(amount(value, 'px'))}`;
 }
+
+/** The struct every Type* role is, gofmt-aligned. */
+const GO_TYPE_ROLE = [
+  '// TypeRole is a type role as the web sets it (tokens.json type.*): its font stack (a Font* constant,',
+  '// written as CSS), its weight, its size and line height in px from 768 px (Size, LineHeight) and',
+  '// below it (PhoneSize, PhoneLineHeight), and its letter spacing in em.',
+  'type TypeRole struct {',
+  '\tFamily          string',
+  '\tWeight          int',
+  '\tSize            float64',
+  '\tLineHeight      float64',
+  '\tPhoneSize       float64',
+  '\tPhoneLineHeight float64',
+  '\tTrackingEm      float64',
+  '}',
+];
 
 export function renderGo(model) {
   const out = [
@@ -646,9 +687,11 @@ export function renderGo(model) {
     'package brand',
     '',
     'import "image/color"',
+    '',
+    ...GO_TYPE_ROLE,
   ];
   for (const t of model.tokens.filter((t) => GO_GROUPS.includes(t.top))) {
-    out.push('', ...docLines(t.description, '', '//'), goDeclaration(t));
+    out.push('', ...docLines(t.description, '', '//'), goDeclaration(t, model.resolve));
   }
   return `${out.join('\n')}\n`;
 }

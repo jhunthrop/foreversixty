@@ -483,12 +483,13 @@ brand-fonts:
 # api/internal/sheet/assets the nine 128 px HD crests and the two 72 px
 # faction marks; into api/internal/brand/art the 400 px seal (seal v4), the
 # brown ground tile, the 1200 px blue band, the link preview art and the lead panel's corner
-# ornament (design/assets/ornaments/corner-filigree.svg).
+# ornament (design/assets/ornaments/corner-filigree.svg), and the flat header seal the app
+# sign-in confirmation page inlines.
 SHEET_ASSETS_DIR := api/internal/sheet/assets
 BRAND_ART_DIR := api/internal/brand/art
 sheet-assets:
 	@mkdir -p $(SHEET_ASSETS_DIR)/crests $(SHEET_ASSETS_DIR)/faction $(BRAND_ART_DIR)
 	cp web/public/icons/hd/crests/*.webp $(SHEET_ASSETS_DIR)/crests/
 	cp web/public/icons/hd/faction/alliance.webp web/public/icons/hd/faction/horde.webp $(SHEET_ASSETS_DIR)/faction/
-	cp web/public/seal-400.png web/public/art/ground.webp web/public/art/band-1200.webp web/public/art/og-art.jpg $(BRAND_ART_DIR)/
+	cp web/public/seal-400.png web/public/art/ground.webp web/public/art/band-1200.webp web/public/art/og-art.jpg web/public/art/seal-flat-small.svg $(BRAND_ART_DIR)/
 	cp design/assets/ornaments/corner-filigree.svg $(BRAND_ART_DIR)/

@@ -9,6 +9,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // The raid post's stripe besides the accent: a cancelled raid in the wipe red, a locked or ended
@@ -19,9 +20,6 @@ var (
 )
 
 const (
-	// guildDateLayout and guildTimeLayout render the raid in the guild's own zone.
-	guildDateLayout = "Monday 2 January"
-	guildTimeLayout = "3:04 pm MST"
 	// maxRaidTitleRunes is the raid form's title bound.
 	maxRaidTitleRunes = 80
 )
@@ -265,7 +263,7 @@ func postFields(p RaidPost) []EmbedField {
 		fields = append(fields, raidField(raidCopy.WasName, fmt.Sprintf(raidCopy.WasFormat, p.Was.Unix())))
 	}
 	if in.Timezone != "" {
-		fields = append(fields, raidField(raidCopy.GuildTimeName, in.StartsAt.In(guildLocation(in.Timezone)).Format(guildTimeLayout)))
+		fields = append(fields, raidField(raidCopy.GuildTimeName, textfmt.RaidClock(in.StartsAt, textfmt.Location(in.Timezone))))
 	}
 	fields = append(fields, signedField(in))
 	if buffs := buffsValue(in); buffs != "" {
@@ -290,7 +288,7 @@ func buffsValue(in RaidPosted) string {
 // raidBaseEmbed is the guild embed every raid post shares: prefix, the escaped title and
 // the guild's date, linking to the raid page, with the crest when absolute.
 func raidBaseEmbed(in RaidPosted, prefix string, now time.Time) Embed {
-	date := in.StartsAt.In(guildLocation(in.Timezone)).Format(guildDateLayout)
+	date := textfmt.LongDay(in.StartsAt, textfmt.Location(in.Timezone))
 	room := maxTitleRunes - len([]rune(prefix)) - len([]rune(fmt.Sprintf(raidCopy.TitleFormat, "", date)))
 	title := prefix + fmt.Sprintf(raidCopy.TitleFormat, escapedWithin(collapse(in.Title), maxRaidTitleRunes, room), date)
 	// Discord answers 400 to a relative link (which would count toward the five failures),
@@ -330,18 +328,6 @@ func SignedValue(c RaidCounts, size int, sizeKnown bool) string {
 		return fmt.Sprintf(raidCopy.SignedLead, signed, size)
 	}
 	return fmt.Sprintf(raidCopy.SignedLeadOpen, signed)
-}
-
-// guildLocation loads the guild's zone, falling back to UTC.
-func guildLocation(name string) *time.Location {
-	if name == "" {
-		return time.UTC
-	}
-	loc, err := time.LoadLocation(name)
-	if err != nil {
-		return time.UTC
-	}
-	return loc
 }
 
 // isAbsolute reports whether raw is an absolute http(s) URL (Discord refuses relative ones).

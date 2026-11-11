@@ -35,7 +35,11 @@ func TestAppConfirmWearsTheDesignTokens(t *testing.T) {
 			t.Errorf("the page still carries the retired %q", retired)
 		}
 	}
-	for _, want := range []string{`<a class="go" href="/v1/auth/app/continue?x=1">`, `<div class="col panel">`, `'Marcellus',Optima`} {
+	for _, want := range []string{
+		`<a class="go" href="/v1/auth/app/continue?x=1">`, `<div class="col panel">`,
+		brand.FontTitle, brand.FontBody, `<img src="data:image/svg&#43;xml;base64,`,
+		"font-family:'Marcellus';font-weight:400", "font-family:'Open Sans';font-weight:600",
+	} {
 		if !strings.Contains(body, want) {
 			t.Errorf("the page is missing %q", want)
 		}

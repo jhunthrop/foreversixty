@@ -2,9 +2,9 @@ name: api
 on:
   push:
     branches: [main, 'land/**']
-    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'web/src/data/active-build.json', 'web/src/data/dates.json', 'apps/shared/home-sections.json', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', 'tools/go-test-shard.sh', 'tools/slop/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'web/src/data/active-build.json', 'web/src/data/dates.json', 'apps/shared/home-sections.json', 'apps/shared/formats.json', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', 'tools/go-test-shard.sh', 'tools/slop/**', '.github/workflows/api.yml']
   pull_request:
-    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'web/src/data/active-build.json', 'web/src/data/dates.json', 'apps/shared/home-sections.json', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', 'tools/go-test-shard.sh', 'tools/slop/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'web/src/data/active-build.json', 'web/src/data/dates.json', 'apps/shared/home-sections.json', 'apps/shared/formats.json', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', 'tools/go-test-shard.sh', 'tools/slop/**', '.github/workflows/api.yml']
   workflow_dispatch:
 jobs:
   # The checks that need no database: the engine-free build, vet and the sim module's

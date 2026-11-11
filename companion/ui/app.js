@@ -296,7 +296,7 @@ function renderStatus(s) {
     report: p.report_id ? { zone: ((s.reports || []).find((r) => r.key === p.report_key) || {}).zone || '', credit: s.credit,
       started: FORMAT.when(((s.reports || []).find((r) => r.key === p.report_key) || {}).started_at, new Date(), COPY.reports),
       visibility: COPY.settings.visibilitySaved[s.visibility] || '',
-      written: p.last_append ? FORMAT.ago(p.last_append, new Date(), COPY.status.ago) : '' } : (p.report_key ? 'starting' : 'none'),
+      written: p.last_append ? FORMAT.ago(p.last_append, new Date()) : '' } : (p.report_key ? 'starting' : 'none'),
     held: p.held || null, figure,
     // The words, not the time: the relative time moves on its own, and the
     // region only redraws when what it holds changes.
@@ -308,7 +308,7 @@ function renderStatus(s) {
     addon: FORMAT.addonRows(s.addon_update),
     installing: local.installingAddon,
     installError: local.addonError,
-    checked: s.builds_checked ? FORMAT.checkedLine(s.builds_checked, new Date(), COPY.status, COPY.status.ago) : '',
+    checked: s.builds_checked ? FORMAT.checkedLine(s.builds_checked, new Date(), COPY.status) : '',
     checking: checkBuilds.running,
     canCheck: checkBuilds.canPress(),
     checkError: local.checkError,
@@ -397,7 +397,7 @@ function renderStatus(s) {
 function lastSyncRow(ls) {
   if (!ls) return null;
   if (ls.state === 'sent') {
-    return { text: COPY.status.lastSyncSent(ls.count, FORMAT.ago(ls.at, new Date(), COPY.status.ago)), title: ls.title };
+    return { text: COPY.status.lastSyncSent(ls.count, FORMAT.ago(ls.at, new Date())), title: ls.title };
   }
   if (ls.state === 'refused') return { text: ls.line, tone: 'amber' };
   if (ls.state === 'none') return { text: ls.line, tone: 'muted' };
@@ -666,7 +666,7 @@ function deviceFacts(s) {
     [COPY.device.savedIn, s.token_backend_name],
     [COPY.device.uploaded, COPY.device.uploadedValue(reports.length, reports.reduce((n, r) => n + (r.fights || 0), 0))],
   ];
-  if (s.addon_seen_at) facts.push([COPY.device.addonSeen, FORMAT.ago(s.addon_seen_at, new Date(), COPY.status.ago)]);
+  if (s.addon_seen_at) facts.push([COPY.device.addonSeen, FORMAT.ago(s.addon_seen_at, new Date())]);
   facts.push([COPY.device.engine, s.engine_version]);
   return facts.filter(([, v]) => v);
 }

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // reportColor is the site's Done mark, the kill green (spec 2026-10-27-guild-attendance §6.2).
@@ -120,7 +121,7 @@ func ReportReadyEmbed(in ReportReady, now time.Time) Embed {
 		raidField(reportCopy.WipesName, fmt.Sprint(in.Wipes)),
 	}
 	if in.Time > 0 {
-		e.Fields = append(e.Fields, raidField(reportCopy.TimeName, NightLength(in.Time)))
+		e.Fields = append(e.Fields, raidField(reportCopy.TimeName, textfmt.Duration(in.Time)))
 	}
 	e.Fields = append(e.Fields,
 		raidField(reportCopy.CameName, fmt.Sprintf(reportCopy.CameOf, in.Came, in.Signed)),
@@ -161,7 +162,7 @@ func killsValue(kills []ReportKill) string {
 			break
 		}
 		boss := escapedWithin(collapse(k.Boss), maxBossRunes, maxBossRunes*2)
-		lines = append(lines, fmt.Sprintf(reportCopy.KillLine, boss, KillClock(k.Duration)))
+		lines = append(lines, fmt.Sprintf(reportCopy.KillLine, boss, textfmt.FightClock(k.Duration)))
 	}
 	return strings.Join(lines, "\n")
 }
@@ -183,28 +184,4 @@ func lootValue(in ReportReady) string {
 			escapedWithin(collapse(l.Winner), maxNameRunes, maxNameRunes*2)))
 	}
 	return strings.Join(lines, "\n")
-}
-
-// NightLength is a night's length as every guild post writes it: "2 h 41 min", "2 h" or
-// "41 min"; under a minute reads "1 min".
-func NightLength(d time.Duration) string {
-	total := max(1, int((d+30*time.Second)/time.Minute))
-	hours, minutes := total/60, total%60
-	switch {
-	case hours == 0:
-		return fmt.Sprintf("%d min", minutes)
-	case minutes == 0:
-		return fmt.Sprintf("%d h", hours)
-	default:
-		return fmt.Sprintf("%d h %d min", hours, minutes)
-	}
-}
-
-// KillClock is a kill time as m:ss, or h:mm:ss from an hour up.
-func KillClock(d time.Duration) string {
-	total := int(d.Round(time.Second) / time.Second)
-	if total >= 3600 {
-		return fmt.Sprintf("%d:%02d:%02d", total/3600, total%3600/60, total%60)
-	}
-	return fmt.Sprintf("%d:%02d", total/60, total%60)
 }

@@ -50,7 +50,7 @@ func (s *Service) itemSection(ctx context.Context, build string, r itemRow) Node
 // tileAlt is "{Item name}, {Quality} {slot} item", without the quality when it is unknown.
 func tileAlt(it ItemFacts, slot string) string {
 	slot = strings.ToLower(slot)
-	if q := qualityWord(it.Quality); q != "" {
+	if q := sheet.QualityWord(it.Quality); q != "" {
 		return fill(panelCopy.TileAlt, "{Item name}", it.Name, "{Quality}", q, "{slot}", slot)
 	}
 	return fill(panelCopy.TileAltNoQuality, "{Item name}", it.Name, "{slot}", slot)

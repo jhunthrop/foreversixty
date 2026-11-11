@@ -10,10 +10,10 @@ package activity
 import (
 	"context"
 	"fmt"
-	"math"
 	"strconv"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -73,16 +73,6 @@ func passedOn(ladder []LadderRow, key string, prev, now float64) []LadderRow {
 	return out
 }
 
-// formatLead is the lead of now over theirs at FormatFigure's precision for now: whole from
-// 100, one decimal below.
-func formatLead(now, theirs float64) string {
-	lead := now - theirs
-	if now >= 100 {
-		return strconv.FormatFloat(math.Round(lead), 'f', 0, 64)
-	}
-	return strconv.FormatFloat(lead, 'f', 1, 64)
-}
-
 // passedEvent is guildsim.passed to r's account.
 func (w *GuildSimWriter) passedEvent(f simFacts, simID string, r LadderRow) events.Event {
 	_, unit := RoleWords(f.role)
@@ -94,8 +84,8 @@ func (w *GuildSimWriter) passedEvent(f simFacts, simID string, r LadderRow) even
 		Kind: events.GuildSimPassed, Audience: events.Users(r.userID),
 		DedupeKey: "guildsim.passed:" + simID + ":" + r.Key,
 		Title:     fmt.Sprintf(passedCopy.Title, f.name),
-		Body: fmt.Sprintf(passedCopy.Body, FormatFigure(f.value), unit, formatLead(f.value, r.Value),
-			FormatFigure(r.Value), SpecName(f.spec), words),
+		Body: fmt.Sprintf(passedCopy.Body, textfmt.Figure(f.value, f.value), unit, textfmt.Figure(f.value-r.Value, f.value),
+			textfmt.Figure(r.Value, r.Value), SpecName(f.spec), words),
 		Link: fmt.Sprintf(guildLinkFormat, w.PublicBaseURL, f.guildID), Icon: specs.ByKey[f.spec].Icon,
 		Data: map[string]string{
 			"guild_id": strconv.FormatInt(f.guildID, 10), "sim_id": simID, "character_key": f.key,

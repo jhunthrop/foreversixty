@@ -155,22 +155,6 @@ func TestEscapeMarkdown(t *testing.T) {
 	}
 }
 
-func TestDurationAndThousands(t *testing.T) {
-	for d, want := range map[time.Duration]string{
-		48 * time.Second: "48 s", 192 * time.Second: "3 min 12 s", 180 * time.Second: "3 min",
-		65 * time.Minute: "1 h 5 min", time.Hour: "1 h", -time.Second: "0 s",
-	} {
-		if got := duration(d); got != want {
-			t.Errorf("%v = %q, want %q", d, got, want)
-		}
-	}
-	for v, want := range map[float64]string{0: "0", 999.4: "999", 1204.5: "1,205", 1234567: "1,234,567"} {
-		if got := thousands(v); got != want {
-			t.Errorf("%v = %q, want %q", v, got, want)
-		}
-	}
-}
-
 func TestTheCharacterNameIsEscapedInTheSimTitle(t *testing.T) {
 	e := SimFinishedEmbed(testBase, SimFinished{Spec: "mage-frost", Character: "A*b_c"})
 	if want := `A\*b\_c's Frost Mage sim finished`; e.Title != want {

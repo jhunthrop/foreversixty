@@ -2,6 +2,7 @@ package discordbot
 
 import (
 	"fmt"
+	"image/color"
 	"net/url"
 	"strings"
 	"time"
@@ -40,7 +41,7 @@ var (
 // copy of the class colours. false for a slug that is not a class.
 func classColor(slug string) (int, bool) {
 	c, ok := sheet.ClassColor(slug)
-	return int(c.R)<<16 | int(c.G)<<8 | int(c.B), ok
+	return brand.RGB(color.NRGBA(c)), ok
 }
 
 // classColorOf is the class's colour, 0 (none) for a slug that is not a class.
@@ -59,7 +60,7 @@ func ItemEmbed(it ItemFacts, slot string, delta string, author string) notify.Em
 		Color: qualityColor(it.Quality),
 	}
 	lines := []string{}
-	if one := joinPresent(slot, qualityWord(it.Quality), itemLevelText(it.ItemLevel)); one != "" {
+	if one := joinPresent(slot, sheet.QualityWord(it.Quality), itemLevelText(it.ItemLevel)); one != "" {
 		lines = append(lines, one)
 	}
 	if two := joinPresent(delta, it.Source); two != "" {
@@ -76,14 +77,7 @@ func qualityColor(q int) int {
 	if !ok {
 		return 0
 	}
-	return int(c.R)<<16 | int(c.G)<<8 | int(c.B)
-}
-
-func qualityWord(q int) string {
-	if q < 0 || q >= len(qualityWords) {
-		return ""
-	}
-	return qualityWords[q]
+	return brand.RGB(color.NRGBA(c))
 }
 
 func itemLevelText(level int) string {

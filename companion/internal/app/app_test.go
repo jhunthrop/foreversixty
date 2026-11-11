@@ -773,7 +773,7 @@ func TestTheStatusPageShowsWhenTheSiteSawTheExport(t *testing.T) {
 	if s.AddonSeenAt == nil || !s.AddonSeenAt.Equal(seen) || s.SimRequestState != addon.SimQueued {
 		t.Fatalf("snapshot = seen %v, sim %q", s.AddonSeenAt, s.SimRequestState)
 	}
-	if want := app.CopyLastSynced + " 14:03" + app.CopySeparator + app.CopySimQueued; s.AddonLine != want {
+	if want := app.CopyLastSynced + " 5 h ago" + app.CopySeparator + app.CopySimQueued; s.AddonLine != want {
 		t.Errorf("line = %q, want %q", s.AddonLine, want)
 	}
 	_, body := h.call(http.MethodGet, h.url("/api/status"), nil)

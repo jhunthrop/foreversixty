@@ -9,6 +9,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // Parts of a /signup card besides the four state words.
@@ -16,9 +17,6 @@ const (
 	partSignupRaid = "raid"
 	partSignupChar = "char"
 )
-
-// signupGuildTimeLayout is the Guild time in a raid option's description, as the post shows it.
-const signupGuildTimeLayout = "3:04 pm MST"
 
 // signupPicks is what a /signup card has chosen: the raid and the presser's own character.
 type signupPicks struct {
@@ -234,7 +232,7 @@ func raidOption(r guilds.Raid, v guilds.RaidView, selected bool) SelectOption {
 	if v.GuildTimezone != nil {
 		zone = *v.GuildTimezone
 	}
-	date := r.StartsAt.In(raidLocation(zone)).Format(raidChoiceDate)
+	date := textfmt.RaidDay(r.StartsAt, textfmt.Location(zone))
 	room := maxOptionRunes - len([]rune(fill(guideCopy.SignupRaidLabel, "{Title}", "", "{Ddd d Mmm}", date)))
 	title := truncateRunes(notify.Collapse(r.Title), room)
 	return SelectOption{
@@ -254,7 +252,7 @@ func raidOptionDescription(starts time.Time, zone string, v guilds.RaidView) str
 		_, count, _ = strings.Cut(count, lineJoin)
 		return count
 	}
-	return strings.Replace(count, "{Guild time}", starts.In(raidLocation(zone)).Format(signupGuildTimeLayout), 1)
+	return strings.Replace(count, "{Guild time}", textfmt.RaidClock(starts, textfmt.Location(zone)), 1)
 }
 
 // pickedNoRoles is whether the card's picked raid is a guild event, whose options name no role.

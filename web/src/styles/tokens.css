@@ -213,8 +213,8 @@
   --text-micro: 11px;
 
   /* The 4 pt steps (space.4 is 16) and the layout spacing. */
-  /* The page frame's gutter (global.css .page-column, the one frame every page, the header bar,
-     the page head band and the footer sit in). */
+  /* The page frame's gutter (global.css .page-column, the one frame every page, the header bar, the
+     page head band and the footer sit in). */
   --page-gutter: 48px;
   --section-gap: 48px;
   --gap: 24px;

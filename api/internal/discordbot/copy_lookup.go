@@ -95,9 +95,6 @@ var panelCopy = struct {
 	SheetCharFooter:   "Upgrades for {band label}",
 }
 
-// qualityWords are the item qualities in the game's words, by quality number (spec §6.2).
-var qualityWords = []string{"Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary"}
-
 // bandLabels are /bis's band labels by phase choice value (spec §6.2).
 var bandLabels = map[string]string{
 	"20": "level 20", "30": "level 30", "40": "level 40", "50": "level 50",

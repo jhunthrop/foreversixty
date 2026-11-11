@@ -18,20 +18,22 @@ import (
 
 // The site's art, copied byte for byte by make sheet-assets (art_test.go compares the hashes).
 const (
-	sealFile   = "art/seal-400.png"
-	groundFile = "art/ground.webp"
-	bandFile   = "art/band-1200.webp"
-	cornerFile = "art/corner-filigree.svg"
-	linkFile   = "art/og-art.jpg"
+	sealFile    = "art/seal-400.png"
+	groundFile  = "art/ground.webp"
+	bandFile    = "art/band-1200.webp"
+	cornerFile  = "art/corner-filigree.svg"
+	linkFile    = "art/og-art.jpg"
+	navSealFile = "art/seal-flat-small.svg"
 )
 
 // ArtSources maps each embedded file to the site file it copies, from the repo root.
 var ArtSources = map[string]string{
-	sealFile:   "web/public/seal-400.png",
-	groundFile: "web/public/art/ground.webp",
-	bandFile:   "web/public/art/band-1200.webp",
-	cornerFile: "design/assets/ornaments/corner-filigree.svg",
-	linkFile:   "web/public/art/og-art.jpg",
+	sealFile:    "web/public/seal-400.png",
+	groundFile:  "web/public/art/ground.webp",
+	bandFile:    "web/public/art/band-1200.webp",
+	cornerFile:  "design/assets/ornaments/corner-filigree.svg",
+	linkFile:    "web/public/art/og-art.jpg",
+	navSealFile: "web/public/art/seal-flat-small.svg",
 }
 
 //go:embed art
@@ -67,6 +69,21 @@ var (
 	bandImage   = sync.OnceValues(func() (image.Image, error) { return decodeArt(bandFile) })
 	linkImage   = sync.OnceValues(func() (image.Image, error) { return decodeArt(linkFile) })
 )
+
+// NavSealSVG is the flat seal the site's header bar draws at 40 px (web/src/lib/ui/assets.ts
+// sealFor), as SVG source, for an HTML page that inlines it.
+func NavSealSVG() ([]byte, error) { return artFS.ReadFile(navSealFile) }
+
+// GroundTileWebP is the site's painted earth tile (body background, tiled at GroundTilePx) and
+// BandWebP its 1200 px blue band, as WebP bytes, for an HTML page that inlines them.
+func GroundTileWebP() ([]byte, error) { return artFS.ReadFile(groundFile) }
+
+// BandWebP: see GroundTileWebP.
+func BandWebP() ([]byte, error) { return artFS.ReadFile(bandFile) }
+
+// GroundTilePx is the ground tile's drawn size, the site's --art-ground-size
+// (web/src/lib/ui/assets.ts GROUND_TILE_PX).
+const GroundTilePx = 1600
 
 // Seal is the LX seal v4 at 400 px, with real transparency.
 func Seal() (image.Image, error) { return sealImage() }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -33,9 +34,15 @@ func TestAppStartIsAConfirmPageWithNoAutoRedirect(t *testing.T) {
 			t.Errorf("confirm page is missing %q", want)
 		}
 	}
-	for _, banned := range []string{"<script", "http-equiv", "<form", "<iframe", "src="} {
+	for _, banned := range []string{"<script", "http-equiv", "<form", "<iframe"} {
 		if strings.Contains(strings.ToLower(body), banned) {
 			t.Errorf("confirm page carries %q; it must need a click and load nothing", banned)
+		}
+	}
+	// The faces and the seal travel inside the page: every src and url() is a data: URL.
+	for _, ref := range regexp.MustCompile(`(?i)(?:src=["']?|url\(["']?)([^"')\s>]*)`).FindAllStringSubmatch(body, -1) {
+		if !strings.HasPrefix(ref[1], "data:") {
+			t.Errorf("confirm page loads %q; it must load nothing", ref[1])
 		}
 	}
 	for header, want := range map[string]string{

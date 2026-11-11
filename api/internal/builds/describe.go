@@ -7,13 +7,15 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
-// defaultClassColor is the site's gold, used when the class has no color -
+// defaultClassColor is the site's gold (color.base.gold), used when the class has no color -
 // or when the build's tree version has no data at all.
-const defaultClassColor = "#e5b955"
+var defaultClassColor = brand.Hex(brand.ColorBaseGold)
 
 // Description is everything the page and the card need beyond the record
 // itself. The spec calls all of it derived, never stored.
@@ -137,19 +139,5 @@ func (d Description) WithSimDPS(ctx context.Context, buildID string, sims SimLoo
 // site formats a number.
 func formatDPSLine(mean, stdErr float64) string {
 	margin := math.Round(1.96 * stdErr)
-	return fmt.Sprintf("%s DPS ±%s", withCommas(math.Round(mean)), withCommas(margin))
-}
-
-// withCommas renders a rounded number with a comma every three digits.
-func withCommas(n float64) string {
-	s := strconv.FormatInt(int64(n), 10)
-	neg := strings.HasPrefix(s, "-")
-	s = strings.TrimPrefix(s, "-")
-	for i := len(s) - 3; i > 0; i -= 3 {
-		s = s[:i] + "," + s[i:]
-	}
-	if neg {
-		s = "-" + s
-	}
-	return s
+	return fmt.Sprintf("%s DPS ±%s", textfmt.Grouped(mean), textfmt.Grouped(margin))
 }

@@ -143,7 +143,7 @@ func markNames() []string {
 	for _, sp := range raidspec.All() {
 		out = append(out, sp.Emoji())
 	}
-	for q := range qualityWords {
+	for q := range sheet.QualityCount {
 		out = append(out, sheet.QualityEmojiName(q))
 	}
 	return out

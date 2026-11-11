@@ -9,6 +9,8 @@ package guilds
 import (
 	"fmt"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // SignupConfirmation is the notification the app posts after a background answer.
@@ -16,9 +18,6 @@ type SignupConfirmation struct {
 	Title string `json:"title"`
 	Body  string `json:"body"`
 }
-
-// confirmationTimeLayout is a time as the raid notifications word it ("8:30 pm CST").
-const confirmationTimeLayout = "3:04 pm MST"
 
 // confirmationCopy is the words of the confirmation.
 var confirmationCopy = struct {
@@ -43,15 +42,16 @@ func signupConfirmation(raid RaidView, name, state string, lateMinutes *int16, m
 	if raid.GuildTimezone != nil {
 		tz = *raid.GuildTimezone
 	}
-	pull := raid.StartsAt.In(raidLocation(tz))
+	loc := textfmt.Location(tz)
+	pull := raid.StartsAt
 	c := SignupConfirmation{Title: fmt.Sprintf(confirmationCopy.Title, confirmationCopy.States[state], raid.ZoneName)}
 	switch {
 	case state == SignupLate && lateMinutes != nil:
 		c.Title = fmt.Sprintf(confirmationCopy.LateTitle, *lateMinutes, raid.ZoneName)
 		arrival := pull.Add(time.Duration(*lateMinutes) * time.Minute)
-		c.Body = fmt.Sprintf(confirmationCopy.Arriving, name, arrival.Format(confirmationTimeLayout))
+		c.Body = fmt.Sprintf(confirmationCopy.Arriving, name, textfmt.RaidClock(arrival, loc))
 	case isAttending(state):
-		c.Body = fmt.Sprintf(confirmationCopy.Pull, name, pull.Format(confirmationTimeLayout))
+		c.Body = fmt.Sprintf(confirmationCopy.Pull, name, textfmt.RaidClock(pull, loc))
 	default:
 		c.Body = fmt.Sprintf(confirmationCopy.NameOnly, name)
 	}
@@ -59,16 +59,4 @@ func signupConfirmation(raid RaidView, name, state string, lateMinutes *int16, m
 		c.Body += fmt.Sprintf(confirmationCopy.Moved, *moved)
 	}
 	return c
-}
-
-// raidLocation is the guild's raid time zone, UTC when it set none or names an unknown one.
-func raidLocation(tz string) *time.Location {
-	if tz == "" {
-		return time.UTC
-	}
-	loc, err := time.LoadLocation(tz)
-	if err != nil {
-		return time.UTC
-	}
-	return loc
 }

@@ -5,7 +5,7 @@
 // while it recruits (recruit_open), on the faction asked (and the realm, when given), and its
 // wanted list names the spec, its class with no spec, or nothing at all (open to everyone).
 // Schedule is the officers' raid nights, else the nights and time of its planned raids over the
-// next two weeks in its raid time zone ("Wed and Sat, 8:00 pm CST"); needs is the spec's role.
+// next two weeks in its raid time zone ("Wed and Sat, 8 pm CST"); needs is the spec's role.
 // Public, like the recruiting card.
 package guilds
 
@@ -20,6 +20,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 const (
@@ -132,7 +133,7 @@ func (s *Store) plannedSchedule(ctx context.Context, guildID int64, tz string) (
 		return "", fmt.Errorf("guilds: recruiting schedule: %w", err)
 	}
 	defer rows.Close()
-	loc := raidLocation(tz)
+	loc := textfmt.Location(tz)
 	var starts []time.Time
 	for rows.Next() {
 		var t time.Time
@@ -147,7 +148,7 @@ func (s *Store) plannedSchedule(ctx context.Context, guildID int64, tz string) (
 	return scheduleWords(starts), nil
 }
 
-// scheduleWords is "Wed and Sat, 8:00 pm CST": the distinct weekdays Monday first, then the
+// scheduleWords is "Wed and Sat, 8 pm CST": the distinct weekdays Monday first, then the
 // first start's time.
 func scheduleWords(starts []time.Time) string {
 	seen := map[time.Weekday]bool{}
@@ -168,7 +169,7 @@ func scheduleWords(starts []time.Time) string {
 	if n := len(words); n > 1 {
 		list = strings.Join(words[:n-1], ", ") + " and " + words[n-1]
 	}
-	return list + ", " + starts[0].Format(confirmationTimeLayout)
+	return list + ", " + textfmt.RaidClock(starts[0], starts[0].Location())
 }
 
 // recruitingQuery validates the request; it writes the 400 itself when a parameter is bad.
