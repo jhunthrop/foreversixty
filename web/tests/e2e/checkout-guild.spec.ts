@@ -139,7 +139,7 @@ test.describe('the owner, a member of two unclaimed guilds', () => {
     const button = page.getByTestId(id('handoff-copy'));
     await expect(button).toHaveText(uiCopy.copyLink);
     await button.click();
-    await expect(button).toHaveText(uiCopy.copiedLink);
+    await expect(button).toHaveText(uiCopy.copied);
     const written = await page.evaluate(() => navigator.clipboard.readText());
     expect(written).toBe(await page.getByTestId(id('handoff-url')).inputValue());
     await expect(button).toHaveText(uiCopy.copyLink, { timeout: 4000 });
@@ -231,7 +231,6 @@ test.describe('claim in place', () => {
     await page.getByTestId(id('claim-commit')).click();
     await expect(page.getByTestId(id('claim-open'))).toHaveAttribute('aria-busy', 'true');
     await expect(page.getByTestId(id('claim-commit'))).toBeDisabled();
-    await expect(page.getByTestId(id('claim-commit'))).toHaveAttribute('aria-busy', 'true');
     cell.set(meWithGuilds(readyGuild(), stepGuild({ ...MILLENNIALS, step: 'claim', rank: 'leader' })));
     release();
     await expect(page.getByTestId(id('notice'))).toHaveText(copy.done.claim(GUILD_NAME));

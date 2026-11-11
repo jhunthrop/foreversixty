@@ -919,7 +919,7 @@ test.describe('readiness: worst-first sort and officer Nudge', () => {
     const copied = await page.evaluate(() => navigator.clipboard.readText());
     expect(copied.length).toBeGreaterThan(0);
     const names = await nudgeButtons.evaluateAll((buttons) =>
-      buttons.map((b) => b.getAttribute('aria-label')),
+      buttons.map((b) => b.textContent?.replace(/\s+/g, ' ').trim()),
     );
     expect(new Set(names).size).toBe(names.length);
   });

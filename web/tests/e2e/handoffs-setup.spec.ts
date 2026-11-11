@@ -51,7 +51,14 @@ test.describe('What it does in the game (L8.3)', () => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/setup');
       // Below 768 the grid folds behind one button (U5); open from 768.
-      if (width < 768) await page.getByTestId('setup-surfaces-show').click();
+      // The page hydrates after paint, so press until the button has opened the grid (it then goes).
+      if (width < 768) {
+        const show = page.getByTestId('setup-surfaces-show');
+        await expect(async () => {
+          await show.click({ timeout: 1000 });
+          await expect(show).toHaveCount(0, { timeout: 500 });
+        }).toPass();
+      }
       const surfaces = page.getByTestId('setup-surfaces').locator('[data-testid^="setup-surface-"]');
       await expect(surfaces).toHaveCount(11);
       expect(

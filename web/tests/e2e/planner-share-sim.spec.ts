@@ -110,7 +110,9 @@ test('unchecking the box skips the card sim entirely', async ({ page }) => {
   expect(simCalled).toBe(false);
 });
 
-test('unticking the box after a failed save drops Retry and reopens a fresh confirm', async ({ page }) => {
+test('unticking the box after a failed save drops Try again and reopens a fresh confirm', async ({
+  page,
+}) => {
   // Fix round (final): Retry used to repost with `confirmedIncludeSim`, captured when the
   // visitor confirmed -- so unticking the box after a failed save and clicking Retry still
   // saved a sim publicly, contradicting the box. The checkbox is now watched by the same
@@ -142,14 +144,14 @@ test('unticking the box after a failed save drops Retry and reopens a fresh conf
 
   await shareBuild(page);
   await expect(page.getByTestId('share-panel').getByRole('alert')).toContainText('build is not valid');
-  await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible();
   expect(buildCalls).toBe(1);
 
   await checkbox.uncheck();
 
   // The failed outcome (and Retry with it) is gone: unticking the box is treated as an
   // edit, the same as a talent change would be.
-  await expect(page.getByRole('button', { name: 'Retry' })).not.toBeVisible();
+  await expect(page.getByRole('button', { name: 'Try again' })).not.toBeVisible();
   await expect(page.getByTestId('share-panel').getByRole('alert')).not.toBeVisible();
   expect(buildCalls).toBe(1);
 
