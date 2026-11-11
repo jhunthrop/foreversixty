@@ -52,7 +52,10 @@ if (androidSealShare > ADAPTIVE.safe / ADAPTIVE.canvas) {
 
 /** The App Store's icon: a full-bleed square, opaque (no alpha channel at all). */
 async function iosAny(file) {
-  await sharp(await renderTile(SIZE)).removeAlpha().png(PNG).toFile(file);
+  await sharp(await renderTile(SIZE))
+    .removeAlpha()
+    .png(PNG)
+    .toFile(file);
 }
 
 /** Apple's dark icons sit on a transparent ground; the system draws the dark backdrop. */
@@ -149,7 +152,9 @@ async function android() {
   const dir = join(OUT, 'android');
   mkdirSync(dir, { recursive: true });
   // The ground fills the whole 108 dp canvas, so the parallax and every mask shape stay painted.
-  await sharp(await renderGround(ADAPTIVE_PX)).png(PNG).toFile(join(dir, 'ic_launcher_background.png'));
+  await sharp(await renderGround(ADAPTIVE_PX))
+    .png(PNG)
+    .toFile(join(dir, 'ic_launcher_background.png'));
   const seal = await renderSeal(Math.round(ADAPTIVE_PX * androidSealShare));
   await transparentCanvas(ADAPTIVE_PX)
     .composite([{ input: seal, gravity: 'center' }])
