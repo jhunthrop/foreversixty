@@ -4,12 +4,12 @@
 // is one the engine computed for this run; nothing is recomputed here.
 import type { PaperdollSlot } from '../gear/paperdoll';
 import { slotsFromWorn } from '../gear/paperdoll-slots';
-import { SLOTS, type Item, type ItemSet } from '../planner/types';
+import type { Item, ItemSet } from '../planner/types';
 import { attemptsOf } from '../report/ability-table';
 import { parseActionKey } from './action-names';
 import { withEnchants } from './enchant-names';
 import { gearCardCopy as copy } from './input-cards-copy';
-import { grouped, oneDecimal } from './result-copy';
+import { grouped, oneDecimal } from '../format/number';
 import type { FinalStats, GearSlot, SimResult } from './types';
 
 export { enchantNames } from './enchant-names';
@@ -24,24 +24,6 @@ interface SlotSources {
 export function gearSlots({ gear, items, failed, enchants }: SlotSources): PaperdollSlot[] {
   const worn = Object.fromEntries(gear.map((row) => [row.slot, row.item_id]));
   return withEnchants(slotsFromWorn(worn, { lookup: (id) => items.get(id), failed }), gear, enchants);
-}
-
-/** The worn items' mean item level, over the items the items file knows; null before it loads. */
-export function averageItemLevel(gear: readonly GearSlot[], items: ReadonlyMap<number, Item>): number | null {
-  const levels = gear.flatMap((row) => {
-    const item = row.item_id > 0 ? items.get(row.item_id) : undefined;
-    return item === undefined ? [] : [item.item_level];
-  });
-  return levels.length === 0 ? null : levels.reduce((sum, level) => sum + level, 0) / levels.length;
-}
-
-/** "17 of 17 slots · no enchants · item level 59.9". Counts every enchanted slot, named by the
- *  client or not; the item level joins once the items file has loaded. */
-export function gearMeta(gear: readonly GearSlot[], itemLevel: number | null = null): string {
-  const worn = gear.filter((row) => row.item_id > 0);
-  const enchanted = worn.filter((row) => (row.enchant ?? 0) > 0).length;
-  const counts = copy.meta(worn.length, SLOTS.length, enchanted);
-  return itemLevel === null ? counts : `${counts} · ${copy.itemLevel(oneDecimal(itemLevel))}`;
 }
 
 export interface SetLine {

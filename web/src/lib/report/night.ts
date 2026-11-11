@@ -5,7 +5,7 @@
 // night (trash is left out of it, as it is from the rankings: a trash pull's damage is mostly
 // a function of how much trash there was), or one zone's trash for its combined entry.
 import type { Fact } from '../ui/facts';
-import { formatDuration, phaseReached } from './format';
+import { phaseReached } from './format';
 import { encounterKey, mechanicRowKey } from './mechanics';
 import { abilityKey } from './types';
 import type {
@@ -26,6 +26,7 @@ import type {
   ThreatRow,
   PullMark,
 } from './types';
+import { clockDuration } from '../format/duration';
 
 export interface NightPlayerFight {
   index: number;
@@ -725,13 +726,13 @@ export function nightFacts(night: Night, trash: boolean, trashPulls = 0): Fact[]
                 {
                   id: 'fastest',
                   label: 'Fastest kill',
-                  value: formatDuration(fastest.best.duration_ms),
+                  value: clockDuration(fastest.best.duration_ms),
                   sub: fastest.name,
                 },
               ]),
           ...(trashPulls > 0 ? [{ id: 'trash', label: 'Trash pulls', value: String(trashPulls) }] : []),
         ]),
-    { id: 'combat', label: 'In combat', value: formatDuration(night.time_ms) },
+    { id: 'combat', label: 'In combat', value: clockDuration(night.time_ms) },
     { id: 'deaths', label: 'Deaths', value: String(night.deaths) },
   ];
 }

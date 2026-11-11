@@ -1,6 +1,7 @@
 // Home's sim figure and rail words (lib/home/home-b-view.ts, spec 2026-11-07 §1).
 import { describe, expect, it } from 'vitest';
-import { simFigure, specName, specWeekView } from './home-b-view';
+import { simFigure, specWeekView } from './home-b-view';
+import { specLabel as specName } from '../sim/spec-label';
 import type { SpecWeek } from './home-answer';
 
 const WEEK: SpecWeek = {

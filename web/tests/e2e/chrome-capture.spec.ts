@@ -21,6 +21,8 @@ import { openHome, type HomeState } from './support/home-page';
 import { openSimState, type SimParityState } from './support/sim-parity';
 import { openLogsState, type LogsParityState } from './support/logs-parity';
 import { openTiersState, type TiersParityState } from './support/tiers-parity';
+import { openRankingsState, type RankingsParityState } from './support/rankings-parity';
+import { openPagesState } from './support/pages-page';
 import { openGuildState } from './support/guild-parity';
 import { REPO_ROOT, readParityConfig, waitForChromeHydrated } from './support/parity';
 
@@ -39,7 +41,10 @@ interface Capture {
 /** Runs in the page: the chrome's markup and every CSS rule that styles it, scoped. */
 async function capture(page: Page): Promise<Capture> {
   return page.evaluate(async () => {
-    const roots = [document.querySelector('[data-site-header]'), document.querySelector('footer')].filter(
+    // The header as the page frame holds it (Base.astro's .page-column around the bar): the mock's
+    // bar then sits on the frame's edges as the site's does.
+    const bar = document.querySelector('[data-site-header]');
+    const roots = [bar?.closest('.page-column') ?? bar, document.querySelector('footer')].filter(
       (el): el is HTMLElement => el !== null,
     );
     const SCOPE = '.fs-chrome';
@@ -271,6 +276,14 @@ test.describe('site chrome capture', () => {
       s.id as LogsParityState,
     ]);
     await each(browser, states, openLogsState);
+    const rankings = readParityConfig('rankings-parity.json').states.map(
+      (s): [string, RankingsParityState] => [s.mock, s.id as RankingsParityState],
+    );
+    await each(browser, rankings, openRankingsState);
+    // parity-pages.spec.ts's ratings state: /ratings signed out.
+    await each(browser, [['web-ratings', '/ratings']], (page, pathname: string) =>
+      openPagesState(page, pathname, 'out'),
+    );
   });
 
   test('tier list', async ({ browser }) => {

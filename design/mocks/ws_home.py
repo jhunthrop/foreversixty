@@ -126,13 +126,15 @@ def raids_open() -> str | None:
 
 
 def clock_to(target: str) -> list[tuple[str, str]]:
-    """The plaque's clock (web lib/home/plaque.ts plaqueClock): days and hours, minutes in the final hour."""
-    secs = int((iso(target) - NOW).total_seconds())
-    if secs <= 0:
+    """The one countdown (web lib/ui/countdown.ts clockParts, apps/shared/formats.json): days, hours and
+    minutes, zero units left out, minutes rounded up."""
+    total = -(-int((iso(target) - NOW).total_seconds()) // 60)
+    if total <= 0:
         return []
-    if secs < 3600:
-        return [(str(-(-secs // 60)), 'min')]
-    return [(str(secs // 86400), 'days'), (str(secs % 86400 // 3600), 'hours')]
+    days, hours, minutes = total // 1440, total % 1440 // 60, total % 60
+    parts = [(str(days), 'day' if days == 1 else 'days')] if days else []
+    parts += [(str(hours), 'hour' if hours == 1 else 'hours')] if hours else []
+    return parts + ([(str(minutes), 'min')] if minutes else [])
 
 
 def day_text(s: str) -> str:

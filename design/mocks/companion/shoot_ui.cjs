@@ -3,7 +3,8 @@
 // pages, at a larger 1100 x 800 and at the smallest the window goes, 560 x 480. The page is served from companion/ui exactly as the binary
 // embeds it; api/status answers with a snapshot from companion/ui/testdata (the same snapshots the Go tests pin),
 // adjusted per state where the fixtures have none. The clock is frozen 4 minutes after the fixtures' report start.
-//   node design/mocks/companion/shoot_ui.cjs <node_modules with playwright> <out dir> [state-name-filter]
+//   [SHOOT_LOCALE=en-US] node design/mocks/companion/shoot_ui.cjs <node_modules with playwright> <out dir> [state-name-filter]
+// The window reads in en-GB unless SHOOT_LOCALE names another locale (the clock follows it).
 const path = require('node:path');
 const fs = require('node:fs');
 const { chromium } = require(path.join(process.argv[2], 'playwright'));
@@ -14,7 +15,7 @@ const OUT = path.resolve(process.argv[3]);
 const FILTER = process.argv[4] ? new RegExp(process.argv[4]) : null;
 const ORIGIN = 'http://127.0.0.1:47123/9f2c1a7e/';
 const NOW = new Date('2026-10-20T17:44:00Z');
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2' };
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2', '.svg': 'image/svg+xml' };
 
 const fixture = (name) => JSON.parse(fs.readFileSync(path.join(UI, 'testdata', name + '.json'), 'utf8')).data;
 const ok = (data) => ({ ok: true, data, error: null });
@@ -104,7 +105,7 @@ const STATES = [
 ];
 
 async function shoot(browser, state, size, suffix) {
-  const context = await browser.newContext({ viewport: size, deviceScaleFactor: 2, timezoneId: 'Europe/London', locale: 'en-GB' });
+  const context = await browser.newContext({ viewport: size, deviceScaleFactor: 2, timezoneId: 'Europe/London', locale: process.env.SHOOT_LOCALE || 'en-GB' });
   const page = await context.newPage();
   await page.clock.install({ time: NOW });
   let current = state.snap;

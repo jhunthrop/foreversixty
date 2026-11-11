@@ -4,7 +4,7 @@
      index. The design's own caveat stands and the page says it: search can find items this
      character has no way to obtain. -->
 <script lang="ts">
-  import { rarityClassFor } from '../../../lib/planner/items';
+  import ItemName from '../../ui/ItemName.svelte';
   import type { Item } from '../../../lib/planner/types';
   import { bulkCopy } from '../../../lib/sim/copy';
   import {
@@ -152,9 +152,10 @@
             <ItemIcon icon={item.icon} quality={item.quality} build={treeVersion} size={28} />
           {/snippet}
           {#snippet titleContent()}
-            <span class={rarityClassFor(item.quality)}
-              >{item.name}{variant === '' ? '' : ` (${variant})`}</span
-            >
+            <ItemName
+              name={variant === '' ? item.name : `${item.name} (${variant})`}
+              quality={item.quality}
+            />
           {/snippet}
           {#snippet trail()}
             <span class="text-muted text-[13px] tabular-nums">{item.item_level}</span>

@@ -11,7 +11,7 @@ import {
   guideLoadout,
   hasUnaddedBuild,
   loadoutDiff,
-  loadoutTrees,
+  talentRanks,
   savedBuildsMessage,
 } from './talent-loadouts';
 import type { TalentLoadout } from './types';
@@ -125,21 +125,20 @@ describe('savedBuildsMessage', () => {
   });
 });
 
-describe('loadoutTrees', () => {
+describe('talentRanks', () => {
   const index = indexTalents(talentsFixture as unknown as TalentFile);
 
-  it('reads one tree per talent tab, each talent at the rank its position in the string gives it', () => {
-    const trees = loadoutTrees(index, '23');
-    expect(trees).toHaveLength(index.trees.length);
+  it('reads each talent at the rank its position in its tree’s string gives it', () => {
+    const ranks = talentRanks(index, '23');
     const [first, second] = index.trees[0].talents;
-    expect(trees[0].talents[0]).toMatchObject({ name: first.name, rank: Math.min(2, first.max_rank) });
-    expect(trees[0].points).toBe(Math.min(2, first.max_rank) + Math.min(3, second.max_rank));
-    expect(trees[1].points).toBe(0);
+    expect(ranks.get(first.id)).toBe(Math.min(2, first.max_rank));
+    expect(ranks.get(second.id)).toBe(Math.min(3, second.max_rank));
+    expect(index.trees[1].talents.every((talent) => ranks.get(talent.id) === 0)).toBe(true);
   });
 
-  it('never draws a rank past the talent’s own maximum', () => {
-    const [first] = loadoutTrees(index, '9');
-    expect(first.talents[0].rank).toBe(index.trees[0].talents[0].max_rank);
+  it('never reads a rank past the talent’s own maximum', () => {
+    const first = index.trees[0].talents[0];
+    expect(talentRanks(index, '9').get(first.id)).toBe(first.max_rank);
   });
 });
 

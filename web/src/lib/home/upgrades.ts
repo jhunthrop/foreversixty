@@ -19,13 +19,14 @@ import { hasKnownSource } from '../bis/source-cell';
 import { slotScoreUnitFor, type SlotScoreUnit } from '../bis/tank-view';
 import type { BisBand, BisSlot, BisStatWeight } from '../bis/types';
 import { SLOTS, type Item, type Slot } from '../planner/types';
+import { WEAPON_SLOTS } from '../gear/slots';
 
 /** The slots a weapon can occupy -- `scoreItem` only sums `item.stats`, so it cannot
  *  reproduce a weapon's own damage-based score term (its published `score` bakes that in,
  *  `scoreItem` does not), which is exactly the ~13x overstatement fix round 1 caught on the
  *  Ranger Bow row. A weapon slot's gain is only ever read off a sim-verified
- *  `BisAlternative.dps_delta` (`alternativeGainDps`); never `scoreItem`-diffed. */
-const WEAPON_SLOTS: ReadonlySet<string> = new Set(['main_hand', 'off_hand', 'ranged']);
+ *  `BisAlternative.dps_delta` (`alternativeGainDps`); never `scoreItem`-diffed. The weapon slots
+ *  are lib/gear/slots.ts WEAPON_SLOTS. */
 
 /** One slot where the character's worn item differs from the band's own pick (and is not a
  *  scored tie with it -- see `tiesWithPick`). */

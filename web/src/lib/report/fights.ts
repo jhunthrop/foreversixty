@@ -8,7 +8,7 @@
 // known there. `?fight=0` therefore parses even though fight_index is 1-based and no
 // report has a fight 0, and so does `?fight=999` and a number that falls in a gap.
 import { type KillCounts, sumKillCounts } from './kill-counts';
-import { formatDuration } from './format';
+import { clockDuration } from '../format/duration';
 import type { FightEntry } from './types';
 import { ALL_FIGHTS, trashScope, trashScopeKey } from './url';
 
@@ -85,7 +85,7 @@ export function sampleFightIndex(fights: readonly FightEntry[]): number {
 
 /** What a fight's row is called: a boss keeps its name; trash is "Trash · 3:26", its length, since every trash pull is named "Trash". */
 export function fightTitle(fight: Pick<FightEntry, 'kind' | 'name' | 'duration_ms'>): string {
-  return fight.kind === 'encounter' ? fight.name : `Trash · ${formatDuration(fight.duration_ms)}`;
+  return fight.kind === 'encounter' ? fight.name : `Trash · ${clockDuration(fight.duration_ms)}`;
 }
 
 export interface TrashGroup {

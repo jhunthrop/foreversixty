@@ -7,7 +7,6 @@ import { FIRST_RAIDS } from '../first-raids';
 
 export interface RaidFact {
   name: string;
-  icon: string;
   /** Null for a raid with no loot rows in this build (not datamined yet). */
   bosses: number | null;
   drops: number | null;
@@ -35,13 +34,12 @@ export function raidFacts(
   return FIRST_RAIDS.map((raid) => {
     const source = sources.find((row) => row.kind === 'raid' && row.name === raid.name);
     const bosses = source?.bosses ?? [];
-    if (bosses.length === 0)
-      return { name: raid.name, icon: raid.icon, bosses: null, drops: null, usable: {} };
+    if (bosses.length === 0) return { name: raid.name, bosses: null, drops: null, usable: {} };
     const drops = new Set(bosses.flatMap((boss) => boss.items));
     const usable = Object.fromEntries(
       [...classItems].map(([slug, ids]) => [slug, [...drops].filter((id) => ids.has(id)).length]),
     );
-    return { name: raid.name, icon: raid.icon, bosses: bosses.length, drops: drops.size, usable };
+    return { name: raid.name, bosses: bosses.length, drops: drops.size, usable };
   });
 }
 

@@ -23,7 +23,7 @@ describe('Countdown', () => {
       }).body,
     );
     expect(body).toContain('role="timer"');
-    expect(body).toContain('aria-label="32 days, 6 hours, 0 min"');
+    expect(body).toContain('aria-label="32 days, 6 hours"');
     expect(body).toContain('ui-countdown-live');
     expect(body).toContain('<span>raids</span>');
   });

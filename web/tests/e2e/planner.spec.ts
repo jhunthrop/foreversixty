@@ -241,7 +241,7 @@ test('the tooltip shows the current and the next rank', async ({ page }) => {
   await page.getByTestId('talent-1001').hover();
   const tip = page.getByRole('tooltip');
   await expect(tip).toContainText('Improved Heroic Strike');
-  await expect(tip).toContainText('Rank 1 of 3');
+  await expect(tip).toContainText('Rank 1/3');
   await expect(tip).toContainText('Reduces the rage cost of Heroic Strike by 1.');
   await expect(tip).toContainText('Reduces the rage cost of Heroic Strike by 2.');
 });
@@ -524,7 +524,7 @@ test('focusing a talent cell opens its tooltip, and Escape dismisses it without 
   await cell.focus();
   // The tooltip opens a beat after focus (150 ms) and the cell points at it while it is open.
   await expect(cell).toHaveAttribute('aria-describedby', 'talent-tip-1001');
-  const tooltip = page.getByTestId('talent-tip-1001');
+  const tooltip = page.locator('#talent-tip-1001');
   await expect(tooltip).toBeVisible();
   await expect(tooltip).toHaveAttribute('id', 'talent-tip-1001');
 

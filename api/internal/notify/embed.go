@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -161,7 +162,7 @@ func SimFinishedEmbed(publicBaseURL string, in SimFinished) Embed {
 	spec, known := specs.ByKey[in.Spec]
 	title := simTitle(in.Character, spec, known)
 	e := baseEmbed(title, absoluteURL(publicBaseURL, simPathPrefix+in.SimID), in.FinishedAt)
-	result := fmt.Sprintf(embedCopy.SimResultDPS, thousands(in.DPS))
+	result := fmt.Sprintf(embedCopy.SimResultDPS, textfmt.Grouped(in.DPS))
 	if headline := collapse(in.Headline); headline != "" {
 		result = escapedWithin(headline, maxValueRunes, maxValueRunes)
 	}
@@ -172,7 +173,7 @@ func SimFinishedEmbed(publicBaseURL string, in SimFinished) Embed {
 		})
 	}
 	e.Fields = append(e.Fields, EmbedField{
-		Name: embedCopy.SimTookName, Value: duration(in.FinishedAt.Sub(in.CreatedAt)), Inline: true,
+		Name: embedCopy.SimTookName, Value: textfmt.Duration(in.FinishedAt.Sub(in.CreatedAt)), Inline: true,
 	})
 	if known {
 		e.Thumbnail = absoluteURL(publicBaseURL, fmt.Sprintf(crestPathFormat, spec.ClassSlug))

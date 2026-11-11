@@ -35,6 +35,7 @@
   import Section from '../ui/Section.svelte';
   import PlannerPart from './PlannerPart.svelte';
 
+  import { grouped } from '../../lib/format/number';
   let { store, part = false }: { store: PlannerStore; part?: boolean } = $props();
 
   // Per-instance, not a literal id: Top Gear mounts a second, inline Planner (and so a
@@ -199,7 +200,7 @@
       // A re-save started (and possibly finished) while this run was in flight. Its own
       // attachSim call owns cardState/cardDps/cardVersion now; this one writes nothing.
       if (supersededSince(generation, build)) return;
-      cardDps = Math.round(result.dps.mean).toLocaleString('en-US');
+      cardDps = grouped(result.dps.mean);
       cardVersion = result.engine_version;
       cardState = 'done';
     } catch {

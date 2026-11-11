@@ -9,6 +9,7 @@
 // (lib/bis/page-data.ts), registers the page band's slice for the server render and inlines it
 // as one JSON script for the island; the raw BiS file never ships. Tooltips stay with
 // BisTooltipHost (cells carry data-bis-item).
+import { iconUrl } from '../../lib/ui/assets';
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../ui/PageHeader.svelte';
 import Notice from '../ui/Notice.svelte';
@@ -112,12 +113,12 @@ const specOptions: ControlOption[] = readSpecCatalog()
   .filter((s) => s.class_slug === classSlug)
   .sort((a, b) => a.tree_index - b.tree_index)
   .map((s) => {
-    const icon = publishedIcon(build, s.icon);
+    const icon = iconUrl(build, publishedIcon(build, s.icon));
     return {
       value: s.spec,
       label: s.name,
       href: bisSpecPath(s.class_slug, s.spec_slug),
-      ...(icon === undefined ? {} : { icon: `/data/${build}/icons/${icon}.webp` }),
+      ...(icon === null ? {} : { icon }),
     };
   });
 
@@ -131,7 +132,7 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
 };
 ---
 
-<Base title={title} description={description} path={path} {canonicalPath} jsonLd={jsonLd} wide>
+<Base title={title} description={description} path={path} {canonicalPath} jsonLd={jsonLd}>
   <script is:inline set:html={BIS_PENDING_SCRIPT}></script>
   <main id="main" tabindex="-1" class="bis-page">
     {server === undefined || band === undefined ? (

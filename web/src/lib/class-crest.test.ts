@@ -3,6 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { classCrestSrc } from './class-crest';
+import { CLASS_SLUGS } from './ui/primitives';
 import { factionMarkSrc } from './faction-mark';
 
 // The character selector's first frame (nav spec 2026-10-09 section 8): Base.astro's head
@@ -26,11 +27,10 @@ describe('classCrestSrc', () => {
     expect(classCrestSrc('hunter')).toBe('/icons/hd/crests/hunter.webp');
   });
 
-  it("Base.astro's pre-paint class list is exactly the crests that ship", () => {
+  it("Base.astro's pre-paint class list is the one class list, and a crest ships for each", () => {
     const base = readFileSync(baseAstroPath, 'utf8');
-    const list = /const CLASSES = \[([^\]]*)\]/.exec(base)?.[1] ?? '';
-    const listed = [...list.matchAll(/'([a-z]+)'/g)].map((match) => match[1]).sort();
-    expect(listed).toEqual(shippedCrestSlugs());
+    expect(base).toContain("data-class-slugs={CLASS_SLUGS.join(' ')}");
+    expect([...CLASS_SLUGS].sort()).toEqual(shippedCrestSlugs());
   });
 
   it('nav.css paints each shipped crest from the path this module builds, and no other', () => {

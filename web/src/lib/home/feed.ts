@@ -18,6 +18,7 @@ import {
   sharedFeedTitle,
   sharedFeedUploadLog,
 } from '../copy/shared/feed.generated';
+import { compactAgo, weekdayDayMonth } from '../dates';
 
 export type FeedFilter = 'all' | 'spec' | 'guild' | 'logs';
 /** The API's tags (one per event kind, api/internal/activity KindTag) plus `guides`, which only
@@ -83,9 +84,6 @@ const FEED_TTL_MS = 60_000;
 const MAX_LEVEL = 60;
 const FIRST_BAND = 20;
 const BAND_STEP = 10;
-const MINUTE_MS = 60_000;
-const HOUR_MINUTES = 60;
-const DAY_HOURS = 24;
 
 export const feedCopy = {
   title: sharedFeedTitle,
@@ -132,26 +130,13 @@ export function fetchFeed(q: FeedQuery, apiBase: string = API_BASE_URL): Promise
   );
 }
 
-/** `just now`, `4 min ago`, `2 h ago`, `3 d ago`. */
-export function agoText(iso: string, now: Date): string {
-  const minutes = Math.max(0, Math.floor((now.getTime() - new Date(iso).getTime()) / MINUTE_MS));
-  if (minutes < 1) return 'just now';
-  if (minutes < HOUR_MINUTES) return `${minutes} min ago`;
-  const hours = Math.floor(minutes / HOUR_MINUTES);
-  if (hours < DAY_HOURS) return `${hours} h ago`;
-  return `${Math.floor(hours / DAY_HOURS)} d ago`;
-}
-
 /** `Wed 9 Dec`, the calendar day of a date-only event. */
-export function dayText(iso: string): string {
-  const date = new Date(iso);
-  const day = date.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' });
-  const rest = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-  return `${day} ${rest}`;
+export function dayText(iso: string, now: Date = new Date()): string {
+  return weekdayDayMonth(new Date(iso), 'UTC', now);
 }
 
 export function whenText(row: Pick<FeedRow, 'at' | 'date_only'>, now: Date): string {
-  return row.date_only ? dayText(row.at) : agoText(row.at, now);
+  return row.date_only ? dayText(row.at, now) : compactAgo(new Date(row.at), now);
 }
 
 /** A guild sim's tail the guild's own home already says: the guild, spec and band (ai-slop tell 22). */

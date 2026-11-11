@@ -4,12 +4,12 @@ import {
   ROLE_TABS,
   formatMetric,
   gapText,
-  ordinal,
   raceBasis,
   readColumns,
   tiersCopy,
   type ReadColumn,
 } from './tier-copy';
+import { ordinal } from '../format/number';
 
 const flat = (column: ReadColumn): string => column.body.map((segment) => segment.text).join('');
 const CTX = { faction: 'horde', presetLabel: 'Raid-ready, Phase 1' } as const;

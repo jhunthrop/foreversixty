@@ -5,6 +5,7 @@
 // the icon in its quality frame, the name opening the item tooltip, where it comes from). The
 // armour and the weapons are two blocks: beside a tall lane the weapons wrap under the prose
 // together (lib/ui/reading-wrap.ts), under the doll's own weapon row, and the armour never splits.
+import { WEAPON_SLOTS } from '../../lib/gear/slots';
 import ItemRow from '../ui/ItemRow.svelte';
 import LaneBlock from '../ui/LaneBlock.svelte';
 import { guidesCopy } from '../../lib/guides/copy';
@@ -16,7 +17,6 @@ interface Props {
 }
 const { build, panel } = Astro.props;
 const faction = panel.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading;
-const WEAPON_SLOTS: ReadonlySet<string> = new Set(['main_hand', 'off_hand', 'ranged']);
 const rows = listedBisRows(panel);
 const blocks = [
   { key: 'armour', rows: rows.filter((row) => !WEAPON_SLOTS.has(row.slot)) },

@@ -5,7 +5,7 @@
 // about the character's own class and spec, whichever board the page is looking at.
 import type { MeCharacter } from '../account/api';
 import { characterHref, rulesetLabel } from '../characters';
-import { ordinal } from '../report/format';
+import { ordinal } from '../format/number';
 import type { AnswerSpec, HeaderAction, HeaderAnswer } from '../character-header/types';
 import { fetchRankings, type RankingsPage, type RankingsQuery } from './api';
 import { rankingsCopy } from './copy';

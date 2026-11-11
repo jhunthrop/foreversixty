@@ -1,4 +1,5 @@
 // web/src/lib/score/score.test.ts
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import labels from '../../../../docs/contracts/fixtures/score-labels.json';
 import type { MeCharacter } from '../account/api';
@@ -80,7 +81,7 @@ describe('tiers and ceilings', () => {
   });
 
   it('names and colours a known tier, and neither for an unknown one', () => {
-    expect(tierColor('epic')).toBe('#a335ee');
+    expect(tierColor('epic')).toBe('var(--color-rarity-epic)');
     expect(tierLabel('epic')).toBe('Epic');
     expect(tierColor('mythic')).toBeNull();
     expect(tierLabel(null)).toBeNull();
@@ -124,15 +125,22 @@ const CAPTURE = { gear: 412, experience: 620, parses: 540, attendance: 180, disc
 describe('tier colours (fix round 1 item 1)', () => {
   it('common is white, the client’s quality 1; grey is Poor and is not a tier', () => {
     expect(labels.tiers.common.color).toBe('#ffffff');
-    expect(tierColor('common')).toBe('#ffffff');
+    expect(tierColor('common')).toBe('var(--color-rarity-common)');
+  });
+
+  it('reads each tier colour from the quality token, which holds the addon’s colour', () => {
+    const tokens = readFileSync(new URL('../../styles/tokens.css', import.meta.url), 'utf8');
+    for (const [tier, { color }] of Object.entries(labels.tiers)) {
+      expect(tokens).toContain(`--color-rarity-${tier}: ${color};`);
+    }
   });
 
   it('words at body size take the lightened rare and epic variants; the rest are the exact colour', () => {
-    expect(tierTextColor('rare')).toBe('#3d94f0');
-    expect(tierTextColor('epic')).toBe('#b866f5');
-    expect(tierTextColor('common')).toBe('#ffffff');
-    expect(tierTextColor('uncommon')).toBe('#1eff00');
-    expect(tierTextColor('legendary')).toBe('#ff8000');
+    expect(tierTextColor('rare')).toBe('var(--color-rarity-rare-text)');
+    expect(tierTextColor('epic')).toBe('var(--color-rarity-epic-text)');
+    expect(tierTextColor('common')).toBe('var(--color-rarity-common)');
+    expect(tierTextColor('uncommon')).toBe('var(--color-rarity-uncommon)');
+    expect(tierTextColor('legendary')).toBe('var(--color-rarity-legendary)');
     expect(tierTextColor('mythic')).toBeNull();
   });
 

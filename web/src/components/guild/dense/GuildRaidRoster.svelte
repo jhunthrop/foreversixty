@@ -18,7 +18,7 @@
     type GuildRecentAttendance,
   } from '../../../lib/guild/overview-api';
   import { fetchGuildRaid } from '../../../lib/guild/raids-api';
-  import { percentileToken, classColorVar } from '../../../lib/report/format';
+  import { classColorVar, parseLabel, parseText, percentileToken } from '../../../lib/report/format';
   import type { StatColumn, StatFigure, StatSort } from '../../../lib/ui/stat-table';
   import {
     GROUP_WORD,
@@ -160,7 +160,11 @@
         : { value: `+${Math.round(row.gap)}${row.gapUnit === null ? '' : ` ${row.gapUnit.toUpperCase()}`}` },
       row.bestPercentile === null
         ? dash
-        : { value: String(Math.floor(row.bestPercentile)), color: percentileToken(row.bestPercentile) },
+        : {
+            value: parseText(row.bestPercentile),
+            color: percentileToken(row.bestPercentile),
+            label: parseLabel(row.bestPercentile),
+          },
       row.attendancePct === null ? dash : { value: `${row.attendancePct}%` },
       { value: String(row.items) },
       row.short === null

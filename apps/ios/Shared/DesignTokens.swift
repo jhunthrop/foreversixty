@@ -288,8 +288,8 @@ public enum FSSpace {
     public static let space16: CGFloat = 64
     public static let gutterPhone: CGFloat = 16
     public static let gutterWide: CGFloat = 64
-    /// The one site column's gutter; the header bar (nav.css) reads it too, so the bar and the page
-    /// never drift apart.
+    /// The page frame's gutter (global.css .page-column, the one frame every page, the header bar,
+    /// the page head band and the footer sit in).
     public static let gutter: CGFloat = 48
     /// The apps' section gap (ruling N2).
     public static let sectionGapCompact: CGFloat = 32

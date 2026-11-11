@@ -7,7 +7,7 @@
   import type { GuildRaidCoverRow } from '../../../lib/guild/api';
   import { coverIconUrl, coverThinnestFirst } from '../../../lib/guild/cover-view';
   import { coverGridRows } from '../../../lib/guild/overview-role-view';
-  import SpellIcon from '../../coach/SpellIcon.svelte';
+  import SpellIcon from '../../ui/SpellIcon.svelte';
   import Button from '../../ui/Button.svelte';
   import Grid from '../../ui/Grid.svelte';
   import Section from '../../ui/Section.svelte';
@@ -38,7 +38,7 @@
     testid="guild-cover"
   >
     {#snippet lead(row)}
-      <SpellIcon url={coverIconUrl(activeBuild.build, row.row)} size={24} name={row.row.name} />
+      <SpellIcon url={coverIconUrl(activeBuild.build, row.row)} size={24} />
     {/snippet}
   </Grid>
 </Section>

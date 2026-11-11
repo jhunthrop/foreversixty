@@ -15,6 +15,7 @@
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
 
+  import { grouped } from '../../lib/format/number';
   let {
     comparison,
     simDuration,
@@ -24,7 +25,7 @@
   // The rounding rule itself (whole percent, own duration) lives once, in compare.ts, so
   // this table's numbers and compareSummaries' own uptime lines can never round differently.
   const pct = (ms: number, of: number): string => `${pctOf(ms, of)}%`;
-  const amount = (value: number): string => Math.round(value).toLocaleString('en-US');
+  const amount = (value: number): string => grouped(value);
 
   const ABILITY_COLUMNS: readonly StatColumn[] = [
     { id: 'actual-casts', label: simCopy.compareActualCasts },
@@ -39,12 +40,12 @@
 </script>
 
 <div class="flex flex-col gap-4" data-testid="sim-compare">
-  <p class="text-strong px-[18px] text-[15px] md:px-0" role="status" data-testid="compare-headline">
+  <p class="text-strong px-(--page-inset) text-[15px]" role="status" data-testid="compare-headline">
     {comparison.headline}
   </p>
 
   {#if comparison.lines.length > 0}
-    <ul class="flex flex-col gap-1 px-[18px] md:px-0" data-testid="compare-lines">
+    <ul class="flex flex-col gap-1 px-(--page-inset)" data-testid="compare-lines">
       <!-- Keyed by position, never by text: a line is prose, not an identity, and two rows
            can word the same gap identically. A repeated {#each} key is a Svelte 5 runtime
            error, and the list is rebuilt whole on every new result anyway. -->
@@ -54,7 +55,7 @@
     </ul>
   {/if}
 
-  <div class="px-[18px] md:px-0">
+  <div class="px-(--page-inset)">
     <Plate testid="compare-abilities">
       <StatTable columns={ABILITY_COLUMNS} nameHead={simCopy.compareAbility} bar={false}>
         <!-- Keyed and tested by id, never by name: a resolved name can hold a space ("Heroic
@@ -84,7 +85,7 @@
     </Plate>
   </div>
 
-  <div class="px-[18px] md:px-0">
+  <div class="px-(--page-inset)">
     <!-- Keyed and tested by id, never by name, for the same reason the ability table is:
          two real buffs at different spell ids (a rank mismatch between the sim's loadout
          and the logged fight's) can resolve to the same display name, and a repeated
@@ -106,7 +107,7 @@
     </StatTable>
   </div>
 
-  <p class="text-muted px-[18px] text-[13px] leading-5 md:px-0" data-testid="compare-footnote">
+  <p class="text-muted px-(--page-inset) text-[13px] leading-5" data-testid="compare-footnote">
     {simCopy.compareFootnote}
   </p>
 </div>

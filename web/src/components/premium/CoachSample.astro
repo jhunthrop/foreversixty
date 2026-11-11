@@ -2,6 +2,7 @@
 // web/src/components/premium/CoachSample.astro
 // /premium's rail panel (premium spec 2026-11-08 section 4.8): one sample coach review, rendered at build
 // from the coach's own Fury fixture, labelled Sample in its head and its caption. Static.
+import SpellIcon from '../ui/SpellIcon.astro';
 import Row from '../ui/Row.svelte';
 import Section from '../ui/Section.svelte';
 import Tag from '../ui/Tag.svelte';
@@ -15,8 +16,6 @@ interface Props {
 }
 const { view = coachSampleView(loadCoachSampleAnswer(), buildSpellIconOf()) } = Astro.props;
 const copy = plansPageCopy.coachSample;
-// A failed icon is hidden, never a broken-image glyph; its box stays.
-const HIDE_ON_ERROR = "this.style.visibility='hidden'";
 ---
 
 <Section title={copy.label} testid="coach-sample" panel>
@@ -40,15 +39,7 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
         <div class="coach-rows" data-testid="coach-sample-fix-first">
           {view.fixFirst.icon ? (
             <Row title={view.fixFirst.title} sub={view.fixFirst.why} open testid="coach-sample-fix-title">
-              <img
-                slot="lead"
-                class="coach-icon"
-                src={view.fixFirst.icon}
-                width="40"
-                height="40"
-                alt=""
-                onerror={HIDE_ON_ERROR}
-              />
+              <SpellIcon slot="lead" url={view.fixFirst.icon} size={40} />
             </Row>
           ) : (
             <Row title={view.fixFirst.title} sub={view.fixFirst.why} open testid="coach-sample-fix-title" />
@@ -63,15 +54,7 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
           {view.then.map((item) =>
             item.icon ? (
               <Row title={item.title} sub={item.why} open>
-                <img
-                  slot="lead"
-                  class="coach-icon"
-                  src={item.icon}
-                  width="32"
-                  height="32"
-                  alt=""
-                  onerror={HIDE_ON_ERROR}
-                />
+                <SpellIcon slot="lead" url={item.icon} size={32} />
               </Row>
             ) : (
               <Row title={item.title} sub={item.why} open />
@@ -87,15 +70,7 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
           {view.doingWell.map((item) =>
             item.icon ? (
               <Row title={item.text} density="slim" open>
-                <img
-                  slot="lead"
-                  class="coach-icon"
-                  src={item.icon}
-                  width="24"
-                  height="24"
-                  alt=""
-                  onerror={HIDE_ON_ERROR}
-                />
+                <SpellIcon slot="lead" url={item.icon} size={24} />
               </Row>
             ) : (
               <Row title={item.text} density="slim" open />
@@ -134,9 +109,6 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
   .coach-rows {
     display: flex;
     flex-direction: column;
-  }
-  .coach-icon {
-    border-radius: 4px;
   }
   .t-label {
     font-size: 12px;

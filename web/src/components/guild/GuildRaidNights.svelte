@@ -5,6 +5,7 @@
      and the items the council handed out. A night matched to a guild raid links its raid page from
      the open pulls. A night in a zone with no published encounters names its pulls plainly. -->
 <script lang="ts">
+  import ZoneIcon from '../ui/ZoneIcon.svelte';
   import type { GuildRaidRow } from '../../lib/guild/api';
   import { guildRaidHref } from '../../lib/characters';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
@@ -14,7 +15,6 @@
   import {
     bossPulls,
     deltaWords,
-    killClock,
     raidNightFigures,
     slowestMs,
     type NightMisses,
@@ -25,13 +25,12 @@
   import { SEP } from '../../lib/guild/raid-copy';
   import type { StatFigure } from '../../lib/ui/stat-table';
   import { LINK, RULE_BOTTOM } from '../../lib/ui/primitives';
-  import ItemIcon from '../ui/ItemIcon.svelte';
   import Meter from '../ui/Meter.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
   import Tag from '../ui/Tag.svelte';
   import activeBuild from '../../data/active-build.json';
-  import { raidZoneIcon } from '../../lib/first-raids';
+  import { clockDuration } from '../../lib/format/duration';
 
   let {
     rows,
@@ -87,7 +86,7 @@
   function cells(f: RaidNightFigures): StatFigure[] {
     const delta = f.deltaS === null ? DASH : { ...deltaWords(f.deltaS) };
     return [
-      f.bossMs === null ? DASH : { value: killClock(f.bossMs), tone: f.best ? 'gold' : undefined },
+      f.bossMs === null ? DASH : { value: clockDuration(f.bossMs), tone: f.best ? 'gold' : undefined },
       delta,
       { value: String(f.wipes) },
       { value: String(f.row.deaths) },
@@ -107,12 +106,7 @@
       phone={`${counted(f.wipes, 'wipe')} · ${counted(f.row.deaths, 'death')}`}
       testid={`guild-raid-night-row-${f.row.id}`}
     >
-      {#snippet icon()}<ItemIcon
-          icon={raidZoneIcon(f.row.zone)}
-          quality={5}
-          build={activeBuild.build}
-          size={28}
-        />{/snippet}
+      {#snippet icon()}<ZoneIcon zone={f.row.zone} build={activeBuild.build} size={28} />{/snippet}
       {#snippet name()}
         <button
           type="button"
@@ -169,7 +163,7 @@
               {#if fight.unnamed}
                 <span class="text-muted">no named encounter published</span>
               {:else}
-                <span class="text-muted numeric text-right">{killClock(fight.duration_ms)}</span>
+                <span class="text-muted numeric text-right">{clockDuration(fight.duration_ms)}</span>
                 <span class="justify-self-end">
                   {#if fight.trash}<span class="text-muted">{TRASH_LABEL}</span>
                   {:else}<Tag tone={fight.kill ? 'success' : 'danger'}>{fight.kill ? 'Kill' : 'Wipe'}</Tag

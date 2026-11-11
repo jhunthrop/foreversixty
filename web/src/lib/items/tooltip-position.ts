@@ -140,6 +140,7 @@ export function positionTooltipPanel(host: HTMLElement, align: TooltipAlign = 's
   const viewportHeight = document.documentElement.clientHeight;
   const panel = host.querySelector<HTMLElement>('[data-testid="item-tooltip"], [data-testid="game-tooltip"]');
   const panelRect = panel?.getBoundingClientRect();
+  if (host.dataset.tipBeside !== undefined && placeBeside(host, anchor, panelRect)) return;
 
   const shift = tooltipLeftPx(
     align,
@@ -168,4 +169,51 @@ export function positionTooltipPanel(host: HTMLElement, align: TooltipAlign = 's
   host.style.setProperty('--item-tooltip-mb', below ? '0px' : `${TOOLTIP_ANCHOR_GAP_PX}px`);
   host.style.setProperty('--item-tooltip-max-h', maxHeightPx === null ? 'none' : `${maxHeightPx}px`);
   host.style.setProperty('--item-tooltip-overflow-y', maxHeightPx === null ? 'visible' : 'auto');
+}
+
+/** The side a talent's tooltip opens on, as the client draws it: beside the cell (right, else
+ *  left), so it never covers the tiles around it. Null when neither side has room (a phone),
+ *  where the tooltip falls back to below or above the cell. */
+export type TalentTipSide = 'right' | 'left';
+
+export function talentTipSide(
+  anchorLeft: number,
+  anchorRight: number,
+  tipWidth: number,
+  viewportWidth: number,
+): TalentTipSide | null {
+  if (anchorRight + TOOLTIP_ANCHOR_GAP_PX + tipWidth <= viewportWidth - SIDE_MARGIN_PX) return 'right';
+  if (anchorLeft - TOOLTIP_ANCHOR_GAP_PX - tipWidth >= SIDE_MARGIN_PX) return 'left';
+  return null;
+}
+
+/** The tooltip's left offset from its cell when it opens beside it. */
+export function talentTipSideLeft(side: TalentTipSide, anchorWidth: number, tipWidth: number): number {
+  return side === 'right' ? anchorWidth + TOOLTIP_ANCHOR_GAP_PX : -(tipWidth + TOOLTIP_ANCHOR_GAP_PX);
+}
+
+/**
+ * A host marked `data-tip-beside` (every talent cell and Point order socket): the panel opens
+ * beside the cell, its top on the cell's top, the way the client's talent frame draws it. False,
+ * placing nothing, when neither side has room or the panel would run past the viewport's foot;
+ * the caller then places it below or above.
+ */
+function placeBeside(host: HTMLElement, anchor: DOMRect, panelRect: DOMRect | undefined): boolean {
+  const width = panelRect?.width ?? TOOLTIP_PANEL_WIDTH_PX;
+  const side = talentTipSide(anchor.left, anchor.right, width, document.documentElement.clientWidth);
+  const height = panelRect?.height ?? 0;
+  if (side === null || anchor.top + height > document.documentElement.clientHeight - VIEWPORT_MARGIN_PX) {
+    return false;
+  }
+  const left = talentTipSideLeft(side, anchor.width, width);
+  const fixed = hasClippingAncestor(host);
+  host.style.setProperty('--item-tooltip-position', fixed ? 'fixed' : 'absolute');
+  host.style.setProperty('--item-tooltip-shift', `${fixed ? anchor.left + left : left}px`);
+  host.style.setProperty('--item-tooltip-top', fixed ? `${anchor.top}px` : '0px');
+  host.style.setProperty('--item-tooltip-bottom', 'auto');
+  host.style.setProperty('--item-tooltip-mt', '0px');
+  host.style.setProperty('--item-tooltip-mb', '0px');
+  host.style.setProperty('--item-tooltip-max-h', 'none');
+  host.style.setProperty('--item-tooltip-overflow-y', 'visible');
+  return true;
 }

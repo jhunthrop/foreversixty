@@ -9,6 +9,7 @@ import { dataUrl, loadItems, loadOptional, loadTalents } from '../planner/load';
 import { parseActionKey, resolveActionName, type ActionNames } from './action-names';
 import { spellTipKey } from '../tooltips/game-tip';
 import type { SimResult } from './types';
+import { iconUrl } from '../ui/assets';
 
 export interface ActionVisual {
   /** The icon's url; null when the build carries none for this key. */
@@ -69,7 +70,7 @@ export function actionVisuals(
     const stem = iconStem(key, tables, names);
     const parsed = parseActionKey(key);
     return {
-      icon: stem === undefined ? null : dataUrl(build, `icons/${stem}.webp`),
+      icon: iconUrl(build, stem),
       rank: parsed?.kind === 'spell' ? (tables.ranks[String(parsed.id)]?.rank ?? 0) : 0,
       tipKey: tipKeyOf(key),
     };

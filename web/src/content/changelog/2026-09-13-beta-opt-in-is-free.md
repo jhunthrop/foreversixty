@@ -17,6 +17,6 @@ sources:
     kind: community
 ---
 
-Blizzard opened a Beta Opt-In button on the Forever page on Battle.net on Sept 13. Anyone signed in can opt in at no cost, which puts them in the pool without guaranteeing anything.
+Blizzard opened a Beta Opt-In button on the Forever page on Battle.net on 13 Sep. Anyone signed in can opt in at no cost, which puts them in the pool without guaranteeing anything.
 
 Guaranteed access still sits with the Skyborne Epic Pack, the Warcraft Forever Collection and the Collector's Edition. The $29.99 Skyborne Heroic Pack does not include beta access.

@@ -9,6 +9,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // The sign-up flow's links and member-text bounds.
@@ -347,7 +348,7 @@ func raidDay(v guilds.RaidView) string {
 	if v.GuildTimezone != nil {
 		zone = *v.GuildTimezone
 	}
-	return v.StartsAt.In(raidLocation(zone)).Format(raidChoiceDate)
+	return textfmt.RaidDay(v.StartsAt, textfmt.Location(zone))
 }
 
 // alreadySentence is a press of the state the character already has; raid is the outcome's

@@ -19,7 +19,7 @@ import TabStrip from '../components/ui/TabStrip.astro';
 import Toc from '../components/ui/Toc.svelte';
 import { contentPagesCopy } from '../lib/content-pages/copy';
 import { LEGAL_SLUGS, splitDocument, tocFromFor } from '../lib/content-pages/sections';
-import { formatDate } from '../lib/dates';
+import UpdatedStamp from '../components/UpdatedStamp.astro';
 import { FOOTER_LEGAL_LINKS } from '../lib/footer-copy';
 import { guidesCopy } from '../lib/guides/copy';
 import { pageScript } from '../lib/guides/page-script';
@@ -44,14 +44,12 @@ const tabs = FOOTER_LEGAL_LINKS.map((link) => ({ id: link.href, label: link.labe
 const tocItems = sections.map((section) => ({ title: section.title, id: section.id }));
 ---
 
-<Base title={title} description={description} path={path} jsonLd={jsonLd} wide>
+<Base title={title} description={description} path={path} jsonLd={jsonLd}>
   <meta slot="head" property="article:modified_time" content={updated.toISOString()} />
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="content-page">
     <Page layout="reading" tocFrom={tocFrom} tocLabel={guidesCopy.tocBarLabel} testid="content-body">
       <PageHeader slot="header" title={title}>
-        <span slot="meta" data-testid="updated-stamp">
-          Updated {formatDate(updated)}
-        </span>
+        <UpdatedStamp slot="meta" date={updated} />
         {legal && (
           <TabStrip
             slot="tabs"

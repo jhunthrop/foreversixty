@@ -6,13 +6,13 @@
      measured upgrade's gain), how many slots are already best in slot, and See all N to the band's
      best-in-slot list when there are more than five. Left out with none to show. -->
 <script lang="ts">
+  import ItemName from '../ui/ItemName.svelte';
   import type { Item } from '../../lib/planner/types';
   import type { CachedUpgrades } from '../../lib/home/upgrades-loader';
   import type { SlotUpgrade } from '../../lib/home/upgrades';
   import { UPGRADES_SHOWN, gainText, upgradeLine, type HomeLink } from '../../lib/home/home-view';
   import { homeBCopy } from '../../lib/home/home-b-view';
   import { factsCopy, upgradesFacts } from '../../lib/home/home-facts';
-  import { rarityClassFor } from '../../lib/planner/items';
   import { LINK } from '../../lib/ui/primitives';
   import ItemRow from '../ui/ItemRow.svelte';
   import Section from '../ui/Section.svelte';
@@ -62,9 +62,12 @@
           {#snippet detail()}
             <span data-testid="home-upgrade-over">
               {#if upgrade.wornItemId === undefined}{factsCopy.emptySlot}{:else if piece !== undefined}{factsCopy.over}
-                <span class="font-semibold {rarityClassFor(piece.quality)}" data-bis-item={piece.id}
-                  >{piece.name}</span
-                >{/if}
+                <ItemName
+                  name={piece.name}
+                  quality={piece.quality}
+                  id={piece.id}
+                  class="font-semibold"
+                />{/if}
             </span>
           {/snippet}
         </ItemRow>

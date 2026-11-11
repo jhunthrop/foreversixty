@@ -292,9 +292,9 @@ describe('presets', () => {
       'Whole fight',
       'First 30s',
       'Last 30s',
-      'Phase 1 · 0.0s to 14.0s',
-      'Phase 2 · 14.0s to 1:00',
-      '20s before Thalgrit died · 10.1s',
+      'Phase 1 · 0:00 to 0:14',
+      'Phase 2 · 0:14 to 1:00',
+      '20s before Thalgrit died · 0:10.1',
     ]);
     expect(presets[0].window).toBeNull();
     expect(presets[5].window).toEqual({ startMs: 0, endMs: 11_000 });
@@ -311,8 +311,8 @@ describe('presets', () => {
     const presets = windowPresets(phased);
     const phases = presets.filter((preset) => preset.label.startsWith('Phase'));
     expect(phases.map((preset) => preset.label)).toEqual([
-      'Phase 1 · 0.0s to 14.0s',
-      'Phase 2 · 14.0s to 1:00',
+      'Phase 1 · 0:00 to 0:14',
+      'Phase 2 · 0:14 to 1:00',
     ]);
     expect(phases[1].window).toEqual({ startMs: 14_000, endMs: 60_000 });
   });

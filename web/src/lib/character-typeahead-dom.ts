@@ -9,6 +9,7 @@ import { characterHref, rulesetLabel } from './characters';
 import classes from '../data/classes.json';
 import { classCrestSrc } from './class-crest';
 import { homeCharacterSearchCopy as copy } from './home-landing-copy';
+import { classColor } from './ui/primitives';
 
 /** The pause after the last keystroke before the endpoint is asked. */
 export const DEBOUNCE_MS = 150;
@@ -77,7 +78,7 @@ function renderRow(row: CharacterSuggestion, id: string): HTMLLIElement {
   link.tabIndex = -1;
   link.setAttribute('role', 'option');
   link.setAttribute('aria-selected', 'false');
-  if (klass !== undefined) link.style.setProperty('--c', klass.color);
+  if (klass !== undefined) link.style.setProperty('--c', classColor(klass.slug));
   const text = element('span', 'typeahead-text');
   text.append(element('span', 'typeahead-name', row.name));
   const meta = element('span', 'typeahead-meta');

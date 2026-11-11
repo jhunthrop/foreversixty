@@ -232,7 +232,7 @@ describe('the member profile', () => {
   it('reads Raid ready: the gear gap in the BiS unit, then enchants, bags, talents and item level', () => {
     const base = profile.readiness!;
     const facts = (row: Partial<typeof base>) =>
-      readyFacts({ ...profile, readiness: { ...base, ...row } }, TZ, LOCALE)!;
+      readyFacts({ ...profile, readiness: { ...base, ...row } }, TZ)!;
     const value = (row: Partial<typeof base>, id: string) => facts(row).find((f) => f.id === id);
     expect(
       value({ gear_gap: { upgrades: 3, gain_dps: 12.44, not_sim_checked: 1, unit: 'dps' } }, 'gear'),
@@ -263,7 +263,7 @@ describe('the member profile', () => {
     expect(value({ attuned: false }, 'attuned')?.value).toBe('Not attuned');
     expect(value({ attuned: null }, 'attuned')).toBeUndefined();
     expect(value({}, 'fight')).toMatchObject({ value: profile.member!.best_parse!.encounter });
-    expect(readyFacts({ ...profile, readiness: null }, TZ, LOCALE)).toBeNull();
+    expect(readyFacts({ ...profile, readiness: null }, TZ)).toBeNull();
   });
 
   it('rolls Raid ready up to how many checks fail, and says nothing when none does', () => {
@@ -300,7 +300,7 @@ describe('the member profile', () => {
   });
 
   it('draws the last 4 raids oldest first with the 30-raid line, and the reports mode line', () => {
-    const view = attendanceView(profile, TZ, LOCALE)!;
+    const view = attendanceView(profile, TZ)!;
     expect(view.columns).toEqual(['Mon 23 Nov', 'Wed 25 Nov', 'Mon 30 Nov', 'Wed 2 Dec']);
     expect(view.rows[0].cells.map((c) => c.text)).toEqual(['✓', '✓', '×', 'L']);
     expect(view.line).toBe('25 of the last 30 raids');
@@ -316,7 +316,6 @@ describe('the member profile', () => {
         },
       },
       TZ,
-      LOCALE,
     )!;
     expect(reports).toEqual({ columns: [], rows: [], line: '2 of the last 4 logged nights' });
   });
@@ -336,13 +335,13 @@ describe('the member profile', () => {
 
   it('adds the run they are on after the 30-raid figure, from two nights', () => {
     const run = (streak: number) =>
-      attendanceView({ ...profile, attendance: { ...profile.attendance!, streak } }, TZ, LOCALE)!.line;
+      attendanceView({ ...profile, attendance: { ...profile.attendance!, streak } }, TZ)!.line;
     expect(run(1)).toBe('25 of the last 30 raids');
     expect(run(4)).toBe('25 of the last 30 raids · 4 in a row');
   });
 
   it('lists loot newest first and names who wrote each note', () => {
-    expect(lootRows(profile, TZ, LOCALE)[0]).toMatchObject({
+    expect(lootRows(profile, TZ)[0]).toMatchObject({
       name: "Dragonstalker's Helm",
       source: 'Awarded Mon 30 Nov · 3 yes, 1 no of 4 · Best in slot, every night this month',
     });
@@ -354,10 +353,10 @@ describe('the member profile', () => {
       votes_no: null,
       votes_officers: null,
     }));
-    expect(lootRows({ ...profile, loot: { ...profile.loot, items: unrecorded } }, TZ, LOCALE)[0].source).toBe(
+    expect(lootRows({ ...profile, loot: { ...profile.loot, items: unrecorded } }, TZ)[0].source).toBe(
       'Awarded Mon 30 Nov',
     );
-    expect(noteSub(profile.notes![0], TZ, LOCALE)).toBe('Kraggor · Sat 5 Dec');
-    expect(noteSub({ ...profile.notes![0], author: null }, TZ, LOCALE)).toBe('An officer · Sat 5 Dec');
+    expect(noteSub(profile.notes![0], TZ)).toBe('Kraggor · Sat 5 Dec');
+    expect(noteSub({ ...profile.notes![0], author: null }, TZ)).toBe('An officer · Sat 5 Dec');
   });
 });

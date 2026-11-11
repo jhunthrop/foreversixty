@@ -4,9 +4,7 @@
 // into prose. The shared retry word is `uiCopy.retry`, not repeated here.
 import { estimateWords, isOverdue } from './server-runs';
 
-function formatCount(value: number): string {
-  return value.toLocaleString('en-US');
-}
+import { grouped } from '../format/number';
 
 export const serverRunsCopy = {
   heading: 'Server runs',
@@ -40,11 +38,11 @@ export const serverRunsCopy = {
   /** The sentence in two parts, so the band can set the DPS figure apart in mono. */
   bandLineParts: (specLabel: string, dps: number): { prefix: string; figure: string } => ({
     prefix: `Your ${specLabel} sim finished: `,
-    figure: `${formatCount(Math.round(dps))} DPS`,
+    figure: `${grouped(Math.round(dps))} DPS`,
   }),
   bandOpen: 'Open result →',
   bandOpenPhone: '→',
-  moreLabel: (count: number): string => `and ${formatCount(count)} more`,
+  moreLabel: (count: number): string => `and ${grouped(count)} more`,
   dismissLabel: (specLabel: string): string => `Dismiss: your ${specLabel} sim finished`,
   dismissFailed: 'Could not dismiss that. Try again.',
 };

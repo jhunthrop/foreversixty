@@ -21,4 +21,4 @@ Wowhead, Icy Veins and the fan site talentsforever.com all published Forever tal
 
 All three come with caveats. Wowhead's own disclaimer says the data is "mostly" accurate, that talent rank scaling is potentially wrong, and that some new Forever talents have no icons yet; it will be rebuilt from the beta client. talentsforever.com marks which rank values were read verbatim and which are estimated, and publishes its whole dataset under CC BY 4.0.
 
-None of them should be treated as final until the beta client is datamined after Sept 17.
+None of them should be treated as final until the beta client is datamined after 17 Sep.

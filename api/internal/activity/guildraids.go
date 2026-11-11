@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
 
@@ -64,11 +65,7 @@ func (w *GuildRaidWriter) facts(ctx context.Context, raidID int64) (raidFacts, e
 }
 
 func guildRaidEvent(f raidFacts) Event {
-	loc, err := time.LoadLocation(f.tz)
-	if err != nil || f.tz == "" {
-		loc = time.UTC
-	}
-	day := f.startsAt.In(loc).Format("Mon 2 Jan")
+	day := textfmt.RaidDay(f.startsAt, textfmt.Location(f.tz))
 	icon := zoneicons.For(f.zone)
 	return Event{
 		Kind: KindGuildRaid, OccurredAt: f.createdAt, GuildID: f.guildID, Icon: icon,

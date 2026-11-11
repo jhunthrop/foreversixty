@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // lootItem is one drop of the loot table (loot_table.go): id, name, quality, ItemClass, Subclass,
@@ -162,7 +163,7 @@ func (s *Store) killNights(ctx context.Context, guildID, encounterID int64) (int
 	if err != nil {
 		return 0, fmt.Errorf("guilds: kill nights: %w", err)
 	}
-	loc := zoneOrUTC(tz)
+	loc := textfmt.Location(tz)
 	rows, err := s.Pool.Query(ctx, `
 		select `+logAnchorSQL("r")+` from reports r
 		where r.guild_id = $1 and `+presence.NotFlagged("r")+`

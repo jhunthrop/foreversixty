@@ -4,9 +4,11 @@
      minute, and below five lines the floor of real dated site events (lib/home/floor.ts, built at
      build time). Its own skeleton and its own error. -->
 <script lang="ts">
+  import SpellIcon from '../ui/SpellIcon.svelte';
+  import { iconUrl } from '../../lib/ui/assets';
   import { untrack } from 'svelte';
   import { invalidate } from '../../lib/data/query';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import {
     feedCopy,
     feedPath,
@@ -111,8 +113,11 @@
           {#snippet lead()}
             {#if row.crest !== null}
               <ClassCrestRing characterClass={row.crest} size={LEAD_PX} />
+            {:else if row.quality !== null}
+              <ItemIcon icon={row.icon ?? undefined} quality={row.quality} {build} size={LEAD_PX} />
             {:else}
-              <ItemIcon icon={row.icon ?? undefined} quality={row.quality ?? 1} {build} size={LEAD_PX} />
+              <!-- A row about a spec or a guide, not an item: its icon in the spell frame. -->
+              <SpellIcon url={iconUrl(build, row.icon)} size={LEAD_PX} />
             {/if}
           {/snippet}
           <FeedSentence segments={row.segments} />

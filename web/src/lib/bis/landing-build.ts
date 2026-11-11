@@ -5,13 +5,14 @@
 // the page's browser script reads. A spec with no ranked list yet keeps its row -- its own page
 // carries the empty state -- rather than vanishing from the index.
 import classes from '../../data/classes.json';
-import { dataUrl } from '../planner/load';
 import { SPECS } from '../sim/specs';
 import { latest } from '../dates';
 import { LANDING_BANDS, bandCaptions, type BandCaption } from './landing-bands';
 import type { LandingConfig } from './landing-config';
 import { bandEntry, loadBisFile } from './load';
 import type { BisFile, BisSlot } from './types';
+import { classColor } from '../ui/primitives';
+import { catalogueIconUrl } from '../ui/assets';
 
 export interface LandingSpecRow {
   key: string;
@@ -42,14 +43,14 @@ function cardsFor(build: string): LandingClassCard[] {
     .map((cls) => ({
       slug: cls.slug,
       name: cls.name,
-      color: cls.color,
+      color: classColor(cls.slug),
       specs: SPECS.filter((spec) => spec.class_slug === cls.slug).map((spec): LandingSpecRow => ({
         key: spec.spec,
         classSlug: spec.class_slug,
         specSlug: spec.spec_slug,
         name: spec.name,
         role: spec.role,
-        iconSrc: dataUrl(build, `icons/${spec.icon}.webp`),
+        iconSrc: catalogueIconUrl(build, spec.icon),
       })),
     }))
     .filter((card) => card.specs.length > 0);

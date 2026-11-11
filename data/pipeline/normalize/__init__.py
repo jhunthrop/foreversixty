@@ -186,7 +186,13 @@ def normalize_build(
     )
     from pipeline.normalize.zones import normalize_zones
     from pipeline.simdb.equip import area_conditional_spells, feral_form_spells
-    from pipeline.spelltext import ExtraRows, load_spell_text
+    from pipeline.spelltext import (
+        SPELLTEXT_MANIFEST_KEY,
+        SPELLTEXT_RENDERER,
+        ExtraRows,
+        load_spell_text,
+    )
+    from pipeline.spelltext_gaps import load_spelltext_gaps
 
     build_dir = root / build
     raw = build_dir / "raw"
@@ -299,7 +305,13 @@ def normalize_build(
             radius=optional("SpellRadius"),
             range=optional("SpellRange"),
             names=t("SpellName"),
+            target_restrictions=optional("SpellTargetRestrictions"),
+            description_variables=optional("SpellDescriptionVariables"),
+            spell_description_variables=optional("SpellXDescriptionVariables"),
+            levels=optional("SpellLevels"),
+            item_enchantments=optional("SpellItemEnchantment"),
         ),
+        load_spelltext_gaps(curated_dir),
     )
     icons = icon_names(t("ManifestInterfaceData"))
     spell_names = {int(r["ID"]): r["Name_lang"] for r in t("SpellName")}
@@ -492,6 +504,9 @@ def normalize_build(
         build=meta["build"],
         product=meta["product"],
         fetched_at=meta["fetched_at"],
-        extra=talent_manifest_extra if overlay_payload is not None else None,
+        extra={
+            **(talent_manifest_extra if overlay_payload is not None else {}),
+            SPELLTEXT_MANIFEST_KEY: SPELLTEXT_RENDERER,
+        },
     )
     return NormalizeResult(build_dir=build_dir, skipped=tuple(skipped))

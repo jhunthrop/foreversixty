@@ -14,6 +14,7 @@ import {
   zoneLineOf,
 } from './raid-copy';
 import { raidBreakdownLine } from './raid-comp';
+import { dayMonth, longDay, weekdayShort } from '../dates';
 
 const MINUTE_MS = 60_000;
 const STATE_ORDER: readonly GuildSignupState[] = ['in', 'late', 'bench', 'out'];
@@ -83,10 +84,6 @@ export function viewerAnswer(raid: GuildRaidView): ViewerAnswer | null {
   return first === undefined ? null : { state: null, role: roles ? first.role : null };
 }
 
-function datePart(d: Date, tz: string, locale: string, option: Intl.DateTimeFormatOptions): string {
-  return new Intl.DateTimeFormat(locale, { timeZone: tz, ...option }).format(d);
-}
-
 export function plannedRowView(
   raid: GuildRaidView,
   now: Date,
@@ -98,15 +95,12 @@ export function plannedRowView(
   const n = raid.counts.in + raid.counts.late;
   const status = chipStatus(raid, now);
   // One clock leads everywhere: the date block and the time read in the guild's zone.
+  const [day = '', month = ''] = dayMonth(startsAt, guildTz).split(' ');
   return {
-    weekday: datePart(startsAt, guildTz, locale, { weekday: 'short' }),
-    fullDate: [
-      datePart(startsAt, guildTz, locale, { weekday: 'long' }),
-      datePart(startsAt, guildTz, locale, { day: 'numeric' }),
-      datePart(startsAt, guildTz, locale, { month: 'long' }),
-    ].join(' '),
-    day: datePart(startsAt, guildTz, locale, { day: 'numeric' }),
-    month: datePart(startsAt, guildTz, locale, { month: 'short' }),
+    weekday: weekdayShort(startsAt, guildTz),
+    fullDate: longDay(startsAt, guildTz),
+    day,
+    month,
     title: raid.title,
     zoneLine: raid.title === raid.zone_name ? null : zoneLineOf(raid),
     time: zonedClock(startsAt, guildTz, locale),

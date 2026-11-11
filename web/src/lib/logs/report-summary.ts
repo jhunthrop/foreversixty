@@ -1,23 +1,13 @@
 // web/src/lib/logs/report-summary.ts
 // The second line of a report row (design/specs/2026-10-11-logs.md section 2.5): the zone, how
-// many bosses died and how long the night ran, "Blackrock Depths · 4 bosses · 2 h 10 m". A part
+// many bosses died and how long the night ran, "Blackrock Depths · 4 bosses · 2 h 10 min". A part
 // the API did not send is left out rather than guessed; the list endpoint does not carry the
 // length yet, so it prints when it does.
 import { bossCountLabel } from '../boss-count';
 import { reportCredit } from '../report/credit';
+import { spokenDuration } from '../format/duration';
 
-const MS_PER_MINUTE = 60_000;
-const MINUTES_PER_HOUR = 60;
 const SEPARATOR = ' · ';
-
-/** "48 m", "2 h 10 m", "1 h 05 m"; the minute is padded only once an hour precedes it. */
-export function formatReportLength(durationMs: number): string {
-  const totalMinutes = Math.round(durationMs / MS_PER_MINUTE);
-  const hours = Math.floor(totalMinutes / MINUTES_PER_HOUR);
-  const minutes = totalMinutes % MINUTES_PER_HOUR;
-  if (hours === 0) return `${minutes} m`;
-  return `${hours} h ${String(minutes).padStart(2, '0')} m`;
-}
 
 const plural = (count: number, one: string, many: string): string => `${count} ${count === 1 ? one : many}`;
 
@@ -36,7 +26,7 @@ export function ownReportSummary({ zone, killCount, durationMs }: OwnReportFacts
   return join([
     zone,
     bossCountLabel(killCount),
-    durationMs === undefined ? undefined : formatReportLength(durationMs),
+    durationMs === undefined ? undefined : spokenDuration(durationMs),
   ]);
 }
 

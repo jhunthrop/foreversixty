@@ -1,8 +1,35 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { FAVICON, SEAL, sealFor } from './assets';
+import { FAVICON, SEAL, catalogueIconUrl, iconUrl, sealFor } from './assets';
+import { PLACEHOLDER_ICON } from '../icons/placeholder';
 
 const publicFile = (path: string): Buffer => readFileSync(new URL(`../../../public${path}`, import.meta.url));
+
+describe('iconUrl', () => {
+  it("is the build's HD icon file for a real stem", () => {
+    expect(iconUrl('1.15.8.65000', 'spell_holy_heal')).toBe('/data/1.15.8.65000/icons/spell_holy_heal.webp');
+  });
+
+  it('is null for no stem, an empty one and the red question mark placeholder', () => {
+    expect(iconUrl('b', undefined)).toBeNull();
+    expect(iconUrl('b', null)).toBeNull();
+    expect(iconUrl('b', '')).toBeNull();
+    expect(iconUrl('b', PLACEHOLDER_ICON)).toBeNull();
+  });
+});
+
+describe('catalogueIconUrl', () => {
+  it('is the icon url for a real stem', () => {
+    expect(catalogueIconUrl('b', 'ability_hunter_swiftstrike')).toBe(
+      '/data/b/icons/ability_hunter_swiftstrike.webp',
+    );
+  });
+
+  it('throws on the placeholder or an empty stem', () => {
+    expect(() => catalogueIconUrl('b', PLACEHOLDER_ICON)).toThrow(/not a real icon/);
+    expect(() => catalogueIconUrl('b', '')).toThrow(/not a real icon/);
+  });
+});
 
 describe('sealFor', () => {
   it('is the tiny bold flat seal at 24 px and below (owner 2026-11-10)', () => {

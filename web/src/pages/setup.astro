@@ -9,7 +9,7 @@ import SetupPage from '../components/setup/SetupPage.svelte';
 import { addonCopy } from '../lib/addon/copy';
 ---
 
-<Base title={addonCopy.setupPageTitle} description={addonCopy.pageDescription} path="/setup" wide>
+<Base title={addonCopy.setupPageTitle} description={addonCopy.pageDescription} path="/setup">
   <main id="main" tabindex="-1" class="flex w-full flex-col" data-testid="setup-page">
     <!-- `client:after-paint`, not `client:load` (src/directives/after-paint.ts): the island's module
          chain stays behind the server-drawn first paint, which Lighthouse would otherwise charge to

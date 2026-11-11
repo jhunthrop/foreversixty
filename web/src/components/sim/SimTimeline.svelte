@@ -42,7 +42,7 @@
   import ActionLink from '../ui/ActionLink.svelte';
   import Section from '../ui/Section.svelte';
   import Segmented from '../ui/Segmented.svelte';
-  import ActionIcon from './ActionIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import SimCastList from './SimCastList.svelte';
   import TimelineBrush from './TimelineBrush.svelte';
   import TimelineReadout from './TimelineReadout.svelte';
@@ -404,9 +404,9 @@
     data-testid="timeline-lane-label"
   >
     <span class="icon-cell"
-      ><ActionIcon
+      ><SpellIcon
         url={visual.icon}
-        loaded={visualsLoaded}
+        loading={!visualsLoaded}
         size={18}
         label={phone ? row.lane.name : ''}
       /></span

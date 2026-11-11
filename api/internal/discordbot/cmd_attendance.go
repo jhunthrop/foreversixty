@@ -8,13 +8,12 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 const (
 	// optAttendanceName is /attendance's officers-only name option.
 	optAttendanceName = "name"
-	// attendanceLineDate is "Thu 10 Dec", in the guild's raid zone.
-	attendanceLineDate = "Mon 2 Jan"
 	// rosterTab is the guild page's Roster tab: the page opens the tab its fragment names
 	// (the site has no /roster path under a guild).
 	rosterTab = "#roster"
@@ -132,10 +131,10 @@ func attendanceEmbed(r guilds.AttendanceRecord, roster, zone string) notify.Embe
 	if len(r.Last) == 0 {
 		return e
 	}
-	loc := raidLocation(zone)
+	loc := textfmt.Location(zone)
 	lines := make([]string, len(r.Last))
 	for i, l := range r.Last {
-		lines[i] = l.StartsAt.In(loc).Format(attendanceLineDate) + lineJoin + outcomeLine(l)
+		lines[i] = textfmt.RaidDay(l.StartsAt, loc) + lineJoin + outcomeLine(l)
 	}
 	e.Fields = []notify.EmbedField{{Name: officerCopy.LastRaids, Value: strings.Join(lines, "\n")}}
 	return e

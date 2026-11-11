@@ -47,6 +47,7 @@
     modelsElementId = BIS_TOOLTIP_MODELS_ID,
     resolve = undefined,
     resolveTip = undefined,
+    scope = undefined,
   }: {
     build: string;
     modelsElementId?: string;
@@ -59,6 +60,9 @@
      *  `data-game-tip` key, null when the page's data does not carry it. Without it those
      *  names open nothing. */
     resolveTip?: (key: string) => Promise<GameTipModel | null>;
+    /** A host for one surface only (a talent tree that carries its own tooltip text): it opens
+     *  the triggers inside this `data-tip-scope` element and no others; a page's host leaves them. */
+    scope?: HTMLElement;
   } = $props();
 
   // Fixed rather than per-row: exactly one panel is ever mounted, so every row's
@@ -110,7 +114,11 @@
   function hostFor(target: EventTarget | null): HTMLElement | null {
     if (!(target instanceof Element)) return null;
     const host = target.closest<HTMLElement>('[data-bis-item], [data-game-tip]');
-    return host?.closest('[data-inline-tip]') ? null : host;
+    if (host === null || host.closest('[data-inline-tip]')) return null;
+    // A surface that carries its own host (`data-tip-scope`: a talent tree with its own text)
+    // belongs to that host alone, and that host to it alone.
+    const owner = host.closest('[data-tip-scope]');
+    return (scope === undefined ? owner === null : owner === scope) ? host : null;
   }
 
   /** The row/pill the pointer or focus is moving TO, so a move between two elements still

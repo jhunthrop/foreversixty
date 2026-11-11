@@ -8,6 +8,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // partScopeRaid is the select on a /readiness or /report answer that changes its raid.
@@ -16,7 +17,7 @@ const partScopeRaid = "raid"
 // raidLabel is `{Title} · {Ddd d Mmm}` in the guild's zone; the title is plain text in a
 // select, so it is collapsed, not escaped, and cut to fit the label.
 func raidLabel(title string, starts time.Time, loc *time.Location) string {
-	date := starts.In(loc).Format(raidChoiceDate)
+	date := textfmt.RaidDay(starts, loc)
 	room := maxOptionRunes - len([]rune(fill(guideCopy.SignupRaidLabel, "{Title}", "", "{Ddd d Mmm}", date)))
 	return fill(guideCopy.SignupRaidLabel, "{Title}", truncateRunes(notify.Collapse(title), room), "{Ddd d Mmm}", date)
 }
@@ -38,7 +39,7 @@ func readinessRaidRow(raids []guilds.Raid, shown int64, loc *time.Location) []Ac
 	for _, r := range raids[:min(len(raids), maxSelectOptions)] {
 		options = append(options, SelectOption{
 			Label: raidLabel(r.Title, r.StartsAt, loc), Value: strconv.FormatInt(r.ID, 10),
-			Description: r.StartsAt.In(loc).Format(signupGuildTimeLayout), Default: r.ID == shown,
+			Description: textfmt.RaidClock(r.StartsAt, loc), Default: r.ID == shown,
 		})
 	}
 	return []ActionRow{scopeSelect(prefixReadiness, guideCopy.ReadinessPlaceholder, options)}
@@ -105,7 +106,7 @@ func (s *Service) reportNightRow(ctx context.Context, guildID, viewer, shown int
 			continue
 		}
 		options = append(options, SelectOption{
-			Label: raidLabel(r.Title, r.StartsAt, raidLocation(zone)), Value: strconv.FormatInt(r.ID, 10),
+			Label: raidLabel(r.Title, r.StartsAt, textfmt.Location(zone)), Value: strconv.FormatInt(r.ID, 10),
 			Description: truncateRunes(nightLine(*ans.Raid.Night), maxOptionRunes), Default: r.ID == shown,
 		})
 	}

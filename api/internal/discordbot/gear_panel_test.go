@@ -68,7 +68,7 @@ type gearWorld struct {
 // mockDots are the six quality dots under the mock's emoji ids.
 func mockDots() []AppEmoji {
 	var out []AppEmoji
-	for q := range qualityWords {
+	for q := range sheet.QualityCount {
 		out = append(out, AppEmoji{ID: fmt.Sprintf("13026%014d", q), Name: sheet.QualityEmojiName(q)})
 	}
 	return out

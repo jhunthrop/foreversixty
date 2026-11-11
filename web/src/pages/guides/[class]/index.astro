@@ -6,6 +6,7 @@
 // spec marked after load), then What changed from 1.12 on its panel with the Races and the raid or
 // leveling notes in the rail beside it, then the Sources full width. No intro paragraph and no card blurb
 // (owner 2026-11-09). index.md is split by its fixed heading vocabulary (class-landing.ts).
+import { catalogueIconUrl } from '../../../lib/ui/assets';
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ClassCrest from '../../../components/ClassCrest.astro';
@@ -30,12 +31,11 @@ import {
   specCardLine,
   splitClassLanding,
 } from '../../../lib/guides/class-landing';
-import { dayMonth } from '../../../lib/guides/guide-header';
+import UpdatedStamp from '../../../components/UpdatedStamp.astro';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { slugify } from '../../../lib/guides/sections';
 import { readSpecCatalog } from '../../../lib/bis/load';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
-import { dataUrl } from '../../../lib/planner/load';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
@@ -88,7 +88,7 @@ const specs = readSpecCatalog()
           specTrees(guide.data.raidBuild ?? guide.data.build),
           guide.data.statPriority,
         ),
-        icon: dataUrl(build, `icons/${s.icon}.webp`),
+        icon: catalogueIconUrl(build, s.icon),
         href: `/guides/${classSlug}/${s.spec_slug}`,
       },
     ];
@@ -106,13 +106,13 @@ const jsonLd = [
 const tone = { classSlug: classSlug as ClassSlug };
 ---
 
-<Base title={searchCopy.classGuideTitle(classEntry.name)} {description} {path} {jsonLd} wide>
+<Base title={searchCopy.classGuideTitle(classEntry.name)} {description} {path} {jsonLd}>
   <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
   <main id="main" tabindex="-1" class="guide-landing" data-testid="guide-class-landing">
     <Page layout="ledger">
       <PageHeader slot="header" title={classEntry.name} tone={tone}>
         <ClassCrest slot="crest" slug={classSlug} size={56} priority />
-        <span slot="meta">Updated {dayMonth(entry.data.updated)}</span>
+        <UpdatedStamp slot="meta" date={entry.data.updated} />
         <GuideAnswer slot="answer" page={{ classSlug }} />
       </PageHeader>
       <div class="guide-landing-top">

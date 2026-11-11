@@ -1,0 +1,2581 @@
+{
+ "404": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "home": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "bis-landing": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "bis": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "guides": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "guides-class": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "guides-spec": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "tiers": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "sim": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "sim-result": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "sim-gear": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "planner": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "rankings": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "logs": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "reports": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "report": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "character": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 336,
+    "right": 1584
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "ui-band",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "footer",
+     "left": 336,
+     "right": 1584
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 376,
+    "right": 1624
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "ui-band",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "footer",
+     "left": 376,
+     "right": 1624
+    }
+   ]
+  }
+ },
+ "guild": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 336,
+    "right": 1584
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "ui-band",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "footer",
+     "left": 336,
+     "right": 1584
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 376,
+    "right": 1624
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "ui-band",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "footer",
+     "left": 376,
+     "right": 1624
+    }
+   ]
+  }
+ },
+ "guild-roster": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 336,
+    "right": 1584
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "ui-band",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "footer",
+     "left": 336,
+     "right": 1584
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 376,
+    "right": 1624
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "ui-band",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "footer",
+     "left": 376,
+     "right": 1624
+    }
+   ]
+  }
+ },
+ "guild-loot": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 336,
+    "right": 1584
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "ui-band",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "ui-cbar",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "footer",
+     "left": 336,
+     "right": 1584
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 376,
+    "right": 1624
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "ui-band",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "ui-cbar",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "footer",
+     "left": 376,
+     "right": 1624
+    }
+   ]
+  }
+ },
+ "account": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "setup": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "connect": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "login": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "premium": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "characters": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "ratings": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "creators": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "app": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "changelog": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-cbar",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-cbar",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-cbar",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "legal": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "about": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 144,
+    "right": 1776
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "ui-band",
+     "left": 144,
+     "right": 1776
+    },
+    {
+     "where": "footer",
+     "left": 144,
+     "right": 1776
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 168,
+    "right": 1832
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "ui-band",
+     "left": 168,
+     "right": 1832
+    },
+    {
+     "where": "footer",
+     "left": 168,
+     "right": 1832
+    }
+   ]
+  }
+ },
+ "b": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 336,
+    "right": 1584
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "ui-band",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "footer",
+     "left": 336,
+     "right": 1584
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 376,
+    "right": 1624
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "ui-band",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "footer",
+     "left": 376,
+     "right": 1624
+    }
+   ]
+  }
+ },
+ "b-unavailable": {
+  "1440": {
+   "header": {
+    "left": 96,
+    "right": 1344
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "ui-band",
+     "left": 96,
+     "right": 1344
+    },
+    {
+     "where": "footer",
+     "left": 96,
+     "right": 1344
+    }
+   ]
+  },
+  "1920": {
+   "header": {
+    "left": 336,
+    "right": 1584
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "ui-band",
+     "left": 336,
+     "right": 1584
+    },
+    {
+     "where": "footer",
+     "left": 336,
+     "right": 1584
+    }
+   ]
+  },
+  "2000": {
+   "header": {
+    "left": 376,
+    "right": 1624
+   },
+   "columns": [
+    {
+     "where": "body",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "ui-band",
+     "left": 376,
+     "right": 1624
+    },
+    {
+     "where": "footer",
+     "left": 376,
+     "right": 1624
+    }
+   ]
+  }
+ }
+}

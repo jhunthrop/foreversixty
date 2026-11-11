@@ -16,6 +16,7 @@ import { specName } from '../guild/spec-name';
 import { orderCharacters } from './order';
 import { selectorCopy } from './copy';
 import { isFailed, isStale } from './stale';
+import { upperFirst } from '../text';
 
 export type RowStatus = 'ok' | 'stale' | 'failed';
 export type RowKind = 'account' | 'pointer';
@@ -66,10 +67,6 @@ export interface ModelInput {
   nowMs: number;
 }
 
-function capitalise(slug: string): string {
-  return slug.length === 0 ? slug : slug.charAt(0).toUpperCase() + slug.slice(1);
-}
-
 function slugOf(className: string | undefined): string {
   return (className ?? '').toLowerCase().replace(/\s+/g, '-');
 }
@@ -97,7 +94,7 @@ function rowFromCharacter(character: MeCharacter, current: boolean, now: Date): 
     kind: 'account',
     name: character.name,
     classSlug,
-    className: capitalise(classSlug),
+    className: upperFirst(classSlug),
     spec: characterSpecName(character),
     level: character.level,
     levelSlot: true,
@@ -126,7 +123,7 @@ function specOfLabel(specClass: string, className: string): string | undefined {
 /** The row for a pointer that names no account character: a pasted export, or an expired session. */
 export function rowFromPointer(pointer: CurrentCharacter, sourceWord: string, now: Date): SelectorRow {
   const { name, specClass } = splitPointerLabel(pointer);
-  const className = capitalise(pointer.classSlug);
+  const className = upperFirst(pointer.classSlug);
   return {
     key: pointer.ref,
     kind: 'pointer',

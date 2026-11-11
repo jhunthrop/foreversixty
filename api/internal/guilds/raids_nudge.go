@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // nudgeFallback is how long before the start a player whose reminder falls at or after it is
@@ -32,7 +33,7 @@ type NudgeReader interface {
 
 // nudgeDue is when p's raid-day reminder for a raid at start comes due.
 func nudgeDue(start time.Time, p events.Prefs) time.Time {
-	loc := raidLocation(p.TimeZone)
+	loc := textfmt.Location(p.TimeZone)
 	local := start.In(loc)
 	due := time.Date(local.Year(), local.Month(), local.Day(), 0, p.RaidReminder, 0, 0, loc)
 	if !due.Before(start) {

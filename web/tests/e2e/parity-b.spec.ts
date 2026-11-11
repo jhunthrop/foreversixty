@@ -16,8 +16,6 @@
 // The mocks are rendered before the tests (support/parity-mocks.ts). A side-by-side per state
 // and width lands in test-results/parity/b-<state>-<width>.png. Desktop project only: the 390 run
 // is a 390 px desktop viewport, as the mock renders are.
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { test, expect } from './support/test';
 import {
@@ -32,42 +30,14 @@ import {
 } from './support/parity';
 import { renderSharedBuildMocks } from './support/parity-mocks';
 import { routePlannerState } from './support/planner-page';
-
-const WEB_ROOT = path.join(import.meta.dirname, '..', '..');
-const FIXTURES = path.join(import.meta.dirname, 'fixtures', 'shared-build');
-
-/** The first site <header> and the last <footer> of a page (api/internal/site chrome_test.go's rule). */
-function chromeOf(html: string): { header: string; footer: string } {
-  const header = html.slice(html.indexOf('<header'), html.indexOf('</header>') + '</header>'.length);
-  const footer = html.slice(html.lastIndexOf('<footer'), html.lastIndexOf('</footer>') + '</footer>'.length);
-  return { header, footer };
-}
-
-/** The API page with this build's chrome in place of the copy it was rendered with. */
-function apiPage(fixture: string): string {
-  const page = readFileSync(path.join(FIXTURES, fixture), 'utf8');
-  const served = chromeOf(page);
-  const site = chromeOf(readFileSync(path.join(WEB_ROOT, 'dist', 'about.html'), 'utf8'));
-  return page.replace(served.header, site.header).replace(served.footer, site.footer);
-}
-
-const RECORD = JSON.parse(
-  readFileSync(path.join(WEB_ROOT, '..', 'api/internal/site/testdata/shared-survival.json'), 'utf8'),
-) as { id: string };
-
-async function openShared(page: Page, fixture: string, id: string): Promise<void> {
-  await routePlannerState(page, 'out');
-  const body = apiPage(fixture);
-  await page.route(`**/b/${id}`, (route) => route.fulfill({ status: 200, contentType: 'text/html', body }));
-  await page.goto(`/b/${id}`);
-}
+import { SHARED_BUILD_ID, openSharedBuild } from './support/shared-build-page';
 
 const STATES: readonly { id: string; mock: string; open: (page: Page) => Promise<void> }[] = [
   {
     id: 'b',
     mock: 'web-b',
     open: async (page) => {
-      await openShared(page, 'survival.html', RECORD.id);
+      await openSharedBuild(page, 'survival.html', SHARED_BUILD_ID);
       await expect(page.getByTestId('planner-trees')).toBeVisible();
       await expect(page.getByTestId('band-compare-differs')).toBeVisible();
       await page.waitForLoadState('networkidle');
@@ -77,7 +47,7 @@ const STATES: readonly { id: string; mock: string; open: (page: Page) => Promise
     id: 'b-missing',
     mock: 'web-b-missing',
     open: async (page) => {
-      await openShared(page, 'missing.html', 'nosuchbuild');
+      await openSharedBuild(page, 'missing.html', 'nosuchbuild');
       await expect(page.getByTestId('page-title')).toHaveText('Build not found');
     },
   },

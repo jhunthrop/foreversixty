@@ -3,10 +3,11 @@
 // 6.2, Rating row; copy section 10): the parts in the weight table's order, each part's one-line
 // definition without its `{Part}: ` prefix, the basis sentence and column, the score Meter's tone
 // (green from 75) and a moment's link text. Browser safe.
-import { formatDuration, percentileToken } from './format';
+import { percentileToken } from './format';
 import { ratingCopy } from '../rating/copy';
 import { RATING_COMPONENT_ORDER } from '../rating/types';
 import type { RatingCardPlayer, RatingComponent, RatingMoment } from '../rating/types';
+import { clockDuration } from '../format/duration';
 
 export const RATING_LOADING = 'Loading ratings.';
 
@@ -77,5 +78,5 @@ export function ratingColour(score: number): string {
 /** `0:12 · Kick`, or the spell alone when the moment has no time. */
 export function momentText(moment: RatingMoment): string {
   const name = moment.spell_name ?? 'Unnamed';
-  return moment.at_ms === undefined ? name : `${formatDuration(moment.at_ms)} · ${name}`;
+  return moment.at_ms === undefined ? name : `${clockDuration(moment.at_ms)} · ${name}`;
 }

@@ -5,6 +5,7 @@ import { SITE_URL } from '../seo';
 import type { GoLinkFunnel } from './api';
 import { GO_PREFIX } from './config';
 
+import { EMPTY_FIGURE, grouped } from '../format/number';
 export type FunnelFigures = Pick<GoLinkFunnel, 'clicks' | 'bot_clicks' | 'sign_ins' | 'linked' | 'premium'>;
 
 /** The URL the owner pastes into a post. */
@@ -14,15 +15,13 @@ export function shortLink(slug: string): string {
 
 /** A step as a whole percent of the one before it; an en dash when there is nothing before. */
 export function shareOf(part: number, whole: number): string {
-  if (whole <= 0) return '–';
+  if (whole <= 0) return EMPTY_FIGURE;
   return `${Math.round((part / whole) * 100)}%`;
 }
 
-const COUNT = new Intl.NumberFormat('en-US');
-
 /** A figure as the table shows it: 6,132. */
 export function countLabel(value: number): string {
-  return COUNT.format(value);
+  return grouped(value);
 }
 
 export function funnelTotals(rows: readonly GoLinkFunnel[]): FunnelFigures {

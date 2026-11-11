@@ -9,7 +9,7 @@
      The arithmetic lives in lib/report/mechanics.ts; this file is the words and the links. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { formatAmount, formatDuration, classColorVar } from '../../lib/report/format';
+  import { classColorVar } from '../../lib/report/format';
   import {
     cleanMechanicRows,
     mechanicRowKey,
@@ -34,6 +34,8 @@
   import Tag, { type TagTone } from '../ui/Tag.svelte';
   import type { ReportState } from '../../lib/report/url';
   import type { MechanicHit, MechanicKind, MechanicRow, Summary } from '../../lib/report/types';
+  import { clockDuration } from '../../lib/format/duration';
+  import { compact } from '../../lib/format/number';
 
   let {
     summary,
@@ -98,8 +100,8 @@
     row.damage === undefined && row.healed === undefined ? count : (row.damage ?? 0) + (row.healed ?? 0);
   const throughWords = (row: MechanicRow): string => {
     const parts = [
-      ...((row.damage ?? 0) > 0 ? [`dealt ${formatAmount(row.damage ?? 0)} damage`] : []),
-      ...((row.healed ?? 0) > 0 ? [`healed the enemies for ${formatAmount(row.healed ?? 0)}`] : []),
+      ...((row.damage ?? 0) > 0 ? [`dealt ${compact(row.damage ?? 0)} damage`] : []),
+      ...((row.healed ?? 0) > 0 ? [`healed the enemies for ${compact(row.healed ?? 0)}`] : []),
     ];
     return parts.length === 0 ? '' : `; it ${parts.join(' and ')}`;
   };
@@ -121,7 +123,7 @@
             hit,
             cost: hit.damage + (hit.killed ? DEATH_COST : 0),
             subject: `${splitUnitName(hit.name).name}, ${row.name}`,
-            text: `${splitUnitName(hit.name).name} took ${row.name} ${hit.hits === 1 ? 'once' : `${hit.hits} times`} for ${formatAmount(hit.damage)} damage${hit.killed ? ' and died to it' : ''}`,
+            text: `${splitUnitName(hit.name).name} took ${row.name} ${hit.hits === 1 ? 'once' : `${hit.hits} times`} for ${compact(hit.damage)} damage${hit.killed ? ' and died to it' : ''}`,
           });
         }
         // The role's own line: the cleave placed on four people is the tank's failure as
@@ -133,7 +135,7 @@
             hit: placement.hit,
             cost: placement.hit.damage + (placement.hit.killed ? DEATH_COST : 0),
             subject: `${splitUnitName(placement.hit.name).name}, ${row.name} placed`,
-            text: `${splitUnitName(placement.hit.name).name} placed ${row.name} on ${placement.others} ${placement.others === 1 ? 'player' : 'players'} ${placement.hit.hits === 1 ? 'once' : `${placement.hit.hits} times`} for ${formatAmount(placement.hit.damage)} damage${placement.hit.killed ? ', and someone died to it' : ''}; the ${row.role}'s to place, and the same hits as their rows below, charged here as well`,
+            text: `${splitUnitName(placement.hit.name).name} placed ${row.name} on ${placement.others} ${placement.others === 1 ? 'player' : 'players'} ${placement.hit.hits === 1 ? 'once' : `${placement.hit.hits} times`} for ${compact(placement.hit.damage)} damage${placement.hit.killed ? ', and someone died to it' : ''}; the ${row.role}'s to place, and the same hits as their rows below, charged here as well`,
           });
         }
       } else if (row.kind === 'interrupt' && (row.casts ?? 0) > (row.stopped ?? 0)) {
@@ -359,9 +361,10 @@
               testid={`mechanics-ability-${ability.spell_id}`}
             >
               {#snippet lead()}<SpellIcon
+                  socket
                   url={icons.of(ability.spell_id, ability.name)}
                   size={24}
-                  tip
+                  tip={ability.spell_id}
                 />{/snippet}
               {#snippet subContent()}{#each abilityHitsByPlayer(summary, ability.spell_id) as one, i (one.guid)}{i >
                   0
@@ -370,12 +373,12 @@
                     >{i > 0 ? '· ' : ''}<span style:color={classColorVar(classOf.get(one.guid))}
                       >{splitUnitName(one.name).name}</span
                     >
-                    <b class="text-text font-semibold tabular-nums">{formatAmount(one.damage)}</b>
+                    <b class="text-text font-semibold tabular-nums">{compact(one.damage)}</b>
                     <span class="tabular-nums">({one.hits} {one.hits === 1 ? 'hit' : 'hits'})</span></span
                   >{/each}{/snippet}
               {#snippet trail()}
                 <span class="text-strong text-[15px] leading-5 font-bold tabular-nums"
-                  >{formatAmount(ability.damage)}</span
+                  >{compact(ability.damage)}</span
                 >
                 <a
                   href={hrefFor(damageTakenPatch(ability.spell_id))}
@@ -406,14 +409,14 @@
               testid={`mechanics-row-${mechanicRowKey(row)}`}
             >
               {#snippet lead()}<SpellIcon
+                  socket
                   url={icons.of(row.spell_id, row.name)}
-                  spellId={row.spell_id}
-                  tip
+                  tip={row.spell_id}
                 />{/snippet}
               {#snippet trail()}
                 <Tag tone={tagTone(row, tally.failed)}>{KIND_TAG[row.kind] ?? row.kind}</Tag>
                 {@render figure(String(tally.failed), 'Failed')}
-                {@render figure(formatAmount(tally.damage), 'Damage')}
+                {@render figure(compact(tally.damage), 'Damage')}
               {/snippet}
             </Row>
           {/each}
@@ -449,6 +452,8 @@
                 wrapTrail
               >
                 {#snippet lead()}<SpellIcon
+                    socket
+                    tip={problem.row.spell_id}
                     url={icons.of(problem.row.spell_id, problem.row.name)}
                     size={24}
                   />{/snippet}
@@ -490,7 +495,12 @@
                   .join(' · ')}
                 open
               >
-                {#snippet lead()}<SpellIcon url={icons.of(row.spell_id, row.name)} size={24} />{/snippet}
+                {#snippet lead()}<SpellIcon
+                    socket
+                    tip={row.spell_id}
+                    url={icons.of(row.spell_id, row.name)}
+                    size={24}
+                  />{/snippet}
               </Row>
             {/each}
           {/each}
@@ -501,13 +511,13 @@
     {#if melee.damage > 0}
       <Section title="Melee swings" testid="mechanics-melee" panel>
         <p class="text-muted text-[14px] leading-6">
-          <span class="text-text tabular-nums">{formatAmount(melee.damage)}</span> damage to
+          <span class="text-text tabular-nums">{compact(melee.damage)}</span> damage to
           <span class="tabular-nums">{melee.players}</span>
           {melee.players === 1 ? 'player' : 'players'} from the enemies’ swings{#if melee.most}, most of it on
             <span class="text-text">{splitUnitName(melee.most.name).name}</span> (<span class="tabular-nums"
-              >{formatAmount(melee.most.damage)}</span
+              >{compact(melee.most.damage)}</span
             >){#if melee.others.players > 0}, the other
-              <span class="tabular-nums">{formatAmount(melee.others.damage)}</span> on
+              <span class="tabular-nums">{compact(melee.others.damage)}</span> on
               <span class="tabular-nums">{melee.others.players}</span>
               {melee.others.players === 1 ? 'other player' : 'other players'}{/if}{/if}. No table judges
           melee; the Damage taken tab splits it by source.
@@ -534,7 +544,7 @@
               >{/snippet}
             {#snippet subContent()}
               <span class="block">
-                <span class="tabular-nums">{formatAmount(player.damage)}</span> avoidable damage
+                <span class="tabular-nums">{compact(player.damage)}</span> avoidable damage
                 {#if nightMode}
                   <span
                     title="Over the night the share would divide by every pull's damage taken, judged or not, so it is not shown; open a pull for it"
@@ -546,7 +556,7 @@
                   > of what they took
                 {/if}
                 {#if player.placed > 0}
-                  · <span class="tabular-nums">{formatAmount(player.placed)}</span> placed on others
+                  · <span class="tabular-nums">{compact(player.placed)}</span> placed on others
                 {/if}
               </span>
               {#if player.hits.length === 0}
@@ -565,12 +575,12 @@
                     {#if entry.others !== undefined}
                       <span class="tabular-nums">{entry.others}</span>
                       {entry.others === 1 ? 'player' : 'players'} who are not the {entry.row.role}{/if} ·
-                    <span class="tabular-nums">{formatAmount(entry.hit.damage)}</span>
+                    <span class="tabular-nums">{compact(entry.hit.damage)}</span>
                     damage{#if (entry.hit.absorbed ?? 0) > 0}
-                      (<span class="tabular-nums">{formatAmount(entry.hit.absorbed ?? 0)}</span> absorbed){/if}
+                      (<span class="tabular-nums">{compact(entry.hit.absorbed ?? 0)}</span> absorbed){/if}
                     {#if nightMode && entry.row.encounter}· on {entry.row.encounter}{/if}
                     {#if !nightMode}· first at <span class="tabular-nums"
-                        >{formatDuration(entry.hit.first_ms)}</span
+                        >{clockDuration(entry.hit.first_ms)}</span
                       >{/if}
                     {#if entry.hit.killed}· {entry.others === undefined
                         ? 'died to it'
@@ -587,7 +597,7 @@
               {/if}
               {#if player.unavoidable.damage > 0}
                 <span class="block">
-                  Unavoidable: <span class="tabular-nums">{formatAmount(player.unavoidable.damage)}</span>
+                  Unavoidable: <span class="tabular-nums">{compact(player.unavoidable.damage)}</span>
                   damage from {player.unavoidable.names.join(', ')}.
                 </span>
               {/if}
@@ -610,10 +620,15 @@
         {#each unclassified as ability (ability.spell_id)}
           <Row
             title={unclassifiedNameShared(ability) ? `${ability.name} #${ability.spell_id}` : ability.name}
-            sub={`${formatAmount(ability.damage)} damage to players · ${ability.players} ${ability.players === 1 ? 'player' : 'players'} hit`}
+            sub={`${compact(ability.damage)} damage to players · ${ability.players} ${ability.players === 1 ? 'player' : 'players'} hit`}
             open
           >
-            {#snippet lead()}<SpellIcon url={icons.of(ability.spell_id, ability.name)} size={24} />{/snippet}
+            {#snippet lead()}<SpellIcon
+                socket
+                tip={ability.spell_id}
+                url={icons.of(ability.spell_id, ability.name)}
+                size={24}
+              />{/snippet}
             {#snippet trail()}
               <a
                 href={hrefFor(damageTakenPatch(ability.spell_id))}
@@ -636,14 +651,14 @@
         {#each unjudged as death (`${death.guid}-${death.at_ms}`)}
           <Row
             title={splitUnitName(death.name).name}
-            sub={`${death.label ? `${death.label} · ` : ''}at ${formatDuration(death.at_ms)} · ${death.by}`}
+            sub={`${death.label ? `${death.label} · ` : ''}at ${clockDuration(death.at_ms)} · ${death.by}`}
             open
           >
             {#snippet trail()}
               <a
                 href={hrefFor(deathsPatch(death.guid, death.night_ms))}
                 class={linkClass}
-                aria-label={`Deaths, ${splitUnitName(death.name).name} at ${formatDuration(death.at_ms)}`}
+                aria-label={`Deaths, ${splitUnitName(death.name).name} at ${clockDuration(death.at_ms)}`}
                 onclick={(event) => follow(event, deathsPatch(death.guid, death.night_ms))}>Deaths</a
               >
             {/snippet}

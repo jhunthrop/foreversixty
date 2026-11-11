@@ -7,6 +7,7 @@
 // left out, never guessed: the craft skill and quest zone show only when loot.json carries them
 // (loot-fields lane), and a source's own level range wins over the curated instance table.
 import { describeSourceCell, type SourceCell } from './source-cell';
+import { titleCase } from '../text';
 
 /** An instance's level range, by its display name. */
 export type InstanceLevels = ReadonlyMap<string, { min: number; max: number }>;
@@ -21,10 +22,6 @@ export interface SourceLineContext {
  *  own words are kept short so a source fits the paperdoll's second line (owner option C). */
 export function dropChanceText(percent: number): string {
   return `${percent >= 1 ? Math.round(percent) : Number(percent.toFixed(1))}%`;
-}
-
-function titleCase(word: string): string {
-  return word.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
 /** ` (15-24)`, or ` (60)` for a one-level range; empty when unknown. */

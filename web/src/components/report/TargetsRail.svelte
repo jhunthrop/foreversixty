@@ -6,7 +6,7 @@
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import { splitUnitName } from '../../lib/characters';
-  import { formatAmount } from '../../lib/report/format';
+  import { compact } from '../../lib/format/number';
   import type { Actor } from '../../lib/report/types';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
@@ -40,7 +40,7 @@
           open
         >
           {#snippet trail()}<span class="text-strong text-[15px] font-semibold tabular-nums"
-              >{formatAmount(amount)}</span
+              >{compact(amount)}</span
             >{/snippet}
         </Row>
       {/each}

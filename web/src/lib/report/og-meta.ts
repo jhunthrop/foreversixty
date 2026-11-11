@@ -19,6 +19,7 @@ import type { SimResult } from '../sim/types';
 import { statLabel } from '../sim/weights';
 import { reportHeading } from './heading';
 import type { ReportMeta } from './types';
+import { grouped } from '../format/number';
 
 export const SITE_BASE_URL = 'https://foreversixty.gg';
 
@@ -211,9 +212,9 @@ function fallbackSimShellMeta(result: SimResult): ShellMeta {
     };
   }
 
-  const dps = Math.round(result.dps.mean).toLocaleString('en-US');
+  const dps = grouped(result.dps.mean);
   const band = formatMargin(confidenceBand(result.dps));
-  const iterations = result.request.iterations.toLocaleString('en-US');
+  const iterations = grouped(result.request.iterations);
   // Whether the player carried a raid buff, read from the stored fact rather than guessed:
   // a SimResult carries no buff preset, so this is true exactly when the summary records at
   // least one BUFF-type aura track.

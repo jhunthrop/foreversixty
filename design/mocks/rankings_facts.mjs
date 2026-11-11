@@ -22,7 +22,7 @@ import { rankRowView } from ${JSON.stringify(WEB + "src/lib/rankings/rank-row-vi
 import { guildRowView } from ${JSON.stringify(WEB + "src/lib/rankings/guild-row-view.ts")};
 import { topParses, specLeaders } from ${JSON.stringify(WEB + "src/lib/rankings/landing.ts")};
 import { RANK_LEGEND, showRowCrests } from ${JSON.stringify(WEB + "src/lib/rankings/row-view.ts")};
-import { ordinal } from ${JSON.stringify(WEB + "src/lib/report/format.ts")};
+import { ordinal } from ${JSON.stringify(WEB + "src/lib/format/number.ts")};
 import { rankColor } from ${JSON.stringify(WEB + "src/lib/rankings/row-view.ts")};
 import { scoreCopy } from ${JSON.stringify(WEB + "src/lib/score/copy.ts")};
 import { ratingCopy } from ${JSON.stringify(WEB + "src/lib/rating/copy.ts")};

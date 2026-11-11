@@ -42,6 +42,7 @@ import { fetchSimInput } from './api';
 import { simCopy } from './copy';
 import { recordCurrentCharacter, recordLoadedExport } from './current-character-bridge';
 import type { CharacterSource } from './types';
+import { relativeTime } from '../dates';
 
 export interface LoadContext {
   /** The active data build; every /data/<build>/ fetch and every character carries it. */
@@ -102,22 +103,10 @@ export function selectRosterRow(roster: RosterRow[], guid: string | undefined): 
   return named ?? roster.find((row) => row.class !== undefined && row.role === 'dps');
 }
 
-const MINUTE = 60_000;
-const HOUR = 60 * MINUTE;
-const DAY = 24 * HOUR;
-
-function plural(count: number, one: string): string {
-  return `${count} ${count === 1 ? one : `${one}s`} ago`;
-}
-
-export function relativeTime(iso: string, now: Date = new Date()): string {
+/** "3 hours ago" (the house relative time, the date past 30 days); unreadable reads as unknown. */
+export function sourceAge(iso: string, now: Date = new Date()): string {
   const at = new Date(iso);
-  if (Number.isNaN(at.getTime())) return 'at an unknown time';
-  const elapsed = Math.max(0, now.getTime() - at.getTime());
-  if (elapsed < MINUTE) return 'just now';
-  if (elapsed < HOUR) return plural(Math.floor(elapsed / MINUTE), 'minute');
-  if (elapsed < DAY) return plural(Math.floor(elapsed / HOUR), 'hour');
-  return plural(Math.floor(elapsed / DAY), 'day');
+  return Number.isNaN(at.getTime()) ? 'at an unknown time' : relativeTime(at, now);
 }
 
 /**
@@ -127,14 +116,14 @@ export function relativeTime(iso: string, now: Date = new Date()): string {
 export function sourcePill(source: CharacterSource, now: Date = new Date(), name = ''): string {
   switch (source.kind) {
     case 'armory':
-      return `Armory, ${relativeTime(source.captured_at, now)}`;
+      return `Armory, ${sourceAge(source.captured_at, now)}`;
     case 'blizzard':
-      return `Battle.net, ${relativeTime(source.captured_at, now)}`;
+      return `Battle.net, ${sourceAge(source.captured_at, now)}`;
     case 'addon':
       // A named export that arrived in a link carries no capture time; say what it is.
       return source.captured_at === ''
         ? 'Addon export'
-        : `Addon export, ${relativeTime(source.captured_at, now)}`;
+        : `Addon export, ${sourceAge(source.captured_at, now)}`;
     case 'build':
       return 'Build from planner';
     case 'fight':

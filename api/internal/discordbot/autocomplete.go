@@ -5,17 +5,15 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // Autocomplete bounds: Discord takes at most 25 choices, each name at most 100.
 const (
 	maxChoices     = 25
 	maxChoiceRunes = 100
-	// raidChoiceDate is "Thu 10 Dec", in the guild's raid zone.
-	raidChoiceDate = "Mon 2 Jan"
 	choiceJoin     = " · "
 )
 
@@ -71,31 +69,19 @@ func (s *Service) raidChoices(ctx context.Context, guildID int64, typed string) 
 	if err != nil {
 		return nil, fmt.Errorf("discordbot: signup autocomplete zone: %w", err)
 	}
-	loc := raidLocation(zone)
+	loc := textfmt.Location(zone)
 	out := []Choice{}
 	for _, r := range raids {
 		if len(out) == maxChoices {
 			break
 		}
-		date := choiceJoin + r.StartsAt.In(loc).Format(raidChoiceDate)
+		date := choiceJoin + textfmt.RaidDay(r.StartsAt, loc)
 		title := truncateRunes(r.Title, maxChoiceRunes-len([]rune(date)))
 		if matches(title, typed) {
 			out = append(out, Choice{Name: title + date, Value: strconv.FormatInt(r.ID, 10)})
 		}
 	}
 	return out, nil
-}
-
-// raidLocation is the guild's raid zone, UTC when unset or unknown.
-func raidLocation(zone string) *time.Location {
-	if zone == "" {
-		return time.UTC
-	}
-	loc, err := time.LoadLocation(zone)
-	if err != nil {
-		return time.UTC
-	}
-	return loc
 }
 
 func matches(name, typed string) bool {

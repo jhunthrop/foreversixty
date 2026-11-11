@@ -4,7 +4,7 @@
 // thumbnail): the real, loadable tree `GuideBuildTree.svelte` renders client-side is still
 // the only INTERACTIVE tree on the page (unchanged island) -- these two previews share its
 // own decoder (`decodeFS1`, the FS1 format's own talent-rank grammar) and the same
-// tier/column sort `GuideBuildTree`'s `TreeGrid` renders by, but read the class's talent
+// tier/column sort ui/TalentTree renders by, but read the class's talent
 // file straight off disk the way `rotation-view.ts`/`spec-icon.ts` already do for the same
 // reason (Astro's static pages run at build time in Node, never in a browser, so
 // `planner/load.ts`'s `fetch`-based `loadTalents` cannot run here).
@@ -34,7 +34,7 @@ export interface DecodedTreeView {
   name: string;
   position: number;
   /** Sorted tier ascending, then column ascending -- the same order the FS1 code's own
-   *  per-tree digit string assumes (`fs1.ts`'s own header) and `TreeGrid` renders by. */
+   *  per-tree digit string assumes (`fs1.ts`'s own header) and ui/TalentTree renders by. */
   talents: DecodedTalentView[];
   points: number;
 }

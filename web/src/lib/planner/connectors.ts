@@ -1,6 +1,6 @@
 // web/src/lib/planner/connectors.ts
 // Where the game draws a line from a prerequisite to the talent that needs it, as
-// a path in the tree grid's own pixel space. Pure and unit-tested: TreeGrid puts
+// a path in the tree grid's own pixel space. Pure and unit-tested: ui/TalentTree puts
 // these in an SVG overlay sized to the grid, so nothing here measures the DOM.
 //
 // Three shapes, which is what the client draws: straight down a column, straight
@@ -12,9 +12,9 @@
 // crosses an icon.
 import type { TalentTree } from './types';
 
-/** The talent button's side in CSS pixels; TalentCell is h-11 w-11. */
+/** The viewBox unit: a 44 px cell (ui/TalentTree stretches it to every size token). */
 const CELL_PX = 44;
-/** The grid's gap; TreeGrid is gap-2. */
+/** The viewBox unit: an 8 px gap. */
 const GAP_PX = 8;
 /** Centre-to-centre distance between neighbouring cells. */
 export const PITCH_PX = CELL_PX + GAP_PX;

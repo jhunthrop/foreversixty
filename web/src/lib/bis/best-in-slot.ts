@@ -5,12 +5,7 @@
 // A pair (two rings, two trinkets) is matched either way round: wearing the listed pair
 // swapped is wearing the picks.
 
-const PAIR_OF: Readonly<Record<string, string>> = {
-  finger1: 'finger2',
-  finger2: 'finger1',
-  trinket1: 'trinket2',
-  trinket2: 'trinket1',
-};
+import { PAIR_OF } from '../gear/slots';
 
 /** True when `gear` (slot -> worn item id) wears `pickId` in `slot`, or in its pair slot. */
 export function wearsListedBest(

@@ -13,12 +13,13 @@
      `max_stacks`, is not rendered here. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { formatPercent, schoolName } from '../../lib/report/format';
+  import { schoolName } from '../../lib/report/format';
   import activeBuild from '../../data/active-build.json';
   import { loadSharedSpellNames, nameAuras, type SpellNames } from '../../lib/report/aura-names';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { AuraTrack } from '../../lib/report/types';
   import type { StatColumn, StatSort } from '../../lib/ui/stat-table';
+  import { percent } from '../../lib/format/number';
   import Meter from '../ui/Meter.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -272,7 +273,7 @@
       {@const each = row.tracks.length > 1 ? eachTarget(row) : []}
       <StatRow
         figures={[
-          { value: formatPercent(shareOf(row)), testid: 'aura-uptime' },
+          { value: percent(shareOf(row)), testid: 'aura-uptime' },
           { value: String(row.applications), testid: 'aura-applied' },
         ]}
         testid={row.tracks.length === 1
@@ -280,9 +281,9 @@
           : `aura-${track.spell_id}-${onEnemy(track) ? 'enemies' : 'players'}`}
       >
         {#snippet icon()}<SpellIcon
+            socket
             url={icons.of(track.spell_id, track.name)}
-            spellId={track.spell_id}
-            tip
+            tip={track.spell_id}
           />{/snippet}
         {#snippet name()}
           <!-- The anchor a rating moment's link lands on (lib/rating/moments.ts); a row on several
@@ -314,8 +315,7 @@
                   id={`aura-${one.target_guid}-${one.spell_id}`}
                   class="scroll-mt-24 whitespace-nowrap"
                   >{i > 0 ? '· ' : ''}{unitLabel(row, one)}
-                  <b class="text-text font-semibold tabular-nums">{formatPercent(shareOf(rowOf([one])))}</b
-                  ></span
+                  <b class="text-text font-semibold tabular-nums">{percent(shareOf(rowOf([one])))}</b></span
                 >{/each}{#if each.length > EACH_MAX}
                 <span class="whitespace-nowrap">· {each.length - EACH_MAX} more</span>{/if}
             </div>{/if}
@@ -357,10 +357,11 @@
   >
     <StatTable columns={[{ id: 'up', label: 'Up' }]} open label="Uptime across the night">
       {#each bySpell as entry (entry.name)}
-        <StatRow figures={[{ value: formatPercent(entry.pct) }]}>
+        <StatRow figures={[{ value: percent(entry.pct) }]}>
           {#snippet icon()}<SpellIcon
+              socket
+              tip={entry.spellId}
               url={icons.of(entry.spellId, entry.name)}
-              spellId={entry.spellId}
             />{/snippet}
           {#snippet name()}{entry.name}{/snippet}
           {#snippet sub()}<span>on {entry.targets} {kind === 'DEBUFF' ? 'bosses' : 'players'}</span>{/snippet}

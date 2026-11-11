@@ -1830,12 +1830,27 @@ end
 --- to `room` as `measure` reads it (nil: drawn whole), the Shift block only while Shift is
 --- held. Then the compare tooltip for the entry's target, and the hover `redraw` re-runs once
 --- an item it waits for arrives (ItemTooltip.onItemInfoReceived).
+--- Whether a section may show `tooltip`: it is up already, or its owner is on screen under the
+--- mouse (the hover that just set it). A tooltip the client rebuilt while hidden (its data
+--- updated after the hover left, a new item in the bags) stays hidden.
+function ItemTooltip.mayShow(tooltip)
+	if type(tooltip.IsShown) ~= "function" or tooltip:IsShown() then
+		return true
+	end
+	local owner = type(tooltip.GetOwner) == "function" and tooltip:GetOwner() or nil
+	return type(owner) == "table" and type(owner.IsVisible) == "function" and owner:IsVisible() == true
+		and type(owner.IsMouseOver) == "function" and owner:IsMouseOver() == true
+end
+
 local function drawEntry(tooltip, entry, measure, room, redraw)
 	for _, line in ipairs(ItemTooltip.visibleLines(entry.lines, Theme.shiftDown())) do
 		local r, g, b = opColor(line.color)
 		for _, text in ipairs(ItemTooltip.fitLine(line, measure, room)) do
 			tooltip:AddLine(text, r, g, b)
 		end
+	end
+	if not ItemTooltip.mayShow(tooltip) then
+		return
 	end
 	tooltip:Show()
 	if entry.target ~= nil then
@@ -1960,6 +1975,20 @@ local function addLines(tooltip, itemLink)
 	end
 end
 
+--- Whether `tooltip` is another addon's hidden scanning tooltip: owned with ANCHOR_NONE and placed
+--- nowhere (a tooltip the client or an addon shows sits at a point, the default anchor included).
+--- Found in game: Pawn read a looted robe through PawnPrivateTooltip1, the processor ran this hook
+--- for it, and the section's compare tooltip opened beside GameTooltip on its own.
+function ItemTooltip.isScanner(tooltip)
+	if type(tooltip.GetAnchorType) ~= "function" or type(tooltip.GetNumPoints) ~= "function" then
+		return false
+	end
+	local ok, anchor, points = pcall(function()
+		return tooltip:GetAnchorType(), tooltip:GetNumPoints()
+	end)
+	return ok and anchor == "ANCHOR_NONE" and points == 0
+end
+
 --- One guarded body for both hook shapes. A Lua error inside a tooltip hook
 --- breaks every tooltip in the game, so a failure turns the hook off.
 function ItemTooltip.onTooltip(tooltip, itemLink)
@@ -1975,7 +2004,7 @@ function ItemTooltip.onTooltip(tooltip, itemLink)
 	end
 	-- The hidden tooltip a worn item's enchant is read through (Compat): reading
 	-- it must never draw a section, nor read the worn items again.
-	if tooltip == Compat.scanFrame then
+	if tooltip == Compat.scanFrame or ItemTooltip.isScanner(tooltip) then
 		return
 	end
 	local ok, err = pcall(addLines, tooltip, itemLink)

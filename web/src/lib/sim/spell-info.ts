@@ -6,6 +6,7 @@
 import { dataUrl, loadOptional } from '../planner/load';
 import type { GameTipModel } from '../tooltips/game-tip';
 import { parseActionKey } from './action-names';
+import { iconUrl } from '../ui/assets';
 
 export interface SimSpellFact {
   name: string;
@@ -39,8 +40,7 @@ export async function loadSpellInfo(build: string, classSlug: string): Promise<S
     iconUrl: (key) => {
       const parsed = parseActionKey(key);
       if (parsed === null || parsed.kind !== 'spell') return null;
-      const stem = icons[parsed.label];
-      return stem === undefined ? null : dataUrl(build, `icons/${stem}.webp`);
+      return iconUrl(build, icons[parsed.label]);
     },
     fact: (spellId) => bundle.spells[String(spellId)],
   };

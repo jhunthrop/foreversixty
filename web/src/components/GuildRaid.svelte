@@ -5,8 +5,8 @@
      not a verified member gets the band and the not-visible line. GuildShell loads this file
      as its own chunk; lib/guild/raid-page-controller.svelte.ts owns the data and the 10 s poll. -->
 <script lang="ts">
-  import { minuteClock } from '../lib/guild/minute-clock.svelte';
-  import { viewerLocale } from '../lib/guild/raid-time';
+  import { minuteClock } from '../lib/ui/minute-clock.svelte';
+
   import { untrack } from 'svelte';
   import { guildClaimHref, guildHref, guildSettingsHref } from '../lib/characters';
   import { gateFactsFrom } from '../lib/guild/plan-gate';
@@ -27,6 +27,7 @@
     GUILD_BANDLESS_TOP,
   } from '../lib/guild/raid-layout';
   import type { RaidStatusAction } from '../lib/guild/raids-api';
+  import { viewerLocale, viewerZone } from '../lib/dates';
   import FactionCrest from './character/FactionCrest.svelte';
   import PageHeader from './ui/PageHeader.svelte';
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
@@ -43,7 +44,7 @@
     path,
     controller,
     now: fixedNow,
-    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    viewerTimezone = viewerZone(),
     locale = viewerLocale(),
   }: {
     path: RaidRoute;

@@ -16,7 +16,6 @@
     application,
     guildName,
     viewerTimezone,
-    locale,
     busy,
     error,
     onWithdraw,
@@ -24,7 +23,6 @@
     application: GuildApplication;
     guildName: string;
     viewerTimezone: string;
-    locale: string;
     busy: boolean;
     error: string;
     onWithdraw: () => void;
@@ -44,7 +42,7 @@
   <Row
     title={application.character.name}
     titleTone={classTone(application.character.class ?? '')}
-    sub={`${applicationLine(application, guildName)} ${applicationStamp(application, viewerTimezone, locale)}.`}
+    sub={`${applicationLine(application, guildName)} ${applicationStamp(application, viewerTimezone)}.`}
     open
     wrapTrail
     testid="guild-recruit-mine-row"

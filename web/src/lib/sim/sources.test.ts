@@ -16,7 +16,7 @@ import {
   fightRefOf,
   fromStoredCharacter,
   parseFightRef,
-  relativeTime,
+  sourceAge,
   selectRosterRow,
   sourcePill,
 } from './sources';
@@ -456,20 +456,21 @@ describe('fromLoggedFight with a combatant guid', () => {
   });
 });
 
-describe('relativeTime', () => {
+describe('sourceAge', () => {
   const now = new Date('2026-09-14T12:00:00Z');
 
   it('reads the way a person would say it', () => {
-    expect(relativeTime('2026-09-14T11:59:30Z', now)).toBe('just now');
-    expect(relativeTime('2026-09-14T11:40:00Z', now)).toBe('20 minutes ago');
-    expect(relativeTime('2026-09-14T11:00:00Z', now)).toBe('1 hour ago');
-    expect(relativeTime('2026-09-14T10:00:00Z', now)).toBe('2 hours ago');
-    expect(relativeTime('2026-09-12T12:00:00Z', now)).toBe('2 days ago');
+    expect(sourceAge('2026-09-14T11:59:30Z', now)).toBe('just now');
+    expect(sourceAge('2026-09-14T11:40:00Z', now)).toBe('20 minutes ago');
+    expect(sourceAge('2026-09-14T11:00:00Z', now)).toBe('1 hour ago');
+    expect(sourceAge('2026-09-14T10:00:00Z', now)).toBe('2 hours ago');
+    expect(sourceAge('2026-09-12T12:00:00Z', now)).toBe('2 days ago');
+    expect(sourceAge('2025-08-01T12:00:00Z', now)).toBe('1 Aug');
   });
 
   it('does not invent a time it cannot read', () => {
-    expect(relativeTime('', now)).toBe('at an unknown time');
-    expect(relativeTime('not a date', now)).toBe('at an unknown time');
+    expect(sourceAge('', now)).toBe('at an unknown time');
+    expect(sourceAge('not a date', now)).toBe('at an unknown time');
   });
 });
 

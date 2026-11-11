@@ -283,6 +283,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     st.add_argument("--build", required=True)
 
+    stc = sub.add_parser(
+        "spelltext-check",
+        help="fail when a shipped description (talents, spelltips, items, sets) still holds "
+        "an unrendered token or an empty substitution (pipeline.spelltext_lint); run after "
+        "normalize and spelltips",
+    )
+    stc.add_argument("--build", required=True)
+
     lv = sub.add_parser(
         "levels",
         help="write levels.json (per-level base stats) and spellranks.json (rank "
@@ -705,6 +713,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.spelltips import write_spell_tips
 
         print(write_spell_tips(args.build))
+    elif args.command == "spelltext-check":
+        from pipeline.spelltext_lint import check_build
+
+        sys.exit(check_build(args.build))
     elif args.command == "levels":
         from pipeline.levels import write_levels
         from pipeline.spellranks import write_spell_ranks

@@ -63,3 +63,25 @@ def test_a_curve_with_no_points_is_refused():
     ]
     with pytest.raises(CurveDataError, match="99999"):
         load_rank_points(rows, read_csv(TRAITS / "CurvePoint.csv"))
+
+
+def test_a_fractional_curve_value_keeps_its_fraction():
+    """Gore Drinker's curve 125264 on 1.60.1.70790 is 0.5 at rank 1: "restore 0.5% of your
+    maximum Health", not 0%."""
+    points = load_rank_points(
+        [
+            {
+                "ID": "1",
+                "TraitDefinitionID": "9",
+                "EffectIndex": "1",
+                "CurveID": "125264",
+                "OperationType": "0",
+            }
+        ],
+        [
+            {"CurveID": "125264", "Pos_0": "1", "Pos_1": "0.5"},
+            {"CurveID": "125264", "Pos_0": "2", "Pos_1": "1"},
+        ],
+    )
+    assert points.for_rank(9, 1) == {1: 0.5}
+    assert points.for_rank(9, 2) == {1: 1}

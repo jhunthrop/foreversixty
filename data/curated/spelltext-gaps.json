@@ -1,0 +1,65 @@
+{
+  "_doc": "Description tokens whose value no client table this build ships carries: the token names a spell (or an effect row) the server knows and the client export does not. Each value is what Wowhead's Forever tooltip prints for the spell, read 2026-11-10; pipeline/spelltext_gaps.py writes it into the spell's template before the renderer runs, so every surface (talents, tooltips, items, sets) reads the same words. Remove an entry when the client starts carrying the row: the loader refuses a token the template no longer holds.",
+  "gaps": [
+    {
+      "spell_id": 20554,
+      "token": "$26635d",
+      "value": "15 sec",
+      "sources": [
+        {
+          "label": "Wowhead Forever tooltip, Berserking: Increases your spellcasting and attack speed by 10% for 15 sec (spell 26635 is in no 1.60.1.70790 client table)",
+          "url": "https://nether.wowhead.com/tooltip/spell/20554?dataEnv=16",
+          "kind": "datamined"
+        }
+      ]
+    },
+    {
+      "spell_id": 14251,
+      "token": "$19718d",
+      "value": "6 sec",
+      "sources": [
+        {
+          "label": "Wowhead Forever tooltip, Riposte: disarms the target for 6 sec (spell 19718 is in no 1.60.1.70790 client table)",
+          "url": "https://nether.wowhead.com/tooltip/spell/14251?dataEnv=16",
+          "kind": "datamined"
+        }
+      ]
+    },
+    {
+      "spell_id": 1309967,
+      "token": "$m1",
+      "value": "7",
+      "sources": [
+        {
+          "label": "Wowhead Forever tooltip, Rock to the Face (Rock on Stick's chance on hit): causing 7 Physical damage every 2 sec (the 1.60.1.70790 client has no SpellEffect row for 1309967)",
+          "url": "https://nether.wowhead.com/tooltip/spell/1309967?dataEnv=16",
+          "kind": "datamined"
+        }
+      ]
+    },
+    {
+      "spell_id": 1309967,
+      "token": "$t1",
+      "value": "2",
+      "sources": [
+        {
+          "label": "Wowhead Forever tooltip, Rock to the Face: causing 7 Physical damage every 2 sec",
+          "url": "https://nether.wowhead.com/tooltip/spell/1309967?dataEnv=16",
+          "kind": "datamined"
+        }
+      ]
+    },
+    {
+      "spell_id": 1322605,
+      "token": "$c",
+      "value": "0",
+      "sources": [
+        {
+          "label": "Wowhead Forever tooltip, Shifting Power: Instantly convert 0 Mana into 40 Energy (its cost is 55% of base mana, no flat amount)",
+          "url": "https://nether.wowhead.com/tooltip/spell/1322605?dataEnv=16",
+          "kind": "datamined"
+        }
+      ]
+    }
+  ]
+}

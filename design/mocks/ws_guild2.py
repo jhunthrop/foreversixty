@@ -68,8 +68,7 @@ def clock_label(at: datetime) -> str:
 
 def countdown_label() -> str:
     left = guild_time(O.NEXT_RAID_AT) - guild_time(NOW)
-    days, hours = left.days, left.seconds // 3600
-    return f'in {days} days {hours} h'
+    return f'in {gd.countdown_text(left)}'
 
 
 def next_raid(officer):
@@ -246,9 +245,9 @@ def raid_when(raid):
     cst = timezone(timedelta(hours=-6))
     a, b = start.astimezone(cst), (start + timedelta(minutes=raid['duration_minutes'])).astimezone(cst)
     left = start - datetime.fromisoformat(NOW.replace('Z', '+00:00'))
-    clock = lambda t: t.strftime('%I:%M %p').lstrip('0').lower()  # noqa: E731
+    clock = gd.house_clock
     return (f"{a.strftime('%A')} {a.day} {a.strftime('%B')} &middot; {clock(a)} to {clock(b)} CST &middot; "
-            f'<span class="gold">in {left.days} days {left.seconds // 3600} h</span>')
+            f'<span class="gold">in {gd.countdown_text(left)}</span>')
 
 
 def assignment_rows(encounter, edited=None):
@@ -502,7 +501,7 @@ def _day(iso):
 
 def _clock(iso):
     d = datetime.fromisoformat(iso.replace('Z', '+00:00')).astimezone(ZoneInfo(gd.ZONE))
-    return f'{d.hour % 12 or 12}:{d:%M} {"am" if d.hour < 12 else "pm"}'
+    return gd.house_clock(d)
 
 
 def _spec_class(name):

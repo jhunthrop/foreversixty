@@ -39,6 +39,9 @@ var qualityText = [...]color.RGBA{
 // qualityWords are the quality names, by quality number; the emoji names use them lowercased.
 var qualityWords = [...]string{"Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary"}
 
+// QualityCount is how many item qualities there are, 0 (Poor) to QualityCount-1 (Legendary).
+const QualityCount = len(qualityWords)
+
 // classColors are color.class.*, keyed by class slug.
 var classColors = map[string]color.RGBA{
 	"warrior": opaque(brand.ColorClassWarrior), "paladin": opaque(brand.ColorClassPaladin),

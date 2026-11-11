@@ -1,3 +1,4 @@
+import { grouped } from '../format/number';
 // web/src/lib/islands/boot.ts
 // Runs an island's boot after the shell it replaces has painted, on its own task.
 //
@@ -50,7 +51,7 @@ function afterNextPaint(run: () => void): void {
  */
 function warmIntl(): void {
   if (typeof Intl === 'undefined') return;
-  new Intl.NumberFormat('en-US').format(0);
+  grouped(0);
 }
 
 /** Schedules `boot` for a fresh task once the document has been parsed and its shell has painted. */

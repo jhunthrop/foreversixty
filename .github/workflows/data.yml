@@ -339,6 +339,11 @@ jobs:
       # (it reads trainables/, enchants.json and simbuffs.json); simdb's manifest
       # refresh below lists it.
       - run: uv run python -m pipeline spelltips --build "$BUILD"
+      # Every description normalize and spelltips just rendered (talent ranks, tooltips, item
+      # effects, set bonuses) must read like the client's: no `$` token, brace, `@` token,
+      # colour code or empty substitution left (pipeline/spelltext_lint.py). The pytest
+      # contract runs before the re-render, so this is the gate on the new text.
+      - run: uv run python -m pipeline spelltext-check --build "$BUILD"
       # icons again, now that spelltips/ exists: the first icons run above reads the tooltips the
       # build had before this run, so a spell new to them (Travel Form, Polymorph on 2026-11-04)
       # had no art until the next night. The icons already on disk are skipped.

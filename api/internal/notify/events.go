@@ -6,6 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
@@ -98,7 +99,7 @@ func SimFinishedEvent(publicBaseURL string, e SimFinished) events.Event {
 			title = fmt.Sprintf(pushCopy.SimTitleNamed, name, label)
 		}
 	}
-	body := fmt.Sprintf(pushCopy.SimBody, thousands(e.DPS))
+	body := fmt.Sprintf(pushCopy.SimBody, textfmt.Grouped(e.DPS))
 	if headline := collapse(e.Headline); headline != "" {
 		body = headline
 	}

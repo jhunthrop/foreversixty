@@ -378,6 +378,42 @@ describe("Panel, the frame", function()
 			score = { score = 1840, tierColor = { r = 0.64, g = 0.21, b = 0.93 } } }))
 	end
 
+	describe("an upgrade row's item hover", function()
+		--- The hover frame over the first upgrade's icon: the one whose OnEnter sets the item.
+		local function upgradeHover()
+			for _, child in ipairs(Panel.content.children) do
+				if child.foreverSixtyProvider ~= nil and child.shown then
+					local before = mock.countCalls(_G.GameTooltip, "SetItemByID")
+					child.scripts.OnEnter(child)
+					if mock.countCalls(_G.GameTooltip, "SetItemByID") > before then
+						return child
+					end
+				end
+			end
+			return nil
+		end
+
+		it("hides the tooltip it owns on leaving", function()
+			Panel.draw(raidModel({ raid_id = 42, answer = "none", role = "dps" }))
+			local over = upgradeHover()
+			assert.is_not_nil(over)
+			_G.GameTooltip.GetOwner = function() return over end
+			local hides = mock.countCalls(_G.GameTooltip, "Hide")
+			over.scripts.OnLeave(over)
+			assert.are.equal(hides + 1, mock.countCalls(_G.GameTooltip, "Hide"))
+		end)
+
+		it("leaves another frame's tooltip alone (the bag item the mouse went on to)", function()
+			Panel.draw(raidModel({ raid_id = 42, answer = "none", role = "dps" }))
+			local over = upgradeHover()
+			local other = _G.CreateFrame("Button", nil, _G.UIParent)
+			_G.GameTooltip.GetOwner = function() return other end
+			local hides = mock.countCalls(_G.GameTooltip, "Hide")
+			over.scripts.OnLeave(over)
+			assert.are.equal(hides, mock.countCalls(_G.GameTooltip, "Hide"))
+		end)
+	end)
+
 	it("draws the title band: the medallion with its faction notch, the name, the meta and the score", function()
 		Panel.draw(raidModel({ raid_id = 42, answer = "none", role = "dps" }))
 		local band = Panel.band

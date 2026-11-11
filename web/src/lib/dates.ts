@@ -1,10 +1,43 @@
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+// web/src/lib/dates.ts
+// The house date and clock (owner rulings 2026-11-10): every date, weekday, month heading, clock
+// time and "Updated" stamp the site prints comes from here. Months are three letters ("Sep",
+// never "Sept"), the day comes first, and the clock follows the viewer's locale ("8 pm" for a US
+// browser, "20:00" for a European one) while the words stay English. A page rendered at build
+// time, or on the server, cannot know the viewer and prints the site's own locale. The canonical
+// cases live in apps/shared/formats.json, which the server pages, the companion and both apps
+// replay too.
 
-/** "25 Sept" in UTC, day first (the house date, as every page head's "Updated 6 Nov"); an invalid
+import { DAY_MS, HOUR_MS, MINUTE_MS } from './format/duration';
+import { EMPTY_FIGURE, SITE_LOCALE } from './format/number';
+
+/** The one month table: three letters, every month. */
+export const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+] as const;
+const SHORT_MONTHS = MONTHS;
+
+/** "25 Sep" in UTC, day first (the house date, as every page head's "Updated 6 Nov"); an invalid
  *  date renders as nothing rather than "undefined NaN". */
 export function formatDate(d: Date): string {
   if (Number.isNaN(d.getTime())) return '';
   return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
+}
+
+/** "Updated 25 Sep": every page head's freshness stamp (UpdatedStamp.astro and its Svelte twin). */
+export function updatedLabel(d: Date): string {
+  const date = formatDate(d);
+  return date === '' ? '' : `Updated ${date}`;
 }
 
 const FULL_MONTHS = [
@@ -38,9 +71,6 @@ export function latest(dates: Date[]): Date {
   return dates.reduce((newest, d) => (d.getTime() > newest.getTime() ? d : newest));
 }
 
-const MINUTE_MS = 60_000;
-const HOUR_MS = 60 * MINUTE_MS;
-const DAY_MS = 24 * HOUR_MS;
 const RELATIVE_TIME_CEILING_DAYS = 30;
 
 /**
@@ -81,11 +111,10 @@ export function compactAgo(d: Date, now: Date = new Date()): string {
 }
 
 const RELATIVE_DAY_CEILING_DAYS = 14;
-const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 /**
  * The one age rule for dated rows (Logs, the character header): whole days relative inside two
- * weeks ("today", "1 day ago", "3 days ago"), else the date ("15 Sept", UTC). Like `relativeTime`,
+ * weeks ("today", "1 day ago", "3 days ago"), else the date ("15 Sep", UTC). Like `relativeTime`,
  * a timestamp ahead of the caller's clock reads as "today", never a negative duration.
  */
 export function relativeDay(d: Date, now: Date = new Date()): string {
@@ -106,12 +135,15 @@ export function formatDayMonthYear(d: Date): string {
   return `${d.getUTCDate()} ${SHORT_MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
 }
 
-/** "19 Oct, 21:40", in the viewer's own time zone: when a sync from the game arrived. An
- *  unreadable date renders as nothing. */
-export function formatSyncStamp(d: Date): string {
+/** "19 Oct, 9:40 pm" ("19 Oct, 21:40" for a 24-hour locale), on the zone's calendar and clock:
+ *  when a sync from the game arrived. An unreadable date renders as nothing. */
+export function formatSyncStamp(
+  d: Date,
+  zone: string = viewerZone(),
+  locale: string = viewerLocale(),
+): string {
   if (Number.isNaN(d.getTime())) return '';
-  const pad = (value: number): string => String(value).padStart(2, '0');
-  return `${d.getDate()} ${SHORT_MONTHS[d.getMonth()]}, ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return `${dayMonth(d, zone)}, ${clock(d, zone, { locale })}`;
 }
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -202,18 +234,8 @@ export function viewerZone(): string {
 function zonedParts(instant: string, zone: string): { day: number; month: string; year: string } | null {
   const date = new Date(instant);
   if (Number.isNaN(date.getTime())) return null;
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: zone,
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-  }).formatToParts(date);
-  const part = (type: string): string => parts.find((entry) => entry.type === type)?.value ?? '';
-  return {
-    day: Number(part('day')),
-    month: SHORT_MONTHS[Number(part('month')) - 1] ?? '',
-    year: part('year'),
-  };
+  const at = zoned(date, zone);
+  return { day: at.day, month: MONTHS[at.month], year: String(at.year) };
 }
 
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
@@ -260,3 +282,152 @@ export function nightDateOnly(value: string, now: Date = new Date()): string {
   if (match === null) return '';
   return nightLabelFor({ y: Number(match[1]), m: Number(match[2]) - 1, d: Number(match[3]) }, now);
 }
+
+// --- The clock and the zoned calendar ------------------------------------------------------
+
+function browserLanguage(): string | undefined {
+  return typeof navigator === 'undefined' ? undefined : navigator.language;
+}
+
+const hourCycles = new Map<string, boolean>();
+
+/** Whether the locale writes the hour on a 12-hour clock (`en-US` yes, `en-GB` and `de-DE` no). */
+export function usesTwelveHourClock(locale: string): boolean {
+  let twelve = hourCycles.get(locale);
+  if (twelve === undefined) {
+    twelve = new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12 === true;
+    hourCycles.set(locale, twelve);
+  }
+  return twelve;
+}
+
+/** The locale the viewer's clock is written in: their browser's language, the site's own on the
+ *  server and at build time (formats.json `site_locale`). Only the hour cycle reads from it. */
+export function viewerLocale(language: string | undefined = browserLanguage()): string {
+  return language ?? SITE_LOCALE;
+}
+
+interface ZonedMoment {
+  year: number;
+  /** 0-based, as `MONTHS` indexes it. */
+  month: number;
+  day: number;
+  weekday: number;
+  hour: number;
+  minute: number;
+}
+
+const zonedFormats = new Map<string, Intl.DateTimeFormat>();
+
+/** One formatter per zone: the calendar and the 24-hour wall clock of an instant in that zone. */
+function zonedFormat(zone: string): Intl.DateTimeFormat {
+  let format = zonedFormats.get(zone);
+  if (format === undefined) {
+    format = new Intl.DateTimeFormat(SITE_LOCALE, {
+      timeZone: zone,
+      hourCycle: 'h23',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      weekday: 'short',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+    zonedFormats.set(zone, format);
+  }
+  return format;
+}
+
+/** The instant on the zone's calendar and clock. */
+function zoned(d: Date, zone: string): ZonedMoment {
+  const parts: Partial<Record<Intl.DateTimeFormatPartTypes, string>> = {};
+  for (const part of zonedFormat(zone).formatToParts(d)) parts[part.type] = part.value;
+  return {
+    year: Number(parts.year),
+    month: Number(parts.month) - 1,
+    day: Number(parts.day),
+    weekday: SHORT_WEEKDAYS.indexOf(parts.weekday ?? ''),
+    hour: Number(parts.hour) % 24,
+    minute: Number(parts.minute),
+  };
+}
+
+/** The zone's calendar day as a whole-day number, so two days subtract to whole days. */
+export function calendarDayIn(d: Date, zone: string): number {
+  const at = zoned(d, zone);
+  return dayNumber(at.year, at.month, at.day);
+}
+
+/** Options for `clock`: the viewer's locale by default; seconds for a log's own timestamp. */
+export interface ClockOptions {
+  locale?: string;
+  /** `11:49:25 pm` / `23:49:25`: a combat log's event time, where the second is the record. */
+  seconds?: boolean;
+}
+
+/**
+ * The time of day on the zone's clock, in the viewer's hour cycle (owner ruling 2026-11-10):
+ * `8 pm`, `8:30 pm` (minutes only off the hour) for a 12-hour locale, `20:00` for a 24-hour one.
+ * With `seconds` both carry minutes and seconds (`11:49:25 pm`, `23:49:25`). An unreadable date
+ * renders as nothing.
+ */
+export function clock(d: Date, zone: string = viewerZone(), options: ClockOptions = {}): string {
+  if (Number.isNaN(d.getTime())) return '';
+  const { hour, minute } = zoned(d, zone);
+  const mm = String(minute).padStart(2, '0');
+  // Every zone's offset is whole minutes, so the second is the instant's own.
+  const ss = options.seconds === true ? `:${String(d.getUTCSeconds()).padStart(2, '0')}` : '';
+  if (!usesTwelveHourClock(options.locale ?? viewerLocale())) {
+    return `${String(hour).padStart(2, '0')}:${mm}${ss}`;
+  }
+  const twelve = hour % 12 === 0 ? 12 : hour % 12;
+  const minutes = ss !== '' || minute !== 0 ? `:${mm}${ss}` : '';
+  return `${twelve}${minutes} ${hour < 12 ? 'am' : 'pm'}`;
+}
+
+/** "9 Dec" on the zone's calendar. An unreadable date renders as nothing. */
+export function dayMonth(d: Date, zone: string = viewerZone()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  const at = zoned(d, zone);
+  return `${at.day} ${MONTHS[at.month]}`;
+}
+
+/** "Wed 9 Dec" on the zone's calendar ("Wed 6 Jan 2027" outside `now`'s year there). */
+export function weekdayDayMonth(d: Date, zone: string = viewerZone(), now: Date = new Date()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  const at = zoned(d, zone);
+  const base = `${SHORT_WEEKDAYS[at.weekday]} ${at.day} ${MONTHS[at.month]}`;
+  return at.year === zoned(now, zone).year ? base : `${base} ${at.year}`;
+}
+
+/** "Wednesday 9 December" on the zone's calendar: a headline day (the first-raids plaque). */
+export function longDay(d: Date, zone: string = viewerZone()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  const at = zoned(d, zone);
+  return `${WEEKDAYS[at.weekday]} ${at.day} ${FULL_MONTHS[at.month]}`;
+}
+
+/** "Wednesday" on the zone's calendar. */
+export function weekdayName(d: Date, zone: string = viewerZone()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  return WEEKDAYS[zoned(d, zone).weekday];
+}
+
+/** "Wed" on the zone's calendar. */
+export function weekdayShort(d: Date, zone: string = viewerZone()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  return SHORT_WEEKDAYS[zoned(d, zone).weekday];
+}
+
+/**
+ * A log event's wall time: the house clock with seconds, in the viewer's hour cycle (`11:49:25 pm`,
+ * `23:49:25`), read in UTC like the log file itself, so a raid leader comparing a teammate's
+ * screenshot sees the same instant (apps/shared/formats.json `clock` with `seconds`). An
+ * unreadable instant is the empty figure.
+ */
+export function logClock(iso: string): string {
+  const at = new Date(iso);
+  return Number.isNaN(at.getTime()) ? EMPTY_FIGURE : clock(at, 'UTC', { seconds: true });
+}
+
+export { DAY_MS, HOUR_MS, MINUTE_MS };

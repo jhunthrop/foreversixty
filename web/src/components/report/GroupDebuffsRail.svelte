@@ -6,11 +6,11 @@
 <script lang="ts">
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import { groupDebuffs } from '../../lib/report/exchange-rails';
-  import { formatDuration } from '../../lib/report/format';
+  import { clockDuration } from '../../lib/format/duration';
   import type { AuraTrack } from '../../lib/report/types';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let {
     auras,
@@ -41,9 +41,14 @@
         density="slim"
         open
       >
-        {#snippet lead()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
+        {#snippet lead()}<SpellIcon
+            socket
+            tip={row.spellId}
+            size={24}
+            url={spellIcon(row.spellId, row.name, row.school)}
+          />{/snippet}
         {#snippet trail()}<span class="text-strong text-[14px] font-semibold tabular-nums"
-            >{formatDuration(row.uptimeMs)}</span
+            >{clockDuration(row.uptimeMs)}</span
           >{/snippet}
       </Row>
     {/each}

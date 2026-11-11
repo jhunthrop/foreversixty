@@ -12,6 +12,7 @@
      It sits inside the More settings Sheet (sim spec 2026-11-06): a heading, then one
      Disclosure per group and plain rows inside it, no boxes. -->
 <script lang="ts">
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import {
     BUFF_GROUPS,
     gradeOf,
@@ -104,10 +105,7 @@
               {@const icon = buffIcon(build, row.id, names)}
               {@const grade = gradeOf(listFor(selection, row.kind), row.id)}
               <li class="flex min-h-11 items-center gap-2 text-[14px] md:min-h-9">
-                {#if icon !== null}
-                  <!-- The name beside it carries the row, so the icon is decorative. -->
-                  <img src={icon} alt="" width="20" height="20" class="rounded-[2px]" loading="lazy" />
-                {/if}
+                <SpellIcon url={icon} size={20} />
                 {#if row.graded}
                   <div class="flex min-w-0 flex-1 items-center gap-2">
                     <span class="truncate">{label}</span>

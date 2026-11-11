@@ -6,6 +6,7 @@
 // reasons and weights), ships it as one JSON block, and the island derives every view from it with
 // no network request (R2). Every field the nightly adds later (`by_kind`, `ranking`, `run`,
 // `filtered_set_dps`, `set_dps_error`) is read when present and absent otherwise.
+import { oneDecimal } from '../format/number';
 import { bisCopy } from './copy';
 import type { HealerSetView } from './heal-view';
 import type { HitCapLine } from './hit-cap';
@@ -36,6 +37,8 @@ import type {
 } from './types';
 import type { LootFile } from '../sim/loot';
 
+import { grouped } from '../format/number';
+import { upperFirst } from '../text';
 /** The unit a band's figures are in: damage, healing, or a tank's score. */
 export type GainUnit = 'DPS' | 'HPS' | 'score';
 
@@ -312,10 +315,6 @@ function isTwoHand(slot: BisSlot, details: ReadonlyMap<number, ItemDetail>): boo
   return slot.two_hand ?? details.get(slot.item_id)?.two_hand ?? false;
 }
 
-function capitalise(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1);
-}
-
 /** "Stack agility, then hit rating, then ranged attack power." from the significant weights. */
 export function stackSentence(rows: readonly ScaleRow[]): string | undefined {
   const top = rows
@@ -329,7 +328,7 @@ export function stackSentence(rows: readonly ScaleRow[]): string | undefined {
 
 function trustFacts(file: BisFile, raw: BisBand, info: BandInfo): string[] {
   const facts = [
-    `Level ${bandTopLevel(raw.band)} ${capitalise(raw.race)}`,
+    `Level ${bandTopLevel(raw.band)} ${upperFirst(raw.race)}`,
     `${raw.talent_points} talent points`,
   ];
   const run = file.run;
@@ -341,7 +340,7 @@ function trustFacts(file: BisFile, raw: BisBand, info: BandInfo): string[] {
   const preset = presetOf(raw);
   const meta = file.presets?.[preset];
   facts.push(preset === 'raid' && meta !== undefined ? raidCaptionFor(meta) : bisCopy.presetBareCaption);
-  if (run !== undefined) facts.push(`${run.iterations.set.toLocaleString('en-US')} runs`);
+  if (run !== undefined) facts.push(`${grouped(run.iterations.set)} runs`);
   if (info.setDpsPartial) facts.push(bisCopy.setDpsPartialNote(info.setDpsPartialCount, info.unit));
   return facts;
 }
@@ -350,7 +349,7 @@ function answerModel(file: BisFile, raw: BisBand, info: BandInfo, deps: PageMode
   const preset = presetOf(raw);
   const meta = preset === 'raid' ? file.presets?.raid : undefined;
   return {
-    figure: info.tank === undefined ? (info.healer?.figure ?? raw.set_dps.toFixed(1)) : undefined,
+    figure: info.tank === undefined ? (info.healer?.figure ?? oneDecimal(raw.set_dps)) : undefined,
     ...(raw.set_dps_error === undefined ? {} : { error: raw.set_dps_error }),
     ...(raw.filtered_set_dps === undefined ? {} : { filtered: raw.filtered_set_dps }),
     ...(info.tank === undefined ? {} : { tank: info.tank }),

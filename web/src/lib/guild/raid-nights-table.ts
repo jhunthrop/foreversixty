@@ -7,6 +7,7 @@
 import type { GuildRaidFight, GuildRaidRow } from './api';
 import { raidTally } from './raid-view';
 import { counted } from '../plural';
+import { clockDuration } from '../format/duration';
 
 export interface RaidNightFigures {
   row: GuildRaidRow;
@@ -60,12 +61,6 @@ export function raidNightFigures(
   });
 }
 
-/** `3:12`. */
-export function killClock(ms: number): string {
-  const total = Math.round(ms / 1000);
-  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
-}
-
 /** `-6 s`, `+4 s`, `0 s`; the figure's tone: faster is the kill colour. */
 export function deltaWords(deltaS: number): { value: string; tone: 'kill' | 'wipe' | undefined } {
   const sign = deltaS > 0 ? '+' : deltaS < 0 ? '−' : '';
@@ -91,7 +86,7 @@ export function raidNightsMeta(rows: readonly GuildRaidRow[], bossIds: ReadonlyS
   const kills = rows.reduce((sum, row) => sum + row.fights.filter((f) => isBossKill(f, bossIds)).length, 0);
   const times = rows.map((row) => bossTimeMs(row, bossIds)).filter((ms): ms is number => ms !== null);
   const parts = [counted(rows.length, 'night'), counted(kills, 'kill')];
-  if (times.length > 0) parts.push(`best ${killClock(Math.min(...times))}`);
+  if (times.length > 0) parts.push(`best ${clockDuration(Math.min(...times))}`);
   return parts.join(' · ');
 }
 

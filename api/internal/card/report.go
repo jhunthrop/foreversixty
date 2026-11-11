@@ -6,8 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"golang.org/x/image/font"
+
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // Boss is one pull of an encounter on a report card: the boss, whether it died, and how long
@@ -94,7 +95,7 @@ func summaryLine(in ReportInput) string {
 	killed, wiped := outcomes(in.Bosses)
 	parts := []string{zone, fmt.Sprintf("%d of %d killed", len(killed), len(killed)+len(wiped))}
 	if in.DurationMS > 0 {
-		parts = append(parts, notify.NightLength(time.Duration(in.DurationMS)*time.Millisecond))
+		parts = append(parts, textfmt.Duration(time.Duration(in.DurationMS)*time.Millisecond))
 	}
 	switch {
 	case in.Deaths == 1:
@@ -126,9 +127,9 @@ func bossRows(f *faces, bosses []Boss, maxWidth int) []bossRow {
 	var rows []bossRow
 	killedWords, wipedWords := make([]string, len(killed)), make([]string, len(wiped))
 	for i, b := range killed {
-		killedWords[i] = fmt.Sprintf(copyKillTime, b.name, notify.KillClock(b.kill))
+		killedWords[i] = fmt.Sprintf(copyKillTime, b.name, textfmt.FightClock(b.kill))
 		if b.wipes > 0 {
-			killedWords[i] = fmt.Sprintf(copyKillAfter, b.name, notify.KillClock(b.kill), wipeWords(b.wipes))
+			killedWords[i] = fmt.Sprintf(copyKillAfter, b.name, textfmt.FightClock(b.kill), wipeWords(b.wipes))
 		}
 	}
 	for i, b := range wiped {

@@ -8,7 +8,7 @@
   import activeBuild from '../../data/active-build.json';
   import { classCrestSrc } from '../../lib/class-crest';
   import { button } from '../../lib/ui/button';
-  import { dataUrl } from '../../lib/planner/load';
+  import { catalogueIconUrl } from '../../lib/ui/assets';
   import { selectCopy } from '../../lib/ui/copy';
   import type { SelectOption } from '../../lib/ui/listbox-model';
   import { simCopy } from '../../lib/sim/copy';
@@ -84,7 +84,7 @@
     },
     ...PLAYERS.slice(2).map((option) => ({ ...option, meta: String(100 + option.label.length * 37) })),
   ];
-  const icon = (stem: string): string => dataUrl(activeBuild.build, `icons/${stem}.webp`);
+  const icon = (stem: string): string => catalogueIconUrl(activeBuild.build, stem);
   const ITEMS: SelectOption[] = [
     {
       value: 'a',

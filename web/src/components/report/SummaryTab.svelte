@@ -10,9 +10,16 @@
      one Active carries the whole-fight mark and a line says why. Damage, healing, taken and deaths
      are the window's own. -->
 <script lang="ts">
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
-  import { classColorVar, formatAmount, wholeFightMark } from '../../lib/report/format';
+  import {
+    classColorVar,
+    parseLabel,
+    parseText,
+    percentileToken,
+    wholeFightMark,
+  } from '../../lib/report/format';
   import { formatRate } from '../../lib/report/frame';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
@@ -22,6 +29,7 @@
   import StatTable from '../ui/StatTable.svelte';
   import Meter from '../ui/Meter.svelte';
   import { roleIcon, roleOf } from '../../lib/report/role-icon';
+  import { compact } from '../../lib/format/number';
   import ClassIcon from './ClassIcon.svelte';
 
   let {
@@ -118,14 +126,18 @@
       ? [
           placed === undefined
             ? { value: parseFallback || NO_FIGURE, muted: true }
-            : { value: String(Math.floor(placed.percentile)) },
+            : {
+                value: parseText(placed.percentile),
+                color: percentileToken(placed.percentile),
+                label: parseLabel(placed.percentile),
+              },
         ]
       : [];
     return [
       ...parse,
       ...pairs.flatMap((pair) => {
         const amount = pair.amountOf(row);
-        return [amountCell(amount, formatAmount(amount)), amountCell(amount, formatRate(rateOf(pair, row)))];
+        return [amountCell(amount, compact(amount)), amountCell(amount, formatRate(rateOf(pair, row)))];
       }),
       { value: `${activeMark}${Math.round(row.activity_pct)}%` },
       { value: String(row.deaths), muted: row.deaths === 0, tone: row.deaths > 0 ? 'wipe' : undefined },
@@ -172,15 +184,10 @@
               data-testid="roster-name"
               onclick={(event) => follow(event, row.guid)}>{display.name}</a
             >{/snippet}
-          {#snippet sub()}{#if role !== null}{@const icon = roleIcon(role)}<img
-                src={icon.url}
-                alt={icon.label}
-                title={icon.label}
-                width="14"
-                height="14"
-                class="mr-1 inline-block rounded-[2px] align-[-2px]"
-                data-testid="roster-role"
-              />{/if}{subOf(row, display.realm) || ' '}{/snippet}
+          {#snippet sub()}{#if role !== null}{@const icon = roleIcon(role)}<span
+                class="mr-1 inline-flex align-[-2px]"
+                ><SpellIcon url={icon.url} size={14} label={icon.label} testid="roster-role" /></span
+              >{/if}{subOf(row, display.realm) || ' '}{/snippet}
           {#snippet meter()}<Meter
               value={row.damage_done / topDamage}
               tone="class"

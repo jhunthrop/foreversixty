@@ -82,6 +82,8 @@ Principles (each replaces a defect above):
 
 Breakpoints (Tailwind names): `md` 768, `lg` 1024, and one new `xl` at 1760. Below 1760 every page composes as today's 1344 column; at 1760 and up the column widens and the layouts below add a rail. `site-column.test.ts` still guards the one-container rule; it reads `--page-max`.
 
+Amended 2026-11-10 (owner: "why don't we have consistent width for every experience?"): the column is the one page frame on every page, with no per-page opt-in (the `wide` prop and `data-column` are gone). `.page-column` holds the site header bar (Base.astro wraps it), every page head band, the control bar, the page body and the footer, so all of them share one left and one right edge at a given viewport, the API's /b pages too (chrome.html). Only `.page-column` reads `--page-max` and `--page-gutter`. A narrower measure inside the frame is named: the `.measure-*` classes and ui/Page's `reading` and `form` layouts. Review: `design/reviews/2026-11-10-header-width/`.
+
 Why 1760 and 1792 and not full width: a 1,664 px content line is the longest a list row can run before the eye cannot return to its slot label. Above 2000 the margins grow; the page does not.
 
 ### 3.3 Type scale (decided by the owner 2026-11-05: option 2 with class colour; nothing under 12)

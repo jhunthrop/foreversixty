@@ -47,6 +47,7 @@
   import SubstitutionChips from './SubstitutionChips.svelte';
   import ToolSection from './ToolSection.svelte';
 
+  import { grouped } from '../../../lib/format/number';
   let {
     result,
     items,
@@ -78,7 +79,7 @@
   ];
 
   function dpsOf(mean: number): string {
-    return Math.round(mean).toLocaleString('en-US');
+    return grouped(mean);
   }
 
   const FOUR_PIECE = 4;
@@ -124,7 +125,7 @@
    */
   const isTalentsMode = $derived(result.request.bulk?.mode === 'talents');
 
-  const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
+  const equippedFigure = $derived(grouped(result.equipped.mean));
   const equippedBand = $derived(formatMargin(confidenceBand(result.equipped)));
 
   /**

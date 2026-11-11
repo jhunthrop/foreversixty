@@ -8,9 +8,9 @@
 import { DataLoadError } from '../planner/load';
 import type { TalentFile } from '../planner/types';
 
-export function classSlugFromName(className: string): string {
-  return className.toLowerCase().replace(/\s+/g, '-');
-}
+import { classSlugFromName } from './format';
+
+export { classSlugFromName };
 
 /**
  * Resolves tree sizes (talent count per tree) for every name in `wanted` that is not

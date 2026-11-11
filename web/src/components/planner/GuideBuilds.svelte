@@ -9,6 +9,8 @@
      row, once a point is spent, says how many of its points the build on screen lacks, the split's
      change tree by tree, and the first talent it lacks. Nothing draws when the class has no guide. -->
 <script lang="ts">
+  import { iconUrl } from '../../lib/ui/assets';
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import { ranksByTalent } from '../../lib/planner/derive';
   import {
     deltaText,
@@ -18,7 +20,6 @@
     type GuideBuild,
   } from '../../lib/planner/guide-builds';
   import { plannerCopy } from '../../lib/planner/copy';
-  import { dataUrl } from '../../lib/planner/load';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import Row from '../ui/Row.svelte';
   import Tag from '../ui/Tag.svelte';
@@ -57,15 +58,7 @@
         >
           {#snippet lead()}
             {#if row.icon}
-              <img
-                class="gb-icon"
-                src={dataUrl(store.treeVersion, `icons/${row.icon}.webp`)}
-                alt=""
-                width="28"
-                height="28"
-                loading="lazy"
-                decoding="async"
-              />
+              <SpellIcon url={iconUrl(store.treeVersion, row.icon)} size={28} />
             {/if}
           {/snippet}
           {#snippet trail()}
@@ -118,11 +111,5 @@
     line-height: 18px;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
-  }
-  .gb-icon {
-    display: block;
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
   }
 </style>

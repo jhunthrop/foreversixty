@@ -7,6 +7,7 @@
 // guide's next points (`ahead`, lane P7), dimmed, so the levels still to come read as a plan.
 // ui/PointOrder draws them.
 import type { OrderSlot } from '../ui/point-order';
+import { talentTipModel } from '../tooltips/game-tip';
 import { plannerCopy } from './copy';
 import { levelForIndex, pointsAvailableAt } from './derive';
 import { canAddPoint, type TalentIndex } from './rules';
@@ -57,7 +58,7 @@ function talentSlot(
   id: number,
   position: number,
   rank: number,
-  iconUrl: (icon: string) => string,
+  iconUrl: (icon: string) => string | null,
 ): PointOrderSlot {
   const talent = index.byId.get(id);
   const slot: PointOrderSlot = {
@@ -66,12 +67,16 @@ function talentSlot(
     rank,
   };
   if (talent !== undefined) {
-    slot.iconSrc = iconUrl(talent.icon);
-    slot.tip = {
-      name: talent.name,
-      rankLine: plannerCopy.rankOf(rank, talent.max_rank),
-      now: talent.ranks[rank - 1]?.description ?? '',
-    };
+    slot.iconSrc = iconUrl(talent.icon) ?? undefined;
+    slot.tip = talentTipModel(
+      {
+        name: talent.name,
+        icon: talent.icon,
+        maxRank: talent.max_rank,
+        ranks: talent.ranks.map((row) => row.description),
+      },
+      rank,
+    );
   }
   return slot;
 }
@@ -81,7 +86,7 @@ export function pointOrderRows(
   order: readonly number[],
   characterLevel: number | null,
   characterName: string | null,
-  iconUrl: (icon: string) => string,
+  iconUrl: (icon: string) => string | null,
   ahead: PointOrderAhead | null = null,
 ): PointOrderView {
   const available = characterLevel === null ? MAX_POINTS : pointsAvailableAt(characterLevel);

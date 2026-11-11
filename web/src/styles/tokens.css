@@ -213,8 +213,8 @@
   --text-micro: 11px;
 
   /* The 4 pt steps (space.4 is 16) and the layout spacing. */
-  /* The one site column's gutter; the header bar (nav.css) reads it too, so the bar and the page
-     never drift apart. */
+  /* The page frame's gutter (global.css .page-column, the one frame every page, the header bar, the
+     page head band and the footer sit in). */
   --page-gutter: 48px;
   --section-gap: 48px;
   --gap: 24px;
@@ -253,12 +253,11 @@
   --shadow-selected-underline: inset 0 -3px 0 #0093b2;
 }
 
-/* The wide column (spec 3.2, owner decision 2026-11-05): a page built from the ui/ primitives sets
-   `data-column="wide"` on <body> (Base.astro's `wide` prop) and from 1760px its column grows with
-   the wider gutter, gaps and rails. Pages not yet migrated keep the narrow column until their own
-   lane adopts the primitives. */
+/* The wide frame (spec 3.2, owner decisions 2026-11-05 and 2026-11-10): from 1760px the one frame
+   grows, with the wider gutter, gaps and rails, on every page alike ("consistent width for every
+   experience"). */
 @media (min-width: 1760px) {
-  [data-column='wide'] {
+  :root {
     --page-gutter: 64px;
     --section-gap: 64px;
     --gap: 32px;

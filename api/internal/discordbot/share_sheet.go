@@ -8,6 +8,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/sheet"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
@@ -21,7 +22,6 @@ type SheetRenderer interface {
 const (
 	sheetFileName    = "sheet.png"
 	sheetContentType = "image/png"
-	sheetDateLayout  = "2 Jan 2006"
 )
 
 // sheetPost is a public share drawn as the character sheet: the model, and the words around
@@ -242,5 +242,5 @@ func sheetDate(template, stamp string) string {
 	if err != nil {
 		return ""
 	}
-	return fill(template, "{d Mon yyyy}", at.UTC().Format(sheetDateLayout))
+	return fill(template, "{d Mon yyyy}", textfmt.DayMonthYear(at, time.UTC))
 }

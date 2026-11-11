@@ -6,11 +6,10 @@
   import activeBuild from '../../../data/active-build.json';
   import type { OfficerApplication } from '../../../lib/guild/recruit-api';
   import type { LootCouncilCandidate, LootNight } from '../../../lib/guild/loot-council-api';
-  import { classColorVar } from '../../../lib/report/format';
+  import { classColorVar, parseText } from '../../../lib/report/format';
   import ItemRow from '../../ui/ItemRow.svelte';
   import { GROUP_WORD } from '../../../lib/guild/dense/roster-board';
   import type { RecruitGap, SlipRow } from '../../../lib/guild/dense/week-board';
-  import { lootIconOf } from '../../../lib/guild/loot-icon';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
@@ -59,7 +58,7 @@
         titleTone={{ classSlug: (app.character.class ?? 'warrior') as never }}
         sub={[
           app.character.spec_name ?? '',
-          parse === null || parse.percentile === null ? '' : `parse ${Math.floor(parse.percentile)}`,
+          parse === null || parse.percentile === null ? '' : `parse ${parseText(parse.percentile)}`,
         ]
           .filter((p) => p !== '')
           .join(' · ')}
@@ -86,7 +85,7 @@
           id: drop.item_id,
           name: drop.name,
           quality: drop.quality,
-          icon: lootIconOf(drop) ?? undefined,
+          icon: drop.icon,
         }}
         {build}
         iconSize={32}

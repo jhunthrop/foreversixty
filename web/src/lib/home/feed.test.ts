@@ -1,6 +1,6 @@
 // "Latest on Forever" (lib/home/feed.ts, home B spec 2026-11-07 P8, P9, F1).
 import { describe, expect, it } from 'vitest';
-import { agoText, bandOf, dayText, feedPath, homeRows, whenText, withFloor, type FeedRow } from './feed';
+import { bandOf, dayText, feedPath, homeRows, whenText, withFloor, type FeedRow } from './feed';
 
 function row(id: string, over: Partial<FeedRow> = {}): FeedRow {
   return {
@@ -22,11 +22,9 @@ const NOW = new Date('2026-11-06T18:00:00Z');
 
 describe('feed', () => {
   it('words a time ago, and a dated event by its day', () => {
-    expect(agoText('2026-11-06T17:59:40Z', NOW)).toBe('just now');
-    expect(agoText('2026-11-06T17:56:00Z', NOW)).toBe('4 min ago');
-    expect(agoText('2026-11-06T16:00:00Z', NOW)).toBe('2 h ago');
-    expect(agoText('2026-11-03T18:00:00Z', NOW)).toBe('3 d ago');
-    expect(dayText('2026-12-09T00:00:00Z')).toBe('Wed 9 Dec');
+    expect(whenText({ at: '2026-11-06T17:56:00Z', date_only: false }, NOW)).toBe('4 min ago');
+    expect(whenText({ at: '2026-11-03T18:00:00Z', date_only: false }, NOW)).toBe('3 d ago');
+    expect(dayText('2026-12-09T00:00:00Z', NOW)).toBe('Wed 9 Dec');
     expect(whenText({ at: '2026-12-09T00:00:00Z', date_only: true }, NOW)).toBe('Wed 9 Dec');
   });
 

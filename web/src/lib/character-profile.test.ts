@@ -1,8 +1,8 @@
 // web/src/lib/character-profile.test.ts
 import { describe, expect, it } from 'vitest';
+import { titleCase } from './text';
 import {
   amountHeader,
-  titleCase,
   bestRepeatsHistory,
   bisHref,
   characterBuildsCopy,

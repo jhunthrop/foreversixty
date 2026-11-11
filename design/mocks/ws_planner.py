@@ -90,7 +90,7 @@ def art(bg: str) -> str:
     return _art[bg]
 
 
-STATE = {'available': 'avail', 'filled': 'part', 'maxed': 'max', 'locked': 'lock'}
+STATE = {'avail': 'avail', 'part': 'part', 'max': 'max', 'lock': 'lock'}   # lib/ui/talent-tree cellState
 
 
 def trees(st: dict, compare: bool = True, hover: int | None = None, focus: int | None = None, readonly: bool = False) -> list[dict]:
@@ -363,17 +363,17 @@ def states_page() -> str:
     prog = S['progress']
     pc = {c['state']: c for t in prog['trees'] for c in t['cells']}
     cells = ''.join(f'<span class="st-c">{TalentCell2(icon(c["icon"], 48), c["name"], c["rank"], c["max"], STATE[k], extra=x)}<span class="t-small">{lab}</span></span>'
-                    for k, x, lab, c in [('available', '', 'Can spend (0 of n)', pc['available']), ('filled', '', 'Partial', pc['filled']), ('maxed', '', 'Maxed', pc['maxed']),
-                                         ('locked', '', 'Locked', pc['locked']), ('available', 'hov', 'Hover', pc['available']), ('available', 'fv', 'Focus-visible', pc['available']),
-                                         ('available', 'act', 'Active (pressed)', pc['available'])])
-    cells += f'<span class="st-c">{TalentCell2(icon(pc["filled"]["icon"], 48), pc["filled"]["name"], pc["filled"]["rank"], pc["filled"]["max"], "part", True)}<span class="t-small">Differs from the band build</span></span>'
+                    for k, x, lab, c in [('avail', '', 'Can spend (0 of n)', pc['avail']), ('part', '', 'Partial', pc['part']), ('max', '', 'Maxed', pc['max']),
+                                         ('lock', '', 'Locked', pc['lock']), ('avail', 'hov', 'Hover', pc['avail']), ('avail', 'fv', 'Focus-visible', pc['avail']),
+                                         ('avail', 'act', 'Active (pressed)', pc['avail'])])
+    cells += f'<span class="st-c">{TalentCell2(icon(pc["part"]["icon"], 48), pc["part"]["name"], pc["part"]["rank"], pc["part"]["max"], "part", True)}<span class="t-small">Differs from the band build</span></span>'
     cells += f'<span class="st-c">{TalentCell2("<span class=\"ic\"></span>", "Missing icon", 0, 3, "avail")}<span class="t-small">Icon missing: the dark socket</span></span>'
-    block('Talent cell: every state (the game&rsquo;s colours, decision P2; 48 px, 44 below 768, 56 from 1760)', f'<div class="st-row tedit">{cells}</div>')
-    lk = pc['locked']
-    av = pc['available']
+    block('Talent cell: every state (the game&rsquo;s colours, decision P2; 48 px, 44 below 768, 56 from 1760)', f'<div class="st-row tt-trees" data-size="lg">{cells}</div>')
+    lk = pc['lock']
+    av = pc['avail']
     block('Talent tooltip: hover or focus (150 ms); a locked talent names what it needs; after a band load, the band&rsquo;s rank',
           '<div class="st-row">' + TalentTip(av['name'], av['rank'], av['max'], av['now'], av['next']) + TalentTip(lk['name'], 0, lk['max'], '', lk['next'], lk['refusal'])
-          + TalentTip(pc['filled']['name'], pc['filled']['rank'], pc['filled']['max'], pc['filled']['now'], pc['filled']['next'], band=F['band_tip']) + '</div>')
+          + TalentTip(pc['part']['name'], pc['part']['rank'], pc['part']['max'], pc['part']['now'], pc['part']['next'], band=F['band_tip']) + '</div>')
     block('Status line under the trees (role="status"): every refusal, read from the real talents', '<div class="st-stack">' + ''.join(
         f'<p class="pl-note wipe">{e(x)}</p>' for x in F['refusals'].values()) + '</div>')
     sends = ''

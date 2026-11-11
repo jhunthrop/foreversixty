@@ -7,7 +7,7 @@
         "kind": "raid.posted",
         "group": "raids",
         "title": "Molten Core",
-        "body": "18 of 40 signed. Thu 24 Dec, 8:00 pm CST.",
+        "body": "18 of 40 signed. Thu 24 Dec, 8 pm CST.",
         "link": "https://foreversixty.gg/guild/olympus-xxvii/raids/311",
         "occurred_at": "2026-12-17T18:04:11Z",
         "read": false,
@@ -18,15 +18,15 @@
         "kind": "guildsim.passed",
         "group": "ladder",
         "title": "Brakka passed you in the guild ladder",
-        "body": "+12.2 over your 191.4.",
+        "body": "+12 over your 191 (Fury Warrior, 60).",
         "link": "https://foreversixty.gg/app/guild/2",
         "occurred_at": "2026-11-07T17:12:40Z",
         "read": false,
         "icon": "ability_warrior_innerrage",
         "segments": [
           { "text": "+" },
-          { "text": "12.2", "style": "strong" },
-          { "text": " over your 191.4." }
+          { "text": "12", "style": "strong" },
+          { "text": " over your 191 (Fury Warrior, 60)." }
         ],
         "crest": "warrior",
         "figure": 203.6

@@ -9,7 +9,7 @@
   import { tokenizeNames } from '../../lib/coach/name-tokens';
   import type { CoachNames } from '../../lib/coach/names';
   import ItemHover from '../ItemHover.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let {
     text,
@@ -26,6 +26,6 @@
   {#if !('entry' in part) || (plainSpells && part.entry.kind === 'spell')}{part.text}{:else if part.entry.kind === 'spell'}<span
       class="inline-flex items-center gap-1 align-bottom"
       data-testid="coach-name-spell"
-      ><SpellIcon url={names.iconUrl(part.entry.id)} size={16} name={part.text} />{part.text}</span
+      ><SpellIcon url={names.iconUrl(part.entry.id)} size={16} tip={part.entry.id} />{part.text}</span
     >{:else}<ItemHover itemId={part.entry.id} {classSlug} {build} />{/if}
 {/each}

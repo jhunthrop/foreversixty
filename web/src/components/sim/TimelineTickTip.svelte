@@ -6,8 +6,9 @@
   import { preciseClock, seconds, tickFollow, type TickLane } from '../../lib/sim/timeline';
   import { timelineCopy } from '../../lib/sim/timeline-copy';
   import Overlay from '../ui/Overlay.svelte';
-  import ActionIcon from './ActionIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
+  import { grouped } from '../../lib/format/number';
   let {
     lane,
     index,
@@ -31,7 +32,7 @@
   <Overlay testid="timeline-tick-tip">
     <div class="px-3 py-[10px] text-[13px] leading-5">
       <div class="mb-1 flex items-center gap-2">
-        <ActionIcon url={visual.icon} loaded={visualsLoaded} size={24} />
+        <SpellIcon url={visual.icon} loading={!visualsLoaded} size={24} />
         <span class="text-strong text-[15px] font-semibold">{lane.name}</span>
         {#if visual.rank > 0}<span class="text-muted">{timelineCopy.rank(visual.rank)}</span>{/if}
       </div>
@@ -50,10 +51,7 @@
       </p>
       {#if event.outcome !== undefined}
         <p class="text-text" data-testid="timeline-tick-outcome">
-          {timelineCopy.tipOutcome(
-            event.outcome,
-            event.amount === undefined ? null : event.amount.toLocaleString('en-US'),
-          )}
+          {timelineCopy.tipOutcome(event.outcome, event.amount === undefined ? null : grouped(event.amount))}
         </p>
       {/if}
     </div>

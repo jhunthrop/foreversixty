@@ -27,6 +27,7 @@ import { simCopy } from './copy';
 import type { Summary } from '../report/types';
 import { playerActor } from './sentence';
 
+import { grouped } from '../format/number';
 export interface AbilityDiff {
   /**
    * The row's own identity, and what the `{#each}` key and the test id are built from --
@@ -154,10 +155,6 @@ export function pct(part: number, whole: number): number {
   return whole <= 0 ? 0 : Math.round((part / whole) * 100);
 }
 
-function round(value: number): string {
-  return Math.round(value).toLocaleString('en-US');
-}
-
 /**
  * `actualPlayerName` names the character in the logged fight; the sim has exactly one
  * player, so its actor is whichever did the most damage. `names` is the build's name table
@@ -242,8 +239,8 @@ export function compareSummaries(
 
   const headline =
     executionScore === null
-      ? `This fight did ${round(actualDps)} DPS; the sim produced no damage to compare it with.`
-      : `This fight did ${round(actualDps)} DPS; the sim expects ${round(simDps)}. That is ${Math.round(executionScore * 100)}% of what this gear can do.`;
+      ? `This fight did ${grouped(actualDps)} DPS; the sim produced no damage to compare it with.`
+      : `This fight did ${grouped(actualDps)} DPS; the sim expects ${grouped(simDps)}. That is ${Math.round(executionScore * 100)}% of what this gear can do.`;
 
   return {
     headline,

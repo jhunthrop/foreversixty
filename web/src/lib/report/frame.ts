@@ -4,10 +4,13 @@
 // the island and its tests read the same rules.
 import type { SelectOption } from '../ui/listbox-model';
 import type { Fact } from '../ui/facts';
-import { formatClock, joinFacts, outcomeLabel } from './format';
+import { joinFacts, outcomeLabel } from './format';
+import { logClock } from '../dates';
 import { pullNumbers, trashGroups } from './fights';
 import type { FightEntry } from './types';
 import { ALL_FIGHTS, trashScope, type Tab } from './url';
+import { counted, grouped, oneDecimal } from '../format/number';
+import { clockSeconds } from '../format/duration';
 
 /** Every tab in the strip's order (decision R3); the modes and views of old are tabs here. */
 export const REPORT_TABS: readonly { id: Tab; label: string }[] = [
@@ -54,13 +57,11 @@ export const NIGHT_TABS: ReadonlySet<Tab> = new Set([
 /** The tabs whose Source scope narrows a table with target and ability filters. */
 export const ACTOR_TABS: ReadonlySet<Tab> = new Set(['damage-done', 'healing', 'damage-taken']);
 
-const plural = (n: number, one: string, many = `${one}s`): string =>
-  `${n.toLocaleString('en-US')} ${n === 1 ? one : many}`;
+const plural = counted;
 
 /** A pull's length as m:ss, short pulls included ("0:04"), the way the fight menu reads. */
 export function pullLength(ms: number): string {
-  const total = Math.max(0, Math.round(ms / 1000));
-  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+  return clockSeconds(Math.round(ms / 1000));
 }
 
 /** The Fight select's face: "Trash · 12:43", "Warden Kelthas #2 · Wipe 34% · 1:12". */
@@ -111,7 +112,7 @@ export function fightOptions(
           ...bosses.map((fight) => ({
             value: String(fight.index),
             label: fightLabel(fight, pulls.get(fight.index)?.pull),
-            description: `${formatClock(fight.start)} · ${plural(fight.deaths ?? 0, 'death')}`,
+            description: `${logClock(fight.start)} · ${plural(fight.deaths ?? 0, 'death')}`,
             group: BOSS_GROUP,
           })),
         ];
@@ -135,8 +136,8 @@ export function fightOptions(
     label: fightLabel(fight),
     description:
       fight.mob_deaths === undefined
-        ? formatClock(fight.start)
-        : `${formatClock(fight.start)} · ${plural(fight.mob_deaths, 'mob')} died`,
+        ? logClock(fight.start)
+        : `${logClock(fight.start)} · ${plural(fight.mob_deaths, 'mob')} died`,
     group: trashGroup,
   }));
   return [...bossRows, ...zoneRows, ...trashRows];
@@ -145,9 +146,7 @@ export function fightOptions(
 /** A per-second figure: one decimal under 100 (1.8), whole from 100 (1,374). */
 export function formatRate(perSecond: number): string {
   const safe = Number.isFinite(perSecond) ? perSecond : 0;
-  return safe < 100
-    ? safe.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-    : Math.round(safe).toLocaleString('en-US');
+  return safe < 100 ? oneDecimal(safe) : grouped(safe);
 }
 
 /** The band's meta line (directions b1): "Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died",
@@ -213,7 +212,7 @@ const RATE_UNIT: Partial<Record<Tab, { key: 'damageDone' | 'healing' | 'damageTa
  *  Coach and the rest). */
 export function reportFigure(facts: FigureFacts): ReportFigure | null {
   if (facts.tab === 'deaths' || (facts.tab === 'mechanics' && facts.bossPull))
-    return { value: facts.deaths.toLocaleString('en-US'), unit: facts.deaths === 1 ? 'death' : 'deaths' };
+    return { value: grouped(facts.deaths), unit: facts.deaths === 1 ? 'death' : 'deaths' };
   const rate = RATE_UNIT[facts.tab];
   if (rate === undefined) return null;
   const seconds = Math.max(facts.durationMs, 1) / 1000;
@@ -232,7 +231,7 @@ export interface PullFacts {
  *  phases. The scope's count and deaths are the band's and the tables' (h-audit 2026-11-09). */
 export function thisPullFacts({ fight, phases }: PullFacts): Fact[] {
   return [
-    { id: 'started', label: 'Started', value: formatClock(fight.start) },
+    { id: 'started', label: 'Started', value: logClock(fight.start) },
     ...phases.map((phase, index) => ({
       id: `phase-${index}`,
       label: phase.name,

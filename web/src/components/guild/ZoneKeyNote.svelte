@@ -3,11 +3,11 @@
      page's band under the when line. The name is the shared item link, in its quality colour, with
      a tooltip of the facts the API carries: a key sits in no class file, so nothing is fetched. -->
 <script lang="ts">
+  import ItemName from '../ui/ItemName.svelte';
   import activeBuild from '../../data/active-build.json';
   import type { GuildKeyItem } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
   import { keyItemTooltipModel } from '../../lib/guild/loot-icon';
-  import { rarityClassFor } from '../../lib/planner/items';
   import ItemHover from '../ItemHover.svelte';
 
   let { item, testid = 'zone-key-note' }: { item: GuildKeyItem; testid?: string } = $props();
@@ -20,7 +20,7 @@
     itemId={item.id}
     classSlug={NO_CLASS}
     build={activeBuild.build}
-    model={keyItemTooltipModel(item)}><span class={rarityClassFor(item.quality)}>{item.name}</span></ItemHover
+    model={keyItemTooltipModel(item)}><ItemName name={item.name} quality={item.quality} /></ItemHover
   >{/snippet}
 
 <!-- A key that opens one of two ways in (Stratholme: Undead's service entrance; groups also enter

@@ -16,6 +16,7 @@ import type {
   RecruitWanted,
   RecruitWantedInput,
 } from './recruit-api';
+import { CLASS_SLUGS } from '../ui/primitives';
 
 const SEP = ' · ';
 
@@ -148,17 +149,7 @@ export const NIGHTS_MAX = 120;
 export const WANTED_NOTE_MAX = 80;
 
 /** The nine classes in the client's order, for the wanted line's class picker. */
-export const CLASS_ORDER = [
-  'warrior',
-  'paladin',
-  'hunter',
-  'rogue',
-  'priest',
-  'shaman',
-  'mage',
-  'warlock',
-  'druid',
-] as const;
+export const CLASS_ORDER = CLASS_SLUGS;
 
 export function classOptions(): { value: string; label: string }[] {
   return CLASS_ORDER.map((slug) => ({ value: slug, label: classDisplayName(slug) }));

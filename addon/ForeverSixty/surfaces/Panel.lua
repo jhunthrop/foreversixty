@@ -771,8 +771,14 @@ local function hover(content, provider)
 				Theme.showLines(self, shown, "ANCHOR_RIGHT")
 			end
 		end)
-		made:SetScript("OnLeave", function()
-			Theme.hideTooltip()
+		-- Only its own tooltip: another frame's (a bag item the mouse went on to) stays.
+		made:SetScript("OnLeave", function(self)
+			local owner = type(GameTooltip) == "table" and type(GameTooltip.GetOwner) == "function"
+				and GameTooltip:GetOwner() or self
+			if owner == self then
+				Theme.hideTooltip()
+				Theme.hideCompareTooltip()
+			end
 		end)
 		return made
 	end)

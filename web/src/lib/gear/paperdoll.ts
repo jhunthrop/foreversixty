@@ -11,6 +11,7 @@ import { slotLabelForClass } from '../bis/slot-display-labels';
 import type { SlotScoreUnit } from '../bis/tank-view';
 import { gearCopy } from './copy';
 import type { CharacterGearSlot } from './types';
+import { COSMETIC_SLOTS } from './slots';
 
 export type PaperdollSlotKey = Slot | 'shirt' | 'tabard';
 
@@ -55,7 +56,6 @@ export interface PaperdollSlot {
 }
 
 /** Shirt and tabard are drawn only when the data carries them (§3.1); the item level skips them. */
-const OPTIONAL: ReadonlySet<PaperdollSlotKey> = new Set(['shirt', 'tabard']);
 
 /**
  * The two-handed main hand covering an empty off hand (§4.3 "Two-hand in main hand"): the doll
@@ -74,7 +74,7 @@ export function twoHandCover(slots: readonly PaperdollSlot[]): PaperdollItemRef 
  * partial mean.
  */
 export function averageItemLevel(slots: readonly PaperdollSlot[]): string | null {
-  const counted = slots.filter((slot) => !OPTIONAL.has(slot.slot) && slot.state !== 'empty');
+  const counted = slots.filter((slot) => !COSMETIC_SLOTS.has(slot.slot) && slot.state !== 'empty');
   if (counted.length === 0) return null;
   const levels = counted.map((slot) => (slot.state === 'item' ? (slot.item?.itemLevel ?? null) : null));
   if (levels.some((level) => level === null)) return null;

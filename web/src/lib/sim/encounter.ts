@@ -4,12 +4,7 @@
 // unfurl copy (the routes group) and the settings bar (the character-model group). Pure
 // formatting over the shape types.ts defines, so this is where they belong regardless.
 import type { EncounterSpec } from './types';
-
-/** Seconds as a clock: 180 is "3:00", not "180s" and not "3 minutes". */
-export function durationLabel(seconds: number): string {
-  const minutes = Math.floor(seconds / 60);
-  return `${minutes}:${String(seconds % 60).padStart(2, '0')}`;
-}
+import { clockSeconds } from '../format/duration';
 
 /**
  * The settings clause a saved sim's title and a shared sim's unfurl both carry:
@@ -17,5 +12,5 @@ export function durationLabel(seconds: number): string {
  */
 export function encounterLabel(encounter: EncounterSpec, buffed: boolean): string {
   const targets = encounter.targets === 1 ? 'single target' : `${encounter.targets} targets`;
-  return `${buffed ? 'raid-buffed' : 'solo'}, ${durationLabel(encounter.duration_sec)}, ${targets}`;
+  return `${buffed ? 'raid-buffed' : 'solo'}, ${clockSeconds(encounter.duration_sec)}, ${targets}`;
 }

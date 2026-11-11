@@ -37,7 +37,7 @@ const defaultFile = loadBisFile(DEFAULT_WEIGHTS_SPEC, activeBuild.build);
 const defaultWeights = defaultFile === null ? null : defaultPublishedWeights(defaultFile);
 ---
 
-<Base title={bulkCopy.weightsTitle} description={simCopy.weightsDescription} path="/sim/weights" wide>
+<Base title={bulkCopy.weightsTitle} description={simCopy.weightsDescription} path="/sim/weights">
   <link rel="stylesheet" href="/sim-tools-island.css" slot="head" />
   <main id="main" tabindex="-1" class="sim-page">
     <SimToolHead tool="weights" title={bulkCopy.weightsTitle} lead={bulkCopy.weightsLead} />

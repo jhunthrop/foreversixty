@@ -12,6 +12,7 @@
 // and lives here, in DISPLAY_LABELS, beside the rest of this lane's words.
 import builtIn from '../../data/phases.json';
 import { fetchPhases as fetchPhasesFromApi } from './api';
+import { monthHeading } from '../dates';
 
 export interface PhaseRow {
   /** The stored, URL-safe name: pre-beta | beta | launch | raids-1. */
@@ -110,19 +111,9 @@ export function hasOpened(phases: readonly PhaseRow[], name: string | undefined,
   return when.getTime() >= Date.parse(row.start);
 }
 
-// Built on first use, not at import: a time-zoned Intl format is milliseconds of CPU to build,
-// and at import it landed in the simulator's hydration task (see billing/plans.ts).
-let dateFormat: Intl.DateTimeFormat | undefined;
-
 /** "9 December 2026", or "" for a phase with no start, for "later", and for an unknown. */
 export function openDateLabel(phases: readonly PhaseRow[], name: string): string {
   const start = phaseStart(phases, name);
   if (start === null) return '';
-  dateFormat ??= new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
-  return dateFormat.format(start);
+  return `${start.getUTCDate()} ${monthHeading(start)}`;
 }

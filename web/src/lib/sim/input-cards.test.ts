@@ -11,7 +11,7 @@ import { rotationLinesOf } from '../../../scripts/rotation-apl.mjs';
 import type { ActionNames } from './action-names';
 import { auraCard } from './aura-card';
 import { damageSchools } from './buff-effect';
-import { enchantNames, gearMeta, gearSlots, setLines, statsBlock } from './gear-card';
+import { enchantNames, gearSlots, setLines, statsBlock } from './gear-card';
 import { resourceCard } from './resource-card';
 import { rotationRows } from './rotation-card';
 import type { SimBuffRow } from './sim-buffs';
@@ -224,11 +224,6 @@ describe('gear card', () => {
     expect(slots.find((slot) => slot.slot === 'wrist')?.enchant).toBe('+7 Strength');
     expect(slots.find((slot) => slot.slot === 'hands')?.enchant).toBeUndefined();
     expect(slots.find((slot) => slot.slot === 'head')?.enchant).toBeUndefined();
-  });
-
-  it('the meta counts slots and enchants', () => {
-    expect(gearMeta(full.request.character.gear)).toBe('17 of 17 slots · no enchants');
-    expect(gearMeta(enchanted)).toBe('17 of 17 slots · 3 enchants');
   });
 
   it('a set lights the bonuses its pieces reach and a lone piece names no set', () => {

@@ -5,6 +5,7 @@
 // then the class and spec picker the BiS landing shares (ClassSpecPicker): every class on its
 // panel, its crest and name a link to its landing, its specs in tree order as slim link rows; the
 // header character's spec is marked after load.
+import { catalogueIconUrl } from '../../lib/ui/assets';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ClassSpecPicker, { type PickerClass } from '../../components/guides/ClassSpecPicker.astro';
@@ -16,9 +17,9 @@ import activeBuild from '../../data/active-build.json';
 import { readSpecCatalog } from '../../lib/bis/load';
 import { latest } from '../../lib/dates';
 import { rankedBisFile } from '../../lib/guides/class-dps';
-import { dayMonth, pageUpdatedAt } from '../../lib/guides/guide-header';
+import { pageUpdatedAt } from '../../lib/guides/guide-header';
+import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import { guidesCopy } from '../../lib/guides/copy';
-import { dataUrl } from '../../lib/planner/load';
 import { searchCopy } from '../../lib/search-copy';
 
 const build = activeBuild.build;
@@ -46,21 +47,16 @@ const groups: PickerClass[] = classes.map((c) => ({
       key: `${c.slug}/${s.spec_slug}`,
       name: s.name,
       href: `/guides/${c.slug}/${s.spec_slug}`,
-      icon: dataUrl(build, `icons/${s.icon}.webp`),
+      icon: catalogueIconUrl(build, s.icon),
     })),
 }));
 ---
 
-<Base
-  title={searchCopy.guidesIndex.title}
-  description={searchCopy.guidesIndex.description}
-  path="/guides"
-  wide
->
+<Base title={searchCopy.guidesIndex.title} description={searchCopy.guidesIndex.description} path="/guides">
   <main id="main" tabindex="-1" class="guides-index" data-testid="guides-index">
     <Page layout="ledger">
       <PageHeader slot="header" title={guidesCopy.indexTitle} tone="strong">
-        <span slot="meta">Updated {dayMonth(updated)}</span>
+        <UpdatedStamp slot="meta" date={updated} />
         <GuideAnswer slot="answer" page={{}} />
       </PageHeader>
       <ClassSpecPicker

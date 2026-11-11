@@ -8,14 +8,9 @@ import UiSheet from '../components/ui/UiSheet.svelte';
 import Base from '../layouts/Base.astro';
 ---
 
-<Base
-  title="Design sheet"
-  description="Every shared control in each of its states."
-  path="/design-sheet"
-  wide
->
+<Base title="Design sheet" description="Every shared control in each of its states." path="/design-sheet">
   <meta slot="head" name="robots" content="noindex" />
-  <main id="main" tabindex="-1" class="flex flex-col gap-8 px-[18px] py-10 md:px-0">
+  <main id="main" tabindex="-1" class="flex flex-col gap-8 px-(--page-inset) py-10">
     <h1 class="font-[family-name:var(--font-title)] text-[40px] leading-[46px] text-strong">Design sheet</h1>
     <FlatSheet />
     <UiSheet client:load />

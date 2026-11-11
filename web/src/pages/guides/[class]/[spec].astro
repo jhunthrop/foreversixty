@@ -55,13 +55,14 @@ import { guideTipsUrl, proseNames, specGuideData, withTipKeys } from '../../../l
 import { linkProse } from '../../../lib/guides/prose-tips';
 import { pageScript } from '../../../lib/guides/page-script';
 import { foldScript } from '../../../lib/ui/fold';
-import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
+import { pageUpdatedAt } from '../../../lib/guides/guide-header';
+import { formatDate } from '../../../lib/dates';
 import { guideLadderSteps } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
 import { raceTableFor, recommendedRaceLines, specKindOf } from '../../../lib/guides/race-table';
 import { guideStatLane } from '../../../lib/guides/stat-lane';
-import { talentTreesOf } from '../../../lib/guides/talent-cells';
+import { guideTalentTrees } from '../../../lib/guides/talent-cells';
 import {
   joinPriorityRuns,
   litTalentsOf,
@@ -241,13 +242,13 @@ const jsonLd = [
 ];
 ---
 
-<Base title={searchCopy.specGuideTitle(title)} {description} {path} {jsonLd} wide>
+<Base title={searchCopy.specGuideTitle(title)} {description} {path} {jsonLd}>
   <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
   <main id="main" tabindex="-1" class="guide-page" data-testid="guide-page">
     <Page layout="reading" tocFrom={1024} testid="guide-body">
       <PageHeader slot="header" title={title} tone={{ classSlug: classSlug as ClassSlug }}>
         <ClassCrest slot="crest" slug={classSlug} size={56} priority />
-        <span slot="meta">{guidesCopy.headerMeta(role, dayMonth(updated))}</span>
+        <span slot="meta">{guidesCopy.headerMeta(role, formatDate(updated))}</span>
         <GuideAnswer
           slot="answer"
           page={{
@@ -271,7 +272,7 @@ const jsonLd = [
           spec={fullSpecId}
           build={build}
           code={describedCode}
-          trees={talentTreesOf(describedTrees, tipBundle)}
+          trees={guideTalentTrees(build, classSlug, describedTrees)}
           isRaidBuild={raidTrees !== undefined}
           rotation={glance}
           rotationTitle={
@@ -408,7 +409,7 @@ const jsonLd = [
                 spec={fullSpecId}
                 classSlug={classSlug}
                 specSlug={specSlug}
-                trees={talentTreesOf(buildTrees, tipBundle)}
+                trees={guideTalentTrees(build, classSlug, buildTrees)}
                 steps={ladderSteps}
               />
             </LaneBlock>

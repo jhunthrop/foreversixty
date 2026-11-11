@@ -13,6 +13,7 @@ import (
 	"strconv"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -22,7 +23,7 @@ import (
 var passedCopy = struct{ Title, Body, Lead string }{
 	Title: "%s passed you in the guild ladder",
 	Body:  "%s %s, %s",
-	Lead:  "+%s over your %s.",
+	Lead:  "+%s over your %s (%s, %s).",
 }
 
 // guildLinkFormat is the app link the event lands on: the Raid tab for that guild, where the
@@ -75,21 +76,22 @@ func passedOn(ladder []LadderRow, key string, prev, now float64) []LadderRow {
 	return out
 }
 
-// passedFigure is a figure, or the lead between two, as guildsim.passed words them: one
-// decimal, so a 12.2 lead on a 191.4 sim reads as it is ("+12.2 over your 191.4").
-func passedFigure(v float64) string { return strconv.FormatFloat(v, 'f', 1, 64) }
-
 // passedEvent is guildsim.passed to r's account.
 func (w *GuildSimWriter) passedEvent(f simFacts, simID string, r LadderRow) events.Event {
 	_, unit := RoleWords(f.role)
-	segments := Segmentf(passedCopy.Lead, Strong(passedFigure(f.value-r.Value)), Text(passedFigure(r.Value)))
+	words := BandWords(f.band)
+	if f.preset != barePreset {
+		words += " " + f.preset
+	}
+	segments := Segmentf(passedCopy.Lead, Strong(textfmt.Figure(f.value-r.Value, f.value)),
+		Text(textfmt.Figure(r.Value, r.Value)), Text(SpecName(f.spec)), Text(words))
 	lead := events.SegmentsText(segments)
 	value := f.value
 	return events.Event{
 		Kind: events.GuildSimPassed, Audience: events.Users(r.userID),
 		DedupeKey: "guildsim.passed:" + simID + ":" + r.Key,
 		Title:     fmt.Sprintf(passedCopy.Title, f.name),
-		Body:      fmt.Sprintf(passedCopy.Body, passedFigure(f.value), unit, lead), ActivityBody: &lead,
+		Body:      fmt.Sprintf(passedCopy.Body, textfmt.Figure(f.value, f.value), unit, lead), ActivityBody: &lead,
 		Segments: segments, Crest: f.class, Figure: &value,
 		Link: fmt.Sprintf(guildLinkFormat, w.PublicBaseURL, f.guildID), Icon: specs.ByKey[f.spec].Icon,
 		Data: map[string]string{

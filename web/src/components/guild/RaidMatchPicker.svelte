@@ -14,7 +14,6 @@
     pickerEmpty,
     pickerFigures,
     pickerHelper,
-    durationLabel,
   } from '../../lib/guild/attendance-copy';
   import { PHONE_HIT_AREA } from '../../lib/guild/field-styles';
   import { focusOnMount } from '../../lib/guild/focus-now';
@@ -26,6 +25,7 @@
   import { button } from '../../lib/ui/button';
   import { ROW_ITEM } from '../../lib/ui/primitives';
   import { ROW_BAND_HOVER } from '../../lib/ui/row';
+  import { spokenDuration } from '../../lib/format/duration';
   import LoadError from '../ui/LoadError.svelte';
   import Figures from './Figures.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -134,7 +134,7 @@
       {#each picker.rows as row (row.report_id)}
         {@const taken = picker.isTaken(row)}
         {@const elsewhere =
-          row.matched_raid === null ? null : matchedElsewhereParts(row.matched_raid, guildTimezone, locale)}
+          row.matched_raid === null ? null : matchedElsewhereParts(row.matched_raid, guildTimezone)}
         <div class={ROW_ITEM}>
           <div
             bind:this={rows[row.report_id]}
@@ -172,14 +172,14 @@
               <span class="text-muted text-[12px]"
                 >{byName(row.uploaded_by_name)}<span class="md:hidden"
                   >{SEP}<Figures text={pickerFigures(row.pulls, row.kills)} />{SEP}<Figures
-                    text={durationLabel(row.duration_ms)}
+                    text={spokenDuration(row.duration_ms)}
                   /></span
                 ></span
               >
             </span>
             <span class="hidden md:inline">{@render when(row)}</span>
             <span class="hidden text-[13px] md:inline">{pickerFigures(row.pulls, row.kills)}</span>
-            <span class="numeric hidden text-[13px] md:inline">{durationLabel(row.duration_ms)}</span>
+            <span class="numeric hidden text-[13px] md:inline">{spokenDuration(row.duration_ms)}</span>
           </div>
           {#if elsewhere !== null && row.matched_raid !== null}
             <!-- Outside the radio, so its link is not a control inside one. -->

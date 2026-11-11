@@ -130,7 +130,7 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 				Detected: credit.Name},
 			Reports:    []ReportRow{{Key: "20261020-174100", ReportID: "r_9f2c", Fights: 0, StartedAt: watched, Credit: credit}},
 			Characters: []addon.Export{},
-			AddonLine:  "Last synced 1 minute ago", Credit: credit,
+			AddonLine:  "Last synced 1 min ago", Credit: credit,
 			LastSync:         LastSyncView{State: SyncSent, Count: 2, At: &watched, Title: "Tue 20 Oct 2026, 17:40"},
 			KeepAddonUpdated: true,
 			AddonUpdate:      AddonUpdateView{Enabled: true, Lines: []AddonVersionLine{}, Offers: []AddonOffer{}},
@@ -271,7 +271,7 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 		}},
 		{"status-addon-stale.json", func() Snapshot {
 			s := base(credited)
-			s.AddonLine, s.AddonStale, s.AddonHelp = "Last synced 3 days ago", true, CopyStaleHelp
+			s.AddonLine, s.AddonStale, s.AddonHelp = "Last synced 3 d ago", true, CopyStaleHelp
 			return s
 		}},
 		// The Addon row's version lines, worded by the same code the companion runs.

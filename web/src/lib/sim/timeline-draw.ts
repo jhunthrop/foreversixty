@@ -69,8 +69,8 @@ export interface PlotView {
 const round = (value: number): string => Number(value).toFixed(1);
 
 export function pxPerMs(view: PlotView): number {
-  const span = view.window.endMs - view.window.startMs;
-  return span <= 0 ? 0 : view.width / span;
+  const spanMs = view.window.endMs - view.window.startMs;
+  return spanMs <= 0 ? 0 : view.width / spanMs;
 }
 
 export function xOf(atMs: number, view: PlotView): number {
@@ -297,14 +297,14 @@ export function brushLine(
   height: number,
 ): string {
   if (line === null || line.cap <= 0) return '';
-  const span = model.endMs - model.startMs;
-  if (span <= 0) return '';
+  const spanMs = model.endMs - model.startMs;
+  if (spanMs <= 0) return '';
   const inset = 8;
   const usable = height - inset * 2;
   return line.points
     .map(
       ([at, value], index) =>
-        `${index === 0 ? 'M' : 'L'}${round(((at - model.startMs) / span) * width)},${round(inset + usable - (value / line.cap) * usable)}`,
+        `${index === 0 ? 'M' : 'L'}${round(((at - model.startMs) / spanMs) * width)},${round(inset + usable - (value / line.cap) * usable)}`,
     )
     .join('');
 }

@@ -4,7 +4,7 @@
 // only the API has the result blob in front of it -- the list route does not send one. The
 // web renders whatever sentence arrives and falls back to the figure for a row saved
 // before the column existed.
-import { formatAmount } from '../report/format';
+import { compact } from '../format/number';
 import { SIM_KINDS, type SimKind } from './kind';
 import { specDisplayName } from './spec-label';
 import type { SimListRow } from './types';
@@ -21,7 +21,7 @@ export function kindOf(row: SimListRow): SimKind {
 /** The API's own sentence, or the DPS figure for a row saved before it composed one. */
 export function headlineOf(row: SimListRow): string {
   const headline = row.headline ?? '';
-  return headline === '' ? `${formatAmount(Math.round(row.dps))} DPS` : headline;
+  return headline === '' ? `${compact(Math.round(row.dps))} DPS` : headline;
 }
 
 /** The player's own title, or the bare spec name when they never gave one. */

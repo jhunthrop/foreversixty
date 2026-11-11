@@ -90,16 +90,13 @@ export function gradeRow(week: SpecWeek | null, specName: string | null): Standi
   };
 }
 
-/** The raid clock keeps its two largest units. */
-const CLOCK_UNITS = 2;
-
-/** C21: "Onyxia's Lair" | "33 days, 8 hours", the clock to its two largest units; null once it has
+/** C21: "Onyxia's Lair" | "33 days, 8 hours, 12 min", the one countdown; null once it has
  *  started. The sign-up count stays on the raid's own page (review 2026-11-09). */
 export function raidRow(raid: NextRaidView | null, now: Date): StandingRow | null {
   if (raid === null) return null;
   const parts = clockParts(new Date(raid.starts_at), now);
-  if (parts === null) return null;
-  return { label: raid.title, value: clockLabel(parts.slice(0, CLOCK_UNITS)) };
+  if (parts.length === 0) return null;
+  return { label: raid.title, value: clockLabel(parts) };
 }
 
 /** A feed sentence on the character's own page: the character's own name drops out (the page is

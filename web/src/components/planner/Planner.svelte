@@ -6,7 +6,7 @@
      b2-planner): the PageHeader (crest, "{Class} talents", the meta line, the answer: the points
      and Sim this build; the simulator owns the numbers, so the live estimate runs only in the
      embed), the ControlBar (the nine class crests, the race), one note line, then the framed
-     Talents panel (TalentEditor) and Point order in main, and in the rail the Level build, In the
+     Talents panel (TalentTrees, edit) and Point order in main, and in the rail the Level build, In the
      game, Share and Import. Below 1280 the regions flow in one column in phone order (Ordered). -->
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
@@ -59,9 +59,10 @@
   import { bandCodeGear, earnedOrder, estimateCharacter } from '../../lib/planner/estimate';
   import type { LadderOrderFor, LadderOrderForRanks } from '../../lib/planner/ladder-load';
   import { dataUrl } from '../../lib/planner/load';
-  import { classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
+  import SpellIcon from '../ui/SpellIcon.svelte';
+  import { classColor, classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
-  import { openTreeIndex, type TalentEditorCopy } from '../../lib/ui/talent-editor';
+  import { openTreeIndex, type TalentTreesCopy } from '../../lib/ui/talent-tree';
   import classRows from '../../data/classes.json';
   import { classCrestSrc } from '../../lib/class-crest';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
@@ -73,7 +74,7 @@
   import PageHeader from '../ui/PageHeader.svelte';
   import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
-  import TalentEditor from '../ui/TalentEditor.svelte';
+  import TalentTrees from '../ui/TalentTrees.svelte';
   import BandCompare from './BandCompare.svelte';
   import ImportBox from './ImportBox.svelte';
   import InGame from './InGame.svelte';
@@ -682,7 +683,7 @@
   let activeTree = $state(0);
 
   /** `BandCompare`'s own diff, once a band has loaded (spec §4.D/§4.E.4) -- shared with
-   *  every `TreeGrid` through `TreeTabs`, so the per-cell marker is one computation, not a
+   *  every tree through `TalentTrees`, so the per-cell marker is one computation, not a
    *  second one forked by the tree row. */
   let bandDiff = $state<BandDiffView | null>(null);
   /** The level card draws nothing (a build that matches it). */
@@ -941,12 +942,10 @@
           characterLevel: store.characterLevel,
           readOnly: store.readOnly,
           bandDiff,
-          asset: (path) => dataUrl(store.treeVersion, path),
+          build: store.treeVersion,
         }),
   );
-  const EDITOR_COPY: TalentEditorCopy = {
-    rankOf: plannerCopy.rankOf,
-    nextRank: plannerCopy.nextRank,
+  const EDITOR_COPY: TalentTreesCopy = {
     resetTree: plannerCopy.resetTree,
     resetTreeLabel: plannerCopy.resetTreeLabel,
   };
@@ -1032,7 +1031,7 @@
         value: row.slug,
         label: row.name,
         icon: classCrestSrc(row.slug),
-        ring: row.color,
+        ring: classColor(row.slug),
         disabled: store.readOnly,
         disabledReason: READ_ONLY_REASON,
       })),
@@ -1147,10 +1146,10 @@
         {#each [0, 1, 2] as tree (tree)}
           <div class="pl-skt">
             {#if openingTrees[tree] !== undefined && store.classSlug === classSlug}
-              <!-- The opening class's tree head as the editor draws it (TalentEditor .tedit-h). -->
-              {@const iconSrc = treeIconSrc(classSlug, tree, (path) => dataUrl(store.treeVersion, path))}
+              <!-- The opening class's tree head as the editor draws it (TalentTree .tt-h). -->
+              {@const iconSrc = treeIconSrc(classSlug, tree, store.treeVersion)}
               <div class="pl-skh">
-                {#if iconSrc !== ''}<img src={iconSrc} alt="" width="28" height="28" />{/if}
+                <SpellIcon url={iconSrc === '' ? null : iconSrc} size={28} />
                 <h2>{openingTrees[tree]}</h2>
                 <b>0</b>
               </div>
@@ -1183,11 +1182,12 @@
   {#if status === 'ready' && store.talentIndex}
     <!-- Never the editor's readOnly: a shared build's press reaches the store, which refuses and
          says why in the status line (fork it to edit). -->
-    <TalentEditor
+    <TalentTrees
+      mode="edit"
       trees={editorTreeList}
+      build={store.treeVersion}
       bind:active={activeTree}
       copy={EDITOR_COPY}
-      readOnly={false}
       onadd={(id) => store.addPoint(id)}
       onremove={(id) => store.removePoint(id)}
       onresettree={store.readOnly ? undefined : (i) => store.resetTree(i)}
@@ -1433,7 +1433,7 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  /* TalentEditor's .tedit-tree padding, so a head sits where the editor's head lands. */
+  /* TalentTrees' .tt-col padding, so a head sits where the editor's head lands. */
   .pl-skt {
     display: flex;
     flex-direction: column;
@@ -1457,13 +1457,6 @@
     gap: 10px;
     min-width: 0;
     height: 28px;
-  }
-  .pl-skh img {
-    display: block;
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
-    flex: none;
   }
   .pl-skh h2 {
     font: 700 15px/20px var(--font-body);

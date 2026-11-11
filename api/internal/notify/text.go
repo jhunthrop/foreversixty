@@ -1,10 +1,7 @@
 package notify
 
 import (
-	"fmt"
-	"math"
 	"strings"
-	"time"
 )
 
 // markdownSpecials are escaped wherever they appear in member text.
@@ -45,44 +42,6 @@ func escapedWithin(raw string, rawMax, outMax int) string {
 		}
 		runes = runes[:len(runes)-1]
 	}
-}
-
-// thousands renders a rounded figure with comma separators.
-func thousands(v float64) string {
-	n := int64(math.Round(v))
-	digits := fmt.Sprintf("%d", n)
-	sign := ""
-	if n < 0 {
-		sign, digits = "-", digits[1:]
-	}
-	for i := len(digits) - 3; i > 0; i -= 3 {
-		digits = digits[:i] + "," + digits[i:]
-	}
-	return sign + digits
-}
-
-// duration renders "48 s", "3 min 12 s" or "1 h 5 min".
-func duration(d time.Duration) string {
-	total := int(math.Round(d.Seconds()))
-	if total < 0 {
-		total = 0
-	}
-	hours, minutes, seconds := total/3600, total%3600/60, total%60
-	switch {
-	case hours > 0:
-		return joinUnits(fmt.Sprintf("%d h", hours), minutes, "min")
-	case minutes > 0:
-		return joinUnits(fmt.Sprintf("%d min", minutes), seconds, "s")
-	default:
-		return fmt.Sprintf("%d s", seconds)
-	}
-}
-
-func joinUnits(lead string, rest int, unit string) string {
-	if rest == 0 {
-		return lead
-	}
-	return fmt.Sprintf("%s %d %s", lead, rest, unit)
 }
 
 // EscapeWithin is escapedWithin for other packages that render member text

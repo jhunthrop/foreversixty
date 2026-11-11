@@ -5,6 +5,7 @@
 import { bisCopy, tankCopy } from './copy';
 import type { BisBand, BisHealMetrics, BisRole, RateUnit, TankMetrics } from './types';
 
+import { grouped, oneDecimal } from '../format/number';
 export const DEFAULT_BIS_ROLE: BisRole = 'dps';
 export const TANK_ROLE: BisRole = 'tank';
 
@@ -12,12 +13,6 @@ export const TANK_ROLE: BisRole = 'tank';
  *  per second on a healer band, or a tank band's composite tank-score points. */
 export type SlotScoreUnit = 'dps' | 'hps' | 'tank_score';
 
-const NUMBER_LOCALE = 'en-US';
-// Built on first use, not when the module loads: a NumberFormat loads locale data, tens of
-// milliseconds under a throttled CPU, and the planner's island imports this file without ever
-// formatting a tank figure.
-let wholeNumber: Intl.NumberFormat | undefined;
-let oneDecimal: Intl.NumberFormat | undefined;
 const PERCENT_DECIMALS = 1;
 const PERCENT_FACTOR = 100;
 /** Under this share a non-zero chance of death is written "<0.1%" rather than "0.0%". */
@@ -72,19 +67,6 @@ export function scoreUnitWord(unit: SlotScoreUnit): string {
   return unit === 'tank_score' ? 'score' : rateUnitFor(unit);
 }
 
-export function formatWholeNumber(value: number): string {
-  wholeNumber ??= new Intl.NumberFormat(NUMBER_LOCALE, { maximumFractionDigits: 0 });
-  return wholeNumber.format(value);
-}
-
-export function formatOneDecimal(value: number): string {
-  oneDecimal ??= new Intl.NumberFormat(NUMBER_LOCALE, {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  });
-  return oneDecimal.format(value);
-}
-
 /** 0..1 as "12.3%"; a non-zero chance under the resolution reads "<0.1%". */
 export function formatChanceOfDeath(chance: number): string {
   if (chance > 0 && chance < CHANCE_OF_DEATH_RESOLUTION) return tankCopy.chanceOfDeathBelowResolution;
@@ -98,13 +80,13 @@ export function tankHeadlineFor(metrics: TankMetrics): TankHeadline {
       {
         id: 'effective-health',
         label: tankCopy.effectiveHealthLabel,
-        value: formatWholeNumber(metrics.effective_health),
+        value: grouped(metrics.effective_health),
         title: tankCopy.effectiveHealthTitle,
       },
       {
         id: 'dtps',
         label: tankCopy.dtpsLabel,
-        value: formatOneDecimal(metrics.dtps),
+        value: oneDecimal(metrics.dtps),
         title: tankCopy.dtpsTitle,
       },
       {
@@ -116,11 +98,11 @@ export function tankHeadlineFor(metrics: TankMetrics): TankHeadline {
       {
         id: 'tps',
         label: tankCopy.tpsLabel,
-        value: formatOneDecimal(metrics.tps),
+        value: oneDecimal(metrics.tps),
         title: tankCopy.tpsTitle,
       },
     ],
-    secondaryLine: tankCopy.secondaryLine(formatWholeNumber(metrics.tmi), formatOneDecimal(metrics.dps)),
+    secondaryLine: tankCopy.secondaryLine(grouped(metrics.tmi), oneDecimal(metrics.dps)),
     secondaryTitle: tankCopy.tmiTitle,
   };
 }

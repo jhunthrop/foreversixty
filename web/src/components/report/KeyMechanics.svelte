@@ -6,12 +6,12 @@
      they hit. At most five rows; the tab has the rest. -->
 <script lang="ts">
   import { mechanicTable, unclassifiedAbilities } from '../../lib/report/mechanics';
-  import { formatAmount } from '../../lib/report/format';
+  import { compact } from '../../lib/format/number';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import type { Summary } from '../../lib/report/types';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let { summary, spellIcon, tabHref }: { summary: Summary; spellIcon: SpellIconOf; tabHref: string } =
     $props();
@@ -56,7 +56,7 @@
         key: String(ability.spell_id),
         spellId: ability.spell_id,
         name: ability.name,
-        figure: formatAmount(ability.damage),
+        figure: compact(ability.damage),
         sub: `${plural(ability.players, 'player')} hit`,
         bad: false,
       }));
@@ -73,6 +73,9 @@
     {#each lines as line (line.key)}
       <Row title={line.name} sub={line.sub} open density="slim">
         {#snippet lead()}<SpellIcon
+            socket
+            tip={line.spellId}
+            size={24}
             url={spellIcon(line.spellId, line.name, schoolOf.get(line.spellId))}
           />{/snippet}
         {#snippet trail()}<span

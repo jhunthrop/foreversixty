@@ -11,7 +11,8 @@ import PlateColumn from '../ui/PlateColumn.svelte';
 import PlateColumns from '../ui/PlateColumns.svelte';
 import StatRow from '../ui/StatRow.svelte';
 import StatTable from '../ui/StatTable.svelte';
-import TalentTrees, { type TalentTree } from '../ui/TalentTrees.svelte';
+import TalentTrees from '../ui/TalentTrees.svelte';
+import type { TalentTreeView } from '../../lib/ui/talent-tree';
 import GuideSpellRow from './GuideSpellRow.astro';
 import { LINK } from '../../lib/ui/primitives';
 import { guidesCopy } from '../../lib/guides/copy';
@@ -25,7 +26,7 @@ interface Props {
   build: string;
   /** The build the plate describes (the raid build when the guide has its own). */
   code?: string;
-  trees: readonly TalentTree[];
+  trees: readonly TalentTreeView[];
   isRaidBuild: boolean;
   rotation: GlanceRotation;
   rotationTitle: string;
@@ -48,7 +49,7 @@ const statRank = (reading: string): string => (reading === 'value' ? String(++ra
           label={isRaidBuild ? guidesCopy.raidBuild : guidesCopy.buildRailLabel}
           testid="guide-glance-build"
         >
-          <TalentTrees trees={trees} build={build} testid="guide-glance-trees" />
+          <TalentTrees mode="compact" trees={trees} build={build} testid="guide-glance-trees" />
           <Fragment slot="foot">
             <Button tone="primary" href={loadBuildHref(code!, spec)} testid="guide-load-build">
               {guidesCopy.loadThisBuild}

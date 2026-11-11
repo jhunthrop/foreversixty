@@ -13,6 +13,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 const (
@@ -200,7 +201,7 @@ func (s *Store) exportLocation(ctx context.Context, guildID int64) (*time.Locati
 	if err != nil {
 		return nil, fmt.Errorf("guilds: export zone: %w", err)
 	}
-	return zoneOrUTC(tz), nil
+	return textfmt.Location(tz), nil
 }
 
 // safeRow escapes every cell of a row against formula injection.

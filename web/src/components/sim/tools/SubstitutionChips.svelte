@@ -29,6 +29,7 @@
      source names here are short (a boss or vendor name), the row already wraps
      (`flex-wrap`), and a reader gets the full answer without a second element to manage. -->
 <script lang="ts">
+  import ItemName from '../../ui/ItemName.svelte';
   import ItemHover from '../../ItemHover.svelte';
   import { rarityClassFor } from '../../../lib/planner/items';
   import type { Item } from '../../../lib/planner/types';
@@ -63,7 +64,7 @@
         {#if item !== undefined && classSlug !== undefined}
           <ItemHover itemId={item.id} {classSlug} build={treeVersion} class="gap-2">
             <ItemIcon icon={item.icon} quality={item.quality} build={treeVersion} size={28} />
-            <span class={rarityClassFor(item.quality)}>{substitutionChipLabel(sub)}</span>
+            <ItemName name={substitutionChipLabel(sub)} quality={item.quality} />
           </ItemHover>
         {:else}
           {#if item !== undefined}

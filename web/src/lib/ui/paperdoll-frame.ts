@@ -4,8 +4,11 @@
 // bar and the centre panel are boxes in percent of the frame (paperdoll-slots.json, measured on
 // the frame and written by tools/art/build_art.py), so the doll scales with its width. Below
 // MIN_SLOT_PX a slot is too small to tap and read, and ui/PaperdollFrame shows the list form.
+// The slots and their order are lib/gear/slots.ts.
+// The slots and their order are lib/gear/slots.ts.
 import spec from './paperdoll-slots.json';
 import { SEAL } from './assets';
+import { FRAME_SLOTS } from '../gear/slots';
 
 /** A box in percent of the frame's width (x, w) and height (y, h). */
 export interface FrameBox {
@@ -14,22 +17,6 @@ export interface FrameBox {
   readonly w: number;
   readonly h: number;
 }
-
-/** The client's order: head to wrist down the left, hands to the trinkets down the right, then
- *  the three weapon sockets along the bottom. */
-export const FRAME_LEFT = ['head', 'neck', 'shoulder', 'back', 'chest', 'shirt', 'tabard', 'wrist'] as const;
-export const FRAME_RIGHT = [
-  'hands',
-  'waist',
-  'legs',
-  'feet',
-  'finger1',
-  'finger2',
-  'trinket1',
-  'trinket2',
-] as const;
-export const FRAME_BOTTOM = ['main_hand', 'off_hand', 'ranged'] as const;
-export const FRAME_SLOTS: readonly string[] = [...FRAME_LEFT, ...FRAME_RIGHT, ...FRAME_BOTTOM];
 
 /** The smallest slot that still reads and takes a tap. */
 export const MIN_SLOT_PX = 36;

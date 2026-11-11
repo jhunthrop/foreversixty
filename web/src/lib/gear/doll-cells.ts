@@ -21,14 +21,13 @@ import {
   type PaperdollSlot,
   type PaperdollUpgrade,
 } from './paperdoll';
+import { EMPTY_FIGURE } from '../format/number';
 
 export type WornDollMode = 'worn' | 'report';
 
 /** The common quality: a name the items file has not coloured (it failed) reads plain. */
 const PLAIN_QUALITY = 1;
 const POOR_QUALITY = 0;
-/** The figure for a gain that has no number. */
-const NO_FIGURE = '—';
 
 function itemRef(ref: PaperdollItemRef): ItemRef {
   return {
@@ -48,7 +47,7 @@ export function wornGain(upgrade: PaperdollUpgrade): Pick<DollCell, 'gain' | 'ba
     return { gain: { value: gearCopy.paperdoll.notScored, basis, tone: 'muted' } };
   if (upgrade.value === null)
     return {
-      gain: { value: NO_FIGURE, basis: { prefix: gearCopy.paperdoll.notSimChecked }, tone: 'muted' },
+      gain: { value: EMPTY_FIGURE, basis: { prefix: gearCopy.paperdoll.notSimChecked }, tone: 'muted' },
       badge: 'upgrade',
     };
   if (isTie(upgrade.value)) return { gain: { value: gearCopy.paperdoll.same, basis, tone: 'muted' } };

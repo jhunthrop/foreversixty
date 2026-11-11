@@ -14,7 +14,7 @@ import guild_dense_data as D
 from guild_dense_fixtures import GUILD, TIER, ago, iso, parse
 from guild_fixtures import OUT, write
 
-RAID_NIGHTS_TEXT = 'Wed, 8:00 pm to 11:00 pm CST'
+RAID_NIGHTS_TEXT = 'Wed, 8 pm to 11 pm CST'
 PITCH = 'We raid Wednesday nights, bring flasks, and split loot by council with the numbers shown. New to Forever is fine.'
 # The open spots (guild_dense_data.COMP_TARGET against the roster): a third tank, healers, a ranged.
 WANTED = [('warrior', 'warrior-protection', 'Protection Warrior', 'Off tank'),

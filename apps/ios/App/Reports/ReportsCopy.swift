@@ -62,11 +62,6 @@ enum ReportsCopy {
         Int(value.rounded()).formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))
     }
 
-    /// A per-second figure to one decimal, grouped, as the sims and Gear print it: `203.6`, `1,196.2`.
-    static func figureTenths(_ value: Double) -> String {
-        value.formatted(.number.precision(.fractionLength(1)).grouping(.automatic).locale(Locale(identifier: "en_US")))
-    }
-
     /// `DPS`, `HPS` or `DTPS`.
     static func unit(_ unit: String) -> String {
         switch unit {

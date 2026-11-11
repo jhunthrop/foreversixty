@@ -131,9 +131,9 @@ describe('/guides/warrior/fury (the page structure)', () => {
     const glance = blockOf(main, 'guide-glance-build', 200_000).split(
       'data-testid="guide-glance-rotation"',
     )[0]!;
-    // The trees are server-rendered: a grid per tree, a group per talent.
+    // The trees are server-rendered: a grid per tree, a button per talent naming its rank.
     expect(glance.match(/role="grid"/g)).toHaveLength(3);
-    expect(glance).toMatch(/role="group" aria-label="[^"]+ \d\/\d"/);
+    expect(glance).toMatch(/class="tt-cell[^"]*" aria-label="[^"]+, rank \d of \d"/);
     const code = encodeURIComponent(entry.data.build as string);
     expect(glance).toMatch(
       new RegExp(
@@ -366,7 +366,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     )[0]!;
     expect(column).toContain(`>${guidesCopy.rotationRailTitle}</h2>`);
     const rows = column.split('data-testid="guide-full-priority"')[0]!;
-    expect(rows.match(/class="guide-spell-icon/g)).toHaveLength(4);
+    expect(rows.match(/class="ui-spell-icon/g)).toHaveLength(4);
     expect(column).toMatch(/href="#rotation-and-priority"[^>]*data-testid="guide-full-priority"/);
     expect(column).toContain(guidesCopy.fullPriorityLink);
     // Each line reads at its level 60 clause: no rank swap a leveller makes.

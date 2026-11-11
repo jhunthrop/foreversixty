@@ -7,8 +7,8 @@ import { raceRows } from '../planner/reference';
 import { hasNoDamageEffect, type BuffEffectRow, type SpecWeights } from './buff-effect';
 import { IMPROVED_SUFFIX } from './buff-id';
 import { CATALOGUE } from './buffs';
-import { durationLabel } from './encounter';
-import { grouped } from './result-copy';
+import { clockSeconds } from '../format/duration';
+import { grouped } from '../format/number';
 import { settingsCopy } from './settings-copy';
 import { humanise } from './humanise';
 import type { SimResult } from './types';
@@ -80,10 +80,10 @@ export function settingsRows(result: SimResult): SettingsRow[] {
   const { keys } = settingsCopy;
   const seconds = encounter.duration_sec;
   const percent = Math.round(encounter.variation * 100);
-  const low = durationLabel(Math.round(seconds * (1 - encounter.variation)));
-  const high = durationLabel(Math.round(seconds * (1 + encounter.variation)));
+  const low = clockSeconds(Math.round(seconds * (1 - encounter.variation)));
+  const high = clockSeconds(Math.round(seconds * (1 + encounter.variation)));
   const race = raceRows.find((row) => row.slug === character.race)?.name;
-  const length = durationLabel(seconds);
+  const length = clockSeconds(seconds);
   return [
     {
       id: 'fight',
@@ -143,16 +143,16 @@ function replacedBy(id: string, list: readonly string[], buffs: SettingsBuffs): 
 function toChip(id: string, list: readonly string[], buffs: SettingsBuffs, buildUrl: IconUrl): SettingsChip {
   const base = baseId(id);
   const winner = replacedBy(id, list, buffs);
-  const icon = buffs[base]?.icon;
   return {
     id,
     name: chipName(id, buffs),
-    icon: icon === undefined || icon === '' ? null : buildUrl(icon),
+    icon: buildUrl(buffs[base]?.icon),
     reason: winner === undefined ? null : settingsCopy.replacedBy(chipName(winner, buffs)),
   };
 }
 
-export type IconUrl = (stem: string) => string;
+/** A buff's icon url from its stem (lib/ui/assets iconUrl over the run's build). */
+export type IconUrl = (stem: string | undefined) => string | null;
 
 function groupOf(
   id: SettingsChipGroup['id'],

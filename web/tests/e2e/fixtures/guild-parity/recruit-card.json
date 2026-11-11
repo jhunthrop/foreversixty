@@ -12,7 +12,7 @@
   "open": true,
   "pitch": "We raid Wednesday nights, bring flasks, and split loot by council with the numbers shown. New to Forever is fine.",
   "raid_nights": {
-    "text": "Wed, 8:00 pm to 11:00 pm CST",
+    "text": "Wed, 8 pm to 11 pm CST",
     "upcoming": ["2026-12-17T02:00:00Z", "2026-12-24T02:00:00Z"],
     "timezone": "America/Chicago"
   },

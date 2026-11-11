@@ -95,9 +95,7 @@ test.describe('desktop', () => {
     for (const race of races) {
       const row = list.getByTestId(`guide-class-race-${race.slug}`);
       await expect(row).toContainText(race.name);
-      await expect(row.locator(`[data-race-icon="${race.name}"]`)).toHaveCount(
-        portraits.has(race.slug) ? 1 : 0,
-      );
+      await expect(row.locator('.ui-spell-icon')).toHaveCount(portraits.has(race.slug) ? 1 : 0);
     }
   });
 

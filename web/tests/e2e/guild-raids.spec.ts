@@ -256,7 +256,7 @@ test.describe('the free raid calendar (owner ruling 2026-11-09)', () => {
       await expect(copy).toHaveText(raidCopy.officerRow.copied);
       const copied = await page.evaluate(() => navigator.clipboard.readText());
       expect(copied).toBe(signupListText(stub.view(ONYXIA_ID), CHICAGO));
-      expect(copied.split('\n')[0]).toBe("Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>");
+      expect(copied.split('\n')[0]).toBe("Onyxia's Lair · Thu 10 Dec, 8 pm CST · <t:1796954400:F>");
       expect(stub.writes).toEqual([]);
     } finally {
       await context.close();
@@ -319,7 +319,7 @@ test.describe('the guild clock (R4)', () => {
     await openForm(page);
     await expect(page.getByTestId('raid-form-timezone')).toHaveValue(CHICAGO);
     await expect(page.getByTestId('raid-form-time')).toHaveValue('20:00');
-    await expect(page.getByTestId('raid-form-for-you')).toHaveText('For you: Thu 17 Dec, 9:00 pm.');
+    await expect(page.getByTestId('raid-form-for-you')).toHaveText('For you: Thu 17 Dec, 9 pm.');
     await choose(page.getByTestId('raid-form-timezone'), NEW_YORK);
     await expect(page.getByTestId('raid-form-for-you')).toHaveText('For you: same time.');
   });
@@ -351,13 +351,8 @@ test.describe('the guild clock (R4)', () => {
     const rows = page.locator('[data-testid^="planned-raid-"][href]');
     await expect(rows).toHaveCount(4);
     // The guild clock leads, the New York viewer's own under it (raid comp spec 3.4).
-    const labels = ['8:00 pm CST', '8:00 pm CDT', '8:00 pm CDT', '8:00 pm CDT'];
-    const yours = [
-      '9:00 pm EST your time',
-      '9:00 pm EDT your time',
-      '9:00 pm EDT your time',
-      '9:00 pm EDT your time',
-    ];
+    const labels = ['8 pm CST', '8 pm CDT', '8 pm CDT', '8 pm CDT'];
+    const yours = ['9 pm EST your time', '9 pm EDT your time', '9 pm EDT your time', '9 pm EDT your time'];
     for (const [index, label] of labels.entries()) {
       await expect(rows.nth(index)).toContainText(label);
       await expect(rows.nth(index)).toContainText(yours[index] ?? '');

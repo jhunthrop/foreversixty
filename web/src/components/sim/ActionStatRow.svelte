@@ -4,6 +4,8 @@
      Meter and the figures. The icon is the action's own, else the buff it is; a key with no icon
      keeps the socket, never a broken image; the engine's rage refund takes ActionMark's refresh glyph. -->
 <script lang="ts">
+  import { spellTipKey } from '../../lib/tooltips/game-tip';
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import { actionTip, resolveIconUrl, REFUND_KEY } from '../../lib/sim/action-mark';
   import { ICON_REFRESH } from '../../lib/ui/ui-icons';
   import Icon from '../ui/Icon.svelte';
@@ -51,24 +53,16 @@
         style:width="{ICON_SIZE}px"
         style:height="{ICON_SIZE}px"
         data-testid="refund-glyph"><Icon icon={ICON_REFRESH} size={14} /></span
-      >{:else if iconUrl !== null}<img
-        src={iconUrl}
-        alt=""
-        width={ICON_SIZE}
-        height={ICON_SIZE}
-        loading="lazy"
-        decoding="async"
-        class="mt-[2px] block rounded-[4px]"
-        data-game-tip={opens.tip}
-        data-bis-item={opens.item}
-      />{/if}
+      >{:else}<span class="mt-[2px] block"
+        ><SpellIcon url={iconUrl} size={ICON_SIZE} tip={opens.spell} item={opens.item} /></span
+      >{/if}
   {/snippet}
   {#snippet name()}
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
     <span
-      data-game-tip={opens.tip}
+      data-game-tip={opens.spell === undefined ? undefined : spellTipKey(opens.spell)}
       data-bis-item={opens.item}
-      tabindex={opens.tip !== undefined || opens.item !== undefined ? 0 : undefined}>{label}</span
+      tabindex={opens.spell !== undefined || opens.item !== undefined ? 0 : undefined}>{label}</span
     >
   {/snippet}
   {#snippet sub()}{#if note !== undefined}<span class={noteTone === 'wipe' ? 'text-wipe' : ''}>{note}</span

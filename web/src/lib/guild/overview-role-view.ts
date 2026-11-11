@@ -9,7 +9,7 @@ import type { CellTone, MarkTone } from '../ui/cells';
 import type { GridRowModel } from '../ui/cells';
 import type { GuildRaidCounts, GuildRaidCoverRow, GuildRaidView } from './api';
 import { coverSigned, coverTone } from './cover-view';
-import { DEFAULT_LOCALE, clockText, dateLabel, offsetsDiffer, zoneAbbreviation } from './raid-time';
+import { offsetsDiffer, zoneAbbreviation } from './raid-time';
 import { enchantSlotLabel as slotWord } from './readiness-view';
 import type {
   ChecklistItem,
@@ -18,6 +18,8 @@ import type {
   GuildCompTarget,
   GuildPingResult,
 } from './overview-api';
+import { clock, weekdayDayMonth, weekdayName } from '../dates';
+import { SITE_LOCALE } from '../format/number';
 
 export interface ChecklistRow {
   key: ChecklistItem['key'];
@@ -256,8 +258,8 @@ export function compGridRows(counts: GuildRaidCounts, target: GuildCompTarget): 
 }
 
 /** The weekday a raid falls on in the guild's zone, for "before Thursday". */
-export function raidWeekday(startsAt: string, tz: string, locale: string = DEFAULT_LOCALE): string {
-  return new Intl.DateTimeFormat(locale, { weekday: 'long', timeZone: tz }).format(new Date(startsAt));
+export function raidWeekday(startsAt: string, tz: string): string {
+  return weekdayName(new Date(startsAt), tz);
 }
 
 /** `Thu 10 Dec · 8 pm CST`, then `· 9 pm EST your time` when the viewer's zone differs. */
@@ -265,12 +267,12 @@ export function raidTimeLine(
   startsAt: string,
   guildTz: string,
   viewerTz: string,
-  locale: string = DEFAULT_LOCALE,
+  locale: string = SITE_LOCALE,
 ): string {
   const at = new Date(startsAt);
-  const guild = `${dateLabel(at, guildTz, locale)} · ${clockText(at, guildTz, locale)} ${zoneAbbreviation(guildTz, at)}`;
+  const guild = `${weekdayDayMonth(at, guildTz)} · ${clock(at, guildTz, { locale })} ${zoneAbbreviation(guildTz, at)}`;
   if (!offsetsDiffer(at, guildTz, viewerTz)) return guild;
-  return `${guild} · ${clockText(at, viewerTz, locale)} ${zoneAbbreviation(viewerTz, at)} your time`;
+  return `${guild} · ${clock(at, viewerTz, { locale })} ${zoneAbbreviation(viewerTz, at)} your time`;
 }
 
 /** The cover rows as Grid rows: what the raid needs, then who is signed In or Late to give it. */

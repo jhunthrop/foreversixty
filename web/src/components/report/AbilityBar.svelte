@@ -4,8 +4,9 @@
      background between segments. Using a palette here would either invent hex values the
      design system forbids or repurpose the class colours, which it forbids harder. -->
 <script lang="ts">
-  import { formatAmount, schoolName, schoolToken } from '../../lib/report/format';
+  import { schoolName, schoolToken } from '../../lib/report/format';
   import { abilityKey, type Ability } from '../../lib/report/types';
+  import { compact } from '../../lib/format/number';
 
   let {
     abilities,
@@ -40,7 +41,7 @@
       <span
         class="h-full"
         style={`flex: ${Math.max(ability.total, 0)} 0 0; background: ${schoolToken(ability.school)}; opacity: ${OPACITIES[Math.min(schoolRank[index] ?? 0, OPACITIES.length - 1)]}; border-right: 1px solid var(--color-bg)`}
-        title={`${ability.name} · ${schoolName(ability.school)} · ${formatAmount(ability.total)}`}
+        title={`${ability.name} · ${schoolName(ability.school)} · ${compact(ability.total)}`}
       ></span>
     {/each}
   </div>

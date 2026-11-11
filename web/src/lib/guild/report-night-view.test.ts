@@ -20,7 +20,7 @@ import {
   raiderDeaths,
 } from './report-night-view';
 import { pullTitle, reportNightCopy as copy } from './report-night-copy';
-import { killTimeLabel } from './attendance-copy';
+import { clockDuration } from '../format/duration';
 
 const report = raidReport();
 
@@ -205,7 +205,7 @@ describe('raiderDeaths', () => {
     const pull = report.pulls.find((p) => (p.death_causes ?? []).length > 0)!;
     const death = pull.death_causes![0];
     const model = rows.find((row) => row.key === death.character_key)!;
-    expect(model.deaths).toContain(`${pullTitle(pull.name, pull.attempt)} at ${killTimeLabel(death.at_ms)}`);
+    expect(model.deaths).toContain(`${pullTitle(pull.name, pull.attempt)} at ${clockDuration(death.at_ms)}`);
   });
 
   it('words the counts as a raider would', () => {

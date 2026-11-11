@@ -24,7 +24,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, LanesLegend, Link, Meter, Notice,
-                      Page, PageHeader, Plate, Row, RowGrid, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
+                      Page, PageHeader, Plate, Row, RowGrid, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page, talent_ranks_from_strings, talent_tree_dicts,
                       control_bar, crest_img, seg, sel, write, PaperdollFrame)
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -656,11 +656,7 @@ def gear_section(with_stats: bool = True) -> str:
 
 
 def talents_section() -> str:
-    trees = []
-    for tr, part in zip(sorted(TALENTS, key=lambda t: t['position']), CHAR['talents'].split('-')):
-        tal = sorted(tr['talents'], key=lambda t: (t['tier'], t['column']))
-        cells = [(t['tier'], t['column'], gicon(t['icon'], 36), int(part[i]) if i < len(part) else 0, t['max_rank']) for i, t in enumerate(tal)]
-        trees.append((tr['name'], sum(int(c) for c in part), cells))
+    trees = talent_tree_dicts(CLS, talent_ranks_from_strings(CLS, CHAR['talents'].split('-')))
     return Section('Talents', Trees(trees), Link('Open in planner &rsaquo;'))
 
 
@@ -856,10 +852,10 @@ input.field{font:400 14px/20px var(--font-body);color:var(--strong)}input.field:
 body .fig.sm .v{font-size:16px;line-height:20px}
 /* the built histogram's axis: 8 px under the plot, 13/20 (DpsDistribution) */
 body .hist .ax{padding-top:8px;line-height:20px}
-/* Trees (ws_prims) with the built TreeGrid's roles: the row boxes take no part in the grid, the talent box is a block */
-.trees .tg>[role=row]{display:contents}.trees .tc{display:block}
+/* the read-only trees (ws_prims TalentTreesAll) shrink in their column */
+.tt-trees{min-width:0}
 /* the built Section's body starts 12 px under its hairline (ui/Section.svelte); a Plate already has it, open blocks take it here */
-.sec-h+.doll,.sec-h+.trees{margin-top:12px}.sec-h+.two{padding-top:12px}
+.sec-h+.doll,.sec-h+div>.tt-trees{margin-top:12px}.sec-h+.two{padding-top:12px}
 .gear-foot{line-height:20px}
 /* the built Section head wraps its action under a long meta (gap-y 4 px); a Row is --row-h, 58 px (spec 2026-11-05 P4) */
 body .sec-h{flex-wrap:wrap;row-gap:4px}body .sec-h .act{line-height:21px}body .row{min-height:58px}body .sec-h+.rows{margin-top:12px}

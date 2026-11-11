@@ -15,7 +15,6 @@
     BUFF_PRESETS,
     DURATIONS,
     MAX_TARGETS,
-    durationLabel,
     styleIdOf,
     withDuration,
     withPreset,
@@ -26,6 +25,7 @@
   } from '../../lib/sim/settings';
   import { FIGHT_STYLES, fightStyle } from '../../lib/sim/styles';
   import type { ControlGroup } from '../../lib/ui/primitives';
+  import { clockSeconds } from '../../lib/format/duration';
   import Button from '../ui/Button.svelte';
   import ControlBar from '../ui/ControlBar.svelte';
 
@@ -99,7 +99,7 @@
       options: [
         ...(DURATIONS.includes(settings.encounter.duration_sec) ? [] : [settings.encounter.duration_sec]),
         ...DURATIONS,
-      ].map((seconds) => ({ value: String(seconds), label: durationLabel(seconds) })),
+      ].map((seconds) => ({ value: String(seconds), label: clockSeconds(seconds) })),
     },
     {
       label: copy.bar.targets,
@@ -134,7 +134,7 @@
 
   const buffsWord = $derived(copy.bar.buffOptions[settings.preset] ?? settings.preset);
   const summary = $derived(
-    `${simCopy.styleLabel[styleId] ?? simCopy.styleCustom} ${durationLabel(settings.encounter.duration_sec)} · ${buffsWord}`,
+    `${simCopy.styleLabel[styleId] ?? simCopy.styleCustom} ${clockSeconds(settings.encounter.duration_sec)} · ${buffsWord}`,
   );
 
   function onchange(param: string, value: string): void {

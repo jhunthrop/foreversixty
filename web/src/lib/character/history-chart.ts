@@ -4,7 +4,7 @@
 // pixel geometry, readouts and notes out. The component draws; nothing here touches the DOM.
 import { utcDayMonthYear } from '../dates';
 import { difficultyLabel } from '../difficulty';
-import { percentileToken } from '../report/format';
+import { parseText, percentileToken } from '../report/format';
 import { SCORE_MAX, TIER_FROM, shortDate, tierColor, tierLabel, tierTextColor } from '../score/score';
 import type { Tier } from '../score/score';
 import {
@@ -359,7 +359,8 @@ export interface ParseKill {
   time: number;
   parse: number;
   /** The whole number the page writes; `parse` keeps the percentile for geometry and colour. */
-  rounded: number;
+  /** The parse as every parse figure reads it: floored (lib/report/format.ts parseText). */
+  floored: number;
   key: string;
   /** The percentile colour ladder's token. */
   color: string;
@@ -378,7 +379,7 @@ export function buildParseChart(encounter: HistoryEncounter | undefined, size: C
     at: kill.at,
     time: Date.parse(kill.at),
     parse: kill.parse_percentile,
-    rounded: Math.round(kill.parse_percentile),
+    floored: Number(parseText(kill.parse_percentile)),
     key: fightKey(kill.report_id, kill.fight_index),
     color: percentileToken(kill.parse_percentile),
   }));
@@ -401,7 +402,7 @@ export function buildParseChart(encounter: HistoryEncounter | undefined, size: C
       },
       size,
     ),
-    change: netChange(kills[0].rounded, kills[kills.length - 1].rounded, utcDate(kills[0].at)),
+    change: netChange(kills[0].floored, kills[kills.length - 1].floored, utcDate(kills[0].at)),
   };
 }
 
@@ -436,11 +437,11 @@ export function parseReadout(kills: readonly ParseKill[], index: number): Readou
   const kill = kills[index];
   const detail = historyCopy.parseDetail(utcDayMonthYear(kill.at), index + 1, kills.length);
   return {
-    value: String(kill.rounded),
+    value: String(kill.floored),
     word: historyCopy.parseWord,
     detail,
     color: kill.color,
-    text: `${kill.rounded} ${historyCopy.parseWord} · ${detail}`,
+    text: `${kill.floored} ${historyCopy.parseWord} · ${detail}`,
   };
 }
 
@@ -538,5 +539,5 @@ export function scoreSrRows(chart: ScoreChart, gaps: readonly HistoryGap[]): SrR
 }
 
 export function parseSrRows(chart: ParseChart): SrRow[] {
-  return chart.kills.map((kill) => ({ text: utcDayMonthYear(kill.at), value: String(kill.rounded) }));
+  return chart.kills.map((kill) => ({ text: utcDayMonthYear(kill.at), value: String(kill.floored) }));
 }

@@ -178,7 +178,7 @@ describe('the rows', () => {
       '/character/us/pvp/bo',
     ]);
     expect(rows[0].querySelector('img')?.getAttribute('src')).toBe('/icons/hd/crests/mage.webp');
-    expect(rows[0].style.getPropertyValue('--c')).toBe('#3fc7eb');
+    expect(rows[0].style.getPropertyValue('--c')).toBe('var(--color-class-mage)');
     expect(rows[0].querySelector('.typeahead-name')?.textContent).toBe('Bolt');
     expect(rows[0].querySelector('.typeahead-detail')?.textContent).toBe('Fire Mage · 60');
     expect(rows[0].querySelector('.typeahead-realm')?.textContent).toBe('US Normal');

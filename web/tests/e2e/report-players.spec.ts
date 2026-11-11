@@ -192,7 +192,7 @@ test.describe('a beta-log report', () => {
   }) => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=3`);
-    await expect(page.getByTestId('report-title')).toHaveText(/^26 Sept? 2026 · 4 fights$/);
+    await expect(page.getByTestId('report-title')).toHaveText(/^26 Sep 2026 · 4 fights$/);
     const option = (index: number) =>
       page.locator(`select[data-testid="report-fight"] option[value="${index}"]`);
     await expect(option(1)).toHaveText('Trash · 0:06');

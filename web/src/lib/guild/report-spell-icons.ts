@@ -8,6 +8,7 @@
 import fallbacks from '../../data/spell-icon-fallbacks.json';
 import { isRealIcon } from '../icons/placeholder';
 import { dataUrl, loadOptional } from '../planner/load';
+import { iconUrl } from '../ui/assets';
 
 /** A spell's icon url: by id, then by name and school when the caller has them. */
 export type SpellIconOf = (spellId: number | null, name?: string, school?: number) => string | null;
@@ -57,10 +58,9 @@ export function spellIconOf(
   return (spellId, name, school) => {
     if (spellId === null) return null;
     if (!chain) {
-      const stem = table[String(spellId)];
-      return stem !== undefined && isRealIcon(stem) ? dataUrl(build, `icons/${stem}.webp`) : null;
+      return iconUrl(build, table[String(spellId)]);
     }
-    return dataUrl(build, `icons/${spellIconStem(table, byName, spellId, name, school)}.webp`);
+    return iconUrl(build, spellIconStem(table, byName, spellId, name, school));
   };
 }
 

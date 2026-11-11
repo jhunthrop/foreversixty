@@ -6,8 +6,8 @@
 // the build's races whatever the planner tests run against, so it never reads them there.
 import type { ClassRow, Combo, RaceRow } from '../planner/types';
 import { buildIconExists } from '../data/build-files';
-import { dataUrl } from '../planner/load';
 import { readBuildJson, requireBuildJson } from './build-files';
+import { catalogueIconUrl } from '../ui/assets';
 
 interface BuildReference {
   classes: readonly ClassRow[];
@@ -72,6 +72,6 @@ export function raceIconsFor(build: string): ReadonlyMap<string, string> {
   return new Map(
     Object.entries(file)
       .filter(([, icon]) => buildIconExists(build, icon))
-      .map(([slug, icon]) => [slug, dataUrl(build, `icons/${icon}.webp`)]),
+      .map(([slug, icon]) => [slug, catalogueIconUrl(build, icon)]),
   );
 }

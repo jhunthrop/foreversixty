@@ -5,9 +5,10 @@
 // consumable its item tooltip when the guide's tooltip data carries them. Each list is one
 // block with its label: past the prose a whole block wraps under it (lib/ui/reading-wrap.ts),
 // never rows parted from their heading.
+import SpellIcon from '../ui/SpellIcon.astro';
 import LaneBlock from '../ui/LaneBlock.svelte';
 import Row from '../ui/Row.svelte';
-import { dataUrl } from '../../lib/planner/load';
+import { iconUrl } from '../../lib/ui/assets';
 import { guidesCopy } from '../../lib/guides/copy';
 import {
   consumableLines,
@@ -50,18 +51,7 @@ const groups = consumableLines(extras.consumables).reduce<ConsumableGroup[]>((ou
       <div class="guide-extras-rows">
         {mergedEnchants(extras.enchants).map((row) => (
           <Row title={row.name} sub={row.slotLabel} density="slim" open testid={`guide-enchant-${row.slot}`}>
-            {row.icon !== undefined && (
-              <img
-                slot="lead"
-                src={dataUrl(build, `icons/${row.icon}.webp`)}
-                alt=""
-                width="28"
-                height="28"
-                loading="lazy"
-                decoding="async"
-                class="guide-extras-icon ui-socket"
-              />
-            )}
+            {row.icon !== undefined && <SpellIcon slot="lead" url={iconUrl(build, row.icon)} size={28} />}
             <span
               slot="titleContent"
               class:list={[enchantKey(row.id) !== undefined && 'gtip guide-extras-tip']}
@@ -86,18 +76,7 @@ const groups = consumableLines(extras.consumables).reduce<ConsumableGroup[]>((ou
             open
             testid={`guide-consumable-${row.id}`}
           >
-            {row.icon !== undefined && (
-              <img
-                slot="lead"
-                src={dataUrl(build, `icons/${row.icon}.webp`)}
-                alt=""
-                width="28"
-                height="28"
-                loading="lazy"
-                decoding="async"
-                class="guide-extras-icon ui-socket"
-              />
-            )}
+            {row.icon !== undefined && <SpellIcon slot="lead" url={iconUrl(build, row.icon)} size={28} />}
             <span
               slot="titleContent"
               class:list={[consumableItem(row.id) !== undefined && 'gtip guide-extras-tip']}
@@ -123,14 +102,7 @@ const groups = consumableLines(extras.consumables).reduce<ConsumableGroup[]>((ou
     display: flex;
     flex-direction: column;
   }
-  /* The icon's frame: a file that does not load shows the dark socket every missing icon shows.
-     A row with no icon has no lead at all, so no empty square sits in its gutter. */
-  .guide-extras-icon {
-    display: block;
-    width: 28px;
-    height: 28px;
-    border-radius: var(--radius-icon);
-  }
+  /* A row with no icon has no lead at all, so no empty square sits in its gutter. */
   .guide-extras-tip {
     position: relative;
     cursor: pointer;

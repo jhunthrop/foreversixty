@@ -145,7 +145,7 @@ describe('the needs line deadline', () => {
   });
 
   it('names the raid’s weekday', () => {
-    expect(nextRaidDeadline(raidDeadlineStart(next({ zone_kind: 'raid' })), 'en-US', CHICAGO)).toBe(
+    expect(nextRaidDeadline(raidDeadlineStart(next({ zone_kind: 'raid' })), CHICAGO)).toBe(
       'before Wednesday',
     );
   });
@@ -153,7 +153,7 @@ describe('the needs line deadline', () => {
   it('falls back when a dungeon run or an event leads the band', () => {
     const run = next({ zone_kind: 'dungeon', zone: 'dungeon:the-deadmines' });
     expect(raidDeadlineStart(run)).toBeUndefined();
-    expect(nextRaidDeadline(raidDeadlineStart(run), 'en-US', CHICAGO)).toBe('before the next raid');
+    expect(nextRaidDeadline(raidDeadlineStart(run), CHICAGO)).toBe('before the next raid');
     expect(raidDeadlineStart(null)).toBeUndefined();
   });
 });

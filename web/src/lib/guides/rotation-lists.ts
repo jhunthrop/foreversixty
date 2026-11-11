@@ -12,6 +12,8 @@ import { repoRoot, spellIcons } from '../data/build-files';
 import { aplGates, gateWords, type AplGate } from '../bis/apl-gates';
 import type { RacialCooldown } from './race-table';
 import { guidesCopy } from './copy';
+import { spokenDuration } from '../format/duration';
+import { upperFirst } from '../text';
 
 export interface RotationItem {
   /** Absent for a step that names no spell ("Then follow the priority list"). */
@@ -68,10 +70,6 @@ function isNode(value: unknown): value is Node {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function upperFirst(text: string): string {
-  return text === '' ? text : text[0]!.toUpperCase() + text.slice(1);
-}
-
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -108,15 +106,6 @@ export function clauseOf(note: string, name: string): string {
     }
   }
   return upperFirst(text);
-}
-
-/** "30 s", "2 min", "1 min 30 s". */
-export function formatCooldown(ms: number): string {
-  const seconds = Math.round(ms / 1000);
-  if (seconds < 60) return `${seconds} s`;
-  const minutes = Math.floor(seconds / 60);
-  const rest = seconds % 60;
-  return rest === 0 ? `${minutes} min` : `${minutes} min ${rest} s`;
 }
 
 /** The in-game panel's shorthand (curated `panel_when`, sized for the addon's line) in the page's
@@ -387,7 +376,7 @@ export function rotationListsFrom(
     if (cooldownMs < COOLDOWN_FLOOR_MS || seen.has(item.name)) continue;
     seen.add(item.name);
     // The cooldown alone: the priority row above already says when to press it (h-guide-spec).
-    cooldowns.push({ ...item, clause: `${formatCooldown(cooldownMs)} cooldown` });
+    cooldowns.push({ ...item, clause: `${spokenDuration(cooldownMs)} cooldown` });
   }
   for (const item of extraCooldowns) {
     if (seen.has(item.name)) continue;
@@ -741,7 +730,7 @@ export function specCooldowns(
         facts?.icon ??
         iconFor(build, spellIcons(build)[String(top.id)]) ??
         iconFor(build, talentIcons.get(spell.name)),
-      clause: `${formatCooldown(cooldownMs)} cooldown`,
+      clause: `${spokenDuration(cooldownMs)} cooldown`,
       cooldownMs,
       lit: isTalent,
     });
@@ -759,7 +748,7 @@ export function specCooldowns(
       name: talent.name,
       rank: facts?.rank,
       icon: facts?.icon ?? iconFor(build, talent.icon),
-      clause: `${formatCooldown(cooldownMs)} cooldown`,
+      clause: `${spokenDuration(cooldownMs)} cooldown`,
       cooldownMs,
       lit: true,
     });

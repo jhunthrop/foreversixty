@@ -3,7 +3,8 @@
 <svelte:options css="injected" />
 
 <script lang="ts">
-  import { tooltipLeftPx } from '../../lib/items/tooltip-position';
+  import { tick } from 'svelte';
+  import { positionTooltipPanel } from '../../lib/items/tooltip-position';
   import {
     drawsTalent,
     holdsPoint,
@@ -11,17 +12,20 @@
     orderIndices,
     type PointOrderRow,
   } from '../../lib/ui/point-order';
-  import { isPlaceholderIcon, talentTipSide, talentTipSideLeft } from '../../lib/ui/talent-editor';
-  import TalentTip from './TalentTip.svelte';
+  import { isPlaceholderIcon } from '../../lib/ui/talent-tree';
+  import GameTooltip from '../GameTooltip.svelte';
 
   let {
     rows,
     capAfter = -1,
     capText = '',
     markers = ORDER_MARKERS,
+    build,
     testid,
   }: {
     rows: readonly PointOrderRow[];
+    /** The data build the tooltip's icon comes from. */
+    build: string;
     /** The row index the character's level line follows; -1 for none. */
     capAfter?: number;
     capText?: string;
@@ -38,21 +42,16 @@
     broken = new Set([...broken, index]);
   }
 
-  // The open talent tooltip: its socket (`r-s`) and where it sits, beside the socket when there is
-  // room (as the client's), else under it inside the viewport.
-  const TIP_WIDTH = 300;
-  let tip = $state<{ key: string; left: number; beside: boolean } | null>(null);
+  // The open talent tooltip's socket (`r-s`): the site's one game tooltip, placed by the one rule
+  // (beside the socket when there is room, as the client's, else under or over it).
+  let tip = $state<string | null>(null);
   function openTip(key: string, event: Event): void {
-    const box = (event.currentTarget as HTMLElement).getBoundingClientRect();
-    const width = document.documentElement.clientWidth;
-    const side = talentTipSide(box.left, box.right, TIP_WIDTH, width);
-    tip =
-      side === null
-        ? { key, left: tooltipLeftPx('start', box.left, box.width, width, TIP_WIDTH), beside: false }
-        : { key, left: talentTipSideLeft(side, box.width, TIP_WIDTH), beside: true };
+    const host = event.currentTarget as HTMLElement;
+    tip = key;
+    void tick().then(() => positionTooltipPanel(host));
   }
   function closeTip(key: string): void {
-    if (tip?.key === key) tip = null;
+    if (tip === key) tip = null;
   }
 </script>
 
@@ -91,6 +90,7 @@
               aria-label={slot.name}
               title={slot.tip === undefined ? slot.name : undefined}
               data-kind={slot.kind}
+              data-tip-beside
               data-testid={holdsPoint(slot) ? `order-point-${index}` : `order-ahead-${r * 10 + s}`}
               onmouseenter={(event) => slot.tip && openTip(key, event)}
               onmouseleave={() => closeTip(key)}
@@ -113,15 +113,8 @@
                 <span class="ic" aria-hidden="true"></span>
               {/if}
               {#if slot.rank !== undefined}<b>{slot.rank}</b>{/if}
-              {#if slot.tip && tip?.key === key}
-                <span class="po-tip" class:beside={tip.beside} style:left={`${tip.left}px`}>
-                  <TalentTip
-                    name={slot.tip.name}
-                    rankLine={slot.tip.rankLine}
-                    now={slot.tip.now}
-                    nextLabel=""
-                  />
-                </span>
+              {#if slot.tip && tip === key}
+                <GameTooltip model={slot.tip} {build} id={`order-tip-${key}`} />
               {/if}
             </span>
           {:else}
@@ -230,16 +223,6 @@
   .ah b {
     color: var(--color-muted);
     opacity: 0.7;
-  }
-  .po-tip {
-    position: absolute;
-    top: calc(100% + 8px);
-    z-index: 30;
-    width: 300px;
-    text-align: left;
-  }
-  .po-tip.beside {
-    top: 0;
   }
   .pl::after {
     content: '';

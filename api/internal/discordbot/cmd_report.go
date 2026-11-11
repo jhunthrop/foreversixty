@@ -10,6 +10,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 const (
@@ -25,8 +26,6 @@ const (
 	fieldValueMax = 1024
 	// reportAnchor is the raid page's report section.
 	reportAnchor = "#report"
-	// raidTitleDate is "Thursday 10 December", in the guild's raid zone.
-	raidTitleDate = "Monday 2 January"
 )
 
 // cmdReport answers /report: the last done raid's report (or the named one), ephemeral, with
@@ -133,9 +132,9 @@ const guildFooter = "{Guild} · Forever Sixty"
 func raidTitle(title string, startsAt time.Time, zone *string) string {
 	loc := time.UTC
 	if zone != nil {
-		loc = raidLocation(*zone)
+		loc = textfmt.Location(*zone)
 	}
-	return memberText(title) + lineJoin + startsAt.In(loc).Format(raidTitleDate)
+	return memberText(title) + lineJoin + textfmt.LongDay(startsAt, loc)
 }
 
 // reportHead is the report's main embed: the night line and kill order, and for a member the
@@ -197,7 +196,7 @@ func tallyClauses(kills, wipes, deaths int, durationMS int64) []string {
 		}
 	}
 	if durationMS > 0 {
-		parts = append(parts, notify.NightLength(time.Duration(durationMS)*time.Millisecond))
+		parts = append(parts, textfmt.Duration(time.Duration(durationMS)*time.Millisecond))
 	}
 	return parts
 }
@@ -228,8 +227,8 @@ func killLines(kills []guilds.KillOrderView) []string {
 	return out
 }
 
-// killClock is notify.KillClock over milliseconds.
-func killClock(ms int64) string { return notify.KillClock(time.Duration(ms) * time.Millisecond) }
+// killClock is textfmt.FightClock over milliseconds.
+func killClock(ms int64) string { return textfmt.FightClock(time.Duration(ms) * time.Millisecond) }
 
 // boundedLines joins lines inside a field value, dropping the tail that does not fit; "" for none.
 func boundedLines(lines []string) string {
@@ -377,10 +376,10 @@ func (s *Service) autocompleteReport(ctx context.Context, in Interaction) ([]Cho
 	if err != nil {
 		return nil, fmt.Errorf("discordbot: report autocomplete zone: %w", err)
 	}
-	loc := raidLocation(zone)
+	loc := textfmt.Location(zone)
 	out := []Choice{}
 	for _, r := range raids {
-		date := choiceJoin + r.StartsAt.In(loc).Format(raidChoiceDate)
+		date := choiceJoin + textfmt.RaidDay(r.StartsAt, loc)
 		title := truncateRunes(r.Title, maxChoiceRunes-len([]rune(date)))
 		if matches(title, typed) {
 			out = append(out, Choice{Name: title + date, Value: strconv.FormatInt(r.ID, 10)})

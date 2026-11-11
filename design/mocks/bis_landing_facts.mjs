@@ -36,7 +36,7 @@ import { emptyAnswer, landingAnswerCharacter, readyAnswer } from ${src("src/lib/
 import { characterBand } from ${src("src/lib/bis/landing-bands.ts")};
 import { planAnswer } from ${src("src/lib/character-header/answer-plan.ts")};
 import { finishedRunsFor } from ${src("src/lib/character-header/finished-sim-line.ts")};
-import { dayMonth } from ${src("src/lib/guides/guide-header.ts")};
+import { formatDate as dayMonth } from ${src("src/lib/dates.ts")};
 import { answerCopy } from ${src("src/lib/account/answer-copy.ts")};
 import { serverRunsCopy } from ${src("src/lib/sim/server-runs-copy.ts")};
 import { specLabel } from ${src("src/lib/sim/spec-label.ts")};
