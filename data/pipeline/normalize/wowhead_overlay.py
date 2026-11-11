@@ -24,6 +24,7 @@ from pathlib import Path
 
 from pipeline.models import ClassTalents, TalentEntry, TalentRank, TalentTree
 from pipeline.normalize.forever_talents import ForeverTalentError, rank_count, single_prereq
+from pipeline.spelltext_grammar import MID_SENTENCE_SPACES, name_reader_stats
 from pipeline.wowhead_talents import raw_talents_path
 
 logger = logging.getLogger(__name__)
@@ -60,6 +61,11 @@ def clean_description(html: str) -> str:
     shown word follows the number before them, and an embedded tooltip table for talents
     that grant a spell. The planner renders text, so the shown value is kept, the pair
     picks its word by that number, and the embedded table is dropped.
+
+    The payload is Wowhead's rendering, not the game's, so it keeps two things the
+    client-table renderer (`pipeline.spelltext`) cleans: a stat token Wowhead leaves bare
+    (Death Mark's `$mcrit`) is named as that renderer names it, and a mid-sentence double
+    space (Mind Flay's "over 3 sec  and", or one an empty value left) is one space.
     """
     text = _SINGULAR.sub(_resolve_singular, html)
     text = _SINGULAR_ANYWHERE.sub(lambda match: match["many"], text)
@@ -67,8 +73,9 @@ def clean_description(html: str) -> str:
     while previous != text:
         previous, text = text, _INNERMOST_TABLE.sub("", text)
     text = _LINE_BREAK.sub("\n", _COMMENT.sub("", text))
-    text = _BLANK_RUN.sub("\n\n", _TAG.sub("", text))
-    return "\n".join(line.rstrip() for line in text.split("\n")).strip()
+    text = name_reader_stats(_BLANK_RUN.sub("\n\n", _TAG.sub("", text)))
+    lines = (MID_SENTENCE_SPACES.sub(" ", line).rstrip() for line in text.split("\n"))
+    return "\n".join(lines).strip()
 
 
 def load_overlay_payload(build_dir: Path) -> dict | None:
