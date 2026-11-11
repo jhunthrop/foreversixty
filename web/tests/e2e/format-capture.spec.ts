@@ -7,6 +7,7 @@
 // Every page whose dates, clocks, numbers, durations, parses or countdowns changed, full page at
 // 1440 and 390, to design/reviews/2026-11-10-unify-format/<set>/<page>-<width>.jpg.
 import { mkdirSync } from 'node:fs';
+import type { Page } from '@playwright/test';
 import path from 'node:path';
 import { test } from './support/test';
 import { FRAME_PAGES, openFramePage, type FramePage } from './support/frame-pages';
@@ -44,7 +45,7 @@ const PAGES: readonly FramePage[] = [
   ...FRAME_PAGES.filter((framePage) => FRAME_IDS.includes(framePage.id)),
   ...GUILD_TABS.map((id) => ({
     id: `guild-${id.replace('dense-', '')}`,
-    open: (page) => openGuildState(page, id),
+    open: (page: Page) => openGuildState(page, id),
   })),
 ];
 
