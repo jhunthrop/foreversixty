@@ -7,7 +7,7 @@
 //
 // The crests are 128 px lossy WebP (4-7 KB each); the PNGs are gone from public/.
 import { classSlugFromName } from './report/format';
-import { sealFor } from './ui/assets';
+import { sealFor } from './ui/seal';
 import { classColor, isClassSlug, type ClassSlug } from './ui/primitives';
 
 /** The answer boxes' crest (ui/CharacterAnswer `.ui-cans-crest`), painted by the BiS and guide mounts. */

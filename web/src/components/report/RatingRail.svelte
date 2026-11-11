@@ -45,10 +45,7 @@
             titleTone={classTone(classSlugOf(className) ?? '')}
             open
           >
-            {#snippet lead()}<Crest
-                cls={classSlugOf(className) ?? ''}
-                size={28}
-              />{/snippet}
+            {#snippet lead()}<Crest cls={classSlugOf(className) ?? ''} size={28} />{/snippet}
             {#snippet trail()}
               {#if player.insufficient}
                 <span class="text-muted text-[13px]">{ratingCopy.insufficient}</span>

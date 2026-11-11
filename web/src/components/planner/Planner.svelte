@@ -1299,11 +1299,7 @@
       >
         {#snippet crest()}
           <!-- Keyed on mount: hydration keeps the server's src, which is the default class's. -->
-          {#key mounted}<Crest
-              cls={className}
-              size={56}
-              testid="planner-header-crest"
-            />{/key}
+          {#key mounted}<Crest cls={className} size={56} testid="planner-header-crest" />{/key}
         {/snippet}
         {#snippet meta()}
           {#if shared}<span data-testid="planner-shared-meta">{plannerCopy.sharedMeta}</span>{/if}

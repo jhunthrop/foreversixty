@@ -277,11 +277,7 @@
     <!-- aria-disabled marks a disabled field's dimmed face as the disabled control's text. -->
     <span class="sel-face" aria-hidden="true" aria-disabled={disabled ? 'true' : undefined}>
       {#if picked?.icon !== undefined && !loading}
-        <span
-          class="sel-icon"
-          data-kind={picked.icon.kind}
-          style:--sel-quality={qualityBorder(picked.icon)}
-        >
+        <span class="sel-icon" data-kind={picked.icon.kind} style:--sel-quality={qualityBorder(picked.icon)}>
           {#if picked.icon.src !== ''}<img
               src={picked.icon.src}
               alt=""

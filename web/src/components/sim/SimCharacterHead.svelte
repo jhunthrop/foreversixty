@@ -31,11 +31,7 @@
 </script>
 
 <PageHeader title={name} tone={classTone(classSlug)} testid="sim-head" {answer} {actions} {tabs}>
-  {#snippet crest()}<Crest
-      cls={classSlug}
-      size={56}
-      testid="sim-character-class-icon"
-    />{/snippet}
+  {#snippet crest()}<Crest cls={classSlug} size={56} testid="sim-character-class-icon" />{/snippet}
   {#snippet meta()}
     {#each lines as line, index (index)}<span data-testid={index === 0 ? 'sim-head-meta' : 'sim-head-source'}
         >{line}</span

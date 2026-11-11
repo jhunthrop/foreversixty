@@ -128,8 +128,7 @@
           fraction={view.fraction}
           figures={view.figures}
           gap={view.gap}
-        >
-        </RankRow>
+        ></RankRow>
       {/each}
     </RankList>
   </div>

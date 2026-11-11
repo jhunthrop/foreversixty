@@ -161,7 +161,9 @@ describe('RankRow', () => {
 
   it('draws the ringed crest from the class', () => {
     const body = html(RankRow, { ...ROW });
-    expect(body).toMatch(/<span class="ui-rr-lead"><img src="\/icons\/hd\/crests\/warrior.webp"[^>]*class="crest ui-rr-crest/);
+    expect(body).toMatch(
+      /<span class="ui-rr-lead"><img src="\/icons\/hd\/crests\/warrior.webp"[^>]*class="crest ui-rr-crest/,
+    );
   });
 
   it('falls back to gold and no crest without a class, and renders a tag', () => {

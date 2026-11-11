@@ -119,7 +119,9 @@ describe('the crest guard', () => {
     expect(offencesIn(css, '.row-crest {\n  width: 28px;\n  border-radius: 999px;\n}')).toHaveLength(1);
     expect(offencesIn(page, '<style>\n  .x-crest { border-radius: 50%; }\n</style>')).toHaveLength(1);
     expect(offencesIn(page, '<img class="typeahead-crest rounded-full" src={src} alt="" />')).toHaveLength(1);
-    expect(offencesIn(page, '<Crest cls={c} size={28} class="rounded-full" testid="crest" />')).toHaveLength(1);
+    expect(offencesIn(page, '<Crest cls={c} size={28} class="rounded-full" testid="crest" />')).toHaveLength(
+      1,
+    );
     expect(offencesIn(page, 'await putSignup(guildId, raid.id, key, body);')).toHaveLength(1);
     expect(offencesIn(lib, 'this.deps.putSignup(id, raidId, key, body)')).toHaveLength(1);
     expect(offencesIn(page, '<span class="pill pill-sample">{copy.waiting}</span>')).toHaveLength(1);

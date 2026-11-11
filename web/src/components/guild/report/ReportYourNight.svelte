@@ -73,9 +73,7 @@
     {#each waiting as character (character.character_key)}
       <li data-testid="raid-your-night-waiting">
         <Row title={character.name} sub={raidCopy.waitingCharacter} open>
-          {#snippet lead()}<span class="opacity-60"
-              ><Crest cls={character.class} size={32} /></span
-            >{/snippet}
+          {#snippet lead()}<span class="opacity-60"><Crest cls={character.class} size={32} /></span>{/snippet}
         </Row>
       </li>
     {/each}

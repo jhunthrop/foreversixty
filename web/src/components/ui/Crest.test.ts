@@ -7,8 +7,13 @@ import { describe, expect, it } from 'vitest';
 import CrestAstro from './Crest.astro';
 import Crest from './Crest.svelte';
 
-const svelte = (props: { cls: string | null; size: number; eager?: boolean; class?: string; testid?: string }) =>
-  render(Crest, { props }).body;
+const svelte = (props: {
+  cls: string | null;
+  size: number;
+  eager?: boolean;
+  class?: string;
+  testid?: string;
+}) => render(Crest, { props }).body;
 
 describe('Crest', () => {
   it('draws the class crest ringed in its class colour, from a name or a slug', () => {
@@ -33,7 +38,9 @@ describe('Crest', () => {
   });
 
   it('is lazy and low priority by default, eager and decoded with the paint when asked', () => {
-    expect(svelte({ cls: 'mage', size: 28 })).toContain('loading="lazy" fetchpriority="low" decoding="async"');
+    expect(svelte({ cls: 'mage', size: 28 })).toContain(
+      'loading="lazy" fetchpriority="low" decoding="async"',
+    );
     const eager = svelte({ cls: 'mage', size: 28, eager: true });
     expect(eager).toContain('loading="eager"');
     expect(eager).toContain('decoding="sync"');
@@ -48,7 +55,9 @@ describe('Crest', () => {
 
   it('the Astro twin draws the same crest', async () => {
     const container = await AstroContainer.create();
-    const known = await container.renderToString(CrestAstro, { props: { cls: 'hunter', size: 56, eager: true } });
+    const known = await container.renderToString(CrestAstro, {
+      props: { cls: 'hunter', size: 56, eager: true },
+    });
     expect(known).toContain('src="/icons/hd/crests/hunter.webp"');
     expect(known).toContain('class="crest"');
     expect(known).toContain('--c: var(--color-class-hunter); width: 56px; height: 56px;');

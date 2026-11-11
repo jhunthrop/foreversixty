@@ -246,10 +246,7 @@
             phone={`${compact(track.spent)} spent`}
             testid={`resource-${track.guid}-${track.power_type}`}
           >
-            {#snippet icon()}<Crest
-                cls={classSlugOf(classOf.get(track.guid)) ?? ''}
-                size={28}
-              />{/snippet}
+            {#snippet icon()}<Crest cls={classSlugOf(classOf.get(track.guid)) ?? ''} size={28} />{/snippet}
             {#snippet name()}<span style:color={colour}>{splitUnitName(track.name).name}</span>{/snippet}
             {#snippet sub()}
               <!-- A block, so the figures wrap between pairs on a phone (each pair stays whole). -->

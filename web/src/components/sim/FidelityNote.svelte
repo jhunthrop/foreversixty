@@ -17,9 +17,7 @@
 
 {#if fidelity !== null && needsFidelityNote(fidelity)}
   <p class="text-muted text-[13px] {extraClass}" data-testid={testid}>
-    <a href="/sim/specs" class="hover:underline"
-      ><Tag tone="warn">{specStateLabel(fidelity.state)}</Tag></a
-    >
+    <a href="/sim/specs" class="hover:underline"><Tag tone="warn">{specStateLabel(fidelity.state)}</Tag></a>
     {specStateNote(fidelity.state)}
   </p>
 {/if}

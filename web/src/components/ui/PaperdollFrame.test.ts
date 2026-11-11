@@ -2,7 +2,7 @@ import { createRawSnippet } from 'svelte';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { DollCell } from '../../lib/ui/paperdoll';
-import { SEAL } from '../../lib/ui/assets';
+import { SEAL } from '../../lib/ui/seal';
 import PaperdollFrame from './PaperdollFrame.svelte';
 
 const BUILD = '1.60.1.70790';

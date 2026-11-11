@@ -12,9 +12,9 @@ describe('classOption', () => {
     });
   });
 
-  it('a class the log never named keeps the crest slot, empty, and no colour', () => {
+  it('a class the log never named keeps the crest slot with the LX seal, and no colour', () => {
     const option = classOption({ value: 't', label: 'Thalgrit', className: undefined });
-    expect(option.icon).toEqual({ kind: 'crest', src: '' });
+    expect(option.icon).toEqual({ kind: 'crest', src: '/art/seal-flat-tiny-bold.svg' });
     expect(option.colour).toBeUndefined();
   });
 });
