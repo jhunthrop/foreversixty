@@ -125,6 +125,8 @@ def test_tables_cover_every_pipeline_input():
         "SpellShapeshift",
         "SpellItemEnchantment",
         "SpellTargetRestrictions",
+        "SpellDescriptionVariables",
+        "SpellXDescriptionVariables",
         "SpellEquippedItems",
         "ManifestInterfaceData",
         "ItemSet",

@@ -1,25 +1,34 @@
 """Turn a WoW spell description into readable text.
 
 The client stores descriptions with `$`-tokens that the game resolves at
-runtime. We resolve only the tokens whose value is in the tables we fetch:
+runtime. We resolve the tokens whose value is in the tables we fetch:
 
   $s<n> / $S<n>        the displayed value of effect <n> (1-based)
+  $m<n> / $M<n>        the minimum / maximum of effect <n>'s displayed value
   $o<n> / $O<n>        that value times the number of periodic ticks
   $t<n> / $T<n>        effect <n>'s tick period, in seconds
   $d   / $D            the spell's duration
-  $m<n> / $M<n>        the minimum of effect <n>'s displayed value
   $a<n>                effect <n>'s radius, in yards
   $x<n>                how many targets effect <n> chains to
   $q<n>                effect <n>'s misc value (Rebirth's mana: EffectMiscValue_0)
+  $b<n>                effect <n>'s points per combo point (Rip 1079: 5.5)
+  $bc<n>               effect <n>'s bonus coefficient
+  $e<n>                effect <n>'s amplitude (Mana Shield 1463: 2 mana per damage)
+  $f<n>                effect <n>'s chain amplitude (Thornspike 1293183: 0.5 per jump)
   $r                   the spell's maximum range, in yards
   $h                   the chance to proc, as a percentage
   $n / $u              the proc's charges / how high the aura stacks
+  $i                   how many targets the spell hits at most
+  $v                   the highest target level it affects (Mind Soothe 453: 40)
+  $ec<n> / $ecim       the enchantment the spell applies: its n-th amount and the lowest
+                       item level it takes (Heavy Armor Kit 2833: 24 armor, items level
+                       15; Classic Wowhead prints these, the Forever one prints 0)
+  $z                   the reader's home, which the client names as Wowhead does
   $proccooldown        the proc's internal cooldown, in seconds
   $/<divisor>;s<n>     any of the above, divided first
+  $*<factor>;f<n>      any of the above, multiplied first (Execute 5308: `$*10;F1` with
+                       a chain amplitude of 0.3 prints "3 additional damage")
   $<spell id><token>   the same token read off a different spell
-  ${<arithmetic>}      worked out, once every token inside it is a number;
-                       a trailing `.N` is the client's "N decimals"
-  $l<one>:<many>;      the word that agrees with the number before it
   $@spellicon<id>      dropped -- the client shows this spell's own icon
                        graphically; this text-only pipeline has nothing to
                        put in its place
@@ -30,30 +39,61 @@ runtime. We resolve only the tokens whose value is in the tables we fetch:
                        relic/rune "engrave" effect text names the ability
                        it grants this way, e.g. Idol of the Huntress's
                        "$@spellicon439510\n$@spelldesc439510")
+  $@spelltooltip<id>   that spell's name, then its description on the next line
+                       (Feral Charge 1238122 shows Feral Charge (Cat)'s tooltip)
 
-Everything else stays in the string exactly as the client stored it:
-`$?x[..][..]` (conditionals), a token whose table has no row or a zero for
-this spell, and any `${..}` that still holds a token with no value here
-(`$rap`, `$<mult>`). The planner shows the raw token rather than a number
-nobody can source. A `$@spellname`/`$@spelldesc` naming a spell this
-build's own tables have no row for is the one exception logged rather
-than silently left raw (`_substitute_at`'s own doc) -- tenet 8's
-"nothing we cannot verify is shown as fact" applies to a whole missing
-ability the same way it applies to a missing number.
+A `$s<n>` naming an effect the spell does not have reads its first effect, as
+Wowhead's Forever tooltips print it (2026-11-10: Unflinching Morale 1216997
+"$s2%" is 5%, Shifting Power 1322605 "$s2 Energy" is 40, Temporal Acceleration
+367756 "$s3%" is 50%, Charge 22120 "plus $s3" is "plus 0").
+
+Conditions, description variables (`$<name>`), `${..}` arithmetic and plurals are
+`pipeline.spelltext_grammar`'s. What stays in the string exactly as the client
+stored it is a token whose table has no row or a zero for this spell, and any
+`${..}` that still holds a token with no value here. The planner shows the raw
+token rather than a number nobody can source. A `$@spellname`/`$@spelldesc`
+naming a spell this build's own tables have no row for is the one exception
+logged rather than silently left raw (`_substitute_at`'s own doc) -- tenet 8's
+"nothing we cannot verify is shown as fact" applies to a whole missing ability
+the same way it applies to a missing number.
 """
 
 from __future__ import annotations
 
-import ast
 import logging
-import operator
+import math
 import re
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field, replace
 
 from pipeline.csvio import populated
+from pipeline.spelltext_grammar import (
+    COLOUR_ESCAPE,
+    FUNCTIONS,
+    MID_SENTENCE_SPACES,
+    READER_LEVEL,
+    STAT_WORDS,
+    VARIABLE,
+    agree_plurals,
+    drop_unknown_variables,
+    flatten_braces,
+    format_number,
+    matching_brace,
+    parse_variables,
+    resolve_conditions,
+    work_out,
+)
 
 logger = logging.getLogger(__name__)
+
+
+#: Which grammar the shipped descriptions were rendered with. normalize records it in the
+#: build's manifest.json under `SPELLTEXT_MANIFEST_KEY`; bump it with any change that moves
+#: shipped text, so `tests/test_spelltext_contract.py` holds a build to the grammar it was
+#: rendered with and never fails the committed files before the nightly re-renders them.
+#: 2: the full grammar of 2026-11-10 (variables, chained conditions, formulas, variance).
+SPELLTEXT_RENDERER = 2
+SPELLTEXT_MANIFEST_KEY = "spelltext_renderer"
 
 
 class SpellTextError(ValueError):
@@ -62,9 +102,9 @@ class SpellTextError(ValueError):
 
 TOKEN = re.compile(
     r"\$"
-    r"(?:/(?P<divisor>\d+);)?"
+    r"(?:/(?P<divisor>\d+);|\*(?P<multiplier>\d+);)?"
     r"(?P<ref>\d+)?"
-    r"(?P<kind>proccooldown|[sSoOtTdDmMaAxXqQrRhHnNuUiI])"
+    r"(?P<kind>proccooldown|ecim|ec|bc|[sSoOtTdDmMaAxXqQrRhHnNuUiIbBeEfFvVzZ])"
     r"(?P<index>[1-9])?"
     # "$rap" is ranged attack power and "$hp" is health: a longer word is never a short
     # token with letters after it.
@@ -74,42 +114,44 @@ TOKEN = re.compile(
 #: The client writes "always" as a chance over one hundred.
 _CERTAIN = 100
 
-#: `${300/10}`, `${500/-1000}.1`: the braces, then the client's optional decimals suffix. The
-#: suffix is a dot and ONE digit not followed by another, so "by ${30/-10}." keeps its full
-#: stop and "${8*2.5}%" is untouched.
-BRACES = re.compile(r"\$\{(?P<expr>[^{}]*)\}(?:\.(?P<places>\d)(?!\d))?")
-_ARITHMETIC = re.compile(r"[\d\s+\-*/().]+")
-#: `$lpoint:points;` -- and the number it has to agree with, somewhere before it.
-PLURAL = re.compile(
-    r"(?P<number>\d+(?:\.\d+)?)(?P<between>[^$\d]*)"
-    r"\$[lL](?P<one>[^:;]+):(?P<many>[^;]+);"
-)
+#: `.N` after a `${..}`: the client's "N decimals". ONE digit not followed by another, so
+#: "by ${30/-10}." keeps its full stop and "${8*2.5}%" is untouched.
+_PLACES = re.compile(r"\.(?P<places>\d)(?!\d)")
+#: A stat the reader brings, or the reader's level, inside a `${..}`.
+_READER_TOKEN = re.compile(r"\$(?P<name>[A-Za-z]+)(?![\w])")
+#: The reader's level, both spellings the client uses (Divine Aegis 431622 writes `$pl`).
+_LEVEL_TOKENS = frozenset({"PL", "pl"})
+#: The same, in a sentence ("Level $PL target:").
+_LEVEL_IN_TEXT = re.compile(r"\$(?:PL|pl)(?![A-Za-z\d])")
+#: The client's own typo `${$m2$*$<frostdamage>}` (Frostbolt 116): a `$` before an operator.
+_STRAY_DOLLAR = re.compile(r"\$(?=[\s*+\-/()])")
 #: `$@spellicon439510`, `$@spellname439510`, `$@spelldesc439510` -- a
 #: whole other spell referenced by id, never one of this spell's own
 #: effects (`TOKEN`, above, never matches `@`: it is a different
 #: vocabulary, resolved in its own pass -- `SpellText.describe`'s own
 #: doc for the ordering this requires).
-AT_TOKEN = re.compile(r"\$@(?P<kind>spellicon|spellname|spelldesc)(?P<id>\d+)")
+AT_TOKEN = re.compile(r"\$@(?P<kind>spellicon|spellname|spelldesc|spelltooltip)(?P<id>\d+)")
 #: `$ghimself:herself;` -- the client picks by the reader's gender; a page has no reader, so both.
 GENDER = re.compile(r"\$[gG](?P<male>[^:;$]+):(?P<female>[^;$]+);")
-#: `$?pc142418[text][other]` -- a condition on the reader's character the page cannot test, so
-#: the text the client shows a character it does not apply to: the second branch.
-CONDITION = re.compile(r"\$\?[^\[\s]*\[(?P<yes>[^\]]*)\]\[(?P<no>[^\]]*)\]")
-
-_BINARY: dict[type[ast.operator], Callable[[float, float], float]] = {
-    ast.Add: operator.add,
-    ast.Sub: operator.sub,
-    ast.Mult: operator.mul,
-    ast.Div: operator.truediv,
-}
+#: `$z`: the client prints the reader's bind point; Wowhead's Forever tooltip for Astral
+#: Recall (556) prints these words.
+_HOME = "Hearthstone Location"
 
 _MS_PER_SECOND = 1000
 _MS_PER_MINUTE = 60_000
+#: A spell that lasts until its reader ends it (SpellDuration -1): Find Treasure 2481's
+#: "Lasts $d." prints "Lasts until canceled." on Wowhead's Forever tooltip.
+_UNTIL_CANCELLED = "until canceled"
+#: `$o` on a periodic heal or mana return the client stores no tick period for. Wowhead's
+#: Forever tooltips divide its duration by 5.2 sec, on every food and drink checked on
+#: 2026-11-10: Food 433 (17, 18 sec) 59, 434 (58, 21 sec) 234, 435 (115, 24 sec) 531,
+#: 1127 (162, 27 sec) 841; Drink 1135 (332, 30 sec) 1915, 10250 (800, 30 sec) 4615.
+_UNTIMED_PERIOD_MS = 5200
 
 
 @dataclass(frozen=True)
 class Effect:
-    base_points: int
+    base_points: float
     die_sides: int
     period_ms: int
     #: Yards, from SpellRadius through EffectRadiusIndex_0 (else _1). None: no radius.
@@ -118,6 +160,19 @@ class Effect:
     chain_targets: int = 0
     #: EffectMiscValue_0, the `$q` token: a resurrect's mana (Rebirth), and so on.
     misc_value: int = 0
+    #: EffectPointsPerResource, the `$b` token: what one more combo point adds.
+    points_per_resource: float = 0
+    #: EffectBonusCoefficient, `$bc`.
+    bonus_coefficient: float = 0
+    #: EffectAmplitude, `$e`.
+    amplitude: float = 0
+    #: EffectChainAmplitude, `$f`: what each jump keeps.
+    chain_amplitude: float = 0
+    #: The 1.60 client's Variance column: the roll spans base * (1 - v/2) to base * (1 + v/2).
+    variance: float = 0
+    #: EffectRealPointsPerLevel times the levels the reader has over the spell's BaseLevel,
+    #: capped at its MaxLevel (`_level_bonus`).
+    level_bonus: float = 0
 
 
 @dataclass(frozen=True)
@@ -136,81 +191,63 @@ class SpellRow:
     range_max: float | None = None
     #: SpellTargetRestrictions.MaxTargets, the `$i` "up to N enemies"; 0 without a cap.
     max_targets: int = 0
+    #: SpellTargetRestrictions.MaxTargetLevel, the `$v`; 0 without a cap.
+    max_target_level: int = 0
+    #: The SpellDuration row says -1: the spell lasts until cancelled (`_UNTIL_CANCELLED`).
+    until_cancelled: bool = False
+    #: The enchantment an enchant-item effect (53, 54) applies: SpellItemEnchantment's
+    #: EffectPointsMin_0..2 (`$ec<n>`) and ItemLevelMin (`$ecim`).
+    enchant_points: tuple[int, ...] = ()
+    enchant_min_item_level: int = 0
+    #: SpellDescriptionVariables through SpellXDescriptionVariables: `$<name>` -> definition.
+    variables: Mapping[str, str] = field(default_factory=dict)
 
 
-def _format_number(value: float) -> str:
-    if value == int(value):
-        return str(int(value))
-    return f"{value:.3f}".rstrip("0").rstrip(".")
+def _half_up(value: float) -> float:
+    return float(math.floor(value + 0.5))
 
 
-def _evaluate(node: ast.expr) -> float:
-    """Four-function arithmetic over number literals, and nothing else."""
-    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
-        return float(node.value)
-    if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.USub, ast.UAdd)):
-        value = _evaluate(node.operand)
-        return -value if isinstance(node.op, ast.USub) else value
-    if isinstance(node, ast.BinOp) and type(node.op) in _BINARY:
-        return _BINARY[type(node.op)](_evaluate(node.left), _evaluate(node.right))
-    raise ValueError(f"not arithmetic: {ast.dump(node)}")
+def _bounds(effect: Effect, whole: bool) -> tuple[float, float]:
+    """The low and high displayed values for one effect.
 
-
-def _work_out(match: re.Match[str]) -> str:
-    """One `${..}` as its value, or exactly as it stood when it is not all numbers.
-
-    The sign is dropped, as it is for every other token here: the client divides a
-    negative amount by a negative number to show it positive, and the amounts that reach
-    this point have already lost theirs.
+    Era rolls its die (`EffectDieSides`); the 1.60 client spreads the base by its Variance
+    and adds the per-level gain, the variance taken on the base before that gain. Checked
+    against Wowhead's Forever tooltips on 2026-11-10: Frostbolt 116 (19, variance 0.105,
+    0.2 a level over levels 4 to 8) reads 18.8 to 20.8; Revenge 6572 (22, 0.154) 20.3077
+    to 23.6923; Immolate 348 (8, 0.7 a level over 1 to 5) 10.8; Eviscerate 2098 (3, 1.333)
+    1 to 5. A sentence prints whole numbers (`whole`); a formula keeps the fractions.
     """
-    expr = match["expr"]
-    if not _ARITHMETIC.fullmatch(expr):
-        return match[0]
-    try:
-        value = abs(_evaluate(ast.parse(expr.strip(), mode="eval").body))
-    except (SyntaxError, ValueError, ZeroDivisionError):
-        return match[0]
-    if match["places"] is None:
-        return _format_number(value)
-    return _format_number(round(value, int(match["places"])))
-
-
-def _agree(match: re.Match[str]) -> str:
-    word = match["one"] if float(match["number"]) == 1 else match["many"]
-    return f"{match['number']}{match['between']}{word}"
-
-
-def _bounds(effect: Effect) -> tuple[int, int]:
-    """The low and high displayed values for one effect."""
     if effect.die_sides > 1:
         return effect.base_points + 1, effect.base_points + effect.die_sides
-    single = effect.base_points + effect.die_sides
-    return single, single
+    single = effect.base_points + effect.die_sides + effect.level_bonus
+    spread = abs(effect.base_points) * effect.variance / 2
+    low, high = single - spread, single + spread
+    return (_half_up(low), _half_up(high)) if whole else (low, high)
 
 
 def _render(low: float, high: float, divisor: int) -> str:
     first, second = sorted((abs(low) / divisor, abs(high) / divisor))
     if first == second:
-        return _format_number(first)
-    return f"{_format_number(first)} to {_format_number(second)}"
+        return format_number(first)
+    return f"{format_number(first)} to {format_number(second)}"
 
 
 def _render_duration(duration_ms: int) -> str:
     if duration_ms >= _MS_PER_MINUTE and duration_ms % _MS_PER_MINUTE == 0:
         return f"{duration_ms // _MS_PER_MINUTE} min"
-    return f"{_format_number(duration_ms / _MS_PER_SECOND)} sec"
+    return f"{format_number(duration_ms / _MS_PER_SECOND)} sec"
 
 
-def _overridden(effects: dict[int, Effect], overrides: Mapping[int, int]) -> dict[int, Effect]:
+def _overridden(effects: dict[int, Effect], overrides: Mapping[int, float]) -> dict[int, Effect]:
     """The overridden effects, keeping each one's tick period.
 
-    Die sides go to zero: a curve names one value per rank, not a spread, so
-    `$s` and `$m` must both render exactly that number.
+    Die sides, variance and the per-level gain go to zero: a curve names one value per
+    rank, not a spread, so `$s` and `$m` must both render exactly that number.
     """
     out: dict[int, Effect] = {}
     for index, value in overrides.items():
         known = effects.get(index, Effect(base_points=0, die_sides=0, period_ms=0))
-        out[index] = replace(known, base_points=value, die_sides=0)
+        out[index] = replace(known, base_points=value, die_sides=0, variance=0, level_bonus=0)
     return out
 
 
@@ -221,12 +258,18 @@ _SPELL_FACTS: dict[str, Callable[[SpellRow], float | None]] = {
     "n": lambda row: row.proc_charges,
     "u": lambda row: row.max_stacks,
     "i": lambda row: row.max_targets,
+    "v": lambda row: row.max_target_level,
+    "ecim": lambda row: row.enchant_min_item_level,
     "r": lambda row: row.range_max,
     "proccooldown": lambda row: row.proc_cooldown_ms / _MS_PER_SECOND,
 }
 _EFFECT_FACTS: dict[str, Callable[[Effect], float | None]] = {
     "x": lambda effect: effect.chain_targets,
     "q": lambda effect: effect.misc_value,
+    "b": lambda effect: effect.points_per_resource,
+    "bc": lambda effect: effect.bonus_coefficient,
+    "e": lambda effect: effect.amplitude,
+    "f": lambda effect: effect.chain_amplitude,
 }
 
 
@@ -241,6 +284,89 @@ def _radius_of(row: SpellRow, index: int) -> float | None:
     return radii.pop() if len(radii) == 1 else None
 
 
+def _effect_of(row: SpellRow, index: int) -> Effect | None:
+    """Effect <index>, or the spell's first effect when it has no such effect (module doc)."""
+    return row.effects.get(index) or row.effects.get(0)
+
+
+@dataclass(frozen=True)
+class _Amount:
+    """One token's value: a low and high number, or a sentence-ready word."""
+
+    low: float
+    high: float
+    #: Duration tokens print in their own unit ("18 sec") outside a formula.
+    duration_ms: int | None = None
+
+
+def _amount(
+    row: SpellRow, kind: str, upper: bool, index: int, whole: bool = True
+) -> _Amount | None:
+    """What one token on `row` stands for, before any divisor; None when the tables say nothing."""
+    if kind in _SPELL_FACTS:
+        value = _SPELL_FACTS[kind](row)
+        return _Amount(value, value) if value else None
+    if kind == "ec":
+        points = row.enchant_points[index] if index < len(row.enchant_points) else 0
+        return _Amount(points, points) if points else None
+    if kind == "d":
+        if row.duration_ms is None:
+            return None
+        return _Amount(row.duration_ms, row.duration_ms, duration_ms=row.duration_ms)
+    if kind == "a":
+        radius = _radius_of(row, index)
+        if radius is None and not any(e.radius for e in row.effects.values()):
+            # Wowhead's Forever tooltip prints a radius the spell has none of as 0: Cloud
+            # of Chained Essence 12766 "a 0 yard radius".
+            radius = 0.0
+        return _Amount(radius, radius) if radius is not None else None
+    effect = _effect_of(row, index)
+    if effect is None:
+        return None
+    if kind in _EFFECT_FACTS:
+        value = _EFFECT_FACTS[kind](effect)
+        return _Amount(value, value) if value else None
+    if kind == "t":
+        period = effect.period_ms / _MS_PER_SECOND
+        return _Amount(period, period) if period > 0 else None
+    low, high = _bounds(effect, whole)
+    if kind == "o":
+        if row.duration_ms is None:
+            return None
+        if effect.period_ms > 0:
+            ticks: float = row.duration_ms // effect.period_ms
+        else:
+            ticks = row.duration_ms / _UNTIMED_PERIOD_MS
+        low, high = low * ticks, high * ticks
+        if whole:
+            low, high = _half_up(low), _half_up(high)
+    if kind == "m":
+        low, high = (high, high) if upper else (low, low)
+    return _Amount(low, high)
+
+
+def _scale(match: re.Match[str]) -> tuple[int, int]:
+    """A token's `$*N;` multiplier and `$/N;` divisor."""
+    multiplier = int(match["multiplier"]) if match["multiplier"] else 1
+    return multiplier, int(match["divisor"]) if match["divisor"] else 1
+
+
+def _scaled(match: re.Match[str]) -> bool:
+    return bool(match["multiplier"] or match["divisor"])
+
+
+def _with_reader_names(expression: str) -> str:
+    """The reader's level as `READER_LEVEL`, a stat the reader brings as its bare name."""
+
+    def reader(match: re.Match[str]) -> str:
+        name = match["name"]
+        if name in _LEVEL_TOKENS:
+            return str(READER_LEVEL)
+        return name if name in STAT_WORDS or name in FUNCTIONS or name == "cond" else match[0]
+
+    return _READER_TOKEN.sub(reader, expression)
+
+
 class SpellText:
     def __init__(self, spells: dict[int, SpellRow], names: Mapping[int, str] | None = None) -> None:
         self._spells = spells
@@ -252,7 +378,7 @@ class SpellText:
     def describe(
         self,
         spell_id: int,
-        overrides: Mapping[int, int] | None = None,
+        overrides: Mapping[int, float] | None = None,
         *,
         _chain: frozenset[int] = frozenset(),
     ) -> str:
@@ -265,25 +391,33 @@ class SpellText:
         described spell's own effects are overridden -- a `$<id>s1` token
         still reads the referenced spell as the client stores it.
 
+        The passes run in the client's own order of binding: description
+        variables are written in, then conditions pick their branch, then
+        `${..}` is worked out with its tokens as plain numbers, then the
+        remaining tokens print in their sentence form.
+
         `$@spelldesc<id>` (a WHOLE OTHER spell, not one of this spell's own
         effects) is resolved LAST, after every other token pass -- its own
         replacement text is itself a fully-resolved `describe` call, and
-        must never be re-scanned by `TOKEN`/`BRACES` in THIS spell's own
-        context (a bare `$s1` inside it means the REFERENCED spell's first
-        effect, not this one's). `_chain` is this call's own private
-        cycle guard (a `$@spelldesc` loop, however unlikely, must not
-        recurse forever) and is never passed by a caller outside this
-        module.
+        must never be re-scanned by `TOKEN` in THIS spell's own context (a
+        bare `$s1` inside it means the REFERENCED spell's first effect, not
+        this one's). `_chain` is this call's own private cycle guard (a
+        `$@spelldesc` loop, however unlikely, must not recurse forever) and
+        is never passed by a caller outside this module.
         """
         row = self._spells.get(spell_id)
         if row is None:
             return ""
         if overrides:
             row = replace(row, effects={**row.effects, **_overridden(row.effects, overrides)})
-        resolved = TOKEN.sub(lambda match: self._substitute(row, match), row.description)
-        resolved = PLURAL.sub(_agree, BRACES.sub(_work_out, resolved))
+        resolved = resolve_conditions(self._write_in_variables(row, row.description))
+        resolved = self._work_out_braces(row, resolved)
+        resolved = TOKEN.sub(lambda match: self._substitute(row, match), resolved)
+        resolved = _LEVEL_IN_TEXT.sub(str(READER_LEVEL), resolved)
+        resolved = agree_plurals(resolved)
         resolved = GENDER.sub(lambda m: f"{m['male']} or {m['female']}", resolved)
-        resolved = CONDITION.sub(lambda m: m["no"], resolved).rstrip()
+        resolved = COLOUR_ESCAPE.sub("", drop_unknown_variables(resolved))
+        resolved = MID_SENTENCE_SPACES.sub(" ", resolved).rstrip()
         chain = _chain | {spell_id}
         return AT_TOKEN.sub(lambda match: self._substitute_at(match, chain), resolved)
 
@@ -291,8 +425,79 @@ class SpellText:
         row = self._spells.get(spell_id)
         return row.icon_file_id if row else 0
 
+    def _write_in_variables(
+        self, row: SpellRow, text: str, seen: frozenset[str] = frozenset()
+    ) -> str:
+        """Each `$<name>` as its own definition, worked out first, as a `${..}`."""
+
+        def value(match: re.Match[str]) -> str:
+            name = match["name"]
+            definition = row.variables.get(name)
+            if definition is None or name in seen:
+                return match[0]
+            written = resolve_conditions(self._write_in_variables(row, definition, seen | {name}))
+            written = written.strip()
+            if written.startswith("${") and matching_brace(written, 1) == len(written) - 1:
+                return written
+            return f"${{{written}}}"
+
+        return VARIABLE.sub(value, text)
+
+    def _work_out_braces(self, row: SpellRow, text: str) -> str:
+        """Every top-level `${..}`, worked out with its tokens as numbers."""
+        out: list[str] = []
+        cursor = 0
+        while (start := text.find("${", cursor)) >= 0:
+            end = matching_brace(text, start + 1)
+            if end < 0:
+                break
+            places = _PLACES.match(text, end + 1)
+            expression = self._as_numbers(row, flatten_braces(text[start + 2 : end]))
+            worked = work_out(
+                _with_reader_names(expression),
+                int(places["places"]) if places else None,
+                STAT_WORDS,
+            )
+            out.append(text[cursor:start])
+            if worked is None:
+                out.append(f"${{{expression}}}")
+                cursor = end + 1
+            else:
+                out.append(worked)
+                cursor = places.end() if places else end + 1
+        out.append(text[cursor:])
+        return "".join(out)
+
+    def _as_numbers(self, row: SpellRow, expression: str) -> str:
+        """A formula's tokens as plain numbers (a duration in seconds)."""
+        expression = _STRAY_DOLLAR.sub("", expression)
+        return TOKEN.sub(lambda match: self._number(row, match), expression)
+
+    def _target(self, row: SpellRow, match: re.Match[str]) -> SpellRow | None:
+        if not match["ref"]:
+            return row
+        return self._spells.get(int(match["ref"]))
+
+    def _number(self, row: SpellRow, match: re.Match[str]) -> str:
+        """One token inside a formula: its signed value (a duration in seconds)."""
+        target = self._target(row, match)
+        kind = match["kind"]
+        if target is None or kind.lower() == "z":
+            return match[0]
+        index = int(match["index"] or 1) - 1
+        amount = _amount(target, kind.lower(), kind == "M", index, whole=False)
+        if amount is None:
+            return match[0]
+        # `$s` in a formula is the roll's middle; `$m` and `$M` already chose their end.
+        value = (amount.low + amount.high) / 2
+        if amount.duration_ms is not None and not _scaled(match):
+            value = amount.duration_ms / _MS_PER_SECOND
+        multiplier, divisor = _scale(match)
+        number = format_number(value * multiplier / divisor)
+        return number if value >= 0 else f"({number})"
+
     def _substitute_at(self, match: re.Match[str], chain: frozenset[int]) -> str:
-        """One `$@spellicon`/`$@spellname`/`$@spelldesc<id>` token --
+        """One `$@spellicon`/`$@spellname`/`$@spelldesc`/`$@spelltooltip<id>` token --
         `describe`'s own doc for why this runs after every other
         substitution, never before."""
         kind = match["kind"]
@@ -312,64 +517,48 @@ class SpellText:
                 )
                 return match[0]
             return name
-        # spelldesc.
+        # spelldesc and spelltooltip.
         if spell_id in chain:
             logger.warning(
-                "spelltext: $@spelldesc%d cycles back to a spell already being "
+                "spelltext: $@%s%d cycles back to a spell already being "
                 "described (%s); leaving the raw token",
+                kind,
                 spell_id,
                 sorted(chain),
             )
             return match[0]
         if spell_id not in self._spells:
+            # Wowhead's Forever tooltip prints nothing for a spell the client lacks: Libram
+            # of Banishment 211472's "Engrave your pants with the Aura Mastery rune:" stops
+            # there (its rune 407624 is a Season of Discovery spell).
             logger.warning(
-                "spelltext: $@spelldesc%d names a spell this build has no row for; "
-                "leaving the raw token",
+                "spelltext: $@%s%d names a spell this build has no row for; dropping it",
+                kind,
                 spell_id,
             )
-            return match[0]
-        return self.describe(spell_id, _chain=chain)
+            return ""
+        description = self.describe(spell_id, _chain=chain)
+        name = self._names.get(spell_id)
+        if kind == "spelltooltip" and name:
+            return f"{name}\r\n{description}"
+        return description
 
     def _substitute(self, row: SpellRow, match: re.Match[str]) -> str:
-        target = row
-        if match["ref"]:
-            referenced = self._spells.get(int(match["ref"]))
-            if referenced is None:
-                return match[0]
-            target = referenced
-        divisor = int(match["divisor"]) if match["divisor"] else 1
-        kind = match["kind"].lower()
-        if kind in _SPELL_FACTS:
-            value = _SPELL_FACTS[kind](target)
-            return match[0] if not value else _render(value, value, divisor)
-        if kind == "d":
-            if target.duration_ms is None:
-                return match[0]
-            if match["divisor"]:
-                return _render(target.duration_ms, target.duration_ms, divisor)
-            return _render_duration(target.duration_ms)
-        if kind == "a":
-            radius = _radius_of(target, int(match["index"] or 1) - 1)
-            return match[0] if not radius else _render(radius, radius, divisor)
-        effect = target.effects.get(int(match["index"] or 1) - 1)
-        if effect is None:
+        target = self._target(row, match)
+        if target is None:
             return match[0]
-        if kind in _EFFECT_FACTS:
-            value = _EFFECT_FACTS[kind](effect)
-            return match[0] if not value else _render(value, value, divisor)
-        if kind == "t":
-            if effect.period_ms <= 0:
-                return match[0]
-            return _render(effect.period_ms, effect.period_ms, divisor * _MS_PER_SECOND)
-        low, high = _bounds(effect)
-        if kind == "o":
-            if target.duration_ms is None or effect.period_ms <= 0:
-                return match[0]
-            ticks = target.duration_ms // effect.period_ms
-            low, high = low * ticks, high * ticks
-        if kind == "m":
-            high = low
-        return _render(low, high, divisor)
+        kind = match["kind"]
+        if kind.lower() == "z":
+            return _HOME
+        if kind.lower() == "d" and target.until_cancelled:
+            return _UNTIL_CANCELLED
+        amount = _amount(target, kind.lower(), kind == "M", int(match["index"] or 1) - 1)
+        if amount is None:
+            return match[0]
+        if amount.duration_ms is not None and not _scaled(match):
+            return _render_duration(amount.duration_ms)
+        multiplier, divisor = _scale(match)
+        return _render(amount.low * multiplier, amount.high * multiplier, divisor)
 
 
 def _base_points(row: dict[str, str]) -> int:
@@ -448,7 +637,7 @@ def effect_amount(row: dict[str, str]) -> int:
 
 @dataclass(frozen=True)
 class ExtraRows:
-    """The tables behind the proc, radius, range and `$@spellname` tokens.
+    """The tables behind the proc, radius, range, target, variable and `$@spellname` tokens.
 
     Optional as a group: a build fetched before they were on the list normalizes exactly as
     it did, with those tokens left raw (`$@spellname`/`$@spelldesc` warn and stay raw too --
@@ -461,12 +650,20 @@ class ExtraRows:
     range: list[dict[str, str]] = field(default_factory=list)
     #: `SpellName.csv`'s own `ID, Name_lang` rows, for `$@spellname<id>`.
     names: list[dict[str, str]] = field(default_factory=list)
-    #: `SpellTargetRestrictions.csv`, for `$i`.
+    #: `SpellTargetRestrictions.csv`, for `$i` and `$v`.
     target_restrictions: list[dict[str, str]] = field(default_factory=list)
+    #: `SpellDescriptionVariables.csv` (ID, Variables), for `$<name>`.
+    description_variables: list[dict[str, str]] = field(default_factory=list)
+    #: `SpellXDescriptionVariables.csv` (SpellID -> SpellDescriptionVariablesID).
+    spell_description_variables: list[dict[str, str]] = field(default_factory=list)
+    #: `SpellLevels.csv`, for the per-level gain an effect adds (`_level_bonus`).
+    levels: list[dict[str, str]] = field(default_factory=list)
+    #: `SpellItemEnchantment.csv`, for `$ec<n>` and `$ecim`.
+    item_enchantments: list[dict[str, str]] = field(default_factory=list)
 
 
 def _base_difficulty(rows: list[dict[str, str]]) -> list[dict[str, str]]:
-    return [row for row in rows if row.get("DifficultyID", "0") == "0"]
+    return [row for row in rows if row.get("DifficultyID", "0") in ("0", "")]
 
 
 def _aura_options(rows: list[dict[str, str]]) -> dict[int, dict[str, int]]:
@@ -481,60 +678,182 @@ def _aura_options(rows: list[dict[str, str]]) -> dict[int, dict[str, int]]:
     }
 
 
-def load_spell_text(
-    spell_rows: list[dict[str, str]],
-    misc_rows: list[dict[str, str]],
-    effect_rows: list[dict[str, str]],
-    duration_rows: list[dict[str, str]],
-    extra: ExtraRows | None = None,
-) -> SpellText:
-    extra = extra or ExtraRows()
-    radii = {int(r["ID"]): float(r["Radius"]) for r in extra.radius}
-    ranges = {int(r["ID"]): float(r["RangeMax_0"]) for r in extra.range}
-    aura_options = _aura_options(extra.aura_options)
-    max_targets = {
-        int(row["SpellID"]): int(row["MaxTargets"])
-        for row in _base_difficulty(extra.target_restrictions)
+def _target_restrictions(rows: list[dict[str, str]]) -> dict[int, dict[str, int]]:
+    return {
+        int(row["SpellID"]): {
+            "max_targets": int(row.get("MaxTargets") or 0),
+            "max_target_level": int(row.get("MaxTargetLevel") or 0),
+        }
+        for row in _base_difficulty(rows)
     }
-    durations = {int(r["ID"]): int(r["Duration"]) for r in duration_rows}
-    effects: dict[int, dict[int, Effect]] = {}
-    for row in effect_rows:
-        if row.get("DifficultyID", "0") != "0":
+
+
+def _variables(extra: ExtraRows) -> dict[int, dict[str, str]]:
+    """Spell id -> its description variables, `$<name>` -> definition."""
+    tables = {
+        int(row["ID"]): parse_variables(row["Variables"]) for row in extra.description_variables
+    }
+    out: dict[int, dict[str, str]] = {}
+    for row in extra.spell_description_variables:
+        table = tables.get(int(row["SpellDescriptionVariablesID"]))
+        if table:
+            out.setdefault(int(row["SpellID"]), {}).update(table)
+    return out
+
+
+#: SPELL_EFFECT_ENCHANT_ITEM and SPELL_EFFECT_ENCHANT_ITEM_TEMPORARY.
+_ENCHANT_EFFECTS = frozenset({"53", "54"})
+_ENCHANT_AMOUNTS = ("EffectPointsMin_0", "EffectPointsMin_1", "EffectPointsMin_2")
+
+
+def _enchants(
+    effect_rows: list[dict[str, str]], enchant_rows: list[dict[str, str]]
+) -> dict[int, dict[str, object]]:
+    """Spell id -> the `SpellRow` fields of the enchantment its enchant-item effect applies."""
+    enchantments = {int(row["ID"]): row for row in enchant_rows}
+    out: dict[int, dict[str, object]] = {}
+    for row in _base_difficulty(effect_rows):
+        if row.get("Effect") not in _ENCHANT_EFFECTS:
             continue
-        effects.setdefault(int(row["SpellID"]), {})[int(row["EffectIndex"])] = Effect(
+        enchantment = enchantments.get(int(row.get("EffectMiscValue_0") or 0))
+        if enchantment is not None:
+            out.setdefault(
+                int(row["SpellID"]),
+                {
+                    "enchant_points": tuple(int(enchantment[c] or 0) for c in _ENCHANT_AMOUNTS),
+                    "enchant_min_item_level": int(enchantment.get("ItemLevelMin") or 0),
+                },
+            )
+    return out
+
+
+def _float(row: dict[str, str], column: str) -> float:
+    return float(row.get(column) or 0)
+
+
+def _levels_gained(rows: list[dict[str, str]]) -> dict[int, int]:
+    """Spell id -> the levels a level-60 reader has over its BaseLevel, capped at MaxLevel.
+
+    The client adds EffectRealPointsPerLevel for each one. Subtracting BaseLevel, not
+    SpellLevel, and capping at MaxLevel is what Wowhead's Forever tooltips print: Frostbolt
+    116 (levels 4 to 8) gains 4 levels, Cone of Cold 120 (26 to 31) 5, Dark Sacrifice
+    1277324 (20 to 28) 8.
+    """
+    out: dict[int, int] = {}
+    for row in _base_difficulty(rows):
+        max_level = int(row.get("MaxLevel") or 0)
+        level = min(READER_LEVEL, max_level) if max_level > 0 else READER_LEVEL
+        out[int(row["SpellID"])] = max(level - int(row.get("BaseLevel") or 0), 0)
+    return out
+
+
+def _effects(
+    rows: list[dict[str, str]], radii: dict[int, float], levels_gained: dict[int, int]
+) -> dict[int, dict[int, Effect]]:
+    effects: dict[int, dict[int, Effect]] = {}
+    for row in _base_difficulty(rows):
+        gained = levels_gained.get(int(row["SpellID"]), 0)
+        effects.setdefault(int(row["SpellID"]), {})[int(row["EffectIndex"] or 0)] = Effect(
             base_points=_base_points(row),
             die_sides=int(row.get("EffectDieSides") or 0),
-            period_ms=int(row["EffectAuraPeriod"]),
+            period_ms=int(row["EffectAuraPeriod"] or 0),
             # Classic rows often leave index 0 unset and keep the radius in index 1
             # (Demoralizing Shout, Thunder Clap): either one is the effect's radius.
             radius=radii.get(int(row.get("EffectRadiusIndex_0") or 0))
             or radii.get(int(row.get("EffectRadiusIndex_1") or 0)),
             chain_targets=int(row.get("EffectChainTargets") or 0),
             misc_value=int(row.get("EffectMiscValue_0") or 0),
+            points_per_resource=_float(row, "EffectPointsPerResource"),
+            bonus_coefficient=_float(row, "EffectBonusCoefficient"),
+            amplitude=_float(row, "EffectAmplitude"),
+            chain_amplitude=_float(row, "EffectChainAmplitude"),
+            variance=_float(row, "Variance"),
+            level_bonus=_float(row, "EffectRealPointsPerLevel") * gained,
         )
-    misc: dict[int, tuple[int | None, int, float | None]] = {}
-    for row in misc_rows:
-        if row.get("DifficultyID", "0") != "0":
-            continue
-        duration = durations.get(int(row["DurationIndex"]))
-        if duration is not None and duration < 0:
-            duration = None
-        misc[int(row["SpellID"])] = (
-            duration,
-            int(row["SpellIconFileDataID"]),
-            ranges.get(int(row.get("RangeIndex") or 0)),
+    return effects
+
+
+@dataclass(frozen=True)
+class _Misc:
+    """The SpellMisc facts a description reads."""
+
+    duration_ms: int | None = None
+    until_cancelled: bool = False
+    icon_file_id: int = 0
+    range_max: float | None = None
+
+
+def _misc(
+    rows: list[dict[str, str]], durations: dict[int, int], ranges: dict[int, float]
+) -> dict[int, _Misc]:
+    misc: dict[int, _Misc] = {}
+    for row in _base_difficulty(rows):
+        duration = durations.get(int(row["DurationIndex"] or 0))
+        misc[int(row["SpellID"])] = _Misc(
+            duration_ms=duration if duration is None or duration >= 0 else None,
+            until_cancelled=duration is not None and duration < 0,
+            icon_file_id=int(row["SpellIconFileDataID"] or 0),
+            range_max=ranges.get(int(row.get("RangeIndex") or 0)),
         )
+    return misc
+
+
+def _fill_gaps(
+    descriptions: dict[int, str], gaps: Mapping[int, Mapping[str, str]]
+) -> dict[int, str]:
+    """`curated/spelltext-gaps.json`'s values written into their templates
+    (`pipeline.spelltext_gaps`); a gap the template no longer holds is an error."""
+    out = dict(descriptions)
+    for spell_id, tokens in gaps.items():
+        for token, value in tokens.items():
+            if token not in out.get(spell_id, ""):
+                raise SpellTextError(
+                    f"spell {spell_id} no longer reads {token!r}; drop it from "
+                    "curated/spelltext-gaps.json"
+                )
+            out[spell_id] = re.sub(
+                re.escape(token) + r"(?![A-Za-z\d])", value.replace("\\", r"\\"), out[spell_id]
+            )
+    return out
+
+
+def load_spell_text(
+    spell_rows: list[dict[str, str]],
+    misc_rows: list[dict[str, str]],
+    effect_rows: list[dict[str, str]],
+    duration_rows: list[dict[str, str]],
+    extra: ExtraRows | None = None,
+    gaps: Mapping[int, Mapping[str, str]] | None = None,
+) -> SpellText:
+    """Every spell the tables know. A spell with SpellMisc or SpellEffect rows but no Spell
+    row (no text of its own) is still there, with an empty description, so another spell's
+    `$<id>d` can read its duration."""
+    extra = extra or ExtraRows()
+    radii = {int(r["ID"]): float(r["Radius"]) for r in extra.radius}
+    ranges = {int(r["ID"]): float(r["RangeMax_0"]) for r in extra.range}
+    durations = {int(r["ID"]): int(r["Duration"]) for r in duration_rows}
+    aura_options = _aura_options(extra.aura_options)
+    targets = _target_restrictions(extra.target_restrictions)
+    variables = _variables(extra)
+    enchants = _enchants(effect_rows, extra.item_enchantments)
+    effects = _effects(effect_rows, radii, _levels_gained(extra.levels))
+    misc = _misc(misc_rows, durations, ranges)
+    descriptions = _fill_gaps(
+        {int(row["ID"]): row["Description_lang"] for row in spell_rows}, gaps or {}
+    )
     spells: dict[int, SpellRow] = {}
-    for row in spell_rows:
-        spell_id = int(row["ID"])
-        duration, icon_file_id, range_max = misc.get(spell_id, (None, 0, None))
+    for spell_id in descriptions.keys() | misc.keys() | effects.keys():
+        facts = misc.get(spell_id, _Misc())
         spells[spell_id] = SpellRow(
-            description=row["Description_lang"],
-            duration_ms=duration,
-            icon_file_id=icon_file_id,
+            description=descriptions.get(spell_id, ""),
+            duration_ms=facts.duration_ms,
+            icon_file_id=facts.icon_file_id,
             effects=effects.get(spell_id, {}),
-            range_max=range_max,
-            max_targets=max_targets.get(spell_id, 0),
+            range_max=facts.range_max,
+            until_cancelled=facts.until_cancelled,
+            variables=variables.get(spell_id, {}),
+            **enchants.get(spell_id, {}),
+            **targets.get(spell_id, {}),
             **aura_options.get(spell_id, {}),
         )
     names = {int(r["ID"]): r["Name_lang"] for r in extra.names}

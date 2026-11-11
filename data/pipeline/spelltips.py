@@ -42,6 +42,7 @@ from pipeline.normalize import write_model
 from pipeline.racialicons import RACIAL_LINE_WORD, RACIAL_SKILL_CATEGORY
 from pipeline.simconst import _by_spell_id, _int, _rank
 from pipeline.spelltext import ExtraRows, SpellText, load_spell_text
+from pipeline.spelltext_gaps import load_spelltext_gaps
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +114,10 @@ INPUT_TABLES: tuple[str, ...] = (
     "SpellRadius",
     "SpellRange",
     "SpellTargetRestrictions",
+    "SpellDescriptionVariables",
+    "SpellXDescriptionVariables",
+    "SpellLevels",
+    "SpellItemEnchantment",
 )
 
 
@@ -132,7 +137,7 @@ class SharedSpellTips(BaseModel):
 class _Tables:
     """The client rows a tooltip reads, indexed once."""
 
-    def __init__(self, raw: Path) -> None:
+    def __init__(self, raw: Path, gaps: dict[int, dict[str, str]] | None = None) -> None:
         spell_rows = read_csv(raw / "Spell.csv")
         name_rows = read_csv(raw / "SpellName.csv")
         misc_rows = read_csv(raw / "SpellMisc.csv")
@@ -156,7 +161,12 @@ class _Tables:
                 range=range_rows,
                 names=name_rows,
                 target_restrictions=_optional(raw / "SpellTargetRestrictions.csv"),
+                description_variables=_optional(raw / "SpellDescriptionVariables.csv"),
+                spell_description_variables=_optional(raw / "SpellXDescriptionVariables.csv"),
+                levels=_optional(raw / "SpellLevels.csv"),
+                item_enchantments=_optional(raw / "SpellItemEnchantment.csv"),
             ),
+            gaps,
         )
 
     def tip(self, spell_id: int) -> SpellTip | None:
@@ -193,10 +203,40 @@ def _read(path: Path) -> object:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def class_spell_tips(build: str, trainables: dict, tables: _Tables) -> ClassSpellTips:
-    """Every rank of every trainable ability the class file lists."""
+def talent_rank_text(talents_dir: Path) -> dict[int, str]:
+    """Spell id -> its talent's top-rank sentence, for a talent whose ranks share one spell.
+
+    The 1.60 client keeps such a talent's per-rank numbers on a curve, so its spell row
+    alone reads "a 0% chance" (Improved Hamstring 12289, Seal Fate 14186, Deep Wounds
+    12834; Wowhead's spell pages print the same 0%). normalize already rendered every rank
+    with its curve value into talents/<class>.json; the tooltip reads the top rank from
+    there rather than rendering the bare row a second time.
+    """
+    out: dict[int, str] = {}
+    for path in sorted(talents_dir.glob("*.json")) if talents_dir.is_dir() else []:
+        for tree in _read(path)["trees"]:  # type: ignore[index]
+            for talent in tree["talents"]:
+                spell_ids = {rank["spell_id"] for rank in talent["ranks"]}
+                if len(talent["ranks"]) > 1 and len(spell_ids) == 1:
+                    out[spell_ids.pop()] = talent["ranks"][-1]["description"]
+    return out
+
+
+def class_spell_tips(
+    build: str, trainables: dict, tables: _Tables, talent_text: dict[int, str] | None = None
+) -> ClassSpellTips:
+    """Every rank of every trainable ability the class file lists; a curve talent's spell
+    reads its top rank (`talent_rank_text`)."""
+    talent_text = talent_text or {}
     ids = sorted({rank["id"] for t in trainables["trainables"] for rank in t["ranks"]})
-    spells = {str(spell_id): tip for spell_id in ids if (tip := tables.tip(spell_id)) is not None}
+    spells: dict[str, SpellTip] = {}
+    for spell_id in ids:
+        tip = tables.tip(spell_id)
+        if tip is None:
+            continue
+        if spell_id in talent_text:
+            tip = tip.model_copy(update={"description": talent_text[spell_id]})
+        spells[str(spell_id)] = tip
     return ClassSpellTips(build=build, class_slug=trainables["class_slug"], spells=spells)
 
 
@@ -329,10 +369,11 @@ def write_spell_tips(
         raise SystemExit(f"no {trainables_dir}; run `python -m pipeline trainables` first")
     hotfix_layer = require_layered(raw, INPUT_TABLES)
     overrides = load_tip_overrides(curated)
-    tables = _Tables(raw)
+    tables = _Tables(raw, load_spelltext_gaps(curated))
+    talent_text = talent_rank_text(build_dir / "talents")
     records = []
     for path in sorted(trainables_dir.glob("*.json")):
-        record = class_spell_tips(build, _read(path), tables)  # type: ignore[arg-type]
+        record = class_spell_tips(build, _read(path), tables, talent_text)  # type: ignore[arg-type]
         spells = apply_tip_overrides(record.spells, overrides)
         records.append(record.model_copy(update={"spells": spells}))
     _require_overrides_land(overrides, {spell for r in records for spell in r.spells})
