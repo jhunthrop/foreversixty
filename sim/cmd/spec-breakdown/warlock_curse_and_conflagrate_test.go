@@ -64,10 +64,10 @@ func TestWarlockDestructionHoldsConflagrateUntilShadowAndFlame(t *testing.T) {
 
 // Sim-accuracy round 21 (warlock lane, guide-accuracy round 19 "Sims
 // requested"): below 60 there is no Bane of Doom, so Affliction presses
-// Amplify Curse before each Bane of Agony it is ready for, not only the one in
-// a fight's last minute. A 300 s fight at 50 has room for two; at 60 the
-// card still keeps it for the last-minute Agony, once Doom has fired.
-func TestWarlockAfflictionAmplifyCurseBeforeEachAgonyBelow60(t *testing.T) {
+// Amplify Curse before each Bane of Agony it is ready for. Since the
+// 2026-11-11 warlock lane (Agony all fight, no Doom) the same holds at 60:
+// a 300 s fight has room for two at either level.
+func TestWarlockAfflictionAmplifyCurseBeforeEachAgony(t *testing.T) {
 	below := options{
 		repoRoot: "../../..", spec: "warlock-affliction", preset: "bare",
 		band: 50, level: 50, faction: "horde", talents: "25522300132001351-2004-0",
@@ -80,7 +80,7 @@ func TestWarlockAfflictionAmplifyCurseBeforeEachAgonyBelow60(t *testing.T) {
 		repoRoot: "../../..", spec: "warlock-affliction", preset: "raid",
 		band: 60, faction: "horde", iterations: 200, seed: 1, duration: 300,
 	}
-	if got := castsOf(t, at60, "Amplify Curse"); got > 1.05 {
-		t.Errorf("level 60, 300 s: Amplify Curse cast %.2f times, want 1 (the last-minute Agony)", got)
+	if got := castsOf(t, at60, "Amplify Curse"); got < 1.9 {
+		t.Errorf("level 60, 300 s: Amplify Curse cast %.2f times, want 2 (once each cooldown)", got)
 	}
 }
