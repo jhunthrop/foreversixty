@@ -1566,7 +1566,7 @@ local function buildBadge(frame)
 	Theme.outline(badge, S.border, "border")
 	local digits = sizedText(badge, S.chipBadgeText, "gold")
 	if type(digits.SetShadowColor) == "function" then
-		digits:SetShadowColor(0, 0, 0, 1)
+		digits:SetShadowColor(Theme.rgb(Theme.HEX.shadow))
 		digits:SetShadowOffset(1, -1)
 	end
 	digits:SetPoint("CENTER", badge, "CENTER", 0, 0)

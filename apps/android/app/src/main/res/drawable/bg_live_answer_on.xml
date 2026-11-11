@@ -2,5 +2,5 @@
 <!-- Your answer's pill (mock m-android-lock `.la .acts a.on`): the teal edge, as a selected segment in the app. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <corners android:radius="17dp" />
-    <solid android:color="@color/forever_teal_edge" />
+    <solid android:color="@color/fs_teal_edge" />
 </shape>

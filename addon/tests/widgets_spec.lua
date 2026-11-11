@@ -456,34 +456,62 @@ describe("Widgets", function()
 
 	-- The site's frame chrome (the panel now, the onboarding next).
 	describe("the umber frame chrome", function()
-		it("takes the client's red button where it has one, else the flat one, either with a teal face", function()
+		--- A texture's last colour, as six hex digits.
+		local function paintOf(texture)
+			local call = mock.lastCall(texture, "SetColorTexture")
+			return call and Theme.hexOf(call[1], call[2], call[3]) or nil
+		end
+
+		it("draws the site's button, never the client's red template, and clicks only while enabled", function()
 			start({ templates = ALL_TEMPLATES })
 			local clicked = 0
-			local templated = Widgets.clientButton(_G.UIParent, "In", function()
+			local made = Widgets.clientButton(_G.UIParent, "In", function()
 				clicked = clicked + 1
 			end)
-			assert.are.equal("UIPanelButtonTemplate", templated.template)
-			assert.are.equal(Theme.SIZES.clientButtonHeight, templated:GetHeight())
-			templated.OnClick(templated)
-			templated:Disable()
-			templated.OnClick(templated)
+			assert.is_nil(made.template)
+			assert.are.equal("In", made:GetText())
+			assert.are.equal(Theme.SIZES.clientButtonHeight, made:GetHeight())
+			made.OnClick(made)
+			made:Disable()
+			made.OnClick(made)
 			assert.are.equal(1, clicked)
-			start({ templates = {} })
-			local flat = Widgets.clientButton(_G.UIParent, "In", function() end)
-			assert.is_nil(flat.template)
-			assert.are.equal("In", flat:GetText())
 		end)
 
-		it("shows the teal face and an ink label only while selected", function()
+		it("is the secondary recipe at rest and the primary while selected, a white label on both", function()
 			start()
 			local made = Widgets.clientButton(_G.UIParent, "Late", function() end)
+			assert.are.equal(Theme.HEX.blue, paintOf(made.foreverSixtyGround))
+			assert.are.equal(Theme.HEX.blueEdge, paintOf(made.foreverSixtyEdges[1]))
 			assert.is_false(made.foreverSixtyTeal[1].shown)
 			assert.is_true(Widgets.setSelected(made, true))
 			for _, part in ipairs(made.foreverSixtyTeal) do
 				assert.is_true(part.shown)
 			end
+			assert.are.equal(Theme.HEX.tealTop, paintOf(made.foreverSixtyTeal[1]))
+			assert.are.equal(Theme.HEX.tealEdge, paintOf(made.foreverSixtyTeal[2]))
+			local label = mock.lastCall(made.foreverSixtyLabel, "SetTextColor")
+			assert.are.equal(Theme.HEX.strong, Theme.hexOf(label[1], label[2], label[3]))
 			assert.is_false(Widgets.setSelected(made, false))
 			assert.is_false(made.foreverSixtyTeal[1].shown)
+		end)
+
+		it("closes with the flat X, never the client's red one", function()
+			start({ templates = ALL_TEMPLATES })
+			local closed = 0
+			local close = Widgets.clientCloseButton(_G.UIParent, function()
+				closed = closed + 1
+			end)
+			assert.is_nil(close.template)
+			close.OnClick(close)
+			assert.are.equal(1, closed)
+		end)
+
+		it("draws a frame as the site's plate: the raised ground in one hairline", function()
+			start()
+			local frame = Widgets.umberFrame(_G.UIParent, 340, 200, nil)
+			assert.are.equal(4, #frame.foreverSixtyBorder)
+			assert.are.equal(Theme.HEX.border, paintOf(frame.foreverSixtyBorder[1]))
+			assert.is_nil(frame.foreverSixtyInnerLine)
 		end)
 
 		it("tints the medallion's notch per faction and hides it with no side", function()

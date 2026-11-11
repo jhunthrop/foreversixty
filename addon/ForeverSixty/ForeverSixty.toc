@@ -10,6 +10,7 @@
 ## SavedVariables: ForeverSixtyDB
 ## OptionalDeps: ForeverSixtyInbox, ForeverSixtyData
 
+Tokens.lua
 Locale.lua
 Data.lua
 Compat.lua

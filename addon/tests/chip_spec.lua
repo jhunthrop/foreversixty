@@ -111,7 +111,7 @@ describe("Chip.model", function()
 		assert.are.equal(string.format(L.chipTake, Chip.pointLabel("Improved Heroic Strike", { have = 0, want = 3 })),
 			model.chosen.text)
 		local lines = Chip.tooltipLines(model, true)
-		assert.are.equal("|cffe9e4d8Take Improved Heroic Strike (1 of 3)|r", lines[1])
+		assert.are.equal("|cffe3dfd9Take Improved Heroic Strike (1 of 3)|r", lines[1])
 		local single = Chip.model(inputs({ level = 21, progress = pointAt(1, 21), unspent = 12,
 			pointName = "Anger Management", pointRank = { have = 0, want = 1 } }))
 		assert.are.equal("Take Anger Management", single.chosen.text)
@@ -910,7 +910,7 @@ describe("the chip's words and numbers", function()
 
 	it("dims the hints to 60 percent of the muted colour over the dark ground", function()
 		assert.are.equal(0.6, Theme.ALPHA.hint)
-		assert.are.equal("62605a", Theme.dimHex("muted", 0.6))
+		assert.are.equal(Theme.overGround(Theme.HEX.muted, 0.6), Theme.dimHex("muted", 0.6))
 	end)
 
 	it("draws the path card's playstyle lines at 11 px", function()

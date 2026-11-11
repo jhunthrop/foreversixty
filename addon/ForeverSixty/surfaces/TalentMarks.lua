@@ -493,7 +493,7 @@ local function placeBadge(index, button, cell, reach)
 	badge.digits:SetAlpha(look.digitsAlpha)
 	if type(badge.digits.SetShadowColor) == "function" then
 		-- Dark digits on the gold plate take no shadow; light ones do.
-		badge.digits:SetShadowColor(0, 0, 0, look.digits == "onGold" and 0 or 1)
+		badge.digits:SetShadowColor(Theme.rgb(Theme.HEX.shadow, look.digits == "onGold" and 0 or 1))
 		badge.digits:SetShadowOffset(1, -1)
 	end
 	tipOn(button, cell)

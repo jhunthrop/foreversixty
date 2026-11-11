@@ -38,10 +38,13 @@ from pathlib import Path
 
 from PIL import Image
 
+from addon_tokens import FONT_FILES, color, role
+
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / 'data/builds/1.60.1.70790'
 ICONS = BUILD / 'icons'
-OUT = ROOT / 'design/reviews/2026-11-08-addon-ux'
+# MOCK_OUT: write the boards elsewhere (the BA1 gate writes design/reviews/2026-11-10-ba1/captures).
+OUT = Path(os.environ['MOCK_OUT']) if os.environ.get('MOCK_OUT') else ROOT / 'design/reviews/2026-11-08-addon-ux'
 FONT = ROOT / 'apps/shared/fonts/Marcellus-Regular.ttf'
 
 ITEMS = {it['id']: it for it in json.loads((BUILD / 'items/hunter.json').read_text())['items']}
@@ -64,9 +67,18 @@ C = {
     'red': '#ff2020',     # RED_FONT_COLOR: the client's own refusals
     'blue': '#0070dd',
 }
-QUALITY = {0: '#9d9d9d', 1: '#ffffff', 2: '#1eff00', 3: '#0070dd', 4: '#a335ee', 5: '#ff8000'}
-TIER = {'Common': '#ffffff', 'Uncommon': '#1eff00', 'Rare': '#0070dd', 'Epic': '#a335ee', 'Legendary': '#ff8000'}
-ADDON = {'gold': '#e5b955', 'muted': '#9a9484', 'body': '#e9e4d8', 'success': '#6fcf8e', 'tmuted': '#b8b8b8'}
+# Item names in the site's rarity colours (Theme.QUALITY_HEX: rare and epic in the text tokens), and the
+# addon's own colours, all from design/tokens/tokens.json (addon_tokens), as Tokens.lua carries them.
+QUALITY = {0: color('rarity.poor'), 1: color('rarity.common'), 2: color('rarity.uncommon'),
+           3: color('rarity.rareText'), 4: color('rarity.epicText'), 5: color('rarity.legendary')}
+TIER = {'Common': QUALITY[1], 'Uncommon': QUALITY[2], 'Rare': QUALITY[3], 'Epic': QUALITY[4], 'Legendary': QUALITY[5]}
+ADDON = {'gold': color('base.gold'), 'muted': color('base.muted'), 'body': color('base.text'),
+         'success': color('outcome.kill'), 'tmuted': color('addon.tooltipMuted'), 'warning': color('outcome.wipe'),
+         'bg': color('base.bg'), 'raised': color('base.raised'), 'hover': color('base.hover'),
+         'line': color('base.line'), 'cream': color('forever.cream'), 'strong': color('base.strong'),
+         'blue': color('forever.blue'), 'blue_edge': color('forever.blueEdge'), 'teal': color('forever.teal'),
+         'teal_edge': color('forever.tealEdge'), 'inset': color('addon.inset')}
+BODY_FACES = {w: f for w, f in FONT_FILES['body'].items()}
 
 
 def b64(data: bytes, mime: str) -> str:
@@ -115,8 +127,15 @@ SILVER = COIN.format(a='#f4f4f4', b='#8c8c8c')
 COPPER = COIN.format(a='#f1a46b', b='#8a4a1f')
 GOLDC = COIN.format(a='#ffe27a', b='#a07812')
 
+SITE_FONTS = ''.join(f"@font-face {{{{ font-family: Site; font-weight: {w}; src: url({b64(f.read_bytes(), 'font/ttf')}); }}}}"
+                     for w, f in BODY_FACES.items())
+TITLE_URI = b64(FONT_FILES['title'][400].read_bytes(), 'font/ttf')
+BODY, SMALL = role('body'), role('small')
+
 CSS = f'''
 @font-face {{ font-family: Friz; src: url({FONT_URI}); }}
+@font-face {{ font-family: Title; src: url({TITLE_URI}); }}
+{SITE_FONTS.replace('{{', '{').replace('}}', '}')}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: #000; }}
 #board {{ display: inline-block; padding: 28px; font-family: Friz, serif; color: #fff;
@@ -171,6 +190,31 @@ body {{ margin: 0; background: #000; }}
   background: linear-gradient(#5a1610, #2e0906); box-shadow: inset 0 1px 0 rgba(255,220,150,.15); white-space: nowrap; }}
 .btn.grey {{ color: #e8e8e8; border-color: #4b4f5c; background: linear-gradient(#2b2f3b, #171a22); }}
 .small {{ font-size: 12px; color: {C['grey']}; }}
+/* The addon's own frames (Widgets.umberFrame, titleBand, clientButton) as the site's plates: the raised
+   ground in one hairline, Open Sans text, Marcellus titles in cream, the site's button recipes. */
+.plate {{ position: relative; background: {ADDON['raised']}; border: 1px solid {ADDON['line']};
+  box-shadow: 0 8px 28px rgba(0,0,0,.7); color: {ADDON['body']}; font-family: Site, sans-serif;
+  font-size: {BODY['size'] + 1}px; }}
+.plate .band {{ height: 64px; display: flex; align-items: center; gap: 12px; padding: 0 42px 0 12px;
+  border-bottom: 1px solid {ADDON['line']}; }}
+.plate .band .t {{ font-family: Title, serif; font-size: {role('title')['size']}px; color: {ADDON['cream']};
+  line-height: 22px; text-shadow: 1px 1px 0 #000; }}
+.plate .band .m {{ font-size: {SMALL['size'] + 1}px; color: {ADDON['muted']}; margin-top: 3px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }}
+.plate .band .num {{ font-family: Site, sans-serif; font-weight: 600; font-size: {role('large')['size'] + 1}px; }}
+.plate .band .unit {{ font-size: 12px; color: {ADDON['muted']}; }}
+.plate .x {{ position: absolute; top: 6px; right: 8px; width: 20px; height: 20px; color: {ADDON['body']};
+  border: 1px solid {ADDON['line']}; box-sizing: border-box;
+  font-size: 14px; display: flex; align-items: center; justify-content: center; font-family: Site, sans-serif; }}
+.plate .body {{ padding: 12px 14px 14px; }}
+.plate .sect {{ font-family: Title, serif; color: {ADDON['cream']}; font-size: {role('heading')['size']}px; }}
+.plate .sect .r {{ font-family: Site, sans-serif; color: {ADDON['muted']}; }}
+.plate .rule {{ background: {ADDON['line']}; }}
+.plate .small, .plate .irow .s {{ color: {ADDON['muted']}; font-size: {SMALL['size'] + 1}px; }}
+.sbtn {{ display: inline-flex; align-items: center; justify-content: center; height: 22px; padding: 0 12px;
+  font-family: Site, sans-serif; font-weight: 600; font-size: 12.5px; color: {ADDON['strong']};
+  background: {ADDON['blue']}; border: 1px solid {ADDON['blue_edge']}; white-space: nowrap; }}
+.sbtn.primary {{ background: {ADDON['teal']}; border-color: {ADDON['teal_edge']}; }}
 '''
 
 
@@ -455,10 +499,11 @@ def minimap(chip_html, size=180):
 def chip(text, ring=0.0, alpha=1.0, icon_alpha=1.0):
     glow = (f'box-shadow:0 0 0 2px rgba(255,209,0,{ring}),0 0 {int(10 * ring) + 2}px {int(4 * ring)}px '
             f'rgba(255,209,0,{ring * .7}),0 0 0 1px #000;' if ring else 'box-shadow:0 0 0 1px #000;')
-    label = (f'<span style="font-size:13px;color:#fff;padding:0 10px 0 6px;white-space:nowrap">{text}</span>'
+    label = (f'<span style="font-family:Site,sans-serif;font-size:12.5px;color:{ADDON["body"]};padding:0 10px 0 6px;'
+             f'white-space:nowrap">{text}</span>'
              if text else '')
     return (f'<div style="display:inline-flex;align-items:center;height:30px;opacity:{alpha};border-radius:15px;'
-            f'background:rgba(8,10,22,.9);border:1px solid #6d6247;{glow}">'
+            f'background:{ADDON["bg"]};border:1px solid {ADDON["line"]};{glow}">'
             f'<div style="width:28px;height:28px;border-radius:50%;background:url({CREST}) center/100%;'
             f'opacity:{icon_alpha}"></div>{label}</div>')
 
@@ -538,7 +583,7 @@ def board_loot_roll():
 # The addon panel
 # =================================================================================================
 SMALL_BTN = 'height:20px;padding:0 8px;font-size:12px'
-EQUIP = f'<span class="btn" style="{SMALL_BTN}">Equip</span>'
+EQUIP = f'<span class="sbtn" style="{SMALL_BTN}">Equip</span>'
 
 
 def upgrade_row(icon, name_html, gain, source, bag=False):
@@ -555,16 +600,18 @@ def spell_row(icon, name, cond, dim=False):
 
 
 def panel(name, fact, sections, width=340, score=''):
+    """Panel.lua on Widgets.umberFrame and titleBand: the medallion, the name in the title face over the
+    muted fact line, the Forever Score on the right in its tier colour, then the sections."""
     body = '<div class="rule"></div>'.join(sections)
-    return (f'<div class="frame" style="width:{width}px"><div class="portrait" style="background-image:url({CREST})"></div>'
-            f'<div class="title" style="padding-left:30px">Forever Sixty</div><div class="x">×</div>'
-            f'<div class="body"><div style="margin:0 0 10px 34px"><div style="display:flex;justify-content:space-between;'
-            f'align-items:baseline"><span style="color:#aad372;font-size:15px">{name}</span>{score}</div>'
-            f'<div class="small">{fact}</div></div>{body}</div></div>')
+    return (f'<div class="plate" style="width:{width}px"><div class="band">{medallion()}'
+            f'<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;'
+            f'align-items:baseline;gap:8px"><div class="t">{name}</div>{score}</div><div class="m">{fact}</div></div>'
+            f'</div><div class="x">×</div><div class="body">{body}</div></div>')
 
 
 def score_fact(score, tier):
-    return f'<span class="small">Forever Score <span style="color:{TIER[tier]}">{score}</span></span>'
+    return (f'<div style="white-space:nowrap"><span class="num" style="color:{TIER[tier]}">{score:,}</span>'
+            f'<span class="unit"> score</span></div>')
 
 
 def leveller_panel():
@@ -572,11 +619,11 @@ def leveller_panel():
                 + upgrade_row('inv_weapon_bow_11', iname(3021), '3.5', 'Ranged · World drop')
                 + upgrade_row('inv_belt_26', iname(10403), '1.1', 'Waist · The Deadmines · Captain Greenskin · 30%')
                 + '<div class="small">Your other slots are best for your level.</div>')
-    talents = (f'<div class="sect">Talents<span class="r">12 of 15 on plan · <span style="color:#ff6b5c">3 off plan'
+    talents = (f'<div class="sect">Talents<span class="r">12 of 15 on plan · <span style="color:{ADDON['warning']}">3 off plan'
                f'</span></span></div><div class="irow">{img("ability_searingarrow", 30)}<div class="tx"><div class="n">'
                f'<span>Level 25: Lethal Attacks</span><span class="small">1 of 5</span></div>'
                f'<div class="s">Beast Mastery leveling · <span style="color:{C["gold"]}">Change</span></div></div>'
-               f'<span class="btn" style="{SMALL_BTN}">Talents</span></div>')
+               f'<span class="sbtn" style="{SMALL_BTN}">Talents</span></div>')
     rotation = ('<div class="sect">Rotation at 24<span class="r">hover for the full rule</span></div>'
                 + spell_row('ability_hunter_snipershot', "Hunter's Mark", 'Whenever the target is not marked')
                 + spell_row('inv_spear_07', 'Aimed Shot', 'When its cooldown, shared with Multi-Shot, is up')
@@ -596,7 +643,7 @@ def board_panel_leveller():
 
 
 def answer_buttons():
-    return ''.join(f'<span class="btn grey" style="{SMALL_BTN}">{a}</span>' for a in ('In', 'Late', 'Bench', 'Out'))
+    return ''.join(f'<span class="sbtn" style="{SMALL_BTN}">{a}</span>' for a in ('In', 'Late', 'Bench', 'Out'))
 
 
 def tonight(answer_html, buttons, sub='as Ashvale, Damage'):
@@ -611,7 +658,7 @@ def tonight(answer_html, buttons, sub='as Ashvale, Damage'):
 
 def board_panel_raider():
     upgrades = (f'<div class="sect">Upgrades<span class="r">your sim · 2 days ago · '
-                f'<span class="btn grey" style="height:18px;padding:0 6px;font-size:11.5px">Sim again</span></span></div>'
+                f'<span class="sbtn" style="height:18px;padding:0 6px;font-size:11.5px">Sim again</span></span></div>'
                 + upgrade_row('inv_weapon_bow_11', iname(13023), '6.4', 'Ranged · World drop')
                 + upgrade_row('inv_gauntlets_11', iname(279257), '4.1', 'Hands · Leatherworking')
                 + upgrade_row('inv_pants_03', iname(237819), '3.0', 'Legs · Illiyana Moonblaze · Vendor'))
@@ -638,7 +685,7 @@ def board_panel_fresh():
     path = ('<div class="sect">Pick your path<span class="r">you can change it later</span></div>'
             + ''.join(f'<div class="irow">{img(i, 30)}<div class="tx"><div class="n"><span>{n}</span></div>'
                       f'<div class="s" style="white-space:normal">{t}</div></div>'
-                      f'<span class="btn" style="{SMALL_BTN}">Pick</span></div>'
+                      f'<span class="sbtn" style="{SMALL_BTN}">Pick</span></div>'
                       for i, n, t in specs)
             + '<div class="small">Loads that path\'s leveling build. Your first talent point comes at level 10.</div>')
     rotation = ('<div class="sect">Rotation at 6</div>'
@@ -671,9 +718,9 @@ COMING = f'<span style="font-size:12px;color:{C["gold"]};margin-left:6px">coming
 # medallion and faction notch, the page heading in bone in the title face over a muted
 # "Welcome to Forever Sixty", "2 of 5" on the right, the client's red X and red buttons.
 # Marcellus stands in for the client's MORPHEUS title face here too (mixed case, like the build).
-U = {'top': '#2a1c12', 'ground': '#1d130c', 'edge': '#4a3a26', 'line': '#0b0705', 'bone': '#e9dcc2',
-     'bone_dim': '#b9ab8f', 'ink': '#f3ecdc', 'muted': '#a69a85', 'brass': '#c9a46a',
-     'alliance': '#2f6fd6', 'horde': '#b8261c'}
+U = {'top': ADDON['raised'], 'ground': ADDON['raised'], 'edge': ADDON['line'], 'line': ADDON['line'],
+     'bone': ADDON['cream'], 'bone_dim': ADDON['muted'], 'ink': ADDON['body'], 'muted': ADDON['muted'],
+     'brass': ADDON['gold'], 'alliance': color('faction.allianceBar'), 'horde': color('faction.hordeBar')}
 TITLE_FONT = b64((ROOT / 'apps/shared/fonts/Marcellus-Regular.ttf').read_bytes(), 'font/ttf')
 RING = tga_uri(ROOT / 'addon/ForeverSixty/media/medallion-ring.tga')
 NOTCH = tga_uri(ROOT / 'addon/ForeverSixty/media/medallion-notch.tga')
@@ -706,33 +753,32 @@ def flow_arrow(direction):
 
 
 def onboarding(page, heading, content, next_label='Next', extra_right='', total=PAGES, faction='alliance'):
-    left_extra = ('<span class="btn" style="padding:0 10px;position:relative">Tooltips only</span>'
+    left_extra = ('<span class="sbtn" style="padding:0 10px;position:relative">Tooltips only</span>'
                   if page == 1 else '')
-    skip = '' if page == total else '<span class="btn" style="padding:0 14px">Skip tour</span>'
-    back = '' if page == 1 else '<span class="btn">Back</span>'
+    skip = '' if page == total else '<span class="sbtn" style="padding:0 14px">Skip tour</span>'
+    back = '' if page == 1 else '<span class="sbtn">Back</span>'
     # Onboarding.frameHeight: the page is as tall as its content (24 over the footer, 14 under it),
     # 240 to 450.
     footer = (f'<div style="margin:24px 16px 0;padding-bottom:14px;display:flex;align-items:center;'
               f'justify-content:space-between"><span style="display:flex;gap:8px;align-items:center">'
               f'{skip}{left_extra}</span><span style="display:flex;gap:8px">{back}{extra_right}'
-              f'<span class="btn" style="padding:0 20px">{next_label}</span></span></div>')
+              f'<span class="sbtn primary" style="padding:0 20px">{next_label}</span></span></div>')
     band = (f'<div style="height:64px;display:flex;align-items:center;gap:12px;padding:0 42px 0 12px;'
-            f'border-bottom:1px solid {U["line"]};box-shadow:0 1px 0 {U["edge"]}">{medallion(faction)}'
+            f'border-bottom:1px solid {U["line"]}">{medallion(faction)}'
             f'<div style="flex:1;min-width:0"><div style="font-family:Title,serif;font-size:19px;color:{U["bone"]};'
             f'text-shadow:1px 1px 0 #000;line-height:22px">{heading}</div>'
             f'<div style="font-size:12px;color:{U["muted"]};margin-top:3px">Welcome to Forever Sixty</div></div>'
-            f'<div style="white-space:nowrap"><span style="font-family:Title,serif;font-size:17px;color:{U["ink"]};'
-            f'text-shadow:1px 1px 0 #000">{page}</span><span style="font-size:12px;color:{U["bone_dim"]}"> of {total}'
+            f'<div style="white-space:nowrap;align-self:flex-start;margin-top:12px"><span style="font-family:Site,'
+            f'sans-serif;font-weight:600;font-size:17px;'
+            f'color:{U["ink"]}">{page}</span><span style="font-size:12px;color:{U["bone_dim"]}"> of {total}'
             f'</span></div></div>')
     return (f'<style>@font-face {{ font-family: Title; src: url({TITLE_FONT}); }}</style>'
             f'<div style="position:relative;width:{OB_W}px;min-height:240px;max-height:{OB_H}px;'
-            f'box-sizing:border-box;color:{U["ink"]};'
-            f'background:linear-gradient({U["top"]},{U["ground"]});border:1px solid {U["edge"]};'
-            f'box-shadow:inset 0 0 0 1px {U["line"]},0 8px 28px rgba(0,0,0,.7)">'
-            f'{band}<div style="position:absolute;top:5px;right:6px;width:20px;height:20px;'
-            f'border-radius:3px;background:linear-gradient(#8a1c12,#4e0b06);border:1px solid #c7a24a;color:#ffd9a0;'
-            f'font-size:13px;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;'
-            f'font-weight:bold">×</div>'
+            f'box-sizing:border-box;color:{U["ink"]};font-family:Site,sans-serif;'
+            f'background:{U["ground"]};border:1px solid {U["edge"]};box-shadow:0 8px 28px rgba(0,0,0,.7)">'
+            f'{band}<div style="position:absolute;top:6px;right:8px;width:20px;height:20px;color:{U["ink"]};'
+            f'border:1px solid {U["line"]};box-sizing:border-box;'
+            f'font-size:14px;display:flex;align-items:center;justify-content:center">×</div>'
             f'<div style="padding:16px 26px 0 26px">{content}</div>{footer}</div>')
 
 
@@ -883,7 +929,7 @@ def board_onboarding_4():
 
 def url_box(url):
     return (f'<div style="height:22px;padding:0 9px;display:inline-flex;align-items:center;font-size:13px;color:{U["ink"]};'
-            f'background:#0b0705;border:1px solid #4a3a26;border-radius:2px;min-width:200px">{url}</div>')
+            f'background:{ADDON["inset"]};border:1px solid {U["edge"]};min-width:200px">{url}</div>')
 
 
 APP_URL = 'https://foreversixty.gg/app'
@@ -919,7 +965,7 @@ SPECS = [('Beast Mastery', 'Your pet fights, Bestial Wrath'),
 def path_tiles(build_word='leveling'):
     """drawSetup with no build: Pick your path, the note, one red client button per spec (188 wide, 196
     apart) with its playstyle muted under it."""
-    tiles = ''.join(f'<div style="width:188px"><span class="btn" style="width:188px">{name}</span>'
+    tiles = ''.join(f'<div style="width:188px"><span class="sbtn" style="width:188px">{name}</span>'
                     f'<div style="font-size:12px;color:{U["muted"]};line-height:15px;margin-top:6px">{text}</div>'
                     f'</div>' for name, text in SPECS)
     return (f'<div style="font-size:13.5px;color:{U["ink"]};margin-bottom:6px">Pick your path '
@@ -951,7 +997,7 @@ def setup_page(top, connect, page_no, total, boxes=True):
     content = (f'{top}<div style="display:flex;gap:20px"><div style="flex:1">{connect}'
                f'{LINKS_LINE if boxes else ""}{DONE_LINE}</div>{qr_block()}</div>')
     return onboarding(page_no, 'Set it up', content, next_label='Done', total=total,
-                      extra_right='<span class="btn">Open my panel</span>')
+                      extra_right='<span class="sbtn">Open my panel</span>')
 
 
 def board_onboarding_5():
@@ -965,7 +1011,7 @@ def board_onboarding_5_connected():
            f'<div><span style="font-size:13.5px;color:{U["ink"]}">Your path: Beast Mastery leveling</span>'
            f'<span style="font-size:12px;color:{U["muted"]};margin-left:10px">15 of 15 points</span>'
            f'<div style="font-size:12px;color:{U["muted"]};margin-top:3px">Next point at level 25: Lethal Attacks'
-           f'</div></div><span class="btn">Change</span></div>')
+           f'</div></div><span class="sbtn">Change</span></div>')
     return ob_board('<b>Last page, a character already set up</b> · level 24, in a guild (page 5 of 5), following a '
                     'build, with an ack in the inbox. Past 3 days without one, the line turns to the warning colour: '
                     '"The site has not seen Bow Jackzon in 4 days. Is the companion running?"',
@@ -977,7 +1023,57 @@ def board_onboarding_5_sixty():
                     setup_page(path_tiles(build_word='raid'), connect_rows(), 5, 5))
 
 
+MINIMAP_ICON = tga_uri(ROOT / 'addon/ForeverSixty/media/minimap.tga')
+
+
+def board_minimap_button():
+    """Minimap.lua: the flat seal (media/minimap, 32 px texture drawn at Theme.SIZES.minimapIcon 20) in the
+    client's own round tracking border on the minimap's rim, with the chip beside the minimap."""
+    button = (f'<div style="position:absolute;left:-8px;top:96px;width:32px;height:32px;border-radius:50%;'
+              f'background:#000;box-shadow:0 0 0 3px #8b6a35,0 0 0 4px #2d220f,0 2px 6px #000;display:flex;'
+              f'align-items:center;justify-content:center"><img src="{MINIMAP_ICON}" style="width:20px;height:20px">'
+              f'</div>')
+    mm = minimap(chip('Next talent at 25: Lethal Attacks'), 180).replace(
+        'box-shadow:0 0 0 5px #8b6a35,0 0 0 7px #2d220f,0 4px 12px #000"></div>',
+        'box-shadow:0 0 0 5px #8b6a35,0 0 0 7px #2d220f,0 4px 12px #000">' + button + '</div>', 1)
+    return page('<p class="cap"><b>Minimap button and chip</b> · the flat seal at 20 px on the minimap rim; the chip '
+                f'on the window ground in one hairline</p><div style="padding:8px 0 0 8px">{mm}</div>')
+
+
+def board_button_states():
+    """Widgets.clientButton and Widgets.closeButton in each state (Theme.CONTROL_STATES.siteButton and
+    .close): the secondary at rest and under the cursor (its ground takes its edge colour), the selected
+    primary likewise, a held button's label one pixel down, and the close X at rest and hovered."""
+    def btn(label, ground, edge, drop=False):
+        return (f'<span class="sbtn" style="background:{ground};border-color:{edge};'
+                f'{"padding-top:2px" if drop else ""}">{label}</span>')
+
+    def x(hover):
+        ground = ADDON['hover'] if hover else 'transparent'
+        ink = ADDON['strong'] if hover else ADDON['body']
+        return (f'<span style="display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;'
+                f'border:1px solid {ADDON["line"]};background:{ground};color:{ink};font-size:14px">×</span>')
+
+    def cell(caption, html):
+        return f'<div class="col" style="gap:6px;align-items:flex-start"><div class="note">{caption}</div>{html}</div>'
+
+    cells = [
+        cell('Secondary, rest', btn('Late', ADDON['blue'], ADDON['blue_edge'])),
+        cell('Secondary, hover', btn('Late', ADDON['blue_edge'], ADDON['blue_edge'])),
+        cell('Secondary, held', btn('Late', ADDON['blue_edge'], ADDON['blue_edge'], drop=True)),
+        cell('Primary or selected, rest', btn('Next', ADDON['teal'], ADDON['teal_edge'])),
+        cell('Primary or selected, hover', btn('Next', ADDON['teal_edge'], ADDON['teal_edge'])),
+        cell('Close, rest', x(False)),
+        cell('Close, hover', x(True)),
+    ]
+    return page('<p class="cap"><b>Button states</b> · the site\'s recipes on the addon\'s plate '
+                '(Theme.CONTROL_STATES.siteButton, .close)</p>'
+                f'<div class="plate" style="padding:18px 20px;display:flex;gap:26px">{"".join(cells)}</div>')
+
+
 BOARDS = {
+    'button-states': board_button_states,
+    'minimap-button': board_minimap_button,
     'item-tooltip-before': board_item_before,
     'item-tooltip-after': board_item_after,
     'item-tooltip-after-shift': board_item_after_shift,

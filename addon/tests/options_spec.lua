@@ -673,7 +673,7 @@ describe("Options", function()
 			expected[index] = Theme.chatLine(line)
 		end
 		assert.are.same(expected, state.printed)
-		assert.are.equal("|cffe5b955Forever Sixty|r: " .. Locale.settingsCommands[1], state.printed[1])
+		assert.are.equal("|cffffec71Forever Sixty|r: " .. Locale.settingsCommands[1], state.printed[1])
 	end)
 
 	-- design/specs/2026-11-08-addon-ux.md 1.6 and 4.2: the minimap button opens the build dialog;

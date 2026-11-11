@@ -292,9 +292,9 @@ local function arrow(parent, direction, left, top)
 	end
 end
 
-local function button(parent, label, onClick, hint)
+local function button(parent, label, onClick, hint, primary)
 	local made = take("button", function()
-		-- The client's own red button, the panel's (Widgets.clientButton), a little taller here.
+		-- The panel's button in the site's recipes (Widgets.clientButton), a little taller here.
 		local built = Widgets.clientButton(parent, "", function(self)
 			if self.foreverSixtyAction ~= nil then
 				self.foreverSixtyAction()
@@ -315,6 +315,8 @@ local function button(parent, label, onClick, hint)
 	made:SetText(label)
 	made.foreverSixtyAction = onClick
 	made.foreverSixtyHint = hint
+	-- The page's one forward action (Next, Done) is the site's primary; the rest its secondary.
+	Widgets.setSelected(made, primary == true)
 	return Widgets.fitButton(made, 64, 24)
 end
 
@@ -642,13 +644,13 @@ local function drawFooter(index, count)
 	end
 	local right
 	if last then
-		right = button(footer, L.tourDone, Onboarding.finish)
+		right = button(footer, L.tourDone, Onboarding.finish, nil, true)
 		right:SetPoint("BOTTOMRIGHT", footer, "BOTTOMRIGHT", 0, 0)
 		local open = button(footer, L.tourOpenPanel, Onboarding.openPanel)
 		open:SetPoint("RIGHT", right, "LEFT", -8, 0)
 		right = open
 	else
-		right = button(footer, L.tourNext, Onboarding.next)
+		right = button(footer, L.tourNext, Onboarding.next, nil, true)
 		right:SetPoint("BOTTOMRIGHT", footer, "BOTTOMRIGHT", 0, 0)
 	end
 	if index > 1 then

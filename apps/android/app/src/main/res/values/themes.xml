@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- The window behind Compose: the house background, so launch shows no white flash. -->
+    <!-- The window behind Compose, and so the launch splash: the house background (fs_bg, generated
+         from tokens.json into core/designsystem's colors_gen.xml), so launch shows no white flash. -->
     <style name="Theme.ForeverSixty" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@color/forever_bg</item>
+        <item name="android:windowBackground">@color/fs_bg</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
-    <!-- FsColor.bg (Tokens.kt): the window shows before Compose can read the token. -->
-    <color name="forever_bg">#FF07090D</color>
-    <!-- FsColor.tealEdge (Tokens.kt): the selected answer, in the raid notification's RemoteViews. -->
-    <color name="forever_teal_edge">#FF408076</color>
     <!-- One of raid night's four answers in its notification (layout notification_raid_live). -->
     <style name="LiveAnswer" parent="TextAppearance.Compat.Notification.Info">
         <item name="android:layout_width">0dp</item>

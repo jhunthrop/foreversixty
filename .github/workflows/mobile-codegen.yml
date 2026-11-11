@@ -17,6 +17,8 @@ on:
       - web/src/lib/mobile/**
       - design/tokens/**
       - web/src/styles/tokens.css
+      - addon/ForeverSixty/Tokens.lua
+      - addon/ForeverSixty/media/fonts/**
       - .github/workflows/mobile-codegen.yml
   pull_request:
     paths:
@@ -27,6 +29,8 @@ on:
       - web/src/lib/mobile/**
       - design/tokens/**
       - web/src/styles/tokens.css
+      - addon/ForeverSixty/Tokens.lua
+      - addon/ForeverSixty/media/fonts/**
       - .github/workflows/mobile-codegen.yml
   workflow_dispatch:
 permissions: { contents: read }

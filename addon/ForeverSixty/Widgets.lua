@@ -204,8 +204,8 @@ function Widgets.textButton(parent, text, onClick)
 	return button
 end
 
---- The small X in the title bar: muted, body on a hover ground under the cursor
---- (Theme.CONTROL_STATES.close), inset while pressed.
+--- The X in the title bar: a body-coloured x in a 1 px hairline box, so it reads as a button at rest;
+--- the strong white on a hover ground under the cursor (Theme.CONTROL_STATES.close), inset while pressed.
 function Widgets.closeButton(parent, onClick)
 	local states = Theme.CONTROL_STATES.close
 	local button = Theme.createFrame("Button", nil, parent)
@@ -214,7 +214,9 @@ function Widgets.closeButton(parent, onClick)
 	ground:SetAllPoints(button)
 	ground:Hide()
 	button.foreverSixtyGround = ground
+	button.foreverSixtyEdges = Theme.outline(button, Theme.SIZES.border, states.edge)
 	local label = Widgets.label(button, "x", states.label)
+	label:SetJustifyH("CENTER")
 	label:SetPoint("CENTER", button, "CENTER", 0, 1)
 	button.foreverSixtyLabel = label
 	button:SetScript("OnEnter", function(self)
@@ -984,8 +986,8 @@ end
 
 -- The site's frame chrome (the panel, the onboarding; design/mocks/addon_ux.py) ------------------
 
---- A frame on the site's umber ground: a vertical umberTop-to-umber fill, a 1 px umberEdge
---- round it and a 1 px umberLine just inside that. `name` (optional) names the frame.
+--- A frame drawn as the site's plate: the flat raised ground (umber) inside one 1 px hairline
+--- (umberEdge), no bevel. `name` (optional) names the frame.
 function Widgets.umberFrame(parent, width, height, name)
 	local frame = CreateFrame("Frame", name, parent)
 	Theme.noteFrame(name or "Umber frame", "a window or panel built")
@@ -995,10 +997,6 @@ function Widgets.umberFrame(parent, width, height, name)
 	Theme.verticalGradient(ground, "umberTop", "umber")
 	frame.foreverSixtyBackground = ground
 	frame.foreverSixtyBorder = Theme.outline(frame, Theme.SIZES.border, "umberEdge")
-	local inner = CreateFrame("Frame", nil, frame)
-	inner:SetPoint("TOPLEFT", frame, "TOPLEFT", Theme.SIZES.border, -Theme.SIZES.border)
-	inner:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -Theme.SIZES.border, Theme.SIZES.border)
-	frame.foreverSixtyInnerLine = Theme.outline(inner, Theme.SIZES.border, "umberLine")
 	return frame
 end
 
@@ -1062,30 +1060,30 @@ function Widgets.titleBand(frame, onDragStop)
 	end)
 	local medallion = Widgets.medallion(band, S.medallion)
 	medallion:SetPoint("LEFT", band, "LEFT", S.titleBandPad, 0)
+	-- The number sits on the title's line, so the meta line under both takes the band's full width
+	-- (a guild name is never cut for the score's sake).
 	local unit = Widgets.label(band, "", "boneDim", "small")
-	unit:SetPoint("RIGHT", band, "RIGHT", -S.titleBandPadRight, -2)
-	local number = Theme.titleFont(Widgets.label(band, "", "ink", "large"), S.titleNumber)
-	number:SetPoint("RIGHT", unit, "LEFT", -3, 2)
+	unit:SetPoint("TOPRIGHT", band, "TOPRIGHT", -S.titleBandPadRight, -S.titleBandNumberTop - 4)
+	-- A figure, so the site's body face (the large role), never the title face's old-style digits.
+	local number = Widgets.label(band, "", "ink", "large")
+	number:SetPoint("TOPRIGHT", band, "TOPRIGHT", -S.titleBandPadRight - S.titleBandUnitRoom, -S.titleBandNumberTop)
 	local left = S.titleBandPad + S.medallion + S.medallionGap
 	local title = Theme.titleFont(Widgets.label(band, "", "bone", "large"), S.titleText)
 	title:SetPoint("TOPLEFT", band, "TOPLEFT", left, -12)
 	title:SetPoint("RIGHT", number, "LEFT", -8, 0)
 	local meta = Widgets.label(band, "", "umberMuted", "small")
 	meta:SetPoint("TOPLEFT", band, "TOPLEFT", left, -36)
-	meta:SetPoint("RIGHT", number, "LEFT", -8, 0)
+	meta:SetPoint("RIGHT", band, "RIGHT", -S.titleBandPadRight, 0)
 	for _, region in ipairs({ title, meta }) do
 		if type(region.SetWordWrap) == "function" then
 			region:SetWordWrap(false)
 		end
 	end
-	local line = Theme.texture(band, "ARTWORK", "umberLine")
-	line:SetPoint("BOTTOMLEFT", band, "BOTTOMLEFT", S.border, 0)
-	line:SetPoint("BOTTOMRIGHT", band, "BOTTOMRIGHT", -S.border, 0)
-	line:SetHeight(1)
+	-- One hairline under the band, the site's plate head rule.
 	local edge = Theme.texture(band, "ARTWORK", "umberEdge")
-	edge:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 0, 0)
-	edge:SetPoint("TOPRIGHT", line, "BOTTOMRIGHT", 0, 0)
-	edge:SetHeight(1)
+	edge:SetPoint("BOTTOMLEFT", band, "BOTTOMLEFT", S.border, 0)
+	edge:SetPoint("BOTTOMRIGHT", band, "BOTTOMRIGHT", -S.border, 0)
+	edge:SetHeight(S.border)
 	band.foreverSixtyMedallion, band.foreverSixtyTitle, band.foreverSixtyMeta = medallion, title, meta
 	band.foreverSixtyNumber, band.foreverSixtyUnit = number, unit
 	return band
@@ -1106,67 +1104,91 @@ function Widgets.setTitleBand(band, head)
 		band.foreverSixtyNumber:SetTextColor(Theme.rgb(Theme.HEX.ink))
 	end
 	band.foreverSixtyUnit:SetText(number ~= "" and (head.unit or "") or "")
+	-- The unit ends at the band's right pad and the number ends just before it.
+	local unitWidth = band.foreverSixtyUnit:GetStringWidth()
+	band.foreverSixtyNumber:ClearAllPoints()
+	band.foreverSixtyNumber:SetPoint("TOPRIGHT", band, "TOPRIGHT",
+		-Theme.SIZES.titleBandPadRight - ((type(unitWidth) == "number" and unitWidth > 0) and unitWidth + 3 or 0),
+		-Theme.SIZES.titleBandNumberTop)
 	return band
 end
 
---- The client's own red close X (UIPanelCloseButton) where the client has it, else Widgets'
---- flat X; either runs `onClick`.
+--- The frame's close X: Widgets' flat X (muted, body on a hover ground), the site's quiet close,
+--- never the client's red one. Runs `onClick`.
 function Widgets.clientCloseButton(parent, onClick)
-	local button, templated = Theme.createFrame("Button", nil, parent, "closeButton")
-	if not templated then
-		button:Hide()
-		return Widgets.closeButton(parent, onClick)
-	end
-	button:SetScript("OnClick", function(self)
-		onClick(self)
-	end)
-	return button
+	return Widgets.closeButton(parent, onClick)
 end
 
---- The client's own red button (UIPanelButtonTemplate), `Theme.SIZES.clientButtonHeight` tall,
---- where the client has it, else Widgets' flat button; either way with a teal face it shows while
---- selected (Widgets.setSelected): the frame's one primary or chosen action. The click runs only
---- while the button is enabled.
-function Widgets.clientButton(parent, text, onClick)
-	local button, templated = Theme.createFrame("Button", nil, parent, "clientButton")
-	if templated then
-		button:SetText(text or "")
-		button:SetScript("OnClick", function(self, ...)
-			if self:IsEnabled() then
-				onClick(self, ...)
-			end
-		end)
-		button.foreverSixtyLabel = type(button.GetFontString) == "function" and button:GetFontString() or nil
-	else
-		button:Hide()
-		button = Widgets.button(parent, text, onClick)
+--- Paints a client button's face for its state (Theme.CONTROL_STATES.siteButton): the secondary
+--- face at rest, the primary's teal over it while selected, each a step brighter under the cursor.
+local function paintSiteButton(button, over)
+	local states = Theme.CONTROL_STATES.siteButton
+	local look = button.foreverSixtySelected and states.selected or states.rest
+	Theme.paint(button.foreverSixtyGround, over and look.hover or look.ground)
+	for _, edge in ipairs(button.foreverSixtyEdges) do
+		Theme.paint(edge, look.edge)
 	end
-	button:SetHeight(Theme.SIZES.clientButtonHeight)
-	local teal = button:CreateTexture(nil, "BORDER")
-	teal:SetPoint("TOPLEFT", button, "TOPLEFT", Theme.SIZES.border, -Theme.SIZES.border)
-	teal:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -Theme.SIZES.border, Theme.SIZES.border)
-	Theme.verticalGradient(teal, "tealTop", "tealBottom")
-	local tealEdges = Theme.outline(button, Theme.SIZES.border, "tealEdge")
+	Theme.setShown(button.foreverSixtyTeal, button.foreverSixtySelected == true)
+	for _, part in ipairs(button.foreverSixtyTeal) do
+		Theme.paint(part, part == button.foreverSixtyTeal[1] and (over and look.hover or look.ground) or look.edge)
+	end
+end
+
+--- The site's button (web/src/lib/ui/button.ts), `Theme.SIZES.clientButtonHeight` tall: the
+--- secondary recipe (blue in its blue edge, a white label) at rest, the primary (teal in the teal
+--- edge) while selected (Widgets.setSelected): the frame's one primary or chosen action. The label
+--- drops a pixel while held. The click runs only while the button is enabled.
+function Widgets.clientButton(parent, text, onClick)
+	local S, states = Theme.SIZES, Theme.CONTROL_STATES.siteButton
+	local button = Theme.createFrame("Button", nil, parent)
+	button:SetHeight(S.clientButtonHeight)
+	local ground = Theme.texture(button, "BACKGROUND", states.rest.ground)
+	ground:SetAllPoints(button)
+	button.foreverSixtyGround = ground
+	button.foreverSixtyEdges = Theme.outline(button, S.border, states.rest.edge)
+	local teal = Theme.texture(button, "BORDER", states.selected.ground)
+	teal:SetPoint("TOPLEFT", button, "TOPLEFT", S.border, -S.border)
+	teal:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -S.border, S.border)
 	button.foreverSixtyTeal = { teal }
-	for _, edge in ipairs(tealEdges) do
+	for _, edge in ipairs(Theme.outline(button, S.border, states.selected.edge)) do
 		button.foreverSixtyTeal[#button.foreverSixtyTeal + 1] = edge
 	end
-	local label = button.foreverSixtyLabel
-	if label ~= nil and type(label.SetDrawLayer) == "function" then
-		label:SetDrawLayer("OVERLAY")
+	local label = Widgets.label(button, text or "", states.label, "highlight")
+	label:SetJustifyH("CENTER")
+	label:SetPoint("CENTER", button, "CENTER", 0, 0)
+	button.foreverSixtyLabel = label
+	button.SetText = function(self, value)
+		self.foreverSixtyLabel:SetText(value or "")
 	end
+	button.GetText = function(self)
+		return self.foreverSixtyLabel:GetText()
+	end
+	button:SetScript("OnEnter", function(self)
+		if self:IsEnabled() then
+			paintSiteButton(self, true)
+		end
+	end)
+	button:SetScript("OnLeave", function(self)
+		paintSiteButton(self, false)
+	end)
+	Theme.pressable(button, label, function() end, function(self, over)
+		paintSiteButton(self, over)
+	end)
+	button:SetScript("OnClick", function(self, ...)
+		if self:IsEnabled() then
+			onClick(self, ...)
+		end
+	end)
 	Widgets.setSelected(button, false)
 	return button
 end
 
---- A client button's selected look: the teal face with an ink label, else the client's own
---- face with its gold label. Returns `selected`.
+--- A client button's selected look: the primary's teal face, else the secondary's; the label stays
+--- white on both, as the site's. Returns `selected`.
 function Widgets.setSelected(button, selected)
 	button.foreverSixtySelected = selected == true
-	Theme.setShown(button.foreverSixtyTeal or {}, button.foreverSixtySelected)
-	local label = button.foreverSixtyLabel
-	if label ~= nil then
-		label:SetTextColor(Theme.rgb(Theme.HEX[button.foreverSixtySelected and "ink" or "clientGold"]))
+	if button.foreverSixtyGround ~= nil then
+		paintSiteButton(button, false)
 	end
 	return button.foreverSixtySelected
 end

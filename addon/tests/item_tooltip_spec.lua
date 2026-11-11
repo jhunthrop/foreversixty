@@ -1910,7 +1910,7 @@ end)
 
 describe("the muted colours", function()
 	it("keep the site's muted token and give the tooltip one at least the client's grey", function()
-		assert.are.equal("9a9484", Theme.HEX.muted)
+		assert.are.equal(require("Tokens").color.base.muted, Theme.HEX.muted)
 		for _, channel in ipairs({ Theme.rgb(Theme.HEX.tooltipMuted) }) do
 			assert.is_true(channel >= 0.72 - 1e-9)
 		end

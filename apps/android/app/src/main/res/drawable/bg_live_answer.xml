@@ -2,5 +2,5 @@
 <!-- A raid-night answer's pill (mock m-android-lock `.la .acts a`): a quiet grey that reads on light and dark shades. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <corners android:radius="17dp" />
-    <solid android:color="#26888888" />
+    <solid android:color="@color/fs_shade_answer" />
 </shape>

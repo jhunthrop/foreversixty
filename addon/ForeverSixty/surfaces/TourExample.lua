@@ -25,14 +25,14 @@ TourExample.EXAMPLE_SLOTS = { "main_hand", "chest", "legs" }
 function TourExample.example(input)
 	local upgrade, pick = input.upgrade, input.pick
 	if type(upgrade) == "table" and type(upgrade.gain) == "number" and upgrade.name ~= nil then
-		return { name = upgrade.name, hex = upgrade.hex or "ffffff", lines = {
+		return { name = upgrade.name, hex = upgrade.hex or Theme.HEX.strong, lines = {
 			{ Theme.arrowMarkup() .. ItemTooltip.figure(upgrade.gain, upgrade.unit), "tooltipGreen" },
 			{ upgrade.detail ~= "" and upgrade.detail or nil, "tooltipMuted" },
 		} }
 	end
 	if type(pick) == "table" and pick.name ~= nil then
 		local verdict = pick.upcoming and string.format(L.tooltipYourBisAt, pick.band) or L.tooltipYourBis
-		return { name = pick.name, hex = pick.hex or "ffffff", lines = {
+		return { name = pick.name, hex = pick.hex or Theme.HEX.strong, lines = {
 			{ verdict, "clientGold" }, { ItemTooltip.sourceLine(pick.pick), "tooltipMuted" },
 		} }
 	end

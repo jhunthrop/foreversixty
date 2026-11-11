@@ -818,10 +818,7 @@ Panel.RAID_ICON_DEFAULT = "Interface\\Icons\\INV_Misc_Bone_HumanSkull_01"
 
 --- Percentile colours, the parse colours every log site uses: grey, green, blue, purple, orange,
 --- pink at 99 and gold at 100.
-Panel.PARSE_COLORS = {
-	{ 100, "e5cc80" }, { 99, "e268a8" }, { 95, "ff8000" }, { 75, "a335ee" }, { 50, "0070ff" }, { 25, "1eff00" },
-	{ 0, "9d9d9d" },
-}
+Panel.PARSE_COLORS = Theme.PARSE_STEPS
 
 --- A percentile's colour as a hex. Pure.
 function Panel.parseHex(percentile)
@@ -1041,7 +1038,8 @@ local function drawUpgradeRow(content, row, y, width)
 	local mark = icon(content, Compat.itemIcon(row.itemId), 28)
 	mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 	local lead = row.bag and (Theme.arrowMarkup() .. Theme.inlineColor("tooltipGreen", L.panelInBags) .. " ") or ""
-	local name = text(content, lead .. "|cff" .. (row.hex or "ffffff") .. (row.name or "") .. "|r", "ink", "normal")
+	local hex = row.hex or Theme.HEX.strong
+	local name = text(content, lead .. "|cff" .. hex .. (row.name or "") .. "|r", "ink", "normal")
 	name:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
 	if type(row.gain) == "number" then
 		local gain = text(content, ItemTooltip.figure(row.gain, row.unit), "tooltipGreen")

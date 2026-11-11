@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Lane F14: a widget's In, Late or Out (spec §7 `Widget button`): tonal, 4.5% white. -->
+<!-- Lane F14: a widget's In, Late or Out (spec §7 `Widget button`): the hover ground on the plate. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="#0BFFFFFF" />
+    <solid android:color="@color/fs_hover" />
     <corners android:radius="24dp" />
 </shape>

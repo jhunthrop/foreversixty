@@ -374,7 +374,7 @@ describe("GuildTab", function()
 			assert.are.equal("380", cells.gear.text)
 			assert.are.equal("1240", cells.score.text)
 			-- The rare blue on this panel is the lighter token (fix round 1, item 4).
-			assert.are.equal(Theme.HEX.rareBright, cells.score.hex)
+			assert.are.equal(Theme.liftForPanel(Theme.HEX.rareBright), cells.score.hex)
 			assert.are.equal("90%", cells.attendance.text)
 			-- No DPS per point in the data for the spec: the gap is in points (item 3).
 			assert.are.equal(string.format(L.guildTabGapPts, 14), cells.gap.text)
@@ -1238,7 +1238,7 @@ describe("GuildTab", function()
 					assert.is_true(Theme.contrast(cells.score.hex, ground) >= 4.5, tier)
 					assert.is_true(Theme.contrast(Theme.overGround(cells.score.hex, Theme.ALPHA.dim), ground) >= 3, tier)
 				end
-				assert.are.equal(Theme.HEX.rareBright,
+				assert.are.equal(Theme.liftForPanel(Theme.HEX.rareBright),
 					GuildTab.cells({ short = "A", name = "A", online = true, score = 1, tier = "rare" }).score.hex)
 				assert.is_true(Theme.contrast(Theme.hexOf(0, 0.44, 0.87), ground) < 4.5)
 			end)
