@@ -4895,26 +4895,26 @@ const GuildTabSetupDone = "{done} of {total} done"
 // GuildTabSetupToGo is guild.tab.setupToGo: {steps} to go
 const GuildTabSetupToGo = "{steps} to go"
 
-// GuildTabStepRanks is guild.tab.stepRanks: Officer ranks
-const GuildTabStepRanks = "Officer ranks"
+// GuildTabStepRanks is guild.tab.stepRanks: officer ranks
+const GuildTabStepRanks = "officer ranks"
 
 // GuildTabStepDiscord is guild.tab.stepDiscord: Discord bot
 const GuildTabStepDiscord = "Discord bot"
 
-// GuildTabStepRecruiting is guild.tab.stepRecruiting: Recruiting
-const GuildTabStepRecruiting = "Recruiting"
+// GuildTabStepRecruiting is guild.tab.stepRecruiting: recruiting
+const GuildTabStepRecruiting = "recruiting"
 
-// GuildTabStepSchedule is guild.tab.stepSchedule: Raid schedule
-const GuildTabStepSchedule = "Raid schedule"
+// GuildTabStepSchedule is guild.tab.stepSchedule: raid schedule
+const GuildTabStepSchedule = "raid schedule"
 
-// GuildTabStepInvite is guild.tab.stepInvite: Invite link
-const GuildTabStepInvite = "Invite link"
+// GuildTabStepInvite is guild.tab.stepInvite: invite link
+const GuildTabStepInvite = "invite link"
 
-// GuildTabStepAddon is guild.tab.stepAddon: Addon sync
-const GuildTabStepAddon = "Addon sync"
+// GuildTabStepAddon is guild.tab.stepAddon: addon sync
+const GuildTabStepAddon = "addon sync"
 
-// GuildTabStepVisibility is guild.tab.stepVisibility: Log visibility
-const GuildTabStepVisibility = "Log visibility"
+// GuildTabStepVisibility is guild.tab.stepVisibility: log visibility
+const GuildTabStepVisibility = "log visibility"
 
 // GuildTabStepRole is guild.tab.stepRole: Discord role
 const GuildTabStepRole = "Discord role"

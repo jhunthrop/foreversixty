@@ -43,7 +43,7 @@ final class FollowupCaptureTests: XCTestCase {
     /// selector these captures first showed is gone (flows spec 2026-11-08 section 3).
     func testSelectorDetailOnRaids() throws {
         for (size, arguments) in [("default", [String]()), ("ax5", Self.largestText)] {
-            let app = CaptureLaunch.signedIn(tab: "raid", extra: arguments)
+            let app = CaptureLaunch.signedIn(tab: "guild", extra: arguments)
             sleep(4)
             CaptureLaunch.openMenu(app)
             sleep(1)

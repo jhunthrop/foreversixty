@@ -83,7 +83,7 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
             logs = home.reports.take(LOGS_SHOWN).map(::log),
             progression = progression(home.summary, inputs.firstRaids),
             loot = if (leveler) null else inputs.badge?.lastRaidLoot?.let { res.getQuantityString(R.plurals.raid_pages_lootLast, it.count, it.count) },
-            officer = if (home.viewer.officerTools) officer(inputs) else emptyList(),
+            officer = if (home.viewer.officerTools || inputs.badge?.officer == true) officer(inputs) else emptyList(),
         )
     }
 
@@ -144,7 +144,7 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
     }
 
     private fun officer(inputs: GuildTabInputs): List<OfficerShortcut> {
-        val upcoming = inputs.planned.map { it to Instant.parse(it.startsAt) }.filter { it.second.isAfter(now) }.sortedBy { it.second }
+        val upcoming = inputs.planned.map { it to Instant.parse(it.startsAt) }.filter { it.second.isAfter(now) }.sortedBy { it.second }.take(PLANNED_SHOWN)
         val planned = if (upcoming.isEmpty()) {
             res.getString(R.string.guild_tab_nonePlanned)
         } else {
@@ -169,7 +169,7 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
             val todo = setup.steps.filter { it.state == SETUP_TODO }.mapNotNull { stepWord(it.key) }
             rows += OfficerShortcut(
                 OfficerKind.Setup, res.getString(R.string.guild_tab_setup),
-                todo.takeIf { it.isNotEmpty() }?.let { res.getString(R.string.guild_tab_setupToGo, list(it)) },
+                todo.takeIf { it.isNotEmpty() }?.let { res.getString(R.string.guild_tab_setupToGo, list(it)).replaceFirstChar { c -> c.titlecase(Locale.US) } },
                 res.getString(R.string.guild_tab_setupDone, setup.done, setup.total),
             )
         }
@@ -212,6 +212,8 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
         const val RECENT_SHOWN = 5
         const val CLOSE_SHOWN = 5
         const val LOGS_SHOWN = 3
+        /** Plan a raid names the next two planned raids, as the Calendar row does. */
+        const val PLANNED_SHOWN = 2
         const val SETUP_TODO = "todo"
         private const val SEPARATOR = " · "
         private const val DAY_LETTERS = 3

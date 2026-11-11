@@ -101,7 +101,7 @@ final class BackfillCaptureTests: XCTestCase {
     }
 
     func testRaidTab() {
-        let app = CaptureLaunch.signedIn(tab: "raid")
+        let app = CaptureLaunch.signedIn(tab: "guild")
         sleep(Self.settles)
         save("raid-01-top")
         tapSteps(app, "Late", "raid-signup-02-late")
@@ -191,7 +191,7 @@ final class BackfillCaptureTests: XCTestCase {
     /// The officer's Raid tab on the fixture clock (the raid ahead, four raiders not synced for eight
     /// days): Needs you, the not-synced line and Covered, then the not-synced tap's filtered roster.
     func testOfficerRaidTab() {
-        let app = CaptureLaunch.signedIn(tab: "raid", extra: Self.officer)
+        let app = CaptureLaunch.signedIn(tab: "guild", extra: Self.officer)
         sleep(Self.settles)
         save("r4-officer-raid-01-top")
         for step in 2 ... 4 {
@@ -298,7 +298,7 @@ final class BackfillCaptureTests: XCTestCase {
 
     /// The not-synced tap's roster: the filter chip, and the plate's one figure.
     func testRound6FilteredRoster() {
-        let app = CaptureLaunch.signedIn(tab: "raid", extra: Self.officer)
+        let app = CaptureLaunch.signedIn(tab: "guild", extra: Self.officer)
         sleep(Self.settles)
         let line = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Not synced this week")).firstMatch
         for _ in 0 ..< 4 where !line.isHittable { app.swipeUp(velocity: .slow) }

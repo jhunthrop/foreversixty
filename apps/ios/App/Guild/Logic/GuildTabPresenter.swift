@@ -95,6 +95,8 @@ struct GuildTabPresenter {
     static let recentShown = 5
     static let closeShown = 5
     static let logsShown = 3
+    /// Plan a raid names the next two planned raids, as the Calendar row does.
+    static let plannedShown = 2
     /// A setup step still to do (api/internal/guilds/setup.go SetupTodo).
     static let setupTodo = "todo"
 
@@ -115,7 +117,7 @@ struct GuildTabPresenter {
         content.logs = home.reports.prefix(Self.logsShown).map(log)
         content.progression = progression(home.summary, firstRaids: inputs.firstRaids)
         content.loot = leveler ? nil : inputs.badge?.lastRaidLoot.map { Copy.raidPagesLootLast(n: $0.count) }
-        if home.viewer.officerTools { content.officer = officer(inputs) }
+        if home.viewer.officerTools || inputs.badge?.officer == true { content.officer = officer(inputs) }
         return content
     }
 
@@ -190,7 +192,7 @@ struct GuildTabPresenter {
     }
 
     private func officer(_ inputs: GuildTabInputs) -> [OfficerShortcut] {
-        let upcoming = inputs.planned.filter { $0.startsAt > now }.sorted { $0.startsAt < $1.startsAt }
+        let upcoming = Array(inputs.planned.filter { $0.startsAt > now }.sorted { $0.startsAt < $1.startsAt }.prefix(Self.plannedShown))
         let planned = upcoming.isEmpty ? Copy.guildTabNonePlanned : upcoming.map { raid in
             Copy.raidPagesCalendarItem(zone: raid.title, weekday: String(clock.weekday(raid.startsAt).prefix(3)))
         }.joined(separator: ", ")
@@ -206,7 +208,7 @@ struct GuildTabPresenter {
             let todo = setup.steps.filter { $0.state == GuildTabPresenter.setupTodo }.map { Self.stepWord($0.key) }.compactMap(\.self)
             rows.append(OfficerShortcut(
                 kind: .setup, title: Copy.guildTabSetup,
-                line: todo.isEmpty ? nil : Copy.guildTabSetupToGo(steps: RaidFlowPresenter.list(todo)),
+                line: todo.isEmpty ? nil : Self.sentence(Copy.guildTabSetupToGo(steps: RaidFlowPresenter.list(todo))),
                 count: Copy.guildTabSetupDone(done: setup.done, total: setup.total)
             ))
         }
@@ -222,7 +224,10 @@ struct GuildTabPresenter {
         return hours > 0 ? Copy.raidTabUntilHours(h: hours, m: minutes % 60) : Copy.raidTabUntilMinutes(m: minutes)
     }
 
-    /// The setup step's name, as the site's checklist titles it.
+    /// The line with its first letter capitalised (the step names run in lower case mid-sentence).
+    static func sentence(_ line: String) -> String { line.prefix(1).uppercased() + line.dropFirst() }
+
+    /// The setup step's name, as it reads mid-sentence.
     static func stepWord(_ key: String) -> String? {
         switch key {
         case "officer_ranks": Copy.guildTabStepRanks

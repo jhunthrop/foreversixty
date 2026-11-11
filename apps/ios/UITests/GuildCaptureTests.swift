@@ -87,7 +87,7 @@ final class GuildCaptureTests: XCTestCase {
 
     /// The app on the Raid tab, scrolled to one of the guild rows.
     private func openRaidsRow(_ title: String) -> XCUIApplication {
-        let app = CaptureLaunch.signedIn(tab: "raid", extra: Self.fixtureNow)
+        let app = CaptureLaunch.signedIn(tab: "guild", extra: Self.fixtureNow)
         let row = app.buttons.containing(begins(title)).firstMatch
         for _ in 0..<6 where !(row.exists && row.isHittable) { app.swipeUp() }
         XCTAssertTrue(row.waitForExistence(timeout: 20))

@@ -104,7 +104,7 @@ final class RaidCaptureTests: XCTestCase {
     /// slot on every tab root), the switch from its menu, then Home's and Gear's for the
     /// side-by-side.
     func testRaidsTabUnderTheSelector() throws {
-        let app = CaptureLaunch.signedIn(tab: "raid")
+        let app = CaptureLaunch.signedIn(tab: "guild")
         // Wait on the next raid card's link.
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Who is coming'")).firstMatch.waitForExistence(timeout: 15))
         sleep(3)

@@ -4,7 +4,7 @@ import SwiftUI
 /// Where links, pushes and intents land (flows spec F4, F6): each screen pushed under its tab.
 extension RootView {
     /// Sim, report, rankings, player and guide links land under Home (lanes F5, F10, F11, F9),
-    /// list links under Gear (lane F9), raid links under Raid (lane F4), the account's under Home.
+    /// list links under Gear (lane F9), raid links under Guild (lane F4), the account's under Home.
     func openLink(_ link: DeepLink) {
         // F6: the site's own pages open the app's screen for them, under its tab.
         if let app = siteLink(link) {
@@ -84,7 +84,8 @@ extension RootView {
         }
     }
 
-    /// Lane F4: a raid, raid-night or guild link selects the Raid tab and pushes its screen.
+    /// Lane F4: a raid, raid-night or guild link selects the Guild tab and pushes its screen (spec
+    /// 2026-11-10-guild-tab.md: a raid push opens the raid inside the Guild tab).
     func openRaids(_ link: DeepLink) {
         guard environment.isAvailable(.raids), RaidsRouter.handles(link) else { return }
         shell.selection = .guild

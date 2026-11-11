@@ -63,9 +63,9 @@ enum ParityCheck {
             "section-who-is-coming", "section-before-you-pull", "section-guild", "section-roster", "section-loot",
             "section-recent-logs", "section-progression", "section-pages",
         ].map(guildRowDrift),
-        // Under 60 the quiet line sits on the ground between the head and Who is coming: the app's line box
-        // and the band's 20 pt gap put Who is coming 17 lower than the mock's margin-0 paragraph.
-        "guild-tab-leveler": ["section-who-is-coming", "section-roster"].map(guildRowDrift),
+        // Under 60 the Close to 60 rows add four more 18.29 line boxes, so the sections under the roster sit 13 to
+        // 15 pt higher than the mock's.
+        "guild-tab-leveler": ["section-recent-logs", "section-progression", "section-pages"].map(guildRowDrift),
         // The recruiting rows' trail (Apply, or Applied Mon) sits 13 shorter than the mock's `.tr` margin.
         "guild-tab-none": [
             guildRowDrift("section-find-your-guild"),

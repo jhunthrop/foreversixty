@@ -6016,25 +6016,25 @@ enum Copy {
         format("guild.tab.setupToGo", steps)
     }
 
-    /// Officer ranks
+    /// officer ranks
     static var guildTabStepRanks: String { text("guild.tab.stepRanks") }
 
     /// Discord bot
     static var guildTabStepDiscord: String { text("guild.tab.stepDiscord") }
 
-    /// Recruiting
+    /// recruiting
     static var guildTabStepRecruiting: String { text("guild.tab.stepRecruiting") }
 
-    /// Raid schedule
+    /// raid schedule
     static var guildTabStepSchedule: String { text("guild.tab.stepSchedule") }
 
-    /// Invite link
+    /// invite link
     static var guildTabStepInvite: String { text("guild.tab.stepInvite") }
 
-    /// Addon sync
+    /// addon sync
     static var guildTabStepAddon: String { text("guild.tab.stepAddon") }
 
-    /// Log visibility
+    /// log visibility
     static var guildTabStepVisibility: String { text("guild.tab.stepVisibility") }
 
     /// Discord role

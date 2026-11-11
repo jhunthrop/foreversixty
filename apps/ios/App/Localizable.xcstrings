@@ -3834,7 +3834,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Addon sync"
+            "value": "addon sync"
           }
         }
       }
@@ -3856,7 +3856,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invite link"
+            "value": "invite link"
           }
         }
       }
@@ -3867,7 +3867,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Officer ranks"
+            "value": "officer ranks"
           }
         }
       }
@@ -3878,7 +3878,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Recruiting"
+            "value": "recruiting"
           }
         }
       }
@@ -3900,7 +3900,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Raid schedule"
+            "value": "raid schedule"
           }
         }
       }
@@ -3911,7 +3911,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Log visibility"
+            "value": "log visibility"
           }
         }
       }

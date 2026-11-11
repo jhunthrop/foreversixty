@@ -1793,13 +1793,13 @@
     <string name="guild_tab_setup">Setup</string>
     <string name="guild_tab_setupDone" tools:ignore="PluralsCandidate">%1$d of %2$d done</string>
     <string name="guild_tab_setupToGo">%1$s to go</string>
-    <string name="guild_tab_stepRanks">Officer ranks</string>
+    <string name="guild_tab_stepRanks">officer ranks</string>
     <string name="guild_tab_stepDiscord">Discord bot</string>
-    <string name="guild_tab_stepRecruiting">Recruiting</string>
-    <string name="guild_tab_stepSchedule">Raid schedule</string>
-    <string name="guild_tab_stepInvite">Invite link</string>
-    <string name="guild_tab_stepAddon">Addon sync</string>
-    <string name="guild_tab_stepVisibility">Log visibility</string>
+    <string name="guild_tab_stepRecruiting">recruiting</string>
+    <string name="guild_tab_stepSchedule">raid schedule</string>
+    <string name="guild_tab_stepInvite">invite link</string>
+    <string name="guild_tab_stepAddon">addon sync</string>
+    <string name="guild_tab_stepVisibility">log visibility</string>
     <string name="guild_tab_stepRole">Discord role</string>
     <string name="guild_tab_find">Find your guild</string>
     <string name="guild_tab_search">Search guilds on the site</string>
