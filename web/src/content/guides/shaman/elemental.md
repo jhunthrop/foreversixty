@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70790:shaman:dwarf:5500331220001351/055/053002:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Spell power, Hit, Nature power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman in Forever: the raid build, Flame Shock up and Lightning Bolt behind Lightning Mastery, bolt ranks for mana, totems, stats, races and leveling.'
-updated: 2026-11-04
+updated: 2026-11-11
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -57,7 +57,7 @@ Lightning Mastery is the 31st point, and Call of Thunder above it is the point t
 - **Call of Flame** (3 points): Flame Shock lasts 21 seconds instead of 12, and Flame Shock, Fire Nova and your fire totems hit 15% harder. One shock now covers three and a half shock cooldowns.
 - **Elemental Focus** (1 point): any Fire, Frost or Nature damage spell has a 10% chance to make your next damage spell free.
 - **Call of Thunder** (1 point): 5% more crit on Lightning Bolt and Chain Lightning, and the way to Lightning Mastery.
-- **Lightning Overload** (3 points): a 30% chance for Lightning Bolt and Chain Lightning to fire a free, smaller copy of the spell with no threat.
+- **Lightning Overload** (3 points): a 30% chance for Lightning Bolt and Chain Lightning to fire a free copy of the spell at half damage, with no threat.
 - **Elemental Fury** (5 points): doubles the crit bonus of your spells and your Searing and Magma Totems.
 - **Lightning Mastery** (1 point): 15 seconds of faster Lightning Bolts and Chain Lightning with no cooldown, every 3 minutes.
 

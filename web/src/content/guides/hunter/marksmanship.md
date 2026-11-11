@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70790:hunter:night-elf:5/0052550011503051/50005003:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Marksmanship Hunter in Forever: talents for leveling and raids, the shot priority, auto shot discipline, stats, consumables and race picks.'
-updated: 2026-11-04
+updated: 2026-11-11
 confidence: inferred
 sources:
   - label: 'Blizzard, Class Deep Dives: Hunter and Druid'
@@ -160,16 +160,10 @@ Mark the target and send the pet in first; once it has hit and Growled, open wit
 
 Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. Out in the world, keep rank 1 on your bar all the way to 60: training a new rank upgrades the bar button on its own, so drag rank 1 back from the book each time, at 28, 36, 44, 52 and 60. Rank 1 still hits for most of what the newer ranks do, because most of the shot is your weapon, for a fraction of the mana, and since you fire it every time the shared cooldown comes up, the expensive ranks drain you fastest of all over a chain of pulls. In a raid at 60, with Judgement of Wisdom on the boss and a mana potion, cast the top rank.
 
-Arcane Shot and Serpent Sting work the same way: both add a share of your ranged attack power on every rank, so a low rank keeps most of the damage for a fraction of the mana. Each new rank takes over the bar button, so drag the old one back after every visit to the trainer.
+Arcane Shot costs 11% of your base mana at every rank, so always cast the newest one. Serpent Sting is different: every rank adds a share of your ranged attack power, so a low rank keeps most of the damage for a fraction of the mana. Drag the old rank back onto the bar after every trainer visit.
 
-- **Until 13:** the newest ranks of both, though a Troll already does a little better with rank 1 Arcane Shot at 13.
-- **14 and 15:** Arcane Shot rank 1, the newest Serpent Sting.
-- **16 and 17:** the newest of both.
-- **18 to 29:** rank 1 of both.
-- **30 to 32:** your newest Serpent Sting from here on, and Arcane Shot rank 3, the one you trained at 20.
-- **33 to 41:** with Rapid Recuperation in, your mana holds up: the newest Arcane Shot.
-- **42 to 47:** the new Serpent Sting costs more, so Arcane Shot steps down to rank 4, the one from 28.
-- **48 to 59:** Arcane Shot rank 5 (a Dwarf keeps rank 4 at 48); rank 6 is a touch better at 57, and for a Dwarf from 54.
-- **60:** Arcane Shot rank 4 out in the world. In a raid, cast the top rank of both.
+- **Until 17:** the newest Serpent Sting.
+- **18 to 29:** Serpent Sting rank 1.
+- **From 30:** your newest Serpent Sting.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get.

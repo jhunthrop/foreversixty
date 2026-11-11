@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70790:mage:gnome:131205203100311531/525000012001/003:'
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Intellect, Arcane power, Critical strike, Spell haste, Spell penetration]
 description: 'Arcane Mage in Forever: the Arcane Blast loop, the opener, Arcane Power windows, mana over a boss fight, talents, stats and leveling.'
-updated: 2026-11-04
+updated: 2026-11-11
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -49,7 +49,7 @@ sources:
 
 - **Arcane Blast** (1 point): the spec. Each cast gives you 12% of your Intellect as spell damage and raises the next Blast's cost by 100%, up to 4 stacks for 18 seconds from the first Blast.
 - **Missile Barrage** (2 points): Arcane Blast procs it 40% of the time, and Arcane Wrath, Fireball and Frostbolt 20%. The proc makes your next Arcane Missiles free (30% of its cost inside Arcane Power), halves its channel and fires a missile every half second.
-- **Arcane Concentration** (5 points): 10% of your damage spells make the next one free, and that includes a 4-stack Arcane Blast.
+- **Arcane Concentration** (5 points): 10% of your damage spells make the next one free, and that includes a 4-stack Arcane Blast. A Missiles channel gets one 10% roll shared by its cast and its missiles, about one channel in ten, so Blast, Fireball and Frostbolt are where your free casts come from.
 - **Arcane Meditation** (3 points): half your mana regeneration keeps running while you cast. With Mage Armor on top, all of it runs, and on a boss that regeneration is what pays for the fourth and fifth Blast.
 - **Presence of Mind** (1 point): your next spell under 10 seconds is instant. In a raid spend it on your longest cast: Pyroblast from 54, Arcane Wrath before that. With the leveling build, or with Arcane Wrath on cooldown, spend it on Frostbolt. Never spend it on a 1.5 second Arcane Blast that the global cooldown already caps.
 - **Arcane Power** (1 point): 30% more spell damage for 15 seconds at 30% more mana per cast, on a 3 minute cooldown.
@@ -111,7 +111,7 @@ Take Tailoring and Enchanting. Tailoring makes the early cloth sets and Enchanti
 
 Train Frostbolt and Conjure Water at 4, Fire Blast at 6, Arcane Missiles at 8, Frost Nova at 10 and Arcane Explosion at 14. From 8, open with Frostbolt so the mob walks in slowed, channel Missiles as it closes and finish with Fire Blast.
 
-At 10 the first point goes into Wand Specialization for 13% more wand damage, then 11 to 14 into Improved Channeling, so most hits no longer push back your Missiles, and 15 to 19 into Arcane Concentration for free casts.
+At 10 the first point goes into Wand Specialization for 13% more wand damage, then 11 to 14 into Improved Channeling, so most hits no longer push back your Missiles, and 15 to 19 into Arcane Concentration. It rolls once per cast, Missiles included, so Frostbolt and Fire Blast give it as many chances as a whole channel does.
 
 Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Alliance, Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
 

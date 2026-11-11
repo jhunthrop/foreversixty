@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70790:shaman:dwarf:0533001/053030310051202051/053:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and your imbue, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
-updated: 2026-11-04
+updated: 2026-11-11
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -51,37 +51,37 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 - **Thundering Strikes** (5 points): 5% crit on every attack and spell, and crits are what start Flurry.
 - **Ancestral Knowledge** (5 points, 3 in the raid build): up to 10% more Intellect. With Mental Dexterity, Intellect is attack power. If your raid never asks you to run, the two Improved Ghost Wolf points go here instead for a little more damage.
-- **Mental Dexterity** (3 points): your attack power goes up by one and a half times your Intellect. This is why Enhancement wants Intellect on its gear.
+- **Mental Dexterity** (3 points): attack power equal to a third of your Intellect per point, all of it at three.
 - **Elemental Weapons** (3 points): Windfury Weapon's extra attacks carry 40% more attack power, and Rockbiter Weapon's attack power is 20% bigger.
 - **Flurry** (5 points): 30% attack speed for your next three swings after a melee crit.
-- **Stormstrike** (1 point): an instant strike for 150% weapon damage on a 6 second cooldown that makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder.
+- **Stormstrike** (1 point): an instant strike for 100% weapon damage on an 8 second cooldown that makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder.
 - **Mental Quickness** (2 points): 30% of your Intellect as spell power, for your shocks and bolts.
-- **Maelstrom Weapon** (5 points): each melee hit has a chance to add a stack, up to five, each taking 20% off your next Lightning Bolt's cast time and mana. At five it is instant and free; spend it inside 30 seconds.
+- **Maelstrom Weapon** (5 points): your main hand adds a stack six times a minute with one point, ten with five, so a slow weapon gets more out of every swing. Each stack takes 20% off your next Lightning Bolt's cast time and mana at every rank, so five make it instant and free; spend them inside 30 seconds.
 - **Rage of the Farseer** (1 point): 30% attack speed for 25 seconds every 3 minutes. Press it with your trinkets.
 
 ## Rotation and priority
 
-**Before the pull.** Imbue your weapon: Rockbiter Weapon in a raid where a Windfury Totem reaches you, Windfury Weapon everywhere else. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves away from them, follow it and press Totemic Call: it relocates your active totems to your location.
+**Before the pull.** Put Windfury Weapon on your weapon, in a raid or out. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves away from them, follow it and press Totemic Call: it relocates your active totems to your location.
 
 **On the pull.** Rage of the Farseer, trinkets, any damage racial (Blood Fury or Berserking) and your potion go together on the pull and again on cooldown. Then Stormstrike.
 
 **Five stacks.** If Stormstrike is a second or two from ready when Maelstrom Weapon hits five, use it first and let the Lightning Bolt take the 20%. Searing Totem when it is down, unless the boss is about to die.
 
-**Which imbue.** Windfury Weapon on your main hand turns off any Windfury Totem's bonus for you. Forever's Rockbiter is a large flat attack power bonus that keeps the totem's extra swings working for you. It also adds threat to your swings, so watch your meter early in a fight.
+**Which imbue.** Windfury Weapon from 30, raid or not. It works alongside a Windfury Totem: each has its own chance on your swings, so under another shaman's totem you get both.
 
-**Which Air totem.** One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and for them it is worth far more than Grace of Air's Agility. If you drop it yourself, keep Rockbiter on so its swings count for you too. There is nothing to twist: Windfury Totem is an aura around the totem, so it ends the moment you replace the totem.
+**Which Air totem.** One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and for them it is worth far more than Grace of Air's Agility. If you drop it yourself, its extra swings count for you too, on top of your weapon's. There is nothing to twist: Windfury Totem is an aura around the totem, so it ends the moment you replace the totem.
 
 **Fire Nova and Flame Shock.** Outside a Clearcasting proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target, and so does Flame Shock.
 
-**Mana.** Stop casting Earth Shock at a quarter of your mana: that last quarter pays for Stormstrike, which hits harder than the shock you skip, and for dropping your totems again. In a raid, Judgement of Wisdom and Mana Spring bring in enough mana that you shock freely down to that quarter.
+**Mana.** Stop casting Earth Shock at a quarter of your mana: that last quarter pays for Stormstrike and for dropping your totems again. In a raid, Judgement of Wisdom and Mana Spring bring in enough mana that you shock freely down to that quarter.
 
-**Packs.** Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it. On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning while your mana lasts, and once you have all five points of Maelstrom Weapon keep spending five stacks on Lightning Bolt.
+**Packs.** Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it. On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning while your mana lasts, and keep spending five Maelstrom Weapon stacks on Lightning Bolt.
 
 **Lightning Shield** only fires when something hits you, which behind a boss is never. Keep it for leveling and for adds that turn on you.
 
 ## Stat priority
 
-Intellect does more for you than for any other melee: Mental Dexterity turns every point into one and a half attack power, and Mental Quickness turns part of it into spell power for your shocks. Crit keeps Flurry up. Hit covers your swings, your Stormstrike and your shocks at once. Your swings stop missing a raid boss at 9% hit and your spells at 16%, so past 9% hit only helps your shocks, Fire Nova, totems and free bolts, a small share of your damage.
+Strength is two attack power a point. Intellect is one through Mental Dexterity once you have all three points, and it also feeds your shocks through Mental Quickness and your mana pool. Crit keeps Flurry up. Hit covers your swings, your Stormstrike and your shocks at once. Your swings stop missing a raid boss at 9% hit and your spells at 16%, so past 9% hit only helps your shocks, Fire Nova, totems and free bolts, a small share of your damage.
 
 ## Best in slot
 
@@ -89,7 +89,7 @@ Your raid set leans on crafts. Frozen Heart of the Mountain is an Enchanting cra
 
 ## Enchants and consumables
 
-Your imbue is your weapon's temporary enchant, Rockbiter Weapon under a raid's Windfury Totem and Windfury Weapon without it, so there is no room for a sharpening stone or a weightstone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
+Your imbue is your weapon's temporary enchant, Windfury Weapon in a raid or out, so there is no room for a sharpening stone or a weightstone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
 
 ## Races
 
@@ -108,7 +108,7 @@ Take Enchanting for Frozen Heart of the Mountain, and on the Alliance Molten Hea
 Rockbiter Weapon goes on at 1; below 20 its attack power is worth more than Flametongue Weapon. Earth Shock comes at 4, and Lightning Shield at 8 stays up while you quest, since mobs hit you. Do the Call of Earth class quest at 4 and Call of Fire at 10: without the Earth Totem and Fire Totem they give, carried in your bags, those totems do not cast. From 10, Searing Totem and Strength of Earth Totem go down on every pull that lasts.
 
 - **10 to 14:** Thundering Strikes, 1% crit with spells and attacks per point.
-- **15 to 17:** Mental Dexterity, attack power equal to half your Intellect per point.
+- **15 to 17:** Mental Dexterity, a third of your Intellect as attack power per point.
 - **From 18:** Ancestral Knowledge, 2% Intellect per point.
 
 Replace the starter weapon with the first slow two-hander a quest gives you: staves are trained already, and a weapon master teaches two-handed maces and axes. Quest rewards beat vendor gear.
@@ -120,6 +120,6 @@ Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits
 - **20 to 25:** fill Ancestral Knowledge, two points in Elemental Weapons, and Stormstrike at 25, the first level the fourth row opens. Press it the moment you learn it.
 - **26 to 32:** finish Elemental Weapons, take Shamanistic Focus and fill Flurry by 32.
 - **33 and 34:** Mental Quickness.
-- **35 to 39:** Maelstrom Weapon, full at 39. Spend its stacks on Lightning Bolt from 39, when the bolt is instant and free; until then let them fall off and keep swinging.
+- **35 to 39:** Maelstrom Weapon, full at 39. Five stacks make the bolt instant and free from your first point, so spend them.
 - **41 and 42:** Improved Ghost Wolf.
 - **43 to 48:** a point of Convection, then Tidal Focus at 44 to 48 for 5% more hit on your swings.

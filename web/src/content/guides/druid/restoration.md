@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70790:druid:night-elf:05302001/0/555300515311321:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [MP5, Spirit, Intellect, Healing power, Critical strike]
 description: 'Restoration in Forever: the build, Rejuvenation and Regrowth ranks, Swiftmend that keeps the HoT, Bloom, Wild Growth and Innervate.'
-updated: 2026-11-04
+updated: 2026-11-11
 confidence: inferred
 sources:
   - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
@@ -52,7 +52,7 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
 - **Improved Rejuvenation** (3 points)
 - **Bloom** (1 point): when a Rejuvenation or Regrowth runs out on its own, the target is healed for your Spirit. With HoTs doing most of your healing, it is the best single point you take.
 - **Swiftmend** (1 point): an instant heal for the whole of your own Regrowth or Rejuvenation on the target (another druid's does not count), and in Forever the HoT keeps ticking.
-- **Nature's Swiftness** (1 point): your next Healing Touch is instant, the save for a dying tank.
+- **Nature's Swiftness** (1 point): your next Healing Touch or Wild Growth is instant, the save for a dying tank or a raid that just took a burst.
 - **Naturalist** (5 points): Healing Touch and Wild Growth half a second faster.
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
 - **Improved Tranquility** (2 points): Tranquility with no threat and its cooldown cut from 5 minutes to 2.
