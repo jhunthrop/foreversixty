@@ -37,7 +37,9 @@ func TestBearSwipesOnlyOnAPack(t *testing.T) {
 // 29.5 with round 16's 30-rage gate). Round 30 retuned the gate on round 29's order and the
 // dungeon-table boss: at 45 rage from 40 to 59 (sim/request TestBearMaulGateFollowsTheLevel)
 // Lacerate takes more of the rage, Primal Bite still fires about 28 times, and threat rises
-// 1.6 to 2.1% at 40 to 45.
+// 1.6 to 2.1% at 40 to 45. Below 60 the fight is now a dungeon pull (sim/request
+// TestTankFightBelowTheReferenceLevelIsADungeonPull), so the test counts Primal Bite against
+// the casts its 6 second cooldown allows in the fight the engine ran.
 func TestBearMaulKeepsRageForPrimalBiteFromFortyToFiftyThree(t *testing.T) {
 	o := options{
 		repoRoot: "../../..", spec: "druid-feral-bear", preset: "bare", band: 40, level: 43,
@@ -51,14 +53,16 @@ func TestBearMaulKeepsRageForPrimalBiteFromFortyToFiftyThree(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	r := newReport(req, fightSecondsOf(req), est, player, nil)
+	secs := fightSecondsOf(req)
+	r := newReport(req, secs, est, player, nil)
 	bites := 0.0
 	for _, a := range r.Actions {
 		if strings.HasSuffix(a.Name, "(407995)") {
 			bites += a.CastsPerIter
 		}
 	}
-	if bites < 27.5 {
-		t.Errorf("level 43: Primal Bite cast %.2f times a fight, want at least 27.5 (Maul is spending its rage)", bites)
+	const primalBiteCooldownSec = 6
+	if possible := secs / primalBiteCooldownSec; bites < 0.9*possible {
+		t.Errorf("level 43: Primal Bite cast %.2f times in a %.0fs fight, want at least 90%% of the %.1f its cooldown allows (Maul is spending its rage)", bites, secs, possible)
 	}
 }

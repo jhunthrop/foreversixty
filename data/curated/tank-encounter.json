@@ -148,8 +148,8 @@
   },
   "dungeon_fight": {
     "duration_sec": {
-      "value": 45,
-      "reason": "Below the reference level the fight is a dungeon pull, not a raid boss: it lasts this long, varied by the request's own share, and level 60 keeps the request's raid length. 45 seconds is the upper quartile of the 766 dungeon fights logged on foreverlogs.gg (the 11 public reports of 2026-11-04 to 11-11 whose tank is level 20 or more: 108 boss kills and 658 trash fights of 10 seconds or more; median 28.5, upper quartile 46.9; boss kills 30.9 and 39.8, trash 28.2 and 48.5). The upper quartile goes with the band's damage, which is its 75th percentile pull. Before sim-accuracy 2026-11-11 (tanks below 45) the tank fought a dungeon band's hardest pull for the ranker's 180 seconds, so a tank whose damage taken sat a little above the band's healing bled out over three minutes no logged pull lasts: a bare bear at 30 to 35 died in 96% of fights."
+      "value": 48,
+      "reason": "Below the reference level the fight is a dungeon pull, not a raid boss: it lasts this long, varied by the request's own share, and level 60 keeps the request's raid length. 48 seconds is the upper quartile (47.6) of the 1,323 dungeon fights logged on foreverlogs.gg in the 15 public reports of 2026-11-04 to 11-11 whose tank is level 20 to 43: 182 boss kills (median 31.0, upper quartile 40.3) and 1,141 trash fights of 10 seconds or more (29.3 and 49.5). The upper quartile goes with the band's damage, which is its 75th percentile pull. Before sim-accuracy 2026-11-11 (tanks below 45) the tank fought a dungeon band's hardest pull for the ranker's 180 seconds, so a tank whose damage taken sat a little above the band's healing bled out over three minutes no logged pull lasts: a bare bear at 30 to 35 died in 96% of fights."
     }
   }
 }
