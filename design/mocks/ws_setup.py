@@ -133,6 +133,12 @@ def _action(a: dict | None, state: str = 'out') -> str:
         return ''
     if a['id'] == 'download':
         return download_block(state, a['primary'])
+    if a['id'] == 'install':
+        # The addon's store group (SetupStepList.svelte): CurseForge, gold when it is the next step, then Wago.
+        return f'<div class="acts" role="group" aria-label="{escape(a["label"])}">{LinkButton(A["installCurseForge"], primary=a["primary"])}{LinkButton(A["installWago"])}</div>'
+    if a['id'] == 'update':
+        # A ticked step's update: quiet gold links.
+        return f'<div class="acts" role="group" aria-label="{escape(a["label"])}">{arrow(A["setupUpdateCurseForge"])}{arrow(A["setupUpdateWago"])}</div>'
     if a['kind'] == 'link':
         return arrow(a['label'])
     if a['kind'] == 'button':
@@ -151,19 +157,20 @@ def download_actions(state: str) -> str:
     return f'<div class="dl-head">{download_block(state, primary=False)}</div>'
 
 
-def row_done(state: str, n: int) -> bool:
-    return FACTS['rows'][state][n - 1]['mark'] == 'ok'
+def row_done(state: str, step: str) -> bool:
+    """Whether the plate's step (lib/setup/steps.ts StepId: signin, companion, addon) is ticked."""
+    return next(r for r in FACTS['rows'][state] if r['id'] == step)['mark'] == 'ok'
 
 
 # ------------------------------------------------------------------------------------------------ /setup: the sections
 def addon_section(state: str) -> str:
     hand = (f'<div class="hand"><span class="t-label">{escape(A["setupHandInstall"])}</span>'
-            f'<p class="t-small">{escape(A["setupHandInstallBody"])}</p>'
+            f'<p class="t-small">{escape(FACTS["hand_install"]["mac" if platform_of(state) == "mac" else "other"])}</p>'
             f'<div class="acts">{arrow(A["installZip"])}{arrow(A["installDataRelease"])}</div><p class="t-small">{escape(FACTS["data_build"])}</p></div>')
-    # U4 (rulings): once row 2 is ticked its button is gone; CurseForge stays here for a second PC.
-    again = arrow(A['installCurseForge']) if row_done(state, 2) else ''
-    body = (f'<div class="body" id="addon"><p class="t-small">{escape(A["installDataHint"])}</p><div class="acts">{again}{LinkButton(A["installWago"])}</div>{hand}</div>')
-    return Section(A['setupStep2Title'], body, panel=True)
+    # U4 (rulings): once the addon step is ticked its buttons are gone; both stores stay here for a second PC.
+    again = f'<div class="acts">{arrow(A["installCurseForge"])}{arrow(A["installWago"])}</div>' if row_done(state, 'addon') else ''
+    body = (f'<div class="body" id="addon"><p class="t-small">{escape(A["installDataHint"])}</p>{again}{hand}</div>')
+    return Section(A['setupAddonTitle'], body, panel=True)
 
 
 def companion_section(state: str) -> str:
@@ -191,16 +198,19 @@ def companion_section(state: str) -> str:
         else:
             pair = f'<div class="pair"><span class="pair-h">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
     # The signing and first-run line (U7): the own build's; every build's, named, for an unknown system; none on a phone.
+    # It belongs to the button: 8 px under it, in body ink (installers review 2026-11-10; SetupCompanion.svelte).
+    first_run = '<p class="t-small" style="color:var(--text)">{}</p>'
     if comp['own'] is not None:
-        plat = f'<p class="t-small">{escape(comp["own"]["firstRun"])}</p>'
+        plat = first_run.format(escape(comp["own"]["firstRun"]))
     elif platform_of(state) == 'unknown':
-        plat = ''.join(f'<p class="t-small">{escape(b["platform"])}: {escape(b["firstRun"])}</p>' for b in comp['others'])
+        plat = ''.join(first_run.format(f'{escape(b["platform"])}: {escape(b["firstRun"])}') for b in comp['others'])
     else:
         plat = ''
     # Owner 2026-11-08: the download right under the heading, in every state (it replaces U4's quiet "another PC" link).
-    body = (f'<div class="body" id="companion">{download_block(state, primary=False)}<p>{escape(lead_sentence)}</p>{plat}'
+    download = f'<div style="display:flex;flex-direction:column;gap:8px">{download_block(state, primary=False)}{plat}</div>'
+    body = (f'<div class="body" id="companion">{download}<p>{escape(lead_sentence)}</p>'
             f'{rows}{pic}{pair}</div>')
-    return Section(A['setupStep3Title'], body, meta=escape(A['setupCompanionNote']), panel=True)
+    return Section(A['setupCompanionTitle'], body, meta=escape(A['setupCompanionNote']), panel=True)
 
 
 def surfaces_section() -> str:
@@ -249,7 +259,7 @@ def setup_page(state: str) -> str:
     paste_state = state if state in ('export', 'paste-error') else ''
     plate_state = 'out' if state == 'paste-error' else state
     head = PageHeader(escape(A['setupPageTitle']), actions=download_actions(state))
-    main = Plate(Steps(step_rows(plate_state)), 'Your setup').replace('class="plate"', 'class="plate framed"', 1) + addon_section(plate_state) + companion_section(plate_state) + surfaces_section()
+    main = Plate(Steps(step_rows(plate_state)), 'Your setup').replace('class="plate"', 'class="plate framed"', 1) + companion_section(plate_state) + addon_section(plate_state) + surfaces_section()
     rail = paste_section(paste_state) + commands_section() + handshake_section() + flows_section()
     body = head + Page('split', main, rail, panels=True)
     who = WHO if state in ('bnet', 'addon', 'pairing', 'done') else None

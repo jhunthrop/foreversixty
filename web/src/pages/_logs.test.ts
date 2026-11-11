@@ -29,7 +29,7 @@ describe('/logs', () => {
     expect(assets.length).toBeGreaterThan(0);
     expect(new Set(assets).size).toBe(assets.length);
     for (const entry of companion.downloads) {
-      expect(entry.asset).toMatch(/^foreversixty-companion_/);
+      expect(entry.asset).toMatch(/^foreversixty-companion[_-]/);
       expect(entry.platform.length).toBeGreaterThan(0);
     }
   });

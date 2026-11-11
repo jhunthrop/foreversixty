@@ -87,6 +87,12 @@ enum CharacterPage {
     /// all, neither the score nor the "no logs" card.
     static func showsScoreSection(_ profile: CharacterProfile) -> Bool { profile.scoreHidden != true }
 
+    /// The unscored card's title: a character with ranked fights (a leveling dungeon boss, say) has
+    /// logs, so it reads "No Forever Score yet", never "No logs yet" (the web's `fought`).
+    static func noScoreTitle(_ profile: CharacterProfile) -> String {
+        profile.best.isEmpty ? Copy.charNoLogs : Copy.charNoScoreYet
+    }
+
     static func score(_ profile: CharacterProfile) -> String {
         (profile.score ?? 0).formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))
     }

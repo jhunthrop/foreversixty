@@ -602,9 +602,20 @@ func validExports(w http.ResponseWriter, r *http.Request, exports []Export) bool
 				map[string]string{"characters": "name must be letters, digits, spaces and hyphens"})
 			return false
 		}
+		// A beta or pre-launch export is refused whole, never dropped quietly:
+		// a 400 on "characters" is logged by the companion and not sent again,
+		// and the paste box shows the message as it stands.
+		if problem := preLiveProblem(c.Name, c.Export); problem != "" {
+			httpx.WriteError(w, r, http.StatusBadRequest, CodePreLiveExport, problem,
+				map[string]string{"characters": "client build must be " + MinLiveBuild + " or newer"})
+			return false
+		}
 	}
 	return true
 }
+
+// CodePreLiveExport is the error code of an export made before launch.
+const CodePreLiveExport = "pre_live_export"
 
 // ExportsResult is the body POST /v1/addon/exports answers with.
 type ExportsResult struct {

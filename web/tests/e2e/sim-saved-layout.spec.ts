@@ -72,7 +72,9 @@ for (const id of FIXTURES) {
       await loadEveryCard(page);
 
       const boxes = await sectionBoxes(page);
-      expect(boxes.map((row) => row.id)).toEqual(expect.arrayContaining(['talents', 'buffs', 'settings']));
+      // Below 768 Buffs folds under its own line (h-audit round 3), so it is no lazy section there.
+      const expected = width < 768 ? ['talents', 'settings'] : ['talents', 'buffs', 'settings'];
+      expect(boxes.map((row) => row.id)).toEqual(expect.arrayContaining(expected));
       for (const row of boxes) {
         expect(
           Math.abs(row.box - row.card),

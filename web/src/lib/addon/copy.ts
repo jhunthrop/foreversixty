@@ -116,21 +116,23 @@ export const addonCopy = {
   flowInTitle: 'Into the game',
   flowInBody: 'Save a build here, press Copy for the game, then type /fs in game and paste it.',
 
-  // --- /setup page's three steps (spec 2026-09-25 §3.4) ---
-  setupStep1Title: 'Sign in',
-  setupStep2Title: 'The addon',
-  setupStep3Title: 'The companion',
+  // --- /setup page's three steps (spec 2026-09-25 §3.4; the companion second, owner 2026-11-10) ---
+  setupSignInTitle: 'Sign in',
+  setupCompanionTitle: 'The companion',
+  setupAddonTitle: 'The addon',
   setupSignInBody: 'Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.',
   /** Same wording as `home-panel-copy.ts`'s `signInButton`; kept as its own key here so
    *  every visible string on this page comes from `addonCopy`, matching this page's own
    *  copy-module convention rather than reaching into the home page's module. */
   setupSignInAction: 'Sign in with Battle.net',
-  /** Under the step 3 title: which of the three steps can be skipped. */
-  setupCompanionNote: 'Optional. Sends bags, bank and live logs after every session.',
+  /** Under the companion step's title: which of the three steps can be skipped. */
+  setupCompanionNote: 'Sends bags, bank and live logs after every session.',
   /** Advanced Combat Logging is a setting that applies at once (no restart); /combatlog turns off
-   *  when you log out, so it is typed each time you log in (setup rulings 2026-11-07). */
+   *  when you log out, so it is typed each time you log in (setup rulings 2026-11-07). The path is
+   *  the Forever client's own: Esc > Options, the System group, Network (Blizzard UI 1.60.1.70888,
+   *  Blizzard_SettingsDefinitions_Shared/Network.lua registers Network under SETTING_GROUP_SYSTEM). */
   setupCompanionBody:
-    'The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.',
+    'The companion logs live from your desktop. Turn on Options > System > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.',
   /** The page's title, and its one H1 (setup spec 2026-11-07 section 4). */
   setupPageTitle: 'Get set up',
   /** A signed-out visitor who pasted an export: the one done line a step can show without a session. */
@@ -139,11 +141,24 @@ export const addonCopy = {
   setupSignedInAs: (name: string): string => `Signed in as ${name}`,
   setupAddonArrived: (character: string, when: string): string =>
     `${character} arrived from the addon ${when}`,
-  /** Step 2 for an account whose characters came from Battle.net and none from the addon. */
-  setupAddonOptional:
-    'Your characters are in from Battle.net. The addon saves bags and bank when you log out; the companion sends them.',
-  /** Step 2 before the account shows the addon: the parallel of `setupCompanionNote`. */
+  /** The addon step before anything shows the addon: the parallel of `setupCompanionNote`. */
   setupAddonNote: 'Optional. Gear tips on every tooltip, talent marks, bags and bank.',
+  /** The addon step once a companion found it in the game folder ('' when its TOC names no version). */
+  setupAddonInstalled: (device: string, version: string): string =>
+    version === '' ? `Installed on ${device}` : `Installed on ${device} · ${version}`,
+  /** Under the note while no companion has looked in the game folder: an installed addon is not
+   *  failed, only not seen yet (wow-player 2026-11-10). */
+  setupAddonUnseen: 'Already installed? The companion sees it.',
+  /** A companion's scan found no Forever Sixty addon in that PC's game folder: a to-do, never a fault. */
+  setupAddonNotOn: (device: string): string => `Not in _forever_ on ${device} yet`,
+  /** Under the installed line when the feed has a newer addon release; the row's Update buttons follow. */
+  setupAddonBehind: (latest: string): string => `${latest} is out`,
+  /** The addon step's install buttons, as one group (its accessible name). */
+  setupInstallAddon: 'Install the addon',
+  /** The same group on an installed addon behind the feed. */
+  setupUpdateAddon: 'Update the addon',
+  setupUpdateCurseForge: 'Update from CurseForge',
+  setupUpdateWago: 'Update from Wago Addons',
   /** Step 1 while the Battle.net import runs or finished under two minutes ago (`/v1/me` `bnet_import`). */
   setupImportWait: 'Your characters can take up to two minutes to arrive.',
   /** Step 1 after `?signin=failed` (the API's callback redirect). */
@@ -151,8 +166,12 @@ export const addonCopy = {
   /** The hand install under The addon: the folders each zip holds (addon-release.yml ships
    *  ForeverSixty and ForeverSixtyInbox; addon-data-release.yml ForeverSixtyData). */
   setupHandInstall: 'Installing by hand',
-  setupHandInstallBody:
-    'Unzip both into World of Warcraft\\_forever_\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.',
+  /** The path with the visitor's own separator: a Mac reads slashes, every other system the
+   *  Windows backslashes (wow-player 2026-11-10). */
+  setupHandInstallBody: (mac: boolean): string => {
+    const path = ['World of Warcraft', '_forever_', 'Interface', 'AddOns'].join(mac ? '/' : '\\');
+    return `Unzip both into ${path}: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.`;
+  },
   /** The paste field's label (the Section title is `setupTryExport`). */
   pasteFieldLabel: 'Addon export',
   setupCompanionLine: (device: string, seen: string): string =>
@@ -160,7 +179,7 @@ export const addonCopy = {
   setupCompanionWaiting: 'No companion signed in yet',
   setupHowItWorks: 'How the addon works',
   setupCompanionPair: 'Sign in with Battle.net inside the companion; it connects itself.',
-  /** Row 3 on a phone or tablet: the companion is a desktop app, so no download is offered. */
+  /** The companion step on a phone or tablet: the companion is a desktop app, so no download is offered. */
   setupCompanionMobile: 'The companion runs on your PC or Mac.',
   /** The button that copies this page's address, to open it on the computer. */
   setupCopyLink: 'Copy link',

@@ -124,7 +124,10 @@ test('/sim: a Restoration Druid loads the head, but Run sim is disabled and the 
   await expect(page.getByTestId('sim-error')).toHaveText(simCopy.runNotSimulated('Restoration Druid'));
   // The honest line is text in the answer, never a title= tooltip.
   await expect(page.getByTestId('sim-error')).toHaveJSProperty('tagName', 'SPAN');
-  await expect(answer.getByRole('link', { name: /Spec support/ })).toHaveAttribute('href', '/sim/specs');
+  // The way to Spec support sits beside the answer, in the head's actions (round 5).
+  await expect(
+    page.getByTestId('sim-head').getByRole('link', { name: simPageCopy.answer.specSupport, exact: true }),
+  ).toHaveAttribute('href', '/sim/specs');
 
   const button = page.getByTestId('sim-run-button');
   await expect(button).toBeDisabled();

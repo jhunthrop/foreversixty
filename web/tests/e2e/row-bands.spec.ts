@@ -7,7 +7,7 @@
 // character page, whose fight rows are Rows since design/specs/2026-11-06-character.md, nor the guild's
 // Readiness, whose rows are Rows since the by-exception board (lane P10).
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import { CHICAGO, NOW, stubGuildRaids, threePlanned } from './support/guild-raids';
 import { gotoHydrated } from './support/hydrated';
 import { GUILD_PAGE, litBandRooms, stubGuild } from './support/row-band-pages';
@@ -45,6 +45,8 @@ for (const width of WIDTHS) {
 
 test('a planned raid row is square at rest and a ringed band on hover', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
+  // The guild page's own reads (the tier's loot nights among them) go unanswered: this measures a row.
+  await apiUnreachable(page, ...GUILD_OVERVIEW_READS);
   await stubGuildRaids(page, { viewer: 'member', raids: threePlanned() });
   await page.clock.install({ time: NOW });
   await gotoHydrated(page, `${GUILD_PAGE}#raids`, 'guild-raids-tab');

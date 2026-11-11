@@ -15,7 +15,7 @@
 <Section title="Columns" testid="queries-rail" panel>
   {#snippet head()}<button
       type="button"
-      class="text-gold text-[14px] font-semibold hover:underline"
+      class="text-gold text-[14px] font-semibold hover:underline [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:min-h-11"
       aria-expanded={all}
       data-testid="queries-rail-all"
       onclick={() => (all = !all)}>{all ? 'Fewer' : `All ${columns.length}`}</button

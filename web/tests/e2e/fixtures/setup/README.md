@@ -10,3 +10,5 @@ character). The clock is pinned to 2026-11-06T10:00:00Z (`setup_facts.mjs` `NOW`
 - `pairing-code.json`: `POST /v1/devices/pair` (as `logs-companion.spec.ts`).
 - `companion-latest.json`: `GET /dl/companion/latest.json`, the feed's companion manifest (0.2.37, Windows and Mac),
   for the download's direct link, version and size.
+- `addon-latest.json`: `GET /dl/addon/latest.json`, the feed's addon manifest (2.0.37), for the addon step's
+  "is out" line when a companion reports an older install.

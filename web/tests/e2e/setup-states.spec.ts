@@ -66,6 +66,7 @@ for (const os of ['windows', 'mac'] as const) {
     const button = page.getByTestId('setup-action-download');
     await expect(button).toHaveText(addonCopy.setupCompanionDownload(own.platform));
     await expect(button).toHaveAttribute('href', releasePath(own.asset));
+    await expect(button).toHaveAttribute('download', own.saveAs);
     await expect(page.getByTestId('setup-download-meta')).toHaveText(/^Version 0\.2\.37 · \d+\.\d MB$/);
     await expect(page.getByTestId('setup-companion-first-run')).toHaveText(own.firstRun);
     const other = COMPANION_DOWNLOADS.find((build) => build.os !== os);
@@ -76,6 +77,7 @@ for (const os of ['windows', 'mac'] as const) {
       'href',
       releasePath(other.asset),
     );
+    await expect(others.getByTestId(`setup-download-${other.os}`)).toHaveAttribute('download', other.saveAs);
   });
 }
 
@@ -99,7 +101,7 @@ test('a phone: the companion runs on a PC or Mac, Copy link copies this page, an
 }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await openSetupState(page, 'mobile');
-  await expect(page.getByTestId('setup-steps-step-3')).toContainText(addonCopy.setupCompanionMobile);
+  await expect(page.getByTestId('setup-steps-step-2')).toContainText(addonCopy.setupCompanionMobile);
   await expect(page.getByTestId('setup-download')).toHaveCount(0);
   await expect(page.getByTestId('setup-companion-first-run')).toHaveCount(0);
   const copy = page.getByTestId('setup-action-copylink');
@@ -137,10 +139,10 @@ test('the download sits at the top and right under The companion heading, the sa
   expect(download?.y ?? Infinity).toBeLessThan(lead?.y ?? 0);
 });
 
-test('a pairing code out: row 3 waits with the code, no gold step', async ({ page }) => {
+test('a pairing code out: the companion step waits with the code, no gold step', async ({ page }) => {
   await openSetupState(page, 'pairing');
-  await expect(plate(page).getByRole('img', { name: 'Step 3: In progress' })).toBeVisible();
-  await expect(page.getByTestId('setup-steps-step-3')).toContainText(pairingCopy.waiting);
+  await expect(plate(page).getByRole('img', { name: 'Step 2: In progress' })).toBeVisible();
+  await expect(page.getByTestId('setup-steps-step-2')).toContainText(pairingCopy.waiting);
   await expect(page.getByTestId('setup-pairing-code')).toBeVisible();
   await expect(plate(page).getByRole('img', { name: /: Next$/ })).toHaveCount(0);
 });
@@ -155,6 +157,57 @@ test('everything done: the quiet install links stay in the Sections (U4)', async
   await expect(page.getByTestId('setup-device-status')).toContainText('JHUNT-PC · Windows');
 });
 
+test('the companion comes second and the addon third, the addon a neutral to-do with both stores', async ({
+  page,
+}) => {
+  await openSetupState(page, 'bnet');
+  await expect(page.getByTestId('setup-steps-step-2')).toContainText(addonCopy.setupCompanionTitle);
+  const addon = page.getByTestId('setup-steps-step-3');
+  await expect(addon).toContainText(addonCopy.setupAddonTitle);
+  await expect(plate(page).getByRole('img', { name: 'Step 3: Not done' })).toBeVisible();
+  await expect(plate(page).getByRole('alert')).toHaveCount(0);
+  await expect(page.getByTestId('setup-action-curseforge')).toHaveAttribute(
+    'href',
+    /curseforge\.com\/projects\//,
+  );
+  await expect(page.getByTestId('setup-action-wago')).toHaveAttribute(
+    'href',
+    /addons\.wago\.io\/addons\/foreversixty/,
+  );
+});
+
+test('a companion that found no addon: the addon is the gold to-do, naming the PC, never failed', async ({
+  page,
+}) => {
+  await openSetupState(page, 'companion');
+  await expect(plate(page).getByRole('img', { name: 'Step 2: Done' })).toBeVisible();
+  await expect(plate(page).getByRole('img', { name: 'Step 3: Next' })).toBeVisible();
+  await expect(page.getByTestId('setup-steps-step-3')).toContainText(addonCopy.setupAddonNotOn('JHUNT-PC'));
+  await expect(plate(page).getByRole('alert')).toHaveCount(0);
+});
+
+test('a companion that found the addon ticks the step with the PC and version', async ({ page }) => {
+  await openSetupState(page, 'installed');
+  await expect(plate(page).getByRole('img', { name: /^Step \d: Done$/ })).toHaveCount(3);
+  await expect(page.getByTestId('setup-steps-step-3')).toContainText(
+    addonCopy.setupAddonInstalled('JHUNT-PC', '2.0.37'),
+  );
+  await expect(page.getByTestId('setup-steps-step-3')).not.toContainText('is out');
+  await expect(page.getByTestId('setup-curseforge-again')).toBeVisible();
+});
+
+test('an addon behind the feed stays ticked and says what is out and where to update', async ({ page }) => {
+  await openSetupState(page, 'outdated');
+  await expect(plate(page).getByRole('img', { name: 'Step 3: Done' })).toBeVisible();
+  const addon = page.getByTestId('setup-steps-step-3');
+  await expect(addon).toContainText(addonCopy.setupAddonInstalled('JHUNT-PC', '2.0.30'));
+  await expect(addon).toContainText(addonCopy.setupAddonBehind('2.0.37'));
+  await expect(page.getByTestId('setup-action-curseforge')).toContainText(addonCopy.setupUpdateCurseForge);
+  await expect(page.getByTestId('setup-action-wago')).toContainText(addonCopy.setupUpdateWago);
+  // Ticked, so it carries no gold: the plate's one primary is never an update.
+  await expect(plate(page).getByRole('img', { name: /: Next$/ })).toHaveCount(0);
+});
+
 test('opened from a claim, the way back is a Notice under the head (spec 4.6)', async ({ page }) => {
   await openSetupState(page, 'claim');
   const notice = page.getByTestId('setup-back-to-claim-notice');
@@ -162,7 +215,7 @@ test('opened from a claim, the way back is a Notice under the head (spec 4.6)', 
     notice.getByRole('link', { name: `${guildClaimCopy.backToClaim('Employed Millennials')} ›` }),
   ).toHaveAttribute('href', CLAIM_NEXT);
   // The plate keeps its own gold step: the companion download.
-  await expect(plate(page).getByRole('img', { name: 'Step 3: Next' })).toBeVisible();
+  await expect(plate(page).getByRole('img', { name: 'Step 2: Next' })).toBeVisible();
 });
 
 test('a returning signed-in visitor sees no shift as the reads answer', async ({ page }) => {

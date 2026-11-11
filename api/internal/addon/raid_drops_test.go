@@ -13,7 +13,7 @@ func TestAnUploadStoresTheExportsDrops(t *testing.T) {
 	h := newHarness(t)
 	guildID := joinByInviteAndSync(t, h, "2")
 	ctx := context.Background()
-	export := fmt.Sprintf("FS1:1.60.1.69893:warrior:tauren:0/0/0:|drops=%d:249:1084:master:Creature-0-1-249-1-10184-5:17078x1@Baelgrim|guild=Forever:2",
+	export := fmt.Sprintf("FS1:1.60.1.70790:warrior:tauren:0/0/0:|drops=%d:249:1084:master:Creature-0-1-249-1-10184-5:17078x1@Baelgrim|guild=Forever:2",
 		time.Now().Unix())
 	for range 2 {
 		if err := h.store.PutExports(ctx, h.owner, []Export{{Name: "Baelgrim", Region: "us", Ruleset: "hardcore", Export: export}}); err != nil {

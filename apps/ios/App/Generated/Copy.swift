@@ -3433,6 +3433,9 @@ enum Copy {
     /// No logs yet.
     static var charNoLogs: String { text("char.noLogs") }
 
+    /// No Forever Score yet.
+    static var charNoScoreYet: String { text("char.noScoreYet") }
+
     /// {name} has no rated fight in a public report, so there is no score to show.
     static func charNoScore(name: String) -> String {
         format("char.noScore", name)

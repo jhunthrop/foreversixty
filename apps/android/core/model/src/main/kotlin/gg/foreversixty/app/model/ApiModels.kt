@@ -853,6 +853,16 @@ data class Device(
     @SerialName("kind") val kind: String? = null,
     @SerialName("created_at") val createdAt: String? = null,
     @SerialName("last_seen_at") val lastSeenAt: String? = null,
+    /** What a companion last found in Interface/AddOns (PUT /v1/devices/self/addons). Omitted until it has reported; empty when it found none. */
+    @SerialName("addons") val addons: List<DeviceAddon>? = null,
+)
+
+/** One Forever Sixty addon a companion found installed (Go auth.DeviceAddon). */
+@Serializable
+data class DeviceAddon(
+    @SerialName("folder") val folder: String,
+    /** The TOC's Version line without its prefix; empty when the TOC has none. */
+    @SerialName("version") val version: String,
 )
 
 /** The saved Discord channel. Never carries the URL, token or webhook id. */

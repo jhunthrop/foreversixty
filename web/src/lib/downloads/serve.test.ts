@@ -122,10 +122,37 @@ describe('serveDownload from the feed', () => {
     expect(response.status).toBe(200);
     expect(await response.text()).toBe('exe');
     expect(response.headers.get('cache-control')).toBe('public, max-age=31536000, immutable');
-    expect(response.headers.get('content-disposition')).toBe(`attachment; filename="${windows.asset}"`);
+    expect(response.headers.get('content-disposition')).toBe(`attachment; filename="${windows.saveAs}"`);
     const head = await get(path, env, 'HEAD');
     expect(head.status).toBe(200);
     expect(head.body).toBeNull();
+  });
+
+  it('saves each /setup build under its friendly name, and every updater file under its own', async () => {
+    const tag = 'companion-v0.2.46';
+    const names = [
+      'foreversixty-companion-setup.exe',
+      'foreversixty-companion_darwin_universal.dmg',
+      'foreversixty-companion_windows_amd64.exe',
+      'foreversixty-companion_windows_amd64.exe.minisig',
+      'foreversixty-companion_darwin_universal.app.zip',
+      'foreversixty-companion_darwin_universal.app.zip.minisig',
+    ];
+    const files = Object.fromEntries(names.map((name) => [`downloads/companion/${tag}/${name}`, name]));
+    const feed = { LOGS: bucket(files) };
+    const savedAs = async (name: string): Promise<string | null> =>
+      (await get(`/dl/companion/${tag}/${name}`, feed)).headers.get('content-disposition');
+    expect(await savedAs('foreversixty-companion-setup.exe')).toBe(
+      'attachment; filename="ForeverSixtySetup.exe"',
+    );
+    expect(await savedAs('foreversixty-companion_darwin_universal.dmg')).toBe(
+      'attachment; filename="ForeverSixty.dmg"',
+    );
+    for (const name of names.slice(2)) {
+      expect(await savedAs(name)).toBe(`attachment; filename="${name}"`);
+    }
+    // The manifest is read, not saved: no attachment at all.
+    expect((await get('/dl/companion/latest.json', env)).headers.get('content-disposition')).toBeNull();
   });
 
   it('redirects the latest companion build and the latest addon zip to their own paths, never the old host', async () => {

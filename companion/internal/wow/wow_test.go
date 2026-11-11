@@ -24,9 +24,11 @@ func fakeInstall(t *testing.T, root, flavor, account string) Install {
 	return installAt(dir)
 }
 
-func TestScanKeepsOnlyForeverFlavoursLiveFirst(t *testing.T) {
+// The beta ended at launch: its folder is another game now, so its
+// characters are never read or uploaded beside the live ones.
+func TestScanKeepsOnlyTheLiveGame(t *testing.T) {
 	root := t.TempDir()
-	beta := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
+	fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
 	live := fakeInstall(t, root, "_forever_", "ACCOUNT#1")
 	fakeInstall(t, root, "_retail_", "ACCOUNT#1")
 	fakeInstall(t, root, "_anniversary_", "ACCOUNT#1")
@@ -36,11 +38,8 @@ func TestScanKeepsOnlyForeverFlavoursLiveFirst(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := Scan(root)
-	if len(got) != 2 || got[0].Path != live.Path || got[1].Path != beta.Path {
-		t.Fatalf("Scan found %+v, want _forever_ then the Classic beta", got)
-	}
-	if got[0].Flavor != "_forever_" || got[1].Flavor != "_classic_beta_" {
-		t.Errorf("flavours = %q, %q", got[0].Flavor, got[1].Flavor)
+	if len(got) != 1 || got[0].Path != live.Path || got[0].Flavor != "_forever_" {
+		t.Fatalf("Scan found %+v, want _forever_ alone", got)
 	}
 	if got[0].Logs != filepath.Join(root, "_forever_", "Logs") {
 		t.Errorf("logs = %q", got[0].Logs)
@@ -52,7 +51,7 @@ func TestScanKeepsOnlyForeverFlavoursLiveFirst(t *testing.T) {
 }
 
 func TestIsForeverIsTheListBesideFlavorName(t *testing.T) {
-	for folder, want := range map[string]bool{"_forever_": true, "_FOREVER_": true, "_classic_beta_": true, "_retail_": false, "_anniversary_": false, "_classic_era_": false, "_myserver_": false, "": false} {
+	for folder, want := range map[string]bool{"_forever_": true, "_FOREVER_": true, "_classic_beta_": false, "_retail_": false, "_anniversary_": false, "_classic_era_": false, "_myserver_": false, "": false} {
 		if got := IsForever(folder); got != want {
 			t.Errorf("IsForever(%q) = %v", folder, got)
 		}
@@ -69,6 +68,7 @@ func TestPickRefusesAnotherGameInWords(t *testing.T) {
 		{"_retail_", "That is Retail. Forever Sixty runs on WoW Forever; pick its _forever_ folder."},
 		{"_anniversary_", "That is Classic Anniversary. Forever Sixty runs on WoW Forever; pick its _forever_ folder."},
 		{"_classic_era_", "That is Classic Era. Forever Sixty runs on WoW Forever; pick its _forever_ folder."},
+		{"_classic_beta_", "That is Classic beta. Forever Sixty runs on WoW Forever; pick its _forever_ folder."},
 		{"_myserver_", "Forever Sixty runs on WoW Forever; pick its _forever_ folder."},
 	} {
 		root := t.TempDir()
@@ -84,24 +84,15 @@ func TestPickRefusesAnotherGameInWords(t *testing.T) {
 			}
 		}
 	}
-	// A folder with a Forever variant and Retail is accepted, and gives the
-	// Forever variant alone: the live game, and the beta for its testers.
-	for _, flavor := range ForeverFlavors {
-		root := t.TempDir()
-		want := fakeInstall(t, root, flavor, "A")
-		fakeInstall(t, root, "_retail_", "A")
-		got, err := Pick(root)
-		if err != nil || len(got) != 1 || got[0].Path != want.Path {
-			t.Fatalf("Pick(%s and Retail) = %+v, %v", flavor, got, err)
-		}
-	}
-	// With both, the live game comes first.
+	// A folder with the live game beside Retail and the ended beta is
+	// accepted, and gives the live game alone: the beta is never offered.
 	root := t.TempDir()
-	beta := fakeInstall(t, root, "_classic_beta_", "A")
-	live := fakeInstall(t, root, "_forever_", "A")
+	live := fakeInstall(t, root, LiveFlavor, "A")
+	fakeInstall(t, root, "_retail_", "A")
+	fakeInstall(t, root, "_classic_beta_", "A")
 	got, err := Pick(root)
-	if err != nil || len(got) != 2 || got[0].Path != live.Path || got[1].Path != beta.Path {
-		t.Fatalf("Pick(live and beta) = %+v, %v", got, err)
+	if err != nil || len(got) != 1 || got[0].Path != live.Path {
+		t.Fatalf("Pick(live, beta and Retail) = %+v, %v", got, err)
 	}
 }
 
@@ -109,8 +100,8 @@ func TestTheNotAnInstallErrorNamesTheLiveFolder(t *testing.T) {
 	if !strings.Contains(ErrNotAnInstall.Error(), "_forever_") {
 		t.Errorf("ErrNotAnInstall = %q, want it to name _forever_", ErrNotAnInstall)
 	}
-	if ForeverFlavors[0] != "_forever_" {
-		t.Errorf("ForeverFlavors = %q, want _forever_ first", ForeverFlavors)
+	if len(ForeverFlavors) != 1 || ForeverFlavors[0] != "_forever_" {
+		t.Errorf("ForeverFlavors = %q, want _forever_ alone", ForeverFlavors)
 	}
 }
 
@@ -158,7 +149,7 @@ func TestPickRefusesAFolderThatIsNotTheGame(t *testing.T) {
 
 func TestAdvancedLoggingIsReadFromConfigWTF(t *testing.T) {
 	root := t.TempDir()
-	in := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
+	in := fakeInstall(t, root, LiveFlavor, "ACCOUNT#1")
 	write := func(body string) {
 		t.Helper()
 		if err := os.WriteFile(in.AdvancedLoggingPath(), []byte(body), 0o600); err != nil {
@@ -184,8 +175,8 @@ func TestAdvancedLoggingIsReadFromConfigWTF(t *testing.T) {
 
 func TestSavedVariablesAreOnePerAccount(t *testing.T) {
 	root := t.TempDir()
-	in := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
-	fakeInstall(t, root, "_classic_beta_", "ACCOUNT#2") // second account, same install
+	in := fakeInstall(t, root, LiveFlavor, "ACCOUNT#1")
+	fakeInstall(t, root, LiveFlavor, "ACCOUNT#2") // second account, same install
 	sv, err := in.SavedVariables("ForeverSixty")
 	if err != nil {
 		t.Fatal(err)
@@ -240,7 +231,7 @@ func touch(t *testing.T, path string, at time.Time) {
 
 func TestLastActivityIsTheNewestFileDirectlyUnderLogs(t *testing.T) {
 	root := t.TempDir()
-	in := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
+	in := fakeInstall(t, root, LiveFlavor, "ACCOUNT#1")
 	old := time.Date(2026, 10, 1, 12, 0, 0, 0, time.UTC)
 	newest := time.Date(2026, 10, 15, 19, 42, 0, 0, time.UTC)
 	touch(t, filepath.Join(in.Logs, "General.log"), old)

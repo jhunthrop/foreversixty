@@ -39,7 +39,7 @@ func TestRaidAssignmentMessagesOnePerHeldSlot(t *testing.T) {
 		{CharacterKey: contractCharacter, RaidID: 42, RaidTitle: "Onyxia", ZoneName: "Onyxia's Lair", StartsAt: at,
 			Encounter: "Onyxia", SlotKey: "off_tank", Label: "Off tank (phase 3, fear)", Warning: "OT",
 			Purpose: "Builds threat from the landing and takes her when Bellowing Roar or Knock Away drops the main tank.",
-			With: []string{"Thornhide"}},
+			With:    []string{"Thornhide"}},
 		{CharacterKey: contractCharacter, RaidID: 42, ZoneName: "Onyxia's Lair", StartsAt: at, SlotKey: "soulstones", With: []string{}},
 	}}
 	s := &Service{Log: quietLog(), Assignments: src}

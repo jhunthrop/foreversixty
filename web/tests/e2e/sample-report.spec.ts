@@ -232,6 +232,8 @@ test.describe('the sample’s counts say what they count', () => {
     await page.goto('/reports/sample?fight=7');
     await expect(page.getByTestId('source-scope').locator('option:checked')).toHaveText('Everyone in range');
     await expect(page.getByTestId('report-group-missing')).toHaveText('Your group wasn’t in this pull.');
-    await expect(page.getByTestId('time-chart').getByTestId('chart-legend')).toContainText('Median player');
+    // With the group taken out, nobody left in range did damage on this short pull: the chart says so
+    // instead of drawing an empty median.
+    await expect(page.getByTestId('time-chart')).toContainText('No damage in this window.');
   });
 });

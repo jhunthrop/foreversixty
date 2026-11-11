@@ -39,7 +39,7 @@ func errorCode(body map[string]any) string {
 }
 
 func TestAPickedFolderIsValidatedAddedAndStoredByItsOwnPath(t *testing.T) {
-	for flavor, name := range map[string]string{"_forever_": "WoW Forever", "_classic_beta_": "Classic beta"} {
+	for flavor, name := range map[string]string{"_forever_": "WoW Forever"} {
 		t.Run(flavor, func(t *testing.T) {
 			h := newHarness(t)
 			picked := newInstall(t, flavor)
@@ -67,6 +67,8 @@ func TestAPickedFolderIsValidatedAddedAndStoredByItsOwnPath(t *testing.T) {
 func TestAFolderAboveTheInstallsAddsTheForeverOnesOnly(t *testing.T) {
 	h := newHarness(t)
 	root := t.TempDir()
+	// The ended beta is another game: picking the folder above it adds the live
+	// game alone, so beta characters never reach the site.
 	for _, f := range []string{"_classic_beta_", "_forever_", "_retail_", "_anniversary_"} {
 		for _, p := range []string{filepath.Join(root, f, "WTF"), filepath.Join(root, f, "Logs")} {
 			if err := os.MkdirAll(p, 0o755); err != nil {
@@ -79,11 +81,11 @@ func TestAFolderAboveTheInstallsAddsTheForeverOnesOnly(t *testing.T) {
 		t.Fatal("pick failed")
 	}
 	got := h.storedPaths()
-	if len(got) != 3 || got[1] != filepath.Join(root, "_forever_") || got[2] != filepath.Join(root, "_classic_beta_") {
-		t.Fatalf("wow_paths = %v, want the game folder, then _forever_ and the Classic beta by their own paths", got)
+	if len(got) != 2 || got[1] != filepath.Join(root, "_forever_") {
+		t.Fatalf("wow_paths = %v, want the game folder, then _forever_ by its own path", got)
 	}
 	for _, in := range h.app.Snapshot().Installs {
-		if in.Flavor != "_forever_" && in.Flavor != "_classic_beta_" {
+		if in.Flavor != "_forever_" {
 			t.Errorf("an install of %s is listed", in.Flavor)
 		}
 	}
@@ -92,8 +94,9 @@ func TestAFolderAboveTheInstallsAddsTheForeverOnesOnly(t *testing.T) {
 func TestARetailFolderIsRefusedInWordsThatSayWhy(t *testing.T) {
 	h := newHarness(t)
 	for pick, want := range map[string]string{
-		newInstall(t, "_retail_"):      "That is Retail. Forever Sixty runs on WoW Forever; pick its _forever_ folder.",
-		newInstall(t, "_private_srv_"): "Forever Sixty runs on WoW Forever; pick its _forever_ folder.",
+		newInstall(t, "_retail_"):       "That is Retail. Forever Sixty runs on WoW Forever; pick its _forever_ folder.",
+		newInstall(t, "_classic_beta_"): "That is Classic beta. Forever Sixty runs on WoW Forever; pick its _forever_ folder.",
+		newInstall(t, "_private_srv_"):  "Forever Sixty runs on WoW Forever; pick its _forever_ folder.",
 	} {
 		h.pick = pick
 		code, body := h.call(http.MethodPost, h.url("/api/folders/pick"), nil)
@@ -165,11 +168,11 @@ func TestACancelledDialogChangesNothing(t *testing.T) {
 
 func TestOnlyAFolderThePlayerAddedCanBeRemoved(t *testing.T) {
 	h := newHarness(t)
-	beta := newInstall(t, "_classic_beta_")
-	h.pick = beta
+	added := newInstall(t, "_forever_")
+	h.pick = added
 	h.call(http.MethodPost, h.url("/api/folders/pick"), nil)
 
-	if code, body := h.call(http.MethodPost, h.url("/api/folders/remove"), map[string]string{"path": beta}); code != http.StatusOK || body["ok"] != true {
+	if code, body := h.call(http.MethodPost, h.url("/api/folders/remove"), map[string]string{"path": added}); code != http.StatusOK || body["ok"] != true {
 		t.Fatalf("remove = %d %v", code, body)
 	}
 	if got := h.storedPaths(); len(got) != 1 || got[0] != h.game {
@@ -257,7 +260,7 @@ func TestTheHeadlineTakesTheFirstMatch(t *testing.T) {
 	}
 	if k := h.app.Snapshot().Headline; k.Key != "advanced_off" || k.Tone != "warn" || k.Title != "Advanced logging is off" ||
 		k.Sub != "Reports will miss deaths with health, item level, resources and positions. "+
-			"Turn it on in Options > Network > Advanced Combat Logging, then restart the game." {
+			"Turn it on in Options > System > Network > Advanced Combat Logging, then restart the game." {
 		t.Fatalf("advanced off = %+v", k)
 	}
 	if err := os.WriteFile(filepath.Join(h.game, "WTF", "Config.wtf"), []byte("SET advancedCombatLogging \"1\"\n"), 0o600); err != nil {

@@ -18,7 +18,8 @@ func flavorInfo(t *testing.T, dir, product string) {
 }
 
 // The owner's folder: _anniversary_, _classic_beta_, _forever_ and _retail_,
-// each with its .flavor.info. The two Forever products are found, live first.
+// each with its .flavor.info. The live game alone is found: the ended beta
+// is another game now (2026-11-10, beta characters reached the site).
 func TestTheOwnersInstallIsReadByProduct(t *testing.T) {
 	root := t.TempDir()
 	for folder, product := range map[string]string{
@@ -27,19 +28,16 @@ func TestTheOwnersInstallIsReadByProduct(t *testing.T) {
 		flavorInfo(t, fakeInstall(t, root, folder, "ACCOUNT#1").Path, product)
 	}
 	got := Scan(root)
-	if len(got) != 2 {
-		t.Fatalf("Scan = %+v, want _forever_ and _classic_beta_", got)
+	if len(got) != 1 {
+		t.Fatalf("Scan = %+v, want _forever_ alone", got)
 	}
 	if got[0].Flavor != LiveFlavor || got[0].Product != "wowf" || filepath.Base(got[0].Path) != "_forever_" {
-		t.Errorf("first = %+v, want the live game", got[0])
-	}
-	if got[1].Flavor != "_classic_beta_" || got[1].Product != "wow_classic_beta" {
-		t.Errorf("second = %+v, want the beta", got[1])
+		t.Errorf("found %+v, want the live game", got[0])
 	}
 }
 
 // A renamed or custom install is the live game when its file says wowf: it
-// is listed, named WoW Forever and preferred over the beta.
+// is listed and named WoW Forever, and the beta beside it is not.
 func TestAFolderNamedAnythingIsTheLiveGameWhenItsFileSaysWowf(t *testing.T) {
 	root := t.TempDir()
 	beta := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
@@ -47,8 +45,8 @@ func TestAFolderNamedAnythingIsTheLiveGameWhenItsFileSaysWowf(t *testing.T) {
 	custom := fakeInstall(t, root, "WoWF Live", "ACCOUNT#1")
 	flavorInfo(t, custom.Path, "WOWF")
 	got := Scan(root)
-	if len(got) != 2 || got[0].Path != custom.Path || got[1].Path != beta.Path {
-		t.Fatalf("Scan = %+v, want the renamed live folder then the beta", got)
+	if len(got) != 1 || got[0].Path != custom.Path {
+		t.Fatalf("Scan = %+v, want the renamed live folder alone", got)
 	}
 	if got[0].Flavor != LiveFlavor || FlavorName(got[0].Flavor) != "WoW Forever" {
 		t.Errorf("renamed live = %+v", got[0])
@@ -81,12 +79,16 @@ func TestTheProductWinsOverAMismatchedFolderName(t *testing.T) {
 		t.Errorf("Pick(_forever_ holding an unknown product) = %v", err)
 	}
 
+	// A beta product in a folder named _forever_ is the ended beta: refused,
+	// and named.
 	other := t.TempDir()
 	beta := fakeInstall(t, other, "_forever_", "ACCOUNT#1")
 	flavorInfo(t, beta.Path, "wow_classic_beta")
-	got := Scan(other)
-	if len(got) != 1 || got[0].Flavor != "_classic_beta_" {
-		t.Errorf("Scan = %+v, want the beta by its product", got)
+	if got := Scan(other); len(got) != 0 {
+		t.Errorf("Scan = %+v, want nothing: the file says the beta", got)
+	}
+	if _, err := Pick(beta.Path); !errors.As(err, &r) || r.Words() != "That is Classic beta. "+PickWords {
+		t.Errorf("Pick(_forever_ holding the beta) = %v, want the refusal naming Classic beta", err)
 	}
 }
 

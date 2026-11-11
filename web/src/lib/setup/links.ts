@@ -18,8 +18,6 @@ export function stepHref(id: StepActionId): string | null {
   switch (id) {
     case 'signin':
       return battlenetStartUrl(SETUP_SIGNED_IN);
-    case 'curseforge':
-      return CURSEFORGE_URL;
     case 'paste':
       return '#paste';
     default:

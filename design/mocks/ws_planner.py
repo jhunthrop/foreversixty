@@ -133,11 +133,12 @@ def answer(st: dict, loading: bool = False) -> str:
 
 
 def head(st: dict, signed: bool, origin: str = '', loading: bool = False) -> str:
-    """PageHeader: crest, "{Class} talents" in the class colour, the meta line; the answer: the points and Sim this build."""
+    """PageHeader: crest, "{Class} talents" in the class colour, the meta line, the lead; the answer: the points and Sim this build."""
     cls = st['cls']
     ans = answer(st, loading)
     meta = [e(st['meta'])] + ([f'<span class="gold">{e(origin)}</span>'] if origin else [])
-    return PageHeader(e(st['title']), CLASS_COLOR[cls], crest_img(cls, 56), meta, ans)
+    # The lead under the title (seo-fix 2026-11-10): what the planner does, every state.
+    return PageHeader(e(st['title']), CLASS_COLOR[cls], crest_img(cls, 56), meta, ans, lead=e(C['planner']['lead']))
 
 
 def bar(st: dict, open_m: bool = False) -> str:

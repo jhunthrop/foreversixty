@@ -58,7 +58,9 @@ test('Your sims lists every kind, each row its kind or spec, its date and a link
   await expect(history).toBeVisible();
   const run = page.getByTestId('sim-history-aaaaaaaaaaaa');
   await expect(run).toContainText('Raid-buffed, 3:00, single target');
-  await expect(run).toContainText('Fury · 14 Sep');
+  // The page's own spec goes without saying (h-audit 2026-11-09): the day alone.
+  await expect(run).toContainText('14 Sep');
+  await expect(run).not.toContainText('Fury ·');
   await expect(run).toContainText('1,204');
   await expect(run).toHaveAttribute('href', '/sim/aaaaaaaaaaaa');
   // An untitled Top Gear result reads its spec as the title and its kind under it.

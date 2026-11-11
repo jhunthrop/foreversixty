@@ -16,11 +16,14 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"runtime"
 	"syscall"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/app"
 	"github.com/jhunthrop/foreversixty/companion/internal/browser"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
+	"github.com/jhunthrop/foreversixty/companion/internal/install"
 	"github.com/jhunthrop/foreversixty/companion/internal/instance"
 	"github.com/jhunthrop/foreversixty/companion/internal/logging"
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
@@ -37,6 +40,10 @@ var startNew updater.Starter = updater.StartDetached
 
 func defaultOpen(u string) error { return browser.Open(u) }
 
+// Every desktop toolkit here wants its loop on the main thread, and the
+// first-launch window (install) opens before the shell's.
+func init() { runtime.LockOSThread() }
+
 func main() {
 	if err := run(os.Args[1:], os.Stdout); err != nil {
 		fmt.Fprintln(os.Stderr, "foreversixty-companion:", err)
@@ -50,11 +57,19 @@ func run(args []string, out *os.File) error {
 	headless := fs.Bool("headless", false, "run without a tray icon or a window")
 	debug := fs.Bool("debug", false, "log at debug level")
 	version := fs.Bool("version", false, "print the version and exit")
+	finish := install.RegisterFlags(fs)
+	uninstall := fs.Bool(install.FlagUninstall, false, "remove the companion from this Windows account (Apps & Features runs this)")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
 	if *version {
 		fmt.Fprintln(out, updater.Version)
+		return nil
+	}
+	// The uninstall opens no log: removing the settings removes the folder
+	// the log would be held open in.
+	if *uninstall {
+		runSetup(slog.New(slog.DiscardHandler), install.ModeUninstall)
 		return nil
 	}
 
@@ -74,6 +89,14 @@ func run(args []string, out *os.File) error {
 	defer logFile.Close()
 	log.Info("launching", "component", "main", "version", updater.Version, "pid", os.Getpid())
 
+	// The Windows download (ForeverSixtySetup.exe) is this same companion under a setup
+	// name: it installs itself and starts the installed copy. It comes before the
+	// one-copy claim, which an installed companion that is running holds.
+	if !*headless && isSetupDownload() {
+		runSetup(log, install.ModeSetup)
+		return nil
+	}
+
 	// One companion per home directory: two would tail the same log and
 	// upload every fight twice. The claim comes before the update swap,
 	// which cannot happen under a running copy on Windows anyway.
@@ -85,6 +108,12 @@ func run(args []string, out *os.File) error {
 		return err
 	}
 	defer func() { lock.Release() }()
+	// A Mac copy opened from the download moves itself to Applications and
+	// starts again from there, before an update could be swapped into the
+	// download.
+	if !*headless && offerInstall(log, func() { lock.Release() }) {
+		return nil
+	}
 	// Before anything else: a staged update becomes the program, and
 	// the new build is started here, so one double-click after an update
 	// is enough. The claim is let go just before, or the new build would
@@ -103,6 +132,7 @@ func run(args []string, out *os.File) error {
 		}) {
 			return nil
 		}
+		syncInstalledVersion(log, exe)
 	}
 
 	cfg, err := config.Load(dirs.ConfigFile())
@@ -147,6 +177,10 @@ func run(args []string, out *os.File) error {
 		defer close(done)
 		_ = a.Run(ctx)
 	}()
+	if finish.Moved && install.Supported {
+		home, _ := os.UserHomeDir()
+		go func() { _ = finish.Complete(ctx, install.NewSystem(), home, log) }()
+	}
 
 	// The shell owns the main goroutine: every desktop toolkit here
 	// requires its loop to run on it.
@@ -167,6 +201,104 @@ func run(args []string, out *os.File) error {
 	stop()
 	<-done
 	return err
+}
+
+// syncInstalledVersion keeps the Windows setup's Apps & Features entry on the
+// running version once a self-update has replaced the exe it installed.
+func syncInstalledVersion(log *slog.Logger, exe string) {
+	wrote, err := updater.SyncInstalledVersion(updater.OpenUserKey, exe, updater.Version)
+	if err != nil {
+		log.Warn("could not update the version Apps & Features shows", "component", "main", "err", err.Error())
+		return
+	}
+	if wrote {
+		log.Info("Apps & Features now shows this version", "component", "main", "version", updater.Version)
+	}
+}
+
+// offerInstall shows the Mac's "Move Forever Sixty to Applications?" when
+// the app runs from anywhere else, and reports whether this process should
+// end: the installed copy was started, or the player closed the window.
+func offerInstall(log *slog.Logger, release func()) bool {
+	if !install.Supported {
+		return false
+	}
+	// hdiutil and App Translocation name real paths (/private/var, not /var).
+	exe := executable()
+	if exe == "" {
+		return false
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return false
+	}
+	plan := install.Decide(updater.BundleRoot(exe), install.Detect(home))
+	if !plan.Move {
+		return false
+	}
+	log.Info("the app runs outside Applications; offering to move it", "component", "main", "from", plan.Original)
+	moved, err := install.Offer(install.OfferOptions{
+		Plan: plan, Home: home, Log: log, System: install.NewSystem(),
+		Prompt: promptWindow, BeforeRelaunch: release,
+	})
+	if err != nil {
+		log.Warn("could not show the move window; running from here", "component", "main", "err", err.Error())
+		return false
+	}
+	if !moved {
+		log.Info("the move window was closed; quitting until the next launch", "component", "main")
+	}
+	return true
+}
+
+// isSetupDownload reports whether this is the Windows setup download.
+func isSetupDownload() bool {
+	if !install.SetupSupported {
+		return false
+	}
+	folders, err := install.WindowsFolders()
+	if err != nil {
+		return false
+	}
+	return install.SetupMode(executable(), folders.Install)
+}
+
+// runSetup shows the Windows setup or uninstall window and runs what it asks.
+func runSetup(log *slog.Logger, mode string) {
+	if !install.SetupSupported {
+		return
+	}
+	folders, err := install.WindowsFolders()
+	if err != nil {
+		log.Warn("could not find this account's folders", "component", "main", "err", err.Error())
+		return
+	}
+	if err := install.ShowSetup(install.SetupOptions{
+		Mode: mode, System: install.NewWinSystem(), Folders: folders,
+		Self: executable(), Version: updater.Version, Log: log, Prompt: promptWindow,
+	}); err != nil {
+		log.Warn("could not show the "+mode+" window", "component", "main", "err", err.Error())
+	}
+}
+
+// executable is this program's real path, or "" when the system cannot say.
+func executable() string {
+	exe, err := os.Executable()
+	if err != nil {
+		return ""
+	}
+	if real, err := filepath.EvalSymlinks(exe); err == nil {
+		return real
+	}
+	return exe
+}
+
+// promptWindow is install's window: small, fixed, and the companion's own look.
+func promptWindow(url string, bind func(install.Window) map[string]any) error {
+	return shell.Prompt(shell.PromptOptions{
+		URL: url, Title: install.ProductName, Width: install.WindowWidth, Height: install.WindowHeight,
+		Bind: func(win shell.PromptWindow) map[string]any { return bind(win) },
+	})
 }
 
 // handOff is what a second launch does: say so in the log, open the

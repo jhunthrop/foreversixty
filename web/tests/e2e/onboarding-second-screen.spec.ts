@@ -102,10 +102,10 @@ for (const size of SIZES) {
       await page.goto('/setup');
       await settle(page);
       await expect(page.getByTestId('setup-steps-step-1')).toContainText('Signed in as hunthrop#1894');
-      await expect(page.getByTestId('setup-steps-step-2')).toContainText(
+      await expect(page.getByTestId('setup-steps-step-3')).toContainText(
         'Bow Jackzon arrived from the addon 1 hour ago',
       );
-      await expect(page.getByTestId('setup-steps-step-3')).toContainText(
+      await expect(page.getByTestId('setup-steps-step-2')).toContainText(
         'Companion signed in on JH-DESKTOP · last seen 3 minutes ago',
       );
       await expect(page.getByRole('img', { name: /^Step \d: Done$/ })).toHaveCount(3);
@@ -124,8 +124,8 @@ for (const size of SIZES) {
       await expect(page.getByTestId('setup-steps-step-1')).toContainText('Signed in as hunthrop#1894');
       await expect(page.getByRole('img', { name: 'Step 1: To do' })).toBeVisible();
       await expect(page.getByTestId('setup-action-refresh')).toBeVisible();
-      await expect(page.getByTestId('setup-steps-step-2')).toContainText(addonCopy.setupAddonNote);
-      await expect(page.getByTestId('setup-steps-step-3')).toContainText('No companion signed in yet');
+      await expect(page.getByTestId('setup-steps-step-3')).toContainText(addonCopy.setupAddonNote);
+      await expect(page.getByTestId('setup-steps-step-2')).toContainText('No companion signed in yet');
       await page.screenshot({
         path: join(SHOTS, `w9-setup-signed-in-pending-${size.name}.png`),
         fullPage: true,

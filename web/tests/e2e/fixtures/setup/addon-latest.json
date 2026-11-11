@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "family": "addon",
+  "tag_name": "addon-v2.0.37",
+  "published_at": "2026-11-05T21:00:00Z",
+  "assets": [
+    {
+      "name": "ForeverSixty-addon-v2.0.37-forever.zip",
+      "browser_download_url": "https://foreversixty.gg/dl/addon/addon-v2.0.37/ForeverSixty-addon-v2.0.37-forever.zip",
+      "size": 812345,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

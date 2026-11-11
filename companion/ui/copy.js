@@ -223,6 +223,53 @@ const COPY = {
     savedVisibility: (words) => 'Saved. New reports will be ' + words + '. The report in progress keeps its setting.',
     rulesets: { normal: 'Normal', pvp: 'PvP', rp: 'Roleplaying', hardcore: 'Hardcore' },
   },
+
+  // The Mac's first launch from a download (install.html, internal/install).
+  install: {
+    // The Mac's first launch from the disk image or a download (internal/install, offer.go).
+    move: {
+      title: 'Move Forever Sixty to Applications?',
+      lede: 'This download goes in the Trash.',
+      toggle: 'Open at login',
+      action: 'Move to Applications',
+      busy: 'Moving…',
+      failed: 'Move failed. Press Move to Applications to try again.',
+    },
+    // The Windows setup download (setup.go); an upgrade when a copy is installed already.
+    setup: {
+      title: 'Install Forever Sixty?',
+      lede: 'Installs in your own Programs folder. No admin needed.',
+      titleUpgrade: 'Update Forever Sixty?',
+      ledeUpgrade: 'Replaces the copy already installed. Your settings stay.',
+      toggle: 'Start with Windows',
+      action: 'Install',
+      actionUpgrade: 'Update',
+      busy: 'Installing…',
+      busyUpgrade: 'Updating…',
+      done: 'Forever Sixty is installed.',
+      doneUpgrade: 'Forever Sixty is updated.',
+      failed: 'Install failed. Press Install to try again.',
+    },
+    // Apps & Features' Uninstall (setup.go).
+    uninstall: {
+      title: 'Remove Forever Sixty?',
+      lede: 'Your reports on foreversixty.gg stay.',
+      toggle: 'Keep my settings',
+      action: 'Remove',
+      busy: 'Removing…',
+      failed: 'Remove failed. Press Remove to try again.',
+      done: 'Forever Sixty is removed.',
+    },
+    // The step under the bar, as each one starts.
+    steps: {
+      stop: 'Closing Forever Sixty',
+      copy: 'Copying files',
+      shortcut: 'Adding the Start menu shortcut',
+      register: 'Adding it to Apps & Features',
+      start: 'Starting Forever Sixty',
+      remove: 'Removing files',
+    },
+  },
 };
 
 if (typeof module !== 'undefined') module.exports = COPY;

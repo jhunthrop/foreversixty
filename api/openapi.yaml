@@ -4197,6 +4197,17 @@ components:
         kind: { type: string, enum: [companion, app] }
         created_at: { type: string, format: date-time }
         last_seen_at: { type: string, format: date-time }
+        addons:
+          type: array
+          description: "What a companion last found in Interface/AddOns (PUT /v1/devices/self/addons). Omitted until it has reported; empty when it found none."
+          items: { $ref: '#/components/schemas/DeviceAddon' }
+    DeviceAddon:
+      type: object
+      description: One Forever Sixty addon a companion found installed (Go auth.DeviceAddon).
+      required: [folder, version]
+      properties:
+        folder: { type: string, enum: [ForeverSixty, ForeverSixtyInbox, ForeverSixtyData] }
+        version: { type: string, maxLength: 32, description: "The TOC's Version line without its prefix; empty when the TOC has none." }
     SignedOut:
       type: object
       required: [signed_out]
@@ -6775,6 +6786,26 @@ paths:
       responses:
         '204': { description: "Revoked" }
         '401': { description: "Not a device token, or the token is already dead", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/devices/self/addons:
+    put:
+      summary: The calling companion reports the Forever Sixty addons in its Interface/AddOns
+      description: >-
+        Device bearer token. Replaces the device's last report. Each folder at most once, from
+        ForeverSixty, ForeverSixtyInbox and ForeverSixtyData; an empty list says none are
+        installed. /setup's addon step reads it from GET /v1/devices.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [addons]
+              properties:
+                addons: { type: array, maxItems: 3, items: { $ref: '#/components/schemas/DeviceAddon' } }
+      responses:
+        '204': { description: "Saved" }
+        '400': { description: "Not a list of known folders with plain versions", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: "Not a device token, or a dead one", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/devices/{id}:
     delete:
       operationId: revokeDevice

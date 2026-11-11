@@ -119,22 +119,39 @@ notarize() { # notarize <file>: submits, waits, and prints Apple's log when it i
 	fi
 }
 
-disk_image() { # disk_image <dmg>: the app beside a link to Applications, to drag it onto
-	local stage=$work/dmg attempt
+# The disk image's window: the background tools/art/dmg_background.py draws, and the window size and
+# icon places it writes beside it (dmg-layout.sh), the app at the left, Applications at the right;
+# 128 px icons, 13 pt labels.
+readonly DMG_BACKGROUND=companion/packaging/macos/dmg-background
+# shellcheck source=../companion/packaging/macos/dmg-layout.sh
+source "$ROOT/companion/packaging/macos/dmg-layout.sh"
+
+disk_image() { # disk_image <dmg>: the designed drag window, under the seal as the volume icon
+	local stage=$work/dmg background=$work/background.tiff
+	command -v create-dmg >/dev/null || die "create-dmg is not installed (brew install create-dmg)"
 	mkdir -p "$stage"
 	ditto "$APP" "$stage/$APP_NAME.app"
-	ln -s /Applications "$stage/Applications"
-	# hdiutil fails now and then with "Resource busy" on a hosted runner; it is retried.
-	for attempt in 1 2 3; do
-		if hdiutil create -volname "$APP_NAME" -srcfolder "$stage" -fs HFS+ \
-			-format UDZO -ov "$1"; then
-			return
-		fi
-		echo "hdiutil failed (attempt $attempt); retrying" >&2
-		sleep $((attempt * 5))
-	done
-	echo "package-mac-companion: could not make the disk image" >&2
-	exit 1
+	# One TIFF with both scales, so a Retina screen draws the 2x background.
+	tiffutil -cathidpicheck "$ROOT/$DMG_BACKGROUND.png" "$ROOT/$DMG_BACKGROUND@2x.png" -out "$background"
+	# create-dmg lays the window out through Finder (background, bounds, icon places, no toolbar or
+	# status bar), writes the .DS_Store into the image, sets the volume icon with its custom-icon
+	# flag, and compresses the result read-only. It retries hdiutil's "Resource busy" by itself.
+	rm -f "$1"
+	create-dmg \
+		--volname "$APP_NAME" \
+		--volicon "$ROOT/$ICON" \
+		--background "$background" \
+		--window-pos 200 120 \
+		--window-size "${DMG_WINDOW[@]}" \
+		--icon-size 128 \
+		--text-size 13 \
+		--icon "$APP_NAME.app" "${DMG_APP[@]}" \
+		--hide-extension "$APP_NAME.app" \
+		--app-drop-link "${DMG_DROP[@]}" \
+		--no-internet-enable \
+		--format UDZO \
+		--hdiutil-retries 8 \
+		"$1" "$stage"
 }
 
 mkdir -p "$OUT"

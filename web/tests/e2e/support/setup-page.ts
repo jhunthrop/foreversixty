@@ -33,7 +33,10 @@ export type SetupPageState =
   | 'addon'
   | 'pairing'
   | 'done'
-  | 'claim';
+  | 'claim'
+  | 'companion'
+  | 'installed'
+  | 'outdated';
 
 export const SETUP_STATES: readonly SetupPageState[] = [
   'out',
@@ -51,7 +54,33 @@ export const SETUP_STATES: readonly SetupPageState[] = [
   'pairing',
   'done',
   'claim',
+  'companion',
+  'installed',
+  'outdated',
 ];
+
+/** What the companion found in Interface/AddOns, per state that has a companion scan (owner
+ *  2026-11-10): none, the feed's newest, or one behind it (fixtures/setup/addon-latest.json is 2.0.37). */
+const ADDON_SCANS: Partial<Record<SetupPageState, { folder: string; version: string }[]>> = {
+  companion: [],
+  installed: [
+    { folder: 'ForeverSixty', version: '2.0.37' },
+    { folder: 'ForeverSixtyInbox', version: '2.0.37' },
+    { folder: 'ForeverSixtyData', version: '2026.11.05' },
+  ],
+  outdated: [
+    { folder: 'ForeverSixty', version: '2.0.30' },
+    { folder: 'ForeverSixtyInbox', version: '2.0.30' },
+  ],
+};
+
+/** The device list each signed-in state reads: none, the companion, or the companion with its scan. */
+function devicesOf(state: SetupPageState): unknown[] {
+  if (state === 'done') return fixture('setup/devices.json');
+  const scan = ADDON_SCANS[state];
+  if (scan === undefined) return [];
+  return fixture<Record<string, unknown>[]>('setup/devices.json').map((d) => ({ ...d, addons: scan }));
+}
 
 function fixture<T = unknown>(name: string): T {
   return JSON.parse(readFileSync(path.join(FIXTURES, name), 'utf8')) as T;
@@ -125,6 +154,9 @@ function accountOf(state: SetupPageState): unknown {
         bnet_import: { state: 'running', at: '2026-11-06T09:59:30Z' },
       };
     case 'bnet':
+    case 'companion':
+    case 'installed':
+    case 'outdated':
       return meBnet();
     case 'claim':
       return {
@@ -160,6 +192,9 @@ export async function routeSetupState(page: Page, state: SetupPageState): Promis
   await page.route('**/dl/companion/latest.json', (route) =>
     route.fulfill(json(fixture('setup/companion-latest.json'))),
   );
+  await page.route('**/dl/addon/latest.json', (route) =>
+    route.fulfill(json(fixture('setup/addon-latest.json'))),
+  );
   if (SIGNED_OUT.includes(state)) {
     await page.route('**/v1/me', (route) => route.fulfill(failure(401)));
     return;
@@ -175,7 +210,7 @@ export async function routeSetupState(page: Page, state: SetupPageState): Promis
   }
   const account = accountOf(state);
   await page.route('**/v1/me', (route) => route.fulfill(envelope(account)));
-  const devices = state === 'done' ? fixture('setup/devices.json') : [];
+  const devices = devicesOf(state);
   await page.route('**/v1/devices', (route) => route.fulfill(envelope(devices)));
   if (state === 'pairing') {
     await page.route('**/v1/devices/pair', (route) =>

@@ -104,7 +104,10 @@ type Device struct {
 	Kind       string     `json:"kind"`
 	CreatedAt  time.Time  `json:"created_at"`
 	LastSeenAt *time.Time `json:"last_seen_at,omitempty"`
-	UserID     int64      `json:"-"`
+	// Addons is what a companion last found in Interface/AddOns (PUT /v1/devices/self/addons):
+	// nil (omitted) until it has reported, empty when it found none.
+	Addons *[]DeviceAddon `json:"addons,omitempty"`
+	UserID int64          `json:"-"`
 }
 
 // Character is a character linked to an account, or seen in a report.
@@ -491,7 +494,7 @@ func (s *Store) DeviceByToken(ctx context.Context, hash []byte) (Device, error) 
 func (s *Store) Devices(ctx context.Context, userID int64) ([]Device, error) {
 	idle, maxAge := s.appTokenLimits()
 	rows, err := s.Pool.Query(ctx,
-		`select id, user_id, name, platform, kind, created_at, last_seen_at from devices
+		`select id, user_id, name, platform, kind, created_at, last_seen_at, addons from devices
 		 where user_id = $1 and revoked_at is null and `+liveAppClause+`
 		 order by created_at desc`, userID, interval(idle), interval(maxAge))
 	if err != nil {
@@ -501,7 +504,7 @@ func (s *Store) Devices(ctx context.Context, userID int64) ([]Device, error) {
 	out := []Device{}
 	for rows.Next() {
 		var d Device
-		if err := rows.Scan(&d.ID, &d.UserID, &d.Name, &d.Platform, &d.Kind, &d.CreatedAt, &d.LastSeenAt); err != nil {
+		if err := rows.Scan(&d.ID, &d.UserID, &d.Name, &d.Platform, &d.Kind, &d.CreatedAt, &d.LastSeenAt, &d.Addons); err != nil {
 			return nil, fmt.Errorf("auth: list devices: %w", err)
 		}
 		out = append(out, d)

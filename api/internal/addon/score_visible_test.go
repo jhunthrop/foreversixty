@@ -15,7 +15,7 @@ func (h *outboxHarness) scoreVisible() bool {
 	return visible
 }
 
-const scoreOutbox = `{"format":1,"export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70291:warrior:human:0/0/0:","saved_at":"2026-11-08 20:00"%s}}`
+const scoreOutbox = `{"format":1,"export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70790:warrior:human:0/0/0:","saved_at":"2026-11-08 20:00"%s}}`
 
 // Contract 4's export.score_visible: false hides the character's score, absent shows it again.
 func TestTheOutboxCarriesTheScoreChoice(t *testing.T) {

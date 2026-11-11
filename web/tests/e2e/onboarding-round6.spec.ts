@@ -142,7 +142,7 @@ for (const size of SIZES) {
       await page.goto('/setup');
       await settle(page);
       expect(await goldSteps(page)).toEqual(['1']);
-      await expect(page.getByTestId('setup-steps-step-3')).toContainText(addonCopy.setupCompanionNote);
+      await expect(page.getByTestId('setup-steps-step-2')).toContainText(addonCopy.setupCompanionNote);
       await expect(page.getByTestId('setup-companion')).toContainText(addonCopy.setupCompanionNote);
       await pictureShown(page);
       await expect(page.getByTestId('setup-companion-capture').getByText('Example')).toBeVisible();
@@ -156,7 +156,7 @@ for (const size of SIZES) {
       await signedIn(page, ME_NEW, []);
       await page.goto('/setup');
       await settle(page);
-      await expect(page.getByTestId('setup-steps-step-2')).toContainText(addonCopy.setupAddonNote);
+      await expect(page.getByTestId('setup-steps-step-3')).toContainText(addonCopy.setupAddonNote);
       expect(await goldSteps(page)).toEqual(['1']);
       await pictureShown(page);
       await settle(page);
@@ -180,7 +180,7 @@ for (const size of SIZES) {
       await signedIn(page, ME_DONE, []);
       await page.goto('/setup');
       await settle(page);
-      expect(await goldSteps(page)).toEqual(['3']);
+      expect(await goldSteps(page)).toEqual(['2']);
     });
 
     test('a character the visitor does not hold, with no data: the not-found page', async ({ page }) => {

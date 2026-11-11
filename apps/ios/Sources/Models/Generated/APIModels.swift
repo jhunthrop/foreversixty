@@ -2225,6 +2225,8 @@ public struct Device: Codable, Sendable, Equatable {
     public let kind: String?
     public let createdAt: Date?
     public let lastSeenAt: Date?
+    /// What a companion last found in Interface/AddOns (PUT /v1/devices/self/addons). Omitted until it has reported; empty when it found none.
+    public let addons: [DeviceAddon]?
 
     public init(
         id: String,
@@ -2232,7 +2234,8 @@ public struct Device: Codable, Sendable, Equatable {
         platform: String,
         kind: String? = nil,
         createdAt: Date? = nil,
-        lastSeenAt: Date? = nil
+        lastSeenAt: Date? = nil,
+        addons: [DeviceAddon]? = nil
     ) {
         self.id = id
         self.name = name
@@ -2240,6 +2243,22 @@ public struct Device: Codable, Sendable, Equatable {
         self.kind = kind
         self.createdAt = createdAt
         self.lastSeenAt = lastSeenAt
+        self.addons = addons
+    }
+}
+
+/// One Forever Sixty addon a companion found installed (Go auth.DeviceAddon).
+public struct DeviceAddon: Codable, Sendable, Equatable {
+    public let folder: String
+    /// The TOC's Version line without its prefix; empty when the TOC has none.
+    public let version: String
+
+    public init(
+        folder: String,
+        version: String
+    ) {
+        self.folder = folder
+        self.version = version
     }
 }
 

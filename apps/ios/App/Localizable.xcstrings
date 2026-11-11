@@ -1666,6 +1666,17 @@
         }
       }
     },
+    "char.noScoreYet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Forever Score yet."
+          }
+        }
+      }
+    },
     "char.notFound": {
       "comment": "Arguments: 1 name (string)",
       "extractionState": "manual",

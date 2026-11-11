@@ -1036,6 +1036,7 @@
     <string name="char_gap">Gear gap</string>
     <string name="char_builds">Builds seen</string>
     <string name="char_noLogs">No logs yet.</string>
+    <string name="char_noScoreYet">No Forever Score yet.</string>
     <string name="char_noScore">%1$s has no rated fight in a public report, so there is no score to show.</string>
     <string name="char_noGear">%1$s has not sent gear to Forever Sixty.</string>
     <string name="char_notFound">We have no character called %1$s.</string>

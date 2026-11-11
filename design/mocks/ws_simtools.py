@@ -63,8 +63,12 @@ def split(main: list[str], rail: list[str]) -> str:
     return Page('split', f'<div class="col">{"".join(main)}</div>', f'<div class="col rail-col">{"".join(rail)}</div>')
 
 
+# The tool heads' leads (SimToolHead `lead`): only /sim/weights carries one (seo-fix 2026-11-10).
+LEADS = {'weights': S.copy_string('lib/sim/copy.ts', 'weightsLead')}
+
+
 def head(tool: str) -> str:
-    return PageHeader(TITLES[tool], tabs=TabStrip(TOOLS, TITLES[tool]))
+    return PageHeader(TITLES[tool], tabs=TabStrip(TOOLS, TITLES[tool]), lead=LEADS.get(tool, ''))
 
 
 def item_name(iid: int) -> str:

@@ -171,3 +171,17 @@ func TestSetupPreviewsReadinessWithoutRaidGuild(t *testing.T) {
 		t.Fatalf("preview = %+v", v.Readiness)
 	}
 }
+
+// The visibility step reads the guild's upload default, never a report: a private default is
+// done, the column default is to do, and the view carries the setting alone.
+func TestSetupVisibilityStepReadsTheGuildDefaultNotAReport(t *testing.T) {
+	for _, tc := range []struct {
+		visibility string
+		done       bool
+	}{{"private", true}, {"guild", true}, {defaultVisibility, false}} {
+		v := SetupView{DefaultVisibility: tc.visibility}
+		if got := v.derivedDone()[StepReportVisibility]; got != tc.done {
+			t.Errorf("default %q: done = %v, want %v", tc.visibility, got, tc.done)
+		}
+	}
+}

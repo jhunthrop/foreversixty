@@ -80,7 +80,9 @@ type SetupView struct {
 	Schedule   SetupSchedule   `json:"schedule"`
 	Invite     SetupInvite     `json:"invite"`
 	Sync       SetupSync       `json:"sync"`
-	Visibility string          `json:"visibility"`
+	// DefaultVisibility is the guild's default for new uploads (guilds.default_visibility), a
+	// setting, not a report's visibility: the step reads no report.
+	DefaultVisibility string `json:"visibility"`
 	// Readiness is what the Raid guild readiness board would flag for the next raid, counts
 	// only, for a guild without Raid guild; nil with Raid guild or no raid ahead.
 	Readiness *SetupReadiness `json:"readiness"`
@@ -189,7 +191,7 @@ func (s *Service) Setup(ctx context.Context, guildID, viewerID int64) (SetupView
 
 // setupFacts reads every step's facts.
 func (s *Service) setupFacts(ctx context.Context, g Guild, viewerID int64) (SetupView, error) {
-	v := SetupView{Visibility: g.DefaultVisibility, Plan: s.setupPlan(ctx, g.ID, viewerID)}
+	v := SetupView{DefaultVisibility: g.DefaultVisibility, Plan: s.setupPlan(ctx, g.ID, viewerID)}
 	v.Invite.Made = g.InviteTokenRotatedAt != nil
 	v.Ranks.OfficerMaxRankIndex = g.OfficerMaxRankIndex
 	steps := []func() error{
@@ -281,7 +283,7 @@ func (v SetupView) derivedDone() map[string]bool {
 		StepRaidSchedule:     v.Schedule.Timezone != nil && v.Schedule.Planned > 0,
 		StepInviteLink:       v.Invite.Made && v.Invite.Joined > 0,
 		StepAddonSync:        v.Sync.Accounts > 0 && v.Sync.Synced*2 >= v.Sync.Accounts,
-		StepReportVisibility: v.Visibility != defaultVisibility,
+		StepReportVisibility: v.DefaultVisibility != defaultVisibility,
 	}
 }
 

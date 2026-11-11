@@ -5,13 +5,15 @@ import { COMPANION_DOWNLOADS, downloadFor, otherDownloads, type CompanionDownloa
 const WINDOWS: CompanionDownload = {
   os: 'windows',
   platform: 'Windows',
-  asset: 'foreversixty-companion_windows_amd64.exe',
+  asset: 'foreversixty-companion-setup.exe',
+  saveAs: 'ForeverSixtySetup.exe',
   firstRun: 'w',
 };
 const MAC: CompanionDownload = {
   os: 'mac',
   platform: 'Mac',
   asset: 'foreversixty-companion_darwin_universal.dmg',
+  saveAs: 'ForeverSixty.dmg',
   firstRun: 'm',
 };
 
