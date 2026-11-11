@@ -1485,11 +1485,6 @@
      "icon": "ability_druid_catform"
     },
     {
-     "name": "Feral Bear",
-     "slug": "feral-bear",
-     "icon": "ability_racial_bearform"
-    },
-    {
      "name": "Restoration",
      "slug": "restoration",
      "icon": "spell_nature_healingtouch"
