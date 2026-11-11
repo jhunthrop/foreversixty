@@ -178,7 +178,7 @@ final class BackfillCaptureTests: XCTestCase {
         CaptureLaunch.switchCharacter(app, to: "Gorvash")
         CaptureLaunch.openMenu(app)
         tapSteps(app, "Planner", "menu-06-planner")
-        app.tabBars.buttons["Raid"].tap()
+        app.tabBars.buttons["Guild"].tap()
         sleep(2)
         save("menu-07-raid-after-planner")
         app.tabBars.buttons["Home"].tap()

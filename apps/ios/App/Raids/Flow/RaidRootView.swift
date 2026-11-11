@@ -15,13 +15,15 @@ struct RaidRootActions {
     var findGuild: () -> Void = {}
     var signIn: () -> Void = {}
     var retry: () -> Void = {}
+    /// The Guild tab's own sections (spec 2026-11-10-guild-tab.md).
+    var guild = GuildTabActions()
 }
 
-/// The Raid tab (flows spec 4.2) in the round-5 look (mocks ios-raid, -signup, -officer, -live,
-/// -no-raid, -none, -leveler, -out and m-ios-raid): under the band's large title, the one-line raid
-/// head with your answer, Who is coming, Before you pull, an officer's Needs you, then the guild's
-/// pages; raid night leads while a raid is live. No guild: the guilds recruiting your spec; under 60,
-/// when raids start.
+/// The Guild tab (spec 2026-11-10-guild-tab.md, mocks ios-guild-tab*; the raid as flows spec 4.2 and
+/// the mocks ios-raid, -signup, -officer, -live and -no-raid): under the band's large title, the raid
+/// first (head with your answer, Your job, Needs you, the officer's rows and assignments, Who is
+/// coming, Before you pull), then the guild (head, roster, loot, logs, progression, pages); under 60
+/// the guild head leads. No guild: the guilds recruiting your spec, then find or claim yours.
 struct RaidRootView: View {
     let content: RaidRootContent
     var actions = RaidRootActions()
@@ -39,10 +41,6 @@ struct RaidRootView: View {
                 case .signedOut:
                     LonePanel(title: Copy.raidTabWithGuild, lines: []) {
                         FSButton(Copy.signinButton, kind: .primary, action: actions.signIn)
-                    }
-                case let .leveler(toGo):
-                    LonePanel(title: Copy.raidTabLeveler, lines: [toGo, Copy.raidTabLevelerLine]) {
-                        FSButton(Copy.homeFindGuildButton, action: actions.findGuild)
                     }
                 case let .noGuild(recruiting): noGuild(recruiting)
                 case .waiting:
@@ -78,19 +76,36 @@ struct RaidRootView: View {
 
     @ViewBuilder
     private func noGuild(_ recruiting: RecruitingContent) -> some View {
+        if let raidsOpen = recruiting.raidsOpen {
+            Text(raidsOpen).type(RowType.sub).foregroundStyle(FSColor.muted).frame(maxWidth: .infinity, alignment: .leading)
+        }
         if !recruiting.rows.isEmpty {
             PanelSection(recruiting.heading, frame: .plain) {
                 ForEach(Array(recruiting.rows.enumerated()), id: \.element.id) { index, row in
                     PanelRow(row.name, sub: Text(row.line), last: index == recruiting.rows.count - 1) {
                         EmptyView()
                     } trail: {
-                        Button(Copy.raidTabApply) { actions.apply(row) }.buttonStyle(FSButtonStyle(fullWidth: false))
+                        if let applied = row.applied {
+                            Text(applied).type(RowType.sub).foregroundStyle(FSColor.muted)
+                        } else {
+                            Button(Copy.raidTabApply) { actions.apply(row) }.buttonStyle(FSButtonStyle(fullWidth: false))
+                        }
                     }
                 }
             }
         }
-        LonePanel(title: Copy.raidTabNotHere, lines: [Copy.raidTabClaimLine]) {
-            FSButton(Copy.raidTabClaim, action: actions.claim)
+        // Find your guild (spec 2.4): the site's guild finder, then Claim.
+        PanelSection(Copy.guildTabFind) {
+            Button(action: actions.findGuild) {
+                PanelRow(Copy.guildTabSearch, sub: Text(Copy.guildTabSearchLine), chevron: true)
+            }
+            .buttonStyle(RowPressStyle())
+            .accessibilityIdentifier("guild-search")
+            Button(action: actions.claim) {
+                PanelRow(Copy.raidTabClaim, sub: Text(Copy.raidTabClaimLine), last: true, chevron: true)
+            }
+            .buttonStyle(RowPressStyle())
+            .accessibilityIdentifier("guild-claim")
         }
     }
 }
@@ -104,13 +119,31 @@ struct RaidGuildView: View {
     var body: some View {
         if let stamp = content.offlineStamp { OfflineStrip(text: Copy.offlineStrip(time: stamp)) }
         if let stale = content.staleStamp { StaleStrip(time: stale, retry: actions.retry) }
+        // Under 60 the guild leads (spec 2.1); at 60 the raid does (2.2).
+        if let tab = content.tab, tab.spread != nil { GuildHeadBlock(head: tab.head, spread: tab.spread) }
+        raid
+        if let tab = content.tab {
+            if tab.spread == nil { GuildHeadBlock(head: tab.head, spread: nil) }
+            GuildRosterSection(content: tab, open: actions.guild.openRoster)
+            GuildLootSection(loot: tab.loot, open: actions.guild.openLoot)
+            GuildLogsSection(logs: tab.logs, actions: actions.guild)
+            GuildProgressSection(progression: tab.progression, open: actions.guild.openProgression)
+        }
+        GuildPagesSection(content: content.pages, open: actions.openPage)
+    }
+
+    @ViewBuilder
+    private var raid: some View {
         if let night = content.night {
             RaidNightBlock(content: night)
         } else if let next = content.next {
             RaidHeadView(content: next, notes: content.notes, actions: actions.raid).parityRegion(RaidRootView.nextRaidRegion)
                 .environment(\.answersOffline, content.offlineStamp != nil)
+            raidsOpen
+            YourJobSection(jobs: content.jobs)
             // G3: an officer's open items sit directly under the head.
             needsYou
+            officer
             if !content.coming.isEmpty {
                 PanelSection(Copy.raidTabComing, action: (Copy.raidTabRosterLink, { actions.openPage(.roster) })) {
                     RoleRowsView(roles: content.coming)
@@ -122,6 +155,7 @@ struct RaidGuildView: View {
             }
         } else {
             PanelBlock { RaidNote(Copy.raidTabNoRaid).padding(.bottom, FSSpace.space2) }.parityRegion(RaidRootView.nextRaidRegion)
+            raidsOpen
         }
         if let ready = content.ready {
             // Once pulled the list is the Ready check, not what comes before the pull.
@@ -129,8 +163,27 @@ struct RaidGuildView: View {
                 ReadyPanelList(content: ready, open: actions.openLink)
             }
         }
-        if content.next == nil { needsYou }
-        GuildPagesSection(content: content.pages, open: actions.openPage)
+        if content.next == nil {
+            needsYou
+            officer
+        }
+    }
+
+    /// Under 60: one quiet line, never a block (coordinator ruling 2026-11-10).
+    @ViewBuilder
+    private var raidsOpen: some View {
+        if let line = content.raidsOpen {
+            Text(line).type(RowType.sub).foregroundStyle(FSColor.muted)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityIdentifier("guild-raids-open")
+        }
+    }
+
+    /// An officer's shortcuts and the raid's assignments, read only (spec 2.3, 2.3a).
+    @ViewBuilder
+    private var officer: some View {
+        if let tab = content.tab { OfficerSection(rows: tab.officer, open: actions.guild.officer) }
+        if let assignments = content.assignments { AssignmentsSection(encounters: assignments, openPlanner: actions.guild.openPlanner) }
     }
 
     @ViewBuilder

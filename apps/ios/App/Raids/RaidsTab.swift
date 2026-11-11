@@ -167,7 +167,7 @@ struct RaidsTab: View {
                 .refreshable { await reload() }
                 .bandBar()
                 // Round 5 on iOS (m-ios-raid): the tab's large title on the band, under the profile button.
-                .navigationTitle(AppTab.raid.title)
+                .navigationTitle(AppTab.guild.title)
                 .toolbarTitleDisplayMode(.large)
                 .tabRootChrome()
                 .searchButton()
@@ -194,7 +194,9 @@ struct RaidsTab: View {
             members: roster?.count,
             atCap: roster?.filter { $0.level == RaidFlowPresenter.maxLevel }.count,
             synced: roster.map(presenter.syncedThisWeek),
-            answering: answers.state
+            answering: answers.state,
+            home: rosterStore?.guild == content?.head.id ? rosterStore?.home : nil,
+            firstRaids: HomeFlowDependencies.firstRaids(BundledData.keyDates())
         )
     }
 
@@ -255,10 +257,42 @@ struct RaidsTab: View {
             openCover: { push { .raid(guild: $0, raid: $1.id, roster: true, open: nil) } },
             openLink: { openURL($0) },
             apply: { openURL(dependencies.site.apply(guild: $0.guildID)) },
-            claim: { openURL(dependencies.site.guilds) },
+            claim: { openURL(dependencies.site.claim) },
             findGuild: { openURL(dependencies.site.guilds) },
             signIn: { Task { await session?.signIn(deviceName: UIDevice.current.name) } },
-            retry: { Task { await reload() } }
+            retry: { Task { await reload() } },
+            guild: guildActions
+        )
+    }
+
+    /// The Guild tab's own sections (spec 2026-11-10-guild-tab.md): the roster and loot pages in the
+    /// app, the rest on the guild's page on the site.
+    private var guildActions: GuildTabActions {
+        let web = content?.head.webURL
+        return GuildTabActions(
+            openRoster: { openPage(.roster) },
+            openLoot: { openPage(.loot) },
+            openProgression: { if let web { openURL(GuildWeb.tab(web, "progression")) } },
+            openReport: { id in
+                if dependencies.reports != nil { router.path.append(.report(id: id)) } else { openURL(RaidLinks.report(id)) }
+            },
+            openPlanner: {
+                guard let web, let raid = currentRaid else { return }
+                openURL(GuildWeb.raid(web, raid: raid.id))
+            },
+            officer: { kind in
+                guard let web else { return }
+                switch kind {
+                case .plan: openURL(GuildWeb.tab(web, "raids"))
+                case .applications:
+                    if let guild = content?.head.id, let first = loader.extras.applicants.first {
+                        router.path.append(.applicant(guild: guild, application: first.id))
+                    } else {
+                        openURL(web.appending(path: "applications"))
+                    }
+                case .setup: openURL(web.appending(path: "setup"))
+                }
+            }
         )
     }
 

@@ -87,7 +87,7 @@ extension RootView {
     /// Lane F4: a raid, raid-night or guild link selects the Raid tab and pushes its screen.
     func openRaids(_ link: DeepLink) {
         guard environment.isAvailable(.raids), RaidsRouter.handles(link) else { return }
-        shell.selection = .raid
+        shell.selection = .guild
         raidsRouter.open(link)
     }
 
@@ -98,7 +98,7 @@ extension RootView {
         case let .link(link): openLink(link)
         case let .tab(tab): shell.selection = tab
         case let .raid(route):
-            shell.selection = .raid
+            shell.selection = .guild
             if environment.isAvailable(.raids) { raidsRouter.open(route) }
         case let .character(key): openCharacter(key)
         case .rankingsBoard:

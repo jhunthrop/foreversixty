@@ -125,7 +125,7 @@ struct OpenRaidIntent: OpenIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        IntentRouter.shared.open(target.link.map(IntentDestination.link) ?? .tab(.raid))
+        IntentRouter.shared.open(target.link.map(IntentDestination.link) ?? .tab(.guild))
         return .result()
     }
 }

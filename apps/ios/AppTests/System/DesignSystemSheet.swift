@@ -139,7 +139,7 @@ struct DesignSystemSheet: View {
         TabView(selection: .constant(AppTab.gear)) {
             ForEach(AppTab.allCases) { tab in
                 Tab(tab.title, image: tab.icon, value: tab) { Color.clear }
-                    .badge(tab == .raid ? 1 : tab == .activity ? 3 : 0)
+                    .badge(tab == .guild ? 1 : tab == .activity ? 3 : 0)
             }
         }
         .tint(Theme.Palette.tabSelected)

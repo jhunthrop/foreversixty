@@ -38,11 +38,6 @@ struct RaidFlowPresenter {
 
     // MARK: The root
 
-    /// Under 60: `26 levels to go`.
-    static func leveler(level: Int) -> RaidRootContent {
-        .leveler(toGo: Copy.raidLevelerToGo(n: max(1, maxLevel - level)))
-    }
-
     /// No guild at 60: the guilds recruiting the spec, with the article the spec's name takes.
     static func recruiting(_ guilds: [RecruitingGuild], kind: String) -> RecruitingContent {
         let vowel = kind.first.map { "AEIOU".contains($0) } ?? false

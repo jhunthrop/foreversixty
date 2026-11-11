@@ -235,8 +235,8 @@ struct HomeCharacterScreen: View {
     }
 
     private var flowActions: HomeFlowActions {
-        let raidTab = { open(.tab(.raid)) }
-        // Each raid action opens its screen under Raid; without the raid loaded, the tab.
+        let raidTab = { open(.tab(.guild)) }
+        // Each raid action opens its screen under Guild; without the raid loaded, the tab.
         let raidScreen = { (route: (Int64, Int64) -> RaidsRoute?) in
             guard let guild = flow?.character.guildID, let raid = flow?.inputs.raid?.id, let screen = route(guild, raid) else {
                 raidTab()

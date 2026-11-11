@@ -55,7 +55,26 @@ enum ParityCheck {
         // by the last section, inside each section's own tolerance.
         "raid": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
         "raid-signup": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
-        "raid-officer": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
+        // The Guild tab (lane guild-tab): the same 18.29 row line box as the Raid tab's over ~40 rows, so the
+        // guild's sections under the raid sit 9 to 17 pt higher than the mock's; each section's own height holds.
+        "guild-tab": ["section-guild", "section-roster", "section-loot", "section-recent-logs", "section-progression", "section-pages"]
+            .map(guildRowDrift),
+        "guild-tab-officer": [
+            "section-who-is-coming", "section-before-you-pull", "section-guild", "section-roster", "section-loot",
+            "section-recent-logs", "section-progression", "section-pages",
+        ].map(guildRowDrift),
+        // Under 60 the quiet line sits on the ground between the head and Who is coming: the app's line box
+        // and the band's 20 pt gap put Who is coming 17 lower than the mock's margin-0 paragraph.
+        "guild-tab-leveler": ["section-who-is-coming", "section-roster"].map(guildRowDrift),
+        // The recruiting rows' trail (Apply, or Applied Mon) sits 13 shorter than the mock's `.tr` margin.
+        "guild-tab-none": [
+            guildRowDrift("section-find-your-guild"),
+            Drift(prefix: "section-guilds-recruiting-a-fury-warrior: height", since: "2026-11-11", lane: "guild-tab row trail"),
+        ],
+        "guild-tab-none-leveler": [guildRowDrift("section-find-your-guild")],
+        "raid-officer": [
+            Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29"),
+        ],
         // Round-4 mock: Home's raid line title (`Onyxia's Lair · Sat 19 Dec, 7:00 pm CST`) holds one
         // line in the runner's Chromium and wraps on the phone, so the block is 16 pt taller.
         "home-60": [
@@ -84,6 +103,11 @@ enum ParityCheck {
     /// A region moved down only because its screen's head now sits on the band (N3, iOS round 1).
     private nonisolated static func bandHead(_ region: String) -> Drift {
         Drift(prefix: "\(region): y", since: "2026-11-10", lane: "N3 band head")
+    }
+
+    /// A Guild tab region moved only by the row line box over the sections above it (lane guild-tab).
+    private nonisolated static func guildRowDrift(_ region: String) -> Drift {
+        Drift(prefix: "\(region): y", since: "2026-11-11", lane: "guild-tab row line box 18.29")
     }
 
     /// Room under the content for the safe area and the screen's own bottom padding.

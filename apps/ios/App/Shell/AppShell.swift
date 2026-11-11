@@ -5,21 +5,21 @@ import SwiftUI
 
 /// The four tabs, the app's jobs (flows spec 3, owner 2026-11-08).
 enum AppTab: String, CaseIterable, Identifiable {
-    case home, raid, gear, activity
+    case home, guild, gear, activity
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
         case .home: Copy.tabHome
-        case .raid: Copy.tabRaid
+        case .guild: Copy.tabGuild
         case .gear: Copy.tabGear
         case .activity: Copy.tabActivity
         }
     }
 
-    /// The owner's tab icon (spec "Tab-bar icons", Brand.xcassets `tab-<name>`): a rune stone,
-    /// crossed swords on a banner, a T-visor helm, a war horn.
+    /// The tab icon (Brand.xcassets `tab-<name>`): the owner's rune stone, helm and war horn, and
+    /// Guild's the site's own Guild door, the banner (spec 2026-11-10-guild-tab.md section 1).
     var icon: String { "tab-\(rawValue)" }
 }
 

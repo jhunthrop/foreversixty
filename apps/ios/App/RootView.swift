@@ -115,7 +115,7 @@ struct RootView: View {
         .widgetRefreshTriggers(environment)
         // The Raid tab's badge, for the selected character's guild, on every foreground.
         .task(id: RaidBadgeTrigger(guild: raidBadgeGuild, active: scenePhase == .active, signupSaves: raidSignupSaves)) {
-            shell.badges[.raid] = await RaidBadgeCount.load(guild: raidBadgeGuild, client: raidBadgeClient)
+            shell.badges[.guild] = await RaidBadgeCount.load(guild: raidBadgeGuild, client: raidBadgeClient)
         }
         // The Activity tab's badge at shell start and on every foreground, as the Raid badge (round 5, i1).
         .task(id: ActivityBadgeTrigger(signedIn: environment.session.phase.isSignedIn, active: scenePhase == .active)) {
@@ -186,12 +186,12 @@ struct RootView: View {
                 HomeTab(dependencies: .live(environment), session: environment.session, openBis: { shell.selection = .gear }, open: openIntent)
             }
         case .home: HomeTab(dependencies: .live(environment), openBis: { shell.selection = .gear }, open: openIntent)
-        case .raid where environment.isAvailable(.raids):
+        case .guild where environment.isAvailable(.raids):
             RaidsTab(
                 dependencies: .live(environment), router: raidsRouter, session: signInAvailable ? environment.session : nil,
                 extras: guildExtras, calendar: guildExtras == nil ? nil : calendarSync
             )
-        case .raid: PlaceholderScreen(title: tab.title)
+        case .guild: PlaceholderScreen(title: tab.title)
         case .gear where environment.isAvailable(.bis):
             BisScreen.live(environment, session: signInAvailable ? environment.session : nil, router: bisRouter)
         case .gear: PlaceholderScreen(title: tab.title)

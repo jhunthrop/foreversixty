@@ -11,6 +11,10 @@ struct RaidRootExtras: Equatable {
     /// The live raid's night (who is in by role, the Ready check).
     var night: RaidNightSummary?
     var recruiting: RecruitingGuilds?
+    /// An officer's setup checklist (the Guild tab's Setup row).
+    var setup: GuildSetup?
+    /// When the player applied to each recruiting guild still deciding, by guild id (spec 2.4).
+    var applied: [Int64: Date] = [:]
 }
 
 /// Composes the Raid tab's root (flows spec 4.2) from the tab's state and its extras.
@@ -23,6 +27,10 @@ struct RaidRootComposer {
     var synced: [String: Bool]?
     /// The head's answer (F1): pending, Late's minutes, the status line, offline.
     var answering = RaidAnswering()
+    /// The guild home the Guild tab's sections read (the roster store's), when it is loaded.
+    var home: GuildHome?
+    /// The first raids' date (the bundled key dates), for Progression before the first pull.
+    var firstRaids: Date?
 
     func content(_ state: RaidsTabState, extras: RaidRootExtras) -> RaidRootContent {
         switch state {
@@ -30,15 +38,19 @@ struct RaidRootComposer {
         case .failed: return .failed
         case .signedOut: return .signedOut
         case let .noGuild(character):
-            if let level = character?.level, level < RaidFlowPresenter.maxLevel { return RaidFlowPresenter.leveler(level: level) }
             let kind = RaidFlowPresenter.kind(spec: character?.spec, className: character?.className)
-            return .noGuild(RaidFlowPresenter.recruiting(extras.recruiting?.rows ?? [], kind: kind))
-        case let .waiting(_, character):
-            if let level = character.level, level < RaidFlowPresenter.maxLevel { return RaidFlowPresenter.leveler(level: level) }
+            var recruiting = RaidFlowPresenter.recruiting(extras.recruiting?.rows ?? [], kind: kind)
+            recruiting.rows = recruiting.rows.map { row in
+                var row = row
+                row.applied = extras.applied[row.guildID].map { Copy.guildTabApplied(day: String(presenter.clock.weekday($0).prefix(3))) }
+                return row
+            }
+            recruiting.raidsOpen = raidsOpen(character?.level)
+            return .noGuild(recruiting)
+        case .waiting:
             return .waiting
         case let .loaded(content):
-            // A guild member under 60 still signs up (Home's card answers the same raid): the leveler's
-            // `Raids start at 60` is for a character with no guild, as on Android.
+            // A guild member under 60 signs up too (coordinator ruling 2026-11-10): one quiet line, never a block.
             return .guild(guild(content, extras: extras))
         }
     }
@@ -54,7 +66,7 @@ struct RaidRootComposer {
         return inputs
     }
 
-    private func guild(_ content: RaidsTabContent, extras: RaidRootExtras) -> RaidGuildContent {
+    private func raid(_ content: RaidsTabContent, extras: RaidRootExtras) -> RaidGuildContent {
         let inputs = inputs(content, extras: extras)
         let live = inputs.raid.map { $0.startsAt <= presenter.now } ?? false
         let night = live ? extras.night.flatMap { presenter.nightRoot(inputs, night: $0) } : nil
@@ -81,6 +93,45 @@ struct RaidRootComposer {
             notSynced: officer ? upcoming.flatMap { presenter.notSynced($0, synced: synced) } : nil
         )
     }
+
+    private func guild(_ content: RaidsTabContent, extras: RaidRootExtras) -> RaidGuildContent {
+        var guild = raid(content, extras: extras)
+        let level = content.character.level
+        let raid = HomeFlowModel.current(content.planned, now: presenter.now)
+        guild.raidsOpen = raidsOpen(level)
+        guild.jobs = RaidAssignmentWords.jobs(raid)
+        let officer = extras.badge?.officer == true || home?.viewer.officerTools == true
+        guild.assignments = officer && raid?.assignments != nil ? RaidAssignmentWords.encounters(raid) : nil
+        var inputs = GuildTabInputs(home: home, setup: extras.setup, applicants: extras.applicants, badge: extras.badge)
+        inputs.level = level
+        inputs.characterKey = content.character.key
+        inputs.planned = content.planned
+        inputs.firstRaids = firstRaids
+        guild.tab = GuildTabPresenter(now: presenter.now, clock: presenter.clock).content(inputs, guildName: content.head.name)
+        if let tab = guild.tab { guild.pages = Self.pages(guild.pages, tab: tab) }
+        return guild
+    }
+
+    /// The pages the Guild tab's sections do not already open (spec 2.1, 2.2): Roster has its
+    /// section, Loot history too at 60, Guild sims is a 60's page.
+    static func pages(_ pages: GuildPagesContent, tab: GuildTabContent) -> GuildPagesContent {
+        let leveler = tab.spread != nil
+        let rows = pages.rows.filter { row in
+            switch row.page {
+            case .roster: false
+            case .loot: leveler
+            case .sims: !leveler
+            case .calendar: true
+            }
+        }
+        return GuildPagesContent(guild: Copy.guildTabPages, rows: rows)
+    }
+
+    /// `Raids open at 60 · you're 36` under 60; nil at 60.
+    private func raidsOpen(_ level: Int?) -> String? {
+        guard let level, level < RaidFlowPresenter.maxLevel else { return nil }
+        return Copy.guildTabRaidsOpen(level: RaidFlowPresenter.maxLevel, you: level)
+    }
 }
 
 /// Loads the Raid tab's extras for the state the tab model reached: the officer's badge and
@@ -105,7 +156,7 @@ final class RaidRootLoader {
         case let .noGuild(character?):
             guard let spec = character.specKey, let faction = character.faction else { extras = RaidRootExtras(); return }
             let recruiting = try? await service.recruiting(spec: spec, faction: faction, region: character.region, ruleset: character.ruleset)
-            extras = RaidRootExtras(recruiting: recruiting)
+            extras = RaidRootExtras(recruiting: recruiting, applied: await applied(recruiting?.rows ?? []))
         case let .loaded(content):
             extras = await guildExtras(content)
         default:
@@ -121,8 +172,9 @@ final class RaidRootLoader {
         async let ready = readyCheck(character: content.character.key, raid: raid?.id)
         async let night = liveNight(liveID)
         var extras = RaidRootExtras(badge: await badge, ready: await ready, night: await night)
-        if let badge = extras.badge, badge.officer, badge.applicants > 0 {
-            extras.applicants = await applicants(guild: guild)
+        if let badge = extras.badge, badge.officer {
+            if badge.applicants > 0 { extras.applicants = await applicants(guild: guild) }
+            extras.setup = try? await service.setup(guild: guild)
         }
         return extras
     }
@@ -135,6 +187,21 @@ final class RaidRootLoader {
     private func liveNight(_ raid: Int64?) async -> RaidNightSummary? {
         guard let raid else { return nil }
         return try? await raids.night(raid: raid)
+    }
+
+    /// When the player applied to each recruiting guild that is still deciding (spec 2.4).
+    private func applied(_ guilds: [RecruitingGuild]) async -> [Int64: Date] {
+        await withTaskGroup(of: (Int64, Date?).self) { group in
+            for guild in guilds {
+                group.addTask { [service] in
+                    let rows = (try? await service.myApplications(guild: guild.guildId))?.rows ?? []
+                    return (guild.guildId, rows.filter { $0.status == LiveApplicantsSource.pending }.map(\.createdAt).max())
+                }
+            }
+            var out: [Int64: Date] = [:]
+            for await (guild, at) in group { if let at { out[guild] = at } }
+            return out
+        }
     }
 
     private func applicants(guild: Int64) async -> [ApplicantLine] {

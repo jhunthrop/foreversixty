@@ -146,6 +146,14 @@ struct RaidGuildContent: Equatable {
     var cover: RaidCoverContent?
     /// G1, officers: `Not synced this week: Kaelra, Thalrin, Brakka, Mirethil`, opening the roster.
     var notSynced: NotSyncedContent?
+    /// The Guild tab's own sections (spec 2026-11-10-guild-tab.md), nil until the guild home loads.
+    var tab: GuildTabContent?
+    /// Under 60: `Raids open at 60 · you're 36` under the raid head (they sign up all the same).
+    var raidsOpen: String?
+    /// Your job in the next raid (spec 2.3a); empty when you hold no slot.
+    var jobs: [RaidJobLine] = []
+    /// An officer's read-only assignments; nil for everyone else.
+    var assignments: [AssignmentEncounterLine]?
 }
 
 /// A gap in the cover (G4): nobody brings `name` (`have` nil), or `have` of the `need` the raid wants.
@@ -191,6 +199,8 @@ struct RecruitingRow: Equatable, Identifiable {
     let name: String
     /// `Alliance · Wed and Sat, 8:00 pm CST · needs damage`.
     let line: String
+    /// `Applied Mon` once the player has an open application to the guild (spec 2.4); nil shows Apply.
+    var applied: String?
 
     var id: Int64 { guildID }
 }
@@ -198,7 +208,9 @@ struct RecruitingRow: Equatable, Identifiable {
 struct RecruitingContent: Equatable {
     /// `Guilds recruiting a Fury Warrior`.
     let heading: String
-    let rows: [RecruitingRow]
+    var rows: [RecruitingRow]
+    /// Under 60: `Raids open at 60 · you're 36` (spec 2.4).
+    var raidsOpen: String?
 }
 
 /// What the Raid tab's root draws (flows spec 4.2).
@@ -206,8 +218,6 @@ enum RaidRootContent: Equatable {
     case loading
     case failed
     case signedOut
-    /// Under 60: the levels to go.
-    case leveler(toGo: String)
     case noGuild(RecruitingContent)
     /// In a guild, waiting for an officer to approve the character.
     case waiting

@@ -106,11 +106,6 @@ enum RaidFlowTestData {
         pages: pages
     ))
 
-    static let recruiting = RaidRootContent.noGuild(RecruitingContent(heading: "Guilds recruiting a Fury Warrior", rows: [
-        RecruitingRow(guildID: 2, name: "Olympus XXVII", line: "Alliance · Wed and Sat, 8:00 pm CST · needs damage"),
-        RecruitingRow(guildID: 7, name: "Dawnbreak", line: "Alliance · Tue and Thu, 9:00 pm EST · needs damage"),
-    ]))
-
     // MARK: Not answered
 
     static func raider(_ key: String, _ name: String, _ className: String, _ sub: String, role: String, marked: SignupState? = nil) -> NotAnsweredRow {

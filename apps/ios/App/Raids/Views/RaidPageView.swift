@@ -112,6 +112,14 @@ struct RaidPageContent: View {
                             OfficerRow(controller: controller, clock: clock)
                         }
                         SignupCard(controller: controller, facts: facts, clock: clock, currentKey: currentKey)
+                        // Raid assignments (spec 2026-11-10-guild-tab.md 2.3a): your job, and for an
+                        // officer the whole list, read only, with the site's planner one tap away.
+                        YourJobSection(jobs: RaidAssignmentWords.jobs(raid))
+                        if facts.showsOfficerTools, raid.assignments != nil {
+                            AssignmentsSection(encounters: RaidAssignmentWords.encounters(raid)) {
+                                if let guildURL { openURL(GuildWeb.raid(guildURL, raid: raid.id)) }
+                            }
+                        }
                         if raid.viewer.raidNight == true { nightRow }
                         if let report = raid.match?.reportId, facts.chip == .done { reportRow(report) }
                         notes

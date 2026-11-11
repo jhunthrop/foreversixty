@@ -22,8 +22,6 @@ struct RaidFlowParityTests {
     @Test("ios-raid-officer") func officer() async throws { try await root(T.member(officer: true), "raid-officer") }
     @Test("ios-raid-live") func live() async throws { try await root(T.live, "raid-live") }
     @Test("ios-raid-no-raid") func noRaid() async throws { try await root(T.noRaid, "raid-no-raid") }
-    @Test("ios-raid-none") func noGuild() async throws { try await root(T.recruiting, "raid-none") }
-    @Test("ios-raid-leveler") func leveler() async throws { try await root(.leveler(toGo: "26 levels to go"), "raid-leveler") }
     @Test("ios-raid-out") func signedOut() async throws { try await root(.signedOut, "raid-out") }
 
     @Test("ios-raid-unanswered")
@@ -62,7 +60,7 @@ struct RaidFlowParityTests {
     /// A raid flow page as the app pushes it over the Raid tab: in its stack, on the N3 bar with the back
     /// control (Android's RaidPagesParityTest wraps FlowBackBar the same way), with the repo's icons.
     private static func pushed(_ title: String, @ViewBuilder _ content: @escaping () -> some View) -> some View {
-        PushedScreen(back: AppTab.raid.title) { content().pushedBandBar(title) }
+        PushedScreen(back: AppTab.guild.title) { content().pushedBandBar(title) }
             .environment(\.itemIconSource, RepoItemIconSource())
     }
 
@@ -85,15 +83,13 @@ struct RaidFlowLogicTests {
         #expect(RaidFlowPresenter.list(["Selka"]) == "Selka")
     }
 
-    @Test("no guild: the recruiting heading takes its article; under 60, the levels to go")
+    @Test("no guild: the recruiting heading takes its article")
     func noGuild() {
         let row = RecruitingGuild(guildId: 2, name: "Olympus XXVII", faction: "alliance", schedule: "Wed and Sat, 8:00 pm CST", needs: "damage", crestUrl: nil)
         let fury = RaidFlowPresenter.recruiting([row], kind: "Fury Warrior")
         #expect(fury.heading == "Guilds recruiting a Fury Warrior")
         #expect(fury.rows.first?.line == "Alliance · Wed and Sat, 8:00 pm CST · needs damage")
         #expect(RaidFlowPresenter.recruiting([], kind: "Arms Warrior").heading == "Guilds recruiting an Arms Warrior")
-        #expect(RaidFlowPresenter.leveler(level: 34) == .leveler(toGo: "26 levels to go"))
-        #expect(RaidFlowPresenter.leveler(level: 59) == .leveler(toGo: "1 level to go"))
     }
 
     private func person(_ name: String, late: Int? = nil) -> RaidNightPerson {
@@ -251,13 +247,17 @@ struct RaidFlowLogicTests {
         #expect(content.rows.filter { $0.dm != nil }.map(\.name) == ["Zulmara"])
     }
 
-    @Test("the root: under 60 the leveler before any guild; with no character, the recruiting guilds")
+    @Test("the root: under 60 with no guild, the recruiting guilds and one quiet line (never a block)")
     func composer() throws {
         let me = try RaidFixture.load(Me.self, "me")
         let character = try #require(me.mainCharacter)
         let composer = RaidRootComposer(presenter: presenter)
         let level = try #require(character.level)
-        #expect(composer.content(.noGuild(character: character), extras: RaidRootExtras()) == RaidFlowPresenter.leveler(level: level))
+        guard case let .noGuild(recruiting) = composer.content(.noGuild(character: character), extras: RaidRootExtras()) else {
+            Issue.record("expected the recruiting guilds under 60")
+            return
+        }
+        #expect(recruiting.raidsOpen == (level < 60 ? "Raids open at 60 · you're \(level)" : nil))
         guard case .noGuild = composer.content(.noGuild(character: nil), extras: RaidRootExtras()) else {
             Issue.record("expected the recruiting guilds")
             return

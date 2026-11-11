@@ -15,6 +15,10 @@ protocol RaidFlowService: Sendable {
     func recruiting(spec: String, faction: String, region: String, ruleset: String) async throws(APIError) -> RecruitingGuilds
     /// The Ready check for one raid; nil without an export or on any failure.
     func ready(character: String, raid: Int64) async -> ReadyCheck?
+    /// `GET /v1/guilds/{id}/setup`: an officer's setup checklist (the Guild tab's Setup row).
+    func setup(guild: Int64) async throws(APIError) -> GuildSetup
+    /// `GET /v1/guilds/{id}/applications/mine`: the player's own applications to a guild.
+    func myApplications(guild: Int64) async throws(APIError) -> GuildApplications
 }
 
 /// The officer's Discord mention (F3): `POST /v1/guilds/{id}/raids/{raid}/ping` with an optional
@@ -30,8 +34,10 @@ protocol RaidSiteActions: Sendable {
     func raid(guild: Int64, raid: Int64) -> URL
     /// Applying to a recruiting guild.
     func apply(guild: Int64) -> URL
-    /// Claiming a guild that is not here, and finding one.
+    /// Finding a guild: the site's guild finder.
     var guilds: URL { get }
+    /// Claiming a guild that is not here.
+    var claim: URL { get }
 }
 
 struct LiveRaidPingService: RaidPingService {
@@ -76,6 +82,14 @@ struct LiveRaidFlowService: RaidFlowService {
     func ready(character: String, raid: Int64) async -> ReadyCheck? {
         await LiveReadySource(client: client).ready(character: character, raid: raid)
     }
+
+    func setup(guild: Int64) async throws(APIError) -> GuildSetup {
+        try await client.send(.getGuildSetup(id: guild))
+    }
+
+    func myApplications(guild: Int64) async throws(APIError) -> GuildApplications {
+        try await client.send(.myGuildApplications(id: guild))
+    }
 }
 
 struct LiveRaidSiteActions: RaidSiteActions {
@@ -83,7 +97,10 @@ struct LiveRaidSiteActions: RaidSiteActions {
 
     func apply(guild: Int64) -> URL { StaticSite.url.appending(path: "app/guild/\(guild)") }
 
-    var guilds: URL { StaticSite.url.appending(path: "guilds") }
+    /// The site's guild finder is `/guild` (web nav's Find a guild); `/guilds` is no page.
+    var guilds: URL { StaticSite.url.appending(path: "guild") }
+
+    var claim: URL { URL(string: "guild#claim", relativeTo: StaticSite.url)?.absoluteURL ?? guilds }
 }
 
 extension AccountCharacter {
