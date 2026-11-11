@@ -1,0 +1,154 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "section-next-raid": {
+   "box": [
+    14,
+    16,
+    384,
+    216
+   ],
+   "inventory": {
+    "button": 4,
+    "image": 1
+   }
+  },
+  "section-your-job": {
+   "box": [
+    14,
+    252,
+    384,
+    127
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-needs-you": {
+   "box": [
+    14,
+    399,
+    384,
+    225
+   ],
+   "inventory": {
+    "row": 2,
+    "button": 1
+   }
+  },
+  "section-officer": {
+   "box": [
+    14,
+    644,
+    384,
+    247
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-assignments": {
+   "box": [
+    14,
+    911,
+    384,
+    412
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-who-is-coming": {
+   "box": [
+    14,
+    1343,
+    384,
+    366
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-before-you-pull": {
+   "box": [
+    14,
+    1729,
+    384,
+    309
+   ],
+   "inventory": {
+    "row": 4
+   }
+  },
+  "section-guild": {
+   "box": [
+    14,
+    2058,
+    384,
+    80
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-roster": {
+   "box": [
+    14,
+    2158,
+    384,
+    374
+   ],
+   "inventory": {
+    "row": 5,
+    "image": 5
+   }
+  },
+  "section-loot": {
+   "box": [
+    14,
+    2553,
+    384,
+    91
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-recent-logs": {
+   "box": [
+    14,
+    2663,
+    384,
+    229
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-progression": {
+   "box": [
+    14,
+    2912,
+    384,
+    109
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-pages": {
+   "box": [
+    14,
+    3041,
+    384,
+    169
+   ],
+   "inventory": {
+    "row": 2
+   }
+  }
+ }
+}

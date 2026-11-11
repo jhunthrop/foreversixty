@@ -27,7 +27,7 @@ CLOSE_ROWS = [('Thornwick', 'druid', 57, 'Feral Druid'), ('Vexa', 'warlock', 56,
 LOGS = [('UBRS, Sunday', 'Blackrock Spire', 7, 8, '1 h 32 min', 'Sun 3 Jan'),
         ('Scholomance, Saturday', 'Scholomance', 9, 9, '1 h 08 min', 'Sat 2 Jan'),
         ('Onyxia, Wednesday', 'Onyxia&rsquo;s Lair', 1, 1, '41 min', 'Wed 30 Dec')]
-SETUP_DONE, SETUP_TOTAL, APPLICANTS = 5, 8, 3
+SETUP_DONE, SETUP_TOTAL, APPLICANTS = 4, 8, 1
 
 GUILD_CSS = '''
 .r5raid .gh{display:flex;align-items:center;gap:12px;padding:8px 0}
@@ -49,7 +49,7 @@ GUILD_CSS = '''
 .r5raid .pn>.grp:first-child{padding-top:6px}
 .r5raid .row .in .cnt{flex:none;font:600 14px/20px var(--font-body);color:var(--gold)}
 .r5raid .kill{color:#7fd48a}
-.r5raid .sh{height:auto;min-height:26px}
+[data-region^=section-guilds-recruiting] .sh{height:auto;min-height:26px}
 .r5raid .row .tr .when{font:600 13px/18.29px var(--font-body);color:var(--muted)}
 '''
 
@@ -72,14 +72,12 @@ def _head(leveler: bool) -> str:
     return f'<div class="blk-r5" data-region="section-guild"><div class="pn">{head}</div></div>'
 
 
-def _raid_view() -> str:
-    """The next raid below 60 (coordinator ruling 2026-11-10: they sign up): the raid, its time, the counts and roles, the
-    four answers live, one quiet line."""
-    seg = ''.join(f'<a class="btn" href="#">{x}</a>' for x in ('In', 'Late', 'Bench', 'Out'))
-    return (f'<div class="blk-r5" data-region="section-next-raid"><div class="pn"><div class="hd"><div class="rl">{icon(F.ONY, 40)}'
-            f'<div class="tx"><b>{F.RAID}</b><span class="s">{F.WHEN}</span><span class="s">18 in, 3 late &middot; Tanks 2 &middot; '
-            f'Healers 5 &middot; Damage 11</span></div></div><div class="seg">{seg}</div>'
-            f'<p class="gate">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p></div></div></div>')
+def _raid_view(platform: str) -> str:
+    """The next raid below 60 (coordinator ruling 2026-11-10: they sign up): the raid head as at 60, one quiet line under it,
+    then Who is coming."""
+    head = F._r5_head(platform, 'In').replace('Thandrel, Damage', 'Felsnap, Damage')
+    gate = f'<p class="gate" style="margin:0">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>'
+    return head + gate + F._r5_coming(platform)
 
 
 def _roster(leveler: bool) -> str:
@@ -96,17 +94,16 @@ def _logs() -> str:
     rows =''.join(f'<div class="row"><div class="in"><div><span class="t">{t}</span><span class="s">{zone} &middot; '
                    f'<span class="{"kill" if k == n else ""}">{k}/{n} kills</span> &middot; {dur}</span></div>'
                    f'<span class="when">{day}</span></div></div>' for t, zone, k, n, dur, day in LOGS)
-    return F._r5_section('Recent logs', rows, action='Logs &rsaquo;')
+    return F._r5_section('Recent logs', rows)
 
 
 def _progression() -> str:
-    row = (f'<div class="row"><div class="in">{icon(F.ONY, 40)}<div><span class="t">Onyxia&rsquo;s Lair</span>'
-           '<span class="s"><span class="kill">1 of 1 down</span> &middot; 6 pulls this tier</span></div></div></div>')
-    return F._r5_section('Progression', row)
+    """The tier's line (summary.tier: its name, down of named, pulls), opening the site's Progression tab."""
+    return F._r5_section('Progression', F._r5_row('First tier', '<span class="kill">1 of 1 down</span> &middot; 6 pulls this tier'))
 
 
 def _loot() -> str:
-    return F._r5_section('Loot', F._r5_row('Last raid: 4 pieces', 'Wed 30 Dec &middot; Onyxia&rsquo;s Lair'), action='Loot history &rsaquo;')
+    return F._r5_section('Loot', F._r5_row('Last raid: 4 pieces'), action='Loot history &rsaquo;')
 
 
 def _officer() -> str:
@@ -114,7 +111,7 @@ def _officer() -> str:
         c = f'<span class="cnt">{count}</span>' if count else ''
         return f'<div class="row"><div class="in"><div><span class="t">{title}</span><span class="s">{sub}</span></div>{c}</div></div>'
     rows = (row('Plan a raid', 'Onyxia Wed, Barrow Deeps Sat')
-            + row('Applications', 'Mirelle, Holy Priest 60, and 2 more', f'{APPLICANTS} waiting')
+            + row('Applications', 'Mirelle, Holy Priest 60', f'{APPLICANTS} waiting')
             + row('Setup', 'Discord bot, raid schedule and addon sync to go', f'{SETUP_DONE} of {SETUP_TOTAL} done'))
     return F._r5_section('Officer', rows)
 
@@ -166,7 +163,7 @@ def _assignments() -> str:
 
 def _body(state: str, platform: str) -> str:
     if state == 'leveler':
-        return _head(True) + _raid_view() + _roster(True) + _logs() + _progression() + _pages(True)
+        return _head(True) + _raid_view(platform) + _roster(True) + _logs() + _progression() + _pages(True)
     if state == 'none':
         return _none(False)
     if state == 'none-leveler':
@@ -174,7 +171,8 @@ def _body(state: str, platform: str) -> str:
     officer = state == 'officer'
     head = F._r5_head(platform, 'In')
     needs = (F._r5_section('Needs you', F._r5_row('5 have not answered, 2 of them healers', 'Healers short by 3',
-                                                  trail='<a class="btn" href="#">Preview mention</a>'), meta='5 open') if officer else '')
+                                                  trail='<a class="btn" href="#">Preview mention</a>')
+                           + F._r5_row('1 applicant', 'Mirelle, Holy Priest 60, 2 min ago'), meta='6 open') if officer else '')
     return (head + _your_job() + needs + (_officer() + _assignments() if officer else '') + F._r5_coming(platform, officer=officer)
             + F._r5_ready(F.R5_READY)
             + _head(False) + _roster(False) + _loot() + _logs() + _progression() + _pages(False))

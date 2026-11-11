@@ -1,0 +1,88 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "section-guild": {
+   "box": [
+    14,
+    16,
+    365,
+    143
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-next-raid": {
+   "box": [
+    14,
+    179,
+    365,
+    220
+   ],
+   "inventory": {
+    "button": 4,
+    "image": 1
+   }
+  },
+  "section-who-is-coming": {
+   "box": [
+    14,
+    439,
+    365,
+    315
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 2
+   }
+  },
+  "section-roster": {
+   "box": [
+    14,
+    774,
+    365,
+    644
+   ],
+   "inventory": {
+    "row": 9,
+    "image": 9
+   }
+  },
+  "section-recent-logs": {
+   "box": [
+    14,
+    1438,
+    365,
+    229
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-progression": {
+   "box": [
+    14,
+    1687,
+    365,
+    109
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-pages": {
+   "box": [
+    14,
+    1815,
+    365,
+    169
+   ],
+   "inventory": {
+    "row": 2
+   }
+  }
+ }
+}

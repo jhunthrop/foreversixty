@@ -1,0 +1,31 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "section-guilds-recruiting-a-fury-warrior": {
+   "box": [
+    14,
+    16,
+    384,
+    264
+   ],
+   "inventory": {
+    "row": 2,
+    "button": 1
+   }
+  },
+  "section-find-your-guild": {
+   "box": [
+    14,
+    300,
+    384,
+    187
+   ],
+   "inventory": {
+    "row": 2
+   }
+  }
+ }
+}

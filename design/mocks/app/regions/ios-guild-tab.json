@@ -1,0 +1,121 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "section-next-raid": {
+   "box": [
+    14,
+    16,
+    365,
+    220
+   ],
+   "inventory": {
+    "button": 4,
+    "image": 1
+   }
+  },
+  "section-your-job": {
+   "box": [
+    14,
+    256,
+    365,
+    127
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-who-is-coming": {
+   "box": [
+    14,
+    403,
+    365,
+    315
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 2
+   }
+  },
+  "section-before-you-pull": {
+   "box": [
+    14,
+    738,
+    365,
+    309
+   ],
+   "inventory": {
+    "row": 4
+   }
+  },
+  "section-guild": {
+   "box": [
+    14,
+    1067,
+    365,
+    80
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-roster": {
+   "box": [
+    14,
+    1167,
+    365,
+    374
+   ],
+   "inventory": {
+    "row": 5,
+    "image": 5
+   }
+  },
+  "section-loot": {
+   "box": [
+    14,
+    1562,
+    365,
+    91
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-recent-logs": {
+   "box": [
+    14,
+    1672,
+    365,
+    229
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-progression": {
+   "box": [
+    14,
+    1921,
+    365,
+    109
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-pages": {
+   "box": [
+    14,
+    2050,
+    365,
+    169
+   ],
+   "inventory": {
+    "row": 2
+   }
+  }
+ }
+}

@@ -26,7 +26,7 @@ COUNTS = '18 in, 3 late'
 ROLES = [('', 'Tanks', 2, 2), ('', 'Healers', 5, 8), ('', 'Damage', 11, 30)]
 DEATHBRINGER = ('Deathbringer', 'inv_axe_09')
 # The tab badges (section 3): the member's unanswered raid, the officer's open items, the unread activity.
-MEMBER, OFFICER, ANSWERED = {'raid': 1, 'activity': 3}, {'raid': 6, 'activity': 3}, {'activity': 3}
+MEMBER, OFFICER, ANSWERED = {'guild': 1, 'activity': 3}, {'guild': 6, 'activity': 3}, {'activity': 3}
 
 FLOWS_CSS = '''
 .ap{padding:8px 16px 24px}
@@ -682,14 +682,6 @@ def _raid_r5(state: str, platform: str) -> str:
                  '<p class="note">Pulled 1 h 12 min ago &middot; 18 in, 3 late &middot; you are In as<br>Thandrel, Damage</p>'
                  f'<div class="rule"></div>{_r5_roles(R5_COMING, platform, split=platform == "android")}')
         return _r5_section('Raid night', night) + _r5_ready(R5_READY, 'Ready check') + pages
-    if state == 'none':
-        apply = '<a class="btn" href="#">Apply</a>'
-        recruiting = _r5_section('Guilds recruiting a Fury Warrior', _r5_row('Olympus XXVII', 'Alliance &middot; Wed and Sat, 8:00 pm CST &middot; needs damage', trail=apply)
-                                 + _r5_row('Dawnbreak', 'Alliance &middot; Tue and Thu, 9:00 pm EST &middot; needs damage', trail=apply))
-        return recruiting + _r5_lone('Your guild is not here?', ['Claim it: a guild master or an officer confirms with the addon or Battle.net.'], 'Claim your guild')
-    if state == 'leveler':
-        return _r5_lone('Raids start at 60', ['26 levels to go', 'Onyxia&rsquo;s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.'],
-                        'Find a guild')
     return _r5_lone('Raid with a guild', [], 'Sign in with Battle.net', primary=True)
 
 
@@ -700,13 +692,14 @@ def _raid_page_r5(state: str, platform: str) -> str:
 
 # ------------------------------------------------------------------------------------------------ Raid (the tab)
 def raid(state: str):
-    """The Raid tab (owner, 2026-11-08): the next raid first with your answer, then for an officer what needs you, then the
-    guild's raid pages. Live: raid night leads. No guild: find, join or claim one. Signed out: sign in, then the same."""
+    """The Guild tab's raid states (owner, 2026-11-08; the tab is Guild since 2026-11-10, ws_app_guild.py draws its own
+    sections): the next raid first with your answer, then for an officer what needs you, then the guild's raid pages. Live:
+    raid night leads. Signed out: sign in. No guild and under 60 are ws_app_guild.py's."""
     def b(platform: str) -> str:
         badges = {'member': ANSWERED, 'signup': ANSWERED, 'officer': OFFICER, 'noraid': ANSWERED, 'live': ANSWERED,
-                  'none': {'activity': 2}, 'leveler': {'activity': 1}, 'out': {}}[state]
-        who = {'out': None, 'leveler': 'hunter'}.get(state, 'warrior')
-        return app_page(platform, _raid_page_r5(state, platform), 'raid', title='Raid', badges=badges, who=who)
+                  'out': {}}[state]
+        who = {'out': None}.get(state, 'warrior')
+        return app_page(platform, _raid_page_r5(state, platform), 'guild', title='Guild', badges=badges, who=who)
     return b
 
 
@@ -937,7 +930,7 @@ def activity(state: str):
     """Activity (owner, 2026-11-08): every notification event, newest first, read state, the six groups as filters (All
     preselected); every row opens its answer. The push inbox: a player with pushes off sees the same list."""
     def b(platform: str) -> str:
-        badges = {'in': {'raid': 0, 'activity': 3}}.get(state, {})
+        badges = {'in': {'guild': 0, 'activity': 3}}.get(state, {})
         return app_page(platform, _activity_page_r5(state), 'activity', title='Activity', badges=badges, who=None if state == 'out' else 'warrior')
     return b
 
@@ -996,7 +989,7 @@ def raid_unanswered(platform: str) -> str:
             + Section('Not answered', Rows(rows, open_=True), meta='4 of 31, healers first')
             + Section('Healers on the bench', bench + '<p class="t-small stampl">If Mirethil, Selka and Aurelith are In, healers are full.</p>')
             + '<p class="t-small" style="margin-top:16px">Creating and editing raids stays on the site. <a class="link" href="#">Edit on the site &rsaquo;</a></p>')
-    return app_page(platform, _page(body, RAID), 'raid', back='Raid', title=RAID, share=True, badges=OFFICER)
+    return app_page(platform, _page(body, RAID), 'guild', back='Guild', title=RAID, share=True, badges=OFFICER)
 
 
 def applicant(state: str):
@@ -1021,7 +1014,7 @@ def applicant(state: str):
                     + '<p class="t-small" style="margin-top:8px">Her raid role comes from her spec when she answers a raid.</p>')
         # Android sets a 28 sp figure on a 38.5 dp line (the Pixel 9's font padding), not the web's 32 (lane M2a, was M0's drift)
         android = '<style>[data-platform=android] .ap .figs .fig .v{line-height:38.5px}</style>'
-        return app_page(platform, _page(body + android, 'Mirelle'), 'raid', back='Raid', title='Mirelle', badges=OFFICER)
+        return app_page(platform, _page(body + android, 'Mirelle'), 'guild', back='Guild', title='Mirelle', badges=OFFICER)
     return b
 
 
@@ -1082,10 +1075,8 @@ SCREENS = {
     'raid-signup': raid('signup'),
     'raid-officer': raid('officer'),
     'raid-live': raid('live'),
-    'raid-none': raid('none'),
     'raid-no-raid': raid('noraid'),
     'raid-out': raid('out'),
-    'raid-leveler': raid('leveler'),
     'gear': gear('in'),
     'gear-out': gear('out'),
     'activity': activity('in'),

@@ -222,7 +222,7 @@ def raid_night(state: str):
                 + Section('Your sign-up', f'<div class="la bare"><div class="btns">{buttons}</div></div>')
                 + Section('Who is coming', counts, 'Roster &rsaquo;')
                 + Section('Before you pull', ready + '<p class="t-small" style="margin-top:8px">From your last log-out, 9 h ago</p>'))
-        return app_page(platform, page(body, "Onyxia's Lair"), 'raid', back='Raid', title="Onyxia's Lair", share=True)
+        return app_page(platform, page(body, "Onyxia's Lair"), 'guild', back='Guild', title="Onyxia's Lair", share=True)
     return b
 
 
@@ -350,10 +350,10 @@ SCREENS: dict = {
     'rankings-you': W('web-rankings-you', 'home', back='Home'),
     'rankings-empty': W('web-rankings-empty', 'home', back='Home'),
     # Guild (tab Guild) and raids
-    'guild-raids': W('web-guild-raids', 'raid', back='Raid'),
-    'guild-raid': W('web-guild-raid', 'raid', back='Raids', share=True),
-    'guild-roster': W('web-guild-roster', 'raid', back='Raid'),
-    'guild-loot': W('web-guild-loot', 'raid', back='Raid'),
+    'guild-raids': W('web-guild-raids', 'guild', back='Guild'),
+    'guild-raid': W('web-guild-raid', 'guild', back='Guild', share=True),
+    'guild-roster': W('web-guild-roster', 'guild', back='Guild'),
+    'guild-loot': W('web-guild-loot', 'guild', back='Guild'),
     'raid-night-live': raid_night('live'),
     'raid-night-signup': raid_night('signup'),
     # You, account, premium, system
