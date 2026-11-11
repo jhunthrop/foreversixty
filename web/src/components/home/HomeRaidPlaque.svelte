@@ -98,7 +98,8 @@
       {#if standing.length > 0}
         <div class="mt-[6px]"><HomeFacts facts={standing} testid="home-raid-standing" /></div>
       {/if}
-      <div class="mt-[18px] flex flex-wrap items-center gap-[10px]">
+      <!-- One line at every width: the choices shrink to their words so "as DPS" stays beside them. -->
+      <div class="mt-[18px] flex items-center gap-[10px]">
         {#if role !== null && !locked}
           <SignupSegments
             value={chosen}
@@ -109,7 +110,7 @@
             onChange={(state) => void choose(state)}
             testid="home-raid-signup"
           />
-          <span class="text-muted text-[14px]" data-testid="home-raid-role"
+          <span class="text-muted shrink-0 text-[14px] whitespace-nowrap" data-testid="home-raid-role"
             >{raidCopy.signingAs(raidCopy.roleLabels[role])}</span
           >
         {:else if raidHref !== null}

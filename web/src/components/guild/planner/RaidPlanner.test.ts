@@ -152,6 +152,9 @@ describe('the body', () => {
     expect(ranged).not.toContain('maybe In');
     expect(text(between(body, 'raid-roster-melee', 'raid-roster-ranged'))).toContain('No melee yet.');
     expect(body).not.toContain('raid-roster-state-us/pvp/frostquill');
+    // The Bench head names the state: its rows carry no Bench Tag.
+    expect(text(between(body, 'raid-roster-bench', 'raid-notes'))).not.toContain('Bench Bench');
+    expect(body).not.toContain('data-testid="raid-roster-state"');
   });
 
   it('gives officers the in-row control instead of the Tag', () => {

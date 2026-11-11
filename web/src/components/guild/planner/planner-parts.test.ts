@@ -79,6 +79,12 @@ describe('PlannerRow', () => {
     expect(body).toContain('aria-current="true"');
   });
 
+  it('drops the Tag under a group head that already names the state', () => {
+    const body = row({ stateNamed: true });
+    expect(text(body)).toBe('Ironbrand Holy Paladin · Healer Also: Rootbound (Restoration Druid, Bench)');
+    expect(body).not.toContain('data-testid="raid-roster-state"');
+  });
+
   it('gives an officer the state control on its own phone line, and a refusal line', () => {
     const body = row({ officer: true, refusal: 'Did not save.' });
     expect(body).toContain('max-md:col-span-full');

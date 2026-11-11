@@ -18,6 +18,7 @@
     deltaWords,
     raidNightFigures,
     slowestMs,
+    type MissedRaider,
     type NightMisses,
     type RaidNightFigures,
   } from '../../lib/guild/raid-nights-table';
@@ -97,6 +98,12 @@
   }
 </script>
 
+<!-- The raiders a night missed, each in class colour (every name on the web is CharacterName). -->
+{#snippet names(raiders: readonly MissedRaider[])}
+  {#each raiders as raider, index (raider.name)}{#if index > 0},
+    {/if}<CharacterName name={raider.name} cls={raider.class} weight="inherit" />{/each}
+{/snippet}
+
 <StatTable {columns} nameHead="Night" barHead="Boss time" dense label="Raid nights" testid="guild-raids-rows">
   {#each figures as f (f.row.id)}
     {@const isOpen = expanded === f.row.id}
@@ -148,11 +155,12 @@
         {#if misses !== undefined && (misses.absent.length > 0 || misses.bench.length > 0)}
           <p class="text-[13px] leading-5" data-testid={`guild-raid-misses-${f.row.id}`}>
             {#if misses.absent.length > 0}<span class="text-muted">Absent</span>
-              <span class="text-wipe">{misses.absent.join(', ')}</span
-              >{/if}{#if misses.absent.length > 0 && misses.bench.length > 0}{SEP}{/if}{#if misses.bench.length > 0}<span
+              {@render names(
+                misses.absent,
+              )}{/if}{#if misses.absent.length > 0 && misses.bench.length > 0}{SEP}{/if}{#if misses.bench.length > 0}<span
                 class="text-muted">Bench</span
               >
-              {misses.bench.join(', ')}{/if}
+              {@render names(misses.bench)}{/if}
           </p>
         {/if}
         <ul class="max-w-[560px]" data-testid={`guild-raid-fights-${f.row.id}`}>

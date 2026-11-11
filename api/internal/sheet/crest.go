@@ -45,14 +45,16 @@ var crestMasks = sync.OnceValues(func() (*image.Alpha, *image.Alpha) {
 
 // CrestPNG draws classSlug's ringed crest, or the LX seal in a muted ring for any other slug.
 func CrestPNG(classSlug string) ([]byte, error) {
-	img, err := crestImage(classSlug)
+	img, err := CrestImage(classSlug)
 	if err != nil {
 		return nil, err
 	}
 	return encodePNG(img)
 }
 
-func crestImage(classSlug string) (*image.NRGBA, error) {
+// CrestImage is the ringed crest as an image, for a card that composes it onto its own canvas:
+// the only class image any Go surface draws (the bare art stays inside this package).
+func CrestImage(classSlug string) (*image.NRGBA, error) {
 	ring, known := ClassColor(classSlug)
 	art, err := crestArt(classSlug, known)
 	if err != nil {
@@ -75,7 +77,7 @@ func crestImage(classSlug string) (*image.NRGBA, error) {
 
 func crestArt(classSlug string, known bool) (image.Image, error) {
 	if known {
-		return EmbeddedCrest(classSlug)
+		return embeddedCrest(classSlug)
 	}
 	return seal()
 }

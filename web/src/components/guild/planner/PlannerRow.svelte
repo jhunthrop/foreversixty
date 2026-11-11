@@ -29,6 +29,7 @@
     busy = false,
     refusal = null,
     facts = null,
+    stateNamed = false,
     onSetState,
   }: {
     row: RosterRow;
@@ -45,6 +46,8 @@
     busy?: boolean;
     /** A refused change's line under this row. */
     refusal?: string | null;
+    /** The group head above already names this row's state (Late, Bench, Out): no Tag repeats it. */
+    stateNamed?: boolean;
     onSetState: (row: RosterRow, state: GuildSignupState) => Promise<boolean>;
   } = $props();
 
@@ -85,7 +88,8 @@
           >{refusal}</span
         >{/if}
     {/snippet}
-    <!-- In is the roster's default: a raider's row carries a Tag only for Late, Bench and Out. -->
+    <!-- In is the roster's default: a raider's row carries a Tag only for Late, Bench and Out, and
+         none under a group head that already names its state. -->
     {#snippet trail()}
       {#if officer}
         <SignupSegments
@@ -97,7 +101,7 @@
           onChange={(state) => void change(state)}
           testid={`raid-roster-state-${row.character_key}`}
         />
-      {:else if row.state !== null && row.state !== 'in'}
+      {:else if row.state !== null && row.state !== 'in' && !stateNamed}
         {@const tag = stateTag(row.state)}
         <Tag tone={tag.tone} testid="raid-roster-state">{tag.text}</Tag>
       {/if}

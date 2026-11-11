@@ -95,6 +95,7 @@
                   busy={busyKey === row.character_key}
                   refusal={line?.control === `roster:${row.character_key}` ? line.message : null}
                   facts={facts?.get(row.character_key) ?? null}
+                  stateNamed={group.id === row.state}
                   onSetState={setState}
                 />
               {/each}

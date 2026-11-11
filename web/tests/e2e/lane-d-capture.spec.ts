@@ -30,6 +30,7 @@ const PAGES: readonly FramePage[] = [
   { id: 'home-out', open: (page: Page) => openHome(page, { feed: 'feed-out.json' }) },
   { id: 'guild-raids', open: (page: Page) => openGuildState(page, 'dense-raids') },
   { id: 'guild-raid', open: (page: Page) => openGuildState(page, 'dense-raid-member') },
+  { id: 'guild-raid-officer', open: (page: Page) => openGuildState(page, 'dense-planner') },
   { id: 'guild-roster', open: (page: Page) => openGuildState(page, 'dense-roster') },
   ...FRAME_PAGES.filter((framePage) => FRAME_IDS.includes(framePage.id)),
 ].filter((framePage) => ONLY === undefined || ONLY.includes(framePage.id));
