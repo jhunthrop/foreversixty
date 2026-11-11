@@ -7,6 +7,8 @@ characters; TestFlight's "What to Test" at 4,000.
 
 ## Unreleased
 
+- The Raid tab is now the Guild tab: your guild at any level, the next raid with your answer and who is coming, your assignments and your job for the pull, the roster, the newest loot night, recent logs and progression.
+
 ## 0.1.0 (21), 2026-11-11
 
 ## 0.1.0 (20), 2026-11-11
