@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.ui
 
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import android.content.ClipData
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.classColor
@@ -79,6 +80,8 @@ fun OfficerRow(controller: SignupController, clock: RaidClock) {
                 enabled = !ended && facts.canLock && !controller.offline,
                 leadingIcon = Icons.Filled.Lock,
                 busy = controller.officerBusy,
+                // The officer's main action is the one teal primary; Copy the list beside it is the outline.
+                kind = BrandButtonKind.Primary,
             )
             RaidSecondaryButton(
                 text = stringResource(if (controller.copied) R.string.officer_copied else R.string.officer_copy),
@@ -88,6 +91,7 @@ fun OfficerRow(controller: SignupController, clock: RaidClock) {
                 },
                 enabled = !ended,
                 leadingIcon = if (controller.copied) Icons.Filled.Check else Icons.AutoMirrored.Filled.List,
+                kind = BrandButtonKind.Quiet,
             )
         }
         // The state notes only; how locking works is not explained (round 1, cut as an explainer).

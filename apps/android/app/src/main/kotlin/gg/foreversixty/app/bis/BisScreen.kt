@@ -99,7 +99,7 @@ fun BisContent(
         else -> null
     }
     Column(Modifier.fillMaxSize().screenGround()) {
-        BandHead(state.context, catalog, state.build.orEmpty(), nowMillis, onOpenPicker)
+        BandHead(state.context, catalog, state.build.orEmpty(), onOpenPicker)
         offlineSince?.let { saved ->
             OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(Instant.ofEpochMilli(saved), Instant.ofEpochMilli(nowMillis))))
         }
@@ -144,12 +144,13 @@ fun BisContent(
  * selection in words and `Change` (spec 3.4, ControlBar, phone form), which opens the picker.
  */
 @Composable
-private fun BandHead(context: BisContext, catalog: SpecCatalog, build: String, nowMillis: Long, onOpenPicker: () -> Unit) {
+private fun BandHead(context: BisContext, catalog: SpecCatalog, build: String, onOpenPicker: () -> Unit) {
     val res = LocalResources.current
     val selection = context.selection
     val spec = catalog.spec(selection.spec)
     val specLabel = stringResource(R.string.bis_specChip, spec?.name ?: selection.spec, context.className(selection.classSlug))
-    val range = context.rangeLabel(res, selection.range, nowMillis)
+    // One line in the control bar: the short range (`60 · Phase 1 raid`); the opening date stays in the picker.
+    val range = BisLabels.range(res, selection.range)
     val faction = BisLabels.faction(res, selection.faction)
     Column(Modifier.fillMaxWidth().surfaceBand()) {
         Row(
