@@ -10,7 +10,7 @@
   import type { CastRow } from '../../lib/report/types';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let {
     casts,
@@ -38,6 +38,9 @@
         open
       >
         {#snippet lead()}<SpellIcon
+            socket
+            tip={row.spellId}
+            size={24}
             url={spellIcon(row.spellId, row.name, schools.get(row.spellId))}
           />{/snippet}
         {#snippet trail()}<span class="text-strong text-[14px] font-semibold tabular-nums">{row.count}</span

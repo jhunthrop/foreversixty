@@ -257,9 +257,9 @@
         {#each ordered as row (`${row.source_guid}-${row.target_guid}-${row.spell_id}-${row.extra_spell_id}`)}
           <StatRow figures={[{ value: `${mark}${row.count}` }]} bar={false} phone={`${row.count}×`}>
             {#snippet icon()}<SpellIcon
+                socket
                 url={icons.of(row.spell_id, row.spell_name)}
-                spellId={row.spell_id}
-                tip
+                tip={row.spell_id}
               />{/snippet}
             {#snippet name()}
               <!-- The anchor a rating moment's link lands on (lib/rating/moments.ts). -->
@@ -309,8 +309,9 @@
       {#each shortfall as entry (entry.spellId)}
         <StatRow figures={[{ value: String(entry.left) }]} bar={false}>
           {#snippet icon()}<SpellIcon
+              socket
+              tip={entry.spellId}
               url={icons.of(entry.spellId, entry.name)}
-              spellId={entry.spellId}
             />{/snippet}
           {#snippet name()}{entry.name}{/snippet}
           {#snippet sub()}{entry.line}{#if scopedToSome}<span>

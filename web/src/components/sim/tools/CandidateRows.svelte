@@ -3,10 +3,10 @@
      menu, grouped by where each came from. A locked slot disables every checkbox in it
      rather than hiding the rows -- the player has to see what they locked away. -->
 <script lang="ts">
+  import ItemName from '../../ui/ItemName.svelte';
   import ItemHover from '../../ItemHover.svelte';
   import ItemIcon from '../../ui/ItemIcon.svelte';
   import Row from '../../ui/Row.svelte';
-  import { rarityClassFor } from '../../../lib/planner/items';
   import { button } from '../../../lib/ui/button';
   import type { Slot } from '../../../lib/planner/types';
   import { candidateKey, type CandidateRow } from '../../../lib/sim/candidates';
@@ -91,7 +91,7 @@
       {/snippet}
       {#snippet titleContent()}
         <ItemHover itemId={row.item.id} {classSlug} build={treeVersion}>
-          <span class={rarityClassFor(row.item.quality)}>{row.item.name}</span>
+          <ItemName name={row.item.name} quality={row.item.quality} />
         </ItemHover>
       {/snippet}
       {#snippet subContent()}

@@ -9,7 +9,7 @@
   import { deathModels, type HitModel } from '../../../lib/guild/report-night-view';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
   import { classColorVar } from '../../../lib/report/format';
-  import SpellIcon from '../../coach/SpellIcon.svelte';
+  import SpellIcon from '../../ui/SpellIcon.svelte';
 
   let {
     pull,
@@ -25,7 +25,7 @@
 
 {#snippet hit(model: HitModel, strong: boolean)}
   <span class="flex min-w-0 items-center gap-2">
-    <SpellIcon url={iconOf(model.spellId)} size={20} name={model.ability} />
+    <SpellIcon url={iconOf(model.spellId)} size={20} tip={model.spellId ?? undefined} />
     <span class="min-w-0">
       <span class={strong ? 'text-strong font-bold' : 'text-text'}>{model.ability}</span><span
         class="text-muted">{` from ${model.source}`}</span

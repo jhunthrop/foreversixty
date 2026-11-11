@@ -6,6 +6,7 @@
 // spec marked after load), then What changed from 1.12 on its panel with the Races and the raid or
 // leveling notes in the rail beside it, then the Sources full width. No intro paragraph and no card blurb
 // (owner 2026-11-09). index.md is split by its fixed heading vocabulary (class-landing.ts).
+import { catalogueIconUrl } from '../../../lib/ui/assets';
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ClassCrest from '../../../components/ClassCrest.astro';
@@ -35,7 +36,6 @@ import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { slugify } from '../../../lib/guides/sections';
 import { readSpecCatalog } from '../../../lib/bis/load';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
-import { dataUrl } from '../../../lib/planner/load';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
@@ -88,7 +88,7 @@ const specs = readSpecCatalog()
           specTrees(guide.data.raidBuild ?? guide.data.build),
           guide.data.statPriority,
         ),
-        icon: dataUrl(build, `icons/${s.icon}.webp`),
+        icon: catalogueIconUrl(build, s.icon),
         href: `/guides/${classSlug}/${s.spec_slug}`,
       },
     ];

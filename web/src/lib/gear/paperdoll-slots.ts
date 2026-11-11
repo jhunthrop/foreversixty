@@ -10,9 +10,9 @@ import { upgradeFor } from './paperdoll';
 import type { GearItemTable } from './qualities';
 import type { CharacterGearSlot } from './types';
 import { isRealIcon } from '../icons/placeholder';
+import { COSMETIC } from './slots';
 
 /** Drawn only when worn (§3.1). */
-const OPTIONAL_SLOTS: readonly PaperdollSlotKey[] = ['shirt', 'tabard'];
 
 export interface WornLookup {
   /** The class's items file row for an id. */
@@ -79,7 +79,7 @@ export function slotsFromWorn(
   worn: Readonly<Partial<Record<PaperdollSlotKey, number>>>,
   source: WornLookup,
 ): PaperdollSlot[] {
-  const keys: PaperdollSlotKey[] = [...SLOTS, ...OPTIONAL_SLOTS.filter((key) => worn[key] !== undefined)];
+  const keys: PaperdollSlotKey[] = [...SLOTS, ...COSMETIC.filter((key) => worn[key] !== undefined)];
   return keys.map((slot) => {
     const id = worn[slot];
     return id === undefined || id <= 0 ? { slot, state: 'empty' } : wornSlot(slot, id, source);

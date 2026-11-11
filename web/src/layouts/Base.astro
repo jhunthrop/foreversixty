@@ -44,6 +44,7 @@ import { HISTORY_MAX_RESERVE_PX, HISTORY_RESERVE_KEY } from '../lib/character/hi
 import { ACCOUNT_RESERVE_KEY, ACCOUNT_RESERVE_MAX_PX } from '../lib/account/layout';
 import { API_BASE_URL } from '../lib/planner/config';
 import { ARRIVAL_CAPTURE_SCRIPT } from '../lib/golinks/arrival';
+import { ICON_FAIL_SCRIPT } from '../lib/ui/icon-fail';
 import {
   LAST_ACTIVE_KEY,
   SESSION_FRESH_KEY,
@@ -85,6 +86,8 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* A spell icon whose file fails leaves no empty frame, hydrated or not (lib/ui/icon-fail.ts). */}
+    <script is:inline set:html={ICON_FAIL_SCRIPT}></script>
     <title data-og="title">{fullTitle}</title>
     <meta name="description" content={description} data-og="description" />
     <link rel="canonical" href={`${site}${canonicalPath}`} data-og="canonical" />

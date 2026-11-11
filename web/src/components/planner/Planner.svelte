@@ -59,6 +59,7 @@
   import { bandCodeGear, earnedOrder, estimateCharacter } from '../../lib/planner/estimate';
   import type { LadderOrderFor, LadderOrderForRanks } from '../../lib/planner/ladder-load';
   import { dataUrl } from '../../lib/planner/load';
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import { classColor, classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
   import { openTreeIndex, type TalentTreesCopy } from '../../lib/ui/talent-tree';
@@ -941,7 +942,7 @@
           characterLevel: store.characterLevel,
           readOnly: store.readOnly,
           bandDiff,
-          asset: (path) => dataUrl(store.treeVersion, path),
+          build: store.treeVersion,
         }),
   );
   const EDITOR_COPY: TalentTreesCopy = {
@@ -1146,9 +1147,9 @@
           <div class="pl-skt">
             {#if openingTrees[tree] !== undefined && store.classSlug === classSlug}
               <!-- The opening class's tree head as the editor draws it (TalentTree .tt-h). -->
-              {@const iconSrc = treeIconSrc(classSlug, tree, (path) => dataUrl(store.treeVersion, path))}
+              {@const iconSrc = treeIconSrc(classSlug, tree, store.treeVersion)}
               <div class="pl-skh">
-                {#if iconSrc !== ''}<img src={iconSrc} alt="" width="28" height="28" />{/if}
+                <SpellIcon url={iconSrc === '' ? null : iconSrc} size={28} />
                 <h2>{openingTrees[tree]}</h2>
                 <b>0</b>
               </div>
@@ -1456,13 +1457,6 @@
     gap: 10px;
     min-width: 0;
     height: 28px;
-  }
-  .pl-skh img {
-    display: block;
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
-    flex: none;
   }
   .pl-skh h2 {
     font: 700 15px/20px var(--font-body);

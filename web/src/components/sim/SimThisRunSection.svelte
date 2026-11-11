@@ -6,11 +6,12 @@
      what only it reads: the buff table, the spec's weights and the talent layout Copy for the game
      needs. DetailsCard stays for bulk and weights results (SavedKind). -->
 <script lang="ts">
+  import { iconUrl } from '../../lib/ui/assets';
   import { onDestroy } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { addonCopy } from '../../lib/addon/copy';
   import { copyForGameLabel, createCopyForGame, type CopyForGameState } from '../../lib/addon/copy-for-game';
-  import { loadItems, loadTalents, loadWeights, dataUrl } from '../../lib/planner/load';
+  import { loadItems, loadTalents, loadWeights } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import type { Item } from '../../lib/planner/types';
   import { damageSchools, type SpecWeights } from '../../lib/sim/buff-effect';
@@ -83,7 +84,7 @@
   ]);
   const groups = $derived(
     settingsChipGroups(result, buffs, weights, damageSchools(result.summary.damage_done), (stem) =>
-      dataUrl(build, `icons/${stem}.webp`),
+      iconUrl(build, stem),
     ),
   );
 

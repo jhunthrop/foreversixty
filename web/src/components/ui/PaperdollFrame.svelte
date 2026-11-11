@@ -28,12 +28,13 @@
        (the centre in the frame only), the page's own tooltip host opens each listed item by the
        row it was tapped on. -->
 <script lang="ts">
+  import { COSMETIC_SLOTS, FRAME_SLOTS } from '../../lib/gear/slots';
+  import { iconUrl } from '../../lib/ui/assets';
   import type { Snippet } from 'svelte';
   import { PAPERDOLL_FRAME } from '../../lib/ui/assets';
   import {
     CENTRE_BOX,
     FRAME_SIZE,
-    FRAME_SLOTS,
     MEDALLION_BOX,
     TITLE_BOX,
     boxStyle,
@@ -41,7 +42,6 @@
     slotBox,
   } from '../../lib/ui/paperdoll-frame';
   import type { DollCell } from '../../lib/ui/paperdoll';
-  import { dataUrl } from '../../lib/planner/load';
   import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
   import { FACT_SEPARATOR, type ItemRef } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
@@ -139,11 +139,12 @@
 </script>
 
 {#snippet icon(face: { item: ItemRef; covered: boolean })}
-  {#if face.item.icon && !failedIcons[face.item.icon]}
+  {@const src = iconUrl(build, face.item.icon)}
+  {#if src !== null && !failedIcons[face.item.icon ?? '']}
     <img
       class="pdf-icon"
       class:pdf-covered={face.covered}
-      src={dataUrl(build, `icons/${face.item.icon}.webp`)}
+      {src}
       alt=""
       loading="lazy"
       decoding="async"
@@ -269,7 +270,7 @@
         {@render figureView()}
       </div>{/if}
     <ul class="pdf-items" class:pdf-headless={!head} class:pdf-facts={facts}>
-      {#each FRAME_SLOTS.filter((slot) => slot !== 'shirt' && slot !== 'tabard') as slot (slot)}
+      {#each FRAME_SLOTS.filter((slot) => !COSMETIC_SLOTS.has(slot)) as slot (slot)}
         {@const cell = bySlot.get(slot)}
         {@const face = shown(cell)}
         <li>

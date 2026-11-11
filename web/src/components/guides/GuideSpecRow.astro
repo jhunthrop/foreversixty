@@ -5,6 +5,7 @@
 // character's spec is marked by the row's accent rule (lib/guides/guide-answer-mount.ts sets
 // `aria-current`) and a screen reader's "Your spec": no pill beside the rule (h-audit 2026-11-09).
 // On a landing the row carries its line (role, top stats, point split) under the name.
+import SpellIcon from '../ui/SpellIcon.astro';
 import Row from '../ui/Row.svelte';
 import { guidesCopy } from '../../lib/guides/copy';
 import type { TitleTone } from '../../lib/ui/primitives';
@@ -39,16 +40,7 @@ const testid = `${testidPrefix}${specKey}`;
 
 {sub === undefined ? (
   <Row title={name} titleTone={tone} {href} density="slim" {testid}>
-    <img
-      slot="lead"
-      src={icon}
-      alt=""
-      width={iconSize}
-      height={iconSize}
-      loading="lazy"
-      decoding="async"
-      class="guide-spec-icon"
-    />
+    <SpellIcon slot="lead" url={icon} size={iconSize} />
     <span slot="titleContent">
       {name}
       <span class="sr-only" data-your-spec hidden>
@@ -58,16 +50,7 @@ const testid = `${testidPrefix}${specKey}`;
   </Row>
 ) : (
   <Row title={name} titleTone={tone} {sub} {href} {testid}>
-    <img
-      slot="lead"
-      src={icon}
-      alt=""
-      width={iconSize}
-      height={iconSize}
-      loading="lazy"
-      decoding="async"
-      class="guide-spec-icon"
-    />
+    <SpellIcon slot="lead" url={icon} size={iconSize} />
     <span slot="titleContent">
       {name}
       <span class="sr-only" data-your-spec hidden>
@@ -78,11 +61,6 @@ const testid = `${testidPrefix}${specKey}`;
 )}
 
 <style>
-  .guide-spec-icon {
-    display: block;
-    border-radius: var(--radius-icon);
-    box-shadow: 0 0 0 1px var(--color-line);
-  }
   :global(.ui-row[aria-current='true']:has([data-your-spec])) {
     background: var(--color-selected);
     box-shadow: var(--shadow-selected-bar);

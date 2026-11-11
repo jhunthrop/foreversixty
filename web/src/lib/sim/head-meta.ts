@@ -18,17 +18,6 @@ export function raceWords(slug: string): string {
     .join(' ');
 }
 
-/** The worn items' average item level to one decimal, or null when any worn item is unknown. */
-export function averageWornItemLevel(
-  itemIds: readonly number[],
-  itemLevel: (id: number) => number | undefined,
-): string | null {
-  if (itemIds.length === 0) return null;
-  const levels = itemIds.map(itemLevel);
-  if (levels.some((level) => level === undefined)) return null;
-  return ((levels as number[]).reduce((sum, level) => sum + level, 0) / levels.length).toFixed(1);
-}
-
 /** "2026-11-04T…" -> "4 Nov" in UTC; null for a missing or unreadable date. */
 export function runDay(iso: string): string | null {
   const day = iso === '' ? '' : utcDayMonth(iso);

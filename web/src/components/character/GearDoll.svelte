@@ -10,10 +10,10 @@
      - The list (either form): every slot as "Head · Item level 61 · Crusader" (the enchant green)
        and its gain; the page's tooltip host opens each item by the row it was tapped on. -->
 <script lang="ts">
+  import ItemName from '../ui/ItemName.svelte';
   import { dollCellsFromSlots, type WornDollMode } from '../../lib/gear/doll-cells';
   import { paperdollNote, unknownCount, type PaperdollSlot } from '../../lib/gear/paperdoll';
   import type { ItemTooltipModel } from '../../lib/items/tooltip';
-  import { rarityClassFor } from '../../lib/planner/items';
   import { defaultSelection, type DollCell } from '../../lib/ui/paperdoll';
   import { FACT_SEPARATOR, type GainFigure } from '../../lib/ui/primitives';
   import type ItemTooltipComponent from '../ItemTooltip.svelte';
@@ -107,8 +107,10 @@
   <p data-testid={`${testid}-gain`}>
     <b class="tabular-nums">{gain.value}{gain.unit ? ` ${gain.unit}` : ''}</b>
     {#if gain.basis}{gain.basis.prefix}
-      {#if gain.basis.item}<span class={rarityClassFor(gain.basis.item.quality)}>{gain.basis.item.name}</span
-        >{/if}{/if}
+      {#if gain.basis.item}<ItemName
+          name={gain.basis.item.name}
+          quality={gain.basis.item.quality}
+        />{/if}{/if}
   </p>
 {/snippet}
 

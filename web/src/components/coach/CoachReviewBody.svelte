@@ -15,7 +15,7 @@
   import type { CoachFull, CoachLink } from '../../lib/coach/types';
   import CoachChips from './CoachChips.svelte';
   import CoachText from './CoachText.svelte';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let {
     answer,

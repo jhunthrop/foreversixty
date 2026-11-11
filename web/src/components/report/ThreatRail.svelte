@@ -78,10 +78,10 @@
               >{clockDuration(taunt.at_ms)}</span
             >
             <SpellIcon
+              socket
               url={icons.of(taunt.spell_id, taunt.spell_name)}
-              spellId={taunt.spell_id}
               size={24}
-              tip
+              tip={taunt.spell_id}
             />
           {/snippet}
           {#snippet titleContent()}

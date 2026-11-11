@@ -5,6 +5,7 @@
 import { dataUrl, fetchJson } from '../planner/load';
 import { buildDictionary, type NameDictionary } from './name-tokens';
 import type { CoachAnchor } from './types';
+import { iconUrl } from '../ui/assets';
 
 interface ClassNames {
   spell: Record<string, string>;
@@ -51,7 +52,7 @@ export async function loadSpellIconUrls(build: string): Promise<IconUrl> {
   const icons = await optional<Record<string, string>>(dataUrl(build, 'spellicons.json'));
   return (spellId) => {
     const stem = spellId === null ? undefined : icons?.[String(spellId)];
-    return stem === undefined ? null : dataUrl(build, `icons/${stem}.webp`);
+    return iconUrl(build, stem);
   };
 }
 

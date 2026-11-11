@@ -5,6 +5,7 @@
 // then the class and spec picker the BiS landing shares (ClassSpecPicker): every class on its
 // panel, its crest and name a link to its landing, its specs in tree order as slim link rows; the
 // header character's spec is marked after load.
+import { catalogueIconUrl } from '../../lib/ui/assets';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ClassSpecPicker, { type PickerClass } from '../../components/guides/ClassSpecPicker.astro';
@@ -19,7 +20,6 @@ import { rankedBisFile } from '../../lib/guides/class-dps';
 import { pageUpdatedAt } from '../../lib/guides/guide-header';
 import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import { guidesCopy } from '../../lib/guides/copy';
-import { dataUrl } from '../../lib/planner/load';
 import { searchCopy } from '../../lib/search-copy';
 
 const build = activeBuild.build;
@@ -47,7 +47,7 @@ const groups: PickerClass[] = classes.map((c) => ({
       key: `${c.slug}/${s.spec_slug}`,
       name: s.name,
       href: `/guides/${c.slug}/${s.spec_slug}`,
-      icon: dataUrl(build, `icons/${s.icon}.webp`),
+      icon: catalogueIconUrl(build, s.icon),
     })),
 }));
 ---

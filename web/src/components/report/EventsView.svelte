@@ -188,10 +188,10 @@
           {#each shown as event, index (`${event.atMs}-${index}`)}
             <StatRow figures={figuresOf(event)} bar={false}>
               {#snippet icon()}{#if event.spellId !== undefined}<SpellIcon
+                    socket
                     url={icons.of(event.spellId, event.spellName)}
-                    spellId={event.spellId}
                     size={20}
-                    tip
+                    tip={event.spellId}
                   />{/if}{/snippet}
               {#snippet name()}
                 <!-- Wraps on a phone: the part a reader wants is the end of the line, "on Hobolol

@@ -24,6 +24,8 @@ import { openSetupState } from './setup-page';
 import { SHARED_BUILD_ID, openSharedBuild } from './shared-build-page';
 import { openSimState, openToolState } from './sim-parity';
 import { openTiersState } from './tiers-parity';
+import { PANEL_URL, STATES, routeCoach, signInAs } from './coach-stubs';
+import { gotoHydrated } from './hydrated';
 
 export interface FramePage {
   /** A short name: the capture's file name and the test's title. */
@@ -82,6 +84,30 @@ export const FRAME_PAGES: readonly FramePage[] = [
   { id: '404', open: plain('/this-page-does-not-exist') },
   { id: 'b', open: (page) => openSharedBuild(page, 'survival.html', SHARED_BUILD_ID) },
   { id: 'b-unavailable', open: plain('/b-unavailable') },
+];
+
+/** The coach's panel on the worked Onyxia pull, a Premium viewer with the full review. */
+async function openCoach(page: Page): Promise<void> {
+  await signInAs(page, 'premium');
+  await routeCoach(page, STATES['ready-model']);
+  await gotoHydrated(page, PANEL_URL(), 'coach-panel');
+}
+
+/** Every frame page plus the report tabs, guild views and coach panel that the frame checks leave
+ *  out, for the captures (frame-capture.spec.ts) that review a change across the whole site. */
+export const CAPTURE_PAGES: readonly FramePage[] = [
+  ...FRAME_PAGES,
+  {
+    id: 'report-damage-done',
+    open: (page) => openReportState(page, 'report-damage-done', '/reports/sample?tab=damage-done'),
+  },
+  {
+    id: 'report-deaths',
+    open: (page) => openReportState(page, 'report-deaths', '/reports/sample?fight=20&tab=deaths'),
+  },
+  { id: 'coach', open: openCoach },
+  { id: 'guild-raids', open: (page) => openGuildState(page, 'dense-raids') },
+  { id: 'guild-report', open: (page) => openGuildState(page, 'report') },
 ];
 
 /** Opens a frame page and waits for the header to settle; reads its opener leaves unanswered fail

@@ -4,7 +4,7 @@
 // build's icon files (web/src/data/spell-icon-fallbacks.json `roles`, published at sync).
 import activeBuild from '../../data/active-build.json';
 import fallbacks from '../../data/spell-icon-fallbacks.json';
-import { dataUrl } from '../planner/load';
+import { catalogueIconUrl } from '../ui/assets';
 
 export type Role = 'tank' | 'healer' | 'dps';
 
@@ -18,5 +18,5 @@ export function roleOf(value: string | undefined): Role | null {
 
 /** The role's icon url and its spoken name. */
 export function roleIcon(role: Role, build: string = activeBuild.build): { url: string; label: string } {
-  return { url: dataUrl(build, `icons/${STEMS[role]}.webp`), label: ROLE_LABEL[role] };
+  return { url: catalogueIconUrl(build, STEMS[role]), label: ROLE_LABEL[role] };
 }

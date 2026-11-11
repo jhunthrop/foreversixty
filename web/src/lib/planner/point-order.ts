@@ -58,7 +58,7 @@ function talentSlot(
   id: number,
   position: number,
   rank: number,
-  iconUrl: (icon: string) => string,
+  iconUrl: (icon: string) => string | null,
 ): PointOrderSlot {
   const talent = index.byId.get(id);
   const slot: PointOrderSlot = {
@@ -67,7 +67,7 @@ function talentSlot(
     rank,
   };
   if (talent !== undefined) {
-    slot.iconSrc = iconUrl(talent.icon);
+    slot.iconSrc = iconUrl(talent.icon) ?? undefined;
     slot.tip = talentTipModel(
       {
         name: talent.name,
@@ -86,7 +86,7 @@ export function pointOrderRows(
   order: readonly number[],
   characterLevel: number | null,
   characterName: string | null,
-  iconUrl: (icon: string) => string,
+  iconUrl: (icon: string) => string | null,
   ahead: PointOrderAhead | null = null,
 ): PointOrderView {
   const available = characterLevel === null ? MAX_POINTS : pointsAvailableAt(characterLevel);

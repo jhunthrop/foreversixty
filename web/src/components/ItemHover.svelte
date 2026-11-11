@@ -16,6 +16,7 @@
      only its own small shell -- not the panel's full layout -- may ride on every page's
      base bundle. -->
 <script module lang="ts">
+  import ItemName from './ui/ItemName.svelte';
   import type { ItemTooltipModel } from '../lib/items/tooltip';
 
   // Page-wide "only one open" rule: a mouse hover already only ever touches one anchor, but
@@ -29,7 +30,6 @@
   import { mount, unmount, untrack, type Component, type Snippet } from 'svelte';
   import { fetchItemTooltipModel } from '../lib/items/lookup';
   import { positionTooltipPanel, type TooltipAlign } from '../lib/items/tooltip-position';
-  import { rarityClassFor } from '../lib/planner/items';
   import ItemIcon from './ui/ItemIcon.svelte';
 
   let {
@@ -214,7 +214,7 @@
       {@render children()}
     {:else if resolvedModel}
       <ItemIcon icon={resolvedModel.icon} quality={resolvedModel.quality} {build} size={20} />
-      <span class={rarityClassFor(resolvedModel.quality)}>{resolvedModel.name}</span>
+      <ItemName name={resolvedModel.name} quality={resolvedModel.quality} />
     {:else}
       <span class="text-muted">Item {itemId}</span>
     {/if}

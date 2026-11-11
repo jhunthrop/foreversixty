@@ -3,11 +3,11 @@
      with the live dot, the clock to the opening and the three raids' icons; once open, `Raids open
      now` and the raids with no clock. Home's countdowns and the guild's Before raids open share it. -->
 <script lang="ts">
+  import ZoneIcon from './ui/ZoneIcon.svelte';
   import { FIRST_RAIDS } from '../lib/first-raids';
   import { dayText } from '../lib/home/feed';
   import { homeBCopy } from '../lib/home/home-b-view';
   import Countdown from './ui/Countdown.svelte';
-  import ItemIcon from './ui/ItemIcon.svelte';
 
   let {
     raidsOpen,
@@ -30,7 +30,7 @@
 >
   <ul class="raids-countdown-list" aria-label="First raids">
     {#each FIRST_RAIDS as first (first.name)}
-      <li><ItemIcon icon={first.icon} {build} size={40} eager /><span>{first.name}</span></li>
+      <li><ZoneIcon zone={first.name} {build} size={40} eager /><span>{first.name}</span></li>
     {/each}
   </ul>
 </Countdown>

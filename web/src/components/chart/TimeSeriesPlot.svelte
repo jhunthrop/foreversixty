@@ -6,6 +6,7 @@
      TimeChart, report/ThreatChart) give it series, events and phases; the legend above it is
      ChartLegend. Every colour is read from the tokens at draw time. -->
 <script lang="ts">
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import uPlot from 'uplot';
   import { untrack } from 'svelte';
   import { chartCopy } from '../../lib/chart/copy';
@@ -790,12 +791,10 @@
                 {#if item.kind === 'cluster'}
                   <span class="count numeric">{item.events.length}</span>
                 {:else if item.events[0].iconUrl && !brokenIcons.has(item.events[0].iconUrl)}
-                  <img
-                    src={item.events[0].iconUrl}
-                    alt=""
-                    width="18"
-                    height="18"
-                    onerror={() => markBroken(item.events[0].iconUrl)}
+                  <SpellIcon
+                    url={item.events[0].iconUrl}
+                    size={18}
+                    onfail={() => markBroken(item.events[0].iconUrl)}
                   />
                 {:else}
                   <Icon icon={item.events[0].kind === 'target-change' ? ICON_TARGET : ICON_BOLT} size={14} />
@@ -1014,11 +1013,6 @@
   .marker.gold.cluster .face {
     border-radius: 999px;
     border-color: var(--color-gold);
-  }
-  .marker img {
-    width: 18px;
-    height: 18px;
-    border-radius: 3px;
   }
   .count {
     font-size: 11px;

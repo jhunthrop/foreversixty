@@ -7,8 +7,8 @@
      guide's order, dimmed, under one line naming it (h-audit 2026-11-09). The rows are
      lib/planner/point-order.ts's; the drawing is ui/PointOrder. -->
 <script lang="ts">
+  import { iconUrl } from '../../lib/ui/assets';
   import { plannerCopy } from '../../lib/planner/copy';
-  import { dataUrl } from '../../lib/planner/load';
   import { specKeyFor } from '../../lib/addon/score';
   import type { LevelingPlans } from '../../lib/leveling/leveling-plan';
   import { aheadOf, pointOrderRows, type PointOrderAhead } from '../../lib/planner/point-order';
@@ -57,7 +57,7 @@
           store.order,
           store.characterLevel,
           characterName,
-          (icon) => dataUrl(store.treeVersion, `icons/${icon}.webp`),
+          (icon) => iconUrl(store.treeVersion, icon),
           ahead,
         ),
   );

@@ -230,9 +230,9 @@
             testid={`cast-${row.guid}-${row.spell_id}`}
           >
             {#snippet icon()}<SpellIcon
+                socket
                 url={icons.of(row.spell_id, row.spell_name)}
-                spellId={row.spell_id}
-                tip
+                tip={row.spell_id}
               />{/snippet}
             {#snippet name()}{row.spell_name}{#if sameName.has(`${row.guid}|${row.spell_name}`)}<span
                   class="text-muted ml-1 text-[13px] font-normal tabular-nums"

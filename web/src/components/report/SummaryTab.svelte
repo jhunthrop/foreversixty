@@ -10,6 +10,7 @@
      one Active carries the whole-fight mark and a line says why. Damage, healing, taken and deaths
      are the window's own. -->
 <script lang="ts">
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
   import {
@@ -183,15 +184,10 @@
               data-testid="roster-name"
               onclick={(event) => follow(event, row.guid)}>{display.name}</a
             >{/snippet}
-          {#snippet sub()}{#if role !== null}{@const icon = roleIcon(role)}<img
-                src={icon.url}
-                alt={icon.label}
-                title={icon.label}
-                width="14"
-                height="14"
-                class="mr-1 inline-block rounded-[2px] align-[-2px]"
-                data-testid="roster-role"
-              />{/if}{subOf(row, display.realm) || ' '}{/snippet}
+          {#snippet sub()}{#if role !== null}{@const icon = roleIcon(role)}<span
+                class="mr-1 inline-flex align-[-2px]"
+                ><SpellIcon url={icon.url} size={14} label={icon.label} testid="roster-role" /></span
+              >{/if}{subOf(row, display.realm) || ' '}{/snippet}
           {#snippet meter()}<Meter
               value={row.damage_done / topDamage}
               tone="class"

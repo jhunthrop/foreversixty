@@ -57,7 +57,7 @@
         index,
         ranks: talentRanks(index, character.talents),
         classSlug: character.class,
-        asset: (path) => dataUrl(treeVersion, path),
+        build: treeVersion,
       });
       view = { kind: 'ready', trees, treeVersion };
     } catch (error) {

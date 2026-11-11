@@ -4,26 +4,10 @@
 // slots of the character's newest addon export in the export's order, each with what it wears,
 // the band's pick and the gap, and `gear_gap_total` beside them. Nothing is invented: a pick the
 // data does not have is null, and a gap that cannot be scored is null.
+import type { Slot } from '../planner/types';
 
-/** `GearSlotName`: the planner's slot vocabulary, in the export's order. */
-export type GearSlotName =
-  | 'head'
-  | 'neck'
-  | 'shoulder'
-  | 'back'
-  | 'chest'
-  | 'wrist'
-  | 'hands'
-  | 'waist'
-  | 'legs'
-  | 'feet'
-  | 'finger1'
-  | 'finger2'
-  | 'trinket1'
-  | 'trinket2'
-  | 'main_hand'
-  | 'off_hand'
-  | 'ranged';
+/** `GearSlotName`: the planner's slot vocabulary. */
+export type GearSlotName = Slot;
 
 /** `CharacterGearSlot.worn`: the item worn in the slot, from the newest addon export. */
 export interface GearWorn {

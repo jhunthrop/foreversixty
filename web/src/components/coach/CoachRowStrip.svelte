@@ -10,7 +10,7 @@
   import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
   import type { IconUrl } from '../../lib/coach/names';
   import { STRIP_RESERVE, type RowLine, type StripPhase, type StripReserve } from '../../lib/coach/row-line';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import { ROW_HOVER } from '../../lib/ui/row';
 
   let {
@@ -68,7 +68,7 @@
     >
       <span class="text-muted">{line.lead}</span>
       {#if line.title !== ''}
-        <SpellIcon url={iconUrl(line.spellId)} size={20} />
+        <SpellIcon url={iconUrl(line.spellId)} size={20} tip={line.spellId ?? undefined} />
         <span class="text-strong ml-1 font-semibold group-hover:underline group-hover:underline-offset-[3px]"
           >{line.title}</span
         >
@@ -89,7 +89,7 @@
         data-testid="coach-row-open"
       >
         <span class="text-muted">{line.lead}</span>
-        <SpellIcon url={iconUrl(line.spellId)} size={20} />
+        <SpellIcon url={iconUrl(line.spellId)} size={20} tip={line.spellId ?? undefined} />
         <span class="text-strong ml-1 font-semibold group-hover:underline group-hover:underline-offset-[3px]"
           >{line.title}</span
         >{#if line.after !== ''}<span class="text-muted whitespace-pre">{line.after}</span>{/if}

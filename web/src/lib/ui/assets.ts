@@ -6,7 +6,29 @@
 // Generated art is the owner's explicit choice (2026-11-09): background only, never captioned as
 // a screenshot (design/specs/2026-11-09-directions.md, round 5).
 
+import { isRealIcon } from '../icons/placeholder';
+import { dataUrl } from '../planner/load';
+
 const DIR = '/art';
+
+/**
+ * The one url of a game icon: the build's HD icon file (data/builds/<build>/icons/<stem>.webp),
+ * or null when there is none to draw (no stem, an empty one, or the client's red question mark
+ * placeholder), so every surface draws its socket or nothing instead (2026-11-04: the "?" leaked
+ * wherever a caller skipped the check). No page or component builds an icon path by hand
+ * (icon-guard.test.ts).
+ */
+export function iconUrl(build: string, stem: string | null | undefined): string | null {
+  return isRealIcon(stem) ? dataUrl(build, `icons/${stem}.webp`) : null;
+}
+
+/** iconUrl for a stem a generated catalogue guarantees (a spec's tab icon, a role's icon): it
+ *  throws on a missing or placeholder stem, so a broken catalogue fails the build, never a page. */
+export function catalogueIconUrl(build: string, stem: string): string {
+  const url = iconUrl(build, stem);
+  if (url === null) throw new Error(`catalogue icon "${stem}" is not a real icon`);
+  return url;
+}
 
 /** One art file at the widths the build writes: the phone width, then the desktop width. */
 export interface ResponsiveArt {

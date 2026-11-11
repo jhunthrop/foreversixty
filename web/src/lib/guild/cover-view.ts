@@ -3,10 +3,9 @@
 // ruling: "the cover lists its gaps first"), each cell's Grid tone from the need
 // against the players signed In or Late, and the spell's icon through the same build icon path
 // SpellIcon draws everywhere. The counts are the API's, never recomputed here.
-import { isRealIcon } from '../icons/placeholder';
-import { dataUrl } from '../planner/load';
 import type { MarkTone } from '../ui/cells';
 import type { GuildRaidCoverRow } from './api';
+import { iconUrl } from '../ui/assets';
 
 /** A Grid cell's tone: covered, covered on a talent we cannot see or too few, nobody. */
 export type CoverTone = MarkTone;
@@ -44,5 +43,5 @@ export function coverCount(row: GuildRaidCoverRow): string {
 
 /** The row's spell icon in `build`, or null when it has none to draw. */
 export function coverIconUrl(build: string, row: GuildRaidCoverRow): string | null {
-  return isRealIcon(row.icon) ? dataUrl(build, `icons/${row.icon}.webp`) : null;
+  return iconUrl(build, row.icon);
 }

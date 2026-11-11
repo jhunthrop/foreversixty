@@ -16,6 +16,7 @@
 </script>
 
 <script lang="ts">
+  import SpellIcon from '../ui/SpellIcon.svelte';
   import { clockLabel } from '../../lib/chart/time-axis';
   import { chartCopy } from '../../lib/chart/copy';
   import type { ChartEvent } from '../../lib/chart/types';
@@ -103,7 +104,7 @@
             <li class="flex items-start gap-1.5 text-[12px] leading-4" class:death={event.kind === 'death'}>
               <span class="text-muted numeric w-[30px] shrink-0">{clockLabel(event.atMs)}</span>
               {#if event.iconUrl}
-                <img src={event.iconUrl} alt="" width="16" height="16" class="rounded-[3px]" />
+                <SpellIcon url={event.iconUrl} size={16} />
               {:else}
                 <span class="icon flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px]"
                   ><Icon icon={glyphOf(event)} size={12} /></span

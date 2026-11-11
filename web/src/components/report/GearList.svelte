@@ -16,7 +16,7 @@
   import Ruled from '../ui/Ruled.svelte';
   import { gearCopy } from '../../lib/gear/copy';
   import { dollCellsFromSlots } from '../../lib/gear/doll-cells';
-  import { FRAME_SLOTS } from '../../lib/ui/paperdoll-frame';
+  import { FRAME_SLOTS } from '../../lib/gear/slots';
   import { FACT_SEPARATOR } from '../../lib/ui/primitives';
   import { slotsFromWorn } from '../../lib/gear/paperdoll-slots';
   import { loadItems } from '../../lib/planner/load';

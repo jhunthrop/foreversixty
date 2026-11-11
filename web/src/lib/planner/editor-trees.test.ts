@@ -14,7 +14,7 @@ const base: EditorTreesInput = {
   characterLevel: null,
   readOnly: false,
   bandDiff: null,
-  asset: (path) => `/d/${path}`,
+  build: 'test-build',
 };
 const cell = (input: Partial<EditorTreesInput>, id: number) =>
   editorTrees({ ...base, ...input })

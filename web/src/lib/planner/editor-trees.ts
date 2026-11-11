@@ -7,21 +7,20 @@
 // holding points past the character's level. `viewTrees`: any read-only build (a guide, the sim,
 // /sim/talents) over the same frame, so every tree on the site is drawn from one builder.
 import { SPECS } from '../sim/specs';
+import { iconUrl } from '../ui/assets';
 import { cellState, type TalentCellView, type TalentTreeView, viewState } from '../ui/talent-tree';
 import type { BandDiffView } from './band-compare';
 import { connectorsFor, gridViewBox } from './connectors';
 import { bandCompareCopy, plannerCopy } from './copy';
 import { pointsAvailableAt, ranksByTalent } from './derive';
 import { gridCells, gridSize } from './grid';
+import { dataUrl } from './load';
 import { canAddPoint, type TalentIndex } from './rules';
 import type { Talent, TalentTree } from './types';
 import { MAX_POINTS } from './types';
 
 /** The talent frame's tiers: every class's trees fill seven. */
 export const GAME_TIERS = 7;
-
-/** A data file's URL (`dataUrl(build, path)`). */
-type Asset = (path: string) => string;
 
 export interface EditorTreesInput {
   index: TalentIndex;
@@ -31,7 +30,8 @@ export interface EditorTreesInput {
   characterLevel: number | null;
   readOnly: boolean;
   bandDiff: BandDiffView | null;
-  asset: Asset;
+  /** The talent data's build: the icons are its files. */
+  build: string;
 }
 
 export interface ViewTreesInput {
@@ -39,16 +39,17 @@ export interface ViewTreesInput {
   /** Talent id → rank; a talent it does not name is untaken. */
   ranks: ReadonlyMap<number, number>;
   classSlug: string;
-  asset: Asset;
+  /** The talent data's build: the icons are its files. */
+  build: string;
   /** Carry every rank's text on the cells, so the trees open their own tooltips. False on a page
    *  whose tooltip host serves the text (a guide's bundle): the island's props stay small. */
   withText?: boolean;
 }
 
 /** A tree's head icon: its spec's icon from the generated spec list, '' when it has none. */
-export function treeIconSrc(classSlug: string, treeIndex: number, asset: Asset): string {
+export function treeIconSrc(classSlug: string, treeIndex: number, build: string): string {
   const icon = SPECS.find((row) => row.class_slug === classSlug && row.tree_index === treeIndex)?.icon;
-  return icon === undefined ? '' : asset(`icons/${icon}.webp`);
+  return iconUrl(build, icon) ?? '';
 }
 
 /** A cell's place, icon and rank, the parts every tree shares. */
@@ -57,7 +58,7 @@ function baseCell(
   tier: number,
   column: number,
   rank: number,
-  asset: Asset,
+  build: string,
   withText: boolean,
 ): Omit<TalentCellView, 'state'> {
   return {
@@ -66,7 +67,7 @@ function baseCell(
     column,
     name: talent.name,
     icon: talent.icon,
-    iconSrc: asset(`icons/${talent.icon}.webp`),
+    iconSrc: iconUrl(build, talent.icon) ?? '',
     rank,
     max: talent.max_rank,
     ...(withText ? { ranks: talent.ranks.map((row) => row.description) } : {}),
@@ -80,7 +81,7 @@ function treeFrame(
   classSlug: string,
   ranks: ReadonlyMap<number, number>,
   cells: TalentCellView[],
-  asset: Asset,
+  build: string,
 ): TalentTreeView {
   // Every tree is drawn at the game frame's seven tiers (a trimmed tree too), so a tree's height
   // is the same everywhere and the planner's loading reserve holds it (spec 5.2).
@@ -89,9 +90,9 @@ function treeFrame(
   return {
     id: tree.id,
     name: tree.name,
-    iconSrc: treeIconSrc(classSlug, treeIndex, asset),
+    iconSrc: treeIconSrc(classSlug, treeIndex, build),
     points: cells.reduce((sum, cell) => sum + cell.rank, 0),
-    ...(tree.background ? { artSrc: asset(`trees/${tree.background}.webp`) } : {}),
+    ...(tree.background ? { artSrc: dataUrl(build, `trees/${tree.background}.webp`) } : {}),
     columns: size.columns,
     tiers: size.tiers,
     viewBox: gridViewBox(size.tiers, size.columns),
@@ -110,18 +111,18 @@ export function viewTrees({
   index,
   ranks,
   classSlug,
-  asset,
+  build,
   withText = true,
 }: ViewTreesInput): TalentTreeView[] {
   return index.trees.map((tree, treeIndex) => {
     const cells = gridCells(tree).map(({ talent, tier, column }) => {
       const rank = Math.min(talent.max_rank, ranks.get(talent.id) ?? 0);
       return {
-        ...baseCell(talent, tier, column, rank, asset, withText),
+        ...baseCell(talent, tier, column, rank, build, withText),
         state: viewState(rank, talent.max_rank),
       };
     });
-    return treeFrame(tree, treeIndex, classSlug, ranks, cells, asset);
+    return treeFrame(tree, treeIndex, classSlug, ranks, cells, build);
   });
 }
 
@@ -132,7 +133,7 @@ export function editorTrees({
   characterLevel,
   readOnly,
   bandDiff,
-  asset,
+  build,
 }: EditorTreesInput): TalentTreeView[] {
   const ranks = ranksByTalent([...order]);
   const available = characterLevel === null ? MAX_POINTS : pointsAvailableAt(characterLevel);
@@ -151,7 +152,7 @@ export function editorTrees({
       // The dot marks what a load would change; an empty build has nothing to change yet.
       const differs = order.length > 0 && (bandDiff?.diffTalentIds.has(talent.id) ?? false);
       const cell: TalentCellView = {
-        ...baseCell(talent, tier, column, rank, asset, true),
+        ...baseCell(talent, tier, column, rank, build, true),
         state: cellState(rank, talent.max_rank, decision.ok && !capped),
         differs,
         // A maxed talent says nothing more, as the client's tooltip: its rank line is the answer.
@@ -179,6 +180,6 @@ export function editorTrees({
       }
       return cell;
     });
-    return treeFrame(tree, treeIndex, classSlug, ranks, cells, asset);
+    return treeFrame(tree, treeIndex, classSlug, ranks, cells, build);
   });
 }

@@ -361,9 +361,10 @@
               testid={`mechanics-ability-${ability.spell_id}`}
             >
               {#snippet lead()}<SpellIcon
+                  socket
                   url={icons.of(ability.spell_id, ability.name)}
                   size={24}
-                  tip
+                  tip={ability.spell_id}
                 />{/snippet}
               {#snippet subContent()}{#each abilityHitsByPlayer(summary, ability.spell_id) as one, i (one.guid)}{i >
                   0
@@ -408,9 +409,9 @@
               testid={`mechanics-row-${mechanicRowKey(row)}`}
             >
               {#snippet lead()}<SpellIcon
+                  socket
                   url={icons.of(row.spell_id, row.name)}
-                  spellId={row.spell_id}
-                  tip
+                  tip={row.spell_id}
                 />{/snippet}
               {#snippet trail()}
                 <Tag tone={tagTone(row, tally.failed)}>{KIND_TAG[row.kind] ?? row.kind}</Tag>
@@ -451,6 +452,8 @@
                 wrapTrail
               >
                 {#snippet lead()}<SpellIcon
+                    socket
+                    tip={problem.row.spell_id}
                     url={icons.of(problem.row.spell_id, problem.row.name)}
                     size={24}
                   />{/snippet}
@@ -492,7 +495,12 @@
                   .join(' · ')}
                 open
               >
-                {#snippet lead()}<SpellIcon url={icons.of(row.spell_id, row.name)} size={24} />{/snippet}
+                {#snippet lead()}<SpellIcon
+                    socket
+                    tip={row.spell_id}
+                    url={icons.of(row.spell_id, row.name)}
+                    size={24}
+                  />{/snippet}
               </Row>
             {/each}
           {/each}
@@ -615,7 +623,12 @@
             sub={`${compact(ability.damage)} damage to players · ${ability.players} ${ability.players === 1 ? 'player' : 'players'} hit`}
             open
           >
-            {#snippet lead()}<SpellIcon url={icons.of(ability.spell_id, ability.name)} size={24} />{/snippet}
+            {#snippet lead()}<SpellIcon
+                socket
+                tip={ability.spell_id}
+                url={icons.of(ability.spell_id, ability.name)}
+                size={24}
+              />{/snippet}
             {#snippet trail()}
               <a
                 href={hrefFor(damageTakenPatch(ability.spell_id))}

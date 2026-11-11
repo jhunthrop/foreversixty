@@ -10,6 +10,7 @@
      icons (round ringed crests with `ring`) and its labels only from 1280 and in the open phone
      stack, where it lays out as a 3 × 3 grid. -->
 <script lang="ts">
+  import SpellIcon from './SpellIcon.svelte';
   import type { Snippet } from 'svelte';
   import { REGION } from '../../lib/ui/regions';
   import { checkRadio } from '../../lib/ui/control-bar';
@@ -160,13 +161,7 @@
                       height="22"
                       class="ui-seg-crest"
                       style:--ring={option.ring}
-                    />{:else if option.icon}<img
-                      src={option.icon}
-                      alt=""
-                      width="22"
-                      height="22"
-                      class="rounded-[4px]"
-                    />{/if}
+                    />{:else if option.icon}<SpellIcon url={option.icon} size={22} />{/if}
                   {#if group.compact}<span class="ui-seg-lbl">{option.label}</span>{:else}<span
                       >{option.label}</span
                     >{/if}

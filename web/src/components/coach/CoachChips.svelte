@@ -7,7 +7,7 @@
   import type { Chip } from '../../lib/coach/chips';
   import type { CoachNames } from '../../lib/coach/names';
   import { followReportLink } from '../../lib/coach/navigate';
-  import SpellIcon from './SpellIcon.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
 
   let {
     chips,
@@ -25,7 +25,7 @@
   {#each chips as chip (chip.id)}
     <li>
       <a class={CHIP} href={chip.href} onclick={(event) => followReportLink(event, chip.href)}>
-        <SpellIcon url={names.iconUrl(chip.spellId)} size={20} />{chip.label}
+        <SpellIcon url={names.iconUrl(chip.spellId)} size={20} tip={chip.spellId ?? undefined} />{chip.label}
       </a>
     </li>
   {/each}

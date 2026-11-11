@@ -10,7 +10,6 @@
   import ItemRow from '../../ui/ItemRow.svelte';
   import { GROUP_WORD } from '../../../lib/guild/dense/roster-board';
   import type { RecruitGap, SlipRow } from '../../../lib/guild/dense/week-board';
-  import { lootIconOf } from '../../../lib/guild/loot-icon';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
@@ -86,7 +85,7 @@
           id: drop.item_id,
           name: drop.name,
           quality: drop.quality,
-          icon: lootIconOf(drop) ?? undefined,
+          icon: drop.icon,
         }}
         {build}
         iconSize={32}

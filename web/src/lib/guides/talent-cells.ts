@@ -4,7 +4,6 @@
 // talent file is read from disk). The cells carry no tooltip text: each names its tooltip by key
 // and the guide's tooltip host serves it from the page's bundle on first open.
 import { viewTrees } from '../planner/editor-trees';
-import { dataUrl } from '../planner/load';
 import { indexTalents } from '../planner/rules';
 import type { TalentTreeView } from '../ui/talent-tree';
 import { loadTalentFile, type DecodedTreeView } from './build-tree';
@@ -22,7 +21,7 @@ export function guideTalentTrees(
       trees.flatMap((tree) => tree.talents.map((talent): [number, number] => [talent.id, talent.rank])),
     ),
     classSlug,
-    asset: (path) => dataUrl(build, path),
+    build,
     withText: false,
   });
 }

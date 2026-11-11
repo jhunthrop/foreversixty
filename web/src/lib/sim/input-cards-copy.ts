@@ -6,9 +6,6 @@
 
 export const gearCardCopy = {
   title: 'Gear',
-  meta: (worn: number, total: number, enchants: number) =>
-    `${worn} of ${total} slots · ${enchants === 0 ? 'no enchants' : `${enchants} ${enchants === 1 ? 'enchant' : 'enchants'}`}`,
-  itemLevel: (level: string) => `item level ${level}`,
   statsHead: (level: number) => `In the fight, against a level ${level} boss.`,
   /** A run from before the engine reported its stats sheet. */
   statsNeedNewerRun: 'Your stats in the fight show after a rerun.',

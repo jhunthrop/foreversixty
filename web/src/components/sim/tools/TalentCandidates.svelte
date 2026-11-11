@@ -10,7 +10,7 @@
   import activeBuild from '../../../data/active-build.json';
   import { fetchBisFile } from '../../../lib/bis/hover';
   import { decodeFS1, orderFromRanks } from '../../../lib/planner/fs1';
-  import { dataUrl, loadTalents } from '../../../lib/planner/load';
+  import { loadTalents } from '../../../lib/planner/load';
   import { viewTrees } from '../../../lib/planner/editor-trees';
   import { indexTalents } from '../../../lib/planner/rules';
   import type { BuildRecord, TalentFile } from '../../../lib/planner/types';
@@ -232,7 +232,7 @@
               index,
               ranks: talentRanks(index, loadout.talents),
               classSlug: character.class_slug,
-              asset: (file) => dataUrl(character.tree_version, file),
+              build: character.tree_version,
             })}
             build={character.tree_version}
             label={loadout.name}

@@ -4,9 +4,10 @@
 // name, rank and tag (GuideSpellName), and the clause under it. A line that names no spell
 // ("Trinkets, racials and potions") takes a Row with no lead at all, never an empty socket: an
 // Astro slot passed conditionally still reaches the Svelte Row as a lead, so it is two Rows.
+import SpellIcon from '../ui/SpellIcon.astro';
 import Row from '../ui/Row.svelte';
 import GuideSpellName from './GuideSpellName.astro';
-import { dataUrl } from '../../lib/planner/load';
+import { iconUrl } from '../../lib/ui/assets';
 import type { RotationItem } from '../../lib/guides/rotation-lists';
 
 interface Props {
@@ -22,16 +23,7 @@ const row = { title: item.name, sub: item.clause, density: 'slim' as const, open
 
 {item.icon !== undefined ? (
   <Row {...row}>
-    <img
-      slot="lead"
-      src={dataUrl(build, `icons/${item.icon}.webp`)}
-      alt=""
-      width="28"
-      height="28"
-      loading="lazy"
-      decoding="async"
-      class="guide-spell-icon"
-    />
+    <SpellIcon slot="lead" url={iconUrl(build, item.icon)} size={28} />
     <GuideSpellName slot="titleContent" {item} />
   </Row>
 ) : (
@@ -39,13 +31,3 @@ const row = { title: item.name, sub: item.clause, density: 'slim' as const, open
     <GuideSpellName slot="titleContent" {item} />
   </Row>
 )}
-
-<style>
-  .guide-spell-icon {
-    display: block;
-    flex: none;
-    width: 28px;
-    height: 28px;
-    border-radius: var(--radius-icon);
-  }
-</style>

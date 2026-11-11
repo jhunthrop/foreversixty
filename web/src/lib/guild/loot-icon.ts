@@ -1,22 +1,10 @@
 // web/src/lib/guild/loot-icon.ts
-// An awarded item's icon and its tooltip of last resort (attendance spec 3.4): the icon the API sends
-// with the award (the Loot tab's loot table, the client's own art), or none, in which case the row
-// draws the /bis neutral tile with the name's letters, never the client's red question mark; and,
-// for an item no class file carries (a quest item such as Head of Onyxia), a tooltip model built
-// from the award.
+// An awarded item's tooltip of last resort (attendance spec 3.4): for an item no class file carries (a
+// quest item such as Head of Onyxia), a tooltip model built from the award. Its icon is the award's
+// own, drawn by ui/ItemIcon (the dark socket for none, never the client's red question mark).
 import type { GuildKeyItem } from './api';
 import type { RaidLootAward } from './attendance-contract';
 import type { ItemTooltipModel } from '../items/tooltip';
-
-/** The award's icon file name, or null when the loot table has none. It is always requested: the
- *  build ships every icon a class item file or talent names (Head of Onyxia's among them), and one
- *  it does not ship (the bag's) fails into the empty socket or the tile, never a broken image. */
-export function lootIconOf(award: Pick<RaidLootAward, 'icon'>): string | null {
-  return award.icon === '' ? null : award.icon;
-}
-
-/** The two letters the neutral tile shows when there is no icon to draw. */
-export const lootInitials = (name: string): string => name.slice(0, 2);
 
 /** A tooltip of an item's name, quality and icon, and nothing else. */
 function bareTooltipModel(id: number, name: string, quality: number, icon: string): ItemTooltipModel {
