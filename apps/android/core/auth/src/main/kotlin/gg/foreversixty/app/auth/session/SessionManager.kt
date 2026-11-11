@@ -5,6 +5,7 @@ import gg.foreversixty.app.auth.BrowserLauncher
 import gg.foreversixty.app.auth.SignInOutcome
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.AccountDeletionRequest
+import gg.foreversixty.app.model.NotificationSettings
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.ApiEndpoints
 import gg.foreversixty.app.network.ApiError
@@ -163,6 +164,9 @@ class SessionManager(
             is ApiResult.Success -> ApiResult.Success(DeviceList.rows(result.data, thisDeviceId(), now), result.requestId)
             is ApiResult.Failure -> result
         }
+
+    /** `GET /v1/me/notifications`: the account's per-event, per-channel choices (the drawer's row reads its groups). */
+    suspend fun notificationSettings(): ApiResult<NotificationSettings> = client.send(ApiEndpoints.getNotificationSettings())
 
     suspend fun revoke(id: String): AccountActionOutcome = when (val result = client.send(ApiEndpoints.revokeDevice(id))) {
         is ApiResult.Success -> AccountActionOutcome.Done

@@ -2113,8 +2113,30 @@ enum Copy {
     /// Application accepted
     static var pushApplicantAccepted: String { text("push.applicant.accepted") }
 
-    /// Open the application.
-    static var pushApplicantFailed: String { text("push.applicant.failed") }
+    /// Could not accept {name}
+    static func pushApplicantAcceptFailed(name: String) -> String {
+        format("push.applicant.acceptFailed", name)
+    }
+
+    /// Could not decline {name}
+    static func pushApplicantDeclineFailed(name: String) -> String {
+        format("push.applicant.declineFailed", name)
+    }
+
+    /// {applicant}. Open Forever Sixty to try again.
+    static func pushApplicantFailed(applicant: String) -> String {
+        format("push.applicant.failed", applicant)
+    }
+
+    /// Could not mention the {who} in Discord
+    static func pushShortFailed(who: String) -> String {
+        format("push.short.failed", who)
+    }
+
+    /// {raid}. Open the raid to try again.
+    static func pushShortRetry(raid: String) -> String {
+        format("push.short.retry", raid)
+    }
 
     /// Raids
     static var pushGroupRaids: String { text("push.group.raids") }

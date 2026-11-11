@@ -106,8 +106,8 @@ enum HomeFlowTestData {
                 activity(1, "inv_misc_book_09", "Beast Mastery Hunter moved to A", "Leveling tiers, 30 to 39 · 2 d ago", unread: false),
             ]
         default: [
-                activity(3, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012.3 DPS, you are #7 of 14 · 1 h ago", unread: true),
-                activity(2, "inv_misc_pocketwatch_01", "Sim done: 948.6 DPS ±6", "+21 vs your last · 3 h ago", unread: true),
+                activity(3, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012 DPS, you are #7 of 14 · 1 h ago", unread: true),
+                activity(2, "inv_misc_pocketwatch_01", "Sim done: 949 DPS ±6", "+21 vs your last · 3 h ago", unread: true),
                 activity(1, "inv_misc_book_09", "Fury Warrior BiS changed", "A new pick for Hands · yesterday", unread: false),
             ]
         }

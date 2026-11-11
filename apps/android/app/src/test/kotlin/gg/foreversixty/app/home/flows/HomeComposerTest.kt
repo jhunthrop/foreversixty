@@ -72,7 +72,7 @@ class HomeComposerTest {
 
     @Test fun `the section meta counts the upgrades and their total, the stamp says when gear synced`() {
         val full = home.copy(totalGain = 157.6, syncedAt = "2026-11-06T16:00:00Z", syncedFrom = "battlenet")
-        assertEquals("4 upgrades · +157.6 DPS", composer.upgradesMeta(full, "DPS"))
+        assertEquals("4 upgrades · +158 DPS", composer.upgradesMeta(full, "DPS"))
         assertEquals("4 upgrades", composer.upgradesMeta(home, "DPS"))
         assertEquals(true, composer.syncedStamp(full)?.startsWith("Synced 2"))
         assertEquals(true, composer.syncedStamp(full.copy(syncedFrom = "addon"))?.endsWith("from the addon"))

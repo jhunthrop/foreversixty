@@ -23,12 +23,12 @@ class GearHeaderTest {
 
     @Test fun `the total, the count and when the gear synced`() {
         val synced = home.copy(totalGain = 157.6, syncedAt = "2026-11-06T16:00:00Z")
-        assertEquals("+157.6 DPS from 13 upgrades · synced 2 h ago", composer.header(synced, "DPS")?.text)
+        assertEquals("+158 DPS from 13 upgrades · synced 2 h ago", composer.header(synced, "DPS")?.text)
         assertEquals(false, composer.header(synced, "DPS")?.syncedStale)
     }
 
     @Test fun `the gains not modelled close the line`() {
-        assertEquals("+157.6 DPS from 13 upgrades · 2 gains not modelled yet", composer.header(home.copy(totalGain = 157.6, notModelledCount = 2), "DPS")?.text)
+        assertEquals("+158 DPS from 13 upgrades · 2 gains not modelled yet", composer.header(home.copy(totalGain = 157.6, notModelledCount = 2), "DPS")?.text)
     }
 
     @Test fun `past a week the synced part alone takes the warning tone`() {

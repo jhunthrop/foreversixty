@@ -106,14 +106,14 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     private func answerOfficer(_ answer: OfficerPushAnswer, reply: PushReply) async -> RaidPushOutcome.Confirmation {
         switch answer {
         case let .accept(guild, application):
-            OfficerPushResult.applicant(done: await officer.accept(guild, application), accepted: true, title: reply.title)
+            OfficerPushResult.applicant(done: await officer.accept(guild, application), accepted: true, applicant: reply.applicant)
         case let .decline(guild, application):
-            OfficerPushResult.applicant(done: await officer.decline(guild, application), accepted: false, title: reply.title)
+            OfficerPushResult.applicant(done: await officer.decline(guild, application), accepted: false, applicant: reply.applicant)
         case let .mention(request):
             OfficerPushResult.mention(
-                await officer.mention(request.guild, request.raid, request.role), role: request.role, title: reply.title
+                await officer.mention(request.guild, request.raid, request.role), request: request, title: reply.title
             )
-        case .unreadable: OfficerPushResult.unreadable(action: reply.action, title: reply.title)
+        case .unreadable: OfficerPushResult.unreadable(action: reply.action, title: reply.title, applicant: reply.applicant)
         }
     }
 
@@ -154,6 +154,8 @@ struct PushReply: Sendable {
     /// The push's `kind`, `link` and `data` strings, kept on the answer that replaces it so a tap on
     /// that still lands where the push did (never its actions).
     let tapThrough: [String: PushTapValue]
+    /// Who an applicant push is about, for its answer's words.
+    let applicant: ApplicantPushName
 
     init(action: String, identifier: String, thread: String, title: String = "", userInfo: [AnyHashable: Any]) {
         self.action = action
@@ -164,6 +166,7 @@ struct PushReply: Sendable {
         landing = PushLanding.destination(userInfo: userInfo)
         officer = OfficerPushAnswer(action: action, userInfo: userInfo)
         tapThrough = PushTapValue.tapThrough(userInfo)
+        applicant = ApplicantPushName(data: PushLanding.data(userInfo: userInfo), pushTitle: title)
     }
 
     init(_ response: UNNotificationResponse) {

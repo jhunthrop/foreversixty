@@ -229,7 +229,7 @@ TOOLS = [('Guides', 'Your spec&rsquo;s guide, then every class', True), ('Tiers'
          ('Patch notes', 'The game and the site', True), ('Sims', 'Your server runs and saved sims', False),
          ('Logs and reports', 'Your reports and the coach', False), ('Planner', 'Your builds and the guide builds', True),
          ('Rankings', 'Your spec and your guild', True)]
-ACCOUNT = [('Notifications', 'Logs, tiers off'), ('Plan', 'Premium &middot; Founder price'), ('Devices', '3 signed in'),
+ACCOUNT = [('Notifications', 'Gear and sims, guild ladder, tiers off'), ('Plan', 'Premium &middot; Founder price'), ('Devices', '3 signed in'),
            ('Offline data', '26.6 MB on this phone'), ('Settings', 'Sign out, delete account')]
 
 
@@ -374,12 +374,12 @@ def _upgrades(platform: str, leveler: bool = False, tonight: bool = True) -> str
 
 # icon, title, body, when (round 3: Activity's buckets on their own line), unread
 ACTIVITY_PREVIEW = {
-    'day': [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012.3 DPS, you are #7 of 14', '1 h ago', True),
-            ('inv_misc_pocketwatch_01', 'Sim done: 948.6 DPS &plusmn;6', '+21 vs your last', '3 h ago', True),
+    'day': [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012 DPS, you are #7 of 14', '1 h ago', True),
+            ('inv_misc_pocketwatch_01', 'Sim done: 949 DPS &plusmn;6', '+21 vs your last', '3 h ago', True),
             ('inv_misc_book_09', 'Fury Warrior BiS changed', 'A new pick for Hands', '6:02 pm', False)],
     # the day after: Last night shows the loot and the report, so the preview starts below them
-    'after': [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012.3 DPS, you are #7 of 14', '8 h ago', True),
-              ('inv_misc_pocketwatch_01', 'Sim done: 948.6 DPS &plusmn;6', '+21 vs your last', '6:02 pm', False),
+    'after': [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012 DPS, you are #7 of 14', '8 h ago', True),
+              ('inv_misc_pocketwatch_01', 'Sim done: 949 DPS &plusmn;6', '+21 vs your last', '6:02 pm', False),
               ('inv_misc_book_09', 'Fury Warrior BiS changed', 'A new pick for Hands', 'Tue', False)],
     'live': [('inv_misc_head_dragon_black', 'Brightwen is Late, 15 min', 'Onyxia&rsquo;s Lair', '4 min ago', True),
              ('inv_misc_head_dragon_black', 'Selka is In', 'Restoration Druid', '20 min ago', True),
@@ -806,7 +806,7 @@ def _gear_page_r5(platform: str) -> str:
                     f'<span class="s">{slot} &middot; ' + ('Equipped' if g is None else f'<span class="g">{g} DPS</span>') + '</span></div></div>'
                     for slot, name, ic, q, _, g in R5_DOLL)
     doll = (f'<div class="pd"><div class="strip"><span class="med"><img src="{AVATAR.format(name="thandrel")}" alt=""></span>'
-            f'<h1>Fury Warrior</h1><b>1004.2 <small>DPS</small></b></div>'
+            f'<h1>Fury Warrior</h1><b>1,004 <small>DPS</small></b></div>'
             + _gear_lead(platform)
             + f'<div class="ls"><div data-region="slots">{cells}</div></div></div>')
     where = ''.join(_r5_gear_row(t, f'{s}<br>{fig}', icon(ic, 40, f'q{q}')) for t, s, ic, q, fig in R5_WHERE)
@@ -862,7 +862,7 @@ ACTIVITY = [
                ('inv_axe_09', f'You got <span style="color:{QCOL[4]}">Deathbringer</span>', 'Onyxia &middot; main hand, +12.6 DPS', 'Gear and sims', '9 h ago', True),
                (ONY, 'Onyxia&rsquo;s Lair report ready', '87th percentile, your best on Onyxia so far &middot; the coach has 2 notes', 'Logs', '9 h ago', True)]),
     ('Yesterday', [(ONY, 'You&rsquo;re In for Onyxia', AS_ME_CAP + ' &middot; 8:00 pm CST', 'Raids', '6:02 pm', False),
-                   ('inv_misc_pocketwatch_01', 'Sim done: 948.6 DPS &plusmn;6', '+21 vs your last', 'Gear and sims', '2:40 pm', False),
+                   ('inv_misc_pocketwatch_01', 'Sim done: 949 DPS &plusmn;6', '+21 vs your last', 'Gear and sims', '2:40 pm', False),
                    (ONY, 'Healers short for Onyxia tonight', '3 of 8 missing', 'Raids', '1:15 pm', False)]),
     ('This week', [('inv_misc_book_09', 'Fury Warrior moved to S', 'Raid tiers, 60', 'Tiers', 'Tue', False),
                    ('inv_misc_book_09', 'Fury Warrior BiS changed', f'A new pick for Hands: <span style="color:{QCOL[4]}">Theramore Gauntlets</span>', 'Gear and sims', 'Tue', False)]),

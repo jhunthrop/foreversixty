@@ -173,18 +173,31 @@ struct PushLandingTests {
     @MainActor
     func officerFailures() async throws {
         let calls = OfficerCalls()
-        let (center, posted) = officerCenter(calls, accepts: false, ping: nil)
+        let (center, posted) = officerCenter(calls, accepts: false, declines: false, ping: nil)
         await center.respond(try reply(RaidPushCategory.actionMention, "push.raid-short.apns", title: "Onyxia's Lair"))
-        await center.respond(try reply(RaidPushCategory.actionAccept, "push.guild-applicant.apns", title: "New applicant"))
+
+        let named = try apns("push.guild-applicant.apns")
+        let title = "New applicant: Mirelle, Holy Priest 60"
+        for action in [RaidPushCategory.actionAccept, RaidPushCategory.actionDecline] {
+            await center.respond(PushReply(action: action, identifier: "a", thread: "", title: title, userInfo: named))
+        }
         var cooled = try apns("push.raid-short.apns")
         cooled[RaidMentionRequest.actionsKey] = nil
         await center.respond(PushReply(action: RaidPushCategory.actionMention, identifier: "c", thread: "", title: "Onyxia's Lair", userInfo: cooled))
+        var unnamed = try apns("push.guild-applicant.apns")
+        unnamed["data"] = ["guild_id": "2", "application_id": "31"]
+        await center.respond(PushReply(action: RaidPushCategory.actionAccept, identifier: "u", thread: "", title: title, userInfo: unnamed))
         #expect(posted.answers == [
-            .init(title: Copy.commonFailed, body: "Onyxia's Lair"),
-            .init(title: Copy.commonFailed, body: Copy.pushApplicantFailed),
-            .init(title: Copy.commonFailed, body: "Onyxia's Lair"),
+            .init(title: "Could not mention the healers in Discord", body: "Onyxia's Lair. Open the raid to try again."),
+            .init(title: "Could not accept Mirelle", body: "Mirelle, Holy Priest 60. Open Forever Sixty to try again."),
+            .init(title: "Could not decline Mirelle", body: "Mirelle, Holy Priest 60. Open Forever Sixty to try again."),
+            // No role to name: the plain title, the same retry line.
+            .init(title: Copy.commonFailed, body: "Onyxia's Lair. Open the raid to try again."),
+            // A push without the applicant's data reads its own title.
+            .init(title: Copy.commonFailed, body: "\(title). Open Forever Sixty to try again."),
         ])
-        #expect(await calls.log == ["mention 2/7 healer", "accept 2/31"], "an unreadable Mention calls nothing")
+        #expect(await calls.log == ["mention 2/7 healer", "accept 2/31", "decline 2/31", "accept 2/31"], "an unreadable Mention calls nothing")
+        #expect(posted.tapThrough.first?["kind"] == .text("raid.short"), "a tap on the failure opens what the push did")
     }
 
     @Test("round 4: UIKit's completion for a response runs on the main thread")

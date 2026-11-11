@@ -105,7 +105,7 @@ struct HomeFlowPresenter {
                     icon: upgrade.pick.icon, itemLevel: upgrade.pick.itemLevel
                 ),
                 source: Self.sourceLine(upgrade),
-                gain: upgrade.modelled ? upgrade.gain.map { HomeGain(figure: ItemNumbers.signedTenths($0), unit: unit) } : nil,
+                gain: upgrade.modelled ? upgrade.gain.map { HomeGain(figure: ReportsCopy.signedHouseFigure($0), unit: unit) } : nil,
                 wornID: upgrade.worn?.id,
                 sourceLine: upgrade.pick.sourceLine
             )
@@ -133,7 +133,7 @@ struct HomeFlowPresenter {
         guard home.upgradeCount > 0 else { return nil }
         let count = Copy.homeAnswerUpgrades(n: home.upgradeCount)
         guard let total = home.totalGain, total > 0 else { return count }
-        let gain = Copy.homeUpgradesGain(figure: ItemNumbers.signedTenths(total), unit: home.unitWord ?? "")
+        let gain = Copy.homeUpgradesGain(figure: ReportsCopy.signedHouseFigure(total), unit: home.unitWord ?? "")
         return Copy.homeUpgradesMeta(upgrades: count, gain: gain)
     }
 
@@ -154,7 +154,7 @@ struct HomeFlowPresenter {
             .joined(separator: Self.partSeparator)
         return HomeBestRunRow(
             place: run.place, line: line, icon: pick?.icon,
-            gain: HomeGain(figure: ItemNumbers.signedTenths(run.gain), unit: home.unitWord ?? "")
+            gain: HomeGain(figure: ReportsCopy.signedHouseFigure(run.gain), unit: home.unitWord ?? "")
         )
     }
 
@@ -367,7 +367,7 @@ struct HomeFlowPresenter {
     func lootLine(_ item: RaidNightLoot) -> String {
         let slot = item.slot.lowercased()
         guard let gain = item.gain, gain > 0 else { return Copy.homeLastNightLoot(boss: item.boss, slot: slot) }
-        let figure = Copy.homeUpgradesGain(figure: ItemNumbers.signedTenths(gain), unit: item.unit ?? "")
+        let figure = Copy.homeUpgradesGain(figure: ReportsCopy.signedHouseFigure(gain), unit: item.unit ?? "")
         return Copy.homeLastNightLootGain(boss: item.boss, slot: slot, gain: figure)
     }
 

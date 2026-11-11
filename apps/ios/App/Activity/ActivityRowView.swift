@@ -38,7 +38,7 @@ enum ActivityBody {
     /// The row's figure (sim DPS, the guild ladder's), shown once and worded as the other figures
     /// (row 11), in the house format (apps/shared/formats.json: grouped and whole from 100): `204 DPS`.
     static func figure(_ row: ActivityRow) -> String? {
-        row.figure.map { Copy.homeUpgradesGain(figure: ReportsCopy.figure($0), unit: Copy.bisUnitDps) }
+        row.figure.map { Copy.homeUpgradesGain(figure: ReportsCopy.houseFigure($0), unit: Copy.bisUnitDps) }
     }
 
     static func text(_ row: ActivityRow, fallback: String) -> Text {

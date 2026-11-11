@@ -130,6 +130,16 @@ struct ReportsLogicTests {
         #expect(ReportsCopy.reportMeta(try ReportsTestData.report(), clock: clock) == "Monday 14 December 2026 · logged by Gorvash")
     }
 
+    /// Round 7, row 1: the house figure Gear and Activity share (apps/shared/formats.json).
+    @Test func houseFigure() {
+        #expect(ReportsCopy.houseFigure(182.04) == "182")
+        #expect(ReportsCopy.houseFigure(1196.2) == "1,196")
+        #expect(ReportsCopy.houseFigure(100) == "100")
+        #expect(ReportsCopy.houseFigure(94.64) == "94.6")
+        #expect(ReportsCopy.houseFigure(18) == "18.0")
+        #expect(ReportsCopy.houseFigure(0) == "0.0")
+    }
+
     // MARK: Your parses
 
     @Test func parseRows_andWords() throws {

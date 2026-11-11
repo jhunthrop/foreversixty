@@ -1,0 +1,89 @@
+{
+  "ok": true,
+  "data": {
+    "time_zone": "America/Chicago",
+    "quiet_hours": {
+      "enabled": true,
+      "start": "22:00",
+      "end": "08:00"
+    },
+    "officer_dms": false,
+    "raid_reminder": "15:00",
+    "events": [
+      {
+        "kind": "raid.posted",
+        "group": "raids",
+        "who": "guild_members",
+        "officer": false,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": true,
+          "discord": true
+        }
+      },
+      {
+        "kind": "raid.starting",
+        "group": "raids",
+        "who": "in_and_late",
+        "officer": false,
+        "quiet_exempt": true,
+        "time_sensitive": true,
+        "channels": {
+          "push": true,
+          "discord": true
+        }
+      },
+      {
+        "kind": "bis.changed",
+        "group": "gear",
+        "who": "player",
+        "officer": false,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": true,
+          "discord": false
+        }
+      },
+      {
+        "kind": "roster.pending",
+        "group": "officer",
+        "who": "officers",
+        "officer": true,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": true,
+          "discord": true
+        }
+      },
+      {
+        "kind": "guildsim.passed",
+        "group": "ladder",
+        "who": "player",
+        "officer": false,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": true,
+          "discord": false
+        }
+      },
+      {
+        "kind": "tier.moved",
+        "group": "tiers",
+        "who": "player",
+        "officer": false,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": true,
+          "discord": false
+        }
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

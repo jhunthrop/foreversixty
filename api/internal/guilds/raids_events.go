@@ -187,6 +187,8 @@ func raidShortEvent(guildID int64, p notify.RaidPosted, lead time.Duration, unan
 	}
 	if worst, ok := shortestRole(short); ok && canPing {
 		e.Actions = []events.Action{mentionAction(guildID, p.RaidID, worst)}
+		// The apps word a failed Mention from it (round 7 row 2): "the healers".
+		e.Data[MentionWhoDataKey] = mentionWho[shortPingRole(worst)]
 	}
 	if unanswered > 0 {
 		gaps = append(gaps, fmt.Sprintf(raidEventCopy.ShortNotIn, unanswered))
@@ -208,8 +210,14 @@ func shortestRole(short []notify.RoleShort) (notify.RoleShort, bool) {
 	return short[0], true
 }
 
-// mentionCopy is the Mention button's label per ping role.
-var mentionCopy = map[string]string{RoleTank: "Mention tanks", RoleHealer: "Mention healers", RoleDPS: "Mention DPS"}
+// mentionWho is who a Mention reaches per ping role; the button reads mentionVerb + it.
+var mentionWho = map[string]string{RoleTank: "tanks", RoleHealer: "healers", RoleDPS: "DPS"}
+
+// mentionVerb starts the Mention button's label ("Mention healers").
+const mentionVerb = "Mention "
+
+// MentionWhoDataKey is raid.short's data key naming who its Mention reaches.
+const MentionWhoDataKey = "mention_who"
 
 // MentionShortActionID is raid.short's one action: the raid ping for the shortest role.
 const MentionShortActionID = "raid_mention_short"
@@ -217,12 +225,17 @@ const MentionShortActionID = "raid_mention_short"
 // mentionAction posts the raid ping (POST …/raids/{raid}/ping) for r's role: melee and ranged
 // are the ping's dps.
 func mentionAction(guildID, raidID int64, r notify.RoleShort) events.Action {
-	role := map[string]string{raidspec.GroupTank: RoleTank, raidspec.GroupHealer: RoleHealer}[r.Group]
-	if role == "" {
-		role = RoleDPS
-	}
-	return events.Action{ID: MentionShortActionID, Title: mentionCopy[role], Method: "POST",
+	role := shortPingRole(r)
+	return events.Action{ID: MentionShortActionID, Title: mentionVerb + mentionWho[role], Method: "POST",
 		Path: fmt.Sprintf("/v1/guilds/%d/raids/%d/ping", guildID, raidID), Body: map[string]string{"role": role}}
+}
+
+// shortPingRole is the raid ping's role for a short roster group: melee and ranged are dps.
+func shortPingRole(r notify.RoleShort) string {
+	if role, ok := map[string]string{raidspec.GroupTank: RoleTank, raidspec.GroupHealer: RoleHealer}[r.Group]; ok {
+		return role
+	}
+	return RoleDPS
 }
 
 // joinSentences is the non-empty sentences one after another.

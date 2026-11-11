@@ -115,7 +115,7 @@ object ActivityFixtures {
         row(7, "loot.awarded", "gear", "You got Deathbringer", "Onyxia · main hand, +12.6 DPS", "2026-11-06T09:00:00Z", false, "inv_axe_09"),
         row(6, "report.ready", "logs", "Onyxia's Lair report ready", "87th percentile, your best on Onyxia so far · the coach has 2 notes", "2026-11-06T09:00:00Z", false, "inv_misc_head_dragon_black"),
         row(5, "raid.signup_nudge", "raids", "You're In for Onyxia", "As Thandrel, Damage · 8:00 pm CST", "2026-11-06T00:02:00Z", true, "inv_misc_head_dragon_black"),
-        row(4, "sim.finished", "gear", "Sim done: 948.6 DPS ±6", "+21 vs your last", "2026-11-05T20:40:00Z", true, "inv_misc_pocketwatch_01"),
+        row(4, "sim.finished", "gear", "Sim done: 949 DPS ±6", "+21 vs your last", "2026-11-05T20:40:00Z", true, "inv_misc_pocketwatch_01"),
         row(3, "raid.short", "raids", "Healers short for Onyxia tonight", "3 of 8 missing", "2026-11-05T19:15:00Z", true, "inv_misc_head_dragon_black"),
         row(2, "tier.moved", "tiers", "Fury Warrior moved to S", "Raid tiers, 60", "2026-11-03T18:00:00Z", true, "inv_misc_book_09"),
         row(1, "bis.changed", "gear", "Fury Warrior BiS changed", "A new pick for Hands: Theramore Gauntlets", "2026-11-03T17:00:00Z", true, "inv_misc_book_09"),

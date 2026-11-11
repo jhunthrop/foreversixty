@@ -9537,7 +9537,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Every catalogue event in catalogue order"
-          x-fixtures: [app.notifications]
+          x-fixtures: [app.notifications, app.notifications.all-on]
           content:
             application/json:
               schema:

@@ -10,7 +10,7 @@ import gg.foreversixty.app.gear.RunPick
 import gg.foreversixty.app.home.HomeCharacter
 import gg.foreversixty.app.home.HomePresenter
 import gg.foreversixty.app.items.ItemLook
-import gg.foreversixty.app.items.ItemNumbers
+import gg.foreversixty.app.common.HouseFigure
 import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.HomeSection
@@ -95,7 +95,7 @@ class HomeComposer(private val res: Resources, private val now: Instant, private
         return UpgradeLine(
             look = ItemLook(pick.id, pick.name, pick.quality, pick.icon, pick.itemLevel),
             source = source,
-            gain = gain?.let(ItemNumbers::signedTenths) ?: upgrade.gainWords,
+            gain = gain?.let(HouseFigure::signed) ?: upgrade.gainWords,
             unit = if (gain != null) unit else null,
             slot = upgrade.slot,
             wornId = upgrade.worn?.id,
@@ -107,7 +107,7 @@ class HomeComposer(private val res: Resources, private val now: Instant, private
     fun upgradesMeta(home: CharacterHome, unit: String): String {
         val count = res.getQuantityString(R.plurals.shared_home_upgradesCount, home.upgradeCount, home.upgradeCount)
         val total = home.totalGain?.takeIf { it > 0 } ?: return count
-        return res.getString(R.string.home_upgrades_meta, count, "${ItemNumbers.signedTenths(total)} $unit".trim())
+        return res.getString(R.string.home_upgrades_meta, count, "${HouseFigure.signed(total)} $unit".trim())
     }
 
     /** `Synced 2 h ago`, or `Synced 2 h ago from the addon`; null before the first sync. */
@@ -125,7 +125,7 @@ class HomeComposer(private val res: Resources, private val now: Instant, private
         return UpgradeLine(
             look = ItemLook(pick.itemId, pick.itemName, null, null, null),
             source = source,
-            gain = ItemNumbers.signedTenths(pick.gain),
+            gain = HouseFigure.signed(pick.gain),
             unit = unit,
             slot = pick.slot,
             wornId = null,

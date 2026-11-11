@@ -37,7 +37,8 @@ func TestApplyPublishesTheApplicantToOfficers(t *testing.T) {
 	if !strings.HasPrefix(e.Title, "New applicant: mirelle") {
 		t.Fatalf("title %q", e.Title)
 	}
-	if e.Body == "" || e.Data["guild_id"] != strconv.FormatInt(gid, 10) || e.Data["application_id"] != strconv.FormatInt(a.ID, 10) {
+	if e.Body == "" || e.Data["guild_id"] != strconv.FormatInt(gid, 10) || e.Data["application_id"] != strconv.FormatInt(a.ID, 10) ||
+		e.Data["applicant_name"] != "mirelle" || e.Data["applicant"] != strings.TrimPrefix(e.Title, "New applicant: ") {
 		t.Fatalf("event %+v", e)
 	}
 	if len(e.Actions) != 2 || e.Actions[1].ID != "application_decline" || e.Actions[1].Method != http.MethodPost ||

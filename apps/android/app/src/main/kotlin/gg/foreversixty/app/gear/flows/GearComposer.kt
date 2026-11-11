@@ -6,6 +6,8 @@ import gg.foreversixty.app.bis.BisList
 import gg.foreversixty.app.bis.BisListBuilder
 import gg.foreversixty.app.bis.BisPhase
 import gg.foreversixty.app.bis.BisRow
+import gg.foreversixty.app.bis.BisUnit
+import gg.foreversixty.app.common.HouseFigure
 import gg.foreversixty.app.gear.RunPick
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.model.HomeAlreadyBest
@@ -69,7 +71,7 @@ data class GearHeader(val gain: String?, val synced: String?, val syncedStale: B
 data class GearContent(
     /** `Fury Warrior`. */
     val title: String,
-    /** The set's figure, `1004.2`, in [unitWord]; null for a tank list. */
+    /** The set's figure in the house format, `1,004`, in [unitWord]; null for a tank list. */
     val figure: String?,
     /** `60 raid · Alliance · 4 of 17 slots on the list`. */
     val facts: String,
@@ -97,10 +99,18 @@ data class GearNotice(
 
 /**
  * Builds Gear from the BiS list on screen, the character's measured upgrades (Home's answer, for the
- * same list) and the picks [gg.foreversixty.app.gear.WhereToGo] placed at their sources.
+ * same list) and the picks [gg.foreversixty.app.gear.WhereToGo] placed at their sources. [setDps] is the
+ * band's set figure, which Gear heads with in the house format (round 7 row 1; the BiS screen keeps its own).
  */
 class GearComposer(private val res: Resources, private val now: Instant = Instant.now()) {
-    fun content(list: BisList, faction: String, upgrades: List<HomeUpgrade>, picks: List<RunPick>, home: CharacterHome? = null): GearContent {
+    fun content(
+        list: BisList,
+        faction: String,
+        upgrades: List<HomeUpgrade>,
+        picks: List<RunPick>,
+        home: CharacterHome? = null,
+        setDps: Double? = null,
+    ): GearContent {
         val bySlot = upgrades.associateBy { it.slot }
         // Row 10: with the home answer, `already_best` decides Equipped, so the counter, the Equipped
         // cells, the header's upgrade count and the gain cells read the same figures.
@@ -109,7 +119,8 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
         val onList = res.getString(R.string.gear_onList, slots.count { it.worn }, list.rows.size)
         return GearContent(
             title = list.specLabel,
-            figure = list.setFigure,
+            // A tank band's set_dps is not its score: no figure, as the BiS list has none.
+            figure = setDps?.takeIf { list.unit != BisUnit.Score }?.let(HouseFigure::of),
             facts = facts(list.rangeLabel, faction, onList),
             where = where(picks, list),
             slots = slots,
@@ -141,7 +152,7 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
      */
     fun header(home: CharacterHome, unit: String): GearHeader? {
         val upgrades = res.getQuantityString(R.plurals.shared_home_upgradesCount, home.upgradeCount, home.upgradeCount)
-        val gain = home.totalGain?.takeIf { it > 0 }?.let { res.getString(R.string.gear_header_gain, "+" + BisListBuilder.figure(it), unit, upgrades) }
+        val gain = home.totalGain?.takeIf { it > 0 }?.let { res.getString(R.string.gear_header_gain, "+" + HouseFigure.of(it), unit, upgrades) }
         val age = home.syncedAt?.let { runCatching { Instant.parse(it) }.getOrNull() }?.let { RelativeAge.of(it, now) }
         val synced = age?.let { res.getString(R.string.gear_header_synced, it.phrase(res)) }
         val notModelled = home.notModelledCount.takeIf { it > 0 }?.let { res.getQuantityString(R.plurals.home_answer_notModelled, it, it) }
@@ -169,7 +180,7 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
             label = label,
             look = item?.let { ItemLook(it.id, it.name, it.quality, it.icon, it.item?.itemLevel) },
             source = pick?.slotSource ?: label,
-            gain = if (worn || item == null) null else gain?.let { "+" + BisListBuilder.figure(it) },
+            gain = if (worn || item == null) null else gain?.let { "+" + HouseFigure.of(it) },
             worn = worn,
             row = row,
             equipped = equipped.takeIf { !worn },
@@ -207,7 +218,7 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
     /** `2 upgrades · +20.4 DPS`: the slots a trip fills and their summed gain. */
     private fun whereFigure(group: List<RunPick>, unit: String): String {
         val count = res.getQuantityString(R.plurals.shared_home_upgradesCount, group.size, group.size)
-        return res.getString(R.string.gear_where_figure, count, "+" + BisListBuilder.figure(group.sumOf { it.gain }), unit)
+        return res.getString(R.string.gear_where_figure, count, "+" + HouseFigure.of(group.sumOf { it.gain }), unit)
     }
 
     private fun whereLine(group: List<RunPick>): String {

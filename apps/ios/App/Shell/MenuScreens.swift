@@ -31,7 +31,12 @@ extension RootView {
                 privacy: { openURL(AccountLinks.privacy) },
                 loadDevices: { [client = environment.client] in try? await client.send(.listDevices) },
                 loadNotifications: { [client = environment.client] in
-                    try? await LiveNotificationSettingsService(client: client).load()
+                    let settings = try? await LiveNotificationSettingsService(client: client).load()
+                    #if DEBUG
+                        return MenuDebugLaunch.notifications(settings)
+                    #else
+                        return settings
+                    #endif
                 }
             )
         )

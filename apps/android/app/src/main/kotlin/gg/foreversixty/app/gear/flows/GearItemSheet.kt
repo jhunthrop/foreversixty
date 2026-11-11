@@ -74,7 +74,8 @@ class GearSheetComposer(private val res: Resources, private val build: String) {
             // The client's tooltip has no item level (spec 2026-11-08, round 4 cut), so the sheet drops it.
             tooltip = (tooltip ?: ItemTooltipModel(look = look, headerMeta = "", known = true)).copy(itemLevel = null),
             gain = row.gain?.let { "$it $unitWord" },
-            sources = sources.map { GearSheetLine(sourceLine(it), null, it.icon?.let { icon -> FlowLead.Icon(icon, build) } ?: itemLead) },
+            sources = sources.map { GearSheetLine(sourceLine(it), null, it.icon?.let { icon -> FlowLead.Icon(icon, build) } ?: itemLead) }
+                .ifEmpty { listOfNotNull(listSource(pick.source, itemLead)) },
             replaces = row.equipped?.let { worn ->
                 GearSheetLine(res.getString(R.string.gear_sheet_replaces, worn.name.orEmpty()), res.getString(R.string.gear_worn), FlowLead.Item(worn, build))
             },
@@ -106,6 +107,13 @@ class GearSheetComposer(private val res: Resources, private val build: String) {
             source.standing?.lowercase(),
         ).joinToString(", ")
     }
+
+    /**
+     * Round 7 row 3: an item the loot file does not place (crafted, a quest, a world drop) still says
+     * where it comes from, the list's own source line (`Crafted: Blacksmithing`) under `Where to get it`.
+     */
+    private fun listSource(source: String, lead: FlowLead): GearSheetLine? =
+        source.takeIf { it.isNotBlank() }?.let { GearSheetLine(it, res.getString(R.string.gear_sheet_where), lead) }
 
     private fun IntRange?.orEmpty(): String = when {
         this == null -> ""

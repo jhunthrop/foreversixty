@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.guild.logic.GuildRank
 import gg.foreversixty.app.push.NotificationsLine
+import gg.foreversixty.app.push.PushGroup
 import gg.foreversixty.app.account.AccountCopy
 import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.account.AccountLinks
@@ -106,9 +107,14 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
     val me = (phase as? SessionPhase.SignedIn)?.me
     val model = me?.let { MenuModel.of(it, session.currentCharacter(phase, picked), Instant.now()) }
     var devices by remember { mutableStateOf<List<DeviceRow>?>(null) }
+    var notificationGroups by remember { mutableStateOf<Map<PushGroup, Boolean>?>(null) }
     var refresh by remember { mutableStateOf(MenuRefresh.Idle) }
     LaunchedEffect(open, me != null) {
-        if (open && session != null && me != null) devices = (session.devices() as? ApiResult.Success)?.data
+        if (open && session != null && me != null) {
+            devices = (session.devices() as? ApiResult.Success)?.data
+            // Round 7 row 4: the account's per-group choices, read each time the drawer opens.
+            (session.notificationSettings() as? ApiResult.Success)?.let { notificationGroups = NotificationsLine.account(it.data) }
+        }
     }
     val offline = remember(account) { account?.offlineData?.invoke() }
     val offlineSize by produceState<String?>(null, open, offline) {
@@ -117,12 +123,10 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
             value = offline.report?.let { OfflineData.size(it.totalBytes) }
         }
     }
-    // Round 5 a1: the groups' real switches, read each time the drawer opens.
+    // The account's choices and the channels' real switches, read each time the drawer opens.
     val officer = model?.you?.guild?.rank?.let { GuildRank.of(it) != GuildRank.Member } == true
     val res = LocalResources.current
-    val notifications = remember(open, officer, res) {
-        NotificationsLine.of(res, NotificationsLine.shown(officer), NotificationsLine.on(context, officer))
-    }
+    val notifications = remember(open, officer, res, notificationGroups) { NotificationsLine.line(res, context, notificationGroups, officer) }
     val lines = MenuLines(
         notifications = notifications,
         plan = me?.let { PlanCopy.line(PlanSummary.of(it, Instant.now()).row) },

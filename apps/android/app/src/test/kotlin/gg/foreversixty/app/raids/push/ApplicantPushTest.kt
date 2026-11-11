@@ -52,14 +52,24 @@ class ApplicantPushTest {
         assertEquals(listOf(ApplicantPushCategory.ACTION_ACCEPT, ApplicantPushCategory.ACTION_DECLINE), pressed)
     }
 
-    @Test fun `a refused or unknown press answers that it did not save`() = runTest {
+    @Test fun `a refused press says what failed for whom and how to retry (round 7 row 2)`() = runTest {
         val refused = ApplicantPushAnswerer({ _, _ -> ApiResult.Failure(ApiError.Status(HTTP_CONFLICT)) }, resources())
-        val failed = refused.answer(payload, ApplicantPushCategory.ACTION_DECLINE)
-        assertEquals("Open the application.", failed.body)
+        val declined = refused.answer(payload, ApplicantPushCategory.ACTION_DECLINE)
+        assertEquals("Could not decline Mirelle", declined.title)
+        assertEquals("Mirelle, Holy Priest 60. Open Forever Sixty to try again.", declined.body)
+        assertEquals("Could not accept Mirelle", refused.answer(payload, ApplicantPushCategory.ACTION_ACCEPT).title)
+    }
+
+    @Test fun `an unknown press sends nothing`() = runTest {
         var calls = 0
-        val unknown = ApplicantPushAnswerer({ _, _ -> calls++; null }, resources()).answer(payload, "application_hold")
+        ApplicantPushAnswerer({ _, _ -> calls++; null }, resources()).answer(payload, "application_hold")
         assertEquals(0, calls)
-        assertEquals(failed, unknown)
+    }
+
+    @Test fun `a push without the applicant's words falls back to the plain failure`() = runTest {
+        val bare = payload.copy(applicantName = null, applicant = null)
+        val refused = ApplicantPushAnswerer({ _, _ -> ApiResult.Failure(ApiError.Status(HTTP_CONFLICT)) }, resources())
+        assertEquals("That did not save. Try again.", refused.answer(bare, ApplicantPushCategory.ACTION_ACCEPT).title)
     }
 
     @Test fun `the notification draws Accept then Decline, posted through the receiver, and its tap opens the application`() {

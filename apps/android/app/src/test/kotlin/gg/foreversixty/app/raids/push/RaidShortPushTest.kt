@@ -46,9 +46,14 @@ class RaidShortPushTest {
         assertEquals(payload.title, answer.body)
     }
 
-    @Test fun `a refused or unknown press says it did not save`() = runTest {
+    @Test fun `a refused press says who it could not mention and how to retry, an unknown one sends nothing`() = runTest {
         val refused = RaidShortPushAnswerer({ _, _ -> ApiResult.Failure(ApiError.Status(HTTP_TOO_MANY)) }, resources())
-        assertEquals("That did not save. Try again.", refused.answer(payload, mention.id).title)
+        val failed = refused.answer(payload, mention.id)
+        // Round 7 row 2: the role as the button names it, then the raid and the retry.
+        assertEquals("Could not mention the healers in Discord", failed.title)
+        assertEquals("Onyxia's Lair. Open the raid to try again.", failed.body)
+        // Without the server's words for who, the plain failure title.
+        assertEquals("That did not save. Try again.", refused.failed(payload.copy(mentionWho = null)).title)
         var calls = 0
         RaidShortPushAnswerer({ _, _ -> calls++; null }, resources()).answer(payload, "raid_mention_all")
         assertEquals(0, calls)

@@ -129,8 +129,8 @@ object HomeFixtures {
     )
 
     private val dayRows = listOf(
-        act(8, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012.3 DPS, you are #7 of 14", true, "1 h ago"),
-        act(4, "inv_misc_pocketwatch_01", "Sim done: 948.6 DPS ±6", "+21 vs your last", true, "3 h ago"),
+        act(8, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012 DPS, you are #7 of 14", true, "1 h ago"),
+        act(4, "inv_misc_pocketwatch_01", "Sim done: 949 DPS ±6", "+21 vs your last", true, "3 h ago"),
         act(1, "inv_misc_book_09", "Fury Warrior BiS changed", "A new pick for Hands", false, "6:02 pm"),
     )
 
@@ -192,8 +192,8 @@ object HomeFixtures {
             upgrades(bestRun = true),
             newForYou(
                 listOf(
-                    act(8, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012.3 DPS, you are #7 of 14", true, "8 h ago"),
-                    act(4, "inv_misc_pocketwatch_01", "Sim done: 948.6 DPS ±6", "+21 vs your last", false, "6:02 pm"),
+                    act(8, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012 DPS, you are #7 of 14", true, "8 h ago"),
+                    act(4, "inv_misc_pocketwatch_01", "Sim done: 949 DPS ±6", "+21 vs your last", false, "6:02 pm"),
                     act(1, "inv_misc_book_09", "Fury Warrior BiS changed", "A new pick for Hands", false, "Tue"),
                 ),
             ),

@@ -190,7 +190,7 @@ func TestRaidShortMentionsTheShortestRole(t *testing.T) {
 			}
 			a := e.Actions[0]
 			if a.ID != MentionShortActionID || a.Method != http.MethodPost || a.Path != "/v1/guilds/3/raids/9/ping" ||
-				a.Body["role"] != c.want || a.Title != c.title {
+				a.Body["role"] != c.want || a.Title != c.title || e.Data[MentionWhoDataKey] != strings.TrimPrefix(c.title, mentionVerb) {
 				t.Fatalf("action %+v", a)
 			}
 		})

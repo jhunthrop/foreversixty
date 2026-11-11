@@ -11,7 +11,8 @@ import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.CharacterGuild
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.push.NotificationsLine
-import gg.foreversixty.app.push.PushGroup
+import gg.foreversixty.app.model.NotificationSettings
+import gg.foreversixty.app.raids.RaidFixture
 import gg.foreversixty.app.raids.resources
 import gg.foreversixty.app.testing.PARITY_PIXEL_9_TALL
 import gg.foreversixty.app.testing.ParityCheck
@@ -122,9 +123,10 @@ object MenuFixtures {
     }
 
     val lines = MenuLines(
-        // Round 5 a1: the drawer's own builder, so the golden and the app cannot disagree.
-        notifications = NotificationsLine.shown(officer = true).let { shown ->
-            NotificationsLine.of(resources(), shown, shown - setOf(PushGroup.Logs, PushGroup.Tiers))
+        // The drawer's own builder over the account fixture (round 7 row 4), every channel on, so the
+        // golden and the app cannot disagree.
+        notifications = NotificationsLine.account(RaidFixture.load(NotificationSettings.serializer(), "app.notifications")).let { account ->
+            NotificationsLine.line(resources(), account.keys.toList(), account, account.keys.toList())
         },
         plan = "Premium · Founder price",
         devices = 3,

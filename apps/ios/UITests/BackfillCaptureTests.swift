@@ -275,8 +275,6 @@ final class BackfillCaptureTests: XCTestCase {
 
     // MARK: Round 6: the drawer's Notifications value, Activity, the filtered roster, the failure lines, stale Gear
 
-    /// `common.failed`, the title a refused officer action posts in place of its push.
-    private static let failedLine = "That did not save. Try again."
     /// Eleven days past the fixture sync: past the seven-day stale age.
     private static let staleNow = ["-FSNow", "2026-11-20T18:00:00Z"]
 
@@ -310,17 +308,51 @@ final class BackfillCaptureTests: XCTestCase {
         save("r6-roster-01-filtered")
     }
 
-    /// The failure line replaces the push when Mention and Accept are refused.
-    func testRound6PushFailures() {
+    // MARK: Round 7: Gear in the house format and its sheet's Where line, the push failures, Notifications
+
+    func testRound7Home() {
+        let app = CaptureLaunch.signedIn(tab: "home")
+        sleep(Self.settles)
+        save("r7-home-01-top")
+        _ = app
+    }
+
+    func testRound7Gear() {
+        let app = CaptureLaunch.signedIn(tab: "gear")
+        sleep(Self.settles)
+        save("r7-gear-01-top")
+        // A dungeon drop, so the sheet's Where line names the boss, the instance and the chance.
+        if tapSteps(app, "Back", "r7-gear-02-sheet-where") {
+            app.swipeUp()
+            sleep(1)
+            save("r7-gear-03-sheet-where-scrolled")
+        }
+    }
+
+    /// The failure titles now say what failed (round 7, row 2).
+    func testRound7PushFailures() {
         let failing = Self.officer + ["-FSFailOfficerPush", "-FSPostPush"]
         pushAction(
-            failing + ["push.raid-short"], title: "Onyxia's Lair", action: "Mention in Discord", name: "r6-push-short-fail",
-            result: Self.failedLine
+            failing + ["push.raid-short"], title: "Onyxia's Lair", action: "Mention in Discord", name: "r7-push-short-fail",
+            result: "Could not mention"
         )
         pushAction(
-            failing + ["push.guild-applicant"], title: "New applicant", action: "Accept", name: "r6-push-applicant-accept-fail",
-            result: Self.failedLine
+            failing + ["push.guild-applicant"], title: "New applicant", action: "Accept", name: "r7-push-applicant-accept-fail",
+            result: "Could not accept"
         )
+    }
+
+    /// The drawer's Notifications value: the fixture's some off, then every group on, then off.
+    func testRound7DrawerNotifications() {
+        for (state, extra) in [("some-off", [String]()), ("all-on", ["-FSNotifications", "on"]), ("all-off", ["-FSNotifications", "off"])] {
+            let app = CaptureLaunch.signedIn(tab: "home", extra: extra)
+            sleep(Self.settles)
+            CaptureLaunch.openMenu(app)
+            app.swipeUp()
+            sleep(2)
+            save("r7-menu-notifications-\(state)")
+            app.terminate()
+        }
     }
 
     /// Gear on a clock past the stale age: the synced line in the warning tone.

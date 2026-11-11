@@ -29,7 +29,8 @@ struct GearPresenter {
         let slots = list.rows.map { slotRow($0, home: home, unit: unit) }
         return GearContent(
             title: list.specLabel,
-            figure: list.setFigure,
+            // The header in the house format (round 7, row 1): `182`; a tank band keeps none.
+            figure: list.setFigure.flatMap { _ in inputs.band.setDps.map(ReportsCopy.houseFigure) },
             unit: unit,
             facts: facts(slots: slots),
             summary: home.flatMap { Self.summary($0, unit: unit, now: now) },

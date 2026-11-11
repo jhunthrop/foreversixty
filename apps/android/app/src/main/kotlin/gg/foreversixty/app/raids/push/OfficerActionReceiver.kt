@@ -33,7 +33,7 @@ class OfficerActionReceiver : BroadcastReceiver() {
         val pending = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
-                val answer = withTimeoutOrNull(BUDGET_MILLIS) { press.answer(action) } ?: press.failed()
+                val answer = withTimeoutOrNull(BUDGET_MILLIS) { press.answer(action) } ?: press.failed(action)
                 val notification = PushNotifier.builder(context, PushGroup.Officer.channelId)
                     .setContentTitle(answer.title)
                     .setContentText(answer.body)
@@ -64,11 +64,11 @@ class OfficerActionReceiver : BroadcastReceiver() {
 private class OfficerPress(
     val link: String?,
     private val run: suspend (String) -> RaidPushPayload.Answer,
-    private val fail: () -> RaidPushPayload.Answer,
+    private val fail: (String) -> RaidPushPayload.Answer,
 ) {
     suspend fun answer(action: String) = run(action)
 
-    fun failed() = fail()
+    fun failed(action: String) = fail(action)
 
     companion object {
         fun of(context: Context, category: String, data: Map<String, String>): OfficerPress? {
@@ -76,7 +76,7 @@ private class OfficerPress(
             return when (category) {
                 ApplicantPushCategory.CATEGORY -> ApplicantPushPayload.parse(data)?.let { payload ->
                     val answerer = ApplicantPushAnswerer(LiveApplicantDecider(client), context.resources)
-                    OfficerPress(payload.link, { answerer.answer(payload, it) }, answerer::failed)
+                    OfficerPress(payload.link, { answerer.answer(payload, it) }, { answerer.failed(payload, it) })
                 }
                 RaidShortPushCategory.CATEGORY -> RaidShortPushPayload.parse(data)?.let { payload ->
                     val answerer = RaidShortPushAnswerer(LiveRaidMentioner(client), context.resources)

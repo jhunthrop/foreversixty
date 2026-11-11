@@ -218,10 +218,18 @@ struct HomeFlowLogicTests {
         let home = try HomeFixtures.home()
         let fixed = HomeFlowPresenter(now: HomeFixtures.now, clock: RaidClock(zone: Self.zone))
         let content = fixed.upgrades(home, limit: 3, bestRun: nil)
-        #expect(content.meta == "12 upgrades · +102.5 DPS")
+        // Round 7: the house format, whole from 100 (`+158 DPS` for 157.6).
+        #expect(content.meta == "12 upgrades · +103 DPS")
         #expect(content.stamp?.hasPrefix("Synced ") == true)
         #expect(content.stamp?.hasSuffix(" from the addon") == true)
         #expect(content.stamp?.contains("2") == true, "synced two hours before HomeFixtures.now")
+    }
+
+    @Test("round 7: Home's gains in the house format: whole from 100, one decimal below")
+    func houseGains() {
+        #expect(ReportsCopy.signedHouseFigure(157.6) == "+158")
+        #expect(ReportsCopy.signedHouseFigure(14.5) == "+14.5")
+        #expect(ReportsCopy.signedHouseFigure(-0.3) == "\u{2212}0.3")
     }
 
     @Test("round 4, row 2: the Synced stamp takes the warning tone past a week, by the drawer's rule")

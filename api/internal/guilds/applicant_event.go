@@ -60,7 +60,9 @@ func (s *Service) applicantEvent(guildName string, a Application) events.Event {
 		Thread:    "guild-" + gid + "-applicants",
 		Collapse:  string(events.GuildApplicant) + "-" + id,
 		Actions:   applicantActions(a.GuildID, a.ID),
-		Data:      map[string]string{"guild_id": gid, "application_id": id},
+		// The apps word an action's result from these (round 7 row 2), never from the title.
+		Data: map[string]string{"guild_id": gid, "application_id": id,
+			"applicant_name": a.Character.Name, "applicant": applicantLine(a.Character)},
 	}
 }
 
@@ -73,9 +75,14 @@ func applicantActions(guildID, applicationID int64) []events.Action {
 	return []events.Action{action("accept", applicantCopy.Accept), action("decline", applicantCopy.Decline)}
 }
 
-// applicantTitle names the applicant: "New applicant: Mirelle, Holy Priest 60", each part only
-// when known.
+// applicantTitle names the applicant: "New applicant: Mirelle, Holy Priest 60".
 func applicantTitle(c ApplicantCharacter) string {
+	return fmt.Sprintf(applicantCopy.Title, applicantLine(c))
+}
+
+// applicantLine is the applicant as the push words them, "Mirelle, Holy Priest 60", each part
+// only when known.
+func applicantLine(c ApplicantCharacter) string {
 	var words []string
 	for _, w := range []*string{c.SpecName, c.Class} {
 		if w != nil && *w != "" {
@@ -85,11 +92,10 @@ func applicantTitle(c ApplicantCharacter) string {
 	if c.Level != nil && *c.Level > 0 {
 		words = append(words, strconv.Itoa(*c.Level))
 	}
-	name := c.Name
-	if len(words) > 0 {
-		name += ", " + strings.Join(words, " ")
+	if len(words) == 0 {
+		return c.Name
 	}
-	return fmt.Sprintf(applicantCopy.Title, name)
+	return c.Name + ", " + strings.Join(words, " ")
 }
 
 // applicantBody is the applicant's note, cut at applicantBodyMax runes, else "Applied to {guild}.".

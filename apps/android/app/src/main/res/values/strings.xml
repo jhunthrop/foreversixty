@@ -651,7 +651,11 @@
     <string name="push_late_minutes" tools:ignore="PluralsCandidate">%1$d min</string>
     <string name="push_applicant_declined">Application declined</string>
     <string name="push_applicant_accepted">Application accepted</string>
-    <string name="push_applicant_failed">Open the application.</string>
+    <string name="push_applicant_acceptFailed">Could not accept %1$s</string>
+    <string name="push_applicant_declineFailed">Could not decline %1$s</string>
+    <string name="push_applicant_failed">%1$s. Open Forever Sixty to try again.</string>
+    <string name="push_short_failed">Could not mention the %1$s in Discord</string>
+    <string name="push_short_retry">%1$s. Open the raid to try again.</string>
     <string name="push_group_raids">Raids</string>
     <string name="push_group_raids_line">Posted, moved, your answer due, raid night</string>
     <string name="push_group_gear">Gear and sims</string>

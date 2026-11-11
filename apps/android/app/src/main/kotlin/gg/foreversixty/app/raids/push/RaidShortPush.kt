@@ -34,6 +34,8 @@ data class RaidShortPushPayload(
     val title: String,
     val link: String?,
     val actions: List<PushAction>,
+    /** Who the Mention names, in the server's words (`healers`), for the failure line (round 7). */
+    val mentionWho: String? = null,
 ) {
     /** The ping [action] makes, for its role; null when its path is not this raid's ping. */
     fun call(action: PushAction): Endpoint<RaidPingResult>? =
@@ -48,7 +50,10 @@ data class RaidShortPushPayload(
         fun parse(data: Map<String, String>): RaidShortPushPayload? {
             val guild = data["guild_id"]?.toLongOrNull() ?: return null
             val raid = data["raid_id"]?.toLongOrNull() ?: return null
-            return RaidShortPushPayload(guild, raid, data["title"].orEmpty(), data["link"]?.takeIf { it.isNotBlank() }, PushActions.of(data))
+            return RaidShortPushPayload(
+                guild, raid, data["title"].orEmpty(), data["link"]?.takeIf { it.isNotBlank() }, PushActions.of(data),
+                mentionWho = data["mention_who"]?.takeIf { it.isNotBlank() },
+            )
         }
     }
 }
@@ -75,5 +80,12 @@ class RaidShortPushAnswerer(private val mentioner: RaidMentioner, private val re
         }
     }
 
-    fun failed(payload: RaidShortPushPayload) = RaidPushPayload.Answer(res.getString(R.string.common_failed), payload.title)
+    /**
+     * Round 7 row 2: what failed and how to retry, `Could not mention the healers in Discord` over
+     * `Onyxia's Lair. Open the raid to try again.`; who in the server's words (`mention_who`).
+     */
+    fun failed(payload: RaidShortPushPayload): RaidPushPayload.Answer {
+        val title = payload.mentionWho?.let { res.getString(R.string.push_short_failed, it) } ?: res.getString(R.string.common_failed)
+        return RaidPushPayload.Answer(title, res.getString(R.string.push_short_retry, payload.title))
+    }
 }

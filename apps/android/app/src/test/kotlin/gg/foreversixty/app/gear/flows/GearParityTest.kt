@@ -105,10 +105,16 @@ class GearParityTest {
 
     @Test fun theListLineNamesTheBandTheFactionAndTheEquippedCount() {
         val composer = GearComposer(ApplicationProvider.getApplicationContext<android.content.Context>().resources)
-        val content = composer.content(GearFixtures.list, "alliance", emptyList(), emptyList())
+        val content = composer.content(GearFixtures.list, "alliance", emptyList(), emptyList(), setDps = 1004.2)
         assertEquals("Fury Warrior", content.title)
-        assertEquals("1004.2", content.figure)
         assertEquals("60 raid · Alliance · 1 of 3 slots match the list", content.facts)
+    }
+
+    @Test fun theHeaderFigureIsTheBandsSetFigureInTheHouseFormatAndNoneForATank() {
+        val composer = GearComposer(ApplicationProvider.getApplicationContext<android.content.Context>().resources)
+        assertEquals("1,004", composer.content(GearFixtures.list, "alliance", emptyList(), emptyList(), setDps = 1004.2).figure)
+        assertEquals("182", composer.content(GearFixtures.list, "alliance", emptyList(), emptyList(), setDps = 182.0).figure)
+        assertEquals(null, composer.content(GearFixtures.list.copy(unit = BisUnit.Score), "alliance", emptyList(), emptyList(), setDps = 1004.2).figure)
     }
 
     @Test fun theSheetNamesWhoNeedsItAndWhoHasIt() {
@@ -126,6 +132,19 @@ class GearParityTest {
         assertEquals("Onyxia, Onyxia's Lair, 8%", composer.sourceLine(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia", levels = 60..60)))
         assertEquals("Stormpike Guard, revered", composer.sourceLine(ItemSource("rep", "Stormpike Guard", null, standing = "Revered")))
         assertEquals("Pix Xizzix, vendor", composer.sourceLine(ItemSource("vendor", "Pix Xizzix", null)))
+    }
+
+    @Test fun theSheetSaysWhereAPieceTheLootFileDoesNotPlaceComesFrom() {
+        val res = ApplicationProvider.getApplicationContext<android.content.Context>().resources
+        val crafted = GearFixtures.list.rows.first().let { row -> row.copy(pick = row.pick?.copy(source = "Crafted: Blacksmithing")) }
+        val row = GearSlotRow("head", "Head", ItemLook(2, "Lionheart Helm", 4), "Head", "+14.5", worn = false, row = crafted)
+        val composer = GearSheetComposer(res, BUILD)
+        val where = composer.content(row, "DPS", null, emptyList(), null).sources.single()
+        assertEquals("Crafted: Blacksmithing", where.title)
+        assertEquals("Where to get it", where.line)
+        // The loot file's places win over the list's line when it has them.
+        val dropped = composer.content(row, "DPS", null, listOf(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia")), null).sources
+        assertEquals(listOf("Onyxia, Onyxia's Lair, 8%"), dropped.map { it.title })
     }
 
     @Test fun theSheetSaysWhatThePickReplaces() {
@@ -198,7 +217,7 @@ object GearFixtures {
 
     val content = GearContent(
         title = "Fury Warrior",
-        figure = "1004.2",
+        figure = "1,004",
         facts = "60 raid · Alliance · 5 of 17 slots match the list",
         where = listOf(
             GearWhereRow("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh'gajin, 8%", ItemLook(1, "Blackcrow", 3, "inv_weapon_crossbow_04"), "1 upgrade · +1.9 DPS"),

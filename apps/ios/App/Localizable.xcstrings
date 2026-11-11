@@ -11070,6 +11070,18 @@
         }
       }
     },
+    "push.applicant.acceptFailed": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not accept %1$@"
+          }
+        }
+      }
+    },
     "push.applicant.declined": {
       "extractionState": "manual",
       "localizations": {
@@ -11081,13 +11093,26 @@
         }
       }
     },
-    "push.applicant.failed": {
+    "push.applicant.declineFailed": {
+      "comment": "Arguments: 1 name (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open the application."
+            "value": "Could not decline %1$@"
+          }
+        }
+      }
+    },
+    "push.applicant.failed": {
+      "comment": "Arguments: 1 applicant (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@. Open Forever Sixty to try again."
           }
         }
       }
@@ -11265,6 +11290,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "How late?"
+          }
+        }
+      }
+    },
+    "push.short.failed": {
+      "comment": "Arguments: 1 who (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not mention the %1$@ in Discord"
+          }
+        }
+      }
+    },
+    "push.short.retry": {
+      "comment": "Arguments: 1 raid (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@. Open the raid to try again."
           }
         }
       }

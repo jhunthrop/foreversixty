@@ -35,7 +35,7 @@ enum ActivityTestData {
         row(7, "loot.awarded", "gear", "You got Deathbringer", "Onyxia · main hand, +12.6 DPS", icon: "inv_axe_09", hoursAgo: 9, read: false),
         row(6, "report.ready", "logs", "Onyxia’s Lair report ready", "87th percentile, your best on Onyxia so far · the coach has 2 notes", icon: onyxia, hoursAgo: 9.2, read: false),
         row(5, "raid.signup_nudge", "raids", "You’re In for Onyxia", "As Thandrel, Damage · 8:00 pm CST", icon: onyxia, hoursAgo: 18, read: true),
-        row(4, "sim.finished", "gear", "Sim done: 948.6 DPS ±6", "+21 vs your last", icon: "inv_misc_pocketwatch_01", hoursAgo: 21.5, read: true),
+        row(4, "sim.finished", "gear", "Sim done: 949 DPS ±6", "+21 vs your last", icon: "inv_misc_pocketwatch_01", hoursAgo: 21.5, read: true),
         row(3, "raid.short", "officer", "Healers short for Onyxia tonight", "3 of 8 missing", icon: onyxia, hoursAgo: 23, read: true),
         row(2, "tier.moved", "tiers", "Fury Warrior moved to S", "Raid tiers, 60", icon: book, hoursAgo: 72, read: true),
         row(1, "bis.changed", "gear", "Fury Warrior BiS changed", "A new pick for Hands: Theramore Gauntlets", icon: book, hoursAgo: 74, read: true),

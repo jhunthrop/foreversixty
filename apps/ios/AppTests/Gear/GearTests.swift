@@ -52,7 +52,7 @@ enum GearTestData {
     }
 
     static let content = GearContent(
-        title: "Fury Warrior", figure: "1004.2", unit: "DPS", facts: "60 raid · Alliance · 5 of 17 slots match the list",
+        title: "Fury Warrior", figure: "1,004", unit: "DPS", facts: "60 raid · Alliance · 5 of 17 slots match the list",
         summary: GearSummary(figures: "+47.5 DPS from 12 upgrades", synced: "synced 2 h ago"),
         tonight: [
             place("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh’gajin, 8%", "inv_weapon_crossbow_04", 3, "1 upgrade · +1.9 DPS"),
@@ -184,6 +184,19 @@ struct GearLogicTests {
         return WhereToGo(slots: slots, gains: gains, places: ItemPlaces(loot: loot, level: level))
     }
 
+    @Test("round 7, row 3: the Gear sheet's Where line from the loaded loot file: boss, instance, chance; profession; reputation")
+    func sheetWhere() throws {
+        let loot = try WireFormat.decoder().decode(LootFile.self, from: Data(Self.loot.utf8))
+        let places = ItemPlaces(loot: loot, level: nil)
+        let look = HomeItemLook(id: 2, name: nil, quality: nil, icon: nil, itemLevel: nil)
+        func line(_ item: Int, _ kind: String) -> String? {
+            ItemSheetBuilder.source(item, look: look, kind: kind, named: nil, places: places, fallback: nil)?.title
+        }
+        #expect(line(2, "dungeon") == "Shadow Hunter Vosh'gajin, Blackrock Spire, 8% drop chance")
+        #expect(line(1, "crafted") == "Blacksmithing")
+        #expect(line(3, "rep") == "Stormpike Guard, exalted")
+    }
+
     @Test("every upgrade grouped by place; tonight is the best place of each kind, instance first")
     func groups() throws {
         let gains = ["head": 14.5, "finger1": 6.8, "main_hand": 5.9, "chest": 5.3, "wrist": 2.0]
@@ -289,6 +302,9 @@ struct GearLogicTests {
         let worn = content.slots.filter { $0.pick?.trail == .worn }.map(\.slot)
         #expect(worn == ["head", "neck", "main_hand"])
         #expect(content.facts.hasSuffix(Copy.gearOnList(n: 3, total: 17)))
+        // Round 7, row 1: the header in the house format, whole from 100.
+        #expect(content.figure == band.setDps.map(ReportsCopy.houseFigure))
+        #expect(content.figure?.contains(".") == false)
     }
 
     @Test("round 4, row 3: a pick neither Equipped nor gaining reads Not modelled or +0.0 DPS")

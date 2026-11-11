@@ -49,11 +49,13 @@ enum MenuTestData {
         )
     }
 
+    /// The groups as GET /v1/me/notifications answers them (app.notifications.json), the same source
+    /// Android's menu golden and the mock read: `Gear and sims, guild ladder, tiers off`.
+    static let notifications: [NotificationGroupsSummary.Row]? = (try? RaidFixture.load(NotificationSettings.self, "app.notifications"))
+        .map { NotificationGroupsSummary($0).rows }
+
     static let facts = ProfileMenuSummary.AccountFacts(
-        notifications: [
-            .init(group: .raids, on: true), .init(group: .gear, on: true), .init(group: .logs, on: false),
-            .init(group: .tiers, on: false),
-        ],
+        notifications: notifications,
         plan: "Premium · Founder price", devices: 3, offlineBytes: 26_600_000,
         newestDevice: "iPhone 17"
     )
@@ -147,7 +149,7 @@ struct ProfileMenuSummaryTests {
         let summary = MenuTestData.summary([MenuTestData.thandrel])
         #expect(summary.tools.map(\.title) == ["Guides", "Tiers", "Patch notes", "Sims", "Logs and reports", "Planner", "Rankings"])
         #expect(summary.account.map(\.line) == [
-            "Logs, tiers off", "Premium · Founder price", "3 signed in · newest iPhone 17", "26.6 MB on this phone", "Sign out, delete account",
+            "Gear and sims, guild ladder, tiers off", "Premium · Founder price", "3 signed in · newest iPhone 17", "26.6 MB on this phone", "Sign out, delete account",
         ])
     }
 
@@ -165,7 +167,9 @@ struct ProfileMenuSummaryTests {
         let groups: [NotificationGroup] = [.raids, .gear, .logs, .tiers]
         #expect(ProfileMenuSummary.notificationsLine(groups.map { Row(group: $0, on: true) }) == "All on")
         #expect(ProfileMenuSummary.notificationsLine(groups.map { Row(group: $0, on: false) }) == "All off")
-        #expect(ProfileMenuSummary.notificationsLine(MenuTestData.facts.notifications) == "Logs, tiers off")
+        #expect(ProfileMenuSummary.notificationsLine(MenuTestData.facts.notifications) == "Gear and sims, guild ladder, tiers off")
+        #expect(ProfileMenuSummary.notificationsLine([.init(group: .logs, on: false), .init(group: .tiers, on: false), .init(group: .raids, on: true)])
+            == "Logs, tiers off")
         #expect(ProfileMenuSummary.notificationsLine([Row(group: .raids, on: false), Row(group: .gear, on: true)]) == "Raids off")
         #expect(ProfileMenuSummary.notificationsLine(nil) == "", "nothing before the settings load")
     }
