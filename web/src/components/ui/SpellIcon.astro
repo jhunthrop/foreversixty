@@ -2,8 +2,8 @@
 // web/src/components/ui/SpellIcon.astro
 // The static twin of ui/SpellIcon.svelte (component audit 2026-11-10 cluster 1) for the server
 // rendered pages (guides, the Premium coach sample): the same frame, sizes and socket rule. No url
-// draws nothing unless `socket`; an image that fails to load takes its frame away (lib/ui/icon-fail.ts)
-// or, with `socket`, socket.css draws the socket over it. A caller fills a Row's lead with slot="lead".
+// draws nothing unless `socket`; an image that fails to load leaves its box invisible
+// (lib/ui/icon-fail.ts) or, with `socket`, socket.css draws the socket over it. A caller fills a Row's lead with slot="lead".
 import { SPELL_ICON_IMAGE, spellIconFrame, spellIconA11y, type SpellIconSize } from '../../lib/ui/spell-icon';
 import { spellTipKey } from '../../lib/tooltips/game-tip';
 

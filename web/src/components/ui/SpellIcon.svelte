@@ -3,13 +3,14 @@
      "Spell / item icon"): every spell, ability, buff, enchant, consumable and spec icon on the
      site, the HD art in a 1 px warm frame at the icon radius (an inline glyph of 16 px and below
      has no frame), width and height always set so nothing shifts. No url (an id the build's icon
-     table does not carry, Melee), or an image that fails to load, draws nothing, never a broken
-     image; a caller whose icons line up in a column (a table, a list) sets `socket` and gets the
-     dark socket at the same size instead (review 2026-11-10: a socket anywhere else reads as an
-     empty checkbox). `loading` holds the skeleton while the caller's icon table loads. `tip` names the spell
+     table does not carry, Melee) draws nothing and takes no space; an image that fails to load keeps
+     its box, invisible, so nothing moves when it fails. A caller whose icons line up in a column (a
+     table, a list) sets `socket` and gets the dark socket at the same size in both cases instead
+     (review 2026-11-10: a socket anywhere else reads as an empty checkbox). `loading` holds the skeleton while the caller's icon table loads. `tip` names the spell
      whose shared tooltip the icon opens on hover, `item` the item's. `label` names an icon that stands alone; beside a
      printed name it stays empty and the icon is decoration. Its static twin is SpellIcon.astro. -->
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { spellTipKey } from '../../lib/tooltips/game-tip';
   import {
     SPELL_ICON_IMAGE,
@@ -30,7 +31,8 @@
     onfail,
     testid,
   }: {
-    /** The icon's url (lib/ui/assets iconUrl, or a build's icon table); null draws the socket. */
+    /** The icon's url (lib/ui/assets iconUrl, or a build's icon table); null draws nothing, or the
+     *  socket with `socket`. */
     url: string | null;
     size?: SpellIconSize;
     /** The spell whose tooltip opens on hover. */
@@ -53,6 +55,17 @@
   /** The url whose image failed; a new url gets its own try. */
   let failed = $state<string | null>(null);
   const shown = $derived(url !== null && url !== failed ? url : null);
+  let image = $state<HTMLImageElement | undefined>(undefined);
+
+  /** A server-rendered image that failed before hydration: complete with nothing decoded. */
+  function markFailed(): void {
+    failed = shown;
+    onfail?.();
+  }
+
+  onMount(() => {
+    if (image?.complete && image.naturalWidth === 0) markFailed();
+  });
 </script>
 
 {#if loading}
@@ -63,11 +76,12 @@
     aria-hidden="true"
     data-testid={testid}
   ></span>
-{:else if shown !== null || socket}
+{:else if url !== null || socket}
   <span
     class={spellIconFrame(size)}
     style:width="{size}px"
     style:height="{size}px"
+    style:visibility={shown === null && !socket ? 'hidden' : undefined}
     {...spellIconA11y(label)}
     data-game-tip={tip !== undefined && tip > 0 ? spellTipKey(tip) : undefined}
     data-bis-item={item}
@@ -77,6 +91,7 @@
   >
     {#if shown !== null}
       <img
+        bind:this={image}
         src={shown}
         alt=""
         width={size}
@@ -84,10 +99,7 @@
         loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         class={SPELL_ICON_IMAGE}
-        onerror={() => {
-          failed = shown;
-          onfail?.();
-        }}
+        onerror={markFailed}
       />
     {/if}
   </span>

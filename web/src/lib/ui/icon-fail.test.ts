@@ -15,15 +15,16 @@ function frame(hideOnFail: boolean): { frame: HTMLSpanElement; image: HTMLImageE
 }
 
 describe('the icon fail listener', () => {
-  it('hides a frame marked to go with its failed image', () => {
+  it('hides a frame marked to go with its failed image, keeping its box', () => {
     const { frame: span, image } = frame(true);
     image.dispatchEvent(new Event('error'));
-    expect(span.style.display).toBe('none');
+    expect(span.style.visibility).toBe('hidden');
+    expect(span.style.display).toBe('');
   });
 
   it('leaves a socket frame (one holding a column) for socket.css', () => {
     const { frame: span, image } = frame(false);
     image.dispatchEvent(new Event('error'));
-    expect(span.style.display).toBe('');
+    expect(span.style.visibility).toBe('');
   });
 });
