@@ -128,8 +128,8 @@ Restoration is the slowest druid to quest with. Level as Feral and switch at 60,
 
 Your mana still runs out first, so the cheap ranks keep healing more for it. Use the top rank of Regrowth from 20.
 
-- **Party Rejuvenation:** rank 1 from 17, except rank 2 at 26 to 29 (from 25 for an Alliance druid) and again at 40 to 42.
-- **Tank Rejuvenation:** rank 1 through 22, rank 2 from 23 through 39 (a night elf can use rank 3 at 29), rank 4 from 40 to 43, rank 5 from 44 to 48, rank 6 from 49 to 56 and rank 8 from 57 to 59.
+- **Party Rejuvenation:** rank 1 from 17, except rank 2 at 26 to 29 (from 25 for an Alliance druid) and again at 40 to 42, rank 4 at 44 and rank 5 from 45 to 48.
+- **Tank Rejuvenation:** rank 1 through 22, rank 2 from 23 through 39 (a night elf can use rank 3 at 29), rank 4 from 40 to 43, rank 5 from 44 to 48, rank 6 from 49 to 55, rank 9 from 56 to 58 and rank 8 at 59.
 - **Healing Touch for a hole:** rank 2 at 20 (a tauren keeps it to 23, and takes rank 4 at 26 to 28), rank 3 at 30 to 33, rank 4 at 34 to 39, rank 5 at 40 to 45 and rank 6 at 46 to 48. From 21 to 29 (24 to 25 and 29 for a tauren) and from 49, cast the top rank.
 
 Your points from 20:

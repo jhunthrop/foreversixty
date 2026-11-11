@@ -131,9 +131,9 @@ Once you wear healing gear, your everyday Healing Wave in a dungeon is not your 
 - **23 and 24:** rank 3.
 - **25:** rank 2 (a dwarf stays on rank 3).
 - **26 to 36:** rank 3.
-- **37 to 41:** rank 4.
-- **42 to 45:** rank 5.
-- **46 to 55:** rank 6.
+- **37 to 39:** rank 6, the newest.
+- **40 to 43:** rank 5.
+- **44 to 55:** rank 6.
 - **56 to 58:** rank 7.
 - **59:** rank 8.
 

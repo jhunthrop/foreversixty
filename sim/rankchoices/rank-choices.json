@@ -1222,6 +1222,59 @@
             "from_level": 40,
             "to_level": 49,
             "rank": 1
+          },
+          {
+            "from_level": 50,
+            "to_level": 54,
+            "rank": 1,
+            "races": [
+              "human",
+              "dwarf",
+              "gnome",
+              "night-elf",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 30 (open items): re-judged on the round 29 leveling order, race by race (spec-breakdown -heal -level N -race R -rank, bare band gear on its band heal profile, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-11-sim-accuracy/round30-open.md). Every race but the Undead heals more with rank 1 than rank 3 at 50 to 54 (+0.2 to +0.6%) and with rank 2 at 55 to 58 (+0.1 to +0.5%; a Night Elf loses 0.2% with it at 57 and keeps rank 3); an Undead keeps rank 3 to 58; at 59 every race casts rank 2 (+0.1 to +0.4%)."
+          },
+          {
+            "from_level": 55,
+            "to_level": 56,
+            "rank": 2,
+            "races": [
+              "human",
+              "dwarf",
+              "gnome",
+              "night-elf",
+              "troll"
+            ]
+          },
+          {
+            "from_level": 57,
+            "to_level": 57,
+            "rank": 2,
+            "races": [
+              "human",
+              "dwarf",
+              "gnome",
+              "troll"
+            ]
+          },
+          {
+            "from_level": 58,
+            "to_level": 58,
+            "rank": 2,
+            "races": [
+              "human",
+              "dwarf",
+              "gnome",
+              "night-elf",
+              "troll"
+            ]
+          },
+          {
+            "from_level": 59,
+            "to_level": 59,
+            "rank": 2
           }
         ]
       },

@@ -58,6 +58,9 @@ func TestRound30HealerRankRows(t *testing.T) {
 		{"Dwarf Restoration Healing Wave at 44", "shaman-restoration", "shaman", "dwarf", 44, 959, 939},
 		{"Night Elf Restoration Rejuvenation at 44", "druid-restoration", "druid", "night-elf", 44, 2090, 774},
 		{"Tauren Restoration Rejuvenation at 47", "druid-restoration", "druid", "tauren", 47, 2091, 774},
+		{"Human Discipline Prayer of Healing at 52", "priest-discipline", "priest", "human", 52, 596, 10960},
+		{"Undead Discipline Prayer of Healing at 52", "priest-discipline", "priest", "undead", 52, 10960, 596},
+		{"Troll Discipline Prayer of Healing at 56", "priest-discipline", "priest", "troll", 56, 996, 10960},
 		{"Night Elf Restoration tank Rejuvenation at 56", "druid-restoration", "druid", "night-elf", 56, 9840, 3627},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, BarePreset, c.race))

@@ -131,7 +131,8 @@ In dungeons the cheaper ranks cost far less and keep nearly all of your healing 
 
 - **Shield, 36 to 41:** when rank 6 arrives at 36, an Undead, Troll or Night Elf keeps rank 5 through 39 (a Dwarf from 37), and a Human, Undead or Troll still at 40; rank 6 takes over from 41.
 - **Heal, 16 to 39:** the tank's filler until Greater Heal at 40. Rank 1 through 35: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank. Rank 3 from 36 (an Undead keeps rank 1 for one more level), since rank 4 costs more mana than its extra healing is worth.
-- **Renew, 40 to 49:** rank 4 on the tank, then rank 5 from 44. A Human or Troll heals more with rank 7 from 44, and a Gnome from 45.
+- **Renew, 40 to 49:** rank 4 on the tank, then rank 5 from 44. A Human casts rank 5 at 41 and the newest rank at 42. A Human or Troll heals more with rank 7 from 44, and a Gnome from 45.
 - **Renew, 50 to 60:** rank 7. Rank 8 heals more per cast but costs more for it, and over a dungeon the two come out even. From 56 a Human or Gnome takes rank 9 and a Dwarf or Night Elf mostly rank 8, all four on rank 9 at 59, while an Undead or Troll stays on rank 7. At 60 rank 7 is the tank's Renew again.
+- **Prayer of Healing, 50 to 59:** rank 1 to 54 and rank 2 from 55 (a Night Elf drops back to rank 3 at 57) for every race but an Undead, who stays on rank 3; at 59 everyone casts rank 2.
 - **Greater Heal, 40 to 60:** rank 1 on the tank all the way, even after rank 4 arrives at 58: the bigger ranks spend mana on healing a dungeon tank rarely needs.
 - **Lesser Heal, from 40:** off your bars for good. Greater Heal rank 1 takes its place, and by your late forties Lesser Heal has lost your healing bonus anyway.
