@@ -33,7 +33,7 @@ func TestRetributionTwistWaitsForTheRighteousnessSwing(t *testing.T) {
 		t.Fatal(err)
 	}
 	var righteousness, swings float64
-	for _, a := range newReport(req, est, player, nil).Actions {
+	for _, a := range newReport(req, fightSecondsOf(req), est, player, nil).Actions {
 		switch {
 		case strings.Contains(a.Name, "(20293)"):
 			righteousness += a.CastsPerIter

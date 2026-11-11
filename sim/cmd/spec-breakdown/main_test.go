@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/request"
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
@@ -126,7 +127,7 @@ func sampleReport() report {
 	req := api.SimRequest{Spec: testSpec, Iterations: 2, Encounter: api.EncounterSpec{DurationSec: 10},
 		Character: api.CharacterSpec{Consumes: []string{"a"}, Buffs: []string{"b"}}}
 	names := map[int32]string{1: "Low", 2: "High", 10: "Short", 11: "Long", 20: "Combo"}
-	return newReport(req, api.Estimate{Mean: 50, Error: 1.5}, sampleMetrics(), names)
+	return newReport(req, fightSecondsOf(req), api.Estimate{Mean: 50, Error: 1.5}, sampleMetrics(), names)
 }
 
 func TestNewReportSortsAndScalesRows(t *testing.T) {
@@ -158,7 +159,7 @@ func TestNewReportFoldsPetActionsUnderThePetName(t *testing.T) {
 	m.Pets = []*proto.UnitMetrics{{Name: "Succubus", Actions: []*proto.ActionMetrics{
 		{Id: spellID(4, 0), Targets: []*proto.TargetedActionMetrics{{Casts: 4, Hits: 4, Damage: 400}}},
 	}}}
-	r := newReport(req, api.Estimate{Mean: 100}, m, map[int32]string{4: "Lash of Pain"})
+	r := newReport(req, fightSecondsOf(req), api.Estimate{Mean: 100}, m, map[int32]string{4: "Lash of Pain"})
 	var pet *actionRow
 	for i := range r.Actions {
 		if r.Actions[i].Name == "Succubus: Lash of Pain (4)" {
@@ -450,4 +451,13 @@ func TestLoadRotationRewritesRanksBelowSixty(t *testing.T) {
 	if got := rot.GetPriorityList()[0].GetAction().GetCastSpell().GetSpellId().GetSpellId(); got != 1106 {
 		t.Errorf("Shadow Bolt at level 30 reads %d, want 1106", got)
 	}
+}
+
+// fightSecondsOf is request.FightSeconds for a test request that is known to resolve.
+func fightSecondsOf(req api.SimRequest) float64 {
+	secs, err := request.FightSeconds(req)
+	if err != nil {
+		panic(err)
+	}
+	return secs
 }

@@ -24,7 +24,7 @@ func TestBearSwipesOnlyOnAPack(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	r := newReport(req, est, player, nil)
+	r := newReport(req, fightSecondsOf(req), est, player, nil)
 	for _, a := range r.Actions {
 		if strings.HasSuffix(a.Name, "(9908)") && a.CastsPerIter > 0 {
 			t.Errorf("one target: Swipe cast %.1f times a fight, want 0", a.CastsPerIter)
@@ -51,7 +51,7 @@ func TestBearMaulKeepsRageForPrimalBiteFromFortyToFiftyThree(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	r := newReport(req, est, player, nil)
+	r := newReport(req, fightSecondsOf(req), est, player, nil)
 	bites := 0.0
 	for _, a := range r.Actions {
 		if strings.HasSuffix(a.Name, "(407995)") {

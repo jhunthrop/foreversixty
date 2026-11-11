@@ -144,7 +144,11 @@ func run(o options) error {
 	if err != nil {
 		return err
 	}
-	report := newReport(req, est, player, names)
+	secs, err := request.FightSeconds(req)
+	if err != nil {
+		return err
+	}
+	report := newReport(req, secs, est, player, names)
 	if o.jsonOut {
 		return json.NewEncoder(os.Stdout).Encode(report)
 	}
@@ -535,9 +539,8 @@ type report struct {
 	MissShareOfSwings  float64
 }
 
-func newReport(req api.SimRequest, est api.Estimate, p *proto.UnitMetrics, names map[int32]string) report {
+func newReport(req api.SimRequest, secs float64, est api.Estimate, p *proto.UnitMetrics, names map[int32]string) report {
 	iters := float64(req.Iterations)
-	secs := float64(req.Encounter.DurationSec)
 	r := report{Spec: req.Spec, Consumes: req.Character.Consumes, Buffs: req.Character.Buffs, DPS: est.Mean, Error: est.Error,
 		FightSeconds: secs, SecondsOOM: p.GetSecondsOomAvg()}
 	for _, a := range p.GetActions() {

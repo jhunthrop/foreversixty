@@ -102,7 +102,11 @@ func runTankReport(o options) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return tankMarkdown(req, computed, res, player, names), nil
+	secs, err := request.FightSeconds(req)
+	if err != nil {
+		return "", err
+	}
+	return tankMarkdown(req, secs, computed, res, player, names), nil
 }
 
 func firstFinalStats(computed *proto.ComputeStatsResult) *proto.UnitStats {
@@ -147,10 +151,9 @@ func bossSwings(res *proto.RaidSimResult, iterations float64) bossSwingRow {
 	return row
 }
 
-func tankMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *proto.RaidSimResult, p *proto.UnitMetrics, names map[int32]string) string {
+func tankMarkdown(req api.SimRequest, secs float64, computed *proto.ComputeStatsResult, res *proto.RaidSimResult, p *proto.UnitMetrics, names map[int32]string) string {
 	var b strings.Builder
 	iters := float64(res.IterationsDone)
-	secs := float64(req.Encounter.DurationSec)
 	fmt.Fprintf(&b, "%s tank fight, %d iterations\n\n| Stat before the fight's auras | Value |\n|---|---|\n", req.Spec, res.IterationsDone)
 	if final := firstFinalStats(computed); final != nil {
 		for _, s := range tankStatNames {

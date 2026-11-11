@@ -190,7 +190,7 @@ func TestTankMarkdownDividesTotalsByIterationsAndSkipsIdleRows(t *testing.T) {
 			{Id: spellID(98, 0)}, // never up: skipped
 		},
 	}
-	out := tankMarkdown(req, finalStatsResult(map[stats.Stat]float64{stats.Health: 3000, stats.Dodge: 5.5}), res, player,
+	out := tankMarkdown(req, float64(req.Encounter.DurationSec), finalStatsResult(map[stats.Stat]float64{stats.Health: 3000, stats.Dodge: 5.5}), res, player,
 		map[int32]string{23922: "Shield Slam", 2565: "Shield Block"})
 	for _, want := range []string{
 		"warrior-protection tank fight, 2 iterations",
@@ -208,7 +208,7 @@ func TestTankMarkdownDividesTotalsByIterationsAndSkipsIdleRows(t *testing.T) {
 	if strings.Contains(out, "spell (99)") || strings.Contains(out, "spell (98)") {
 		t.Errorf("idle rows must be skipped:\n%s", out)
 	}
-	if bare := tankMarkdown(req, &proto.ComputeStatsResult{}, res, player, nil); strings.Contains(bare, "| health |") {
+	if bare := tankMarkdown(req, float64(req.Encounter.DurationSec), &proto.ComputeStatsResult{}, res, player, nil); strings.Contains(bare, "| health |") {
 		t.Error("no final stats, no stat table")
 	}
 }
@@ -231,7 +231,7 @@ func TestBossSwingsBlockedShareOfDamage(t *testing.T) {
 
 func TestTankAndHealMarkdownReportTheMeanError(t *testing.T) {
 	res := &proto.RaidSimResult{IterationsDone: 4}
-	tank := tankMarkdown(api.SimRequest{Spec: "paladin-protection", Encounter: api.DefaultEncounter()}, &proto.ComputeStatsResult{}, res,
+	tank := tankMarkdown(api.SimRequest{Spec: "paladin-protection", Encounter: api.DefaultEncounter()}, float64(api.DefaultEncounter().DurationSec), &proto.ComputeStatsResult{}, res,
 		&proto.UnitMetrics{Threat: &proto.DistributionMetrics{Avg: 50, Stdev: 4}}, nil)
 	if !strings.Contains(tank, "| threat /s | 50.00 +/- 2.00 |") { // stdev 4 / sqrt(4 iterations)
 		t.Errorf("tank threat has no error:\n%s", tank)

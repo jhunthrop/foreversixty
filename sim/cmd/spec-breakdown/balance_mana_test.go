@@ -25,7 +25,7 @@ func TestBareBalanceDruidsDoNotSpendHalfTheFightOutOfMana(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		r := newReport(req, est, player, nil)
+		r := newReport(req, fightSecondsOf(req), est, player, nil)
 		if r.SecondsOOM > 0.3*r.FightSeconds {
 			t.Errorf("band %d: %.1f s of %.0f s out of mana, want under 30%% of the fight", band, r.SecondsOOM, r.FightSeconds)
 		}

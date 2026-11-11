@@ -25,7 +25,7 @@ func castsOf(t *testing.T, o options, spell string) float64 {
 		t.Fatal(err)
 	}
 	casts := 0.0
-	for _, a := range newReport(req, est, player, names).Actions {
+	for _, a := range newReport(req, fightSecondsOf(req), est, player, names).Actions {
 		if strings.HasPrefix(a.Name, spell+" (") {
 			casts += a.CastsPerIter
 		}

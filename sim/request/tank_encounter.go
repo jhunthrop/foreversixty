@@ -64,6 +64,11 @@ type tankEncounterFile struct {
 		CadenceVariationSec sourced[float64] `json:"cadence_variation_sec"`
 		BurstWindowSec      sourced[int32]   `json:"burst_window_sec"`
 	} `json:"healers"`
+	// DungeonFight is the fight below the reference level: a dungeon pull,
+	// not a raid boss.
+	DungeonFight struct {
+		DurationSec sourced[float64] `json:"duration_sec"`
+	} `json:"dungeon_fight"`
 }
 
 // TankBoss is the boss's melee, resolved for one character level.
@@ -95,6 +100,10 @@ type TankHealers struct {
 type TankProfile struct {
 	Boss    TankBoss
 	Healers TankHealers
+	// FightSec is the fight's length below the reference level, a dungeon
+	// pull (dungeon_fight.duration_sec); zero at the reference level, where
+	// the raid boss keeps the request's length.
+	FightSec float64
 }
 
 var (
@@ -123,6 +132,7 @@ func (f tankEncounterFile) validate() error {
 		"boss.min_base_damage":           f.Boss.MinBaseDamage.Value,
 		"healers.hps":                    f.Healers.HPS.Value,
 		"healers.burst_window_sec":       float64(f.Healers.BurstWindowSec.Value),
+		"dungeon_fight.duration_sec":     f.DungeonFight.DurationSec.Value,
 	}
 	for name, v := range positive {
 		if v <= 0 {
@@ -218,7 +228,8 @@ func tankFightScale(level int, f tankEncounterFile) (damage, healing float64, er
 
 // TankProfileForLevel is the tank fight for a character of characterLevel:
 // the curated numbers, with damage and healing scaled to the band the
-// character fights (tankBandLevel, tankFightScale).
+// character fights (tankBandLevel, tankFightScale), and below the reference
+// level the length of a dungeon pull (dungeon_fight.duration_sec).
 func TankProfileForLevel(characterLevel int) (TankProfile, error) {
 	f, err := loadTankEncounter()
 	if err != nil {
@@ -228,7 +239,12 @@ func TankProfileForLevel(characterLevel int) (TankProfile, error) {
 	if err != nil {
 		return TankProfile{}, err
 	}
+	var fightSec float64
+	if characterLevel < f.LevelScaling.ReferenceLevel {
+		fightSec = f.DungeonFight.DurationSec.Value
+	}
 	return TankProfile{
+		FightSec: fightSec,
 		Boss: TankBoss{
 			SwingSpeedSec: f.Boss.SwingSpeedSec.Value,
 			MinBaseDamage: f.Boss.MinBaseDamage.Value * damageScale,
@@ -272,6 +288,15 @@ func applyTankFight(player *proto.Player, raid *proto.Raid, enc *proto.Encounter
 	if err != nil {
 		return err
 	}
+	if profile.FightSec > 0 {
+		// A dungeon pull: the curated length, varied by the request's own share.
+		share := 0.0
+		if enc.Duration > 0 {
+			share = enc.DurationVariation / enc.Duration
+		}
+		enc.Duration = profile.FightSec
+		enc.DurationVariation = profile.FightSec * share
+	}
 	player.InFrontOfTarget = true
 	player.HealingModel = &proto.HealingModel{
 		Hps:              profile.Healers.HPS,
@@ -294,4 +319,21 @@ func applyTankFight(player *proto.Player, raid *proto.Raid, enc *proto.Encounter
 		target.DualWield = profile.Boss.DualWield
 	}
 	return nil
+}
+
+// FightSeconds is the length the engine fights req for: a tank below the
+// reference level fights its dungeon pull (applyTankFight), anything else the
+// request's own duration. Per-second figures folded from per-iteration totals
+// divide by it.
+func FightSeconds(req api.SimRequest) (float64, error) {
+	if IsTankSpec(req.Spec) && !req.Encounter.Dummy {
+		profile, err := TankProfileForLevel(req.Character.Level)
+		if err != nil {
+			return 0, err
+		}
+		if profile.FightSec > 0 {
+			return profile.FightSec, nil
+		}
+	}
+	return float64(req.Encounter.DurationSec), nil
 }

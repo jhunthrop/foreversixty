@@ -32,7 +32,7 @@ func TestAfflictionRaidRotationRunsAgonyAllFightWithoutDoom(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	r := newReport(req, est, player, nil)
+	r := newReport(req, fightSecondsOf(req), est, player, nil)
 	casts := map[string]float64{}
 	for _, a := range r.Actions {
 		for _, id := range []string{"(603)", "(11713)", "(18288)"} {

@@ -36,7 +36,7 @@ func TestDemonologySoulFireOnlyWithoutDemonicPact(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			r := newReport(req, est, player, nil)
+			r := newReport(req, fightSecondsOf(req), est, player, nil)
 			casts := 0.0
 			for _, a := range r.Actions {
 				if strings.HasSuffix(a.Name, "(17924)") {

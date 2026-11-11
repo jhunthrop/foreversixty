@@ -45,7 +45,7 @@ func TestDemonologyNeverSummonsAwayItsSacrifice(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			r := newReport(req, est, player, nil)
+			r := newReport(req, fightSecondsOf(req), est, player, nil)
 			for _, a := range r.Auras {
 				for _, id := range demonicSacrificeBuffs {
 					if !strings.HasSuffix(a.Name, fmt.Sprintf("(%d)", id)) || a.ProcsPerIter == 0 {

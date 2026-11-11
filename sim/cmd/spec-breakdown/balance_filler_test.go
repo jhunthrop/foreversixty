@@ -34,7 +34,7 @@ func TestBalanceBelowTwentyCastsWrathWhileManaIsAhead(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	r := newReport(req, est, player, nil)
+	r := newReport(req, fightSecondsOf(req), est, player, nil)
 	wraths := 0.0
 	for _, a := range r.Actions {
 		for _, id := range wrathRankIDs {

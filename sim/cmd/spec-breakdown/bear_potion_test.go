@@ -28,7 +28,7 @@ func TestTheBearDrinksItsPotion(t *testing.T) {
 		t.Fatal(err)
 	}
 	casts := 0.0
-	for _, a := range newReport(req, est, player, nil).Actions {
+	for _, a := range newReport(req, fightSecondsOf(req), est, player, nil).Actions {
 		if strings.Contains(a.Name, "13442") {
 			casts += a.CastsPerIter
 		}

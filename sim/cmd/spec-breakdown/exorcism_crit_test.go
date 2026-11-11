@@ -28,7 +28,7 @@ func TestExorcismNeverCrits(t *testing.T) {
 		t.Fatal(err)
 	}
 	found := false
-	for _, a := range newReport(req, est, player, nil).Actions {
+	for _, a := range newReport(req, fightSecondsOf(req), est, player, nil).Actions {
 		if !strings.Contains(a.Name, "(10314)") {
 			continue
 		}
