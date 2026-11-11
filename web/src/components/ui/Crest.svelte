@@ -35,8 +35,7 @@
   loading={eager ? 'eager' : 'lazy'}
   fetchpriority={eager ? undefined : 'low'}
   decoding={eager ? 'sync' : 'async'}
-  class="{CREST_CLASS} {extra}"
-  class:crest-none={!image.known}
+  class={[CREST_CLASS, !image.known && 'crest-none', extra]}
   style={`--c: ${image.ring}; ${box}`}
   data-testid={testid === undefined ? undefined : image.known ? testid : `${testid}-fallback`}
 />

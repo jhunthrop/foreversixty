@@ -10,7 +10,7 @@
   import type { MedianInfo } from '../../lib/chart/rate';
   import type { PlayerEntry } from '../../lib/chart/types';
   import { claimOverlay } from '../../lib/ui/overlay';
-  import ClassIcon from '../report/ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
   import PresetChips from './PresetChips.svelte';
   import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
@@ -137,7 +137,7 @@
 
 {#snippet row(entry: PlayerEntry)}
   <Row title={entry.label} density="slim" open testid="legend-sheet-row">
-    {#snippet lead()}<ClassIcon className={entry.className} size={24} />{/snippet}
+    {#snippet lead()}<Crest cls={entry.className} size={24} />{/snippet}
     {#snippet titleContent()}<span class="block truncate" style:color={entry.colour}>{entry.label}</span
       >{/snippet}
     {#snippet trail()}

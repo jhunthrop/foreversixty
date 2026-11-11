@@ -267,7 +267,7 @@ export class RaidPageController {
   signup: SignupHandler = async (key, state, role, note, spec) => {
     try {
       const result = await this.write((id) =>
-        this.deps.putSignup(id, this.route.raidId, key, {
+        this.deps.saveSignup(id, this.route.raidId, key, {
           state,
           role,
           note,
@@ -297,7 +297,7 @@ export class RaidPageController {
     this.line = null;
     try {
       const result = await this.write((id) =>
-        this.deps.putSignup(id, this.route.raidId, row.character_key, {
+        this.deps.saveSignup(id, this.route.raidId, row.character_key, {
           state,
           role: row.role,
           note: row.note,

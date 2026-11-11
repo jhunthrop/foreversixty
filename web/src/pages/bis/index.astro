@@ -9,7 +9,9 @@
 // that open at the selected range. Everything is prerendered; lib/bis/landing-client.ts follows
 // the bar and the header selector in place after paint.
 import Base from '../../layouts/Base.astro';
-import ClassSpecPicker, { type PickerClass } from '../../components/guides/ClassSpecPicker.astro';
+import ClassSpecPicker from '../../components/guides/ClassSpecPicker.astro';
+import { pickerClasses } from '../../lib/class-picker';
+import { catalogueIconUrl } from '../../lib/ui/assets';
 import BisLandingAnswer from '../../components/bis/BisLandingAnswer.astro';
 import ControlBar from '../../components/ui/ControlBar.astro';
 import Page from '../../components/ui/Page.svelte';
@@ -25,7 +27,7 @@ import { REGION } from '../../lib/ui/regions';
 import { searchCopy } from '../../lib/search-copy';
 import { LINK, type ControlGroup } from '../../lib/ui/primitives';
 
-const { cards, updated, config } = loadLandingData(activeBuild.build);
+const { updated, config } = loadLandingData(activeBuild.build);
 const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
 const groups: ControlGroup[] = [
   {
@@ -36,16 +38,10 @@ const groups: ControlGroup[] = [
     options: LANDING_BANDS.map((band) => ({ value: String(band), label: bandLabel(band) })),
   },
 ];
-const pickerClasses: PickerClass[] = cards.map((card) => ({
-  slug: card.slug,
-  name: card.name,
-  specs: card.specs.map((spec) => ({
-    key: `${spec.classSlug}/${spec.specSlug}`,
-    name: spec.name,
-    href: specLinkHref({ classSlug: spec.classSlug, specSlug: spec.specSlug, band: DEFAULT_LANDING_BAND }),
-    icon: spec.iconSrc,
-  })),
-}));
+const pickerGroups = pickerClasses({
+  specHref: (classSlug, specSlug) => specLinkHref({ classSlug, specSlug, band: DEFAULT_LANDING_BAND }),
+  specIcon: (spec) => catalogueIconUrl(activeBuild.build, spec.icon),
+});
 ---
 
 <Base title={searchCopy.bisIndex.title} description={searchCopy.bisIndex.description} path="/bis">
@@ -88,7 +84,7 @@ const pickerClasses: PickerClass[] = cards.map((card) => ({
         </p>
         <div id="bis-classes">
           <ClassSpecPicker
-            classes={pickerClasses}
+            classes={pickerGroups}
             label={landingCopy.plateLabel}
             testid="bis-class-grid"
             classTestidPrefix="bis-class-"

@@ -333,8 +333,8 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     const [ashenveil = '', strayhound = ''] = body.split('data-testid="guild-roster-entry" ').slice(1);
     expect(/data-testid="guild-roster-entry-spec">([^<]*)</.exec(ashenveil)?.[1]).toBe('Holy Paladin');
     expect(ashenveil).toContain('/crests/paladin.webp');
-    expect(ashenveil).toContain(
-      'style="color:var(--color-class-paladin)" data-testid="guild-roster-entry-name"',
+    expect(ashenveil).toMatch(
+      /data-testid="guild-roster-entry-name" style="color: var\(--color-class-paladin\);">Ashenveil</,
     );
     // No class: the neutral ringed crest and the spec word alone, never a guessed class.
     expect(/data-testid="guild-roster-entry-spec">([^<]*)</.exec(strayhound)?.[1]).toBe('Protection');

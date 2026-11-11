@@ -5,6 +5,7 @@
      and the items the council handed out. A night matched to a guild raid links its raid page from
      the open pulls. A night in a zone with no published encounters names its pulls plainly. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import ZoneIcon from '../ui/ZoneIcon.svelte';
   import type { GuildRaidRow } from '../../lib/guild/api';
   import { guildRaidHref } from '../../lib/characters';
@@ -20,7 +21,6 @@
     type NightMisses,
     type RaidNightFigures,
   } from '../../lib/guild/raid-nights-table';
-  import { classColorVar } from '../../lib/report/format';
   import { counted } from '../../lib/plural';
   import { SEP } from '../../lib/guild/raid-copy';
   import type { StatFigure } from '../../lib/ui/stat-table';
@@ -120,8 +120,12 @@
             >best kill</span
           >{/if}{#each tops(f.row) as top (top.kind)}{SEP}<span
             data-testid={`guild-raid-top-${top.kind}-${f.row.id}`}
-            >{top.word}&#32;<b style:color={classColorVar(top.parse?.class ?? '')}>{top.parse?.name}</b
-            >&#32;{outputFigure(top.parse?.value ?? 0)}</span
+            >{top.word}&#32;<CharacterName
+              name={top.parse?.name ?? ''}
+              cls={top.parse?.class}
+              weight="inherit"
+              class="font-bold"
+            />&#32;{outputFigure(top.parse?.value ?? 0)}</span
           >{/each}{/snippet}
       {#snippet meter()}{#if f.bossMs !== null && slowest !== null}<Meter
             value={f.bossMs / slowest}

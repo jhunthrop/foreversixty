@@ -131,7 +131,7 @@ func (s *Service) bisCardEmbed(c bisCard) notify.Embed {
 		return e
 	}
 	e.Color = classColorOf(p.Class)
-	e.Thumbnail = s.d.PublicBaseURL + "/icons/hd/crests/" + p.Class + ".webp"
+	e.Thumbnail = s.crestURL(p.Class)
 	e.Title = fill(guideCopy.BisTitleClass, "{Class}", classLabel(p.Class))
 	if key, ok := p.specKey(); ok {
 		sp, _ := specByKey(key)

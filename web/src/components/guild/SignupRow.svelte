@@ -41,9 +41,9 @@
     type SignupChoice,
     type SignupOutcome,
   } from '../../lib/guild/signup-strip';
-  import { classColorVar } from '../../lib/report/format';
   import { ROW_ITEM } from '../../lib/ui/primitives';
   import Crest from '../ui/Crest.svelte';
+  import CharacterName from '../ui/CharacterName.svelte';
   import Select from '../ui/Select.svelte';
   import SignupSegments from './SignupSegments.svelte';
 
@@ -275,8 +275,8 @@
       >
         <Crest cls={character.class} size={32} />
         <div class="min-w-0">
-          <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
-            {character.name}
+          <p class="truncate">
+            <CharacterName name={character.name} cls={character.class} class="heading-name text-[14px]" />
           </p>
           <p
             class="text-muted text-[12px] leading-4 md:truncate md:leading-normal"

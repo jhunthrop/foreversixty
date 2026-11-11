@@ -5,10 +5,10 @@
      then the hits before it, oldest first. A pull the log has not been read for says so in one
      muted line. A member's report carries only their own deaths, so nothing here filters. -->
 <script lang="ts">
+  import CharacterName from '../../ui/CharacterName.svelte';
   import type { RaidReportPull } from '../../../lib/guild/attendance-contract';
   import { deathModels, type HitModel } from '../../../lib/guild/report-night-view';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
-  import { classColorVar } from '../../../lib/report/format';
   import SpellIcon from '../../ui/SpellIcon.svelte';
 
   let {
@@ -41,7 +41,7 @@
     {#each deaths as death (death.key)}
       <li class="flex min-w-0 flex-col gap-1" data-testid="raid-pull-death">
         <p>
-          <span class="font-bold" style:color={classColorVar(death.class)}>{death.name}</span>
+          <CharacterName name={death.name} cls={death.class} weight="inherit" class="font-bold" />
           <span class="text-muted tabular-nums">{death.at}</span>
         </p>
         {#if death.killingBlow === null}

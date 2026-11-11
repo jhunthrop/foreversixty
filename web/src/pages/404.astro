@@ -9,7 +9,8 @@
 // the plate paints; the answer is painted after load (lib/not-found/answer-mount.ts).
 import Base from '../layouts/Base.astro';
 import CharacterSearch from '../components/CharacterSearch.astro';
-import NotFoundClassPicker from '../components/not-found/NotFoundClassPicker.svelte';
+import ClassPicker from '../components/ui/ClassPicker.svelte';
+import Section from '../components/ui/Section.svelte';
 import CharacterAnswer from '../components/ui/CharacterAnswer.svelte';
 import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
@@ -50,7 +51,9 @@ const pages = knownPages(
       </div>
       <script is:inline type="application/json" id="nf-pages" set:html={JSON.stringify(pages)}></script>
       <script is:inline set:html={SUGGEST_SCRIPT}></script>
-      <NotFoundClassPicker />
+      <Section title={notFoundCopy.pick} panel flush testid="not-found-classes">
+        <ClassPicker specLinks testidPrefix="not-found-class-" />
+      </Section>
       <div class="nf-lookup">
         <CharacterSearch />
       </div>

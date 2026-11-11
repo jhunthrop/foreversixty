@@ -14,7 +14,7 @@
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
-  import ClassIcon from './ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let {
     reportId,
@@ -62,10 +62,7 @@
       {#each rows as { player, guid } (player.player_key)}
         {@const colour = classColorVar(classForPlayer(guid, player.class, roster))}
         <Row title={unitLabel(player.player_name).text} open>
-          {#snippet lead()}<ClassIcon
-              className={classForPlayer(guid, player.class, roster)}
-              size={28}
-            />{/snippet}
+          {#snippet lead()}<Crest cls={classForPlayer(guid, player.class, roster)} size={28} />{/snippet}
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(player.player_name).text}</span
             >{/snippet}
           {#snippet trail()}<span

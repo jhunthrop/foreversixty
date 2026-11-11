@@ -7,7 +7,7 @@
 import type { HTMLAttributes } from 'astro/types';
 import Crest from './ui/Crest.astro';
 import { GUILD_OVERVIEW_TAB, GUILDLESS_SWAPS, navKey, type NavGroup, type NavRow } from '../lib/nav';
-import type { GuideClass } from '../lib/nav-guides';
+import { specSummary, type PickerClass } from '../lib/class-picker';
 import DiscordMark from './DiscordMark.astro';
 import { UI_ICONS } from '../lib/ui/ui-icons';
 import Icon from './ui/Icon.astro';
@@ -17,7 +17,7 @@ interface Props {
   group: NavGroup;
   place: 'bar' | 'menu';
   /** The Guides grid; read from the spec catalogue once at build time by Header.astro. */
-  guideClasses: readonly GuideClass[];
+  guideClasses: readonly PickerClass[];
   /** Guild rows carry the tab the session's guild fills in (applySessionGuild). */
   isGuild: boolean;
 }
@@ -83,7 +83,7 @@ const swapOf = (tab: string | undefined) => (tab === undefined ? undefined : GUI
     <div class="site-panel-grid">
       {guideClasses.map((guideClass) => (
         <a
-          href={`/guides/${guideClass.slug}`}
+          href={guideClass.href}
           class="site-panel-class"
           role={itemRole}
           style={`--c: ${classColor(guideClass.slug)}`}
@@ -92,7 +92,7 @@ const swapOf = (tab: string | undefined) => (tab === undefined ? undefined : GUI
           <Crest cls={guideClass.slug} size={28} class="site-panel-crest" />
           <span class="site-panel-text">
             <span class="site-panel-class-name">{guideClass.name}</span>
-            <span class="site-panel-desc">{guideClass.specs.join(' · ')}</span>
+            <span class="site-panel-desc">{specSummary(guideClass, ' · ')}</span>
           </span>
         </a>
       ))}

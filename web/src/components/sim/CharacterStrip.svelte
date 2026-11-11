@@ -17,6 +17,7 @@
   import BisTooltipHost from '../BisTooltipHost.svelte';
   import GearDoll from '../character/GearDoll.svelte';
   import Section from '../ui/Section.svelte';
+  import Tag from '../ui/Tag.svelte';
   import { simCharacterHasGear } from '../../lib/addon-export';
   import { gearCopy } from '../../lib/gear/copy';
   import { averageItemLevel } from '../../lib/gear/paperdoll';
@@ -244,7 +245,7 @@
             >{gearCopy.paperdoll.averageItemLevel(itemLevel)}</span
           >
         {/if}
-        <span class="pill pill-site" data-testid="paperdoll-source">{source}</span>
+        <Tag testid="paperdoll-source">{source}</Tag>
       </div>
       {#if !unread && gearKnown}
         {#snippet doll()}

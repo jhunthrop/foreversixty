@@ -1,7 +1,5 @@
 ---
 // web/src/components/Header.astro
-import classes from '../data/classes.json';
-import { readSpecCatalog } from '../lib/bis/load';
 import {
   GUILD_GROUP_INDEX,
   GUILD_OVERVIEW_TAB,
@@ -11,7 +9,7 @@ import {
   isNavItemCurrent,
   navKey,
 } from '../lib/nav';
-import { guideClasses } from '../lib/nav-guides';
+import { pickerClasses } from '../lib/class-picker';
 import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
 import { PREMIUM_SOURCE_KEY, STORED_SOURCES } from '../lib/account/premium-hint';
 import HeaderPanel from './HeaderPanel.astro';
@@ -35,7 +33,7 @@ interface Props {
 const { path = '' } = Astro.props;
 
 // Build time only, as pages/guides/index.astro reads it: the Guides panel's spec names.
-const guideEntries = guideClasses(classes, readSpecCatalog());
+const guideEntries = pickerClasses();
 /** A door's icon beside its label (nav.css shows it where the bar has the room). */
 const DOOR_ICON_PX = 20;
 

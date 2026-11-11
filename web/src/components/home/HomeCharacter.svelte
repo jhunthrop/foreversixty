@@ -145,6 +145,7 @@
           needs={guildHome.standing?.needs_before_next_raid ?? []}
           {standing}
           characterKey={character.key}
+          characterName={character.name}
           role={signupRole(raid.own, character)}
           raidHref={links.raid}
         />

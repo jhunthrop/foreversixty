@@ -4,14 +4,14 @@
      colour and "{ability} · {source} · {amount}" (a melee swing reads Melee), with the Deaths ›
      link. Nobody died: one short line. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar } from '../../lib/report/format';
   import type { Summary } from '../../lib/report/types';
   import { clockDuration } from '../../lib/format/duration';
   import { compact } from '../../lib/format/number';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import ClassIcon from './ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   /** The log's null unit: a fall, a hazard, or a source the log did not name. */
   const NULL_GUID = /^0+$/;
@@ -46,10 +46,12 @@
       <Row title={splitUnitName(death.name).name} sub={cause(death)} open density="slim">
         {#snippet lead()}<span class="text-muted w-9 text-right text-[13px] tabular-nums"
             >{clockDuration(death.at_ms)}</span
-          ><ClassIcon className={death.class} size={24} />{/snippet}
-        {#snippet titleContent()}<span style:color={classColorVar(death.class)}
-            >{splitUnitName(death.name).name}</span
-          >{/snippet}
+          ><Crest cls={death.class} size={24} />{/snippet}
+        {#snippet titleContent()}<CharacterName
+            name={splitUnitName(death.name).name}
+            cls={death.class}
+            weight="inherit"
+          />{/snippet}
       </Row>
     {/each}
   {/if}

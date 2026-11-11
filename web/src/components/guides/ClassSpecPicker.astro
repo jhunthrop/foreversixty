@@ -1,6 +1,6 @@
 ---
 // web/src/components/guides/ClassSpecPicker.astro
-// The class and spec picker /guides and /bis share (directions mocks b2-guides and the BiS
+// The class and spec picker /guides and /bis share (the lib/class-picker.ts model) (directions mocks b2-guides and the BiS
 // landing, round 5): one panel per class, three across from 1024 and two from 768, each with the
 // class crest and name in the class colour, then its specs in tree order as slim link rows
 // (GuideSpecRow: the spec icon and name, and the hidden "Your spec" Tag the page's answer shows).
@@ -9,23 +9,7 @@ import Crest from '../ui/Crest.astro';
 import GuideSpecRow from './GuideSpecRow.astro';
 import Plate from '../ui/Plate.svelte';
 import Row from '../ui/Row.svelte';
-import type { ClassSlug } from '../../lib/ui/primitives';
-
-export interface PickerSpec {
-  /** `<class>/<spec>`: what the page's answer matches. */
-  key: string;
-  name: string;
-  href: string;
-  icon: string;
-}
-
-export interface PickerClass {
-  slug: string;
-  name: string;
-  /** The class's own page (/guides/<class>); none on /bis. */
-  href?: string;
-  specs: readonly PickerSpec[];
-}
+import type { PickerClass } from '../../lib/class-picker';
 
 interface Props {
   classes: readonly PickerClass[];
@@ -51,7 +35,7 @@ const { classes, label, testid, classTestidPrefix, classLinkTestidPrefix, rowTes
       <div class="class-spec-picker-class" data-testid={`${classTestidPrefix}${group.slug}`}>
         <Row
           title={group.name}
-          titleTone={{ classSlug: group.slug as ClassSlug }}
+          titleTone={{ classSlug: group.slug }}
           href={group.href}
           testid={
             group.href !== undefined && classLinkTestidPrefix !== undefined

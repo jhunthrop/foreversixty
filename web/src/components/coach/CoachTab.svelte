@@ -18,7 +18,7 @@
   import { REPORT_LAZY_MIN_H } from '../../lib/report/layout';
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { FightEntry } from '../../lib/report/types';
-  import ClassIcon from '../report/ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
   import CoachPanel from './CoachPanel.svelte';
 
   let {
@@ -131,7 +131,7 @@
             title={splitUnitName(owned.name).name}
             onclick={() => onSelectPlayer(owned.guid)}
           >
-            <ClassIcon className={owned.class} size={32} />
+            <Crest cls={owned.class} size={32} />
           </button>
         </li>
       {/each}

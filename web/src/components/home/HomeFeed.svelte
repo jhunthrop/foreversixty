@@ -4,8 +4,6 @@
      minute, and below five lines the floor of real dated site events (lib/home/floor.ts, built at
      build time). Its own skeleton and its own error. -->
 <script lang="ts">
-  import SpellIcon from '../ui/SpellIcon.svelte';
-  import { iconUrl } from '../../lib/ui/assets';
   import { untrack } from 'svelte';
   import { invalidate } from '../../lib/data/query';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
@@ -22,9 +20,7 @@
   import { HOME_FEED_FETCH, signedInRows } from '../../lib/home/feed-mix';
   import { API_BASE_URL } from '../../lib/planner/config';
   import { LINK } from '../../lib/ui/primitives';
-  import Crest from '../ui/Crest.svelte';
   import FeedRowUi from '../ui/FeedRow.svelte';
-  import ItemIcon from '../ui/ItemIcon.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Section from '../ui/Section.svelte';
   import FeedSentence from './FeedSentence.svelte';
@@ -51,8 +47,6 @@
     build: string;
   } = $props();
 
-  /** The row's crest or icon (round 5 mock: 30 px leads on the boxed feed). */
-  const LEAD_PX = 32;
   /** A line this fresh slides in (when motion is allowed). */
   const FRESH_MS = 5 * 60_000;
   const clock = minuteClock(() => undefined);
@@ -108,18 +102,10 @@
           href={row.href}
           when={whenText(row, clock.now)}
           fresh={index === 0 && new Date(row.at).getTime() > freshCut}
+          lead={row}
+          {build}
           testid="home-feed-row"
         >
-          {#snippet lead()}
-            {#if row.crest !== null}
-              <Crest cls={row.crest} size={LEAD_PX} />
-            {:else if row.quality !== null}
-              <ItemIcon icon={row.icon ?? undefined} quality={row.quality} {build} size={LEAD_PX} />
-            {:else}
-              <!-- A row about a spec or a guide, not an item: its icon in the spell frame. -->
-              <SpellIcon url={iconUrl(build, row.icon)} size={LEAD_PX} />
-            {/if}
-          {/snippet}
           <FeedSentence segments={row.segments} />
         </FeedRowUi>
       {/each}

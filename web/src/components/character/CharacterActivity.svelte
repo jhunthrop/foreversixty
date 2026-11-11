@@ -8,9 +8,7 @@
   import { fetchActivity, ownActivitySegments, standingCopy } from '../../lib/character/standing';
   import FeedSentence from '../home/FeedSentence.svelte';
   import FeedRowUi from '../ui/FeedRow.svelte';
-  import ItemIcon from '../ui/ItemIcon.svelte';
   import Section from '../ui/Section.svelte';
-  import Crest from '../ui/Crest.svelte';
 
   let {
     characterKey,
@@ -37,14 +35,7 @@
 {#if rows.length > 0}
   <Section title={standingCopy.activity} panel testid="character-activity">
     {#each rows as row (row.id)}
-      <FeedRowUi href={row.href} when={whenText(row, now)} testid="character-activity-row">
-        {#snippet lead()}
-          {#if row.crest !== null}
-            <Crest cls={row.crest} size={32} />
-          {:else}
-            <ItemIcon icon={row.icon ?? undefined} quality={row.quality ?? 1} {build} size={32} />
-          {/if}
-        {/snippet}
+      <FeedRowUi href={row.href} when={whenText(row, now)} lead={row} {build} testid="character-activity-row">
         <FeedSentence segments={ownActivitySegments(row.segments, characterName)} />
       </FeedRowUi>
     {/each}

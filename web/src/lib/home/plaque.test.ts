@@ -1,6 +1,6 @@
 // The raid plaque's facts and words (lib/home/plaque.ts, round 5 home).
 import { describe, expect, it } from 'vitest';
-import { choiceOf, countdownFigures, raidWhen, roleCounts, signupFigures, signupRole } from './plaque';
+import { countdownFigures, raidWhen, roleCounts, signupFigures, signupRole } from './plaque';
 import type { NextRaidView } from '../guild/api';
 
 const NOW = new Date('2026-11-06T18:00:00Z');
@@ -44,12 +44,6 @@ describe('the raid plaque', () => {
     expect(signupRole(null, { class: 'warrior', spec: 'Fury' })).toBe('dps');
     expect(signupRole(null, { class: 'mage' })).toBe('dps');
     expect(signupRole(null, { class: 'druid' })).toBeNull();
-  });
-
-  it('presses only I am in, Late or Can not come', () => {
-    expect(choiceOf('late')).toBe('late');
-    expect(choiceOf('bench')).toBeNull();
-    expect(choiceOf(null)).toBeNull();
   });
 
   it("reads the raid's start whole, on the viewer's own clock with no zone", () => {

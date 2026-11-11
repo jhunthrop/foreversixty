@@ -54,7 +54,7 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 		if got := textsOf(m); strings.Join(got, "|") != strings.Join(want, "|") {
 			t.Fatalf("texts = %q", got)
 		}
-		if head := headOf(t, m); head.Color != 0xc69b6d || head.Thumbnail != pressPublic+"/icons/hd/crests/warrior.webp" {
+		if head := headOf(t, m); head.Color != 0xc69b6d || head.Thumbnail != pressAPI+"/v1/discord/tiles/crest/warrior.png" {
 			t.Fatalf("head = %+v", head)
 		}
 		if tile := sectionsOf(m)[1].Accessory; tile.Media != pressAPI+"/v1/discord/tiles/"+lookupBuild+"/100.png" || tile.Description != "Pick head, Epic head item" {

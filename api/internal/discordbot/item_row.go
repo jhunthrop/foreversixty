@@ -59,10 +59,9 @@ func tileAlt(it ItemFacts, slot string) string {
 // crestAlt is a class crest's alt text.
 func crestAlt(class string) string { return fill(panelCopy.CrestAlt, "{Class}", classLabel(class)) }
 
-// crestURL is a class's ringed HD crest on the site.
-func (s *Service) crestURL(class string) string {
-	return s.d.PublicBaseURL + "/icons/hd/crests/" + class + ".webp"
-}
+// crestURL is a class's ringed crest thumbnail (sheet.CrestPNG): the site's one crest look, ring
+// and tinted disc drawn in, since an embed cannot draw CSS.
+func (s *Service) crestURL(class string) string { return sheet.CrestURL(s.d.APIBaseURL, class) }
 
 // crestThumb is the header's crest accessory; nil for a class the site has no crest for.
 func (s *Service) crestThumb(class string) *Node {

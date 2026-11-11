@@ -1,32 +1,23 @@
 <!-- web/src/components/home/HomeRaidPlaque.svelte -->
 <!-- The raid plaque (round 5, the page's one ornate panel on the cave art): the guild's next raid,
      its day and time, the clock in days and hours, signed up and late, the role counts, your place in the guild (item level among
-     your spec, raids attended), I'm in /
-     Late / Can't come (the saved choice pressed), and Before the pull at the right. A choice saves
-     at once through the raid's sign-up endpoint; with no role to sign as, the raid page instead. -->
+     your spec, raids attended), the guild's own sign-up control (In, Late, Bench, Out), and Before
+     the pull at the right. A choice saves at once through the one sign-up save
+     (lib/guild/signup-save.ts); with no role to sign as, the raid page instead. -->
 <script lang="ts">
   import type { GuildRaidRole, GuildSignupState, NextRaidView } from '../../lib/guild/api';
-  import { putSignup } from '../../lib/guild/raids-api';
+  import { pressSignup } from '../../lib/guild/signup-save';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { homeBCopy } from '../../lib/home/home-b-view';
-  import {
-    PLAQUE_CHOICES,
-    choiceOf,
-    countdownFigures,
-    raidWhen,
-    plaqueCopy,
-    roleCounts,
-    signupFigures,
-    type PlaqueChoice,
-  } from '../../lib/home/plaque';
+  import { countdownFigures, raidWhen, plaqueCopy, roleCounts, signupFigures } from '../../lib/home/plaque';
   import { LINK } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
   import BigFigures from '../ui/BigFigures.svelte';
-  import Button from '../ui/Button.svelte';
   import Frame from '../ui/Frame.svelte';
   import type { HomeFact } from '../../lib/home/home-facts';
   import HomeFacts from './HomeFacts.svelte';
   import HomePlaqueTitle from './HomePlaqueTitle.svelte';
+  import SignupSegments from '../guild/SignupSegments.svelte';
   import { viewerZone } from '../../lib/dates';
   import { countdownText } from '../../lib/ui/countdown';
 
@@ -37,6 +28,7 @@
     needs,
     standing,
     characterKey,
+    characterName,
     role,
     raidHref,
   }: {
@@ -48,6 +40,8 @@
     /** You in the guild: your item level place among your spec, raids attended. */
     standing: readonly HomeFact[];
     characterKey: string;
+    /** The sign-up control's accessible name: `{name}'s sign-up`. */
+    characterName: string;
     /** The role a sign-up carries; null, the raid page signs up instead. */
     role: GuildRaidRole | null;
     raidHref: string | null;
@@ -56,34 +50,31 @@
   const clock = minuteClock(() => undefined);
   const viewerTz = viewerZone();
 
-  /** What a choice saved on this page, over the raid as it loaded. */
-  let savedHere = $state<{ state: GuildSignupState; counts: NextRaidView['counts'] } | null>(null);
-  let busy = $state<PlaqueChoice | null>(null);
-  let failed = $state(false);
+  /** The raid after a choice saved on this page, over the raid as it loaded. */
+  let savedHere = $state<NextRaidView | null>(null);
+  let pending = $state<GuildSignupState | null>(null);
+  let failedLine = $state('');
 
-  const counts = $derived(savedHere?.counts ?? raid.counts);
-  const chosen = $derived(choiceOf(savedHere?.state ?? raid.own?.state ?? null));
+  const shown = $derived(savedHere ?? raid);
+  const counts = $derived(shown.counts);
+  const chosen = $derived(shown.own?.state ?? null);
   const when = $derived(raidWhen(raid.starts_at, viewerTz));
   const parts = $derived(countdownFigures(new Date(raid.starts_at), clock.now));
   const timer = $derived(parts.length === 0 ? undefined : countdownText(new Date(raid.starts_at), clock.now));
-  const locked = $derived(raid.status === 'locked');
+  const locked = $derived(shown.status === 'locked');
 
-  async function choose(choice: PlaqueChoice): Promise<void> {
-    if (role === null || busy !== null) return;
-    busy = choice;
-    failed = false;
-    try {
-      const result = await putSignup(guildId, raid.id, characterKey, {
-        state: choice,
-        role,
-        note: raid.own?.note ?? '',
-      });
-      savedHere = { state: choice, counts: result.raid.counts };
-    } catch {
-      failed = true;
-    } finally {
-      busy = null;
-    }
+  async function choose(state: GuildSignupState): Promise<void> {
+    if (role === null || pending !== null) return;
+    pending = state;
+    failedLine = '';
+    const outcome = await pressSignup(guildId, shown, characterKey, {
+      state,
+      role,
+      note: shown.own?.note ?? '',
+    });
+    pending = null;
+    if (outcome.next) savedHere = outcome.next;
+    if (!outcome.ok) failedLine = outcome.line;
   }
 </script>
 
@@ -108,21 +99,20 @@
       {/if}
       <div class="mt-[18px] flex flex-wrap items-center gap-[10px]">
         {#if role !== null && !locked}
-          {#each PLAQUE_CHOICES as choice (choice)}
-            <Button
-              tone={choice === 'in' ? 'primary' : 'secondary'}
-              size="sm"
-              pressed={chosen === choice}
-              disabled={busy !== null}
-              onclick={() => choose(choice)}
-              testid={`home-raid-${choice}`}>{plaqueCopy.choices[choice]}</Button
-            >
-          {/each}
+          <SignupSegments
+            value={chosen}
+            {pending}
+            name={characterName}
+            size="strip"
+            disabled={pending !== null}
+            onChange={(state) => void choose(state)}
+            testid="home-raid-signup"
+          />
         {:else if raidHref !== null}
           <a class={LINK} href={raidHref}>{homeBCopy.signUpLink} ›</a>
         {/if}
       </div>
-      {#if failed}<p class="text-wipe mt-2 text-[14px]" role="alert">{plaqueCopy.signUpFailed}</p>{/if}
+      {#if failedLine !== ''}<p class="text-wipe mt-2 text-[14px]" role="alert">{failedLine}</p>{/if}
     </div>
     {#if needs.length > 0}
       <div

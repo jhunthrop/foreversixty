@@ -23,7 +23,8 @@ export interface RaidPageDeps {
   fetchRaid: (guildId: number, raidId: string) => Promise<GuildRaidView>;
   /** Asks the network now, whatever the cache holds; rejects on a failure. */
   refetchRaid: (guildId: number, raidId: string) => Promise<GuildRaidView>;
-  putSignup: (guildId: number, raidId: string, key: string, body: SignupInput) => Promise<SignupResult>;
+  /** The one sign-up save (lib/guild/signup-save.ts sendSignup). */
+  saveSignup: (guildId: number, raidId: string, key: string, body: SignupInput) => Promise<SignupResult>;
   setStatus: (
     guildId: number,
     raidId: string,

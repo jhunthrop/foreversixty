@@ -9,6 +9,7 @@
      Base.astro's pre-paint script has already filled from the stored pointer, so the box, the
      crest and the name are where they will be when the island swaps in the button. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import Icon from '../ui/Icon.svelte';
   import { ICON_ACCOUNT, ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
   import { tick } from 'svelte';
@@ -28,7 +29,6 @@
     type SelectorRow,
   } from '../../lib/character-selector/rows';
   import { createSelectorState } from '../../lib/character-selector/selector-state.svelte';
-  import { classColorVar } from '../../lib/report/format';
   import Crest from '../ui/Crest.svelte';
   import SelectorMenuRow from './SelectorMenuRow.svelte';
   import SelectorPanel from './SelectorPanel.svelte';
@@ -246,11 +246,15 @@
           <Icon icon={ICON_CHEVRON_DOWN} size={8} />
         </span>
       </span>
-      <span class="csel-name-bar" style:color={classColorVar(current.classSlug)}>{current.name}</span>
+      <CharacterName name={current.name} cls={current.classSlug} weight="inherit" class="csel-name-bar" />
       <span class="csel-text">
-        <span class="csel-name" style:color={classColorVar(current.classSlug)} data-testid="selector-name">
-          {current.name}
-        </span>
+        <CharacterName
+          name={current.name}
+          cls={current.classSlug}
+          weight="inherit"
+          class="csel-name"
+          testid="selector-name"
+        />
         <span class="csel-sub" data-testid="selector-sub">{closedFaceLine(current)}</span>
         <span class="csel-sub-short">{closedSecondLine(current, false)}</span>
         {#if current.level !== undefined || current.levelSlot === true}<span

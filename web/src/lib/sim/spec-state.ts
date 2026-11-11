@@ -42,10 +42,6 @@ export function specHeadLabel(state: Exclude<SpecState, 'validated'>): string {
   return HEAD_LABELS[state];
 }
 
-export function specPillClass(state: SpecState): string {
-  return state === 'validated' ? 'pill pill-site' : 'pill pill-sample';
-}
-
 /**
  * Whether a fidelity caution belongs on screen: a validated spec needs none, and neither
  * does a spec the fidelity list has not answered for yet (`null` reads as "unknown", not

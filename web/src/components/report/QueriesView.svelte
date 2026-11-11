@@ -16,9 +16,9 @@
      the panel `Result`, a StatTable under the query's own column names. The parquet's column
      list is the rail's (QueriesRail). -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { sharedQueryLayer } from '../../lib/report/exact';
-  import { classColorVar } from '../../lib/report/format';
   import { untrack } from 'svelte';
   import { eventsUrl as eventsUrlFor } from '../../lib/report/load';
   import { QUERY_ABANDONED, QUERY_TEMPLATES, withWindow, type QueryResult } from '../../lib/report/query';
@@ -264,9 +264,11 @@
             <StatRow figures={figuresOf(row)} bar={false}>
               {#snippet name()}{#if shape.lead !== -1}{@const first = cellText(
                     row[shape.lead],
-                  )}{#if classByName.has(first)}<span style:color={classColorVar(classByName.get(first))}
-                      >{splitUnitName(first).name}</span
-                    >{:else}{first}{/if}{#each shape.words as index (index)}<span
+                  )}{#if classByName.has(first)}<CharacterName
+                      name={splitUnitName(first).name}
+                      cls={classByName.get(first)}
+                      weight="inherit"
+                    />{:else}{first}{/if}{#each shape.words as index (index)}<span
                       class="text-text font-normal"
                       >{` · ${cellShown(row[index], shape.columns[index] ?? '')}`}</span
                     >{/each}{/if}{/snippet}

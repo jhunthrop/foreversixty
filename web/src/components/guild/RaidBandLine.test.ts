@@ -9,7 +9,8 @@ import { raidCopy } from '../../lib/guild/raid-copy';
 import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import { gateFactsFixture, GATE_SETTINGS_HREF } from '../../test-support/gate-facts';
 import type { GateFacts } from '../../lib/guild/plan-gate';
-import RaidBandLine, { nextRaidAfter, nextRaidAfterRefusal, pressFailedLine } from './RaidBandLine.svelte';
+import RaidBandLine from './RaidBandLine.svelte';
+import { nextRaidAfter, nextRaidAfterRefusal, pressFailedLine } from '../../lib/guild/signup-save';
 
 const TZ = 'America/Chicago';
 // Monday 2026-12-07, noon in Chicago; the raid is Thursday 10 Dec, 8 pm Chicago.

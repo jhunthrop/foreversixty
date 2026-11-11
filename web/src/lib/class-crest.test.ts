@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { classCrestSrc, crestImage, crestSlug } from './class-crest';
-import { CLASS_SLUGS } from './ui/primitives';
+import { CLASS_SLUGS, type ClassSlug } from './ui/primitives';
 import { factionMarkSrc } from './faction-mark';
 
 // The character selector's first frame (nav spec 2026-10-09 section 8): Base.astro's head
@@ -39,7 +39,7 @@ describe('classCrestSrc', () => {
       ...css.matchAll(/data-pointer-class='([a-z]+)'\] \{\s*--pointer-crest: url\('([^']+)'\)/g),
     ];
     expect(painted.map((match) => match[1]).sort()).toEqual(shippedCrestSlugs());
-    for (const [, slug, url] of painted) expect(url).toBe(classCrestSrc(slug));
+    for (const [, slug, url] of painted) expect(url).toBe(classCrestSrc(slug as ClassSlug));
   });
 });
 

@@ -6,6 +6,7 @@
      on every figure, filters by group and name. Waiting approvals sit above it on one line. Reads the
      home it is given plus the attendance grid (officers), the loot history and the readiness board. -->
 <script lang="ts">
+  import CharacterName from '../../ui/CharacterName.svelte';
   import { onMount, type ComponentProps } from 'svelte';
   import GuildRosterTable from '../GuildRosterTable.svelte';
   import Disclosure from '../../ui/Disclosure.svelte';
@@ -18,7 +19,7 @@
     type GuildRecentAttendance,
   } from '../../../lib/guild/overview-api';
   import { fetchGuildRaid } from '../../../lib/guild/raids-api';
-  import { classColorVar, parseLabel, parseText, percentileToken } from '../../../lib/report/format';
+  import { parseLabel, parseText, percentileToken } from '../../../lib/report/format';
   import type { StatColumn, StatFigure, StatSort } from '../../../lib/ui/stat-table';
   import {
     GROUP_WORD,
@@ -303,9 +304,7 @@
           >
             {#snippet icon()}<Crest cls={row.cls} size={28} />{/snippet}
             {#snippet name()}
-              {#if href}<a {href} style:color={classColorVar(row.cls)}>{row.name}</a>{:else}<span
-                  style:color={classColorVar(row.cls)}>{row.name}</span
-                >{/if}
+              <CharacterName name={row.name} cls={row.cls} href={href ?? undefined} weight="inherit" />
             {/snippet}
             {#snippet sub()}{row.spec}{rankWord(row.rank)}{#if row.cells.length > 0}<span class="ui-st-phone"
                   ><span class="block pt-0.5"

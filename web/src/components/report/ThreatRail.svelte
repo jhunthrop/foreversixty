@@ -5,8 +5,9 @@
      sets the window to the span around the taunt (not on the night, which has no one clock). With
      an enemy picked, its taunts alone: the list answers "who took this one off me". -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, tauntKey } from '../../lib/report/format';
+  import { tauntKey } from '../../lib/report/format';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import { noTauntsLine, orderedTaunts, pickedEnemyName } from '../../lib/report/threat-taunts';
   import type { Taunt, ThreatPair } from '../../lib/report/types';
@@ -85,9 +86,11 @@
             />
           {/snippet}
           {#snippet titleContent()}
-            <span style:color={classColorVar(classOf.get(taunt.source_guid))}
-              >{nameOf(taunt.source_guid, taunt.source_name)}</span
-            >
+            <CharacterName
+              name={nameOf(taunt.source_guid, taunt.source_name)}
+              cls={classOf.get(taunt.source_guid)}
+              weight="inherit"
+            />
             <span class="text-text font-semibold">taunted {nameOf(taunt.target_guid, taunt.target_name)}</span
             >
           {/snippet}

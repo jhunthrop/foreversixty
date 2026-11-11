@@ -51,7 +51,7 @@
   <span class="sr-only">{label}</span>
   <div class="ui-cans-sk" data-answer-skeleton aria-hidden="true">
     <span class="ui-cans-row">
-      <span class="skeleton-block ui-cans-sk-crest"></span>
+      <span class="skeleton-block ui-cans-sk-lead"></span>
       <span class="ui-cans-text">
         <span class="skeleton-block ui-cans-sk-name"></span>
         <span class="skeleton-block ui-cans-sk-detail"></span>
@@ -113,7 +113,7 @@
   .ui-cans-sk .ui-cans-text {
     gap: 4px;
   }
-  .ui-cans-sk-crest {
+  .ui-cans-sk-lead {
     width: 40px;
     height: 40px;
     border-radius: 999px;

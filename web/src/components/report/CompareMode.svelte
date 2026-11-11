@@ -19,6 +19,7 @@
      entirely rather than inventing a per-fight rescoping, and says so, so a window left
      brushed on the chart is not mistaken for narrowing this table too. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import {
     COMPARE_METRICS,
     METRIC_LABELS,
@@ -33,7 +34,7 @@
     type CompareMetric,
   } from '../../lib/report/compare';
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, joinFacts, outcomeLabel } from '../../lib/report/format';
+  import { joinFacts, outcomeLabel } from '../../lib/report/format';
   import { fetchSummary } from '../../lib/report/load';
   import type { FightEntry, RosterRow, Summary } from '../../lib/report/types';
   import { clampWindow, scopeSummary, type TimeWindow } from '../../lib/report/window';
@@ -508,8 +509,11 @@
     testid={rowTestid}
   >
     {#snippet icon()}<Crest cls={classSlugOf(line.class) ?? ''} size={28} />{/snippet}
-    {#snippet name()}<span style:color={classColorVar(line.class)}>{splitUnitName(line.name).name}</span
-      >{/snippet}
+    {#snippet name()}<CharacterName
+        name={splitUnitName(line.name).name}
+        cls={line.class}
+        weight="inherit"
+      />{/snippet}
     {#snippet sub()}
       {#if versusPlayer}
         <span>{mark}{compact(line.a)} in this pull</span> ·

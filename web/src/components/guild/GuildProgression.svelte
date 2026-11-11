@@ -4,9 +4,9 @@
      bosses down over a meter, the zones with no encounter list and their pulls) and the roster bests
      as one ranked table. Shown to every role. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import { characterHref, splitUnitName, type Region, type Ruleset } from '../../lib/characters';
   import type { GuildProgressionPage } from '../../lib/guild/api';
-  import { classColorVar } from '../../lib/report/format';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { bossesDownMeta, progressionEmpty, progressionZones } from '../../lib/guild/progression-view';
   import { rosterBestLabels } from '../../lib/guild/roster-best';
@@ -74,11 +74,13 @@
           {@const labels = rosterBestLabels(row)}
           <StatRow bar={false} figures={[{ value: labels.value }]}>
             {#snippet icon()}<Crest cls={row.player.class} size={28} />{/snippet}
-            {#snippet name()}<a
+            {#snippet name()}<CharacterName
+                name={splitUnitName(row.player.name).name}
+                cls={row.player.class}
                 href={characterHref(region, ruleset, row.player.name)}
-                style:color={classColorVar(row.player.class)}
-                class="underline-offset-4 hover:underline">{splitUnitName(row.player.name).name}</a
-              >{/snippet}
+                weight="inherit"
+                class="underline-offset-4"
+              />{/snippet}
             {#snippet sub()}<span title={labels.hover}
                 >{oneBoss ? specClassName(row.player.spec, row.player.class) : labels.what}</span
               >{#if labels.execution !== null}{SEP}<span title={labels.executionHover}

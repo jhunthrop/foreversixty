@@ -8,6 +8,7 @@
      shows them. The rail's rated players and The cap live in RatingRail.svelte; `onRatings`
      hands this tab's fetch to it so the page fetches once. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
   import { classSlugOf } from '../../lib/report/planner-link';
@@ -146,10 +147,7 @@
   {@const name = splitUnitName(player.player_name).name}
   <div class="w-full" data-testid={`rating-card-${guid || player.player_key}`}>
     <Row title={playerRating(name)} sub={basisSentence(player)}>
-      {#snippet lead()}<Crest
-          cls={classSlugOf(classOf(player, guid)) ?? ''}
-          size={32}
-        />{/snippet}
+      {#snippet lead()}<Crest cls={classSlugOf(classOf(player, guid)) ?? ''} size={32} />{/snippet}
       {#snippet titleContent()}
         {#if guid !== ''}
           <button
@@ -160,7 +158,7 @@
             onclick={() => onSelectPlayer(guid)}>{playerRating(name)}</button
           >
         {:else}
-          <span style:color={classColorVar(classOf(player, guid))}>{playerRating(name)}</span>
+          <CharacterName name={playerRating(name)} cls={classOf(player, guid)} weight="inherit" />
         {/if}
       {/snippet}
       {#snippet trail()}
