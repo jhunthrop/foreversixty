@@ -7,7 +7,6 @@
      back empty says so in one line, and the rest still show. The newest board's updated_at goes up
      to the title band's stamp. -->
 <script lang="ts">
-  import { classCrestSrc } from '../../lib/class-crest';
   import { untrack } from 'svelte';
   import { fetchRankings, type RankedEncounter, type RankingsPage } from '../../lib/rankings/api';
   import { withoutIdleRows } from '../../lib/rankings/row-view';

@@ -1,4 +1,4 @@
-"""Web-layout mocks: the changelog (/changelog), the content pages (/terms, /privacy, /refunds, /about, /sources, /roadmap), the
+"""Web-layout mocks: the changelog (/changelog), the content pages (/terms, /privacy, /refunds, /about, /roadmap), the
 404 page and the build-unavailable page, composed ONLY from ws_prims primitives.
 
 Spec: design/specs/2026-11-08-pages.md (section 0A: the rulings). Every word is read from design/mocks/data/pages-facts.json,
@@ -138,7 +138,7 @@ def content_page(pid: str, current: str = '', open_toc: bool = False, scroll_to:
         active = next(l['label'] for l in C['legalLinks'] if l['href'] == f'/{pid}')
         tabs = TabStrip(labels, active).replace('<nav class="strip-tabs ph-tabs">', f'<nav class="strip-tabs ph-tabs" aria-label="{e(C["legalTabsLabel"])}">', 1)
     # The description is the lead only when the body opens on a heading (the legal pages); a page that opens on a paragraph
-    # leads with it (About, Data sources, Roadmap), so the head never says the same thing twice (decision L3).
+    # leads with it (About, Roadmap), so the head never says the same thing twice (decision L3).
     head = PageHeader(e(p['title']), meta=[f'Updated {e(p["updated"])}'], tabs=tabs)
     body = f'<div class="doc-intro" data-region="{REGION["intro"]}">{Prose(intro)}</div>' if intro else ''
     contents = ''
@@ -333,7 +333,6 @@ PAGES = {
     'web-legal-privacy-toc': lambda: content_page('privacy', open_toc=True),
     'web-legal-refunds': lambda: content_page('refunds'),
     'web-about': lambda: content_page('about'),
-    'web-about-sources': lambda: content_page('sources'),
     'web-404': lambda: not_found_page(),
     'web-404-in': lambda: not_found_page('who'),
     'web-404-loading': lambda: not_found_page('loading'),
@@ -356,8 +355,7 @@ def compare(before: Path) -> None:
     for name, live, mock in pairs:
         for w, sc in ((1440, .5), (1920, .42), (2000, .4), (390, .8)):
             print(ws_compose.compose(name, live, mock, w, sc, max_h=6000))
-    for name, live, mock in (('404-in', '404-in', 'web-404-in'), ('terms', 'terms', 'web-legal-terms'), ('refunds', 'refunds', 'web-legal-refunds'),
-                             ('sources', 'sources', 'web-about-sources')):
+    for name, live, mock in (('404-in', '404-in', 'web-404-in'), ('terms', 'terms', 'web-legal-terms'), ('refunds', 'refunds', 'web-legal-refunds')):
         for w, sc in ((1440, .5), (390, .8)):
             print(ws_compose.compose(name, live, mock, w, sc, max_h=6000))
 

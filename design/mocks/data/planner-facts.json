@@ -8060,7 +8060,7 @@
        "state": "lock",
        "planned": 0,
        "now": "",
-       "next": "Assault the target's mind with Shadow energy, causing 63 Shadow damage over 3 sec  and slowing their movement speed by 50%.",
+       "next": "Assault the target's mind with Shadow energy, causing 63 Shadow damage over 3 sec and slowing their movement speed by 50%.",
        "refusal": "Needs 10 points in Shadow. You have 0."
       },
       {
@@ -19450,7 +19450,7 @@
    "shareTitlePlaceholder": "Optional",
    "copyLink": "Copy link",
    "copied": "Copied",
-   "retry": "Retry",
+   "retry": "Try again",
    "loadFailedDetail": "[fn]",
    "reloadTalents": "Reload talents"
   },
@@ -19517,7 +19517,7 @@
   },
   "addon": {
    "copyForGame": "Copy for the game",
-   "copiedForGame": "Copied, paste it in game with /fs",
+   "copiedForGame": "Copied. Paste it in game with /fs",
    "copyFailed": "Could not copy; select the code below instead",
    "buildCodeLabel": "Build code",
    "addonCodeHint": "Paste this in game with /fs; the Forever Sixty line and the talent window follow it from then on.",

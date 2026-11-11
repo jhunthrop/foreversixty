@@ -17,7 +17,6 @@
   import { lowLevelCopy, splitByLevel } from '../../lib/account/level-filter';
   import { classTone, LINK } from '../../lib/ui/primitives';
   import Crest from '../ui/Crest.svelte';
-  import Button from '../ui/Button.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
   import ShowAll from '../ui/ShowAll.svelte';
   import Row from '../ui/Row.svelte';

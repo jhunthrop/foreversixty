@@ -23,7 +23,6 @@
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { classTone } from '../lib/ui/primitives';
-  import { button } from '../lib/ui/button';
   import Crest from './ui/Crest.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import GuildJoinedBlock from './guild/GuildJoinedBlock.svelte';

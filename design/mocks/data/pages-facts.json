@@ -960,7 +960,7 @@
      "kind": "site"
     }
    ],
-   "html": "<p>Forever Sixty helps you play your class better in World of Warcraft: Forever. It is built and run by Commish LLC, an Arkansas company founded by players, and written and checked by players.</p>\n<p>Every page says when it was last updated, under its title. Numbers come from the game client and our own sims. <a href=\"/sources\">How sources are classified</a> says where everything else comes from.</p>\n<p>Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc. Forever Sixty is a registered trade name of Commish LLC. © Commish LLC.</p>\n<p>To report an error, use Report a bug in the footer. To talk about a guide or offer to help write one, join the Discord from the footer.</p>\n",
+   "html": "<p>Forever Sixty helps you play your class better in World of Warcraft: Forever. It is built and run by Commish LLC, an Arkansas company founded by players, and written and checked by players.</p>\n<p>Every page says when it was last updated, under its title. Numbers come from the game client and our own sims.</p>\n<p>Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc. Forever Sixty is a registered trade name of Commish LLC. © Commish LLC.</p>\n<p>To report an error, use Report a bug in the footer. To talk about a guide or offer to help write one, join the Discord from the footer.</p>\n",
    "headings": [],
    "sectionsMeta": "0 sections"
   },
@@ -1047,52 +1047,6 @@
     }
    ],
    "sectionsMeta": "4 sections"
-  },
-  "sources": {
-   "id": "sources",
-   "title": "How sources are classified",
-   "description": "How this site shows where a fact comes from, what each pill means, and what \"single-source\" means.",
-   "updated": "8 Nov",
-   "confidence": null,
-   "sources": [
-    {
-     "label": "This site",
-     "url": "https://foreversixty.gg/sources",
-     "kind": "site"
-    }
-   ],
-   "html": "<p>Each page carries one Updated date under its title. Source pills sit where the source changes what you do with a fact: on each news row, in the Sources list at the foot of a page, and beside a claim that only one outlet has reported.</p>\n<h2 id=\"the-four-pill-kinds\">The four pill kinds</h2>\n<ul>\n<li><strong>Blizzard</strong>: stated in an official Blizzard post, panel, or in-game text.</li>\n<li><strong>Datamined</strong>: pulled directly from the beta or live game client, such as with wago.tools.</li>\n<li><strong>Community</strong>: reported by press outlets, streamers, or other players, and not yet confirmed by Blizzard or the client.</li>\n<li><strong>This site</strong>: written or compiled by this site, such as a guide or a methodology page like this one.</li>\n</ul>\n<h2 id=\"what-single-source-means\">What “single-source” means</h2>\n<p>A page or fact marked single-source has been reported by exactly one outlet, and has not been confirmed by Blizzard, by the game client, or by a second independent outlet. Single-source facts can turn out to be wrong, incomplete, or superseded once the beta client is available. Pages marked confirmed are backed either by Blizzard’s own words or by two or more independent outlets agreeing. Pages marked inferred are this site’s own reasoning about what is likely true, based on what has been said elsewhere, and are the least certain of the three.</p>\n<h2 id=\"when-we-get-something-wrong\">When we get something wrong</h2>\n<p>We correct it in place, say so on the page, and add a dated entry to the <a href=\"/changelog\">changelog</a> explaining what changed. We do not delete the original changelog entry, because the record of what was reported on the day is itself worth keeping. Two corrections have been made so far: transmog turned out to be opt-out rather than opt-in, and new classes turned out not to be ruled out.</p>\n<h2 id=\"primary-sources-this-site-checks\">Primary sources this site checks</h2>\n<ul>\n<li><a href=\"https://news.blizzard.com/en-us/\">Blizzard’s official news hub</a> for Blizzard’s own posts.</li>\n<li><a href=\"https://wago.tools/builds\">wago.tools</a> for datamined build data once the beta client is available.</li>\n</ul>\n<h2 id=\"panel-recaps-and-transcripts\">Panel recaps and transcripts</h2>\n<ul>\n<li><a href=\"https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap\">Blizzard’s What’s Next panel recap</a> and <a href=\"https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap\">Deep Dive panel recap</a>, 12 and 13 Sep.</li>\n<li><a href=\"https://warcraft.blizzplanet.com/blog/comments/blizzcon-2026-world-of-warcraft-whats-next-panel-transcript/4\">Blizzplanet’s What’s Next panel transcript</a>, which quotes the stage directly where Blizzard’s recap paraphrases.</li>\n<li>Wowhead’s liveblogs of the <a href=\"https://www.wowhead.com/forever/news/world-of-warcraft-forever-whats-next-liveblog-382824\">What’s Next</a>, <a href=\"https://www.wowhead.com/forever/news/world-of-warcraft-forever-deep-dive-liveblog-382862\">Deep Dive</a>, and <a href=\"https://www.wowhead.com/forever/news/whats-next-hardcore-panel-liveblog-382875\">Hardcore</a> panels.</li>\n<li>MMO-Champion’s write-ups of the <a href=\"https://www.mmo-champion.com/content/14512-BlizzCon-2026-World-of-Warcraft-Forever-Deep-Dive-Panel\">Deep Dive</a> and <a href=\"https://www.mmo-champion.com/content/14518-BlizzCon-2026-World-of-Warcraft-The-Past-Present-and-Future-of-Hardcore\">Hardcore</a> panels.</li>\n<li><a href=\"https://outputlag.com/news/everything-new-world-of-warcraft-forever/\">Output Lag’s timestamped live log</a> of the What’s Next panel, which recorded slide detail other recaps skipped, including dungeon level ranges.</li>\n</ul>\n<h2 id=\"developer-interviews\">Developer interviews</h2>\n<ul>\n<li><a href=\"https://sea.ign.com/world-of-warcraft-forever/248775/world-of-warcraft-forever-devs-explain-why-the-game-makes-wow-2-unlikely\">IGN with Kris Zierhut and Mike Nuthals</a>.</li>\n<li><a href=\"https://www.invenglobal.com/articles/25888/why-was-world-of-warcraft-forever-created\">Inven Global with Ana Resendes</a>.</li>\n<li><a href=\"https://butwhytho.net/2026/09/wow-classic-devs-world-of-warcraft-forever/\">But Why Tho with Anna Resendez and Clayton Stone</a>.</li>\n<li><a href=\"https://screenrant.com/world-of-warcraft-forever-interview-controller-support-future-development/\">ScreenRant with Tim Jones and Nora Valletta</a>.</li>\n</ul>\n<h2 id=\"community-data-we-credit-and-reuse\">Community data we credit and reuse</h2>\n<p>The BlizzCon demo was playable on the show floor and streamed, so a lot of what is known about abilities, racials, and Legacy perks was transcribed off footage before any client existed.</p>\n<ul>\n<li><strong><a href=\"https://talentsforever.com\">Talents Forever</a></strong> publishes its whole dataset at <a href=\"https://talentsforever.com/data.json\">talentsforever.com/data.json</a> under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. Where this site uses its ability, racial, or Legacy data, it is credited as “Talents Forever (demo transcription)” with a link, as the licence requires. Its talent trees include estimated rank values and we do not reuse those.</li>\n<li><strong><a href=\"https://www.icy-veins.com/wow-forever/\">Icy Veins</a></strong> transcribed all nine races’ racials from the demo.</li>\n<li><strong><a href=\"https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/\">Power Up Gaming</a></strong> counted the talent trees and published a per-class breakdown of what is new, changed, and unchanged.</li>\n</ul>\n<p>Demo transcriptions are marked community, and single-source unless two outlets independently read the same number. They will be replaced with datamined values once the beta client is available after 17 Sep.</p>\n",
-   "headings": [
-    {
-     "id": "the-four-pill-kinds",
-     "title": "The four pill kinds"
-    },
-    {
-     "id": "what-single-source-means",
-     "title": "What “single-source” means"
-    },
-    {
-     "id": "when-we-get-something-wrong",
-     "title": "When we get something wrong"
-    },
-    {
-     "id": "primary-sources-this-site-checks",
-     "title": "Primary sources this site checks"
-    },
-    {
-     "id": "panel-recaps-and-transcripts",
-     "title": "Panel recaps and transcripts"
-    },
-    {
-     "id": "developer-interviews",
-     "title": "Developer interviews"
-    },
-    {
-     "id": "community-data-we-credit-and-reuse",
-     "title": "Community data we credit and reuse"
-    }
-   ],
-   "sectionsMeta": "7 sections"
   },
   "terms": {
    "id": "terms",
@@ -1201,10 +1155,6 @@
    {
     "label": "Changelog",
     "href": "/changelog"
-   },
-   {
-    "label": "Data sources",
-    "href": "/sources"
    }
   ],
   "rulesets": [
@@ -1507,6 +1457,6 @@
    "/guides/hunter/beast-mastery",
    "Beast Mastery Hunter guide"
   ],
-  "known": 82
+  "known": 81
  }
 }

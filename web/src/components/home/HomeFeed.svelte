@@ -20,7 +20,6 @@
   import { HOME_FEED_FETCH, signedInRows } from '../../lib/home/feed-mix';
   import { API_BASE_URL } from '../../lib/planner/config';
   import FeedRowUi from '../ui/FeedRow.svelte';
-  import ItemIcon from '../ui/ItemIcon.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Section from '../ui/Section.svelte';
