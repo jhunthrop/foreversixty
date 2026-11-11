@@ -183,7 +183,7 @@ describe('LevelSlider', () => {
 });
 
 describe('PageHeader lead', () => {
-  it('sets the one sentence under the meta line, and nothing without it', () => {
+  it('sets the one sentence directly under the title, the meta line under it, and nothing without it', () => {
     const body = html(PageHeader, {
       title: 'Frost Mage',
       tone: { classSlug: 'mage' },
@@ -193,7 +193,8 @@ describe('PageHeader lead', () => {
     expect(body).toMatch(
       /<p class="ui-page-header-lead[^"]*">Frost casts Frostbolt behind Ice Barrier\.<\/p>/,
     );
-    expect(body.indexOf('DPS')).toBeLessThan(body.indexOf('Frost casts'));
+    // seo-fix 2026-11-10: the lead is the page's first sentence, never under a caveat line.
+    expect(body.indexOf('Frost casts')).toBeLessThan(body.indexOf('DPS'));
     expect(html(PageHeader, { title: 'Frost Mage' })).not.toContain('ui-page-header-lead');
   });
 });

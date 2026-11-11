@@ -100,6 +100,7 @@
     views = null,
     hideBar = false,
     guideBuilds = [],
+    openingRaces = [],
   }: {
     treeVersion: string;
     classSlug?: string;
@@ -135,6 +136,9 @@
     hideBar?: boolean;
     /** Every spec guide's published builds (planner.astro reads the guides): the rail's Guide builds. */
     guideBuilds?: readonly GuideBuild[];
+    /** The opening class's legal races (planner.astro reads them): the Race select's options before
+     *  the reference data lands, so the first paint never draws an empty select (seo-fix 2026-11-10). */
+    openingRaces?: readonly { slug: string; name: string }[];
   } = $props();
 
   /** The shared build page (`/b/:id`, spec section 8): its own head, the Edit a copy line, no bar,
@@ -968,11 +972,18 @@
     return specLabel(specOf(store.talentIndex, [...store.order]));
   });
   /** The meta line: race, level, and the spec once a tree leads (spec 4.1). */
-  const metaLine = $derived(
-    [store.raceRow?.name ?? '', `Level ${store.level}`, leadingSpec]
-      .filter((part) => part !== '')
-      .join(' · '),
+  /** A bare build with no character reached no level: it names none (seo-fix 2026-11-10: "Level 9"). */
+  const levelPart = $derived(
+    store.order.length === 0 && store.characterLevel === null ? '' : `Level ${store.level}`,
   );
+  /** The race on screen: the store's, or before the reference data lands the select's (the race the
+   *  link names, else the class's first legal one, which is the race the store will settle on). */
+  const raceName = $derived(
+    store.raceRow?.name ??
+      (raceOptions.find((race) => race.slug === store.raceSlug) ?? raceOptions[0])?.name ??
+      '',
+  );
+  const metaLine = $derived([raceName, levelPart, leadingSpec].filter((part) => part !== '').join(' · '));
   /** The H1: `{Class} talents`; on a shared build its own title, else `{Race} {Class}` (B1). */
   const headTitle = $derived(
     !shared
@@ -1019,6 +1030,13 @@
     }
   });
 
+  /** The Race select's rows: the store's once the reference data lands; until then the opening
+   *  class's, from the build (the server render and the hydration pass alike). */
+  const raceOptions = $derived(
+    store.legalRaces.length > 0 || (mounted && store.classSlug !== DEFAULT_CLASS_SLUG)
+      ? store.legalRaces
+      : openingRaces,
+  );
   /** The bar (spec 4.2): the nine class crests, then the class's legal races. */
   const barGroups = $derived<ControlGroup[]>([
     {
@@ -1042,7 +1060,7 @@
       kind: 'select',
       value: store.raceSlug,
       fieldWidth: 130,
-      options: store.legalRaces.map((race) => ({
+      options: raceOptions.map((race) => ({
         value: race.slug,
         label: race.name,
         disabled: store.readOnly,
@@ -1318,13 +1336,9 @@
             >{/if}
         {/snippet}
         {#snippet answer()}
-          {#if status === 'loading'}
-            <div class="pl-ans-skel" aria-busy="true">
-              <span class="skeleton-block block" style="width:150px;height:68px"></span>
-            </div>
-          {:else}
-            <PlannerAnswer {store} simHref={simLinkShown ? simHref : undefined} />
-          {/if}
+          <!-- Drawn in the server render too (seo-fix 2026-11-10): the count needs no reference data,
+               only the order and the level, so the first paint reads "0 of 51" rather than a blank. -->
+          <PlannerAnswer {store} simHref={simLinkShown ? simHref : undefined} />
         {/snippet}
       </PageHeader>
     {/snippet}
@@ -1483,16 +1497,6 @@
     flex-direction: column;
     gap: 8px;
     padding: 20px;
-  }
-  /* The ready answer's height (spec 5.2): the trees arriving move nothing under the head. */
-  .pl-ans-skel {
-    display: flex;
-    align-items: flex-start;
-  }
-  @media (min-width: 900px) {
-    .pl-ans-skel {
-      align-items: flex-end;
-    }
   }
   .pl-notes {
     padding-inline: var(--page-inset);

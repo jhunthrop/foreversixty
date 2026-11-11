@@ -863,7 +863,36 @@ describe('shell routes with rewritten unfurl tags', () => {
     const env = shellEnv();
     const response = await worker.fetch(new Request('https://foreversixty.gg/rankings/warden-kelthas'), env);
     expect(response.status).toBe(404);
-    expect((env.ASSETS.fetch.mock.calls[0][0] as Request).url).toBe('https://foreversixty.gg/rankings.html');
+    // The encounter's own prerendered page first, then the bare shell; neither exists here.
+    const asked = env.ASSETS.fetch.mock.calls.map((call) => (call[0] as Request).url);
+    expect(asked).toEqual([
+      'https://foreversixty.gg/rankings/warden-kelthas',
+      'https://foreversixty.gg/rankings.html',
+    ]);
+  });
+
+  it("serves an encounter's prerendered page, with its server-rendered rows, in place of the bare shell", async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => new Response('{}', { status: 500 })),
+    );
+    const page =
+      '<html><head><title data-og="title">Onyxia rankings</title></head><body>Thorgrim</body></html>';
+    const env = {
+      API_BASE_URL,
+      ASSETS: {
+        fetch: vi.fn<AssetFetch>(async (request: Request) =>
+          new URL(request.url).pathname === '/rankings/onyxia'
+            ? new Response(page, { status: 200, headers: { 'content-type': 'text/html' } })
+            : new Response('not found', { status: 404 }),
+        ),
+      },
+    };
+    const response = await worker.fetch(new Request('https://foreversixty.gg/rankings/onyxia'), env);
+    expect(response.status).toBe(200);
+    expect(await response.text()).toContain('Thorgrim');
+    expect(env.ASSETS.fetch).toHaveBeenCalledTimes(1);
   });
 
   it('serves the shell unrewritten where HTMLRewriter does not exist', async () => {

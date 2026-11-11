@@ -9,6 +9,7 @@ import type { RankFigure } from '../ui/rank-list';
 import type { RankedEncounter, RankingRow, RankingsPage } from './api';
 import { rankingsCopy } from './copy';
 import { percentileLabel, rankRowView, type RankRowView } from './rank-row-view';
+import { seedFor, type RankingsSeed, type RankingsSnapshot } from './snapshot';
 
 /** How many encounters the landing shows with their top parses, most kills first; the rest are a list. */
 export const LANDING_ENCOUNTERS = 4;
@@ -103,6 +104,8 @@ function group(
 ): LandingRow[] {
   const best = new Map<string, RankingRow>();
   for (const row of board.rows) {
+    // A row whose log named no spec (the API leaves it out then) leads no spec.
+    if (!row.player.spec) continue;
     if ((specRole(row.player.class, row.player.spec) === 'healer') !== healers) continue;
     const key = `${row.player.class.toLowerCase()}/${row.player.spec}`;
     if (!best.has(key)) best.set(key, row);
@@ -138,4 +141,19 @@ export function specLeaders(
     damage: group(dps, 'dps', false, specHref),
     healing: hps === null ? [] : group(hps, 'hps', true, specHref),
   };
+}
+
+/** The landing's part of the build's rankings snapshot: the encounters it lists, their top parses,
+ *  and the leader encounter's boards for Leaders by spec. */
+export function landingSeed(snapshot: RankingsSnapshot): RankingsSeed | null {
+  return seedFor(snapshot, '', {
+    shown: LANDING_ENCOUNTERS,
+    topRows: TOP_PARSES,
+    leader: leaderEncounter(snapshot.encounters)?.slug ?? null,
+  });
+}
+
+/** One encounter's page's part of the snapshot: its board's first rows. */
+export function encounterSeed(snapshot: RankingsSnapshot, slug: string): RankingsSeed | null {
+  return slug === '' ? null : seedFor(snapshot, slug, { shown: 0, topRows: 0, leader: null });
 }

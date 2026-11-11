@@ -49,6 +49,7 @@
   import { PENDING_ANSWER, ownRankSpec } from '../lib/rankings/own-rank';
   import { cohortName, scopeHeading } from '../lib/rankings/scope';
   import { scoreCopy } from '../lib/score/copy';
+  import { seedBoard, type RankingsSeed } from '../lib/rankings/snapshot';
   import {
     GUILD_KINDS,
     RANKING_METRICS,
@@ -76,9 +77,11 @@
   import Tag from './ui/Tag.svelte';
   import { grouped } from '../lib/format/number';
 
-  // The prerendered fixture page passes the slug; the Worker-served shell has none, so the
-  // island reads it out of the path. One component, both routes.
-  let { slug = '' }: { slug?: string } = $props();
+  // A prerendered encounter page passes the slug; the Worker-served shell has none, so the
+  // island reads it out of the path. One component, both routes. `seed` is the build's rankings
+  // snapshot for this page (lib/rankings/snapshot.ts): its rows are drawn, server-side and until the
+  // live board answers, for the board the snapshot read.
+  let { slug = '', seed = null }: { slug?: string; seed?: RankingsSeed | null } = $props();
 
   const SLUG_PATH = /^\/rankings\/([a-z0-9-]{1,64})\/?$/;
   const reads = { encounters: fetchRankedEncounters, character: fetchCharacter };
@@ -98,7 +101,7 @@
   );
   const urlNamedAnEncounter = initialSlug !== '';
   let encounterSlug = $state(initialSlug);
-  let encounters = $state<RankedEncounter[]>([]);
+  let encounters = $state<RankedEncounter[]>(untrack(() => seed?.encounters ?? []));
   let state = $state<RankingsState>(
     typeof window === 'undefined' ? parseRankingsState('') : parseRankingsState(window.location.search),
   );
@@ -134,6 +137,10 @@
   );
   const ownCohort = $derived(cohortName(ownDefaults.class, ownDefaults.spec));
   const lastPage = $derived(page === null ? 1 : Math.max(1, Math.ceil(page.total / page.per_page)));
+  /** The snapshot's rows for the board on screen while the live one has not answered. */
+  const seedPage = $derived(page === null ? seedBoard(seed, encounterSlug, state) : null);
+  /** The board the rows are drawn from: the live one, or the snapshot's until it answers. */
+  const shownPage = $derived(page ?? seedPage);
 
   function urlFor(next: RankingsState, nextSlug: string): string {
     const path = nextSlug === '' ? '/rankings' : `/rankings/${nextSlug}`;
@@ -398,13 +405,13 @@
     page === null || ownKey === null ? 'none' : ownRowPlacement(page.rows, page.character_rank),
   );
   const boardView = $derived(
-    page === null
+    shownPage === null
       ? null
       : {
-          total: page.total,
-          top: page.rows[0]?.value ?? 0,
+          total: shownPage.total,
+          top: shownPage.rows[0]?.value ?? 0,
           unit: metricLabel === 'Damage' ? 'DPS' : state.metric === 'hps' ? 'HPS' : '',
-          multiClass: showRowCrests(page.rows),
+          multiClass: showRowCrests(shownPage.rows),
         },
   );
   const guildBest = $derived(guildRows[0]?.value ?? 0);
@@ -433,9 +440,9 @@
   const showYourRank = $derived(viewer !== null && !isIndex && !isGuild && ownDefaults.class !== '');
   /** "212 ranked", unless Your rank already says "14th of 212 Fury Warriors" beside it. */
   const boardMeta = $derived(
-    isGuild || page === null || page.total === 0 || (showYourRank && placement !== 'none')
+    isGuild || shownPage === null || shownPage.total === 0 || (showYourRank && placement !== 'none')
       ? undefined
-      : `${grouped(page.total)} ranked`,
+      : `${grouped(shownPage.total)} ranked`,
   );
 
   /** The landing's boards each carry updated_at: the band's stamp shows the newest. */
@@ -511,27 +518,31 @@
       {#if nothingRanked}<div class="max-xl:hidden">{@render companion('rankings-companion')}</div>{/if}
     {/snippet}
 
-    {#if isIndex && aimed && encounters.length > 0}
-      <RankingsLanding
-        {encounters}
-        phase={state.phase}
-        hrefFor={encounterHref}
-        specHref={(slug, cls, spec) =>
-          urlFor({ ...state, board: 'character', class: cls, spec, page: 1 }, slug)}
-        onupdated={stampUpdated}
-      />
+    {#if isIndex && (aimed || seed !== null) && encounters.length > 0}
+      <!-- Before the board knows who is looking, the snapshot's landing is for a signed-out visitor
+           only: a hinted session sees the picker's skeleton until its own encounter opens. -->
+      <div class="contents" data-signed-out-only={aimed ? undefined : true}>
+        <RankingsLanding
+          {encounters}
+          {seed}
+          phase={state.phase}
+          hrefFor={encounterHref}
+          specHref={(slug, cls, spec) =>
+            urlFor({ ...state, board: 'character', class: cls, spec, page: 1 }, slug)}
+          onupdated={stampUpdated}
+        />
+      </div>
+      {#if !aimed}<div class="contents" data-signed-in-only>{@render pickerSkeleton()}</div>{/if}
     {:else if isIndex}
-      <Section title={encounterPickerCopy.heading} panel frame="lead" flush testid="encounter-picker">
-        {#if !aimed}
-          <div class="px-5 pb-4"><Skeleton lines={3} rowHeight="h-11" testid="rankings-skeleton" /></div>
-        {:else}
+      {#if !aimed}{@render pickerSkeleton()}{:else}
+        <Section title={encounterPickerCopy.heading} panel frame="lead" flush testid="encounter-picker">
           <RankingsEmpty
             line={encounterPickerCopy.noneYet}
             fill={encounterPickerCopy.fill}
             testid="rankings-no-encounters"
           />
-        {/if}
-      </Section>
+        </Section>
+      {/if}
     {:else}
       <Section
         title={boardTitle}
@@ -542,15 +553,16 @@
         flush
         testid="rankings-heading"
       >
-        {#if status === 'loading'}
-          <div class="px-5 pb-4">
-            <Skeleton
-              lines={8}
-              rowHeight="h-11"
-              minHeight={RANKINGS_LOADING_MIN_H}
-              testid="rankings-skeleton"
-            />
+        {#if status === 'loading' && seedPage !== null}
+          <!-- The snapshot's rows until the live board answers; before the board knows who is looking
+               they are for a signed-out visitor only (a hinted session opens its own board). -->
+          <div class="contents" data-signed-out-only={aimed ? undefined : true}>
+            {@render legend()}
+            {@render board(seedPage.rows, heads)}
           </div>
+          {#if !aimed}<div class="contents" data-signed-in-only>{@render boardSkeleton()}</div>{/if}
+        {:else if status === 'loading'}
+          {@render boardSkeleton()}
         {:else if status === 'failed'}
           <!-- The failed state holds the loading reserve, so nothing under the panel moves. -->
           <div
@@ -631,26 +643,7 @@
               )}
             </RankList>
           {/if}
-          <Ruled>
-            <RankList
-              heads={placement === 'pinned' ? undefined : heads}
-              figures={4}
-              figureWidth={72}
-              links={1}
-              compact
-              phoneFigures={2}
-              label={cohort}
-              testid="ranking-board"
-            >
-              {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
-                {@render rankRow(
-                  row,
-                  placement === 'in-place' && row.player.key === ownKey,
-                  `ranking-${row.rank}`,
-                )}
-              {/each}
-            </RankList>
-          </Ruled>
+          {@render board(page.rows, placement === 'pinned' ? undefined : heads)}
           {#if lastPage > 1}
             <Divided>
               <div
@@ -733,6 +726,37 @@
       {/snippet}
     </RankRow>
   {/if}
+{/snippet}
+
+{#snippet board(rows: readonly RankingRowData[], columnHeads: RankHead[] | undefined)}
+  <Ruled>
+    <RankList
+      heads={columnHeads}
+      figures={4}
+      figureWidth={72}
+      links={1}
+      compact
+      phoneFigures={2}
+      label={cohort}
+      testid="ranking-board"
+    >
+      {#each rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
+        {@render rankRow(row, placement === 'in-place' && row.player.key === ownKey, `ranking-${row.rank}`)}
+      {/each}
+    </RankList>
+  </Ruled>
+{/snippet}
+
+{#snippet boardSkeleton()}
+  <div class="px-5 pb-4">
+    <Skeleton lines={8} rowHeight="h-11" minHeight={RANKINGS_LOADING_MIN_H} testid="rankings-skeleton" />
+  </div>
+{/snippet}
+
+{#snippet pickerSkeleton()}
+  <Section title={encounterPickerCopy.heading} panel frame="lead" flush testid="encounter-picker">
+    <div class="px-5 pb-4"><Skeleton lines={3} rowHeight="h-11" testid="rankings-skeleton" /></div>
+  </Section>
 {/snippet}
 
 {#snippet legend()}

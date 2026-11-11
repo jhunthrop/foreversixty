@@ -13,6 +13,7 @@ import {
   isDpsSpec,
   isSignificant,
   pickableStatsFor,
+  pickableStatsForSpec,
   toolScaleView,
   referenceFor,
   statLabel,
@@ -361,5 +362,18 @@ describe('weightsIterationsFor (Task 8, sub-item 2): the browser lane is guarded
     const worstCaseStatCount = WEIGHT_STATS.length;
     const cost = weightsEngineIterations(WEIGHTS_BROWSER_DEFAULT_ITERATIONS, worstCaseStatCount);
     expect(cost / measuredIterationsPerSecond).toBeLessThan(30);
+  });
+});
+
+describe('pickableStatsForSpec', () => {
+  it('offers a Fury warrior only its own stats, never a spell school or MP5 (seo-fix 2026-11-10)', () => {
+    const ids = pickableStatsForSpec('warrior-fury').map((stat) => stat.id);
+    expect(ids).toEqual(specRow('warrior-fury')?.weight_stats);
+    expect(ids).not.toContain('mp5');
+    expect(ids.some((id) => id.endsWith('_power') && id !== 'attack_power')).toBe(false);
+  });
+
+  it('falls back to the full vocabulary only for a spec nobody has heard of', () => {
+    expect(pickableStatsForSpec('nobody-knows')).toEqual(pickableStatsFor(undefined));
   });
 });

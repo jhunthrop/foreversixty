@@ -8,6 +8,7 @@
      to the title band's stamp. -->
 <script lang="ts">
   import { classCrestSrc } from '../../lib/class-crest';
+  import { untrack } from 'svelte';
   import { fetchRankings, type RankedEncounter, type RankingsPage } from '../../lib/rankings/api';
   import { encounterPickerCopy, rankingsCopy } from '../../lib/rankings/copy';
   import {
@@ -18,6 +19,7 @@
     type LandingRow,
     type SpecLeaders,
   } from '../../lib/rankings/landing';
+  import type { RankingsSeed } from '../../lib/rankings/snapshot';
   import type { RankHead } from '../../lib/ui/rank-list';
   import RankList from '../ui/RankList.svelte';
   import RankingsEncounters from './RankingsEncounters.svelte';
@@ -29,6 +31,7 @@
 
   let {
     encounters,
+    seed = null,
     phase,
     hrefFor,
     specHref,
@@ -36,6 +39,8 @@
   }: {
     /** The ranked encounters, most kills first. */
     encounters: readonly RankedEncounter[];
+    /** The build's rankings snapshot for the landing: its boards are drawn until the live ones answer. */
+    seed?: RankingsSeed | null;
     /** The board's phase filter ('' for every phase). */
     phase: string;
     hrefFor: (slug: string) => string;
@@ -51,8 +56,20 @@
   /** The encounters past the busiest few: a plain list under them, so every board is a link away. */
   const more = $derived(encounters.slice(LANDING_ENCOUNTERS));
   const leaderAt = $derived(leaderEncounter(encounters));
-  let boards = $state<Record<string, Board>>({});
-  let hps = $state<Board>({ status: 'loading' });
+  /** The snapshot's board for `slug`, when it was read in the phase on screen ('' is the default). */
+  function seeded(slug: string): Board {
+    const page = seed !== null && (phase === '' || phase === seed.phase) ? seed.boards[slug] : undefined;
+    return page === undefined ? { status: 'loading' } : { status: 'ready', page };
+  }
+  function seededHps(slug: string | null): Board {
+    return slug !== null && seed?.hps?.slug === slug && (phase === '' || phase === seed.phase)
+      ? { status: 'ready', page: seed.hps.page }
+      : { status: 'loading' };
+  }
+  let boards = $state<Record<string, Board>>(
+    untrack(() => Object.fromEntries(shown.map((encounter) => [encounter.slug, seeded(encounter.slug)]))),
+  );
+  let hps = $state<Board>(untrack(() => seededHps(leaderAt?.slug ?? null)));
 
   function read(slug: string, metric: 'dps' | 'hps'): Promise<RankingsPage> {
     return fetchRankings({ encounter: slug, metric, phase, distinct: 'character' }).then((page) => {
@@ -65,8 +82,10 @@
     const slugs = shown.map((encounter) => encounter.slug);
     const leader = leaderAt?.slug ?? null;
     let stale = false;
-    boards = Object.fromEntries(slugs.map((slug) => [slug, { status: 'loading' } as Board]));
-    hps = { status: 'loading' };
+    // Each board starts from the snapshot's rows when it has them, so the live answer replaces rows
+    // with rows instead of a skeleton.
+    boards = untrack(() => Object.fromEntries(slugs.map((slug) => [slug, seeded(slug)])));
+    hps = untrack(() => seededHps(leader));
     for (const slug of slugs) {
       read(slug, 'dps').then(
         (page) => {

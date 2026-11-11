@@ -69,6 +69,10 @@ export const rankingsCopy = {
   h1: 'Rankings',
   /** The page's lead: what the boards hold and how a player gets on them. */
   lead: 'Logged boss kills on Forever, ranked by DPS and HPS for each spec, class, ruleset and guild. The companion uploads your combat log as you play, so your kills join the board.',
+  /** The pages' meta descriptions: the landing, and one encounter's board. */
+  description: 'World of Warcraft: Forever rankings by encounter: characters, guilds, specs and phases.',
+  encounterDescription: (encounter: string) =>
+    `${encounter} on Forever: the best logged kills, ranked by DPS and HPS for every class and spec.`,
   tierLink: 'Tier list',
   tierHref: '/tiers',
   updated: (date: string) => `Updated ${date}`,

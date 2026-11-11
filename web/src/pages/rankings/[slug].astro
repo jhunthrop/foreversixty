@@ -1,22 +1,35 @@
 ---
 // web/src/pages/rankings/[slug].astro
-// Only under FOREVER_DATA=fixture: one encounter Playwright can navigate to without a
-// Worker. A real build prerenders none of these; every /rankings/<slug> is the shell.
+// One page per encounter the build's rankings snapshot holds a board for (lib/rankings/snapshot.ts),
+// its first rows server-rendered until the live board answers; src/worker.ts serves it for that
+// slug and the bare shell (rankings.astro) for any other. Under FOREVER_DATA=fixture the fixture
+// encounter Playwright navigates to is one of them.
 import Base from '../../layouts/Base.astro';
 import Rankings from '../../components/Rankings.svelte';
 import { fixtureRankingsPaths } from '../../lib/report/shell-paths';
 import { titleize } from '../../lib/report/og-meta';
+import { rankingsCopy } from '../../lib/rankings/copy';
+import { encounterSeed } from '../../lib/rankings/landing';
+import { snapshotSlugs } from '../../lib/rankings/snapshot';
+import { loadRankingsSnapshot } from '../../lib/rankings/snapshot-load';
 
 export function getStaticPaths() {
-  return fixtureRankingsPaths();
+  const slugs = new Set([
+    ...fixtureRankingsPaths().map((path) => path.params.slug),
+    ...snapshotSlugs(loadRankingsSnapshot()),
+  ]);
+  return [...slugs].map((slug) => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
+const snapshot = loadRankingsSnapshot();
+const seed = encounterSeed(snapshot, slug ?? '');
+const name = snapshot.encounters.find((encounter) => encounter.slug === slug)?.name ?? titleize(slug ?? '');
 ---
 
 <Base
-  title={`${titleize(slug ?? '')} rankings`}
-  description="World of Warcraft: Forever rankings by encounter: characters, guilds, specs and phases."
+  title={`${name} rankings`}
+  description={rankingsCopy.encounterDescription(name)}
   path={`/rankings/${slug}`}
 >
   <main id="main" tabindex="-1" class="flex w-full flex-col">
@@ -24,6 +37,6 @@ const { slug } = Astro.params;
          server-rendered header and board skeleton are the page's largest contentful paint, and
          `client:load` put its ~60-module chain ahead of that first paint, so Lighthouse's
          simulation charged it to LCP (2026-11-06: 3.5 s, performance 0.88). -->
-    <Rankings client:after-paint slug={slug ?? ''} />
+    <Rankings client:after-paint slug={slug ?? ''} {seed} />
   </main>
 </Base>

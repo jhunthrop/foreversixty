@@ -1,7 +1,3 @@
-<!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
-     page inlines only the styles of what its server render drew. -->
-<svelte:options css="injected" />
-
 <script lang="ts">
   import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import { plannerCopy } from '../../lib/planner/copy';

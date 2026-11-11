@@ -72,6 +72,7 @@
           <Field
             id="sim-addon"
             label={simCopy.sourceAddonTitle}
+            labelHidden
             placeholder="FS1:…"
             grow
             disabled={busy}

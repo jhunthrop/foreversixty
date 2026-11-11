@@ -1,21 +1,24 @@
 ---
 // web/src/pages/rankings.astro
-// The shell src/worker.ts serves for /rankings/<any slug>, with its unfurl tags rewritten
-// from GET /v1/rankings. The island reads the slug out of the path.
+// The landing, and the shell src/worker.ts serves for any /rankings/<slug> the build prerendered no
+// page for, with its unfurl tags rewritten from GET /v1/rankings. The island reads the slug out of
+// the path. The landing server-renders the build's rankings snapshot (lib/rankings/snapshot.ts):
+// the encounters, their top parses and the spec leaders, until the live boards answer.
 import Base from '../layouts/Base.astro';
 import Rankings from '../components/Rankings.svelte';
+import { landingSeed } from '../lib/rankings/landing';
+import { loadRankingsSnapshot } from '../lib/rankings/snapshot-load';
+import { rankingsCopy } from '../lib/rankings/copy';
+
+const seed = landingSeed(loadRankingsSnapshot());
 ---
 
-<Base
-  title="Rankings"
-  description="World of Warcraft: Forever rankings by encounter: characters, guilds, specs and phases."
-  path="/rankings"
->
+<Base title="Rankings" description={rankingsCopy.description} path="/rankings">
   <main id="main" tabindex="-1" class="flex w-full flex-col">
     <!-- `client:after-paint`, not `client:load` (src/directives/after-paint.ts): the island's
          server-rendered header and board skeleton are the page's largest contentful paint, and
          `client:load` put its ~60-module chain ahead of that first paint, so Lighthouse's
          simulation charged it to LCP (2026-11-06: 3.5 s, performance 0.88). -->
-    <Rankings client:after-paint />
+    <Rankings client:after-paint {seed} />
   </main>
 </Base>

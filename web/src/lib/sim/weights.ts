@@ -171,6 +171,18 @@ export function pickableStatsFor(weightStats: readonly string[] | undefined): re
 }
 
 /**
+ * The picker's list for the spec on screen: the loaded character's, or with none loaded the spec
+ * whose published weights the page shows (seo-fix 2026-11-10: the no-character page offered a Fury
+ * warrior every spell school and MP5, because no spec meant the full vocabulary).
+ */
+export function pickableStatsForSpec(
+  spec: string,
+  rows: readonly SpecFidelity[] = [],
+): readonly WeightStat[] {
+  return pickableStatsFor(weightStatsFor(spec, rows));
+}
+
+/**
  * What the picker opens with: the reference stat first, then every stat that can matter --
  * "can matter" being `weightStats` when the spec sent one, the full pinned vocabulary
  * otherwise. The list is not pruned by class beyond that -- a spec that gains nothing from

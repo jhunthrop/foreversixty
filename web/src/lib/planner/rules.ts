@@ -239,6 +239,15 @@ export function comboIsLegal(combos: Combo[], raceId: number, classId: number): 
   return combos.some((combo) => combo.race_id === raceId && combo.class_id === classId);
 }
 
+/** The races a class may be (rule 1), in the races file's order; every race when the class is unknown. */
+export function legalRacesFor<R extends { id: number }>(
+  races: readonly R[],
+  combos: Combo[],
+  classId: number | null,
+): R[] {
+  return classId === null ? [...races] : races.filter((race) => comboIsLegal(combos, race.id, classId));
+}
+
 /** The planner slots an item can occupy; `finger`/`trinket` map to both numbered slots. */
 export function slotsForItem(item: Item): Slot[] {
   const aliased = SLOT_ALIASES[item.slot];
