@@ -1820,6 +1820,73 @@ describe("the item hook", function()
 		end
 	end)
 
+	-- Found in game: the first upgrade row's item tooltip in the panel popped up on its own when an
+	-- item came into the bags. The client rebuilt the hidden GameTooltip for its last item and the
+	-- section's Show brought it back at the panel's icon.
+	describe("a tooltip the client rebuilt while hidden", function()
+		local function hiddenTip(ownerUnderMouse)
+			local tip, calls = recording()
+			tip.shows = 0
+			tip.Show = function(self) self.shows = self.shows + 1 end
+			tip.IsShown = function() return false end
+			local owner = {
+				IsVisible = function() return true end,
+				IsMouseOver = function() return ownerUnderMouse end,
+			}
+			tip.GetOwner = function() return owner end
+			return tip, calls
+		end
+
+		before_each(function()
+			NAMES[100] = "Defias Overseer Chest"
+		end)
+
+		it("stays hidden when its owner is not under the mouse, and nothing waits to redraw it", function()
+			local tip, calls = hiddenTip(false)
+			ItemTooltip.onTooltip(tip, "item:50")
+			assert.are.equal(0, tip.shows)
+			assert.is_nil(ItemTooltip.activeHover)
+			-- The lines are still added: a hover that comes back later finds a whole tooltip.
+			assert.is_not_nil(calls[1])
+		end)
+
+		it("shows for a hover just set on an owner under the mouse", function()
+			local tip = hiddenTip(true)
+			ItemTooltip.onTooltip(tip, "item:50")
+			assert.are.equal(1, tip.shows)
+		end)
+
+		it("draws nothing on another addon's scanning tooltip (Pawn's PawnPrivateTooltip1)", function()
+			local scan, calls = recording()
+			scan.shows = 0
+			scan.Show = function(self) self.shows = self.shows + 1 end
+			scan.IsShown = function() return true end
+			scan.GetAnchorType = function() return "ANCHOR_NONE" end
+			scan.GetNumPoints = function() return 0 end
+			ItemTooltip.onTooltip(scan, "item:50")
+			assert.is_nil(calls[1])
+			assert.are.equal(0, scan.shows)
+			assert.is_nil(ItemTooltip.activeHover)
+		end)
+
+		it("still draws on a tooltip at the client's default anchor (ANCHOR_NONE with a point)", function()
+			local tip, calls = recording()
+			tip.IsShown = function() return true end
+			tip.GetAnchorType = function() return "ANCHOR_NONE" end
+			tip.GetNumPoints = function() return 1 end
+			ItemTooltip.onTooltip(tip, "item:50")
+			assert.is_not_nil(calls[1])
+		end)
+
+		it("stays hidden when its owner is no longer on screen (the panel closed)", function()
+			local tip = hiddenTip(true)
+			local owner = tip.GetOwner()
+			owner.IsVisible = function() return false end
+			ItemTooltip.onTooltip(tip, "item:50")
+			assert.are.equal(0, tip.shows)
+		end)
+	end)
+
 	it("draws the Shift block only while Shift is held, the attribution last and dimmer", function()
 		NAMES[100] = "Defias Overseer Chest"
 		local savedShift = _G.IsShiftKeyDown
