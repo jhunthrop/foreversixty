@@ -19,6 +19,8 @@ data class ItemSource(
     val levels: IntRange? = null,
     /** A dungeon's or raid's icon. */
     val icon: String? = null,
+    /** A crafted item's profession skill (`required_skill`), when the loot file carries it. */
+    val skill: Int? = null,
 )
 
 /** One upgrade the player can go and get: the item, its gain over what is worn, and where it comes from. */
@@ -49,7 +51,13 @@ object WhereToGo {
             }
             source.trash.orEmpty().forEach { id -> add(id, place.copy(chance = chance(source.itemChances, id))) }
             source.items.orEmpty().forEach { id ->
-                add(id, ItemSource(source.kind, source.name, chance(source.itemChances, id), profession = source.profession, standing = source.standing))
+                add(
+                    id,
+                    ItemSource(
+                        source.kind, source.name, chance(source.itemChances, id),
+                        profession = source.profession, standing = source.standing, skill = source.requiredSkill?.get(id.toString()),
+                    ),
+                )
             }
         }
         return out

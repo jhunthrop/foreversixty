@@ -93,7 +93,7 @@ enum ItemPageLogic {
     static func sourceMeta(_ source: ItemUseSource) -> String {
         var parts = [source.place, kindWord(source.kind)].compactMap { $0 }.filter { !$0.isEmpty && $0 != source.title }
         if bossKinds.contains(source.kind), let chance = source.chance {
-            parts.append(Copy.itemPageDropChance(chance: percent(chance), boss: source.title))
+            parts.append(Copy.itemPageDropChance(chance: ItemNumbers.percent(chance), boss: source.title))
         }
         if source.kind == "quest", let level = source.minLevel, level > 0 {
             parts.append(Copy.itemPageQuestLevel(n: level))
@@ -101,10 +101,6 @@ enum ItemPageLogic {
         return parts.joined(separator: " · ")
     }
 
-    /// The site's `dropPercentLabel`: a whole percent, `<1%` under one, so nothing reads `0%`.
-    static func percent(_ chance: Double) -> String {
-        chance < 1 ? "<1%" : "\(Int(chance.rounded()))%"
-    }
 
     static func kindWord(_ kind: String) -> String? {
         switch kind {

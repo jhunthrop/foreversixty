@@ -120,11 +120,11 @@ struct GearPresenter {
     }
 
     /// Round 4, row 3: with the character's answer every pick that is not Equipped says what it gives:
-    /// its gain, `Not modelled` when the sim could not measure it, else `+0.0 DPS`.
+    /// its gain, `Not modelled` when the sim could not measure it, else `No gain` (round 8, row 3).
     static func trail(_ upgrade: HomeUpgrade?, gain: HomeGain?, unit: String) -> GearSlotRow.Trail {
         if let gain { return .gain(gain) }
         if upgrade?.modelled == false { return .notModelled }
-        return .noGain(HomeGain(figure: ItemNumbers.signedTenths(0), unit: unit))
+        return .noGain
     }
 
     /// A measured gain above zero, the server's, as Home words it.

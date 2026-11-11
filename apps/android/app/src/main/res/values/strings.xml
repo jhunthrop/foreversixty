@@ -241,6 +241,7 @@
     <string name="bis_slotSource">%1$s · %2$s</string>
     <string name="bis_source_quest">Quest: %1$s</string>
     <string name="bis_source_crafted">Crafted: %1$s</string>
+    <string name="bis_source_craftedSkill" tools:ignore="PluralsCandidate">Crafted: %1$s (%2$d)</string>
     <string name="bis_source_vendor">Vendor: %1$s</string>
     <string name="bis_a11y_item">%1$s, %2$s, item level %3$d.</string>
     <string name="bis_a11y_picker">Choose a list: %1$s, %2$s, %3$s</string>
@@ -654,7 +655,7 @@
     <string name="push_applicant_acceptFailed">Could not accept %1$s</string>
     <string name="push_applicant_declineFailed">Could not decline %1$s</string>
     <string name="push_applicant_failed">%1$s. Open Forever Sixty to try again.</string>
-    <string name="push_short_failed">Could not mention the %1$s in Discord</string>
+    <string name="push_short_failed">Could not mention the %1$s</string>
     <string name="push_short_retry">%1$s. Open the raid to try again.</string>
     <string name="push_group_raids">Raids</string>
     <string name="push_group_raids_line">Posted, moved, your answer due, raid night</string>
@@ -734,6 +735,7 @@
     <string name="gear_where_ask">%1$s · ask a %2$s</string>
     <string name="gear_where_rep">%1$s, needs %2$s</string>
     <string name="gear_where_figure">%1$s · %2$s %3$s</string>
+    <string name="gear_cell_noGain">No gain</string>
     <string name="gear_header_gain">%1$s %2$s from %3$s</string>
     <string name="gear_header_synced">synced %1$s</string>
     <string name="gear_notModelled">Not modelled</string>
@@ -758,7 +760,6 @@
         <item quantity="one">1 guildmate has not shared their gear yet</item>
         <item quantity="other">%1$d guildmates have not shared their gear yet</item>
     </plurals>
-    <string name="gear_sheet_dropChance">%1$s drop chance</string>
     <string name="gear_sheet_replaces">Replaces %1$s</string>
     <string name="gear_sheet_vendor">%1$s, vendor</string>
     <string name="you_title">You</string>

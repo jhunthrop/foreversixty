@@ -24,6 +24,8 @@ struct ItemPlace: Equatable, Sendable {
     var standing: String?
     /// A profession's key (`blacksmithing`).
     var profession: String?
+    /// The profession skill the recipe needs (`245`), when the loot file knows it.
+    var skill: Int?
 }
 
 /// Every item of the loot file by where it comes from, for the kinds Where to go groups by.
@@ -51,7 +53,8 @@ struct ItemPlaces: Sendable {
             case Self.craftedKind:
                 for item in source.items ?? [] where crafted[item] == nil {
                     crafted[item] = ItemPlace(
-                        kind: .profession, sourceKind: source.kind, name: source.name, profession: source.profession
+                        kind: .profession, sourceKind: source.kind, name: source.name, profession: source.profession,
+                        skill: source.requiredSkill?[String(item)]
                     )
                 }
             case Self.repKind:

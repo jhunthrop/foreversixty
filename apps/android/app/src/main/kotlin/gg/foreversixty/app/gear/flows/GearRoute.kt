@@ -132,10 +132,12 @@ private fun sheetContent(row: GearSlotRow, unitWord: String, deps: GearDeps, bui
             specName = null, band = null, bandLabel = null, preset = null, faction = selection.faction,
         )
         val tooltip = deps.catalog.sources(request)?.let { ItemTooltipModel.build(request, it, res) }
-        val sources = deps.catalog.loot(build)?.let { WhereToGo.sources(it)[look.id] }.orEmpty()
-        value = composer.content(row, unitWord, tooltip, sources, null)
+        val places = deps.catalog.loot(build)?.let(WhereToGo::sources).orEmpty()
+        val sources = places[look.id].orEmpty()
+        val runnerUp = row.row.pick?.runnersUp?.firstOrNull()?.let { places[it.item.id]?.firstOrNull() }
+        value = composer.content(row, unitWord, tooltip, sources, null, runnerUp)
         val needs = guildId?.let { deps.needs(it, look.id) }
-        if (needs != null) value = composer.content(row, unitWord, tooltip, sources, needs)
+        if (needs != null) value = composer.content(row, unitWord, tooltip, sources, needs, runnerUp)
     }
     return loaded
 }

@@ -807,6 +807,11 @@ enum Copy {
         format("bis.source.crafted", name)
     }
 
+    /// Crafted: {name} ({skill})
+    static func bisSourceCraftedSkill(name: String, skill: Int) -> String {
+        format("bis.source.craftedSkill", name, skill)
+    }
+
     /// Vendor: {name}
     static func bisSourceVendor(name: String) -> String {
         format("bis.source.vendor", name)
@@ -2128,7 +2133,7 @@ enum Copy {
         format("push.applicant.failed", applicant)
     }
 
-    /// Could not mention the {who} in Discord
+    /// Could not mention the {who}
     static func pushShortFailed(who: String) -> String {
         format("push.short.failed", who)
     }
@@ -2404,6 +2409,9 @@ enum Copy {
         format("gear.where.figure", upgrades, gain, unit)
     }
 
+    /// No gain
+    static var gearCellNoGain: String { text("gear.cell.noGain") }
+
     /// {gain} {unit} from {upgrades}
     static func gearHeaderGain(gain: String, unit: String, upgrades: String) -> String {
         format("gear.header.gain", gain, unit, upgrades)
@@ -2477,11 +2485,6 @@ enum Copy {
     /// {n} guildmates have not shared their gear yet
     static func gearSheetUnknown(n: Int) -> String {
         format("gear.sheet.unknown", n)
-    }
-
-    /// {chance} drop chance
-    static func gearSheetDropChance(chance: String) -> String {
-        format("gear.sheet.dropChance", chance)
     }
 
     /// Replaces {item}

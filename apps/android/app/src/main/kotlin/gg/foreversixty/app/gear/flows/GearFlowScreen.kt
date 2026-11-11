@@ -56,7 +56,7 @@ data class GearActions(
  */
 @Composable
 fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, portrait: Painter? = null, topBar: @Composable () -> Unit = {}) {
-    val words = SlotWords(stringResource(R.string.gear_worn), stringResource(R.string.gear_notModelled), content.unitWord)
+    val words = SlotWords(stringResource(R.string.gear_worn), stringResource(R.string.gear_notModelled), stringResource(R.string.gear_cell_noGain), content.unitWord)
     val looks = content.slots.mapNotNull { it.look }.associateBy { it.id }
     FlowBandPage(topBar) {
         PaperdollHeader(
@@ -131,7 +131,7 @@ private fun HeaderLine(header: GearHeader) {
 }
 
 /** The words a slot's second line can take: Equipped, Not modelled, and the gain's unit. */
-private data class SlotWords(val equipped: String, val notModelled: String, val unit: String)
+private data class SlotWords(val equipped: String, val notModelled: String, val noGain: String, val unit: String)
 
 /** A slot as the paperdoll's list draws it: the pick in its quality colour, its gain or Equipped. */
 private fun GearSlotRow.listSlot(words: SlotWords): PaperdollListSlot {
@@ -139,6 +139,8 @@ private fun GearSlotRow.listSlot(words: SlotWords): PaperdollListSlot {
     val detail = when {
         worn -> words.equipped
         notModelled -> words.notModelled
+        // Round 8 row 3: a measured slot that gains nothing reads `No gain`, not `+0.0 DPS`.
+        gain != null && !gains -> words.noGain
         gain != null -> "$gain ${words.unit}"
         else -> null
     }

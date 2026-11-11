@@ -131,9 +131,11 @@ class HomeComposerTest {
         val loot = LootFile(
             sources = listOf(
                 LootSource("dungeon:ubrs", "dungeon", "Blackrock Spire", bosses = listOf(LootBoss("b", "Drakkisath", items = listOf(7), itemChances = mapOf("7" to 8.0)))),
-                LootSource("crafted:bs", "crafted", "Blacksmithing", items = listOf(1)),
+                LootSource("crafted:bs", "crafted", "Blacksmithing", items = listOf(1), requiredSkill = mapOf("1" to 245)),
             ),
         )
+        // Round 8 row 1: a crafted source carries the profession's skill when the loot file has it.
+        assertEquals(245, WhereToGo.sources(loot)[1]?.single()?.skill)
         val upgrades = listOf(upgrade("head", 1, "Lionheart Helm", 14.5), upgrade("back", 20, "Cape", 2.4))
         val picks = WhereToGo.picks(upgrades, slots, WhereToGo.sources(loot))
         assertEquals(listOf("Lionheart Helm", "Blackcrow"), picks.map { it.itemName })

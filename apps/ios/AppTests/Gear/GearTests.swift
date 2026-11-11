@@ -74,7 +74,7 @@ enum GearTestData {
     static let sheet = ItemSheetContent(
         tooltip: tooltip,
         gain: HomeGain(figure: "+12.6", unit: "DPS"),
-        source: ItemSheetRow(id: "source", title: "Onyxia, Onyxia’s Lair, 8% drop chance", sub: nil, lead: .item(icon: "inv_misc_head_dragon_black", quality: nil)),
+        source: ItemSheetRow(id: "source", title: "Onyxia, Onyxia’s Lair, 8%", sub: nil, lead: .none),
         replaces: ItemSheetRow(id: "replaces", title: "Replaces Ironwood Blade", sub: "Equipped", lead: .item(icon: "inv_sword_07", quality: 4)),
         runnerUp: ItemSheetRow(
             id: "runner-up", title: "Vis’kag the Bloodletter", titleQuality: 4, sub: "Runner-up · Onyxia · 8% · \u{2212}1.8 DPS",
@@ -173,7 +173,7 @@ struct GearLogicTests {
       {"id":"dungeon:brs","kind":"dungeon","name":"Blackrock Spire","level_min":55,"bosses":[
         {"id":"b1","name":"Shadow Hunter Vosh'gajin","items":[2],"item_chances":{"2":8.2}}]},
       {"id":"dungeon:mara","kind":"dungeon","name":"Maraudon","level_min":56,"items":[6]},
-      {"id":"crafted:bs","kind":"crafted","name":"Blacksmithing","profession":"blacksmithing","items":[1,4]},
+      {"id":"crafted:bs","kind":"crafted","name":"Blacksmithing","profession":"blacksmithing","items":[1,4],"required_skill":{"4":245}},
       {"id":"crafted:lw","kind":"crafted","name":"Leatherworking","profession":"leatherworking","items":[5]},
       {"id":"rep:sp","kind":"rep","name":"Stormpike Guard","standing":"exalted","items":[3]}]}
     """
@@ -188,13 +188,27 @@ struct GearLogicTests {
     func sheetWhere() throws {
         let loot = try WireFormat.decoder().decode(LootFile.self, from: Data(Self.loot.utf8))
         let places = ItemPlaces(loot: loot, level: nil)
-        let look = HomeItemLook(id: 2, name: nil, quality: nil, icon: nil, itemLevel: nil)
-        func line(_ item: Int, _ kind: String) -> String? {
-            ItemSheetBuilder.source(item, look: look, kind: kind, named: nil, places: places, fallback: nil)?.title
+        func row(_ item: Int, _ kind: String) -> ItemSheetRow? {
+            ItemSheetBuilder.source(item, kind: kind, named: nil, places: places, fallback: nil)
         }
-        #expect(line(2, "dungeon") == "Shadow Hunter Vosh'gajin, Blackrock Spire, 8% drop chance")
-        #expect(line(1, "crafted") == "Blacksmithing")
-        #expect(line(3, "rep") == "Stormpike Guard, exalted")
+        // Round 8, row 1: the shared source words with the figure, no caption, no image.
+        #expect(row(2, "dungeon")?.title == "Shadow Hunter Vosh'gajin, Blackrock Spire, 8%")
+        #expect(row(1, "crafted")?.title == "Crafted: Blacksmithing")
+        #expect(row(4, "crafted")?.title == "Crafted: Blacksmithing (245)", "the recipe's skill, WoW's Requires shape")
+        #expect(row(3, "rep")?.title == "Stormpike Guard, exalted")
+        #expect(row(2, "dungeon")?.sub == nil && row(2, "dungeon")?.lead == ItemSheetRow.Lead.none)
+        let world = ItemSheetBuilder.source(99, kind: "world", named: nil, places: places, fallback: "World drop")
+        #expect(world?.title == "World drop" && world?.lead == ItemSheetRow.Lead.none)
+    }
+
+    @Test("round 8: drop chances in the site's dropPercentLabel: whole percent, half up, <1% under one")
+    func dropPercent() {
+        #expect(ItemNumbers.percent(1.3) == "1%")
+        #expect(ItemNumbers.percent(19.6) == "20%")
+        #expect(ItemNumbers.percent(2.5) == "3%")
+        #expect(ItemNumbers.percent(8.2) == "8%")
+        #expect(ItemNumbers.percent(0.4) == "<1%")
+        #expect(ItemNumbers.percent(1) == "1%")
     }
 
     @Test("every upgrade grouped by place; tonight is the best place of each kind, instance first")
@@ -307,7 +321,7 @@ struct GearLogicTests {
         #expect(content.figure?.contains(".") == false)
     }
 
-    @Test("round 4, row 3: a pick neither Equipped nor gaining reads Not modelled or +0.0 DPS")
+    @Test("round 4, row 3: a pick neither Equipped nor gaining reads Not modelled or No gain")
     func flatTrails() throws {
         let home = try HomeFixtures.home()
         let upgrade = try #require(home.upgrades.first)
@@ -315,7 +329,7 @@ struct GearLogicTests {
         #expect(GearPresenter.trail(upgrade, gain: gain, unit: "DPS") == .gain(gain))
         let unmodelled = try #require(home.upgrades.first { !$0.modelled }, "the fixture has gains not modelled")
         #expect(GearPresenter.trail(unmodelled, gain: nil, unit: "DPS") == .notModelled)
-        #expect(GearPresenter.trail(nil, gain: nil, unit: "DPS") == .noGain(HomeGain(figure: "+0.0", unit: "DPS")))
+        #expect(GearPresenter.trail(nil, gain: nil, unit: "DPS") == .noGain, "round 8: `No gain`, not +0.0 DPS")
     }
 
     @Test("round 4, row 2: Gear's synced age takes the warning tone past a week, as the drawer's")

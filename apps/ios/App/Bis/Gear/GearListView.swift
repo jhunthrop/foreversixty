@@ -69,7 +69,8 @@ struct GearListView: View {
         guard let pick = row.pick else { return PaperdollListSlot(id: row.slot, label: row.label, item: nil) }
         let detail: String? = switch pick.trail {
         case .worn: Copy.gearWorn
-        case let .gain(gain), let .noGain(gain): "\(gain.figure) \(gain.unit)"
+        case let .gain(gain): "\(gain.figure) \(gain.unit)"
+        case .noGain: Copy.gearCellNoGain
         case .notModelled: Copy.gearNotModelled
         case nil: nil
         }

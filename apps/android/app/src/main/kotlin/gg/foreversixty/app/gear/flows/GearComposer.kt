@@ -3,7 +3,6 @@ package gg.foreversixty.app.gear.flows
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.BisList
-import gg.foreversixty.app.bis.BisListBuilder
 import gg.foreversixty.app.bis.BisPhase
 import gg.foreversixty.app.bis.BisRow
 import gg.foreversixty.app.bis.BisUnit
@@ -258,8 +257,13 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
 
         private fun kindOrder(kind: String) = if (kind == RAID) DUNGEON else kind
 
-        /** `8%`, or `0.5%` under one. */
-        fun chanceWord(chance: Double): String =
-            if (chance >= 1) "${chance.roundToInt()}%" else "${BisListBuilder.figure(chance)}%"
+        /**
+         * A drop chance as the site prints it (web/src/lib/items/drop-chance.ts `dropPercentLabel`, the
+         * web Gear's and tooltip's one way): a whole percent, half up (`8%`, `1%` for 1.3), and `<1%`
+         * under one, so a rare drop never reads `0%`.
+         */
+        fun chanceWord(chance: Double): String = if (chance < 1) UNDER_ONE else "${chance.roundToInt()}%"
+
+        private const val UNDER_ONE = "<1%"
     }
 }

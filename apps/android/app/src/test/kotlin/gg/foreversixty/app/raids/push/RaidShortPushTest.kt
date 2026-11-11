@@ -50,7 +50,7 @@ class RaidShortPushTest {
         val refused = RaidShortPushAnswerer({ _, _ -> ApiResult.Failure(ApiError.Status(HTTP_TOO_MANY)) }, resources())
         val failed = refused.answer(payload, mention.id)
         // Round 7 row 2: the role as the button names it, then the raid and the retry.
-        assertEquals("Could not mention the healers in Discord", failed.title)
+        assertEquals("Could not mention the healers", failed.title)
         assertEquals("Onyxia's Lair. Open the raid to try again.", failed.body)
         // Without the server's words for who, the plain failure title.
         assertEquals("That did not save. Try again.", refused.failed(payload.copy(mentionWho = null)).title)

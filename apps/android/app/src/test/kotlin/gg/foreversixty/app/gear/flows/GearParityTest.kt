@@ -131,7 +131,12 @@ class GearParityTest {
         assertEquals("Skum, Wailing Caverns (15-24), 50%", composer.sourceLine(ItemSource("dungeon", "Wailing Caverns", 50.0, boss = "Skum", levels = 15..24)))
         assertEquals("Onyxia, Onyxia's Lair, 8%", composer.sourceLine(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia", levels = 60..60)))
         assertEquals("Stormpike Guard, revered", composer.sourceLine(ItemSource("rep", "Stormpike Guard", null, standing = "Revered")))
-        assertEquals("Pix Xizzix, vendor", composer.sourceLine(ItemSource("vendor", "Pix Xizzix", null)))
+        // Round 8 row 1: the shared source words, with the figure when the data has one.
+        assertEquals("Vendor: Pix Xizzix", composer.sourceLine(ItemSource("vendor", "Pix Xizzix", null)))
+        assertEquals("Crafted: Blacksmithing (245)", composer.sourceLine(ItemSource("crafted", "Blacksmithing", null, profession = "blacksmithing", skill = 245)))
+        assertEquals("Crafted: Blacksmithing", composer.sourceLine(ItemSource("crafted", "Blacksmithing", null, profession = "blacksmithing")))
+        assertEquals("Quest: A Collection of Heads", composer.sourceLine(ItemSource("quest", "A Collection of Heads", null)))
+        assertEquals("World drop", composer.sourceLine(ItemSource("world_drop", "World drop", null)))
     }
 
     @Test fun theSheetSaysWhereAPieceTheLootFileDoesNotPlaceComesFrom() {
@@ -141,10 +146,36 @@ class GearParityTest {
         val composer = GearSheetComposer(res, BUILD)
         val where = composer.content(row, "DPS", null, emptyList(), null).sources.single()
         assertEquals("Crafted: Blacksmithing", where.title)
-        assertEquals("Where to get it", where.line)
+        // Round 8 row 1: no caption and no icon, so the row cannot read as an item.
+        assertEquals(null, where.line)
+        assertEquals(null, where.lead)
         // The loot file's places win over the list's line when it has them.
         val dropped = composer.content(row, "DPS", null, listOf(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia")), null).sources
         assertEquals(listOf("Onyxia, Onyxia's Lair, 8%"), dropped.map { it.title })
+    }
+
+    @Test fun aDropChanceIsAWholePercentAndUnderOneReadsLessThanOne() {
+        // web/src/lib/items/drop-chance.ts dropPercentLabel.
+        assertEquals("8%", GearComposer.chanceWord(8.0))
+        assertEquals("1%", GearComposer.chanceWord(1.3))
+        assertEquals("20%", GearComposer.chanceWord(19.6))
+        assertEquals("3%", GearComposer.chanceWord(2.5))
+        assertEquals("<1%", GearComposer.chanceWord(0.3))
+    }
+
+    @Test fun aZeroGainReadsNoGainAndTheRunnerUpAlwaysSaysWhatItGives() {
+        val res = ApplicationProvider.getApplicationContext<android.content.Context>().resources
+        val alt = BisRunnerUp(BisItemRef(5, "Blood Guard's Plate Helm", null), "PvP rank 11", dpsDelta = 0.0, isWorn = false)
+        val bisRow = GearFixtures.list.rows.first().let { row -> row.copy(pick = row.pick?.copy(runnersUp = listOf(alt))) }
+        val row = GearSlotRow("head", "Head", ItemLook(2, "Lionheart Helm", 4), "Head", "+0.0", worn = false, row = bisRow, gains = false)
+        val sheet = GearSheetComposer(res, BUILD).content(row, "DPS", null, emptyList(), null)
+        assertEquals("No gain", sheet.gain)
+        assertEquals("Runner-up · PvP rank 11 · Same DPS as the pick", sheet.runnerUp?.line)
+        // Placed by the loot file: its boss and its chance, as iOS words it.
+        val dropped = GearSheetComposer(res, BUILD).content(
+            row, "DPS", null, emptyList(), null, ItemSource("dungeon", "Uldaman", 1.3, boss = "Ancient Treasure"),
+        )
+        assertEquals("Runner-up · Ancient Treasure · 1% · Same DPS as the pick", dropped.runnerUp?.line)
     }
 
     @Test fun theSheetSaysWhatThePickReplaces() {
@@ -257,8 +288,7 @@ object GearFixtures {
             gain = "+12.6 DPS",
             sources = listOf(
                 GearSheetLine(
-                    composer.sourceLine(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia", levels = 60..60)), null,
-                    FlowLead.Icon("inv_misc_head_dragon_black", BUILD),
+                    composer.sourceLine(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia", levels = 60..60)), null, null,
                 ),
             ),
             replaces = GearSheetLine(

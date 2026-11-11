@@ -756,6 +756,18 @@
         }
       }
     },
+    "bis.source.craftedSkill": {
+      "comment": "Arguments: 1 name (string), 2 skill (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crafted: %1$@ (%2$lld)"
+          }
+        }
+      }
+    },
     "bis.source.quest": {
       "comment": "Arguments: 1 name (string)",
       "extractionState": "manual",
@@ -2409,6 +2421,17 @@
         }
       }
     },
+    "gear.cell.noGain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No gain"
+          }
+        }
+      }
+    },
     "gear.change": {
       "extractionState": "manual",
       "localizations": {
@@ -2606,18 +2629,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Best in slot for your class"
-          }
-        }
-      }
-    },
-    "gear.sheet.dropChance": {
-      "comment": "Arguments: 1 chance (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ drop chance"
           }
         }
       }
@@ -11301,7 +11312,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Could not mention the %1$@ in Discord"
+            "value": "Could not mention the %1$@"
           }
         }
       }

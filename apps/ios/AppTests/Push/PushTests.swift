@@ -188,7 +188,7 @@ struct PushLandingTests {
         unnamed["data"] = ["guild_id": "2", "application_id": "31"]
         await center.respond(PushReply(action: RaidPushCategory.actionAccept, identifier: "u", thread: "", title: title, userInfo: unnamed))
         #expect(posted.answers == [
-            .init(title: "Could not mention the healers in Discord", body: "Onyxia's Lair. Open the raid to try again."),
+            .init(title: "Could not mention the healers", body: "Onyxia's Lair. Open the raid to try again."),
             .init(title: "Could not accept Mirelle", body: "Mirelle, Holy Priest 60. Open Forever Sixty to try again."),
             .init(title: "Could not decline Mirelle", body: "Mirelle, Holy Priest 60. Open Forever Sixty to try again."),
             // No role to name: the plain title, the same retry line.

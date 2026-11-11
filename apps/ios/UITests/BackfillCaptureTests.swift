@@ -317,40 +317,41 @@ final class BackfillCaptureTests: XCTestCase {
         _ = app
     }
 
-    func testRound7Gear() {
+    // MARK: Round 8: the sheet's source row, the Decline and Mention failures, the drawer from its top
+
+    /// The Gear sheet's source row: the head pick crafted at a skill with its runner-up a boss drop
+    /// (Ancient Treasure, Uldaman), the off-hand crafted upgrade, and the back's world-drop upgrade.
+    func testRound8GearSheets() {
         let app = CaptureLaunch.signedIn(tab: "gear")
         sleep(Self.settles)
-        save("r7-gear-01-top")
-        // A dungeon drop, so the sheet's Where line names the boss, the instance and the chance.
-        if tapSteps(app, "Back", "r7-gear-02-sheet-where") {
-            app.swipeUp()
-            sleep(1)
-            save("r7-gear-03-sheet-where-scrolled")
+        for (slot, name) in [("Head", "crafted-boss-runner-up"), ("Off hand", "crafted-upgrade"), ("Back", "upgrade")] {
+            if tapSteps(app, slot, "r8-gear-sheet-\(name)") {
+                app.swipeDown(velocity: .fast)
+                sleep(1)
+            }
         }
     }
 
-    /// The failure titles now say what failed (round 7, row 2).
-    func testRound7PushFailures() {
+    func testRound8PushFailures() {
         let failing = Self.officer + ["-FSFailOfficerPush", "-FSPostPush"]
         pushAction(
-            failing + ["push.raid-short"], title: "Onyxia's Lair", action: "Mention in Discord", name: "r7-push-short-fail",
+            failing + ["push.raid-short"], title: "Onyxia's Lair", action: "Mention in Discord", name: "r8-push-short-fail",
             result: "Could not mention"
         )
         pushAction(
-            failing + ["push.guild-applicant"], title: "New applicant", action: "Accept", name: "r7-push-applicant-accept-fail",
-            result: "Could not accept"
+            failing + ["push.guild-applicant"], title: "New applicant", action: "Decline", name: "r8-push-applicant-decline-fail",
+            result: "Could not decline"
         )
     }
 
-    /// The drawer's Notifications value: the fixture's some off, then every group on, then off.
-    func testRound7DrawerNotifications() {
+    /// The drawer's Notifications value from the top of the drawer: the header and the row in one frame.
+    func testRound8DrawerNotifications() {
         for (state, extra) in [("some-off", [String]()), ("all-on", ["-FSNotifications", "on"]), ("all-off", ["-FSNotifications", "off"])] {
             let app = CaptureLaunch.signedIn(tab: "home", extra: extra)
             sleep(Self.settles)
             CaptureLaunch.openMenu(app)
-            app.swipeUp()
             sleep(2)
-            save("r7-menu-notifications-\(state)")
+            save("r8-menu-notifications-\(state)")
             app.terminate()
         }
     }

@@ -175,6 +175,8 @@ private struct ItemSheetRowView: View {
                 ItemIconView(icon: icon, quality: quality, build: build, size: FSSize.icon40).parityItem(.image)
             case let .crest(className):
                 ClassCrest(className: className, size: FSSize.crest40, flat: true)
+            case .none:
+                EmptyView()
             }
         }
     }

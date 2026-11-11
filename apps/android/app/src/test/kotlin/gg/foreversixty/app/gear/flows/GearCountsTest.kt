@@ -43,6 +43,7 @@ class GearCountsTest {
         val content = GearComposer(res).content(list.copy(rows = list.rows + extra), "horde", upgrades, emptyList(), home.copy(upgrades = upgrades))
         val shoulder = content.slots.first { it.slot == "shoulder" }
         assertEquals("+0.0", shoulder.gain)
+        // The cell draws it as `No gain` (round 8 row 3): measured, nothing gained.
         assertEquals(false, shoulder.gains)
         val first = content.slots.first { it.slot == unmodelled.slot }
         assertEquals(true, first.notModelled)

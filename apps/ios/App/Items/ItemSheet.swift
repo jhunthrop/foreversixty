@@ -18,6 +18,8 @@ struct ItemSheetRow: Equatable, Identifiable {
     enum Lead: Equatable {
         case item(icon: String?, quality: Int?)
         case crest(className: String)
+        /// No image: the source row is words alone, so it never reads as an item (round 8, row 1).
+        case none
     }
 
     let id: String
@@ -84,7 +86,7 @@ enum ItemSheetBuilder {
         return ItemSheetContent(
             tooltip: tooltip.withoutItemLevel,
             gain: request.gain,
-            source: source(itemID, look: tooltip.look, kind: listed?.kind, named: listed?.source, places: places, fallback: tooltip.source),
+            source: source(itemID, kind: listed?.kind, named: listed?.source, places: places, fallback: tooltip.source),
             replaces: replaces(request.tooltip.wornID, item: itemID, items: sources.items),
             runnerUp: runnerUp(listed, band: band, items: sources.items, places: places),
             guild: guild,
@@ -127,23 +129,21 @@ enum ItemSheetBuilder {
         return nil
     }
 
-    /// Where to get it: an instance by its boss with the drop chance, a profession, a reputation
-    /// with the standing it needs; any other source in the list's words.
-    static func source(
-        _ item: Int, look: HomeItemLook, kind: String?, named: String?, places: ItemPlaces?, fallback: String?
-    ) -> ItemSheetRow? {
-        let lead = ItemSheetRow.Lead.item(icon: look.icon, quality: look.quality)
+    /// Where to get it, one self-describing row with no image and no caption (round 8, row 1; Android's
+    /// anatomy): an instance by its boss with the drop chance (`Onyxia, Onyxia's Lair, 8%`), a profession
+    /// with the skill its recipe needs (`Crafted: Blacksmithing (245)`, WoW's Requires shape), a
+    /// reputation with its standing (`Stormpike Guard, revered`); any other source in the list's words
+    /// (`World drop`).
+    static func source(_ item: Int, kind: String?, named: String?, places: ItemPlaces?, fallback: String?) -> ItemSheetRow? {
         guard let place = places?.place(of: item, kind: kind, named: named) else {
-            return fallback.map { ItemSheetRow(id: "source", title: $0, sub: nil, lead: lead) }
+            return fallback.map { ItemSheetRow(id: "source", title: $0, sub: nil, lead: .none) }
         }
-        // One line, as the round-5 sheet words it: `Onyxia, Onyxia's Lair, 8% drop chance`, `Blacksmithing`,
-        // `Stormpike Guard, revered`.
         let parts: [String?] = switch place.kind {
-        case .instance: [place.boss, place.name, place.chance.map { Copy.gearSheetDropChance(chance: ItemNumbers.percent($0)) }]
-        case .profession: [place.name]
+        case .instance: [place.boss, place.name, place.chance.map(ItemNumbers.percent)]
+        case .profession: [place.skill.map { Copy.bisSourceCraftedSkill(name: place.name, skill: $0) } ?? Copy.bisSourceCrafted(name: place.name)]
         case .reputation: [place.name, place.standing.map { ItemVocabulary.standingName($0)?.lowercased() ?? $0 }]
         }
-        return ItemSheetRow(id: "source", title: parts.compactMap(\.self).joined(separator: listSeparator), sub: nil, lead: lead)
+        return ItemSheetRow(id: "source", title: parts.compactMap(\.self).joined(separator: listSeparator), sub: nil, lead: .none)
     }
 
     private static let listSeparator = ", "

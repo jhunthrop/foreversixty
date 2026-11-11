@@ -66,15 +66,15 @@ struct GearPlaceRow: Equatable, Identifiable {
     let item: GearItemRef
 }
 
-/// One slot of the paperdoll: the list's pick with Equipped, its gain, `Not modelled` or `+0.0 DPS`.
+/// One slot of the paperdoll: the list's pick with Equipped, its gain, `Not modelled` or `No gain`.
 struct GearSlotRow: Equatable, Identifiable {
     enum Trail: Equatable {
         case worn
         case gain(HomeGain)
         /// The answer has the pick but the sim could not measure it.
         case notModelled
-        /// Not worn and no gain: `+0.0 DPS`.
-        case noGain(HomeGain)
+        /// Not worn and no gain: `No gain` (round 8, row 3).
+        case noGain
     }
 
     struct Pick: Equatable {

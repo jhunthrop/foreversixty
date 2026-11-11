@@ -778,7 +778,7 @@ GEAR_R5_CSS = """
 .r5item .tip .nm{font-weight:700;font-size:17px;color:#b866f5}.r5item .tip .sp{display:flex;justify-content:space-between}
 .r5item .tip .gr{color:#1eff00}.r5item .tip .gn{font-weight:600;color:var(--gold)}.r5item .tip .gap{height:4px;margin:-4px 0 0}
 .r5item .lines{margin-top:12px}
-.r5item .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.r5item .row:last-child{border-bottom:0}
+.r5item .row{display:flex;align-items:center;gap:12px;min-height:0;padding:10px 0;border-bottom:1px solid var(--line)}.r5item .row:last-child{border-bottom:0}
 .r5item .row img{width:40px;height:40px;flex:none}
 .r5item b.t{display:block;font:700 15px/20.57px var(--font-body);color:#fff}
 .r5item .row .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
@@ -832,7 +832,7 @@ def _item_sheet_r5(platform: str) -> str:
            '<span>(56.4 damage per second)</span><span class="gap"></span><span>Requires Level 60</span>'
            '<span class="gr">Chance on hit: Sends a shadowy bolt at the<br>enemy causing 125 Shadow damage.</span><span class="gn">+12.6 DPS</span></div>')
     next_raid = _r5_gear_row('Next raid: Onyxia&rsquo;s Lair, Wed 8:00 PM', '', '') if platform == 'ios' else ''
-    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', icon(ONY, 40)) + next_raid
+    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', '') + next_raid
              + _r5_gear_row('Replaces Ironwood Blade', 'Equipped', icon('inv_sword_07', 40, 'q4'))
              + _r5_gear_row('Vis&rsquo;kag the Bloodletter', 'Runner-up &middot; Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'), QCOL[4])
              + _r5_gear_row('Grunvald', 'Protection Warrior &middot; needs it, the pick on their list', crest_img('warrior', 40), WARRIOR)
