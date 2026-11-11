@@ -51,9 +51,9 @@ func requireBefore(t *testing.T, spec string, ids []int32, first, second int32) 
 }
 
 // W1, W2: the Affliction build takes Siphon Life, so the rotation keeps it
-// up. Sim-accuracy round 15 (warlock lane, A2): Bane of Doom is the
-// maintained bane while a minute or more is left, and Bane of Agony only
-// covers the last minute, so Doom's line sits above Agony's.
+// up. Since the 10 Nov hotfix (sim-accuracy 2026-11-11), Wrack speeds up
+// Corruption, Siphon Life and Bane of Agony and Soul Siphon counts only those
+// three, so Agony is the bane all fight and Bane of Doom is never cast.
 func TestAfflictionKeepsSiphonLifeAndAgony(t *testing.T) {
 	const (
 		siphonLife = 18881
@@ -61,10 +61,14 @@ func TestAfflictionKeepsSiphonLifeAndAgony(t *testing.T) {
 		doom       = 603
 	)
 	ids := castOrder(t, "warlock-affliction")
-	if !slices.Contains(ids, siphonLife) {
-		t.Errorf("Affliction never casts Siphon Life (%d): %v", siphonLife, ids)
+	for _, id := range []int32{siphonLife, agony} {
+		if !slices.Contains(ids, id) {
+			t.Errorf("Affliction never casts %d: %v", id, ids)
+		}
 	}
-	requireBefore(t, "warlock-affliction", ids, doom, agony)
+	if slices.Contains(ids, doom) {
+		t.Errorf("Affliction casts Bane of Doom (%d), which Wrack and Soul Siphon leave behind: %v", doom, ids)
+	}
 }
 
 // D2: Demonic Pact is real and modeled. The Demonology raid build takes it,
