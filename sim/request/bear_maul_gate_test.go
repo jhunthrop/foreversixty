@@ -12,6 +12,12 @@ import (
 // to 39 (where a higher gate costs over 5 points of chance of death once Frenzied Regeneration
 // needs the rage), 45 from 40 to 59 and 25 at 60. Threat +0.4 to +6.3% at 25 to 59 and +0.5 to
 // +1.8% at 60, both factions, seeds 1 and 50001 (design/reviews/2026-11-11-sim-accuracy/round30-open.md).
+//
+// Sim-accuracy 2026-11-11 (tanks below 45): below 60 the fight is now a 48 second dungeon pull,
+// and on it 35 rage beats 20 at 25 to 29 beyond the error in every cell (+0.7 to +1.6% threat,
+// chance of death 0 either way). 30 to 35 and 50 to 59 keep 45 (35 gains there too, but within
+// the error at 33 and 56), 36 to 39 keep 25 (30 and 35 tie it, 45 loses) and 40 to 49 keep 45
+// (35 ties it).
 func TestBearMaulGateFollowsTheLevel(t *testing.T) {
 	b, err := aplFS.ReadFile("apl/druid-feral-bear.apl.json")
 	if err != nil {
@@ -39,7 +45,7 @@ func TestBearMaulGateFollowsTheLevel(t *testing.T) {
 	if cond == nil {
 		t.Fatal("no Maul line")
 	}
-	want := map[int]float64{10: 15, 24: 15, 25: 20, 29: 20, 30: 45, 35: 45, 36: 25, 39: 25, 40: 45, 53: 45, 54: 45, 59: 45, 60: 25}
+	want := map[int]float64{10: 15, 24: 15, 25: 35, 27: 35, 29: 35, 30: 45, 35: 45, 36: 25, 39: 25, 40: 45, 53: 45, 54: 45, 59: 45, 60: 25}
 	for level, rage := range want {
 		if got := maulGate(t, cond, level); got != rage {
 			t.Errorf("level %d: Maul queued from %v rage, want %v", level, got, rage)
