@@ -36,7 +36,7 @@ type Audience struct {
 // Users is the audience of the listed accounts.
 func Users(ids ...int64) Audience { return Audience{Kind: ToUsers, UserIDs: ids} }
 
-// Action is a button on the notification: In, Late or Out on a raid.
+// Action is a button on the notification: In, Late, Bench or Out on a raid.
 type Action struct {
 	// ID is the action's identifier the apps register ("signup_in").
 	ID string `json:"id"`

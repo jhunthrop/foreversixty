@@ -727,7 +727,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ %2$@ at best in slot for your level range · Updated %3$@"
+            "value": "%1$@ %2$@ · Updated %3$@"
           }
         }
       }
@@ -21286,7 +21286,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your guild's next raid and your answer. Answer In, Late or Out from here."
+            "value": "Your guild's next raid and your answer. Answer In, Late, Bench or Out from here."
           }
         }
       }

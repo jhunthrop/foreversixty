@@ -77,12 +77,12 @@ struct RaidHeadline: View {
 /// the raid rather than you (Locked, Cancelled), and `Updated {n} h ago` under them when stale.
 struct RaidFoot: View {
     let figures: WidgetFigures
-    /// The medium widget's checked button already says In, Late or Out.
+    /// The medium widget's checked button already says In, Late, Bench or Out.
     var buttonsSayIt = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if let tag = figures.tag, let kind = figures.tagKind, !(buttonsSayIt && [.in, .late, .out].contains(kind)) {
+            if let tag = figures.tag, let kind = figures.tagKind, !(buttonsSayIt && [.in, .late, .bench, .out].contains(kind)) {
                 WidgetTag(text: tag, kind: kind)
             }
             if figures.tagKind == .locked || figures.tagKind == .cancelled, let you = figures.you {
@@ -116,7 +116,7 @@ struct NextRaidSmallView: View {
 }
 
 /// Next raid, medium: the headline and the count on top; under them, 8 pt clear, the answer in
-/// words on the left and In, Late, Out on the right. A press answers in place through
+/// words on the left and In, Late, Bench, Out on the right. A press answers in place through
 /// RaidAnswerIntent; with no spec saved every button opens the spec ask.
 struct NextRaidMediumView: View {
     let figures: WidgetFigures
@@ -124,7 +124,7 @@ struct NextRaidMediumView: View {
     let raid: WidgetNextRaid?
     let characterKey: String?
 
-    static let answers = ["in", "late", "out"]
+    static let answers = ["in", "late", "bench", "out"]
     static let buttonGap: CGFloat = 8
 
     var body: some View {
@@ -181,7 +181,7 @@ struct NextRaidMediumView: View {
     }
 }
 
-/// One of In, Late, Out: tonal, the answer checked with the kill ground and a 2 pt kill underline.
+/// One of In, Late, Bench, Out: tonal, the answer checked with the kill ground and a 2 pt kill underline.
 struct AnswerButtonLabel: View {
     let title: String
     let checked: Bool

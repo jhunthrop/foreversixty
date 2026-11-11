@@ -65,7 +65,7 @@ struct CharacterConfigurationIntent: WidgetConfigurationIntent {
     var characterKey: String? { character?.characterKey }
 }
 
-/// In, Late or Out pressed on the medium widget: answered without opening the app (spec §5.6).
+/// In, Late, Bench or Out pressed on the medium widget: answered without opening the app (spec §5.6).
 struct RaidAnswerIntent: AppIntent {
     static let title: LocalizedStringResource = "widget.nextRaid"
     static let isDiscoverable = false

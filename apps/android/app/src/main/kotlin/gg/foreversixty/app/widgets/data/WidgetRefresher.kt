@@ -69,7 +69,7 @@ class WidgetRefresher(
 }
 
 /**
- * In, Late or Out pressed on the 4 x 2 widget (spec §5.6): the press redraws at once, the existing
+ * In, Late, Bench or Out pressed on the 4 x 2 widget (spec §5.6): the press redraws at once, the existing
  * sign-up PUT answers it (keeping the stored note), then the server's snapshot redraws it. A refused
  * press redraws the previous answer and says `Not saved` on its button for 10 s.
  */

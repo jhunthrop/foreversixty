@@ -677,7 +677,7 @@ enum Copy {
     /// Yours
     static var bisYours: String { text("bis.yours") }
 
-    /// {dps} {unit} at best in slot for your level range · Updated {date}
+    /// {dps} {unit} · Updated {date}
     static func bisSetDps(dps: String, unit: String, date: String) -> String {
         format("bis.setDps", dps, unit, date)
     }
@@ -4139,7 +4139,7 @@ enum Copy {
     /// Current character
     static var widgetCurrentCharacter: String { text("widget.currentCharacter") }
 
-    /// Your guild's next raid and your answer. Answer In, Late or Out from here.
+    /// Your guild's next raid and your answer. Answer In, Late, Bench or Out from here.
     static var widgetGalleryRaid: String { text("widget.gallery.raid") }
 
     /// Your next upgrades and what each one gains.

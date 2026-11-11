@@ -115,12 +115,12 @@ private fun Label(text: String, modifier: GlanceModifier = GlanceModifier) {
     }
 }
 
-/** In, Late, Out: 48 dp, the answer checked; a press answers in place, or asks the spec first. */
+/** In, Late, Bench, Out: 48 dp, the answer checked; a press answers in place, or asks the spec first. */
 @Composable
 private fun Answers(figures: RaidFigures, characterKey: String?) {
     val context = LocalContext.current
     Row {
-        listOf(SignupState.In, SignupState.Late, SignupState.Out).forEachIndexed { index, state ->
+        SignupState.entries.forEachIndexed { index, state ->
             if (index > 0) Spacer(GlanceModifier.width(6.dp))
             val checked = figures.checked == state
             val failed = figures.notSaved == state

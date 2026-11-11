@@ -207,7 +207,7 @@
 
     "bis.title": "Best in slot",
     "bis.yours": "Yours",
-    "bis.setDps": "{dps} {unit} at best in slot for your level range · Updated {date}",
+    "bis.setDps": "{dps} {unit} · Updated {date}",
     "bis.next": "Runner-up: {item}, {delta} {unit}",
     "bis.nextSame": "Runner-up: {item}, same {unit}",
     "bis.youWear": "You wear it",
@@ -1184,7 +1184,7 @@
     "widget.noGain": "—",
     "widget.characterSetting": "Character",
     "widget.currentCharacter": "Current character",
-    "widget.gallery.raid": "Your guild's next raid and your answer. Answer In, Late or Out from here.",
+    "widget.gallery.raid": "Your guild's next raid and your answer. Answer In, Late, Bench or Out from here.",
     "widget.gallery.upgrade": "Your next upgrades and what each one gains.",
     "widget.a11y.raid": "Next raid, {zone}, {when}, {countdown}.",
     "widget.a11y.you": "You are {state} as {role}.",

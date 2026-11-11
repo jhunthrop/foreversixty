@@ -56,6 +56,9 @@ local Tokens = {
 			purple = "a335ee",
 			orange = "ff8000",
 			pink = "e268a8",
+			--- The pink step as text on the apps' panels (spec W3 section 4 Parse number), lightened as the
+			--- rarity text colours are (brand S5).
+			pinkText = "f08cc0",
 			gold = "e5cc80",
 		},
 		school = {
@@ -162,6 +165,8 @@ local Tokens = {
 			tabOn = "ffd36b",
 			--- The apps' tab bar: an unselected tab, muted white.
 			tabOff = "ffffff",
+			--- The apps' paperdoll: the ground behind the sockets (spec W3 section 4, brand S5).
+			paperdollGround = "14171f",
 		},
 		addon = {
 			--- A field the player reads or types in, and a pressed control: one step darker than bg, so it
@@ -227,6 +232,38 @@ local Tokens = {
 		button = { font = "body", weight = 700, size = 13, line = 16 },
 		--- The tab bar label (ruling N4).
 		tab = { font = "body", weight = 600, size = 12, line = 14 },
+		--- The apps' hero head: the character's name on Home's hero (brand S4).
+		heroName = { font = "title", weight = 400, size = 30, line = 34 },
+		--- The raid card's zone on Home (brand S4).
+		cardTitle = { font = "title", weight = 400, size = 24, line = 30 },
+		--- A round-5 section title over the ground, above its panel (the mock's `.sh h2`, brand N4).
+		panelTitle = { font = "title", weight = 400, size = 21, line = 26 },
+		--- The fact line under a hero name (brand S4).
+		factLine = { font = "body", weight = 400, size = 14, line = 20 },
+		--- The unit under a countdown figure (brand S4).
+		figureUnit = { font = "body", weight = 400, size = 12, line = 16 },
+		--- A filter chip's label (brand S4).
+		chip = { font = "body", weight = 600, size = 14, line = 18 },
+		--- The apps' profile drawer: the character's name at its head (brand S4).
+		drawerName = { font = "title", weight = 400, size = 26, line = 32 },
+		--- The apps' profile drawer: a section head (brand S4).
+		drawerSection = { font = "title", weight = 400, size = 16, line = 22 },
+		--- A small strong tag beside a name: the drawer's plan and rank tags (brand S4).
+		tag = { font = "body", weight = 600, size = 12, line = 16 },
+		--- The answer chip at a raid head's end, `Late · 30 min` (brand S4).
+		answerChip = { font = "body", weight = 700, size = 13, line = 18 },
+		--- The apps' bar title beside the profile button, Material 3's small top app bar size (brand D6).
+		barTitle = { font = "title", weight = 400, size = 22, line = 28 },
+		--- The paperdoll list: an item's name in its cell (brand D6).
+		paperdollName = { font = "body", weight = 600, size = 13, line = 16 },
+		--- The paperdoll list: the slot word and its gain under the name (brand D6).
+		paperdollDetail = { font = "body", weight = 400, size = 12, line = 15 },
+		--- A row's line under its title, 13/18 (the mock's `.row .sub`, iOS RowType.sub).
+		rowSub = { font = "body", weight = 400, size = 13, line = 18 },
+		--- The flows' small button label and a row's check mark (brand D6).
+		buttonSmall = { font = "body", weight = 700, size = 13, line = 16 },
+		--- The countdown's figures on Home's raid card (brand S4).
+		countdown = { font = "body", weight = 600, size = 36, line = 38 },
 		figureSm = { font = "body", weight = 700, size = 16, line = 20 },
 		figure = { font = "body", weight = 700, size = 28, line = 32 },
 		figureBig = { font = "body", weight = 700, size = 36, line = 40 },
@@ -289,6 +326,8 @@ local Tokens = {
 		bandFade = 120,
 		segment = 40,
 		icon = {
+			--- A spell icon beside a name in a line of text (the Covered line).
+			[20] = 20,
 			[28] = 28,
 			[32] = 32,
 			[36] = 36,

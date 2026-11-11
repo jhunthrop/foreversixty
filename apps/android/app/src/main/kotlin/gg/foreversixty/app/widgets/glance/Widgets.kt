@@ -83,7 +83,7 @@ class NextUpgradeWidgetReceiver : ForeverWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = NextUpgradeWidget()
 }
 
-/** In, Late or Out on the 4 x 2 widget: answers without opening the app (spec §5.6). */
+/** In, Late, Bench or Out on the 4 x 2 widget: answers without opening the app (spec §5.6). */
 class SignupCallback : ActionCallback {
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
         val feature = context.widgets() ?: return

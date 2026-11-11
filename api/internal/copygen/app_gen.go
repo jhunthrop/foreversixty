@@ -131,9 +131,6 @@ const HomeAnswerLabel = "Upgrades for your level range"
 // HomeAnswerUpgrades is home.answer.upgrades: {n} upgrades
 var HomeAnswerUpgrades = Plural{Count: "n", One: "1 upgrade", Other: "{n} upgrades"}
 
-// HomeAnswerNote is home.answer.note: Best in slot for {band}, together
-const HomeAnswerNote = "Best in slot for {band}, together"
-
 // HomeAnswerNotModelled is home.answer.notModelled: · {n} gains not modelled yet
 var HomeAnswerNotModelled = Plural{Count: "n", One: " · 1 gain not modelled yet", Other: " · {n} gains not modelled yet"}
 
@@ -142,9 +139,6 @@ const HomeAnswerSyncedAddon = "Synced {age} from the addon"
 
 // HomeAnswerNoGear is home.answer.noGear: Add the addon to see which slots you can upgrade.
 const HomeAnswerNoGear = "Add the addon to see which slots you can upgrade."
-
-// HomeAnswerNoGearNote is home.answer.noGearNote: The addon sends your gear when you log out.
-const HomeAnswerNoGearNote = "The addon sends your gear when you log out."
 
 // HomeAnswerListButton is home.answer.listButton: {spec} {band} list
 const HomeAnswerListButton = "{spec} {band} list"
@@ -223,9 +217,6 @@ const HomeNextRaid = "Next raid"
 
 // GearTitle is gear.title: Your gear
 const GearTitle = "Your gear"
-
-// GearIntro is gear.intro: What you wear, and the pick for {band}.
-const GearIntro = "What you wear, and the pick for {band}."
 
 // GearBis is gear.bis: BiS
 const GearBis = "BiS"
@@ -578,8 +569,8 @@ const ItemsPickArrow = "→ {item}"
 // ItemsSetBonus is items.setBonus: ({n}) Set: {text}
 const ItemsSetBonus = "({n}) Set: {text}"
 
-// ItemsSameDps is items.sameDps: Same {unit} as the pick
-const ItemsSameDps = "Same {unit} as the pick"
+// ItemsSameDps is items.sameDps: Same {unit}
+const ItemsSameDps = "Same {unit}"
 
 // ItemsLoading is items.loading: Loading the item…
 const ItemsLoading = "Loading the item…"
@@ -599,8 +590,8 @@ const BisTitle = "Best in slot"
 // BisYours is bis.yours: Yours
 const BisYours = "Yours"
 
-// BisSetDps is bis.setDps: {dps} {unit} at best in slot for your level range · Updated {date}
-const BisSetDps = "{dps} {unit} at best in slot for your level range · Updated {date}"
+// BisSetDps is bis.setDps: {dps} {unit} · Updated {date}
+const BisSetDps = "{dps} {unit} · Updated {date}"
 
 // BisNext is bis.next: Runner-up: {item}, {delta} {unit}
 const BisNext = "Runner-up: {item}, {delta} {unit}"
@@ -700,6 +691,9 @@ const BisSourceQuest = "Quest: {name}"
 
 // BisSourceCrafted is bis.source.crafted: Crafted: {name}
 const BisSourceCrafted = "Crafted: {name}"
+
+// BisSourceCraftedSkill is bis.source.craftedSkill: Crafted: {name} ({skill})
+const BisSourceCraftedSkill = "Crafted: {name} ({skill})"
 
 // BisSourceVendor is bis.source.vendor: Vendor: {name}
 const BisSourceVendor = "Vendor: {name}"
@@ -1133,11 +1127,17 @@ const RaidPagesCalendarItem = "{zone} {weekday}"
 // RaidPagesLootLast is raid.pages.lootLast: Last raid: {n} pieces
 var RaidPagesLootLast = Plural{Count: "n", One: "Last raid: 1 piece", Other: "Last raid: {n} pieces"}
 
+// RaidPagesLastNight is raid.pages.lastNight: Last: {zone}, {kills}, {wipes}
+const RaidPagesLastNight = "Last: {zone}, {kills}, {wipes}"
+
+// RaidPagesKills is raid.pages.kills: {n} kills
+var RaidPagesKills = Plural{Count: "n", One: "1 kill", Other: "{n} kills"}
+
+// RaidPagesWipes is raid.pages.wipes: {n} wipes
+var RaidPagesWipes = Plural{Count: "n", One: "1 wipe", Other: "{n} wipes"}
+
 // RaidPagesSimsRank is raid.pages.simsRank: #{position} of {of} in guild sims
 const RaidPagesSimsRank = "#{position} of {of} in guild sims"
-
-// RaidNoRaid is raid.noRaid: No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
-const RaidNoRaid = "No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted."
 
 // RaidNeedsYou is raid.needsYou: Needs you
 const RaidNeedsYou = "Needs you"
@@ -1220,8 +1220,8 @@ const OfficerLabel = "Officer"
 // OfficerLock is officer.lock: Lock sign-ups
 const OfficerLock = "Lock sign-ups"
 
-// OfficerUnlock is officer.unlock: Unlock sign-ups
-const OfficerUnlock = "Unlock sign-ups"
+// OfficerUnlock is officer.unlock: Open sign-ups
+const OfficerUnlock = "Open sign-ups"
 
 // OfficerCopy is officer.copy: Copy the list
 const OfficerCopy = "Copy the list"
@@ -1412,8 +1412,8 @@ const SimsGear = "The gear it ran"
 // SimsBreakdown is sims.breakdown: Full breakdown on foreversixty.gg
 const SimsBreakdown = "Full breakdown on foreversixty.gg"
 
-// SimsError is sims.error: ± {error} · {n} iterations · engine {version}
-const SimsError = "± {error} · {n} iterations · engine {version}"
+// SimsError is sims.error: ± {error} · {n} iterations
+const SimsError = "± {error} · {n} iterations"
 
 // SimsKindRun is sims.kind.run: Sim
 const SimsKindRun = "Sim"
@@ -1739,14 +1739,41 @@ const PushActionBench = "Bench"
 // PushActionReview is push.action.review: Review
 const PushActionReview = "Review"
 
+// PushActionMention is push.action.mention: Mention in Discord
+const PushActionMention = "Mention in Discord"
+
 // PushActionDecline is push.action.decline: Decline
 const PushActionDecline = "Decline"
+
+// PushActionAccept is push.action.accept: Accept
+const PushActionAccept = "Accept"
 
 // PushLateQuestion is push.late.question: How late?
 const PushLateQuestion = "How late?"
 
 // PushLateMinutes is push.late.minutes: {n} min
 const PushLateMinutes = "{n} min"
+
+// PushApplicantDeclined is push.applicant.declined: Application declined
+const PushApplicantDeclined = "Application declined"
+
+// PushApplicantAccepted is push.applicant.accepted: Application accepted
+const PushApplicantAccepted = "Application accepted"
+
+// PushApplicantAcceptFailed is push.applicant.acceptFailed: Could not accept {name}
+const PushApplicantAcceptFailed = "Could not accept {name}"
+
+// PushApplicantDeclineFailed is push.applicant.declineFailed: Could not decline {name}
+const PushApplicantDeclineFailed = "Could not decline {name}"
+
+// PushApplicantFailed is push.applicant.failed: {applicant}. Open Forever Sixty to try again.
+const PushApplicantFailed = "{applicant}. Open Forever Sixty to try again."
+
+// PushShortFailed is push.short.failed: Could not mention the {who}
+const PushShortFailed = "Could not mention the {who}"
+
+// PushShortRetry is push.short.retry: {raid}. Open the raid to try again.
+const PushShortRetry = "{raid}. Open the raid to try again."
 
 // PushGroupRaids is push.group.raids: Raids
 const PushGroupRaids = "Raids"
@@ -1826,8 +1853,14 @@ const MenuCharacterLine = "{kind} · {n}"
 // MenuCharacterLineGuild is menu.character.lineGuild: {kind} · {n} · {guild}
 const MenuCharacterLineGuild = "{kind} · {n} · {guild}"
 
-// MenuCharacterMain is menu.character.main: Main
-const MenuCharacterMain = "Main"
+// MenuCharacterLineRank is menu.character.lineRank: {kind} · {n} · {rank}
+const MenuCharacterLineRank = "{kind} · {n} · {rank}"
+
+// MenuCharacterItemLevel is menu.character.itemLevel: item level {n}
+const MenuCharacterItemLevel = "item level {n}"
+
+// MenuSyncError is menu.syncError: Battle.net refresh failed
+const MenuSyncError = "Battle.net refresh failed"
 
 // MenuOpen is menu.open: Open menu
 const MenuOpen = "Open menu"
@@ -1838,59 +1871,17 @@ const MenuTitle = "Menu"
 // MenuRefresh is menu.refresh: Refresh
 const MenuRefresh = "Refresh"
 
+// MenuRefreshing is menu.refreshing: Refreshing…
+const MenuRefreshing = "Refreshing…"
+
+// MenuRefreshFailed is menu.refreshFailed: Could not refresh just now. Try again.
+const MenuRefreshFailed = "Could not refresh just now. Try again."
+
 // MenuSwitch is menu.switch: Switch character
 const MenuSwitch = "Switch character"
 
-// MenuLowLevelShow is menu.lowLevel.show: Show low-level characters ({n})
-const MenuLowLevelShow = "Show low-level characters ({n})"
-
-// MenuLowLevelHide is menu.lowLevel.hide: Hide low-level characters
-const MenuLowLevelHide = "Hide low-level characters"
-
 // MenuTools is menu.tools: Tools
 const MenuTools = "Tools"
-
-// MenuToolGuides is menu.tool.guides: Guides
-const MenuToolGuides = "Guides"
-
-// MenuToolGuidesLine is menu.tool.guides.line: Your spec’s guide, then every class
-const MenuToolGuidesLine = "Your spec’s guide, then every class"
-
-// MenuToolTiers is menu.tool.tiers: Tiers
-const MenuToolTiers = "Tiers"
-
-// MenuToolTiersLine is menu.tool.tiers.line: Every spec, this week
-const MenuToolTiersLine = "Every spec, this week"
-
-// MenuToolPatchNotes is menu.tool.patchNotes: Patch notes
-const MenuToolPatchNotes = "Patch notes"
-
-// MenuToolPatchNotesLine is menu.tool.patchNotes.line: The game and the site
-const MenuToolPatchNotesLine = "The game and the site"
-
-// MenuToolSims is menu.tool.sims: Sims
-const MenuToolSims = "Sims"
-
-// MenuToolSimsLine is menu.tool.sims.line: Your server runs and saved sims
-const MenuToolSimsLine = "Your server runs and saved sims"
-
-// MenuToolReports is menu.tool.reports: Logs and reports
-const MenuToolReports = "Logs and reports"
-
-// MenuToolReportsLine is menu.tool.reports.line: Your reports and the coach
-const MenuToolReportsLine = "Your reports and the coach"
-
-// MenuToolPlanner is menu.tool.planner: Planner
-const MenuToolPlanner = "Planner"
-
-// MenuToolPlannerLine is menu.tool.planner.line: Your builds and the guide builds
-const MenuToolPlannerLine = "Your builds and the guide builds"
-
-// MenuToolRankings is menu.tool.rankings: Rankings
-const MenuToolRankings = "Rankings"
-
-// MenuToolRankingsLine is menu.tool.rankings.line: Your spec and your guild
-const MenuToolRankingsLine = "Your spec and your guild"
 
 // MenuAccount is menu.account: Account
 const MenuAccount = "Account"
@@ -1898,8 +1889,11 @@ const MenuAccount = "Account"
 // MenuNotifications is menu.notifications: Notifications
 const MenuNotifications = "Notifications"
 
-// MenuNotificationsOn is menu.notifications.on: {groups} on
-const MenuNotificationsOn = "{groups} on"
+// MenuNotificationsAllOn is menu.notifications.allOn: All on
+const MenuNotificationsAllOn = "All on"
+
+// MenuNotificationsSomeOff is menu.notifications.someOff: {groups} off
+const MenuNotificationsSomeOff = "{groups} off"
 
 // MenuNotificationsOff is menu.notifications.off: All off
 const MenuNotificationsOff = "All off"
@@ -1913,11 +1907,8 @@ const MenuDevices = "Devices"
 // MenuDevicesLine is menu.devices.line: {n} signed in
 const MenuDevicesLine = "{n} signed in"
 
-// MenuOffline is menu.offline: Offline data
-const MenuOffline = "Offline data"
-
-// MenuOfflineLine is menu.offline.line: {size} on this phone
-const MenuOfflineLine = "{size} on this phone"
+// MenuDevicesLineNewest is menu.devices.lineNewest: {n} signed in · newest {name}
+const MenuDevicesLineNewest = "{n} signed in · newest {name}"
 
 // MenuSettings is menu.settings: Settings
 const MenuSettings = "Settings"
@@ -1961,9 +1952,6 @@ const ActivityUnread = "Unread"
 // ActivityEmpty is activity.empty: Nothing yet. Loot, sims, reports and raids land here.
 const ActivityEmpty = "Nothing yet. Loot, sims, reports and raids land here."
 
-// ActivitySignedOut is activity.signedOut: What changed for your characters: loot, sims, reports, raids.
-const ActivitySignedOut = "What changed for your characters: loot, sims, reports, raids."
-
 // NotificationsSendMe is notifications.sendMe: Send me
 const NotificationsSendMe = "Send me"
 
@@ -1988,14 +1976,17 @@ const NotificationsOfficerDms = "Let officers DM me on Discord"
 // NotificationsOfficerDmsLine is notifications.officerDmsLine: When you have not answered a raid; off, they mention you in the channel
 const NotificationsOfficerDmsLine = "When you have not answered a raid; off, they mention you in the channel"
 
-// GearOnList is gear.onList: {n} of {total} slots on the list
-const GearOnList = "{n} of {total} slots on the list"
+// GearOnList is gear.onList: {n} of {total} slots match the list
+const GearOnList = "{n} of {total} slots match the list"
 
 // GearChange is gear.change: Change
 const GearChange = "Change"
 
-// GearWhereTonight is gear.whereTonight: Where to go tonight
-const GearWhereTonight = "Where to go tonight"
+// GearErrorTitle is gear.error.title: We could not load this list
+const GearErrorTitle = "We could not load this list"
+
+// GearWhereTonight is gear.whereTonight: Where to go
+const GearWhereTonight = "Where to go"
 
 // GearEverySlot is gear.everySlot: Every slot
 const GearEverySlot = "Every slot"
@@ -2014,6 +2005,21 @@ const GearWhereAsk = "{items} · ask a {crafter}"
 
 // GearWhereRep is gear.where.rep: {items}, needs {standing}
 const GearWhereRep = "{items}, needs {standing}"
+
+// GearWhereFigure is gear.where.figure: {upgrades} · {gain} {unit}
+const GearWhereFigure = "{upgrades} · {gain} {unit}"
+
+// GearCellNoGain is gear.cell.noGain: No gain
+const GearCellNoGain = "No gain"
+
+// GearHeaderGain is gear.header.gain: {gain} {unit} from {upgrades}
+const GearHeaderGain = "{gain} {unit} from {upgrades}"
+
+// GearHeaderSynced is gear.header.synced: synced {age}
+const GearHeaderSynced = "synced {age}"
+
+// GearNotModelled is gear.notModelled: Not modelled
+const GearNotModelled = "Not modelled"
 
 // GearCrafterBlacksmithing is gear.crafter.blacksmithing: blacksmith
 const GearCrafterBlacksmithing = "blacksmith"
@@ -2068,9 +2074,6 @@ const GearSheetNobody = "Nobody in the guild has it on their list."
 
 // GearSheetUnknown is gear.sheet.unknown: {n} guildmates have not shared their gear yet
 var GearSheetUnknown = Plural{Count: "n", One: "1 guildmate has not shared their gear yet", Other: "{n} guildmates have not shared their gear yet"}
-
-// GearSheetDropChance is gear.sheet.dropChance: {chance} drop chance
-const GearSheetDropChance = "{chance} drop chance"
 
 // GearSheetReplaces is gear.sheet.replaces: Replaces {item}
 const GearSheetReplaces = "Replaces {item}"
@@ -2360,8 +2363,8 @@ const AccountVersionNoData = "Version {version} ({build})"
 // SearchButton is search.button: Search
 const SearchButton = "Search"
 
-// SearchPlaceholder is search.placeholder: Search items, characters, guides, talents
-const SearchPlaceholder = "Search items, characters, guides, talents"
+// SearchPlaceholder is search.placeholder: Search items, characters, guides
+const SearchPlaceholder = "Search items, characters, guides"
 
 // SearchCancel is search.cancel: Cancel
 const SearchCancel = "Cancel"
@@ -3407,8 +3410,8 @@ const WidgetCharacterSetting = "Character"
 // WidgetCurrentCharacter is widget.currentCharacter: Current character
 const WidgetCurrentCharacter = "Current character"
 
-// WidgetGalleryRaid is widget.gallery.raid: Your guild's next raid and your answer. Answer In, Late or Out from here.
-const WidgetGalleryRaid = "Your guild's next raid and your answer. Answer In, Late or Out from here."
+// WidgetGalleryRaid is widget.gallery.raid: Your guild's next raid and your answer. Answer In, Late, Bench or Out from here.
+const WidgetGalleryRaid = "Your guild's next raid and your answer. Answer In, Late, Bench or Out from here."
 
 // WidgetGalleryUpgrade is widget.gallery.upgrade: Your next upgrades and what each one gains.
 const WidgetGalleryUpgrade = "Your next upgrades and what each one gains."
@@ -3593,8 +3596,8 @@ const GuidesNotSaved = "Not saved"
 // GuidesClasses is guides.classes: All classes
 const GuidesClasses = "All classes"
 
-// GuidesFooter is guides.footer: Saved on this phone: {classes} · {size}. Guides update by themselves when the game data does.
-const GuidesFooter = "Saved on this phone: {classes} · {size}. Guides update by themselves when the game data does."
+// GuidesFooter is guides.footer: Saved on this phone: {classes} · {size}
+const GuidesFooter = "Saved on this phone: {classes} · {size}"
 
 // GuidesFooterNone is guides.footerNone: Nothing is saved on this phone yet. Open a guide once and it stays.
 const GuidesFooterNone = "Nothing is saved on this phone yet. Open a guide once and it stays."
@@ -3811,6 +3814,15 @@ const RosterChipHealers = "Healers"
 
 // RosterChipDps is roster.chip.dps: DPS
 const RosterChipDps = "DPS"
+
+// RosterChipNotSynced is roster.chip.notSynced: Not synced this week · {n}
+const RosterChipNotSynced = "Not synced this week · {n}"
+
+// RosterChipClear is roster.chip.clear: Show the whole roster
+const RosterChipClear = "Show the whole roster"
+
+// RosterCountsOf is roster.counts.of: {shown} of {total}
+const RosterCountsOf = "{shown} of {total}"
 
 // RosterSort is roster.sort: Sort: {by}
 const RosterSort = "Sort: {by}"
@@ -4556,11 +4568,11 @@ const RaidGroupDamage = "Damage"
 // HomeHeadLevel is home.head.level: Level {n} {who}
 const HomeHeadLevel = "Level {n} {who}"
 
-// HomeHeadToBand is home.head.toBand: {n} levels to band {band}
-const HomeHeadToBand = "{n} levels to band {band}"
+// HomeHeadToBand is home.head.toBand: {n} levels to the {band} list
+const HomeHeadToBand = "{n} levels to the {band} list"
 
-// HomeHeadToBandOne is home.head.toBandOne: 1 level to band {band}
-const HomeHeadToBandOne = "1 level to band {band}"
+// HomeHeadToBandOne is home.head.toBandOne: 1 level to the {band} list
+const HomeHeadToBandOne = "1 level to the {band} list"
 
 // HomeUpgradesNext is home.upgrades.next: Next upgrades
 const HomeUpgradesNext = "Next upgrades"
@@ -4573,6 +4585,18 @@ const HomeBestRun = "Best run: {place}, {item} {gain}"
 
 // HomeBestRunChance is home.bestRun.chance: Best run: {place}, {item} {gain}, {chance}
 const HomeBestRunChance = "Best run: {place}, {item} {gain}, {chance}"
+
+// HomeBestRunRow is home.bestRun.row: Best run · {item}
+const HomeBestRunRow = "Best run · {item}"
+
+// HomeUpgradesMeta is home.upgrades.meta: {upgrades} · {gain}
+const HomeUpgradesMeta = "{upgrades} · {gain}"
+
+// HomeUpgradesReplacesWorn is home.upgrades.replacesWorn: replaces {item}
+const HomeUpgradesReplacesWorn = "replaces {item}"
+
+// HomeAnswerSynced is home.answer.synced: Synced {age}
+const HomeAnswerSynced = "Synced {age}"
 
 // HomeRaidTonight is home.raid.tonight: {guild} · {raid} tonight
 const HomeRaidTonight = "{guild} · {raid} tonight"
@@ -4597,12 +4621,6 @@ const HomeRaidNotAnswered = "You have not answered, as {name}, {role}"
 
 // HomeRaidNotAnsweredAlone is home.raid.notAnsweredAlone: You have not answered
 const HomeRaidNotAnsweredAlone = "You have not answered"
-
-// HomeRaidAnswered is home.raid.answered: You are {answer}, as {name}, {role}
-const HomeRaidAnswered = "You are {answer}, as {name}, {role}"
-
-// HomeRaidAnsweredAlone is home.raid.answeredAlone: You are {answer}
-const HomeRaidAnsweredAlone = "You are {answer}"
 
 // HomeRaidPlace is home.raid.place: {guild} · {when}
 const HomeRaidPlace = "{guild} · {when}"
@@ -4679,11 +4697,11 @@ const HomeAllActivity = "All activity ›"
 // HomeAllActivityCount is home.allActivity.count: All activity ({n}) ›
 const HomeAllActivityCount = "All activity ({n}) ›"
 
-// HomeFindGuildLine is home.findGuild.line: Raid with a guild that plans its nights here, and answer its raids from the app.
-const HomeFindGuildLine = "Raid with a guild that plans its nights here, and answer its raids from the app."
+// HomeFindGuildLine is home.findGuild.line: Join a guild to sign up for its raids here.
+const HomeFindGuildLine = "Join a guild to sign up for its raids here."
 
-// HomeFindGuildFirstRaids is home.findGuild.firstRaids: Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open {date}.
-const HomeFindGuildFirstRaids = "Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open {date}."
+// HomeFindGuildFirstRaids is home.findGuild.firstRaids: Join a guild before the first raids on {date}.
+const HomeFindGuildFirstRaids = "Join a guild before the first raids on {date}."
 
 // HomeFindGuild is home.findGuild: Find a guild
 const HomeFindGuild = "Find a guild"
@@ -4703,9 +4721,6 @@ const HomeNewLine = "Log out in game, then check again."
 // HomeNewCheck is home.new.check: Check again
 const HomeNewCheck = "Check again"
 
-// HomeYesterday is home.yesterday: yesterday
-const HomeYesterday = "yesterday"
-
 // RaidTabNextRaid is raid.tab.nextRaid: Next raid
 const RaidTabNextRaid = "Next raid"
 
@@ -4715,8 +4730,8 @@ const RaidTabNeedsYou = "Needs you"
 // RaidTabOpen is raid.tab.open: {n} open
 const RaidTabOpen = "{n} open"
 
-// RaidTabNoRaid is raid.tab.noRaid: No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
-const RaidTabNoRaid = "No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted."
+// RaidTabNoRaid is raid.tab.noRaid: No raid posted yet.
+const RaidTabNoRaid = "No raid posted yet."
 
 // RaidTabRaidNight is raid.tab.raidNight: Raid night
 const RaidTabRaidNight = "Raid night"
@@ -4751,9 +4766,6 @@ const RaidTabCalendarItem = "{zone} {day}"
 // RaidTabWithGuild is raid.tab.withGuild: Raid with a guild
 const RaidTabWithGuild = "Raid with a guild"
 
-// RaidTabWithGuildLine is raid.tab.withGuildLine: Guilds that plan their raids here
-const RaidTabWithGuildLine = "Guilds that plan their raids here"
-
 // RaidTabRecruiting is raid.tab.recruiting: Guilds recruiting a {spec}
 const RaidTabRecruiting = "Guilds recruiting a {spec}"
 
@@ -4777,9 +4789,6 @@ const RaidTabLevelsToGo = "{n} levels to go"
 
 // RaidTabLevelerLine is raid.tab.levelerLine: Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
 const RaidTabLevelerLine = "Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here."
-
-// RaidTabOutLine is raid.tab.outLine: Sign up for your guild's raids from your phone.
-const RaidTabOutLine = "Sign up for your guild's raids from your phone."
 
 // RaidTabPullIn is raid.tab.pullIn: {time} · pull in {until}
 const RaidTabPullIn = "{time} · pull in {until}"
@@ -4813,6 +4822,39 @@ const RaidTabAndMore = "{names} and {n} more"
 
 // RaidTabHowLate is raid.tab.howLate: How late
 const RaidTabHowLate = "How late"
+
+// RaidTabTallyShort is raid.tab.tallyShort: {tally} · {n} short
+const RaidTabTallyShort = "{tally} · {n} short"
+
+// RaidTabTallyCompact is raid.tab.tallyCompact: {have}/{want}
+const RaidTabTallyCompact = "{have}/{want}"
+
+// RaidTabDamageSplit is raid.tab.damageSplit: {melee} melee, {ranged} ranged
+const RaidTabDamageSplit = "{melee} melee, {ranged} ranged"
+
+// RaidTabInviteSize is raid.tab.inviteSize: Invites {time} · {n}-man
+const RaidTabInviteSize = "Invites {time} · {n}-man"
+
+// RaidTabCountBench is raid.tab.countBench: Bench {n}
+const RaidTabCountBench = "Bench {n}"
+
+// RaidTabCountOut is raid.tab.countOut: Out {n}
+const RaidTabCountOut = "Out {n}"
+
+// RaidTabCountNotAnswered is raid.tab.countNotAnswered: {n} not answered
+const RaidTabCountNotAnswered = "{n} not answered"
+
+// RaidTabNotSyncedNames is raid.tab.notSyncedNames: Not synced this week: {names}
+const RaidTabNotSyncedNames = "Not synced this week: {names}"
+
+// RaidTabCoverMissing is raid.tab.coverMissing: Missing {names}
+const RaidTabCoverMissing = "Missing {names}"
+
+// RaidTabCoverLabel is raid.tab.coverLabel: Missing
+const RaidTabCoverLabel = "Missing"
+
+// RaidTabCoverShort is raid.tab.coverShort: {name} {have} of {need}
+const RaidTabCoverShort = "{name} {have} of {need}"
 
 // RaidAnswerLateMinutes is raid.answer.lateMinutes: Late · {n} min
 const RaidAnswerLateMinutes = "Late · {n} min"
@@ -5036,15 +5078,6 @@ const RaidApplicantLine = "{name}, {kind} {level}, {age}"
 // RaidApplicantFailed is raid.applicant.failed: We could not load this application
 const RaidApplicantFailed = "We could not load this application"
 
-// HomeRaidInProgress is home.raid.inProgress: {guild} · {zone} in progress
-const HomeRaidInProgress = "{guild} · {zone} in progress"
-
-// HomeRaidMinutes is home.raid.minutes: min
-const HomeRaidMinutes = "min"
-
-// HomeRaidAs is home.raid.as: as {name}, {role}
-const HomeRaidAs = "as {name}, {role}"
-
 // HomeRaidLineOpen is home.raid.lineOpen: {counts} · you have not answered, {who}
 const HomeRaidLineOpen = "{counts} · you have not answered, {who}"
 
@@ -5110,9 +5143,6 @@ const HomeNewForYouAll = "All activity ›"
 
 // HomeNewForYouAllUnread is home.newForYou.allUnread: All activity ({n}) ›
 const HomeNewForYouAllUnread = "All activity ({n}) ›"
-
-// HomeNewForYouLine is home.newForYou.line: {body} · {when}
-const HomeNewForYouLine = "{body} · {when}"
 
 // HomeFindGuildTitle is home.findGuild.title: Raid with a guild
 const HomeFindGuildTitle = "Raid with a guild"

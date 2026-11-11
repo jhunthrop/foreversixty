@@ -17,7 +17,7 @@ data class WidgetSnapshot(val widget: Widget, val fetchedAt: String) {
 }
 
 /**
- * A press on a widget's In, Late or Out that the server has not answered yet ([pending]), or one it
+ * A press on a widget's In, Late, Bench or Out that the server has not answered yet ([pending]), or one it
  * refused ([failedUntil]: the button says `Not saved` until then and the snapshot's answer stands).
  */
 @Serializable
