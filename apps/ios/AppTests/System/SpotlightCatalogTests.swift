@@ -55,7 +55,7 @@ struct SpotlightCatalogTests {
     func guide() throws {
         let spec = try #require(SpecCatalog.bundled().spec("shaman-elemental"))
         let row = SpotlightCatalog.guideRow(.init(spec: spec, updated: "2026-11-01"))
-        #expect(row == SpotlightRow(id: "shaman-elemental", title: "Elemental Shaman guide", subtitle: "Guide · Updated 1 Nov 2026"))
+        #expect(row == SpotlightRow(id: "shaman-elemental", title: "Elemental Shaman guide", subtitle: "Guide · Updated 1 Nov"))
     }
 
     @Test("the entities open what they name")
