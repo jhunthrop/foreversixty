@@ -467,6 +467,17 @@ class, spec, gain_dps (null when not sim-checked), not_sim_checked, ilvl_delta (
 attendance, already_equivalent, fills_empty_slot, replaces, items_won }`, ranked best first. `icon` is an icon stem
 (see Icons). Errors: 403 `forbidden` (`guild.home.error-forbidden`), 404.
 
+### GET /v1/guilds/{id}/loot/nights (Guild tab, 2026-11-10)
+Auth session, verified members only. Caching private. Fixture `guild.loot.nights`. The same read as the
+web's loot history; the Guild tab asks `?limit=1` for the newest night. Each night carries `drops[]`, and a
+drop's `award` is a loot decision (`{ character_key, name, class, ... }`, `class` is `className` in the
+generated clients) or null when nobody was awarded it yet. Errors: 403 `forbidden`, 404.
+
+### GET /v1/guilds/{id}/setup (Guild tab, 2026-11-10)
+Auth session, verified officers and the leader only. Caching private. Fixture `guild.setup`. Answer `{ steps[], done, total,
+finished }`; a step is `{ key, state, marked }`, the same checklist as the web's guild setup page. The
+Guild tab's officer Setup row reads the counts and the steps. Errors: 403 `forbidden` for anyone else, 404.
+
 The roster is the `roster[]` of the home read; there is no separate roster endpoint in v1.
 
 ## Reports
