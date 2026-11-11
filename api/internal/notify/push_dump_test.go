@@ -23,7 +23,7 @@ func TestDumpPushExamples(t *testing.T) {
 	var events []push
 	add := func(id, title, body, link string) { events = append(events, push{id, title, body, link}) }
 	sim := SimFinishedEvent(site, SimFinished{SimID: "abc123", Spec: "warrior-fury", Character: "Kraggor",
-		DPS: 1234.5, CreatedAt: at.Add(-48 * time.Second), FinishedAt: at})
+		DPS: 1234.5, Title: "BiS check", CreatedAt: at.Add(-48 * time.Second), FinishedAt: at})
 	add("sim", sim.Title, sim.Body, sim.Link)
 	headline := SimFinishedEvent(site, SimFinished{SimID: "abc124", Spec: "mage-frost", DPS: 812,
 		Headline: "+41 DPS from Mana Igniting Cord", FinishedAt: at})

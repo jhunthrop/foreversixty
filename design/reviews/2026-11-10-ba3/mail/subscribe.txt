@@ -1,0 +1,14 @@
+Subject: Confirm your Forever Sixty subscription
+
+Confirm your subscription
+
+Confirm to get Forever Sixty updates. They come only when something changes.
+
+If you did not ask for this, ignore it and nothing happens.
+
+Confirm: https://api.foreversixty.gg/v1/subscribe/confirm?token=4a6c8e0b2d4f6a8c
+
+--
+A fan-made player tool. Not affiliated with Blizzard.
+© 2026 Commish LLC d/b/a Forever Sixty
+Reply to this email or write to help@foreversixty.gg.

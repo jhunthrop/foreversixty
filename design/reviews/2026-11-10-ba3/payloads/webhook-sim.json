@@ -1,0 +1,41 @@
+{
+  "id": "webhook-sim",
+  "title": "webhook: a server sim finished",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "avatar_url": "https://foreversixty.gg/seal-400.png",
+    "embeds": [
+      {
+        "title": "Kraggor's Fury Warrior sim finished",
+        "url": "https://foreversixty.gg/sim/abc123",
+        "fields": [
+          {
+            "name": "Result",
+            "value": "+41 DPS from Vis'kag",
+            "inline": true
+          },
+          {
+            "name": "Run",
+            "value": "BiS check",
+            "inline": true
+          },
+          {
+            "name": "Run time",
+            "value": "48 s",
+            "inline": true
+          }
+        ],
+        "footer": {
+          "text": "Forever Sixty",
+          "icon_url": "https://foreversixty.gg/seal-400.png"
+        },
+        "thumbnail": {
+          "url": "https://foreversixty.gg/icons/hd/crests/warrior.webp"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 37810
+      }
+    ],
+    "username": "Forever Sixty"
+  }
+}

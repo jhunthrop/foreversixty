@@ -1,0 +1,38 @@
+{
+  "id": "webhook-log",
+  "title": "webhook: a log finished parsing",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "avatar_url": "https://foreversixty.gg/seal-400.png",
+    "embeds": [
+      {
+        "title": "Your Tuesday Molten Core report is ready",
+        "url": "https://foreversixty.gg/reports/rep1",
+        "fields": [
+          {
+            "name": "Zone",
+            "value": "Molten Core",
+            "inline": true
+          },
+          {
+            "name": "Boss fights",
+            "value": "9 · 7 kills",
+            "inline": true
+          },
+          {
+            "name": "Visible to",
+            "value": "Everyone",
+            "inline": true
+          }
+        ],
+        "footer": {
+          "text": "Forever Sixty",
+          "icon_url": "https://foreversixty.gg/seal-400.png"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 37810
+      }
+    ],
+    "username": "Forever Sixty"
+  }
+}

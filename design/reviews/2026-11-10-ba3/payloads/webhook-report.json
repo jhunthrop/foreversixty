@@ -1,0 +1,60 @@
+{
+  "id": "webhook-report",
+  "title": "webhook: an officer posts the report",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "avatar_url": "https://foreversixty.gg/seal-400.png",
+    "embeds": [
+      {
+        "title": "Report: Onyxia's Lair · Thu 10 Dec",
+        "description": "Coach reviews of tonight's pulls are in the report and /report.",
+        "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#report",
+        "fields": [
+          {
+            "name": "Kills",
+            "value": "Onyxia 1:42",
+            "inline": true
+          },
+          {
+            "name": "Wipes",
+            "value": "3",
+            "inline": true
+          },
+          {
+            "name": "Time",
+            "value": "2 h 41 min",
+            "inline": true
+          },
+          {
+            "name": "Came",
+            "value": "22 of 23",
+            "inline": true
+          },
+          {
+            "name": "Deaths",
+            "value": "14",
+            "inline": true
+          },
+          {
+            "name": "Top parses",
+            "value": "Zulmara 812 DPS on Onyxia\nCorvane 776 DPS on Onyxia\nPyrewisp 741 DPS on Onyxia"
+          },
+          {
+            "name": "Loot",
+            "value": "Deathbringer to Kraggor\nVis'kag the Bloodletter to Corvane\nEskhandar's Collar to Zulmara\nRing of Binding to Ironvale\nSapphiron Drape to Pyrewisp\n+2 more"
+          }
+        ],
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty",
+          "icon_url": "https://foreversixty.gg/seal-400.png"
+        },
+        "thumbnail": {
+          "url": "https://foreversixty.gg/icons/hd/crests/warrior.webp"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 8377482
+      }
+    ],
+    "username": "Forever Sixty"
+  }
+}
