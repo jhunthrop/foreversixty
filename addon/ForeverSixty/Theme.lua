@@ -383,8 +383,8 @@ Theme.SIZES = {
 	--- The addon's own frames' title band (Widgets.titleBand): its height, the medallion's side,
 	--- the crest's inset inside the ring (13 % of the side, the mock's), the gap after the
 	--- medallion, the band's side padding (the right one clears the close button), the title's,
-	--- the right-hand number's and a section heading's sizes in the title font, and the height of
-	--- a small client button (the panel's rows).
+	--- and a section heading's sizes in the title font (the right-hand number is a figure, set in
+	--- the body face's large role), and the height of a small client button (the panel's rows).
 	titleBand = 64,
 	medallion = 44,
 	medallionInset = 6,
@@ -392,7 +392,6 @@ Theme.SIZES = {
 	titleBandPad = 12,
 	titleBandPadRight = 42,
 	titleText = Tokens.type.addon.title.size,
-	titleNumber = Tokens.type.addon.number.size,
 	headingText = Tokens.type.addon.heading.size,
 	clientButtonHeight = 20,
 }
@@ -763,7 +762,7 @@ Theme.CONTROL_STATES = {
 	--- the text white under the cursor and on an inset ground while held; the sorted column
 	--- gold whatever the cursor does.
 	header = { label = "muted", hoverLabel = "body", active = "gold", pressed = "inset" },
-	close = { label = "muted", hoverLabel = "body", hoverGround = "hover", pressed = "inset" },
+	close = { label = "body", edge = "border", hoverLabel = "strong", hoverGround = "hover", pressed = "inset" },
 	--- The site's button recipes on the addon's own frames (Widgets.clientButton; web
 	--- lib/ui/button.ts): the secondary (blue, blue edge) at rest and the primary (teal, teal edge)
 	--- while selected, a white label on both; under the cursor the ground takes its edge colour.

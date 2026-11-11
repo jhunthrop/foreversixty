@@ -204,8 +204,8 @@ function Widgets.textButton(parent, text, onClick)
 	return button
 end
 
---- The small X in the title bar: muted, body on a hover ground under the cursor
---- (Theme.CONTROL_STATES.close), inset while pressed.
+--- The X in the title bar: a body-coloured x in a 1 px hairline box, so it reads as a button at rest;
+--- the strong white on a hover ground under the cursor (Theme.CONTROL_STATES.close), inset while pressed.
 function Widgets.closeButton(parent, onClick)
 	local states = Theme.CONTROL_STATES.close
 	local button = Theme.createFrame("Button", nil, parent)
@@ -214,7 +214,9 @@ function Widgets.closeButton(parent, onClick)
 	ground:SetAllPoints(button)
 	ground:Hide()
 	button.foreverSixtyGround = ground
+	button.foreverSixtyEdges = Theme.outline(button, Theme.SIZES.border, states.edge)
 	local label = Widgets.label(button, "x", states.label)
+	label:SetJustifyH("CENTER")
 	label:SetPoint("CENTER", button, "CENTER", 0, 1)
 	button.foreverSixtyLabel = label
 	button:SetScript("OnEnter", function(self)
@@ -1060,7 +1062,8 @@ function Widgets.titleBand(frame, onDragStop)
 	medallion:SetPoint("LEFT", band, "LEFT", S.titleBandPad, 0)
 	local unit = Widgets.label(band, "", "boneDim", "small")
 	unit:SetPoint("RIGHT", band, "RIGHT", -S.titleBandPadRight, -2)
-	local number = Theme.titleFont(Widgets.label(band, "", "ink", "large"), S.titleNumber)
+	-- A figure, so the site's body face (the large role), never the title face's old-style digits.
+	local number = Widgets.label(band, "", "ink", "large")
 	number:SetPoint("RIGHT", unit, "LEFT", -3, 2)
 	local left = S.titleBandPad + S.medallion + S.medallionGap
 	local title = Theme.titleFont(Widgets.label(band, "", "bone", "large"), S.titleText)

@@ -199,16 +199,18 @@ body {{ margin: 0; background: #000; }}
   border-bottom: 1px solid {ADDON['line']}; }}
 .plate .band .t {{ font-family: Title, serif; font-size: {role('title')['size']}px; color: {ADDON['cream']};
   line-height: 22px; text-shadow: 1px 1px 0 #000; }}
-.plate .band .m {{ font-size: 12px; color: {ADDON['muted']}; margin-top: 3px; }}
-.plate .band .num {{ font-family: Title, serif; font-size: {role('number')['size']}px; text-shadow: 1px 1px 0 #000; }}
+.plate .band .m {{ font-size: {SMALL['size'] + 1}px; color: {ADDON['muted']}; margin-top: 3px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }}
+.plate .band .num {{ font-family: Site, sans-serif; font-weight: 600; font-size: {role('large')['size'] + 1}px; }}
 .plate .band .unit {{ font-size: 12px; color: {ADDON['muted']}; }}
-.plate .x {{ position: absolute; top: 6px; right: 8px; width: 20px; height: 20px; color: {ADDON['muted']};
+.plate .x {{ position: absolute; top: 6px; right: 8px; width: 20px; height: 20px; color: {ADDON['body']};
+  border: 1px solid {ADDON['line']}; box-sizing: border-box;
   font-size: 14px; display: flex; align-items: center; justify-content: center; font-family: Site, sans-serif; }}
 .plate .body {{ padding: 12px 14px 14px; }}
 .plate .sect {{ font-family: Title, serif; color: {ADDON['cream']}; font-size: {role('heading')['size']}px; }}
 .plate .sect .r {{ font-family: Site, sans-serif; color: {ADDON['muted']}; }}
 .plate .rule {{ background: {ADDON['line']}; }}
-.plate .small, .plate .irow .s {{ color: {ADDON['muted']}; }}
+.plate .small, .plate .irow .s {{ color: {ADDON['muted']}; font-size: {SMALL['size'] + 1}px; }}
 .sbtn {{ display: inline-flex; align-items: center; justify-content: center; height: 22px; padding: 0 12px;
   font-family: Site, sans-serif; font-weight: 600; font-size: 12.5px; color: {ADDON['strong']};
   background: {ADDON['blue']}; border: 1px solid {ADDON['blue_edge']}; white-space: nowrap; }}
@@ -765,14 +767,15 @@ def onboarding(page, heading, content, next_label='Next', extra_right='', total=
             f'<div style="flex:1;min-width:0"><div style="font-family:Title,serif;font-size:19px;color:{U["bone"]};'
             f'text-shadow:1px 1px 0 #000;line-height:22px">{heading}</div>'
             f'<div style="font-size:12px;color:{U["muted"]};margin-top:3px">Welcome to Forever Sixty</div></div>'
-            f'<div style="white-space:nowrap"><span style="font-family:Title,serif;font-size:17px;color:{U["ink"]};'
-            f'text-shadow:1px 1px 0 #000">{page}</span><span style="font-size:12px;color:{U["bone_dim"]}"> of {total}'
+            f'<div style="white-space:nowrap"><span style="font-family:Site,sans-serif;font-weight:600;font-size:17px;'
+            f'color:{U["ink"]}">{page}</span><span style="font-size:12px;color:{U["bone_dim"]}"> of {total}'
             f'</span></div></div>')
     return (f'<style>@font-face {{ font-family: Title; src: url({TITLE_FONT}); }}</style>'
             f'<div style="position:relative;width:{OB_W}px;min-height:240px;max-height:{OB_H}px;'
             f'box-sizing:border-box;color:{U["ink"]};font-family:Site,sans-serif;'
             f'background:{U["ground"]};border:1px solid {U["edge"]};box-shadow:0 8px 28px rgba(0,0,0,.7)">'
-            f'{band}<div style="position:absolute;top:6px;right:8px;width:20px;height:20px;color:{U["muted"]};'
+            f'{band}<div style="position:absolute;top:6px;right:8px;width:20px;height:20px;color:{U["ink"]};'
+            f'border:1px solid {U["line"]};box-sizing:border-box;'
             f'font-size:14px;display:flex;align-items:center;justify-content:center">×</div>'
             f'<div style="padding:16px 26px 0 26px">{content}</div>{footer}</div>')
 
@@ -1035,7 +1038,39 @@ def board_minimap_button():
                 f'on the window ground in one hairline</p><div style="padding:8px 0 0 8px">{mm}</div>')
 
 
+def board_button_states():
+    """Widgets.clientButton and Widgets.closeButton in each state (Theme.CONTROL_STATES.siteButton and
+    .close): the secondary at rest and under the cursor (its ground takes its edge colour), the selected
+    primary likewise, a held button's label one pixel down, and the close X at rest and hovered."""
+    def btn(label, ground, edge, drop=False):
+        return (f'<span class="sbtn" style="background:{ground};border-color:{edge};'
+                f'{"padding-top:2px" if drop else ""}">{label}</span>')
+
+    def x(hover):
+        ground = ADDON['hover'] if hover else 'transparent'
+        ink = ADDON['strong'] if hover else ADDON['body']
+        return (f'<span style="display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;'
+                f'border:1px solid {ADDON["line"]};background:{ground};color:{ink};font-size:14px">×</span>')
+
+    def cell(caption, html):
+        return f'<div class="col" style="gap:6px;align-items:flex-start"><div class="note">{caption}</div>{html}</div>'
+
+    cells = [
+        cell('Secondary, rest', btn('Late', ADDON['blue'], ADDON['blue_edge'])),
+        cell('Secondary, hover', btn('Late', ADDON['blue_edge'], ADDON['blue_edge'])),
+        cell('Secondary, held', btn('Late', ADDON['blue_edge'], ADDON['blue_edge'], drop=True)),
+        cell('Primary or selected, rest', btn('Next', ADDON['teal'], ADDON['teal_edge'])),
+        cell('Primary or selected, hover', btn('Next', ADDON['teal_edge'], ADDON['teal_edge'])),
+        cell('Close, rest', x(False)),
+        cell('Close, hover', x(True)),
+    ]
+    return page('<p class="cap"><b>Button states</b> · the site\'s recipes on the addon\'s plate '
+                '(Theme.CONTROL_STATES.siteButton, .close)</p>'
+                f'<div class="plate" style="padding:18px 20px;display:flex;gap:26px">{"".join(cells)}</div>')
+
+
 BOARDS = {
+    'button-states': board_button_states,
     'minimap-button': board_minimap_button,
     'item-tooltip-before': board_item_before,
     'item-tooltip-after': board_item_after,

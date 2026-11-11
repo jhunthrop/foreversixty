@@ -243,8 +243,6 @@ local Tokens = {
 			large = { font = "body", weight = 600, size = 16, line = 20 },
 			--- A frame's title in its title band.
 			title = { font = "title", weight = 400, size = 19, line = 22 },
-			--- The title band's one number ("2 of 5", the Forever Score).
-			number = { font = "title", weight = 400, size = 17, line = 20 },
 			--- A section heading inside a frame.
 			heading = { font = "title", weight = 400, size = 15, line = 18 },
 		},
