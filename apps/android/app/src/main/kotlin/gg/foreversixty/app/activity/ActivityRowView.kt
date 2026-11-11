@@ -13,7 +13,9 @@ import gg.foreversixty.app.items.ItemQuality
 import gg.foreversixty.app.model.ActivityRow
 import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.bis.BisUnit
-import gg.foreversixty.app.sims.logic.SimResultModel
+import java.text.NumberFormat
+import java.util.Locale
+import kotlin.math.roundToLong
 
 /**
  * An Activity row's body as the feed styles it (`segments`): names in class colour, items in their
@@ -45,11 +47,11 @@ object ActivityBody {
     }
 
     /**
-     * The row's figure (sim DPS, the guild ladder's) to one decimal like every DPS figure (round 5
-     * row 6), grouped with its [unit] (`203.6 DPS`, `1,196.0 DPS`); the body no longer repeats it.
+     * The row's figure (sim DPS, the guild ladder's) in the house format, whole and grouped from
+     * 100 (apps/shared/formats.json), with its [unit] (`1,196 DPS`, row 11); the body no longer repeats it.
      */
     fun figure(row: ActivityRow, unit: String): String? =
-        row.figure?.let { "${SimResultModel.figure(it)} $unit" }
+        row.figure?.let { "${NumberFormat.getIntegerInstance(Locale.US).format(it.roundToLong())} $unit" }
 
     /** The styled line; null when the row has no segments (the caller draws its plain line). */
     fun annotated(row: ActivityRow): AnnotatedString? = parts(row)?.let { parts ->

@@ -468,7 +468,7 @@ struct RaidPushTests {
         #expect(service.signups.first?.key == "us/pvp/gorvash")
         #expect(service.signups.first?.request.state == "in")
         #expect(service.signups.first?.request.lateMinutes == nil)
-        #expect(outcome == .answered(.init(title: "You're In for Onyxia's Lair", body: "Gorvash, pull at 7:00 pm CST.")))
+        #expect(outcome == .answered(.init(title: "You're In for Onyxia's Lair", body: "Gorvash, pull at 7 pm CST.")))
     }
 
     @Test("a Late chip sends its minutes")

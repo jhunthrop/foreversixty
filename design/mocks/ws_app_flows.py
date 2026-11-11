@@ -868,7 +868,7 @@ ACTIVITY = [
                    ('inv_misc_book_09', 'Fury Warrior BiS changed', f'A new pick for Hands: <span style="color:{QCOL[4]}">Theramore Gauntlets</span>', 'Gear and sims', 'Tue', False)]),
 ]
 # The row's figure (round 3, row 11): once, at its end, formatted like the rest.
-ACTIVITY_FIGURES = {'Kaelra passed you in the guild sims': '1,196.2 DPS'}
+ACTIVITY_FIGURES = {'Kaelra passed you in the guild sims': '1,196 DPS'}
 GROUPS = ['All', 'Raids', 'Gear and sims', 'Logs', 'Guild ladder', 'Tiers']
 # The rows about a class wear its crest (one crest language, lane M4a): a guildmate's spec icon, a spec's tier move.
 ACTIVITY_CRESTS = {'ability_warrior_innerrage': 'warrior', 'Fury Warrior moved to S': 'warrior'}

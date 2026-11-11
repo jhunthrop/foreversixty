@@ -481,7 +481,7 @@ class RaidLogicTest {
         assertEquals("in", service.signups.first().second.state)
         // The server's confirmation names the character and the pull time.
         assertEquals(
-            RaidPushPayload.Answer("You're In for Onyxia's Lair", "Gorvash, pull at 7:00 pm CST."),
+            RaidPushPayload.Answer("You're In for Onyxia's Lair", "Gorvash, pull at 7 pm CST."),
             (outcome as RaidPushOutcome.Answered).answer,
         )
     }
@@ -508,7 +508,7 @@ class RaidLogicTest {
         service.signupAnswer = { ok(RaidFixture.load(SignupAnswer.serializer(), "guild.signup.moved")) }
         val outcome = RaidPushAnswerer(service, resources()).answer(payload(), SignupState.In) as RaidPushOutcome.Answered
         assertTrue(outcome.answer.body.endsWith(" Gorvash moved to Bench."))
-        assertEquals("Yellfury, pull at 7:00 pm CST. Gorvash moved to Bench.", outcome.answer.body)
+        assertEquals("Yellfury, pull at 7 pm CST. Gorvash moved to Bench.", outcome.answer.body)
     }
 
     @Test
