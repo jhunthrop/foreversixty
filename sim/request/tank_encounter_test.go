@@ -50,11 +50,15 @@ func TestEveryTankEncounterValueStatesItsReason(t *testing.T) {
 // Sim-accuracy round 30 (walks-heal T2): below 60 the boss was the level-60 one scaled by
 // (band/60)^2 and the healing by (band/60)^1.5, which hit 1.4 to 2 times harder than the
 // dungeon table the heal profile carries (data/curated/heal-profile.json bands: each band's
-// sourced tank hit, from its dungeons' last bosses and trash pulls). A band's boss and its
-// healers now scale by that table: the band's tank hit over the reference band's, the same
-// factor for both, so the share of the damage the healers cover is the level-60 fight's at
-// every band. Below the first band a level scales down from band 20 by the exponents.
+// sourced tank hit, from its dungeons' last bosses and trash pulls). A band's boss now scales
+// by that table, the band's tank hit over the reference band's, and the healing keeps the old
+// stand-in's ratio to the damage ((band/60)^(1.5-2)), so only the swings against the tank's
+// health shrink. Below the first band a level scales down from band 20 by the exponent.
 func TestTankProfileScalesDamageAndHealingByTheHealProfileBandTable(t *testing.T) {
+	f, _ := loadTankEncounter()
+	healingOverDamage := func(level int) float64 {
+		return math.Pow(float64(level)/60, f.LevelScaling.HealingExponent.Value-f.LevelScaling.Exponent.Value)
+	}
 	full, err := TankProfileForLevel(60)
 	if err != nil {
 		t.Fatal(err)
@@ -80,8 +84,8 @@ func TestTankProfileScalesDamageAndHealingByTheHealProfileBandTable(t *testing.T
 		if g, w := got.Boss.MinBaseDamage, full.Boss.MinBaseDamage*scale; math.Abs(g-w) > 1e-9 {
 			t.Errorf("level %d boss damage = %v, want level 60's times band %d's tank hit ratio %v (%v)", c.level, g, c.band, scale, w)
 		}
-		if g, w := got.Healers.HPS, full.Healers.HPS*scale; math.Abs(g-w) > 1e-9 {
-			t.Errorf("level %d healing = %v, want level 60's times band %d's tank hit ratio %v (%v)", c.level, g, c.band, scale, w)
+		if g, w := got.Healers.HPS, full.Healers.HPS*scale*healingOverDamage(c.band); math.Abs(g-w) > 1e-9 {
+			t.Errorf("level %d healing = %v, want the damage scale %v times the stand-in's healing-to-damage ratio at band %d (%v)", c.level, g, scale, c.band, w)
 		}
 		if got.Boss.SwingSpeedSec != full.Boss.SwingSpeedSec || got.Boss.DamageSpread != full.Boss.DamageSpread {
 			t.Error("level scaling must change damage and healing only, not the swing timer or the roll")
@@ -94,7 +98,6 @@ func TestTankProfileScalesDamageAndHealingByTheHealProfileBandTable(t *testing.T
 			t.Errorf("band %d tank hit ratio %v is %v of the old stand-in; T2 measured about half", band, want[band], ratio)
 		}
 	}
-	f, _ := loadTankEncounter()
 	ten, err := TankProfileForLevel(10)
 	if err != nil {
 		t.Fatal(err)
@@ -102,8 +105,8 @@ func TestTankProfileScalesDamageAndHealingByTheHealProfileBandTable(t *testing.T
 	if g, w := ten.Boss.MinBaseDamage, full.Boss.MinBaseDamage*want[20]*math.Pow(0.5, f.LevelScaling.Exponent.Value); math.Abs(g-w) > 1e-9 {
 		t.Errorf("level 10 boss damage = %v, want band 20's scaled by (10/20)^exponent (%v)", g, w)
 	}
-	if g, w := ten.Healers.HPS, full.Healers.HPS*want[20]*math.Pow(0.5, f.LevelScaling.HealingExponent.Value); math.Abs(g-w) > 1e-9 {
-		t.Errorf("level 10 healing = %v, want band 20's scaled by (10/20)^healing_exponent (%v)", g, w)
+	if g, w := ten.Healers.HPS, full.Healers.HPS*want[20]*math.Pow(0.5, f.LevelScaling.Exponent.Value)*healingOverDamage(10); math.Abs(g-w) > 1e-9 {
+		t.Errorf("level 10 healing = %v, want its damage scale times the healing-to-damage ratio at 10 (%v)", g, w)
 	}
 }
 

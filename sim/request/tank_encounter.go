@@ -183,19 +183,51 @@ func tankBandLevel(level, referenceLevel int) int {
 	return min(level/tankBandWidth*tankBandWidth, referenceLevel)
 }
 
+// tankHealProfile is the embedded heal profile, parsed once: the tank fight reads its band
+// table on every request.
+var tankHealProfile = sync.OnceValues(EmbeddedHealProfile)
+
+// tankFightScale is how much of the reference fight's damage and healing a character of
+// level meets. Damage at a band is the heal profile's dungeon table (data/curated/heal-profile.json
+// bands): the band's sourced tank hit over the reference band's. Below the first band there is
+// no row, and a level scales down from band 20 by the damage exponent. Healing keeps the
+// stand-in's ratio to the damage, (fight level over the reference) to the power
+// healing_exponent - exponent, so a lower level is healed a little more for the damage it takes
+// (its armor and avoidance take less of each swing); only the size of the swings against the
+// tank's health moves.
+func tankFightScale(level int, f tankEncounterFile) (damage, healing float64, err error) {
+	heal, err := tankHealProfile()
+	if err != nil {
+		return 0, 0, err
+	}
+	fightLevel := tankBandLevel(level, f.LevelScaling.ReferenceLevel)
+	band := max(fightLevel, tankFirstBand)
+	reference := heal.Bands.reference().TankHitDamage
+	row := heal.Bands.bandFor(band)
+	if row.Level != band || reference <= 0 {
+		return 0, 0, fmt.Errorf("request: the heal profile has no band %d row for the tank fight", band)
+	}
+	damage = row.TankHitDamage / reference
+	if fightLevel < band {
+		damage *= math.Pow(float64(fightLevel)/float64(band), f.LevelScaling.Exponent.Value)
+	}
+	levelRatio := float64(fightLevel) / float64(f.LevelScaling.ReferenceLevel)
+	healing = damage * math.Pow(levelRatio, f.LevelScaling.HealingExponent.Value-f.LevelScaling.Exponent.Value)
+	return damage, healing, nil
+}
+
 // TankProfileForLevel is the tank fight for a character of characterLevel:
-// the curated numbers, with damage and healing scaled by the level of the
-// band the character fights (tankBandLevel) over the reference level
-// (data/curated/tank-encounter.json's level_scaling).
+// the curated numbers, with damage and healing scaled to the band the
+// character fights (tankBandLevel, tankFightScale).
 func TankProfileForLevel(characterLevel int) (TankProfile, error) {
 	f, err := loadTankEncounter()
 	if err != nil {
 		return TankProfile{}, err
 	}
-	bandLevel := tankBandLevel(characterLevel, f.LevelScaling.ReferenceLevel)
-	levelRatio := float64(bandLevel) / float64(f.LevelScaling.ReferenceLevel)
-	damageScale := math.Pow(levelRatio, f.LevelScaling.Exponent.Value)
-	healingScale := math.Pow(levelRatio, f.LevelScaling.HealingExponent.Value)
+	damageScale, healingScale, err := tankFightScale(characterLevel, f)
+	if err != nil {
+		return TankProfile{}, err
+	}
 	return TankProfile{
 		Boss: TankBoss{
 			SwingSpeedSec: f.Boss.SwingSpeedSec.Value,
