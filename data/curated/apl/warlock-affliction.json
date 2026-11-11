@@ -6,7 +6,7 @@
     5019
   ],
   "engineering_notes": {
-    "5": "Wrack is live (sim/warlock/wrack.go, talent-gated, RequiredLevel 40). Since round 15 it is the filler from 40 and the spec's largest damage source; Shadow Bolt is cast only before 40, so Nightfall left the leveling build in round 17."
+    "5": "Wrack is live (sim/warlock/wrack.go, talent-gated, RequiredLevel 40). Since round 15 it is the filler from 40 and the spec's largest damage source; Shadow Bolt is cast only before 40, so Nightfall left the leveling build in round 17. The 10 Nov hotfix cut Wrack 30% and made it run Corruption, Siphon Life and Bane of Agony twice as fast while channelled, with Soul Siphon counting only those three: the 60 rotation drops Bane of Doom for Agony and recasts the three under 3 s (sim-accuracy 2026-11-11)."
   },
   "sources": [
     {
@@ -103,18 +103,42 @@
         }
       },
       {
-        "notes": "Corruption whenever it has fallen off. Instant with Improved Corruption, and never clipped.",
+        "notes": "Corruption when it has fallen off or has under 3 seconds left. Instant with Improved Corruption. Wrack runs its clock twice as fast, so put a fresh one up before the next channel instead of letting it drop in the middle of one.",
         "action": {
           "condition": {
-            "not": {
-              "val": {
-                "dotIsActive": {
-                  "spellId": {
-                    "spellId": 11672,
-                    "rank": 6
+            "or": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 11672,
+                          "rank": 6
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "dotRemainingTime": {
+                        "spellId": {
+                          "spellId": 11672,
+                          "rank": 6
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "3s"
+                      }
+                    }
                   }
                 }
-              }
+              ]
             }
           },
           "castSpell": {
@@ -126,62 +150,11 @@
         }
       },
       {
-        "notes": "Bane of Doom while a minute or more of the fight is left. One global for a big hit after a minute, and Pandemic doubles the bonus on its crits.",
+        "notes": "Amplify Curse right before each Bane of Agony whenever it is ready. It makes that Agony 50% stronger and costs no global.",
         "action": {
           "condition": {
-            "and": {
+            "or": {
               "vals": [
-                {
-                  "not": {
-                    "val": {
-                      "dotIsActive": {
-                        "spellId": {
-                          "spellId": 603
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "remainingTime": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "60s"
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "castSpell": {
-            "spellId": {
-              "spellId": 603
-            }
-          }
-        }
-      },
-      {
-        "notes": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires. It makes that Agony 50% stronger and costs no global.",
-        "action": {
-          "condition": {
-            "and": {
-              "vals": [
-                {
-                  "not": {
-                    "val": {
-                      "dotIsActive": {
-                        "spellId": {
-                          "spellId": 603
-                        }
-                      }
-                    }
-                  }
-                },
                 {
                   "not": {
                     "val": {
@@ -195,33 +168,21 @@
                   }
                 },
                 {
-                  "or": {
-                    "vals": [
-                      {
-                        "not": {
-                          "val": {
-                            "spellIsKnown": {
-                              "spellId": {
-                                "spellId": 603
-                              }
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "cmp": {
-                          "op": "OpLt",
-                          "lhs": {
-                            "remainingTime": {}
-                          },
-                          "rhs": {
-                            "const": {
-                              "val": "60s"
-                            }
-                          }
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "dotRemainingTime": {
+                        "spellId": {
+                          "spellId": 11713,
+                          "rank": 6
                         }
                       }
-                    ]
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "3s"
+                      }
+                    }
                   }
                 }
               ]
@@ -235,22 +196,11 @@
         }
       },
       {
-        "notes": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired. Never clip it, since its biggest ticks come last, and once you have Amplify Curse it makes the Agony 50% stronger.",
+        "notes": "Bane of Agony all fight, recast when it has fallen off or has under 3 seconds left. It is one of the three DoTs Wrack speeds up and Soul Siphon counts, so it beats Bane of Doom at 60, and Amplify Curse makes it 50% stronger whenever that is ready.",
         "action": {
           "condition": {
-            "and": {
+            "or": {
               "vals": [
-                {
-                  "not": {
-                    "val": {
-                      "dotIsActive": {
-                        "spellId": {
-                          "spellId": 603
-                        }
-                      }
-                    }
-                  }
-                },
                 {
                   "not": {
                     "val": {
@@ -259,6 +209,24 @@
                           "spellId": 11713,
                           "rank": 6
                         }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "dotRemainingTime": {
+                        "spellId": {
+                          "spellId": 11713,
+                          "rank": 6
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "3s"
                       }
                     }
                   }
@@ -275,18 +243,42 @@
         }
       },
       {
-        "notes": "Siphon Life whenever it has fallen off. Thirty seconds of Shadow damage that heals you.",
+        "notes": "Siphon Life when it has fallen off or has under 3 seconds left. Shadow damage that heals you, and the third DoT for Soul Siphon.",
         "action": {
           "condition": {
-            "not": {
-              "val": {
-                "dotIsActive": {
-                  "spellId": {
-                    "spellId": 18881,
-                    "rank": 4
+            "or": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 18881,
+                          "rank": 4
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "dotRemainingTime": {
+                        "spellId": {
+                          "spellId": 18881,
+                          "rank": 4
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "3s"
+                      }
+                    }
                   }
                 }
-              }
+              ]
             }
           },
           "castSpell": {
@@ -375,7 +367,7 @@
         }
       },
       {
-        "notes": "Wrack with your DoTs up. With Soul Siphon it out-damages Shadow Bolt for a fraction of the mana, and your Corruption and Bane of Agony take 10% more while it runs.",
+        "notes": "Wrack with your DoTs up. While you channel it, your Corruption, Siphon Life and Bane of Agony tick twice as fast, and Soul Siphon adds 12% to it for each of the three on the target.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -423,24 +415,14 @@
   "panel_when": {
     "1": "below 10% mana",
     "2": "when Curse of the Elements is not on the target",
-    "3": "when Corruption is not on the target",
-    "4": "when Bane of Doom is not on the target, with 60+ s left",
-    "5": "right before Bane of Agony",
-    "6": [
-      {
-        "from_level": 1,
-        "text": "when Bane of Agony is not on the target"
-      },
-      {
-        "from_level": 60,
-        "text": "when neither Bane of Agony nor Bane of Doom is up"
-      }
-    ],
-    "7": "when Siphon Life is not on the target",
-    "8": "when Immolate has under 3 s left",
-    "9": "on a Shadow Trance proc",
-    "10": "as your filler, with your DoTs up",
-    "11": [
+    "3": "when Corruption is off or has under 3 s left",
+    "4": "right before Bane of Agony",
+    "5": "when Bane of Agony is off or has under 3 s left",
+    "6": "when Siphon Life is off or has under 3 s left",
+    "7": "when Immolate has under 3 s left",
+    "8": "on a Shadow Trance proc",
+    "9": "as your filler, with your DoTs up",
+    "10": [
       {
         "from_level": 1,
         "text": "as your filler"
@@ -450,6 +432,6 @@
         "text": "as your filler until Wrack at level 40"
       }
     ],
-    "12": "when you are out of mana and cannot Life Tap"
+    "11": "when you are out of mana and cannot Life Tap"
   }
 }
