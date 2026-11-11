@@ -202,7 +202,11 @@ def test_duration_token_stays_verbatim_when_duration_is_none():
     assert text.describe(1) == "Lasts $d."
 
 
-def test_missing_effect_index_stays_verbatim():
+def test_missing_effect_index_reads_the_first_effect():
+    """Wowhead's Forever tooltips print a token naming an effect the spell lacks with the
+    spell's first effect (2026-11-10, nether.wowhead.com/tooltip/spell/<id>?dataEnv=16):
+    Unflinching Morale 1216997 "by $s2%" is "by 5%", Shifting Power 1322605 "$s2 Energy"
+    is "40 Energy", Temporal Acceleration 367756 "$s3%" is "50%"."""
     from pipeline.spelltext import Effect, SpellRow, SpellText
 
     text = SpellText(
@@ -215,7 +219,10 @@ def test_missing_effect_index_stays_verbatim():
             )
         }
     )
-    assert text.describe(1) == "Extra effect: $s3."
+    assert text.describe(1) == "Extra effect: 2."
+    assert SpellText(
+        {1: SpellRow(description="Extra: $s3.", duration_ms=None, icon_file_id=0)}
+    ).describe(1) == ("Extra: $s3.")
 
 
 def test_t_token_renders_the_tick_period_in_seconds():
@@ -328,11 +335,43 @@ def test_a_precision_suffix_is_the_number_of_decimals_not_a_full_stop():
     assert _one("by ${$s1/-10}.", s1=30) == "by 3."
 
 
+def test_a_stat_the_reader_brings_stays_a_word_in_the_formula():
+    """Wowhead's Forever tooltips (2026-11-10): Summon Hawk 1293241 prints `$rap` as
+    "Ranged Attack Power", Dark Sacrifice 1277324 "${400+$SPI}" as "(440 + Spirit)" (its
+    400 is our build's base points), Wyvern Strike 458436 `$AP` as "Attack Power"."""
+    assert _one("dealing ${32+($rap*(5/100))} Physical damage") == (
+        "dealing (32 + Ranged Attack Power * 0.05) Physical damage"
+    )
+    assert _one("to gain ${400+$SPI} Mana.") == "to gain (400 + Spirit) Mana."
+    assert _one("Bleed for ${6/100*8*$AP} Physical damage") == (
+        "Bleed for (0.48 * Attack Power) Physical damage"
+    )
+
+
 def test_brace_arithmetic_that_is_not_all_numbers_is_left_as_the_client_stored_it():
-    # $rap and $<mult> have no value in the tables this module reads.
-    raw = "${32+($rap*(5/100))} damage and ${(172+($bh*$bc))*$<mult>}"
+    # $sk43 (the reader's sword skill) and an undefined $<mult> have no value here.
+    raw = "${$sk43*5} and ${8*$<mult>}"
     assert _one(raw) == raw
     assert _one("${$s1/0}", s1=5) == "${5/0}"
+
+
+def test_brace_arithmetic_reads_the_duration_in_seconds_and_rounds_to_whole():
+    """Drink 430 on 1.60.1.70790: "Restores ${($s1/5)*$d} mana over $d." with 42 and 18 sec
+    is 151.2, which Wowhead's Forever tooltip prints as "Restores 151 mana over 18 sec.";
+    Drink 431 (104, 21 sec, 436.8) prints 437."""
+    from pipeline.spelltext import Effect, SpellRow, SpellText
+
+    def drink(points: int, duration_ms: int) -> str:
+        row = SpellRow(
+            description="Restores ${($s1/5)*$d} mana over $d.",
+            duration_ms=duration_ms,
+            icon_file_id=0,
+            effects={0: Effect(base_points=points, die_sides=0, period_ms=0)},
+        )
+        return SpellText({430: row}).describe(430)
+
+    assert drink(42, 18_000) == "Restores 151 mana over 18 sec."
+    assert drink(104, 21_000) == "Restores 437 mana over 21 sec."
 
 
 def test_plural_tokens_follow_the_number_before_them():
@@ -412,7 +451,9 @@ def test_a_value_the_tables_do_not_carry_leaves_its_token_alone():
 
 def test_a_longer_token_is_never_read_as_a_shorter_one():
     # "$rap" is ranged attack power, not "$r" followed by "ap".
-    assert _proc_text("${32+($rap*(5/100))}", range_max=30.0) == "${32+($rap*(5/100))}"
+    assert _proc_text("${32+($rap*(5/100))}", range_max=30.0) == (
+        "(32 + Ranged Attack Power * 0.05)"
+    )
     assert _proc_text("$hp $HP", proc_chance=30) == "$hp $HP"
 
 
@@ -435,5 +476,7 @@ def test_q_is_the_effects_misc_value():
 
 
 def test_q_reads_its_own_effect_and_stays_raw_without_a_misc_value():
-    assert _proc_text("$q1 and $q2", misc_value=5) == "5 and $q2"
+    # `$q2` names an effect this spell lacks, so it reads the first (see
+    # test_missing_effect_index_reads_the_first_effect).
+    assert _proc_text("$q1 and $q2", misc_value=5) == "5 and 5"
     assert _proc_text("$q mana") == "$q mana"

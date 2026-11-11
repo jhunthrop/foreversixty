@@ -47,6 +47,10 @@ TABLES = [
     "SpellItemEnchantment",
     # A spell's target cap, the "$i" in "up to $i enemies" (pipeline/spelltext.py).
     "SpellTargetRestrictions",
+    # A description's `$<name>` variables (pipeline/spelltext_grammar.py): Frostbolt's
+    # `$<frostdamage>`, Arcane Barrage's `$<power>`.
+    "SpellDescriptionVariables",
+    "SpellXDescriptionVariables",
     # A spell's weapon restriction: a scope's equip spell reaches ranged
     # weapons only (pipeline/simdb/enchants.py's ranged_weapon_only_spells).
     "SpellEquippedItems",
@@ -116,6 +120,9 @@ TABLES = [
 # typo).
 OPTIONAL_TABLES = frozenset(
     {
+        # Description variables: a build without them leaves its `$<name>` tokens raw.
+        "SpellDescriptionVariables",
+        "SpellXDescriptionVariables",
         "JournalInstance",
         # The rest of the Dungeon Journal: 1.60.1.70790 answers 400 "Table not
         # found" for both, as it does for JournalInstance.
