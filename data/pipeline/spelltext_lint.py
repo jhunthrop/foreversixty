@@ -26,16 +26,14 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
+from pipeline.spelltext_grammar import MID_SENTENCE_SPACES
+
 #: A `$` the renderer left: `$s1`, `${..}`, `$<mult>`, `$?s123[..]`, `$@spelldesc123`.
 _DOLLAR = re.compile(r"\$")
 #: A brace with no `$` before it: the remains of a half-worked `${..}`.
 _BRACE = re.compile(r"[{}]")
 #: An `@` token whose `$` is gone, or still there.
 _AT = re.compile(r"@(?:spell|null)")
-#: Two spaces inside a sentence. Two after a full stop is the client's own house style
-#: ("Lasts 30 sec.  Must remain seated") and a line's leading indent is the combo-point
-#: tables' layout ("   1 point  : 14 sec"); neither is a defect.
-_MID_SENTENCE_SPACES = re.compile(r"(?<=[^\s.!?:;)\]\"'])  +(?=[^\s(:])")
 #: The words a value sits between, with the value gone: "cost by of your", "by %",
 #: "for  sec", "of .", "( )".
 _EMPTY_SUBSTITUTION = re.compile(
@@ -57,7 +55,7 @@ DEFECT_PATTERNS: dict[str, re.Pattern[str]] = {
     "stray brace": _BRACE,
     "unrendered @ token": _AT,
     "client colour code": re.compile(r"\|[cC][0-9A-Fa-f]{8}|\|[rR](?![a-z])"),
-    "double space mid-sentence": _MID_SENTENCE_SPACES,
+    "double space mid-sentence": MID_SENTENCE_SPACES,
     "empty substitution": _EMPTY_SUBSTITUTION,
     "negative zero": _NEGATIVE_ZERO,
     "zero duration": _ZERO_DURATION,

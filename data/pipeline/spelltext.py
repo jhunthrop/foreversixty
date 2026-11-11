@@ -64,6 +64,7 @@ from dataclasses import dataclass, field, replace
 from pipeline.csvio import populated
 from pipeline.spelltext_grammar import (
     COLOUR_ESCAPE,
+    MID_SENTENCE_SPACES,
     READER_LEVEL,
     STAT_WORDS,
     VARIABLE,
@@ -367,7 +368,8 @@ class SpellText:
         resolved = TOKEN.sub(lambda match: self._substitute(row, match), resolved)
         resolved = agree_plurals(resolved)
         resolved = GENDER.sub(lambda m: f"{m['male']} or {m['female']}", resolved)
-        resolved = COLOUR_ESCAPE.sub("", drop_unknown_variables(resolved)).rstrip()
+        resolved = COLOUR_ESCAPE.sub("", drop_unknown_variables(resolved))
+        resolved = MID_SENTENCE_SPACES.sub(" ", resolved).rstrip()
         chain = _chain | {spell_id}
         return AT_TOKEN.sub(lambda match: self._substitute_at(match, chain), resolved)
 

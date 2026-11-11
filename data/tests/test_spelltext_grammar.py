@@ -119,7 +119,8 @@ def test_frostbolt_reads_its_damage_multiplier_from_its_variables():
         frost,
         variables=variables,
     )
-    assert text == "causing 19 to 21  Frost damage"
+    # The client's own two spaces before "Frost" print as the one a page shows.
+    assert text == "causing 19 to 21 Frost damage"
 
 
 def test_a_level_formula_variable_is_read_at_level_sixty():

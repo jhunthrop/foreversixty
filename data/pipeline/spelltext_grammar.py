@@ -186,6 +186,13 @@ def drop_unknown_variables(text: str) -> str:
 #: keeps the words and drops the colour, as it drops `$@spellicon`.
 COLOUR_ESCAPE = re.compile(r"\|[cC][0-9A-Fa-f]{8}|\|[rR]")
 
+#: Two spaces inside a sentence: the client's own slip (Mind Flay 15407 "over $d  and
+#: slowing", Enrage 5229 "but  reduces") or what an empty value leaves. A page shows one
+#: space either way, so the text carries one. Two after a full stop is the client's own
+#: house style ("Lasts 30 sec.  Must remain seated") and a line's leading indent is the
+#: combo-point tables' layout ("   1 point  : 14 sec"); both stay.
+MID_SENTENCE_SPACES = re.compile(r"(?<=[^\s.!?:;)\]\"'])  +(?=[^\s(:])")
+
 
 def matching_brace(text: str, start: int) -> int:
     """The index of the `}` closing the `{` at `start`, or -1."""
