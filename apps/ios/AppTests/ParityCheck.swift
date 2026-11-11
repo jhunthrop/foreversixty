@@ -41,6 +41,12 @@ enum ParityCheck {
         // The raid flows' heads sit on the band under the clear bar (N3), 16 above the content; the
         // mocks draw the head on the ground under an opaque bar, so every region below is ~20 lower.
         "raid-unanswered": ["controls", "section-not-answered", "section-healers-on-the-bench"].map(bandHead),
+        // Home's raid-day card draws the one answer control (44 pt and its 1 pt ring, lane mobile-rest's
+        // brand ruling: one answer control everywhere); the mock's older answers are shorter, so New for
+        // you sits 8 to 9 lower. Clears when the Home mock draws the segmented answers.
+        "home-raid-day": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
+        "home-raid-day-late": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
+        "home-raid-day-officer": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
         "raid-applicant": applicantBandDrift,
     ]
 

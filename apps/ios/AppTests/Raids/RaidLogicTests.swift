@@ -9,12 +9,12 @@ import Testing
 struct RaidClockTests {
     let clock = RaidTime.clock
 
-    @Test("clocks read 7:45 pm in the viewer's zone, and the date block THU 10 DEC")
+    @Test("clocks read 7:45 pm in the viewer's zone, and the date block Thu 10 Dec")
     func clocks() throws {
         let invite = RaidTime.date("2026-12-20T00:45:00Z")
         #expect(clock.clock(invite) == "6:45 pm")
         let block = clock.dateBlock(invite)
-        #expect(block.weekday == "SAT" && block.day == "19" && block.month == "DEC")
+        #expect(block.weekday == "Sat" && block.day == "19" && block.month == "Dec")
         #expect(clock.longDate(invite) == "Saturday 19 December")
     }
 
