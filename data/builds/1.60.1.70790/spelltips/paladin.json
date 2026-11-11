@@ -55,7 +55,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 43.",
+      "description": "Heals a friendly target for 42 to 50.",
       "icon": "spell_holy_holybolt"
     },
     "639": {
@@ -69,7 +69,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 83.",
+      "description": "Heals a friendly target for 82 to 95.",
       "icon": "spell_holy_holybolt"
     },
     "642": {
@@ -111,7 +111,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 155.",
+      "description": "Heals a friendly target for 151 to 176.",
       "icon": "spell_holy_holybolt"
     },
     "678": {
@@ -125,7 +125,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 29% weapon damage plus an additional 17 as Holy damage.",
+      "description": "An instant strike that causes 29% weapon damage plus an additional 15 to 20 as Holy damage.",
       "icon": "classicon_paladin"
     },
     "679": {
@@ -139,7 +139,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 25% weapon damage plus an additional 12 as Holy damage.",
+      "description": "An instant strike that causes 25% weapon damage plus an additional 11 to 14 as Holy damage.",
       "icon": "classicon_paladin"
     },
     "680": {
@@ -153,7 +153,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 36% weapon damage plus an additional 24 as Holy damage.",
+      "description": "An instant strike that causes 36% weapon damage plus an additional 23 to 29 as Holy damage.",
       "icon": "classicon_paladin"
     },
     "853": {
@@ -181,7 +181,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 79 Holy damage to an Undead or Demon target.",
+      "description": "Causes 80 to 90 Holy damage to an Undead or Demon target.",
       "icon": "spell_holy_excorcism_02"
     },
     "1020": {
@@ -223,7 +223,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 287.",
+      "description": "Heals a friendly target for 279 to 319.",
       "icon": "spell_holy_holybolt"
     },
     "1032": {
@@ -251,7 +251,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 452.",
+      "description": "Heals a friendly target for 441 to 494.",
       "icon": "spell_holy_holybolt"
     },
     "1044": {
@@ -293,7 +293,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 32% weapon damage plus an additional 19 as Holy damage.",
+      "description": "An instant strike that causes 32% weapon damage plus an additional 18 to 22 as Holy damage.",
       "icon": "classicon_paladin"
     },
     "2495": {
@@ -307,7 +307,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 39% weapon damage plus an additional 31 as Holy damage.",
+      "description": "An instant strike that causes 39% weapon damage plus an additional 32 to 40 as Holy damage.",
       "icon": "classicon_paladin"
     },
     "2800": {
@@ -335,7 +335,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "Sends bolts of holy power in all directions, causing 395 Holy damage to all Undead and Demon targets within 20 yds and stunning them for 2 sec.",
+      "description": "Sends bolts of holy power in all directions, causing 368 to 434 Holy damage to all Undead and Demon targets within 20 yds and stunning them for 2 sec.",
       "icon": "spell_holy_excorcism"
     },
     "2878": {
@@ -363,7 +363,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 646.",
+      "description": "Heals a friendly target for 629 to 701.",
       "icon": "spell_holy_holybolt"
     },
     "4987": {
@@ -391,7 +391,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 43% weapon damage plus an additional 53 as Holy damage.",
+      "description": "An instant strike that causes 43% weapon damage plus an additional 54 to 67 as Holy damage.",
       "icon": "classicon_paladin"
     },
     "5573": {
@@ -461,7 +461,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 141 Holy damage to an Undead or Demon target.",
+      "description": "Causes 140 to 158 Holy damage to an Undead or Demon target.",
       "icon": "spell_holy_excorcism_02"
     },
     "5615": {
@@ -475,7 +475,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 202 Holy damage to an Undead or Demon target.",
+      "description": "Causes 200 to 224 Holy damage to an Undead or Demon target.",
       "icon": "spell_holy_excorcism_02"
     },
     "5627": {
@@ -699,7 +699,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 291 Holy damage to an Undead or Demon target.",
+      "description": "Causes 286 to 320 Holy damage to an Undead or Demon target.",
       "icon": "spell_holy_excorcism_02"
     },
     "10313": {
@@ -713,7 +713,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 384 Holy damage to an Undead or Demon target.",
+      "description": "Causes 377 to 419 Holy damage to an Undead or Demon target.",
       "icon": "spell_holy_excorcism_02"
     },
     "10314": {
@@ -727,7 +727,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 502 Holy damage to an Undead or Demon target.",
+      "description": "Causes 475 to 529 Holy damage to an Undead or Demon target.",
       "icon": "spell_holy_excorcism_02"
     },
     "10318": {
@@ -741,7 +741,7 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "Sends bolts of holy power in all directions, causing 533 Holy damage to all Undead and Demon targets within 20 yds and stunning them for 2 sec.",
+      "description": "Sends bolts of holy power in all directions, causing 490 to 576 Holy damage to all Undead and Demon targets within 20 yds and stunning them for 2 sec.",
       "icon": "spell_holy_excorcism"
     },
     "10322": {
@@ -797,7 +797,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 899.",
+      "description": "Heals a friendly target for 873 to 971.",
       "icon": "spell_holy_holybolt"
     },
     "10329": {
@@ -811,7 +811,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1217.",
+      "description": "Heals a friendly target for 1177 to 1309.",
       "icon": "spell_holy_holybolt"
     },
     "10332": {
@@ -825,7 +825,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 46% weapon damage plus an additional 68 as Holy damage.",
+      "description": "An instant strike that causes 46% weapon damage plus an additional 73 to 90 as Holy damage.",
       "icon": "classicon_paladin"
     },
     "10333": {
@@ -839,7 +839,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 50% weapon damage plus an additional 93 as Holy damage.",
+      "description": "An instant strike that causes 50% weapon damage plus an additional 81 to 105 as Holy damage.",
       "icon": "classicon_paladin"
     },
     "19740": {
@@ -895,7 +895,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 46.",
+      "description": "Heals a friendly target for 48 to 54.",
       "icon": "spell_holy_flashheal"
     },
     "19752": {
@@ -1175,7 +1175,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 66.",
+      "description": "Heals a friendly target for 68 to 77.",
       "icon": "spell_holy_flashheal"
     },
     "19940": {
@@ -1189,7 +1189,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 101.",
+      "description": "Heals a friendly target for 103 to 115.",
       "icon": "spell_holy_flashheal"
     },
     "19941": {
@@ -1203,7 +1203,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 151.",
+      "description": "Heals a friendly target for 152 to 169.",
       "icon": "spell_holy_flashheal"
     },
     "19942": {
@@ -1217,7 +1217,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 223.",
+      "description": "Heals a friendly target for 221 to 247.",
       "icon": "spell_holy_flashheal"
     },
     "19943": {
@@ -1231,7 +1231,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 303.",
+      "description": "Heals a friendly target for 292 to 325.",
       "icon": "spell_holy_flashheal"
     },
     "20066": {
@@ -1287,7 +1287,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(108/87+$<1h>)*$<mult>} to ${(108/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.",
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional (2.483 + 0.076 * Spell Power) to (8.64 + 0.12 * Spell Power) Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.",
       "icon": "ability_thunderbolt"
     },
     "20162": {
@@ -1301,7 +1301,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 51 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 35.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 60 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 35.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
       "icon": "spell_holy_holysmite"
     },
     "20163": {
@@ -1315,7 +1315,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 14 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 54 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 14 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 66 to 72 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
       "icon": "spell_holy_retributionaura"
     },
     "20164": {
@@ -1413,7 +1413,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(216/87+$<1h>)*$<mult>} to ${(216/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 26 Holy damage to an enemy.",
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional (3.655 + 0.076 * Spell Power) to (12.72 + 0.12 * Spell Power) Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 36 to 38 Holy damage to an enemy.",
       "icon": "ability_thunderbolt"
     },
     "20288": {
@@ -1427,7 +1427,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(352/87+$<1h>)*$<mult>} to ${(352/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 41 Holy damage to an enemy.",
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional (5.632 + 0.076 * Spell Power) to (19.6 + 0.12 * Spell Power) Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 53 to 57 Holy damage to an enemy.",
       "icon": "ability_thunderbolt"
     },
     "20289": {
@@ -1441,7 +1441,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(541/87+$<1h>)*$<mult>} to ${(541/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 60 Holy damage to an enemy.",
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional (8.356 + 0.076 * Spell Power) to (29.08 + 0.12 * Spell Power) Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 74 to 80 Holy damage to an enemy.",
       "icon": "ability_thunderbolt"
     },
     "20290": {
@@ -1455,7 +1455,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(785/87+$<1h>)*$<mult>} to ${(785/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 82 Holy damage to an enemy.",
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional (11.575 + 0.076 * Spell Power) to (40.28 + 0.12 * Spell Power) Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 97 to 105 Holy damage to an enemy.",
       "icon": "ability_thunderbolt"
     },
     "20291": {
@@ -1469,7 +1469,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(1082/87+$<1h>)*$<mult>} to ${(1082/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 107 Holy damage to an enemy.",
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional (15.264 + 0.076 * Spell Power) to (53.12 + 0.12 * Spell Power) Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 125 to 135 Holy damage to an enemy.",
       "icon": "ability_thunderbolt"
     },
     "20292": {
@@ -1483,7 +1483,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(1407/87+$<1h>)*$<mult>} to ${(1407/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 137 Holy damage to an enemy.",
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional (19.414 + 0.076 * Spell Power) to (67.56 + 0.12 * Spell Power) Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 156 to 168 Holy damage to an enemy.",
       "icon": "ability_thunderbolt"
     },
     "20293": {
@@ -1497,7 +1497,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(1786/87+$<1h>)*$<mult>} to ${(1786/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 170 Holy damage to an enemy.",
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional (21.609 + 0.076 * Spell Power) to (75.2 + 0.12 * Spell Power) Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 170 to 186 Holy damage to an enemy.",
       "icon": "ability_thunderbolt"
     },
     "20305": {
@@ -1511,7 +1511,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 94 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 58.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 108 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 58.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
       "icon": "spell_holy_holysmite"
     },
     "20306": {
@@ -1525,7 +1525,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 145 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 92.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 161 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 92.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
       "icon": "spell_holy_holysmite"
     },
     "20307": {
@@ -1539,7 +1539,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 221 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 127.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 239 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 127.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
       "icon": "spell_holy_holysmite"
     },
     "20308": {
@@ -1553,7 +1553,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 306 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 161.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 325 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 161.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
       "icon": "spell_holy_holysmite"
     },
     "20347": {
@@ -1637,7 +1637,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 48.5 Holy damage, 97 if the target is stunned or incapacitated.",
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 69 to 73 Holy damage, 138 to 146 if the target is stunned or incapacitated.",
       "icon": "ability_warrior_innerrage"
     },
     "20419": {
@@ -1651,7 +1651,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 19 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 74 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 19 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 87 to 94 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
       "icon": "spell_holy_retributionaura"
     },
     "20421": {
@@ -1665,7 +1665,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 25 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 96 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 25 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 112 to 121 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
       "icon": "spell_holy_retributionaura"
     },
     "20422": {
@@ -1679,7 +1679,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 32 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 123 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 32 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 140 to 151 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
       "icon": "spell_holy_retributionaura"
     },
     "20423": {
@@ -1693,7 +1693,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 153 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 154 to 167 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
       "icon": "spell_holy_retributionaura"
     },
     "20473": {
@@ -1707,7 +1707,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 20.0,
-      "description": "Blasts the target with Holy energy, causing 182 Holy damage to an enemy, or 156 healing to an ally.",
+      "description": "Blasts the target with Holy energy, causing 175 to 189 Holy damage to an enemy, or 150 to 162 healing to an ally.",
       "icon": "spell_holy_searinglight"
     },
     "20729": {
@@ -1763,7 +1763,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 76.5 Holy damage, 153 if the target is stunned or incapacitated.",
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 97.5 to 104.5 Holy damage, 195 to 209 if the target is stunned or incapacitated.",
       "icon": "ability_warrior_innerrage"
     },
     "20918": {
@@ -1777,7 +1777,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 107 Holy damage, 214 if the target is stunned or incapacitated.",
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 124.5 to 134.5 Holy damage, 249 to 269 if the target is stunned or incapacitated.",
       "icon": "ability_warrior_innerrage"
     },
     "20919": {
@@ -1791,7 +1791,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 137 Holy damage, 274 if the target is stunned or incapacitated.",
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 155 to 168 Holy damage, 310 to 336 if the target is stunned or incapacitated.",
       "icon": "ability_warrior_innerrage"
     },
     "20920": {
@@ -1805,7 +1805,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 178 Holy damage, 356 if the target is stunned or incapacitated.",
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 169.5 to 186.5 Holy damage, 339 to 373 if the target is stunned or incapacitated.",
       "icon": "ability_warrior_innerrage"
     },
     "20922": {
@@ -1903,7 +1903,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 20.0,
-      "description": "Blasts the target with Holy energy, causing 258 Holy damage to an enemy, or 230 healing to an ally.",
+      "description": "Blasts the target with Holy energy, causing 248 to 268 Holy damage to an enemy, or 221 to 239 healing to an ally.",
       "icon": "spell_holy_searinglight"
     },
     "20930": {
@@ -1917,7 +1917,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 20.0,
-      "description": "Blasts the target with Holy energy, causing 348 Holy damage to an enemy, or 320 healing to an ally.",
+      "description": "Blasts the target with Holy energy, causing 334 to 362 Holy damage to an enemy, or 307 to 333 healing to an ally.",
       "icon": "spell_holy_searinglight"
     },
     "21082": {
@@ -1931,7 +1931,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 31 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 23.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 35 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 23.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
       "icon": "spell_holy_holysmite"
     },
     "21084": {
@@ -1945,7 +1945,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(108/87+$<1h>)*$<mult>} to ${(108/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 15 Holy damage to an enemy.",
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional (2.483 + 0.076 * Spell Power) to (8.64 + 0.12 * Spell Power) Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 25 to 26 Holy damage to an enemy.",
       "icon": "ability_thunderbolt"
     },
     "24239": {
@@ -1959,7 +1959,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a hammer that strikes an enemy for 498 Holy damage.  Only usable on enemies that have 20% or less health.",
+      "description": "Hurls a hammer that strikes an enemy for 474 to 522 Holy damage.  Only usable on enemies that have 20% or less health.",
       "icon": "ability_thunderclap"
     },
     "24274": {
@@ -1973,7 +1973,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a hammer that strikes an enemy for 388 Holy damage.  Only usable on enemies that have 20% or less health.",
+      "description": "Hurls a hammer that strikes an enemy for 382 to 421 Holy damage.  Only usable on enemies that have 20% or less health.",
       "icon": "ability_thunderclap"
     },
     "24275": {
@@ -1987,7 +1987,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a hammer that strikes an enemy for 288 Holy damage.  Only usable on enemies that have 20% or less health.",
+      "description": "Hurls a hammer that strikes an enemy for 286 to 314 Holy damage.  Only usable on enemies that have 20% or less health.",
       "icon": "ability_thunderclap"
     },
     "25290": {
@@ -2029,7 +2029,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1580.",
+      "description": "Heals a friendly target for 1495 to 1665.",
       "icon": "spell_holy_holybolt"
     },
     "25780": {
@@ -2197,7 +2197,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 40.0,
-      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 324. Only one Vigil per Paladin may be active in each party.",
+      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 326 to 344. Only one Vigil per Paladin may be active in each party.",
       "icon": "ability_paladin_judgementofthepure"
     },
     "1310994": {
@@ -2239,7 +2239,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 40.0,
-      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 487. Only one Vigil per Paladin may be active in each party.",
+      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 487 to 514. Only one Vigil per Paladin may be active in each party.",
       "icon": "ability_paladin_judgementofthepure"
     },
     "1311595": {
@@ -2253,7 +2253,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 40.0,
-      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 704. Only one Vigil per Paladin may be active in each party.",
+      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 684 to 724. Only one Vigil per Paladin may be active in each party.",
       "icon": "ability_paladin_judgementofthepure"
     },
     "1311606": {
@@ -2267,7 +2267,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 20.0,
-      "description": "Blasts the target with Holy energy, causing 134 Holy damage to an enemy, or 114 healing to an ally.",
+      "description": "Blasts the target with Holy energy, causing 129 to 139 Holy damage to an enemy, or 110 to 118 healing to an ally.",
       "icon": "spell_holy_searinglight"
     },
     "1311649": {
@@ -2281,7 +2281,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills you with divine fury for 30 sec, causing melee attacks to deal an additional 6 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 23 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "description": "Fills you with divine fury for 30 sec, causing melee attacks to deal an additional 6 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 32 to 34 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
       "icon": "spell_holy_retributionaura"
     },
     "1311656": {
@@ -2295,7 +2295,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills you with divine fury for 30 sec, causing melee attacks to inflict an additional 9 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 37 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "description": "Fills you with divine fury for 30 sec, causing melee attacks to inflict an additional 9 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 48 to 52 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
       "icon": "spell_holy_retributionaura"
     },
     "1328372": {
@@ -2351,7 +2351,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Swear an Oath to protect target ally for 5 min, increasing the healing of your Holy Light on them by up to 0, your Flash of Light by up to 0, and your Holy Shock by up to 0. Only one Oath of Light may be sworn by the Paladin at any one time.",
+      "description": "Swear an Oath to protect target ally for 5 min, increasing the healing of your Holy Light on them by up to 400, your Flash of Light by up to 115, and your Holy Shock by up to 230. Only one Oath of Light may be sworn by the Paladin at any one time.",
       "icon": "spell_holy_greaterblessingoflight"
     }
   }

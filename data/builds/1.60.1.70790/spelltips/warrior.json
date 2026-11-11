@@ -181,7 +181,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the melee attack power of all enemies within 10 yards by 49 for 45 sec.",
+      "description": "Reduces the melee attack power of all enemies within 10 yards by 63 for 45 sec.",
       "icon": "ability_warrior_warcry"
     },
     "1161": {
@@ -363,7 +363,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 21.  Lasts 3 min.",
+      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 24.  Lasts 3 min.",
       "icon": "ability_warrior_battleshout"
     },
     "5246": {
@@ -391,7 +391,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Attempt to finish off a wounded foe, causing 125 damage and converting each extra point of rage into $*10;F1 additional damage.  Only usable on enemies that have 20% or less health.",
+      "description": "Attempt to finish off a wounded foe, causing 125 damage and converting each extra point of rage into 3 additional damage.  Only usable on enemies that have 20% or less health.",
       "icon": "inv_sword_48"
     },
     "6178": {
@@ -419,7 +419,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the melee attack power of all enemies within 10 yards by 77 for 45 sec.",
+      "description": "Reduces the melee attack power of all enemies within 10 yards by 91 for 45 sec.",
       "icon": "ability_warrior_warcry"
     },
     "6192": {
@@ -433,7 +433,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 33.  Lasts 3 min.",
+      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 36.  Lasts 3 min.",
       "icon": "ability_warrior_battleshout"
     },
     "6343": {
@@ -531,7 +531,7 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Instantly counterattack an enemy for ${22+($<APRatio>*$apm)} to ${22+($<APRatio>*$apm)} damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
+      "description": "Instantly counterattack an enemy for (20.308 + 0.25 * Attack Power) to (23.692 + 0.25 * Attack Power) damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
       "icon": "ability_warrior_revenge"
     },
     "6574": {
@@ -545,7 +545,7 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Instantly counterattack an enemy for ${34+($<APRatio>*$apm)} to ${34+($<APRatio>*$apm)} damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
+      "description": "Instantly counterattack an enemy for (30.6 + 0.25 * Attack Power) to (37.4 + 0.25 * Attack Power) damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
       "icon": "ability_warrior_revenge"
     },
     "6673": {
@@ -559,7 +559,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 9.  Lasts 3 min.",
+      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 12.  Lasts 3 min.",
       "icon": "ability_warrior_battleshout"
     },
     "7369": {
@@ -629,7 +629,7 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Instantly counterattack an enemy for ${48+($<APRatio>*$apm)} to ${48+($<APRatio>*$apm)} damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
+      "description": "Instantly counterattack an enemy for (42.857 + 0.25 * Attack Power) to (53.143 + 0.25 * Attack Power) damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
       "icon": "ability_warrior_revenge"
     },
     "7381": {
@@ -811,7 +811,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 51.  Lasts 3 min.",
+      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 56.  Lasts 3 min.",
       "icon": "ability_warrior_battleshout"
     },
     "11550": {
@@ -825,7 +825,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 78.  Lasts 3 min.",
+      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 83.  Lasts 3 min.",
       "icon": "ability_warrior_battleshout"
     },
     "11551": {
@@ -839,7 +839,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 111.  Lasts 3 min.",
+      "description": "The warrior shouts, increasing the melee attack power of all party or raid members within 20 yards by 116.  Lasts 3 min.",
       "icon": "ability_warrior_battleshout"
     },
     "11554": {
@@ -853,7 +853,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the melee attack power of all enemies within 10 yards by 98 for 45 sec.",
+      "description": "Reduces the melee attack power of all enemies within 10 yards by 112 for 45 sec.",
       "icon": "ability_warrior_warcry"
     },
     "11555": {
@@ -867,7 +867,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the melee attack power of all enemies within 10 yards by 147 for 45 sec.",
+      "description": "Reduces the melee attack power of all enemies within 10 yards by 161 for 45 sec.",
       "icon": "ability_warrior_warcry"
     },
     "11556": {
@@ -881,7 +881,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the melee attack power of all enemies within 10 yards by 196 for 45 sec.",
+      "description": "Reduces the melee attack power of all enemies within 10 yards by 204 for 45 sec.",
       "icon": "ability_warrior_warcry"
     },
     "11564": {
@@ -1091,7 +1091,7 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Instantly counterattack an enemy for ${82+($<APRatio>*$apm)} to ${82+($<APRatio>*$apm)} damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
+      "description": "Instantly counterattack an enemy for (73.458 + 0.25 * Attack Power) to (90.542 + 0.25 * Attack Power) damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
       "icon": "ability_warrior_revenge"
     },
     "11601": {
@@ -1105,7 +1105,7 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Instantly counterattack an enemy for ${121+($<APRatio>*$apm)} to ${121+($<APRatio>*$apm)} damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
+      "description": "Instantly counterattack an enemy for (109.07 + 0.25 * Attack Power) to (132.93 + 0.25 * Attack Power) damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
       "icon": "ability_warrior_revenge"
     },
     "11604": {
@@ -1175,7 +1175,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the cost of your Heroic Strike ability by 1 Rage.",
+      "description": "Reduces the cost of your Heroic Strike ability by 3 Rage.",
       "icon": "ability_rogue_ambush"
     },
     "12285": {
@@ -1189,7 +1189,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Rage generated by your Charge ability by 3.",
+      "description": "Increases the Rage generated by your Charge ability by 6.",
       "icon": "ability_warrior_charge"
     },
     "12286": {
@@ -1203,7 +1203,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Bleed damage done by your Rend ability by 15%.",
+      "description": "Increases the Bleed damage done by your Rend ability by 35%.",
       "icon": "ability_gouge"
     },
     "12287": {
@@ -1245,7 +1245,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives your Hamstring ability a 0% chance to immobilize the target for 5 sec.",
+      "description": "Gives your Hamstring ability a 15% chance to immobilize the target for 5 sec.",
       "icon": "ability_shockwave"
     },
     "12290": {
@@ -1259,7 +1259,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the critical strike chance of your Overpower ability by 25%.",
+      "description": "Increases the critical strike chance of your Overpower ability by 50%.",
       "icon": "inv_sword_05"
     },
     "12292": {
@@ -1385,7 +1385,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the cooldown of your Shield Wall ability by 11 min.",
+      "description": "Reduces the cooldown of your Shield Wall ability by 11.0 min.",
       "icon": "ability_warrior_shieldwall"
     },
     "12313": {
@@ -1581,7 +1581,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Your critical strikes cause your opponent to Bleed, dealing 0% of your melee weapon's average damage over 12 sec.",
+      "description": "Your critical strikes cause your opponent to Bleed, dealing 60% of your melee weapon's average damage over 12 sec.",
       "icon": "ability_backstab"
     },
     "12857": {
@@ -1651,7 +1651,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the cooldown of your Slam ability by 5 sec, the cast time and global cooldown by 0.5 sec, and Slam no longer interrupts or delays your melee swing.",
+      "description": "Reduces the cooldown of your Slam ability by 5.0 sec, the cast time and global cooldown by 0.50 sec, and Slam no longer interrupts or delays your melee swing.",
       "icon": "ability_warrior_decisivestrike"
     },
     "12876": {
@@ -1931,7 +1931,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Attempt to finish off a wounded foe, causing 200 damage and converting each extra point of rage into $*10;F1 additional damage.  Only usable on enemies that have 20% or less health.",
+      "description": "Attempt to finish off a wounded foe, causing 200 damage and converting each extra point of rage into 6 additional damage.  Only usable on enemies that have 20% or less health.",
       "icon": "inv_sword_48"
     },
     "20660": {
@@ -1945,7 +1945,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Attempt to finish off a wounded foe, causing 325 damage and converting each extra point of rage into $*10;F1 additional damage.  Only usable on enemies that have 20% or less health.",
+      "description": "Attempt to finish off a wounded foe, causing 325 damage and converting each extra point of rage into 9 additional damage.  Only usable on enemies that have 20% or less health.",
       "icon": "inv_sword_48"
     },
     "20661": {
@@ -1959,7 +1959,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Attempt to finish off a wounded foe, causing 450 damage and converting each extra point of rage into $*10;F1 additional damage.  Only usable on enemies that have 20% or less health.",
+      "description": "Attempt to finish off a wounded foe, causing 450 damage and converting each extra point of rage into 12 additional damage.  Only usable on enemies that have 20% or less health.",
       "icon": "inv_sword_48"
     },
     "20662": {
@@ -1973,7 +1973,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Attempt to finish off a wounded foe, causing 600 damage and converting each extra point of rage into $*10;F1 additional damage.  Only usable on enemies that have 20% or less health.",
+      "description": "Attempt to finish off a wounded foe, causing 600 damage and converting each extra point of rage into 15 additional damage.  Only usable on enemies that have 20% or less health.",
       "icon": "inv_sword_48"
     },
     "21156": {
@@ -2099,7 +2099,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "Slam the target with your shield, causing 430 damage, increased by your Block Value, and has a 50% chance of dispelling 1 magic effect on the target. Causes a very high amount of threat.",
+      "description": "Slam the target with your shield, causing 421 to 439 damage, increased by your Block Value, and has a 50% chance of dispelling 1 magic effect on the target. Causes a very high amount of threat.",
       "icon": "inv_shield_05"
     },
     "23923": {
@@ -2113,7 +2113,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "Slam the target with your shield, causing 505 damage, increased by your Block Value, and has a 50% chance of dispelling 1 magic effect on the target. Causes a very high amount of threat.",
+      "description": "Slam the target with your shield, causing 494 to 516 damage, increased by your Block Value, and has a 50% chance of dispelling 1 magic effect on the target. Causes a very high amount of threat.",
       "icon": "inv_shield_05"
     },
     "23924": {
@@ -2127,7 +2127,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "Slam the target with your shield, causing 580 damage, increased by your Block Value, and has a 50% chance of dispelling 1 magic effect on the target. Causes a very high amount of threat.",
+      "description": "Slam the target with your shield, causing 567 to 593 damage, increased by your Block Value, and has a 50% chance of dispelling 1 magic effect on the target. Causes a very high amount of threat.",
       "icon": "inv_shield_05"
     },
     "23925": {
@@ -2141,7 +2141,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "Slam the target with your shield, causing 655 damage, increased by your Block Value, and has a 50% chance of dispelling 1 magic effect on the target. Causes a very high amount of threat.",
+      "description": "Slam the target with your shield, causing 640 to 670 damage, increased by your Block Value, and has a 50% chance of dispelling 1 magic effect on the target. Causes a very high amount of threat.",
       "icon": "inv_shield_05"
     },
     "25286": {
@@ -2169,7 +2169,7 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Instantly counterattack an enemy for ${153+($<APRatio>*$apm)} to ${153+($<APRatio>*$apm)} damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
+      "description": "Instantly counterattack an enemy for (137.7 + 0.25 * Attack Power) to (168.3 + 0.25 * Attack Power) damage and a high amount of threat.  Revenge must follow a block, dodge or parry.",
       "icon": "ability_warrior_revenge"
     },
     "25289": {
@@ -2197,7 +2197,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 5.0,
-      "description": "Instantly attack the target causing ${1+$apm*15/100} damage and healing you for 10% of your maximum health.  Only useable within 20 sec after you kill a non-trivial enemy.",
+      "description": "Instantly attack the target causing (1 + Attack Power * 15 / 100) damage and healing you for 10% of your maximum health.  Only useable within 20 sec after you kill a non-trivial enemy.",
       "icon": "ability_warrior_devastate"
     },
     "458882": {

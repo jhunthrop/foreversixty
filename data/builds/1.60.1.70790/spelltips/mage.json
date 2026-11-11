@@ -13,7 +13,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Ice shards pelt the target area doing ${24*8 sec*$<frostdamage>} Frost damage over 8 sec.",
+      "description": "Ice shards pelt the target area doing 196 Frost damage over 8 sec.",
       "icon": "spell_frost_icestorm"
     },
     "116": {
@@ -27,7 +27,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${19$*$<frostdamage>} to ${19*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 5 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 19 to 21 Frost damage and slowing movement speed by 40% for 5 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "118": {
@@ -55,7 +55,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Targets in a cone in front of the caster take ${97*$<frostdamage>} to ${97*$<frostdamage>}  Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone $Lis:are; slowed by an additional 10% for an additional 3 sec.",
+      "description": "Targets in a cone in front of the caster take 96 to 106 Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.",
       "icon": "spell_frost_glacier"
     },
     "122": {
@@ -69,7 +69,7 @@
       "passive": false,
       "cooldown_ms": 25000,
       "range_yd": 0.0,
-      "description": "Blasts enemies near the caster for ${20*$<frostdamage>} to ${20*$<frostdamage>} Frost damage and freezes them in place for up to 8 sec.  Damage caused may interrupt the effect.",
+      "description": "Blasts enemies near the caster for 22 to 24 Frost damage and freezes them in place for up to 8 sec.  Damage caused may interrupt the effect.",
       "icon": "spell_frost_frostnova"
     },
     "130": {
@@ -97,7 +97,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 18 Fire damage and an additional 2 Fire damage over 4 sec.",
+      "description": "Hurls a fiery ball that causes 15 to 23 Fire damage and an additional 2 Fire damage over 4 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "143": {
@@ -111,7 +111,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 32 Fire damage and an additional 3 Fire damage over 6 sec.",
+      "description": "Hurls a fiery ball that causes 27 to 39 Fire damage and an additional 3 Fire damage over 6 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "145": {
@@ -125,7 +125,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 51 Fire damage and an additional 6 Fire damage over 6 sec.",
+      "description": "Hurls a fiery ball that causes 45 to 61 Fire damage and an additional 6 Fire damage over 6 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "168": {
@@ -153,7 +153,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${29$*$<frostdamage>} to ${29*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 6 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 28 to 32 Frost damage and slowing movement speed by 40% for 6 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "475": {
@@ -209,7 +209,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 muffins, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 muffins, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_food_10"
     },
     "597": {
@@ -223,7 +223,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 loaves of bread, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 loaves of bread, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_food_09"
     },
     "604": {
@@ -265,7 +265,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures a mana agate that can be used to instantly restore 400 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures a mana agate that can be used to instantly restore 375 to 425 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_gem_emerald_01"
     },
     "837": {
@@ -279,7 +279,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${46$*$<frostdamage>} to ${46*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 6 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 45 to 51 Frost damage and slowing movement speed by 40% for 6 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "857": {
@@ -307,7 +307,7 @@
       "passive": false,
       "cooldown_ms": 25000,
       "range_yd": 0.0,
-      "description": "Blasts enemies near the caster for ${34*$<frostdamage>} to ${34*$<frostdamage>} Frost damage and freezes them in place for up to 8 sec.  Damage caused may interrupt the effect.",
+      "description": "Blasts enemies near the caster for 35 to 38 Frost damage and freezes them in place for up to 8 sec.  Damage caused may interrupt the effect.",
       "icon": "spell_frost_frostnova"
     },
     "990": {
@@ -321,7 +321,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 loaves of rye, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 loaves of rye, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_food_12"
     },
     "1008": {
@@ -363,7 +363,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes an explosion of arcane magic around the caster, causing 32 Arcane damage to all targets within 10 yards.",
+      "description": "Causes an explosion of arcane magic around the caster, causing 32 to 36 Arcane damage to all targets within 10 yards.",
       "icon": "spell_nature_wispsplode"
     },
     "1459": {
@@ -419,7 +419,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Absorbs 120 physical damage, draining mana instead.  Drains $e mana per damage absorbed.  Lasts 1 min.",
+      "description": "Absorbs 120 physical damage, draining mana instead.  Drains 2 mana per damage absorbed.  Lasts 1 min.",
       "icon": "spell_shadow_detectlesserinvisibility"
     },
     "1953": {
@@ -447,7 +447,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a pillar of fire, burning all enemies within the area for 60 Fire damage and an additional 44 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
+      "description": "Calls down a pillar of fire, burning all enemies within the area for 55 to 71 Fire damage and an additional 44 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
       "icon": "spell_fire_selfdestruct"
     },
     "2121": {
@@ -461,7 +461,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a pillar of fire, burning all enemies within the area for 109 Fire damage and an additional 84 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
+      "description": "Calls down a pillar of fire, burning all enemies within the area for 100 to 126 Fire damage and an additional 84 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
       "icon": "spell_fire_selfdestruct"
     },
     "2136": {
@@ -475,7 +475,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 20.0,
-      "description": "Blasts the enemy for 28 Fire damage.",
+      "description": "Blasts the enemy for 27 to 35 Fire damage.",
       "icon": "spell_fire_fireball"
     },
     "2137": {
@@ -489,7 +489,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 20.0,
-      "description": "Blasts the enemy for 58 Fire damage.",
+      "description": "Blasts the enemy for 57 to 69 Fire damage.",
       "icon": "spell_fire_fireball"
     },
     "2138": {
@@ -503,7 +503,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 20.0,
-      "description": "Blasts the enemy for 100 Fire damage.",
+      "description": "Blasts the enemy for 97 to 117 Fire damage.",
       "icon": "spell_fire_fireball"
     },
     "2139": {
@@ -531,7 +531,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Scorch the enemy for 39 Fire damage.",
+      "description": "Scorch the enemy for 38 to 46 Fire damage.",
       "icon": "spell_fire_soulburn"
     },
     "3140": {
@@ -545,7 +545,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 77 Fire damage and an additional 12 Fire damage over 8 sec.",
+      "description": "Hurls a fiery ball that causes 68 to 93 Fire damage and an additional 12 Fire damage over 8 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "3552": {
@@ -559,7 +559,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures a mana jade that can be used to instantly restore 600 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures a mana jade that can be used to instantly restore 550 to 650 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_gem_emerald_02"
     },
     "3561": {
@@ -657,7 +657,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches Arcane Missiles at the enemy, causing 24 Arcane damage each second for 3 sec.",
+      "description": "Launches Arcane Missiles at the enemy, causing 25 Arcane damage each second for 3 sec.",
       "icon": "spell_nature_starfall"
     },
     "5144": {
@@ -671,7 +671,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches Arcane Missiles at the enemy, causing 34 Arcane damage each second for 4 sec.",
+      "description": "Launches Arcane Missiles at the enemy, causing 35 Arcane damage each second for 4 sec.",
       "icon": "spell_nature_starfall"
     },
     "5145": {
@@ -685,7 +685,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches Arcane Missiles at the enemy, causing 47 Arcane damage each second for 5 sec.",
+      "description": "Launches Arcane Missiles at the enemy, causing 49 Arcane damage each second for 5 sec.",
       "icon": "spell_nature_starfall"
     },
     "5504": {
@@ -699,7 +699,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 bottles of water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_drink_06"
     },
     "5505": {
@@ -713,7 +713,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of fresh water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 bottles of fresh water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_drink_07"
     },
     "5506": {
@@ -727,7 +727,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of purified water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 bottles of purified water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_drink_milk_02"
     },
     "6117": {
@@ -755,7 +755,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of spring water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 bottles of spring water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_drink_10"
     },
     "6129": {
@@ -769,7 +769,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 loaves of pumpernickel, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 loaves of pumpernickel, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_food_08"
     },
     "6131": {
@@ -783,7 +783,7 @@
       "passive": false,
       "cooldown_ms": 25000,
       "range_yd": 0.0,
-      "description": "Blasts enemies near the caster for ${53*$<frostdamage>} to ${53*$<frostdamage>} Frost damage and freezes them in place for up to 8 sec.  Damage caused may interrupt the effect.",
+      "description": "Blasts enemies near the caster for 53 to 58 Frost damage and freezes them in place for up to 8 sec.  Damage caused may interrupt the effect.",
       "icon": "spell_frost_frostnova"
     },
     "6141": {
@@ -797,7 +797,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Ice shards pelt the target area doing ${42*8 sec*$<frostdamage>} Frost damage over 8 sec.",
+      "description": "Ice shards pelt the target area doing 344 Frost damage over 8 sec.",
       "icon": "spell_frost_icestorm"
     },
     "6143": {
@@ -811,7 +811,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${162+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec.",
+      "description": "Absorbs (162 + Frost spell power * 0.1) Frost damage.  Lasts 30 sec.",
       "icon": "spell_frost_frostward"
     },
     "7300": {
@@ -881,7 +881,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${70$*$<frostdamage>} to ${70*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 7 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 70 to 77 Frost damage and slowing movement speed by 40% for 7 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "8400": {
@@ -895,7 +895,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 120 Fire damage and an additional 16 Fire damage over 8 sec.",
+      "description": "Hurls a fiery ball that causes 108 to 143 Fire damage and an additional 16 Fire damage over 8 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "8401": {
@@ -909,7 +909,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 153 Fire damage and an additional 24 Fire damage over 8 sec.",
+      "description": "Hurls a fiery ball that causes 138 to 182 Fire damage and an additional 24 Fire damage over 8 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "8402": {
@@ -923,7 +923,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 187 Fire damage and an additional 24 Fire damage over 8 sec.",
+      "description": "Hurls a fiery ball that causes 171 to 222 Fire damage and an additional 24 Fire damage over 8 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "8406": {
@@ -937,7 +937,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${104$*$<frostdamage>} to ${104*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 7 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 104 to 114 Frost damage and slowing movement speed by 40% for 7 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "8407": {
@@ -951,7 +951,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${134$*$<frostdamage>} to ${134*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 8 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 135 to 147 Frost damage and slowing movement speed by 40% for 8 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "8408": {
@@ -965,7 +965,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${181$*$<frostdamage>} to ${181*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 8 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 181 to 197 Frost damage and slowing movement speed by 40% for 8 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "8412": {
@@ -979,7 +979,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 20.0,
-      "description": "Blasts the enemy for 163 Fire damage.",
+      "description": "Blasts the enemy for 157 to 187 Fire damage.",
       "icon": "spell_fire_fireball"
     },
     "8413": {
@@ -993,7 +993,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 20.0,
-      "description": "Blasts the enemy for 236 Fire damage.",
+      "description": "Blasts the enemy for 226 to 268 Fire damage.",
       "icon": "spell_fire_fireball"
     },
     "8416": {
@@ -1007,7 +1007,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches Arcane Missiles at the enemy, causing 66 Arcane damage each second for 5 sec.",
+      "description": "Launches Arcane Missiles at the enemy, causing 68 Arcane damage each second for 5 sec.",
       "icon": "spell_nature_starfall"
     },
     "8417": {
@@ -1021,7 +1021,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches Arcane Missiles at the enemy, causing 95 Arcane damage each second for 5 sec.",
+      "description": "Launches Arcane Missiles at the enemy, causing 98 Arcane damage each second for 5 sec.",
       "icon": "spell_nature_starfall"
     },
     "8422": {
@@ -1035,7 +1035,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a pillar of fire, burning all enemies within the area for 173 Fire damage and an additional 132 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
+      "description": "Calls down a pillar of fire, burning all enemies within the area for 159 to 197 Fire damage and an additional 132 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
       "icon": "spell_fire_selfdestruct"
     },
     "8423": {
@@ -1049,7 +1049,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a pillar of fire, burning all enemies within the area for 246 Fire damage and an additional 188 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
+      "description": "Calls down a pillar of fire, burning all enemies within the area for 226 to 279 Fire damage and an additional 188 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
       "icon": "spell_fire_selfdestruct"
     },
     "8427": {
@@ -1063,7 +1063,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Ice shards pelt the target area doing ${62*8 sec*$<frostdamage>} Frost damage over 8 sec.",
+      "description": "Ice shards pelt the target area doing 504 Frost damage over 8 sec.",
       "icon": "spell_frost_icestorm"
     },
     "8437": {
@@ -1077,7 +1077,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes an explosion of arcane magic around the caster, causing 55 Arcane damage to all targets within 10 yards.",
+      "description": "Causes an explosion of arcane magic around the caster, causing 55 to 61 Arcane damage to all targets within 10 yards.",
       "icon": "spell_nature_wispsplode"
     },
     "8438": {
@@ -1091,7 +1091,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes an explosion of arcane magic around the caster, causing 94 Arcane damage to all targets within 10 yards.",
+      "description": "Causes an explosion of arcane magic around the caster, causing 95 to 102 Arcane damage to all targets within 10 yards.",
       "icon": "spell_nature_wispsplode"
     },
     "8439": {
@@ -1105,7 +1105,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes an explosion of arcane magic around the caster, causing 135 Arcane damage to all targets within 10 yards.",
+      "description": "Causes an explosion of arcane magic around the caster, causing 134 to 145 Arcane damage to all targets within 10 yards.",
       "icon": "spell_nature_wispsplode"
     },
     "8444": {
@@ -1119,7 +1119,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Scorch the enemy for 55 Fire damage.",
+      "description": "Scorch the enemy for 54 to 64 Fire damage.",
       "icon": "spell_fire_soulburn"
     },
     "8445": {
@@ -1133,7 +1133,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Scorch the enemy for 69 Fire damage.",
+      "description": "Scorch the enemy for 67 to 79 Fire damage.",
       "icon": "spell_fire_soulburn"
     },
     "8446": {
@@ -1147,7 +1147,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Scorch the enemy for 93 Fire damage.",
+      "description": "Scorch the enemy for 90 to 106 Fire damage.",
       "icon": "spell_fire_soulburn"
     },
     "8450": {
@@ -1231,7 +1231,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${284+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec.",
+      "description": "Absorbs (284 + Frost spell power * 0.1) Frost damage.  Lasts 30 sec.",
       "icon": "spell_frost_frostward"
     },
     "8462": {
@@ -1245,7 +1245,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${463+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec.",
+      "description": "Absorbs (463 + Frost spell power * 0.1) Frost damage.  Lasts 30 sec.",
       "icon": "spell_frost_frostward"
     },
     "8492": {
@@ -1259,7 +1259,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Targets in a cone in front of the caster take ${144*$<frostdamage>} to ${144*$<frostdamage>}  Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone $Lis:are; slowed by an additional 10% for an additional 3 sec.",
+      "description": "Targets in a cone in front of the caster take 142 to 156 Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.",
       "icon": "spell_frost_glacier"
     },
     "8494": {
@@ -1273,7 +1273,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Absorbs 210 physical damage, draining mana instead.  Drains $e mana per damage absorbed.  Lasts 1 min.",
+      "description": "Absorbs 210 physical damage, draining mana instead.  Drains 2 mana per damage absorbed.  Lasts 1 min.",
       "icon": "spell_shadow_detectlesserinvisibility"
     },
     "8495": {
@@ -1287,7 +1287,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Absorbs 300 physical damage, draining mana instead.  Drains $e mana per damage absorbed.  Lasts 1 min.",
+      "description": "Absorbs 300 physical damage, draining mana instead.  Drains 2 mana per damage absorbed.  Lasts 1 min.",
       "icon": "spell_shadow_detectlesserinvisibility"
     },
     "10053": {
@@ -1301,7 +1301,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures a mana citrine that can be used to instantly restore 850 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures a mana citrine that can be used to instantly restore 775 to 925 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_gem_opal_01"
     },
     "10054": {
@@ -1315,7 +1315,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures a mana ruby that can be used to instantly restore 1100 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures a mana ruby that can be used to instantly restore 1000 to 1200 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_gem_ruby_01"
     },
     "10059": {
@@ -1343,7 +1343,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of mineral water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 bottles of mineral water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_drink_09"
     },
     "10139": {
@@ -1357,7 +1357,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of sparkling water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 bottles of sparkling water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_drink_11"
     },
     "10140": {
@@ -1385,7 +1385,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 loaves of sourdough, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 loaves of sourdough, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_food_11"
     },
     "10145": {
@@ -1399,7 +1399,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 sweet rolls, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 20 sweet rolls, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_misc_food_33"
     },
     "10148": {
@@ -1413,7 +1413,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 235 Fire damage and an additional 32 Fire damage over 8 sec.",
+      "description": "Hurls a fiery ball that causes 213 to 275 Fire damage and an additional 32 Fire damage over 8 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "10149": {
@@ -1427,7 +1427,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 300 Fire damage and an additional 40 Fire damage over 8 sec.",
+      "description": "Hurls a fiery ball that causes 272 to 348 Fire damage and an additional 40 Fire damage over 8 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "10150": {
@@ -1441,7 +1441,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 374 Fire damage and an additional 48 Fire damage over 8 sec.",
+      "description": "Hurls a fiery ball that causes 339 to 431 Fire damage and an additional 48 Fire damage over 8 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "10151": {
@@ -1455,7 +1455,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 451 Fire damage and an additional 56 Fire damage over 8 sec.",
+      "description": "Hurls a fiery ball that causes 397 to 505 Fire damage and an additional 56 Fire damage over 8 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "10156": {
@@ -1497,7 +1497,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Targets in a cone in front of the caster take ${204*$<frostdamage>} to ${204*$<frostdamage>}  Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone $Lis:are; slowed by an additional 10% for an additional 3 sec.",
+      "description": "Targets in a cone in front of the caster take 200 to 220 Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.",
       "icon": "spell_frost_glacier"
     },
     "10160": {
@@ -1511,7 +1511,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Targets in a cone in front of the caster take ${267*$<frostdamage>} to ${267*$<frostdamage>}  Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone $Lis:are; slowed by an additional 10% for an additional 3 sec.",
+      "description": "Targets in a cone in front of the caster take 261 to 286 Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.",
       "icon": "spell_frost_glacier"
     },
     "10161": {
@@ -1525,7 +1525,7 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Targets in a cone in front of the caster take ${340*$<frostdamage>} to ${340*$<frostdamage>}  Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone $Lis:are; slowed by an additional 10% for an additional 3 sec.",
+      "description": "Targets in a cone in front of the caster take 328 to 358 Frost damage and are slowed by 40% for 6 sec. The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.",
       "icon": "spell_frost_glacier"
     },
     "10165": {
@@ -1623,7 +1623,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${668+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec.",
+      "description": "Absorbs (668 + Frost spell power * 0.1) Frost damage.  Lasts 30 sec.",
       "icon": "spell_frost_frostward"
     },
     "10179": {
@@ -1637,7 +1637,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${244$*$<frostdamage>} to ${244*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 9 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 244 to 263 Frost damage and slowing movement speed by 40% for 9 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "10180": {
@@ -1651,7 +1651,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${308$*$<frostdamage>} to ${308*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 9 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 306 to 331 Frost damage and slowing movement speed by 40% for 9 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "10181": {
@@ -1665,7 +1665,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${386$*$<frostdamage>} to ${386*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 9 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 383 to 412 Frost damage and slowing movement speed by 40% for 9 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "10185": {
@@ -1679,7 +1679,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Ice shards pelt the target area doing ${87*8 sec*$<frostdamage>} Frost damage over 8 sec.",
+      "description": "Ice shards pelt the target area doing 708 Frost damage over 8 sec.",
       "icon": "spell_frost_icestorm"
     },
     "10186": {
@@ -1693,7 +1693,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Ice shards pelt the target area doing ${114*8 sec*$<frostdamage>} Frost damage over 8 sec.",
+      "description": "Ice shards pelt the target area doing 924 Frost damage over 8 sec.",
       "icon": "spell_frost_icestorm"
     },
     "10187": {
@@ -1707,7 +1707,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Ice shards pelt the target area doing ${146*8 sec*$<frostdamage>} Frost damage over 8 sec.",
+      "description": "Ice shards pelt the target area doing 1168 Frost damage over 8 sec.",
       "icon": "spell_frost_icestorm"
     },
     "10191": {
@@ -1721,7 +1721,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Absorbs 390 physical damage, draining mana instead.  Drains $e mana per damage absorbed.  Lasts 1 min.",
+      "description": "Absorbs 390 physical damage, draining mana instead.  Drains 2 mana per damage absorbed.  Lasts 1 min.",
       "icon": "spell_shadow_detectlesserinvisibility"
     },
     "10192": {
@@ -1735,7 +1735,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Absorbs 480 physical damage, draining mana instead.  Drains $e mana per damage absorbed.  Lasts 1 min.",
+      "description": "Absorbs 480 physical damage, draining mana instead.  Drains 2 mana per damage absorbed.  Lasts 1 min.",
       "icon": "spell_shadow_detectlesserinvisibility"
     },
     "10193": {
@@ -1749,7 +1749,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Absorbs 570 physical damage, draining mana instead.  Drains $e mana per damage absorbed.  Lasts 1 min.",
+      "description": "Absorbs 570 physical damage, draining mana instead.  Drains 2 mana per damage absorbed.  Lasts 1 min.",
       "icon": "spell_shadow_detectlesserinvisibility"
     },
     "10197": {
@@ -1763,7 +1763,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 20.0,
-      "description": "Blasts the enemy for 331 Fire damage.",
+      "description": "Blasts the enemy for 316 to 372 Fire damage.",
       "icon": "spell_fire_fireball"
     },
     "10199": {
@@ -1777,7 +1777,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 20.0,
-      "description": "Blasts the enemy for 438 Fire damage.",
+      "description": "Blasts the enemy for 417 to 489 Fire damage.",
       "icon": "spell_fire_fireball"
     },
     "10201": {
@@ -1791,7 +1791,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes an explosion of arcane magic around the caster, causing 183 Arcane damage to all targets within 10 yards.",
+      "description": "Causes an explosion of arcane magic around the caster, causing 181 to 196 Arcane damage to all targets within 10 yards.",
       "icon": "spell_nature_wispsplode"
     },
     "10202": {
@@ -1805,7 +1805,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes an explosion of arcane magic around the caster, causing 242 Arcane damage to all targets within 10 yards.",
+      "description": "Causes an explosion of arcane magic around the caster, causing 239 to 258 Arcane damage to all targets within 10 yards.",
       "icon": "spell_nature_wispsplode"
     },
     "10205": {
@@ -1819,7 +1819,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Scorch the enemy for 116 Fire damage.",
+      "description": "Scorch the enemy for 112 to 131 Fire damage.",
       "icon": "spell_fire_soulburn"
     },
     "10206": {
@@ -1833,7 +1833,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Scorch the enemy for 150 Fire damage.",
+      "description": "Scorch the enemy for 143 to 169 Fire damage.",
       "icon": "spell_fire_soulburn"
     },
     "10207": {
@@ -1847,7 +1847,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Scorch the enemy for 178 Fire damage.",
+      "description": "Scorch the enemy for 167 to 196 Fire damage.",
       "icon": "spell_fire_soulburn"
     },
     "10211": {
@@ -1861,7 +1861,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches Arcane Missiles at the enemy, causing 130 Arcane damage each second for 5 sec.",
+      "description": "Launches Arcane Missiles at the enemy, causing 133 Arcane damage each second for 5 sec.",
       "icon": "spell_nature_starfall"
     },
     "10212": {
@@ -1875,7 +1875,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches Arcane Missiles at the enemy, causing 171 Arcane damage each second for 5 sec.",
+      "description": "Launches Arcane Missiles at the enemy, causing 175 Arcane damage each second for 5 sec.",
       "icon": "spell_nature_starfall"
     },
     "10215": {
@@ -1889,7 +1889,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a pillar of fire, burning all enemies within the area for 325 Fire damage and an additional 256 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
+      "description": "Calls down a pillar of fire, burning all enemies within the area for 299 to 366 Fire damage and an additional 256 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
       "icon": "spell_fire_selfdestruct"
     },
     "10216": {
@@ -1903,7 +1903,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a pillar of fire, burning all enemies within the area for 417 Fire damage and an additional 332 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
+      "description": "Calls down a pillar of fire, burning all enemies within the area for 382 to 466 Fire damage and an additional 332 Fire damage over 8 sec. Only one Flamestrike can be active per Mage at a time.",
       "icon": "spell_fire_selfdestruct"
     },
     "10219": {
@@ -1973,7 +1973,7 @@
       "passive": false,
       "cooldown_ms": 25000,
       "range_yd": 0.0,
-      "description": "Blasts enemies near the caster for ${73*$<frostdamage>} to ${73*$<frostdamage>} Frost damage and freezes them in place for up to 8 sec.  Damage caused may interrupt the effect.",
+      "description": "Blasts enemies near the caster for 72 to 79 Frost damage and freezes them in place for up to 8 sec.  Damage caused may interrupt the effect.",
       "icon": "spell_frost_frostnova"
     },
     "11069": {
@@ -2001,7 +2001,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the casting time of your Frostbolt spell by 0.1 sec.",
+      "description": "Reduces the casting time of your Frostbolt spell by 0.5 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "11071": {
@@ -2113,7 +2113,7 @@
       "passive": false,
       "cooldown_ms": 45000,
       "range_yd": 0.0,
-      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 163 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
+      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 154 to 184 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
       "icon": "spell_holy_excorcism_02"
     },
     "11115": {
@@ -2127,7 +2127,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the critical strike chance of your Fire spells by 2%.",
+      "description": "Increases the critical strike chance of your Fire spells by 6%.",
       "icon": "spell_nature_wispheal"
     },
     "11119": {
@@ -2225,7 +2225,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the critical strike chance of all your spells against Frozen targets by 1%.",
+      "description": "Increases the critical strike chance of all your spells against Frozen targets by 50%.",
       "icon": "spell_frost_frostshock"
     },
     "11175": {
@@ -2253,7 +2253,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives your Frostbolt and Fingers of Frost empowered Ice Lance spells a 0% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+      "description": "Gives your Frostbolt and Fingers of Frost empowered Ice Lance spells a 100% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
       "icon": "spell_frost_chillingblast"
     },
     "11185": {
@@ -2281,7 +2281,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Armor and resistances granted by your Frost Armor and Ice Armor spells by 15%, gives your Frost Ward a 0% chance to negate the warded damage spell, and increases the amount absorbed by your Ice Barrier and Frost Ward by 0%.",
+      "description": "Increases the Armor and resistances granted by your Frost Armor and Ice Armor spells by 30%, gives your Frost Ward a 20% chance to negate the warded damage spell, and increases the amount absorbed by your Ice Barrier and Frost Ward by 20%.",
       "icon": "spell_frost_frostward"
     },
     "11190": {
@@ -2295,7 +2295,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the damage dealt by your Cone of Cold spell by 15%.",
+      "description": "Increases the damage dealt by your Cone of Cold spell by 35%.",
       "icon": "spell_frost_glacier"
     },
     "11207": {
@@ -2337,7 +2337,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives you a 100% chance of entering a Clearcasting state after any damage spell hits a target.  The Clearcasting state reduces the mana cost of your next damage spell by 100%.",
+      "description": "Gives you a 10% chance of entering a Clearcasting state after any damage spell hits a target.  The Clearcasting state reduces the mana cost of your next damage spell by 100%.",
       "icon": "spell_shadow_manaburn"
     },
     "11222": {
@@ -2379,7 +2379,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives your Arcane Missiles spell a 20% chance and your Arcane Blast and Arcane Wrath spells a 14% chance to not lose casting time when you take damage.",
+      "description": "Gives your Arcane Missiles spell a 100% chance and your Arcane Blast and Arcane Wrath spells a 70% chance to not lose casting time when you take damage.",
       "icon": "spell_nature_starfall"
     },
     "11242": {
@@ -2449,7 +2449,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls an immense fiery boulder that causes 110 Fire damage and an additional 44 Fire damage over 12 sec.",
+      "description": "Hurls an immense fiery boulder that causes 101 to 131 Fire damage and an additional 44 Fire damage over 12 sec.",
       "icon": "spell_fire_fireball02"
     },
     "11416": {
@@ -2533,7 +2533,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Shield yourself, absorbing ${431+($SPFR*0.1)*(0/100+1)} damage and increasing your Frost damage by 15% for 1 min. While shielded, your Frost damage is increased by an additional 5% and you do not lose casting time when you take damage.",
+      "description": "Shield yourself, absorbing (447.8 + Frost spell power * 0.1) damage and increasing your Frost damage by 15% for 1 min. While shielded, your Frost damage is increased by an additional 5% and you do not lose casting time when you take damage.",
       "icon": "spell_ice_lament"
     },
     "11958": {
@@ -2659,7 +2659,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls an immense fiery boulder that causes 134 Fire damage and an additional 56 Fire damage over 12 sec.",
+      "description": "Hurls an immense fiery boulder that causes 126 to 162 Fire damage and an additional 56 Fire damage over 12 sec.",
       "icon": "spell_fire_fireball02"
     },
     "12522": {
@@ -2673,7 +2673,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls an immense fiery boulder that causes 191 Fire damage and an additional 76 Fire damage over 12 sec.",
+      "description": "Hurls an immense fiery boulder that causes 180 to 227 Fire damage and an additional 76 Fire damage over 12 sec.",
       "icon": "spell_fire_fireball02"
     },
     "12523": {
@@ -2687,7 +2687,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls an immense fiery boulder that causes 245 Fire damage and an additional 100 Fire damage over 12 sec.",
+      "description": "Hurls an immense fiery boulder that causes 230 to 289 Fire damage and an additional 100 Fire damage over 12 sec.",
       "icon": "spell_fire_fireball02"
     },
     "12524": {
@@ -2701,7 +2701,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls an immense fiery boulder that causes 311 Fire damage and an additional 124 Fire damage over 12 sec.",
+      "description": "Hurls an immense fiery boulder that causes 291 to 364 Fire damage and an additional 124 Fire damage over 12 sec.",
       "icon": "spell_fire_fireball02"
     },
     "12525": {
@@ -2715,7 +2715,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls an immense fiery boulder that causes 394 Fire damage and an additional 152 Fire damage over 12 sec.",
+      "description": "Hurls an immense fiery boulder that causes 368 to 456 Fire damage and an additional 152 Fire damage over 12 sec.",
       "icon": "spell_fire_fireball02"
     },
     "12526": {
@@ -2729,7 +2729,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls an immense fiery boulder that causes 481 Fire damage and an additional 184 Fire damage over 12 sec.",
+      "description": "Hurls an immense fiery boulder that causes 448 to 555 Fire damage and an additional 184 Fire damage over 12 sec.",
       "icon": "spell_fire_fireball02"
     },
     "12536": {
@@ -2813,7 +2813,7 @@
       "passive": false,
       "cooldown_ms": 45000,
       "range_yd": 0.0,
-      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 212 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
+      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 200 to 238 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
       "icon": "spell_holy_excorcism_02"
     },
     "13019": {
@@ -2827,7 +2827,7 @@
       "passive": false,
       "cooldown_ms": 45000,
       "range_yd": 0.0,
-      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 293 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
+      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 276 to 327 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
       "icon": "spell_holy_excorcism_02"
     },
     "13020": {
@@ -2841,7 +2841,7 @@
       "passive": false,
       "cooldown_ms": 45000,
       "range_yd": 0.0,
-      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 389 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
+      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 365 to 432 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
       "icon": "spell_holy_excorcism_02"
     },
     "13021": {
@@ -2855,7 +2855,7 @@
       "passive": false,
       "cooldown_ms": 45000,
       "range_yd": 0.0,
-      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 493 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
+      "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 453 to 533 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec.",
       "icon": "spell_holy_excorcism_02"
     },
     "13031": {
@@ -2869,7 +2869,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Shield yourself, absorbing ${542+($SPFR*0.1)*(0/100+1)} damage and increasing your Frost damage by 15% for 1 min. While shielded, your Frost damage is increased by an additional 5% and you do not lose casting time when you take damage.",
+      "description": "Shield yourself, absorbing (561.2 + Frost spell power * 0.1) damage and increasing your Frost damage by 15% for 1 min. While shielded, your Frost damage is increased by an additional 5% and you do not lose casting time when you take damage.",
       "icon": "spell_ice_lament"
     },
     "13032": {
@@ -2883,7 +2883,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Shield yourself, absorbing ${671+($SPFR*0.1)*(0/100+1)} damage and increasing your Frost damage by 15% for 1 min. While shielded, your Frost damage is increased by an additional 5% and you do not lose casting time when you take damage.",
+      "description": "Shield yourself, absorbing (692.6 + Frost spell power * 0.1) damage and increasing your Frost damage by 15% for 1 min. While shielded, your Frost damage is increased by an additional 5% and you do not lose casting time when you take damage.",
       "icon": "spell_ice_lament"
     },
     "13033": {
@@ -2897,7 +2897,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Shield yourself, absorbing ${811+($SPFR*0.1)*(0/100+1)} damage and increasing your Frost damage by 15% for 1 min. While shielded, your Frost damage is increased by an additional 5% and you do not lose casting time when you take damage.",
+      "description": "Shield yourself, absorbing (819 + Frost spell power * 0.1) damage and increasing your Frost damage by 15% for 1 min. While shielded, your Frost damage is increased by an additional 5% and you do not lose casting time when you take damage.",
       "icon": "spell_ice_lament"
     },
     "18809": {
@@ -2911,7 +2911,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls an immense fiery boulder that causes 583 Fire damage and an additional 212 Fire damage over 12 sec.",
+      "description": "Hurls an immense fiery boulder that causes 520 to 646 Fire damage and an additional 212 Fire damage over 12 sec.",
       "icon": "spell_fire_fireball02"
     },
     "22782": {
@@ -2981,7 +2981,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a bolt of frost at the enemy, causing ${475$*$<frostdamage>} to ${475*$<frostdamage>}  Frost damage and slowing movement speed by 40% for 9 sec.",
+      "description": "Launches a bolt of frost at the enemy, causing 457 to 493 Frost damage and slowing movement speed by 40% for 9 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "25306": {
@@ -2995,7 +2995,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Hurls a fiery ball that causes 483 Fire damage and an additional 60 Fire damage over 8 sec.",
+      "description": "Hurls a fiery ball that causes 425 to 541 Fire damage and an additional 60 Fire damage over 8 sec.",
       "icon": "spell_fire_flamebolt"
     },
     "25345": {
@@ -3065,7 +3065,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${913+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec.",
+      "description": "Absorbs (913 + Frost spell power * 0.1) Frost damage.  Lasts 30 sec.",
       "icon": "spell_frost_frostward"
     },
     "28612": {
@@ -3093,7 +3093,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Your Fire and Frost critical strikes will refund 10% of their base mana cost.",
+      "description": "Your Fire and Frost critical strikes will refund 30% of their base mana cost.",
       "icon": "spell_fire_masterofelements"
     },
     "29077": {
@@ -3135,7 +3135,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases all your resistances by 2 and causes all spells you fully resist to restore 1% of your total mana. Cannot trigger more often than 1 time per sec.",
+      "description": "Increases all your resistances by 10 and causes all spells you fully resist to restore 2% of your total mana. Cannot trigger more often than 1 time per sec.",
       "icon": "spell_nature_astralrecalgroup"
     },
     "400574": {
@@ -3149,7 +3149,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Blasts the target with energy, dealing 32 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
+      "description": "Blasts the target with energy, dealing 34 to 38 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
       "icon": "spell_arcane_blast"
     },
     "400640": {
@@ -3163,7 +3163,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 30.0,
-      "description": "Deals 36 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
+      "description": "Deals 35 to 41 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
       "icon": "spell_frost_frostblast"
     },
     "401502": {
@@ -3177,7 +3177,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Launches a bolt of frostfire at the enemy, causing 100 Frostfire damage, slowing movement speed by 40% and causing an additional 27 Frostfire damage over 9 sec. This spell will be checked against the lower of the target's Frost and Fire resists and counts as both Frost and Fire damage.",
+      "description": "Launches a bolt of frostfire at the enemy, causing 103 to 118 Frostfire damage, slowing movement speed by 40% and causing an additional 27 Frostfire damage over 9 sec. This spell will be checked against the lower of the target's Frost and Fire resists and counts as both Frost and Fire damage.",
       "icon": "ability_mage_frostfirebolt"
     },
     "448572": {
@@ -3205,7 +3205,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 20 bottles of mountain spring water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "description": "Conjures 140 bottles of mountain spring water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
       "icon": "inv_drink_waterskin_11"
     },
     "469055": {
@@ -3219,7 +3219,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a barrage of Fire at the enemy, causing 24  Fire damage each second for 3 sec.",
+      "description": "Launches a barrage of Fire at the enemy, causing 25 Fire damage each second for 3 sec.",
       "icon": "spell_shadow_rainoffire"
     },
     "469056": {
@@ -3233,7 +3233,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a barrage of Frost at the enemy, causing 24  Frost damage each second for 3 sec.",
+      "description": "Launches a barrage of Frost at the enemy, causing 25 Frost damage each second for 3 sec.",
       "icon": "spell_frost_icestorm"
     },
     "469057": {
@@ -3247,7 +3247,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a barrage of Earth at the enemy, causing 24  Nature damage each second for 3 sec.",
+      "description": "Launches a barrage of Earth at the enemy, causing 25 Nature damage each second for 3 sec.",
       "icon": "inv_elemental_primal_earth"
     },
     "469058": {
@@ -3261,7 +3261,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Launches a barrage of Lightning at the enemy, causing 24  Nature damage each second for 3 sec.",
+      "description": "Launches a barrage of Lightning at the enemy, causing 25 Nature damage each second for 3 sec.",
       "icon": "spell_nature_lightningoverload"
     },
     "1237312": {
@@ -3275,7 +3275,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Launches a bolt of frostfire at the enemy, causing 182 Frostfire damage, slowing movement speed by 40% and causing an additional 39 Frostfire damage over 9 sec. This spell will be checked against the lower of the target's Frost and Fire resists and counts as both Frost and Fire damage.",
+      "description": "Launches a bolt of frostfire at the enemy, causing 182 to 210 Frostfire damage, slowing movement speed by 40% and causing an additional 39 Frostfire damage over 9 sec. This spell will be checked against the lower of the target's Frost and Fire resists and counts as both Frost and Fire damage.",
       "icon": "ability_mage_frostfirebolt"
     },
     "1237313": {
@@ -3289,7 +3289,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Launches a bolt of frostfire at the enemy, causing 292 Frostfire damage, slowing movement speed by 40% and causing an additional 57 Frostfire damage over 9 sec. This spell will be checked against the lower of the target's Frost and Fire resists and counts as both Frost and Fire damage.",
+      "description": "Launches a bolt of frostfire at the enemy, causing 270 to 314 Frostfire damage, slowing movement speed by 40% and causing an additional 57 Frostfire damage over 9 sec. This spell will be checked against the lower of the target's Frost and Fire resists and counts as both Frost and Fire damage.",
       "icon": "ability_mage_frostfirebolt"
     },
     "1239696": {
@@ -3303,7 +3303,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Blasts the target with energy, dealing 78 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
+      "description": "Blasts the target with energy, dealing 79 to 90 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
       "icon": "spell_arcane_blast"
     },
     "1239697": {
@@ -3317,7 +3317,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Blasts the target with energy, dealing 101 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
+      "description": "Blasts the target with energy, dealing 101 to 117 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
       "icon": "spell_arcane_blast"
     },
     "1239699": {
@@ -3331,7 +3331,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Blasts the target with energy, dealing 168 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
+      "description": "Blasts the target with energy, dealing 166 to 191 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
       "icon": "spell_arcane_blast"
     },
     "1239700": {
@@ -3345,7 +3345,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Blasts the target with energy, dealing 236 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
+      "description": "Blasts the target with energy, dealing 218 to 254 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application.",
       "icon": "spell_arcane_blast"
     },
     "1240044": {
@@ -3359,7 +3359,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 30.0,
-      "description": "Deals 45 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
+      "description": "Deals 44 to 52 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
       "icon": "spell_frost_frostblast"
     },
     "1240045": {
@@ -3373,7 +3373,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 30.0,
-      "description": "Deals 79 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
+      "description": "Deals 77 to 90 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
       "icon": "spell_frost_frostblast"
     },
     "1240046": {
@@ -3387,7 +3387,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 30.0,
-      "description": "Deals 98 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
+      "description": "Deals 95 to 112 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
       "icon": "spell_frost_frostblast"
     },
     "1240047": {
@@ -3401,7 +3401,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 30.0,
-      "description": "Deals 145 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
+      "description": "Deals 137 to 161 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
       "icon": "spell_frost_frostblast"
     },
     "1297659": {
@@ -3429,7 +3429,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 30.0,
-      "description": "Deals 28 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
+      "description": "Deals 28 to 32 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets.",
       "icon": "spell_frost_frostblast"
     },
     "1326053": {
@@ -3443,7 +3443,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Quickly launch a weak blast of frost at the enemy, causing 26 Frost damage and slowing movement speed by 40% for 9 sec.",
+      "description": "Quickly launch a weak blast of frost at the enemy, causing 28 to 31 Frost damage and slowing movement speed by 40% for 9 sec.",
       "icon": "spell_ice_magicdamage"
     },
     "1326054": {
@@ -3457,7 +3457,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Quickly launch a weak blast of frost at the enemy, causing 45 Frost damage and slowing movement speed by 40% for 9 sec.",
+      "description": "Quickly launch a weak blast of frost at the enemy, causing 48 to 53 Frost damage and slowing movement speed by 40% for 9 sec.",
       "icon": "spell_ice_magicdamage"
     },
     "1326055": {
@@ -3471,7 +3471,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Quickly launch a weak blast of frost at the enemy, causing 77 Frost damage and slowing movement speed by 40% for 9 sec.",
+      "description": "Quickly launch a weak blast of frost at the enemy, causing 80 to 88 Frost damage and slowing movement speed by 40% for 9 sec.",
       "icon": "spell_ice_magicdamage"
     },
     "1326079": {
@@ -3485,7 +3485,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Launches a projectile of pure Arcane energy at the enemy target, causing 120 Arcane damage. This spell gains additional Spell Damage equal to 5% of your maximum Mana.",
+      "description": "Launches a projectile of pure Arcane energy at the enemy target, causing 122 to 146 Arcane damage. This spell gains additional Spell Damage equal to 5% of your maximum Mana.",
       "icon": "ability_mage_netherwindpresence"
     },
     "1326080": {
@@ -3499,7 +3499,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Launches a projectile of pure Arcane energy at the enemy target, causing 187 Arcane damage. This spell gains additional Spell Damage equal to 5% of your maximum Mana.",
+      "description": "Launches a projectile of pure Arcane energy at the enemy target, causing 194 to 231 Arcane damage. This spell gains additional Spell Damage equal to 5% of your maximum Mana.",
       "icon": "ability_mage_netherwindpresence"
     },
     "1326081": {
@@ -3513,7 +3513,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Launches a projectile of pure Arcane energy at the enemy target, causing 300 Arcane damage. This spell gains additional Spell Damage equal to 5% of your maximum Mana.",
+      "description": "Launches a projectile of pure Arcane energy at the enemy target, causing 296 to 357 Arcane damage. This spell gains additional Spell Damage equal to 5% of your maximum Mana.",
       "icon": "ability_mage_netherwindpresence"
     },
     "1326082": {
@@ -3527,7 +3527,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Launches a projectile of pure Arcane energy at the enemy target, causing 451 Arcane damage. This spell gains additional Spell Damage equal to 5% of your maximum Mana.",
+      "description": "Launches a projectile of pure Arcane energy at the enemy target, causing 406 to 496 Arcane damage. This spell gains additional Spell Damage equal to 5% of your maximum Mana.",
       "icon": "ability_mage_netherwindpresence"
     }
   }

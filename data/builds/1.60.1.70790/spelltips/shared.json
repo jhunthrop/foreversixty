@@ -40,7 +40,7 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Increases your spellcasting and attack speed by 10% for $26635d.",
+      "description": "Increases your spellcasting and attack speed by 10% for 15 sec.",
       "icon": "racial_troll_berserk"
     },
     "Big Game Hunter": {
@@ -222,7 +222,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Allows the dwarf to sense nearby treasure, making it appear on the minimap and sometimes increase treasure found. Lasts $d.",
+      "description": "Allows the dwarf to sense nearby treasure, making it appear on the minimap and sometimes increase treasure found. Lasts until canceled.",
       "icon": "racial_dwarf_findtreasure"
     },
     "Hardiness": {
@@ -630,7 +630,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Enchants a weapon to have a 15% chance to inflict 11 Fire damage to all enemies within 3 yards.",
+      "description": "Enchants a weapon to have a 15% chance to inflict 9 to 13 Fire damage to all enemies within 3 yards.",
       "icon": "inv_jewelry_talisman_01"
     },
     "41": {
@@ -896,7 +896,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to increase armor by $ec1.",
+      "description": "Permanently enchant a cloak to increase armor by 20.",
       "icon": "spell_holy_greaterheal"
     },
     "783": {
@@ -910,7 +910,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to increase armor by $ec1.",
+      "description": "Permanently enchant a cloak to increase armor by 10.",
       "icon": "spell_holy_greaterheal"
     },
     "803": {
@@ -1050,7 +1050,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give $ec1 additional armor.",
+      "description": "Permanently enchant a cloak to give 30 additional armor.",
       "icon": "spell_holy_greaterheal"
     },
     "849": {
@@ -1218,7 +1218,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give $ec1 additional armor.",
+      "description": "Permanently enchant a cloak to give 60 additional armor.",
       "icon": "spell_holy_greaterheal"
     },
     "903": {
@@ -1750,7 +1750,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give $ec1 additional armor.",
+      "description": "Permanently enchant a cloak to give 70 additional armor.",
       "icon": "spell_holy_greaterheal"
     },
     "1890": {
@@ -1890,7 +1890,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon so that often when attacking in melee it heals for 100 and increases Strength by 100 for 15 sec.",
+      "description": "Permanently enchant a melee weapon so that often when attacking in melee it heals for 75 to 125 and increases Strength by 100 for 15 sec.",
       "icon": "spell_holy_greaterheal"
     },
     "1901": {
@@ -1974,7 +1974,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the defense value of an item worn on the chest, legs, hands or feet by $ec1. Only usable on items level $ecim and above.",
+      "description": "Permanently increase the defense value of an item worn on the chest, legs, hands or feet by 3. Only usable on items level 45 and above.",
       "icon": "temp"
     },
     "2504": {
@@ -2534,7 +2534,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Weapon to cause all spells and attacks to sometimes deal 75 additional damage to mechanical creatures.",
+      "description": "Permanently enchant a Weapon to cause all spells and attacks to sometimes deal 60 to 90 additional damage to mechanical creatures.",
       "icon": "spell_holy_greaterheal"
     },
     "7223": {
@@ -2800,7 +2800,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
+      "description": "Permanently increase the Stamina value by 3 and armor value by 24 of an item worn on the chest, legs, hands or feet. Only usable on items level 15 and above.",
       "icon": "temp"
     },
     "8487": {
@@ -2814,7 +2814,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
+      "description": "Permanently increase the Stamina value by 4 and armor value by 32 of an item worn on the chest, legs, hands or feet. Only usable on items level 25 and above.",
       "icon": "temp"
     },
     "8490": {
@@ -2828,7 +2828,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
+      "description": "Permanently increase the Stamina value by 5 and armor value by 40 of an item worn on the chest, legs, hands or feet. Only usable on items level 35 and above.",
       "icon": "temp"
     },
     "8492": {
@@ -2842,7 +2842,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the Spell Power value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands, or feet. Only usable on items level $ecim and above.",
+      "description": "Permanently increase the Spell Power value by 6 and armor value by 40 of an item worn on the chest, legs, hands, or feet. Only usable on items level 35 and above.",
       "icon": "temp"
     },
     "8734": {
@@ -2856,7 +2856,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a bracer so it increases the wearer's Intellect by $ec1.",
+      "description": "Permanently enchant a bracer so it increases the wearer's Intellect by 3.",
       "icon": "spell_holy_greaterheal"
     }
   },
@@ -2904,12 +2904,12 @@
     "conjured_demonic_rune": {
       "item_id": 12662,
       "spell_id": 16666,
-      "use": "Restores 1200 mana at the cost of 800 life."
+      "use": "Restores 900 to 1500 mana at the cost of 600 to 1000 life."
     },
     "conjured_minor_recombobulator": {
       "item_id": 4381,
       "spell_id": 18805,
-      "use": "Dispels Polymorph effects on a friendly target.  Also restores 270 Health and 128 Mana."
+      "use": "Dispels Polymorph effects on a friendly target.  Also restores 203 to 338 Health and 96 to 160 Mana."
     },
     "conjured_rogue_thistle_tea": {
       "item_id": 7676,
@@ -3014,22 +3014,22 @@
     "explosive_dense_dynamite": {
       "item_id": 18641,
       "spell_id": 23063,
-      "use": "Inflicts 400 Fire damage in a 5 yard radius."
+      "use": "Inflicts 340 to 460 Fire damage in a 5 yard radius."
     },
     "explosive_goblin_land_mine": {
       "item_id": 4395,
       "spell_id": 4100,
-      "use": "Places the Goblin Land Mine on the ground. It will explode for 450 Fire damage the next time a hostile creature passes near it. The mine has a duration of 1 min."
+      "use": "Places the Goblin Land Mine on the ground. It will explode for 394 to 506 Fire damage the next time a hostile creature passes near it. The mine has a duration of 1 min."
     },
     "explosive_solid_dynamite": {
       "item_id": 10507,
       "spell_id": 12419,
-      "use": "Inflicts 250 Fire damage in a 5 yard radius."
+      "use": "Inflicts 213 to 287 Fire damage in a 5 yard radius."
     },
     "explosive_thorium_grenade": {
       "item_id": 15993,
       "spell_id": 19769,
-      "use": "Inflicts 400 Fire damage and stuns targets for 3 sec in a 3 yard radius. Any damage will break the effect."
+      "use": "Inflicts 300 to 500 Fire damage and stuns targets for 3 sec in a 3 yard radius. Any damage will break the effect."
     },
     "fire_toasted_bun": {
       "item_id": 23327,
@@ -3079,62 +3079,62 @@
     "food_baked_salmon": {
       "item_id": 13935,
       "spell_id": 1249516,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 28 Spell Damage for 15 min."
+      "use": "Restores 2065 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 28 Spell Damage for 15 min."
     },
     "food_bless_sunfruit": {
       "item_id": 13810,
       "spell_id": 18124,
-      "use": "Restores $o1 health over 27 sec.  Must remain seated while eating. Also increases your Strength by 10 for 10 min."
+      "use": "Restores 1859 health over 27 sec.  Must remain seated while eating. Also increases your Strength by 10 for 10 min."
     },
     "food_blessed_sunfruit_juice": {
       "item_id": 13813,
       "spell_id": 18140,
-      "use": "Restores $o1 mana over 30 sec.  Must remain seated while drinking. Also increases your Spirit by 10 for 10 min."
+      "use": "Restores 4240 mana over 30 sec.  Must remain seated while drinking. Also increases your Spirit by 10 for 10 min."
     },
     "food_dirges_kick_chimaerok_chops": {
       "item_id": 21023,
       "spell_id": 25660,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain 25 Stamina for 15 min."
+      "use": "Restores 2452 health over 30 sec.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain 25 Stamina for 15 min."
     },
     "food_hot_wolf_ribs": {
       "item_id": 13851,
       "spell_id": 1248391,
-      "use": "Restores $o1 health over 27 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 10 Agility for 15 min."
+      "use": "Restores 841 health over 27 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 10 Agility for 15 min."
     },
     "food_nightfin_soup": {
       "item_id": 13931,
       "spell_id": 1249513,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 22 Spell Damage for 15 min."
+      "use": "Restores 1338 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 22 Spell Damage for 15 min."
     },
     "food_poached_sunscale_salmon": {
       "item_id": 13932,
       "spell_id": 1249515,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 40 Attack Power for 15 min."
+      "use": "Restores 2065 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 40 Attack Power for 15 min."
     },
     "food_runn_tum_tuber_surprise": {
       "item_id": 18254,
       "spell_id": 1248396,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 15 Intellect for 15 min."
+      "use": "Restores 1338 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 15 Intellect for 15 min."
     },
     "food_sagefish_delight": {
       "item_id": 21217,
       "spell_id": 1249507,
-      "use": "Restores $o1 health over 24 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 7 Spell Damage for 15 min."
+      "use": "Restores 531 health over 24 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 7 Spell Damage for 15 min."
     },
     "food_sages_tea": {
       "item_id": 249870,
       "spell_id": 1249925,
-      "use": "Restores $o1 mana over 30 sec.  Must remain seated while drinking. If you spend at least 10 sec eating, you will become well fed and gain 44 Healing Power for 15 min."
+      "use": "Restores 2821 mana over 30 sec.  Must remain seated while drinking. If you spend at least 10 sec eating, you will become well fed and gain 44 Healing Power for 15 min."
     },
     "food_smoked_desert_dumpling": {
       "item_id": 20452,
       "spell_id": 1248401,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 20 Strength for 15 min."
+      "use": "Restores 2065 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 20 Strength for 15 min."
     },
     "food_smoked_sagefish": {
       "item_id": 21072,
       "spell_id": 1249504,
-      "use": "Restores $o1 health over 21 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 4 Spell Damage for 15 min."
+      "use": "Restores 234 health over 21 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 4 Spell Damage for 15 min."
     },
     "frenzy_potion": {
       "item_id": 250940,
@@ -3164,7 +3164,7 @@
     "greater_arcane_protection_potion": {
       "item_id": 13461,
       "spell_id": 17549,
-      "use": "Absorbs 2600 arcane damage.  Lasts 2 min."
+      "use": "Absorbs 1950 to 3250 arcane damage.  Lasts 2 min."
     },
     "greater_clerics_elixir": {
       "item_id": 250333,
@@ -3174,17 +3174,17 @@
     "greater_fire_protection_potion": {
       "item_id": 13457,
       "spell_id": 17543,
-      "use": "Absorbs 2600 fire damage.  Lasts 2 min."
+      "use": "Absorbs 1950 to 3250 fire damage.  Lasts 2 min."
     },
     "greater_frost_protection_potion": {
       "item_id": 13456,
       "spell_id": 17544,
-      "use": "Absorbs 2600 frost damage.  Lasts 2 min."
+      "use": "Absorbs 1950 to 3250 frost damage.  Lasts 2 min."
     },
     "greater_holy_protection_potion": {
       "item_id": 13460,
       "spell_id": 17545,
-      "use": "Absorbs 2600 holy damage.  Lasts 2 min."
+      "use": "Absorbs 1950 to 3250 holy damage.  Lasts 2 min."
     },
     "greater_mageblood_elixir": {
       "item_id": 250341,
@@ -3194,17 +3194,17 @@
     "greater_mana_potion": {
       "item_id": 6149,
       "spell_id": 11903,
-      "use": "Restores 800 mana."
+      "use": "Restores 700 to 900 mana."
     },
     "greater_nature_protection_potion": {
       "item_id": 13458,
       "spell_id": 17546,
-      "use": "Absorbs 2600 nature damage.  Lasts 2 min."
+      "use": "Absorbs 1950 to 3250 nature damage.  Lasts 2 min."
     },
     "greater_shadow_protection_potion": {
       "item_id": 13459,
       "spell_id": 17548,
-      "use": "Absorbs 2600 shadow damage.  Lasts 2 min."
+      "use": "Absorbs 1950 to 3250 shadow damage.  Lasts 2 min."
     },
     "greater_stoneshield_potion": {
       "item_id": 13455,
@@ -3219,7 +3219,7 @@
     "healing_potion": {
       "item_id": 929,
       "spell_id": 441,
-      "use": "Restores 320 health."
+      "use": "Restores 280 to 360 health."
     },
     "juju_might": {
       "item_id": 12460,
@@ -3289,7 +3289,7 @@
     "main_hand_imbue:instant_poison": {
       "item_id": 6947,
       "spell_id": 8679,
-      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 15 Nature damage.  60 charges."
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 13 to 17 Nature damage.  60 charges."
     },
     "main_hand_imbue:lesser_mana_oil": {
       "item_id": 20747,
@@ -3374,7 +3374,7 @@
     "main_hand_stone:instant_poison": {
       "item_id": 6947,
       "spell_id": 8679,
-      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 15 Nature damage.  60 charges."
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 13 to 17 Nature damage.  60 charges."
     },
     "main_hand_stone:lesser_mana_oil": {
       "item_id": 20747,
@@ -3424,7 +3424,7 @@
     "major_mana_potion": {
       "item_id": 13444,
       "spell_id": 17531,
-      "use": "Restores 1800 mana."
+      "use": "Restores 1350 to 2250 mana."
     },
     "major_menders_potion": {
       "item_id": 250949,
@@ -3439,7 +3439,7 @@
     "mana_potion": {
       "item_id": 3827,
       "spell_id": 2023,
-      "use": "Restores 520 mana."
+      "use": "Restores 455 to 585 mana."
     },
     "menders_potion": {
       "item_id": 250946,
@@ -3449,7 +3449,7 @@
     "mighty_rage_potion": {
       "item_id": 13442,
       "spell_id": 17528,
-      "use": "Increases Rage by 60 and increases Strength by 60 for 20 sec."
+      "use": "Increases Rage by 45 to 75 and increases Strength by 60 for 20 sec."
     },
     "off_hand_imbue:blessed_wizard_oil": {
       "item_id": 23123,
@@ -3494,7 +3494,7 @@
     "off_hand_imbue:instant_poison": {
       "item_id": 6947,
       "spell_id": 8679,
-      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 15 Nature damage.  60 charges."
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 13 to 17 Nature damage.  60 charges."
     },
     "off_hand_imbue:lesser_mana_oil": {
       "item_id": 20747,
@@ -3579,7 +3579,7 @@
     "off_hand_stone:instant_poison": {
       "item_id": 6947,
       "spell_id": 8679,
-      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 15 Nature damage.  60 charges."
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 13 to 17 Nature damage.  60 charges."
     },
     "off_hand_stone:lesser_mana_oil": {
       "item_id": 20747,
@@ -3634,7 +3634,7 @@
     "sapper_goblin_sapper": {
       "item_id": 10646,
       "spell_id": 13241,
-      "use": "Explodes when triggered dealing 600 Fire damage to all enemies nearby and 500 damage to you."
+      "use": "Explodes when triggered dealing 450 to 750 Fire damage to all enemies nearby and 375 to 625 damage to you."
     },
     "scroll_of_agility": {
       "item_id": 3012,
@@ -3709,6 +3709,10 @@
     "SpellPower": "6eb0c56fd62d3d9561f89a862dc6d574c114a2b99f182198b9d8ff69f134f307",
     "SpellRadius": "ae97b1f91868aa7b4414c3e26c5d15f6981921b2f6aa1694adc7a0c3e821826b",
     "SpellRange": "30734ead3acfb44c57737ed7c9f8ff2feafda2fbffa291711d4c4afef989b1b3",
-    "SpellTargetRestrictions": "5a6c2278aef22562993afc431f54d8c00a0d986bce4d07080282c830684719a8"
+    "SpellTargetRestrictions": "5a6c2278aef22562993afc431f54d8c00a0d986bce4d07080282c830684719a8",
+    "SpellDescriptionVariables": "20529a59a5c632572bca119b7a320f7e9200b2b6c4c70867e347f1c96cb73a0e",
+    "SpellXDescriptionVariables": "107b3d23691955ed29b9f7a51705423b88e91a6672d1579ca53b8db59c3ddef3",
+    "SpellLevels": "c906182d1ff16546e110d9ebba36c8a9b31e736beff9e2c00ddf20d74364cda7",
+    "SpellItemEnchantment": "6340e0a785dbcf8e0fe4e974121ac6feaa34e76d2314c2bcea69aa606f2f31b3"
   }
 }

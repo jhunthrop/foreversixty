@@ -279,6 +279,13 @@
    "sha256": "424b3f203b5253e70c4fa32c8ec0e36e529ff06261a8f552daa1a9188084a2bf",
    "withheld": 5
   },
+  "SpellDescriptionVariables": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "20529a59a5c632572bca119b7a320f7e9200b2b6c4c70867e347f1c96cb73a0e",
+   "withheld": 0
+  },
   "SpellDuration": {
    "added": 0,
    "changed": 0,
@@ -369,6 +376,13 @@
    "removed": 2,
    "sha256": "5a6c2278aef22562993afc431f54d8c00a0d986bce4d07080282c830684719a8",
    "withheld": 1
+  },
+  "SpellXDescriptionVariables": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "107b3d23691955ed29b9f7a51705423b88e91a6672d1579ca53b8db59c3ddef3",
+   "withheld": 0
   },
   "Talent": {
    "added": 0,

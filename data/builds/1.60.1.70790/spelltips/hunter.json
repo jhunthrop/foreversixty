@@ -699,7 +699,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that explodes when an enemy approaches, causing 115 Fire damage and 150 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "description": "Place a Fire trap that explodes when an enemy approaches, causing 105 to 135 Fire damage and 150 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
       "icon": "spell_fire_selfdestruct"
     },
     "14260": {
@@ -1175,7 +1175,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that explodes when an enemy approaches, causing 163 Fire damage and 240 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "description": "Place a Fire trap that explodes when an enemy approaches, causing 145 to 193 Fire damage and 240 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
       "icon": "spell_fire_selfdestruct"
     },
     "14317": {
@@ -1189,7 +1189,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that explodes when an enemy approaches, causing 229 Fire damage and 330 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "description": "Place a Fire trap that explodes when an enemy approaches, causing 208 to 264 Fire damage and 330 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
       "icon": "spell_fire_selfdestruct"
     },
     "14318": {
@@ -1777,7 +1777,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Wounds the target causing them to bleed for 119 damage over 21 sec.",
+      "description": "Wounds the target causing them to bleed for 147 damage over 21 sec.",
       "icon": "ability_gouge"
     },
     "24119": {
@@ -1791,7 +1791,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Wounds the target causing them to bleed for 196 damage over 21 sec.",
+      "description": "Wounds the target causing them to bleed for 231 damage over 21 sec.",
       "icon": "ability_gouge"
     },
     "24120": {
@@ -1805,7 +1805,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Wounds the target causing them to bleed for 280 damage over 21 sec.",
+      "description": "Wounds the target causing them to bleed for 322 damage over 21 sec.",
       "icon": "ability_gouge"
     },
     "24406": {
@@ -1875,7 +1875,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter invokes the heart of a lion, increasing total stats by 10% and Attack Power by 40 for all nearby allies, and increasing total stats for the Hunter by an additional 10%.",
+      "description": "The hunter invokes the heart of a lion, increasing total stats by 10% and Attack Power by 280 for all nearby allies, and increasing total stats for the Hunter by an additional 10%.",
       "icon": "ability_hunter_pet_cat"
     },
     "415423": {
@@ -1903,7 +1903,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 5.0,
-      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for ${6/100*8*$AP} Physical damage over 8 sec.",
+      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for (0.48 * Attack Power) Physical damage over 8 sec.",
       "icon": "inv_spear_02"
     },
     "458481": {
@@ -1917,7 +1917,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 5.0,
-      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for ${8/100*8*$AP} Physical damage over 8 sec.",
+      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for (0.64 * Attack Power) Physical damage over 8 sec.",
       "icon": "inv_spear_02"
     },
     "458482": {
@@ -1931,7 +1931,7 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 5.0,
-      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for ${10/100*8*$AP} Physical damage over 8 sec.",
+      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for (0.8 * Attack Power) Physical damage over 8 sec.",
       "icon": "inv_spear_02"
     },
     "469145": {
@@ -2001,7 +2001,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${32+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
+      "description": "Command a hawk to dive-bomb your targeted enemy, dealing (32 + Ranged Attack Power * 0.05) Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
       "icon": "ability_hunter_animalhandler"
     },
     "1293525": {
@@ -2015,7 +2015,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${47+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
+      "description": "Command a hawk to dive-bomb your targeted enemy, dealing (47 + Ranged Attack Power * 0.05) Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
       "icon": "ability_hunter_animalhandler"
     },
     "1293526": {
@@ -2029,7 +2029,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${85+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
+      "description": "Command a hawk to dive-bomb your targeted enemy, dealing (85 + Ranged Attack Power * 0.05) Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
       "icon": "ability_hunter_animalhandler"
     },
     "1293527": {
@@ -2043,7 +2043,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${108+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
+      "description": "Command a hawk to dive-bomb your targeted enemy, dealing (108 + Ranged Attack Power * 0.05) Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
       "icon": "ability_hunter_animalhandler"
     },
     "1299332": {

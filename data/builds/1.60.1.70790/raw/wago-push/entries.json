@@ -1,4 +1,4 @@
-{"build":"1.60.1.70790","format":1,"tables":["AreaTable","ArmorLocation","ChrClasses","ChrRaces","CurvePoint","DungeonEncounter","Faction","ItemArmorQuality","ItemArmorShield","ItemArmorTotal","ItemDamageOneHand","ItemDamageRanged","ItemDamageThrown","ItemDamageTwoHand","ItemDamageWand","ItemEffect","ItemSet","ItemSetSpell","ItemXItemEffect","JournalEncounter","JournalEncounterItem","JournalInstance","ManifestInterfaceData","Map","MapDifficulty","RandPropPoints","SkillLine","SkillLineAbility","SkillLineXTraitTree","SkillRaceClassInfo","Spell","SpellAuraOptions","SpellCastTimes","SpellClassOptions","SpellCooldowns","SpellDuration","SpellEffect","SpellEquippedItems","SpellItemEnchantment","SpellLevels","SpellMisc","SpellName","SpellPower","SpellRadius","SpellRange","SpellReagents","SpellShapeshift","SpellTargetRestrictions","Talent","TalentTab","TraitCond","TraitCurrency","TraitDefinition","TraitDefinitionEffectPoints","TraitEdge","TraitNode","TraitNodeEntry","TraitNodeGroup","TraitNodeGroupXTraitNode","TraitNodeXTraitNodeEntry"],"splits":{
+{"build":"1.60.1.70790","format":1,"tables":["AreaTable","ArmorLocation","ChrClasses","ChrRaces","CurvePoint","DungeonEncounter","Faction","ItemArmorQuality","ItemArmorShield","ItemArmorTotal","ItemDamageOneHand","ItemDamageRanged","ItemDamageThrown","ItemDamageTwoHand","ItemDamageWand","ItemEffect","ItemSet","ItemSetSpell","ItemXItemEffect","JournalEncounter","JournalEncounterItem","JournalInstance","ManifestInterfaceData","Map","MapDifficulty","RandPropPoints","SkillLine","SkillLineAbility","SkillLineXTraitTree","SkillRaceClassInfo","Spell","SpellAuraOptions","SpellCastTimes","SpellClassOptions","SpellCooldowns","SpellDescriptionVariables","SpellDuration","SpellEffect","SpellEquippedItems","SpellItemEnchantment","SpellLevels","SpellMisc","SpellName","SpellPower","SpellRadius","SpellRange","SpellReagents","SpellShapeshift","SpellTargetRestrictions","SpellXDescriptionVariables","Talent","TalentTab","TraitCond","TraitCurrency","TraitDefinition","TraitDefinitionEffectPoints","TraitEdge","TraitNode","TraitNodeEntry","TraitNodeGroup","TraitNodeGroupXTraitNode","TraitNodeXTraitNodeEntry"],"splits":{
 "0 70790 areatable":[40,0],
 "0 70790 curvepoint":[1249,0],
 "0 70790 itemeffect":[40,0],
@@ -8137,6 +8137,14 @@
 [28261705305,113539,102442,1,[102442,0,0,15000,1000,0,1329555]],
 [28296707535,113664,102498,1,[102498,0,10000,0,1000,0,1324481]],
 [28296789770,113664,102498,1,[102498,0,10000,0,1000,0,1324481]]
+],
+"SpellDescriptionVariables":[
+[28261639581,113483,1021,1,[1021,"$ratio=${12}\r\n$maxAP=${0.04}\r\n$attackP=${((($MW+$mw)-($MWB+$mwb))*7)/$MWS}\r\n$coup=$?s14162[${$14162s1/100+1}][${1}]"]],
+[28261704290,113483,1021,1,[1021,"$ratio=${12}\r\n$maxAP=${0.04}\r\n$attackP=${((($MW+$mw)-($MWB+$mwb))*7)/$MWS}\r\n$coup=$?s14162[${$14162s1/100+1}][${1}]"]],
+[28261624319,113170,1024,1,[1024,"$APR=$?a71[${0.225}][${0.25}]\r\n\n$ImpRevenge=$?a12797[${$12797s1/100+1}][${1}]\r\n\n$APRatio=${$<APR>*$<ImpRevenge>}"]],
+[28261689136,113170,1024,1,[1024,"$APR=$?a71[${0.225}][${0.25}]\r\n\n$ImpRevenge=$?a12797[${$12797s1/100+1}][${1}]\r\n\n$APRatio=${$<APR>*$<ImpRevenge>}"]],
+[28261639582,113483,1025,1,[1025,"$bloodS=$?s1329256[${$1329256m1/1000}][${0}]"]],
+[28261704291,113483,1025,1,[1025,"$bloodS=$?s1329256[${$1329256m1/1000}][${0}]"]]
 ],
 "SpellDuration":[
 [28261640221,113500,427,1,[427,60000,60000,600000,0]],
@@ -16928,6 +16936,32 @@
 [28261687385,113139,358259,1,[358259,0,"0",1,0,0,0,"0",1328548]],
 [28261637454,113388,358364,1,[358364,0,"0",0,0,0,16,"0",1328948]],
 [28261702164,113388,358364,1,[358364,0,"0",0,0,0,16,"0",1328948]]
+],
+"SpellXDescriptionVariables":[
+[28261624320,113170,3361,1,[3361,25288,1024]],
+[28261689137,113170,3361,1,[3361,25288,1024]],
+[28261624321,113170,3362,1,[3362,6572,1024]],
+[28261689138,113170,3362,1,[3362,6572,1024]],
+[28261624322,113170,3363,1,[3363,6574,1024]],
+[28261689139,113170,3363,1,[3363,6574,1024]],
+[28261624323,113170,3364,1,[3364,7379,1024]],
+[28261689140,113170,3364,1,[3364,7379,1024]],
+[28261624324,113170,3365,1,[3365,11600,1024]],
+[28261689141,113170,3365,1,[3365,11600,1024]],
+[28261624325,113170,3366,1,[3366,11601,1024]],
+[28261689142,113170,3366,1,[3366,11601,1024]],
+[28261639758,113483,3368,1,[3368,11275,1025]],
+[28261704467,113483,3368,1,[3368,11275,1025]],
+[28261639759,113483,3369,1,[3369,11274,1025]],
+[28261704468,113483,3369,1,[3369,11274,1025]],
+[28261639760,113483,3370,1,[3370,11273,1025]],
+[28261704469,113483,3370,1,[3370,11273,1025]],
+[28261639761,113483,3371,1,[3371,8640,1025]],
+[28261704470,113483,3371,1,[3371,8640,1025]],
+[28261639762,113483,3372,1,[3372,8639,1025]],
+[28261704471,113483,3372,1,[3372,8639,1025]],
+[28261639763,113483,3373,1,[3373,1943,1025]],
+[28261704472,113483,3373,1,[3373,1943,1025]]
 ],
 "Talent":[],
 "TalentTab":[],
