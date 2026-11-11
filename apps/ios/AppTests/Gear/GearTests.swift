@@ -77,7 +77,7 @@ enum GearTestData {
         source: ItemSheetRow(id: "source", title: "Onyxia, Onyxia’s Lair, 8%", sub: nil, lead: .none),
         replaces: ItemSheetRow(id: "replaces", title: "Replaces Ironwood Blade", sub: "Equipped", lead: .item(icon: "inv_sword_07", quality: 4)),
         runnerUp: ItemSheetRow(
-            id: "runner-up", title: "Vis’kag the Bloodletter", titleQuality: 4, sub: "Runner-up · Onyxia · 8% · \u{2212}1.8 DPS",
+            id: "runner-up", title: "Vis’kag the Bloodletter", titleQuality: 4, sub: "Runner-up · \u{2212}1.8 DPS",
             lead: .item(icon: "inv_sword_18", quality: 4)
         ),
         guild: .loaded(rows: [
@@ -199,6 +199,43 @@ struct GearLogicTests {
         #expect(row(2, "dungeon")?.sub == nil && row(2, "dungeon")?.lead == ItemSheetRow.Lead.none)
         let world = ItemSheetBuilder.source(99, kind: "world", named: nil, places: places, fallback: "World drop")
         #expect(world?.title == "World drop" && world?.lead == ItemSheetRow.Lead.none)
+    }
+
+    /// A runner-up row for a head pick (Lionheart Helm, crafted) whose first alternative is `alt`.
+    private func runnerUpRow(_ alt: String) throws -> ItemSheetRow? {
+        let slot = try WireFormat.decoder().decode(BisSlot.self, from: Data("""
+        {"slot":"head","verified":true,"item_id":1,"item_name":"Lionheart Helm","source":"Blacksmithing","source_kind":"crafted",
+         "alternatives":[\(alt)]}
+        """.utf8))
+        let places = ItemPlaces(loot: try WireFormat.decoder().decode(LootFile.self, from: Data(Self.loot.utf8)), level: nil)
+        let listing = ItemSheetBuilder.Listing(slot: slot, isPick: true, kind: "crafted", source: "Blacksmithing")
+        return ItemSheetBuilder.runnerUp(listing, band: nil, items: [:], places: places, pickPlace: places.place(of: 1, kind: "crafted"))
+    }
+
+    @Test("round 9: the runner-up names its source only when it differs from the pick's, in the source row's words")
+    func runnerUpWords() throws {
+        // The same crafter as the pick: no source, the delta alone.
+        let crafted = #"{"item_id":4,"item_name":"Ironwood Blade","source":"Blacksmithing","source_kind":"crafted","dps_delta":-5.0}"#
+        #expect(try runnerUpRow(crafted)?.sub == "Runner-up · \u{2212}5.0 DPS")
+        // A boss drop: `Boss · 8%`.
+        let boss = #"{"item_id":2,"item_name":"Blackcrow","source":"Blackrock Spire","source_kind":"dungeon","dps_delta":-0.4}"#
+        #expect(try runnerUpRow(boss)?.sub == "Runner-up · Shadow Hunter Vosh'gajin · 8% · \u{2212}0.4 DPS")
+        // PvP without the faction word, and `Same DPS` when nothing separates them.
+        let pvp = #"{"item_id":9,"item_name":"Blood Guard's Plate Helm","source":"PvP rank 11 · Blood Guard · Horde","source_kind":"vendor","dps_delta":0}"#
+        #expect(try runnerUpRow(pvp)?.sub == "Runner-up · PvP rank 11 · Blood Guard · Same DPS")
+        // A crafted runner-up from another crafter, in the shared words.
+        let other = #"{"item_id":5,"item_name":"Timbermaw Tunic","source":"Leatherworking","source_kind":"crafted","dps_delta":-1.2}"#
+        #expect(try runnerUpRow(other)?.sub == "Runner-up · Crafted: Leatherworking · \u{2212}1.2 DPS")
+        // Not in the loot file: the list's words decide, and the same crafter is still left out.
+        let unplaced = #"{"item_id":77,"item_name":"Thorium Cestus","source":"Blacksmithing","source_kind":"crafted","dps_delta":-5.0}"#
+        #expect(try runnerUpRow(unplaced)?.sub == "Runner-up · \u{2212}5.0 DPS")
+    }
+
+    @Test("round 9: a PvP source drops its faction word; anything else is left alone")
+    func withoutFaction() {
+        #expect(ItemSheetBuilder.withoutFaction("PvP rank 11 · Blood Guard · Horde") == "PvP rank 11 · Blood Guard")
+        #expect(ItemSheetBuilder.withoutFaction("PvP rank 12 · Knight · Alliance") == "PvP rank 12 · Knight")
+        #expect(ItemSheetBuilder.withoutFaction("World drop") == "World drop")
     }
 
     @Test("round 8: drop chances in the site's dropPercentLabel: whole percent, half up, <1% under one")

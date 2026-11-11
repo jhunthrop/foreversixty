@@ -199,7 +199,7 @@
     "items.ilvl": {"text": "ilvl {n}", "args": {"n": "int"}},
     "items.pickArrow": "→ {item}",
     "items.setBonus": {"text": "({n}) Set: {text}", "notPlural": true, "args": {"n": "int"}},
-    "items.sameDps": "Same {unit} as the pick",
+    "items.sameDps": "Same {unit}",
     "items.loading": "Loading the item…",
     "items.failed": "This item did not load.",
     "items.notInData": "Not in our item data yet",

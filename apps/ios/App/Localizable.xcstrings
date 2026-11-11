@@ -6405,7 +6405,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Same %1$@ as the pick"
+            "value": "Same %1$@"
           }
         }
       }

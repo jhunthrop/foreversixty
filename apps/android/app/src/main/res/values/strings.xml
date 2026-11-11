@@ -200,7 +200,7 @@
     <string name="items_ilvl">ilvl %1$d</string>
     <string name="items_pickArrow">→ %1$s</string>
     <string name="items_setBonus" tools:ignore="PluralsCandidate">(%1$d) Set: %2$s</string>
-    <string name="items_sameDps">Same %1$s as the pick</string>
+    <string name="items_sameDps">Same %1$s</string>
     <string name="items_loading">Loading the item…</string>
     <string name="items_failed">This item did not load.</string>
     <string name="items_notInData">Not in our item data yet</string>

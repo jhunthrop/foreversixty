@@ -834,7 +834,7 @@ def _item_sheet_r5(platform: str) -> str:
     next_raid = _r5_gear_row('Next raid: Onyxia&rsquo;s Lair, Wed 8:00 PM', '', '') if platform == 'ios' else ''
     lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', '') + next_raid
              + _r5_gear_row('Replaces Ironwood Blade', 'Equipped', icon('inv_sword_07', 40, 'q4'))
-             + _r5_gear_row('Vis&rsquo;kag the Bloodletter', 'Runner-up &middot; Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'), QCOL[4])
+             + _r5_gear_row('Vis&rsquo;kag the Bloodletter', 'Runner-up &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'), QCOL[4])
              + _r5_gear_row('Grunvald', 'Protection Warrior &middot; needs it, the pick on their list', crest_img('warrior', 40), WARRIOR)
              + _r5_gear_row('Torvak', 'Enhancement Shaman &middot; has it', crest_img('shaman', 40), CLASS_COLOR['shaman']))
     sheet = ('<div class="dim" style="height:120px"></div><div class="sheetp r5item" role="dialog" aria-label="Deathbringer"><span class="sheet-grab"></span>'

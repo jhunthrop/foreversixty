@@ -321,11 +321,16 @@ final class BackfillCaptureTests: XCTestCase {
 
     /// The Gear sheet's source row: the head pick crafted at a skill with its runner-up a boss drop
     /// (Ancient Treasure, Uldaman), the off-hand crafted upgrade, and the back's world-drop upgrade.
-    func testRound8GearSheets() {
+    func testRound8GearSheets() { gearSheets(round: "r8") }
+
+    /// Round 9: the runner-up row names its source only when it differs, `Same DPS`, PvP without a faction.
+    func testRound9GearSheets() { gearSheets(round: "r9") }
+
+    private func gearSheets(round: String) {
         let app = CaptureLaunch.signedIn(tab: "gear")
         sleep(Self.settles)
-        for (slot, name) in [("Head", "crafted-boss-runner-up"), ("Off hand", "crafted-upgrade"), ("Back", "upgrade")] {
-            if tapSteps(app, slot, "r8-gear-sheet-\(name)") {
+        for (slot, name) in [("Head", "crafted-pvp-runner-up"), ("Off hand", "crafted-upgrade"), ("Back", "upgrade")] {
+            if tapSteps(app, slot, "\(round)-gear-sheet-\(name)") {
                 app.swipeDown(velocity: .fast)
                 sleep(1)
             }

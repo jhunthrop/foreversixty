@@ -165,17 +165,36 @@ class GearParityTest {
 
     @Test fun aZeroGainReadsNoGainAndTheRunnerUpAlwaysSaysWhatItGives() {
         val res = ApplicationProvider.getApplicationContext<android.content.Context>().resources
-        val alt = BisRunnerUp(BisItemRef(5, "Blood Guard's Plate Helm", null), "PvP rank 11", dpsDelta = 0.0, isWorn = false)
+        val alt = BisRunnerUp(BisItemRef(5, "Blood Guard's Plate Helm", null), "PvP rank 11 · Blood Guard · Horde", dpsDelta = 0.0, isWorn = false)
         val bisRow = GearFixtures.list.rows.first().let { row -> row.copy(pick = row.pick?.copy(runnersUp = listOf(alt))) }
         val row = GearSlotRow("head", "Head", ItemLook(2, "Lionheart Helm", 4), "Head", "+0.0", worn = false, row = bisRow, gains = false)
         val sheet = GearSheetComposer(res, BUILD).content(row, "DPS", null, emptyList(), null)
         assertEquals("No gain", sheet.gain)
-        assertEquals("Runner-up · PvP rank 11 · Same DPS as the pick", sheet.runnerUp?.line)
+        // Round 9 rows 1 and 3: `Same DPS`, and a PvP source without its faction word.
+        assertEquals("Runner-up · PvP rank 11 · Blood Guard · Same DPS", sheet.runnerUp?.line)
         // Placed by the loot file: its boss and its chance, as iOS words it.
         val dropped = GearSheetComposer(res, BUILD).content(
             row, "DPS", null, emptyList(), null, ItemSource("dungeon", "Uldaman", 1.3, boss = "Ancient Treasure"),
         )
-        assertEquals("Runner-up · Ancient Treasure · 1% · Same DPS as the pick", dropped.runnerUp?.line)
+        assertEquals("Runner-up · Ancient Treasure · 1% · Same DPS", dropped.runnerUp?.line)
+    }
+
+    @Test fun theRunnerUpNamesItsSourceOnlyWhenItDiffersFromThePicks() {
+        val res = ApplicationProvider.getApplicationContext<android.content.Context>().resources
+        val composer = GearSheetComposer(res, BUILD)
+        val alt = BisRunnerUp(BisItemRef(6, "Thorium Cestus", null), "Crafted: Blacksmithing", dpsDelta = -5.0, isWorn = false)
+        val crafted = GearFixtures.list.rows.first().let { row -> row.copy(pick = row.pick?.copy(source = "Crafted: Blacksmithing", runnersUp = listOf(alt))) }
+        val row = GearSlotRow("off_hand", "Off hand", ItemLook(2, "Dawn's Edge", 3), "Off hand", "+2.8", worn = false, row = crafted)
+        val forge = ItemSource("crafted", "Blacksmithing", null, profession = "blacksmithing", skill = 275)
+        // Same place as the pick's row (`Crafted: Blacksmithing (275)` above it): the delta alone.
+        assertEquals("Runner-up · −5.0 DPS", composer.content(row, "DPS", null, listOf(forge), null).runnerUp?.line)
+        assertEquals("Runner-up · −5.0 DPS", composer.content(row, "DPS", null, emptyList(), null).runnerUp?.line)
+        // Placed by the loot file at the pick's own place: left out too.
+        assertEquals("Runner-up · −5.0 DPS", composer.content(row, "DPS", null, listOf(forge), null, forge).runnerUp?.line)
+        // A different place is named, in the source row's words.
+        val drop = alt.copy(source = "World drop", dpsDelta = -0.3)
+        val vendor = crafted.copy(pick = crafted.pick?.copy(source = "Vendor: Lady Palanseer", runnersUp = listOf(drop)))
+        assertEquals("Runner-up · World drop · −0.3 DPS", composer.content(row.copy(row = vendor), "DPS", null, emptyList(), null).runnerUp?.line)
     }
 
     @Test fun theSheetSaysWhatThePickReplaces() {
@@ -296,7 +315,7 @@ object GearFixtures {
                 FlowLead.Item(ItemLook(7, "Ironwood Blade", 4, "inv_sword_07"), BUILD),
             ),
             runnerUp = GearSheetLine(
-                "Vis'kag the Bloodletter", "Runner-up · Onyxia · 8% · −1.8 DPS",
+                "Vis'kag the Bloodletter", "Runner-up · −1.8 DPS",
                 FlowLead.Item(ItemLook(17075, "Vis'kag the Bloodletter", 4, "inv_sword_18"), BUILD),
                 titleColor = ItemQuality(4).text,
             ),

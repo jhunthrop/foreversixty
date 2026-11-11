@@ -654,7 +654,7 @@ enum Copy {
         format("items.setBonus", n, text)
     }
 
-    /// Same {unit} as the pick
+    /// Same {unit}
     static func itemsSameDps(unit: String) -> String {
         format("items.sameDps", unit)
     }
