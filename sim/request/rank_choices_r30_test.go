@@ -5,7 +5,7 @@ import "testing"
 // Sim-accuracy round 30 (open items): rank rows on the levels round 29's leveling orders moved,
 // re-judged on the new talents level by level (design/reviews/2026-11-11-sim-accuracy/round30-open.md).
 // Arcane: with Missile Barrage, Arcane Impact and Arcane Meditation at 21 to 28, Frostbolt rank 1
-// (116) beats rank 4 (7322) at 24 to 27. Fire: with Precision at 41 to 43, Scorch rank 3 (8445) wins
+// (116) beats rank 4 (7322) at 24 to 28. Fire: with Precision at 41 to 43, Scorch rank 3 (8445) wins
 // at 50 and 51 and rank 4 (8446) at 52 to 55, and a Human casts Pyroblast rank 4 (12523) at 41.
 // Balance: Wrath rank 7 (8905) beats rank 6 (6780) from 48.
 func TestRound30DamageRankRows(t *testing.T) {
@@ -16,7 +16,8 @@ func TestRound30DamageRankRows(t *testing.T) {
 	}{
 		{"Troll Arcane Frostbolt at 24", "mage-arcane", "mage", "troll", 24, 116, 7322},
 		{"Human Arcane Frostbolt at 27", "mage-arcane", "mage", "human", 27, 116, 7322},
-		{"Gnome Arcane Frostbolt at 28", "mage-arcane", "mage", "gnome", 28, 7322, 116},
+		{"Gnome Arcane Frostbolt at 28", "mage-arcane", "mage", "gnome", 28, 116, 7322},
+		{"Gnome Arcane Frostbolt at 29", "mage-arcane", "mage", "gnome", 29, 7322, 116},
 		{"Undead Fire Scorch at 50", "mage-fire", "mage", "undead", 50, 8445, 10205},
 		{"Human Fire Scorch at 51", "mage-fire", "mage", "human", 51, 8445, 10205},
 		{"Gnome Fire Scorch at 52", "mage-fire", "mage", "gnome", 52, 8446, 10206},

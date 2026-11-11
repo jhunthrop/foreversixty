@@ -368,8 +368,8 @@ func TestRound24CasterRankRows(t *testing.T) {
 		// Fireball rank 4 (3140) at 24 for every race but a Gnome.
 		{"Undead Fireball at 24", "mage-fire", "mage", BarePreset, "undead", 24, 3140, 8400},
 		{"Gnome Fireball at 24", "mage-fire", "mage", BarePreset, "gnome", 24, 8400, 3140},
-		// Arcane's Frostbolt rank 4 (7322) from 28 (round 30: rank 1 at 24 to 27), when rank 5 (8406) arrives at 26, to 33.
-		{"Troll Arcane Frostbolt at 28", "mage-arcane", "mage", BarePreset, "troll", 28, 7322, 8406},
+		// Arcane's Frostbolt rank 4 (7322) from 29 (round 30: rank 1 at 24 to 28), when rank 5 (8406) arrives at 26, to 33.
+		{"Troll Arcane Frostbolt at 29", "mage-arcane", "mage", BarePreset, "troll", 29, 7322, 8406},
 		{"Human Arcane Frostbolt at 29", "mage-arcane", "mage", BarePreset, "human", 29, 7322, 8406},
 		// Frost's Frostbolt at 29: rank 5 for a Gnome, Orc or Undead; rank 4 for a Human to 31.
 		{"Gnome Frost Frostbolt at 29", "mage-frost", "mage", BarePreset, "gnome", 29, 8406, 7322},

@@ -780,12 +780,12 @@
         "bands": [
           {
             "from_level": 24,
-            "to_level": 27,
+            "to_level": 28,
             "rank": 1,
-            "note": "Sim-accuracy round 30 (open items): re-judged level by level on the round 29 leveling order (spec-breakdown -level N -rank, bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, every rank learned; design/reviews/2026-11-11-sim-accuracy/round30-open.md). With Missile Barrage, Arcane Impact and Arcane Meditation at 21 to 28, rank 1 beats rank 4 by 1.2 to 2.0% at 24 to 26 and 0.4 to 0.9% at 27; from 28 rank 4 wins again (ranks 1 to 3 lose 0.1 to 1.5%)."
+            "note": "Sim-accuracy round 30 (open items): re-judged level by level on the round 29 leveling order (spec-breakdown -level N -rank, bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, every rank learned; design/reviews/2026-11-11-sim-accuracy/round30-open.md). With Missile Barrage, Arcane Impact and Arcane Meditation at 21 to 28, rank 1 beats rank 4 by 1.2 to 2.0% at 24 to 26 and 0.4 to 0.9% at 27; re-checked on the 9 and 10 Nov hotfix engine (pin 4a3601e1f), rank 1 also wins at 28 (+0.4 to +1.1%, both factions and seeds), so the rank 4 row starts at 29."
           },
           {
-            "from_level": 28,
+            "from_level": 29,
             "to_level": 33,
             "rank": 4,
             "note": "Sim-accuracy round 24 (casters), judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every race of the class; a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). Rank 4 beats rank 5 from 26, when rank 5 arrives, by 1.2% to 2.0% for every race, and holds to 33; rank 5 at 30 to 33 loses 0.7% to 1.7%. From 34, with Mage Armor, the highest rank wins."
