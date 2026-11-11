@@ -28,6 +28,13 @@ new frame showed those stubs as the empty boxes rounds 1 and 2 flagged. Producti
 - **Newly read by ai-slop-reviewer, no tells:** sim-gear, sim-result, bis, character, report-deaths,
   report-damage-done, guild.
 
+## After the verdicts
+
+`30c2e9ee2`: a failed icon image now keeps its box, invisible, instead of removing it. The full
+Playwright run found that removing the box reflowed rows when a fixture icon 404'd late (the guides
+parity states at 390). Nothing visible changes: an empty frame still never shows, and no icon failed
+in the round 3 captures.
+
 ## Open, non-blocking
 
 - ux-designer: confirm 16 px as the frame cut-off. The 20 px chip icons keep the frame and the 16 px
