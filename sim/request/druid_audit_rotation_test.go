@@ -341,7 +341,7 @@ func TestBalanceRankRowsFortyToFiftyNine(t *testing.T) {
 	}{
 		{"Wrath at 45 is rank 6", 45, wrath6, wrath7},
 		{"Wrath at 46 is rank 6", 46, wrath6, wrath7},
-		{"Wrath at 48 is rank 6", 48, wrath6, wrath7},
+		{"Wrath at 47 is rank 6", 47, wrath6, wrath7},
 		{"Wrath at 49 is rank 7", 49, wrath7, wrath6},
 		{"Insect Swarm at 53 is rank 4", 53, insectSwarm4, insectSwarm3},
 		{"Insect Swarm at 54 is rank 3", 54, insectSwarm3, insectSwarm4},
