@@ -185,6 +185,7 @@
           <!-- On a phone the detail columns fold into the sub line under the name. -->
           <StatRow {figures} {phone}>
             {#snippet icon()}<SpellIcon
+                socket
                 tip={row.spellId}
                 size={24}
                 url={spellIcon(row.spellId, row.name, row.school)}
@@ -198,6 +199,7 @@
         {:else}
           <StatRow {figures} {phone}>
             {#snippet icon()}<SpellIcon
+                socket
                 tip={row.spellId}
                 size={24}
                 url={spellIcon(row.spellId, row.name, row.school)}

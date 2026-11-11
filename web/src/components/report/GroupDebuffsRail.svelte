@@ -42,6 +42,7 @@
         open
       >
         {#snippet lead()}<SpellIcon
+            socket
             tip={row.spellId}
             size={24}
             url={spellIcon(row.spellId, row.name, row.school)}

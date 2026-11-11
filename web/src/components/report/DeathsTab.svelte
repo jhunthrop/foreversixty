@@ -395,6 +395,7 @@
                 {@const heal = event.heal}
                 <StatRow figures={healFigures(heal)} phone={healFigures(heal)[1]?.value} testid="death-heal">
                   {#snippet icon()}<SpellIcon
+                      socket
                       tip={heal.spell_id}
                       size={24}
                       url={spellIcon(heal.spell_id, heal.spell_name)}
@@ -415,6 +416,7 @@
                 {@const blow = lethal && !lethalHitMissing(death, card)}
                 <StatRow figures={shown} phone={shown[1]?.value} testid={blow ? 'death-blow' : undefined}>
                   {#snippet icon()}<SpellIcon
+                      socket
                       tip={hit.spell_id}
                       size={24}
                       url={spellIcon(hit.spell_id, hit.spell_name)}

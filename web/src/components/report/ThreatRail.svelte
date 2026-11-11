@@ -76,7 +76,12 @@
             <span class="text-muted w-9 text-right text-[13px] tabular-nums" title="On the pull's clock"
               >{formatDuration(taunt.at_ms)}</span
             >
-            <SpellIcon url={icons.of(taunt.spell_id, taunt.spell_name)} size={24} tip={taunt.spell_id} />
+            <SpellIcon
+              socket
+              url={icons.of(taunt.spell_id, taunt.spell_name)}
+              size={24}
+              tip={taunt.spell_id}
+            />
           {/snippet}
           {#snippet titleContent()}
             <span style:color={classColorVar(classOf.get(taunt.source_guid))}

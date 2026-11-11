@@ -258,6 +258,7 @@
               phone={`${formatRate(ability.effective / seconds)} ${RATE[tab]}`}
             >
               {#snippet icon()}<SpellIcon
+                  socket
                   tip={ability.spell_id}
                   url={spellIcon(ability.spell_id, ability.name, ability.school)}
                   size={28}

@@ -73,6 +73,7 @@
     {#each lines as line (line.key)}
       <Row title={line.name} sub={line.sub} open density="slim">
         {#snippet lead()}<SpellIcon
+            socket
             tip={line.spellId}
             size={24}
             url={spellIcon(line.spellId, line.name, schoolOf.get(line.spellId))}

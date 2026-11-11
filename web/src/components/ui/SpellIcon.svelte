@@ -1,17 +1,19 @@
 <!-- web/src/components/ui/SpellIcon.svelte -->
 <!-- The one spell icon (component audit 2026-11-10 cluster 1; logs spec 2026-11-07 section 9,
      "Spell / item icon"): every spell, ability, buff, enchant, consumable and spec icon on the
-     site, the HD art in a 1 px warm frame at the icon radius, width and height always set so
-     nothing shifts. No url (an id the build's icon table does not carry, Melee) draws the dark
-     socket at the same size, never a broken image; an image that fails to load becomes the socket
-     too. `loading` holds the skeleton while the caller's icon table loads. `tip` names the spell
+     site, the HD art in a 1 px warm frame at the icon radius (an inline glyph of 16 px and below
+     has no frame), width and height always set so nothing shifts. No url (an id the build's icon
+     table does not carry, Melee), or an image that fails to load, draws nothing, never a broken
+     image; a caller whose icons line up in a column (a table, a list) sets `socket` and gets the
+     dark socket at the same size instead (review 2026-11-10: a socket anywhere else reads as an
+     empty checkbox). `loading` holds the skeleton while the caller's icon table loads. `tip` names the spell
      whose shared tooltip the icon opens on hover, `item` the item's. `label` names an icon that stands alone; beside a
      printed name it stays empty and the icon is decoration. Its static twin is SpellIcon.astro. -->
 <script lang="ts">
   import { spellTipKey } from '../../lib/tooltips/game-tip';
   import {
-    SPELL_ICON_FRAME,
     SPELL_ICON_IMAGE,
+    spellIconFrame,
     spellIconA11y,
     type SpellIconSize,
   } from '../../lib/ui/spell-icon';
@@ -24,6 +26,7 @@
     label = '',
     loading = false,
     eager = false,
+    socket = false,
     onfail,
     testid,
   }: {
@@ -40,6 +43,8 @@
     loading?: boolean;
     /** Above the fold: load at once instead of lazily. */
     eager?: boolean;
+    /** The icon holds a column: with no icon, the dark socket at its size rather than nothing. */
+    socket?: boolean;
     /** Called once when the image fails to load, for a caller that draws its own fallback. */
     onfail?: () => void;
     testid?: string;
@@ -58,9 +63,9 @@
     aria-hidden="true"
     data-testid={testid}
   ></span>
-{:else}
+{:else if shown !== null || socket}
   <span
-    class={SPELL_ICON_FRAME}
+    class={spellIconFrame(size)}
     style:width="{size}px"
     style:height="{size}px"
     {...spellIconA11y(label)}

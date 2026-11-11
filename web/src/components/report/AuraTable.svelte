@@ -280,6 +280,7 @@
           : `aura-${track.spell_id}-${onEnemy(track) ? 'enemies' : 'players'}`}
       >
         {#snippet icon()}<SpellIcon
+            socket
             url={icons.of(track.spell_id, track.name)}
             tip={track.spell_id}
           />{/snippet}
@@ -358,6 +359,7 @@
       {#each bySpell as entry (entry.name)}
         <StatRow figures={[{ value: formatPercent(entry.pct) }]}>
           {#snippet icon()}<SpellIcon
+              socket
               tip={entry.spellId}
               url={icons.of(entry.spellId, entry.name)}
             />{/snippet}

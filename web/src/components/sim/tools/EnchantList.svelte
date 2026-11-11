@@ -57,7 +57,7 @@
         data-testid={`sim-enchant-${slot}-${enchant.id}`}
         onclick={() => onpick(enchant.id)}
       >
-        <SpellIcon url={iconUrl(treeVersion, enchant.icon)} size={28} />
+        <SpellIcon socket url={iconUrl(treeVersion, enchant.icon)} size={28} />
         {enchant.name}
       </button>
     </li>

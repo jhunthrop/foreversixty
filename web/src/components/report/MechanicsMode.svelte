@@ -359,6 +359,7 @@
               testid={`mechanics-ability-${ability.spell_id}`}
             >
               {#snippet lead()}<SpellIcon
+                  socket
                   url={icons.of(ability.spell_id, ability.name)}
                   size={24}
                   tip={ability.spell_id}
@@ -406,6 +407,7 @@
               testid={`mechanics-row-${mechanicRowKey(row)}`}
             >
               {#snippet lead()}<SpellIcon
+                  socket
                   url={icons.of(row.spell_id, row.name)}
                   tip={row.spell_id}
                 />{/snippet}
@@ -448,6 +450,7 @@
                 wrapTrail
               >
                 {#snippet lead()}<SpellIcon
+                    socket
                     tip={problem.row.spell_id}
                     url={icons.of(problem.row.spell_id, problem.row.name)}
                     size={24}
@@ -491,6 +494,7 @@
                 open
               >
                 {#snippet lead()}<SpellIcon
+                    socket
                     tip={row.spell_id}
                     url={icons.of(row.spell_id, row.name)}
                     size={24}
@@ -618,6 +622,7 @@
             open
           >
             {#snippet lead()}<SpellIcon
+                socket
                 tip={ability.spell_id}
                 url={icons.of(ability.spell_id, ability.name)}
                 size={24}

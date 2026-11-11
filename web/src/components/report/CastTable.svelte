@@ -229,6 +229,7 @@
             testid={`cast-${row.guid}-${row.spell_id}`}
           >
             {#snippet icon()}<SpellIcon
+                socket
                 url={icons.of(row.spell_id, row.spell_name)}
                 tip={row.spell_id}
               />{/snippet}

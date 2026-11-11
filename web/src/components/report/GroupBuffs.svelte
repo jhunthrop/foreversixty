@@ -92,6 +92,7 @@
         {#each rows as row (row.name)}
           <StatRow figures={[{ value: formatPercent(row.share * 100) }]}>
             {#snippet icon()}<SpellIcon
+                socket
                 tip={row.spellId}
                 size={24}
                 url={spellIcon(row.spellId, row.name, row.school)}

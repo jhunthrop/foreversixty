@@ -186,6 +186,7 @@
           {#each shown as event, index (`${event.atMs}-${index}`)}
             <StatRow figures={figuresOf(event)} bar={false}>
               {#snippet icon()}{#if event.spellId !== undefined}<SpellIcon
+                    socket
                     url={icons.of(event.spellId, event.spellName)}
                     size={20}
                     tip={event.spellId}

@@ -8,9 +8,16 @@
 export const SPELL_ICON_SIZES = [14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 44] as const;
 export type SpellIconSize = (typeof SPELL_ICON_SIZES)[number];
 
-/** The frame: the warm line, the icon radius, the dark socket behind the art. */
-export const SPELL_ICON_FRAME =
-  'ui-spell-icon border-rule-warm rounded-icon inline-flex shrink-0 overflow-hidden border bg-[var(--color-bg)]';
+/** At this size and below an icon is a glyph inside a line of text: no frame, which would take
+ *  most of it and read as a checkbox (review 2026-11-10). */
+export const INLINE_MAX_PX = 16;
+
+/** The frame: the warm line, the icon radius, the dark socket behind the art; an inline glyph keeps
+ *  only the radius. */
+export function spellIconFrame(size: SpellIconSize): string {
+  const base = 'ui-spell-icon rounded-icon inline-flex shrink-0 overflow-hidden';
+  return size <= INLINE_MAX_PX ? base : `${base} border-rule-warm border bg-[var(--color-bg)]`;
+}
 
 /** The art inside the frame. */
 export const SPELL_ICON_IMAGE = 'block h-full w-full object-cover';

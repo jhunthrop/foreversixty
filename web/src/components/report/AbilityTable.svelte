@@ -112,6 +112,7 @@
     {#snippet icon()}
       <!-- The icon opens the same tooltip as the name: the spell's, or a swing row's weapon. -->
       <SpellIcon
+        socket
         url={iconUrl}
         size={28}
         tip={extras.tip ? row.spellId : undefined}
