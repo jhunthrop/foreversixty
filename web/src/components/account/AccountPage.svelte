@@ -389,7 +389,7 @@
       {#snippet header()}<PageHeader title={accountPageCopy.title} testid="account-head" />{/snippet}
       <Section title={characterListCopy.heading} panel frame="framed">
         <LoadError
-          message={ACCOUNT_FAILED}
+          message={accountPageCopy.loadFailed}
           variant="panel"
           onRetry={() => session.refresh()}
           testid="account-load-error"

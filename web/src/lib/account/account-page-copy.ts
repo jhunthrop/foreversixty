@@ -29,6 +29,8 @@ import {
 // that character-list-copy.ts and signin-copy.ts do not already carry.
 
 export const accountPageCopy = {
+  /** The Characters panel when /v1/me failed; LoadError adds Try again. */
+  loadFailed: 'Your account did not load.',
   title: 'Your account',
   /** The You panel's facts: who is signed in, and how. */
   battletagLabel: 'BattleTag',

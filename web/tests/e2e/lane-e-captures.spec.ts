@@ -17,6 +17,7 @@ import { REPO_ROOT, prepareParityPage, settleParityPage } from './support/parity
 import { stubRankingsApi } from './support/rankings-fixture';
 import { signedOut } from './support/selector';
 import { shareBuild } from './support/planner';
+import { openBis } from './support/bis-page';
 import {
   CHARACTER,
   CHARACTER_PATH,
@@ -79,7 +80,7 @@ test.describe('Lane E captures', () => {
       });
 
       test('bis sources', async ({ page }) => {
-        await page.goto('/bis');
+        await openBis(page, '/bis/hunter/marksmanship?band=60&view=slot');
         const button = page.getByTestId('bis-sources-button');
         if (width >= 768 && (await button.count()) > 0) {
           await button.click();
@@ -111,7 +112,21 @@ test.describe('Lane E captures', () => {
       });
 
       test('boss picker', async ({ page }) => {
-        await page.route(CHARACTER_URL, (route) => route.fulfill(fulfil({ ...CHARACTER })));
+        await page.route(CHARACTER_URL, (route) =>
+          route.fulfill(
+            fulfil({
+              ...CHARACTER,
+              data: {
+                ...CHARACTER.data,
+                score: 1830,
+                tier: 'epic',
+                as_of: '2026-11-04',
+                components: { gear: 412, experience: 640, parses: 510, attendance: 180, discipline: 88 },
+                experience: { dungeons: 4, raid_kills: 12, alts: 1 },
+              },
+            }),
+          ),
+        );
         await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill({ status: 404, body: '{}' }));
         const me = ownerMeAnswer() as { data: { entitlements?: Record<string, unknown> } };
         me.data.entitlements = { ...(me.data.entitlements ?? {}), history: true };
