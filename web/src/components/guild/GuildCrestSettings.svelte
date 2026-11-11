@@ -22,10 +22,10 @@
   import { guildCrestCopy, guildHomeCopy } from '../../lib/guild/copy';
   import { CREST_ACCEPT_ATTR, precheckCrestFile } from '../../lib/guild/crest';
   import { guildMarkSrc } from '../../lib/guild/mark';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
   import { button } from '../../lib/ui/button';
   import { ROW_LABEL, ROW_OPEN } from '../../lib/ui/row';
   import { CONFIRM_BLOCK } from '../../lib/guild/billing-styles';
+  import Button from '../ui/Button.svelte';
 
   let {
     guildId,
@@ -169,7 +169,7 @@
         'sm',
       )} has-[:focus-visible]:outline-gold cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 {busy !==
       null
-        ? BUSY_CLASS
+        ? 'cursor-not-allowed opacity-45'
         : ''}"
       data-testid="guild-crest-choose"
     >
@@ -202,16 +202,16 @@
     {/if}
 
     <div class="flex flex-wrap items-center gap-3">
-      <button
-        type="button"
-        class="{button('secondary', 'sm')} {busy === 'saving' ? BUSY_CLASS : ''}"
+      <Button
+        size="sm"
         onclick={() => void onSave()}
+        busy={busy === 'saving'}
+        busyLabel={guildCrestCopy.saving}
         disabled={selectedFile === null || busy !== null}
-        aria-busy={busy === 'saving'}
-        data-testid="guild-crest-save"
+        testid="guild-crest-save"
       >
-        {busy === 'saving' ? guildCrestCopy.saving : guildCrestCopy.save}
-      </button>
+        {guildCrestCopy.save}
+      </Button>
 
       {#if hasCrest && !confirmingRemove}
         <button
@@ -230,16 +230,17 @@
       <div class={CONFIRM_BLOCK} data-testid="guild-crest-remove-confirm">
         <p class="text-[13px]">{guildCrestCopy.removeConfirmLine}</p>
         <div class="flex gap-3">
-          <button
-            type="button"
-            class="{button('danger', 'sm')} {busy === 'removing' ? BUSY_CLASS : ''}"
+          <Button
+            tone="danger"
+            size="sm"
             onclick={() => void onRemoveConfirm()}
+            busy={busy === 'removing'}
+            busyLabel={guildCrestCopy.removing}
             disabled={busy !== null}
-            aria-busy={busy === 'removing'}
-            data-testid="guild-crest-remove-confirm-button"
+            testid="guild-crest-remove-confirm-button"
           >
-            {busy === 'removing' ? guildCrestCopy.removing : guildCrestCopy.removeConfirmButton}
-          </button>
+            {guildCrestCopy.removeConfirmButton}
+          </Button>
           <button
             type="button"
             class={button('ghost', 'sm')}

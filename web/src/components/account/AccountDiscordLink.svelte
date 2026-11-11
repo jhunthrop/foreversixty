@@ -20,7 +20,7 @@
   } from '../../lib/account/discord-link-return';
   import { createFocusQueue } from '../../lib/account/discord-return.svelte';
   import Row from '../ui/Row.svelte';
-  import ConfirmButtons from './ConfirmButtons.svelte';
+  import ConfirmButtons from '../ui/ConfirmButtons.svelte';
   import DiscordConnectLink from './discord/DiscordConnectLink.svelte';
 
   /** `Unlinked.` stays this long; a return's line stays until the next action. */

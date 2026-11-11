@@ -85,12 +85,14 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(html).toContain('guild-roster-sort-attendance');
   });
 
-  it('keeps the default sort on item level, the active chip showing its arrow and aria-sort', () => {
-    const tag = /<button[^>]*data-testid="guild-roster-sort-ilvl"[^>]*>[^<]*</.exec(withSnapshot)?.[0] ?? '';
+  it('keeps the default sort on item level, the active chip showing its arrow and pressed', () => {
+    const tag =
+      /<button[^>]*data-testid="guild-roster-sort-ilvl"[^>]*>[\s\S]*?<\/button>/.exec(withSnapshot)?.[0] ??
+      '';
     expect(tag).toContain('▾');
-    expect(tag).toContain('aria-sort="descending"');
+    expect(tag).toContain('aria-pressed="true"');
     expect(/<button[^>]*data-testid="guild-roster-sort-rank"[^>]*>/.exec(withSnapshot)?.[0]).not.toContain(
-      'aria-sort',
+      'aria-pressed="true"',
     );
     const names = [...rows(withSnapshot).keys()];
     // Zulmara (the viewer) pinned first, then item level descending: Windtalon 70 leads.

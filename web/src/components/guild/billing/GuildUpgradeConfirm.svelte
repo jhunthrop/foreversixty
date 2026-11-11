@@ -4,17 +4,11 @@
      (its ring shows on focus moved in code), Escape acts as Keep Guild. The renewal date is the plan
      line's own, so the two sentences never disagree. Below 768 the buttons are full width. -->
 <script lang="ts">
-  import { button } from '../../../lib/ui/button';
   import type { GuildPlanView, UpgradePreview } from '../../../lib/billing/contract';
   import { guildBillingCopy as copy } from '../../../lib/billing/guild-billing-copy';
-  import {
-    BILLING_SAFE_TEXT_BUTTON,
-    CONFIRM_ACTION_WIDTH,
-    CONFIRM_ACTIONS,
-    CONFIRM_BLOCK,
-  } from '../../../lib/guild/billing-styles';
+  import { CONFIRM_ACTION_WIDTH, CONFIRM_ACTIONS, CONFIRM_BLOCK } from '../../../lib/guild/billing-styles';
   import { upgradeFacts } from '../../../lib/guild/upgrade-facts';
-  import { focusOnMount } from '../../../lib/guild/focus-now';
+  import ConfirmButtons from '../../ui/ConfirmButtons.svelte';
   import Skeleton from '../../ui/Skeleton.svelte';
 
   let {
@@ -42,12 +36,6 @@
       : copy.upgrade.parts(facts.proratedCents ?? 0, facts.interval, facts.renewsAt, facts.nextCents),
   );
   const loading = $derived(preview === null);
-
-  function onKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Escape' || committing) return;
-    event.preventDefault();
-    onKeep();
-  }
 </script>
 
 <div
@@ -55,7 +43,6 @@
   role="group"
   aria-labelledby="guild-upgrade-sentence"
   aria-busy={preview === null || committing}
-  onkeydown={onKeydown}
   data-testid="guild-upgrade-confirm"
 >
   <div id="guild-upgrade-sentence" class="flex flex-wrap items-center text-[14px]">
@@ -78,24 +65,20 @@
     <p class="text-[13px]" role="alert" data-testid="guild-upgrade-error">{error}</p>
   {/if}
   <div class={CONFIRM_ACTIONS}>
-    <button
-      type="button"
-      class="{button('primary')} {CONFIRM_ACTION_WIDTH}"
-      disabled={preview === null || committing}
-      onclick={onCommit}
-      data-testid="guild-upgrade-commit"
-    >
-      {committing ? copy.upgrade.committing : copy.upgrade.commit}
-    </button>
-    <button
-      type="button"
-      class="{BILLING_SAFE_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH}"
-      use:focusOnMount
-      disabled={committing}
-      onclick={onKeep}
-      data-testid="guild-upgrade-keep"
-    >
-      {copy.upgrade.keep}
-    </button>
+    <ConfirmButtons
+      tone="primary"
+      size="md"
+      width={CONFIRM_ACTION_WIDTH}
+      confirm={copy.upgrade.commit}
+      cancel={copy.upgrade.keep}
+      busy={committing}
+      busyLabel={copy.upgrade.committing}
+      disabled={preview === null}
+      onconfirm={onCommit}
+      oncancel={onKeep}
+      testid="guild-upgrade"
+      confirmTestid="guild-upgrade-commit"
+      cancelTestid="guild-upgrade-keep"
+    />
   </div>
 </div>

@@ -99,6 +99,7 @@ export const rankingsCopy = {
   removed: 'Removed by a moderator',
   atRisk: 'Under review by a moderator',
   filtersButton: 'Filters',
+  clearFilters: 'Clear filters',
   boardTabs: 'Board',
   pickerHeading: 'Choose an encounter',
 

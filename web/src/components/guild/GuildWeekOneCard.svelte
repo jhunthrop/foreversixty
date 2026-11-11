@@ -7,6 +7,7 @@
      `loading` and `error` hold the section's height so the page does not shift. -->
 <script lang="ts">
   import CharacterName from '../ui/CharacterName.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import activeBuild from '../../data/active-build.json';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import {
@@ -130,7 +131,7 @@
   {:else}
     <div class="flex flex-col gap-4">
       {#if spreadIsEmpty(spread)}
-        <p class="text-muted text-[14px]" data-testid="guild-week-one-empty">{weekOneCopy.empty}</p>
+        <EmptyState message={weekOneCopy.empty} testid="guild-week-one-empty" />
       {:else}
         <div class="flex flex-col gap-2">
           <Tally items={levelTally(spread)} testid="guild-week-one-spread" />

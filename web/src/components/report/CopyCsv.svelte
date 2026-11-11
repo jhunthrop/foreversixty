@@ -3,6 +3,7 @@
      the button puts them on the clipboard and says whether it managed. -->
 <script lang="ts">
   import { toCsv } from '../../lib/report/csv';
+  import { CopyState } from '../../lib/ui/copy-state.svelte';
   import { LINK } from '../../lib/ui/primitives';
 
   let {
@@ -16,16 +17,8 @@
     inHead?: boolean;
   } = $props();
 
-  let copied = $state('');
-  async function copy(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(toCsv(lines()));
-      copied = 'Copied';
-    } catch {
-      copied = 'Copy failed';
-    }
-    setTimeout(() => (copied = ''), 1500);
-  }
+  const copier = new CopyState();
+  $effect(() => () => copier.dispose());
 </script>
 
 <div class="flex justify-end">
@@ -36,6 +29,6 @@
       : `${LINK} inline-flex min-h-11 items-center text-[14px] md:min-h-9`}
     title={label}
     data-testid="copy-csv"
-    onclick={() => void copy()}>{copied === '' ? 'Copy CSV' : copied}</button
+    onclick={() => void copier.copy(toCsv(lines()))}>{copier.label('Copy CSV')}</button
   >
 </div>

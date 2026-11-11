@@ -6,6 +6,7 @@ import { priceFor } from './plan-costs';
 import { PLANS, formatPrice, type Interval, type PlanKey } from './plans';
 import { sharedPremiumSupporterChip } from '../copy/shared/premium.generated';
 import { grouped } from '../format/number';
+import { uiCopy } from '../ui/copy';
 
 export const checkoutCopy = {
   redirecting: 'Redirecting to secure checkout…',
@@ -16,7 +17,7 @@ export const checkoutCopy = {
   processing: 'Confirming your payment…',
   confirmed: 'Payment confirmed.',
   confirmationSlow: 'This can take a moment; refresh if it does not update.',
-  retry: 'Try again',
+  retry: uiCopy.retry,
   whichGuild: 'Which guild?',
   /** Under Which guild? (player 9): the plan and price picked on /premium, `Raid guild · $200 a year`. */
   chosenPlan: (plan: PlanKey, interval: Interval, founder: boolean): string =>
@@ -28,7 +29,7 @@ export const checkoutCopy = {
   noBillableGuild: 'You can subscribe a guild you lead or have claimed.',
   findYourGuild: 'Find your guild',
   guildsDidNotLoad: 'Your guilds did not load.',
-  tryAgain: 'Try again',
+  tryAgain: uiCopy.retry,
   /** The checkout Steps (spec 2026-11-08 section 6). */
   steps: { signIn: 'Sign in', pay: 'Pay with Stripe', on: (plan: string): string => `${plan} on` },
   signedInAs: (who: string): string => `Signed in as ${who}`,

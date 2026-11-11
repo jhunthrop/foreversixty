@@ -11,9 +11,10 @@
   import type { GuildRaidSignup, GuildReadinessRow } from '../../lib/guild/api';
   import type { ReadinessRaid } from '../../lib/guild/attendance-contract';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
-  import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
+  import { CopyState } from '../../lib/ui/copy-state.svelte';
 
   import { fetchGuildRaid } from '../../lib/guild/raids-api';
+  import Chips from '../ui/Chips.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
   import Page from '../ui/Page.svelte';
   import Section from '../ui/Section.svelte';
@@ -104,19 +105,12 @@
       .catch(() => (tanks = null));
   });
 
-  let copiedKey = $state<string | null>(null);
+  // Each row's Nudge reads Copied for two seconds, or Copy failed when the clipboard refuses.
+  const nudge = new CopyState();
+  $effect(() => () => nudge.dispose());
 
-  async function onNudge(row: GuildReadinessRow): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(nudgeText(row));
-      copiedKey = row.character_key;
-      setTimeout(() => {
-        if (copiedKey === row.character_key) copiedKey = null;
-      }, 2000);
-    } catch {
-      // Clipboard access can be refused (no permission, insecure context): the label never
-      // promised more than "Copied", so a refusal leaves no confirmation rather than an error.
-    }
+  function onNudge(row: GuildReadinessRow): Promise<void> {
+    return nudge.copy(nudgeText(row), row.character_key);
   }
 </script>
 
@@ -132,14 +126,12 @@
     >
       {#snippet head()}
         {#if raid !== null}
-          <button
-            class={`${FILTER_BTN} ${nextRaidOnly ? FILTER_BTN_ON : ''}`}
-            aria-pressed={nextRaidOnly}
-            onclick={onToggleNextRaid}
-            data-testid="guild-readiness-next-raid"
-          >
-            {NEXT_RAID_ONLY}
-          </button>
+          <Chips
+            chips={[{ id: 'next-raid', label: NEXT_RAID_ONLY, on: nextRaidOnly }]}
+            label={NEXT_RAID_ONLY}
+            onToggle={onToggleNextRaid}
+            chipTestid="guild-readiness"
+          />
         {/if}
       {/snippet}
       {#if officerReadOnly}<GuildPlanGate tab="readiness" facts={gateFacts} />{/if}
@@ -158,7 +150,7 @@
           {officer}
           readOnly={officerReadOnly}
           describedBy={gateDescribedBy}
-          {copiedKey}
+          nudgeLabel={(key) => nudge.label('Nudge', key)}
           {median}
           fireKeys={tanks === null ? null : new Set(tanks.map((t) => t.character_key))}
           {now}

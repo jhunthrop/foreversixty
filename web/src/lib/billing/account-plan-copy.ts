@@ -4,6 +4,7 @@
 // values read as written, instants on the viewer calendar; prices are built from ./plans.
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { PLANS, formatCents, type Interval } from './plans';
+import { withRetry } from '../ui/copy';
 
 export const accountPlanCopy = {
   offer: {
@@ -19,7 +20,7 @@ export const accountPlanCopy = {
       `Accepted. Your Premium ends ${zonedDayMonthYear(ownEnds, zone)}; the seat starts then.`,
     acceptedNoDate: 'Accepted. The seat starts when your Premium ends.',
     declined: 'Declined. Your Premium carries on as before.',
-    failed: 'That did not save. Try again.',
+    failed: withRetry('That did not save.'),
   },
   planLine: {
     renews: (date: string, amountCents: number, interval: Interval, zone?: string): string =>

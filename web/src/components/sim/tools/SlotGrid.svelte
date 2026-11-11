@@ -3,6 +3,7 @@
      trinkets get one group, not two: sim/bulk tries them in both slots and the grid
      saying otherwise would be a promise the engine does not keep. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import { SLOTS, type Slot } from '../../../lib/planner/types';
   import { slotLabelForClass } from '../../../lib/bis/slot-display-labels';
   import type { CandidateRow } from '../../../lib/sim/candidates';
@@ -49,7 +50,7 @@
        true-void case (no gear, no bag/bank picks, nothing searched in yet), not the normal
        "this slot has nothing" case -- which a group simply not existing already says. -->
   {#if rows.length === 0}
-    <p class="text-muted text-[13px]" data-testid="sim-slot-grid-empty">{bulkCopy.noCandidates}</p>
+    <EmptyState message={bulkCopy.noCandidates} testid="sim-slot-grid-empty" />
   {/if}
   <div class="flex flex-col gap-5">
     {#each SHOWN as slot (slot)}

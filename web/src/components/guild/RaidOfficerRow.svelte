@@ -16,11 +16,10 @@
   import { RAID_BUTTON as BUTTON, RAID_GHOST_BUTTON } from '../../lib/guild/raid-buttons';
   import type { RaidStatusAction } from '../../lib/guild/raids-api';
   import type { GateFacts } from '../../lib/guild/plan-gate';
+  import { CopyState } from '../../lib/ui/copy-state.svelte';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import RaidCancelConfirm from './RaidCancelConfirm.svelte';
 
-  /** `Copied` stays this long (spec 4). */
-  const COPIED_MS = 4000;
   let {
     raid,
     readOnly,
@@ -32,7 +31,7 @@
     onEdit,
     onStatus,
     ended = false,
-    writeClipboard = (text: string) => navigator.clipboard.writeText(text),
+    writeClipboard = undefined,
   }: {
     raid: GuildRaidView;
     /** Officer-read-only (gate spec 3.2). */
@@ -55,9 +54,9 @@
   let confirming = $state(false);
   /** Ticked when the guild's channel posts raids by default (spec 4 "Cancel confirm"). */
   let postCancel = $state(false);
-  let copied = $state(false);
-  let copyFailed = $state<string | null>(null);
-  let copiedTimer: ReturnType<typeof setTimeout> | undefined;
+  // svelte-ignore state_referenced_locally
+  const clip = new CopyState(writeClipboard);
+  $effect(() => () => clip.dispose());
   let cancelButton = $state<HTMLButtonElement | null>(null);
 
   /** A cancelled or done raid takes no edit, lock or cancel. */
@@ -90,17 +89,8 @@
     if (await onStatus('cancel', postCancel)) confirming = false;
   }
 
-  async function copy(): Promise<void> {
-    const text = signupListText(raid, guildTimezone);
-    try {
-      await writeClipboard(text);
-      copyFailed = null;
-      copied = true;
-      clearTimeout(copiedTimer);
-      copiedTimer = setTimeout(() => (copied = false), COPIED_MS);
-    } catch {
-      copyFailed = text;
-    }
+  function copy(): Promise<void> {
+    return clip.copy(signupListText(raid, guildTimezone));
   }
 
   function selectAll(node: HTMLTextAreaElement): void {
@@ -139,7 +129,7 @@
           data-testid="raid-officer-lock">{lockLabel}</button
         >
         <button type="button" class={BUTTON} onclick={() => void copy()} data-testid="raid-officer-copy"
-          >{copied ? raidCopy.officerRow.copied : raidCopy.officerRow.copy}</button
+          >{clip.copied() ? raidCopy.officerRow.copied : raidCopy.officerRow.copy}</button
         >
         <button
           type="button"
@@ -169,7 +159,7 @@
       </p>
     {/key}
   {/if}
-  {#if copyFailed !== null}
+  {#if clip.failed()}
     <p class="text-wipe text-[13px]" role="alert" data-testid="raid-copy-failed">{raidCopy.copyFailed}</p>
     <textarea
       class="{TEXTAREA_CHROME} font-mono text-[12px]"
@@ -177,7 +167,7 @@
       readonly
       aria-label={raidCopy.officerRow.copy}
       use:selectAll
-      data-testid="raid-copy-text">{copyFailed}</textarea
+      data-testid="raid-copy-text">{clip.text}</textarea
     >
   {/if}
 </div>

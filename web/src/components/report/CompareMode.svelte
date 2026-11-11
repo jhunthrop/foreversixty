@@ -47,6 +47,7 @@
   import { clockDuration } from '../../lib/format/duration';
   import { compact } from '../../lib/format/number';
   import Crest from '../ui/Crest.svelte';
+  import LoadError from '../ui/LoadError.svelte';
   import Notice from '../ui/Notice.svelte';
   import Section from '../ui/Section.svelte';
   import Select from '../ui/Select.svelte';
@@ -155,6 +156,8 @@
       : scopeSummary(rightWhole, clampWindow(rightWindow, rightWhole.duration_ms)),
   );
   let error = $state('');
+  /** Bumped by Try again: the effect below reads it, so the same fight is asked for again. */
+  let attempt = $state(0);
   const metric = $derived<CompareMetric>(
     (COMPARE_METRICS as readonly string[]).includes(metricParam) ? (metricParam as CompareMetric) : 'dps',
   );
@@ -184,6 +187,7 @@
    */
   $effect(() => {
     const wanted = rightIndex;
+    void attempt;
     if (wanted === null) {
       rightWhole = null;
       error = '';
@@ -599,7 +603,9 @@
     {#if controls}<div class="px-5 pb-3">{@render pickers()}</div>{/if}
     <div>
       {#if error !== ''}
-        <p class="px-4 py-4 text-[14px]" role="alert">{error}</p>
+        <div class="px-4 py-4">
+          <LoadError message={error} onRetry={() => (attempt += 1)} testid="compare-error" />
+        </div>
       {:else if versusPlayer}
         <StatTable
           columns={playerColumns}

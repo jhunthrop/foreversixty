@@ -37,7 +37,7 @@ test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const NEW_YORK = 'America/New_York';
 const POLL_MS = 10_000;
-const COPIED_MS = 4_000;
+const COPIED_MS = 2_000;
 const PHONE = { width: 360, height: 800 };
 
 test.use({ timezoneId: CHICAGO });
@@ -432,7 +432,7 @@ test.describe('the officer row in a browser (Task 7)', () => {
     await expect(page.getByTestId('raid-back-link')).toBeFocused();
   });
 
-  test('Copied shows for 4 s', async ({ page, context }) => {
+  test('Copied shows for 2 s', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await openRaid(page, { viewer: 'officer' });
     const copy = page.getByTestId('raid-officer-copy');

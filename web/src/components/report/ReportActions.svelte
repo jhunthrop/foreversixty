@@ -5,14 +5,22 @@
      scrolling to This pull. Escape or a click outside closes it and focus returns to the button. -->
 <script lang="ts">
   import { reportCopy } from '../../lib/report/copy';
-  import { COPIED_FOR_MS, copyReportLink } from '../../lib/report/copy-link';
+  import { CopyState } from '../../lib/ui/copy-state.svelte';
   import { simCopy } from '../../lib/sim/copy';
   import Overlay from '../ui/Overlay.svelte';
 
   let { simHref }: { simHref: string | null } = $props();
 
   let open = $state(false);
-  let copied = $state('');
+  const copier = new CopyState();
+  $effect(() => () => copier.dispose());
+  /** The menu closes once its Copied has shown (lib/ui/copy-feedback.ts's two seconds). */
+  let closeAfterCopy = false;
+  $effect(() => {
+    if (copier.state !== 'idle' || !closeAfterCopy) return;
+    closeAfterCopy = false;
+    close(true);
+  });
   let root = $state<HTMLElement | null>(null);
 
   function close(refocus: boolean): void {
@@ -21,11 +29,8 @@
   }
 
   async function copyLink(): Promise<void> {
-    copied = await copyReportLink(window.location.href);
-    setTimeout(() => {
-      copied = '';
-      close(true);
-    }, COPIED_FOR_MS);
+    await copier.copy(window.location.href);
+    closeAfterCopy = copier.state === 'copied';
   }
 
   function onKey(event: KeyboardEvent): void {
@@ -72,7 +77,7 @@
             role="menuitem"
             class="report-action"
             data-testid="report-actions-copy"
-            onclick={() => void copyLink()}>{copied === '' ? reportCopy.copyLink : copied}</button
+            onclick={() => void copyLink()}>{copier.label(reportCopy.copyLink)}</button
           >
         </div>
       </Overlay>

@@ -4,6 +4,7 @@
 // own words are typed here. No runtime import
 // beyond the copy modules, so a Playwright spec can read it.
 import { notificationsCopy } from '../account/notifications-copy';
+import { withRetry } from '../ui/copy';
 
 export const guildDiscordCopy = {
   heading: 'Discord',
@@ -21,5 +22,5 @@ export const guildDiscordCopy = {
   returnDenied: notificationsCopy.returnDenied,
   returnFailed:
     'Could not connect. You need to manage webhooks in that channel and be an officer of this guild. Ask a server admin for the permission, then try again.',
-  connectStuck: 'Discord did not open. Try again.',
+  connectStuck: withRetry('Discord did not open.'),
 } as const;

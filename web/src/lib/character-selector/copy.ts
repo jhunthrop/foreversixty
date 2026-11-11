@@ -5,6 +5,7 @@ import { accountPlanCopy } from '../billing/account-plan-copy';
 import { PREMIUM_LINKS } from '../billing/premium-links';
 import { ctaCopy } from '../addon/cta-copy';
 import { sharedSelectorRefreshing } from '../copy/shared/selector.generated';
+import { uiCopy, withRetry } from '../ui/copy';
 
 export const selectorCopy = {
   listHeading: 'Your characters',
@@ -40,7 +41,7 @@ export const selectorCopy = {
   accountLinkHref: '/account',
   loadErrorTitle: 'Your characters did not load.',
   loadErrorBody: 'Check your connection and try again. You can still paste an export.',
-  tryAgain: 'Try again',
+  tryAgain: uiCopy.retry,
   sessionEnded: 'Your session ended. Sign in to see your other characters.',
   pastedNotSaved: 'Not saved to an account. Sign in to keep it.',
   /** The panel's line for a character restored from an earlier visit (restored.ts), and its action. */
@@ -48,7 +49,7 @@ export const selectorCopy = {
   forget: 'Forget',
   forgetAria: (name: string): string => `Forget ${name}`,
   forgotten: (name: string): string => `Forgot ${name}.`,
-  retry: 'Retry',
+  retry: uiCopy.retry,
   retrying: 'Trying',
   refreshing: sharedSelectorRefreshing,
   staleAddonTail: 'Log in to the game to update',
@@ -93,7 +94,7 @@ export const selectorCopy = {
     founderTag: accountPlanCopy.founder.pill,
     signOut: 'Sign out',
     signingOut: 'Signing out…',
-    signOutFailed: 'Could not sign out. Try again.',
+    signOutFailed: withRetry('Could not sign out.'),
     /** `mark` is a ring-mark sentence ("Sync is stale.") that sits before the action. */
     controlAria: (name: string, desc: string, mark = ''): string =>
       `${name}, ${desc}. ${mark === '' ? '' : `${mark} `}Your characters and account`,

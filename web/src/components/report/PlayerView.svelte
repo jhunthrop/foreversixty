@@ -7,7 +7,7 @@
      Section Gear at the pull under the chart: the shared paperdoll frame in report mode, or on a pull
      with no gear in the log (every trash pull) the one line that says why. -->
 <script lang="ts">
-  import EmptyLine from './EmptyLine.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import CopyCsv from './CopyCsv.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
   import { schoolName } from '../../lib/report/format';
@@ -240,7 +240,7 @@
     {#snippet head()}{#if rows.length > 0}<CopyCsv lines={abilityCsv} inHead />{/if}{/snippet}
     <div>
       {#if rows.length === 0}
-        <EmptyLine text="Nothing in this window." testid="table-empty" />
+        <EmptyState inset message="Nothing in this window." testid="table-empty" />
       {:else}
         <StatTable
           columns={COLUMNS}
@@ -294,7 +294,7 @@
     panel
   >
     {#if combatant === undefined || combatant.gear.every((item) => item.ID <= 0)}
-      <EmptyLine text={NO_GEAR} testid="report-no-gear" />
+      <EmptyState inset message={NO_GEAR} testid="report-no-gear" />
     {:else}
       <GearList
         gear={combatant.gear}

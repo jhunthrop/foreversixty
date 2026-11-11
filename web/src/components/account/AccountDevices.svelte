@@ -16,7 +16,7 @@
   import Code from '../ui/Code.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import ConfirmButtons from './ConfirmButtons.svelte';
+  import ConfirmButtons from '../ui/ConfirmButtons.svelte';
 
   let {
     devices,

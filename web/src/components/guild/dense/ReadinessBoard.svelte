@@ -14,13 +14,16 @@
   import StatRow from '../../ui/StatRow.svelte';
   import StatTable from '../../ui/StatTable.svelte';
 
+  /** The idle word: the shared CopyState swaps in Copied or Copy failed. */
+  const NUDGE = 'Nudge';
+
   let {
     short,
     ready,
     officer,
     readOnly = false,
     describedBy,
-    copiedKey = null,
+    nudgeLabel = () => NUDGE,
     median = null,
     fireKeys = null,
     now,
@@ -33,7 +36,8 @@
     readOnly?: boolean;
     /** The plan sentence's id that describes a disabled Nudge. */
     describedBy?: string;
-    copiedKey?: string | null;
+    /** The Nudge button's words for a row: Nudge, then Copied or Copy failed (lib/ui/copy-state). */
+    nudgeLabel?: (characterKey: string) => string;
     median?: number | null;
     /** The raid asks for fire resistance: these signed tanks' totals fill a Fire res column. */
     fireKeys?: ReadonlySet<string> | null;
@@ -138,9 +142,10 @@
           disabled={readOnly}
           aria-describedby={describedBy}
           onclick={() => onNudge(row)}
-          aria-label={`Nudge ${row.name}`}
           data-testid={`guild-readiness-nudge-${row.character_key}`}
-          >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
+          ><span aria-live="polite">{nudgeLabel(row.character_key)}</span><span class="sr-only">
+            {row.name}</span
+          ></button
         >{/snippet}
       {#if index === short.length && short.length > 0 && ready.length > 0}
         <StatRow total bar={false} figures={blank}

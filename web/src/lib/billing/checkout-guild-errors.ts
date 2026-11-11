@@ -1,6 +1,7 @@
 // web/src/lib/billing/checkout-guild-errors.ts
 // The busy labels and error lines of the checkout guild step (design/specs/2026-10-27-subscribe-and-join.md
 // §9.1). Error lines are written from the API's error codes, never its sentence.
+import { uiCopy, withRetry } from '../ui/copy';
 
 /** One claim attempt per account in this many days (the API's claim cooldown). */
 export const CLAIM_COOLDOWN_DAYS = 30;
@@ -10,6 +11,7 @@ export const checkoutGuildBusy = {
   claiming: 'Claiming…',
   starting: 'Starting…',
   confirming: 'Confirming…',
+  portal: 'Opening billing…',
 } as const;
 
 export const checkoutGuildClaimErrors = {
@@ -26,7 +28,7 @@ export const checkoutGuildCheckoutErrors = {
   notOpen: 'Purchases are not open yet. Nothing was charged. Check back soon.',
   alreadyOnPlan: (guild: string): string => `${guild} is already on a plan.`,
   generic: 'That did not work; try again.',
-  tryAgain: 'Try again',
+  tryAgain: uiCopy.retry,
 } as const;
 
-export const checkoutGuildPortalError = 'Billing did not open. Try again.';
+export const checkoutGuildPortalError = withRetry('Billing did not open.');

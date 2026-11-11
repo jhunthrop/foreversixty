@@ -13,6 +13,7 @@
      cast in the whole fight and scopeCastRow never touches it, so under any window it is
      silently the whole fight's total -- the `†` mark SummaryTab's Active column uses. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { approximateMark, classColorVar, wholeFightMark } from '../../lib/report/format';
   import type { CastRow } from '../../lib/report/types';
@@ -217,7 +218,7 @@
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}
-      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">No casts in this window.</p>
+      <EmptyState inset message="No casts in this window." testid="table-empty" />
     {:else}
       <StatTable {columns} nameHead="Spell" barHead="When" {sort} {onsort} label="Casts" testid="cast-table">
         {#each ordered as row (`${row.guid}-${row.spell_id}`)}

@@ -4,7 +4,7 @@
      trash pack's six "Gluttonous Tick" GUIDs are one row), the top eight as Rows with their share
      under the name and the amount at the right (directions b1), then "and {n} more". -->
 <script lang="ts">
-  import EmptyLine from './EmptyLine.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { compact } from '../../lib/format/number';
   import type { Actor } from '../../lib/report/types';
@@ -30,7 +30,7 @@
 
 <Section {title} testid="report-targets" panel>
   {#if units.length === 0}
-    <EmptyLine text="Nothing in this window." />
+    <EmptyState inset message="Nothing in this window." />
   {:else}
     <div>
       {#each units.slice(0, SHOWN) as [name, amount] (name)}

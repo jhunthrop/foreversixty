@@ -1,6 +1,7 @@
 // web/src/lib/reports/copy.ts
 // Every visible string RecentReports.svelte and the /logs page use, in the site's own
 // honest-copy voice: never promises what is not built, no exclamation marks.
+import { withRetry } from '../ui/copy';
 export const recentReportsCopy = {
   heading: 'Recent public reports',
   /** The placeholder's screen-reader name while the feed loads: never the word "Loading" in page text. */
@@ -39,7 +40,7 @@ export const pairingCopy = {
   success: (deviceName: string): string =>
     `${deviceName} paired. It starts uploading as soon as you are logging.`,
   action: 'Get a pairing code',
-  failed: 'The pairing code did not load. Try again.',
+  failed: withRetry('The pairing code did not load.'),
   codeLine: (minutes: number): string =>
     `Type this into the companion within ${minutes} minutes. It pairs one device and cannot be reused.`,
   /** /setup's row 3 while a code is out and unused. */

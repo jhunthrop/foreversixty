@@ -1,5 +1,5 @@
 <!-- web/src/components/ui/CopyLinkField.svelte -->
-<!-- A read-only field holding a full link, with a Copy button ("Copied" for two seconds), a
+<!-- A read-only field holding a full link, with a Copy button (its confirmation for two seconds), a
      Share button where the browser has one, and a failure line when the clipboard refuses.
      Select-all on focus, so a failed copy is one long-press away from done.
 
@@ -10,7 +10,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { button } from '../../lib/ui/button';
-  import { COPIED_VISIBLE_MS, createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
+  import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import { uiCopy } from '../../lib/ui/copy';
 
   let {
@@ -23,7 +23,6 @@
     labelVisible = true,
     onCard = false,
     phoneFullWidth = false,
-    copiedMs = COPIED_VISIBLE_MS,
     autoSelect = false,
   }: {
     url: string;
@@ -42,8 +41,6 @@
     onCard?: boolean;
     /** Below 768 the buttons fill the row (two columns when Share exists). */
     phoneFullWidth?: boolean;
-    /** How long `Copied` stays. */
-    copiedMs?: number;
     /** Selected on mount: the field is the fallback after a clipboard refusal. */
     autoSelect?: boolean;
   } = $props();
@@ -51,11 +48,7 @@
   let feedback = $state<CopyFeedbackState>('idle');
 
   const canShare = $derived(typeof navigator !== 'undefined' && typeof navigator.share === 'function');
-  const copier = createCopyFeedback(
-    (text) => navigator.clipboard.writeText(text),
-    (next) => (feedback = next),
-    copiedMs,
-  );
+  const copier = createCopyFeedback((next) => (feedback = next));
 
   const fieldGround = $derived(onCard ? 'bg-bg' : 'bg-raised');
   const buttonRow = $derived(
@@ -101,7 +94,7 @@
       onclick={() => void copier.copy(url)}
       data-testid={`${testid}-copy`}
     >
-      {feedback === 'copied' ? uiCopy.copiedLink : uiCopy.copyLink}
+      {feedback === 'copied' ? uiCopy.copied : uiCopy.copyLink}
     </button>
     {#if canShare}
       <button

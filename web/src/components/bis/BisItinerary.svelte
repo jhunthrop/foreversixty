@@ -7,6 +7,7 @@
 <script lang="ts">
   import Plate from '../ui/Plate.svelte';
   import ItemRow from '../ui/ItemRow.svelte';
+  import SectionTitle from '../ui/SectionTitle.svelte';
   import { rowFigure, type ItineraryStop } from '../../lib/bis/frame-view';
   import { factSegments } from '../../lib/ui/primitives';
 
@@ -25,9 +26,9 @@
   <div class="bis-stops-cols">
     {#each stops as stop (stop.key)}
       <section class="bis-stop" id={stop.anchor} data-testid={`bis-stop-${stop.key}`}>
-        <h2 class="bis-stop-title text-section">
-          {stop.title}{#if stop.range}<span class="bis-stop-range">{stop.range}</span>{/if}
-        </h2>
+        <SectionTitle class="bis-stop-title" title={stop.title}>
+          {#snippet after()}{#if stop.range}<span class="bis-stop-range">{stop.range}</span>{/if}{/snippet}
+        </SectionTitle>
         {#each stop.rows as row (row.cell.slot)}
           <ItemRow
             item={row.cell.item}
@@ -62,15 +63,11 @@
       column-gap: 40px;
     }
   }
-  .bis-stop-title {
+  .bis-stop :global(.bis-stop-title) {
     display: flex;
     align-items: baseline;
     gap: 10px;
     padding: 4px 0 8px;
-    font-family: var(--font-title);
-    font-weight: 400;
-    letter-spacing: var(--tracking-heading);
-    color: var(--color-cream);
     scroll-margin-top: calc(var(--bar-h) + 16px);
   }
   .bis-stop-range {

@@ -6,6 +6,7 @@
      below 768) and the All links Row; the rail is the New link panel (Fields). Anyone but the
      owner sees one line saying so: the API answers 403 for them whatever this page shows. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { AccountError, fetchMeOnce } from '../../lib/account/api';
   import { adminLinksCopy as copy } from '../../lib/golinks/admin-copy';
   import { createGoLink, listGoLinks, type GoLinkFunnel } from '../../lib/golinks/api';
@@ -45,10 +46,7 @@
 
   let copiedSlug = $state<string | null>(null);
   let copyingSlug: string | null = null;
-  const copier = createCopyFeedback(
-    (text) => navigator.clipboard.writeText(text),
-    (state) => (copiedSlug = state === 'copied' ? copyingSlug : null),
-  );
+  const copier = createCopyFeedback((state) => (copiedSlug = state === 'copied' ? copyingSlug : null));
   $effect(() => copier.dispose);
 
   function phaseForError(error: unknown): Phase {
@@ -199,7 +197,7 @@
     <Section title={copy.tableTitle} meta={copy.tableMeta(rows.length)} panel flush testid="links-table">
       <div>
         {#if rows.length === 0}
-          <p data-testid="links-empty">{copy.empty}</p>
+          <EmptyState inset message={copy.empty} testid="links-empty" />
         {:else}
           <div role="group" aria-label={copy.tableTitle}>
             {#each rows as row (row.slug)}

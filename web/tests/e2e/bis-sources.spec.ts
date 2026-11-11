@@ -59,7 +59,7 @@ test('from 768 the Sources button opens a checklist popover; Escape closes it an
   const popover = page.getByTestId('bis-sources-popover');
   await expect(popover).toBeVisible();
   await expect(popover.getByRole('checkbox')).toHaveCount(8);
-  await expect(popover).toContainText('Counts are slots with a ranked option');
+  await expect(popover).toContainText('Counts are gear slots with an option');
 
   const quest = page.getByTestId('bis-source-check-quest').getByRole('checkbox');
   await quest.uncheck();

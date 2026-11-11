@@ -13,6 +13,7 @@
      Below 768 the labels are 124 px and the plot scrolls sideways while the labels stay put. The
      summary carries no per-player hit stream, so the lanes draw no hit marks. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar, tauntKey } from '../../lib/report/format';
   import { classSlugOf } from '../../lib/report/planner-link';
@@ -336,7 +337,7 @@
 >
   <div>
     {#if lanes.length === 0}
-      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">Nothing in this window.</p>
+      <EmptyState inset message="Nothing in this window." testid="table-empty" />
     {:else}
       <div class="flex flex-col gap-2 px-4 pb-3 md:px-5" data-testid="timelines">
         <Chips {chips} label="Show" onToggle={toggleMark} testid="timeline-show" />

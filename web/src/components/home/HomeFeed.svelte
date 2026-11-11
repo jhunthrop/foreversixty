@@ -19,8 +19,9 @@
   } from '../../lib/home/feed';
   import { HOME_FEED_FETCH, signedInRows } from '../../lib/home/feed-mix';
   import { API_BASE_URL } from '../../lib/planner/config';
-  import { LINK } from '../../lib/ui/primitives';
   import FeedRowUi from '../ui/FeedRow.svelte';
+  import ItemIcon from '../ui/ItemIcon.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Section from '../ui/Section.svelte';
   import FeedSentence from './FeedSentence.svelte';
@@ -92,9 +93,11 @@
   {:else if status === 'failed'}
     <LoadError message={feedCopy.failed} onRetry={retry} testid="home-feed-error" />
   {:else if shown.length === 0}
-    <p class="text-muted py-3 text-[15px] leading-6" data-testid="home-feed-empty">
-      {feedCopy.logsEmpty} <a class={LINK} href="/logs/upload">{feedCopy.uploadLog} ›</a>
-    </p>
+    <EmptyState
+      message={feedCopy.logsEmpty}
+      action={{ label: feedCopy.uploadLog, href: '/logs/upload' }}
+      testid="home-feed-empty"
+    />
   {:else}
     <div class="flex flex-col" data-testid="home-feed-rows">
       {#each shown as row, index (row.id)}

@@ -7,7 +7,9 @@
   import { simCopy } from '../../lib/sim/copy';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
   import type { SimResult } from '../../lib/sim/types';
+  import { busyCopy } from '../../lib/ui/copy';
   import Button from '../ui/Button.svelte';
+  import CopyButton from '../ui/CopyButton.svelte';
   import Field from '../ui/Field.svelte';
   import FormRow from '../ui/FormRow.svelte';
 
@@ -36,7 +38,6 @@
   let saving = $state(false);
   let failed = $state(false);
   let savedUrl = $state<string | null>(null);
-  let copyState = $state<'idle' | 'copied' | 'failed'>('idle');
 
   // A new result is a new thing to save: the form, the link and the copy state start over.
   $effect(() => {
@@ -44,7 +45,6 @@
     formOpen = false;
     failed = false;
     savedUrl = null;
-    copyState = 'idle';
     onsaved?.(null);
   });
 
@@ -64,16 +64,6 @@
     savedUrl = `${window.location.origin}/sim/${id}`;
     onsaved?.(savedUrl);
   }
-
-  async function copyLink(): Promise<void> {
-    if (savedUrl === null) return;
-    try {
-      await navigator.clipboard.writeText(savedUrl);
-      copyState = 'copied';
-    } catch {
-      copyState = 'failed';
-    }
-  }
 </script>
 
 {#if formOpen}
@@ -87,8 +77,13 @@
     />
     {#snippet submit()}
       <span class="flex gap-2">
-        <Button tone="primary" size="sm" type="submit" disabled={saving} testid="sim-save-confirm"
-          >{simCopy.saveAction}</Button
+        <Button
+          tone="primary"
+          size="sm"
+          type="submit"
+          busy={saving}
+          busyLabel={busyCopy.saving}
+          testid="sim-save-confirm">{simCopy.saveAction}</Button
         >
         <Button size="sm" onclick={() => (formOpen = false)} testid="sim-save-cancel">{simCopy.cancel}</Button
         >
@@ -99,13 +94,7 @@
       >{simCopy.saveFailed}</span
     >{/if}
 {:else if savedUrl !== null}
-  <Button size="sm" onclick={() => void copyLink()} testid="sim-save-copy"
-    >{copyState === 'copied'
-      ? copy.answer.copied
-      : copyState === 'failed'
-        ? copy.answer.copyFailed
-        : copy.answer.copyLink}</Button
-  >
+  <CopyButton text={savedUrl} label={copy.answer.copyLink} testid="sim-save-copy" />
   <a class="sr-only" href={savedUrl} data-testid="sim-save-link">{savedUrl}</a>
 {:else if !signedIn}
   <Button size="sm" onclick={onsignin} testid="sim-save-open">{copy.answer.signInToSave}</Button>

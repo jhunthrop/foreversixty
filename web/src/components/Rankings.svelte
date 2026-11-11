@@ -71,6 +71,7 @@
   import RankRow from './ui/RankRow.svelte';
   import Ruled from './ui/Ruled.svelte';
   import Section from './ui/Section.svelte';
+  import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import Tag from './ui/Tag.svelte';
   import { grouped } from '../lib/format/number';
@@ -552,15 +553,12 @@
           </div>
         {:else if status === 'failed'}
           <!-- The failed state holds the loading reserve, so nothing under the panel moves. -->
-          <div
-            class="text-muted {RANKINGS_LOADING_MIN_H} px-5 pb-4 text-[14px] leading-5"
-            role="alert"
-            data-testid="rankings-error"
-          >
-            <p>{error || 'Rankings did not load.'}</p>
-            <div class="mt-3">
-              <button type="button" class={LINK} onclick={() => (attempt += 1)}>Try again</button>
-            </div>
+          <div class="{RANKINGS_LOADING_MIN_H} px-5 pb-4">
+            <LoadError
+              message={error || 'Rankings did not load.'}
+              onRetry={() => (attempt += 1)}
+              testid="rankings-error"
+            />
           </div>
         {:else if isGuild}
           {#if guildRows.length === 0}

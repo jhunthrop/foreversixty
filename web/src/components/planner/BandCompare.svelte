@@ -9,6 +9,7 @@
      gear, which this section hands up through `onband`. The band file is `bis/<spec>.json`,
      fetched once per spec (`fetchBisFile`); there is no band picker here (owner ruling 12). -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { bandForLevel, bandEntryFor, bisPageHref, fetchBisFile } from '../../lib/bis/hover';
   import type { BisBand, BisFile, Faction } from '../../lib/bis/types';
   import {
@@ -241,13 +242,16 @@
         <span class="skeleton-block block max-w-full" style="width:200px;height:44px"></span>
       </div>
     {:else if file === null || bandEntry === undefined}
-      <p class="text-small text-muted pl-pad" data-testid="band-compare-empty">
-        {bandCompareCopy.noLevelBuild(
-          store.level,
-          specKey !== null ? specDisplayName(specKey) : '',
-          specKey !== null ? siblingSpecNames(specKey) : [],
-        )}
-      </p>
+      <div class="pl-pad">
+        <EmptyState
+          message={bandCompareCopy.noLevelBuild(
+            store.level,
+            specKey !== null ? specDisplayName(specKey) : '',
+            specKey !== null ? siblingSpecNames(specKey) : [],
+          )}
+          testid="band-compare-empty"
+        />
+      </div>
     {:else if diff !== null}
       <div class="pl-sec">
         <p class="pl-line" data-testid="band-compare-differs">

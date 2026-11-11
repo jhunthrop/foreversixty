@@ -14,6 +14,7 @@
   import type { VisitorPlatform } from '../../lib/setup/visitor-platform';
   import { LINK } from '../../lib/ui/primitives';
   import Button from '../ui/Button.svelte';
+  import Disclosure from '../ui/Disclosure.svelte';
 
   let {
     platform,
@@ -63,11 +64,8 @@
         testid="{idPrefix}-action-download">{label(own)}</Button
       >
       {#if others.length > 0}
-        <details class="setup-other" data-testid="{idPrefix}-other-platforms">
-          <summary class="{LINK} inline-flex min-h-11 cursor-pointer items-center md:min-h-0"
-            >{addonCopy.setupOtherPlatforms}</summary
-          >
-          <ul class="mt-2 flex flex-col gap-1">
+        <Disclosure summary={addonCopy.setupOtherPlatforms} link testid="{idPrefix}-other-platforms">
+          <ul class="flex flex-col gap-1">
             {#each others as other (other.asset)}
               {@const otherMeta = releaseMeta(other.asset, release)}
               <li class="text-small">
@@ -81,7 +79,7 @@
               </li>
             {/each}
           </ul>
-        </details>
+        </Disclosure>
       {/if}
     </div>
     <span class="text-small text-muted min-h-5" data-testid="{idPrefix}-download-meta">{meta ?? ''}</span>

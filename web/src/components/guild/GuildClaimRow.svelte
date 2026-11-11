@@ -8,7 +8,7 @@
   import { guildHomeCopy } from '../../lib/guild/copy';
   import { inviteUrl } from '../../lib/guild/invite-link';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
-  import { COPIED_LONG_MS, createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
+  import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import ActionLink from '../ui/ActionLink.svelte';
   import CopyLinkField from '../ui/CopyLinkField.svelte';
 
@@ -24,11 +24,7 @@
 
   const words = guildHomeCopy.claimRow;
   let feedback = $state<CopyFeedbackState>('idle');
-  const copier = createCopyFeedback(
-    (text) => navigator.clipboard.writeText(text),
-    (next) => (feedback = next),
-    COPIED_LONG_MS,
-  );
+  const copier = createCopyFeedback((next) => (feedback = next));
   $effect(() => copier.dispose);
 
   const sentence = $derived(

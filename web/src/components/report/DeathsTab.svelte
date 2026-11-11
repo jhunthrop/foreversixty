@@ -12,7 +12,7 @@
      control at its right: Open on a folded card, Last 20 s › (the window) on the open one
      (h-audit 2026-11-09). -->
 <script lang="ts">
-  import EmptyLine from './EmptyLine.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import CopyCsv from './CopyCsv.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { unitLabel } from '../../lib/report/names.svelte';
@@ -349,7 +349,7 @@
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}
-      <EmptyLine text="Nobody died." testid="table-empty" />
+      <EmptyState inset message="Nobody died." testid="table-empty" />
     {/if}
     {#each ordered as death (`${death.guid}-${death.at_ms}`)}
       {@const link = linkFor(death)}

@@ -4,6 +4,7 @@
 // webhook's own words stay in discord-copy.ts.
 // Functions take the data, so no number or name is typed into prose. No runtime import beyond
 // the copy modules, so a Playwright spec can read it.
+import { uiCopy, withRetry } from '../ui/copy';
 
 /** A server name is shown whole up to this many characters, then cut with an ellipsis (§3.1). */
 const SERVER_NAME_LIMIT = 60;
@@ -55,9 +56,9 @@ export const guildBotCopy = {
       `The bot cannot post in any text channel of ${shortServerName(server)}. In Discord, give the Forever Sixty role View Channel, Send Messages and Embed Links in your raid channel, then reload the list.`,
     reload: 'Reload the list',
     loadFailed: 'Could not load the channels.',
-    retry: 'Try again',
+    retry: uiCopy.retry,
     race: 'That channel is gone, or the bot cannot post there. Choose another; the list is fresh.',
-    saveFailed: 'That did not save. Try again.',
+    saveFailed: withRetry('That did not save.'),
   },
 
   installed: {
@@ -130,7 +131,7 @@ export const guildBotCopy = {
       }`,
     confirm: 'Remove',
     cancel: 'Cancel',
-    failed: 'Could not remove it. Try again.',
+    failed: withRetry('Could not remove it.'),
   },
 
   returns: {

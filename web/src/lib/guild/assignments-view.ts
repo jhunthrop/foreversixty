@@ -11,6 +11,7 @@ import type {
   EncounterAssignments,
   GuildRaidAssignments,
 } from './assignments-api';
+import { uiCopy, withRetry } from '../ui/copy';
 
 /** A picked name's Tag tone (a subset of ui/Tag's). */
 export type NameTone = 'gold' | 'warn' | 'muted';
@@ -31,13 +32,13 @@ export const assignmentsCopy = {
   remove: (name: string) => `Remove ${name}`,
   clear: 'Clear',
   copyWarning: 'Copy as raid warning',
-  copied: 'Copied',
+  copied: uiCopy.copied,
   copyFailed: 'Your browser did not let us copy. Select the lines below and copy them.',
   post: 'Post to Discord',
   posting: 'Posting',
   posted: 'Posted under the raid post on Discord.',
-  postFailed: 'The post did not go out. Try again.',
-  saveFailed: 'That slot did not save. Try again.',
+  postFailed: withRetry('The post did not go out.'),
+  saveFailed: withRetry('That slot did not save.'),
   nothingYet: 'No one is picked yet.',
   offRole: (name: string) => `${name} is not signed up for this role tonight.`,
   fits: 'Fits the slot',

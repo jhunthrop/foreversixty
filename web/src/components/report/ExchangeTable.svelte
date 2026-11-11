@@ -15,6 +15,7 @@
      on whether the window happens to be whole. -->
 <script lang="ts">
   import CharacterName from '../ui/CharacterName.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { wholeFightMark } from '../../lib/report/format';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
@@ -246,7 +247,7 @@
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}
-      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">{emptyText}</p>
+      <EmptyState inset message={emptyText} testid="table-empty" />
     {:else}
       <StatTable
         columns={[{ id: 'count', label: 'Count' }]}

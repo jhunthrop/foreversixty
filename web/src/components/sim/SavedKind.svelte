@@ -45,6 +45,7 @@
   import { yieldToMain } from '../../lib/yield';
   import CopyForGame from '../CopyForGame.svelte';
   import Button from '../ui/Button.svelte';
+  import CopyButton from '../ui/CopyButton.svelte';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
@@ -54,8 +55,6 @@
   import SimCharacterHead from './SimCharacterHead.svelte';
 
   let { result, onrerun }: { result: SimResult; onrerun: () => void } = $props();
-
-  let copied = $state(false);
 
   const stale = $derived(isStale(result.engine_version));
   const hasFigure = $derived(result.dps.mean > 0);
@@ -225,15 +224,6 @@
     }
   })();
 
-  async function copyLink(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      copied = true;
-    } catch {
-      copied = false;
-    }
-  }
-
   // Two separate chunks, one per kind's own results view: a saved weights page downloads no
   // combination table and a saved bulk page no weights table.
   const savedCombosLazy = createLazyComponent(() => import('./SavedCombos.svelte'));
@@ -297,10 +287,11 @@
       <Button tone="primary" size="sm" onclick={onrerun} testid="sim-run-yourself"
         >{simPageCopy.answer.openInSim}</Button
       >
-      <Button size="sm" onclick={() => void copyLink()} testid="sim-saved-copy"
-        ><span aria-live="polite">{copied ? simPageCopy.answer.copied : simPageCopy.answer.copyLink}</span
-        ></Button
-      >
+      <CopyButton
+        text={() => window.location.href}
+        label={simPageCopy.answer.copyLink}
+        testid="sim-saved-copy"
+      />
     {/snippet}
   </SimCharacterHead>
 </div>

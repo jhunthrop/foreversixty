@@ -17,6 +17,7 @@
   import { compGaps, FILLERS_SHOWN, type CompGapRow, type Filler } from '../../../lib/guild/dense/week-board';
   import { GROUP_WORD } from '../../../lib/guild/dense/roster-board';
   import { clock, viewerLocale } from '../../../lib/dates';
+  import { withRetry } from '../../../lib/ui/copy';
   import Button from '../../ui/Button.svelte';
   import CharacterName from '../../ui/CharacterName.svelte';
   import Figure from '../../ui/Figure.svelte';
@@ -78,7 +79,7 @@
       pingedAt = now;
       pingError = '';
     } catch (error) {
-      pingError = error instanceof GuildApiError ? error.message : 'That did not go through. Try again.';
+      pingError = error instanceof GuildApiError ? error.message : withRetry('That did not go through.');
     }
   }
 

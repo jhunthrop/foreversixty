@@ -10,6 +10,9 @@
   import { premiumOwnedView } from '../../lib/billing/premium-owned';
   import Tag from '../ui/Tag.svelte';
   import { button } from '../../lib/ui/button';
+  import { checkoutGuildBusy } from '../../lib/billing/checkout-guild-errors';
+  import Button from '../ui/Button.svelte';
+  import SectionTitle from '../ui/SectionTitle.svelte';
 
   let {
     me,
@@ -28,16 +31,14 @@
 
   const view = $derived(premiumOwnedView(me, now, zone));
   const founderTail = ` ${accountPlanCopy.founder.title}`;
-  const BUTTON = `${button('secondary')} w-full sm:w-fit`;
+  const WIDTH = 'w-full sm:w-fit';
 
-  let titleEl = $state<HTMLHeadingElement | undefined>(undefined);
+  let titleEl = $state<HTMLElement | undefined>(undefined);
   $effect(() => titleEl?.focus());
 </script>
 
 <section class="flex flex-col gap-2" data-testid="premium-owned">
-  <h2 bind:this={titleEl} tabindex="-1" class="text-strong m-0 text-[17px] leading-6 font-bold outline-none">
-    {view.title}
-  </h2>
+  <SectionTitle bind:element={titleEl} focusable class="m-0" title={view.title} />
   <p class="m-0 flex flex-wrap items-center gap-x-2 text-[14px]" data-testid="premium-owned-line">
     <span>{view.line}</span>
     {#if view.founder}
@@ -55,14 +56,16 @@
   {/if}
   <div class="mt-3">
     {#if view.action.kind === 'portal'}
-      <button class={BUTTON} onclick={onPortal} disabled={busy} data-testid="premium-owned-action">
-        {view.action.label}
-      </button>
+      <Button
+        class={WIDTH}
+        onclick={onPortal}
+        {busy}
+        busyLabel={checkoutGuildBusy.portal}
+        testid="premium-owned-action">{view.action.label}</Button
+      >
     {:else}
-      <a
-        class="{BUTTON} inline-flex items-center justify-center"
-        href={view.action.href}
-        data-testid="premium-owned-action">{view.action.label}</a
+      <a class="{button('secondary')} {WIDTH}" href={view.action.href} data-testid="premium-owned-action"
+        >{view.action.label}</a
       >
     {/if}
   </div>

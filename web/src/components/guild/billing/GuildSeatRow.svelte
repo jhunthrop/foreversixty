@@ -14,9 +14,9 @@
     OPENER_PRESSED,
   } from '../../../lib/guild/billing-styles';
   import { isSeatLocked, seatErrorLine, seatRowKind, staleReadRefusal } from '../../../lib/guild/seat-view';
-  import { BUSY_CLASS } from '../../../lib/ui/busy';
   import Crest from '../../ui/Crest.svelte';
   import CharacterName from '../../ui/CharacterName.svelte';
+  import Spinner from '../../ui/Spinner.svelte';
   import Tag from '../../ui/Tag.svelte';
   import GuildSeatPicker from './GuildSeatPicker.svelte';
 
@@ -234,14 +234,14 @@
         {#if canWithdraw}
           <button
             type="button"
-            class="{BILLING_TEXT_BUTTON} {busy ? BUSY_CLASS : ''}"
+            class="{BILLING_TEXT_BUTTON} gap-2"
             disabled={busy}
-            aria-busy={busy}
+            aria-busy={busy ? 'true' : undefined}
             onclick={() => void withdraw()}
             data-seat-action={canMove ? undefined : ''}
             data-testid={`guild-seat-${seat.slot}-withdraw`}
           >
-            {busy ? copy.withdrawing : copy.withdraw}
+            {#if busy}<Spinner />{copy.withdrawing}{:else}{copy.withdraw}{/if}
           </button>
         {:else if !canMove}
           <button

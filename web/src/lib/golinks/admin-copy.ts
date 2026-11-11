@@ -1,6 +1,7 @@
 // web/src/lib/golinks/admin-copy.ts
 // Every word on /admin/links, the owner's tracked links page.
 import { countLabel } from './funnel';
+import { uiCopy } from '../ui/copy';
 
 export const adminLinksCopy = {
   pageTitle: 'Links',
@@ -31,7 +32,7 @@ export const adminLinksCopy = {
   noClicks: 'No clicks yet',
   totals: 'All links',
   copy: 'Copy',
-  copied: 'Copied',
+  copied: uiCopy.copied,
   copyLabel: (slug: string): string => `Copy the link for ${slug}`,
   formTitle: 'New link',
   formJob: 'The link counts every click and sends people to the page you pick, on this site only.',

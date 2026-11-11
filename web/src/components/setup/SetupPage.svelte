@@ -12,6 +12,7 @@
      pre-paint hints on <html> point at (data-session: the loading rows; data-pointer: the addon
      ticked), so nothing flips after paint (W.10). -->
 <script lang="ts">
+  import { CopyState } from '../../lib/ui/copy-state.svelte';
   import { onMount } from 'svelte';
   import { invalidateMe, battlenetStartUrl, type Device, type Me } from '../../lib/account/api';
   import { characterListCopy } from '../../lib/account/character-list-copy';
@@ -43,8 +44,6 @@
 
   /** While Battle.net's import runs, `/v1/me` is read again this often (setup spec G1). */
   const IMPORT_POLL_MS = 5000;
-  /** How long Copy link says "Link copied". */
-  const COPIED_MS = 2000;
 
   let mounted = $state(false);
   let session = $state<SessionState>('out');
@@ -53,7 +52,10 @@
   let platform = $state<VisitorPlatform>('unknown');
   let release = $state<CompanionRelease | null>(null);
   let addonLatest = $state<string | null>(null);
-  let copied = $state(false);
+  /** Copy link's feedback: "Link copied" for two seconds (lib/ui/copy-feedback.ts). */
+  const copier = new CopyState();
+  $effect(() => () => copier.dispose());
+  const copied = $derived(copier.copied());
   let pointer = $state(false);
   let signinFailed = $state(false);
   let refreshFailed = $state(false);
@@ -126,14 +128,9 @@
   });
 
   /** Copy link: this page's address, to open on the computer the companion runs on. */
-  async function copyLink(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}`);
-    } catch {
-      return; // no clipboard (an insecure context, a refused permission): the address bar still has it
-    }
-    copied = true;
-    setTimeout(() => (copied = false), COPIED_MS);
+  // A refused clipboard (an insecure context, a denied permission) says nothing: the address bar has it.
+  function copyLink(): Promise<void> {
+    return copier.copy(`${window.location.origin}${window.location.pathname}`);
   }
 
   function onAction(action: StepAction): void {

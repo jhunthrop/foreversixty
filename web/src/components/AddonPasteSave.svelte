@@ -16,7 +16,7 @@
   import { missingPasteSaveField, type PasteSaveField } from '../lib/addon/paste-save';
   import { REGIONS, RULESETS, rulesetFromRealm } from '../lib/characters';
   import type { FS1Build } from '../lib/planner/fs1';
-  import { BUSY_CLASS } from '../lib/ui/busy';
+  import { busyCopy } from '../lib/ui/copy';
   import Button from './ui/Button.svelte';
   import Field from './ui/Field.svelte';
   import Select from './ui/Select.svelte';
@@ -105,8 +105,14 @@
         testid="addon-paste-ruleset"
       />
     </div>
-    <span class={busy ? BUSY_CLASS : ''} aria-busy={busy}>
-      <Button disabled={busy || saved} onclick={() => void onSave()} testid="addon-paste-save-button">
+    <span>
+      <Button
+        disabled={saved}
+        {busy}
+        busyLabel={busyCopy.saving}
+        onclick={() => void onSave()}
+        testid="addon-paste-save-button"
+      >
         {saved ? addonCopy.pasteSaved : addonCopy.pasteSaveAction}
       </Button>
     </span>

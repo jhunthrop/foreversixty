@@ -8,6 +8,7 @@
      `Plan an event` (disabled with the gate sentence in officer-read-only; the cap line at 12 raids
      limits raids only, so the button stays live) and the form in place under the header row. One minute tick feeds every row's countdown. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { tick } from 'svelte';
   import {
@@ -258,9 +259,10 @@
     testid="guild-raid-nights"
   >
     {#if rows.length === 0}
-      <p class="text-muted text-[14px] leading-[22px]" data-testid="guild-raids-empty">
-        {publicView ? NO_PUBLIC_RAID_NIGHTS : 'No raid nights logged yet.'}
-      </p>
+      <EmptyState
+        message={publicView ? NO_PUBLIC_RAID_NIGHTS : 'No raid nights logged yet.'}
+        testid="guild-raids-empty"
+      />
     {:else}
       <GuildRaidNights
         {rows}

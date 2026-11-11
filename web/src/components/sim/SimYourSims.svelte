@@ -6,6 +6,8 @@
      whole list on the account page. Three skeleton rows while loading, one line when empty, one
      line and Try again when a read failed. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
+  import LoadError from '../ui/LoadError.svelte';
   import { rerunSim } from '../../lib/sim/api';
   import { KIND_TITLES, simCopy } from '../../lib/sim/copy';
   import { runDay } from '../../lib/sim/head-meta';
@@ -82,19 +84,11 @@
     testid="sim-history"
   >
     {#if error !== null}
-      <p class="text-muted py-3 text-[14px]" role="alert" data-testid="sim-history-error">
-        Your sims did not load. <button type="button" class="text-gold font-semibold" onclick={onretry}
-          >Try again</button
-        >
-      </p>
+      <LoadError message={simCopy.historyFailed} onRetry={onretry} testid="sim-history-error" />
     {:else if rows === null}
-      <div aria-busy="true">
-        {#each Array.from({ length: SKELETON_ROWS }, (_, index) => index) as index (index)}
-          <div class="py-[9px]"><Skeleton lines={2} /></div>
-        {/each}
-      </div>
+      <Skeleton lines={SKELETON_ROWS * 2} rowHeight="h-[18px]" testid="sim-history-skeleton" />
     {:else if shown.length === 0}
-      <p class="text-muted py-3 text-[14px]" data-testid="sim-history-empty">{simCopy.historyEmpty}</p>
+      <EmptyState message={simCopy.historyEmpty} testid="sim-history-empty" />
     {:else}
       <div data-testid="sim-history-list">
         {#each shown as row (row.sim_id)}
@@ -143,10 +137,7 @@
       </div>
     {/if}
     {#if serverFailed && onserverretry}
-      <p class="text-muted py-3 text-[14px]" role="alert" data-testid="server-runs-error">
-        {serverRunsCopy.loadFailed}
-        <button type="button" class="text-gold font-semibold" onclick={onserverretry}>Try again</button>
-      </p>
+      <LoadError message={serverRunsCopy.loadFailed} onRetry={onserverretry} testid="server-runs-error" />
     {/if}
   </Section>
 </div>

@@ -402,12 +402,12 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
       /Last seen/,
     ]);
     await expect(page.getByTestId('guild-roster-sort-ilvl')).toContainText('▾');
-    await expect(page.getByTestId('guild-roster-sort-ilvl')).toHaveAttribute('aria-sort', 'descending');
+    await expect(page.getByTestId('guild-roster-sort-ilvl')).toHaveAttribute('aria-pressed', 'true');
     // Rank puts the leader and officers first (the viewer stays pinned above them).
     await page.getByTestId('guild-roster-sort-rank').click();
     await expect(page.getByTestId('guild-roster-sort-rank')).toContainText('▾');
-    await expect(page.getByTestId('guild-roster-sort-rank')).toHaveAttribute('aria-sort', 'descending');
-    await expect(page.getByTestId('guild-roster-sort-ilvl')).not.toHaveAttribute('aria-sort', 'descending');
+    await expect(page.getByTestId('guild-roster-sort-rank')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('guild-roster-sort-ilvl')).not.toHaveAttribute('aria-pressed', 'true');
     const names = (
       await page.getByTestId('guild-roster-rows').getByTestId('guild-roster-name').allTextContents()
     ).map((n) => n.replace(' (you)', '').trim());
@@ -919,7 +919,7 @@ test.describe('readiness: worst-first sort and officer Nudge', () => {
     const copied = await page.evaluate(() => navigator.clipboard.readText());
     expect(copied.length).toBeGreaterThan(0);
     const names = await nudgeButtons.evaluateAll((buttons) =>
-      buttons.map((b) => b.getAttribute('aria-label')),
+      buttons.map((b) => b.textContent?.replace(/\s+/g, ' ').trim()),
     );
     expect(new Set(names).size).toBe(names.length);
   });

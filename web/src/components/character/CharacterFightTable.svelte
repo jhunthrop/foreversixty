@@ -11,6 +11,7 @@
      round 4 items 6 and 7). The dash is named "Not scored yet" on hover and aloud (fix round 5
      item 7). -->
 <script lang="ts" generics="Row extends CharacterFight">
+  import SectionTitle from '../ui/SectionTitle.svelte';
   import { amountHeader, characterTableCopy, executionCellClass } from '../../lib/character-profile';
   import { fightKey } from '../../lib/character/fight-key';
   import { formatDayMonthYear } from '../../lib/dates';
@@ -116,7 +117,7 @@
 
 <section class="flex flex-col gap-2">
   {#if heading}
-    <h2 class="text-section text-strong font-bold">{title}</h2>
+    <SectionTitle {title} />
     <p class="text-muted text-[12px]" data-testid="character-execution-definition">
       {characterTableCopy.executionDefinition}
     </p>

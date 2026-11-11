@@ -6,7 +6,7 @@
      on a ranked boss kill; a Total row foots it. Every figure head sorts. An empty window reads
      the tab's own line inside the Plate. -->
 <script lang="ts">
-  import EmptyLine from './EmptyLine.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import type { Placement } from '../../lib/report/percentile';
   import { compact, percent } from '../../lib/format/number';
   import { formatRate } from '../../lib/report/frame';
@@ -270,7 +270,7 @@
   {#snippet head()}{#if actors.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if actors.length === 0}
-      <EmptyLine text="Nothing in this window." testid="table-empty" />
+      <EmptyState inset message="Nothing in this window." testid="table-empty" />
     {:else}
       <StatTable {columns} nameHead="Player" {sort} {onsort} label={TITLE[tab]} testid="actor-table">
         {#each rows as actor (actor.guid)}

@@ -187,9 +187,9 @@
     if (raid !== null) await pingRaid(guildId, raid.id).catch(() => undefined);
   }
 
-  async function nudge(word: Word): Promise<void> {
+  function nudgeTextOf(word: Word): string {
     const row = readiness.find((r) => r.character_key === word.key);
-    if (row !== undefined) await navigator.clipboard?.writeText(nudgeText(row));
+    return row === undefined ? '' : nudgeText(row);
   }
 </script>
 
@@ -221,7 +221,7 @@
   {#if next !== null && raid !== null}
     <WednesdayPanel {guildId} {next} {raid} {ready} {planHref} {viewerTz} {now} onChanged={onRaidChanged} />
   {/if}
-  <NeedsAWord {words} {hrefOf} onPing={() => void ping()} onNudge={nudge} />
+  <NeedsAWord {words} {hrefOf} onPing={() => void ping()} {nudgeTextOf} />
   {#if last !== null && before !== null}
     <LastNightMovers
       meta={lastMeta}

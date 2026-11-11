@@ -36,7 +36,7 @@ describe('ClaimConfirmBlock', () => {
     expect(body).toContain('ui-row');
     expect(body).toMatch(/h-11[^>]*claim-cancel/);
     expect(body).toContain('Cancel');
-    expect(body).toContain('aria-busy="false"');
+    expect(body).not.toContain('aria-busy="true"');
   });
 
   it.each([

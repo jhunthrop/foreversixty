@@ -9,14 +9,15 @@ import type { GuildCompRole } from './overview-api';
 import { pingLine } from './overview-role-view';
 import { raidCopy, raidPostCopy } from './raid-copy';
 import type { RaidPageDeps, RaidRoute } from './raid-page-types';
+import { withRetry } from '../ui/copy';
 
 type PlannerDeps = Pick<
   RaidPageDeps,
   'putCompTarget' | 'deleteCompTarget' | 'pingRaid' | 'postRaidNow' | 'now'
 >;
 
-const PING_FAILED = 'The ping did not go out. Try again.';
-const COMP_FAILED = 'The target did not save. Try again.';
+const PING_FAILED = withRetry('The ping did not go out.');
+const COMP_FAILED = withRetry('The target did not save.');
 
 export class PlannerActions {
   compBusy = $state<'save' | 'reset' | null>(null);

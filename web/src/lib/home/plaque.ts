@@ -7,6 +7,7 @@ import type { GuildRaidRole, NextRaidView } from '../guild/api';
 import { roleForSpec, rolesForClass } from '../guild/raid-roles';
 import { clock, longDay, viewerLocale } from '../dates';
 import { clockParts } from '../ui/countdown';
+import { withRetry } from '../ui/copy';
 
 /** One big figure on the plaque: `32` over `days`. */
 export interface PlaqueFigure {
@@ -20,6 +21,7 @@ export const plaqueCopy = {
   late: 'late',
   firstRaids: 'First raids open',
   raidsOpen: 'Raids open now',
+  signUpFailed: withRetry('Could not save your sign-up.'),
   roles: { tanks: 'tanks', healers: 'healers', melee: 'melee', ranged: 'ranged' },
 } as const;
 

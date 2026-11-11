@@ -3,6 +3,7 @@
      first, as DecisionRows. Officers get Export history in the head, which opens the date range and
      the CSV and JSON downloads under it. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import type { LootDecision } from '../../../lib/guild/loot-council-api';
   import Section from '../../ui/Section.svelte';
   import DecisionRow from './DecisionRow.svelte';
@@ -44,8 +45,6 @@
   {#each decisions as decision (decision.award_id)}
     <DecisionRow {decision} {build} shipsIcon={shipsIcon(decision.item_id)} {timeZone} />
   {:else}
-    <p class="text-muted text-[14px]" data-testid="guild-loot-decisions-empty">
-      Nothing awarded on this night yet.
-    </p>
+    <EmptyState message="Nothing awarded on this night yet." testid="guild-loot-decisions-empty" />
   {/each}
 </Section>

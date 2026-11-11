@@ -16,7 +16,8 @@
     CONFIRM_BLOCK,
   } from '../../../lib/guild/billing-styles';
   import { button } from '../../../lib/ui/button';
-  import { BUSY_CLASS } from '../../../lib/ui/busy';
+  import ConfirmButtons from '../../ui/ConfirmButtons.svelte';
+  import Spinner from '../../ui/Spinner.svelte';
   import Select from '../../ui/Select.svelte';
   import SettingsRow from '../../ui/SettingsRow.svelte';
 
@@ -94,12 +95,6 @@
     error = '';
     void refocusAction();
   }
-
-  function onKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Escape') return;
-    event.preventDefault();
-    close();
-  }
 </script>
 
 <div bind:this={rootEl} data-testid="guild-whopays">
@@ -126,14 +121,14 @@
       {#if waiting}
         <button
           type="button"
-          class="{BILLING_SAFE_TEXT_BUTTON} {busy ? BUSY_CLASS : ''}"
+          class="{BILLING_SAFE_TEXT_BUTTON} gap-2"
           disabled={busy}
-          aria-busy={busy}
+          aria-busy={busy ? 'true' : undefined}
           onclick={() => void run(() => withdrawTransfer(guildId))}
           data-whopays-action
           data-testid="guild-transfer-withdraw"
         >
-          {copy.withdraw}
+          {#if busy}<Spinner />{copy.withdrawing}{:else}{copy.withdraw}{/if}
         </button>
       {:else if !opening || candidates.length === 0}
         <button
@@ -155,7 +150,6 @@
       class="{CONFIRM_BLOCK} mb-3"
       role="group"
       aria-labelledby="guild-transfer-label"
-      onkeydown={onKeydown}
       data-testid="guild-transfer-confirm"
     >
       <div class="flex flex-col gap-1">
@@ -186,19 +180,19 @@
         <p class="text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>
       {/if}
       <div class={CONFIRM_ACTIONS}>
-        <button
-          type="button"
-          class="{button('primary', 'sm')} {CONFIRM_ACTION_WIDTH} {busy ? BUSY_CLASS : ''}"
-          disabled={busy}
-          aria-busy={busy}
-          onclick={() => void send()}
-          data-testid="guild-transfer-send"
-        >
-          {busy ? copy.sending : copy.send}
-        </button>
-        <button type="button" class="{BILLING_SAFE_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH}" onclick={close}
-          >{copy.cancel}</button
-        >
+        <ConfirmButtons
+          tone="primary"
+          width={CONFIRM_ACTION_WIDTH}
+          confirm={copy.send}
+          cancel={copy.cancel}
+          {busy}
+          busyLabel={copy.sending}
+          focusCancel={false}
+          onconfirm={() => void send()}
+          oncancel={close}
+          testid="guild-transfer"
+          confirmTestid="guild-transfer-send"
+        />
       </div>
     </div>
   {:else if error !== ''}

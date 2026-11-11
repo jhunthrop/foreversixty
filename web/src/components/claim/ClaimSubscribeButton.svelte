@@ -5,8 +5,7 @@
   import { startCheckout } from '../../lib/billing/api';
   import { checkoutGuildCopy } from '../../lib/billing/checkout-guild-copy';
   import type { ClaimPlan } from '../../lib/guild/claim-plan';
-  import { button } from '../../lib/ui/button';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
+  import Button from '../ui/Button.svelte';
 
   let { guildId, claimPlan, label }: { guildId: number; claimPlan: ClaimPlan; label: string } = $props();
 
@@ -27,15 +26,16 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <button
-    class={`${button('primary')} w-full md:w-fit ${busy ? BUSY_CLASS : ''}`}
+  <Button
+    tone="primary"
+    class="w-full md:w-fit"
     onclick={() => void onClick()}
-    disabled={busy}
-    aria-busy={busy}
-    data-testid="guild-claim-next-subscribe"
+    {busy}
+    busyLabel={checkoutGuildCopy.busy.checkout}
+    testid="guild-claim-next-subscribe"
   >
-    {busy ? checkoutGuildCopy.busy.checkout : label}
-  </button>
+    {label}
+  </Button>
   <!-- Drawn only on a failure, after the player's own click: an empty reserve would push the
        next item 40 px down instead of the list's 12 (row 16). -->
   {#if failed}

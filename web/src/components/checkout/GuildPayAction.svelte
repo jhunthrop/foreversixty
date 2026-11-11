@@ -23,7 +23,7 @@
   import { switchNote, type StepGuild } from '../../lib/billing/subscribe-step';
   import { INLINE_LINK } from '../../lib/guild/field-styles';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
+  import Spinner from '../ui/Spinner.svelte';
 
   let {
     guild,
@@ -71,28 +71,30 @@
   {/if}
   <button
     type="button"
-    class={`${subscribeClass} ${busy === 'checkout' ? BUSY_CLASS : ''}`}
+    class={`${subscribeClass} gap-2`}
     disabled={busy !== null || locked}
     aria-busy={busy === 'checkout'}
     onclick={onSubscribe}
     data-step-action
     data-testid={`guild-${guild.id}-subscribe`}
   >
-    {busy === 'checkout' ? copy.busy.checkout : readyLabel(guild, price)}<span class="sr-only"
-      >, {guild.name}</span
+    {#if busy === 'checkout'}<Spinner />{copy.busy.checkout}{:else}{readyLabel(guild, price)}{/if}<span
+      class="sr-only">, {guild.name}</span
     >
   </button>
 {:else if action === 'manage'}
   <button
     type="button"
-    class={`${PLAIN_BUTTON} ${busy === 'portal' ? BUSY_CLASS : ''}`}
+    class={`${PLAIN_BUTTON} gap-2`}
     disabled={busy !== null || locked}
     aria-busy={busy === 'portal'}
     onclick={onManage}
     data-step-action
     data-testid={`guild-${guild.id}-manage`}
   >
-    {copy.onPlan.manageBilling}<span class="sr-only">, {guild.name}</span>
+    {#if busy === 'portal'}<Spinner />{copy.busy.portal}{:else}{copy.onPlan.manageBilling}{/if}<span
+      class="sr-only">, {guild.name}</span
+    >
   </button>
 {:else if action === 'move'}
   <a

@@ -17,7 +17,6 @@
   import { damageSchools, type SpecWeights } from '../../lib/sim/buff-effect';
   import { loadBuffNames } from '../../lib/sim/buff-names';
   import { gameCodeForSimResult } from '../../lib/sim/game-code';
-  import { bandCopy } from '../../lib/sim/result-copy';
   import { settingsCopy as copy } from '../../lib/sim/settings-copy';
   import {
     settingsChipGroups,
@@ -26,16 +25,15 @@
     type SettingsChip,
   } from '../../lib/sim/settings-rows';
   import type { SimResult } from '../../lib/sim/types';
-  import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import type { Fact, IconListItem } from '../../lib/ui/facts';
   import Button from '../ui/Button.svelte';
+  import CopyButton from '../ui/CopyButton.svelte';
   import Facts from '../ui/Facts.svelte';
   import IconList from '../ui/IconList.svelte';
   import Section from '../ui/Section.svelte';
 
   let { result, simId = '' }: { result: SimResult; simId?: string } = $props();
 
-  const COPY_FAILED_MS = 3000;
   const ENGINE_SHA_LENGTH = 7;
   const build = activeBuild.build;
   const classSlug = $derived(result.request.character.class);
@@ -111,25 +109,7 @@
   let gameState = $state<CopyForGameState>('idle');
   const gameCopier = createCopyForGame((next) => (gameState = next));
 
-  let jsonState = $state<CopyFeedbackState>('idle');
-  let failedTimer: ReturnType<typeof setTimeout> | undefined;
-  const jsonCopier = createCopyFeedback(
-    (text) => navigator.clipboard.writeText(text),
-    (next) => {
-      jsonState = next;
-      clearTimeout(failedTimer);
-      if (next === 'failed') failedTimer = setTimeout(() => (jsonState = 'idle'), COPY_FAILED_MS);
-    },
-  );
-  onDestroy(() => {
-    gameCopier.dispose();
-    jsonCopier.dispose();
-    clearTimeout(failedTimer);
-  });
-  const jsonLabel = $derived.by(() => {
-    if (jsonState === 'copied') return bandCopy.copied;
-    return jsonState === 'failed' ? bandCopy.copyFailed : copy.copyJson;
-  });
+  onDestroy(() => gameCopier.dispose());
 </script>
 
 <Section panel title={copy.title} testid="sim-settings-card">
@@ -151,9 +131,7 @@
       onclick={() => void gameCopier.copy(gameCode)}
       testid="sim-saved-copy-for-game">{copyForGameLabel(gameState)}</Button
     >
-    <Button size="sm" onclick={() => void jsonCopier.copy(resultJson())} testid="sim-copy-json"
-      ><span aria-live="polite">{jsonLabel}</span></Button
-    >
+    <CopyButton text={resultJson} label={copy.copyJson} testid="sim-copy-json" />
     <Button size="sm" onclick={downloadJson} testid="sim-download-json">{copy.downloadJson}</Button>
   </div>
   {#if gameState === 'failed'}

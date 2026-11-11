@@ -1,5 +1,6 @@
 // web/src/lib/account/discord-role-copy.ts
 // Every visible string of the account page's Discord Premium role row.
+import { withRetry } from '../ui/copy';
 
 export const discordRoleCopy = {
   label: 'Premium role in Discord',
@@ -9,6 +10,6 @@ export const discordRoleCopy = {
   link: 'Link Premium role',
   returnLinked: 'Linked. Your Discord Premium role now follows your Forever Sixty Premium.',
   returnDenied: 'Cancelled in Discord. Nothing was linked.',
-  returnFailed: 'Could not link the Premium role. Try again.',
-  stuck: 'Discord did not open. Try again.',
+  returnFailed: withRetry('Could not link the Premium role.'),
+  stuck: withRetry('Discord did not open.'),
 } as const;

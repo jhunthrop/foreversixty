@@ -1,6 +1,11 @@
 // web/src/lib/items/tooltip-position.test.ts
 import { describe, expect, it } from 'vitest';
-import { tooltipLeftPx, tooltipShiftPx, tooltipVerticalPlacementFor } from './tooltip-position';
+import {
+  pointerTipPosition,
+  tooltipLeftPx,
+  tooltipShiftPx,
+  tooltipVerticalPlacementFor,
+} from './tooltip-position';
 
 describe('tooltipShiftPx', () => {
   it('is 0 when the panel already fits between the anchor and the right edge', () => {
@@ -73,5 +78,29 @@ describe('tooltipLeftPx', () => {
   it('spans the 16 px phone gutters with a viewport-wide panel, whichever column was tapped', () => {
     expect(tooltipLeftPx('start', 28, 334, 390, 358)).toBe(16 - 28);
     expect(tooltipLeftPx('end', 200, 170, 390, 358)).toBe(16 - 200);
+  });
+});
+
+describe('pointerTipPosition', () => {
+  const viewport = { width: 1000, height: 600 };
+  const panel = { width: 200, height: 100 };
+  it('sits 16 px right of the pointer, its top on the pointer', () => {
+    expect(pointerTipPosition({ x: 100, y: 50, flip: false }, panel, viewport)).toEqual({
+      left: 116,
+      top: 50,
+    });
+  });
+  it('sits left of the pointer when flipped', () => {
+    expect(pointerTipPosition({ x: 600, y: 50, flip: true }, panel, viewport)).toEqual({
+      left: 384,
+      top: 50,
+    });
+  });
+  it('stays 8 px inside every viewport edge', () => {
+    expect(pointerTipPosition({ x: 990, y: 590, flip: false }, panel, viewport)).toEqual({
+      left: 792,
+      top: 492,
+    });
+    expect(pointerTipPosition({ x: 10, y: -20, flip: true }, panel, viewport)).toEqual({ left: 8, top: 8 });
   });
 });

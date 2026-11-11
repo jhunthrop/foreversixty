@@ -2,6 +2,7 @@
 // Every string the coach shows on the web, word for word from the experience spec's section 8.2
 // (design/specs/2026-10-28-log-coach.md). copy.test.ts reads the spec table and fails on any drift.
 // A `{field}` is filled by `fill`.
+import { uiCopy } from '../ui/copy';
 
 /**
  * The muted ` · ` between a line's segments, rendered as an expression: Svelte trims the edges of
@@ -21,7 +22,7 @@ export const coachCopy = {
   rowOfficer: 'Coach review',
   rowPreparing: 'Top {Spec} logs for this boss are still loading.',
   rowError: "The coach couldn't read this pull just now.",
-  rowRetry: 'Try again',
+  rowRetry: uiCopy.retry,
   loading: 'Reading the pull…',
   writing: 'Your coach is writing…',
   writingLate: 'Still writing. Check back in a few minutes.',
@@ -49,7 +50,8 @@ export const coachCopy = {
   footerNoBasis: 'Reviewed {date}.',
   history: 'History',
   historyOlder: 'Show older',
-  historyOlderError: "Older reviews didn't load. Try again.",
+  /** The line LoadOlder shows, with its own Try again, when the next page fails. */
+  historyOlderError: "Older reviews didn't load.",
   historyNone: 'Nothing to fix',
   historyRules: 'Log only',
   historyRulesTitle: 'Written from the log only; the model was off',

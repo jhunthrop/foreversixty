@@ -5,6 +5,7 @@
      unit (output-figure.ts: a raw DPS is never called a parse). The API's order: damage before
      healing, best first. A member's report carries only their own rows. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import type { RaidReportParse } from '../../../lib/guild/attendance-contract';
   import { outputGroups } from '../../../lib/guild/report-night-view';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
@@ -31,9 +32,10 @@
 
 <Section title={copy.output.head} meta={copy.output.meta} anchor="raid-output" panel testid="raid-output">
   {#if groups.length === 0}
-    <p class="text-muted text-[14px]" data-testid="raid-output-empty">
-      {officer ? copy.output.officerEmpty : copy.output.memberEmpty}
-    </p>
+    <EmptyState
+      message={officer ? copy.output.officerEmpty : copy.output.memberEmpty}
+      testid="raid-output-empty"
+    />
   {:else}
     <div class="flex flex-col gap-4">
       {#each groups as group (group.key)}

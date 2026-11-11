@@ -137,7 +137,7 @@ export const chartCopy = {
     `${title} chart, ${clockLabel(startMs)} to ${clockLabel(endMs)}. Arrow keys move through time.`,
   live: (ms: number, rows: readonly { name: string; value: string }[]): string =>
     `${clockLabel(ms)}. ${rows.map((row) => `${row.name} ${row.value}`).join(', ')}.`,
-  loading: 'Loading the chart.',
+  loading: 'Loading the chart…',
   error: 'The chart didn’t load.',
   emptyRate: (metric: RateMetric): string => `No ${NOUN[metric]} in this window.`,
   emptyThreat: (enemy: string): string => `No threat on ${enemy} in this window.`,

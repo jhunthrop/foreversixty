@@ -26,7 +26,8 @@ import { plantSessionHint } from './support/subscribe-stubs';
 import { shortControls } from './support/short-controls';
 
 const ROW_PX = 56;
-const OLDER_PX = 44;
+/** The shared LoadOlder is the small Button: 36 px from 1024 with a fine pointer, 44 below. */
+const OLDER_PX = 36;
 const SEPARATOR = ' · ';
 const list = (page: Page) => page.getByTestId('coach-history-list');
 const rows = (page: Page) => page.getByTestId('coach-history-row');
@@ -119,9 +120,9 @@ test('Show older is aria-busy while it reads, then appends the last page and goe
 test('a failed older page keeps the rows and says so under the list', async ({ page }) => {
   await openOwner(page, true, { first: HISTORY_PAGES.first, older: 500 });
   await page.getByTestId('coach-history-older').click();
-  await expect(page.getByTestId('coach-history-older-error')).toHaveText(coachCopy.historyOlderError);
+  await expect(page.getByTestId('coach-history-older-error')).toContainText(coachCopy.historyOlderError);
   await expect(rows(page)).toHaveCount(20);
-  await expect(page.getByTestId('coach-history-older')).toBeEnabled();
+  await expect(page.getByTestId('coach-history-older-error-retry')).toBeEnabled();
 });
 
 test('a failed first page shows the error with a retry', async ({ page }) => {

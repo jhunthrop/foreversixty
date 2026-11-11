@@ -9,6 +9,7 @@ import { stampParts } from './raid-time';
 import { clock, weekdayDayMonth } from '../dates';
 import { SITE_LOCALE } from '../format/number';
 import { HOUR_MS, spokenDuration } from '../format/duration';
+import { uiCopy, withRetry } from '../ui/copy';
 
 export const SECONDS_PER_MINUTE = 60;
 export { DAY_MS } from '../format/duration';
@@ -20,8 +21,6 @@ export const ENDED_MATCH_WINDOW_MS = 6 * HOUR_MS;
 export const DISCORD_REPORT_MAX_LINES = 12;
 export const BIGGEST_CHANGES_ROWS = 5;
 export const PICKER_MAX_ROWS = 20;
-/** How long `Copied` stays up. */
-export const COPIED_VISIBLE_MS = 4000;
 const MINUS = '−'; // a real minus sign: a fall is `−12`, not `-12`
 
 /** `3 wipes`, `1 wipe`. */
@@ -68,7 +67,7 @@ export const attendanceCopy = {
     matching: 'Matching…',
     cancel: 'Cancel',
     loadFailed: 'These logs did not load.',
-    tryAgain: 'Try again',
+    tryAgain: uiCopy.retry,
     matchedElsewhere: 'That log was just matched to another raid.',
     /** Before a candidate's time: it is the upload time, not the raid's (WP 11, interim). */
     uploaded: 'Uploaded',
@@ -81,7 +80,7 @@ export const attendanceCopy = {
   report: {
     head: 'Report',
     copy: 'Copy for Discord',
-    copied: 'Copied',
+    copied: uiCopy.copied,
     post: 'Post to Discord',
     posting: 'Posting…',
     kills: 'Kill order',
@@ -129,8 +128,8 @@ export const attendanceCopy = {
   },
   errors: {
     buttons: 'That did not save; try again.',
-    rows: 'That did not save. Try again.',
-    post: 'Could not post. Try again.',
+    rows: withRetry('That did not save.'),
+    post: withRetry('Could not post.'),
     reportLoad: 'This report did not load.',
     officerToolsEnded: "Not saved. This guild's officer tools have ended.",
     copyFailed: 'Could not copy. Select the report and copy it.',

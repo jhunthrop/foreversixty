@@ -3,6 +3,7 @@
      Swap in, which moves them to In through the same officer sign-up write the roster's control
      uses; the comp tally above shows what the swap does to the seats. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import type { GuildRaidView, GuildSignupState } from '../../../lib/guild/api';
   import { kindCountsRoles, kindOf } from '../../../lib/guild/raid-copy';
   import { benchRows, rowSub } from '../../../lib/guild/raid-planner-view';
@@ -38,7 +39,7 @@
   testid="raid-bench"
 >
   {#if rows.length === 0}
-    <p class="text-muted text-[14px]" data-testid="raid-bench-empty">Nobody is on the bench.</p>
+    <EmptyState message="Nobody is on the bench." testid="raid-bench-empty" />
   {:else}
     <ul>
       {#each rows as row (row.character_key)}

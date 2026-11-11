@@ -12,6 +12,7 @@
      neither the `~` nor the `†` mark. The one field on AuraTrack that IS whole-fight,
      `max_stacks`, is not rendered here. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { schoolName } from '../../lib/report/format';
   import activeBuild from '../../data/active-build.json';
@@ -333,9 +334,11 @@
   {#snippet head()}{#if rows.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if rows.length === 0}
-      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
-        {emptyMessage ?? `No ${kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.`}
-      </p>
+      <EmptyState
+        inset
+        message={emptyMessage ?? `No ${kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.`}
+        testid="table-empty"
+      />
     {:else}
       {@render auraRows(rows, title, 'aura-table')}
     {/if}

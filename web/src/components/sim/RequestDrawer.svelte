@@ -20,7 +20,10 @@
   import { checkRequest, formatRequest, type RequestCheck } from '../../lib/sim/request-json';
   import type { SimRequest } from '../../lib/sim/types';
   import { FIELD_FOCUS, fieldEdge } from '../../lib/ui/field';
+  import { uiCopy } from '../../lib/ui/copy';
+  import { CopyState } from '../../lib/ui/copy-state.svelte';
   import Button from '../ui/Button.svelte';
+  import Disclosure from '../ui/Disclosure.svelte';
 
   let {
     request,
@@ -109,103 +112,90 @@
       return;
     }
     shared = url;
-    try {
-      await navigator.clipboard.writeText(url);
-    } catch {
-      /* the field below holds it; a browser that refuses the clipboard is not an error */
-    }
+    // The field below holds it too: a browser that refuses the clipboard is not an error.
+    await clip.copy(url);
   }
+
+  const clip = new CopyState();
+  $effect(() => () => clip.dispose());
 
   /** The field recipe (lib/ui/field.ts) on the JSON and the share link: the page ground, one edge. */
   const FIELD = `rounded-field bg-bg text-strong w-full border ${fieldEdge(false)} ${FIELD_FOCUS}`;
 </script>
 
-<details class="request-drawer mx-[18px] md:mx-0" data-testid="sim-request-drawer">
-  <summary
-    class="focus-visible:outline-gold flex min-h-11 cursor-pointer list-none flex-wrap items-center gap-x-2 select-none focus-visible:outline-2 focus-visible:-outline-offset-2 [&::-webkit-details-marker]:hidden"
-    data-testid="sim-request-summary"
+<div class="mx-[18px] md:mx-0">
+  <Disclosure
+    summary={simCopy.requestDrawerSummary}
+    meta={simCopy.requestDrawerHint}
+    testid="sim-request-drawer"
+    summaryTestid="sim-request-summary"
   >
-    <span class="text-nav text-[14px] leading-5 font-semibold">{simCopy.requestDrawerSummary}</span>
-    <span class="text-small text-muted">{simCopy.requestDrawerHint}</span>
-  </summary>
-  <div class="flex flex-col gap-3 pt-1 pb-2">
-    <p class="text-small text-muted">{simCopy.requestNote}</p>
-    <label class="sr-only" for="sim-request-json">{simCopy.requestDrawer}</label>
-    <textarea
-      id="sim-request-json"
-      class={`${FIELD} h-72 p-3 font-mono text-[12px]`}
-      spellcheck="false"
-      bind:value={text}
-      oninput={() => (edited = true)}
-      data-testid="sim-request-json"></textarea>
+    <div class="flex flex-col gap-3">
+      <p class="text-small text-muted">{simCopy.requestNote}</p>
+      <label class="sr-only" for="sim-request-json">{simCopy.requestDrawer}</label>
+      <textarea
+        id="sim-request-json"
+        class={`${FIELD} h-72 p-3 font-mono text-[12px]`}
+        spellcheck="false"
+        bind:value={text}
+        oninput={() => (edited = true)}
+        data-testid="sim-request-json"></textarea>
 
-    {#if check !== null && (check.status === 'parse-error' || check.status === 'validate-error')}
-      <p role="alert" class="text-strong text-[14px] leading-5" data-testid="sim-request-errors">
-        {check.message}
-      </p>
-    {:else if check !== null && check.status === 'invalid'}
-      <ul class="flex flex-col gap-1 text-[14px] leading-5" role="alert" data-testid="sim-request-errors">
-        {#each check.errors as row, index (`${row.field}-${index}`)}
-          <li data-testid={`sim-request-error-${row.field}`}>
-            <span class="text-strong font-mono">{row.field}</span>
-            <span class="text-muted ml-2">{row.message}</span>
-          </li>
-        {/each}
-      </ul>
-    {:else if check !== null && check.status === 'valid'}
-      <p class="text-muted text-[14px] leading-5" data-testid="sim-request-valid">{simCopy.requestValid}</p>
-    {/if}
-
-    <div class="flex flex-wrap items-center gap-2">
-      <Button size="sm" {disabled} onclick={() => void apply()} testid="sim-request-apply"
-        >{simCopy.requestApply}</Button
-      >
-      <Button size="sm" {disabled} onclick={() => void run()} testid="sim-request-run"
-        >{simCopy.requestRun}</Button
-      >
-      {#if canShare}
-        <Button size="sm" onclick={() => void share()} testid="sim-request-share"
-          >{simCopy.requestShare}</Button
-        >
+      {#if check !== null && (check.status === 'parse-error' || check.status === 'validate-error')}
+        <p role="alert" class="text-strong text-[14px] leading-5" data-testid="sim-request-errors">
+          {check.message}
+        </p>
+      {:else if check !== null && check.status === 'invalid'}
+        <ul class="flex flex-col gap-1 text-[14px] leading-5" role="alert" data-testid="sim-request-errors">
+          {#each check.errors as row, index (`${row.field}-${index}`)}
+            <li data-testid={`sim-request-error-${row.field}`}>
+              <span class="text-strong font-mono">{row.field}</span>
+              <span class="text-muted ml-2">{row.message}</span>
+            </li>
+          {/each}
+        </ul>
+      {:else if check !== null && check.status === 'valid'}
+        <p class="text-muted text-[14px] leading-5" data-testid="sim-request-valid">{simCopy.requestValid}</p>
       {/if}
-      <Button size="sm" onclick={reset} testid="sim-request-reset">{simCopy.requestReset}</Button>
-    </div>
-    <p class="text-small text-muted">{simCopy.requestApplyNote}</p>
 
-    {#if canShare && shareError !== ''}
-      <p role="alert" class="text-strong text-[14px] leading-5" data-testid="sim-request-share-error">
-        {shareError}
-      </p>
-    {:else if canShare && shared !== ''}
-      <label class="sr-only" for="sim-request-share-link">{simCopy.requestShare}</label>
-      <input
-        id="sim-request-share-link"
-        type="text"
-        readonly
-        value={shared}
-        class={`${FIELD} h-11 px-3 text-[14px] md:h-10`}
-        data-testid="sim-request-share-link"
-        onclick={(event) => event.currentTarget.select()}
-      />
-    {/if}
+      <div class="flex flex-wrap items-center gap-2">
+        <Button size="sm" {disabled} onclick={() => void apply()} testid="sim-request-apply"
+          >{simCopy.requestApply}</Button
+        >
+        <Button size="sm" {disabled} onclick={() => void run()} testid="sim-request-run"
+          >{simCopy.requestRun}</Button
+        >
+        {#if canShare}
+          <Button size="sm" onclick={() => void share()} testid="sim-request-share"
+            >{clip.copied() ? uiCopy.copied : simCopy.requestShare}</Button
+          >
+        {/if}
+        <Button size="sm" onclick={reset} testid="sim-request-reset">{simCopy.requestReset}</Button>
+      </div>
+      <p class="text-small text-muted">{simCopy.requestApplyNote}</p>
 
-    <!-- The buff list as plain text, so a test (and a person) can read what is actually
+      {#if canShare && shareError !== ''}
+        <p role="alert" class="text-strong text-[14px] leading-5" data-testid="sim-request-share-error">
+          {shareError}
+        </p>
+      {:else if canShare && shared !== ''}
+        <label class="sr-only" for="sim-request-share-link">{simCopy.requestShare}</label>
+        <input
+          id="sim-request-share-link"
+          type="text"
+          readonly
+          value={shared}
+          class={`${FIELD} h-11 px-3 text-[14px] md:h-10`}
+          data-testid="sim-request-share-link"
+          onclick={(event) => event.currentTarget.select()}
+        />
+      {/if}
+
+      <!-- The buff list as plain text, so a test (and a person) can read what is actually
          going to the engine without parsing the textarea. -->
-    <p class="text-muted font-mono text-[11px]" data-testid="sim-request-buffs">
-      {(request?.character.buffs ?? []).join(' ')}
-    </p>
-  </div>
-</details>
-
-<style>
-  /* The caret is drawn, as ui/Disclosure draws it: no text node to read. */
-  .request-drawer > summary::before {
-    content: '\25B8';
-    display: inline-block;
-    font-size: 11px;
-    color: var(--color-muted);
-  }
-  .request-drawer[open] > summary::before {
-    transform: rotate(90deg);
-  }
-</style>
+      <p class="text-muted font-mono text-[11px]" data-testid="sim-request-buffs">
+        {(request?.character.buffs ?? []).join(' ')}
+      </p>
+    </div>
+  </Disclosure>
+</div>

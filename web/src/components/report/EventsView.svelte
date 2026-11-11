@@ -9,6 +9,7 @@
      lines (the spell's icon, the sentence with each player's name in their class colour, Time,
      Amount), 100 a page, and one foot line that loads every hit and heal. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import activeBuild from '../../data/active-build.json';
   import { isUnnamed, loadSharedSpellNames, nameAuras, type SpellNames } from '../../lib/report/aura-names';
   import { classColorVar } from '../../lib/report/format';
@@ -24,12 +25,12 @@
   import type { StreamLine } from '../../lib/report/exact';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { Summary } from '../../lib/report/types';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
   import { LINK, RULE_TOP } from '../../lib/ui/primitives';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import { clockDuration } from '../../lib/format/duration';
   import { compact, grouped } from '../../lib/format/number';
   import Button from '../ui/Button.svelte';
+  import Spinner from '../ui/Spinner.svelte';
   import Field from '../ui/Field.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -182,7 +183,7 @@
 
     <div>
       {#if shown.length === 0}
-        <p class="text-muted px-4 py-4 text-[14px] md:px-5" data-testid="table-empty">No rows matched.</p>
+        <EmptyState inset message="No rows matched." testid="table-empty" />
       {:else}
         <StatTable {columns} nameHead="Event" bar={false} dense label="Events" testid="event-list">
           {#each shown as event, index (`${event.atMs}-${index}`)}
@@ -220,12 +221,12 @@
       {#if stream === null}
         Hits and heals: only those before a death.{#if loadStream !== undefined}<button
             type="button"
-            class={`${LINK} ml-1 inline-flex min-h-11 items-center md:min-h-0 ${streaming ? BUSY_CLASS : ''}`}
+            class={`${LINK} ml-1 inline-flex min-h-11 items-center gap-2 md:min-h-0`}
             data-testid="events-stream"
             disabled={streaming}
             aria-busy={streaming}
             onclick={() => void runStream()}
-            >{streaming ? 'Loading every hit and heal' : 'Load every hit and heal'}</button
+            >{#if streaming}<Spinner />Loading every hit and heal…{:else}Load every hit and heal{/if}</button
           >{/if}
       {:else}
         Every hit and heal in the window: <span class="tabular-nums">{grouped(streamedCount)}</span>.

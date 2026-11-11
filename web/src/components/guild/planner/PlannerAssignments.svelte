@@ -49,10 +49,7 @@
   /** The encounter whose lines the failed copy shows, selectable. */
   let copyShown = $state<number | null>(null);
 
-  const feedback = createCopyFeedback(
-    (text) => navigator.clipboard.writeText(text),
-    (next) => (copyState = next),
-  );
+  const feedback = createCopyFeedback((next) => (copyState = next));
   onDestroy(() => feedback.dispose());
 
   function copyWarning(encounter: EncounterAssignments): void {

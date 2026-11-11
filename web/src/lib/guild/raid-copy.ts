@@ -19,6 +19,7 @@ import { MINUTE_MS, spokenDuration } from '../format/duration';
 import { SITE_LOCALE } from '../format/number';
 import { countdownText } from '../ui/countdown';
 import { instantToWallClock, offsetsDiffer, wallClockToInstant, zoneAbbreviation } from './raid-time';
+import { uiCopy, withRetry } from '../ui/copy';
 
 /** A day further out than this is written as a date, not a weekday (spec 6.1 `{when}`). */
 const WEEKDAY_WINDOW_DAYS = 6;
@@ -38,7 +39,7 @@ export const raidPostCopy = {
   posted: 'Posted.',
   reposted: 'Reposted as a new message.',
   noChannel: 'Pick a Discord channel in Settings first.',
-  failed: 'The post did not go out. Try again.',
+  failed: withRetry('The post did not go out.'),
 } as const;
 
 export const raidCopy = {
@@ -81,7 +82,7 @@ export const raidCopy = {
   },
   stripStatus: {
     saved: 'Saved.',
-    failed: 'That did not save. Try again.',
+    failed: withRetry('That did not save.'),
     movedToBench: (name: string): string => `${name} moved to Bench.`,
     left: (n: number): string => `${n} left`,
     /** On an answered character that is not the account's roster row: `Officers see Quillfeather (Late).` */
@@ -118,7 +119,7 @@ export const raidCopy = {
     locking: 'Locking…',
     unlock: 'Unlock sign-ups',
     copy: 'Copy the sign-up list',
-    copied: 'Copied',
+    copied: uiCopy.copied,
     failed: 'That did not save; try again.',
   },
   cancelConfirm: {
@@ -174,7 +175,7 @@ export const raidCopy = {
       date: 'Pick a date.',
       time: 'Pick a time after now.',
       cap: 'A guild plans at most 12 raids ahead.',
-      failed: 'That did not save. Try again.',
+      failed: withRetry('That did not save.'),
     },
   },
   emptyGroup: {
