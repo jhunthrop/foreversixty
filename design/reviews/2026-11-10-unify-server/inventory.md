@@ -14,3 +14,9 @@ Component audit 2026-11-10, clusters 20, 21 and 22 (`design/reviews/2026-11-10-c
 | Not captured, text only | | | Push notification bodies ("Sign-ups are open: Wed 4 Nov, 8 pm CST."), the activity feed ("simmed 1,234 DPS", "2 bosses in 1 h 27 min"), the calendar feed ("Pull 8 pm CST."), the recruiting schedule ("Wed and Sat, 8 pm CST"), report night length and kill clocks (unchanged values, now from `textfmt`). |
 
 Web reference for the brand review: `design/reviews/2026-11-10-header-width/after/` (about, b, b-unavailable, app at 1440 and 1920).
+
+## Responses to the verdicts
+
+- ux-designer SHIP, ai-slop-reviewer PASS WITH FIXES, brand-consistency-reviewer CONSISTENT; no must findings.
+- Brand should 1: the embed title is a heading, so it keeps the long day ("Thursday 10 December", textfmt.LongDay, as the site's first-raids plaque). It is read in the guild's zone: the boards' raid is Thursday 10 December, 8 pm in Chicago (02:00Z on the 11th), not the fixture's 02:00Z on the 10th.
+- Brand nit 2: the title's text-shadow is the web's own band-title shadow (web/src/styles/global.css). Nits 3 to 5 and the slop findings on copy that this lane did not change stay with their owners.
