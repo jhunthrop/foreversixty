@@ -79,7 +79,7 @@
   "recruiting": {
     "open": true,
     "pitch": true,
-    "nights": "Wed, 8:00 pm to 11:00 pm CST",
+    "nights": "Wed, 8 pm to 11 pm CST",
     "wanted": ["warrior-protection", "paladin-holy", "priest-holy", "warlock-destruction"],
     "role_set": false
   },

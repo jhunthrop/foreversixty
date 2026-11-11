@@ -19,4 +19,13 @@ Web reference for the brand review: `design/reviews/2026-11-10-header-width/afte
 
 - ux-designer SHIP, ai-slop-reviewer PASS WITH FIXES, brand-consistency-reviewer CONSISTENT; no must findings.
 - Brand should 1: the embed title is a heading, so it keeps the long day ("Thursday 10 December", textfmt.LongDay, as the site's first-raids plaque). It is read in the guild's zone: the boards' raid is Thursday 10 December, 8 pm in Chicago (02:00Z on the 11th), not the fixture's 02:00Z on the 10th.
-- Brand nit 2: the title's text-shadow is the web's own band-title shadow (web/src/styles/global.css). Nits 3 to 5 and the slop findings on copy that this lane did not change stay with their owners.
+- Brand nit 2: the title's text-shadow is the web's own band-title shadow (web/src/styles/global.css). Nits 3 to 5 stay with their owners.
+
+## After lane B (formats.json final) and the ai-slop fixes
+
+- The fixture is lane B's (merged from lane/unify-format); `textfmt` adds ClockSeconds and the companion's clock takes `{ seconds }` for the log-time cases.
+- Slop 1 and 2: the sign-in page paints the site's band and earth tile (inlined WebP) instead of a flat gradient, and drops the sentence that restated the button (`after/app-confirm-*.png`, recaptured).
+- Slop 3 (empty lower page) stays: one action, and no site nav before sign-in.
+- Slop 4: "When" is Discord's own `<t:...>` clock in each reader's locale (owner ruling); "Guild time" is the officers' fixed reference for a guild spread across zones, so both stay.
+- Slop 5 to 7: copy this lane did not change (the /raid answer, the companion status lines, /b-unavailable); left to their owners.
+- Lane B's leftovers: the activity upload line reads "10 bosses in 1 h 32 min" (textfmt.Duration, already on this branch); the recruit card's raid nights are the officers' own words, so the mocks and parity fixtures now carry the house form "Wed, 8 pm to 11 pm CST".

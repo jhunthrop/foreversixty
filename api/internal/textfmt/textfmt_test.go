@@ -16,6 +16,7 @@ type instantCase struct {
 	Now           string `json:"now"`
 	Locale        string `json:"locale"`
 	AlwaysMinutes bool   `json:"always_minutes"`
+	Seconds       bool   `json:"seconds"`
 	Out           string `json:"out"`
 }
 
@@ -107,6 +108,10 @@ func TestTheHouseFormats(t *testing.T) {
 			continue
 		}
 		clocks++
+		if c.Seconds {
+			check(t, "ClockSeconds", c, ClockSeconds(instant(t, c.In), zone(t, c.Zone)), c.Out)
+			continue
+		}
 		check(t, "Clock", c, Clock(instant(t, c.In), zone(t, c.Zone)), c.Out)
 	}
 	if clocks == 0 {

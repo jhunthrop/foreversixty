@@ -113,7 +113,7 @@ test('the dates, the clock and the ages are the shared examples', () => {
   replay(fixture.dates.weekday_day_month, (c) => FORMAT.weekdayDayMonth(at(c.in), c.zone, at(c.now)));
   replay(fixture.dates.long_day, (c) => FORMAT.longDay(at(c.in), c.zone));
   replay(fixture.dates.stamp, (c) => FORMAT.stamp(at(c.in), c.zone, c.locale));
-  replay(fixture.clock, (c) => FORMAT.clock(at(c.in), c.zone, c.locale, c.always_minutes));
+  replay(fixture.clock, (c) => FORMAT.clock(at(c.in), c.zone, c.locale, { alwaysMinutes: c.always_minutes, seconds: c.seconds }));
   const now = at(fixture.relative.now);
   replay(fixture.relative.compact_ago, (c) => FORMAT.compactAgo(at(c.in), now));
   assert.strictEqual(FORMAT.SITE_LOCALE, fixture.site_locale);

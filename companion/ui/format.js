@@ -80,14 +80,18 @@ const FORMAT = (() => {
 
   const valid = (d) => d instanceof Date && !Number.isNaN(d.getTime());
 
-  // clock is the time of day in the viewer's hour cycle: "8 pm", "8:30 pm" (the minutes on the
-  // hour too with alwaysMinutes), or "20:00".
-  function clock(d, zone, locale, alwaysMinutes) {
+  // clock is the time of day in the viewer's hour cycle: "8 pm", "8:30 pm" or "20:00". Options:
+  // alwaysMinutes writes the minutes on the hour too; seconds is a log's event time, the second
+  // part of the record ("11:49:25 pm", "23:49:25").
+  function clock(d, zone, locale, options) {
     if (!valid(d)) return '';
+    const opts = options || {};
     const { hour, minute } = zoned(d, zone);
-    if (!usesTwelveHourClock(locale || viewerLocale())) return two(hour) + ':' + two(minute);
+    const secs = opts.seconds ? ':' + two(d.getUTCSeconds()) : '';
+    if (!usesTwelveHourClock(locale || viewerLocale())) return two(hour) + ':' + two(minute) + secs;
     const twelve = hour % 12 === 0 ? 12 : hour % 12;
-    return twelve + (alwaysMinutes || minute !== 0 ? ':' + two(minute) : '') + (hour < 12 ? ' am' : ' pm');
+    const minutes = opts.alwaysMinutes || opts.seconds || minute !== 0 ? ':' + two(minute) : '';
+    return twelve + minutes + secs + (hour < 12 ? ' am' : ' pm');
   }
 
   // dayMonth is "9 Dec"; weekdayDayMonth "Wed 9 Dec", "Wed 6 Jan 2027" outside now's year;

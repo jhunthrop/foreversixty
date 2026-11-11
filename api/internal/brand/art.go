@@ -74,6 +74,17 @@ var (
 // sealFor), as SVG source, for an HTML page that inlines it.
 func NavSealSVG() ([]byte, error) { return artFS.ReadFile(navSealFile) }
 
+// GroundTileWebP is the site's painted earth tile (body background, tiled at GroundTilePx) and
+// BandWebP its 1200 px blue band, as WebP bytes, for an HTML page that inlines them.
+func GroundTileWebP() ([]byte, error) { return artFS.ReadFile(groundFile) }
+
+// BandWebP: see GroundTileWebP.
+func BandWebP() ([]byte, error) { return artFS.ReadFile(bandFile) }
+
+// GroundTilePx is the ground tile's drawn size, the site's --art-ground-size
+// (web/src/lib/ui/assets.ts GROUND_TILE_PX).
+const GroundTilePx = 1600
+
 // Seal is the LX seal v4 at 400 px, with real transparency.
 func Seal() (image.Image, error) { return sealImage() }
 

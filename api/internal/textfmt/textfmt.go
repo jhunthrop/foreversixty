@@ -27,6 +27,7 @@ const (
 	dayLongMonthLayout = "2 January"
 	hourLayout         = "3"
 	minuteLayout       = "3:04"
+	secondsLayout      = "3:04:05"
 	zoneLayout         = "MST"
 )
 
@@ -165,6 +166,17 @@ func Clock(t time.Time, loc *time.Location) string {
 		half = "pm"
 	}
 	return at.Format(layout) + " " + half
+}
+
+// ClockSeconds is a log's event time on the 12-hour clock, the second part of the record:
+// "11:49:25 pm", "8:00:00 pm".
+func ClockSeconds(t time.Time, loc *time.Location) string {
+	at := t.In(loc)
+	half := "am"
+	if at.Hour() >= 12 {
+		half = "pm"
+	}
+	return at.Format(secondsLayout) + " " + half
 }
 
 // RaidClock is Clock with the zone's abbreviation after it, so a fixed guild time names its

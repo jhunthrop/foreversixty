@@ -15,22 +15,22 @@ import (
 
 // appConfirmCopy is the confirm page's words, shared with its test.
 var appConfirmCopy = struct {
-	Title, Heading, Body, Button, NotYou, Wordmark string
+	Title, Heading, Button, NotYou, Wordmark string
 }{
 	Title:    "Sign in to the Forever Sixty app",
 	Heading:  "Sign in to the app",
-	Body:     "Sign in on Battle.net and the app picks it up from there.",
 	Button:   "Continue to Battle.net",
 	NotYou:   "Didn’t start this sign-in from the app? Close this page.",
 	Wordmark: "Forever Sixty",
 }
 
-// appConfirmPage is self-contained: no script, no form, nothing fetched. The site's own faces and
-// the header's flat seal travel inside the page as data: URLs, the only kind its CSP admits. The
-// one link is the click the flow needs. Round 5 within that (design/mocks/directions/app_confirm.py):
-// the band colour fading into the earth ground (the painted art's own fallbacks), the wordmark as
-// the site's header draws it (seal, then the name in Marcellus), the title, then one framed panel
-// with the sentence, the teal primary and the not-you line.
+// appConfirmPage is self-contained: no script, no form, nothing fetched. The site's own faces, the
+// header's flat seal and the painted band and ground travel inside the page as data: URLs, the
+// only kind its CSP admits. The one link is the click the flow needs. Round 5 within that
+// (design/mocks/directions/app_confirm.py): the painted band fading into the painted earth, the
+// wordmark as the site's header draws it (seal, then the name in Marcellus), the title, then one
+// framed panel with the teal primary and the not-you line (the title and the button say the
+// rest; ai-slop review 2026-11-10).
 var appConfirmPage = template.Must(template.New("confirm").Parse(`<!doctype html>
 <html lang="en">
 <head>
@@ -46,7 +46,6 @@ var appConfirmPage = template.Must(template.New("confirm").Parse(`<!doctype html
 <h1>{{.Copy.Heading}}</h1>
 </div></div>
 <main><div class="col panel">
-<p>{{.Copy.Body}}</p>
 <a class="go" href="{{.Continue}}">{{.Copy.Button}}</a>
 <p class="note">{{.Copy.NotYou}}</p>
 </div></main>
@@ -99,6 +98,19 @@ func sealURL() (template.URL, error) {
 	return template.URL("data:image/svg+xml;base64," + base64.StdEncoding.EncodeToString(raw)), nil
 }
 
+// webpURL is WebP art as a data: URL.
+func webpURL(art func() ([]byte, error)) (string, error) {
+	raw, err := art()
+	if err != nil {
+		return "", err
+	}
+	return "data:image/webp;base64," + base64.StdEncoding.EncodeToString(raw), nil
+}
+
+// bandFade is how far the band's paint runs under the panel and fades out, the site's
+// --band-fade on a phone-first page (web/src/components/ui/band.css).
+const bandFade = 96
+
 // typeCSS is a type role as a CSS font shorthand at one width, its tracking after it.
 func typeCSS(r brand.TypeRole, size, line float64) string {
 	return fmt.Sprintf("font:%d %gpx/%gpx %s;letter-spacing:%gem", r.Weight, size, line, r.Family, r.TrackingEm)
@@ -112,10 +124,21 @@ func appConfirmStyle() (template.CSS, error) {
 	if err != nil {
 		return "", err
 	}
+	ground, err := webpURL(brand.GroundTileWebP)
+	if err != nil {
+		return "", err
+	}
+	band, err := webpURL(brand.BandWebP)
+	if err != nil {
+		return "", err
+	}
 	title, body, small := brand.TypeTitle, brand.TypeBody, brand.TypeSmall
 	return template.CSS(faces + fmt.Sprintf(`:root{color-scheme:dark}*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:%[1]s;color:%[2]s;%[3]s;-webkit-font-smoothing:antialiased}
-.band{background:linear-gradient(%[4]s 0,%[4]s calc(100%% - 96px),%[1]s 100%%);padding:0 18px 96px}
+body{margin:0;min-height:100vh;isolation:isolate;background:%[1]s url(%[28]s) 0 0/%[29]dpx repeat;color:%[2]s;%[3]s;-webkit-font-smoothing:antialiased}
+.band{position:relative;padding:0 18px %[32]dpx}
+.band::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+background:linear-gradient(%[31]s,%[31]s),url(%[30]s) center top/cover no-repeat,%[4]s;
+mask-image:linear-gradient(to bottom,#000 calc(100%% - %[32]dpx),rgba(0,0,0,.5) calc(100%% - %[32]dpx / 2),transparent)}
 .col{max-width:%[19]dpx;margin:0 auto}
 .mark{display:flex;align-items:center;gap:%[20]dpx;padding:16px 0 0;font:400 %[21]dpx/1 %[5]s;color:%[6]s;letter-spacing:%[22]gem;white-space:nowrap}
 .mark img{display:block;flex:none}
@@ -124,7 +147,7 @@ main{margin-top:-76px;padding:0 18px 40px}
 .panel{position:relative;background:%[7]s;border:1px solid #000;box-shadow:0 0 0 1px %[8]s;border-radius:%[9]dpx;padding:22px 24px}
 .panel::before{content:"";position:absolute;inset:6px;border:1px solid %[10]s;border-radius:%[11]dpx;pointer-events:none}
 .panel p{margin:0}
-.go{position:relative;display:flex;align-items:center;justify-content:center;height:44px;margin-top:18px;padding:0 20px;
+.go{position:relative;display:flex;align-items:center;justify-content:center;height:44px;padding:0 20px;
 border:1px solid %[12]s;border-radius:%[13]dpx;background:%[14]s;color:%[15]s;font-weight:600;text-decoration:none}
 .go:hover{background:%[12]s}.go:active{transform:translateY(1px);filter:brightness(.92)}
 .go:focus-visible{outline:%[16]dpx solid %[17]s;outline-offset:2px}
@@ -138,7 +161,8 @@ border:1px solid %[12]s;border-radius:%[13]dpx;background:%[14]s;color:%[15]s;fo
 		brand.StrokeFocus, cssColor(brand.ColorBaseGold), cssColor(brand.ColorForeverMutedCard),
 		columnWidth, wordmarkGap, wordmarkSize, title.TrackingEm,
 		typeCSS(title, title.Size, title.LineHeight), typeCSS(small, small.Size, small.LineHeight),
-		phoneBreakpoint-1, wordmarkSizePhone, typeCSS(title, title.PhoneSize, title.PhoneLineHeight))), nil
+		phoneBreakpoint-1, wordmarkSizePhone, typeCSS(title, title.PhoneSize, title.PhoneLineHeight),
+		ground, brand.GroundTilePx, band, cssColor(brand.ColorForeverVeilBand), bandFade)), nil
 }
 
 // cssColor writes a token as CSS: #rrggbb when opaque, rgba() otherwise.
@@ -149,7 +173,7 @@ func cssColor(c color.NRGBA) string {
 	return fmt.Sprintf("rgba(%d,%d,%d,%.3g)", c.R, c.G, c.B, float64(c.A)/0xFF)
 }
 
-// appConfirmCSP lets the page style itself and draw its inlined faces and seal, and nothing else:
+// appConfirmCSP lets the page style itself and draw its inlined faces, seal and art, and nothing else:
 // no script, no fetch, no form, and no frame around it, so the click cannot be lifted by an overlay.
 const appConfirmCSP = "default-src 'none'; style-src 'unsafe-inline'; font-src data:; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
 
