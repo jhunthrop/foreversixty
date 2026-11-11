@@ -77,6 +77,18 @@ func (s *Store) MarkEventProcessed(ctx context.Context, id string) error {
 	return nil
 }
 
+// DeleteStripeEventsBefore deletes every stripe_events row received before
+// cutoff (issue #3 M8), processed or not: Stripe resends nothing that old,
+// and reconcile heals any event that never processed from Stripe itself.
+// Returns how many rows it deleted.
+func (s *Store) DeleteStripeEventsBefore(ctx context.Context, cutoff time.Time) (int64, error) {
+	tag, err := s.Pool.Exec(ctx, `delete from stripe_events where received_at < $1`, cutoff)
+	if err != nil {
+		return 0, fmt.Errorf("billing: delete stripe events before %s: %w", cutoff.Format(time.RFC3339), err)
+	}
+	return tag.RowsAffected(), nil
+}
+
 // withAdvisoryLock takes a transaction-scoped Postgres advisory lock
 // scoped to key for the duration of fn, so at most one caller is ever
 // inside fn for that key at a time. Shared by WithEventLock, WithGuildLock

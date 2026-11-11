@@ -406,7 +406,17 @@ nightly the same way `sim-validate` already is:
 
 `stripe-reconcile` heals any webhook Stripe's own three-day retry window never successfully
 delivered (design spec §2.8): it is a backstop, not the primary path — the webhook itself
-(`POST /v1/billing/webhook`) does the real-time work.
+(`POST /v1/billing/webhook`) does the real-time work. It also deletes `stripe_events` rows
+received more than 30 days ago (raw payloads carry the buyer's name, email and address, and
+Stripe resends nothing older). A row that fails is logged with its subscription id and the job
+carries on; it exits non-zero naming every failure.
+
+A live grant holds its row against Stripe: a subscription billing beside a whole-plan grant is
+recorded as a `grant_conflict` anomaly to cancel or refund by hand (one already set to end at
+its period end is only logged), reconcile re-reads it nightly so it takes the row the night the
+grant lapses, and `grant` refuses a
+subject whose Stripe subscription still bills (cancel it first; one set to end at its period end
+is fine).
 
 `raid-posts` is the guild raids' clock: deferred posts (a raid saved more than a week ahead
 posts a week before) and the day-before reminders go out every ten minutes, even when the

@@ -27,9 +27,9 @@ func runStripeReconcile(ctx context.Context, log *slog.Logger) error {
 		Gateway: billing.NewStripeGateway(cfg.StripeSecretKey), Log: log,
 	}
 	n, err := svc.Reconcile(ctx)
+	log.Info("stripe-reconcile", "reconciled", n)
 	if err != nil {
 		return fmt.Errorf("stripe-reconcile: %w", err)
 	}
-	log.Info("stripe-reconcile", "reconciled", n)
 	return nil
 }
