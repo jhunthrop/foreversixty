@@ -10,24 +10,21 @@
 // drawable from tools/gen_seal_silhouette.py.
 // Run from the repo root: node web/scripts/build-app-icon.mjs. Deterministic: run twice, same files.
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import sharp from 'sharp';
+import {
+  PNG,
+  ROOT,
+  SEAL_SHARE,
+  TILE_SIZE as SIZE,
+  renderFlatSeal,
+  renderGround,
+  renderSeal,
+  renderTile,
+  transparentCanvas,
+} from './brand-art.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const GROUND_ART = join(ROOT, 'design/assets/art/app-icon-background.jpeg');
-const SEAL_PNG = join(ROOT, 'design/assets/logo/lx-seal-v4.png');
-const FLAT_SVG = join(ROOT, 'design/assets/brand/seal-flat/seal-flat-small.svg');
 const OUT = join(ROOT, 'apps/shared/brand');
-/** The iOS icon: one 1024 px image the system scales to every home-screen size. */
-const SIZE = 1024;
-/** The painted blue inside the ground art's brass frame, as a share of its side (the companion's
- *  macOS tile, companion/tools/icons/render.py MAC_GROUND_INNER): the frame never shows. */
-const GROUND_INNER = [0.09, 0.91];
-/** The seal's diameter as a share of the visible tile. iOS masks the square to its squircle, which
- *  keeps a centred circle of almost the whole side, so the coin's rim stays whole with a margin of
- *  ground round it. The companion's macOS tile uses 0.78 of its body; the phone tile matches it. */
-const SEAL_SHARE = 0.78;
 /** Android's adaptive canvas is 108 dp; the launcher shows the middle 72 dp under its mask and
  *  guarantees only the middle 66 dp (the safe zone). */
 const ADAPTIVE = { canvas: 108, visible: 72, safe: 66 };
@@ -47,48 +44,10 @@ const FLAT_SEAL_RATIO = 0.85;
 const TINT_LEVELS = { black: 16, white: 168, curve: 1.6 };
 /** Rec. 601 luma weights, the ones the levels above are measured in. */
 const LUMA = [0.299, 0.587, 0.114];
-const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
-const PNG = { compressionLevel: 9, effort: 10 };
 
 const androidSealShare = (SEAL_SHARE * ADAPTIVE.visible) / ADAPTIVE.canvas;
 if (androidSealShare > ADAPTIVE.safe / ADAPTIVE.canvas) {
   throw new Error(`the Android seal (${androidSealShare}) leaves the 66 dp safe zone`);
-}
-
-/** The painted ground, its frame cropped away, at `px` square, opaque. */
-async function renderGround(px) {
-  const { width, height } = await sharp(GROUND_ART).metadata();
-  const [from, to] = GROUND_INNER;
-  return sharp(GROUND_ART)
-    .extract({
-      left: Math.round(width * from),
-      top: Math.round(height * from),
-      width: Math.round(width * (to - from)),
-      height: Math.round(height * (to - from)),
-    })
-    .resize(px, px, { kernel: 'lanczos3' })
-    .removeAlpha()
-    .png()
-    .toBuffer();
-}
-
-const renderSeal = (diameter) =>
-  sharp(SEAL_PNG).resize(diameter, diameter, { kernel: 'lanczos3' }).png().toBuffer();
-
-const renderFlatSeal = (diameter) =>
-  sharp(FLAT_SVG, { density: 1200 }).resize(diameter, diameter).png().toBuffer();
-
-const transparentCanvas = (px = SIZE) =>
-  sharp({ create: { width: px, height: px, channels: 4, background: TRANSPARENT } });
-
-/** The tile at `px`: the ground with the seal centred at `share` of the side. Opaque. */
-async function renderTile(px, share = SEAL_SHARE) {
-  const seal = await renderSeal(Math.round(px * share));
-  return sharp(await renderGround(px))
-    .composite([{ input: seal, gravity: 'center' }])
-    .removeAlpha()
-    .png()
-    .toBuffer();
 }
 
 /** The App Store's icon: a full-bleed square, opaque (no alpha channel at all). */

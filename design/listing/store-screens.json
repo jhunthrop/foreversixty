@@ -1,0 +1,9 @@
+{
+  "$comment": "The store screenshots, in listing order: each raw capture (design/listing/app-captures/<platform>/<capture>.png, from capture-apps.sh) and the line over it. build-store.mjs reads this file for both stores.",
+  "screens": [
+    { "capture": "home", "caption": "Your next upgrades and your next raid" },
+    { "capture": "raid", "caption": "Sign up for raid night from anywhere" },
+    { "capture": "raid-roster", "caption": "See who is coming before the first pull" },
+    { "capture": "gear", "caption": "Best in slot for your spec and level" }
+  ]
+}

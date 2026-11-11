@@ -8,6 +8,12 @@ with a visible seam. No lossless originals of them exist anywhere on disk. A sma
 1:1 looks small on the plate, and the old 1.5x enlargement made it blurry. The only real fix is
 new lossless captures from the game.
 
+As of 2026-11-10 the plate list follows addon 2.0.38. Nine of the twelve surfaces changed since
+those crops (the panel replaced the character pane's flyout, the tooltips, talent strip, player
+tooltip, build dialog tabs and Settings page all read differently), so those plates have no
+capture at all and `gen_gallery.mjs` stops at the first one. Only `bag-arrow`,
+`chat-badge-guild` and `guild-tab` still have a JPEG stand-in.
+
 Claude never drives the game client; the owner takes every screenshot.
 
 ## Client setup, once
@@ -29,7 +35,7 @@ Claude never drives the game client; the owner takes every screenshot.
 5. Keep the UI on (no Alt-Z) and the addon on its current release. Turn off other addons that
    restyle tooltips or frames, so every frame looks like the default UI.
 
-The client saves screenshots to `/Applications/World of Warcraft/_classic_beta_/Screenshots/`.
+The client saves screenshots to `/Applications/World of Warcraft/_forever_/Screenshots/`.
 That folder appears after the first shot, and the path follows whichever client folder you
 play from.
 
@@ -51,18 +57,18 @@ calm, dark backdrop (an inn or a city at night) so the frames read clearly.
 
 | # | `<name>` | Frame | What must show |
 |---|---|---|---|
-| 1 | `chip-tooltip-legend` | The chip beside the minimap, hovered | The chip and the whole minimap, with the chip's tooltip open: the build line, the next talent, the green-arrow and gold-corner legend, and the click hints. |
-| 2 | `talent-marks-trees` | Talent window (N) | All three trees with the addon's numbers on the build's talents, the next one ringed, and the progress strip at the bottom. Use a build with some points off plan, so every kind of mark appears. |
-| 3 | `item-tooltip-ranged` | Character panel (C), hovering an equipped item | The paper doll, the item tooltip with the Forever Sixty block (estimate, next upgrade, source, "Also good" with two items), and the comparison tooltip beside it. |
-| 4 | `bag-arrow` | Character panel (C) and bags (B) open together | The green arrow on a paper-doll slot and on the bag item that beats it, plus a gold corner on a slot worth chasing. The current capture shows only the bag; the caption needs both. |
-| 5 | `character-panel-tab` | The addon's tab on the character panel | Next targets with their sources, the rotation at your level, and the build's progress, all fully visible with nothing scrolled off. |
-| 6 | `player-tooltip-score` | Hovering another player | The unit tooltip with the Forever Score line. If you can, take a second shot with Shift held so the five parts show (`player-tooltip-score-shift.png`). Claude will use whichever reads better. |
-| 7 | `chat-badge-guild` | Chat frame | Make the chat window wider and taller first. Show several guild, trade or whisper lines with score badges in front of the senders, not one line on its own. |
-| 8 | `guild-tab` | The addon's guild window | Online only unticked, sorted by Score, with several rows that have scores and specs (not mostly "no logs"). |
-| 9 | `group-panel-solo` | Social (O) > Raid, the addon's group panel | Ideally in a party with addon users, so member rows (spec, gear gap, score) show and a ready-check line names what someone lacks. Solo only shows "Not in a group", so shoot solo only as a last resort. |
-| 10 | `build-dialog-paste` | `/fs`, Paste a build tab | The "Following" line, the next talent and the paste box. If you can, paste a code so the build preview shows. |
-| 11 | `build-dialog-copy` | `/fs`, Copy my character tab | The export selected, the "Press Ctrl+C" line and the companion status lines. |
-| 12 | `settings-switches` | Settings > AddOns > Forever Sixty | All nine switches with their one-line explanations, in one shot with no stitching. If the page scrolls, take the top view and a second shot scrolled to the end (`settings-switches-2.png`); Claude will pick the one shot that holds the switches, not join the two. |
+| 1 | `forever-sixty-line` | The Forever Sixty line beside the minimap, hovered | The line and the whole minimap, with its two-line hover open. Shoot on raid day if you can, so it leads with tonight's raid; otherwise a next talent ("Next talent at 25: ..."). |
+| 2 | `addon-panel` | The panel (click the line) | The title band (crest, name, level, score) and every region with something in it: Tonight or Last raid, Upgrades with an Equip button, Talents with Change and Talents, and the rotation, nothing cut off. |
+| 3 | `item-tooltip-verdict` | Bags (B), hovering an upgrade | The item tooltip with its one verdict line (the green arrow and "+2.2 DPS") and its one support line. If you can, a second shot with Shift held (`item-tooltip-verdict-shift.png`). |
+| 4 | `talent-window-marks` | Talent window (N) | All three trees with numbers on the points still to take, the next one ringed, and the strip ("Next at 25: ... · 12 of 15 · 3 off plan"). Use a build with some points off plan. |
+| 5 | `bag-arrow` | Character pane (C) and bags (B) open together | The green arrow on a paperdoll slot and on the bag item that beats it, plus a gold corner on a slot with an upgrade to chase. |
+| 6 | `quest-reward-marks` | A quest's reward choices | The green arrow on the reward that is an upgrade and "Best in slot" under the pick; or, on a quest where nothing helps, "Sells for most". A group loot roll with its line is a good second shot (`roll-line.png`). |
+| 7 | `player-tooltip` | Hovering another player | The unit tooltip with "Forever Score 1240" in the tier's colour. A second shot with Shift held shows the five parts (`player-tooltip-shift.png`); Claude uses whichever reads better. |
+| 8 | `chat-badge-guild` | Chat frame | Make the chat window wider and taller first. Several guild, Trade or whisper lines with "FS 1240 ·" before the senders, not one line on its own. |
+| 9 | `guild-tab` | The guild window's Forever Sixty button | Online only unticked, sorted by Score, the count line ("97 members · 3 online"), and several rows with scores and specs. |
+| 10 | `group-panel` | Social (O) > Raid, the Forever Sixty button | In a party or raid with addon users, so member rows (spec, item level, gap, score, enchants) show, ideally after a ready check that names what someone lacks. Solo shows only "Join a group to see its specs, gear and buffs.", so never shoot it solo. |
+| 11 | `build-dialog-builds` | `/fs`, the Builds tab | The "Following" line, the next talent, a build from the site in the list or a pasted code with its preview, and the Copy my character tab label. |
+| 12 | `settings-page` | Settings > AddOns > Forever Sixty | The commands at the top and as many of the twelve switches as fit, in one shot with no stitching. If the page scrolls, take the top view and a second shot scrolled to the end (`settings-page-2.png`); Claude picks the one shot that reads best, never joins the two. |
 
 ## After the shots
 

@@ -153,7 +153,13 @@ Self-host every face (the licences permit it) so no third-party request happens 
 
 ## Logo
 
-The mark is the LX seal (`design/logo`, built by `build.py` from the real Cinzel outlines): the unit-frame level badge with sixty as the Roman numeral, a dark disc, a gold-gradient ring with a dotted inner track, and LX in Cinzel 800 gold. Header: seal at 34px beside the flat wordmark (Cinzel 700, 0.10em tracking, `--text-strong`); footer 22px; the favicon and the addon icon are the seal alone. Mono versions ink the whole seal in one colour for light or dark grounds. Never recolour, outline, stretch or add the gradient back to the wordmark.
+The mark is the owner's LX seal, the unit-frame level badge with sixty as the Roman numeral, in two drawings of one mark chosen by size:
+
+- **Painted seal v4** at 64px and up (`design/assets/logo/lx-seal-v4*.png`, cut by `tools/art/cut_seal.py`): the footer, the medallion, link previews, the addon icon, banners and store art.
+- **Flat seal** at 44px and under (`design/assets/brand/seal-flat`, `tools/art/flat_seal.py`): the nav, favicons, tray icons, the minimap button, role icons.
+- **The tile**, the painted seal on the owner's painted blue ground (`web/scripts/brand-art.mjs`), is the square identity image: the app icon, the store icons, the Discord server icon and the bot avatar.
+
+The wordmark is "Forever Sixty" in Marcellus, sentence case. Every identity image is generated (`web/scripts/build-app-icon.mjs`, `design/community/discord/build-assets.mjs`, `design/listing/build-store.mjs`), never placed by hand. The Cinzel seal on a dark disc in `design/logo/*.svg` is retired and read only by older mock boards.
 
 ## Icons
 

@@ -1,127 +1,97 @@
-<h2>Play your class better, in game</h2>
-<p>Forever Sixty puts the next thing that makes your character better where you would act on it: on the talent window, the item tooltip, the character panel, the raid frame. There is no window to open and nothing to configure. A new character follows the default build for its spec from the first level; every surface with nothing to say stays out of the way.</p>
-<p>It is the in-game half of <strong><a href="https://foreversixty.gg">foreversixty.gg</a></strong>, the planner, simulator and log site for World of Warcraft: Forever. The numbers in the game are the site's numbers: the same simulator, the same stat weights, the same Forever Score.</p>
-<h3>What's new in 2.0.17</h3>
-<ul>
-<li><strong>The build preview shows the whole build.</strong> Every gear slot the code plans is listed, at the build's own level, each with where it comes from in full (boss, place, drop chance, or the profession that crafts it). The list scrolls when it is long.</li>
-<li><strong>The line beside the minimap says the next point.</strong> When your plan is finished for now it reads "Build complete · next point at level 25", and the talent strip and the chat line after you paste a build say the same, so a finished plan no longer looks like a dead end.</li>
-<li><strong>The stray words are gone.</strong> "0 off plan" reads "none off plan", the Options page lists four commands and "/fs help" for the rest, the testers' commands moved under "/fs help all", and the copy tab says how long ago the site saved your character instead of a clock time.</li>
-</ul>
-<h3>Install in two minutes</h3>
-<ol>
-<li>Install <strong>Forever Sixty</strong> and <strong>Forever Sixty Data</strong> (the nightly ratings pack; a required dependency, so the CurseForge and Wago apps install it with the addon). Installing by hand, put both folders in <code>Interface\AddOns</code>; the <code>ForeverSixtyInbox</code> folder in the same download is for the desktop companion and does nothing on its own.</li>
-<li>Log in. There is nothing to set up: a character with no saved build follows the default leveling build for its spec, and the raid build from 60. At level 1 to 9 with no spec yet, the chip offers a path to pick.</li>
-<li>When you want a build of your own, make it in the <strong><a href="https://foreversixty.gg/planner">planner</a></strong>, press "Copy for the game", type <code>/fs</code> in game and paste.</li>
-</ol>
-<h3>The chip</h3>
-<p><img src="https://foreversixty.gg/addon/chip-tooltip-legend.jpg" alt="The chip beside the minimap, with its hover legend"></p>
-<p>One small icon and line beside the minimap that names your next step: a talent point to spend, an upgrade waiting in your bags, loot in the dungeon you just entered, what a ready check found missing, or last raid night's biggest loss. When there is nothing to say it says nothing.</p>
-<ul>
-<li><strong>Click it</strong> to act: equip the bag item, open the talent window, open the group panel.</li>
-<li><strong>Hover it</strong> for the legend of the marks the addon draws on your bags and paper doll.</li>
-<li><strong>Right-click it</strong> to hide it until your next level; <code>/fs chip</code> brings it back or hides it for good.</li>
-<li>It fades to 25% in combat (or hides, if you prefer, in Settings) and hides with the rest of the UI. Drag it where you like; Reset positions in Settings puts it back.</li>
-</ul>
-<h3>Talent marks</h3>
-<p><img src="https://foreversixty.gg/addon/talent-marks-trees.jpg" alt="The talent window with the build's talents numbered and the next one ringed"></p>
-<p>Open the talent window and your build is drawn on it: every talent it takes carries its order number, the next one to take is ringed in gold, and a strip along the bottom counts the points your level allows ("12 of 15 points · 3 off plan").</p>
-<ul>
-<li><strong>Hover a numbered talent</strong> for its place in the plan and the level you take it.</li>
-<li><strong>Hover "off plan"</strong> for the talents you spent outside the build and the next point to take.</li>
-<li>The marks sit on frames of the addon's own, so the client's talent buttons work exactly as before.</li>
-</ul>
-<h3>Item tooltips</h3>
-<p><img src="https://foreversixty.gg/addon/item-tooltip-ranged.jpg" alt="An item tooltip with the Forever Sixty section: upgrade, next upgrade, source and alternatives"></p>
-<p>Hover any item, in your bags, at a vendor, in the auction house, on a corpse or linked in chat, and its tooltip gains a Forever Sixty section:</p>
-<ul>
-<li><strong>"Upgrade +4.2 DPS over Cracked Blacksmith Hammer"</strong>, by the same stat weights the site's simulator uses for your spec. Healers read HPS.</li>
-<li><strong>The next upgrade for that slot</strong> and the level it lasts until, then where it drops, with the boss and its chance.</li>
-<li><strong>"Also good:"</strong> two runners-up, a thrown weapon tagged "(thrown)", ammunition users "(needs bullets)", and a pair verdict for two one-handers against a two-hander.</li>
-<li>An item the client has not cached yet shows "stats pending" and redraws the moment it arrives.</li>
-</ul>
-<h3>Paper doll, bags, quest rewards and rolls</h3>
+<h3>The green arrow and one line on every item</h3>
 <p><img src="https://foreversixty.gg/addon/bag-arrow.jpg" alt="A green arrow on the character slot and the bag item that beats it"></p>
-<p>Open your character panel and bags and the upgrades are marked where they are:</p>
+<p>One line under any item says what it means for you, such as "+2.2 DPS", "Best in slot" or "Sidegrade". A green arrow marks the bag item, quest reward or loot roll that beats what you wear. The talent window rings your next point, and one panel shows your next upgrades, your rotation at your level and tonight's raid.</p>
+<p>A new character follows the default leveling build for its spec, and the raid build from 60, so there is nothing to set up. The numbers are the ones on <strong><a href="https://foreversixty.gg">foreversixty.gg</a></strong>, the planner, simulator and log site for World of Warcraft: Forever: the same stat weights, best in slot lists and Forever Score. Fan-made, not affiliated with Blizzard.</p>
+<h3>Install</h3>
+<ol>
+<li>Install <strong>Forever Sixty</strong>.</li>
+<li>The CurseForge and Wago apps install <strong>Forever Sixty Data</strong>, the nightly ratings pack, with it.</li>
+<li>By hand, put the <code>ForeverSixty</code> and <code>ForeverSixtyData</code> folders in <code>Interface\AddOns</code>. The <code>ForeverSixtyInbox</code> folder in the same download is for the companion app.</li>
+<li>Log in. A short tour shows what goes where.</li>
+</ol>
+<p>For a build of your own, make it in the <strong><a href="https://foreversixty.gg/planner">planner</a></strong>, press Copy for the game, then type <code>/fs</code> in game and paste it.</p>
+<h3>What's new in 2.0.38</h3>
 <ul>
-<li><strong>A green arrow</strong> on a character slot and on the bag item that beats it, or fills an empty slot. Click the chip to equip it.</li>
-<li><strong>A gold corner</strong> on a slot whose next upgrade is worth chasing; hover the slot and it names the pick for your spec, faction and level.</li>
-<li><strong>"Best for Arms"</strong> in gold on the quest reward that is an upgrade, or "Vendor" on each when none is.</li>
-<li><strong>Beside the roll frame</strong>, the same verdict the item's tooltip gives, so you decide Need before the timer runs out.</li>
+<li>A short tour on your first login: what the site puts in your game, what your fights send back, your guild's raids, and setting your character up. Skip it any time; <code>/fs help</code> opens it again. "Tooltips only" on its first page turns off everything but the tooltip lines.</li>
+<li>A new switch, "Show my Forever Score to others". Off, other players see no score for you; you still see yours.</li>
+<li>The talent window numbers only the points you still have to take, and its strip reads like "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan".</li>
+<li>A talent's tooltip names its points in your build in one line, for example "Your build: point 12".</li>
+<li>The guild tab's count line is just members and online, for example "97 members · 3 online". Alone, the group panel says "Join a group to see its specs, gear and buffs."</li>
+<li>The minimap button wears the flat seal, sharp at its small size.</li>
 </ul>
-<p>Another bag addon's bags are left alone, and <code>/fs diag</code> says so.</p>
-<h3>The "Forever Sixty" tab on the character panel</h3>
-<p><img src="https://foreversixty.gg/addon/character-panel-tab.jpg" alt="The character-panel flyout: next targets, rotation and build"></p>
-<p>A "Forever Sixty" button on the character panel opens a flyout with three things:</p>
+<h3>The Forever Sixty line</h3>
+<p>One line beside the minimap with your next step. It always has words: your next talent ("Next talent at 25"), an upgrade in your bags to equip, with its gain, loot for you in the dungeon you are in, what a ready check found missing, or "Forever Sixty" when there is nothing to do. On raid day, from the evening before, it leads with your raid: tonight, the start time and the instance.</p>
 <ul>
-<li><strong>Your next targets</strong>: up to five pieces, each with its source, drop chance and the worn item it replaces.</li>
-<li><strong>Your rotation at your level</strong>, with the rank to use, and "Rank N at level M" for what you have not learned yet.</li>
-<li><strong>Your build</strong>: the tree split, "12 of 15 points on plan", the off-plan count, a way to use a different build, and "Copy my character".</li>
+<li><strong>Click it</strong> to open your panel.</li>
+<li><strong>Right-click it</strong> to hide it until your next level; <code>/fs chip</code> brings it back.</li>
+<li><strong>Shift-drag it</strong> to move it; Reset positions in Settings puts it back.</li>
+<li>It hides in combat, or stays at 25% if you turn "Hide the Forever Sixty line in combat" off.</li>
 </ul>
-<p>At 60, with the desktop companion, it adds <strong>your simulation</strong> (your DPS, your top stat weights in DPS per point, "Sim me again") and <strong>your last raid</strong>: each boss's parse percentile, biggest loss, deaths, consumables missed and rotation adherence.</p>
-<h3>The player tooltip and the Forever Score</h3>
-<p><img src="https://foreversixty.gg/addon/player-tooltip-score.jpg" alt="A player tooltip with the Forever Score and its five parts"></p>
-<p>Hover any player and their tooltip carries their Forever Score and tier in the tier's colour, with the date of the record: "Forever Score 1240 · Rare · as of 13 Oct".</p>
+<h3>Your panel</h3>
+<p>Click the line, the Forever Sixty button on your character pane, or your keybind (Key Bindings, "Toggle Forever Sixty") and one panel answers what to do next on this character. Your class crest, level and Forever Score sit at the top; under them, only what has something to say:</p>
 <ul>
-<li><strong>Hold Shift</strong> for the five parts behind it: gear, experience, parses, attendance and preparation, and their total.</li>
-<li>A player with no public logs reads "no logs yet", never a zero.</li>
-<li>Guildmates who run the addon also show their level, spec and gear gap live.</li>
-<li><strong>Target them and type <code>/fs link</code></strong> to copy the address of their page on the site.</li>
+<li><strong>Tonight</strong>: the raid, its start, your role and your job. The day after, <strong>Last raid</strong>: each boss's percentile and your biggest loss.</li>
+<li><strong>Upgrades</strong>: up to three, each with where it drops and the level it needs when that is above yours, and an Equip button for one already in your bags.</li>
+<li><strong>Talents</strong>: points on plan, your next talent, and Change and Talents buttons. Under level 10 with no build, Pick your path loads a spec's leveling build.</li>
+<li><strong>Rotation at your level</strong>: when to press each button, in plain words, never a spell you do not have yet. At 60 it folds away until you open it.</li>
 </ul>
-<p>Scores come from the Forever Sixty Data pack, rated every night from public logs on foreversixty.gg. A parse is not a performance; the score says so.</p>
-<h3>Score badges in chat</h3>
+<p>Opened from the character pane it docks to the pane. Drag its top to move it.</p>
+<h3>Item tooltips</h3>
+<p>One line under the item says what it means for you: the green arrow and the gain ("+2.2 DPS"), "Best in slot", "Best in slot until level 30", "Sidegrade", or the level you can wear it, such as "Mail armor at level 40". Rings and trinkets name the one they replace. Healers read HPS.</p>
+<p>At most one more line follows, the next upgrade for the slot or a better pick and where it drops. <strong>Hold Shift</strong> for the rest: the stat breakdown, "Also good:" alternatives, and where the weights came from (the spec's, or your own sim).</p>
+<h3>The talent window</h3>
+<p>Open your talents and your build is drawn on them: a number on every point you still have to take, the next one ringed in gold, and a strip under the trees, "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan". A talent's own tooltip names its points in your build. The client's talent buttons work exactly as before.</p>
+<h3>Bags, paperdoll, quest rewards and rolls</h3>
+<ul>
+<li><strong>A green arrow</strong> on a character slot and on the bag item that beats it or fills it.</li>
+<li><strong>A gold corner</strong> on a slot with an upgrade to chase; hover the slot and it names the pick.</li>
+<li><strong>Quest rewards</strong>: the green arrow on the reward that is an upgrade, "Best in slot" under your pick, and "Sells for most" under the one to vendor when nothing helps.</li>
+<li><strong>Group loot rolls</strong>: the green arrow on an upgrade and one short line, "+5.8 DPS · Best in slot", "Sidegrade" or "Not for you".</li>
+</ul>
+<p>Another bag addon's bags are left alone, and <code>/fs diag</code> says so; the marks on your character pane still show.</p>
+<h3>The Forever Score</h3>
 <p><img src="https://foreversixty.gg/addon/chat-badge-guild.jpg" alt="A guild chat line with the sender's FS badge in front of it"></p>
-<p>In LFG, Trade, guild chat and whispers, a sender with a score gets "FS 1240 ·" before their line, in the tier colour, muted once the record is more than three days old. One switch in Settings turns it off.</p>
+<p>Hover a player and their tooltip carries one line, "Forever Score 1240" in the tier's colour, dated once the record is over a week old. Hold Shift for the five parts: Gear, Experience, Parses, Attendance and Preparation. In guild chat, Trade, LookingForGroup and whispers, a sender with a score gets "FS 1240 ·" before their line, muted once the record is three days old. A player with no rated fights shows nothing.</p>
+<p>Scores come from the Forever Sixty Data pack, rated every night from public logs on foreversixty.gg. <code>/fs link</code> on your target copies their page on the site.</p>
 <h3>The guild tab</h3>
 <p><img src="https://foreversixty.gg/addon/guild-tab.jpg" alt="The guild frame's Forever Sixty roster"></p>
-<p>A "Forever Sixty" button on the guild frame lists your roster with level, spec, gear, Forever Score, attendance and gear gap.</p>
-<ul>
-<li><strong>Click a column</strong> to sort by it; "Online only" filters the list; the "as of" date tells you how fresh the records are.</li>
-<li>Members who run the addon show their live snapshot; everyone else shows the nightly record.</li>
-<li><strong>Officers</strong> see the approvals waiting on the site and can "Push the raid build to guild" behind a confirmation. A pushed build is announced once and listed in <code>/fs</code> with the officer's name; nobody is made to use it.</li>
-</ul>
-<p>Your own row goes live for your guild while "Share my build with my guild" is on in Settings.</p>
+<p>A Forever Sixty button inside the guild window, beside Invite Member, opens your roster with Level, Spec, Gear, Score, Attendance and Gap. Click a column to sort; Online only filters. Guildmates who run the addon show their live build and gear gap; everyone else, the nightly record.</p>
+<p><strong>Officers</strong> see the approvals waiting on the site and can Push the raid build to guild behind a confirmation. Guildmates get it as a build they can choose; nothing changes for them until they do. Your own row goes live while "Share my build with my guild" is on.</p>
 <h3>The group panel and the ready check</h3>
-<p><img src="https://foreversixty.gg/addon/group-panel-solo.jpg" alt="The raid tab's Forever Sixty panel, one member"></p>
-<p>On the Social window's Raid tab, or with <code>/fs group</code>, a Forever Sixty panel shows each member's spec, item level, gear gap, score and buffs before the first pull. Members without the addon are read from inspect, one every two seconds, never in combat.</p>
+<p>On the Raid tab of the Social window (O), or with <code>/fs group</code>, one row per member: Spec, Level, iLvl, Gap, Score, Enchants, and whether they run the addon, with their weakest slot under it. Members without the addon are read from inspect, paused in combat.</p>
 <ul>
-<li><strong><code>/fs ready</code></strong> runs the check on demand: who lacks flask, food or a weapon imbue, and inside Molten Core, Onyxia's Lair and Blackwing Lair, which class buffs the bosses need that nobody brings.</li>
-<li><strong><code>/fs floor N</code></strong> tags the members scored under N.</li>
-<li>It informs the leader. It never kicks, whispers or announces for you.</li>
+<li>After a ready check it lists who lacks flask, food or a weapon buff, and in Molten Core, Onyxia's Lair and Blackwing Lair which buffs, debuffs and resistances the bosses want and who brings them.</li>
+<li><strong><code>/fs ready</code></strong> runs the check now, for your eyes only.</li>
+<li><strong><code>/fs floor 1200</code></strong> tags the members scored under 1200.</li>
 </ul>
 <h3>Loot council</h3>
-<p>When an epic drops and you are the master looter, the addon asks the group what the item is worth to each member who can wear it, by the simulator, and lists the answers with a 10 second countdown in the title. Nothing is asked about an item no member's class can wear; "Ask the group about rare drops too" in Settings adds rares. For yourself, <code>/fs loot &lt;item link&gt;</code> answers "+6.3 DPS over &lt;worn item&gt;, on your list".</p>
-<h3>Paste a build from the site</h3>
-<p><img src="https://foreversixty.gg/addon/build-dialog-paste.jpg" alt="The build dialog's paste tab"></p>
-<p><code>/fs</code> opens the one dialog of the addon's own.</p>
-<ol>
-<li>On <strong><a href="https://foreversixty.gg/planner">foreversixty.gg/planner</a></strong>, build or pick a build and press "Copy for the game".</li>
-<li>In game, type <code>/fs</code>, paste the code and press Load. The dialog reads "Following: Raid build · 51 points".</li>
-<li>From then on the chip, the talent marks and the character panel follow it.</li>
-</ol>
-<p>The dialog previews what a paste would replace and never overwrites a raid build with a leveling one. <code>/fs build raid</code>, <code>leveling</code> or <code>pvp</code> switches between the builds you have saved. Builds you save on the site, and builds an officer pushes, arrive here too.</p>
-<h3>Copy your character to the site</h3>
-<p><img src="https://foreversixty.gg/addon/build-dialog-copy.jpg" alt="The build dialog's copy tab"></p>
-<p><code>/fs copy</code>, or Ctrl+C in the dialog, copies your character: level, spec, talents, equipped gear, and your bags when that switch is on. Paste it on the site's planner or simulator under "Import from addon" and they start from exactly what you have. With the desktop companion the copy travels by itself at logout, and the tab reads "Site has your save from" and how long ago.</p>
+<p>When an epic drops and you are the master looter, the addon asks the group what it is worth to each member who can wear it and lists the answers as they come in, with a 10 second countdown. "Ask the group about rare drops too" adds rares. For yourself, <code>/fs loot</code> and a shift-clicked item gives its gain over what you wear and whether it is on your list.</p>
+<h3>Builds and your character</h3>
+<p><code>/fs</code> opens the build dialog on its Builds tab: the builds you picked on the site, and the box for a code from the planner. The preview lists the build's gear at its own level and what it replaces before you press Use this build. <code>/fs build raid</code>, <code>leveling</code> or <code>pvp</code> switches between your saved builds.</p>
+<p><code>/fs copy</code> opens Copy my character: your level, talents, gear, bags and professions in one code, selected for Ctrl+C. Paste it on the site's planner or simulator and they start from exactly what you have. With the companion app it travels by itself at logout, and the tab says "Site has your save from 1 h 35 min ago".</p>
+<p>On raid day <code>/fs job</code> prints your jobs for the raid, and a line names them when you zone in.</p>
 <h3>Settings</h3>
-<p><img src="https://foreversixty.gg/addon/settings-switches.jpg" alt="The addon's page on the game's Settings window"></p>
-<p>Everything lives on the game's own Settings page: Escape, Options, AddOns, Forever Sixty; or <code>/fs options</code>; or right-click the minimap button. Nine switches, each with one line saying what it does:</p>
+<p><code>/fs options</code> opens the addon's page on the game's Settings. The minimap button is off on a new install.</p>
 <table>
 <thead><tr><th>Switch</th><th>What it does</th></tr></thead>
 <tbody>
-<tr><td>Show the chip</td><td>The small icon and line beside the minimap with your next step.</td></tr>
-<tr><td>Hide the chip in combat</td><td>On: the chip hides when combat starts. Off: it stays, faded to 25%.</td></tr>
+<tr><td>Tooltips only</td><td>Turns off everything but the tooltip lines.</td></tr>
+<tr><td>Show the Forever Sixty line</td><td>Beside the minimap. Shift-drag moves it.</td></tr>
+<tr><td>Hide the Forever Sixty line in combat</td><td>On: the line hides when combat starts. Off: it stays, faded to 25%.</td></tr>
 <tr><td>Marks on the talent window</td><td>Numbers your build's talents in order, rings the next one and adds a progress strip.</td></tr>
-<tr><td>Show the minimap button</td><td>Left-click pastes or copies a build; right-click opens this page.</td></tr>
-<tr><td>Gear tips on item tooltips</td><td>Adds a line when an item is in your build or beats what you wear.</td></tr>
+<tr><td>Marks on your bags and character pane</td><td>A green arrow on gear that beats yours, a gold corner on a slot with an upgrade to chase.</td></tr>
+<tr><td>Show the minimap button</td><td>Left-click pastes or copies a build; right-click opens this page. Off: type /fs options or use Options &gt; AddOns.</td></tr>
+<tr><td>Gear tips on item tooltips</td><td>Hold Shift for the details. Off also hides player scores and the quest and roll marks.</td></tr>
 <tr><td>Score badges in chat</td><td>Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers.</td></tr>
-<tr><td>Ask the group about rare drops too</td><td>As the master looter you ask the group about epics. On: rares too.</td></tr>
-<tr><td>Share my build with my guild</td><td>Guildmates with Forever Sixty see your level, spec, build and gear gap.</td></tr>
-<tr><td>Save my character for the companion app</td><td>Written at logout for the companion app on your PC, so the site can read your gear.</td></tr>
+<tr><td>Show my Forever Score to others</td><td>Off: other players see no score for you. You still see yours. Applies after the companion's next upload.</td></tr>
+<tr><td>Share my build with my guild</td><td>Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see nothing.</td></tr>
+<tr><td>Save my character for the companion app</td><td>Written at logout for the companion app on your PC, so the site can read your gear and talents.</td></tr>
+<tr><td>Ask the group about rare drops too</td><td>As the master looter you ask the group about epics. On: rares too, whatever the loot threshold. Off by default.</td></tr>
 </tbody>
 </table>
-<p>Under them: Reset positions, which puts the chip, the minimap button and the build dialog back, the first four commands and "/fs help: all the commands", and a plain line for the data pack ("Player ratings: as of 14 Oct", "too old", "not installed").</p>
-<h3>The desktop companion, optional</h3>
-<p>The companion app on <strong><a href="https://foreversixty.gg/setup">foreversixty.gg/setup</a></strong> (Windows) carries what the addon leaves at logout to the site, your character, a "Sim me" request and your guild roster, and brings back what the site has for you: the builds you chose there, your newest sim with its upgrades, and your last raid. Without it everything above still works; the character panel's sim and last-raid drawers are what it adds.</p>
+<p>The page also lists the first commands, has Reset positions for the line, the minimap button and the build dialog, and says at the foot whether the addon data is current for this patch and the state of the player ratings.</p>
+<h3>The companion app, optional</h3>
+<p>The companion app from <strong><a href="https://foreversixty.gg/setup">foreversixty.gg/setup</a></strong>, for Windows and Mac, uploads your fights from the combat log for reports and the coach, carries your character to the site at logout, and brings back the builds you pick there, your newest sim and your last raid. Without it everything above still works, except Last raid and the sim in your panel.</p>
 <h3>Commands</h3>
 <table>
 <thead><tr><th>Command</th><th>What it does</th></tr></thead>
@@ -129,26 +99,26 @@
 <tr><td><code>/fs</code></td><td>paste or copy a build</td></tr>
 <tr><td><code>/fs copy</code></td><td>copy my character for the site</td></tr>
 <tr><td><code>/fs build</code></td><td>switch between saved builds</td></tr>
-<tr><td><code>/fs chip</code></td><td>show or hide the chip</td></tr>
+<tr><td><code>/fs chip</code></td><td>show or hide the Forever Sixty line</td></tr>
 <tr><td><code>/fs inspect</code></td><td>gear and talents of your target</td></tr>
 <tr><td><code>/fs link</code></td><td>copy a player's site page</td></tr>
 <tr><td><code>/fs group</code></td><td>your group's specs, gear and buffs</td></tr>
 <tr><td><code>/fs ready</code></td><td>check flasks, food and buffs now</td></tr>
+<tr><td><code>/fs job</code></td><td>your jobs for the next raid</td></tr>
 <tr><td><code>/fs loot</code></td><td>what an item is worth to you</td></tr>
 <tr><td><code>/fs floor N</code></td><td>tag members scored under N</td></tr>
 <tr><td><code>/fs options</code></td><td>open the settings page</td></tr>
 <tr><td><code>/fs diag</code></td><td>check what is wrong</td></tr>
-<tr><td><code>/fs help</code></td><td>every command</td></tr>
+<tr><td><code>/fs help</code></td><td>every command, and the tour again</td></tr>
 </tbody>
 </table>
 <h3>If something looks wrong</h3>
 <ul>
-<li><strong><code>/fs diag</code></strong> says what is wrong and why, one line per surface.</li>
-<li><strong>"Player ratings: not installed"</strong> means Forever Sixty Data is missing; install it beside the addon. <strong>"too old"</strong> means your addon manager has not updated it for a while.</li>
-<li><strong>No chip</strong>: right-click hid it until your next level; <code>/fs chip</code> brings it back.</li>
-<li><strong>No marks in your bags</strong>: another bag addon owns them, and the chip's hover legend still names the upgrade.</li>
+<li><strong><code>/fs diag</code></strong> lists what is working and what is not, one line each.</li>
+<li><strong>"Player ratings (on player tooltips): not installed"</strong> on the Settings page means Forever Sixty Data is missing; install it beside the addon. <strong>"too old"</strong> means your addon manager has not updated it lately.</li>
+<li><strong>No line by the minimap</strong>: a right-click hid it until your next level, or "Tooltips only" turned it off. <code>/fs chip</code> brings it back.</li>
+<li><strong>No marks in your bags</strong>: another bag addon owns them. The marks on your character pane still show.</li>
 <li>Anything else: <strong><a href="https://github.com/jhunthrop/foreversixty/issues">open an issue</a></strong> with the <code>/fs diag</code> output, or ask on <strong><a href="https://discord.gg/NZhBtPwvHt">Discord</a></strong>.</li>
 </ul>
-<h3>What it never does</h3>
-<p>It never connects to the internet, never reads your account, never sends a message or a kick on your behalf, and does nothing in combat. It reads what the game client already shows you, and the data pack your addon manager updates. Every surface has a switch on the game's Settings page.</p>
+<p>No network (only the companion app talks to the site), no messages or kicks sent for you, and nothing opens in combat.</p>
 <p><strong><a href="https://foreversixty.gg">foreversixty.gg</a></strong> · <a href="https://foreversixty.gg/setup">Get set up</a> · <a href="https://discord.gg/NZhBtPwvHt">Discord</a> · <a href="https://github.com/jhunthrop/foreversixty">Source and changelog</a></p>

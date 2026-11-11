@@ -1,8 +1,10 @@
 // design/listing/gen_gallery.mjs
 // Renders the store gallery plates for the Forever Sixty listing: each client capture on a
-// 16:9 plate in the site's own dark and gold, with the surface's name and one line under it.
+// 16:9 plate in the site's page head (the band art over the ground, Marcellus and Open Sans, the
+// painted seal), with the surface's name and one line under it.
 // Run from anywhere:
-//   node design/listing/gen_gallery.mjs
+//   node design/listing/gen_gallery.mjs                    # every plate
+//   node design/listing/gen_gallery.mjs --only bag-arrow   # one plate
 // Output: design/listing/gallery/NN-<name>.png at 3200x1800 (a 1600x900 layout at device scale 2,
 // so the caption text is rasterised at full resolution). Playwright comes from web/node_modules.
 //
@@ -17,6 +19,7 @@ import { existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { INK } from './brand-ink.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(here, '..', '..');
@@ -49,18 +52,18 @@ const MAX_PLATE_BYTES = 5 * 1024 * 1024;
 
 /** Capture file names in gallery order; titles and captions come from CAPTIONS_FILE. */
 const PLATES = [
-  'chip-tooltip-legend',
-  'talent-marks-trees',
-  'item-tooltip-ranged',
+  'forever-sixty-line',
+  'addon-panel',
+  'item-tooltip-verdict',
+  'talent-window-marks',
   'bag-arrow',
-  'character-panel-tab',
-  'player-tooltip-score',
+  'quest-reward-marks',
+  'player-tooltip',
   'chat-badge-guild',
   'guild-tab',
-  'group-panel-solo',
-  'build-dialog-paste',
-  'build-dialog-copy',
-  'settings-switches',
+  'group-panel',
+  'build-dialog-builds',
+  'settings-page',
 ];
 
 /** Reads "N. **Title.** Caption." lines under "## Gallery captions". */
@@ -88,35 +91,43 @@ const dataUrl = async (file, type) => `data:${type};base64,${(await readFile(fil
 const font = (file) => dataUrl(path.join(FONTS, file), 'font/woff2');
 const escapeHtml = (text) => text.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
+/** The site's page head behind the plate: the band art over the ground (web/public/art). */
+const ART = path.join(repo, 'web', 'public', 'art');
+/** The painted seal in the foot, at 48 CSS px (96 device px): the painted seal from 64 px up. */
+const SEAL = path.join(repo, 'design', 'assets', 'logo', 'lx-seal-v4-128.png');
+
 async function plateHtml(capture, { title, text }) {
-  const [cinzel, barlow400, barlow600, shot] = await Promise.all([
-    font('cinzel-700-subset.woff2'),
-    font('barlow-400-subset.woff2'),
-    font('barlow-600-subset.woff2'),
+  const [marcellus, openSans, ground, band, seal, shot] = await Promise.all([
+    font('marcellus-400-subset.woff2'),
+    font('open-sans-400-subset.woff2'),
+    dataUrl(path.join(ART, 'ground.webp'), 'image/webp'),
+    dataUrl(path.join(ART, 'band-2400.webp'), 'image/webp'),
+    dataUrl(SEAL, 'image/png'),
     dataUrl(capture.file, capture.type),
   ]);
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <style>
-@font-face{font-family:Cinzel;src:url(${cinzel}) format('woff2');font-weight:700}
-@font-face{font-family:Barlow;src:url(${barlow400}) format('woff2');font-weight:400}
-@font-face{font-family:Barlow;src:url(${barlow600}) format('woff2');font-weight:600}
+@font-face{font-family:Marcellus;src:url(${marcellus}) format('woff2')}
+@font-face{font-family:'Open Sans';src:url(${openSans}) format('woff2')}
 html,body{margin:0;width:${WIDTH}px;height:${HEIGHT}px;overflow:hidden}
-body{background:#07090d;color:#e9e4d8;font-family:Barlow,sans-serif;display:grid;grid-template-rows:1fr auto;box-sizing:border-box;padding:64px 80px 56px;
-  -webkit-font-smoothing:antialiased;text-rendering:geometricPrecision;
-  background-image:radial-gradient(ellipse 70% 60% at 50% 42%,rgba(229,185,85,.07),transparent 70%)}
+body{position:relative;color:${INK.text};font-family:'Open Sans',sans-serif;display:grid;grid-template-rows:1fr auto;box-sizing:border-box;padding:64px 80px 52px;
+  -webkit-font-smoothing:antialiased;background:url(${ground}) 0 0/1600px auto repeat,${INK.bg}}
+body::before{content:'';position:absolute;inset:0 0 auto;height:62%;background:url(${band}) center top/cover;
+  -webkit-mask-image:linear-gradient(#000 50%,transparent);mask-image:linear-gradient(#000 50%,transparent)}
 .stage{position:relative;height:${STAGE_HEIGHT}px}
-.frame{position:absolute;background:#07090d;border:1px solid #262e40;border-radius:6px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.65)}
+.frame{position:absolute;background:${INK.bg};border:1px solid ${INK.line};border-radius:6px;overflow:hidden}
 .shot{display:block}
-.foot{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;margin-top:40px;padding-top:28px;border-top:1px solid #262e40}
-.mark{display:flex;align-items:center;gap:12px;font-family:Cinzel,serif;font-weight:700;font-size:22px;letter-spacing:.1em;text-transform:uppercase;color:#f2eee4;white-space:nowrap}
+.foot{position:relative;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;margin-top:40px;padding-top:26px;border-top:1px solid ${INK.line}}
+.mark{display:flex;align-items:center;gap:14px;font-family:Marcellus,serif;font-size:28px;color:${INK.cream};white-space:nowrap}
+.mark img{width:48px;height:48px}
 .text{min-width:0}
-h1{margin:0 0 6px;font-family:Barlow,sans-serif;font-weight:600;font-size:30px;line-height:1.1;color:#e5b955}
-p{margin:0;font-size:20px;line-height:1.35;color:#b9b3a4;max-width:1100px}
+h1{margin:0 0 6px;font-family:Marcellus,serif;font-weight:400;font-size:32px;line-height:1.1;color:${INK.cream}}
+p{margin:0;font-size:20px;line-height:1.4;color:${INK.mutedGround};max-width:1100px}
 </style></head><body>
 <div class="stage"><div class="frame"><img class="shot" src="${shot}" alt=""></div></div>
 <div class="foot">
-  <div class="mark"><svg width="34" height="34" viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe7a1"/><stop offset=".45" stop-color="#e5b955"/><stop offset="1" stop-color="#a8762a"/></linearGradient></defs><circle cx="128" cy="128" r="112.64" fill="#0d111a"/><circle cx="128" cy="128" r="112.64" fill="none" stroke="url(#g)" stroke-width="12.8"/><text x="128" y="152" text-anchor="middle" font-family="Cinzel,serif" font-weight="700" font-size="72" fill="url(#g)">LX</text></svg>Forever Sixty</div>
+  <div class="mark"><img src="${seal}" alt="">Forever Sixty</div>
   <div class="text"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(text)}</p></div>
 </div>
 </body></html>`;
@@ -175,12 +186,17 @@ function report(file, capture, placed, bytes) {
   process.stdout.write(`${line.join(' | ')}\n`);
 }
 
+/** `--only <name>` renders one plate (a preview while the other captures are still to shoot). */
+const only = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1] : null;
+if (only && !PLATES.includes(only)) throw new Error(`--only takes one of ${PLATES.join(', ')}`);
+
 async function main() {
   const captions = await readCaptions();
   await mkdir(OUT, { recursive: true });
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: DEVICE_SCALE });
   for (const [index, name] of PLATES.entries()) {
+    if (only && name !== only) continue;
     const capture = findCapture(name);
     await page.setContent(await plateHtml(capture, captions[index]), { waitUntil: 'load' });
     const placed = await page.evaluate(placeCapture, { stageWidth: STAGE_WIDTH, stageHeight: STAGE_HEIGHT, deviceScale: DEVICE_SCALE });

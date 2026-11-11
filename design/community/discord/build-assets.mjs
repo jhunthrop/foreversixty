@@ -1,78 +1,103 @@
 // design/community/discord/build-assets.mjs
-// Builds the Discord images from the brand assets:
-//   assets/icon.png       server icon, the Forever Sixty mark at 512 px
-//   assets/premium.png    Premium role icon, the mark at 64 px
-//   assets/crest-<class>.png  class role icons and onboarding emoji, the HD crests at 128 px
-//   assets/<faction>.png  onboarding emoji, the faction logos at 128 px
-//   assets/banner.png     server banner, 960x540: the stacked lockup, the line, the nine crests
-// Needs dwebp and sips (macOS) and @playwright/test resolvable from web/ (or NODE_PATH).
-import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+// Builds every Discord image from the brand sources, so none is placed by hand:
+//   assets/icon.png       server icon: the painted tile (the app icon) at 512 px
+//   assets/avatar.png     the bot's avatar (Developer Portal app icon): the same tile at 1024 px
+//   assets/premium.png    Premium role icon: the flat seal's tiny bold drawing at 64 px (Discord
+//                         shows it at about 20 px beside a name, the size that drawing is for)
+//   assets/crest-<class>.png  class role icons and onboarding emoji: the HD crests at 128 px
+//   assets/<faction>.png  onboarding emoji: the faction logos at 128 px
+//   assets/banner.jpg     server banner, 1920x1080: the tavern art and the painted seal. Discord
+//                         draws the server's name over the banner, so the banner carries no name
+//   assets/splash.jpg     invite background, 1920x1080: the same with "Forever Sixty" in Marcellus
+//                         (the layout is design/assets/art/discord-banner.html)
+// Run from anywhere: node design/community/discord/build-assets.mjs
+// sharp and @playwright/test resolve from web/node_modules. Deterministic for the PNGs; the banner
+// is a browser render.
+import { mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { PNG, renderFlatSeal, renderTile } from '../../../web/scripts/brand-art.mjs';
 
 const here = (p) => fileURLToPath(new URL(p, import.meta.url));
 const repo = (p) => here(`../../../${p}`);
+const require = createRequire(repo('web/package.json'));
+const sharp = require('sharp');
 const classes = JSON.parse(readFileSync(repo('web/src/data/classes.json'), 'utf8'));
+
 const FACTIONS = ['alliance', 'horde'];
-const BANNER = { width: 960, height: 540 };
-const COLORS = { bg: '#07090d', gold: '#e5b955', muted: '#9a9484' };
+/** Discord's sizes: the server icon at 512 (its recommended upload), the app icon at 1024, role
+ *  icons at 64 (its minimum), emoji at 128 (shown at 48 at most). */
+const SIZE = { icon: 512, avatar: 1024, roleIcon: 64, emoji: 128 };
+/** The banner layout is 960x540 (Discord's minimum, 16:9) drawn at 2x. */
+const BANNER = { width: 960, height: 540, scale: 2, quality: 86 };
+/** Discord's upload ceilings: 10 MB for the banner and splash, 256 KB for a role icon or emoji. */
+const MAX_BYTES = { banner: 10 * 1024 * 1024, roleIcon: 256 * 1024, emoji: 256 * 1024 };
+const ASSETS = here('assets');
 
-function sipsResize(src, size, out) {
-  execFileSync('sips', ['-Z', String(size), src, '--out', out], { stdio: 'ignore' });
+const out = (name) => `${ASSETS}/${name}`;
+
+function checkSize(name, limit) {
+  const bytes = statSync(out(name)).size;
+  if (bytes > limit) throw new Error(`${name} is ${bytes} bytes, over Discord's ${limit}`);
+  console.log(`${name.padEnd(20)} ${String(Math.round(bytes / 1024)).padStart(5)} KB  ok`);
 }
 
-function buildRasterIcons() {
-  sipsResize(repo('design/logo/export/foreversixty-icon-1024.png'), 512, here('assets/icon.png'));
-  sipsResize(repo('design/logo/export/foreversixty-icon-1024.png'), 64, here('assets/premium.png'));
-  for (const { slug } of classes) {
-    execFileSync('dwebp', [repo(`web/public/icons/hd/crests/${slug}.webp`), '-o', here(`assets/crest-${slug}.png`)], {
-      stdio: 'ignore',
-    });
-  }
-  for (const faction of FACTIONS) {
-    execFileSync('dwebp', [repo(`web/public/icons/hd/faction/${faction}-logo-512.webp`), '-o', here(`assets/${faction}.png`)], {
-      stdio: 'ignore',
-    });
-    sipsResize(here(`assets/${faction}.png`), 128, here(`assets/${faction}.png`));
-  }
+async function buildIdentity() {
+  await sharp(await renderTile(SIZE.icon)).png(PNG).toFile(out('icon.png'));
+  await sharp(await renderTile(SIZE.avatar)).png(PNG).toFile(out('avatar.png'));
+  await sharp(await renderFlatSeal(SIZE.roleIcon, 'tiny')).png(PNG).toFile(out('premium.png'));
+  checkSize('icon.png', MAX_BYTES.banner);
+  checkSize('avatar.png', MAX_BYTES.banner);
+  checkSize('premium.png', MAX_BYTES.roleIcon);
 }
 
-function bannerHtml() {
-  const lockup = readFileSync(repo('design/logo/foreversixty-lockup-stacked.svg'), 'utf8');
-  const font = readFileSync(repo('apps/shared/fonts/BarlowCondensed-ExtraBold.ttf')).toString('base64');
-  const crests = classes
-    .map(({ slug }) => {
-      const png = readFileSync(here(`assets/crest-${slug}.png`)).toString('base64');
-      return `<img src="data:image/png;base64,${png}" alt="">`;
-    })
-    .join('');
-  return `<!doctype html><html><head><style>
-@font-face{font-family:BC;src:url(data:font/ttf;base64,${font})}
-html,body{margin:0;width:${BANNER.width}px;height:${BANNER.height}px;background:${COLORS.bg};overflow:hidden}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
-background:radial-gradient(ellipse 60% 55% at 50% 42%,rgba(229,185,85,.16),transparent 70%),
-radial-gradient(ellipse 120% 60% at 50% 120%,rgba(38,64,92,.55),transparent 70%),${COLORS.bg}}
-.lockup svg{width:420px;height:auto;display:block}
-.line{font:800 30px/1 BC,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:${COLORS.gold}}
-.crests{display:flex;gap:14px;margin-top:6px}.crests img{width:52px;height:52px}
-</style></head><body><div class="lockup">${lockup}</div><div class="line">Play your class better</div>
-<div class="crests">${crests}</div></body></html>`;
+async function webpToPng(src, name) {
+  await sharp(repo(src)).resize(SIZE.emoji, SIZE.emoji, { kernel: 'lanczos3' }).png(PNG).toFile(out(name));
+  checkSize(name, MAX_BYTES.emoji);
 }
 
-async function buildBanner() {
-  const require = createRequire(repo('web/package.json'));
+async function buildEmoji() {
+  for (const { slug } of classes) await webpToPng(`web/public/icons/hd/crests/${slug}.webp`, `crest-${slug}.png`);
+  for (const faction of FACTIONS) await webpToPng(`web/public/icons/hd/faction/${faction}-logo-512.webp`, `${faction}.png`);
+}
+
+const dataUri = (path, type) => `data:${type};base64,${readFileSync(path).toString('base64')}`;
+
+/** Over the layout: a lighter veil, so the room reads at Discord's 240 px sidebar size. The banner
+ *  drops the name (Discord prints it over the banner) and shows the seal larger. */
+const VEIL = '.v{background:radial-gradient(ellipse at center,rgba(23,14,9,.1),rgba(23,14,9,.55))}';
+const BANNER_ONLY = 'h1{display:none}img{width:200px;height:200px}';
+
+/** The banner layout with its three files inlined, so the render needs no server. */
+function bannerHtml(extraCss) {
+  return readFileSync(repo('design/assets/art/discord-banner.html'), 'utf8')
+    .replace('url(marcellus.woff2)', `url(${dataUri(repo('apps/shared/fonts/Marcellus-Regular.ttf'), 'font/ttf')})`)
+    .replace('url(tavern.jpeg)', `url(${dataUri(repo('design/assets/art/discord-banner-tavern.jpeg'), 'image/jpeg')})`)
+    .replace('src="seal.png"', `src="${dataUri(repo('design/assets/logo/lx-seal-v4-512.png'), 'image/png')}"`)
+    .replace('</style>', `${extraCss}</style>`);
+}
+
+async function buildBanners() {
   const { chromium } = require('@playwright/test');
   const browser = await chromium.launch();
   try {
-    const page = await browser.newPage({ viewport: BANNER });
-    await page.setContent(bannerHtml(), { waitUntil: 'load' });
-    await page.screenshot({ path: here('assets/banner.png') });
+    const page = await browser.newPage({
+      viewport: { width: BANNER.width, height: BANNER.height },
+      deviceScaleFactor: BANNER.scale,
+    });
+    for (const [name, css] of [['banner.jpg', VEIL + BANNER_ONLY], ['splash.jpg', VEIL]]) {
+      await page.setContent(bannerHtml(css), { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      const shot = await page.locator('.b').screenshot({ type: 'png' });
+      writeFileSync(out(name), await sharp(shot).jpeg({ quality: BANNER.quality, mozjpeg: true }).toBuffer());
+      checkSize(name, MAX_BYTES.banner);
+    }
   } finally {
     await browser.close();
   }
 }
 
-buildRasterIcons();
-await buildBanner();
-console.log('assets built');
+mkdirSync(ASSETS, { recursive: true });
+await buildIdentity();
+await buildEmoji();
+await buildBanners();
