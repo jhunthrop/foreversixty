@@ -46,7 +46,7 @@ Forever Sixty is fan-made. It is not made by or affiliated with Blizzard Enterta
 
 ## What's new
 
-A new app icon, the painted LX seal. Home, Raid, Gear and Activity now match the site.
+New icon. Home, Raid, Gear and Activity now match the site.
 
 ## URLs
 

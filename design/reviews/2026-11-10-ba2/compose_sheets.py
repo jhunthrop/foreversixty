@@ -92,8 +92,8 @@ def identity(og: Path) -> None:
                  + [(tile(DISCORD / f'{f}.png', 64), f) for f in ('alliance', 'horde')])
     discord = row([
         (discord_sidebar(), 'banner in the sidebar, 240x135 at 2x, name drawn by Discord'),
-        (tile(DISCORD / 'premium.png', 20).resize((80, 80), Image.NEAREST), 'Premium at 20 px, 4x'),
-    ], min_cell=120)
+        (tile(DISCORD / 'premium.png', 20).resize((80, 80), Image.NEAREST), 'Premium, 20 px at 4x'),
+    ], min_cell=200)
     art = row([(fit(DISCORD / 'splash.jpg', 960), 'Discord invite background (1920x1080); banner.jpg is the same without the name'),
                (fit(LISTING / 'play/feature-graphic.png', 820), 'Play feature graphic (1024x500)')])
     ogs = row([(fit(og / f'{name}.png', 600), f'live link preview /og/{name}.png') for name in ('index', 'bis', 'app')])
