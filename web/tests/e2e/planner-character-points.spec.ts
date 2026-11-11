@@ -82,7 +82,7 @@ test.describe('the planner counts only the points a character has earned', () =>
     const impale = page.getByTestId('talent-1006');
     await expect(impale).toHaveAttribute('data-state', 'lock');
     await impale.hover();
-    await expect(page.getByTestId('talent-tip-1006')).toContainText(plannerCopy.noPointsLeft(21));
+    await expect(page.locator('#talent-tip-1006')).toContainText(plannerCopy.noPointsLeft(21));
 
     // P4: a click still spends it, as a point planned past the character's level (the cell is
     // aria-disabled, so `force` clicks it as a player would, past Playwright's enabled check).

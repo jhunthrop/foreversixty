@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import Facts, Field, FormRow, Notice, Page, PageHeader, Plate, Row, Rows, Section, TabStrip, TalentTrees, build_page, write
+from ws_prims import Facts, Field, FormRow, Notice, Page, PageHeader, Plate, Row, Rows, Section, TabStrip, TalentTreesAll, build_page, talent_ranks_from_strings, talent_tree_dicts, write
 import ws_sim as S
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -163,15 +163,8 @@ def guide_talents() -> list[str]:
 
 
 def loadout_trees(per_tree: list[str]) -> str:
-    """web lib/sim/talent-loadouts.ts loadoutTrees: each tree's talents at the rank the string gives them, in ui/TalentTrees."""
-    file = json.loads((B / 'talents' / 'warrior.json').read_text())
-    trees = []
-    for i, tree in enumerate(sorted(file['trees'], key=lambda t: t['position'])):
-        digits = per_tree[i] if i < len(per_tree) else ''
-        cells = [(x['tier'], x['column'], S.gicon(x['icon'], 24), min(x['max_rank'], int(digits[p]) if p < len(digits) else 0), x['max_rank'])
-                 for p, x in enumerate(tree['talents'])]
-        trees.append((tree['name'], sum(c[3] for c in cells), cells))
-    return f'<div class="tbox">{TalentTrees(trees)}</div>'   # TalentTrees' sizing box (ui-trees-box)
+    """web TalentCandidates: each build's trees at the rank its string gives them, in the site's read-only trees (view)."""
+    return TalentTreesAll(talent_tree_dicts('warrior', talent_ranks_from_strings('warrior', per_tree)), 'view')
 
 
 def loadout_ranks(per_tree: list[str]) -> list[tuple[str, int]]:
@@ -446,7 +439,7 @@ TOOL_CSS = '''<style>
 .src-cols{display:grid;grid-template-columns:1fr;column-gap:32px}@media(min-width:768px){.src-cols{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.src-cols{grid-template-columns:1fr 1fr 1fr}}.rep-n{padding-top:8px;font-size:14px;line-height:20px}.rep-t{display:flex;flex-wrap:wrap;gap:0 16px}.opt.sm{font-size:13px}
 .tb-row{display:grid;gap:4px 24px;padding:12px 0;border-bottom:1px solid var(--line-soft,var(--line));align-self:stretch}.tb-row:last-of-type{border-bottom:0}@media(min-width:768px){.tb-row{grid-template-columns:260px minmax(0,1fr);align-items:start}}
 .src-l{display:flex;align-items:center;gap:8px;min-height:44px}.src-l .opt{min-width:0}.bcount{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}.pl{padding-left:8px}.later{margin:0;padding-top:4px;font-size:13px}.gl2{margin:0;padding:4px 0;font-size:13px;line-height:20px}.gl1{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-height:44px;margin:0;font-size:14px;line-height:24px}.gl1 b{font-size:15px}.disc-b{padding:4px 0 8px}
-.tb-t{display:grid;align-items:start;gap:12px 32px;min-width:0}@media(min-width:1024px){.tb-t{grid-template-columns:600px minmax(0,1fr)}}.tb-t .trees.cmp{--cell:clamp(18px,calc((100cqw - 2 * var(--tg) - 9 * var(--cg)) / 12 - 0.5px),44px)}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-gs{display:flex;flex-wrap:wrap;gap:8px 32px}.tb-g h4{margin:0;padding-bottom:4px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
+.tb-t{display:grid;align-items:start;gap:12px 32px;min-width:0}@media(min-width:1024px){.tb-t{grid-template-columns:600px minmax(0,1fr)}}.tb-t>div{min-width:0}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-gs{display:flex;flex-wrap:wrap;gap:8px 32px}.tb-g h4{margin:0;padding-bottom:4px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
 .spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:48px;text-align:right}.spec-heads{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:4px 16px 0;font:700 12px/16px var(--font-body);color:var(--muted)}.spec-heads .rk{width:48px;text-align:right}.spec-heads .dps{width:64px;text-align:right}.spec-fig .dps{width:64px;text-align:right;font-weight:700}.sbar{display:none;width:240px}@media(min-width:768px){.sbar{display:block}}.spec-n>summary{color:inherit;font-size:15px;font-weight:700;white-space:nowrap}.un{padding:8px 16px;border-top:1px solid var(--line-soft,var(--line))}.un-h{margin:0;padding-top:8px;font:600 15px/20px var(--font-body);color:var(--cream)}.un-g{display:grid;grid-template-columns:1fr;column-gap:20px}@media(min-width:768px){.un-g{grid-template-columns:repeat(4,1fr)}}.un-l{display:flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:700;text-decoration:none;white-space:nowrap}.un-l .t-small{margin-left:auto}@media(min-width:768px){.un-l{display:inline-flex}.un-l .t-small{margin-left:0}}</style>'''
 
 

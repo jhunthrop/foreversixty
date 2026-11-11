@@ -2,7 +2,7 @@
 //   node design/mocks/planner_facts.mjs [out.json]  ->  design/mocks/data/planner-facts.json (or out.json)
 // Runs the planner's own models, bundled with esbuild from web/node_modules, never retyped:
 //  - the trees: talents/<class>.json of the active build (data/builds, the committed copy), indexTalents, gridCells,
-//    gridSize, connectorsFor, canAddPoint, cellState (lib/planner/*), the spec icons of lib/sim/specs.ts;
+//    gridSize, connectorsFor, canAddPoint (lib/planner/*), cellState (lib/ui/talent-tree), the spec icons of lib/sim/specs.ts;
 //  - a build: decodeFS1 + orderFromRanks (a guide's own code, as /planner?code= applies it), loadFromBandAtLevel (a
 //    band build cut at a character's level, as BandCompare's Load does), levelForIndex, levelReached, pointsAvailableAt;
 //  - the compare: the band entry of data/builds/<build>/bis/<spec>.json through bandEntryFor, diffAgainstBand,
@@ -54,7 +54,7 @@ import { decodeFS1, orderFromRanks } from ${src("src/lib/planner/fs1.ts")};
 import { indexTalents, canAddPoint, messages } from ${src("src/lib/planner/rules.ts")};
 import { gridCells, gridSize } from ${src("src/lib/planner/grid.ts")};
 import { connectorsFor, gridViewBox } from ${src("src/lib/planner/connectors.ts")};
-import { cellState } from ${src("src/lib/planner/styles.ts")};
+import { cellState } from ${src("src/lib/ui/talent-tree.ts")};
 import { levelForIndex, levelReached, pointsAvailableAt, ranksByTalent, pointsPerTree } from ${src("src/lib/planner/derive.ts")};
 import { diffAgainstBand, bandDiffStatus, bandForPanel, loadFromBandAtLevel, bandDiffNames, bandPointTotal, bandCoverage } from ${src("src/lib/planner/band-compare.ts")};
 import { ladderPrefixFor } from ${src("src/lib/planner/ladder-load.ts")};

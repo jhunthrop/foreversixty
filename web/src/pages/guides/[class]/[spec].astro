@@ -61,7 +61,7 @@ import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-tal
 import { splitOverview } from '../../../lib/guides/overview';
 import { raceTableFor, recommendedRaceLines, specKindOf } from '../../../lib/guides/race-table';
 import { guideStatLane } from '../../../lib/guides/stat-lane';
-import { talentTreesOf } from '../../../lib/guides/talent-cells';
+import { guideTalentTrees } from '../../../lib/guides/talent-cells';
 import {
   joinPriorityRuns,
   litTalentsOf,
@@ -271,7 +271,7 @@ const jsonLd = [
           spec={fullSpecId}
           build={build}
           code={describedCode}
-          trees={talentTreesOf(describedTrees, tipBundle)}
+          trees={guideTalentTrees(build, classSlug, describedTrees)}
           isRaidBuild={raidTrees !== undefined}
           rotation={glance}
           rotationTitle={
@@ -408,7 +408,7 @@ const jsonLd = [
                 spec={fullSpecId}
                 classSlug={classSlug}
                 specSlug={specSlug}
-                trees={talentTreesOf(buildTrees, tipBundle)}
+                trees={guideTalentTrees(build, classSlug, buildTrees)}
                 steps={ladderSteps}
               />
             </LaneBlock>

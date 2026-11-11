@@ -2,12 +2,7 @@
 // The PointOrder primitive's data (planner spec 2026-11-08 section 3A, 4.5): the build's spend order
 // as rows of ten levels, a socket per level.
 
-/** The game's talent tooltip on a point: the talent, the rank this point reached and that rank's text. */
-export interface OrderTip {
-  name: string;
-  rankLine: string;
-  now: string;
-}
+import type { GameTipModel } from '../tooltips/game-tip';
 
 /** One level's socket: a spent point, one spent past the character's level, an empty level, the
  *  next point, or `ahead`: the spec guide's next point past the build (not part of it), dimmed. */
@@ -18,8 +13,9 @@ export interface OrderSlot {
   iconSrc?: string;
   /** The rank the talent reached with this point. */
   rank?: number;
-  /** The talent tooltip, shown on hover and focus in place of the plain title. */
-  tip?: OrderTip;
+  /** The talent's game tooltip at the rank this point reached, shown on hover and focus in place
+   *  of the plain title. */
+  tip?: GameTipModel;
 }
 
 export interface PointOrderRow {

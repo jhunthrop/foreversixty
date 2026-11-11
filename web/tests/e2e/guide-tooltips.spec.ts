@@ -97,14 +97,16 @@ test.describe('a spec guide opens the game tooltip for every name it shows', () 
   }) => {
     test.skip(isMobile, 'hover and keyboard path');
     await openGuide(page);
-    const cells = page.getByTestId('guide-glance-trees').locator('[role="group"][data-game-tip]');
+    const cells = page.getByTestId('guide-glance-trees').locator('[data-game-tip]');
     const cell = cells.first();
     await expect(cell).toHaveAttribute('data-game-tip', /^talent:\d+:\d+$/);
     await cell.focus();
     const tooltip = page.getByTestId('game-tooltip');
     await expect(tooltip).toBeVisible();
     const label = (await cell.getAttribute('aria-label')) ?? '';
-    await expect(tooltip.getByTestId('game-tooltip-name')).toHaveText(label.replace(/ \d+\/\d+$/, ''));
+    await expect(tooltip.getByTestId('game-tooltip-name')).toHaveText(
+      label.replace(/, rank \d+ of \d+$/, ''),
+    );
     await page.keyboard.press('Tab');
     await expect(cells.nth(1)).toBeFocused();
     await page.keyboard.press('Escape');

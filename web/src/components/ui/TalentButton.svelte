@@ -1,95 +1,58 @@
-<!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
-     page inlines only the styles of what its server render drew. -->
-<svelte:options css="injected" />
-
 <script lang="ts">
-  import { onDestroy } from 'svelte';
-  import { tooltipLeftPx, tooltipVerticalPlacementFor } from '../../lib/items/tooltip-position';
+  import { onDestroy, tick } from 'svelte';
+  import { positionTooltipPanel } from '../../lib/items/tooltip-position';
   import {
     cellLabel,
+    cellTipKey,
+    cellTipModel,
     isPlaceholderIcon,
     LONG_PRESS_MS,
-    talentTipSide,
-    talentTipSideLeft,
     TIP_DELAY_MS,
-    type EditorCell,
-    type TalentEditorCopy,
-  } from '../../lib/ui/talent-editor';
-  import TalentTip from './TalentTip.svelte';
+    type TalentCellView,
+  } from '../../lib/ui/talent-tree';
+  import GameTooltip from '../GameTooltip.svelte';
 
   let {
     cell,
-    copy,
-    focused = false,
-    readOnly = false,
+    build,
+    editable = false,
+    focusable = true,
     onadd,
     onremove,
     onfocuscell,
   }: {
-    cell: EditorCell;
-    copy: Pick<TalentEditorCopy, 'rankOf' | 'nextRank'>;
+    cell: TalentCellView;
+    /** The data build the tooltip's icon comes from. */
+    build: string;
+    /** The planner: a click adds, right-click or a long press removes, the tooltip is its own. */
+    editable?: boolean;
     /** This cell holds its tree's one tab stop. */
-    focused?: boolean;
-    readOnly?: boolean;
-    onadd: (id: number) => void;
-    onremove: (id: number) => void;
+    focusable?: boolean;
+    onadd?: (id: number) => void;
+    onremove?: (id: number) => void;
     onfocuscell?: (id: number) => void;
   } = $props();
 
   const tipId = $derived(`talent-tip-${cell.id}`);
+  const tip = $derived(editable ? cellTipModel(cell) : null);
 
   let open = $state(false);
   let iconBroken = $state(false);
-  let button: HTMLButtonElement | undefined = $state();
-  let tipBox: HTMLDivElement | undefined = $state();
+  let wrap: HTMLSpanElement | undefined = $state();
 
-  interface TipPlacement {
-    left: number;
-    /** Beside the cell, top-aligned with it (the client's talent tooltip), when there is room. */
-    beside: boolean;
-    below: boolean;
-    maxHeightPx: number | null;
-  }
-  // Unshifted and unclamped: reset on every close so the next opening measures the natural box.
-  const NATURAL: TipPlacement = { left: 0, beside: false, below: true, maxHeightPx: null };
-  let placement = $state<TipPlacement>(NATURAL);
-
+  // Placed by the site's one rule (beside the cell when there is room, else below or above), as
+  // every read-only cell's tooltip is placed by the page host.
   $effect(() => {
-    if (!open || !tipBox || !button) {
-      placement = NATURAL;
-      return;
-    }
-    const anchor = button.getBoundingClientRect();
-    const root = document.documentElement;
-    const beside = talentTipSide(anchor.left, anchor.right, tipBox.offsetWidth, root.clientWidth);
-    if (beside !== null) {
-      placement = {
-        left: talentTipSideLeft(beside, anchor.width, tipBox.offsetWidth),
-        beside: true,
-        below: true,
-        maxHeightPx: null,
-      };
-      return;
-    }
-    const { side, maxHeightPx } = tooltipVerticalPlacementFor(
-      anchor.top,
-      anchor.bottom,
-      tipBox.offsetHeight,
-      root.clientHeight,
-    );
-    placement = {
-      left: tooltipLeftPx('start', anchor.left, anchor.width, root.clientWidth, tipBox.offsetWidth),
-      beside: false,
-      below: side === 'below',
-      maxHeightPx,
-    };
+    if (!open || !wrap || tip === null) return;
+    const host = wrap;
+    void tick().then(() => positionTooltipPanel(host));
   });
 
   let tipTimer: ReturnType<typeof setTimeout> | undefined;
 
-  function showTip(): void {
+  function showTip(delay = TIP_DELAY_MS): void {
     clearTimeout(tipTimer);
-    tipTimer = setTimeout(() => (open = true), TIP_DELAY_MS);
+    tipTimer = setTimeout(() => (open = true), delay);
   }
 
   function hideTip(): void {
@@ -97,6 +60,16 @@
     tipTimer = undefined;
     open = false;
   }
+
+  // A tap on a touch screen adds the point and shows what it bought; a tap anywhere else closes it.
+  $effect(() => {
+    if (!open) return;
+    const close = (event: PointerEvent): void => {
+      if (wrap && !wrap.contains(event.target as Node)) hideTip();
+    };
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
+  });
 
   let pressTimer: ReturnType<typeof setTimeout> | undefined;
   // True once the gesture in progress has removed its point. The click that ends a long press
@@ -106,12 +79,12 @@
 
   function startPress(event: PointerEvent): void {
     // Only a primary press can become a long press: a secondary button raises contextmenu itself.
-    if (readOnly || event.button !== 0) return;
+    if (event.button !== 0) return;
     gestureRemoved = false;
     pressTimer = setTimeout(() => {
       disarmPress();
       gestureRemoved = true;
-      onremove(cell.id);
+      onremove?.(cell.id);
     }, LONG_PRESS_MS);
   }
 
@@ -119,6 +92,11 @@
   function disarmPress(): void {
     clearTimeout(pressTimer);
     pressTimer = undefined;
+  }
+
+  function endPress(event: PointerEvent): void {
+    disarmPress();
+    if (event.pointerType === 'touch') showTip(0);
   }
 
   /** The press ended elsewhere: no click follows, nothing is left to suppress. */
@@ -129,22 +107,21 @@
 
   function removeOnContextMenu(event: MouseEvent): void {
     event.preventDefault();
-    if (readOnly || gestureRemoved) return;
+    if (gestureRemoved) return;
     // A contextmenu during a pending press is that press's own touch gesture and a click still
     // follows it; a right-click arms no timer and no click follows.
     const duringPress = pressTimer !== undefined;
     disarmPress();
     gestureRemoved = duringPress;
-    onremove(cell.id);
+    onremove?.(cell.id);
   }
 
   function add(): void {
-    if (readOnly) return;
     if (gestureRemoved) {
       gestureRemoved = false;
       return;
     }
-    onadd(cell.id);
+    onadd?.(cell.id);
   }
 
   function closeOnEscape(event: KeyboardEvent): void {
@@ -160,46 +137,22 @@
 </script>
 
 <!-- web/src/components/ui/TalentButton.svelte -->
-<!-- One talent (planner spec 2026-11-08 section 3A, the mock's TalentCell2): the icon, a 2 px inset
-     ring and a rank pill in the state's colour (avail, part, max, lock), the gold dot when it
-     differs from the band, a dashed dimmed pill when planned past the character's level. Click
-     adds; right-click or a 500 ms primary press removes, exactly once per gesture. A locked cell
-     is aria-disabled but its click still reaches `onadd`: the caller refuses and says why. The
-     tooltip opens 150 ms after hover or focus and closes on leave, blur or Escape, placed with the
-     site's one edge-aware rule (lib/items/tooltip-position). Arrow keys and Backspace belong to
-     the grid (TalentEditor), which owns the one tab stop per tree. Read-only: no gesture, the
-     tooltip still opens. -->
+<!-- One talent, the same in every tree on the site (talent-tree lane 2026-11-10; planner spec
+     2026-11-08 section 3A, the mock's TalentCell2): the icon, a 2 px inset ring and a rank pill in
+     the state's colour (avail, part, max, lock), the gold dot when it differs from the band, a
+     dashed dimmed pill when planned past the character's level. Its tooltip is the site's one game
+     tooltip (GameTooltip), placed beside the cell by the one placement rule (`data-tip-beside`).
+     Read-only (`editable` false): the cell carries its `data-game-tip` key and a page host opens the
+     tooltip on hover, keyboard focus and a tap, as for every spell and item. Editable: the cell
+     opens its own tooltip 150 ms after hover or keyboard focus, and after a tap on a touch screen
+     (which also adds); a click adds; right-click or a 500 ms primary press removes, exactly once
+     per gesture. A locked cell is aria-disabled but its click still reaches `onadd`: the caller
+     refuses and says why. Arrow keys and Backspace belong to the grid (TalentTree), which owns the
+     one tab stop per tree. -->
 
-<button
-  bind:this={button}
-  type="button"
-  class={['tc2', cell.state, cell.differs && 'diff', cell.planned && 'plan']}
-  aria-label={cellLabel(cell)}
-  aria-disabled={cell.state === 'lock' && cell.plannable !== true ? 'true' : undefined}
-  aria-describedby={open ? tipId : undefined}
-  tabindex={focused ? 0 : -1}
-  data-testid={`talent-${cell.id}`}
-  data-rank={cell.rank}
-  data-state={cell.state}
-  onclick={add}
-  oncontextmenu={removeOnContextMenu}
-  onfocus={() => {
-    showTip();
-    onfocuscell?.(cell.id);
-  }}
-  onblur={hideTip}
-  onmouseenter={showTip}
-  onmouseleave={() => {
-    hideTip();
-    abandonPress();
-  }}
-  onpointerdown={startPress}
-  onpointerup={disarmPress}
-  onpointercancel={abandonPress}
-  onkeydown={closeOnEscape}
->
+{#snippet face()}
   {#if iconBroken || cell.iconSrc === ''}
-    <span class="ic" aria-hidden="true"></span>
+    <span class="tt-ic" aria-hidden="true"></span>
   {:else}
     <img
       src={cell.iconSrc}
@@ -214,134 +167,57 @@
       }}
     />
   {/if}
-  <span class="rk" aria-hidden="true">{cell.rank}/{cell.max}</span>
-</button>
-{#if open}
-  <div
-    bind:this={tipBox}
-    class="tc2-tip"
-    class:beside={placement.beside}
-    class:above={!placement.below}
-    class:scroll={placement.maxHeightPx !== null}
-    style:left={`${placement.left}px`}
-    style:max-height={placement.maxHeightPx === null ? undefined : `${placement.maxHeightPx}px`}
-  >
-    <TalentTip
-      id={tipId}
-      talentId={cell.id}
-      name={cell.name}
-      rankLine={copy.rankOf(cell.rank, cell.max)}
-      now={cell.now}
-      next={cell.next}
-      nextLabel={copy.nextRank}
-      req={cell.req}
-      band={cell.band}
-    />
-  </div>
-{/if}
+  <span class="tt-rk" aria-hidden="true">{cell.rank}/{cell.max}</span>
+{/snippet}
 
-<style>
-  .tc2 {
-    all: unset;
-    box-sizing: border-box;
-    position: relative;
-    display: block;
-    width: var(--cell, 48px);
-    height: var(--cell, 48px);
-    border-radius: 5px;
-    cursor: pointer;
-    background: var(--color-bg);
-  }
-  .tc2 img,
-  .tc2 .ic {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: 5px;
-    border: 0;
-  }
-  .tc2::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 5px;
-    box-shadow: inset 0 0 0 2px var(--ring, var(--color-line));
-  }
-  .rk {
-    position: absolute;
-    right: -5px;
-    bottom: -5px;
-    z-index: 1;
-    padding: 0 4px;
-    border-radius: 999px;
-    border: 1px solid var(--ring, var(--color-line));
-    background: var(--color-bg);
-    font: 700 12px/14px var(--font-body);
-    font-variant-numeric: tabular-nums;
-    color: var(--rk, var(--color-muted));
-    white-space: nowrap;
-  }
-  .tc2.avail {
-    --ring: #4fae5c;
-    --rk: var(--color-kill);
-  }
-  .tc2.part {
-    --ring: var(--color-kill);
-    --rk: var(--color-kill);
-  }
-  .tc2.max {
-    --ring: var(--color-gold);
-    --rk: var(--color-gold);
-  }
-  .tc2.lock {
-    cursor: default;
-  }
-  .tc2.lock img,
-  .tc2.lock .ic {
-    filter: grayscale(1) brightness(0.55);
-  }
-  .tc2.diff::before {
-    content: '';
-    position: absolute;
-    left: -4px;
-    top: -4px;
-    z-index: 1;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--color-gold);
-    box-shadow: 0 0 0 2px var(--color-bg);
-  }
-  .tc2:hover:not(.lock) {
-    filter: brightness(1.15);
-  }
-  .tc2:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
-  .tc2:active {
-    transform: translateY(1px);
-  }
-  .tc2.plan .rk {
-    opacity: 0.6;
-    border-style: dashed;
-  }
-  .tc2-tip {
-    position: absolute;
-    top: 100%;
-    z-index: 30;
-    margin-top: 8px;
-  }
-  .tc2-tip.above {
-    top: auto;
-    bottom: 100%;
-    margin: 0 0 8px;
-  }
-  .tc2-tip.beside {
-    top: 0;
-    margin: 0;
-  }
-  .tc2-tip.scroll {
-    overflow-y: auto;
-  }
-</style>
+{#if editable}
+  <span class="tt-wrap" bind:this={wrap} data-tip-beside>
+    <button
+      type="button"
+      class={['tt-cell', cell.state, cell.differs && 'diff', cell.planned && 'plan']}
+      aria-label={cellLabel(cell)}
+      aria-disabled={cell.state === 'lock' && cell.plannable !== true ? 'true' : undefined}
+      aria-describedby={open ? tipId : undefined}
+      tabindex={focusable ? 0 : -1}
+      data-testid={`talent-${cell.id}`}
+      data-rank={cell.rank}
+      data-state={cell.state}
+      onclick={add}
+      oncontextmenu={removeOnContextMenu}
+      onfocus={() => {
+        showTip();
+        onfocuscell?.(cell.id);
+      }}
+      onblur={hideTip}
+      onmouseenter={() => showTip()}
+      onmouseleave={() => {
+        hideTip();
+        abandonPress();
+      }}
+      onpointerdown={startPress}
+      onpointerup={endPress}
+      onpointercancel={abandonPress}
+      onkeydown={closeOnEscape}
+    >
+      {@render face()}
+    </button>
+    {#if open && tip !== null}
+      <GameTooltip model={tip} {build} id={tipId} />
+    {/if}
+  </span>
+{:else}
+  <button
+    type="button"
+    class={['tt-cell', cell.state, cell.differs && 'diff']}
+    aria-label={cellLabel(cell)}
+    tabindex={focusable ? 0 : -1}
+    data-testid={`talent-${cell.id}`}
+    data-rank={cell.rank}
+    data-state={cell.state}
+    data-game-tip={cellTipKey(cell)}
+    data-tip-beside
+    onfocus={() => onfocuscell?.(cell.id)}
+  >
+    {@render face()}
+  </button>
+{/if}

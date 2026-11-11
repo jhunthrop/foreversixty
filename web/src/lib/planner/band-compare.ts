@@ -8,7 +8,7 @@
 // forking a second traversal of the tree:
 //  - `diffAgainstBand` walks the same tree/talent shape `lib/home/talent-delta.ts`'s loop does,
 //    summing the band's unmatched points per talent cell, keyed by talent id instead of string position, so it can also report which ids differ -- the per-cell
-//    marker `TalentCell.svelte` needs (spec §4.E.4).
+//    marker `ui/TalentButton` needs (spec §4.E.4).
 //  - `loadFromBand` reconstructs a legal point order for a band's own ranks with
 //    `orderFromRanks` (fs1.ts), the exact same reconstruction an addon import already runs.
 import type { TalentIndex } from './rules';
@@ -91,7 +91,7 @@ export function bandDiffStatus(diff: BandDiff): BandDiffStatus {
   return { kind: 'toTake', count: diff.missingCount };
 }
 
-/** `TreeGrid`/`TalentCell`'s own view of a loaded band diff (spec §4.E.4): the label for
+/** `editorTrees`'s own view of a loaded band diff (spec §4.E.4): the label for
  *  the tooltip's extra line, plus `BandDiff`'s own two maps. A thin alias rather than a
  *  new shape -- every field here is `BandDiff`'s own. */
 export interface BandDiffView extends BandDiff {
