@@ -72,6 +72,7 @@
     data-game-tip={tip !== undefined && tip > 0 ? spellTipKey(tip) : undefined}
     data-bis-item={item}
     data-icon-socket={shown === null ? '' : undefined}
+    data-icon-hide-on-fail={socket ? undefined : ''}
     data-testid={testid}
   >
     {#if shown !== null}

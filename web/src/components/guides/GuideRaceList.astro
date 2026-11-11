@@ -1,10 +1,10 @@
 ---
 // web/src/components/guides/GuideRaceList.astro
 // The races a class can be, on the class landing's Races panel above its prose: Alliance then
-// Horde, each race its portrait (RaceIcon) and its name in the faction's colour, in the build's
+// Horde, each race its portrait (ui/SpellIcon) and its name in the faction's colour, in the build's
 // order (build-races.ts: the build's own combos). A race the build ships no portrait for shows
 // its name alone. A pair new in Forever says "new" after the name, so no prose has to.
-import RaceIcon from '../ui/RaceIcon.svelte';
+import SpellIcon from '../ui/SpellIcon.astro';
 import { buildRacesForClass, newRaceSlugsForClass, raceIconsFor } from '../../lib/guides/build-races';
 import { guidesCopy } from '../../lib/guides/copy';
 import { titleColor } from '../../lib/ui/primitives';
@@ -36,7 +36,7 @@ const groups = (['alliance', 'horde'] as const)
             data-testid={`guide-class-race-${race.slug}`}
             style={`color: ${titleColor({ faction: group.faction })}`}
           >
-            {icons.has(race.slug) && <RaceIcon url={icons.get(race.slug)!} name={race.name} size={24} />}
+            {icons.has(race.slug) && <SpellIcon url={icons.get(race.slug) ?? null} size={24} />}
             <span>{race.name}</span>
             {fresh.has(race.slug) && (
               <span

@@ -140,8 +140,9 @@ export function offencesIn(file: string, text: string): string[] {
     .map((rule) => rule.name);
 }
 
-/** A spell icon component outside ui/ by its file name. */
+/** A spell icon component outside ui/ by its file name, or the deleted ui/RaceIcon frame. */
 export function strayIconComponent(file: string): boolean {
+  if (/(?:^|\/)RaceIcon\.(?:svelte|astro)$/.test(file)) return true;
   return (
     /(?:^|\/)(?:SpellIcon|ActionIcon)\.(?:svelte|astro)$/.test(file) && !file.startsWith('components/ui/')
   );
@@ -175,6 +176,7 @@ describe('the icon guard', () => {
     expect(offencesIn(lib, "const BOTH = { finger: ['finger1', 'finger2'] };")).toEqual([]);
     expect(offencesIn(lib, 'export function averageItemLevel(gear) {}')).toHaveLength(1);
     expect(strayIconComponent('components/report/SpellIcon.svelte')).toBe(true);
+    expect(strayIconComponent('components/ui/RaceIcon.svelte')).toBe(true);
     // What the shared components themselves write is allowed.
     expect(offencesIn('lib/ui/assets.ts', 'dataUrl(build, `icons/${stem}.webp`)')).toEqual([]);
     expect(offencesIn('components/ui/SpellIcon.svelte', '<img src={shown} alt="" />')).toEqual([]);
