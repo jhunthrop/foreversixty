@@ -30,7 +30,7 @@ import {
 
 export const accountPageCopy = {
   /** The Characters panel when /v1/me failed; LoadError adds Try again. */
-  loadFailed: 'Your account did not load.',
+  loadFailed: 'Could not reach Forever Sixty. Check your connection.',
   title: 'Your account',
   /** The You panel's facts: who is signed in, and how. */
   battletagLabel: 'BattleTag',

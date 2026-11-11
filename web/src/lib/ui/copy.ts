@@ -15,7 +15,6 @@ export const uiCopy = {
   copyLink: 'Copy link',
   /** Shown for about two seconds after a copy (owner ruling 2026-11-10). */
   copied: 'Copied',
-  copiedLink: 'Copied',
   copyFailed: 'Copy failed',
   copyLinkFailed: 'Could not copy. Select the link and copy it.',
   shareLink: 'Share',
@@ -41,9 +40,9 @@ export function withRetry(sentence: string): string {
   return `${sentence} ${RETRY}.`;
 }
 
-/** "Copied" plus what to do next: "Copied, paste it in game with /fs". */
+/** "Copied" plus what to do next: "Copied. Paste it in game with /fs". */
 export function copiedThen(next: string): string {
-  return `${uiCopy.copied}, ${next}`;
+  return `${uiCopy.copied}. ${next}`;
 }
 
 /** The show-all control: "Show all 24". */

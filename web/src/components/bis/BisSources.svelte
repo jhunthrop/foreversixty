@@ -25,7 +25,7 @@
 
   const LABEL = 'Sources';
   const FOOT =
-    'Counts are slots with a ranked option from that source. Turning one off re-picks each slot; nothing is hidden.';
+    'Counts are gear slots with an option from that source. Turn one off and each slot picks again.';
 
   const chips = $derived(
     SOURCE_FILTER_KINDS.map((kind) => ({

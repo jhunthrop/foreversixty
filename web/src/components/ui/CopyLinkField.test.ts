@@ -73,7 +73,7 @@ describe('CopyLinkField', () => {
     expect(body).toContain('data-testid="guild-invite-copy"');
     expect(body).toContain(uiCopy.copyLink);
     expect(uiCopy.copyLink).toBe('Copy link');
-    expect(uiCopy.copiedLink).toBe('Copied');
+    expect(uiCopy.copied).toBe('Copied');
     expect(uiCopy.copyLinkFailed).toBe('Could not copy. Select the link and copy it.');
   });
 

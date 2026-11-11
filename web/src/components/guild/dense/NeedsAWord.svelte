@@ -55,7 +55,7 @@
           {#if word.action === 'ping'}
             <Button tone="ghost" size="sm" onclick={onPing}>{LABEL.ping}</Button>
           {:else if word.action === 'nudge'}
-            <Button tone="ghost" size="sm" onclick={() => nudge(word)}
+            <Button tone="ghost" size="sm" disabled={nudgeTextOf(word) === ''} onclick={() => nudge(word)}
               >{nudges.label(LABEL.nudge, word.key)}</Button
             >
           {:else}

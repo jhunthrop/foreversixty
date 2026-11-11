@@ -85,12 +85,18 @@
   {#snippet panel()}
     <div class="flex flex-col gap-3 p-4">
       {@render fields('rankings-pop')}
+      <!-- Nothing set: it says so (muted, aria-disabled) and stays focusable, so focus never drops. -->
       <button
         type="button"
-        class="text-gold self-start text-[14px] font-semibold"
+        class={[
+          'self-start text-[14px] font-semibold',
+          setCount === 0 ? 'text-muted cursor-not-allowed' : 'text-gold hover:text-gold-hover',
+        ]}
+        aria-disabled={setCount === 0 ? 'true' : undefined}
         data-testid="rankings-filters-clear"
-        onclick={() => onpatch({ region: '', phase: defaultPhase, faction: '', since: '' })}
-        >Clear filters</button
+        onclick={() => {
+          if (setCount > 0) onpatch({ region: '', phase: defaultPhase, faction: '', since: '' });
+        }}>{rankingsCopy.clearFilters}</button
       >
     </div>
   {/snippet}

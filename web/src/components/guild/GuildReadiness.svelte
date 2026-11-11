@@ -150,7 +150,7 @@
           {officer}
           readOnly={officerReadOnly}
           describedBy={gateDescribedBy}
-          copiedKey={nudge.state === 'copied' ? nudge.key : null}
+          nudgeLabel={(key) => nudge.label('Nudge', key)}
           {median}
           fireKeys={tanks === null ? null : new Set(tanks.map((t) => t.character_key))}
           {now}

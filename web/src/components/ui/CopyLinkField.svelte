@@ -94,7 +94,7 @@
       onclick={() => void copier.copy(url)}
       data-testid={`${testid}-copy`}
     >
-      {feedback === 'copied' ? uiCopy.copiedLink : uiCopy.copyLink}
+      {feedback === 'copied' ? uiCopy.copied : uiCopy.copyLink}
     </button>
     {#if canShare}
       <button

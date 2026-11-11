@@ -17,6 +17,7 @@ import { REPO_ROOT, prepareParityPage, settleParityPage } from './support/parity
 import { stubRankingsApi } from './support/rankings-fixture';
 import { signedOut } from './support/selector';
 import { shareBuild } from './support/planner';
+import { openFilters } from './support/rankings-filters';
 import { openBis } from './support/bis-page';
 import {
   CHARACTER,
@@ -75,6 +76,8 @@ test.describe('Lane E captures', () => {
         if (width >= 768) {
           await page.getByTestId('rankings-filters-button').click();
           await expect(page.getByTestId('rankings-filters-popover')).toBeVisible();
+        } else {
+          await openFilters(page);
         }
         await shoot(page, 'filter-popover-rankings', width);
       });
@@ -82,9 +85,12 @@ test.describe('Lane E captures', () => {
       test('bis sources', async ({ page }) => {
         await openBis(page, '/bis/hunter/marksmanship?band=60&view=slot');
         const button = page.getByTestId('bis-sources-button');
-        if (width >= 768 && (await button.count()) > 0) {
+        if (width >= 768) {
           await button.click();
           await expect(page.getByTestId('bis-sources-popover')).toBeVisible();
+        } else {
+          await page.locator('[data-control-bar-toggle]').first().click();
+          await expect(page.getByTestId('bis-source-chip-dungeon')).toBeVisible();
         }
         await shoot(page, 'filter-popover-bis', width);
       });
@@ -108,7 +114,11 @@ test.describe('Lane E captures', () => {
         await page.getByLabel('Title').fill('Arms leveling');
         await shareBuild(page);
         await expect(page.getByTestId('share-link')).toBeVisible();
+        await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
         await shoot(page, 'planner-share', width);
+        await page.getByRole('button', { name: 'Copy link' }).click();
+        await page.getByTestId('share-link').scrollIntoViewIfNeeded();
+        await page.screenshot({ path: path.join(OUT, `planner-share-copied-${width}.png`) });
       });
 
       test('boss picker', async ({ page }) => {
@@ -137,6 +147,8 @@ test.describe('Lane E captures', () => {
         await expect(page.getByTestId('history-picker')).toBeVisible();
         await page.getByTestId('history-picker').scrollIntoViewIfNeeded();
         await shoot(page, 'boss-picker', width);
+        await page.getByTestId('history-picker').scrollIntoViewIfNeeded();
+        await page.screenshot({ path: path.join(OUT, `boss-picker-crop-${width}.png`) });
       });
     });
   }

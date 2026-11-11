@@ -432,15 +432,18 @@
             </Button>
           {/if}
           {#if canRemove && row.may_remove}
-            <button
-              class={`${button('ghost', 'sm')}`}
+            <Button
+              tone="ghost"
+              size="sm"
               onclick={() => (decliningKey = row.character_key)}
-              disabled={rosterBusy === row.character_key || (frozen && !removeOverridesFrozen(row))}
-              aria-label={`Decline ${row.name}`}
-              data-testid="guild-roster-decline"
+              busy={rosterBusy === row.character_key}
+              busyLabel={guildRosterModelCopy.declining}
+              disabled={frozen && !removeOverridesFrozen(row)}
+              label={`Decline ${row.name}`}
+              testid="guild-roster-decline"
             >
               {guildRosterModelCopy.decline}
-            </button>
+            </Button>
           {/if}
         </div>
       </div>
@@ -703,16 +706,17 @@
                           </div>
                         {/if}
                         {#if canRemove && row.may_remove}
-                          <button
-                            class={`${button('secondary', 'sm')}`}
+                          <Button
+                            size="sm"
                             onclick={() => (removingKey = row.character_key)}
-                            disabled={rosterBusy === row.character_key ||
-                              (frozen && !removeOverridesFrozen(row))}
-                            aria-label={`Remove ${row.name}`}
-                            data-testid="guild-roster-remove"
+                            busy={rosterBusy === row.character_key}
+                            busyLabel={guildRosterModelCopy.removing}
+                            disabled={frozen && !removeOverridesFrozen(row)}
+                            label={`Remove ${row.name}`}
+                            testid="guild-roster-remove"
                           >
-                            Remove
-                          </button>
+                            {guildRosterModelCopy.removeButton}
+                          </Button>
                         {/if}
                       </div>
                     </div>
@@ -777,15 +781,17 @@
                           class="contents lg:ml-auto lg:flex lg:w-[216px] lg:shrink-0 lg:items-center lg:justify-end"
                           data-testid="guild-roster-entry-actions"
                         >
-                          <button
-                            class={`${button('secondary', 'sm')}`}
+                          <Button
+                            size="sm"
                             onclick={() => (removingKey = accountKey)}
-                            disabled={rosterBusy === accountKey || frozen}
-                            aria-label={`Remove ${entry.name}`}
-                            data-testid="guild-roster-entry-remove"
+                            busy={rosterBusy === accountKey}
+                            busyLabel={guildRosterModelCopy.removing}
+                            disabled={frozen}
+                            label={`Remove ${entry.name}`}
+                            testid="guild-roster-entry-remove"
                           >
-                            Remove
-                          </button>
+                            {guildRosterModelCopy.removeButton}
+                          </Button>
                         </div>
                       {:else}
                         <div class="ml-auto shrink-0 max-lg:hidden lg:w-[216px]" aria-hidden="true"></div>

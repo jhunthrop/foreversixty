@@ -51,7 +51,7 @@ export const addonCopy = {
   //     saved sim all copy the same FSB1 build code through the same button. ---
   copyForGame: 'Copy for the game',
   /** Stands for 3 s after a copy, then the button reads `copyForGame` again. */
-  copiedForGame: copiedThen('paste it in game with /fs'),
+  copiedForGame: copiedThen('Paste it in game with /fs'),
   /** The clipboard refused (permission, an insecure page, no clipboard at all): the code is
    *  shown in a read-only field under this line instead. */
   copyFailed: 'Could not copy; select the code below instead',

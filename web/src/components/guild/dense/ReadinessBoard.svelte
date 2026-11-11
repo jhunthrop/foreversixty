@@ -5,7 +5,6 @@
      the shortfall in the wipe colour; a pass is a muted tick. The shortfall words also ride the
      raider's sub line, so a phone keeps them when the columns fold. -->
 <script lang="ts">
-  import { uiCopy } from '../../../lib/ui/copy';
   import type { GuildReadinessRow } from '../../../lib/guild/api';
   import { classColorVar } from '../../../lib/report/format';
   import { enchantSlotLabel, missingCount } from '../../../lib/guild/readiness-view';
@@ -14,13 +13,16 @@
   import StatRow from '../../ui/StatRow.svelte';
   import StatTable from '../../ui/StatTable.svelte';
 
+  /** The idle word: the shared CopyState swaps in Copied or Copy failed. */
+  const NUDGE = 'Nudge';
+
   let {
     short,
     ready,
     officer,
     readOnly = false,
     describedBy,
-    copiedKey = null,
+    nudgeLabel = () => NUDGE,
     median = null,
     fireKeys = null,
     now,
@@ -33,7 +35,8 @@
     readOnly?: boolean;
     /** The plan sentence's id that describes a disabled Nudge. */
     describedBy?: string;
-    copiedKey?: string | null;
+    /** The Nudge button's words for a row: Nudge, then Copied or Copy failed (lib/ui/copy-state). */
+    nudgeLabel?: (characterKey: string) => string;
     median?: number | null;
     /** The raid asks for fire resistance: these signed tanks' totals fill a Fire res column. */
     fireKeys?: ReadonlySet<string> | null;
@@ -139,8 +142,7 @@
           aria-describedby={describedBy}
           onclick={() => onNudge(row)}
           aria-label={`Nudge ${row.name}`}
-          data-testid={`guild-readiness-nudge-${row.character_key}`}
-          >{copiedKey === row.character_key ? uiCopy.copied : 'Nudge'}</button
+          data-testid={`guild-readiness-nudge-${row.character_key}`}>{nudgeLabel(row.character_key)}</button
         >{/snippet}
       {#if index === short.length && short.length > 0 && ready.length > 0}
         <StatRow total bar={false} figures={blank}

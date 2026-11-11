@@ -7,6 +7,14 @@ import { counted } from '../plural';
 import { uiCopy, withRetry } from '../ui/copy';
 import { possessive } from '../possessive';
 
+/** The overview's Last raid panel (web layout spec 2026-11-05 §7.1). */
+export const guildLastRaidCopy = {
+  title: 'Last raid',
+  empty: 'No raid logged yet.',
+  /** The one action that fills it: the companion uploads the night's log. */
+  emptyAction: { label: 'Get the companion', href: '/setup' },
+} as const;
+
 export const guildHomeCopy = {
   eyebrow: 'Guild',
   // The line every not-yet-ready state paints (loading, failed, a bad address), so the first
@@ -204,7 +212,7 @@ export const guildSettingsCopy = {
   tokenShownOnce: 'Copy it now. It cannot be shown again.',
   linkLabel: 'Invite link',
   copyButton: uiCopy.copyLink,
-  copied: uiCopy.copiedLink,
+  copied: uiCopy.copied,
   copyFailed: uiCopy.copyLinkFailed,
   shareButton: uiCopy.shareLink,
   inviteShareTitle: 'Join our guild on Forever Sixty',
@@ -392,6 +400,8 @@ export const guildRosterModelCopy = {
   heads: { raider: 'Raider', level: 'Item level', raids: 'Raids', best: 'Top output', rating: 'Rating' },
   decline: 'Decline',
   approving: 'Approving…',
+  declining: 'Declining…',
+  removing: 'Removing…',
   /** Asked before a verified character is taken off the roster. */
   removeQuestion: (name: string): string => `Remove ${name} from the roster?`,
   removeButton: 'Remove',

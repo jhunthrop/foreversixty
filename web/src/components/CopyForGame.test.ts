@@ -59,13 +59,13 @@ describe('CopyForGame (the click)', () => {
     vi.unstubAllGlobals();
   });
 
-  it('copies the code and reads "Copied, paste it in game with /fs" for 2 s', async () => {
+  it('copies the code and reads "Copied. Paste it in game with /fs" for 2 s', async () => {
     const copier = createCopyForGame((state) => states.push(state));
     await copier.copy(CODE);
     expect(writeText).toHaveBeenCalledWith(CODE);
     expect(states).toEqual(['copied']);
     expect(copyForGameLabel('copied')).toBe(addonCopy.copiedForGame);
-    expect(addonCopy.copiedForGame).toBe('Copied, paste it in game with /fs');
+    expect(addonCopy.copiedForGame).toBe('Copied. Paste it in game with /fs');
 
     vi.advanceTimersByTime(COPIED_FOR_GAME_MS - 1);
     expect(states).toEqual(['copied']);
