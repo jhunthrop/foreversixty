@@ -346,3 +346,38 @@ The two button findings are real component drift. A regular who opens the app af
 
 VERDICT: DRIFT
 
+## Round 5
+
+Round 5 brand-consistency verdict on the four tab roots, the profile drawer and the raid notification: I find no BLOCKER or SHOULD drift. I checked two parts of the screen set directly and the rest only through the decisions files and the code, so the verdict rests on that scope.
+
+**What I looked at.** I opened the iOS and Android Home captures and the officer Raid captures on both apps. I read `round-4-decisions.md` and `round-5-decisions.md`, my round-4 findings, and the cited code. I did not open the Gear, Activity or drawer captures, the Android parity goldens or the web captures one by one.
+
+**Round-4 findings**
+- **R4-1 (Preview mention, secondary button): FIXED.** In `android-r5/raid-officer-01-top.png` and `ios/r4-officer-raid-01-top.png` both apps draw Preview mention as the same blue fill with a blue edge and white label. `FlowRows.kt:260-272` now maps non-primary to `BrandButtonKind.Secondary`.
+- **R4-2 (Android gold gradient): FIXED.** I found no `Brush` or gradient in `FlowRows.kt`; primary is `BrandButtonKind.Primary`, the shared token kind.
+- **R4-3 (iOS Activity badge at launch): FIXED.** `RootView.swift:121-123` loads `ActivityBadgeCount` at shell start. The iOS Home capture shows the Activity badge `3` and the Raid badge `1`.
+- **R4-4 (Raid badge, 6 on Android and 1 on iOS): FIXED on the officer state.** Both officer Raid frames read `6`. The Home frames read `1` on both apps for the member state.
+
+**Home, side by side.** Home matches between the two apps and the web's roles:
+- Serif section heads, a gold `Gear ›` link and a gold `All activity (3) ›` link.
+- Quality-coloured item names with plate icons, and `+2.8 DPS` as a figure plus a muted unit.
+- The `In` segment filled in teal.
+- The circular ringed crest, and the same tab glyphs on both apps.
+- Whole-number figures where the house format asks for them. `+18.0 DPS` stays one decimal because it is under 100.
+
+**Colour.** My grep for hardcoded colours in the app sources found literals only in widget snapshot tests and the calendar adapter. `EventKitCalendarAdapter.swift:36` sets a literal `CGColor` for the calendar colour, which is a system calendar and not app UI.
+
+**ALLOWED differences**
+- The iOS floating tab bar and large title, against the Android `NavigationBar` and bar title (rule 8).
+- The pill segmented control on Android, against the rounded rectangle on iOS (rule 8).
+- Panels on the list blocks, and `OLYMPUS XXVII` as the guild typed it (both KEEP rulings).
+- The age on its own meta line under feed rows (KEEP, round 3 decision 3).
+- Android's three notification actions (platform limit).
+
+**NIT**
+1. **Feed clocks differ between the apps.** The Home feed row on Android reads `just now` where iOS reads `Thu`. This comes from the capture clocks, which my round-4 R4-5 flagged. It is a fixture difference, not app behaviour. Pin one fixture clock so a future comparison lines up.
+2. **The Home raid title wraps on iOS and not on Android.** `Onyxia's Lair · Sat 19 Dec, 7:00 pm CST` breaks across two lines on iOS and fits on one line on Android. The brief already lists this as a dated known drift, so I am not counting it.
+3. **App raid clocks still read `7:00 pm`**, while server text follows the house format and drops `:00`. The brief assigns that to the format lane, so I am not counting it.
+
+VERDICT: CONSISTENT
+

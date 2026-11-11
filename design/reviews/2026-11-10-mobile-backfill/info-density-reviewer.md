@@ -299,3 +299,45 @@ Worth making soon, ranked:
 2. N2: show every Covered gap, or make `and N more` a link.
 3. N3: put the sim figure in the trailing column. Also re-shoot the two notification-shade captures.
 
+## Round 5
+
+Round 5 is DENSE WITH ADDITIONS: all three round-4 additions landed. I judged the Android r5 captures (home-01, raid-01 and raid-officer-02/03, gear-01, activity-01, drawer-02) and ios/light-raid, plus the fixtures. I did not open the iOS flow snapshots because they are still in CI.
+
+## Round-4 additions
+
+| Addition | Status |
+|---|---|
+| N1: drawer Notifications value | LANDED. `drawer-02-open` reads `Raids, gear and sims, logs, guild ladder, tiers, officer on`. It is no longer bare. |
+| N2: `and N more` on Covered | LANDED. `raid-officer-02` shows `and 2 more` in the link colour, and the not-synced line has a chevron and a two-line row. Whether the tail opens the cover list I judged from the decisions file, not from a capture; `raid-officer-05-cover-list` exists, so I take it as shown. |
+| N3: sim figure in the trailing column | LANDED. `activity-01-top` shows `190.4 DPS` right-aligned on the sim row, from `activity.list.json` `figure`. |
+| Re-shoot of the notification-shade captures | LANDED. `gear-01-top` and `activity-01-top` are the app now. |
+
+## Findings
+
+**SHOULD**
+1. **The Loot row has no figure, and the trailing column is uneven.** `activity.list.json` row 4163 (`loot.awarded`, Deathbringer) has no `figure`, so `activity-01-top` shows the trailing figure on the ladder and sim rows but not on loot. In round 4 I saw `+12.6 DPS` in the body on the parity golden. Either the golden carries data the fixture lacks, or the server sets it only sometimes. Make the fixture and the golden agree, and show the DPS gain in the trailing column when the sim has it. A raider wants to see what the drop is worth.
+2. **The drawer Notifications value is a list of everything on.** `drawer-02-open` wraps `Raids, gear and sims, logs, guild ladder, tiers, officer on` onto two lines. When every group is on, collapse it to `All on`. Otherwise list only the groups that are off, so a raider sees at a glance what they will miss. The source is the per-group state in `app.notifications.json`. At fs2 (`fs2-drawer`) this line takes more space, so check it there.
+3. **Gear's header is dense but flat.** `gear-01-top` reads `50 to 59 · Horde · 3 of 17 slots match the list · Change`, then the +18.0 DPS line. The cells show a per-slot gain, but none shows where the piece comes from, which Home's rows do (`Crafted: Blacksmithing`, `Lady Palanseer`). Add the source to the cell sheet if it is not there already. The sheet is `gear-03`, and I did not re-open it this round. It stays on the Gear tab, so the one-job rule is not touched.
+
+**NIT**
+4. The Activity captures `activity-01-top` and `activity-06` still read `203.6 DPS` and `+12.2 over your 191.4`. The decisions file says to judge by the house format (`204 DPS`), so this is capture age only. Re-shoot before the next round.
+5. `raid-officer-03-roster-not-synced` is the roster screen, which is another lane's. The stat strip reads `4 of 38 · 4 in game, no account · 2 waiting`. It is not clear whether the last two are filtered too, so another lane should check that.
+6. iOS parity holds. `ios/light-raid` matches Android row for row (Covered line, `40-man`, tallies with the melee/ranged split, tab badges 1 and 1). I have no iOS drift to add.
+
+**BLOCKER**: none.
+
+Rulings I did not reopen: Home's tally without the split (F3), the age on its own meta line, and the Might and Wisdom art.
+
+## Needs data (unchanged from round 4)
+- Per-group unread counts for the Activity chips.
+- A founder end date for the Plan row.
+- A cached `total_gain` per character for the Switch rows.
+- A last-pulls or progress figure for the Raid tab.
+- The reputation standing number for `needs revered` rows.
+
+Files:
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/docs/contracts/fixtures/app/activity.list.json
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/android-r5/
+
+VERDICT: DENSE WITH ADDITIONS
+

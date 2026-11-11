@@ -297,3 +297,65 @@ The remaining blockers are the two small must-fixes above. Neither touches the d
 
 VERDICT: NO SHIP
 
+## Round 5
+
+Round 5 clears UX1 and UX2 and both round-4 must-fixes, but one round-4 evidence request is still open: no Gear frame shows the stale tone, and Gear's stale tone is verified from code and unit tests only. I rate that a SHOULD, not a BLOCKER. The Android flows, the Android Home, Raid and Activity tab frames, and the iOS flow snapshots were not opened.
+
+**Round-4 items**
+- **UX1, not-synced row:** PASS on both apps.
+  - iOS `r4-officer-raid-05-not-synced-line.png` and Android `raid-officer-02-covered-notsynced.png` draw the same row: primary text colour, two lines, trailing chevron at the right edge.
+  - The Android row is no longer warning red.
+  - The Android row is about 100 px tall at 2.7x, so the 48 dp target holds. The iOS row is taller than 44 pt.
+- **UX2, filtered roster:** PASS on both apps.
+  - iOS `r4-officer-raid-06-roster-settled.png` and Android `raid-officer-03-roster-not-synced.png` show a selected chip `Not synced this week · 4` with `×`, and `All` deselected.
+  - The stat reads `4 of 38 on the roster`, and four rows show.
+  - The `×` is about 44 px of glyph inside a chip taller than 44 pt / 48 dp, so the target is fine. I am accepting the clear frame (`r5-officer-raid-07-roster-cleared.png`, `raid-officer-04-roster-cleared.png`) from the filenames only. I did not open it.
+- **iOS push results:** PASS.
+  - `r4-push-short-03-result.png` shows a banner `Mentioned 3 healers in Discord.` with `Onyxia's Lair` under it.
+  - `r4-push-applicant-accept-03-result.png` shows `Application accepted` with `New applicant: Mirelle, Holy Priest 60`.
+  - This matches Android's `push-raid-short-03-mention-result` and answers round-4 evidence item 1. I did not open the Decline result frame.
+- **Android Gear recapture:** the frame is clean and no longer the shade.
+  - `android-r5/gear-01-top.png` reconciles. Thirteen cells carry gains and sum to +18.0, which matches `+18.0 DPS from 13 upgrades`.
+  - Head, Neck and Main hand read `Equipped`, giving `3 of 17`.
+  - Shoulder reads `+0.0 DPS`, as ruled.
+  - The iOS Gear frame matches, apart from the Main hand cell, which wraps to three lines.
+- **Drawer `Refreshing…` ripple (polish 2):** fixed. `android-r5/drawer-03-refreshing.png` shows the muted `Refreshing…` with no speckled patch.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+1. **Gear stale tone has no frame.**
+   - I asked for it in round 4 and the brief says it is "kept from round 4", but `android-r4/gear-01-top.png` does not exist in the worktree's design folder.
+   - Both Gear captures are fresh (`synced 8 h ago`, muted).
+   - The rule is in the code: `GearComposer.kt` `GearHeader.syncedStale` and `GearPresenter.swift:92`. `GearHeaderTest` and `GearParityTest` reference `syncedStale`.
+   - I accept it from the code and tests. Attach one stale Gear frame on each app with the next capture.
+2. **iOS flow snapshots.** `apps/ios/AppTests/Flows` exists, but the CI record run (42953910502) is still in flight. Every iOS sign-up state (pressed Late, chips, saving, failed, offline) is unverified from renders. Attach the snapshots when they land.
+3. **Drawer stamp.** Android `drawer-03-refreshing.png` reads `Updated 12 d ago from Battle.net` (orange) while Gear on the same build reads `synced 8 h ago`. The two stamps disagree on one character, which the fresh-stamp fixture fix (s2) should have prevented. The drawer's stamp comes from the Battle.net import time, so this may be a different field. If it is, say so. If not, move the fixture.
+4. **Roster stat plate under the filter.** `4 of 38 on the roster`, then `4 in game, no account` and `2 waiting`, still count the whole roster. After a filter the three figures describe different populations. The roster is another lane's, so I am only flagging it. The first figure is correct, so I am not blocking.
+
+**NIT**
+- Android drawer, Notifications row: the value `Raids, gear and sims, logs, guild ladder, tiers, officer on` wraps and strands `on` on its own line. Shorten it, or drop the trailing `on` when every group is on.
+- iOS Gear: `Main hand · Equipped` wraps to a third line. Android's cell fits in two lines.
+- iOS Raid tab badge reads 6 in the officer state while Android's Gear frame shows 1 for the non-officer state. This is consistent with the shared rule, so no action.
+- The officer `r4-*` iOS frames pin the clock to 17 Dec and read `Synced 37 d ago`. This is the one stale capture the brief says it keeps, so not a defect.
+- Android's `Preview mention` and the Missing icon are consistent with ruling 5. Nothing to report.
+
+**Checklist**
+- [x] Stale tone is one rule on Home and the drawer, both apps.
+- [ ] Stale tone on Gear (code and tests only, no frame; SHOULD 1).
+- [x] Covered has no empty frames.
+- [x] Notification title, body and landing agree.
+- [x] iOS landing captured.
+- [x] `Refreshing…` frames, both apps, no ripple patch on Android.
+- [x] Android officer push steps and results.
+- [x] iOS officer push result.
+- [x] Not-synced line matches across apps.
+- [x] Filtered roster shows its filter, with a clear control.
+- [x] Android Gear recaptured and reconciled.
+- [ ] iOS CI flow snapshots attached (in flight).
+
+The open items are evidence and fixture polish, not defects in what renders. I keep the round-4 KEEP rulings: panels, Damage without the split, three Android notification actions, and the Android tap-through landing.
+
+VERDICT: SHIP
+

@@ -252,3 +252,43 @@ VERDICT: FAIL
 
 The fails are two small items, so a round 5 should clear them. Delete the enchant detail lines and re-shoot the captures, and this passes with the polish items listed.
 
+## Round 5
+
+1. **First impression.** It reads as made by someone who plays. Item rows, push bodies and the Who is coming tallies are in a player's voice, and the round-4 enchant copy tell is gone. One stale-data inconsistency in the drawer is left, and I count it as must-fix 1 below.
+
+I did not open the iOS push or officer step frames, the Android parity goldens, the `fs2-*` or `light-*` captures, or the server copy beyond `ready_check.go`.
+
+**2. Round-4 items checked**
+- **Must-fix 1, enchant row: cleared.** `android-r5/raid-01-top.png` reads `Boots not enchanted` with nothing under it. The fixtures and `ready_check.go` carry only the title.
+- **Must-fix 2, stale sync stamps: mostly cleared, drawer still stale.** Android Home reads `Synced 8 h ago`, and iOS Gear reads `synced 8 h ago`. The Android drawer head still reads `Updated 12 d ago from Battle.net` in warning orange. This is in `android-r5/drawer-02-open.png` and `drawer-04-refresh-after.png`, so the Refresh frame never changes the stamp. See must-fix 1 below.
+- **Orphan age on feed rows: not cleared, covered by your KEEP.**
+  - Examples: `Thu` under `Thu 24 Dec` in `ios/activity-01-top.png`, `Sat` on its own line, `just now` in `android-r5/activity-01-top.png`.
+  - The round-3 ruling stands, because I accept the wrapping argument. The duplicate day on the Molten Core row is the one place it reads as a stutter. When the body already carries the date, drop the age line.
+- **Decimals on Activity: reverted by the house format. Captures still show the old format.** The `203.6 DPS` and `190.4 DPS` in both Activity captures predate the merge and I judged them by the house format. `182.0 DPS` in the Gear header is also over 100, so confirm it prints `182 DPS` under the house format. I did not check the goldens' text files.
+- **Bare `40`: cleared.** It now reads `Invites 6:45 pm CST · 40-man`.
+- **Duplicate `raid.noRaid` key: cleared.** Only `raid.tab.noRaid` remains in `en.json`. I found no other `noRaid` key with the same text (`widget.noRaid`, `intent.noRaid` have different text).
+- **Covered icon: stands.** `Missing [Kings icon] Kings · Might · Wisdom and 2 more` has one icon, which the Might and Wisdom art KEEP covers. The `and 2 more` in gold on a red line is a little loud but reads as a link, which it is.
+
+**Must-fix**
+1. **Android drawer stamp.** `Updated 12 d ago` sits beside Home's `Synced 8 h ago` in the same capture set. Either the fixture's `synced_at` was moved for the tabs but not for the drawer's source, or the two read different fields. A reviewer or store listing sees an app that contradicts itself and looks broken. Fix the fixture or the field, re-shoot `drawer-*`, and keep the one deliberate stale frame (iOS officer, 37 d) as the only stale capture.
+
+**Polish**
+- **Notifications drawer row, Android.** The value `Raids, gear and sims, logs, guild ladder, tiers, officer on` wraps and leaves `on` alone on a line. The value lists every group without saying which are off. Print a count or the off ones, such as `All on`, or `Raids, gear and sims on`.
+- **Duplicate day on the Activity feed row.** See the orphan age above.
+- **Raid push copy.** `Healers 5 of 8, 5 not answered. 21 of 40 signed, 24 hours out.` is good. Nothing to change.
+
+**3. Reads as authentic, keep**
+- Item rows and the Gear grid: quality-coloured names, `Off hand · Crafted: Blacksmithing`, `Finger 1`, `Trinket 2`, `Equipped`, and per-slot DPS. The counter `3 of 17 slots match the list` is true.
+- Raid tab: class-coloured names, `Damage 15 · 7 melee, 8 ranged`, `Bench 1 · Out 3 · 3 not answered`, `Bring flasks`.
+- The Missing line with real buff names.
+- Drawer head `Fury Warrior · 58 · Officer`, the `Main` tag, and `Devices: 3 signed in · newest Pixel 9`.
+- `Brakka passed you in the guild ladder`, `+12 over your 191`, and `Loot awarded` with the guild name left as typed.
+- Home hero `Level 58 Fury Warrior · 2 levels to the 60 list`.
+- The segmented In / Late / Bench / Out control on the teal fill: one state, one control.
+- The one framed Plate on Home, with plain panels elsewhere. I withdrew tell 8 in round 4 and do not reopen it.
+- No blocking visual tell is present (1, 2, 5, 8, 12, 13, 15): no glow, no gradient button, no hero slogan, no glass beyond the system iOS tab bar (KEEP), and no empty frames.
+
+**4. Verdict.** No blocking tells. One stale-state contradiction remains in the drawer, which is the same class as my round-4 must-fix 2 and is a fixture re-shoot, not a design change. I do not pass a surface that shows a 12-day-old stamp beside a fresh one. Fix it and the rest passes with the polish items above.
+
+VERDICT: FAIL
+

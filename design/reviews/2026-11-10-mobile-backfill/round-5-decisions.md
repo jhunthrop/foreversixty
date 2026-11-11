@@ -11,7 +11,7 @@ ux-designer NO SHIP; ai-slop FAIL. Codes: ID, GO, BR, UX, AS as before (round-4 
 | 3 | The officer push results show on iOS as on Android: after Mention, Accept or Decline the notification is replaced by the result (`Mentioned 3 healers in Discord.`, `Application accepted`, the failure line) | UX evidence, GO P2' |
 | 4 | Covered: the `and N more` tail is a tap target to the raid page's cover list; the one icon sits on the text baseline | ID N2, BR N3 residue |
 | 5 | Buttons from the shared tokens: primary `teal` fill, `tealEdge` border, `strong` text, no gradient; secondary `blue` with `blueEdge`; Android's `FlowButton` gains the secondary kind and loses the gold gradient (both apps then draw Preview mention and Accept alike) | BR R4-1, R4-2 |
-| 6 | Activity's trailing figures carry one decimal like the rest (`203.6 DPS`), the sim rows too | AS polish, ID N3 |
+| 6 | ~~Activity's trailing figures carry one decimal~~ REVERTED after the main merge: the house format (apps/shared/formats.json, owner 2026-11-10) prints figures grouped and whole from 100 (`204 DPS`) | AS polish, ID N3 |
 | 7 | The raid head's size reads `40-man` (`Invites 6:45 pm CST · 40-man`) | AS polish |
 | 8 | Copy: delete the unused one of `raid.noRaid` / `raid.tab.noRaid`; fold `FlowRows.kt:348`'s line-height override into a role | AS polish, BR N4 residue |
 

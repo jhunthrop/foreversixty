@@ -328,3 +328,50 @@ Key files:
 
 VERDICT: WORTH PAYING FOR
 
+## Round 5
+
+Round 5 confirmation of the Raid tab and the officer pushes, judged from the screenshots. I did not open the code, API or fixtures, and I did not see the Android Roborazzi goldens.
+
+**The page's job:** the officer runs raid week from the phone: who is short, who hasn't answered, who to chase, who to accept. The member gets the raid time, their sign-up and one tap to answer.
+
+## Round-4 follow-ups
+
+| # | Status | Evidence |
+|---|---|---|
+| P4' filtered roster | **Landed on both.** The selected chip `Not synced this week · 4` has a clear `×`. `All` is deselected and the stat reads `4 of 38`. | `ios/r4-officer-raid-06-roster-settled.png` (the file name is a round-4 leftover, but it was re-shot at 21:10 and shows the round-5 state), `android-r5/raid-officer-03-roster-not-synced.png` |
+| P2' iOS Mention result | **Landed.** The banner reads `Mentioned 3 healers in Discord.` and replaces the action text. | `ios/r4-push-short-03-result.png` |
+| P2' iOS applicant result | **Landed.** The banner reads `Application declined`. | `ios/r4-push-applicant-decline-03-result.png` |
+| P2' Android Decline | **Landed.** The shade reads `Application declined`. | `android-r5/push-applicant-04-decline-result.png` |
+| Not-synced line | **Landed.** Primary text colour, trailing chevron, a wide row. | `android-r5/raid-officer-02-covered-notsynced.png` |
+
+The round-3 and round-4 passes still hold: the count-first short push, Needs you directly under the head, the Covered line, and `Boots not enchanted` with no restated detail.
+
+## Findings
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+1. **The filtered roster's stat strip mixes scopes.** `4 of 38 on the roster` is filtered. `4 in game, no account` and `2 waiting` beside it read as guild-wide counts. An officer can't tell whether the 4 and 2 belong to the four listed raiders. Either scope them to the filter or drop them while a filter is on. The roster screen belongs to another lane, but the filtered state is this tab's entry point.
+2. **The iOS push results rest on the fixture.** They appear after the action, but I can't tell a failed Mention from a sent one. The failure line is claimed in the round-5 decisions and I saw no capture of it. An officer who replaces Discord with this button needs to see a red-state frame once on each platform.
+3. **The iOS officer tally has no comp target.** The frame reads `Healers 6`, not `5 of 8 · 3 short`. That is the known fixture limit. The tank, healer, damage order is proven only by the Android push and the mocks. It is not a regression, but it stays unproven on iOS until a targeted capture exists.
+
+**NIT**
+- The Android shade captures still show `Serial console enabled` beside the raid notification (round-3 P6, still open). Retake them on a clean emulator.
+- The Android Decline result reads `Application declined / New applicant: Mirelle…`. It works, but the body is the old push text. `Declined Mirelle, Holy Priest 60` would read as a result.
+- The roster-filter frames show Draknar and Lightningbolltz at 2 of 8 nights while they are listed as unsynced. That is consistent with the rule (addon `logged_at`, not attendance), but a `last synced` detail on each row would explain why they are in the list.
+- Android's three-action limit still drops Out from the raid push (round-4 P5). I accepted this ruling in round 4, and Out is one tap away on the raid page.
+- The iOS officer frames pin the clock to 17 Dec, so they read `Synced 37 d ago`. This is the documented stale capture.
+
+## Value test
+
+A guild would pay $15 or $25 a month for this as the officer's raid-day, away-from-PC companion. The loop is complete and visible:
+- The server names the first short role a day out.
+- One tap in the shade pings Discord, and the notification says what happened, on both platforms.
+- The applicant push accepts or declines from the lock screen.
+- In the tab, Needs you leads, the not-synced line names raiders, and the tap lands on a roster that says it is filtered, with a clear control.
+
+The sheet still wins for loot fairness, attendance trends and per-raider performance. Those live on the site, and this surface is not meant to replace them.
+
+VERDICT: WORTH PAYING FOR
+
