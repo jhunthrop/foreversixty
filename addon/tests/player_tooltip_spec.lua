@@ -110,7 +110,7 @@ describe("PlayerTooltip", function()
 			assert.are.equal(1, #lines)
 			assert.are.equal(string.format(L.scoreLine, 1240), lines[1].text)
 			assert.are.equal("Forever Score 1240", lines[1].text)
-			assert.are.same({ 0, 0.44, 0.87 }, { lines[1].r, lines[1].g, lines[1].b })
+			assert.are.same({ Theme.rgb(require("Tokens").color.rarity.rareText) }, { lines[1].r, lines[1].g, lines[1].b, 1 })
 			assert.are.equal(1, mock.countCalls(tooltip, "Show"))
 		end)
 

@@ -83,14 +83,12 @@ describe("Theme", function()
 		assert.are.equal("UIPanelButtonTemplate", frame.template)
 	end)
 
-	it("ships with the real tooltip and the client's own red button and close X, nothing else", function()
+	it("ships with the real tooltip, nothing else", function()
 		start({ templates = ALL_TEMPLATES })
 		-- Theme.compareTooltip names a real template: SetHyperlink and comparison are the
-		-- GameTooltip frame type's own behaviour. The addon's own frames in the site's style (the
-		-- panel, the onboarding; owner, 2026-11-08) take the client's red button and close X
-		-- (Widgets.clientButton, Widgets.clientCloseButton); every other control is the addon's own.
-		assert.are.same({ gameTooltip = "GameTooltipTemplate", clientButton = "UIPanelButtonTemplate",
-			closeButton = "UIPanelCloseButton" }, Theme.TEMPLATES)
+		-- GameTooltip frame type's own behaviour. Every control, the panel's and the tour's buttons
+		-- and close X included, is the addon's own in the site's recipes (brand audit BA1).
+		assert.are.same({ gameTooltip = "GameTooltipTemplate" }, Theme.TEMPLATES)
 	end)
 
 	it("builds a bare frame when the client does not", function()
@@ -104,59 +102,69 @@ describe("Theme", function()
 		assert.is_nil(frame.template)
 	end)
 
-	it("keeps the client's own font when the inherited font object exists", function()
+	it("sets the site's face over the client's font object, at the object's own size", function()
 		start({ fonts = { "GameFontNormal" } })
 		local frame = _G.CreateFrame("Frame")
 		local region = Theme.fontString(frame, "ARTWORK", "normal")
-		assert.are.equal("GameFontNormal", region:GetFont())
-		assert.is_nil(mock.firstCall(region, "SetFont"))
+		local call = mock.firstCall(region, "SetFont")
+		assert.are.equal(Theme.FONT_ROLES.normal.size, call[2])
+		assert.is_truthy(call[1]:find("OpenSans%-Regular%.ttf$"))
+		assert.are.same({}, Theme.diagnostics())
 	end)
 
-	it("falls back to the shipped font when the inherited font object is missing", function()
+	it("notes a missing font object and still sets the site's face", function()
 		start()
 		local frame = _G.CreateFrame("Frame")
 		local region = Theme.fontString(frame, "ARTWORK", "normal")
 		local call = mock.firstCall(region, "SetFont")
-		assert.is_not_nil(call)
-		assert.are.equal(Theme.FALLBACK_FONT.path, call[1])
-		assert.are.equal(Theme.FALLBACK_FONT.size, call[2])
+		assert.is_truthy(call[1]:find("OpenSans%-Regular%.ttf$"))
 		assert.are.same(
 			{ string.format(L.diagNoTemplate, "GameFontNormal") },
 			Theme.diagnostics())
 	end)
 
-	it("keeps the client's own font on a region that already exists", function()
+	it("falls back to the client's face where the client refuses the shipped file", function()
+		start({ fonts = { "GameFontNormal" } })
+		local region = Theme.fontString(_G.CreateFrame("Frame"), "ARTWORK", "normal")
+		local faces = {}
+		region.SetFont = function(_, path)
+			faces[#faces + 1] = path
+			return not path:find("AddOns", 1, true)
+		end
+		assert.is_false(Theme.setFace(region, Theme.FONT_ROLES.normal))
+		assert.are.equal(Theme.FALLBACK_FONT.path, faces[2])
+		assert.is_false(Theme.setFace(region, require("Tokens").type.addon.title))
+		assert.are.equal(Theme.TITLE_FALLBACK, faces[4])
+	end)
+
+	it("sets an existing region in the site's face for its role", function()
 		start({ fonts = { "GameFontNormalSmall" } })
 		local box = _G.CreateFrame("EditBox")
 		Theme.applyFont(box, "small")
-		assert.are.equal("GameFontNormalSmall", box:GetFont())
-		assert.is_nil(mock.firstCall(box, "SetFont"))
+		local call = mock.firstCall(box, "SetFont")
+		assert.is_truthy(call[1]:find("OpenSans%-Regular%.ttf$"))
+		assert.are.equal(Theme.FONT_ROLES.small.size, call[2])
+		assert.are.same({}, Theme.diagnostics())
 	end)
 
-	it("falls back to the shipped font when the region's font object is missing", function()
+	it("notes a region's missing font object and still sets the site's face", function()
 		start()
 		local box = _G.CreateFrame("EditBox")
 		Theme.applyFont(box, "small")
-		local call = mock.firstCall(box, "SetFont")
-		assert.is_not_nil(call)
-		assert.are.equal(Theme.FALLBACK_FONT.path, call[1])
-		assert.are.equal(Theme.FALLBACK_FONT.size, call[2])
+		assert.is_truthy(mock.firstCall(box, "SetFont")[1]:find("OpenSans%-Regular%.ttf$"))
 		assert.are.same(
 			{ string.format(L.diagNoTemplate, "GameFontNormalSmall") },
 			Theme.diagnostics())
 	end)
 
-	it("takes the class's own colour for the header", function()
+	it("takes the site's class colour for the header, whatever the client's table says", function()
 		start({ globals = { RAID_CLASS_COLORS = { WARRIOR = { r = 0.78, g = 0.61, b = 0.43 } } } })
-		local r, g, b = Theme.classColor("WARRIOR")
-		assert.are.equal(0.78, r)
-		assert.are.equal(0.61, g)
-		assert.are.equal(0.43, b)
+		assert.are.same({ Theme.rgb(require("Tokens").color.class.warrior) }, { Theme.classColor("WARRIOR") })
 	end)
 
-	it("falls back to gold when the client has no class colour table", function()
+	it("takes the site's class colour with no client table at all", function()
 		start()
-		assert.are.same({ Theme.rgb(Theme.HEX.gold) }, { Theme.classColor("WARRIOR") })
+		assert.are.same({ Theme.rgb(require("Tokens").color.class.shaman) }, { Theme.classColor("SHAMAN") })
 	end)
 
 	it("falls back to gold for a class token the table does not carry", function()

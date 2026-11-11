@@ -1,11 +1,22 @@
-// design/tokens/tokens.test.mjs: the token outputs (web, iOS, Android, the companion) must be what design/tokens/build.mjs
-// writes from tokens.json today, and each must open with the GENERATED line (a hand edit that
-// removed it fails too). Run: node --test design/tokens/tokens.test.mjs (the web unit job and mobile-codegen.yml).
+// design/tokens/tokens.test.mjs: the token outputs (web, iOS, Android, the companion, the addon)
+// must be what design/tokens/build.mjs writes from tokens.json today, and each must open with the
+// GENERATED line (a hand edit that removed it fails too). Run: node --test
+// design/tokens/tokens.test.mjs (the web unit job and mobile-codegen.yml).
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { relative } from 'node:path';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join, relative } from 'node:path';
 import { describe, it } from 'node:test';
-import { COMMAND, HEADER, OUTPUTS, flatten, generate, gradientStops, parseColor } from './build.mjs';
+import {
+  ADDON_FONT_DIR,
+  COMMAND,
+  HEADER,
+  OUTPUTS,
+  SHARED_FONT_DIR,
+  flatten,
+  generate,
+  gradientStops,
+  parseColor,
+} from './build.mjs';
 
 const generated = generate();
 const repoPath = (file) => relative(new URL('../..', import.meta.url).pathname, file);
@@ -93,5 +104,57 @@ describe('the band fade', () => {
     const [desktop, phone] = [...bandCss.matchAll(/--band-fade:\s*(\d+px);/g)].map((m) => m[1]);
     assert.equal(desktop, t.value);
     assert.equal(phone, t.ext.phone);
+  });
+});
+
+describe('the addon fonts', () => {
+  const doc = JSON.parse(readFileSync(new URL('./tokens.json', import.meta.url), 'utf8'));
+  const shipped = flatten(doc).tokens.filter((t) => t.top === 'font' && t.ext.lua);
+
+  it('ships a face for Open Sans and Marcellus', () => {
+    assert.deepEqual(shipped.map((t) => t.name).sort(), ['body', 'title']);
+  });
+
+  for (const t of shipped) {
+    for (const postScript of Object.values(t.ext.faces)) {
+      it(`ships ${postScript}.ttf unaltered, with its licence, and names a client fallback`, () => {
+        const file = join(ADDON_FONT_DIR, `${postScript}.ttf`);
+        assert.ok(existsSync(file), `copy apps/shared/fonts/${postScript}.ttf into addon/ForeverSixty/media/fonts`);
+        assert.ok(
+          readFileSync(file).equals(readFileSync(join(SHARED_FONT_DIR, `${postScript}.ttf`))),
+          `${postScript}.ttf differs from apps/shared/fonts: ship the upstream TTF, never a subset`,
+        );
+        assert.match(t.ext.lua.fallback, /^Fonts\\[A-Z_]+\.TTF$/);
+      });
+    }
+  }
+
+  it('ships each family\'s OFL licence beside its faces', () => {
+    for (const name of ['OFL-Marcellus.txt', 'OFL-OpenSans.txt']) {
+      assert.ok(existsSync(join(ADDON_FONT_DIR, name)), name);
+    }
+  });
+});
+
+describe('the Android XML colours', () => {
+  const res = new URL('../../apps/android/app/src/main/res/', import.meta.url).pathname;
+  // Every colour a values file or a shape drawable sets comes from colors_gen.xml (@color/fs_*). The
+  // ic_* vectors are white glyph masks the code tints, so they are not colours of their own.
+  const files = ['values', 'drawable'].flatMap((dir) =>
+    readdirSync(join(res, dir))
+      .filter((name) => name.endsWith('.xml') && !name.startsWith('ic_'))
+      .map((name) => join(res, dir, name)),
+  );
+
+  it('writes no colour value outside the generated file', () => {
+    const found = files.flatMap((file) =>
+      [...readFileSync(file, 'utf8').matchAll(/#[0-9A-Fa-f]{6,8}\b/g)].map((m) => `${repoPath(file)}: ${m[0]}`),
+    );
+    assert.deepEqual(found, []);
+  });
+
+  it('opens the window, so the splash, on the token ground', () => {
+    const themes = readFileSync(join(res, 'values/themes.xml'), 'utf8');
+    assert.match(themes, /android:windowBackground">@color\/fs_bg</);
   });
 });

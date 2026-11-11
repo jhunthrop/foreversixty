@@ -48,7 +48,7 @@ end
 -- design/specs/2026-11-08-addon-ux.md 1.8: "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan".
 -- The next step leads, then the count, then the off-plan count as a warning from one point; no build
 -- name, no "points" word, no "none off plan", no Apply Changes (the client's lit button says it).
-local WARN = "|cffff6b5c"
+local WARN = "|cfff0736b"
 
 describe("the strip's line (TalentMarks.stripSegments)", function()
 	it("leads with the next point's level and talent: Next at 25: Lethal Attacks · 12 of 15 · 3 off plan", function()
@@ -201,8 +201,8 @@ end)
 
 describe("Theme.inlineColor", function()
 	it("wraps text in the client's colour escape for a token", function()
-		assert.are.equal("|cffff6b5cx|r", Theme.inlineColor("warning", "x"))
-		assert.are.equal("|cffe5b955y|r", Theme.inlineColor("gold", "y"))
+		assert.are.equal("|cfff0736bx|r", Theme.inlineColor("warning", "x"))
+		assert.are.equal("|cffffec71y|r", Theme.inlineColor("gold", "y"))
 	end)
 end)
 
@@ -368,7 +368,7 @@ end)
 
 -- design/specs/2026-11-08-addon-ux.md 1.8: one line on the node's own tooltip, every run of the
 -- plan's points there in body colour, without the addon's name; an off-plan node a warning.
-local BODY = "|cffe9e4d8"
+local BODY = "|cffe3dfd9"
 
 describe("TalentMarks.nodeLine", function()
 	it("names the plan's points in the cell", function()

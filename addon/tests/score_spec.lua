@@ -278,20 +278,20 @@ describe("Score", function()
 	end)
 
 	describe("tierColor", function()
-		it("is the client's quality colour for the tier name", function()
-			_G.ITEM_QUALITY_COLORS = {
-				[1] = { r = 1, g = 1, b = 1 }, [2] = { r = 0.1, g = 1, b = 0 }, [3] = { r = 0, g = 0.44, b = 0.87 },
-				[4] = { r = 0.64, g = 0.21, b = 0.93 }, [5] = { r = 1, g = 0.5, b = 0 },
-			}
+		it("is the site's rarity colour for the tier name, rare and epic in the text tokens", function()
 			start(fixture())
-			local r, g, b = Score.tierColor("epic")
-			assert.are.same({ 0.64, 0.21, 0.93 }, { r, g, b })
-			assert.are.equal(1, (Score.tierColor("common")))
-			assert.are.equal(0.1, (Score.tierColor("uncommon")))
-			assert.are.equal(0, (Score.tierColor("rare")))
-			assert.are.equal(0.5, select(2, Score.tierColor("legendary")))
+			local rarity = require("Tokens").color.rarity
+			local function hex(tier)
+				return Theme.hexOf(Score.tierColor(tier))
+			end
+			assert.are.equal(rarity.epicText, hex("epic"))
+			assert.are.equal(rarity.common, hex("common"))
+			assert.are.equal(rarity.uncommon, hex("uncommon"))
+			assert.are.equal(rarity.rareText, hex("rare"))
+			assert.are.equal(rarity.legendary, hex("legendary"))
 			local record = Score.forCharacter("Obnoxious Yell", "ClassicBetaPvE2")
-			assert.are.same({ r = 0, g = 0.44, b = 0.87, a = 1 }, record.tierColor)
+			local r, g, b = Theme.rgb(rarity.rareText)
+			assert.are.same({ r = r, g = g, b = b, a = 1 }, record.tierColor)
 		end)
 
 		it("is nil for a missing or unknown tier, which shows the score uncoloured", function()

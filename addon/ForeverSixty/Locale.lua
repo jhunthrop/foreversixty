@@ -117,7 +117,7 @@ local L = {
 		"Open " .. SITE .. "/planner or " .. SITE .. "/sim.",
 		"Paste it into the box marked Import from addon.",
 	},
-	exportContents = "WHAT IS IN IT",
+	exportContents = "What is in it",
 	-- exportNoTalents is deleted with the refusal it belonged to
 	-- (controller ruling 5); this is the summary's line, not an error.
 	exportNoPoints = "No talent points yet",
@@ -193,7 +193,7 @@ local L = {
 	--- The rank cell on the row to take next, and on a finished row.
 	followNextTag = "Next · %s",
 	followLoadButton = "Load build",
-	followLoadTitle = "LOAD A BUILD",
+	followLoadTitle = "Load a build",
 	followForget = "Forget build",
 	followProgress = "%d of %d points",
 	-- Controller ruling 2: neither code format carries a build name, so a
@@ -242,13 +242,13 @@ local L = {
 	gearRequiresLevel = "requires level %d",
 	gearClassOnly = "%s only",
 	gearClassOr = " or ",
-	gearPlanned = "PLANNED",
-	gearEquipped = "EQUIPPED",
+	gearPlanned = "Planned",
+	gearEquipped = "Equipped",
 	gearMatches = "As planned",
 	gearEmptySlot = "Empty",
 	gearYoursBetter = "Yours is better (%+.0f)",
 	gearDiffers = "Different from the plan",
-	gearBagUpgrades = "UPGRADES IN YOUR BAGS",
+	gearBagUpgrades = "Upgrades in your bags",
 	gearEquipButton = "Equip",
 	gearInCombat = "In combat",
 	gearLoadABuild = "Load a build on the Talents page to compare your gear with the plan.",
@@ -378,13 +378,13 @@ local L = {
 	diagSettingsDrawn = "The Settings page drew %d of its %d controls.",
 	diagSettingsNoOpen = "This client did not open the Settings page; right-click prints the commands instead.",
 	-- The Overview page.
-	overviewBuildEyebrow = "YOUR BUILD",
+	overviewBuildEyebrow = "Your build",
 	overviewBuildNone = "No build loaded",
 	overviewBuildNoneHint = "Plan a build on the site and load its code on the Talents page.",
 	overviewBuildProgress = "%d of %d points taken",
 	overviewBuildOpen = "Open talents",
 	overviewBuildLoad = "Load a build",
-	overviewGearEyebrow = "GEAR",
+	overviewGearEyebrow = "Gear",
 	overviewGearNoBuild = "No build loaded",
 	overviewGearSlots = "%d of %d slots filled",
 	overviewGearNeedsBuild = "Load a build to compare what you wear with what you planned, "
@@ -393,9 +393,9 @@ local L = {
 	overviewGearNoUpgrades = "Nothing in your bags beats what you are wearing.",
 	overviewGearMatched = "%d of %d planned pieces equipped",
 	overviewGearOpen = "See gear",
-	overviewTreesEyebrow = "TALENT POINTS",
+	overviewTreesEyebrow = "Talent points",
 	overviewTreesNone = "No points spent yet. Talents open at level 10.",
-	overviewSyncEyebrow = "SEND TO THE SITE",
+	overviewSyncEyebrow = "Send to the site",
 	overviewSyncNothing = "There is nothing to send yet.",
 	-- Round-2 owner fix: there is always something to send -- the
 	-- character itself -- so the card leads with the crest, the name
@@ -419,7 +419,7 @@ local L = {
 	-- every key.
 	diagTooltipHookFailed = "The item tooltip hook failed once and turned itself off: %s",
 	-- The Overview's rotation card (section 6 Wave B).
-	overviewRotationEyebrow = "YOUR ROTATION",
+	overviewRotationEyebrow = "Your rotation",
 	overviewRotationNone = "No curated rotation for this spec yet.",
 	overviewRotationNoBuild = "Load a build to see your rotation.",
 	-- The Follow tab's own Top Gear upgrade queue reuses this line for its
@@ -470,7 +470,7 @@ local L = {
 	overviewRating = "Your rating on the site: %d, over %d fights",
 	-- The Overview's personal rating card (design section 3): always
 	-- shown, its detail widened by the advanced-detail toggle.
-	overviewRatingEyebrow = "PERSONAL RATING",
+	overviewRatingEyebrow = "Personal rating",
 	overviewRatingHeadline = "Rating %d, over %d fights",
 	-- "<label> <score>" for one component in the advanced breakdown,
 	-- joined with exportTreeSeparator: "Output 82 · Survival 91".
@@ -488,7 +488,7 @@ local L = {
 	guildRank = "%s",
 	guildNights = "%d raid nights logged",
 	guildRoster = "%d on the roster",
-	guildRosterTitle = "ROSTER BY RATING",
+	guildRosterTitle = "Roster by rating",
 	guildUnrated = "No rating yet",
 	guildNotOnSite = "This guild has no logs on " .. SITE .. " yet. "
 		.. "Upload a raid night and it appears here the next day.",
@@ -531,7 +531,7 @@ local L = {
 	-- section 3 item 2, section 4). Appended after the Wave C block above
 	-- for the same reason it gives: the smallest surface for another
 	-- lane's concurrent edit to merge.
-	followUpgradesTitle = "UPGRADES WAITING",
+	followUpgradesTitle = "Upgrades waiting",
 	-- "<slot>: <item name>" for one upgrade row's top line.
 	followUpgradeItem = "%s: %s",
 	-- The row's second line: where the item drops.

@@ -2012,7 +2012,7 @@ local function buildCopy(frame, top, bottom)
 	box:SetAlpha(0)
 	-- Its selection highlight would draw over the label (round 4: a grey block): never drawn.
 	if type(box.SetHighlightColor) == "function" then
-		box:SetHighlightColor(0, 0, 0, 0)
+		box:SetHighlightColor(Theme.rgb(Theme.HEX.shadow, 0))
 	end
 	local over = Theme.createFrame("Frame", nil, clip)
 	copy.over = over
@@ -2494,7 +2494,7 @@ function BuildDialog.drawPaste()
 	-- The selection under a collapsed line is kept (a next Ctrl+V replaces it) but never drawn.
 	if type(paste.box.SetHighlightColor) == "function" then
 		if view.hideSelection then
-			paste.box:SetHighlightColor(0, 0, 0, 0)
+			paste.box:SetHighlightColor(Theme.rgb(Theme.HEX.shadow, 0))
 		else
 			local r, g, b = Theme.rgb(Theme.HEX.gold)
 			paste.box:SetHighlightColor(r, g, b, 0.35)

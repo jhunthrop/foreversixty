@@ -6,7 +6,7 @@
 -- every spec reaches its module through require, not through the TOC.
 describe("the TOC", function()
 	local EXPECTED = {
-		"Locale.lua", "Data.lua", "Compat.lua", "Rules.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
+		"Tokens.lua", "Locale.lua", "Data.lua", "Compat.lua", "Rules.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
 		"Theme.lua", "Widgets.lua",
 		-- The secure talent click (TalentClick): the chip and the panel cover their buttons with it.
 		"TalentClick.lua", "Cards.lua",

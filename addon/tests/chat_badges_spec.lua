@@ -36,9 +36,9 @@ local function record()
 end
 
 local DOT = "\194\183" -- the middle dot
-local MUTED_DOT = "|cff9a9484" .. DOT .. "|r"
-local RARE = "|cff0070deFS 1240|r " .. MUTED_DOT
-local EPIC = "|cffa336edFS 1610|r " .. MUTED_DOT
+local MUTED_DOT = "|cff8b8784" .. DOT .. "|r"
+local RARE = "|cff3d94f0FS 1240|r " .. MUTED_DOT
+local EPIC = "|cffb866f5FS 1610|r " .. MUTED_DOT
 
 describe("ChatBadges", function()
 	local state, ChatBadges, Prefs, Theme, Score
@@ -97,7 +97,7 @@ describe("ChatBadges", function()
 			start(record())
 			local list = args("lf tank for rfc", "Smoke Gouda-ClassicBetaPvP")
 			assertOnly(run("CHAT_MSG_GUILD", list), list, EPIC .. " lf tank for rfc")
-			assert.are.equal("|cffa336ed" .. string.format(L.badge, 1610) .. "|r " .. MUTED_DOT, EPIC)
+			assert.are.equal("|cffb866f5" .. string.format(L.badge, 1610) .. "|r " .. MUTED_DOT, EPIC)
 		end)
 
 		-- Fix round 2, item 1: "[1240]" in rare blue read as a rare item link.
@@ -106,7 +106,7 @@ describe("ChatBadges", function()
 			local list = args("testing an addon", "Bow Jackzon-ClassicBetaPvP")
 			local shown = run("CHAT_MSG_GUILD", list)[2]
 			assert.are.equal("FS %d", L.badge)
-			assert.are.equal("|cff0070deFS 1240|r |cff9a9484" .. DOT .. "|r testing an addon", shown)
+			assert.are.equal("|cff3d94f0FS 1240|r |cff8b8784" .. DOT .. "|r testing an addon", shown)
 			local plain = shown:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
 			assert.are.equal("FS 1240 " .. DOT .. " testing an addon", plain)
 			assert.is_nil(plain:find("[", 1, true))
@@ -233,8 +233,8 @@ describe("ChatBadges", function()
 			local fresh = ChatBadges.badgeText({ score = 1240, tierColor = { r = 0, g = 0.44, b = 0.87, a = 1 } })
 			local stale = ChatBadges.badgeText({ score = 1240, stale = true,
 				tierColor = { r = 0, g = 0.44, b = 0.87, a = 1 } })
-			assert.are.equal(RARE, fresh)
-			assert.are.equal("|cff9a9484FS 1240|r " .. MUTED_DOT, stale)
+			assert.are.equal("|cff0070deFS 1240|r " .. MUTED_DOT, fresh)
+			assert.are.equal("|cff8b8784FS 1240|r " .. MUTED_DOT, stale)
 		end)
 	end)
 
@@ -315,7 +315,7 @@ describe("ChatBadges", function()
 			data.characters["Smoke Gouda-ClassicBetaPvP"].score = 1700
 			_G.ForeverSixtyData = data
 			local list = args("hi", "Smoke Gouda-ClassicBetaPvP")
-			assertOnly(run("CHAT_MSG_GUILD", list), list, "|cffa336edFS 1700|r " .. MUTED_DOT .. " hi")
+			assertOnly(run("CHAT_MSG_GUILD", list), list, "|cffb866f5FS 1700|r " .. MUTED_DOT .. " hi")
 		end)
 	end)
 
