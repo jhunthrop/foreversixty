@@ -1,16 +1,19 @@
-<!-- web/src/components/account/ConfirmButtons.svelte -->
-<!-- The two buttons every destructive ask on /account ends in (premium spec 2026-11-08 section 9:
-     Leave guild, Revoke, Unlink, Sign out): the danger confirm and a secondary Cancel. Focus lands
+<!-- web/src/components/ui/ConfirmButtons.svelte -->
+<!-- The two buttons every inline ask ends in (premium spec 2026-11-08 section 9; component audit
+     2026-11-10 cluster 14: account, raid clear and cancel, guild billing, the claim): the confirm
+     (danger, or primary for a non-destructive ask) and a secondary Cancel. Focus lands
      on Cancel, so a stray Enter backs out; Escape cancels; busy disables both. The question itself
      is the caller's, wherever its row puts it. -->
 <script lang="ts">
-  import { smallButton } from '../../lib/account/small-button';
   import { button, type ButtonSize } from '../../lib/ui/button';
-  import Spinner from '../ui/Spinner.svelte';
+  import { uiCopy } from '../../lib/ui/copy';
+  import Spinner from './Spinner.svelte';
 
   let {
     confirm,
-    cancel,
+    cancel = uiCopy.cancel,
+    busyLabel,
+    tone = 'danger',
     busy = false,
     size = 'sm',
     onconfirm,
@@ -18,7 +21,11 @@
     testid,
   }: {
     confirm: string;
-    cancel: string;
+    cancel?: string;
+    /** The confirm's busy word ("Leaving…"); the confirm's own words when left out. */
+    busyLabel?: string;
+    /** `primary` for an ask that destroys nothing (Upgrade, Claim). */
+    tone?: 'danger' | 'primary';
     busy?: boolean;
     size?: ButtonSize;
     onconfirm: () => void;
@@ -40,16 +47,16 @@
 <svelte:window onkeydown={onKeydown} />
 <button
   type="button"
-  class={size === 'sm' ? smallButton('danger') : button('danger', size)}
+  class={button(tone, size)}
   disabled={busy}
   aria-busy={busy ? 'true' : undefined}
   onclick={onconfirm}
   data-testid="{testid}-confirm"
-  >{#if busy}<Spinner />{/if}{confirm}</button
+  >{#if busy}<Spinner />{busyLabel ?? confirm}{:else}{confirm}{/if}</button
 >
 <button
   type="button"
-  class={size === 'sm' ? smallButton() : button('secondary', size)}
+  class={button('secondary', size)}
   disabled={busy}
   onclick={oncancel}
   use:focusOnMount

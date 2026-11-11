@@ -25,7 +25,7 @@
   import Tag from '../ui/Tag.svelte';
   import AccountGuildPlanLine from './AccountGuildPlanLine.svelte';
   import AccountGuildRowStep from './AccountGuildRowStep.svelte';
-  import ConfirmButtons from './ConfirmButtons.svelte';
+  import ConfirmButtons from '../ui/ConfirmButtons.svelte';
 
   let {
     guild,

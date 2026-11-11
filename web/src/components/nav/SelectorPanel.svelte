@@ -5,6 +5,7 @@
      focus return and the pointer write. Keyboard inside the list: ArrowUp/Down, Home/End and a
      letter move between rows (one roving tab stop); Enter or Space chooses. -->
 <script lang="ts">
+  import { trapTab } from '../../lib/ui/focus-trap';
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { FILTER_AFTER_CHARACTERS, VISIBLE_ROWS } from '../../lib/character-selector/config';
   import { listRows, type SelectorModel, type SelectorRow as Row } from '../../lib/character-selector/rows';
@@ -171,22 +172,7 @@
   }
 
   function onPanelKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Tab' || !sheet || panelEl === undefined) return;
-    const focusable = [
-      ...panelEl.querySelectorAll<HTMLElement>(
-        'button:not([disabled]):not([tabindex="-1"]), a[href], input, textarea',
-      ),
-    ];
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (first === undefined || last === undefined) return;
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
+    if (sheet && panelEl !== undefined) trapTab(event, panelEl);
   }
 
   /** Puts focus where a keyboard user starts: the current row, else the first row, else the first action. */

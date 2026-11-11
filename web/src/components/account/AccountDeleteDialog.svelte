@@ -6,6 +6,7 @@
      the title on open and stays inside; Escape, the scrim and Cancel close it (not while the call
      runs), and the owner gives focus back to the control that opened it. -->
 <script lang="ts">
+  import { trapTab } from '../../lib/ui/focus-trap';
   import { tick } from 'svelte';
   import { accountPageCopy } from '../../lib/account/account-page-copy';
   import { confirmMatches, confirmWordFor, lineParts } from '../../lib/account/delete-confirm';
@@ -67,8 +68,6 @@
     if (refusal !== '') void tick().then(() => alert?.scrollIntoView({ block: 'nearest' }));
   });
 
-  const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])';
-
   function close(): void {
     if (!busy) onclose();
   }
@@ -79,18 +78,7 @@
       close();
       return;
     }
-    if (event.key !== 'Tab' || panel === undefined) return;
-    const items = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)];
-    if (items.length === 0) return;
-    const first = items[0];
-    const last = items[items.length - 1];
-    if (event.shiftKey && (document.activeElement === first || document.activeElement === heading)) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
+    if (panel !== undefined) trapTab(event, panel, heading);
   }
 
   function submit(event: SubmitEvent): void {
