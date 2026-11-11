@@ -17,7 +17,6 @@ func signInEmail(to, link string, now time.Time) (mail.Message, error) {
 		Preheader: copygen.Fill(copygen.MailSignInPreheader, "{minutes}", minutes),
 		Heading:   copygen.MailSignInHeading,
 		Lead:      copygen.Fill(copygen.MailSignInLead, "{minutes}", minutes),
-		Note:      copygen.MailSignInNote,
 		Action:    mail.Action{Label: copygen.MailSignInAction, URL: link},
 	}, now)
 }

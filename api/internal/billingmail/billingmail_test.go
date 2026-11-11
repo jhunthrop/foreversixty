@@ -44,7 +44,7 @@ func allEmails() map[string]mail.Message {
 func TestEmailSubjectsAndLinks(t *testing.T) {
 	want := map[string]struct{ subject, action string }{
 		"renewal": {"Your Guild plan renews on 18 Nov 2027", "Manage or cancel: https://x/m"},
-		"size":    {"Olympus XXVII has 31 members; Guild covers 25", "Look at Raid guild: https://x/s"},
+		"size":    {"Olympus XXVII has 31 members; Guild covers 25", "See Raid guild: https://x/s"},
 		"offered": {"Olympus XXVII offers you a Premium seat", "Accept or decline: https://x/a"},
 		"given":   {"You have Premium from Olympus XXVII", "See your plan: https://x/a"},
 		"removed": {"Your Premium seat from Olympus XXVII has ended", "Come back at $5 a month: https://x/c"},
@@ -62,13 +62,13 @@ func TestEmailSubjectsAndLinks(t *testing.T) {
 	}
 }
 
-// The renewal reads as the account page does: the plan, the date and the price in a figure
-// block, then how to stop it and the founder note.
+// The renewal says each fact once: the plan and date in the heading, the guild and price in the
+// figure block, then the founder note.
 func TestRenewalText(t *testing.T) {
 	m := allEmails()["renewal"]
 	want := "Your Guild plan renews on 18 Nov 2027\n\n" +
 		"To stop it, cancel before then and nothing more is charged.\n\n" +
-		"Plan: Guild for Olympus XXVII\nRenews: 18 Nov 2027\nPrice: $120 a year\n\n" +
+		"Guild: Olympus XXVII\nPrice: $120 a year\n\n" +
 		"Founder price, kept while your plan stays active.\n\n" +
 		"Manage or cancel: https://x/m\n\n" +
 		"--\nA fan-made player tool. Not affiliated with Blizzard.\n" +
@@ -82,7 +82,7 @@ func TestRenewalText(t *testing.T) {
 func TestPremiumRenewalAtListPrice(t *testing.T) {
 	m := must(RenewalEmail(Renewal{To: "a@b.c", Plan: PlanPremium, RenewsOn: fixtureDate,
 		AmountCents: 4000, Interval: "yearly", ManageURL: "https://x/m"}, sentAt))
-	if !strings.Contains(m.Text, "Plan: Premium\n") || !strings.Contains(m.Text, "Price: $40 a year\n") {
+	if strings.Contains(m.Text, "Guild:") || !strings.Contains(m.Text, "Price: $40 a year\n") {
 		t.Errorf("text = %q", m.Text)
 	}
 	if strings.Contains(m.Text, "Founder") {
@@ -101,7 +101,7 @@ func TestNoExclamationMarks(t *testing.T) {
 func TestMonthlySizeEmail(t *testing.T) {
 	m := must(SizeEmail(Size{To: "a@b.c", Guild: guild, Members: 40, MemberLimit: 25, RenewsOn: fixtureDate,
 		RaidGuildCents: 2500, Interval: "monthly", SettingsURL: "https://x/s"}, sentAt))
-	if !strings.Contains(m.Text, "Raid guild at $25 a month.") {
+	if !strings.Contains(m.Text, "Raid guild: $25 a month\n") {
 		t.Errorf("text = %q", m.Text)
 	}
 }

@@ -64,8 +64,8 @@ type SeatRemoved struct {
 	ComebackURL string
 }
 
-// RenewalEmail builds the renewal notice: the plan, the date and the price as the account page
-// lists them, and how to stop it.
+// RenewalEmail builds the renewal notice: the plan and date in the heading, the price (and the
+// guild a guild plan is for) in the figure block, and how to stop it. Each fact is said once.
 func RenewalEmail(r Renewal, now time.Time) (mail.Message, error) {
 	price, err := FormatPrice(r.AmountCents, r.Interval)
 	if err != nil {
@@ -73,10 +73,11 @@ func RenewalEmail(r Renewal, now time.Time) (mail.Message, error) {
 	}
 	date := EmailDate(r.RenewsOn)
 	plan := string(r.Plan)
-	planFact := plan
+	var facts []mail.Fact
 	if r.Guild != "" {
-		planFact = copygen.Fill(copygen.MailFactPlanForGuild, "{plan}", plan, "{guild}", r.Guild)
+		facts = append(facts, mail.Fact{Label: copygen.MailFactGuild, Value: r.Guild})
 	}
+	facts = append(facts, mail.Fact{Label: copygen.MailFactPrice, Value: price})
 	note := ""
 	if r.Founder {
 		note = copygen.PlanFounderNote
@@ -87,17 +88,14 @@ func RenewalEmail(r Renewal, now time.Time) (mail.Message, error) {
 		Preheader: copygen.Fill(copygen.MailRenewalPreheader, "{price}", price, "{date}", date),
 		Heading:   copygen.Fill(copygen.MailRenewalHeading, "{plan}", plan, "{date}", date),
 		Lead:      copygen.MailRenewalLead,
-		Facts: []mail.Fact{
-			{Label: copygen.MailFactPlan, Value: planFact},
-			{Label: copygen.MailFactRenews, Value: date},
-			{Label: copygen.MailFactPrice, Value: price},
-		},
-		Note:   note,
-		Action: mail.Action{Label: copygen.MailRenewalAction, URL: r.ManageURL},
+		Facts:     facts,
+		Note:      note,
+		Action:    mail.Action{Label: copygen.MailRenewalAction, URL: r.ManageURL},
 	}, now)
 }
 
-// SizeEmail builds the notice for a Guild-tier guild over its member limit.
+// SizeEmail builds the notice for a Guild-tier guild over its member limit: the count and the
+// limit, then what Raid guild costs and when the plan renews.
 func SizeEmail(s Size, now time.Time) (mail.Message, error) {
 	price, err := FormatPrice(s.RaidGuildCents, s.Interval)
 	if err != nil {
@@ -106,75 +104,60 @@ func SizeEmail(s Size, now time.Time) (mail.Message, error) {
 	if s.MemberLimit <= 0 {
 		return mail.Message{}, ErrNoMemberLimit
 	}
-	date := EmailDate(s.RenewsOn)
 	members, limit := strconv.Itoa(s.Members), strconv.Itoa(s.MemberLimit)
 	return mail.Compose(mail.Letter{
 		To:        s.To,
 		Subject:   copygen.Fill(copygen.MailSizeSubject, "{guild}", s.Guild, "{members}", members, "{limit}", limit),
-		Preheader: copygen.MailSizePreheader,
-		Heading:   copygen.Fill(copygen.MailSizeHeading, "{guild}", s.Guild),
-		Lead:      copygen.Fill(copygen.MailSizeLead, "{guild}", s.Guild, "{members}", members, "{limit}", limit),
+		Preheader: copygen.Fill(copygen.MailSizePreheader, "{price}", price),
+		Heading:   copygen.Fill(copygen.MailSizeHeading, "{guild}", s.Guild, "{members}", members),
+		Lead:      copygen.Fill(copygen.MailSizeLead, "{limit}", limit),
 		Facts: []mail.Fact{
-			{Label: copygen.MailFactGuild, Value: s.Guild},
-			{Label: copygen.MailFactMembers, Value: copygen.Fill(copygen.MailFactMembersOf, "{members}", members, "{limit}", limit)},
-			{Label: copygen.MailFactRenews, Value: date},
 			{Label: string(PlanRaidGuild), Value: price},
+			{Label: copygen.MailFactRenews, Value: EmailDate(s.RenewsOn)},
 		},
-		Note:   copygen.Fill(copygen.MailSizeNote, "{date}", date, "{price}", price),
 		Action: mail.Action{Label: copygen.MailSizeAction, URL: s.SettingsURL},
 	}, now)
 }
 
 // SeatOfferedEmail builds the offer to a paying member.
 func SeatOfferedEmail(o SeatOffered, now time.Time) (mail.Message, error) {
-	ends := EmailDate(o.OwnEndsOn)
 	return mail.Compose(mail.Letter{
 		To:        o.To,
 		Subject:   copygen.Fill(copygen.MailSeatOfferedSubject, "{guild}", o.Guild),
 		Preheader: copygen.MailSeatOfferedPreheader,
 		Heading:   copygen.Fill(copygen.MailSeatOfferedHeading, "{guild}", o.Guild),
-		Lead:      copygen.Fill(copygen.MailSeatOfferedLead, "{from}", o.From, "{guild}", o.Guild),
-		Facts: []mail.Fact{
-			{Label: copygen.MailFactFrom, Value: o.From},
-			{Label: copygen.MailFactOwnEnds, Value: ends},
-		},
-		Note:   copygen.Fill(copygen.MailSeatOfferedNote, "{date}", ends),
-		Action: mail.Action{Label: copygen.MailSeatOfferedAction, URL: o.AccountURL},
+		Lead:      copygen.Fill(copygen.MailSeatOfferedLead, "{from}", o.From),
+		Note:      copygen.Fill(copygen.MailSeatOfferedNote, "{date}", EmailDate(o.OwnEndsOn)),
+		Action:    mail.Action{Label: copygen.MailSeatOfferedAction, URL: o.AccountURL},
 	}, now)
 }
 
-// SeatGivenEmail builds the notice to a non-paying member.
+// SeatGivenEmail builds the notice to a non-paying member, in the account page's own words for a
+// given seat (plan.seatGivenBy).
 func SeatGivenEmail(g SeatGiven, now time.Time) (mail.Message, error) {
 	return mail.Compose(mail.Letter{
 		To:        g.To,
 		Subject:   copygen.Fill(copygen.MailSeatGivenSubject, "{guild}", g.Guild),
 		Preheader: copygen.MailSeatGivenPreheader,
 		Heading:   copygen.Fill(copygen.MailSeatGivenHeading, "{guild}", g.Guild),
-		Lead:      copygen.Fill(copygen.MailSeatGivenLead, "{from}", g.From, "{guild}", g.Guild),
-		Note:      copygen.MailSeatGivenNote,
+		Lead:      copygen.Fill(copygen.PlanSeatGivenBy, "{name}", g.From),
 		Action:    mail.Action{Label: copygen.MailSeatGivenAction, URL: g.AccountURL},
 	}, now)
 }
 
-// SeatRemovedEmail builds the come-back notice.
+// SeatRemovedEmail builds the come-back notice; its button carries the price.
 func SeatRemovedEmail(r SeatRemoved, now time.Time) (mail.Message, error) {
 	price, err := FormatPrice(r.AmountCents, r.Interval)
 	if err != nil {
 		return mail.Message{}, err
 	}
-	ended := EmailDate(r.EndedOn)
 	return mail.Compose(mail.Letter{
 		To:        r.To,
 		Subject:   copygen.Fill(copygen.MailSeatRemovedSubject, "{guild}", r.Guild),
 		Preheader: copygen.MailSeatRemovedPreheader,
 		Heading:   copygen.MailSeatRemovedHeading,
-		Lead:      copygen.Fill(copygen.MailSeatRemovedLead, "{guild}", r.Guild, "{date}", ended),
-		Facts: []mail.Fact{
-			{Label: copygen.MailFactGuild, Value: r.Guild},
-			{Label: copygen.MailFactEnded, Value: ended},
-			{Label: copygen.MailFactPrice, Value: price},
-		},
-		Note:   copygen.MailSeatRemovedNote,
-		Action: mail.Action{Label: copygen.Fill(copygen.MailSeatRemovedAction, "{price}", price), URL: r.ComebackURL},
+		Lead:      copygen.Fill(copygen.MailSeatRemovedLead, "{guild}", r.Guild, "{date}", EmailDate(r.EndedOn)),
+		Note:      copygen.MailSeatRemovedNote,
+		Action:    mail.Action{Label: copygen.Fill(copygen.MailSeatRemovedAction, "{price}", price), URL: r.ComebackURL},
 	}, now)
 }

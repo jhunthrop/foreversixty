@@ -53,7 +53,6 @@ var raidCopy = struct {
 	WhenName        string
 	WhenFormat      string // %d the unix start, twice
 	WasName         string
-	WasFormat       string // %d the old unix start
 	StruckFormat    string // %s a struck-through value
 	SignedName      string
 	SignedLead      string // {signed} signed up, {size} the raid size (roster.signed)
@@ -91,7 +90,6 @@ var raidCopy = struct {
 	WhenName:       copygen.NotificationsWhen,
 	WhenFormat:     "<t:%d:t> (<t:%d:R>)",
 	WasName:        copygen.DiscordRaidWasName,
-	WasFormat:      "<t:%d:F>",
 	StruckFormat:   "~~%s~~",
 	SignedName:     copygen.DiscordRaidSignedName,
 	SignedLead:     copygen.DiscordRaidSignedLead,
@@ -260,7 +258,7 @@ func postFields(p RaidPost) []EmbedField {
 	}
 	fields := []EmbedField{raidField(raidCopy.WhenName, when)}
 	if p.State == PostMoved && p.Was != nil {
-		fields = append(fields, raidField(raidCopy.WasName, fmt.Sprintf(raidCopy.WasFormat, p.Was.Unix())))
+		fields = append(fields, raidField(raidCopy.WasName, textfmt.RaidWhen(*p.Was, textfmt.Location(in.Timezone))))
 	}
 	fields = append(fields, signedField(in))
 	if buffs := buffsValue(in); buffs != "" {

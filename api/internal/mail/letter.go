@@ -41,14 +41,25 @@ func Compose(l Letter, now time.Time) (Message, error) {
 	return Message{To: l.To, Subject: l.Subject, Text: renderText(l, now), HTML: html}, nil
 }
 
-// footerLines are the shell's closing lines, the site footer's own (shared.footer.*), then how
-// to reach a person.
-func footerLines(now time.Time) []string {
-	return []string{
-		copygen.SharedFooterFanLine,
-		copygen.Fill(copygen.SharedFooterOperator, "{year}", strconv.Itoa(now.Year())),
-		copygen.MailFooterContact,
+// footer is the shell's closing lines: the site footer's own (shared.footer.*), then how to reach
+// a person, whose address the HTML part links.
+type footer struct {
+	FanLine, Operator string
+	// ContactLead and ContactTail are the contact line around the address.
+	ContactLead, ContactTail, Email string
+}
+
+func footerOf(now time.Time) footer {
+	lead, tail, _ := strings.Cut(copygen.MailFooterContact, "{email}")
+	return footer{
+		FanLine:     copygen.SharedFooterFanLine,
+		Operator:    copygen.Fill(copygen.SharedFooterOperator, "{year}", strconv.Itoa(now.Year())),
+		ContactLead: lead, ContactTail: tail, Email: copygen.MailFooterEmail,
 	}
+}
+
+func (f footer) lines() []string {
+	return []string{f.FanLine, f.Operator, f.ContactLead + f.Email + f.ContactTail}
 }
 
 // renderText is the plain-text alternative: the same blocks, one blank line apart.
@@ -64,7 +75,7 @@ func renderText(l Letter, now time.Time) string {
 	if l.Note != "" {
 		blocks = append(blocks, l.Note)
 	}
-	blocks = append(blocks, l.Action.Label+": "+l.Action.URL, textRule+"\n"+strings.Join(footerLines(now), "\n"))
+	blocks = append(blocks, l.Action.Label+": "+l.Action.URL, textRule+"\n"+strings.Join(footerOf(now).lines(), "\n"))
 	return strings.Join(blocks, "\n\n") + "\n"
 }
 

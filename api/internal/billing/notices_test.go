@@ -177,7 +177,7 @@ func TestNotices_SizeAbove25Only(t *testing.T) {
 	if m.Subject != "Olympus XXVII has 26 members; Guild covers 25" {
 		t.Errorf("subject %q", m.Subject)
 	}
-	if !strings.Contains(m.Text, "Raid guild at $20 a month") || !strings.Contains(m.Text, "/guild/us/hardcore/olympus-xxvii/settings#billing") {
+	if !strings.Contains(m.Text, "Raid guild: $20 a month\n") || !strings.Contains(m.Text, "/guild/us/hardcore/olympus-xxvii/settings#billing") {
 		t.Errorf("body %q", m.Text)
 	}
 }

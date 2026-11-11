@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/events"
@@ -74,8 +75,9 @@ func (p *EventProducer) UploadParsed(ctx context.Context, e UploadParsed) {
 	events.Quietly(ctx, p.Publisher, p.Log, UploadParsedEvent(p.PublicBaseURL, e))
 }
 
-// pushLogBody is a parsed log's push body: the zone, then the fights line.
-const pushLogBody = "%s · %s"
+// pushPairBody joins two parts of a push body: a log's zone and its fights line, a run's DPS
+// and its name.
+const pushPairBody = "%s · %s"
 
 // SimFinishedEvent is the run as an event: plain text for push, the fact for Discord. Push and
 // the webhook embed word the run with the same keys (embedCopy).
@@ -89,6 +91,9 @@ func SimFinishedEvent(publicBaseURL string, e SimFinished) events.Event {
 		}
 	}
 	body := copygen.Fill(embedCopy.SimResultDPS, "{dps}", textfmt.Grouped(e.DPS))
+	if run := collapse(e.Title); run != "" {
+		body = fmt.Sprintf(pushPairBody, body, run)
+	}
 	if headline := collapse(e.Headline); headline != "" {
 		body = headline
 	}
@@ -106,12 +111,13 @@ func UploadParsedEvent(publicBaseURL string, e UploadParsed) events.Event {
 		title = copygen.Fill(embedCopy.LogTitle, "{title}", name)
 	}
 	body := copygen.Fill(embedCopy.LogPushFights, "{fights}", embedCopy.LogBossFights.For(e.Fights), "{kills}", killsPhrase(e.Kills))
-	if zone := collapse(e.Zone); zone != "" {
-		body = fmt.Sprintf(pushLogBody, zone, body)
-	}
 	icon := ""
 	if zone := collapse(e.Zone); zone != "" {
 		icon = zoneicons.ForName(zone)
+		// The zone leads the body unless the title already names it ("Tuesday Molten Core").
+		if !strings.Contains(strings.ToLower(title), strings.ToLower(zone)) {
+			body = fmt.Sprintf(pushPairBody, zone, body)
+		}
 	}
 	return events.Event{
 		Kind: events.ReportReady, Audience: events.Users(e.UserID), DedupeKey: "report.ready:" + e.ReportID,

@@ -902,8 +902,8 @@ const DiscordRaidBuffsName = "Buffs"
 // DiscordRaidBuffsMissing is discord.raid.buffsMissing: Missing: {buffs}
 const DiscordRaidBuffsMissing = "Missing: {buffs}"
 
-// DiscordRaidBuffsShort is discord.raid.buffsShort: Short: {buffs}
-const DiscordRaidBuffsShort = "Short: {buffs}"
+// DiscordRaidBuffsShort is discord.raid.buffsShort: Need more: {buffs}
+const DiscordRaidBuffsShort = "Need more: {buffs}"
 
 // DiscordRaidReminderLead is discord.raid.reminderLead: **{title} is tomorrow**, <t:{unix}:t>.
 const DiscordRaidReminderLead = "**{title} is tomorrow**, <t:{unix}:t>."
@@ -980,38 +980,23 @@ const DiscordReportParsesName = "Top parses"
 // DiscordReportParseLine is discord.report.parseLine: {name} {value} {metric} on {boss}
 const DiscordReportParseLine = "{name} {value} {metric} on {boss}"
 
-// MailFooterContact is mail.footer.contact: Reply to this email or write to help@foreversixty.gg.
-const MailFooterContact = "Reply to this email or write to help@foreversixty.gg."
+// MailFooterContact is mail.footer.contact: Reply to this email or write to {email}.
+const MailFooterContact = "Reply to this email or write to {email}."
 
-// MailFactPlan is mail.fact.plan: Plan
-const MailFactPlan = "Plan"
+// MailFooterEmail is mail.footer.email: help@foreversixty.gg
+const MailFooterEmail = "help@foreversixty.gg"
+
+// MailLinkFallback is mail.linkFallback: If the button does not work, open this link:
+const MailLinkFallback = "If the button does not work, open this link:"
 
 // MailFactGuild is mail.fact.guild: Guild
 const MailFactGuild = "Guild"
 
-// MailFactRenews is mail.fact.renews: Renews
-const MailFactRenews = "Renews"
-
 // MailFactPrice is mail.fact.price: Price
 const MailFactPrice = "Price"
 
-// MailFactMembers is mail.fact.members: Members
-const MailFactMembers = "Members"
-
-// MailFactFrom is mail.fact.from: From
-const MailFactFrom = "From"
-
-// MailFactOwnEnds is mail.fact.ownEnds: Your Premium ends
-const MailFactOwnEnds = "Your Premium ends"
-
-// MailFactEnded is mail.fact.ended: Ended
-const MailFactEnded = "Ended"
-
-// MailFactPlanForGuild is mail.fact.planForGuild: {plan} for {guild}
-const MailFactPlanForGuild = "{plan} for {guild}"
-
-// MailFactMembersOf is mail.fact.membersOf: {members} of {limit} covered
-const MailFactMembersOf = "{members} of {limit} covered"
+// MailFactRenews is mail.fact.renews: Renews
+const MailFactRenews = "Renews"
 
 // MailRenewalSubject is mail.renewal.subject: Your {plan} plan renews on {date}
 const MailRenewalSubject = "Your {plan} plan renews on {date}"
@@ -1031,32 +1016,29 @@ const MailRenewalAction = "Manage or cancel"
 // MailSizeSubject is mail.size.subject: {guild} has {members} members; Guild covers {limit}
 const MailSizeSubject = "{guild} has {members} members; Guild covers {limit}"
 
-// MailSizePreheader is mail.size.preheader: Raid guild may suit it better at renewal. Nothing switches off either way.
-const MailSizePreheader = "Raid guild may suit it better at renewal. Nothing switches off either way."
+// MailSizePreheader is mail.size.preheader: Raid guild covers more, at {price}.
+const MailSizePreheader = "Raid guild covers more, at {price}."
 
-// MailSizeHeading is mail.size.heading: {guild} has outgrown its Guild plan
-const MailSizeHeading = "{guild} has outgrown its Guild plan"
+// MailSizeHeading is mail.size.heading: {guild} has {members} verified members
+const MailSizeHeading = "{guild} has {members} verified members"
 
-// MailSizeLead is mail.size.lead: {guild} has {members} verified members, and its Guild plan covers up to {limit}.
-const MailSizeLead = "{guild} has {members} verified members, and its Guild plan covers up to {limit}."
+// MailSizeLead is mail.size.lead: Its Guild plan covers up to {limit}. Raid guild covers more, and nothing switches off either way.
+const MailSizeLead = "Its Guild plan covers up to {limit}. Raid guild covers more, and nothing switches off either way."
 
-// MailSizeNote is mail.size.note: When it renews on {date}, you may want Raid guild at {price}. Nothing switches off either way.
-const MailSizeNote = "When it renews on {date}, you may want Raid guild at {price}. Nothing switches off either way."
-
-// MailSizeAction is mail.size.action: Look at Raid guild
-const MailSizeAction = "Look at Raid guild"
+// MailSizeAction is mail.size.action: See Raid guild
+const MailSizeAction = "See Raid guild"
 
 // MailSeatOfferedSubject is mail.seatOffered.subject: {guild} offers you a Premium seat
 const MailSeatOfferedSubject = "{guild} offers you a Premium seat"
 
-// MailSeatOfferedPreheader is mail.seatOffered.preheader: Accept it and you are never charged twice.
-const MailSeatOfferedPreheader = "Accept it and you are never charged twice."
+// MailSeatOfferedPreheader is mail.seatOffered.preheader: If you accept, you are never charged twice.
+const MailSeatOfferedPreheader = "If you accept, you are never charged twice."
 
 // MailSeatOfferedHeading is mail.seatOffered.heading: {guild} offers you a Premium seat
 const MailSeatOfferedHeading = "{guild} offers you a Premium seat"
 
-// MailSeatOfferedLead is mail.seatOffered.lead: {from} offered you a Premium seat in {guild}.
-const MailSeatOfferedLead = "{from} offered you a Premium seat in {guild}."
+// MailSeatOfferedLead is mail.seatOffered.lead: Sent by {from}.
+const MailSeatOfferedLead = "Sent by {from}."
 
 // MailSeatOfferedNote is mail.seatOffered.note: If you accept, your own Premium stops renewing and ends on {date}. The seat starts then, so you are never charged twice.
 const MailSeatOfferedNote = "If you accept, your own Premium stops renewing and ends on {date}. The seat starts then, so you are never charged twice."
@@ -1073,12 +1055,6 @@ const MailSeatGivenPreheader = "Nothing is billed to you."
 // MailSeatGivenHeading is mail.seatGiven.heading: You have Premium from {guild}
 const MailSeatGivenHeading = "You have Premium from {guild}"
 
-// MailSeatGivenLead is mail.seatGiven.lead: {from} gave you a Premium seat in {guild}.
-const MailSeatGivenLead = "{from} gave you a Premium seat in {guild}."
-
-// MailSeatGivenNote is mail.seatGiven.note: It lasts while the guild's plan does; nothing is billed to you.
-const MailSeatGivenNote = "It lasts while the guild's plan does; nothing is billed to you."
-
 // MailSeatGivenAction is mail.seatGiven.action: See your plan
 const MailSeatGivenAction = "See your plan"
 
@@ -1091,8 +1067,8 @@ const MailSeatRemovedPreheader = "Your own Premium can come back at the price yo
 // MailSeatRemovedHeading is mail.seatRemoved.heading: Your Premium seat has ended
 const MailSeatRemovedHeading = "Your Premium seat has ended"
 
-// MailSeatRemovedLead is mail.seatRemoved.lead: Your Premium seat in {guild} ended on {date}.
-const MailSeatRemovedLead = "Your Premium seat in {guild} ended on {date}."
+// MailSeatRemovedLead is mail.seatRemoved.lead: Your seat in {guild} ended on {date}.
+const MailSeatRemovedLead = "Your seat in {guild} ended on {date}."
 
 // MailSeatRemovedNote is mail.seatRemoved.note: You gave up your own Premium for it, so this link brings it back at the price you had.
 const MailSeatRemovedNote = "You gave up your own Premium for it, so this link brings it back at the price you had."
@@ -1103,17 +1079,14 @@ const MailSeatRemovedAction = "Come back at {price}"
 // MailSignInSubject is mail.signIn.subject: Your Forever Sixty sign-in link
 const MailSignInSubject = "Your Forever Sixty sign-in link"
 
-// MailSignInPreheader is mail.signIn.preheader: The link works once and expires in {minutes} minutes.
-const MailSignInPreheader = "The link works once and expires in {minutes} minutes."
+// MailSignInPreheader is mail.signIn.preheader: Works once, for the next {minutes} minutes.
+const MailSignInPreheader = "Works once, for the next {minutes} minutes."
 
 // MailSignInHeading is mail.signIn.heading: Sign in to Forever Sixty
 const MailSignInHeading = "Sign in to Forever Sixty"
 
-// MailSignInLead is mail.signIn.lead: The link works once and expires in {minutes} minutes.
-const MailSignInLead = "The link works once and expires in {minutes} minutes."
-
-// MailSignInNote is mail.signIn.note: If you did not ask for it, ignore this email.
-const MailSignInNote = "If you did not ask for it, ignore this email."
+// MailSignInLead is mail.signIn.lead: The link works once and expires in {minutes} minutes. If you did not ask for it, ignore this email.
+const MailSignInLead = "The link works once and expires in {minutes} minutes. If you did not ask for it, ignore this email."
 
 // MailSignInAction is mail.signIn.action: Sign in
 const MailSignInAction = "Sign in"
@@ -1121,8 +1094,8 @@ const MailSignInAction = "Sign in"
 // MailSubscribeSubject is mail.subscribe.subject: Confirm your Forever Sixty subscription
 const MailSubscribeSubject = "Confirm your Forever Sixty subscription"
 
-// MailSubscribePreheader is mail.subscribe.preheader: One click and you are on the list.
-const MailSubscribePreheader = "One click and you are on the list."
+// MailSubscribePreheader is mail.subscribe.preheader: Confirm to start the updates.
+const MailSubscribePreheader = "Confirm to start the updates."
 
 // MailSubscribeHeading is mail.subscribe.heading: Confirm your subscription
 const MailSubscribeHeading = "Confirm your subscription"

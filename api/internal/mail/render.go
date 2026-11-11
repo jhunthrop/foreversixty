@@ -21,14 +21,14 @@ const (
 
 // shellStyle is every colour and face the shell paints with, from the design tokens
 // (brand/tokens_gen.go, generated from design/tokens/tokens.json): the site's earth ground, the
-// raised panel, its text and gold link, the teal button, and the footer's muted words. Font
+// raised panel and its text, the teal button, and the footer's muted words. Font
 // stacks end in faces every client has (Georgia, Arial), so a client without the site's fonts
 // still reads a serif title over a sans body.
 type shellStyle struct {
-	Ground, Panel, PanelEdge, Rule, Title, Text, Strong, Muted, Link template.CSS
-	Button, ButtonEdge, ButtonText, FooterText, TitleFont, BodyFont  template.CSS
-	GroundAttr, PanelAttr, ButtonAttr                                string
-	ColumnWidth, SealSize                                            int
+	Ground, Panel, PanelEdge, Rule, Title, Text, Strong, Muted      template.CSS
+	Button, ButtonEdge, ButtonText, FooterText, TitleFont, BodyFont template.CSS
+	GroundAttr, PanelAttr, ButtonAttr                               string
+	ColumnWidth, SealSize                                           int
 }
 
 func css(c color.NRGBA) template.CSS { return template.CSS(hex(c)) }
@@ -40,7 +40,7 @@ var style = shellStyle{
 	Ground: css(brand.ColorForeverGround), Panel: css(brand.ColorBaseRaised),
 	PanelEdge: css(brand.ColorForeverRuleWarm), Rule: css(brand.ColorBaseLine),
 	Title: css(brand.ColorForeverCream2), Text: css(brand.ColorBaseText), Strong: css(brand.ColorBaseStrong),
-	Muted: css(brand.ColorBaseMuted), Link: css(brand.ColorBaseGold),
+	Muted:  css(brand.ColorBaseMuted),
 	Button: css(brand.ColorForeverTeal), ButtonEdge: css(brand.ColorForeverTealEdge),
 	ButtonText: css(brand.ColorForeverCream), FooterText: css(brand.ColorForeverMutedGround),
 	TitleFont: template.CSS(brand.FontTitle), BodyFont: template.CSS(brand.FontBody),
@@ -51,9 +51,9 @@ var style = shellStyle{
 // shellView is what the template draws.
 type shellView struct {
 	Letter
-	S                          shellStyle
-	SiteURL, SealURL, Wordmark string
-	Footer                     []string
+	S                                    shellStyle
+	SiteURL, SealURL, Wordmark, Fallback string
+	Footer                               footer
 }
 
 // fontsHref loads the site's two faces where the client allows a stylesheet (Apple Mail, iOS);
@@ -67,7 +67,7 @@ var shell = template.Must(template.New("mail").Funcs(template.FuncMap{
 func renderHTML(l Letter, now time.Time) (string, error) {
 	view := shellView{
 		Letter: l, S: style, SiteURL: brand.SiteOrigin, SealURL: brand.SiteOrigin + brand.SealPath,
-		Wordmark: copygen.AppName, Footer: footerLines(now),
+		Wordmark: copygen.AppName, Fallback: copygen.MailLinkFallback, Footer: footerOf(now),
 	}
 	var b bytes.Buffer
 	if err := shell.Execute(&b, view); err != nil {
@@ -125,10 +125,10 @@ const shellHTML = `<!doctype html>
 <a href="{{.Action.URL}}" style="display:inline-block;padding:12px 24px;font-family:{{.S.BodyFont}};font-size:15px;line-height:20px;font-weight:600;color:{{.S.ButtonText}};text-decoration:none;">{{.Action.Label}}</a>
 </td></tr>
 </table>
-<p style="margin:0;font-family:{{.S.BodyFont}};font-size:13px;line-height:20px;color:{{.S.Muted}};word-break:break-all;"><a href="{{.Action.URL}}" style="color:{{.S.Link}};text-decoration:none;">{{.Action.URL}}</a></p>
+<p style="margin:0;font-family:{{.S.BodyFont}};font-size:12px;line-height:18px;color:{{.S.Muted}};">{{.Fallback}}<br><a href="{{.Action.URL}}" style="color:{{.S.Muted}};text-decoration:underline;word-break:break-all;">{{.Action.URL}}</a></p>
 </td></tr>
 <tr><td style="padding:24px 4px 0;font-family:{{.S.BodyFont}};font-size:13px;line-height:20px;color:{{.S.FooterText}};">
-{{- range $i, $line := .Footer}}{{if $i}}<br>{{end}}{{$line}}{{end}}
+{{.Footer.FanLine}}<br>{{.Footer.Operator}}<br>{{.Footer.ContactLead}}<a href="mailto:{{.Footer.Email}}" style="color:{{.S.FooterText}};text-decoration:underline;">{{.Footer.Email}}</a>{{.Footer.ContactTail}}
 </td></tr>
 </table>
 </td></tr>

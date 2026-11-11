@@ -42,7 +42,7 @@ func TestHTMLIsTheBrandedShell(t *testing.T) {
 	h := compose(t, sample()).HTML
 	for _, want := range []string{
 		`src="https://foreversixty.gg/seal-400.png"`,
-		hex(brand.ColorForeverGround), hex(brand.ColorBaseRaised), hex(brand.ColorForeverTeal), hex(brand.ColorBaseGold),
+		hex(brand.ColorForeverGround), hex(brand.ColorBaseRaised), hex(brand.ColorForeverTeal), `href="mailto:help@foreversixty.gg"`,
 		"&#39;Georgia&#39;, serif", "&#39;Arial&#39;, sans-serif", "Forever Sixty</span>",
 		"A fan-made player tool. Not affiliated with Blizzard.",
 		"© 2026 Commish LLC d/b/a Forever Sixty", "help@foreversixty.gg",

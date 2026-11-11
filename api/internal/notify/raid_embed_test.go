@@ -46,7 +46,7 @@ func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {
 			RaidChangedEmbed(moved, fixedFinish),
 			`{"title":"Moved: Onyxia's Lair · Fri 11 Dec","description":"Sign-ups carry over. Check you can still make it.",` +
 				raidLink + `"fields":[{"name":"When","value":"\u003ct:1797040800:t\u003e (\u003ct:1797040800:R\u003e)","inline":true},` +
-				`{"name":"Was","value":"\u003ct:1796954400:F\u003e","inline":true},` +
+				`{"name":"Was","value":"Thu 10 Dec, 8 pm CST","inline":true},` +
 				`` + raidSigned + `],` +
 				raidFoot + `"color":37810}`,
 		},

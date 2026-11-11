@@ -30,7 +30,7 @@ func TestRaidPostCarriesTheTargetAndTheCover(t *testing.T) {
 			t.Errorf("no heading %q in %v", want, heads)
 		}
 	}
-	if buffs != "Missing: Mark of the Wild, Trueshot Aura\nShort: Blessing of Kings" {
+	if buffs != "Missing: Mark of the Wild, Trueshot Aura\nNeed more: Blessing of Kings" {
 		t.Fatalf("buffs = %q", buffs)
 	}
 }
