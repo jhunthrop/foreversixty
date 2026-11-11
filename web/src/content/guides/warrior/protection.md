@@ -130,12 +130,12 @@ Solo, Arms or Fury levels faster; keep a shield in your bags, because with one o
 
 - **20 to 22:** Defiance, the moment its row opens.
 - **23 and 24:** Master of Defense.
-- **25 to 27:** Anticipation's Defense.
-- **28:** Last Stand.
-- **29 and 30:** Anticipation's last points, so your Defense is in before the late-20s dungeons.
-- **31 to 33:** Improved Sunder Armor.
-- **34 to 36:** Improved Thunder Clap.
-- **37 and 38:** Focused Rage.
+- **25 to 27:** Improved Sunder Armor.
+- **28 to 30:** Improved Thunder Clap.
+- **31 and 32:** Focused Rage.
+- **33 to 35:** Anticipation's Defense.
+- **36:** Last Stand.
+- **37 and 38:** Anticipation's last points.
 - **39:** Concussion Blow, which opens Shield Slam.
 - **40:** Shield Slam, the 31st point.
 - **41:** the last point of Focused Rage, then Bastion.
