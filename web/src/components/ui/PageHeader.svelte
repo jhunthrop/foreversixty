@@ -2,7 +2,7 @@
 <!-- The compact title band, once per page (round 5, design/specs/2026-11-09-directions.md: "no big
      headers"): the painted blue band continued from the floating bar above it (nav.css .site-top),
      and in it a crest, the Title in Marcellus 26/30 (21/25 below 768) in cream or the class, spec or
-     faction colour, one meta line of facts and Tags, an optional Lead sentence, and at the right the
+     faction colour, an optional Lead sentence directly under the title, then one meta line of facts and Tags, and at the right the
      page's answer, its actions, or both. A notice line and a TabStrip may sit under it on the band.
      `art="hero"` (home only) puts the owner's camp-road art behind it under the night veil instead;
      Base.astro's `art="hero"` starts the same art under the bar. No eyebrow, no job paragraph.
@@ -90,13 +90,13 @@
             {:else}<h1 class="ui-title" style:color={titleColor(tone)} data-testid={titleTestid}>
                 {title}
               </h1>{/if}
+            {#if lead}<p class="ui-page-header-lead">{lead}</p>{/if}
             {#if meta}<div
                 data-region={REGION.headMeta}
                 class="text-small text-muted mt-[6px] flex flex-wrap items-center gap-x-4 gap-y-[6px]"
               >
                 {@render meta()}
               </div>{/if}
-            {#if lead}<p class="ui-page-header-lead">{lead}</p>{/if}
           </div>
         </div>
         {#if answer || actions}<div class="ui-page-header-side">

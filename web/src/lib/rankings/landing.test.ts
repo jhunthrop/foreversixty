@@ -92,3 +92,16 @@ describe('specLeaders', () => {
     expect(specLeaders(board, null, href).healing).toEqual([]);
   });
 });
+
+describe('specLeaders with a log that named no spec', () => {
+  it('leaves the row out instead of throwing (the API omits `spec` then)', () => {
+    const bare = {
+      ...row(1, 'Psycho', 'Shaman', '', 113),
+      player: { key: 'us/pvp/psycho', name: 'Psycho', class: 'Shaman' },
+    };
+    const board = { total: 2, rows: [bare as RankingRow, row(2, 'Thoralf', 'Paladin', 'Retribution', 102)] };
+    expect(specLeaders(board, null, () => '#').damage.map((leader) => leader.name)).toEqual([
+      'Retribution Paladin',
+    ]);
+  });
+});

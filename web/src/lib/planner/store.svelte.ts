@@ -22,6 +22,7 @@ import {
   canEquip,
   canRemovePoint,
   comboIsLegal,
+  legalRacesFor,
   indexItems,
   indexTalents,
   withPoint,
@@ -109,9 +110,7 @@ export function createPlannerStore(init: PlannerInit) {
   const itemIndex = $derived<Map<number, Item>>(itemFile ? indexItems(itemFile) : new Map());
   const classRow = $derived<ClassRow | null>(classes.find((c) => c.slug === classSlug) ?? null);
   const raceRow = $derived<RaceRow | null>(races.find((r) => r.slug === raceSlug) ?? null);
-  const legalRaces = $derived<RaceRow[]>(
-    classRow === null ? races : races.filter((race) => comboIsLegal(combos, race.id, classRow.id)),
-  );
+  const legalRaces = $derived<RaceRow[]>(legalRacesFor(races, combos, classRow?.id ?? null));
   const ranks = $derived<Map<number, number>>(ranksByTalent(order));
   const split = $derived<number[]>(talentIndex ? pointsPerTree(talentIndex, order) : []);
   const splitLabel = $derived<string>(talentIndex ? deriveSplitLabel(talentIndex, order) : '');

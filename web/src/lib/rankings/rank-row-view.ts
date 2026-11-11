@@ -65,10 +65,11 @@ export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView 
       row.guild?.name,
       // A board of several classes names the spec (its class too unless a guild shares the line: the
       // crest says the class); one class's board shows the talent split.
+      // A log that named no spec leaves `spec` out: the class alone (the crest's word), never "undefined".
       board.multiClass === true
         ? row.guild?.name
           ? row.player.spec
-          : `${row.player.spec} ${row.player.class}`
+          : [row.player.spec, row.player.class].filter(Boolean).join(' ')
         : row.talent_split,
     ]
       .filter((part): part is string => part !== undefined && part !== '')

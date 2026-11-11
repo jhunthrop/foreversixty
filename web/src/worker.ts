@@ -574,8 +574,26 @@ function rewriteHead(response: Response, meta: ShellMeta): Response {
   );
 }
 
+/** The page's own prerendered asset first, where the build makes one: the real build prerenders a
+ *  page per encounter its rankings snapshot holds (pages/rankings/[slug].astro), with that board's
+ *  rows server-rendered; any other slug gets the bare shell. */
+function shellAssets(url: URL, asset: string): string[] {
+  const rankings = RANKINGS_SLUG.exec(url.pathname);
+  return rankings === null ? [asset] : [`/rankings/${rankings[1]}`, asset];
+}
+
+async function fetchShell(env: Env, url: URL, assets: readonly string[]): Promise<Response> {
+  let response: Response | null = null;
+  for (const asset of assets) {
+    response = await env.ASSETS.fetch(new Request(new URL(asset, url).toString(), { method: 'GET' }));
+    if (response.ok) return response;
+  }
+  if (response === null) throw new Error('fetchShell: no asset to fetch');
+  return response;
+}
+
 async function serveShell(env: Env, url: URL, asset: string): Promise<Response> {
-  const shell = await env.ASSETS.fetch(new Request(new URL(asset, url).toString(), { method: 'GET' }));
+  const shell = await fetchShell(env, url, shellAssets(url, asset));
   if (!shell.ok) return shell;
 
   const head = await shellHead(url, env);

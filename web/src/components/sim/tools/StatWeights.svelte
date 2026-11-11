@@ -27,12 +27,16 @@
   import activeBuild from '../../../data/active-build.json';
   import type { Me } from '../../../lib/account/api';
   import { fetchBisFile } from '../../../lib/bis/hover';
-  import { publishedWeights, type PublishedWeights } from '../../../lib/sim/published-weights';
+  import {
+    DEFAULT_WEIGHTS_SPEC,
+    publishedWeights,
+    type PublishedWeights,
+  } from '../../../lib/sim/published-weights';
   import { requestPresetFor } from '../../../lib/sim/settings';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { specLabel } from '../../../lib/sim/spec-label';
-  import { pickableStatsFor, toolScaleView } from '../../../lib/sim/weights';
+  import { pickableStatsFor, pickableStatsForSpec, toolScaleView } from '../../../lib/sim/weights';
   import type { Snippet } from 'svelte';
   import Page from '../../ui/Page.svelte';
   import Section from '../../ui/Section.svelte';
@@ -56,8 +60,13 @@
 
   const view = $derived(toolScaleView(store.weights, store.character?.spec ?? '', store.referenceStat));
   /** The picker's own list: `store.weightStats` when the spec sent one, the full pinned
-   *  vocabulary otherwise (sub-item 4; `weights.ts`'s own fallback rule). */
-  const pickable = $derived(pickableStatsFor(store.weightStats));
+   *  vocabulary otherwise (sub-item 4; `weights.ts`'s own fallback rule). With no character it is
+   *  the default table's spec's, as the server render draws it (WeightsShell). */
+  const pickable = $derived(
+    store.character === null
+      ? pickableStatsForSpec(defaultWeights?.spec ?? DEFAULT_WEIGHTS_SPEC)
+      : pickableStatsFor(store.weightStats),
+  );
 
   /**
    * `store.save` (bulk-store.svelte.ts) has no fallback title of its own, the same as every

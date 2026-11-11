@@ -951,13 +951,13 @@ _Page0 = Page
 
 def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '',
                lead: str = '', crumb: str = '', notice: str = '', pending: bool = False, second_head: bool = False) -> str:
-    """PageHeader with the optional Lead sentence under the meta line (inside head-title, so the regions are unchanged)."""
+    """PageHeader with the optional Lead sentence directly under the title, the meta line under it (inside head-title,
+    so the regions are unchanged; seo-fix 2026-11-10: the lead is the page's first sentence, never under a caveat)."""
     html = _PageHeader0(title, title_color, crest, meta, answer, actions, tabs, crumb=crumb, notice=notice, pending=pending,
                         second_head=second_head)
     if not lead:
         return html
-    at = re.search(r'<div class="ph-meta" data-region="head-meta">.*?</span></div>', html) if meta else None
-    cut = at.end() if at else html.index('</h1>') + len('</h1>')
+    cut = html.index('</h1>') + len('</h1>') if '</h1>' in html else html.index('</p>') + len('</p>')
     return html[:cut] + f'<p class="ph-lead">{lead}</p>' + html[cut:]
 
 

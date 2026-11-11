@@ -9,6 +9,7 @@ import {
   rankPercentile,
   rankingDate,
   showRowCrests,
+  withoutIdleRows,
 } from './row-view';
 
 const row = (key: string, cls = 'Warrior'): Pick<RankingRow, 'player'> => ({
@@ -96,5 +97,16 @@ describe('the moderation line', () => {
     expect(moderationLine('removed')).toBe('Removed by a moderator');
     expect(moderationLine('at_risk')).toBe('Under review by a moderator');
     expect(moderationLine('ok')).toBeNull();
+  });
+});
+
+describe('withoutIdleRows', () => {
+  const rows = [{ value: 120 }, { value: 80 }, { value: 0 }] as RankingRow[];
+  it('drops a 0 DPS or HPS row and counts it out of the total', () => {
+    expect(withoutIdleRows({ rows, total: 3 }, 'dps')).toEqual({ rows: rows.slice(0, 2), total: 2 });
+    expect(withoutIdleRows({ rows, total: 3 }, 'hps').total).toBe(2);
+  });
+  it('leaves the other metrics alone', () => {
+    expect(withoutIdleRows({ rows, total: 3 }, 'damage_taken').rows).toHaveLength(3);
   });
 });
