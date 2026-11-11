@@ -266,3 +266,33 @@ def test_each_plural_agrees_with_its_own_nearest_number():
     assert agree_plurals("The first 4 targets hit by this cone $Lis:are; slowed") == (
         "The first 4 targets hit by this cone are slowed"
     )
+
+
+def test_an_enchant_reads_its_enchantments_amounts_and_item_level():
+    """Heavy Armor Kit 2833 applies enchantment 8484 (EffectPointsMin 24 and 3, ItemLevelMin
+    15); Classic Wowhead prints "by 24. Only usable on items level 15 and above." (the
+    Forever one prints 0 for every `$ec` token)."""
+    spell = {
+        "ID": "2833",
+        "Description_lang": "Stamina by $ec2 and armor by $ec1. Only usable on items level "
+        "$ecim and above.",
+    }
+    effect = {
+        "SpellID": "2833",
+        "EffectIndex": "0",
+        "Effect": "53",
+        "EffectBasePointsF": "0",
+        "EffectAuraPeriod": "0",
+        "EffectMiscValue_0": "8484",
+    }
+    enchantment = {
+        "ID": "8484",
+        "EffectPointsMin_0": "24",
+        "EffectPointsMin_1": "3",
+        "EffectPointsMin_2": "0",
+        "ItemLevelMin": "15",
+    }
+    text = load_spell_text([spell], [], [effect], [], ExtraRows(item_enchantments=[enchantment]))
+    assert text.describe(2833) == (
+        "Stamina by 3 and armor by 24. Only usable on items level 15 and above."
+    )

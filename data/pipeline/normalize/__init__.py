@@ -308,6 +308,7 @@ def normalize_build(
             description_variables=optional("SpellDescriptionVariables"),
             spell_description_variables=optional("SpellXDescriptionVariables"),
             levels=optional("SpellLevels"),
+            item_enchantments=optional("SpellItemEnchantment"),
         ),
     )
     icons = icon_names(t("ManifestInterfaceData"))

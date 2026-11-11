@@ -20,6 +20,9 @@ runtime. We resolve the tokens whose value is in the tables we fetch:
   $n / $u              the proc's charges / how high the aura stacks
   $i                   how many targets the spell hits at most
   $v                   the highest target level it affects (Mind Soothe 453: 40)
+  $ec<n> / $ecim       the enchantment the spell applies: its n-th amount and the lowest
+                       item level it takes (Heavy Armor Kit 2833: 24 armor, items level
+                       15; Classic Wowhead prints these, the Forever one prints 0)
   $z                   the reader's home, which the client names as Wowhead does
   $proccooldown        the proc's internal cooldown, in seconds
   $/<divisor>;s<n>     any of the above, divided first
@@ -98,7 +101,7 @@ TOKEN = re.compile(
     r"\$"
     r"(?:/(?P<divisor>\d+);)?"
     r"(?P<ref>\d+)?"
-    r"(?P<kind>proccooldown|bc|[sSoOtTdDmMaAxXqQrRhHnNuUiIbBeEfFvVzZ])"
+    r"(?P<kind>proccooldown|ecim|ec|bc|[sSoOtTdDmMaAxXqQrRhHnNuUiIbBeEfFvVzZ])"
     r"(?P<index>[1-9])?"
     # "$rap" is ranged attack power and "$hp" is health: a longer word is never a short
     # token with letters after it.
@@ -175,6 +178,10 @@ class SpellRow:
     max_targets: int = 0
     #: SpellTargetRestrictions.MaxTargetLevel, the `$v`; 0 without a cap.
     max_target_level: int = 0
+    #: The enchantment an enchant-item effect (53, 54) applies: SpellItemEnchantment's
+    #: EffectPointsMin_0..2 (`$ec<n>`) and ItemLevelMin (`$ecim`).
+    enchant_points: tuple[int, ...] = ()
+    enchant_min_item_level: int = 0
     #: SpellDescriptionVariables through SpellXDescriptionVariables: `$<name>` -> definition.
     variables: Mapping[str, str] = field(default_factory=dict)
 
@@ -235,6 +242,7 @@ _SPELL_FACTS: dict[str, Callable[[SpellRow], float | None]] = {
     "u": lambda row: row.max_stacks,
     "i": lambda row: row.max_targets,
     "v": lambda row: row.max_target_level,
+    "ecim": lambda row: row.enchant_min_item_level,
     "r": lambda row: row.range_max,
     "proccooldown": lambda row: row.proc_cooldown_ms / _MS_PER_SECOND,
 }
@@ -281,6 +289,9 @@ def _amount(
     if kind in _SPELL_FACTS:
         value = _SPELL_FACTS[kind](row)
         return _Amount(value, value) if value else None
+    if kind == "ec":
+        points = row.enchant_points[index] if index < len(row.enchant_points) else 0
+        return _Amount(points, points) if points else None
     if kind == "d":
         if row.duration_ms is None:
             return None
@@ -605,6 +616,8 @@ class ExtraRows:
     spell_description_variables: list[dict[str, str]] = field(default_factory=list)
     #: `SpellLevels.csv`, for the per-level gain an effect adds (`_level_bonus`).
     levels: list[dict[str, str]] = field(default_factory=list)
+    #: `SpellItemEnchantment.csv`, for `$ec<n>` and `$ecim`.
+    item_enchantments: list[dict[str, str]] = field(default_factory=list)
 
 
 def _base_difficulty(rows: list[dict[str, str]]) -> list[dict[str, str]]:
@@ -643,6 +656,32 @@ def _variables(extra: ExtraRows) -> dict[int, dict[str, str]]:
         table = tables.get(int(row["SpellDescriptionVariablesID"]))
         if table:
             out.setdefault(int(row["SpellID"]), {}).update(table)
+    return out
+
+
+#: SPELL_EFFECT_ENCHANT_ITEM and SPELL_EFFECT_ENCHANT_ITEM_TEMPORARY.
+_ENCHANT_EFFECTS = frozenset({"53", "54"})
+_ENCHANT_AMOUNTS = ("EffectPointsMin_0", "EffectPointsMin_1", "EffectPointsMin_2")
+
+
+def _enchants(
+    effect_rows: list[dict[str, str]], enchant_rows: list[dict[str, str]]
+) -> dict[int, dict[str, object]]:
+    """Spell id -> the `SpellRow` fields of the enchantment its enchant-item effect applies."""
+    enchantments = {int(row["ID"]): row for row in enchant_rows}
+    out: dict[int, dict[str, object]] = {}
+    for row in _base_difficulty(effect_rows):
+        if row.get("Effect") not in _ENCHANT_EFFECTS:
+            continue
+        enchantment = enchantments.get(int(row.get("EffectMiscValue_0") or 0))
+        if enchantment is not None:
+            out.setdefault(
+                int(row["SpellID"]),
+                {
+                    "enchant_points": tuple(int(enchantment[c] or 0) for c in _ENCHANT_AMOUNTS),
+                    "enchant_min_item_level": int(enchantment.get("ItemLevelMin") or 0),
+                },
+            )
     return out
 
 
@@ -725,6 +764,7 @@ def load_spell_text(
     aura_options = _aura_options(extra.aura_options)
     targets = _target_restrictions(extra.target_restrictions)
     variables = _variables(extra)
+    enchants = _enchants(effect_rows, extra.item_enchantments)
     effects = _effects(effect_rows, radii, _levels_gained(extra.levels))
     misc = _misc(misc_rows, durations, ranges)
     descriptions = {int(row["ID"]): row["Description_lang"] for row in spell_rows}
@@ -738,6 +778,7 @@ def load_spell_text(
             effects=effects.get(spell_id, {}),
             range_max=range_max,
             variables=variables.get(spell_id, {}),
+            **enchants.get(spell_id, {}),
             **targets.get(spell_id, {}),
             **aura_options.get(spell_id, {}),
         )

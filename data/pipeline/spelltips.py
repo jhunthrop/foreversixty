@@ -116,6 +116,7 @@ INPUT_TABLES: tuple[str, ...] = (
     "SpellDescriptionVariables",
     "SpellXDescriptionVariables",
     "SpellLevels",
+    "SpellItemEnchantment",
 )
 
 
@@ -162,6 +163,7 @@ class _Tables:
                 description_variables=_optional(raw / "SpellDescriptionVariables.csv"),
                 spell_description_variables=_optional(raw / "SpellXDescriptionVariables.csv"),
                 levels=_optional(raw / "SpellLevels.csv"),
+                item_enchantments=_optional(raw / "SpellItemEnchantment.csv"),
             ),
         )
 
