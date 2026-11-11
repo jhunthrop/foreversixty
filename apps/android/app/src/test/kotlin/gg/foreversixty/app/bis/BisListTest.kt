@@ -73,7 +73,7 @@ class BisListTest {
 
     @Test
     fun `the set line carries the figure, the unit and the Updated date`() {
-        assertEquals("894.1 DPS at best in slot for your level range · Updated 30 Oct 2026", raidList().setDpsLine)
+        assertEquals("894.1 DPS · Updated 30 Oct 2026", raidList().setDpsLine)
     }
 
     @Test

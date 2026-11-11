@@ -44,18 +44,11 @@ class RaidPagesParityTest {
         ApplicantScreen(RaidPagesFixtures.applicant(accepted = true), ApplicantActions())
     }
 
-    // 2026-11-10, lane mobile-rest: the same answers' drift as nightSignup below.
-    @Test fun nightLive() = pushed("raid-night-live", "Raid", share = true, drift = ANSWERS_DRIFT) {
+    @Test fun nightLive() = pushed("raid-night-live", "Raid", share = true) {
         RaidNightPageScreen(RaidPagesFixtures.night(answered = true), BUILD, RaidNightPageActions())
     }
 
-    // 2026-11-10, lane mobile-rest: the answers are FlowSegmented (48, one control everywhere, brand round 2); the
-    // mock still draws the old small buttons (ws_app_flows `_signup_buttons`, shared with the iOS Home mocks
-    // lane ios-restyle owns), so the sections under them sit 11 to 14 lower until that generator moves.
-    @Test fun nightSignup() = pushed(
-        "raid-night-signup", "Raid", share = true,
-        drift = ANSWERS_DRIFT,
-    ) {
+    @Test fun nightSignup() = pushed("raid-night-signup", "Raid", share = true) {
         RaidNightPageScreen(RaidPagesFixtures.night(answered = false), BUILD, RaidNightPageActions())
     }
 
@@ -79,12 +72,6 @@ class RaidPagesParityTest {
         }
 
     private companion object {
-        /** The sections under the answers, 11 to 14 lower than the mock's small buttons (see nightSignup). */
-        val ANSWERS_DRIFT = setOf(
-            "section-before-you-pull: y 666, the mock has 652 (within 8)",
-            "section-who-is-coming: y 446, the mock has 435 (within 8)",
-        )
-
         const val BUILD = "1.60.1.70790"
     }
 }

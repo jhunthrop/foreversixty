@@ -118,7 +118,7 @@ class RaidDeepLinkFlowTest {
         show()
         openLink(DeepLink.Raid(FlowPlayer.GUILD, FlowPlayer.RAID, spec = "ask"))
         assertEquals(RaidOpenAction(SignupState.In), (flow.navigator.stack.single() as RaidsDestination.Raid).open)
-        compose.onNodeWithText(resources().getString(R.string.spec_title).uppercase()).assertExists()
+        compose.onNodeWithText(resources().getString(R.string.spec_title)).assertExists()
         assertTrue(flow.service.requests.isEmpty())
         assertEquals(listOf("selection"), flow.haptics.calls)
         shots.screen(4, "spec-sheet")
@@ -153,7 +153,7 @@ class RaidDeepLinkFlowTest {
         compose.onNodeWithText("Restoration").performClick()
         compose.waitUntil(SETTLE_MILLIS) { flow.service.inFlight == 1 }
         compose.waitForIdle()
-        compose.onNodeWithText(resources().getString(R.string.spec_title).uppercase()).assertDoesNotExist()
+        compose.onNodeWithText(resources().getString(R.string.spec_title)).assertDoesNotExist()
         gate.complete(Unit)
         val saved = resources().getString(R.string.spec_kept, "Restoration", "Lightningbolltz")
         compose.waitUntil(SETTLE_MILLIS) { compose.onAllNodes(hasText(saved, substring = true)).fetchSemanticsNodes().isNotEmpty() }
@@ -165,7 +165,7 @@ class RaidDeepLinkFlowTest {
         show()
         openLink(DeepLink.Raid(FlowPlayer.GUILD, FlowPlayer.RAID, spec = "ask", state = "late"))
         assertEquals(RaidOpenAction(SignupState.Late), (flow.navigator.stack.single() as RaidsDestination.Raid).open)
-        compose.onNodeWithText(resources().getString(R.string.spec_title).uppercase()).assertExists()
+        compose.onNodeWithText(resources().getString(R.string.spec_title)).assertExists()
         assertTrue(flow.service.requests.isEmpty())
 
         compose.onNodeWithText("Restoration").performClick()
