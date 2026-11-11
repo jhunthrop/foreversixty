@@ -18,7 +18,7 @@ MEMBERS, AT_CAP, CLOSE = 38, 31, 4
 LEVELER_LEVEL = 36
 
 # Recently on: the newest seen_at first (members[]: name, class, level, spec_name, seen).
-RECENT = [('Grunvald', 'warrior', 60, 'Protection Warrior', 'Online now'), ('Mirethil', 'priest', 60, 'Holy Priest', 'Seen 12 min ago'),
+RECENT = [('Grunvald', 'warrior', 60, 'Protection Warrior', 'Seen just now'), ('Mirethil', 'priest', 60, 'Holy Priest', 'Seen 12 min ago'),
           ('Kaelra', 'warrior', 60, 'Fury Warrior', 'Seen 40 min ago'), ('Thornwick', 'druid', 57, 'Feral Druid', 'Seen 1 h ago'),
           ('Selka', 'druid', 60, 'Restoration Druid', 'Seen 2 h ago')]
 CLOSE_ROWS = [('Thornwick', 'druid', 57, 'Feral Druid'), ('Vexa', 'warlock', 56, 'Affliction Warlock'),
@@ -92,7 +92,7 @@ def _roster(leveler: bool) -> str:
 def _logs() -> str:
     # the day sits on the right, as the roster's seen line does
     rows =''.join(f'<div class="row"><div class="in"><div><span class="t">{t}</span><span class="s">{zone} &middot; '
-                   f'<span class="{"kill" if k == n else ""}">{k} of {n} kills</span> &middot; {dur}</span></div>'
+                   f'<span class="{"kill" if k == n else ""}">{k}/{n} kills</span> &middot; {dur}</span></div>'
                    f'<span class="when">{day}</span></div></div>' for t, zone, k, n, dur, day in LOGS)
     return F._r5_section('Recent logs', rows, action='Logs &rsaquo;')
 
@@ -111,7 +111,7 @@ def _officer() -> str:
     def row(title: str, sub: str, count: str = '') -> str:
         c = f'<span class="cnt">{count}</span>' if count else ''
         return f'<div class="row"><div class="in"><div><span class="t">{title}</span><span class="s">{sub}</span></div>{c}</div></div>'
-    rows = (row('Plan a raid', 'On the site, the guild&rsquo;s Raids tab')
+    rows = (row('Plan a raid', 'Onyxia Wed, Barrow Deeps Sat')
             + row('Applications', 'Mirelle, Holy Priest 60, and 2 more', f'{APPLICANTS} waiting')
             + row('Setup', 'Discord bot, raid schedule and addon sync to go', f'{SETUP_DONE} of {SETUP_TOTAL} done'))
     return F._r5_section('Officer', rows)
@@ -138,6 +138,30 @@ def _none(leveler: bool) -> str:
     return gate + rec + find
 
 
+# The raid's assignments (RaidView.assignments, Onyxia's template in api/internal/guilds/raid_assign_templates.go).
+WHELPS_PURPOSE = 'Pick up the west cave&rsquo;s whelps in phases 2 and 3 and kill them away from the raid.'
+ASSIGNED = [('Main tank', 1, [('Grunvald', 'warrior')]), ('Off tank (phase 3, fear)', 2, [('Brakka', 'druid')]),
+            ('Main tank healers', 4, [('Mirethil', 'priest'), ('Selka', 'druid'), ('Hollowmend', 'priest'), ('Aenwyn', 'paladin')]),
+            ('Fear cover', 2, [('Mirethil', 'priest')]),
+            ('Whelps, west cave', 3, [('Thandrel', 'warrior'), ('Kaelra', 'warrior'), ('Thalrin', 'mage')])]
+
+
+def _your_job() -> str:
+    """Your job (spec 2.3a): the slot with its partners, the boss and the slot's purpose; the web's title."""
+    return F._r5_section('Your job', F._r5_row('Whelps, west cave with Kaelra and Thalrin', f'Onyxia &middot; {WHELPS_PURPOSE}'))
+
+
+def _assignments() -> str:
+    """An officer's read-only Assignments (spec 2.3a): each filled slot, its names (yours in gold), how full; Open in planner."""
+    def names(people: list) -> str:
+        return ', '.join(f'<span style="color:{"var(--gold)" if n == "Thandrel" else CLASS_COLOR[c]}">{n}</span>' for n, c in people)
+    rows = '<p class="grp">Onyxia assignments</p>' + ''.join(
+        f'<div class="row"><div class="in"><div><span class="t">{label}</span><span class="s">{names(people)}</span></div>'
+        f'<span class="when">{len(people)} of {count}</span></div></div>' for label, count, people in ASSIGNED)
+    rows += '<p class="stamp" style="margin:0">Assigning is on the site for now.</p>'
+    return F._r5_section('Assignments', rows, action='Open in planner &rsaquo;')
+
+
 def _body(state: str, platform: str) -> str:
     if state == 'leveler':
         return _head(True) + _raid_view() + _roster(True) + _logs() + _progression() + _pages(True)
@@ -149,7 +173,8 @@ def _body(state: str, platform: str) -> str:
     head = F._r5_head(platform, 'In')
     needs = (F._r5_section('Needs you', F._r5_row('5 have not answered, 2 of them healers', 'Healers short by 3',
                                                   trail='<a class="btn" href="#">Preview mention</a>'), meta='5 open') if officer else '')
-    return (head + needs + (_officer() if officer else '') + F._r5_coming(platform, officer=officer) + F._r5_ready(F.R5_READY)
+    return (head + _your_job() + needs + (_officer() + _assignments() if officer else '') + F._r5_coming(platform, officer=officer)
+            + F._r5_ready(F.R5_READY)
             + _head(False) + _roster(False) + _loot() + _logs() + _progression() + _pages(False))
 
 
