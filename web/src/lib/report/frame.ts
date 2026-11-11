@@ -4,7 +4,8 @@
 // the island and its tests read the same rules.
 import type { SelectOption } from '../ui/listbox-model';
 import type { Fact } from '../ui/facts';
-import { formatClock, joinFacts, outcomeLabel } from './format';
+import { joinFacts, outcomeLabel } from './format';
+import { logClock } from '../dates';
 import { pullNumbers, trashGroups } from './fights';
 import type { FightEntry } from './types';
 import { ALL_FIGHTS, trashScope, type Tab } from './url';
@@ -111,7 +112,7 @@ export function fightOptions(
           ...bosses.map((fight) => ({
             value: String(fight.index),
             label: fightLabel(fight, pulls.get(fight.index)?.pull),
-            description: `${formatClock(fight.start)} · ${plural(fight.deaths ?? 0, 'death')}`,
+            description: `${logClock(fight.start)} · ${plural(fight.deaths ?? 0, 'death')}`,
             group: BOSS_GROUP,
           })),
         ];
@@ -135,8 +136,8 @@ export function fightOptions(
     label: fightLabel(fight),
     description:
       fight.mob_deaths === undefined
-        ? formatClock(fight.start)
-        : `${formatClock(fight.start)} · ${plural(fight.mob_deaths, 'mob')} died`,
+        ? logClock(fight.start)
+        : `${logClock(fight.start)} · ${plural(fight.mob_deaths, 'mob')} died`,
     group: trashGroup,
   }));
   return [...bossRows, ...zoneRows, ...trashRows];
@@ -230,7 +231,7 @@ export interface PullFacts {
  *  phases. The scope's count and deaths are the band's and the tables' (h-audit 2026-11-09). */
 export function thisPullFacts({ fight, phases }: PullFacts): Fact[] {
   return [
-    { id: 'started', label: 'Started', value: formatClock(fight.start) },
+    { id: 'started', label: 'Started', value: logClock(fight.start) },
     ...phases.map((phase, index) => ({
       id: `phase-${index}`,
       label: phase.name,

@@ -8,7 +8,7 @@
 // replay too.
 
 import { DAY_MS, HOUR_MS, MINUTE_MS } from './format/duration';
-import { SITE_LOCALE } from './format/number';
+import { EMPTY_FIGURE, SITE_LOCALE } from './format/number';
 
 /** The one month table: three letters, every month. */
 export const MONTHS = [
@@ -417,6 +417,17 @@ export function weekdayName(d: Date, zone: string = viewerZone()): string {
 export function weekdayShort(d: Date, zone: string = viewerZone()): string {
   if (Number.isNaN(d.getTime())) return '';
   return SHORT_WEEKDAYS[zoned(d, zone).weekday];
+}
+
+/**
+ * A log event's wall time: the house clock with seconds, in the viewer's hour cycle (`11:49:25 pm`,
+ * `23:49:25`), read in UTC like the log file itself, so a raid leader comparing a teammate's
+ * screenshot sees the same instant (apps/shared/formats.json `clock` with `seconds`). An
+ * unreadable instant is the empty figure.
+ */
+export function logClock(iso: string): string {
+  const at = new Date(iso);
+  return Number.isNaN(at.getTime()) ? EMPTY_FIGURE : clock(at, 'UTC', { seconds: true });
 }
 
 export { DAY_MS, HOUR_MS, MINUTE_MS };

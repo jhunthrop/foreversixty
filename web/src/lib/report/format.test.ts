@@ -1,8 +1,8 @@
 // web/src/lib/report/format.test.ts
+import { logClock } from '../dates';
 import { describe, expect, it } from 'vitest';
 import {
   classColorVar,
-  formatClock,
   formatPerSecond,
   joinFacts,
   outcomeLabel,
@@ -29,9 +29,9 @@ describe('report formatting', () => {
   });
 
   it('formats wall-clock times from the engine’s ISO strings', () => {
-    expect(formatClock('2026-09-26T20:12:00Z')).toBe('8:12:00 pm');
-    expect(formatClock('2026-09-26T20:10:04.6Z')).toBe('8:10:04 pm');
-    expect(formatClock('not a time')).toBe('–');
+    expect(logClock('2026-09-26T20:12:00Z')).toBe('8:12:00 pm');
+    expect(logClock('2026-09-26T20:10:04.6Z')).toBe('8:10:04 pm');
+    expect(logClock('not a time')).toBe('–');
   });
 
   it('groups amounts, and abbreviates from a million up', () => {

@@ -17,7 +17,7 @@ import {
   thisPullFacts,
   reportMetaTail,
 } from './frame';
-import { formatClock } from './format';
+import { logClock } from '../dates';
 import type { FightEntry } from './types';
 
 const FIGHTS = sample.fights as FightEntry[];
@@ -153,7 +153,7 @@ describe('the band’s figure follows the tab (directions b1)', () => {
 describe('This pull (directions b1)', () => {
   it('says only what the band does not: the start', () => {
     const facts = thisPullFacts({ fight: PULL_9, phases: [] });
-    expect(facts.map((fact) => [fact.label, fact.value])).toEqual([['Started', formatClock(PULL_9.start)]]);
+    expect(facts.map((fact) => [fact.label, fact.value])).toEqual([['Started', logClock(PULL_9.start)]]);
   });
 
   it('adds a boss pull’s phases, one line each', () => {

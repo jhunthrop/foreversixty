@@ -5,8 +5,7 @@
 
 import { killCounts, killCountsLabel } from './kill-counts';
 import type { FightEntry, Phase, Taunt } from './types';
-import { clock } from '../dates';
-import { EMPTY_FIGURE, compact, ordinal, percent, thousands } from '../format/number';
+import { compact, ordinal, percent, thousands } from '../format/number';
 import { CLASS_SLUGS } from '../ui/primitives';
 
 /**
@@ -59,16 +58,6 @@ export function schoolName(mask: number | undefined): string {
   ];
   for (const [bit, name] of table) if ((mask & bit) !== 0) names.push(name);
   return names.join('/');
-}
-
-/**
- * A log event's wall time: the house clock with seconds, in the viewer's hour cycle (`11:49:25 pm`,
- * `23:49:25`), read in UTC like the log file itself, so a raid leader comparing a teammate's
- * screenshot sees the same instant (apps/shared/formats.json `clock` with `seconds`).
- */
-export function formatClock(iso: string): string {
-  const at = new Date(iso);
-  return Number.isNaN(at.getTime()) ? EMPTY_FIGURE : clock(at, 'UTC', { seconds: true });
 }
 
 /**
