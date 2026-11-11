@@ -22,6 +22,7 @@ import openSans600Url from '../assets/fonts/open-sans-600-subset.woff2?url';
 import archivo600Url from '../assets/fonts/archivo-600-subset.woff2?url';
 import marcellus400Url from '../assets/fonts/marcellus-400-subset.woff2?url';
 import { artStyle, FAVICON } from '../lib/ui/assets';
+import { MOBILE_UA } from '../lib/setup/visitor-platform';
 import type { BandArt } from '../lib/ui/primitives';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
@@ -133,6 +134,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       data-header-gear-key={HEADER_GEAR_HINT_KEY}
       data-header-geared={HEADER_GEARED}
       data-class-slugs={CLASS_SLUGS.join(' ')}
+      data-mobile-ua={MOBILE_UA.source}
     >
       // The hints the stylesheet keys off, before first paint. The readable half of the session
       // cookie (fs_csrf) means someone is signed in: anything marked data-session-hide (the
@@ -155,6 +157,13 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       } catch {
         /* storage unavailable or malformed: no pointer, no crest */
       }
+      // A phone or tablet (lib/setup/visitor-platform.ts's MOBILE_UA, handed in as data-mobile-ua)
+      // sets data-platform, so /setup's head draws the phone's download before its island mounts.
+      if (
+        (navigator.userAgentData && navigator.userAgentData.mobile === true) ||
+        new RegExp(document.currentScript.dataset.mobileUa, 'i').test(navigator.userAgent)
+      )
+        document.documentElement.dataset.platform = 'mobile';
       // The character header's skeleton shape (HEADER_GEAR_HINT_KEY's module): data-ch-gear
       // when the last header drawn was for a character with gear on file, so the loading box
       // reserves the sync line and the figures only when the header that replaces it has them.

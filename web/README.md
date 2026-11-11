@@ -468,6 +468,9 @@ none is collected and never asserted at all.
   network at all: the prerendered fixture shell inlines its `GET /v1/reports/{id}` payload as
   `data-report`, and `public/logs-data/reports/fixture2abcd/` (published by `scripts/sync-duckdb.mjs`'s
   sibling, `sync-report-fixture.mjs`) carries the rest. No LCP assertion, and a wider TBT ceiling.
+- `.*/(?:account|premium/checkout)\.html(?:\?.*)?$` — the noindex pages Lighthouse collects
+  (`src/lib/noindex-paths.mjs`). Their `is-crawlable` audit fails by design, and it alone weighs the
+  SEO category to 0.69, so they assert every other SEO audit at a full score instead of the category.
 
 Accessibility and SEO stay at 0.95 on every URL, and so do CLS (0.05). Performance is 0.95 on the two
 static entries and 0.90 on `/planner.html`, `/logs.html` and `/reports/fixture2abcd.html`, which each

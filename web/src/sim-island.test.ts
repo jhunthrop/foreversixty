@@ -7,7 +7,7 @@
 // element's own height.
 import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
 import { shellReservations } from './lib/islands/reservations';
-import { readInlineResult, simIdFor } from './sim-island';
+import { loadSpecGrid, readInlineResult, simIdFor } from './sim-island';
 import fixtureResult from './fixtures/sim/result.json';
 
 // boot() self-invokes at module load and is not exported, so driving it means importing a
@@ -83,6 +83,17 @@ describe('shellReservations', () => {
     const element = mountElement();
     element.className = 'flex min-h-[9509px] md:min-h-[5652px] gap-4';
     expect(shellReservations(element)).toEqual(['min-h-[9509px]', 'md:min-h-[5652px]']);
+  });
+});
+
+describe('loadSpecGrid', () => {
+  it('is null on every page but /sim/specs', async () => {
+    await expect(loadSpecGrid(mountElement())).resolves.toBeNull();
+  });
+
+  it("fetches /sim/specs's grid before the mount, so the first render is the grid", async () => {
+    const grid = await loadSpecGrid(mountElement({ 'data-sim-view': 'specs' }));
+    expect(grid).toBe((await import('./components/sim/SpecGrid.svelte')).default);
   });
 });
 

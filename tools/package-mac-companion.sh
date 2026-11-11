@@ -123,7 +123,7 @@ notarize() { # notarize <file>: submits, waits, and prints Apple's log when it i
 # icon places it writes beside it (dmg-layout.sh), the app at the left, Applications at the right;
 # 128 px icons, 13 pt labels.
 readonly DMG_BACKGROUND=companion/packaging/macos/dmg-background
-# shellcheck source=../companion/packaging/macos/dmg-layout.sh
+# shellcheck source=SCRIPTDIR/../companion/packaging/macos/dmg-layout.sh
 source "$ROOT/companion/packaging/macos/dmg-layout.sh"
 
 disk_image() { # disk_image <dmg>: the designed drag window, under the seal as the volume icon

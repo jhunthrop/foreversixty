@@ -190,17 +190,29 @@
 <!-- The companion's download at the top, in every state (owner 2026-11-08), never gold (the plate
      keeps the page's one primary): the head's actions alone (ui/PageHeader); the signed-in
      character is the header's and the Sign in step's. -->
+{#snippet headDownload(shown: VisitorPlatform)}
+  <CompanionDownload
+    platform={shown}
+    {release}
+    primary={false}
+    {copied}
+    onCopyLink={() => void copyLink()}
+    idPrefix="setup-head"
+    end
+  />
+{/snippet}
+
+<!-- Before the island mounts, the server draws both the phone's download and the one for a
+     system it cannot name, and the pre-paint data-platform hint (Base.astro) keeps the right one,
+     so mounting does not change the head's height (the Lighthouse CLS budget at 360). -->
 {#snippet downloadContent()}
   <div class="setup-head-download">
-    <CompanionDownload
-      {platform}
-      {release}
-      primary={false}
-      {copied}
-      onCopyLink={() => void copyLink()}
-      idPrefix="setup-head"
-      end
-    />
+    {#if mounted}
+      {@render headDownload(platform)}
+    {:else}
+      <div class="setup-hint" data-hint="platform-other">{@render headDownload('unknown')}</div>
+      <div class="setup-hint" data-hint="platform-mobile">{@render headDownload('mobile')}</div>
+    {/if}
   </div>
 {/snippet}
 
@@ -254,11 +266,14 @@
 </Page>
 
 <style>
-  /* The pre-paint swap: signed out (with or without a stored character) or session hinted. */
+  /* The pre-paint swap: signed out (with or without a stored character) or session hinted, and
+     the head's download for a phone or not. */
   :global(html[data-session='1']) .setup-hint:not([data-hint='in']),
   :global(html:not([data-session='1'])) .setup-hint[data-hint='in'],
   :global(html:not([data-session='1'])[data-pointer='1']) .setup-hint[data-hint='out'],
-  :global(html:not([data-pointer='1'])) .setup-hint[data-hint='pointer'] {
+  :global(html:not([data-pointer='1'])) .setup-hint[data-hint='pointer'],
+  :global(html[data-platform='mobile']) .setup-hint[data-hint='platform-other'],
+  :global(html:not([data-platform='mobile'])) .setup-hint[data-hint='platform-mobile'] {
     display: none;
   }
   /* The Sections' shared body: a column, reading lines, quiet link rows. */

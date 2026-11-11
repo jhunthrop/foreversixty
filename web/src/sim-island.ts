@@ -75,10 +75,35 @@ export function readInitialNotes(element: HTMLElement): PrerenderedNote[] | unde
   }
 }
 
+type SpecGridComponent = (typeof import('./components/sim/SpecGrid.svelte'))['default'];
+
+/**
+ * /sim/specs's grid, fetched before the shell is replaced. Its shell is the grid itself, and
+ * SimView would otherwise fetch the chunk only after mounting, painting its short loading
+ * skeleton in between: the footer jumped up into view and back (CLS 0.5 under Lighthouse).
+ * Null on every other page, or when the chunk will not load (SimView then fetches it itself
+ * and shows its error).
+ */
+export function loadSpecGrid(target: HTMLElement): Promise<SpecGridComponent | null> {
+  if (target.dataset.simView !== 'specs') return Promise.resolve(null);
+  return import('./components/sim/SpecGrid.svelte').then(
+    (module) => module.default,
+    (error: unknown) => {
+      console.error('sim island: the spec grid chunk did not load', error);
+      return null;
+    },
+  );
+}
+
 function boot(): void {
   const target = document.getElementById(MOUNT_ID);
   if (target === null) return;
+  void loadSpecGrid(target).then((specGrid) => mountSim(target, specGrid));
+}
+
+function mountSim(target: HTMLElement, specGrid: SpecGridComponent | null): void {
   const props = {
+    specGrid,
     simId: simIdFor(target, window.location.pathname),
     inlineResult: readInlineResult(target),
     bisSets: readBisSets(target),

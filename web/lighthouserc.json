@@ -53,12 +53,33 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*/(?:index|planner|logs|setup)\\.html$)(?!.*/reports/)(?!.*/sim(?:/specs|/gear|/talents|/drops|/weights)?\\.html$)(?!.*/sim/[a-z2-7]{12}\\.html$)(?!.*/bis/[a-z]+/[a-z]+\\.html$)(?!.*/guild/).*$",
+          "matchingUrlPattern": "^(?!.*/(?:index|planner|logs|setup)\\.html$)(?!.*/(?:account|premium/checkout)\\.html(?:\\?|$))(?!.*/reports/)(?!.*/sim(?:/specs|/gear|/talents|/drops|/weights)?\\.html$)(?!.*/sim/[a-z2-7]{12}\\.html$)(?!.*/bis/[a-z]+/[a-z]+\\.html$)(?!.*/guild/).*$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.95 }],
             "categories:accessibility": ["error", { "minScore": 0.95 }],
             "categories:seo": ["error", { "minScore": 0.95 }],
+            "categories:best-practices": ["warn", { "minScore": 0.95 }],
+            "largest-contentful-paint": ["error", { "maxNumericValue": 2400 }],
+            "total-blocking-time": ["error", { "maxNumericValue": 100 }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
+          }
+        },
+        {
+          "matchingUrlPattern": ".*/(?:account|premium/checkout)\\.html(?:\\?.*)?$",
+          "aggregationMethod": "median",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.95 }],
+            "categories:accessibility": ["error", { "minScore": 0.95 }],
+            "document-title": ["error", { "minScore": 1 }],
+            "meta-description": ["error", { "minScore": 1 }],
+            "http-status-code": ["error", { "minScore": 1 }],
+            "link-text": ["error", { "minScore": 1 }],
+            "crawlable-anchors": ["error", { "minScore": 1 }],
+            "robots-txt": ["error", { "minScore": 1 }],
+            "image-alt": ["error", { "minScore": 1 }],
+            "hreflang": ["error", { "minScore": 1 }],
+            "canonical": ["error", { "minScore": 1 }],
             "categories:best-practices": ["warn", { "minScore": 0.95 }],
             "largest-contentful-paint": ["error", { "maxNumericValue": 2400 }],
             "total-blocking-time": ["error", { "maxNumericValue": 100 }],

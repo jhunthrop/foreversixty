@@ -9,7 +9,8 @@
      `?source=build&ref=`) from init, not from a `$effect` here: `createSimStore` stays DOM-free
      and unit-testable, and this component's only job is to read `window.location` once. -->
 <script lang="ts">
-  import { onMount, tick, untrack } from 'svelte';
+  import { onMount, tick, untrack, type Component, type ComponentProps } from 'svelte';
+  import type SpecGrid from './SpecGrid.svelte';
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, effectiveServerSims, fetchMeOnce, type Me } from '../../lib/account/api';
   import { heroCharacter } from '../../lib/account/hero-character';
@@ -79,6 +80,7 @@
     bisSets = [],
     bisBenchmarks = {},
     initialNotes,
+    specGrid = null,
   }: {
     simId?: string;
     inlineResult?: SimResult | null;
@@ -87,6 +89,8 @@
     bisBenchmarks?: BisBenchmarks;
     /** A prerendered saved run's Worth knowing, read at build time (sim/[id].astro). */
     initialNotes?: readonly PrerenderedNote[];
+    /** /sim/specs's grid, fetched by the entry before it replaced the shell (sim-island.ts). */
+    specGrid?: Component<ComponentProps<typeof SpecGrid>> | null;
   } = $props();
 
   // /sim/<sim_id>, or the prerendered fixture page that inlines its result.
@@ -191,7 +195,10 @@
   // open, the before-a-run body once a character is loaded, the spec grid on /sim/specs.
   const moreSheetLazy = createLazyComponent(() => import('./MoreSettingsSheet.svelte'));
   const preRunLazy = createLazyComponent(() => import('./SimPreRun.svelte'));
-  const specGridLazy = createLazyComponent(() => import('./SpecGrid.svelte'));
+  const specGridLazy = createLazyComponent(
+    () => import('./SpecGrid.svelte'),
+    untrack(() => specGrid),
+  );
   // The saved sim's failure panel ships as its own chunk: only a page whose load failed fetches it.
   // Your sims (the rail's tail) is a signed-in reader's alone and fills from its own fetch: its chunk
   // starts loading as soon as a session is known or hinted, beside that fetch.

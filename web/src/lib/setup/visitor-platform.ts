@@ -14,8 +14,9 @@ export interface NavigatorLike {
   maxTouchPoints?: number;
 }
 
-/** A phone or tablet in the user agent: Android, iPhone, iPad, iPod, or a "Mobile" browser. */
-const MOBILE_UA = /android|iphone|ipad|ipod|mobile/i;
+/** A phone or tablet in the user agent: Android, iPhone, iPad, iPod, or a "Mobile" browser. Base.astro's
+ *  pre-paint script reads its source to set `data-platform="mobile"` on <html> (/setup's head hint). */
+export const MOBILE_UA = /android|iphone|ipad|ipod|mobile/i;
 const MOBILE_PLATFORM = /android|ios|iphone|ipad/i;
 
 /** The visitor's system, from User-Agent Client Hints where the browser offers them, else the user agent. */

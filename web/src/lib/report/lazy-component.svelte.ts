@@ -29,8 +29,11 @@ export interface LazyComponent<Props extends Record<string, unknown>> extends La
 
 export function createLazyComponent<Props extends Record<string, unknown>>(
   loader: () => Promise<{ default: Component<Props> }>,
+  /** The component already in hand (its entry fetched the chunk before mounting), so the first
+   *  render draws it instead of the caller's fallback. */
+  preloaded: Component<Props> | null = null,
 ): LazyComponent<Props> {
-  let current = $state<Component<Props> | null>(null);
+  let current = $state<Component<Props> | null>(preloaded);
   let loading = $state(false);
   let error = $state('');
   return {

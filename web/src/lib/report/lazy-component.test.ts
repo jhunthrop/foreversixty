@@ -13,6 +13,15 @@ function flush(): Promise<void> {
 }
 
 describe('createLazyComponent', () => {
+  it('starts with a preloaded component and never calls the loader', () => {
+    const loader = vi.fn().mockResolvedValue({ default: fakeComponent });
+    const lazy = createLazyComponent(loader, fakeComponent);
+
+    expect(lazy.current).toBe(fakeComponent);
+    lazy.load();
+    expect(loader).not.toHaveBeenCalled();
+  });
+
   it('loads once and caches: a second load() call does not call the loader again', async () => {
     const loader = vi.fn().mockResolvedValue({ default: fakeComponent });
     const lazy = createLazyComponent(loader);
