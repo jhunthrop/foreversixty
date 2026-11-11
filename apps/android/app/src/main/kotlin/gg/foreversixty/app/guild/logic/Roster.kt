@@ -5,6 +5,7 @@ import android.content.res.Resources
 import androidx.annotation.StringRes
 import gg.foreversixty.app.R
 import gg.foreversixty.app.model.GuildHome
+import gg.foreversixty.app.model.GuildMemberCounts
 import gg.foreversixty.app.model.GuildMember
 import gg.foreversixty.app.model.GuildRosterRow
 import gg.foreversixty.app.raids.logic.GameClass
@@ -112,6 +113,29 @@ data class RosterQuery(
     val search: String = "",
     val only: Set<String> = emptySet(),
 )
+
+/** A figure on the roster's stat plate: [value], or `value of [of]` while a filter is on. */
+data class RosterFigure(val kind: Kind, val value: Int, val of: Int? = null) {
+    enum class Kind(@param:StringRes val caption: Int) {
+        OnRoster(R.string.roster_counts_onRoster),
+        NoAccount(R.string.roster_counts_noAccount),
+        Waiting(R.string.roster_counts_waiting),
+    }
+
+    companion object {
+        /**
+         * The plate's figures: the three guild-wide counts, or while a filter keeps [shown] of them
+         * only `4 of 38 on the roster`, one population (round 6 row 2).
+         */
+        fun of(counts: GuildMemberCounts, shown: Int?): List<RosterFigure> = shown?.let {
+            listOf(RosterFigure(Kind.OnRoster, it, counts.onRoster))
+        } ?: listOf(
+            RosterFigure(Kind.OnRoster, counts.onRoster),
+            RosterFigure(Kind.NoAccount, counts.inGameNoAccount),
+            RosterFigure(Kind.Waiting, counts.waiting),
+        )
+    }
+}
 
 object RosterList {
     /** How many of [entries] the `only` filter keeps (the not-synced chip's count); null when not filtered. */

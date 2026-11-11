@@ -125,6 +125,16 @@ class FixtureEngineTest {
     }
 
     @Test
+    fun `an error variant with no file answers its status and code`() = runTest {
+        val failing = mapOf("me" to FixtureVariant.Error("unavailable", HttpStatusCode.ServiceUnavailable))
+        val result = AccountApi(client(failing)).me()
+
+        val error = (result as ApiResult.Failure).error as ApiError.Server
+        assertEquals(503, error.status)
+        assertEquals("unavailable", error.code)
+    }
+
+    @Test
     fun `a path with no fixture answers a not found envelope`() = runTest {
         val result = client().get("/v1/nothing/here", AppSession.serializer())
 

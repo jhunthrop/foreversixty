@@ -66,10 +66,18 @@ object FixtureEngine {
             val file = FixtureRoutes.fileName(request.method, path, variants)
                 ?: return@MockEngine respond("", status)
             val own = FixtureRoutes.characterFileName(request.method, path, variants)?.let(source::read)
+            // An error variant with no file of its own answers its status with a plain error body.
+            val error = route.fixture?.let { variants[it] as? FixtureVariant.Error }
             val body = own ?: source.read(file)
+                ?: error?.let { return@MockEngine respond(errorBody(it.code), it.status, jsonHeaders) }
                 ?: return@MockEngine respond(notFoundBody("$path -> $file"), HttpStatusCode.NotFound, jsonHeaders)
             respond(body, status, jsonHeaders)
         }
+
+    private fun errorBody(code: String): String = ApiJson.encodeToString(
+        ApiEnvelope.serializer(),
+        ApiEnvelope(ok = false, error = ApiErrorBody(code = code, message = "fixture error $code"), requestId = "fixture-error"),
+    )
 
     private fun notFoundBody(what: String): String = ApiJson.encodeToString(
         ApiEnvelope.serializer(),

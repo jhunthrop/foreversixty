@@ -269,6 +269,24 @@ struct SignupControllerTests {
         #expect(controller.block(ask).status == .saved("Saved. Elemental is kept for Lightningbolltz."))
     }
 
+    @Test("a pick whose write answers after the sheet closed still saves (Android round-6 bug, iOS check)")
+    func specPickOutlivesSheet() async throws {
+        let service = FakeRaidService()
+        service.signupDelay = .milliseconds(200)
+        let ask = "us/pvp/lightningbolltz"
+        let controller = try makeController(try RaidFixture.raid("guild.raid.ask-spec"), service: service)
+        await controller.press(ask, .signedIn)
+        let elemental = try #require(controller.character(ask)?.specOptions?.first { $0.spec == "shaman-elemental" })
+        // As the sheet does: the pick runs in its own Task, then the sheet's binding closes it.
+        let pick = Task { await controller.pickSpec(elemental) }
+        while controller.specAsk != nil { await Task.yield() }
+        controller.closeSpecSheet()
+        #expect(controller.block(ask).busy, "the write is still out when the sheet goes")
+        await pick.value
+        #expect(controller.block(ask).status == .saved("Saved. Elemental is kept for Lightningbolltz."))
+        #expect(!controller.block(ask).busy)
+    }
+
     @Test("closing the spec sheet drops the press; Out never asks")
     func specSheetClose() async throws {
         let service = FakeRaidService()

@@ -229,7 +229,7 @@ TOOLS = [('Guides', 'Your spec&rsquo;s guide, then every class', True), ('Tiers'
          ('Patch notes', 'The game and the site', True), ('Sims', 'Your server runs and saved sims', False),
          ('Logs and reports', 'Your reports and the coach', False), ('Planner', 'Your builds and the guide builds', True),
          ('Rankings', 'Your spec and your guild', True)]
-ACCOUNT = [('Notifications', 'Raids, gear and sims, logs on'), ('Plan', 'Premium &middot; Founder price'), ('Devices', '3 signed in'),
+ACCOUNT = [('Notifications', 'Logs, tiers off'), ('Plan', 'Premium &middot; Founder price'), ('Devices', '3 signed in'),
            ('Offline data', '26.6 MB on this phone'), ('Settings', 'Sign out, delete account')]
 
 

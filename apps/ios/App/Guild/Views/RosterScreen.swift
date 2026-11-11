@@ -111,11 +111,20 @@ struct RosterCountsCard: View {
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
             : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
         layout {
-            figure(shown.map { Copy.rosterCountsOf(shown: $0, total: counts.onRoster) } ?? "\(counts.onRoster)", Copy.rosterCountsOnRoster)
-            figure("\(counts.inGameNoAccount)", Copy.rosterCountsNoAccount)
-            figure("\(counts.waiting)", Copy.rosterCountsWaiting)
+            ForEach(Self.figures(counts, shown: shown), id: \.caption) { figure($0.value, $0.caption) }
         }
         .raidCardBox(16).quietCard()
+    }
+
+    /// The plate's figures: filtered, the one population the list shows (`4 of 38 on the roster`,
+    /// round 6, row 2); else the three guild-wide counts.
+    static func figures(_ counts: GuildMemberCounts, shown: Int?) -> [(value: String, caption: String)] {
+        if let shown { return [(Copy.rosterCountsOf(shown: shown, total: counts.onRoster), Copy.rosterCountsOnRoster)] }
+        return [
+            ("\(counts.onRoster)", Copy.rosterCountsOnRoster),
+            ("\(counts.inGameNoAccount)", Copy.rosterCountsNoAccount),
+            ("\(counts.waiting)", Copy.rosterCountsWaiting),
+        ]
     }
 
     private func figure(_ value: String, _ caption: String) -> some View {

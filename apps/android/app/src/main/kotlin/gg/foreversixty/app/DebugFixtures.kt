@@ -1,6 +1,7 @@
 package gg.foreversixty.app
 
 import gg.foreversixty.app.network.FixtureVariant
+import io.ktor.http.HttpStatusCode
 
 /**
  * Debug builds only (round 4 a2): the fixture states the review walk asks for, so the emulator can
@@ -20,7 +21,11 @@ object DebugFixtures {
     @Volatile
     var variants: Map<String, FixtureVariant> = emptyMap()
 
-    /** `stem=variant,stem=variant`: each a route stem and its named success variant. */
+    /**
+     * `stem=variant,stem=variant`: each a route stem and its named success variant, or [FAIL]
+     * (round 6 row 3: `guild.raid.ping=fail`), which answers the route with a 503 error so a push
+     * action's failure line shows.
+     */
     fun parse(spec: String): Map<String, FixtureVariant> = spec.split(',')
         .map { it.trim() }
         .filter { it.isNotEmpty() }
@@ -28,6 +33,10 @@ object DebugFixtures {
             val (stem, variant) = pair.split('=', limit = 2).map { it.trim() }.also {
                 require(it.size == 2 && it.all(String::isNotEmpty)) { "fs.debug.fixtures takes stem=variant pairs, not $pair" }
             }
-            stem to FixtureVariant.Named(variant)
+            stem to if (variant == FAIL) FixtureVariant.Error(FAIL_CODE, HttpStatusCode.ServiceUnavailable) else FixtureVariant.Named(variant)
         }
+
+    /** The variant word that makes a route fail. */
+    const val FAIL = "fail"
+    private const val FAIL_CODE = "unavailable"
 }

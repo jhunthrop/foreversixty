@@ -15,12 +15,17 @@ object NotificationsLine {
     fun shown(officer: Boolean): List<PushGroup> =
         PushGroup.entries.filter { it != PushGroup.Account && (officer || it != PushGroup.Officer) }
 
-    /** The line for the groups [on]; the golden and the drawer both build it here. */
-    fun of(res: Resources, on: List<PushGroup>): String {
-        val first = on.firstOrNull() ?: return res.getString(R.string.menu_notifications_off)
-        val rest = on.drop(1).map { res.getString(it.title).lowercase() }
+    /**
+     * The line for the [shown] groups of which [on] are on (round 6 row 1): `All on`, `All off`, else
+     * what the player misses, `Logs, tiers off`. The golden and the drawer both build it here.
+     */
+    fun of(res: Resources, shown: List<PushGroup>, on: List<PushGroup>): String {
+        val off = shown.filterNot { it in on }
+        val first = off.firstOrNull() ?: return res.getString(R.string.menu_notifications_allOn)
+        if (off.size == shown.size) return res.getString(R.string.menu_notifications_off)
+        val rest = off.drop(1).map { res.getString(it.title).lowercase() }
         val groups = (listOf(res.getString(first.title)) + rest).joinToString(LIST)
-        return res.getString(R.string.menu_notifications_on, groups)
+        return res.getString(R.string.menu_notifications_someOff, groups)
     }
 
     /**

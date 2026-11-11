@@ -10,6 +10,7 @@ import gg.foreversixty.app.guild.logic.MoreState
 import gg.foreversixty.app.guild.logic.NightFacts
 import gg.foreversixty.app.guild.logic.RosterCopy
 import gg.foreversixty.app.guild.logic.RosterEntries
+import gg.foreversixty.app.guild.logic.RosterFigure
 import gg.foreversixty.app.guild.logic.RosterList
 import gg.foreversixty.app.guild.logic.RosterQuery
 import gg.foreversixty.app.guild.logic.RosterRole
@@ -46,6 +47,17 @@ class GuildLogicTest {
         assertEquals(4, RosterList.onlyCount(entries, keys))
         assertEquals(1, RosterList.onlyCount(entries, keys.take(1).toSet() + "us/pvp/not-in-guild"))
         assertNull(RosterList.onlyCount(entries, emptySet()))
+    }
+
+    @Test
+    fun `a filtered plate counts one population, the whole plate counts the guild`() {
+        val counts = GuildFixture.home().counts
+        assertEquals(listOf(RosterFigure(RosterFigure.Kind.OnRoster, 4, counts.onRoster)), RosterFigure.of(counts, shown = 4))
+        assertEquals(
+            listOf(RosterFigure.Kind.OnRoster, RosterFigure.Kind.NoAccount, RosterFigure.Kind.Waiting),
+            RosterFigure.of(counts, shown = null).map { it.kind },
+        )
+        assertTrue(RosterFigure.of(counts, shown = null).all { it.of == null })
     }
 
     @Test

@@ -7807,6 +7807,17 @@
         }
       }
     },
+    "menu.notifications.allOn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All on"
+          }
+        }
+      }
+    },
     "menu.notifications.off": {
       "extractionState": "manual",
       "localizations": {
@@ -7818,14 +7829,14 @@
         }
       }
     },
-    "menu.notifications.on": {
+    "menu.notifications.someOff": {
       "comment": "Arguments: 1 groups (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ on"
+            "value": "%1$@ off"
           }
         }
       }

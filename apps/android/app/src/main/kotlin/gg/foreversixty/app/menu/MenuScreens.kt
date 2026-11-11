@@ -120,10 +120,12 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
     // Round 5 a1: the groups' real switches, read each time the drawer opens.
     val officer = model?.you?.guild?.rank?.let { GuildRank.of(it) != GuildRank.Member } == true
     val res = LocalResources.current
-    val notifications = remember(open, officer, res) { NotificationsLine.of(res, NotificationsLine.on(context, officer)) }
+    val notifications = remember(open, officer, res) {
+        NotificationsLine.of(res, NotificationsLine.shown(officer), NotificationsLine.on(context, officer))
+    }
     val lines = MenuLines(
         notifications = notifications,
-        plan =me?.let { PlanCopy.line(PlanSummary.of(it, Instant.now()).row) },
+        plan = me?.let { PlanCopy.line(PlanSummary.of(it, Instant.now()).row) },
         devices = devices?.size,
         newestDevice = devices?.firstOrNull { !it.isThisDevice }?.name,
         offlineData = offlineSize,

@@ -690,7 +690,8 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_account">Account</string>
     <string name="menu_notifications">Notifications</string>
-    <string name="menu_notifications_on">%1$s on</string>
+    <string name="menu_notifications_allOn">All on</string>
+    <string name="menu_notifications_someOff">%1$s off</string>
     <string name="menu_notifications_off">All off</string>
     <string name="menu_plan">Plan</string>
     <string name="menu_devices">Devices</string>

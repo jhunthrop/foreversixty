@@ -16,9 +16,12 @@ class NotificationsLineTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val manager = context.getSystemService(NotificationManager::class.java)
 
-    @Test fun `the groups that are on read in order, sentence case`() {
-        assertEquals("Raids, gear and sims, logs on", NotificationsLine.of(resources(), listOf(PushGroup.Raids, PushGroup.Gear, PushGroup.Logs)))
-        assertEquals("All off", NotificationsLine.of(resources(), emptyList()))
+    @Test fun `the row says what is missed - all on, all off, or the groups that are off`() {
+        val shown = NotificationsLine.shown(officer = false)
+        assertEquals("All on", NotificationsLine.of(resources(), shown, shown))
+        assertEquals("All off", NotificationsLine.of(resources(), shown, emptyList()))
+        assertEquals("Logs, tiers off", NotificationsLine.of(resources(), shown, shown - setOf(PushGroup.Logs, PushGroup.Tiers)))
+        assertEquals("Gear and sims off", NotificationsLine.of(resources(), shown, shown - PushGroup.Gear))
     }
 
     @Test fun `Account is never named and Officer only for an officer`() {

@@ -2240,9 +2240,12 @@ enum Copy {
     /// Notifications
     static var menuNotifications: String { text("menu.notifications") }
 
-    /// {groups} on
-    static func menuNotificationsOn(groups: String) -> String {
-        format("menu.notifications.on", groups)
+    /// All on
+    static var menuNotificationsAllOn: String { text("menu.notifications.allOn") }
+
+    /// {groups} off
+    static func menuNotificationsSomeOff(groups: String) -> String {
+        format("menu.notifications.someOff", groups)
     }
 
     /// All off

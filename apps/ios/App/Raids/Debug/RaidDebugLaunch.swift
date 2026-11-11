@@ -19,6 +19,10 @@ enum RaidDebugLaunch {
     /// `-FSOpenLink https://foreversixty.gg/app/raid/2/31`
     static var link: DeepLink? { value("-FSOpenLink").flatMap(URL.init(string:)).flatMap(DeepLink.init(url:)) }
 
+    /// `-FSFailOfficerPush` refuses every officer push action (Mention, Accept, Decline), so the
+    /// failure line replaces the push in the review captures (round 6, row 3).
+    static var failsOfficerPush: Bool { arguments.contains("-FSFailOfficerPush") }
+
     /// `-FSRaidFixture officer` answers the raid view from `guild.raid.officer` and the badge from
     /// `guild.raid-badge.officer`: the officer's Raid tab.
     static var raidVariant: String? { value("-FSRaidFixture") }

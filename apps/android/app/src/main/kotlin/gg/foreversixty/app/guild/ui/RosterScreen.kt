@@ -67,6 +67,7 @@ import gg.foreversixty.app.guild.logic.Loadable
 import gg.foreversixty.app.guild.logic.RosterCopy
 import gg.foreversixty.app.guild.logic.RosterEntries
 import gg.foreversixty.app.guild.logic.RosterEntry
+import gg.foreversixty.app.guild.logic.RosterFigure
 import gg.foreversixty.app.guild.logic.RosterList
 import gg.foreversixty.app.guild.logic.RosterQuery
 import gg.foreversixty.app.guild.logic.RosterRole
@@ -84,7 +85,7 @@ import java.time.Instant
 /** Below this width the attendance bar hides and `{n} of 8` stays (spec 9). */
 private const val NARROW_WIDTH_DP = 340
 
-/** The counts card's wide figures' share of the row: the longest caption, and the filtered `4 of 38`. */
+/** The counts card's middle figure's share of the row: its caption is the longest. */
 private const val WIDE_FIGURE = 1.6f
 
 /** What the roster screen holds besides its data: the chips, the search and the sort menu. */
@@ -183,12 +184,10 @@ private fun LazyListScope.loaded(
 /** The three figures; filtered from the Raid tab ([shown]), the roster's reads `4 of 38` (round 5 row 2). */
 @Composable
 private fun CountsCard(counts: GuildMemberCounts, shown: Int?) {
-    val onRoster = shown?.let { stringResource(R.string.roster_counts_of, it, counts.onRoster) } ?: "${counts.onRoster}"
-    val figures = listOf(
-        onRoster to stringResource(R.string.roster_counts_onRoster),
-        "${counts.inGameNoAccount}" to stringResource(R.string.roster_counts_noAccount),
-        "${counts.waiting}" to stringResource(R.string.roster_counts_waiting),
-    )
+    val figures = RosterFigure.of(counts, shown).map { figure ->
+        val value = figure.of?.let { total -> stringResource(R.string.roster_counts_of, figure.value, total) } ?: "${figure.value}"
+        value to stringResource(figure.kind.caption)
+    }
     val figure = @Composable { value: String, caption: String, modifier: Modifier ->
         Column(modifier.semantics(mergeDescendants = true) {}) {
             Text(value, style = ScaledType.stat, color = FsColor.strong)
@@ -203,9 +202,8 @@ private fun CountsCard(counts: GuildMemberCounts, shown: Int?) {
     } else {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = card) {
             figures.forEachIndexed { index, (value, caption) ->
-                // The middle caption is the longest; it takes the room it needs, as does `4 of 38`.
-                val wide = index == 1 || (index == 0 && shown != null)
-                figure(value, caption, Modifier.weight(if (wide) WIDE_FIGURE else 1f))
+                // The middle caption is the longest; it takes the room it needs.
+                figure(value, caption, Modifier.weight(if (index == 1) WIDE_FIGURE else 1f))
             }
         }
     }

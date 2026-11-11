@@ -41,6 +41,15 @@ struct RosterListTests {
         #expect(list.count(only: ["us/pvp/nobody"]) == 0)
     }
 
+    @Test("round 6, row 2: filtered, the plate counts the one population it shows")
+    func filteredPlate() throws {
+        let counts = try list().counts
+        let filtered = RosterCountsCard.figures(counts, shown: 4)
+        #expect(filtered.map(\.value) == ["4 of 38"])
+        #expect(filtered.map(\.caption) == [Copy.rosterCountsOnRoster])
+        #expect(RosterCountsCard.figures(counts, shown: nil).map(\.value) == ["38", "4", "2"])
+    }
+
     @Test("search filters by name, ignoring case and accents")
     func search() throws {
         let found = try list().visible(role: .all, query: "KRAG", sort: .rank)

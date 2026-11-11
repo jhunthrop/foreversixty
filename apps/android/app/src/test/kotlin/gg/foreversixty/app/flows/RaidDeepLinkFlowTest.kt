@@ -40,6 +40,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
+import kotlinx.coroutines.CompletableDeferred
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
@@ -136,6 +137,26 @@ class RaidDeepLinkFlowTest {
         answer(SignupState.In).assertIsSelected()
         shots.screen(5, "spec-picked")
         compose.mainClock.autoAdvance = true
+    }
+
+    /**
+     * The flake's cause, held open: the pick closes the sheet at once, and the write's answer comes back
+     * after that recomposition. It used to run in the sheet's own scope and was cancelled with it.
+     */
+    @Test
+    fun `a spec pick whose write answers after the sheet closes still shows Saved`() {
+        flow.service.raidOverride = RaidFixture.raid("guild.raid.ask-spec")
+        show()
+        openLink(DeepLink.Raid(FlowPlayer.GUILD, FlowPlayer.RAID, spec = "ask"))
+        val gate = CompletableDeferred<Unit>()
+        flow.service.gate = gate
+        compose.onNodeWithText("Restoration").performClick()
+        compose.waitUntil(SETTLE_MILLIS) { flow.service.inFlight == 1 }
+        compose.waitForIdle()
+        compose.onNodeWithText(resources().getString(R.string.spec_title).uppercase()).assertDoesNotExist()
+        gate.complete(Unit)
+        val saved = resources().getString(R.string.spec_kept, "Restoration", "Lightningbolltz")
+        compose.waitUntil(SETTLE_MILLIS) { compose.onAllNodes(hasText(saved, substring = true)).fetchSemanticsNodes().isNotEmpty() }
     }
 
     @Test

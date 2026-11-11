@@ -273,6 +273,64 @@ final class BackfillCaptureTests: XCTestCase {
 
     private static let officer = ["-FSRaidFixture", "officer", "-FSNow", "2026-12-17T22:30:00Z"]
 
+    // MARK: Round 6: the drawer's Notifications value, Activity, the filtered roster, the failure lines, stale Gear
+
+    /// `common.failed`, the title a refused officer action posts in place of its push.
+    private static let failedLine = "That did not save. Try again."
+    /// Eleven days past the fixture sync: past the seven-day stale age.
+    private static let staleNow = ["-FSNow", "2026-11-20T18:00:00Z"]
+
+    func testRound6Drawer() {
+        let app = CaptureLaunch.signedIn(tab: "home")
+        sleep(Self.settles)
+        CaptureLaunch.openMenu(app)
+        sleep(2)
+        save("r6-menu-01-open")
+        app.swipeUp()
+        sleep(1)
+        save("r6-menu-02-account")
+    }
+
+    func testRound6Activity() {
+        let app = CaptureLaunch.signedIn(tab: "activity")
+        sleep(Self.settles)
+        save("r6-activity-01-top")
+        _ = app
+    }
+
+    /// The not-synced tap's roster: the filter chip, and the plate's one figure.
+    func testRound6FilteredRoster() {
+        let app = CaptureLaunch.signedIn(tab: "raid", extra: Self.officer)
+        sleep(Self.settles)
+        let line = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Not synced this week")).firstMatch
+        for _ in 0 ..< 4 where !line.isHittable { app.swipeUp(velocity: .slow) }
+        guard line.waitForExistence(timeout: Self.appears), line.isHittable else { return XCTFail("no not-synced line") }
+        line.tap()
+        sleep(2)
+        save("r6-roster-01-filtered")
+    }
+
+    /// The failure line replaces the push when Mention and Accept are refused.
+    func testRound6PushFailures() {
+        let failing = Self.officer + ["-FSFailOfficerPush", "-FSPostPush"]
+        pushAction(
+            failing + ["push.raid-short"], title: "Onyxia's Lair", action: "Mention in Discord", name: "r6-push-short-fail",
+            result: Self.failedLine
+        )
+        pushAction(
+            failing + ["push.guild-applicant"], title: "New applicant", action: "Accept", name: "r6-push-applicant-accept-fail",
+            result: Self.failedLine
+        )
+    }
+
+    /// Gear on a clock past the stale age: the synced line in the warning tone.
+    func testRound6StaleGear() {
+        let app = CaptureLaunch.signedIn(tab: "gear", extra: Self.staleNow)
+        sleep(Self.settles)
+        save("r6-gear-01-stale")
+        _ = app
+    }
+
     private func pushAction(_ extra: [String], title: String, action: String, name: String, result: String? = nil) {
         let app = CaptureLaunch.signedIn(tab: "home", extra: extra)
         allowNotifications()

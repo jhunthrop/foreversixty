@@ -17,7 +17,7 @@ struct GearInputs: Equatable, Sendable {
 struct GearPresenter {
     let context: BisContext
     /// The synced stamp's clock.
-    var now = Date()
+    var now = AppClock.now()
 
     func content(list: BisList, inputs: GearInputs) -> GearContent {
         let home = ownHome(inputs.home)

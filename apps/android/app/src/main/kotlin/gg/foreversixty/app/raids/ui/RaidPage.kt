@@ -325,16 +325,7 @@ fun SignupCard(controller: SignupController, facts: RaidFacts, clock: RaidClock,
             }
         }
     }
-    controller.specAsk?.let { ask ->
-        controller.character(ask.characterKey)?.let { character ->
-            val scope = androidx.compose.runtime.rememberCoroutineScope()
-            SpecSheet(
-                ask, character, controller.raid.title, clock.shortDate(facts.startsAt),
-                pick = { option -> scope.launch { controller.pickSpec(option) } },
-                close = { controller.closeSpecSheet() },
-            )
-        }
-    }
+    SpecAskSheet(controller, controller.raid.title, clock.shortDate(facts.startsAt))
 }
 
 @Composable

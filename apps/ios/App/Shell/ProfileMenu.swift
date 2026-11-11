@@ -37,7 +37,8 @@ struct ProfileMenuSummary: Equatable {
     static let switchLevel = 10
 
     struct AccountFacts: Equatable {
-        var notificationGroups: [String]?
+        /// The groups the player gets, each on or off (`GET /v1/me/notifications`); nil until loaded.
+        var notifications: [NotificationGroupsSummary.Row]?
         var plan: String?
         var devices: Int?
         var offlineBytes: Int64?
@@ -92,7 +93,7 @@ struct ProfileMenuSummary: Equatable {
     private static func account(_ destination: MenuDestination, facts: AccountFacts) -> Row {
         switch destination {
         case .notifications:
-            Row(destination: destination, title: Copy.menuNotifications, line: notificationsLine(facts.notificationGroups))
+            Row(destination: destination, title: Copy.menuNotifications, line: notificationsLine(facts.notifications))
         case .plan:
             Row(destination: destination, title: Copy.menuPlan, line: facts.plan ?? "")
         case .devices:
@@ -133,13 +134,18 @@ struct ProfileMenuSummary: Equatable {
         return updated
     }
 
-    /// `Raids, gear and sims, logs on`: the groups that are on, in their order, sentence case.
-    static func notificationsLine(_ groups: [String]?) -> String {
-        guard let groups else { return "" }
-        guard let first = groups.first else { return Copy.menuNotificationsOff }
-        let joined = ([first] + groups.dropFirst().map { $0.lowercased() }).joined(separator: ", ")
-        return Copy.menuNotificationsOn(groups: joined)
+    /// What a player misses (round 6, row 1): `All on` when every group they get is on, `All off`
+    /// when none is, else the groups that are off in their order, sentence case (`Logs, tiers off`).
+    static func notificationsLine(_ rows: [NotificationGroupsSummary.Row]?) -> String {
+        guard let rows, !rows.isEmpty else { return "" }
+        let off = rows.filter { !$0.on }.map(\.group.title)
+        guard let first = off.first else { return Copy.menuNotificationsAllOn }
+        guard off.count < rows.count else { return Copy.menuNotificationsOff }
+        let joined = ([first] + off.dropFirst().map { $0.lowercased() }).joined(separator: Self.listSeparator)
+        return Copy.menuNotificationsSomeOff(groups: joined)
     }
+
+    private static let listSeparator = ", "
 
     static func offlineLine(_ bytes: Int64) -> String {
         Copy.menuOfflineDataLine(size: ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file))
@@ -157,6 +163,8 @@ struct ProfileMenuActions {
     var privacy: () -> Void = {}
     /// `GET /v1/devices`, for the Devices row's newest device; nil keeps the summary's line.
     var loadDevices: () async -> [Device]? = { nil }
+    /// `GET /v1/me/notifications`, for the Notifications row's value; nil keeps the summary's line.
+    var loadNotifications: () async -> NotificationSettings? = { nil }
 }
 
 /// The profile menu's content in the round-5 look (mocks ios-menu, -one, -low, -out and m-ios-menu):
@@ -170,6 +178,7 @@ struct ProfileMenuView: View {
     var actions = ProfileMenuActions()
     @State private var showsLowLevel = false
     @State private var devices: [Device]?
+    @State private var notifications: NotificationSettings?
     @State private var refresh = MenuRefresh.idle
 
     static let youPortrait: CGFloat = 56
@@ -248,6 +257,7 @@ struct ProfileMenuView: View {
         .ignoresSafeArea(edges: .top)
         .background(FSColor.raised)
         .task { devices = await actions.loadDevices() }
+        .task { notifications = await actions.loadNotifications() }
     }
 
     private func youBlock(_ you: AccountCharacter) -> some View {
@@ -321,14 +331,22 @@ struct ProfileMenuView: View {
         }
     }
 
-    /// The Account rows, the Devices line from the loaded devices once they arrive.
+    /// The Account rows, the Devices and Notifications lines from what was loaded once it arrives.
     private var accountRows: [ProfileMenuSummary.Row] {
-        guard let devices else { return summary.account }
-        let facts = ProfileMenuSummary.deviceFacts(devices, into: .init())
-        return summary.account.map { row in
-            guard row.destination == .devices else { return row }
-            let line = ProfileMenuSummary.devicesLine(facts.devices, newest: facts.newestDevice)
-            return ProfileMenuSummary.Row(destination: row.destination, title: row.title, line: line)
+        summary.account.map { row in
+            switch row.destination {
+            case .devices:
+                guard let devices else { return row }
+                let facts = ProfileMenuSummary.deviceFacts(devices, into: .init())
+                let line = ProfileMenuSummary.devicesLine(facts.devices, newest: facts.newestDevice)
+                return ProfileMenuSummary.Row(destination: row.destination, title: row.title, line: line)
+            case .notifications:
+                guard let notifications else { return row }
+                let line = ProfileMenuSummary.notificationsLine(NotificationGroupsSummary(notifications).rows)
+                return ProfileMenuSummary.Row(destination: row.destination, title: row.title, line: line)
+            default:
+                return row
+            }
         }
     }
 

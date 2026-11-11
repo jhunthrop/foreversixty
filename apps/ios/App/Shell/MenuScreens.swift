@@ -29,7 +29,10 @@ extension RootView {
                 signIn: { Task { await session.signIn(deviceName: UIDevice.current.name) } },
                 help: { openURL(AccountLinks.help) },
                 privacy: { openURL(AccountLinks.privacy) },
-                loadDevices: { [client = environment.client] in try? await client.send(.listDevices) }
+                loadDevices: { [client = environment.client] in try? await client.send(.listDevices) },
+                loadNotifications: { [client = environment.client] in
+                    try? await LiveNotificationSettingsService(client: client).load()
+                }
             )
         )
         .environment(\.portraitSource, RemotePortraitSource.shared)
@@ -39,7 +42,7 @@ extension RootView {
     private func menuFacts(_ me: Me?) -> ProfileMenuSummary.AccountFacts {
         guard let me else { return .init() }
         return .init(
-            notificationGroups: nil,
+            notifications: nil,
             plan: PlanSummary(me: me, now: Date()).row,
             devices: nil,
             offlineBytes: nil

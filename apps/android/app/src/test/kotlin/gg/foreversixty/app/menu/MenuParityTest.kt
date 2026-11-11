@@ -123,7 +123,9 @@ object MenuFixtures {
 
     val lines = MenuLines(
         // Round 5 a1: the drawer's own builder, so the golden and the app cannot disagree.
-        notifications = NotificationsLine.of(resources(), listOf(PushGroup.Raids, PushGroup.Gear, PushGroup.Logs)),
+        notifications = NotificationsLine.shown(officer = true).let { shown ->
+            NotificationsLine.of(resources(), shown, shown - setOf(PushGroup.Logs, PushGroup.Tiers))
+        },
         plan = "Premium · Founder price",
         devices = 3,
         newestDevice = "Pixel 9",

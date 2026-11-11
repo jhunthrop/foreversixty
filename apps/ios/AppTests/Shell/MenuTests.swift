@@ -50,7 +50,11 @@ enum MenuTestData {
     }
 
     static let facts = ProfileMenuSummary.AccountFacts(
-        notificationGroups: ["Raids", "Gear and sims", "Logs"], plan: "Premium · Founder price", devices: 3, offlineBytes: 26_600_000,
+        notifications: [
+            .init(group: .raids, on: true), .init(group: .gear, on: true), .init(group: .logs, on: false),
+            .init(group: .tiers, on: false),
+        ],
+        plan: "Premium · Founder price", devices: 3, offlineBytes: 26_600_000,
         newestDevice: "iPhone 17"
     )
     static let version = "Version 0.1.0 (7) · data 1.60.1.70790"
@@ -143,7 +147,7 @@ struct ProfileMenuSummaryTests {
         let summary = MenuTestData.summary([MenuTestData.thandrel])
         #expect(summary.tools.map(\.title) == ["Guides", "Tiers", "Patch notes", "Sims", "Logs and reports", "Planner", "Rankings"])
         #expect(summary.account.map(\.line) == [
-            "Raids, gear and sims, logs on", "Premium · Founder price", "3 signed in · newest iPhone 17", "26.6 MB on this phone", "Sign out, delete account",
+            "Logs, tiers off", "Premium · Founder price", "3 signed in · newest iPhone 17", "26.6 MB on this phone", "Sign out, delete account",
         ])
     }
 
@@ -155,10 +159,15 @@ struct ProfileMenuSummaryTests {
         #expect(summary.tools.map(\.destination) == [.guides, .tiers, .patchNotes, .planner, .rankings])
     }
 
-    @Test("every notification group off reads All off")
-    func allOff() {
-        #expect(ProfileMenuSummary.notificationsLine([]) == "All off")
-        #expect(ProfileMenuSummary.notificationsLine(["Raids"]) == "Raids on")
+    @Test("round 6, row 1: the Notifications value says what a player misses")
+    func notificationsLine() {
+        typealias Row = NotificationGroupsSummary.Row
+        let groups: [NotificationGroup] = [.raids, .gear, .logs, .tiers]
+        #expect(ProfileMenuSummary.notificationsLine(groups.map { Row(group: $0, on: true) }) == "All on")
+        #expect(ProfileMenuSummary.notificationsLine(groups.map { Row(group: $0, on: false) }) == "All off")
+        #expect(ProfileMenuSummary.notificationsLine(MenuTestData.facts.notifications) == "Logs, tiers off")
+        #expect(ProfileMenuSummary.notificationsLine([Row(group: .raids, on: false), Row(group: .gear, on: true)]) == "Raids off")
+        #expect(ProfileMenuSummary.notificationsLine(nil) == "", "nothing before the settings load")
     }
 }
 
