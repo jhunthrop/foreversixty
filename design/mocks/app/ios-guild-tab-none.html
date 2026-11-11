@@ -134,7 +134,7 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 [data-platform=android] .app-home{width:108px;height:4px;opacity:.7}
 /* pull to refresh affordance, drawn only on the states that show it */
 .app-ptr{display:flex;justify-content:center;padding:10px 0 0}.app-ptr span{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--gold)}
-</style></head><body data-platform="ios" style="--dev-w:393px;--dev-h:852px;--status:54px;--nav:44px;--home:34px;--top:98px;--bottom:83px"><div class="app-status" aria-hidden="true"><span>9:41</span><span class="island"></span><span class="sys"><i></i><i></i><i class="b"></i></span></div><nav class="app-nav" aria-label="Navigation"><a href="#" class="menu-crest" aria-label="Open menu"><span class="pf" style="width:32px;height:32px;--ring:#2f6fd6"><img class="pf-img" src="../data/avatars/thandrel.jpg" alt=""><img class="pf-badge" src="../../../web/public/icons/hd/faction/alliance.webp" alt="" style="width:13px;height:13px"></span></a><span class="ttl hidden">Guild</span><a aria-hidden="true"></a></nav><!--fs-chrome:{"who": null, "state": "", "nav": ""}--><div class="fs-chrome"><div data-fs-body%BODY_ATTRS%>%HEADER%</div></div><main><div class="ap r5raid"><section data-region="section-guilds-recruiting-a-fury-warrior"><div class="sh"><h2>Guilds recruiting a Fury Warrior</h2></div><div class="pn"><div class="row"><span class="t">Olympus XXVII</span><span class="s">Alliance &middot; Wed and Sat, 8:00 pm CST &middot; needs damage</span><div class="tr"><span class="when">Applied Mon</span></div></div><div class="row"><span class="t">Dawnbreak</span><span class="s">Alliance &middot; Tue and Thu, 9:00 pm EST &middot; needs damage</span><div class="tr"><a class="btn" href="#">Apply</a></div></div></div></section><section data-region="section-find-your-guild"><div class="sh"><h2>Find your guild</h2></div><div class="pn"><div class="row"><span class="t">Search guilds on the site</span><span class="s">By name or realm</span></div><div class="row"><span class="t">Claim your guild</span><span class="s">A guild master or an officer confirms with the addon or Battle.net.</span></div></div></section></div><style>
+</style></head><body data-platform="ios" style="--dev-w:393px;--dev-h:852px;--status:54px;--nav:44px;--home:34px;--top:98px;--bottom:83px"><div class="app-status" aria-hidden="true"><span>9:41</span><span class="island"></span><span class="sys"><i></i><i></i><i class="b"></i></span></div><nav class="app-nav" aria-label="Navigation"><a href="#" class="menu-crest" aria-label="Open menu"><span class="pf" style="width:32px;height:32px;--ring:#2f6fd6"><img class="pf-img" src="../data/avatars/thandrel.jpg" alt=""><img class="pf-badge" src="../../../web/public/icons/hd/faction/alliance.webp" alt="" style="width:13px;height:13px"></span></a><span class="ttl hidden">Guild</span><a aria-hidden="true"></a></nav><!--fs-chrome:{"who": null, "state": "", "nav": ""}--><div class="fs-chrome"><div data-fs-body%BODY_ATTRS%>%HEADER%</div></div><main><div class="ap r5raid"><section data-region="section-guilds-recruiting-a-fury-warrior"><div class="sh"><h2>Guilds recruiting a Fury Warrior</h2></div><div class="pn"><div class="row"><span class="t">Olympus XXVII</span><span class="s">Alliance &middot; Wed and Sat, 8:00 pm CST &middot; needs damage</span><div class="tr"><span class="when">Applied Mon</span></div></div><div class="row"><span class="t">Dawnbreak</span><span class="s">Alliance &middot; Tue and Thu, 9:00 pm EST &middot; needs damage</span><div class="tr"><a class="btn" href="#">Apply</a></div></div></div></section><section data-region="section-find-your-guild"><div class="sh"><h2>Find your guild</h2></div><div class="pn"><div class="row"><div class="in"><div><span class="t">Search guilds</span></div><span class="chev">&rsaquo;</span></div></div><div class="row"><div class="in"><div><span class="t">Claim your guild</span></div><span class="chev">&rsaquo;</span></div></div></div></section></div><style>
 .ap{padding:8px 16px 24px}
 .r5{display:none}
 .ap .pc{padding-inline:0!important}
@@ -259,28 +259,29 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 [data-platform=ios] .r5raid .rfoot p{padding:0;line-height:18px}
 [data-platform=ios] .r5raid .rfoot p.warn{color:var(--muted)}
 
-.r5raid .gh{display:flex;align-items:center;gap:12px;padding:8px 0}
+.r5raid .gh{display:flex;align-items:flex-start;gap:12px;padding:8px 0}
 .r5raid .gh .crest{flex:none}
-.r5raid .gh h1{margin:0;font:400 22px/26px var(--font-title);color:#f3eee2}
+.r5raid .gh h1{margin:0;font:400 21px/26px var(--font-title);color:#f3eee2}
 .r5raid .gh .s{white-space:normal}
 .r5raid .spread{display:flex;gap:0;margin:4px 0 8px;border-top:1px solid var(--line);padding-top:10px}
 .r5raid .spread>div{flex:1;min-width:0}
-.r5raid .spread b{font:700 20px/24px var(--font-body);font-variant-numeric:tabular-nums}
+.r5raid .spread b{font:700 18px/22px var(--font-body);font-variant-numeric:tabular-nums}
 .r5raid .spread .s{font-size:12px;line-height:16px}
 .r5raid .spread .you b{color:var(--gold)}
-.r5raid .seg.off .btn{color:var(--muted);opacity:.45}
-.r5raid .gate{margin:0;font:400 13px/20px var(--font-body);color:var(--muted)}
+.r5raid .gate{margin:0;font:400 13px/20px var(--font-body);color:var(--text)}
 .ap.r5raid>*+.gate{margin-top:20px}
 .r5raid .row .in .crest{flex:none}
 .r5raid .row .in>div{flex:1;min-width:0}
 .r5raid .row .in .when{flex:none;font:400 13px/18.29px var(--font-body);color:var(--muted);text-align:right}
 .r5raid .row .in .lv{flex:none;font:700 15px/20.57px var(--font-body);font-variant-numeric:tabular-nums;color:#fff}
+.r5raid .row .in .chev{flex:none;color:var(--muted);font:600 15px/20px var(--font-body)}
 .r5raid .grp{margin:0;padding:10px 0 2px;font:600 13px/18px var(--font-body);color:var(--muted)}
 .r5raid .pn>.grp:first-child{padding-top:6px}
 .r5raid .row .in .cnt{flex:none;font:600 14px/20px var(--font-body);color:var(--gold)}
 .r5raid .kill{color:#7fd48a}
 [data-region^=section-guilds-recruiting] .sh{height:auto;min-height:26px}
-.r5raid .row .tr .when{font:600 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .row .tr .when{font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .row .t.vacant{color:var(--muted)}
 </style><style>
 /* ---- Page: one column, four layouts ---- */
 .layout-split{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);align-items:start}

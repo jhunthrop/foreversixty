@@ -7,8 +7,10 @@ import Models
 /// progression, the officer's shortcuts, the loot line.
 struct GuildTabContent: Equatable {
     var head: GuildTabHead
-    /// Below 60: the guild's level spread (the head leads the tab); nil at 60.
+    /// The guild's level spread: at 60, 55 to 59, and your level under 60 or the raiders at 60.
     var spread: GuildSpread?
+    /// Under 60 the guild leads the tab (spec 2.1); at 60 the raid does (2.2).
+    var leveler = false
     /// `31 of 38 at 60`, on the Roster section's title row.
     var rosterMeta: String?
     var recent: [GuildMemberLine] = []
@@ -16,8 +18,30 @@ struct GuildTabContent: Equatable {
     var close: [GuildMemberLine] = []
     var logs: [GuildLogLine] = []
     var progression: GuildProgressLine?
+    /// At 60: the newest night's drops and who won them; `loot` is the badge's count when the night is not loaded.
+    var lootNight: GuildLootNight?
     var loot: String?
     var officer: [OfficerShortcut] = []
+    /// Officers: the raiders who missed most of the last 30 days' nights.
+    var missing: [GuildMemberLine] = []
+}
+
+/// The newest loot night (spec 2.2): its raid and day, each drop with who won it.
+struct GuildLootNight: Equatable {
+    struct Drop: Equatable, Identifiable {
+        var id: Int { itemID }
+        let itemID: Int
+        let name: String
+        let icon: String
+        let quality: Int
+        /// The winner, or nil while the drop is open.
+        let winner: String?
+        let winnerClass: String?
+    }
+
+    let zone: String
+    let day: String
+    let drops: [Drop]
 }
 
 struct GuildTabHead: Equatable {
@@ -28,11 +52,14 @@ struct GuildTabHead: Equatable {
     let line: String
 }
 
-/// `31 at 60 · 4 at 55 to 59 · you 36`, as three figures.
+/// `31 at 60 · 4 at 55 to 59 · 36 your level` (under 60) or `24 raiders` (at 60), as three figures.
 struct GuildSpread: Equatable {
     let atCap: Int
     let close: Int
-    let you: Int
+    let third: Int
+    let thirdLabel: String
+    /// The third figure is the viewer's own level, in gold.
+    let own: Bool
 }
 
 struct GuildMemberLine: Equatable, Identifiable {
@@ -82,6 +109,7 @@ struct GuildTabInputs: Equatable {
     var characterKey: String?
     var planned: [RaidView] = []
     var firstRaids: Date?
+    var lootNights: LootNights?
 }
 
 /// Turns the guild home into the Guild tab's sections. Pure, so each state is a test of values.
@@ -95,6 +123,10 @@ struct GuildTabPresenter {
     static let recentShown = 5
     static let closeShown = 5
     static let logsShown = 3
+    static let lootShown = 4
+    static let missingShown = 3
+    /// Missing raids: at least this many of the last 30 days' nights, and present at under half.
+    static let missingNights = 4
     /// Plan a raid names the next two planned raids, as the Calendar row does.
     static let plannedShown = 2
     /// A setup step still to do (api/internal/guilds/setup.go SetupTodo).
@@ -106,18 +138,27 @@ struct GuildTabPresenter {
         let levels = home.members.compactMap(\.level)
         let atCap = levels.filter { $0 >= Self.maxLevel }.count
         var content = GuildTabContent(head: head(home, name: guildName))
+        content.leveler = leveler
         content.rosterMeta = Copy.guildTabRosterMeta(n: atCap, total: home.members.count, level: Self.maxLevel)
+        let close = levels.filter { (Self.closeFrom..<Self.maxLevel).contains($0) }.count
+        content.spread = leveler
+            ? GuildSpread(atCap: atCap, close: close, third: inputs.level ?? 0, thirdLabel: Copy.guildTabYou, own: true)
+            : GuildSpread(atCap: atCap, close: close, third: home.summary.raiders, thirdLabel: Copy.guildTabRaiders, own: false)
         content.recent = recent(home, excluding: inputs.characterKey)
         if leveler {
-            content.spread = GuildSpread(
-                atCap: atCap, close: levels.filter { (Self.closeFrom..<Self.maxLevel).contains($0) }.count, you: inputs.level ?? 0
-            )
-            content.close = close(home, excluding: inputs.characterKey)
+            let shown = Set(content.recent.map(\.name))
+            content.close = self.close(home, excluding: inputs.characterKey).filter { !shown.contains($0.name) }
         }
         content.logs = home.reports.prefix(Self.logsShown).map(log)
         content.progression = progression(home.summary, firstRaids: inputs.firstRaids)
-        content.loot = leveler ? nil : inputs.badge?.lastRaidLoot.map { Copy.raidPagesLootLast(n: $0.count) }
-        if home.viewer.officerTools || inputs.badge?.officer == true { content.officer = officer(inputs) }
+        if !leveler {
+            content.lootNight = inputs.lootNights?.nights.first.flatMap(lootNight)
+            content.loot = content.lootNight == nil ? inputs.badge?.lastRaidLoot.map { Copy.raidPagesLootLast(n: $0.count) } : nil
+        }
+        if home.viewer.officerTools || inputs.badge?.officer == true {
+            content.officer = officer(inputs)
+            content.missing = missing(home)
+        }
         return content
     }
 
@@ -126,29 +167,73 @@ struct GuildTabPresenter {
     private func head(_ home: GuildHome, name: String) -> GuildTabHead {
         let members = Copy.raidPagesMembers(n: home.counts.onRoster)
         let faction = home.guild.faction.map(\.capitalized)
+        let realm = Self.realm(region: home.guild.region, ruleset: home.guild.ruleset)
         return GuildTabHead(
             name: home.guild.name.isEmpty ? name : home.guild.name,
             faction: home.guild.faction,
             crestURL: home.guild.crestUrl.flatMap(URL.init(string:)),
-            line: faction.map { Copy.guildTabHeadLine(members: members, faction: $0) } ?? members
+            line: faction.map { Copy.guildTabHeadLine(members: members, faction: $0, realm: realm) } ?? members
         )
+    }
+
+    /// `US PvP`, the site's realm words.
+    static func realm(region: String, ruleset: String) -> String {
+        let rules = ruleset.lowercased() == "pvp" ? "PvP" : ruleset.prefix(1).uppercased() + ruleset.dropFirst()
+        return "\(region.uppercased()) \(rules)"
+    }
+
+    /// The newest night's drops, each with who won it (Not awarded yet while open).
+    private func lootNight(_ night: LootNight) -> GuildLootNight? {
+        let drops = night.drops.filter { $0.kind == "gear" }.prefix(Self.lootShown).map { drop in
+            GuildLootNight.Drop(
+                itemID: drop.itemId, name: drop.name, icon: drop.icon, quality: drop.quality,
+                winner: drop.award?.name, winnerClass: drop.award?.className
+            )
+        }
+        guard !drops.isEmpty else { return nil }
+        let day = (try? Date(night.date + "T12:00:00Z", strategy: .iso8601)).map(clock.shortDate) ?? night.date
+        return GuildLootNight(zone: night.zone, day: day, drops: Array(drops))
+    }
+
+    /// Officers: the raiders present at under half of at least four nights in the last 30 days, fewest first.
+    func missing(_ home: GuildHome) -> [GuildMemberLine] {
+        home.roster
+            .compactMap { row -> (GuildRosterRow, Int, Int)? in
+                guard let present = row.attendance30?.present, let nights = row.attendance30?.nights,
+                      nights >= Self.missingNights, present * 2 < nights else { return nil }
+                return (row, present, nights)
+            }
+            .sorted { Double($0.1) / Double($0.2) < Double($1.1) / Double($1.2) }
+            .prefix(Self.missingShown)
+            .map { row, present, nights in
+                GuildMemberLine(
+                    name: row.name, className: row.className, specIcon: row.specIcon,
+                    line: [row.specName, row.itemLevel.map { Copy.guildTabItemLevel(n: $0) }].compactMap(\.self).joined(separator: " · "),
+                    trail: Copy.guildTabNights(present: present, nights: nights)
+                )
+            }
     }
 
     /// The five most recently seen members (the addon's `seen_at`, read in the viewer's zone as the
     /// site reads it), the viewer left out.
     func recent(_ home: GuildHome, excluding key: String?) -> [GuildMemberLine] {
-        home.members
+        var itemLevels: [String: Int] = [:]
+        for row in home.roster { if let level = row.itemLevel { itemLevels[row.characterKey] = level } }
+        let seen: [(GuildMember, Date)] = home.members
             .filter { $0.characterKey == nil || $0.characterKey != key }
             .compactMap { member in Self.seenAt(member.seenAt).map { (member, $0) } }
-            .sorted { $0.1 > $1.1 }
-            .prefix(Self.recentShown)
-            .map { member, seen in
-                GuildMemberLine(
-                    name: member.name, className: member.className, specIcon: member.specIcon,
-                    line: [member.level.map(String.init), member.specName].compactMap(\.self).joined(separator: " · "),
-                    trail: Copy.guildTabSeen(age: RelativeAge(from: seen, to: now).phrase)
-                )
-            }
+        return seen.sorted { $0.1 > $1.1 }.prefix(Self.recentShown).map { member, at in
+            memberLine(member, itemLevel: member.characterKey.flatMap { itemLevels[$0] }, seen: at)
+        }
+    }
+
+    /// `60 · Protection Warrior · item level 66`, and how long ago they were seen.
+    private func memberLine(_ member: GuildMember, itemLevel: Int?, seen: Date) -> GuildMemberLine {
+        let parts: [String?] = [member.level.map(String.init), member.specName, itemLevel.map { Copy.guildTabItemLevel(n: $0) }]
+        return GuildMemberLine(
+            name: member.name, className: member.className, specIcon: member.specIcon,
+            line: parts.compactMap(\.self).joined(separator: " · "), trail: RelativeAge(from: seen, to: now).phrase
+        )
     }
 
     func close(_ home: GuildHome, excluding key: String?) -> [GuildMemberLine] {
@@ -178,7 +263,8 @@ struct GuildTabPresenter {
     /// The tier's line: `1 of 1 down · 6 pulls this tier`; before the first pull, when the first raids open.
     func progression(_ summary: GuildSummary, firstRaids: Date?) -> GuildProgressLine? {
         let named = summary.tier?.namedEncounters ?? 0
-        let title = summary.tier?.name ?? summary.tier?.raids?.first
+        let raids = summary.tier?.raids ?? []
+        let title = raids.isEmpty ? summary.tier?.name : raids.joined(separator: ", ")
         guard let title, named > 0 else { return nil }
         let pulls = summary.tier?.pullsTotal ?? summary.pullsThisTier
         let down = summary.tier?.down ?? summary.namedEncountersDown

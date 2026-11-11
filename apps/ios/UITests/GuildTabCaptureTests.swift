@@ -142,6 +142,22 @@ final class GuildTabCaptureTests: XCTestCase {
         }
     }
 
+    // MARK: The tab bar
+
+    /// The four tab icons together with Guild unselected (from Home and from Gear) and selected.
+    func testTabBar() {
+        let app = CaptureLaunch.signedIn(tab: "home")
+        sleep(Self.settles)
+        save("tabbar-01-home")
+        app.tabBars.buttons["Gear"].tap()
+        sleep(Self.settles)
+        save("tabbar-02-gear")
+        app.tabBars.buttons["Guild"].tap()
+        sleep(Self.settles)
+        XCTAssertTrue(app.tabBars.buttons["Guild"].isSelected)
+        save("tabbar-03-guild")
+    }
+
     // MARK: The deep link
 
     /// A raid link (a push's tap-through) opens the raid page inside the Guild tab; back returns to the tab's root.

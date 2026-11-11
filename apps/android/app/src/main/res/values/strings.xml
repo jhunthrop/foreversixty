@@ -1706,7 +1706,7 @@
     <string name="home_officer_role_healers">healers</string>
     <string name="home_officer_role_damage">damage</string>
     <string name="home_officer_short" tools:ignore="PluralsCandidate">%1$s short by %2$d</string>
-    <string name="home_officer_preview">Preview mention</string>
+    <string name="home_officer_preview">Ping on Discord</string>
     <plurals name="home_officer_applicants">
         <item quantity="one">1 applicant</item>
         <item quantity="other">%1$d applicants</item>
@@ -1760,23 +1760,27 @@
     <string name="raid_tab_short" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
     <string name="raid_tab_andMore" tools:ignore="PluralsCandidate">%1$s and %2$d more</string>
     <string name="raid_tab_howLate">How late</string>
-    <string name="guild_tab_headLine">%1$s · %2$s</string>
+    <string name="guild_tab_headLine">%1$s · %2$s · %3$s</string>
     <string name="guild_tab_atCap" tools:ignore="PluralsCandidate">at %1$d</string>
     <string name="guild_tab_closeRange" tools:ignore="PluralsCandidate">%1$d to %2$d</string>
-    <string name="guild_tab_you">you</string>
+    <string name="guild_tab_you">your level</string>
+    <string name="guild_tab_raiders">raiders</string>
+    <string name="guild_tab_missingRaids">Missing raids</string>
+    <string name="guild_tab_nights" tools:ignore="PluralsCandidate">%1$d of %2$d nights</string>
+    <string name="guild_tab_itemLevel" tools:ignore="PluralsCandidate">item level %1$d</string>
+    <string name="guild_tab_notAwarded">Not awarded yet</string>
     <string name="guild_tab_raidsOpen" tools:ignore="PluralsCandidate">Raids open at %1$d · you\'re %2$d</string>
     <string name="guild_tab_roster">Roster</string>
     <string name="guild_tab_rosterMeta" tools:ignore="PluralsCandidate">%1$d of %2$d at %3$d</string>
     <string name="guild_tab_recentlyOn">Recently on</string>
     <string name="guild_tab_closeTo" tools:ignore="PluralsCandidate">Close to %1$d</string>
-    <string name="guild_tab_seen">Seen %1$s</string>
     <string name="guild_tab_logs">Recent logs</string>
     <string name="guild_tab_logLine" tools:ignore="PluralsCandidate">%1$s · %2$d/%3$d kills · %4$s</string>
     <string name="guild_tab_progression">Progression</string>
     <string name="guild_tab_down" tools:ignore="PluralsCandidate">%1$d of %2$d down</string>
     <plurals name="guild_tab_pulls">
-        <item quantity="one">1 pull this tier</item>
-        <item quantity="other">%1$d pulls this tier</item>
+        <item quantity="one">1 pull</item>
+        <item quantity="other">%1$d pulls</item>
     </plurals>
     <string name="guild_tab_firstRaids">First raids open %1$s</string>
     <string name="guild_tab_loot">Loot</string>
@@ -1802,8 +1806,7 @@
     <string name="guild_tab_stepVisibility">log visibility</string>
     <string name="guild_tab_stepRole">Discord role</string>
     <string name="guild_tab_find">Find your guild</string>
-    <string name="guild_tab_search">Search guilds on the site</string>
-    <string name="guild_tab_searchLine">By name or realm</string>
+    <string name="guild_tab_search">Search guilds</string>
     <string name="guild_tab_applied">Applied %1$s</string>
     <string name="guild_tab_jobLine">%1$s · %2$s</string>
     <string name="guild_tab_openPlanner">Open in planner ›</string>
@@ -1912,7 +1915,7 @@
         <item quantity="other">%1$d things before you pull</item>
     </plurals>
     <string name="home_ready_line">%1$s · from your last log-out, %2$s</string>
-    <string name="home_officer_previewMention">Preview mention</string>
+    <string name="home_officer_previewMention">Ping on Discord</string>
     <string name="home_officer_applicant" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d, %4$s</string>
     <string name="home_role_tanks">tanks</string>
     <string name="home_role_healers">healers</string>

@@ -4,6 +4,7 @@ import gg.foreversixty.app.model.GuildApplicationDecision
 import gg.foreversixty.app.model.GuildApplications
 import gg.foreversixty.app.model.GuildOfficerApplications
 import gg.foreversixty.app.model.GuildSetup
+import gg.foreversixty.app.model.LootNights
 import gg.foreversixty.app.model.RaidPingRequest
 import gg.foreversixty.app.model.RaidPingResult
 import gg.foreversixty.app.model.ReadyCheck
@@ -31,6 +32,9 @@ interface RaidFlowService {
 
     /** The player's own applications to [guild]. */
     suspend fun myApplications(guild: Long): ApiResult<GuildApplications>
+
+    /** The newest loot night: its drops and who won them. */
+    suspend fun lootNights(guild: Long): ApiResult<LootNights>
 }
 
 class LiveRaidFlowService(private val client: ApiClient) : RaidFlowService {
@@ -51,4 +55,6 @@ class LiveRaidFlowService(private val client: ApiClient) : RaidFlowService {
     override suspend fun setup(guild: Long) = client.send(ApiEndpoints.getGuildSetup(guild))
 
     override suspend fun myApplications(guild: Long) = client.send(ApiEndpoints.myGuildApplications(guild))
+
+    override suspend fun lootNights(guild: Long) = client.send(ApiEndpoints.getGuildLootNights(guild, 1))
 }

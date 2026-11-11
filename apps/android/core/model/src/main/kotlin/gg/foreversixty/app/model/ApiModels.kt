@@ -1981,6 +1981,26 @@ data class LootCandidate(
     @SerialName("items_won") val itemsWon: Int,
 )
 
+/** An award's decision record. ms_os, reason and the votes are what the award kept when it was made (votes snapshotted at award time; votes_officers is how many officers could vote); all null on an award made before the council recorded them. awarded_by is the officer's character in the guild, "an officer" when it cannot be named, "" when no officer is recorded. */
+@Serializable
+data class LootDecision(
+    @SerialName("award_id") val awardId: Long,
+    @SerialName("item_id") val itemId: Int,
+    @SerialName("item_name") val itemName: String,
+    @SerialName("icon") val icon: String,
+    @SerialName("quality") val quality: Int,
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("ms_os") val msOs: String? = null,
+    @SerialName("reason") val reason: String? = null,
+    @SerialName("votes_yes") val votesYes: Int? = null,
+    @SerialName("votes_no") val votesNo: Int? = null,
+    @SerialName("votes_officers") val votesOfficers: Int? = null,
+    @SerialName("awarded_by") val awardedBy: String,
+    @SerialName("at") val at: String,
+)
+
 @Serializable
 data class LootEligible(
     @SerialName("character_key") val characterKey: String,
@@ -2041,6 +2061,48 @@ data class LootItem(
     @SerialName("awarded_to") val awardedTo: LootAward? = null,
     /** Ranked best first. */
     @SerialName("candidates") val candidates: List<LootCandidate> = emptyList(),
+)
+
+@Serializable
+data class LootNight(
+    /** The key every council call takes: "raid:<id>", "report:<id>" or "live" (no night yet). */
+    @SerialName("night") val night: String,
+    @SerialName("raid_id") val raidId: Long? = null,
+    @SerialName("report_id") val reportId: String? = null,
+    /** The night's day in the guild's raid zone (UTC without one). */
+    @SerialName("date") val date: String,
+    @SerialName("at") val at: String,
+    @SerialName("zone") val zone: String,
+    @SerialName("current") val current: Boolean,
+    @SerialName("drops") val drops: List<LootNightDrop> = emptyList(),
+    /** The night's decision record, oldest first. */
+    @SerialName("decisions") val decisions: List<LootDecision> = emptyList(),
+)
+
+@Serializable
+data class LootNightDrop(
+    @SerialName("item_id") val itemId: Int,
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String,
+    @SerialName("quality") val quality: Int,
+    @SerialName("kind") val kind: String,
+    @SerialName("encounter_id") val encounterId: Long,
+    @SerialName("boss") val boss: String,
+    @SerialName("state") val state: String,
+    @SerialName("award") val award: LootDecision? = null,
+    /** True when a raider's addon recorded the drop from the loot window. */
+    @SerialName("recorded") val recorded: Boolean,
+    /** The copies the addon recorded; 0 when no addon recorded the drop. */
+    @SerialName("count") val count: Int,
+    /** Who the loot chat says received a copy, as the client named them; empty when unknown. */
+    @SerialName("looted_by") val lootedBy: List<String> = emptyList(),
+)
+
+/** GET /v1/guilds/{id}/loot/nights: the guild's loot nights, newest first. A night's drops are what a raider's addon recorded dropping on it (the export's drops= section, recorded true), plus the items the council awarded, voted on or flagged; the current night (where an award made now is filed) is always listed, first when nothing else holds it, and the page offers the whole loot table on it (GET .../loot) for a night no addon recorded. Members read the same drops with no vote counts. */
+@Serializable
+data class LootNights(
+    @SerialName("officers") val officers: Int,
+    @SerialName("nights") val nights: List<LootNight> = emptyList(),
 )
 
 @Serializable

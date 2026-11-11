@@ -5282,6 +5282,77 @@ public struct LootCandidate: Codable, Sendable, Equatable {
     }
 }
 
+/// An award's decision record. ms_os, reason and the votes are what the award kept when it was made (votes snapshotted at award time; votes_officers is how many officers could vote); all null on an award made before the council recorded them. awarded_by is the officer's character in the guild, "an officer" when it cannot be named, "" when no officer is recorded.
+public struct LootDecision: Codable, Sendable, Equatable {
+    public let awardId: Int64
+    public let itemId: Int
+    public let itemName: String
+    public let icon: String
+    public let quality: Int
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    public let msOs: String?
+    public let reason: String?
+    public let votesYes: Int?
+    public let votesNo: Int?
+    public let votesOfficers: Int?
+    public let awardedBy: String
+    public let at: Date
+
+    public init(
+        awardId: Int64,
+        itemId: Int,
+        itemName: String,
+        icon: String,
+        quality: Int,
+        characterKey: String,
+        name: String,
+        className: String,
+        msOs: String? = nil,
+        reason: String? = nil,
+        votesYes: Int? = nil,
+        votesNo: Int? = nil,
+        votesOfficers: Int? = nil,
+        awardedBy: String,
+        at: Date
+    ) {
+        self.awardId = awardId
+        self.itemId = itemId
+        self.itemName = itemName
+        self.icon = icon
+        self.quality = quality
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.msOs = msOs
+        self.reason = reason
+        self.votesYes = votesYes
+        self.votesNo = votesNo
+        self.votesOfficers = votesOfficers
+        self.awardedBy = awardedBy
+        self.at = at
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case awardId
+        case itemId
+        case itemName
+        case icon
+        case quality
+        case characterKey
+        case name
+        case className = "class"
+        case msOs
+        case reason
+        case votesYes
+        case votesNo
+        case votesOfficers
+        case awardedBy
+        case at
+    }
+}
+
 public struct LootEligible: Codable, Sendable, Equatable {
     public let characterKey: String
     public let name: String
@@ -5448,6 +5519,138 @@ public struct LootItem: Codable, Sendable, Equatable {
         copies = try c.decode(Int.self, forKey: .copies)
         awardedTo = try c.decodeIfPresent(LootAward.self, forKey: .awardedTo)
         candidates = try c.decodeIfPresent([LootCandidate].self, forKey: .candidates) ?? []
+    }
+}
+
+public struct LootNight: Codable, Sendable, Equatable {
+    /// The key every council call takes: "raid:<id>", "report:<id>" or "live" (no night yet).
+    public let night: String
+    public let raidId: Int64?
+    public let reportId: String?
+    /// The night's day in the guild's raid zone (UTC without one).
+    public let date: String
+    public let at: Date
+    public let zone: String
+    public let current: Bool
+    public let drops: [LootNightDrop]
+    /// The night's decision record, oldest first.
+    public let decisions: [LootDecision]
+
+    public init(
+        night: String,
+        raidId: Int64? = nil,
+        reportId: String? = nil,
+        date: String,
+        at: Date,
+        zone: String,
+        current: Bool,
+        drops: [LootNightDrop] = [],
+        decisions: [LootDecision] = []
+    ) {
+        self.night = night
+        self.raidId = raidId
+        self.reportId = reportId
+        self.date = date
+        self.at = at
+        self.zone = zone
+        self.current = current
+        self.drops = drops
+        self.decisions = decisions
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        night = try c.decode(String.self, forKey: .night)
+        raidId = try c.decodeIfPresent(Int64.self, forKey: .raidId)
+        reportId = try c.decodeIfPresent(String.self, forKey: .reportId)
+        date = try c.decode(String.self, forKey: .date)
+        at = try c.decode(Date.self, forKey: .at)
+        zone = try c.decode(String.self, forKey: .zone)
+        current = try c.decode(Bool.self, forKey: .current)
+        drops = try c.decodeIfPresent([LootNightDrop].self, forKey: .drops) ?? []
+        decisions = try c.decodeIfPresent([LootDecision].self, forKey: .decisions) ?? []
+    }
+}
+
+public struct LootNightDrop: Codable, Sendable, Equatable {
+    public let itemId: Int
+    public let name: String
+    public let icon: String
+    public let quality: Int
+    public let kind: String
+    public let encounterId: Int64
+    public let boss: String
+    public let state: String
+    public let award: LootDecision?
+    /// True when a raider's addon recorded the drop from the loot window.
+    public let recorded: Bool
+    /// The copies the addon recorded; 0 when no addon recorded the drop.
+    public let count: Int
+    /// Who the loot chat says received a copy, as the client named them; empty when unknown.
+    public let lootedBy: [String]
+
+    public init(
+        itemId: Int,
+        name: String,
+        icon: String,
+        quality: Int,
+        kind: String,
+        encounterId: Int64,
+        boss: String,
+        state: String,
+        award: LootDecision? = nil,
+        recorded: Bool,
+        count: Int,
+        lootedBy: [String] = []
+    ) {
+        self.itemId = itemId
+        self.name = name
+        self.icon = icon
+        self.quality = quality
+        self.kind = kind
+        self.encounterId = encounterId
+        self.boss = boss
+        self.state = state
+        self.award = award
+        self.recorded = recorded
+        self.count = count
+        self.lootedBy = lootedBy
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        itemId = try c.decode(Int.self, forKey: .itemId)
+        name = try c.decode(String.self, forKey: .name)
+        icon = try c.decode(String.self, forKey: .icon)
+        quality = try c.decode(Int.self, forKey: .quality)
+        kind = try c.decode(String.self, forKey: .kind)
+        encounterId = try c.decode(Int64.self, forKey: .encounterId)
+        boss = try c.decode(String.self, forKey: .boss)
+        state = try c.decode(String.self, forKey: .state)
+        award = try c.decodeIfPresent(LootDecision.self, forKey: .award)
+        recorded = try c.decode(Bool.self, forKey: .recorded)
+        count = try c.decode(Int.self, forKey: .count)
+        lootedBy = try c.decodeIfPresent([String].self, forKey: .lootedBy) ?? []
+    }
+}
+
+/// GET /v1/guilds/{id}/loot/nights: the guild's loot nights, newest first. A night's drops are what a raider's addon recorded dropping on it (the export's drops= section, recorded true), plus the items the council awarded, voted on or flagged; the current night (where an award made now is filed) is always listed, first when nothing else holds it, and the page offers the whole loot table on it (GET .../loot) for a night no addon recorded. Members read the same drops with no vote counts.
+public struct LootNights: Codable, Sendable, Equatable {
+    public let officers: Int
+    public let nights: [LootNight]
+
+    public init(
+        officers: Int,
+        nights: [LootNight] = []
+    ) {
+        self.officers = officers
+        self.nights = nights
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        officers = try c.decode(Int.self, forKey: .officers)
+        nights = try c.decodeIfPresent([LootNight].self, forKey: .nights) ?? []
     }
 }
 

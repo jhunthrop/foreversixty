@@ -77,7 +77,7 @@ struct RaidRootView: View {
     @ViewBuilder
     private func noGuild(_ recruiting: RecruitingContent) -> some View {
         if let raidsOpen = recruiting.raidsOpen {
-            Text(raidsOpen).type(RowType.sub).foregroundStyle(FSColor.muted).frame(maxWidth: .infinity, alignment: .leading)
+            Text(raidsOpen).type(RowType.sub).foregroundStyle(FSColor.text).frame(maxWidth: .infinity, alignment: .leading)
         }
         if !recruiting.rows.isEmpty {
             PanelSection(recruiting.heading, frame: .plain) {
@@ -97,12 +97,12 @@ struct RaidRootView: View {
         // Find your guild (spec 2.4): the site's guild finder, then Claim.
         PanelSection(Copy.guildTabFind) {
             Button(action: actions.findGuild) {
-                PanelRow(Copy.guildTabSearch, sub: Text(Copy.guildTabSearchLine), chevron: true)
+                PanelRow(Copy.guildTabSearch, chevron: true)
             }
             .buttonStyle(RowPressStyle())
             .accessibilityIdentifier("guild-search")
             Button(action: actions.claim) {
-                PanelRow(Copy.raidTabClaim, sub: Text(Copy.raidTabClaimLine), last: true, chevron: true)
+                PanelRow(Copy.raidTabClaim, last: true, chevron: true)
             }
             .buttonStyle(RowPressStyle())
             .accessibilityIdentifier("guild-claim")
@@ -120,12 +120,12 @@ struct RaidGuildView: View {
         if let stamp = content.offlineStamp { OfflineStrip(text: Copy.offlineStrip(time: stamp)) }
         if let stale = content.staleStamp { StaleStrip(time: stale, retry: actions.retry) }
         // Under 60 the guild leads (spec 2.1); at 60 the raid does (2.2).
-        if let tab = content.tab, tab.spread != nil { GuildHeadBlock(head: tab.head, spread: tab.spread) }
+        if let tab = content.tab, tab.leveler { GuildHeadBlock(head: tab.head, spread: tab.spread) }
         raid
         if let tab = content.tab {
-            if tab.spread == nil { GuildHeadBlock(head: tab.head, spread: nil) }
+            if !tab.leveler { GuildHeadBlock(head: tab.head, spread: tab.spread) }
             GuildRosterSection(content: tab, open: actions.guild.openRoster)
-            GuildLootSection(loot: tab.loot, open: actions.guild.openLoot)
+            GuildLootSection(night: tab.lootNight, loot: tab.loot, open: actions.guild.openLoot)
             GuildLogsSection(logs: tab.logs, actions: actions.guild)
             GuildProgressSection(progression: tab.progression, open: actions.guild.openProgression)
         }
@@ -140,12 +140,13 @@ struct RaidGuildView: View {
             RaidHeadView(content: next, notes: content.notes, actions: actions.raid).parityRegion(RaidRootView.nextRaidRegion)
                 .environment(\.answersOffline, content.offlineStamp != nil)
             raidsOpen
-            YourJobSection(jobs: content.jobs)
-            // G3: an officer's open items sit directly under the head.
+            // G3: an officer's open items sit directly under the head, the officer's rows with them; then your job.
             needsYou
             officer
+            YourJobSection(jobs: content.jobs)
             if !content.coming.isEmpty {
-                PanelSection(Copy.raidTabComing, action: (Copy.raidTabRosterLink, { actions.openPage(.roster) })) {
+                // With the Guild tab's Roster section on the page, its link is the one way to the roster.
+                PanelSection(Copy.raidTabComing, action: content.tab == nil ? (Copy.raidTabRosterLink, { actions.openPage(.roster) }) : nil) {
                     RoleRowsView(roles: content.coming)
                     ComingFoot(
                         answers: content.answers, cover: content.cover, notSynced: content.notSynced,
@@ -173,7 +174,7 @@ struct RaidGuildView: View {
     @ViewBuilder
     private var raidsOpen: some View {
         if let line = content.raidsOpen {
-            Text(line).type(RowType.sub).foregroundStyle(FSColor.muted)
+            Text(line).type(RowType.sub).foregroundStyle(FSColor.text)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityIdentifier("guild-raids-open")
         }

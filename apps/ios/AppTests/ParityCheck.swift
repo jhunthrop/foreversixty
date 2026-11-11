@@ -60,7 +60,7 @@ enum ParityCheck {
         "guild-tab": ["section-guild", "section-roster", "section-loot", "section-recent-logs", "section-progression", "section-pages"]
             .map(guildRowDrift),
         "guild-tab-officer": [
-            "section-who-is-coming", "section-before-you-pull", "section-guild", "section-roster", "section-loot",
+            "section-your-job", "section-who-is-coming", "section-before-you-pull", "section-guild", "section-roster", "section-loot",
             "section-recent-logs", "section-progression", "section-pages",
         ].map(guildRowDrift),
         // Under 60 the Close to 60 rows add four more 18.29 line boxes, so the sections under the roster sit 13 to

@@ -73,7 +73,16 @@ front() {
 pick() {
 	tap "Open the menu" 2>/dev/null || tap "Open menu"
 	sleep 2
-	tap "$1*" || back
+	local list row
+	list=$(centre "Switch character")
+	row=$(centre "$1*")
+	# Under Switch character only: the drawer's head names the current character, and a tap there opens it.
+	if [ -n "$list" ] && [ -n "$row" ] && [ "${row#* }" -gt "${list#* }" ]; then
+		# shellcheck disable=SC2086
+		"$ADB" shell input tap $row
+	else
+		back
+	fi
 	sleep "$SETTLES"
 }
 
@@ -129,6 +138,11 @@ for mode in dark light; do
 	if reveal "Search guilds on the site"; then steps "Search guilds on the site" noguild-02-search-site || true; front; fi
 	if reveal "Claim your guild"; then steps "Claim your guild" noguild-03-claim-site || true; front; fi
 	pick Gorvash
+
+	# The tab bar: the four icons with Guild unselected (Home, Gear) and selected.
+	tap "Home"; sleep "$SETTLES"; shot tabbar-01-home
+	tap "Gear"; sleep "$SETTLES"; shot tabbar-02-gear
+	tap "Guild"; sleep "$SETTLES"; shot tabbar-03-guild
 
 	# The deep link: a raid link opens the raid page inside the Guild tab.
 	"$ADB" shell am start -W -a android.intent.action.VIEW -d "https://foreversixty.gg/app/raid/2/31" "$PKG" >/dev/null

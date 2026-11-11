@@ -1,5 +1,13 @@
 package gg.foreversixty.app.raids.flows
 
+import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
+import gg.foreversixty.app.items.ItemQuality
+import gg.foreversixty.app.designsystem.GameColors
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +28,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.designsystem.FsColor
@@ -57,11 +64,11 @@ data class GuildTabActions(
 fun GuildHeadBlock(head: GuildTabHead, spread: GuildSpread?) {
     FlowBlock(ParityRegion.section(stringResource(R.string.tab_guild)), top = 0.dp) {
         FlowPanel {
-            Row(Modifier.padding(vertical = FsSpace.space2), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.parityItem(ParityItemKind.Image)) { FactionMark(head.faction.orEmpty(), CREST) }
+            Row(Modifier.padding(vertical = FsSpace.space2), verticalAlignment = Alignment.Top) {
+                GuildCrestMark(head.faction)
                 Spacer(Modifier.width(FsSpace.space3))
                 Column {
-                    Text(head.name, style = ScaledType.sectionTitle.copy(fontSize = 22.sp), color = FsColor.cream)
+                    Text(head.name, style = ScaledType.sectionTitle, color = FsColor.cream)
                     Text(head.line, style = FsType.small, color = FsColor.muted)
                 }
             }
@@ -81,19 +88,33 @@ private fun SpreadFigures(spread: GuildSpread) {
             FsColor.strong,
             Modifier.weight(1f),
         )
-        Figure(spread.you.toString(), stringResource(R.string.guild_tab_you), FsColor.gold, Modifier.weight(1f))
+        Figure(spread.third.toString(), spread.thirdLabel, if (spread.own) FsColor.gold else FsColor.strong, Modifier.weight(1f))
     }
 }
 
 @Composable
 private fun Figure(value: String, label: String, color: Color, modifier: Modifier) {
     Column(modifier) {
-        Text(value, style = FsType.figureSm.copy(fontSize = 20.sp, lineHeight = 24.sp), color = color)
+        Text(value, style = FsType.itemLg.copy(fontFeatureSettings = "tnum"), color = color)
         Text(label, style = FsType.small, color = FsColor.muted)
     }
 }
 
-/** Roster: Recently on and, below 60, Close to 60; `Roster ›` to the roster page. */
+/** The guild's crest in the one ringed circle: the faction's mark inside, a guild with no crest of its own. */
+@Composable
+private fun GuildCrestMark(faction: String?) {
+    Box(
+        Modifier
+            .size(CREST)
+            .parityItem(ParityItemKind.Image)
+            .clip(CircleShape)
+            .background(FsColor.raised)
+            .border(CREST_RING, GameColors.faction(faction.orEmpty()).copy(alpha = RING_ALPHA), CircleShape),
+        contentAlignment = Alignment.Center,
+    ) { FactionMark(faction.orEmpty(), CREST * MARK_SHARE) }
+}
+
+/** Roster: Recently on and, below 60, Close to 60; an officer's Missing raids; `Roster ›` to the roster page. */
 @Composable
 fun GuildRosterSection(sections: GuildTabSections, onRoster: () -> Unit) {
     if (sections.recent.isEmpty() && sections.close.isEmpty()) return
@@ -107,11 +128,15 @@ fun GuildRosterSection(sections: GuildTabSections, onRoster: () -> Unit) {
     ) {
         if (sections.recent.isNotEmpty()) {
             GroupLabel(stringResource(R.string.guild_tab_recentlyOn))
-            MemberRows(sections.recent, last = sections.close.isEmpty())
+            MemberRows(sections.recent, last = sections.close.isEmpty() && sections.missing.isEmpty())
         }
         if (sections.close.isNotEmpty()) {
             GroupLabel(stringResource(R.string.guild_tab_closeTo, GuildTabPresenter.MAX_LEVEL))
-            MemberRows(sections.close, last = true)
+            MemberRows(sections.close, last = sections.missing.isEmpty())
+        }
+        if (sections.missing.isNotEmpty()) {
+            GroupLabel(stringResource(R.string.guild_tab_missingRaids))
+            MemberRows(sections.missing, last = true)
         }
     }
 }
@@ -155,15 +180,35 @@ fun GuildProgressSection(progression: GuildProgressLine?, onProgression: () -> U
     }
 }
 
-/** Loot at 60: the last raid's pieces, `Loot history ›` to the guild's loot. */
+/** Loot at 60: the newest night's drops in their quality colour with who won them; `Loot history ›` to the guild's loot. */
 @Composable
-fun GuildLootSection(loot: String?, onLoot: () -> Unit) {
-    loot ?: return
+fun GuildLootSection(night: GuildLootNight?, loot: String?, onLoot: () -> Unit) {
+    if (night == null && loot == null) return
     FlowSection(
         stringResource(R.string.guild_tab_loot), action = stringResource(R.string.guild_tab_lootLink), onAction = onLoot,
-        top = 0.dp, panel = PanelFrame.None,
+        meta = night?.day, top = 0.dp, panel = PanelFrame.None,
     ) {
-        FlowRow(title = loot, last = true)
+        if (night == null) {
+            FlowRow(title = loot.orEmpty(), last = true)
+        } else {
+            val notAwarded = stringResource(R.string.guild_tab_notAwarded)
+            night.drops.forEachIndexed { index, drop ->
+                FlowRow(
+                    title = drop.name,
+                    titleColor = ItemQuality(drop.quality).text,
+                    lead = FlowLead.Icon(drop.icon, LocalRaidIconBuild.current),
+                    styledSub = buildAnnotatedString {
+                        val winner = drop.winner
+                        if (winner == null) {
+                            append(notAwarded)
+                        } else {
+                            withStyle(SpanStyle(color = classColor(drop.winnerClass))) { append(winner) }
+                        }
+                    },
+                    last = index == night.drops.lastIndex,
+                )
+            }
+        }
     }
 }
 
@@ -204,7 +249,12 @@ fun AssignmentsSection(encounters: List<AssignmentEncounterLine>, onPlanner: () 
             encounters.forEach { encounter ->
                 GroupLabel(encounter.title)
                 encounter.slots.forEach { slot ->
-                    FlowRow(title = slot.label, styledSub = names(slot.names), value = slot.filled)
+                    FlowRow(
+                        title = slot.label,
+                        titleColor = if (slot.names.isEmpty()) FsColor.muted else FsColor.strong,
+                        styledSub = if (slot.names.isEmpty()) null else names(slot.names),
+                        value = slot.filled,
+                    )
                 }
             }
             FlowNote(stringResource(R.string.guild_tab_assignOnSite), Modifier.padding(vertical = FsSpace.space2))
@@ -212,12 +262,16 @@ fun AssignmentsSection(encounters: List<AssignmentEncounterLine>, onPlanner: () 
     }
 }
 
-/** A slot's names in class colour, the viewer's own in gold (the web planner's Tag tones). */
+/** A slot's names: the viewer's own in gold, the rest muted (the web planner's Tag tones). */
 private fun names(names: List<RaidAssignedName>) = buildAnnotatedString {
     names.forEachIndexed { index, name ->
         if (index > 0) withStyle(SpanStyle(color = FsColor.muted)) { append(", ") }
-        withStyle(SpanStyle(color = if (name.own) FsColor.gold else classColor(name.className))) { append(name.name) }
+        withStyle(SpanStyle(color = if (name.own) FsColor.gold else FsColor.muted)) { append(name.name) }
     }
 }
 
 private val CREST = 48.dp
+private val CREST_RING = 2.dp
+private const val RING_ALPHA = 0.6f
+/** The faction mark's share of the ringed circle. */
+private const val MARK_SHARE = 0.72f

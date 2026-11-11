@@ -38,16 +38,25 @@ class GuildTabParityTest {
 
     @Test fun atCap() = state("guild-tab", GuildTabFixtures.atCap(), guild = 0, activity = 3)
 
-    @Test fun officer() = state("guild-tab-officer", GuildTabFixtures.atCap(officer = true), guild = 6, activity = 3)
+    // 2026-11-11, lane guild-tab: the officer's tab is about 40 rows long; their 18.29 line boxes put the sections under the
+    // roster 10 to 11 higher than the mock's; each section's own height holds.
+    @Test fun officer() = state(
+        "guild-tab-officer", GuildTabFixtures.atCap(officer = true), guild = 6, activity = 3,
+        drift = setOf(
+            "section-loot: y 2875, the mock has 2865 (within 8)",
+            "section-pages: y 3505, the mock has 3494 (within 8)",
+            "section-progression: y 3376, the mock has 3365 (within 8)",
+            "section-recent-logs: y 3127, the mock has 3117 (within 8)",
+        ),
+    )
 
-    // 2026-11-11, lane guild-tab: the Close to 60 rows' 18.29 line box over nine rows puts the sections under the
-    // roster 9 higher than the mock's; each section's own height holds.
+    // 2026-11-11, lane guild-tab: the same line boxes over the Close to 60 rows put the sections under the roster 8 higher.
     @Test fun leveler() = state(
         "guild-tab-leveler", GuildTabFixtures.leveler(), activity = 1, felsnap = true,
         drift = setOf(
-            "section-pages: y 1844, the mock has 1835 (within 8)",
-            "section-progression: y 1715, the mock has 1706 (within 8)",
-            "section-recent-logs: y 1466, the mock has 1457 (within 8)",
+            "section-pages: y 1781, the mock has 1773 (within 8)",
+            "section-progression: y 1652, the mock has 1644 (within 8)",
+            "section-recent-logs: y 1403, the mock has 1395 (within 8)",
         ),
     )
 
@@ -96,15 +105,28 @@ object GuildTabFixtures {
     private val head = GuildTabHead("Olympus XXVII", "alliance", null, "38 members · Alliance · US PvP")
 
     private val recent = listOf(
-        GuildMemberLine("Grunvald", "warrior", null, "60 · Protection Warrior", "Seen just now"),
-        GuildMemberLine("Mirethil", "priest", null, "60 · Holy Priest", "Seen 12 min ago"),
-        GuildMemberLine("Kaelra", "warrior", null, "60 · Fury Warrior", "Seen 40 min ago"),
-        GuildMemberLine("Thornwick", "druid", null, "57 · Feral Druid", "Seen 1 h ago"),
-        GuildMemberLine("Selka", "druid", null, "60 · Restoration Druid", "Seen 2 h ago"),
+        GuildMemberLine("Grunvald", "warrior", null, "60 · Protection Warrior · item level 66", "just now"),
+        GuildMemberLine("Mirethil", "priest", null, "60 · Holy Priest · item level 63", "12 min ago"),
+        GuildMemberLine("Kaelra", "mage", null, "60 · Frost Mage · item level 61", "40 min ago"),
+        GuildMemberLine("Thornwick", "druid", null, "57 · Feral Druid", "1 h ago"),
+        GuildMemberLine("Selka", "druid", null, "60 · Restoration Druid · item level 62", "2 h ago"),
+    )
+
+    private val missing = listOf(
+        GuildMemberLine("Brakka", "druid", null, "Feral Druid · item level 60", "2 of 8 nights"),
+        GuildMemberLine("Thalrin", "hunter", null, "Marksmanship Hunter · item level 58", "3 of 7 nights"),
+    )
+
+    private val lootNight = GuildLootNight(
+        "Onyxia's Lair", "Wed 30 Dec",
+        listOf(
+            GuildLootNight.Drop(18205, "Eskhandar's Collar", "inv_jewelry_necklace_07", 4, "Kraggor", "warrior"),
+            GuildLootNight.Drop(17067, "Ancient Cornerstone Grimoire", "inv_misc_book_07", 4, "Mirethil", "priest"),
+            GuildLootNight.Drop(18422, "Head of Onyxia", "inv_misc_head_dragon_01", 4, null, null),
+        ),
     )
 
     private val close = listOf(
-        GuildMemberLine("Thornwick", "druid", null, "Feral Druid", "57"),
         GuildMemberLine("Vexa", "warlock", null, "Affliction Warlock", "56"),
         GuildMemberLine("Pell", "mage", null, "Frost Mage", "55"),
         GuildMemberLine("Orrin", "paladin", null, "Holy Paladin", "55"),
@@ -112,7 +134,7 @@ object GuildTabFixtures {
 
     private val logs = listOf(
         GuildLogLine("r3", "UBRS, Sunday", "Blackrock Spire · 7/8 kills · 1 h 32 min", "Sun 3 Jan", clean = false),
-        GuildLogLine("r2", "Scholomance, Saturday", "Scholomance · 9/9 kills · 1 h 08 min", "Sat 2 Jan", clean = true),
+        GuildLogLine("r2", "Scholomance, Saturday", "Scholomance · 10/10 kills · 1 h 08 min", "Sat 2 Jan", clean = true),
         GuildLogLine("r1", "Onyxia, Wednesday", "Onyxia's Lair · 1/1 kills · 41 min", "Wed 30 Dec", clean = true),
     )
 
@@ -124,14 +146,16 @@ object GuildTabFixtures {
 
     private fun sections(leveler: Boolean, officer: Boolean) = GuildTabSections(
         head = head,
-        spread = if (leveler) GuildSpread(31, 4, 36) else null,
+        spread = if (leveler) GuildSpread(31, 3, 36, "your level", own = true) else GuildSpread(31, 3, 24, "raiders", own = false),
+        leveler = leveler,
         rosterMeta = "31 of 38 at 60",
         recent = recent,
         close = if (leveler) close else emptyList(),
         logs = logs,
-        progression = GuildProgressLine("First tier", "1 of 1 down · 6 pulls this tier"),
-        loot = if (leveler) null else "Last raid: 4 pieces",
+        progression = GuildProgressLine("Onyxia's Lair", "1 of 1 down · 6 pulls"),
+        lootNight = if (leveler) null else lootNight,
         officer = if (officer) officerRows else emptyList(),
+        missing = if (officer) missing else emptyList(),
     )
 
     private val job = RaidJobLine(
@@ -142,23 +166,23 @@ object GuildTabFixtures {
     private fun picked(name: String, className: String, own: Boolean = false) =
         RaidAssignedName("us/pvp/${name.lowercase()}", name, className, "", "in", own, false)
 
+    private fun slot(key: String, label: String, count: Int, vararg people: RaidAssignedName) =
+        AssignmentEncounterLine.Slot(key, label, people.toList(), "${people.size} of $count")
+
     private val assignments = listOf(
         AssignmentEncounterLine(
-            1084, "Onyxia assignments",
+            1084, "Onyxia",
             listOf(
-                AssignmentEncounterLine.Slot("main_tank", "Main tank", listOf(picked("Grunvald", "warrior")), "1 of 1"),
-                AssignmentEncounterLine.Slot("off_tank", "Off tank (phase 3, fear)", listOf(picked("Brakka", "druid")), "1 of 2"),
-                AssignmentEncounterLine.Slot(
-                    "main_tank_heals", "Main tank healers",
-                    listOf(picked("Mirethil", "priest"), picked("Selka", "druid"), picked("Hollowmend", "priest"), picked("Aenwyn", "paladin")),
-                    "4 of 4",
+                slot("main_tank", "Main tank", 1, picked("Grunvald", "warrior")),
+                slot("off_tank", "Off tank (phase 3, fear)", 2, picked("Brakka", "druid")),
+                slot(
+                    "main_tank_heals", "Main tank healers", 4,
+                    picked("Mirethil", "priest"), picked("Selka", "druid"), picked("Hollowmend", "priest"), picked("Aenwyn", "paladin"),
                 ),
-                AssignmentEncounterLine.Slot("fear_cover", "Fear cover", listOf(picked("Mirethil", "priest")), "1 of 2"),
-                AssignmentEncounterLine.Slot(
-                    "whelps_west", "Whelps, west cave",
-                    listOf(picked("Thandrel", "warrior", own = true), picked("Kaelra", "warrior"), picked("Thalrin", "mage")),
-                    "3 of 3",
-                ),
+                slot("off_tank_heals", "Off tank healers", 2),
+                slot("fear_cover", "Fear cover", 2, picked("Mirethil", "priest")),
+                slot("whelps_west", "Whelps, west cave", 3, picked("Thandrel", "warrior", own = true), picked("Kaelra", "mage"), picked("Thalrin", "hunter")),
+                slot("whelps_east", "Whelps, east cave", 3),
             ),
         ),
     )

@@ -4652,8 +4652,8 @@ const HomeOfficerRoleDamage = "damage"
 // HomeOfficerShort is home.officer.short: {role} short by {n}
 const HomeOfficerShort = "{role} short by {n}"
 
-// HomeOfficerPreview is home.officer.preview: Preview mention
-const HomeOfficerPreview = "Preview mention"
+// HomeOfficerPreview is home.officer.preview: Ping on Discord
+const HomeOfficerPreview = "Ping on Discord"
 
 // HomeOfficerApplicants is home.officer.applicants: {n} applicants
 var HomeOfficerApplicants = Plural{Count: "n", One: "1 applicant", Other: "{n} applicants"}
@@ -4805,8 +4805,8 @@ const RaidTabAndMore = "{names} and {n} more"
 // RaidTabHowLate is raid.tab.howLate: How late
 const RaidTabHowLate = "How late"
 
-// GuildTabHeadLine is guild.tab.headLine: {members} · {faction}
-const GuildTabHeadLine = "{members} · {faction}"
+// GuildTabHeadLine is guild.tab.headLine: {members} · {faction} · {realm}
+const GuildTabHeadLine = "{members} · {faction} · {realm}"
 
 // GuildTabAtCap is guild.tab.atCap: at {level}
 const GuildTabAtCap = "at {level}"
@@ -4814,8 +4814,23 @@ const GuildTabAtCap = "at {level}"
 // GuildTabCloseRange is guild.tab.closeRange: {from} to {to}
 const GuildTabCloseRange = "{from} to {to}"
 
-// GuildTabYou is guild.tab.you: you
-const GuildTabYou = "you"
+// GuildTabYou is guild.tab.you: your level
+const GuildTabYou = "your level"
+
+// GuildTabRaiders is guild.tab.raiders: raiders
+const GuildTabRaiders = "raiders"
+
+// GuildTabMissingRaids is guild.tab.missingRaids: Missing raids
+const GuildTabMissingRaids = "Missing raids"
+
+// GuildTabNights is guild.tab.nights: {present} of {nights} nights
+const GuildTabNights = "{present} of {nights} nights"
+
+// GuildTabItemLevel is guild.tab.itemLevel: item level {n}
+const GuildTabItemLevel = "item level {n}"
+
+// GuildTabNotAwarded is guild.tab.notAwarded: Not awarded yet
+const GuildTabNotAwarded = "Not awarded yet"
 
 // GuildTabRaidsOpen is guild.tab.raidsOpen: Raids open at {level} · you're {you}
 const GuildTabRaidsOpen = "Raids open at {level} · you're {you}"
@@ -4832,9 +4847,6 @@ const GuildTabRecentlyOn = "Recently on"
 // GuildTabCloseTo is guild.tab.closeTo: Close to {level}
 const GuildTabCloseTo = "Close to {level}"
 
-// GuildTabSeen is guild.tab.seen: Seen {age}
-const GuildTabSeen = "Seen {age}"
-
 // GuildTabLogs is guild.tab.logs: Recent logs
 const GuildTabLogs = "Recent logs"
 
@@ -4847,8 +4859,8 @@ const GuildTabProgression = "Progression"
 // GuildTabDown is guild.tab.down: {down} of {named} down
 const GuildTabDown = "{down} of {named} down"
 
-// GuildTabPulls is guild.tab.pulls: {n} pulls this tier
-var GuildTabPulls = Plural{Count: "n", One: "1 pull this tier", Other: "{n} pulls this tier"}
+// GuildTabPulls is guild.tab.pulls: {n} pulls
+var GuildTabPulls = Plural{Count: "n", One: "1 pull", Other: "{n} pulls"}
 
 // GuildTabFirstRaids is guild.tab.firstRaids: First raids open {date}
 const GuildTabFirstRaids = "First raids open {date}"
@@ -4922,11 +4934,8 @@ const GuildTabStepRole = "Discord role"
 // GuildTabFind is guild.tab.find: Find your guild
 const GuildTabFind = "Find your guild"
 
-// GuildTabSearch is guild.tab.search: Search guilds on the site
-const GuildTabSearch = "Search guilds on the site"
-
-// GuildTabSearchLine is guild.tab.searchLine: By name or realm
-const GuildTabSearchLine = "By name or realm"
+// GuildTabSearch is guild.tab.search: Search guilds
+const GuildTabSearch = "Search guilds"
 
 // GuildTabApplied is guild.tab.applied: Applied {day}
 const GuildTabApplied = "Applied {day}"
@@ -5216,8 +5225,8 @@ var HomeReadyTitle = Plural{Count: "n", One: "1 thing before you pull", Other: "
 // HomeReadyLine is home.ready.line: {items} · from your last log-out, {age}
 const HomeReadyLine = "{items} · from your last log-out, {age}"
 
-// HomeOfficerPreviewMention is home.officer.previewMention: Preview mention
-const HomeOfficerPreviewMention = "Preview mention"
+// HomeOfficerPreviewMention is home.officer.previewMention: Ping on Discord
+const HomeOfficerPreviewMention = "Ping on Discord"
 
 // HomeOfficerApplicant is home.officer.applicant: {name}, {kind} {level}, {age}
 const HomeOfficerApplicant = "{name}, {kind} {level}, {age}"

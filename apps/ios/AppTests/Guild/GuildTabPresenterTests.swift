@@ -22,16 +22,20 @@ struct GuildTabPresenterTests {
     @Test("below 60: the level spread and Close to 60")
     func leveler() throws {
         let content = try #require(presenter.content(try inputs(level: 36), guildName: "OLYMPUS XXVII"))
-        #expect(content.spread == GuildSpread(atCap: 30, close: 5, you: 36))
+        #expect(content.spread == GuildSpread(atCap: 30, close: 5, third: 36, thirdLabel: "your level", own: true))
+        #expect(content.leveler)
         #expect(content.close.allSatisfy { Int($0.trail).map { (55..<60).contains($0) } ?? false })
+        // Close to 60 never repeats a name Recently on shows.
+        #expect(Set(content.close.map(\.name)).isDisjoint(with: content.recent.map(\.name)))
         #expect(content.loot == nil)
         #expect(content.rosterMeta == "30 of 38 at 60")
     }
 
-    @Test("at 60: no spread, no Close to 60")
+    @Test("at 60: the raiders figure in place of your level, no Close to 60")
     func atCap() throws {
         let content = try #require(presenter.content(try inputs(level: 60), guildName: "OLYMPUS XXVII"))
-        #expect(content.spread == nil)
+        #expect(content.spread?.own == false)
+        #expect(!content.leveler)
         #expect(content.close.isEmpty)
         #expect(content.recent.count == GuildTabPresenter.recentShown)
     }
@@ -42,7 +46,7 @@ struct GuildTabPresenterTests {
         let home = try GuildFixture.home()
         let viewer = home.members.first { $0.characterKey == GuildFixture.viewerKey }?.name
         #expect(!content.recent.contains { $0.name == viewer })
-        #expect(content.recent.allSatisfy { $0.trail.hasPrefix("Seen ") })
+        #expect(content.recent.allSatisfy { $0.trail.hasSuffix("ago") || $0.trail == "just now" })
     }
 
     @Test("the officer rows follow viewer.officer_tools")

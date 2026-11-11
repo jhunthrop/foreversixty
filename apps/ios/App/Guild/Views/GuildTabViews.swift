@@ -22,13 +22,10 @@ struct GuildHeadBlock: View {
 
     var body: some View {
         PanelBlock {
-            HStack(spacing: FSSpace.space3) {
+            HStack(alignment: .top, spacing: FSSpace.space3) {
                 GuildCrestMark(url: head.crestURL, faction: head.faction, size: Self.crest)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(head.name)
-                        .type(TypeRole(face: FSFont.title, size: 22, lineHeight: 26, scalesWith: .title3))
-                        .foregroundStyle(FSColor.cream)
-                        .accessibilityAddTraits(.isHeader)
+                    PanelTitle(head.name)
                     Text(head.line).type(RowType.sub).foregroundStyle(FSColor.muted)
                 }
                 Spacer(minLength: 0)
@@ -43,16 +40,21 @@ struct GuildHeadBlock: View {
 /// `31 at 60 · 4 55 to 59 · 36 you`: the guild's level spread, your own level in gold.
 private struct SpreadFigures: View {
     let spread: GuildSpread
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
+        // At the accessibility sizes the three figures stack, so no label wraps.
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpace.space2))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: 0))
+        layout {
             figure(String(spread.atCap), Copy.guildTabAtCap(level: GuildTabPresenter.maxLevel), FSColor.strong)
             figure(
                 String(spread.close),
                 Copy.guildTabCloseRange(from: GuildTabPresenter.closeFrom, to: GuildTabPresenter.maxLevel - 1),
                 FSColor.strong
             )
-            figure(String(spread.you), Copy.guildTabYou, FSColor.gold)
+            figure(String(spread.third), spread.thirdLabel, spread.own ? FSColor.gold : FSColor.strong)
         }
         .padding(.vertical, FSSpace.space2)
         .overlay(alignment: .top) { Hairline(FSColor.line) }
@@ -61,9 +63,7 @@ private struct SpreadFigures: View {
 
     private func figure(_ value: String, _ label: String, _ color: Color) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(value)
-                .type(TypeRole(face: FSFont.bodyBold, size: 20, lineHeight: 24, scalesWith: .title3, tabular: true))
-                .foregroundStyle(color)
+            Text(value).type(FSType.itemLg).monospacedDigit().foregroundStyle(color)
             Text(label).type(FSType.small).foregroundStyle(FSColor.muted)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -76,20 +76,26 @@ struct GuildCrestMark: View {
     let faction: String?
     let size: CGFloat
 
+    /// The faction mark's share of the ringed circle.
+    static let markShare: CGFloat = 0.72
+
     var body: some View {
-        Group {
+        ZStack {
+            Circle().fill(FSColor.raised)
             if let url {
                 AsyncImage(url: url) { image in
                     image.resizable().scaledToFill()
                 } placeholder: {
-                    FactionMark(faction: faction ?? "", size: size)
+                    FactionMark(faction: faction ?? "", size: size * Self.markShare)
                 }
                 .frame(width: size, height: size)
-                .clipShape(.circle)
             } else {
-                FactionMark(faction: faction ?? "", size: size)
+                FactionMark(faction: faction ?? "", size: size * Self.markShare)
             }
         }
+        .frame(width: size, height: size)
+        .clipShape(.circle)
+        .overlay(Circle().stroke(GameColors.faction(faction ?? "").opacity(0.6), lineWidth: FSStroke.crestRing))
         .accessibilityHidden(true)
         .parityItem(.image)
     }
@@ -105,11 +111,15 @@ struct GuildRosterSection: View {
             PanelSection(Copy.guildTabRoster, meta: content.rosterMeta, action: (Copy.raidTabRosterLink, open)) {
                 if !content.recent.isEmpty {
                     GroupLabel(Copy.guildTabRecentlyOn)
-                    MemberRows(lines: content.recent, last: content.close.isEmpty, levelTrail: false)
+                    MemberRows(lines: content.recent, last: content.close.isEmpty && content.missing.isEmpty, levelTrail: false)
                 }
                 if !content.close.isEmpty {
                     GroupLabel(Copy.guildTabCloseTo(level: GuildTabPresenter.maxLevel))
-                    MemberRows(lines: content.close, last: true, levelTrail: true)
+                    MemberRows(lines: content.close, last: content.missing.isEmpty, levelTrail: true)
+                }
+                if !content.missing.isEmpty {
+                    GroupLabel(Copy.guildTabMissingRaids)
+                    MemberRows(lines: content.missing, last: true, levelTrail: false)
                 }
             }
         }
@@ -156,6 +166,8 @@ struct GuildLineRow<Lead: View>: View {
     let trail: String?
     var trailStrong = false
     let last: Bool
+    /// The row opens a page: iOS's disclosure chevron at its end.
+    var chevron = false
     @ViewBuilder let lead: () -> Lead
 
     var body: some View {
@@ -178,6 +190,12 @@ struct GuildLineRow<Lead: View>: View {
                     .foregroundStyle(trailStrong ? FSColor.strong : FSColor.muted)
                     .multilineTextAlignment(.trailing)
             }
+            if chevron {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(FSColor.muted)
+                    .accessibilityHidden(true)
+            }
         }
         .padding(.vertical, FSSpace.rowPadY)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -198,7 +216,7 @@ struct GuildLogsSection: View {
             PanelSection(Copy.guildTabLogs) {
                 ForEach(Array(logs.enumerated()), id: \.element.id) { index, log in
                     Button { actions.openReport(log.id) } label: {
-                        GuildLineRow(title: log.title, sub: log.line, trail: log.day, last: index == logs.count - 1) { EmptyView() }
+                        GuildLineRow(title: log.title, sub: log.line, trail: log.day, last: index == logs.count - 1, chevron: true) { EmptyView() }
                     }
                     .buttonStyle(RowPressStyle())
                 }
@@ -217,7 +235,7 @@ struct GuildProgressSection: View {
         if let progression {
             PanelSection(Copy.guildTabProgression) {
                 Button(action: open) {
-                    GuildLineRow(title: progression.title, sub: progression.line, trail: nil, last: true) { EmptyView() }
+                    GuildLineRow(title: progression.title, sub: progression.line, trail: nil, last: true, chevron: true) { EmptyView() }
                 }
                 .buttonStyle(RowPressStyle())
             }
@@ -256,7 +274,8 @@ struct AssignmentsSection: View {
                 GroupLabel(encounter.title)
                 ForEach(encounter.slots) { slot in
                     GuildLineRow(
-                        title: slot.label, sub: "", styledSub: AssignedNames.text(slot.names), trail: slot.filled, last: false
+                        title: slot.label, titleColor: slot.names.isEmpty ? FSColor.muted : FSColor.strong, sub: "",
+                        styledSub: slot.names.isEmpty ? nil : AssignedNames.text(slot.names), trail: slot.filled, last: false
                     ) { EmptyView() }
                 }
             }
@@ -277,7 +296,7 @@ enum AssignedNames {
                 line += comma
             }
             var piece = AttributedString(name.name)
-            piece.foregroundColor = name.own ? FSColor.gold : ClassColor.of(name.className)
+            piece.foregroundColor = name.own ? FSColor.gold : FSColor.muted
             line += piece
         }
         return Text(line)
@@ -286,11 +305,26 @@ enum AssignedNames {
 
 /// Loot at 60: the last raid's pieces, `Loot history ›` to the guild's loot.
 struct GuildLootSection: View {
+    let night: GuildLootNight?
     let loot: String?
     let open: () -> Void
+    @Environment(\.raidIconBuild) private var build
 
     var body: some View {
-        if let loot {
+        if let night {
+            PanelSection(Copy.guildTabLoot, meta: night.day, action: (Copy.guildTabLootLink, open)) {
+                ForEach(Array(night.drops.enumerated()), id: \.element.id) { index, drop in
+                    GuildLineRow(
+                        title: drop.name, titleColor: ItemQuality(value: drop.quality).text,
+                        sub: drop.winner == nil ? Copy.guildTabNotAwarded : "",
+                        styledSub: drop.winner.map { Text($0).foregroundColor(ClassColor.of(drop.winnerClass)) },
+                        trail: nil, last: index == night.drops.count - 1
+                    ) {
+                        ItemIconView(icon: drop.icon, quality: drop.quality, build: build ?? "", size: FSSize.icon40).parityItem(.image)
+                    }
+                }
+            }
+        } else if let loot {
             PanelSection(Copy.guildTabLoot, action: (Copy.guildTabLootLink, open)) {
                 PanelRow(loot, last: true)
             }

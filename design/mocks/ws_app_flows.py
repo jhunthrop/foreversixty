@@ -202,7 +202,7 @@ def _raid_card(officer: bool = False, answered: str = '', late: bool = False) ->
 
 def _needs_you() -> str:
     """The officer's open items (F3): the unanswered with the short role named, the applicant; the badge's number."""
-    return Rows([Row('5 have not answered, 2 of them healers', 'Healers short by 3', trail=Button('Preview mention', small=True), link=False),
+    return Rows([Row('5 have not answered, 2 of them healers', 'Healers short by 3', trail=Button('Ping on Discord', small=True), link=False),
                  Row('1 applicant', 'Mirelle, Holy Priest 60, 2 min ago')], open_=True)
 
 
@@ -671,7 +671,7 @@ def _raid_r5(state: str, platform: str) -> str:
     if state in ('member', 'officer', 'signup'):
         # signup: Late with 30 minutes just sent, so the status line says Saved.
         head = _r5_head(platform, 'Late', 30, 'Saved.') if state == 'signup' else _r5_head(platform, 'In')
-        needs = (_r5_section('Needs you', _r5_row('5 have not answered, 2 of them healers', 'Healers short by 3', trail='<a class="btn" href="#">Preview mention</a>')
+        needs = (_r5_section('Needs you', _r5_row('5 have not answered, 2 of them healers', 'Healers short by 3', trail='<a class="btn" href="#">Ping on Discord</a>')
                              + _r5_row('1 applicant', 'Mirelle, Holy Priest 60, 2 min ago'), meta='6 open') if state == 'officer' else '')
         return head + needs + _r5_coming(platform, officer=state == 'officer') + _r5_ready(R5_READY) + pages
     if state == 'noraid':

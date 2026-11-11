@@ -1,0 +1,86 @@
+{
+  "ok": true,
+  "data": {
+    "officers": 3,
+    "nights": [
+      {
+        "night": "raid:30",
+        "raid_id": 30,
+        "report_id": "ewlrx3enxbeb",
+        "date": "2026-12-15",
+        "at": "2026-12-15T01:00:00Z",
+        "zone": "Onyxia's Lair",
+        "current": false,
+        "drops": [
+          {
+            "item_id": 18205,
+            "name": "Eskhandar's Collar",
+            "icon": "inv_jewelry_necklace_07",
+            "quality": 4,
+            "kind": "gear",
+            "encounter_id": 1084,
+            "boss": "Onyxia",
+            "state": "awarded",
+            "award": {
+              "award_id": 11,
+              "item_id": 18205,
+              "item_name": "Eskhandar's Collar",
+              "icon": "inv_jewelry_necklace_07",
+              "quality": 4,
+              "character_key": "us/pvp/kraggor",
+              "name": "Kraggor",
+              "class": "warrior",
+              "ms_os": "ms",
+              "reason": null,
+              "votes_yes": null,
+              "votes_no": null,
+              "votes_officers": null,
+              "awarded_by": "Obnoxious Yell",
+              "at": "2026-12-15T02:10:00Z"
+            },
+            "recorded": true,
+            "count": 1,
+            "looted_by": [
+              "Kraggor"
+            ]
+          },
+          {
+            "item_id": 17067,
+            "name": "Ancient Cornerstone Grimoire",
+            "icon": "inv_misc_book_07",
+            "quality": 4,
+            "kind": "gear",
+            "encounter_id": 1084,
+            "boss": "Onyxia",
+            "state": "open",
+            "award": null,
+            "recorded": true,
+            "count": 1,
+            "looted_by": []
+          }
+        ],
+        "decisions": [
+          {
+            "award_id": 11,
+            "item_id": 18205,
+            "item_name": "Eskhandar's Collar",
+            "icon": "inv_jewelry_necklace_07",
+            "quality": 4,
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior",
+            "ms_os": "ms",
+            "reason": null,
+            "votes_yes": null,
+            "votes_no": null,
+            "votes_officers": null,
+            "awarded_by": "Obnoxious Yell",
+            "at": "2026-12-15T02:10:00Z"
+          }
+        ]
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "7c0e2b9d44a1f058"
+}

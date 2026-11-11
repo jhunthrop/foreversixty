@@ -209,7 +209,8 @@ class RaidsFeature(
                 val applicant = if ((badge?.applicants ?: 0) > 0 && officer) newestApplicant(guild) else null
                 val ready = readyRaid?.let { (flows.ready(state.content.character.key, it) as? ApiResult.Success)?.data }
                 val setup = if (officer) (flows.setup(guild) as? ApiResult.Success)?.data else null
-                RaidTabExtras(applicant = applicant, ready = ready, setup = setup)
+                val loot = (flows.lootNights(guild) as? ApiResult.Success)?.data
+                RaidTabExtras(applicant = applicant, ready = ready, setup = setup, lootNights = loot)
             }
             else -> RaidTabExtras()
         }

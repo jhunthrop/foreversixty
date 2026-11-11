@@ -51,6 +51,7 @@ import gg.foreversixty.app.model.LiveActivityRequest
 import gg.foreversixty.app.model.LiveStartTokenRequest
 import gg.foreversixty.app.model.LiveStartTokenStored
 import gg.foreversixty.app.model.LootFile
+import gg.foreversixty.app.model.LootNights
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.MePatch
 import gg.foreversixty.app.model.NotificationSettings
@@ -306,6 +307,10 @@ object ApiEndpoints {
     fun getGuildLoot(id: Long): Endpoint<GuildLoot> =
         Endpoint(HttpMethod.Get, "/v1/guilds/$id/loot", GuildLoot.serializer())
 
+    /** GET /v1/guilds/{id}/loot/nights: The loot council's raid nights, newest first (verified members; officers see vote counts) */
+    fun getGuildLootNights(id: Long, limit: Int? = null): Endpoint<LootNights> =
+        Endpoint(HttpMethod.Get, "/v1/guilds/$id/loot/nights", LootNights.serializer(), query = listOfNotNull(limit?.let { "limit" to it.toString() }))
+
     /** POST /v1/auth/app/exchange: Swap the one-time code and the PKCE verifier for a device token (dark, APP_SIGN_IN) */
     fun exchangeAppSignIn(body: AppExchangeRequest): Endpoint<AppSession> =
         Endpoint(HttpMethod.Post, "/v1/auth/app/exchange", AppSession.serializer(), body = ApiJson.encodeToString(AppExchangeRequest.serializer(), body))
@@ -512,6 +517,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/raid-badge", "guild.raid-badge", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/items/{item}/needs", "guild.item-needs", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/loot", "guild.loot", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/loot/nights", "guild.loot.nights", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/auth/app/exchange", "app.signin.exchange", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Post, "/v1/auth/app/logout", "app.logout", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/me/notifications", "app.notifications", HttpStatusCode.fromValue(200)),

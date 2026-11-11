@@ -16,21 +16,10 @@
     "image": 1
    }
   },
-  "section-your-job": {
-   "box": [
-    14,
-    256,
-    365,
-    127
-   ],
-   "inventory": {
-    "row": 1
-   }
-  },
   "section-needs-you": {
    "box": [
     14,
-    403,
+    256,
     365,
     221
    ],
@@ -42,7 +31,7 @@
   "section-officer": {
    "box": [
     14,
-    644,
+    497,
     365,
     247
    ],
@@ -53,18 +42,29 @@
   "section-assignments": {
    "box": [
     14,
-    911,
+    764,
     365,
-    412
+    495
    ],
    "inventory": {
-    "row": 5
+    "row": 7
+   }
+  },
+  "section-your-job": {
+   "box": [
+    14,
+    1279,
+    365,
+    127
+   ],
+   "inventory": {
+    "row": 1
    }
   },
   "section-who-is-coming": {
    "box": [
     14,
-    1343,
+    1426,
     365,
     367
    ],
@@ -76,7 +76,7 @@
   "section-before-you-pull": {
    "box": [
     14,
-    1730,
+    1813,
     365,
     309
    ],
@@ -87,9 +87,9 @@
   "section-guild": {
    "box": [
     14,
-    2059,
+    2142,
     365,
-    80
+    141
    ],
    "inventory": {
     "image": 1
@@ -98,30 +98,31 @@
   "section-roster": {
    "box": [
     14,
-    2159,
+    2303,
     365,
-    374
+    542
    ],
    "inventory": {
-    "row": 5,
-    "image": 5
+    "row": 7,
+    "image": 7
    }
   },
   "section-loot": {
    "box": [
     14,
-    2553,
+    2865,
     365,
-    91
+    232
    ],
    "inventory": {
-    "row": 1
+    "row": 3,
+    "image": 3
    }
   },
   "section-recent-logs": {
    "box": [
     14,
-    2664,
+    3117,
     365,
     229
    ],
@@ -132,7 +133,7 @@
   "section-progression": {
    "box": [
     14,
-    2912,
+    3366,
     365,
     109
    ],
@@ -143,7 +144,7 @@
   "section-pages": {
    "box": [
     14,
-    3041,
+    3495,
     365,
     169
    ],

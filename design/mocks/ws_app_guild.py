@@ -1,58 +1,73 @@
 """The Guild tab (design/specs/2026-11-10-guild-tab.md): the Raid tab became Guild, so a player below 60 still has a tab
-that is about his guild. Four states: below 60 in a guild, at 60 (the raid first, unchanged), officer, no guild. Composed
-from the Raid tab's round-5 parts in ws_app_flows.py; ws_app.py registers the screens.
+that is about his guild. Four states: below 60 in a guild, at 60 (the raid first), officer, no guild. Composed from the
+Raid tab's round-5 parts in ws_app_flows.py; ws_app.py registers the screens.
 
 The world is ws_app_flows's (Olympus XXVII, Onyxia's Lair Wed 6 Jan, 8:00 pm CST), with Felsnap at 36 in the guild for the
-below-60 state. Every figure is one the guild home already sends (members[].level and seen_at, reports[], summary.tier,
-counts, viewer.officer_tools) or the setup checklist's done and total.
+below-60 state. Every figure is one the guild home already sends (members[].level and seen_at, roster[].item_level and
+attendance_30, reports[], summary.tier and raiders, counts, viewer.officer_tools), the newest loot night, or the setup
+checklist's done and total. Round 2 (review verdicts 2026-11-11): the spread at every level, item levels, Close to 60
+without repeats, an officer's Missing raids, the loot night's drops and winners, every assignment slot, one Roster link.
 """
 from __future__ import annotations
 
 from mocklib import CLASS_COLOR
 import ws_app_flows as F
 from ws_app_frame import app_page
+from ws_lib import QCOL
 from ws_prims import Emblem, build_page, crest_img, icon
 
 GUILD = 'Olympus XXVII'
-MEMBERS, AT_CAP, CLOSE = 38, 31, 4
+MEMBERS, AT_CAP, CLOSE, RAIDERS = 38, 31, 3, 24
 LEVELER_LEVEL = 36
 
-# Recently on: the newest seen_at first (members[]: name, class, level, spec_name, seen).
-RECENT = [('Grunvald', 'warrior', 60, 'Protection Warrior', 'Seen just now'), ('Mirethil', 'priest', 60, 'Holy Priest', 'Seen 12 min ago'),
-          ('Kaelra', 'warrior', 60, 'Fury Warrior', 'Seen 40 min ago'), ('Thornwick', 'druid', 57, 'Feral Druid', 'Seen 1 h ago'),
-          ('Selka', 'druid', 60, 'Restoration Druid', 'Seen 2 h ago')]
-CLOSE_ROWS = [('Thornwick', 'druid', 57, 'Feral Druid'), ('Vexa', 'warlock', 56, 'Affliction Warlock'),
-              ('Pell', 'mage', 55, 'Frost Mage'), ('Orrin', 'paladin', 55, 'Holy Paladin')]
+# Recently on: the newest seen_at first (members[]: name, class, level, spec_name; roster[].item_level; seen).
+RECENT = [('Grunvald', 'warrior', '60 &middot; Protection Warrior &middot; item level 66', 'just now'),
+          ('Mirethil', 'priest', '60 &middot; Holy Priest &middot; item level 63', '12 min ago'),
+          ('Kaelra', 'mage', '60 &middot; Frost Mage &middot; item level 61', '40 min ago'),
+          ('Thornwick', 'druid', '57 &middot; Feral Druid', '1 h ago'),
+          ('Selka', 'druid', '60 &middot; Restoration Druid &middot; item level 62', '2 h ago')]
+# Close to 60, without the names Recently on already shows.
+CLOSE_ROWS = [('Vexa', 'warlock', 56, 'Affliction Warlock'), ('Pell', 'mage', 55, 'Frost Mage'), ('Orrin', 'paladin', 55, 'Holy Paladin')]
+# An officer's Missing raids (roster[].attendance_30: under half of at least four nights).
+MISSING = [('Brakka', 'druid', 'Feral Druid &middot; item level 60', '2 of 8 nights'),
+           ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', '3 of 7 nights')]
 # reports[]: title, zone, kills of fights, duration, day.
 LOGS = [('UBRS, Sunday', 'Blackrock Spire', 7, 8, '1 h 32 min', 'Sun 3 Jan'),
-        ('Scholomance, Saturday', 'Scholomance', 9, 9, '1 h 08 min', 'Sat 2 Jan'),
+        ('Scholomance, Saturday', 'Scholomance', 10, 10, '1 h 08 min', 'Sat 2 Jan'),
         ('Onyxia, Wednesday', 'Onyxia&rsquo;s Lair', 1, 1, '41 min', 'Wed 30 Dec')]
+# The newest loot night's drops (loot/nights?limit=1): item, icon, quality, winner and class (None while open).
+LOOT = [('Eskhandar&rsquo;s Collar', 'inv_jewelry_necklace_07', 4, 'Kraggor', 'warrior'),
+        ('Ancient Cornerstone Grimoire', 'inv_misc_book_07', 4, 'Mirethil', 'priest'),
+        ('Head of Onyxia', 'inv_misc_head_dragon_01', 4, None, None)]
 SETUP_DONE, SETUP_TOTAL, APPLICANTS = 4, 8, 1
 
 GUILD_CSS = '''
-.r5raid .gh{display:flex;align-items:center;gap:12px;padding:8px 0}
+.r5raid .gh{display:flex;align-items:flex-start;gap:12px;padding:8px 0}
 .r5raid .gh .crest{flex:none}
-.r5raid .gh h1{margin:0;font:400 22px/26px var(--font-title);color:#f3eee2}
+.r5raid .gh h1{margin:0;font:400 21px/26px var(--font-title);color:#f3eee2}
 .r5raid .gh .s{white-space:normal}
 .r5raid .spread{display:flex;gap:0;margin:4px 0 8px;border-top:1px solid var(--line);padding-top:10px}
 .r5raid .spread>div{flex:1;min-width:0}
-.r5raid .spread b{font:700 20px/24px var(--font-body);font-variant-numeric:tabular-nums}
+.r5raid .spread b{font:700 18px/22px var(--font-body);font-variant-numeric:tabular-nums}
 .r5raid .spread .s{font-size:12px;line-height:16px}
 .r5raid .spread .you b{color:var(--gold)}
-.r5raid .seg.off .btn{color:var(--muted);opacity:.45}
-.r5raid .gate{margin:0;font:400 13px/20px var(--font-body);color:var(--muted)}
+.r5raid .gate{margin:0;font:400 13px/20px var(--font-body);color:var(--text)}
 .ap.r5raid>*+.gate{margin-top:20px}
 .r5raid .row .in .crest{flex:none}
 .r5raid .row .in>div{flex:1;min-width:0}
 .r5raid .row .in .when{flex:none;font:400 13px/18.29px var(--font-body);color:var(--muted);text-align:right}
 .r5raid .row .in .lv{flex:none;font:700 15px/20.57px var(--font-body);font-variant-numeric:tabular-nums;color:#fff}
+.r5raid .row .in .chev{flex:none;color:var(--muted);font:600 15px/20px var(--font-body)}
 .r5raid .grp{margin:0;padding:10px 0 2px;font:600 13px/18px var(--font-body);color:var(--muted)}
 .r5raid .pn>.grp:first-child{padding-top:6px}
 .r5raid .row .in .cnt{flex:none;font:600 14px/20px var(--font-body);color:var(--gold)}
 .r5raid .kill{color:#7fd48a}
 [data-region^=section-guilds-recruiting] .sh{height:auto;min-height:26px}
-.r5raid .row .tr .when{font:600 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .row .tr .when{font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .row .t.vacant{color:var(--muted)}
 '''
+
+CHEVRON = '<span class="chev">&rsaquo;</span>'
 
 
 def _crest_row(name: str, cls: str, sub: str, trail: str) -> str:
@@ -61,16 +76,27 @@ def _crest_row(name: str, cls: str, sub: str, trail: str) -> str:
             f'<span class="s">{sub}</span></div>{trail}</div></div>')
 
 
+def _line_row(title: str, sub: str, trail: str = '', lead: str = '', title_style: str = '') -> str:
+    style = f' style="{title_style}"' if title_style else ''
+    s = f'<span class="s">{sub}</span>' if sub else ''
+    return f'<div class="row"><div class="in">{lead}<div><span class="t"{style}>{title}</span>{s}</div>{trail}</div></div>'
+
+
 def _head(leveler: bool) -> str:
-    """The guild head: the guild's crest (the faction mark, it has none), the name, members and faction; below 60 the
-    level spread under it."""
+    """The guild head: the guild's crest in its ring (the faction mark, it has none), the name, members, faction and realm;
+    the spread under it at every level: at 60, 55 to 59, then your level under 60 or the raiders at 60."""
+    third = (f'<div class="you"><b>{LEVELER_LEVEL}</b><span class="s">your level</span></div>' if leveler
+             else f'<div><b>{RAIDERS}</b><span class="s">raiders</span></div>')
     head = (f'<div class="gh">{Emblem("alliance", 48)}<div><h1>{GUILD}</h1>'
-            f'<span class="s">{MEMBERS} members &middot; Alliance &middot; US PvP</span></div></div>')
-    if leveler:
-        head += ('<div class="spread"><div><b>' + str(AT_CAP) + '</b><span class="s">at 60</span></div>'
-                 f'<div><b>{CLOSE}</b><span class="s">55 to 59</span></div>'
-                 f'<div class="you"><b>{LEVELER_LEVEL}</b><span class="s">you</span></div></div>')
+            f'<span class="s">{MEMBERS} members &middot; Alliance &middot; US PvP</span></div></div>'
+            f'<div class="spread"><div><b>{AT_CAP}</b><span class="s">at 60</span></div>'
+            f'<div><b>{CLOSE}</b><span class="s">55 to 59</span></div>{third}</div>')
     return f'<div class="blk-r5" data-region="section-guild"><div class="pn">{head}</div></div>'
+
+
+def _coming(platform: str, officer: bool = False) -> str:
+    """Who is coming without its Roster link: the Roster section's link is the one way to the roster on this tab."""
+    return F._r5_coming(platform, officer=officer).replace('<span class="act">Roster &rsaquo;</span>', '', 1)
 
 
 def _raid_view(platform: str) -> str:
@@ -78,39 +104,44 @@ def _raid_view(platform: str) -> str:
     then Who is coming."""
     head = F._r5_head(platform, 'In').replace('Thandrel, Damage', 'Felsnap, Damage')
     gate = f'<p class="gate">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>'
-    return head + gate + F._r5_coming(platform)
+    return head + gate + _coming(platform)
 
 
-def _roster(leveler: bool) -> str:
+def _roster(leveler: bool, officer: bool = False) -> str:
     rows = '<p class="grp">Recently on</p>' + ''.join(
-        _crest_row(n, c, f'{lv} &middot; {spec}', f'<span class="when">{seen}</span>') for n, c, lv, spec, seen in RECENT)
+        _crest_row(n, c, sub, f'<span class="when">{seen}</span>') for n, c, sub, seen in RECENT)
     if leveler:
         rows += '<p class="grp">Close to 60</p>' + ''.join(
             _crest_row(n, c, spec, f'<span class="lv">{lv}</span>') for n, c, lv, spec in CLOSE_ROWS)
+    if officer:
+        rows += '<p class="grp">Missing raids</p>' + ''.join(
+            _crest_row(n, c, sub, f'<span class="when">{nights}</span>') for n, c, sub, nights in MISSING)
     return F._r5_section('Roster', rows, action='Roster &rsaquo;', meta=f'{AT_CAP} of {MEMBERS} at 60')
 
 
 def _logs() -> str:
-    # the day sits on the right, as the roster's seen line does
-    rows =''.join(f'<div class="row"><div class="in"><div><span class="t">{t}</span><span class="s">{zone} &middot; '
-                   f'<span class="{"kill" if k == n else ""}">{k}/{n} kills</span> &middot; {dur}</span></div>'
-                   f'<span class="when">{day}</span></div></div>' for t, zone, k, n, dur, day in LOGS)
+    """The guild's last reports, the day on the right, each opening the report."""
+    rows = ''.join(_line_row(t, f'{zone} &middot; <span class="{"kill" if k == n else ""}">{k}/{n} kills</span> &middot; {dur}',
+                             f'<span class="when">{day}</span>{CHEVRON}') for t, zone, k, n, dur, day in LOGS)
     return F._r5_section('Recent logs', rows)
 
 
 def _progression() -> str:
-    """The tier's line (summary.tier: its name, down of named, pulls), opening the site's Progression tab."""
-    return F._r5_section('Progression', F._r5_row('First tier', '<span class="kill">1 of 1 down</span> &middot; 6 pulls this tier'))
+    """The tier's raids by name, down of named and the pulls, opening the site's Progression tab."""
+    return F._r5_section('Progression', _line_row('Onyxia&rsquo;s Lair', '<span class="kill">1 of 1 down</span> &middot; 6 pulls', CHEVRON))
 
 
 def _loot() -> str:
-    return F._r5_section('Loot', F._r5_row('Last raid: 4 pieces'), action='Loot history &rsaquo;')
+    """The newest loot night: each drop in its quality colour with who won it (Not awarded yet while open)."""
+    rows = ''.join(_line_row(name, f'<span style="color:{CLASS_COLOR[cls]}">{who}</span>' if who else 'Not awarded yet',
+                             lead=icon(ic, 40), title_style=f'color:{QCOL[q]}') for name, ic, q, who, cls in LOOT)
+    return F._r5_section('Loot', rows, action='Loot history &rsaquo;', meta='Wed 30 Dec')
 
 
 def _officer() -> str:
     def row(title: str, sub: str, count: str = '') -> str:
         c = f'<span class="cnt">{count}</span>' if count else ''
-        return f'<div class="row"><div class="in"><div><span class="t">{title}</span><span class="s">{sub}</span></div>{c}</div></div>'
+        return _line_row(title, sub, c + CHEVRON)
     rows = (row('Plan a raid', 'Onyxia Wed, Barrow Deeps Sat')
             + row('Applications', 'Mirelle, Holy Priest 60', f'{APPLICANTS} waiting')
             + row('Setup', 'Discord bot, raid schedule and addon sync to go', f'{SETUP_DONE} of {SETUP_TOTAL} done'))
@@ -132,18 +163,17 @@ def _none(leveler: bool) -> str:
     rec = F._r5_section(f'Guilds recruiting a {spec}',
                         F._r5_row(GUILD, 'Alliance &middot; Wed and Sat, 8:00 pm CST &middot; needs damage', trail=applied)
                         + F._r5_row('Dawnbreak', 'Alliance &middot; Tue and Thu, 9:00 pm EST &middot; needs damage', trail=apply))
-    find = F._r5_section('Find your guild', F._r5_row('Search guilds on the site', 'By name or realm')
-                         + F._r5_row('Claim your guild', 'A guild master or an officer confirms with the addon or Battle.net.'))
+    find = F._r5_section('Find your guild', _line_row('Search guilds', '', CHEVRON) + _line_row('Claim your guild', '', CHEVRON))
     gate = f'<p class="gate">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>' if leveler else ''
     return gate + rec + find
 
 
-# The raid's assignments (RaidView.assignments, Onyxia's template in api/internal/guilds/raid_assign_templates.go).
+# The raid's assignments (RaidView.assignments, Onyxia's template in api/internal/guilds/raid_assign_templates.go): every slot
+# of the template in order, an empty one muted.
 WHELPS_PURPOSE = 'Pick up the west cave&rsquo;s whelps in phases 2 and 3 and kill them away from the raid.'
-ASSIGNED = [('Main tank', 1, [('Grunvald', 'warrior')]), ('Off tank (phase 3, fear)', 2, [('Brakka', 'druid')]),
-            ('Main tank healers', 4, [('Mirethil', 'priest'), ('Selka', 'druid'), ('Hollowmend', 'priest'), ('Aenwyn', 'paladin')]),
-            ('Fear cover', 2, [('Mirethil', 'priest')]),
-            ('Whelps, west cave', 3, [('Thandrel', 'warrior'), ('Kaelra', 'warrior'), ('Thalrin', 'mage')])]
+ASSIGNED = [('Main tank', 1, ['Grunvald']), ('Off tank (phase 3, fear)', 2, ['Brakka']),
+            ('Main tank healers', 4, ['Mirethil', 'Selka', 'Hollowmend', 'Aenwyn']), ('Off tank healers', 2, []),
+            ('Fear cover', 2, ['Mirethil']), ('Whelps, west cave', 3, ['Thandrel', 'Kaelra', 'Thalrin']), ('Whelps, east cave', 3, [])]
 
 
 def _your_job() -> str:
@@ -152,12 +182,14 @@ def _your_job() -> str:
 
 
 def _assignments() -> str:
-    """An officer's read-only Assignments (spec 2.3a): each filled slot, its names (yours in gold), how full; Open in planner."""
+    """An officer's read-only Assignments (spec 2.3a): every slot, its names (yours in gold, the rest muted, the web's Tag
+    tones), how full; Open in planner, and one plain line that assigning is on the site."""
     def names(people: list) -> str:
-        return ', '.join(f'<span style="color:{"var(--gold)" if n == "Thandrel" else CLASS_COLOR[c]}">{n}</span>' for n, c in people)
-    rows = '<p class="grp">Onyxia assignments</p>' + ''.join(
-        f'<div class="row"><div class="in"><div><span class="t">{label}</span><span class="s">{names(people)}</span></div>'
-        f'<span class="when">{len(people)} of {count}</span></div></div>' for label, count, people in ASSIGNED)
+        return ', '.join(f'<span style="color:{"var(--gold)" if n == "Thandrel" else "var(--muted)"}">{n}</span>' for n in people)
+    rows = '<p class="grp">Onyxia</p>' + ''.join(
+        f'<div class="row"><div class="in"><div><span class="t{" vacant" if not people else ""}">{label}</span>'
+        + (f'<span class="s">{names(people)}</span>' if people else '')
+        + f'</div><span class="when">{len(people)} of {count}</span></div></div>' for label, count, people in ASSIGNED)
     rows += '<p class="stamp" style="margin:0">Assigning is on the site for now.</p>'
     return F._r5_section('Assignments', rows, action='Open in planner &rsaquo;')
 
@@ -172,11 +204,11 @@ def _body(state: str, platform: str) -> str:
     officer = state == 'officer'
     head = F._r5_head(platform, 'In')
     needs = (F._r5_section('Needs you', F._r5_row('5 have not answered, 2 of them healers', 'Healers short by 3',
-                                                  trail='<a class="btn" href="#">Preview mention</a>')
+                                                  trail='<a class="btn" href="#">Ping on Discord</a>')
                            + F._r5_row('1 applicant', 'Mirelle, Holy Priest 60, 2 min ago'), meta='6 open') if officer else '')
-    return (head + _your_job() + needs + (_officer() + _assignments() if officer else '') + F._r5_coming(platform, officer=officer)
+    return (head + needs + (_officer() + _assignments() if officer else '') + _your_job() + _coming(platform, officer=officer)
             + F._r5_ready(F.R5_READY)
-            + _head(False) + _roster(False) + _loot() + _logs() + _progression() + _pages(False))
+            + _head(False) + _roster(False, officer) + _loot() + _logs() + _progression() + _pages(False))
 
 
 def guild(state: str):

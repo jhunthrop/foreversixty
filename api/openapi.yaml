@@ -3923,7 +3923,7 @@ components:
         quality: { type: integer, minimum: 0, maximum: 5 }
         character_key: { type: string }
         name: { type: string }
-        class: { type: string }
+        class: { type: string, x-name: className }
         ms_os: { type: [string, "null"], enum: [ms, os, null] }
         reason: { type: [string, "null"], maxLength: 200 }
         votes_yes: { type: [integer, "null"] }
@@ -9430,12 +9430,19 @@ paths:
     get:
       summary: The loot council's raid nights, newest first (verified members; officers see vote counts)
       operationId: getGuildLootNights
-      tags: [web]
+      tags: [web, app]
+      description: >-
+        The apps read the newest night (limit=1) for the Guild tab's Loot section: each drop and who
+        won it (spec design/specs/2026-11-10-guild-tab.md 2.2).
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 30, default: 8 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
+          x-fixtures: [guild.loot.nights]
           description: "Nights with their drops (open or awarded) and decision record. Not plan-gated: history is never locked. A member's copy has votes_yes, votes_no and votes_officers null on every decision."
           content:
             application/json:

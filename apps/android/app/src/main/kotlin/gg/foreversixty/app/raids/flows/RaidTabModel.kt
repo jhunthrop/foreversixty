@@ -42,6 +42,8 @@ data class RaidTabExtras(
     val setup: GuildSetup? = null,
     /** When the player applied to each recruiting guild still deciding, by guild id (spec 2.4). */
     val applied: Map<Long, Instant> = emptyMap(),
+    /** The newest loot night (the Guild tab's Loot section). */
+    val lootNights: gg.foreversixty.app.model.LootNights? = null,
 )
 
 /**
@@ -97,7 +99,7 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
         val tab = GuildTabPresenter(res, clock, now).sections(
             GuildTabInputs(
                 home = extras.home, setup = extras.setup, applicants = listOfNotNull(extras.applicant), badge = badge,
-                level = content.character.level, characterKey = key, planned = content.planned,
+                level = content.character.level, characterKey = key, planned = content.planned, lootNights = extras.lootNights,
             ),
             content.head.name,
         )

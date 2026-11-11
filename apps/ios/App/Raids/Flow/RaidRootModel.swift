@@ -15,6 +15,8 @@ struct RaidRootExtras: Equatable {
     var setup: GuildSetup?
     /// When the player applied to each recruiting guild still deciding, by guild id (spec 2.4).
     var applied: [Int64: Date] = [:]
+    /// The newest loot night (the Guild tab's Loot section).
+    var lootNights: LootNights?
 }
 
 /// Composes the Raid tab's root (flows spec 4.2) from the tab's state and its extras.
@@ -107,6 +109,7 @@ struct RaidRootComposer {
         inputs.characterKey = content.character.key
         inputs.planned = content.planned
         inputs.firstRaids = firstRaids
+        inputs.lootNights = extras.lootNights
         guild.tab = GuildTabPresenter(now: presenter.now, clock: presenter.clock).content(inputs, guildName: content.head.name)
         if let tab = guild.tab { guild.pages = Self.pages(guild.pages, tab: tab) }
         return guild
@@ -171,7 +174,9 @@ final class RaidRootLoader {
         async let badge = try? service.badge(guild: guild)
         async let ready = readyCheck(character: content.character.key, raid: raid?.id)
         async let night = liveNight(liveID)
+        async let loot = try? service.lootNights(guild: guild)
         var extras = RaidRootExtras(badge: await badge, ready: await ready, night: await night)
+        extras.lootNights = await loot
         if let badge = extras.badge, badge.officer {
             if badge.applicants > 0 { extras.applicants = await applicants(guild: guild) }
             extras.setup = try? await service.setup(guild: guild)

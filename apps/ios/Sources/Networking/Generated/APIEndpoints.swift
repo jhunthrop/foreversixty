@@ -417,6 +417,15 @@ public extension Endpoint where Response == GuildLoot {
     }
 }
 
+public extension Endpoint where Response == LootNights {
+    /// GET /v1/guilds/{id}/loot/nights: The loot council's raid nights, newest first (verified members; officers see vote counts)
+    static func getGuildLootNights(id: Int64, limit: Int? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/guilds/\(id)/loot/nights", query: [
+            limit.map { URLQueryItem(name: "limit", value: "\($0)") },
+        ].compactMap { $0 })
+    }
+}
+
 public extension Endpoint where Response == AppSession {
     /// POST /v1/auth/app/exchange: Swap the one-time code and the PKCE verifier for a device token (dark, APP_SIGN_IN)
     static func exchangeAppSignIn(_ body: AppExchangeRequest) throws(APIError) -> Endpoint {
@@ -698,6 +707,7 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/v1/guilds/{id}/raid-badge", fixture: "guild.raid-badge", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/items/{item}/needs", fixture: "guild.item-needs", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/loot", fixture: "guild.loot", status: 200),
+        FixtureRoute(.get, "/v1/guilds/{id}/loot/nights", fixture: "guild.loot.nights", status: 200),
         FixtureRoute(.post, "/v1/auth/app/exchange", fixture: "app.signin.exchange", status: 201),
         FixtureRoute(.post, "/v1/auth/app/logout", fixture: "app.logout", status: 200),
         FixtureRoute(.get, "/v1/me/notifications", fixture: "app.notifications", status: 200),

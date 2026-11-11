@@ -25,15 +25,17 @@ class RaidAssignmentWords(private val res: Resources) {
             }
         }
 
-    /** Every encounter with a pick, its filled slots in the template's order. */
+    /**
+     * Every encounter with a pick, every slot of its template in order (an empty one reads `0 of 2`), as the web planner
+     * lists them; the encounter titled by its boss.
+     */
     fun encounters(raid: RaidView?): List<AssignmentEncounterLine> =
         raid?.assignments?.encounters.orEmpty().mapNotNull { encounter ->
-            val slots = encounter.slots.filter { it.names.isNotEmpty() }.map {
+            if (encounter.slots.none { it.names.isNotEmpty() }) return@mapNotNull null
+            val slots = encounter.slots.map {
                 AssignmentEncounterLine.Slot(it.key, it.label, it.names, res.getString(R.string.shared_assign_filled, it.names.size, it.count))
             }
-            slots.takeIf { it.isNotEmpty() }?.let {
-                AssignmentEncounterLine(encounter.encounterId, res.getString(R.string.shared_assign_encounterTitle, encounter.name), it)
-            }
+            AssignmentEncounterLine(encounter.encounterId, encounter.name, slots)
         }
 
     private fun list(names: List<String>): String =

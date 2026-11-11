@@ -105,5 +105,6 @@ class NotAnsweredTest {
         override suspend fun ready(characterKey: String, raid: Long) = error("unused")
         override suspend fun setup(guild: Long) = error("unused")
         override suspend fun myApplications(guild: Long) = error("unused")
+        override suspend fun lootNights(guild: Long) = error("unused")
     }
 }

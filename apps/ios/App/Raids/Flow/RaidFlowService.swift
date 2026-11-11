@@ -19,6 +19,8 @@ protocol RaidFlowService: Sendable {
     func setup(guild: Int64) async throws(APIError) -> GuildSetup
     /// `GET /v1/guilds/{id}/applications/mine`: the player's own applications to a guild.
     func myApplications(guild: Int64) async throws(APIError) -> GuildApplications
+    /// `GET /v1/guilds/{id}/loot/nights?limit=1`: the newest night's drops and who won them.
+    func lootNights(guild: Int64) async throws(APIError) -> LootNights
 }
 
 /// The officer's Discord mention (F3): `POST /v1/guilds/{id}/raids/{raid}/ping` with an optional
@@ -89,6 +91,10 @@ struct LiveRaidFlowService: RaidFlowService {
 
     func myApplications(guild: Int64) async throws(APIError) -> GuildApplications {
         try await client.send(.myGuildApplications(id: guild))
+    }
+
+    func lootNights(guild: Int64) async throws(APIError) -> LootNights {
+        try await client.send(.getGuildLootNights(id: guild, limit: 1))
     }
 }
 

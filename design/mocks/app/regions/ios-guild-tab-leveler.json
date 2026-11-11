@@ -9,7 +9,7 @@
     14,
     16,
     365,
-    143
+    141
    ],
    "inventory": {
     "image": 1
@@ -18,7 +18,7 @@
   "section-next-raid": {
    "box": [
     14,
-    179,
+    177,
     365,
     220
    ],
@@ -30,7 +30,7 @@
   "section-who-is-coming": {
    "box": [
     14,
-    459,
+    457,
     365,
     315
    ],
@@ -42,19 +42,19 @@
   "section-roster": {
    "box": [
     14,
-    794,
+    792,
     365,
-    644
+    584
    ],
    "inventory": {
-    "row": 9,
-    "image": 9
+    "row": 8,
+    "image": 8
    }
   },
   "section-recent-logs": {
    "box": [
     14,
-    1458,
+    1396,
     365,
     229
    ],
@@ -65,7 +65,7 @@
   "section-progression": {
    "box": [
     14,
-    1707,
+    1645,
     365,
     109
    ],
@@ -76,7 +76,7 @@
   "section-pages": {
    "box": [
     14,
-    1835,
+    1774,
     365,
     169
    ],

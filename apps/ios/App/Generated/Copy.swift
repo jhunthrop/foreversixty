@@ -5703,7 +5703,7 @@ enum Copy {
         format("home.officer.short", role, n)
     }
 
-    /// Preview mention
+    /// Ping on Discord
     static var homeOfficerPreview: String { text("home.officer.preview") }
 
     /// {n} applicants
@@ -5894,9 +5894,9 @@ enum Copy {
     /// How late
     static var raidTabHowLate: String { text("raid.tab.howLate") }
 
-    /// {members} · {faction}
-    static func guildTabHeadLine(members: String, faction: String) -> String {
-        format("guild.tab.headLine", members, faction)
+    /// {members} · {faction} · {realm}
+    static func guildTabHeadLine(members: String, faction: String, realm: String) -> String {
+        format("guild.tab.headLine", members, faction, realm)
     }
 
     /// at {level}
@@ -5909,8 +5909,27 @@ enum Copy {
         format("guild.tab.closeRange", from, to)
     }
 
-    /// you
+    /// your level
     static var guildTabYou: String { text("guild.tab.you") }
+
+    /// raiders
+    static var guildTabRaiders: String { text("guild.tab.raiders") }
+
+    /// Missing raids
+    static var guildTabMissingRaids: String { text("guild.tab.missingRaids") }
+
+    /// {present} of {nights} nights
+    static func guildTabNights(present: Int, nights: Int) -> String {
+        format("guild.tab.nights", present, nights)
+    }
+
+    /// item level {n}
+    static func guildTabItemLevel(n: Int) -> String {
+        format("guild.tab.itemLevel", n)
+    }
+
+    /// Not awarded yet
+    static var guildTabNotAwarded: String { text("guild.tab.notAwarded") }
 
     /// Raids open at {level} · you're {you}
     static func guildTabRaidsOpen(level: Int, you: Int) -> String {
@@ -5933,11 +5952,6 @@ enum Copy {
         format("guild.tab.closeTo", level)
     }
 
-    /// Seen {age}
-    static func guildTabSeen(age: String) -> String {
-        format("guild.tab.seen", age)
-    }
-
     /// Recent logs
     static var guildTabLogs: String { text("guild.tab.logs") }
 
@@ -5954,7 +5968,7 @@ enum Copy {
         format("guild.tab.down", down, named)
     }
 
-    /// {n} pulls this tier
+    /// {n} pulls
     static func guildTabPulls(n: Int) -> String {
         format("guild.tab.pulls", n)
     }
@@ -6043,11 +6057,8 @@ enum Copy {
     /// Find your guild
     static var guildTabFind: String { text("guild.tab.find") }
 
-    /// Search guilds on the site
+    /// Search guilds
     static var guildTabSearch: String { text("guild.tab.search") }
-
-    /// By name or realm
-    static var guildTabSearchLine: String { text("guild.tab.searchLine") }
 
     /// Applied {day}
     static func guildTabApplied(day: String) -> String {
@@ -6445,7 +6456,7 @@ enum Copy {
         format("home.ready.line", items, age)
     }
 
-    /// Preview mention
+    /// Ping on Discord
     static var homeOfficerPreviewMention: String { text("home.officer.previewMention") }
 
     /// {name}, {kind} {level}, {age}

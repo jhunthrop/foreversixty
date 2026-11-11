@@ -48,20 +48,19 @@ enum RaidAssignmentWords {
         }
     }
 
-    /// Every encounter with a pick, its filled slots in the template's order.
+    /// Every encounter with a pick, every slot of its template in order (an empty one reads `0 of 2`), as the
+    /// web planner lists them; the encounter titled by its boss.
     static func encounters(_ raid: RaidView?) -> [AssignmentEncounterLine] {
         guard let encounters = raid?.assignments?.encounters else { return [] }
         return encounters.compactMap { encounter in
-            let slots = encounter.slots.filter { !$0.names.isEmpty }.map { slot in
+            guard encounter.slots.contains(where: { !$0.names.isEmpty }) else { return nil }
+            let slots = encounter.slots.map { slot in
                 AssignmentEncounterLine.Slot(
                     key: slot.key, label: slot.label, names: slot.names,
                     filled: Copy.sharedAssignFilled(n: slot.names.count, count: slot.count)
                 )
             }
-            guard !slots.isEmpty else { return nil }
-            return AssignmentEncounterLine(
-                encounterID: encounter.encounterId, title: Copy.sharedAssignEncounterTitle(boss: encounter.name), slots: slots
-            )
+            return AssignmentEncounterLine(encounterID: encounter.encounterId, title: encounter.name, slots: slots)
         }
     }
 }

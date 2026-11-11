@@ -14,27 +14,37 @@ enum GuildTabTestData {
     }
 
     static let recent = [
-        member("Grunvald", "warrior", "60 · Protection Warrior", "Seen just now"),
-        member("Mirethil", "priest", "60 · Holy Priest", "Seen 12 min ago"),
-        member("Kaelra", "warrior", "60 · Fury Warrior", "Seen 40 min ago"),
-        member("Thornwick", "druid", "57 · Feral Druid", "Seen 1 h ago"),
-        member("Selka", "druid", "60 · Restoration Druid", "Seen 2 h ago"),
+        member("Grunvald", "warrior", "60 · Protection Warrior · item level 66", "just now"),
+        member("Mirethil", "priest", "60 · Holy Priest · item level 63", "12 min ago"),
+        member("Kaelra", "mage", "60 · Frost Mage · item level 61", "40 min ago"),
+        member("Thornwick", "druid", "57 · Feral Druid", "1 h ago"),
+        member("Selka", "druid", "60 · Restoration Druid · item level 62", "2 h ago"),
     ]
 
     static let close = [
-        member("Thornwick", "druid", "Feral Druid", "57"),
         member("Vexa", "warlock", "Affliction Warlock", "56"),
         member("Pell", "mage", "Frost Mage", "55"),
         member("Orrin", "paladin", "Holy Paladin", "55"),
     ]
 
+    static let missing = [
+        member("Brakka", "druid", "Feral Druid · item level 60", "2 of 8 nights"),
+        member("Thalrin", "hunter", "Marksmanship Hunter · item level 58", "3 of 7 nights"),
+    ]
+
     static let logs = [
         GuildLogLine(id: "r3", title: "UBRS, Sunday", line: "Blackrock Spire · 7/8 kills · 1 h 32 min", day: "Sun 3 Jan", clean: false),
-        GuildLogLine(id: "r2", title: "Scholomance, Saturday", line: "Scholomance · 9/9 kills · 1 h 08 min", day: "Sat 2 Jan", clean: true),
+        GuildLogLine(id: "r2", title: "Scholomance, Saturday", line: "Scholomance · 10/10 kills · 1 h 08 min", day: "Sat 2 Jan", clean: true),
         GuildLogLine(id: "r1", title: "Onyxia, Wednesday", line: "Onyxia's Lair · 1/1 kills · 41 min", day: "Wed 30 Dec", clean: true),
     ]
 
-    static let progression = GuildProgressLine(title: "First tier", line: "1 of 1 down · 6 pulls this tier")
+    static let progression = GuildProgressLine(title: "Onyxia's Lair", line: "1 of 1 down · 6 pulls")
+
+    static let lootNight = GuildLootNight(zone: "Onyxia's Lair", day: "Wed 30 Dec", drops: [
+        .init(itemID: 18205, name: "Eskhandar's Collar", icon: "inv_jewelry_necklace_07", quality: 4, winner: "Kraggor", winnerClass: "warrior"),
+        .init(itemID: 17067, name: "Ancient Cornerstone Grimoire", icon: "inv_misc_book_07", quality: 4, winner: "Mirethil", winnerClass: "priest"),
+        .init(itemID: 18422, name: "Head of Onyxia", icon: "inv_misc_head_dragon_01", quality: 4, winner: nil, winnerClass: nil),
+    ])
 
     static let officerRows = [
         OfficerShortcut(kind: .plan, title: Copy.guildTabPlanRaid, line: "Onyxia Wed, Barrow Deeps Sat", count: nil),
@@ -46,14 +56,18 @@ enum GuildTabTestData {
 
     static func tab(leveler: Bool = false, officer: Bool = false) -> GuildTabContent {
         var tab = GuildTabContent(head: head)
-        tab.spread = leveler ? GuildSpread(atCap: 31, close: 4, you: 36) : nil
+        tab.leveler = leveler
+        tab.spread = leveler
+            ? GuildSpread(atCap: 31, close: 3, third: 36, thirdLabel: Copy.guildTabYou, own: true)
+            : GuildSpread(atCap: 31, close: 3, third: 24, thirdLabel: Copy.guildTabRaiders, own: false)
         tab.rosterMeta = "31 of 38 at 60"
         tab.recent = recent
         tab.close = leveler ? close : []
         tab.logs = logs
         tab.progression = progression
-        tab.loot = leveler ? nil : Copy.raidPagesLootLast(n: 4)
+        tab.lootNight = leveler ? nil : lootNight
         tab.officer = officer ? officerRows : []
+        tab.missing = officer ? missing : []
         return tab
     }
 
@@ -66,16 +80,18 @@ enum GuildTabTestData {
         RaidAssignedName(characterKey: "us/pvp/\(name.lowercased())", name: name, className: className, group: "", state: "in", own: own, offRole: false)
     }
 
-    static let assignments = [AssignmentEncounterLine(encounterID: 1084, title: "Onyxia assignments", slots: [
+    static let assignments = [AssignmentEncounterLine(encounterID: 1084, title: "Onyxia", slots: [
         .init(key: "main_tank", label: "Main tank", names: [picked("Grunvald", "warrior")], filled: "1 of 1"),
         .init(key: "off_tank", label: "Off tank (phase 3, fear)", names: [picked("Brakka", "druid")], filled: "1 of 2"),
         .init(key: "main_tank_heals", label: "Main tank healers", names: [
             picked("Mirethil", "priest"), picked("Selka", "druid"), picked("Hollowmend", "priest"), picked("Aenwyn", "paladin"),
         ], filled: "4 of 4"),
+        .init(key: "off_tank_heals", label: "Off tank healers", names: [], filled: "0 of 2"),
         .init(key: "fear_cover", label: "Fear cover", names: [picked("Mirethil", "priest")], filled: "1 of 2"),
         .init(key: "whelps_west", label: "Whelps, west cave", names: [
-            picked("Thandrel", "warrior", own: true), picked("Kaelra", "warrior"), picked("Thalrin", "mage"),
+            picked("Thandrel", "warrior", own: true), picked("Kaelra", "mage"), picked("Thalrin", "hunter"),
         ], filled: "3 of 3"),
+        .init(key: "whelps_east", label: "Whelps, east cave", names: [], filled: "0 of 3"),
     ])]
 
     /// The Guild tab's pages once its sections show: Calendar and Guild sims at 60, Calendar and Loot history under 60.
