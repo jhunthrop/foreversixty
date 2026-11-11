@@ -19,6 +19,7 @@ import type { Page } from '@playwright/test';
 import { test } from './support/test';
 import { CAPTURE_PAGES, measureFrame, openFramePage, type FrameMeasure } from './support/frame-pages';
 import { REPO_ROOT } from './support/parity';
+import { routeRealIcons } from './support/real-icons';
 
 const SET = process.env.FRAME_CAPTURE ?? '';
 const OUT = path.join(
@@ -78,6 +79,8 @@ test.describe('page frame capture', () => {
         const context = await browser.newContext({ ...contextFor(width), baseURL });
         const page = await context.newPage();
         try {
+          // A person reads these captures: the real icons, not the fixture build's black stubs.
+          await routeRealIcons(page);
           await openFramePage(page, framePage);
         } catch (error: unknown) {
           // One page that will not settle must not cost the rest of the set; it is listed below.
