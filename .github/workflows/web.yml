@@ -764,8 +764,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           go test ./internal/site -run TestChromeSnapshotMatchesTheBuiltSite -update
-          snapshot="internal/site/chrome.html internal/site/testdata/chrome.html ../web/tests/e2e/fixtures/shared-build"
-          if git diff --quiet -- $snapshot; then
+          snapshot=(internal/site/chrome.html internal/site/testdata/chrome.html ../web/tests/e2e/fixtures/shared-build)
+          if git diff --quiet -- "${snapshot[@]}"; then
             echo "the chrome snapshot is current"
             exit 0
           fi
@@ -774,7 +774,7 @@ jobs:
           go test ./internal/site
           git config user.name "forever-data-bot"
           git config user.email "bot@foreversixty.gg"
-          git add $snapshot
+          git add "${snapshot[@]}"
           git commit -m "chore(site): regenerate the chrome snapshot from $GITHUB_SHA"
           for attempt in 1 2 3 4 5; do
             if git pull --rebase --autostash --quiet origin main && git push --quiet origin HEAD:main; then
