@@ -89,3 +89,103 @@ Verdict policy says tells 1, 2, 5, 8, 12, 13 and 15 block a pass. Two of those a
 
 VERDICT: FAIL
 
+## Round 3 (2026-11-10, base 7911bf87e)
+
+# ai-slop-reviewer: mobile backfill, round 3 (both platforms)
+
+**Base:** 7911bf87e
+
+## First impression
+
+This reads as made by someone who plays the game, more than it did in round 2. The item rows, role tally, push lines and "Bring flasks" are the real thing. What still says generated is the same dark rounded card stamped on every block of Home and Raid. Next to it, a few fixture numbers still contradict each other.
+
+The deciding item is tell 8, and it is narrower than in round 2.
+
+## Rulings I accept (not contested)
+
+- **iOS tab bar (round-2 must-fix 1, tell 12).** I accept this one. The captures show a hard bottom edge and content cut cleanly above it, with nothing legible bleeding through. It is the system `TabView` on a native platform, so I am no longer calling it blur.
+- **Large title band (round-2 must-fix 3).** I accept this on ruling N3. On Activity the band holds the filter chips, so it has a job.
+  - Polish: on Raid and Gear it is a blank blue band about 20% of the screen high. If the owner ever revisits the look, those two are where the band is weakest.
+- **One Plate frame (round-2 must-fix 2).**
+  - I accept the double border on "Next upgrades" as the one framed panel, per spec. The stamp is now outside it, which was my actual complaint.
+
+## Must-fix
+
+**1. Tell 8, residue the Plate ruling does not cover: the plain card on every other block.**
+- The ruling answers the one framed Plate. It does not answer the identical plain near-black rounded card repeated on:
+  - Home: raid card and the "New for you" feed.
+  - Raid: sign-up card, "Who is coming", "Before you pull".
+  - Activity: the feed.
+- Android is the same. Round 2 asked for only the sign-up control to keep a filled card, with the lists as hairline-divided rows on the page. That was not done and not ruled on.
+- Fix, in the iOS and Android card wrappers (the shared surface component):
+  - Make "Who is coming", "Before you pull", the Activity list and the Home feed bare rows on the page with hairline dividers.
+  - Keep a filled card only for the sign-up control and the Plate.
+- Files: the iOS Home, Raid and Activity views and the Android `FlowRows.kt` card wrapper.
+
+**2. Tell 22 and tell 19: the DPS fixture still does not hold together.**
+- `ios/gear-01-top.png` shows 182.0 DPS (the band list's `set_dps`, which the ruling explains).
+  - `ios/activity-01-top.png` shows the same character, Gorvash Fury Warrior, at 1,184 and 1,196 DPS.
+  - Those are three scales for one character in one app, and the ruling answers only 182 against +157.
+  - +63.0 DPS on 182.0 is still a 35% gain from 13 items.
+- "+12 over your 1184" is unformatted where the right-hand figure reads "1,196 DPS". It also keeps the qualifier "(Fury Warrior, 60)", which is tell 22 again.
+- Fix:
+  - Put the Gear header, the Activity sim rows and the gains on one scale.
+  - Format the number the same way everywhere.
+  - Make the row read "+12 over your 1,184" and drop the parenthetical.
+- Files: the gear fixture and `docs/contracts/fixtures/app/` activity bodies.
+
+**3. Gear counter contradicts the rows.**
+- `ios/gear-01-top.png` says "0 of 17 slots match the list". Head, Neck, Shoulder and Main hand show no gain, which implies they already match.
+- 13 upgrades plus 4 matching slots is 17, so "0 matching" is wrong.
+- Reconcile against `upgrade_count` and `already_best[]` in `GearPresenter.swift` and the fixture.
+
+**4. Tell 13: empty icon boxes in the Covered line.**
+- `ios/raid-01-top.png`: "Blessing of Might" and "Blessing of Wisdom" show blank bordered squares where the spell icon should be. Only Kings has an icon.
+  - That icon is a plate helm, not the Kings spell icon.
+- Android's `android-r3/raid-01-top.png` leaves the same icons as empty space with a ragged wrap.
+- A veteran spots the wrong icon at once. Fix the fixture's spell ids, or render no icon box when there is no icon.
+
+## Polish
+
+- **Dates.**
+  - Home and Activity show "Molten Core · 18 of 40 signed. Thu 12 Nov, 8:00 pm CST." with the age "Sat" under it.
+  - The next raid is Sat 19 Dec, so the sample timeline is incoherent.
+  - "Sat" alone on its own line still reads as an orphan. Put the age on the title line or in the right margin.
+  - "Synced 12 d ago" still sits on every capture, and Android draws it in warning orange. Use a fresh stamp in captures.
+- **`home.answer.noGearNote`** ("The addon sends your gear when you log out.") was in my round-2 list and is not in the decisions file. Cut it.
+- **`raid.noRaid`**, `apps/shared/copy/en.json:398`, still carries the pitch ("a push tells you the moment one is posted"). If anything still renders it, cut it to `raid.tab.noRaid` ("No raid posted yet."). If nothing does, delete the key. `en.json` also holds widget, intent and reports variants of the same no-raid line.
+- **Android 2x** (`android-r3/fs2-home.png`): the stacking works now.
+  - The hero subtitle wraps as "· 2 / levels to the 60 list", so keep "2 levels" together.
+  - The hero name sits slightly above the crest. Both are minor.
+- **`Short: "%s, 24 hours out."`** in `raids_events.go:45` hard-codes "24 hours" regardless of the actual lead time. `Starting: "Starts in %d minutes."` has no singular, so one minute reads "1 minutes".
+
+## Push copy, checked
+
+- **Good:**
+  - "24 of 40 signed. Thu 5 Nov, 8:00 pm CST." leads with the count.
+  - The applicant push is a player's voice.
+  - `moved` has a title and no leading space.
+  - `cancelled` is "Onyxia's Lair was cancelled."
+  - The time layout is shared across the posted body and the answers.
+  - `failed` is fine.
+- **Problem:** the server `Cancelled` body is still "This raid was cancelled." It is fine because the title is the raid name, but it duplicates the fixture's title-only form. Pick one.
+
+## Authentic, keep
+
+- Item rows: real names, quality colours and icons, "Off hand · Crafted: Blacksmithing", and per-row DPS.
+- Role tally with class-coloured names: "Healers 6", "Damage 15 · 7 melee, 8 ranged". Both platforms now agree, so my round-2 count complaint is closed.
+- "Bring flasks" with the item word in bold.
+- The In / Late / Bench / Out segmented control on the teal fill. It is now the single answer state with the chip gone.
+- "2 levels to the 60 list" replaces "band".
+- "Show older" and "Where to go".
+- The push bodies as a set.
+- The Android opaque bar.
+
+## Verdict
+
+Round 3 fixes most of round 2, and my KEEP contests are withdrawn for the tab bar, title band and Plate.
+
+Tell 8, the plain card stamped on every list block, remains. It is a blocking tell, and the Plate ruling does not cover it. The DPS and slot-count contradictions and the blank spell icons are also open. Items 2 to 4 are fixture and data work, and item 1 is a small wrapper change.
+
+VERDICT: FAIL
+

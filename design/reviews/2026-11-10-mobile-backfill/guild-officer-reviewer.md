@@ -177,3 +177,82 @@ Key files:
 
 VERDICT: CLOSE
 
+## Round 3 (2026-11-10, base 7911bf87e)
+
+# Round 3 verdict: guild-officer-reviewer, Raid tab (iOS and Android), Home raid card, raid and officer pushes
+
+**Page job:** tell a raider when the raid is, whether they're in, and what they're missing. Tell an officer who is short and who hasn't answered, and let them act from the phone. Earn an unprompted open from the officer.
+
+**Judged from:**
+- Android `android-raid-officer.png` and `.txt`, `android-home-raid-day-officer.txt`, and `android-raid-no-raid.txt`.
+- Android `notif-01-shade.png`.
+- Push fixtures `push.raid-short.*`, `push.guild-applicant.apns.json` and `push.raid-posted.apns.json`.
+- `raids_events.go` (`raidShortEvent`, `shortestRole`, `mentionAction`).
+- `RaidShortPush.kt`, `OfficerPushActions.swift`, `RaidTabFacts.kt`, `RaidTabScreen.kt` and `RaidsFeature.kt`.
+
+**Not verified:**
+- I could not run either app.
+- I did not open the iOS flow tests; I saw only that Flows tests exist.
+- I did not open the Android flow PNGs; I listed them and took the signup, late and offline states from the file names and my round-2 reading.
+
+## Round-2 findings
+
+| # | Round-2 finding | Status |
+|---|---|---|
+| N1 | `raid.short` has no officer action | **FIXED.** Both fixtures carry `raid_mention_short`, "Mention healers", POST `/v1/guilds/2/raids/7/ping` with `{"role":"healer"}`, category `RAID_SHORT`. The server leaves the action out when the ping is in its cooldown or Discord isn't connected (`canPing`). Android's `RaidShortPushAnswerer` posts it and replaces the notification with the result line (`Mentioned 3 healers in Discord.`). iOS parses the same action into `OfficerPushAnswer.mention`. This is the one that moves an officer off Discord. See new findings P1 and P2 for what is still loose. |
+| N2 | Applicant push offers Decline only | **FIXED.** The fixture carries Accept then Decline, with Accept first. |
+| N3 | Push body clips before the counts | **FIXED.** The Android shade (`notif-01-shade`) reads `24 of 40 signed. Thu 5 Nov, 8:00 pm CST.` without clipping. `raid.short` leads with the short roles: `Healers 5 of 8, 5 not answered. 21 of 40 signed, 24 hours out.` |
+| N4 | Unsynced line has no names or destination | **FIXED.** Android reads `Not synced this week: Kaelra, Thalrin, Brakka, Mirethil` (three names, then `and N more`). It is tappable (`onRosterOf`) and pushes `RaidsDestination.Roster(guild, keys)`. iOS wires the same tap (`openUnsynced`, `RaidsTab.swift:247`). I have no capture of the filtered roster. See P4. |
+| N5 | Counts contradict | **FIXED.** Needs you says "5 have not answered", the foot says "5 not answered", and Bench 1 · Out 3 matches round-2-decisions. |
+| N6 | Fixture time and `answers` disagree | **FIXED.** Body and `answers` both read `Thu 5 Nov, 8:00 pm CST`. `moved` now has a title and `cancelled` reads `Onyxia's Lair was cancelled.` |
+| N7 | iOS Missing line truncated names | **FIXED in code, not seen.** The Covered line is capped at three names with `and N more`, as round-3 row 4 says. The Android capture reads `Missing Fort · WF 1 of 2`. I did not see an iOS capture of it, and `WF` is a data label I would spell out once. |
+| N8 | `moved` leading space and empty title | **FIXED** (fixture reads `Sign-up moved` / `{name} moved to Bench.`). |
+| N9 | No iOS officer captures | **STILL OPEN.** `ios/` has no `raid-officer-*` step and the officer-only round-3 content (Needs you, not-synced, Covered) is reviewable only from code on iOS. |
+| N10 | `notif-02-expanded` was a blank spinner | **STILL OPEN.** It exists again in `android-r3`, and I did not re-open it. There is still no capture of a `raid.short` or `guild.applicant` notification, expanded or collapsed, on either platform. The shade capture is `raid.posted` only. |
+| N11 | `no-raid` has no officer link | **STILL OPEN.** The `android-raid-no-raid` text is unchanged: `No raid posted yet.` |
+| Earlier | Cooldown line (9), attendance (10), loot fairness (11) | **KEPT.** These stay with the other lanes' rulings. |
+
+## New findings
+
+### SHOULD
+
+**P1. The Mention button picks a different role than the screen leads with.**
+- **Problem:** `shortestRole` takes the role with the largest absolute gap. In the officer capture, Damage is 11 of 30 (19 short) and Healers is 5 of 8 (3 short). The Needs you card says "Healers short by 3" and Preview mention is for healers. A server built from that same roster would pick `Mention DPS`, which pings 19 slots, and the fixture's "Mention healers" would never occur.
+- **Fix:** Align the two. Either the push and the card both lead with the same role, or the push offers the role the officer can actually fill (tank, then healer, then DPS) rather than the largest raw gap.
+- **Data:** `notify.ShortRoles`, in `raids_events.go`.
+
+**P2. The officer's mention result is not captured.**
+- **Problem:** Success, cooldown (action absent), no-Discord and failure all exist in code and tests, but I saw no capture of the officer shade. This is the feature that decides whether the app replaces Discord, and it should be reviewable like the sign-up flow is.
+- **Fix:** Add `notif-officer-*` captures: the collapsed `raid.short`, the expanded one, the result after the tap, and the applicant push with Accept and Decline.
+
+**P3. `Not synced this week` is built on `logged_recently`.**
+- **Problem:** `logged_recently` records a character login, not an addon sync. An officer reads "not synced" as "no addon data". The roster payload also carries `addon` and `sim_export`.
+- **Fix:** Either say "Haven't logged in this week", or match on `addon` and `sim_export` so the word is true.
+- **Data:** `GuildHome.roster[]` in `api/openapi.yaml`.
+
+**P4. The filtered roster result is unseen.**
+- **Problem:** The tap pushes `Roster(guild, keys)`, but I saw no capture showing the filtered state: a header such as "Showing 4 raiders" with a way to clear the filter. Without that, an officer who taps from the tab lands on a roster that looks unfiltered or lands on a screen with no explanation.
+- **Fix:** Capture it on both platforms and confirm a filter chip and a clear action exist.
+
+### NICE
+
+- **P5.** The Android shade shows In, Late and Bench only. Android's three-action limit drops Out, so a raider who is out has to open the app. The expanded notification or a link in the body could carry it.
+- **P6.** The shade capture shows a different test notification ("warmup") beside the raid one. Retake it on a clean emulator before it goes in the record.
+- **P7.** The Home officer card repeats the 5 not answered and the applicant card from the Raid tab. That is fine, but it is the same Needs you content twice at the top of two tabs; a single count and a tap through would be shorter.
+
+## Value test
+
+**Would a guild pay $15 or $25 a month for this exact screen?** For the officer's phone companion, yes, and the two flips I named are in. The loop is now complete. The server tells the officer a day out which role is short and how many have not answered. One tap in the shade pings Discord, and the notification says what happened. The applicant push accepts or declines from the lock screen. Inside the app, Needs you sits directly under the head and the unsynced line names raiders. A raider gets a count-first push with In, Late and Bench, a Late follow-up, a "Before you pull" list that says where to fix each miss, and honest sync stamps. The sheet still wins for loot fairness, attendance and per-raider performance, but those live on the site, and this is a raid-day and away-from-PC tool, so that gap doesn't block the switch.
+
+**What would still cost trust:** P1. If the shade offers "Mention DPS" while the tab says "Healers short by 3", the officer stops believing the button. Fix that and show the officer notifications on a device, and it holds.
+
+Key files:
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/api/internal/guilds/raids_events.go`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/docs/contracts/fixtures/app/push.raid-short.apns.json`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/main/kotlin/gg/foreversixty/app/raids/push/RaidShortPush.kt`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/ios/App/Raids/Push/OfficerPushActions.swift`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/main/kotlin/gg/foreversixty/app/raids/flows/RaidTabFacts.kt`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/test/screenshots/parity/android-raid-officer.png`
+
+VERDICT: WORTH PAYING FOR
+

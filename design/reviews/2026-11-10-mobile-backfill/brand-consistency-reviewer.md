@@ -193,3 +193,92 @@ I judged the current captures, the Android parity goldens, the token sources and
 
 VERDICT: DRIFT
 
+## Round 3 (2026-11-10, base 7911bf87e)
+
+# Round 3 verdict: brand consistency, both apps vs the web
+
+I judged the iOS step captures (including `light-*` and `ax5-*`), the Android `android-r3/` captures (including `fs2-*`), the parity goldens, the round-3 decisions and the code. I did not run either app. The iOS and Android `light-*` captures are identical to the dark ones, so the app is dark only, as the site is. I judged the Android push from `notif-01-shade.png`. The iOS Gear counter (`0 of 17` vs `3 of 17`) and the Gear `Equipped` cells are known and not re-reported. I did not open the round-3 mocks or the web captures, so web comparisons rest on the earlier rounds and the decisions file.
+
+## Round-2 findings (D1-D10)
+
+| # | Status | Evidence |
+|---|---|---|
+| D1 Two teals on the selected answer | FIXED | `Segmented.swift:83-84` and `FlowSegmented.kt` both fill `FsColor.teal` inside a `tealEdge` edge. Home and Raid read the same teal on both apps. A new teal split appears on the Activity chips (N1). |
+| D2 iOS Home drops the tally | FIXED | iOS Home reads `Tanks 3 · Healers 6 · Damage 15`, the same as Android. |
+| D3 Android Home `3 d ago` | FIXED | Both Home feeds read `Sat` on its own meta line, the same as Activity. |
+| D4 Counts and Covered line | FIXED for counts, PARTLY OPEN for the Covered line | `Damage 15` equals `7 melee, 8 ranged` on Home and Raid, on both apps. `Missing` appears once, at most three names and `and 2 more`, with wipe red on the names only. What is left is N3. |
+| D5 Android no stacked answer at large font | FIXED | `fs2-raid.png` stacks to 2×2. iOS stacks to one column at `ax5` (N5, NICE). |
+| D6 Type residue | PARTLY OPEN | iOS Home, the drawer and the countdown are clean: `NextRaidBlock.swift` and `ProfileMenu.swift` now use roles. Residue is listed in N4. |
+| D7 Synced stamp position | FIXED for position, tone differs | The stamp sits under the meta line on both apps. The tone differs (N2). |
+| D8 `Bring flasks` placement | FIXED | It sits inside the raid card on both Raid tabs. |
+| D9 Feed time layout vs push | FIXED | The feed and the push both read `Thu 12 Nov, 8:00 pm CST`. The push body leads with the count, `24 of 40 signed.`, on both platforms (decision s3). |
+| D10 iOS `Show older` | FIXED | It is on iOS Activity. Alignment differs (N8). |
+| Carried N-1 `OLYMPUS XXVII` | STILL OPEN, NICE | The `Loot awarded` body reads `by OLYMPUS XXVII` on both apps. Fix the server text or the fixture to `Olympus XXVII`. |
+
+The KEEPs hold, and I do not contest them:
+- The person glyph in the faction ring (owner exception).
+- The Android bar title at rest (the round-5 mocks and rule 8).
+- Liquid Glass on the iOS tab bar and the M3 `NavigationBar` (spec 4.1, rule 8).
+- The pill `FlowSegmented` against the 4 pt `FSSegmented` (mock ruling, rule 8).
+- Three notification actions on Android (rule 8).
+
+## New findings, ranked
+
+### SHOULD
+
+**N1. The selected filter chip is a different teal on each app (DRIFT).**
+- **Where:** iOS `ActivityScreen.swift:179` fills `FSColor.tealEdge` (pale `#408076`) for the selected chip and while pressed. Android `FlowChip` fills dark teal. `activity-01-top.png` shows both.
+- **Why a player feels it:** this is the D1 split again, one control over from the Segmented. The web primary is `teal` fill with a `tealEdge` border.
+- **Fix:** in `ChipStyle`, use `FSColor.teal` as the selected fill with a `tealEdge` hairline. Keep the pressed state as the `tealEdge.opacity(0.25)` overlay that `Segmented.swift:94` uses.
+
+**N2. The stale `Synced 12 d ago` stamp is muted on iOS Home and warning-orange on Android Home.**
+- **Where:** iOS `Panels.swift:165` always draws the stamp in `FSColor.muted`. Android passes `stampWarn = block.syncedStale` (`HomeFlowScreen.kt:115`). The iOS drawer already shows the same age in warning orange (`menu-01-open.png`).
+- **What is ruled:** round-3 change 12 sets the warning tone past 7 days. The fixture is 12 days stale, so Home should show it.
+- **Fix:** give `PanelSectionHead` a `stampStale` flag. Fed from the Presenter, it draws the stamp in the drawer's warning token. The Presenter already has the sync age.
+
+**N3. The Covered line has broken or missing spell icons, and its punctuation differs.**
+- **Where:** `raid-01-top.png` on iOS draws empty bordered boxes beside `Blessing of Might` and `Blessing of Wisdom`. Android leaves a blank gap in the same places. Only Kings has an icon. iOS adds trailing commas, and Android does not.
+- **Also:** decision 4 asks for the data's short `label` (`Kings`, `Might`...) where one exists, and the line still shows the long names. That is only a drift if the fixture carries labels, so check that.
+- **Fix:**
+  - Render no icon frame when the stem is missing, on both apps. Or ship the three icons as faithful HD reproductions per the owner's icon ruling.
+  - Use the shared Covered builder's output for the separators on both apps.
+
+**N4. Type residue remains on the four tabs.**
+- **iOS:** `GearListView.swift:97` and `:107` use inline `TypeRole(... size: 13 ...)` and `20` for the Gear rows. These are the slot and gain lines on a tab root.
+- **Android:**
+  - `FlowFigures.kt:45` and `:55` have 13.sp and 12.sp.
+  - `FlowLayout.kt:304` and `:307` have `ACTION` 14.sp and `PANEL_TITLE` 21.sp.
+  - `FlowRows.kt:338` and `:345` carry local `lineHeight` copies.
+  - `ForeverTheme.kt:52` has `TOP_BAR_TITLE = 22.sp`.
+  - `PaperdollHeader.kt:301-304` has 19, 17 and 11 sp.
+  - `ScaledType.kt` carries literal sizes (`cardHead`, `lead`, `segment`).
+- **Why it matters:** the Android Raid card title is visibly smaller than the iOS one on the same card, because the iOS Home title wraps to three lines where Android's fits one. A scale change in `design/tokens/build.mjs` will not reach any of these.
+- **Fix:**
+  - Add roles to `design/tokens/tokens.json` for `cardTitle`, `figureUnit`, `paperdollName`, `paperdollDetail`, `barTitle` and `panelTitle`.
+  - Regenerate `DesignTokens.swift` and `Tokens.kt`.
+  - Point every site above at its role, and make the iOS and Android Home raid titles use the same `cardTitle`.
+
+### NICE
+
+**N5. The answer control stacks differently at large type.** iOS `ax5-raid.png` goes to one column of four. Android `fs2-raid.png` goes to 2×2. Round-3 change a2 said "as iOS does", so pick one. I would take the 2×2 on both. The pill outline around a 2×2 on Android has a rounded grid corner that the web never draws, so set the stacked form's radius to 4.
+
+**N6. The Damage row is laid out two ways.**
+- **iOS:** `Damage 15`, then the names, then `7 melee, 8 ranged` on its own line.
+- **Android:** `Damage 15 · 7 melee, 8 ranged`, then the names.
+- **Fix:** take the Android form. The role label, count and split read as one line, and the names stay the lead.
+
+**N7. The Home tally touches the Segmented on iOS.** `Tanks 3 · Healers 6 · Damage 15` sits flush on the control's top edge in `home-01-top.png`. Android leaves a gap. Add the same 8 pt spacing in `NextRaidBlock.swift`.
+
+**N8. `Show older` is centred on iOS and left-aligned on Android.** The web's pager link is left-aligned under its list. Left-align it on iOS, with a 44 pt target on both.
+
+## ALLOWED differences (cited)
+
+- The floating glass iOS tab bar against the M3 `NavigationBar` and its pill indicator: spec 4.1, rule 8.
+- iOS large title under the band against the Android bar title at rest: N3, rule 8.
+- The M3 pill answer control and the three notification actions: rule 8, the round-5 mock ruling.
+- The system notification chrome (the Android teal LX small icon, the iOS LX tile): rule 8.
+- The person glyph in the faction ring: the owner exception, KEPT.
+- Safe areas, haptics and `ax5-*` and `fs2-*` scaling: rule 8.
+
+VERDICT: DRIFT
+

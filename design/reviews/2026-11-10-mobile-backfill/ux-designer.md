@@ -133,3 +133,94 @@ VERDICT: NO SHIP
 
 The blockers are items 1 to 3, which are wrong or contradictory numbers on the first job. Items 4 to 7 are missing proof for steps the brief asked me to judge, and items 6 and 8 are functional gaps. After the fixes, re-run the iOS flows and the pull and drawer captures and send them back.
 
+## Round 3 (2026-11-10, base 7911bf87e)
+
+# ux-designer round 3: mobile backfill (Home, Raid, Gear, Activity, drawer, notification; iOS and Android)
+
+Base is the round-3 tip. I judged from the captures in `ios/` and `android-r3/`, the step logic in `apps/ios/AppTests/Flows`, and a grep of the drawer code. I did not run the apps. The iOS CI flow snapshots are not in the record yet.
+
+## Round-2 must-fixes, checked
+
+| # | Item | Result |
+|---|---|---|
+| 1 | One count model | PASS. Home reads `Damage 15` on both apps. The Raid tab reads `Damage 15 · 7 melee, 8 ranged` on both. 7 + 8 = 15, and 3 + 6 + 15 = 24 matches the raid page's 24 of 40. |
+| 2 | iOS Home tally | PASS. `Tanks 3 · Healers 6 · Damage 15` now sits above the Segmented, as on Android. |
+| 3 | Home time buckets | PASS. Both Home and Activity read `Sat` on its own meta line on both apps. No `· 3 d ago` and no orphan dot. |
+| 4 | iOS sign-up evidence | CONDITIONAL, see below. |
+| 5 | Drawer Refresh | Code PASS, capture still missing, see below. Pull to refresh uses the system controls, which is accepted. |
+| 6 | iOS Show older | PASS. `activity-07-older-settled` shows a centred yellow `Show older` link below the list. |
+| 7 | Push tap-through | PASS on Android: `notif-02-expanded` is the raid page, Back returns to the tab, and the count agrees. The iOS capture is still a lock screen, see must-fix 3. |
+| 8 | Android 2x header | PASS. In `fs2-home`, `Gear ›` stays on the title row and the meta and stamp drop to their own rows. |
+
+The i3 bottom inset also passes. `raid-06-scrolled` ends with clear space above the tab bar.
+
+Sign-up flow (item 4) is judged from the tests, not from snapshots. `RaidSignupFlowTests` asserts these behaviours:
+- Late selected and chips open on press.
+- `busy` while the write is in flight, with the press drawn before the write returns.
+- On failure, a return to In, `Copy.commonFailed`, a retry, and haptics `["selection","error"]`.
+- On success, haptics `["selection","success"]`.
+- Offline disables the answers and shows the sentence. A tap sends nothing.
+
+That covers the logic and the haptic order. The steps match Android's `flows/*.png`. I accept item 4 on the condition that the CI snapshots are attached before merge. The required frames are pressed Late, chips, saving, failed with Try again, and offline. I will not re-open it unless a frame contradicts the tests.
+
+## Must fix
+
+1. **The stale-sync tone differs between the apps and inside iOS.**
+   - Home: Android draws `Synced 12 d ago` in the warning orange. iOS draws it in plain grey (`home-01-top`, `ax5-home`).
+   - The iOS drawer draws `Updated 12 d ago` in orange.
+   - Round-3 change 12 asked for the warning tone past 7 days, with Refresh as the action.
+   - Fix: apply the warning tone to the iOS Home and Gear stamps. Android's Home treatment is the reference.
+   - Gear's `synced 12 d ago` is grey on both apps. Either tone it on both or on neither, to match Home.
+   - Files: the iOS Home section-header stamp, and iOS and Android Gear's sync line.
+
+2. **The Covered/Missing line draws empty icon boxes and does not use the ruled names.**
+   - iOS draws `Blessing of Kings` with its icon. `Blessing of Might` and `Blessing of Wisdom` each get an empty dark rounded square (`raid-01-top`).
+   - Android draws the Kings icon and leaves a blank gap before Might and Wisdom, so the baseline is ragged (`raid-01-top`).
+   - A missing-icon flash is a defect under the performance limits. Showing an icon only for the first name is also a defect.
+   - Round-3 change 4 asked for buff short names from the data's `label` (`Fort`, `MotW`, `Kings`) with spell icons beside them. The captures show full names instead.
+   - Fix:
+     - Resolve every spell icon, or omit the icon box when there is none. Never draw an empty frame.
+     - Use `label` for the names.
+     - Keep the order missing before short, at most three names, then `and N more`.
+     - Do not wrap mid-name: Android wraps `Blessing of Wisdom` onto a second line under the gap.
+   - Files: the iOS Raid tab's Covered view and Android `raids/flows/RaidTabParts.kt`.
+
+3. **The notification fixture still contradicts itself, and iOS has no tap-through frame.**
+   - iOS `notif-04-tap-through` shows the title `Onyxia's Lair` with the body `24 of 40 signed. Thu 5 Nov, 8:00 pm CST.` Round 2 flagged this mismatch. The raid is Sat 19 Dec, 7:00 pm.
+   - The same date confusion shows in the `Molten Core` feed row, `Thu 12 Nov`.
+   - The file is named tap-through but it is the lock screen. The landing is not captured.
+   - Fix: set `docs/contracts/fixtures/app/push.raid-posted.json` so the body carries the same raid as the title: `24 of 40 signed. Sat 19 Dec, 7:00 pm CST.`
+   - Recapture the iOS landing on the Raid tab with the sign-up visible.
+
+## Evidence to attach before merge (not blockers by themselves)
+
+- **Drawer Refresh in flight.** `menu-02-refresh-t0` and `drawer-03-refresh-t300` still show `Refresh`. Neither shows `Refreshing…`.
+  - The code is present: `ProfileMenu.swift:211` and `menu_refreshing` in `ProfileMenu.kt:182`.
+  - I accept it from the code. Capture the in-flight frame with the link disabled, then the new stamp, for both apps.
+- **iOS flow snapshots.** Attach them from the CI record run (see item 4 above).
+
+## Polish
+
+- **`drawer-03-refresh-t300` (Android).** A teal rectangle sits behind the `Updated 12 d ago from Battle.net · Refresh` line. It looks like a pressed or focus fill on the whole row, not on the link.
+  - Confine the pressed state to the `Refresh` link, with a 48 dp target.
+  - Files: `ProfileMenu.kt`, and `ProfileMenu.swift` for the matching target.
+- **Hero line at large text.**
+  - On Android fs2, `Level 58 Fury Warrior · 2 levels to the 60 list` wraps with `· 2` stranded at the end of the first line.
+  - On iOS ax5 it takes four lines and the Next upgrades header spreads over five rows. That pushes the first upgrade below the fold at about 2300 px.
+  - Break the line at the dot, with `2 levels to the 60 list` as a second line. At ax5, collapse the band to the name only.
+- **Gear counter on iOS.** The fixture app still reads `0 of 17 slots match the list` with no Equipped cells, while Android reads `3 of 17`. The brief lists this as known and being fixed. The iOS capture predates the alignment.
+- **Gear on Android.** The counts reconcile. `13 upgrades · +63.0 DPS` equals the cell gains, which sum to 63.0, and 3 slots read Equipped. Shoulder carries neither a gain nor Equipped. That is acceptable as long as a no-gain, not-equipped slot is intended to read plain.
+- **Activity filter chips on iOS.** `Guil` is still clipped at the right edge with no trailing fade. Round 2 asked for the fade.
+- **Android Show older.** The control is already ruled. Confirm its 48 dp height.
+
+## Passing
+
+- **Segmented.** Teal fill and hairline dividers match on both apps. The raid notes (`Bring flasks`) sit inside the card on both. There is one answer state per surface, with no chip beside the title.
+- **Raid-day first screen.** The answer, the tally and `Roster ›` all sit inside the first 560 px on both apps.
+- **Activity rows.** The figure shows once, as `1,196 DPS`. Rows use the same bucket format as Home.
+- **Android Gear.** Slot labels are `Finger 1` and `Trinket 2`, and Equipped cells show.
+
+VERDICT: NO SHIP
+
+The blockers are must-fixes 1 to 3. All three are small. Fix them, attach the CI snapshots and the in-flight drawer frames, and this ships.
+

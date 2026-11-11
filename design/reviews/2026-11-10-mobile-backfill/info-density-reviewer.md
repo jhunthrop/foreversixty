@@ -184,3 +184,64 @@ Nothing new collapses at 390. At font scale 2 the only issue I saw is the one al
 
 **DENSE WITH ADDITIONS**
 
+## Round 3 (2026-11-10, base 7911bf87e)
+
+# info-density-reviewer: round 3, Android tab roots and drawer
+
+I judged these on the current build:
+- the `android-r3/` step captures (raid-01, gear-01, home-01, activity-01, drawer-02);
+- the parity goldens and their `.txt` files (home-60, raid-officer, gear, activity, menu, menu-low, activity-empty);
+- `GearComposer.kt`.
+
+I did not open the flow-step PNGs or the iOS captures. I did not re-check the fixture limits the BRIEF lists: the 12 d stamps, the tally without a target, and Late snapping back. Round-2 N3 (Plan founder end date) and A1 (Activity chip counts) are ruled data gaps. They stay under needs data and do not count against the verdict.
+
+## Round-2 findings
+
+| # | Round-2 finding | Status |
+|---|---|---|
+| N1 | Covered line: a wall of "Missing", no icons | FIXED in the golden. It reads `Missing Fort · WF 1 of 2` with the label once. The emulator capture is not clean; see F1. |
+| N2 | Gear counter, Equipped cells, header count and gain cells disagree | FIXED in the golden. Counter 5 of 17, with 5 Equipped cells (Neck, Shoulder, Waist, Trinket 1, Off hand) and 12 gain cells. The header says 12 upgrades, and the 12 gains sum to the header's +47.5 DPS. The "Where to go" totals also reconcile (20.4 = 14.5 + 5.9). The emulator has one leftover; see F2. |
+| N3 | Plan row has no founder end date | KEPT. The ruling accepts that no date exists in the API and the founder price holds while subscribed. The golden's `Premium · Founder price` is the honest figure. Needs data only if a `founder_until` field is ever added. |
+| N4 | Home tally has no "N short" | FIXED. The golden reads `Tanks 2/2 · Healers 5/8 · 3 short · Damage 11/30 · 19 short`. |
+| N5 | Slot labels `Finger 1` and `Trinket 2` | FIXED. The cells and the merged semantics nodes both carry them (`Finger 1, +6.8 DPS`). |
+| N6 | `Head ·` dangling separator | FIXED for TalkBack. Each cell has a merged node (`Lionheart Helm, Head, +14.5 DPS`). The separator still appears as its own text line in the `.txt` golden, but it no longer reads alone. |
+| N7 | Activity empty state could carry the filter icons | STILL OPEN as a NICE. It still reads `Nothing yet. Loot, sims, reports and raids land here.` It names what fills it, which meets the bar. |
+| N8 | Drawer Tools are nine bare words | STILL OPEN as a NICE. The third-of-a-screen dead space from round 1 is gone, because the Account block now carries Notifications, Plan, Devices, Offline data and Settings with values. |
+| N9 | Activity figure shown twice | FIXED. `activity-01-top` shows `1,196 DPS` once on the right. The body reads `+12 over your 1184 (Fury Warrior, 60)`, which is a different figure. |
+| R7 | Attendance | STILL OPEN as a NICE. `me.characters[].guild.attendance` is not drawn anywhere. |
+| A4 | Day-of-week and guild name on raid rows | KEPT. The S3 bucket ruling stands (`Sat`, `Tue`). |
+| D3 | Sync error in the drawer | PARTIAL. The warning-tone stale stamp with `Refresh` shows in `drawer-02-open` (`Updated 12 d ago from Battle.net`). I saw no `sync_error` red state in any golden. |
+
+Round-1 items I accepted in round 2 (Home hero, raid card split, upgrade meta, worn item, drop chance, Best run, officer cover and notes, Where to go figures) are unchanged and still hold in the goldens.
+
+## New findings, ranked
+
+**SHOULD**
+- **F1: Covered line draws icons unevenly.** In `android-r3/raid-01-top`, `Blessing of Kings` has a spell icon. `Blessing of Might` and `Blessing of Wisdom` have none, only a gap where the icon would go, and the second row is indented to match. The fixture buffs also lack a short `label`, so full names show instead of `Kings`, `Might`, `Wisdom`. Either draw an icon for every name or none. Where `composition.buffs[].icon` is missing, collapse the gap. Fix this in the Covered renderer in `raids/flows/RaidTabParts.kt`. A raid leader scans this line by icon, and one icon in three reads as a bug.
+- **F2: One Gear cell says nothing.** In `android-r3/gear-01-top`, Shoulder (`Officer's Pauldrons`) shows `Shoulder` with no gain and no `Equipped`. The counts add up only because it is the 17th cell: 3 Equipped, 13 gains, 1 silent. The header used to say `2 gains not modelled yet` and no longer shows it in either capture. `GearComposer.slotRow` sets `gain` only when `modelled` and `gain > 0`, so a not-modelled or zero-gain slot falls through blank. Give that case a one-word value (`Not modelled`, or `+0.0 DPS` when the gain is genuinely zero). The source is `home.notModelledCount` and `HomeUpgrade.modelled`. A raider who counts cells will find the hole.
+- **F3: Home's tally never splits melee and ranged.** In `android-r3/home-01-top`, Home reads `Damage 15`, and the Raid tab reads `Damage 15 · 7 melee, 8 ranged`. Round-3 change 1 made `Damage N` equal melee plus ranged on both surfaces, and it does. But Home is a shorter form of the same fact, and the golden reads the same either way, so this stays minor. Add the split only if the card has room at 390.
+
+**NICE**
+- **F4: Drawer Notifications row has no value in the emulator** (`drawer-02-open`). Plan says `Free` and Devices has a value, but Notifications shows a bare label. The golden shows `Raids, gear and sims, logs on`. Confirm that the empty emulator row is the fixture's missing prefs and not a collapsed state.
+- **F5: Activity rows lack a per-kind figure beyond sim DPS.** On Loot awarded (`Deathbringer`), the `+12.6 DPS` that Home's feed row carries is missing. The `figure` field is on the segment where the server sets it. Check whether the server sets it for `loot.awarded`.
+- **F6: Gear still has no gear-talent status row.** This is KEPT under the one-job ruling, so it is not a finding. It is listed only to say I did not reopen it.
+
+## Phones and font scale
+Nothing new collapses at 390. The Gear grid stays two columns with 3-line names (`Precisely Calibrated Boomstick` takes four lines in the emulator and is still readable). F1's Covered line gets more cramped at `fs2-raid` if icons are added to every name, so check it at font scale 2 after the F1 fix.
+
+## Needs data
+- Per-group unread counts for the Activity chips (a field on `/v1/feed`, or a client tally).
+- A founder end date, if the Plan row is ever to show one. Not in the API today.
+- A cached `total_gain` per character, so the Switch rows can show a gain.
+- A last-pulls or progress figure for the Raid tab.
+- The reputation standing number for `needs revered` rows.
+
+## Verdict
+
+**DENSE WITH ADDITIONS**
+
+Worth making soon, ranked:
+1. F1: uniform icons on the Covered line.
+2. F2: a value on the silent Gear cell, and restore the not-modelled count.
+3. F5 and F4: the Loot row figure and the Notifications value in the emulator build.
+
