@@ -51,22 +51,18 @@ class RaidTabParityTest {
 
     @Test fun live() = state("raid-live", RaidTabFixtures.live())
 
-    @Test fun noGuild() = state("raid-none", RaidTabFixtures.noGuild, activity = 2)
-
-    @Test fun leveler() = state("raid-leveler", RaidTabView.Leveler(26), activity = 1)
-
     @Test fun signedOut() = state("raid-out", RaidTabView.SignedOut, activity = 0)
 
     private fun state(screen: String, view: RaidTabView, raid: Int = 0, activity: Int = 3, fontScale: Float = 1f) =
         ParityCheck.state(compose, screen, fontScale = fontScale) {
-            Tab(TabBadges(raid = raid, activity = activity)) {
-                RaidTabScreen(view, RaidTabActions(), topBar = { CharacterBar(barFor(view), "Raid") })
+            Tab(TabBadges(guild = raid, activity = activity)) {
+                RaidTabScreen(view, RaidTabActions(), topBar = { CharacterBar(barFor(view), "Guild") })
             }
         }
 
     @Composable
     private fun Tab(badges: TabBadges, content: @Composable () -> Unit) {
-        ForeverTabScaffold(selected = ForeverTab.Raid, onSelect = {}, badges = badges) {
+        ForeverTabScaffold(selected = ForeverTab.Guild, onSelect = {}, badges = badges) {
             // The game icons from the repo's build data, as Home's parity test paints them.
             CompositionLocalProvider(
                 LocalOpenMenu provides {},
@@ -77,17 +73,16 @@ class RaidTabParityTest {
         }
     }
 
-    /** The bar's character: none signed out, Felsnap while leveling, else Thandrel (the mocks' portraits). */
+    /** The bar's character: none signed out, else Thandrel (the mocks' portraits). */
     private fun barFor(view: RaidTabView): AccountCharacter? = when (view) {
         RaidTabView.SignedOut -> null
-        is RaidTabView.Leveler -> MenuFixtures.all.first { it.name == "Felsnap" }
         else -> MenuFixtures.thandrel
     }
 }
 
 /** The mock's guild, Olympus XXVII, and its raid. */
 object RaidTabFixtures {
-    private val pages = listOf(
+    val pages = listOf(
         GuildPageRow(GuildPage.Roster, "Roster", "38 members, 31 at 60"),
         GuildPageRow(GuildPage.Calendar, "Calendar", "Onyxia Wed, Barrow Deeps Sat"),
         GuildPageRow(GuildPage.Loot, "Loot history", "Last raid: 4 pieces"),
@@ -132,7 +127,7 @@ object RaidTabFixtures {
         ReadyItem(ReadyTone.Warn, "Boots not enchanted", "", null),
     )
 
-    private fun head(answer: SignupState, lateMinutes: Int? = null, control: AnswerControl = AnswerControl()) =
+    fun head(answer: SignupState, lateMinutes: Int? = null, control: AnswerControl = AnswerControl()) =
         HomeFixtures.raid(answer, lateOpen = answer == SignupState.Late).copy(
             headLine = "8:00 pm CST · pull in 2 h 48 min",
             facts = "Invites 7:45 pm · 40-man",
@@ -168,14 +163,6 @@ object RaidTabFixtures {
             role("Tanks", 2, 2, "Grunvald, Brakka"),
             role("Healers", 5, 8, "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late\u00a0·\u00a015\u00a0min)"),
             role("Damage", 11, 30, "Thandrel, Kaelra, Thalrin", " and 8 more", "5 melee, 6 ranged"),
-        ),
-    )
-
-    val noGuild = RaidTabView.NoGuild(
-        "Fury Warrior",
-        listOf(
-            RecruitingGuild(2, "Olympus XXVII", "Alliance · Wed and Sat, 8:00 pm CST · needs damage"),
-            RecruitingGuild(3, "Dawnbreak", "Alliance · Tue and Thu, 9:00 pm EST · needs damage"),
         ),
     )
 }

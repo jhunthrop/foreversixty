@@ -1,0 +1,223 @@
+package gg.foreversixty.app.raids.flows
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import gg.foreversixty.app.R
+import gg.foreversixty.app.common.FactionMark
+import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.PanelFrame
+import gg.foreversixty.app.designsystem.ParityItemKind
+import gg.foreversixty.app.designsystem.ParityRegion
+import gg.foreversixty.app.designsystem.ScaledType
+import gg.foreversixty.app.designsystem.classColor
+import gg.foreversixty.app.designsystem.parityItem
+import gg.foreversixty.app.flows.FlowBlock
+import gg.foreversixty.app.flows.FlowLead
+import gg.foreversixty.app.flows.FlowNote
+import gg.foreversixty.app.flows.FlowPanel
+import gg.foreversixty.app.flows.FlowRow
+import gg.foreversixty.app.flows.FlowSection
+import gg.foreversixty.app.model.RaidAssignedName
+import gg.foreversixty.app.raids.logic.AssignmentEncounterLine
+import gg.foreversixty.app.raids.logic.RaidJobLine
+
+/** What the Guild tab's own sections do (spec 2026-11-10-guild-tab.md section 2). */
+data class GuildTabActions(
+    val onRoster: () -> Unit = {},
+    val onLoot: () -> Unit = {},
+    val onProgression: () -> Unit = {},
+    val onReport: (String) -> Unit = {},
+    val onPlanner: () -> Unit = {},
+    val onOfficer: (OfficerKind) -> Unit = {},
+)
+
+/** The guild head: the crest (the faction mark, a guild with none), the name and its line; below 60 the level spread. */
+@Composable
+fun GuildHeadBlock(head: GuildTabHead, spread: GuildSpread?) {
+    FlowBlock(ParityRegion.section(stringResource(R.string.tab_guild)), top = 0.dp) {
+        FlowPanel {
+            Row(Modifier.padding(vertical = FsSpace.space2), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.parityItem(ParityItemKind.Image)) { FactionMark(head.faction.orEmpty(), CREST) }
+                Spacer(Modifier.width(FsSpace.space3))
+                Column {
+                    Text(head.name, style = ScaledType.sectionTitle.copy(fontSize = 22.sp), color = FsColor.cream)
+                    Text(head.line, style = FsType.small, color = FsColor.muted)
+                }
+            }
+            if (spread != null) SpreadFigures(spread)
+        }
+    }
+}
+
+@Composable
+private fun SpreadFigures(spread: GuildSpread) {
+    HorizontalDivider(color = FsColor.line)
+    Row(Modifier.fillMaxWidth().padding(vertical = FsSpace.space2)) {
+        Figure(spread.atCap.toString(), stringResource(R.string.guild_tab_atCap, GuildTabPresenter.MAX_LEVEL), FsColor.strong, Modifier.weight(1f))
+        Figure(
+            spread.close.toString(),
+            stringResource(R.string.guild_tab_closeRange, GuildTabPresenter.CLOSE_FROM, GuildTabPresenter.MAX_LEVEL - 1),
+            FsColor.strong,
+            Modifier.weight(1f),
+        )
+        Figure(spread.you.toString(), stringResource(R.string.guild_tab_you), FsColor.gold, Modifier.weight(1f))
+    }
+}
+
+@Composable
+private fun Figure(value: String, label: String, color: Color, modifier: Modifier) {
+    Column(modifier) {
+        Text(value, style = FsType.figureSm.copy(fontSize = 20.sp, lineHeight = 24.sp), color = color)
+        Text(label, style = FsType.small, color = FsColor.muted)
+    }
+}
+
+/** Roster: Recently on and, below 60, Close to 60; `Roster ›` to the roster page. */
+@Composable
+fun GuildRosterSection(sections: GuildTabSections, onRoster: () -> Unit) {
+    if (sections.recent.isEmpty() && sections.close.isEmpty()) return
+    FlowSection(
+        stringResource(R.string.guild_tab_roster),
+        action = stringResource(R.string.raid_tab_rosterLink),
+        onAction = onRoster,
+        meta = sections.rosterMeta,
+        top = 0.dp,
+        panel = PanelFrame.None,
+    ) {
+        if (sections.recent.isNotEmpty()) {
+            GroupLabel(stringResource(R.string.guild_tab_recentlyOn))
+            MemberRows(sections.recent, last = sections.close.isEmpty())
+        }
+        if (sections.close.isNotEmpty()) {
+            GroupLabel(stringResource(R.string.guild_tab_closeTo, GuildTabPresenter.MAX_LEVEL))
+            MemberRows(sections.close, last = true)
+        }
+    }
+}
+
+@Composable
+private fun GroupLabel(text: String) {
+    Text(text, style = FsType.small.copy(fontWeight = FontWeight.SemiBold), color = FsColor.muted, modifier = Modifier.padding(top = FsSpace.space2))
+}
+
+@Composable
+private fun MemberRows(lines: List<GuildMemberLine>, last: Boolean) {
+    lines.forEachIndexed { index, line ->
+        FlowRow(
+            title = line.name,
+            sub = line.line,
+            lead = line.className?.let { FlowLead.Crest(it) },
+            titleColor = classColor(line.className),
+            value = line.trail,
+            last = last && index == lines.lastIndex,
+        )
+    }
+}
+
+/** Recent logs: the guild's last reports, each opening the report. */
+@Composable
+fun GuildLogsSection(logs: List<GuildLogLine>, actions: GuildTabActions) {
+    if (logs.isEmpty()) return
+    FlowSection(stringResource(R.string.guild_tab_logs), top = 0.dp, panel = PanelFrame.None) {
+        logs.forEachIndexed { index, log ->
+            FlowRow(title = log.title, sub = log.line, value = log.day, last = index == logs.lastIndex, onClick = { actions.onReport(log.id) })
+        }
+    }
+}
+
+/** Progression: the tier's line, opening the guild page's Progression on the site. */
+@Composable
+fun GuildProgressSection(progression: GuildProgressLine?, onProgression: () -> Unit) {
+    progression ?: return
+    FlowSection(stringResource(R.string.guild_tab_progression), top = 0.dp, panel = PanelFrame.None) {
+        FlowRow(title = progression.title, sub = progression.line, last = true, onClick = onProgression)
+    }
+}
+
+/** Loot at 60: the last raid's pieces, `Loot history ›` to the guild's loot. */
+@Composable
+fun GuildLootSection(loot: String?, onLoot: () -> Unit) {
+    loot ?: return
+    FlowSection(
+        stringResource(R.string.guild_tab_loot), action = stringResource(R.string.guild_tab_lootLink), onAction = onLoot,
+        top = 0.dp, panel = PanelFrame.None,
+    ) {
+        FlowRow(title = loot, last = true)
+    }
+}
+
+/** Officer (spec 2.3): Plan a raid, Applications with their count, Setup with its progress; one tap each. */
+@Composable
+fun OfficerSection(rows: List<OfficerShortcut>, onOfficer: (OfficerKind) -> Unit) {
+    if (rows.isEmpty()) return
+    FlowSection(stringResource(R.string.guild_tab_officer), top = 0.dp, panel = PanelFrame.None) {
+        rows.forEachIndexed { index, row ->
+            Column(Modifier.testTag("guild-officer-${row.kind.name.lowercase()}")) {
+                FlowRow(title = row.title, sub = row.line, value = row.count, last = index == rows.lastIndex, onClick = { onOfficer(row.kind) })
+            }
+        }
+    }
+}
+
+/** Your job (spec 2.3a): every slot the viewer holds, with the partners, the boss and the purpose; left out with none. */
+@Composable
+fun YourJobSection(jobs: List<RaidJobLine>) {
+    if (jobs.isEmpty()) return
+    FlowSection(stringResource(R.string.shared_assign_yours), top = 0.dp, panel = PanelFrame.None) {
+        jobs.forEachIndexed { index, job -> FlowRow(title = job.title, sub = job.line, last = index == jobs.lastIndex) }
+    }
+}
+
+/**
+ * An officer's read-only Assignments (spec 2.3a): each encounter's filled slots, the names (yours in gold), how full;
+ * `Open in planner ›` to the raid's page on the site, where assigning stays.
+ */
+@Composable
+fun AssignmentsSection(encounters: List<AssignmentEncounterLine>, onPlanner: () -> Unit) {
+    FlowSection(
+        stringResource(R.string.shared_assign_title), action = stringResource(R.string.guild_tab_openPlanner), onAction = onPlanner,
+        top = 0.dp, panel = PanelFrame.None,
+    ) {
+        Column(Modifier.testTag("guild-assignments")) {
+            if (encounters.isEmpty()) FlowNote(stringResource(R.string.shared_assign_nothingYet), Modifier.padding(vertical = FsSpace.space2), FsColor.text)
+            encounters.forEach { encounter ->
+                GroupLabel(encounter.title)
+                encounter.slots.forEach { slot ->
+                    FlowRow(title = slot.label, styledSub = names(slot.names), value = slot.filled)
+                }
+            }
+            FlowNote(stringResource(R.string.guild_tab_assignOnSite), Modifier.padding(vertical = FsSpace.space2))
+        }
+    }
+}
+
+/** A slot's names in class colour, the viewer's own in gold (the web planner's Tag tones). */
+private fun names(names: List<RaidAssignedName>) = buildAnnotatedString {
+    names.forEachIndexed { index, name ->
+        if (index > 0) withStyle(SpanStyle(color = FsColor.muted)) { append(", ") }
+        withStyle(SpanStyle(color = if (name.own) FsColor.gold else classColor(name.className))) { append(name.name) }
+    }
+}
+
+private val CREST = 48.dp

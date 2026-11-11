@@ -153,7 +153,7 @@ private fun ShellBody(
     val onSearch = search?.let { feature -> { feature.navigator.openSearch() } }
     val openItemPage = search?.let { feature -> { look: ItemLook -> feature.navigator.openItem(look, selected.label) } }
     val searchOpen = search?.navigator?.stack?.isNotEmpty() == true
-    val badges = TabBadges(raid = features.raids?.badge?.count ?: 0, activity = features.activity?.unread ?: 0)
+    val badges = TabBadges(guild = features.raids?.badge?.count ?: 0, activity = features.activity?.unread ?: 0)
     val plannerTop = features.planner?.navigator?.top
     val shell = rememberSaveableStateHolder()
     CompositionLocalProvider(LocalItemPageOpener provides openItemPage) {
@@ -186,7 +186,7 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
         activity = features.activity,
         exits = HomeExits(
             openActivity = { select(ForeverTab.Activity) },
-            openRaidTab = { select(ForeverTab.Raid) },
+            openRaidTab = { select(ForeverTab.Guild) },
             openLanding = { landing -> openLanding(features, landing, select) },
             openWeb = { path -> uri.openUri(if (path.startsWith("http")) path else SITE + path) },
         ),
@@ -199,8 +199,8 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
                 HomeRoute(features.home, session, openGear, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }, flows = flows) { Unavailable(tab) }
             }
         }
-        ForeverTab.Raid -> features.raids?.let { raids ->
-            val title = stringResource(R.string.tab_raid)
+        ForeverTab.Guild -> features.raids?.let { raids ->
+            val title = stringResource(R.string.tab_guild)
             RaidTab(raids, account, features.home.reports) { RootSearchBar(onSearch) { ProfileBar(session, title) } }
         } ?: Unavailable(tab)
         ForeverTab.Gear -> features.bis?.let { GearTab(it, features.home, account, onSearch) } ?: Unavailable(tab)
@@ -243,7 +243,7 @@ private fun FollowRequests(features: ShellFeatures, select: (ForeverTab) -> Unit
     val wantsRaids = raids?.navigator?.wantsTab == true
     LaunchedEffect(wantsRaids) {
         if (wantsRaids) {
-            select(ForeverTab.Raid)
+            select(ForeverTab.Guild)
             raids.navigator.wantsTab = false
         }
     }

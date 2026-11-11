@@ -47,7 +47,7 @@ class RaidSignupFlowTest {
     private val shots = FlowCapture(compose, FLOW)
 
     private fun show() {
-        compose.setContent { FlowFrame(ForeverTab.Raid) { RaidFlowScreen(flow) } }
+        compose.setContent { FlowFrame(ForeverTab.Guild) { RaidFlowScreen(flow) } }
         compose.waitUntil(SETTLE_MILLIS) { flow.next != null }
         compose.waitForIdle()
     }

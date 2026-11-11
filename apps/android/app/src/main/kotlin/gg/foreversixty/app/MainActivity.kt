@@ -187,7 +187,7 @@ class MainActivity : ComponentActivity() {
             }
             DeepLink.TiersPage -> graph.system.navigator.wantsMenu = MenuDestination.Tiers
             // The site names the guild, not its id: the Raid tab answers for the player's own guild.
-            is DeepLink.GuildRaidPage -> graph.system.navigator.wantsTab = ForeverTab.Raid
+            is DeepLink.GuildRaidPage -> graph.system.navigator.wantsTab = ForeverTab.Guild
             // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.
             else -> if (graph.raids.enabled) graph.raids.navigator.open(parsed)
         }

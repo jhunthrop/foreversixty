@@ -180,7 +180,9 @@ struct GuildTabPresenter {
         guard let title, named > 0 else { return nil }
         let pulls = summary.tier?.pullsTotal ?? summary.pullsThisTier
         let down = summary.tier?.down ?? summary.namedEncountersDown
-        if pulls == 0, let firstRaids, firstRaids > now {
+        // Before the first pull: when the first raids open; with no pull and no date, nothing yet.
+        if pulls == 0 {
+            guard let firstRaids, firstRaids > now else { return nil }
             return GuildProgressLine(title: title, line: Copy.guildTabFirstRaids(date: clock.shortDate(firstRaids)))
         }
         let line = [Copy.guildTabDown(down: down, named: named), Copy.guildTabPulls(n: pulls)].joined(separator: " · ")

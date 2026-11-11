@@ -97,7 +97,7 @@ object Activity {
         )
         PushLanding.of(message)?.let { return ActivityLanding.Link(it) }
         return when (message.group) {
-            PushGroup.Raids, PushGroup.Officer, PushGroup.Ladder -> ActivityLanding.Tab(ForeverTab.Raid)
+            PushGroup.Raids, PushGroup.Officer, PushGroup.Ladder -> ActivityLanding.Tab(ForeverTab.Guild)
             PushGroup.Gear -> ActivityLanding.Tab(ForeverTab.Gear)
             // tier.moved: Tiers, the spec marked (spec F4).
             PushGroup.Tiers -> ActivityLanding.Menu(MenuDestination.Tiers)

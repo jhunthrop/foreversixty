@@ -40,7 +40,7 @@ class SystemNavigator {
 
     companion object {
         fun tabOf(shortcut: AppShortcut): ForeverTab? = when (shortcut) {
-            AppShortcut.NextRaid, AppShortcut.SignupIn -> ForeverTab.Raid
+            AppShortcut.NextRaid, AppShortcut.SignupIn -> ForeverTab.Guild
             AppShortcut.Upgrades -> ForeverTab.Home
             AppShortcut.Bis -> ForeverTab.Gear
             AppShortcut.Guides, AppShortcut.Search -> null

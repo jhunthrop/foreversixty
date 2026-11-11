@@ -67,7 +67,7 @@ class HomeParityTest {
 
     private fun state(screen: String, view: HomeView, raid: Int = 0, activity: Int = 3, fontScale: Float = 1f) =
         ParityCheck.state(compose, screen, fontScale = fontScale) {
-            Tab(TabBadges(raid = raid, activity = activity)) {
+            Tab(TabBadges(guild = raid, activity = activity)) {
                 HomeFlowScreen(view, HomeActions()) {
                     CompositionLocalProvider(LocalOpenMenu provides {}, LocalPortraitPainter provides MenuFixtures.repoPortraits) { CharacterBar(barFor(view)) }
                 }

@@ -79,7 +79,7 @@ class DesignSystemSheetScreenshotTest {
         compose.setContent {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
-                    ForeverTabScaffold(selected = ForeverTab.Gear, onSelect = {}, badges = TabBadges(raid = 1, activity = 3)) {
+                    ForeverTabScaffold(selected = ForeverTab.Gear, onSelect = {}, badges = TabBadges(guild = 1, activity = 3)) {
                         Sheet(portrait)
                     }
                 }

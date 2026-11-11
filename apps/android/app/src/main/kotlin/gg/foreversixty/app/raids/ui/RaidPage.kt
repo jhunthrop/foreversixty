@@ -1,5 +1,9 @@
 package gg.foreversixty.app.raids.ui
 
+import gg.foreversixty.app.raids.flows.AssignmentsSection
+import gg.foreversixty.app.raids.flows.YourJobSection
+import gg.foreversixty.app.raids.logic.RaidAssignmentWords
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.graphics.Color
 import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.designsystem.FsTopBar
@@ -124,7 +128,7 @@ fun RaidPageScreen(
 @Composable
 private fun PageMessage(back: () -> Unit, content: @Composable () -> Unit) {
     Column(Modifier.fillMaxSize().screenGround()) {
-        FsTopBar(null, stringResource(R.string.tab_raids), back)
+        FsTopBar(null, stringResource(R.string.tab_guild), back)
         Box(Modifier.padding(16.dp)) { content() }
     }
 }
@@ -132,7 +136,7 @@ private fun PageMessage(back: () -> Unit, content: @Composable () -> Unit) {
 @Composable
 private fun BackButton(back: () -> Unit) {
     IconButton(onClick = back) {
-        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.tab_raids), tint = FsColor.strong)
+        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.tab_guild), tint = FsColor.strong)
     }
 }
 
@@ -166,7 +170,7 @@ fun RaidPageContent(
     val addToCalendar = { context.startActivity(calendarIntent(raid, facts, location, share)) }
     Box(Modifier.fillMaxSize().screenGround()) {
         Column(Modifier.fillMaxSize()) {
-            FsTopBar(raid.title, stringResource(R.string.tab_raids), back, bottomLine = false) {
+            FsTopBar(raid.title, stringResource(R.string.tab_guild), back, bottomLine = false) {
                     IconButton(onClick = addToCalendar) {
                         Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.raid_menu_calendar), tint = FsColor.strong)
                     }
@@ -191,6 +195,14 @@ fun RaidPageContent(
                     CountBlock(facts, muted = facts.chip == RaidChip.Cancelled, ink = FsColor.mutedGround)
                     if (facts.showsOfficerTools && facts.isSignable) OfficerRow(controller, clock)
                     SignupCard(controller, facts, clock, currentKey, requestPermission)
+                    // Raid assignments (spec 2026-11-10-guild-tab.md 2.3a): your job, and for an officer the whole
+                    // list, read only, with the site's planner one tap away.
+                    val res = LocalResources.current
+                    val assign = remember(res) { RaidAssignmentWords(res) }
+                    YourJobSection(assign.jobs(raid))
+                    if (facts.showsOfficerTools && raid.assignments != null) {
+                        AssignmentsSection(assign.encounters(raid)) { uri.openUri(web) }
+                    }
                     if (raid.viewer.raidNight == true) NightRow { openNight(raid.id) }
                     raid.match?.reportId?.takeIf { facts.chip == RaidChip.Done }?.let { report ->
                         GoldLink(stringResource(R.string.raid_report), { uri.openUri(RaidLinks.report(report)) })

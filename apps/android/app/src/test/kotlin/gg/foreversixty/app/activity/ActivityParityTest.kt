@@ -67,7 +67,7 @@ class ActivityParityTest {
 
     @Test fun rowsLandOnTheirAnswer() {
         val (ladder, loot) = ActivityFixtures.rows
-        assertEquals(ActivityLanding.Tab(ForeverTab.Raid), Activity.landing(ladder))
+        assertEquals(ActivityLanding.Tab(ForeverTab.Guild), Activity.landing(ladder))
         assertEquals(ActivityLanding.Tab(ForeverTab.Gear), Activity.landing(loot))
         val tiers = ActivityFixtures.rows.first { it.kind == "tier.moved" }
         assertEquals(ActivityLanding.Menu(gg.foreversixty.app.menu.MenuDestination.Tiers), Activity.landing(tiers))

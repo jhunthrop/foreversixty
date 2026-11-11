@@ -1,6 +1,10 @@
 package gg.foreversixty.app.raids.flows
 
+import gg.foreversixty.app.raids.logic.AssignmentEncounterLine
+import gg.foreversixty.app.raids.logic.RaidJobLine
 import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.platform.testTag
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -40,7 +44,7 @@ data class GuildPageRow(val page: GuildPage, val title: String, val sub: String?
 enum class GuildPage { Roster, Calendar, Loot, Sims }
 
 /** A guild that recruits the player's spec, with Apply. */
-data class RecruitingGuild(val id: Long, val name: String, val line: String)
+data class RecruitingGuild(val id: Long, val name: String, val line: String, val applied: String? = null)
 
 /**
  * One item of Before you pull: ticked, missing or a warning, and where to get it; [icon] the item the
@@ -74,11 +78,8 @@ data class RoleName(val text: String, val className: String)
 sealed interface RaidTabView {
     data object SignedOut : RaidTabView
 
-    /** Under 60: when raids start, and Find a guild. */
-    data class Leveler(val levelsLeft: Int) : RaidTabView
-
-    /** No guild: the guilds recruiting the spec, then Claim your guild. */
-    data class NoGuild(val spec: String?, val guilds: List<RecruitingGuild>) : RaidTabView
+    /** No guild: the guilds recruiting the spec (Applied once you did), then Find your guild; under 60 one quiet line. */
+    data class NoGuild(val spec: String?, val guilds: List<RecruitingGuild>, val raidsOpen: String? = null) : RaidTabView
 
     data class Guild(
         val guild: String,
@@ -100,6 +101,16 @@ sealed interface RaidTabView {
         val ready: List<ReadyItem>,
         val readyStamp: String?,
         val pages: List<GuildPageRow>,
+        /** The Guild tab's own sections (spec 2026-11-10-guild-tab.md); null until the guild home loads. */
+        val tab: GuildTabSections? = null,
+        /** Under 60: `Raids open at 60 · you're 36` under the raid head. */
+        val raidsOpen: String? = null,
+        /** Your job in the raid (spec 2.3a); empty when you hold no slot. */
+        val jobs: List<RaidJobLine> = emptyList(),
+        /** An officer's read-only assignments; null for everyone else. */
+        val assignments: List<AssignmentEncounterLine>? = null,
+        /** The pages section's title once the guild head shows the name (`Pages`); null keeps the guild's name. */
+        val pagesTitle: String? = null,
     ) : RaidTabView
 }
 
@@ -117,6 +128,8 @@ data class RaidTabActions(
     val onRosterOf: (Set<String>) -> Unit = {},
     /** The Covered line's `and N more` (round 5 row 4): the raid page at its cover list. */
     val onCover: (Long) -> Unit = {},
+    /** The Guild tab's own sections (spec 2026-11-10-guild-tab.md). */
+    val guild: GuildTabActions = GuildTabActions(),
 )
 
 /**
@@ -137,10 +150,6 @@ fun RaidTabScreen(
             RaidTabView.SignedOut -> Lone(stringResource(R.string.raid_tab_withGuild), emptyList()) {
                 RaidWideButton(stringResource(R.string.signin_button), primary = true, onClick = actions.onSignIn)
             }
-            is RaidTabView.Leveler -> Lone(
-                stringResource(R.string.raid_tab_leveler),
-                listOf(stringResource(R.string.raid_tab_levelsToGo, view.levelsLeft), stringResource(R.string.raid_tab_levelerLine)),
-            ) { RaidWideButton(stringResource(R.string.home_findGuild), primary = false, onClick = actions.onFindGuild) }
             is RaidTabView.NoGuild -> NoGuild(view, actions)
             is RaidTabView.Guild -> Guild(view, actions)
         }
@@ -160,32 +169,52 @@ private fun Lone(title: String, lines: List<String>, button: @Composable () -> U
 
 @Composable
 private fun NoGuild(view: RaidTabView.NoGuild, actions: RaidTabActions) {
+    view.raidsOpen?.let { RaidsOpenLine(it) }
     if (view.guilds.isNotEmpty() && view.spec != null) {
         FlowSection(stringResource(R.string.raid_tab_recruiting, view.spec), top = 0.dp, panel = PanelFrame.Plain) {
             view.guilds.forEachIndexed { index, guild ->
                 FlowRow(guild.name, guild.line, last = index == view.guilds.lastIndex, trail = {
-                    FlowButton(stringResource(R.string.raid_tab_apply), { actions.onApply(guild) }, RAID_TARGET)
+                    val applied = guild.applied
+                    if (applied != null) {
+                        FlowNote(applied)
+                    } else {
+                        FlowButton(stringResource(R.string.raid_tab_apply), { actions.onApply(guild) }, RAID_TARGET)
+                    }
                 })
             }
         }
     }
-    Lone(stringResource(R.string.raid_tab_notHere), listOf(stringResource(R.string.raid_tab_claimLine))) {
-        RaidWideButton(stringResource(R.string.raid_tab_claim), primary = false, onClick = actions.onClaim)
+    // Find your guild (spec 2.4): the site's guild finder, then Claim.
+    FlowSection(stringResource(R.string.guild_tab_find), top = 0.dp, panel = PanelFrame.None) {
+        FlowRow(stringResource(R.string.guild_tab_search), stringResource(R.string.guild_tab_searchLine), onClick = actions.onFindGuild)
+        FlowRow(stringResource(R.string.raid_tab_claim), stringResource(R.string.raid_tab_claimLine), last = true, onClick = actions.onClaim)
     }
+}
+
+/** Under 60: one quiet line on the ground, never a block. */
+@Composable
+private fun RaidsOpenLine(text: String) {
+    FlowNote(text, Modifier.fillMaxWidth().testTag("guild-raids-open"))
 }
 
 @Composable
 private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
     val live = view.live
     val next = view.next
+    val tab = view.tab
+    // Under 60 the guild leads (spec 2.1); at 60 the raid does (2.2).
+    if (tab?.spread != null) GuildHeadBlock(tab.head, tab.spread)
     when {
         live != null -> RaidNightBlock(live, view.roles)
         next != null -> {
             FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) {
                 RaidHead(next, actions.card, view.notes)
             }
+            view.raidsOpen?.let { RaidsOpenLine(it) }
+            YourJobSection(view.jobs)
             // G3: an officer's open items come straight after the head.
             if (view.needsFirst) NeedsSection(view, actions)
+            OfficerParts(view, actions)
             if (view.roles.isNotEmpty() || view.foot.isNotEmpty()) {
                 FlowSection(
                     stringResource(R.string.raid_tab_coming),
@@ -196,8 +225,11 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
                 ) { RoleRows(view.roles, view.foot, actions.onRosterOf) { actions.onCover(next.raidId) } }
             }
         }
-        else -> FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) {
-            FlowPanel { FlowNote(stringResource(R.string.raid_tab_noRaid), Modifier.padding(vertical = FsSpace.space2), color = FsColor.text) }
+        else -> {
+            FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) {
+                FlowPanel { FlowNote(stringResource(R.string.raid_tab_noRaid), Modifier.padding(vertical = FsSpace.space2), color = FsColor.text) }
+            }
+            view.raidsOpen?.let { RaidsOpenLine(it) }
         }
     }
     if (view.ready.isNotEmpty()) {
@@ -208,13 +240,28 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
         }
     }
     if (!view.needsFirst || next == null) NeedsSection(view, actions)
+    if (next == null) OfficerParts(view, actions)
+    if (tab != null) {
+        if (tab.spread == null) GuildHeadBlock(tab.head, null)
+        GuildRosterSection(tab, actions.guild.onRoster)
+        GuildLootSection(tab.loot, actions.guild.onLoot)
+        GuildLogsSection(tab.logs, actions.guild)
+        GuildProgressSection(tab.progression, actions.guild.onProgression)
+    }
     if (view.pages.isNotEmpty()) {
-        FlowSection(view.guild, top = 0.dp, panel = PanelFrame.None) {
+        FlowSection(view.pagesTitle ?: view.guild, top = 0.dp, panel = PanelFrame.None) {
             view.pages.forEachIndexed { index, page ->
                 FlowRow(page.title, page.sub, last = index == view.pages.lastIndex, onClick = { actions.onPage(page.page) })
             }
         }
     }
+}
+
+/** An officer's shortcuts and the raid's assignments, read only (spec 2.3, 2.3a). */
+@Composable
+private fun OfficerParts(view: RaidTabView.Guild, actions: RaidTabActions) {
+    view.tab?.let { OfficerSection(it.officer, actions.guild.onOfficer) }
+    view.assignments?.let { AssignmentsSection(it, actions.guild.onPlanner) }
 }
 
 /** Needs you: an officer's open items with their count. */

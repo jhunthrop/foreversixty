@@ -33,7 +33,7 @@ fun ApplicantRoute(model: ApplicantModel, clock: RaidClock, guildName: String, n
     val scope = rememberCoroutineScope()
     LaunchedEffect(model) { model.load() }
     Column(Modifier.fillMaxSize().screenGround()) {
-        FlowBackBar(stringResource(R.string.tab_raids), back)
+        FlowBackBar(stringResource(R.string.tab_guild), back)
         when (val phase = model.phase) {
             ApplicantModel.Phase.Loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = FsColor.gold)

@@ -1,5 +1,10 @@
 package gg.foreversixty.app.raids
 
+import gg.foreversixty.app.raids.flows.OfficerKind
+import gg.foreversixty.app.raids.flows.GuildTabActions
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.async
 import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.common.rememberHaptics
 import android.Manifest
@@ -194,15 +199,30 @@ class RaidsFeature(
      */
     suspend fun refreshExtras(state: RaidsTabState, readyRaid: Long?) {
         tabExtras = when (state) {
-            is RaidsTabState.NoGuild -> RaidTabExtras(recruiting = recruiting(state.character))
+            is RaidsTabState.NoGuild -> {
+                val recruiting = recruiting(state.character)
+                RaidTabExtras(recruiting = recruiting, applied = applied(recruiting))
+            }
             is RaidsTabState.Loaded -> {
                 val guild = state.content.head.id
-                val applicant = if ((badge?.applicants ?: 0) > 0 && badge?.officer == true) newestApplicant(guild) else null
+                val officer = badge?.officer == true
+                val applicant = if ((badge?.applicants ?: 0) > 0 && officer) newestApplicant(guild) else null
                 val ready = readyRaid?.let { (flows.ready(state.content.character.key, it) as? ApiResult.Success)?.data }
-                RaidTabExtras(applicant = applicant, ready = ready)
+                val setup = if (officer) (flows.setup(guild) as? ApiResult.Success)?.data else null
+                RaidTabExtras(applicant = applicant, ready = ready, setup = setup)
             }
             else -> RaidTabExtras()
         }
+    }
+
+    /** When the player applied to each recruiting guild still deciding (spec 2026-11-10-guild-tab.md 2.4). */
+    private suspend fun applied(guilds: List<gg.foreversixty.app.model.RecruitingGuild>): Map<Long, Instant> = coroutineScope {
+        guilds.map { guild ->
+            async {
+                val rows = (flows.myApplications(guild.guildId) as? ApiResult.Success)?.data?.rows.orEmpty()
+                guild.guildId to rows.filter { it.status == ApplicantModel.PENDING }.maxOfOrNull { Instant.parse(it.createdAt) }
+            }
+        }.awaitAll().mapNotNull { (id, at) -> at?.let { id to it } }.toMap()
     }
 
     private suspend fun newestApplicant(guild: Long) = (flows.applications(guild) as? ApiResult.Success)?.data?.rows
@@ -409,11 +429,39 @@ private fun raidTabActions(
         onRosterOf = { keys -> guild?.let { feature.navigator.push(RaidsDestination.Roster(it.id, keys)) } },
         onCover = { raid -> guild?.let { feature.navigator.push(RaidsDestination.Raid(it.id, raid, toCover = true)) } },
         onApply = { openWeb("${RaidLinks.SITE}/app/guild/${it.id}") },
-        onClaim = { openWeb(GUILDS) },
+        onClaim = { openWeb(CLAIM) },
         onFindGuild = { openWeb(GUILDS) },
+        guild = guildTabActions(feature, content, openWeb),
         onSignIn = signIn,
         onApplicant = { id -> guild?.let { feature.navigator.push(RaidsDestination.Applicant(it.id, id)) } },
         onWhere = { item -> item.link?.let(openWeb) },
+    )
+}
+
+/**
+ * The Guild tab's own sections' taps (spec 2026-11-10-guild-tab.md): roster and loot in the app, the rest on the guild's
+ * page on the site (its Progression and Raids tabs, the raid's planner, applications and setup).
+ */
+private fun guildTabActions(feature: RaidsFeature, content: RaidsTabContent?, openWeb: (String) -> Unit): GuildTabActions {
+    val guild = content?.head
+    val web = guild?.webUrl
+    val current = content?.planned?.let { planned -> planned.firstOrNull { HomeFlowState.isLive(it, feature.now()) } ?: PlannedRaids(planned, feature.now()).next }
+    return GuildTabActions(
+        onRoster = { guild?.let { feature.navigator.push(RaidsDestination.Roster(it.id)) } },
+        onLoot = { guild?.let { feature.navigator.push(RaidsDestination.History(it.id)) } },
+        onProgression = { web?.let { openWeb("$it#progression") } },
+        onReport = { id -> openWeb("${RaidLinks.SITE}/reports/$id") },
+        onPlanner = { if (web != null && current != null) openWeb("$web/raids/${current.id}") },
+        onOfficer = { kind ->
+            when (kind) {
+                OfficerKind.Plan -> web?.let { openWeb("$it#raids") }
+                OfficerKind.Applications -> {
+                    val applicant = feature.tabExtras.applicant
+                    if (guild != null && applicant != null) feature.navigator.push(RaidsDestination.Applicant(guild.id, applicant.id)) else web?.let { openWeb("$it/applications") }
+                }
+                OfficerKind.Setup -> web?.let { openWeb("$it/setup") }
+            }
+        },
     )
 }
 
@@ -421,8 +469,11 @@ private fun raidTabActions(
 fun raidDestination(guild: Long, raid: Long, unanswered: Boolean): RaidsDestination =
     if (unanswered) RaidsDestination.NotAnswered(guild, raid) else RaidsDestination.Raid(guild, raid)
 
-/** The site's guild finder, where a player applies to or claims a guild. */
+/** The site's guild finder, where a player applies to a guild. */
 private const val GUILDS = "https://foreversixty.gg/guild"
+
+/** Claiming a guild that is not here (web nav's Claim your guild). */
+private const val CLAIM = "https://foreversixty.gg/guild#claim"
 
 /** `Saved.`, `Copied` and the lock toast stay 4 s (spec F4.3, F4.18, F4.21). */
 private val HOLD = 4.seconds

@@ -43,7 +43,7 @@ fun RaidNightRoute(
     val res = LocalResources.current
     val scope = rememberCoroutineScope()
     Column(Modifier.fillMaxSize().screenGround()) {
-        FlowBackBar(stringResource(R.string.tab_raids), back)
+        FlowBackBar(stringResource(R.string.tab_guild), back)
         RaidNightPageScreen(
             RaidNightPagePresenter(res, clock, now()).content(night, target, model.pressed, model.lateOpen),
             build,

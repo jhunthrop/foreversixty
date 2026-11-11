@@ -62,7 +62,7 @@ class RaidPagesParityTest {
         ParityCheck.state(compose, screen, expectedDrift = drift) {
             // The repo's game icons, as the tab roots' parity tests paint them (never an empty square).
             CompositionLocalProvider(LocalItemIconPainter provides gg.foreversixty.app.home.HomeFixtures.repoIcons, LocalRaidIconBuild provides gg.foreversixty.app.home.HomeFixtures.BUILD) {
-                ForeverTabScaffold(selected = ForeverTab.Raid, onSelect = {}, badges = TabBadges(raid = 6, activity = 3)) {
+                ForeverTabScaffold(selected = ForeverTab.Guild, onSelect = {}, badges = TabBadges(guild = 6, activity = 3)) {
                     Column(Modifier.fillMaxSize().screenGround()) {
                         FlowBackBar(backTo, {}, if (share) ({}) else null)
                         content()

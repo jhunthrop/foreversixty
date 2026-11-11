@@ -92,7 +92,7 @@ class GuildScreenshotTest {
     private fun capture(
         name: String,
         large: Boolean = false,
-        tab: ForeverTab = ForeverTab.Raid,
+        tab: ForeverTab = ForeverTab.Guild,
         scrollTo: Int? = null,
         scrollToText: String? = null,
         screen: @Composable () -> Unit,

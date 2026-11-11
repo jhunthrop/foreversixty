@@ -40,7 +40,8 @@ GUILD_CSS = '''
 .r5raid .spread .s{font-size:12px;line-height:16px}
 .r5raid .spread .you b{color:var(--gold)}
 .r5raid .seg.off .btn{color:var(--muted);opacity:.45}
-.r5raid .gate{margin:8px 0 0;font:400 13px/20px var(--font-body);color:var(--muted)}
+.r5raid .gate{margin:0;font:400 13px/20px var(--font-body);color:var(--muted)}
+.ap.r5raid>*+.gate{margin-top:20px}
 .r5raid .row .in .crest{flex:none}
 .r5raid .row .in>div{flex:1;min-width:0}
 .r5raid .row .in .when{flex:none;font:400 13px/18.29px var(--font-body);color:var(--muted);text-align:right}
@@ -76,7 +77,7 @@ def _raid_view(platform: str) -> str:
     """The next raid below 60 (coordinator ruling 2026-11-10: they sign up): the raid head as at 60, one quiet line under it,
     then Who is coming."""
     head = F._r5_head(platform, 'In').replace('Thandrel, Damage', 'Felsnap, Damage')
-    gate = f'<p class="gate" style="margin:0">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>'
+    gate = f'<p class="gate">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>'
     return head + gate + F._r5_coming(platform)
 
 
@@ -133,7 +134,7 @@ def _none(leveler: bool) -> str:
                         + F._r5_row('Dawnbreak', 'Alliance &middot; Tue and Thu, 9:00 pm EST &middot; needs damage', trail=apply))
     find = F._r5_section('Find your guild', F._r5_row('Search guilds on the site', 'By name or realm')
                          + F._r5_row('Claim your guild', 'A guild master or an officer confirms with the addon or Battle.net.'))
-    gate = f'<p class="gate" style="margin:0">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>' if leveler else ''
+    gate = f'<p class="gate">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>' if leveler else ''
     return gate + rec + find
 
 

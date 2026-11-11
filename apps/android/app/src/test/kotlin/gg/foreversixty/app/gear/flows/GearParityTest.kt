@@ -215,7 +215,7 @@ class GearParityTest {
 
     @Composable
     private fun Tab(content: @Composable () -> Unit) {
-        ForeverTabScaffold(selected = ForeverTab.Gear, onSelect = {}, badges = TabBadges(raid = 1, activity = 3)) {
+        ForeverTabScaffold(selected = ForeverTab.Gear, onSelect = {}, badges = TabBadges(guild = 1, activity = 3)) {
             CompositionLocalProvider(LocalOpenMenu provides {}, LocalPortraitPainter provides MenuFixtures.repoPortraits) { Icons(content) }
         }
     }

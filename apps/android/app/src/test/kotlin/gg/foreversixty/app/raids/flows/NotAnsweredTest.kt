@@ -103,5 +103,7 @@ class NotAnsweredTest {
         override suspend fun recruiting(spec: String, faction: String, region: String?, ruleset: String?) = error("unused")
         override suspend fun ping(guild: Long, raid: Long, role: String?) = error("unused")
         override suspend fun ready(characterKey: String, raid: Long) = error("unused")
+        override suspend fun setup(guild: Long) = error("unused")
+        override suspend fun myApplications(guild: Long) = error("unused")
     }
 }

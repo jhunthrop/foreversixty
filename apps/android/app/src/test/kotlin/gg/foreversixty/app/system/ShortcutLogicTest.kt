@@ -169,7 +169,7 @@ class ShortcutLogicTest {
         assertEquals(AppShortcut.Guides, AppShortcut.ofFeature("guides"))
         assertEquals(AppShortcut.Search, AppShortcut.ofFeature("search"))
         assertNull(AppShortcut.ofFeature("sign me up"))
-        assertEquals(ForeverTab.Raid, SystemNavigator.tabOf(AppShortcut.NextRaid))
+        assertEquals(ForeverTab.Guild, SystemNavigator.tabOf(AppShortcut.NextRaid))
         assertEquals(ForeverTab.Home, SystemNavigator.tabOf(AppShortcut.Upgrades))
         assertNull(SystemNavigator.tabOf(AppShortcut.Search))
     }

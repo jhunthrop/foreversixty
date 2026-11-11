@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.flows
 
+import gg.foreversixty.app.model.GuildSetup
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.BisRange
@@ -14,6 +15,7 @@ import gg.foreversixty.app.phrase
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.raids.logic.ComingCounts
 import gg.foreversixty.app.raids.logic.PlannedRaids
+import gg.foreversixty.app.raids.logic.RaidAssignmentWords
 import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidsTabContent
 import gg.foreversixty.app.raids.logic.RaidsTabState
@@ -34,8 +36,12 @@ data class RaidTabExtras(
     val applicant: GuildOfficerApplication? = null,
     val recruiting: List<gg.foreversixty.app.model.RecruitingGuild> = emptyList(),
     val ready: ReadyCheck? = null,
-    /** The guild's home (roster and counts), for an officer's readiness line and the Roster row's figure. */
+    /** The guild's home (roster and counts), for an officer's readiness line, the Roster row and the Guild tab's sections. */
     val home: GuildHome? = null,
+    /** An officer's setup checklist (the Guild tab's Setup row). */
+    val setup: GuildSetup? = null,
+    /** When the player applied to each recruiting guild still deciding, by guild id (spec 2.4). */
+    val applied: Map<Long, Instant> = emptyMap(),
 )
 
 /**
@@ -46,20 +52,22 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
     fun view(state: RaidsTabState, controller: SignupController?, badge: RaidBadge?, hasExtras: Boolean, extras: RaidTabExtras = RaidTabExtras()): RaidTabView? =
         when (state) {
             RaidsTabState.SignedOut -> RaidTabView.SignedOut
-            is RaidsTabState.NoGuild -> {
-                val level = state.level
-                if (level != null && level < BisRange.LAST_BAND) {
-                    RaidTabView.Leveler(BisRange.LAST_BAND - level)
-                } else {
-                    RaidTabView.NoGuild(state.spec, extras.recruiting.map(::recruiting))
-                }
-            }
+            // Under 60 the guilds still show, with one quiet line (spec 2026-11-10-guild-tab.md 2.4): never a block.
+            is RaidsTabState.NoGuild -> RaidTabView.NoGuild(
+                state.spec,
+                extras.recruiting.map { recruiting(it, extras.applied[it.guildId]) },
+                raidsOpen(state.level),
+            )
             is RaidsTabState.Loaded -> guild(state.content, controller, badge, hasExtras, extras)
             else -> null
         }
 
     /** `Alliance · Wed and Sat, 8:00 pm CST · needs damage`. */
-    private fun recruiting(row: gg.foreversixty.app.model.RecruitingGuild): RecruitingGuild {
+    /** `Raids open at 60 · you're 36` under 60; null at 60 (coordinator ruling 2026-11-10: they sign up all the same). */
+    private fun raidsOpen(level: Int?): String? =
+        level?.takeIf { it < BisRange.LAST_BAND }?.let { res.getString(R.string.guild_tab_raidsOpen, BisRange.LAST_BAND, it) }
+
+    private fun recruiting(row: gg.foreversixty.app.model.RecruitingGuild, applied: Instant?): RecruitingGuild {
         val faction = res.getString(if (row.faction == HORDE) R.string.bis_faction_horde else R.string.bis_faction_alliance)
         val needs = res.getString(
             when (row.needs) {
@@ -68,7 +76,10 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
                 else -> R.string.home_officer_role_damage
             },
         )
-        return RecruitingGuild(row.guildId, row.name, res.getString(R.string.raid_recruit_line, faction, row.schedule, needs))
+        return RecruitingGuild(
+            row.guildId, row.name, res.getString(R.string.raid_recruit_line, faction, row.schedule, needs),
+            applied?.let { res.getString(R.string.guild_tab_applied, clock.weekday(it).take(DAY_LETTERS)) },
+        )
     }
 
     private fun guild(content: RaidsTabContent, controller: SignupController?, badge: RaidBadge?, hasExtras: Boolean, extras: RaidTabExtras): RaidTabView.Guild {
@@ -82,7 +93,21 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
         val (ready, stamp) = ReadyRows.of(res, extras.ready, now)
         val shown = live ?: PlannedRaids(content.planned, now).next
         val officer = badge?.officer == true
+        val current = live ?: PlannedRaids(content.planned, now).next
+        val tab = GuildTabPresenter(res, clock, now).sections(
+            GuildTabInputs(
+                home = extras.home, setup = extras.setup, applicants = listOfNotNull(extras.applicant), badge = badge,
+                level = content.character.level, characterKey = key, planned = content.planned,
+            ),
+            content.head.name,
+        )
+        val assign = RaidAssignmentWords(res)
+        val pages = pages(content, hasExtras, extras.home, badge)
         return RaidTabView.Guild(
+            tab = tab,
+            raidsOpen = raidsOpen(content.character.level),
+            jobs = assign.jobs(current),
+            assignments = if ((officer || extras.home?.viewer?.officerTools == true) && current?.assignments != null) assign.encounters(current) else null,
             guild = content.head.name,
             next = next,
             needs = next?.officer?.copy(applicantLine = applicantLine),
@@ -95,7 +120,8 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
             needsFirst = officer,
             ready = ready,
             readyStamp = stamp,
-            pages = pages(content, hasExtras, extras.home, badge),
+            pages = if (tab != null) GuildTabPresenter.pagesLeft(pages, leveler = tab.spread != null) else pages,
+            pagesTitle = if (tab != null) res.getString(R.string.guild_tab_pages) else null,
         )
     }
 
@@ -133,6 +159,7 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
         const val CALENDAR_ITEMS = 2
         const val HORDE = "horde"
         const val LINE_SEPARATOR = " · "
+        const val DAY_LETTERS = 3
     }
 }
 

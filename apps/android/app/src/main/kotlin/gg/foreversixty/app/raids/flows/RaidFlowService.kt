@@ -1,7 +1,9 @@
 package gg.foreversixty.app.raids.flows
 
 import gg.foreversixty.app.model.GuildApplicationDecision
+import gg.foreversixty.app.model.GuildApplications
 import gg.foreversixty.app.model.GuildOfficerApplications
+import gg.foreversixty.app.model.GuildSetup
 import gg.foreversixty.app.model.RaidPingRequest
 import gg.foreversixty.app.model.RaidPingResult
 import gg.foreversixty.app.model.ReadyCheck
@@ -23,6 +25,12 @@ interface RaidFlowService {
 
     /** The character's Ready check for [raid]; null for a key that does not parse. */
     suspend fun ready(characterKey: String, raid: Long): ApiResult<ReadyCheck>?
+
+    /** An officer's setup checklist (the Guild tab's Setup row). */
+    suspend fun setup(guild: Long): ApiResult<GuildSetup>
+
+    /** The player's own applications to [guild]. */
+    suspend fun myApplications(guild: Long): ApiResult<GuildApplications>
 }
 
 class LiveRaidFlowService(private val client: ApiClient) : RaidFlowService {
@@ -39,4 +47,8 @@ class LiveRaidFlowService(private val client: ApiClient) : RaidFlowService {
         val key = CharacterKey.parse(characterKey) ?: return null
         return client.send(ApiEndpoints.getCharacterReady(key.region, key.ruleset, key.name, raid))
     }
+
+    override suspend fun setup(guild: Long) = client.send(ApiEndpoints.getGuildSetup(guild))
+
+    override suspend fun myApplications(guild: Long) = client.send(ApiEndpoints.myGuildApplications(guild))
 }

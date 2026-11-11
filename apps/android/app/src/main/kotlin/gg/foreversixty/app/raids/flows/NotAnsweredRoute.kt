@@ -44,7 +44,7 @@ fun NotAnsweredRoute(
     val share = RaidLinks.share(model.guild, model.raidId)
     val page = guildUrl?.let { "$it/raids/${model.raidId}" } ?: share
     Column(Modifier.fillMaxSize().screenGround()) {
-        FlowBackBar(stringResource(R.string.tab_raids), back) {
+        FlowBackBar(stringResource(R.string.tab_guild), back) {
             context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, share), null))
         }
         when (val phase = model.phase) {
