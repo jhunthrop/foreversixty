@@ -32,7 +32,13 @@ const discord = createClient({ dryRun });
 const base = `/guilds/${GUILD_ID}`;
 const report = { created: [], updated: [], moved: [], manual: [], leftover: [] };
 
-const dataUri = (rel) => `data:image/png;base64,${readFileSync(assetPath(rel)).toString('base64')}`;
+/** Discord takes PNG or JPEG image data; the type follows the file's extension. */
+const IMAGE_TYPES = { png: 'image/png', jpg: 'image/jpeg' };
+const dataUri = (rel) => {
+  const type = IMAGE_TYPES[rel.split('.').pop()];
+  if (!type) throw new Error(`apply: ${rel} is not a PNG or JPEG`);
+  return `data:${type};base64,${readFileSync(assetPath(rel)).toString('base64')}`;
+};
 const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
 let snowflakeSeq = 0n;
 const newSnowflake = () =>

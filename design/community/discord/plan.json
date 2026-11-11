@@ -6,7 +6,7 @@
     "explicitContentFilter": 2,
     "defaultMessageNotifications": 1,
     "icon": "assets/icon.png",
-    "banner": "assets/banner.png",
+    "banner": "assets/banner.jpg",
     "systemChannel": "general",
     "rulesChannel": "rules",
     "updatesChannel": "modlog",
