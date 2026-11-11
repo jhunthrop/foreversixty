@@ -150,9 +150,9 @@
           },
           {
             "from_level": 46,
-            "to_level": 48,
+            "to_level": 47,
             "rank": 6,
-            "note": "Sim-accuracy round 19: judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 6 beats rank 7 by 0.6 to 0.7% at 46, 0.3 to 0.4% at 47 and 0.1 to 0.2% at 48; they tie at 49."
+            "note": "Sim-accuracy round 19: judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 6 beats rank 7 by 0.6 to 0.7% at 46, 0.3 to 0.4% at 47 and 0.1 to 0.2% at 48; they tie at 49. Sim-accuracy round 30 (open items): re-judged level by level on the round 29 leveling order (spec-breakdown -level N -rank, bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, every rank learned; design/reviews/2026-11-11-sim-accuracy/round30-open.md). On Heart of the Wild and Naturalist at 42 to 51, rank 7 (learned at 46) beats rank 6 by 0.24 to 0.34% at 48, so the row ends at 47."
           }
         ]
       },
@@ -757,7 +757,13 @@
         "authored": 10181,
         "bands": [
           {
-            "from_level": 26,
+            "from_level": 24,
+            "to_level": 27,
+            "rank": 1,
+            "note": "Sim-accuracy round 30 (open items): re-judged level by level on the round 29 leveling order (spec-breakdown -level N -rank, bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, every rank learned; design/reviews/2026-11-11-sim-accuracy/round30-open.md). With Missile Barrage, Arcane Impact and Arcane Meditation at 21 to 28, rank 1 beats rank 4 by 1.2 to 2.0% at 24 to 26 and 0.4 to 0.9% at 27; from 28 rank 4 wins again (ranks 1 to 3 lose 0.1 to 1.5%)."
+          },
+          {
+            "from_level": 28,
             "to_level": 33,
             "rank": 4,
             "note": "Sim-accuracy round 24 (casters), judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every race of the class; a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). Rank 4 beats rank 5 from 26, when rank 5 arrives, by 1.2% to 2.0% for every race, and holds to 33; rank 5 at 30 to 33 loses 0.7% to 1.7%. From 34, with Mage Armor, the highest rank wins."
@@ -811,6 +817,18 @@
             "to_level": 49,
             "rank": 3,
             "note": "Rank 3 (learned at 34) wins from 46 as rank 2 loses its spell power from 45: tie at 46, +1.8% at 47, +4.3% at 49 (round 16 mage wave 2, per-level sweep). Round 24 holds it (rank 4 and 5 lose 0.7% to 1.4%)."
+          },
+          {
+            "from_level": 50,
+            "to_level": 51,
+            "rank": 3,
+            "note": "Sim-accuracy round 30 (open items): re-judged level by level on the round 29 leveling order (spec-breakdown -level N -rank, bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, every rank learned; design/reviews/2026-11-11-sim-accuracy/round30-open.md). With Precision at 41 to 43, rank 3 beats rank 5 by 1.6 to 1.9% at 50 and 0.5 to 0.6% at 51."
+          },
+          {
+            "from_level": 52,
+            "to_level": 55,
+            "rank": 4,
+            "note": "Sim-accuracy round 30 (open items): re-judged level by level on the round 29 leveling order (spec-breakdown -level N -rank, bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, every rank learned; design/reviews/2026-11-11-sim-accuracy/round30-open.md). Rank 4 beats rank 6 by 0.4 to 1.0% at 52 to 54 (rank 5 by 0.3 to 0.8%) and by 0.1 to 0.5% at 55 for every race (beyond the error for a Human, a High Order Skyborne and a Troll, inside it for the rest); from 56 rank 6 ties or wins."
           }
         ]
       },
@@ -841,12 +859,11 @@
             "to_level": 41,
             "rank": 3,
             "races": [
-              "human",
               "orc",
               "troll",
               "undead"
             ],
-            "note": "Sim-accuracy round 24 (casters), judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every race of the class; a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). Judged jointly with Pyroblast (Fire Blast ranks 2 to 5 against Pyroblast ranks 2 to 4 at every level from 30 to 41): At 41 rank 3 wins for an Orc or Troll (+0.1% to +0.3%) and ties for a Human or Undead; a Gnome keeps rank 4 (rank 3 -0.2%)."
+            "note": "Sim-accuracy round 24 (casters), judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every race of the class; a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). Judged jointly with Pyroblast (Fire Blast ranks 2 to 5 against Pyroblast ranks 2 to 4 at every level from 30 to 41): At 41 rank 3 wins for an Orc or Troll (+0.1% to +0.3%) and ties for a Human or Undead; a Gnome keeps rank 4 (rank 3 -0.2%). Sim-accuracy round 30 (open items), race by race on the round 29 order (Precision at 41): a Human now gains 0.3 to 0.5% with rank 4 beyond the error at both seeds and leaves the row; an Orc, a Troll and an Undead gain under the error and keep rank 3."
           },
           {
             "from_level": 42,
