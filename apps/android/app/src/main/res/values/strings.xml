@@ -1767,7 +1767,7 @@
     <string name="guild_tab_raiders">raiders</string>
     <string name="guild_tab_missingRaids">Missing raids</string>
     <string name="guild_tab_nights" tools:ignore="PluralsCandidate">%1$d of %2$d nights</string>
-    <string name="guild_tab_itemLevel" tools:ignore="PluralsCandidate">item level %1$d</string>
+    <string name="guild_tab_itemLevel" tools:ignore="PluralsCandidate">ilvl %1$d</string>
     <string name="guild_tab_notAwarded">Not awarded yet</string>
     <string name="guild_tab_gearGaps">Gear gaps</string>
     <string name="guild_tab_gearGap" tools:ignore="PluralsCandidate">%1$d DPS</string>

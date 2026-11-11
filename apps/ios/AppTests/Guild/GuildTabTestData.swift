@@ -14,11 +14,11 @@ enum GuildTabTestData {
     }
 
     static let recent = [
-        member("Grunvald", "warrior", "60 · Protection Warrior · item level 66", "just now"),
-        member("Mirethil", "priest", "60 · Holy Priest · item level 63", "12 min ago"),
-        member("Kaelra", "mage", "60 · Frost Mage · item level 61", "40 min ago"),
+        member("Grunvald", "warrior", "60 · Protection Warrior · ilvl 66", "just now"),
+        member("Mirethil", "priest", "60 · Holy Priest · ilvl 63", "12 min ago"),
+        member("Kaelra", "mage", "60 · Frost Mage · ilvl 61", "40 min ago"),
         member("Thornwick", "druid", "57 · Feral Druid", "1 h ago"),
-        member("Selka", "druid", "60 · Restoration Druid · item level 62", "2 h ago"),
+        member("Selka", "druid", "60 · Restoration Druid · ilvl 62", "2 h ago"),
     ]
 
     static let close = [
@@ -28,16 +28,16 @@ enum GuildTabTestData {
     ]
 
     static let gearGaps = [
-        member("Selka", "druid", "Restoration Druid · item level 62", "41 HPS"),
-        member("Thalrin", "hunter", "Marksmanship Hunter · item level 58", "37 DPS"),
-        member("Kaelra", "mage", "Frost Mage · item level 61", "22 DPS"),
+        member("Selka", "druid", "Restoration Druid · ilvl 62", "41 HPS"),
+        member("Thalrin", "hunter", "Marksmanship Hunter · ilvl 58", "37 DPS"),
+        member("Kaelra", "mage", "Frost Mage · ilvl 61", "22 DPS"),
     ]
 
     static let yourAttendance = member("Thandrel", "warrior", "Fury Warrior", "7 of 8 nights")
 
     static let missing = [
-        member("Brakka", "druid", "Feral Druid · item level 60", "2 of 8 nights"),
-        member("Thalrin", "hunter", "Marksmanship Hunter · item level 58", "3 of 7 nights"),
+        member("Brakka", "druid", "Feral Druid · ilvl 60", "2 of 8 nights"),
+        member("Thalrin", "hunter", "Marksmanship Hunter · ilvl 58", "3 of 7 nights"),
     ]
 
     static let logs = [

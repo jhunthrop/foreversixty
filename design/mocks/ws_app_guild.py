@@ -22,20 +22,20 @@ MEMBERS, AT_CAP, CLOSE, RAIDERS = 38, 31, 4, 24
 LEVELER_LEVEL = 36
 
 # Recently on: the newest seen_at first (members[]: name, class, level, spec_name; roster[].item_level; seen).
-RECENT = [('Grunvald', 'warrior', '60 &middot; Protection Warrior &middot; item level 66', 'just now'),
-          ('Mirethil', 'priest', '60 &middot; Holy Priest &middot; item level 63', '12 min ago'),
-          ('Kaelra', 'mage', '60 &middot; Frost Mage &middot; item level 61', '40 min ago'),
+RECENT = [('Grunvald', 'warrior', '60 &middot; Protection Warrior &middot; ilvl 66', 'just now'),
+          ('Mirethil', 'priest', '60 &middot; Holy Priest &middot; ilvl 63', '12 min ago'),
+          ('Kaelra', 'mage', '60 &middot; Frost Mage &middot; ilvl 61', '40 min ago'),
           ('Thornwick', 'druid', '57 &middot; Feral Druid', '1 h ago'),
-          ('Selka', 'druid', '60 &middot; Restoration Druid &middot; item level 62', '2 h ago')]
+          ('Selka', 'druid', '60 &middot; Restoration Druid &middot; ilvl 62', '2 h ago')]
 # Close to 60, without the names Recently on already shows.
 CLOSE_ROWS = [('Vexa', 'warlock', 56, 'Affliction Warlock'), ('Pell', 'mage', 55, 'Frost Mage'), ('Orrin', 'paladin', 55, 'Holy Paladin')]
 # An officer's Missing raids (roster[].attendance_30: under half of at least four nights).
-MISSING = [('Brakka', 'druid', 'Feral Druid &middot; item level 60', '2 of 8 nights'),
-           ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', '3 of 7 nights')]
+MISSING = [('Brakka', 'druid', 'Feral Druid &middot; ilvl 60', '2 of 8 nights'),
+           ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; ilvl 58', '3 of 7 nights')]
 # An officer's Gear gaps (roster[].addon.gear_gap, largest first) and your own attendance (your roster row's attendance_30).
-GEAR_GAPS = [('Selka', 'druid', 'Restoration Druid &middot; item level 62', '41 HPS'),
-             ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', '37 DPS'),
-             ('Kaelra', 'mage', 'Frost Mage &middot; item level 61', '22 DPS')]
+GEAR_GAPS = [('Selka', 'druid', 'Restoration Druid &middot; ilvl 62', '41 HPS'),
+             ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; ilvl 58', '37 DPS'),
+             ('Kaelra', 'mage', 'Frost Mage &middot; ilvl 61', '22 DPS')]
 YOURS = ('Thandrel', 'warrior', 'Fury Warrior', '7 of 8 nights')
 # reports[]: title, zone, kills of fights, duration, day.
 LOGS = [('UBRS, Sunday', 'Blackrock Spire', 7, 8, '1 h 32 min', 'Sun 3 Jan'),

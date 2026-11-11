@@ -4826,8 +4826,8 @@ const GuildTabMissingRaids = "Missing raids"
 // GuildTabNights is guild.tab.nights: {present} of {nights} nights
 const GuildTabNights = "{present} of {nights} nights"
 
-// GuildTabItemLevel is guild.tab.itemLevel: item level {n}
-const GuildTabItemLevel = "item level {n}"
+// GuildTabItemLevel is guild.tab.itemLevel: ilvl {n}
+const GuildTabItemLevel = "ilvl {n}"
 
 // GuildTabNotAwarded is guild.tab.notAwarded: Not awarded yet
 const GuildTabNotAwarded = "Not awarded yet"

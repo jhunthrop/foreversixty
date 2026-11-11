@@ -3609,7 +3609,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "item level %1$lld"
+            "value": "ilvl %1$lld"
           }
         }
       }

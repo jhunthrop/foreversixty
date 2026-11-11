@@ -50,19 +50,19 @@ Roster
 Roster ›
 Recently on
 Grunvald
-60 · Protection Warrior · item level 66
+60 · Protection Warrior · ilvl 66
 just now
 Mirethil
-60 · Holy Priest · item level 63
+60 · Holy Priest · ilvl 63
 12 min ago
 Kaelra
-60 · Frost Mage · item level 61
+60 · Frost Mage · ilvl 61
 40 min ago
 Thornwick
 57 · Feral Druid
 1 h ago
 Selka
-60 · Restoration Druid · item level 62
+60 · Restoration Druid · ilvl 62
 2 h ago
 Your attendance
 Thandrel
@@ -94,7 +94,7 @@ Pages
 Calendar
 Onyxia Wed, Barrow Deeps Sat
 Guild sims
-You are #7 of 14 DPS
+#7 of 14 in guild sims
 Home
 Guild
 Gear

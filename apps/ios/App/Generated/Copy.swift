@@ -5923,7 +5923,7 @@ enum Copy {
         format("guild.tab.nights", present, nights)
     }
 
-    /// item level {n}
+    /// ilvl {n}
     static func guildTabItemLevel(n: Int) -> String {
         format("guild.tab.itemLevel", n)
     }

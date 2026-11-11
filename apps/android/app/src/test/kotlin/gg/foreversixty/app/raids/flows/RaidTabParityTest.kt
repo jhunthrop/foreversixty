@@ -86,7 +86,7 @@ object RaidTabFixtures {
         GuildPageRow(GuildPage.Roster, "Roster", "38 members, 31 at 60"),
         GuildPageRow(GuildPage.Calendar, "Calendar", "Onyxia Wed, Barrow Deeps Sat"),
         GuildPageRow(GuildPage.Loot, "Loot history", "Last raid: 4 pieces"),
-        GuildPageRow(GuildPage.Sims, "Guild sims", "You are #7 of 14 DPS"),
+        GuildPageRow(GuildPage.Sims, "Guild sims", "#7 of 14 in guild sims"),
     )
 
     /** A Who is coming row as the presenter builds it: the tally, the names in one class, the rest. */

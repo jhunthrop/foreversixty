@@ -39,14 +39,14 @@ class GuildTabParityTest {
     @Test fun atCap() = state("guild-tab", GuildTabFixtures.atCap(), guild = 0, activity = 3)
 
     // 2026-11-11, lane guild-tab: the officer's roster is 11 rows under four group labels; their 18.29 line boxes run 2 to 3
-    // taller than the mock's over the roster, so the sections under it sit 12 to 13 lower; each section's own height holds.
+    // taller than the mock's over the roster, so the sections under it sit 13 to 14 lower; each section's own height holds.
     @Test fun officer() = state(
         "guild-tab-officer", GuildTabFixtures.atCap(officer = true), guild = 6, activity = 3,
         drift = setOf(
-            "section-loot: y 3139, the mock has 3127 (within 8)",
-            "section-pages: y 3769, the mock has 3756 (within 8)",
-            "section-progression: y 3640, the mock has 3627 (within 8)",
-            "section-recent-logs: y 3391, the mock has 3379 (within 8)",
+            "section-loot: y 3122, the mock has 3108 (within 8)",
+            "section-pages: y 3752, the mock has 3738 (within 8)",
+            "section-progression: y 3622, the mock has 3609 (within 8)",
+            "section-recent-logs: y 3374, the mock has 3360 (within 8)",
         ),
     )
 
@@ -97,16 +97,16 @@ object GuildTabFixtures {
     private val head = GuildTabHead("Olympus XXVII", "alliance", null, "38 members · Alliance · US PvP")
 
     private val recent = listOf(
-        GuildMemberLine("Grunvald", "warrior", null, "60 · Protection Warrior · item level 66", "just now"),
-        GuildMemberLine("Mirethil", "priest", null, "60 · Holy Priest · item level 63", "12 min ago"),
-        GuildMemberLine("Kaelra", "mage", null, "60 · Frost Mage · item level 61", "40 min ago"),
+        GuildMemberLine("Grunvald", "warrior", null, "60 · Protection Warrior · ilvl 66", "just now"),
+        GuildMemberLine("Mirethil", "priest", null, "60 · Holy Priest · ilvl 63", "12 min ago"),
+        GuildMemberLine("Kaelra", "mage", null, "60 · Frost Mage · ilvl 61", "40 min ago"),
         GuildMemberLine("Thornwick", "druid", null, "57 · Feral Druid", "1 h ago"),
-        GuildMemberLine("Selka", "druid", null, "60 · Restoration Druid · item level 62", "2 h ago"),
+        GuildMemberLine("Selka", "druid", null, "60 · Restoration Druid · ilvl 62", "2 h ago"),
     )
 
     private val missing = listOf(
-        GuildMemberLine("Brakka", "druid", null, "Feral Druid · item level 60", "2 of 8 nights"),
-        GuildMemberLine("Thalrin", "hunter", null, "Marksmanship Hunter · item level 58", "3 of 7 nights"),
+        GuildMemberLine("Brakka", "druid", null, "Feral Druid · ilvl 60", "2 of 8 nights"),
+        GuildMemberLine("Thalrin", "hunter", null, "Marksmanship Hunter · ilvl 58", "3 of 7 nights"),
     )
 
     private val lootNight = GuildLootNight(
@@ -125,9 +125,9 @@ object GuildTabFixtures {
     )
 
     private val gearGaps = listOf(
-        GuildMemberLine("Selka", "druid", null, "Restoration Druid · item level 62", "41 HPS"),
-        GuildMemberLine("Thalrin", "hunter", null, "Marksmanship Hunter · item level 58", "37 DPS"),
-        GuildMemberLine("Kaelra", "mage", null, "Frost Mage · item level 61", "22 DPS"),
+        GuildMemberLine("Selka", "druid", null, "Restoration Druid · ilvl 62", "41 HPS"),
+        GuildMemberLine("Thalrin", "hunter", null, "Marksmanship Hunter · ilvl 58", "37 DPS"),
+        GuildMemberLine("Kaelra", "mage", null, "Frost Mage · ilvl 61", "22 DPS"),
     )
 
     private val yourAttendance = GuildMemberLine("Thandrel", "warrior", null, "Fury Warrior", "7 of 8 nights")

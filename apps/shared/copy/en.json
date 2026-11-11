@@ -1666,7 +1666,7 @@
     "guild.tab.raiders": "raiders",
     "guild.tab.missingRaids": "Missing raids",
     "guild.tab.nights": {"text": "{present} of {nights} nights", "notPlural": true, "args": {"present": "int", "nights": "int"}},
-    "guild.tab.itemLevel": {"text": "item level {n}", "notPlural": true, "args": {"n": "int"}},
+    "guild.tab.itemLevel": {"text": "ilvl {n}", "notPlural": true, "args": {"n": "int"}},
     "guild.tab.notAwarded": "Not awarded yet",
     "guild.tab.gearGaps": "Gear gaps",
     "guild.tab.gearGap": {"text": "{n} DPS", "notPlural": true, "args": {"n": "int"}},
