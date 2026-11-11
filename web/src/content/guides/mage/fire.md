@@ -143,3 +143,5 @@ After Combustion at 40:
 - **55 and 56:** Missile Barrage turns its procs into fast Arcane Missiles.
 - **57:** Accelerant's last point makes that Fireball a 3 second cast.
 - **58 to 60:** two points of **Burning Soul**, then a point of Arcane Subtlety, finish the build.
+
+The cheap Scorch ranks keep winning after 40: rank 2 to 45, rank 3 from 46 to 51 and rank 4 from 52 to 55. Pyroblast rank 4 at 41 and 42 (only at 42 for an Orc, a Troll or an Undead), then the newest rank.
