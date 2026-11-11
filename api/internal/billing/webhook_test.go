@@ -3,6 +3,7 @@ package billing
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -739,5 +740,57 @@ func TestWebhookMetadataChangedBetweenFetchesWritesNothing(t *testing.T) {
 	}
 	if n := h.countAnomalies(t, gid) + h.countAnomalies(t, gid+1); n != 0 {
 		t.Fatalf("anomaly rows = %d, want 0", n)
+	}
+}
+
+// TestWebhookFinishesWorkAfterTheCallerHangsUp is issue #3 L7: a delivery that outlives
+// Stripe's patience (a cold start) still commits, so the retry finds it processed instead of
+// the cancellation abandoning the write half done.
+func TestWebhookFinishesWorkAfterTheCallerHangsUp(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "webhook-hangup@example.com")
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+	sub := fixtureSubscription("sub_hangup", "premium", uid, 0, stripe.SubscriptionStatusActive, end)
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
+
+	r := signedWebhookRequest(t, "customer.subscription.created", map[string]any{"id": sub.ID})
+	ctx, cancel := context.WithCancel(r.Context())
+	cancel()
+	h.do(t, r.WithContext(ctx))
+
+	var status string
+	if err := h.pool.QueryRow(t.Context(),
+		`select status from entitlements where user_id = $1 and plan = 'premium'`, uid).Scan(&status); err != nil {
+		t.Fatalf("no premium row after a hung-up delivery: %v", err)
+	}
+	if status != "active" {
+		t.Fatalf("status = %q, want active", status)
+	}
+}
+
+// TestWebhookStaleSubscriptionEventsLeaveAGrant is issue #3 M5 (coverage gap 9): an account on
+// a grant that once paid keeps the grant when its old subscription sends late events.
+func TestWebhookStaleSubscriptionEventsLeaveAGrant(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "webhook-grant-stale@example.com")
+	if err := h.svc.Entitlements.(*entitlements.Store).Grant(t.Context(), entitlements.Subject{UserID: &uid},
+		entitlements.PlanPremium, nil, nil, "n", "a", nil); err != nil {
+		t.Fatal(err)
+	}
+	end := time.Now().Add(-time.Hour).UTC().Truncate(time.Second)
+	sub := fixtureSubscription("sub_stale_paid", "premium", uid, 0, stripe.SubscriptionStatusCanceled, end)
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
+	for _, typ := range []string{"customer.subscription.updated", "customer.subscription.deleted"} {
+		if w := h.do(t, signedWebhookRequest(t, typ, map[string]any{"id": sub.ID})); w.Code != http.StatusOK {
+			t.Fatalf("%s: status = %d, body = %s", typ, w.Code, w.Body.String())
+		}
+	}
+	var source, status string
+	if err := h.pool.QueryRow(t.Context(),
+		`select source, status from entitlements where user_id = $1 and plan = 'premium'`, uid).Scan(&source, &status); err != nil {
+		t.Fatal(err)
+	}
+	if source != "grant" || status != "active" {
+		t.Fatalf("row = %s/%s, want the grant active", source, status)
 	}
 }

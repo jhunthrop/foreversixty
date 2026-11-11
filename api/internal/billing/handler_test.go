@@ -372,3 +372,19 @@ func TestCheckoutPremiumOpensAfterAPersonalGrantExpires(t *testing.T) {
 		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
 	}
 }
+
+// TestCheckoutAndPortalHaveTheirOwnRateBudgets is issue #3 L3 (spec §3): a member who spent the
+// checkout budget retrying a declined card can still open the portal to fix the card.
+func TestCheckoutAndPortalHaveTheirOwnRateBudgets(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "budgets@example.com")
+	for range billingRateLimitPerHour {
+		h.do(t, h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", uid, map[string]string{"plan": "bogus"}))
+	}
+	if w := h.do(t, h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", uid, map[string]string{"plan": "bogus"})); w.Code != http.StatusTooManyRequests {
+		t.Fatalf("checkout past its budget = %d, want 429", w.Code)
+	}
+	if w := h.do(t, h.sessionRequest(t, http.MethodPost, "/v1/billing/portal", uid, nil)); w.Code == http.StatusTooManyRequests {
+		t.Fatal("portal = 429 after only checkout spent its budget, want its own budget")
+	}
+}

@@ -1,6 +1,7 @@
 package billing
 
 import (
+	"strings"
 	"testing"
 	"time"
 )
@@ -46,4 +47,26 @@ func equalInt64Ptr(a, b *int64) bool {
 		return a == b
 	}
 	return *a == *b
+}
+
+// TestCustomerCreateParamsCarryAPerAccountIdempotencyKey is issue #3 L4: two checkouts racing
+// for an account with no Customer yet (two tabs, two guilds) get one Customer back from Stripe,
+// not two.
+func TestCustomerCreateParamsCarryAPerAccountIdempotencyKey(t *testing.T) {
+	a := customerCreateParams(42, "a@example.com")
+	if a.IdempotencyKey == nil || !strings.HasPrefix(*a.IdempotencyKey, "fs-customer-42-") {
+		t.Fatalf("idempotency key = %v, want fs-customer-42-<email digest>", a.IdempotencyKey)
+	}
+	if again := customerCreateParams(42, "a@example.com"); *again.IdempotencyKey != *a.IdempotencyKey {
+		t.Fatalf("keys differ for the same account and email: %s, %s", *again.IdempotencyKey, *a.IdempotencyKey)
+	}
+	if moved := customerCreateParams(42, "b@example.com"); *moved.IdempotencyKey == *a.IdempotencyKey {
+		t.Fatal("a changed email reuses the key Stripe would refuse")
+	}
+	if a.Email == nil || *a.Email != "a@example.com" {
+		t.Fatalf("email = %v", a.Email)
+	}
+	if b := customerCreateParams(43, ""); b.Email != nil || *b.IdempotencyKey == *a.IdempotencyKey {
+		t.Fatalf("params = %+v, want no email and a key of its own", b)
+	}
 }

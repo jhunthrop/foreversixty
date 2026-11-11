@@ -22,8 +22,8 @@ import (
 // handful of fields, a kilobyte is generous.
 const maxBillingBody = 1 << 10
 
-// billingRateLimitPerHour is POST /v1/billing/checkout and
-// POST /v1/billing/portal's own per-IP budget (spec §3): generous for a
+// billingRateLimitPerHour is POST /v1/billing/checkout's and
+// POST /v1/billing/portal's per-IP budget, each its own (spec §3): generous for a
 // signed-in member retrying a declined card, bounding a script that
 // would otherwise mint many Stripe sessions for free.
 const billingRateLimitPerHour = 20
@@ -116,9 +116,13 @@ type Service struct {
 // deployment with no Stripe keys yet still describes the surface it will
 // have once they are set.
 func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
-	limit := httpx.RateLimitPer(billingRateLimitPerHour, time.Hour, trustedProxyHops)
-	mux.Handle("POST /v1/billing/checkout", limit(auth.RequireBrowserSession(s.checkout)))
-	mux.Handle("POST /v1/billing/portal", limit(auth.RequireBrowserSession(s.portal)))
+	// One budget per route (spec §3, issue #3 L3): retries of a declined
+	// card must not lock the member out of the portal that fixes the card.
+	limit := func() func(http.Handler) http.Handler {
+		return httpx.RateLimitPer(billingRateLimitPerHour, time.Hour, trustedProxyHops)
+	}
+	mux.Handle("POST /v1/billing/checkout", limit()(auth.RequireBrowserSession(s.checkout)))
+	mux.Handle("POST /v1/billing/portal", limit()(auth.RequireBrowserSession(s.portal)))
 	mux.HandleFunc("POST /v1/billing/webhook", s.webhook)
 	mountGuild(mux, s, trustedProxyHops)
 }
@@ -243,7 +247,7 @@ func (s *Service) customerFor(ctx context.Context, userID int64) (string, error)
 	if u.Email != nil {
 		email = *u.Email
 	}
-	id, err := s.Gateway.CreateCustomer(ctx, email)
+	id, err := s.Gateway.CreateCustomer(ctx, userID, email)
 	if err != nil {
 		return "", err
 	}

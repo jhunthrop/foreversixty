@@ -23,6 +23,10 @@ import (
 // subscription event's JSON is a few KB; this is generous headroom.
 const maxWebhookBody = 64 << 10
 
+// webhookWorkTimeout bounds one delivery's processing once it no longer
+// follows the request's own cancellation.
+const webhookWorkTimeout = time.Minute
+
 func (s *Service) webhook(w http.ResponseWriter, r *http.Request) {
 	if s.Gateway == nil || s.WebhookSecret == "" {
 		writeUnavailable(w, r)
@@ -50,7 +54,13 @@ func (s *Service) webhook(w http.ResponseWriter, r *http.Request) {
 	// first attempt that has not yet responded, and without this lock
 	// both deliveries could observe RecordEventOnce's processed_at as
 	// still null and both call handleEvent concurrently.
-	err = s.Store.WithEventLock(r.Context(), event.ID, func(ctx context.Context) error {
+	// The work outlives the request (issue #3 L7): Stripe gives up on a slow
+	// answer (a cold start) and retries later, and a write abandoned half
+	// way by that cancellation would only be redone by the retry. Bounded so
+	// a stuck call still ends.
+	work, cancel := context.WithTimeout(context.WithoutCancel(r.Context()), webhookWorkTimeout)
+	defer cancel()
+	err = s.Store.WithEventLock(work, event.ID, func(ctx context.Context) error {
 		proceed, err := s.Store.RecordEventOnce(ctx, event.ID, string(event.Type), payload)
 		if err != nil {
 			return err

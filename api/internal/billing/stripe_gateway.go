@@ -3,6 +3,7 @@ package billing
 
 import (
 	"context"
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"sync"
@@ -40,16 +41,28 @@ func NewStripeGateway(secretKey string) *StripeGateway {
 	return &StripeGateway{client: stripe.NewClient(secretKey), cache: map[string]cachedPrice{}, portalCache: map[string]cachedPrice{}}
 }
 
-func (g *StripeGateway) CreateCustomer(ctx context.Context, email string) (string, error) {
-	params := &stripe.CustomerCreateParams{}
-	if email != "" {
-		params.Email = stripe.String(email)
-	}
-	c, err := g.client.V1Customers.Create(ctx, params)
+func (g *StripeGateway) CreateCustomer(ctx context.Context, userID int64, email string) (string, error) {
+	c, err := g.client.V1Customers.Create(ctx, customerCreateParams(userID, email))
 	if err != nil {
 		return "", fmt.Errorf("billing: create customer: %w", err)
 	}
 	return c.ID, nil
+}
+
+// customerCreateParams is one account's Customer creation. The idempotency
+// key is the account's own (issue #3 L4): Stripe answers a second create
+// within 24 hours with the first Customer, so two checkouts racing for an
+// account with no Customer yet cannot make two. It carries a digest of the
+// email because Stripe refuses a reused key whose parameters differ, which
+// would lock out an account that changed its email inside the day.
+func customerCreateParams(userID int64, email string) *stripe.CustomerCreateParams {
+	params := &stripe.CustomerCreateParams{}
+	digest := sha256.Sum256([]byte(email))
+	params.SetIdempotencyKey(fmt.Sprintf("fs-customer-%d-%x", userID, digest[:6]))
+	if email != "" {
+		params.Email = stripe.String(email)
+	}
+	return params
 }
 
 // checkoutSessionLifetime is how long a Checkout page stays valid: the

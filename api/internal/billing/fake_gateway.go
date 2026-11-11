@@ -39,6 +39,7 @@ type FakeGateway struct {
 	archivedKeys map[string]bool
 
 	nextCustomerID int
+	customerByUser map[int64]string
 	nextSessionID  int
 	// Subscriptions is looked up by GetSubscription — tests register a
 	// hand-built *stripe.Subscription fixture here before calling a
@@ -80,15 +81,25 @@ type FakeGateway struct {
 	NextPortalURL         string
 }
 
-func (f *FakeGateway) CreateCustomer(_ context.Context, email string) (string, error) {
+// CreateCustomer answers a repeat for the same userID with the first
+// Customer, as Stripe's idempotency key does.
+func (f *FakeGateway) CreateCustomer(_ context.Context, userID int64, email string) (string, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	if f.Err != nil {
 		return "", f.Err
 	}
+	if id, ok := f.customerByUser[userID]; ok {
+		return id, nil
+	}
 	f.nextCustomerID++
 	f.Customers = append(f.Customers, email)
-	return fmt.Sprintf("cus_fake_%d", f.nextCustomerID), nil
+	id := fmt.Sprintf("cus_fake_%d", f.nextCustomerID)
+	if f.customerByUser == nil {
+		f.customerByUser = map[int64]string{}
+	}
+	f.customerByUser[userID] = id
+	return id, nil
 }
 
 func (f *FakeGateway) CreateCheckoutSession(_ context.Context, p CheckoutParams) (CheckoutSession, error) {

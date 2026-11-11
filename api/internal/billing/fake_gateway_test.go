@@ -14,7 +14,7 @@ import (
 func TestFakeGatewaySatisfiesGateway(t *testing.T) {
 	var g Gateway = &FakeGateway{}
 	ctx := context.Background()
-	id, err := g.CreateCustomer(ctx, "a@example.com")
+	id, err := g.CreateCustomer(ctx, 1, "a@example.com")
 	if err != nil || id == "" {
 		t.Fatalf("CreateCustomer: %v, %v", id, err)
 	}
@@ -60,7 +60,7 @@ func TestFakeGatewayReturnsConfiguredSubscription(t *testing.T) {
 func TestFakeGatewayErrPropagatesToEveryMethod(t *testing.T) {
 	want := errors.New("upstream down")
 	f := &FakeGateway{Err: want}
-	if _, err := f.CreateCustomer(context.Background(), "a@example.com"); err != want {
+	if _, err := f.CreateCustomer(context.Background(), 1, "a@example.com"); err != want {
 		t.Fatal(err)
 	}
 	if _, err := f.CreateCheckoutSession(context.Background(), CheckoutParams{}); err != want {

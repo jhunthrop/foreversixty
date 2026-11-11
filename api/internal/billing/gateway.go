@@ -145,7 +145,9 @@ type StripeSubscriptionSummary struct {
 // uses FakeGateway, never StripeGateway, so no test ever reaches the
 // real Stripe API (the coordinator's lane constraint).
 type Gateway interface {
-	CreateCustomer(ctx context.Context, email string) (customerID string, err error)
+	// CreateCustomer is idempotent per userID for a day: a repeat answers the
+	// first Customer.
+	CreateCustomer(ctx context.Context, userID int64, email string) (customerID string, err error)
 	CreateCheckoutSession(ctx context.Context, p CheckoutParams) (CheckoutSession, error)
 	// CreatePortalSession opens the portal configuration whose fs_portal
 	// metadata equals configurationKey; a missing configuration is an error.
