@@ -263,7 +263,7 @@
       }
     },
     {
-      "notes": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana. It is instant and never holds an auto shot, and every hit carries 15% of your ranged attack power, so from 18 it does far more for its mana than Multi-Shot: keep it going even when the mana runs low.",
+      "notes": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana. It is instant and never holds an auto shot, and every hit carries 15% of your ranged attack power, so from 18 it does more for its mana than Multi-Shot: keep it going even when the mana runs low.",
       "action": {
         "condition": {
           "or": {

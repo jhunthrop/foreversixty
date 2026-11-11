@@ -26,52 +26,8 @@ const (
 	hSV = "hunter-survival"
 )
 
-// Round 24 (hunter lane): the round-22 Arcane Shot rows were judged at each
-// band floor with the band floor's talents, so a hunter above the floor ran
-// without the mana talents he has by then. Re-judged level by level on the
-// talents the leveling order gives at the level (spec-breakdown -level,
-// bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf), a
-// Marksmanship hunter's best Arcane Shot from 33 is the newest-but-one or
-// the one before it, not rank 1 or rank 3.
-func TestRound24MarksmanshipArcaneShotRankRows(t *testing.T) {
-	checkHunterRankCases(t, []hunterRankCase{
-		{"at 32 keeps rank 3", hMM, BarePreset, "troll", 32, 14282, 14283},
-		{"at 33", hMM, BarePreset, "troll", 33, 14283, 14282},
-		{"at 35", hMM, BarePreset, "dwarf", 35, 14283, 14284},
-		{"at 36", hMM, BarePreset, "troll", 36, 14284, 14283},
-		{"at 41", hMM, BarePreset, "dwarf", 41, 14284, 3044},
-		{"at 42", hMM, BarePreset, "troll", 42, 14283, 14284},
-		{"at 47", hMM, BarePreset, "dwarf", 47, 14283, 14284},
-		{"at 48", hMM, BarePreset, "troll", 48, 14284, 3044},
-		{"at 59", hMM, BarePreset, "dwarf", 59, 14284, 3044},
-		{"at bare 60", hMM, BarePreset, "troll", 60, 14283, 3044},
-		{"raid 60 keeps the top rank", hMM, RaidPreset, "troll", 60, 14287, 14283},
-	})
-}
-
-// Round 24: the same re-judgement for Beast Mastery. Rank 1 now starts at 20
-// (it ran from 26), rank 3 wins at 34 to 39 inside the rank 1 stretch, and
-// rank 4 beats rank 3 at 54 to 57 (at 53 for a Troll only; a Dwarf ties).
-func TestRound24BeastMasteryArcaneShotRankRows(t *testing.T) {
-	checkHunterRankCases(t, []hunterRankCase{
-		{"at 20", hBM, BarePreset, "troll", 20, 3044, 14282},
-		{"at 25", hBM, BarePreset, "dwarf", 25, 3044, 14282},
-		{"at 33", hBM, BarePreset, "troll", 33, 3044, 14282},
-		{"at 34", hBM, BarePreset, "dwarf", 34, 14282, 3044},
-		{"at 39", hBM, BarePreset, "troll", 39, 14282, 3044},
-		{"at 40", hBM, BarePreset, "dwarf", 40, 3044, 14282},
-		{"at 52", hBM, BarePreset, "troll", 52, 14282, 14283},
-		{"Troll at 53", hBM, BarePreset, "troll", 53, 14283, 14282},
-		{"Dwarf at 53", hBM, BarePreset, "dwarf", 53, 14282, 14283},
-		{"at 54", hBM, BarePreset, "dwarf", 54, 14283, 14282},
-		{"at 57", hBM, BarePreset, "troll", 57, 14283, 14282},
-		{"at 58", hBM, BarePreset, "dwarf", 58, 14282, 14283},
-		{"at bare 60", hBM, BarePreset, "troll", 60, 14282, 14287},
-	})
-}
-
 // Round 24: Beast Mastery's Serpent Sting rank 1 row now starts at 20, and
-// rank 2 beats it at 38 and 39 next to Arcane Shot rank 3.
+// rank 2 beats it at 38 and 39.
 func TestRound24BeastMasterySerpentStingRankRows(t *testing.T) {
 	checkHunterRankCases(t, []hunterRankCase{
 		{"at 20", hBM, BarePreset, "troll", 20, 1978, 13550},

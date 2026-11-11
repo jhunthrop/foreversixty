@@ -1138,9 +1138,9 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
     ("spec", "condition", "first"),
     [
         ("shaman-restoration", "right after Nature's Swiftness, on the tank below 25%", 55),
-        # Round 24 (platform, second pass): the gate names Maelstrom Weapon's rank 5 (tag 5),
-        # so the row starts at the fifth point (42 on the leveling order), not the first (37).
-        ("shaman-enhancement", "at 5 Maelstrom Weapon stacks", 39),
+        # Since Blizzard's 10 November hotfix five stacks make the bolt instant and free at any
+        # rank, so the gate names the talent untagged and the row starts at its first point.
+        ("shaman-enhancement", "at 5 Maelstrom Weapon stacks", 35),
         # Round 24 (platform): the gate is on Clearcasting (16246), the aura Elemental Focus
         # (16164) gives; the raid order takes the talent at 52, the leveling build never does.
         ("shaman-enhancement", "on a Clearcasting proc", 57),

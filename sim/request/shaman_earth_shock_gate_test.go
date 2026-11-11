@@ -8,9 +8,8 @@ import (
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
-// maelstromWeaponTalentSpellID is Maelstrom Weapon's talent spell. The
-// engine's trigger aura carries the talent rank as its ActionID tag, and the
-// stacking buff keeps the bare id.
+// maelstromWeaponTalentSpellID is Maelstrom Weapon's talent spell, the
+// stacking buff's id.
 const maelstromWeaponTalentSpellID = 408498
 
 // Sim-accuracy round 18, shaman lane: Enhancement held Earth Shock back below
@@ -35,20 +34,34 @@ func TestEnhancementShocksDownToAQuarterOfItsMana(t *testing.T) {
 	t.Fatal("the Enhancement rotation casts no Earth Shock rank 7")
 }
 
-func TestEnhancementBoltsMaelstromOnlyAtFiveOfFive(t *testing.T) {
+// Blizzard's 10 November hotfix: every Maelstrom Weapon stack takes 20% at
+// every rank, so five stacks make the bolt instant and free from the first
+// point, and the bolt no longer waits for 5/5 (+4.8 to +9.1% at 35 to 38,
+// design/reviews/2026-11-11-sim-accuracy/hotfixes-other-classes.md).
+func TestEnhancementBoltsAtFiveMaelstromStacksAtAnyRank(t *testing.T) {
 	const lightningBolt = 15208
 	for _, item := range enhancementRotation(t).PriorityList {
 		action := item.GetAction()
 		if action.GetCastSpell().GetSpellId().GetSpellId() != lightningBolt {
 			continue
 		}
+		known, stacks := false, false
 		for _, v := range action.GetCondition().GetAnd().GetVals() {
-			id := v.GetAuraIsKnown().GetAuraId()
-			if id.GetSpellId() == maelstromWeaponTalentSpellID && id.GetTag() == 5 {
-				return
+			if id := v.GetAuraIsKnown().GetAuraId(); id.GetSpellId() == maelstromWeaponTalentSpellID {
+				if id.GetTag() != 0 {
+					t.Fatalf("Lightning Bolt still waits for Maelstrom Weapon rank %d: %v", id.GetTag(), action.GetCondition())
+				}
+				known = true
+			}
+			cmp := v.GetCmp()
+			if cmp.GetLhs().GetAuraNumStacks().GetAuraId().GetSpellId() == maelstromWeaponTalentSpellID && cmp.GetRhs().GetConst().GetVal() == "5" {
+				stacks = true
 			}
 		}
-		t.Fatalf("Lightning Bolt's condition does not ask for Maelstrom Weapon 5/5: %v", action.GetCondition())
+		if !known || !stacks {
+			t.Fatalf("Lightning Bolt's condition is not the talent known and five stacks: %v", action.GetCondition())
+		}
+		return
 	}
 	t.Fatal("the Enhancement rotation casts no Lightning Bolt rank 10")
 }

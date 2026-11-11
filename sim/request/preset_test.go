@@ -281,36 +281,29 @@ func TestLayerKeepsTheKitOnTopOfThePreset(t *testing.T) {
 	if !slices.Contains(buffs, "windfury_totem") {
 		t.Errorf("the raid's Windfury Totem is missing from %v", buffs)
 	}
-	if !slices.Contains(consumeIDs, "main_hand_imbue:rockbiter_weapon") || slices.Contains(consumeIDs, "main_hand_imbue:windfury_weapon") {
-		t.Errorf("under the raid's Windfury Totem the kit's Windfury Weapon becomes Rockbiter Weapon: %v", consumeIDs)
+	if !slices.Contains(consumeIDs, "main_hand_imbue:windfury_weapon") || slices.Contains(consumeIDs, "main_hand_imbue:rockbiter_weapon") {
+		t.Errorf("under the raid's Windfury Totem the kit's Windfury Weapon stays: %v", consumeIDs)
 	}
 	if !slices.Contains(consumeIDs, "elixir_of_the_mongoose") {
 		t.Errorf("the preset's other consumables are missing: %v", consumeIDs)
 	}
 }
 
-// Sim-accuracy round 15 (shaman): Windfury Weapon turns off the Windfury
-// Totem for its wielder, and Forever's Rockbiter Weapon is a flat 653 attack
-// power at 60 (client 16313, 554 + 16.5 a level). Wherever a preset carries
-// the totem the kit's Windfury Weapon becomes Rockbiter: +5.7% at 40, +8.7%
-// at 50, +10.1% at bare 60 with the totem added, +4.5% at raid 60. Below the
-// totem's first rank (32) it does nothing, and Windfury Weapon stays (bare 30
-// with Rockbiter is -3.5%); without the totem Windfury Weapon stays.
-func TestLayerSwapsWindfuryWeaponForRockbiterUnderTheTotem(t *testing.T) {
+// Blizzard's 10 November hotfix: "Weapon imbues and Weapon totems can now be
+// used at the same time." Under the raid's Windfury Totem the kit's Windfury
+// Weapon stays at every level (+10.8% at raid 60 over Rockbiter Weapon,
+// 2026-11-11 hotfix lane); round 15's swap to Rockbiter is gone.
+func TestLayerKeepsWindfuryWeaponUnderTheTotem(t *testing.T) {
 	resolved, err := loadRealPresets(t).Resolve(RaidPreset, specs.ByKey["shaman-enhancement"])
 	if err != nil {
 		t.Fatal(err)
 	}
 	kit := []string{"main_hand_imbue:windfury_weapon"}
-	for level, want := range map[int]string{30: "windfury_weapon", 31: "windfury_weapon", 32: "rockbiter_weapon", 60: "rockbiter_weapon"} {
+	for _, level := range []int{30, 32, 60} {
 		_, consumeIDs := resolved.UsableAt(level, loadRealItemLevels(t)).Layer(nil, kit)
-		if !slices.Contains(consumeIDs, "main_hand_imbue:"+want) {
-			t.Errorf("level %d: %v, want %s", level, consumeIDs, want)
+		if !slices.Contains(consumeIDs, "main_hand_imbue:windfury_weapon") || slices.Contains(consumeIDs, "main_hand_imbue:rockbiter_weapon") {
+			t.Errorf("level %d: %v, want Windfury Weapon", level, consumeIDs)
 		}
-	}
-	// The bare preset is the kit alone; a preset without the totem keeps it too.
-	if _, consumeIDs := (ResolvedPreset{}).Layer(nil, kit); !slices.Equal(consumeIDs, kit) {
-		t.Errorf("no totem: %v, want the kit's Windfury Weapon", consumeIDs)
 	}
 }
 

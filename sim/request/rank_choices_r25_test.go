@@ -7,23 +7,13 @@ import "testing"
 // gate on Multi-Shot's cooldown dropped out with Multi-Shot unlearned), so no
 // hunter row below 20 could be judged. Judged level by level with a bow in
 // hand (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and
-// 50001, Troll and Dwarf): rank 1 Arcane Shot wins at 14 to 16 (13 on a Troll
-// Marksman), and at 18 and 19 rank 1 of both shots wins together.
+// 50001, Troll and Dwarf): rank 1 Serpent Sting wins at 18 and 19. (Its Arcane
+// Shot rows are gone since the 10 November hotfix: hotfix_arcane_shot_rank_test.go.)
 func TestRound25LowLevelHunterRankRows(t *testing.T) {
 	checkHunterRankCases(t, []hunterRankCase{
-		{"BM Arcane Shot at 13 keeps rank 2", hBM, BarePreset, "troll", 13, 14281, 3044},
-		{"BM Arcane Shot at 14", hBM, BarePreset, "troll", 14, 3044, 14281},
-		{"BM Arcane Shot at 16", hBM, BarePreset, "dwarf", 16, 3044, 14281},
-		{"BM Arcane Shot at 17 keeps rank 2", hBM, BarePreset, "troll", 17, 14281, 3044},
-		{"BM Arcane Shot at 18", hBM, BarePreset, "dwarf", 18, 3044, 14281},
 		{"BM Serpent Sting at 17 keeps rank 2", hBM, BarePreset, "troll", 17, 13549, 1978},
 		{"BM Serpent Sting at 18", hBM, BarePreset, "troll", 18, 1978, 13550},
 		{"BM Serpent Sting at 19", hBM, BarePreset, "dwarf", 19, 1978, 13550},
-		{"MM Arcane Shot at 13 on a Troll", hMM, BarePreset, "troll", 13, 3044, 14281},
-		{"MM Arcane Shot at 13 on a Dwarf keeps rank 2", hMM, BarePreset, "dwarf", 13, 14281, 3044},
-		{"MM Arcane Shot at 15", hMM, BarePreset, "dwarf", 15, 3044, 14281},
-		{"MM Arcane Shot at 16 keeps rank 2", hMM, BarePreset, "troll", 16, 14281, 3044},
-		{"MM Arcane Shot at 19", hMM, BarePreset, "troll", 19, 3044, 14281},
 		{"MM Serpent Sting at 18", hMM, BarePreset, "dwarf", 18, 1978, 13550},
 	})
 }

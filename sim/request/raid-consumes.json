@@ -5087,39 +5087,6 @@
         ]
       },
       {
-        "from_level": 32,
-        "buffs": [
-          "arcane_brilliance",
-          "gift_of_the_wild",
-          "power_word_fortitude",
-          "divine_spirit",
-          "blessing_of_might",
-          "blessing_of_wisdom",
-          "battle_shout",
-          "trueshot_aura",
-          "heart_of_the_lion",
-          "leader_of_the_pack",
-          "moonkin_aura",
-          "strength_of_earth_totem",
-          "windfury_totem",
-          "mana_spring_totem:improved",
-          "curse_of_elements",
-          "sunder_armor",
-          "faerie_fire",
-          "judgement_of_wisdom",
-          "judgement_of_the_crusader",
-          "judgement_of_light",
-          "hunters_mark",
-          "curse_of_recklessness"
-        ],
-        "consumes": [
-          "main_hand_imbue:rockbiter_weapon",
-          "juju_power",
-          "r_o_i_d_s",
-          "juju_might"
-        ]
-      },
-      {
         "from_level": 35,
         "buffs": [
           "arcane_brilliance",
@@ -5146,7 +5113,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "main_hand_imbue:rockbiter_weapon",
+          "main_hand_imbue:windfury_weapon",
           "food_poached_sunscale_salmon",
           "juju_power",
           "r_o_i_d_s",
@@ -5180,7 +5147,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "main_hand_imbue:rockbiter_weapon",
+          "main_hand_imbue:windfury_weapon",
           "food_smoked_desert_dumpling",
           "juju_power",
           "r_o_i_d_s",
@@ -5214,7 +5181,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "main_hand_imbue:rockbiter_weapon",
+          "main_hand_imbue:windfury_weapon",
           "food_smoked_desert_dumpling",
           "elixir_of_the_mongoose",
           "juju_power",
@@ -5249,7 +5216,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "main_hand_imbue:rockbiter_weapon",
+          "main_hand_imbue:windfury_weapon",
           "food_smoked_desert_dumpling",
           "major_mana_potion",
           "elixir_of_the_mongoose",
@@ -5285,7 +5252,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "main_hand_imbue:rockbiter_weapon",
+          "main_hand_imbue:windfury_weapon",
           "major_frenzy_potion",
           "food_smoked_desert_dumpling",
           "flask_of_natural_aggression",

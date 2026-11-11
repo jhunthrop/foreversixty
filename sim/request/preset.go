@@ -301,7 +301,10 @@ func (r ResolvedPreset) UsableAt(level int, levels ItemLevels) ResolvedPreset {
 // plain or its improved form) is carried once, in the kit's form; a
 // preset consumable whose slot the kit already fills is dropped, so a
 // rogue's poison or an enhancement shaman's Windfury Weapon is never
-// displaced by the preset's weapon imbue; a stone the preset puts on a
+// displaced by the preset's weapon imbue (since Blizzard's 10 November
+// hotfix, "Weapon imbues and Weapon totems can now be used at the same
+// time", Windfury Weapon stays on under the raid's Windfury Totem: +10.8% at
+// raid 60 over the Rockbiter Weapon the preset used to swap in); a stone the preset puts on a
 // hand that holds a poison moves to that hand's stone field instead. Of
 // two preset consumables for one slot the first is carried: Resolve lists
 // the spec's, then the class's, then the group's, and a list puts a
@@ -350,39 +353,7 @@ func (r ResolvedPreset) Layer(kitBuffs, kitConsumes []string) (buffs, consumeIDs
 			}
 		}
 	}
-	return buffs, r.swapImbueUnderWindfuryTotem(buffs, consumeIDs)
-}
-
-// windfuryTotemBuff, windfuryWeaponImbue and rockbiterWeaponImbue are the
-// request ids of the raid's Windfury Totem and the two shaman imbues.
-const (
-	windfuryTotemBuff    = "windfury_totem"
-	windfuryWeaponImbue  = "main_hand_imbue:windfury_weapon"
-	rockbiterWeaponImbue = "main_hand_imbue:rockbiter_weapon"
-	// windfuryTotemFirstLevel is the totem's first rank (8512, learned at
-	// 32; core.WindfuryTotemLevel): below it the buff does nothing.
-	windfuryTotemFirstLevel = 32
-)
-
-// swapImbueUnderWindfuryTotem puts Rockbiter Weapon in place of the kit's
-// Windfury Weapon wherever the buffs carry the Windfury Totem. Windfury
-// Weapon "disables any benefit you personally receive from" the totem, and
-// Forever's Rockbiter Weapon is a flat 653 attack power at 60 (client spell
-// 16313, 554 + 16.5 a level), so under the totem Rockbiter wins: +4.5% at
-// raid 60 and +5.7 to +10.1% at 40 to 60 with the totem added (sim-accuracy
-// round 15, shaman). Below the totem's first rank, or without the totem,
-// Windfury Weapon stays.
-func (r ResolvedPreset) swapImbueUnderWindfuryTotem(buffs, consumeIDs []string) []string {
-	if !slices.Contains(buffs, windfuryTotemBuff) || (r.level != 0 && r.level < windfuryTotemFirstLevel) {
-		return consumeIDs
-	}
-	out := slices.Clone(consumeIDs)
-	for i, id := range out {
-		if id == windfuryWeaponImbue {
-			out[i] = rockbiterWeaponImbue
-		}
-	}
-	return out
+	return buffs, consumeIDs
 }
 
 // roguePoisons are the kit imbues Forever lets share a weapon with a

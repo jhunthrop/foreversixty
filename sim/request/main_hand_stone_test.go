@@ -42,7 +42,7 @@ func TestMeleeMainHandsCarryTheDenseStoneUntilTheElementalStone(t *testing.T) {
 		{"hunter-survival", 60, elemental, "main_hand_imbue"},
 		{"rogue-combat", 40, dense, "main_hand_stone"},
 		{"rogue-combat", 60, elemental, "main_hand_stone"},
-		{"shaman-enhancement", 40, "rockbiter_weapon", "main_hand_imbue"},
+		{"shaman-enhancement", 40, "windfury_weapon", "main_hand_imbue"},
 	} {
 		var got []string
 		for _, id := range ConsumesAtLevel(all[c.spec], c.level) {

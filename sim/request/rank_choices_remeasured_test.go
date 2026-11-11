@@ -150,9 +150,8 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 }
 
 // Rows re-judged at sim-accuracy round 14 (design/reviews/2026-11-04-sim-audit-round14/data.md),
-// each row against the default rule on its own at seeds 1 and 50001, 10000 iterations. Since
-// the 3 November hotfix push (Arcane Shot 217 to 280 at rank 8) Beast Mastery's lower Arcane
-// Shot ranks lose or tie; since Shadow keeps Vampiric Embrace up a Human or Gnome loses with
+// each row against the default rule on its own at seeds 1 and 50001, 10000 iterations (the
+// Arcane Shot rows are gone: hotfix_arcane_shot_rank_test.go); since Shadow keeps Vampiric Embrace up a Human or Gnome loses with
 // Devouring Plague rank 2 at bare 60; Corruption rank 3 at 40 ties for every warlock race.
 func TestRound14RankChoicesCastTheWinningRank(t *testing.T) {
 	for _, c := range []struct {
@@ -160,11 +159,6 @@ func TestRound14RankChoicesCastTheWinningRank(t *testing.T) {
 		level                           int
 		want, not                       int32
 	}{
-		// Round 22 brought Arcane Shot rows back (rank_choices_hunter_r22_test.go): the attack
-		// power share is the same on every rank, so the cheap ranks win while leveling.
-		{"Arcane Shot at 40 is rank 1", "hunter-beast-mastery", "hunter", BarePreset, "troll", 40, 3044, 14284},
-		{"Arcane Shot at 50 is rank 3", "hunter-beast-mastery", "hunter", BarePreset, "dwarf", 50, 14282, 14285},
-		{"Arcane Shot at bare 60 is rank 3", "hunter-beast-mastery", "hunter", BarePreset, "troll", 60, 14282, 14287},
 		{"Human Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "human", 60, 19280, 19276},
 		{"Gnome Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "gnome", 60, 19280, 19276},
 		{"Troll Devouring Plague at bare 60 keeps rank 2", "priest-shadow", "priest", BarePreset, "troll", 60, 19276, 19280},
