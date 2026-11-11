@@ -101,6 +101,14 @@ final class GuildTabCaptureTests: XCTestCase {
         let app = CaptureLaunch.signedIn(tab: "guild", extra: Self.officer)
         sleep(Self.settles)
         save("officer-01-top")
+        // Ping on Discord: the not-answered list, then a mention and its result line (the after-state).
+        let ping = app.buttons["Ping on Discord"]
+        if reveal(app, ping) {
+            tapSteps(ping, "officer-07-ping-list")
+            let mention = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Mention")).firstMatch
+            if reveal(app, mention) { tapSteps(mention, "officer-08-mentioned") }
+            backToRoot(app)
+        }
         let applications = app.descendants(matching: .any)["guild-officer-applications"]
         XCTAssertTrue(reveal(app, applications), "no Applications row")
         save("officer-02-officer-rows")

@@ -1770,7 +1770,7 @@
     <string name="guild_tab_itemLevel" tools:ignore="PluralsCandidate">item level %1$d</string>
     <string name="guild_tab_notAwarded">Not awarded yet</string>
     <string name="guild_tab_gearGaps">Gear gaps</string>
-    <string name="guild_tab_gearGap" tools:ignore="PluralsCandidate">Gear gap %1$d DPS</string>
+    <string name="guild_tab_gearGap" tools:ignore="PluralsCandidate">%1$d DPS</string>
     <string name="guild_tab_yourAttendance">Your attendance</string>
     <string name="guild_tab_raidsOpen" tools:ignore="PluralsCandidate">Raids open at %1$d · you\'re %2$d</string>
     <string name="guild_tab_roster">Roster</string>

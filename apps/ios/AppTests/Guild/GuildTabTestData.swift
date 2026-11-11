@@ -28,9 +28,9 @@ enum GuildTabTestData {
     ]
 
     static let gearGaps = [
-        member("Selka", "druid", "Restoration Druid · item level 62", "Gear gap 41 DPS"),
-        member("Thalrin", "hunter", "Marksmanship Hunter · item level 58", "Gear gap 37 DPS"),
-        member("Kaelra", "mage", "Frost Mage · item level 61", "Gear gap 22 DPS"),
+        member("Selka", "druid", "Restoration Druid · item level 62", "41 DPS"),
+        member("Thalrin", "hunter", "Marksmanship Hunter · item level 58", "37 DPS"),
+        member("Kaelra", "mage", "Frost Mage · item level 61", "22 DPS"),
     ]
 
     static let yourAttendance = member("Thandrel", "warrior", "Fury Warrior", "7 of 8 nights")
@@ -130,6 +130,7 @@ enum GuildTabTestData {
         guild.answers = nil
         guild.cover = nil
         guild.notSynced = nil
+        guild.coming = guild.coming.map(\.countOnly)
         return .guild(guild)
     }
 

@@ -121,7 +121,8 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
             applicantId = extras.applicant?.id,
             needsCount = badge?.count ?: 0,
             live = live?.let { words.live(it, content.head.name, key, words.ownAnswer(it, key)) },
-            roles = shown?.let { RaidRoleLines(res).of(it) }.orEmpty(),
+            // Under 60 the counts alone (`Healers 5`): who is coming, not what the raid still needs (spec 2.1).
+            roles = shown?.let { RaidRoleLines(res).of(it) }.orEmpty().map { if (leveler) it.countOnly() else it },
             // Under 60, Who is coming keeps its roles; the 60s' lines (answers, cover, not synced) stay on the raid page.
             foot = if (leveler) {
                 emptyList()

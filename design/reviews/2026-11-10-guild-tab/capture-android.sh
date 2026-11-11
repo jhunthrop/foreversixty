@@ -127,6 +127,11 @@ for mode in dark light; do
 	# Officer.
 	launch "$OFFICER"
 	shot officer-01-top
+	# Ping on Discord: the not-answered list, then a mention and its result line (the after-state).
+	if steps "Ping on Discord" officer-07-ping-list; then
+		if reveal "Mention*"; then steps "Mention*" officer-08-mentioned || true; fi
+		back
+	fi
 	if reveal "Applications"; then shot officer-02-officer-rows; steps "Applications" officer-03-applications; back; fi
 	if reveal "Setup"; then steps "Setup" officer-04-setup-site || true; front; fi
 	if reveal "Plan a raid"; then steps "Plan a raid" officer-05-plan-site || true; front; fi

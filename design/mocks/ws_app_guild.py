@@ -33,9 +33,9 @@ CLOSE_ROWS = [('Vexa', 'warlock', 56, 'Affliction Warlock'), ('Pell', 'mage', 55
 MISSING = [('Brakka', 'druid', 'Feral Druid &middot; item level 60', '2 of 8 nights'),
            ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', '3 of 7 nights')]
 # An officer's Gear gaps (roster[].addon.gear_gap, largest first) and your own attendance (your roster row's attendance_30).
-GEAR_GAPS = [('Selka', 'druid', 'Restoration Druid &middot; item level 62', 'Gear gap 41 DPS'),
-             ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', 'Gear gap 37 DPS'),
-             ('Kaelra', 'mage', 'Frost Mage &middot; item level 61', 'Gear gap 22 DPS')]
+GEAR_GAPS = [('Selka', 'druid', 'Restoration Druid &middot; item level 62', '41 DPS'),
+             ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', '37 DPS'),
+             ('Kaelra', 'mage', 'Frost Mage &middot; item level 61', '22 DPS')]
 YOURS = ('Thandrel', 'warrior', 'Fury Warrior', '7 of 8 nights')
 # reports[]: title, zone, kills of fights, duration, day.
 LOGS = [('UBRS, Sunday', 'Blackrock Spire', 7, 8, '1 h 32 min', 'Sun 3 Jan'),
@@ -100,9 +100,9 @@ def _head(leveler: bool) -> str:
     return f'<div class="blk-r5" data-region="section-guild"><div class="pn">{head}</div></div>'
 
 
-def _coming(platform: str, officer: bool = False, foot: bool = True) -> str:
+def _coming(platform: str, officer: bool = False, foot: bool = True, targets: bool = True) -> str:
     """Who is coming without its Roster link: the Roster section's link is the one way to the roster on this tab."""
-    return F._r5_coming(platform, officer=officer, foot=foot).replace('<span class="act">Roster &rsaquo;</span>', '', 1)
+    return F._r5_coming(platform, officer=officer, foot=foot, targets=targets).replace('<span class="act">Roster &rsaquo;</span>', '', 1)
 
 
 def _raid_view(platform: str) -> str:
@@ -111,7 +111,7 @@ def _raid_view(platform: str) -> str:
     head = F._r5_head(platform, 'In').replace('Thandrel, Damage', 'Felsnap, Damage')
     gate = f'<p class="gate">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>'
     # Under 60 Who is coming keeps its roles; the 60s' lines (answers, cover, not synced) stay on the raid page.
-    coming = _coming(platform, foot=False)
+    coming = _coming(platform, foot=False, targets=False)
     return head + gate + coming
 
 

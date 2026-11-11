@@ -62,6 +62,9 @@ data class RoleLine(val tally: TallyItem, val names: List<RoleName>, val more: S
 
     /** The names line as plain text (TalkBack, tests): `Mendara, Gravemend, Rainspeaker and 3 more`. */
     val namesText: String get() = names.joinToString(", ") { it.text } + more.orEmpty()
+
+    /** The line without its target, `Healers 5`: under 60 the Guild tab shows who is coming, not what the raid still needs. */
+    fun countOnly(): RoleLine = copy(tally = tally.copy(want = null))
 }
 
 /**

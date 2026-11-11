@@ -122,6 +122,12 @@ struct RoleLineContent: Equatable, Identifiable {
 
     /// The card's meter, only against a target.
     var meter: FSTally.Item? { want.map { FSTally.Item(label: role, have: have, want: $0) } }
+
+    /// The line without its target, `Healers 5`: under 60 the Guild tab shows who is coming, not what the raid
+    /// still needs (spec 2026-11-10-guild-tab.md 2.1).
+    var countOnly: RoleLineContent {
+        RoleLineContent(role: role, have: have, want: nil, names: names, people: people, more: more, split: split)
+    }
 }
 
 /// The Raid tab for a guild member.

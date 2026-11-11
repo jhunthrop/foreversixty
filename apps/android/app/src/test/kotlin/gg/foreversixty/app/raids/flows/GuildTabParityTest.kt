@@ -39,14 +39,14 @@ class GuildTabParityTest {
     @Test fun atCap() = state("guild-tab", GuildTabFixtures.atCap(), guild = 0, activity = 3)
 
     // 2026-11-11, lane guild-tab: the officer's roster is 11 rows under four group labels; their 18.29 line boxes run 2 to 3
-    // taller per row than the mock's, so the sections under the roster sit 27 lower; each section's own height holds.
+    // taller than the mock's over the roster, so the sections under it sit 11 lower; each section's own height holds.
     @Test fun officer() = state(
         "guild-tab-officer", GuildTabFixtures.atCap(officer = true), guild = 6, activity = 3,
         drift = setOf(
-            "section-loot: y 3209, the mock has 3182 (within 8)",
-            "section-pages: y 3839, the mock has 3812 (within 8)",
-            "section-progression: y 3710, the mock has 3683 (within 8)",
-            "section-recent-logs: y 3461, the mock has 3434 (within 8)",
+            "section-loot: y 3175, the mock has 3164 (within 8)",
+            "section-pages: y 3805, the mock has 3794 (within 8)",
+            "section-progression: y 3676, the mock has 3665 (within 8)",
+            "section-recent-logs: y 3427, the mock has 3416 (within 8)",
         ),
     )
 
@@ -125,9 +125,9 @@ object GuildTabFixtures {
     )
 
     private val gearGaps = listOf(
-        GuildMemberLine("Selka", "druid", null, "Restoration Druid · item level 62", "Gear gap 41 DPS"),
-        GuildMemberLine("Thalrin", "hunter", null, "Marksmanship Hunter · item level 58", "Gear gap 37 DPS"),
-        GuildMemberLine("Kaelra", "mage", null, "Frost Mage · item level 61", "Gear gap 22 DPS"),
+        GuildMemberLine("Selka", "druid", null, "Restoration Druid · item level 62", "41 DPS"),
+        GuildMemberLine("Thalrin", "hunter", null, "Marksmanship Hunter · item level 58", "37 DPS"),
+        GuildMemberLine("Kaelra", "mage", null, "Frost Mage · item level 61", "22 DPS"),
     )
 
     private val yourAttendance = GuildMemberLine("Thandrel", "warrior", null, "Fury Warrior", "7 of 8 nights")
@@ -204,6 +204,7 @@ object GuildTabFixtures {
         ready = emptyList(),
         readyStamp = null,
         foot = emptyList(),
+        roles = RaidTabFixtures.guild().roles.map { it.countOnly() },
         tab = sections(leveler = true, officer = false),
         raidsOpen = "Raids open at 60 · you're 36",
         pages = GuildTabPresenter.pagesLeft(RaidTabFixtures.pages, leveler = true),

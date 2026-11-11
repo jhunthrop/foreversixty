@@ -5934,7 +5934,7 @@ enum Copy {
     /// Gear gaps
     static var guildTabGearGaps: String { text("guild.tab.gearGaps") }
 
-    /// Gear gap {n} DPS
+    /// {n} DPS
     static func guildTabGearGap(n: Int) -> String {
         format("guild.tab.gearGap", n)
     }

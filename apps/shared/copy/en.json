@@ -1669,7 +1669,7 @@
     "guild.tab.itemLevel": {"text": "item level {n}", "notPlural": true, "args": {"n": "int"}},
     "guild.tab.notAwarded": "Not awarded yet",
     "guild.tab.gearGaps": "Gear gaps",
-    "guild.tab.gearGap": {"text": "Gear gap {n} DPS", "notPlural": true, "args": {"n": "int"}},
+    "guild.tab.gearGap": {"text": "{n} DPS", "notPlural": true, "args": {"n": "int"}},
     "guild.tab.yourAttendance": "Your attendance",
     "guild.tab.raidsOpen": {"text": "Raids open at {level} · you're {you}", "notPlural": true, "args": {"level": "int", "you": "int"}},
     "guild.tab.roster": "Roster",

@@ -46,5 +46,6 @@ class GuildTabReadyTest {
         val g = guild(36)
         assertTrue(g.ready.isEmpty())
         assertTrue(g.foot.isEmpty())
+        assertTrue(g.roles.all { it.want == null })
     }
 }

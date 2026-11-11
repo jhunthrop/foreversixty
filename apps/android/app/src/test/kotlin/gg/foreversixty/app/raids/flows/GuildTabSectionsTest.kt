@@ -54,7 +54,7 @@ class GuildTabSectionsTest {
     @Test fun `Gear gaps are the three largest, largest first, in the addon's DPS`() {
         val gaps = presenter.gearGaps(GuildFixture.home())
         assertEquals(3, gaps.size)
-        assertTrue(gaps.all { it.trail == "Gear gap 4 DPS" })
+        assertTrue(gaps.all { it.trail == "4 DPS" })
     }
 
     @Test fun `your attendance reads your own nights`() {

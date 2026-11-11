@@ -3550,7 +3550,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gear gap %1$lld DPS"
+            "value": "%1$lld DPS"
           }
         }
       }

@@ -3,6 +3,7 @@ package gg.foreversixty.app.raids.flows
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.session.RelativeAge
+import gg.foreversixty.app.designsystem.Codes
 import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildMember
 import gg.foreversixty.app.model.GuildOfficerApplication
@@ -318,7 +319,7 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
         /** `US PvP`, the site's realm words. */
         fun realm(region: String, ruleset: String): String {
             val rules = if (ruleset.equals("pvp", ignoreCase = true)) "PvP" else ruleset.replaceFirstChar { it.titlecase(Locale.US) }
-            return "${region.uppercase(Locale.US)} $rules"
+            return "${Codes.region(region)} $rules"
         }
         /** Plan a raid names the next two planned raids, as the Calendar row does. */
         const val PLANNED_SHOWN = 2

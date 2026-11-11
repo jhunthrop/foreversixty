@@ -114,13 +114,13 @@ Marksmanship Hunter · item level 58
 Gear gaps
 Selka
 Restoration Druid · item level 62
-Gear gap 41 DPS
+41 DPS
 Thalrin
 Marksmanship Hunter · item level 58
-Gear gap 37 DPS
+37 DPS
 Kaelra
 Frost Mage · item level 61
-Gear gap 22 DPS
+22 DPS
 Your attendance
 Thandrel
 Fury Warrior

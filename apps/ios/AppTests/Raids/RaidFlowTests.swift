@@ -279,6 +279,7 @@ struct RaidFlowLogicTests {
         }
         // Before you pull is a 60's check (spec 2026-11-10-guild-tab.md 2.1).
         #expect(guild.ready == nil)
+        #expect(guild.coming.allSatisfy { $0.want == nil })
     }
 }
 

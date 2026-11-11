@@ -590,10 +590,13 @@ def _r5_roles(roles: list, platform: str, split: bool = True) -> str:
     night's rows on iOS do not)."""
     out = ''
     for role, n, want, people, more in roles:
-        short = want - n
-        tally = f'{n} of {want}' + (f' &middot; {short} short' if short > 0 else '')
         dmg = split and role == 'Damage'
-        title = f'{role} <span class="{"ok" if short <= 0 else "lo"}">{tally}</span>'
+        if want is None:  # no target (the Guild tab under 60): the count alone, in the title's ink
+            title = f'{role} {n}'
+        else:
+            short = want - n
+            tally = f'{n} of {want}' + (f' &middot; {short} short' if short > 0 else '')
+            title = f'{role} <span class="{"ok" if short <= 0 else "lo"}">{tally}</span>'
         if dmg:
             title += f'<span class="split"> &middot; {DAMAGE_SPLIT}</span>'
         names = ', '.join(f'<span style="color:{CLASS_COLOR[c]}">{nm}</span>' for nm, c in people) + (f' and {more} more' if more else '')
@@ -625,7 +628,7 @@ def _cover(platform: str) -> str:
     return '<div class="cov"><span>Missing</span>' + ''.join(gap(k, *g) for k, g in enumerate(gaps)) + '</div>'
 
 
-def _r5_coming(platform: str, officer: bool = False, foot: bool = True) -> str:
+def _r5_coming(platform: str, officer: bool = False, foot: bool = True, targets: bool = True) -> str:
     """Who is coming: the roles, then the other answers' counts, what the cover misses (G4) and, for officers, who signed In
     without syncing this week, as a row that opens the roster filtered to them (G1; iOS counts it as a row)."""
     unsynced = ''
@@ -633,7 +636,8 @@ def _r5_coming(platform: str, officer: bool = False, foot: bool = True) -> str:
         unsynced = (f'<a class="ns sr" href="#"><span>{RAID_NOT_SYNCED}</span><i>&rsaquo;</i></a>' if platform == 'ios'
                     else f'<a class="ns" href="#"><span>{RAID_NOT_SYNCED}</span><i>&rsaquo;</i></a>')
     lines = f'<div class="rfoot"><p>{RAID_ANSWERS}</p>{_cover(platform)}{unsynced}</div>' if foot else ''
-    return _r5_section('Who is coming', _r5_roles(R5_COMING, platform) + lines, action='Roster &rsaquo;')
+    roles = R5_COMING if targets else [(role, n, None, people, more) for role, n, _, people, more in R5_COMING]
+    return _r5_section('Who is coming', _r5_roles(roles, platform) + lines, action='Roster &rsaquo;')
 
 
 def _r5_head(platform: str, answer: str, late_min: int | None = None, status: str = '') -> str:
