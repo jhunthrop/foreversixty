@@ -39,3 +39,16 @@ SHOULD
 3. Give the off-panel yellow links a darker backing or move them onto the panel (contrast on parchment).
 4. Label the DMG Applications square as a Finder placeholder in the capture.
 5. Reconcile the DMG cream with the parchment/dark app palette, or note why it differs.
+
+## Round 2
+
+MUST 1 (dmg-window.png): This is a real Finder window. The Applications folder is Finder's own alias, so the placeholder concern is closed. The 128 pt app icon is the painted seal (seal.icns). The 32 pt band mark is the same LX ring. The 64 px rule (painted at 64 and up, flat at 44 and under) is a stated reason for the two renderings. I read this as the owner's brand asset, not a generated render. Tell 15 does not apply. Keep this condition: the icon must stay the shipped seal.icns and must not be re-rendered.
+
+MUST 2 (reports.png): The link now reads "Open on the site". It no longer repeats the "Your reports" title. Resolved. "Reports will miss health at death, item level, resources and positions." names concrete things a veteran cares about. Fine.
+
+Still open, all SHOULD, carried as follow-ups:
+- The yellow "Open on the site" link sits directly on the parchment, not on the dark panel. Contrast is still weak.
+- The DMG cream field does not appear anywhere in the app.
+- The copy trims from round 1 (settings explainers, "Characters sent" and "Addon" rows, and the Logging and Trash lines).
+
+Verdict: PASS. No visual tell (1, 2, 5, 8, 12, 13, 15) is present, and both MUSTs are met.
