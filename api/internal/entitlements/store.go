@@ -21,6 +21,12 @@ var ErrNotFound = errors.New("entitlements: not found")
 // written. The wrapped message names the guild.
 var ErrWouldDowngrade = errors.New("entitlements: a scoped grant would downgrade a live plan")
 
+// ErrLiveSubscription is returned by Grant when the row is a live Stripe
+// subscription that keeps billing (issue #3 M5): the grant would leave it
+// billing with nothing pointing at it. Cancel it first; one set to end at
+// its period end may be replaced.
+var ErrLiveSubscription = errors.New("entitlements: a grant would replace a live Stripe subscription; cancel it in Stripe first")
+
 // Store is every entitlements table read and write.
 type Store struct {
 	Pool *pgxpool.Pool
@@ -284,11 +290,18 @@ func (s *Store) GuildBillings(ctx context.Context, guildIDs []int64) (map[int64]
 // StripeSubscriptionIDs lists every stripe_subscription_id whose row is
 // still believed live (source = 'stripe', status not canceled) — spec
 // §2.8's reconciliation job input, and part of the Entitlements
-// interface billing.Service depends on (Task 4).
+// interface billing.Service depends on (Task 4) — plus every subscription
+// a grant kept off its row (AnomalyGrantConflict) that no row points at
+// yet, so it takes the row the night the grant lapses.
 func (s *Store) StripeSubscriptionIDs(ctx context.Context) ([]string, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select stripe_subscription_id from entitlements
-		 where source = 'stripe' and status != 'canceled' and stripe_subscription_id is not null`)
+		 where source = 'stripe' and status != 'canceled' and stripe_subscription_id is not null
+		 union
+		 select a.stripe_subscription_id from entitlement_anomalies a
+		 where a.kind = $1 and not exists (
+		   select 1 from entitlements e where e.stripe_subscription_id = a.stripe_subscription_id)`,
+		string(AnomalyGrantConflict))
 	if err != nil {
 		return nil, fmt.Errorf("entitlements: list stripe subscription ids: %w", err)
 	}
@@ -371,6 +384,7 @@ type existingRow struct {
 	// stripeSubscriptionCreated is nil for rows written before it was stored.
 	stripeSubscriptionCreated *time.Time
 	source                    string
+	cancelAtPeriodEnd         bool
 	// features is nil for a whole-plan row.
 	features []string
 	// active is activeClause evaluated now.
@@ -380,23 +394,25 @@ type existingRow struct {
 // existingEntitlementColumns is existingEntitlement's select list, in
 // existingRow's Scan order.
 const existingEntitlementColumns = `e.id, e.status, e.stripe_subscription_id, e.stripe_subscription_created,
-	e.source, e.features, (` + activeClause + `)`
+	e.source, e.cancel_at_period_end, e.features, (` + activeClause + `)`
 
-// existingEntitlement reads subj's row for plan, inside tx — isNew=true
-// and a zero existingRow when no row exists yet.
+// existingEntitlement reads and locks subj's row for plan, inside tx —
+// isNew=true and a zero existingRow when no row exists yet. The row lock
+// keeps a Grant and a Stripe write from both passing their checks on the
+// same row and then writing over each other.
 func existingEntitlement(ctx context.Context, tx pgx.Tx, subj Subject, plan string) (row existingRow, isNew bool, err error) {
 	var q pgx.Row
 	if subj.UserID != nil {
 		q = tx.QueryRow(ctx,
-			`select `+existingEntitlementColumns+` from entitlements e where e.user_id = $1 and e.plan = $2`,
+			`select `+existingEntitlementColumns+` from entitlements e where e.user_id = $1 and e.plan = $2 for update`,
 			*subj.UserID, plan)
 	} else {
 		q = tx.QueryRow(ctx,
-			`select `+existingEntitlementColumns+` from entitlements e where e.guild_id = $1 and e.plan = $2`,
+			`select `+existingEntitlementColumns+` from entitlements e where e.guild_id = $1 and e.plan = $2 for update`,
 			*subj.GuildID, plan)
 	}
 	err = q.Scan(&row.id, &row.status, &row.stripeSubscriptionID, &row.stripeSubscriptionCreated,
-		&row.source, &row.features, &row.active)
+		&row.source, &row.cancelAtPeriodEnd, &row.features, &row.active)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return existingRow{}, true, nil
 	}
@@ -529,6 +545,10 @@ const (
 	// OutcomeStrayTransfer: a transfer whose offer is gone (OfferGone)
 	// would have taken the row. Nothing written; the caller cancels it.
 	OutcomeStrayTransfer UpsertOutcome = "stray_transfer"
+	// OutcomeGrantKept: a live grant holds the row (grantHolds). Nothing
+	// written; a live subscription billing beside it is recorded as an
+	// AnomalyGrantConflict for a human to settle.
+	OutcomeGrantKept UpsertOutcome = "grant_kept"
 )
 
 // UpsertResult is UpsertStripe's outcome. ExistingSubscriptionID names
@@ -574,6 +594,23 @@ func skippedOutcome(existing existingRow, p StripeUpsert) (skipped bool, outcome
 	}
 }
 
+// grantHolds reports whether a live grant keeps its row against p (issue
+// #3 M5), and whether p is a live subscription that keeps billing beside
+// it, which a human must settle. A whole-plan grant holds against every
+// subscription; a scoped grant only against one that grants no access,
+// since a live plan is an upgrade over officer tools alone. An expired or
+// revoked grant holds nothing.
+func grantHolds(existing existingRow, isNew bool, p StripeUpsert) (holds, conflict bool) {
+	if isNew || existing.source != "grant" || !existing.active {
+		return false, false
+	}
+	live := isActiveStatus(p.Status)
+	if existing.features != nil && live {
+		return false, false
+	}
+	return true, live && !p.CancelAtPeriodEnd
+}
+
 // subscriptionCreatedOrNil is the column value for a possibly unknown
 // (zero) created time.
 func subscriptionCreatedOrNil(created time.Time) *time.Time {
@@ -600,6 +637,14 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 		existing, isNew, err := existingEntitlement(ctx, tx, subj, p.Plan)
 		if err != nil {
 			return err
+		}
+		if holds, conflict := grantHolds(existing, isNew, p); holds {
+			result = UpsertResult{Outcome: OutcomeGrantKept}
+			if !conflict {
+				return nil
+			}
+			return recordAnomaly(ctx, tx, &existing.id, p.UserID, p.GuildID, p.Plan,
+				AnomalyGrantConflict, p.StripeSubscriptionID, p.Actor)
 		}
 		if conflictsWithActiveRow(existing, isNew, p) {
 			if skipped, outcome := skippedOutcome(existing, p); skipped {
@@ -648,11 +693,14 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 					then coalesce(excluded.unit_amount_cents, entitlements.unit_amount_cents)
 					else excluded.unit_amount_cents end,
 				trial_end = excluded.trial_end,
+				-- a live subscription ends any retention grace a canceled one left (issue #3 L2)
+				grace_until = case when $14 then null else entitlements.grace_until end,
 				updated_at = now()
 			returning id`,
 			p.UserID, p.GuildID, p.Plan, p.Status, p.CurrentPeriodEnd, p.CancelAtPeriodEnd,
 			p.StripeSubscriptionID, p.BillingUserID, subscriptionCreatedOrNil(p.SubscriptionCreated),
-			tier, nullableText(p.PriceLookupKey), unitAmountOrNil(p.UnitAmountCents), p.TrialEnd).Scan(&id); err != nil {
+			tier, nullableText(p.PriceLookupKey), unitAmountOrNil(p.UnitAmountCents), p.TrialEnd,
+			isActiveStatus(p.Status)).Scan(&id); err != nil {
 			return fmt.Errorf("entitlements: upsert stripe: write: %w", err)
 		}
 		var oldPtr *string
@@ -669,7 +717,9 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 
 // SetCanceled is customer.subscription.deleted's writer (spec §2.6's
 // table): sets status = canceled and, when graceUntil is non-nil, the
-// retention grace (spec §2.7). A subscription id with no matching row is
+// retention grace (spec §2.7). Only a Stripe row is canceled: a grant
+// row that kept the id is the operator's (issue #3 M5). A subscription id
+// with no matching row is
 // not an error — it was never created through this integration, or was
 // already handled by an earlier retry — the call still succeeds.
 func (s *Store) SetCanceled(ctx context.Context, stripeSubscriptionID string, graceUntil *time.Time, actor string) error {
@@ -679,7 +729,7 @@ func (s *Store) SetCanceled(ctx context.Context, stripeSubscriptionID string, gr
 		var userID, guildID *int64
 		var plan, oldStatus string
 		err := tx.QueryRow(ctx,
-			`select id, user_id, guild_id, plan, status from entitlements where stripe_subscription_id = $1`,
+			`select id, user_id, guild_id, plan, status from entitlements where stripe_subscription_id = $1 and source = 'stripe'`,
 			stripeSubscriptionID).Scan(&id, &userID, &guildID, &plan, &oldStatus)
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil
@@ -726,6 +776,9 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 		if !isNew && wouldDowngrade(existing, features) {
 			return fmt.Errorf("%w: %s", ErrWouldDowngrade, describeSubject(subj))
 		}
+		if !isNew && billsOn(existing) {
+			return fmt.Errorf("%w: %s", ErrLiveSubscription, describeSubject(subj))
+		}
 		oldStatus := existing.status
 		var id int64
 		if err := tx.QueryRow(ctx, `
@@ -769,6 +822,12 @@ func wouldDowngrade(existing existingRow, features []string) bool {
 		return false
 	}
 	return existing.source == "stripe" || existing.features == nil
+}
+
+// billsOn reports whether the row is a live Stripe subscription that is
+// not set to end at its period end.
+func billsOn(existing existingRow) bool {
+	return existing.source == "stripe" && existing.active && !existing.cancelAtPeriodEnd
 }
 
 // describeSubject names subj for an error message.

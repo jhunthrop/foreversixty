@@ -422,6 +422,9 @@ func (s *Service) applyUpsert(ctx context.Context, p entitlements.StripeUpsert, 
 	case entitlements.OutcomeDeadNewcomer:
 		s.logger().Info("billing", "op", "dead_newcomer_ignored",
 			"subscription_id", sub.ID, "kept_subscription_id", result.ExistingSubscriptionID)
+	case entitlements.OutcomeGrantKept:
+		s.logger().Warn("billing", "op", "grant_kept_subscription_ignored",
+			"subscription_id", sub.ID, "status", string(sub.Status))
 	case entitlements.OutcomeWritten:
 		return s.afterWritten(ctx, p, sub)
 	}

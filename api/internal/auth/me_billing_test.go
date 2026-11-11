@@ -164,6 +164,10 @@ func TestMe_GrantOverStripeHistoryKeepsPortal(t *testing.T) {
 	h := newHarness(t)
 	uid := h.seedUser(t, "paidthengranted@example.com")
 	h.seedStripePremium(t, uid, "premium_monthly_launch", 600, time.Now().Add(24*time.Hour))
+	// A grant never replaces a subscription that bills on, so the paid one ended first.
+	if err := h.svc.Entitlements.SetCanceled(t.Context(), "sub_premium_monthly_launch", nil, "t"); err != nil {
+		t.Fatal(err)
+	}
 	h.grantPremium(t, uid, nil)
 	// Grant itself clears the subscription id; this pins the view's rule for a grant row
 	// that does carry one (restored by hand, as a support fix would).

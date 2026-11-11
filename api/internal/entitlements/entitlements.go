@@ -81,6 +81,10 @@ const (
 	// AnomalyUnknownPrice is a subscription whose price is not in the
 	// catalog for its plan.
 	AnomalyUnknownPrice AnomalyKind = "unknown_price"
+	// AnomalyGrantConflict is a live subscription that keeps billing for a
+	// subject whose live grant holds the row (issue #3 M5): the row is left
+	// to the grant and a human cancels or refunds the subscription.
+	AnomalyGrantConflict AnomalyKind = "grant_conflict"
 )
 
 // StatusGrantsAccess reports whether a Stripe subscription status counts

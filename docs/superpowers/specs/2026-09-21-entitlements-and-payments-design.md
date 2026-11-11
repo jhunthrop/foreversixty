@@ -657,6 +657,10 @@ func (s *Service) upsertSubscription(ctx context.Context, subscriptionID, actor 
   are purged **unless** the owning account currently has `FeatureRetention` true (§1.3), or
   `grace_until` is set and still in the future. Once `grace_until` passes, retention falls
   back to 90 days exactly as if the account had never been premium.
+  *Amendment 2026-11-11 (issue #3 L2):* no raw-log or saved-sim purge exists yet, so nothing
+  reads `grace_until`; it is kept correct for the purge that will (a live subscription clears
+  it). Until that purge ships, every account keeps everything, which is never less than either
+  tier promises.
 - **Refunds. RULING 9 — refunds are a manual, owner-run process, not a webhook-automated
   one.** Resolving a `charge.refunded` event back to the subscription it belongs to requires
   a multi-step lookup (Charge → PaymentIntent → the invoice-payments list → Invoice →
