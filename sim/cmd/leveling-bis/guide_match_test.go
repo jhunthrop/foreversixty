@@ -65,7 +65,9 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // each with the reason. It exists only while a split ranking lands one
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
-var knownStaleBISFiles = map[string]string{}
+var knownStaleBISFiles = map[string]string{
+	"warrior-protection": "sim-accuracy round 30 moved band 30's leveling talents (threat talents before Anticipation on the dungeon-table boss); the batch re-rank lands it",
+}
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files
 // wear the races and talents their guides name. Not gated like
