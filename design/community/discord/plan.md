@@ -77,9 +77,10 @@ features, and site links through `/go/discord` or `?golink=discord`.
   - invite links (exempt in #lfg-and-recruitment and for staff; our invite and the vanity allowed)
   - real-money-trading and power-leveling keywords
   - Discord's slur list
-- Icon: the painted tile, the same image as the app icon. Banner: the tavern art with the painted
-  seal and "Forever Sixty" (1920×1080, also the invite splash), allowed on this server's boost
-  level. `build-assets.mjs` draws every image; none is placed by hand.
+- Icon: the live seal v4 (owner 2026-11-11: the server icon stays the seal; the painted tile is the
+  bot avatar and the app icon). Banner: the live seal v4 banner (1920×1080), allowed on this
+  server's boost level. Invite splash: the tavern art with the painted seal and "Forever Sixty".
+  `build-assets.mjs` copies the two live images and draws the rest; none is placed by hand.
 - Vanity URL `foreversixty`: set through the API if the server has the VANITY_URL feature,
   otherwise listed for the owner.
 

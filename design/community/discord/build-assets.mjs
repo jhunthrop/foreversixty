@@ -1,19 +1,19 @@
 // design/community/discord/build-assets.mjs
 // Builds every Discord image from the brand sources, so none is placed by hand:
-//   assets/icon.png       server icon: the painted tile (the app icon) at 512 px
+//   assets/icon.png       server icon: the live seal v4 at 512 px (owner 2026-11-11: the server
+//                         icon stays the seal, not the tile), copied from LIVE.icon
 //   assets/avatar.png     the bot's avatar (Developer Portal app icon): the same tile at 1024 px
 //   assets/premium.png    Premium role icon: the flat seal's tiny bold drawing at 64 px (Discord
 //                         shows it at about 20 px beside a name, the size that drawing is for)
 //   assets/crest-<class>.png  class role icons and onboarding emoji: the HD crests at 128 px
 //   assets/<faction>.png  onboarding emoji: the faction logos at 128 px
-//   assets/banner.jpg     server banner, 1920x1080: the tavern art and the painted seal. Discord
-//                         draws the server's name over the banner, so the banner carries no name
+//   assets/banner.jpg     server banner, 1920x1080: the live seal v4 banner, copied from LIVE.banner
 //   assets/splash.jpg     invite background, 1920x1080: the same with "Forever Sixty" in Marcellus
 //                         (the layout is design/assets/art/discord-banner.html)
 // Run from anywhere: node design/community/discord/build-assets.mjs
 // sharp and @playwright/test resolve from web/node_modules. Deterministic for the PNGs; the banner
 // is a browser render.
-import { mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { PNG, renderFlatSeal, renderTile } from '../../../web/scripts/brand-art.mjs';
@@ -42,8 +42,14 @@ function checkSize(name, limit) {
   console.log(`${name.padEnd(20)} ${String(Math.round(bytes / 1024)).padStart(5)} KB  ok`);
 }
 
+/** What is live on the server and stays (owner 2026-11-11): the seal v4 icon and its banner. */
+const LIVE = {
+  icon: 'design/assets/logo/discord-icon-seal-v4-512.png',
+  banner: 'design/assets/art/discord-banner-seal-v4.jpg',
+};
+
 async function buildIdentity() {
-  await sharp(await renderTile(SIZE.icon)).png(PNG).toFile(out('icon.png'));
+  copyFileSync(repo(LIVE.icon), out('icon.png'));
   await sharp(await renderTile(SIZE.avatar)).png(PNG).toFile(out('avatar.png'));
   await sharp(await renderFlatSeal(SIZE.roleIcon, 'tiny')).png(PNG).toFile(out('premium.png'));
   checkSize('icon.png', MAX_BYTES.banner);
@@ -63,10 +69,8 @@ async function buildEmoji() {
 
 const dataUri = (path, type) => `data:${type};base64,${readFileSync(path).toString('base64')}`;
 
-/** Over the layout: a lighter veil, so the room reads at Discord's 240 px sidebar size. The banner
- *  drops the name (Discord prints it over the banner) and shows the seal larger. */
+/** Over the splash layout: a lighter veil, so the room reads at Discord's 240 px sidebar size. */
 const VEIL = '.v{background:radial-gradient(ellipse at center,rgba(23,14,9,.1),rgba(23,14,9,.55))}';
-const BANNER_ONLY = 'h1{display:none}img{width:200px;height:200px}';
 
 /** The banner layout with its three files inlined, so the render needs no server. */
 function bannerHtml(extraCss) {
@@ -85,13 +89,13 @@ async function buildBanners() {
       viewport: { width: BANNER.width, height: BANNER.height },
       deviceScaleFactor: BANNER.scale,
     });
-    for (const [name, css] of [['banner.jpg', VEIL + BANNER_ONLY], ['splash.jpg', VEIL]]) {
-      await page.setContent(bannerHtml(css), { waitUntil: 'load' });
-      await page.evaluate(() => document.fonts.ready);
-      const shot = await page.locator('.b').screenshot({ type: 'png' });
-      writeFileSync(out(name), await sharp(shot).jpeg({ quality: BANNER.quality, mozjpeg: true }).toBuffer());
-      checkSize(name, MAX_BYTES.banner);
-    }
+    copyFileSync(repo(LIVE.banner), out('banner.jpg'));
+    checkSize('banner.jpg', MAX_BYTES.banner);
+    await page.setContent(bannerHtml(VEIL), { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    const shot = await page.locator('.b').screenshot({ type: 'png' });
+    writeFileSync(out('splash.jpg'), await sharp(shot).jpeg({ quality: BANNER.quality, mozjpeg: true }).toBuffer());
+    checkSize('splash.jpg', MAX_BYTES.banner);
   } finally {
     await browser.close();
   }

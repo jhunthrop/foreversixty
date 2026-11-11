@@ -17,14 +17,13 @@ Each command prints one line per file and ends each line in `ok`.
 
 Files are in `design/community/discord/assets/`.
 
-- [ ] **Server icon.** Server Settings > Overview > Server icon: upload `icon.png` (512 px, the painted tile).
-- [ ] **Server banner.** Server Settings > Overview > Server banner (needs boost level 2): upload `banner.jpg` (1920x1080). It has no name on it because Discord draws the server name over the banner.
+- **Server icon and banner: no change.** The owner kept the live seal v4 icon and its banner (2026-11-11); `icon.png` and `banner.jpg` are copies of what is live.
 - [ ] **Invite background.** Server Settings > Overview > Invite background, if the server has it: upload `splash.jpg`, the same art with "Forever Sixty" on it.
-- [ ] **Bot avatar.** Developer Portal > the Forever Sixty application > General Information > App icon: upload `avatar.png` (1024 px, the same tile). Then Bot > Icon: the same file.
+- [ ] **Bot avatar.** Developer Portal > the Forever Sixty application > General Information > App icon: upload `avatar.png` (1024 px, the painted tile). Then Bot > Icon: the same file.
 - [ ] **Premium role icon.** Server Settings > Roles > Premium > Role icon (needs boost level 2): upload `premium.png` (the flat seal's tiny bold drawing; Discord shows it at about 20 px).
 - [ ] **Class crests and faction emoji** are unchanged in look and only rebuilt; re-upload only if Discord shows an old one.
-- [ ] Or run `node design/community/discord/apply.mjs --images` with the bot token. It sets the server icon, banner and role icons, but not the invite background or the bot avatar.
-- [ ] Check: the server list shows the painted seal, and the banner reads at the sidebar's size under the server name.
+- [ ] Or run `node design/community/discord/apply.mjs --images` with the bot token. It sets the server icon, banner and role icons (the icon and banner re-send the live seal v4), but not the invite background or the bot avatar.
+- [ ] Check: the server list still shows the seal v4 icon.
 
 ## CurseForge and Wago
 
