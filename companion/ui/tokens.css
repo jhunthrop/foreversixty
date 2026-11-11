@@ -135,6 +135,18 @@
   --color-veil-band: rgba(5, 58, 84, 0.38);
   /* The raid plaque's flat veil (text 11.9:1). */
   --color-veil-cave: rgba(14, 9, 6, 0.36);
+  /* A white hairline over a dark ground: a row rule, the sign-in link's expiry track. Companion
+     only until the web reads it. */
+  --color-veil-rule: rgba(255, 255, 255, 0.09);
+  /* A progress track over a dark ground (the web's row band ring). Companion only until the web
+     reads it. */
+  --color-veil-track: rgba(255, 255, 255, 0.12);
+  /* White at .72: a tab label that is not current and a footer link (web ui/segmented.css).
+     Companion only until the web reads it. */
+  --color-ink-soft: rgba(255, 255, 255, 0.72);
+  /* The hard black edge every panel, band and overlay draws (web ui/panel.css, band.css,
+     overlay.css). Companion only until the web reads it. */
+  --color-edge: #000000;
   /* c: their footer brown-black. */
   --color-foot: #170e09;
   /* The client tooltip ground (round 4: the client exactly). */
@@ -240,11 +252,17 @@
   --radius-plate: 10px;
   --radius-field: 6px;
   --radius-icon: 3px;
+  /* Fully round: a status dot, a spinner, a switch and its thumb. Companion only until the web
+     reads it. */
+  --radius-round: 999px;
   /* The client tooltip keeps the client's own corner. */
   --radius-tooltip: 4px;
 
   /* Overlays and tooltips. Native sheets use the platform's own scrim and no extra shadow. */
   --shadow-overlay: 0 12px 32px rgba(0, 0, 0, 0.6);
+  /* The display heading's soft shadow on the ground and the band (web global.css h1, h2). Companion
+     only until the web reads it. */
+  --shadow-heading: 0 1px 2px rgba(0, 0, 0, 0.45);
   --row-band-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   /* The selected mark on a row, cell or list item: a 3 px accent bar on its left edge, over the
      selected ground. */

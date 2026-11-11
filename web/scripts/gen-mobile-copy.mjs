@@ -9,6 +9,10 @@
 // (keys discord.*, mail.*, push.event.*, confirm.*), which only the Go target reads:
 //   api/internal/copygen/{app,shared,server}_gen.go   one Go constant per key of each source, so a
 //   word the site, an app and the server all show is the same key everywhere.
+// and the desktop companion's words (the window, the tray, the installers) from
+// apps/shared/copy/companion.json (keys companion.*), which only the companion targets read:
+//   companion/internal/copygen/copy_gen.go   one Go constant per key, the prefix dropped
+//   companion/ui/copy_gen.js                 COPY_TEXT, one entry per key, read by ui/copy.js
 // Run: node web/scripts/gen-mobile-copy.mjs   (src/lib/mobile/copy-codegen.test.ts fails CI when
 // the checked-in files differ from what this produces).
 //
@@ -33,6 +37,9 @@ import {
 export const SOURCE = 'apps/shared/copy/en.json';
 export const SHARED_SOURCE = 'apps/shared/copy/shared.json';
 export const SERVER_SOURCE = 'apps/shared/copy/server.json';
+export const COMPANION_SOURCE = 'apps/shared/copy/companion.json';
+/** The companion's namespace: only the companion targets read companion.json. */
+export const COMPANION_PREFIX = 'companion.';
 const SHARED_PREFIX = 'shared.';
 /** The server's own namespaces: only the Go target reads server.json, so its keys never reach an app. */
 export const SERVER_PREFIXES = ['discord.', 'mail.', 'push.event.', 'confirm.'];
@@ -173,14 +180,19 @@ export function parseEntry(key, value, { server = false } = {}) {
 
 const EMPTY = '{"strings":{}}';
 const isServerKey = (key) => SERVER_PREFIXES.some((prefix) => key.startsWith(prefix));
+const isCompanionKey = (key) => key.startsWith(COMPANION_PREFIX);
 
-/** en.json's entries, then shared.json's, then server.json's. Every shared key starts shared., every
- *  server key starts one of SERVER_PREFIXES, and no app key does either, so a word is in exactly
- *  one of the three files. */
-export function buildCatalog(json, sharedJson = EMPTY, serverJson = EMPTY) {
+/** en.json's entries, then shared.json's, server.json's and companion.json's. Every shared key
+ *  starts shared., every server key one of SERVER_PREFIXES, every companion key companion., and
+ *  no key starts another file's prefix, so a word is in exactly one of the four files. */
+export function buildCatalog(json, sharedJson = EMPTY, serverJson = EMPTY, companionJson = EMPTY) {
   const own = Object.entries(JSON.parse(json).strings ?? {});
   const shared = Object.entries(JSON.parse(sharedJson).strings ?? {});
   const server = Object.entries(JSON.parse(serverJson).strings ?? {});
+  const companion = Object.entries(JSON.parse(companionJson).strings ?? {});
+  for (const [key] of [...own, ...shared, ...server]) {
+    if (isCompanionKey(key)) fail(`${key}: companion.* keys live in ${COMPANION_SOURCE}`);
+  }
   for (const [key] of own) {
     if (key.startsWith(SHARED_PREFIX)) fail(`${key}: shared.* keys live in ${SHARED_SOURCE}`);
     if (isServerKey(key)) fail(`${key}: ${SERVER_PREFIXES.join(' ')} keys live in ${SERVER_SOURCE}`);
@@ -189,9 +201,13 @@ export function buildCatalog(json, sharedJson = EMPTY, serverJson = EMPTY) {
     if (!key.startsWith(SHARED_PREFIX)) fail(`${key}: ${SHARED_SOURCE} keys start shared.`);
   for (const [key] of server)
     if (!isServerKey(key)) fail(`${key}: ${SERVER_SOURCE} keys start ${SERVER_PREFIXES.join(' or ')}`);
+  for (const [key] of companion)
+    if (!isCompanionKey(key)) fail(`${key}: ${COMPANION_SOURCE} keys start ${COMPANION_PREFIX}`);
   const entries = [
     ...[...own, ...shared].map(([k, v]) => parseEntry(k, v)),
     ...server.map(([k, v]) => parseEntry(k, v, { server: true })),
+    // The companion fills its {name} placeholders itself, as the server does.
+    ...companion.map(([k, v]) => ({ ...parseEntry(k, v, { server: true }), server: false, companion: true })),
   ];
   checkAndroidNames(clientEntries(entries));
   const goNames = new Map();
@@ -203,8 +219,8 @@ export function buildCatalog(json, sharedJson = EMPTY, serverJson = EMPTY) {
   return entries;
 }
 
-/** The entries an app or the site shows: everything but server.json's. */
-const clientEntries = (entries) => entries.filter((e) => !e.server);
+/** The entries an app or the site shows: everything but server.json's and companion.json's. */
+const clientEntries = (entries) => entries.filter((e) => !e.server && !e.companion);
 
 /** Checks the app and site keys for Android name clashes; server keys never reach Android. */
 function checkAndroidNames(entries) {
@@ -393,7 +409,13 @@ export function goDeclaration(e) {
  *  the server's copy guard (api/internal/copygen/guard_test.go) skip these files. */
 export function renderGo(entries) {
   const bySource = (e) =>
-    e.server ? SERVER_SOURCE : e.key.startsWith(SHARED_PREFIX) ? SHARED_SOURCE : SOURCE;
+    e.companion
+      ? COMPANION_SOURCE
+      : e.server
+        ? SERVER_SOURCE
+        : e.key.startsWith(SHARED_PREFIX)
+          ? SHARED_SOURCE
+          : SOURCE;
   return Object.fromEntries(
     Object.entries(GO_FILES).map(([source, file]) => {
       const lines = entries
@@ -407,12 +429,71 @@ export function renderGo(entries) {
   );
 }
 
+// Companion ---------------------------------------------------------------------------------
+
+/** Where the companion reads its words: a Go package (the app, the shell and the installers) and
+ *  a plain script the window loads before ui/copy.js. */
+export const COMPANION_GO = join(REPO_ROOT, 'companion/internal/copygen/copy_gen.go');
+export const COMPANION_JS = join(REPO_ROOT, 'companion/ui/copy_gen.js');
+
+/** The key without its namespace, as a name: "companion.tray.quit" is trayQuit (Go: TrayQuit). */
+const companionName = (key) => camel(key.slice(COMPANION_PREFIX.length).replaceAll('.', '_'));
+export const companionGoName = (key) => pascal(key.slice(COMPANION_PREFIX.length).replaceAll('.', '_'));
+
+/** companion.json's entries as one Go file, package copygen (companion/internal/copygen). */
+export function renderCompanionGo(entries) {
+  const lines = entries
+    .filter((e) => e.companion)
+    .map((e) => {
+      const forms = e.forms.ios;
+      const name = companionGoName(e.key);
+      const doc = `// ${name} is ${e.key}: ${docLine(e.plural ? forms.other : forms.text)}`;
+      if (e.plural) {
+        return `${doc}\nvar ${name} = Plural{Count: ${goString(e.plural)}, One: ${goString(forms.one)}, Other: ${goString(forms.other)}}`;
+      }
+      return `${doc}\nconst ${name} = ${goString(forms.text)}`;
+    });
+  const head = [
+    `// Code generated by ${SCRIPT} from ${COMPANION_SOURCE}. DO NOT EDIT.`,
+    '',
+    'package copygen',
+    '',
+  ];
+  return [...head, ...(lines.length ? [lines.join('\n\n'), ''] : [])].join('\n');
+}
+
+/** companion.json's entries as the window's COPY_TEXT: a string per key, a { count, one, other }
+ *  per plural. A plain script (the window has no bundler), exported for node's tests. */
+export function renderCompanionJs(entries) {
+  const body = entries
+    .filter((e) => e.companion)
+    .map((e) => {
+      const forms = e.forms.ios;
+      const value = e.plural
+        ? `{ count: ${goString(e.plural)}, one: ${goString(forms.one)}, other: ${goString(forms.other)} }`
+        : goString(forms.text);
+      return `  ${companionName(e.key)}: ${value},`;
+    });
+  return [
+    `// Code generated by ${SCRIPT} from ${COMPANION_SOURCE}. DO NOT EDIT.`,
+    "'use strict';",
+    '',
+    'const COPY_TEXT = Object.freeze({',
+    ...body,
+    '});',
+    '',
+    "if (typeof module !== 'undefined') module.exports = COPY_TEXT;",
+    '',
+  ].join('\n');
+}
+
 export function generate(
   json = readRepoFile(SOURCE),
   sharedJson = readRepoFile(SHARED_SOURCE),
   serverJson = readRepoFile(SERVER_SOURCE),
+  companionJson = readRepoFile(COMPANION_SOURCE),
 ) {
-  const entries = buildCatalog(json, sharedJson, serverJson);
+  const entries = buildCatalog(json, sharedJson, serverJson, companionJson);
   const client = clientEntries(entries);
   const banner = header(SCRIPT, [SOURCE, SHARED_SOURCE]);
   return {
@@ -421,6 +502,8 @@ export function generate(
     [OUTPUTS.android]: renderAndroid(client, banner),
     ...renderWeb(client, banner),
     ...renderGo(entries),
+    [COMPANION_GO]: renderCompanionGo(entries),
+    [COMPANION_JS]: renderCompanionJs(entries),
   };
 }
 

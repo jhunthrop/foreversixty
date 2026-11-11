@@ -2,16 +2,17 @@
 
     python3 tools/art/dmg_background.py
 
-Writes companion/packaging/macos/dmg-background.png (660 x 400) and dmg-background@2x.png (1320 x 800): the white
-ground, the painted seal and "Forever Sixty" in Marcellus small at the top left, and one short teal arrow from where
-the app sits to where Applications sits. Nothing else.
+Writes companion/packaging/macos/dmg-background.png (660 x 400) and dmg-background@2x.png (1320 x 800): the
+companion window's own head, the site's painted band under its veil with a black edge, the painted seal and
+"Forever Sixty" in Marcellus cream on it; under it the cream ground, and one short teal arrow from where the app
+sits to where Applications sits. Nothing else.
 
-The ground is light on purpose. Finder draws icon labels over a background picture in dark ink in light and dark
-appearance alike (checked on macOS 26, 2026-11-10: a dark ground left "Forever Sixty" unreadable in both), so the
-labels need a light ground: white, as the owner's Discord reference. The ground is the site's white (--color-strong),
-the ink its card brown-black, the short arrow the primary button's teal: all from design/tokens/tokens.json. In dark
-appearance Finder's dark title bar sits over the white; that is expected. The seal beside the name follows the owner's reference (Discord's
-logo and wordmark at the top left). The build is deterministic.
+The ground under the icons is light on purpose. Finder draws icon labels over a background picture in dark ink in
+light and dark appearance alike (checked on macOS 26, 2026-11-10: a dark ground left "Forever Sixty" unreadable in
+both), so the labels sit on the brand's cream (--color-cream, every display heading's ink), and the dark brand
+lives in the band above them, as the companion window opens. Every colour is a token from
+design/tokens/tokens.json (band, veilBand, edge, cream, teal) and the band art is the window's own
+(companion/ui/art/band-1200.webp, the site's). The build is deterministic.
 
 Also writes companion/packaging/macos/dmg-layout.sh, the window and icon places in the shell's terms, so the image
 and the layout share one set of numbers.
@@ -24,6 +25,7 @@ from PIL import Image, ImageDraw, ImageFont
 REPO = Path(__file__).resolve().parents[2]
 TOKENS = REPO / 'design/tokens/tokens.json'
 SEAL = REPO / 'design/assets/logo/lx-seal-v4.png'
+BAND = REPO / 'companion/ui/art/band-1200.webp'
 FONT = REPO / 'api/internal/brand/fonts/Marcellus-Regular.ttf'
 OUT = REPO / 'companion/packaging/macos'
 
@@ -33,11 +35,15 @@ WINDOW = (660, 400)
 TITLE_BAR_PT = 32
 APP_X, DROP_X, ICON_Y = 180, 480, 188
 ICON_PT = 128
-# The wordmark: the seal and the name, small, at the top left.
-MARK_AT = (24, 22)
-SEAL_PT = 28
-NAME_PT = 16
-NAME_GAP = 8
+# The band across the top, as the window's (--band-h is 60 px there), and the wordmark on it: the seal and the
+# name at the window's 24 px gutter, the name at the window's wordmark size (--text-title-phone).
+BAND_PT = 60
+BAND_FOCUS_Y = 0.3  # the window's `center 30%`
+EDGE_PT = 1
+MARK_X = 24
+SEAL_PT = 32
+NAME_PT = 21
+NAME_GAP = 10
 # The arrow runs between the two icons with this much air at each end, at the icons' centre line.
 ARROW_AIR = 70
 ARROW_STROKE = 4
@@ -54,18 +60,41 @@ def token(*path: str) -> str:
     return web or node['$value']
 
 
+def rgba(value: str) -> tuple[int, int, int, int]:
+    """A token colour, '#rrggbb' or 'rgba(r, g, b, a)', as an RGBA tuple."""
+    if value.startswith('#'):
+        return (*(int(value[i:i + 2], 16) for i in (1, 3, 5)), 255)
+    r, g, b, a = (p.strip() for p in value[value.index('(') + 1:-1].split(','))
+    return int(r), int(g), int(b), round(float(a) * 255)
+
+
+def band(w: int, h: int) -> Image.Image:
+    """The painted band cropped to w by h around its focus, under the band veil, as the window draws it."""
+    art = Image.open(BAND).convert('RGB')
+    scale = w / art.width
+    art = art.resize((w, round(art.height * scale)), Image.LANCZOS)
+    top = max(0, min(art.height - h, round((art.height - h) * BAND_FOCUS_Y)))
+    out = Image.new('RGB', (w, h), token('forever', 'band'))
+    out.paste(art.crop((0, top, w, top + h)), (0, 0))
+    veil = Image.new('RGBA', (w, h), rgba(token('forever', 'veilBand')))
+    return Image.alpha_composite(out.convert('RGBA'), veil).convert('RGB')
+
+
 def render(scale: int) -> Image.Image:
     s = scale * SUPERSAMPLE
     w, h = WINDOW[0] * s, WINDOW[1] * s
-    im = Image.new('RGB', (w, h), token('base', 'strong'))
+    im = Image.new('RGB', (w, h), token('forever', 'cream'))
     draw = ImageDraw.Draw(im)
 
+    band_h = BAND_PT * s
+    im.paste(band(w, band_h), (0, 0))
+    draw.rectangle((0, band_h, w, band_h + EDGE_PT * s - 1), fill=token('forever', 'edge'))
+
     seal = Image.open(SEAL).convert('RGBA').resize((SEAL_PT * s, SEAL_PT * s), Image.LANCZOS)
-    x, y = MARK_AT[0] * s, MARK_AT[1] * s
+    x, y = MARK_X * s, (band_h - SEAL_PT * s) // 2
     im.paste(seal, (x, y), seal)
     font = ImageFont.truetype(str(FONT), NAME_PT * s)
-    ink = token('base', 'raised')
-    draw.text((x + (SEAL_PT + NAME_GAP) * s, y + SEAL_PT * s / 2), 'Forever Sixty', font=font, fill=ink, anchor='lm')
+    draw.text((x + (SEAL_PT + NAME_GAP) * s, band_h / 2), 'Forever Sixty', font=font, fill=token('forever', 'cream'), anchor='lm')
 
     arrow = token('forever', 'teal')
     half = ICON_PT / 2

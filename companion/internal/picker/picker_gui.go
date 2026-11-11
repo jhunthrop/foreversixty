@@ -6,6 +6,8 @@ import (
 	"errors"
 
 	"github.com/ncruces/zenity"
+
+	"github.com/jhunthrop/foreversixty/companion/internal/copygen"
 )
 
 // Pick shows the system folder dialog and returns the chosen path. It
@@ -14,7 +16,7 @@ import (
 func Pick() (string, error) {
 	p, err := zenity.SelectFile(
 		zenity.Directory(),
-		zenity.Title("Choose your World of Warcraft folder"),
+		zenity.Title(copygen.PickerTitle),
 	)
 	switch {
 	case errors.Is(err, zenity.ErrCanceled):

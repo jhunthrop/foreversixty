@@ -10,6 +10,8 @@ package shell
 import (
 	"context"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/companion/internal/copygen"
 )
 
 // Options configures the window.
@@ -35,7 +37,7 @@ type Options struct {
 	// the tone changes.
 	Tone func() string
 	// OpenReports opens the player's reports on the site; the tray's
-	// "Open my reports on the site".
+	// "Open your reports".
 	OpenReports func()
 	// FirstClose reports whether this is the first time the player has
 	// closed the window, and remembers that it was. The window then
@@ -57,7 +59,7 @@ const NoticeFor = 4 * time.Second
 // Status headline and its button without scrolling.
 func (o Options) withDefaults() Options {
 	if o.Title == "" {
-		o.Title = "Forever Sixty"
+		o.Title = copygen.Title
 	}
 	if o.Width == 0 {
 		o.Width = 800

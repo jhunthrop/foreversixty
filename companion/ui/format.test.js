@@ -27,7 +27,7 @@ test('a long path is cut at separators only, keeping the drive and the last two 
   }
   // Another flavour folder and a POSIX path.
   assert.strictEqual(FORMAT.pathTruncate('D:\\Games\\Blizzard\\World of Warcraft\\_anniversary_', 38), 'D:\\\u2026\\World of Warcraft\\_anniversary_');
-  assert.strictEqual(FORMAT.pathTruncate('/home/jhunt/Games/World of Warcraft/_classic_era_', 38), '/\u2026/World of Warcraft/_classic_era_');
+  assert.strictEqual(FORMAT.pathTruncate('/home/raider/Games/World of Warcraft/_classic_era_', 38), '/\u2026/World of Warcraft/_classic_era_');
 });
 
 test('a time is today, yesterday or a short date, on the viewer\'s clock', () => {
@@ -400,7 +400,7 @@ test('every count is in the body face, the poll failure disables Check for build
   assert.match(css, /\.bar\.update \{\s*align-items: flex-start/);
   assert.ok(!/\.bar\.update \{\s*justify-content: flex-start/.test(css));
   assert.match(css, /\.tag \{[^}]*var\(--color-teal\)/);
-  assert.match(css, /footer a \{ color: rgba\(255, 255, 255, 0\.72\)/);
+  assert.match(css, /footer a \{ color: var\(--color-ink-soft\)/);
 });
 
 test('the Fights row never shows a bare 0 on an open report', () => {

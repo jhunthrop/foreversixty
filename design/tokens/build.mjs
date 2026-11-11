@@ -6,14 +6,17 @@
 //   api/internal/brand/tokens_gen.go        the colours, radii, strokes and spaces the Go
 //                                           renderers (Discord cards, link previews) draw with,
 //                                           and the font stacks and type roles its HTML pages set
-//   companion/ui/tokens.css                 the web's custom properties on :root, for the desktop companion
+//   companion/ui/tokens.css                 the web's custom properties on :root, for the desktop companion,
+//                                           plus the companion-only ones (native: 'companion')
+//   companion/internal/brand/tokens_gen.go  the same Go palette as the API's, for the companion's
+//                                           native chrome (the Windows title bar and window ground)
 //   addon/ForeverSixty/Tokens.lua           the colours, faces, type roles, spaces, sizes, radii and
 //                                           strokes the in-game addon draws with (Theme.lua reads only it)
 //   apps/android/core/designsystem/src/main/res/values/colors_gen.xml
 //                                           the colours Android's XML resources need before Compose
 //                                           runs (the window and splash ground, the notification accent)
 // Run: node design/tokens/build.mjs. design/tokens/tokens.test.mjs fails CI on a stale output.
-// No dependencies: seven outputs do not need Style Dictionary.
+// No dependencies: eight outputs do not need Style Dictionary.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -29,6 +32,7 @@ export const OUTPUTS = {
   ),
   go: join(ROOT, 'api/internal/brand/tokens_gen.go'),
   companion: join(ROOT, 'companion/ui/tokens.css'),
+  companionGo: join(ROOT, 'companion/internal/brand/tokens_gen.go'),
   lua: join(ROOT, 'addon/ForeverSixty/Tokens.lua'),
   androidXml: join(ROOT, 'apps/android/core/designsystem/src/main/res/values/colors_gen.xml'),
 };
@@ -289,11 +293,15 @@ function cssDeclarations(t, resolve) {
   return [[css, cssValue(t, value, resolve)], ...(t.ext.cssAliases ?? []).map((a) => [a, `var(${css})`])];
 }
 
-/** The declarations of every token the web carries, with their group and token comments. */
-function cssBody({ tokens, groups, resolve }) {
+/** A token only the companion window reads (native: 'companion'): in its tokens.css, never the web's. */
+const isCompanionOnly = (t) => t.native === 'companion';
+
+/** The declarations of every token the output carries (`keep` picks them), with their group and
+ *  token comments. */
+function cssBody({ tokens, groups, resolve }, keep) {
   const out = [];
   let group = null;
-  for (const t of tokens) {
+  for (const t of tokens.filter(keep)) {
     const decls = cssDeclarations(t, resolve);
     if (!decls.length) continue;
     if (t.group !== group) {
@@ -317,7 +325,7 @@ export function renderCss(model) {
       '',
     ),
     '@theme static {',
-    ...cssBody(model),
+    ...cssBody(model, (t) => !isCompanionOnly(t)),
   ];
   out.push('}', '');
   const wide = tokens.filter((t) => t.ext.wide && t.ext.css);
@@ -347,7 +355,7 @@ export function renderCompanionCss(model) {
       '',
     ),
     ':root {',
-    ...cssBody(model),
+    ...cssBody(model, () => true),
     '}',
     '',
   ].join('\n');
@@ -898,6 +906,7 @@ export function generate(doc = JSON.parse(readFileSync(TOKENS_JSON, 'utf8'))) {
   return {
     css: renderCss(model),
     companion: renderCompanionCss(model),
+    companionGo: renderGo(model),
     swift: renderSwift(model),
     kotlin: renderKotlin(model),
     go: renderGo(model),

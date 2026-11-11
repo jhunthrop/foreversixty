@@ -3,7 +3,7 @@
    mock is design/mocks/companion/window.py). Every colour, radius and face is a token from
    tokens.css, which design/tokens/build.mjs generates from design/tokens/tokens.json for the site,
    the apps and this window alike: this sheet composes them and declares no colour of its own
-   (ui/assets_test.go fails on a hex literal here; black and white veils are the only rgba).
+   (ui/assets_test.go fails on a hex literal, an rgba or a px font size or radius here).
    The faces are the site's own subset files, embedded in the binary and served from loopback with
    the page, so no third-party request happens; the band and the ground are the site's art files
    (tools/art/build_art.py copies them to art/). */
@@ -26,7 +26,7 @@
 
   /* Muted ink: the ground's on the earth, the card's on a panel (as the site's global.css). */
   --muted: var(--color-muted-ground);
-  --rule: rgba(255, 255, 255, 0.09);
+  --rule: var(--color-veil-rule);
 
   /* The window's own layout: one 752 px column in the 800 px window, 24 px gutters. */
   --band-h: 60px;
@@ -90,11 +90,11 @@ main.enter { animation: fade-in var(--dur-med) var(--ease); }
 .top header { display: flex; align-items: stretch; gap: 18px; height: 100%; }
 .wordmark {
   display: inline-flex; align-items: center; gap: 10px; flex: none;
-  font: 400 21px/1 var(--font-title);
+  font: 400 var(--text-title-phone)/1 var(--font-title);
   letter-spacing: var(--tracking-heading);
   color: var(--color-cream);
   text-decoration: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  text-shadow: var(--shadow-heading);
 }
 .seal { display: block; width: 32px; height: 32px; flex: none; }
 
@@ -107,8 +107,8 @@ nav button {
   padding: 0 2px;
   border: 0; border-radius: 0;
   background: none;
-  color: rgba(255, 255, 255, 0.72);
-  font: 600 15px/1 var(--font-nav);
+  color: var(--color-ink-soft);
+  font: 600 var(--text-item)/1 var(--font-nav);
   transition: color var(--dur-fast) var(--ease);
 }
 nav button svg { width: 18px; height: 18px; }
@@ -123,13 +123,13 @@ main section.enter { animation: page-in var(--dur-med) var(--ease); }
 
 /* Headings on the ground: the display face in cream with the site's soft shadow, sentence case. */
 h2, h3 {
-  font: 400 22px/28px var(--font-title);
+  font: 400 var(--text-section)/var(--text-section--line-height) var(--font-title);
   letter-spacing: var(--tracking-heading);
   color: var(--color-cream);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  text-shadow: var(--shadow-heading);
 }
 h2 { margin: 0 0 10px; }
-h3 { margin: 22px 0 10px; font-size: 20px; line-height: 26px; }
+h3 { margin: 22px 0 10px; font-size: var(--text-item-lg); line-height: var(--text-item-lg--line-height); }
 .h2line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
 .h2line h2 { margin: 0; }
 .h2line a { font-size: var(--text-small); }
@@ -140,7 +140,7 @@ h3 { margin: 22px 0 10px; font-size: 20px; line-height: 26px; }
   --muted: var(--color-muted-card);
   position: relative;
   background: var(--color-raised);
-  border: 1px solid black;
+  border: 1px solid var(--color-edge);
   border-radius: var(--radius-plate);
   box-shadow: 0 0 0 1px var(--color-panel-edge);
   padding: 18px 20px;
@@ -174,7 +174,7 @@ h3 { margin: 22px 0 10px; font-size: 20px; line-height: 26px; }
   min-height: 38px;
   padding: 7px max(var(--gutter), calc((100% - var(--col)) / 2 + var(--gutter)));
   background: var(--color-nav-bar);
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--color-edge);
   font-size: var(--text-small);
   color: var(--color-strong);
   text-wrap: pretty;
@@ -182,7 +182,7 @@ h3 { margin: 22px 0 10px; font-size: 20px; line-height: 26px; }
 .bar.bad { background: var(--color-death-soft); color: var(--color-cream); align-items: flex-start; }
 .bar.bad .dot { margin-top: 5px; }
 .bar button.ghost { margin-top: 0; min-height: 26px; }
-.bar.update { align-items: flex-start; border-bottom: 0; border-top: 1px solid black; background: var(--color-nav-bar); color: var(--color-cream); }
+.bar.update { align-items: flex-start; border-bottom: 0; border-top: 1px solid var(--color-edge); background: var(--color-nav-bar); color: var(--color-cream); }
 .bar .ghost { margin-left: auto; margin-right: -10px; }
 .first-check { margin-top: 20px; margin-bottom: 0; color: var(--muted); font-size: var(--text-small); }
 
@@ -200,7 +200,7 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; }
 
 .headline .head { display: flex; align-items: center; gap: 12px; position: relative; z-index: 2; }
 .headline .title, .state-line {
-  font: 400 26px/30px var(--font-title);
+  font: 400 var(--text-title)/var(--text-title--line-height) var(--font-title);
   letter-spacing: var(--tracking-heading);
   color: var(--color-cream);
 }
@@ -210,7 +210,7 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; }
 .headline .fig { position: absolute; top: 0; right: 0; text-align: right; white-space: nowrap; }
 .headline .head { position: relative; }
 .headline.has-fig .head, .headline.has-fig .sub { padding-right: 120px; }
-.headline .fig b { display: block; font: 600 26px/30px var(--font-body); color: var(--color-strong); font-variant-numeric: tabular-nums; }
+.headline .fig b { display: block; font: 600 var(--text-title)/var(--text-title--line-height) var(--font-body); color: var(--color-strong); font-variant-numeric: tabular-nums; }
 .headline .fig span { font-size: var(--text-small); color: var(--muted); }
 
 .headline .spinner { width: 18px; height: 18px; }
@@ -219,7 +219,7 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; }
 .headline .actions button { margin-top: 0; }
 .headline .actions a { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
 
-.dot { position: relative; display: inline-block; width: 8px; height: 8px; border-radius: 999px; margin-right: 6px; flex: none; background: var(--tone-off); color: var(--tone-off); }
+.dot { position: relative; display: inline-block; width: 8px; height: 8px; border-radius: var(--radius-round); margin-right: 6px; flex: none; background: var(--tone-off); color: var(--tone-off); }
 .dot.on { background: var(--tone-on); color: var(--tone-on); }
 .dot.bad { background: var(--tone-bad); color: var(--tone-bad); }
 .dot.warn { background: var(--tone-warn); color: var(--tone-warn); }
@@ -244,10 +244,10 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; }
 .row:last-child { border-bottom: 0; }
 .row .k { color: var(--muted); flex: none; }
 .row .v { color: var(--color-strong); text-align: right; min-width: 0; font-variant-numeric: tabular-nums; }
-.mono, .row .v.mono, .v .mono { font-family: var(--font-mono); font-weight: 500; font-size: 12px; font-variant-numeric: tabular-nums; }
+.mono, .row .v.mono, .v .mono { font-family: var(--font-mono); font-weight: 500; font-size: var(--text-label); font-variant-numeric: tabular-nums; }
 .row .v.amber { color: var(--tone-warn); font-weight: 600; }
 .row .v.muted { color: var(--muted); }
-.row .v .sub { display: block; font-size: 12px; line-height: 18px; color: var(--muted); }
+.row .v .sub { display: block; font-size: var(--text-label); line-height: 18px; color: var(--muted); }
 .row .v .sub.warn { color: var(--tone-warn); }
 .row .v .warn { color: var(--tone-warn); font-weight: 600; }
 .row .v .muted-word { color: var(--muted); }
@@ -270,7 +270,7 @@ a:hover { color: var(--color-gold-hover); }
 
 /* ---- form controls ---------------------------------------------------------------------------- */
 
-label, .label { display: block; margin: 0 0 6px; color: var(--color-strong); font: 600 14px/1.3 var(--font-body); }
+label, .label { display: block; margin: 0 0 6px; color: var(--color-strong); font: 600 var(--text-small)/1.3 var(--font-body); }
 .fallback label { margin-top: 16px; }
 input, select {
   width: 100%;
@@ -280,7 +280,7 @@ input, select {
   border-radius: var(--radius-field);
   background: var(--color-bg);
   color: var(--color-text);
-  font: 400 14px/1 var(--font-body);
+  font: 400 var(--text-body)/1 var(--font-body);
   transition: border-color var(--dur-fast) var(--ease);
 }
 input.mono { font: 500 var(--text-small)/1 var(--font-mono); }
@@ -299,14 +299,14 @@ input:focus-visible, select:focus-visible { border-color: var(--color-gold); }
 select:disabled, input:disabled { opacity: 0.45; border-color: var(--color-line); }
 
 /* A switch: a checkbox drawn as a track and a thumb; the teal of the primary when on. */
-.switch { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--color-strong); font: 600 14px/1.3 var(--font-body); }
+.switch { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--color-strong); font: 600 var(--text-item)/1.3 var(--font-body); }
 .switch input {
   appearance: none; flex: none; position: relative;
   width: 40px; height: 22px; min-height: 0; padding: 0; margin: 0;
-  border-radius: 11px;
+  border-radius: var(--radius-round);
 }
 .switch input::after {
-  content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%;
+  content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: var(--radius-round);
   background: var(--color-muted-card);
   transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
 }
@@ -325,7 +325,7 @@ button.action, button.ghost, button.account {
   border-radius: var(--radius-field);
   background: var(--color-blue);
   color: var(--color-strong);
-  font: 600 14px/1 var(--font-body);
+  font: 600 var(--text-small)/1 var(--font-body);
   white-space: nowrap;
   transition: filter var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
@@ -346,7 +346,7 @@ button.action:disabled, button.ghost:disabled, button.account:disabled { opacity
    with the account glyph, on the Device page and wherever Status sends you there. */
 button.primary, button.account { background: var(--color-teal); border-color: var(--color-teal-edge); color: var(--color-strong); }
 button.primary:hover, button.account:hover { background: var(--color-teal-edge); filter: none; }
-button.big, button.account { min-height: 40px; padding: 0 18px; font-size: 15px; }
+button.big, button.account { min-height: 40px; padding: 0 18px; font-size: var(--text-item); }
 button.danger { background: transparent; border-color: var(--color-wipe); color: var(--color-wipe); }
 button.danger:hover { background: var(--color-death-soft); filter: none; }
 
@@ -369,7 +369,7 @@ button.link:hover { color: var(--color-gold-hover); }
 .install:last-child { border-bottom: 0; }
 .install .top-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .name { white-space: nowrap; font-weight: 600; color: var(--color-strong); display: flex; align-items: center; gap: 8px; min-width: 0; }
-.path { display: block; font: 500 12px/1.5 var(--font-mono); color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.path { display: block; font: 500 var(--text-label)/1.5 var(--font-mono); color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .played { display: block; font-size: var(--text-small); line-height: 1.5; color: var(--muted); margin-top: 2px; }
 .install .adv { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-small); color: var(--muted); white-space: nowrap; }
 .install .adv.on { color: var(--tone-on); }
@@ -382,7 +382,7 @@ button.link:hover { color: var(--color-gold-hover); }
   border: 1px solid var(--color-teal-edge); border-radius: var(--radius-field);
   background: var(--color-teal);
   color: var(--color-strong);
-  font: 600 12px/18px var(--font-body);
+  font: 600 var(--text-label)/18px var(--font-body);
 }
 #installs .note { margin: 12px 0; }
 ul.folders { list-style: none; margin: 0; padding: 0; }
@@ -390,7 +390,7 @@ ul.folders li { padding: 8px 0; border-top: 1px solid var(--rule); display: flex
 ul.folders .where { min-width: 0; }
 ul.folders .head { display: flex; align-items: baseline; gap: 10px; }
 ul.folders .played { margin-top: 0; }
-ul.folders .auto { font-size: 12px; color: var(--muted); white-space: nowrap; }
+ul.folders .auto { font-size: var(--text-label); color: var(--muted); white-space: nowrap; }
 ul.folders .note { margin: 0; }
 .label-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
 .label-row .label { margin: 0; }
@@ -409,7 +409,7 @@ ul.reports li {
 ul.reports li:last-child { border-bottom: 0; }
 ul.reports li:hover { background: var(--color-hover); }
 ul.reports .what { min-width: 0; }
-ul.reports .zone { font: 600 15px/1.3 var(--font-body); color: var(--color-strong); }
+ul.reports .zone { font: 600 var(--text-item)/1.3 var(--font-body); color: var(--color-strong); }
 ul.reports .zone a { color: var(--color-strong); text-decoration: none; transition: color var(--dur-fast) var(--ease); }
 ul.reports li:hover .zone a { color: var(--color-gold); }
 /* The whole row is the link; the Copy link button sits above it. */
@@ -417,15 +417,15 @@ ul.reports .zone a::after { content: ''; position: absolute; inset: 0; }
 ul.reports .zone a:focus-visible { outline: none; }
 ul.reports .zone a:focus-visible::after { outline: 2px solid var(--color-gold); outline-offset: -2px; border-radius: var(--radius-plate); }
 ul.reports button { position: relative; z-index: 1; }
-.marker { width: 8px; height: 8px; justify-self: start; border-radius: 999px; }
+.marker { width: 8px; height: 8px; justify-self: start; border-radius: var(--radius-round); }
 .marker.live { background: var(--tone-on); }
 .marker.pending { border: 1.5px solid var(--muted); }
-.when { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.when { color: var(--muted); font-size: var(--text-label); line-height: 1.5; }
 .when .who { color: var(--color-text); }
 .when .live { color: var(--tone-on); font-weight: 600; }
 .when .not-credited { color: var(--tone-warn); font-weight: 600; }
 .empty { padding: 20px; }
-.empty .big-line { font: 400 20px/26px var(--font-title); color: var(--color-cream); margin: 0; }
+.empty .big-line { font: 400 var(--text-item-lg)/var(--text-item-lg--line-height) var(--font-title); color: var(--color-cream); margin: 0; }
 .empty .note { margin: 4px 0 0; }
 .empty button { margin-top: 16px; }
 
@@ -438,27 +438,27 @@ ul.reports button { position: relative; z-index: 1; }
 .cta { margin-top: 16px; }
 .cta button { margin-top: 0; }
 .lede { color: var(--color-text); margin: 8px 0 0; max-width: 60ch; text-wrap: pretty; }
-.fine { color: var(--muted); font-size: 12px; margin: 10px 0 0; }
+.fine { color: var(--muted); font-size: var(--text-label); margin: 10px 0 0; }
 /* The countdown is one sentence in one face; the last minute turns all of it amber. */
 .fine.expires { font-variant-numeric: tabular-nums; }
 .fine.expires.late { color: var(--tone-warn); }
 .reason {
   margin: 12px 0 0; padding: 10px 12px;
-  border: 1px solid black; border-radius: var(--radius-field);
+  border: 1px solid var(--color-edge); border-radius: var(--radius-field);
   background: var(--color-death-soft); color: var(--color-cream);
   font-size: var(--text-small);
 }
 .spinner {
   display: inline-block; width: 16px; height: 16px; flex: none;
   border: 2px solid var(--color-line); border-top-color: var(--color-gold);
-  border-radius: 999px; animation: spin 900ms linear infinite;
+  border-radius: var(--radius-round); animation: spin 900ms linear infinite;
 }
 .code-plate {
   display: inline-block; margin-top: 10px; padding: 10px 20px;
   background: var(--color-bg); border: 1px solid var(--color-line); border-radius: var(--radius-field);
 }
-.code { display: block; font: 500 28px/1.2 var(--font-mono); letter-spacing: 0.16em; color: var(--color-strong); }
-.expiry { width: 200px; height: 3px; margin-top: 10px; border-radius: 2px; background: var(--rule); overflow: hidden; }
+.code { display: block; font: 500 var(--text-stat)/1.2 var(--font-mono); letter-spacing: 0.16em; color: var(--color-strong); }
+.expiry { width: 200px; height: 3px; margin-top: 10px; border-radius: var(--radius-icon); background: var(--rule); overflow: hidden; }
 .expiry > i { display: block; height: 100%; width: 100%; background: var(--color-gold); transition: width 1000ms linear; }
 .link-field { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
 .link-field input { flex: 1; }
@@ -531,10 +531,10 @@ main:has(#settings:not([hidden])) .page { padding-top: 14px; }
 /* ---- footer: the site's brown-black ----------------------------------------------------------- */
 
 /* margin-top: auto keeps it at the foot while main is still hidden for the first answer. */
-footer { --muted: var(--color-muted-card); margin-top: auto; height: var(--footer-h); background: var(--color-foot); border-top: 1px solid black; font-size: 12px; color: var(--muted); }
+footer { --muted: var(--color-muted-card); margin-top: auto; height: var(--footer-h); background: var(--color-foot); border-top: 1px solid var(--color-edge); font-size: var(--text-label); color: var(--muted); }
 footer .inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 100%; }
 footer .foot-left .updated { color: var(--tone-on); }
-footer a { color: rgba(255, 255, 255, 0.72); font-weight: 400; }
+footer a { color: var(--color-ink-soft); font-weight: 400; }
 footer a:hover, footer a:focus-visible { color: var(--color-gold); }
 
 /* ---- motion ----------------------------------------------------------------------------------- */
@@ -550,7 +550,7 @@ footer a:hover, footer a:focus-visible { color: var(--color-gold); }
 .prompt .page { padding-top: 24px; }
 .prompt h1 {
   margin: 0;
-  font: 400 24px/30px var(--font-title);
+  font: 400 var(--text-section-reading)/var(--text-section-reading--line-height) var(--font-title);
   letter-spacing: var(--tracking-heading);
   color: var(--color-cream);
 }
@@ -560,7 +560,7 @@ footer a:hover, footer a:focus-visible { color: var(--color-gold); }
 .prompt #move { margin-top: 22px; }
 /* The setup's progress: a thin accent bar and the step under it, in place of the button. */
 .progress { margin-top: 22px; max-width: 360px; }
-.progress-track { height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.progress-track { height: 4px; border-radius: var(--radius-icon); background: var(--color-veil-track); overflow: hidden; }
 .progress-track span { display: block; height: 100%; width: 0; background: var(--color-teal-edge); transition: width var(--dur-med) var(--ease); }
 .progress .fine { margin-top: 8px; }
 

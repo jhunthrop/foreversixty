@@ -31,6 +31,7 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/character"
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
+	"github.com/jhunthrop/foreversixty/companion/internal/copygen"
 	"github.com/jhunthrop/foreversixty/companion/internal/logger"
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
 	"github.com/jhunthrop/foreversixty/companion/internal/picker"
@@ -459,7 +460,7 @@ func (a *App) addonRecords() []logger.Record {
 func deviceName() string {
 	name, err := os.Hostname()
 	if err != nil || name == "" {
-		return "Forever Sixty companion"
+		return copygen.DeviceDefaultName
 	}
 	return name
 }

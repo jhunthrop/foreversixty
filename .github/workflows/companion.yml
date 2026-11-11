@@ -138,9 +138,9 @@ jobs:
       - uses: actions/setup-node@v4
         if: vars.LAUNCH_MODE != 'true'
         with: { node-version-file: web/.node-version }
-      - name: the window's formatters
+      - name: the window's formatters and copy guard
         if: vars.LAUNCH_MODE != 'true'
-        run: node --test ui/format.test.js
+        run: node --test ui/format.test.js ui/copy.test.js
       - name: the window still compiles
         if: vars.LAUNCH_MODE != 'true'
         # Nothing here runs it; this only proves the cgo build is not
