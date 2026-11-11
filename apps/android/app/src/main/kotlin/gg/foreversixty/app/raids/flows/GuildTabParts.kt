@@ -174,7 +174,7 @@ fun GuildLogsSection(logs: List<GuildLogLine>, actions: GuildTabActions) {
     if (logs.isEmpty()) return
     FlowSection(stringResource(R.string.guild_tab_logs), top = 0.dp, panel = PanelFrame.None) {
         logs.forEachIndexed { index, log ->
-            FlowRow(title = log.title, sub = log.line, value = log.day, last = index == logs.lastIndex, onClick = { actions.onReport(log.id) })
+            FlowRow(title = log.title, sub = log.line, value = log.day, last = index == logs.lastIndex, onClick = { actions.onReport(log.id) }, chevron = true)
         }
     }
 }
@@ -184,7 +184,7 @@ fun GuildLogsSection(logs: List<GuildLogLine>, actions: GuildTabActions) {
 fun GuildProgressSection(progression: GuildProgressLine?, onProgression: () -> Unit) {
     progression ?: return
     FlowSection(stringResource(R.string.guild_tab_progression), top = 0.dp, panel = PanelFrame.None) {
-        FlowRow(title = progression.title, sub = progression.line, last = true, onClick = onProgression)
+        FlowRow(title = progression.title, sub = progression.line, last = true, onClick = onProgression, chevron = true)
     }
 }
 
@@ -228,7 +228,7 @@ fun OfficerSection(rows: List<OfficerShortcut>, onOfficer: (OfficerKind) -> Unit
     FlowSection(stringResource(R.string.guild_tab_officer), top = 0.dp, panel = PanelFrame.None) {
         rows.forEachIndexed { index, row ->
             Column(Modifier.testTag("guild-officer-${row.kind.name.lowercase()}")) {
-                FlowRow(title = row.title, sub = row.line, value = row.count, last = index == rows.lastIndex, onClick = { onOfficer(row.kind) })
+                FlowRow(title = row.title, sub = row.line, value = row.count, last = index == rows.lastIndex, onClick = { onOfficer(row.kind) }, chevron = true)
             }
         }
     }
@@ -250,7 +250,7 @@ fun YourJobSection(jobs: List<RaidJobLine>) {
 @Composable
 fun AssignmentsSection(encounters: List<AssignmentEncounterLine>, onPlanner: () -> Unit) {
     FlowSection(
-        stringResource(R.string.shared_assign_title), action = stringResource(R.string.guild_tab_openPlanner), onAction = onPlanner,
+        stringResource(R.string.shared_assign_title), action = stringResource(R.string.guild_tab_assignPlanner), onAction = onPlanner,
         top = 0.dp, panel = PanelFrame.None,
     ) {
         Column(Modifier.testTag("guild-assignments")) {
@@ -266,7 +266,6 @@ fun AssignmentsSection(encounters: List<AssignmentEncounterLine>, onPlanner: () 
                     )
                 }
             }
-            FlowNote(stringResource(R.string.guild_tab_assignOnSite), Modifier.padding(vertical = FsSpace.space2))
         }
     }
 }

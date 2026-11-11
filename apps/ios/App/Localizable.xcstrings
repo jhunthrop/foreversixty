@@ -3461,13 +3461,13 @@
         }
       }
     },
-    "guild.tab.assignOnSite": {
+    "guild.tab.assignPlanner": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Assigning is on the site."
+            "value": "Assign in planner ›"
           }
         }
       }
@@ -3551,6 +3551,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld DPS"
+          }
+        }
+      }
+    },
+    "guild.tab.gearGapHealing": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld HPS"
+          }
+        }
+      }
+    },
+    "guild.tab.gearGapPoints": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld pts"
           }
         }
       }
@@ -3710,17 +3734,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Officer"
-          }
-        }
-      }
-    },
-    "guild.tab.openPlanner": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open in planner ›"
           }
         }
       }

@@ -34,7 +34,7 @@ with the app unchanged, as the site is. That is the expected result, not a gap.
 | Officer: Applications | officer-03 | officer-03 | The newest applicant's sheet, one tap |
 | Officer: Setup | officer-04 | officer-04 | The site's setup checklist (`{guild page}/setup`) |
 | Officer: Plan a raid | officer-05 | officer-05 | The guild page's Raids tab on the site (`#raids`), where Plan a raid lives |
-| Officer: Assignments › Open in planner | parity `guild-tab-officer` | parity `guild-tab-officer` | The raid's page on the site (`{guild page}/raids/{raid}`); `Assigning is on the site.` |
+| Officer: Assignments › Assign in planner | parity `guild-tab-officer` | parity `guild-tab-officer` | The raid's page on the site (`{guild page}/raids/{raid}`); the label says where assigning happens |
 | Roster at 60 | parity `guild-tab`, `guild-tab-officer` | parity `guild-tab`, `guild-tab-officer` | Round 3: Your attendance (`7 of 8 nights`) for everyone; officers also get Missing raids and Gear gaps (the addon's gap, largest three, `41 DPS`); your own loot award is gold |
 | Your job | parity `guild-tab`, raid page | parity `guild-tab`, raid page | `Whelps, west cave with Kaelra and Thalrin`, `Onyxia · <purpose>`; gone with no slot |
 | No guild | noguild-01 | noguild-01 | `Raids open at 60 · you're 31`, the guilds recruiting the spec (Apply, or `Applied Mon`), Find your guild |

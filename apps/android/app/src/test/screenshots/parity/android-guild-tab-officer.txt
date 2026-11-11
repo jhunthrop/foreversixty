@@ -26,7 +26,7 @@ Setup
 Discord bot, raid schedule and addon sync to go
 4 of 8 done
 Assignments
-Open in planner ›
+Assign in planner ›
 Onyxia
 Main tank
 Grunvald
@@ -47,7 +47,6 @@ Thandrel, Kaelra, Thalrin
 3 of 3
 Whelps, east cave
 0 of 3
-Assigning is on the site.
 Your job
 Whelps, west cave with Kaelra and Thalrin
 Onyxia · Pick up the west cave's whelps in phases 2 and 3 and kill them away from the raid.
@@ -114,7 +113,7 @@ Marksmanship Hunter · item level 58
 Gear gaps
 Selka
 Restoration Druid · item level 62
-41 DPS
+41 HPS
 Thalrin
 Marksmanship Hunter · item level 58
 37 DPS

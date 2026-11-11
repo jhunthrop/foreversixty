@@ -283,7 +283,7 @@ struct AssignmentsSection: View {
     let openPlanner: () -> Void
 
     var body: some View {
-        PanelSection(Copy.sharedAssignTitle, action: (Copy.guildTabOpenPlanner, openPlanner)) {
+        PanelSection(Copy.sharedAssignTitle, action: (Copy.guildTabAssignPlanner, openPlanner)) {
             if encounters.isEmpty {
                 Text(Copy.sharedAssignNothingYet).type(RowType.sub).foregroundStyle(FSColor.text).padding(.vertical, FSSpace.space2)
             }
@@ -296,7 +296,6 @@ struct AssignmentsSection: View {
                     ) { EmptyView() }
                 }
             }
-            Text(Copy.guildTabAssignOnSite).type(RowType.sub).foregroundStyle(FSColor.muted).padding(.vertical, FSSpace.space2)
         }
         .accessibilityIdentifier("guild-assignments")
     }

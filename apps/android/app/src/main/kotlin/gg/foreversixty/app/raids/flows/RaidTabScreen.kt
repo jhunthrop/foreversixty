@@ -189,8 +189,8 @@ private fun NoGuild(view: RaidTabView.NoGuild, actions: RaidTabActions) {
     }
     // Find your guild (spec 2.4): the site's guild finder, then Claim.
     FlowSection(stringResource(R.string.guild_tab_find), top = 0.dp, panel = PanelFrame.None) {
-        FlowRow(stringResource(R.string.guild_tab_search), onClick = actions.onFindGuild)
-        FlowRow(stringResource(R.string.raid_tab_claim), last = true, onClick = actions.onClaim)
+        FlowRow(stringResource(R.string.guild_tab_search), onClick = actions.onFindGuild, chevron = true)
+        FlowRow(stringResource(R.string.raid_tab_claim), last = true, onClick = actions.onClaim, chevron = true)
     }
 }
 
@@ -255,7 +255,7 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
     if (view.pages.isNotEmpty()) {
         FlowSection(view.pagesTitle ?: view.guild, top = 0.dp, panel = PanelFrame.None) {
             view.pages.forEachIndexed { index, page ->
-                FlowRow(page.title, page.sub, last = index == view.pages.lastIndex, onClick = { actions.onPage(page.page) })
+                FlowRow(page.title, page.sub, last = index == view.pages.lastIndex, onClick = { actions.onPage(page.page) }, chevron = true)
             }
         }
     }

@@ -84,4 +84,11 @@ struct GuildTabPresenterTests {
         }
         #expect(GuildTabPresenter.stepWord("other") == nil)
     }
+
+    @Test("a gear gap reads HPS for a healer, DPS for any other spec, points with no spec (the addon's unit)")
+    func gapUnit() {
+        #expect(GuildTabPresenter.gapWords(41, role: "healer", spec: "Restoration") == "41 HPS")
+        #expect(GuildTabPresenter.gapWords(22, role: "dps", spec: "Frost") == "22 DPS")
+        #expect(GuildTabPresenter.gapWords(9, role: nil, spec: nil) == "9 pts")
+    }
 }

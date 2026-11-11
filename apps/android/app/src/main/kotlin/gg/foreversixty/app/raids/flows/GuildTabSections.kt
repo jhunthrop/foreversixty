@@ -158,9 +158,16 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
             GuildMemberLine(
                 row.name, row.className, row.specIcon,
                 listOfNotNull(row.specName, row.itemLevel?.let { res.getString(R.string.guild_tab_itemLevel, it) }).joinToString(SEPARATOR),
-                res.getString(R.string.guild_tab_gearGap, gap),
+                gapWords(gap, row.role, row.spec),
             )
         }
+
+    /** The gap in the addon's unit (Comms.gapUnit): a healer's in HPS, any other known spec's in DPS, else points. */
+    fun gapWords(gap: Int, role: String?, spec: String?): String = when {
+        spec == null -> res.getString(R.string.guild_tab_gearGapPoints, gap)
+        role == HEALER -> res.getString(R.string.guild_tab_gearGapHealing, gap)
+        else -> res.getString(R.string.guild_tab_gearGap, gap)
+    }
 
     /** Your own character's attendance over the last 30 days, when its roster row carries one. */
     fun yourAttendance(home: GuildHome, key: String?): GuildMemberLine? {
@@ -315,6 +322,7 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
         /** Missing raids: at least this many of the last 30 days' nights, and present at under half. */
         const val MISSING_NIGHTS = 4
         private const val GEAR = "gear"
+        private const val HEALER = "healer"
 
         /** `US PvP`, the site's realm words. */
         fun realm(region: String, ruleset: String): String {

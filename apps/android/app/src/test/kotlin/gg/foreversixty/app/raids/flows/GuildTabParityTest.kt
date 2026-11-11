@@ -39,14 +39,14 @@ class GuildTabParityTest {
     @Test fun atCap() = state("guild-tab", GuildTabFixtures.atCap(), guild = 0, activity = 3)
 
     // 2026-11-11, lane guild-tab: the officer's roster is 11 rows under four group labels; their 18.29 line boxes run 2 to 3
-    // taller than the mock's over the roster, so the sections under it sit 11 lower; each section's own height holds.
+    // taller than the mock's over the roster, so the sections under it sit 12 to 13 lower; each section's own height holds.
     @Test fun officer() = state(
         "guild-tab-officer", GuildTabFixtures.atCap(officer = true), guild = 6, activity = 3,
         drift = setOf(
-            "section-loot: y 3175, the mock has 3164 (within 8)",
-            "section-pages: y 3805, the mock has 3794 (within 8)",
-            "section-progression: y 3676, the mock has 3665 (within 8)",
-            "section-recent-logs: y 3427, the mock has 3416 (within 8)",
+            "section-loot: y 3139, the mock has 3127 (within 8)",
+            "section-pages: y 3769, the mock has 3756 (within 8)",
+            "section-progression: y 3640, the mock has 3627 (within 8)",
+            "section-recent-logs: y 3391, the mock has 3379 (within 8)",
         ),
     )
 
@@ -125,7 +125,7 @@ object GuildTabFixtures {
     )
 
     private val gearGaps = listOf(
-        GuildMemberLine("Selka", "druid", null, "Restoration Druid · item level 62", "41 DPS"),
+        GuildMemberLine("Selka", "druid", null, "Restoration Druid · item level 62", "41 HPS"),
         GuildMemberLine("Thalrin", "hunter", null, "Marksmanship Hunter · item level 58", "37 DPS"),
         GuildMemberLine("Kaelra", "mage", null, "Frost Mage · item level 61", "22 DPS"),
     )

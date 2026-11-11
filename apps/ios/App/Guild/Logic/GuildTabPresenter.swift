@@ -217,10 +217,18 @@ struct GuildTabPresenter {
                 GuildMemberLine(
                     name: row.name, className: row.className, specIcon: row.specIcon,
                     line: [row.specName, row.itemLevel.map { Copy.guildTabItemLevel(n: $0) }].compactMap(\.self).joined(separator: " · "),
-                    trail: Copy.guildTabGearGap(n: gap)
+                    trail: Self.gapWords(gap, role: row.role, spec: row.spec)
                 )
             }
     }
+
+    /// The gap in the addon's unit (Comms.gapUnit): a healer's in HPS, any other known spec's in DPS, else points.
+    static func gapWords(_ gap: Int, role: String?, spec: String?) -> String {
+        guard spec != nil else { return Copy.guildTabGearGapPoints(n: gap) }
+        return role == healerRole ? Copy.guildTabGearGapHealing(n: gap) : Copy.guildTabGearGap(n: gap)
+    }
+
+    private static let healerRole = "healer"
 
     /// Your own character's attendance over the last 30 days, when its roster row carries one.
     func yourAttendance(_ home: GuildHome, key: String?) -> GuildMemberLine? {

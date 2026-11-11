@@ -75,7 +75,8 @@ sealed interface FlowLead {
  * [meta] line under it ([styledSub] in place of [sub] for a line in colours), an optional [value]
  * at the right in tabular figures (an Activity row's DPS), and a
  * trailing control that drops under the text at phone width. [slim] rows are 6 above and below and at
- * least 44 tall; others are 10. [unread] puts the gold dot in the gutter. A rule follows unless [last].
+ * least 44 tall; others are 10. [unread] puts the gold dot in the gutter. [chevron] ends a row that opens a
+ * page with the muted chevron, as iOS's rows. A rule follows unless [last].
  */
 @Composable
 fun FlowRow(
@@ -92,6 +93,7 @@ fun FlowRow(
     meta: String? = null,
     styledSub: AnnotatedString? = null,
     value: String? = null,
+    chevron: Boolean = false,
 ) {
     val unreadLabel = androidx.compose.ui.res.stringResource(gg.foreversixty.app.R.string.activity_unread)
     val tap = onClick?.let { Modifier.clickable(role = Role.Button, onClick = it) } ?: Modifier
@@ -135,6 +137,10 @@ fun FlowRow(
             if (value != null) {
                 Spacer(Modifier.width(FsSpace.space3))
                 Text(value, style = VALUE, color = FsColor.strong, maxLines = 1)
+            }
+            if (chevron) {
+                Spacer(Modifier.width(FsSpace.space1))
+                gg.foreversixty.app.reports.ui.Chevron(FsSize.icon20)
             }
         }
         if (trail != null) Box(Modifier.padding(top = FsSpace.space2)) { trail() }

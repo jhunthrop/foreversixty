@@ -33,7 +33,7 @@ CLOSE_ROWS = [('Vexa', 'warlock', 56, 'Affliction Warlock'), ('Pell', 'mage', 55
 MISSING = [('Brakka', 'druid', 'Feral Druid &middot; item level 60', '2 of 8 nights'),
            ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', '3 of 7 nights')]
 # An officer's Gear gaps (roster[].addon.gear_gap, largest first) and your own attendance (your roster row's attendance_30).
-GEAR_GAPS = [('Selka', 'druid', 'Restoration Druid &middot; item level 62', '41 DPS'),
+GEAR_GAPS = [('Selka', 'druid', 'Restoration Druid &middot; item level 62', '41 HPS'),
              ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', '37 DPS'),
              ('Kaelra', 'mage', 'Frost Mage &middot; item level 61', '22 DPS')]
 YOURS = ('Thandrel', 'warrior', 'Fury Warrior', '7 of 8 nights')
@@ -198,15 +198,14 @@ def _your_job() -> str:
 
 def _assignments() -> str:
     """An officer's read-only Assignments (spec 2.3a): every slot, its names (yours in gold, the rest muted, the web's Tag
-    tones), how full; Open in planner, and one plain line that assigning is on the site."""
+    tones), how full; the link says where assigning happens (Assign in planner)."""
     def names(people: list) -> str:
         return ', '.join(f'<span style="color:{"var(--gold)" if n == "Thandrel" else "var(--muted)"}">{n}</span>' for n in people)
     rows = '<p class="grp">Onyxia</p>' + ''.join(
         f'<div class="row"><div class="in"><div><span class="t{" vacant" if not people else ""}">{label}</span>'
         + (f'<span class="s">{names(people)}</span>' if people else '')
         + f'</div><span class="when">{len(people)} of {count}</span></div></div>' for label, count, people in ASSIGNED)
-    rows += '<p class="stamp" style="margin:0">Assigning is on the site.</p>'
-    return F._r5_section('Assignments', rows, action='Open in planner &rsaquo;')
+    return F._r5_section('Assignments', rows, action='Assign in planner &rsaquo;')
 
 
 def _body(state: str, platform: str) -> str:

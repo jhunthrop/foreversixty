@@ -5939,6 +5939,16 @@ enum Copy {
         format("guild.tab.gearGap", n)
     }
 
+    /// {n} HPS
+    static func guildTabGearGapHealing(n: Int) -> String {
+        format("guild.tab.gearGapHealing", n)
+    }
+
+    /// {n} pts
+    static func guildTabGearGapPoints(n: Int) -> String {
+        format("guild.tab.gearGapPoints", n)
+    }
+
     /// Your attendance
     static var guildTabYourAttendance: String { text("guild.tab.yourAttendance") }
 
@@ -6081,11 +6091,8 @@ enum Copy {
         format("guild.tab.jobLine", boss, purpose)
     }
 
-    /// Open in planner ›
-    static var guildTabOpenPlanner: String { text("guild.tab.openPlanner") }
-
-    /// Assigning is on the site.
-    static var guildTabAssignOnSite: String { text("guild.tab.assignOnSite") }
+    /// Assign in planner ›
+    static var guildTabAssignPlanner: String { text("guild.tab.assignPlanner") }
 
     /// {tally} · {n} short
     static func raidTabTallyShort(tally: String, n: Int) -> String {

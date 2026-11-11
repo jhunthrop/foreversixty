@@ -4838,6 +4838,12 @@ const GuildTabGearGaps = "Gear gaps"
 // GuildTabGearGap is guild.tab.gearGap: {n} DPS
 const GuildTabGearGap = "{n} DPS"
 
+// GuildTabGearGapHealing is guild.tab.gearGapHealing: {n} HPS
+const GuildTabGearGapHealing = "{n} HPS"
+
+// GuildTabGearGapPoints is guild.tab.gearGapPoints: {n} pts
+const GuildTabGearGapPoints = "{n} pts"
+
 // GuildTabYourAttendance is guild.tab.yourAttendance: Your attendance
 const GuildTabYourAttendance = "Your attendance"
 
@@ -4952,11 +4958,8 @@ const GuildTabApplied = "Applied {day}"
 // GuildTabJobLine is guild.tab.jobLine: {boss} · {purpose}
 const GuildTabJobLine = "{boss} · {purpose}"
 
-// GuildTabOpenPlanner is guild.tab.openPlanner: Open in planner ›
-const GuildTabOpenPlanner = "Open in planner ›"
-
-// GuildTabAssignOnSite is guild.tab.assignOnSite: Assigning is on the site.
-const GuildTabAssignOnSite = "Assigning is on the site."
+// GuildTabAssignPlanner is guild.tab.assignPlanner: Assign in planner ›
+const GuildTabAssignPlanner = "Assign in planner ›"
 
 // RaidTabTallyShort is raid.tab.tallyShort: {tally} · {n} short
 const RaidTabTallyShort = "{tally} · {n} short"

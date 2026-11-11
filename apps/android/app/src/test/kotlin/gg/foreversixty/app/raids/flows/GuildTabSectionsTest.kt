@@ -51,10 +51,15 @@ class GuildTabSectionsTest {
         assertEquals(listOf(true, false), drops.map { it.yours })
     }
 
-    @Test fun `Gear gaps are the three largest, largest first, in the addon's DPS`() {
+    @Test fun `Gear gaps are the three largest, largest first, each in the addon's unit`() {
         val gaps = presenter.gearGaps(GuildFixture.home())
-        assertEquals(3, gaps.size)
-        assertTrue(gaps.all { it.trail == "4 DPS" })
+        assertEquals(listOf("Rainspeaker" to "4 HPS", "Ursoka" to "4 DPS", "Ombrewood" to "4 HPS"), gaps.map { it.name to it.trail })
+    }
+
+    @Test fun `a gap reads HPS for a healer, DPS for any other spec, points with no spec`() {
+        assertEquals("41 HPS", presenter.gapWords(41, "healer", "Restoration"))
+        assertEquals("22 DPS", presenter.gapWords(22, "dps", "Frost"))
+        assertEquals("9 pts", presenter.gapWords(9, null, null))
     }
 
     @Test fun `your attendance reads your own nights`() {
