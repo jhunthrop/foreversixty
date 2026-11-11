@@ -187,7 +187,7 @@ func TestReportMemberAndOfficer(t *testing.T) {
 	}
 	assertMessageLimits(t, member.Message)
 	head := member.Message.Embeds[0]
-	wantTitle := specString(t, pressHeading, "`/report`", 0, map[string]string{"Title": "Onyxia's Lair", "Weekday": "Thursday", "d": "10", "Month": "December"})
+	wantTitle := specString(t, pressHeading, "`/report`", 0, map[string]string{"Title": "Onyxia's Lair", "Weekday": "Thu", "d": "10", "Month": "Dec"})
 	if head.Title != wantTitle || head.Color != doneGreen || head.Description != "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min" {
 		t.Fatalf("head = %q %d %q", head.Title, head.Color, head.Description)
 	}

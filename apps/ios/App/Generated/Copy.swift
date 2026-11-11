@@ -6870,6 +6870,14 @@ enum Copy {
     /// Your account is deleted. Thanks for playing with us.
     static var sharedAccountDeleteDone: String { text("shared.account.delete.done") }
 
+    /// A fan-made player tool. Not affiliated with Blizzard.
+    static var sharedFooterFanLine: String { text("shared.footer.fanLine") }
+
+    /// © {year} Commish LLC d/b/a Forever Sixty
+    static func sharedFooterOperator(year: String) -> String {
+        format("shared.footer.operator", year)
+    }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }

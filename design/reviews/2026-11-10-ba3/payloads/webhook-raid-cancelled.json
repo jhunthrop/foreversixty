@@ -1,0 +1,37 @@
+{
+  "id": "webhook-raid-cancelled",
+  "title": "webhook: a raid cancelled",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "avatar_url": "https://foreversixty.gg/seal-400.png",
+    "embeds": [
+      {
+        "title": "Cancelled: Onyxia's Lair · Thu 10 Dec",
+        "description": "This raid was cancelled.",
+        "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7",
+        "fields": [
+          {
+            "name": "When",
+            "value": "~~\u003ct:1796954400:t\u003e (\u003ct:1796954400:R\u003e)~~",
+            "inline": true
+          },
+          {
+            "name": "Signed up",
+            "value": "**25 of 40**",
+            "inline": true
+          }
+        ],
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty",
+          "icon_url": "https://foreversixty.gg/seal-400.png"
+        },
+        "thumbnail": {
+          "url": "https://foreversixty.gg/icons/hd/crests/warrior.webp"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 15758187
+      }
+    ],
+    "username": "Forever Sixty"
+  }
+}

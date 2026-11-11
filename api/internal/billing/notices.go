@@ -94,7 +94,7 @@ func (s *Service) renewalMessage(to string, due DueNotice) (mail.Message, error)
 	return billingmail.RenewalEmail(billingmail.Renewal{
 		To: to, Guild: due.Guild, Plan: plan, RenewsOn: due.PeriodEnd, AmountCents: amount,
 		Interval: string(price.Interval), Founder: price.Founder, ManageURL: manageURL,
-	})
+	}, s.now())
 }
 
 func (s *Service) sizeMessage(to string, due DueNotice) (mail.Message, error) {
@@ -106,7 +106,7 @@ func (s *Service) sizeMessage(to string, due DueNotice) (mail.Message, error) {
 	return billingmail.SizeEmail(billingmail.Size{
 		To: to, Guild: due.Guild, Members: due.Members, MemberLimit: catalog.GuildTierMemberLimit, RenewsOn: due.PeriodEnd,
 		RaidGuildCents: raid.AmountCents, Interval: string(raid.Interval), SettingsURL: s.guildBillingURL(due),
-	})
+	}, s.now())
 }
 
 func noticePlan(tier string) billingmail.Plan {

@@ -5,10 +5,7 @@ import (
 	"time"
 )
 
-const (
-	raidGuildTime = `{"name":"Guild time","value":"8 pm CST","inline":true}`
-	lockedText    = "Sign-ups are locked. An officer can still change yours."
-)
+const lockedText = "Sign-ups are locked. An officer can still change yours."
 
 func TestRaidPostStatesMatchTheCopyTable(t *testing.T) {
 	post := func(state RaidPostState) RaidPost { return RaidPost{RaidPosted: onyxiaThursday(), State: state} }
@@ -19,13 +16,13 @@ func TestRaidPostStatesMatchTheCopyTable(t *testing.T) {
 		post RaidPost
 		want string
 	}{
-		"open": {post(PostOpen), `{"title":"Onyxia's Lair · Thursday 10 December",` +
-			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":37810}`},
-		"locked": {post(PostLocked), `{"title":"Onyxia's Lair · Thursday 10 December","description":"` + lockedText + `",` +
-			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":9144196}`},
-		"ended": {post(PostEnded), `{"title":"Onyxia's Lair · Thursday 10 December","description":"This raid has ended.",` +
-			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":9144196}`},
-		"done": {done, `{"title":"Done: Onyxia's Lair · Thursday 10 December","description":"Logged as a raid night.",` +
+		"open": {post(PostOpen), `{"title":"Onyxia's Lair · Thu 10 Dec",` +
+			raidLink + `"fields":[` + raidWhen + `,` + raidSigned + `],` + raidFoot + `"color":37810}`},
+		"locked": {post(PostLocked), `{"title":"Onyxia's Lair · Thu 10 Dec","description":"` + lockedText + `",` +
+			raidLink + `"fields":[` + raidWhen + `,` + raidSigned + `],` + raidFoot + `"color":9144196}`},
+		"ended": {post(PostEnded), `{"title":"Onyxia's Lair · Thu 10 Dec","description":"This raid has ended.",` +
+			raidLink + `"fields":[` + raidWhen + `,` + raidSigned + `],` + raidFoot + `"color":9144196}`},
+		"done": {done, `{"title":"Done: Onyxia's Lair · Thu 10 Dec","description":"Logged as a raid night.",` +
 			raidLink + `"fields":[` + raidWhen + `,{"name":"Came","value":"22 of 23","inline":true},` +
 			`{"name":"Kills","value":"Onyxia 1:42"}],` + raidFoot + `"color":8377482}`},
 	}
@@ -38,16 +35,23 @@ func TestRaidPostStatesMatchTheCopyTable(t *testing.T) {
 	}
 }
 
-func TestBotStatesOmitGuildTimeWithoutAZone(t *testing.T) {
+// The post carries one time cell, When (Discord's own stamp in each reader's clock), and its
+// title the site's raid-row date: the year only when the night falls in another year.
+func TestRaidPostHasOneTimeCellAndTheRaidRowDate(t *testing.T) {
 	for _, state := range []RaidPostState{PostOpen, PostLocked, PostMoved, PostEnded} {
 		in := onyxiaThursday()
-		in.Timezone = ""
 		was := in.StartsAt
-		for _, f := range RaidPostEmbed(RaidPost{RaidPosted: in, State: state, Was: &was}, fixedFinish).Fields {
-			if f.Name == raidCopy.GuildTimeName {
-				t.Fatalf("%s carries Guild time without a zone", state)
+		e := RaidPostEmbed(RaidPost{RaidPosted: in, State: state, Was: &was}, fixedFinish)
+		for _, f := range e.Fields {
+			if f.Name == "Guild time" {
+				t.Fatalf("%s carries a second time cell", state)
 			}
 		}
+	}
+	nextYear := onyxiaThursday()
+	nextYear.StartsAt = time.Date(2027, 1, 14, 2, 0, 0, 0, time.UTC)
+	if got := RaidPostEmbed(RaidPost{RaidPosted: nextYear, State: PostOpen}, fixedFinish).Title; got != "Onyxia's Lair · Wed 13 Jan 2027" {
+		t.Fatalf("title = %q", got)
 	}
 }
 

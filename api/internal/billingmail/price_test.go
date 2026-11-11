@@ -36,22 +36,21 @@ func TestFormatPriceRejectsNegative(t *testing.T) {
 }
 
 func TestEmailDatesUsePacificTime(t *testing.T) {
-	// 05:00 UTC on 19 November is 21:00 PST on the 18th.
-	evening := time.Date(2027, time.November, 19, 5, 0, 0, 0, time.UTC)
-	if got := EmailDate(evening); got != "18 November 2027" {
-		t.Errorf("EmailDate = %q", got)
+	cases := []struct {
+		name string
+		at   time.Time
+		want string
+	}{
+		// 05:00 UTC on 19 November is 21:00 PST on the 18th.
+		{"evening", time.Date(2027, time.November, 19, 5, 0, 0, 0, time.UTC), "18 Nov 2027"},
+		// 08:00 UTC on the 19th is 00:00 PST: the 19th begins.
+		{"midnight", time.Date(2027, time.November, 19, 8, 0, 0, 0, time.UTC), "19 Nov 2027"},
+		// Daylight time: 06:30 UTC on 15 July is 23:30 PDT on the 14th.
+		{"summer", time.Date(2027, time.July, 15, 6, 30, 0, 0, time.UTC), "14 Jul 2027"},
 	}
-	if got := EmailDayMonth(evening); got != "18 November" {
-		t.Errorf("EmailDayMonth = %q", got)
-	}
-	// 08:00 UTC on the 19th is 00:00 PST: the 19th begins.
-	midnight := time.Date(2027, time.November, 19, 8, 0, 0, 0, time.UTC)
-	if got := EmailDayMonth(midnight); got != "19 November" {
-		t.Errorf("EmailDayMonth at midnight = %q", got)
-	}
-	// Daylight time: 06:30 UTC on 15 July is 23:30 PDT on the 14th.
-	summer := time.Date(2027, time.July, 15, 6, 30, 0, 0, time.UTC)
-	if got := EmailDayMonth(summer); got != "14 July" {
-		t.Errorf("EmailDayMonth in PDT = %q", got)
+	for _, c := range cases {
+		if got := EmailDate(c.at); got != c.want {
+			t.Errorf("%s: EmailDate = %q, want %q", c.name, got, c.want)
+		}
 	}
 }

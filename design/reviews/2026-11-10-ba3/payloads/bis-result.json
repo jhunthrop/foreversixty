@@ -1,0 +1,213 @@
+{
+  "id": "bis-result",
+  "title": "Show BiS: the card becomes the typed answer",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "flags": 32832,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 11195250,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "### Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid · Alliance\n-# Head to Legs, 9 of 17 slots. Each gain is over the next best item."
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://site.test/icons/hd/crests/hunter.webp"
+              },
+              "description": "Hunter crest"
+            }
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Beastmaster's Cap**\nHead · Gain not modelled yet\n-# Quest: Saving the Best for Last · requires level 58"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/226887.png"
+              },
+              "description": "Beastmaster's Cap, head item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Amulet of the Darkmoon**\nNeck · +0.3 DPS\n-# Quest: 1200 Tickets - Amulet of the Darkmoon · requires level 55"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/19491.png"
+              },
+              "description": "Amulet of the Darkmoon, neck item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Darkspear Pauldrons**\nShoulder · Same DPS as the next best\n-# Vendor: Creeg Bothunk"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/272105.png"
+              },
+              "description": "Darkspear Pauldrons, shoulder item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Cape of the Black Baron**\nBack · +0.9 DPS\n-# Stratholme · Baron Rivendare"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/13340.png"
+              },
+              "description": "Cape of the Black Baron, back item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Dawn Armor**\nChest · +5.4 DPS\n-# Crafted: Leatherworking"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/252483.png"
+              },
+              "description": "Dawn Armor, chest item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Beastmaster's Bindings**\nWrist · Same DPS as the next best\n-# Quest: An Earnest Proposition · requires level 58"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/226885.png"
+              },
+              "description": "Beastmaster's Bindings, wrist item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Raider Gloves**\nHands · Same DPS as the next best\n-# Vendor: Creeg Bothunk"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/272099.png"
+              },
+              "description": "Raider Gloves, hands item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Belt of Preserved Heads**\nWaist · +0.4 DPS\n-# Quest: A Collection of Heads · requires level 58"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/20216.png"
+              },
+              "description": "Belt of Preserved Heads, waist item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Sentinel's Chain Leggings**\nLegs · +7.4 DPS\n-# Vendor: Illiyana Moonblaze"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/237819.png"
+              },
+              "description": "Sentinel's Chain Leggings, legs item"
+            }
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Share in channel",
+            "custom_id": "share:wRcVfDBv773IPrD4znssowpndDkh_Gaa7uMX4UmbkA0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Feet to Ranged",
+            "custom_id": "gbis:1:pg:hunter:beast-mastery:p1::2"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Change picks",
+            "custom_id": "gbis:1:chg:hunter:beast-mastery:p1:"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "All 17 slots",
+            "url": "https://site.test/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
+          }
+        ]
+      }
+    ],
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

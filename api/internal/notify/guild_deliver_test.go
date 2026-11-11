@@ -55,7 +55,7 @@ func TestGuildDelivererPostsTheRaidEmbeds(t *testing.T) {
 	if len(posts) != 2 || posts[0].URL != guildHookURL {
 		t.Fatalf("posts = %+v", posts)
 	}
-	if posts[0].Embed.Title != "Onyxia's Lair · Thursday 10 December" || posts[1].Embed.Color != cancelColor ||
+	if posts[0].Embed.Title != "Onyxia's Lair · Thu 10 Dec" || posts[1].Embed.Color != cancelColor ||
 		!posts[0].Embed.Timestamp.Equal(fixedFinish) {
 		t.Fatalf("embeds = %+v", posts)
 	}

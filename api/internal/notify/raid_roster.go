@@ -3,29 +3,32 @@ package notify
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 )
 
 // rosterCopy is the roster's words on the raid post (spec 2026-10-28 §P.7, the roster.* rows).
 var rosterCopy = struct {
-	Tanks, Healers, Melee, Ranged string // each takes %d
-	OfTarget                      string // a group heading with its target: %s the heading, %d
-	OverTarget                    string // a group past its target: %s the heading, %d the target, %d over
-	In                            string // a guild event's In list; takes %d
-	Late, Bench, Out              string // each takes %d
+	Tanks, Healers, Melee, Ranged string // each takes {n}
+	OfTarget                      string // a group heading with its target: {heading}, {want}
+	OverTarget                    string // a group past its target: {heading}, {want} the target, {over}
+	In                            string // a guild event's In list; takes {n}
+	Late, Bench, Out              string // each takes {n}
 	Continued                     string
 	Empty                         string
-	More                          string // %d
+	More                          string // {n}
 	OutJoin                       string
 	Sep                           string // between a name and its spec or class in a text line
 	EmojiFormat                   string // %s the emoji name, %s its id, %s the name
 }{
-	Tanks: "Tanks · %d", Healers: "Healers · %d", Melee: "Melee · %d", Ranged: "Ranged · %d", OfTarget: "%s of %d", OverTarget: "%s of %d, %d over",
-	In: "In · %d", Late: "Late · %d", Bench: "Bench · %d", Out: "Out · %d",
-	Continued: "​", Empty: "None yet", More: "and %d more", OutJoin: ", ", Sep: " · ",
+	Tanks: copygen.DiscordRosterTanks, Healers: copygen.DiscordRosterHealers, Melee: copygen.DiscordRosterMelee, Ranged: copygen.DiscordRosterRanged,
+	OfTarget: copygen.DiscordRosterOfTarget, OverTarget: copygen.DiscordRosterOverTarget,
+	In: copygen.DiscordRosterIn, Late: copygen.DiscordRosterLate, Bench: copygen.DiscordRosterBench, Out: copygen.DiscordRosterOut,
+	Continued: "\u200b", Empty: copygen.DiscordRaidSignedNone, More: copygen.DiscordRosterMore, OutJoin: ", ", Sep: " · ",
 	EmojiFormat: "<:%s:%s> %s",
 }
 
@@ -155,12 +158,13 @@ func rosterFieldsWithin(roster []RosterLine, marks Marks, target *RoleTarget, li
 	if countState(roster, rosterIn)+countState(roster, rosterLate) > 0 {
 		for i, g := range rosterGroups {
 			rows := inGroup(roster, g)
-			heading := fmt.Sprintf(g.label, len(rows))
+			heading := counted(g.label, len(rows))
 			if target != nil {
 				want := target.of(g.group)
-				heading = fmt.Sprintf(rosterCopy.OfTarget, heading, want)
+				heading = copygen.Fill(rosterCopy.OfTarget, "{heading}", heading, "{want}", strconv.Itoa(want))
 				if over := len(rows) - want; over > 0 {
-					heading = fmt.Sprintf(rosterCopy.OverTarget, fmt.Sprintf(g.label, len(rows)), want, over)
+					heading = copygen.Fill(rosterCopy.OverTarget, "{heading}", counted(g.label, len(rows)),
+						"{want}", strconv.Itoa(want), "{over}", strconv.Itoa(over))
 				}
 			}
 			fields = append(fields, groupFields(heading, lines(rows, marks), lim.group[i])...)
@@ -168,7 +172,7 @@ func rosterFieldsWithin(roster []RosterLine, marks Marks, target *RoleTarget, li
 		fields = append(fields, listFields(roster, marks, lim)...)
 	}
 	if out := outNames(roster); len(out) > 0 {
-		fields = append(fields, EmbedField{Name: fmt.Sprintf(rosterCopy.Out, len(out)), Value: outValue(out, lim.outChars)})
+		fields = append(fields, EmbedField{Name: counted(rosterCopy.Out, len(out)), Value: outValue(out, lim.outChars)})
 	}
 	return fields
 }
@@ -190,10 +194,10 @@ func eventRosterFields(roster []RosterLine, _ Marks, lim rosterLimits) []EmbedFi
 		for i, r := range rows {
 			ls[i] = textLine(rosterName(r.Name), r.Class, raidspec.Spec{}, false)
 		}
-		fields = append(fields, groupFields(fmt.Sprintf(list.label, len(rows)), ls, list.most)...)
+		fields = append(fields, groupFields(counted(list.label, len(rows)), ls, list.most)...)
 	}
 	if out := outNames(roster); len(out) > 0 {
-		fields = append(fields, EmbedField{Name: fmt.Sprintf(rosterCopy.Out, len(out)), Value: outValue(out, lim.outChars)})
+		fields = append(fields, EmbedField{Name: counted(rosterCopy.Out, len(out)), Value: outValue(out, lim.outChars)})
 	}
 	return fields
 }
@@ -206,7 +210,7 @@ func listFields(roster []RosterLine, marks Marks, lim rosterLimits) []EmbedField
 		most         int
 	}{{rosterCopy.Late, rosterLate, lim.late}, {rosterCopy.Bench, rosterBench, lim.bench}} {
 		if rows := sortedState(roster, list.state); len(rows) > 0 {
-			fields = append(fields, EmbedField{Name: fmt.Sprintf(list.label, len(rows)),
+			fields = append(fields, EmbedField{Name: counted(list.label, len(rows)),
 				Value: fitValue(capped(lines(rows, marks), list.most)), Inline: true})
 		}
 	}
@@ -298,7 +302,7 @@ func capped(ls []string, most int) []string {
 		return ls
 	}
 	keep := most - 1
-	return append(append([]string{}, ls[:keep]...), fmt.Sprintf(rosterCopy.More, len(ls)-keep))
+	return append(append([]string{}, ls[:keep]...), counted(rosterCopy.More, len(ls)-keep))
 }
 
 // fitValue joins lines, dropping tail lines into `and {n} more` while the value would pass 1024
@@ -376,15 +380,20 @@ func outValue(names []string, budget int) string {
 		}
 		need := utf8.RuneCountInString(next)
 		if rest := len(names) - i - 1; rest > 0 {
-			need += utf8.RuneCountInString(rosterCopy.OutJoin + fmt.Sprintf(rosterCopy.More, rest))
+			need += utf8.RuneCountInString(rosterCopy.OutJoin + counted(rosterCopy.More, rest))
 		}
 		if need > budget {
 			if i == 0 {
-				return fmt.Sprintf(rosterCopy.More, len(names))
+				return counted(rosterCopy.More, len(names))
 			}
-			return value + rosterCopy.OutJoin + fmt.Sprintf(rosterCopy.More, len(names)-i)
+			return value + rosterCopy.OutJoin + counted(rosterCopy.More, len(names)-i)
 		}
 		value = next
 	}
 	return value
+}
+
+// counted fills a label's {n}: "Tanks · 4", "and 3 more".
+func counted(label string, n int) string {
+	return copygen.Fill(label, "{n}", strconv.Itoa(n))
 }

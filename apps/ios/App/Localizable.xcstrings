@@ -18102,6 +18102,29 @@
         }
       }
     },
+    "shared.footer.fanLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A fan-made player tool. Not affiliated with Blizzard."
+          }
+        }
+      }
+    },
+    "shared.footer.operator": {
+      "comment": "Arguments: 1 year (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "© %1$@ Commish LLC d/b/a Forever Sixty"
+          }
+        }
+      }
+    },
     "shared.home.bisLink": {
       "extractionState": "manual",
       "localizations": {

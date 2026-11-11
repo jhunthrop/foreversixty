@@ -22,21 +22,41 @@ func TestResendPostsExpectedJSON(t *testing.T) {
 		_, _ = w.Write([]byte(`{"id":"1"}`))
 	}))
 	defer srv.Close()
-	m := NewResend("key", "Forever Sixty <hello@foreversixty.gg>", srv.Client())
+	sender := Sender{From: "Forever Sixty <help@foreversixty.gg>", ReplyTo: "help@foreversixty.gg"}
+	m := NewResend("key", sender, srv.Client())
 	m.endpoint = srv.URL
-	err := m.Send(context.Background(), Message{To: "a@b.c", Subject: "Confirm", Text: "hi"})
+	err := m.Send(context.Background(), Message{To: "a@b.c", Subject: "Confirm", Text: "hi", HTML: "<p>hi</p>"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got["subject"] != "Confirm" || got["text"] != "hi" {
+	if got["subject"] != "Confirm" || got["text"] != "hi" || got["html"] != "<p>hi</p>" {
 		t.Fatalf("payload = %v", got)
 	}
-	if got["from"] != "Forever Sixty <hello@foreversixty.gg>" {
-		t.Errorf("from = %q", got["from"])
+	if got["from"] != sender.From || got["reply_to"] != sender.ReplyTo {
+		t.Errorf("from = %q, reply_to = %q", got["from"], got["reply_to"])
 	}
 	to, ok := got["to"].([]any)
 	if !ok || len(to) != 1 || to[0] != "a@b.c" {
 		t.Errorf("to = %v", got["to"])
+	}
+}
+
+func TestResendLeavesOutAnEmptyReplyToAndHTML(t *testing.T) {
+	var got map[string]any
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_ = json.NewDecoder(r.Body).Decode(&got)
+	}))
+	defer srv.Close()
+	m := NewResend("key", Sender{From: "sender@example.com"}, srv.Client())
+	m.endpoint = srv.URL
+	if err := m.Send(context.Background(), Message{To: "a@b.c", Subject: "s", Text: "t"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := got["reply_to"]; ok {
+		t.Errorf("reply_to sent empty: %v", got)
+	}
+	if _, ok := got["html"]; ok {
+		t.Errorf("html sent empty: %v", got)
 	}
 }
 
@@ -45,7 +65,7 @@ func TestResendNon2xxIsError(t *testing.T) {
 		w.WriteHeader(500)
 	}))
 	defer srv.Close()
-	m := NewResend("key", "sender@example.com", srv.Client())
+	m := NewResend("key", Sender{From: "sender@example.com"}, srv.Client())
 	m.endpoint = srv.URL
 	err := m.Send(context.Background(), Message{To: "user@example.com", Subject: "Test", Text: "body"})
 	if err == nil {
@@ -62,7 +82,7 @@ func TestResendTransportErrorIsWrapped(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
 	closedURL := srv.URL
 	srv.Close()
-	m := NewResend("key", "sender@example.com", http.DefaultClient)
+	m := NewResend("key", Sender{From: "sender@example.com"}, http.DefaultClient)
 	m.endpoint = closedURL
 	err := m.Send(context.Background(), Message{To: "user@example.com", Subject: "Test", Text: "body"})
 	if err == nil {

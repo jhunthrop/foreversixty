@@ -94,9 +94,9 @@ func TestNotices_RenewalPremiumAndGuild(t *testing.T) {
 	}
 	all := strings.Join(subjects, "|") + strings.Join(bodies, "|")
 	for _, want := range []string{
-		"Your Premium plan renews on 17 November", "Your Guild plan renews on 12 November",
+		"Your Premium plan renews on 17 Nov 2027", "Your Guild plan renews on 12 Nov 2027",
 		"https://foreversixty.gg/account#plan", "https://foreversixty.gg/guild/us/hardcore/olympus-xxvii/settings#billing",
-		"$120 a year, your founder price",
+		"Price: $120 a year\n", "Founder price, kept while your plan stays active.",
 	} {
 		if !strings.Contains(all, want) {
 			t.Errorf("missing %q in %q", want, all)
@@ -177,7 +177,7 @@ func TestNotices_SizeAbove25Only(t *testing.T) {
 	if m.Subject != "Olympus XXVII has 26 members; Guild covers 25" {
 		t.Errorf("subject %q", m.Subject)
 	}
-	if !strings.Contains(m.Text, "Raid guild at $20 a month") || !strings.Contains(m.Text, "/guild/us/hardcore/olympus-xxvii/settings#billing") {
+	if !strings.Contains(m.Text, "Raid guild: $20 a month\n") || !strings.Contains(m.Text, "/guild/us/hardcore/olympus-xxvii/settings#billing") {
 		t.Errorf("body %q", m.Text)
 	}
 }

@@ -10,10 +10,18 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
-// defaultMailFrom is used when MAIL_FROM is not set.
-const defaultMailFrom = "Forever Sixty <hello@foreversixty.gg>"
+// The sender when MAIL_FROM and MAIL_REPLY_TO are not set: help@ is the address the site and the
+// mail footer give (owner 2026-11-10), a Google Workspace inbox, so a reply reaches a person.
+// foreversixty.gg is the domain verified for sending in Resend.
+const (
+	defaultMailFrom    = "Forever Sixty <help@foreversixty.gg>"
+	defaultMailReplyTo = "help@foreversixty.gg"
+)
 
 // defaultTreeDataDir is where the Docker image places data/builds; see
 // api/Dockerfile.
@@ -58,6 +66,8 @@ const defaultTrustedProxyHops = 1
 type Config struct {
 	Port     string
 	MailFrom string
+	// MailReplyTo (MAIL_REPLY_TO) is where a reply to any email goes.
+	MailReplyTo string
 
 	// ListenHost is the address the HTTP listener binds to (LISTEN_HOST). Empty binds every
 	// interface, which is what a container wants; a local run sets 127.0.0.1.
@@ -240,6 +250,7 @@ func Load(getenv func(string) string) (Config, error) {
 	c := Config{
 		Port:               getenv("PORT"),
 		MailFrom:           getenv("MAIL_FROM"),
+		MailReplyTo:        getenv("MAIL_REPLY_TO"),
 		DatabaseURL:        getenv("DATABASE_URL"),
 		MigrateDatabaseURL: getenv("MIGRATE_DATABASE_URL"),
 		ResendAPIKey:       getenv("RESEND_API_KEY"),
@@ -251,6 +262,9 @@ func Load(getenv func(string) string) (Config, error) {
 	}
 	if c.MailFrom == "" {
 		c.MailFrom = defaultMailFrom
+	}
+	if c.MailReplyTo == "" {
+		c.MailReplyTo = defaultMailReplyTo
 	}
 	c.ListenHost = getenv("LISTEN_HOST")
 	c.DevLogin = getenv("FS_DEV_LOGIN") == "1"
@@ -525,6 +539,11 @@ func (c Config) R2Configured() bool {
 	return c.R2AccountID != "" && c.R2AccessKeyID != "" && c.R2SecretAccessKey != "" && c.R2Bucket != ""
 }
 
+// MailSender is the From and Reply-To every email carries.
+func (c Config) MailSender() mail.Sender {
+	return mail.Sender{From: c.MailFrom, ReplyTo: c.MailReplyTo}
+}
+
 // BattleNetConfigured reports whether Battle.net sign-in can be offered.
 func (c Config) BattleNetConfigured() bool {
 	return c.BnetClientID != "" && c.BnetClientSecret != "" && c.BnetRedirectURL != ""
@@ -532,7 +551,7 @@ func (c Config) BattleNetConfigured() bool {
 
 // productionBaseURL is the one PublicBaseURL value ValidateStripeKeyEnvironment treats as
 // production (spec §3).
-const productionBaseURL = "https://foreversixty.gg"
+const productionBaseURL = brand.SiteOrigin
 
 // StripeConfigured reports whether billing can be offered: both the
 // secret key and the webhook secret are present. Absent, the billing

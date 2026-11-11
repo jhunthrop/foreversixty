@@ -1,5 +1,7 @@
 package discordbot
 
+import "github.com/jhunthrop/foreversixty/api/internal/copygen"
+
 // pressCopy is what a press on the raid post, the character select and /signup answer
 // (experience spec §3.3.2, §6.2 "Press: …"); the tests read each string back out of the spec.
 // {Name}-style markers are filled by fill.
@@ -21,34 +23,34 @@ var pressCopy = struct {
 	// NoRaid answers /signup with nothing planned.
 	NoRaid string
 }{
-	NotLinked:         "Link your Discord account to Forever Sixty to sign up from here, then press the button again.",
-	Locked:            "Sign-ups are locked. An officer can still change yours.",
-	Cancelled:         "This raid was cancelled.",
-	Ended:             "This raid has ended.",
-	NotMember:         "Sign-ups are for members of {Guild}. Save your character on Forever Sixty and an officer can approve it.",
-	SetupButton:       "Get set up",
-	WaitingOne:        "{Name} is waiting for approval. You can sign it up once an officer approves it.",
-	WaitingMany:       "Your characters are waiting for approval. You can sign them up once an officer approves them.",
-	RateLimited:       "Too many sign-up changes. Wait a minute, then try again.",
-	Failure:           "That did not save. Try again.",
-	SelectPrompt:      "Sign up as {State} for {Title}, <t:{unix}:f>, with which character?",
-	SelectPlaceholder: "Choose a character",
-	OptionDescription: "{Spec} {Class} · {Role}",
-	OptionMain:        " · your main",
-	Showing:           "Showing 25 of {n}. Sign up the others on the raid page.",
-	InSaved:           "{Name} is In as {Role} for {Title}, {Date}.",
-	Count:             " {signed} of {size} signed up.",
-	CountOpen:         " {n} signed up.",
-	LateSaved:         "{Name} is Late as {Role} for {Title}, {Date}. Add a note for the officers on the {kind} page.",
-	NoteButton:        "Add a note",
-	BenchSaved:        "{Name} is on the Bench for {Title}, {Date}.",
-	OutSaved:          "{Name} is Out for {Title}, {Date}.",
-	Moved:             " Your other character {Other} moved to Bench.",
-	Already:           "{Name} is already {State} as {Role} for {Title}, {Date}.",
-	AlreadyBench:      "{Name} is already on the Bench for {Title}, {Date}.",
-	AlreadyOut:        "{Name} is already Out for {Title}, {Date}.",
-	NoRaid:            "No raid planned yet.",
+	NotLinked:         copygen.DiscordPressNotLinked,
+	Locked:            copygen.RaidLocked,
+	Cancelled:         copygen.RaidCancelled,
+	Ended:             copygen.RaidEnded,
+	NotMember:         copygen.DiscordPressNotMember,
+	SetupButton:       copygen.SharedHomeSetupAction,
+	WaitingOne:        copygen.DiscordPressWaitingOne,
+	WaitingMany:       copygen.DiscordPressWaitingMany,
+	RateLimited:       copygen.RaidRateLimited,
+	Failure:           copygen.FirstPickMainFailed,
+	SelectPrompt:      copygen.DiscordPressSelectPrompt,
+	SelectPlaceholder: copygen.PushActionChoose,
+	OptionDescription: copygen.DiscordPressOptionDescription,
+	OptionMain:        copygen.DiscordPressOptionMain,
+	Showing:           copygen.DiscordPressShowing,
+	InSaved:           copygen.DiscordPressInSaved,
+	Count:             copygen.DiscordPressCount,
+	CountOpen:         copygen.DiscordPressCountOpen,
+	LateSaved:         copygen.DiscordPressLateSaved,
+	NoteButton:        copygen.DiscordPressNoteButton,
+	BenchSaved:        copygen.DiscordPressBenchSaved,
+	OutSaved:          copygen.DiscordPressOutSaved,
+	Moved:             copygen.DiscordPressMoved,
+	Already:           copygen.DiscordPressAlready,
+	AlreadyBench:      copygen.DiscordPressAlreadyBench,
+	AlreadyOut:        copygen.DiscordPressAlreadyOut,
+	NoRaid:            copygen.RaidsEmpty,
 }
 
 // roleWords are the sign-up roles as the sentences say them.
-var roleWords = map[string]string{"tank": "Tank", "healer": "Healer", "dps": "DPS"}
+var roleWords = map[string]string{"tank": copygen.RaidRoleTank, "healer": copygen.RaidRoleHealer, "dps": copygen.GuidesRoleDps}

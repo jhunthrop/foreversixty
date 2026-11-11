@@ -190,6 +190,8 @@
     "shared.account.delete.busy": "Deleting",
     "shared.account.delete.email": "You can also ask by email at help@foreversixty.gg.",
     "shared.account.delete.failed": "Could not delete your account just now. Try again.",
-    "shared.account.delete.done": "Your account is deleted. Thanks for playing with us."
+    "shared.account.delete.done": "Your account is deleted. Thanks for playing with us.",
+    "shared.footer.fanLine": "A fan-made player tool. Not affiliated with Blizzard.",
+    "shared.footer.operator": "© {year} Commish LLC d/b/a Forever Sixty"
   }
 }

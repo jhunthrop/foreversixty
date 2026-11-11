@@ -1,8 +1,5 @@
 package discordbot
 
-// The recruiting channel (guild onboarding spec 2026-11-09 §2.3): an officer picks one of the
-// server's channels, and the bot posts each new application there. Free for any claimed guild.
-
 import (
 	"context"
 	"encoding/json"
@@ -12,10 +9,12 @@ import (
 	"strconv"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
-)
+) // The recruiting channel (guild onboarding spec 2026-11-09 §2.3): an officer picks one of the
+// server's channels, and the bot posts each new application there. Free for any claimed guild.
 
 var _ guilds.ApplicationPoster = (*Service)(nil)
 
@@ -23,13 +22,13 @@ var _ guilds.ApplicationPoster = (*Service)(nil)
 var recruitCopy = struct {
 	Title, Level, ItemLevel, Availability, Footer, BestParse, Parse string
 }{
-	Title:        "Application · {Name}",
-	Level:        "Level",
-	ItemLevel:    "Item level",
-	Availability: "Available",
-	Footer:       "{Guild} · Forever Sixty",
-	BestParse:    "Best parse",
-	Parse:        "{pct} on {Boss}",
+	Title:        copygen.DiscordRecruitTitle,
+	Level:        copygen.PlanLevelSheet,
+	ItemLevel:    copygen.RaidApplicantItemLevel,
+	Availability: copygen.DiscordRecruitAvailability,
+	Footer:       copygen.DiscordCmdReportGuildFooter,
+	BestParse:    copygen.DiscordRecruitBestParse,
+	Parse:        copygen.DiscordRecruitParse,
 }
 
 // maxApplicationRunes caps the message the post quotes; the applications page has the rest.

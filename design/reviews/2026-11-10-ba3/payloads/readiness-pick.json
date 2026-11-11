@@ -1,0 +1,43 @@
+{
+  "id": "readiness-pick",
+  "title": "a raid picked",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Readiness · Molten Core · Mon 16 Nov",
+        "description": "11 signed In or Late. 2 have something to fix.",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii#readiness",
+        "fields": [
+          {
+            "name": "To fix, worst first",
+            "value": "Vexlash · 2 upgrades · +31 DPS · No enchant: Chest, Main hand · Consumables short\nThalwyn · Consumables short · Synced 9 days ago"
+          }
+        ],
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty",
+          "icon_url": "https://site.test/seal-400.png"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 37810
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Readiness board",
+            "url": "https://site.test/guild/us/normal/olympus-xxvii#readiness"
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

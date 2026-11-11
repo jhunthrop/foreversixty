@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
@@ -17,11 +18,11 @@ import (
 var appConfirmCopy = struct {
 	Title, Heading, Button, NotYou, Wordmark string
 }{
-	Title:    "Sign in to the Forever Sixty app",
-	Heading:  "Sign in to the app",
-	Button:   "Continue to Battle.net",
-	NotYou:   "Didn’t start this sign-in from the app? Close this page.",
-	Wordmark: "Forever Sixty",
+	Title:    copygen.ConfirmAppTitle,
+	Heading:  copygen.ConfirmAppHeading,
+	Button:   copygen.ConfirmAppButton,
+	NotYou:   copygen.ConfirmAppNotYou,
+	Wordmark: copygen.AppName,
 }
 
 // appConfirmPage is self-contained: no script, no form, nothing fetched. The site's own faces, the

@@ -167,10 +167,3 @@ func TestLocationFallsBackToUTC(t *testing.T) {
 		t.Errorf("Location(America/Chicago) = %v", got)
 	}
 }
-
-func TestLetterDates(t *testing.T) {
-	pacific := zone(t, "America/Los_Angeles")
-	at := time.Date(2027, 1, 7, 5, 0, 0, 0, time.UTC) // the evening of 6 January in Los Angeles
-	check(t, "LongDate", at, LongDate(at, pacific), "6 January 2027")
-	check(t, "DayLongMonth", at, DayLongMonth(at, pacific), "6 January")
-}

@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
@@ -34,8 +35,8 @@ var signUpStates = []struct{ State, Label string }{
 
 // postCopy is the words of the post's buttons.
 var postCopy = struct{ RaidPage, OpenNight string }{
-	RaidPage:  "Raid page",
-	OpenNight: "Open the night",
+	RaidPage:  copygen.SharedHomeRaidPageLink,
+	OpenNight: copygen.DiscordPostOpenNight,
 }
 
 // PostState is the look of a raid's post at now: cancelled, then done, then ended once the

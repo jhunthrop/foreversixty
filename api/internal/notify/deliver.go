@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
@@ -35,8 +36,8 @@ var errNoEvents = errors.New("notify: Deliver needs at least one event")
 
 // What a member reads in last_error when the post never got an answer.
 const (
-	timeoutText     = "Discord did not answer in time."
-	unreachableText = "Discord could not be reached."
+	timeoutText     = copygen.DiscordDeliverTimeoutText
+	unreachableText = copygen.DiscordDeliverUnreachableText
 )
 
 // Deliverer returns a Deliverer sharing the service's wiring.

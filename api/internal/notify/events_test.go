@@ -118,15 +118,21 @@ func TestDiscordSinkIgnoresOtherKindsAndOtherAccounts(t *testing.T) {
 
 func TestSimAndUploadEventsReadPlainly(t *testing.T) {
 	sim := SimFinishedEvent("https://foreversixty.gg", sampleSim(4))
-	if sim.Title != "Kraggor's Fury Warrior sim finished" || sim.Body != "1,235 DPS" || sim.Link != "https://foreversixty.gg/sim/sim-1" {
+	if sim.Title != "Kraggor's Fury Warrior sim finished" || sim.Body != "1,235 DPS · BiS check" || sim.Link != "https://foreversixty.gg/sim/sim-1" {
 		t.Fatalf("sim %+v", sim)
 	}
 	if sim.DedupeKey != "sim.finished:sim-1" || sim.Audience.UserIDs[0] != 4 {
 		t.Fatalf("sim %+v", sim)
 	}
 	up := UploadParsedEvent("https://foreversixty.gg", sampleUpload(4, false))
-	if up.Title != "MC night finished parsing" || up.Body != "Molten Core · 10 boss fights · 9 kills" || !strings.HasSuffix(up.Link, "/reports/rep-1") {
+	if up.Title != "Your MC night report is ready" || up.Body != "Molten Core · 10 boss fights · 9 kills" || !strings.HasSuffix(up.Link, "/reports/rep-1") {
 		t.Fatalf("upload %+v", up)
+	}
+	// A title that names the zone leaves it out of the body.
+	in := sampleUpload(4, false)
+	in.Title = "Tuesday Molten Core"
+	if e := UploadParsedEvent("https://foreversixty.gg", in); e.Body != "10 boss fights · 9 kills" {
+		t.Fatalf("zone twice: %q", e.Body)
 	}
 	named := SimFinished{UserID: 1, SimID: "s", Character: `**Bold**`, Spec: "nope"}
 	if e := SimFinishedEvent("", named); e.Title != "Your sim finished" {

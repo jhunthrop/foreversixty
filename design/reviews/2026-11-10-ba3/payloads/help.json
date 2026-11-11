@@ -1,0 +1,23 @@
+{
+  "id": "help",
+  "title": "/help",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Commands",
+        "description": "**/raid** Your guild's next raid. Sign up from the answer.\n**/signup** Sign up for a raid without the post.\n**/char** Item level, readiness and the top 3 upgrades of a character.\n**/bis** Best in slot for a class and spec.\n**/report** Kills and loot from the last logged raid.\n**/attendance** Your attendance. Officers can name anyone.\n**/readiness** Officers: who is not ready for the next raid.\n**/link** Link this Discord account to Forever Sixty.",
+        "footer": {
+          "text": "Forever Sixty",
+          "icon_url": "https://site.test/seal-400.png"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 37810
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

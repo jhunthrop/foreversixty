@@ -1,5 +1,7 @@
 package discordbot
 
+import "github.com/jhunthrop/foreversixty/api/internal/copygen"
+
 // officerCopy is the words of /report, /attendance and /readiness (experience spec §6.2); the
 // tests read each string back out of the spec. The G2 night line, kill order and outcome words
 // are the raid page's own (web/src/lib/guild/attendance-copy.ts), below.
@@ -45,46 +47,46 @@ var officerCopy = struct {
 	// buy, so it asks us (the site's guildGateCopy.grantedMove, word for word).
 	GrantedMove, AskUsOnDiscord string
 }{
-	ReportPrefix:          "Report: ",
-	KillOrder:             "Kill order",
-	MostDeaths:            "Most deaths",
-	Consumables:           "Consumables",
-	Loot:                  "Loot",
-	LootAll:               "{n} items",
-	LootCount:             "{n} items",
-	LootFirst:             ", the best {k} below",
-	LootTo:                "to {Name} · {Boss}",
-	OpenReport:            "Open the report",
-	ReportNone:            "No raid logged yet.",
-	LoggedPresent:         "{n} present",
-	LoggedNote:            "Logged with no planned raid, so no sign-ups or loot to show.",
-	LoggedPlanned:         "{Raid} was planned that night: match the log on {page}.",
-	LoggedPlannedPage:     "the raid page",
-	LootNone:              "No loot awarded.",
-	ReportUnlinked:        "Link your Discord account to see your guild's raids.",
-	AttendanceTitle:       "{Name} · attendance",
-	LastRaids:             "Last 5 raids",
-	Roster:                "Roster",
-	OfficersOnly:          "Only officers can look up another member's attendance.",
-	NoMember:              "No member of {Guild} by that name.",
-	NoRaids:               "No raid nights yet.",
-	AttendanceUnlinked:    "Link your Discord account to see your attendance.",
-	AttendanceMembers:     "Attendance is for members of {Guild}.",
-	ReadinessTitle:        "Readiness · ",
-	ReadinessLead:         "{n} signed In or Late. {k} have something to fix.",
-	ReadinessLeadOne:      "{n} signed In or Late. 1 has something to fix.",
-	ReadinessAllReady:     "Everyone signed In or Late is ready.",
-	ReadinessNobodySigned: "No one has signed In or Late yet.",
-	ToFix:                 "To fix, worst first",
-	ReadinessMore:         "+{n} more on the board",
-	Board:                 "Readiness board",
-	NotOfficer:            "Readiness is for officers of {Guild}.",
-	ReadinessUnlinked:     "Readiness is for officers of {Guild}. Link your Discord account if you are one.",
-	Frozen:                "This guild's claim is contested. Officer actions are frozen until a moderator resolves it.",
-	RaidGuild:             "The readiness board is part of Raid guild.",
-	MoveToRaidGuild:       "Move to Raid guild",
-	GrantedMove:           "Your plan was granted by Forever Sixty. Ask us on Discord to move it to Raid guild.",
-	AskUsOnDiscord:        "Ask us on Discord",
+	ReportPrefix:          copygen.DiscordOfficerReportPrefix,
+	KillOrder:             copygen.DiscordOfficerKillOrder,
+	MostDeaths:            copygen.DiscordOfficerMostDeaths,
+	Consumables:           copygen.DiscordOfficerConsumables,
+	Loot:                  copygen.DiscordOfficerLoot,
+	LootAll:               copygen.DiscordOfficerLootAll,
+	LootCount:             copygen.DiscordOfficerLootAll,
+	LootFirst:             copygen.DiscordOfficerLootFirst,
+	LootTo:                copygen.DiscordOfficerLootTo,
+	OpenReport:            copygen.RankMenuReport,
+	ReportNone:            copygen.DiscordOfficerReportNone,
+	LoggedPresent:         copygen.DiscordOfficerLoggedPresent,
+	LoggedNote:            copygen.DiscordOfficerLoggedNote,
+	LoggedPlanned:         copygen.DiscordOfficerLoggedPlanned,
+	LoggedPlannedPage:     copygen.DiscordOfficerLoggedPlannedPage,
+	LootNone:              copygen.DiscordOfficerLootNone,
+	ReportUnlinked:        copygen.DiscordOfficerReportUnlinked,
+	AttendanceTitle:       copygen.DiscordOfficerAttendanceTitle,
+	LastRaids:             copygen.DiscordOfficerLastRaids,
+	Roster:                copygen.RaidsRosterRow,
+	OfficersOnly:          copygen.DiscordOfficerOfficersOnly,
+	NoMember:              copygen.DiscordOfficerNoMember,
+	NoRaids:               copygen.DiscordOfficerNoRaids,
+	AttendanceUnlinked:    copygen.DiscordOfficerAttendanceUnlinked,
+	AttendanceMembers:     copygen.DiscordOfficerAttendanceMembers,
+	ReadinessTitle:        copygen.DiscordOfficerReadinessTitle,
+	ReadinessLead:         copygen.DiscordOfficerReadinessLead,
+	ReadinessLeadOne:      copygen.DiscordOfficerReadinessLeadOne,
+	ReadinessAllReady:     copygen.DiscordOfficerReadinessAllReady,
+	ReadinessNobodySigned: copygen.DiscordOfficerReadinessNobodySigned,
+	ToFix:                 copygen.DiscordOfficerToFix,
+	ReadinessMore:         copygen.DiscordOfficerReadinessMore,
+	Board:                 copygen.DiscordOfficerBoard,
+	NotOfficer:            copygen.DiscordOfficerNotOfficer,
+	ReadinessUnlinked:     copygen.DiscordOfficerReadinessUnlinked,
+	Frozen:                copygen.DiscordOfficerFrozen,
+	RaidGuild:             copygen.DiscordOfficerRaidGuild,
+	MoveToRaidGuild:       copygen.DiscordOfficerMoveToRaidGuild,
+	GrantedMove:           copygen.DiscordOfficerGrantedMove,
+	AskUsOnDiscord:        copygen.DiscordOfficerAskUsOnDiscord,
 }
 
 // CommunityDiscordInvite is the Forever Sixty Discord invite, web/src/data/links.json's
@@ -102,26 +104,26 @@ var nightCopy = struct {
 	// nobody shared their bags and the log has no buffs to read.
 	ShortBefore, NoFlask, NothingShared string
 }{
-	Came:          "{came} of {signed} came",
-	CameUnsigned:  "{n} came, nobody signed up beforehand",
-	NobodySigned:  "Nobody signed up beforehand",
-	NothingShared: "Nobody shared their bags before the raid",
-	FirstPull:     "first pull",
-	After:         "after {wipes}",
-	NotKilled:     "Not killed",
-	ShortBefore:   "{n} short before the raid",
-	NoFlask:       "{n} with no flask in the log",
+	Came:          copygen.DiscordNightCame,
+	CameUnsigned:  copygen.DiscordNightCameUnsigned,
+	NobodySigned:  copygen.DiscordNightNobodySigned,
+	NothingShared: copygen.DiscordNightNothingShared,
+	FirstPull:     copygen.DiscordNightFirstPull,
+	After:         copygen.DiscordNightAfter,
+	NotKilled:     copygen.DiscordNightNotKilled,
+	ShortBefore:   copygen.DiscordNightShortBefore,
+	NoFlask:       copygen.DiscordNightNoFlask,
 }
 
 // outcomeWords are the attendance outcomes in G2's words (never "no-show").
 var outcomeWords = map[string]string{
-	"present": "Present",
-	"late":    "Late",
-	"no_show": "Not in the log",
+	"present": copygen.DiscordOutcomeWordsPresent,
+	"late":    copygen.IntentStateLate,
+	"no_show": copygen.DiscordOutcomeWordsNoShow,
 }
 
 // The attendance line's extra words: "Came as {Name}" and the excused suffix.
 const (
-	cameAsWords   = "Came as {Name}"
-	excusedSuffix = ", excused"
+	cameAsWords   = copygen.DiscordOfficerCameAsWords
+	excusedSuffix = copygen.DiscordOfficerExcusedSuffix
 )

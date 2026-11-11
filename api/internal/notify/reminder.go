@@ -1,8 +1,10 @@
 package notify
 
 import (
-	"fmt"
+	"strconv"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 )
 
 // The destinations a raid reminder can have been sent through.
@@ -25,7 +27,8 @@ const maxReminderTitleRunes = 400
 func ReminderLine(in RaidPosted) string {
 	unix := in.StartsAt.Unix()
 	title := escapedWithin(collapse(in.Title), maxRaidTitleRunes, maxReminderTitleRunes)
-	return fmt.Sprintf(raidCopy.ReminderLead, title, unix) + " " + reminderCount(in)
+	lead := copygen.Fill(raidCopy.ReminderLead, "{title}", title, "{unix}", strconv.FormatInt(unix, 10))
+	return lead + " " + reminderCount(in)
 }
 
 func reminderCount(in RaidPosted) string {
@@ -34,14 +37,14 @@ func reminderCount(in RaidPosted) string {
 	case signed == 0:
 		return raidCopy.ReminderNobody
 	case in.SizeKnown:
-		return fmt.Sprintf(raidCopy.ReminderCount, signed, in.Size)
+		return copygen.Fill(raidCopy.ReminderCount, "{signed}", strconv.Itoa(signed), "{size}", strconv.Itoa(in.Size))
 	}
-	return fmt.Sprintf(raidCopy.ReminderCountOpen, signed)
+	return copygen.Fill(raidCopy.ReminderCountOpen, "{signed}", strconv.Itoa(signed))
 }
 
 // WebhookReminderContent is the reminder through a webhook: no buttons, so a link to the raid.
 func WebhookReminderContent(in RaidPosted) string {
-	return ReminderLine(in) + " " + fmt.Sprintf(raidCopy.ReminderWebhookLink, in.RaidURL)
+	return ReminderLine(in) + " " + copygen.Fill(raidCopy.ReminderWebhookLink, "{url}", in.RaidURL)
 }
 
 // WebhookReminderEmbed is the webhook post in the Tomorrow state under the reminder: the title

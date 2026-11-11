@@ -1,0 +1,147 @@
+{
+  "id": "report-select",
+  "title": "/report: the Another night select",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Report: Onyxia's Lair · Thu 10 Dec",
+        "description": "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "fields": [
+          {
+            "name": "Kill order",
+            "value": "1. Onyxia 1:42 after 3 wipes"
+          },
+          {
+            "name": "Most deaths",
+            "value": "Pyrewisp 4 · Windtalon 3 · Vexlash 2"
+          },
+          {
+            "name": "Consumables",
+            "value": "3 short before the raid"
+          },
+          {
+            "name": "Loot",
+            "value": "7 items"
+          }
+        ],
+        "color": 8377482
+      },
+      {
+        "title": "Deathbringer",
+        "description": "Epic · item level 75\nto Kraggor · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=17068-0#report",
+        "thumbnail": {
+          "url": "https://api.test/v1/discord/tiles/1.60.1.99999/17068.png"
+        },
+        "color": 10696174
+      },
+      {
+        "title": "Vis'kag the Bloodletter",
+        "description": "Epic · item level 74\nto Corvane · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=17075-1#report",
+        "thumbnail": {
+          "url": "https://api.test/v1/discord/tiles/1.60.1.99999/17075.png"
+        },
+        "color": 10696174
+      },
+      {
+        "title": "Eskhandar's Collar",
+        "description": "Epic · item level 71\nto Zulmara · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=18205-2#report",
+        "thumbnail": {
+          "url": "https://api.test/v1/discord/tiles/1.60.1.99999/18205.png"
+        },
+        "color": 10696174
+      },
+      {
+        "title": "Ring of Binding",
+        "description": "Epic · item level 73\nto Ironvale · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=18813-3#report",
+        "thumbnail": {
+          "url": "https://api.test/v1/discord/tiles/1.60.1.99999/18813.png"
+        },
+        "color": 10696174
+      },
+      {
+        "title": "Sapphiron Drape",
+        "description": "Epic · item level 72\nto Pyrewisp · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=17078-4#report",
+        "thumbnail": {
+          "url": "https://api.test/v1/discord/tiles/1.60.1.99999/17078.png"
+        },
+        "color": 10696174
+      },
+      {
+        "title": "Bloodfang Hood",
+        "description": "Epic · item level 76\nto Duskmantle · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=16908-5#report",
+        "thumbnail": {
+          "url": "https://api.test/v1/discord/tiles/1.60.1.99999/16908.png"
+        },
+        "color": 10696174
+      },
+      {
+        "title": "Netherwind Crown",
+        "description": "Epic · item level 76\nto Frostwhisk · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=16914-6#report",
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty",
+          "icon_url": "https://site.test/seal-400.png"
+        },
+        "thumbnail": {
+          "url": "https://api.test/v1/discord/tiles/1.60.1.99999/16914.png"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 10696174
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Share in channel",
+            "custom_id": "share:VNsuno1KcjZHOqT6HABnkoyi8-ayzzNjqgRJz_gj050"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Open the report",
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "grep:1:raid:",
+            "placeholder": "Another night",
+            "options": [
+              {
+                "label": "Onyxia's Lair · Fri 11 Dec",
+                "value": "7",
+                "description": "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min",
+                "default": true
+              },
+              {
+                "label": "Onyxia's Lair · Fri 4 Dec",
+                "value": "6",
+                "description": "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

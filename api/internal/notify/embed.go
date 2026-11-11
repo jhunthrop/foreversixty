@@ -2,17 +2,19 @@ package notify
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 const (
 	// embedFooter is the footer text every message carries.
-	embedFooter = "Forever Sixty"
+	embedFooter = copygen.AppName
 
 	accountDiscordPath = "/account#discord"
 	simPathPrefix      = "/sim/"
@@ -20,7 +22,7 @@ const (
 	crestPathFormat    = "/icons/hd/crests/%s.webp"
 	// sealPath is the raster Forever Sixty seal the web serves; Discord
 	// does not draw SVG avatars.
-	sealPath = "/seal-400.png"
+	sealPath = brand.SealPath
 
 	// Discord's limits: 256 for a title, 1024 for a field value.
 	maxTitleRunes = 256
@@ -44,55 +46,57 @@ var embedCopy = struct {
 	// TestPrivateClause ends the upload clause when private logs may post.
 	TestPrivateClause string
 
-	SimTitle         string // %s: the spec label
-	SimTitleNamed    string // %s: the escaped character name, then the spec label
+	SimTitle         string // {spec}: the spec label
+	SimTitleNamed    string // {name}: the character name; {spec}: the spec label
 	SimTitleNoSpec   string
 	SimResultName    string
-	SimResultDPS     string // %s: the formatted DPS
+	SimResultDPS     string // {dps}: the formatted DPS
 	SimRunName       string
 	SimTookName      string
-	LogTitleSuffix   string
+	LogTitle         string // {title}: the log's title
 	LogTitleNoTitle  string
 	LogZoneName      string
 	LogFightsName    string
-	LogFightsFormat  string // %d fights, %s kills phrase
+	LogFightsFormat  string // {n} fights, {kills} the kills phrase
+	LogPushFights    string // push's fights line: {fights} the counted fights, {kills} the kills phrase
+	LogBossFights    copygen.Plural
 	LogKillsNone     string
-	LogOneKill       string
-	LogManyKills     string // %d
+	LogKills         copygen.Plural
 	LogVisibleName   string
 	LogVisibleLabels map[string]string
 }{
-	TestTitle: "Test message from Forever Sixty",
-	TestIntro: "Your webhook works.",
-	TestLead:  "You will get a message here when",
+	TestTitle: copygen.DiscordEmbedTestTitle,
+	TestIntro: copygen.DiscordEmbedTestIntro,
+	TestLead:  copygen.DiscordEmbedTestLead,
 	TestClauses: map[EventName]string{
-		EventSimFinished:  "a server sim finishes",
-		EventUploadParsed: "a combat log you upload finishes parsing",
+		EventSimFinished:  copygen.DiscordEmbedTestClausesEventSimFinished,
+		EventUploadParsed: copygen.DiscordEmbedTestClausesEventUploadParsed,
 	},
-	TestNone:          "No events are on yet.",
-	TestPrivateClause: ", private logs included",
+	TestNone:          copygen.DiscordEmbedTestNone,
+	TestPrivateClause: copygen.DiscordEmbedTestPrivateClause,
 
-	SimTitle:        "Your %s sim finished",
-	SimTitleNamed:   "%s's %s sim finished",
-	SimTitleNoSpec:  "Your sim finished",
-	SimResultName:   "Result",
-	SimResultDPS:    "%s DPS",
-	SimRunName:      "Run",
-	SimTookName:     "Run time",
-	LogTitleSuffix:  " finished parsing",
-	LogTitleNoTitle: "Your log finished parsing",
-	LogZoneName:     "Zone",
-	LogFightsName:   "Boss fights",
-	LogFightsFormat: "%s · %s",
-	LogKillsNone:    "no kills",
-	LogOneKill:      "1 kill",
-	LogManyKills:    "%d kills",
-	LogVisibleName:  "Visible to",
+	SimTitle:        copygen.PushEventSimTitle,
+	SimTitleNamed:   copygen.PushEventSimTitleNamed,
+	SimTitleNoSpec:  copygen.PushEventSimTitleNoSpec,
+	SimResultName:   copygen.DiscordEmbedSimResultName,
+	SimResultDPS:    copygen.RaidsNightDps,
+	SimRunName:      copygen.DiscordEmbedSimRunName,
+	SimTookName:     copygen.DiscordEmbedSimTookName,
+	LogTitle:        copygen.PushEventLogTitle,
+	LogTitleNoTitle: copygen.PushEventLogTitleNoTitle,
+	LogZoneName:     copygen.ItemPageKindZone,
+	LogFightsName:   copygen.DiscordEmbedLogFightsName,
+	LogFightsFormat: copygen.DiscordEmbedLogFightsFormat,
+	LogPushFights:   copygen.PushEventLogFights,
+	LogBossFights:   copygen.PushEventBossFights,
+	LogKillsNone:    copygen.PushEventLogKillsNone,
+	LogKills:        copygen.PushEventKills,
+	LogVisibleName:  copygen.DiscordEmbedLogVisibleName,
 	LogVisibleLabels: map[string]string{
-		"public":   "Everyone",
-		"unlisted": "Anyone with the link",
-		"guild":    "Your guild",
-		"private":  "Only you",
+		"public":   copygen.DiscordEmbedLogVisibleLabelsPublic,
+		"unlisted": copygen.DiscordEmbedLogVisibleLabelsUnlisted,
+		"guild":    copygen.SharedFeedTagYourGuild,
+		"private":  copygen.DiscordEmbedLogVisibleLabelsPrivate,
 	},
 }
 
@@ -162,7 +166,7 @@ func SimFinishedEmbed(publicBaseURL string, in SimFinished) Embed {
 	spec, known := specs.ByKey[in.Spec]
 	title := simTitle(in.Character, spec, known)
 	e := baseEmbed(title, absoluteURL(publicBaseURL, simPathPrefix+in.SimID), in.FinishedAt)
-	result := fmt.Sprintf(embedCopy.SimResultDPS, textfmt.Grouped(in.DPS))
+	result := copygen.Fill(embedCopy.SimResultDPS, "{dps}", textfmt.Grouped(in.DPS))
 	if headline := collapse(in.Headline); headline != "" {
 		result = escapedWithin(headline, maxValueRunes, maxValueRunes)
 	}
@@ -199,8 +203,8 @@ type UploadParsed struct {
 func UploadParsedEmbed(publicBaseURL string, in UploadParsed) Embed {
 	title := embedCopy.LogTitleNoTitle
 	if name := collapse(in.Title); name != "" {
-		title = escapedWithin(name, maxReportTitle, maxTitleRunes-len([]rune(embedCopy.LogTitleSuffix))) +
-			embedCopy.LogTitleSuffix
+		room := maxTitleRunes - len([]rune(copygen.Fill(embedCopy.LogTitle, "{title}", "")))
+		title = copygen.Fill(embedCopy.LogTitle, "{title}", escapedWithin(name, maxReportTitle, room))
 	}
 	e := baseEmbed(title, absoluteURL(publicBaseURL, reportPathPrefix+in.ReportID), in.FinishedAt)
 	if zone := collapse(in.Zone); zone != "" {
@@ -225,13 +229,14 @@ func simTitle(character string, spec specs.Spec, known bool) string {
 	}
 	label := spec.FullName
 	if name := collapse(character); name != "" {
-		return fmt.Sprintf(embedCopy.SimTitleNamed, escapedWithin(name, maxCharacterRunes, maxCharacterRunes), label)
+		return copygen.Fill(embedCopy.SimTitleNamed,
+			"{name}", escapedWithin(name, maxCharacterRunes, maxCharacterRunes), "{spec}", label)
 	}
-	return fmt.Sprintf(embedCopy.SimTitle, label)
+	return copygen.Fill(embedCopy.SimTitle, "{spec}", label)
 }
 
 func fightsLine(fights, kills int) string {
-	return fmt.Sprintf(embedCopy.LogFightsFormat, fmt.Sprintf("%d", fights), killsPhrase(kills))
+	return copygen.Fill(embedCopy.LogFightsFormat, "{n}", strconv.Itoa(fights), "{kills}", killsPhrase(kills))
 }
 
 // classLabel capitalises a class slug ("mage" -> "Mage").

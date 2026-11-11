@@ -50,7 +50,7 @@ func TestReportFallsBackToTheLatestLoggedNight(t *testing.T) {
 		t.Fatalf("embeds = %+v, want the head alone", rep.Message.Embeds)
 	}
 	head := rep.Message.Embeds[0]
-	if head.Title != officerCopy.ReportPrefix+"Onyxia's Lair · Thursday 10 December" {
+	if head.Title != officerCopy.ReportPrefix+"Onyxia's Lair · Thu 10 Dec" {
 		t.Fatalf("title = %q", head.Title)
 	}
 	want := "2 present · 1 kill · 1 wipe · 2 deaths · 12 min\n" + officerCopy.LoggedNote

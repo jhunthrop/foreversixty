@@ -62,7 +62,7 @@ func TestACompletedUploadPostsOneEmbed(t *testing.T) {
 		t.Fatalf("posts = %+v", posts)
 	}
 	e := posts[0].Embed
-	if e.Title != "Tuesday finished parsing" || e.URL != "https://foreversixty.gg/reports/"+reportID {
+	if e.Title != "Your Tuesday report is ready" || e.URL != "https://foreversixty.gg/reports/"+reportID {
 		t.Fatalf("embed = %+v", e)
 	}
 	last := e.Fields[len(e.Fields)-1]

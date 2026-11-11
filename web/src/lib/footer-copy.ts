@@ -5,6 +5,8 @@
 // own tabs (layouts/Content.astro). FOOTER_COLUMNS is not drawn; it is the site's page list the 404
 // page suggests from (lib/not-found/suggest.ts).
 import communityLinks from '../data/links.json';
+import { fillShared } from './copy/shared';
+import { sharedFooterFanLine, sharedFooterOperator } from './copy/shared/footer.generated';
 
 export interface FooterLink {
   readonly label: string;
@@ -32,11 +34,12 @@ export const FOOTER_LINKS: readonly FooterLink[] = [
 /** The footer's not-official line, at the right of the row (owner rule: never mistakable for
  *  Blizzard's). The full trademark sentence and the operator line are on /about and /terms
  *  (lib/legal-notice.ts). */
-export const FOOTER_FAN_LINE = 'A fan-made player tool. Not affiliated with Blizzard.';
+export const FOOTER_FAN_LINE = sharedFooterFanLine;
 
 /** The operator under the fan line (owner 2026-11-10): the legal entity and its trade name on every
- *  page. The year is the build's, so it never goes stale. */
-export const footerOperatorLine = (year: number): string => `© ${year} Commish LLC d/b/a Forever Sixty`;
+ *  page. The year is the build's, so it never goes stale. Both lines are shared keys
+ *  (apps/shared/copy/shared.json shared.footer.*), so every email's footer reads the same words. */
+export const footerOperatorLine = (year: number): string => fillShared(sharedFooterOperator, { year });
 
 export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   {

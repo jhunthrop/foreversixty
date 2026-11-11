@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// onyxiaThursday is a guild in America/Chicago raiding at 20:00 on Thursday 10 December
+// onyxiaThursday is a guild in America/Chicago raiding at 20:00 on Thu 10 Dec
 // 2026 (02:00 UTC on the 11th), 23 of 40 signed up.
 func onyxiaThursday() RaidPosted {
 	return RaidPosted{
@@ -38,21 +38,21 @@ func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {
 	}{
 		"posted": {
 			RaidPostedEmbed(onyxiaThursday(), fixedFinish),
-			`{"title":"Onyxia's Lair · Thursday 10 December","description":"Sign up on Forever Sixty.",` + raidLink +
-				`"fields":[` + raidWhen + `,{"name":"Guild time","value":"8 pm CST","inline":true},` + raidSigned + `],` +
+			`{"title":"Onyxia's Lair · Thu 10 Dec","description":"Sign up on Forever Sixty.",` + raidLink +
+				`"fields":[` + raidWhen + `,` + raidSigned + `],` +
 				raidFoot + `"color":37810}`,
 		},
 		"moved": {
 			RaidChangedEmbed(moved, fixedFinish),
-			`{"title":"Moved: Onyxia's Lair · Friday 11 December","description":"Sign-ups carry over. Check you can still make it.",` +
+			`{"title":"Moved: Onyxia's Lair · Fri 11 Dec","description":"Sign-ups carry over. Check you can still make it.",` +
 				raidLink + `"fields":[{"name":"When","value":"\u003ct:1797040800:t\u003e (\u003ct:1797040800:R\u003e)","inline":true},` +
-				`{"name":"Was","value":"\u003ct:1796954400:F\u003e","inline":true},` +
-				`{"name":"Guild time","value":"8 pm CST","inline":true},` + raidSigned + `],` +
+				`{"name":"Was","value":"Thu 10 Dec, 8 pm CST","inline":true},` +
+				`` + raidSigned + `],` +
 				raidFoot + `"color":37810}`,
 		},
 		"cancelled": {
 			RaidChangedEmbed(cancelled, fixedFinish),
-			`{"title":"Cancelled: Onyxia's Lair · Thursday 10 December","description":"This raid was cancelled.",` + raidLink +
+			`{"title":"Cancelled: Onyxia's Lair · Thu 10 Dec","description":"This raid was cancelled.",` + raidLink +
 				`"fields":[{"name":"When","value":"~~\u003ct:1796954400:t\u003e (\u003ct:1796954400:R\u003e)~~","inline":true},` +
 				raidSigned + `],` + raidFoot + `"color":15758187}`,
 		},
@@ -75,7 +75,7 @@ func TestRaidPostedEdges(t *testing.T) {
 	if e.URL != "" {
 		t.Fatalf("relative raid link posted as url %q", e.URL)
 	}
-	if e.Title != `\*Ony\* @everyone · Friday 11 December` {
+	if e.Title != `\*Ony\* @everyone · Fri 11 Dec` {
 		t.Fatalf("escaped title in UTC = %q", e.Title)
 	}
 	if len(e.Fields) != 2 || e.Fields[1].Value != "None yet" {

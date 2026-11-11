@@ -63,7 +63,7 @@ func TestReadinessGate(t *testing.T) {
 	rep = w.run(t, pressDiscord, "readiness")
 	assertMessageLimits(t, rep.Message)
 	e := rep.Message.Embeds[0]
-	wantTitle := segment(0, map[string]string{"Title": "Onyxia's Lair", "Weekday": "Thursday", "d": "10", "Month": "December"})
+	wantTitle := segment(0, map[string]string{"Title": "Onyxia's Lair", "Weekday": "Thu", "d": "10", "Month": "Dec"})
 	if e.Title != wantTitle || e.Description != "23 signed In or Late. 12 have something to fix." || e.Fields[0].Name != segment(4, nil) {
 		t.Fatalf("embed = %+v", e)
 	}

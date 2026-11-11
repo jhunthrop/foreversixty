@@ -1,0 +1,106 @@
+{
+  "id": "char-card-own",
+  "title": "/char, linked: the main and the own-characters select",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "flags": 32832,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 11195250,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "### [Zulmara](https://site.test/character/us/normal/zulmara)\nLevel 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://site.test/icons/hd/crests/hunter.webp"
+              },
+              "description": "Hunter crest"
+            }
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 10,
+            "content": "**Top upgrades** · level 60 Phase 1 raid"
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Pick head**\nHead · +9.2 DPS\n-# item level 61"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/100.png"
+              },
+              "description": "Pick head, Epic head item"
+            }
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Share in channel",
+            "custom_id": "share:2pOH9jTnprXWlajGLJNSjuo7xP0Sg7d9CTZZWKERnCA"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Someone else",
+            "custom_id": "gchar:1:ask:"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Character page",
+            "url": "https://site.test/character/us/normal/zulmara"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "gchar:1:pick:",
+            "placeholder": "Another of your characters",
+            "options": [
+              {
+                "label": "Zulmara",
+                "value": "Zulmara",
+                "description": "Beast Mastery Hunter · Level 60",
+                "default": true
+              },
+              {
+                "label": "Duskstrider",
+                "value": "Duskstrider",
+                "description": "Fury Warrior · Level 58"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

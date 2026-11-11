@@ -1,0 +1,12 @@
+Subject: Your Forever Sixty sign-in link
+
+Sign in to Forever Sixty
+
+The link works once and expires in 20 minutes. If you did not ask for it, ignore this email.
+
+Sign in: https://api.foreversixty.gg/v1/auth/email/callback?token=0f3c9a1e7b2d4c6a8e0f1b3d5c7a9e1f
+
+--
+A fan-made player tool. Not affiliated with Blizzard.
+© 2026 Commish LLC d/b/a Forever Sixty
+Reply to this email or write to help@foreversixty.gg.

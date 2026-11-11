@@ -3,12 +3,14 @@ package notify
 import (
 	"fmt"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 )
 
 const (
 	// guildTestTitle is the guild test message's title (spec 2026-10-26-guild-raids §6.2);
-	// %s is the escaped guild name.
-	guildTestTitle = "Forever Sixty will post raids for %s here."
+	// {guild} is the escaped guild name.
+	guildTestTitle = copygen.DiscordGuildEmbedGuildTestTitle
 	// guildRaidsAnchor is the guild page's Raids tab: members in the channel cannot open
 	// Settings, so the guild posts link there.
 	guildRaidsAnchor = "#raids"
@@ -29,6 +31,6 @@ func guildBaseEmbed(guildName, title, link string, at time.Time) Embed {
 // page's Raids tab, no fields, no description. guildPath is the guild page's site path.
 func GuildTestEmbed(publicBaseURL, guildName, guildPath string, now time.Time) Embed {
 	name := escapedWithin(collapse(guildName), maxGuildNameRunes, maxTitleRunes-len([]rune(guildTestTitle)))
-	return guildBaseEmbed(guildName, fmt.Sprintf(guildTestTitle, name),
+	return guildBaseEmbed(guildName, copygen.Fill(guildTestTitle, "{guild}", name),
 		absoluteURL(publicBaseURL, guildPath+guildRaidsAnchor), now)
 }

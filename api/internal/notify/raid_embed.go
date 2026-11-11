@@ -3,11 +3,13 @@ package notify
 import (
 	"fmt"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
@@ -42,7 +44,7 @@ const (
 
 // raidCopy is the words of the raid posts (spec 2026-10-27-discord-bot §6.2).
 var raidCopy = struct {
-	TitleFormat     string // %s the escaped title, %s the guild's date
+	TitleFormat     string // %s the escaped title, %s the guild's date (markup, no words)
 	MovedPrefix     string
 	CancelledPrefix string
 	DonePrefix      string
@@ -51,65 +53,61 @@ var raidCopy = struct {
 	WhenName        string
 	WhenFormat      string // %d the unix start, twice
 	WasName         string
-	WasFormat       string // %d the old unix start
 	StruckFormat    string // %s a struck-through value
-	GuildTimeName   string
 	SignedName      string
-	SignedLead      string // %d signed up, %d the raid size (roster.signed)
-	SignedLeadOpen  string // %d signed up, size unknown
+	SignedLead      string // {signed} signed up, {size} the raid size (roster.signed)
+	SignedLeadOpen  string // {signed} signed up, size unknown
 	SignedNone      string
 	CameName        string
-	CameOf          string // %d came, %d of
+	CameOf          string // {came} came, {of} of
 	KillsName       string
 	BuffsName       string
-	BuffsMissing    string // %s the buffs nobody signed brings
-	BuffsShort      string // %s the buffs with too few bringers
+	BuffsMissing    string // {buffs} the buffs nobody signed brings
+	BuffsShort      string // {buffs} the buffs with too few bringers
 	BuffsJoin       string
 	// The reminder line (spec 2026-10-28 §P.7).
-	ReminderLead        string // %s the escaped title, %d the unix start
-	ReminderCount       string // %d signed up, %d the raid size
-	ReminderCountOpen   string // %d signed up, size unknown
+	ReminderLead        string // {title} the escaped title, {unix} the unix start
+	ReminderCount       string // {signed} signed up, {size} the raid size
+	ReminderCountOpen   string // {signed} signed up, size unknown
 	ReminderNobody      string
-	ReminderWebhookLink string // %s the raid page
+	ReminderWebhookLink string // {url} the raid page
 }{
 	TitleFormat:     "%s · %s",
-	MovedPrefix:     "Moved: ",
-	CancelledPrefix: "Cancelled: ",
-	DonePrefix:      "Done: ",
-	TomorrowPrefix:  "Tomorrow: ",
+	MovedPrefix:     copygen.DiscordRaidMovedPrefix,
+	CancelledPrefix: copygen.DiscordRaidCancelledPrefix,
+	DonePrefix:      copygen.DiscordRaidDonePrefix,
+	TomorrowPrefix:  copygen.DiscordRaidTomorrowPrefix,
 	Descriptions: map[RaidPostState]string{
 		PostOpen:      "",
-		PostLocked:    "Sign-ups are locked. An officer can still change yours.",
-		PostMoved:     "Sign-ups carry over. Check you can still make it.",
-		PostCancelled: "This raid was cancelled.",
-		PostEnded:     "This raid has ended.",
-		PostDone:      "Logged as a raid night.",
-		PostWebhook:   "Sign up on Forever Sixty.",
+		PostLocked:    copygen.RaidLocked,
+		PostMoved:     copygen.DiscordRaidDescriptionsPostMoved,
+		PostCancelled: copygen.RaidCancelled,
+		PostEnded:     copygen.RaidEnded,
+		PostDone:      copygen.DiscordRaidDescriptionsPostDone,
+		PostWebhook:   copygen.DiscordRaidDescriptionsPostWebhook,
 		PostTomorrow:  "",
 	},
-	WhenName:       "When",
+	WhenName:       copygen.NotificationsWhen,
 	WhenFormat:     "<t:%d:t> (<t:%d:R>)",
-	WasName:        "Was",
-	WasFormat:      "<t:%d:F>",
+	WasName:        copygen.DiscordRaidWasName,
 	StruckFormat:   "~~%s~~",
-	GuildTimeName:  "Guild time",
-	SignedName:     "Signed up",
-	SignedLead:     "**%d of %d**",
-	SignedLeadOpen: "**%d signed up**",
-	SignedNone:     "None yet",
-	CameName:       "Came",
-	CameOf:         "%d of %d",
-	KillsName:      "Kills",
-	BuffsName:      "Buffs",
-	BuffsMissing:   "Missing: %s",
-	BuffsShort:     "Short: %s",
+	SignedName:     copygen.DiscordRaidSignedName,
+	SignedLead:     copygen.DiscordRaidSignedLead,
+	SignedLeadOpen: copygen.DiscordRaidSignedLeadOpen,
+	SignedNone:     copygen.DiscordRaidSignedNone,
+	CameName:       copygen.DiscordRaidCameName,
+	CameOf:         copygen.DiscordRaidCameOf,
+	KillsName:      copygen.DiscordRaidKillsName,
+	BuffsName:      copygen.DiscordRaidBuffsName,
+	BuffsMissing:   copygen.DiscordRaidBuffsMissing,
+	BuffsShort:     copygen.DiscordRaidBuffsShort,
 	BuffsJoin:      ", ",
 
-	ReminderLead:        "**%s is tomorrow**, <t:%d:t>.",
-	ReminderCount:       "%d of %d signed up so far.",
-	ReminderCountOpen:   "%d signed up so far.",
-	ReminderNobody:      "Nobody has signed up yet.",
-	ReminderWebhookLink: "[Sign up on Forever Sixty](%s)",
+	ReminderLead:        copygen.DiscordRaidReminderLead,
+	ReminderCount:       copygen.DiscordRaidReminderCount,
+	ReminderCountOpen:   copygen.DiscordRaidReminderCountOpen,
+	ReminderNobody:      copygen.DiscordRaidReminderNobody,
+	ReminderWebhookLink: copygen.DiscordRaidReminderWebhookLink,
 }
 
 // RaidCounts are a raid's sign-up totals; the roles count In rows only.
@@ -254,16 +252,13 @@ func postFields(p RaidPost) []EmbedField {
 	case PostDone:
 		return []EmbedField{
 			raidField(raidCopy.WhenName, when),
-			raidField(raidCopy.CameName, fmt.Sprintf(raidCopy.CameOf, p.Came, p.CameOf)),
+			raidField(raidCopy.CameName, copygen.Fill(raidCopy.CameOf, "{came}", strconv.Itoa(p.Came), "{of}", strconv.Itoa(p.CameOf))),
 			{Name: raidCopy.KillsName, Value: killsValue(p.Kills)},
 		}
 	}
 	fields := []EmbedField{raidField(raidCopy.WhenName, when)}
 	if p.State == PostMoved && p.Was != nil {
-		fields = append(fields, raidField(raidCopy.WasName, fmt.Sprintf(raidCopy.WasFormat, p.Was.Unix())))
-	}
-	if in.Timezone != "" {
-		fields = append(fields, raidField(raidCopy.GuildTimeName, textfmt.RaidClock(in.StartsAt, textfmt.Location(in.Timezone))))
+		fields = append(fields, raidField(raidCopy.WasName, textfmt.RaidWhen(*p.Was, textfmt.Location(in.Timezone))))
 	}
 	fields = append(fields, signedField(in))
 	if buffs := buffsValue(in); buffs != "" {
@@ -277,18 +272,19 @@ func postFields(p RaidPost) []EmbedField {
 func buffsValue(in RaidPosted) string {
 	var lines []string
 	if len(in.Missing) > 0 {
-		lines = append(lines, fmt.Sprintf(raidCopy.BuffsMissing, strings.Join(in.Missing, raidCopy.BuffsJoin)))
+		lines = append(lines, copygen.Fill(raidCopy.BuffsMissing, "{buffs}", strings.Join(in.Missing, raidCopy.BuffsJoin)))
 	}
 	if len(in.Short) > 0 {
-		lines = append(lines, fmt.Sprintf(raidCopy.BuffsShort, strings.Join(in.Short, raidCopy.BuffsJoin)))
+		lines = append(lines, copygen.Fill(raidCopy.BuffsShort, "{buffs}", strings.Join(in.Short, raidCopy.BuffsJoin)))
 	}
 	return truncateRunes(strings.Join(lines, "\n"), maxValueRunes)
 }
 
 // raidBaseEmbed is the guild embed every raid post shares: prefix, the escaped title and
-// the guild's date, linking to the raid page, with the crest when absolute.
+// the guild's date as the site's raid row writes it ("Wed 13 Jan", the year only in another
+// year), linking to the raid page, with the crest when absolute.
 func raidBaseEmbed(in RaidPosted, prefix string, now time.Time) Embed {
-	date := textfmt.LongDay(in.StartsAt, textfmt.Location(in.Timezone))
+	date := textfmt.WeekdayDayMonth(in.StartsAt, textfmt.Location(in.Timezone), now)
 	room := maxTitleRunes - len([]rune(prefix)) - len([]rune(fmt.Sprintf(raidCopy.TitleFormat, "", date)))
 	title := prefix + fmt.Sprintf(raidCopy.TitleFormat, escapedWithin(collapse(in.Title), maxRaidTitleRunes, room), date)
 	// Discord answers 400 to a relative link (which would count toward the five failures),
@@ -325,9 +321,9 @@ func SignedValue(c RaidCounts, size int, sizeKnown bool) string {
 	case signed == 0:
 		return raidCopy.SignedNone
 	case sizeKnown:
-		return fmt.Sprintf(raidCopy.SignedLead, signed, size)
+		return copygen.Fill(raidCopy.SignedLead, "{signed}", strconv.Itoa(signed), "{size}", strconv.Itoa(size))
 	}
-	return fmt.Sprintf(raidCopy.SignedLeadOpen, signed)
+	return copygen.Fill(raidCopy.SignedLeadOpen, "{signed}", strconv.Itoa(signed))
 }
 
 // isAbsolute reports whether raw is an absolute http(s) URL (Discord refuses relative ones).

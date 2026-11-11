@@ -573,7 +573,7 @@ func serve(log *slog.Logger) error {
 	buildsSvc := &builds.Service{
 		Store: buildStore, Data: treeData, PublicBaseURL: cfg.PublicBaseURL, Log: log,
 	}
-	mailer := mail.NewResend(cfg.ResendAPIKey, cfg.MailFrom, nil)
+	mailer := mail.NewResend(cfg.ResendAPIKey, cfg.MailSender(), nil)
 	subscribeSvc := &subscribe.Service{
 		Store: &subscribe.Store{Pool: pool}, Mailer: mailer,
 		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Logger: log,

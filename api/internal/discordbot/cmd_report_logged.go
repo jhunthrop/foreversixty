@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
@@ -30,7 +31,7 @@ func (s *Service) loggedNightReply(ctx context.Context, guildID, viewer int64, u
 	if ans.PlannedRaid != nil {
 		note = plannedNote(ans.PlannedRaid.Title, s.raidPageURL(ctx, ans.PlannedRaid.ID))
 	}
-	embeds := []notify.Embed{loggedNightEmbed(ans, link, note)}
+	embeds := []notify.Embed{loggedNightEmbed(ans, link, note, s.now())}
 	s.closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
 	button := Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.OpenReport, URL: link}
 	msg := Message{Embeds: embeds, Components: []ActionRow{{button}}}
@@ -51,13 +52,13 @@ func plannedNote(title, raidURL string) string {
 
 // loggedNightEmbed is the logged night's head: "Report: Onyxia's Lair · Thursday 10 December",
 // "5 present · 1 kill · 3 wipes · 14 deaths · 2 h 41 min", the note, then the kill order.
-func loggedNightEmbed(ans guilds.LoggedNightAnswer, link, note string) notify.Embed {
+func loggedNightEmbed(ans guilds.LoggedNightAnswer, link, note string, now time.Time) notify.Embed {
 	name := ans.Zone
 	if name == "" {
 		name = ans.Title
 	}
 	e := notify.Embed{
-		Title: officerCopy.ReportPrefix + raidTitle(name, ans.At, ans.GuildTimezone), URL: link, Color: doneGreen,
+		Title: officerCopy.ReportPrefix + raidTitle(name, ans.At, ans.GuildTimezone, now), URL: link, Color: doneGreen,
 		Description: loggedNightLine(ans) + "\n" + note,
 	}
 	if kills := boundedLines(killLines(ans.KillOrder)); kills != "" {

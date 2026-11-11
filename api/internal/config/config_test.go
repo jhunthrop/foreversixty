@@ -58,8 +58,11 @@ func TestLoadDefaults(t *testing.T) {
 	if c.Port != "8080" {
 		t.Fatalf("default port = %q", c.Port)
 	}
-	if c.MailFrom != defaultMailFrom {
-		t.Fatalf("default MailFrom = %q", c.MailFrom)
+	if c.MailFrom != "Forever Sixty <help@foreversixty.gg>" || c.MailReplyTo != "help@foreversixty.gg" {
+		t.Fatalf("default sender = %q, reply-to %q", c.MailFrom, c.MailReplyTo)
+	}
+	if got := c.MailSender(); got.From != c.MailFrom || got.ReplyTo != c.MailReplyTo {
+		t.Fatalf("MailSender = %+v", got)
 	}
 	if c.TrustedProxyHops != 1 {
 		t.Fatalf("default TrustedProxyHops = %d, want 1", c.TrustedProxyHops)
@@ -73,13 +76,13 @@ func TestLoadMailFromOverride(t *testing.T) {
 	c, err := Load(env(map[string]string{
 		"DATABASE_URL": "postgres://x", "RESEND_API_KEY": "k",
 		"PUBLIC_BASE_URL": "https://foreversixty.gg", "API_BASE_URL": "https://api.foreversixty.gg",
-		"MAIL_FROM": "Test <test@example.com>",
+		"MAIL_FROM": "Test <test@example.com>", "MAIL_REPLY_TO": "reply@example.com",
 	}))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if c.MailFrom != "Test <test@example.com>" {
-		t.Fatalf("MailFrom = %q", c.MailFrom)
+	if c.MailFrom != "Test <test@example.com>" || c.MailReplyTo != "reply@example.com" {
+		t.Fatalf("MailFrom = %q, MailReplyTo = %q", c.MailFrom, c.MailReplyTo)
 	}
 }
 

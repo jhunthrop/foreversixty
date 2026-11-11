@@ -1,4 +1,4 @@
-// Package billingmail builds the plain-text billing emails.
+// Package billingmail builds the billing emails, drawn in the mail package's branded shell.
 package billingmail
 
 import (
@@ -7,6 +7,7 @@ import (
 	"time"
 	_ "time/tzdata" // the zone must load on minimal images
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
@@ -36,8 +37,8 @@ func mustLoadZone(name string) *time.Location {
 	return loc
 }
 
-// FormatPrice renders cents as "$5 a month", "$40 a year", or a bare amount
-// for an empty interval. Cents show only when the amount is not whole.
+// FormatPrice renders cents as "$5 a month", "$40 a year" (the app's plan.price.* words), or a
+// bare amount for an empty interval. Cents show only when the amount is not whole.
 func FormatPrice(cents int64, interval string) (string, error) {
 	if cents < 0 {
 		return "", fmt.Errorf("%w: %d cents", ErrNegativeAmount, cents)
@@ -48,16 +49,14 @@ func FormatPrice(cents int64, interval string) (string, error) {
 	}
 	switch interval {
 	case intervalMonthly:
-		return amount + " a month", nil
+		return copygen.Fill(copygen.PlanPriceMonthly, "{amount}", amount), nil
 	case intervalYearly:
-		return amount + " a year", nil
+		return copygen.Fill(copygen.PlanPriceYearly, "{amount}", amount), nil
 	default:
 		return amount, nil
 	}
 }
 
-// EmailDate renders a date in the Pacific zone as "6 January 2027".
-func EmailDate(t time.Time) string { return textfmt.LongDate(t, pacific) }
-
-// EmailDayMonth renders a date in the Pacific zone as "6 January".
-func EmailDayMonth(t time.Time) string { return textfmt.DayLongMonth(t, pacific) }
+// EmailDate renders a date in the Pacific zone as the account page writes a plan's date:
+// "6 Jan 2027" (formats.json day_month_year).
+func EmailDate(t time.Time) string { return textfmt.DayMonthYear(t, pacific) }

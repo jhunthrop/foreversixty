@@ -158,6 +158,10 @@ func (s *Service) Subscribe(ctx context.Context, email string) error {
 		token = result.Token // never invent a new token for an existing row
 	}
 
+	msg, err := confirmationEmail(display, s.APIBaseURL+"/v1/subscribe/confirm?token="+token, time.Now())
+	if err != nil {
+		return fmt.Errorf("subscribe: compose: %w", err)
+	}
 	claimed, err := s.Store.ClaimConfirmationSend(ctx, normalized, s.ResendCooldown)
 	if err != nil {
 		return fmt.Errorf("subscribe: store: %w", err)
@@ -171,13 +175,6 @@ func (s *Service) Subscribe(ctx context.Context, email string) error {
 		return nil
 	}
 
-	msg := mailer.Message{
-		To:      display,
-		Subject: "Confirm your Forever Sixty subscription",
-		Text: "Confirm to get Forever Sixty updates (a few emails before launch, then only when something changes):\n\n" +
-			s.APIBaseURL + "/v1/subscribe/confirm?token=" + token + "\n\n" +
-			"If you did not ask for this, ignore it and nothing happens.\n",
-	}
 	requestID := httpx.RequestIDFrom(ctx)
 
 	s.wg.Add(1)

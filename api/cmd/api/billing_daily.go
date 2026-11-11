@@ -28,7 +28,7 @@ func runBillingDaily(ctx context.Context, log *slog.Logger) error {
 		return err
 	}
 	defer pool.Close()
-	mailer := mail.NewResend(cfg.ResendAPIKey, cfg.MailFrom, nil)
+	mailer := mail.NewResend(cfg.ResendAPIKey, cfg.MailSender(), nil)
 	return billingDaily(ctx, log, newBillingDailyServices(cfg, pool, mailer, log), time.Now())
 }
 

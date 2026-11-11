@@ -76,7 +76,7 @@ func (s *Service) openComeback(ctx context.Context, tx pgx.Tx, guildID, userID i
 	msg, err := billingmail.SeatRemovedEmail(billingmail.SeatRemoved{
 		To: email, Guild: guildName, EndedOn: endedAt, AmountCents: price.AmountCents,
 		Interval: string(price.Interval), ComebackURL: s.comebackURL(price.Interval, id),
-	})
+	}, endedAt)
 	if err != nil {
 		return nil, wrap("seat removed email", err)
 	}

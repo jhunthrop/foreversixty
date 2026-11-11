@@ -2045,4 +2045,6 @@
     <string name="shared_account_delete_email">You can also ask by email at help@foreversixty.gg.</string>
     <string name="shared_account_delete_failed">Could not delete your account just now. Try again.</string>
     <string name="shared_account_delete_done">Your account is deleted. Thanks for playing with us.</string>
+    <string name="shared_footer_fanLine">A fan-made player tool. Not affiliated with Blizzard.</string>
+    <string name="shared_footer_operator">© %1$s Commish LLC d/b/a Forever Sixty</string>
 </resources>

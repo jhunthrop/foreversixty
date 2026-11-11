@@ -1,0 +1,97 @@
+{
+  "id": "raid-answer",
+  "title": "/raid: the next raid, before signing up",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Onyxia's Lair · Thu 10 Dec",
+        "description": "You have not signed up yet.",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/13",
+        "fields": [
+          {
+            "name": "When",
+            "value": "\u003ct:1796954400:t\u003e (\u003ct:1796954400:R\u003e)",
+            "inline": true
+          },
+          {
+            "name": "Signed up",
+            "value": "**1 of 40**",
+            "inline": true
+          },
+          {
+            "name": "Buffs",
+            "value": "Missing: Windfury Totem, Grace of Air Totem, Strength of Earth Totem, Mana Spring Totem, Battle Shout, Trueshot Aura, Leader of the Pack, Moonkin Aura, Power Word: Fortitude, Shadow Protection, Divine Spirit, Mark of the Wild, Blessing of Kings, Blessing of Might, Blessing of Wisdom, Sunder Armor, Faerie Fire, Curse of Recklessness, Curse of the Elements, Demoralizing Shout, Thunder Clap, Judgement of Wisdom, Judgement of Light"
+          },
+          {
+            "name": "Tanks · 0 of 2",
+            "value": "None yet",
+            "inline": true
+          },
+          {
+            "name": "Healers · 0 of 8",
+            "value": "None yet",
+            "inline": true
+          },
+          {
+            "name": "Melee · 0 of 10",
+            "value": "None yet",
+            "inline": true
+          },
+          {
+            "name": "Ranged · 1 of 20",
+            "value": "Other1 · Frost Mage",
+            "inline": true
+          }
+        ],
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty",
+          "icon_url": "https://foreversixty.gg/seal-400.png"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 37810
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "In",
+            "custom_id": "raid:13:in"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Late",
+            "custom_id": "raid:13:late"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Bench",
+            "custom_id": "raid:13:bench"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Out",
+            "custom_id": "raid:13:out"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Raid page",
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/13"
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

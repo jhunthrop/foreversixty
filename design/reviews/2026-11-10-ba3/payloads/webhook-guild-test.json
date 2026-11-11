@@ -1,0 +1,21 @@
+{
+  "id": "webhook-guild-test",
+  "title": "webhook: the guild's test message",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "avatar_url": "https://foreversixty.gg/seal-400.png",
+    "embeds": [
+      {
+        "title": "Forever Sixty will post raids for Olympus XXVII here.",
+        "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii#raids",
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty",
+          "icon_url": "https://foreversixty.gg/seal-400.png"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 37810
+      }
+    ],
+    "username": "Forever Sixty"
+  }
+}
