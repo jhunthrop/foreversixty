@@ -122,7 +122,10 @@ public struct FixtureTransport: HTTPTransport {
         guard let (route, params) = resolve(method: method, path: path) else {
             throw .missingFixture(key)
         }
-        let (data, status) = try answer(route, params: params, key: key)
+        var (data, status) = try answer(route, params: params, key: key)
+        if method == HTTPMethod.put.rawValue, let body = request.httpBody, let echoed = SignupEcho.apply(data, request: body, params: params) {
+            data = echoed
+        }
         guard let url = request.url,
               let response = HTTPURLResponse(url: url, statusCode: status, httpVersion: "HTTP/1.1", headerFields: nil)
         else {

@@ -9,6 +9,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.TextContent
 import kotlinx.coroutines.delay
 import io.ktor.http.headersOf
 import java.io.FileNotFoundException
@@ -71,7 +72,10 @@ object FixtureEngine {
             val body = own ?: source.read(file)
                 ?: error?.let { return@MockEngine respond(errorBody(it.code), it.status, jsonHeaders) }
                 ?: return@MockEngine respond(notFoundBody("$path -> $file"), HttpStatusCode.NotFound, jsonHeaders)
-            respond(body, status, jsonHeaders)
+            // A sign-up write answers with the tapped answer in place (SignupEcho), as the server does.
+            val sent = if (request.method == HttpMethod.Put) (request.body as? TextContent)?.text else null
+            val answer = sent?.let { SignupEcho.apply(body, path, it) } ?: body
+            respond(answer, status, jsonHeaders)
         }
 
     private fun errorBody(code: String): String = ApiJson.encodeToString(

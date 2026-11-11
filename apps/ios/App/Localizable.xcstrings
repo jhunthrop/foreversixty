@@ -3467,7 +3467,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Assigning is on the site for now."
+            "value": "Assigning is on the site."
           }
         }
       }
@@ -3539,6 +3539,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "First raids open %1$@"
+          }
+        }
+      }
+    },
+    "guild.tab.gearGap": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gear gap %1$lld DPS"
+          }
+        }
+      }
+    },
+    "guild.tab.gearGaps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gear gaps"
           }
         }
       }
@@ -3969,6 +3992,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "your level"
+          }
+        }
+      }
+    },
+    "guild.tab.yourAttendance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your attendance"
           }
         }
       }

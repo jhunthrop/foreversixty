@@ -44,6 +44,8 @@ data class RaidTabExtras(
     val applied: Map<Long, Instant> = emptyMap(),
     /** The newest loot night (the Guild tab's Loot section). */
     val lootNights: gg.foreversixty.app.model.LootNights? = null,
+    /** Every character on the account, for your own loot. */
+    val yourKeys: Set<String> = emptySet(),
 )
 
 /**
@@ -100,6 +102,7 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
             GuildTabInputs(
                 home = extras.home, setup = extras.setup, applicants = listOfNotNull(extras.applicant), badge = badge,
                 level = content.character.level, characterKey = key, planned = content.planned, lootNights = extras.lootNights,
+                yourKeys = extras.yourKeys,
             ),
             content.head.name,
         )
@@ -117,7 +120,12 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
             needsCount = badge?.count ?: 0,
             live = live?.let { words.live(it, content.head.name, key, words.ownAnswer(it, key)) },
             roles = shown?.let { RaidRoleLines(res).of(it) }.orEmpty(),
-            foot = shown?.let { RaidTabFacts(res).foot(it, officer, extras.home?.roster.orEmpty(), now) }.orEmpty(),
+            // Under 60, Who is coming keeps its roles; the 60s' lines (answers, cover, not synced) stay on the raid page.
+            foot = if (raidsOpen(content.character.level) != null) {
+                emptyList()
+            } else {
+                shown?.let { RaidTabFacts(res).foot(it, officer, extras.home?.roster.orEmpty(), now) }.orEmpty()
+            },
             notes = next?.let { shown?.notesHtml?.takeIf { html -> html.isNotBlank() } },
             needsFirst = officer,
             ready = ready,

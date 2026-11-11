@@ -4832,6 +4832,15 @@ const GuildTabItemLevel = "item level {n}"
 // GuildTabNotAwarded is guild.tab.notAwarded: Not awarded yet
 const GuildTabNotAwarded = "Not awarded yet"
 
+// GuildTabGearGaps is guild.tab.gearGaps: Gear gaps
+const GuildTabGearGaps = "Gear gaps"
+
+// GuildTabGearGap is guild.tab.gearGap: Gear gap {n} DPS
+const GuildTabGearGap = "Gear gap {n} DPS"
+
+// GuildTabYourAttendance is guild.tab.yourAttendance: Your attendance
+const GuildTabYourAttendance = "Your attendance"
+
 // GuildTabRaidsOpen is guild.tab.raidsOpen: Raids open at {level} · you're {you}
 const GuildTabRaidsOpen = "Raids open at {level} · you're {you}"
 
@@ -4946,8 +4955,8 @@ const GuildTabJobLine = "{boss} · {purpose}"
 // GuildTabOpenPlanner is guild.tab.openPlanner: Open in planner ›
 const GuildTabOpenPlanner = "Open in planner ›"
 
-// GuildTabAssignOnSite is guild.tab.assignOnSite: Assigning is on the site for now.
-const GuildTabAssignOnSite = "Assigning is on the site for now."
+// GuildTabAssignOnSite is guild.tab.assignOnSite: Assigning is on the site.
+const GuildTabAssignOnSite = "Assigning is on the site."
 
 // RaidTabTallyShort is raid.tab.tallyShort: {tally} · {n} short
 const RaidTabTallyShort = "{tally} · {n} short"

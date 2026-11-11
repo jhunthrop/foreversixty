@@ -5931,6 +5931,17 @@ enum Copy {
     /// Not awarded yet
     static var guildTabNotAwarded: String { text("guild.tab.notAwarded") }
 
+    /// Gear gaps
+    static var guildTabGearGaps: String { text("guild.tab.gearGaps") }
+
+    /// Gear gap {n} DPS
+    static func guildTabGearGap(n: Int) -> String {
+        format("guild.tab.gearGap", n)
+    }
+
+    /// Your attendance
+    static var guildTabYourAttendance: String { text("guild.tab.yourAttendance") }
+
     /// Raids open at {level} · you're {you}
     static func guildTabRaidsOpen(level: Int, you: Int) -> String {
         format("guild.tab.raidsOpen", level, you)
@@ -6073,7 +6084,7 @@ enum Copy {
     /// Open in planner ›
     static var guildTabOpenPlanner: String { text("guild.tab.openPlanner") }
 
-    /// Assigning is on the site for now.
+    /// Assigning is on the site.
     static var guildTabAssignOnSite: String { text("guild.tab.assignOnSite") }
 
     /// {tally} · {n} short

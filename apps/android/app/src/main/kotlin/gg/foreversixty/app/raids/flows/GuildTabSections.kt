@@ -43,11 +43,24 @@ data class GuildTabSections(
     val officer: List<OfficerShortcut> = emptyList(),
     /** Officers: the raiders who missed most of the last 30 days' nights. */
     val missing: List<GuildMemberLine> = emptyList(),
+    /** Officers: the raiders whose gear is furthest from their list (the addon's gear gap, DPS). */
+    val gearGaps: List<GuildMemberLine> = emptyList(),
+    /** Your own attendance over the last 30 days, `7 of 8 nights`. */
+    val yourAttendance: GuildMemberLine? = null,
 )
 
 /** The newest loot night (spec 2.2): its raid and day, each drop with who won it (null while open). */
 data class GuildLootNight(val zone: String, val day: String, val drops: List<Drop>) {
-    data class Drop(val itemId: Int, val name: String, val icon: String, val quality: Int, val winner: String?, val winnerClass: String?)
+    /** [yours]: one of your characters won it. */
+    data class Drop(
+        val itemId: Int,
+        val name: String,
+        val icon: String,
+        val quality: Int,
+        val winner: String?,
+        val winnerClass: String?,
+        val yours: Boolean = false,
+    )
 }
 
 data class GuildTabHead(val name: String, val faction: String?, val crestUrl: String?, val line: String)
@@ -79,6 +92,8 @@ data class GuildTabInputs(
     val planned: List<RaidView> = emptyList(),
     val firstRaids: Instant? = null,
     val lootNights: LootNights? = null,
+    /** Every character on the account, for your own loot. */
+    val yourKeys: Set<String> = emptySet(),
 )
 
 /** Turns the guild home into the Guild tab's sections. Pure over [Resources], so each state is a test of values. */
@@ -93,7 +108,7 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
         val recent = recent(others, home.roster.mapNotNull { row -> row.itemLevel?.let { row.characterKey to it } }.toMap())
         val shown = recent.map { it.name }.toSet()
         val officerView = home.viewer.officerTools || inputs.badge?.officer == true
-        val lootNight = if (leveler) null else inputs.lootNights?.nights?.firstOrNull()?.let(::lootNight)
+        val lootNight = if (leveler) null else inputs.lootNights?.nights?.firstOrNull()?.let { lootNight(it, inputs.yourKeys) }
         return GuildTabSections(
             head = head(home, guildName),
             spread = if (leveler) {
@@ -111,6 +126,8 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
             loot = if (leveler || lootNight != null) null else inputs.badge?.lastRaidLoot?.let { res.getQuantityString(R.plurals.raid_pages_lootLast, it.count, it.count) },
             officer = if (officerView) officer(inputs) else emptyList(),
             missing = if (officerView) missing(home) else emptyList(),
+            gearGaps = if (officerView) gearGaps(home) else emptyList(),
+            yourAttendance = yourAttendance(home, inputs.characterKey),
         )
     }
 
@@ -122,13 +139,34 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
     }
 
     /** The newest night's gear drops, each with who won it. */
-    private fun lootNight(night: LootNight): GuildLootNight? {
+    private fun lootNight(night: LootNight, yours: Set<String>): GuildLootNight? {
         val drops = night.drops.filter { it.kind == GEAR }.take(LOOT_SHOWN).map {
-            GuildLootNight.Drop(it.itemId, it.name, it.icon, it.quality, it.award?.name, it.award?.className)
+            GuildLootNight.Drop(it.itemId, it.name, it.icon, it.quality, it.award?.name, it.award?.className, it.award?.characterKey in yours)
         }
         if (drops.isEmpty()) return null
         val day = runCatching { clock.shortDate(java.time.LocalDate.parse(night.date).atTime(12, 0).toInstant(java.time.ZoneOffset.UTC)) }.getOrDefault(night.date)
         return GuildLootNight(night.zone, day, drops)
+    }
+
+    /** Officers: the three raiders furthest from their list (the addon's gear gap), largest first. */
+    fun gearGaps(home: GuildHome): List<GuildMemberLine> = home.roster
+        .mapNotNull { row -> row.addon?.gearGap?.takeIf { it > 0 }?.let { row to it } }
+        .sortedByDescending { it.second }
+        .take(GEAR_GAPS_SHOWN)
+        .map { (row, gap) ->
+            GuildMemberLine(
+                row.name, row.className, row.specIcon,
+                listOfNotNull(row.specName, row.itemLevel?.let { res.getString(R.string.guild_tab_itemLevel, it) }).joinToString(SEPARATOR),
+                res.getString(R.string.guild_tab_gearGap, gap),
+            )
+        }
+
+    /** Your own character's attendance over the last 30 days, when its roster row carries one. */
+    fun yourAttendance(home: GuildHome, key: String?): GuildMemberLine? {
+        val row = home.roster.firstOrNull { it.characterKey == key } ?: return null
+        val present = row.attendance30?.present ?: return null
+        val nights = row.attendance30?.nights?.takeIf { it > 0 } ?: return null
+        return GuildMemberLine(row.name, row.className, row.specIcon, row.specName.orEmpty(), res.getString(R.string.guild_tab_nights, present, nights))
     }
 
     /** Officers: the raiders present at under half of at least four nights in the last 30 days, fewest first. */
@@ -272,6 +310,7 @@ class GuildTabPresenter(private val res: Resources, private val clock: RaidClock
         const val LOGS_SHOWN = 3
         const val LOOT_SHOWN = 4
         const val MISSING_SHOWN = 3
+        const val GEAR_GAPS_SHOWN = 3
         /** Missing raids: at least this many of the last 30 days' nights, and present at under half. */
         const val MISSING_NIGHTS = 4
         private const val GEAR = "gear"

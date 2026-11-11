@@ -128,15 +128,23 @@ fun GuildRosterSection(sections: GuildTabSections, onRoster: () -> Unit) {
     ) {
         if (sections.recent.isNotEmpty()) {
             GroupLabel(stringResource(R.string.guild_tab_recentlyOn))
-            MemberRows(sections.recent, last = sections.close.isEmpty() && sections.missing.isEmpty())
+            MemberRows(sections.recent, last = sections.close.isEmpty() && sections.missing.isEmpty() && sections.gearGaps.isEmpty() && sections.yourAttendance == null)
         }
         if (sections.close.isNotEmpty()) {
             GroupLabel(stringResource(R.string.guild_tab_closeTo, GuildTabPresenter.MAX_LEVEL))
-            MemberRows(sections.close, last = sections.missing.isEmpty())
+            MemberRows(sections.close, last = sections.missing.isEmpty() && sections.gearGaps.isEmpty() && sections.yourAttendance == null)
         }
         if (sections.missing.isNotEmpty()) {
             GroupLabel(stringResource(R.string.guild_tab_missingRaids))
-            MemberRows(sections.missing, last = true)
+            MemberRows(sections.missing, last = sections.gearGaps.isEmpty() && sections.yourAttendance == null)
+        }
+        if (sections.gearGaps.isNotEmpty()) {
+            GroupLabel(stringResource(R.string.guild_tab_gearGaps))
+            MemberRows(sections.gearGaps, last = sections.yourAttendance == null)
+        }
+        sections.yourAttendance?.let {
+            GroupLabel(stringResource(R.string.guild_tab_yourAttendance))
+            MemberRows(listOf(it), last = true)
         }
     }
 }
@@ -202,7 +210,8 @@ fun GuildLootSection(night: GuildLootNight?, loot: String?, onLoot: () -> Unit) 
                         if (winner == null) {
                             append(notAwarded)
                         } else {
-                            withStyle(SpanStyle(color = classColor(drop.winnerClass))) { append(winner) }
+                            // Yours in gold (the web's Tag tone), anyone else's in class colour.
+                            withStyle(SpanStyle(color = if (drop.yours) FsColor.gold else classColor(drop.winnerClass))) { append(winner) }
                         }
                     },
                     last = index == night.drops.lastIndex,

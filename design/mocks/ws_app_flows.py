@@ -625,15 +625,15 @@ def _cover(platform: str) -> str:
     return '<div class="cov"><span>Missing</span>' + ''.join(gap(k, *g) for k, g in enumerate(gaps)) + '</div>'
 
 
-def _r5_coming(platform: str, officer: bool = False) -> str:
+def _r5_coming(platform: str, officer: bool = False, foot: bool = True) -> str:
     """Who is coming: the roles, then the other answers' counts, what the cover misses (G4) and, for officers, who signed In
     without syncing this week, as a row that opens the roster filtered to them (G1; iOS counts it as a row)."""
     unsynced = ''
     if officer:
         unsynced = (f'<a class="ns sr" href="#"><span>{RAID_NOT_SYNCED}</span><i>&rsaquo;</i></a>' if platform == 'ios'
                     else f'<a class="ns" href="#"><span>{RAID_NOT_SYNCED}</span><i>&rsaquo;</i></a>')
-    foot = f'<div class="rfoot"><p>{RAID_ANSWERS}</p>{_cover(platform)}{unsynced}</div>'
-    return _r5_section('Who is coming', _r5_roles(R5_COMING, platform) + foot, action='Roster &rsaquo;')
+    lines = f'<div class="rfoot"><p>{RAID_ANSWERS}</p>{_cover(platform)}{unsynced}</div>' if foot else ''
+    return _r5_section('Who is coming', _r5_roles(R5_COMING, platform) + lines, action='Roster &rsaquo;')
 
 
 def _r5_head(platform: str, answer: str, late_min: int | None = None, status: str = '') -> str:

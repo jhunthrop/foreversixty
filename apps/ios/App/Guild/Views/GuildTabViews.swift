@@ -111,15 +111,30 @@ struct GuildRosterSection: View {
             PanelSection(Copy.guildTabRoster, meta: content.rosterMeta, action: (Copy.raidTabRosterLink, open)) {
                 if !content.recent.isEmpty {
                     GroupLabel(Copy.guildTabRecentlyOn)
-                    MemberRows(lines: content.recent, last: content.close.isEmpty && content.missing.isEmpty, levelTrail: false)
+                    MemberRows(
+                        lines: content.recent,
+                        last: content.close.isEmpty && content.missing.isEmpty && content.gearGaps.isEmpty && content.yourAttendance == nil,
+                        levelTrail: false
+                    )
                 }
                 if !content.close.isEmpty {
                     GroupLabel(Copy.guildTabCloseTo(level: GuildTabPresenter.maxLevel))
-                    MemberRows(lines: content.close, last: content.missing.isEmpty, levelTrail: true)
+                    MemberRows(
+                        lines: content.close, last: content.missing.isEmpty && content.gearGaps.isEmpty && content.yourAttendance == nil,
+                        levelTrail: true
+                    )
                 }
                 if !content.missing.isEmpty {
                     GroupLabel(Copy.guildTabMissingRaids)
-                    MemberRows(lines: content.missing, last: true, levelTrail: false)
+                    MemberRows(lines: content.missing, last: content.gearGaps.isEmpty && content.yourAttendance == nil, levelTrail: false)
+                }
+                if !content.gearGaps.isEmpty {
+                    GroupLabel(Copy.guildTabGearGaps)
+                    MemberRows(lines: content.gearGaps, last: content.yourAttendance == nil, levelTrail: false)
+                }
+                if let yours = content.yourAttendance {
+                    GroupLabel(Copy.guildTabYourAttendance)
+                    MemberRows(lines: [yours], last: true, levelTrail: false)
                 }
             }
         }
@@ -319,7 +334,7 @@ struct GuildLootSection: View {
                     GuildLineRow(
                         title: drop.name, titleColor: ItemQuality(value: drop.quality).text,
                         sub: drop.winner == nil ? Copy.guildTabNotAwarded : "",
-                        styledSub: drop.winner.map { Text($0).foregroundColor(ClassColor.of(drop.winnerClass)) },
+                        styledSub: drop.winner.map { Self.winner($0, className: drop.winnerClass, yours: drop.yours) },
                         trail: nil, last: index == night.drops.count - 1
                     ) {
                         ItemIconView(icon: drop.icon, quality: drop.quality, build: build ?? "", size: FSSize.icon40).parityItem(.image)
@@ -331,6 +346,11 @@ struct GuildLootSection: View {
                 PanelRow(loot, last: true)
             }
         }
+    }
+    static func winner(_ name: String, className: String?, yours: Bool) -> Text {
+        var line = AttributedString(name)
+        line.foregroundColor = yours ? FSColor.gold : ClassColor.of(className)
+        return Text(line)
     }
 }
 

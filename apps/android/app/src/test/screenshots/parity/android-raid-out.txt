@@ -1,8 +1,8 @@
 Open the menu
-Raid
+Guild
 Raid with a guild
 Sign in with Battle.net
 Home
-Raid
+Guild
 Gear
 Activity

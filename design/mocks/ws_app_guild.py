@@ -10,6 +10,7 @@ without repeats, an officer's Missing raids, the loot night's drops and winners,
 """
 from __future__ import annotations
 
+
 from mocklib import CLASS_COLOR
 import ws_app_flows as F
 from ws_app_frame import app_page
@@ -17,7 +18,7 @@ from ws_lib import QCOL
 from ws_prims import Emblem, build_page, crest_img, icon
 
 GUILD = 'Olympus XXVII'
-MEMBERS, AT_CAP, CLOSE, RAIDERS = 38, 31, 3, 24
+MEMBERS, AT_CAP, CLOSE, RAIDERS = 38, 31, 4, 24
 LEVELER_LEVEL = 36
 
 # Recently on: the newest seen_at first (members[]: name, class, level, spec_name; roster[].item_level; seen).
@@ -31,13 +32,18 @@ CLOSE_ROWS = [('Vexa', 'warlock', 56, 'Affliction Warlock'), ('Pell', 'mage', 55
 # An officer's Missing raids (roster[].attendance_30: under half of at least four nights).
 MISSING = [('Brakka', 'druid', 'Feral Druid &middot; item level 60', '2 of 8 nights'),
            ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', '3 of 7 nights')]
+# An officer's Gear gaps (roster[].addon.gear_gap, largest first) and your own attendance (your roster row's attendance_30).
+GEAR_GAPS = [('Selka', 'druid', 'Restoration Druid &middot; item level 62', 'Gear gap 41 DPS'),
+             ('Thalrin', 'hunter', 'Marksmanship Hunter &middot; item level 58', 'Gear gap 37 DPS'),
+             ('Kaelra', 'mage', 'Frost Mage &middot; item level 61', 'Gear gap 22 DPS')]
+YOURS = ('Thandrel', 'warrior', 'Fury Warrior', '7 of 8 nights')
 # reports[]: title, zone, kills of fights, duration, day.
 LOGS = [('UBRS, Sunday', 'Blackrock Spire', 7, 8, '1 h 32 min', 'Sun 3 Jan'),
         ('Scholomance, Saturday', 'Scholomance', 10, 10, '1 h 08 min', 'Sat 2 Jan'),
         ('Onyxia, Wednesday', 'Onyxia&rsquo;s Lair', 1, 1, '41 min', 'Wed 30 Dec')]
 # The newest loot night's drops (loot/nights?limit=1): item, icon, quality, winner and class (None while open).
 LOOT = [('Eskhandar&rsquo;s Collar', 'inv_jewelry_necklace_07', 4, 'Kraggor', 'warrior'),
-        ('Ancient Cornerstone Grimoire', 'inv_misc_book_07', 4, 'Mirethil', 'priest'),
+        ('Ancient Cornerstone Grimoire', 'inv_misc_book_07', 4, 'Thandrel', 'you'),
         ('Head of Onyxia', 'inv_misc_head_dragon_01', 4, None, None)]
 SETUP_DONE, SETUP_TOTAL, APPLICANTS = 4, 8, 1
 
@@ -94,9 +100,9 @@ def _head(leveler: bool) -> str:
     return f'<div class="blk-r5" data-region="section-guild"><div class="pn">{head}</div></div>'
 
 
-def _coming(platform: str, officer: bool = False) -> str:
+def _coming(platform: str, officer: bool = False, foot: bool = True) -> str:
     """Who is coming without its Roster link: the Roster section's link is the one way to the roster on this tab."""
-    return F._r5_coming(platform, officer=officer).replace('<span class="act">Roster &rsaquo;</span>', '', 1)
+    return F._r5_coming(platform, officer=officer, foot=foot).replace('<span class="act">Roster &rsaquo;</span>', '', 1)
 
 
 def _raid_view(platform: str) -> str:
@@ -104,7 +110,9 @@ def _raid_view(platform: str) -> str:
     then Who is coming."""
     head = F._r5_head(platform, 'In').replace('Thandrel, Damage', 'Felsnap, Damage')
     gate = f'<p class="gate">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>'
-    return head + gate + _coming(platform)
+    # Under 60 Who is coming keeps its roles; the 60s' lines (answers, cover, not synced) stay on the raid page.
+    coming = _coming(platform, foot=False)
+    return head + gate + coming
 
 
 def _roster(leveler: bool, officer: bool = False) -> str:
@@ -116,6 +124,11 @@ def _roster(leveler: bool, officer: bool = False) -> str:
     if officer:
         rows += '<p class="grp">Missing raids</p>' + ''.join(
             _crest_row(n, c, sub, f'<span class="when">{nights}</span>') for n, c, sub, nights in MISSING)
+        rows += '<p class="grp">Gear gaps</p>' + ''.join(
+            _crest_row(n, c, sub, f'<span class="when">{gap}</span>') for n, c, sub, gap in GEAR_GAPS)
+    if not leveler:
+        n, c, sub, nights = YOURS
+        rows += '<p class="grp">Your attendance</p>' + _crest_row(n, c, sub, f'<span class="when">{nights}</span>')
     return F._r5_section('Roster', rows, action='Roster &rsaquo;', meta=f'{AT_CAP} of {MEMBERS} at 60')
 
 
@@ -133,7 +146,9 @@ def _progression() -> str:
 
 def _loot() -> str:
     """The newest loot night: each drop in its quality colour with who won it (Not awarded yet while open)."""
-    rows = ''.join(_line_row(name, f'<span style="color:{CLASS_COLOR[cls]}">{who}</span>' if who else 'Not awarded yet',
+    def colour(cls: str) -> str:
+        return 'var(--gold)' if cls == 'you' else CLASS_COLOR[cls]
+    rows = ''.join(_line_row(name, f'<span style="color:{colour(cls)}">{who}</span>' if who else 'Not awarded yet',
                              lead=icon(ic, 40), title_style=f'color:{QCOL[q]}') for name, ic, q, who, cls in LOOT)
     return F._r5_section('Loot', rows, action='Loot history &rsaquo;', meta='Wed 30 Dec')
 
@@ -190,7 +205,7 @@ def _assignments() -> str:
         f'<div class="row"><div class="in"><div><span class="t{" vacant" if not people else ""}">{label}</span>'
         + (f'<span class="s">{names(people)}</span>' if people else '')
         + f'</div><span class="when">{len(people)} of {count}</span></div></div>' for label, count, people in ASSIGNED)
-    rows += '<p class="stamp" style="margin:0">Assigning is on the site for now.</p>'
+    rows += '<p class="stamp" style="margin:0">Assigning is on the site.</p>'
     return F._r5_section('Assignments', rows, action='Open in planner &rsaquo;')
 
 

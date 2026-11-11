@@ -24,6 +24,10 @@ struct GuildTabContent: Equatable {
     var officer: [OfficerShortcut] = []
     /// Officers: the raiders who missed most of the last 30 days' nights.
     var missing: [GuildMemberLine] = []
+    /// Officers: the raiders whose gear is furthest from their list (the addon's gear gap, DPS).
+    var gearGaps: [GuildMemberLine] = []
+    /// Your own attendance over the last 30 days, `7 of 8 nights`.
+    var yourAttendance: GuildMemberLine?
 }
 
 /// The newest loot night (spec 2.2): its raid and day, each drop with who won it.
@@ -37,6 +41,8 @@ struct GuildLootNight: Equatable {
         /// The winner, or nil while the drop is open.
         let winner: String?
         let winnerClass: String?
+        /// One of your characters won it.
+        var yours = false
     }
 
     let zone: String
@@ -110,6 +116,8 @@ struct GuildTabInputs: Equatable {
     var planned: [RaidView] = []
     var firstRaids: Date?
     var lootNights: LootNights?
+    /// Every character on the account, for your own loot and attendance.
+    var yourKeys: Set<String> = []
 }
 
 /// Turns the guild home into the Guild tab's sections. Pure, so each state is a test of values.
@@ -125,6 +133,7 @@ struct GuildTabPresenter {
     static let logsShown = 3
     static let lootShown = 4
     static let missingShown = 3
+    static let gearGapsShown = 3
     /// Missing raids: at least this many of the last 30 days' nights, and present at under half.
     static let missingNights = 4
     /// Plan a raid names the next two planned raids, as the Calendar row does.
@@ -151,13 +160,15 @@ struct GuildTabPresenter {
         }
         content.logs = home.reports.prefix(Self.logsShown).map(log)
         content.progression = progression(home.summary, firstRaids: inputs.firstRaids)
+        content.yourAttendance = yourAttendance(home, key: inputs.characterKey)
         if !leveler {
-            content.lootNight = inputs.lootNights?.nights.first.flatMap(lootNight)
+            content.lootNight = inputs.lootNights?.nights.first.flatMap { lootNight($0, yours: inputs.yourKeys) }
             content.loot = content.lootNight == nil ? inputs.badge?.lastRaidLoot.map { Copy.raidPagesLootLast(n: $0.count) } : nil
         }
         if home.viewer.officerTools || inputs.badge?.officer == true {
             content.officer = officer(inputs)
             content.missing = missing(home)
+            content.gearGaps = gearGaps(home)
         }
         return content
     }
@@ -183,16 +194,42 @@ struct GuildTabPresenter {
     }
 
     /// The newest night's drops, each with who won it (Not awarded yet while open).
-    private func lootNight(_ night: LootNight) -> GuildLootNight? {
+    private func lootNight(_ night: LootNight, yours: Set<String>) -> GuildLootNight? {
         let drops = night.drops.filter { $0.kind == "gear" }.prefix(Self.lootShown).map { drop in
             GuildLootNight.Drop(
                 itemID: drop.itemId, name: drop.name, icon: drop.icon, quality: drop.quality,
-                winner: drop.award?.name, winnerClass: drop.award?.className
+                winner: drop.award?.name, winnerClass: drop.award?.className,
+                yours: drop.award.map { yours.contains($0.characterKey) } ?? false
             )
         }
         guard !drops.isEmpty else { return nil }
         let day = (try? Date(night.date + "T12:00:00Z", strategy: .iso8601)).map(clock.shortDate) ?? night.date
         return GuildLootNight(zone: night.zone, day: day, drops: Array(drops))
+    }
+
+    /// Officers: the three raiders furthest from their list (the addon's gear gap), largest first.
+    func gearGaps(_ home: GuildHome) -> [GuildMemberLine] {
+        home.roster
+            .compactMap { row -> (GuildRosterRow, Int)? in row.addon?.gearGap.flatMap { $0 > 0 ? (row, $0) : nil } }
+            .sorted { $0.1 > $1.1 }
+            .prefix(Self.gearGapsShown)
+            .map { row, gap in
+                GuildMemberLine(
+                    name: row.name, className: row.className, specIcon: row.specIcon,
+                    line: [row.specName, row.itemLevel.map { Copy.guildTabItemLevel(n: $0) }].compactMap(\.self).joined(separator: " · "),
+                    trail: Copy.guildTabGearGap(n: gap)
+                )
+            }
+    }
+
+    /// Your own character's attendance over the last 30 days, when its roster row carries one.
+    func yourAttendance(_ home: GuildHome, key: String?) -> GuildMemberLine? {
+        guard let row = home.roster.first(where: { $0.characterKey == key }),
+              let present = row.attendance30?.present, let nights = row.attendance30?.nights, nights > 0 else { return nil }
+        return GuildMemberLine(
+            name: row.name, className: row.className, specIcon: row.specIcon, line: row.specName ?? "",
+            trail: Copy.guildTabNights(present: present, nights: nights)
+        )
     }
 
     /// Officers: the raiders present at under half of at least four nights in the last 30 days, fewest first.

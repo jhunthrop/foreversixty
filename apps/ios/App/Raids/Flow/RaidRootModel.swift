@@ -101,6 +101,12 @@ struct RaidRootComposer {
         let level = content.character.level
         let raid = HomeFlowModel.current(content.planned, now: presenter.now)
         guild.raidsOpen = raidsOpen(level)
+        if guild.raidsOpen != nil {
+            // Under 60, Who is coming keeps its roles; the 60s' lines (answers, cover, not synced) stay on the raid page.
+            guild.answers = nil
+            guild.cover = nil
+            guild.notSynced = nil
+        }
         guild.jobs = RaidAssignmentWords.jobs(raid)
         let officer = extras.badge?.officer == true || home?.viewer.officerTools == true
         guild.assignments = officer && raid?.assignments != nil ? RaidAssignmentWords.encounters(raid) : nil
@@ -110,6 +116,7 @@ struct RaidRootComposer {
         inputs.planned = content.planned
         inputs.firstRaids = firstRaids
         inputs.lootNights = extras.lootNights
+        inputs.yourKeys = content.accountKeys
         guild.tab = GuildTabPresenter(now: presenter.now, clock: presenter.clock).content(inputs, guildName: content.head.name)
         if let tab = guild.tab { guild.pages = Self.pages(guild.pages, tab: tab) }
         return guild

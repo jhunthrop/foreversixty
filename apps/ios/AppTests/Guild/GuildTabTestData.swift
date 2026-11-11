@@ -27,6 +27,14 @@ enum GuildTabTestData {
         member("Orrin", "paladin", "Holy Paladin", "55"),
     ]
 
+    static let gearGaps = [
+        member("Selka", "druid", "Restoration Druid · item level 62", "Gear gap 41 DPS"),
+        member("Thalrin", "hunter", "Marksmanship Hunter · item level 58", "Gear gap 37 DPS"),
+        member("Kaelra", "mage", "Frost Mage · item level 61", "Gear gap 22 DPS"),
+    ]
+
+    static let yourAttendance = member("Thandrel", "warrior", "Fury Warrior", "7 of 8 nights")
+
     static let missing = [
         member("Brakka", "druid", "Feral Druid · item level 60", "2 of 8 nights"),
         member("Thalrin", "hunter", "Marksmanship Hunter · item level 58", "3 of 7 nights"),
@@ -42,7 +50,7 @@ enum GuildTabTestData {
 
     static let lootNight = GuildLootNight(zone: "Onyxia's Lair", day: "Wed 30 Dec", drops: [
         .init(itemID: 18205, name: "Eskhandar's Collar", icon: "inv_jewelry_necklace_07", quality: 4, winner: "Kraggor", winnerClass: "warrior"),
-        .init(itemID: 17067, name: "Ancient Cornerstone Grimoire", icon: "inv_misc_book_07", quality: 4, winner: "Mirethil", winnerClass: "priest"),
+        .init(itemID: 17067, name: "Ancient Cornerstone Grimoire", icon: "inv_misc_book_07", quality: 4, winner: "Thandrel", winnerClass: "warrior", yours: true),
         .init(itemID: 18422, name: "Head of Onyxia", icon: "inv_misc_head_dragon_01", quality: 4, winner: nil, winnerClass: nil),
     ])
 
@@ -58,8 +66,8 @@ enum GuildTabTestData {
         var tab = GuildTabContent(head: head)
         tab.leveler = leveler
         tab.spread = leveler
-            ? GuildSpread(atCap: 31, close: 3, third: 36, thirdLabel: Copy.guildTabYou, own: true)
-            : GuildSpread(atCap: 31, close: 3, third: 24, thirdLabel: Copy.guildTabRaiders, own: false)
+            ? GuildSpread(atCap: 31, close: 4, third: 36, thirdLabel: Copy.guildTabYou, own: true)
+            : GuildSpread(atCap: 31, close: 4, third: 24, thirdLabel: Copy.guildTabRaiders, own: false)
         tab.rosterMeta = "31 of 38 at 60"
         tab.recent = recent
         tab.close = leveler ? close : []
@@ -68,6 +76,8 @@ enum GuildTabTestData {
         tab.lootNight = leveler ? nil : lootNight
         tab.officer = officer ? officerRows : []
         tab.missing = officer ? missing : []
+        tab.gearGaps = officer ? gearGaps : []
+        tab.yourAttendance = leveler ? nil : yourAttendance
         return tab
     }
 
@@ -117,6 +127,9 @@ enum GuildTabTestData {
         guild.tab = tab(leveler: true)
         guild.pages = pages(leveler: true)
         guild.raidsOpen = Copy.guildTabRaidsOpen(level: 60, you: 36)
+        guild.answers = nil
+        guild.cover = nil
+        guild.notSynced = nil
         return .guild(guild)
     }
 

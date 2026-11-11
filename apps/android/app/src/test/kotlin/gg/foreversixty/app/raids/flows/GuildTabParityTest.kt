@@ -38,27 +38,19 @@ class GuildTabParityTest {
 
     @Test fun atCap() = state("guild-tab", GuildTabFixtures.atCap(), guild = 0, activity = 3)
 
-    // 2026-11-11, lane guild-tab: the officer's tab is about 40 rows long; their 18.29 line boxes put the sections under the
-    // roster 10 to 11 higher than the mock's; each section's own height holds.
+    // 2026-11-11, lane guild-tab: the officer's roster is 11 rows under four group labels; their 18.29 line boxes run 2 to 3
+    // taller per row than the mock's, so the sections under the roster sit 27 lower; each section's own height holds.
     @Test fun officer() = state(
         "guild-tab-officer", GuildTabFixtures.atCap(officer = true), guild = 6, activity = 3,
         drift = setOf(
-            "section-loot: y 2875, the mock has 2865 (within 8)",
-            "section-pages: y 3505, the mock has 3494 (within 8)",
-            "section-progression: y 3376, the mock has 3365 (within 8)",
-            "section-recent-logs: y 3127, the mock has 3117 (within 8)",
+            "section-loot: y 3209, the mock has 3182 (within 8)",
+            "section-pages: y 3839, the mock has 3812 (within 8)",
+            "section-progression: y 3710, the mock has 3683 (within 8)",
+            "section-recent-logs: y 3461, the mock has 3434 (within 8)",
         ),
     )
 
-    // 2026-11-11, lane guild-tab: the same line boxes over the Close to 60 rows put the sections under the roster 8 higher.
-    @Test fun leveler() = state(
-        "guild-tab-leveler", GuildTabFixtures.leveler(), activity = 1, felsnap = true,
-        drift = setOf(
-            "section-pages: y 1781, the mock has 1773 (within 8)",
-            "section-progression: y 1652, the mock has 1644 (within 8)",
-            "section-recent-logs: y 1403, the mock has 1395 (within 8)",
-        ),
-    )
+    @Test fun leveler() = state("guild-tab-leveler", GuildTabFixtures.leveler(), activity = 1, felsnap = true)
 
     // 2026-11-11, lane guild-tab: the recruiting rows' trail (Apply 44 dp, Applied's 20 line) is 10 shorter than the
     // mock's `.tr` with its 8 margin and 48 px button, so Find your guild sits 10 to 11 higher.
@@ -121,7 +113,7 @@ object GuildTabFixtures {
         "Onyxia's Lair", "Wed 30 Dec",
         listOf(
             GuildLootNight.Drop(18205, "Eskhandar's Collar", "inv_jewelry_necklace_07", 4, "Kraggor", "warrior"),
-            GuildLootNight.Drop(17067, "Ancient Cornerstone Grimoire", "inv_misc_book_07", 4, "Mirethil", "priest"),
+            GuildLootNight.Drop(17067, "Ancient Cornerstone Grimoire", "inv_misc_book_07", 4, "Thandrel", "warrior", yours = true),
             GuildLootNight.Drop(18422, "Head of Onyxia", "inv_misc_head_dragon_01", 4, null, null),
         ),
     )
@@ -131,6 +123,14 @@ object GuildTabFixtures {
         GuildMemberLine("Pell", "mage", null, "Frost Mage", "55"),
         GuildMemberLine("Orrin", "paladin", null, "Holy Paladin", "55"),
     )
+
+    private val gearGaps = listOf(
+        GuildMemberLine("Selka", "druid", null, "Restoration Druid · item level 62", "Gear gap 41 DPS"),
+        GuildMemberLine("Thalrin", "hunter", null, "Marksmanship Hunter · item level 58", "Gear gap 37 DPS"),
+        GuildMemberLine("Kaelra", "mage", null, "Frost Mage · item level 61", "Gear gap 22 DPS"),
+    )
+
+    private val yourAttendance = GuildMemberLine("Thandrel", "warrior", null, "Fury Warrior", "7 of 8 nights")
 
     private val logs = listOf(
         GuildLogLine("r3", "UBRS, Sunday", "Blackrock Spire · 7/8 kills · 1 h 32 min", "Sun 3 Jan", clean = false),
@@ -146,7 +146,7 @@ object GuildTabFixtures {
 
     private fun sections(leveler: Boolean, officer: Boolean) = GuildTabSections(
         head = head,
-        spread = if (leveler) GuildSpread(31, 3, 36, "your level", own = true) else GuildSpread(31, 3, 24, "raiders", own = false),
+        spread = if (leveler) GuildSpread(31, 4, 36, "your level", own = true) else GuildSpread(31, 4, 24, "raiders", own = false),
         leveler = leveler,
         rosterMeta = "31 of 38 at 60",
         recent = recent,
@@ -156,6 +156,8 @@ object GuildTabFixtures {
         lootNight = if (leveler) null else lootNight,
         officer = if (officer) officerRows else emptyList(),
         missing = if (officer) missing else emptyList(),
+        gearGaps = if (officer) gearGaps else emptyList(),
+        yourAttendance = if (leveler) null else yourAttendance,
     )
 
     private val job = RaidJobLine(
@@ -201,6 +203,7 @@ object GuildTabFixtures {
         next = RaidTabFixtures.head(SignupState.In).copy(who = "As Felsnap, Damage"),
         ready = emptyList(),
         readyStamp = null,
+        foot = emptyList(),
         tab = sections(leveler = true, officer = false),
         raidsOpen = "Raids open at 60 · you're 36",
         pages = GuildTabPresenter.pagesLeft(RaidTabFixtures.pages, leveler = true),

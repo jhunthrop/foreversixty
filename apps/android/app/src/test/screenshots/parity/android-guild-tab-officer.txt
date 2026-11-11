@@ -47,7 +47,7 @@ Thandrel, Kaelra, Thalrin
 3 of 3
 Whelps, east cave
 0 of 3
-Assigning is on the site for now.
+Assigning is on the site.
 Your job
 Whelps, west cave with Kaelra and Thalrin
 Onyxia · Pick up the west cave's whelps in phases 2 and 3 and kill them away from the raid.
@@ -81,7 +81,7 @@ Olympus XXVII
 38 members · Alliance · US PvP
 31
 at 60
-3
+4
 55 to 59
 24
 raiders
@@ -111,13 +111,27 @@ Feral Druid · item level 60
 Thalrin
 Marksmanship Hunter · item level 58
 3 of 7 nights
+Gear gaps
+Selka
+Restoration Druid · item level 62
+Gear gap 41 DPS
+Thalrin
+Marksmanship Hunter · item level 58
+Gear gap 37 DPS
+Kaelra
+Frost Mage · item level 61
+Gear gap 22 DPS
+Your attendance
+Thandrel
+Fury Warrior
+7 of 8 nights
 Loot
 Wed 30 Dec
 Loot history ›
 Eskhandar's Collar
 Kraggor
 Ancient Cornerstone Grimoire
-Mirethil
+Thandrel
 Head of Onyxia
 Not awarded yet
 Recent logs

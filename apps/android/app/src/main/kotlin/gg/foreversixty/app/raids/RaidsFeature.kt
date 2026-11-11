@@ -315,7 +315,7 @@ fun RaidsRoute(
         when (val top = feature.navigator.stack.lastOrNull()) {
             null -> Column(Modifier.fillMaxSize().screenGround()) {
                 val home = content?.let { extras?.roster(it.head.id)?.state as? Loadable.Loaded }?.value
-                val view = RaidTabPresenter(res, clock, feature.now()).view(tab.state, next, feature.badge, extras != null, feature.tabExtras.copy(home = home))
+                val view = RaidTabPresenter(res, clock, feature.now()).view(tab.state, next, feature.badge, extras != null, feature.tabExtras.copy(home = home, yourKeys = tab.accountKeys))
                 if (view != null) {
                     val actions = raidTabActions(feature, content, next, scope, uri::openUri, signIn)
                     RaidTabScreen(view, actions, topBar = selector, page = FlowPageState(rootScroll, refresh)) {

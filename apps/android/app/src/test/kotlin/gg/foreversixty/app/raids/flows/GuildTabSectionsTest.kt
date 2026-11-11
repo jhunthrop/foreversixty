@@ -23,8 +23,10 @@ class GuildTabSectionsTest {
     private val presenter = GuildTabPresenter(res, RaidClock(res, ZoneOffset.UTC), now, ZoneOffset.UTC)
     private val viewer = "us/pvp/obnoxious-yell"
 
-    private fun sections(level: Int, loot: LootNights? = null) =
-        requireNotNull(presenter.sections(GuildTabInputs(GuildFixture.home(), level = level, characterKey = viewer, lootNights = loot), "OLYMPUS XXVII"))
+    private fun sections(level: Int, loot: LootNights? = null, yours: Set<String> = emptySet(), key: String = viewer) =
+        requireNotNull(
+            presenter.sections(GuildTabInputs(GuildFixture.home(), level = level, characterKey = key, lootNights = loot, yourKeys = yours), "OLYMPUS XXVII"),
+        )
 
     @Test fun `under 60 the guild leads, the spread names your level, Close to 60 never repeats Recently on`() {
         val s = sections(36)
@@ -42,6 +44,21 @@ class GuildTabSectionsTest {
         val drops = requireNotNull(s.lootNight).drops
         assertEquals(listOf("Kraggor", null), drops.map { it.winner })
         assertTrue(s.close.isEmpty())
+    }
+
+    @Test fun `your own award is marked yours, anyone else's is not`() {
+        val drops = requireNotNull(sections(60, RaidFixture.load(LootNights.serializer(), "guild.loot.nights"), setOf("us/pvp/kraggor")).lootNight).drops
+        assertEquals(listOf(true, false), drops.map { it.yours })
+    }
+
+    @Test fun `Gear gaps are the three largest, largest first, in the addon's DPS`() {
+        val gaps = presenter.gearGaps(GuildFixture.home())
+        assertEquals(3, gaps.size)
+        assertTrue(gaps.all { it.trail == "Gear gap 4 DPS" })
+    }
+
+    @Test fun `your attendance reads your own nights`() {
+        assertEquals("3 of 8 nights", sections(60, key = "us/pvp/gorvash").yourAttendance?.trail)
     }
 
     @Test fun `the head names the realm in the site's words`() {

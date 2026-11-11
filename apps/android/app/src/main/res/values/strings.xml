@@ -1769,6 +1769,9 @@
     <string name="guild_tab_nights" tools:ignore="PluralsCandidate">%1$d of %2$d nights</string>
     <string name="guild_tab_itemLevel" tools:ignore="PluralsCandidate">item level %1$d</string>
     <string name="guild_tab_notAwarded">Not awarded yet</string>
+    <string name="guild_tab_gearGaps">Gear gaps</string>
+    <string name="guild_tab_gearGap" tools:ignore="PluralsCandidate">Gear gap %1$d DPS</string>
+    <string name="guild_tab_yourAttendance">Your attendance</string>
     <string name="guild_tab_raidsOpen" tools:ignore="PluralsCandidate">Raids open at %1$d · you\'re %2$d</string>
     <string name="guild_tab_roster">Roster</string>
     <string name="guild_tab_rosterMeta" tools:ignore="PluralsCandidate">%1$d of %2$d at %3$d</string>
@@ -1810,7 +1813,7 @@
     <string name="guild_tab_applied">Applied %1$s</string>
     <string name="guild_tab_jobLine">%1$s · %2$s</string>
     <string name="guild_tab_openPlanner">Open in planner ›</string>
-    <string name="guild_tab_assignOnSite">Assigning is on the site for now.</string>
+    <string name="guild_tab_assignOnSite">Assigning is on the site.</string>
     <string name="raid_tab_tallyShort" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
     <string name="raid_tab_tallyCompact" tools:ignore="PluralsCandidate">%1$d/%2$d</string>
     <string name="raid_tab_damageSplit" tools:ignore="PluralsCandidate">%1$d melee, %2$d ranged</string>
