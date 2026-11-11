@@ -32,11 +32,11 @@ func TestBearSwipesOnlyOnAPack(t *testing.T) {
 	}
 }
 
-// From 40, when Primal Bite arrives, to 53 a bear is short of rage, and a
-// Maul queued at 15 rage leaves Primal Bite waiting on its cooldown: Maul at
-// 30 rage there is +0.2 to +0.8% threat (bare, both seeds, both factions),
-// while from 54 and at raid 60 the 15 holds. At 43 Primal Bite then fires on
-// nearly every cooldown (29.5 of a possible 30 a fight, against 28.4).
+// From 40, when Primal Bite arrives, a bear is short of rage, and a Maul queued at 15 rage
+// leaves Primal Bite waiting on its cooldown. Round 16 gated Maul at 30 rage from 40 to 53;
+// round 30 retuned the gate on round 29's order and the dungeon-table boss (45 from 40 to 59,
+// sim/request TestBearMaulGateFollowsTheLevel). At 43 Primal Bite fires on nearly every
+// cooldown (29.5 of a possible 30 a fight, against 28.4 with the 15 gate).
 func TestBearMaulKeepsRageForPrimalBiteFromFortyToFiftyThree(t *testing.T) {
 	o := options{
 		repoRoot: "../../..", spec: "druid-feral-bear", preset: "bare", band: 40, level: 43,
