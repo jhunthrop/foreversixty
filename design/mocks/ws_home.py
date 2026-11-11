@@ -22,7 +22,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_prims import (Button, FeedRow, FeedSkeleton, Frame, GradeTile, ItemRow, Link, MeterClass, Page, PageHeader, Plate, Row, RowGrid, Rows,
-                      Section, Skeleton, build_page, crest_img, icon, write)
+                      Section, Segmented, Skeleton, build_page, crest_img, icon, write)
 from ws_lib import REGION, QCOL, region_slug
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -205,11 +205,14 @@ def guild_plaque(char: dict, guild_home: dict) -> str:
     d = iso(r['starts_at']) - timedelta(hours=6)
     when = f"{d.strftime('%A')} {d.day} {d.strftime('%B')} &middot; 8 pm"  # web lib/home/plaque.ts raidWhen, the viewer's time
     # the countdown alone is big (h-audit 2026-11-09); signed up and late lead the role line at body size
-    roles = (f'<span><b>{c["in"]}</b> signed up</span><span><b>{c["late"]}</b> late</span>'
+    roles = (f'<span><b>{c["in"]}</b> in</span><span><b>{c["late"]}</b> late</span>'
              + ''.join(f'<span><b>{c[k]}</b> {k}</span>' for k in ('tanks', 'healers', 'melee', 'ranged')))
     own = r['own']['state'] if r['own'] else None
-    buttons = ''.join(f'<button type="button" class="btn{" primary" if k == "in" else ""} sm" aria-pressed="{str(own == k).lower()}">{label}</button>'
-                      for k, label in (('in', "I'm in"), ('late', 'Late'), ('out', "Can't come")))
+    # The four-choice sign-up (owner ruling 2026-11-10: In, Late, Bench, Out everywhere), the one Segmented
+    # (guild/SignupSegments.svelte), with the role it signs as beside it (raid-copy signingAs).
+    role = {'tank': 'Tank', 'healer': 'Healer', 'dps': 'DPS'}[r['own']['role']] if r['own'] else 'DPS'
+    buttons = (Segmented([(label, own == k) for k, label in (('in', 'In'), ('late', 'Late'), ('bench', 'Bench'), ('out', 'Out'))])
+               + f'<span class="t-small" style="color:var(--muted);white-space:nowrap">as {role}</span>')
     prep = (f'<div class="prep"><h3>Before the pull</h3><ul>{"".join(f"<li>{n}</li>" for n in needs)}</ul></div>') if needs else ''
     main = (f'<div style="min-width:0">{plaque_title(r["zone_name"], f"{char["guild"]["name"]} &middot; {when}")}'
             f'{big_figures([clock_to(r["starts_at"])], True)}'

@@ -34,6 +34,12 @@ from `design/mocks/companion/shoot_ui.cjs`).
   read the same): Rankings 122,238, Character 143,102, BisSpecPage 88,966, listbox 17,460 and
   planner-island 109,083; the shared Crest, CharacterName and crest.css (D) and the shared states (E)
   now ride in every island's startup closure. Reasons recorded in web/scripts/check-island-size.mjs.
+- Mock parity reconciled to the lanes' shared components (none of the lanes had run these specs):
+  the home plaque mock draws D's four-choice sign-up radiogroup with "as DPS" (ws_home.py); the
+  rankings empty board mock mirrors RankingsEmpty's EmptyState shape (ws_rankings.py); a shared
+  `EmptyState` line primitive in ws_prims.py stands in for E's ui/EmptyState on the guild Last raid
+  (with "Get the companion") and raid Notes panels (ws_guild_states.py, ws_guild_dense_tabs.py). The
+  home, rankings and guild reference mocks are regenerated through their generators.
 - Tests reconciled to the merged behaviour: the typeahead's no-class row shows the LX seal in a neutral
   ring (D's crest, the test predated it); the home text floor is 290 (the shared class picker names one
   spec per talent tree, so home draws about 296 words).

@@ -230,12 +230,20 @@ PRIM_CSS += '''
 .ck.ok{background:var(--kill)}.ck.warn{background:var(--gold)}.ck.miss{background:var(--wipe)}.ck.gap{background:var(--muted)}
 .gap-tag{font-size:12px;color:var(--muted)}
 .seg.sm a{height:32px;padding:0 10px;font-size:13px}
+.es-line{display:flex;min-height:44px;flex-wrap:wrap;align-items:center;gap:12px;font-size:14px}.es-line .msg{color:var(--muted)}
 '''
 
 
 def Segmented(items: list[tuple[str, bool]], small: bool = False) -> str:
     """An inline choice of one among few (sign-up In / Late / Bench). Same look as the ControlBar's segmented control."""
     return seg([(a, on, None, '') for a, on in items], 'sm' if small else '')
+
+
+def EmptyState(message: str, action: str | None = None) -> str:
+    """The shared empty line (ui/EmptyState.svelte, component audit cluster 10): a region whose data loaded with nothing in it,
+    the muted sentence at 44 px and at most one gold link that leads to what would fill it."""
+    act = Link(f'{action} &rsaquo;') if action else ''
+    return f'<div class="es-line"><span class="msg">{message}</span>{act}</div>'
 
 
 def Checklist(items: list[tuple]) -> str:
