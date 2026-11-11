@@ -24,6 +24,8 @@
 #                    `npx playwright test ...` without its own --workers (default: 6)
 #   --pin-engine     rewrite sim/go.mod's engine replace to the pinned fork sha, as CI's
 #                    .github/actions/pin-engine does; on by default when the command is `go ...`
+#   --engine-sha <sha>  pin the engine to this pushed fork sha instead of sim/enginever's
+#                    (a lane's unpinned fork branch); implies --pin-engine
 #   --no-pin-engine  never pin (a Go command that does not load the sim module)
 #   --keep           keep the run's worktree, ref and database for inspection
 #
@@ -47,13 +49,14 @@ usage() {
 	exit 64
 }
 
-dir=web workers=$DEFAULT_WORKERS pin=auto keep=0
+dir=web workers=$DEFAULT_WORKERS pin=auto keep=0 engine_sha=
 while (($#)); do
 	case $1 in
 	--dir) dir=${2:?--dir needs a path}; shift 2 ;;
 	--workers) workers=${2:?--workers needs a number}; shift 2 ;;
 	--pin-engine) pin=1; shift ;;
 	--no-pin-engine) pin=0; shift ;;
+	--engine-sha) engine_sha=${2:?--engine-sha needs a sha}; pin=1; shift 2 ;;
 	--keep) keep=1; shift ;;
 	-h | --help) usage ;;
 	--) usage ;;
@@ -66,6 +69,7 @@ readonly target=$1
 shift 2
 [[ $workers =~ ^[1-9][0-9]*$ ]] || { echo "remote-test: --workers must be a positive number" >&2; exit 64; }
 [[ $dir =~ ^[A-Za-z0-9._/-]+$ && $dir != *..* ]] || { echo "remote-test: --dir must be a plain repo-relative path" >&2; exit 64; }
+[[ -z $engine_sha || $engine_sha =~ ^[0-9a-f]{7,40}$ ]] || { echo "remote-test: --engine-sha must be a hex commit sha" >&2; exit 64; }
 
 # The commit to run, from a worktree path or a ref.
 if [[ -d $target ]]; then
@@ -109,7 +113,7 @@ remote_body='
 main() {
 set -euo pipefail
 dec() { printf "%s" "$1" | base64 -d; }
-run_id=$(dec "$1") sha=$(dec "$2") dir=$(dec "$3") pin=$(dec "$4") keep=$(dec "$5") cmd_line=$(dec "$6")
+run_id=$(dec "$1") sha=$(dec "$2") dir=$(dec "$3") pin=$(dec "$4") keep=$(dec "$5") cmd_line=$(dec "$6") engine_sha=$(dec "${7:-}")
 root=$HOME/forever-ci repo=$root/repo.git wt=$root/runs/$run_id db=ft_${run_id//-/_}
 export TZ=UTC CI=1
 
@@ -155,7 +159,8 @@ fi
 if ((pin)); then
 	(
 		cd "$wt/sim"
-		engine=$(sed -n "s/.*Version = \"\(.*\)\"/\1/p" enginever/version.go)
+		engine=${engine_sha:-$(sed -n "s/.*Version = \"\(.*\)\"/\1/p" enginever/version.go)}
+		echo "remote-test: engine pinned to $engine" >&2
 		[[ -n $engine ]] || { echo "remote-test: sim/enginever/version.go has no Version" >&2; exit 1; }
 		go mod edit -replace "github.com/wowsims/classic=github.com/jhunthrop/wowsims-forever@$engine"
 		go mod tidy || { rm -rf "$(go env GOMODCACHE)/cache/vcs"; go mod tidy; }
@@ -182,4 +187,4 @@ main "$@" </dev/null
 
 # shellcheck disable=SC2029 # the arguments are meant to expand here, on the Mac
 printf '%s' "$remote_body" | ssh -o BatchMode=yes "$HOST" \
-	"wsl -d $DISTRO -- bash -l -s -- $(b64 "$run_id") $(b64 "$sha") $(b64 "$dir") $(b64 "$pin") $(b64 "$keep") $(b64 "$cmd_line")"
+	"wsl -d $DISTRO -- bash -l -s -- $(b64 "$run_id") $(b64 "$sha") $(b64 "$dir") $(b64 "$pin") $(b64 "$keep") $(b64 "$cmd_line") $(b64 "$engine_sha")"
