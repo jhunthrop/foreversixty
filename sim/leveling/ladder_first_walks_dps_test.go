@@ -17,20 +17,23 @@ func TestFuryTakesFlurryBeforeImprovedBerserkerRage(t *testing.T) {
 }
 
 // Sim-accuracy round 29 (walks-dps): a leveling Protection warrior takes Improved Revenge at 17 to 19, Defiance at
-// 20 to 22 and Master of Defense at 23 and 24 before Anticipation, but Anticipation 25 to 27,
-// Last Stand 28 and Anticipation 29 and 30 come before Improved Sunder Armor, so the band 20
-// boss's chance of death at 28 and 29 rises less than 5 points (the round 29 tank rule).
-// Concussion Blow 39, Shield Slam 40 and Bastion are unchanged.
+// 20 to 22 and Master of Defense at 23 and 24 before Anticipation. Round 30: on the dungeon-table
+// boss a bare tank's chance of death is 0 at every level with either order, so under the tank
+// rule Improved Sunder Armor (25 to 27), Improved Thunder Clap (28 to 30) and Focused Rage (31,
+// 32) come before Anticipation (33 to 35, 37, 38) and Last Stand (36), threat +1 to +11% at 25 to
+// 37. Concussion Blow 39, Shield Slam 40 and Bastion are unchanged.
 func TestProtectionWarriorTakesDefianceBeforeAnticipation(t *testing.T) {
 	checkLadder(t, "warrior", "protection", 2, map[int]string{
 		17: "00000000000000000-000000000000000000-250010000000000000",
 		20: "00000000000000000-000000000000000000-250030000100000000",
-		25: "00000000000000000-000000000000000000-250130020300000000",
-		28: "00000000000000000-000000000000000000-250330120300000000",
-		29: "00000000000000000-000000000000000000-250430120300000000",
-		30: "00000000000000000-000000000000000000-250530120300000000",
-		35: "00000000000000000-000000000000000000-250532120330000000",
+		25: "00000000000000000-000000000000000000-250030020310000000",
+		28: "00000000000000000-000000000000000000-250031020330000000",
+		30: "00000000000000000-000000000000000000-250033020330000000",
+		32: "00000000000000000-000000000000000000-250033020330000200",
+		33: "00000000000000000-000000000000000000-250133020330000200",
+		36: "00000000000000000-000000000000000000-250333120330000200",
 		38: "00000000000000000-000000000000000000-250533120330000200",
+		40: "00000000000000000-000000000000000000-250533120330001201",
 	})
 }
 
