@@ -212,7 +212,7 @@
           }
         }
       },
-      "notes": "On cooldown. Strong threat for little mana, twenty at 60; with Iron Creed it also cuts your damage taken for 6 seconds, and from 40 Shieldsworn brings it back every 6 seconds. At 40, rank 1 is your Holy Strike: it costs far less, and the mana buys more Judgements."
+      "notes": "On cooldown. Strong threat for little mana, twenty mana at 60; with Iron Creed it also cuts your damage taken for 6 seconds, and from 40 Shieldsworn brings it back every 6 seconds. Always your newest rank: the flat Holy damage grows with each rank and is not reduced by the weapon-damage part of the strike."
     },
     {
       "action": {

@@ -479,7 +479,7 @@
       }
     },
     {
-      "notes": "On cooldown. A cheap Holy weapon strike, 18 mana at 60 with Benediction, and with Sacred Arbiter it refreshes every Judgement on the target.",
+      "notes": "On cooldown. Half your weapon's damage, plus 81 to 105 Holy and a share of your spell damage that the weapon half does not cut. 18 mana at 60 with Benediction, and with Sacred Arbiter it refreshes every Judgement on the target.",
       "action": {
         "condition": {
           "spellCanCast": {
