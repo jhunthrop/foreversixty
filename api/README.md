@@ -30,7 +30,8 @@ make run
 | `RESEND_API_KEY` | yes | — | |
 | `PUBLIC_BASE_URL` | yes | — | e.g. `https://foreversixty.gg`; confirm/unsubscribe redirects land here. |
 | `API_BASE_URL` | yes | — | e.g. `https://api.foreversixty.gg`; used to build the confirmation link. |
-| `MAIL_FROM` | no | `Forever Sixty <hello@foreversixty.gg>` | `From:` address for outgoing mail. |
+| `MAIL_FROM` | no | `Forever Sixty <help@foreversixty.gg>` | `From:` address for outgoing mail. |
+| `MAIL_REPLY_TO` | no | `help@foreversixty.gg` | `Reply-To:` on every mail; the help@ inbox is Google Workspace. |
 | `TRUSTED_PROXY_HOPS` | no | `1` | How many reverse proxies in front of this service (e.g. Cloud Run) are trusted to append to `X-Forwarded-For`; used to resolve the real client IP for rate limiting. `0` ignores `X-Forwarded-For` entirely and rate-limits by the raw connection address. Must be an integer >= 0. |
 | `R2_ACCOUNT_ID` | no | — | Cloudflare account id; the S3 endpoint is derived from it. |
 | `R2_ACCESS_KEY_ID` | no | — | R2 API token id (Object Read & Write). |
@@ -820,9 +821,14 @@ not a measurement, and nobody has watched the service's RSS under a full-cap pla
 with a measured full-cap `-plan` footprint when there is one; a real measurement may well argue
 for more, or for taking the plan off the request path entirely.
 
-`MAIL_FROM` and `TRUSTED_PROXY_HOPS` are deliberately left out of `--set-env-vars` above: both
-take their documented defaults (`Forever Sixty <hello@foreversixty.gg>` and `1`, matching a
-single Cloud Run edge in front of the service) unless explicitly set on the service.
+`MAIL_FROM`, `MAIL_REPLY_TO` and `TRUSTED_PROXY_HOPS` are deliberately left out of
+`--set-env-vars` above: they take their documented defaults (`Forever Sixty
+<help@foreversixty.gg>`, `help@foreversixty.gg` and `1`, matching a single Cloud Run edge in
+front of the service) unless explicitly set on the service.
+
+Every email is one branded HTML shell with a plain-text alternative (`internal/mail`: a
+`Letter` drawn by `Compose`), its words from `apps/shared/copy/server.json` (`mail.*`) through
+`internal/copygen`. `go test ./internal/billingmail ./internal/mail` checks both parts.
 
 Add the DNS records the last command prints to Cloudflare as DNS-only (grey cloud) so Google's
 certificate validates. Verify:

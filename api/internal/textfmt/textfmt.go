@@ -23,8 +23,6 @@ const (
 	dayLayout          = "Mon 2 Jan"
 	longDayLayout      = "Monday 2 January"
 	dayMonthYearLayout = "2 Jan 2006"
-	longDateLayout     = "2 January 2006"
-	dayLongMonthLayout = "2 January"
 	hourLayout         = "3"
 	minuteLayout       = "3:04"
 	secondsLayout      = "3:04:05"
@@ -142,14 +140,6 @@ func LongDay(t time.Time, loc *time.Location) string { return t.In(loc).Format(l
 // DayMonthYear is t's date in loc with its year: "9 Dec 2026".
 func DayMonthYear(t time.Time, loc *time.Location) string {
 	return t.In(loc).Format(dayMonthYearLayout)
-}
-
-// LongDate is t's date in loc with the month in full, a letter's date: "6 January 2027".
-func LongDate(t time.Time, loc *time.Location) string { return t.In(loc).Format(longDateLayout) }
-
-// DayLongMonth is LongDate without the year: "6 January".
-func DayLongMonth(t time.Time, loc *time.Location) string {
-	return t.In(loc).Format(dayLongMonthLayout)
 }
 
 // Clock is t's time in loc on the 12-hour clock, lower case, the minutes only off the hour:

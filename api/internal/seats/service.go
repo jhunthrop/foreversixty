@@ -412,10 +412,10 @@ func (s *Service) assignedEmail(ctx context.Context, tx pgx.Tx, guildID, actorID
 	}
 	if pays != nil {
 		return billingmail.SeatOfferedEmail(billingmail.SeatOffered{
-			To: to, Guild: guildName, From: fromName, OwnEndsOn: pays.endsAt, AccountURL: s.accountURL()}), nil
+			To: to, Guild: guildName, From: fromName, OwnEndsOn: pays.endsAt, AccountURL: s.accountURL()}, s.now())
 	}
 	return billingmail.SeatGivenEmail(billingmail.SeatGiven{
-		To: to, Guild: guildName, From: fromName, AccountURL: s.accountURL()}), nil
+		To: to, Guild: guildName, From: fromName, AccountURL: s.accountURL()}, s.now())
 }
 
 // offerRowSQL finds the seat userID has been offered: as its first holder, or

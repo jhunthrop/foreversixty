@@ -14,22 +14,44 @@ import (
 // indefinitely.
 const resendClientTimeout = 10 * time.Second
 
+// Sender is who a message comes from (config MAIL_FROM) and where a reply goes (MAIL_REPLY_TO);
+// an empty ReplyTo leaves replies to the From address.
+type Sender struct {
+	From, ReplyTo string
+}
+
 type Resend struct {
 	apiKey   string
-	from     string
+	sender   Sender
 	client   *http.Client
 	endpoint string
 }
 
-func NewResend(apiKey, from string, client *http.Client) *Resend {
+func NewResend(apiKey string, sender Sender, client *http.Client) *Resend {
 	if client == nil {
 		client = &http.Client{Timeout: resendClientTimeout}
 	}
-	return &Resend{apiKey: apiKey, from: from, client: client, endpoint: "https://api.resend.com/emails"}
+	return &Resend{apiKey: apiKey, sender: sender, client: client, endpoint: "https://api.resend.com/emails"}
+}
+
+// resendEmail is the body of Resend's POST /emails; html and reply_to are left out when empty.
+type resendEmail struct {
+	From    string   `json:"from"`
+	To      []string `json:"to"`
+	ReplyTo string   `json:"reply_to,omitempty"`
+	Subject string   `json:"subject"`
+	Text    string   `json:"text"`
+	HTML    string   `json:"html,omitempty"`
 }
 
 func (r *Resend) Send(ctx context.Context, m Message) error {
-	body, _ := json.Marshal(map[string]any{"from": r.from, "to": []string{m.To}, "subject": m.Subject, "text": m.Text})
+	body, err := json.Marshal(resendEmail{
+		From: r.sender.From, To: []string{m.To}, ReplyTo: r.sender.ReplyTo,
+		Subject: m.Subject, Text: m.Text, HTML: m.HTML,
+	})
+	if err != nil {
+		return fmt.Errorf("mail: encode: %w", err)
+	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, r.endpoint, bytes.NewReader(body))
 	if err != nil {
 		return fmt.Errorf("mail: request: %w", err)

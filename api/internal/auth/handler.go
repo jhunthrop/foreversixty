@@ -265,12 +265,12 @@ func (s *Service) emailStart(w http.ResponseWriter, r *http.Request) {
 		link += "next=" + url.QueryEscape(safeNext(in.Next)) + "&"
 	}
 	link += "token=" + token
-	if err := s.Mailer.Send(r.Context(), mail.Message{
-		To:      address,
-		Subject: "Your Forever Sixty sign-in link",
-		Text: "Sign in to Forever Sixty:\n\n" + link +
-			"\n\nThe link works once and expires in 20 minutes. If you did not ask for it, ignore this mail.\n",
-	}); err != nil {
+	msg, err := signInEmail(address, link, time.Now())
+	if err != nil {
+		s.fail(w, r, "email", err, "could not send that link just now")
+		return
+	}
+	if err := s.Mailer.Send(r.Context(), msg); err != nil {
 		s.fail(w, r, "email", err, "could not send that link just now")
 		return
 	}

@@ -1,20 +1,21 @@
 package billingmail
 
 import (
-	"fmt"
+	"strconv"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
 // Plan is the plan name as it reads in an email.
 type Plan string
 
-// The plans a renewal email can name.
+// The plans a renewal email can name, in the site's words.
 const (
-	PlanPremium   Plan = "Premium"
-	PlanGuild     Plan = "Guild"
-	PlanRaidGuild Plan = "Raid guild"
+	PlanPremium   Plan = copygen.PlanPremium
+	PlanGuild     Plan = copygen.MailPlanGuild
+	PlanRaidGuild Plan = copygen.MailPlanRaidGuild
 )
 
 // Renewal is the email sent 7 days before a yearly renewal. Guild is empty
@@ -63,32 +64,41 @@ type SeatRemoved struct {
 	ComebackURL string
 }
 
-// compose joins the first sentence and the single link into the body shape.
-func compose(to, subject, sentence, label, url string) mail.Message {
-	return mail.Message{To: to, Subject: subject, Text: fmt.Sprintf("%s\n\n%s: %s", sentence, label, url)}
-}
-
-// RenewalEmail builds the renewal notice.
-func RenewalEmail(r Renewal) (mail.Message, error) {
+// RenewalEmail builds the renewal notice: the plan, the date and the price as the account page
+// lists them, and how to stop it.
+func RenewalEmail(r Renewal, now time.Time) (mail.Message, error) {
 	price, err := FormatPrice(r.AmountCents, r.Interval)
 	if err != nil {
 		return mail.Message{}, err
 	}
-	subject := fmt.Sprintf("Your %s plan renews on %s", r.Plan, EmailDayMonth(r.RenewsOn))
-	forGuild, founder := "", ""
+	date := EmailDate(r.RenewsOn)
+	plan := string(r.Plan)
+	planFact := plan
 	if r.Guild != "" {
-		forGuild = " for " + r.Guild
+		planFact = copygen.Fill(copygen.MailFactPlanForGuild, "{plan}", plan, "{guild}", r.Guild)
 	}
+	note := ""
 	if r.Founder {
-		founder = ", your founder price"
+		note = copygen.PlanFounderNote
 	}
-	sentence := fmt.Sprintf("Your %s plan%s renews on %s for %s%s; to stop it, cancel before then and nothing more is charged.",
-		r.Plan, forGuild, EmailDate(r.RenewsOn), price, founder)
-	return compose(r.To, subject, sentence, "Manage or cancel", r.ManageURL), nil
+	return mail.Compose(mail.Letter{
+		To:        r.To,
+		Subject:   copygen.Fill(copygen.MailRenewalSubject, "{plan}", plan, "{date}", date),
+		Preheader: copygen.Fill(copygen.MailRenewalPreheader, "{price}", price, "{date}", date),
+		Heading:   copygen.Fill(copygen.MailRenewalHeading, "{plan}", plan, "{date}", date),
+		Lead:      copygen.Fill(copygen.MailRenewalLead, "{date}", date),
+		Facts: []mail.Fact{
+			{Label: copygen.MailFactPlan, Value: planFact},
+			{Label: copygen.MailFactRenews, Value: date},
+			{Label: copygen.MailFactPrice, Value: price},
+		},
+		Note:   note,
+		Action: mail.Action{Label: copygen.MailRenewalAction, URL: r.ManageURL},
+	}, now)
 }
 
 // SizeEmail builds the notice for a Guild-tier guild over its member limit.
-func SizeEmail(s Size) (mail.Message, error) {
+func SizeEmail(s Size, now time.Time) (mail.Message, error) {
 	price, err := FormatPrice(s.RaidGuildCents, s.Interval)
 	if err != nil {
 		return mail.Message{}, err
@@ -96,36 +106,75 @@ func SizeEmail(s Size) (mail.Message, error) {
 	if s.MemberLimit <= 0 {
 		return mail.Message{}, ErrNoMemberLimit
 	}
-	subject := fmt.Sprintf("%s has %d members; Guild covers %d", s.Guild, s.Members, s.MemberLimit)
-	sentence := fmt.Sprintf("%s has %d verified members and its Guild plan covers up to %d, so when it renews on %s you may want Raid guild at %s; nothing switches off either way.",
-		s.Guild, s.Members, s.MemberLimit, EmailDate(s.RenewsOn), price)
-	return compose(s.To, subject, sentence, "Look at Raid guild", s.SettingsURL), nil
+	date := EmailDate(s.RenewsOn)
+	members, limit := strconv.Itoa(s.Members), strconv.Itoa(s.MemberLimit)
+	return mail.Compose(mail.Letter{
+		To:        s.To,
+		Subject:   copygen.Fill(copygen.MailSizeSubject, "{guild}", s.Guild, "{members}", members, "{limit}", limit),
+		Preheader: copygen.MailSizePreheader,
+		Heading:   copygen.Fill(copygen.MailSizeHeading, "{guild}", s.Guild),
+		Lead:      copygen.Fill(copygen.MailSizeLead, "{guild}", s.Guild, "{members}", members, "{limit}", limit),
+		Facts: []mail.Fact{
+			{Label: copygen.MailFactGuild, Value: s.Guild},
+			{Label: copygen.MailFactMembers, Value: copygen.Fill(copygen.MailFactMembersOf, "{members}", members, "{limit}", limit)},
+			{Label: copygen.MailFactRenews, Value: date},
+			{Label: string(PlanRaidGuild), Value: price},
+		},
+		Note:   copygen.Fill(copygen.MailSizeNote, "{date}", date, "{price}", price),
+		Action: mail.Action{Label: copygen.MailSizeAction, URL: s.SettingsURL},
+	}, now)
 }
 
 // SeatOfferedEmail builds the offer to a paying member.
-func SeatOfferedEmail(o SeatOffered) mail.Message {
-	subject := o.Guild + " offers you a Premium seat"
-	sentence := fmt.Sprintf("%s offered you a Premium seat in %s; if you accept, your own Premium stops renewing and ends on %s, the seat starts then, and you are not charged twice.",
-		o.From, o.Guild, EmailDate(o.OwnEndsOn))
-	return compose(o.To, subject, sentence, "Accept or decline", o.AccountURL)
+func SeatOfferedEmail(o SeatOffered, now time.Time) (mail.Message, error) {
+	ends := EmailDate(o.OwnEndsOn)
+	return mail.Compose(mail.Letter{
+		To:        o.To,
+		Subject:   copygen.Fill(copygen.MailSeatOfferedSubject, "{guild}", o.Guild),
+		Preheader: copygen.MailSeatOfferedPreheader,
+		Heading:   copygen.Fill(copygen.MailSeatOfferedHeading, "{guild}", o.Guild),
+		Lead:      copygen.Fill(copygen.MailSeatOfferedLead, "{from}", o.From, "{guild}", o.Guild),
+		Facts: []mail.Fact{
+			{Label: copygen.MailFactFrom, Value: o.From},
+			{Label: copygen.MailFactOwnEnds, Value: ends},
+		},
+		Note:   copygen.Fill(copygen.MailSeatOfferedNote, "{date}", ends),
+		Action: mail.Action{Label: copygen.MailSeatOfferedAction, URL: o.AccountURL},
+	}, now)
 }
 
 // SeatGivenEmail builds the notice to a non-paying member.
-func SeatGivenEmail(g SeatGiven) mail.Message {
-	subject := "You have Premium from " + g.Guild
-	sentence := fmt.Sprintf("%s gave you a Premium seat in %s, so you have Premium for as long as the guild's plan lasts, with nothing billed to you.",
-		g.From, g.Guild)
-	return compose(g.To, subject, sentence, "See your plan", g.AccountURL)
+func SeatGivenEmail(g SeatGiven, now time.Time) (mail.Message, error) {
+	return mail.Compose(mail.Letter{
+		To:        g.To,
+		Subject:   copygen.Fill(copygen.MailSeatGivenSubject, "{guild}", g.Guild),
+		Preheader: copygen.MailSeatGivenPreheader,
+		Heading:   copygen.Fill(copygen.MailSeatGivenHeading, "{guild}", g.Guild),
+		Lead:      copygen.Fill(copygen.MailSeatGivenLead, "{from}", g.From, "{guild}", g.Guild),
+		Note:      copygen.MailSeatGivenNote,
+		Action:    mail.Action{Label: copygen.MailSeatGivenAction, URL: g.AccountURL},
+	}, now)
 }
 
 // SeatRemovedEmail builds the come-back notice.
-func SeatRemovedEmail(r SeatRemoved) (mail.Message, error) {
+func SeatRemovedEmail(r SeatRemoved, now time.Time) (mail.Message, error) {
 	price, err := FormatPrice(r.AmountCents, r.Interval)
 	if err != nil {
 		return mail.Message{}, err
 	}
-	subject := fmt.Sprintf("Your Premium seat from %s has ended", r.Guild)
-	sentence := fmt.Sprintf("Your Premium seat in %s ended on %s, and because you gave up your own Premium for it, this link brings it back at %s, the price you had.",
-		r.Guild, EmailDate(r.EndedOn), price)
-	return compose(r.To, subject, sentence, "Come back at "+price, r.ComebackURL), nil
+	ended := EmailDate(r.EndedOn)
+	return mail.Compose(mail.Letter{
+		To:        r.To,
+		Subject:   copygen.Fill(copygen.MailSeatRemovedSubject, "{guild}", r.Guild),
+		Preheader: copygen.MailSeatRemovedPreheader,
+		Heading:   copygen.MailSeatRemovedHeading,
+		Lead:      copygen.Fill(copygen.MailSeatRemovedLead, "{guild}", r.Guild, "{date}", ended),
+		Facts: []mail.Fact{
+			{Label: copygen.MailFactGuild, Value: r.Guild},
+			{Label: copygen.MailFactEnded, Value: ended},
+			{Label: copygen.MailFactPrice, Value: price},
+		},
+		Note:   copygen.MailSeatRemovedNote,
+		Action: mail.Action{Label: copygen.Fill(copygen.MailSeatRemovedAction, "{price}", price), URL: r.ComebackURL},
+	}, now)
 }
