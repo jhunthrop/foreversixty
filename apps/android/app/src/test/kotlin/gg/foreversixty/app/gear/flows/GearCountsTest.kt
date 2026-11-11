@@ -32,8 +32,22 @@ class GearCountsTest {
         val worn = content.slots.count { it.worn }
         assertEquals(home.alreadyBest.size, worn)
         assertEquals(true, content.facts.endsWith("$worn of ${list.rows.size} slots match the list"))
-        assertEquals(home.upgradeCount, content.slots.count { it.gain != null })
-        assertEquals(true, content.header?.contains("from ${home.upgradeCount} upgrades"))
+        assertEquals(home.upgradeCount, content.slots.count { it.gains })
+        assertEquals(true, content.header?.text?.contains("from ${home.upgradeCount} upgrades"))
+    }
+
+    @Test fun `with the home answer no cell is silent - a pick reads its gain, Not modelled or +0,0`() {
+        val extra = BisRow("shoulder", "shoulder", pick(999_001, "Officer's Pauldrons"), null)
+        val unmodelled = home.upgrades.first().copy(modelled = false)
+        val upgrades = listOf(unmodelled) + home.upgrades.drop(1)
+        val content = GearComposer(res).content(list.copy(rows = list.rows + extra), "horde", upgrades, emptyList(), home.copy(upgrades = upgrades))
+        val shoulder = content.slots.first { it.slot == "shoulder" }
+        assertEquals("+0.0", shoulder.gain)
+        assertEquals(false, shoulder.gains)
+        val first = content.slots.first { it.slot == unmodelled.slot }
+        assertEquals(true, first.notModelled)
+        assertEquals(null, first.gain)
+        assertEquals(true, content.slots.all { it.worn || it.notModelled || it.gain != null })
     }
 
     @Test fun `cells take the API's slot label, so the two rings and trinkets read apart`() {

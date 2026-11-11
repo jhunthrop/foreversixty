@@ -19,7 +19,12 @@ extension RootView {
                     session.pick(character.key)
                     shell.closeMenu()
                 },
-                refresh: { await session.refresh() },
+                refresh: {
+                    #if DEBUG
+                    await MenuDebugLaunch.holdRefresh()
+                    #endif
+                    return await session.refresh()
+                },
                 open: { shell.open($0) },
                 signIn: { Task { await session.signIn(deviceName: UIDevice.current.name) } },
                 help: { openURL(AccountLinks.help) },

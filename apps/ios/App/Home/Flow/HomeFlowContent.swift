@@ -43,6 +43,8 @@ struct HomeUpgradesContent: Equatable {
     var meta: String?
     /// `Synced 2 h ago from the addon`, under the meta.
     var stamp: String?
+    /// The sync is past a week: the stamp takes the warning tone (round 4, row 2).
+    var stampStale = false
 }
 
 /// Best run (F5) as a row: `Blackrock Spire` over `Best run · Blackcrow · 8%`, the drop's icon, its gain.

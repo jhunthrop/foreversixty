@@ -1,4 +1,5 @@
 @testable import ForeverSixty
+import Auth
 import DesignSystem
 import Foundation
 import Models
@@ -52,7 +53,7 @@ enum GearTestData {
 
     static let content = GearContent(
         title: "Fury Warrior", figure: "1004.2", unit: "DPS", facts: "60 raid · Alliance · 5 of 17 slots match the list",
-        summary: "+47.5 DPS from 12 upgrades · synced 2 h ago",
+        summary: GearSummary(figures: "+47.5 DPS from 12 upgrades", synced: "synced 2 h ago"),
         tonight: [
             place("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh’gajin, 8%", "inv_weapon_crossbow_04", 3, "1 upgrade · +1.9 DPS"),
             place("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", "inv_helmet_36", 4, "2 upgrades · +20.4 DPS"),
@@ -228,7 +229,8 @@ struct GearLogicTests {
         let home = try HomeFixtures.home()
         let synced = try #require(home.syncedAt)
         let line = GearPresenter.summary(home, unit: "DPS", now: synced.addingTimeInterval(2 * 3600))
-        #expect(line == "+102.5 DPS from 12 upgrades · 2 gains not modelled yet · synced 2 h ago")
+        #expect(line?.line == "+102.5 DPS from 12 upgrades · 2 gains not modelled yet · synced 2 h ago")
+        #expect(line?.stale == false)
     }
 
     @Test("no list for the spec and band: the list line with Change and one row, never a blank page")
@@ -270,8 +272,44 @@ struct GearLogicTests {
         #expect(worn == home.alreadyBest.count)
         #expect(content.facts.hasSuffix(Copy.gearOnList(n: worn, total: rows.count)))
         #expect(gains == home.upgradeCount)
-        #expect(content.summary?.contains(Copy.homeAnswerUpgrades(n: home.upgradeCount)) == true)
+        #expect(content.summary?.line.contains(Copy.homeAnswerUpgrades(n: home.upgradeCount)) == true)
         #expect(content.slots.map(\.label).contains("Finger 2"), "the API's slot label")
+    }
+
+    @Test("row 10, the fixture app: Gorvash's 50 to 59 list reads 3 of 17, Head, Neck and Main hand Equipped")
+    func gorvashFixture() throws {
+        let home = try HomeFixtures.home("character.home.gorvash")
+        let range = BisRange(band: 50, preset: "bare")
+        let file = try BisTestData.bis()
+        let band = try #require(file.band(for: range, faction: "horde"))
+        let list = BisListBuilder(items: [], worn: [], timeZone: .gmt).list(file: file, band: band, specLabel: "Fury Warrior", rangeLabel: "50 to 59")
+        let selection = BisSelection(classSlug: "warrior", spec: "warrior-fury", range: range, faction: "horde")
+        let content = GearPresenter(context: BisContext(selection: selection, characterSelection: selection))
+            .content(list: list, inputs: GearInputs(band: band, home: home, loot: nil, level: 58))
+        let worn = content.slots.filter { $0.pick?.trail == .worn }.map(\.slot)
+        #expect(worn == ["head", "neck", "main_hand"])
+        #expect(content.facts.hasSuffix(Copy.gearOnList(n: 3, total: 17)))
+    }
+
+    @Test("round 4, row 3: a pick neither Equipped nor gaining reads Not modelled or +0.0 DPS")
+    func flatTrails() throws {
+        let home = try HomeFixtures.home()
+        let upgrade = try #require(home.upgrades.first)
+        let gain = HomeGain(figure: "+4.2", unit: "DPS")
+        #expect(GearPresenter.trail(upgrade, gain: gain, unit: "DPS") == .gain(gain))
+        let unmodelled = try #require(home.upgrades.first { !$0.modelled }, "the fixture has gains not modelled")
+        #expect(GearPresenter.trail(unmodelled, gain: nil, unit: "DPS") == .notModelled)
+        #expect(GearPresenter.trail(nil, gain: nil, unit: "DPS") == .noGain(HomeGain(figure: "+0.0", unit: "DPS")))
+    }
+
+    @Test("round 4, row 2: Gear's synced age takes the warning tone past a week, as the drawer's")
+    func staleSummary() throws {
+        let home = try HomeFixtures.home()
+        let synced = try #require(home.syncedAt)
+        #expect(GearPresenter.summary(home, unit: "DPS", now: synced.addingTimeInterval(SyncAge.staleAfter - 60))?.stale == false)
+        let stale = try #require(GearPresenter.summary(home, unit: "DPS", now: synced.addingTimeInterval(SyncAge.staleAfter + 60)))
+        #expect(stale.stale)
+        #expect(stale.synced == Copy.gearHeaderSynced(age: RelativeAge.days(7).phrase))
     }
 
     @Test("the counter reads how many slots match the list")

@@ -22,11 +22,16 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
 
     /// Installs the delegate and the categories, once at launch.
     func install(answerer: RaidPushAnswerer, officer: OfficerPushActions) {
-        self.answerer = answerer
-        self.officer = officer
+        use(answerer: answerer, officer: officer)
         let center = UNUserNotificationCenter.current()
         center.delegate = self
         center.setNotificationCategories(Self.categories)
+    }
+
+    /// The answers the actions run (tests set them without the system center).
+    func use(answerer: RaidPushAnswerer?, officer: OfficerPushActions) {
+        self.answerer = answerer
+        self.officer = officer
     }
 
     static var categories: Set<UNNotificationCategory> {
@@ -63,18 +68,31 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
         [.banner, .list, .sound]
     }
 
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        let request = response.notification.request
-        let content = request.content
-        let payload = RaidPushPayload(userInfo: content.userInfo)
-        let landing = PushLanding.destination(userInfo: content.userInfo)
-        if let answer = OfficerPushAnswer(action: response.actionIdentifier, userInfo: content.userInfo) {
-            await answerOfficer(answer, landing: landing)
+    /// The completion-handler form, never the `async` one: the `async` form's thunk calls UIKit's
+    /// completion from the cooperative pool, and UIKit asserts off the main thread while it takes
+    /// the background snapshot (a crash on every action answered from the lock screen, round 4).
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        let reply = PushReply(response)
+        let done = MainThreadCompletion(completionHandler)
+        Task { @MainActor in
+            await self.respond(reply)
+            done.run()
+        }
+    }
+
+    /// Answers an action or a tap: an officer's in place, a sign-up's in the background, else the landing.
+    func respond(_ reply: PushReply) async {
+        if let answer = reply.officer {
+            await answerOfficer(answer, landing: reply.landing)
             return
         }
         await handle(
-            payload: payload, landing: landing, action: response.actionIdentifier,
-            identifier: request.identifier, thread: content.threadIdentifier
+            payload: reply.payload, landing: reply.landing, action: reply.action,
+            identifier: reply.identifier, thread: reply.thread
         )
     }
 
@@ -110,5 +128,46 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
 
     private func open(_ destination: IntentDestination) {
         if let onOpen { onOpen(destination) } else { pending = destination }
+    }
+}
+
+/// What a notification response carries, read before it crosses to the main actor.
+struct PushReply: Sendable {
+    let action: String
+    let identifier: String
+    let thread: String
+    let payload: RaidPushPayload?
+    let landing: IntentDestination?
+    let officer: OfficerPushAnswer?
+
+    init(action: String, identifier: String, thread: String, userInfo: [AnyHashable: Any]) {
+        self.action = action
+        self.identifier = identifier
+        self.thread = thread
+        payload = RaidPushPayload(userInfo: userInfo)
+        landing = PushLanding.destination(userInfo: userInfo)
+        officer = OfficerPushAnswer(action: action, userInfo: userInfo)
+    }
+
+    init(_ response: UNNotificationResponse) {
+        let request = response.notification.request
+        self.init(
+            action: response.actionIdentifier, identifier: request.identifier, thread: request.content.threadIdentifier,
+            userInfo: request.content.userInfo
+        )
+    }
+}
+
+/// UIKit's completion for a notification response, called back on the main thread only.
+struct MainThreadCompletion: @unchecked Sendable {
+    private let completion: () -> Void
+
+    init(_ completion: @escaping () -> Void) {
+        self.completion = completion
+    }
+
+    @MainActor
+    func run() {
+        completion()
     }
 }

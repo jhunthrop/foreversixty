@@ -6,16 +6,18 @@ import gg.foreversixty.app.model.GuildRosterRow
 import gg.foreversixty.app.model.RaidSignup
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.raids.logic.SignupState
+import java.time.Duration
+import java.time.Instant
 
 /**
  * The lines that close Who is coming on the Raid tab (round 2, guild-officer G1 and G4, info-density):
  * who else answered, what the comp misses, and for officers who signed In without syncing this week.
  */
 class RaidTabFacts(private val res: Resources) {
-    fun foot(raid: RaidView, officer: Boolean, roster: List<GuildRosterRow>): List<RoleFoot> = listOfNotNull(
+    fun foot(raid: RaidView, officer: Boolean, roster: List<GuildRosterRow>, now: Instant): List<RoleFoot> = listOfNotNull(
         counts(raid)?.let(::RoleFoot),
         coverLine(raid)?.let { RoleFoot(text(it), cover = it) },
-        notSynced(raid, roster).takeIf { officer && it.isNotEmpty() }?.let { stale ->
+        notSynced(raid, roster, now).takeIf { officer && it.isNotEmpty() }?.let { stale ->
             RoleFoot(notSyncedLine(stale), warn = true, onlyKeys = stale.map { it.characterKey }.toSet())
         },
     )
@@ -42,14 +44,19 @@ class RaidTabFacts(private val res: Resources) {
         return CoverLine(shown.filter { it.have == null }, shown.filter { it.have != null }, gaps.size - shown.size)
     }
 
-    /** The line in words: also what TalkBack reads for the drawn row. */
+    /**
+     * The line in words, also what TalkBack reads for the drawn row: every name, missing then short, on
+     * the one separator (round 4 row 1, `Missing Kings · Might · WF 1 of 2 and 2 more`).
+     */
     fun text(line: CoverLine): String {
-        val missing = line.missing.takeIf { it.isNotEmpty() }
-            ?.let { list -> res.getString(R.string.raid_tab_coverMissing, list.joinToString(LIST) { it.name }) }
-        val short = line.short.joinToString(LIST) { shortText(it) }.ifEmpty { null }
-        val text = listOfNotNull(missing, short).joinToString(SEPARATOR)
+        val names = names(line).joinToString(SEPARATOR) { it.text }
+        val text = if (line.missing.isEmpty()) names else res.getString(R.string.raid_tab_coverMissing, names)
         return if (line.more > 0) res.getString(R.string.raid_tab_andMore, text, line.more) else text
     }
+
+    /** The names the line spells out, in its order: the missing ones (`Kings`), then the short ones (`WF 1 of 2`). */
+    fun names(line: CoverLine): List<CoverName> =
+        line.missing.map { CoverName(it.name, it.icon) } + line.short.map { CoverName(shortText(it), it.icon) }
 
     /** `WF 1 of 2`. */
     fun shortText(item: CoverItem): String = res.getString(R.string.raid_tab_coverShort, item.name, item.have ?: 0, item.need)
@@ -73,9 +80,13 @@ class RaidTabFacts(private val res: Resources) {
         }
     }
 
-    /** G1: the In and Late sign-ups whose roster row has not logged in this week. */
-    fun notSynced(raid: RaidView, roster: List<GuildRosterRow>): List<RaidSignup> {
-        val stale = roster.filter { !it.loggedRecently }.map { it.characterKey }.toSet()
+    /**
+     * G1 (round 4 s5): the In and Late sign-ups whose addon has not synced this week, `logged_at` (the
+     * addon's last upload, not a game login) missing or more than [SYNC_WEEK_DAYS] days before [now].
+     */
+    fun notSynced(raid: RaidView, roster: List<GuildRosterRow>, now: Instant): List<RaidSignup> {
+        val weekAgo = now.minus(Duration.ofDays(SYNC_WEEK_DAYS))
+        val stale = roster.filter { row -> row.syncedAt()?.isBefore(weekAgo) ?: true }.map { it.characterKey }.toSet()
         return raid.signups.filter { SignupState.of(it.state)?.isComing == true && it.characterKey in stale }
     }
 
@@ -93,19 +104,31 @@ class RaidTabFacts(private val res: Resources) {
      */
     private fun shown(total: Int) = if (total <= COVER_NAMES + 1) total else COVER_NAMES
 
-    private companion object {
+    companion object {
+        /** The one separator of the tab's lines, the Covered names included. */
         const val SEPARATOR = " · "
-        const val LIST = ", "
+        private const val LIST = ", "
 
         /** The most names the Covered line spells out before `and N more`. */
-        const val COVER_NAMES = 3
-        const val MISSING = "missing"
-        const val SHORT = "short"
+        private const val COVER_NAMES = 3
+        private const val MISSING = "missing"
+        private const val SHORT = "short"
+
+        /** `Not synced this week`: the addon's last upload is older than this. */
+        private const val SYNC_WEEK_DAYS = 7L
+
+        private fun GuildRosterRow.syncedAt(): Instant? = runCatching { Instant.parse(loggedAt) }.getOrNull()
     }
 }
 
 /** A gap in the cover: nobody brings [name] ([have] null), or [have] of the [need] the raid wants. */
 data class CoverItem(val name: String, val icon: String?, val have: Int? = null, val need: Int = 0)
+
+/** A name the Covered line draws: its words (`Kings`, `WF 1 of 2`) and its spell icon, if it has one. */
+data class CoverName(val text: String, val icon: String?) {
+    /** A name without an icon draws none, and its text closes up (round 4 row 1). */
+    val hasIcon: Boolean get() = !icon.isNullOrBlank()
+}
 
 /** The Covered line: the missing names, the short ones, and how many more are not spelled out. */
 data class CoverLine(val missing: List<CoverItem>, val short: List<CoverItem>, val more: Int)

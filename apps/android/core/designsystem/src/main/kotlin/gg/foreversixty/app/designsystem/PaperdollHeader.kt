@@ -46,15 +46,12 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 /** One slot of the phone paperdoll's list: the slot's word, and the item in it or nothing. */
 data class PaperdollListSlot(
@@ -140,22 +137,16 @@ private fun Strip(title: String, figure: String?, unit: String, portrait: Painte
         Text(
             title,
             modifier = Modifier.weight(1f).semantics { heading() },
-            style = TextStyle(fontFamily = FsFont.title, fontSize = TITLE_SIZE, lineHeight = TITLE_LINE),
+            style = FsType.sectionReading,
             color = FsColor.cream,
         )
         if (figure != null) {
             Text(
                 buildAnnotatedString {
                     append(figure)
-                    withStyle(SpanStyle(fontSize = UNIT_SIZE, color = FsColor.text)) { append(" $unit") }
+                    withStyle(FsType.figureUnit.toSpanStyle().copy(color = FsColor.text)) { append(" $unit") }
                 },
-                style = TextStyle(
-                    fontFamily = FsFont.body,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = FIGURE_SIZE,
-                    fontFeatureSettings = "tnum",
-                    shadow = Shadow(Color.Black, Offset(0f, 1f), 2f),
-                ),
+                style = FsType.figureSm.copy(shadow = Shadow(Color.Black, Offset(0f, 1f), 2f)),
                 color = FsColor.strong,
                 maxLines = 1,
             )
@@ -298,8 +289,4 @@ private val COLUMN_GAP = 10.dp
 private val STRIP_GAP = 10.dp
 private val SELECTED_RING = 2.dp
 private val SELECTED_GAP = 3.dp
-private val TITLE_SIZE = 19.sp
-private val TITLE_LINE = 23.sp
-private val FIGURE_SIZE = 17.sp
-private val UNIT_SIZE = 11.sp
 private const val COVERED_ALPHA = 0.55f

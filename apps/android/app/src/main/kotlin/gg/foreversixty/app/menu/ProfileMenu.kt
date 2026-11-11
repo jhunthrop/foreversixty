@@ -184,27 +184,32 @@ private fun BattleNetStamp(updated: String, stale: Boolean, syncFailed: Boolean,
             else -> R.string.menu_refresh
         },
     )
-    val actionStyle = SpanStyle(color = if (refreshing) FsColor.muted else FsColor.gold, fontWeight = FsType.bodyStrong.fontWeight)
-    // The 48 dp target takes the press; the text is centred inside it.
+    val actionColor = if (refreshing) FsColor.muted else FsColor.gold
+    // Round 4 row 10: only the action takes the press, inside its own 48 dp target; the stamp is text.
     val tap = Modifier
         .heightIn(min = FsTarget.min)
         .clickable(enabled = !refreshing, role = Role.Button, onClick = onRefresh)
         .semantics { liveRegion = LiveRegionMode.Polite }
         .wrapContentHeight(Alignment.CenterVertically)
+    val actionText: @Composable (Modifier) -> Unit = { modifier ->
+        Text(action, style = STAMP, color = actionColor, fontWeight = FsType.bodyStrong.fontWeight, modifier = modifier.then(tap))
+    }
     if (LocalDensity.current.fontScale >= LARGE_TEXT_SCALE) {
         Text(stamp, style = STAMP, color = stampColor, modifier = Modifier.padding(top = FsSpace.space1))
-        Text(buildAnnotatedString { withStyle(actionStyle) { append(action) } }, style = STAMP, modifier = tap)
+        actionText(Modifier)
     } else {
-        Text(
-            buildAnnotatedString {
-                withStyle(SpanStyle(color = stampColor)) { append(stamp) }
-                append(STAMP_DOT)
-                withStyle(actionStyle) { append(action) }
-            },
-            style = STAMP,
-            color = FsColor.text,
-            modifier = Modifier.padding(top = FsSpace.space1).then(tap),
-        )
+        Row(Modifier.padding(top = FsSpace.space1), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                buildAnnotatedString {
+                    withStyle(SpanStyle(color = stampColor)) { append(stamp) }
+                    append(STAMP_DOT)
+                },
+                style = STAMP,
+                color = FsColor.text,
+                modifier = Modifier.weight(1f, fill = false),
+            )
+            actionText(Modifier)
+        }
     }
     if (refresh == MenuRefresh.Failed) Text(stringResource(R.string.menu_refreshFailed), style = STAMP, color = FsColor.wipe)
 }

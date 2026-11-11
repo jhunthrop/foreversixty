@@ -106,15 +106,17 @@ struct ActivityView: View {
                         daySection(section, first: index == 0)
                     }
                     if let older {
-                        // The same words as Android, a 44 pt target; disabled while the page loads.
+                        // The same words as Android, left-aligned under the list as the web's pager link
+                        // (round 4, row 7), a 44 pt target; disabled while the page loads.
                         Button(action: actions.more) {
                             Text(Copy.activityMore).type(FSType.bodyStrong).foregroundStyle(FSColor.gold)
-                                .frame(maxWidth: .infinity, minHeight: FSTarget.min)
+                                .frame(minHeight: FSTarget.min)
                                 .contentShape(.rect)
                         }
                         .buttonStyle(RowPressStyle())
                         .disabled(older == .loading)
                         .parityItem(.button)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
@@ -141,14 +143,17 @@ struct ActivityView: View {
     }
 }
 
-/// Activity's group chips on the band (round 5): 36 pt faces in 44 pt targets, the selected one teal,
-/// scrolling sideways.
+/// Activity's group chips on the band (round 5): 36 pt faces in 44 pt targets, the selected one in
+/// `teal` with a `tealEdge` hairline as the Segmented (round 4, row 9), scrolling sideways under a
+/// trailing fade.
 struct ActivityFilterChips: View {
     let filter: ActivityFilter
     let select: (ActivityFilter) -> Void
 
     static let face: CGFloat = 36
     static let radius: CGFloat = 8
+    /// How far the row fades out at its trailing edge, so a cut chip reads as more to scroll.
+    static let fade: CGFloat = FSSpace.space6
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -163,6 +168,12 @@ struct ActivityFilterChips: View {
             .padding(.top, 2)
             .padding(.bottom, FSSpace.space2)
         }
+        .mask {
+            HStack(spacing: 0) {
+                Color.black
+                LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing).frame(width: Self.fade)
+            }
+        }
         .parityRegion(.controls)
         .padding(.leading, FSSpace.space4)
     }
@@ -176,8 +187,9 @@ struct ActivityFilterChips: View {
                 .foregroundStyle(FSColor.strong)
                 .padding(.horizontal, FSSpace.space4)
                 .frame(height: ActivityFilterChips.face)
-                .background(on || configuration.isPressed ? FSColor.tealEdge : .clear, in: .rect(cornerRadius: ActivityFilterChips.radius))
-                .overlay(RoundedRectangle(cornerRadius: ActivityFilterChips.radius).strokeBorder(FSColor.rule, lineWidth: FSStroke.hairline))
+                .background(on ? FSColor.teal : .clear, in: .rect(cornerRadius: ActivityFilterChips.radius))
+                .overlay { if configuration.isPressed { TealPress.veil.clipShape(.rect(cornerRadius: ActivityFilterChips.radius)) } }
+                .overlay(RoundedRectangle(cornerRadius: ActivityFilterChips.radius).strokeBorder(on ? FSColor.tealEdge : FSColor.rule, lineWidth: FSStroke.hairline))
                 // The 36 pt face in its 44 pt target.
                 .padding(.vertical, (FSTarget.min - ActivityFilterChips.face) / 2)
                 .contentShape(.rect)

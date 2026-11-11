@@ -12,6 +12,7 @@ import gg.foreversixty.app.model.HomeAlreadyBest
 import gg.foreversixty.app.model.HomeUpgrade
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.auth.session.RelativeAge
+import gg.foreversixty.app.isStale
 import gg.foreversixty.app.phrase
 import java.time.Instant
 import java.util.Locale
@@ -28,13 +29,38 @@ data class GearSlotRow(
     val look: ItemLook?,
     /** `Head · Blacksmithing`. */
     val source: String,
-    /** `+14.5`, or null when equipped or not measured. */
+    /** `+14.5`, `+0.0` for a measured slot that gains nothing, or null when equipped or not modelled. */
     val gain: String?,
     val worn: Boolean,
     val row: BisRow,
     /** What the character wears in the slot today, which the pick replaces. */
     val equipped: ItemLook? = null,
+    /** Round 4 row 3: the pick's gain is not modelled yet, so the cell reads `Not modelled`. */
+    val notModelled: Boolean = false,
+    /** The gain is above zero: drawn in the gain green; a measured `+0.0` stays plain. */
+    val gains: Boolean = gain != null,
 )
+
+/**
+ * Gear's header line, `+157.6 DPS from 13 upgrades · synced 2 h ago · 2 gains not modelled yet`: the
+ * [synced] part takes the warning tone when [syncedStale] (round 4 row 2, the drawer's rule).
+ */
+data class GearHeader(val gain: String?, val synced: String?, val syncedStale: Boolean, val notModelled: String?) {
+    /** The line as one string: what TalkBack reads and the tests compare. */
+    val text: String get() = parts().joinToString("") { it.first }
+
+    /** The line's parts in order, each with whether it is the stale stamp. */
+    fun parts(): List<Pair<String, Boolean>> {
+        val head = listOfNotNull(gain?.let { it to false }, synced?.let { it to syncedStale })
+        val joined = head.flatMapIndexed { i, part -> if (i == 0) listOf(part) else listOf(SEPARATOR to false, part) }
+        val tail = notModelled?.let { (if (joined.isEmpty()) it.removePrefix(SEPARATOR) else it) to false }
+        return joined + listOfNotNull(tail)
+    }
+
+    private companion object {
+        const val SEPARATOR = " · "
+    }
+}
 
 /**
  * Gear's answer (spec 2026-11-08 4.3, round 5 mock `m-android-gear-frame`): the paperdoll strip (the
@@ -51,7 +77,7 @@ data class GearContent(
     val slots: List<GearSlotRow>,
     val unitWord: String,
     /** `+157.6 DPS from 13 upgrades · synced 2 h ago · 2 gains not modelled yet`, under the band line. */
-    val header: String? = null,
+    val header: GearHeader? = null,
 )
 
 /**
@@ -109,15 +135,17 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
             .filter { it.isNotBlank() }
             .joinToString(SEPARATOR)
 
-    /** The header line (round 2): the measured total and count, when the gear synced, the gains not modelled. */
-    fun header(home: CharacterHome, unit: String): String? {
+    /**
+     * The header line (round 2): the measured total and count, when the gear synced (stale past a week,
+     * round 4 row 2), the gains not modelled.
+     */
+    fun header(home: CharacterHome, unit: String): GearHeader? {
         val upgrades = res.getQuantityString(R.plurals.shared_home_upgradesCount, home.upgradeCount, home.upgradeCount)
         val gain = home.totalGain?.takeIf { it > 0 }?.let { res.getString(R.string.gear_header_gain, "+" + BisListBuilder.figure(it), unit, upgrades) }
-        val synced = home.syncedAt?.let { runCatching { Instant.parse(it) }.getOrNull() }
-            ?.let { res.getString(R.string.gear_header_synced, RelativeAge.of(it, now).phrase(res)) }
-        val line = listOfNotNull(gain, synced).joinToString(SEPARATOR)
-        val notModelled = home.notModelledCount.takeIf { it > 0 }?.let { res.getQuantityString(R.plurals.home_answer_notModelled, it, it) }.orEmpty()
-        return (line + notModelled).removePrefix(SEPARATOR).ifBlank { null }
+        val age = home.syncedAt?.let { runCatching { Instant.parse(it) }.getOrNull() }?.let { RelativeAge.of(it, now) }
+        val synced = age?.let { res.getString(R.string.gear_header_synced, it.phrase(res)) }
+        val notModelled = home.notModelledCount.takeIf { it > 0 }?.let { res.getQuantityString(R.plurals.home_answer_notModelled, it, it) }
+        return GearHeader(gain, synced, age?.isStale() == true, notModelled).takeIf { it.text.isNotBlank() }
     }
 
     /**
@@ -129,7 +157,11 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
         val pick = row.pick
         val item = pick?.item
         val worn = best?.containsKey(row.slot) ?: (pick?.isWorn == true)
-        val gain = upgrade?.takeIf { it.modelled && it.pick.id == item?.id }?.gain?.takeIf { it > 0 }
+        val measured = upgrade?.takeIf { it.pick.id == item?.id }
+        val notModelled = measured?.modelled == false
+        // Round 4 row 3 (as iOS): with the home answer a pick that is not Equipped says what it gives,
+        // its gain, `Not modelled`, else `+0.0`.
+        val gain = measured?.takeIf { it.modelled }?.gain?.takeIf { it > 0 } ?: ZERO.takeIf { best != null && !notModelled }
         val equipped = upgrade?.worn?.takeIf { it.known }?.let { ItemLook(it.id, it.name, it.quality, it.icon, it.itemLevel) }
         val label = upgrade?.slotLabel ?: best?.get(row.slot)?.slotLabel ?: row.slotLabel
         return GearSlotRow(
@@ -137,10 +169,12 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
             label = label,
             look = item?.let { ItemLook(it.id, it.name, it.quality, it.icon, it.item?.itemLevel) },
             source = pick?.slotSource ?: label,
-            gain = if (worn) null else gain?.let { "+" + BisListBuilder.figure(it) },
+            gain = if (worn || item == null) null else gain?.let { "+" + BisListBuilder.figure(it) },
             worn = worn,
             row = row,
             equipped = equipped.takeIf { !worn },
+            notModelled = !worn && notModelled,
+            gains = !worn && gain != null && gain > ZERO,
         )
     }
 
@@ -202,6 +236,7 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
 
     companion object {
         private const val SEPARATOR = " · "
+        private const val ZERO = 0.0
         private const val DUNGEON = "dungeon"
         private const val RAID = "raid"
         private const val CRAFTED = "crafted"

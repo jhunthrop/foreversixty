@@ -28,7 +28,7 @@ import (
 // shows a member.
 var raidEventCopy = struct {
 	Posted, SignedOf, SignedOpen, Nudge, Moved, Cancelled, RosterIn, RosterBench, RosterOther string
-	Starting, Short, ShortRole, ShortNotIn, LateChange                                        string
+	Starting, Minute, Minutes, Short, ShortRole, ShortNotIn, LateChange                       string
 	MovedIn, MovedBench, MovedLate, MovedOut                                                  string
 	ActionIn, ActionLate, ActionBench, ActionOut                                              string
 }{
@@ -41,8 +41,10 @@ var raidEventCopy = struct {
 	RosterIn:    "The roster is set. You are In.",
 	RosterBench: "The roster is set. You are on the bench.",
 	RosterOther: "The roster is set.",
-	Starting:    "Starts in %d minutes.",
-	Short:       "%s, 24 hours out.",
+	Starting:    "Starts in %s.",
+	Minute:      "1 minute",
+	Minutes:     "%d minutes",
+	Short:       "%s, %s out.",
 	ShortRole:   "%s %d of %d",
 	ShortNotIn:  "%d not answered",
 	LateChange:  "%s changed to Out, %s before the start.",
@@ -159,18 +161,26 @@ func rosterSetEvent(guildID int64, p notify.RaidPosted, userID int64, state stri
 // check misses ("No flask in your bags."), "" when none or not known.
 func raidStartingEvent(guildID int64, p notify.RaidPosted, lead time.Duration, aud events.Audience, miss string) events.Event {
 	e := raidEvent(events.RaidStarting, guildID, p, raidKey(events.RaidStarting, p), aud)
-	e.Body = joinSentences(fmt.Sprintf(raidEventCopy.Starting, int(lead.Minutes())), miss)
+	e.Body = joinSentences(fmt.Sprintf(raidEventCopy.Starting, minutesWords(lead)), miss)
 	return e
+}
+
+// minutesWords is d to the nearest minute: "1 minute", "45 minutes".
+func minutesWords(d time.Duration) string {
+	if m := int(d.Round(time.Minute).Minutes()); m != 1 {
+		return fmt.Sprintf(raidEventCopy.Minutes, m)
+	}
+	return raidEventCopy.Minute
 }
 
 // unansweredUnknown is raid.short's not-answered count when it could not be read.
 const unansweredUnknown = -1
 
-// raidShortEvent is raid.short: the roles below the comp target and how many have not
-// answered, each only when known and not nothing, then the signed count. canPing (the raid's
-// ping is out of its cooldown and Discord is connected) adds the Mention button for the role
-// furthest below its target.
-func raidShortEvent(guildID int64, p notify.RaidPosted, unanswered int, canPing bool) events.Event {
+// raidShortEvent is raid.short at lead before the start: the roles below the comp target and
+// how many have not answered, each only when known and not nothing, then the signed count and
+// the lead to the hour. canPing (the raid's ping is out of its cooldown and Discord is
+// connected) adds the Mention button for the first short role (shortestRole).
+func raidShortEvent(guildID int64, p notify.RaidPosted, lead time.Duration, unanswered int, canPing bool) events.Event {
 	e := raidEvent(events.RaidShort, guildID, p, raidKey(events.RaidShort, p),
 		events.Audience{Kind: events.ToGuildOfficers, GuildID: guildID})
 	short := notify.ShortRoles(p)
@@ -188,22 +198,17 @@ func raidShortEvent(guildID int64, p notify.RaidPosted, unanswered int, canPing 
 	if len(gaps) > 0 {
 		gapLine = strings.Join(gaps, ", ") + "."
 	}
-	e.Body = joinSentences(gapLine, fmt.Sprintf(raidEventCopy.Short, signedWords(p)))
+	e.Body = joinSentences(gapLine, fmt.Sprintf(raidEventCopy.Short, signedWords(p), roundedHours(lead.Round(time.Hour))))
 	return e
 }
 
-// shortestRole is the role furthest below its target, the first in roster order on a tie.
+// shortestRole is the role the Mention button and the apps' Needs you line name: the first
+// short role in tank, healer, dps order (ShortRoles' order), the one an officer can fill.
 func shortestRole(short []notify.RoleShort) (notify.RoleShort, bool) {
 	if len(short) == 0 {
 		return notify.RoleShort{}, false
 	}
-	worst := short[0]
-	for _, r := range short[1:] {
-		if r.Gap() > worst.Gap() {
-			worst = r
-		}
-	}
-	return worst, true
+	return short[0], true
 }
 
 // mentionCopy is the Mention button's label per ping role.

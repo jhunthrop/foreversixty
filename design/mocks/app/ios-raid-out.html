@@ -236,14 +236,15 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
    not-synced line is a row that opens the roster */
 .r5raid .pn .notes{margin-top:8px}
 .r5raid .hl{margin:8px 0 0;font:400 14px/20px var(--font-body);color:var(--muted)}
-.r5raid .cov{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;padding:8px 0;font:400 13px/18.29px var(--font-body);color:var(--muted)}
-.r5raid .cov .cg{display:inline-flex;align-items:center;gap:4px;color:var(--wipe)}
+.r5raid .cov{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:8px 0;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .cov .cg{display:inline-flex;align-items:center;gap:4px;color:var(--wipe);white-space:nowrap}
 .r5raid .cov .cg img,.r5raid .cov .cg .ci{display:block;width:20px;height:20px;border-radius:4px;background-size:cover}
 .r5raid .cov .cg .n{color:var(--muted)}
 .r5raid .rfoot .ns{display:flex;align-items:center;min-height:48px;padding:0;border:0;font:400 13px/18.29px var(--font-body);color:var(--wipe)}
 [data-platform=ios] .r5raid .rfoot .ns{min-height:44px;color:var(--text);gap:4px}
 [data-platform=ios] .r5raid .rfoot .ns span{flex:1}[data-platform=ios] .r5raid .rfoot .ns i{font-style:normal;color:var(--muted)}
 [data-platform=ios] .r5raid .cov{padding:0;gap:4px}
+[data-platform=android] .r5raid .sh .act{line-height:18px}
 [data-platform=ios] .r5raid .btn{height:44px;min-height:44px}
 /* iOS's Segmented (brand B1): one connected group, hairline dividers, the chosen one teal with its edge, 44 pt */
 [data-platform=ios] .r5raid .seg{border:1px solid #5a5d70;border-radius:6px;background:#170e09}

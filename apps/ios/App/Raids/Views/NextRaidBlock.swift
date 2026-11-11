@@ -170,7 +170,8 @@ struct NextRaidLineView: View {
             }
             .buttonStyle(RowPressStyle())
             // The role tally on one line (`Healers 5/8 · 3 short`, a short role in wipe red; `Healers 6` without a target).
-            if !content.tally.isEmpty { RaidTallyLine(roles: content.tally) }
+            // Round 4, row 6: 8 pt between the tally and the Segmented, as Android.
+            if !content.tally.isEmpty { RaidTallyLine(roles: content.tally).padding(.bottom, FSSpace.space2) }
             RaidAnswerControl(content: content, actions: actions, question: true, compact: true)
                 .padding(.bottom, content.tally.isEmpty ? FSSpace.space1 : 0)
         }

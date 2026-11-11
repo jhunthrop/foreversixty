@@ -335,14 +335,14 @@ fun FlowWideButton(label: String, primary: Boolean, onClick: () -> Unit) {
 /** An inline link (`.link`, 15/24 semibold gold): `Open raid night ›`, `Where to get it`. */
 @Composable
 fun FlowLink(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Text(text, style = FsType.bodyStrong.copy(lineHeight = 24.sp), color = FsColor.gold, modifier = modifier.clickable(role = Role.Button, onClick = onClick))
+    Text(text, style = FsType.bodyStrong, color = FsColor.gold, modifier = modifier.clickable(role = Role.Button, onClick = onClick))
 }
 
 /** The small chip's height (Activity's filters, Home's Late minutes); Compose takes the tap 48 tall. */
 val FLOW_CHIP_SMALL: Dp = 36.dp
 
-/** A row's trailing figure (iOS PanelRow's value): 15/20 semibold in tabular figures. */
-private val VALUE = FsType.bodyStrong.copy(lineHeight = 20.sp, fontFeatureSettings = "tnum")
+/** A row's trailing figure (iOS PanelRow's value): the strong body role in tabular figures. */
+private val VALUE = FsType.bodyStrong.copy(fontFeatureSettings = "tnum")
 
 /** The row's line (`.row .sub`, 13/18). */
 val SUB = FsType.small.copy(lineHeight = 18.sp)

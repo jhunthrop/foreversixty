@@ -191,10 +191,10 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 
 .ap.r5act{padding:0 14px 22px}
 .r5act .bandc{margin:0 -14px;padding-left:16px;background:#0c3a52;border-bottom:1px solid #000}
-.r5act .chips{display:flex;gap:8px;padding:2px 16px 8px 0;overflow:hidden;white-space:nowrap}
+.r5act .chips{display:flex;gap:8px;padding:2px 16px 8px 0;overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent)}
 .r5act .chips .btn{flex:none;display:flex;align-items:center;box-sizing:border-box;height:36px;min-height:36px;margin:6px 0;padding:0 16px;
   border:1px solid #5a5d70;border-radius:8px;background:none;color:#fff;font:600 14px/20px var(--font-body)}
-.r5act .chips .btn.on{background:#408076}
+.r5act .chips .btn.on{background:#0f6064;border-color:#408076}
 .ap.r5act>section,.ap.r5act>.blk-r5{margin-top:20px}.ap.r5act>.bandc+*{margin-top:16px}.ap.r5act>.blk-r5:first-child{margin-top:16px}
 .r5act .sh{display:flex;align-items:center;height:26px;margin-bottom:8px}
 .r5act .sh h2{margin:0;font:400 21px/26px var(--font-title);color:#f3eee2}
@@ -207,7 +207,8 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .r5act .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
 .r5act .row .fig{margin-left:auto;flex:none;font:700 15px/20.57px var(--font-body);font-variant-numeric:tabular-nums;color:#fff}
 .r5act .more{display:flex;align-items:center;min-height:48px;margin-top:8px;padding:0 16px;font:600 15px/20px var(--font-body);color:var(--gold)}
-[data-platform=ios] .r5act .more{min-height:44px;justify-content:center}
+[data-platform=ios] .r5act .more{min-height:44px;padding:0}
+[data-platform=android] .r5act .row .fig{line-height:22px}[data-platform=android] .r5act .sh .act{line-height:18px}
 .r5act .note{margin:0;padding:8px 0;font:400 13px/20.57px var(--font-body);color:var(--text)}
 .r5act .wide{display:flex;align-items:center;justify-content:center;height:48px;margin:12px 0;border-radius:4px;background:#0f6064;border:1px solid #408076;
   color:#fff;font:700 15px/20px var(--font-body)}

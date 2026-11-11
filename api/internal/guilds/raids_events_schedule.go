@@ -162,10 +162,11 @@ func (s *Service) publishDue(ctx context.Context, raidID int64, kinds []events.K
 		switch k {
 		case events.RaidShort:
 			if p.SizeKnown && p.Counts.In+p.Counts.Late < p.Size {
-				out = append(out, raidShortEvent(facts.GuildID, p, s.shortUnanswered(ctx, facts.GuildID, raidID), s.canPing(ctx, raidID, now)))
+				out = append(out, raidShortEvent(facts.GuildID, p, p.StartsAt.Sub(now), s.shortUnanswered(ctx, facts.GuildID, raidID),
+					s.canPing(ctx, raidID, now)))
 			}
 		case events.RaidStarting:
-			out = append(out, s.startingEvents(ctx, facts.GuildID, p)...)
+			out = append(out, s.startingEvents(ctx, facts.GuildID, p, p.StartsAt.Sub(now))...)
 		}
 	}
 	s.publishAll(ctx, out)

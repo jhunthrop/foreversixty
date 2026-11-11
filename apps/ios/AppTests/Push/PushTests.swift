@@ -118,6 +118,45 @@ struct PushLandingTests {
         #expect(OfficerPushAnswer(action: RaidPushCategory.actionDecline, userInfo: applicant) == .decline(guild: 2, application: 31))
         #expect(OfficerPushAnswer(action: RaidPushCategory.actionIn, userInfo: applicant) == nil)
     }
+
+    @Test("round 4: Mention and Accept run in place from the response; a refused answer opens the push's landing")
+    @MainActor
+    func officerResponses() async throws {
+        let calls = OfficerCalls()
+        let center = RaidNotificationCenter()
+        var opened: [IntentDestination] = []
+        center.onOpen = { opened.append($0) }
+        center.use(answerer: nil, officer: OfficerPushActions(
+            accept: { guild, application in await calls.record("accept \(guild)/\(application)"); return true },
+            decline: { guild, application in await calls.record("decline \(guild)/\(application)"); return false },
+            mention: { guild, raid, role in await calls.record("mention \(guild)/\(raid) \(role)"); return true }
+        ))
+        let reply = { (action: String, name: String) in
+            PushReply(action: action, identifier: name, thread: "", userInfo: try self.apns(name))
+        }
+        await center.respond(try reply(RaidPushCategory.actionMention, "push.raid-short.apns"))
+        await center.respond(try reply(RaidPushCategory.actionAccept, "push.guild-applicant.apns"))
+        #expect(await calls.log == ["mention 2/7 healer", "accept 2/31"])
+        #expect(opened.isEmpty, "answered in place, nothing opens")
+        await center.respond(try reply(RaidPushCategory.actionDecline, "push.guild-applicant.apns"))
+        #expect(opened.count == 1, "a refused Decline opens the review")
+    }
+
+    @Test("round 4: UIKit's completion for a response runs on the main thread")
+    func completionOnMain() async {
+        let onMain = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            let done = MainThreadCompletion { continuation.resume(returning: Thread.isMainThread) }
+            Task.detached { await done.run() }
+        }
+        #expect(onMain)
+    }
+}
+
+/// What the officer actions were asked to do, in order.
+private actor OfficerCalls {
+    private(set) var log: [String] = []
+
+    func record(_ call: String) { log.append(call) }
 }
 
 @Suite("Push token registration")

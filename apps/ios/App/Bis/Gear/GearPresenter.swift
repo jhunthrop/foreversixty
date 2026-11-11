@@ -74,7 +74,7 @@ struct GearPresenter {
 
     /// `+157.6 DPS from 13 upgrades · 2 gains not modelled yet · synced 2 h ago`: what the answer adds
     /// up to, what it could not measure, and how old the gear it read is.
-    static func summary(_ home: CharacterHome, unit: String, now: Date) -> String? {
+    static func summary(_ home: CharacterHome, unit: String, now: Date) -> GearSummary? {
         var line = ""
         if home.upgradeCount > 0, let total = home.totalGain, total > 0 {
             line = Copy.gearHeaderGain(
@@ -86,11 +86,12 @@ struct GearPresenter {
             let words = Copy.homeAnswerNotModelled(n: home.notModelledCount)
             line += line.isEmpty ? String(words.drop { $0 == " " || $0 == "·" }) : words
         }
-        if let synced = home.syncedAt {
-            let stamp = Copy.gearHeaderSynced(age: RelativeAge(from: synced, to: now).phrase)
-            line = line.isEmpty ? stamp : line + separator + stamp
-        }
-        return line.isEmpty ? nil : line
+        let summary = GearSummary(
+            figures: line.isEmpty ? nil : line,
+            synced: home.syncedAt.map { Copy.gearHeaderSynced(age: RelativeAge(from: $0, to: now).phrase) },
+            stale: home.syncedAt.map { SyncAge.isStale($0, now: now) } ?? false
+        )
+        return summary.line.isEmpty ? nil : summary
     }
 
     /// `60 raid` for the raid list, the band's words otherwise.
@@ -102,16 +103,27 @@ struct GearPresenter {
 
     private func slotRow(_ row: BisRow, home: CharacterHome?, unit: String) -> GearSlotRow {
         guard let pick = row.pick else { return GearSlotRow(slot: row.slot, label: row.slotLabel, pick: nil) }
-        let worn = pick.isWorn || home?.alreadyBest.contains { $0.slot == row.slot && $0.item.id == pick.item.id } == true
-        let gain = worn ? nil : Self.gain(home?.upgrades.first { $0.slot == row.slot && $0.pick.id == pick.item.id }, unit: unit)
+        // Row 10, as Android: the answer's `already_best` decides by slot (the server read the gear against
+        // this list); without an answer, the list's own worn mark.
+        let worn = home.map { $0.alreadyBest.contains { $0.slot == row.slot } } ?? pick.isWorn
+        let upgrade = home?.upgrades.first { $0.slot == row.slot && $0.pick.id == pick.item.id }
+        let gain = worn ? nil : Self.gain(upgrade, unit: unit)
         let look = HomeItemLook(
             id: pick.item.id, name: pick.item.name, quality: pick.item.item?.quality, icon: pick.item.icon, itemLevel: pick.item.item?.itemLevel
         )
         return GearSlotRow(slot: row.slot, label: row.slotLabel, pick: GearSlotRow.Pick(
             look: look,
-            trail: worn ? .worn : gain.map { .gain($0) },
+            trail: worn ? .worn : home.map { _ in Self.trail(upgrade, gain: gain, unit: unit) },
             item: GearItemRef(itemID: pick.item.id, slot: row.slot, gain: gain)
         ))
+    }
+
+    /// Round 4, row 3: with the character's answer every pick that is not Equipped says what it gives:
+    /// its gain, `Not modelled` when the sim could not measure it, else `+0.0 DPS`.
+    static func trail(_ upgrade: HomeUpgrade?, gain: HomeGain?, unit: String) -> GearSlotRow.Trail {
+        if let gain { return .gain(gain) }
+        if upgrade?.modelled == false { return .notModelled }
+        return .noGain(HomeGain(figure: ItemNumbers.signedTenths(0), unit: unit))
     }
 
     /// A measured gain above zero, the server's, as Home words it.

@@ -9,6 +9,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.delay
 import io.ktor.http.headersOf
 import java.io.FileNotFoundException
 
@@ -43,7 +44,20 @@ const val FIXTURE_ASSET_DIR = "fixtures/app"
  */
 object FixtureEngine {
     fun create(source: FixtureSource, variants: Map<String, FixtureVariant> = emptyMap()): HttpClientEngine =
+        create(source) { variants }
+
+    /**
+     * As [create], with [variantsNow] and [latencyMillis] read on every request: a debug build can
+     * switch a state, or hold each answer back so an in-flight frame can be captured.
+     */
+    fun create(
+        source: FixtureSource,
+        latencyMillis: () -> Long = { 0L },
+        variantsNow: () -> Map<String, FixtureVariant>,
+    ): HttpClientEngine =
         MockEngine { request ->
+            latencyMillis().takeIf { it > 0 }?.let { delay(it) }
+            val variants = variantsNow()
             val path = request.url.encodedPath
             val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
             val (route, _) = FixtureRoutes.resolve(request.method, path)

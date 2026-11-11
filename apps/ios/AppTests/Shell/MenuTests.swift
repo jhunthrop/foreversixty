@@ -127,7 +127,7 @@ struct ProfileMenuSummaryTests {
     func staleStamp() throws {
         let fresh = MenuTestData.summary([MenuTestData.thandrel])
         let me = try #require(MenuTestData.me([MenuTestData.thandrel]).bnetImportedAt)
-        let week = ProfileMenuSummary.staleAfter
+        let week = SyncAge.staleAfter
         let later = ProfileMenuSummary(
             me: MenuTestData.me([MenuTestData.thandrel]), current: MenuTestData.thandrel, facts: MenuTestData.facts,
             version: "", now: me.addingTimeInterval(week + 60)

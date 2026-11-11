@@ -165,9 +165,6 @@ enum Copy {
     /// Add the addon to see which slots you can upgrade.
     static var homeAnswerNoGear: String { text("home.answer.noGear") }
 
-    /// The addon sends your gear when you log out.
-    static var homeAnswerNoGearNote: String { text("home.answer.noGearNote") }
-
     /// {spec} {band} list
     static func homeAnswerListButton(spec: String, band: String) -> String {
         format("home.answer.listButton", spec, band)
@@ -1388,7 +1385,7 @@ enum Copy {
         format("raid.pages.simsRank", position, of)
     }
 
-    /// No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
+    /// No raid posted yet.
     static var raidNoRaid: String { text("raid.noRaid") }
 
     /// Needs you
@@ -2394,6 +2391,9 @@ enum Copy {
     static func gearHeaderSynced(age: String) -> String {
         format("gear.header.synced", age)
     }
+
+    /// Not modelled
+    static var gearNotModelled: String { text("gear.notModelled") }
 
     /// blacksmith
     static var gearCrafterBlacksmithing: String { text("gear.crafter.blacksmithing") }

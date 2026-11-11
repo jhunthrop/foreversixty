@@ -122,15 +122,20 @@ class RaidDeepLinkFlowTest {
         assertEquals(listOf("selection"), flow.haptics.calls)
         shots.screen(4, "spec-sheet")
 
+        // The capture waits for the saved line itself (it shows the frame the write returns), then
+        // stops the clock, so the frame always lands inside the line's 4 s hold instead of racing it.
+        val saved = resources().getString(R.string.spec_kept, "Restoration", "Lightningbolltz")
         compose.onNodeWithText("Restoration").performClick()
-        compose.waitUntil(SETTLE_MILLIS) { flow.service.requests.isNotEmpty() }
-        compose.settle(flow.service)
+        compose.waitUntil(SETTLE_MILLIS) { compose.onAllNodes(hasText(saved, substring = true)).fetchSemanticsNodes().isNotEmpty() }
+        compose.mainClock.autoAdvance = false
         val (key, request) = flow.service.requests.single()
         assertEquals("us/pvp/lightningbolltz", key)
         assertEquals("in", request.state)
         assertEquals("shaman-restoration", request.spec)
+        assertEquals(0, flow.service.inFlight)
         answer(SignupState.In).assertIsSelected()
         shots.screen(5, "spec-picked")
+        compose.mainClock.autoAdvance = true
     }
 
     @Test

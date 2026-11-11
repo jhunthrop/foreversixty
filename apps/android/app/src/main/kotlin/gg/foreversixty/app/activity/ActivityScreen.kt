@@ -1,6 +1,15 @@
 package gg.foreversixty.app.activity
 
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -138,14 +147,19 @@ fun ActivityScreen(
     }
 }
 
-/** The groups as chips under the bar, All preselected; they scroll sideways past the edge (the mock's `.chips.scroll`). */
+/**
+ * The groups as chips under the bar, All preselected; they scroll sideways past the edge (the mock's
+ * `.chips.scroll`) under a trailing fade while more chips lie past it (round 4 row 9, as iOS).
+ */
 @Composable
 private fun Filters(current: ActivityFilter, onFilter: (ActivityFilter) -> Unit) {
+    val scroll = rememberScrollState()
     Row(
         Modifier
             .padding(start = FsSpace.space4)
             .parityRegion(ParityRegion.CONTROLS)
-            .horizontalScroll(rememberScrollState())
+            .trailingFade { scroll.canScrollForward }
+            .horizontalScroll(scroll)
             .padding(top = FILTERS_TOP, bottom = FILTERS_BOTTOM, end = FsSpace.space4),
         horizontalArrangement = Arrangement.spacedBy(FsSpace.space2),
     ) {
@@ -189,8 +203,33 @@ private fun Days(state: ActivityState.Loaded, build: String?, now: Instant, zone
             }
         }
     }
-    if (state.nextBefore != null) FlowLink(stringResource(R.string.activity_more), Modifier.padding(horizontal = FsSpace.space4), actions.onMore)
+    // Round 4 row 7: left under its list, as the web's pager link, at the 48 dp target.
+    if (state.nextBefore != null) {
+        FlowLink(
+            stringResource(R.string.activity_more),
+            Modifier.padding(horizontal = FsSpace.space4).heightIn(min = FsTarget.min).wrapContentHeight(Alignment.CenterVertically),
+            actions.onMore,
+        )
+    }
 }
+
+/** Fades the trailing [FILTER_FADE] to clear while [active], so a cut chip reads as more to scroll. */
+private fun Modifier.trailingFade(active: () -> Boolean): Modifier = this
+    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+    .drawWithContent {
+        drawContent()
+        if (active()) {
+            val start = size.width - FILTER_FADE.toPx()
+            drawRect(
+                Brush.horizontalGradient(listOf(Color.Black, Color.Transparent), startX = start, endX = size.width),
+                topLeft = Offset(start, 0f),
+                blendMode = BlendMode.DstIn,
+            )
+        }
+    }
+
+/** How far the chips fade out at the trailing edge (iOS `ActivityFilterChips.fade`). */
+private val FILTER_FADE = FsSpace.space6
 
 /** A filter chip's face (the mock's `.chips a`, 7 above and below a 20 line), 48 to the touch. */
 

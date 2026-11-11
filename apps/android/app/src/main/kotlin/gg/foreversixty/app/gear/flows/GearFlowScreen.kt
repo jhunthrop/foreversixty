@@ -1,8 +1,11 @@
 package gg.foreversixty.app.gear.flows
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.foundation.layout.padding
-import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.designsystem.FsSpace
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -53,14 +56,14 @@ data class GearActions(
  */
 @Composable
 fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, portrait: Painter? = null, topBar: @Composable () -> Unit = {}) {
-    val equipped = stringResource(R.string.gear_worn)
+    val words = SlotWords(stringResource(R.string.gear_worn), stringResource(R.string.gear_notModelled), content.unitWord)
     val looks = content.slots.mapNotNull { it.look }.associateBy { it.id }
     FlowBandPage(topBar) {
         PaperdollHeader(
             title = content.title,
             figure = content.figure,
             portrait = portrait,
-            slots = content.slots.map { it.listSlot(content.unitWord, equipped) },
+            slots = content.slots.map { it.listSlot(words) },
             unit = content.unitWord,
             onSelect = { id -> content.slots.firstOrNull { it.slot == id }?.let(actions.onSlot) },
             lead = { Lead(content.facts, content.header, actions.onChange) },
@@ -111,22 +114,35 @@ fun GearNoticeScreen(notice: GearNotice, actions: GearActions, topBar: @Composab
  * it the measured [header] (`+157.6 DPS from 13 upgrades · synced 2 h ago`).
  */
 @Composable
-private fun Lead(facts: String, header: String?, onChange: () -> Unit) {
+private fun Lead(facts: String, header: GearHeader?, onChange: () -> Unit) {
     Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.CONTROLS)) {
         FlowLinkLine(facts, FlowSubLink(stringResource(R.string.gear_change), onChange), LEAD, FsColor.text, Modifier.fillMaxWidth())
-        header?.let { FlowNote(it, Modifier.padding(top = FsSpace.space1)) }
+        header?.let { HeaderLine(it) }
     }
 }
 
+/** The header in the muted note tone, its `synced 12 d ago` in the warning tone past a week (round 4 row 2). */
+@Composable
+private fun HeaderLine(header: GearHeader) {
+    val line = buildAnnotatedString {
+        header.parts().forEach { (text, stale) -> if (stale) withStyle(SpanStyle(color = FsColor.warn)) { append(text) } else append(text) }
+    }
+    Text(line, style = FsType.small, color = FsColor.muted, modifier = Modifier.padding(top = FsSpace.space1))
+}
+
+/** The words a slot's second line can take: Equipped, Not modelled, and the gain's unit. */
+private data class SlotWords(val equipped: String, val notModelled: String, val unit: String)
+
 /** A slot as the paperdoll's list draws it: the pick in its quality colour, its gain or Equipped. */
-private fun GearSlotRow.listSlot(unit: String, equipped: String): PaperdollListSlot {
+private fun GearSlotRow.listSlot(words: SlotWords): PaperdollListSlot {
     val pick = look ?: return PaperdollListSlot(slot, label, item = null)
     val detail = when {
-        worn -> equipped
-        gain != null -> "$gain $unit"
+        worn -> words.equipped
+        notModelled -> words.notModelled
+        gain != null -> "$gain ${words.unit}"
         else -> null
     }
-    val item = PaperdollListSlot.Item(pick.id, pick.name.orEmpty(), ItemQuality(pick.quality).text, detail, isGain = gain != null && !worn)
+    val item = PaperdollListSlot.Item(pick.id, pick.name.orEmpty(), ItemQuality(pick.quality).text, detail, isGain = gains && !worn)
     return PaperdollListSlot(slot, label, item)
 }
 

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.semantics.heading
@@ -31,6 +32,7 @@ import gg.foreversixty.app.designsystem.parityRegion
 import gg.foreversixty.app.flows.FlowBandPage
 import gg.foreversixty.app.flows.FlowPageState
 import gg.foreversixty.app.flows.lineBox
+import gg.foreversixty.app.home.LARGE_TEXT_SCALE
 
 /**
  * Home's page in the round-5 look (spec Mobile, mock m-android-home): the camp-road hero behind the
@@ -59,12 +61,22 @@ fun HomeHeroHead(title: String, facts: List<String>, className: String?) {
                 // Marcellus at 30 is taller than its 34 line; the box keeps the role's line (heroName 30/34).
                 Text(title, style = NAME, color = color, modifier = Modifier.lineBox(NAME.lineHeight).semantics { heading() })
                 if (facts.isNotEmpty()) {
-                    Text(facts.joinToString(FACT_SEPARATOR), style = FACTS, color = FsColor.text, modifier = Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD_META))
+                    val lines = heroFactLines(facts, stacked = LocalDensity.current.fontScale >= LARGE_TEXT_SCALE)
+                    Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD_META)) {
+                        lines.forEach { Text(it, style = FACTS, color = FsColor.text) }
+                    }
                 }
             }
         }
     }
 }
+
+/**
+ * The hero's fact lines: one line on the dot (`Level 58 Fury Warrior · 2 levels to the 60 list`), or at
+ * large text one fact to a line, so the break falls at the dot and never strands `· 2` (round 4 row 8).
+ */
+internal fun heroFactLines(facts: List<String>, stacked: Boolean): List<String> =
+    if (stacked) facts else listOf(facts.joinToString(FACT_SEPARATOR))
 
 private val HEAD_TOP = 6.dp
 private val HEAD_BOTTOM = 18.dp

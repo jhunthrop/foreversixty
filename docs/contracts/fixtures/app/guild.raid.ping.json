@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "data": {
+    "posted": true,
+    "mentioned": 3,
+    "no_discord": 1,
+    "no_discord_names": ["Mendara"],
+    "next_allowed_at": "2026-12-18T04:30:00Z",
+    "recently_mentioned": 0
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

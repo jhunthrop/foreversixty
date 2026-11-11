@@ -69,7 +69,8 @@ struct GearListView: View {
         guard let pick = row.pick else { return PaperdollListSlot(id: row.slot, label: row.label, item: nil) }
         let detail: String? = switch pick.trail {
         case .worn: Copy.gearWorn
-        case let .gain(gain): "\(gain.figure) \(gain.unit)"
+        case let .gain(gain), let .noGain(gain): "\(gain.figure) \(gain.unit)"
+        case .notModelled: Copy.gearNotModelled
         case nil: nil
         }
         let isGain = if case .gain = pick.trail { true } else { false }
@@ -83,28 +84,34 @@ struct GearListView: View {
 /// The line that names the list, `60 raid · Alliance · 4 of 17 slots on the list · Change` (14/20).
 struct GearListLine: View {
     let facts: String
-    /// `+157.6 DPS from 13 upgrades · synced 2 h ago`, muted under the line.
-    var summary: String?
+    /// `+157.6 DPS from 13 upgrades · synced 2 h ago`, muted under the line; a stale age in the warning tone.
+    var summary: GearSummary?
     let change: () -> Void
-
-    static let size: CGFloat = 14
 
     var body: some View {
         VStack(alignment: .leading, spacing: FSSpace.space1) {
             line
             if let summary {
-                Text(summary)
-                    .type(TypeRole(face: FSFont.body, size: 13, lineHeight: 18, scalesWith: .footnote))
+                summaryText(summary)
+                    .type(RowType.sub)
                     .foregroundStyle(FSColor.muted)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
     }
 
+    private func summaryText(_ summary: GearSummary) -> Text {
+        let synced = summary.synced.map { Text($0).foregroundColor(summary.stale ? FSColor.warn : FSColor.muted) }
+        guard let figures = summary.figures else { return synced ?? Text("") }
+        let lead = Text(figures).foregroundColor(FSColor.muted)
+        guard let synced else { return lead }
+        return Text("\(lead)\(Text(GearPresenter.separator).foregroundColor(FSColor.muted))\(synced)")
+    }
+
     private var line: some View {
         Button(action: change) {
-            Text.line(facts, link: Copy.gearChange, size: Self.size)
-                .type(TypeRole(face: FSFont.body, size: Self.size, lineHeight: 20, scalesWith: .subheadline))
+            Text.line(facts, link: Copy.gearChange, size: FSType.factLine.size)
+                .type(FSType.factLine)
                 .foregroundStyle(FSColor.text)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)

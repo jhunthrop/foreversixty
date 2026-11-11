@@ -191,6 +191,8 @@ object FsType {
     val heroName = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 30.sp, lineHeight = 34.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The raid card's zone on Home (brand S4).
     val cardTitle = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 24.sp, lineHeight = 30.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // A round-5 section title over the ground, above its panel (the mock's `.sh h2`, brand N4).
+    val panelTitle = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 21.sp, lineHeight = 26.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The fact line under a hero name (brand S4).
     val factLine = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The unit under a countdown figure (brand S4).

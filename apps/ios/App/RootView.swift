@@ -142,7 +142,7 @@ struct RootView: View {
                 if let row = UserDefaults.standard.string(forKey: "FSMenu").flatMap(MenuDestination.init(rawValue:)) {
                     shell.open(row)
                 }
-                await RaidDebugLaunch.postRaidPushIfAsked()
+                await RaidDebugLaunch.postPushIfAsked()
             #endif
         }
     }

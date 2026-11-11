@@ -85,11 +85,11 @@ func pingOpen(state *RaidPingState, now time.Time) bool {
 	return state.NextAllowedAt == nil || !now.Before(*state.NextAllowedAt)
 }
 
-// startingEvents is raid.starting, one per In or Late account with its ready check miss. A
+// startingEvents is raid.starting at lead before the start, one per In or Late account with its ready check miss. A
 // failed read falls back to the one raid-audience event with no miss.
-func (s *Service) startingEvents(ctx context.Context, guildID int64, p notify.RaidPosted) []events.Event {
+func (s *Service) startingEvents(ctx context.Context, guildID int64, p notify.RaidPosted, lead time.Duration) []events.Event {
 	all := events.Audience{Kind: events.ToRaidInLate, GuildID: guildID, RaidID: p.RaidID}
-	plain := []events.Event{raidStartingEvent(guildID, p, startingLead, all, "")}
+	plain := []events.Event{raidStartingEvent(guildID, p, lead, all, "")}
 	if s.Nudges == nil {
 		return plain
 	}
@@ -100,7 +100,7 @@ func (s *Service) startingEvents(ctx context.Context, guildID int64, p notify.Ra
 			zone := zoneOf(p.Zone)
 			out := make([]events.Event, 0, len(users))
 			for _, uid := range users {
-				out = append(out, raidStartingEvent(guildID, p, startingLead, events.Users(uid), s.readyMiss(ctx, chars[uid], &zone)))
+				out = append(out, raidStartingEvent(guildID, p, lead, events.Users(uid), s.readyMiss(ctx, chars[uid], &zone)))
 			}
 			return out
 		}

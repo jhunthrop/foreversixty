@@ -2543,6 +2543,17 @@
         }
       }
     },
+    "gear.notModelled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not modelled"
+          }
+        }
+      }
+    },
     "gear.onList": {
       "comment": "Arguments: 1 n (int), 2 total (int)",
       "extractionState": "manual",
@@ -3781,17 +3792,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add the addon to see which slots you can upgrade."
-          }
-        }
-      }
-    },
-    "home.answer.noGearNote": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The addon sends your gear when you log out."
           }
         }
       }
@@ -12709,7 +12709,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted."
+            "value": "No raid posted yet."
           }
         }
       }

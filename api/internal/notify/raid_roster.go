@@ -227,9 +227,6 @@ type RoleShort struct {
 	Have, Want  int
 }
 
-// Gap is how many the role still wants.
-func (r RoleShort) Gap() int { return r.Want - r.Have }
-
 // ShortRoles is p's role groups with fewer In than its comp target, in roster order; nil for
 // a raid without a target and for a guild event.
 func ShortRoles(p RaidPosted) []RoleShort {

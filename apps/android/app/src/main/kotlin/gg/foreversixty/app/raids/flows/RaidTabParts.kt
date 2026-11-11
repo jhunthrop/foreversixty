@@ -23,6 +23,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -130,31 +134,51 @@ internal fun RoleRows(roles: List<RoleLine>, footer: List<RoleFoot> = emptyList(
 }
 
 /**
- * The Covered line (row 4): a neutral `Missing`, then each name in wipe red beside its spell icon, the
- * short ones with their count, then `and N more`; read aloud as [spoken], one sentence.
+ * The Covered line (row 4, round 4 row 1): a neutral `Missing`, then each name in wipe red, with its
+ * spell icon when it has one, joined by the one separator, then `and N more`. A name never breaks
+ * across lines; the line wraps between names. Read aloud as [spoken], one sentence.
  */
 @Composable
 private fun CoverRow(line: CoverLine, spoken: String) {
     val res = LocalResources.current
-    val facts = RaidTabFacts(res)
+    val names = RaidTabFacts(res).names(line)
     FlowRow(
         Modifier.fillMaxWidth().padding(vertical = FsSpace.space2).clearAndSetSemantics { contentDescription = spoken },
-        horizontalArrangement = Arrangement.spacedBy(FsSpace.space2),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space1),
         verticalArrangement = Arrangement.spacedBy(FsSpace.space1),
     ) {
-        if (line.missing.isNotEmpty()) Text(stringResource(R.string.raid_tab_coverLabel), style = SUB, color = FsColor.muted)
-        line.missing.forEach { CoverName(it.icon, it.name) }
-        line.short.forEach { CoverName(it.icon, facts.shortText(it)) }
-        if (line.more > 0) Text(res.getString(R.string.raid_tab_andMore, "", line.more).trim(), style = SUB, color = FsColor.muted)
+        // Each piece centres on the line, so a name beside its icon sits on the same baseline as one without.
+        val centred = Modifier.align(Alignment.CenterVertically)
+        if (line.missing.isNotEmpty()) Text(stringResource(R.string.raid_tab_coverLabel), centred, style = SUB, color = FsColor.muted, maxLines = 1, softWrap = false)
+        names.forEachIndexed { index, name -> CoverNameView(name, separated = index < names.lastIndex, centred) }
+        if (line.more > 0) Text(res.getString(R.string.raid_tab_andMore, "", line.more).trim(), centred, style = SUB, color = FsColor.muted, maxLines = 1, softWrap = false)
     }
 }
 
+/**
+ * One name, its icon only when it has one that loads (a missing file closes the gap, round 4 row 1),
+ * then the separator in the muted tone when another name follows.
+ */
 @Composable
-private fun CoverName(icon: String?, name: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.size(COVER_ICON).clip(RoundedCornerShape(FsRadius.control))) { GameIconImage(icon, LocalRaidIconBuild.current, COVER_ICON) }
-        Spacer(Modifier.width(FsSpace.space1))
-        Text(name, style = SUB, color = FsColor.wipe)
+private fun CoverNameView(name: CoverName, separated: Boolean, modifier: Modifier = Modifier) {
+    val build = LocalRaidIconBuild.current
+    var iconShown by remember(name.icon, build) { mutableStateOf(name.hasIcon && build != null) }
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        if (iconShown) {
+            Box(Modifier.size(COVER_ICON).clip(RoundedCornerShape(FsRadius.control))) {
+                GameIconImage(name.icon, build, COVER_ICON, onUnavailable = { iconShown = false })
+            }
+            Spacer(Modifier.width(FsSpace.space1))
+        }
+        Text(
+            buildAnnotatedString {
+                withStyle(SpanStyle(color = FsColor.wipe)) { append(name.text) }
+                if (separated) withStyle(SpanStyle(color = FsColor.muted)) { append(RaidTabFacts.SEPARATOR.trimEnd()) }
+            },
+            style = SUB,
+            maxLines = 1,
+            softWrap = false,
+        )
     }
 }
 

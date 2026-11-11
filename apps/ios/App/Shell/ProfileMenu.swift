@@ -20,7 +20,7 @@ struct ProfileMenuSummary: Equatable {
     let youLine: String
     /// `Updated 2 h ago from Battle.net`, nil before the first import.
     let stamp: String?
-    /// The import is older than `staleAfter`: the stamp takes the warning tone (row 12).
+    /// The import is past `SyncAge.staleAfter`: the stamp takes the warning tone (row 12).
     let stale: Bool
     /// The last Battle.net refresh failed: this replaces the stamp, in wipe red with Try again.
     let syncError: String?
@@ -35,8 +35,6 @@ struct ProfileMenuSummary: Equatable {
 
     /// The level the Switch character list starts at; the rest fold.
     static let switchLevel = 10
-    /// Past a week the Battle.net stamp reads as stale.
-    static let staleAfter: TimeInterval = 7 * 86_400
 
     struct AccountFacts: Equatable {
         var notificationGroups: [String]?
@@ -67,7 +65,7 @@ struct ProfileMenuSummary: Equatable {
         youLine = Self.youLine(current)
         isMain = current.key == me.mainCharacterKey
         stamp = me.bnetImportedAt.map { Copy.menuUpdated(age: RelativeAge(from: $0, to: now).phrase) }
-        stale = me.bnetImportedAt.map { now.timeIntervalSince($0) > Self.staleAfter } ?? false
+        stale = me.bnetImportedAt.map { SyncAge.isStale($0, now: now) } ?? false
         syncError = current.build?.syncError.map { _ in Copy.menuSyncError }
         let rest = me.characters.filter { $0.key != current.key }
         others = rest.filter { ($0.level ?? 0) >= Self.switchLevel }
@@ -382,7 +380,7 @@ private struct MenuStampLine: View {
             if typeSize.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: FSSpace.space1) {
                     Text(text).type(Self.type).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
-                    button.frame(minHeight: FSTarget.min)
+                    button
                 }
             } else {
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
@@ -396,11 +394,17 @@ private struct MenuStampLine: View {
         .padding(.top, FSSpace.space1)
     }
 
+    /// Round 4, row 10: the press and its 44 pt target are the link's alone, never the whole line.
     private var button: some View {
-        Button(action, action: run)
-            .type(FSType.tag)
-            .foregroundStyle(busy ? FSColor.muted : FSColor.gold)
-            .disabled(busy)
+        Button(action: run) {
+            Text(action)
+                .type(FSType.tag)
+                .foregroundStyle(busy ? FSColor.muted : FSColor.gold)
+                .frame(minHeight: FSTarget.min)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .disabled(busy)
     }
 }
 

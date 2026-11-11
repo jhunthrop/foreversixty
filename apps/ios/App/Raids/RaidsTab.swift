@@ -39,8 +39,10 @@ struct RaidsDependencies {
         }
         let statics = StaticDataClient(transport: staticTransport)
         var service: any RaidService = LiveRaidService(client: environment.client)
+        var flow: any RaidFlowService = LiveRaidFlowService(client: environment.client)
         #if DEBUG
         if let fixture = RaidDebugLaunch.service(baseURL: environment.configuration.baseURL) { service = fixture }
+        if let fixture = RaidDebugLaunch.flow(baseURL: environment.configuration.baseURL) { flow = fixture }
         #endif
         return RaidsDependencies(
             service: service,
@@ -53,7 +55,7 @@ struct RaidsDependencies {
             iconBuild: { try? await statics.activeBuild().build },
             reports: environment.isAvailable(.reports) ? .live(environment) : nil,
             connectivity: PathConnectivity.shared,
-            flow: LiveRaidFlowService(client: environment.client),
+            flow: flow,
             ping: LiveRaidPingService(client: environment.client)
         )
     }
@@ -186,11 +188,12 @@ struct RaidsTab: View {
 
     private var composer: RaidRootComposer {
         let roster = rosterStore?.guild == content?.head.id ? rosterStore?.home?.roster : nil
+        let presenter = RaidFlowPresenter(now: dependencies.now(), clock: dependencies.clock)
         return RaidRootComposer(
-            presenter: RaidFlowPresenter(now: dependencies.now(), clock: dependencies.clock),
+            presenter: presenter,
             members: roster?.count,
             atCap: roster?.filter { $0.level == RaidFlowPresenter.maxLevel }.count,
-            synced: roster.map { rows in Dictionary(rows.map { ($0.characterKey, $0.loggedRecently) }) { first, _ in first } },
+            synced: roster.map(presenter.syncedThisWeek),
             answering: answers.state
         )
     }

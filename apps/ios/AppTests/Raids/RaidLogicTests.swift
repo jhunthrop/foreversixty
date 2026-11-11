@@ -149,7 +149,7 @@ struct RosterTests {
     @Test("every buff tile is named, live art or not: the short label under it, the full name for VoiceOver")
     func buffNames() throws {
         let read = try #require(CompositionRead(try RaidFixture.raid().composition))
-        #expect(read.buffs.map(\.label) == ["Fort", "MotW", "Int", "Bless", "SPro", "SS", "Rez", "WF", "SoE", "MS"])
+        #expect(read.buffs.map(\.label) == ["Fort", "MotW", "Int", "Kings", "Might", "Wisdom", "SPro", "SS", "Rez", "WF", "SoE", "MS"])
         #expect(read.buffs.allSatisfy { $0.accessibilityLabel.hasPrefix($0.name) })
         #expect(read.buffs.first { $0.key == "fortitude" }?.name == "Power Word: Fortitude")
     }
@@ -160,8 +160,8 @@ struct RosterTests {
         #expect(read.classes.map(\.count) == [5, 0, 2, 2, 4, 4, 2, 2, 3])
         #expect(read.classes[1].name == "Paladin")
         #expect(read.roles == ["Tanks 3", "Healers 6", "DPS 14"])
-        #expect(read.buffSummary == "Missing: Blessings")
-        #expect(read.buffs.first { $0.key == "blessings" }?.accessibilityLabel == "Blessings, missing")
+        #expect(read.buffSummary == "Missing: Blessing of Kings, Blessing of Might, Blessing of Wisdom")
+        #expect(read.buffs.first { $0.key == "blessing_of_kings" }?.accessibilityLabel == "Blessing of Kings, missing")
         #expect(read.buffs.first { $0.key == "mark_of_the_wild" }?.label == "MotW")
         #expect(read.buffs.contains { $0.key == "windfury_totem" && $0.present })
         #expect(read.classesAccessibilityLabel.hasPrefix("Classes coming: Warrior 5, Paladin 0, Hunter 2"))

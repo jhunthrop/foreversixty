@@ -33,7 +33,6 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.BandKind
 import gg.foreversixty.app.designsystem.FsColor
@@ -301,7 +300,7 @@ private val META_GAP = 6.dp
 private val SECTION_TITLE_GAP = 10.dp
 private val ACTION_DROP = 2.dp
 private val SKELETON_RADIUS = 6.dp
-private val ACTION = FsType.bodyStrong.copy(fontSize = 14.sp, lineHeight = 24.sp)
+private val ACTION = FsType.chip
 
 /** A round-5 section title over the ground: the display face at 21 (the mock's `.sh h2`). */
-private val PANEL_TITLE = FsType.sectionReading.copy(fontSize = 21.sp, lineHeight = 26.sp)
+private val PANEL_TITLE = FsType.panelTitle

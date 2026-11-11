@@ -116,11 +116,19 @@ struct HomeHeroHead: View {
                     .shadow(color: .black.opacity(PanelShadow.opacity), radius: PanelShadow.radius, y: PanelShadow.drop)
                     .accessibilityAddTraits(.isHeader)
                 if !facts.isEmpty {
-                    Text(facts.joined(separator: HomeHeroHead.factSeparator))
-                        .type(FSType.factLine)
-                        .foregroundStyle(FSColor.text)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .parityRegion(.headMeta)
+                    // Round 4, row 8: on one line when it fits, else broken at the dot, one fact a line
+                    // (`Level 58 Fury Warrior`, then `2 levels to the 60 list`), never a stranded `· 2`.
+                    ViewThatFits(in: .horizontal) {
+                        Text(facts.joined(separator: HomeHeroHead.factSeparator)).lineLimit(1).type(FSType.factLine)
+                        VStack(alignment: .leading, spacing: 0) {
+                            ForEach(Array(facts.enumerated()), id: \.offset) { Text($0.element).type(FSType.factLine) }
+                        }
+                    }
+                    .foregroundStyle(FSColor.text)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(facts.joined(separator: HomeHeroHead.factSeparator))
+                    .parityRegion(.headMeta)
                 }
             }
         }
@@ -142,7 +150,7 @@ struct HomeUpgradesSection: View {
 
     var body: some View {
         PanelSection(
-            Copy.homeUpgradesNext, meta: content.meta, stamp: content.stamp, action: (Copy.homeUpgradesGear, openGear), frame: .plain
+            Copy.homeUpgradesNext, meta: content.meta, stamp: content.stamp, stampStale: content.stampStale, action: (Copy.homeUpgradesGear, openGear), frame: .plain
         ) {
             ForEach(Array(content.rows.enumerated()), id: \.element.id) { index, row in
                 if index > 0 { Hairline(FSColor.line) }

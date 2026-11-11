@@ -2199,8 +2199,8 @@ components:
         rank: { type: string }
         verified: { type: boolean }
         consent: { type: string }
-        logged_at: { type: string, format: date-time }
-        logged_recently: { type: boolean }
+        logged_at: { type: string, format: date-time, description: "The addon's last sync: when the companion last uploaded this character's export (addon_exports.updated_at), not a game login. A 'Not synced this week' line reads this against 7 days." }
+        logged_recently: { type: boolean, description: "logged_at within the last 24 hours. Not a week; read logged_at for any other window." }
         attendance: { $ref: '#/components/schemas/GuildAttendance' }
         account_key: { type: string }
         supporter: { type: boolean }
@@ -3478,7 +3478,8 @@ components:
         or Late; roles are the In counts by role; targets are the raid's role targets, null when
         the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed
         In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez
-        (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count),
+        (druid), arcane_intellect (mage), blessing_of_kings, blessing_of_might and
+        blessing_of_wisdom (paladin, labels Kings, Might and Wisdom; count is the paladin count),
         soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and
         mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data
         pipeline exports each icon.
@@ -3502,7 +3503,7 @@ components:
             title: RaidBuff
             required: [key, name, label, icon, present, count]
             properties:
-              key: { type: string, enum: [fortitude, mark_of_the_wild, arcane_intellect, blessings, shadow_protection, soulstone, battle_rez, windfury_totem, strength_of_earth, mana_spring] }
+              key: { type: string, enum: [fortitude, mark_of_the_wild, arcane_intellect, blessing_of_kings, blessing_of_might, blessing_of_wisdom, shadow_protection, soulstone, battle_rez, windfury_totem, strength_of_earth, mana_spring] }
               label: { type: string, description: "A short label (MotW, Fort) the apps draw inside the tile while the icon is missing or fails to load." }
               name: { type: string, description: "The spell's name in the client, e.g. Power Word: Fortitude." }
               icon: { type: string, description: "The icon stem, /data/{build}/icons/{stem}.webp." }
@@ -8823,6 +8824,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "What was posted"
+          x-fixtures: [guild.raid.ping]
           content:
             application/json:
               schema:
@@ -10605,6 +10607,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The decision"
+          x-fixtures: [guild.application.decline]
           content:
             application/json:
               schema:

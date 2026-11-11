@@ -119,17 +119,19 @@ public struct PanelSection<Content: View>: View {
     private let title: String
     private let meta: String?
     private let stamp: String?
+    private let stampStale: Bool
     private let action: (title: String, run: () -> Void)?
     private let frame: PanelFrame
     private let content: Content
     @Environment(\.dynamicTypeSize) private var typeSize
 
     /// `stamp`: how old the section's data is (`Synced 2 h ago`), under the meta line and outside the
-    /// panel (round 3, row 8).
+    /// panel (round 3, row 8); `stampStale` sets it in the warning tone (round 4, row 2).
     public init(
         _ title: String,
         meta: String? = nil,
         stamp: String? = nil,
+        stampStale: Bool = false,
         action: (title: String, run: () -> Void)? = nil,
         frame: PanelFrame = .none,
         @ViewBuilder content: () -> Content
@@ -137,6 +139,7 @@ public struct PanelSection<Content: View>: View {
         self.title = title
         self.meta = meta
         self.stamp = stamp
+        self.stampStale = stampStale
         self.action = action
         self.frame = frame
         self.content = content()
@@ -162,7 +165,7 @@ public struct PanelSection<Content: View>: View {
                 if let action { PanelAction(action.title, action: action.run) }
             }
             if let stamp {
-                Text(stamp).type(FSType.small).foregroundStyle(FSColor.muted)
+                Text(stamp).type(FSType.small).foregroundStyle(stampStale ? FSColor.warn : FSColor.muted)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, -FSSpace.space1)
             }

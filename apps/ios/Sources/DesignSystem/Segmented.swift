@@ -2,7 +2,8 @@ import SwiftUI
 
 /// `ui/Segmented` (brand B1, round 5 `.r5raid .seg`): one connected group, the chosen segment in
 /// teal with its edge, hairline dividers between, 44 pt; at the accessibility sizes the segments
-/// stack, one full-width row each, so no word breaks. VoiceOver reads it as one segmented control
+/// stack two to a row (2 x 2 for the four answers, as Android at 1.5x) at the control radius, so no
+/// word breaks (round 4, row 4). VoiceOver reads it as one segmented control
 /// (a radio group: `1 of 4`, the chosen one selected). The press's haptic (R14) is the caller's,
 /// through its injected haptics, so a test records it.
 public struct FSSegmented<Value: Hashable>: View {
@@ -37,11 +38,16 @@ public struct FSSegmented<Value: Hashable>: View {
         self.select = select
     }
 
+    /// Segments to a row in the stacked form.
+    static var stackedColumns: Int { 2 }
+
+    private var radius: CGFloat { typeSize.isAccessibilitySize ? FSRadius.control : FSRadius.field }
+
     public var body: some View {
         group
-            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.field))
-            .clipShape(.rect(cornerRadius: FSRadius.field))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.field).strokeBorder(FSColor.rule, lineWidth: FSStroke.hairline))
+            .background(FSColor.raised, in: .rect(cornerRadius: radius))
+            .clipShape(.rect(cornerRadius: radius))
+            .overlay(RoundedRectangle(cornerRadius: radius).strokeBorder(FSColor.rule, lineWidth: FSStroke.hairline))
             .opacity(isEnabled ? 1 : 0.5)
             .accessibilityRepresentation {
                 Picker(label, selection: Binding(get: { selection }, set: { $0.map(select) })) {
@@ -54,10 +60,21 @@ public struct FSSegmented<Value: Hashable>: View {
     @ViewBuilder
     private var group: some View {
         if typeSize.isAccessibilitySize {
+            let rows = stride(from: 0, to: options.count, by: Self.stackedColumns).map {
+                Array(options[$0 ..< min($0 + Self.stackedColumns, options.count)])
+            }
             VStack(spacing: 0) {
-                ForEach(Array(options.enumerated()), id: \.element.id) { index, option in
-                    segment(option)
-                    if index < options.count - 1 { Rectangle().fill(FSColor.rule).frame(height: FSStroke.hairline) }
+                ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
+                    HStack(spacing: 0) {
+                        ForEach(Array(row.enumerated()), id: \.element.id) { column, option in
+                            segment(option)
+                            if column < Self.stackedColumns - 1 { Rectangle().fill(FSColor.rule).frame(width: FSStroke.hairline) }
+                        }
+                        // A short last row keeps its cells the width of the rows above.
+                        if row.count < Self.stackedColumns { Color.clear.frame(maxWidth: .infinity) }
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
+                    if index < rows.count - 1 { Rectangle().fill(FSColor.rule).frame(height: FSStroke.hairline) }
                 }
             }
         } else {
@@ -89,8 +106,13 @@ public struct FSSegmented<Value: Hashable>: View {
     }
 }
 
+/// The press on a teal control (the Segmented, Activity's chips): the edge's teal as a veil.
+public enum TealPress {
+    public static var veil: Color { FSColor.tealEdge.opacity(0.25) }
+}
+
 private struct SegmentPress: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label.overlay(configuration.isPressed ? FSColor.tealEdge.opacity(0.25) : .clear)
+        configuration.label.overlay(configuration.isPressed ? TealPress.veil : .clear)
     }
 }

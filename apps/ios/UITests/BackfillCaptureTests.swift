@@ -186,6 +186,107 @@ final class BackfillCaptureTests: XCTestCase {
         save("menu-08-home-after-planner")
     }
 
+    // MARK: Round 4 (i2): the officer's Raid tab, the drawer in flight, the push landings
+
+    /// The officer's Raid tab on the fixture clock (the raid ahead, four raiders not synced for eight
+    /// days): Needs you, the not-synced line and Covered, then the not-synced tap's filtered roster.
+    func testOfficerRaidTab() {
+        let app = CaptureLaunch.signedIn(tab: "raid", extra: Self.officer)
+        sleep(Self.settles)
+        save("r4-officer-raid-01-top")
+        for step in 2 ... 4 {
+            app.swipeUp(velocity: .slow)
+            sleep(1)
+            save("r4-officer-raid-0\(step)-scrolled")
+        }
+        app.swipeDown(velocity: .fast)
+        app.swipeDown(velocity: .fast)
+        sleep(1)
+        let line = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Not synced this week")).firstMatch
+        for _ in 0 ..< 4 where !line.isHittable { app.swipeUp(velocity: .slow) }
+        guard line.waitForExistence(timeout: Self.appears), line.isHittable else { return XCTFail("no not-synced line") }
+        save("r4-officer-raid-05-not-synced-line")
+        line.tap()
+        save("r4-officer-raid-06-roster-t0")
+        usleep(400_000)
+        save("r4-officer-raid-06-roster-t400")
+        sleep(2)
+        save("r4-officer-raid-06-roster-settled")
+    }
+
+    /// The drawer's Refresh: the `Refreshing…` frame inside 200 ms, then the new stamp.
+    func testMenuRefreshInFlight() {
+        // The fixture answers at once; the debug hold keeps the call out long enough to see.
+        let app = CaptureLaunch.signedIn(tab: "home", extra: ["-FSRefreshHold", "2"])
+        sleep(Self.settles)
+        CaptureLaunch.openMenu(app)
+        let refresh = app.buttons.matching(NSPredicate(format: "label ==[c] %@", "Refresh")).firstMatch
+        guard refresh.waitForExistence(timeout: Self.appears) else { return XCTFail("no Refresh link") }
+        save("r4-menu-refresh-01-before")
+        refresh.tap()
+        save("r4-menu-refresh-02-t0")
+        usleep(150_000)
+        save("r4-menu-refresh-03-t150")
+        sleep(2)
+        save("r4-menu-refresh-04-settled")
+    }
+
+    /// The raid push's tap-through: the banner over the app (on Activity) lands on the raid.
+    func testRaidPushLanding() {
+        let app = CaptureLaunch.signedIn(tab: "activity", extra: ["-FSPostRaidPush"])
+        allowNotifications()
+        guard let note = banner("Onyxia's Lair") else { return XCTFail("no raid notification") }
+        save("r4-push-raid-01-delivered")
+        note.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        sleep(Self.settles)
+        save("r4-push-raid-02-landing")
+        _ = app
+    }
+
+    /// The officer pushes: raid.short with Mention and the shade after it ran in place; then
+    /// guild.applicant with Accept and Decline, and the shade after Accept.
+    /// The pushes' actions answered from the banner, each with its result: the raid push's Late (the
+    /// server's confirmation replaces it), Mention on raid.short, Accept and Decline on guild.applicant.
+    func testOfficerPushes() {
+        pushAction(["-FSPostRaidPush"], title: "Onyxia's Lair", action: "Late", name: "r4-push-raid-late")
+        let officer = Self.officer + ["-FSPostPush"]
+        pushAction(officer + ["push.raid-short"], title: "Onyxia's Lair", action: "Mention in Discord", name: "r4-push-short")
+        pushAction(officer + ["push.guild-applicant"], title: "New applicant", action: "Accept", name: "r4-push-applicant-accept")
+        pushAction(officer + ["push.guild-applicant"], title: "New applicant", action: "Decline", name: "r4-push-applicant-decline")
+    }
+
+    private static let officer = ["-FSRaidFixture", "officer", "-FSNow", "2026-12-17T22:30:00Z"]
+
+    private func pushAction(_ extra: [String], title: String, action: String, name: String) {
+        let app = CaptureLaunch.signedIn(tab: "home", extra: extra)
+        allowNotifications()
+        guard let note = banner(title) else { return XCTFail("\(name): no notification") }
+        save("\(name)-01-delivered")
+        note.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).press(forDuration: 1.5)
+        let button = springboard.buttons[action]
+        guard button.waitForExistence(timeout: 5) else { return XCTFail("\(name): no \(action)") }
+        save("\(name)-02-actions")
+        button.tap()
+        usleep(1_500_000)
+        save("\(name)-03-result")
+        sleep(3)
+        save("\(name)-04-settled")
+        XCTAssertEqual(app.state, .runningForeground, "\(name): the app kept running after the action")
+        app.terminate()
+    }
+
+    private func allowNotifications() {
+        let alert = springboard.alerts.firstMatch
+        if alert.waitForExistence(timeout: 4), alert.buttons["Allow"].exists { alert.buttons["Allow"].tap() }
+        sleep(1)
+    }
+
+    /// The banner the app presents in the foreground (`willPresent`), by the start of its title.
+    private func banner(_ title: String) -> XCUIElement? {
+        let note = springboard.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", title)).firstMatch
+        return note.waitForExistence(timeout: 10) ? note : nil
+    }
+
     func testRaidNotificationAndLinks() {
         let app = XCUIApplication()
         app.launchArguments = ["-FSPostRaidPush"]

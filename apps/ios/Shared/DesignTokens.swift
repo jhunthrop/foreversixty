@@ -216,6 +216,8 @@ public enum FSType {
     public static let heroName = FSTextRole(face: FSFont.title, size: 30, lineHeight: 34, tracking: 0, scalesWith: .title, tabular: false)
     /// The raid card's zone on Home (brand S4).
     public static let cardTitle = FSTextRole(face: FSFont.title, size: 24, lineHeight: 30, tracking: 0, scalesWith: .title2, tabular: false)
+    /// A round-5 section title over the ground, above its panel (the mock's `.sh h2`, brand N4).
+    public static let panelTitle = FSTextRole(face: FSFont.title, size: 21, lineHeight: 26, tracking: 0, scalesWith: .title3, tabular: false)
     /// The fact line under a hero name (brand S4).
     public static let factLine = FSTextRole(face: FSFont.body, size: 14, lineHeight: 20, tracking: 0, scalesWith: .subheadline, tabular: false)
     /// The unit under a countdown figure (brand S4).

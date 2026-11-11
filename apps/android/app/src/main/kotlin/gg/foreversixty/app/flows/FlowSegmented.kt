@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsTarget
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ScaledType
@@ -42,7 +43,8 @@ import gg.foreversixty.app.designsystem.parityItem
 fun FlowSegmented(labels: List<String>, selected: String?, modifier: Modifier = Modifier, enabled: Boolean = true, onPress: (Int) -> Unit) {
     val colors = ChoiceColors.of(enabled)
     val stacked = LocalDensity.current.fontScale >= LARGE_TEXT_SCALE && labels.size > STACK_COLUMNS
-    val shape = if (stacked) RoundedCornerShape(FsTarget.min / 2) else RoundedCornerShape(percent = 50)
+    // Round 4 row 4: the 2 x 2 stack at radius 4, as the web draws a grid; the one row stays the pill.
+    val shape = if (stacked) RoundedCornerShape(FsRadius.control) else RoundedCornerShape(percent = 50)
     val rows = if (stacked) labels.withIndex().chunked(STACK_COLUMNS) else listOf(labels.withIndex().toList())
     Column(modifier.fillMaxWidth().clip(shape).border(1.dp, colors.edge, shape)) {
         rows.forEachIndexed { rowIndex, row ->

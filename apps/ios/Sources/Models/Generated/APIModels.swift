@@ -3819,7 +3819,9 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     public let rank: String
     public let verified: Bool
     public let consent: String
+    /// The addon's last sync: when the companion last uploaded this character's export (addon_exports.updated_at), not a game login. A 'Not synced this week' line reads this against 7 days.
     public let loggedAt: Date
+    /// logged_at within the last 24 hours. Not a week; read logged_at for any other window.
     public let loggedRecently: Bool
     public let attendance: GuildAttendance
     public let accountKey: String
@@ -6484,7 +6486,7 @@ public struct RaidClassCount: Codable, Sendable, Equatable {
     }
 }
 
-/// The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count), soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data pipeline exports each icon.
+/// The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessing_of_kings, blessing_of_might and blessing_of_wisdom (paladin, labels Kings, Might and Wisdom; count is the paladin count), soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data pipeline exports each icon.
 public struct RaidComposition: Codable, Sendable, Equatable {
     public let classes: [RaidClassCount]
     public let roles: RaidRoleCounts

@@ -209,7 +209,7 @@ object GearFixtures {
             GearSlotRow(d.slot, d.label, look(i, d), "${d.label} · ${d.source}", d.gain, worn = d.gain == null, row = BisRow(d.slot, d.label, null, null))
         },
         unitWord = "DPS",
-        header = "+47.5 DPS from 12 upgrades · synced 2 h ago",
+        header = GearHeader("+47.5 DPS from 12 upgrades", "synced 2 h ago", syncedStale = false, notModelled = null),
     )
 
     val classes = listOf("warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid")

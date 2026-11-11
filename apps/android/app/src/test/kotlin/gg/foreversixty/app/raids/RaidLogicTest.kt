@@ -178,7 +178,7 @@ class RaidLogicTest {
     @Test
     fun `every buff tile is named, live art or not - the short label under it, the full name for TalkBack`() {
         val read = requireNotNull(CompositionRead.of(RaidFixture.raid().composition, resources()))
-        assertEquals(listOf("Fort", "MotW", "Int", "Bless", "SPro", "SS", "Rez", "WF", "SoE", "MS"), read.buffs.map { it.label })
+        assertEquals(listOf("Fort", "MotW", "Int", "Kings", "Might", "Wisdom", "SPro", "SS", "Rez", "WF", "SoE", "MS"), read.buffs.map { it.label })
         assertTrue(read.buffs.all { it.accessibilityLabel.startsWith(it.name) })
         assertEquals("Power Word: Fortitude", read.buffs.first { it.key == "fortitude" }.name)
     }
@@ -189,8 +189,8 @@ class RaidLogicTest {
         assertEquals(listOf(5, 0, 2, 2, 4, 4, 2, 2, 3), read.classes.map { it.count })
         assertEquals("Paladin", read.classes[1].name)
         assertEquals(listOf("Tanks 3", "Healers 6", "DPS 14"), read.roles)
-        assertEquals("Missing: Blessings", read.buffSummary)
-        assertEquals("Blessings, missing", read.buffs.first { it.key == "blessings" }.accessibilityLabel)
+        assertEquals("Missing: Blessing of Kings, Blessing of Might, Blessing of Wisdom", read.buffSummary)
+        assertEquals("Blessing of Kings, missing", read.buffs.first { it.key == "blessing_of_kings" }.accessibilityLabel)
         assertEquals("MotW", read.buffs.first { it.key == "mark_of_the_wild" }.label)
         assertTrue(read.buffs.any { it.key == "windfury_totem" && it.present })
         assertTrue(read.classesAccessibilityLabel.startsWith("Classes coming: Warrior 5, Paladin 0, Hunter 2"))

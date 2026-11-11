@@ -79,7 +79,7 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	if posted.Audience.Kind != events.ToGuildMembers || posted.Data["raid_id"] != "9" {
 		t.Fatalf("posted %+v", posted)
 	}
-	if e := raidShortEvent(3, p, unansweredUnknown, false); e.Body != "12 of 40 signed, 24 hours out." || e.Audience.Kind != events.ToGuildOfficers {
+	if e := raidShortEvent(3, p, reminderLead, unansweredUnknown, false); e.Body != "12 of 40 signed, 24 hours out." || e.Audience.Kind != events.ToGuildOfficers {
 		t.Fatalf("short %+v", e)
 	}
 	moved := raidChangedEvent(3, p, false)
@@ -98,7 +98,7 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	if e := rosterSetEvent(3, p, 7, SignupBench, time.Unix(1, 0)); e.Body != raidEventCopy.RosterBench || e.Audience.UserIDs[0] != 7 {
 		t.Fatalf("roster %+v", e)
 	}
-	for _, e := range []events.Event{posted, moved, raidNudgeEvent(3, p, []int64{1}), raidStartingEvent(3, p, time.Hour, events.Users(1), ""), raidShortEvent(3, p, 0, true)} {
+	for _, e := range []events.Event{posted, moved, raidNudgeEvent(3, p, []int64{1}), raidStartingEvent(3, p, time.Hour, events.Users(1), ""), raidShortEvent(3, p, reminderLead, 0, true)} {
 		if err := e.Validate(); err != nil {
 			t.Fatalf("%s: %v", e.Kind, err)
 		}
@@ -148,7 +148,7 @@ func TestRaidShortBodyNamesShortRolesAndUnanswered(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			if got := raidShortEvent(3, c.p, c.unanswered, false).Body; got != c.want {
+			if got := raidShortEvent(3, c.p, reminderLead, c.unanswered, false).Body; got != c.want {
 				t.Fatalf("body %q, want %q", got, c.want)
 			}
 		})
@@ -159,6 +159,8 @@ func TestRaidShortMentionsTheShortestRole(t *testing.T) {
 	short := samplePosted()
 	short.Target = &notify.RoleTarget{Tanks: 2, Healers: 8, Ranged: 4}
 	short.Roster = []notify.RosterLine{{Name: "Mirelle", Class: "priest", Spec: "Holy", Role: "healer", State: "in"}}
+	healerShort := short
+	healerShort.Target = &notify.RoleTarget{Healers: 8, Ranged: 4}
 	dpsShort := samplePosted()
 	dpsShort.Target = &notify.RoleTarget{Ranged: 3}
 	cases := []struct {
@@ -168,14 +170,15 @@ func TestRaidShortMentionsTheShortestRole(t *testing.T) {
 		want    string // the ping body's role; "" for no action
 		title   string
 	}{
-		{"healers furthest below", short, true, RoleHealer, "Mention healers"},
+		{"tanks first though healers are further below", short, true, RoleTank, "Mention tanks"},
+		{"healers before dps", healerShort, true, RoleHealer, "Mention healers"},
 		{"ranged pings dps", dpsShort, true, RoleDPS, "Mention DPS"},
 		{"inside the cooldown", short, false, "", ""},
 		{"no target", samplePosted(), true, "", ""},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			e := raidShortEvent(3, c.p, 0, c.canPing)
+			e := raidShortEvent(3, c.p, reminderLead, 0, c.canPing)
 			if c.want == "" {
 				if len(e.Actions) != 0 {
 					t.Fatalf("actions %+v, want none", e.Actions)
@@ -191,6 +194,26 @@ func TestRaidShortMentionsTheShortestRole(t *testing.T) {
 				t.Fatalf("action %+v", a)
 			}
 		})
+	}
+}
+
+func TestScheduledEventsSayTheActualLead(t *testing.T) {
+	p := samplePosted()
+	cases := []struct {
+		name string
+		got  string
+		want string
+	}{
+		{"short on time", raidShortEvent(3, p, reminderLead, 0, false).Body, "12 of 40 signed, 24 hours out."},
+		{"short a run late", raidShortEvent(3, p, 23*time.Hour+10*time.Minute, 0, false).Body, "12 of 40 signed, 23 hours out."},
+		{"starting on time", raidStartingEvent(3, p, startingLead, events.Users(1), "").Body, "Starts in 60 minutes."},
+		{"starting late", raidStartingEvent(3, p, 42*time.Minute+20*time.Second, events.Users(1), "").Body, "Starts in 42 minutes."},
+		{"one minute", raidStartingEvent(3, p, time.Minute, events.Users(1), "").Body, "Starts in 1 minute."},
+	}
+	for _, c := range cases {
+		if c.got != c.want {
+			t.Errorf("%s: %q, want %q", c.name, c.got, c.want)
+		}
 	}
 }
 

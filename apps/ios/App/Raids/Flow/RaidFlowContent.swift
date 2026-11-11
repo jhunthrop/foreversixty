@@ -160,20 +160,21 @@ struct CoverGap: Equatable {
     var text: String { have.map { Copy.raidTabCoverShort(name: name, have: $0, need: need) } ?? name }
 }
 
-/// The Covered line (row 4): `Missing` once over the missing names, then the short ones, then
-/// `and N more`; the view sets the names in wipe red beside their spell icons.
+/// The Covered line (row 4; round 4, row 1): `Missing` once over the missing names, then the short
+/// ones, then `and N more`, every name parted by the one ` · `; the view sets the names in wipe red
+/// beside their spell icons, and a name without one closes up.
 struct RaidCoverContent: Equatable {
     let missing: [CoverGap]
     let short: [CoverGap]
     let more: Int
 
-    /// The line as one string (VoiceOver, tests): `Missing Fort, MotW · WF 1 of 2 and 3 more`.
+    /// The line as one string (VoiceOver, tests): `Missing Kings · Might · WF 1 of 2 and 3 more`.
     var line: String {
-        let list = RaidFlowPresenter.list
+        let separator = RaidFlowPresenter.separator
         let text = [
-            missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.map(\.text).joined(separator: list)),
-            short.isEmpty ? nil : short.map(\.text).joined(separator: list),
-        ].compactMap(\.self).joined(separator: RaidFlowPresenter.separator)
+            missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.map(\.text).joined(separator: separator)),
+            short.isEmpty ? nil : short.map(\.text).joined(separator: separator),
+        ].compactMap(\.self).joined(separator: separator)
         return more > 0 ? Copy.raidTabAndMore(names: text, n: more) : text
     }
 }

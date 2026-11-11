@@ -120,7 +120,7 @@ struct RaidTabFactsTests {
     func cover() throws {
         let raid = try RaidFixture.raid()
         let cover = try #require(presenter.cover(raid))
-        #expect(cover.line == "Missing Blessing of Kings, Blessing of Might, Blessing of Wisdom and 2 more")
+        #expect(cover.line == "Missing Kings · Might · Wisdom and 2 more", "the short labels, one separator")
         #expect(cover.missing.map(\.icon) == ["spell_magic_magearmor", "spell_holy_fistofjustice", "spell_holy_sealofwisdom"])
         let covered = try edited(raid) { json in
             json["cover"] = (json["cover"] as? [[String: Any]] ?? []).map { var row = $0; row["state"] = "ok"; return row }
@@ -152,9 +152,9 @@ struct RaidTabFactsTests {
         let one = try with([windfury, fortitude])
         let many = try with([windfury] + gaps)
         let two = try with([windfury] + gaps.prefix(2))
-        #expect(presenter.cover(many)?.line == "Missing Gap 1, Gap 2, Gap 3 and 10 more")
+        #expect(presenter.cover(many)?.line == "Missing Gap 1 · Gap 2 · Gap 3 and 10 more")
         // These rows' keys (`gap0`...) have no composition label, so they read by name.
-        #expect(presenter.cover(two)?.line == "Missing Gap 1, Gap 2 · Windfury Totem 1 of 2", "missing first")
+        #expect(presenter.cover(two)?.line == "Missing Gap 1 · Gap 2 · Windfury Totem 1 of 2", "missing first")
         #expect(presenter.cover(one)?.line == "Missing Power Word: Fortitude · Windfury Totem 1 of 2")
     }
 
@@ -169,14 +169,26 @@ struct RaidTabFactsTests {
         }
         let cover = try #require(presenter.cover(raid))
         #expect(cover.missing.first?.name == "Fort")
-        #expect(cover.missing.dropFirst().first?.name == "Blessing of Kings")
+        #expect(cover.missing.dropFirst().first?.name == "Kings")
     }
 
     @Test("G4: without cover rows the line falls back to the buffs no one brings")
     func coverFallback() throws {
         let raid = try edited(try RaidFixture.raid()) { json in json["cover"] = NSNull() }
         let missing = (raid.composition?.buffs ?? []).filter { !$0.present }.map(\.label)
-        #expect(presenter.cover(raid)?.line == (missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.joined(separator: ", "))))
+        #expect(presenter.cover(raid)?.line == (missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.joined(separator: " · "))))
+    }
+
+    @Test("round 4, s5: Not synced this week reads the addon's logged_at against a week, not logged_recently")
+    func syncedThisWeek() throws {
+        let roster = try GuildFixture.home().roster
+        let synced = presenter.syncedThisWeek(roster)
+        let stale = Set(["draknar", "skarn", "zekra", "lightningbolltz"].map { "us/pvp/\($0)" })
+        #expect(synced.filter { !$0.value }.keys.sorted() == stale.sorted(), "logged_at eight days before the fixture clock")
+        #expect(roster.filter { stale.contains($0.characterKey) }.allSatisfy { !$0.loggedRecently })
+        let raid = try RaidFixture.raid("guild.raid.officer")
+        let line = try #require(presenter.notSynced(raid, synced: synced))
+        #expect(Set(line.keys) == stale)
     }
 
     @Test("G1: officers see how many signed In have not synced; only for them, only when some have not")

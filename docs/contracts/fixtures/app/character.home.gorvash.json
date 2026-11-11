@@ -13,7 +13,7 @@
     "unit": "dps",
     "unit_word": "DPS",
     "upgrade_count": 13,
-    "total_gain": 63.0,
+    "total_gain": 18.0,
     "not_sim_checked_count": 0,
     "not_modelled_count": 0,
     "upgrades": [
@@ -30,8 +30,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 9.8,
-        "gain_words": "+9.8 DPS",
+        "gain": 2.8,
+        "gain_words": "+2.8 DPS",
         "modelled": true
       },
       {
@@ -47,8 +47,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 7.8,
-        "gain_words": "+7.8 DPS",
+        "gain": 2.2,
+        "gain_words": "+2.2 DPS",
         "modelled": true
       },
       {
@@ -64,8 +64,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 7.2,
-        "gain_words": "+7.2 DPS",
+        "gain": 2.0,
+        "gain_words": "+2.0 DPS",
         "modelled": true
       },
       {
@@ -81,8 +81,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 6.6,
-        "gain_words": "+6.6 DPS",
+        "gain": 1.9,
+        "gain_words": "+1.9 DPS",
         "modelled": true
       },
       {
@@ -98,8 +98,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 5.6,
-        "gain_words": "+5.6 DPS",
+        "gain": 1.6,
+        "gain_words": "+1.6 DPS",
         "modelled": true
       },
       {
@@ -115,8 +115,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 5.2,
-        "gain_words": "+5.2 DPS",
+        "gain": 1.5,
+        "gain_words": "+1.5 DPS",
         "modelled": true
       },
       {
@@ -132,8 +132,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 4.1,
-        "gain_words": "+4.1 DPS",
+        "gain": 1.2,
+        "gain_words": "+1.2 DPS",
         "modelled": true
       },
       {
@@ -149,25 +149,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 3.8,
-        "gain_words": "+3.8 DPS",
-        "modelled": true
-      },
-      {
-        "slot": "finger2",
-        "slot_label": "Finger 2",
-        "pick": {
-          "id": 11862,
-          "name": "White Bone Band",
-          "quality": 2,
-          "icon": "inv_misc_bone_05",
-          "item_level": 52,
-          "source_line": "Quest: Bone-Bladed Weapons",
-          "drop_chance": null
-        },
-        "worn": null,
-        "gain": 2.9,
-        "gain_words": "+2.9 DPS",
+        "gain": 1.1,
+        "gain_words": "+1.1 DPS",
         "modelled": true
       },
       {
@@ -183,8 +166,25 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 2.8,
-        "gain_words": "+2.8 DPS",
+        "gain": 0.8,
+        "gain_words": "+0.8 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "finger2",
+        "slot_label": "Finger 2",
+        "pick": {
+          "id": 11862,
+          "name": "White Bone Band",
+          "quality": 2,
+          "icon": "inv_misc_bone_05",
+          "item_level": 52,
+          "source_line": "Quest: Bone-Bladed Weapons",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 0.8,
+        "gain_words": "+0.8 DPS",
         "modelled": true
       },
       {
@@ -200,8 +200,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 2.4,
-        "gain_words": "+2.4 DPS",
+        "gain": 0.7,
+        "gain_words": "+0.7 DPS",
         "modelled": true
       },
       {
@@ -217,8 +217,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 2.4,
-        "gain_words": "+2.4 DPS",
+        "gain": 0.7,
+        "gain_words": "+0.7 DPS",
         "modelled": true
       },
       {
@@ -234,8 +234,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 2.4,
-        "gain_words": "+2.4 DPS",
+        "gain": 0.7,
+        "gain_words": "+0.7 DPS",
         "modelled": true
       }
     ],

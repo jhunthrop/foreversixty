@@ -502,6 +502,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/raids/{raid}/cancel", "guild.raid.patch", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Put, "/v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}", "guild.signup", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/me/raid-nights/{raid}", "me.raid-night", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/raids/{raid}/ping", "guild.raid.ping", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/raid-badge", "guild.raid-badge", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/items/{item}/needs", "guild.item-needs", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/loot", "guild.loot", HttpStatusCode.fromValue(200)),
@@ -524,6 +525,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/applications", "guild.application", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/applications/mine", "guild.applications.mine", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/applications/{app}/accept", "guild.application.accept", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/applications/{app}/decline", "guild.application.decline", HttpStatusCode.fromValue(200)),
     )
 
     val staticData: List<FixtureRoute> = listOf(

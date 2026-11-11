@@ -255,6 +255,12 @@ struct RaidFlowPresenter {
     static let coverShort = "short"
     static let separator = " · "
 
+    /// Whether the addon synced each roster character this week (round 4, s5): `logged_at` is the
+    /// addon's last upload, read against the one stale rule; `logged_recently` is only the last 24 h.
+    func syncedThisWeek(_ roster: [GuildRosterRow]) -> [String: Bool] {
+        Dictionary(roster.map { ($0.characterKey, !SyncAge.isStale($0.loggedAt, now: now)) }) { first, _ in first }
+    }
+
     /// G1 and row 5, for officers: the signed In or Late the roster has not seen sync this week, by
     /// name (`Not synced this week: Kaelra, Thalrin, Brakka and 1 more`); the tap opens the roster
     /// filtered to them.

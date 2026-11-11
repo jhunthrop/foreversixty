@@ -157,6 +157,7 @@ HOME_R5_CSS = '''
 [data-platform=ios] .ap.home .tline{font:400 14px/20px var(--font-body);color:var(--text);margin:0 0 8px}
 [data-platform=ios] .ap.home .tline .ok{color:#fff}
 [data-platform=ios] .ap.home .blk .btns .btn{height:36px;min-height:36px}
+[data-platform=ios] .ap.home .blk:not(:has(.cdn)) .btns{margin:0}
 .ap.home .tline{margin:0 0 4px;font:400 13px/18.29px var(--font-body);color:var(--muted)}
 .ap.home .tline .ok{color:var(--kill)}.ap.home .tline .lo{color:var(--wipe)}
 .ap.home .blk:not(:has(.cdn)) .tally{margin:0 0 8px}
@@ -524,14 +525,15 @@ RAID_R5_CSS = """
    not-synced line is a row that opens the roster */
 .r5raid .pn .notes{margin-top:8px}
 .r5raid .hl{margin:8px 0 0;font:400 14px/20px var(--font-body);color:var(--muted)}
-.r5raid .cov{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;padding:8px 0;font:400 13px/18.29px var(--font-body);color:var(--muted)}
-.r5raid .cov .cg{display:inline-flex;align-items:center;gap:4px;color:var(--wipe)}
+.r5raid .cov{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:8px 0;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .cov .cg{display:inline-flex;align-items:center;gap:4px;color:var(--wipe);white-space:nowrap}
 .r5raid .cov .cg img,.r5raid .cov .cg .ci{display:block;width:20px;height:20px;border-radius:4px;background-size:cover}
 .r5raid .cov .cg .n{color:var(--muted)}
 .r5raid .rfoot .ns{display:flex;align-items:center;min-height:48px;padding:0;border:0;font:400 13px/18.29px var(--font-body);color:var(--wipe)}
 [data-platform=ios] .r5raid .rfoot .ns{min-height:44px;color:var(--text);gap:4px}
 [data-platform=ios] .r5raid .rfoot .ns span{flex:1}[data-platform=ios] .r5raid .rfoot .ns i{font-style:normal;color:var(--muted)}
 [data-platform=ios] .r5raid .cov{padding:0;gap:4px}
+[data-platform=android] .r5raid .sh .act{line-height:18px}
 [data-platform=ios] .r5raid .btn{height:44px;min-height:44px}
 /* iOS's Segmented (brand B1): one connected group, hairline dividers, the chosen one teal with its edge, 44 pt */
 [data-platform=ios] .r5raid .seg{border:1px solid #5a5d70;border-radius:6px;background:#170e09}
@@ -578,18 +580,17 @@ def _r5_row(title: str, sub: str = '', lead: str = '', trail: str = '') -> str:
 
 
 def _r5_roles(roles: list, platform: str, split: bool = True) -> str:
-    """Who is coming's rows. split: Damage carries its melee and ranged split (the night's rows on iOS do not)."""
+    """Who is coming's rows. split: Damage's title carries its melee and ranged split (round 4: both apps on one line; the
+    night's rows on iOS do not)."""
     out = ''
     for role, n, want, people, more in roles:
         short = want - n
         tally = f'{n} of {want}' + (f' &middot; {short} short' if short > 0 else '')
         dmg = split and role == 'Damage'
         title = f'{role} <span class="{"ok" if short <= 0 else "lo"}">{tally}</span>'
-        if dmg and platform == 'android':
+        if dmg:
             title += f'<span class="split"> &middot; {DAMAGE_SPLIT}</span>'
         names = ', '.join(f'<span style="color:{CLASS_COLOR[c]}">{nm}</span>' for nm, c in people) + (f' and {more} more' if more else '')
-        if dmg and platform == 'ios':
-            names += f'</span><span class="s">{DAMAGE_SPLIT}'
         out += _r5_row(title, names)
     return out
 
@@ -606,12 +607,16 @@ def _cover_icon(platform: str, name: str) -> str:
 def _cover(platform: str) -> str:
     """The Covered line (round 3, row 4): `Missing`, then each gap in wipe red beside its spell icon (iOS sets ` · ` between
     the missing and the short ones), the short ones with their count."""
-    def gap(name: str, ic: str, count: str = '') -> str:
-        n = (f' <span class="n">{count}</span>' if platform == 'ios' else f' {count}') if count else ''
-        return f'<span class="cg">{_cover_icon(platform, ic)}<span>{name}{n}</span></span>'
-    sep = '<span>&middot;</span>' if platform == 'ios' and COVER_MISSING and COVER_SHORT else ''
-    return ('<div class="cov"><span>Missing</span>' + ''.join(gap(n, i) for n, i in COVER_MISSING) + sep
-            + ''.join(gap(n, i, c) for n, i, c in COVER_SHORT) + '</div>')
+    gaps = [(n, i, '') for n, i in COVER_MISSING] + list(COVER_SHORT)
+
+    def gap(k: int, name: str, ic: str, count: str) -> str:
+        if platform == 'ios':  # the separator before each name after the first, the count muted
+            sep = '<span class="n">&middot;&nbsp;</span>' if k else ''
+            n = f' <span class="n">{count}</span>' if count else ''
+            return f'<span class="cg">{sep}{_cover_icon(platform, ic) if ic else ""}<span>{name}{n}</span></span>'
+        sep = '<span class="n"> &middot;</span>' if k < len(gaps) - 1 else ''  # Android: the separator after each name
+        return f'<span class="cg">{_cover_icon(platform, ic) if ic else ""}<span>{name}{" " + count if count else ""}{sep}</span></span>'
+    return '<div class="cov"><span>Missing</span>' + ''.join(gap(k, *g) for k, g in enumerate(gaps)) + '</div>'
 
 
 def _r5_coming(platform: str, officer: bool = False) -> str:
@@ -744,6 +749,8 @@ GEAR_R5_CSS = """
    Android the note, inside it) */
 .r5gear .lead .sum{margin-top:4px;font:400 13px/18px var(--font-body);color:var(--muted)}
 [data-platform=android] .r5gear .lead .sum{font-size:14px;line-height:20px}
+[data-platform=android] .r5gear .strip h1{font-size:20px;line-height:26px}
+[data-platform=android] .r5gear .strip b{font-size:16px;font-weight:700}[data-platform=android] .r5gear .strip b small{font-size:12px}
 [data-platform=android] .r5gear .lead [data-region=controls]>span:first-child{display:block;white-space:nowrap;letter-spacing:-.15px}
 .r5gear .ls{padding:12px}.r5gear .ls>div{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
 .r5gear .cell{display:flex;align-items:center;gap:8px;min-height:48px;min-width:0;padding:0;border:0}
@@ -867,10 +874,10 @@ ACTIVITY_CRESTS = {'ability_warrior_innerrage': 'warrior', 'Fury Warrior moved t
 ACTIVITY_R5_CSS = """
 .ap.r5act{padding:0 14px 22px}
 .r5act .bandc{margin:0 -14px;padding-left:16px;background:#0c3a52;border-bottom:1px solid #000}
-.r5act .chips{display:flex;gap:8px;padding:2px 16px 8px 0;overflow:hidden;white-space:nowrap}
+.r5act .chips{display:flex;gap:8px;padding:2px 16px 8px 0;overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent)}
 .r5act .chips .btn{flex:none;display:flex;align-items:center;box-sizing:border-box;height:36px;min-height:36px;margin:6px 0;padding:0 16px;
   border:1px solid #5a5d70;border-radius:8px;background:none;color:#fff;font:600 14px/20px var(--font-body)}
-.r5act .chips .btn.on{background:#408076}
+.r5act .chips .btn.on{background:#0f6064;border-color:#408076}
 .ap.r5act>section,.ap.r5act>.blk-r5{margin-top:20px}.ap.r5act>.bandc+*{margin-top:16px}.ap.r5act>.blk-r5:first-child{margin-top:16px}
 .r5act .sh{display:flex;align-items:center;height:26px;margin-bottom:8px}
 .r5act .sh h2{margin:0;font:400 21px/26px var(--font-title);color:#f3eee2}
@@ -883,7 +890,8 @@ ACTIVITY_R5_CSS = """
 .r5act .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
 .r5act .row .fig{margin-left:auto;flex:none;font:700 15px/20.57px var(--font-body);font-variant-numeric:tabular-nums;color:#fff}
 .r5act .more{display:flex;align-items:center;min-height:48px;margin-top:8px;padding:0 16px;font:600 15px/20px var(--font-body);color:var(--gold)}
-[data-platform=ios] .r5act .more{min-height:44px;justify-content:center}
+[data-platform=ios] .r5act .more{min-height:44px;padding:0}
+[data-platform=android] .r5act .row .fig{line-height:22px}[data-platform=android] .r5act .sh .act{line-height:18px}
 .r5act .note{margin:0;padding:8px 0;font:400 13px/20.57px var(--font-body);color:var(--text)}
 .r5act .wide{display:flex;align-items:center;justify-content:center;height:48px;margin:12px 0;border-radius:4px;background:#0f6064;border:1px solid #408076;
   color:#fff;font:700 15px/20px var(--font-body)}

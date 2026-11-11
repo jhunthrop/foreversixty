@@ -54,7 +54,6 @@
     </plurals>
     <string name="home_answer_synced_addon">Synced %1$s from the addon</string>
     <string name="home_answer_noGear">Add the addon to see which slots you can upgrade.</string>
-    <string name="home_answer_noGearNote">The addon sends your gear when you log out.</string>
     <string name="home_answer_listButton">%1$s %2$s list</string>
     <string name="home_answer_under20">Best in slot starts at 20.</string>
     <string name="home_answer_pickSpec">Set a spec in the planner to see this.</string>
@@ -423,7 +422,7 @@
         <item quantity="other">%1$d wipes</item>
     </plurals>
     <string name="raid_pages_simsRank" tools:ignore="PluralsCandidate">#%1$d of %2$d in guild sims</string>
-    <string name="raid_noRaid">No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.</string>
+    <string name="raid_noRaid">No raid posted yet.</string>
     <string name="raid_needsYou">Needs you</string>
     <string name="raid_needsYouOpen" tools:ignore="PluralsCandidate">%1$d open</string>
     <string name="raid_night_title">Raid night</string>
@@ -733,6 +732,7 @@
     <string name="gear_where_figure">%1$s · %2$s %3$s</string>
     <string name="gear_header_gain">%1$s %2$s from %3$s</string>
     <string name="gear_header_synced">synced %1$s</string>
+    <string name="gear_notModelled">Not modelled</string>
     <string name="gear_crafter_blacksmithing">blacksmith</string>
     <string name="gear_crafter_leatherworking">leatherworker</string>
     <string name="gear_crafter_tailoring">tailor</string>

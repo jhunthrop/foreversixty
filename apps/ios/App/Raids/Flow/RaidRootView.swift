@@ -172,8 +172,9 @@ private struct ComingFoot: View {
     }
 }
 
-/// The Covered line (row 4): `Missing` once in the muted label tone, each gap's spell icon beside its
-/// name in wipe red (only the names, never a red wall), then `and N more`.
+/// The Covered line (row 4; round 4, row 1): `Missing` once in the muted label tone, each gap's spell
+/// icon beside its name in wipe red (only the names, never a red wall), ` · ` between the names, then
+/// `and N more`. A name never breaks inside, and a name with no icon draws no frame.
 private struct CoverLine: View {
     let content: RaidCoverContent
     @Environment(\.raidIconBuild) private var build
@@ -182,12 +183,8 @@ private struct CoverLine: View {
         WrapLayout(spacing: FSSpace.space1, lineSpacing: FSSpace.space1) {
             if !content.missing.isEmpty {
                 Text(Copy.raidTabCoverLabel).foregroundStyle(FSColor.muted)
-                gaps(content.missing)
             }
-            if !content.missing.isEmpty, !content.short.isEmpty {
-                Text(RaidFlowPresenter.separator.trimmingCharacters(in: .whitespaces)).foregroundStyle(FSColor.muted)
-            }
-            gaps(content.short)
+            gaps(content.missing + content.short)
             if content.more > 0 {
                 Text(Copy.raidTabAndMore(names: "", n: content.more).trimmingCharacters(in: .whitespaces)).foregroundStyle(FSColor.muted)
             }
@@ -198,20 +195,54 @@ private struct CoverLine: View {
         .accessibilityLabel(content.line)
     }
 
+    /// Each name with the separator before it (so a wrapped line starts on `· Might`, never a lone dot).
     private func gaps(_ gaps: [CoverGap]) -> some View {
         ForEach(Array(gaps.enumerated()), id: \.offset) { index, gap in
-            HStack(spacing: FSSpace.space1) {
-                ItemIconView(icon: gap.icon, quality: nil, build: build ?? "", size: FSSize.icon20).parityItem(.image)
-                Text("\(Text(gap.name).foregroundColor(FSColor.wipe))\(Text(tail(gap, last: index == gaps.count - 1)).foregroundColor(FSColor.muted))")
+            HStack(spacing: 0) {
+                if index > 0 {
+                    Text(RaidFlowPresenter.separator.trimmingCharacters(in: .whitespaces)).foregroundStyle(FSColor.muted)
+                        .padding(.trailing, FSSpace.space1)
+                }
+                CoverIcon(icon: gap.icon, build: build ?? "")
+                Text("\(Text(gap.name).foregroundColor(FSColor.wipe))\(Text(count(gap)).foregroundColor(FSColor.muted))")
             }
+            .lineLimit(1)
+            .fixedSize()
         }
     }
 
-    /// ` 1 of 2` after a short gap, then the list's comma unless it is the last.
-    private func tail(_ gap: CoverGap, last: Bool) -> String {
-        let count = gap.have.map { " " + Copy.raidTabOfWant(have: $0, want: gap.need) } ?? ""
-        return count + (last ? "" : RaidFlowPresenter.list.trimmingCharacters(in: .whitespaces))
+    /// ` 1 of 2` after a short gap.
+    private func count(_ gap: CoverGap) -> String {
+        gap.have.map { " " + Copy.raidTabOfWant(have: $0, want: gap.need) } ?? ""
     }
+}
+
+/// A gap's spell icon, drawn only once there is art for it: no stem, or a stem with no file, draws
+/// nothing and the name closes up (round 4, row 1), never an empty frame.
+private struct CoverIcon: View {
+    let icon: String?
+    let build: String
+    @Environment(\.itemIconSource) private var source
+    @State private var loaded = false
+
+    var body: some View {
+        Group {
+            if let stem, loaded || source.cached(icon: stem, build: build) != nil {
+                ItemIconView(icon: stem, quality: nil, build: build, size: FSSize.icon20)
+                    .parityItem(.image)
+                    .padding(.trailing, FSSpace.space1)
+            } else {
+                // Holds the load's task without taking any room.
+                Color.clear.frame(width: 0, height: 0)
+            }
+        }
+        .task(id: stem) {
+            guard let stem, !build.isEmpty else { return }
+            loaded = await source.load(icon: stem, build: build) != nil
+        }
+    }
+
+    private var stem: String? { icon.flatMap { $0.isEmpty ? nil : $0 } }
 }
 
 /// The Raid tab's head (spec 4.2, owner 2026-11-09): one compact line, the zone's icon, the raid, its
@@ -227,7 +258,6 @@ struct RaidHeadView: View {
     /// How far the head's line may shrink to stay on one line.
     static let lineScale: CGFloat = 0.8
     @Environment(\.dynamicTypeSize) private var typeSize
-
 
     var body: some View {
         PanelBlock {
@@ -294,7 +324,8 @@ struct RoleRowsView: View {
     }
 }
 
-/// One role (S6): `Healers 5 of 8 · 3 short` in tone over its names in class colour; Damage's split.
+/// One role (S6): `Healers 5 of 8 · 3 short` in tone over its names in class colour; Damage's split
+/// on the title's line, `Damage 15 · 7 melee, 8 ranged` (round 4, row 5, the Android form).
 private struct RoleRow: View {
     let line: RoleLineContent
     let last: Bool
@@ -303,7 +334,6 @@ private struct RoleRow: View {
         VStack(alignment: .leading, spacing: 0) {
             title.type(FSType.item)
             names.type(RowType.sub)
-            if let split = line.split { Text(split).type(RowType.sub).foregroundStyle(FSColor.muted) }
         }
         .padding(.vertical, FSSpace.rowPadY)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -319,7 +349,10 @@ private struct RoleRow: View {
         case .plain: FSColor.strong
         }
         let tally = Text(line.tally).foregroundColor(tone)
-        return Text("\(line.role) \(tally)").foregroundColor(FSColor.strong)
+        let head = Text("\(line.role) \(tally)").foregroundColor(FSColor.strong)
+        guard let split = line.split else { return head }
+        let tail = Text(RaidFlowPresenter.separator + split).font(.custom(FSFont.body, size: FSType.item.size, relativeTo: .body))
+        return Text("\(head)\(tail.foregroundColor(FSColor.muted))")
     }
 
     /// The names in class colour, `, ` between; past five `and N more`.

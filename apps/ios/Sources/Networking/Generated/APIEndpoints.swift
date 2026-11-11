@@ -686,6 +686,7 @@ public enum ContractRoutes {
         FixtureRoute(.post, "/v1/guilds/{id}/raids/{raid}/cancel", fixture: "guild.raid.patch", status: 200),
         FixtureRoute(.put, "/v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}", fixture: "guild.signup", status: 200),
         FixtureRoute(.get, "/v1/me/raid-nights/{raid}", fixture: "me.raid-night", status: 200),
+        FixtureRoute(.post, "/v1/guilds/{id}/raids/{raid}/ping", fixture: "guild.raid.ping", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/raid-badge", fixture: "guild.raid-badge", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/items/{item}/needs", fixture: "guild.item-needs", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/loot", fixture: "guild.loot", status: 200),
@@ -708,6 +709,7 @@ public enum ContractRoutes {
         FixtureRoute(.post, "/v1/guilds/{id}/applications", fixture: "guild.application", status: 201),
         FixtureRoute(.get, "/v1/guilds/{id}/applications/mine", fixture: "guild.applications.mine", status: 200),
         FixtureRoute(.post, "/v1/guilds/{id}/applications/{app}/accept", fixture: "guild.application.accept", status: 200),
+        FixtureRoute(.post, "/v1/guilds/{id}/applications/{app}/decline", fixture: "guild.application.decline", status: 200),
     ]
 
     public static let staticData: [FixtureRoute] = [

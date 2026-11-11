@@ -114,6 +114,7 @@ struct HomeFlowPresenter {
         var content = HomeUpgradesContent(rows: Array(rows), bestRun: bestRun.map { bestRunRow($0, home: home) }, note: note)
         content.meta = upgradesMeta(home)
         content.stamp = syncedStamp(home)
+        content.stampStale = home.syncedAt.map { SyncAge.isStale($0, now: now) } ?? false
         return content
     }
 

@@ -43,21 +43,31 @@ class RaidTabFactsTest {
         val windfury = rows[0].copy(state = "short", providersIn = 1, providersLate = 0, need = 2)
         assertEquals("Missing Fort · WF 1 of 2", facts.covered(raid.copy(cover = listOf(windfury, fortitude))))
         val missing = (1..12).map { rows[0].copy(key = "gap$it", name = "Gap $it", state = "missing") }
-        assertEquals("Missing Gap 1, Gap 2, Gap 3 and 10 more", facts.covered(raid.copy(cover = listOf(windfury) + missing)))
+        assertEquals("Missing Gap 1 · Gap 2 · Gap 3 and 10 more", facts.covered(raid.copy(cover = listOf(windfury) + missing)))
         val fourMissing = missing.take(4)
-        assertEquals("Missing Gap 1, Gap 2, Gap 3, Gap 4", facts.covered(raid.copy(cover = fourMissing)))
+        assertEquals("Missing Gap 1 · Gap 2 · Gap 3 · Gap 4", facts.covered(raid.copy(cover = fourMissing)))
         val twoMissing = missing.take(2)
-        assertEquals("Missing Gap 1, Gap 2 · WF 1 of 2", facts.covered(raid.copy(cover = listOf(windfury) + twoMissing)))
-        assertEquals("Missing Blessing of Kings, Blessing of Might, Blessing of Wisdom and 2 more", facts.covered(raid))
+        assertEquals("Missing Gap 1 · Gap 2 · WF 1 of 2", facts.covered(raid.copy(cover = listOf(windfury) + twoMissing)))
+        assertEquals("Missing Kings · Might · Wisdom and 2 more", facts.covered(raid))
     }
 
     @Test fun `the Covered row carries each name's spell icon and is not a red wall`() {
         val line = requireNotNull(facts.coverLine(raid))
         assertEquals(listOf("spell_magic_magearmor", "spell_holy_fistofjustice", "spell_holy_sealofwisdom"), line.missing.map { it.icon })
         assertEquals(2, line.more)
-        val foot = facts.foot(raid, officer = false, roster = emptyList()).first { it.cover != null }
+        val foot = facts.foot(raid, officer = false, roster = emptyList(), now = RaidTime.now).first { it.cover != null }
         assertEquals(false, foot.warn)
         assertEquals(facts.covered(raid), foot.text)
+    }
+
+    @Test fun `a Covered name without a spell icon draws none and the short ones carry their count`() {
+        val rows = requireNotNull(raid.cover)
+        val blank = rows[0].copy(key = "blank", name = "Blank", state = "missing", icon = "")
+        val windfury = rows[0].copy(state = "short", providersIn = 1, providersLate = 0, need = 2)
+        val names = facts.names(requireNotNull(facts.coverLine(raid.copy(cover = listOf(windfury, blank)))))
+        assertEquals(listOf("Blank", "WF 1 of 2"), names.map { it.text })
+        assertEquals(listOf(false, true), names.map { it.hasIcon })
+        assertEquals(false, CoverName("Kings", null).hasIcon)
     }
 
     @Test fun `without cover rows Covered falls back to the buffs nobody brings`() {
@@ -69,12 +79,24 @@ class RaidTabFactsTest {
     @Test fun `an officer sees who signed In without syncing this week, a member does not`() {
         val home = RaidFixture.load(GuildHome.serializer(), "guild.home")
         val coming = raid.signups.first { it.state == "in" }
-        val roster = home.roster.take(1).map { it.copy(characterKey = coming.characterKey, loggedRecently = false) }
-        assertEquals(listOf(coming.name), facts.notSynced(raid, roster).map { it.name })
-        val foot = facts.foot(raid, officer = true, roster).first { it.onlyKeys.isNotEmpty() }
+        val roster = home.roster.take(1).map { it.copy(characterKey = coming.characterKey, loggedAt = "2026-12-09T22:00:00Z") }
+        assertEquals(listOf(coming.name), facts.notSynced(raid, roster, RaidTime.now).map { it.name })
+        val foot = facts.foot(raid, officer = true, roster, RaidTime.now).first { it.onlyKeys.isNotEmpty() }
         assertEquals("Not synced this week: ${coming.name}", foot.text)
         assertEquals(setOf(coming.characterKey), foot.onlyKeys)
-        assertTrue(facts.foot(raid, officer = false, roster).none { it.text.contains("synced") })
+        assertTrue(facts.foot(raid, officer = false, roster, RaidTime.now).none { it.text.contains("synced") })
+    }
+
+    @Test fun `not synced reads the addon's logged_at against seven days, not logged_recently`() {
+        val home = RaidFixture.load(GuildHome.serializer(), "guild.home")
+        val coming = raid.signups.first { it.state == "in" }
+        val row = home.roster.first().copy(characterKey = coming.characterKey)
+        // A sync three days ago is this week, though logged_recently (24 h) is false.
+        val recent = row.copy(loggedAt = "2026-12-14T22:30:00Z", loggedRecently = false)
+        assertTrue(facts.notSynced(raid, listOf(recent), RaidTime.now).isEmpty())
+        // No sync time at all reads as not synced.
+        val never = row.copy(loggedAt = "")
+        assertEquals(listOf(coming.name), facts.notSynced(raid, listOf(never), RaidTime.now).map { it.name })
     }
 
     @Test fun `the not-synced line names four in full, five as three and 2 more, never and 1 more`() {

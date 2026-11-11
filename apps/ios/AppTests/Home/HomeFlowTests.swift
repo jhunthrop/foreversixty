@@ -224,6 +224,17 @@ struct HomeFlowLogicTests {
         #expect(content.stamp?.contains("2") == true, "synced two hours before HomeFixtures.now")
     }
 
+    @Test("round 4, row 2: the Synced stamp takes the warning tone past a week, by the drawer's rule")
+    func staleStamp() throws {
+        let home = try HomeFixtures.home()
+        let synced = try #require(home.syncedAt)
+        let at = { (seconds: TimeInterval) in
+            HomeFlowPresenter(now: synced.addingTimeInterval(seconds), clock: RaidClock(zone: Self.zone)).upgrades(home, limit: 3, bestRun: nil)
+        }
+        #expect(at(2 * 3600).stampStale == false)
+        #expect(at(SyncAge.staleAfter + 60).stampStale)
+    }
+
     @Test("an upgrade's source ends with the worn item it replaces and the drop chance")
     func upgradeSource() throws {
         let home = try HomeFixtures.home()
