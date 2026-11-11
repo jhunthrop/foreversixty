@@ -66,4 +66,27 @@ Inside run 42842739728:
 
 ## After
 
-(filled in from the lane's dispatch runs)
+Dispatch runs on the lane (so the SwiftPM, compilation and XcodeGen caches were cold: only main saves
+them, and main had not run the new workflow yet).
+
+### ios.yml
+
+| run | total | checkout | free disk | simulator start | XcodeGen | key caches | build for testing | test |
+|---|---|---|---|---|---|---|---|---|
+| 43025024853 (38b8ff114, old base) | 35m17s | 40s | 2m51s | 3m20s | 3m54s | n/a | 14m21s | 8m48s |
+| 43115565980 (7d6b28ed5, rebased on main) | 38m23s | 47s | 2m41s | 2m33s | 40s | 5m17s | 17m59s | 7m24s |
+
+- Checkout fell from 2 to 5 min to under a minute (sparse checkout; data/builds from the cache in 37s).
+- The simulator step is now its start only (about 3 min, in the background); the boot finishes while
+  the app builds, and the test step no longer makes a second device.
+- Build for testing is the floor on a cold cache (14 to 18 min). Main's first run on the new workflow
+  saves the compilation and package caches; lane runs then restore them.
+- The Guild tab lane (`lane/guild-tab`, run 43116256985) had timed out twice at 60 min on the old
+  workflow; on this one it finished in 31m29s.
+
+### android.yml
+
+| run | total | the one Gradle step |
+|---|---|---|
+| 43025029223 (38b8ff114, old base) | 8m36s | 7m45s |
+| 43115570016 (7d6b28ed5, rebased on main) | 6m44s | 5m50s |
