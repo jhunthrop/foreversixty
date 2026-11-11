@@ -271,10 +271,14 @@ struct RaidFlowLogicTests {
         await tab.load()
         guard case let .loaded(content) = tab.state else { Issue.record("not loaded"); return }
         #expect((content.character.level ?? RaidFlowPresenter.maxLevel) < RaidFlowPresenter.maxLevel)
-        guard case .guild = RaidRootComposer(presenter: presenter).content(tab.state, extras: RaidRootExtras()) else {
+        var extras = RaidRootExtras()
+        extras.ready = try RaidFixture.load(ReadyCheck.self, "character.ready")
+        guard case let .guild(guild) = RaidRootComposer(presenter: presenter).content(tab.state, extras: extras) else {
             Issue.record("expected the guild's raid")
             return
         }
+        // Before you pull is a 60's check (spec 2026-11-10-guild-tab.md 2.1).
+        #expect(guild.ready == nil)
     }
 }
 

@@ -11,7 +11,9 @@ APK=apps/android/app/build/outputs/apk/debug/app-debug.apk
 PKG=$("$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/aapt2" dump packagename "$APK")
 ROOT=design/reviews/2026-11-10-guild-tab/android
 SETTLES=5
-OFFICER="guild.raid=officer,guild.raid-badge=officer"
+# The 38-member roster for the guild home, as iOS fixture mode serves it (FixtureGuildExtrasService).
+GUILD="guild.home=roster"
+OFFICER="$GUILD,guild.raid=officer,guild.raid-badge=officer"
 
 shot() { "$ADB" exec-out screencap -p > "$OUT/$1.png"; }
 
@@ -110,7 +112,7 @@ for mode in dark light; do
 	mkdir -p "$OUT"
 
 	# In a guild, under 60.
-	launch ""
+	launch "$GUILD"
 	shot leveler-01-top
 	steps "Late" leveler-02-answer-late || true
 	steps "In" leveler-03-answer-in || true

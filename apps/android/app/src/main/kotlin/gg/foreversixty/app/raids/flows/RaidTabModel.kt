@@ -94,7 +94,9 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
             words.card(raid, content.head.name, key, controller, badge)
         }
         val applicantLine = extras.applicant?.let { ApplicantPresenter(res, clock, now).line(it) }
-        val (ready, stamp) = ReadyRows.of(res, extras.ready, now)
+        val leveler = raidsOpen(content.character.level) != null
+        // Before you pull (flasks, enchants, attunement) is a 60's check (spec 2026-11-10-guild-tab.md 2.1).
+        val (ready, stamp) = ReadyRows.of(res, extras.ready.takeUnless { leveler }, now)
         val shown = live ?: PlannedRaids(content.planned, now).next
         val officer = badge?.officer == true
         val current = live ?: PlannedRaids(content.planned, now).next
@@ -121,7 +123,7 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
             live = live?.let { words.live(it, content.head.name, key, words.ownAnswer(it, key)) },
             roles = shown?.let { RaidRoleLines(res).of(it) }.orEmpty(),
             // Under 60, Who is coming keeps its roles; the 60s' lines (answers, cover, not synced) stay on the raid page.
-            foot = if (raidsOpen(content.character.level) != null) {
+            foot = if (leveler) {
                 emptyList()
             } else {
                 shown?.let { RaidTabFacts(res).foot(it, officer, extras.home?.roster.orEmpty(), now) }.orEmpty()

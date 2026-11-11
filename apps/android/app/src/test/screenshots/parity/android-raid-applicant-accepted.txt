@@ -9,7 +9,7 @@ Copy
 Mirelle shows on the roster once the addon or Battle.net sees the character in the guild.
 Home
 6 new
-Raid
+Guild
 6
 Gear
 3 new

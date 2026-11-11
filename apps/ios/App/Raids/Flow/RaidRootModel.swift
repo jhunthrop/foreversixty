@@ -102,7 +102,9 @@ struct RaidRootComposer {
         let raid = HomeFlowModel.current(content.planned, now: presenter.now)
         guild.raidsOpen = raidsOpen(level)
         if guild.raidsOpen != nil {
-            // Under 60, Who is coming keeps its roles; the 60s' lines (answers, cover, not synced) stay on the raid page.
+            // Under 60, Who is coming keeps its roles; the 60s' lines (answers, cover, not synced) stay on the raid page,
+            // and Before you pull (flasks, enchants, attunement) is a 60's check (spec 2.1).
+            guild.ready = nil
             guild.answers = nil
             guild.cover = nil
             guild.notSynced = nil
