@@ -470,3 +470,46 @@ Files:
 
 VERDICT: DENSE WITH ADDITIONS
 
+## Round 9
+
+Round 9 rows 1 to 3 landed on both apps, and the round-8 S1 and S2 are closed or reduced to a capture gap the brief declares. I opened three Android sheets and two iOS sheets. I did not re-open Home, Raid, Activity, the drawer or the notification frames, and rounds 6 to 8 left them unchanged. The iOS crafted-upgrade frame (`ios/r9-gear-sheet-crafted-upgrade-settled.png`) and the `cdn.loot.json` fixture were not opened either.
+
+**S1, runner-up repeating the pick's source:** closed on the frames I opened.
+- The Android crafted helm sheet (`android-r9/gear-02-sheet-crafted-skill.png`) and the iOS one (`ios/r9-gear-sheet-crafted-pvp-runner-up-settled.png`) both read `Runner-up · PvP rank 11 · Blood Guard · Same DPS`. The PvP row has dropped the faction word.
+- The iOS cape sheet (`ios/r9-gear-sheet-upgrade-settled.png`) reads `Runner-up · −0.3 DPS` under the `World drop` heading, so the repeated source is gone.
+- On Android, `android-r9/gear-04-sheet-upgrade.png` is the vendor Leggings sheet, a different fixture item from the iOS cape. It reads `Runner-up · World drop · −1.3 DPS` under `Vendor: Lady Palanseer`, which differs from the pick's source, so naming it is correct.
+- The two apps now share the same source words and the same same-source rule. Android's rule is `samePlace` in `GearItemSheet.kt`, and iOS's is `isPickPlace` in `ItemSheet.swift`.
+- `Same DPS` is now a figure-like tail.
+
+**S2, no boss-drop runner-up on a device:** this is the capture gap the brief declares. The Android golden `apps/android/app/src/test/screenshots/parity/android-item-sheet.txt` shows `Runner-up · −1.8 DPS` under `Onyxia, Onyxia's Lair, 8%`. The iOS boss-drop frame is the round-8 CI one, and the iOS golden run is still in flight per the brief.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+- None.
+
+**NIT**
+- `Replaces … / Equipped` keeps its icon, a KEEP.
+- The Android Gear tab frame under the sheet is clipped by the sheet, so it only shows the header and the first row. That is fine for a sheet capture.
+- iOS shows the gain line `+0.8 DPS` in the tooltip, matching Android.
+
+**Needs data** (all KEEPs in `round-9-decisions.md`, none new)
+- A per-character gain on `loot.awarded`.
+- Per-group unread counts for the Activity chips.
+- A cached `total_gain` per character for the Switch rows.
+- A last-pulls or progress figure for the Raid tab.
+- The reputation standing number for `needs revered` rows.
+- A founder end date for the Plan row.
+
+Files:
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/android-r9/gear-02-sheet-crafted-skill.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/android-r9/gear-04-sheet-upgrade.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/ios/r9-gear-sheet-crafted-pvp-runner-up-settled.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/ios/r9-gear-sheet-upgrade-settled.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/test/screenshots/parity/android-item-sheet.txt
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/main/kotlin/gg/foreversixty/app/gear/flows/GearItemSheet.kt
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/ios/App/Items/ItemSheet.swift
+
+VERDICT: DENSE
+

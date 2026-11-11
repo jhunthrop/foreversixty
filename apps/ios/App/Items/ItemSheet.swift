@@ -86,7 +86,11 @@ enum ItemSheetBuilder {
         return ItemSheetContent(
             tooltip: tooltip.withoutItemLevel,
             gain: request.gain,
-            source: source(itemID, kind: listed?.kind, named: listed?.source, places: places, fallback: tooltip.source),
+            // Unplaced by the loot file, the list's own source in the shared words (`Vendor: Lady Palanseer`).
+            source: source(
+                itemID, kind: listed?.kind, named: listed?.source, places: places,
+                fallback: listed?.source.map { BisListBuilder.sourceLine($0, kind: listed?.kind) } ?? tooltip.source
+            ),
             replaces: replaces(request.tooltip.wornID, item: itemID, items: sources.items),
             runnerUp: runnerUp(listed, band: band, items: sources.items, places: places, pickPlace: place),
             guild: guild,

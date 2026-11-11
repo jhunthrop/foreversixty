@@ -1,4 +1,4 @@
-# Mobile backfill review brief (round 8)
+# Mobile backfill review brief (round 9)
 
 Scope: the four tab roots (Home, Raid, Gear, Activity), the profile drawer, and the raid
 notification, on iOS (SwiftUI, apps/ios) and Android (Compose, apps/android). The tabs are four by
@@ -9,11 +9,13 @@ out of scope here: mention them only if a main-tab interaction lands on them.
 Branch: lane/mobile-review-backfill. Fixture character: Gorvash, Orc Fury Warrior 58, Officer of
 Olympus XXVII; alt Yellfury, Hunter 31, no spec reported. The app is dark only, as the site.
 
-What changed and what a ruling keeps: round-2- to round-8-decisions.md (read them
+What changed and what a ruling keeps: round-2- to round-9-decisions.md (read them
 first; contest a KEEP only with a reason its ruling does not answer). Your earlier verdicts are in
 `<persona>.md` beside this file.
 
-## Captures (round 8)
+## Captures (round 9)
+Round 9 adds `android-r9/` (Gear tab and the three item sheets: crafted helm with a PvP runner-up, crafted Dawn's Edge, vendor Leggings) and `ios/r9-*` (the same three sheets). Round 9 changed only the sheet's runner-up row (and, through the shared `items.sameDps`, the item tooltip's "The next best" rows).
+
 Round 8 adds `android-r8/` (Gear `No gain`, the item sheet for a crafted pick with its skill, a crafted upgrade, a vendor upgrade, the Mention and Decline failures) and `ios/r8-*` (the same, plus the drawer Notifications frames from the top). No capture shows a boss-drop runner-up: the fixture's first head runner-up is a PvP helm and the list order is kept as the data has it; the boss-drop row is in the item-sheet parity state (`Onyxia, Onyxia's Lair, 8%`).
 Round 7 adds `android-r7/` (fresh debug build: Gear `182 DPS`, the Gear sheet with its Where line, both officer push failures, the drawer Notifications value some off / All on / All off) and `ios/r7-*` (the same set plus `r7-home-01-top`). Earlier sets stand for what round 7 did not change.
 Round 6 adds `android-r6/` (fresh debug build: drawer, Activity in the house format, officer roster filtered, push failure results, a stale Gear frame) and `ios/r6-*` (the same set). The round-5 sets below still stand for everything round 6 did not change.
@@ -24,7 +26,7 @@ Round 6 adds `android-r6/` (fresh debug build: drawer, Activity in the house for
 | Android step captures (Pixel 9 class emulator, fixture app, adb; `light-*`, `fs2-*` at font scale 2) | design/reviews/2026-11-10-mobile-backfill/android-r5/ (incl. the officer Raid tab and its filtered roster, officer pushes with their results, the drawer Refreshing frame; earlier rounds android-r2/ to android-r4/) |
 | Android mocked states (Roborazzi, incl. `-x1_5`, `-x2_0`) | apps/android/app/src/test/screenshots/parity/android-*.png (+ `.txt` text goldens) |
 | Android flow steps (real controller, a service that echoes the answer: sign-up, Home sign-up, deep links, saving, failed, offline) | apps/android/app/src/test/screenshots/flows/ |
-| iOS flow and parity snapshots | round-5 goldens from record run 42953910502 are in apps/ios/AppTests/**/__Snapshots__ (incl. Flows/); the round-8 run (42966915895) re-records every golden that rounds 6 to 8 moved and is in flight; until it lands, judge iOS from the step captures (apps/ios/AppTests/Flows, the parity test data) |
+| iOS flow and parity snapshots | round-5 goldens from record run 42953910502 are in apps/ios/AppTests/**/__Snapshots__ (incl. Flows/); the round-9 run (42968686168) re-records every golden that rounds 6 to 9 moved and is in flight; until it lands, judge iOS from the step captures (apps/ios/AppTests/Flows, the parity test data) |
 | Round-5 app mocks (updated for round 5) | design/mocks/app/ios-*.html, android-*.html, regions/ |
 | Web counterparts at 390 px | design/reviews/2026-11-10-mobile-backfill/web/ (README.md) |
 | Push fixtures | docs/contracts/fixtures/app/push.*.json (raid-posted, raid-short with its Mention action, raid-starting, guild-applicant with Accept and Decline) |

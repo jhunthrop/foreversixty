@@ -536,3 +536,32 @@ Files are under `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e
 
 VERDICT: SHIP
 
+## Round 9
+
+Round 9 clears S1: both apps now build the runner-up row from the same shared words. I found no blockers.
+
+I read the Android sheets from `android-r9/gear-02` to `gear-04`. The iOS sheets are `ios/r9-gear-sheet-*-settled`. The Android item-sheet golden is `apps/android/app/src/test/screenshots/parity/android-item-sheet.png`.
+
+**Round-8 S1 (crafted words differing between apps): cleared.**
+- Crafted upgrade, Dawn's Edge: both apps read `Crafted: Blacksmithing (275)`, then `Runner-up · −5.0 DPS`. The source is not repeated, and the line is identical on both.
+- Crafted helm: both apps read `Runner-up · PvP rank 11 · Blood Guard · Same DPS`. The faction word is dropped as decided, `Same DPS` is a figure-like tail, and the source is named because it differs from the pick's.
+- World-drop pick on iOS: `Runner-up · −0.3 DPS` under `World drop`. The source is correctly omitted because it matches.
+- Vendor pick on Android: `Runner-up · World drop · −1.3 DPS` under `Vendor: Lady Palanseer`. The source is correctly named because it differs.
+- Structure is unchanged and matches the mocks:
+  - The runner-up icon is on the left, with the name in its quality colour.
+  - The caption is grey, in the mocks' `Runner-up · −1.8 DPS` shape.
+  - The source row above it is bold white.
+- Spec checks: separators are intact, there is no clipping, there is no layout shift between the t0, t400 and settled captures, and the two apps match in type and spacing.
+
+**BLOCKER:** none.
+
+**SHOULD**
+1. **The iOS and Android captures use different pick fixtures.** The third sheet is a world-drop pick on iOS (Dark Phantom Cape) and a vendor pick on Android (Stone Guard's Plate Leggings). Each app shows one of the two naming rules, not both. Because of that, I could not compare the named-source row across the apps in one fixture. Round 10 should capture the same three fixtures on both apps. The code and strings are shared, so I expect no drift.
+2. **The Android golden and the mocks show no source difference.** The golden shows a boss pick, `Onyxia, Onyxia's Lair, 8%`, with the runner-up `Vis'kag the Bloodletter · −1.8 DPS`. The mocks match it. That is consistent only if Vis'kag shares that source. If it does not, the rule requires the runner-up to name its own source. Confirm the fixture data. The golden was re-recorded on Nov 10 and shows no named boss runner-up, so the boss shape `Boss · 8%` has no capture in this round.
+
+**NIT**
+- iOS sheets are cut at the bottom (the `Ironhide` row is clipped in the helm capture). The Android captures show the whole list with the "3 guildmates have not shared their gear yet" footer. This is presumably the simulator frame, not a defect, so I am not holding the verdict for it.
+- The iOS directory in the BRIEF is `ios/r9-*`, and `android-r9/` uses different filenames (`gear-0N-sheet-*`). Name them the same way in round 10.
+
+VERDICT: SHIP
+

@@ -442,3 +442,43 @@ None of 1, 2, 5, 8, 12, 13 or 15 is present. There are no glows, gradients, hero
 
 VERDICT: FAIL
 
+## Round 9
+
+Round 9 clears the round-8 must-fix. I found no new must-fix on the main tabs, the drawer or the notifications. I opened only the Gear-sheet captures, goldens and strings; Home, Raid, Activity, the drawer and notifications I did not re-open and judged from the earlier sets, which round 9 did not change. Round 9 changed only the Gear sheet's runner-up row.
+
+**Round-8 must-fix: cleared**
+- **Runner-up copy:** the crafted-helm sheet now reads `Runner-up · PvP rank 11 · Blood Guard · Same DPS`. That is in `android-r9/gear-02-sheet-crafted-skill.png` and `ios/r9-gear-sheet-crafted-pvp-runner-up-settled.png`. `as the pick` and `Horde` are gone. `Same DPS` is the same shape as `−5.0 DPS` and `−1.3 DPS`.
+- **Row length:** the row fits on one line on both platforms.
+- **Repeated sources:** a runner-up no longer repeats the source row above it.
+  - `Thorium Cestus` reads `Runner-up · −5.0 DPS` under `Crafted: Blacksmithing (275)` (`gear-03`).
+  - `Vis'kag the Bloodletter` reads `Runner-up · −1.8 DPS` in `android-item-sheet.png`.
+  - Where the source differs, it is named in the shared words: `Serpentskin Leggings` reads `Runner-up · World drop · −1.3 DPS` under `Vendor: Lady Palanseer` (`gear-04`).
+  - On iOS, `Pridelord Cape` reads `Runner-up · −0.3 DPS` under `World drop` (`r9-gear-sheet-upgrade-settled.png`).
+- **iOS and Android parity:** the iOS sheet matches Android.
+- **Visual tells:** none of tells 1, 2, 5, 8, 12, 13 or 15. The drawer, tab bar, push copy and the rest of Gear are unchanged since my round 8 pass.
+
+**Must-fix**
+None.
+
+**Polish**
+1. **Stale tooltip golden, tell 22.** `apps/ios/AppTests/__Snapshots__/HomeSnapshotTests/tooltip-large.1.png` still shows the old copy. The brief says the CI run re-records the iOS goldens. I could not confirm the re-record landed, so this is the one thing to check.
+   - Both next-best rows read `Same DPS as the pick` and `PvP rank 17 · Warlord · Horde`.
+   - It also shows `WHERE IT COMES FROM` and `THE NEXT BEST` as uppercase letter-spaced eyebrows (tell 6), and a line saying `Epic · Head` beside the icon.
+   - `en.json:202` now reads `Same {unit}`, so the golden is out of date.
+   - Do not accept the re-record if `as the pick` or `Horde` survives. I also could not find an Android tooltip golden under `parity/`; only `android-item-sheet.png` exists there.
+2. **`Replaces Ironwood Blade` over `Equipped`** (`android-item-sheet.png`). The icon is a KEEP, but `Equipped` under `Replaces …` still says the same thing twice. Drop the second line, or show the DPS on it.
+3. **`Horde` in the Gear header.** `50 to 59 · Horde · 3 of 17 slots match the list · Change` appears on both platforms (`android-r9/gear-01-top.png`, `ios/r9-*`). It is the same qualifier I flagged on the runner-up row, because the app is Horde only. It is cheap to drop. Skip it if an earlier KEEP covers it.
+4. **`gear.sheet.where`.** The string is still in `en.json` and I could not tell whether anything uses it. The decisions file keeps it as the iOS parity region's section id, which has no visible text. Delete it if nothing renders it.
+
+**Authentic, keep**
+- Quality-coloured sheet rows, with the runner-up's icon border following its quality.
+- Bold bare source lines such as `Vendor: Lady Palanseer` and `Crafted: Blacksmithing (275)`. The `(275)` is the profession skill.
+- `Onyxia, Onyxia's Lair, 8%`.
+- `+12.6 DPS` in yellow and the green proc text in the tooltip plate.
+- The guild list: `Kraggor · Fury Warrior · needs it, the pick on their list`.
+- `3 guildmates have not shared their gear yet`.
+- `No gain` on Officer's Pauldrons.
+- The earlier KEEP rulings stand, and nothing in round 9 contests them.
+
+VERDICT: PASS
+

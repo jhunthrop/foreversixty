@@ -472,3 +472,23 @@ Round 8 holds up against the web. I found no BLOCKER and no SHOULD. I did not re
 
 VERDICT: CONSISTENT
 
+## Round 9
+
+Round 9 is consistent with the web. I found no BLOCKER and no SHOULD, only two NITs.
+
+I judged from the iOS `r9-gear-sheet-crafted-pvp-runner-up-settled.png` and `android-r9/gear-02-sheet-crafted-skill.png`. I did not open the other two sheets, the Android goldens `tooltip-weapon` and `tooltip-large`, or the 390 px web captures. For the web side I read `web/src/lib/bis/copy.ts`, `web/src/lib/bis/doll-view.ts`, `web/src/lib/bis/frame-view.ts` and `web/src/lib/ui/paperdoll.ts`.
+
+**Matches the web**
+- **Copy key:** `Same DPS` comes from the shared key `items.sameDps` ("Same {unit}"). The unit word is the same one the signed deltas use. `GearItemSheet.kt` and `ItemTooltipModel.kt` read `R.string.items_sameDps`, which comes from the shared copy. iOS reads the generated `Copy.swift`, line 659. Neither app hardcodes the string.
+- **Wording:** The web already says "same DPS" for a tie. It does so in `doll-view.ts` and in the paperdoll tooltip "(same DPS)". "Same DPS" as a standalone figure-like tail is the same word, capitalised for a standalone tail.
+- **Row anatomy:** In both captures the runner-up row has a quality-bordered icon, a quality-coloured name, and a muted tail of `Runner-up · source · figure`. This matches the web's tooltip "next best" row, with `·` separators and no em dashes.
+- **Source row:** The pick's source row reads `Crafted: Blacksmithing (245)`, which is `bis.source.craftedSkill` as on the web. The runner-up does not repeat its source when it matches the pick's. A differing source is named in the shared `bis.source.*` words.
+- **Type, colour and shape:** Both captures are dark. Rows are hairline-separated rather than stacked cards. The blue name is the rare quality colour and the pick is green, as on the web. I saw no new shadows or glows, and no hardcoded strings or colours.
+- **Both platforms agree:** The two platforms show the same row.
+
+**NIT**
+1. **PvP source drops the faction word.** The app reads `PvP rank 11 · Blood Guard`. The web's `pvpSourceLabel` in `web/src/lib/bis/copy.ts` still reads `PvP rank 11 · Knight-Lieutenant · Alliance`. This is an owned decision (round-8 ruling 3, from the ai-slop review), and the faction is redundant on a list already filtered to one faction. But a player who moves between the web and the app will see the same source worded two ways. Either carry the ruling into the web's `pvpSourceLabel`, or record it in the decisions as a deliberate native-only difference. If you carry it to the web, check `source-cell.test.ts` and `copy.test.ts`, which assert the faction.
+2. **Tie handling differs from the web's Gear rows.** The web's `rowFigure` in `frame-view.ts` hides a tie on frame rows ("Same DPS on most rows was noise"). The app shows `Same DPS` on a runner-up. That is the correct place for it, because the web also says "same DPS" in the runner-up tooltip. I'm recording it only so nobody copies the frame-row suppression into the sheet.
+
+VERDICT: CONSISTENT
+

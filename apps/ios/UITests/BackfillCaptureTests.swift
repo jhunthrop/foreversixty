@@ -329,7 +329,7 @@ final class BackfillCaptureTests: XCTestCase {
     private func gearSheets(round: String) {
         let app = CaptureLaunch.signedIn(tab: "gear")
         sleep(Self.settles)
-        for (slot, name) in [("Head", "crafted-pvp-runner-up"), ("Off hand", "crafted-upgrade"), ("Back", "upgrade")] {
+        for (slot, name) in [("Head", "crafted-pvp-runner-up"), ("Off hand", "crafted-upgrade"), ("Back", "upgrade"), ("Legs", "vendor-upgrade")] {
             if tapSteps(app, slot, "\(round)-gear-sheet-\(name)") {
                 app.swipeDown(velocity: .fast)
                 sleep(1)
