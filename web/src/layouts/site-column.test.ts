@@ -1,6 +1,9 @@
-// The owner's rule: one centred site column for the whole site. Base.astro wraps every page in
-// `.page-column` once, a full-bleed band breaks out with `.full-bleed` and puts its content back
-// with `.page-column`, and no page or component declares a page-level container of its own.
+// The owner's rule: one centred page frame for the whole site, one width on every page at a given
+// viewport (2026-11-10: "consistent width for every experience"). `.page-column` (global.css) is
+// the frame: Base.astro puts the header bar, the page body and the footer in it, a full-bleed band
+// breaks out with `.full-bleed` and puts its content back with `.page-column`, and no page or
+// component declares a page-level container, a frame width or a frame gutter of its own. A narrower
+// measure inside the frame is named: the `.measure-*` classes, or ui/Page's `reading` and `form`.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -25,6 +28,15 @@ const FORBIDDEN: ReadonlyArray<{ pattern: RegExp; why: string }> = [
     pattern: /max-w-\[(?:[89]\d\d|\d{4,})px\]|^\s*max-width:\s*(?:[89]\d\d|\d{4,})px/,
     why: 'a container-sized max-width (800px and up)',
   },
+  {
+    pattern: /--page-(?:max|gutter)\b/,
+    why: 'reads the frame width or gutter; only .page-column (global.css) may, from tokens.css',
+  },
+  { pattern: /data-column/, why: 'a per-page column width; every page has one frame' },
+  {
+    pattern: /px-\[18px\][^"']*md:px-0|md:px-0[^"']*px-\[18px\]/,
+    why: 'a hand-written phone inset; use px-(--page-inset)',
+  },
 ];
 
 /**
@@ -33,8 +45,6 @@ const FORBIDDEN: ReadonlyArray<{ pattern: RegExp; why: string }> = [
  * everything else must go through the shared column classes.
  */
 const ALLOWED: Readonly<Record<string, readonly RegExp[]>> = {
-  // The tier page's two cards cap their own width at the reading measure, inside the column.
-  'components/tiers/TierPage.astro': [/max-width:\s*820px/],
   // A grid of tree panels centred as a fit-content group, not a page container.
   'components/planner/TreeGrid.svelte': [/mx-auto w-fit/],
   // The item tooltip sizes itself to the viewport, minus a margin.
@@ -42,10 +52,15 @@ const ALLOWED: Readonly<Record<string, readonly RegExp[]>> = {
   'components/ui/TalentTip.svelte': [/calc\(100vw - 32px\)/], // the talent tooltip's phone cap, a popover
   // The header bar's phone name clamp reads the viewport, not a page container.
   'styles/nav.css': [/calc\(100vw - 460px\)/],
-  // The wide column's own width (web layout spec 2026-11-05 §3.2): the token, not a container.
-  'styles/tokens.css': [/clamp\(1600px, 100vw - 160px, 1792px\)/],
-  // The breakout itself, and the clip that keeps it from adding a scrollbar.
-  'styles/global.css': [/100vw/, /margin-inline: auto/, /margin-inline: calc/],
+  // The frame's own width and gutter (web layout spec 2026-11-05 §3.2): the tokens, not a container.
+  'styles/tokens.css': [/clamp\(1600px, 100vw - 160px, 1792px\)/, /--page-(?:max|gutter):/],
+  // The frame itself, the breakout, and the clip that keeps it from adding a scrollbar.
+  'styles/global.css': [
+    /100vw/,
+    /margin-inline: auto/,
+    /margin-inline: calc/,
+    /var\(--page-(?:max|gutter)\)/,
+  ],
 };
 
 function sourceFiles(dir: string): string[] {
@@ -73,6 +88,18 @@ describe('the single site column', () => {
       slots: { default: '<main data-probe>body</main>' },
     });
     expect(html).toMatch(/<div class="page-column"[^>]*>\s*<main data-probe>body<\/main>\s*<\/div>/);
+  });
+
+  it('Base.astro puts the header bar in the same frame, and gives no page a column of its own', async () => {
+    const container = await createPageContainer();
+    const html = await container.renderToString(Base, {
+      props: { title: 'Column', description: 'x', path: '/column' },
+      slots: { default: '<main data-probe>body</main>' },
+    });
+    expect(html).toMatch(
+      /<div class="site-top[^"]*"[^>]*>\s*<div class="page-column">\s*<header class="site-header"/,
+    );
+    expect(html).not.toMatch(/data-column/);
   });
 
   it('every page renders through a layout that reaches Base.astro', () => {

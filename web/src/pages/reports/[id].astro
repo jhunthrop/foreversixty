@@ -27,7 +27,6 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
   title={id === FIXTURE_REPORT_ID ? fixtureMeta.title : 'Report'}
   description="A World of Warcraft: Forever combat log report: fights, damage, healing, deaths and rankings."
   path={`/reports/${id}`}
-  wide
 >
   <link rel="stylesheet" href="/report-island.css" slot="head" />
   <main id="main" tabindex="-1" class="flex w-full flex-col pb-10">

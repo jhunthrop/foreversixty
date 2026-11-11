@@ -213,7 +213,7 @@
   {#if lazy.error !== ''}
     <!-- One failed state for every island (design 2026-09-22 spec section 1.5), so the
          chunk that would not load says so through LoadError rather than an ad-hoc alert
-         line. The phone gutter the old <p> carried (px-[18px] md:px-0) lives on this
+         line. The phone gutter the old <p> carried (the page inset) lives on this
          wrapper instead, since LoadError takes no class prop -- the same shape the report
          island's top-level error and SimView's two lazy panels already use. -->
     <Page layout="ledger">
