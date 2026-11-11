@@ -8,7 +8,7 @@
   import { characterLink, homeBCopy, homeBHrefs, specWeekView } from '../../lib/home/home-b-view';
   import { factsCopy, moverDelta, moversTitle } from '../../lib/home/home-facts';
   import type { ClassSlug } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Figure from '../ui/Figure.svelte';
   import GradeTile from '../ui/GradeTile.svelte';
   import Row from '../ui/Row.svelte';
@@ -47,7 +47,7 @@
             open
             testid="home-mover"
           >
-            {#snippet lead()}<ClassCrestRing characterClass={row.class} size={CREST_PX} />{/snippet}
+            {#snippet lead()}<Crest cls={row.class} size={CREST_PX} />{/snippet}
             {#snippet trail()}
               {#if delta !== null}<Figure
                   value={delta}

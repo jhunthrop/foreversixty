@@ -15,7 +15,7 @@
   } from '../../../lib/guild/billing-styles';
   import { isSeatLocked, seatErrorLine, seatRowKind, staleReadRefusal } from '../../../lib/guild/seat-view';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import { classColorVar } from '../../../lib/report/format';
   import GuildSeatPicker from './GuildSeatPicker.svelte';
 
@@ -163,7 +163,7 @@
     <!-- Below 768 the row is two lines (spec 7): who and the button on line 1, the middle on line 2. -->
     <div class="col-start-1 row-start-1 flex min-w-0 items-center gap-3">
       {#if seat.holder !== null}
-        <ClassCrestRing characterClass={seat.holder.class} size={32} />
+        <Crest cls={seat.holder.class} size={32} />
         <div class="flex min-w-0 flex-col">
           <span
             class="heading-name truncate text-[14px]"
@@ -177,7 +177,7 @@
           {/if}
         </div>
       {:else if seat.offeree !== null}
-        <ClassCrestRing characterClass={seat.offeree.class} size={32} />
+        <Crest cls={seat.offeree.class} size={32} />
         <div class="flex min-w-0 flex-col">
           <span
             class="heading-name truncate text-[14px]"

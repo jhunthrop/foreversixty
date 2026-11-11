@@ -6,7 +6,7 @@
   import { recruitCopy as copy } from '../../../lib/guild/recruit-copy';
   import { applicationLine, applicationStamp } from '../../../lib/guild/recruit-view';
   import { classTone } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
@@ -47,7 +47,7 @@
     wrapTrail
     testid="guild-recruit-mine-row"
   >
-    {#snippet lead()}<ClassCrestRing characterClass={application.character.class ?? ''} size={32} />{/snippet}
+    {#snippet lead()}<Crest cls={application.character.class ?? ''} size={32} />{/snippet}
     {#snippet trail()}
       <Tag tone={TONE[application.status]} testid="guild-recruit-mine-status">{WORD[application.status]}</Tag>
       {#if pending}

@@ -13,7 +13,7 @@
   import { PLANNER_FACT_COLUMNS } from './planner-columns';
   import AttendanceStrip from '../dense/AttendanceStrip.svelte';
   import { classTone, ROW_ITEM } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Row from '../../ui/Row.svelte';
   import Tag from '../../ui/Tag.svelte';
   import SignupSegments from '../SignupSegments.svelte';
@@ -66,7 +66,7 @@
     wrapTrail={officer}
     density={facts === null ? 'default' : 'slim'}
   >
-    {#snippet lead()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
+    {#snippet lead()}<Crest cls={row.class} size={28} />{/snippet}
     {#snippet subContent()}
       <span class="block truncate" title={sub ?? rowSub(row, roles)}>{sub ?? rowSub(row, roles)}</span>
       {#if facts !== null && facts.why.length > 0}<span class="text-wipe block" data-testid="raid-roster-why"

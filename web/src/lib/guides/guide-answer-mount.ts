@@ -4,7 +4,7 @@
 // only the newest read paints. Plain DOM: the guide pages carry no island above the fold.
 import { fetchMeOnce } from '../account/api';
 import { onCurrentCharacterChange, readCurrent } from '../current-character';
-import { classCrestSrc } from '../class-crest';
+import { ANSWER_CREST_PX, paintCrest } from '../class-crest';
 import { classColorVar } from '../report/format';
 import { afterLoad, hasSessionHint } from '../page-load';
 import { answerDetail, guideAnswerFrom, type GuideAnswer, type GuideAnswerPage } from './guide-answer';
@@ -54,9 +54,7 @@ export function paintGuideAnswer(root: HTMLElement, answer: GuideAnswer, retry: 
   field('links').replaceChildren();
   if (answer.state === 'ready') {
     const { character } = answer;
-    const crest = field('crest') as HTMLImageElement;
-    crest.src = classCrestSrc(character.classSlug);
-    crest.style.setProperty('--c', classColorVar(character.className));
+    paintCrest(field('crest') as HTMLImageElement, character.className, ANSWER_CREST_PX);
     field('name').textContent = character.name;
     field('name').style.color = classColorVar(character.className);
     field('detail').textContent = answerDetail(character.level, character.identity, character.className);

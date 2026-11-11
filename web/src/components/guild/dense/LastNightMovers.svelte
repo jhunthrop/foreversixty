@@ -9,7 +9,7 @@
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
   import StatTable from '../../ui/StatTable.svelte';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
 
   let {
     meta,
@@ -59,7 +59,7 @@
         phone={`${figures(m)[1].value} ${vsLabel}`}
         testid={`guild-mover-${m.name.toLowerCase()}`}
       >
-        {#snippet icon()}<ClassCrestRing characterClass={m.cls} size={28} />{/snippet}
+        {#snippet icon()}<Crest cls={m.cls} size={28} />{/snippet}
         {#snippet name()}<span style:color={classColorVar(m.cls)}>{m.name}</span>{/snippet}
         {#snippet sub()}{m.spec}{#if m.weakest}{` · weakest ${m.weakest.part} ${m.weakest.value}`}{/if}{/snippet}
       </StatRow>

@@ -8,7 +8,7 @@
   import { SEP } from '../../../lib/guild/raid-copy';
   import { specClassName } from '../../../lib/guild/spec-name';
   import { classColorVar } from '../../../lib/report/format';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
   import StatTable from '../../ui/StatTable.svelte';
@@ -32,7 +32,7 @@
           bar={false}
           figures={[{ value: `${outputFigure(parse.value)} ${outputUnit(parse.metric)}` }]}
         >
-          {#snippet icon()}<ClassCrestRing characterClass={parse.class} size={28} />{/snippet}
+          {#snippet icon()}<Crest cls={parse.class} size={28} />{/snippet}
           {#snippet name()}<span style:color={classColorVar(parse.class)}>{parse.name}</span>{/snippet}
           {#snippet sub()}{ROLE_WORD[role]}{#if parse.spec}{SEP}{specClassName(
                 parse.spec,

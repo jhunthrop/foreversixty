@@ -10,7 +10,7 @@
   import ItemRow from '../../ui/ItemRow.svelte';
   import { GROUP_WORD } from '../../../lib/guild/dense/roster-board';
   import type { RecruitGap, SlipRow } from '../../../lib/guild/dense/week-board';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
@@ -65,7 +65,7 @@
         href={applicationsHref}
         open
       >
-        {#snippet lead()}<ClassCrestRing characterClass={app.character.class ?? ''} size={32} />{/snippet}
+        {#snippet lead()}<Crest cls={app.character.class ?? ''} size={32} />{/snippet}
       </Row>
     {/each}
   </Section>
@@ -105,7 +105,7 @@
   <Section title="Slipping" panel action={{ label: 'Roster', href: '#roster' }} testid="guild-week-slipping">
     {#each slipping as row (row.name)}
       <Row title={row.name} titleTone={{ classSlug: row.cls as never }} open>
-        {#snippet lead()}<ClassCrestRing characterClass={row.cls} size={28} />{/snippet}
+        {#snippet lead()}<Crest cls={row.cls} size={28} />{/snippet}
         {#snippet trail()}<AttendanceStrip cells={row.cells} />{/snippet}
       </Row>
     {/each}

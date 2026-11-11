@@ -4,7 +4,7 @@
      size, never a dot or another class's crest. -->
 <script lang="ts">
   import { classSlugOf } from '../../lib/report/planner-link';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let { className, size = 18 }: { className: string | undefined; size?: number } = $props();
 
@@ -12,7 +12,7 @@
 </script>
 
 {#if slug !== null}
-  <ClassCrestRing characterClass={slug} {size} />
+  <Crest cls={slug} {size} />
 {:else}
-  <ClassCrestRing characterClass="" {size} />
+  <Crest cls="" {size} />
 {/if}

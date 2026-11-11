@@ -5,12 +5,12 @@
 <script lang="ts">
   import type { ClaimHolder } from '../../lib/guild/api';
   import { classColorVar } from '../../lib/report/format';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let { holder, crestSize = 20 }: { holder: ClaimHolder; crestSize?: number } = $props();
 </script>
 
-{#if crestSize > 0}<ClassCrestRing characterClass={holder.class ?? ''} size={crestSize} />{/if}<span
+{#if crestSize > 0}<Crest cls={holder.class ?? ''} size={crestSize} />{/if}<span
   class="font-semibold"
   style:color={classColorVar(holder.class ?? undefined)}>{holder.name}</span
 >

@@ -13,7 +13,7 @@
   import { closedSecondLine, type SelectorRow } from '../../lib/character-selector/rows';
   import type { ClosedKind } from '../../lib/character-selector/selector-state.svelte';
   import { classColorVar } from '../../lib/report/format';
-  import SelectorCrest from './SelectorCrest.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let {
     closed,
@@ -42,7 +42,7 @@
     onclick={onopen}
   >
     <span class="csel-pre-char">
-      <span class="csel-crest csel-pre-crest" style="width:36px;height:36px"></span>
+      <span class="crest csel-crest csel-pre-crest" style="width:36px;height:36px"></span>
       <span class="csel-menu-text">
         <span class="csel-menu-name" data-csel-name></span>
         <span class="csel-menu-sub" data-csel-sub></span>
@@ -73,7 +73,7 @@
     aria-haspopup="dialog"
     onclick={onopen}
   >
-    <SelectorCrest classSlug={current.classSlug} size={36} />
+    <Crest cls={current.classSlug} size={36} eager class="csel-crest" />
     <span class="csel-menu-text">
       <span class="csel-menu-name" style:color={classColorVar(current.classSlug)}>{current.name}</span>
       <span class="csel-menu-sub">{closedSecondLine(current, true)}</span>

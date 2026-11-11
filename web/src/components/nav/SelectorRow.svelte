@@ -11,7 +11,7 @@
   import { button } from '../../lib/ui/button';
   import Icon from '../ui/Icon.svelte';
   import { ICON_CHECK } from '../../lib/ui/ui-icons';
-  import SelectorCrest from './SelectorCrest.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let {
     row,
@@ -45,7 +45,7 @@
     aria-current={row.current ? 'true' : undefined}
     onclick={() => onchoose(row)}
   >
-    <SelectorCrest classSlug={row.classSlug} size={36} cssClass="csel-row-crest" lazy />
+    <Crest cls={row.classSlug} size={36} class="csel-row-crest" />
     <span class="csel-row-text">
       <span class="csel-r1">
         <span>{row.name}</span>

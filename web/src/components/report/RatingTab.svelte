@@ -29,7 +29,7 @@
   } from '../../lib/report/rating-card';
   import type { RatingCardPlayer, RatingComponent, ReportRatings } from '../../lib/rating/types';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Divided from '../ui/Divided.svelte';
   import Figure from '../ui/Figure.svelte';
   import Meter from '../ui/Meter.svelte';
@@ -146,8 +146,8 @@
   {@const name = splitUnitName(player.player_name).name}
   <div class="w-full" data-testid={`rating-card-${guid || player.player_key}`}>
     <Row title={playerRating(name)} sub={basisSentence(player)}>
-      {#snippet lead()}<ClassCrestRing
-          characterClass={classSlugOf(classOf(player, guid)) ?? ''}
+      {#snippet lead()}<Crest
+          cls={classSlugOf(classOf(player, guid)) ?? ''}
           size={32}
         />{/snippet}
       {#snippet titleContent()}

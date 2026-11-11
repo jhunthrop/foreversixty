@@ -27,6 +27,7 @@
   import type { SpecFidelity } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
   import { specLeadIcon } from '../../lib/sim/spec-icon';
+  import Crest from '../ui/Crest.svelte';
   import Meter from '../ui/Meter.svelte';
   import type { SpecTopSet } from '../../lib/sim/bis-benchmark';
 
@@ -96,14 +97,14 @@
 {/snippet}
 
 {#snippet crest()}
-  <img
-    src={lead.src}
-    alt=""
-    width="28"
-    height="28"
-    class={lead.crest ? 'rounded-full' : 'rounded-[5px]'}
-    onerror={() => (iconFailed = true)}
-  />
+  {#if lead === null}<Crest cls={classOfSpec(row.spec)} size={28} />{:else}<img
+      src={lead}
+      alt=""
+      width="28"
+      height="28"
+      class="rounded-[5px]"
+      onerror={() => (iconFailed = true)}
+    />{/if}
 {/snippet}
 
 <Row

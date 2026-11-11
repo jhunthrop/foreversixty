@@ -27,7 +27,7 @@
   } from '../../lib/report/mechanics';
   import { classSlugOf } from '../../lib/report/planner-link';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -535,8 +535,8 @@
       <Section title="By player" meta="What hit them, and what did not" testid="mechanics-players" panel>
         {#each players as player (player.guid)}
           <Row title={splitUnitName(player.name).name} open testid={`mechanics-player-${player.guid}`}>
-            {#snippet lead()}<ClassCrestRing
-                characterClass={classSlugOf(classOf.get(player.guid)) ?? ''}
+            {#snippet lead()}<Crest
+                cls={classSlugOf(classOf.get(player.guid)) ?? ''}
                 size={28}
               />{/snippet}
             {#snippet titleContent()}<span style:color={classColorVar(classOf.get(player.guid))}

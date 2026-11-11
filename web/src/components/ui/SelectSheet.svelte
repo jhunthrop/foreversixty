@@ -6,7 +6,7 @@
      right slot, item icons) that the e2e, axe and capture specs open. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
-  import { classCrestSrc } from '../../lib/class-crest';
+  import { crestImage } from '../../lib/class-crest';
   import { button } from '../../lib/ui/button';
   import { catalogueIconUrl } from '../../lib/ui/assets';
   import { selectCopy } from '../../lib/ui/copy';
@@ -27,7 +27,7 @@
   }));
   const PATCHWERK: SelectOption[] = [{ value: 'patchwerk', label: 'Patchwerk' }, ...STYLES.slice(1)];
 
-  const crest = (cls: string) => ({ kind: 'crest' as const, src: classCrestSrc(cls) });
+  const crest = (cls: string) => ({ kind: 'crest' as const, src: crestImage(cls, 20).src });
   const player = (
     name: string,
     cls: string,

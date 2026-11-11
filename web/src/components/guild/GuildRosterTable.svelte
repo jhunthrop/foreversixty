@@ -18,7 +18,7 @@
      Waiting for approval and Roster; the roster's rows are the page's one Plate. No card, no icon
      chip, no hand-drawn rule: ui/Ruled draws the hairlines. -->
 <script lang="ts">
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Tag from '../ui/Tag.svelte';
   import SupporterChip from '../SupporterChip.svelte';
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
@@ -391,7 +391,7 @@
   <Ruled id="guild-roster-unverified" testid="guild-roster-unverified-list">
     {#each shownPending as row (row.character_key)}
       <div class={ROW}>
-        <ClassCrestRing characterClass={row.class ?? ''} size={36} />
+        <Crest cls={row.class ?? ''} size={36} />
         <div class="flex min-w-[150px] flex-col">
           <span class="flex min-w-0 items-center gap-2">
             <span class="heading-name text-[14px]" style={`color:${classColorVar(row.class ?? '')}`}>
@@ -589,7 +589,7 @@
                       ? `${specLine}${specLine === '' ? '' : ' · '}alt of ${altOf.get(row.character_key)}`
                       : specLine}
                     <div class={`${ROW} ${ownRowBand(pinned, 0)}`}>
-                      <ClassCrestRing characterClass={row.class ?? ''} size={36} />
+                      <Crest cls={row.class ?? ''} size={36} />
                       <!-- At lg the name block is a fixed 240 px and its subtitle one ellipsised line (the whole
                text in the title), so every row's rank and stats start at the same left edge. -->
                       <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
@@ -718,8 +718,8 @@
                   {#each extras as entry (`${entry.state}:${entry.name}`)}
                     <div class={ENTRY_ROW} data-testid="guild-roster-entry" data-state={entry.state}>
                       <!-- No class known: the component's neutral ringed disc, never an empty outline. -->
-                      <ClassCrestRing
-                        characterClass={entry.class ?? ''}
+                      <Crest
+                        cls={entry.class ?? ''}
                         size={36}
                         testid="guild-roster-entry-crest"
                       />

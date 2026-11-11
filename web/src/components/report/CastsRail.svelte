@@ -10,7 +10,7 @@
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { CastRow } from '../../lib/report/types';
   import { classTone } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import { counted } from '../../lib/format/number';
@@ -50,7 +50,7 @@
         open
         testid={`casts-rail-${row.guid}`}
       >
-        {#snippet lead()}<ClassCrestRing characterClass={slug} size={24} />{/snippet}
+        {#snippet lead()}<Crest cls={slug} size={24} />{/snippet}
         {#snippet trail()}<span class="text-strong text-[14px] font-semibold tabular-nums"
             >{row.perMinute.toFixed(1)}</span
           >{/snippet}

@@ -25,7 +25,7 @@
   import { classTone } from '../lib/ui/primitives';
   import { BUSY_CLASS } from '../lib/ui/busy';
   import { button } from '../lib/ui/button';
-  import ClassCrestRing from './character/ClassCrestRing.svelte';
+  import Crest from './ui/Crest.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import GuildJoinedBlock from './guild/GuildJoinedBlock.svelte';
   import GuildJoinInvited from './guild/GuildJoinInvited.svelte';
@@ -157,7 +157,7 @@
                 sub={joining.sub}
                 open
               >
-                {#snippet lead()}<ClassCrestRing characterClass={joining.crestClass} size={32} />{/snippet}
+                {#snippet lead()}<Crest cls={joining.crestClass} size={32} />{/snippet}
               </Row>
             </div>
           {/if}

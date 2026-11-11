@@ -60,12 +60,11 @@
   import type { LadderOrderFor, LadderOrderForRanks } from '../../lib/planner/ladder-load';
   import { dataUrl } from '../../lib/planner/load';
   import SpellIcon from '../ui/SpellIcon.svelte';
-  import { classColor, classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
+  import { classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
   import { openTreeIndex, type TalentTreesCopy } from '../../lib/ui/talent-tree';
   import classRows from '../../data/classes.json';
-  import { classCrestSrc } from '../../lib/class-crest';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Button from '../ui/Button.svelte';
   import ControlBar from '../ui/ControlBar.svelte';
   import Notice from '../ui/Notice.svelte';
@@ -1030,8 +1029,7 @@
       options: classRows.map((row) => ({
         value: row.slug,
         label: row.name,
-        icon: classCrestSrc(row.slug),
-        ring: classColor(row.slug),
+        crest: row.slug,
         disabled: store.readOnly,
         disabledReason: READ_ONLY_REASON,
       })),
@@ -1301,8 +1299,8 @@
       >
         {#snippet crest()}
           <!-- Keyed on mount: hydration keeps the server's src, which is the default class's. -->
-          {#key mounted}<ClassCrestRing
-              characterClass={className}
+          {#key mounted}<Crest
+              cls={className}
               size={56}
               testid="planner-header-crest"
             />{/key}

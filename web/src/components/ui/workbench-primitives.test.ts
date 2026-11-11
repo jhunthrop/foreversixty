@@ -193,8 +193,8 @@ describe('ControlBar compact class picker', () => {
       compact: true,
       value: 'hunter',
       options: [
-        { value: 'warrior', label: 'Warrior', icon: '/c/warrior.webp', ring: 'var(--color-class-warrior)' },
-        { value: 'hunter', label: 'Hunter', icon: '/c/hunter.webp', ring: 'var(--color-class-hunter)' },
+        { value: 'warrior', label: 'Warrior', crest: 'warrior' },
+        { value: 'hunter', label: 'Hunter', crest: 'hunter' },
       ],
     },
   ];
@@ -210,7 +210,7 @@ describe('ControlBar compact class picker', () => {
   it('draws the ringed crest at 22 px', () => {
     const body = html(ControlBar, { groups, label: 'x' });
     expect(body).toMatch(
-      /<img src="\/c\/hunter.webp" alt="" width="22" height="22" class="ui-seg-crest" style="--ring: var\(--color-class-hunter\);"/,
+      /<img src="\/icons\/hd\/crests\/hunter.webp" alt="" width="22" height="22"[^>]*class="crest"[^>]*style="--c: var\(--color-class-hunter\); width: 22px; height: 22px;"/,
     );
   });
 

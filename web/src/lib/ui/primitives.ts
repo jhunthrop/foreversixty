@@ -96,8 +96,8 @@ export interface ControlOption {
   /** `href` is the option's own URL (a BiS band page), but the island applies the choice in place
    *  and moves the address itself: the link is for crawlers, a new tab and a script-less visit. */
   inPlace?: boolean;
-  /** A ring colour (CSS): `icon` renders as the round ringed class crest (ruling P10). */
-  ring?: string;
+  /** A class name or slug: the option leads with the ringed class crest (ruling P10), not `icon`. */
+  crest?: string;
 }
 
 export interface ControlGroup {

@@ -15,7 +15,7 @@
   import { simGap, simShare } from '../../lib/home/home-facts';
   import { titleColor, type ClassSlug } from '../../lib/ui/primitives';
   import { LINK } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Figure from '../ui/Figure.svelte';
   import Meter from '../ui/Meter.svelte';
   import Row from '../ui/Row.svelte';
@@ -44,7 +44,7 @@
     open
     testid="home-guild-sim"
   >
-    {#snippet lead()}<ClassCrestRing characterClass={row.class} size={CREST_PX} />{/snippet}
+    {#snippet lead()}<Crest cls={row.class} size={CREST_PX} />{/snippet}
     {#snippet trail()}
       <span class="home-sims-trail">
         <span class="home-sims-bar"

@@ -32,7 +32,7 @@
     type BoardRow,
     type BoardSortKey,
   } from '../../../lib/guild/dense/roster-board';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Page from '../../ui/Page.svelte';
   import Row from '../../ui/Row.svelte';
@@ -234,7 +234,7 @@
               sub={`${row.spec_name ?? row.spec ?? ''} · item level ${row.item_level ?? '–'}`}
               open
             >
-              {#snippet lead()}<ClassCrestRing characterClass={row.class ?? ''} size={32} />{/snippet}
+              {#snippet lead()}<Crest cls={row.class ?? ''} size={32} />{/snippet}
               {#snippet trail()}
                 <Button tone="secondary" size="sm" disabled={busy} onclick={() => onApprove(row)}
                   >Approve</Button
@@ -301,7 +301,7 @@
             phone={row.itemLevel === null ? undefined : `${row.itemLevel} ilvl`}
             testid={`guild-roster-row-${row.name.toLowerCase()}`}
           >
-            {#snippet icon()}<ClassCrestRing characterClass={row.cls} size={28} />{/snippet}
+            {#snippet icon()}<Crest cls={row.cls} size={28} />{/snippet}
             {#snippet name()}
               {#if href}<a {href} style:color={classColorVar(row.cls)}>{row.name}</a>{:else}<span
                   style:color={classColorVar(row.cls)}>{row.name}</span

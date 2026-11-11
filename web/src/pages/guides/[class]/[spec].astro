@@ -10,7 +10,7 @@
 // heading keeps its id.
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
-import ClassCrest from '../../../components/ClassCrest.astro';
+import Crest from '../../../components/ui/Crest.astro';
 import GuideAnswer from '../../../components/guides/GuideAnswer.astro';
 import GuideBisDoll from '../../../components/guides/GuideBisDoll.svelte';
 import GuideBisLane from '../../../components/guides/GuideBisLane.astro';
@@ -247,7 +247,7 @@ const jsonLd = [
   <main id="main" tabindex="-1" class="guide-page" data-testid="guide-page">
     <Page layout="reading" tocFrom={1024} testid="guide-body">
       <PageHeader slot="header" title={title} tone={{ classSlug: classSlug as ClassSlug }}>
-        <ClassCrest slot="crest" slug={classSlug} size={56} priority />
+        <Crest slot="crest" cls={classSlug} size={56} eager />
         <span slot="meta">{guidesCopy.headerMeta(role, formatDate(updated))}</span>
         <GuideAnswer
           slot="answer"

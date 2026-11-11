@@ -19,7 +19,7 @@
   import PageHeader from '../ui/PageHeader.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import ClassCrestRing from './ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let { path, name, signedIn }: { path: CharacterPath; name: string; signedIn: boolean } = $props();
 
@@ -83,7 +83,7 @@
           href={characterHrefs.character(row.region, row.ruleset, row.name)}
           open
         >
-          {#snippet lead()}<ClassCrestRing characterClass={row.class ?? ''} size={40} />{/snippet}
+          {#snippet lead()}<Crest cls={row.class ?? ''} size={40} />{/snippet}
         </Row>
       {/each}
     </Section>

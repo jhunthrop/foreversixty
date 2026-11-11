@@ -10,7 +10,7 @@
   import FeedRowUi from '../ui/FeedRow.svelte';
   import ItemIcon from '../ui/ItemIcon.svelte';
   import Section from '../ui/Section.svelte';
-  import ClassCrestRing from './ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let {
     characterKey,
@@ -40,7 +40,7 @@
       <FeedRowUi href={row.href} when={whenText(row, now)} testid="character-activity-row">
         {#snippet lead()}
           {#if row.crest !== null}
-            <ClassCrestRing characterClass={row.crest} size={32} />
+            <Crest cls={row.crest} size={32} />
           {:else}
             <ItemIcon icon={row.icon ?? undefined} quality={row.quality ?? 1} {build} size={32} />
           {/if}

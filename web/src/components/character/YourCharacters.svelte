@@ -7,7 +7,7 @@
   import { yourCharacterRows, type YourCharacterRow } from '../../lib/character/your-characters';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import ClassCrestRing from './ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let { title }: { title: string } = $props();
 
@@ -27,7 +27,7 @@
   <Section {title} panel testid="your-characters">
     {#each rows as row (row.key)}
       <Row title={row.name} titleTone={row.tone} sub={row.line} href={row.href} density="slim" open>
-        {#snippet lead()}<ClassCrestRing characterClass={row.classSlug} size={32} />{/snippet}
+        {#snippet lead()}<Crest cls={row.classSlug} size={32} />{/snippet}
       </Row>
     {/each}
   </Section>

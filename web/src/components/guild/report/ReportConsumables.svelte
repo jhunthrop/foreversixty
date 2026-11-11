@@ -8,7 +8,7 @@
   import type { RaidPullConsumables } from '../../../lib/guild/attendance-contract';
   import { consumablesModel } from '../../../lib/guild/report-night-view';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Grid from '../../ui/Grid.svelte';
   import Section from '../../ui/Section.svelte';
 
@@ -36,7 +36,7 @@
           rows={model.rows}
           testid="raid-consumables-grid"
         >
-          {#snippet lead(row)}<ClassCrestRing characterClass={row.class} size={20} />{/snippet}
+          {#snippet lead(row)}<Crest cls={row.class} size={20} />{/snippet}
         </Grid>
       </div>
       <p class="text-muted mt-2 text-[13px]" data-testid="raid-consumables-legend">

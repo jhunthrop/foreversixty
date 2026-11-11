@@ -16,7 +16,7 @@
   import { CONFIRM_BLOCK } from '../../lib/guild/billing-styles';
   import { COPIED_LONG_MS } from '../../lib/ui/copy-feedback';
   import CopyLinkField from '../ui/CopyLinkField.svelte';
-  import GuildCharacterName from './GuildCharacterName.svelte';
+  import CharacterName from '../ui/CharacterName.svelte';
 
   const TESTID = 'guild-invite';
 
@@ -138,7 +138,7 @@
         >
           {#if madeBy !== null}
             {copy.linkMadeBy(madeOn)}
-            <span><GuildCharacterName holder={madeBy} crestSize={0} />.</span>
+            <span><CharacterName name={madeBy.name} cls={madeBy.class} />.</span>
           {:else}
             {copy.linkMade(madeOn)}
           {/if}

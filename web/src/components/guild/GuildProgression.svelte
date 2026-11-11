@@ -12,7 +12,7 @@
   import { rosterBestLabels } from '../../lib/guild/roster-best';
   import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
   import Meter from '../ui/Meter.svelte';
   import Page from '../ui/Page.svelte';
@@ -73,7 +73,7 @@
         {#each shownBests as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
           {@const labels = rosterBestLabels(row)}
           <StatRow bar={false} figures={[{ value: labels.value }]}>
-            {#snippet icon()}<ClassCrestRing characterClass={row.player.class} size={28} />{/snippet}
+            {#snippet icon()}<Crest cls={row.player.class} size={28} />{/snippet}
             {#snippet name()}<a
                 href={characterHref(region, ruleset, row.player.name)}
                 style:color={classColorVar(row.player.class)}

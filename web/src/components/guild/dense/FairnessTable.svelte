@@ -11,7 +11,7 @@
   import { counted } from '../../../lib/plural';
   import { fairnessRows, guildItemsPerNight, type FairnessRaider } from '../../../lib/guild/dense/fairness';
   import { viewerZone, weekdayDayMonth } from '../../../lib/dates';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
@@ -106,7 +106,7 @@
               phone={counted(one.items, 'item')}
               testid={`guild-fair-${one.name.toLowerCase()}`}
             >
-              {#snippet icon()}<ClassCrestRing characterClass={one.cls} size={28} />{/snippet}
+              {#snippet icon()}<Crest cls={one.cls} size={28} />{/snippet}
               {#snippet name()}<span style:color={classColorVar(one.cls)}>{one.name}</span>{/snippet}
               {#snippet sub()}{one.spec}{one.last === null
                   ? ''

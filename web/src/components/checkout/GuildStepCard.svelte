@@ -14,7 +14,7 @@
   import { guildFacts, youRow } from '../../lib/billing/guild-card-model';
   import { guildMarkSrc } from '../../lib/guild/mark';
   import { classColorVar } from '../../lib/report/format';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Row from '../ui/Row.svelte';
 
   const FACT_SEPARATOR = ' · ';
@@ -80,7 +80,7 @@
                    verify mark drops to its own line rather than splitting words. -->
             <li class="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span class="inline-flex items-center gap-2 whitespace-nowrap">
-                <ClassCrestRing characterClass={entry.characterClass} size={20} />
+                <Crest cls={entry.characterClass} size={20} />
                 <span class="font-semibold" style={`color: ${classColorVar(entry.characterClass)}`}>
                   {entry.name}
                 </span>

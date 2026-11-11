@@ -13,8 +13,12 @@
   import { rulesetLabel } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
   import SupporterChip from '../SupporterChip.svelte';
-  import CharacterPortrait from './CharacterPortrait.svelte';
+  import Crest from '../ui/Crest.svelte';
 
+  /** The crest: 28 / 36 / 40 / 44 / 72px, and 64px -> 84px from `lg` for the home hero (home rebuild
+   *  spec §3.B.1). */
+  const CREST_PX = { sm: 28, md: 36, row: 40, lg: 44, xxl: 72, xl: 84 } as const;
+  const XL_CREST_BOX = 'h-16 w-16 lg:h-[84px] lg:w-[84px]';
   /** 14 / 15 / 18px, spec 2026-09-23 §2.2; xl is the home hero's 34px display name (design
    *  system: the home hero h1 exception; spec 2026-10-10-home-signed-in-panel §3.B). */
   const NAME_SIZE = {
@@ -131,7 +135,12 @@
 {/snippet}
 
 <div class={`flex min-w-0 gap-3 ${align === 'start' ? 'items-start' : 'items-center'}`}>
-  <CharacterPortrait {character} {size} {testid} />
+  <Crest
+    cls={character.class}
+    size={CREST_PX[size]}
+    class={size === 'xl' ? XL_CREST_BOX : undefined}
+    testid={`${testid}-avatar`}
+  />
   <div class="flex min-w-0 flex-col gap-0.5">
     {#if supporter}
       <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">

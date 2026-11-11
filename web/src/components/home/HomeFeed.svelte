@@ -22,7 +22,7 @@
   import { HOME_FEED_FETCH, signedInRows } from '../../lib/home/feed-mix';
   import { API_BASE_URL } from '../../lib/planner/config';
   import { LINK } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import FeedRowUi from '../ui/FeedRow.svelte';
   import ItemIcon from '../ui/ItemIcon.svelte';
   import LoadError from '../ui/LoadError.svelte';
@@ -112,7 +112,7 @@
         >
           {#snippet lead()}
             {#if row.crest !== null}
-              <ClassCrestRing characterClass={row.crest} size={LEAD_PX} />
+              <Crest cls={row.crest} size={LEAD_PX} />
             {:else if row.quality !== null}
               <ItemIcon icon={row.icon ?? undefined} quality={row.quality} {build} size={LEAD_PX} />
             {:else}

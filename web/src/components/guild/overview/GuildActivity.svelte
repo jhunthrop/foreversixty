@@ -6,7 +6,7 @@
   import activeBuild from '../../../data/active-build.json';
   import { minuteClock } from '../../../lib/ui/minute-clock.svelte';
   import { feedCopy, fetchFeed, whenText, type FeedRow } from '../../../lib/home/feed';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import FeedSentence from '../../home/FeedSentence.svelte';
   import FeedRowUi from '../../ui/FeedRow.svelte';
   import ItemIcon from '../../ui/ItemIcon.svelte';
@@ -37,7 +37,7 @@
         >
           {#snippet lead()}
             {#if row.crest !== null}
-              <ClassCrestRing characterClass={row.crest} size={40} />
+              <Crest cls={row.crest} size={40} />
             {:else}
               <ItemIcon
                 icon={row.icon ?? undefined}

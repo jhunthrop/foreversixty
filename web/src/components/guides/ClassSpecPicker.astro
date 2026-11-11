@@ -5,7 +5,7 @@
 // class crest and name in the class colour, then its specs in tree order as slim link rows
 // (GuideSpecRow: the spec icon and name, and the hidden "Your spec" Tag the page's answer shows).
 // The class and spec colours sit on the panel, where they clear contrast.
-import ClassCrest from '../ClassCrest.astro';
+import Crest from '../ui/Crest.astro';
 import GuideSpecRow from './GuideSpecRow.astro';
 import Plate from '../ui/Plate.svelte';
 import Row from '../ui/Row.svelte';
@@ -59,7 +59,7 @@ const { classes, label, testid, classTestidPrefix, classLinkTestidPrefix, rowTes
               : undefined
           }
         >
-          <ClassCrest slot="lead" slug={group.slug} size={40} />
+          <Crest slot="lead" cls={group.slug} size={40} testid={`class-crest-${group.slug}`} />
         </Row>
         <div class="class-spec-picker-specs">
           {group.specs.map((spec) => (

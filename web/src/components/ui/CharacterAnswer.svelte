@@ -186,8 +186,6 @@
   .ui-cans-crest {
     width: 40px;
     height: 40px;
-    border-radius: 999px;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
   }
   .ui-cans-name {
     font: 700 18px/22px var(--font-body);

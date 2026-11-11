@@ -37,20 +37,10 @@
     outline: 2px solid var(--color-gold);
     outline-offset: -2px;
   }
+  /* The ringed crest (styles/crest.css) at the row's size. */
   .typeahead-crest {
-    flex-shrink: 0;
     width: 28px;
     height: 28px;
-    border-radius: 999px;
-    object-fit: cover;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
-  }
-  .typeahead-crest-none {
-    box-shadow: 0 0 0 2px var(--color-line);
-  }
-  .typeahead-row:hover .typeahead-crest,
-  .typeahead-row[aria-selected='true'] .typeahead-crest {
-    box-shadow: 0 0 0 2px var(--c);
   }
   .typeahead-text {
     display: flex;

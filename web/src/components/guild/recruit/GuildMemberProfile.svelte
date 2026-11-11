@@ -28,7 +28,7 @@
   import { classTone } from '../../../lib/ui/primitives';
   import { untrack } from 'svelte';
   import { viewerZone } from '../../../lib/dates';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import SignInPrompt from '../../SignInPrompt.svelte';
   import Facts from '../../ui/Facts.svelte';
   import Figure from '../../ui/Figure.svelte';
@@ -107,7 +107,7 @@
     {@const fairness = lootFairness(profile)}
     {@const upgrades = upgradeRows(profile)}
     {@const member = profile.member}
-    {#snippet crest()}<ClassCrestRing characterClass={head.classSlug} size={56} />{/snippet}
+    {#snippet crest()}<Crest cls={head.classSlug} size={56} />{/snippet}
     {#snippet figures()}
       {@const list = profileFigures(profile)}
       <!-- Two by two on a phone, one row from 768, so no label wraps under its figure. -->
@@ -148,7 +148,7 @@
                   open
                   testid="guild-profile-character"
                 >
-                  {#snippet lead()}<ClassCrestRing characterClass={character.classSlug} size={28} />{/snippet}
+                  {#snippet lead()}<Crest cls={character.classSlug} size={28} />{/snippet}
                   {#snippet trail()}{#if character.main}<Tag tone="muted">{copy.main}</Tag>{/if}{/snippet}
                 </Row>
               </li>

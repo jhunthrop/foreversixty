@@ -58,7 +58,7 @@
   import type { GuildRaidRole, GuildSignupState } from '../../lib/guild/api';
   import { bandClause, bandLineParts, kindCountsRoles, kindOf, whenPhrase } from '../../lib/guild/raid-copy';
   import { classTone } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Row from '../ui/Row.svelte';
   import { putSignup } from '../../lib/guild/raids-api';
   import { guildGateCopy } from '../../lib/guild/copy';
@@ -271,7 +271,7 @@
 {:else if layout === 'row'}
   <div data-testid="guild-raid-line" aria-busy={busy ? 'true' : undefined}>
     <Row title={boundName} titleTone={classTone(rowCharacter?.class ?? '')} wrapTrail>
-      {#snippet lead()}<ClassCrestRing characterClass={rowCharacter?.class ?? ''} size={36} />{/snippet}
+      {#snippet lead()}<Crest cls={rowCharacter?.class ?? ''} size={36} />{/snippet}
       {#snippet subContent()}<span data-testid="guild-raid-line-sentence"
           >{rowFacts}{rowClause.head}{#if rowClause.word !== ''}<strong class="text-strong font-semibold"
               >{rowClause.word}</strong

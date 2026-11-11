@@ -29,7 +29,7 @@
   import type { TimeWindow } from '../../lib/report/window';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import { compact, percent } from '../../lib/format/number';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Meter from '../ui/Meter.svelte';
   import Section from '../ui/Section.svelte';
   import Select from '../ui/Select.svelte';
@@ -461,8 +461,8 @@
           {#each lines as row (row.guid)}
             <StatRow figures={figuresOf(row)} phone={phoneOf(row)} bar={ranked} testid={`threat-${row.guid}`}>
               {#snippet icon()}
-                <ClassCrestRing
-                  characterClass={isPlayer(row.guid) ? (classSlugOf(classOf.get(row.guid)) ?? '') : ''}
+                <Crest
+                  cls={isPlayer(row.guid) ? (classSlugOf(classOf.get(row.guid)) ?? '') : ''}
                   size={28}
                 />
               {/snippet}

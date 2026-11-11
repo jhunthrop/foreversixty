@@ -23,7 +23,7 @@
   import { CHART_INK, inkCss } from '../../lib/chart/theme';
   import { clockDuration } from '../../lib/format/duration';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Chips from '../ui/Chips.svelte';
   import Section from '../ui/Section.svelte';
 
@@ -364,7 +364,7 @@
                 style:height="{rowHeight(pitch)}px"
                 title={lane.name}
               >
-                <ClassCrestRing characterClass="" size={20} />
+                <Crest cls="" size={20} />
                 <span
                   class="text-strong min-w-0 text-[13px] leading-4 font-semibold md:truncate md:text-[14px] md:leading-5"
                   >{lane.name}</span
@@ -377,7 +377,7 @@
                 style:height="{rowHeight(pitch)}px"
                 title={lane.name}
               >
-                <ClassCrestRing characterClass={lane.crest} size={20} />
+                <Crest cls={lane.crest} size={20} />
                 <span
                   class="min-w-0 text-[13px] leading-4 font-semibold md:truncate md:text-[14px] md:leading-5"
                   style:color={lane.color}>{lane.name}</span

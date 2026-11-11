@@ -45,7 +45,7 @@
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import { clockDuration } from '../../lib/format/duration';
   import { compact } from '../../lib/format/number';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Notice from '../ui/Notice.svelte';
   import Section from '../ui/Section.svelte';
   import Select from '../ui/Select.svelte';
@@ -507,7 +507,7 @@
     phone={line.inB ? `${mark}${compact(line.b)} · ${signed(line.a - line.b)}` : DASH}
     testid={rowTestid}
   >
-    {#snippet icon()}<ClassCrestRing characterClass={classSlugOf(line.class) ?? ''} size={28} />{/snippet}
+    {#snippet icon()}<Crest cls={classSlugOf(line.class) ?? ''} size={28} />{/snippet}
     {#snippet name()}<span style:color={classColorVar(line.class)}>{splitUnitName(line.name).name}</span
       >{/snippet}
     {#snippet sub()}

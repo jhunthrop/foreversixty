@@ -7,7 +7,7 @@
 import { mount, unmount } from 'svelte';
 import { fetchMeOnce, type Me, type MeCharacter } from '../account/api';
 import { onCurrentCharacterChange, readCurrent } from '../current-character';
-import { classCrestSrc } from '../class-crest';
+import { ANSWER_CREST_PX, paintCrest } from '../class-crest';
 import { planAnswer } from '../character-header/answer-plan';
 import { finishedRunsFor } from '../character-header/finished-sim-line';
 import { classColorVar } from '../report/format';
@@ -53,9 +53,7 @@ function paintCharacter(
   answer: Extract<LandingAnswer, { state: 'ready' }>,
 ): void {
   const { character } = answer;
-  const crest = field('crest') as HTMLImageElement;
-  crest.src = character.classSlug === '' ? '' : classCrestSrc(character.classSlug);
-  crest.style.setProperty('--c', classColorVar(character.className));
+  paintCrest(field('crest') as HTMLImageElement, character.className, ANSWER_CREST_PX);
   field('name').textContent = character.name;
   field('name').style.color = classColorVar(character.className);
   field('detail').textContent = character.line;

@@ -29,7 +29,7 @@
   } from '../../lib/character-selector/rows';
   import { createSelectorState } from '../../lib/character-selector/selector-state.svelte';
   import { classColorVar } from '../../lib/report/format';
-  import SelectorCrest from './SelectorCrest.svelte';
+  import Crest from '../ui/Crest.svelte';
   import SelectorMenuRow from './SelectorMenuRow.svelte';
   import SelectorPanel from './SelectorPanel.svelte';
 
@@ -193,7 +193,7 @@
     >
       <span class="csel-pre-char">
         <span class="csel-crestbox">
-          <span class="csel-crest csel-pre-crest"></span>
+          <span class="crest csel-crest csel-pre-crest"></span>
           <span class="csel-badge"></span>
         </span>
         <span class="csel-name-bar" data-csel-name></span>
@@ -240,7 +240,7 @@
       data-testid="character-selector"
     >
       <span class="csel-crestbox">
-        <SelectorCrest classSlug={current.classSlug} size={32} />
+        <Crest cls={current.classSlug} size={32} eager class="csel-crest" />
         {#if mark !== null}<i class="csel-mark" data-mark={mark} data-testid="selector-mark"></i>{/if}
         <span class="csel-badge">
           <Icon icon={ICON_CHEVRON_DOWN} size={8} />

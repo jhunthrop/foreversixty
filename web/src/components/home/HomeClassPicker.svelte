@@ -7,7 +7,7 @@
   import { SPECS } from '../../lib/sim/specs';
   import { homeCopy, homeHrefs } from '../../lib/home/home-view';
   import type { ClassSlug } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Row from '../ui/Row.svelte';
   import RowGrid from '../ui/RowGrid.svelte';
   import Plate from '../ui/Plate.svelte';
@@ -37,7 +37,7 @@
         open
         testid={`home-class-${c.slug}`}
       >
-        {#snippet lead()}<ClassCrestRing characterClass={c.name} size={CREST_PX} />{/snippet}
+        {#snippet lead()}<Crest cls={c.name} size={CREST_PX} />{/snippet}
       </Row>
     {/each}
   </RowGrid>

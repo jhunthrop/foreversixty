@@ -12,6 +12,7 @@
 </script>
 
 <script lang="ts">
+  import { CREST_CLASS } from '../../lib/class-crest';
   import Icon from './Icon.svelte';
   import { ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
   import { selectCopy } from '../../lib/ui/copy';
@@ -280,7 +281,6 @@
           class="sel-icon"
           data-kind={picked.icon.kind}
           style:--sel-quality={qualityBorder(picked.icon)}
-          style:--sel-ring={crestRing(picked.icon, picked.colour)}
         >
           {#if picked.icon.src !== ''}<img
               src={picked.icon.src}
@@ -288,6 +288,8 @@
               width="20"
               height="20"
               decoding="async"
+              class={picked.icon.kind === 'crest' ? CREST_CLASS : undefined}
+              style:--c={crestRing(picked.icon, picked.colour)}
             />{/if}
         </span>
       {/if}

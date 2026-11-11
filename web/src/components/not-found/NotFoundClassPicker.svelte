@@ -7,7 +7,7 @@
   import { SPECS } from '../../lib/sim/specs';
   import { notFoundCopy } from '../../lib/not-found/copy';
   import { titleColor, type ClassSlug } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Row from '../ui/Row.svelte';
   import RowGrid from '../ui/RowGrid.svelte';
   import Section from '../ui/Section.svelte';
@@ -25,7 +25,7 @@
   <RowGrid cols={3}>
     {#each rows as c (c.slug)}
       <Row title={c.name} testid={`not-found-class-${c.slug}`}>
-        {#snippet lead()}<ClassCrestRing characterClass={c.name} size={CREST_PX} />{/snippet}
+        {#snippet lead()}<Crest cls={c.name} size={CREST_PX} />{/snippet}
         {#snippet titleContent()}<a
             class="nf-class"
             href={`/guides/${c.slug}`}

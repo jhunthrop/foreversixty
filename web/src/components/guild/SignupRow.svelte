@@ -43,7 +43,7 @@
   } from '../../lib/guild/signup-strip';
   import { classColorVar } from '../../lib/report/format';
   import { ROW_ITEM } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Select from '../ui/Select.svelte';
   import SignupSegments from './SignupSegments.svelte';
 
@@ -254,7 +254,7 @@
 
 {#if !character.verified}
   <li class="{ROW_ITEM} flex min-h-[68px] items-center gap-3 py-3" data-testid={`signup-row-${key}`}>
-    <span class="opacity-60"><ClassCrestRing characterClass={character.class} size={32} /></span>
+    <span class="opacity-60"><Crest cls={character.class} size={32} /></span>
     <div class="min-w-0">
       <p class="heading-name text-muted text-[14px]">{character.name}</p>
       <p class="text-muted text-[13px]">{raidCopy.waitingCharacter}</p>
@@ -273,7 +273,7 @@
           ? ''
           : 'col-span-2'}"
       >
-        <ClassCrestRing characterClass={character.class} size={32} />
+        <Crest cls={character.class} size={32} />
         <div class="min-w-0">
           <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
             {character.name}

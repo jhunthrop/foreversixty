@@ -20,7 +20,7 @@
   import { specLabel } from '../../../lib/sim/spec-label';
   import { LINK } from '../../../lib/ui/primitives';
   import { REGION } from '../../../lib/ui/regions';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
 
   let {
@@ -74,7 +74,7 @@
   <!-- One line of facts (13 px from the item level on, so a phone holds it on one row), then the
        actions; at 390 the actions take the second row. -->
   <p class="m-0 flex flex-wrap items-center gap-x-2 gap-y-2 text-[15px] leading-6 md:gap-x-3">
-    <ClassCrestRing characterClass={character.class_slug} size={24} testid="sim-character-class-icon" />
+    <Crest cls={character.class_slug} size={24} testid="sim-character-class-icon" />
     {#if character.name}<span
         class="font-bold"
         style:color={classColorVar(character.class_slug)}
