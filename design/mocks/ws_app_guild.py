@@ -73,11 +73,13 @@ def _head(leveler: bool) -> str:
 
 
 def _raid_view() -> str:
-    """The next raid below 60: the raid, its time, the counts and roles; the answers drawn off, one quiet line."""
-    seg = ''.join(f'<a class="btn" href="#" aria-disabled="true">{x}</a>' for x in ('In', 'Late', 'Bench', 'Out'))
+    """The next raid below 60 (coordinator ruling 2026-11-10: they sign up): the raid, its time, the counts and roles, the
+    four answers live, one quiet line."""
+    seg = ''.join(f'<a class="btn" href="#">{x}</a>' for x in ('In', 'Late', 'Bench', 'Out'))
     return (f'<div class="blk-r5" data-region="section-next-raid"><div class="pn"><div class="hd"><div class="rl">{icon(F.ONY, 40)}'
-            f'<div class="tx"><b>{F.RAID}</b><span class="s">{F.WHEN}</span><span class="s">18 in, 3 late &middot; 2 tanks, 5 healers, 11 damage</span></div>'
-            f'</div><div class="seg off">{seg}</div><p class="gate">Raids open at 60</p></div></div></div>')
+            f'<div class="tx"><b>{F.RAID}</b><span class="s">{F.WHEN}</span><span class="s">18 in, 3 late &middot; Tanks 2 &middot; '
+            f'Healers 5 &middot; Damage 11</span></div></div><div class="seg">{seg}</div>'
+            f'<p class="gate">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p></div></div></div>')
 
 
 def _roster(leveler: bool) -> str:
@@ -134,7 +136,7 @@ def _none(leveler: bool) -> str:
                         + F._r5_row('Dawnbreak', 'Alliance &middot; Tue and Thu, 9:00 pm EST &middot; needs damage', trail=apply))
     find = F._r5_section('Find your guild', F._r5_row('Search guilds on the site', 'By name or realm')
                          + F._r5_row('Claim your guild', 'A guild master or an officer confirms with the addon or Battle.net.'))
-    gate = '<p class="gate" style="margin:0">Raids open at 60</p>' if leveler else ''
+    gate = f'<p class="gate" style="margin:0">Raids open at 60 &middot; you&rsquo;re {LEVELER_LEVEL}</p>' if leveler else ''
     return gate + rec + find
 
 
