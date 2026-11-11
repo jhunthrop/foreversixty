@@ -9,7 +9,7 @@
       "key": "advanced_off",
       "tone": "warn",
       "title": "Advanced logging is off",
-      "sub": "Reports will miss deaths with health, item level, resources and positions. Turn it on in Options \u003e System \u003e Network \u003e Advanced Combat Logging, then relog."
+      "sub": "Reports will miss health at death, item level, resources and positions. Turn it on in Options \u003e System \u003e Network \u003e Advanced Combat Logging, then relog."
     },
     "connect": {
       "state": "",
@@ -32,7 +32,7 @@
         "last_played": "2026-10-20T17:40:00Z",
         "advanced_logging": false,
         "advanced_logging_known": true,
-        "advanced_logging_help": "Turn it on in Options \u003e System \u003e Network \u003e Advanced Combat Logging."
+        "advanced_logging_help": "Turn it on in Options \u003e System \u003e Network \u003e Advanced Combat Logging, then relog."
       }
     ],
     "watch_pending": false,

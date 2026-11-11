@@ -32,6 +32,12 @@ var CountBuilds = Plural{Count: "n", One: "1 build", Other: "{n} builds"}
 // ReportsOpen is companion.reports.open: Open your reports
 const ReportsOpen = "Open your reports"
 
+// ReportsOnSite is companion.reports.onSite: Open on the site
+const ReportsOnSite = "Open on the site"
+
+// DmgHint is companion.dmg.hint: Drag Forever Sixty to Applications
+const DmgHint = "Drag Forever Sixty to Applications"
+
 // TrayTooltip is companion.tray.tooltip: Forever Sixty · {line}
 const TrayTooltip = "Forever Sixty · {line}"
 
@@ -698,14 +704,11 @@ const HeadlineNoFolderButton = "Open Settings"
 // HeadlineAdvancedOffTitle is companion.headline.advancedOffTitle: Advanced logging is off
 const HeadlineAdvancedOffTitle = "Advanced logging is off"
 
-// HeadlineAdvancedOffSub is companion.headline.advancedOffSub: Reports will miss deaths with health, item level, resources and positions.
-const HeadlineAdvancedOffSub = "Reports will miss deaths with health, item level, resources and positions."
+// HeadlineAdvancedOffSub is companion.headline.advancedOffSub: Reports will miss health at death, item level, resources and positions.
+const HeadlineAdvancedOffSub = "Reports will miss health at death, item level, resources and positions."
 
 // HeadlineAdvancedHow is companion.headline.advancedHow: Turn it on in Options > System > Network > Advanced Combat Logging, then relog.
 const HeadlineAdvancedHow = "Turn it on in Options > System > Network > Advanced Combat Logging, then relog."
-
-// HeadlineAdvancedRowHelp is companion.headline.advancedRowHelp: Turn it on in Options > System > Network > Advanced Combat Logging.
-const HeadlineAdvancedRowHelp = "Turn it on in Options > System > Network > Advanced Combat Logging."
 
 // HeadlineReadyTitle is companion.headline.readyTitle: Ready
 const HeadlineReadyTitle = "Ready"

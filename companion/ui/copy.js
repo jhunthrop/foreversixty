@@ -116,7 +116,7 @@ const COPY = (() => {
 
     reports: {
       // The one name for the reports job, as the site's: the tray and the Device page say it too.
-      all: T.reportsOpen,
+      all: T.reportsOnSite,
       emptyTitle: T.reportsEmptyTitle,
       emptyBody: T.reportsEmptyBody,
       unpairedTitle: T.reportsUnpairedTitle,

@@ -5,7 +5,8 @@
 Writes companion/packaging/macos/dmg-background.png (660 x 400) and dmg-background@2x.png (1320 x 800): the
 companion window's own head, the site's painted band under its veil with a black edge, the painted seal and
 "Forever Sixty" in Marcellus cream on it; under it the cream ground, and one short teal arrow from where the app
-sits to where Applications sits. Nothing else.
+sits to where Applications sits, with the one line under it that says to drag it there (companion.dmg.hint in
+apps/shared/copy/companion.json). Nothing else.
 
 The ground under the icons is light on purpose. Finder draws icon labels over a background picture in dark ink in
 light and dark appearance alike (checked on macOS 26, 2026-11-10: a dark ground left "Forever Sixty" unreadable in
@@ -27,6 +28,8 @@ TOKENS = REPO / 'design/tokens/tokens.json'
 SEAL = REPO / 'design/assets/logo/lx-seal-v4.png'
 BAND = REPO / 'companion/ui/art/band-1200.webp'
 FONT = REPO / 'api/internal/brand/fonts/Marcellus-Regular.ttf'
+BODY_FONT = REPO / 'api/internal/brand/fonts/OpenSans-SemiBold.ttf'
+COPY = REPO / 'apps/shared/copy/companion.json'
 OUT = REPO / 'companion/packaging/macos'
 
 # The window's content, in points. The icons sit a little above the middle so each one with its label below
@@ -48,6 +51,10 @@ NAME_GAP = 10
 ARROW_AIR = 70
 ARROW_STROKE = 4
 ARROW_HEAD = 12
+# The one instruction, under the icons' labels, centred: the companion's copy key, in the card's ink.
+HINT_KEY = 'companion.dmg.hint'
+HINT_Y = 330
+HINT_PT = 15
 SUPERSAMPLE = 4
 
 
@@ -106,6 +113,9 @@ def render(scale: int) -> Image.Image:
     for px, py in ((x0, cy), (x1 - head, cy - head), (x1 - head, cy + head), (x1, cy)):
         r = stroke / 2
         draw.ellipse((px - r, py - r, px + r, py + r), fill=arrow)  # round caps and the tip
+    hint = json.loads(COPY.read_text())['strings'][HINT_KEY]
+    hint_font = ImageFont.truetype(str(BODY_FONT), HINT_PT * s)
+    draw.text((w / 2, HINT_Y * s), hint, font=hint_font, fill=token('base', 'raised'), anchor='mm')
     return im.resize((WINDOW[0] * scale, WINDOW[1] * scale), Image.LANCZOS)
 
 

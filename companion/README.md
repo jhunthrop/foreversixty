@@ -197,7 +197,7 @@ while you are not connected, and they go up as soon as you connect, so a missed 
 and `Logs`, on the Settings page. The folder above it works too.
 
 **"Advanced logging: OFF."** The report will be accepted, marked, and will lose the views that
-need the advanced fields: deaths with health, item level, resources, and positions. Turn it on
+need the advanced fields: health at death, item level, resources, and positions. Turn it on
 in **Options > System > Network > Advanced Combat Logging**, then relog.
 
 **Fights are queued and not going up.** Open `logs/companion.log`. Every upload failure is one

@@ -93,7 +93,7 @@ test('the reports job has one name: the tray, the Reports page and the Device pa
   const COPY = require('./copy.js');
   const TEXT = require('./copy_gen.js');
   assert.strictEqual(TEXT.reportsOpen, 'Open your reports');
-  assert.strictEqual(COPY.reports.all, TEXT.reportsOpen);
+  assert.strictEqual(COPY.reports.all, TEXT.reportsOnSite);
   assert.strictEqual(COPY.device.openReports, TEXT.reportsOpen);
   assert.strictEqual(COPY.pages.reports, 'Your reports');
 });

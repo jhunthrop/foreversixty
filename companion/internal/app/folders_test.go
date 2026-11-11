@@ -259,7 +259,7 @@ func TestTheHeadlineTakesTheFirstMatch(t *testing.T) {
 		t.Fatal(err)
 	}
 	if k := h.app.Snapshot().Headline; k.Key != "advanced_off" || k.Tone != "warn" || k.Title != "Advanced logging is off" ||
-		k.Sub != "Reports will miss deaths with health, item level, resources and positions. "+
+		k.Sub != "Reports will miss health at death, item level, resources and positions. "+
 			"Turn it on in Options > System > Network > Advanced Combat Logging, then relog." {
 		t.Fatalf("advanced off = %+v", k)
 	}

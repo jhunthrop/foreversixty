@@ -133,10 +133,10 @@ const (
 
 	// CopyAdvancedHow is the menu path, and what to do after.
 	CopyAdvancedHow = copygen.HeadlineAdvancedHow
-	// CopyAdvancedRowHelp is the short line a folder row keeps when the
-	// headline is about something else, so the sentence is never on
+	// CopyAdvancedRowHelp is the line a folder row keeps when the headline
+	// is about something else: the same steps, so the sentence is never on
 	// screen twice.
-	CopyAdvancedRowHelp = copygen.HeadlineAdvancedRowHelp
+	CopyAdvancedRowHelp = CopyAdvancedHow
 )
 
 // Why a sign-in failed, when the site (not the network) said so.

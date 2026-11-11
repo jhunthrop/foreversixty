@@ -1,8 +1,8 @@
 // design/mocks/companion/shoot_ba4.cjs: the companion surfaces shoot_ui.cjs does not cover, for lane BA4's review
 // (design/reviews/2026-11-11-ba4): the setup steps (companion/ui/install.html in each mode, at the window's fixed
 // 660 x 400), the tray menu as macOS and Windows draw it (its words read from the generated companion/ui/copy_gen.js,
-// so the capture shows the keys the binary ships, and the tray dot from internal/icon/assets), and the disk image's
-// window (packaging/macos/dmg-background@2x.png with the two icons at dmg-layout.sh's places, labels in Finder's ink).
+// so the capture shows the keys the binary ships, and the tray dot from internal/icon/assets). The disk image's
+// window is a real Finder capture of a create-dmg image built with package-mac-companion.sh's arguments (dmg-window.png).
 //   node design/mocks/companion/shoot_ba4.cjs <node_modules with playwright> <out dir>
 const path = require('node:path');
 const fs = require('node:fs');
@@ -73,29 +73,6 @@ hr { border: 0; border-top: 1px solid #555; margin: 4px 8px; }
 </body></html>`;
 }
 
-// The disk image's window: the background at its 2x, the app and Applications icons at dmg-layout.sh's centres.
-function dmgHtml() {
-  const layout = fs.readFileSync(path.join(REPO, 'companion/packaging/macos/dmg-layout.sh'), 'utf8');
-  const nums = (key) => layout.match(new RegExp(`${key}=\\((\\d+) (\\d+)\\)`)).slice(1).map(Number);
-  const [app, drop] = [nums('DMG_APP'), nums('DMG_DROP')];
-  const bg = dataUrl(path.join(REPO, 'companion/packaging/macos/dmg-background@2x.png'));
-  const seal = dataUrl(path.join(REPO, 'design/assets/logo/lx-seal-v4.png'));
-  const icon = (at, img, label) => `<div class="icon" style="left:${at[0] - 64}px;top:${at[1] - 64}px">${img}<span>${label}</span></div>`;
-  const folder = '<div class="folder"></div>';
-  return `<!doctype html><html><head><meta charset="utf-8"><style>
-body { margin: 0; background: #1e1e1e; font: 13px -apple-system, sans-serif; }
-.title { height: 32px; background: #e8e6e3; display: flex; align-items: center; justify-content: center; color: #333; font-weight: 600; position: relative; }
-.title i { position: absolute; left: 12px; top: 10px; width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; box-shadow: 20px 0 #febc2e, 40px 0 #28c840; }
-.win { position: relative; width: 660px; height: 400px; background: url(${bg}) 0 0 / 660px 400px; }
-.icon { position: absolute; width: 128px; text-align: center; }
-.icon img { width: 128px; height: 128px; display: block; }
-.icon span { display: block; margin-top: 4px; color: #1d1d1f; font-size: 13px; }
-.folder { width: 128px; height: 104px; margin-top: 12px; border-radius: 10px; background: linear-gradient(#64b5f6, #1e88e5); margin-bottom: 12px; }
-</style></head><body><div class="title"><i></i>Forever Sixty</div><div class="win">
-${icon(app, `<img src="${seal}" alt="">`, 'Forever Sixty')}${icon(drop, folder, 'Applications')}
-</div></body></html>`;
-}
-
 async function shootHtml(browser, name, html, size) {
   const page = await browser.newPage({ viewport: size, deviceScaleFactor: 2 });
   await page.setContent(html);
@@ -110,6 +87,5 @@ async function shootHtml(browser, name, html, size) {
   const browser = await chromium.launch();
   for (const s of INSTALL) console.log(path.relative(REPO, await shootInstall(browser, s)));
   console.log(path.relative(REPO, await shootHtml(browser, 'tray-menu', trayHtml(), { width: 680, height: 260 })));
-  console.log(path.relative(REPO, await shootHtml(browser, 'dmg-window', dmgHtml(), { width: 660, height: 432 })));
   await browser.close();
 })();
