@@ -5,4 +5,4 @@
 // APP_VERSION is the semver players see. APP_BUILD rises by one on every upload,
 // whatever the version: it is the iOS build number and the Play versionCode.
 APP_VERSION = 0.1.0
-APP_BUILD = 19
+APP_BUILD = 20
