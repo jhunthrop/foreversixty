@@ -17,10 +17,18 @@ import gg.foreversixty.app.flows.FlowButton
 import gg.foreversixty.app.flows.FlowLead
 import gg.foreversixty.app.flows.FlowLink
 import gg.foreversixty.app.flows.FlowNote
+import gg.foreversixty.app.flows.FlowPageState
+import androidx.compose.foundation.rememberScrollState
 import gg.foreversixty.app.flows.FlowPanel
 import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowSection
 import gg.foreversixty.app.flows.FlowSubLink
+import gg.foreversixty.app.flows.TallyItem
+import gg.foreversixty.app.flows.SUB
+import gg.foreversixty.app.raids.logic.NotesText
+import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.style.TextOverflow
 import gg.foreversixty.app.home.flows.HomeActions
 import gg.foreversixty.app.home.flows.OfficerItems
 import gg.foreversixty.app.home.flows.RaidCardModel
@@ -34,13 +42,33 @@ enum class GuildPage { Roster, Calendar, Loot, Sims }
 /** A guild that recruits the player's spec, with Apply. */
 data class RecruitingGuild(val id: Long, val name: String, val line: String)
 
-/** One item of Before you pull: ticked, missing or a warning, and where to get it. */
-data class ReadyItem(val tone: ReadyTone, val title: String, val sub: String, val where: String?, val link: String? = null)
+/**
+ * One item of Before you pull: ticked, missing or a warning, and where to get it; [icon] the item the
+ * check is about (the attunement item, the boots) when the data has its icon.
+ */
+data class ReadyItem(val tone: ReadyTone, val title: String, val sub: String, val where: String?, val link: String? = null, val icon: String? = null)
 
 enum class ReadyTone { Ok, Miss, Warn }
 
-/** One role of Who is coming: `Healers`, `5` of `8`, the names (and the short role's gap). */
-data class RoleLine(val role: String, val have: Int, val want: Int?, val names: String)
+/** One role of Who is coming: its tally (S6), the names shown, how many more, and Damage's split. */
+data class RoleLine(val tally: TallyItem, val names: List<RoleName>, val more: String? = null, val split: String? = null) {
+    val role: String get() = tally.label
+    val have: Int get() = tally.have
+    val want: Int? get() = tally.want
+
+    /** The names line as plain text (TalkBack, tests): `Mendara, Gravemend, Rainspeaker and 3 more`. */
+    val namesText: String get() = names.joinToString(", ") { it.text } + more.orEmpty()
+}
+
+/**
+ * A line closing Who is coming: the counts, the Covered line ([cover], its names in wipe red beside their
+ * icons, [text] read aloud), an officer's readiness (a tap opens the roster on [onlyKeys], the raiders
+ * it names).
+ */
+data class RoleFoot(val text: String, val cover: CoverLine? = null, val onlyKeys: Set<String> = emptySet())
+
+/** A name on Who is coming in its class colour: `Brightwen (Late · 15 min)`. */
+data class RoleName(val text: String, val className: String)
 
 /** What the Raid tab shows (spec 2026-11-08 4.2). */
 sealed interface RaidTabView {
@@ -63,6 +91,12 @@ sealed interface RaidTabView {
         val live: RaidLiveModel?,
         /** Who is coming (or, live, who is in): each role with its names. */
         val roles: List<RoleLine>,
+        /** The lines under it: the other answers, what the comp misses, an officer's readiness. */
+        val foot: List<RoleFoot> = emptyList(),
+        /** The raid's officer notes (HTML), two lines under the head; the rest on the raid page. */
+        val notes: String? = null,
+        /** An officer's Needs you sits directly under the head (G3). */
+        val needsFirst: Boolean = false,
         val ready: List<ReadyItem>,
         val readyStamp: String?,
         val pages: List<GuildPageRow>,
@@ -79,6 +113,10 @@ data class RaidTabActions(
     val onSignIn: () -> Unit = {},
     val onWhere: (ReadyItem) -> Unit = {},
     val onApplicant: (Long) -> Unit = {},
+    /** The not-synced line's tap (row 5): the roster filtered to the characters it names. */
+    val onRosterOf: (Set<String>) -> Unit = {},
+    /** The Covered line's `and N more` (round 5 row 4): the raid page at its cover list. */
+    val onCover: (Long) -> Unit = {},
 )
 
 /**
@@ -87,8 +125,14 @@ data class RaidTabActions(
  * Before you pull, what needs an officer and the guild's pages. [notice] sits under the band.
  */
 @Composable
-fun RaidTabScreen(view: RaidTabView, actions: RaidTabActions, topBar: @Composable () -> Unit = {}, notice: @Composable () -> Unit = {}) {
-    FlowBandPage(topBar, notice = notice) {
+fun RaidTabScreen(
+    view: RaidTabView,
+    actions: RaidTabActions,
+    topBar: @Composable () -> Unit = {},
+    page: FlowPageState = FlowPageState(rememberScrollState()),
+    notice: @Composable () -> Unit = {},
+) {
+    FlowBandPage(topBar, notice = notice, page = page) {
         when (view) {
             RaidTabView.SignedOut -> Lone(stringResource(R.string.raid_tab_withGuild), emptyList()) {
                 RaidWideButton(stringResource(R.string.signin_button), primary = true, onClick = actions.onSignIn)
@@ -137,15 +181,19 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
     when {
         live != null -> RaidNightBlock(live, view.roles)
         next != null -> {
-            FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) { RaidHead(next, actions.card) }
-            if (view.roles.isNotEmpty()) {
+            FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) {
+                RaidHead(next, actions.card, view.notes)
+            }
+            // G3: an officer's open items come straight after the head.
+            if (view.needsFirst) NeedsSection(view, actions)
+            if (view.roles.isNotEmpty() || view.foot.isNotEmpty()) {
                 FlowSection(
                     stringResource(R.string.raid_tab_coming),
                     action = stringResource(R.string.raid_tab_rosterLink),
                     onAction = { actions.onPage(GuildPage.Roster) },
                     top = 0.dp,
                     panel = PanelFrame.None,
-                ) { RoleRows(view.roles) }
+                ) { RoleRows(view.roles, view.foot, actions.onRosterOf) { actions.onCover(next.raidId) } }
             }
         }
         else -> FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) {
@@ -159,11 +207,7 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
             ReadyList(view.ready, view.readyStamp, actions.onWhere, inlineWhere = true)
         }
     }
-    view.needs?.let { needs ->
-        FlowSection(stringResource(R.string.raid_tab_needsYou), meta = stringResource(R.string.raid_tab_open, view.needsCount), top = 0.dp, panel = PanelFrame.None) {
-            Needs(view.next?.raidId ?: 0L, needs, actions.card) { view.applicantId?.let(actions.onApplicant) ?: actions.card.onApplicants() }
-        }
-    }
+    if (!view.needsFirst || next == null) NeedsSection(view, actions)
     if (view.pages.isNotEmpty()) {
         FlowSection(view.guild, top = 0.dp, panel = PanelFrame.None) {
             view.pages.forEachIndexed { index, page ->
@@ -171,6 +215,28 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
             }
         }
     }
+}
+
+/** Needs you: an officer's open items with their count. */
+@Composable
+private fun NeedsSection(view: RaidTabView.Guild, actions: RaidTabActions) {
+    val needs = view.needs ?: return
+    FlowSection(stringResource(R.string.raid_tab_needsYou), meta = stringResource(R.string.raid_tab_open, view.needsCount), top = 0.dp, panel = PanelFrame.None) {
+        Needs(view.next?.raidId ?: 0L, needs, actions.card) { view.applicantId?.let(actions.onApplicant) ?: actions.card.onApplicants() }
+    }
+}
+
+/** The raid's notes under the head, two lines; the raid page has the rest. */
+@Composable
+internal fun RaidNotes(html: String) {
+    Text(
+        NotesText.annotated(html, FsColor.gold),
+        style = SUB,
+        color = FsColor.text,
+        maxLines = NOTES_LINES,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier.padding(top = FsSpace.space2),
+    )
 }
 
 @Composable
@@ -194,7 +260,7 @@ fun ReadyList(items: List<ReadyItem>, stamp: String?, onWhere: (ReadyItem) -> Un
         FlowRow(
             item.title,
             item.sub,
-            FlowLead.Check(item.tone == ReadyTone.Ok, item.tone == ReadyTone.Miss),
+            FlowLead.Check(item.tone == ReadyTone.Ok, item.tone == ReadyTone.Miss, item.icon, LocalRaidIconBuild.current),
             last = index == items.lastIndex,
             trail = where?.takeIf { !inlineWhere }?.let { { FlowLink(it) { onWhere(item) } } },
             subLink = where?.takeIf { inlineWhere }?.let { FlowSubLink(it) { onWhere(item) } },
@@ -205,3 +271,6 @@ fun ReadyList(items: List<ReadyItem>, stamp: String?, onWhere: (ReadyItem) -> Un
 
 /** The Raid tab's region for its head: the old Next raid section's name, so every state keeps one. */
 private const val NEXT_RAID_REGION = "Next raid"
+
+/** The notes' lines on the tab (round 2); the raid page shows them whole. */
+private const val NOTES_LINES = 2

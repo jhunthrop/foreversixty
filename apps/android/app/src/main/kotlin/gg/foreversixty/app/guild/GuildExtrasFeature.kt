@@ -51,6 +51,7 @@ import gg.foreversixty.app.guild.ui.CalendarScreenState
 import gg.foreversixty.app.guild.ui.GuildLinkRow
 import gg.foreversixty.app.guild.ui.HistoryContent
 import gg.foreversixty.app.guild.ui.RosterContent
+import gg.foreversixty.app.guild.logic.RosterQuery
 import gg.foreversixty.app.guild.ui.RosterControls
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.model.mainCharacter
@@ -183,10 +184,10 @@ fun GuildExtrasRows(onRoster: Int?, openRoster: () -> Unit, openHistory: () -> U
 
 /** F16.1: the roster pushed on the Raids stack; a row opens the character's web page. */
 @Composable
-fun RosterRoute(store: RosterStore, clock: RaidClock, now: () -> Instant, back: () -> Unit) {
+fun RosterRoute(store: RosterStore, clock: RaidClock, now: () -> Instant, only: Set<String> = emptySet(), back: () -> Unit) {
     val uri = LocalUriHandler.current
     val scope = rememberCoroutineScope()
-    val controls = remember(store) { RosterControls() }
+    val controls = remember(store, only) { RosterControls(RosterQuery(only = only)) }
     LaunchedEffect(store) { store.load() }
     RosterContent(
         state = store.state,

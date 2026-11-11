@@ -152,11 +152,6 @@ enum Copy {
         format("home.answer.upgrades", n)
     }
 
-    /// Best in slot for {band}, together
-    static func homeAnswerNote(band: String) -> String {
-        format("home.answer.note", band)
-    }
-
     /// · {n} gains not modelled yet
     static func homeAnswerNotModelled(n: Int) -> String {
         format("home.answer.notModelled", n)
@@ -169,9 +164,6 @@ enum Copy {
 
     /// Add the addon to see which slots you can upgrade.
     static var homeAnswerNoGear: String { text("home.answer.noGear") }
-
-    /// The addon sends your gear when you log out.
-    static var homeAnswerNoGearNote: String { text("home.answer.noGearNote") }
 
     /// {spec} {band} list
     static func homeAnswerListButton(spec: String, band: String) -> String {
@@ -268,11 +260,6 @@ enum Copy {
 
     /// Your gear
     static var gearTitle: String { text("gear.title") }
-
-    /// What you wear, and the pick for {band}.
-    static func gearIntro(band: String) -> String {
-        format("gear.intro", band)
-    }
 
     /// BiS
     static var gearBis: String { text("gear.bis") }
@@ -667,7 +654,7 @@ enum Copy {
         format("items.setBonus", n, text)
     }
 
-    /// Same {unit} as the pick
+    /// Same {unit}
     static func itemsSameDps(unit: String) -> String {
         format("items.sameDps", unit)
     }
@@ -818,6 +805,11 @@ enum Copy {
     /// Crafted: {name}
     static func bisSourceCrafted(name: String) -> String {
         format("bis.source.crafted", name)
+    }
+
+    /// Crafted: {name} ({skill})
+    static func bisSourceCraftedSkill(name: String, skill: Int) -> String {
+        format("bis.source.craftedSkill", name, skill)
     }
 
     /// Vendor: {name}
@@ -1378,13 +1370,25 @@ enum Copy {
         format("raid.pages.lootLast", n)
     }
 
+    /// Last: {zone}, {kills}, {wipes}
+    static func raidPagesLastNight(zone: String, kills: String, wipes: String) -> String {
+        format("raid.pages.lastNight", zone, kills, wipes)
+    }
+
+    /// {n} kills
+    static func raidPagesKills(n: Int) -> String {
+        format("raid.pages.kills", n)
+    }
+
+    /// {n} wipes
+    static func raidPagesWipes(n: Int) -> String {
+        format("raid.pages.wipes", n)
+    }
+
     /// #{position} of {of} in guild sims
     static func raidPagesSimsRank(position: Int, of: Int) -> String {
         format("raid.pages.simsRank", position, of)
     }
-
-    /// No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
-    static var raidNoRaid: String { text("raid.noRaid") }
 
     /// Needs you
     static var raidNeedsYou: String { text("raid.needsYou") }
@@ -2091,8 +2095,14 @@ enum Copy {
     /// Review
     static var pushActionReview: String { text("push.action.review") }
 
+    /// Mention in Discord
+    static var pushActionMention: String { text("push.action.mention") }
+
     /// Decline
     static var pushActionDecline: String { text("push.action.decline") }
+
+    /// Accept
+    static var pushActionAccept: String { text("push.action.accept") }
 
     /// How late?
     static var pushLateQuestion: String { text("push.late.question") }
@@ -2100,6 +2110,37 @@ enum Copy {
     /// {n} min
     static func pushLateMinutes(n: Int) -> String {
         format("push.late.minutes", n)
+    }
+
+    /// Application declined
+    static var pushApplicantDeclined: String { text("push.applicant.declined") }
+
+    /// Application accepted
+    static var pushApplicantAccepted: String { text("push.applicant.accepted") }
+
+    /// Could not accept {name}
+    static func pushApplicantAcceptFailed(name: String) -> String {
+        format("push.applicant.acceptFailed", name)
+    }
+
+    /// Could not decline {name}
+    static func pushApplicantDeclineFailed(name: String) -> String {
+        format("push.applicant.declineFailed", name)
+    }
+
+    /// {applicant}. Open Forever Sixty to try again.
+    static func pushApplicantFailed(applicant: String) -> String {
+        format("push.applicant.failed", applicant)
+    }
+
+    /// Could not mention the {who}
+    static func pushShortFailed(who: String) -> String {
+        format("push.short.failed", who)
+    }
+
+    /// {raid}. Open the raid to try again.
+    static func pushShortRetry(raid: String) -> String {
+        format("push.short.retry", raid)
     }
 
     /// Raids
@@ -2186,8 +2227,18 @@ enum Copy {
         format("menu.character.lineGuild", kind, n, guild)
     }
 
-    /// Main
-    static var menuCharacterMain: String { text("menu.character.main") }
+    /// {kind} · {n} · {rank}
+    static func menuCharacterLineRank(kind: String, n: Int, rank: String) -> String {
+        format("menu.character.lineRank", kind, n, rank)
+    }
+
+    /// item level {n}
+    static func menuCharacterItemLevel(n: Int) -> String {
+        format("menu.character.itemLevel", n)
+    }
+
+    /// Battle.net refresh failed
+    static var menuSyncError: String { text("menu.syncError") }
 
     /// Open menu
     static var menuOpen: String { text("menu.open") }
@@ -2198,61 +2249,17 @@ enum Copy {
     /// Refresh
     static var menuRefresh: String { text("menu.refresh") }
 
+    /// Refreshing…
+    static var menuRefreshing: String { text("menu.refreshing") }
+
+    /// Could not refresh just now. Try again.
+    static var menuRefreshFailed: String { text("menu.refreshFailed") }
+
     /// Switch character
     static var menuSwitch: String { text("menu.switch") }
 
-    /// Show low-level characters ({n})
-    static func menuLowLevelShow(n: Int) -> String {
-        format("menu.lowLevel.show", n)
-    }
-
-    /// Hide low-level characters
-    static var menuLowLevelHide: String { text("menu.lowLevel.hide") }
-
     /// Tools
     static var menuTools: String { text("menu.tools") }
-
-    /// Guides
-    static var menuToolGuides: String { text("menu.tool.guides") }
-
-    /// Your spec’s guide, then every class
-    static var menuToolGuidesLine: String { text("menu.tool.guides.line") }
-
-    /// Tiers
-    static var menuToolTiers: String { text("menu.tool.tiers") }
-
-    /// Every spec, this week
-    static var menuToolTiersLine: String { text("menu.tool.tiers.line") }
-
-    /// Patch notes
-    static var menuToolPatchNotes: String { text("menu.tool.patchNotes") }
-
-    /// The game and the site
-    static var menuToolPatchNotesLine: String { text("menu.tool.patchNotes.line") }
-
-    /// Sims
-    static var menuToolSims: String { text("menu.tool.sims") }
-
-    /// Your server runs and saved sims
-    static var menuToolSimsLine: String { text("menu.tool.sims.line") }
-
-    /// Logs and reports
-    static var menuToolReports: String { text("menu.tool.reports") }
-
-    /// Your reports and the coach
-    static var menuToolReportsLine: String { text("menu.tool.reports.line") }
-
-    /// Planner
-    static var menuToolPlanner: String { text("menu.tool.planner") }
-
-    /// Your builds and the guide builds
-    static var menuToolPlannerLine: String { text("menu.tool.planner.line") }
-
-    /// Rankings
-    static var menuToolRankings: String { text("menu.tool.rankings") }
-
-    /// Your spec and your guild
-    static var menuToolRankingsLine: String { text("menu.tool.rankings.line") }
 
     /// Account
     static var menuAccount: String { text("menu.account") }
@@ -2260,9 +2267,12 @@ enum Copy {
     /// Notifications
     static var menuNotifications: String { text("menu.notifications") }
 
-    /// {groups} on
-    static func menuNotificationsOn(groups: String) -> String {
-        format("menu.notifications.on", groups)
+    /// All on
+    static var menuNotificationsAllOn: String { text("menu.notifications.allOn") }
+
+    /// {groups} off
+    static func menuNotificationsSomeOff(groups: String) -> String {
+        format("menu.notifications.someOff", groups)
     }
 
     /// All off
@@ -2279,12 +2289,9 @@ enum Copy {
         format("menu.devices.line", n)
     }
 
-    /// Offline data
-    static var menuOffline: String { text("menu.offline") }
-
-    /// {size} on this phone
-    static func menuOfflineLine(size: String) -> String {
-        format("menu.offline.line", size)
+    /// {n} signed in · newest {name}
+    static func menuDevicesLineNewest(n: Int, name: String) -> String {
+        format("menu.devices.lineNewest", n, name)
     }
 
     /// Settings
@@ -2331,9 +2338,6 @@ enum Copy {
     /// Nothing yet. Loot, sims, reports and raids land here.
     static var activityEmpty: String { text("activity.empty") }
 
-    /// What changed for your characters: loot, sims, reports, raids.
-    static var activitySignedOut: String { text("activity.signedOut") }
-
     /// Send me
     static var notificationsSendMe: String { text("notifications.sendMe") }
 
@@ -2360,7 +2364,7 @@ enum Copy {
     /// When you have not answered a raid; off, they mention you in the channel
     static var notificationsOfficerDmsLine: String { text("notifications.officerDmsLine") }
 
-    /// {n} of {total} slots on the list
+    /// {n} of {total} slots match the list
     static func gearOnList(n: Int, total: Int) -> String {
         format("gear.onList", n, total)
     }
@@ -2368,7 +2372,10 @@ enum Copy {
     /// Change
     static var gearChange: String { text("gear.change") }
 
-    /// Where to go tonight
+    /// We could not load this list
+    static var gearErrorTitle: String { text("gear.error.title") }
+
+    /// Where to go
     static var gearWhereTonight: String { text("gear.whereTonight") }
 
     /// Every slot
@@ -2396,6 +2403,27 @@ enum Copy {
     static func gearWhereRep(items: String, standing: String) -> String {
         format("gear.where.rep", items, standing)
     }
+
+    /// {upgrades} · {gain} {unit}
+    static func gearWhereFigure(upgrades: String, gain: String, unit: String) -> String {
+        format("gear.where.figure", upgrades, gain, unit)
+    }
+
+    /// No gain
+    static var gearCellNoGain: String { text("gear.cell.noGain") }
+
+    /// {gain} {unit} from {upgrades}
+    static func gearHeaderGain(gain: String, unit: String, upgrades: String) -> String {
+        format("gear.header.gain", gain, unit, upgrades)
+    }
+
+    /// synced {age}
+    static func gearHeaderSynced(age: String) -> String {
+        format("gear.header.synced", age)
+    }
+
+    /// Not modelled
+    static var gearNotModelled: String { text("gear.notModelled") }
 
     /// blacksmith
     static var gearCrafterBlacksmithing: String { text("gear.crafter.blacksmithing") }
@@ -2457,11 +2485,6 @@ enum Copy {
     /// {n} guildmates have not shared their gear yet
     static func gearSheetUnknown(n: Int) -> String {
         format("gear.sheet.unknown", n)
-    }
-
-    /// {chance} drop chance
-    static func gearSheetDropChance(chance: String) -> String {
-        format("gear.sheet.dropChance", chance)
     }
 
     /// Replaces {item}
@@ -4617,6 +4640,19 @@ enum Copy {
     /// DPS
     static var rosterChipDps: String { text("roster.chip.dps") }
 
+    /// Not synced this week · {n}
+    static func rosterChipNotSynced(n: Int) -> String {
+        format("roster.chip.notSynced", n)
+    }
+
+    /// Show the whole roster
+    static var rosterChipClear: String { text("roster.chip.clear") }
+
+    /// {shown} of {total}
+    static func rosterCountsOf(shown: Int, total: Int) -> String {
+        format("roster.counts.of", shown, total)
+    }
+
     /// Sort: {by}
     static func rosterSort(by: String) -> String {
         format("roster.sort", by)
@@ -5539,12 +5575,12 @@ enum Copy {
         format("home.head.level", n, who)
     }
 
-    /// {n} levels to band {band}
+    /// {n} levels to the {band} list
     static func homeHeadToBand(n: Int, band: Int) -> String {
         format("home.head.toBand", n, band)
     }
 
-    /// 1 level to band {band}
+    /// 1 level to the {band} list
     static func homeHeadToBandOne(band: Int) -> String {
         format("home.head.toBandOne", band)
     }
@@ -5563,6 +5599,26 @@ enum Copy {
     /// Best run: {place}, {item} {gain}, {chance}
     static func homeBestRunChance(place: String, item: String, gain: String, chance: String) -> String {
         format("home.bestRun.chance", place, item, gain, chance)
+    }
+
+    /// Best run · {item}
+    static func homeBestRunRow(item: String) -> String {
+        format("home.bestRun.row", item)
+    }
+
+    /// {upgrades} · {gain}
+    static func homeUpgradesMeta(upgrades: String, gain: String) -> String {
+        format("home.upgrades.meta", upgrades, gain)
+    }
+
+    /// replaces {item}
+    static func homeUpgradesReplacesWorn(item: String) -> String {
+        format("home.upgrades.replacesWorn", item)
+    }
+
+    /// Synced {age}
+    static func homeAnswerSynced(age: String) -> String {
+        format("home.answer.synced", age)
     }
 
     /// {guild} · {raid} tonight
@@ -5598,16 +5654,6 @@ enum Copy {
 
     /// You have not answered
     static var homeRaidNotAnsweredAlone: String { text("home.raid.notAnsweredAlone") }
-
-    /// You are {answer}, as {name}, {role}
-    static func homeRaidAnswered(answer: String, name: String, role: String) -> String {
-        format("home.raid.answered", answer, name, role)
-    }
-
-    /// You are {answer}
-    static func homeRaidAnsweredAlone(answer: String) -> String {
-        format("home.raid.answeredAlone", answer)
-    }
 
     /// {guild} · {when}
     static func homeRaidPlace(guild: String, when: String) -> String {
@@ -5714,10 +5760,10 @@ enum Copy {
         format("home.allActivity.count", n)
     }
 
-    /// Raid with a guild that plans its nights here, and answer its raids from the app.
+    /// Join a guild to sign up for its raids here.
     static var homeFindGuildLine: String { text("home.findGuild.line") }
 
-    /// Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open {date}.
+    /// Join a guild before the first raids on {date}.
     static func homeFindGuildFirstRaids(date: String) -> String {
         format("home.findGuild.firstRaids", date)
     }
@@ -5740,9 +5786,6 @@ enum Copy {
     /// Check again
     static var homeNewCheck: String { text("home.new.check") }
 
-    /// yesterday
-    static var homeYesterday: String { text("home.yesterday") }
-
     /// Next raid
     static var raidTabNextRaid: String { text("raid.tab.nextRaid") }
 
@@ -5754,7 +5797,7 @@ enum Copy {
         format("raid.tab.open", n)
     }
 
-    /// No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
+    /// No raid posted yet.
     static var raidTabNoRaid: String { text("raid.tab.noRaid") }
 
     /// Raid night
@@ -5798,9 +5841,6 @@ enum Copy {
     /// Raid with a guild
     static var raidTabWithGuild: String { text("raid.tab.withGuild") }
 
-    /// Guilds that plan their raids here
-    static var raidTabWithGuildLine: String { text("raid.tab.withGuildLine") }
-
     /// Guilds recruiting a {spec}
     static func raidTabRecruiting(spec: String) -> String {
         format("raid.tab.recruiting", spec)
@@ -5828,9 +5868,6 @@ enum Copy {
 
     /// Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
     static var raidTabLevelerLine: String { text("raid.tab.levelerLine") }
-
-    /// Sign up for your guild's raids from your phone.
-    static var raidTabOutLine: String { text("raid.tab.outLine") }
 
     /// {time} · pull in {until}
     static func raidTabPullIn(time: String, until: String) -> String {
@@ -5878,6 +5915,59 @@ enum Copy {
 
     /// How late
     static var raidTabHowLate: String { text("raid.tab.howLate") }
+
+    /// {tally} · {n} short
+    static func raidTabTallyShort(tally: String, n: Int) -> String {
+        format("raid.tab.tallyShort", tally, n)
+    }
+
+    /// {have}/{want}
+    static func raidTabTallyCompact(have: Int, want: Int) -> String {
+        format("raid.tab.tallyCompact", have, want)
+    }
+
+    /// {melee} melee, {ranged} ranged
+    static func raidTabDamageSplit(melee: Int, ranged: Int) -> String {
+        format("raid.tab.damageSplit", melee, ranged)
+    }
+
+    /// Invites {time} · {n}-man
+    static func raidTabInviteSize(time: String, n: Int) -> String {
+        format("raid.tab.inviteSize", time, n)
+    }
+
+    /// Bench {n}
+    static func raidTabCountBench(n: Int) -> String {
+        format("raid.tab.countBench", n)
+    }
+
+    /// Out {n}
+    static func raidTabCountOut(n: Int) -> String {
+        format("raid.tab.countOut", n)
+    }
+
+    /// {n} not answered
+    static func raidTabCountNotAnswered(n: Int) -> String {
+        format("raid.tab.countNotAnswered", n)
+    }
+
+    /// Not synced this week: {names}
+    static func raidTabNotSyncedNames(names: String) -> String {
+        format("raid.tab.notSyncedNames", names)
+    }
+
+    /// Missing {names}
+    static func raidTabCoverMissing(names: String) -> String {
+        format("raid.tab.coverMissing", names)
+    }
+
+    /// Missing
+    static var raidTabCoverLabel: String { text("raid.tab.coverLabel") }
+
+    /// {name} {have} of {need}
+    static func raidTabCoverShort(name: String, have: Int, need: Int) -> String {
+        format("raid.tab.coverShort", name, have, need)
+    }
 
     /// Late · {n} min
     static func raidAnswerLateMinutes(n: Int) -> String {
@@ -6177,19 +6267,6 @@ enum Copy {
     /// We could not load this application
     static var raidApplicantFailed: String { text("raid.applicant.failed") }
 
-    /// {guild} · {zone} in progress
-    static func homeRaidInProgress(guild: String, zone: String) -> String {
-        format("home.raid.inProgress", guild, zone)
-    }
-
-    /// min
-    static var homeRaidMinutes: String { text("home.raid.minutes") }
-
-    /// as {name}, {role}
-    static func homeRaidAs(name: String, role: String) -> String {
-        format("home.raid.as", name, role)
-    }
-
     /// {counts} · you have not answered, {who}
     static func homeRaidLineOpen(counts: String, who: String) -> String {
         format("home.raid.lineOpen", counts, who)
@@ -6280,11 +6357,6 @@ enum Copy {
     /// All activity ({n}) ›
     static func homeNewForYouAllUnread(n: Int) -> String {
         format("home.newForYou.allUnread", n)
-    }
-
-    /// {body} · {when}
-    static func homeNewForYouLine(body: String, when: String) -> String {
-        format("home.newForYou.line", body, when)
     }
 
     /// Raid with a guild

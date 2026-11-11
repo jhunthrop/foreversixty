@@ -80,7 +80,7 @@ h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
 .cbar.static{position:static;background:none;border-top:0}
 .mocknote{margin-block:32px 0;font-size:12px;color:var(--muted)}
 .ic.fit,.fit>.ic{width:100%!important;height:auto!important;aspect-ratio:1}
-body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:auto}main{padding-bottom:40px}@media(min-width:1024px){main{padding-bottom:64px}}</style><style>
+body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:auto}main{padding-bottom:calc(0px + 40px)}@media(min-width:1024px){main{padding-bottom:calc(0px + 64px)}}</style><style>
 /* ---- native deltas over the web system (spec 3.3: N1 to N4) ---- */
 /* round 5 (lane M0): the apps set Open Sans, so their mocks do too */
 :root{--page-inset:16px!important;--font-body:'Open Sans',Arial,sans-serif!important}
@@ -244,6 +244,8 @@ a.row:hover,.row.hov{background:var(--hover)}
 .meter.kill>i{background:var(--kill)}.meter.muted>i{background:#5a5a52}
 .meter.seg{display:flex;gap:2px;background:none}.meter.seg>i{border-radius:0}
 /* ---- Tag, Field ---- */
+/* web ui/Tag: 22 px, 0 8 px (site-alignment 1: "A state on a thing is a Tag: 22 px") */
+.pill.tag{height:22px;padding:0 8px}
 .tag.kill{color:var(--kill);border-color:#7fd48a66}.tag.muted{color:var(--muted);border-color:var(--line)}.tag.wipe{color:var(--wipe);border-color:#f0736b66}
 .field{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:4px;background:#0a0d14;color:var(--muted);font-size:14px;min-width:0}
 .field.grow{flex:1;min-width:200px}
@@ -476,6 +478,7 @@ right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
 .btn.is-off{opacity:.45;pointer-events:none}
 .cap{display:block;position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
 .cap img{display:block;width:100%;height:100%;object-fit:contain}
+.cap picture{display:contents}@media(max-width:639px){.cap.has-narrow{aspect-ratio:var(--ar-n)}}
 .cap-wrap{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
 code.c{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong);letter-spacing:.02em}
 code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}

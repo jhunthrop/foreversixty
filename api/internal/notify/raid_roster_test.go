@@ -277,3 +277,31 @@ func TestEventPostIsOnePlainList(t *testing.T) {
 		}
 	}
 }
+
+func TestShortRolesNamesOnlyTheRolesBelowTarget(t *testing.T) {
+	roster := []RosterLine{
+		line("Brakka", "warrior", "Protection", "tank", "in"),
+		line("Mirelle", "priest", "Holy", "healer", "in"),
+		line("Dawnrae", "paladin", "Holy", "healer", "late"),
+		line("Gorvash", "rogue", "Combat", "dps", "in"),
+	}
+	target := &RoleTarget{Tanks: 1, Healers: 3, Melee: 1, Ranged: 2}
+	cases := []struct {
+		name string
+		in   RaidPosted
+		want []RoleShort
+	}{
+		{"below target, Late not counted", RaidPosted{Roster: roster, Target: target},
+			[]RoleShort{{Name: "Healers", Group: raidspec.GroupHealer, Have: 1, Want: 3}, {Name: "Ranged", Group: raidspec.GroupRanged, Have: 0, Want: 2}}},
+		{"no target", RaidPosted{Roster: roster}, nil},
+		{"guild event", RaidPosted{Roster: roster, Target: target, NoRoles: true}, nil},
+		{"every role covered", RaidPosted{Roster: roster, Target: &RoleTarget{Tanks: 1, Healers: 1, Melee: 1}}, nil},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := ShortRoles(c.in); fmt.Sprint(got) != fmt.Sprint(c.want) {
+				t.Fatalf("ShortRoles = %v, want %v", got, c.want)
+			}
+		})
+	}
+}

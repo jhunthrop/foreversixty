@@ -67,3 +67,21 @@ func TestGuildSimPassedNeedsAMoveUp(t *testing.T) {
 		t.Fatalf("events %+v", pub.got)
 	}
 }
+
+// The Activity row of guildsim.passed: the body styled (the figures strong), the passer's class
+// crest and the passer's figure.
+func TestGuildSimPassedCarriesSegmentsCrestAndFigure(t *testing.T) {
+	f := simFacts{key: "us/normal/me", name: "Brakka", class: "warrior", spec: "warrior-fury", preset: barePreset,
+		role: "raid", band: 60, value: 203.6, guildID: 2}
+	e := (&GuildSimWriter{}).passedEvent(f, "s1", LadderRow{Key: "us/normal/mc", Value: 191.4})
+	if e.Crest != "warrior" || e.Figure == nil || *e.Figure != 203.6 {
+		t.Fatalf("crest %q figure %v", e.Crest, e.Figure)
+	}
+	if e.Body != "204 DPS, +12 over your 191 (Fury Warrior, 60)." {
+		t.Fatalf("push body %q", e.Body)
+	}
+	if *e.ActivityBody != "+12 over your 191 (Fury Warrior, 60)." || events.SegmentsText(e.Segments) != *e.ActivityBody ||
+		e.Segments[1].Style != StyleStrong || e.Segments[1].Text != "12" {
+		t.Fatalf("segments %+v activity body %q", e.Segments, *e.ActivityBody)
+	}
+}

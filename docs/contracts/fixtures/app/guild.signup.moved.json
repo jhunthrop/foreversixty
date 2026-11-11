@@ -106,10 +106,26 @@
             "count": 2
           },
           {
-            "key": "blessings",
-            "name": "Blessings",
-            "label": "Bless",
+            "key": "blessing_of_kings",
+            "name": "Blessing of Kings",
+            "label": "Kings",
+            "icon": "spell_magic_magearmor",
+            "present": false,
+            "count": 0
+          },
+          {
+            "key": "blessing_of_might",
+            "name": "Blessing of Might",
+            "label": "Might",
             "icon": "spell_holy_fistofjustice",
+            "present": false,
+            "count": 0
+          },
+          {
+            "key": "blessing_of_wisdom",
+            "name": "Blessing of Wisdom",
+            "label": "Wisdom",
+            "icon": "spell_holy_sealofwisdom",
             "present": false,
             "count": 0
           },
@@ -611,8 +627,8 @@
           "spec_key": "hunter-marksmanship",
           "also": [
             {
-              "character_key": "us/pvp/obnoxious-yell",
-              "name": "Obnoxious Yell",
+              "character_key": "us/pvp/gorvash",
+              "name": "Gorvash",
               "class": "warrior",
               "spec": "warrior-fury",
               "spec_key": "warrior-fury",
@@ -660,8 +676,8 @@
       "viewer": {
         "characters": [
           {
-            "character_key": "us/pvp/obnoxious-yell",
-            "name": "Obnoxious Yell",
+            "character_key": "us/pvp/gorvash",
+            "name": "Gorvash",
             "class": "warrior",
             "spec": "warrior-fury",
             "verified": true,
@@ -1123,10 +1139,10 @@
         }
       ]
     },
-    "moved": "Obnoxious Yell",
+    "moved": "Gorvash",
     "confirmation": {
       "title": "You're In for Onyxia's Lair",
-      "body": "Yellfury, pull at 7:00 pm CST. Obnoxious Yell moved to Bench."
+      "body": "Yellfury, pull at 7 pm CST. Gorvash moved to Bench."
     }
   },
   "error": null,

@@ -108,6 +108,13 @@ func (s *Service) publishApproved(ctx context.Context, guildID int64, keys []str
 	})
 }
 
+// lootSegments is loot.awarded's named body styled: the character in its class colour, the
+// item in its quality.
+func lootSegments(name, class, item string, itemID, quality int, guild string) []events.Segment {
+	return events.Segmentf(memberEventCopy.LootBodyNamed,
+		events.Name(name, class), events.Item(item, itemID, quality), events.Text(guild))
+}
+
 // publishLootAwarded tells the account of the character an award went to. An award to an
 // invited member's stand-in row names no roster character, so it tells nobody.
 func (s *Service) publishLootAwarded(ctx context.Context, guildID, awardID int64, characterKey string, itemID int) {
@@ -131,7 +138,8 @@ func (s *Service) publishLootAwarded(ctx context.Context, guildID, awardID int64
 		e.Title = memberEventCopy.LootTitle
 		e.Body = fmt.Sprintf(memberEventCopy.LootBody, c.Name, g.Name)
 		if item, ok := s.Store.ItemIn(s.Store.BisBuild(), c.Class, itemID); ok && item.Name != "" {
-			e.Body = fmt.Sprintf(memberEventCopy.LootBodyNamed, c.Name, item.Name, g.Name)
+			e.Segments = lootSegments(c.Name, c.Class, item.Name, itemID, item.Quality, g.Name)
+			e.Body = events.SegmentsText(e.Segments)
 			e.Icon = item.Icon
 		}
 		e.Data["item_id"] = strconv.Itoa(itemID)

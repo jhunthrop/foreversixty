@@ -1,0 +1,24 @@
+{
+  "message": {
+    "token": "fcm-registration-token",
+    "data": {
+      "actions": "[{\"id\":\"application_accept\",\"title\":\"Accept\",\"method\":\"POST\",\"path\":\"/v1/guilds/2/applications/31/accept\"},{\"id\":\"application_decline\",\"title\":\"Decline\",\"method\":\"POST\",\"path\":\"/v1/guilds/2/applications/31/decline\"}]",
+      "applicant": "Mirelle, Holy Priest 60",
+      "applicant_name": "Mirelle",
+      "application_id": "31",
+      "body": "Holy priest, 60, full T1. Raided MC and Ony on the last server, can make every Thursday and Sunday.",
+      "category": "GUILD_APPLICANT",
+      "collapse": "guild.applicant-31",
+      "group": "officer",
+      "guild_id": "2",
+      "kind": "guild.applicant",
+      "link": "https://foreversixty.gg/app/guild/2/applicants/31",
+      "thread": "guild-2-applicants",
+      "title": "New applicant: Mirelle, Holy Priest 60"
+    },
+    "android": {
+      "priority": "NORMAL",
+      "collapse_key": "guild.applicant-31"
+    }
+  }
+}

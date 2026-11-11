@@ -6,8 +6,10 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.model.RaidView
 
 /**
- * The role furthest under the raid's comp target (healers first on a tie): its wire role, its group
- * label (`Healers`), its lower-case word (`healers`) and how many it is short.
+ * The first role under the raid's comp target in tank, healer, DPS order (round 4 s1, the server's
+ * `notify.ShortRoles` rule: the role an officer can fill, not the largest raw gap, so Needs you and the
+ * raid.short push's Mention name the same role): its wire role, its group label (`Healers`), its
+ * lower-case word (`healers`) and how many it is short.
  */
 data class ShortRole(val wire: String, @param:StringRes val group: Int, @param:StringRes val lower: Int, val missing: Int) {
     companion object {
@@ -18,12 +20,12 @@ data class ShortRole(val wire: String, @param:StringRes val group: Int, @param:S
         /** Null when the raid has no comp target or every role is met. */
         fun of(raid: RaidView): ShortRole? {
             val target = raid.compTarget ?: return null
-            val c = raid.counts
+            val c = ComingCounts.of(raid)
             return listOf(
-                ShortRole(HEALER, R.string.raid_group_healers, R.string.home_officer_role_healers, target.healers - c.healers),
                 ShortRole(TANK, R.string.raid_group_tanks, R.string.home_officer_role_tanks, target.tanks - c.tanks),
+                ShortRole(HEALER, R.string.raid_group_healers, R.string.home_officer_role_healers, target.healers - c.healers),
                 ShortRole(DPS, R.string.raid_group_damage, R.string.home_officer_role_damage, target.melee + target.ranged - c.melee - c.ranged),
-            ).filter { it.missing > 0 }.maxByOrNull { it.missing }
+            ).firstOrNull { it.missing > 0 }
         }
 
         /** A sign-up's role group: tank, healer, else damage (melee and ranged). */

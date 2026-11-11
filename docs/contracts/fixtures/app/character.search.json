@@ -3,19 +3,19 @@
   "data": {
     "rows": [
       {
-        "key": "us/pvp/obnoxious-yell",
+        "key": "us/pvp/gorvash",
         "region": "us",
         "ruleset": "pvp",
-        "name": "Obnoxious Yell",
+        "name": "Gorvash",
         "class": "warrior",
         "level": 58,
         "spec": null
       },
       {
-        "key": "us/normal/obnoxious",
+        "key": "us/normal/gorvash",
         "region": "us",
         "ruleset": "normal",
-        "name": "Obnoxious",
+        "name": "Gorvash",
         "class": null,
         "level": null,
         "spec": null

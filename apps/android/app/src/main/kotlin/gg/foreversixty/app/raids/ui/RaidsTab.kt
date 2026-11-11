@@ -58,7 +58,6 @@ import gg.foreversixty.app.raids.logic.RowChip
 import gg.foreversixty.app.raids.logic.SignupController
 import gg.foreversixty.app.raids.logic.roleLabel
 import java.time.Instant
-import kotlinx.coroutines.launch
 
 /** F4.1 the Raids tab's content, pure over its state so screenshot tests draw every state. */
 @Composable
@@ -259,14 +258,7 @@ fun NextRaidCard(
         }
         GoldLink(stringResource(R.string.raids_whoIsComing), { open(true) }, trailing = true)
     }
-    controller.specAsk?.let { ask ->
-        controller.character(ask.characterKey)?.let { character ->
-            val scope = androidx.compose.runtime.rememberCoroutineScope()
-            SpecSheet(ask, character, raid.title, clock.shortDate(facts.startsAt), pick = { option ->
-                scope.launch { controller.pickSpec(option) }
-            }, close = { controller.closeSpecSheet() })
-        }
-    }
+    SpecAskSheet(controller, raid.title, clock.shortDate(facts.startsAt))
 }
 
 /** An Also planned row (min 76): date block, title, when, count with a 64 dp bar, one chip. */

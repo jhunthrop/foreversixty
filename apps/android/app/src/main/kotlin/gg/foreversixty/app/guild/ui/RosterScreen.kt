@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
@@ -59,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsTarget
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.Tag
@@ -67,6 +69,7 @@ import gg.foreversixty.app.guild.logic.Loadable
 import gg.foreversixty.app.guild.logic.RosterCopy
 import gg.foreversixty.app.guild.logic.RosterEntries
 import gg.foreversixty.app.guild.logic.RosterEntry
+import gg.foreversixty.app.guild.logic.RosterFigure
 import gg.foreversixty.app.guild.logic.RosterList
 import gg.foreversixty.app.guild.logic.RosterQuery
 import gg.foreversixty.app.guild.logic.RosterRole
@@ -83,6 +86,9 @@ import java.time.Instant
 
 /** Below this width the attendance bar hides and `{n} of 8` stays (spec 9). */
 private const val NARROW_WIDTH_DP = 340
+
+/** The counts card's middle figure's share of the row: its caption is the longest. */
+private const val WIDE_FIGURE = 1.6f
 
 /** What the roster screen holds besides its data: the chips, the search and the sort menu. */
 class RosterControls(
@@ -152,10 +158,12 @@ private fun LazyListScope.loaded(
     retry: () -> Unit,
 ) {
     val home = state.value
-    val rows = RosterList.apply(RosterEntries.of(home), controls.query)
+    val entries = RosterEntries.of(home)
+    val rows = RosterList.apply(entries, controls.query)
+    val onlyCount = RosterList.onlyCount(entries, controls.query.only)
     state.offlineSince?.let { since -> item { SavedAnswerStrip(stripTime(since), state.stale, retry) } }
-    item { CountsCard(home.counts) }
-    item { Chips(controls) }
+    item { CountsCard(home.counts, onlyCount) }
+    item { Chips(controls, onlyCount) }
     if (rows.isEmpty()) {
         item { NoMatch() }
     } else {
@@ -175,16 +183,16 @@ private fun LazyListScope.loaded(
     }
 }
 
+/** The three figures; filtered from the Raid tab ([shown]), the roster's reads `4 of 38` (round 5 row 2). */
 @Composable
-private fun CountsCard(counts: GuildMemberCounts) {
-    val figures = listOf(
-        counts.onRoster to stringResource(R.string.roster_counts_onRoster),
-        counts.inGameNoAccount to stringResource(R.string.roster_counts_noAccount),
-        counts.waiting to stringResource(R.string.roster_counts_waiting),
-    )
-    val figure = @Composable { value: Int, caption: String, modifier: Modifier ->
+private fun CountsCard(counts: GuildMemberCounts, shown: Int?) {
+    val figures = RosterFigure.of(counts, shown).map { figure ->
+        val value = figure.of?.let { total -> stringResource(R.string.roster_counts_of, figure.value, total) } ?: "${figure.value}"
+        value to stringResource(figure.kind.caption)
+    }
+    val figure = @Composable { value: String, caption: String, modifier: Modifier ->
         Column(modifier.semantics(mergeDescendants = true) {}) {
-            Text("$value", style = ScaledType.stat, color = FsColor.strong)
+            Text(value, style = ScaledType.stat, color = FsColor.strong)
             Text(caption, style = ScaledType.meta, color = FsColor.muted)
         }
     }
@@ -197,14 +205,18 @@ private fun CountsCard(counts: GuildMemberCounts) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = card) {
             figures.forEachIndexed { index, (value, caption) ->
                 // The middle caption is the longest; it takes the room it needs.
-                figure(value, caption, if (index == 1) Modifier.weight(1.6f) else Modifier.weight(1f))
+                figure(value, caption, Modifier.weight(if (index == 1) WIDE_FIGURE else 1f))
             }
         }
     }
 }
 
+/**
+ * All, Tanks, Healers, DPS, then `Sort: {by}`; from the Raid tab's not-synced line ([onlyCount]) the
+ * filter's own chip leads, selected, with its clear control, and All is not selected (round 5 row 2).
+ */
 @Composable
-private fun Chips(controls: RosterControls) {
+private fun Chips(controls: RosterControls, onlyCount: Int?) {
     // The chips wrap, so the Sort chip stays whole at the largest text.
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -213,10 +225,13 @@ private fun Chips(controls: RosterControls) {
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         val haptics = rememberHaptics()
+        val clearOnly = { controls.query = controls.query.copy(only = emptySet()) }
+        onlyCount?.let { FilterChip(stringResource(R.string.roster_chip_notSynced, it), clearOnly) }
         RosterRole.entries.forEach { role ->
-            Chip(stringResource(role.label), selected = controls.query.role == role) {
+            Chip(stringResource(role.label), selected = controls.query.role == role && (role != RosterRole.All || onlyCount == null)) {
                 haptics.selection()
-                controls.query = controls.query.copy(role = role)
+                // All is everyone: it clears the not-synced filter too.
+                controls.query = controls.query.copy(role = role, only = if (role == RosterRole.All) emptySet() else controls.query.only)
             }
         }
         Box {
@@ -275,6 +290,30 @@ private fun Chip(text: String, selected: Boolean, trailing: Boolean = false, onC
     ) {
         Text(text, style = ScaledType.meta, color = if (selected) FsColor.strong else FsColor.text, maxLines = 1)
         if (trailing) Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(16.dp))
+    }
+}
+
+/**
+ * The not-synced filter's chip in [Chip]'s selected style, `Not synced this week · 4`, then its clear
+ * control (`×`, a 48 dp target) that shows the whole roster again.
+ */
+@Composable
+private fun FilterChip(text: String, clear: () -> Unit) {
+    val shape = RoundedCornerShape(FsRadius.control)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .minimumInteractiveComponentSize()
+            .heightIn(min = 40.dp)
+            .background(FsColor.gold.copy(alpha = 0.10f), shape)
+            .border(1.dp, FsColor.gold, shape)
+            .padding(start = 14.dp)
+            .semantics { selected = true },
+    ) {
+        Text(text, style = ScaledType.meta, color = FsColor.strong, maxLines = 1)
+        IconButton(onClick = clear, modifier = Modifier.size(FsTarget.min)) {
+            Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.roster_chip_clear), tint = FsColor.gold, modifier = Modifier.size(16.dp))
+        }
     }
 }
 

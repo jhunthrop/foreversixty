@@ -13,12 +13,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import gg.foreversixty.app.MainActivity
 import gg.foreversixty.app.R
+import gg.foreversixty.app.raids.push.OfficerNotificationActions
 import gg.foreversixty.app.raids.push.RaidNotificationActions
 
 /**
- * Draws a push on its group's channel (spec 2026-11-08 F1, F4): the title and line, the raid answers
- * for RAID_SIGNUP, and a tap that opens its answer. One notification per collapse id, so a later
- * message for the same raid replaces the earlier one.
+ * Draws a push on its group's channel (spec 2026-11-08 F1, F4): the title and the line in big text,
+ * so the expanded view shows all of it (GO N3), the raid answers for RAID_SIGNUP, the payload's
+ * Accept and Decline for GUILD_APPLICANT and its Mention for RAID_SHORT, and a tap that opens its
+ * answer. One notification per collapse id, so a later message for the same raid replaces the earlier one.
  */
 object PushNotifier {
     fun show(context: Context, message: PushMessage) {
@@ -32,9 +34,12 @@ object PushNotifier {
             .setContentIntent(openIntent(context, message.landing(), tag))
             .setAutoCancel(true)
         message.data[PushMessage.KEY_RAID]?.let { builder.setGroup("raid-$it") }
-        message.category?.let { category ->
-            RaidNotificationActions.actions(context, category, message.data, tag, id).forEach(builder::addAction)
+        val actions = when (val category = message.category) {
+            null -> emptyList()
+            in OfficerNotificationActions.CATEGORIES -> OfficerNotificationActions.actions(context, category, message.data, tag, id)
+            else -> RaidNotificationActions.actions(context, category, message.data, tag, id)
         }
+        actions.forEach(builder::addAction)
         notify(context, tag, id, builder.build())
     }
 
@@ -55,18 +60,17 @@ object PushNotifier {
         NotificationManagerCompat.from(context).notify(tag, id, notification)
     }
 
-    /** The tap: the app on [link] (an app link MainActivity routes), or the app as it was when null. */
-    fun openIntent(context: Context, link: String?, tag: String?): PendingIntent {
+    /**
+     * The tap: the app on [link] (an app link MainActivity routes), or the app as it was when null. A
+     * button that opens the app uses this too ([slot] apart from the tap), never a receiver that starts
+     * an activity: Android 12 blocks notification trampolines.
+     */
+    fun openIntent(context: Context, link: String?, tag: String?, slot: Int = 0): PendingIntent {
         val intent = launch(context, link)
         return PendingIntent.getActivity(
-            context, (tag ?: link ?: "").hashCode(), intent,
+            context, (tag ?: link ?: "").hashCode() + slot, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-    }
-
-    /** Opens the app on [url] from a receiver. */
-    fun open(context: Context, url: String) {
-        context.startActivity(launch(context, url).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
     private fun launch(context: Context, link: String?): Intent {

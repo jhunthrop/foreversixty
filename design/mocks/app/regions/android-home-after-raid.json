@@ -52,19 +52,19 @@
     14,
     373,
     384,
-    302
+    349
    ],
    "inventory": {
     "row": 4,
-    "image": 3
+    "image": 4
    }
   },
   "section-new-for-you": {
    "box": [
     14,
-    695,
+    742,
     384,
-    232
+    283
    ],
    "inventory": {
     "row": 3,

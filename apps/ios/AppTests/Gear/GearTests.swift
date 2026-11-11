@@ -1,4 +1,5 @@
 @testable import ForeverSixty
+import Auth
 import DesignSystem
 import Foundation
 import Models
@@ -35,25 +36,28 @@ enum GearTestData {
         slot("waist", "Waist", "Valiant’s Waistguard", "inv_belt_33", 4, nil),
         slot("legs", "Legs", "Sentinel’s Plate Legguards", "inv_pants_plate_20", 4, "+4.7"),
         slot("feet", "Feet", "Scalegut Treaders", "inv_boots_chain_11", 3, "+0.9"),
-        slot("finger1", "Finger", "Don Julio’s Band", "inv_jewelry_ring_35", 4, "+6.8"),
-        slot("finger2", "Finger", "Cutthroat’s Signet", "inv_jewelry_ring_01", 3, "+0.8"),
-        slot("trinket1", "Trinket", "Hand of Justice", "inv_jewelry_talisman_01", 3, nil),
-        slot("trinket2", "Trinket", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "+3.2"),
+        slot("finger1", "Finger 1", "Don Julio’s Band", "inv_jewelry_ring_35", 4, "+6.8"),
+        slot("finger2", "Finger 2", "Cutthroat’s Signet", "inv_jewelry_ring_01", 3, "+0.8"),
+        slot("trinket1", "Trinket 1", "Hand of Justice", "inv_jewelry_talisman_01", 3, nil),
+        slot("trinket2", "Trinket 2", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "+3.2"),
         slot("main_hand", "Main hand", "Ironwood Blade", "inv_sword_07", 4, "+5.9"),
         slot("off_hand", "Off hand", "Persuader", "inv_hammer_08", 4, nil),
         slot("ranged", "Ranged", "Blackcrow", "inv_weapon_crossbow_04", 3, "+1.9"),
     ]
 
-    private static func place(_ title: String, _ sub: String, _ icon: String, _ quality: Int) -> GearPlaceRow {
-        GearPlaceRow(id: title, title: title, sub: sub, icon: icon, quality: quality, item: GearItemRef(itemID: 1, slot: "head", gain: nil))
+    private static func place(_ title: String, _ sub: String, _ icon: String, _ quality: Int, _ figure: String) -> GearPlaceRow {
+        GearPlaceRow(
+            id: title, title: title, sub: sub, icon: icon, quality: quality, figure: figure, item: GearItemRef(itemID: 1, slot: "head", gain: nil)
+        )
     }
 
     static let content = GearContent(
-        title: "Fury Warrior", figure: "1004.2", unit: "DPS", facts: "60 raid · Alliance · 4 of 17 slots on the list",
+        title: "Fury Warrior", figure: "1,004", unit: "DPS", facts: "60 raid · Alliance · 5 of 17 slots match the list",
+        summary: GearSummary(figures: "+47.5 DPS from 12 upgrades", synced: "synced 2 h ago"),
         tonight: [
-            place("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh’gajin, 8%", "inv_weapon_crossbow_04", 3),
-            place("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", "inv_helmet_36", 4),
-            place("Stormpike Guard", "Don Julio’s Band, needs revered", "inv_jewelry_ring_35", 4),
+            place("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh’gajin, 8%", "inv_weapon_crossbow_04", 3, "1 upgrade · +1.9 DPS"),
+            place("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", "inv_helmet_36", 4, "2 upgrades · +20.4 DPS"),
+            place("Stormpike Guard", "Don Julio’s Band, needs revered", "inv_jewelry_ring_35", 4, "1 upgrade · +6.8 DPS"),
         ],
         slots: slots
     )
@@ -70,10 +74,10 @@ enum GearTestData {
     static let sheet = ItemSheetContent(
         tooltip: tooltip,
         gain: HomeGain(figure: "+12.6", unit: "DPS"),
-        source: ItemSheetRow(id: "source", title: "Onyxia, Onyxia’s Lair, 8% drop chance", sub: nil, lead: .item(icon: "inv_misc_head_dragon_black", quality: nil)),
+        source: ItemSheetRow(id: "source", title: "Onyxia, Onyxia’s Lair, 8%", sub: nil, lead: .none),
         replaces: ItemSheetRow(id: "replaces", title: "Replaces Ironwood Blade", sub: "Equipped", lead: .item(icon: "inv_sword_07", quality: 4)),
         runnerUp: ItemSheetRow(
-            id: "runner-up", title: "Vis’kag the Bloodletter", titleQuality: 4, sub: "Runner-up · Onyxia · 8% · \u{2212}1.8 DPS",
+            id: "runner-up", title: "Vis’kag the Bloodletter", titleQuality: 4, sub: "Runner-up · \u{2212}1.8 DPS",
             lead: .item(icon: "inv_sword_18", quality: 4)
         ),
         guild: .loaded(rows: [
@@ -169,7 +173,7 @@ struct GearLogicTests {
       {"id":"dungeon:brs","kind":"dungeon","name":"Blackrock Spire","level_min":55,"bosses":[
         {"id":"b1","name":"Shadow Hunter Vosh'gajin","items":[2],"item_chances":{"2":8.2}}]},
       {"id":"dungeon:mara","kind":"dungeon","name":"Maraudon","level_min":56,"items":[6]},
-      {"id":"crafted:bs","kind":"crafted","name":"Blacksmithing","profession":"blacksmithing","items":[1,4]},
+      {"id":"crafted:bs","kind":"crafted","name":"Blacksmithing","profession":"blacksmithing","items":[1,4],"required_skill":{"4":245}},
       {"id":"crafted:lw","kind":"crafted","name":"Leatherworking","profession":"leatherworking","items":[5]},
       {"id":"rep:sp","kind":"rep","name":"Stormpike Guard","standing":"exalted","items":[3]}]}
     """
@@ -178,6 +182,70 @@ struct GearLogicTests {
         let slots = try WireFormat.decoder().decode([BisSlot].self, from: Data(Self.slots.utf8))
         let loot = try WireFormat.decoder().decode(LootFile.self, from: Data(Self.loot.utf8))
         return WhereToGo(slots: slots, gains: gains, places: ItemPlaces(loot: loot, level: level))
+    }
+
+    @Test("round 7, row 3: the Gear sheet's Where line from the loaded loot file: boss, instance, chance; profession; reputation")
+    func sheetWhere() throws {
+        let loot = try WireFormat.decoder().decode(LootFile.self, from: Data(Self.loot.utf8))
+        let places = ItemPlaces(loot: loot, level: nil)
+        func row(_ item: Int, _ kind: String) -> ItemSheetRow? {
+            ItemSheetBuilder.source(item, kind: kind, named: nil, places: places, fallback: nil)
+        }
+        // Round 8, row 1: the shared source words with the figure, no caption, no image.
+        #expect(row(2, "dungeon")?.title == "Shadow Hunter Vosh'gajin, Blackrock Spire, 8%")
+        #expect(row(1, "crafted")?.title == "Crafted: Blacksmithing")
+        #expect(row(4, "crafted")?.title == "Crafted: Blacksmithing (245)", "the recipe's skill, WoW's Requires shape")
+        #expect(row(3, "rep")?.title == "Stormpike Guard, exalted")
+        #expect(row(2, "dungeon")?.sub == nil && row(2, "dungeon")?.lead == ItemSheetRow.Lead.none)
+        let world = ItemSheetBuilder.source(99, kind: "world", named: nil, places: places, fallback: "World drop")
+        #expect(world?.title == "World drop" && world?.lead == ItemSheetRow.Lead.none)
+    }
+
+    /// A runner-up row for a head pick (Lionheart Helm, crafted) whose first alternative is `alt`.
+    private func runnerUpRow(_ alt: String) throws -> ItemSheetRow? {
+        let slot = try WireFormat.decoder().decode(BisSlot.self, from: Data("""
+        {"slot":"head","verified":true,"item_id":1,"item_name":"Lionheart Helm","source":"Blacksmithing","source_kind":"crafted",
+         "alternatives":[\(alt)]}
+        """.utf8))
+        let places = ItemPlaces(loot: try WireFormat.decoder().decode(LootFile.self, from: Data(Self.loot.utf8)), level: nil)
+        let listing = ItemSheetBuilder.Listing(slot: slot, isPick: true, kind: "crafted", source: "Blacksmithing")
+        return ItemSheetBuilder.runnerUp(listing, band: nil, items: [:], places: places, pickPlace: places.place(of: 1, kind: "crafted"))
+    }
+
+    @Test("round 9: the runner-up names its source only when it differs from the pick's, in the source row's words")
+    func runnerUpWords() throws {
+        // The same crafter as the pick: no source, the delta alone.
+        let crafted = #"{"item_id":4,"item_name":"Ironwood Blade","source":"Blacksmithing","source_kind":"crafted","dps_delta":-5.0}"#
+        #expect(try runnerUpRow(crafted)?.sub == "Runner-up · \u{2212}5.0 DPS")
+        // A boss drop: `Boss · 8%`.
+        let boss = #"{"item_id":2,"item_name":"Blackcrow","source":"Blackrock Spire","source_kind":"dungeon","dps_delta":-0.4}"#
+        #expect(try runnerUpRow(boss)?.sub == "Runner-up · Shadow Hunter Vosh'gajin · 8% · \u{2212}0.4 DPS")
+        // PvP without the faction word, and `Same DPS` when nothing separates them.
+        let pvp = #"{"item_id":9,"item_name":"Blood Guard's Plate Helm","source":"PvP rank 11 · Blood Guard · Horde","source_kind":"vendor","dps_delta":0}"#
+        #expect(try runnerUpRow(pvp)?.sub == "Runner-up · PvP rank 11 · Blood Guard · Same DPS")
+        // A crafted runner-up from another crafter, in the shared words.
+        let other = #"{"item_id":5,"item_name":"Timbermaw Tunic","source":"Leatherworking","source_kind":"crafted","dps_delta":-1.2}"#
+        #expect(try runnerUpRow(other)?.sub == "Runner-up · Crafted: Leatherworking · \u{2212}1.2 DPS")
+        // Not in the loot file: the list's words decide, and the same crafter is still left out.
+        let unplaced = #"{"item_id":77,"item_name":"Thorium Cestus","source":"Blacksmithing","source_kind":"crafted","dps_delta":-5.0}"#
+        #expect(try runnerUpRow(unplaced)?.sub == "Runner-up · \u{2212}5.0 DPS")
+    }
+
+    @Test("round 9: a PvP source drops its faction word; anything else is left alone")
+    func withoutFaction() {
+        #expect(ItemSheetBuilder.withoutFaction("PvP rank 11 · Blood Guard · Horde") == "PvP rank 11 · Blood Guard")
+        #expect(ItemSheetBuilder.withoutFaction("PvP rank 12 · Knight · Alliance") == "PvP rank 12 · Knight")
+        #expect(ItemSheetBuilder.withoutFaction("World drop") == "World drop")
+    }
+
+    @Test("round 8: drop chances in the site's dropPercentLabel: whole percent, half up, <1% under one")
+    func dropPercent() {
+        #expect(ItemNumbers.percent(1.3) == "1%")
+        #expect(ItemNumbers.percent(19.6) == "20%")
+        #expect(ItemNumbers.percent(2.5) == "3%")
+        #expect(ItemNumbers.percent(8.2) == "8%")
+        #expect(ItemNumbers.percent(0.4) == "<1%")
+        #expect(ItemNumbers.percent(1) == "1%")
     }
 
     @Test("every upgrade grouped by place; tonight is the best place of each kind, instance first")
@@ -209,6 +277,111 @@ struct GearLogicTests {
             "Lionheart Helm, Ironwood Blade · ask a blacksmith",
             "Don Julio's Band, needs exalted",
         ])
+    }
+
+    @Test("each place row adds up its upgrades and their gains")
+    func placeFigure() throws {
+        let places = try whereToGo(gains: ["head": 14.5, "finger1": 6.8, "main_hand": 5.9], level: 60)
+        let smith = try #require(places.tonight.first { $0.place.name == "Blacksmithing" })
+        #expect(GearPresenter.placeFigure(smith, unit: "DPS") == "2 upgrades · +20.4 DPS")
+        let rep = try #require(places.tonight.first { $0.place.name == "Stormpike Guard" })
+        #expect(GearPresenter.placeFigure(rep, unit: "DPS") == "1 upgrade · +6.8 DPS")
+    }
+
+    @Test("the header line: the gain from the upgrades, the gains not modelled, the synced age")
+    func headerLine() throws {
+        let home = try HomeFixtures.home()
+        let synced = try #require(home.syncedAt)
+        let line = GearPresenter.summary(home, unit: "DPS", now: synced.addingTimeInterval(2 * 3600))
+        #expect(line?.line == "+102.5 DPS from 12 upgrades · 2 gains not modelled yet · synced 2 h ago")
+        #expect(line?.stale == false)
+    }
+
+    @Test("no list for the spec and band: the list line with Change and one row, never a blank page")
+    func notice() {
+        let selection = BisSelection(classSlug: "hunter", spec: "hunter-beast-mastery", range: BisRange(band: 30, preset: "bare"), faction: "horde")
+        let presenter = GearPresenter(context: BisContext(selection: selection, characterSelection: selection))
+        let title = "Beast Mastery Hunter"
+        #expect(presenter.notice(phase: .noList(offlineSince: nil), title: title) == GearNotice(
+            title: title, facts: "30 to 39 · Horde", row: "No best in slot list published yet for this spec and level range."
+        ))
+        let failed = presenter.notice(phase: .failed, title: title)
+        #expect(failed?.row == "We could not load this list")
+        #expect(failed?.sub == Copy.homeErrorLine)
+        #expect(failed?.retry == true)
+        #expect(presenter.notice(phase: .notCached, title: title)?.retry == true)
+        #expect(presenter.notice(phase: .loading, title: title) == nil)
+    }
+
+    @Test("row 10: the counter, the Equipped cells, the header's count and the gain cells agree with the answer")
+    func countsAgree() throws {
+        let home = try HomeFixtures.home("character.home.gorvash")
+        let range = BisRange(band: 50, preset: "bare")
+        let band = try #require(try BisTestData.bis().band(for: range, faction: "horde"))
+        // A list whose picks are the answer's own: its upgrades' picks, then what is already best.
+        let pick = { (id: Int, name: String) in
+            BisRow.Content.pick(BisPick(
+                item: BisItemRef(id: id, name: name, item: nil), slotSource: "", next: "", isUnmodelled: false, isWorn: false,
+                runnersUp: [], source: ""
+            ))
+        }
+        let rows = home.upgrades.map { BisRow(slot: $0.slot, slotLabel: $0.slotLabel, content: pick($0.pick.id, $0.pick.name ?? "")) }
+            + home.alreadyBest.map { BisRow(slot: $0.slot, slotLabel: $0.slotLabel, content: pick($0.item.id, $0.item.name ?? "")) }
+        let list = BisList(setDpsLine: nil, rows: rows, unit: .dps, specLabel: "Fury Warrior", rangeLabel: "50 to 59")
+        let selection = BisSelection(classSlug: "warrior", spec: "warrior-fury", range: range, faction: "horde")
+        let content = GearPresenter(context: BisContext(selection: selection, characterSelection: selection))
+            .content(list: list, inputs: GearInputs(band: band, home: home, loot: nil, level: 58))
+        let worn = content.slots.filter { $0.pick?.trail == .worn }.count
+        let gains = content.slots.filter { if case .gain = $0.pick?.trail { true } else { false } }.count
+        #expect(worn == home.alreadyBest.count)
+        #expect(content.facts.hasSuffix(Copy.gearOnList(n: worn, total: rows.count)))
+        #expect(gains == home.upgradeCount)
+        #expect(content.summary?.line.contains(Copy.homeAnswerUpgrades(n: home.upgradeCount)) == true)
+        #expect(content.slots.map(\.label).contains("Finger 2"), "the API's slot label")
+    }
+
+    @Test("row 10, the fixture app: Gorvash's 50 to 59 list reads 3 of 17, Head, Neck and Main hand Equipped")
+    func gorvashFixture() throws {
+        let home = try HomeFixtures.home("character.home.gorvash")
+        let range = BisRange(band: 50, preset: "bare")
+        let file = try BisTestData.bis()
+        let band = try #require(file.band(for: range, faction: "horde"))
+        let list = BisListBuilder(items: [], worn: [], timeZone: .gmt).list(file: file, band: band, specLabel: "Fury Warrior", rangeLabel: "50 to 59")
+        let selection = BisSelection(classSlug: "warrior", spec: "warrior-fury", range: range, faction: "horde")
+        let content = GearPresenter(context: BisContext(selection: selection, characterSelection: selection))
+            .content(list: list, inputs: GearInputs(band: band, home: home, loot: nil, level: 58))
+        let worn = content.slots.filter { $0.pick?.trail == .worn }.map(\.slot)
+        #expect(worn == ["head", "neck", "main_hand"])
+        #expect(content.facts.hasSuffix(Copy.gearOnList(n: 3, total: 17)))
+        // Round 7, row 1: the header in the house format, whole from 100.
+        #expect(content.figure == band.setDps.map(ReportsCopy.houseFigure))
+        #expect(content.figure?.contains(".") == false)
+    }
+
+    @Test("round 4, row 3: a pick neither Equipped nor gaining reads Not modelled or No gain")
+    func flatTrails() throws {
+        let home = try HomeFixtures.home()
+        let upgrade = try #require(home.upgrades.first)
+        let gain = HomeGain(figure: "+4.2", unit: "DPS")
+        #expect(GearPresenter.trail(upgrade, gain: gain, unit: "DPS") == .gain(gain))
+        let unmodelled = try #require(home.upgrades.first { !$0.modelled }, "the fixture has gains not modelled")
+        #expect(GearPresenter.trail(unmodelled, gain: nil, unit: "DPS") == .notModelled)
+        #expect(GearPresenter.trail(nil, gain: nil, unit: "DPS") == .noGain, "round 8: `No gain`, not +0.0 DPS")
+    }
+
+    @Test("round 4, row 2: Gear's synced age takes the warning tone past a week, as the drawer's")
+    func staleSummary() throws {
+        let home = try HomeFixtures.home()
+        let synced = try #require(home.syncedAt)
+        #expect(GearPresenter.summary(home, unit: "DPS", now: synced.addingTimeInterval(SyncAge.staleAfter - 60))?.stale == false)
+        let stale = try #require(GearPresenter.summary(home, unit: "DPS", now: synced.addingTimeInterval(SyncAge.staleAfter + 60)))
+        #expect(stale.stale)
+        #expect(stale.synced == Copy.gearHeaderSynced(age: RelativeAge.days(7).phrase))
+    }
+
+    @Test("the counter reads how many slots match the list")
+    func counterWords() {
+        #expect(Copy.gearOnList(n: 0, total: 17) == "0 of 17 slots match the list")
     }
 
     @Test("the summary names the band: 60 raid, or the band's range")

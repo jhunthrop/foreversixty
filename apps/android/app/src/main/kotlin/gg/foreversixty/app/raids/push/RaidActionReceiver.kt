@@ -8,7 +8,9 @@ import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import gg.foreversixty.app.ForeverApplication
 import gg.foreversixty.app.R
+import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.push.PushGroup
+import gg.foreversixty.app.push.PushMessage
 import gg.foreversixty.app.push.PushNotifier
 import gg.foreversixty.app.raids.logic.LiveRaidService
 import gg.foreversixty.app.raids.logic.SignupState
@@ -23,7 +25,9 @@ import kotlinx.coroutines.withTimeoutOrNull
  * In, Late, Bench and Out answered from the notification shade (spec 2026-11-08 F1): `goAsync`, the
  * PUT inside the receiver's window, then the answer replaces the notification by its tag. After Late the
  * answer offers How late? (15, 30, 60 min); a press there answers again with the minutes. A foreground
- * action, or a press the server cannot place, opens the raid page instead.
+ * action (Choose a spec, Choose a character) is an activity PendingIntent on the raid page, never this
+ * receiver (Android 12 blocks trampolines); a press the server cannot place replaces the notification
+ * with one whose tap opens the raid page.
  */
 class RaidActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -32,11 +36,7 @@ class RaidActionReceiver : BroadcastReceiver() {
         val payload = RaidPushPayload.parse(raw) ?: return
         val tag = intent.getStringExtra(EXTRA_TAG)
         val id = intent.getIntExtra(EXTRA_ID, 0)
-        val state = RaidPushCategory.stateFor(action)
-        if (state == null) {
-            PushNotifier.open(context, payload.deepLink(askingSpec = action == RaidPushCategory.ACTION_ASK_SPEC).url())
-            return
-        }
+        val state = RaidPushCategory.stateFor(action) ?: return
         val minutes = RaidPushCategory.lateMinutes(action)
         val pending = goAsync()
         val app = context.applicationContext as ForeverApplication
@@ -52,7 +52,7 @@ class RaidActionReceiver : BroadcastReceiver() {
                         // Lane F14: the widgets, tile and countdown redraw from the server's answer.
                         WidgetRefreshWork.now(context)
                     }
-                    is RaidPushOutcome.Open -> PushNotifier.open(context, outcome.link.url())
+                    is RaidPushOutcome.Open -> postOpen(context, outcome.link, raw, tag, id)
                 }
             } finally {
                 pending.finish()
@@ -82,6 +82,23 @@ class RaidActionReceiver : BroadcastReceiver() {
             RaidNotificationActions.lateMinutes(context, raw, tag, id).forEach(builder::addAction)
         }
         PushNotifier.notify(context, tag, id, builder.build())
+    }
+
+    /**
+     * A press the shade cannot finish (the spec to pick, the character to choose): the notification
+     * asks for it and its tap opens the raid page there. A receiver may not start the activity itself.
+     */
+    private fun postOpen(context: Context, link: DeepLink, raw: Map<String, String>, tag: String?, id: Int) {
+        val asking = (link as? DeepLink.Raid)?.spec == RaidPushPayload.SPEC_ASK
+        val title = context.getString(if (asking) R.string.push_action_askSpec else R.string.push_action_choose)
+        val body = raw[PushMessage.KEY_TITLE].orEmpty()
+        val notification = PushNotifier.builder(context, PushGroup.Raids.channelId)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setContentIntent(PushNotifier.openIntent(context, link.url(), tag))
+            .setAutoCancel(true)
+            .build()
+        PushNotifier.notify(context, tag, id, notification)
     }
 
     companion object {
@@ -140,7 +157,14 @@ object RaidNotificationActions {
         slot: Int,
     ): List<NotificationCompat.Action> {
         val bundle = Bundle().apply { data.forEach { (key, value) -> putString(key, value) } }
+        val payload = RaidPushPayload.parse(data)
         return ids.mapIndexed { index, (action, label) ->
+            if (RaidPushCategory.stateFor(action) == null) {
+                // Opens the raid page: an activity PendingIntent straight from the button (no trampoline).
+                val link = payload?.deepLink(askingSpec = action == RaidPushCategory.ACTION_ASK_SPEC)?.url()
+                val open = PushNotifier.openIntent(context, link, tag, slot = OPEN_SLOT + slot + index)
+                return@mapIndexed NotificationCompat.Action.Builder(0, label, open).build()
+            }
             val intent = Intent(context, RaidActionReceiver::class.java)
                 .setAction(action)
                 .putExtra(RaidActionReceiver.EXTRA_ACTION, action)
@@ -158,4 +182,7 @@ object RaidNotificationActions {
     /** Room for the four answers, then the three minutes. */
     private const val ACTION_SLOTS = 8
     private const val MINUTES_SLOT = 4
+
+    /** Keeps an opening button's request code apart from the notification's own tap. */
+    private const val OPEN_SLOT = 1
 }

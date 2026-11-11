@@ -57,6 +57,13 @@ struct GuildSnapshotTests {
     @Test func rosterAll() throws { snap(roster(try loadedRoster()), "f16.1-roster-all", height: 1400) }
     @Test func rosterAll_xl() throws { snap(roster(try loadedRoster()), "f16.1-roster-all-xl", height: 2600, large: true) }
 
+    /// Round 5, row 2: from the Raid tab's not-synced line, the filter chip selected with its clear
+    /// control, All not selected, the count `4 of 38`.
+    @Test func rosterNotSynced() throws {
+        let keys = Set(RosterList(home: try GuildFixture.home()).entries.compactMap(\.characterKey).prefix(4))
+        snap(roster(try loadedRoster(), query: RosterQuery(only: keys)), "r5-roster-not-synced", height: 900)
+    }
+
     @Test func rosterTanks() throws {
         snap(roster(try loadedRoster(), query: RosterQuery(role: .tanks)), "f16.1-roster-tanks")
     }

@@ -62,6 +62,20 @@ enum ReportsCopy {
         Int(value.rounded()).formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))
     }
 
+    /// The house figure (apps/shared/formats.json `numbers`, round 7 row 1): whole and grouped from
+    /// 100 (`182`, `1,196`), one decimal below (`18.0`, `94.6`). Gear's header and Activity's rows.
+    static func houseFigure(_ value: Double) -> String {
+        guard abs(value) < houseWholeFrom else { return figure(value) }
+        return value.formatted(.number.precision(.fractionLength(1)).grouping(.automatic).locale(Locale(identifier: "en_US")))
+    }
+
+    static let houseWholeFrom: Double = 100
+
+    /// A gain in the house figure with its sign and a true minus: `+158`, `+18.0`, `\u{2212}0.3`.
+    static func signedHouseFigure(_ value: Double) -> String {
+        (value < 0 ? "\u{2212}" : "+") + houseFigure(abs(value))
+    }
+
     /// `DPS`, `HPS` or `DTPS`.
     static func unit(_ unit: String) -> String {
         switch unit {
@@ -120,7 +134,7 @@ enum ReportsCopy {
 
     // MARK: F10.2 report
 
-    /// `Tuesday 15 December 2026 · logged by Obnoxious Yell`.
+    /// `Tuesday 15 December 2026 · logged by Gorvash`.
     static func reportMeta(_ report: Report, clock: ReportsClock) -> String {
         Copy.reportMeta(
             weekday: clock.weekday(report.createdAt), date: clock.longDate(report.createdAt),
@@ -185,7 +199,7 @@ enum ReportsCopy {
         }
     }
 
-    /// `Kill 4:28 · Obnoxious Yell, Fury`.
+    /// `Kill 4:28 · Gorvash, Fury`.
     static func parseMeta(_ row: ParseRow) -> String {
         Copy.reportParseMeta(time: duration(row.fight.durationMs), name: row.character.name, spec: row.character.specName)
     }

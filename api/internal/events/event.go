@@ -69,6 +69,16 @@ type Event struct {
 	// Icon is the Activity row's icon, a name under /data/{build}/icons (icons.go); "" takes the
 	// kind's group's.
 	Icon string
+	// Segments are the Activity row's styled sentence (names in class colour, items with
+	// quality and id), nil for a row that shows Body alone; Crest is the class slug of the other
+	// player the row is about ("" for none); Figure is the row's number (a sim's DPS), nil
+	// without one. Push reads Body only.
+	Segments []Segment
+	Crest    string
+	Figure   *float64
+	// ActivityBody replaces Body on the Activity row when the row draws its figure itself, so
+	// the row does not say the number twice (it may be empty); nil keeps Body.
+	ActivityBody *string
 	// Source is the producer's typed fact, for a channel that renders it in full (the
 	// Discord embeds read notify.SimFinished and notify.UploadParsed). nil otherwise.
 	Source any
@@ -77,6 +87,14 @@ type Event struct {
 // Publisher is what a producer calls; Router implements it.
 type Publisher interface {
 	Publish(ctx context.Context, e Event) error
+}
+
+// activityBody is the body the Activity row keeps: ActivityBody, else Body.
+func (e Event) activityBody() string {
+	if e.ActivityBody != nil {
+		return *e.ActivityBody
+	}
+	return e.Body
 }
 
 var errNoDedupe = errors.New("events: an event needs a dedupe key")

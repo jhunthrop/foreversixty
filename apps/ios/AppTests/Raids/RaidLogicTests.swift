@@ -150,7 +150,7 @@ struct RosterTests {
     @Test("every buff tile is named, live art or not: the short label under it, the full name for VoiceOver")
     func buffNames() throws {
         let read = try #require(CompositionRead(try RaidFixture.raid().composition))
-        #expect(read.buffs.map(\.label) == ["Fort", "MotW", "Int", "Bless", "SPro", "SS", "Rez", "WF", "SoE", "MS"])
+        #expect(read.buffs.map(\.label) == ["Fort", "MotW", "Int", "Kings", "Might", "Wisdom", "SPro", "SS", "Rez", "WF", "SoE", "MS"])
         #expect(read.buffs.allSatisfy { $0.accessibilityLabel.hasPrefix($0.name) })
         #expect(read.buffs.first { $0.key == "fortitude" }?.name == "Power Word: Fortitude")
     }
@@ -161,8 +161,8 @@ struct RosterTests {
         #expect(read.classes.map(\.count) == [5, 0, 2, 2, 4, 4, 2, 2, 3])
         #expect(read.classes[1].name == "Paladin")
         #expect(read.roles == ["Tanks 3", "Healers 6", "DPS 14"])
-        #expect(read.buffSummary == "Missing: Blessings")
-        #expect(read.buffs.first { $0.key == "blessings" }?.accessibilityLabel == "Blessings, missing")
+        #expect(read.buffSummary == "Missing: Blessing of Kings, Blessing of Might, Blessing of Wisdom")
+        #expect(read.buffs.first { $0.key == "blessing_of_kings" }?.accessibilityLabel == "Blessing of Kings, missing")
         #expect(read.buffs.first { $0.key == "mark_of_the_wild" }?.label == "MotW")
         #expect(read.buffs.contains { $0.key == "windfury_totem" && $0.present })
         #expect(read.classesAccessibilityLabel.hasPrefix("Classes coming: Warrior 5, Paladin 0, Hunter 2"))
@@ -201,7 +201,7 @@ struct RosterTests {
 @MainActor
 @Suite("Sign-up")
 struct SignupControllerTests {
-    let key = "us/pvp/obnoxious-yell"
+    let key = "us/pvp/gorvash"
 
     @Test("a press draws at once, saves, says Saved. and plays selection then success")
     func pressSaves() async throws {
@@ -270,6 +270,24 @@ struct SignupControllerTests {
         #expect(controller.block(ask).status == .saved("Saved. Elemental is kept for Lightningbolltz."))
     }
 
+    @Test("a pick whose write answers after the sheet closed still saves (Android round-6 bug, iOS check)")
+    func specPickOutlivesSheet() async throws {
+        let service = FakeRaidService()
+        service.signupDelay = .milliseconds(200)
+        let ask = "us/pvp/lightningbolltz"
+        let controller = try makeController(try RaidFixture.raid("guild.raid.ask-spec"), service: service)
+        await controller.press(ask, .signedIn)
+        let elemental = try #require(controller.character(ask)?.specOptions?.first { $0.spec == "shaman-elemental" })
+        // As the sheet does: the pick runs in its own Task, then the sheet's binding closes it.
+        let pick = Task { await controller.pickSpec(elemental) }
+        while controller.specAsk != nil { await Task.yield() }
+        controller.closeSpecSheet()
+        #expect(controller.block(ask).busy, "the write is still out when the sheet goes")
+        await pick.value
+        #expect(controller.block(ask).status == .saved("Saved. Elemental is kept for Lightningbolltz."))
+        #expect(!controller.block(ask).busy)
+    }
+
     @Test("closing the spec sheet drops the press; Out never asks")
     func specSheetClose() async throws {
         let service = FakeRaidService()
@@ -304,7 +322,7 @@ struct SignupControllerTests {
         await controller.press("us/pvp/yellfury", .signedIn)
         #expect(controller.block("us/pvp/yellfury").shown == .signedIn)
         #expect(controller.block(key).shown == .bench)
-        #expect(controller.block(key).status == .info("Obnoxious Yell moved to Bench."))
+        #expect(controller.block(key).status == .info("Gorvash moved to Bench."))
     }
 
     @Test("a locked raid disables a member's segments and keeps an officer's")
@@ -453,7 +471,7 @@ struct RaidPushTests {
     func parse() throws {
         let push = try payload()
         #expect(push.guild == 2 && push.raid == 31)
-        #expect(push.characterKey == "us/pvp/obnoxious-yell")
+        #expect(push.characterKey == "us/pvp/gorvash")
         #expect(!push.askSpec)
         #expect(RaidPushCategory.signup(forAction: "signup_late") == PushSignup(state: "late"))
         #expect(RaidPushCategory.signup(forAction: "signup_bench") == PushSignup(state: "bench"))
@@ -466,10 +484,10 @@ struct RaidPushTests {
     func answersIn() async throws {
         let service = FakeRaidService()
         let outcome = try await answer(service, PushSignup(state: "in"))
-        #expect(service.signups.first?.key == "us/pvp/obnoxious-yell")
+        #expect(service.signups.first?.key == "us/pvp/gorvash")
         #expect(service.signups.first?.request.state == "in")
         #expect(service.signups.first?.request.lateMinutes == nil)
-        #expect(outcome == .answered(.init(title: "You're In for Onyxia's Lair", body: "Obnoxious Yell, pull at 7:00 pm CST.")))
+        #expect(outcome == .answered(.init(title: "You're In for Onyxia's Lair", body: "Gorvash, pull at 7 pm CST.")))
     }
 
     @Test("a Late chip sends its minutes")
@@ -489,7 +507,7 @@ struct RaidPushTests {
             Issue.record("not answered")
             return
         }
-        #expect(confirmation.body.hasSuffix(" Obnoxious Yell moved to Bench."))
+        #expect(confirmation.body.hasSuffix(" Gorvash moved to Bench."))
     }
 
     @Test("a locked raid posts the locked line; a failure posts the failed one")
@@ -516,7 +534,7 @@ struct RaidPushTests {
     @Test("with no pick and two unsigned characters, the tap opens the page")
     func noPick() throws {
         let push = try payload(["character_key": ""])
-        #expect(RaidPushAnswerer.character(for: push, in: try RaidFixture.raid("guild.raid.two-characters"))?.characterKey == "us/pvp/obnoxious-yell")
+        #expect(RaidPushAnswerer.character(for: push, in: try RaidFixture.raid("guild.raid.two-characters"))?.characterKey == "us/pvp/gorvash")
         #expect(RaidPushAnswerer.character(for: push, in: try RaidFixture.raid("guild.raid.ask-spec"))?.characterKey == "us/pvp/lightningbolltz")
     }
 }

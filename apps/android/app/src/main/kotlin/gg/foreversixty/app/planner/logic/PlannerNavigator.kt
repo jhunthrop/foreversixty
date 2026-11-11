@@ -31,6 +31,11 @@ class PlannerNavigator {
         stack = stack.dropLast(1)
     }
 
+    /** Closes every planner screen: a tab tap returns to that tab's root, as it does for a menu screen. */
+    fun close() {
+        stack = emptyList()
+    }
+
     /**
      * `/app/planner/{class}` opens the editor (a code loads its build), `/app/builds` Your builds
      * (signed in only) and `/b/{id}` the viewer. Each replaces whatever planner screens were open.

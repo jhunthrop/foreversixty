@@ -9,6 +9,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.delay
 import io.ktor.http.headersOf
 import java.io.FileNotFoundException
 
@@ -43,7 +44,20 @@ const val FIXTURE_ASSET_DIR = "fixtures/app"
  */
 object FixtureEngine {
     fun create(source: FixtureSource, variants: Map<String, FixtureVariant> = emptyMap()): HttpClientEngine =
+        create(source) { variants }
+
+    /**
+     * As [create], with [variantsNow] and [latencyMillis] read on every request: a debug build can
+     * switch a state, or hold each answer back so an in-flight frame can be captured.
+     */
+    fun create(
+        source: FixtureSource,
+        latencyMillis: () -> Long = { 0L },
+        variantsNow: () -> Map<String, FixtureVariant>,
+    ): HttpClientEngine =
         MockEngine { request ->
+            latencyMillis().takeIf { it > 0 }?.let { delay(it) }
+            val variants = variantsNow()
             val path = request.url.encodedPath
             val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
             val (route, _) = FixtureRoutes.resolve(request.method, path)
@@ -51,10 +65,19 @@ object FixtureEngine {
             val status = route.fixture?.let { variants[it]?.status } ?: route.status
             val file = FixtureRoutes.fileName(request.method, path, variants)
                 ?: return@MockEngine respond("", status)
-            val body = source.read(file)
+            val own = FixtureRoutes.characterFileName(request.method, path, variants)?.let(source::read)
+            // An error variant with no file of its own answers its status with a plain error body.
+            val error = route.fixture?.let { variants[it] as? FixtureVariant.Error }
+            val body = own ?: source.read(file)
+                ?: error?.let { return@MockEngine respond(errorBody(it.code), it.status, jsonHeaders) }
                 ?: return@MockEngine respond(notFoundBody("$path -> $file"), HttpStatusCode.NotFound, jsonHeaders)
             respond(body, status, jsonHeaders)
         }
+
+    private fun errorBody(code: String): String = ApiJson.encodeToString(
+        ApiEnvelope.serializer(),
+        ApiEnvelope(ok = false, error = ApiErrorBody(code = code, message = "fixture error $code"), requestId = "fixture-error"),
+    )
 
     private fun notFoundBody(what: String): String = ApiJson.encodeToString(
         ApiEnvelope.serializer(),

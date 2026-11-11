@@ -21,13 +21,6 @@ enum ParityCheck {
     /// narrower than iOS, so `Main hand · Fel Ancient, Ashenvale` holds one line in the mock and wraps
     /// on the phone, moving New for you 13 down.
     static let expectedDrift: [String: [Drift]] = [
-        "home-34": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "M1i")],
-        // The runner's Chromium sets a low-level row's crest inline, on the line's baseline, so each such
-        // row is 4 to 5 taller in the mock than the 48 pt row the drawer draws.
-        "menu-low": [
-            Drift(prefix: "section-tools: y", since: "2026-11-10", lane: "M5i"),
-            Drift(prefix: "section-account: y", since: "2026-11-10", lane: "M5i"),
-        ],
         // The web system's rows set the mock's Send me 12 shorter since batch H; Notifications keeps its
         // rows until the secondary screens' restyle.
         "notification-settings": [
@@ -48,6 +41,32 @@ enum ParityCheck {
         "home-raid-day-late": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
         "home-raid-day-officer": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "mobile-rest")],
         "raid-applicant": applicantBandDrift,
+        // Round 3 mocks set `.sub` lines at 18.29 and the Segmented inside a 1 px border; the app's row
+        // line is RowType.sub's 18. Over the Raid tab's and Activity's ~30 lines that sums to 8 to 11 pt
+        // by the last section, inside each section's own tolerance.
+        "raid": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
+        "raid-signup": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
+        "raid-officer": [
+            Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29"),
+            // Round-4 mock: the officer's Who is coming sits 8 pt lower in the mock (its Covered and
+            // not-synced lines); exactly at the 8 pt edge.
+            Drift(prefix: "section-before-you-pull: y", since: "2026-11-10", lane: "round-4 mocks"),
+        ],
+        // Round-4 mock: Home's raid line title (`Onyxia's Lair · Sat 19 Dec, 7:00 pm CST`) holds one
+        // line in the runner's Chromium and wraps on the phone, so the block is 16 pt taller.
+        "home-60": [
+            Drift(prefix: "countdowns: height", since: "2026-11-10", lane: "round-4 mocks"),
+            Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "round-4 mocks"),
+        ],
+        "home-60-noavatar": [
+            Drift(prefix: "countdowns: height", since: "2026-11-10", lane: "round-4 mocks"),
+            Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "round-4 mocks"),
+        ],
+        "home-60-answered": [
+            Drift(prefix: "countdowns: height", since: "2026-11-10", lane: "round-4 mocks"),
+            Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "round-4 mocks"),
+        ],
+        "activity": [Drift(prefix: "section-this-week: y", since: "2026-11-10", lane: "row line box 18.29")],
     ]
 
     private static let nightAnswersDrift = [

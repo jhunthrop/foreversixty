@@ -1,5 +1,6 @@
 import DesignSystem
 import Models
+import Networking
 import Routing
 import SwiftUI
 
@@ -114,7 +115,14 @@ struct RootView: View {
         .widgetRefreshTriggers(environment)
         // The Raid tab's badge, for the selected character's guild, on every foreground.
         .task(id: RaidBadgeTrigger(guild: raidBadgeGuild, active: scenePhase == .active, signupSaves: raidSignupSaves)) {
-            shell.badges[.raid] = await RaidBadgeCount.load(guild: raidBadgeGuild, client: environment.client)
+            shell.badges[.raid] = await RaidBadgeCount.load(guild: raidBadgeGuild, client: raidBadgeClient)
+        }
+        // The Activity tab's badge at shell start and on every foreground, as the Raid badge (round 5, i1).
+        .task(id: ActivityBadgeTrigger(signedIn: environment.session.phase.isSignedIn, active: scenePhase == .active)) {
+            guard scenePhase == .active else { return }
+            shell.badges[.activity] = await ActivityBadgeCount.load(
+                signedIn: environment.session.phase.isSignedIn, service: activityService
+            )
         }
         .onReceive(NotificationCenter.default.publisher(for: .raidSignupSaved)) { _ in raidSignupSaves += 1 }
         .modifier(FirstRunHost(session: environment.session, model: firstRun, isOn: signInAvailable))
@@ -142,7 +150,7 @@ struct RootView: View {
                 if let row = UserDefaults.standard.string(forKey: "FSMenu").flatMap(MenuDestination.init(rawValue:)) {
                     shell.open(row)
                 }
-                await RaidDebugLaunch.postRaidPushIfAsked()
+                await RaidDebugLaunch.postPushIfAsked()
             #endif
         }
     }
@@ -189,7 +197,7 @@ struct RootView: View {
         case .gear: PlaceholderScreen(title: tab.title)
         case .activity:
             ActivityScreen(
-                service: LiveActivityService(client: environment.client),
+                service: activityService,
                 session: signInAvailable ? environment.session : nil,
                 build: environment.appConfig.current?.activeBuild ?? BundledBuild.read() ?? "",
                 onUnread: { shell.badges[.activity] = $0 },
@@ -241,6 +249,18 @@ struct RootView: View {
         return PlannerNewBuild(className: character?.className, race: character?.race, level: character?.level)
     }
 
+    /// Activity's calls, for the tab and its badge.
+    private var activityService: LiveActivityService { LiveActivityService(client: environment.client) }
+
+    /// The Raid badge's calls: the same answers the Raid tab reads (round 5, i2: in the review
+    /// captures the officer fixture's badge, as Android's tab and badge share one load).
+    private var raidBadgeClient: APIClient {
+        #if DEBUG
+            if let fixture = RaidDebugLaunch.client(baseURL: environment.configuration.baseURL) { return fixture }
+        #endif
+        return environment.client
+    }
+
     /// The selected character's guild, whose raids the Raid badge counts.
     private var raidBadgeGuild: Int64? {
         guard signInAvailable, environment.isAvailable(.raids) else { return nil }
@@ -261,6 +281,12 @@ private struct SpotlightTrigger: Equatable {
     let account: Me?
     let current: String?
     let enabled: Bool
+}
+
+/// Reads the Activity badge again on sign-in and on a foreground.
+private struct ActivityBadgeTrigger: Equatable {
+    let signedIn: Bool
+    let active: Bool
 }
 
 /// Reads the Raid badge again for a new guild, a foreground, or a saved answer.

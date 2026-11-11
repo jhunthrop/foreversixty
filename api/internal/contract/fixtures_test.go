@@ -2,10 +2,13 @@ package contract
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/push"
 )
 
 // Every response fixture is a well-formed envelope: {ok, data, error, request_id}, where a
@@ -87,8 +90,8 @@ func TestPushFixturesCarryThePayloadFields(t *testing.T) {
 				requireKeys(t, alert, "title", "body")
 				requireKeys(t, aps, "thread-id")
 				requireKeys(t, doc, "kind", "link", "data")
-				if _, hasActions := doc["actions"]; hasActions && aps["category"] != "RAID_SIGNUP" {
-					t.Errorf("a payload with actions has the RAID_SIGNUP category, got %v", aps["category"])
+				if _, hasActions := doc["actions"]; hasActions && !pushCategories[fmt.Sprint(aps["category"])] {
+					t.Errorf("a payload with actions names a button set the apps register, got %v", aps["category"])
 				}
 			case strings.HasSuffix(name, ".fcm"):
 				assertDataOnlyFCM(t, doc)
@@ -99,10 +102,13 @@ func TestPushFixturesCarryThePayloadFields(t *testing.T) {
 	}
 }
 
+// pushCategories are the button sets a payload with actions can name (push.MessageOf).
+var pushCategories = map[string]bool{push.RaidSignupCategory: true, push.GuildApplicantCategory: true, push.RaidShortCategory: true}
+
 // assertDataOnlyFCM holds an FCM fixture to the data-only message Android is sent (since
 // a8ad9c882): no notification block, so the app's own service draws every push with its group;
 // everything the app shows or does is a string in data, the actions a JSON list beside the
-// RAID_SIGNUP category.
+// button set (category) the apps register.
 func assertDataOnlyFCM(t *testing.T, doc map[string]any) {
 	t.Helper()
 	msg, _ := doc["message"].(map[string]any)
@@ -121,8 +127,8 @@ func assertDataOnlyFCM(t *testing.T, doc map[string]any) {
 	if !hasActions {
 		return
 	}
-	if data["category"] != "RAID_SIGNUP" {
-		t.Errorf("a payload with actions has the RAID_SIGNUP category, got %v", data["category"])
+	if !pushCategories[fmt.Sprint(data["category"])] {
+		t.Errorf("a payload with actions names a button set the apps register, got %v", data["category"])
 	}
 	var actions []map[string]any
 	if err := json.Unmarshal([]byte(raw), &actions); err != nil || len(actions) == 0 {

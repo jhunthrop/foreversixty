@@ -77,7 +77,7 @@ class ReportsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.
 
     // Report (F10.2)
 
-    /** `Monday 14 December 2026 · logged by Obnoxious Yell`. */
+    /** `Monday 14 December 2026 · logged by Gorvash`. */
     fun reportMeta(report: Report): String {
         val at = Reports.instantOrNull(report.createdAt)?.atZone(zone)
         val weekday = at?.let(WEEKDAY::format).orEmpty()

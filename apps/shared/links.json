@@ -6,7 +6,7 @@
       "path": "/app/character/{region}/{ruleset}/{name}",
       "screen": "character",
       "opens": "Home on that character; it becomes the current character.",
-      "example": "/app/character/us/pvp/obnoxious-yell"
+      "example": "/app/character/us/pvp/gorvash"
     },
     {
       "path": "/app/raid/{guild}/{raid}",

@@ -205,6 +205,8 @@ struct HomeCharacterScreen: View {
             )
         }
         .task { if let flow { await flow.load() } else { await store.load(character) } }
+        // Offline the raid card's answers disable, as the Raid tab's (F1).
+        .onChange(of: offlineStamp != nil, initial: true) { _, offline in flow?.offline = offline }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await store.refreshIfStale(character); await flow?.refresh() } }
         }
@@ -247,6 +249,7 @@ struct HomeCharacterScreen: View {
             raid: NextRaidActions(
                 answer: { state in Task { await flow?.answer(state) } },
                 late: { minutes in Task { await flow?.late(minutes) } },
+                retry: { Task { await flow?.retry() } },
                 openRaid: { raidScreen { .raid(guild: $0, raid: $1, roster: false, open: nil) } },
                 openReady: raidNight,
                 previewMention: { raidScreen { .notAnswered(guild: $0, raid: $1) } },

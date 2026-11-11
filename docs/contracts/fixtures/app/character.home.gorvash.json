@@ -1,0 +1,285 @@
+{
+  "ok": true,
+  "data": {
+    "data_build": "1.60.1.70658",
+    "synced_at": "2026-11-10T18:22:41Z",
+    "synced_from": "blizzard",
+    "character": "us/pvp/gorvash",
+    "state": "ok",
+    "spec": "warrior-fury",
+    "band": 50,
+    "band_label": "50 to 59",
+    "preset": "bare",
+    "unit": "dps",
+    "unit_word": "DPS",
+    "upgrade_count": 13,
+    "total_gain": 18.0,
+    "not_sim_checked_count": 0,
+    "not_modelled_count": 0,
+    "upgrades": [
+      {
+        "slot": "off_hand",
+        "slot_label": "Off hand",
+        "pick": {
+          "id": 12774,
+          "name": "Dawn's Edge",
+          "quality": 3,
+          "icon": "inv_axe_05",
+          "item_level": 55,
+          "source_line": "Crafted: Blacksmithing",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 2.8,
+        "gain_words": "+2.8 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "legs",
+        "slot_label": "Legs",
+        "pick": {
+          "id": 220798,
+          "name": "Stone Guard's Plate Leggings",
+          "quality": 3,
+          "icon": "inv_pants_04",
+          "item_level": 53,
+          "source_line": "Lady Palanseer",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 2.2,
+        "gain_words": "+2.2 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "hands",
+        "slot_label": "Hands",
+        "pick": {
+          "id": 272096,
+          "name": "Raider Gauntlets",
+          "quality": 4,
+          "icon": "inv_gauntlets_29",
+          "item_level": 55,
+          "source_line": "Creeg Bothunk",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 2.0,
+        "gain_words": "+2.0 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "chest",
+        "slot_label": "Chest",
+        "pick": {
+          "id": 220801,
+          "name": "Stone Guard's Plate Armor",
+          "quality": 3,
+          "icon": "inv_chest_plate16",
+          "item_level": 53,
+          "source_line": "Lady Palanseer",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 1.9,
+        "gain_words": "+1.9 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "waist",
+        "slot_label": "Waist",
+        "pick": {
+          "id": 252473,
+          "name": "Prowler's Leather Waistguard",
+          "quality": 3,
+          "icon": "inv_belt_37b",
+          "item_level": 55,
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 1.6,
+        "gain_words": "+1.6 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "feet",
+        "slot_label": "Feet",
+        "pick": {
+          "id": 252468,
+          "name": "Prowler's Leather Boots",
+          "quality": 3,
+          "icon": "inv_boots_chain_06",
+          "item_level": 52,
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 1.5,
+        "gain_words": "+1.5 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "finger1",
+        "slot_label": "Finger 1",
+        "pick": {
+          "id": 19511,
+          "name": "Legionnaire's Band",
+          "quality": 3,
+          "icon": "inv_jewelry_ring_21",
+          "item_level": 53,
+          "source_line": "Warsong Outriders",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 1.2,
+        "gain_words": "+1.2 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "wrist",
+        "slot_label": "Wrist",
+        "pick": {
+          "id": 13120,
+          "name": "Deepfury Bracers",
+          "quality": 3,
+          "icon": "inv_bracer_07",
+          "item_level": 55,
+          "source_line": "World drop (BoE)",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 1.1,
+        "gain_words": "+1.1 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "back",
+        "slot_label": "Back",
+        "pick": {
+          "id": 13122,
+          "name": "Dark Phantom Cape",
+          "quality": 3,
+          "icon": "inv_misc_cape_21",
+          "item_level": 55,
+          "source_line": "World drop (BoE)",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 0.8,
+        "gain_words": "+0.8 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "finger2",
+        "slot_label": "Finger 2",
+        "pick": {
+          "id": 11862,
+          "name": "White Bone Band",
+          "quality": 2,
+          "icon": "inv_misc_bone_05",
+          "item_level": 52,
+          "source_line": "Quest: Bone-Bladed Weapons",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 0.8,
+        "gain_words": "+0.8 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "trinket1",
+        "slot_label": "Trinket 1",
+        "pick": {
+          "id": 19120,
+          "name": "Rune of the Guard Captain",
+          "quality": 2,
+          "icon": "inv_misc_rune_07",
+          "item_level": 51,
+          "source_line": "Quest: Job Opening: Guard Captain of Revantusk Village",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 0.7,
+        "gain_words": "+0.7 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "trinket2",
+        "slot_label": "Trinket 2",
+        "pick": {
+          "id": 249469,
+          "name": "Frozen Heart of the Mountain",
+          "quality": 3,
+          "icon": "inv_misc_gem_sapphire_01",
+          "item_level": 55,
+          "source_line": "Crafted: Enchanting",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 0.7,
+        "gain_words": "+0.7 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "ranged",
+        "slot_label": "Ranged",
+        "pick": {
+          "id": 2100,
+          "name": "Precisely Calibrated Boomstick",
+          "quality": 4,
+          "icon": "inv_weapon_rifle_06",
+          "item_level": 48,
+          "source_line": "World drop (BoE)",
+          "drop_chance": null
+        },
+        "worn": null,
+        "gain": 0.7,
+        "gain_words": "+0.7 DPS",
+        "modelled": true
+      }
+    ],
+    "already_best": [
+      {
+        "slot": "head",
+        "slot_label": "Head",
+        "item": {
+          "id": 12640,
+          "name": "Lionheart Helm",
+          "quality": 4,
+          "icon": "inv_helmet_36",
+          "item_level": 61
+        }
+      },
+      {
+        "slot": "neck",
+        "slot_label": "Neck",
+        "item": {
+          "id": 18404,
+          "name": "Onyxia Tooth Pendant",
+          "quality": 4,
+          "icon": "inv_jewelry_necklace_09",
+          "item_level": 65
+        }
+      },
+      {
+        "slot": "main_hand",
+        "slot_label": "Main hand",
+        "item": {
+          "id": 13246,
+          "name": "Argent Avenger",
+          "quality": 3,
+          "icon": "inv_sword_05",
+          "item_level": 62
+        }
+      }
+    ],
+    "talents": {
+      "state": "optimized",
+      "points_differ": 0,
+      "band_points": 49
+    }
+  },
+  "error": null,
+  "request_id": "req_fixture"
+}

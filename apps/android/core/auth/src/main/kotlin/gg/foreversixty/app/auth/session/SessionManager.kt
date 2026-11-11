@@ -5,6 +5,7 @@ import gg.foreversixty.app.auth.BrowserLauncher
 import gg.foreversixty.app.auth.SignInOutcome
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.AccountDeletionRequest
+import gg.foreversixty.app.model.NotificationSettings
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.ApiEndpoints
 import gg.foreversixty.app.network.ApiError
@@ -88,12 +89,21 @@ class SessionManager(
     fun currentCharacter(phase: SessionPhase = this.phase.value, pickedKey: String? = mutablePicked.value): AccountCharacter? =
         phase.me?.let { CharacterSelection.current(it, pickedKey) }
 
-    /** Reads `GET /v1/me`. A 401 ends the session; any other failure keeps what is on screen. */
-    suspend fun refresh() {
-        if (!phase.value.isSignedIn) return
-        when (val result = client.send(ApiEndpoints.getMe())) {
-            is ApiResult.Success -> if (phase.value.isSignedIn) mutablePhase.value = SessionPhase.SignedIn(result.data)
-            is ApiResult.Failure -> if ((result.error as? ApiError.Server)?.isUnauthorized == true) tokenDied()
+    /**
+     * Reads `GET /v1/me`. A 401 ends the session; any other failure keeps what is on screen. True when
+     * the account was read (the menu's Refresh says whether it worked).
+     */
+    suspend fun refresh(): Boolean {
+        if (!phase.value.isSignedIn) return false
+        return when (val result = client.send(ApiEndpoints.getMe())) {
+            is ApiResult.Success -> {
+                if (phase.value.isSignedIn) mutablePhase.value = SessionPhase.SignedIn(result.data)
+                true
+            }
+            is ApiResult.Failure -> {
+                if ((result.error as? ApiError.Server)?.isUnauthorized == true) tokenDied()
+                false
+            }
         }
     }
 
@@ -154,6 +164,9 @@ class SessionManager(
             is ApiResult.Success -> ApiResult.Success(DeviceList.rows(result.data, thisDeviceId(), now), result.requestId)
             is ApiResult.Failure -> result
         }
+
+    /** `GET /v1/me/notifications`: the account's per-event, per-channel choices (the drawer's row reads its groups). */
+    suspend fun notificationSettings(): ApiResult<NotificationSettings> = client.send(ApiEndpoints.getNotificationSettings())
 
     suspend fun revoke(id: String): AccountActionOutcome = when (val result = client.send(ApiEndpoints.revokeDevice(id))) {
         is ApiResult.Success -> AccountActionOutcome.Done

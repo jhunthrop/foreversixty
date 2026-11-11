@@ -9,39 +9,17 @@
     14,
     16,
     384,
-    151
+    216
    ],
    "inventory": {
     "button": 4,
     "image": 1
    }
   },
-  "section-who-is-coming": {
-   "box": [
-    14,
-    187,
-    384,
-    229
-   ],
-   "inventory": {
-    "row": 3
-   }
-  },
-  "section-before-you-pull": {
-   "box": [
-    14,
-    436,
-    384,
-    326
-   ],
-   "inventory": {
-    "row": 4
-   }
-  },
   "section-needs-you": {
    "box": [
     14,
-    782,
+    252,
     384,
     225
    ],
@@ -50,10 +28,32 @@
     "button": 1
    }
   },
+  "section-who-is-coming": {
+   "box": [
+    14,
+    497,
+    384,
+    366
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-before-you-pull": {
+   "box": [
+    14,
+    883,
+    384,
+    309
+   ],
+   "inventory": {
+    "row": 4
+   }
+  },
   "section-olympus-xxvii": {
    "box": [
     14,
-    1026,
+    1212,
     384,
     288
    ],

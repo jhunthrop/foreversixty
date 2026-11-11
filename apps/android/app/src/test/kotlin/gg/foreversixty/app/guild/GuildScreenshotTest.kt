@@ -32,6 +32,7 @@ import gg.foreversixty.app.guild.logic.CalendarWhich
 import gg.foreversixty.app.guild.logic.HistoryPager
 import gg.foreversixty.app.guild.logic.Loadable
 import gg.foreversixty.app.guild.logic.MoreState
+import gg.foreversixty.app.guild.logic.RosterEntries
 import gg.foreversixty.app.guild.logic.RosterQuery
 import gg.foreversixty.app.guild.logic.RosterRole
 import gg.foreversixty.app.guild.logic.RosterSort
@@ -157,6 +158,12 @@ class GuildScreenshotTest {
     @Test fun roster_loading() = capture("f16.1-roster-loading") { Roster(Loadable.Loading) }
 
     @Test fun roster_error() = capture("f16.1-roster-error") { Roster(Loadable.Failed) }
+
+    /** Round 5 row 2: from the Raid tab's not-synced line, the filter chip with its clear, All off, `4 of N`. */
+    @Test fun roster_notSynced() = capture("f16.1-roster-not-synced") {
+        val keys = RosterEntries.of(GuildFixture.home()).mapNotNull { it.characterKey }.take(4).toSet()
+        Roster(controls = RosterControls(RosterQuery(only = keys)))
+    }
 
     @Test fun roster_offline() =
         capture("f16.1-roster-offline") { Roster(Loadable.Loaded(GuildFixture.home(), RaidTime.now.minusSeconds(900))) }

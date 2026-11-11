@@ -87,6 +87,9 @@ public enum FSColor {
     public static let parsePurple = Color(tokenHex: 0xA335EE)
     public static let parseOrange = Color(tokenHex: 0xFF8000)
     public static let parsePink = Color(tokenHex: 0xE268A8)
+    /// The pink step as text on the apps' panels (spec W3 section 4 Parse number), lightened as the
+    /// rarity text colours are (brand S5).
+    public static let parsePinkText = Color(tokenHex: 0xF08CC0)
     public static let parseGold = Color(tokenHex: 0xE5CC80)
     public static let schoolPhysical = Color(tokenHex: 0xE8C96A)
     public static let schoolHoly = Color(tokenHex: 0xFFF1A8)
@@ -182,6 +185,8 @@ public enum FSColor {
     public static let tabOn = Color(tokenHex: 0xFFD36B)
     /// The apps' tab bar: an unselected tab, muted white.
     public static let tabOff = Color(tokenHex: 0xFFFFFF, opacity: 0.82)
+    /// The apps' paperdoll: the ground behind the sockets (spec W3 section 4, brand S5).
+    public static let paperdollGround = Color(tokenHex: 0x14171F)
 }
 
 public enum FSFont {
@@ -211,6 +216,39 @@ public enum FSType {
     public static let button = FSTextRole(face: FSFont.bodyBold, size: 13, lineHeight: 16, tracking: 0, scalesWith: .subheadline, tabular: false)
     /// The tab bar label (ruling N4).
     public static let tab = FSTextRole(face: FSFont.bodySemibold, size: 12, lineHeight: 14, tracking: 0, scalesWith: .caption, tabular: false)
+    /// The apps' hero head: the character's name on Home's hero (brand S4).
+    public static let heroName = FSTextRole(face: FSFont.title, size: 30, lineHeight: 34, tracking: 0, scalesWith: .title, tabular: false)
+    /// The raid card's zone on Home (brand S4).
+    public static let cardTitle = FSTextRole(face: FSFont.title, size: 24, lineHeight: 30, tracking: 0, scalesWith: .title2, tabular: false)
+    /// A round-5 section title over the ground, above its panel (the mock's `.sh h2`, brand N4).
+    public static let panelTitle = FSTextRole(face: FSFont.title, size: 21, lineHeight: 26, tracking: 0, scalesWith: .title3, tabular: false)
+    /// The fact line under a hero name (brand S4).
+    public static let factLine = FSTextRole(face: FSFont.body, size: 14, lineHeight: 20, tracking: 0, scalesWith: .subheadline, tabular: false)
+    /// The unit under a countdown figure (brand S4).
+    public static let figureUnit = FSTextRole(face: FSFont.body, size: 12, lineHeight: 16, tracking: 0, scalesWith: .caption, tabular: false)
+    /// A filter chip's label (brand S4).
+    public static let chip = FSTextRole(face: FSFont.bodySemibold, size: 14, lineHeight: 18, tracking: 0, scalesWith: .subheadline, tabular: false)
+    /// The apps' profile drawer: the character's name at its head (brand S4).
+    public static let drawerName = FSTextRole(face: FSFont.title, size: 26, lineHeight: 32, tracking: 0, scalesWith: .title2, tabular: false)
+    /// The apps' profile drawer: a section head (brand S4).
+    public static let drawerSection = FSTextRole(face: FSFont.title, size: 16, lineHeight: 22, tracking: 0, scalesWith: .headline, tabular: false)
+    /// A small strong tag beside a name: the drawer's plan and rank tags (brand S4).
+    public static let tag = FSTextRole(face: FSFont.bodySemibold, size: 12, lineHeight: 16, tracking: 0, scalesWith: .caption, tabular: false)
+    /// The answer chip at a raid head's end, `Late · 30 min` (brand S4).
+    public static let answerChip = FSTextRole(face: FSFont.bodyBold, size: 13, lineHeight: 18, tracking: 0, scalesWith: .footnote, tabular: false)
+    /// The apps' bar title beside the profile button, Material 3's small top app bar size (brand
+    /// D6).
+    public static let barTitle = FSTextRole(face: FSFont.title, size: 22, lineHeight: 28, tracking: 0, scalesWith: .title2, tabular: false)
+    /// The paperdoll list: an item's name in its cell (brand D6).
+    public static let paperdollName = FSTextRole(face: FSFont.bodySemibold, size: 13, lineHeight: 16, tracking: 0, scalesWith: .footnote, tabular: false)
+    /// The paperdoll list: the slot word and its gain under the name (brand D6).
+    public static let paperdollDetail = FSTextRole(face: FSFont.body, size: 12, lineHeight: 15, tracking: 0, scalesWith: .caption, tabular: false)
+    /// A row's line under its title, 13/18 (the mock's `.row .sub`, iOS RowType.sub).
+    public static let rowSub = FSTextRole(face: FSFont.body, size: 13, lineHeight: 18, tracking: 0, scalesWith: .footnote, tabular: false)
+    /// The flows' small button label and a row's check mark (brand D6).
+    public static let buttonSmall = FSTextRole(face: FSFont.bodyBold, size: 13, lineHeight: 16, tracking: 0, scalesWith: .footnote, tabular: false)
+    /// The countdown's figures on Home's raid card (brand S4).
+    public static let countdown = FSTextRole(face: FSFont.bodySemibold, size: 36, lineHeight: 38, tracking: 0, scalesWith: .title2, tabular: true)
     public static let figureSm = FSTextRole(face: FSFont.bodyBold, size: 16, lineHeight: 20, tracking: 0, scalesWith: .title2, tabular: true)
     public static let figure = FSTextRole(face: FSFont.bodyBold, size: 28, lineHeight: 32, tracking: 0, scalesWith: .title2, tabular: true)
     public static let figureBig = FSTextRole(face: FSFont.bodyBold, size: 36, lineHeight: 40, tracking: 0, scalesWith: .title2, tabular: true)
@@ -276,6 +314,8 @@ public enum FSSize {
     /// roots draw it under the bars (iOS BandPage, Android FlowBandPage).
     public static let bandFade: CGFloat = 64
     public static let segment: CGFloat = 44
+    /// A spell icon beside a name in a line of text (the Covered line).
+    public static let icon20: CGFloat = 20
     public static let icon28: CGFloat = 28
     public static let icon32: CGFloat = 32
     public static let icon36: CGFloat = 36

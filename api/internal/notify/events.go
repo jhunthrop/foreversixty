@@ -103,11 +103,19 @@ func SimFinishedEvent(publicBaseURL string, e SimFinished) events.Event {
 	if headline := collapse(e.Headline); headline != "" {
 		body = headline
 	}
-	return events.Event{
+	out := events.Event{
 		Kind: events.SimFinished, Audience: events.Users(e.UserID), DedupeKey: "sim.finished:" + e.SimID,
 		Title: title, Body: body, Link: absoluteURL(publicBaseURL, simPathPrefix+e.SimID), Icon: events.IconSim,
 		Data: map[string]string{"sim_id": e.SimID}, Source: e,
 	}
+	if e.DPS > 0 {
+		dps := e.DPS
+		out.Figure = &dps
+		// The Activity row draws the DPS itself: it keeps the headline alone.
+		headline := collapse(e.Headline)
+		out.ActivityBody = &headline
+	}
+	return out
 }
 
 // UploadParsedEvent is the parsed upload as an event to its owner.

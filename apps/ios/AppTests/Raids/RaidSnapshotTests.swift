@@ -71,7 +71,7 @@ struct RaidSnapshotTests {
         let service = FakeRaidService()
         service.signupAnswer = { _ throws(APIError) in throw .unexpectedStatus(500) }
         let controller = try makeController(service: service)
-        await controller.press("us/pvp/obnoxious-yell", .late)
+        await controller.press("us/pvp/gorvash", .late)
         snap(page(controller), "raid-page-save-failed-ios")
     }
 
@@ -79,7 +79,7 @@ struct RaidSnapshotTests {
         let service = FakeRaidService()
         service.signupAnswer = { _ throws(APIError) in throw (try? RaidFixture.error("guild.signup.error-rate-limited", status: 429)) ?? .unexpectedStatus(0) }
         let controller = try makeController(service: service)
-        await controller.press("us/pvp/obnoxious-yell", .bench)
+        await controller.press("us/pvp/gorvash", .bench)
         snap(page(controller), "raid-page-rate-limited-ios")
     }
 
@@ -87,7 +87,7 @@ struct RaidSnapshotTests {
         let service = FakeRaidService()
         service.signupAnswer = { _ throws(APIError) in throw (try? RaidFixture.error("guild.signup.error-raid-locked", status: 409)) ?? .unexpectedStatus(0) }
         let controller = try makeController(service: service)
-        await controller.press("us/pvp/obnoxious-yell", .late)
+        await controller.press("us/pvp/gorvash", .late)
         snap(page(controller), "raid-page-race-locked-ios")
     }
 
@@ -102,7 +102,7 @@ struct RaidSnapshotTests {
 
     @Test func raidPage_reminderAsk() async throws {
         let controller = try makeController(undetermined: true)
-        await controller.press("us/pvp/obnoxious-yell", .signedIn)
+        await controller.press("us/pvp/gorvash", .signedIn)
         snap(page(controller), "raid-page-reminder-ask-ios", height: 1100)
     }
 
@@ -152,7 +152,7 @@ struct RaidSnapshotTests {
     }
 
     @Test func specSheet_change() throws {
-        snap(try sheet("guild.raid", ask: .change(characterKey: "us/pvp/obnoxious-yell"), key: "us/pvp/obnoxious-yell"), "spec-sheet-change-ios")
+        snap(try sheet("guild.raid", ask: .change(characterKey: "us/pvp/gorvash"), key: "us/pvp/gorvash"), "spec-sheet-change-ios")
     }
 
     private func night(_ fixture: String) throws -> some View {

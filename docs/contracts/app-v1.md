@@ -98,7 +98,7 @@ malformed `X-App` is not an error.
 with status `426`. Both apps then replace every screen with a blocking "Update Forever Sixty"
 screen whose one button opens `store_url` (https only; otherwise the app's own store page).
 
-**Character keys.** A character is `region/ruleset/slug`, for example `us/pvp/obnoxious-yell`.
+**Character keys.** A character is `region/ruleset/slug`, for example `us/pvp/gorvash`.
 `region` is `us|eu|kr|tw|cn`, `ruleset` is `normal|pvp|rp|hardcore`, and the slug is the name
 lowercased with spaces turned into hyphens. The same three segments are the path of every
 character route.

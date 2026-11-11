@@ -169,7 +169,7 @@ class RaidScreenshotTest {
         capture("raid-page-offline-and") { Page(controller, RaidTime.now.minusSeconds(600)) }
     }
 
-    private fun pressed(state: SignupState, answer: (FakeRaidService) -> Unit, raid: String = "guild.raid", key: String = "us/pvp/obnoxious-yell", undetermined: Boolean = false): SignupController {
+    private fun pressed(state: SignupState, answer: (FakeRaidService) -> Unit, raid: String = "guild.raid", key: String = "us/pvp/gorvash", undetermined: Boolean = false): SignupController {
         val service = FakeRaidService().also(answer)
         val controller = makeController(RaidFixture.raid(raid), service, undetermined = undetermined)
         runTest { controller.press(key, state) }
@@ -251,7 +251,7 @@ class RaidScreenshotTest {
     fun specSheet_ask_xl() = capture("spec-sheet-ask-xl-and", large = true) { Sheet("guild.raid.ask-spec", SpecAsk.Ask("us/pvp/lightningbolltz", SignupState.In)) }
 
     @Test
-    fun specSheet_change() = capture("spec-sheet-change-and") { Sheet("guild.raid", SpecAsk.Change("us/pvp/obnoxious-yell")) }
+    fun specSheet_change() = capture("spec-sheet-change-and") { Sheet("guild.raid", SpecAsk.Change("us/pvp/gorvash")) }
 
     @Composable
     private fun Night(fixture: String) {

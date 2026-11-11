@@ -36,7 +36,7 @@ class FixtureEngineTest {
     fun `routes use lane C's endpoint names`() {
         assertEquals("me.json", FixtureRoutes.fileName(HttpMethod.Get, "/v1/me"))
         assertEquals("me.patch.json", FixtureRoutes.fileName(HttpMethod.Patch, "/v1/me"))
-        assertEquals("character.card.json", FixtureRoutes.fileName(HttpMethod.Get, "/v1/characters/us/pvp/obnoxious-yell"))
+        assertEquals("character.card.json", FixtureRoutes.fileName(HttpMethod.Get, "/v1/characters/us/pvp/gorvash"))
         assertEquals("app.signin.exchange.json", FixtureRoutes.fileName(HttpMethod.Post, "/v1/auth/app/exchange"))
         assertEquals("cdn.bis.warrior-fury.json", FixtureRoutes.fileName(HttpMethod.Get, "/data/1.60.1.70658/bis/warrior-fury.json"))
         assertNull(FixtureRoutes.fileName(HttpMethod.Post, "/v1/sims/7/seen"))
@@ -122,6 +122,16 @@ class FixtureEngineTest {
 
         assertFalse(build.isEmpty())
         assertTrue((classes as ApiResult.Success).data.all { it.slug.isNotEmpty() })
+    }
+
+    @Test
+    fun `an error variant with no file answers its status and code`() = runTest {
+        val failing = mapOf("me" to FixtureVariant.Error("unavailable", HttpStatusCode.ServiceUnavailable))
+        val result = AccountApi(client(failing)).me()
+
+        val error = (result as ApiResult.Failure).error as ApiError.Server
+        assertEquals(503, error.status)
+        assertEquals("unavailable", error.code)
     }
 
     @Test

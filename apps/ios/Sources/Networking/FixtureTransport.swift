@@ -147,7 +147,16 @@ public struct FixtureTransport: HTTPTransport {
     private func file(for route: FixtureRoute, params: [String: String]) -> String? {
         guard let stem = route.fixture else { return nil }
         let named = params.reduce(stem) { $0.replacingOccurrences(of: "{\($1.key)}", with: $1.value) }
-        return variants[stem].map { $0.file(named) } ?? named
+        if let variant = variants[stem] { return variant.file(named) }
+        return characterFile(named, params: params) ?? named
+    }
+
+    /// A character's own answer (`character.home.gorvash`) when the fixtures have one, so each fixture
+    /// character reads its own class and spec; every other character reads the route's default.
+    private func characterFile(_ named: String, params: [String: String]) -> String? {
+        guard let name = params["name"] else { return nil }
+        let own = "\(named).\(name)"
+        return FileManager.default.fileExists(atPath: directory.appending(path: "\(own).json").path) ? own : nil
     }
 
     private func answer(_ route: FixtureRoute, params: [String: String], key: String) throws(APIError) -> (Data, Int) {

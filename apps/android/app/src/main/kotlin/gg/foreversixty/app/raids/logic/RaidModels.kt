@@ -198,6 +198,8 @@ class RaidPageModel(
     private var openAction: RaidOpenAction? = null,
     private val onChange: (RaidView) -> Unit = {},
     private val connectivity: Connectivity = Connectivity.Unknown,
+    /** The session's current character: a link's press answers for it when it is on the raid. */
+    private val currentKey: String? = null,
 ) {
     sealed interface State {
         data object Loading : State
@@ -290,7 +292,8 @@ class RaidPageModel(
     private suspend fun runOpenAction() {
         val action = openAction ?: return
         val controller = (state as? State.Loaded)?.controller ?: return
-        val character = controller.raid.viewer.characters.firstOrNull { it.verified } ?: return
+        val verified = controller.raid.viewer.characters.filter { it.verified }
+        val character = verified.firstOrNull { it.characterKey == currentKey } ?: verified.firstOrNull() ?: return
         openAction = null
         controller.press(character.characterKey, action.state)
     }

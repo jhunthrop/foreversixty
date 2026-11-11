@@ -32,6 +32,24 @@ struct RosterListTests {
         #expect(list.visible(role: .tanks, query: "", sort: .rank).allSatisfy { $0.role == "tank" })
     }
 
+    @Test("round 5, row 2: the not-synced filter counts the raiders it keeps, and only those")
+    func onlyCount() throws {
+        let list = try list()
+        let keys = Set(list.entries.compactMap(\.characterKey).prefix(4))
+        #expect(list.count(only: keys) == 4)
+        #expect(list.visible(role: .all, query: "", sort: .rank, only: keys).count == 4)
+        #expect(list.count(only: ["us/pvp/nobody"]) == 0)
+    }
+
+    @Test("round 6, row 2: filtered, the plate counts the one population it shows")
+    func filteredPlate() throws {
+        let counts = try list().counts
+        let filtered = RosterCountsCard.figures(counts, shown: 4)
+        #expect(filtered.map(\.value) == ["4 of 38"])
+        #expect(filtered.map(\.caption) == [Copy.rosterCountsOnRoster])
+        #expect(RosterCountsCard.figures(counts, shown: nil).map(\.value) == ["38", "4", "2"])
+    }
+
     @Test("search filters by name, ignoring case and accents")
     func search() throws {
         let found = try list().visible(role: .all, query: "KRAG", sort: .rank)
@@ -65,7 +83,7 @@ struct RosterListTests {
     @Test("attendance sorts most nights present first; no attendance sorts last")
     func sortAttendance() throws {
         let sorted = try list().visible(role: .all, query: "", sort: .attendance)
-        #expect(sorted.first?.name == "Obnoxious Yell")
+        #expect(sorted.first?.name == "Gorvash")
         #expect(sorted.first?.standing == .attendance(present: 3, nights: 8))
         let tail = sorted.suffix(6)
         #expect(tail.allSatisfy { $0.standing == .waiting || $0.standing == .noAccount })
@@ -127,7 +145,7 @@ struct RosterListTests {
     @Test("rows with the same sort key keep name order")
     func tieOrder() throws {
         let byRank = try list().visible(role: .all, query: "", sort: .rank).map(\.name)
-        #expect(Array(byRank.prefix(5)) == ["Kraggor", "Draknar", "Mendara", "Obnoxious Yell", "Thokgar"])
+        #expect(Array(byRank.prefix(5)) == ["Kraggor", "Draknar", "Gorvash", "Mendara", "Thokgar"])
         let eights = try list().visible(role: .all, query: "", sort: .attendance)
             .filter { $0.standing == .attendance(present: 2, nights: 8) }.map(\.name)
         #expect(eights == eights.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending })

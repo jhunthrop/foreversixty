@@ -18,6 +18,8 @@ struct ItemSheetRow: Equatable, Identifiable {
     enum Lead: Equatable {
         case item(icon: String?, quality: Int?)
         case crest(className: String)
+        /// No image: the source row is words alone, so it never reads as an item (round 8, row 1).
+        case none
     }
 
     let id: String
@@ -84,9 +86,13 @@ enum ItemSheetBuilder {
         return ItemSheetContent(
             tooltip: tooltip.withoutItemLevel,
             gain: request.gain,
-            source: source(itemID, look: tooltip.look, kind: listed?.kind, named: listed?.source, places: places, fallback: tooltip.source),
+            // Unplaced by the loot file, the list's own source in the shared words (`Vendor: Lady Palanseer`).
+            source: source(
+                itemID, kind: listed?.kind, named: listed?.source, places: places,
+                fallback: listed?.source.map { BisListBuilder.sourceLine($0, kind: listed?.kind) } ?? tooltip.source
+            ),
             replaces: replaces(request.tooltip.wornID, item: itemID, items: sources.items),
-            runnerUp: runnerUp(listed, band: band, items: sources.items, places: places),
+            runnerUp: runnerUp(listed, band: band, items: sources.items, places: places, pickPlace: place),
             guild: guild,
             raidZone: place.flatMap { $0.kind == .instance && $0.sourceKind == ItemPlaces.raidKind ? $0.name : nil }
         )
@@ -127,23 +133,63 @@ enum ItemSheetBuilder {
         return nil
     }
 
-    /// Where to get it: an instance by its boss with the drop chance, a profession, a reputation
-    /// with the standing it needs; any other source in the list's words.
-    static func source(
-        _ item: Int, look: HomeItemLook, kind: String?, named: String?, places: ItemPlaces?, fallback: String?
-    ) -> ItemSheetRow? {
-        let lead = ItemSheetRow.Lead.item(icon: look.icon, quality: look.quality)
+    /// Where to get it, one self-describing row with no image and no caption (round 8, row 1; Android's
+    /// anatomy): an instance by its boss with the drop chance (`Onyxia, Onyxia's Lair, 8%`), a profession
+    /// with the skill its recipe needs (`Crafted: Blacksmithing (245)`, WoW's Requires shape), a
+    /// reputation with its standing (`Stormpike Guard, revered`); any other source in the list's words
+    /// (`World drop`).
+    static func source(_ item: Int, kind: String?, named: String?, places: ItemPlaces?, fallback: String?) -> ItemSheetRow? {
         guard let place = places?.place(of: item, kind: kind, named: named) else {
-            return fallback.map { ItemSheetRow(id: "source", title: $0, sub: nil, lead: lead) }
+            return fallback.map { ItemSheetRow(id: "source", title: withoutFaction($0), sub: nil, lead: .none) }
         }
-        // One line, as the round-5 sheet words it: `Onyxia, Onyxia's Lair, 8% drop chance`, `Blacksmithing`,
-        // `Stormpike Guard, revered`.
         let parts: [String?] = switch place.kind {
-        case .instance: [place.boss, place.name, place.chance.map { Copy.gearSheetDropChance(chance: ItemNumbers.percent($0)) }]
-        case .profession: [place.name]
-        case .reputation: [place.name, place.standing.map { ItemVocabulary.standingName($0)?.lowercased() ?? $0 }]
+        case .instance: [place.boss, place.name, place.chance.map(ItemNumbers.percent)]
+        case .profession: [professionWords(place)]
+        case .reputation: [place.name, standingWord(place)]
         }
-        return ItemSheetRow(id: "source", title: parts.compactMap(\.self).joined(separator: listSeparator), sub: nil, lead: lead)
+        return ItemSheetRow(id: "source", title: parts.compactMap(\.self).joined(separator: listSeparator), sub: nil, lead: .none)
+    }
+
+    /// `Crafted: Blacksmithing (245)`, or without the skill when the loot file has none.
+    private static func professionWords(_ place: ItemPlace) -> String {
+        place.skill.map { Copy.bisSourceCraftedSkill(name: place.name, skill: $0) } ?? Copy.bisSourceCrafted(name: place.name)
+    }
+
+    private static func standingWord(_ place: ItemPlace) -> String? {
+        place.standing.map { ItemVocabulary.standingName($0)?.lowercased() ?? $0 }
+    }
+
+    /// A PvP source without its faction word: the rank title already belongs to one faction
+    /// (`PvP rank 11 · Blood Guard`, round 9, row 3).
+    static func withoutFaction(_ line: String) -> String {
+        let factions: Set = [Copy.bisFactionHorde, Copy.bisFactionAlliance]
+        var parts = line.components(separatedBy: separator)
+        if parts.count > 1, let last = parts.last, factions.contains(last) { parts.removeLast() }
+        return parts.joined(separator: separator)
+    }
+
+    /// Whether the runner-up comes from the pick's own place (Android's round-9 rule): placed by the loot
+    /// file, the same kind, name and boss as the pick's place; else its list words equal the pick's.
+    static func isPickPlace(_ runnerUp: ItemPlace?, words: String?, pick: ItemPlace?, pickWords: String?) -> Bool {
+        if let runnerUp {
+            return runnerUp.sourceKind == pick?.sourceKind && runnerUp.name == pick?.name && runnerUp.boss == pick?.boss
+        }
+        return words != nil && words == pickWords
+    }
+
+    /// The runner-up's source in the source row's shared words, the boss in its short shape
+    /// (`Ancient Treasure · 1%`), the list's words (`bis.source.*`) when the loot file has no place; nil
+    /// when nothing is known.
+    static func runnerUpSource(_ place: ItemPlace?, chance: Double?, line: String?, kind: String?) -> String? {
+        guard let place else { return line.map { withoutFaction(BisListBuilder.sourceLine($0, kind: kind)) } }
+        switch place.kind {
+        case .instance:
+            return [place.boss ?? place.name, chance.map(ItemNumbers.percent)].compactMap(\.self).joined(separator: separator)
+        case .profession:
+            return professionWords(place)
+        case .reputation:
+            return [place.name, standingWord(place)].compactMap(\.self).joined(separator: listSeparator)
+        }
     }
 
     private static let listSeparator = ", "
@@ -159,16 +205,23 @@ enum ItemSheetBuilder {
         )
     }
 
-    /// The slot's next pick after this one: `Onyxia · 8% · −1.8 DPS`.
-    static func runnerUp(_ listed: Listing?, band: BisBand?, items: [Int: Item], places: ItemPlaces?) -> ItemSheetRow? {
+    /// The slot's next pick after this one: `Runner-up · Onyxia · 8% · −1.8 DPS`; its source only when it
+    /// differs from the pick's (round 9, row 2: `Runner-up · −5.0 DPS` under the same crafter), and `Same
+    /// DPS` when nothing separates them (row 1).
+    static func runnerUp(
+        _ listed: Listing?, band: BisBand?, items: [Int: Item], places: ItemPlaces?, pickPlace: ItemPlace? = nil
+    ) -> ItemSheetRow? {
         guard let listed, listed.isPick, let alt = listed.slot.alternatives?.first else { return nil }
         let unit = BisUnit(role: band?.role).word
         let item = items[alt.itemId]
         let place = places?.place(of: alt.itemId, kind: alt.sourceKind, named: alt.source)
+        let line = alt.sourceLine ?? alt.source
+        let own = isPickPlace(place, words: line, pick: pickPlace, pickWords: listed.slot.sourceLine ?? listed.source)
         let delta = BisListBuilder.signedDelta(alt.dpsDelta).map { "\($0) \(unit)" } ?? Copy.itemsSameDps(unit: unit)
         let parts = [
-            Copy.gearSheetRunnerUp, place?.boss ?? place?.name ?? alt.sourceLine ?? alt.source,
-            (place?.chance ?? alt.dropChance).map(ItemNumbers.percent), delta,
+            Copy.gearSheetRunnerUp,
+            own ? nil : runnerUpSource(place, chance: place?.chance ?? alt.dropChance, line: line, kind: alt.sourceKind),
+            delta,
         ]
         return ItemSheetRow(
             id: "runner-up", title: item?.name ?? alt.itemName, titleQuality: item?.quality ?? 1,

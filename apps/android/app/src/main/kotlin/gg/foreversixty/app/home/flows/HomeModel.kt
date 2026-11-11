@@ -5,6 +5,7 @@ import gg.foreversixty.app.flows.TallyItem
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.raids.logic.SignupState
+import gg.foreversixty.app.raids.logic.StatusLine
 
 /** Home's head (spec 2026-11-08 4.1): the class crest, the name in the class colour, the fact line. */
 data class HomeHead(val name: String, val className: String?, val facts: List<String>)
@@ -32,10 +33,13 @@ data class RaidCardModel(
     val aside: String,
     /** The line style's title, `Onyxia's Lair · Wed 6 Jan, 8:00 pm CST`. */
     val title: String,
-    /** The line style's sub line: the counts and the answer. */
-    val sub: String,
-    /** `You have not answered, as Thandrel, Damage`, or the answer alone with one character in the guild (E7). */
-    val me: String,
+    /** The line style's sub line: the counts and who has not answered; once answered the counts and who answered. */
+    val sub: String?,
+    /**
+     * `You have not answered, as Thandrel, Damage` (the answer alone with one character in the guild, E7);
+     * once answered only `As Thandrel, Damage`, null with one character: the segmented control shows it (AS5).
+     */
+    val me: String?,
     val answer: SignupState?,
     val lateOpen: Boolean,
     val tally: List<TallyItem>,
@@ -47,13 +51,22 @@ data class RaidCardModel(
     val place: String = "",
     /** The Raid tab's one-line head (spec 4.2): `8:00 pm CST · pull in 2 h 48 min`, or the date and time a day or more out. */
     val headLine: String = "",
+    /** `Invites 7:45 pm · 40` under the head line; null without an invite time or size. */
+    val facts: String? = null,
     /** `As Thandrel, Damage` under the head line, only with more than one character in the guild (E7). */
     val who: String? = null,
-    /** The answer as the head's chip: `In`, `Late · 30 min`; null while unanswered. */
-    val chip: String? = null,
     /** How late a Late answer said it would be (15, 30, 60); the selected chip. */
     val lateMinutes: Int? = null,
+    /** The answers' live state from the raid's controller: enabled, the status line, Try again. */
+    val control: AnswerControl = AnswerControl(),
 )
+
+/**
+ * The answers' live state under a raid card (spec F4.3, R16): whether they take a press (offline,
+ * locked or a character still waiting do not), the status line under them (`Saving…`, `Saved.`, an
+ * error, the offline or locked sentence) and Try again after a failed write.
+ */
+data class AnswerControl(val enabled: Boolean = true, val status: StatusLine? = null, val canRetry: Boolean = false)
 
 /** `2 things before you pull` and what they are, with the export's age. */
 data class ReadyLine(val title: String, val sub: String)
@@ -64,12 +77,21 @@ data class OfficerItems(val unanswered: String?, val short: String?, val applica
 /** The raid live card. */
 data class RaidLiveModel(val raidId: Long, val eyebrow: String, val line: String)
 
-/** An Activity row as Home draws it: its line with when (`+21 vs your last · 3 h ago`). */
-data class HomeActivityRow(val row: ActivityRow, val line: String)
+/** An Activity row as Home draws it: its line with when (`+21 vs your last · 3 h ago`); [age] the when alone, after a styled body. */
+data class HomeActivityRow(val row: ActivityRow, val line: String, val age: String? = null)
 
 /** One block of the signed-in Home, in the order `/v1/home` `sections` gives. */
 sealed interface HomeBlock {
-    data class Upgrades(val rows: List<UpgradeLine>, val bestRun: String?, val build: String) : HomeBlock
+    /** Next upgrades: the rows, Best run as a row, the meta (`13 upgrades · +157.6 DPS`) and the synced stamp. */
+    data class Upgrades(
+        val rows: List<UpgradeLine>,
+        val bestRun: UpgradeLine?,
+        val build: String,
+        val meta: String? = null,
+        val synced: String? = null,
+        /** The sync is over a week old: the stamp in the warning tone (row 12). */
+        val syncedStale: Boolean = false,
+    ) : HomeBlock
     data class NextRaidCard(val raid: RaidCardModel) : HomeBlock
     data class NextRaidLine(val raid: RaidCardModel) : HomeBlock
     data class RaidLive(val live: RaidLiveModel) : HomeBlock
@@ -95,6 +117,8 @@ data class HomeActions(
     val onItem: (UpgradeLine) -> Unit = {},
     val onAnswer: (Long, SignupState) -> Unit = { _, _ -> },
     val onLate: (Long, Int) -> Unit = { _, _ -> },
+    /** Try again under a failed write on the raid card. */
+    val onRetryAnswer: (Long) -> Unit = {},
     val onRaid: (Long) -> Unit = {},
     val onRaidNight: (Long) -> Unit = {},
     val onReady: (Long) -> Unit = {},

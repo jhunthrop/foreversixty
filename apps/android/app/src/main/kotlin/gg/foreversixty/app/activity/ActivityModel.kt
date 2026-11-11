@@ -72,11 +72,13 @@ object Activity {
 
     /**
      * The class a row is about, drawn as its crest (one crest language, never a square spec icon): the
+     * row's own `crest` when the server names the other player's class, else the
      * spec icon the server sends for a guildmate (guildsim.passed), else the spec a tier move names
      * at its start (`Fury Warrior moved to S`). Null for every other row: it keeps its game icon.
      */
     fun crestClass(row: ActivityRow, specs: SpecCatalog): String? =
-        specs.specs.firstOrNull { it.icon == row.icon }?.classSlug
+        row.crest?.takeIf { it.isNotBlank() }
+            ?: specs.specs.firstOrNull { it.icon == row.icon }?.classSlug
             ?: row.takeIf { it.kind in NAMED_SPEC_KINDS }?.let { named ->
                 specs.specs.firstOrNull { named.title.startsWith("${it.name} ${it.classSlug} ", ignoreCase = true) }?.classSlug
             }

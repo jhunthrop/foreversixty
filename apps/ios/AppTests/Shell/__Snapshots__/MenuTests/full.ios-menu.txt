@@ -1,14 +1,14 @@
 Thandrel
-Fury Warrior · 60 · Olympus XXVII
+Fury Warrior · 60 · Raider
 Main
 Updated 2 h ago from Battle.net ·
 Refresh
 Switch character
-Lightvow, Holy Paladin · 60 · Olympus XXVII
-Kaelor, Frost Mage · 47
-Felsnap, Beast Mastery Hunter · 34
-Brewmist, Enhancement Shaman · 22
-Ashmantle, Affliction Warlock · 18
+Lightvow, Holy Paladin · 60 · Olympus XXVII · item level 61
+Kaelor, Frost Mage · 47 · item level 44
+Felsnap, Beast Mastery Hunter · 34 · item level 31
+Brewmist, Enhancement Shaman · 22 · item level 19
+Ashmantle, Affliction Warlock · 18 · item level 15
 Show low-level characters (2)
 Tools
 Guides
@@ -19,9 +19,9 @@ Logs and reports
 Planner
 Rankings
 Account
-Notifications, Raids, gear and sims, logs on
+Notifications, Gear and sims, guild ladder, tiers off
 Plan, Premium · Founder price
-Devices, 3 signed in
+Devices, 3 signed in · newest iPhone 17
 Offline data, 26.6 MB on this phone
 Settings, Sign out, delete account
 A fan-made player tool. Not affiliated with Blizzard.

@@ -210,9 +210,11 @@ enum ItemNumbers {
         return value < 0 ? "\u{2212}\(magnitude)" : "+\(magnitude)"
     }
 
-    /// A drop chance as the client words it: `8%`, rounded to the whole percent.
+    /// A drop chance in the site's `dropPercentLabel` (web/src/lib/items/drop-chance.ts): the whole
+    /// percent, half up (`1.3` reads `1%`, `2.5` reads `3%`), and `<1%` under one so nothing reads `0%`.
+    /// The one drop-chance formatter: Home, Gear, the item sheet and the item page.
     static func percent(_ value: Double) -> String {
-        "\(Int(value.rounded()))%"
+        value < 1 ? "<1%" : "\(Int(value.rounded(.toNearestOrAwayFromZero)))%"
     }
 
 }

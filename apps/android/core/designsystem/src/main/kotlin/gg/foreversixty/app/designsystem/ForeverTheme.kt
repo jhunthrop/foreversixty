@@ -8,7 +8,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
 
 /**
  * Material 3 mapped onto the generated tokens (Tokens.kt: FsColor, FsType, FsTextSize, FsRadius,
@@ -48,14 +47,11 @@ private fun heading(size: TextUnit) = styled(FsFont.title, FontWeight.Normal, si
 
 private fun body(size: TextUnit) = styled(FsFont.body, FontWeight.Normal, size)
 
-/** The mock's Android top app bar title (`.android .navb .t`, Marcellus 22). */
-private val TOP_BAR_TITLE = 22.sp
-
 private val ForeverTypography = Typography(
     headlineMedium = heading(FsTextSize.h1Phone),
     headlineSmall = heading(FsTextSize.h2),
     // The M3 top app bar's title (the mock's Android bar: Marcellus 22).
-    titleLarge = heading(FsTextSize.h2).copy(fontSize = TOP_BAR_TITLE),
+    titleLarge = FsType.barTitle,
     titleMedium = heading(FsTextSize.cardTitle),
     bodyLarge = body(FsType.body.fontSize).copy(lineHeight = FsType.body.lineHeight),
     bodyMedium = body(FsType.body.fontSize).copy(lineHeight = FsType.body.lineHeight),

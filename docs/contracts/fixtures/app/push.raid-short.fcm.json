@@ -1,0 +1,23 @@
+{
+  "message": {
+    "token": "fcm-registration-token",
+    "data": {
+      "actions": "[{\"id\":\"raid_mention_short\",\"title\":\"Mention healers\",\"method\":\"POST\",\"path\":\"/v1/guilds/2/raids/7/ping\",\"body\":{\"role\":\"healer\"}}]",
+      "body": "Healers 5 of 8, 5 not answered. 21 of 40 signed, 24 hours out.",
+      "category": "RAID_SHORT",
+      "collapse": "raid.short-7",
+      "group": "officer",
+      "guild_id": "2",
+      "kind": "raid.short",
+      "link": "https://foreversixty.gg/guild/us/pvp/olympus-xxvii/raids/7",
+      "mention_who": "healers",
+      "raid_id": "7",
+      "thread": "raid-7",
+      "title": "Onyxia's Lair"
+    },
+    "android": {
+      "priority": "HIGH",
+      "collapse_key": "raid.short-7"
+    }
+  }
+}

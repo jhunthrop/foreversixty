@@ -13,8 +13,10 @@ enum RaidPushCategory {
     static let askSpec = "RAID_ASK_SPEC"
     /// `Choose a character` (foreground, opens the raid page).
     static let choose = "RAID_CHOOSE"
-    /// An officer's new applicant: Decline, answered without opening the app.
+    /// An officer's new applicant: Accept and Decline, answered without opening the app.
     static let applicant = "GUILD_APPLICANT"
+    /// An officer's short raid (`raid.short`): Mention the short role in Discord.
+    static let short = "RAID_SHORT"
 
     static let actionIn = "signup_in"
     static let actionLate = "signup_late"
@@ -24,6 +26,10 @@ enum RaidPushCategory {
     static let actionChoose = "choose"
     /// The API's action id on `guild.applicant` (POST .../applications/{app}/decline).
     static let actionDecline = "application_decline"
+    /// The API's action id on `guild.applicant` (POST .../applications/{app}/accept).
+    static let actionAccept = "application_accept"
+    /// The API's action id on `raid.short` (POST .../raids/{raid}/ping with the short role).
+    static let actionMention = "raid_mention_short"
 
     /// The Late chips (15, 30, 60 min) the content extension offers after Late.
     static let lateMinutes = [15, 30, 60]
@@ -145,13 +151,54 @@ extension LiveIntentCalls: PushSignupCalls {}
 
 extension RaidPushOutcome.Confirmation {
     /// Posts the confirmation in place of the question: the same identifier and thread, no
-    /// actions (flows spec F1: a quiet confirmation naming the character).
-    func post(replacing identifier: String, thread: String) async {
+    /// actions (flows spec F1: a quiet confirmation naming the character). `tapThrough` keeps where a
+    /// tap on it lands.
+    func post(replacing identifier: String, thread: String, tapThrough: [String: PushTapValue] = [:]) async {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.threadIdentifier = thread
+        content.userInfo = tapThrough.mapValues(\.value)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
         try? await UNUserNotificationCenter.current().add(request)
+    }
+}
+
+/// One tap-through value of a push's userInfo: a string (`kind`, `link`) or the `data` strings.
+enum PushTapValue: Equatable, Sendable {
+    case text(String)
+    case strings([String: String])
+
+    static let keys = ["kind", "group", "link", "data"]
+
+    static func tapThrough(_ userInfo: [AnyHashable: Any]) -> [String: PushTapValue] {
+        keys.reduce(into: [:]) { kept, key in
+            if let text = userInfo[key] as? String {
+                kept[key] = .text(text)
+            } else if let strings = userInfo[key] as? [String: Any] {
+                kept[key] = .strings(strings.compactMapValues { $0 as? String })
+            }
+        }
+    }
+
+    var value: Any {
+        switch self {
+        case let .text(text): text
+        case let .strings(strings): strings
+        }
+    }
+}
+
+/// UIKit's completion for a notification response, called back on the main thread only.
+struct MainThreadCompletion: @unchecked Sendable {
+    private let completion: () -> Void
+
+    init(_ completion: @escaping () -> Void) {
+        self.completion = completion
+    }
+
+    @MainActor
+    func run() {
+        completion()
     }
 }

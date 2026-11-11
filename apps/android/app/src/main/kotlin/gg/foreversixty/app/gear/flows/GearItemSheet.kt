@@ -34,8 +34,8 @@ import gg.foreversixty.app.items.ItemTooltipModel
 import gg.foreversixty.app.items.ItemTooltipPanel
 import gg.foreversixty.app.model.ItemNeeds
 
-/** One line of the sheet's list: a lead, the title in its colour, its line. */
-data class GearSheetLine(val title: String, val line: String?, val lead: FlowLead, val titleColor: Color? = null)
+/** One line of the sheet's list: a lead (none for a source row), the title in its colour, its line. */
+data class GearSheetLine(val title: String, val line: String?, val lead: FlowLead?, val titleColor: Color? = null)
 
 /**
  * The item sheet (spec F5, round 5 mock `m-android-item`): the client's tooltip with the gain closing
@@ -66,24 +66,29 @@ class GearSheetComposer(private val res: Resources, private val build: String) {
         tooltip: ItemTooltipModel?,
         sources: List<ItemSource>,
         needs: ItemNeeds?,
+        /** The runner-up's first place in the loot file, when it has one. */
+        runnerUpSource: ItemSource? = null,
     ): GearSheetContent {
         val pick = requireNotNull(row.row.pick) { "a sheet opens on a pick" }
         val look = requireNotNull(row.look) { "a sheet opens on a pick" }
-        val itemLead = FlowLead.Item(look, build)
         return GearSheetContent(
             // The client's tooltip has no item level (spec 2026-11-08, round 4 cut), so the sheet drops it.
             tooltip = (tooltip ?: ItemTooltipModel(look = look, headerMeta = "", known = true)).copy(itemLevel = null),
-            gain = row.gain?.let { "$it $unitWord" },
-            sources = sources.map { GearSheetLine(sourceLine(it), null, it.icon?.let { icon -> FlowLead.Icon(icon, build) } ?: itemLead) },
+            gain = row.gain?.let { if (row.gains) "$it $unitWord" else res.getString(R.string.gear_cell_noGain) },
+            // Round 8 row 1: a source row is the source alone, self-describing, no caption and no icon
+            // (it must not read as an item row); the loot file's places, else the list's own line.
+            sources = sourceRows(sources, pick.source),
             replaces = row.equipped?.let { worn ->
                 GearSheetLine(res.getString(R.string.gear_sheet_replaces, worn.name.orEmpty()), res.getString(R.string.gear_worn), FlowLead.Item(worn, build))
             },
             runnerUp = pick.runnersUp.firstOrNull()?.let { alt ->
-                val delta = BisListBuilder.signedDelta(alt.dpsDelta)?.let { "$it $unitWord" }
+                // Round 8 row 4 (as iOS): the runner-up always says what it gives against the pick.
+                val delta = BisListBuilder.signedDelta(alt.dpsDelta)?.let { "$it $unitWord" } ?: res.getString(R.string.items_sameDps, unitWord)
                 val altLook = ItemLook(alt.item.id, alt.item.name, alt.item.quality, alt.item.icon)
+                val place = runnerUpPlace(runnerUpSource, alt.source).takeIf { !samePlace(it, runnerUpSource, sources, pick.source) }
                 GearSheetLine(
                     alt.item.name,
-                    listOfNotNull(res.getString(R.string.gear_sheet_runnerUp), alt.source.takeIf { it.isNotBlank() }, delta).joinToString(SEPARATOR),
+                    listOfNotNull(res.getString(R.string.gear_sheet_runnerUp), place, delta).joinToString(SEPARATOR),
                     FlowLead.Item(altLook, build),
                     ItemQuality(alt.item.quality).text,
                 )
@@ -93,15 +98,51 @@ class GearSheetComposer(private val res: Resources, private val build: String) {
         )
     }
 
-    /** `Skum, Wailing Caverns (15-24), 50%`; `Blacksmithing`; `Stormpike Guard, revered`; `Pix Xizzix, vendor`. */
-    fun sourceLine(source: ItemSource): String {
-        val place = when (source.kind) {
-            VENDOR -> res.getString(R.string.gear_sheet_vendor, source.name)
-            else -> source.name + source.levels.orEmpty()
-        }
-        return listOfNotNull(
+    /** The pick's source rows: the loot file's places, else the list's own line (round 8 row 1). */
+    private fun sourceRows(sources: List<ItemSource>, listSource: String): List<GearSheetLine> =
+        sources.map { GearSheetLine(sourceLine(it), null, null) }
+            .ifEmpty { listOfNotNull(listWords(listSource)?.let { GearSheetLine(it, null, null) }) }
+
+    /**
+     * Where the runner-up comes from in the source row's shared words (round 9 row 2): a boss drop as
+     * `Ancient Treasure · 1%`, any other place as its source row reads, else the list's own words.
+     */
+    private fun runnerUpPlace(source: ItemSource?, listSource: String): String? = when {
+        source == null -> listWords(listSource)
+        source.boss?.isNotBlank() == true -> listOfNotNull(source.boss.trim(), source.chance?.let(GearComposer::chanceWord)).joinToString(SEPARATOR)
+        else -> sourceLine(source)
+    }
+
+    /** The runner-up's place is the pick's own: its source row already says it, so the row leaves it out. */
+    private fun samePlace(place: String?, source: ItemSource?, sources: List<ItemSource>, listSource: String): Boolean = when {
+        place == null -> false
+        source != null -> sources.any { it.kind == source.kind && it.name == source.name && it.boss == source.boss }
+        else -> place == listWords(listSource)
+    }
+
+    /**
+     * The list's own source words on the sheet (round 9 row 3): a PvP source drops its faction word, the
+     * rank title already belongs to one side (`PvP rank 11 · Blood Guard`).
+     */
+    private fun listWords(source: String): String? {
+        if (source.isBlank()) return null
+        val parts = source.split(SEPARATOR)
+        return if (source.startsWith(PVP_PREFIX) && parts.last() in FACTIONS) parts.dropLast(1).joinToString(SEPARATOR) else source
+    }
+
+    /**
+     * The source in the shared source words with its figure when the data has one (round 8 row 1):
+     * `Skum, Wailing Caverns (15-24), 50%`, `Crafted: Blacksmithing (245)`, `Vendor: Pix Xizzix`,
+     * `Quest: A Collection of Heads`, `Stormpike Guard, revered`, `World drop`.
+     */
+    fun sourceLine(source: ItemSource): String = when (source.kind) {
+        VENDOR -> res.getString(R.string.bis_source_vendor, source.name)
+        QUEST -> res.getString(R.string.bis_source_quest, source.name)
+        CRAFTED -> source.skill?.let { res.getString(R.string.bis_source_craftedSkill, source.name, it) }
+            ?: res.getString(R.string.bis_source_crafted, source.name)
+        else -> listOfNotNull(
             source.boss?.trim()?.takeIf { it.isNotEmpty() },
-            place,
+            source.name + source.levels.orEmpty(),
             source.chance?.let { GearComposer.chanceWord(it) },
             source.standing?.lowercase(),
         ).joinToString(", ")
@@ -131,6 +172,12 @@ class GearSheetComposer(private val res: Resources, private val build: String) {
     private companion object {
         const val SEPARATOR = " · "
         const val VENDOR = "vendor"
+        const val QUEST = "quest"
+        const val CRAFTED = "crafted"
+        const val PVP_PREFIX = "PvP rank"
+
+        /** The faction words a PvP source ends with in the list (the server's). */
+        val FACTIONS = setOf("Horde", "Alliance")
     }
 }
 

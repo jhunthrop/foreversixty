@@ -46,7 +46,7 @@ import org.junit.runner.RunWith
 /** The F4 test list, one per behaviour; iOS's RaidLogicTests carries the same names. */
 @RunWith(AndroidJUnit4::class)
 class RaidLogicTest {
-    private val key = "us/pvp/obnoxious-yell"
+    private val key = "us/pvp/gorvash"
 
     // Raid times
 
@@ -178,7 +178,7 @@ class RaidLogicTest {
     @Test
     fun `every buff tile is named, live art or not - the short label under it, the full name for TalkBack`() {
         val read = requireNotNull(CompositionRead.of(RaidFixture.raid().composition, resources()))
-        assertEquals(listOf("Fort", "MotW", "Int", "Bless", "SPro", "SS", "Rez", "WF", "SoE", "MS"), read.buffs.map { it.label })
+        assertEquals(listOf("Fort", "MotW", "Int", "Kings", "Might", "Wisdom", "SPro", "SS", "Rez", "WF", "SoE", "MS"), read.buffs.map { it.label })
         assertTrue(read.buffs.all { it.accessibilityLabel.startsWith(it.name) })
         assertEquals("Power Word: Fortitude", read.buffs.first { it.key == "fortitude" }.name)
     }
@@ -189,8 +189,8 @@ class RaidLogicTest {
         assertEquals(listOf(5, 0, 2, 2, 4, 4, 2, 2, 3), read.classes.map { it.count })
         assertEquals("Paladin", read.classes[1].name)
         assertEquals(listOf("Tanks 3", "Healers 6", "DPS 14"), read.roles)
-        assertEquals("Missing: Blessings", read.buffSummary)
-        assertEquals("Blessings, missing", read.buffs.first { it.key == "blessings" }.accessibilityLabel)
+        assertEquals("Missing: Blessing of Kings, Blessing of Might, Blessing of Wisdom", read.buffSummary)
+        assertEquals("Blessing of Kings, missing", read.buffs.first { it.key == "blessing_of_kings" }.accessibilityLabel)
         assertEquals("MotW", read.buffs.first { it.key == "mark_of_the_wild" }.label)
         assertTrue(read.buffs.any { it.key == "windfury_totem" && it.present })
         assertTrue(read.classesAccessibilityLabel.startsWith("Classes coming: Warrior 5, Paladin 0, Hunter 2"))
@@ -333,7 +333,7 @@ class RaidLogicTest {
         controller.press("us/pvp/yellfury", SignupState.In)
         assertEquals(SignupState.In, controller.block("us/pvp/yellfury").shown)
         assertEquals(SignupState.Bench, controller.block(key).shown)
-        assertEquals(StatusLine.Info("Obnoxious Yell moved to Bench."), controller.block(key).status)
+        assertEquals(StatusLine.Info("Gorvash moved to Bench."), controller.block(key).status)
     }
 
     @Test
@@ -467,7 +467,7 @@ class RaidLogicTest {
         val push = payload()
         assertEquals(2L, push.guild)
         assertEquals(31L, push.raid)
-        assertEquals("us/pvp/obnoxious-yell", push.characterKey)
+        assertEquals("us/pvp/gorvash", push.characterKey)
         assertFalse(push.askSpec)
         assertEquals("You are In for Onyxia's Lair", push.answers["in"]?.title)
         assertEquals(SignupState.Late, RaidPushCategory.stateFor("signup_late"))
@@ -477,11 +477,11 @@ class RaidLogicTest {
     fun `In from the shade sends the PUT for the chosen character, keeping its note`() = runTest {
         val service = FakeRaidService()
         val outcome = RaidPushAnswerer(service, resources()).answer(payload(), SignupState.In)
-        assertEquals("us/pvp/obnoxious-yell", service.signups.first().first)
+        assertEquals("us/pvp/gorvash", service.signups.first().first)
         assertEquals("in", service.signups.first().second.state)
         // The server's confirmation names the character and the pull time.
         assertEquals(
-            RaidPushPayload.Answer("You're In for Onyxia's Lair", "Obnoxious Yell, pull at 7:00 pm CST."),
+            RaidPushPayload.Answer("You're In for Onyxia's Lair", "Gorvash, pull at 7 pm CST."),
             (outcome as RaidPushOutcome.Answered).answer,
         )
     }
@@ -507,8 +507,8 @@ class RaidLogicTest {
         val service = FakeRaidService()
         service.signupAnswer = { ok(RaidFixture.load(SignupAnswer.serializer(), "guild.signup.moved")) }
         val outcome = RaidPushAnswerer(service, resources()).answer(payload(), SignupState.In) as RaidPushOutcome.Answered
-        assertTrue(outcome.answer.body.endsWith(" Obnoxious Yell moved to Bench."))
-        assertEquals("Yellfury, pull at 7:00 pm CST. Obnoxious Yell moved to Bench.", outcome.answer.body)
+        assertTrue(outcome.answer.body.endsWith(" Gorvash moved to Bench."))
+        assertEquals("Yellfury, pull at 7 pm CST. Gorvash moved to Bench.", outcome.answer.body)
     }
 
     @Test
@@ -527,14 +527,14 @@ class RaidLogicTest {
         val service = FakeRaidService()
         service.raidAnswer = { ok(RaidFixture.raid("guild.raid.ask-spec")) }
         val outcome = RaidPushAnswerer(service, resources()).answer(payload(mapOf("character_key" to "us/pvp/lightningbolltz")), SignupState.In)
-        assertEquals(RaidPushOutcome.Open(DeepLink.Raid(2, 31, spec = "ask")), outcome)
+        assertEquals(RaidPushOutcome.Open(DeepLink.Raid(2, 31, spec = "ask", state = "in")), outcome)
         assertTrue(service.signups.isEmpty())
     }
 
     @Test
     fun `with no pick and two unsigned characters, the tap opens the page`() {
         val push = payload(mapOf("character_key" to ""))
-        assertEquals("us/pvp/obnoxious-yell", RaidPushAnswerer.character(push, RaidFixture.raid("guild.raid.two-characters"))?.characterKey)
+        assertEquals("us/pvp/gorvash", RaidPushAnswerer.character(push, RaidFixture.raid("guild.raid.two-characters"))?.characterKey)
         assertEquals("us/pvp/lightningbolltz", RaidPushAnswerer.character(push, RaidFixture.raid("guild.raid.ask-spec"))?.characterKey)
     }
 

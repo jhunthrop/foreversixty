@@ -107,7 +107,7 @@ struct BisScreen: View {
         }
     }
 
-    /// Signed in: Gear once the list is drawn (the list's own states before); signed out: the classes.
+    /// Signed in: Gear once the list is drawn, its notice when there is none; signed out: the classes.
     @ViewBuilder
     private var root: some View {
         if model.context.characterSelection == nil {
@@ -119,11 +119,19 @@ struct BisScreen: View {
             GearListView(
                 content: GearPresenter(context: model.context).content(list: list, inputs: inputs),
                 build: model.build ?? "",
-                portrait: model.context.isYours ? portrait : nil,
+                portrait: portrait,
                 actions: GearActions(openPicker: { model.isPickerPresented = true }, openItem: open)
             )
             .bandBar()
             .safeAreaInset(edge: .top, spacing: 0) { strips(offlineSince) }
+        } else if let notice = GearPresenter(context: model.context).notice(phase: model.phase, title: model.specLabel(model.context.selection)) {
+            // No list for the spec and band, or it did not load: the Gear tab's list line and one row.
+            GearNoticeView(
+                notice: notice,
+                change: { model.isPickerPresented = true },
+                retry: { Task { await model.refresh() } }
+            )
+            .bandBar()
         } else {
             list
         }

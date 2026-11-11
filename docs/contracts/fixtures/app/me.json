@@ -2,23 +2,23 @@
   "data": {
     "characters": [
       {
-        "key": "us/pvp/obnoxious-yell",
+        "key": "us/pvp/gorvash",
         "region": "us",
         "ruleset": "pvp",
-        "name": "Obnoxious Yell",
+        "name": "Gorvash",
         "class": "warrior",
         "level": 58,
         "faction": "horde",
         "race": "orc",
         "gender": "male",
         "item_level": 66,
-        "avatar_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/obnoxious-yell-avatar.jpg",
-        "render_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/obnoxious-yell-main-raw.png",
+        "avatar_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/gorvash-avatar.jpg",
+        "render_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/gorvash-main-raw.png",
         "source": "bnet",
         "spec": "Fury",
         "build": {
           "source": "bnet",
-          "captured_at": "2026-10-29T18:22:41Z",
+          "captured_at": "2026-11-10T18:22:41Z",
           "gear": {
             "head": 12640,
             "neck": 18404,
@@ -118,8 +118,8 @@
       "role": "user",
       "anonymize": false
     },
-    "main_character_key": "us/pvp/obnoxious-yell",
-    "bnet_imported_at": "2026-10-29T18:22:41Z"
+    "main_character_key": "us/pvp/gorvash",
+    "bnet_imported_at": "2026-11-10T18:22:41Z"
   },
   "error": null,
   "ok": true,

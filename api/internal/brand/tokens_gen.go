@@ -90,6 +90,10 @@ var ColorParseOrange = color.NRGBA{R: 0xFF, G: 0x80, B: 0x00, A: 0xFF}
 
 var ColorParsePink = color.NRGBA{R: 0xE2, G: 0x68, B: 0xA8, A: 0xFF}
 
+// The pink step as text on the apps' panels (spec W3 section 4 Parse number), lightened as the
+// rarity text colours are (brand S5).
+var ColorParsePinkText = color.NRGBA{R: 0xF0, G: 0x8C, B: 0xC0, A: 0xFF}
+
 var ColorParseGold = color.NRGBA{R: 0xE5, G: 0xCC, B: 0x80, A: 0xFF}
 
 var ColorSchoolPhysical = color.NRGBA{R: 0xE8, G: 0xC9, B: 0x6A, A: 0xFF}
@@ -248,6 +252,9 @@ var ColorForeverTabOn = color.NRGBA{R: 0xFF, G: 0xD3, B: 0x6B, A: 0xFF}
 // The apps' tab bar: an unselected tab, muted white.
 var ColorForeverTabOff = color.NRGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0xD1}
 
+// The apps' paperdoll: the ground behind the sockets (spec W3 section 4, brand S5).
+var ColorForeverPaperdollGround = color.NRGBA{R: 0x14, G: 0x17, B: 0x1F, A: 0xFF}
+
 // Web: Open Sans 400, 600 and 700 (theirs exactly), body, labels and figures; 'Open Sans Fallback'
 // (fonts.css) is a size-adjusted Arial. The apps keep Barlow until the mobile lane bundles Open
 // Sans.
@@ -357,6 +364,134 @@ var TypeTab = TypeRole{
 	Family: FontBody, Weight: 600,
 	Size: 12, LineHeight: 14,
 	PhoneSize: 12, PhoneLineHeight: 14,
+	TrackingEm: 0,
+}
+
+// The apps' hero head: the character's name on Home's hero (brand S4).
+var TypeHeroName = TypeRole{
+	Family: FontTitle, Weight: 400,
+	Size: 30, LineHeight: 34,
+	PhoneSize: 30, PhoneLineHeight: 34,
+	TrackingEm: 0,
+}
+
+// The raid card's zone on Home (brand S4).
+var TypeCardTitle = TypeRole{
+	Family: FontTitle, Weight: 400,
+	Size: 24, LineHeight: 30,
+	PhoneSize: 24, PhoneLineHeight: 30,
+	TrackingEm: 0,
+}
+
+// A round-5 section title over the ground, above its panel (the mock's `.sh h2`, brand N4).
+var TypePanelTitle = TypeRole{
+	Family: FontTitle, Weight: 400,
+	Size: 21, LineHeight: 26,
+	PhoneSize: 21, PhoneLineHeight: 26,
+	TrackingEm: 0,
+}
+
+// The fact line under a hero name (brand S4).
+var TypeFactLine = TypeRole{
+	Family: FontBody, Weight: 400,
+	Size: 14, LineHeight: 20,
+	PhoneSize: 14, PhoneLineHeight: 20,
+	TrackingEm: 0,
+}
+
+// The unit under a countdown figure (brand S4).
+var TypeFigureUnit = TypeRole{
+	Family: FontBody, Weight: 400,
+	Size: 12, LineHeight: 16,
+	PhoneSize: 12, PhoneLineHeight: 16,
+	TrackingEm: 0,
+}
+
+// A filter chip's label (brand S4).
+var TypeChip = TypeRole{
+	Family: FontBody, Weight: 600,
+	Size: 14, LineHeight: 18,
+	PhoneSize: 14, PhoneLineHeight: 18,
+	TrackingEm: 0,
+}
+
+// The apps' profile drawer: the character's name at its head (brand S4).
+var TypeDrawerName = TypeRole{
+	Family: FontTitle, Weight: 400,
+	Size: 26, LineHeight: 32,
+	PhoneSize: 26, PhoneLineHeight: 32,
+	TrackingEm: 0,
+}
+
+// The apps' profile drawer: a section head (brand S4).
+var TypeDrawerSection = TypeRole{
+	Family: FontTitle, Weight: 400,
+	Size: 16, LineHeight: 22,
+	PhoneSize: 16, PhoneLineHeight: 22,
+	TrackingEm: 0,
+}
+
+// A small strong tag beside a name: the drawer's plan and rank tags (brand S4).
+var TypeTag = TypeRole{
+	Family: FontBody, Weight: 600,
+	Size: 12, LineHeight: 16,
+	PhoneSize: 12, PhoneLineHeight: 16,
+	TrackingEm: 0,
+}
+
+// The answer chip at a raid head's end, `Late · 30 min` (brand S4).
+var TypeAnswerChip = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 13, LineHeight: 18,
+	PhoneSize: 13, PhoneLineHeight: 18,
+	TrackingEm: 0,
+}
+
+// The apps' bar title beside the profile button, Material 3's small top app bar size (brand D6).
+var TypeBarTitle = TypeRole{
+	Family: FontTitle, Weight: 400,
+	Size: 22, LineHeight: 28,
+	PhoneSize: 22, PhoneLineHeight: 28,
+	TrackingEm: 0,
+}
+
+// The paperdoll list: an item's name in its cell (brand D6).
+var TypePaperdollName = TypeRole{
+	Family: FontBody, Weight: 600,
+	Size: 13, LineHeight: 16,
+	PhoneSize: 13, PhoneLineHeight: 16,
+	TrackingEm: 0,
+}
+
+// The paperdoll list: the slot word and its gain under the name (brand D6).
+var TypePaperdollDetail = TypeRole{
+	Family: FontBody, Weight: 400,
+	Size: 12, LineHeight: 15,
+	PhoneSize: 12, PhoneLineHeight: 15,
+	TrackingEm: 0,
+}
+
+// A row's line under its title, 13/18 (the mock's `.row .sub`, iOS RowType.sub).
+var TypeRowSub = TypeRole{
+	Family: FontBody, Weight: 400,
+	Size: 13, LineHeight: 18,
+	PhoneSize: 13, PhoneLineHeight: 18,
+	TrackingEm: 0,
+}
+
+// The flows' small button label and a row's check mark (brand D6).
+var TypeButtonSmall = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 13, LineHeight: 16,
+	PhoneSize: 13, PhoneLineHeight: 16,
+	TrackingEm: 0,
+}
+
+// The countdown's figures on Home's raid card (brand S4).
+var TypeCountdown = TypeRole{
+	Family: FontBody, Weight: 600,
+	Size: 36, LineHeight: 38,
+	PhoneSize: 36, PhoneLineHeight: 38,
 	TrackingEm: 0,
 }
 

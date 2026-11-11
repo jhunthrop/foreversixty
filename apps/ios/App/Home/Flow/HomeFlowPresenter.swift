@@ -33,9 +33,19 @@ struct HomeFlowInputs: Equatable {
     var ready: ReadyCheck?
     var bestRun: BestRun?
     var firstRaids: Date?
+    /// The raid answer's state (F1): the answer just sent, Late's minutes, the status line, offline.
+    var answering = RaidAnswering()
+
     /// The answer just sent, shown before the raid reloads.
-    var answer: SignupState?
-    var lateOpen = false
+    var answer: SignupState? {
+        get { answering.pending }
+        set { answering.pending = newValue }
+    }
+
+    var lateOpen: Bool {
+        get { answering.lateOpen }
+        set { answering.lateOpen = newValue }
+    }
 }
 
 /// Turns the server's blocks and the loaded data into what Home draws (flows spec 4.1). A block
@@ -94,21 +104,70 @@ struct HomeFlowPresenter {
                     id: upgrade.pick.id, name: upgrade.pick.name, quality: upgrade.pick.quality,
                     icon: upgrade.pick.icon, itemLevel: upgrade.pick.itemLevel
                 ),
-                source: "\(upgrade.slotLabel) · \(upgrade.pick.sourceLine)",
-                gain: upgrade.modelled ? upgrade.gain.map { HomeGain(figure: ItemNumbers.signedTenths($0), unit: unit) } : nil,
+                source: Self.sourceLine(upgrade),
+                gain: upgrade.modelled ? upgrade.gain.map { HomeGain(figure: ReportsCopy.signedHouseFigure($0), unit: unit) } : nil,
                 wornID: upgrade.worn?.id,
                 sourceLine: upgrade.pick.sourceLine
             )
         }
-        let note: String? = rows.isEmpty ? (home.state == "no_gear" ? Copy.homeAnswerNoGear : Copy.homeAnswerAllMatch(band: home.bandLabel ?? "")) : nil
-        return HomeUpgradesContent(rows: Array(rows), bestRun: bestRun.map { bestRunLine($0, unit: unit) }, note: note)
+        let note: String? = rows.isEmpty ? Self.emptyNote(home) : nil
+        var content = HomeUpgradesContent(rows: Array(rows), bestRun: bestRun.map { bestRunRow($0, home: home) }, note: note)
+        content.meta = upgradesMeta(home)
+        content.stamp = syncedStamp(home)
+        content.stampStale = home.syncedAt.map { SyncAge.isStale($0, now: now) } ?? false
+        return content
     }
 
-    func bestRunLine(_ run: BestRun, unit: String) -> String {
-        let gain = Copy.homeUpgradesGain(figure: ItemNumbers.signedTenths(run.gain), unit: unit)
-        guard let chance = run.chance else { return Copy.homeBestRun(place: run.place, item: run.item, gain: gain) }
-        return Copy.homeBestRunChance(place: run.place, item: run.item, gain: gain, chance: ItemNumbers.percent(chance))
+    static let partSeparator = " · "
+
+    /// `Head · Blacksmithing · replaces Lionheart Helm · 4%`: the worn item when the API names it,
+    /// the drop chance when the source has one.
+    static func sourceLine(_ upgrade: HomeUpgrade) -> String {
+        let worn = upgrade.worn.flatMap { $0.known ? $0.name : nil }.map { Copy.homeUpgradesReplacesWorn(item: $0) }
+        let chance = upgrade.pick.dropChance.map(ItemNumbers.percent)
+        return [upgrade.slotLabel, upgrade.pick.sourceLine, worn, chance].compactMap(\.self).joined(separator: partSeparator)
     }
+
+    /// `13 upgrades · +157.6 DPS`; the count alone without a modelled total.
+    func upgradesMeta(_ home: CharacterHome) -> String? {
+        guard home.upgradeCount > 0 else { return nil }
+        let count = Copy.homeAnswerUpgrades(n: home.upgradeCount)
+        guard let total = home.totalGain, total > 0 else { return count }
+        let gain = Copy.homeUpgradesGain(figure: ReportsCopy.signedHouseFigure(total), unit: home.unitWord ?? "")
+        return Copy.homeUpgradesMeta(upgrades: count, gain: gain)
+    }
+
+    /// `Synced 2 h ago from the addon`; `Synced 2 h ago` from anywhere else.
+    func syncedStamp(_ home: CharacterHome) -> String? {
+        guard let synced = home.syncedAt else { return nil }
+        let age = HomeTime(now: now, calendar: calendar).age(since: synced)
+        return home.syncedFrom == Self.addonSource ? Copy.homeAnswerSyncedAddon(age: age) : Copy.homeAnswerSynced(age: age)
+    }
+
+    static let addonSource = "addon"
+
+    /// Best run as a row: the dungeon over the drop and its chance, the drop's icon when the answer
+    /// names that item, the gain.
+    func bestRunRow(_ run: BestRun, home: CharacterHome) -> HomeBestRunRow {
+        let pick = run.itemID.flatMap { id in home.upgrades.first { $0.pick.id == id }?.pick }
+        let line = [Copy.homeBestRunRow(item: run.item), run.chance.map(ItemNumbers.percent)].compactMap(\.self)
+            .joined(separator: Self.partSeparator)
+        return HomeBestRunRow(
+            place: run.place, line: line, icon: pick?.icon,
+            gain: HomeGain(figure: ReportsCopy.signedHouseFigure(run.gain), unit: home.unitWord ?? "")
+        )
+    }
+
+    /// The line an answer with no rows shows, by the server's state: only `ok` means every slot matches.
+    static func emptyNote(_ home: CharacterHome) -> String {
+        switch home.state {
+        case "no_gear": Copy.homeAnswerNoGear
+        case "no_spec": Copy.homeAnswerPickSpec
+        case "under_20": Copy.homeAnswerUnder20
+        default: Copy.homeAnswerAllMatch(band: home.bandLabel ?? "")
+        }
+    }
+
 
     // MARK: The next raid
 
@@ -123,22 +182,27 @@ struct HomeFlowPresenter {
         let clockTime = clock.guildClock(raid.startsAt, guildZone: zone).replacingOccurrences(of: " ", with: Self.noBreak)
         let time = Copy.homeRaidWhen(date: clock.shortDate(raid.startsAt), time: clockTime)
         let counts = Copy.homeRaidCounts(in: raid.counts.signedIn, late: raid.counts.late)
+        // AS5: once answered the Segmented is the answer; the line names only the character (E7), or is empty.
         let answer: String = switch (selected, named) {
-        case let (state?, nil): Copy.homeRaidAnsweredAlone(answer: state.label)
-        case let (state?, _?): Copy.homeRaidAnswered(answer: state.label, name: name, role: role)
+        case (_?, nil): ""
+        case (_?, _?): Copy.raidTabAs(name: name, role: role)
         case (nil, nil): Copy.homeRaidNotAnsweredAlone
         case (nil, _?): Copy.homeRaidNotAnswered(name: name, role: role)
         }
         let open = named == nil ? Copy.homeRaidLineSubAlone(counts: counts) : Copy.homeRaidLineSub(counts: counts, name: name, role: role)
+        // AS5: once answered the Segmented is the answer; the line keeps the counts and who it is for.
+        let answeredSub = ([counts] + (named.map { [Copy.raidTabAs(name: $0.name, role: role)] } ?? []))
+            .joined(separator: Self.partSeparator)
         let guild = inputs.character.guild ?? ""
-        let minutes = selected == .late ? raid.signups.first { $0.own && $0.characterKey == viewer?.characterKey }?.lateMinutes : nil
+        let saved = raid.signups.first { $0.own && $0.characterKey == viewer?.characterKey }?.lateMinutes
+        let minutes = selected == .late ? (inputs.answer == .late ? inputs.answering.pendingMinutes ?? saved : saved) : nil
         var content = NextRaidContent(
             guildID: inputs.character.guildID ?? 0, raidID: raid.id, characterKey: viewer?.characterKey ?? inputs.character.key,
             zone: raid.zoneName,
             place: Copy.homeRaidPlace(guild: guild, when: time),
             clock: clockParts(to: raid.startsAt),
             clockLabel: clockLabel(to: raid.startsAt),
-            line: HomeLine(title: Copy.homeRaidLineTitle(raid: raid.zoneName, when: time), sub: selected == nil ? open : answer),
+            line: HomeLine(title: Copy.homeRaidLineTitle(raid: raid.zoneName, when: time), sub: selected == nil ? open : answeredSub),
             icon: raid.zoneIcon ?? RaidIcons.of(zone: raid.zone),
             answer: answer,
             selected: selected,
@@ -149,8 +213,10 @@ struct HomeFlowPresenter {
         )
         content.headLine = headLine(to: raid.startsAt, zone: zone, when: time)
         content.who = named.map { Copy.raidTabAs(name: $0.name, role: role) }
-        content.chip = selected.map { Self.answerWord($0, lateMinutes: minutes) }
         content.lateMinutes = minutes
+        content.status = inputs.answering.line
+        content.busy = inputs.answering.busy
+        content.answersEnabled = !inputs.answering.offline
         return content
     }
 
@@ -196,18 +262,21 @@ struct HomeFlowPresenter {
         let minutes = (seconds % 3600) / 60
         return [
             FSClockPart(String(format: "%02d", hours), Copy.homeRaidHours),
-            FSClockPart(String(format: "%02d", minutes), Copy.homeRaidMinutes),
+            FSClockPart(String(format: "%02d", minutes), Copy.homeRaidMin),
         ]
     }
 
-    /// Who is coming against the comp target: tanks, healers, damage.
-    func tally(_ raid: RaidView) -> [FSTally.Item] {
-        guard let target = raid.compTarget else { return [] }
-        return [
-            FSTally.Item(label: Copy.raidGroupTanks, have: raid.counts.tanks, want: target.tanks),
-            FSTally.Item(label: Copy.raidGroupHealers, have: raid.counts.healers, want: target.healers),
-            FSTally.Item(label: Copy.homeRaidDamage, have: raid.counts.dps, want: target.melee + target.ranged),
+    /// Who is coming by role from the one count model (rows 1 and 2): against the comp target when the
+    /// raid has one (`Healers 5/8 · 3 short`), the plain count without (`Healers 6`).
+    func tally(_ raid: RaidView) -> [RoleLineContent] {
+        let counts = RaidRoleCounts.of(raid)
+        let target = raid.compTarget
+        let roles: [(wire: String, label: String, want: Int?)] = [
+            (RaidRoleCounts.tank, Copy.raidGroupTanks, target?.tanks),
+            (RaidRoleCounts.healer, Copy.raidGroupHealers, target?.healers),
+            (RaidRoleCounts.dps, Copy.homeRaidDamage, target.map { $0.melee + $0.ranged }),
         ]
+        return roles.map { RoleLineContent(role: $0.label, have: counts.count($0.wire), want: $0.want, names: "") }
     }
 
     func ready(_ check: ReadyCheck?) -> HomeLine? {
@@ -220,7 +289,8 @@ struct HomeFlowPresenter {
     /// The officer's open items (F3): who has not answered with the short role, and the applicants.
     func officer(_ inputs: HomeFlowInputs, raid: RaidView?) -> OfficerContent? {
         guard let badge = inputs.badge, badge.officer else { return nil }
-        let unanswered: HomeLine? = if let raid, badge.unanswered > 0 { unansweredLine(badge.unanswered, raid: raid) } else { nil }
+        // Row 6: the raid's own not-answered list, the population Who is coming's foot counts.
+        let unanswered: HomeLine? = if let raid, raid.notAnsweredCount > 0 { unansweredLine(raid.notAnsweredCount, raid: raid) } else { nil }
         let applicants: HomeLine? = badge.applicants > 0 ? HomeLine(
             title: Copy.homeOfficerApplicants(n: badge.applicants),
             sub: inputs.applicants.first.map { applicant in
@@ -263,7 +333,7 @@ struct HomeFlowPresenter {
         case let (state?, nil): Copy.homeLiveLineAlone(age: age, counts: counts, answer: state.label)
         case let (state?, who?): Copy.homeLiveLine(age: age, counts: counts, answer: state.label, name: who.name, role: Self.roleWord(who.role))
         }
-        return RaidLiveContent(eyebrow: Copy.homeRaidInProgress(guild: inputs.character.guild ?? "", zone: raid.zoneName), line: line)
+        return RaidLiveContent(eyebrow: Copy.homeRaidLive(guild: inputs.character.guild ?? "", raid: raid.zoneName), line: line)
     }
 
     // MARK: Last night
@@ -297,7 +367,7 @@ struct HomeFlowPresenter {
     func lootLine(_ item: RaidNightLoot) -> String {
         let slot = item.slot.lowercased()
         guard let gain = item.gain, gain > 0 else { return Copy.homeLastNightLoot(boss: item.boss, slot: slot) }
-        let figure = Copy.homeUpgradesGain(figure: ItemNumbers.signedTenths(gain), unit: item.unit ?? "")
+        let figure = Copy.homeUpgradesGain(figure: ReportsCopy.signedHouseFigure(gain), unit: item.unit ?? "")
         return Copy.homeLastNightLootGain(boss: item.boss, slot: slot, gain: figure)
     }
 
@@ -307,7 +377,8 @@ struct HomeFlowPresenter {
         let rows = query.rows(page.rows).map { row in
             let day = ActivityDay.of(row.occurredAt, now: now, calendar: calendar)
             let when = ActivitySections.when(row.occurredAt, day: day, now: now, calendar: calendar, locale: Locale(identifier: "en_US"))
-            return NewForYouRow(row: row, line: Copy.homeNewForYouLine(body: row.body, when: when))
+            // Row 3: Activity's bucket (`Sat`) on its own meta line, never `· 3 d ago` after the body.
+            return NewForYouRow(row: row, line: row.body, when: when)
         }
         return NewForYouContent(rows: rows, unread: page.unread)
     }
@@ -341,12 +412,7 @@ struct RaidShortRole: Equatable {
 
     /// Tanks and healers first: a raid short of damage is rarely held up by it.
     static func of(_ raid: RaidView) -> RaidShortRole? {
-        guard let target = raid.compTarget else { return nil }
-        let gaps = [
-            RaidShortRole(role: "tank", missing: target.tanks - raid.counts.tanks),
-            RaidShortRole(role: "healer", missing: target.healers - raid.counts.healers),
-            RaidShortRole(role: "dps", missing: target.melee + target.ranged - raid.counts.dps),
-        ]
-        return gaps.first { $0.missing > 0 }
+        guard let target = raid.compTarget, let short = RaidRoleCounts.of(raid).short(target) else { return nil }
+        return RaidShortRole(role: short.role, missing: short.missing)
     }
 }

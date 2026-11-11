@@ -2,6 +2,7 @@ package events
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -27,6 +28,10 @@ type ActivityRow struct {
 	Read       bool      `json:"read"`
 	// Icon is the row's icon (IconOf): its producer's, else its group's; never empty.
 	Icon string `json:"icon"`
+	// Segments, Crest and Figure are the event's (Event); absent on a row without them.
+	Segments []Segment `json:"segments,omitempty"`
+	Crest    *string   `json:"crest,omitempty"`
+	Figure   *float64  `json:"figure,omitempty"`
 }
 
 // ActivityQuery is one page request. An empty Group is every group; Before 0 is the newest
@@ -43,14 +48,26 @@ func (s *Store) Record(ctx context.Context, userIDs []int64, e Event) error {
 	if len(userIDs) == 0 {
 		return nil
 	}
-	_, err := s.Pool.Exec(ctx, `insert into user_activity (user_id, kind, title, body, link, dedupe_key, icon)
-		select uid, $2, $3, $4, $5, $6, $7 from unnest($1::bigint[]) as uid
+	segments, err := segmentsJSON(e.Segments)
+	if err != nil {
+		return fmt.Errorf("events: record activity: %w", err)
+	}
+	_, err = s.Pool.Exec(ctx, `insert into user_activity (user_id, kind, title, body, link, dedupe_key, icon, segments, crest, figure)
+		select uid, $2, $3, $4, $5, $6, $7, $8, nullif($9, ''), $10 from unnest($1::bigint[]) as uid
 		on conflict (user_id, dedupe_key) do nothing`,
-		userIDs, string(e.Kind), e.Title, e.Body, e.Link, e.DedupeKey, IconOf(e.Kind, e.Icon))
+		userIDs, string(e.Kind), e.Title, e.activityBody(), e.Link, e.DedupeKey, IconOf(e.Kind, e.Icon), segments, e.Crest, e.Figure)
 	if err != nil {
 		return fmt.Errorf("events: record activity: %w", err)
 	}
 	return nil
+}
+
+// segmentsJSON is the segments as stored: nil (SQL null) for none.
+func segmentsJSON(segs []Segment) ([]byte, error) {
+	if len(segs) == 0 {
+		return nil, nil
+	}
+	return json.Marshal(segs)
 }
 
 // Activity is one page of the account's inbox, newest first, and the cursor of the next page
@@ -60,7 +77,8 @@ func (s *Store) Activity(ctx context.Context, userID int64, q ActivityQuery) ([]
 	for _, k := range KindsOf(q.Group) {
 		kinds = append(kinds, string(k))
 	}
-	rows, err := s.Pool.Query(ctx, `select id, kind, title, body, link, occurred_at, read_at is not null, coalesce(icon, '')
+	rows, err := s.Pool.Query(ctx, `select id, kind, title, body, link, occurred_at, read_at is not null, coalesce(icon, ''),
+		       segments, crest, figure
 		from user_activity
 		where user_id = $1 and (not $2 or kind = any($3)) and ($4::bigint = 0 or id < $4::bigint)
 		order by id desc limit $5`, userID, q.Group != "", kinds, q.Before, q.Limit+1)
@@ -70,9 +88,18 @@ func (s *Store) Activity(ctx context.Context, userID int64, q ActivityQuery) ([]
 	out, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (ActivityRow, error) {
 		var a ActivityRow
 		var kind string
-		err := row.Scan(&a.ID, &kind, &a.Title, &a.Body, &a.Link, &a.OccurredAt, &a.Read, &a.Icon)
+		var segments []byte
+		if err := row.Scan(&a.ID, &kind, &a.Title, &a.Body, &a.Link, &a.OccurredAt, &a.Read, &a.Icon,
+			&segments, &a.Crest, &a.Figure); err != nil {
+			return a, err
+		}
 		a.Kind, a.Group, a.Icon = Kind(kind), GroupOf(Kind(kind)), IconOf(Kind(kind), a.Icon)
-		return a, err
+		if len(segments) > 0 {
+			if err := json.Unmarshal(segments, &a.Segments); err != nil {
+				return a, fmt.Errorf("segments of row %d: %w", a.ID, err)
+			}
+		}
+		return a, nil
 	})
 	if err != nil {
 		return nil, nil, fmt.Errorf("events: read activity: %w", err)

@@ -265,6 +265,12 @@ public struct ActivityRow: Codable, Sendable, Equatable {
     public let read: Bool
     /// The row's icon, a name under /data/{build}/icons, always sent, as the app mocks draw them: loot.awarded the item's; raid kinds and report.ready the instance's (inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for one with none); sim.finished inv_misc_pocketwatch_01; bis.changed and tier.moved inv_misc_book_09; guildsim.passed the passer's spec icon (ability_warrior_innerrage for a Fury warrior). Any other row, and rows written before icons, its group's: raids inv_misc_book_09, gear inv_misc_bag_10, logs inv_misc_book_11, ladder inv_misc_pocketwatch_01, tiers inv_misc_book_09, officer inv_scroll_08, account inv_misc_gear_01.
     public let icon: String
+    /// The body styled as the feed's rows are (names in class colour, items with quality and id, strong figures); its texts joined are the body. Absent on a row that has only the plain body: loot.awarded and guildsim.passed carry it.
+    public let segments: [FeedSegment]?
+    /// The class slug of the other player the row is about (guildsim.passed's passer); absent otherwise.
+    public let crest: String?
+    /// The row's number when it has one: sim.finished's DPS, guildsim.passed's figure; the body then leaves it out (sim.finished keeps its headline, maybe empty; guildsim.passed the lead). Absent otherwise.
+    public let figure: Double?
 
     public init(
         id: Int64,
@@ -275,7 +281,10 @@ public struct ActivityRow: Codable, Sendable, Equatable {
         link: String,
         occurredAt: Date,
         read: Bool,
-        icon: String
+        icon: String,
+        segments: [FeedSegment]? = nil,
+        crest: String? = nil,
+        figure: Double? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -286,6 +295,9 @@ public struct ActivityRow: Codable, Sendable, Equatable {
         self.occurredAt = occurredAt
         self.read = read
         self.icon = icon
+        self.segments = segments
+        self.crest = crest
+        self.figure = figure
     }
 }
 
@@ -3826,7 +3838,9 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     public let rank: String
     public let verified: Bool
     public let consent: String
+    /// The addon's last sync: when the companion last uploaded this character's export (addon_exports.updated_at), not a game login. A 'Not synced this week' line reads this against 7 days.
     public let loggedAt: Date
+    /// logged_at within the last 24 hours. Not a week; read logged_at for any other window.
     public let loggedRecently: Bool
     public let attendance: GuildAttendance
     public let accountKey: String
@@ -6491,7 +6505,7 @@ public struct RaidClassCount: Codable, Sendable, Equatable {
     }
 }
 
-/// The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count), soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data pipeline exports each icon.
+/// The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessing_of_kings, blessing_of_might and blessing_of_wisdom (paladin, labels Kings, Might and Wisdom; count is the paladin count), soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data pipeline exports each icon.
 public struct RaidComposition: Codable, Sendable, Equatable {
     public let classes: [RaidClassCount]
     public let roles: RaidRoleCounts
@@ -8295,6 +8309,10 @@ public struct ReadyItem: Codable, Sendable, Equatable {
     public let state: String
     public let title: String
     public let line: String
+    /// The item the line is about: the flask or food in the bags, the attunement item, the unenchanted slot's item. Absent when it names none.
+    public let itemId: Int?
+    /// That item's icon, a name under /data/{build}/icons; absent when the data has none (consumables).
+    public let icon: String?
     public let whereToGet: ReadyWhere?
 
     public init(
@@ -8302,12 +8320,16 @@ public struct ReadyItem: Codable, Sendable, Equatable {
         state: String,
         title: String,
         line: String,
+        itemId: Int? = nil,
+        icon: String? = nil,
         whereToGet: ReadyWhere? = nil
     ) {
         self.key = key
         self.state = state
         self.title = title
         self.line = line
+        self.itemId = itemId
+        self.icon = icon
         self.whereToGet = whereToGet
     }
 
@@ -8316,6 +8338,8 @@ public struct ReadyItem: Codable, Sendable, Equatable {
         case state
         case title
         case line
+        case itemId
+        case icon
         case whereToGet = "where"
     }
 }

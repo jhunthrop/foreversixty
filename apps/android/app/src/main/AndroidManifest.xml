@@ -105,6 +105,7 @@
 
         <!-- In, Late, Bench and Out (and Late's minutes) answered from the notification, in the background. -->
         <receiver android:name=".raids.push.RaidActionReceiver" android:exported="false" />
+        <receiver android:name=".raids.push.OfficerActionReceiver" android:exported="false" />
 
         <!-- The flat seal and its turquoise for any notification FCM draws itself. -->
         <meta-data

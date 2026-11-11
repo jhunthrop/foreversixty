@@ -111,9 +111,9 @@
           "mine": "yes"
         },
         "decided_by": {
-          "name": "Obnoxious Yell",
+          "name": "Gorvash",
           "class": "warrior",
-          "character_key": "us/pvp/obnoxious-yell"
+          "character_key": "us/pvp/gorvash"
         },
         "role_outcome": "granted",
         "dm_outcome": "not_opted_in",

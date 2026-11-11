@@ -37,12 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.BandKind
 import gg.foreversixty.app.designsystem.FsColor
@@ -60,6 +60,7 @@ import gg.foreversixty.app.designsystem.parityRegion
 import gg.foreversixty.app.designsystem.panel
 import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.designsystem.surfaceBand
+import gg.foreversixty.app.home.LARGE_TEXT_SCALE
 import gg.foreversixty.app.items.GameIconImage
 
 /**
@@ -85,12 +86,13 @@ fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
 }
 
 /**
+/**
  * A tab root in the round-5 look (spec Mobile): the painted [band] behind the status bar, [topBar]
  * (and [head] on Home's hero), fading into the ground below its foot as the site's head does
  * (`fadingBand`), then [notice] and the blocks over the fade, 16 under the band, 14 at the sides and
  * 20 apart. Once the page scrolls, a strip of the band holds the status bar so the clock never sits
  * on the content. Parity regions are measured from the bottom of [topBar], as the mocks' are from
- * the nav bar.
+ * the nav bar. [page] carries the scroll a route keeps across a push and its pull to refresh (R12).
  */
 @Composable
 fun FlowBandPage(
@@ -98,13 +100,16 @@ fun FlowBandPage(
     band: BandKind = BandKind.Band,
     head: @Composable () -> Unit = {},
     notice: @Composable () -> Unit = {},
+    page: FlowPageState = FlowPageState(rememberScrollState()),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val scroll = rememberScrollState()
-    val scrolled by remember { derivedStateOf { scroll.value > 0 } }
+    val scroll = page.scroll
+    val scrolled by remember(scroll) { derivedStateOf { scroll.value > 0 } }
     val statusBar = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     Box(Modifier.reachUp(statusBar).fillMaxSize()) {
-        BandPageColumn(scroll, statusBar, band, topBar, head, notice, content)
+        FlowRefreshBox(page.refresh, Modifier.fillMaxSize().screenGround()) {
+            BandPageColumn(scroll, statusBar, band, topBar, head, notice, content)
+        }
         if (scrolled) Box(Modifier.fillMaxWidth().height(statusBar).surfaceBand(bottomLine = false, kind = band))
     }
 }
@@ -119,7 +124,7 @@ private fun BandPageColumn(
     notice: @Composable () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(Modifier.fillMaxSize().screenGround().verticalScroll(scroll)) {
+    Column(Modifier.fillMaxSize().verticalScroll(scroll)) {
         Column(Modifier.fillMaxWidth().fadingBand(band)) {
             Spacer(Modifier.height(statusBar))
             topBar()
@@ -206,6 +211,8 @@ fun FlowHeadIcon(icon: String?, build: String?) {
  * right, 10 under it and a rule, then [content]. Its region is `section-<slug of the title>`.
  * With a [panel] (round 5, spec Mobile) the title is the cream display face over the ground with a
  * gold action, 8 under it, and [content] sits in the round-5 panel with that frame, no rule.
+ * A [stamp] (`Synced 2 h ago`, round 3 row 8) sits under the meta line, outside the panel, in the
+ * warning tone when [stampWarn].
  */
 @Composable
 fun FlowSection(
@@ -215,37 +222,87 @@ fun FlowSection(
     meta: String? = null,
     top: Dp = FsSpace.space7,
     panel: PanelFrame? = null,
+    stamp: String? = null,
+    stampWarn: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(Modifier.padding(top = top).fillMaxWidth().parityRegion(ParityRegion.section(title))) {
         val round5 = panel != null
-        Row(
-            Modifier.fillMaxWidth().padding(bottom = if (round5) FsSpace.space2 else SECTION_TITLE_GAP),
-            verticalAlignment = if (round5) Alignment.CenterVertically else Alignment.Top,
-        ) {
-            Text(
-                title,
-                style = if (round5) ScaledType.sectionTitle else FsType.section,
-                color = if (round5) FsColor.cream else FsColor.strong,
-                modifier = Modifier.semantics { heading() },
-            )
-            // The meta sits beside the title (`Needs you  6 open`); the action at the far end.
-            if (meta != null) Text(meta, style = FsType.small, color = FsColor.mutedGround, modifier = Modifier.padding(start = FsSpace.space3, top = ACTION_DROP))
-            Spacer(Modifier.weight(1f))
-            if (action != null) {
-                Text(
-                    action,
-                    style = ACTION,
-                    color = if (round5) FsColor.gold else FsColor.strong,
-                    modifier = Modifier.padding(top = if (round5) 0.dp else ACTION_DROP).clickable(role = Role.Button, onClick = onAction),
-                )
+        val style = SectionHeadStyle(round5)
+        val actionText: (@Composable () -> Unit)? = action?.let { { SectionAction(it, style, onAction) } }
+        Column(Modifier.fillMaxWidth().padding(bottom = style.bottom)) {
+            if (meta != null && LocalDensity.current.fontScale >= LARGE_TEXT_SCALE) {
+                StackedSectionHead(title, meta, style, actionText)
+            } else {
+                InlineSectionHead(title, meta, style, actionText)
             }
+            stamp?.let { Text(it, style = FsType.small, color = if (stampWarn) FsColor.warn else FsColor.mutedGround) }
         }
         if (panel == null) {
             HorizontalDivider(color = FsColor.line)
             CompositionLocalProvider(LocalSubInk provides FsColor.mutedGround) { content() }
         } else {
-            FlowPanel(frame = panel, content = content)
+            FlowPanel(frame = panel) {
+                // Under a stamp the panel's first row sits 8 lower (the mock's `.stmp + *`).
+                if (stamp != null) Spacer(Modifier.height(FsSpace.space2))
+                content()
+            }
+        }
+    }
+}
+
+/** A section head's look: the round-5 cream display title with a gold action, or the plain one. */
+private class SectionHeadStyle(val round5: Boolean) {
+    val title get() = if (round5) PANEL_TITLE else FsType.section
+    val titleColor get() = if (round5) FsColor.cream else FsColor.strong
+    val actionColor get() = if (round5) FsColor.gold else FsColor.strong
+    val actionDrop get() = if (round5) 0.dp else ACTION_DROP
+    val bottom get() = if (round5) FsSpace.space2 else SECTION_TITLE_GAP
+}
+
+@Composable
+private fun SectionTitle(title: String, style: SectionHeadStyle, modifier: Modifier = Modifier) {
+    Text(title, style = style.title, color = style.titleColor, modifier = modifier.semantics { heading() })
+}
+
+@Composable
+private fun SectionAction(action: String, style: SectionHeadStyle, onAction: () -> Unit) {
+    Text(
+        action,
+        style = ACTION,
+        color = style.actionColor,
+        modifier = Modifier.padding(top = style.actionDrop).clickable(role = Role.Button, onClick = onAction),
+    )
+}
+
+/** The title, the meta beside it (`Needs you  6 open`) and the action at the far end, on one line. */
+@Composable
+private fun InlineSectionHead(title: String, meta: String?, style: SectionHeadStyle, action: (@Composable () -> Unit)?) {
+    Row(
+        Modifier.fillMaxWidth(),
+        verticalAlignment = if (style.round5) Alignment.CenterVertically else Alignment.Top,
+    ) {
+        SectionTitle(title, style)
+        if (meta != null) Text(meta, style = FsType.small, color = FsColor.mutedGround, modifier = Modifier.padding(start = FsSpace.space3, top = ACTION_DROP))
+        Spacer(Modifier.weight(1f))
+        action?.invoke()
+    }
+}
+
+/**
+ * From font scale 1.5 (spec 3.2) the meta moves under the title, both wrapping in the space the
+ * action leaves; the action keeps its natural width at the far end of the title's line.
+ */
+@Composable
+private fun StackedSectionHead(title: String, meta: String, style: SectionHeadStyle, action: (@Composable () -> Unit)?) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+        Column(Modifier.weight(1f)) {
+            SectionTitle(title, style)
+            Text(meta, style = FsType.small, color = FsColor.mutedGround, modifier = Modifier.padding(top = ACTION_DROP))
+        }
+        if (action != null) {
+            Spacer(Modifier.width(FsSpace.space3))
+            action()
         }
     }
 }
@@ -299,4 +356,7 @@ private val META_GAP = 6.dp
 private val SECTION_TITLE_GAP = 10.dp
 private val ACTION_DROP = 2.dp
 private val SKELETON_RADIUS = 6.dp
-private val ACTION = FsType.bodyStrong.copy(fontSize = 14.sp, lineHeight = 24.sp)
+private val ACTION = FsType.chip
+
+/** A round-5 section title over the ground: the display face at 21 (the mock's `.sh h2`). */
+private val PANEL_TITLE = ScaledType.sectionTitle

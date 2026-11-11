@@ -49,6 +49,19 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: ${{ env.XCODE_VERSION }}
+      # A record run writes and attaches every failing golden; two of them filled the runner's disk
+      # mid-test and lost their upload (runs 42908207505 and 42925826117, "No space left on
+      # device"). Before one, the Xcodes this job does not use go.
+      - name: Free disk for a record run
+        if: inputs.record == true
+        working-directory: .
+        run: |
+          df -h / | tail -1
+          selected=$(xcode-select -p | sed 's#/Contents/Developer##')
+          for app in /Applications/Xcode*.app; do
+            [ "$app" = "$selected" ] || [ -L "$app" ] || sudo rm -rf "$app"
+          done
+          df -h / | tail -1
       # The runtime build, not just its version: 26.5 resolves to 23F73 while the lanes run 23F77.
       # tools/ios-ci-simulator.sh picks (or downloads) that runtime, makes its own iPhone 17 on it,
       # boots it with retries and exports SIMULATOR (id=, never a name: installing a runtime creates

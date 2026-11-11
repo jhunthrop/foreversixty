@@ -23,7 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import gg.foreversixty.app.common.crestOf
 import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.designsystem.FsColor
@@ -33,8 +33,9 @@ import gg.foreversixty.app.designsystem.parityItem
 /**
  * The Battle.net portrait in a faction-coloured ring with the faction emblem as a badge on its top right:
  * the profile button and the menu's characters only (DESIGN-SYSTEM.md tenet 2, the owner's scoped
- * exception; everywhere else is the class crest). Without a portrait, the [className]'s crest fills the
- * ring and the badge stays (one crest language, never a generic figure); with no class known, the person glyph.
+ * exception; everywhere else is the class crest). Without a portrait, or when it fails to load, the
+ * profile button and the menu's head draw the person glyph (flows spec 3: the class crest is Home's head
+ * and is never drawn twice); the Switch character rows pass [className] so the crest tells them apart.
  * The parity inventory counts the portrait and the badge as images, as the mock's two `img`s.
  */
 @Composable
@@ -50,23 +51,19 @@ fun CharacterPortrait(avatarUrl: String?, faction: String?, size: Dp, modifier: 
             contentAlignment = Alignment.Center,
         ) {
             val crest = crestOf(className)
-            if (avatarUrl.isNullOrBlank() && crest != null) {
-                // No portrait yet: the class crest says which character, never a generic glyph.
-                Image(painterResource(crest), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image))
-            } else if (avatarUrl.isNullOrBlank()) {
-                Icon(Icons.Outlined.Person, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(size * GLYPH_RATIO))
-            } else {
-                val local = LocalPortraitPainter.current?.painter(avatarUrl)
-                if (local != null) {
-                    Image(local, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image))
-                } else {
-                    AsyncImage(
-                        model = avatarUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image),
-                    )
-                }
+            val local = avatarUrl?.takeIf { it.isNotBlank() }?.let { LocalPortraitPainter.current?.painter(it) }
+            when {
+                avatarUrl.isNullOrBlank() -> Stand(crest, size)
+                local != null -> Image(local, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image))
+                // Loading, or a portrait that fails (a Battle.net render 403, no network): the stand-in, never an empty ring.
+                else -> SubcomposeAsyncImage(
+                    model = avatarUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    loading = { Stand(crest, size) },
+                    error = { Stand(crest, size) },
+                    modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image),
+                )
             }
         }
         if (faction != null) {
@@ -80,6 +77,18 @@ fun CharacterPortrait(avatarUrl: String?, faction: String?, size: Dp, modifier: 
             ) {
                 FactionMark(faction, badge)
             }
+        }
+    }
+}
+
+/** What fills the ring without a portrait: the class crest when the caller names one, else the person glyph. */
+@Composable
+private fun Stand(crest: Int?, size: Dp) {
+    if (crest != null) {
+        Image(painterResource(crest), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image))
+    } else {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Icon(Icons.Outlined.Person, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(size * GLYPH_RATIO))
         }
     }
 }

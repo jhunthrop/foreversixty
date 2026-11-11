@@ -13,12 +13,14 @@ Healers: 5 of 8
 Damage: 11 of 30
 2 things before you pull, No flask in your bags; boots not enchanted · from your last log-out, 9 h ago
 Next upgrades
+12 upgrades · +47.5 DPS
 Gear ›
-Lionheart Helm, Head · Blacksmithing, +14.5, DPS
+Synced 2 h ago from the addon
+Lionheart Helm, Head · Blacksmithing · replaces Helm of Valor, +14.5, DPS
 Don Julio’s Band, Finger · Stormpike Guard, needs revered, +6.8, DPS
 Timbermaw Tunic, Chest · Leatherworking, +5.3, DPS
 New for you
 All activity (3) ›
-Kaelra passed you in the guild sims, 1,012.3 DPS, you are #7 of 14 · 1 h ago: Unread
-Sim done: 948.6 DPS ±6, +21 vs your last · 3 h ago: Unread
-Fury Warrior BiS changed, A new pick for Hands · yesterday
+Kaelra passed you in the guild sims, 1,012 DPS, you are #7 of 14, 1 h ago: Unread
+Sim done: 949 DPS ±6, +21 vs your last, 3 h ago: Unread
+Fury Warrior BiS changed, A new pick for Hands, yesterday

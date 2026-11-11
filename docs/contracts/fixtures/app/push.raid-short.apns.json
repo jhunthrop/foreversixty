@@ -1,0 +1,30 @@
+{
+  "aps": {
+    "alert": {
+      "title": "Onyxia's Lair",
+      "body": "Healers 5 of 8, 5 not answered. 21 of 40 signed, 24 hours out."
+    },
+    "sound": "default",
+    "thread-id": "raid-7",
+    "category": "RAID_SHORT"
+  },
+  "kind": "raid.short",
+  "group": "officer",
+  "link": "https://foreversixty.gg/guild/us/pvp/olympus-xxvii/raids/7",
+  "data": {
+    "guild_id": "2",
+    "mention_who": "healers",
+    "raid_id": "7"
+  },
+  "actions": [
+    {
+      "id": "raid_mention_short",
+      "title": "Mention healers",
+      "method": "POST",
+      "path": "/v1/guilds/2/raids/7/ping",
+      "body": {
+        "role": "healer"
+      }
+    }
+  ]
+}

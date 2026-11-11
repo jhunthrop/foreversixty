@@ -2,7 +2,7 @@
   "data": {
     "addon_snapshot": {
       "received_at": "2026-12-15T05:11:00Z",
-      "by_character": "us/pvp/obnoxious-yell",
+      "by_character": "us/pvp/gorvash",
       "members": 14
     },
     "attendance_source": "raids",
@@ -33,8 +33,8 @@
     },
     "members": [
       {
-        "name": "Obnoxious Yell",
-        "character_key": "us/pvp/obnoxious-yell",
+        "name": "Gorvash",
+        "character_key": "us/pvp/gorvash",
         "state": "approved",
         "rank": "officer",
         "class": "warrior",
@@ -87,7 +87,7 @@
         "ranged": 6
       },
       "own": {
-        "character_key": "us/pvp/obnoxious-yell",
+        "character_key": "us/pvp/gorvash",
         "state": "in",
         "role": "dps",
         "note": ""
@@ -160,7 +160,7 @@
           "report_id": "ewlrx3enxbeb",
           "fight_index": 3
         },
-        "character_key": "us/pvp/obnoxious-yell",
+        "character_key": "us/pvp/gorvash",
         "class": "warrior",
         "consent": "gear",
         "last_report_at": "2026-12-15T03:12:44Z",
@@ -170,7 +170,7 @@
         "is_main": false,
         "sim_export": false,
         "may_remove": false,
-        "name": "Obnoxious Yell",
+        "name": "Gorvash",
         "rank": "officer",
         "region": "us",
         "role": "dps",
@@ -239,7 +239,7 @@
     },
     "viewer": {
       "role": "officer",
-      "character_key": "us/pvp/obnoxious-yell",
+      "character_key": "us/pvp/gorvash",
       "verified": true,
       "officer_tools": true,
       "raid_guild_tools": false,

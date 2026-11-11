@@ -12,8 +12,8 @@
     "status": "done",
     "phase": "after",
     "character": {
-      "character_key": "us/pvp/obnoxious-yell",
-      "name": "Obnoxious Yell",
+      "character_key": "us/pvp/gorvash",
+      "name": "Gorvash",
       "class": "warrior",
       "spec": "warrior-fury",
       "spec_name": "Fury",
@@ -49,7 +49,7 @@
       ],
       "damage": [
         {
-          "name": "Obnoxious Yell",
+          "name": "Gorvash",
           "class": "warrior",
           "state": "in",
           "late_minutes": null,

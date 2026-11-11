@@ -10,6 +10,8 @@ struct BestRun: Equatable, Sendable {
     let gain: Double
     /// Percent, when the loot file names one.
     let chance: Double?
+    /// The drop's item id, for its icon on Home's Best run row.
+    var itemID: Int?
 
     /// The slots' modelled gains from the home answer, by slot.
     static func gains(_ upgrades: [HomeUpgrade]) -> [String: Double] {
@@ -22,6 +24,6 @@ struct BestRun: Equatable, Sendable {
     static func best(slots: [BisSlot], gains: [String: Double], loot: LootFile, level: Int?) -> BestRun? {
         let places = WhereToGo(slots: slots, gains: gains, places: ItemPlaces(loot: loot, level: level))
         guard let entry = places.best(sourceKind: ItemPlaces.dungeonKind) else { return nil }
-        return BestRun(place: entry.place.name, item: entry.name, gain: entry.gain, chance: entry.chance)
+        return BestRun(place: entry.place.name, item: entry.name, gain: entry.gain, chance: entry.chance, itemID: entry.itemID)
     }
 }

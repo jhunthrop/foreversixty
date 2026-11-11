@@ -42,7 +42,12 @@ data class SignupBlock(
     val status: StatusLine? = null,
     val noteBusy: Boolean = false,
     val noteFailed: Boolean = false,
+    /** The write that failed, for Try again; cleared with its error line. */
+    val failed: SignupPress? = null,
 )
+
+/** One sign-up write: the answer, the spec picked for it and Late's minutes. */
+data class SignupPress(val state: SignupState, val spec: RaidSpecOption? = null, val lateMinutes: Int? = null)
 
 /** The spec sheet's question: a press waiting for a spec, or Change spec. */
 sealed interface SpecAsk {
@@ -134,14 +139,29 @@ class SignupController(
         }
     }
 
+    /** The raid cards' status line: `Saving…` while a write is out, else [restingStatus]. */
+    fun answerStatus(key: String): StatusLine? =
+        if (block(key).busy) StatusLine.Info(res.getString(R.string.raids_note_saving)) else restingStatus(key)
+
+    /** Whether Try again can repeat a failed write: its error line still shows. */
+    fun canRetry(key: String): Boolean = block(key).failed != null && block(key).status is StatusLine.Error
+
     private fun update(key: String, change: (SignupBlock) -> SignupBlock) {
         blocks[key] = change(block(key))
     }
+
+    /** A failed write's line gives way on the next press or a newer view, so the offline sentence shows again. */
+    private fun clearError(key: String) {
+        if (block(key).status is StatusLine.Error) update(key) { it.copy(status = null, failed = null) }
+    }
+
+    private fun clearErrors() = blocks.keys.toList().forEach(::clearError)
 
     // Sign-up
 
     suspend fun press(key: String, state: SignupState) {
         val character = character(key) ?: return
+        clearError(key)
         if (!segmentsEnabled(key) || block(key).busy) return
         deps.haptics.selection()
         if (state.carriesSpec && character.raidSpec == null && (character.specOptions?.size ?: 0) >= 2) {
@@ -154,9 +174,20 @@ class SignupController(
 
     /** Late's minutes (spec 2026-11-08 F1): Late again with how late; the chips show once Late is the answer. */
     suspend fun pressLate(key: String, minutes: Int) {
+        clearError(key)
         if (!segmentsEnabled(key) || block(key).busy) return
         deps.haptics.selection()
         save(key, SignupState.Late, null, minutes)
+    }
+
+    /** Try again under a failed write: offline, a refetch first; then the same write once the answers are back. */
+    suspend fun retry(key: String) {
+        val failed = block(key).failed ?: return
+        clearError(key)
+        if (offline) refresh()
+        if (!segmentsEnabled(key) || block(key).busy) return
+        deps.haptics.selection()
+        save(key, failed.state, failed.spec, failed.lateMinutes)
     }
 
     fun changeSpec(key: String) {
@@ -184,7 +215,7 @@ class SignupController(
     private suspend fun save(key: String, state: SignupState, spec: RaidSpecOption?, lateMinutes: Int? = null) {
         val previous = block(key).shown
         val name = character(key)?.name.orEmpty()
-        update(key) { it.copy(shown = state, busy = true, status = null) }
+        update(key) { it.copy(shown = state, busy = true, status = null, failed = null) }
         val request = SignupRequest(state = state.wire, note = notes[key].orEmpty(), spec = spec?.spec, lateMinutes = lateMinutes)
         when (val result = deps.service.signup(guild, raid.id, key, request)) {
             is ApiResult.Success -> {
@@ -201,7 +232,8 @@ class SignupController(
                 if (state.isComing) considerReminderAsk()
             }
             is ApiResult.Failure -> {
-                update(key) { it.copy(shown = previous, busy = false, status = StatusLine.Error(SignupRefusal.sentence(result.error, res))) }
+                val error = StatusLine.Error(SignupRefusal.sentence(result.error, res))
+                update(key) { it.copy(shown = previous, busy = false, status = error, failed = SignupPress(state, spec, lateMinutes)) }
                 offline = SignupRefusal.isOffline(result.error)
                 deps.haptics.error()
             }
@@ -311,6 +343,7 @@ class SignupController(
     fun replace(view: RaidView) {
         if (isWriting) return
         offline = false
+        clearErrors()
         apply(view)
     }
 

@@ -216,7 +216,7 @@ def raid_night(state: str):
         ready = Checklist([('ok', 'Drakefire Amulet', 'Attuned to Onyxia&rsquo;s Lair', None),
                            ('ok', 'Elixir of the Mongoose', '3 in your bags, from the addon&rsquo;s last export', None),
                            ('miss', 'Flask of the Titans', 'None in your bags', 'Auction house'),
-                           ('warn', 'Boots not enchanted', 'Enchant Boots: Greater Agility', 'Where to get it')])
+                           ('warn', 'Boots not enchanted', '', None)])
         body = (title("Onyxia's Lair", 'var(--strong)', icon('inv_misc_head_dragon_black', 56), ['Olympus XXVII', 'Wed 6 Jan, 8:00 pm CST']) + cd
                 + Section('Your sign-up', f'<div class="la bare"><div class="btns">{buttons}</div></div>')
                 + Section('Who is coming', counts, 'Roster &rsaquo;')

@@ -28,18 +28,33 @@ func TestReadyItemsWordTheChecklist(t *testing.T) {
 		{Key: CheckFlaskFood, State: CheckFail, Missing: []string{missingFlaskOrElixir},
 			Supplies: []SupplyStack{{Name: "Grilled Squid", Kind: supplyFood, Count: 12}}},
 	}
-	got := readyItems(checks, &ony)
+	got := readyItems(checks, &ony, nil)
 	want := []string{"attune.onyxias-lair:ok", "enchant.feet:warn", "flask:miss", "food:ok"}
 	if !slices.Equal(readyKeys(got), want) {
 		t.Fatalf("items %v, want %v", readyKeys(got), want)
 	}
-	if got[0].Title != "Drakefire Amulet" || got[1].Title != "Boots not enchanted" || got[2].Where == nil ||
+	if got[0].Title != "Drakefire Amulet" || got[1].Title != "Boots not enchanted" || got[1].Line != "" || got[1].Where != nil || got[2].Where == nil ||
 		got[2].Where.Label != "Auction house" || got[3].Title != "Grilled Squid" || got[3].Line != "12 in your bags" {
 		t.Fatalf("words %+v", got)
 	}
+	if got[0].ItemID != nil || got[1].ItemID != nil || got[2].ItemID != nil {
+		t.Fatalf("no ids on file, none sent: %+v", got)
+	}
+	withIDs := slices.Clone(checks)
+	withIDs[1].KeyItem = &KeyItem{ID: 16309, Name: "Drakefire Amulet"}
+	withIDs[4].Supplies = []SupplyStack{{ID: 13931, Name: "Nightfin Soup", Kind: supplyFood, Count: 4}}
+	ids := readyItems(withIDs, &ony, map[string]int{"feet": 16912})
+	for i, want := range map[int]int{0: 16309, 1: 16912, 3: 13931} {
+		if ids[i].ItemID == nil || *ids[i].ItemID != want {
+			t.Errorf("%s item_id %v, want %d", ids[i].Key, ids[i].ItemID, want)
+		}
+	}
+	if ids[2].ItemID != nil {
+		t.Errorf("a missing flask names no item, got %d", *ids[2].ItemID)
+	}
 	unseen := []ChecklistItem{{Key: CheckAttunement, State: CheckNotTracked, Reason: reasonKeysNotInExport},
 		{Key: CheckFlaskFood, State: CheckNotTracked, Reason: reasonBagsNotShared}}
-	if got := readyItems(unseen, &ony); len(got) != 1 || got[0].State != ReadyWarn {
+	if got := readyItems(unseen, &ony, nil); len(got) != 1 || got[0].State != ReadyWarn {
 		t.Fatalf("unseen %+v", got)
 	}
 }

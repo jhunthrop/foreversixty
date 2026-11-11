@@ -10,6 +10,7 @@ import gg.foreversixty.app.guild.logic.MoreState
 import gg.foreversixty.app.guild.logic.NightFacts
 import gg.foreversixty.app.guild.logic.RosterCopy
 import gg.foreversixty.app.guild.logic.RosterEntries
+import gg.foreversixty.app.guild.logic.RosterFigure
 import gg.foreversixty.app.guild.logic.RosterList
 import gg.foreversixty.app.guild.logic.RosterQuery
 import gg.foreversixty.app.guild.logic.RosterRole
@@ -39,6 +40,25 @@ class GuildLogicTest {
     private fun entry(name: String) = entries.first { it.name == name }
 
     // Roster (F16.1)
+
+    @Test
+    fun `the not-synced filter counts the raiders it keeps and none when the roster is whole`() {
+        val keys = entries.mapNotNull { it.characterKey }.take(4).toSet()
+        assertEquals(4, RosterList.onlyCount(entries, keys))
+        assertEquals(1, RosterList.onlyCount(entries, keys.take(1).toSet() + "us/pvp/not-in-guild"))
+        assertNull(RosterList.onlyCount(entries, emptySet()))
+    }
+
+    @Test
+    fun `a filtered plate counts one population, the whole plate counts the guild`() {
+        val counts = GuildFixture.home().counts
+        assertEquals(listOf(RosterFigure(RosterFigure.Kind.OnRoster, 4, counts.onRoster)), RosterFigure.of(counts, shown = 4))
+        assertEquals(
+            listOf(RosterFigure.Kind.OnRoster, RosterFigure.Kind.NoAccount, RosterFigure.Kind.Waiting),
+            RosterFigure.of(counts, shown = null).map { it.kind },
+        )
+        assertTrue(RosterFigure.of(counts, shown = null).all { it.of == null })
+    }
 
     @Test
     fun `every member is a row, the waiting and the no-account ones included`() {
@@ -89,7 +109,7 @@ class GuildLogicTest {
     @Test
     fun `rank sort is leader, officers, members, each by name`() {
         val sorted = names(RosterQuery(sort = RosterSort.Rank))
-        assertEquals(listOf("Kraggor", "Draknar", "Mendara", "Obnoxious Yell", "Thokgar"), sorted.take(5))
+        assertEquals(listOf("Kraggor", "Draknar", "Gorvash", "Mendara", "Thokgar"), sorted.take(5))
         val members = sorted.drop(5)
         assertTrue(members.all { entry(it).rank == GuildRank.Member })
         assertEquals(members.sortedWith(String.CASE_INSENSITIVE_ORDER), members)
@@ -115,7 +135,7 @@ class GuildLogicTest {
     fun `name, attendance and level sorts`() {
         assertEquals("Arrowmane", names(RosterQuery(sort = RosterSort.Name)).first())
         val byAttendance = RosterList.apply(entries, RosterQuery(sort = RosterSort.Attendance))
-        assertEquals("Obnoxious Yell", byAttendance.first().name)
+        assertEquals("Gorvash", byAttendance.first().name)
         assertEquals(RosterStanding.Attended(3, 8), byAttendance.first().standing)
         assertEquals(RosterStanding.Attended(0, 8), byAttendance.first { it.name == "Quillara" }.standing)
         assertTrue(byAttendance.indexOfFirst { it.name == "Quillara" } < byAttendance.indexOfFirst { it.name == "Voidsong" })

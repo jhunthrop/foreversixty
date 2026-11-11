@@ -112,6 +112,9 @@ fun ForeverAppScaffold(features: ShellFeatures) {
     val select = { tab: ForeverTab ->
         selected = tab
         pushed = null
+        // Your builds and a shared build sit over the tab like a menu screen; a tab tap leaves them.
+        features.planner?.navigator?.close()
+        Unit
     }
     FollowRequests(features, select) { pushed = it }
     // Lane F13: the planner's editor covers the shell; the tabs' saved state outlives it.

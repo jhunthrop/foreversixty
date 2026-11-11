@@ -264,6 +264,18 @@ struct RaidFlowLogicTests {
         }
         #expect(composer.content(.signedOut, extras: RaidRootExtras()) == .signedOut)
     }
+
+    @Test("the root: a guild member under 60 sees the guild's raid, not the leveler")
+    func guildMemberUnder60() async throws {
+        let tab = RaidsTabModel(service: FakeRaidService(), cache: NoRaidCache(), now: { RaidTime.now })
+        await tab.load()
+        guard case let .loaded(content) = tab.state else { Issue.record("not loaded"); return }
+        #expect((content.character.level ?? RaidFlowPresenter.maxLevel) < RaidFlowPresenter.maxLevel)
+        guard case .guild = RaidRootComposer(presenter: presenter).content(tab.state, extras: RaidRootExtras()) else {
+            Issue.record("expected the guild's raid")
+            return
+        }
+    }
 }
 
 /// Mentions as many as asked, or fails with an error.

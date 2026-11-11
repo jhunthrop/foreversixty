@@ -48,14 +48,12 @@
         <item quantity="one">1 upgrade</item>
         <item quantity="other">%1$d upgrades</item>
     </plurals>
-    <string name="home_answer_note">Best in slot for %1$s, together</string>
     <plurals name="home_answer_notModelled">
         <item quantity="one">" · 1 gain not modelled yet"</item>
         <item quantity="other">" · %1$d gains not modelled yet"</item>
     </plurals>
     <string name="home_answer_synced_addon">Synced %1$s from the addon</string>
     <string name="home_answer_noGear">Add the addon to see which slots you can upgrade.</string>
-    <string name="home_answer_noGearNote">The addon sends your gear when you log out.</string>
     <string name="home_answer_listButton">%1$s %2$s list</string>
     <string name="home_answer_under20">Best in slot starts at 20.</string>
     <string name="home_answer_pickSpec">Set a spec in the planner to see this.</string>
@@ -85,7 +83,6 @@
     <string name="home_next_noSim">No sim yet.</string>
     <string name="home_next_raid">Next raid</string>
     <string name="gear_title">Your gear</string>
-    <string name="gear_intro">What you wear, and the pick for %1$s.</string>
     <string name="gear_bis">BiS</string>
     <string name="gear_emptySlot">Empty</string>
     <string name="tooltip_bind_pickup">Binds when picked up</string>
@@ -203,7 +200,7 @@
     <string name="items_ilvl">ilvl %1$d</string>
     <string name="items_pickArrow">→ %1$s</string>
     <string name="items_setBonus" tools:ignore="PluralsCandidate">(%1$d) Set: %2$s</string>
-    <string name="items_sameDps">Same %1$s as the pick</string>
+    <string name="items_sameDps">Same %1$s</string>
     <string name="items_loading">Loading the item…</string>
     <string name="items_failed">This item did not load.</string>
     <string name="items_notInData">Not in our item data yet</string>
@@ -244,6 +241,7 @@
     <string name="bis_slotSource">%1$s · %2$s</string>
     <string name="bis_source_quest">Quest: %1$s</string>
     <string name="bis_source_crafted">Crafted: %1$s</string>
+    <string name="bis_source_craftedSkill" tools:ignore="PluralsCandidate">Crafted: %1$s (%2$d)</string>
     <string name="bis_source_vendor">Vendor: %1$s</string>
     <string name="bis_a11y_item">%1$s, %2$s, item level %3$d.</string>
     <string name="bis_a11y_picker">Choose a list: %1$s, %2$s, %3$s</string>
@@ -415,8 +413,16 @@
         <item quantity="one">Last raid: 1 piece</item>
         <item quantity="other">Last raid: %1$d pieces</item>
     </plurals>
+    <string name="raid_pages_lastNight">Last: %1$s, %2$s, %3$s</string>
+    <plurals name="raid_pages_kills">
+        <item quantity="one">1 kill</item>
+        <item quantity="other">%1$d kills</item>
+    </plurals>
+    <plurals name="raid_pages_wipes">
+        <item quantity="one">1 wipe</item>
+        <item quantity="other">%1$d wipes</item>
+    </plurals>
     <string name="raid_pages_simsRank" tools:ignore="PluralsCandidate">#%1$d of %2$d in guild sims</string>
-    <string name="raid_noRaid">No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.</string>
     <string name="raid_needsYou">Needs you</string>
     <string name="raid_needsYouOpen" tools:ignore="PluralsCandidate">%1$d open</string>
     <string name="raid_night_title">Raid night</string>
@@ -639,9 +645,18 @@
     <string name="push_action_openBilling">Open billing</string>
     <string name="push_action_bench">Bench</string>
     <string name="push_action_review">Review</string>
+    <string name="push_action_mention">Mention in Discord</string>
     <string name="push_action_decline">Decline</string>
+    <string name="push_action_accept">Accept</string>
     <string name="push_late_question">How late?</string>
     <string name="push_late_minutes" tools:ignore="PluralsCandidate">%1$d min</string>
+    <string name="push_applicant_declined">Application declined</string>
+    <string name="push_applicant_accepted">Application accepted</string>
+    <string name="push_applicant_acceptFailed">Could not accept %1$s</string>
+    <string name="push_applicant_declineFailed">Could not decline %1$s</string>
+    <string name="push_applicant_failed">%1$s. Open Forever Sixty to try again.</string>
+    <string name="push_short_failed">Could not mention the %1$s</string>
+    <string name="push_short_retry">%1$s. Open the raid to try again.</string>
     <string name="push_group_raids">Raids</string>
     <string name="push_group_raids_line">Posted, moved, your answer due, raid night</string>
     <string name="push_group_gear">Gear and sims</string>
@@ -668,37 +683,25 @@
     <string name="first_permission_notNow">Not now</string>
     <string name="menu_character_line" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
     <string name="menu_character_lineGuild" tools:ignore="PluralsCandidate">%1$s · %2$d · %3$s</string>
-    <string name="menu_character_main">Main</string>
+    <string name="menu_character_lineRank" tools:ignore="PluralsCandidate">%1$s · %2$d · %3$s</string>
+    <string name="menu_character_itemLevel" tools:ignore="PluralsCandidate">item level %1$d</string>
+    <string name="menu_syncError">Battle.net refresh failed</string>
     <string name="menu_open">Open menu</string>
     <string name="menu_title">Menu</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="menu_refreshing">Refreshing…</string>
+    <string name="menu_refreshFailed">Could not refresh just now. Try again.</string>
     <string name="menu_switch">Switch character</string>
-    <string name="menu_lowLevel_show" tools:ignore="PluralsCandidate">Show low-level characters (%1$d)</string>
-    <string name="menu_lowLevel_hide">Hide low-level characters</string>
     <string name="menu_tools">Tools</string>
-    <string name="menu_tool_guides">Guides</string>
-    <string name="menu_tool_guides_line">Your spec’s guide, then every class</string>
-    <string name="menu_tool_tiers">Tiers</string>
-    <string name="menu_tool_tiers_line">Every spec, this week</string>
-    <string name="menu_tool_patchNotes">Patch notes</string>
-    <string name="menu_tool_patchNotes_line">The game and the site</string>
-    <string name="menu_tool_sims">Sims</string>
-    <string name="menu_tool_sims_line">Your server runs and saved sims</string>
-    <string name="menu_tool_reports">Logs and reports</string>
-    <string name="menu_tool_reports_line">Your reports and the coach</string>
-    <string name="menu_tool_planner">Planner</string>
-    <string name="menu_tool_planner_line">Your builds and the guide builds</string>
-    <string name="menu_tool_rankings">Rankings</string>
-    <string name="menu_tool_rankings_line">Your spec and your guild</string>
     <string name="menu_account">Account</string>
     <string name="menu_notifications">Notifications</string>
-    <string name="menu_notifications_on">%1$s on</string>
+    <string name="menu_notifications_allOn">All on</string>
+    <string name="menu_notifications_someOff">%1$s off</string>
     <string name="menu_notifications_off">All off</string>
     <string name="menu_plan">Plan</string>
     <string name="menu_devices">Devices</string>
     <string name="menu_devices_line" tools:ignore="PluralsCandidate">%1$d signed in</string>
-    <string name="menu_offline">Offline data</string>
-    <string name="menu_offline_line">%1$s on this phone</string>
+    <string name="menu_devices_lineNewest" tools:ignore="PluralsCandidate">%1$d signed in · newest %2$s</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_settings_line">Sign out, delete account</string>
     <string name="menu_help">Help</string>
@@ -713,7 +716,6 @@
     <string name="activity_markAllRead">Mark all read</string>
     <string name="activity_unread">Unread</string>
     <string name="activity_empty">Nothing yet. Loot, sims, reports and raids land here.</string>
-    <string name="activity_signedOut">What changed for your characters: loot, sims, reports, raids.</string>
     <string name="notifications_sendMe">Send me</string>
     <string name="notifications_when">When</string>
     <string name="notifications_reminder">Raid-day reminder</string>
@@ -722,15 +724,21 @@
     <string name="notifications_discord">Discord</string>
     <string name="notifications_officerDms">Let officers DM me on Discord</string>
     <string name="notifications_officerDmsLine">When you have not answered a raid; off, they mention you in the channel</string>
-    <string name="gear_onList" tools:ignore="PluralsCandidate">%1$d of %2$d slots on the list</string>
+    <string name="gear_onList" tools:ignore="PluralsCandidate">%1$d of %2$d slots match the list</string>
     <string name="gear_change">Change</string>
-    <string name="gear_whereTonight">Where to go tonight</string>
+    <string name="gear_error_title">We could not load this list</string>
+    <string name="gear_whereTonight">Where to go</string>
     <string name="gear_everySlot">Every slot</string>
     <string name="gear_worn">Equipped</string>
     <string name="gear_where_drop">%1$s · %2$s, %3$s</string>
     <string name="gear_where_boss">%1$s · %2$s</string>
     <string name="gear_where_ask">%1$s · ask a %2$s</string>
     <string name="gear_where_rep">%1$s, needs %2$s</string>
+    <string name="gear_where_figure">%1$s · %2$s %3$s</string>
+    <string name="gear_cell_noGain">No gain</string>
+    <string name="gear_header_gain">%1$s %2$s from %3$s</string>
+    <string name="gear_header_synced">synced %1$s</string>
+    <string name="gear_notModelled">Not modelled</string>
     <string name="gear_crafter_blacksmithing">blacksmith</string>
     <string name="gear_crafter_leatherworking">leatherworker</string>
     <string name="gear_crafter_tailoring">tailor</string>
@@ -752,7 +760,6 @@
         <item quantity="one">1 guildmate has not shared their gear yet</item>
         <item quantity="other">%1$d guildmates have not shared their gear yet</item>
     </plurals>
-    <string name="gear_sheet_dropChance">%1$s drop chance</string>
     <string name="gear_sheet_replaces">Replaces %1$s</string>
     <string name="gear_sheet_vendor">%1$s, vendor</string>
     <string name="you_title">You</string>
@@ -1387,6 +1394,9 @@
     <string name="roster_chip_tanks">Tanks</string>
     <string name="roster_chip_healers">Healers</string>
     <string name="roster_chip_dps">DPS</string>
+    <string name="roster_chip_notSynced" tools:ignore="PluralsCandidate">Not synced this week · %1$d</string>
+    <string name="roster_chip_clear">Show the whole roster</string>
+    <string name="roster_counts_of" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
     <string name="roster_sort">Sort: %1$s</string>
     <string name="roster_sort_rank">Rank</string>
     <string name="roster_sort_className">Class</string>
@@ -1668,12 +1678,16 @@
     <string name="share_action">Share</string>
     <string name="raid_group_damage">Damage</string>
     <string name="home_head_level">Level %1$d %2$s</string>
-    <string name="home_head_toBand" tools:ignore="PluralsCandidate">%1$d levels to band %2$d</string>
-    <string name="home_head_toBandOne">1 level to band %1$d</string>
+    <string name="home_head_toBand" tools:ignore="PluralsCandidate">%1$d levels to the %2$d list</string>
+    <string name="home_head_toBandOne" tools:ignore="PluralsCandidate">1 level to the %1$d list</string>
     <string name="home_upgrades_next">Next upgrades</string>
     <string name="home_upgrades_gear">Gear ›</string>
     <string name="home_bestRun">Best run: %1$s, %2$s %3$s</string>
     <string name="home_bestRun_chance">Best run: %1$s, %2$s %3$s, %4$s</string>
+    <string name="home_bestRun_row">Best run · %1$s</string>
+    <string name="home_upgrades_meta">%1$s · %2$s</string>
+    <string name="home_upgrades_replacesWorn">replaces %1$s</string>
+    <string name="home_answer_synced">Synced %1$s</string>
     <string name="home_raid_tonight">%1$s · %2$s tonight</string>
     <string name="home_raid_live">%1$s · %2$s in progress</string>
     <string name="home_raid_hours">hours</string>
@@ -1682,8 +1696,6 @@
     <string name="home_raid_when">%1$s, %2$s</string>
     <string name="home_raid_notAnswered">You have not answered, as %1$s, %2$s</string>
     <string name="home_raid_notAnsweredAlone">You have not answered</string>
-    <string name="home_raid_answered">You are %1$s, as %2$s, %3$s</string>
-    <string name="home_raid_answeredAlone">You are %1$s</string>
     <string name="home_raid_place">%1$s · %2$s</string>
     <string name="home_raid_lineTitle">%1$s · %2$s</string>
     <string name="home_raid_lineSub">%1$s · you have not answered, as %2$s, %3$s</string>
@@ -1715,19 +1727,18 @@
     <string name="home_newForYou">New for you</string>
     <string name="home_allActivity">All activity ›</string>
     <string name="home_allActivity_count" tools:ignore="PluralsCandidate">All activity (%1$d) ›</string>
-    <string name="home_findGuild_line">Raid with a guild that plans its nights here, and answer its raids from the app.</string>
-    <string name="home_findGuild_firstRaids">Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open %1$s.</string>
+    <string name="home_findGuild_line">Join a guild to sign up for its raids here.</string>
+    <string name="home_findGuild_firstRaids">Join a guild before the first raids on %1$s.</string>
     <string name="home_findGuild">Find a guild</string>
     <string name="home_error_title">We could not load your home</string>
     <string name="home_error_sub">Check your connection</string>
     <string name="home_new_title">No characters yet</string>
     <string name="home_new_line">Log out in game, then check again.</string>
     <string name="home_new_check">Check again</string>
-    <string name="home_yesterday">yesterday</string>
     <string name="raid_tab_nextRaid">Next raid</string>
     <string name="raid_tab_needsYou">Needs you</string>
     <string name="raid_tab_open" tools:ignore="PluralsCandidate">%1$d open</string>
-    <string name="raid_tab_noRaid">No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.</string>
+    <string name="raid_tab_noRaid">No raid posted yet.</string>
     <string name="raid_tab_raidNight">Raid night</string>
     <string name="raid_tab_roleLine" tools:ignore="PluralsCandidate">%1$s %2$d of %3$d</string>
     <string name="raid_tab_lateNote" tools:ignore="PluralsCandidate">%1$s (Late · %2$d min)</string>
@@ -1739,7 +1750,6 @@
     <string name="raid_tab_sims">Guild sims</string>
     <string name="raid_tab_calendarItem">%1$s %2$s</string>
     <string name="raid_tab_withGuild">Raid with a guild</string>
-    <string name="raid_tab_withGuildLine">Guilds that plan their raids here</string>
     <string name="raid_tab_recruiting">Guilds recruiting a %1$s</string>
     <string name="raid_tab_apply">Apply</string>
     <string name="raid_tab_notHere">Your guild is not here?</string>
@@ -1748,7 +1758,6 @@
     <string name="raid_tab_leveler">Raids start at 60</string>
     <string name="raid_tab_levelsToGo" tools:ignore="PluralsCandidate">%1$d levels to go</string>
     <string name="raid_tab_levelerLine">Onyxia\'s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.</string>
-    <string name="raid_tab_outLine">Sign up for your guild\'s raids from your phone.</string>
     <string name="raid_tab_pullIn">%1$s · pull in %2$s</string>
     <string name="raid_tab_untilHours" tools:ignore="PluralsCandidate">%1$d h %2$d min</string>
     <string name="raid_tab_untilMinutes" tools:ignore="PluralsCandidate">%1$d min</string>
@@ -1760,6 +1769,17 @@
     <string name="raid_tab_short" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
     <string name="raid_tab_andMore" tools:ignore="PluralsCandidate">%1$s and %2$d more</string>
     <string name="raid_tab_howLate">How late</string>
+    <string name="raid_tab_tallyShort" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
+    <string name="raid_tab_tallyCompact" tools:ignore="PluralsCandidate">%1$d/%2$d</string>
+    <string name="raid_tab_damageSplit" tools:ignore="PluralsCandidate">%1$d melee, %2$d ranged</string>
+    <string name="raid_tab_inviteSize" tools:ignore="PluralsCandidate">Invites %1$s · %2$d-man</string>
+    <string name="raid_tab_countBench" tools:ignore="PluralsCandidate">Bench %1$d</string>
+    <string name="raid_tab_countOut" tools:ignore="PluralsCandidate">Out %1$d</string>
+    <string name="raid_tab_countNotAnswered" tools:ignore="PluralsCandidate">%1$d not answered</string>
+    <string name="raid_tab_notSyncedNames">Not synced this week: %1$s</string>
+    <string name="raid_tab_coverMissing">Missing %1$s</string>
+    <string name="raid_tab_coverLabel">Missing</string>
+    <string name="raid_tab_coverShort" tools:ignore="PluralsCandidate">%1$s %2$d of %3$d</string>
     <string name="raid_answer_lateMinutes" tools:ignore="PluralsCandidate">Late · %1$d min</string>
     <string name="raid_na_title">Not answered</string>
     <string name="raid_na_all">All</string>
@@ -1843,9 +1863,6 @@
     <string name="raid_applicant_after">%1$s shows on the roster once the addon or Battle.net sees the character in the guild.</string>
     <string name="raid_applicant_line" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d, %4$s</string>
     <string name="raid_applicant_failed">We could not load this application</string>
-    <string name="home_raid_inProgress">%1$s · %2$s in progress</string>
-    <string name="home_raid_minutes">min</string>
-    <string name="home_raid_as">as %1$s, %2$s</string>
     <string name="home_raid_lineOpen">%1$s · you have not answered, %2$s</string>
     <string name="home_raid_pulled">Pulled %1$s ago · %2$s · you are %3$s %4$s</string>
     <string name="home_raid_openNight">Open raid night ›</string>
@@ -1874,7 +1891,6 @@
     <string name="home_lastNight_simAgainLine">Your sim is from before it dropped</string>
     <string name="home_newForYou_all">All activity ›</string>
     <string name="home_newForYou_allUnread" tools:ignore="PluralsCandidate">All activity (%1$d) ›</string>
-    <string name="home_newForYou_line">%1$s · %2$s</string>
     <string name="home_findGuild_title">Raid with a guild</string>
     <string name="home_findGuild_button">Find a guild</string>
     <string name="home_error_line">Check your connection</string>

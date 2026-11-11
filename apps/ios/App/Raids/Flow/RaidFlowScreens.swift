@@ -199,7 +199,7 @@ struct RaidCalendarScreen: View {
         RaidFlowScroll {
             RaidFlowHead(title: Copy.raidPagesCalendar)
             let upcoming = planned.filter { $0.startsAt > now().addingTimeInterval(-HomeFlowModel.liveSpan) }.sorted { $0.startsAt < $1.startsAt }
-            if upcoming.isEmpty { SmallText(Copy.raidNoRaid).padding(.top, RaidFlowSpacing.section) }
+            if upcoming.isEmpty { SmallText(Copy.raidTabNoRaid).padding(.top, RaidFlowSpacing.section) }
             VStack(spacing: 0) {
                 ForEach(upcoming, id: \.id) { raid in
                     PlannedRow(raid: raid, clock: clock, now: now(), currentKey: currentKey) { open(raid) }

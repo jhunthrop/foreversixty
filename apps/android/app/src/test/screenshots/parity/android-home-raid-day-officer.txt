@@ -27,9 +27,11 @@ Preview mention
 1 applicant
 Mirelle, Holy Priest 60, 2 min ago
 Next upgrades
+12 upgrades · +47.5 DPS
 Gear ›
+Synced 2 h ago from the addon
 Lionheart Helm
-Head · Blacksmithing
+Head · Blacksmithing · replaces Helm of Valor
 +14.5 DPS
 Don Julio's Band
 Finger · Stormpike Guard, needs revered
@@ -41,12 +43,15 @@ New for you
 All activity (3) ›
 Unread
 Kaelra passed you in the guild sims
-1,012.3 DPS, you are #7 of 14 · 1 h ago
+1,012 DPS, you are #7 of 14
+1 h ago
 Unread
-Sim done: 948.6 DPS ±6
-+21 vs your last · 3 h ago
+Sim done: 949 DPS ±6
++21 vs your last
+3 h ago
 Fury Warrior BiS changed
-A new pick for Hands · yesterday
+A new pick for Hands
+6:02 pm
 Home
 6 new
 Raid

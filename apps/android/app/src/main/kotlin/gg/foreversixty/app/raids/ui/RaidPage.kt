@@ -93,6 +93,7 @@ fun RaidPageScreen(
     openNight: (Long) -> Unit,
     back: () -> Unit,
     requestPermission: () -> Unit,
+    toCover: Boolean = false,
 ) {
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     LaunchedEffect(model) { model.load() }
@@ -105,6 +106,7 @@ fun RaidPageScreen(
             state.controller, clock, now, currentKey, model.offlineSince, guildName, guildUrl, openNight, back, requestPermission,
             stale = model.stale,
             retry = { scope.launch { model.load() } },
+            toCover = toCover,
         )
         RaidPageModel.State.Failed -> PageMessage(back) {
             ErrorRegion(stringResource(R.string.raid_failed)) { scope.launch { model.load() } }
@@ -150,6 +152,8 @@ fun RaidPageContent(
     requestPermission: () -> Unit,
     stale: Boolean = false,
     retry: () -> Unit = {},
+    /** Opened from the Raid tab's `and N more`: the composition's cover scrolls into view. */
+    toCover: Boolean = false,
 ) {
     val raid = controller.raid
     val facts = controller.facts
@@ -192,7 +196,7 @@ fun RaidPageContent(
                         GoldLink(stringResource(R.string.raid_report), { uri.openUri(RaidLinks.report(report)) })
                     }
                     Notes(raid)
-                    Roster(controller, facts)
+                    Roster(controller, facts, toCover)
                 }
             }
         }
@@ -315,16 +319,7 @@ fun SignupCard(controller: SignupController, facts: RaidFacts, clock: RaidClock,
             }
         }
     }
-    controller.specAsk?.let { ask ->
-        controller.character(ask.characterKey)?.let { character ->
-            val scope = androidx.compose.runtime.rememberCoroutineScope()
-            SpecSheet(
-                ask, character, controller.raid.title, clock.shortDate(facts.startsAt),
-                pick = { option -> scope.launch { controller.pickSpec(option) } },
-                close = { controller.closeSpecSheet() },
-            )
-        }
-    }
+    SpecAskSheet(controller, controller.raid.title, clock.shortDate(facts.startsAt))
 }
 
 @Composable

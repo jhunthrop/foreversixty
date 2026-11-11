@@ -30,7 +30,11 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -106,10 +110,11 @@ fun OfficerRow(controller: SignupController, clock: RaidClock) {
 
 /**
  * Sign-ups (spec F4.2 item 8): groups by role, then Late, Bench, Out, then Not signed up. An
- * officer's rows end in their place button (F4.19); Not signed up become rows with Add.
+ * officer's rows end in their place button (F4.19); Not signed up become rows with Add. [toCover]
+ * scrolls the composition (the buffs covered and missing) into view: the Raid tab's `and N more`.
  */
 @Composable
-fun Roster(controller: SignupController, facts: RaidFacts) {
+fun Roster(controller: SignupController, facts: RaidFacts, toCover: Boolean = false) {
     val scope = rememberCoroutineScope()
     val roster = RosterGroups(controller.raid, controller.rosterOverrides.toMap())
     val officer = facts.canMove && facts.isSignable
@@ -120,7 +125,7 @@ fun Roster(controller: SignupController, facts: RaidFacts) {
             Text(facts.ratio, style = ScaledType.tabular, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
         }
         val res = androidx.compose.ui.platform.LocalResources.current
-        gg.foreversixty.app.raids.logic.CompositionRead.of(controller.raid.composition, res)?.let { CompositionBlock(it) }
+        gg.foreversixty.app.raids.logic.CompositionRead.of(controller.raid.composition, res)?.let { CompositionBlock(it, Modifier.coverFocus(toCover)) }
         roster.groups.forEach { group ->
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 SectionLabel(stringResource(group.kind.label), trailing = "${group.rows.size}")
@@ -151,6 +156,18 @@ fun Roster(controller: SignupController, facts: RaidFacts) {
             }
         }
     }
+}
+
+/** With [focus], the block it modifies scrolls into view once laid out (the cover list a tap asked for). */
+@Composable
+private fun Modifier.coverFocus(focus: Boolean): Modifier {
+    if (!focus) return this
+    val requester = remember { BringIntoViewRequester() }
+    LaunchedEffect(requester) {
+        withFrameNanos { }
+        requester.bringIntoView()
+    }
+    return bringIntoViewRequester(requester)
 }
 
 @Composable

@@ -9,9 +9,11 @@ Onyxia's Lair report ready
 Sim again with your new gear
 Your sim is from before last night
 Next upgrades
+12 upgrades · +47.5 DPS
 Gear ›
+Synced 2 h ago from the addon
 Lionheart Helm
-Head · Blacksmithing
+Head · Blacksmithing · replaces Helm of Valor
 +14.5 DPS
 Don Julio's Band
 Finger · Stormpike Guard, needs revered
@@ -19,16 +21,21 @@ Finger · Stormpike Guard, needs revered
 Timbermaw Tunic
 Chest · Leatherworking
 +5.3 DPS
-Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%
+Blackcrow
+Best run · Blackrock Spire · 8%
++1.9 DPS
 New for you
 All activity (3) ›
 Unread
 Kaelra passed you in the guild sims
-1,012.3 DPS, you are #7 of 14 · 8 h ago
-Sim done: 948.6 DPS ±6
-+21 vs your last · yesterday
+1,012 DPS, you are #7 of 14
+8 h ago
+Sim done: 949 DPS ±6
++21 vs your last
+6:02 pm
 Fury Warrior BiS changed
-A new pick for Hands · Tue
+A new pick for Hands
+Tue
 Home
 Raid
 Gear

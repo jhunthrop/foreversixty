@@ -73,8 +73,12 @@ final class FakeRaidService: RaidService, @unchecked Sendable {
     func raids(guild: Int64) async throws(APIError) -> GuildRaids { try raidsAnswer() }
     func raid(guild: Int64, raid: Int64) async throws(APIError) -> RaidView { try raidAnswer() }
 
+    /// How long the sign-up write takes to answer (a slow network); nil answers at once.
+    var signupDelay: Duration?
+
     func signup(guild: Int64, raid: Int64, characterKey: String, _ request: SignupRequest) async throws(APIError) -> SignupAnswer {
         signups.append((characterKey, request))
+        if let signupDelay { try? await Task.sleep(for: signupDelay) }
         return try signupAnswer(request)
     }
 

@@ -17,13 +17,17 @@ object ForeverHttpClient {
 
     /**
      * The engine for [config]'s mode: OkHttp for live, the fixture engine for fixture.
-     * [fixtures] is required in fixture mode.
+     * [fixtures] is required in fixture mode; [variants] picks a route's state and [latencyMillis]
+     * holds each answer back, both read per request.
      */
-    fun engineFor(config: ApiConfig, fixtures: FixtureSource?): HttpClientEngine = when (config.mode) {
+    fun engineFor(
+        config: ApiConfig,
+        fixtures: FixtureSource?,
+        latencyMillis: () -> Long = { 0L },
+        variants: () -> Map<String, FixtureVariant> = { emptyMap() },
+    ): HttpClientEngine = when (config.mode) {
         ApiMode.Live -> OkHttp.create()
-        ApiMode.Fixture -> FixtureEngine.create(
-            requireNotNull(fixtures) { "fixture mode needs a FixtureSource" },
-        )
+        ApiMode.Fixture -> FixtureEngine.create(requireNotNull(fixtures) { "fixture mode needs a FixtureSource" }, latencyMillis, variants)
     }
 
     /**

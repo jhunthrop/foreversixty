@@ -1,20 +1,21 @@
 Thandrel
-Fury Warrior · 60 · Olympus XXVII
+Fury Warrior · 60 · Raider
 Main
-Updated 2 h ago from Battle.net · Refresh
+Updated 2 h ago from Battle.net ·
+Refresh
 Switch character
 Lightvow
-Holy Paladin · 60 · Olympus XXVII
+Holy Paladin · 60 · Olympus XXVII · item level 61
 Kaelor
-Frost Mage · 47
+Frost Mage · 47 · item level 44
 Felsnap
-Beast Mastery Hunter · 34
+Beast Mastery Hunter · 34 · item level 31
 Brewmist
-Enhancement Shaman · 22
+Enhancement Shaman · 22 · item level 19
 Ashmantle
-Affliction Warlock · 18
+Affliction Warlock · 18 · item level 15
 Pockets
-Rogue · 6
+Rogue · 6 · item level 5
 Bankalt
 Mage · 1
 Hide low-level characters
@@ -28,11 +29,11 @@ Planner
 Rankings
 Account
 Notifications
-Raids, gear and sims, logs on
+Gear and sims, guild ladder, tiers off
 Plan
 Premium · Founder price
 Devices
-3 signed in
+3 signed in · newest Pixel 9
 Offline data
 26.6 MB on this phone
 Settings

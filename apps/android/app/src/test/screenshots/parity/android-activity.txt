@@ -10,8 +10,9 @@ Today
 Mark all read
 Unread
 Kaelra passed you in the guild sims
-1,012.3 DPS, you are #7 of 14
+You are #7 of 14
 8 h ago
+1,196 DPS
 Unread
 You got Deathbringer
 Onyxia · main hand, +12.6 DPS
@@ -24,7 +25,7 @@ Yesterday
 You're In for Onyxia
 As Thandrel, Damage · 8:00 pm CST
 6:02 pm
-Sim done: 948.6 DPS ±6
+Sim done: 949 DPS ±6
 +21 vs your last
 2:40 pm
 Healers short for Onyxia tonight
@@ -37,6 +38,7 @@ Tue
 Fury Warrior BiS changed
 A new pick for Hands: Theramore Gauntlets
 Tue
+Show older
 Home
 Raid
 Gear

@@ -130,7 +130,7 @@ struct ReportsStoreTests {
         #expect(store.report?.id == ReportsTestData.reportID)
         #expect(store.parses == .loaded(try ReportsTestData.me()))
         #expect(store.coach == .ready(try ReportsTestData.review()))
-        #expect(service.coachCalls == ["night:us/pvp/obnoxious-yell", "fight:9"])
+        #expect(service.coachCalls == ["night:us/pvp/gorvash", "fight:9"])
     }
 
     @Test func report_free_makesNoCoachCall() async throws {
@@ -156,7 +156,7 @@ struct ReportsStoreTests {
         let store = try reportStore(service)
         await store.load()
         #expect(store.coach == .hidden)
-        #expect(service.coachCalls == ["night:us/pvp/obnoxious-yell"])
+        #expect(service.coachCalls == ["night:us/pvp/gorvash"])
     }
 
     @Test func report_coachError_failsInTheCardOnly() async throws {

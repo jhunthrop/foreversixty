@@ -345,3 +345,24 @@ func TestTimeSensitiveMessagesBreakThrough(t *testing.T) {
 		t.Fatal("MessageOf time-sensitive")
 	}
 }
+
+func TestMessageOfNamesTheKindsButtonSet(t *testing.T) {
+	act := []events.Action{{ID: "x", Title: "X", Method: "PUT", Path: "/v1/x"}}
+	cases := []struct {
+		name string
+		e    events.Event
+		want string
+	}{
+		{"raid sign-up", events.Event{Kind: events.RaidPosted, Actions: act}, RaidSignupCategory},
+		{"applicant decline", events.Event{Kind: events.GuildApplicant, Actions: act}, GuildApplicantCategory},
+		{"short mention", events.Event{Kind: events.RaidShort, Actions: act}, RaidShortCategory},
+		{"no actions, no category", events.Event{Kind: events.RaidShort}, ""},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := MessageOf(c.e, Token{}).Category; got != c.want {
+				t.Fatalf("category %q, want %q", got, c.want)
+			}
+		})
+	}
+}

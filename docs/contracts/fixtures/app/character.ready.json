@@ -8,17 +8,18 @@
         "state": "ok",
         "title": "Drakefire Amulet",
         "line": "Attuned",
-        "where": null
+        "where": null,
+        "item_id": 16309,
+        "icon": "inv_jewelry_talisman_11"
       },
       {
         "key": "enchant.feet",
         "state": "warn",
         "title": "Boots not enchanted",
-        "line": "No enchant on it",
-        "where": {
-          "label": "An enchanter or the auction house",
-          "link": null
-        }
+        "line": "",
+        "where": null,
+        "item_id": 16811,
+        "icon": "inv_boots_07"
       },
       {
         "key": "flask",
@@ -35,7 +36,8 @@
         "state": "ok",
         "title": "Grilled Squid",
         "line": "12 in your bags",
-        "where": null
+        "where": null,
+        "item_id": 13928
       }
     ]
   },

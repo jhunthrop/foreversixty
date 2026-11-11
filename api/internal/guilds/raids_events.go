@@ -13,12 +13,14 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
@@ -26,21 +28,26 @@ import (
 // raidCopy is the words of the raid notifications. Every line names only what the raid page
 // shows a member.
 var raidEventCopy = struct {
-	Posted, Nudge, Moved, Cancelled, RosterIn, RosterBench, RosterOther string
-	Starting, Short, ShortOpen, LateChange                              string
-	MovedIn, MovedBench, MovedLate, MovedOut                            string
-	ActionIn, ActionLate, ActionBench, ActionOut                        string
+	Posted, SignedOf, SignedOpen, Nudge, Moved, Cancelled, RosterIn, RosterBench, RosterOther string
+	Starting, Minute, Minutes, Short, ShortRole, ShortNotIn, LateChange                       string
+	MovedIn, MovedBench, MovedLate, MovedOut                                                  string
+	ActionIn, ActionLate, ActionBench, ActionOut                                              string
 }{
-	Posted:      "Sign-ups are open: %s.",
+	Posted:      "%s. %s.",
+	SignedOf:    "%d of %d signed",
+	SignedOpen:  "%d signed",
 	Nudge:       "%s is today at %s. Are you coming?",
 	Moved:       "Moved to %s.",
 	Cancelled:   "This raid was cancelled.",
 	RosterIn:    "The roster is set. You are In.",
 	RosterBench: "The roster is set. You are on the bench.",
 	RosterOther: "The roster is set.",
-	Starting:    "Starts in %d minutes.",
-	Short:       "%d of %d signed, 24 hours out.",
-	ShortOpen:   "%d signed, 24 hours out.",
+	Starting:    "Starts in %s.",
+	Minute:      "1 minute",
+	Minutes:     "%d minutes",
+	Short:       "%s, %s out.",
+	ShortRole:   "%s %d of %d",
+	ShortNotIn:  "%d not answered",
 	LateChange:  "%s changed to Out, %s before the start.",
 	MovedIn:     "An officer moved %s to In.",
 	MovedBench:  "An officer moved %s to the bench.",
@@ -59,6 +66,16 @@ const SignupCharacterPlaceholder = "{character}"
 // raidWhen is p's start in its zone (UTC when the guild set none).
 func raidWhen(p notify.RaidPosted) string {
 	return textfmt.RaidWhen(p.StartsAt, textfmt.Location(p.Timezone))
+}
+
+// signedWords is p's In and Late count against its size ("24 of 40 signed"), the count alone
+// for a raid of open size ("24 signed").
+func signedWords(p notify.RaidPosted) string {
+	signed := p.Counts.In + p.Counts.Late
+	if p.SizeKnown {
+		return fmt.Sprintf(raidEventCopy.SignedOf, signed, p.Size)
+	}
+	return fmt.Sprintf(raidEventCopy.SignedOpen, signed)
 }
 
 // signupActions are the In, Late, Bench and Out buttons: the sign-up PUT the app calls with
@@ -97,7 +114,7 @@ func raidKey(kind events.Kind, p notify.RaidPosted, extra ...string) string {
 func raidPostedEvent(guildID int64, p notify.RaidPosted) events.Event {
 	e := raidEvent(events.RaidPosted, guildID, p, fmt.Sprintf("%s:%d", events.RaidPosted, p.RaidID),
 		events.Audience{Kind: events.ToGuildMembers, GuildID: guildID})
-	e.Body = fmt.Sprintf(raidEventCopy.Posted, raidWhen(p))
+	e.Body = fmt.Sprintf(raidEventCopy.Posted, signedWords(p), raidWhen(p))
 	e.Actions = signupActions(guildID, p.RaidID)
 	return e
 }
@@ -137,22 +154,99 @@ func rosterSetEvent(guildID int64, p notify.RaidPosted, userID int64, state stri
 	return e
 }
 
-func raidStartingEvent(guildID int64, p notify.RaidPosted, lead time.Duration) events.Event {
-	e := raidEvent(events.RaidStarting, guildID, p, raidKey(events.RaidStarting, p),
-		events.Audience{Kind: events.ToRaidInLate, GuildID: guildID, RaidID: p.RaidID})
-	e.Body = fmt.Sprintf(raidEventCopy.Starting, int(lead.Minutes()))
+// raidStartingEvent is raid.starting to aud; miss is the first thing the recipient's ready
+// check misses ("No flask in your bags."), "" when none or not known.
+func raidStartingEvent(guildID int64, p notify.RaidPosted, lead time.Duration, aud events.Audience, miss string) events.Event {
+	e := raidEvent(events.RaidStarting, guildID, p, raidKey(events.RaidStarting, p), aud)
+	e.Body = joinSentences(fmt.Sprintf(raidEventCopy.Starting, minutesWords(lead)), miss)
 	return e
 }
 
-func raidShortEvent(guildID int64, p notify.RaidPosted) events.Event {
+// minutesWords is d to the nearest minute: "1 minute", "45 minutes".
+func minutesWords(d time.Duration) string {
+	if m := int(d.Round(time.Minute).Minutes()); m != 1 {
+		return fmt.Sprintf(raidEventCopy.Minutes, m)
+	}
+	return raidEventCopy.Minute
+}
+
+// unansweredUnknown is raid.short's not-answered count when it could not be read.
+const unansweredUnknown = -1
+
+// raidShortEvent is raid.short at lead before the start: the roles below the comp target and
+// how many have not answered, each only when known and not nothing, then the signed count and
+// the lead to the hour. canPing (the raid's ping is out of its cooldown and Discord is
+// connected) adds the Mention button for the first short role (shortestRole).
+func raidShortEvent(guildID int64, p notify.RaidPosted, lead time.Duration, unanswered int, canPing bool) events.Event {
 	e := raidEvent(events.RaidShort, guildID, p, raidKey(events.RaidShort, p),
 		events.Audience{Kind: events.ToGuildOfficers, GuildID: guildID})
-	signed := p.Counts.In + p.Counts.Late
-	e.Body = fmt.Sprintf(raidEventCopy.ShortOpen, signed)
-	if p.SizeKnown {
-		e.Body = fmt.Sprintf(raidEventCopy.Short, signed, p.Size)
+	short := notify.ShortRoles(p)
+	var gaps []string
+	for _, r := range short {
+		gaps = append(gaps, fmt.Sprintf(raidEventCopy.ShortRole, r.Name, r.Have, r.Want))
 	}
+	if worst, ok := shortestRole(short); ok && canPing {
+		e.Actions = []events.Action{mentionAction(guildID, p.RaidID, worst)}
+		// The apps word a failed Mention from it (round 7 row 2): "the healers".
+		e.Data[MentionWhoDataKey] = mentionWho[shortPingRole(worst)]
+	}
+	if unanswered > 0 {
+		gaps = append(gaps, fmt.Sprintf(raidEventCopy.ShortNotIn, unanswered))
+	}
+	gapLine := ""
+	if len(gaps) > 0 {
+		gapLine = strings.Join(gaps, ", ") + "."
+	}
+	e.Body = joinSentences(gapLine, fmt.Sprintf(raidEventCopy.Short, signedWords(p), roundedHours(lead.Round(time.Hour))))
 	return e
+}
+
+// shortestRole is the role the Mention button and the apps' Needs you line name: the first
+// short role in tank, healer, dps order (ShortRoles' order), the one an officer can fill.
+func shortestRole(short []notify.RoleShort) (notify.RoleShort, bool) {
+	if len(short) == 0 {
+		return notify.RoleShort{}, false
+	}
+	return short[0], true
+}
+
+// mentionWho is who a Mention reaches per ping role; the button reads mentionVerb + it.
+var mentionWho = map[string]string{RoleTank: "tanks", RoleHealer: "healers", RoleDPS: "DPS"}
+
+// mentionVerb starts the Mention button's label ("Mention healers").
+const mentionVerb = "Mention "
+
+// MentionWhoDataKey is raid.short's data key naming who its Mention reaches.
+const MentionWhoDataKey = "mention_who"
+
+// MentionShortActionID is raid.short's one action: the raid ping for the shortest role.
+const MentionShortActionID = "raid_mention_short"
+
+// mentionAction posts the raid ping (POST …/raids/{raid}/ping) for r's role: melee and ranged
+// are the ping's dps.
+func mentionAction(guildID, raidID int64, r notify.RoleShort) events.Action {
+	role := shortPingRole(r)
+	return events.Action{ID: MentionShortActionID, Title: mentionVerb + mentionWho[role], Method: "POST",
+		Path: fmt.Sprintf("/v1/guilds/%d/raids/%d/ping", guildID, raidID), Body: map[string]string{"role": role}}
+}
+
+// shortPingRole is the raid ping's role for a short roster group: melee and ranged are dps.
+func shortPingRole(r notify.RoleShort) string {
+	if role, ok := map[string]string{raidspec.GroupTank: RoleTank, raidspec.GroupHealer: RoleHealer}[r.Group]; ok {
+		return role
+	}
+	return RoleDPS
+}
+
+// joinSentences is the non-empty sentences one after another.
+func joinSentences(sentences ...string) string {
+	var out []string
+	for _, s := range sentences {
+		if s != "" {
+			out = append(out, s)
+		}
+	}
+	return strings.Join(out, " ")
 }
 
 func lateChangeEvent(guildID int64, p notify.RaidPosted, characterKey, name string, before time.Duration) events.Event {

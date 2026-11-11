@@ -27,6 +27,10 @@ import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidsTabModel
 import gg.foreversixty.app.raids.logic.SignupController
 import gg.foreversixty.app.raids.logic.SystemNotificationPermission
+import gg.foreversixty.app.raids.flows.NextRaidSignup
+import gg.foreversixty.app.flows.FlowPageState
+import gg.foreversixty.app.flows.rememberFlowRefresh
+import androidx.compose.foundation.rememberScrollState
 import java.time.Instant
 import java.time.ZoneId
 import kotlin.time.Duration.Companion.seconds
@@ -65,25 +69,28 @@ fun HomeFlowContent(
     val haptics = rememberHaptics()
     val tabModel = remember(raids) { raids?.let { RaidsTabModel(it.service, it.cache, res, it.now, connectivity = it.connectivity) } }
     val state = remember(character.key) { HomeFlowState(service, tabModel, activity, Instant::now) }
-    var controller by remember { mutableStateOf<SignupController?>(null) }
+    // One controller per raid, the Raid tab's rule: the answer saves, its haptics and its offline rule.
+    val signup = remember(tabModel) { tabModel?.let { NextRaidSignup(it, raids?.now ?: Instant::now) } }
+    val deps = remember(raids, haptics) {
+        raids?.let { SignupController.Dependencies(it.service, res, haptics, SystemNotificationPermission(context), it.askStore, it.now, scope, HOLD) }
+    }
     val home = (phase as? HomePhase.Loaded)?.home ?: (phase as? HomePhase.Failed)?.cached
 
-    LaunchedEffect(character.key) {
+    suspend fun load() {
         state.load(character)
+        deps?.let { signup?.sync(it) }
         raids?.refreshBadge(state.raidContent?.head?.id)
     }
-    LaunchedEffect(home) { state.refreshBestRun(home) }
 
-    // One controller per raid, the Raid tab's: the answer saves, its haptics and its offline rule.
-    val raid = state.nextRaid
-    val guild = state.raidContent?.head
-    if (raids != null && raid != null && guild != null && controller?.raid?.id != raid.id) {
-        controller = SignupController(
-            guild.id,
-            raid,
-            SignupController.Dependencies(raids.service, res, haptics, SystemNotificationPermission(context), raids.askStore, raids.now, scope, HOLD),
-        )
+    LaunchedEffect(character.key) { load() }
+    LaunchedEffect(home) { state.refreshBestRun(home) }
+    val refresh = rememberFlowRefresh {
+        store.refresh(character)
+        load()
     }
+
+    val controller = signup?.controller
+    val guild = state.raidContent?.head
     val now = Instant.now()
     val view = homeView(character, phase, home, state, controller, HomeComposer(res, now, ZoneId.systemDefault()), RaidCardWords(res, RaidClock(res), now),
         unread = activity?.unread ?: state.rows.count { !it.read },
@@ -97,6 +104,7 @@ fun HomeFlowContent(
             scope.launch { controller?.press(key, answer) }
         },
         onLate = { _, minutes -> scope.launch { controller?.pressLate(character.key, minutes) } },
+        onRetryAnswer = { scope.launch { controller?.retry(character.key) } },
         onRaid = { id -> openRaid(raids, guild?.id, id, exits) },
         onRaidNight = { id ->
             raids?.navigator?.let { nav ->
@@ -116,7 +124,7 @@ fun HomeFlowContent(
         onRetry = {
             scope.launch {
                 store.refresh(character)
-                state.load(character)
+                load()
             }
         },
     )
@@ -124,7 +132,7 @@ fun HomeFlowContent(
     (phase as? HomePhase.Loaded)?.offlineSince?.let { since ->
         SavedAnswerStrip(OfflineStamp.format(since, now, ZoneId.systemDefault()), phase.stale, actions.onRetry)
     }
-    HomeFlowScreen(view, actions, topBar)
+    HomeFlowScreen(view, actions, FlowPageState(rememberScrollState(), refresh), topBar)
 }
 
 private fun openRaid(raids: RaidsFeature?, guild: Long?, raid: Long, exits: HomeExits, unanswered: Boolean = false) {
@@ -151,12 +159,7 @@ private fun homeView(
     if (phase is HomePhase.Loading) return HomeView.Loading(head)
     if (phase is HomePhase.Failed && home == null) return HomeView.Failed(head)
     val guild = state.raidContent?.head?.name.orEmpty()
-    val next = state.nextRaid
-    val card = next?.let { raid ->
-        val own = raid.signups.firstOrNull { it.own && it.characterKey == character.key }
-        val answer = controller?.takeIf { it.raid.id == raid.id }?.block(character.key)?.shown ?: words.ownAnswer(raid, character.key)
-        words.card(raid, guild, character.key, answer, lateOpen = own?.lateMinutes == null, badge = badge)
-    }
+    val card = state.nextRaid?.let { words.card(it, guild, character.key, controller, badge) }
     val live = state.liveRaid?.let { words.live(it, guild, character.key, words.ownAnswer(it, character.key)) }
     val inputs = HomeInputs(state.sections, home, state.bestRun, card, live, state.rows, unread, firstRaids = null)
     return HomeView.Blocks(head, composer.blocks(inputs), home?.dataBuild)

@@ -65,6 +65,9 @@ object FsColor {
     val parsePurple = Color(0xFFA335EE)
     val parseOrange = Color(0xFFFF8000)
     val parsePink = Color(0xFFE268A8)
+    // The pink step as text on the apps' panels (spec W3 section 4 Parse number), lightened as the
+    // rarity text colours are (brand S5).
+    val parsePinkText = Color(0xFFF08CC0)
     val parseGold = Color(0xFFE5CC80)
     val schoolPhysical = Color(0xFFE8C96A)
     val schoolHoly = Color(0xFFFFF1A8)
@@ -159,6 +162,8 @@ object FsColor {
     val tabOn = Color(0xFFFFD36B)
     // The apps' tab bar: an unselected tab, muted white.
     val tabOff = Color(0xD1FFFFFF)
+    // The apps' paperdoll: the ground behind the sockets (spec W3 section 4, brand S5).
+    val paperdollGround = Color(0xFF14171F)
 }
 
 object FsFont {
@@ -186,6 +191,39 @@ object FsType {
     val button = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The tab bar label (ruling N4).
     val tab = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, lineHeight = 14.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The apps' hero head: the character's name on Home's hero (brand S4).
+    val heroName = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 30.sp, lineHeight = 34.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The raid card's zone on Home (brand S4).
+    val cardTitle = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 24.sp, lineHeight = 30.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // A round-5 section title over the ground, above its panel (the mock's `.sh h2`, brand N4).
+    val panelTitle = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 21.sp, lineHeight = 26.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The fact line under a hero name (brand S4).
+    val factLine = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The unit under a countdown figure (brand S4).
+    val figureUnit = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // A filter chip's label (brand S4).
+    val chip = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, lineHeight = 18.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The apps' profile drawer: the character's name at its head (brand S4).
+    val drawerName = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 26.sp, lineHeight = 32.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The apps' profile drawer: a section head (brand S4).
+    val drawerSection = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 22.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // A small strong tag beside a name: the drawer's plan and rank tags (brand S4).
+    val tag = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The answer chip at a raid head's end, `Late · 30 min` (brand S4).
+    val answerChip = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 18.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The apps' bar title beside the profile button, Material 3's small top app bar size (brand
+    // D6).
+    val barTitle = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The paperdoll list: an item's name in its cell (brand D6).
+    val paperdollName = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The paperdoll list: the slot word and its gain under the name (brand D6).
+    val paperdollDetail = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 15.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // A row's line under its title, 13/18 (the mock's `.row .sub`, iOS RowType.sub).
+    val rowSub = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 13.sp, lineHeight = 18.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The flows' small button label and a row's check mark (brand D6).
+    val buttonSmall = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The countdown's figures on Home's raid card (brand S4).
+    val countdown = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 36.sp, lineHeight = 38.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines, fontFeatureSettings = "tnum")
     val figureSm = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 20.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines, fontFeatureSettings = "tnum")
     val figure = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 32.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines, fontFeatureSettings = "tnum")
     val figureBig = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 36.sp, lineHeight = 40.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines, fontFeatureSettings = "tnum")
@@ -251,6 +289,8 @@ object FsSize {
     // roots draw it under the bars (iOS BandPage, Android FlowBandPage).
     val bandFade = 64.dp
     val segment = 44.dp
+    // A spell icon beside a name in a line of text (the Covered line).
+    val icon20 = 20.dp
     val icon28 = 28.dp
     val icon32 = 32.dp
     val icon36 = 36.dp

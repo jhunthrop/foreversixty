@@ -64,10 +64,15 @@ data class RaidPushPayload(
 ) {
     data class Answer(val title: String, val body: String)
 
-    /** The screen a tap opens: the payload's app link, else the raid page. */
-    fun deepLink(askingSpec: Boolean = false): DeepLink {
-        if (!askingSpec) link?.let(DeepLink::parse)?.let { return it }
-        return DeepLink.Raid(guild, raid, spec = if (askingSpec) "ask" else null)
+    /**
+     * The screen a tap opens: the payload's app link when it names an app screen, else this raid's page.
+     * The site's raid page link names the guild by its slug, which the app cannot open, so the ids win.
+     * [askingSpec] opens the page asking for the spec, with [pressed] (the Late or Bench that needed
+     * it) carried as `state=`, so the pick saves that answer and not In.
+     */
+    fun deepLink(askingSpec: Boolean = false, pressed: SignupState? = null): DeepLink {
+        if (!askingSpec) link?.let(DeepLink::parse)?.takeIf { it !is DeepLink.GuildRaidPage }?.let { return it }
+        return DeepLink.Raid(guild, raid, spec = SPEC_ASK.takeIf { askingSpec }, state = pressed?.wire?.takeIf { askingSpec })
     }
 
     /** The server's answer for an outcome; without one, the app's own words for saved or failed. */
@@ -76,6 +81,9 @@ data class RaidPushPayload(
 
     companion object {
         const val FAILED = "failed"
+
+        /** links.json's `spec=ask`. */
+        const val SPEC_ASK = "ask"
 
         fun parse(data: Map<String, String>): RaidPushPayload? {
             val guild = data["guild_id"]?.toLongOrNull() ?: return null
@@ -124,7 +132,7 @@ class RaidPushAnswerer(private val service: RaidService, private val res: Resour
         }
         val character = character(payload, view) ?: return RaidPushOutcome.Open(payload.deepLink())
         if (state.carriesSpec && character.raidSpec == null && (character.specOptions?.size ?: 0) >= 2) {
-            return RaidPushOutcome.Open(payload.deepLink(askingSpec = true))
+            return RaidPushOutcome.Open(payload.deepLink(askingSpec = true, pressed = state))
         }
         val note = view.signups.firstOrNull { it.characterKey == character.characterKey }?.note.orEmpty()
         val request = SignupRequest(state = state.wire, note = note, lateMinutes = minutes.takeIf { state == SignupState.Late })
@@ -135,12 +143,15 @@ class RaidPushAnswerer(private val service: RaidService, private val res: Resour
                 val moved = result.data.moved
                 val suffix = payload.answers["moved"]
                 RaidPushOutcome.Answered(
-                    if (moved != null && suffix != null) reply.copy(body = reply.body + suffix.body.replace("{name}", moved)) else reply,
+                    if (moved != null && suffix != null) reply.copy(body = joined(reply.body, suffix.body.replace("{name}", moved))) else reply,
                 )
             }
             is ApiResult.Failure -> RaidPushOutcome.Answered(payload.answer(refusalKey(result.error), res))
         }
     }
+
+    /** The answer's body, then the move's sentence, one space between (the server sends no leading space). */
+    private fun joined(body: String, moved: String) = listOf(body, moved).filter { it.isNotBlank() }.joinToString(" ")
 
     private fun refusalKey(error: ApiError): String = when ((error as? ApiError.Server)?.code) {
         "raid_locked" -> "locked"

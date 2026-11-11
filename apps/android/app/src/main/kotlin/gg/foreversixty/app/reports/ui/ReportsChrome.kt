@@ -46,7 +46,6 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.reports.logic.ParseTier
 import gg.foreversixty.app.reports.logic.Visibility
 
@@ -141,5 +140,5 @@ fun parseColor(tier: ParseTier): Color = when (tier) {
     ParseTier.Blue -> FsColor.rarityRareText
     ParseTier.Purple -> FsColor.rarityEpicText
     ParseTier.Orange -> FsColor.parseOrange
-    ParseTier.Pink -> GameColors.parsePinkText
+    ParseTier.Pink -> FsColor.parsePinkText
 }

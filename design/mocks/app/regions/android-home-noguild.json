@@ -40,19 +40,19 @@
     14,
     96,
     384,
-    302
+    349
    ],
    "inventory": {
     "row": 4,
-    "image": 3
+    "image": 4
    }
   },
   "section-new-for-you": {
    "box": [
     14,
-    418,
+    465,
     384,
-    232
+    283
    ],
    "inventory": {
     "row": 3,
@@ -62,9 +62,9 @@
   "section-raid-with-a-guild": {
    "box": [
     14,
-    670,
+    768,
     384,
-    132
+    112
    ],
    "inventory": {
     "button": 1

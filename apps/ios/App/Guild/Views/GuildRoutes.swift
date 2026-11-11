@@ -4,15 +4,17 @@ import SwiftUI
 /// else its own, kept for the screen's life.
 struct RosterRoute: View {
     let extras: GuildExtrasDependencies
+    let only: Set<String>?
     @State private var store: RosterStore
 
-    init(extras: GuildExtrasDependencies, guild: Int64, shared: RosterStore?) {
+    init(extras: GuildExtrasDependencies, guild: Int64, shared: RosterStore?, only: Set<String>? = nil) {
         self.extras = extras
+        self.only = only
         _store = State(initialValue: shared.flatMap { $0.guild == guild ? $0 : nil } ?? extras.rosterStore(guild: guild))
     }
 
     var body: some View {
-        RosterScreen(store: store, clock: extras.clock, now: extras.now)
+        RosterScreen(store: store, clock: extras.clock, now: extras.now, only: only)
     }
 }
 

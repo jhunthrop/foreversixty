@@ -2199,8 +2199,8 @@ components:
         rank: { type: string }
         verified: { type: boolean }
         consent: { type: string }
-        logged_at: { type: string, format: date-time }
-        logged_recently: { type: boolean }
+        logged_at: { type: string, format: date-time, description: "The addon's last sync: when the companion last uploaded this character's export (addon_exports.updated_at), not a game login. A 'Not synced this week' line reads this against 7 days." }
+        logged_recently: { type: boolean, description: "logged_at within the last 24 hours. Not a week; read logged_at for any other window." }
         attendance: { $ref: '#/components/schemas/GuildAttendance' }
         account_key: { type: string }
         supporter: { type: boolean }
@@ -3478,7 +3478,8 @@ components:
         or Late; roles are the In counts by role; targets are the raid's role targets, null when
         the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed
         In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez
-        (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count),
+        (druid), arcane_intellect (mage), blessing_of_kings, blessing_of_might and
+        blessing_of_wisdom (paladin, labels Kings, Might and Wisdom; count is the paladin count),
         soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and
         mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data
         pipeline exports each icon.
@@ -3502,7 +3503,7 @@ components:
             title: RaidBuff
             required: [key, name, label, icon, present, count]
             properties:
-              key: { type: string, enum: [fortitude, mark_of_the_wild, arcane_intellect, blessings, shadow_protection, soulstone, battle_rez, windfury_totem, strength_of_earth, mana_spring] }
+              key: { type: string, enum: [fortitude, mark_of_the_wild, arcane_intellect, blessing_of_kings, blessing_of_might, blessing_of_wisdom, shadow_protection, soulstone, battle_rez, windfury_totem, strength_of_earth, mana_spring] }
               label: { type: string, description: "A short label (MotW, Fort) the apps draw inside the tile while the icon is missing or fails to load." }
               name: { type: string, description: "The spell's name in the client, e.g. Power Word: Fortitude." }
               icon: { type: string, description: "The icon stem, /data/{build}/icons/{stem}.webp." }
@@ -4339,6 +4340,15 @@ components:
             Any other row, and rows written before icons, its group's: raids inv_misc_book_09,
             gear inv_misc_bag_10, logs inv_misc_book_11, ladder inv_misc_pocketwatch_01, tiers
             inv_misc_book_09, officer inv_scroll_08, account inv_misc_gear_01.
+        segments:
+          type: array
+          items: { $ref: '#/components/schemas/FeedSegment' }
+          description: >-
+            The body styled as the feed's rows are (names in class colour, items with quality and
+            id, strong figures); its texts joined are the body. Absent on a row that has only the
+            plain body: loot.awarded and guildsim.passed carry it.
+        crest: { type: string, description: "The class slug of the other player the row is about (guildsim.passed's passer); absent otherwise." }
+        figure: { type: number, description: "The row's number when it has one: sim.finished's DPS, guildsim.passed's figure; the body then leaves it out (sim.finished keeps its headline, maybe empty; guildsim.passed the lead). Absent otherwise." }
     ActivityPage:
       type: object
       required: [rows, unread, next_before]
@@ -5123,7 +5133,7 @@ components:
     # Push payloads (lane A2, api/internal/push): what APNs and FCM hand the app -------------
     ApnsPayload:
       type: object
-      x-fixtures: [push.raid-posted.apns, push.raid-starting.apns]
+      x-fixtures: [push.raid-posted.apns, push.raid-starting.apns, push.raid-short.apns, push.guild-applicant.apns]
       required: [aps, kind, link, data]
       properties:
         aps:
@@ -5138,7 +5148,7 @@ components:
                 body: { type: string }
             sound: { type: string, enum: [default] }
             thread-id: { type: string, description: "raid-<raid id>" }
-            category: { type: string, enum: [RAID_SIGNUP] }
+            category: { type: string, enum: [RAID_SIGNUP, GUILD_APPLICANT, RAID_SHORT] }
             interruption-level: { type: string, enum: [time-sensitive] }
         kind: { type: string }
         group:
@@ -5156,11 +5166,12 @@ components:
             else the only verified one), ask_spec ("true" when that character has no raid spec
             and its class has two or more) and answers, a JSON string of { in, late, out, moved,
             locked, cancelled, failed } each { title, body } composed in the player's locale,
-            which the app posts in place of the notification after an action (moved.body holds
-            {name}, appended to the in or late body). Lane F4 contract, A2 pending.
+            which the app posts in place of the notification after an action. Times read as the
+            body's ("Thu 5 Nov, 8:00 pm CST"); moved.body holds {name} and is joined to the in or
+            late body with one space. Lane F4 contract, A2 pending.
     FcmMessage:
       type: object
-      x-fixtures: [push.raid-posted.fcm]
+      x-fixtures: [push.raid-posted.fcm, push.raid-starting.fcm, push.raid-short.fcm, push.guild-applicant.fcm]
       required: [message]
       properties:
         message:
@@ -5200,18 +5211,25 @@ components:
                 collapse_key: { type: string }
     PushAction:
       type: object
-      description: 'One notification button. The app replaces {character} in path with the region/ruleset/name it answers for.'
-      required: [id, title, method, path, body]
+      description: >-
+        One notification button. The app replaces {character} in path with the region/ruleset/name
+        it answers for. The sign-up buttons (RAID_SIGNUP) PUT a body of state;
+        guild.applicant's Accept and Decline (GUILD_APPLICANT) POST none; raid.short's
+        raid_mention_short (RAID_SHORT) POSTs the raid ping (pingGuildRaid) with the body's role,
+        the role furthest below the comp target, and is left out while the raid's ping is inside
+        its cooldown (RaidPingState.next_allowed_at). Its answer is a RaidPingResult.
+      required: [id, title, method, path]
       properties:
-        id: { type: string, enum: [signup_in, signup_late, signup_bench, signup_out] }
+        id: { type: string, enum: [signup_in, signup_late, signup_bench, signup_out, application_accept, application_decline, raid_mention_short] }
         title: { type: string }
-        method: { type: string, enum: [PUT] }
+        method: { type: string, enum: [PUT, POST] }
         path: { type: string }
         body:
           type: object
-          required: [state]
-          description: The PUT's body; the app adds late_minutes when a Late chip was picked.
-          properties: { state: { type: string, enum: [in, late, bench, out] } }
+          description: A sign-up PUT's state (the app adds late_minutes when a Late chip was picked), or the ping's role.
+          properties:
+            state: { type: string, enum: [in, late, bench, out] }
+            role: { type: string, enum: [tank, healer, dps] }
     # Live surfaces (Wave 3 lane F14, api/internal/livesurface) ----------------------------
     Widget:
       type: object
@@ -5780,6 +5798,8 @@ components:
         state: { type: string, enum: [ok, miss, warn] }
         title: { type: string }
         line: { type: string }
+        item_id: { type: integer, description: "The item the line is about: the flask or food in the bags, the attunement item, the unenchanted slot's item. Absent when it names none." }
+        icon: { type: string, description: "That item's icon, a name under /data/{build}/icons; absent when the data has none (consumables)." }
         where:
           x-name: whereToGet
           oneOf:
@@ -7268,7 +7288,7 @@ paths:
         - { name: faction, in: query, schema: { type: string, enum: [alliance, horde] } }
         - { name: since, in: query, schema: { type: string, example: "today" } }
         - { name: distinct, in: query, schema: { type: string, enum: [character] }, description: "character ranks each character's best kill only, so total counts characters and the response carries deduped: true" }
-        - { name: character, in: query, schema: { type: string, example: "us/normal/obnoxious yell" }, description: "A player key (region/ruleset/name). Needs distinct=character. Adds character_rank to the response" }
+        - { name: character, in: query, schema: { type: string, example: "us/normal/gorvash" }, description: "A player key (region/ruleset/name). Needs distinct=character. Adds character_rank to the response" }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
       responses:
         '426': { $ref: '#/components/responses/UpdateRequired' }
@@ -8343,7 +8363,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The answer"
-          x-fixtures: [character.home, character.home.empty, character.home.no-gear, character.home.yours]
+          x-fixtures: [character.home, character.home.empty, character.home.no-gear, character.home.yours, character.home.gorvash, character.home.yellfury]
           content:
             application/json:
               schema:
@@ -8835,6 +8855,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "What was posted"
+          x-fixtures: [guild.raid.ping]
           content:
             application/json:
               schema:
@@ -9516,7 +9537,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Every catalogue event in catalogue order"
-          x-fixtures: [app.notifications]
+          x-fixtures: [app.notifications, app.notifications.all-on]
           content:
             application/json:
               schema:
@@ -10617,6 +10638,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The decision"
+          x-fixtures: [guild.application.decline]
           content:
             application/json:
               schema:

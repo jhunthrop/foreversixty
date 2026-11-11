@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
 import gg.foreversixty.app.bis.BisModel
@@ -25,6 +26,7 @@ import gg.foreversixty.app.bis.BisPickerContent
 import gg.foreversixty.app.bis.BisRoute
 import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.bis.band
+import gg.foreversixty.app.designsystem.BrandArt
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.gear.WhereToGo
 import gg.foreversixty.app.home.HomeCache
@@ -77,17 +79,29 @@ fun GearRoute(model: BisModel, deps: GearDeps, owner: GearOwner, onSearch: (() -
             val band = deps.catalog.bis(build, selection.spec)?.band(selection.range, selection.faction)
             val loot = deps.catalog.loot(build)
             val picks = if (band != null && loot != null) WhereToGo.picks(upgrades, band.slots, WhereToGo.sources(loot)) else emptyList()
-            GearComposer(res).content(it, selection.faction, upgrades, picks)
+            GearComposer(res).content(it, selection.faction, upgrades, picks, home, setDps = band?.setDps)
         }
     }
     var open by remember { mutableStateOf<GearSlotRow?>(null) }
-    val portrait = owner.avatarUrl?.takeIf { it.isNotBlank() }?.let { rememberAsyncImagePainter(it) }
-    content?.let { gear ->
-        GearFlowScreen(
+    // A portrait that fails to load draws the seal, as no portrait does (never an empty medallion).
+    val seal = painterResource(BrandArt.Seal.res)
+    val portrait = owner.avatarUrl?.takeIf { it.isNotBlank() }?.let { rememberAsyncImagePainter(it, error = seal, fallback = seal) }
+    // No list for the spec and band, or it did not load: the list line with Change and one row, never a blank page.
+    val notice = GearComposer(res).notice(state.phase, model.specLabel(selection), state.context.rangeLabel(res, selection.range), selection.faction)
+    val scope = rememberCoroutineScope()
+    val onChange = { model.setPickerOpen(true) }
+    val gear = content
+    when {
+        notice != null -> GearNoticeScreen(
+            notice,
+            GearActions(onChange = onChange, onRetry = { scope.launch { model.refresh() } }),
+            topBar = { RootSearchBar(onSearch, selector) },
+        )
+        gear != null -> GearFlowScreen(
             gear,
             build,
             GearActions(
-                onChange = { model.setPickerOpen(true) },
+                onChange = onChange,
                 // A place opens the sheet of its best item, which says where else it drops.
                 onWhere = { place -> open = gear.slots.firstOrNull { it.look?.id == place.lead.id } },
                 onSlot = { open = it },
@@ -95,9 +109,10 @@ fun GearRoute(model: BisModel, deps: GearDeps, owner: GearOwner, onSearch: (() -
             portrait = portrait,
             topBar = { RootSearchBar(onSearch, selector) },
         )
-    } ?: Column(Modifier.fillMaxSize()) {
-        RootSearchBar(onSearch, selector)
-        GearLoading()
+        else -> Column(Modifier.fillMaxSize()) {
+            RootSearchBar(onSearch, selector)
+            GearLoading()
+        }
     }
     Picker(model)
     open?.takeIf { it.look != null && it.row.pick != null }?.let { row ->
@@ -117,10 +132,12 @@ private fun sheetContent(row: GearSlotRow, unitWord: String, deps: GearDeps, bui
             specName = null, band = null, bandLabel = null, preset = null, faction = selection.faction,
         )
         val tooltip = deps.catalog.sources(request)?.let { ItemTooltipModel.build(request, it, res) }
-        val sources = deps.catalog.loot(build)?.let { WhereToGo.sources(it)[look.id] }.orEmpty()
-        value = composer.content(row, unitWord, tooltip, sources, null)
+        val places = deps.catalog.loot(build)?.let(WhereToGo::sources).orEmpty()
+        val sources = places[look.id].orEmpty()
+        val runnerUp = row.row.pick?.runnersUp?.firstOrNull()?.let { places[it.item.id]?.firstOrNull() }
+        value = composer.content(row, unitWord, tooltip, sources, null, runnerUp)
         val needs = guildId?.let { deps.needs(it, look.id) }
-        if (needs != null) value = composer.content(row, unitWord, tooltip, sources, needs)
+        if (needs != null) value = composer.content(row, unitWord, tooltip, sources, needs, runnerUp)
     }
     return loaded
 }

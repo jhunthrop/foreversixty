@@ -31,7 +31,7 @@ struct GearListView: View {
                     slots: content.slots.map(paperdollSlot),
                     onSelect: { id in content.slots.first { $0.slot == id }?.pick.map { actions.openItem($0.item) } }
                 ) {
-                    GearListLine(facts: content.facts, change: actions.openPicker)
+                    GearListLine(facts: content.facts, summary: content.summary, change: actions.openPicker)
                 } icon: { item in
                     let look = looks[item.id]
                     ItemIconView(icon: look?.icon, quality: look?.quality, build: build, size: Self.socketIcon).parityItem(.image)
@@ -40,7 +40,7 @@ struct GearListView: View {
                     PanelSection(Copy.gearWhereTonight) {
                         ForEach(Array(content.tonight.enumerated()), id: \.element.id) { index, place in
                             Button { actions.openItem(place.item) } label: {
-                                PanelRow(place.title, sub: Text(place.sub), last: index == content.tonight.count - 1) {
+                                PanelRow(place.title, sub: Self.placeSub(place), last: index == content.tonight.count - 1) {
                                     ItemIconView(icon: place.icon, quality: place.quality, build: build, size: FSSize.icon40).parityItem(.image)
                                 }
                             }
@@ -50,7 +50,14 @@ struct GearListView: View {
                 }
             }
         }
+        .tabRootScroll()
         .screenGround()
+    }
+
+    /// What the place gives, then `2 upgrades · +20.4 DPS` on its own line.
+    static func placeSub(_ place: GearPlaceRow) -> Text {
+        guard let figure = place.figure else { return Text(place.sub) }
+        return Text("\(place.sub)\n\(figure)")
     }
 
     private var looks: [Int: HomeItemLook] {
@@ -63,6 +70,8 @@ struct GearListView: View {
         let detail: String? = switch pick.trail {
         case .worn: Copy.gearWorn
         case let .gain(gain): "\(gain.figure) \(gain.unit)"
+        case .noGain: Copy.gearCellNoGain
+        case .notModelled: Copy.gearNotModelled
         case nil: nil
         }
         let isGain = if case .gain = pick.trail { true } else { false }
@@ -76,18 +85,38 @@ struct GearListView: View {
 /// The line that names the list, `60 raid · Alliance · 4 of 17 slots on the list · Change` (14/20).
 struct GearListLine: View {
     let facts: String
+    /// `+157.6 DPS from 13 upgrades · synced 2 h ago`, muted under the line; a stale age in the warning tone.
+    var summary: GearSummary?
     let change: () -> Void
 
-    static let size: CGFloat = 14
-
     var body: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space1) {
+            line
+            if let summary {
+                summaryText(summary)
+                    .type(RowType.sub)
+                    .foregroundStyle(FSColor.muted)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+
+    private func summaryText(_ summary: GearSummary) -> Text {
+        let synced = summary.synced.map { Text($0).foregroundColor(summary.stale ? FSColor.warn : FSColor.muted) }
+        guard let figures = summary.figures else { return synced ?? Text("") }
+        let lead = Text(figures).foregroundColor(FSColor.muted)
+        guard let synced else { return lead }
+        return Text("\(lead)\(Text(GearPresenter.separator).foregroundColor(FSColor.muted))\(synced)")
+    }
+
+    private var line: some View {
         Button(action: change) {
-            Text.line(facts, link: Copy.gearChange, size: Self.size)
-                .type(TypeRole(face: FSFont.body, size: Self.size, lineHeight: 20, scalesWith: .subheadline))
+            Text.line(facts, link: Copy.gearChange, size: FSType.factLine.size)
+                .type(FSType.factLine)
                 .foregroundStyle(FSColor.text)
                 .multilineTextAlignment(.leading)
-                .parityRegion(.controls)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .parityRegion(.controls)
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)

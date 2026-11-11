@@ -171,6 +171,8 @@ final class SignupController {
             let answer = try await deps.service.signup(guild: guild, raid: raid.id, characterKey: key, request)
             offline = false
             apply(answer.raid)
+            // The answer's viewer list may not carry this character; the write is over either way.
+            blocks[key, default: SignupBlock()].busy = false
             let kept = spec.map { " " + Copy.specKept(spec: $0.name, name: name) } ?? ""
             setStatus(.saved(Copy.commonSaved + kept), for: key)
             if let moved = answer.moved, let other = raid.viewer.characters.first(where: { $0.name == moved && $0.characterKey != key }) {

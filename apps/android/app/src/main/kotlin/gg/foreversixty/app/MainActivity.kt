@@ -148,10 +148,13 @@ class MainActivity : ComponentActivity() {
     private fun handleAppLink(intent: Intent?) {
         // Lane F8 review captures, debug builds only: the storefront country to show (`GB`, `none`).
         if (BuildConfig.DEBUG) intent?.getStringExtra(gg.foreversixty.app.premium.DebugStorefront.EXTRA)?.let { gg.foreversixty.app.premium.DebugStorefront.code = it }
-        // Lane F4 review captures, debug builds only: post the fixture raid notification.
-        if (BuildConfig.DEBUG && intent?.getBooleanExtra(gg.foreversixty.app.raids.push.RaidDebugPush.EXTRA, false) == true) {
-            gg.foreversixty.app.raids.push.RaidDebugPush.post(this)
+        // Review captures, debug builds only (round 4 a2): fixture states (`guild.raid-badge=officer`).
+        if (BuildConfig.DEBUG) intent?.getStringExtra(DebugFixtures.EXTRA)?.let { DebugFixtures.variants = DebugFixtures.parse(it) }
+        if (BuildConfig.DEBUG && intent?.hasExtra(DebugFixtures.LATENCY_EXTRA) == true) {
+            DebugFixtures.latencyMillis = intent.getLongExtra(DebugFixtures.LATENCY_EXTRA, 0L).coerceAtLeast(0L)
         }
+        // Review captures, debug builds only (round 4 a2): post a push fixture by name as FCM draws it.
+        if (BuildConfig.DEBUG) intent?.getStringExtra(gg.foreversixty.app.push.DebugPush.EXTRA)?.let { gg.foreversixty.app.push.DebugPush.post(this, it) }
         // Lane F15 review captures, debug builds only: the real share chooser with the app's share.
         if (BuildConfig.DEBUG) intent?.getStringExtra(gg.foreversixty.app.system.platform.DebugShare.EXTRA)?.let { gg.foreversixty.app.system.platform.DebugShare.open(this, it) }
         // Lane F15: a launcher shortcut or the Assistant's Open app feature.

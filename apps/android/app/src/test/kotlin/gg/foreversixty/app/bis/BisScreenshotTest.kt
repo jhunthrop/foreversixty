@@ -53,7 +53,7 @@ class BisScreenshotTest {
     private val context = BisContext(
         BisTestData.raid,
         BisTestData.raid,
-        "Obnoxious Yell",
+        "Gorvash",
         BisTestData.classes(),
         RaidsOpening.from(BisTestData.fixture("cdn.dates", ListSerializer(KeyDate.serializer()))),
     )
@@ -77,7 +77,7 @@ class BisScreenshotTest {
     @Test fun `picker`() = both("bis_picker", screen = { PickerSheet() }, inShell = false)
 
     @Test fun `picker scrolled to Back at the largest size`() {
-        capture("bis_picker_bottom_large", LARGE, inShell = false, scrollTo = "Back to Obnoxious Yell's list") { PickerSheet() }
+        capture("bis_picker_bottom_large", LARGE, inShell = false, scrollTo = "Back to Gorvash's list") { PickerSheet() }
     }
 
     @Test fun `tooltip`() = both("bis_tooltip", inShell = false, screen = {

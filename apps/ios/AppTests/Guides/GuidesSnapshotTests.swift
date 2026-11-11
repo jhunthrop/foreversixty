@@ -206,7 +206,7 @@ struct GuidesSnapshotTests {
     }
 
     @Test func tiers_first() throws {
-        snap(root(try tiersRoot(TierChoice(role: .dps, faction: .horde), character: GuidesTestData.obnoxiousYell)), "f9-tiers-first-ios")
+        snap(root(try tiersRoot(TierChoice(role: .dps, faction: .horde), character: GuidesTestData.gorvash)), "f9-tiers-first-ios")
     }
 
     @Test func tiers_tank() throws {

@@ -122,6 +122,53 @@
       "items": [
         272695
       ]
+    },
+    {
+      "id": "dungeon:uldaman",
+      "kind": "dungeon",
+      "name": "Uldaman",
+      "zone_id": 1337,
+      "bosses": [
+        {
+          "id": "dungeon:uldaman:141979",
+          "name": "Ancient Treasure",
+          "npc_id": 141979,
+          "items": [
+            8142
+          ],
+          "item_chances": {
+            "8142": 1.3
+          },
+          "reitemised_from": {
+            "217249": 7086,
+            "217251": 7084,
+            "217260": 8387,
+            "217262": 8386,
+            "217264": 4300,
+            "217271": 8385
+          },
+          "item_source_origin": {
+            "8142": "wowhead"
+          }
+        }
+      ],
+      "trash": [],
+      "level_min": 41,
+      "level_max": 51
+    },
+    {
+      "id": "crafted:blacksmithing",
+      "kind": "crafted",
+      "name": "Blacksmithing",
+      "profession": "blacksmithing",
+      "items": [
+        7937,
+        12774
+      ],
+      "required_skill": {
+        "7937": 245,
+        "12774": 275
+      }
     }
   ],
   "quests": {

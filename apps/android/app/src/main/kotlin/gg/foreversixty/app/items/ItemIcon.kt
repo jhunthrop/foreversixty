@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -164,7 +165,7 @@ fun SpecIcon(icon: String?, build: String, size: Dp, modifier: Modifier = Modifi
  * [dimmed] greys and fades only the art, so a fallback label stays readable (WCAG AA).
  */
 @Composable
-fun GameIconImage(icon: String?, build: String?, size: Dp, fallback: String? = null, dimmed: Boolean = false) {
+fun GameIconImage(icon: String?, build: String?, size: Dp, fallback: String? = null, dimmed: Boolean = false, onUnavailable: () -> Unit = {}) {
     var failed by remember(icon, build) { mutableStateOf(false) }
     val art = if (dimmed) Modifier.size(size).alpha(DIMMED_ALPHA) else Modifier.size(size)
     val filter = if (dimmed) ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) }) else null
@@ -172,6 +173,8 @@ fun GameIconImage(icon: String?, build: String?, size: Dp, fallback: String? = n
     val painter = if (local != null && icon != null && build != null) local.painter(icon, build) else null
     val url = if (icon != null && build != null) ItemIconLoader.url(icon, build) else null
     val loads = url != null && !failed && (local == null || painter != null)
+    // A name, a build or a local painter that cannot give art says so at once (the caller may close the gap).
+    if (url == null || (local != null && painter == null)) SideEffect(onUnavailable)
     Box(Modifier.size(size), contentAlignment = Alignment.Center) {
         if (fallback != null && !loads) GameIconLabel(fallback, dimmed)
         if (loads && painter != null) {
@@ -185,7 +188,10 @@ fun GameIconImage(icon: String?, build: String?, size: Dp, fallback: String? = n
                 contentScale = ContentScale.Crop,
                 colorFilter = filter,
                 modifier = art,
-                onError = { failed = true },
+                onError = {
+                    failed = true
+                    onUnavailable()
+                },
             )
         }
     }

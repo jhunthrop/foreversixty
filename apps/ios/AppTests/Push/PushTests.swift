@@ -1,5 +1,6 @@
 @testable import ForeverSixty
 import Foundation
+import Models
 import Routing
 import Testing
 
@@ -79,6 +80,157 @@ struct PushLandingTests {
         let signup = RaidNotificationCenter.categories.first { $0.identifier == RaidPushCategory.signup }
         #expect(signup?.actions.map(\.identifier) == ["signup_in", "signup_late", "signup_bench", "signup_out"])
     }
+
+    /// The contract fixture's APNs payload as userInfo.
+    private func apns(_ name: String) throws -> [AnyHashable: Any] {
+        let data = try Data(contentsOf: RaidFixture.directory.appending(path: "\(name).json"))
+        return try #require(try JSONSerialization.jsonObject(with: data) as? [AnyHashable: Any])
+    }
+
+    @Test("the officer pushes' categories carry the server's actions: Mention on RAID_SHORT, Accept before Decline")
+    @MainActor
+    func officerCategories() throws {
+        let categories = RaidNotificationCenter.categories
+        for name in ["push.raid-short.apns", "push.guild-applicant.apns"] {
+            let info = try apns(name)
+            let aps = try #require(info["aps"] as? [String: Any])
+            let category = try #require(categories.first { $0.identifier == aps["category"] as? String }, "\(name)'s category is registered")
+            let served = (info[RaidMentionRequest.actionsKey] as? [[String: Any]] ?? []).compactMap { $0["id"] as? String }
+            #expect(category.actions.map(\.identifier) == served, "\(name)")
+        }
+        let short = try #require(categories.first { $0.identifier == RaidPushCategory.short })
+        #expect(short.actions.allSatisfy { !$0.options.contains(.foreground) }, "Mention answers in place")
+    }
+
+    @Test("Mention reads the raid and the short role from the push; Accept and Decline the application")
+    func officerAnswers() throws {
+        let short = try apns("push.raid-short.apns")
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionMention, userInfo: short)
+            == .mention(try #require(RaidMentionRequest(userInfo: short))))
+        let request = try #require(RaidMentionRequest(userInfo: short))
+        #expect(request.guild == 2)
+        #expect(request.raid == 7)
+        #expect(request.role == "healer")
+        var cooled = short
+        cooled[RaidMentionRequest.actionsKey] = nil
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionMention, userInfo: cooled) == .unreadable, "no action inside the cooldown")
+        let applicant = try apns("push.guild-applicant.apns")
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionAccept, userInfo: applicant) == .accept(guild: 2, application: 31))
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionDecline, userInfo: applicant) == .decline(guild: 2, application: 31))
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionIn, userInfo: applicant) == nil)
+    }
+
+    /// The fixture ping's answer: 3 mentioned, nobody left out.
+    private func pingResult() throws -> RaidPingResult {
+        try RaidFixture.load(RaidPingResult.self, "guild.raid.ping")
+    }
+
+    /// A centre whose officer actions log their calls and whose answers are recorded, not posted.
+    @MainActor
+    private func officerCenter(
+        _ calls: OfficerCalls, accepts: Bool = true, declines: Bool = true, ping: RaidPingResult?
+    ) -> (RaidNotificationCenter, PostedAnswers) {
+        let center = RaidNotificationCenter()
+        let posted = PostedAnswers()
+        center.use(answerer: nil, officer: OfficerPushActions(
+            accept: { guild, application in await calls.record("accept \(guild)/\(application)"); return accepts },
+            decline: { guild, application in await calls.record("decline \(guild)/\(application)"); return declines },
+            mention: { guild, raid, role in await calls.record("mention \(guild)/\(raid) \(role)"); return ping }
+        ), post: { answer, reply in posted.add(answer, reply) })
+        return (center, posted)
+    }
+
+    private func reply(_ action: String, _ name: String, title: String) throws -> PushReply {
+        PushReply(action: action, identifier: name, thread: "t-\(name)", title: title, userInfo: try apns(name))
+    }
+
+    @Test("round 5, row 3: Mention, Accept and Decline run in place and their result replaces the push")
+    @MainActor
+    func officerResults() async throws {
+        let calls = OfficerCalls()
+        let (center, posted) = officerCenter(calls, ping: try pingResult())
+        var opened: [IntentDestination] = []
+        center.onOpen = { opened.append($0) }
+        let applicant = "New applicant: Mirelle, Holy Priest 60"
+        await center.respond(try reply(RaidPushCategory.actionMention, "push.raid-short.apns", title: "Onyxia's Lair"))
+        await center.respond(try reply(RaidPushCategory.actionAccept, "push.guild-applicant.apns", title: applicant))
+        await center.respond(try reply(RaidPushCategory.actionDecline, "push.guild-applicant.apns", title: applicant))
+        #expect(await calls.log == ["mention 2/7 healer", "accept 2/31", "decline 2/31"])
+        #expect(opened.isEmpty, "answered in place, nothing opens")
+        #expect(posted.answers == [
+            .init(title: "Mentioned 3 healers in Discord.", body: "Onyxia's Lair"),
+            .init(title: Copy.pushApplicantAccepted, body: applicant),
+            .init(title: Copy.pushApplicantDeclined, body: applicant),
+        ])
+        #expect(posted.replaced == ["push.raid-short.apns", "push.guild-applicant.apns", "push.guild-applicant.apns"])
+        #expect(posted.threads.first == "t-push.raid-short.apns", "the result keeps the push's thread")
+        let kept = try #require(posted.tapThrough.first)
+        #expect(kept["kind"] == .text("raid.short"), "a tap on the result still lands on Not answered")
+        #expect(kept["actions"] == nil, "the result carries no actions")
+    }
+
+    @Test("round 5, row 3: a failed or unreadable answer replaces the push with the failure line")
+    @MainActor
+    func officerFailures() async throws {
+        let calls = OfficerCalls()
+        let (center, posted) = officerCenter(calls, accepts: false, declines: false, ping: nil)
+        await center.respond(try reply(RaidPushCategory.actionMention, "push.raid-short.apns", title: "Onyxia's Lair"))
+
+        let named = try apns("push.guild-applicant.apns")
+        let title = "New applicant: Mirelle, Holy Priest 60"
+        for action in [RaidPushCategory.actionAccept, RaidPushCategory.actionDecline] {
+            await center.respond(PushReply(action: action, identifier: "a", thread: "", title: title, userInfo: named))
+        }
+        var cooled = try apns("push.raid-short.apns")
+        cooled[RaidMentionRequest.actionsKey] = nil
+        await center.respond(PushReply(action: RaidPushCategory.actionMention, identifier: "c", thread: "", title: "Onyxia's Lair", userInfo: cooled))
+        var unnamed = try apns("push.guild-applicant.apns")
+        unnamed["data"] = ["guild_id": "2", "application_id": "31"]
+        await center.respond(PushReply(action: RaidPushCategory.actionAccept, identifier: "u", thread: "", title: title, userInfo: unnamed))
+        #expect(posted.answers == [
+            .init(title: "Could not mention the healers", body: "Onyxia's Lair. Open the raid to try again."),
+            .init(title: "Could not accept Mirelle", body: "Mirelle, Holy Priest 60. Open Forever Sixty to try again."),
+            .init(title: "Could not decline Mirelle", body: "Mirelle, Holy Priest 60. Open Forever Sixty to try again."),
+            // No role to name: the plain title, the same retry line.
+            .init(title: Copy.commonFailed, body: "Onyxia's Lair. Open the raid to try again."),
+            // A push without the applicant's data reads its own title.
+            .init(title: Copy.commonFailed, body: "\(title). Open Forever Sixty to try again."),
+        ])
+        #expect(await calls.log == ["mention 2/7 healer", "accept 2/31", "decline 2/31", "accept 2/31"], "an unreadable Mention calls nothing")
+        #expect(posted.tapThrough.first?["kind"] == .text("raid.short"), "a tap on the failure opens what the push did")
+    }
+
+    @Test("round 4: UIKit's completion for a response runs on the main thread")
+    func completionOnMain() async {
+        let onMain = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            let done = MainThreadCompletion { continuation.resume(returning: Thread.isMainThread) }
+            Task.detached { await done.run() }
+        }
+        #expect(onMain)
+    }
+}
+
+/// The answers a centre posted in place of their pushes, in order.
+@MainActor
+private final class PostedAnswers {
+    private(set) var answers: [RaidPushOutcome.Confirmation] = []
+    private(set) var replaced: [String] = []
+    private(set) var threads: [String] = []
+    private(set) var tapThrough: [[String: PushTapValue]] = []
+
+    func add(_ answer: RaidPushOutcome.Confirmation, _ reply: PushReply) {
+        answers.append(answer)
+        replaced.append(reply.identifier)
+        threads.append(reply.thread)
+        tapThrough.append(reply.tapThrough)
+    }
+}
+
+/// What the officer actions were asked to do, in order.
+private actor OfficerCalls {
+    private(set) var log: [String] = []
+
+    func record(_ call: String) { log.append(call) }
 }
 
 @Suite("Push token registration")

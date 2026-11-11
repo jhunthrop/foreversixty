@@ -138,31 +138,50 @@ public struct BandBar: UIViewControllerRepresentable {
 public extension View {
     /// A round-5 tab root's clear bar over its band (`BandBar`).
     func bandBar() -> some View { background { BandBar().frame(width: 0, height: 0).accessibilityHidden(true) } }
+
+    /// A tab root's scroll over the floating tab bar (round 3, i3): the hard bottom edge keeps text
+    /// under the bar readable, and the end of the page clears it by one step of space.
+    func tabRootScroll() -> some View {
+        scrollEdgeEffectStyle(.hard, for: .bottom)
+            .contentMargins(.bottom, FSSpace.space6, for: .scrollContent)
+    }
 }
 
 /// A round-5 section over the ground: the cream display title at 21/26 with its gold action (or a muted
-/// meta beside it), 8 under it, then the content in a panel of that frame. Reports `section-<slug>`.
+/// meta beside it), a stamp under that line when given, 8 under it, then the content in a panel of
+/// that frame. Reports `section-<slug>`.
 public struct PanelSection<Content: View>: View {
     private let title: String
     private let meta: String?
+    private let stamp: String?
+    private let stampStale: Bool
     private let action: (title: String, run: () -> Void)?
     private let frame: PanelFrame
     private let content: Content
     @Environment(\.dynamicTypeSize) private var typeSize
 
+    /// `stamp`: how old the section's data is (`Synced 2 h ago`), under the meta line and outside the
+    /// panel (round 3, row 8); `stampStale` sets it in the warning tone (round 4, row 2).
     public init(
         _ title: String,
         meta: String? = nil,
+        stamp: String? = nil,
+        stampStale: Bool = false,
         action: (title: String, run: () -> Void)? = nil,
         frame: PanelFrame = .none,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.meta = meta
+        self.stamp = stamp
+        self.stampStale = stampStale
         self.action = action
         self.frame = frame
         self.content = content()
     }
+
+    /// How far a meta may shrink to keep the title's line beside the action.
+    static var metaScale: CGFloat { 0.8 }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
@@ -172,9 +191,18 @@ public struct PanelSection<Content: View>: View {
                 : AnyLayout(HStackLayout(alignment: .center, spacing: FSSpace.space3))
             head {
                 PanelTitle(title)
-                if let meta { Text(meta).type(FSType.small).foregroundStyle(FSColor.muted) }
+                if let meta {
+                    Text(meta).type(FSType.small).foregroundStyle(FSColor.muted)
+                        .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+                        .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : Self.metaScale)
+                }
                 if !typeSize.isAccessibilitySize { Spacer(minLength: 0) }
                 if let action { PanelAction(action.title, action: action.run) }
+            }
+            if let stamp {
+                Text(stamp).type(FSType.small).foregroundStyle(stampStale ? FSColor.warn : FSColor.muted)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, -FSSpace.space1)
             }
             PanelBlock(frame: frame) { content }
         }
@@ -274,6 +302,9 @@ public struct PanelRow<Lead: View, Trail: View>: View {
     private let last: Bool
     /// iOS's disclosure chevron at the right of a row that pushes a screen.
     private let chevron: Bool
+    @Environment(\.dynamicTypeSize) private var typeSize
+    /// A figure at the row's right in tabular digits (an Activity row's DPS).
+    private let value: String?
     private let lead: Lead
     private let trail: Trail
 
@@ -286,9 +317,11 @@ public struct PanelRow<Lead: View, Trail: View>: View {
         unread: String? = nil,
         last: Bool = false,
         chevron: Bool = false,
+        value: String? = nil,
         @ViewBuilder lead: () -> Lead,
         @ViewBuilder trail: () -> Trail
     ) {
+        self.value = value
         self.title = title
         self.titleColor = titleColor
         self.sub = sub
@@ -301,6 +334,11 @@ public struct PanelRow<Lead: View, Trail: View>: View {
         self.trail = trail()
     }
 
+    private func valueText(_ value: String) -> some View {
+        Text(value).type(TypeRole(face: FSFont.bodySemibold, size: 15, lineHeight: 20, scalesWith: .subheadline, tabular: true))
+            .foregroundStyle(FSColor.strong)
+    }
+
     public var body: some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
             HStack(spacing: FSSpace.space3) {
@@ -309,9 +347,13 @@ public struct PanelRow<Lead: View, Trail: View>: View {
                     Text(title).type(FSType.item).foregroundStyle(titleColor)
                     if let sub { sub.type(RowType.sub).foregroundStyle(FSColor.muted) }
                     if let meta { Text(meta).type(RowType.sub).foregroundStyle(FSColor.muted) }
+                    // At the accessibility sizes the figure goes under the text, so the title keeps
+                    // its words whole (round 5: `203.6 DPS` broke `Brakka` at ax5).
+                    if typeSize.isAccessibilitySize, let value { valueText(value) }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.trailing, trailCell && !chevron ? FSSpace.space3 : 0)
+                if !typeSize.isAccessibilitySize, let value { valueText(value).fixedSize() }
                 if chevron {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13, weight: .semibold))
@@ -342,10 +384,11 @@ public struct PanelRow<Lead: View, Trail: View>: View {
 public extension PanelRow where Trail == EmptyView {
     init(
         _ title: String, titleColor: Color = FSColor.strong, sub: Text? = nil, meta: String? = nil, slim: Bool = false,
-        unread: String? = nil, last: Bool = false, @ViewBuilder lead: () -> Lead
+        unread: String? = nil, last: Bool = false, value: String? = nil, @ViewBuilder lead: () -> Lead
     ) {
         self.init(
-            title, titleColor: titleColor, sub: sub, meta: meta, slim: slim, unread: unread, last: last, lead: lead, trail: { EmptyView() }
+            title, titleColor: titleColor, sub: sub, meta: meta, slim: slim, unread: unread, last: last, value: value, lead: lead,
+            trail: { EmptyView() }
         )
     }
 }

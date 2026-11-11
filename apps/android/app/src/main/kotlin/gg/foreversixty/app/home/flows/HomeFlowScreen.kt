@@ -21,15 +21,18 @@ import gg.foreversixty.app.flows.FlowButton
 import gg.foreversixty.app.flows.FlowButtonRow
 import gg.foreversixty.app.flows.FlowGap
 import gg.foreversixty.app.flows.FlowItemRow
+import gg.foreversixty.app.activity.ActivityRowView
 import gg.foreversixty.app.activity.activityLead
 import gg.foreversixty.app.flows.FlowLead
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowPanel
+import gg.foreversixty.app.flows.FlowPageState
+import androidx.compose.foundation.rememberScrollState
 import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowRule
 import gg.foreversixty.app.flows.FlowSection
-import gg.foreversixty.app.flows.FlowSegmented
 import gg.foreversixty.app.flows.FlowSkeleton
+import gg.foreversixty.app.flows.FlowTallyLine
 import gg.foreversixty.app.raids.logic.SignupState
 
 /**
@@ -37,9 +40,14 @@ import gg.foreversixty.app.raids.logic.SignupState
  * then the blocks of the moment on the ground.
  */
 @Composable
-fun HomeFlowScreen(view: HomeView, actions: HomeActions, topBar: @Composable () -> Unit = {}) {
+fun HomeFlowScreen(
+    view: HomeView,
+    actions: HomeActions,
+    page: FlowPageState = FlowPageState(rememberScrollState()),
+    topBar: @Composable () -> Unit = {},
+) {
     when (view) {
-        is HomeView.Loading -> HomePage(topBar, { Head(view.head) }) {
+        is HomeView.Loading -> HomePage(topBar, page, { Head(view.head) }) {
             FlowBlock(ParityRegion.section("Loading"), top = 0.dp) {
                 // The raid card, then the rows under it, at their final size: nothing shifts when they fill.
                 SKELETONS.forEachIndexed { index, height ->
@@ -48,7 +56,7 @@ fun HomeFlowScreen(view: HomeView, actions: HomeActions, topBar: @Composable () 
                 }
             }
         }
-        is HomeView.Failed -> HomePage(topBar, { Head(view.head) }) {
+        is HomeView.Failed -> HomePage(topBar, page, { Head(view.head) }) {
             FlowBlock(ParityRegion.section("Error"), top = 0.dp) {
                 FlowPanel {
                     FlowRow(stringResource(R.string.home_error_title), stringResource(R.string.home_error_sub), last = true, trail = {
@@ -57,12 +65,12 @@ fun HomeFlowScreen(view: HomeView, actions: HomeActions, topBar: @Composable () 
                 }
             }
         }
-        HomeView.NoCharacter -> HomePage(topBar, {
+        HomeView.NoCharacter -> HomePage(topBar, page, {
             HomeHeroHead(stringResource(R.string.home_new_title), listOf(stringResource(R.string.home_new_line)), className = null)
         }) {
             BrandButton(stringResource(R.string.home_new_check), BrandButtonKind.Primary, actions.onCheckAgain, height = FsTarget.min)
         }
-        is HomeView.Blocks -> HomePage(topBar, { Head(view.head) }) {
+        is HomeView.Blocks -> HomePage(topBar, page, { Head(view.head) }) {
             view.blocks.forEach { Block(it, view.iconBuild, actions) }
         }
     }
@@ -98,18 +106,21 @@ private fun Block(block: HomeBlock, build: String?, actions: HomeActions) {
 private fun Upgrades(block: HomeBlock.Upgrades, actions: HomeActions) {
     FlowSection(
         stringResource(R.string.home_upgrades_next),
+        meta = block.meta,
         action = stringResource(R.string.home_upgrades_gear),
         onAction = actions.onGear,
         top = 0.dp,
         panel = PanelFrame.Plain,
+        stamp = block.synced,
+        stampWarn = block.syncedStale,
     ) {
         block.rows.forEachIndexed { index, row ->
             if (index > 0) FlowRule()
             FlowItemRow(row.look, block.build, row.source, row.gain, row.unit, inset = 0.dp) { actions.onItem(row) }
         }
-        block.bestRun?.let {
+        block.bestRun?.let { run ->
             FlowRule()
-            FlowRow(it, slim = true, last = true, onClick = actions.onGear)
+            FlowItemRow(run.look, block.build, run.source, run.gain, run.unit, inset = 0.dp) { actions.onGear() }
         }
     }
 }
@@ -139,15 +150,14 @@ fun LateChips(onLate: (Int) -> Unit) {
     FlowButtonRow(chips, null) { onLate(LATE_MINUTES[it]) }
 }
 
-/** Any other day: one line with the raid and its answers, the current one selected (F1). */
+/** Any other day: one line with the raid and its answers (Late with its minutes), as the raid-day card's (F1). */
 @Composable
 private fun RaidLine(raid: RaidCardModel, build: String?, actions: HomeActions) {
     FlowPanel {
         FlowRow(raid.title, raid.sub, FlowLead.Icon(raid.icon, build), last = true, onClick = { actions.onRaid(raid.raidId) })
-        val labels = SignupState.entries.map { stringResource(it.label) }
-        FlowSegmented(labels, raid.answer?.let { stringResource(it.label) }, Modifier.padding(top = FsSpace.space1, bottom = FsSpace.space2)) {
-            actions.onAnswer(raid.raidId, SignupState.entries[it])
-        }
+        // Who is coming in one line, the short role in wipe red (S6, the Raid tab's tally model).
+        FlowTallyLine(raid.tally)
+        RaidAnswers(raid, actions, Modifier.padding(top = FsSpace.space1, bottom = FsSpace.space2), LateChipsStyle.Asked)
     }
 }
 
@@ -170,7 +180,7 @@ private fun NewForYou(block: HomeBlock.Activity, build: String?, actions: HomeAc
     FlowSection(stringResource(R.string.home_newForYou), action = link, onAction = actions.onAllActivity, top = 0.dp, panel = PanelFrame.None) {
         block.rows.forEachIndexed { index, item ->
             val row = item.row
-            FlowRow(row.title, item.line, activityLead(row, build), unread = !row.read, last = index == block.rows.lastIndex, onClick = { actions.onActivityRow(row) })
+            ActivityRowView(row, item.line, build, last = index == block.rows.lastIndex, onClick = { actions.onActivityRow(row) }, meta = item.age)
         }
     }
 }

@@ -20,26 +20,55 @@ enum RaidFlowTestData {
         applicants: HomeLine(title: "1 applicant", sub: "Mirelle, Holy Priest 60, 2 min ago")
     )
 
-    /// The round-5 head (m-ios-raid): In, or Late with 30 minutes chosen (m-ios-signup).
+    /// The round-5 head (m-ios-raid): In, or Late with 30 minutes chosen and `Saved.` (m-ios-signup).
     static func head(late: Bool = false) -> NextRaidContent {
         var raid = H.raid(answered: late ? .late : .signedIn, late: late)
         raid.headLine = "8:00 pm CST · pull in 2 h 48 min"
+        raid.invites = "Invites 7:45 pm · 40-man"
         raid.who = "As Thandrel, Damage"
-        raid.chip = late ? "Late · 30 min" : "In"
         raid.lateMinutes = late ? 30 : nil
+        raid.status = late ? .saved(Copy.commonSaved) : nil
         return raid
     }
 
+    static let notes = "Bring **fire resistance** gear and flasks. Whelps go to the left wall, the tanks call the deep breath in voice; consumables check at 7:50 pm."
+
+    private static func people(_ names: [(String, String, String?)]) -> [RolePerson] {
+        names.map { RolePerson(name: $0.0, className: $0.1, text: $0.2 ?? $0.0) }
+    }
+
     static let coming = [
-        RoleLineContent(role: "Tanks", have: 2, want: 2, names: "Grunvald, Brakka"),
-        RoleLineContent(role: "Healers", have: 5, want: 8, names: "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen · 3 short"),
-        RoleLineContent(role: "Damage", have: 11, want: 30, names: "Thandrel, Kaelra, Thalrin and 8 more"),
+        RoleLineContent(
+            role: "Tanks", have: 2, want: 2, names: "Grunvald, Brakka",
+            people: people([("Grunvald", "warrior", nil), ("Brakka", "druid", nil)])
+        ),
+        RoleLineContent(
+            role: "Healers", have: 5, want: 8, names: "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late · 15 min)",
+            people: people([
+                ("Mirethil", "priest", nil), ("Selka", "druid", nil), ("Hollowmend", "priest", nil), ("Aenwyn", "shaman", nil),
+                ("Brightwen", "paladin", "Brightwen (Late · 15 min)"),
+            ])
+        ),
+        RoleLineContent(
+            role: "Damage", have: 11, want: 30, names: "Thandrel, Kaelra, Thalrin and 8 more",
+            people: people([("Thandrel", "warrior", nil), ("Kaelra", "mage", nil), ("Thalrin", "hunter", nil)]), more: 8,
+            split: "5 melee, 6 ranged"
+        ),
     ]
 
     static func member(officer: Bool = false, late: Bool = false) -> RaidRootContent {
         .guild(RaidGuildContent(
             next: head(late: late), coming: coming, ready: ready(elixir: true),
-            needsYou: officer ? NeedsYouContent(meta: "6 open", items: Self.officer) : nil, pages: pages
+            needsYou: officer ? NeedsYouContent(meta: "6 open", items: Self.officer) : nil, pages: pages,
+            // Row 6: the foot counts the same 5 as Needs you.
+            notes: notes, answers: "Bench 1 · Out 3 · 5 not answered",
+            cover: RaidCoverContent(
+                missing: [CoverGap(name: "Fort", icon: "spell_holy_wordfortitude")],
+                short: [CoverGap(name: "WF", icon: "spell_nature_windfury", have: 1, need: 2)], more: 0
+            ),
+            notSynced: officer
+                ? NotSyncedContent(line: "Not synced this week: Kaelra, Thalrin, Brakka, Mirethil", keys: ["k", "t", "b", "m"])
+                : nil
         ))
     }
 
@@ -53,10 +82,8 @@ enum RaidFlowTestData {
         }
         rows += [
             ReadyRowContent(key: "flask", mark: .miss, title: "Flask of the Titans", line: "None in your bags", fix: "Auction house", link: nil),
-            ReadyRowContent(
-                key: "enchant.feet", mark: .warn, title: "Boots not enchanted", line: "Enchant Boots: Greater Agility",
-                fix: "Where to get it", link: URL(string: "https://foreversixty.gg/")
-            ),
+            // Round 5, s1: the title says it all, nothing under it.
+            ReadyRowContent(key: "enchant.feet", mark: .warn, title: "Boots not enchanted", line: "", fix: nil, link: nil),
         ]
         return ReadyListContent(rows: rows, stamp: "From your last log-out, 9 h ago")
     }
@@ -70,7 +97,7 @@ enum RaidFlowTestData {
             roles: [
                 RoleLineContent(role: "Tanks", have: 2, want: 2, names: "Grunvald, Brakka"),
                 RoleLineContent(
-                    role: "Healers", have: 5, want: 8, names: "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late · 15 min) · 3 short"
+                    role: "Healers", have: 5, want: 8, names: "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late · 15 min)"
                 ),
                 RoleLineContent(role: "Damage", have: 11, want: 30, names: "Thandrel, Kaelra, Thalrin and 8 more"),
             ]
@@ -160,7 +187,7 @@ enum RaidFlowTestData {
             selected: answered ? .signedIn : nil, lateOpen: false,
             roles: [
                 HomeLine(title: "Tanks 2 of 2", sub: "Grunvald, Brakka"),
-                HomeLine(title: "Healers 5 of 8", sub: "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen · 3 short"),
+                HomeLine(title: "Healers 5 of 8", sub: "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen"),
                 HomeLine(title: "Damage 11 of 30", sub: "Thandrel, Kaelra, Thalrin and 8 more"),
             ],
             ready: ready(elixir: true)

@@ -10,7 +10,7 @@ struct YouSummary: Equatable {
     let battletag: String
     /// Lane F8: the plan in the site's words.
     let plan: PlanSummary
-    /// The current character and where it plays (`Obnoxious Yell`, `US · PvP`).
+    /// The current character and where it plays (`Gorvash`, `US · PvP`).
     let character: CharacterLine?
     /// `This iPhone and 2 more`, nil until the device list answers.
     let devices: String?

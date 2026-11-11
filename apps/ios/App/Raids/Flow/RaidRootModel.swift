@@ -19,8 +19,10 @@ struct RaidRootComposer {
     /// The roster's figures for the Roster row, when the guild's roster is loaded.
     var members: Int?
     var atCap: Int?
-    var answer: SignupState?
-    var lateOpen = false
+    /// G1: the guild roster's `logged_recently` by character key, when the roster is loaded.
+    var synced: [String: Bool]?
+    /// The head's answer (F1): pending, Late's minutes, the status line, offline.
+    var answering = RaidAnswering()
 
     func content(_ state: RaidsTabState, extras: RaidRootExtras) -> RaidRootContent {
         switch state {
@@ -35,7 +37,8 @@ struct RaidRootComposer {
             if let level = character.level, level < RaidFlowPresenter.maxLevel { return RaidFlowPresenter.leveler(level: level) }
             return .waiting
         case let .loaded(content):
-            if let level = content.character.level, level < RaidFlowPresenter.maxLevel { return RaidFlowPresenter.leveler(level: level) }
+            // A guild member under 60 still signs up (Home's card answers the same raid): the leveler's
+            // `Raids start at 60` is for a character with no guild, as on Android.
             return .guild(guild(content, extras: extras))
         }
     }
@@ -46,8 +49,8 @@ struct RaidRootComposer {
         inputs.badge = extras.badge
         inputs.applicants = extras.applicants
         inputs.ready = extras.ready
-        inputs.answer = answer
-        inputs.lateOpen = lateOpen
+        inputs.answering = answering
+        if content.offlineSince != nil { inputs.answering.offline = true }
         return inputs
     }
 
@@ -56,18 +59,26 @@ struct RaidRootComposer {
         let live = inputs.raid.map { $0.startsAt <= presenter.now } ?? false
         let night = live ? extras.night.flatMap { presenter.nightRoot(inputs, night: $0) } : nil
         let stamp = { (date: Date) in presenter.clock.stripTime(date, now: presenter.now) }
+        let upcoming = night == nil ? inputs.raid : nil
+        var next = night == nil ? presenter.nextRaid(inputs) : nil
+        next?.invites = upcoming.flatMap(presenter.invites)
+        let officer = extras.badge?.officer == true
         return RaidGuildContent(
             night: night,
-            next: night == nil ? presenter.nextRaid(inputs) : nil,
+            next: next,
             coming: night == nil ? inputs.raid.map(presenter.coming) ?? [] : [],
             ready: presenter.ready(extras.night?.ready ?? extras.ready),
             needsYou: presenter.needsYou(inputs, raid: inputs.raid),
             pages: presenter.pages(
                 guild: content.head.name, members: members ?? content.head.members, atCap: atCap, planned: content.planned,
-                badge: extras.badge
+                badge: extras.badge, lastNight: content.nights.first
             ),
             offlineStamp: content.offlineSince.map(stamp),
-            staleStamp: content.staleSince.map(stamp)
+            staleStamp: content.staleSince.map(stamp),
+            notes: upcoming.flatMap(RaidFlowPresenter.notes),
+            answers: upcoming.flatMap(presenter.answers),
+            cover: upcoming.flatMap(presenter.cover),
+            notSynced: officer ? upcoming.flatMap { presenter.notSynced($0, synced: synced) } : nil
         )
     }
 }

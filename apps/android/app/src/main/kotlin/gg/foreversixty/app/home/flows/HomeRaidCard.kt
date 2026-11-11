@@ -24,9 +24,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FrameCorners
 import gg.foreversixty.app.designsystem.FsColor
@@ -37,10 +35,9 @@ import gg.foreversixty.app.designsystem.panel
 import gg.foreversixty.app.flows.ClockPart
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowRow
-import gg.foreversixty.app.flows.FlowSegmented
 import gg.foreversixty.app.flows.FlowTally
+import gg.foreversixty.app.flows.FlowTallyLine
 import gg.foreversixty.app.flows.lineBox
-import gg.foreversixty.app.raids.logic.SignupState
 
 /**
  * The raid card on raid day (spec F1, round 5): the lead panel, ornate on the cave. The zone, the guild
@@ -53,13 +50,11 @@ fun HomeRaidCard(raid: RaidCardModel, actions: HomeActions) {
         Text(raid.zone, style = HOME_CARD_TITLE, color = FsColor.cream, modifier = Modifier.semantics { heading() })
         Text(raid.place, style = FsType.small, color = FsColor.text)
         Clock(raid.clock, raid.clockLabel, Modifier.padding(top = FsSpace.space2))
-        Text(raid.me, style = FsType.small, color = FsColor.text, modifier = Modifier.padding(top = FsSpace.space3))
-        val labels = SignupState.entries.map { stringResource(it.label) }
-        FlowSegmented(labels, raid.answer?.let { stringResource(it.label) }, Modifier.padding(top = FsSpace.space2)) {
-            actions.onAnswer(raid.raidId, SignupState.entries[it])
-        }
-        if (raid.lateOpen) LateChips { actions.onLate(raid.raidId, it) }
-        if (raid.tally.isNotEmpty()) FlowTally(raid.tally, Modifier.padding(top = TALLY_TOP))
+        raid.me?.let { Text(it, style = FsType.small, color = FsColor.text, modifier = Modifier.padding(top = FsSpace.space3)) }
+        RaidAnswers(raid, actions, Modifier.padding(top = FsSpace.space2), LateChipsStyle.Asked)
+        // Row 2: the meters against a target, else the plain counts (`Healers 6`), never nothing.
+        val tallyTop = Modifier.padding(top = TALLY_TOP)
+        if (raid.tally.any { it.want != null }) FlowTally(raid.tally, tallyTop) else FlowTallyLine(raid.tally, tallyTop)
         raid.ready?.let { ready ->
             HorizontalDivider(Modifier.padding(top = TALLY_TOP), color = FsColor.lineWarm)
             FlowRow(ready.title, ready.sub, slim = true, last = true, onClick = { actions.onReady(raid.raidId) })
@@ -117,5 +112,5 @@ private val CARD_PAD = 18.dp
 private val TALLY_TOP = 14.dp
 private val CLOCK_GAP = 18.dp
 private val LIVE_DOT = 8.dp
-private val CLOCK = FsType.figureBig.copy(fontWeight = FontWeight.SemiBold, lineHeight = 38.sp)
-private val UNIT = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp)
+private val CLOCK = FsType.countdown
+private val UNIT = FsType.figureUnit

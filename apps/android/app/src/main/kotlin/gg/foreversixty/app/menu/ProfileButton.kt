@@ -58,7 +58,7 @@ fun CharacterButton(character: AccountCharacter?, modifier: Modifier = Modifier)
     ) {
         // The bar is chrome above the content, as the mocks' nav sits outside `main`: its images never count.
         CompositionLocalProvider(LocalParityRecorder provides null) {
-            CharacterPortrait(character?.avatarUrl, character?.faction, SIZE, Modifier.padding((TOUCH - SIZE) / 2), className = character?.className)
+            CharacterPortrait(character?.avatarUrl, character?.faction, SIZE, Modifier.padding((TOUCH - SIZE) / 2))
         }
     }
 }

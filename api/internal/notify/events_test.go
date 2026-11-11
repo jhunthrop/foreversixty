@@ -132,6 +132,17 @@ func TestSimAndUploadEventsReadPlainly(t *testing.T) {
 	if e := SimFinishedEvent("", named); e.Title != "Your sim finished" {
 		t.Fatalf("unknown spec %+v", e)
 	}
+	if sim.Figure == nil || *sim.Figure != sampleSim(4).DPS || sim.ActivityBody == nil || *sim.ActivityBody != "" {
+		t.Fatalf("sim figure %v, activity body %v", sim.Figure, sim.ActivityBody)
+	}
+	headlined := sampleSim(4)
+	headlined.Headline = "Gear is your biggest gain"
+	if e := SimFinishedEvent("", headlined); e.Body != "Gear is your biggest gain" || *e.ActivityBody != "Gear is your biggest gain" {
+		t.Fatalf("headlined %+v", e)
+	}
+	if e := SimFinishedEvent("", named); e.Figure != nil {
+		t.Fatalf("a sim without DPS has no figure, got %v", *e.Figure)
+	}
 }
 
 // The Activity icons, the mocks': a sim shows the pocketwatch, a report its zone's (the generic

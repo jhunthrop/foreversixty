@@ -2,7 +2,7 @@
 //
 // guild.applicant (spec 2026-11-08-app-flows F3): when someone applies, the guild's officers
 // hear it. The push opens the applicant sheet (/app/guild/{id}/applicants/{app}) and offers
-// Decline, never Accept; Review is the notification itself. Published after the application
+// Accept and Decline; Review is the notification itself. Published after the application
 // commits, off the request; a failure never fails the application.
 package guilds
 
@@ -21,10 +21,11 @@ const applicantBodyMax = 140
 
 // applicantCopy is the words of guild.applicant.
 var applicantCopy = struct {
-	Title, NoNote, Decline string
+	Title, NoNote, Accept, Decline string
 }{
 	Title:   "New applicant: %s",
 	NoNote:  "Applied to %s.",
+	Accept:  "Accept",
 	Decline: "Decline",
 }
 
@@ -57,15 +58,31 @@ func (s *Service) applicantEvent(guildName string, a Application) events.Event {
 		Body:      applicantBody(guildName, a),
 		Link:      s.PublicBaseURL + ApplicantPagePath(a.GuildID, a.ID),
 		Thread:    "guild-" + gid + "-applicants",
-		Actions: []events.Action{{ID: "application_decline", Title: applicantCopy.Decline, Method: "POST",
-			Path: fmt.Sprintf("/v1/guilds/%d/applications/%d/decline", a.GuildID, a.ID)}},
-		Data: map[string]string{"guild_id": gid, "application_id": id},
+		Collapse:  string(events.GuildApplicant) + "-" + id,
+		Actions:   applicantActions(a.GuildID, a.ID),
+		// The apps word an action's result from these (round 7 row 2), never from the title.
+		Data: map[string]string{"guild_id": gid, "application_id": id,
+			"applicant_name": a.Character.Name, "applicant": applicantLine(a.Character)},
 	}
 }
 
-// applicantTitle names the applicant: "New applicant: Mirelle, Holy Priest 60", each part only
-// when known.
+// applicantActions are Accept and Decline: each POSTs the officer's decision with no body.
+func applicantActions(guildID, applicationID int64) []events.Action {
+	action := func(decision, title string) events.Action {
+		return events.Action{ID: "application_" + decision, Title: title, Method: "POST",
+			Path: fmt.Sprintf("/v1/guilds/%d/applications/%d/%s", guildID, applicationID, decision)}
+	}
+	return []events.Action{action("accept", applicantCopy.Accept), action("decline", applicantCopy.Decline)}
+}
+
+// applicantTitle names the applicant: "New applicant: Mirelle, Holy Priest 60".
 func applicantTitle(c ApplicantCharacter) string {
+	return fmt.Sprintf(applicantCopy.Title, applicantLine(c))
+}
+
+// applicantLine is the applicant as the push words them, "Mirelle, Holy Priest 60", each part
+// only when known.
+func applicantLine(c ApplicantCharacter) string {
 	var words []string
 	for _, w := range []*string{c.SpecName, c.Class} {
 		if w != nil && *w != "" {
@@ -75,11 +92,10 @@ func applicantTitle(c ApplicantCharacter) string {
 	if c.Level != nil && *c.Level > 0 {
 		words = append(words, strconv.Itoa(*c.Level))
 	}
-	name := c.Name
-	if len(words) > 0 {
-		name += ", " + strings.Join(words, " ")
+	if len(words) == 0 {
+		return c.Name
 	}
-	return fmt.Sprintf(applicantCopy.Title, name)
+	return c.Name + ", " + strings.Join(words, " ")
 }
 
 // applicantBody is the applicant's note, cut at applicantBodyMax runes, else "Applied to {guild}.".

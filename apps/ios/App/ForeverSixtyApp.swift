@@ -14,9 +14,18 @@ struct ForeverSixtyApp: App {
         CrashReporting.start(configuration: environment.configuration)
         // Lane F4: the raid notifications' categories and their In, Late and Out answers.
         let flows = LiveRaidFlowService(client: environment.client)
+        let ping = LiveRaidPingService(client: environment.client)
+        var officer = OfficerPushActions(
+            accept: { guild, application in (try? await flows.accept(guild: guild, application: application)) != nil },
+            decline: { guild, application in (try? await flows.decline(guild: guild, application: application)) != nil },
+            mention: { guild, raid, role in try? await ping.ping(guild: guild, raid: raid, role: role) }
+        )
+        #if DEBUG
+            // Review captures only: the default actions refuse, so the failure line shows.
+            if RaidDebugLaunch.failsOfficerPush { officer = OfficerPushActions() }
+        #endif
         RaidNotificationCenter.shared.install(
-            answerer: RaidPushAnswerer(calls: LiveRaidService(client: environment.client)),
-            decline: { guild, application in (try? await flows.decline(guild: guild, application: application)) != nil }
+            answerer: RaidPushAnswerer(calls: LiveRaidService(client: environment.client)), officer: officer
         )
         _environment = State(initialValue: environment)
     }

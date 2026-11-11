@@ -1,14 +1,23 @@
 package gg.foreversixty.app.gear.flows
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.foundation.layout.padding
+import gg.foreversixty.app.designsystem.FsSpace
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import gg.foreversixty.app.designsystem.FsTarget
+import gg.foreversixty.app.flows.FlowBlock
+import gg.foreversixty.app.flows.FlowButton
+import gg.foreversixty.app.flows.FlowPanel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
@@ -28,12 +37,13 @@ import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowSection
 import gg.foreversixty.app.flows.FlowSkeleton
 import gg.foreversixty.app.flows.FlowSubLink
-import gg.foreversixty.app.flows.subWithLink
+import gg.foreversixty.app.flows.FlowLinkLine
 import gg.foreversixty.app.items.ItemIcon
 import gg.foreversixty.app.items.ItemQuality
 
 data class GearActions(
     val onChange: () -> Unit = {},
+    val onRetry: () -> Unit = {},
     val onWhere: (GearWhereRow) -> Unit = {},
     val onSlot: (GearSlotRow) -> Unit = {},
 )
@@ -46,17 +56,17 @@ data class GearActions(
  */
 @Composable
 fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, portrait: Painter? = null, topBar: @Composable () -> Unit = {}) {
-    val equipped = stringResource(R.string.gear_worn)
+    val words = SlotWords(stringResource(R.string.gear_worn), stringResource(R.string.gear_notModelled), stringResource(R.string.gear_cell_noGain), content.unitWord)
     val looks = content.slots.mapNotNull { it.look }.associateBy { it.id }
     FlowBandPage(topBar) {
         PaperdollHeader(
             title = content.title,
             figure = content.figure,
             portrait = portrait,
-            slots = content.slots.map { it.listSlot(content.unitWord, equipped) },
+            slots = content.slots.map { it.listSlot(words) },
             unit = content.unitWord,
             onSelect = { id -> content.slots.firstOrNull { it.slot == id }?.let(actions.onSlot) },
-            lead = { Lead(content.facts, actions.onChange) },
+            lead = { Lead(content.facts, content.header, actions.onChange) },
         ) { item ->
             val look = looks[item.id]
             ItemIcon(look?.icon, look?.quality, build, SOCKET_ICON, Modifier.parityItem(ParityItemKind.Image))
@@ -68,6 +78,7 @@ fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, po
                         row.title, row.line, FlowLead.Item(row.lead, build),
                         last = i == content.where.lastIndex,
                         onClick = { actions.onWhere(row) },
+                        meta = row.figure,
                     )
                 }
             }
@@ -75,26 +86,65 @@ fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, po
     }
 }
 
-/** The line that names the list, `60 raid · Alliance · 4 of 17 slots on the list · Change`. */
+/**
+ * Gear with no list for the spec and band (round 2): the spec, the line naming the list with Change, and
+ * one row saying why, with Try again when the list did not load.
+ */
 @Composable
-private fun Lead(facts: String, onChange: () -> Unit) {
-    Text(
-        subWithLink(facts, FlowSubLink(stringResource(R.string.gear_change), onChange)),
-        style = LEAD,
-        color = FsColor.text,
-        modifier = Modifier.fillMaxWidth().parityRegion(ParityRegion.CONTROLS),
-    )
+fun GearNoticeScreen(notice: GearNotice, actions: GearActions, topBar: @Composable () -> Unit = {}) {
+    FlowBandPage(topBar) {
+        Column(Modifier.fillMaxWidth()) {
+            FlowHead(notice.title, emptyList())
+            Lead(notice.facts, null, actions.onChange)
+        }
+        FlowBlock(ParityRegion.section(if (notice.retry) "Error" else "Empty"), top = 0.dp) {
+            FlowPanel {
+                FlowRow(notice.row, notice.sub, last = true, trail = if (notice.retry) {
+                    { FlowButton(stringResource(R.string.common_tryAgain), actions.onRetry, Modifier.heightIn(min = FsTarget.min)) }
+                } else {
+                    null
+                })
+            }
+        }
+    }
 }
 
+/**
+ * The line that names the list, `60 raid · Alliance · 4 of 17 slots match the list · Change`, and under
+ * it the measured [header] (`+157.6 DPS from 13 upgrades · synced 2 h ago`).
+ */
+@Composable
+private fun Lead(facts: String, header: GearHeader?, onChange: () -> Unit) {
+    Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.CONTROLS)) {
+        FlowLinkLine(facts, FlowSubLink(stringResource(R.string.gear_change), onChange), LEAD, FsColor.text, Modifier.fillMaxWidth())
+        header?.let { HeaderLine(it) }
+    }
+}
+
+/** The header in the muted note tone, its `synced 12 d ago` in the warning tone past a week (round 4 row 2). */
+@Composable
+private fun HeaderLine(header: GearHeader) {
+    val line = buildAnnotatedString {
+        header.parts().forEach { (text, stale) -> if (stale) withStyle(SpanStyle(color = FsColor.warn)) { append(text) } else append(text) }
+    }
+    Text(line, style = FsType.small, color = FsColor.muted, modifier = Modifier.padding(top = FsSpace.space1))
+}
+
+/** The words a slot's second line can take: Equipped, Not modelled, and the gain's unit. */
+private data class SlotWords(val equipped: String, val notModelled: String, val noGain: String, val unit: String)
+
 /** A slot as the paperdoll's list draws it: the pick in its quality colour, its gain or Equipped. */
-private fun GearSlotRow.listSlot(unit: String, equipped: String): PaperdollListSlot {
+private fun GearSlotRow.listSlot(words: SlotWords): PaperdollListSlot {
     val pick = look ?: return PaperdollListSlot(slot, label, item = null)
     val detail = when {
-        worn -> equipped
-        gain != null -> "$gain $unit"
+        worn -> words.equipped
+        notModelled -> words.notModelled
+        // Round 8 row 3: a measured slot that gains nothing reads `No gain`, not `+0.0 DPS`.
+        gain != null && !gains -> words.noGain
+        gain != null -> "$gain ${words.unit}"
         else -> null
     }
-    val item = PaperdollListSlot.Item(pick.id, pick.name.orEmpty(), ItemQuality(pick.quality).text, detail, isGain = gain != null && !worn)
+    val item = PaperdollListSlot.Item(pick.id, pick.name.orEmpty(), ItemQuality(pick.quality).text, detail, isGain = gains && !worn)
     return PaperdollListSlot(slot, label, item)
 }
 
@@ -124,4 +174,4 @@ fun GearSignedOut(classes: List<Pair<String, String>>, onClass: (String) -> Unit
 private val SOCKET_ICON = 38.dp
 
 /** The list's lead line, 14 on 20 (the mock's `.pdl .lead`). */
-private val LEAD = FsType.small.copy(fontSize = 14.sp, lineHeight = 20.sp)
+private val LEAD = FsType.factLine

@@ -39,8 +39,10 @@ struct RaidsDependencies {
         }
         let statics = StaticDataClient(transport: staticTransport)
         var service: any RaidService = LiveRaidService(client: environment.client)
+        var flow: any RaidFlowService = LiveRaidFlowService(client: environment.client)
         #if DEBUG
         if let fixture = RaidDebugLaunch.service(baseURL: environment.configuration.baseURL) { service = fixture }
+        if let fixture = RaidDebugLaunch.flow(baseURL: environment.configuration.baseURL) { flow = fixture }
         #endif
         return RaidsDependencies(
             service: service,
@@ -53,7 +55,7 @@ struct RaidsDependencies {
             iconBuild: { try? await statics.activeBuild().build },
             reports: environment.isAvailable(.reports) ? .live(environment) : nil,
             connectivity: PathConnectivity.shared,
-            flow: LiveRaidFlowService(client: environment.client),
+            flow: flow,
             ping: LiveRaidPingService(client: environment.client)
         )
     }
@@ -79,7 +81,8 @@ enum RaidsRoute: Hashable, Sendable {
     /// Lane F10: a report from Your raid night.
     case report(id: String)
     /// Lane F16: the guild's roster and raid history.
-    case roster(guild: Int64)
+    /// `only`: the characters the roster lists (the Raid tab's not-synced raiders); empty lists all.
+    case roster(guild: Int64, only: [String] = [])
     case history(guild: Int64)
 }
 
@@ -92,6 +95,8 @@ final class RaidsRouter {
     /// Opens a raid link on a fresh stack, so back goes to the tab's root.
     func open(_ link: DeepLink) {
         switch link {
+        case let .raid(guild, raid, _, _, view) where view == RaidsRouter.unansweredView:
+            path = [.notAnswered(guild: guild, raid: raid)]
         case let .raid(guild, raid, spec, state, _):
             let press = spec == "ask" ? SignupState.signedIn : state.flatMap(SignupState.init)
             path = [.raid(guild: guild, raid: raid, roster: false, open: press.map(RaidOpenAction.init))]
@@ -110,6 +115,9 @@ final class RaidsRouter {
     func open(_ route: RaidsRoute) {
         path = [route]
     }
+
+    /// The raid link's `view=` that opens Not answered (links.json).
+    static let unansweredView = "unanswered"
 
     /// True for the links the Raids tab opens.
     static func handles(_ link: DeepLink) -> Bool {
@@ -150,7 +158,7 @@ struct RaidsTab: View {
             service: dependencies.service, cache: dependencies.cache, now: dependencies.now, connectivity: dependencies.connectivity
         ))
         _loader = State(initialValue: RaidRootLoader(service: dependencies.flow, raids: dependencies.service, now: dependencies.now))
-        _answers = State(initialValue: RaidAnswerModel(service: dependencies.service))
+        _answers = State(initialValue: RaidAnswerModel(service: dependencies.service, haptics: dependencies.haptics))
     }
 
     var body: some View {
@@ -180,12 +188,13 @@ struct RaidsTab: View {
 
     private var composer: RaidRootComposer {
         let roster = rosterStore?.guild == content?.head.id ? rosterStore?.home?.roster : nil
+        let presenter = RaidFlowPresenter(now: dependencies.now(), clock: dependencies.clock)
         return RaidRootComposer(
-            presenter: RaidFlowPresenter(now: dependencies.now(), clock: dependencies.clock),
+            presenter: presenter,
             members: roster?.count,
             atCap: roster?.filter { $0.level == RaidFlowPresenter.maxLevel }.count,
-            answer: answers.pending,
-            lateOpen: answers.lateOpen
+            synced: roster.map(presenter.syncedThisWeek),
+            answering: answers.state
         )
     }
 
@@ -196,6 +205,7 @@ struct RaidsTab: View {
 
     private func reload() async {
         await model.load()
+        if let content { answers.offline = content.offlineSince != nil }
         await loader.load(for: model.state)
         await refreshGuildExtras()
     }
@@ -227,6 +237,7 @@ struct RaidsTab: View {
             raid: NextRaidActions(
                 answer: { state in answer { key, raid, note in await answers.answer(state, guild: raid.0, raid: raid.1, key: key, note: note) } },
                 late: { minutes in answer { key, raid, note in await answers.late(minutes, guild: raid.0, raid: raid.1, key: key, note: note) } },
+                retry: { answer { key, raid, note in await answers.retry(guild: raid.0, raid: raid.1, key: key, note: note) } },
                 openRaid: { push { .raid(guild: $0, raid: $1.id, roster: false, open: nil) } },
                 openReady: { push { _, raid in .night(raid: raid.id) } },
                 previewMention: { push { .notAnswered(guild: $0, raid: $1.id) } },
@@ -236,6 +247,12 @@ struct RaidsTab: View {
                 }
             ),
             openPage: openPage,
+            openRoster: { keys in
+                guard let guild = content?.head.id, extras != nil else { return }
+                router.path.append(.roster(guild: guild, only: keys))
+            },
+            // The cover list heads the raid page's sign-ups.
+            openCover: { push { .raid(guild: $0, raid: $1.id, roster: true, open: nil) } },
             openLink: { openURL($0) },
             apply: { openURL(dependencies.site.apply(guild: $0.guildID)) },
             claim: { openURL(dependencies.site.guilds) },
@@ -322,9 +339,9 @@ struct RaidsTab: View {
                     account: ReportsAccount.of(session?.phase.me, current: session?.currentCharacter)
                 )
             }
-        case let .roster(guild):
+        case let .roster(guild, only):
             if let extras {
-                RosterRoute(extras: extras, guild: guild, shared: rosterStore)
+                RosterRoute(extras: extras, guild: guild, shared: rosterStore, only: only.isEmpty ? nil : Set(only))
             }
         case let .history(guild):
             if let extras {

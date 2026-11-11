@@ -37,7 +37,7 @@ struct BisSnapshotTests {
         context = BisContext(
             selection: BisTestData.raid,
             characterSelection: BisTestData.raid,
-            characterName: "Obnoxious Yell",
+            characterName: "Gorvash",
             classes: try BisTestData.classes(),
             raidsOpening: RaidsOpening(try BisTestData.fixture("cdn.dates", as: [KeyDate].self))
         )

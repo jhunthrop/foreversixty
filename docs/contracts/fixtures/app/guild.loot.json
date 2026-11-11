@@ -25,12 +25,12 @@
           "character_key": "us/pvp/kraggor",
           "name": "Kraggor",
           "at": "2026-12-15T04:12:00Z",
-          "by_name": "Obnoxious Yell"
+          "by_name": "Gorvash"
         },
         "candidates": [
           {
-            "character_key": "us/pvp/obnoxious-yell",
-            "name": "Obnoxious Yell",
+            "character_key": "us/pvp/gorvash",
+            "name": "Gorvash",
             "class": "warrior",
             "spec": "Fury",
             "gain_dps": 18.6,

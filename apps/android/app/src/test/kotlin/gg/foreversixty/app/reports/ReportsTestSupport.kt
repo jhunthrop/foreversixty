@@ -23,7 +23,7 @@ import java.time.ZoneId
  */
 object ReportsTestData {
     const val ID = "ewlrx3enxbeb"
-    const val ME_KEY = "us/pvp/obnoxious-yell"
+    const val ME_KEY = "us/pvp/gorvash"
 
     /** Twenty seconds after the live report's heartbeat (2026-12-16 00:31:40Z). */
     val now: Instant = Instant.parse("2026-12-16T00:32:00Z")

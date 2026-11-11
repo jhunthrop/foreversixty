@@ -22,6 +22,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import gg.foreversixty.app.activity.ActivityTime
 import java.time.Instant
 import java.time.ZoneId
 
@@ -44,15 +45,15 @@ class HomeComposerTest {
     private fun row(id: Long, kind: String, at: String, group: String = "gear") =
         ActivityRow(id = id, kind = kind, group = group, title = "t$id", body = "b$id", link = "", occurredAt = at, read = id % 2 == 0L, icon = "i")
 
-    private fun inputs(sections: List<HomeSection>, card: RaidCardModel? = null, rows: List<ActivityRow> = emptyList()) =
+    private fun inputs(sections: List<HomeSection>, card: RaidCardModel? = null, rows: List<ActivityRow> = emptyList(), home: CharacterHome = this.home) =
         HomeInputs(sections, home, RunPick("back", 7, "Blackcrow", 1.94, ItemSource(WhereToGo.DUNGEON, "Blackrock Spire", 8.0)), card, null, rows, 3, null)
 
     @Test fun `the head names level, spec and class, then the guild or the levels to the next band`() {
         val warrior = HomeCharacter("k", "us", "normal", "Thandrel", null, "warrior", "Fury", 60, "Olympus XXVII", "alliance")
         assertEquals(listOf("Level 60 Fury Warrior", "Olympus XXVII"), composer.head(warrior).facts)
         val hunter = warrior.copy(name = "Felsnap", className = "hunter", specName = "Beast Mastery", level = 34)
-        assertEquals(listOf("Level 34 Beast Mastery Hunter", "6 levels to band 40"), composer.head(hunter).facts)
-        assertEquals("1 level to band 40", composer.head(hunter.copy(level = 39)).facts[1])
+        assertEquals(listOf("Level 34 Beast Mastery Hunter", "6 levels to the 40 list"), composer.head(hunter).facts)
+        assertEquals("1 level to the 40 list", composer.head(hunter.copy(level = 39)).facts[1])
     }
 
     @Test fun `blocks follow the sections, upgrades largest first with the Best run line`() {
@@ -60,9 +61,32 @@ class HomeComposerTest {
         val upgrades = blocks[0] as HomeBlock.Upgrades
         assertEquals(listOf("Lionheart Helm", "Greenhammer", "Band"), upgrades.rows.map { it.look.name })
         assertEquals("+14.5", upgrades.rows[0].gain)
-        assertEquals("Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%", upgrades.bestRun)
+        // Round 2: Best run is a row (the item, the dungeon and its chance, the gain).
+        val run = requireNotNull(upgrades.bestRun)
+        assertEquals("Blackcrow", run.look.name)
+        assertEquals("Best run · Blackrock Spire · 8%", run.source)
+        assertEquals("+1.9", run.gain)
         assertTrue(blocks[1] is HomeBlock.FindGuild)
         assertEquals(2, blocks.size)
+    }
+
+    @Test fun `the section meta counts the upgrades and their total, the stamp says when gear synced`() {
+        val full = home.copy(totalGain = 157.6, syncedAt = "2026-11-06T16:00:00Z", syncedFrom = "battlenet")
+        assertEquals("4 upgrades · +158 DPS", composer.upgradesMeta(full, "DPS"))
+        assertEquals("4 upgrades", composer.upgradesMeta(home, "DPS"))
+        assertEquals(true, composer.syncedStamp(full)?.startsWith("Synced 2"))
+        assertEquals(true, composer.syncedStamp(full.copy(syncedFrom = "addon"))?.endsWith("from the addon"))
+        assertNull(composer.syncedStamp(home))
+    }
+
+    @Test fun `an upgrade's line ends with its drop chance and the worn item it replaces`() {
+        val worn = gg.foreversixty.app.model.HomeWorn(id = 5, name = "Crown of Destruction", known = true, label = "Crown of Destruction")
+        val pick = HomePick(1, "Lionheart Helm", 4, "icon", 60, "Onyxia's Lair", dropChance = 4.2)
+        val upgrades = listOf(HomeUpgrade("head", "Head", pick, worn, 14.5, "+14.5 DPS", true))
+        val one = composer.blocks(
+            HomeInputs(listOf(HomeSection("upgrades")), home.copy(upgrades = upgrades), null, null, null, emptyList(), 0, null),
+        ).first() as HomeBlock.Upgrades
+        assertEquals("Head · Onyxia's Lair · 4% · replaces Crown of Destruction", one.rows.single().source)
     }
 
     @Test fun `the raid day card leaves the Best run line out`() {
@@ -86,7 +110,17 @@ class HomeComposerTest {
         assertTrue(last.simAgain)
         val preview = blocks[1] as HomeBlock.Activity
         assertEquals(listOf("t4", "t2"), preview.rows.map { it.row.title })
-        assertEquals("b2 · yesterday", preview.rows[1].line)
+        // Row 3: the body alone, the when on its own meta line in Activity's buckets.
+        assertEquals("b2", preview.rows[1].line)
+        assertEquals("9:00 am", preview.rows[1].age)
+        assertEquals(ActivityTime.label(res, Instant.parse("2026-11-05T15:00:00Z"), now, ZoneId.of("America/Chicago")), preview.rows[1].age)
+    }
+
+    @Test fun `a sync over a week old takes the warning tone (row 12)`() {
+        val fresh = composer.blocks(inputs(listOf(HomeSection("upgrades")), home = home.copy(syncedAt = "2026-11-04T18:00:00Z")))
+        val stale = composer.blocks(inputs(listOf(HomeSection("upgrades")), home = home.copy(syncedAt = "2026-10-27T18:00:00Z")))
+        assertEquals(false, (fresh.first() as HomeBlock.Upgrades).syncedStale)
+        assertEquals(true, (stale.first() as HomeBlock.Upgrades).syncedStale)
     }
 
     @Test fun `Best run is the dungeon candidate with the largest gain over the worn item`() {
@@ -97,9 +131,11 @@ class HomeComposerTest {
         val loot = LootFile(
             sources = listOf(
                 LootSource("dungeon:ubrs", "dungeon", "Blackrock Spire", bosses = listOf(LootBoss("b", "Drakkisath", items = listOf(7), itemChances = mapOf("7" to 8.0)))),
-                LootSource("crafted:bs", "crafted", "Blacksmithing", items = listOf(1)),
+                LootSource("crafted:bs", "crafted", "Blacksmithing", items = listOf(1), requiredSkill = mapOf("1" to 245)),
             ),
         )
+        // Round 8 row 1: a crafted source carries the profession's skill when the loot file has it.
+        assertEquals(245, WhereToGo.sources(loot)[1]?.single()?.skill)
         val upgrades = listOf(upgrade("head", 1, "Lionheart Helm", 14.5), upgrade("back", 20, "Cape", 2.4))
         val picks = WhereToGo.picks(upgrades, slots, WhereToGo.sources(loot))
         assertEquals(listOf("Lionheart Helm", "Blackcrow"), picks.map { it.itemName })

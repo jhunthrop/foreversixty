@@ -116,7 +116,7 @@ final class RaidCaptureTests: XCTestCase {
         CaptureLaunch.pick(app, "Yellfury")
         sleep(1)
         try save("selector-raids-switched-ios.png")
-        CaptureLaunch.switchCharacter(app, to: "Obnoxious Yell")
+        CaptureLaunch.switchCharacter(app, to: "Gorvash")
         app.tabBars.buttons["Home"].tap()
         sleep(4)
         try save("selector-home-ios.png")

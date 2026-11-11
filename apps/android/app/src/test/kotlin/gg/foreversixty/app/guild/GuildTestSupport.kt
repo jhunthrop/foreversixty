@@ -22,7 +22,7 @@ object GuildFixture {
     fun feed(shown: Boolean = true): CalendarFeed =
         RaidFixture.load(CalendarFeed.serializer(), if (shown) "calendar.feed" else "calendar.feed.shown")
 
-    /** The account's characters (me.json: Obnoxious Yell, Yellfury), as the Raids tab reads them. */
+    /** The account's characters (me.json: Gorvash, Yellfury), as the Raids tab reads them. */
     val mine: Set<String> get() = RaidFixture.load(Me.serializer(), "me").characters.map { it.key }.toSet()
 }
 

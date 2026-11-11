@@ -107,20 +107,20 @@ private val ICON_SIZE = 16.dp
 private val ICON_TEXT_SIZE = 16.sp
 private const val DISABLED_ALPHA = 0.5f
 
-/** The filled kinds' ground; the outlined kinds have none. */
-private fun containerColor(kind: BrandButtonKind): Color? = when (kind) {
+/** The filled kinds' ground; the outlined kinds have none. The kinds' colours are shared with the flows' small button. */
+fun containerColor(kind: BrandButtonKind): Color? = when (kind) {
     BrandButtonKind.Primary -> FsColor.teal
     BrandButtonKind.Secondary -> FsColor.blue
     BrandButtonKind.Accent, BrandButtonKind.Destructive, BrandButtonKind.Quiet -> null
 }
 
-private fun contentColor(kind: BrandButtonKind): Color = when (kind) {
+fun contentColor(kind: BrandButtonKind): Color = when (kind) {
     BrandButtonKind.Primary, BrandButtonKind.Secondary, BrandButtonKind.Quiet -> FsColor.strong
     BrandButtonKind.Accent -> FsColor.gold
     BrandButtonKind.Destructive -> FsColor.wipe
 }
 
-private fun borderColor(kind: BrandButtonKind): Color = when (kind) {
+fun borderColor(kind: BrandButtonKind): Color = when (kind) {
     BrandButtonKind.Primary -> FsColor.tealEdge
     BrandButtonKind.Secondary -> FsColor.blueEdge
     BrandButtonKind.Quiet -> FsColor.rule

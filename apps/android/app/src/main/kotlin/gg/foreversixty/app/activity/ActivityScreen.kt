@@ -1,6 +1,15 @@
 package gg.foreversixty.app.activity
 
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountDeps
-import gg.foreversixty.app.auth.session.RelativeAge
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
@@ -35,21 +43,21 @@ import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.designsystem.ParityScrollRegion
 import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.designsystem.parityRegion
+import gg.foreversixty.app.flows.FLOW_CHIP_SMALL
 import gg.foreversixty.app.flows.FlowBandPage
+import gg.foreversixty.app.flows.FlowPageState
+import gg.foreversixty.app.flows.rememberFlowRefresh
 import gg.foreversixty.app.flows.FlowBlock
 import gg.foreversixty.app.flows.FlowChip
 import gg.foreversixty.app.flows.FlowLink
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowPanel
-import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowSection
 import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.phrase
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 /** The Activity tab bound to the session: signed out it asks to sign in, else the inbox. */
 @Composable
@@ -63,6 +71,7 @@ fun ActivityTab(feature: ActivityFeature, account: AccountDeps?, onOpen: (Activi
         ActivitySignedOut(bar) { account?.let { it.session.beginSignIn(it.browser(context)) } }
         return
     }
+    val refresh = rememberFlowRefresh { feature.load() }
     ActivityScreen(
         state = feature.state,
         filter = feature.filter,
@@ -77,6 +86,7 @@ fun ActivityTab(feature: ActivityFeature, account: AccountDeps?, onOpen: (Activi
             onOpen = { row -> Activity.landing(row)?.let(onOpen) },
         ),
         bar = bar,
+        page = FlowPageState(rememberScrollState(), refresh),
     )
 }
 
@@ -120,11 +130,12 @@ fun ActivityScreen(
     now: Instant,
     zone: ZoneId,
     actions: ActivityActions,
+    page: FlowPageState = FlowPageState(rememberScrollState()),
     bar: @Composable () -> Unit,
 ) {
     // An empty inbox under All has nothing to filter; a filter's own empty page keeps the chips to go back.
     val nothingAtAll = state is ActivityState.Loaded && state.rows.isEmpty() && filter == ActivityFilter.All
-    FlowBandPage(bar, head = { if (!nothingAtAll) Filters(filter, actions.onFilter) }) {
+    FlowBandPage(bar, head = { if (!nothingAtAll) Filters(filter, actions.onFilter) }, page = page) {
         when (state) {
             ActivityState.Loading -> Box(Modifier.fillMaxWidth().padding(FsSpace.space8), Alignment.Center) { CircularProgressIndicator(color = FsColor.gold) }
             ActivityState.Failed -> FlowPanel {
@@ -136,14 +147,19 @@ fun ActivityScreen(
     }
 }
 
-/** The groups as chips under the bar, All preselected; they scroll sideways past the edge (the mock's `.chips.scroll`). */
+/**
+ * The groups as chips under the bar, All preselected; they scroll sideways past the edge (the mock's
+ * `.chips.scroll`) under a trailing fade while more chips lie past it (round 4 row 9, as iOS).
+ */
 @Composable
 private fun Filters(current: ActivityFilter, onFilter: (ActivityFilter) -> Unit) {
+    val scroll = rememberScrollState()
     Row(
         Modifier
             .padding(start = FsSpace.space4)
             .parityRegion(ParityRegion.CONTROLS)
-            .horizontalScroll(rememberScrollState())
+            .trailingFade { scroll.canScrollForward }
+            .horizontalScroll(scroll)
             .padding(top = FILTERS_TOP, bottom = FILTERS_BOTTOM, end = FsSpace.space4),
         horizontalArrangement = Arrangement.spacedBy(FsSpace.space2),
     ) {
@@ -154,7 +170,7 @@ private fun Filters(current: ActivityFilter, onFilter: (ActivityFilter) -> Unit)
                     option == current,
                     { onFilter(option) },
                     Modifier.minimumInteractiveComponentSize(),
-                    minHeight = FILTER_HEIGHT,
+                    minHeight = FLOW_CHIP_SMALL,
                     role = Role.Tab,
                 )
             }
@@ -176,36 +192,46 @@ private fun Days(state: ActivityState.Loaded, build: String?, now: Instant, zone
         val markAll = if (index == 0 && anyUnread) stringResource(R.string.activity_markAllRead) else null
         FlowSection(stringResource(section.day.label), action = markAll, onAction = actions.onMarkAllRead, top = 0.dp, panel = PanelFrame.None) {
             section.items.forEachIndexed { at, item ->
-                FlowRow(
-                    title = item.row.title,
-                    sub = item.row.body,
-                    lead = activityLead(item.row, build),
-                    unread = !item.row.read,
+                ActivityRowView(
+                    row = item.row,
+                    line = item.row.body,
+                    build = build,
                     last = at == section.items.lastIndex,
-                    meta = timeLabel(item.at, section.day, now, zone),
+                    meta = ActivityTime.label(LocalResources.current, item.at, section.day, now, zone),
                     onClick = { actions.onOpen(item.row) },
                 )
             }
         }
     }
-    if (state.nextBefore != null) FlowLink(stringResource(R.string.activity_more), Modifier.padding(horizontal = FsSpace.space4), actions.onMore)
+    // Round 4 row 7: left under its list, as the web's pager link, at the 48 dp target.
+    if (state.nextBefore != null) {
+        FlowLink(
+            stringResource(R.string.activity_more),
+            Modifier.padding(horizontal = FsSpace.space4).heightIn(min = FsTarget.min).wrapContentHeight(Alignment.CenterVertically),
+            actions.onMore,
+        )
+    }
 }
 
-/** Today `8 h ago`, Yesterday `6:02 pm`, This week `Tue`, Earlier `3 Nov`. */
-@Composable
-private fun timeLabel(at: Instant, day: ActivityDay, now: Instant, zone: ZoneId): String = when (day) {
-    ActivityDay.Today -> RelativeAge.of(at, now).phrase(LocalResources.current)
-    ActivityDay.Yesterday -> CLOCK.withZone(zone).format(at).lowercase(Locale.UK)
-    ActivityDay.ThisWeek -> WEEKDAY.withZone(zone).format(at)
-    ActivityDay.Earlier -> DATE.withZone(zone).format(at)
-}
+/** Fades the trailing [FILTER_FADE] to clear while [active], so a cut chip reads as more to scroll. */
+private fun Modifier.trailingFade(active: () -> Boolean): Modifier = this
+    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+    .drawWithContent {
+        drawContent()
+        if (active()) {
+            val start = size.width - FILTER_FADE.toPx()
+            drawRect(
+                Brush.horizontalGradient(listOf(Color.Black, Color.Transparent), startX = start, endX = size.width),
+                topLeft = Offset(start, 0f),
+                blendMode = BlendMode.DstIn,
+            )
+        }
+    }
 
-private val CLOCK = DateTimeFormatter.ofPattern("h:mm a", Locale.UK)
-private val WEEKDAY = DateTimeFormatter.ofPattern("EEE", Locale.UK)
-private val DATE = DateTimeFormatter.ofPattern("d MMM", Locale.UK)
+/** How far the chips fade out at the trailing edge (iOS `ActivityFilterChips.fade`). */
+private val FILTER_FADE = FsSpace.space6
 
 /** A filter chip's face (the mock's `.chips a`, 7 above and below a 20 line), 48 to the touch. */
-private val FILTER_HEIGHT = 36.dp
 
 /** The chips' faces 8 under the bar and the band's foot 14 under them, less the touch target's 6. */
 private val FILTERS_TOP = 2.dp

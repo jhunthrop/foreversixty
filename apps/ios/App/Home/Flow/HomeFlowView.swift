@@ -46,6 +46,7 @@ struct HomeFlowView: View {
         }
         .environment(\.panelRowTrailCell, true)
         .environment(\.answersOffline, content.offlineStamp != nil)
+        .tabRootScroll()
         .screenGround()
     }
 
@@ -111,16 +112,24 @@ struct HomeHeroHead: View {
             }
             VStack(alignment: .leading, spacing: 0) {
                 Text(title)
-                    .type(TypeRole(face: FSFont.title, size: 30, lineHeight: 34, scalesWith: .title))
+                    .type(FSType.heroName)
                     .foregroundStyle(className.map { ClassColor.of($0) } ?? FSColor.cream)
                     .shadow(color: .black.opacity(PanelShadow.opacity), radius: PanelShadow.radius, y: PanelShadow.drop)
                     .accessibilityAddTraits(.isHeader)
                 if !facts.isEmpty {
-                    Text(facts.joined(separator: HomeHeroHead.factSeparator))
-                        .type(TypeRole(face: FSFont.body, size: 14, lineHeight: 20, scalesWith: .subheadline))
-                        .foregroundStyle(FSColor.text)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .parityRegion(.headMeta)
+                    // Round 4, row 8: on one line when it fits, else broken at the dot, one fact a line
+                    // (`Level 58 Fury Warrior`, then `2 levels to the 60 list`), never a stranded `· 2`.
+                    ViewThatFits(in: .horizontal) {
+                        Text(facts.joined(separator: HomeHeroHead.factSeparator)).lineLimit(1).type(FSType.factLine)
+                        VStack(alignment: .leading, spacing: 0) {
+                            ForEach(Array(facts.enumerated()), id: \.offset) { Text($0.element).type(FSType.factLine) }
+                        }
+                    }
+                    .foregroundStyle(FSColor.text)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(facts.joined(separator: HomeHeroHead.factSeparator))
+                    .parityRegion(.headMeta)
                 }
             }
         }
@@ -141,7 +150,9 @@ struct HomeUpgradesSection: View {
     let openGear: () -> Void
 
     var body: some View {
-        PanelSection(Copy.homeUpgradesNext, action: (Copy.homeUpgradesGear, openGear), frame: .plain) {
+        PanelSection(
+            Copy.homeUpgradesNext, meta: content.meta, stamp: content.stamp, stampStale: content.stampStale, action: (Copy.homeUpgradesGear, openGear), frame: .plain
+        ) {
             ForEach(Array(content.rows.enumerated()), id: \.element.id) { index, row in
                 if index > 0 { Hairline(FSColor.line) }
                 Button { open(row) } label: {
@@ -152,9 +163,19 @@ struct HomeUpgradesSection: View {
                 }
                 .buttonStyle(RowPressStyle())
             }
-            ForEach([content.note, content.bestRun].compactMap { $0 }, id: \.self) { line in
+            if let note = content.note {
                 Hairline(FSColor.line)
-                Button(action: openGear) { PanelRow(line, slim: true, last: true) }.buttonStyle(RowPressStyle())
+                Button(action: openGear) { PanelRow(note, slim: true, last: true) }.buttonStyle(RowPressStyle())
+            }
+            if let run = content.bestRun {
+                Hairline(FSColor.line)
+                Button(action: openGear) {
+                    ItemLineView(
+                        name: run.place, quality: nil, icon: run.icon, source: run.line,
+                        gain: (run.gain.figure, run.gain.unit), build: build, inset: 0
+                    )
+                }
+                .buttonStyle(RowPressStyle())
             }
         }
     }
@@ -181,7 +202,7 @@ struct RaidLiveCard: View {
             Text(content.line).type(FSType.small).foregroundStyle(FSColor.text).padding(.top, FSSpace.space2)
             if let open {
                 Button(Copy.homeRaidOpenNight, action: open)
-                    .font(.custom(FSFont.bodySemibold, size: 15, relativeTo: .body))
+                    .type(FSType.bodyStrong)
                     .foregroundStyle(FSColor.gold)
                     .frame(minHeight: FSTarget.min)
                     .contentShape(.rect)
@@ -239,12 +260,7 @@ struct NewForYouSection: View {
         PanelSection(Copy.homeNewForYou, action: (link, all)) {
             ForEach(Array(content.rows.enumerated()), id: \.element.id) { index, item in
                 Button { open(item.row) } label: {
-                    PanelRow(
-                        item.row.title, sub: Text(item.line), unread: item.row.read ? nil : Copy.activityUnread,
-                        last: index == content.rows.count - 1
-                    ) {
-                        ActivityLead(row: item.row, build: build)
-                    }
+                    ActivityRowView(row: item.row, line: item.line, meta: item.when, build: build, last: index == content.rows.count - 1)
                 }
                 .buttonStyle(RowPressStyle())
             }

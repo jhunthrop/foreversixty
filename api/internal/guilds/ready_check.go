@@ -23,8 +23,8 @@ const (
 
 // readyCopy is the ready check's words.
 var readyCopy = struct {
-	LevelTitle, LevelLine, Attuned, NotAttuned, KeysUnseen, AttuneWhere                        string
-	FlaskTitle, FoodTitle, NoneInBags, AuctionHouse, Enchanted, NoEnchant, EnchantWhere, Every string
+	LevelTitle, LevelLine, Attuned, NotAttuned, KeysUnseen, AttuneWhere string
+	FlaskTitle, FoodTitle, NoneInBags, AuctionHouse, Enchanted, Every   string
 }{
 	LevelTitle:   "Level %d",
 	LevelLine:    "You are level %d",
@@ -37,8 +37,6 @@ var readyCopy = struct {
 	NoneInBags:   "None in your bags",
 	AuctionHouse: "Auction house",
 	Enchanted:    "%s not enchanted",
-	NoEnchant:    "No enchant on it",
-	EnchantWhere: "An enchanter or the auction house",
 	Every:        "Every slot enchanted",
 }
 
@@ -58,6 +56,11 @@ type ReadyItem struct {
 	Title string      `json:"title"`
 	Line  string      `json:"line"`
 	Where *ReadyWhere `json:"where"`
+	// ItemID and Icon are the item the line is about (the flask or food in the bags, the
+	// attunement key, the unenchanted slot's item); absent when it names none or the data has no
+	// icon for it.
+	ItemID *int    `json:"item_id,omitempty"`
+	Icon   *string `json:"icon,omitempty"`
 }
 
 // ReadyCheck is GET /v1/characters/{region}/{ruleset}/{name}/ready: the items and when the
@@ -77,12 +80,12 @@ func (s *Store) ReadyCheckOf(ctx context.Context, key string, zone *Zone) (Ready
 	out.ExportedAt = p.exportedAt
 	checks, _ := buildChecklist(checklistInput{zone: zone, readiness: p.readiness, row: p.row, onRoster: true,
 		band: p.band, hasBand: p.hasBand})
-	out.Items = readyItems(checks, zone)
+	out.Items = s.withIcons(readyItems(checks, zone, p.row.gear), p.row.className)
 	return out, nil
 }
 
 // readyItems words the checklist's items as ready lines, in the checklist's order.
-func readyItems(checks []ChecklistItem, zone *Zone) []ReadyItem {
+func readyItems(checks []ChecklistItem, zone *Zone, gear map[string]int) []ReadyItem {
 	out := []ReadyItem{}
 	for _, c := range checks {
 		switch c.Key {
@@ -98,7 +101,7 @@ func readyItems(checks []ChecklistItem, zone *Zone) []ReadyItem {
 		case CheckFlaskFood:
 			out = append(out, supplyLines(c)...)
 		case CheckEnchants:
-			out = append(out, enchantLines(c)...)
+			out = append(out, enchantLines(c, gear)...)
 		}
 	}
 	return out
@@ -111,7 +114,7 @@ func attunementLine(c ChecklistItem, zone *Zone) (ReadyItem, bool) {
 	_, slug, _ := strings.Cut(zone.Key, ":")
 	it := ReadyItem{Key: "attune." + slug, Title: zone.Name}
 	if c.KeyItem != nil {
-		it.Title = c.KeyItem.Name
+		it.Title, it.ItemID = c.KeyItem.Name, itemIDOf(c.KeyItem.ID)
 	}
 	switch {
 	case c.State == CheckOK:
@@ -141,7 +144,8 @@ func supplyLines(c ChecklistItem) []ReadyItem {
 		for _, st := range c.Supplies {
 			for _, k := range kinds {
 				if st.Kind == k {
-					return ReadyItem{Key: key, State: ReadyOK, Title: st.Name, Line: fmt.Sprintf("%d in your bags", st.Count)}
+					return ReadyItem{Key: key, State: ReadyOK, Title: st.Name, Line: fmt.Sprintf("%d in your bags", st.Count),
+						ItemID: itemIDOf(st.ID)}
 				}
 			}
 		}
@@ -154,7 +158,7 @@ func supplyLines(c ChecklistItem) []ReadyItem {
 }
 
 // enchantLines is one warn line per unenchanted slot, else one ok line.
-func enchantLines(c ChecklistItem) []ReadyItem {
+func enchantLines(c ChecklistItem, gear map[string]int) []ReadyItem {
 	switch c.State {
 	case CheckOK:
 		return []ReadyItem{{Key: "enchants", State: ReadyOK, Title: readyCopy.Every}}
@@ -166,9 +170,33 @@ func enchantLines(c ChecklistItem) []ReadyItem {
 				words = slot
 			}
 			out = append(out, ReadyItem{Key: "enchant." + slot, State: ReadyWarn, Title: fmt.Sprintf(readyCopy.Enchanted, words),
-				Line: readyCopy.NoEnchant, Where: &ReadyWhere{Label: readyCopy.EnchantWhere}})
+				ItemID: itemIDOf(gear[slot])})
 		}
 		return out
 	}
 	return nil
+}
+
+// itemIDOf is id as a ready line's item_id; nil for none (0).
+func itemIDOf(id int) *int {
+	if id <= 0 {
+		return nil
+	}
+	return &id
+}
+
+// withIcons gives each line with an item the item's icon, when the build's data for class has
+// one (gear does; consumables and quest items have none on file, so they keep the id alone).
+func (s *Store) withIcons(items []ReadyItem, class string) []ReadyItem {
+	out := make([]ReadyItem, len(items))
+	for i, it := range items {
+		if it.ItemID != nil {
+			if item, ok := s.ItemIn(s.BisBuild(), class, *it.ItemID); ok && item.Icon != "" {
+				icon := item.Icon
+				it.Icon = &icon
+			}
+		}
+		out[i] = it
+	}
+	return out
 }

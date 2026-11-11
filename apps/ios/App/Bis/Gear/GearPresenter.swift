@@ -1,3 +1,4 @@
+import Auth
 import Foundation
 import Models
 
@@ -15,6 +16,8 @@ struct GearInputs: Equatable, Sendable {
 /// file's (`WhereToGo`).
 struct GearPresenter {
     let context: BisContext
+    /// The synced stamp's clock.
+    var now = AppClock.now()
 
     func content(list: BisList, inputs: GearInputs) -> GearContent {
         let home = ownHome(inputs.home)
@@ -26,9 +29,11 @@ struct GearPresenter {
         let slots = list.rows.map { slotRow($0, home: home, unit: unit) }
         return GearContent(
             title: list.specLabel,
-            figure: list.setFigure,
+            // The header in the house format (round 7, row 1): `182`; a tank band keeps none.
+            figure: list.setFigure.flatMap { _ in inputs.band.setDps.map(ReportsCopy.houseFigure) },
             unit: unit,
             facts: facts(slots: slots),
+            summary: home.flatMap { Self.summary($0, unit: unit, now: now) },
             tonight: tonight.compactMap { placeRow($0, refs: refs, unit: unit) },
             slots: slots
         )
@@ -44,14 +49,51 @@ struct GearPresenter {
 
     /// `60 raid · Alliance · 4 of 17 slots on the list`: the band, the faction, how many picks are worn.
     private func facts(slots: [GearSlotRow]) -> String {
-        let selection = context.selection
         let picks = slots.compactMap(\.pick)
         let worn = picks.filter { $0.trail == .worn }.count
-        return [Self.band(selection.range), BisLabels.faction(selection.faction), Copy.gearOnList(n: worn, total: picks.count)]
-            .joined(separator: Self.separator)
+        return facts(more: [Copy.gearOnList(n: worn, total: picks.count)])
+    }
+
+    /// The band and the faction, then `more`.
+    private func facts(more: [String] = []) -> String {
+        let selection = context.selection
+        return ([Self.band(selection.range), BisLabels.faction(selection.faction)] + more).joined(separator: Self.separator)
+    }
+
+    /// Gear's notice for a phase with no list to draw, under the spec's `title`; nil while the list
+    /// loads or once it has one.
+    func notice(phase: BisPhase, title: String) -> GearNotice? {
+        switch phase {
+        case .noList: GearNotice(title: title, facts: facts(), row: Copy.homeAnswerNoList)
+        case .failed: GearNotice(title: title, facts: facts(), row: Copy.gearErrorTitle, sub: Copy.homeErrorLine, retry: true)
+        case .notCached: GearNotice(title: title, facts: facts(), row: Copy.gearErrorTitle, sub: Copy.bisNotCached, retry: true)
+        case .loading, .loaded: nil
+        }
     }
 
     static let separator = " · "
+
+    /// `+157.6 DPS from 13 upgrades · 2 gains not modelled yet · synced 2 h ago`: what the answer adds
+    /// up to, what it could not measure, and how old the gear it read is.
+    static func summary(_ home: CharacterHome, unit: String, now: Date) -> GearSummary? {
+        var line = ""
+        if home.upgradeCount > 0, let total = home.totalGain, total > 0 {
+            line = Copy.gearHeaderGain(
+                gain: ItemNumbers.signedTenths(total), unit: unit, upgrades: Copy.homeAnswerUpgrades(n: home.upgradeCount)
+            )
+        }
+        if home.notModelledCount > 0 {
+            // The key carries its own ` · ` lead; alone it starts the line.
+            let words = Copy.homeAnswerNotModelled(n: home.notModelledCount)
+            line += line.isEmpty ? String(words.drop { $0 == " " || $0 == "·" }) : words
+        }
+        let summary = GearSummary(
+            figures: line.isEmpty ? nil : line,
+            synced: home.syncedAt.map { Copy.gearHeaderSynced(age: RelativeAge(from: $0, to: now).phrase) },
+            stale: home.syncedAt.map { SyncAge.isStale($0, now: now) } ?? false
+        )
+        return summary.line.isEmpty ? nil : summary
+    }
 
     /// `60 raid` for the raid list, the band's words otherwise.
     static func band(_ range: BisRange) -> String {
@@ -62,16 +104,27 @@ struct GearPresenter {
 
     private func slotRow(_ row: BisRow, home: CharacterHome?, unit: String) -> GearSlotRow {
         guard let pick = row.pick else { return GearSlotRow(slot: row.slot, label: row.slotLabel, pick: nil) }
-        let worn = pick.isWorn || home?.alreadyBest.contains { $0.slot == row.slot && $0.item.id == pick.item.id } == true
-        let gain = worn ? nil : Self.gain(home?.upgrades.first { $0.slot == row.slot && $0.pick.id == pick.item.id }, unit: unit)
+        // Row 10, as Android: the answer's `already_best` decides by slot (the server read the gear against
+        // this list); without an answer, the list's own worn mark.
+        let worn = home.map { $0.alreadyBest.contains { $0.slot == row.slot } } ?? pick.isWorn
+        let upgrade = home?.upgrades.first { $0.slot == row.slot && $0.pick.id == pick.item.id }
+        let gain = worn ? nil : Self.gain(upgrade, unit: unit)
         let look = HomeItemLook(
             id: pick.item.id, name: pick.item.name, quality: pick.item.item?.quality, icon: pick.item.icon, itemLevel: pick.item.item?.itemLevel
         )
         return GearSlotRow(slot: row.slot, label: row.slotLabel, pick: GearSlotRow.Pick(
             look: look,
-            trail: worn ? .worn : gain.map { .gain($0) },
+            trail: worn ? .worn : home.map { _ in Self.trail(upgrade, gain: gain, unit: unit) },
             item: GearItemRef(itemID: pick.item.id, slot: row.slot, gain: gain)
         ))
+    }
+
+    /// Round 4, row 3: with the character's answer every pick that is not Equipped says what it gives:
+    /// its gain, `Not modelled` when the sim could not measure it, else `No gain` (round 8, row 3).
+    static func trail(_ upgrade: HomeUpgrade?, gain: HomeGain?, unit: String) -> GearSlotRow.Trail {
+        if let gain { return .gain(gain) }
+        if upgrade?.modelled == false { return .notModelled }
+        return .noGain
     }
 
     /// A measured gain above zero, the server's, as Home words it.
@@ -92,7 +145,17 @@ struct GearPresenter {
             sub: Self.placeSub(group, names: names),
             icon: ref?.icon,
             quality: ref?.item?.quality,
+            figure: Self.placeFigure(group, unit: unit),
             item: GearItemRef(itemID: top.itemID, slot: top.slot, gain: HomeGain(figure: ItemNumbers.signedTenths(top.gain), unit: unit))
+        )
+    }
+
+    /// `2 upgrades · +20.4 DPS`: the place's upgrades and their gains together.
+    static func placeFigure(_ group: WhereToGo.Group, unit: String) -> String? {
+        guard !group.entries.isEmpty else { return nil }
+        let total = group.entries.reduce(0) { $0 + $1.gain }
+        return Copy.gearWhereFigure(
+            upgrades: Copy.homeAnswerUpgrades(n: group.entries.count), gain: ItemNumbers.signedTenths(total), unit: unit
         )
     }
 

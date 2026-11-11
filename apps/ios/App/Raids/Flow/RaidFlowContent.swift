@@ -51,6 +51,8 @@ struct ReadyRowContent: Equatable, Identifiable {
     let line: String
     let fix: String?
     let link: URL?
+    /// The item the check is about (the flask, the attunement item), when the data has its icon.
+    var icon: String?
 
     var id: String { key }
 }
@@ -67,14 +69,59 @@ struct RaidNightRootContent: Equatable {
     let roles: [RoleLineContent]
 }
 
-/// One role of Who is coming: `Healers`, `5` of `8`, the names (and the short role's gap).
+/// One named player on a role line, the name in the class colour (`Brightwen (Late · 15 min)`).
+struct RolePerson: Equatable {
+    let name: String
+    let className: String?
+    /// The name as the line reads it: with a Late's minutes.
+    let text: String
+}
+
+/// One role of Who is coming (S6, one tally model on both apps): `Healers 5 of 8 · 3 short` in tone
+/// when the raid has a target, `Healers 6` without; then the names in class colour, and for Damage
+/// the melee and ranged split.
 struct RoleLineContent: Equatable, Identifiable {
+    enum Tone: Equatable { case met, short, plain }
+
     let role: String
     let have: Int
     let want: Int?
+    /// The names as one line (VoiceOver, and where no class is known).
     let names: String
+    /// The names drawn in class colour; past five, the first three and `and N more`.
+    var people: [RolePerson] = []
+    var more = 0
+    /// Damage: `5 melee, 6 ranged`.
+    var split: String?
 
     var id: String { role }
+
+    /// How many the target still wants; nil with no target or none short.
+    var short: Int? { want.flatMap { $0 > have ? $0 - have : nil } }
+
+    var tone: Tone {
+        guard want != nil else { return .plain }
+        return short == nil ? .met : .short
+    }
+
+    /// `5 of 8 · 3 short`, `2 of 2`, or `6` without a target.
+    var tally: String {
+        guard let want else { return "\(have)" }
+        let count = Copy.raidTabOfWant(have: have, want: want)
+        return short.map { Copy.raidTabTallyShort(tally: count, n: $0) } ?? count
+    }
+
+    /// `2/8` for the compact tally of Home's raid line.
+    var compact: String? { want.map { Copy.raidTabTallyCompact(have: have, want: $0) } }
+
+    /// Home's compact form (row 2): `5/8 · 3 short`, `2/2`, or `6` without a target.
+    var compactTally: String {
+        guard let compact else { return "\(have)" }
+        return short.map { Copy.raidTabTallyShort(tally: compact, n: $0) } ?? compact
+    }
+
+    /// The card's meter, only against a target.
+    var meter: FSTally.Item? { want.map { FSTally.Item(label: role, have: have, want: $0) } }
 }
 
 /// The Raid tab for a guild member.
@@ -91,6 +138,51 @@ struct RaidGuildContent: Equatable {
     var pages: GuildPagesContent
     var offlineStamp: String?
     var staleStamp: String?
+    /// The officers' notes, two lines (the raid page has the rest).
+    var notes: String?
+    /// Who is coming's foot: `Bench 1 · Out 4 · 14 not answered`.
+    var answers: String?
+    /// G4: what the raid's cover misses, by name (`Missing Fort · WF 1 of 2`).
+    var cover: RaidCoverContent?
+    /// G1, officers: `Not synced this week: Kaelra, Thalrin, Brakka, Mirethil`, opening the roster.
+    var notSynced: NotSyncedContent?
+}
+
+/// A gap in the cover (G4): nobody brings `name` (`have` nil), or `have` of the `need` the raid wants.
+struct CoverGap: Equatable {
+    /// The buff's short label (`Fort`), else its name.
+    let name: String
+    let icon: String?
+    var have: Int?
+    var need = 0
+
+    /// `Fort`, or `WF 1 of 2`.
+    var text: String { have.map { Copy.raidTabCoverShort(name: name, have: $0, need: need) } ?? name }
+}
+
+/// The Covered line (row 4; round 4, row 1): `Missing` once over the missing names, then the short
+/// ones, then `and N more`, every name parted by the one ` · `; the view sets the names in wipe red
+/// beside their spell icons, and a name without one closes up.
+struct RaidCoverContent: Equatable {
+    let missing: [CoverGap]
+    let short: [CoverGap]
+    let more: Int
+
+    /// The line as one string (VoiceOver, tests): `Missing Kings · Might · WF 1 of 2 and 3 more`.
+    var line: String {
+        let separator = RaidFlowPresenter.separator
+        let text = [
+            missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.map(\.text).joined(separator: separator)),
+            short.isEmpty ? nil : short.map(\.text).joined(separator: separator),
+        ].compactMap(\.self).joined(separator: separator)
+        return more > 0 ? Copy.raidTabAndMore(names: text, n: more) : text
+    }
+}
+
+/// The officers' not-synced line (row 5) and whom it names, for the filtered roster.
+struct NotSyncedContent: Equatable {
+    let line: String
+    let keys: [String]
 }
 
 /// A guild recruiting the player's spec, with Apply.

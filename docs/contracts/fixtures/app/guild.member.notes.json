@@ -6,9 +6,9 @@
         "id": 7,
         "body": "Always brings flasks.",
         "author": {
-          "name": "Obnoxious Yell",
+          "name": "Gorvash",
           "class": "warrior",
-          "character_key": "us/pvp/obnoxious-yell"
+          "character_key": "us/pvp/gorvash"
         },
         "created_at": "2026-12-02T21:30:00Z",
         "may_delete": true

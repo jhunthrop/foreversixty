@@ -100,14 +100,23 @@ func (s *Service) nextUnanswered(ctx context.Context, guildID, viewerID int64) (
 	if err != nil || !found {
 		return nil, nil, err
 	}
-	views, err := s.Store.RaidViews(ctx, guildID, viewerID, []Raid{raid})
-	if err != nil {
-		return nil, nil, err
-	}
-	facts, err := s.Store.officerRosterFacts(ctx, guildID)
+	rows, err := s.unansweredOn(ctx, guildID, viewerID, raid)
 	if err != nil {
 		return nil, nil, err
 	}
 	id := raid.ID
-	return notSignedRaiders(views[0], facts), &id, nil
+	return rows, &id, nil
+}
+
+// unansweredOn is the officer's not-signed raiders of raid: the badge's and raid.short's count.
+func (s *Service) unansweredOn(ctx context.Context, guildID, viewerID int64, raid Raid) ([]NotSignedRaider, error) {
+	views, err := s.Store.RaidViews(ctx, guildID, viewerID, []Raid{raid})
+	if err != nil {
+		return nil, err
+	}
+	facts, err := s.Store.officerRosterFacts(ctx, guildID)
+	if err != nil {
+		return nil, err
+	}
+	return notSignedRaiders(views[0], facts), nil
 }

@@ -105,10 +105,16 @@ class GearParityTest {
 
     @Test fun theListLineNamesTheBandTheFactionAndTheEquippedCount() {
         val composer = GearComposer(ApplicationProvider.getApplicationContext<android.content.Context>().resources)
-        val content = composer.content(GearFixtures.list, "alliance", emptyList(), emptyList())
+        val content = composer.content(GearFixtures.list, "alliance", emptyList(), emptyList(), setDps = 1004.2)
         assertEquals("Fury Warrior", content.title)
-        assertEquals("1004.2", content.figure)
-        assertEquals("60 raid · Alliance · 1 of 3 slots on the list", content.facts)
+        assertEquals("60 raid · Alliance · 1 of 3 slots match the list", content.facts)
+    }
+
+    @Test fun theHeaderFigureIsTheBandsSetFigureInTheHouseFormatAndNoneForATank() {
+        val composer = GearComposer(ApplicationProvider.getApplicationContext<android.content.Context>().resources)
+        assertEquals("1,004", composer.content(GearFixtures.list, "alliance", emptyList(), emptyList(), setDps = 1004.2).figure)
+        assertEquals("182", composer.content(GearFixtures.list, "alliance", emptyList(), emptyList(), setDps = 182.0).figure)
+        assertEquals(null, composer.content(GearFixtures.list.copy(unit = BisUnit.Score), "alliance", emptyList(), emptyList(), setDps = 1004.2).figure)
     }
 
     @Test fun theSheetNamesWhoNeedsItAndWhoHasIt() {
@@ -125,7 +131,70 @@ class GearParityTest {
         assertEquals("Skum, Wailing Caverns (15-24), 50%", composer.sourceLine(ItemSource("dungeon", "Wailing Caverns", 50.0, boss = "Skum", levels = 15..24)))
         assertEquals("Onyxia, Onyxia's Lair, 8%", composer.sourceLine(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia", levels = 60..60)))
         assertEquals("Stormpike Guard, revered", composer.sourceLine(ItemSource("rep", "Stormpike Guard", null, standing = "Revered")))
-        assertEquals("Pix Xizzix, vendor", composer.sourceLine(ItemSource("vendor", "Pix Xizzix", null)))
+        // Round 8 row 1: the shared source words, with the figure when the data has one.
+        assertEquals("Vendor: Pix Xizzix", composer.sourceLine(ItemSource("vendor", "Pix Xizzix", null)))
+        assertEquals("Crafted: Blacksmithing (245)", composer.sourceLine(ItemSource("crafted", "Blacksmithing", null, profession = "blacksmithing", skill = 245)))
+        assertEquals("Crafted: Blacksmithing", composer.sourceLine(ItemSource("crafted", "Blacksmithing", null, profession = "blacksmithing")))
+        assertEquals("Quest: A Collection of Heads", composer.sourceLine(ItemSource("quest", "A Collection of Heads", null)))
+        assertEquals("World drop", composer.sourceLine(ItemSource("world_drop", "World drop", null)))
+    }
+
+    @Test fun theSheetSaysWhereAPieceTheLootFileDoesNotPlaceComesFrom() {
+        val res = ApplicationProvider.getApplicationContext<android.content.Context>().resources
+        val crafted = GearFixtures.list.rows.first().let { row -> row.copy(pick = row.pick?.copy(source = "Crafted: Blacksmithing")) }
+        val row = GearSlotRow("head", "Head", ItemLook(2, "Lionheart Helm", 4), "Head", "+14.5", worn = false, row = crafted)
+        val composer = GearSheetComposer(res, BUILD)
+        val where = composer.content(row, "DPS", null, emptyList(), null).sources.single()
+        assertEquals("Crafted: Blacksmithing", where.title)
+        // Round 8 row 1: no caption and no icon, so the row cannot read as an item.
+        assertEquals(null, where.line)
+        assertEquals(null, where.lead)
+        // The loot file's places win over the list's line when it has them.
+        val dropped = composer.content(row, "DPS", null, listOf(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia")), null).sources
+        assertEquals(listOf("Onyxia, Onyxia's Lair, 8%"), dropped.map { it.title })
+    }
+
+    @Test fun aDropChanceIsAWholePercentAndUnderOneReadsLessThanOne() {
+        // web/src/lib/items/drop-chance.ts dropPercentLabel.
+        assertEquals("8%", GearComposer.chanceWord(8.0))
+        assertEquals("1%", GearComposer.chanceWord(1.3))
+        assertEquals("20%", GearComposer.chanceWord(19.6))
+        assertEquals("3%", GearComposer.chanceWord(2.5))
+        assertEquals("<1%", GearComposer.chanceWord(0.3))
+    }
+
+    @Test fun aZeroGainReadsNoGainAndTheRunnerUpAlwaysSaysWhatItGives() {
+        val res = ApplicationProvider.getApplicationContext<android.content.Context>().resources
+        val alt = BisRunnerUp(BisItemRef(5, "Blood Guard's Plate Helm", null), "PvP rank 11 · Blood Guard · Horde", dpsDelta = 0.0, isWorn = false)
+        val bisRow = GearFixtures.list.rows.first().let { row -> row.copy(pick = row.pick?.copy(runnersUp = listOf(alt))) }
+        val row = GearSlotRow("head", "Head", ItemLook(2, "Lionheart Helm", 4), "Head", "+0.0", worn = false, row = bisRow, gains = false)
+        val sheet = GearSheetComposer(res, BUILD).content(row, "DPS", null, emptyList(), null)
+        assertEquals("No gain", sheet.gain)
+        // Round 9 rows 1 and 3: `Same DPS`, and a PvP source without its faction word.
+        assertEquals("Runner-up · PvP rank 11 · Blood Guard · Same DPS", sheet.runnerUp?.line)
+        // Placed by the loot file: its boss and its chance, as iOS words it.
+        val dropped = GearSheetComposer(res, BUILD).content(
+            row, "DPS", null, emptyList(), null, ItemSource("dungeon", "Uldaman", 1.3, boss = "Ancient Treasure"),
+        )
+        assertEquals("Runner-up · Ancient Treasure · 1% · Same DPS", dropped.runnerUp?.line)
+    }
+
+    @Test fun theRunnerUpNamesItsSourceOnlyWhenItDiffersFromThePicks() {
+        val res = ApplicationProvider.getApplicationContext<android.content.Context>().resources
+        val composer = GearSheetComposer(res, BUILD)
+        val alt = BisRunnerUp(BisItemRef(6, "Thorium Cestus", null), "Crafted: Blacksmithing", dpsDelta = -5.0, isWorn = false)
+        val crafted = GearFixtures.list.rows.first().let { row -> row.copy(pick = row.pick?.copy(source = "Crafted: Blacksmithing", runnersUp = listOf(alt))) }
+        val row = GearSlotRow("off_hand", "Off hand", ItemLook(2, "Dawn's Edge", 3), "Off hand", "+2.8", worn = false, row = crafted)
+        val forge = ItemSource("crafted", "Blacksmithing", null, profession = "blacksmithing", skill = 275)
+        // Same place as the pick's row (`Crafted: Blacksmithing (275)` above it): the delta alone.
+        assertEquals("Runner-up · −5.0 DPS", composer.content(row, "DPS", null, listOf(forge), null).runnerUp?.line)
+        assertEquals("Runner-up · −5.0 DPS", composer.content(row, "DPS", null, emptyList(), null).runnerUp?.line)
+        // Placed by the loot file at the pick's own place: left out too.
+        assertEquals("Runner-up · −5.0 DPS", composer.content(row, "DPS", null, listOf(forge), null, forge).runnerUp?.line)
+        // A different place is named, in the source row's words.
+        val drop = alt.copy(source = "World drop", dpsDelta = -0.3)
+        val vendor = crafted.copy(pick = crafted.pick?.copy(source = "Vendor: Lady Palanseer", runnersUp = listOf(drop)))
+        assertEquals("Runner-up · World drop · −0.3 DPS", composer.content(row.copy(row = vendor), "DPS", null, emptyList(), null).runnerUp?.line)
     }
 
     @Test fun theSheetSaysWhatThePickReplaces() {
@@ -185,10 +254,10 @@ object GearFixtures {
         Doll("waist", "Waist", "Valiant's Waistguard", "inv_belt_33", 4, "Pix Xizzix, vendor", null),
         Doll("legs", "Legs", "Sentinel's Plate Legguards", "inv_pants_plate_20", 4, "Illiyana Moonblaze, vendor", "+4.7"),
         Doll("feet", "Feet", "Scalegut Treaders", "inv_boots_chain_11", 3, "Leatherworking", "+0.9"),
-        Doll("finger_1", "Finger", "Don Julio's Band", "inv_jewelry_ring_35", 4, "Stormpike Guard", "+6.8"),
-        Doll("finger_2", "Finger", "Cutthroat's Signet", "inv_jewelry_ring_01", 3, "Pix Xizzix, vendor", "+0.8"),
-        Doll("trinket_1", "Trinket", "Hand of Justice", "inv_jewelry_talisman_01", 3, "Blackrock Depths: Emperor Dagran Thaurissan", null),
-        Doll("trinket_2", "Trinket", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "Enchanting", "+3.2"),
+        Doll("finger1", "Finger 1", "Don Julio's Band", "inv_jewelry_ring_35", 4, "Stormpike Guard", "+6.8"),
+        Doll("finger2", "Finger 2", "Cutthroat's Signet", "inv_jewelry_ring_01", 3, "Pix Xizzix, vendor", "+0.8"),
+        Doll("trinket1", "Trinket 1", "Hand of Justice", "inv_jewelry_talisman_01", 3, "Blackrock Depths: Emperor Dagran Thaurissan", null),
+        Doll("trinket2", "Trinket 2", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "Enchanting", "+3.2"),
         Doll("main_hand", "Main hand", "Ironwood Blade", "inv_sword_07", 4, "Blacksmithing", "+5.9"),
         Doll("off_hand", "Off hand", "Persuader", "inv_hammer_08", 4, "Blacksmithing", null),
         Doll("ranged", "Ranged", "Blackcrow", "inv_weapon_crossbow_04", 3, "Blackrock Spire: Shadow Hunter Vosh'gajin, 8%", "+1.9"),
@@ -198,17 +267,18 @@ object GearFixtures {
 
     val content = GearContent(
         title = "Fury Warrior",
-        figure = "1004.2",
-        facts = "60 raid · Alliance · 4 of 17 slots on the list",
+        figure = "1,004",
+        facts = "60 raid · Alliance · 5 of 17 slots match the list",
         where = listOf(
-            GearWhereRow("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh'gajin, 8%", ItemLook(1, "Blackcrow", 3, "inv_weapon_crossbow_04")),
-            GearWhereRow("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", ItemLook(2, "Lionheart Helm", 4, "inv_helmet_36")),
-            GearWhereRow("Stormpike Guard", "Don Julio's Band, needs revered", ItemLook(3, "Don Julio's Band", 4, "inv_jewelry_ring_35")),
+            GearWhereRow("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh'gajin, 8%", ItemLook(1, "Blackcrow", 3, "inv_weapon_crossbow_04"), "1 upgrade · +1.9 DPS"),
+            GearWhereRow("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", ItemLook(2, "Lionheart Helm", 4, "inv_helmet_36"), "2 upgrades · +20.4 DPS"),
+            GearWhereRow("Stormpike Guard", "Don Julio's Band, needs revered", ItemLook(3, "Don Julio's Band", 4, "inv_jewelry_ring_35"), "1 upgrade · +6.8 DPS"),
         ),
         slots = doll.mapIndexed { i, d ->
             GearSlotRow(d.slot, d.label, look(i, d), "${d.label} · ${d.source}", d.gain, worn = d.gain == null, row = BisRow(d.slot, d.label, null, null))
         },
         unitWord = "DPS",
+        header = GearHeader("+47.5 DPS from 12 upgrades", "synced 2 h ago", syncedStale = false, notModelled = null),
     )
 
     val classes = listOf("warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid")
@@ -237,8 +307,7 @@ object GearFixtures {
             gain = "+12.6 DPS",
             sources = listOf(
                 GearSheetLine(
-                    composer.sourceLine(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia", levels = 60..60)), null,
-                    FlowLead.Icon("inv_misc_head_dragon_black", BUILD),
+                    composer.sourceLine(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia", levels = 60..60)), null, null,
                 ),
             ),
             replaces = GearSheetLine(
@@ -246,7 +315,7 @@ object GearFixtures {
                 FlowLead.Item(ItemLook(7, "Ironwood Blade", 4, "inv_sword_07"), BUILD),
             ),
             runnerUp = GearSheetLine(
-                "Vis'kag the Bloodletter", "Runner-up · Onyxia · 8% · −1.8 DPS",
+                "Vis'kag the Bloodletter", "Runner-up · −1.8 DPS",
                 FlowLead.Item(ItemLook(17075, "Vis'kag the Bloodletter", 4, "inv_sword_18"), BUILD),
                 titleColor = ItemQuality(4).text,
             ),

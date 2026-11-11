@@ -6,10 +6,14 @@ public struct WrapLayout: Layout {
     public var spacing: CGFloat
     /// The gap between wrapped lines; the item gap when not given.
     public var lineSpacing: CGFloat
+    /// True centres each item on its line's middle (a line of words where one carries an icon), else
+    /// items sit on the line's top.
+    public var centresLines: Bool
 
-    public init(spacing: CGFloat = 8, lineSpacing: CGFloat? = nil) {
+    public init(spacing: CGFloat = 8, lineSpacing: CGFloat? = nil, centresLines: Bool = false) {
         self.spacing = spacing
         self.lineSpacing = lineSpacing ?? spacing
+        self.centresLines = centresLines
     }
 
     public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache _: inout ()) -> CGSize {
@@ -25,7 +29,8 @@ public struct WrapLayout: Layout {
             var x = bounds.minX
             for index in row.indices {
                 let size = subviews[index].sizeThatFits(.init(width: bounds.width, height: nil))
-                subviews[index].place(at: CGPoint(x: x, y: y), proposal: .init(width: size.width, height: size.height))
+                let top = centresLines ? y + (row.height - size.height) / 2 : y
+                subviews[index].place(at: CGPoint(x: x, y: top), proposal: .init(width: size.width, height: size.height))
                 x += size.width + spacing
             }
             y += row.height + lineSpacing

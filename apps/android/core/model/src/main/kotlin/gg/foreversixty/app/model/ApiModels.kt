@@ -112,6 +112,12 @@ data class ActivityRow(
     @SerialName("read") val read: Boolean,
     /** The row's icon, a name under /data/{build}/icons, always sent, as the app mocks draw them: loot.awarded the item's; raid kinds and report.ready the instance's (inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for one with none); sim.finished inv_misc_pocketwatch_01; bis.changed and tier.moved inv_misc_book_09; guildsim.passed the passer's spec icon (ability_warrior_innerrage for a Fury warrior). Any other row, and rows written before icons, its group's: raids inv_misc_book_09, gear inv_misc_bag_10, logs inv_misc_book_11, ladder inv_misc_pocketwatch_01, tiers inv_misc_book_09, officer inv_scroll_08, account inv_misc_gear_01. */
     @SerialName("icon") val icon: String,
+    /** The body styled as the feed's rows are (names in class colour, items with quality and id, strong figures); its texts joined are the body. Absent on a row that has only the plain body: loot.awarded and guildsim.passed carry it. */
+    @SerialName("segments") val segments: List<FeedSegment>? = null,
+    /** The class slug of the other player the row is about (guildsim.passed's passer); absent otherwise. */
+    @SerialName("crest") val crest: String? = null,
+    /** The row's number when it has one: sim.finished's DPS, guildsim.passed's figure; the body then leaves it out (sim.finished keeps its headline, maybe empty; guildsim.passed the lead). Absent otherwise. */
+    @SerialName("figure") val figure: Double? = null,
 )
 
 @Serializable
@@ -1455,7 +1461,9 @@ data class GuildRosterRow(
     @SerialName("rank") val rank: String,
     @SerialName("verified") val verified: Boolean,
     @SerialName("consent") val consent: String,
+    /** The addon's last sync: when the companion last uploaded this character's export (addon_exports.updated_at), not a game login. A 'Not synced this week' line reads this against 7 days. */
     @SerialName("logged_at") val loggedAt: String,
+    /** logged_at within the last 24 hours. Not a week; read logged_at for any other window. */
     @SerialName("logged_recently") val loggedRecently: Boolean,
     @SerialName("attendance") val attendance: GuildAttendance,
     @SerialName("account_key") val accountKey: String,
@@ -2449,7 +2457,7 @@ data class RaidClassCount(
     @SerialName("count") val count: Int,
 )
 
-/** The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count), soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data pipeline exports each icon. */
+/** The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessing_of_kings, blessing_of_might and blessing_of_wisdom (paladin, labels Kings, Might and Wisdom; count is the paladin count), soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data pipeline exports each icon. */
 @Serializable
 data class RaidComposition(
     @SerialName("classes") val classes: List<RaidClassCount> = emptyList(),
@@ -3098,6 +3106,10 @@ data class ReadyItem(
     @SerialName("state") val state: String,
     @SerialName("title") val title: String,
     @SerialName("line") val line: String,
+    /** The item the line is about: the flask or food in the bags, the attunement item, the unenchanted slot's item. Absent when it names none. */
+    @SerialName("item_id") val itemId: Int? = null,
+    /** That item's icon, a name under /data/{build}/icons; absent when the data has none (consumables). */
+    @SerialName("icon") val icon: String? = null,
     @SerialName("where") val whereToGet: ReadyWhere? = null,
 )
 

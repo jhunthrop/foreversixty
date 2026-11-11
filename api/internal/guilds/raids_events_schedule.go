@@ -81,7 +81,7 @@ func (s *Service) RunEventSchedule(ctx context.Context, now time.Time) (EventSch
 		if len(kinds) == 0 {
 			continue
 		}
-		run = run.add(kinds, s.publishDue(ctx, r.ID, kinds))
+		run = run.add(kinds, s.publishDue(ctx, r.ID, kinds, now))
 	}
 	pending, err := s.publishPending(ctx, now)
 	run.Pending = pending
@@ -151,7 +151,7 @@ func (s *Store) pendingApprovals(ctx context.Context) ([]pendingGuild, error) {
 
 // publishDue publishes the raid's due kinds from one read of the raid; false when it could
 // not be read.
-func (s *Service) publishDue(ctx context.Context, raidID int64, kinds []events.Kind) bool {
+func (s *Service) publishDue(ctx context.Context, raidID int64, kinds []events.Kind, now time.Time) bool {
 	facts, ok := s.raidFacts(ctx, raidID, "event_schedule")
 	if !ok {
 		return false
@@ -162,10 +162,11 @@ func (s *Service) publishDue(ctx context.Context, raidID int64, kinds []events.K
 		switch k {
 		case events.RaidShort:
 			if p.SizeKnown && p.Counts.In+p.Counts.Late < p.Size {
-				out = append(out, raidShortEvent(facts.GuildID, p))
+				out = append(out, raidShortEvent(facts.GuildID, p, p.StartsAt.Sub(now), s.shortUnanswered(ctx, facts.GuildID, raidID),
+					s.canPing(ctx, raidID, now)))
 			}
 		case events.RaidStarting:
-			out = append(out, raidStartingEvent(facts.GuildID, p, startingLead))
+			out = append(out, s.startingEvents(ctx, facts.GuildID, p, p.StartsAt.Sub(now))...)
 		}
 	}
 	s.publishAll(ctx, out)

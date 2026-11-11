@@ -10,6 +10,10 @@ import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.CharacterGuild
 import gg.foreversixty.app.model.Me
+import gg.foreversixty.app.push.NotificationsLine
+import gg.foreversixty.app.model.NotificationSettings
+import gg.foreversixty.app.raids.RaidFixture
+import gg.foreversixty.app.raids.resources
 import gg.foreversixty.app.testing.PARITY_PIXEL_9_TALL
 import gg.foreversixty.app.testing.ParityCheck
 import kotlinx.serialization.json.jsonObject
@@ -80,6 +84,7 @@ object MenuFixtures {
         guilded: Boolean = false,
         avatar: Boolean = true,
         faction: String = "alliance",
+        itemLevel: Int? = null,
     ) = AccountCharacter(
         key = "us/normal/${name.lowercase()}",
         region = "us",
@@ -92,17 +97,18 @@ object MenuFixtures {
         spec = spec,
         avatarUrl = if (avatar) "https://render.worldofwarcraft.com/us/character/forever/${name.lowercase()}-avatar.jpg" else null,
         guild = if (guilded) guild else null,
+        itemLevel = itemLevel,
     )
 
     val thandrel = character("Thandrel", "warrior", "fury", 60, guilded = true)
     val all = listOf(
         thandrel,
-        character("Lightvow", "paladin", "holy", 60, guilded = true),
-        character("Kaelor", "mage", "frost", 47, faction = "horde"),
-        character("Felsnap", "hunter", "beast mastery", 34),
-        character("Brewmist", "shaman", "enhancement", 22, faction = "horde"),
-        character("Ashmantle", "warlock", "affliction", 18, avatar = false),
-        character("Pockets", "rogue", null, 6, avatar = false),
+        character("Lightvow", "paladin", "holy", 60, guilded = true, itemLevel = 61),
+        character("Kaelor", "mage", "frost", 47, faction = "horde", itemLevel = 44),
+        character("Felsnap", "hunter", "beast mastery", 34, itemLevel = 31),
+        character("Brewmist", "shaman", "enhancement", 22, faction = "horde", itemLevel = 19),
+        character("Ashmantle", "warlock", "affliction", 18, avatar = false, itemLevel = 15),
+        character("Pockets", "rogue", null, 6, avatar = false, itemLevel = 5),
         character("Bankalt", "mage", null, 1, avatar = false),
     )
 
@@ -117,9 +123,14 @@ object MenuFixtures {
     }
 
     val lines = MenuLines(
-        notifications = "Raids, gear and sims, logs on",
+        // The drawer's own builder over the account fixture (round 7 row 4), every channel on, so the
+        // golden and the app cannot disagree.
+        notifications = NotificationsLine.account(RaidFixture.load(NotificationSettings.serializer(), "app.notifications")).let { account ->
+            NotificationsLine.line(resources(), account.keys.toList(), account, account.keys.toList())
+        },
         plan = "Premium · Founder price",
         devices = 3,
+        newestDevice = "Pixel 9",
         offlineData = "26.6 MB",
         version = "Version 0.1.0 (7) · data 1.60.1.70790",
         year = 2026,

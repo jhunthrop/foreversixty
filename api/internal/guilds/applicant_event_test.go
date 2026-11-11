@@ -37,15 +37,32 @@ func TestApplyPublishesTheApplicantToOfficers(t *testing.T) {
 	if !strings.HasPrefix(e.Title, "New applicant: mirelle") {
 		t.Fatalf("title %q", e.Title)
 	}
-	if e.Body == "" || e.Data["guild_id"] != strconv.FormatInt(gid, 10) || e.Data["application_id"] != strconv.FormatInt(a.ID, 10) {
+	if e.Body == "" || e.Data["guild_id"] != strconv.FormatInt(gid, 10) || e.Data["application_id"] != strconv.FormatInt(a.ID, 10) ||
+		e.Data["applicant_name"] != "mirelle" || e.Data["applicant"] != strings.TrimPrefix(e.Title, "New applicant: ") {
 		t.Fatalf("event %+v", e)
 	}
-	if len(e.Actions) != 1 || e.Actions[0].ID != "application_decline" || e.Actions[0].Method != http.MethodPost ||
-		e.Actions[0].Path != fmt.Sprintf("/v1/guilds/%d/applications/%d/decline", gid, a.ID) {
+	if len(e.Actions) != 2 || e.Actions[1].ID != "application_decline" || e.Actions[1].Method != http.MethodPost ||
+		e.Actions[1].Path != fmt.Sprintf("/v1/guilds/%d/applications/%d/decline", gid, a.ID) {
 		t.Fatalf("actions %+v", e.Actions)
 	}
 	if e.DedupeKey != fmt.Sprintf("guild.applicant:%d", a.ID) {
 		t.Fatalf("dedupe %q", e.DedupeKey)
+	}
+}
+
+func TestApplicantActionsAcceptAndDecline(t *testing.T) {
+	got := applicantActions(2, 31)
+	want := []struct{ id, title, path string }{
+		{"application_accept", "Accept", "/v1/guilds/2/applications/31/accept"},
+		{"application_decline", "Decline", "/v1/guilds/2/applications/31/decline"},
+	}
+	if len(got) != len(want) {
+		t.Fatalf("actions %+v", got)
+	}
+	for i, w := range want {
+		if a := got[i]; a.ID != w.id || a.Title != w.title || a.Path != w.path || a.Method != http.MethodPost || a.Body != nil {
+			t.Errorf("action %d %+v, want %+v", i, a, w)
+		}
 	}
 }
 

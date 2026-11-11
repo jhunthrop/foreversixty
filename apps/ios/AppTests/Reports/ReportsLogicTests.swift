@@ -127,7 +127,17 @@ struct ReportsLogicTests {
     }
 
     @Test func reportMeta_weekdayAndLongDate() throws {
-        #expect(ReportsCopy.reportMeta(try ReportsTestData.report(), clock: clock) == "Monday 14 December 2026 · logged by Obnoxious Yell")
+        #expect(ReportsCopy.reportMeta(try ReportsTestData.report(), clock: clock) == "Monday 14 December 2026 · logged by Gorvash")
+    }
+
+    /// Round 7, row 1: the house figure Gear and Activity share (apps/shared/formats.json).
+    @Test func houseFigure() {
+        #expect(ReportsCopy.houseFigure(182.04) == "182")
+        #expect(ReportsCopy.houseFigure(1196.2) == "1,196")
+        #expect(ReportsCopy.houseFigure(100) == "100")
+        #expect(ReportsCopy.houseFigure(94.64) == "94.6")
+        #expect(ReportsCopy.houseFigure(18) == "18.0")
+        #expect(ReportsCopy.houseFigure(0) == "0.0")
     }
 
     // MARK: Your parses
@@ -135,7 +145,7 @@ struct ReportsLogicTests {
     @Test func parseRows_andWords() throws {
         let rows = ParseRows.rows(try ReportsTestData.me())
         #expect(rows.count == 1)
-        #expect(ReportsCopy.parseMeta(rows[0]) == "Kill 4:28 · Obnoxious Yell, Fury")
+        #expect(ReportsCopy.parseMeta(rows[0]) == "Kill 4:28 · Gorvash, Fury")
         #expect(ReportsCopy.figure(rows[0].fight.value) == "712")
         #expect(rows[0].tier == .purple)
         #expect(ReportsCopy.parseA11y(rows[0]) == "Onyxia, kill, 4 minutes 28 seconds, 712 damage per second, 91st percentile, New best")
@@ -177,7 +187,7 @@ struct ReportsLogicTests {
     @Test func meterA11y_marksYourRow() throws {
         let players = try ReportsTestData.meters().players
         let mine = try #require(players.firstIndex { $0.mine })
-        #expect(ReportsCopy.meterA11y(rank: mine + 1, player: players[mine], metric: .damage) == "Rank 6, Obnoxious Yell, Fury Warrior, 712, your character")
+        #expect(ReportsCopy.meterA11y(rank: mine + 1, player: players[mine], metric: .damage) == "Rank 6, Gorvash, Fury Warrior, 712, your character")
     }
 
     @Test func meterValues_followTheSegment() throws {
@@ -200,7 +210,7 @@ struct ReportsLogicTests {
 
     @Test func coach_asksOnlyWithLogCoachAndAKill() throws {
         let me = try ReportsTestData.me()
-        #expect(Coach.player(logCoach: true, me: me) == "us/pvp/obnoxious-yell")
+        #expect(Coach.player(logCoach: true, me: me) == "us/pvp/gorvash")
         #expect(Coach.player(logCoach: false, me: me) == nil)
         #expect(Coach.player(logCoach: true, me: try ReportsTestData.meWithoutKill()) == nil)
     }

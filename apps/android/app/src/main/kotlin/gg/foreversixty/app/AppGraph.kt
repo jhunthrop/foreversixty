@@ -79,7 +79,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         ForeverHttpClient.create(
             config = config,
             tokens = tokens,
-            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets), { DebugFixtures.latencyMillis }) { DebugFixtures.variants },
             identity = identity,
         ),
         updateGate,

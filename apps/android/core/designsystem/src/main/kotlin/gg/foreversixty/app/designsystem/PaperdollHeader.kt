@@ -46,15 +46,12 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 /** One slot of the phone paperdoll's list: the slot's word, and the item in it or nothing. */
 data class PaperdollListSlot(
@@ -86,8 +83,9 @@ data class PaperdollListSlot(
  * character's [portrait], or the LX seal; the [title]; the set's [figure]) and the slots in two
  * columns on the panel. A tap on a filled slot calls [onSelect]. [icon] draws a slot's item icon
  * (the app's item icon), which sits in the 44 dp socket. [lead] is a line under the strip (Gear's
- * band, faction and Change). A name clamps to two lines; a gain never shares its line with a cut
- * slot word, it drops under it whole. iOS: `PaperdollHeader`.
+ * band, faction and Change). A name wraps and never truncates (spec 3.2), a third line only when its
+ * words need it; a gain never shares its line with a cut slot word, it drops under it whole. iOS:
+ * `PaperdollHeader`.
  */
 @Composable
 fun PaperdollHeader(
@@ -139,22 +137,16 @@ private fun Strip(title: String, figure: String?, unit: String, portrait: Painte
         Text(
             title,
             modifier = Modifier.weight(1f).semantics { heading() },
-            style = TextStyle(fontFamily = FsFont.title, fontSize = TITLE_SIZE, lineHeight = TITLE_LINE),
+            style = FsType.sectionReading,
             color = FsColor.cream,
         )
         if (figure != null) {
             Text(
                 buildAnnotatedString {
                     append(figure)
-                    withStyle(SpanStyle(fontSize = UNIT_SIZE, color = FsColor.text)) { append(" $unit") }
+                    withStyle(FsType.figureUnit.toSpanStyle().copy(color = FsColor.text)) { append(" $unit") }
                 },
-                style = TextStyle(
-                    fontFamily = FsFont.body,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = FIGURE_SIZE,
-                    fontFeatureSettings = "tnum",
-                    shadow = Shadow(Color.Black, Offset(0f, 1f), 2f),
-                ),
+                style = FsType.figureSm.copy(shadow = Shadow(Color.Black, Offset(0f, 1f), 2f)),
                 color = FsColor.strong,
                 maxLines = 1,
             )
@@ -190,10 +182,8 @@ private fun Cell(
             if (item != null) {
                 Text(
                     item.name,
-                    style = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, lineHeight = 16.sp),
+                    style = FsType.paperdollName,
                     color = item.quality,
-                    maxLines = NAME_LINES,
-                    overflow = TextOverflow.Ellipsis,
                 )
                 Sub(slot.label, item.detail, item.isGain)
             } else {
@@ -210,12 +200,13 @@ private fun Cell(
  */
 @Composable
 private fun Sub(label: String, detail: String?, gain: Boolean) {
-    val style = TextStyle(fontFamily = FsFont.body, fontSize = 12.sp, lineHeight = 16.sp)
+    val style = FsType.paperdollDetail
     if (detail == null) {
         Text(label, style = style, color = FsColor.muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
         return
     }
-    FlowRow(Modifier.fillMaxWidth()) {
+    // The separator joins its word and the detail in one node, so TalkBack never reads a lone `·` (N6).
+    FlowRow(Modifier.fillMaxWidth().clearAndSetSemantics { contentDescription = "$label, $detail" }) {
         Text("${label.replace(' ', NBSP)}$NBSP·$NBSP", style = style, color = FsColor.muted, maxLines = 1, softWrap = false)
         Text(
             detail.replace(' ', NBSP),
@@ -289,7 +280,6 @@ fun PaperdollMedallion(portrait: Painter?, size: Dp, ring: Boolean = false) {
 
 private val MEDALLION_SIZE = 40.dp
 private val MEDALLION_RING = 1.5.dp
-private const val NAME_LINES = 2
 private const val ONE_COLUMN_SCALE = 1.5f
 private const val NBSP = '\u00a0'
 private val CELL_SIZE = 44.dp
@@ -299,8 +289,4 @@ private val COLUMN_GAP = 10.dp
 private val STRIP_GAP = 10.dp
 private val SELECTED_RING = 2.dp
 private val SELECTED_GAP = 3.dp
-private val TITLE_SIZE = 19.sp
-private val TITLE_LINE = 23.sp
-private val FIGURE_SIZE = 17.sp
-private val UNIT_SIZE = 11.sp
 private const val COVERED_ALPHA = 0.55f

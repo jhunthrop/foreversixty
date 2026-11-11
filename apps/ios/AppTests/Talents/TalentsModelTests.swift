@@ -42,7 +42,7 @@ struct TalentsModelTests {
         fury = try TalentTestData.fury()
         catalog = try BisTestData.catalog()
         let me = try BisTestData.me()
-        yell = HomeCharacter(try #require(me.characters.first { $0.name == "Obnoxious Yell" }))
+        yell = HomeCharacter(try #require(me.characters.first { $0.name == "Gorvash" }))
     }
 
     private func fresh<T>(_ value: T) -> Result<CachedFile<T>, APIError> {

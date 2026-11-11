@@ -1,83 +1,104 @@
 Open the menu
 Gear
 Fury Warrior
-1004.2 DPS
-60 raid · Alliance · 4 of 17 slots on the list · Change
+1,004 DPS
+60 raid · Alliance · 5 of 17 slots match the list · Change
++47.5 DPS from 12 upgrades · synced 2 h ago
 Lionheart Helm, Head, +14.5 DPS
 Lionheart Helm
+Head, +14.5 DPS
 Head ·
 +14.5 DPS
 Skibi's Pendant, Neck, Equipped
 Skibi's Pendant
+Neck, Equipped
 Neck ·
 Equipped
 Theramore Pauldrons, Shoulder, Equipped
 Theramore Pauldrons
+Shoulder, Equipped
 Shoulder ·
 Equipped
 Howler's Furs, Back, +2.4 DPS
 Howler's Furs
+Back, +2.4 DPS
 Back ·
 +2.4 DPS
 Timbermaw Tunic, Chest, +5.3 DPS
 Timbermaw Tunic
+Chest, +5.3 DPS
 Chest ·
 +5.3 DPS
 Forest Stalker's Bracers, Wrist, +0.1 DPS
 Forest Stalker's Bracers
+Wrist, +0.1 DPS
 Wrist ·
 +0.1 DPS
 Theramore Gauntlets, Hands, +1.0 DPS
 Theramore Gauntlets
+Hands, +1.0 DPS
 Hands ·
 +1.0 DPS
 Valiant's Waistguard, Waist, Equipped
 Valiant's Waistguard
+Waist, Equipped
 Waist ·
 Equipped
 Sentinel's Plate Legguards, Legs, +4.7 DPS
 Sentinel's Plate Legguards
+Legs, +4.7 DPS
 Legs ·
 +4.7 DPS
 Scalegut Treaders, Feet, +0.9 DPS
 Scalegut Treaders
+Feet, +0.9 DPS
 Feet ·
 +0.9 DPS
-Don Julio's Band, Finger, +6.8 DPS
+Don Julio's Band, Finger 1, +6.8 DPS
 Don Julio's Band
-Finger ·
+Finger 1, +6.8 DPS
+Finger 1 ·
 +6.8 DPS
-Cutthroat's Signet, Finger, +0.8 DPS
+Cutthroat's Signet, Finger 2, +0.8 DPS
 Cutthroat's Signet
-Finger ·
+Finger 2, +0.8 DPS
+Finger 2 ·
 +0.8 DPS
-Hand of Justice, Trinket, Equipped
+Hand of Justice, Trinket 1, Equipped
 Hand of Justice
-Trinket ·
+Trinket 1, Equipped
+Trinket 1 ·
 Equipped
-Molten Heart of the Mountain, Trinket, +3.2 DPS
+Molten Heart of the Mountain, Trinket 2, +3.2 DPS
 Molten Heart of the Mountain
-Trinket ·
+Trinket 2, +3.2 DPS
+Trinket 2 ·
 +3.2 DPS
 Ironwood Blade, Main hand, +5.9 DPS
 Ironwood Blade
+Main hand, +5.9 DPS
 Main hand ·
 +5.9 DPS
 Persuader, Off hand, Equipped
 Persuader
+Off hand, Equipped
 Off hand ·
 Equipped
 Blackcrow, Ranged, +1.9 DPS
 Blackcrow
+Ranged, +1.9 DPS
 Ranged ·
 +1.9 DPS
-Where to go tonight
+Where to go
 Blackrock Spire
 Blackcrow · Shadow Hunter Vosh'gajin, 8%
+1 upgrade · +1.9 DPS
 Blacksmithing
 Lionheart Helm, Ironwood Blade · ask a blacksmith
+2 upgrades · +20.4 DPS
 Stormpike Guard
 Don Julio's Band, needs revered
+1 upgrade · +6.8 DPS
 Home
 1 new
 Raid

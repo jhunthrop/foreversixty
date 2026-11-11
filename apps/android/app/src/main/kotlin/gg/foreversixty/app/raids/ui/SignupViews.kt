@@ -332,6 +332,19 @@ fun ReminderAsk(turnOn: () -> Unit, notNow: () -> Unit) {
     }
 }
 
+/**
+ * The spec sheet while [controller] asks for one. The pick's scope lives here, outside the sheet: a
+ * pick closes the sheet at once, and a scope of the sheet's own was cancelled with it, so a write
+ * slower than that recomposition lost its answer (no `Saved.`, the block left busy).
+ */
+@Composable
+fun SpecAskSheet(controller: SignupController, raidTitle: String, date: String) {
+    val scope = rememberCoroutineScope()
+    val ask = controller.specAsk ?: return
+    val character = controller.character(ask.characterKey) ?: return
+    SpecSheet(ask, character, raidTitle, date, pick = { option -> scope.launch { controller.pickSpec(option) } }, close = { controller.closeSpecSheet() })
+}
+
 /** "Which spec tonight?" (spec F4.3), a Material bottom sheet. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

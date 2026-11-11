@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,11 +26,15 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
+import gg.foreversixty.app.guild.logic.GuildRank
+import gg.foreversixty.app.push.NotificationsLine
+import gg.foreversixty.app.push.PushGroup
 import gg.foreversixty.app.account.AccountCopy
 import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.account.AccountLinks
 import gg.foreversixty.app.account.AccountPage
 import gg.foreversixty.app.account.AccountRoute
+import gg.foreversixty.app.auth.session.DeviceRow
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.designsystem.FsColor
@@ -101,9 +106,15 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
     val me = (phase as? SessionPhase.SignedIn)?.me
     val model = me?.let { MenuModel.of(it, session.currentCharacter(phase, picked), Instant.now()) }
-    var devices by remember { mutableStateOf<Int?>(null) }
+    var devices by remember { mutableStateOf<List<DeviceRow>?>(null) }
+    var notificationGroups by remember { mutableStateOf<Map<PushGroup, Boolean>?>(null) }
+    var refresh by remember { mutableStateOf(MenuRefresh.Idle) }
     LaunchedEffect(open, me != null) {
-        if (open && session != null && me != null) devices = (session.devices() as? ApiResult.Success)?.data?.size
+        if (open && session != null && me != null) {
+            devices = (session.devices() as? ApiResult.Success)?.data
+            // Round 7 row 4: the account's per-group choices, read each time the drawer opens.
+            (session.notificationSettings() as? ApiResult.Success)?.let { notificationGroups = NotificationsLine.account(it.data) }
+        }
     }
     val offline = remember(account) { account?.offlineData?.invoke() }
     val offlineSize by produceState<String?>(null, open, offline) {
@@ -112,9 +123,15 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
             value = offline.report?.let { OfflineData.size(it.totalBytes) }
         }
     }
+    // The account's choices and the channels' real switches, read each time the drawer opens.
+    val officer = model?.you?.guild?.rank?.let { GuildRank.of(it) != GuildRank.Member } == true
+    val res = LocalResources.current
+    val notifications = remember(open, officer, res, notificationGroups) { NotificationsLine.line(res, context, notificationGroups, officer) }
     val lines = MenuLines(
+        notifications = notifications,
         plan = me?.let { PlanCopy.line(PlanSummary.of(it, Instant.now()).row) },
-        devices = devices,
+        devices = devices?.size,
+        newestDevice = devices?.firstOrNull { !it.isThisDevice }?.name,
         offlineData = offlineSize,
         version = account?.let { AccountCopy.version(it.versionName, it.versionCode, it.dataBuild()) }.orEmpty(),
         year = Year.now().value,
@@ -124,12 +141,17 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
         lines = lines,
         actions = MenuActions(
             onSwitch = { character -> act { session?.pick(character.key) } },
-            onRefresh = { scope.launch { session?.refresh() } },
+            onRefresh = {
+                if (session != null && refresh != MenuRefresh.Refreshing) {
+                    scope.launch { MenuRefresh.run({ refresh = it }, session::refresh) }
+                }
+            },
             onOpen = { destination -> act { open -> open(destination) } },
             onSignIn = { act { account?.let { it.session.beginSignIn(it.browser(context)) } } },
             onHelp = { act { AccountLinks.open(context, AccountLinks.HELP) } },
             onPrivacy = { act { AccountLinks.open(context, AccountLinks.PRIVACY) } },
         ),
+        refresh = refresh,
     )
 }
 

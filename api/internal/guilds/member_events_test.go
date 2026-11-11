@@ -90,3 +90,14 @@ func TestTheNightsSummaryOffersTheCoachToAHolder(t *testing.T) {
 		t.Fatal("a Premium member holds the coach")
 	}
 }
+
+func TestLootSegmentsStyleTheNameAndItem(t *testing.T) {
+	segs := lootSegments("Gorvash", "warrior", "Deathbringer", 17068, 4, "Olympus")
+	if got := events.SegmentsText(segs); got != "Gorvash was awarded Deathbringer by Olympus." {
+		t.Fatalf("text %q", got)
+	}
+	if segs[0].Style != events.StyleName || segs[0].Class != "warrior" || segs[2].Style != events.StyleItem ||
+		*segs[2].ItemID != 17068 || *segs[2].Quality != 4 {
+		t.Fatalf("segments %+v", segs)
+	}
+}

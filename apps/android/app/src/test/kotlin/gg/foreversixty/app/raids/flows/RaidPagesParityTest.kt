@@ -114,7 +114,7 @@ object RaidPagesFixtures {
             ReadyItem(ReadyTone.Ok, "Drakefire Amulet", "Attuned to Onyxia's Lair", null),
             ReadyItem(ReadyTone.Ok, "Elixir of the Mongoose", "3 in your bags, from the addon's last export", null),
             ReadyItem(ReadyTone.Miss, "Flask of the Titans", "None in your bags", "Auction house"),
-            ReadyItem(ReadyTone.Warn, "Boots not enchanted", "Enchant Boots: Greater Agility", "Where to get it"),
+            ReadyItem(ReadyTone.Warn, "Boots not enchanted", "", null),
         ),
         readyStamp = "From your last log-out, 9 h ago",
     )

@@ -1,7 +1,7 @@
 {
   "ok": true,
   "data": {
-    "player_key": "us/pvp/obnoxious-yell",
+    "player_key": "us/pvp/gorvash",
     "sample_size": 2,
     "trend": [
       {
@@ -19,8 +19,8 @@
     ],
     "next_cursor": "MjAyNi0xMi0wOFQwMjowOTo0MVp8azJxOG00eGI3cnRhfDI",
     "latest": {
-      "player_key": "us/pvp/obnoxious-yell",
-      "player_name": "Obnoxious Yell",
+      "player_key": "us/pvp/gorvash",
+      "player_name": "Gorvash",
       "class": "Warrior",
       "spec": "Fury",
       "role": "dps",

@@ -62,7 +62,7 @@ import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.premium.PlanRow
 import gg.foreversixty.app.premium.PlanSummary
 
-/** The current character and where it plays (`Obnoxious Yell`, `US · PvP`). */
+/** The current character and where it plays (`Gorvash`, `US · PvP`). */
 data class CharacterLine(val name: String, val className: String?, val place: String)
 
 /**

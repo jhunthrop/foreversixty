@@ -71,7 +71,9 @@ struct HomeFlowParityTests {
     @Test("ios-home-34")
     func leveler() async throws {
         let upgrades = HomeBlockContent.upgrades(HomeUpgradesContent(
-            rows: T.levelerRows, bestRun: "Best run: Blackfathom Deeps, Grimclaw +0.9 DPS", note: nil
+            rows: T.levelerRows,
+            bestRun: HomeBestRunRow(place: "Blackfathom Deeps", line: "Best run · Ring of Precision", icon: "inv_jewelry_ring_14", gain: HomeGain(figure: "+0.6", unit: "DPS")),
+            note: nil, meta: "6 upgrades · +3.1 DPS", stamp: T.stamp
         ))
         try await check(T.content([upgrades, T.newForYou("leveler", unread: 1)], head: T.felsnap), "home-34")
     }
@@ -97,6 +99,14 @@ struct HomeFlowParityTests {
 @Suite("Home flow")
 struct HomeFlowLogicTests {
     private static let zone = TimeZone(identifier: "America/Chicago")!
+
+    @Test("an answer with no rows says why, by its state; only ok reads every slot matches")
+    func emptyNotes() throws {
+        #expect(HomeFlowPresenter.emptyNote(try HomeFixtures.home(state: "no_spec")) == Copy.homeAnswerPickSpec)
+        #expect(HomeFlowPresenter.emptyNote(try HomeFixtures.home(state: "no_gear")) == Copy.homeAnswerNoGear)
+        #expect(HomeFlowPresenter.emptyNote(try HomeFixtures.home(state: "under_20")) == Copy.homeAnswerUnder20)
+        #expect(HomeFlowPresenter.emptyNote(try HomeFixtures.home("character.home.yellfury")) == Copy.homeAnswerPickSpec)
+    }
 
     private var presenter: HomeFlowPresenter {
         var calendar = Calendar(identifier: .gregorian)
@@ -145,7 +155,7 @@ struct HomeFlowLogicTests {
             key: "us/normal/felsnap", region: "us", ruleset: "normal", name: "Felsnap", race: "dwarf", className: "hunter",
             specName: "Beast Mastery", level: 34, guild: nil, faction: "alliance"
         )
-        #expect(presenter.head(leveler).facts == ["Level 34 Beast Mastery Hunter", "6 levels to band 40"])
+        #expect(presenter.head(leveler).facts == ["Level 34 Beast Mastery Hunter", "6 levels to the 40 list"])
     }
 
     @Test("the countdown: hours and minutes to the pull, none once it has started")
@@ -182,18 +192,67 @@ struct HomeFlowLogicTests {
           {"id":"dungeon:mara","kind":"dungeon","name":"Maraudon","level_min":40,"items":[4]}]}
         """.utf8))
         let run = try #require(BestRun.best(slots: slots, gains: ["head": 2.3, "finger": 0.6], loot: loot, level: 34))
-        #expect(run == BestRun(place: "Blackrock Spire", item: "Blackcrow", gain: 2.3 - 0.4, chance: 8.2))
+        #expect(run == BestRun(place: "Blackrock Spire", item: "Blackcrow", gain: 2.3 - 0.4, chance: 8.2, itemID: 2))
         let finger = try #require(BestRun.best(slots: slots, gains: ["finger": 0.6], loot: loot, level: 34))
         #expect(finger.place == "Blackfathom Deeps")
         #expect(BestRun.best(slots: slots, gains: [:], loot: loot, level: 34) == nil)
     }
 
-    @Test("Best run's line names the chance when the loot file has one")
-    func bestRunLine() {
-        let run = BestRun(place: "Blackrock Spire", item: "Blackcrow", gain: 1.94, chance: 8.2)
-        #expect(presenter.bestRunLine(run, unit: "DPS") == "Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%")
-        let none = BestRun(place: "Blackfathom Deeps", item: "Ring of Precision", gain: 0.6, chance: nil)
-        #expect(presenter.bestRunLine(none, unit: "DPS") == "Best run: Blackfathom Deeps, Ring of Precision +0.6 DPS")
+    @Test("Best run is a row: the dungeon over the drop and its chance, the drop's icon when the answer names it, the gain")
+    func bestRunRow() throws {
+        let home = try HomeFixtures.home()
+        let waist = try #require(home.upgrades.first { $0.slot == "waist" })
+        let run = BestRun(place: "Blackrock Spire", item: "Blackcrow", gain: 1.94, chance: 8.2, itemID: waist.pick.id)
+        let row = presenter.bestRunRow(run, home: home)
+        #expect(row.place == "Blackrock Spire")
+        #expect(row.line == "Best run · Blackcrow · 8%")
+        #expect(row.icon == waist.pick.icon)
+        #expect(row.gain == HomeGain(figure: "+1.9", unit: "DPS"))
+        let none = presenter.bestRunRow(BestRun(place: "Blackfathom Deeps", item: "Ring of Precision", gain: 0.6, chance: nil), home: home)
+        #expect(none.line == "Best run · Ring of Precision")
+        #expect(none.icon == nil)
+    }
+
+    @Test("Next upgrades: the meta counts every upgrade and the total, the stamp says when and from where")
+    func upgradesMeta() throws {
+        let home = try HomeFixtures.home()
+        let fixed = HomeFlowPresenter(now: HomeFixtures.now, clock: RaidClock(zone: Self.zone))
+        let content = fixed.upgrades(home, limit: 3, bestRun: nil)
+        // Round 7: the house format, whole from 100 (`+158 DPS` for 157.6).
+        #expect(content.meta == "12 upgrades · +103 DPS")
+        #expect(content.stamp?.hasPrefix("Synced ") == true)
+        #expect(content.stamp?.hasSuffix(" from the addon") == true)
+        #expect(content.stamp?.contains("2") == true, "synced two hours before HomeFixtures.now")
+    }
+
+    @Test("round 7: Home's gains in the house format: whole from 100, one decimal below")
+    func houseGains() {
+        #expect(ReportsCopy.signedHouseFigure(157.6) == "+158")
+        #expect(ReportsCopy.signedHouseFigure(14.5) == "+14.5")
+        #expect(ReportsCopy.signedHouseFigure(-0.3) == "\u{2212}0.3")
+    }
+
+    @Test("round 4, row 2: the Synced stamp takes the warning tone past a week, by the drawer's rule")
+    func staleStamp() throws {
+        let home = try HomeFixtures.home()
+        let synced = try #require(home.syncedAt)
+        let at = { (seconds: TimeInterval) in
+            HomeFlowPresenter(now: synced.addingTimeInterval(seconds), clock: RaidClock(zone: Self.zone)).upgrades(home, limit: 3, bestRun: nil)
+        }
+        #expect(at(2 * 3600).stampStale == false)
+        #expect(at(SyncAge.staleAfter + 60).stampStale)
+    }
+
+    @Test("an upgrade's source ends with the worn item it replaces and the drop chance")
+    func upgradeSource() throws {
+        let home = try HomeFixtures.home()
+        let waist = try #require(home.upgrades.first { $0.slot == "waist" })
+        let worn = try #require(waist.worn?.name)
+        #expect(HomeFlowPresenter.sourceLine(waist) == "\(waist.slotLabel) · \(waist.pick.sourceLine) · replaces \(worn) · 4%")
+        let wrist = try #require(home.upgrades.first { $0.slot == "wrist" })
+        #expect(HomeFlowPresenter.sourceLine(wrist) == "\(wrist.slotLabel) · \(wrist.pick.sourceLine) · 4%", "an unknown worn item is not named")
+        let trinket = try #require(home.upgrades.first { $0.slot == "trinket2" })
+        #expect(HomeFlowPresenter.sourceLine(trinket) == "\(trinket.slotLabel) · \(trinket.pick.sourceLine)")
     }
 
     @Test("before the pull: the items not ok, in their own words, with the export's age")

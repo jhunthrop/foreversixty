@@ -100,10 +100,26 @@
             "count": 0
           },
           {
-            "key": "blessings",
-            "name": "Blessings",
-            "label": "Bless",
+            "key": "blessing_of_kings",
+            "name": "Blessing of Kings",
+            "label": "Kings",
+            "icon": "spell_magic_magearmor",
+            "present": false,
+            "count": 0
+          },
+          {
+            "key": "blessing_of_might",
+            "name": "Blessing of Might",
+            "label": "Might",
             "icon": "spell_holy_fistofjustice",
+            "present": false,
+            "count": 0
+          },
+          {
+            "key": "blessing_of_wisdom",
+            "name": "Blessing of Wisdom",
+            "label": "Wisdom",
+            "icon": "spell_holy_sealofwisdom",
             "present": false,
             "count": 0
           },
@@ -159,8 +175,8 @@
       },
       "signups": [
         {
-          "character_key": "us/pvp/obnoxious-yell",
-          "name": "Obnoxious Yell",
+          "character_key": "us/pvp/gorvash",
+          "name": "Gorvash",
           "class": "warrior",
           "spec": "warrior-fury",
           "role": "dps",
@@ -207,8 +223,8 @@
       "viewer": {
         "characters": [
           {
-            "character_key": "us/pvp/obnoxious-yell",
-            "name": "Obnoxious Yell",
+            "character_key": "us/pvp/gorvash",
+            "name": "Gorvash",
             "class": "warrior",
             "spec": "warrior-fury",
             "verified": true,
@@ -605,7 +621,7 @@
     "moved": null,
     "confirmation": {
       "title": "You're In for Onyxia's Lair",
-      "body": "Obnoxious Yell, pull at 7:00 pm CST."
+      "body": "Gorvash, pull at 7 pm CST."
     }
   },
   "error": null,

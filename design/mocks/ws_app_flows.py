@@ -141,8 +141,28 @@ HOME_R5_CSS = '''
 .ap.home .irow{padding-inline:0}
 /* a row's lines as the Pixel 9 rounds them (420 dpi: a 20 sp line is 54 px, 20.57 dp; 18 sp is 48 px, 18.29 dp) */
 .ap.home section .row .ttl{line-height:20.57px}.ap.home section .row .sub{line-height:18.29px}
-[data-platform=ios] .ap.home .blk .btns{gap:8px;border:0;border-radius:0;overflow:visible}
-[data-platform=ios] .ap.home .blk .btns .btn{height:44px;min-height:44px;border:1px solid var(--line);border-radius:6px}
+/* round 2: iOS answers with its Segmented (brand B1): one connected group, hairline dividers, the chosen one teal, 44 pt */
+[data-platform=ios] .ap.home .blk .btns{border-color:#5a5d70;border-radius:6px;background:#170e09}
+[data-platform=ios] .ap.home .blk .btns .btn{height:44px;min-height:44px;padding:0 4px;font:600 13px/18px var(--font-body);color:var(--text)}
+[data-platform=ios] .ap.home .blk .btns .btn+.btn{border-left:1px solid #5a5d70}
+[data-platform=ios] .ap.home .blk .btns .btn.primary{font-weight:700;color:#fff;background:#0f6064;box-shadow:inset 0 0 0 1px #408076}
+/* round 2 (review backfill): the status line under the answers; the upgrades' synced stamp; the raid line's tally */
+.ap.home .chips .btn.primary{background:#0f6064;border-color:#408076;color:#fff}
+.ap.home .btn.primary{background:#0f6064;border-color:#408076;color:#fff;box-shadow:none}
+.ap.home .row .trail .btn,.ap.home .vstack .btn:not(.primary){background:#114f72;border-color:#1d6a96;color:#fff}
+.ap.home .stl{margin:8px 0 0;font:400 13px/20px var(--font-body);color:var(--kill)}
+.ap.home section>.stmp{margin:-8px 0 8px;font:400 14px/20px var(--font-body);color:var(--muted)}
+[data-platform=ios] .ap.home section>.stmp{margin-top:-12px}
+.ap.home section>.stmp+*{padding-top:8px;border-radius:10px 10px 0 0}
+/* round 3: New for you's ages on their own line; the compact tally (iOS 14/20 in the text colour, Android 13 muted) */
+.ap.home .row .sub.age{margin-top:0}
+[data-platform=ios] .ap.home .tline{font:400 14px/20px var(--font-body);color:var(--text);margin:0 0 8px}
+[data-platform=ios] .ap.home .tline .ok{color:#fff}
+[data-platform=ios] .ap.home .blk .btns .btn{height:36px;min-height:36px}
+[data-platform=ios] .ap.home .blk:not(:has(.cdn)) .btns{margin:0}
+.ap.home .tline{margin:0 0 4px;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.ap.home .tline .ok{color:var(--kill)}.ap.home .tline .lo{color:var(--wipe)}
+.ap.home .blk:not(:has(.cdn)) .tally{margin:0 0 8px}
 [data-platform=ios] .ap.home .blk .row .trail .btn{min-height:44px}
 '''
 
@@ -158,8 +178,10 @@ def _signup_buttons(selected: str = '') -> str:
         Button(x, primary=(x == selected), small=True) for x in ('In', 'Late', 'Bench', 'Out')) + '</div>'
 
 
-def _late_chips() -> str:
-    return '<div class="chips" role="group" aria-label="How late">' + ''.join(Button(x, small=True) for x in ('15 min', '30 min', '60 min')) + '</div>'
+def _late_chips(chosen: str = '') -> str:
+    """15, 30, 60 min; the minutes already said selected (they stay open after a pick, round 2)."""
+    return '<div class="chips" role="group" aria-label="How late">' + ''.join(
+        Button(x, primary=(x == chosen), small=True) for x in ('15 min', '30 min', '60 min')) + '</div>'
 
 
 def _raid_card(officer: bool = False, answered: str = '', late: bool = False) -> str:
@@ -168,8 +190,10 @@ def _raid_card(officer: bool = False, answered: str = '', late: bool = False) ->
     cd = Countdown(f'Olympus XXVII &middot; {RAID} tonight', [('02', 'hours'), ('48', 'min')],
                    f'<p class="t-small">{WHEN}</p>', 'guild')
     answered = 'Late' if late else answered
-    me = f'<p class="t-small me">{"You are " + answered if answered else "You have not answered"}, {AS_ME}</p>'
-    how_late = '<p class="t-small me">How late?</p>' + _late_chips() if late else ''
+    # round 3 (AS5): once answered the answers are the state; the line names only the character
+    me = f'<p class="t-small me">{AS_ME_CAP if answered else "You have not answered, " + AS_ME}</p>'
+    # late: Late with 30 minutes just sent, the minutes selected and the status line saying so
+    how_late = '<p class="t-small me">How late?</p>' + _late_chips('30 min') + '<p class="stl">Saved.</p>' if late else ''
     ready = Rows([Row('2 things before you pull', 'No flask in your bags; boots not enchanted &middot; from your last log-out, 9 h ago', slim=True)], open_=True)
     # round 5 (HOME_R5_CSS): the card titles the zone and puts the guild before the time
     r5 = f'<h2 class="r5 r5z">{RAID}</h2><p class="r5 r5p">Olympus XXVII &middot; {WHEN}</p>'
@@ -196,12 +220,16 @@ CHARACTERS = [  # name, class, line, tag, Battle.net avatar (None: no avatar_url
     ('Ashmantle', 'warlock', 'Affliction Warlock &middot; 18', '', None, 'alliance'),
 ]
 LOW = [('Pockets', 'rogue', 'Rogue &middot; 6'), ('Bankalt', 'mage', 'Mage &middot; 1')]
+# Round 2 (review backfill): the head's line names the guild rank; a Switch row ends with the item level the import has.
+YOU_LINE = 'Fury Warrior &middot; 60 &middot; Raider'
+ITEM_LEVEL = {'Lightvow': 61, 'Kaelor': 44, 'Felsnap': 31, 'Brewmist': 19, 'Ashmantle': 15, 'Pockets': 5}
+NEWEST_DEVICE = {'ios': 'iPhone 17', 'android': 'Pixel 9'}
 # The tools, in the order the owner ruled (2026-11-08); the ones a signed-out visitor can use carry True.
 TOOLS = [('Guides', 'Your spec&rsquo;s guide, then every class', True), ('Tiers', 'Every spec, this week', True),
          ('Patch notes', 'The game and the site', True), ('Sims', 'Your server runs and saved sims', False),
          ('Logs and reports', 'Your reports and the coach', False), ('Planner', 'Your builds and the guide builds', True),
          ('Rankings', 'Your spec and your guild', True)]
-ACCOUNT = [('Notifications', 'Raids, gear and sims, logs on'), ('Plan', 'Premium &middot; Founder price'), ('Devices', '3 signed in'),
+ACCOUNT = [('Notifications', 'Gear and sims, guild ladder, tiers off'), ('Plan', 'Premium &middot; Founder price'), ('Devices', '3 signed in'),
            ('Offline data', '26.6 MB on this phone'), ('Settings', 'Sign out, delete account')]
 
 
@@ -246,7 +274,12 @@ def _r5_portrait(faction: str, avatar: str | None, cls: str, px: int) -> str:
     return f'<span class="pf" style="width:{px}px;height:{px}px;--ring:{FACTION_RING[faction]}">{crest}{badge}</span>'
 
 
-def _menu_r5(state: str) -> str:
+def _switch_line(name: str, line: str) -> str:
+    level = ITEM_LEVEL.get(name)
+    return f'{line} &middot; item level {level}' if level else line
+
+
+def _menu_r5(state: str, platform: str) -> str:
     """The drawer's body in round 5 (MENU_R5_CSS); the characters, tools and account rows are menu()'s."""
     def section(title: str, rows: str) -> str:
         return f'<section data-region="{region_slug(title)}"><h3>{title}</h3>{rows}</section>'
@@ -262,20 +295,22 @@ def _menu_r5(state: str) -> str:
     else:
         me = CHARACTERS[0]
         you = (f'<div class="you"><div data-region="head"><div class="yt" data-region="head-title">{portrait(me[5], me[4], 56)}'
-               f'<div style="flex:1"><h2 style="color:{CLASS_COLOR[me[1]]}">{me[0]}</h2><div data-region="head-meta"><span class="ln">{me[2]}</span>'
+               f'<div style="flex:1"><h2 style="color:{CLASS_COLOR[me[1]]}">{me[0]}</h2><div data-region="head-meta"><span class="ln">{YOU_LINE}</span>'
                '<span class="tag">Main</span></div></div></div>'
                '<p class="stamp">Updated 2 h ago from Battle.net&nbsp;&middot;&nbsp;<a href="#">Refresh</a></p></div></div>')
         others = CHARACTERS[1:] if state != 'one' else []
-        chars = [f'<div class="row ch">{_r5_portrait(f, av, c, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{s}</span></div></div>'
+        chars = [f'<div class="row ch">{_r5_portrait(f, av, c, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{_switch_line(n, s)}</span></div></div>'
                  for n, c, s, _, av, f in others]
         if state == 'low':
-            chars += [f'<div class="row ch">{_r5_portrait("alliance", None, c, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{s}</span></div></div>'
+            chars += [f'<div class="row ch">{_r5_portrait("alliance", None, c, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{_switch_line(n, s)}</span></div></div>'
                       for n, c, s in LOW]
         fold = (f'<a class="fold" href="#">{"Hide low-level characters" if state == "low" else "Show low-level characters (2)"}</a>' if others else '')
         body = ((section('Switch character', ''.join(chars) + fold) if others else '')
                 + section('Tools', ''.join(row(n) for n, _, _ in TOOLS))
-                + section('Account', ''.join(row(n, s) for n, s in ACCOUNT)))
-    foot = ('<div class="foot"><span class="t-small">Version 0.1.0 (7) &middot; data 1.60.1.70790</span>'
+                + section('Account', ''.join(row(n, f'{s} &middot; newest {NEWEST_DEVICE[platform]}' if n == 'Devices' else s) for n, s in ACCOUNT)))
+    foot = ('<div class="foot"><span class="t-small">A fan-made player tool. Not affiliated with Blizzard.</span>'
+            '<span class="t-small">&copy; 2026 Commish LLC d/b/a Forever Sixty</span>'
+            '<span class="t-small">Version 0.1.0 (7) &middot; data 1.60.1.70790</span>'
             '<span class="t-small"><a class="link" href="#">Help</a> &middot; <a class="link" href="#">Privacy</a></span></div>')
     return you + f'<div class="bd">{body}{foot}</div>'
 
@@ -283,7 +318,7 @@ def _menu_r5(state: str) -> str:
 def menu(state: str):
     """state: in (6 characters), one (just the main), low (the low-level fold open), out (signed out)."""
     def b(platform: str) -> str:
-        html = build_page('Menu', f'<div class="drawer-wrap"><div class="drawer r5menu" role="dialog" aria-label="Menu">{_menu_r5(state)}</div>'
+        html = build_page('Menu', f'<div class="drawer-wrap"><div class="drawer r5menu" role="dialog" aria-label="Menu">{_menu_r5(state, platform)}</div>'
                           f'<div class="dim" aria-hidden="true"></div></div><style>{FLOWS_CSS}{MENU_R5_CSS}</style>', note='Profile menu mock, round 5.')
         return app_page(platform, html, None, navbar=False, who=None if state == 'out' else 'warrior')
     return b
@@ -294,46 +329,71 @@ def _head(leveler: bool = False) -> str:
     """One head on every Home state: the class crest, the name in the class colour and the fact line. The profile button
     above it is the portrait, a different image, so the character is never drawn twice the same way (owner, 2026-11-08)."""
     if leveler:
-        return PageHeader('Felsnap', HUNTER, crest_img('hunter', 56), ['Level 34 Beast Mastery Hunter', '6 levels to band 40'])
+        return PageHeader('Felsnap', HUNTER, crest_img('hunter', 56), ['Level 34 Beast Mastery Hunter', '6 levels to the 40 list'])
     return PageHeader('Thandrel', WARRIOR, crest_img('warrior', 56), ['Level 60 Fury Warrior', 'Olympus XXVII'])
 
 
-def _upgrades(leveler: bool = False, tonight: bool = True) -> str:
-    """Next upgrades (F5): three, each with its gain and where it comes from; one line names the best dungeon run with its
-    gain and chance (left out on a raid day: the raid is tonight)."""
-    if leveler:
-        rows = [ItemRow('Felbough Arm', 3, icon('inv_spear_08', 40, 'q3'), 'Main hand &middot; Fel Ancient, Ashenvale', gain=('+1.3', 'DPS', '')),
-                ItemRow('Cartilage Shapers', 3, icon('inv_gauntlets_18', 40, 'q3'), 'Hands &middot; quest, Lyn the Ignored', gain=('+0.8', 'DPS', '')),
-                ItemRow('Ring of Precision', 3, icon('inv_jewelry_ring_14', 40, 'q3'), 'Finger &middot; Blackfathom Deeps', gain=('+0.6', 'DPS', ''))]
-        go = 'Best run: Blackfathom Deeps, Grimclaw +0.9 DPS'
-    else:
-        rows = [ItemRow('Lionheart Helm', 4, icon('inv_helmet_36', 40, 'q4'), 'Head &middot; Blacksmithing', gain=('+14.5', 'DPS', '')),
-                ItemRow('Greenhammer', 4, icon('inv_mace_1h_raidhyjalc60_d_01', 40, 'q4'), 'Off hand &middot; Blacksmithing', gain=('+9.7', 'DPS', '')),
-                ItemRow('Don Julio&rsquo;s Band', 4, icon('inv_jewelry_ring_35', 40, 'q4'), 'Finger &middot; Stormpike Guard, needs revered', gain=('+6.8', 'DPS', ''))]
-        go = 'Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%'
-    line = Rows([Row(go, '', slim=True)], open_=True) if tonight else ''
-    return Section('Next upgrades', ''.join(rows) + line, action='Gear &rsaquo;')
+# Next upgrades (round 2, review backfill): the figures in the section's meta (Home's head carries none, owner ruling), the
+# synced stamp (iOS at the top of the panel, Android at its foot), the worn item a row replaces, Best run as a row with its
+# drop's icon (iOS titles the place, Android the item). The rows are the gear the Gear tab can reach (Greenhammer waits for
+# the first raids), as the Android parity fixture has them.
+UPGRADES = {
+    'raid': ('12 upgrades &middot; +47.5 DPS', 4, [
+        ('Lionheart Helm', 'inv_helmet_36', 'Head &middot; Blacksmithing &middot; replaces Helm of Valor', '+14.5'),
+        ('Don Julio&rsquo;s Band', 'inv_jewelry_ring_35', 'Finger &middot; Stormpike Guard, needs revered', '+6.8'),
+        ('Timbermaw Tunic', 'inv_chest_fur', 'Chest &middot; Leatherworking', '+5.3')],
+        ('Blackrock Spire', 'Blackcrow', 3, 'inv_weapon_crossbow_02', '8%', '+1.9')),
+    'leveler': ('6 upgrades &middot; +3.1 DPS', 3, [
+        ('Felbough Arm', 'inv_spear_08', 'Main hand &middot; Fel Ancient, Ashenvale', '+1.3'),
+        ('Cartilage Shapers', 'inv_gauntlets_18', 'Hands &middot; quest, Lyn the Ignored', '+0.8'),
+        ('Ring of Precision', 'inv_jewelry_ring_14', 'Finger &middot; Blackfathom Deeps', '+0.6')],
+        ('Blackfathom Deeps', 'Ring of Precision', 3, 'inv_jewelry_ring_14', '', '+0.6')),
+}
+SYNCED = 'Synced 2 h ago from the addon'
 
 
+def _best_run(platform: str, place: str, item: str, q: int, ic: str, chance: str, gain: str) -> str:
+    """Best run as a row: iOS titles the dungeon (`Best run · Blackcrow · 8%`), Android the item (`Best run · Blackrock Spire · 8%`)."""
+    ios = platform == 'ios'
+    line = ' &middot; '.join(x for x in (f'Best run &middot; {item if ios else place}', chance) if x)
+    row = ItemRow(place if ios else item, 1 if ios else q, icon(ic, 40, f'q{q}'), line, gain=(gain, 'DPS', ''))
+    return row.replace(f'color:{QCOL[1]}', 'color:var(--strong)', 1) if ios else row
+
+
+def _upgrades(platform: str, leveler: bool = False, tonight: bool = True) -> str:
+    """Next upgrades (F5): three, each with its gain and where it comes from; Best run as a row (left out on a raid day: the
+    raid is tonight)."""
+    meta, quality, picks, run = UPGRADES['leveler' if leveler else 'raid']
+    rows = ''.join(ItemRow(n, quality, icon(i, 40, f'q{quality}'), src, gain=(g, 'DPS', '')) for n, i, src, g in picks)
+    if tonight:
+        rows += _best_run(platform, *run)
+    # round 3 (row 8): the stamp under the meta line, outside the panel, on both
+    html = Section('Next upgrades', rows, action='Gear &rsaquo;', meta=meta)
+    return html.replace('</div>', f'</div><p class="stmp">{SYNCED}</p>', 1)
+
+
+# icon, title, body, when (round 3: Activity's buckets on their own line), unread
 ACTIVITY_PREVIEW = {
-    'day': [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012.3 DPS, you are #7 of 14 &middot; 1 h ago', True),
-            ('inv_misc_pocketwatch_01', 'Sim done: 948.6 DPS &plusmn;6', '+21 vs your last &middot; 3 h ago', True),
-            ('inv_misc_book_09', 'Fury Warrior BiS changed', 'A new pick for Hands &middot; yesterday', False)],
+    'day': [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012 DPS, you are #7 of 14', '1 h ago', True),
+            ('inv_misc_pocketwatch_01', 'Sim done: 949 DPS &plusmn;6', '+21 vs your last', '3 h ago', True),
+            ('inv_misc_book_09', 'Fury Warrior BiS changed', 'A new pick for Hands', '6:02 pm', False)],
     # the day after: Last night shows the loot and the report, so the preview starts below them
-    'after': [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012.3 DPS, you are #7 of 14 &middot; 8 h ago', True),
-              ('inv_misc_pocketwatch_01', 'Sim done: 948.6 DPS &plusmn;6', '+21 vs your last &middot; yesterday', False),
-              ('inv_misc_book_09', 'Fury Warrior BiS changed', 'A new pick for Hands &middot; Tue', False)],
-    'live': [('inv_misc_head_dragon_black', 'Brightwen is Late, 15 min', 'Onyxia&rsquo;s Lair &middot; 4 min ago', True),
-             ('inv_misc_head_dragon_black', 'Selka is In', 'Restoration Druid &middot; 20 min ago', True),
-             ('inv_misc_head_dragon_black', 'Healers short for Onyxia tonight', '3 of 8 missing &middot; 3 h ago', False)],
-    'leveler': [('inv_misc_book_09', 'Level 34: your 30 to 39 list', 'Beast Mastery Hunter &middot; 2 h ago', True),
-                ('inv_misc_pocketwatch_01', 'Sim done: 58.4 DPS &plusmn;1', '+3.1 vs your last &middot; yesterday', False),
-                ('inv_misc_book_09', 'Beast Mastery Hunter moved to A', 'Leveling tiers, 30 to 39 &middot; 2 d ago', False)],
+    'after': [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012 DPS, you are #7 of 14', '8 h ago', True),
+              ('inv_misc_pocketwatch_01', 'Sim done: 949 DPS &plusmn;6', '+21 vs your last', '6:02 pm', False),
+              ('inv_misc_book_09', 'Fury Warrior BiS changed', 'A new pick for Hands', 'Tue', False)],
+    'live': [('inv_misc_head_dragon_black', 'Brightwen is Late, 15 min', 'Onyxia&rsquo;s Lair', '4 min ago', True),
+             ('inv_misc_head_dragon_black', 'Selka is In', 'Restoration Druid', '20 min ago', True),
+             ('inv_misc_head_dragon_black', 'Healers short for Onyxia tonight', '3 of 8 missing', '3 h ago', False)],
+    'leveler': [('inv_misc_book_09', 'Level 34: your 30 to 39 list', 'Beast Mastery Hunter', '2 h ago', True),
+                ('inv_misc_pocketwatch_01', 'Sim done: 58.4 DPS &plusmn;1', '+3.1 vs your last', '6:02 pm', False),
+                ('inv_misc_book_09', 'Beast Mastery Hunter moved to A', 'Leveling tiers, 30 to 39', 'Sun', False)],
 }
 
 
-def _act_row(ic: str, t: str, s: str, unread: bool) -> str:
-    return Row(t, s, icon(ic, 40)).replace('class="row', f'class="act-row{" unread" if unread else ""} row', 1)
+def _act_row(ic: str, t: str, s: str, when: str, unread: bool) -> str:
+    """A feed row on Home: its body, then its when on a line of its own (round 3, row 3)."""
+    sub = f'{s}</div><div class="sub age">{when}'
+    return Row(t, sub, _act_lead(ic, t)).replace('class="row', f'class="act-row{" unread" if unread else ""} row', 1)
 
 
 def _changed(kind: str, unread: int = 3) -> str:
@@ -341,19 +401,33 @@ def _changed(kind: str, unread: int = 3) -> str:
     unread count, the same number as the Activity badge; all of them are one tap away."""
     rows = ACTIVITY_PREVIEW[kind]
     link = f'All activity ({unread}) &rsaquo;' if unread else 'All activity &rsaquo;'
-    return Section('New for you', Rows([_act_row(i, t, s, u) for i, t, s, u in rows], open_=True), action=link)
+    return Section('New for you', Rows([_act_row(i, t, s, w, u) for i, t, s, w, u in rows], open_=True), action=link)
 
 
-def _home(blocks: str, title: str, badges: dict, who: str = 'warrior', avatar=DEFAULT):
+def _home(blocks, title: str, badges: dict, who: str = 'warrior', avatar=DEFAULT):
+    """blocks: the body, or a function of the platform for the blocks the two apps draw apart (round 2)."""
     def b(platform: str) -> str:
-        return app_page(platform, _page(blocks, title, home=True), 'home', badges=badges, who=who, avatar=avatar)
+        body = blocks(platform) if callable(blocks) else blocks
+        return app_page(platform, _page(body, title, home=True), 'home', badges=badges, who=who, avatar=avatar)
     return b
 
 
-def _raid_line(answered: str = '') -> str:
-    sub = f'You are {answered}, {AS_ME}' if answered else f'{COUNTS} &middot; you have not answered, {AS_ME}'
+def _tally_line(platform: str) -> str:
+    """Who is coming in one line (S6, round 3 row 2): `Healers 5/8 · 3 short`, the short role in wipe red. iOS counts it as
+    a row (its parity item), so the mock's iOS line carries the row class `sr`."""
+    def part(label: str, have: int, want: int) -> str:
+        short = f' &middot; {want - have} short' if have < want else ''
+        return f'{label} <span class="{"ok" if have >= want else "lo"}">{have}/{want}{short}</span>'
+    cls = 'tline sr' if platform == 'ios' else 'tline'
+    return f'<p class="{cls}">' + ' &middot; '.join(part(label, have, want) for _, label, have, want in ROLES) + '</p>'
+
+
+def _raid_line(platform: str, answered: str = '') -> str:
+    """Any other day: the raid as a row, the role tally on one line, the answers (iOS 36 pt). Answered, the line keeps the
+    counts and who it is for (round 3, AS5)."""
+    sub = f'{COUNTS} &middot; {AS_ME_CAP}' if answered else f'{COUNTS} &middot; you have not answered, {AS_ME}'
     row = Rows([Row(f'{RAID} &middot; {WHEN}', sub, icon(ONY, 40))], open_=True)
-    return _blk(row + _signup_buttons(answered))
+    return _blk(row + _tally_line(platform) + _signup_buttons(answered))
 
 
 def _raid_live() -> str:
@@ -371,22 +445,22 @@ def _last_night() -> str:
 
 
 def _find_guild() -> str:
-    return _blk('<p class="t-small">Raid with a guild that plans its nights here, and answer its raids from the app.</p>'
+    return _blk('<p class="t-small">Join a guild to sign up for its raids here.</p>'
                 + '<div class="vstack">' + Button('Find a guild') + '</div>', 'section-raid-with-a-guild')
 
 
 HOME = {
-    'home-raid-day': lambda: _home(_head() + _blk(_raid_card()) + _upgrades(tonight=False) + _changed('day'), 'Home', MEMBER),
-    'home-raid-day-late': lambda: _home(_head() + _blk(_raid_card(late=True)) + _upgrades(tonight=False) + _changed('day'), 'Home', ANSWERED),
-    'home-raid-day-officer': lambda: _home(_head() + _blk(_raid_card(officer=True)) + _upgrades(tonight=False) + _changed('day'), 'Home', OFFICER),
+    'home-raid-day': lambda: _home(lambda p: _head() + _blk(_raid_card()) + _upgrades(p, tonight=False) + _changed('day'), 'Home', MEMBER),
+    'home-raid-day-late': lambda: _home(lambda p: _head() + _blk(_raid_card(late=True)) + _upgrades(p, tonight=False) + _changed('day'), 'Home', ANSWERED),
+    'home-raid-day-officer': lambda: _home(lambda p: _head() + _blk(_raid_card(officer=True)) + _upgrades(p, tonight=False) + _changed('day'), 'Home', OFFICER),
     'home-raid-live': lambda: _home(_head() + _raid_live() + _changed('live'), 'Home', ANSWERED),
-    'home-after-raid': lambda: _home(_head() + _last_night() + _upgrades() + _changed('after'), 'Home', ANSWERED),
-    'home-60': lambda: _home(_head() + _upgrades() + _raid_line() + _changed('day'), 'Home', MEMBER),
+    'home-after-raid': lambda: _home(lambda p: _head() + _last_night() + _upgrades(p) + _changed('after'), 'Home', ANSWERED),
+    'home-60': lambda: _home(lambda p: _head() + _upgrades(p) + _raid_line(p) + _changed('day'), 'Home', MEMBER),
     # no avatar_url yet (a new character, a failed media fetch): the crest stands in on the profile button
-    'home-60-noavatar': lambda: _home(_head() + _upgrades() + _raid_line() + _changed('day'), 'Home', MEMBER, avatar=None),
-    'home-60-answered': lambda: _home(_head() + _upgrades() + _raid_line('In') + _changed('day'), 'Home', ANSWERED),
-    'home-noguild': lambda: _home(_head() + _upgrades() + _changed('day', 2) + _find_guild(), 'Home', {'activity': 2}),
-    'home-34': lambda: _home(_head(leveler=True) + _upgrades(leveler=True) + _changed('leveler', 1), 'Home', {'activity': 1}, who='hunter'),
+    'home-60-noavatar': lambda: _home(lambda p: _head() + _upgrades(p) + _raid_line(p) + _changed('day'), 'Home', MEMBER, avatar=None),
+    'home-60-answered': lambda: _home(lambda p: _head() + _upgrades(p) + _raid_line(p, 'In') + _changed('day'), 'Home', ANSWERED),
+    'home-noguild': lambda: _home(lambda p: _head() + _upgrades(p) + _changed('day', 2) + _find_guild(), 'Home', {'activity': 2}),
+    'home-34': lambda: _home(lambda p: _head(leveler=True) + _upgrades(p, leveler=True) + _changed('leveler', 1), 'Home', {'activity': 1}, who='hunter'),
     # loading: the head and the blocks at their final size, no shift when they fill
     'home-loading': lambda: _home(_head() + _blk(''.join(f'<div style="margin-top:12px">{Skeleton(361, 56)}</div>' for _ in range(5)), 'section-loading'),
                                   'Home', {}),
@@ -425,7 +499,7 @@ RAID_R5_CSS = """
 .r5raid .seg .btn{height:48px;min-height:48px;border:0;border-radius:0}.r5raid .seg .btn+.btn{border-left:1px solid #5a5d70}
 .r5raid .seg .btn.on,.r5raid .lm .btn.on{background:#408076}
 .r5raid .lm{display:flex;gap:8px;margin-top:8px}.r5raid .lm .btn{border-color:#5a5d70;border-radius:8px}
-.r5raid .row{display:block;padding:10px 0;border-bottom:1px solid var(--line)}.r5raid .row:last-child{border-bottom:0}
+.r5raid .row{display:block;min-height:0;padding:10px 0;border-bottom:1px solid var(--line)}.r5raid .row:last-child{border-bottom:0}
 .r5raid .row .in{display:flex;align-items:center;gap:12px}
 .r5raid .row .tr{margin-top:8px;display:flex}
 .r5raid .row .lk{font-weight:600;color:var(--gold)}
@@ -441,20 +515,60 @@ RAID_R5_CSS = """
 .r5raid .lvh span{font:600 15px/22.1px var(--font-body);color:#fff}
 .r5raid .lvh+.note{margin:4px 0 8px}
 .r5raid .rule{border-top:1px solid var(--line)}
+/* round 2 (review backfill): the status line under the answers, the officers' notes, Who is coming's closing lines */
+.r5raid .stl{margin:8px 0 0;font:400 13px/20px var(--font-body);color:var(--kill)}
+.r5raid .notes{margin:0;font:400 13px/18.29px var(--font-body);color:var(--text);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.r5raid .notes b{font-weight:700;color:#fff;display:inline}
+.r5raid .rfoot p{margin:0;padding:8px 0;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .rfoot p.warn{color:var(--wipe)}
+.r5raid .row .split{font-weight:400;color:var(--muted)}
+/* round 3: the notes close the head's card (16 under the answers on iOS, 8 on Android); Android asks How late? over the
+   chips; the Covered line (a muted Missing, each short name in wipe red beside its 20 pt spell icon); the officers'
+   not-synced line is a row that opens the roster */
+.r5raid .pn .notes{margin-top:8px}
+.r5raid .hl{margin:8px 0 0;font:400 14px/20px var(--font-body);color:var(--muted)}
+.r5raid .cov{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:8px 0;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .cov .cg{display:inline-flex;align-items:center;gap:4px;color:var(--wipe);white-space:nowrap}
+.r5raid .cov .cg img,.r5raid .cov .cg .ci{display:block;width:20px;height:20px;border-radius:4px;background-size:cover}
+.r5raid .cov .cg .n{color:var(--muted)}
+.r5raid .rfoot .ns{display:flex;align-items:center;gap:4px;min-height:48px;padding:0;border:0;font:400 13px/18.29px var(--font-body);color:var(--text)}
+.r5raid .rfoot .ns span{flex:1}.r5raid .rfoot .ns i{font-style:normal;color:var(--muted)}
+[data-platform=ios] .r5raid .rfoot .ns{min-height:44px}
+/* round 5: buttons from the tokens: the primary teal with its tealEdge and strong text, the secondary blue with blueEdge */
+.r5raid .btn{background:#114f72;border-color:#1d6a96}
+.r5raid .seg .btn,.r5raid .lm .btn{background:none}
+.r5raid .seg .btn.on,.r5raid .lm .btn.on,.r5raid .wide.primary{background:#0f6064;border-color:#408076;color:#fff}
+[data-platform=ios] .r5raid .cov{padding:0;gap:4px}
+[data-platform=android] .r5raid .sh .act{line-height:18px}
 [data-platform=ios] .r5raid .btn{height:44px;min-height:44px}
-[data-platform=ios] .r5raid .seg{gap:8px;border:0;border-radius:0;overflow:visible}
-[data-platform=ios] .r5raid .seg .btn{border:1px solid #5a5d70;border-radius:6px}
-[data-platform=ios] .r5raid .seg .btn+.btn{border-left:1px solid #5a5d70}
+/* iOS's Segmented (brand B1): one connected group, hairline dividers, the chosen one teal with its edge, 44 pt */
+[data-platform=ios] .r5raid .seg{border:1px solid #5a5d70;border-radius:6px;background:#170e09}
+[data-platform=ios] .r5raid .seg .btn{height:44px;min-height:44px;padding:0 4px;font:600 13px/18px var(--font-body);color:var(--text)}
+[data-platform=ios] .r5raid .seg .btn.on{font-weight:700;color:#fff;box-shadow:inset 0 0 0 1px #408076;background:#0f6064}
+[data-platform=ios] .r5raid .pn .notes{margin-top:16px}
+[data-platform=ios] .r5raid .rfoot{border-top:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:8px}
+[data-platform=ios] .r5raid .rfoot p{padding:0;line-height:18px}
+[data-platform=ios] .r5raid .rfoot p.warn{color:var(--muted)}
 """
 
-R5_COMING = [('Tanks', 2, 2, 'Grunvald, Brakka'), ('Healers', 5, 8, 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen &middot; 3 short'),
-             ('Damage', 11, 30, 'Thandrel, Kaelra, Thalrin and 8 more')]
-R5_LIVE = [('Tanks', 2, 2, 'Grunvald, Brakka'),
-           ('Healers', 5, 8, 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen<br>(Late&nbsp;&middot;&nbsp;15&nbsp;min) &middot; 3 short'),
-           ('Damage', 11, 30, 'Thandrel, Kaelra, Thalrin and 8 more')]
+# Who is coming (S6, one tally model on both apps): `Healers 5 of 8 · 3 short` in tone, the names in class colour, a Late
+# with its minutes (G5); Damage's melee and ranged split (Android on the title line, iOS a line under the names).
+R5_COMING = [('Tanks', 2, 2, [('Grunvald', 'warrior'), ('Brakka', 'druid')], 0),
+             ('Healers', 5, 8, [('Mirethil', 'priest'), ('Selka', 'druid'), ('Hollowmend', 'priest'), ('Aenwyn', 'paladin'),
+                                ('Brightwen<br>(Late&nbsp;&middot;&nbsp;15&nbsp;min)', 'priest')], 0),
+             ('Damage', 11, 30, [('Thandrel', 'warrior'), ('Kaelra', 'warrior'), ('Thalrin', 'mage')], 8)]
+DAMAGE_SPLIT = '5 melee, 6 ranged'
+RAID_INVITES = 'Invites 7:45 pm &middot; 40-man'
+RAID_NOTES = ('Bring <b>fire resistance</b> gear and flasks. Whelps go to the left wall, the tanks call the deep breath in voice; '
+              'consumables check at 7:50 pm.')
+RAID_ANSWERS = 'Bench 1 &middot; Out 3 &middot; 5 not answered'
+# The Covered line (round 3, row 4): the gaps nobody brings, then the short ones, by the buff's short name, at most three
+COVER_MISSING = [('Fort', 'spell_holy_wordfortitude')]
+COVER_SHORT = [('WF', 'spell_nature_windfury', '1 of 2')]
+RAID_NOT_SYNCED = 'Not synced this week: Kaelra, Thalrin, Brakka, Mirethil'
 R5_READY = [('ok', 'Drakefire Amulet', 'Attuned', None), ('ok', 'Elixir of the Mongoose', '3 in your bags', None),
             ('miss', 'Flask of the Titans', 'None in your bags', 'Auction house'),
-            ('warn', 'Boots not enchanted', 'Enchant Boots: Greater Agility', 'Where to get it')]
+            ('warn', 'Boots not enchanted', '', None)]
 R5_PAGES = [('Roster', '38 members, 31 at 60'), ('Calendar', 'Onyxia Wed, Barrow Deeps Sat'), ('Loot history', 'Last raid: 4 pieces'),
             ('Guild sims', 'You are #7 of 14 DPS')]
 
@@ -471,18 +585,71 @@ def _r5_row(title: str, sub: str = '', lead: str = '', trail: str = '') -> str:
     return f'<div class="row">{inner}' + (f'<div class="tr">{trail}</div>' if trail else '') + '</div>'
 
 
-def _r5_roles(roles: list) -> str:
-    return ''.join(_r5_row(f'{role} <span class="{"ok" if n >= want else "lo"}">{n} of {want}</span>', names) for role, n, want, names in roles)
+def _r5_roles(roles: list, platform: str, split: bool = True) -> str:
+    """Who is coming's rows. split: Damage's title carries its melee and ranged split (round 4: both apps on one line; the
+    night's rows on iOS do not)."""
+    out = ''
+    for role, n, want, people, more in roles:
+        short = want - n
+        tally = f'{n} of {want}' + (f' &middot; {short} short' if short > 0 else '')
+        dmg = split and role == 'Damage'
+        title = f'{role} <span class="{"ok" if short <= 0 else "lo"}">{tally}</span>'
+        if dmg:
+            title += f'<span class="split"> &middot; {DAMAGE_SPLIT}</span>'
+        names = ', '.join(f'<span style="color:{CLASS_COLOR[c]}">{nm}</span>' for nm, c in people) + (f' and {more} more' if more else '')
+        out += _r5_row(title, names)
+    return out
 
 
-def _r5_head(answer: str, late_min: int | None = None) -> str:
-    chip = f'Late&nbsp;&middot;&nbsp;{late_min}&nbsp;min' if late_min else answer
+def _cover_icon(platform: str, name: str) -> str:
+    """A buff's 20 pt spell icon: an image iOS counts (parityItem image); Android draws it without a parity item."""
+    html = icon(name, 20)
+    if platform == 'ios':
+        return html
+    src = html.split('src="', 1)[1].split('"', 1)[0]
+    return f'<svg class="ci" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><image href="{src}" width="20" height="20"/></svg>'
+
+
+def _cover(platform: str) -> str:
+    """The Covered line (round 3, row 4): `Missing`, then each gap in wipe red beside its spell icon (iOS sets ` · ` between
+    the missing and the short ones), the short ones with their count."""
+    gaps = [(n, i, '') for n, i in COVER_MISSING] + list(COVER_SHORT)
+
+    def gap(k: int, name: str, ic: str, count: str) -> str:
+        if platform == 'ios':  # the separator before each name after the first, the count muted
+            sep = '<span class="n">&middot;&nbsp;</span>' if k else ''
+            n = f' <span class="n">{count}</span>' if count else ''
+            return f'<span class="cg">{sep}{_cover_icon(platform, ic) if ic else ""}<span>{name}{n}</span></span>'
+        sep = '<span class="n"> &middot;</span>' if k < len(gaps) - 1 else ''  # Android: the separator after each name
+        return f'<span class="cg">{_cover_icon(platform, ic) if ic else ""}<span>{name}{" " + count if count else ""}{sep}</span></span>'
+    return '<div class="cov"><span>Missing</span>' + ''.join(gap(k, *g) for k, g in enumerate(gaps)) + '</div>'
+
+
+def _r5_coming(platform: str, officer: bool = False) -> str:
+    """Who is coming: the roles, then the other answers' counts, what the cover misses (G4) and, for officers, who signed In
+    without syncing this week, as a row that opens the roster filtered to them (G1; iOS counts it as a row)."""
+    unsynced = ''
+    if officer:
+        unsynced = (f'<a class="ns sr" href="#"><span>{RAID_NOT_SYNCED}</span><i>&rsaquo;</i></a>' if platform == 'ios'
+                    else f'<a class="ns" href="#"><span>{RAID_NOT_SYNCED}</span><i>&rsaquo;</i></a>')
+    foot = f'<div class="rfoot"><p>{RAID_ANSWERS}</p>{_cover(platform)}{unsynced}</div>'
+    return _r5_section('Who is coming', _r5_roles(R5_COMING, platform) + foot, action='Roster &rsaquo;')
+
+
+def _r5_head(platform: str, answer: str, late_min: int | None = None, status: str = '') -> str:
+    """The raid head: the zone, the time and the pull, the invite time and size, who the answer is for (round 3: no answer
+    chip, the answers are the state); the four answers (Android's 48 dp pill, iOS's Segmented), Late's minutes (Android asks
+    How late? over them), the status line; the officers' notes, two lines, close the card on both."""
     seg = ''.join(f'<a class="btn{" on" if x == answer else ""}" href="#">{x}</a>' for x in ('In', 'Late', 'Bench', 'Out'))
-    late = ('<div class="lm">' + ''.join(f'<a class="btn{" on" if m == late_min else ""}" href="#">{m} min</a>' for m in (15, 30, 60)) + '</div>'
+    ask = '<p class="hl">How late?</p>' if platform == 'android' else ''
+    late = (ask + '<div class="lm">' + ''.join(f'<a class="btn{" on" if m == late_min else ""}" href="#">{m} min</a>' for m in (15, 30, 60)) + '</div>'
             if answer == 'Late' else '')
+    stl = f'<p class="stl">{status}</p>' if status else ''
+    notes = f'<p class="notes">{RAID_NOTES}</p>'
     return (f'<div class="blk-r5" data-region="section-next-raid"><div class="pn"><div class="hd"><div class="rl">{icon(ONY, 40)}'
-            f'<div class="tx"><b>{RAID}</b><span class="s">8:00 pm CST &middot; pull in 2 h 48 min</span><span class="s">{AS_ME_CAP}</span></div>'
-            f'<span class="chip">{chip}</span></div><div class="seg">{seg}</div>{late}</div></div></div>')
+            f'<div class="tx"><b>{RAID}</b><span class="s">8:00 pm CST &middot; pull in 2 h 48 min</span><span class="s">{RAID_INVITES}</span>'
+            f'<span class="s">{AS_ME_CAP}</span></div>'
+            f'</div><div class="seg">{seg}</div>{late}{stl}{notes}</div></div></div>')
 
 
 def _r5_ready(items: list, title: str = 'Before you pull') -> str:
@@ -497,22 +664,23 @@ def _r5_lone(title: str, lines: list[str], button: str, primary: bool = False) -
     return _r5_section(title, notes + f'<a class="btn wide{" primary" if primary else ""}" href="#">{button}</a>')
 
 
-def _raid_r5(state: str) -> str:
-    """The Raid tab's body in round 5 (RAID_R5_CSS); the states and words are raid()'s."""
+def _raid_r5(state: str, platform: str) -> str:
+    """The Raid tab's body in round 5 (RAID_R5_CSS); the states and words are raid()'s. Round 2 (review backfill): an
+    officer's Needs you sits directly under the head (G3)."""
     pages = _r5_section('Olympus XXVII', ''.join(_r5_row(t, sub) for t, sub in R5_PAGES))
-    coming = _r5_section('Who is coming', _r5_roles(R5_COMING), action='Roster &rsaquo;')
     if state in ('member', 'officer', 'signup'):
-        head = _r5_head('Late', 30) if state == 'signup' else _r5_head('In')
+        # signup: Late with 30 minutes just sent, so the status line says Saved.
+        head = _r5_head(platform, 'Late', 30, 'Saved.') if state == 'signup' else _r5_head(platform, 'In')
         needs = (_r5_section('Needs you', _r5_row('5 have not answered, 2 of them healers', 'Healers short by 3', trail='<a class="btn" href="#">Preview mention</a>')
                              + _r5_row('1 applicant', 'Mirelle, Holy Priest 60, 2 min ago'), meta='6 open') if state == 'officer' else '')
-        return head + coming + _r5_ready(R5_READY) + needs + pages
+        return head + needs + _r5_coming(platform, officer=state == 'officer') + _r5_ready(R5_READY) + pages
     if state == 'noraid':
-        return ('<div class="blk-r5" data-region="section-next-raid"><div class="pn"><p class="note" style="margin:0;padding:8px 0">No raid planned yet. '
-                'Your officers plan raids on the site; a push tells you the moment one is posted.</p></div></div>' + pages)
+        return ('<div class="blk-r5" data-region="section-next-raid"><div class="pn"><p class="note" style="margin:0;padding:8px 0;font-size:14px;line-height:20px">'
+                'No raid posted yet.</p></div></div>' + pages)
     if state == 'live':
         night = ('<div class="lvh"><i></i><span>Olympus XXVII &middot; Onyxia&rsquo;s Lair in progress</span></div>'
                  '<p class="note">Pulled 1 h 12 min ago &middot; 18 in, 3 late &middot; you are In as<br>Thandrel, Damage</p>'
-                 f'<div class="rule"></div>{_r5_roles(R5_LIVE)}')
+                 f'<div class="rule"></div>{_r5_roles(R5_COMING, platform, split=platform == "android")}')
         return _r5_section('Raid night', night) + _r5_ready(R5_READY, 'Ready check') + pages
     if state == 'none':
         apply = '<a class="btn" href="#">Apply</a>'
@@ -525,8 +693,8 @@ def _raid_r5(state: str) -> str:
     return _r5_lone('Raid with a guild', [], 'Sign in with Battle.net', primary=True)
 
 
-def _raid_page_r5(state: str) -> str:
-    return build_page('Raid', f'<div class="ap r5raid">{_raid_r5(state)}</div><style>{FLOWS_CSS}{RAID_R5_CSS}</style>',
+def _raid_page_r5(state: str, platform: str) -> str:
+    return build_page('Raid', f'<div class="ap r5raid">{_raid_r5(state, platform)}</div><style>{FLOWS_CSS}{RAID_R5_CSS}</style>',
                       note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5.')
 
 
@@ -538,7 +706,7 @@ def raid(state: str):
         badges = {'member': ANSWERED, 'signup': ANSWERED, 'officer': OFFICER, 'noraid': ANSWERED, 'live': ANSWERED,
                   'none': {'activity': 2}, 'leveler': {'activity': 1}, 'out': {}}[state]
         who = {'out': None, 'leveler': 'hunter'}.get(state, 'warrior')
-        return app_page(platform, _raid_page_r5(state), 'raid', title='Raid', badges=badges, who=who)
+        return app_page(platform, _raid_page_r5(state, platform), 'raid', title='Raid', badges=badges, who=who)
     return b
 
 
@@ -555,10 +723,10 @@ DOLL = [  # slot label, pick, icon, quality, source, gain or None when worn
     ('Waist', 'Valiant&rsquo;s Waistguard', 'inv_belt_33', 4, 'Pix Xizzix, vendor', None),
     ('Legs', 'Sentinel&rsquo;s Plate Legguards', 'inv_pants_plate_20', 4, 'Illiyana Moonblaze, vendor', '+4.7'),
     ('Feet', 'Scalegut Treaders', 'inv_boots_chain_11', 3, 'Leatherworking', '+0.9'),
-    ('Finger', 'Don Julio&rsquo;s Band', 'inv_jewelry_ring_35', 4, 'Stormpike Guard', '+6.8'),
-    ('Finger', 'Cutthroat&rsquo;s Signet', 'inv_jewelry_ring_01', 3, 'Pix Xizzix, vendor', '+0.8'),
-    ('Trinket', 'Hand of Justice', 'inv_jewelry_talisman_01', 3, 'Blackrock Depths: Emperor Dagran Thaurissan', None),
-    ('Trinket', 'Molten Heart of the Mountain', 'inv_misc_gem_ruby_01', 3, 'Enchanting', '+3.2'),
+    ('Finger 1', 'Don Julio&rsquo;s Band', 'inv_jewelry_ring_35', 4, 'Stormpike Guard', '+6.8'),
+    ('Finger 2', 'Cutthroat&rsquo;s Signet', 'inv_jewelry_ring_01', 3, 'Pix Xizzix, vendor', '+0.8'),
+    ('Trinket 1', 'Hand of Justice', 'inv_jewelry_talisman_01', 3, 'Blackrock Depths: Emperor Dagran Thaurissan', None),
+    ('Trinket 2', 'Molten Heart of the Mountain', 'inv_misc_gem_ruby_01', 3, 'Enchanting', '+3.2'),
     ('Main hand', 'Ironwood Blade', 'inv_sword_07', 4, 'Blacksmithing', '+5.9'),
     ('Off hand', 'Greenhammer', 'inv_mace_1h_raidhyjalc60_d_01', 4, 'Blacksmithing', '+9.7'),
     ('Ranged', 'Blackcrow', 'inv_weapon_crossbow_04', 3, 'Blackrock Spire: Shadow Hunter Vosh&rsquo;gajin, 8%', '+1.9'),
@@ -583,6 +751,13 @@ GEAR_R5_CSS = """
 .r5gear .strip b{font:600 17px/23px var(--font-body);color:#fff}.r5gear .strip b small{font-size:11px;color:var(--text)}
 .r5gear .lead{margin:0;padding:12px 12px 0;font:400 14px/20px var(--font-body);color:var(--text)}.r5gear .lead span{display:block}
 .r5gear .lead a{font-weight:600;color:var(--gold)}
+/* round 2 (review backfill): the measured header under the band line (iOS 13/18 muted, outside the controls region;
+   Android the note, inside it) */
+.r5gear .lead .sum{margin-top:4px;font:400 13px/18px var(--font-body);color:var(--muted)}
+[data-platform=android] .r5gear .lead .sum{font-size:14px;line-height:20px}
+[data-platform=android] .r5gear .strip h1{font-size:20px;line-height:26px}
+[data-platform=android] .r5gear .strip b{font-size:16px;font-weight:700}[data-platform=android] .r5gear .strip b small{font-size:12px}
+[data-platform=android] .r5gear .lead [data-region=controls]>span:first-child{display:block;white-space:nowrap;letter-spacing:-.15px}
 .r5gear .ls{padding:12px}.r5gear .ls>div{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
 .r5gear .cell{display:flex;align-items:center;gap:8px;min-height:48px;min-width:0;padding:0;border:0}
 .r5gear .sk{width:44px;height:44px;flex:none;box-sizing:border-box;padding:3px;border:1px solid var(--line);border-radius:3px;background:#100a06}
@@ -603,16 +778,21 @@ GEAR_R5_CSS = """
 .r5item .tip .nm{font-weight:700;font-size:17px;color:#b866f5}.r5item .tip .sp{display:flex;justify-content:space-between}
 .r5item .tip .gr{color:#1eff00}.r5item .tip .gn{font-weight:600;color:var(--gold)}.r5item .tip .gap{height:4px;margin:-4px 0 0}
 .r5item .lines{margin-top:12px}
-.r5item .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.r5item .row:last-child{border-bottom:0}
+.r5item .row{display:flex;align-items:center;gap:12px;min-height:0;padding:10px 0;border-bottom:1px solid var(--line)}.r5item .row:last-child{border-bottom:0}
 .r5item .row img{width:40px;height:40px;flex:none}
 .r5item b.t{display:block;font:700 15px/20.57px var(--font-body);color:#fff}
 .r5item .row .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
 """
 
 R5_DOLL = [r if r[1] != 'Greenhammer' else ('Off hand', 'Persuader', 'inv_hammer_08', 4, 'Blacksmithing', None) for r in DOLL]
-R5_WHERE = [('Blackrock Spire', 'Blackcrow &middot; Shadow Hunter Vosh&rsquo;gajin, 8%', 'inv_weapon_crossbow_04', 3),
-            ('Blacksmithing', 'Lionheart Helm, Ironwood Blade &middot; ask a blacksmith', 'inv_helmet_36', 4),
-            ('Stormpike Guard', 'Don Julio&rsquo;s Band, needs revered', 'inv_jewelry_ring_35', 4)]
+# place, what it gives, icon, quality, and (round 2) its upgrades and their gains together
+R5_WHERE = [('Blackrock Spire', 'Blackcrow &middot; Shadow Hunter Vosh&rsquo;gajin, 8%', 'inv_weapon_crossbow_04', 3, '1 upgrade &middot; +1.9 DPS'),
+            ('Blacksmithing', 'Lionheart Helm, Ironwood Blade &middot; ask a blacksmith', 'inv_helmet_36', 4, '2 upgrades &middot; +20.4 DPS'),
+            ('Stormpike Guard', 'Don Julio&rsquo;s Band, needs revered', 'inv_jewelry_ring_35', 4, '1 upgrade &middot; +6.8 DPS')]
+# The header line (round 2): the measured total, the gains not modelled, when the gear synced; the apps order it apart.
+# The header line (round 3): what the apps compute from the fixture (12 upgrades, their gains together, the synced age).
+GEAR_SUMMARY = '+47.5 DPS from 12 upgrades &middot; synced 2 h ago'
+GEAR_FACTS = '60 raid &middot; Alliance &middot; 5 of 17 slots match the list &middot; <a href="#">Change</a>'
 
 
 def _r5_gear_row(title: str, sub: str, lead: str, color: str = '#fff') -> str:
@@ -620,20 +800,28 @@ def _r5_gear_row(title: str, sub: str, lead: str, color: str = '#fff') -> str:
     return f'<div class="row">{lead}<div><b class="t" style="color:{color}">{title}</b>{s}</div></div>'
 
 
-def _gear_page_r5() -> str:
+def _gear_page_r5(platform: str) -> str:
     """The Gear tab's body in round 5 (GEAR_R5_CSS)."""
     cells = ''.join(f'<div class="cell"><span class="sk">{icon(ic, 38, f"q{q}")}</span><div><span class="n" style="color:{QCOL[q]}">{name}</span>'
                     f'<span class="s">{slot} &middot; ' + ('Equipped' if g is None else f'<span class="g">{g} DPS</span>') + '</span></div></div>'
                     for slot, name, ic, q, _, g in R5_DOLL)
     doll = (f'<div class="pd"><div class="strip"><span class="med"><img src="{AVATAR.format(name="thandrel")}" alt=""></span>'
-            f'<h1>Fury Warrior</h1><b>1004.2 <small>DPS</small></b></div>'
-            '<p class="lead"><span data-region="controls">60 raid &middot; Alliance &middot; 4 of 17 slots on the list &middot; <a href="#">Change</a></span></p>'
-            f'<div class="ls"><div data-region="slots">{cells}</div></div></div>')
-    where = ''.join(_r5_gear_row(t, s, icon(ic, 40, f'q{q}')) for t, s, ic, q in R5_WHERE)
-    body = doll + (f'<section data-region="{region_slug("Where to go tonight")}"><div class="sh"><h2>Where to go tonight</h2></div>'
+            f'<h1>Fury Warrior</h1><b>1,004 <small>DPS</small></b></div>'
+            + _gear_lead(platform)
+            + f'<div class="ls"><div data-region="slots">{cells}</div></div></div>')
+    where = ''.join(_r5_gear_row(t, f'{s}<br>{fig}', icon(ic, 40, f'q{q}')) for t, s, ic, q, fig in R5_WHERE)
+    body = doll + (f'<section data-region="{region_slug("Where to go")}"><div class="sh"><h2>Where to go</h2></div>'
                    f'<div class="pn">{where}</div></section>')
     return build_page('Gear', f'<div class="ap r5gear">{body}</div><style>{FLOWS_CSS}{GEAR_R5_CSS}</style>',
                       note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5.')
+
+
+def _gear_lead(platform: str) -> str:
+    """The line naming the list with Change, then the measured header (iOS holds the controls region to the line alone)."""
+    summary = f'<span class="sum">{GEAR_SUMMARY}</span>'
+    if platform == 'ios':
+        return f'<p class="lead"><span data-region="controls">{GEAR_FACTS}</span>{summary}</p>'
+    return f'<p class="lead"><span data-region="controls"><span>{GEAR_FACTS}</span>{summary}</span></p>'
 
 
 def _item_sheet_r5(platform: str) -> str:
@@ -644,9 +832,9 @@ def _item_sheet_r5(platform: str) -> str:
            '<span>(56.4 damage per second)</span><span class="gap"></span><span>Requires Level 60</span>'
            '<span class="gr">Chance on hit: Sends a shadowy bolt at the<br>enemy causing 125 Shadow damage.</span><span class="gn">+12.6 DPS</span></div>')
     next_raid = _r5_gear_row('Next raid: Onyxia&rsquo;s Lair, Wed 8:00 PM', '', '') if platform == 'ios' else ''
-    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', icon(ONY, 40)) + next_raid
+    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', '') + next_raid
              + _r5_gear_row('Replaces Ironwood Blade', 'Equipped', icon('inv_sword_07', 40, 'q4'))
-             + _r5_gear_row('Vis&rsquo;kag the Bloodletter', 'Runner-up &middot; Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'), QCOL[4])
+             + _r5_gear_row('Vis&rsquo;kag the Bloodletter', 'Runner-up &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'), QCOL[4])
              + _r5_gear_row('Grunvald', 'Protection Warrior &middot; needs it, the pick on their list', crest_img('warrior', 40), WARRIOR)
              + _r5_gear_row('Torvak', 'Enhancement Shaman &middot; has it', crest_img('shaman', 40), CLASS_COLOR['shaman']))
     sheet = ('<div class="dim" style="height:120px"></div><div class="sheetp r5item" role="dialog" aria-label="Deathbringer"><span class="sheet-grab"></span>'
@@ -659,7 +847,7 @@ def gear(state: str):
     faction, preselected; Change opens the picker); then where to go tonight; then every slot (Home holds the top three)."""
     def b(platform: str) -> str:
         if state == 'in':
-            return app_page(platform, _gear_page_r5(), 'gear', title='Gear', badges=MEMBER)
+            return app_page(platform, _gear_page_r5(platform), 'gear', title='Gear', badges=MEMBER)
         if state == 'out':
             body = (PageHeader('Best in slot for your class', meta=['Pick a class, then a spec and a level range.'])
                     + Section('Classes', Rows([Row(c.capitalize(), '', crest_img(c, 40), title_color=CLASS_COLOR[c])
@@ -670,15 +858,17 @@ def gear(state: str):
 
 # ------------------------------------------------------------------------------------------------ Activity (the tab)
 ACTIVITY = [
-    ('Today', [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012.3 DPS, you are #7 of 14', 'Guild ladder', '8 h ago', True),
-               ('inv_axe_09', 'You got Deathbringer', 'Onyxia &middot; main hand, +12.6 DPS', 'Gear and sims', '9 h ago', True),
+    ('Today', [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', 'You are #7 of 14', 'Guild ladder', '8 h ago', True),
+               ('inv_axe_09', f'You got <span style="color:{QCOL[4]}">Deathbringer</span>', 'Onyxia &middot; main hand, +12.6 DPS', 'Gear and sims', '9 h ago', True),
                (ONY, 'Onyxia&rsquo;s Lair report ready', '87th percentile, your best on Onyxia so far &middot; the coach has 2 notes', 'Logs', '9 h ago', True)]),
     ('Yesterday', [(ONY, 'You&rsquo;re In for Onyxia', AS_ME_CAP + ' &middot; 8:00 pm CST', 'Raids', '6:02 pm', False),
-                   ('inv_misc_pocketwatch_01', 'Sim done: 948.6 DPS &plusmn;6', '+21 vs your last', 'Gear and sims', '2:40 pm', False),
+                   ('inv_misc_pocketwatch_01', 'Sim done: 949 DPS &plusmn;6', '+21 vs your last', 'Gear and sims', '2:40 pm', False),
                    (ONY, 'Healers short for Onyxia tonight', '3 of 8 missing', 'Raids', '1:15 pm', False)]),
     ('This week', [('inv_misc_book_09', 'Fury Warrior moved to S', 'Raid tiers, 60', 'Tiers', 'Tue', False),
-                   ('inv_misc_book_09', 'Fury Warrior BiS changed', 'A new pick for Hands: Theramore Gauntlets', 'Gear and sims', 'Tue', False)]),
+                   ('inv_misc_book_09', 'Fury Warrior BiS changed', f'A new pick for Hands: <span style="color:{QCOL[4]}">Theramore Gauntlets</span>', 'Gear and sims', 'Tue', False)]),
 ]
+# The row's figure (round 3, row 11): once, at its end, formatted like the rest.
+ACTIVITY_FIGURES = {'Kaelra passed you in the guild sims': '1,196 DPS'}
 GROUPS = ['All', 'Raids', 'Gear and sims', 'Logs', 'Guild ladder', 'Tiers']
 # The rows about a class wear its crest (one crest language, lane M4a): a guildmate's spec icon, a spec's tier move.
 ACTIVITY_CRESTS = {'ability_warrior_innerrage': 'warrior', 'Fury Warrior moved to S': 'warrior'}
@@ -690,10 +880,10 @@ ACTIVITY_CRESTS = {'ability_warrior_innerrage': 'warrior', 'Fury Warrior moved t
 ACTIVITY_R5_CSS = """
 .ap.r5act{padding:0 14px 22px}
 .r5act .bandc{margin:0 -14px;padding-left:16px;background:#0c3a52;border-bottom:1px solid #000}
-.r5act .chips{display:flex;gap:8px;padding:2px 16px 8px 0;overflow:hidden;white-space:nowrap}
+.r5act .chips{display:flex;gap:8px;padding:2px 16px 8px 0;overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent)}
 .r5act .chips .btn{flex:none;display:flex;align-items:center;box-sizing:border-box;height:36px;min-height:36px;margin:6px 0;padding:0 16px;
   border:1px solid #5a5d70;border-radius:8px;background:none;color:#fff;font:600 14px/20px var(--font-body)}
-.r5act .chips .btn.on{background:#408076}
+.r5act .chips .btn.on{background:#0f6064;border-color:#408076}
 .ap.r5act>section,.ap.r5act>.blk-r5{margin-top:20px}.ap.r5act>.bandc+*{margin-top:16px}.ap.r5act>.blk-r5:first-child{margin-top:16px}
 .r5act .sh{display:flex;align-items:center;height:26px;margin-bottom:8px}
 .r5act .sh h2{margin:0;font:400 21px/26px var(--font-title);color:#f3eee2}
@@ -704,6 +894,10 @@ ACTIVITY_R5_CSS = """
 .r5act .row.dot::before{content:"";position:absolute;left:-10px;top:50%;width:6px;height:6px;margin-top:-6px;border-radius:50%;background:var(--gold)}
 .r5act b.t{display:block;font:700 15px/20.57px var(--font-body);color:#fff}
 .r5act .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5act .row .fig{margin-left:auto;flex:none;font:700 15px/20.57px var(--font-body);font-variant-numeric:tabular-nums;color:#fff}
+.r5act .more{display:flex;align-items:center;min-height:48px;margin-top:8px;padding:0 16px;font:600 15px/20px var(--font-body);color:var(--gold)}
+[data-platform=ios] .r5act .more{min-height:44px;padding:0}
+[data-platform=android] .r5act .row .fig{line-height:22px}[data-platform=android] .r5act .sh .act{line-height:18px}
 .r5act .note{margin:0;padding:8px 0;font:400 13px/20.57px var(--font-body);color:var(--text)}
 .r5act .wide{display:flex;align-items:center;justify-content:center;height:48px;margin:12px 0;border-radius:4px;background:#0f6064;border:1px solid #408076;
   color:#fff;font:700 15px/20px var(--font-body)}
@@ -728,9 +922,10 @@ def _activity_r5(state: str) -> str:
     for when, rows in ACTIVITY:
         act = '<span class="act">Mark all read</span>' if when == 'Today' else ''
         lines = ''.join(f'<div class="row{" dot" if u else ""}">{_act_lead(i, t)}<div><b class="t">{t}</b><span class="s">{s}</span>'
-                        f'<span class="s">{at}</span></div></div>' for i, t, s, _, at, u in rows)
+                        f'<span class="s">{at}</span></div>' + (f'<span class="fig">{ACTIVITY_FIGURES[t]}</span>' if t in ACTIVITY_FIGURES else '')
+                        + '</div>' for i, t, s, _, at, u in rows)
         days += f'<section data-region="{region_slug(when)}"><div class="sh"><h2>{when}</h2>{act}</div><div class="pn">{lines}</div></section>'
-    return band + days
+    return band + days + '<a class="more" href="#">Show older</a>'
 
 
 def _activity_page_r5(state: str) -> str:
