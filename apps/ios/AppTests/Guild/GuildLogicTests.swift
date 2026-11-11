@@ -32,6 +32,15 @@ struct RosterListTests {
         #expect(list.visible(role: .tanks, query: "", sort: .rank).allSatisfy { $0.role == "tank" })
     }
 
+    @Test("round 5, row 2: the not-synced filter counts the raiders it keeps, and only those")
+    func onlyCount() throws {
+        let list = try list()
+        let keys = Set(list.entries.compactMap(\.characterKey).prefix(4))
+        #expect(list.count(only: keys) == 4)
+        #expect(list.visible(role: .all, query: "", sort: .rank, only: keys).count == 4)
+        #expect(list.count(only: ["us/pvp/nobody"]) == 0)
+    }
+
     @Test("search filters by name, ignoring case and accents")
     func search() throws {
         let found = try list().visible(role: .all, query: "KRAG", sort: .rank)

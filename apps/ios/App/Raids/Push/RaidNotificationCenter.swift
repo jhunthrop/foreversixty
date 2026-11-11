@@ -12,6 +12,10 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     private var answerer: RaidPushAnswerer?
     /// Accept, Decline and Mention from the officer pushes.
     private var officer = OfficerPushActions()
+    /// Posts an answer in place of its notification (tests record it without the system center).
+    private var post: @MainActor (_ answer: RaidPushOutcome.Confirmation, _ reply: PushReply) async -> Void = { answer, reply in
+        await answer.post(replacing: reply.identifier, thread: reply.thread, tapThrough: reply.tapThrough)
+    }
     /// The app's router; a tap that arrives before it is set (a cold launch) waits in `pending`.
     var onOpen: ((IntentDestination) -> Void)? {
         didSet {
@@ -28,10 +32,14 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
         center.setNotificationCategories(Self.categories)
     }
 
-    /// The answers the actions run (tests set them without the system center).
-    func use(answerer: RaidPushAnswerer?, officer: OfficerPushActions) {
+    /// The answers the actions run (tests set them, and `post`, without the system center).
+    func use(
+        answerer: RaidPushAnswerer?, officer: OfficerPushActions,
+        post: (@MainActor (RaidPushOutcome.Confirmation, PushReply) async -> Void)? = nil
+    ) {
         self.answerer = answerer
         self.officer = officer
+        if let post { self.post = post }
     }
 
     static var categories: Set<UNNotificationCategory> {
@@ -87,32 +95,34 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     /// Answers an action or a tap: an officer's in place, a sign-up's in the background, else the landing.
     func respond(_ reply: PushReply) async {
         if let answer = reply.officer {
-            await answerOfficer(answer, landing: reply.landing)
+            await post(await answerOfficer(answer, reply: reply), reply)
             return
         }
-        await handle(
-            payload: reply.payload, landing: reply.landing, action: reply.action,
-            identifier: reply.identifier, thread: reply.thread
-        )
+        await handle(reply)
     }
 
-    /// Accept or Decline from the applicant push, Mention from the short raid's: done in place; a
-    /// refused, failed or unreadable answer opens the push's landing instead.
-    private func answerOfficer(_ answer: OfficerPushAnswer, landing: IntentDestination?) async {
-        let done = switch answer {
-        case let .accept(guild, application): await officer.accept(guild, application)
-        case let .decline(guild, application): await officer.decline(guild, application)
-        case let .mention(request): await officer.mention(request.guild, request.raid, request.role)
-        case .unreadable: false
+    /// Accept or Decline from the applicant push, Mention from the short raid's: done in place, and
+    /// what it did (or the failure line) replaces the push; a tap on that still lands (round 5, row 3).
+    private func answerOfficer(_ answer: OfficerPushAnswer, reply: PushReply) async -> RaidPushOutcome.Confirmation {
+        switch answer {
+        case let .accept(guild, application):
+            OfficerPushResult.applicant(done: await officer.accept(guild, application), accepted: true, title: reply.title)
+        case let .decline(guild, application):
+            OfficerPushResult.applicant(done: await officer.decline(guild, application), accepted: false, title: reply.title)
+        case let .mention(request):
+            OfficerPushResult.mention(
+                await officer.mention(request.guild, request.raid, request.role), role: request.role, title: reply.title
+            )
+        case .unreadable: OfficerPushResult.unreadable(action: reply.action, title: reply.title)
         }
-        if !done, let landing { open(landing) }
     }
 
     /// A background answer posts in place; a tap lands on the event's answer (flows spec F4).
-    private func handle(payload: RaidPushPayload?, landing: IntentDestination?, action: String, identifier: String, thread: String) async {
+    private func handle(_ reply: PushReply) async {
+        let (payload, landing, action) = (reply.payload, reply.landing, reply.action)
         if let payload, let signup = RaidPushCategory.signup(forAction: action), let answerer {
             switch await answerer.answer(payload, signup) {
-            case let .answered(confirmation): await confirmation.post(replacing: identifier, thread: thread)
+            case let .answered(confirmation): await post(confirmation, reply)
             case let .open(link): open(.link(link))
             }
             return
@@ -136,38 +146,31 @@ struct PushReply: Sendable {
     let action: String
     let identifier: String
     let thread: String
+    /// The delivered push's title (the raid, the applicant), under an officer answer's result.
+    let title: String
     let payload: RaidPushPayload?
     let landing: IntentDestination?
     let officer: OfficerPushAnswer?
+    /// The push's `kind`, `link` and `data` strings, kept on the answer that replaces it so a tap on
+    /// that still lands where the push did (never its actions).
+    let tapThrough: [String: PushTapValue]
 
-    init(action: String, identifier: String, thread: String, userInfo: [AnyHashable: Any]) {
+    init(action: String, identifier: String, thread: String, title: String = "", userInfo: [AnyHashable: Any]) {
         self.action = action
         self.identifier = identifier
         self.thread = thread
+        self.title = title
         payload = RaidPushPayload(userInfo: userInfo)
         landing = PushLanding.destination(userInfo: userInfo)
         officer = OfficerPushAnswer(action: action, userInfo: userInfo)
+        tapThrough = PushTapValue.tapThrough(userInfo)
     }
 
     init(_ response: UNNotificationResponse) {
-        let request = response.notification.request
+        let content = response.notification.request.content
         self.init(
-            action: response.actionIdentifier, identifier: request.identifier, thread: request.content.threadIdentifier,
-            userInfo: request.content.userInfo
+            action: response.actionIdentifier, identifier: response.notification.request.identifier,
+            thread: content.threadIdentifier, title: content.title, userInfo: content.userInfo
         )
-    }
-}
-
-/// UIKit's completion for a notification response, called back on the main thread only.
-struct MainThreadCompletion: @unchecked Sendable {
-    private let completion: () -> Void
-
-    init(_ completion: @escaping () -> Void) {
-        self.completion = completion
-    }
-
-    @MainActor
-    func run() {
-        completion()
     }
 }

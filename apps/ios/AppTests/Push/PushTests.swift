@@ -1,5 +1,6 @@
 @testable import ForeverSixty
 import Foundation
+import Models
 import Routing
 import Testing
 
@@ -119,27 +120,71 @@ struct PushLandingTests {
         #expect(OfficerPushAnswer(action: RaidPushCategory.actionIn, userInfo: applicant) == nil)
     }
 
-    @Test("round 4: Mention and Accept run in place from the response; a refused answer opens the push's landing")
+    /// The fixture ping's answer: 3 mentioned, nobody left out.
+    private func pingResult() throws -> RaidPingResult {
+        try RaidFixture.load(RaidPingResult.self, "guild.raid.ping")
+    }
+
+    /// A centre whose officer actions log their calls and whose answers are recorded, not posted.
     @MainActor
-    func officerResponses() async throws {
-        let calls = OfficerCalls()
+    private func officerCenter(
+        _ calls: OfficerCalls, accepts: Bool = true, declines: Bool = true, ping: RaidPingResult?
+    ) -> (RaidNotificationCenter, PostedAnswers) {
         let center = RaidNotificationCenter()
+        let posted = PostedAnswers()
+        center.use(answerer: nil, officer: OfficerPushActions(
+            accept: { guild, application in await calls.record("accept \(guild)/\(application)"); return accepts },
+            decline: { guild, application in await calls.record("decline \(guild)/\(application)"); return declines },
+            mention: { guild, raid, role in await calls.record("mention \(guild)/\(raid) \(role)"); return ping }
+        ), post: { answer, reply in posted.add(answer, reply) })
+        return (center, posted)
+    }
+
+    private func reply(_ action: String, _ name: String, title: String) throws -> PushReply {
+        PushReply(action: action, identifier: name, thread: "t-\(name)", title: title, userInfo: try apns(name))
+    }
+
+    @Test("round 5, row 3: Mention, Accept and Decline run in place and their result replaces the push")
+    @MainActor
+    func officerResults() async throws {
+        let calls = OfficerCalls()
+        let (center, posted) = officerCenter(calls, ping: try pingResult())
         var opened: [IntentDestination] = []
         center.onOpen = { opened.append($0) }
-        center.use(answerer: nil, officer: OfficerPushActions(
-            accept: { guild, application in await calls.record("accept \(guild)/\(application)"); return true },
-            decline: { guild, application in await calls.record("decline \(guild)/\(application)"); return false },
-            mention: { guild, raid, role in await calls.record("mention \(guild)/\(raid) \(role)"); return true }
-        ))
-        let reply = { (action: String, name: String) in
-            PushReply(action: action, identifier: name, thread: "", userInfo: try self.apns(name))
-        }
-        await center.respond(try reply(RaidPushCategory.actionMention, "push.raid-short.apns"))
-        await center.respond(try reply(RaidPushCategory.actionAccept, "push.guild-applicant.apns"))
-        #expect(await calls.log == ["mention 2/7 healer", "accept 2/31"])
+        let applicant = "New applicant: Mirelle, Holy Priest 60"
+        await center.respond(try reply(RaidPushCategory.actionMention, "push.raid-short.apns", title: "Onyxia's Lair"))
+        await center.respond(try reply(RaidPushCategory.actionAccept, "push.guild-applicant.apns", title: applicant))
+        await center.respond(try reply(RaidPushCategory.actionDecline, "push.guild-applicant.apns", title: applicant))
+        #expect(await calls.log == ["mention 2/7 healer", "accept 2/31", "decline 2/31"])
         #expect(opened.isEmpty, "answered in place, nothing opens")
-        await center.respond(try reply(RaidPushCategory.actionDecline, "push.guild-applicant.apns"))
-        #expect(opened.count == 1, "a refused Decline opens the review")
+        #expect(posted.answers == [
+            .init(title: "Mentioned 3 healers in Discord.", body: "Onyxia's Lair"),
+            .init(title: Copy.pushApplicantAccepted, body: applicant),
+            .init(title: Copy.pushApplicantDeclined, body: applicant),
+        ])
+        #expect(posted.replaced == ["push.raid-short.apns", "push.guild-applicant.apns", "push.guild-applicant.apns"])
+        #expect(posted.threads.first == "t-push.raid-short.apns", "the result keeps the push's thread")
+        let kept = try #require(posted.tapThrough.first)
+        #expect(kept["kind"] == .text("raid.short"), "a tap on the result still lands on Not answered")
+        #expect(kept["actions"] == nil, "the result carries no actions")
+    }
+
+    @Test("round 5, row 3: a failed or unreadable answer replaces the push with the failure line")
+    @MainActor
+    func officerFailures() async throws {
+        let calls = OfficerCalls()
+        let (center, posted) = officerCenter(calls, accepts: false, ping: nil)
+        await center.respond(try reply(RaidPushCategory.actionMention, "push.raid-short.apns", title: "Onyxia's Lair"))
+        await center.respond(try reply(RaidPushCategory.actionAccept, "push.guild-applicant.apns", title: "New applicant"))
+        var cooled = try apns("push.raid-short.apns")
+        cooled[RaidMentionRequest.actionsKey] = nil
+        await center.respond(PushReply(action: RaidPushCategory.actionMention, identifier: "c", thread: "", title: "Onyxia's Lair", userInfo: cooled))
+        #expect(posted.answers == [
+            .init(title: Copy.commonFailed, body: "Onyxia's Lair"),
+            .init(title: Copy.commonFailed, body: Copy.pushApplicantFailed),
+            .init(title: Copy.commonFailed, body: "Onyxia's Lair"),
+        ])
+        #expect(await calls.log == ["mention 2/7 healer", "accept 2/31"], "an unreadable Mention calls nothing")
     }
 
     @Test("round 4: UIKit's completion for a response runs on the main thread")
@@ -149,6 +194,22 @@ struct PushLandingTests {
             Task.detached { await done.run() }
         }
         #expect(onMain)
+    }
+}
+
+/// The answers a centre posted in place of their pushes, in order.
+@MainActor
+private final class PostedAnswers {
+    private(set) var answers: [RaidPushOutcome.Confirmation] = []
+    private(set) var replaced: [String] = []
+    private(set) var threads: [String] = []
+    private(set) var tapThrough: [[String: PushTapValue]] = []
+
+    func add(_ answer: RaidPushOutcome.Confirmation, _ reply: PushReply) {
+        answers.append(answer)
+        replaced.append(reply.identifier)
+        threads.append(reply.thread)
+        tapThrough.append(reply.tapThrough)
     }
 }
 

@@ -56,7 +56,6 @@ class RaidTabFactsTest {
         assertEquals(listOf("spell_magic_magearmor", "spell_holy_fistofjustice", "spell_holy_sealofwisdom"), line.missing.map { it.icon })
         assertEquals(2, line.more)
         val foot = facts.foot(raid, officer = false, roster = emptyList(), now = RaidTime.now).first { it.cover != null }
-        assertEquals(false, foot.warn)
         assertEquals(facts.covered(raid), foot.text)
     }
 
@@ -109,7 +108,7 @@ class RaidTabFactsTest {
     @Test fun `the head reads the invite time and the size`() {
         val words = RaidCardWords(resources(), clock(), RaidTime.now)
         val card = words.card(raid, "Olympus XXVII", "us/pvp/gorvash", null, null)
-        assertEquals("Invites 6:45 pm CST · 40", card.facts)
+        assertEquals("Invites 6:45 pm CST · 40-man", card.facts)
         assertNull(words.card(raid.copy(inviteAt = null), "Olympus XXVII", "us/pvp/gorvash", null, null).facts)
     }
 }

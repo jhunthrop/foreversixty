@@ -18,7 +18,7 @@
         "spec": "Fury",
         "build": {
           "source": "bnet",
-          "captured_at": "2026-10-29T18:22:41Z",
+          "captured_at": "2026-11-10T18:22:41Z",
           "gear": {
             "head": 12640,
             "neck": 18404,
@@ -132,7 +132,7 @@
       "anonymize": false
     },
     "main_character_key": "us/pvp/gorvash",
-    "bnet_imported_at": "2026-10-29T18:22:41Z"
+    "bnet_imported_at": "2026-11-10T18:22:41Z"
   },
   "error": null,
   "ok": true,

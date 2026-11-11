@@ -24,7 +24,7 @@ enum RaidFlowTestData {
     static func head(late: Bool = false) -> NextRaidContent {
         var raid = H.raid(answered: late ? .late : .signedIn, late: late)
         raid.headLine = "8:00 pm CST · pull in 2 h 48 min"
-        raid.invites = "Invites 7:45 pm · 40"
+        raid.invites = "Invites 7:45 pm · 40-man"
         raid.who = "As Thandrel, Damage"
         raid.lateMinutes = late ? 30 : nil
         raid.status = late ? .saved(Copy.commonSaved) : nil
@@ -82,10 +82,8 @@ enum RaidFlowTestData {
         }
         rows += [
             ReadyRowContent(key: "flask", mark: .miss, title: "Flask of the Titans", line: "None in your bags", fix: "Auction house", link: nil),
-            ReadyRowContent(
-                key: "enchant.feet", mark: .warn, title: "Boots not enchanted", line: "Enchant Boots: Greater Agility",
-                fix: "Where to get it", link: URL(string: "https://foreversixty.gg/")
-            ),
+            // Round 5, s1: the title says it all, nothing under it.
+            ReadyRowContent(key: "enchant.feet", mark: .warn, title: "Boots not enchanted", line: "", fix: nil, link: nil),
         ]
         return ReadyListContent(rows: rows, stamp: "From your last log-out, 9 h ago")
     }

@@ -12714,17 +12714,6 @@
         }
       }
     },
-    "raid.noRaid": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No raid posted yet."
-          }
-        }
-      }
-    },
     "raid.notAvailable": {
       "extractionState": "manual",
       "localizations": {
@@ -13529,7 +13518,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invites %1$@ · %2$lld"
+            "value": "Invites %1$@ · %2$lld-man"
           }
         }
       }
@@ -16437,6 +16426,17 @@
         }
       }
     },
+    "roster.chip.clear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show the whole roster"
+          }
+        }
+      }
+    },
     "roster.chip.dps": {
       "extractionState": "manual",
       "localizations": {
@@ -16459,6 +16459,18 @@
         }
       }
     },
+    "roster.chip.notSynced": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not synced this week · %1$lld"
+          }
+        }
+      }
+    },
     "roster.chip.tanks": {
       "extractionState": "manual",
       "localizations": {
@@ -16477,6 +16489,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "in game, no account"
+          }
+        }
+      }
+    },
+    "roster.counts.of": {
+      "comment": "Arguments: 1 shown (int), 2 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
           }
         }
       }

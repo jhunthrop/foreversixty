@@ -20,7 +20,7 @@ struct ForeverSixtyApp: App {
             officer: OfficerPushActions(
                 accept: { guild, application in (try? await flows.accept(guild: guild, application: application)) != nil },
                 decline: { guild, application in (try? await flows.decline(guild: guild, application: application)) != nil },
-                mention: { guild, raid, role in (try? await ping.ping(guild: guild, raid: raid, role: role)) != nil }
+                mention: { guild, raid, role in try? await ping.ping(guild: guild, raid: raid, role: role) }
             )
         )
         _environment = State(initialValue: environment)

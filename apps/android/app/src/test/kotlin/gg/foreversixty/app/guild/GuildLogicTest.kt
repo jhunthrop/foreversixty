@@ -41,6 +41,14 @@ class GuildLogicTest {
     // Roster (F16.1)
 
     @Test
+    fun `the not-synced filter counts the raiders it keeps and none when the roster is whole`() {
+        val keys = entries.mapNotNull { it.characterKey }.take(4).toSet()
+        assertEquals(4, RosterList.onlyCount(entries, keys))
+        assertEquals(1, RosterList.onlyCount(entries, keys.take(1).toSet() + "us/pvp/not-in-guild"))
+        assertNull(RosterList.onlyCount(entries, emptySet()))
+    }
+
+    @Test
     fun `every member is a row, the waiting and the no-account ones included`() {
         assertEquals(GuildFixture.home().members.size, entries.size)
         assertEquals(RosterStanding.Waiting, entry("Voidsong").standing)

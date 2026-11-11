@@ -214,6 +214,8 @@ object FsType {
     val paperdollName = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The paperdoll list: the slot word and its gain under the name (brand D6).
     val paperdollDetail = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 15.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // A row's line under its title, 13/18 (the mock's `.row .sub`, iOS RowType.sub).
+    val rowSub = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 13.sp, lineHeight = 18.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The flows' small button label and a row's check mark (brand D6).
     val buttonSmall = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The countdown's figures on Home's raid card (brand S4).

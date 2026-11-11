@@ -133,6 +133,15 @@ struct ActivityModelTests {
         #expect(!model.hasOlder, "the last page hides Show older")
         #expect(!model.loadingMore)
     }
+
+    @Test("round 5, i1: the shell reads the Activity badge before the tab opens; signed out or offline, none")
+    func badge() async {
+        let service = FakeActivityService()
+        #expect(await ActivityBadgeCount.load(signedIn: true, service: service) == 3)
+        #expect(await ActivityBadgeCount.load(signedIn: false, service: service) == 0)
+        service.pages = [:]
+        #expect(await ActivityBadgeCount.load(signedIn: true, service: service) == 0)
+    }
 }
 
 @MainActor

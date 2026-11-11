@@ -36,9 +36,9 @@ enum ActivityBody {
     }
 
     /// The row's figure (sim DPS, the guild ladder's), shown once and worded as the other figures
-    /// (row 11): `1,196 DPS`.
+    /// (row 11), to one decimal like them (round 5, row 6): `203.6 DPS`.
     static func figure(_ row: ActivityRow) -> String? {
-        row.figure.map { Copy.homeUpgradesGain(figure: ReportsCopy.figure($0), unit: Copy.bisUnitDps) }
+        row.figure.map { Copy.homeUpgradesGain(figure: ReportsCopy.figureTenths($0), unit: Copy.bisUnitDps) }
     }
 
     static func text(_ row: ActivityRow, fallback: String) -> Text {

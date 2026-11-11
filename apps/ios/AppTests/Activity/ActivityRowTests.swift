@@ -28,18 +28,18 @@ struct ActivityRowTests {
     func guildsim() throws {
         let passed = try row("guildsim.passed")
         let parts = try #require(ActivityBody.parts(passed))
-        #expect(parts.contains(.init(text: "12", tone: .strong)))
+        #expect(parts.contains(.init(text: "12.2", tone: .strong)))
         #expect(ActivityCrest.className(passed, specs: .main) == "warrior")
         // Row 11: the figure once, worded as the others; the body no longer repeats it.
-        #expect(ActivityBody.figure(passed) == "1,196 DPS")
-        #expect(!passed.body.contains("1196"))
+        #expect(ActivityBody.figure(passed) == "203.6 DPS")
+        #expect(!passed.body.contains("203.6"))
     }
 
     @Test("a row without segments keeps its plain body; a sim keeps its figure")
     func plain() throws {
         let sim = try row("sim.finished")
         #expect(ActivityBody.parts(sim) == nil)
-        #expect(ActivityBody.figure(sim) == "1,184 DPS")
+        #expect(ActivityBody.figure(sim) == "190.4 DPS")
     }
 
     @Test("Mark all read keeps a row's segments, crest and figure")

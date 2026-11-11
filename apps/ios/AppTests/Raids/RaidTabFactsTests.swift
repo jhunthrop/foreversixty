@@ -106,7 +106,7 @@ struct RaidTabFactsTests {
         let raid = try RaidFixture.raid()
         let invites = try #require(presenter.invites(raid))
         #expect(invites.hasPrefix("Invites "))
-        #expect(invites.hasSuffix(" · 40"))
+        #expect(invites.hasSuffix(" · 40-man"))
         #expect(invites.contains("6:45"))
         let answers = try #require(presenter.answers(raid))
         let unanswered = raid.notSignedRaiders?.count ?? raid.notSigned.count

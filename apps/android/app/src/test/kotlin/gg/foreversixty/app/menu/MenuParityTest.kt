@@ -10,6 +10,9 @@ import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.CharacterGuild
 import gg.foreversixty.app.model.Me
+import gg.foreversixty.app.push.NotificationsLine
+import gg.foreversixty.app.push.PushGroup
+import gg.foreversixty.app.raids.resources
 import gg.foreversixty.app.testing.PARITY_PIXEL_9_TALL
 import gg.foreversixty.app.testing.ParityCheck
 import kotlinx.serialization.json.jsonObject
@@ -119,7 +122,8 @@ object MenuFixtures {
     }
 
     val lines = MenuLines(
-        notifications = "Raids, gear and sims, logs on",
+        // Round 5 a1: the drawer's own builder, so the golden and the app cannot disagree.
+        notifications = NotificationsLine.of(resources(), listOf(PushGroup.Raids, PushGroup.Gear, PushGroup.Logs)),
         plan = "Premium · Founder price",
         devices = 3,
         newestDevice = "Pixel 9",

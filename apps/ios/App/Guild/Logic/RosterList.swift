@@ -201,6 +201,11 @@ struct RosterList: Equatable, Sendable {
         counts = home.counts
     }
 
+    /// How many raiders the `only` filter keeps (the not-synced chip's count).
+    func count(only keys: Set<String>) -> Int {
+        entries.count { $0.characterKey.map(keys.contains) ?? false }
+    }
+
     /// The rows a filter shows; `only` keeps just those character keys (nil keeps everyone).
     func visible(role: RosterRoleFilter, query: String, sort: RosterSort, only: Set<String>? = nil) -> [RosterEntry] {
         let needle = query.trimmingCharacters(in: .whitespacesAndNewlines)

@@ -212,6 +212,12 @@ final class BackfillCaptureTests: XCTestCase {
         save("r4-officer-raid-06-roster-t400")
         sleep(2)
         save("r4-officer-raid-06-roster-settled")
+        // Round 5, row 2: the filter chip's clear control brings the whole roster back.
+        let clear = app.buttons.matching(NSPredicate(format: "label ==[c] %@", "Show the whole roster")).firstMatch
+        guard clear.waitForExistence(timeout: Self.appears) else { return XCTFail("no clear control on the filter chip") }
+        clear.tap()
+        sleep(1)
+        save("r5-officer-raid-07-roster-cleared")
     }
 
     /// The drawer's Refresh: the `Refreshing…` frame inside 200 ms, then the new stamp.
@@ -250,14 +256,24 @@ final class BackfillCaptureTests: XCTestCase {
     func testOfficerPushes() {
         pushAction(["-FSPostRaidPush"], title: "Onyxia's Lair", action: "Late", name: "r4-push-raid-late")
         let officer = Self.officer + ["-FSPostPush"]
-        pushAction(officer + ["push.raid-short"], title: "Onyxia's Lair", action: "Mention in Discord", name: "r4-push-short")
-        pushAction(officer + ["push.guild-applicant"], title: "New applicant", action: "Accept", name: "r4-push-applicant-accept")
-        pushAction(officer + ["push.guild-applicant"], title: "New applicant", action: "Decline", name: "r4-push-applicant-decline")
+        // Round 5, row 3: each result replaces the push and shows as its banner.
+        pushAction(
+            officer + ["push.raid-short"], title: "Onyxia's Lair", action: "Mention in Discord", name: "r4-push-short",
+            result: "Mentioned 3 healers in Discord."
+        )
+        pushAction(
+            officer + ["push.guild-applicant"], title: "New applicant", action: "Accept", name: "r4-push-applicant-accept",
+            result: "Application accepted"
+        )
+        pushAction(
+            officer + ["push.guild-applicant"], title: "New applicant", action: "Decline", name: "r4-push-applicant-decline",
+            result: "Application declined"
+        )
     }
 
     private static let officer = ["-FSRaidFixture", "officer", "-FSNow", "2026-12-17T22:30:00Z"]
 
-    private func pushAction(_ extra: [String], title: String, action: String, name: String) {
+    private func pushAction(_ extra: [String], title: String, action: String, name: String, result: String? = nil) {
         let app = CaptureLaunch.signedIn(tab: "home", extra: extra)
         allowNotifications()
         guard let note = banner(title) else { return XCTFail("\(name): no notification") }
@@ -267,7 +283,12 @@ final class BackfillCaptureTests: XCTestCase {
         guard button.waitForExistence(timeout: 5) else { return XCTFail("\(name): no \(action)") }
         save("\(name)-02-actions")
         button.tap()
-        usleep(1_500_000)
+        if let result {
+            // The banner that replaced the push, once it is up.
+            if banner(result) == nil { XCTFail("\(name): no \(result) banner") }
+        } else {
+            usleep(1_500_000)
+        }
         save("\(name)-03-result")
         sleep(3)
         save("\(name)-04-settled")

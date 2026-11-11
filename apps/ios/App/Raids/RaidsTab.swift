@@ -251,6 +251,8 @@ struct RaidsTab: View {
                 guard let guild = content?.head.id, extras != nil else { return }
                 router.path.append(.roster(guild: guild, only: keys))
             },
+            // The cover list heads the raid page's sign-ups.
+            openCover: { push { .raid(guild: $0, raid: $1.id, roster: true, open: nil) } },
             openLink: { openURL($0) },
             apply: { openURL(dependencies.site.apply(guild: $0.guildID)) },
             claim: { openURL(dependencies.site.guilds) },

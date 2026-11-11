@@ -239,6 +239,8 @@ public enum FSType {
     public static let paperdollName = FSTextRole(face: FSFont.bodySemibold, size: 13, lineHeight: 16, tracking: 0, scalesWith: .footnote, tabular: false)
     /// The paperdoll list: the slot word and its gain under the name (brand D6).
     public static let paperdollDetail = FSTextRole(face: FSFont.body, size: 12, lineHeight: 15, tracking: 0, scalesWith: .caption, tabular: false)
+    /// A row's line under its title, 13/18 (the mock's `.row .sub`, iOS RowType.sub).
+    public static let rowSub = FSTextRole(face: FSFont.body, size: 13, lineHeight: 18, tracking: 0, scalesWith: .footnote, tabular: false)
     /// The flows' small button label and a row's check mark (brand D6).
     public static let buttonSmall = FSTextRole(face: FSFont.bodyBold, size: 13, lineHeight: 16, tracking: 0, scalesWith: .footnote, tabular: false)
     /// The countdown's figures on Home's raid card (brand S4).

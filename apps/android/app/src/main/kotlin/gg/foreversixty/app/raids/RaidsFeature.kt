@@ -92,7 +92,8 @@ import kotlinx.coroutines.launch
 
 /** A screen pushed on the Raids stack. */
 sealed interface RaidsDestination {
-    data class Raid(val guild: Long, val raid: Long, val open: RaidOpenAction? = null) : RaidsDestination
+    /** A raid's page; [toCover] scrolls to its composition's cover (the Raid tab's `and N more`). */
+    data class Raid(val guild: Long, val raid: Long, val open: RaidOpenAction? = null, val toCover: Boolean = false) : RaidsDestination
 
     /** An application to the guild, for its officers (spec 2026-11-08 F3). */
     data class Applicant(val guild: Long, val application: Long) : RaidsDestination
@@ -336,6 +337,7 @@ fun RaidsRoute(
                     openNight = { feature.navigator.push(RaidsDestination.Night(it)) },
                     back = { feature.navigator.pop() },
                     requestPermission = requestPermission,
+                    toCover = top.toCover,
                 )
             }
             is RaidsDestination.NotAnswered -> {
@@ -406,6 +408,7 @@ private fun raidTabActions(
             }
         },
         onRosterOf = { keys -> guild?.let { feature.navigator.push(RaidsDestination.Roster(it.id, keys)) } },
+        onCover = { raid -> guild?.let { feature.navigator.push(RaidsDestination.Raid(it.id, raid, toCover = true)) } },
         onApply = { openWeb("${RaidLinks.SITE}/app/guild/${it.id}") },
         onClaim = { openWeb(GUILDS) },
         onFindGuild = { openWeb(GUILDS) },

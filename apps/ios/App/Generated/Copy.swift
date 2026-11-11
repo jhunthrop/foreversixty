@@ -1385,9 +1385,6 @@ enum Copy {
         format("raid.pages.simsRank", position, of)
     }
 
-    /// No raid posted yet.
-    static var raidNoRaid: String { text("raid.noRaid") }
-
     /// Needs you
     static var raidNeedsYou: String { text("raid.needsYou") }
 
@@ -4615,6 +4612,19 @@ enum Copy {
     /// DPS
     static var rosterChipDps: String { text("roster.chip.dps") }
 
+    /// Not synced this week · {n}
+    static func rosterChipNotSynced(n: Int) -> String {
+        format("roster.chip.notSynced", n)
+    }
+
+    /// Show the whole roster
+    static var rosterChipClear: String { text("roster.chip.clear") }
+
+    /// {shown} of {total}
+    static func rosterCountsOf(shown: Int, total: Int) -> String {
+        format("roster.counts.of", shown, total)
+    }
+
     /// Sort: {by}
     static func rosterSort(by: String) -> String {
         format("roster.sort", by)
@@ -5893,7 +5903,7 @@ enum Copy {
         format("raid.tab.damageSplit", melee, ranged)
     }
 
-    /// Invites {time} · {n}
+    /// Invites {time} · {n}-man
     static func raidTabInviteSize(time: String, n: Int) -> String {
         format("raid.tab.inviteSize", time, n)
     }

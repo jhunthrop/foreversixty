@@ -1,12 +1,43 @@
 import Foundation
+import Models
 
 /// An officer's answers from a push without opening the app (guild-officer N1, N2): Accept or
-/// Decline an applicant, Mention the short role in Discord. Each returns true when the API took it;
-/// a refusal or failure opens the push's landing instead.
+/// Decline an applicant, Mention the short role in Discord. Accept and Decline return true when the
+/// API took it; Mention returns what the ping did, nil when it failed.
 struct OfficerPushActions: Sendable {
     var accept: @Sendable (_ guild: Int64, _ application: Int64) async -> Bool = { _, _ in false }
     var decline: @Sendable (_ guild: Int64, _ application: Int64) async -> Bool = { _, _ in false }
-    var mention: @Sendable (_ guild: Int64, _ raid: Int64, _ role: String) async -> Bool = { _, _, _ in false }
+    var mention: @Sendable (_ guild: Int64, _ raid: Int64, _ role: String) async -> RaidPingResult? = { _, _, _ in nil }
+}
+
+/// What replaces an officer push once its action ran (round 5, row 3; Android's
+/// RaidShortPushAnswerer and ApplicantPushAnswerer): `Mentioned 3 healers in Discord.` over the
+/// raid, `Application accepted` over the applicant, or the failure line.
+@MainActor
+enum OfficerPushResult {
+    /// `title` is the delivered push's title (the raid, the applicant).
+    static func mention(_ result: RaidPingResult?, role: String, title: String) -> RaidPushOutcome.Confirmation {
+        guard let result else { return mentionFailed(title: title) }
+        return .init(title: NotAnsweredModel.status(result, role: role), body: title)
+    }
+
+    static func applicant(done: Bool, accepted: Bool, title: String) -> RaidPushOutcome.Confirmation {
+        guard done else { return applicantFailed }
+        return .init(title: accepted ? Copy.pushApplicantAccepted : Copy.pushApplicantDeclined, body: title)
+    }
+
+    /// An action whose payload lacks what it needs (the server sends no Mention inside the cooldown).
+    static func unreadable(action: String, title: String) -> RaidPushOutcome.Confirmation {
+        action == RaidPushCategory.actionMention ? mentionFailed(title: title) : applicantFailed
+    }
+
+    private static func mentionFailed(title: String) -> RaidPushOutcome.Confirmation {
+        .init(title: Copy.commonFailed, body: title)
+    }
+
+    private static var applicantFailed: RaidPushOutcome.Confirmation {
+        .init(title: Copy.commonFailed, body: Copy.pushApplicantFailed)
+    }
 }
 
 /// An officer push's action, read from the notification before it crosses to the main actor.

@@ -16,11 +16,8 @@
         "key": "enchant.feet",
         "state": "warn",
         "title": "Boots not enchanted",
-        "line": "No enchant on it",
-        "where": {
-          "label": "An enchanter or the auction house",
-          "link": null
-        },
+        "line": "",
+        "where": null,
         "item_id": 16811,
         "icon": "inv_boots_07"
       },

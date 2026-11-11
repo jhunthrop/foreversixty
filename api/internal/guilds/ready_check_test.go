@@ -33,7 +33,7 @@ func TestReadyItemsWordTheChecklist(t *testing.T) {
 	if !slices.Equal(readyKeys(got), want) {
 		t.Fatalf("items %v, want %v", readyKeys(got), want)
 	}
-	if got[0].Title != "Drakefire Amulet" || got[1].Title != "Boots not enchanted" || got[2].Where == nil ||
+	if got[0].Title != "Drakefire Amulet" || got[1].Title != "Boots not enchanted" || got[1].Line != "" || got[1].Where != nil || got[2].Where == nil ||
 		got[2].Where.Label != "Auction house" || got[3].Title != "Grilled Squid" || got[3].Line != "12 in your bags" {
 		t.Fatalf("words %+v", got)
 	}

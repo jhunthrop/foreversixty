@@ -62,10 +62,10 @@ data class RoleLine(val tally: TallyItem, val names: List<RoleName>, val more: S
 
 /**
  * A line closing Who is coming: the counts, the Covered line ([cover], its names in wipe red beside their
- * icons, [text] read aloud), an officer's readiness ([warn] in wipe red; a tap opens the roster on
- * [onlyKeys], the raiders it names).
+ * icons, [text] read aloud), an officer's readiness (a tap opens the roster on [onlyKeys], the raiders
+ * it names).
  */
-data class RoleFoot(val text: String, val warn: Boolean = false, val cover: CoverLine? = null, val onlyKeys: Set<String> = emptySet())
+data class RoleFoot(val text: String, val cover: CoverLine? = null, val onlyKeys: Set<String> = emptySet())
 
 /** A name on Who is coming in its class colour: `Brightwen (Late · 15 min)`. */
 data class RoleName(val text: String, val className: String)
@@ -115,6 +115,8 @@ data class RaidTabActions(
     val onApplicant: (Long) -> Unit = {},
     /** The not-synced line's tap (row 5): the roster filtered to the characters it names. */
     val onRosterOf: (Set<String>) -> Unit = {},
+    /** The Covered line's `and N more` (round 5 row 4): the raid page at its cover list. */
+    val onCover: (Long) -> Unit = {},
 )
 
 /**
@@ -191,7 +193,7 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
                     onAction = { actions.onPage(GuildPage.Roster) },
                     top = 0.dp,
                     panel = PanelFrame.None,
-                ) { RoleRows(view.roles, view.foot, actions.onRosterOf) }
+                ) { RoleRows(view.roles, view.foot, actions.onRosterOf) { actions.onCover(next.raidId) } }
             }
         }
         else -> FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) {

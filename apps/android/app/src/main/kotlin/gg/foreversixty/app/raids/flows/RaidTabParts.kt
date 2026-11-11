@@ -3,9 +3,10 @@ package gg.foreversixty.app.raids.flows
 import androidx.compose.foundation.background
 import gg.foreversixty.app.designsystem.FsSize
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.platform.LocalResources
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.border
@@ -67,6 +68,7 @@ import gg.foreversixty.app.home.flows.RaidAnswers
 import gg.foreversixty.app.home.flows.RaidLiveModel
 import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
 import gg.foreversixty.app.items.GameIconImage
+import gg.foreversixty.app.reports.ui.Chevron
 
 /**
  * The Raid tab's head (spec 4.2, owner 2026-11-09): one compact line, the zone's icon, the raid, its
@@ -107,7 +109,12 @@ internal fun RaidHead(raid: RaidCardModel, actions: HomeActions, notes: String? 
  * the Covered line, an officer's readiness).
  */
 @Composable
-internal fun RoleRows(roles: List<RoleLine>, footer: List<RoleFoot> = emptyList(), onRosterOf: (Set<String>) -> Unit = {}) {
+internal fun RoleRows(
+    roles: List<RoleLine>,
+    footer: List<RoleFoot> = emptyList(),
+    onRosterOf: (Set<String>) -> Unit = {},
+    onCover: () -> Unit = {},
+) {
     roles.forEachIndexed { index, line ->
         Column(Modifier.fillMaxWidth().parityItem(ParityItemKind.Row).padding(vertical = ROLE_PAD)) {
             Text(roleTitle(line), style = FsType.item, color = FsColor.strong)
@@ -118,40 +125,71 @@ internal fun RoleRows(roles: List<RoleLine>, footer: List<RoleFoot> = emptyList(
     footer.forEach { foot ->
         val cover = foot.cover
         when {
-            cover != null -> CoverRow(cover, foot.text)
-            foot.onlyKeys.isNotEmpty() -> Text(
-                foot.text,
-                style = SUB,
-                color = FsColor.wipe,
-                modifier = RAID_TARGET
-                    .fillMaxWidth()
-                    .clickable(role = Role.Button) { onRosterOf(foot.onlyKeys) }
-                    .wrapContentHeight(Alignment.CenterVertically),
-            )
-            else -> Text(foot.text, style = SUB, color = if (foot.warn) FsColor.wipe else FsColor.muted, modifier = Modifier.padding(vertical = FsSpace.space2))
+            cover != null -> CoverRow(cover, foot.text, onCover)
+            foot.onlyKeys.isNotEmpty() -> NotSyncedRow(foot.text) { onRosterOf(foot.onlyKeys) }
+            else -> Text(foot.text, style = SUB, color = FsColor.muted, modifier = Modifier.padding(vertical = FsSpace.space2))
         }
+    }
+}
+
+/**
+ * An officer's not-synced line (round 5 row 1, as iOS): the names in the primary text tone, a trailing
+ * chevron, the whole 48 dp row the tap that opens the roster filtered to them.
+ */
+@Composable
+private fun NotSyncedRow(text: String, onClick: () -> Unit) {
+    Row(
+        RAID_TARGET.fillMaxWidth().clickable(role = Role.Button, onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space1),
+    ) {
+        Text(text, style = SUB, color = FsColor.text, modifier = Modifier.weight(1f))
+        Chevron(FsSize.icon20)
     }
 }
 
 /**
  * The Covered line (row 4, round 4 row 1): a neutral `Missing`, then each name in wipe red, with its
  * spell icon when it has one, joined by the one separator, then `and N more`. A name never breaks
- * across lines; the line wraps between names. Read aloud as [spoken], one sentence.
+ * across lines; the line wraps between names. Read aloud as [spoken], one sentence. With names left
+ * out (round 5 row 4) the tail is a gold link and the 48 dp line opens the raid page's cover list.
  */
 @Composable
-private fun CoverRow(line: CoverLine, spoken: String) {
+private fun CoverRow(line: CoverLine, spoken: String, onMore: () -> Unit) {
     val res = LocalResources.current
     val names = RaidTabFacts(res).names(line)
+    val more = line.more > 0
+    val tap = if (more) RAID_TARGET.clickable(role = Role.Button, onClick = onMore) else Modifier
     FlowRow(
-        Modifier.fillMaxWidth().padding(vertical = FsSpace.space2).clearAndSetSemantics { contentDescription = spoken },
+        Modifier
+            .fillMaxWidth()
+            .then(tap)
+            .padding(vertical = FsSpace.space2)
+            .clearAndSetSemantics {
+                contentDescription = spoken
+                if (more) {
+                    role = Role.Button
+                    onClick { onMore(); true }
+                }
+            },
         horizontalArrangement = Arrangement.spacedBy(FsSpace.space1),
-        verticalArrangement = Arrangement.spacedBy(FsSpace.space1),
+        verticalArrangement = Arrangement.spacedBy(FsSpace.space1, Alignment.CenterVertically),
     ) {
-        // Each piece centres on the line, so a name beside its icon sits on the same baseline as one without.
-        val centred = Modifier.align(Alignment.CenterVertically)
-        if (line.missing.isNotEmpty()) Text(stringResource(R.string.raid_tab_coverLabel), centred, style = SUB, color = FsColor.muted, maxLines = 1, softWrap = false)
-        names.forEachIndexed { index, name -> CoverNameView(name, separated = index < names.lastIndex, centred) }
-        if (line.more > 0) Text(res.getString(R.string.raid_tab_andMore, "", line.more).trim(), centred, style = SUB, color = FsColor.muted, maxLines = 1, softWrap = false)
+        // Every piece sits on the text baseline, so a name beside its icon lines up with one without.
+        val onBaseline = Modifier.alignByBaseline()
+        if (line.missing.isNotEmpty()) Text(stringResource(R.string.raid_tab_coverLabel), onBaseline, style = SUB, color = FsColor.muted, maxLines = 1, softWrap = false)
+        names.forEachIndexed { index, name -> CoverNameView(name, separated = index < names.lastIndex, onBaseline) }
+        if (more) {
+            Text(
+                res.getString(R.string.raid_tab_andMore, "", line.more).trim(),
+                onBaseline,
+                style = SUB,
+                color = FsColor.gold,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                softWrap = false,
+            )
+        }
     }
 }
 

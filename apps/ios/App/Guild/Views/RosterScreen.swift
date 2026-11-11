@@ -49,8 +49,9 @@ struct RosterContentView: View {
     @ViewBuilder
     private func loaded(_ list: RosterList) -> some View {
         if query.searching { searchField }
-        RosterCountsCard(counts: list.counts)
-        RosterChips(query: $query)
+        let filtered = query.only.map(list.count(only:))
+        RosterCountsCard(counts: list.counts, shown: filtered)
+        RosterChips(query: $query, onlyCount: filtered)
         let rows = list.visible(role: query.role, query: query.search, sort: query.sort, only: query.only)
         if rows.isEmpty {
             GuildMessageCard(title: Copy.rosterEmptyTitle, note: Copy.rosterEmptyBody)
@@ -97,9 +98,12 @@ struct RosterContentView: View {
     }
 }
 
-/// The counts card: three figures at stat size over their captions.
+/// The counts card: three figures at stat size over their captions; filtered, the roster's reads
+/// `4 of 38` (round 5, row 2).
 struct RosterCountsCard: View {
     let counts: GuildMemberCounts
+    /// How many the not-synced filter shows; nil when the roster is not filtered.
+    var shown: Int?
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
@@ -107,16 +111,16 @@ struct RosterCountsCard: View {
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
             : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
         layout {
-            figure(counts.onRoster, Copy.rosterCountsOnRoster)
-            figure(counts.inGameNoAccount, Copy.rosterCountsNoAccount)
-            figure(counts.waiting, Copy.rosterCountsWaiting)
+            figure(shown.map { Copy.rosterCountsOf(shown: $0, total: counts.onRoster) } ?? "\(counts.onRoster)", Copy.rosterCountsOnRoster)
+            figure("\(counts.inGameNoAccount)", Copy.rosterCountsNoAccount)
+            figure("\(counts.waiting)", Copy.rosterCountsWaiting)
         }
         .raidCardBox(16).quietCard()
     }
 
-    private func figure(_ value: Int, _ caption: String) -> some View {
+    private func figure(_ value: String, _ caption: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("\(value)").font(ScaledType.stat).foregroundStyle(FSColor.strong)
+            Text(value).font(ScaledType.stat).foregroundStyle(FSColor.strong)
             Text(caption).font(ScaledType.meta).foregroundStyle(FSColor.muted)
         }
         .frame(maxWidth: typeSize.isAccessibilitySize ? nil : .infinity, alignment: .leading)
@@ -124,15 +128,23 @@ struct RosterCountsCard: View {
     }
 }
 
-/// All, Tanks, Healers, DPS, then `Sort: {by}`.
+/// All, Tanks, Healers, DPS, then `Sort: {by}`; from the Raid tab's not-synced line, the filter's own
+/// chip leads, selected, with its clear control, and All is not selected (round 5, row 2).
 struct RosterChips: View {
     @Binding var query: RosterQuery
+    /// The not-synced filter's count; nil when the roster is not filtered.
+    var onlyCount: Int?
 
     var body: some View {
         WrapLayout(spacing: 8) {
+            if let onlyCount { RosterFilterChip(count: onlyCount) { query.only = nil } }
             ForEach(RosterRoleFilter.allCases) { role in
-                let selected = query.role == role
-                Button { query.role = role } label: {
+                let selected = query.role == role && (role != .all || onlyCount == nil)
+                Button {
+                    query.role = role
+                    // All is everyone: it clears the not-synced filter too.
+                    if role == .all { query.only = nil }
+                } label: {
                     Text(role.label).font(ScaledType.meta.weight(.semibold))
                         .foregroundStyle(selected ? FSColor.gold : FSColor.text)
                         .padding(.horizontal, 14)
@@ -161,6 +173,33 @@ struct RosterChips: View {
                 .contentShape(.rect)
             }
         }
+    }
+}
+
+/// The not-synced filter's chip in the selected style: `Not synced this week · 4`, then its clear
+/// control, a 44 pt target.
+struct RosterFilterChip: View {
+    let count: Int
+    let clear: () -> Void
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Text(Copy.rosterChipNotSynced(n: count)).font(ScaledType.meta.weight(.semibold))
+                .padding(.leading, FSSpace.space3)
+            Button(action: clear) {
+                Image(systemName: "xmark").font(ScaledType.meta.weight(.bold))
+                    .frame(width: FSTarget.min, height: FSButtonStyle.smallHeight)
+                    .contentShape(.rect.inset(by: (FSButtonStyle.smallHeight - FSTarget.min) / 2))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Copy.rosterChipClear)
+        }
+        .foregroundStyle(FSColor.gold)
+        .frame(minHeight: FSButtonStyle.smallHeight)
+        .guildPill(fill: GameColors.pressedWash, line: FSColor.gold)
+        .padding(.vertical, (FSTarget.min - FSButtonStyle.smallHeight) / 2)
+        .accessibilityElement(children: .contain)
+        .accessibilityAddTraits(.isSelected)
     }
 }
 

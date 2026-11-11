@@ -422,7 +422,6 @@
         <item quantity="other">%1$d wipes</item>
     </plurals>
     <string name="raid_pages_simsRank" tools:ignore="PluralsCandidate">#%1$d of %2$d in guild sims</string>
-    <string name="raid_noRaid">No raid posted yet.</string>
     <string name="raid_needsYou">Needs you</string>
     <string name="raid_needsYouOpen" tools:ignore="PluralsCandidate">%1$d open</string>
     <string name="raid_night_title">Raid night</string>
@@ -1389,6 +1388,9 @@
     <string name="roster_chip_tanks">Tanks</string>
     <string name="roster_chip_healers">Healers</string>
     <string name="roster_chip_dps">DPS</string>
+    <string name="roster_chip_notSynced" tools:ignore="PluralsCandidate">Not synced this week · %1$d</string>
+    <string name="roster_chip_clear">Show the whole roster</string>
+    <string name="roster_counts_of" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
     <string name="roster_sort">Sort: %1$s</string>
     <string name="roster_sort_rank">Rank</string>
     <string name="roster_sort_className">Class</string>
@@ -1764,7 +1766,7 @@
     <string name="raid_tab_tallyShort" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
     <string name="raid_tab_tallyCompact" tools:ignore="PluralsCandidate">%1$d/%2$d</string>
     <string name="raid_tab_damageSplit" tools:ignore="PluralsCandidate">%1$d melee, %2$d ranged</string>
-    <string name="raid_tab_inviteSize" tools:ignore="PluralsCandidate">Invites %1$s · %2$d</string>
+    <string name="raid_tab_inviteSize" tools:ignore="PluralsCandidate">Invites %1$s · %2$d-man</string>
     <string name="raid_tab_countBench" tools:ignore="PluralsCandidate">Bench %1$d</string>
     <string name="raid_tab_countOut" tools:ignore="PluralsCandidate">Out %1$d</string>
     <string name="raid_tab_countNotAnswered" tools:ignore="PluralsCandidate">%1$d not answered</string>

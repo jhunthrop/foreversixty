@@ -111,7 +111,6 @@ object RaidTabFixtures {
         RoleFoot("Missing Fort · WF 1 of 2", cover = COVER),
         RoleFoot(
             "Not synced this week: Kaelra, Thalrin, Brakka, Mirethil",
-            warn = true,
             onlyKeys = setOf("us/pvp/kaelra", "us/pvp/thalrin", "us/pvp/brakka", "us/pvp/mirethil"),
         ).takeIf { officer },
     )
@@ -130,13 +129,13 @@ object RaidTabFixtures {
         ReadyItem(ReadyTone.Ok, "Drakefire Amulet", "Attuned", null),
         ReadyItem(ReadyTone.Ok, "Elixir of the Mongoose", "3 in your bags", null),
         ReadyItem(ReadyTone.Miss, "Flask of the Titans", "None in your bags", "Auction house"),
-        ReadyItem(ReadyTone.Warn, "Boots not enchanted", "Enchant Boots: Greater Agility", "Where to get it"),
+        ReadyItem(ReadyTone.Warn, "Boots not enchanted", "", null),
     )
 
     private fun head(answer: SignupState, lateMinutes: Int? = null, control: AnswerControl = AnswerControl()) =
         HomeFixtures.raid(answer, lateOpen = answer == SignupState.Late).copy(
             headLine = "8:00 pm CST · pull in 2 h 48 min",
-            facts = "Invites 7:45 pm · 40",
+            facts = "Invites 7:45 pm · 40-man",
             who = "As Thandrel, Damage",
             lateMinutes = lateMinutes,
             control = control,

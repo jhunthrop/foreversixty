@@ -23,8 +23,8 @@ const (
 
 // readyCopy is the ready check's words.
 var readyCopy = struct {
-	LevelTitle, LevelLine, Attuned, NotAttuned, KeysUnseen, AttuneWhere                        string
-	FlaskTitle, FoodTitle, NoneInBags, AuctionHouse, Enchanted, NoEnchant, EnchantWhere, Every string
+	LevelTitle, LevelLine, Attuned, NotAttuned, KeysUnseen, AttuneWhere string
+	FlaskTitle, FoodTitle, NoneInBags, AuctionHouse, Enchanted, Every   string
 }{
 	LevelTitle:   "Level %d",
 	LevelLine:    "You are level %d",
@@ -37,8 +37,6 @@ var readyCopy = struct {
 	NoneInBags:   "None in your bags",
 	AuctionHouse: "Auction house",
 	Enchanted:    "%s not enchanted",
-	NoEnchant:    "No enchant on it",
-	EnchantWhere: "An enchanter or the auction house",
 	Every:        "Every slot enchanted",
 }
 
@@ -172,7 +170,7 @@ func enchantLines(c ChecklistItem, gear map[string]int) []ReadyItem {
 				words = slot
 			}
 			out = append(out, ReadyItem{Key: "enchant." + slot, State: ReadyWarn, Title: fmt.Sprintf(readyCopy.Enchanted, words),
-				Line: readyCopy.NoEnchant, Where: &ReadyWhere{Label: readyCopy.EnchantWhere}, ItemID: itemIDOf(gear[slot])})
+				ItemID: itemIDOf(gear[slot])})
 		}
 		return out
 	}

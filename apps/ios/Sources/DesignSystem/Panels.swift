@@ -267,6 +267,7 @@ public struct PanelRow<Lead: View, Trail: View>: View {
     private let last: Bool
     /// iOS's disclosure chevron at the right of a row that pushes a screen.
     private let chevron: Bool
+    @Environment(\.dynamicTypeSize) private var typeSize
     /// A figure at the row's right in tabular digits (an Activity row's DPS).
     private let value: String?
     private let lead: Lead
@@ -298,6 +299,11 @@ public struct PanelRow<Lead: View, Trail: View>: View {
         self.trail = trail()
     }
 
+    private func valueText(_ value: String) -> some View {
+        Text(value).type(TypeRole(face: FSFont.bodySemibold, size: 15, lineHeight: 20, scalesWith: .subheadline, tabular: true))
+            .foregroundStyle(FSColor.strong)
+    }
+
     public var body: some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
             HStack(spacing: FSSpace.space3) {
@@ -306,14 +312,13 @@ public struct PanelRow<Lead: View, Trail: View>: View {
                     Text(title).type(FSType.item).foregroundStyle(titleColor)
                     if let sub { sub.type(RowType.sub).foregroundStyle(FSColor.muted) }
                     if let meta { Text(meta).type(RowType.sub).foregroundStyle(FSColor.muted) }
+                    // At the accessibility sizes the figure goes under the text, so the title keeps
+                    // its words whole (round 5: `203.6 DPS` broke `Brakka` at ax5).
+                    if typeSize.isAccessibilitySize, let value { valueText(value) }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.trailing, trailCell && !chevron ? FSSpace.space3 : 0)
-                if let value {
-                    Text(value).type(TypeRole(face: FSFont.bodySemibold, size: 15, lineHeight: 20, scalesWith: .subheadline, tabular: true))
-                        .foregroundStyle(FSColor.strong)
-                        .fixedSize()
-                }
+                if !typeSize.isAccessibilitySize, let value { valueText(value).fixedSize() }
                 if chevron {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13, weight: .semibold))

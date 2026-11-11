@@ -114,6 +114,10 @@ data class RosterQuery(
 )
 
 object RosterList {
+    /** How many of [entries] the `only` filter keeps (the not-synced chip's count); null when not filtered. */
+    fun onlyCount(entries: List<RosterEntry>, only: Set<String>): Int? =
+        only.takeIf { it.isNotEmpty() }?.let { keys -> entries.count { it.characterKey in keys } }
+
     fun apply(entries: List<RosterEntry>, query: RosterQuery): List<RosterEntry> {
         val needle = query.search.trim()
         return entries

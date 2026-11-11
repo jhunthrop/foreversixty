@@ -42,8 +42,8 @@ class ActivityRowTest {
         val passed = row("guildsim.passed")
         assertEquals(ActivityBody.Part("12.2", ActivityBody.Tone.Strong), requireNotNull(ActivityBody.parts(passed)).first { it.tone == ActivityBody.Tone.Strong })
         assertEquals("warrior", Activity.crestClass(passed, SpecCatalog(emptyList())))
-        // Row 11: the figure shows once, whole and grouped with its unit; the body leaves it out.
-        assertEquals("204 DPS", ActivityBody.figure(passed, "DPS"))
+        // Row 11, round 5 row 6: the figure shows once, to one decimal, with its unit; the body leaves it out.
+        assertEquals("203.6 DPS", ActivityBody.figure(passed, "DPS"))
         assertEquals(false, passed.body.contains("203.6"))
     }
 
@@ -51,7 +51,7 @@ class ActivityRowTest {
         val sim = row("sim.finished")
         assertNull(ActivityBody.parts(sim))
         assertNull(ActivityBody.annotated(sim))
-        assertEquals("190 DPS", ActivityBody.figure(sim, "DPS"))
+        assertEquals("190.4 DPS", ActivityBody.figure(sim, "DPS"))
     }
 
     @Test fun `the styled body is the body, the age is not appended (row 3)`() {

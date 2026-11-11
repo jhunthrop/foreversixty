@@ -29,7 +29,7 @@ enum RaidDebugLaunch {
     private static var folder: URL? { Bundle.main.url(forResource: FixtureTransport.bundledFolder, withExtension: nil) }
 
     /// The bundled fixtures with the named raid state on every route that has it.
-    private static func client(baseURL: URL) -> APIClient? {
+    static func client(baseURL: URL) -> APIClient? {
         guard let variant = raidVariant, let folder else { return nil }
         let stems = variantStems.filter { FileManager.default.fileExists(atPath: folder.appending(path: "\($0).\(variant).json").path) }
         let variants = Dictionary(uniqueKeysWithValues: stems.map { ($0, FixtureVariant.named(variant)) })

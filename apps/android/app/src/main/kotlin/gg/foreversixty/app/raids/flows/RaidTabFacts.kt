@@ -18,7 +18,7 @@ class RaidTabFacts(private val res: Resources) {
         counts(raid)?.let(::RoleFoot),
         coverLine(raid)?.let { RoleFoot(text(it), cover = it) },
         notSynced(raid, roster, now).takeIf { officer && it.isNotEmpty() }?.let { stale ->
-            RoleFoot(notSyncedLine(stale), warn = true, onlyKeys = stale.map { it.characterKey }.toSet())
+            RoleFoot(notSyncedLine(stale), onlyKeys = stale.map { it.characterKey }.toSet())
         },
     )
 

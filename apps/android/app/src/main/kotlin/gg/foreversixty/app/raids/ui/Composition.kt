@@ -28,9 +28,9 @@ import gg.foreversixty.app.raids.logic.CompositionRead
  * raid's targets, and the raid buffs present or missing. Every figure comes from the API.
  */
 @Composable
-fun CompositionBlock(read: CompositionRead) {
+fun CompositionBlock(read: CompositionRead, modifier: Modifier = Modifier) {
     val large = isLargeText()
-    Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.raidQuietCard().padding(14.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = modifier.raidQuietCard().padding(14.dp)) {
         SectionLabel(stringResource(R.string.raids_comp_title))
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),

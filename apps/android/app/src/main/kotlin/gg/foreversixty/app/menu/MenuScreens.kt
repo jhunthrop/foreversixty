@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,6 +26,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
+import gg.foreversixty.app.guild.logic.GuildRank
+import gg.foreversixty.app.push.NotificationsLine
 import gg.foreversixty.app.account.AccountCopy
 import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.account.AccountLinks
@@ -114,8 +117,13 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
             value = offline.report?.let { OfflineData.size(it.totalBytes) }
         }
     }
+    // Round 5 a1: the groups' real switches, read each time the drawer opens.
+    val officer = model?.you?.guild?.rank?.let { GuildRank.of(it) != GuildRank.Member } == true
+    val res = LocalResources.current
+    val notifications = remember(open, officer, res) { NotificationsLine.of(res, NotificationsLine.on(context, officer)) }
     val lines = MenuLines(
-        plan = me?.let { PlanCopy.line(PlanSummary.of(it, Instant.now()).row) },
+        notifications = notifications,
+        plan =me?.let { PlanCopy.line(PlanSummary.of(it, Instant.now()).row) },
         devices = devices?.size,
         newestDevice = devices?.firstOrNull { !it.isThisDevice }?.name,
         offlineData = offlineSize,

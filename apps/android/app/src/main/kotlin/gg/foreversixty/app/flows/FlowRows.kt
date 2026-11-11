@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
@@ -37,8 +36,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.borderColor
+import gg.foreversixty.app.designsystem.containerColor
+import gg.foreversixty.app.designsystem.contentColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSize
 import gg.foreversixty.app.designsystem.FsSpace
@@ -253,8 +255,9 @@ private fun gainText(gain: String, unit: String?) = buildAnnotatedString {
 }
 
 /**
- * The flows' button (`.btn`): 36 tall small, 44 otherwise; [primary] is the gold fill, the selected
- * answer among the raid's four.
+ * The flows' button (`.btn`): 36 tall small, 44 otherwise, in the site's and iOS's colours (round 5
+ * row 5): [primary] the flat teal with the teal edge (the selected answer among the raid's four,
+ * Accept), else the secondary blue with the blue edge (Preview mention, Decline), white labels.
  */
 @Composable
 fun FlowButton(
@@ -266,20 +269,20 @@ fun FlowButton(
     selectedState: Boolean? = null,
 ) {
     val shape = RoundedCornerShape(FsRadius.control)
-    val fill = if (primary) Modifier.background(Brush.verticalGradient(listOf(FsColor.goldHover, FsColor.gold)), shape) else Modifier.background(FsColor.raised, shape)
+    val kind = if (primary) BrandButtonKind.Primary else BrandButtonKind.Secondary
     Box(
         modifier
             .heightIn(min = if (small) SMALL_BUTTON else BUTTON)
             .parityItem(ParityItemKind.Button)
             .clip(shape)
-            .then(fill)
-            .border(1.dp, if (primary) FsColor.gold else FsColor.line, shape)
+            .background(containerColor(kind) ?: Color.Transparent, shape)
+            .border(1.dp, borderColor(kind), shape)
             .clickable(role = Role.Button, onClick = onClick)
             .then(selectedState?.let { on -> Modifier.semantics { selected = on } } ?: Modifier)
             .padding(horizontal = BUTTON_PAD),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, style = BUTTON_TEXT, color = if (primary) FsColor.bg else FsColor.strong, maxLines = 1)
+        Text(label, style = BUTTON_TEXT, color = contentColor(kind), maxLines = 1)
     }
 }
 
@@ -345,7 +348,7 @@ val FLOW_CHIP_SMALL: Dp = 36.dp
 private val VALUE = FsType.bodyStrong.copy(fontFeatureSettings = "tnum")
 
 /** The row's line (`.row .sub`, 13/18). */
-val SUB = FsType.small.copy(lineHeight = 18.sp)
+val SUB = FsType.rowSub
 
 private val LEAD = 40.dp
 private val CHIP_RADIUS = 8.dp

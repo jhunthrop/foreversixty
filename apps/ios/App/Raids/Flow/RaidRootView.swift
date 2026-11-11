@@ -7,6 +7,8 @@ struct RaidRootActions {
     var openPage: (GuildPage) -> Void = { _ in }
     /// The roster filtered to these characters (row 5's not-synced raiders).
     var openRoster: ([String]) -> Void = { _ in }
+    /// The raid page's cover list, from Covered's `and N more` (round 5, row 4).
+    var openCover: () -> Void = {}
     var openLink: (URL) -> Void = { _ in }
     var apply: (RecruitingRow) -> Void = { _ in }
     var claim: () -> Void = {}
@@ -113,7 +115,7 @@ struct RaidGuildView: View {
                     RoleRowsView(roles: content.coming)
                     ComingFoot(
                         answers: content.answers, cover: content.cover, notSynced: content.notSynced,
-                        openUnsynced: actions.openRoster
+                        openUnsynced: actions.openRoster, openCover: actions.openCover
                     )
                 }
             }
@@ -145,12 +147,22 @@ private struct ComingFoot: View {
     let cover: RaidCoverContent?
     let notSynced: NotSyncedContent?
     let openUnsynced: ([String]) -> Void
+    let openCover: () -> Void
 
     var body: some View {
         if answers != nil || cover != nil || notSynced != nil {
             VStack(alignment: .leading, spacing: FSSpace.space2) {
                 if let answers { Text(answers).type(RowType.sub).foregroundStyle(FSColor.muted) }
-                if let cover { CoverLine(content: cover) }
+                if let cover {
+                    if cover.more > 0 {
+                        // The names it leaves out are on the raid page's cover list (round 5, row 4).
+                        Button(action: openCover) { CoverLine(content: cover).frame(minHeight: FSTarget.min).contentShape(.rect) }
+                            .buttonStyle(RowPressStyle())
+                            .parityItem(.row)
+                    } else {
+                        CoverLine(content: cover)
+                    }
+                }
                 if let notSynced {
                     Button { openUnsynced(notSynced.keys) } label: {
                         HStack(spacing: FSSpace.space1) {
@@ -174,19 +186,21 @@ private struct ComingFoot: View {
 
 /// The Covered line (row 4; round 4, row 1): `Missing` once in the muted label tone, each gap's spell
 /// icon beside its name in wipe red (only the names, never a red wall), ` · ` between the names, then
-/// `and N more`. A name never breaks inside, and a name with no icon draws no frame.
+/// `and N more` in the link gold (round 5, row 4: it opens the cover list). A name never breaks
+/// inside, a name with no icon draws no frame, and every word sits on one centre line, so the one
+/// icon never drops its name below the others.
 private struct CoverLine: View {
     let content: RaidCoverContent
     @Environment(\.raidIconBuild) private var build
 
     var body: some View {
-        WrapLayout(spacing: FSSpace.space1, lineSpacing: FSSpace.space1) {
+        WrapLayout(spacing: FSSpace.space1, lineSpacing: FSSpace.space1, centresLines: true) {
             if !content.missing.isEmpty {
                 Text(Copy.raidTabCoverLabel).foregroundStyle(FSColor.muted)
             }
             gaps(content.missing + content.short)
             if content.more > 0 {
-                Text(Copy.raidTabAndMore(names: "", n: content.more).trimmingCharacters(in: .whitespaces)).foregroundStyle(FSColor.muted)
+                Text(Copy.raidTabAndMore(names: "", n: content.more).trimmingCharacters(in: .whitespaces)).foregroundStyle(FSColor.gold)
             }
         }
         .type(RowType.sub)
@@ -464,7 +478,8 @@ struct ReadyPanelList: View {
     var body: some View {
         ForEach(content.rows) { row in
             Button { if let link = row.link { open(link) } } label: {
-                PanelRow(row.title, sub: row.fix.map { Text.line(row.line, link: $0) } ?? Text(row.line)) {
+                // A check with nothing to add (s1: `Boots not enchanted`) draws no empty line.
+                PanelRow(row.title, sub: row.fix.map { Text.line(row.line, link: $0) } ?? (row.line.isEmpty ? nil : Text(row.line))) {
                     ReadyLead(mark: row.mark, icon: row.icon)
                 }
             }

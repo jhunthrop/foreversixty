@@ -148,6 +148,8 @@ HOME_R5_CSS = '''
 [data-platform=ios] .ap.home .blk .btns .btn.primary{font-weight:700;color:#fff;background:#0f6064;box-shadow:inset 0 0 0 1px #408076}
 /* round 2 (review backfill): the status line under the answers; the upgrades' synced stamp; the raid line's tally */
 .ap.home .chips .btn.primary{background:#0f6064;border-color:#408076;color:#fff}
+.ap.home .btn.primary{background:#0f6064;border-color:#408076;color:#fff;box-shadow:none}
+.ap.home .row .trail .btn,.ap.home .vstack .btn:not(.primary){background:#114f72;border-color:#1d6a96;color:#fff}
 .ap.home .stl{margin:8px 0 0;font:400 13px/20px var(--font-body);color:var(--kill)}
 .ap.home section>.stmp{margin:-8px 0 8px;font:400 14px/20px var(--font-body);color:var(--muted)}
 [data-platform=ios] .ap.home section>.stmp{margin-top:-12px}
@@ -497,7 +499,7 @@ RAID_R5_CSS = """
 .r5raid .seg .btn{height:48px;min-height:48px;border:0;border-radius:0}.r5raid .seg .btn+.btn{border-left:1px solid #5a5d70}
 .r5raid .seg .btn.on,.r5raid .lm .btn.on{background:#408076}
 .r5raid .lm{display:flex;gap:8px;margin-top:8px}.r5raid .lm .btn{border-color:#5a5d70;border-radius:8px}
-.r5raid .row{display:block;padding:10px 0;border-bottom:1px solid var(--line)}.r5raid .row:last-child{border-bottom:0}
+.r5raid .row{display:block;min-height:0;padding:10px 0;border-bottom:1px solid var(--line)}.r5raid .row:last-child{border-bottom:0}
 .r5raid .row .in{display:flex;align-items:center;gap:12px}
 .r5raid .row .tr{margin-top:8px;display:flex}
 .r5raid .row .lk{font-weight:600;color:var(--gold)}
@@ -529,9 +531,13 @@ RAID_R5_CSS = """
 .r5raid .cov .cg{display:inline-flex;align-items:center;gap:4px;color:var(--wipe);white-space:nowrap}
 .r5raid .cov .cg img,.r5raid .cov .cg .ci{display:block;width:20px;height:20px;border-radius:4px;background-size:cover}
 .r5raid .cov .cg .n{color:var(--muted)}
-.r5raid .rfoot .ns{display:flex;align-items:center;min-height:48px;padding:0;border:0;font:400 13px/18.29px var(--font-body);color:var(--wipe)}
-[data-platform=ios] .r5raid .rfoot .ns{min-height:44px;color:var(--text);gap:4px}
-[data-platform=ios] .r5raid .rfoot .ns span{flex:1}[data-platform=ios] .r5raid .rfoot .ns i{font-style:normal;color:var(--muted)}
+.r5raid .rfoot .ns{display:flex;align-items:center;gap:4px;min-height:48px;padding:0;border:0;font:400 13px/18.29px var(--font-body);color:var(--text)}
+.r5raid .rfoot .ns span{flex:1}.r5raid .rfoot .ns i{font-style:normal;color:var(--muted)}
+[data-platform=ios] .r5raid .rfoot .ns{min-height:44px}
+/* round 5: buttons from the tokens: the primary teal with its tealEdge and strong text, the secondary blue with blueEdge */
+.r5raid .btn{background:#114f72;border-color:#1d6a96}
+.r5raid .seg .btn,.r5raid .lm .btn{background:none}
+.r5raid .seg .btn.on,.r5raid .lm .btn.on,.r5raid .wide.primary{background:#0f6064;border-color:#408076;color:#fff}
 [data-platform=ios] .r5raid .cov{padding:0;gap:4px}
 [data-platform=android] .r5raid .sh .act{line-height:18px}
 [data-platform=ios] .r5raid .btn{height:44px;min-height:44px}
@@ -552,7 +558,7 @@ R5_COMING = [('Tanks', 2, 2, [('Grunvald', 'warrior'), ('Brakka', 'druid')], 0),
                                 ('Brightwen<br>(Late&nbsp;&middot;&nbsp;15&nbsp;min)', 'priest')], 0),
              ('Damage', 11, 30, [('Thandrel', 'warrior'), ('Kaelra', 'warrior'), ('Thalrin', 'mage')], 8)]
 DAMAGE_SPLIT = '5 melee, 6 ranged'
-RAID_INVITES = 'Invites 7:45 pm &middot; 40'
+RAID_INVITES = 'Invites 7:45 pm &middot; 40-man'
 RAID_NOTES = ('Bring <b>fire resistance</b> gear and flasks. Whelps go to the left wall, the tanks call the deep breath in voice; '
               'consumables check at 7:50 pm.')
 RAID_ANSWERS = 'Bench 1 &middot; Out 3 &middot; 5 not answered'
@@ -562,7 +568,7 @@ COVER_SHORT = [('WF', 'spell_nature_windfury', '1 of 2')]
 RAID_NOT_SYNCED = 'Not synced this week: Kaelra, Thalrin, Brakka, Mirethil'
 R5_READY = [('ok', 'Drakefire Amulet', 'Attuned', None), ('ok', 'Elixir of the Mongoose', '3 in your bags', None),
             ('miss', 'Flask of the Titans', 'None in your bags', 'Auction house'),
-            ('warn', 'Boots not enchanted', 'Enchant Boots: Greater Agility', 'Where to get it')]
+            ('warn', 'Boots not enchanted', '', None)]
 R5_PAGES = [('Roster', '38 members, 31 at 60'), ('Calendar', 'Onyxia Wed, Barrow Deeps Sat'), ('Loot history', 'Last raid: 4 pieces'),
             ('Guild sims', 'You are #7 of 14 DPS')]
 
@@ -625,7 +631,7 @@ def _r5_coming(platform: str, officer: bool = False) -> str:
     unsynced = ''
     if officer:
         unsynced = (f'<a class="ns sr" href="#"><span>{RAID_NOT_SYNCED}</span><i>&rsaquo;</i></a>' if platform == 'ios'
-                    else f'<a class="ns" href="#">{RAID_NOT_SYNCED}</a>')
+                    else f'<a class="ns" href="#"><span>{RAID_NOT_SYNCED}</span><i>&rsaquo;</i></a>')
     foot = f'<div class="rfoot"><p>{RAID_ANSWERS}</p>{_cover(platform)}{unsynced}</div>'
     return _r5_section('Who is coming', _r5_roles(R5_COMING, platform) + foot, action='Roster &rsaquo;')
 
@@ -862,7 +868,7 @@ ACTIVITY = [
                    ('inv_misc_book_09', 'Fury Warrior BiS changed', f'A new pick for Hands: <span style="color:{QCOL[4]}">Theramore Gauntlets</span>', 'Gear and sims', 'Tue', False)]),
 ]
 # The row's figure (round 3, row 11): once, at its end, formatted like the rest.
-ACTIVITY_FIGURES = {'Kaelra passed you in the guild sims': '1,196 DPS'}
+ACTIVITY_FIGURES = {'Kaelra passed you in the guild sims': '1,196.2 DPS'}
 GROUPS = ['All', 'Raids', 'Gear and sims', 'Logs', 'Guild ladder', 'Tiers']
 # The rows about a class wear its crest (one crest language, lane M4a): a guildmate's spec icon, a spec's tier move.
 ACTIVITY_CRESTS = {'ability_warrior_innerrage': 'warrior', 'Fury Warrior moved to S': 'warrior'}

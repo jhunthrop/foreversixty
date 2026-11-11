@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -186,9 +187,11 @@ private fun BattleNetStamp(updated: String, stale: Boolean, syncFailed: Boolean,
     )
     val actionColor = if (refreshing) FsColor.muted else FsColor.gold
     // Round 4 row 10: only the action takes the press, inside its own 48 dp target; the stamp is text.
+    // Round 5 a2: while refreshing the press is gone with its ripple (no patch behind `Refreshing…`).
+    val press = if (refreshing) Modifier.semantics { disabled() } else Modifier.clickable(role = Role.Button, onClick = onRefresh)
     val tap = Modifier
         .heightIn(min = FsTarget.min)
-        .clickable(enabled = !refreshing, role = Role.Button, onClick = onRefresh)
+        .then(press)
         .semantics { liveRegion = LiveRegionMode.Polite }
         .wrapContentHeight(Alignment.CenterVertically)
     val actionText: @Composable (Modifier) -> Unit = { modifier ->
