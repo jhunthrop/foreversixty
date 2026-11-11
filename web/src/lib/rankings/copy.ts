@@ -13,7 +13,8 @@ export const encounterPickerCopy = {
       .filter((part) => part !== null && part !== '')
       .join(' · '),
   /** "212 ranked": the encounter's ranked kills. */
-  ranked: (kills: number): string => `${grouped(kills)} ranked`,
+  /** The encounter's ranked kills: a kill puts several characters on the board, so never "ranked". */
+  ranked: (kills: number): string => `${grouped(kills)} ${kills === 1 ? 'kill' : 'kills'}`,
   /** One line in place of an encounter's top parses, or of the spec leaders. */
   topFailed: 'Top parses did not load.',
   topNone: 'No ranked kill on this board yet.',

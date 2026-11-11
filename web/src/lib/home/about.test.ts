@@ -10,8 +10,8 @@ const FACTS: AboutFacts = {
   bands: { first: 20, last: 60 },
   raidsOpen: '2026-12-09T00:00:00.000Z',
   ranked: [
-    { name: 'Saltspine', slug: 'saltspine' },
-    { name: 'Relic Guardian', slug: 'relic-guardian' },
+    { name: 'Saltspine', slug: 'saltspine', size: 5 },
+    { name: 'Relic Guardian', slug: 'relic-guardian', size: 5 },
   ],
 };
 
@@ -19,10 +19,10 @@ const prose = (parts: readonly Part[]) => parts.map((part) => part.text).join(''
 
 describe('aboutView', () => {
   it('reads every fact from the data: bands, build, read day, ranking day, raid day', () => {
-    const text = aboutView(FACTS).paragraphs.map(prose).join('\n');
-    expect(text).toContain('each ten-level band from 20 to 60');
-    expect(text).toContain('client build 1.60.1.70790, read from the game files on 11 Nov.');
-    expect(text).toContain('BiS lists ranked 10 Nov.');
+    const view = aboutView(FACTS);
+    const text = view.paragraphs.map(prose).join('\n');
+    expect(text).toContain('Every spec has BiS for each ten-level band from 20 to 60');
+    expect(view.build).toBe('Client build 1.60.1.70790, read 11 Nov. BiS ranked 10 Nov.');
     expect(text).toContain("opens on 9 Dec with Barrow Deeps, Hyjal Summit and Onyxia's Lair.");
   });
 
@@ -33,6 +33,16 @@ describe('aboutView', () => {
       '/rankings/relic-guardian',
     ]);
     expect(prose(aboutView({ ...FACTS, ranked: [] }).paragraphs[2] ?? [])).not.toContain('rankings');
+  });
+
+  it('calls the bosses dungeon bosses only when every one named is under raid size', () => {
+    expect(prose(aboutView(FACTS).paragraphs[2] ?? [])).toContain(
+      'The most logged dungeon bosses on the rankings:',
+    );
+    const raid = { ...FACTS, ranked: [{ name: 'Onyxia', slug: 'onyxia', size: 40 }] };
+    expect(prose(aboutView(raid).paragraphs[2] ?? [])).toContain(
+      'The most logged bosses on the rankings: Onyxia.',
+    );
   });
 
   it('says the tier is open once its day has passed', () => {

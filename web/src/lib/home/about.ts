@@ -8,6 +8,7 @@
 import { FIRST_RAIDS } from '../first-raids';
 import { SPECS, type SpecRole } from '../sim/specs';
 import { utcDayMonth } from '../dates';
+import { RAID_SIZE } from '../rankings/landing';
 
 /** A run of text, a link when it has an href. */
 export interface Part {
@@ -29,18 +30,21 @@ export interface AboutFacts {
   /** The first tier's opening day (ISO date) while it is ahead; null once it is open. */
   raidsOpen: string | null;
   /** The most-logged ranked encounters, most kills first. */
-  ranked: readonly { name: string; slug: string }[];
+  /** With its raid size (null when no log says): bosses under raid size are dungeon bosses. */
+  ranked: readonly { name: string; slug: string; size: number | null }[];
 }
 
 export interface AboutView {
   paragraphs: Part[][];
+  /** Where the data comes from, one small line. */
+  build: string;
   roles: { role: SpecRole; label: string; specs: Part[] }[];
   bisMeta: string | undefined;
 }
 
 export const aboutCopy = {
   title: "What's here",
-  bisTitle: 'Leveling BiS by spec',
+  bisTitle: 'BiS by spec',
   roleLabels: { tank: 'Tanks', healer: 'Healers', dps: 'Damage' } as const satisfies Record<SpecRole, string>,
 } as const;
 
@@ -64,8 +68,8 @@ function gearParagraph(facts: AboutFacts): Part[] {
     facts.bands === null ? '' : ` for each ten-level band from ${facts.bands.first} to ${facts.bands.last}`;
   return [
     text(`Every spec has `),
-    link('leveling BiS', '/bis'),
-    text(`${bands}, with the quest, dungeon or vendor each piece comes from, a `),
+    link('BiS', '/bis'),
+    text(`${bands}, each piece with its quest, dungeon or vendor, a `),
     link('guide', '/guides'),
     text(" written for Forever's changes, and talent builds you can open in the "),
     link('planner', '/planner'),
@@ -86,13 +90,7 @@ function simParagraph(): Part[] {
     ]),
     text('. The same engine orders every spec on the '),
     link('tier list', '/tiers'),
-    text(' at 60, for '),
-    ...listParts([
-      link('damage', '/tiers'),
-      link('healing', '/tiers/healer'),
-      link('tanking', '/tiers/tank'),
-    ]),
-    text('. The '),
+    text(' at 60, for damage, healing and tanking. The '),
     link('addon and the companion', '/setup'),
     text(
       ' bring your character over with its gear and talents, and upload your combat logs as you play, so your boss kills reach the ',
@@ -113,16 +111,24 @@ function raidParagraph(facts: AboutFacts): Part[] {
           text('.'),
         ];
   if (facts.ranked.length === 0) return opening;
-  const bosses = facts.ranked.slice(0, RANKED_NAMED).map((boss) => link(boss.name, `/rankings/${boss.slug}`));
-  return [...opening, text(' The most logged bosses on the rankings: '), ...listParts(bosses), text('.')];
+  const named = facts.ranked.slice(0, RANKED_NAMED);
+  // Named by what they are: beside the raid sentence a raider reads plain "bosses" as raid bosses.
+  const dungeon = named.every((boss) => boss.size !== null && boss.size < RAID_SIZE);
+  const bosses = named.map((boss) => link(boss.name, `/rankings/${boss.slug}`));
+  return [
+    ...opening,
+    text(` The most logged ${dungeon ? 'dungeon bosses' : 'bosses'} on the rankings: `),
+    ...listParts(bosses),
+    text('.'),
+  ];
 }
 
-function buildParagraph(facts: AboutFacts): Part[] {
-  const read =
-    facts.readAt === null ? '' : `, read from the game files on ${utcDayMonth(facts.readAt.slice(0, 10))}`;
+/** The provenance line, drawn small under the paragraphs. */
+function buildLine(facts: AboutFacts): string {
+  const read = facts.readAt === null ? '' : `, read ${utcDayMonth(facts.readAt.slice(0, 10))}`;
   const ranked =
-    facts.bisRankedAt === null ? '' : ` BiS lists ranked ${utcDayMonth(facts.bisRankedAt.slice(0, 10))}.`;
-  return [text(`Data from client build ${facts.build}${read}.${ranked}`)];
+    facts.bisRankedAt === null ? '' : ` BiS ranked ${utcDayMonth(facts.bisRankedAt.slice(0, 10))}.`;
+  return `Client build ${facts.build}${read}.${ranked}`;
 }
 
 /** Every spec with a BiS file, by role, each its full name linking to its BiS page. */
@@ -139,7 +145,8 @@ function bisRoles(facts: AboutFacts): AboutView['roles'] {
 
 export function aboutView(facts: AboutFacts): AboutView {
   return {
-    paragraphs: [gearParagraph(facts), simParagraph(), raidParagraph(facts), buildParagraph(facts)],
+    paragraphs: [gearParagraph(facts), simParagraph(), raidParagraph(facts)],
+    build: buildLine(facts),
     roles: bisRoles(facts),
     bisMeta: facts.bands === null ? undefined : `Levels ${facts.bands.first} to ${facts.bands.last}`,
   };

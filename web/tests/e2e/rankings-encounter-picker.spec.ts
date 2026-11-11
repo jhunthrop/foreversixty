@@ -45,7 +45,7 @@ test('signed out, bare /rankings lists the ranked encounters, each a link to its
   await expect(links).toHaveCount(2);
   await expect(links.nth(0)).toContainText('Warden Kelthas');
   await expect(links.nth(0)).toContainText('5-player');
-  await expect(links.nth(0)).toContainText('3 ranked');
+  await expect(links.nth(0)).toContainText('3 kills');
   await expect(links.nth(0)).toHaveAttribute('href', '/rankings/warden-kelthas');
   await expect(links.nth(1)).toContainText('Excavation Site: Wetlands · 5-player');
   await expect(links.nth(1)).toHaveAttribute('href', '/rankings/skolex-the-insatiable');

@@ -1,6 +1,6 @@
 <!-- web/src/components/home/HomeAbout.svelte -->
 <!-- The signed-out home's foot (seo-fix 2026-11-11, lane G2): what the site does for a Forever
-     player, in four short paragraphs read from the build's data (lib/home/about.ts), and every
+     player, in three short paragraphs and its build line read from the build's data (lib/home/about.ts), and every
      spec's leveling BiS by role, each spec in its class colour. Server-rendered, no island: it is the
      text a search engine and a player without JavaScript read, under the islands above it. -->
 <script lang="ts">
@@ -25,6 +25,7 @@
           {#each paragraph as item, at (at)}{@render part(item)}{/each}
         </p>
       {/each}
+      <p class="home-about-build text-muted" data-testid="home-about-build">{view.build}</p>
     </div>
   </Section>
   <Section title={aboutCopy.bisTitle} meta={view.bisMeta} boxed testid="home-about-bis">
@@ -52,7 +53,17 @@
   }
   @media (min-width: 1100px) {
     .home-about {
-      grid-template-columns: minmax(0, 1fr) var(--home-rail, 440px);
+      /* Halves: the prose and the spec list come out near one height, so neither panel holds a void. */
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: stretch;
+    }
+    /* The two panels end together, as the feed and the rail above them do (HomeGrid). */
+    .home-about > :global(section.ui-section) {
+      display: flex;
+      flex-direction: column;
+    }
+    .home-about > :global(section.ui-section > .ui-section-box) {
+      flex: 1;
     }
   }
   .home-about-prose {
@@ -66,6 +77,10 @@
   }
   .home-about-prose p {
     margin: 0;
+  }
+  .home-about-prose .home-about-build {
+    font-size: 13px;
+    line-height: 20px;
   }
   .home-about-roles {
     display: flex;
@@ -89,5 +104,12 @@
   }
   .home-about-specs li {
     white-space: nowrap;
+  }
+  /* A finger-sized target on a touch screen. */
+  @media (pointer: coarse) {
+    .home-about-specs :global(a) {
+      display: inline-block;
+      padding-block: 10px;
+    }
   }
 </style>

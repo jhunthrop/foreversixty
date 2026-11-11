@@ -42,6 +42,6 @@ export function loadAboutFacts(
     bands:
       bandNumbers.length === 0 ? null : { first: Math.min(...bandNumbers), last: Math.max(...bandNumbers) },
     raidsOpen,
-    ranked: snapshot.encounters.map(({ name, slug }) => ({ name, slug })),
+    ranked: snapshot.encounters.map(({ name, slug, size }) => ({ name, slug, size })),
   };
 }

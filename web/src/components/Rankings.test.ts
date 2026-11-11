@@ -60,6 +60,7 @@ describe('Rankings empty state copy', () => {
     expect(encounterPickerCopy.where("Onyxia's Lair", 40)).toBe("Onyxia's Lair · 40-player");
     expect(encounterPickerCopy.where(null, 5)).toBe('5-player');
     expect(encounterPickerCopy.where(null, null)).toBe('');
-    expect(encounterPickerCopy.ranked(1212)).toBe('1,212 ranked');
+    expect(encounterPickerCopy.ranked(1212)).toBe('1,212 kills');
+    expect(encounterPickerCopy.ranked(1)).toBe('1 kill');
   });
 });

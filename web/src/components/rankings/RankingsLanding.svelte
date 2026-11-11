@@ -210,7 +210,9 @@
   </Ruled>
 </Section>
 
-{#if leaderAt !== null}
+<!-- Hidden when the boards answered and no row names a spec (a log that named none): an empty
+     panel under a board of kills reads as a contradiction. -->
+{#if leaderAt !== null && !(leaders !== null && leaders.damage.length + leaders.healing.length === 0)}
   <Section
     title={encounterPickerCopy.leadersHeading}
     meta={leaderAt.name}

@@ -16,7 +16,7 @@ export const LANDING_ENCOUNTERS = 4;
 /** The parses shown under each encounter. */
 export const TOP_PARSES = 3;
 /** The smallest raid: a boss at this size or over is a raid boss. */
-const RAID_SIZE = 10;
+export const RAID_SIZE = 10;
 
 export type LandingMetric = 'dps' | 'hps';
 

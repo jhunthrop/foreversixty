@@ -82,7 +82,10 @@ describe('scripts/sync-rankings.mjs', () => {
   });
 
   it('reads the encounters and each board, leaves out a board that fails, and trims the rows', async () => {
-    const rows = Array.from({ length: 40 }, (_, index) => ({ rank: index + 1 }));
+    const rows = [
+      ...Array.from({ length: 40 }, (_, index) => ({ rank: index + 1, value: 900 - index })),
+      { rank: 41, value: 0 },
+    ];
     const asked: string[] = [];
     const fetchImpl = async (url: string) => {
       asked.push(url);
@@ -109,6 +112,7 @@ describe('scripts/sync-rankings.mjs', () => {
     expect(read.phase).toBe('launch');
     expect(Object.keys(read.boards)).toEqual(['onyxia']);
     expect(read.boards.onyxia.rows).toHaveLength(SNAPSHOT_ROWS);
+    expect(read.boards.onyxia.rows.every((row: { value: number }) => row.value > 0)).toBe(true);
     expect(read.hps?.slug).toBe('onyxia');
     expect(warnings).toEqual([expect.stringContaining('broken left out')]);
     expect(asked).toContain(

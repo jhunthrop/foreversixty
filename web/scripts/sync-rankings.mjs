@@ -58,8 +58,10 @@ function boardQuery(slug, metric, phase) {
   return `/v1/rankings?${params}`;
 }
 
+/** The first rows, without a character who did nothing on the board (0 DPS, a healer on the DPS
+ *  board): a 0 with a percentile beside it reads as a broken row. */
 function trim(page) {
-  return { ...page, rows: page.rows.slice(0, SNAPSHOT_ROWS) };
+  return { ...page, rows: page.rows.filter((row) => row.value > 0).slice(0, SNAPSHOT_ROWS) };
 }
 
 /**
