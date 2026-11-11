@@ -28,8 +28,8 @@ enum Copy {
     /// You
     static var tabYou: String { text("tab.you") }
 
-    /// Raid
-    static var tabRaid: String { text("tab.raid") }
+    /// Guild
+    static var tabGuild: String { text("tab.guild") }
 
     /// Gear
     static var tabGear: String { text("tab.gear") }
@@ -1460,17 +1460,6 @@ enum Copy {
 
     /// Claim your guild
     static var raidClaimButton: String { text("raid.claim.button") }
-
-    /// Raids start at 60
-    static var raidLevelerTitle: String { text("raid.leveler.title") }
-
-    /// {n} levels to go
-    static func raidLevelerToGo(n: Int) -> String {
-        format("raid.leveler.toGo", n)
-    }
-
-    /// Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
-    static var raidLevelerLine: String { text("raid.leveler.line") }
 
     /// Sign up for your guild's raids from your phone.
     static var raidOutLine: String { text("raid.out.line") }
@@ -5858,17 +5847,6 @@ enum Copy {
     /// Claim your guild
     static var raidTabClaim: String { text("raid.tab.claim") }
 
-    /// Raids start at 60
-    static var raidTabLeveler: String { text("raid.tab.leveler") }
-
-    /// {n} levels to go
-    static func raidTabLevelsToGo(n: Int) -> String {
-        format("raid.tab.levelsToGo", n)
-    }
-
-    /// Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
-    static var raidTabLevelerLine: String { text("raid.tab.levelerLine") }
-
     /// {time} · pull in {until}
     static func raidTabPullIn(time: String, until: String) -> String {
         format("raid.tab.pullIn", time, until)
@@ -5915,6 +5893,177 @@ enum Copy {
 
     /// How late
     static var raidTabHowLate: String { text("raid.tab.howLate") }
+
+    /// {members} · {faction}
+    static func guildTabHeadLine(members: String, faction: String) -> String {
+        format("guild.tab.headLine", members, faction)
+    }
+
+    /// at {level}
+    static func guildTabAtCap(level: Int) -> String {
+        format("guild.tab.atCap", level)
+    }
+
+    /// {from} to {to}
+    static func guildTabCloseRange(from: Int, to: Int) -> String {
+        format("guild.tab.closeRange", from, to)
+    }
+
+    /// you
+    static var guildTabYou: String { text("guild.tab.you") }
+
+    /// Raids open at {level} · you're {you}
+    static func guildTabRaidsOpen(level: Int, you: Int) -> String {
+        format("guild.tab.raidsOpen", level, you)
+    }
+
+    /// Roster
+    static var guildTabRoster: String { text("guild.tab.roster") }
+
+    /// {n} of {total} at {level}
+    static func guildTabRosterMeta(n: Int, total: Int, level: Int) -> String {
+        format("guild.tab.rosterMeta", n, total, level)
+    }
+
+    /// Recently on
+    static var guildTabRecentlyOn: String { text("guild.tab.recentlyOn") }
+
+    /// Close to {level}
+    static func guildTabCloseTo(level: Int) -> String {
+        format("guild.tab.closeTo", level)
+    }
+
+    /// Seen {age}
+    static func guildTabSeen(age: String) -> String {
+        format("guild.tab.seen", age)
+    }
+
+    /// Recent logs
+    static var guildTabLogs: String { text("guild.tab.logs") }
+
+    /// {zone} · {kills}/{fights} kills · {duration}
+    static func guildTabLogLine(zone: String, kills: Int, fights: Int, duration: String) -> String {
+        format("guild.tab.logLine", zone, kills, fights, duration)
+    }
+
+    /// Progression
+    static var guildTabProgression: String { text("guild.tab.progression") }
+
+    /// {down} of {named} down
+    static func guildTabDown(down: Int, named: Int) -> String {
+        format("guild.tab.down", down, named)
+    }
+
+    /// {n} pulls this tier
+    static func guildTabPulls(n: Int) -> String {
+        format("guild.tab.pulls", n)
+    }
+
+    /// First raids open {date}
+    static func guildTabFirstRaids(date: String) -> String {
+        format("guild.tab.firstRaids", date)
+    }
+
+    /// Loot
+    static var guildTabLoot: String { text("guild.tab.loot") }
+
+    /// Loot history ›
+    static var guildTabLootLink: String { text("guild.tab.lootLink") }
+
+    /// Pages
+    static var guildTabPages: String { text("guild.tab.pages") }
+
+    /// Officer
+    static var guildTabOfficer: String { text("guild.tab.officer") }
+
+    /// Plan a raid
+    static var guildTabPlanRaid: String { text("guild.tab.planRaid") }
+
+    /// None planned
+    static var guildTabNonePlanned: String { text("guild.tab.nonePlanned") }
+
+    /// Applications
+    static var guildTabApplications: String { text("guild.tab.applications") }
+
+    /// None waiting
+    static var guildTabNoApplications: String { text("guild.tab.noApplications") }
+
+    /// {name}, {kind} {level}
+    static func guildTabApplicant(name: String, kind: String, level: Int) -> String {
+        format("guild.tab.applicant", name, kind, level)
+    }
+
+    /// {first}, and {n} more
+    static func guildTabApplicantMore(first: String, n: Int) -> String {
+        format("guild.tab.applicantMore", first, n)
+    }
+
+    /// {n} waiting
+    static func guildTabWaiting(n: Int) -> String {
+        format("guild.tab.waiting", n)
+    }
+
+    /// Setup
+    static var guildTabSetup: String { text("guild.tab.setup") }
+
+    /// {done} of {total} done
+    static func guildTabSetupDone(done: Int, total: Int) -> String {
+        format("guild.tab.setupDone", done, total)
+    }
+
+    /// {steps} to go
+    static func guildTabSetupToGo(steps: String) -> String {
+        format("guild.tab.setupToGo", steps)
+    }
+
+    /// Officer ranks
+    static var guildTabStepRanks: String { text("guild.tab.stepRanks") }
+
+    /// Discord bot
+    static var guildTabStepDiscord: String { text("guild.tab.stepDiscord") }
+
+    /// Recruiting
+    static var guildTabStepRecruiting: String { text("guild.tab.stepRecruiting") }
+
+    /// Raid schedule
+    static var guildTabStepSchedule: String { text("guild.tab.stepSchedule") }
+
+    /// Invite link
+    static var guildTabStepInvite: String { text("guild.tab.stepInvite") }
+
+    /// Addon sync
+    static var guildTabStepAddon: String { text("guild.tab.stepAddon") }
+
+    /// Log visibility
+    static var guildTabStepVisibility: String { text("guild.tab.stepVisibility") }
+
+    /// Discord role
+    static var guildTabStepRole: String { text("guild.tab.stepRole") }
+
+    /// Find your guild
+    static var guildTabFind: String { text("guild.tab.find") }
+
+    /// Search guilds on the site
+    static var guildTabSearch: String { text("guild.tab.search") }
+
+    /// By name or realm
+    static var guildTabSearchLine: String { text("guild.tab.searchLine") }
+
+    /// Applied {day}
+    static func guildTabApplied(day: String) -> String {
+        format("guild.tab.applied", day)
+    }
+
+    /// {boss} · {purpose}
+    static func guildTabJobLine(boss: String, purpose: String) -> String {
+        format("guild.tab.jobLine", boss, purpose)
+    }
+
+    /// Open in planner ›
+    static var guildTabOpenPlanner: String { text("guild.tab.openPlanner") }
+
+    /// Assigning is on the site for now.
+    static var guildTabAssignOnSite: String { text("guild.tab.assignOnSite") }
 
     /// {tally} · {n} short
     static func raidTabTallyShort(tally: String, n: Int) -> String {
@@ -6876,6 +7025,30 @@ enum Copy {
     /// © {year} Commish LLC d/b/a Forever Sixty
     static func sharedFooterOperator(year: String) -> String {
         format("shared.footer.operator", year)
+    }
+
+    /// Assignments
+    static var sharedAssignTitle: String { text("shared.assign.title") }
+
+    /// {boss} assignments
+    static func sharedAssignEncounterTitle(boss: String) -> String {
+        format("shared.assign.encounterTitle", boss)
+    }
+
+    /// Your job
+    static var sharedAssignYours: String { text("shared.assign.yours") }
+
+    /// No one is picked yet.
+    static var sharedAssignNothingYet: String { text("shared.assign.nothingYet") }
+
+    /// {n} of {count}
+    static func sharedAssignFilled(n: Int, count: Int) -> String {
+        format("shared.assign.filled", n, count)
+    }
+
+    /// {label} with {names}
+    static func sharedAssignJobWith(label: String, names: String) -> String {
+        format("shared.assign.jobWith", label, names)
     }
 
     private static func text(_ key: String) -> String {

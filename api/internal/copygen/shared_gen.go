@@ -439,3 +439,21 @@ const SharedFooterFanLine = "A fan-made player tool. Not affiliated with Blizzar
 
 // SharedFooterOperator is shared.footer.operator: © {year} Commish LLC d/b/a Forever Sixty
 const SharedFooterOperator = "© {year} Commish LLC d/b/a Forever Sixty"
+
+// SharedAssignTitle is shared.assign.title: Assignments
+const SharedAssignTitle = "Assignments"
+
+// SharedAssignEncounterTitle is shared.assign.encounterTitle: {boss} assignments
+const SharedAssignEncounterTitle = "{boss} assignments"
+
+// SharedAssignYours is shared.assign.yours: Your job
+const SharedAssignYours = "Your job"
+
+// SharedAssignNothingYet is shared.assign.nothingYet: No one is picked yet.
+const SharedAssignNothingYet = "No one is picked yet."
+
+// SharedAssignFilled is shared.assign.filled: {n} of {count}
+const SharedAssignFilled = "{n} of {count}"
+
+// SharedAssignJobWith is shared.assign.jobWith: {label} with {names}
+const SharedAssignJobWith = "{label} with {names}"

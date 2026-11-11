@@ -192,6 +192,13 @@
     "shared.account.delete.failed": "Could not delete your account just now. Try again.",
     "shared.account.delete.done": "Your account is deleted. Thanks for playing with us.",
     "shared.footer.fanLine": "A fan-made player tool. Not affiliated with Blizzard.",
-    "shared.footer.operator": "© {year} Commish LLC d/b/a Forever Sixty"
+    "shared.footer.operator": "© {year} Commish LLC d/b/a Forever Sixty",
+
+    "shared.assign.title": "Assignments",
+    "shared.assign.encounterTitle": "{boss} assignments",
+    "shared.assign.yours": "Your job",
+    "shared.assign.nothingYet": "No one is picked yet.",
+    "shared.assign.filled": { "text": "{n} of {count}", "notPlural": true, "args": { "n": "int", "count": "int" } },
+    "shared.assign.jobWith": "{label} with {names}"
   }
 }

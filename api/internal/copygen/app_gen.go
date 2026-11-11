@@ -23,8 +23,8 @@ const TabBis = "BiS"
 // TabYou is tab.you: You
 const TabYou = "You"
 
-// TabRaid is tab.raid: Raid
-const TabRaid = "Raid"
+// TabGuild is tab.guild: Guild
+const TabGuild = "Guild"
 
 // TabGear is tab.gear: Gear
 const TabGear = "Gear"
@@ -1195,15 +1195,6 @@ const RaidClaimLine = "Claim it: a guild master or an officer confirms with the 
 
 // RaidClaimButton is raid.claim.button: Claim your guild
 const RaidClaimButton = "Claim your guild"
-
-// RaidLevelerTitle is raid.leveler.title: Raids start at 60
-const RaidLevelerTitle = "Raids start at 60"
-
-// RaidLevelerToGo is raid.leveler.toGo: {n} levels to go
-var RaidLevelerToGo = Plural{Count: "n", One: "1 level to go", Other: "{n} levels to go"}
-
-// RaidLevelerLine is raid.leveler.line: Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
-const RaidLevelerLine = "Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here."
 
 // RaidOutLine is raid.out.line: Sign up for your guild's raids from your phone.
 const RaidOutLine = "Sign up for your guild's raids from your phone."
@@ -4781,15 +4772,6 @@ const RaidTabClaimLine = "Claim it: a guild master or an officer confirms with t
 // RaidTabClaim is raid.tab.claim: Claim your guild
 const RaidTabClaim = "Claim your guild"
 
-// RaidTabLeveler is raid.tab.leveler: Raids start at 60
-const RaidTabLeveler = "Raids start at 60"
-
-// RaidTabLevelsToGo is raid.tab.levelsToGo: {n} levels to go
-const RaidTabLevelsToGo = "{n} levels to go"
-
-// RaidTabLevelerLine is raid.tab.levelerLine: Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
-const RaidTabLevelerLine = "Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here."
-
 // RaidTabPullIn is raid.tab.pullIn: {time} · pull in {until}
 const RaidTabPullIn = "{time} · pull in {until}"
 
@@ -4822,6 +4804,141 @@ const RaidTabAndMore = "{names} and {n} more"
 
 // RaidTabHowLate is raid.tab.howLate: How late
 const RaidTabHowLate = "How late"
+
+// GuildTabHeadLine is guild.tab.headLine: {members} · {faction}
+const GuildTabHeadLine = "{members} · {faction}"
+
+// GuildTabAtCap is guild.tab.atCap: at {level}
+const GuildTabAtCap = "at {level}"
+
+// GuildTabCloseRange is guild.tab.closeRange: {from} to {to}
+const GuildTabCloseRange = "{from} to {to}"
+
+// GuildTabYou is guild.tab.you: you
+const GuildTabYou = "you"
+
+// GuildTabRaidsOpen is guild.tab.raidsOpen: Raids open at {level} · you're {you}
+const GuildTabRaidsOpen = "Raids open at {level} · you're {you}"
+
+// GuildTabRoster is guild.tab.roster: Roster
+const GuildTabRoster = "Roster"
+
+// GuildTabRosterMeta is guild.tab.rosterMeta: {n} of {total} at {level}
+const GuildTabRosterMeta = "{n} of {total} at {level}"
+
+// GuildTabRecentlyOn is guild.tab.recentlyOn: Recently on
+const GuildTabRecentlyOn = "Recently on"
+
+// GuildTabCloseTo is guild.tab.closeTo: Close to {level}
+const GuildTabCloseTo = "Close to {level}"
+
+// GuildTabSeen is guild.tab.seen: Seen {age}
+const GuildTabSeen = "Seen {age}"
+
+// GuildTabLogs is guild.tab.logs: Recent logs
+const GuildTabLogs = "Recent logs"
+
+// GuildTabLogLine is guild.tab.logLine: {zone} · {kills}/{fights} kills · {duration}
+const GuildTabLogLine = "{zone} · {kills}/{fights} kills · {duration}"
+
+// GuildTabProgression is guild.tab.progression: Progression
+const GuildTabProgression = "Progression"
+
+// GuildTabDown is guild.tab.down: {down} of {named} down
+const GuildTabDown = "{down} of {named} down"
+
+// GuildTabPulls is guild.tab.pulls: {n} pulls this tier
+var GuildTabPulls = Plural{Count: "n", One: "1 pull this tier", Other: "{n} pulls this tier"}
+
+// GuildTabFirstRaids is guild.tab.firstRaids: First raids open {date}
+const GuildTabFirstRaids = "First raids open {date}"
+
+// GuildTabLoot is guild.tab.loot: Loot
+const GuildTabLoot = "Loot"
+
+// GuildTabLootLink is guild.tab.lootLink: Loot history ›
+const GuildTabLootLink = "Loot history ›"
+
+// GuildTabPages is guild.tab.pages: Pages
+const GuildTabPages = "Pages"
+
+// GuildTabOfficer is guild.tab.officer: Officer
+const GuildTabOfficer = "Officer"
+
+// GuildTabPlanRaid is guild.tab.planRaid: Plan a raid
+const GuildTabPlanRaid = "Plan a raid"
+
+// GuildTabNonePlanned is guild.tab.nonePlanned: None planned
+const GuildTabNonePlanned = "None planned"
+
+// GuildTabApplications is guild.tab.applications: Applications
+const GuildTabApplications = "Applications"
+
+// GuildTabNoApplications is guild.tab.noApplications: None waiting
+const GuildTabNoApplications = "None waiting"
+
+// GuildTabApplicant is guild.tab.applicant: {name}, {kind} {level}
+const GuildTabApplicant = "{name}, {kind} {level}"
+
+// GuildTabApplicantMore is guild.tab.applicantMore: {first}, and {n} more
+const GuildTabApplicantMore = "{first}, and {n} more"
+
+// GuildTabWaiting is guild.tab.waiting: {n} waiting
+const GuildTabWaiting = "{n} waiting"
+
+// GuildTabSetup is guild.tab.setup: Setup
+const GuildTabSetup = "Setup"
+
+// GuildTabSetupDone is guild.tab.setupDone: {done} of {total} done
+const GuildTabSetupDone = "{done} of {total} done"
+
+// GuildTabSetupToGo is guild.tab.setupToGo: {steps} to go
+const GuildTabSetupToGo = "{steps} to go"
+
+// GuildTabStepRanks is guild.tab.stepRanks: Officer ranks
+const GuildTabStepRanks = "Officer ranks"
+
+// GuildTabStepDiscord is guild.tab.stepDiscord: Discord bot
+const GuildTabStepDiscord = "Discord bot"
+
+// GuildTabStepRecruiting is guild.tab.stepRecruiting: Recruiting
+const GuildTabStepRecruiting = "Recruiting"
+
+// GuildTabStepSchedule is guild.tab.stepSchedule: Raid schedule
+const GuildTabStepSchedule = "Raid schedule"
+
+// GuildTabStepInvite is guild.tab.stepInvite: Invite link
+const GuildTabStepInvite = "Invite link"
+
+// GuildTabStepAddon is guild.tab.stepAddon: Addon sync
+const GuildTabStepAddon = "Addon sync"
+
+// GuildTabStepVisibility is guild.tab.stepVisibility: Log visibility
+const GuildTabStepVisibility = "Log visibility"
+
+// GuildTabStepRole is guild.tab.stepRole: Discord role
+const GuildTabStepRole = "Discord role"
+
+// GuildTabFind is guild.tab.find: Find your guild
+const GuildTabFind = "Find your guild"
+
+// GuildTabSearch is guild.tab.search: Search guilds on the site
+const GuildTabSearch = "Search guilds on the site"
+
+// GuildTabSearchLine is guild.tab.searchLine: By name or realm
+const GuildTabSearchLine = "By name or realm"
+
+// GuildTabApplied is guild.tab.applied: Applied {day}
+const GuildTabApplied = "Applied {day}"
+
+// GuildTabJobLine is guild.tab.jobLine: {boss} · {purpose}
+const GuildTabJobLine = "{boss} · {purpose}"
+
+// GuildTabOpenPlanner is guild.tab.openPlanner: Open in planner ›
+const GuildTabOpenPlanner = "Open in planner ›"
+
+// GuildTabAssignOnSite is guild.tab.assignOnSite: Assigning is on the site for now.
+const GuildTabAssignOnSite = "Assigning is on the site for now."
 
 // RaidTabTallyShort is raid.tab.tallyShort: {tally} · {n} short
 const RaidTabTallyShort = "{tally} · {n} short"

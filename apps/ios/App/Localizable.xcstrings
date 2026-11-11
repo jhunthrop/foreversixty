@@ -3414,6 +3414,531 @@
         }
       }
     },
+    "guild.tab.applicant": {
+      "comment": "Arguments: 1 name (string), 2 kind (string), 3 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@ %3$lld"
+          }
+        }
+      }
+    },
+    "guild.tab.applicantMore": {
+      "comment": "Arguments: 1 first (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, and %2$lld more"
+          }
+        }
+      }
+    },
+    "guild.tab.applications": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applications"
+          }
+        }
+      }
+    },
+    "guild.tab.applied": {
+      "comment": "Arguments: 1 day (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applied %1$@"
+          }
+        }
+      }
+    },
+    "guild.tab.assignOnSite": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assigning is on the site for now."
+          }
+        }
+      }
+    },
+    "guild.tab.atCap": {
+      "comment": "Arguments: 1 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "at %1$lld"
+          }
+        }
+      }
+    },
+    "guild.tab.closeRange": {
+      "comment": "Arguments: 1 from (int), 2 to (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld to %2$lld"
+          }
+        }
+      }
+    },
+    "guild.tab.closeTo": {
+      "comment": "Arguments: 1 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close to %1$lld"
+          }
+        }
+      }
+    },
+    "guild.tab.down": {
+      "comment": "Arguments: 1 down (int), 2 named (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld down"
+          }
+        }
+      }
+    },
+    "guild.tab.find": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find your guild"
+          }
+        }
+      }
+    },
+    "guild.tab.firstRaids": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First raids open %1$@"
+          }
+        }
+      }
+    },
+    "guild.tab.headLine": {
+      "comment": "Arguments: 1 members (string), 2 faction (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "guild.tab.jobLine": {
+      "comment": "Arguments: 1 boss (string), 2 purpose (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "guild.tab.logLine": {
+      "comment": "Arguments: 1 zone (string), 2 kills (int), 3 fights (int), 4 duration (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld/%3$lld kills · %4$@"
+          }
+        }
+      }
+    },
+    "guild.tab.logs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent logs"
+          }
+        }
+      }
+    },
+    "guild.tab.loot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loot"
+          }
+        }
+      }
+    },
+    "guild.tab.lootLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loot history ›"
+          }
+        }
+      }
+    },
+    "guild.tab.noApplications": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None waiting"
+          }
+        }
+      }
+    },
+    "guild.tab.nonePlanned": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None planned"
+          }
+        }
+      }
+    },
+    "guild.tab.officer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Officer"
+          }
+        }
+      }
+    },
+    "guild.tab.openPlanner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in planner ›"
+          }
+        }
+      }
+    },
+    "guild.tab.pages": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pages"
+          }
+        }
+      }
+    },
+    "guild.tab.planRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan a raid"
+          }
+        }
+      }
+    },
+    "guild.tab.progression": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progression"
+          }
+        }
+      }
+    },
+    "guild.tab.pulls": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 pull this tier"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld pulls this tier"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "guild.tab.raidsOpen": {
+      "comment": "Arguments: 1 level (int), 2 you (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raids open at %1$lld · you're %2$lld"
+          }
+        }
+      }
+    },
+    "guild.tab.recentlyOn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recently on"
+          }
+        }
+      }
+    },
+    "guild.tab.roster": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roster"
+          }
+        }
+      }
+    },
+    "guild.tab.rosterMeta": {
+      "comment": "Arguments: 1 n (int), 2 total (int), 3 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld at %3$lld"
+          }
+        }
+      }
+    },
+    "guild.tab.search": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search guilds on the site"
+          }
+        }
+      }
+    },
+    "guild.tab.searchLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By name or realm"
+          }
+        }
+      }
+    },
+    "guild.tab.seen": {
+      "comment": "Arguments: 1 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seen %1$@"
+          }
+        }
+      }
+    },
+    "guild.tab.setup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setup"
+          }
+        }
+      }
+    },
+    "guild.tab.setupDone": {
+      "comment": "Arguments: 1 done (int), 2 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld done"
+          }
+        }
+      }
+    },
+    "guild.tab.setupToGo": {
+      "comment": "Arguments: 1 steps (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ to go"
+          }
+        }
+      }
+    },
+    "guild.tab.stepAddon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Addon sync"
+          }
+        }
+      }
+    },
+    "guild.tab.stepDiscord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discord bot"
+          }
+        }
+      }
+    },
+    "guild.tab.stepInvite": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite link"
+          }
+        }
+      }
+    },
+    "guild.tab.stepRanks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Officer ranks"
+          }
+        }
+      }
+    },
+    "guild.tab.stepRecruiting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recruiting"
+          }
+        }
+      }
+    },
+    "guild.tab.stepRole": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discord role"
+          }
+        }
+      }
+    },
+    "guild.tab.stepSchedule": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid schedule"
+          }
+        }
+      }
+    },
+    "guild.tab.stepVisibility": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log visibility"
+          }
+        }
+      }
+    },
+    "guild.tab.waiting": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld waiting"
+          }
+        }
+      }
+    },
+    "guild.tab.you": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "you"
+          }
+        }
+      }
+    },
     "history.a11y.hours": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
@@ -12185,52 +12710,6 @@
         }
       }
     },
-    "raid.leveler.line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here."
-          }
-        }
-      }
-    },
-    "raid.leveler.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Raids start at 60"
-          }
-        }
-      }
-    },
-    "raid.leveler.toGo": {
-      "comment": "Arguments: 1 n (int)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "1 level to go"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%1$lld levels to go"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "raid.list.and": {
       "comment": "Arguments: 1 first (string), 2 last (string)",
       "extractionState": "manual",
@@ -13602,40 +14081,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ (Late · %2$lld min)"
-          }
-        }
-      }
-    },
-    "raid.tab.leveler": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Raids start at 60"
-          }
-        }
-      }
-    },
-    "raid.tab.levelerLine": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here."
-          }
-        }
-      }
-    },
-    "raid.tab.levelsToGo": {
-      "comment": "Arguments: 1 n (int)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld levels to go"
           }
         }
       }
@@ -17701,6 +18146,75 @@
         }
       }
     },
+    "shared.assign.encounterTitle": {
+      "comment": "Arguments: 1 boss (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ assignments"
+          }
+        }
+      }
+    },
+    "shared.assign.filled": {
+      "comment": "Arguments: 1 n (int), 2 count (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "shared.assign.jobWith": {
+      "comment": "Arguments: 1 label (string), 2 names (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ with %2$@"
+          }
+        }
+      }
+    },
+    "shared.assign.nothingYet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No one is picked yet."
+          }
+        }
+      }
+    },
+    "shared.assign.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assignments"
+          }
+        }
+      }
+    },
+    "shared.assign.yours": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your job"
+          }
+        }
+      }
+    },
     "shared.bisLanding.answerLabel": {
       "extractionState": "manual",
       "localizations": {
@@ -20006,6 +20520,17 @@
         }
       }
     },
+    "tab.guild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guild"
+          }
+        }
+      }
+    },
     "tab.home": {
       "extractionState": "manual",
       "localizations": {
@@ -20013,17 +20538,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Home"
-          }
-        }
-      }
-    },
-    "tab.raid": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Raid"
           }
         }
       }

@@ -3,6 +3,14 @@
 // slot's names as Tags (the viewer's own in gold, an off-role pick flagged), the officer's picker
 // with the raiders who fit the slot first, the slot's next names after an add or a remove, and
 // the raid warning text a leader pastes into /rw. Pure: the component and the actions read it.
+import { fillShared } from '../copy/shared';
+import {
+  sharedAssignEncounterTitle,
+  sharedAssignFilled,
+  sharedAssignNothingYet,
+  sharedAssignTitle,
+  sharedAssignYours,
+} from '../copy/shared/assign.generated';
 import type { SelectOption } from '../ui/listbox-model';
 import type {
   AssignedName,
@@ -17,8 +25,9 @@ import { uiCopy, withRetry } from '../ui/copy';
 export type NameTone = 'gold' | 'warn' | 'muted';
 
 export const assignmentsCopy = {
-  title: 'Assignments',
-  encounterTitle: (boss: string) => `${boss} assignments`,
+  // The words the apps show too (apps/shared/copy/shared.json shared.assign.*).
+  title: sharedAssignTitle,
+  encounterTitle: (boss: string) => fillShared(sharedAssignEncounterTitle, { boss }),
   notInClient: 'Not in the game client yet',
   notInClientLine: (raid: string) =>
     `${raid} has no bosses in the game client yet. Its jobs show here once the client carries them.`,
@@ -39,11 +48,11 @@ export const assignmentsCopy = {
   posted: 'Posted under the raid post on Discord.',
   postFailed: withRetry('The post did not go out.'),
   saveFailed: withRetry('That slot did not save.'),
-  nothingYet: 'No one is picked yet.',
+  nothingYet: sharedAssignNothingYet,
   offRole: (name: string) => `${name} is not signed up for this role tonight.`,
   fits: 'Fits the slot',
   others: 'Others',
-  yours: 'Your job',
+  yours: sharedAssignYours,
   late: 'Late',
   bench: 'Bench',
 } as const;
@@ -71,7 +80,7 @@ export function nameTone(name: AssignedName): NameTone {
 
 /** "2 of 4": how full the slot is. */
 export function filledLine(slot: AssignmentSlot): string {
-  return `${slot.names.length} of ${slot.count}`;
+  return fillShared(sharedAssignFilled, { n: slot.names.length, count: slot.count });
 }
 
 /** The slot's sub line: how full it is, then what it does. */

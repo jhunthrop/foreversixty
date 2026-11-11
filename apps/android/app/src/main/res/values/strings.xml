@@ -9,7 +9,7 @@
     <string name="tab_raids">Raids</string>
     <string name="tab_bis">BiS</string>
     <string name="tab_you">You</string>
-    <string name="tab_raid">Raid</string>
+    <string name="tab_guild">Guild</string>
     <string name="tab_gear">Gear</string>
     <string name="tab_activity">Activity</string>
     <string name="tab_badge" tools:ignore="PluralsCandidate">%1$d new</string>
@@ -442,12 +442,6 @@
     <string name="raid_claim_title">Your guild is not here?</string>
     <string name="raid_claim_line">Claim it: a guild master or an officer confirms with the addon or Battle.net.</string>
     <string name="raid_claim_button">Claim your guild</string>
-    <string name="raid_leveler_title">Raids start at 60</string>
-    <plurals name="raid_leveler_toGo">
-        <item quantity="one">1 level to go</item>
-        <item quantity="other">%1$d levels to go</item>
-    </plurals>
-    <string name="raid_leveler_line">Onyxia\'s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.</string>
     <string name="raid_out_line">Sign up for your guild\'s raids from your phone.</string>
     <string name="raid_na_noBot">This guild has no Discord bot yet. Connect it on the raid\'s page.</string>
     <string name="raid_na_throttled">They were mentioned a moment ago. Try again later.</string>
@@ -1755,9 +1749,6 @@
     <string name="raid_tab_notHere">Your guild is not here?</string>
     <string name="raid_tab_claimLine">Claim it: a guild master or an officer confirms with the addon or Battle.net.</string>
     <string name="raid_tab_claim">Claim your guild</string>
-    <string name="raid_tab_leveler">Raids start at 60</string>
-    <string name="raid_tab_levelsToGo" tools:ignore="PluralsCandidate">%1$d levels to go</string>
-    <string name="raid_tab_levelerLine">Onyxia\'s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.</string>
     <string name="raid_tab_pullIn">%1$s · pull in %2$s</string>
     <string name="raid_tab_untilHours" tools:ignore="PluralsCandidate">%1$d h %2$d min</string>
     <string name="raid_tab_untilMinutes" tools:ignore="PluralsCandidate">%1$d min</string>
@@ -1769,6 +1760,54 @@
     <string name="raid_tab_short" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
     <string name="raid_tab_andMore" tools:ignore="PluralsCandidate">%1$s and %2$d more</string>
     <string name="raid_tab_howLate">How late</string>
+    <string name="guild_tab_headLine">%1$s · %2$s</string>
+    <string name="guild_tab_atCap" tools:ignore="PluralsCandidate">at %1$d</string>
+    <string name="guild_tab_closeRange" tools:ignore="PluralsCandidate">%1$d to %2$d</string>
+    <string name="guild_tab_you">you</string>
+    <string name="guild_tab_raidsOpen" tools:ignore="PluralsCandidate">Raids open at %1$d · you\'re %2$d</string>
+    <string name="guild_tab_roster">Roster</string>
+    <string name="guild_tab_rosterMeta" tools:ignore="PluralsCandidate">%1$d of %2$d at %3$d</string>
+    <string name="guild_tab_recentlyOn">Recently on</string>
+    <string name="guild_tab_closeTo" tools:ignore="PluralsCandidate">Close to %1$d</string>
+    <string name="guild_tab_seen">Seen %1$s</string>
+    <string name="guild_tab_logs">Recent logs</string>
+    <string name="guild_tab_logLine" tools:ignore="PluralsCandidate">%1$s · %2$d/%3$d kills · %4$s</string>
+    <string name="guild_tab_progression">Progression</string>
+    <string name="guild_tab_down" tools:ignore="PluralsCandidate">%1$d of %2$d down</string>
+    <plurals name="guild_tab_pulls">
+        <item quantity="one">1 pull this tier</item>
+        <item quantity="other">%1$d pulls this tier</item>
+    </plurals>
+    <string name="guild_tab_firstRaids">First raids open %1$s</string>
+    <string name="guild_tab_loot">Loot</string>
+    <string name="guild_tab_lootLink">Loot history ›</string>
+    <string name="guild_tab_pages">Pages</string>
+    <string name="guild_tab_officer">Officer</string>
+    <string name="guild_tab_planRaid">Plan a raid</string>
+    <string name="guild_tab_nonePlanned">None planned</string>
+    <string name="guild_tab_applications">Applications</string>
+    <string name="guild_tab_noApplications">None waiting</string>
+    <string name="guild_tab_applicant" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d</string>
+    <string name="guild_tab_applicantMore" tools:ignore="PluralsCandidate">%1$s, and %2$d more</string>
+    <string name="guild_tab_waiting" tools:ignore="PluralsCandidate">%1$d waiting</string>
+    <string name="guild_tab_setup">Setup</string>
+    <string name="guild_tab_setupDone" tools:ignore="PluralsCandidate">%1$d of %2$d done</string>
+    <string name="guild_tab_setupToGo">%1$s to go</string>
+    <string name="guild_tab_stepRanks">Officer ranks</string>
+    <string name="guild_tab_stepDiscord">Discord bot</string>
+    <string name="guild_tab_stepRecruiting">Recruiting</string>
+    <string name="guild_tab_stepSchedule">Raid schedule</string>
+    <string name="guild_tab_stepInvite">Invite link</string>
+    <string name="guild_tab_stepAddon">Addon sync</string>
+    <string name="guild_tab_stepVisibility">Log visibility</string>
+    <string name="guild_tab_stepRole">Discord role</string>
+    <string name="guild_tab_find">Find your guild</string>
+    <string name="guild_tab_search">Search guilds on the site</string>
+    <string name="guild_tab_searchLine">By name or realm</string>
+    <string name="guild_tab_applied">Applied %1$s</string>
+    <string name="guild_tab_jobLine">%1$s · %2$s</string>
+    <string name="guild_tab_openPlanner">Open in planner ›</string>
+    <string name="guild_tab_assignOnSite">Assigning is on the site for now.</string>
     <string name="raid_tab_tallyShort" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
     <string name="raid_tab_tallyCompact" tools:ignore="PluralsCandidate">%1$d/%2$d</string>
     <string name="raid_tab_damageSplit" tools:ignore="PluralsCandidate">%1$d melee, %2$d ranged</string>
@@ -2047,4 +2086,10 @@
     <string name="shared_account_delete_done">Your account is deleted. Thanks for playing with us.</string>
     <string name="shared_footer_fanLine">A fan-made player tool. Not affiliated with Blizzard.</string>
     <string name="shared_footer_operator">© %1$s Commish LLC d/b/a Forever Sixty</string>
+    <string name="shared_assign_title">Assignments</string>
+    <string name="shared_assign_encounterTitle">%1$s assignments</string>
+    <string name="shared_assign_yours">Your job</string>
+    <string name="shared_assign_nothingYet">No one is picked yet.</string>
+    <string name="shared_assign_filled" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
+    <string name="shared_assign_jobWith">%1$s with %2$s</string>
 </resources>
