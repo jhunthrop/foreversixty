@@ -8,23 +8,23 @@ The web source of truth is `web/src/lib/ui/button.ts` (button recipes), `web/src
 
 | Web recipe | Web use | Addon today | Companion today | Rule |
 |---|---|---|---|---|
-| primary: teal ground, teal edge, white label | the view's one main action | none: `CONTROL_STATES.siteButton.selected` (`Theme.lua:775`) is a pressed toggle's look, not a primary | `button.primary` and `button.account` (`styles.css:347-349`), two classes for one recipe | One primary per frame. Teal, never client red, never gold. |
+| primary: teal ground, teal edge, white label | the view's one main action | `CONTROL_STATES.siteButton.selected` (`Theme.lua:775`: `tealTop` ground, `tealEdge` edge) draws the primary recipe, but serves as a toggle's selected state | `button.primary` and `button.account` (`styles.css:347-349`), two classes for one recipe | One primary per frame. Teal, never client red, never gold. |
 | secondary: blue ground, blue edge, white label | every other action | `Widgets.clientButton` at rest | `button.action` | The default button. |
 | ghost: gold text, no box | a link-weight action | `Widgets.textButton` | `button.ghost` | Gold text only; hover to gold-hover. |
 | danger: wipe ink, 40 % wipe hairline, never filled; hover takes the full wipe border | the confirm of a destructive ask | none | `button.danger` (`styles.css:350-351`): full wipe border, fills on hover; `danger-text` is a ghost variant the web lacks | Pair with a secondary Cancel that takes focus (web `ui/ConfirmButtons`). |
-| a pressed toggle: the selected-mark edge with its ring | a choice among a set | `siteButton.selected` | none | Keep apart from primary. |
+| a pressed toggle: the secondary's blue ground with the selected-mark edge and its ring | a choice among a set | `siteButton.selected`, drawn teal | none | Keep apart from primary. |
 
 Sizes: web 36 px (sm, fine pointer) and 44 px (md), 20 px side padding. The addon's 20 to 22 px client buttons follow the client's UI scale and stay. The companion takes the web's sizes.
 
 Addon gaps, for the addon lane:
-- Add `CONTROL_STATES.siteButton.primary = { ground = "teal", edge = "tealEdge", hover = "tealEdge" }` and draw the frame's one main action with it; `selected` stays the toggle state.
+- Split the two looks `siteButton.selected` mixes today: a new `siteButton.primary = { ground = "tealTop", edge = "tealEdge", hover = "tealEdge" }` for the frame's one main action, and `selected` becomes the web's pressed toggle (`blue` ground with a selected-mark edge, which needs a `selectedMark` key in the token map).
 - `Widgets.button` (raised ground, hairline, gold label) is a fourth look the web does not have. It has four callers: `surfaces/Settings.lua:435` (Reset), `surfaces/GuildTab.lua:1027` (Push), and `Widgets.confirmFrame` (`Widgets.lua:949`, `:957`), which `GuildTab.lua:1139` and `:1484` use for the push confirm. All move to `Widgets.clientButton`: Cancel secondary and first, the confirm secondary (the push destroys nothing); then `Widgets.button` is deleted.
 - `Widgets.edgedButton` (panel fill under a 1 px gold edge) stays: it is the tab hung on the client's Character, Guild and Group frames, and the spec treats it as the web's tab.
 - Busy: no addon button waits on the network today. One that does follows owner ruling 5, a spinner plus a busy word ("Sending…").
 
 Companion gaps, for the companion lane:
 - Fold `button.account` into `button.primary`.
-- The Pair submit (`app.js:584`, `action`) is its view's one main action: make it `action primary`. Check `install.html` / `install.js` against the same rule.
+- The Pair submit (`app.js:584`, `action`) is its view's one main action: make it `action primary`. `install.html:27` already ships `action primary big` (and `install.js:37` swaps it to `danger` for uninstall); there, only `big` goes.
 - Drop the 40 px / 15 px `big` step: 36 px for small, 44 px for the main action, 20 px padding.
 - `button.danger`: a 40 % wipe border at rest, the full wipe border on hover, no fill.
 

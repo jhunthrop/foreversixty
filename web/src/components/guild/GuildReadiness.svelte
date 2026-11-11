@@ -105,7 +105,7 @@
       .catch(() => (tanks = null));
   });
 
-  // A refused clipboard leaves no confirmation: the label never promised more than Copied.
+  // Each row's Nudge reads Copied for two seconds, or Copy failed when the clipboard refuses.
   const nudge = new CopyState();
   $effect(() => () => nudge.dispose());
 

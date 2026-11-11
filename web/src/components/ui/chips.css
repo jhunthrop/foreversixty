@@ -1,7 +1,7 @@
 /* web/src/components/ui/chips.css
    ui/Chips: the round 5 filter chips (design/mocks/directions/prims.py `.chips`): 13 px 600 labels on
    a hairline edge at the field radius, a lit chip white on the cyan tint with the cyan edge. 32 px
-   from 768 on a pointer, 44 px on touch. */
+   from 768 on a pointer, 44 px on touch and below 768 (spec 2026-11-05 §3.4). */
 .ui-chips {
   display: flex;
   flex-wrap: wrap;
@@ -35,7 +35,7 @@
     color: var(--color-gold);
   }
 }
-@media (pointer: coarse), (hover: none) {
+@media (pointer: coarse), (hover: none), (max-width: 767px) {
   .ui-chip {
     min-height: 44px;
   }

@@ -141,8 +141,10 @@
           disabled={readOnly}
           aria-describedby={describedBy}
           onclick={() => onNudge(row)}
-          aria-label={`Nudge ${row.name}`}
-          data-testid={`guild-readiness-nudge-${row.character_key}`}>{nudgeLabel(row.character_key)}</button
+          data-testid={`guild-readiness-nudge-${row.character_key}`}
+          ><span aria-live="polite">{nudgeLabel(row.character_key)}</span><span class="sr-only">
+            {row.name}</span
+          ></button
         >{/snippet}
       {#if index === short.length && short.length > 0 && ready.length > 0}
         <StatRow total bar={false} figures={blank}

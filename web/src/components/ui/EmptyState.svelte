@@ -1,8 +1,8 @@
 <!-- web/src/components/ui/EmptyState.svelte -->
 <!-- The one empty state (component audit 2026-11-10 cluster 10), for a region whose data loaded with
      nothing in it. Three shapes, one look:
-     - the line (default): the muted sentence and at most one action that leads to the thing that
-       would fill it, plus a quieter second link;
+     - the line (default): the muted sentence and at most one action, a gold link, that leads to
+       the thing that would fill it, plus a quieter second link;
      - with `fill`: the designed empty (the Rankings board's, owner 2026-11-09 "every empty state
        designed and honest"): what is missing in strong, what fills it muted under it, then the
        action as the primary button and the second link as a gold link;
@@ -42,7 +42,9 @@
 </script>
 
 {#if inset}
-  <p class={['text-muted p-4 text-[14px] leading-6', section && '-mt-3']} {role} data-testid={testid}>{message}</p>
+  <p class={['text-muted p-4 text-[14px] leading-6', section && '-mt-3']} {role} data-testid={testid}>
+    {message}
+  </p>
 {:else if fill !== undefined}
   <div class="flex flex-col gap-1 py-1" {role} data-testid={testid}>
     <p class="text-strong font-semibold">{message}</p>
@@ -64,12 +66,10 @@
     <span class="text-muted">{message}</span>
     {#if action !== undefined}
       <a
-        class="text-text inline-flex min-h-11 items-center text-[13px] font-semibold underline md:min-h-0"
+        class="{LINK} inline-flex min-h-11 items-center text-[14px] md:min-h-0"
         href={action.href}
-        data-testid="{testid}-action"
+        data-testid="{testid}-action">{action.label} ›</a
       >
-        {action.label}
-      </a>
     {/if}
     {#if secondary !== undefined}
       <a
