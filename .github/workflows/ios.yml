@@ -37,8 +37,10 @@ jobs:
     if: vars.LAUNCH_MODE != 'true' || github.event_name == 'workflow_dispatch'
     runs-on: xcode-27
     # A green run with a runtime download and a first boot takes ~36 minutes (run 42512503765);
-    # the headroom covers a boot retry (tools/ios-ci-simulator.sh).
-    timeout-minutes: 60
+    # the headroom covers a boot retry (tools/ios-ci-simulator.sh). A record run rewrites every
+    # golden it renders, and twice on 2026-11-10 (runs 42916220914, 42934432174) a slow runner spent
+    # ~20 minutes before the tests began, so record runs get 90 and a push's check keeps 60.
+    timeout-minutes: ${{ inputs.record && 90 || 60 }}
     defaults:
       run:
         working-directory: apps/ios
