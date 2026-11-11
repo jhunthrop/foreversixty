@@ -73,7 +73,8 @@ const BUDGETS = [
   // read 84,126 bytes against 83,968.
   // 86 KB since the redesign batch of 2026-11-09 (ship-fast mode): the planner's density pass
   // and the shared corner frame; the fixture build read 85,274 bytes against 84,992. Debt as above.
-  { file: 'dist/planner-island.js', limitBytes: 86 * 1024, closureLimitBytes: 108347 },
+  // Closure 108,347 -> 111,000, batch L (2026-11-11): the shared Crest, CharacterName and crest.css (lane D) and the shared states, copy and retry (lane E) ride in every island's startup closure; measured on the box's fixture and real-data builds of the merged tree, which read the same, with the usual ~2% slack. Planner read 109,083.
+  { file: 'dist/planner-island.js', limitBytes: 86 * 1024, closureLimitBytes: 111000 },
   // Closure 165,000 since batch L lane E (2026-11-11): the report's empties, errors and filter
   // popover moved onto the shared EmptyState, LoadError (the busy Button with its spinner) and
   // FilterPopover; the fixture build read 163,673 against 161,872. One copy of each, site-wide.
@@ -108,7 +109,8 @@ const PAGE_ISLAND_BUDGETS = [
   // boards on the ranked list and the designed empty states measured 113,999 on CI; 114,300 keeps
   // the trip wire. Loading the landing on its own did not help: its modules are shared.
   // Closure 118,000 since the redesign batch of 2026-11-09: the rankings density pass read 115,884.
-  { component: 'Rankings', limitBytes: 16 * 1024, closureLimitBytes: 118000 },
+  // Closure 118,000 -> 124,500, batch L (2026-11-11): the shared Crest, CharacterName and crest.css (lane D) and the shared states, copy and retry (lane E) ride in every island's startup closure; measured on the box's fixture and real-data builds of the merged tree, which read the same, with the usual ~2% slack. Rankings read 122,238.
+  { component: 'Rankings', limitBytes: 16 * 1024, closureLimitBytes: 124500 },
   // Raised 16 -> 18 KB (paperdoll lane, 2026-10-31): the character page's Gear section became
   // the shared Paperdoll (design/specs/2026-10-31-paperdoll.md), which statically carries the
   // frame, its model and ItemHover. The spec's own §8 budget lets that frame add up to 4 KB
@@ -127,7 +129,8 @@ const PAGE_ISLAND_BUDGETS = [
   // Closure 140,000 -> 140,900 (unify-icons on top of house formats, 2026-11-10): the page's icons
   // draw through ui/SpellIcon, ItemIcon and lib/ui/assets iconUrl. Measured 140,362 on the merged
   // fixture build, +362 over lane B's figure, with the usual ~0.5 KB slack.
-  { component: 'Character', limitBytes: 18 * 1024 + 256, closureLimitBytes: 140900 },
+  // Closure 140,900 -> 146,000, batch L (2026-11-11): the shared Crest, CharacterName and crest.css (lane D) and the shared states, copy and retry (lane E) ride in every island's startup closure; measured on the box's fixture and real-data builds of the merged tree, which read the same, with the usual ~2% slack. Character read 143,102.
+  { component: 'Character', limitBytes: 18 * 1024 + 256, closureLimitBytes: 146000 },
   // +512 bytes (guild round 3, 2026-11-05): the guild page's first view now carries the week-one
   // card's raider step, the plan gate on the band, the unknown-guild panel and the landing's
   // Your guilds card. Measured 16,564 gzipped against 16,022 at round 2 (main moved too). Lazy
@@ -166,14 +169,16 @@ const PAGE_ISLAND_BUDGETS = [
   // Closure 83,500 -> 85,700 (unify-icons, 2026-11-10): the paperdoll and lists draw their icons
   // through the shared ui/SpellIcon and ItemIcon with iconUrl. Measured 85,177 on the merged
   // fixture build, with the usual ~0.5 KB slack.
-  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 85700 },
+  // Closure 85,700 -> 90,700, batch L (2026-11-11): the shared Crest, CharacterName and crest.css (lane D) and the shared states, copy and retry (lane E) ride in every island's startup closure; measured on the box's fixture and real-data builds of the merged tree, which read the same, with the usual ~2% slack. BisSpecPage read 88,966.
+  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 90700 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
   // lib/ui/listbox.ts with its list renderer, the popover core and Floating UI, loaded after
   // first paint on a fine pointer only. The spec asked for 9 KB; it measures 10,221 bytes
   // gzipped on the fixture build of 2026-10-30, of which Floating UI's computePosition with
   // offset, shift and size is about 5.1 KB on its own (its autoUpdate and hide were replaced
   // by popover.ts's own watcher to save 1 KB). 10.5 KB holds it with the fixture/CI gap.
-  { component: 'listbox', limitBytes: 10.5 * 1024, closureLimitBytes: 17276 },
+  // Closure 17,276 -> 17,800, batch L (2026-11-11): the shared Crest, CharacterName and crest.css (lane D) and the shared states, copy and retry (lane E) ride in every island's startup closure; measured on the box's fixture and real-data builds of the merged tree, which read the same, with the usual ~2% slack. listbox read 17,460.
+  { component: 'listbox', limitBytes: 10.5 * 1024, closureLimitBytes: 17800 },
 ];
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');

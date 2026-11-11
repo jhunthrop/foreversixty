@@ -6,7 +6,7 @@ const COPY_TEXT = Object.freeze({
   joint: " · ",
   signIn: "Sign in with Battle.net",
   copyLink: "Copy link",
-  copied: "Copied.",
+  copied: "Copied",
   countFights: { count: "n", one: "1 fight", other: "{n} fights" },
   countReports: { count: "n", one: "1 report", other: "{n} reports" },
   countCharacters: { count: "n", one: "1 character", other: "{n} characters" },

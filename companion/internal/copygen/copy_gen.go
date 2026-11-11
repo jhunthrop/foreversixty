@@ -14,8 +14,8 @@ const SignIn = "Sign in with Battle.net"
 // CopyLink is companion.copyLink: Copy link
 const CopyLink = "Copy link"
 
-// Copied is companion.copied: Copied.
-const Copied = "Copied."
+// Copied is companion.copied: Copied
+const Copied = "Copied"
 
 // CountFights is companion.count.fights: {n} fights
 var CountFights = Plural{Count: "n", One: "1 fight", Other: "{n} fights"}
