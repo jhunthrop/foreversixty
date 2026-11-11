@@ -1,10 +1,11 @@
 <!-- web/src/components/guild/RaidChip.svelte -->
-<!-- The raid chips of spec 3.6 on the site's .pill: a raid's status (with the derived `ended`), or
-     the viewer's answer. The kill recipe is .pill-community's own colours; cancelled is the
-     failure colour at 14 % fill and 35 % border. -->
+<!-- The raid chips of spec 3.6 on ui/Tag: a raid's status (with the derived `ended`), or the
+     viewer's answer. Done and a coming answer read success, Planned and unsigned gold, Locked,
+     Ended, Bench and Out muted, Cancelled danger. -->
 <script lang="ts">
   import type { GuildRaidRole, GuildRaidStatus, GuildSignupState } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
+  import Tag, { type TagTone } from '../ui/Tag.svelte';
 
   type ChipStatus = GuildRaidStatus | 'ended';
 
@@ -23,31 +24,26 @@
     testid?: string;
   } = $props();
 
-  const KILL = 'pill-community';
-  const SAMPLE = 'pill-sample';
-  const SITE = 'pill-site';
-  const CANCELLED = 'text-wipe bg-wipe/14 border-wipe/35';
-
-  const STATUS_CHIPS: Record<ChipStatus, { text: string; recipe: string }> = {
-    planned: { text: 'Planned', recipe: SITE },
-    locked: { text: 'Locked', recipe: SAMPLE },
-    done: { text: 'Done', recipe: KILL },
-    cancelled: { text: 'Cancelled', recipe: CANCELLED },
-    ended: { text: 'Ended', recipe: SAMPLE },
+  const STATUS_CHIPS: Record<ChipStatus, { text: string; tone: TagTone }> = {
+    planned: { text: 'Planned', tone: 'gold' },
+    locked: { text: 'Locked', tone: 'muted' },
+    done: { text: 'Done', tone: 'success' },
+    cancelled: { text: 'Cancelled', tone: 'danger' },
+    ended: { text: 'Ended', tone: 'muted' },
   };
 
   function viewerChip(
     answer: GuildSignupState | null,
     played: GuildRaidRole | null,
-  ): { text: string; recipe: string } {
-    if (answer === null) return { text: raidCopy.subheads.notSigned, recipe: SITE };
+  ): { text: string; tone: TagTone } {
+    if (answer === null) return { text: raidCopy.subheads.notSigned, tone: 'gold' };
     const word = raidCopy.segments[answer];
     if (answer === 'in' || answer === 'late')
-      return { text: played === null ? word : `${word} · ${raidCopy.roleLabels[played]}`, recipe: KILL };
-    return { text: word, recipe: SAMPLE };
+      return { text: played === null ? word : `${word} · ${raidCopy.roleLabels[played]}`, tone: 'success' };
+    return { text: word, tone: 'muted' };
   }
 
   const chip = $derived(kind === 'status' ? STATUS_CHIPS[status] : viewerChip(state, role));
 </script>
 
-<span class="pill {chip.recipe} shrink-0 whitespace-nowrap" data-testid={testid}>{chip.text}</span>
+<Tag tone={chip.tone} {testid}>{chip.text}</Tag>

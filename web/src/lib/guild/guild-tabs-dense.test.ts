@@ -92,12 +92,15 @@ describe('the Raids tab nights', () => {
     const misses = absentByRaid({
       raids: [{ id: 44 }],
       rows: [
-        { name: 'Voidcall', cells: ['absent'] },
-        { name: 'Nightlatch', cells: ['bench'] },
-        { name: 'Hollowmend', cells: ['present'] },
+        { name: 'Voidcall', class: 'warlock', cells: ['absent'] },
+        { name: 'Nightlatch', class: 'rogue', cells: ['bench'] },
+        { name: 'Hollowmend', class: 'priest', cells: ['present'] },
       ],
     });
-    expect(misses.get(44)).toEqual({ absent: ['Voidcall'], bench: ['Nightlatch'] });
+    expect(misses.get(44)).toEqual({
+      absent: [{ name: 'Voidcall', class: 'warlock' }],
+      bench: [{ name: 'Nightlatch', class: 'rogue' }],
+    });
   });
 
   it('counts the council awards per report', () => {

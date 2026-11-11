@@ -204,10 +204,11 @@
     border-radius: 4px;
     background: var(--color-raised);
   }
+  /* A crest kind holds ui/Crest's look (styles/crest.css `.crest`), so the slot draws no frame. */
   .sel-icon[data-kind='crest'] {
+    overflow: visible;
     border: 0;
-    border-radius: 999px;
-    box-shadow: 0 0 0 1.5px var(--sel-ring, var(--color-line));
+    background: none;
   }
   .sel-icon img {
     width: 100%;

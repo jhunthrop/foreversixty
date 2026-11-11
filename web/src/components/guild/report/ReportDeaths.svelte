@@ -8,7 +8,7 @@
   import { raiderDeaths } from '../../../lib/guild/report-night-view';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
   import { classTone } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
 
@@ -36,7 +36,7 @@
             density="slim"
             testid="raid-deaths-row"
           >
-            {#snippet lead()}<ClassCrestRing characterClass={row.class} size={24} />{/snippet}
+            {#snippet lead()}<Crest cls={row.class} size={24} />{/snippet}
             {#snippet trail()}{#if row.count !== ''}<span class="text-text text-[13px] tabular-nums"
                   >{row.count}</span
                 >{/if}{/snippet}

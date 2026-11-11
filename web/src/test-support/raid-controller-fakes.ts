@@ -69,7 +69,7 @@ export function deps(extra: Partial<RaidPageDeps> = {}): RaidPageDeps {
       } as unknown as GuildHome),
     fetchRaid: () => Promise.resolve(plannedRaid()),
     refetchRaid: () => Promise.resolve(plannedRaid()),
-    putSignup: () =>
+    saveSignup: () =>
       Promise.resolve({ raid: plannedRaid({ counts: { ...plannedRaid().counts, in: 22 } }), moved: null }),
     setStatus: () => Promise.resolve(plannedRaid({ status: 'locked' })),
     updateRaid: () => Promise.resolve(plannedRaid({ title: 'Ony farm' })),

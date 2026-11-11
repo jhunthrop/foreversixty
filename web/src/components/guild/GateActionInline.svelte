@@ -8,7 +8,7 @@
   import { guildGateCopy } from '../../lib/guild/copy';
   import { INLINE_LINK } from '../../lib/guild/field-styles';
   import type { GateAction } from '../../lib/guild/plan-gate';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let { action }: { action: GateAction } = $props();
 
@@ -28,8 +28,8 @@
     style:color={classColorVar(action.holder.class ?? undefined)}
     data-testid="guild-gate-holder"
     ><!-- The word space lives inside the flex box, which draws no whitespace-only run: the text
-           still reads "Ask Thornhide" while the crest sits exactly 4 px (ml-1) from "Ask". -->{WORD_SPACE}<ClassCrestRing
-      characterClass={action.holder.class ?? ''}
+           still reads "Ask Thornhide" while the crest sits exactly 4 px (ml-1) from "Ask". -->{WORD_SPACE}<Crest
+      cls={action.holder.class ?? ''}
       size={16}
       class="size-4 self-center"
     />{action.holder.name}</span

@@ -11,13 +11,13 @@
   import { feedCopy, type FeedRow } from '../../lib/home/feed';
   import type { RaidFact } from '../../lib/home/raid-facts';
   import Button from '../ui/Button.svelte';
+  import ClassPicker from '../ui/ClassPicker.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
   import Row from '../ui/Row.svelte';
   import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import HomeCharacter from './HomeCharacter.svelte';
-  import HomeClassPicker from './HomeClassPicker.svelte';
   import HomeGrid from './HomeGrid.svelte';
   import HomePlaqueSkeleton from './HomePlaqueSkeleton.svelte';
   import FeedSkeleton from '../ui/FeedSkeleton.svelte';
@@ -75,7 +75,9 @@
           {/snippet}
         </Row>
       </Plate>
-      <HomeClassPicker />
+      <Section title={homeCopy.pickClass} boxed testid="home-class-picker"
+        ><ClassPicker testidPrefix="home-class-" /></Section
+      >
     </Page>
   {/if}
 </div>

@@ -278,7 +278,7 @@ func TestCharCard(t *testing.T) {
 		assertCardLimits(t, m)
 		head := headOf(t, m)
 		if head.Title != "Zulmara" || head.URL != pressPublic+"/character/"+keyZulmaraLookup || head.Color != 0xaad372 ||
-			head.Thumbnail != pressPublic+"/icons/hd/crests/hunter.webp" ||
+			head.Thumbnail != pressAPI+"/v1/discord/tiles/crest/hunter.png" ||
 			head.Description != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56 · Readiness: Stocked · Synced <t:1700000000:R>" {
 			t.Fatalf("header = %+v", head)
 		}

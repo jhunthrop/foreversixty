@@ -7,7 +7,7 @@
 import type { CharacterSearch, CharacterSuggestion } from './character-search-api';
 import { characterHref, rulesetLabel } from './characters';
 import classes from '../data/classes.json';
-import { classCrestSrc } from './class-crest';
+import { paintCrest } from './class-crest';
 import { homeCharacterSearchCopy as copy } from './home-landing-copy';
 import { classColor } from './ui/primitives';
 
@@ -48,13 +48,15 @@ function element<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
+/** The typeahead row's crest size (typeahead.css `.typeahead-crest`). */
+const TYPEAHEAD_CREST_PX = 28;
+
 function crestFor(klass: (typeof classes)[number] | undefined): HTMLElement {
-  if (klass === undefined) return element('span', 'typeahead-crest typeahead-crest-none');
   const crest = element('img', 'typeahead-crest');
-  crest.src = classCrestSrc(klass.slug);
   crest.alt = '';
-  crest.width = 28;
-  crest.height = 28;
+  crest.width = TYPEAHEAD_CREST_PX;
+  crest.height = TYPEAHEAD_CREST_PX;
+  paintCrest(crest, klass?.slug, TYPEAHEAD_CREST_PX);
   return crest;
 }
 

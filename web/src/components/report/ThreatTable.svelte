@@ -19,6 +19,7 @@
      pull -- which is why url.ts reads `target` as any printable string and not as a GUID
      pattern. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { approximateMark, classColorVar } from '../../lib/report/format';
   import { classSlugOf } from '../../lib/report/planner-link';
@@ -29,7 +30,7 @@
   import type { TimeWindow } from '../../lib/report/window';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import { compact, percent } from '../../lib/format/number';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Meter from '../ui/Meter.svelte';
   import Section from '../ui/Section.svelte';
   import Select from '../ui/Select.svelte';
@@ -461,15 +462,15 @@
           {#each lines as row (row.guid)}
             <StatRow figures={figuresOf(row)} phone={phoneOf(row)} bar={ranked} testid={`threat-${row.guid}`}>
               {#snippet icon()}
-                <ClassCrestRing
-                  characterClass={isPlayer(row.guid) ? (classSlugOf(classOf.get(row.guid)) ?? '') : ''}
-                  size={28}
-                />
+                <Crest cls={isPlayer(row.guid) ? (classSlugOf(classOf.get(row.guid)) ?? '') : ''} size={28} />
               {/snippet}
               {#snippet name()}
-                <span style:color={classColorVar(classOf.get(row.guid))} data-testid="threat-name"
-                  >{splitUnitName(row.name).name}</span
-                >{#if picked === undefined && copies.has(row.guid)}<span
+                <CharacterName
+                  name={splitUnitName(row.name).name}
+                  cls={classOf.get(row.guid)}
+                  weight="inherit"
+                  testid="threat-name"
+                />{#if picked === undefined && copies.has(row.guid)}<span
                     class="text-muted ml-1 text-[13px] font-normal tabular-nums"
                     title="Another unit of the same name">#{copyOf.get(row.guid)}</span
                   >{/if}

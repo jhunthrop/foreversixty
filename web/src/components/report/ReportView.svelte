@@ -119,7 +119,7 @@
   import Skeleton from '../ui/Skeleton.svelte';
   import Row from '../ui/Row.svelte';
   import Spinner from '../ui/Spinner.svelte';
-  import ClassIcon from './ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
   import { REGION } from '../../lib/ui/regions';
   import { button as buttonClass } from '../../lib/ui/button';
   import { REPORT_LAZY_MIN_H } from '../../lib/report/layout';
@@ -2005,7 +2005,7 @@
                     sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · ilvl ${combatant.item_level ?? 0}`}
                     open
                   >
-                    {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}
+                    {#snippet lead()}<Crest cls={classOf.get(combatant.guid)} size={28} />{/snippet}
                     {#snippet trail()}<span class="flex gap-3" data-testid="at-pull-links"
                         ><a
                           class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"

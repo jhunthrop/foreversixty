@@ -5,6 +5,7 @@
      and the items the council handed out. A night matched to a guild raid links its raid page from
      the open pulls. A night in a zone with no published encounters names its pulls plainly. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import ZoneIcon from '../ui/ZoneIcon.svelte';
   import type { GuildRaidRow } from '../../lib/guild/api';
   import { guildRaidHref } from '../../lib/characters';
@@ -17,10 +18,10 @@
     deltaWords,
     raidNightFigures,
     slowestMs,
+    type MissedRaider,
     type NightMisses,
     type RaidNightFigures,
   } from '../../lib/guild/raid-nights-table';
-  import { classColorVar } from '../../lib/report/format';
   import { counted } from '../../lib/plural';
   import { SEP } from '../../lib/guild/raid-copy';
   import type { StatFigure } from '../../lib/ui/stat-table';
@@ -64,6 +65,8 @@
     ...(lootByReport === null ? [] : [{ id: 'loot', label: 'Loot' }]),
   ]);
   const DASH: StatFigure = { value: '–', muted: true };
+  /** Between missed raiders' names, as an expression so the space survives (Svelte trims a literal's edge). */
+  const COMMA = ', ';
 
   /** The night's top healer and damage dealer, healing first, for the sub line. */
   const tops = (row: GuildRaidRow) =>
@@ -97,6 +100,12 @@
   }
 </script>
 
+<!-- The raiders a night missed, each in class colour (every name on the web is CharacterName). -->
+{#snippet names(raiders: readonly MissedRaider[])}
+  {#each raiders as raider, index (raider.name)}{#if index > 0}<span class="text-muted">{COMMA}</span
+      >{/if}<CharacterName name={raider.name} cls={raider.class} weight="inherit" />{/each}
+{/snippet}
+
 <StatTable {columns} nameHead="Night" barHead="Boss time" dense label="Raid nights" testid="guild-raids-rows">
   {#each figures as f (f.row.id)}
     {@const isOpen = expanded === f.row.id}
@@ -120,8 +129,12 @@
             >best kill</span
           >{/if}{#each tops(f.row) as top (top.kind)}{SEP}<span
             data-testid={`guild-raid-top-${top.kind}-${f.row.id}`}
-            >{top.word}&#32;<b style:color={classColorVar(top.parse?.class ?? '')}>{top.parse?.name}</b
-            >&#32;{outputFigure(top.parse?.value ?? 0)}</span
+            >{top.word}&#32;<CharacterName
+              name={top.parse?.name ?? ''}
+              cls={top.parse?.class}
+              weight="inherit"
+              class="font-bold"
+            />&#32;{outputFigure(top.parse?.value ?? 0)}</span
           >{/each}{/snippet}
       {#snippet meter()}{#if f.bossMs !== null && slowest !== null}<Meter
             value={f.bossMs / slowest}
@@ -144,11 +157,12 @@
         {#if misses !== undefined && (misses.absent.length > 0 || misses.bench.length > 0)}
           <p class="text-[13px] leading-5" data-testid={`guild-raid-misses-${f.row.id}`}>
             {#if misses.absent.length > 0}<span class="text-muted">Absent</span>
-              <span class="text-wipe">{misses.absent.join(', ')}</span
-              >{/if}{#if misses.absent.length > 0 && misses.bench.length > 0}{SEP}{/if}{#if misses.bench.length > 0}<span
+              {@render names(
+                misses.absent,
+              )}{/if}{#if misses.absent.length > 0 && misses.bench.length > 0}{SEP}{/if}{#if misses.bench.length > 0}<span
                 class="text-muted">Bench</span
               >
-              {misses.bench.join(', ')}{/if}
+              {@render names(misses.bench)}{/if}
           </p>
         {/if}
         <ul class="max-w-[560px]" data-testid={`guild-raid-fights-${f.row.id}`}>

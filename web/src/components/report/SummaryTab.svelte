@@ -10,6 +10,7 @@
      one Active carries the whole-fight mark and a line says why. Damage, healing, taken and deaths
      are the window's own. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
@@ -30,7 +31,7 @@
   import Meter from '../ui/Meter.svelte';
   import { roleIcon, roleOf } from '../../lib/report/role-icon';
   import { compact } from '../../lib/format/number';
-  import ClassIcon from './ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let {
     summary,
@@ -175,15 +176,17 @@
           phone={`${formatRate(row.damage_done / seconds)} DPS`}
           testid={`roster-${row.guid}`}
         >
-          {#snippet icon()}<ClassIcon className={cell.class} size={28} />{/snippet}
-          {#snippet name()}<a
+          {#snippet icon()}<Crest cls={cell.class} size={28} />{/snippet}
+          {#snippet name()}<CharacterName
+              name={display.name}
+              cls={cell.class}
               href={playerHref(row.guid)}
-              class="font-bold hover:underline [@media(pointer:coarse)]:-my-[13px] [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-[13px]"
-              style:color={classColorVar(cell.class)}
               title={display.title}
-              data-testid="roster-name"
-              onclick={(event) => follow(event, row.guid)}>{display.name}</a
-            >{/snippet}
+              weight="inherit"
+              class="font-bold [@media(pointer:coarse)]:-my-[13px] [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-[13px]"
+              testid="roster-name"
+              onclick={(event) => follow(event, row.guid)}
+            />{/snippet}
           {#snippet sub()}{#if role !== null}{@const icon = roleIcon(role)}<span
                 class="mr-1 inline-flex align-[-2px]"
                 ><SpellIcon url={icon.url} size={14} label={icon.label} testid="roster-role" /></span

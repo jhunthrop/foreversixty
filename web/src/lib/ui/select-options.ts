@@ -2,11 +2,14 @@
 // The option shapes several dropdowns share (design/specs/2026-10-30-controls-charts.md §A10):
 // a player or class with its ringed crest and class colour, and a spec with its icon. One
 // place builds them so every list reads the same.
-import { classCrestSrc, hasClassCrest } from '../class-crest';
+import { crestImage } from '../class-crest';
 import { specIconSrc } from '../guild/raid-spec';
 import { SPECS } from '../sim/specs';
 import { classColorToken, classSlug } from '../report/format';
 import type { SelectOption } from './listbox-model';
+
+/** The select's icon slot (select.css `.sel-icon`). */
+const SELECT_ICON_PX = 20;
 
 export interface ClassOptionInput {
   value: string;
@@ -20,10 +23,9 @@ export interface ClassOptionInput {
 }
 
 /** A player or class: the crest and the class colour on the label. A player whose class the log
- *  never named keeps the crest's place as an empty neutral ring, so every player row reads the
- *  same and the names stay in one column. */
+ *  never named keeps the crest's place with the LX seal in a muted ring, so every player row reads
+ *  the same and the names stay in one column. */
 export function classOption(input: ClassOptionInput): SelectOption {
-  const slug = classSlug(input.className);
   return {
     value: input.value,
     label: input.label,
@@ -32,7 +34,7 @@ export function classOption(input: ClassOptionInput): SelectOption {
     meta: input.meta,
     description: input.description,
     colour: classColorToken(input.className),
-    icon: { kind: 'crest', src: slug !== undefined && hasClassCrest(slug) ? classCrestSrc(slug) : '' },
+    icon: { kind: 'crest', src: crestImage(input.className, SELECT_ICON_PX).src },
   };
 }
 

@@ -18,7 +18,6 @@
   import type { MeCharacter } from '../lib/account/api';
   import { formatDate } from '../lib/dates';
   import { createCharacterCardState } from '../lib/bis/character-card-state.svelte';
-  import { classCrestSrc } from '../lib/class-crest';
   import { titleize } from '../lib/report/og-meta';
   import {
     fetchCharacter,
@@ -721,13 +720,6 @@
       {label}
       {testid}
     >
-      {#snippet lead()}<img
-          src={classCrestSrc(view.classSlug)}
-          alt=""
-          width="28"
-          height="28"
-          class="rounded-full"
-        />{/snippet}
       {#snippet tag()}
         {#if you}<Tag tone="yours">You</Tag>{/if}
       {/snippet}

@@ -159,16 +159,22 @@ describe('RankRow', () => {
     expect(body).toContain('data-leader="true"');
   });
 
-  it('falls back to gold without a class, and renders a lead and a tag', () => {
+  it('draws the ringed crest from the class', () => {
+    const body = html(RankRow, { ...ROW });
+    expect(body).toMatch(
+      /<span class="ui-rr-lead"><img src="\/icons\/hd\/crests\/warrior.webp"[^>]*class="crest ui-rr-crest/,
+    );
+  });
+
+  it('falls back to gold and no crest without a class, and renders a tag', () => {
     const body = html(RankRow, {
       ...ROW,
       classSlug: undefined,
       links: [],
-      lead: text('<img alt="">'),
       tag: text('<span>Your spec</span>'),
     });
     expect(body).toContain('--rr-tone: var(--color-gold)');
-    expect(body).toContain('<span class="ui-rr-lead"><img alt=""></span>');
+    expect(body).toContain('<span class="ui-rr-lead"></span>');
     expect(body).toContain('Arms</a><span>Your spec</span>');
     expect(body).not.toContain('ui-rr-links');
   });

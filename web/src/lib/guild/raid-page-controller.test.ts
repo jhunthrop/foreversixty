@@ -147,7 +147,7 @@ describe('poll', () => {
     const refetchRaid = vi.fn(() =>
       Promise.resolve(plannedRaid({ viewer: { characters: [viewerCharacter({ state: null })] } })),
     );
-    const { c, stop } = await started(deps({ refetchRaid, putSignup: () => put.promise }));
+    const { c, stop } = await started(deps({ refetchRaid, saveSignup: () => put.promise }));
     const outcome = c.signup('us-pvp-kraggor', 'bench', 'dps', '');
     await vi.advanceTimersByTimeAsync(RAID_POLL_MS);
     expect(refetchRaid).toHaveBeenCalledTimes(1);
@@ -176,7 +176,7 @@ describe('poll', () => {
 describe('sign-up races', () => {
   it('resolves the moved name after applying the answer', async () => {
     const { c, stop } = await started(
-      deps({ putSignup: () => Promise.resolve({ raid: plannedRaid({ title: 'New' }), moved: 'Menda' }) }),
+      deps({ saveSignup: () => Promise.resolve({ raid: plannedRaid({ title: 'New' }), moved: 'Menda' }) }),
     );
     await expect(c.signup('us-pvp-kraggor', 'in', 'dps', '')).resolves.toEqual({ ok: true, moved: 'Menda' });
     expect(c.raid?.title).toBe('New');
@@ -189,7 +189,7 @@ describe('sign-up races', () => {
       ['raid_cancelled', 'cancelled'],
     ] as const) {
       const refusal = new GuildApiError('refused', 409, code);
-      const { c, stop } = await started(deps({ putSignup: () => Promise.reject(refusal) }));
+      const { c, stop } = await started(deps({ saveSignup: () => Promise.reject(refusal) }));
       const outcome = await c.signup('us-pvp-kraggor', 'in', 'dps', '');
       expect(outcome).toMatchObject({ ok: false, code });
       expect(c.raid?.status).toBe(status);
@@ -199,14 +199,14 @@ describe('sign-up races', () => {
 
   it('lifts the cancelled race line to the page, where the cancelled strip has no rows', async () => {
     const cancelled = await started(
-      deps({ putSignup: () => Promise.reject(new GuildApiError('refused', 409, 'raid_cancelled')) }),
+      deps({ saveSignup: () => Promise.reject(new GuildApiError('refused', 409, 'raid_cancelled')) }),
     );
     expect(cancelled.c.raceLine).toBeNull();
     await cancelled.c.signup('us-pvp-kraggor', 'in', 'dps', '');
     expect(cancelled.c.raceLine).toBe(raidCopy.races.cancelled);
     cancelled.stop();
     const locked = await started(
-      deps({ putSignup: () => Promise.reject(new GuildApiError('refused', 409, 'raid_locked')) }),
+      deps({ saveSignup: () => Promise.reject(new GuildApiError('refused', 409, 'raid_locked')) }),
     );
     await locked.c.signup('us-pvp-kraggor', 'in', 'dps', '');
     expect(locked.c.raceLine).toBeNull();
@@ -216,11 +216,11 @@ describe('sign-up races', () => {
 
 describe('sign-up spec', () => {
   it('sends the picked spec with the sign-up, and nothing when none was picked', async () => {
-    const putSignup = vi.fn(() => Promise.resolve({ raid: plannedRaid(), moved: null }));
-    const { c, stop } = await started(deps({ putSignup }));
+    const saveSignup = vi.fn(() => Promise.resolve({ raid: plannedRaid(), moved: null }));
+    const { c, stop } = await started(deps({ saveSignup }));
     await c.signup('us-pvp-kraggor', 'in', 'healer', '', 'priest-holy');
     await c.signup('us-pvp-kraggor', 'in', 'healer', '');
-    expect(putSignup.mock.calls.map((call) => (call as unknown[])[3])).toEqual([
+    expect(saveSignup.mock.calls.map((call) => (call as unknown[])[3])).toEqual([
       { state: 'in', role: 'healer', note: '', spec: 'priest-holy' },
       { state: 'in', role: 'healer', note: '' },
     ]);

@@ -1,0 +1,81 @@
+/* web/src/styles/crest.css
+   The one class crest look (component audit 2026-11-10 cluster 2; brand audit 2026-11-10 crest
+   spec): the circular ringed HD crest over a disc of the page ground tinted by its class, a 2 px
+   ring at 55 % that brightens to the full class colour on the hover, focus or selection of the row
+   or control that holds it, and no glow. `.crest-none` is the LX seal in a muted ring for a
+   character with no known class. ui/Crest, ui/Crest.astro and the DOM-built rows
+   (lib/class-crest.ts paintCrest) all draw `.crest`; the size is the caller's. No other file
+   rounds a crest (crest-guard.test.ts).
+
+   Loading: lazy crests say fetchpriority low so a decorative crest never races the page's text
+   for the critical path (Lighthouse LCP budget, web/lighthouserc.json); eager ones stay at auto,
+   never high, which pulled LCP from about 1.1 s to 6.9 s on the throttled profile. */
+@layer components {
+  .crest {
+    display: inline-block;
+    flex-shrink: 0;
+    border-radius: 999px;
+    object-fit: cover;
+    background: color-mix(in srgb, var(--c, var(--color-muted)) 12%, var(--color-bg));
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c, var(--color-muted)) 55%, transparent);
+    transition: box-shadow 120ms ease-out;
+  }
+  /* The LX seal fills its own disc; the muted ring stays at rest on every state. */
+  .crest-none,
+  :is(a, button, summary, [role='option']):is(:hover, :focus-visible, [aria-selected='true'])
+    .crest.crest-none {
+    background: var(--color-bg);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-muted) 55%, transparent);
+  }
+  :is(a, button, summary, label, [role='option']):is(:hover, :focus-visible, [aria-selected='true']) .crest,
+  :is(input:checked + *, [aria-checked='true']) .crest {
+    box-shadow: 0 0 0 2px var(--c, var(--color-muted));
+  }
+  :is(a, button, summary):focus-visible > .crest {
+    outline: 2px solid var(--c, var(--color-gold));
+    outline-offset: 2px;
+  }
+
+  /* The character selector's first frame (nav spec 2026-10-09 section 8): Base.astro's head script
+     sets `data-pointer-class` before the island hydrates, and the placeholder paints that crest. */
+  html[data-pointer-class='warrior'] {
+    --pointer-crest: url('/icons/hd/crests/warrior.webp');
+    --pointer-color: var(--color-class-warrior);
+  }
+  html[data-pointer-class='paladin'] {
+    --pointer-crest: url('/icons/hd/crests/paladin.webp');
+    --pointer-color: var(--color-class-paladin);
+  }
+  html[data-pointer-class='hunter'] {
+    --pointer-crest: url('/icons/hd/crests/hunter.webp');
+    --pointer-color: var(--color-class-hunter);
+  }
+  html[data-pointer-class='rogue'] {
+    --pointer-crest: url('/icons/hd/crests/rogue.webp');
+    --pointer-color: var(--color-class-rogue);
+  }
+  html[data-pointer-class='priest'] {
+    --pointer-crest: url('/icons/hd/crests/priest.webp');
+    --pointer-color: var(--color-class-priest);
+  }
+  html[data-pointer-class='shaman'] {
+    --pointer-crest: url('/icons/hd/crests/shaman.webp');
+    --pointer-color: var(--color-class-shaman);
+  }
+  html[data-pointer-class='mage'] {
+    --pointer-crest: url('/icons/hd/crests/mage.webp');
+    --pointer-color: var(--color-class-mage);
+  }
+  html[data-pointer-class='warlock'] {
+    --pointer-crest: url('/icons/hd/crests/warlock.webp');
+    --pointer-color: var(--color-class-warlock);
+  }
+  html[data-pointer-class='druid'] {
+    --pointer-crest: url('/icons/hd/crests/druid.webp');
+    --pointer-color: var(--color-class-druid);
+  }
+  .csel-pre .csel-pre-crest {
+    background-image: var(--pointer-crest, none);
+    background-size: cover;
+  }
+}

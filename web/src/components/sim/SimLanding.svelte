@@ -10,7 +10,7 @@
   import { validateColdPaste } from '../../lib/sim/cold-paste';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
   import type { BisSetClass } from '../../lib/sim/bis-set-rail';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
   import FormRow from '../ui/FormRow.svelte';
@@ -169,7 +169,7 @@
     <RowGrid cols={3}>
       {#each bisSets as klass (klass.slug)}
         <Row title={klass.name} titleTone={classTone(klass.slug)} open>
-          {#snippet lead()}<ClassCrestRing characterClass={klass.slug} size={32} />{/snippet}
+          {#snippet lead()}<Crest cls={klass.slug} size={32} />{/snippet}
           {#snippet subContent()}
             <!-- On a phone each spec link takes its own line (no orphans, no collisions); one line from 768. -->
             <span class="flex flex-col pt-[2px] md:flex-row md:flex-wrap md:gap-x-4 md:gap-y-1">

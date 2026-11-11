@@ -22,7 +22,7 @@
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import { clockDuration } from '../../lib/format/duration';
   import { compact, percent } from '../../lib/format/number';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -246,10 +246,7 @@
             phone={`${compact(track.spent)} spent`}
             testid={`resource-${track.guid}-${track.power_type}`}
           >
-            {#snippet icon()}<ClassCrestRing
-                characterClass={classSlugOf(classOf.get(track.guid)) ?? ''}
-                size={28}
-              />{/snippet}
+            {#snippet icon()}<Crest cls={classSlugOf(classOf.get(track.guid)) ?? ''} size={28} />{/snippet}
             {#snippet name()}<span style:color={colour}>{splitUnitName(track.name).name}</span>{/snippet}
             {#snippet sub()}
               <!-- A block, so the figures wrap between pairs on a phone (each pair stays whole). -->

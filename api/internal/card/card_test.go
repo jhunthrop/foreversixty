@@ -2,11 +2,52 @@ package card
 
 import (
 	"bytes"
+	"image"
+	"image/color"
 	"image/png"
 	"strings"
 	"sync"
 	"testing"
 )
+
+func decodeImage(t *testing.T, b []byte) image.Image {
+	t.Helper()
+	img, err := png.Decode(bytes.NewReader(b))
+	if err != nil {
+		t.Fatalf("not a PNG: %v", err)
+	}
+	return img
+}
+
+// The crest on the card is the ringed crest, never the bare square art: the crest square's corner
+// shows the card's own ground for every class (the same pixel on a warrior's and a mage's card),
+// while the ring at the top of the circle takes each class's colour.
+func TestRenderDrawsTheRingedCrest(t *testing.T) {
+	mage := sample()
+	mage.Class, mage.ClassSlug, mage.ClassColor = "Mage", "mage", "#3fc7eb"
+	warriorPNG, err := Render(sample())
+	if err != nil {
+		t.Fatal(err)
+	}
+	magePNG, err := Render(mage)
+	if err != nil {
+		t.Fatal(err)
+	}
+	warrior, mageImg := decodeImage(t, warriorPNG), decodeImage(t, magePNG)
+	o := crestOrigin()
+	corner := image.Pt(o.X+1, o.Y+1)
+	ring := image.Pt(o.X+crestPx/2, o.Y+2)
+	if color.NRGBAModel.Convert(warrior.At(corner.X, corner.Y)) != color.NRGBAModel.Convert(mageImg.At(corner.X, corner.Y)) {
+		t.Fatalf("the crest square's corner differs by class: the bare art is drawn, not the ringed crest")
+	}
+	warriorRing := color.NRGBAModel.Convert(warrior.At(ring.X, ring.Y)).(color.NRGBA)
+	mageRing := color.NRGBAModel.Convert(mageImg.At(ring.X, ring.Y)).(color.NRGBA)
+	// The ring keeps the class hue over the ground: the warrior's tan is redder than blue, the
+	// mage's cyan bluer than red.
+	if warriorRing.R <= warriorRing.B || mageRing.B <= mageRing.R {
+		t.Fatalf("the ring is not in the class colour: warrior %v, mage %v", warriorRing, mageRing)
+	}
+}
 
 func decode(t *testing.T, b []byte) (int, int) {
 	t.Helper()

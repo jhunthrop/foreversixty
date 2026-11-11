@@ -53,7 +53,7 @@
   import CharacterOwnerSections from './character/CharacterOwnerSections.svelte';
   import CharacterScore from './character/CharacterScore.svelte';
   import CharacterStanding from './character/CharacterStanding.svelte';
-  import ClassCrestRing from './character/ClassCrestRing.svelte';
+  import Crest from './ui/Crest.svelte';
   import Figure from './ui/Figure.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Notice from './ui/Notice.svelte';
@@ -298,8 +298,8 @@
         tone={classSlug === null ? 'strong' : { classSlug }}
         testid="character-head"
       >
-        {#snippet crest()}<ClassCrestRing
-            characterClass={data.character.class ?? ''}
+        {#snippet crest()}<Crest
+            cls={data.character.class ?? ''}
             size={CREST_PX}
             class={CREST_CLASS}
           />{/snippet}

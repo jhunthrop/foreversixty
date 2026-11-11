@@ -29,7 +29,7 @@
     type?: 'button' | 'submit';
     disabled?: boolean;
     onclick?: (event: MouseEvent) => void;
-    /** A toggle's state (aria-pressed): the current choice of a set ("Late" among I'm in, Late, Can't come). */
+    /** A toggle's state (aria-pressed): the current choice of a set ("Late" among In, Late, Bench, Out). */
     pressed?: boolean;
     /** The accessible name when the visible words need more ("Retry" that reloads the talents). */
     label?: string;

@@ -5,11 +5,12 @@
      the shortfall in the wipe colour; a pass is a muted tick. The shortfall words also ride the
      raider's sub line, so a phone keeps them when the columns fold. -->
 <script lang="ts">
+  import { raidCopy } from '../../../lib/guild/raid-copy';
+  import CharacterName from '../../ui/CharacterName.svelte';
   import type { GuildReadinessRow } from '../../../lib/guild/api';
-  import { classColorVar } from '../../../lib/report/format';
   import { enchantSlotLabel, missingCount } from '../../../lib/guild/readiness-view';
   import type { StatFigure } from '../../../lib/ui/stat-table';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import StatRow from '../../ui/StatRow.svelte';
   import StatTable from '../../ui/StatTable.svelte';
 
@@ -85,7 +86,7 @@
     const missing = row.enchants.missing_slots;
     return [
       shortfalls.length > 0
-        ? { value: `${missingCount(row, shortfalls)} missing`, tone: 'wipe' }
+        ? { value: raidCopy.missing(missingCount(row, shortfalls)), tone: 'wipe' }
         : { value: '', muted: true },
       check(row.attuned, '×'),
       delta === null
@@ -159,8 +160,8 @@
           figures={figures(row, shortfalls)}
           testid={`guild-readiness-row-${row.character_key}`}
         >
-          {#snippet icon()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
-          {#snippet name()}<span style:color={classColorVar(row.class)}>{row.name}</span>{/snippet}
+          {#snippet icon()}<Crest cls={row.class} size={28} />{/snippet}
+          {#snippet name()}<CharacterName name={row.name} cls={row.class} weight="inherit" />{/snippet}
           {#snippet sub()}<span class="sub-line"><span>{row.spec} · {row.item_level ?? '–'} ilvl</span></span
             >{#if shortfalls.length > 0}<span
                 class="reasons text-wipe"

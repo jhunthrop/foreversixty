@@ -76,16 +76,7 @@
 }
 /* The compact group (the class picker, planner spec 2026-11-08 ruling P10): icon-led items whose
    labels show from 1280 and in the open phone stack (3 per row, crest and name); between, the
-   radio's aria-label carries the name. `.ui-seg-crest` is the site's ringed class crest at 22 px. */
-.ui-seg-crest {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  object-fit: cover;
-  border-radius: 50%;
-  background: var(--color-raised);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 55%, transparent);
-}
+   radio's aria-label carries the name. The crest is ui/Crest at 22 px. */
 .ui-seg--compact .ui-seg-item {
   padding: 0 10px;
 }

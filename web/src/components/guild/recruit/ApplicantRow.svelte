@@ -12,7 +12,7 @@
   import { outputFigure } from '../../../lib/guild/output-figure';
 
   import { classTone } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Votes from '../../ui/Votes.svelte';
@@ -55,7 +55,7 @@
   density="slim"
   testid={`guild-application-${application.id}`}
 >
-  {#snippet lead()}<ClassCrestRing characterClass={character.class ?? ''} size={28} />{/snippet}
+  {#snippet lead()}<Crest cls={character.class ?? ''} size={28} />{/snippet}
   {#snippet subContent()}
     <span class="xl:hidden">{applicantFacts(character)}</span><span class="hidden xl:inline"
       >{character.spec_name ?? ''}</span

@@ -11,14 +11,14 @@
     type GuildRaidView,
     type NextRaidView,
   } from '../../../lib/guild/api';
-  import { classColorVar } from '../../../lib/report/format';
   import { pingRaid } from '../../../lib/guild/overview-api';
   import { pingAllowed } from '../../../lib/guild/overview-role-view';
-  import { putSignup } from '../../../lib/guild/raids-api';
+  import { trySignup } from '../../../lib/guild/signup-save';
   import { compGaps, FILLERS_SHOWN, type CompGapRow, type Filler } from '../../../lib/guild/dense/week-board';
   import { GROUP_WORD } from '../../../lib/guild/dense/roster-board';
   import { clock, viewerLocale } from '../../../lib/dates';
   import Button from '../../ui/Button.svelte';
+  import CharacterName from '../../ui/CharacterName.svelte';
   import Figure from '../../ui/Figure.svelte';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
@@ -57,6 +57,8 @@
   let pingedAt = $state<Date | null>(null);
   let pingError = $state('');
   let moving = $state<string | null>(null);
+  /** A Move to In the API refused: the line the officer sees beside the ping line. */
+  let moveError = $state('');
   const rows = $derived(compGaps(raid));
   const stillShort = $derived(rows.filter((r) => r.stillShort > 0));
   const notAnswered = $derived(raid.not_signed_raiders?.length ?? raid.not_signed.length);
@@ -84,12 +86,15 @@
     const row = raid.signups.find((s) => s.character_key === filler.key);
     if (row === undefined || moving !== null) return;
     moving = filler.key;
-    try {
-      await putSignup(guildId, raid.id, row.character_key, { state: 'in', role: row.role, note: row.note });
-      onChanged();
-    } finally {
-      moving = null;
-    }
+    moveError = '';
+    const saved = await trySignup(guildId, raid.id, row.character_key, {
+      state: 'in',
+      role: row.role,
+      note: row.note,
+    });
+    moving = null;
+    if (saved.ok) onChanged();
+    else moveError = saved.line;
   }
 
   function figures(row: CompGapRow) {
@@ -105,8 +110,7 @@
 </script>
 
 {#snippet people(list: readonly GuildRaidSignup[])}
-  {#each list as s, i (s.character_key)}<b style:color={classColorVar(s.class)}>{s.name}</b>{i <
-    list.length - 1
+  {#each list as s, i (s.character_key)}<CharacterName name={s.name} cls={s.class} />{i < list.length - 1
       ? ', '
       : ''}{/each}
 {/snippet}
@@ -151,9 +155,7 @@
               <span class="fills">
                 {#each row.fillers.slice(0, FILLERS_SHOWN) as f (f.key)}
                   {#if f.kind === 'ping' && pingedAt !== null}
-                    <span class="fill done"
-                      ><b style:color={classColorVar(f.cls)}>{f.name}</b>{pingedText}</span
-                    >
+                    <span class="fill done"><CharacterName name={f.name} cls={f.cls} />{pingedText}</span>
                   {:else}
                     <button
                       type="button"
@@ -161,7 +163,7 @@
                       disabled={f.kind === 'ping' ? !canPing : moving !== null}
                       onclick={() => void (f.kind === 'ping' ? ping() : moveIn(f))}
                       data-testid={`guild-fill-${f.name.toLowerCase()}`}
-                      ><b style:color={classColorVar(f.cls)}>{f.name}</b><span class="act"
+                      ><CharacterName name={f.name} cls={f.cls} /><span class="act"
                         >{f.kind === 'ping' ? 'Ping' : 'Move to In'}</span
                       ></button
                     >
@@ -193,6 +195,9 @@
     >
     <a class="text-gold text-[14px] font-semibold" href={planHref}>Open the planner ›</a>
     {#if pingError !== ''}<span class="text-small text-wipe">{pingError}</span>{/if}
+    {#if moveError !== ''}<span class="text-small text-wipe" role="alert" data-testid="guild-move-error"
+        >{moveError}</span
+      >{/if}
   </div>
 </Section>
 

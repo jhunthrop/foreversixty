@@ -5,9 +5,9 @@
 // header script opens it), `menu` is the same list as a section of the phone Menu. One body,
 // two shells, so the rows, the Guides grid and the foot never drift apart.
 import type { HTMLAttributes } from 'astro/types';
-import { classCrestSrc } from '../lib/class-crest';
+import Crest from './ui/Crest.astro';
 import { GUILD_OVERVIEW_TAB, GUILDLESS_SWAPS, navKey, type NavGroup, type NavRow } from '../lib/nav';
-import type { GuideClass } from '../lib/nav-guides';
+import { specSummary, type PickerClass } from '../lib/class-picker';
 import DiscordMark from './DiscordMark.astro';
 import { UI_ICONS } from '../lib/ui/ui-icons';
 import Icon from './ui/Icon.astro';
@@ -17,7 +17,7 @@ interface Props {
   group: NavGroup;
   place: 'bar' | 'menu';
   /** The Guides grid; read from the spec catalogue once at build time by Header.astro. */
-  guideClasses: readonly GuideClass[];
+  guideClasses: readonly PickerClass[];
   /** Guild rows carry the tab the session's guild fills in (applySessionGuild). */
   isGuild: boolean;
 }
@@ -83,25 +83,16 @@ const swapOf = (tab: string | undefined) => (tab === undefined ? undefined : GUI
     <div class="site-panel-grid">
       {guideClasses.map((guideClass) => (
         <a
-          href={`/guides/${guideClass.slug}`}
+          href={guideClass.href}
           class="site-panel-class"
           role={itemRole}
           style={`--c: ${classColor(guideClass.slug)}`}
           data-testid={`${testScope}-class-${guideClass.slug}`}
         >
-          <img
-            class="site-panel-crest"
-            src={classCrestSrc(guideClass.slug)}
-            alt=""
-            width="28"
-            height="28"
-            loading="lazy"
-            fetchpriority="low"
-            decoding="async"
-          />
+          <Crest cls={guideClass.slug} size={28} class="site-panel-crest" />
           <span class="site-panel-text">
             <span class="site-panel-class-name">{guideClass.name}</span>
-            <span class="site-panel-desc">{guideClass.specs.join(' · ')}</span>
+            <span class="site-panel-desc">{specSummary(guideClass, ' · ')}</span>
           </span>
         </a>
       ))}

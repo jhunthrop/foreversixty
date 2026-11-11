@@ -7,7 +7,6 @@
      back empty says so in one line, and the rest still show. The newest board's updated_at goes up
      to the title band's stamp. -->
 <script lang="ts">
-  import { classCrestSrc } from '../../lib/class-crest';
   import { fetchRankings, type RankedEncounter, type RankingsPage } from '../../lib/rankings/api';
   import { encounterPickerCopy, rankingsCopy } from '../../lib/rankings/copy';
   import {
@@ -129,15 +128,7 @@
           fraction={view.fraction}
           figures={view.figures}
           gap={view.gap}
-        >
-          {#snippet lead()}<img
-              src={classCrestSrc(view.classSlug)}
-              alt=""
-              width="28"
-              height="28"
-              class="rounded-full"
-            />{/snippet}
-        </RankRow>
+        ></RankRow>
       {/each}
     </RankList>
   </div>

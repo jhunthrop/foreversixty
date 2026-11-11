@@ -9,7 +9,7 @@
   import { candidateSub, msOsTag } from '../../../lib/guild/loot-council-view';
   import { classSlugFromName } from '../../../lib/report/tree-sizes';
   import { isClassSlug } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Tag from '../../ui/Tag.svelte';
@@ -60,7 +60,7 @@
   open
   testid={`guild-loot-candidate-${candidate.character_key}`}
 >
-  {#snippet lead()}<ClassCrestRing characterClass={candidate.class} size={32} />{/snippet}
+  {#snippet lead()}<Crest cls={candidate.class} size={32} />{/snippet}
   {#snippet foot()}
     {#if tag !== null}<Tag tone={tag.declared ? 'gold' : 'muted'} title={tag.title} testid="guild-loot-msos"
         >{tag.label}</Tag

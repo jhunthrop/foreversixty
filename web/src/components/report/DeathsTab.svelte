@@ -26,7 +26,7 @@
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
-  import ClassIcon from './ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import type { CastRow, CombatantRow, DamageRef, Death, HealRef, PullMark } from '../../lib/report/types';
@@ -361,7 +361,7 @@
           {#snippet lead()}<span class="text-muted text-[13px] tabular-nums" data-testid="death-label"
               >{#if death.label}{death.label} ·
               {/if}{clockDuration(inPull(death))}</span
-            ><ClassIcon className={death.class ?? classOf.get(death.guid)} size={32} />{/snippet}
+            ><Crest cls={death.class ?? classOf.get(death.guid)} size={32} />{/snippet}
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(death.name).text}</span>{/snippet}
           {#snippet trail()}
             <!-- One control a row: Open on a folded card, the window on the open one. -->

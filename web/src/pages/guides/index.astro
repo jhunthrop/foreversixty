@@ -8,13 +8,12 @@
 import { catalogueIconUrl } from '../../lib/ui/assets';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import ClassSpecPicker, { type PickerClass } from '../../components/guides/ClassSpecPicker.astro';
+import ClassSpecPicker from '../../components/guides/ClassSpecPicker.astro';
+import { GUIDE_LINKS, pickerClasses } from '../../lib/class-picker';
 import GuideAnswer from '../../components/guides/GuideAnswer.astro';
 import Page from '../../components/ui/Page.svelte';
 import PageHeader from '../../components/ui/PageHeader.svelte';
-import classes from '../../data/classes.json';
 import activeBuild from '../../data/active-build.json';
-import { readSpecCatalog } from '../../lib/bis/load';
 import { latest } from '../../lib/dates';
 import { rankedBisFile } from '../../lib/guides/class-dps';
 import { pageUpdatedAt } from '../../lib/guides/guide-header';
@@ -23,7 +22,6 @@ import { guidesCopy } from '../../lib/guides/copy';
 import { searchCopy } from '../../lib/search-copy';
 
 const build = activeBuild.build;
-const catalog = readSpecCatalog();
 // The newest date any guide page shows: its own `updated`, or the day its ranked BiS file was
 // published (the nightly republishes the numbers the guide pages carry).
 const updated = latest(
@@ -36,20 +34,7 @@ const updated = latest(
     ),
   ),
 );
-const groups: PickerClass[] = classes.map((c) => ({
-  slug: c.slug,
-  name: c.name,
-  href: `/guides/${c.slug}`,
-  specs: catalog
-    .filter((s) => s.class_slug === c.slug)
-    .sort((a, b) => a.tree_index - b.tree_index)
-    .map((s) => ({
-      key: `${c.slug}/${s.spec_slug}`,
-      name: s.name,
-      href: `/guides/${c.slug}/${s.spec_slug}`,
-      icon: catalogueIconUrl(build, s.icon),
-    })),
-}));
+const groups = pickerClasses({ ...GUIDE_LINKS, specIcon: (s) => catalogueIconUrl(build, s.icon) });
 ---
 
 <Base title={searchCopy.guidesIndex.title} description={searchCopy.guidesIndex.description} path="/guides">

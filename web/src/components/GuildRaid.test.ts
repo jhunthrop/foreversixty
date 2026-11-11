@@ -30,7 +30,7 @@ const DEPS: RaidPageDeps = {
   loadHome: never,
   fetchRaid: never,
   refetchRaid: never,
-  putSignup: never,
+  saveSignup: never,
   setStatus: never,
   updateRaid: never,
   loadMatchCandidates: never,

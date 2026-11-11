@@ -8,6 +8,7 @@
   import { classSpecPath } from '../../lib/sim/gear-card';
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
   import { specLeadIcon } from '../../lib/sim/spec-icon';
+  import Crest from '../ui/Crest.svelte';
   import type { Spec } from '../../lib/sim/specs';
   import { classColorVar } from '../../lib/report/format';
   import { simCopy } from '../../lib/sim/copy';
@@ -23,14 +24,14 @@
     class="flex w-full min-w-0 items-center gap-2 text-[15px] font-bold whitespace-nowrap hover:underline md:inline-flex md:w-auto"
     style:color={classColorVar(classOfSpec(spec.spec))}
     data-testid={`spec-guide-${spec.spec}`}
-    ><img
-      src={lead.src}
-      alt=""
-      width="24"
-      height="24"
-      class={lead.crest ? 'rounded-full' : 'rounded-[5px]'}
-      onerror={() => (iconFailed = true)}
-    />{specLabel(spec.spec)}<span class="text-muted ml-auto text-[13px] font-normal md:ml-0"
+    >{#if lead === null}<Crest cls={classOfSpec(spec.spec)} size={24} />{:else}<img
+        src={lead}
+        alt=""
+        width="24"
+        height="24"
+        class="rounded-[5px]"
+        onerror={() => (iconFailed = true)}
+      />{/if}{specLabel(spec.spec)}<span class="text-muted ml-auto text-[13px] font-normal md:ml-0"
       >{simCopy.specsRole[spec.role]}</span
     ></a
   >

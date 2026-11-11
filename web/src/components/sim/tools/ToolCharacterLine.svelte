@@ -6,8 +6,8 @@
      /sim; a tool page does not draw it a second time. A level note, when the talents stop short
      of the character's level, sits on the line as "20 talent points". -->
 <script lang="ts">
+  import CharacterName from '../../ui/CharacterName.svelte';
   import { onMount } from 'svelte';
-  import { classColorVar } from '../../../lib/report/format';
   import { averageItemLevel } from '../../../lib/gear/paperdoll';
   import { slotsFromWorn } from '../../../lib/gear/paperdoll-slots';
   import { loadTalents } from '../../../lib/planner/load';
@@ -20,7 +20,7 @@
   import { specLabel } from '../../../lib/sim/spec-label';
   import { LINK } from '../../../lib/ui/primitives';
   import { REGION } from '../../../lib/ui/regions';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
 
   let {
@@ -74,12 +74,14 @@
   <!-- One line of facts (13 px from the item level on, so a phone holds it on one row), then the
        actions; at 390 the actions take the second row. -->
   <p class="m-0 flex flex-wrap items-center gap-x-2 gap-y-2 text-[15px] leading-6 md:gap-x-3">
-    <ClassCrestRing characterClass={character.class_slug} size={24} testid="sim-character-class-icon" />
-    {#if character.name}<span
+    <Crest cls={character.class_slug} size={24} testid="sim-character-class-icon" />
+    {#if character.name}<CharacterName
+        name={character.name}
+        cls={character.class_slug}
+        weight="inherit"
         class="font-bold"
-        style:color={classColorVar(character.class_slug)}
-        data-testid="paperdoll-name">{character.name}</span
-      >{/if}
+        testid="paperdoll-name"
+      />{/if}
     <span class="text-text" data-testid="paperdoll-descriptor">{descriptor}</span>
     {#if itemLevel !== null}<span class="text-muted text-[13px] tabular-nums" data-testid="sim-gear-ilvl"
         >{simCopy.toolIlvl(itemLevel)}</span

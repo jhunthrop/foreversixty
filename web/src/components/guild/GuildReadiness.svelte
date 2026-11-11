@@ -7,7 +7,7 @@
      toggle cuts the board to the raid's In and Late sign-ups. Officer tools gate §3: with the tools
      off the plan sentence sits under the heading and every Nudge stays on screen, disabled. -->
 <script lang="ts">
-  import { classColorVar } from '../../lib/report/format';
+  import CharacterName from '../ui/CharacterName.svelte';
   import type { GuildRaidSignup, GuildReadinessRow } from '../../lib/guild/api';
   import type { ReadinessRaid } from '../../lib/guild/attendance-contract';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
@@ -170,10 +170,12 @@
     {#if lists.leveling.length > 0}
       <Section title="Leveling" panel testid="guild-readiness-leveling-group">
         <p class="text-[14px] leading-[23px]">
-          {#each lists.leveling as row, index (row.character_key)}<span
-              style={`color:${classColorVar(row.class)}`}
-              data-testid={`guild-readiness-level-${row.character_key}`}>{row.name}</span
-            ><span class="text-muted">&#32;{levelingLabel(row.level ?? 0)}</span
+          {#each lists.leveling as row, index (row.character_key)}<CharacterName
+              name={row.name}
+              cls={row.class}
+              weight="inherit"
+              testid={`guild-readiness-level-${row.character_key}`}
+            /><span class="text-muted">&#32;{levelingLabel(row.level ?? 0)}</span
             >{#if index < lists.leveling.length - 1}<span class="text-muted">,&#32;</span>{/if}{/each}
         </p>
       </Section>

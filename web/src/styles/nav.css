@@ -256,16 +256,8 @@
     gap: 2px;
   }
   .site-panel-crest {
-    flex-shrink: 0;
     width: 28px;
     height: 28px;
-    border-radius: 999px;
-    object-fit: cover;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
-  }
-  .site-panel-class:hover .site-panel-crest,
-  .site-panel-class:focus-visible .site-panel-crest {
-    box-shadow: 0 0 0 2px var(--c);
   }
   .site-panel-foot {
     display: flex;
@@ -658,14 +650,6 @@
     display: block;
     width: 32px;
     height: 32px;
-    border-radius: 999px;
-    object-fit: cover;
-    background-size: cover;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c, var(--color-line)) 55%, transparent);
-  }
-  .csel-btn:hover .csel-crest,
-  .csel-btn:focus-visible .csel-crest {
-    box-shadow: 0 0 0 2px var(--c, var(--color-line));
   }
   .csel-mark {
     position: absolute;
@@ -799,45 +783,6 @@
   /* The signed-out placeholder's chevron shows, so "Sign in" matches the hydrated button. */
   .csel-pre .csel-pre-out .csel-pre-out-chev {
     visibility: visible;
-  }
-  .csel-pre .csel-pre-crest {
-    background-image: var(--pointer-crest, none);
-  }
-  html[data-pointer-class='warrior'] {
-    --pointer-crest: url('/icons/hd/crests/warrior.webp');
-    --pointer-color: var(--color-class-warrior);
-  }
-  html[data-pointer-class='paladin'] {
-    --pointer-crest: url('/icons/hd/crests/paladin.webp');
-    --pointer-color: var(--color-class-paladin);
-  }
-  html[data-pointer-class='hunter'] {
-    --pointer-crest: url('/icons/hd/crests/hunter.webp');
-    --pointer-color: var(--color-class-hunter);
-  }
-  html[data-pointer-class='rogue'] {
-    --pointer-crest: url('/icons/hd/crests/rogue.webp');
-    --pointer-color: var(--color-class-rogue);
-  }
-  html[data-pointer-class='priest'] {
-    --pointer-crest: url('/icons/hd/crests/priest.webp');
-    --pointer-color: var(--color-class-priest);
-  }
-  html[data-pointer-class='shaman'] {
-    --pointer-crest: url('/icons/hd/crests/shaman.webp');
-    --pointer-color: var(--color-class-shaman);
-  }
-  html[data-pointer-class='mage'] {
-    --pointer-crest: url('/icons/hd/crests/mage.webp');
-    --pointer-color: var(--color-class-mage);
-  }
-  html[data-pointer-class='warlock'] {
-    --pointer-crest: url('/icons/hd/crests/warlock.webp');
-    --pointer-color: var(--color-class-warlock);
-  }
-  html[data-pointer-class='druid'] {
-    --pointer-crest: url('/icons/hd/crests/druid.webp');
-    --pointer-color: var(--color-class-druid);
   }
   .csel-pre .csel-pre-crest {
     --c: var(--pointer-color, var(--color-line));
@@ -1139,18 +1084,10 @@
     outline: 2px solid var(--color-gold);
     outline-offset: -2px;
   }
-  /* The ringed crest (ClassCrestRing's recipe): the class ring at 55 %, full on hover and focus. */
+  /* The ringed crest (styles/crest.css) at the list row's size. */
   .csel-row-crest {
     width: 36px;
     height: 36px;
-    border-radius: 999px;
-    object-fit: cover;
-    background: color-mix(in srgb, var(--c) 12%, var(--color-bg));
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
-  }
-  .csel-row-main:hover .csel-row-crest,
-  .csel-row-main:focus-visible .csel-row-crest {
-    box-shadow: 0 0 0 2px var(--c);
   }
   .csel-row-text {
     display: flex;

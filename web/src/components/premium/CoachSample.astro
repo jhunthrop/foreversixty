@@ -6,7 +6,7 @@ import SpellIcon from '../ui/SpellIcon.astro';
 import Row from '../ui/Row.svelte';
 import Section from '../ui/Section.svelte';
 import Tag from '../ui/Tag.svelte';
-import ClassCrest from '../ClassCrest.astro';
+import Crest from '../ui/Crest.astro';
 import { coachSampleView, loadCoachSampleAnswer, type CoachSampleView } from '../../lib/billing/coach-sample';
 import { buildSpellIconOf } from '../../lib/billing/coach-sample-icons';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
@@ -24,7 +24,7 @@ const copy = plansPageCopy.coachSample;
   </Tag>
   <div class="coach">
     <div class="coach-who">
-      <ClassCrest slug={view.classSlug} size={40} />
+      <Crest cls={view.classSlug} size={40} />
       <span>
         <b>{view.title}</b>
         <span class="text-small text-muted block">{view.context}</span>

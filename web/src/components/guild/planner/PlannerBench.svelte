@@ -8,7 +8,7 @@
   import { benchRows, rowSub } from '../../../lib/guild/raid-planner-view';
   import type { RosterRow } from '../../../lib/guild/raid-roster';
   import { classTone, ROW_ITEM } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
@@ -44,7 +44,7 @@
       {#each rows as row (row.character_key)}
         <li class={ROW_ITEM} data-testid="raid-bench-row">
           <Row title={row.name} titleTone={classTone(row.class)} sub={rowSub(row, roles)} open density="slim">
-            {#snippet lead()}<ClassCrestRing characterClass={row.class} size={24} />{/snippet}
+            {#snippet lead()}<Crest cls={row.class} size={24} />{/snippet}
             {#snippet trail()}
               <Button
                 size="sm"

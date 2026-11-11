@@ -3,7 +3,7 @@
 // "Night Elf Hunter · Level 25 · Living Flame (PvP US)" (brief 2026-09-22 §B3). One place so
 // CharacterList.svelte's rows and Account.svelte's hero band read the exact same text rather
 // than two hand-rolled copies drifting apart. (The character's picture is always the ringed
-// class crest, CharacterPortrait.svelte; the letter square and class-icon URL that lived here
+// class crest, ui/Crest.svelte; the letter square and class-icon URL that lived here
 // are gone, design/DESIGN-SYSTEM.md tenet 7.)
 import { characterSpecName } from '../character-spec';
 import { classDisplayName } from '../sim/spec-label';

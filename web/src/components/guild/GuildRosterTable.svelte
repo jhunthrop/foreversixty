@@ -18,11 +18,11 @@
      Waiting for approval and Roster; the roster's rows are the page's one Plate. No card, no icon
      chip, no hand-drawn rule: ui/Ruled draws the hairlines. -->
 <script lang="ts">
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import CharacterName from '../ui/CharacterName.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Tag from '../ui/Tag.svelte';
   import SupporterChip from '../SupporterChip.svelte';
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
-  import { classColorVar } from '../../lib/report/format';
   import type { CharacterPath } from '../../lib/characters';
   import type { GuildRosterCounts, GuildRosterEntry, GuildRosterRow } from '../../lib/guild/api';
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
@@ -391,12 +391,15 @@
   <Ruled id="guild-roster-unverified" testid="guild-roster-unverified-list">
     {#each shownPending as row (row.character_key)}
       <div class={ROW}>
-        <ClassCrestRing characterClass={row.class ?? ''} size={36} />
+        <Crest cls={row.class ?? ''} size={36} />
         <div class="flex min-w-[150px] flex-col">
           <span class="flex min-w-0 items-center gap-2">
-            <span class="heading-name text-[14px]" style={`color:${classColorVar(row.class ?? '')}`}>
-              {row.name}
-            </span>
+            <CharacterName
+              name={row.name}
+              cls={row.class}
+              weight="inherit"
+              class="heading-name text-[14px]"
+            />
             {#if row.supporter === true}<SupporterChip />{/if}
           </span>
           <span class="text-muted text-[12px]">{specLineOf(row)}</span>
@@ -589,23 +592,20 @@
                       ? `${specLine}${specLine === '' ? '' : ' · '}alt of ${altOf.get(row.character_key)}`
                       : specLine}
                     <div class={`${ROW} ${ownRowBand(pinned, 0)}`}>
-                      <ClassCrestRing characterClass={row.class ?? ''} size={36} />
+                      <Crest cls={row.class ?? ''} size={36} />
                       <!-- At lg the name block is a fixed 240 px and its subtitle one ellipsised line (the whole
                text in the title), so every row's rank and stats start at the same left edge. -->
                       <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
                         <span class="flex min-w-0 items-center gap-2">
-                          <svelte:element
-                            this={profile === null ? 'span' : 'a'}
+                          <CharacterName
+                            name={`${row.name}${pinned ? ' (you)' : ''}`}
+                            cls={row.class}
                             href={profile ?? undefined}
-                            class="heading-name min-w-0 text-[14px] lg:truncate {profile === null
-                              ? ''
-                              : 'hover:underline focus-visible:underline'}"
-                            style={`color:${classColorVar(row.class ?? '')}`}
                             title={`${row.name}${pinned ? ' (you)' : ''}`}
-                            data-testid="guild-roster-name"
-                          >
-                            {row.name}{pinned ? ' (you)' : ''}
-                          </svelte:element>
+                            weight="inherit"
+                            class="heading-name min-w-0 text-[14px] focus-visible:underline lg:truncate"
+                            testid="guild-roster-name"
+                          />
                           {#if row.supporter === true}<SupporterChip />{/if}
                         </span>
                         <!-- One line per part at lg ("Beast Mastery Hunter in game", then "Survival on the site"), each
@@ -718,17 +718,15 @@
                   {#each extras as entry (`${entry.state}:${entry.name}`)}
                     <div class={ENTRY_ROW} data-testid="guild-roster-entry" data-state={entry.state}>
                       <!-- No class known: the component's neutral ringed disc, never an empty outline. -->
-                      <ClassCrestRing
-                        characterClass={entry.class ?? ''}
-                        size={36}
-                        testid="guild-roster-entry-crest"
-                      />
+                      <Crest cls={entry.class ?? ''} size={36} testid="guild-roster-entry-crest" />
                       <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
-                        <span
-                          class="heading-name text-text text-[14px]"
-                          style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)}`}
-                          data-testid="guild-roster-entry-name">{entry.name}</span
-                        >
+                        <CharacterName
+                          name={entry.name}
+                          cls={entry.class}
+                          weight="inherit"
+                          class="heading-name text-[14px]"
+                          testid="guild-roster-entry-name"
+                        />
                         {#if entrySpecLine(entry) !== ''}
                           <span
                             class="text-nav text-[12px] max-lg:break-words lg:truncate"

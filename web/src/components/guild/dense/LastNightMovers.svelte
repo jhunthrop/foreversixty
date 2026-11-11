@@ -3,13 +3,13 @@
      against the night before, Up then Down, each with the weakest part of their rating and their
      figure. -->
 <script lang="ts">
-  import { classColorVar } from '../../../lib/report/format';
+  import CharacterName from '../../ui/CharacterName.svelte';
   import type { Mover } from '../../../lib/guild/dense/week-board';
   import { grouped } from '../../../lib/format/number';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
   import StatTable from '../../ui/StatTable.svelte';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
 
   let {
     meta,
@@ -59,8 +59,8 @@
         phone={`${figures(m)[1].value} ${vsLabel}`}
         testid={`guild-mover-${m.name.toLowerCase()}`}
       >
-        {#snippet icon()}<ClassCrestRing characterClass={m.cls} size={28} />{/snippet}
-        {#snippet name()}<span style:color={classColorVar(m.cls)}>{m.name}</span>{/snippet}
+        {#snippet icon()}<Crest cls={m.cls} size={28} />{/snippet}
+        {#snippet name()}<CharacterName name={m.name} cls={m.cls} weight="inherit" />{/snippet}
         {#snippet sub()}{m.spec}{#if m.weakest}{` · weakest ${m.weakest.part} ${m.weakest.value}`}{/if}{/snippet}
       </StatRow>
     {/each}

@@ -4,14 +4,14 @@
      with their names. One grid for both row kinds (since, items, nights); the last item rides the
      raider's sub line. -->
 <script lang="ts">
+  import CharacterName from '../../ui/CharacterName.svelte';
   import type { GuildRosterRow } from '../../../lib/guild/api';
   import type { LootNights } from '../../../lib/guild/loot-council-api';
   import type { GuildRecentAttendance } from '../../../lib/guild/overview-api';
-  import { classColorVar } from '../../../lib/report/format';
   import { counted } from '../../../lib/plural';
   import { fairnessRows, guildItemsPerNight, type FairnessRaider } from '../../../lib/guild/dense/fairness';
   import { viewerZone, weekdayDayMonth } from '../../../lib/dates';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
@@ -93,10 +93,12 @@
             ]}
           >
             {#snippet name()}{row.raiders.length} raiders, no item yet{/snippet}
-            {#snippet sub()}{#each row.raiders as r, i (r.key)}<b
-                  class="whitespace-nowrap"
-                  style:color={classColorVar(r.cls)}>{r.name}</b
-                >{i < row.raiders.length - 1 ? ', ' : ''}{/each}{/snippet}
+            {#snippet sub()}{#each row.raiders as r, i (r.key)}<CharacterName
+                  name={r.name}
+                  cls={r.cls}
+                  weight="inherit"
+                  class="font-bold whitespace-nowrap"
+                />{i < row.raiders.length - 1 ? ', ' : ''}{/each}{/snippet}
           </StatRow>
         {:else}
           {#each row.raiders as one (one.key)}
@@ -106,8 +108,8 @@
               phone={counted(one.items, 'item')}
               testid={`guild-fair-${one.name.toLowerCase()}`}
             >
-              {#snippet icon()}<ClassCrestRing characterClass={one.cls} size={28} />{/snippet}
-              {#snippet name()}<span style:color={classColorVar(one.cls)}>{one.name}</span>{/snippet}
+              {#snippet icon()}<Crest cls={one.cls} size={28} />{/snippet}
+              {#snippet name()}<CharacterName name={one.name} cls={one.cls} weight="inherit" />{/snippet}
               {#snippet sub()}{one.spec}{one.last === null
                   ? ''
                   : ` · last ${one.last.item}, ${day(one.last.at)}`}{/snippet}

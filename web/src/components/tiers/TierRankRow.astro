@@ -1,8 +1,7 @@
 ---
 // web/src/components/tiers/TierRankRow.astro
 // One tier row: the ui/RankRow preset filled from lib/tiers/tier-row-view.ts, with the spec's
-// circular crest. The page script marks the visitor's own row (aria-current, the accent tint).
-import ClassCrest from '../ClassCrest.astro';
+// circular crest (RankRow draws it from the class). The page script marks the visitor's own row (aria-current, the accent tint).
 import RankRow from '../ui/RankRow.svelte';
 import type { TierRow } from '../../lib/tiers/tier-list';
 import { rankRowProps } from '../../lib/tiers/tier-row-view';
@@ -16,6 +15,4 @@ interface Props {
 const { row, rows } = Astro.props;
 ---
 
-<RankRow {...rankRowProps(row, rows)}>
-  <ClassCrest slot="lead" slug={row.classSlug} size={36} />
-</RankRow>
+<RankRow {...rankRowProps(row, rows)} />

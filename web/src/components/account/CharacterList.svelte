@@ -16,7 +16,7 @@
   import { characterHref } from '../../lib/characters';
   import { lowLevelCopy, splitByLevel } from '../../lib/account/level-filter';
   import { classTone, LINK } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Button from '../ui/Button.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
@@ -199,7 +199,7 @@
             wrapTrail
             testid="account-character-row"
           >
-            {#snippet lead()}<ClassCrestRing characterClass={character.class ?? ''} size={40} />{/snippet}
+            {#snippet lead()}<Crest cls={character.class ?? ''} size={40} />{/snippet}
             {#snippet titleContent()}
               <span class="inline-flex flex-wrap items-center gap-2"
                 ><span data-testid="character-name">{character.name}</span>

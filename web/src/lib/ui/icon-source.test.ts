@@ -21,8 +21,6 @@ const ALLOWED: Readonly<Record<string, string>> = {
   'components/ui/Icon.astro': "the icon component's server twin",
   'components/DiscordMark.astro': 'brand mark: the Discord logo',
   'components/ui/FrameCorners.svelte': 'art: the frame filigree',
-  'components/character/ClassCrestRing.svelte': "art: the crest's class-less silhouette",
-  'components/character/CharacterPortrait.svelte': "art: the portrait's class-less silhouette",
   'components/ui/Spark.svelte': 'chart: the sparkline',
   'components/character/ChartPlot.svelte': 'chart: the history plot',
   'components/chart/OverviewBrush.svelte': 'chart: the overview brush',

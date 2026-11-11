@@ -5,7 +5,7 @@
 <script lang="ts">
   import type { ClaimHolder } from '../../lib/guild/api';
   import { guildJoinCopy } from '../../lib/guild/copy';
-  import GuildCharacterName from './GuildCharacterName.svelte';
+  import CharacterName from '../ui/CharacterName.svelte';
 
   let { guildName, inviter = null }: { guildName: string; inviter?: ClaimHolder | null } = $props();
 </script>
@@ -15,7 +15,7 @@
     class="text-text inline-flex flex-wrap items-center gap-1.5 text-[15px]"
     data-testid="guild-join-invited"
   >
-    <GuildCharacterName holder={inviter} crestSize={24} />
+    <CharacterName name={inviter.name} cls={inviter.class} crestSize={24} />
     {guildJoinCopy.invitedBy}
   </p>
 {:else}

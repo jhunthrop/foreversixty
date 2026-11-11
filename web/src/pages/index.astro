@@ -17,7 +17,8 @@ import { buildFloor } from '../lib/home/floor';
 import { floorInputs, raidsOpenIso } from '../lib/home/floor-load';
 import { loadRaidFacts } from '../lib/home/raid-facts-load';
 import PageHeader from '../components/ui/PageHeader.svelte';
-import HomeClassPicker from '../components/home/HomeClassPicker.svelte';
+import ClassPicker from '../components/ui/ClassPicker.svelte';
+import Plate from '../components/ui/Plate.svelte';
 import HomeDeletedNotice from '../components/home/HomeDeletedNotice.svelte';
 import HomeFeed from '../components/home/HomeFeed.svelte';
 import HomeFirstRaids from '../components/home/HomeFirstRaids.svelte';
@@ -49,7 +50,9 @@ const raids = loadRaidFacts();
       <PageHeader title={homeCopy.pickClass} art="hero" />
       <HomeDeletedNotice client:idle-after-load />
       <HomeGrid>
-        <HomeClassPicker slot="lead" headless />
+        <Plate slot="lead" flush={false} label={homeCopy.pickClass} testid="home-class-picker">
+          <ClassPicker testidPrefix="home-class-" />
+        </Plate>
         <HomeFeed
           client:idle-after-load
           signedIn={false}

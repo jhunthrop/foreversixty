@@ -10,7 +10,7 @@
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
   import { characterHrefOfKey } from '../../../lib/characters';
   import { classTone } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Figure from '../../ui/Figure.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
@@ -53,7 +53,7 @@
                   open
                   density="slim"
                 >
-                  {#snippet lead()}<ClassCrestRing characterClass={row.class} size={24} />{/snippet}
+                  {#snippet lead()}<Crest cls={row.class} size={24} />{/snippet}
                   {#snippet trail()}<Figure
                       value={row.figure}
                       unit={row.unit}

@@ -78,7 +78,7 @@ func TestBareBisLinkedWithAMain(t *testing.T) {
 	e := headOf(t, m)
 	if e.Description != "Picked from your main, **Zulmara**. Show BiS, or change a pick." ||
 		e.Title != "Beast Mastery Hunter · level 60 Phase 1 raid" || e.Color != classColorOf("hunter") ||
-		!strings.HasSuffix(e.Thumbnail, "/icons/hd/crests/hunter.webp") {
+		!strings.HasSuffix(e.Thumbnail, "/v1/discord/tiles/crest/hunter.png") {
 		t.Fatalf("embed = %+v", e)
 	}
 	got := []string{defaultOf(m.Components[0][0]), defaultOf(m.Components[1][0]), defaultOf(m.Components[2][0])}

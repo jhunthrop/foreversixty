@@ -19,7 +19,7 @@
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
-  import ClassIcon from './ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -119,7 +119,7 @@
           phone={`${formatRate(player.dps)} DPS · ${player.fights} pulls`}
           testid={`night-player-${player.guid}`}
         >
-          {#snippet icon()}<ClassIcon className={cell.class} size={28} />{/snippet}
+          {#snippet icon()}<Crest cls={cell.class} size={28} />{/snippet}
           {#snippet name()}<button
               type="button"
               class="text-left font-bold hover:underline"

@@ -6,6 +6,7 @@
      (an older /v1/me) draws the identity row and the block only. Not a control: no hover or
      focus state of its own. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
   import Icon from '../ui/Icon.svelte';
   import { ICON_CHECK } from '../../lib/ui/ui-icons';
   import type { Snippet } from 'svelte';
@@ -13,8 +14,6 @@
   import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
   import { guildFacts, youRow } from '../../lib/billing/guild-card-model';
   import { guildMarkSrc } from '../../lib/guild/mark';
-  import { classColorVar } from '../../lib/report/format';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Row from '../ui/Row.svelte';
 
   const FACT_SEPARATOR = ' · ';
@@ -80,10 +79,7 @@
                    verify mark drops to its own line rather than splitting words. -->
             <li class="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span class="inline-flex items-center gap-2 whitespace-nowrap">
-                <ClassCrestRing characterClass={entry.characterClass} size={20} />
-                <span class="font-semibold" style={`color: ${classColorVar(entry.characterClass)}`}>
-                  {entry.name}
-                </span>
+                <CharacterName name={entry.name} cls={entry.characterClass} crestSize={20} />
               </span>
               <span class="inline-flex items-center gap-2 whitespace-nowrap">
                 <span class="text-muted"><span aria-hidden="true">·</span><span class="sr-only">,</span></span

@@ -7,7 +7,7 @@
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import type { ClassSlug } from '../../../lib/ui/primitives';
 
   let {
@@ -48,7 +48,7 @@
         sub={word.reasons.join(' · ')}
         open
       >
-        {#snippet lead()}<ClassCrestRing characterClass={word.cls} size={32} />{/snippet}
+        {#snippet lead()}<Crest cls={word.cls} size={32} />{/snippet}
         {#snippet trail()}
           {#if word.action === 'ping'}
             <Button tone="ghost" size="sm" onclick={onPing}>{LABEL.ping}</Button>
