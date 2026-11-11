@@ -39,3 +39,15 @@ Checked home-1440 and rankings-1440 against about.ts.
 No visual tells 1, 2, 5, 8, 12, 13 or 15 in the lane's new parts.
 
 **Verdict: PASS WITH FIXES (optional: trim the second sentence of the rankings lead; trim "written for Forever's changes" from paragraph 1)**
+
+## Round 3
+
+Text is unchanged since round 2, so I did not re-shoot. I took the changes as stated and did not check them against new screenshots.
+
+- Rankings lead trim: accepted as a follow-up. The lead predates this lane and other lanes own the rankings head.
+- "written for Forever's changes": accepted. It names a real fact (Forever's class and talent changes) that separates these guides from Classic guides, so it is not pitch.
+- Dropping 0 DPS rows in every view means the boards show only real kills. This is consistent with the Round 2 fixes. Round 1 listed the 0 DPS rows as authentic ("left honest"), which this reverses. The result is a cleaner board and I see no tell in it.
+
+No visual tells found. No open items for this lane.
+
+**Verdict: PASS**

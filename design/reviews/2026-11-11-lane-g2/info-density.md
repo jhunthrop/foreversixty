@@ -38,3 +38,13 @@ Checked home-1440-nojs, rankings-1440-nojs and rankings-saltspine-1440.
 - Leaders by spec is hidden on the live board, as intended.
 
 Verdict: PASS WITH FIXES (zero-DPS rows on the live board via the API follow-up; Executed column and the rankings rail, carried to the board lane)
+
+## Round 3
+
+Checked rankings-saltspine-1440 and rankings-saltspine-1440-nojs.
+
+- Fixed: the live board and the no-JS snapshot agree. Both read "5 ranked" over 5 rows, and no 0-DPS rows remain.
+- Follow-ups for the board lane, not this lane: the all-dash Executed column, and the empty right rail at 1440 (about 370 px).
+- Observation: the no-JS shot shows "Filters (1)" while the JS shot shows "Filters". Check that this is intended.
+
+Verdict: PASS (follow-ups for the board lane: Executed column, rankings rail)

@@ -44,3 +44,12 @@ Still wrong:
 Minor: the Saltspine 114 DPS top row vs 111/99 on the other two bosses is fine; the "Latest on Forever" feed ends with a blank band under the last row, not this lane's concern.
 
 SHIP WITH FIXES: (1) filter 0-DPS rows and fix the "10 ranked" count on /rankings/saltspine and the other boss pages, (2) hide the all-dash "Executed" column.
+
+## Round 3
+
+Seen rendered: rankings-saltspine-1440 and -390 (fresh).
+
+- Closed: the five 0-DPS rows are gone, the header reads "5 ranked" over 5 rows, percentiles are rescaled (100, 80, 60, 40, 20) and still match the row order.
+- Accepted as out of lane: the all-dash "Executed" column on the board. It is still there at 1440 and a player will still read it as broken, so keep the follow-up open for the board lane. It is not on the 390 view.
+
+SHIP (Executed column follow-up stays open on the board lane).

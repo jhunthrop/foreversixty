@@ -51,3 +51,13 @@ Judged on the round-2 shots (home 1440/390, rankings 1440 with and without JS, S
 - Lead clamp on phone: accepted as a PageHeader-wide change; log it.
 
 VERDICT: SHIP WITH FIXES (must fix 1, 2, 3: kill count equals or exceeds the rows shown, ranked count from trimmed rows, board view filters 0-DPS so no-JS and JS match)
+
+## Round 3
+
+Judged on rankings-1440, rankings-saltspine-1440 and rankings-saltspine-1440-nojs.
+
+- Must fix 2 and 3 closed. Saltspine reads "5 ranked" over 5 rows with and without JS, the rows match one to one (Psycho Giga 114 down to Buzz Killa 27), no 0-DPS rows, no height change on hydration. Percentiles re-ranked on the five rows (100, 80, 60, 40, 20) and the landing cards agree with the board for the same characters.
+- Must fix 1 closed on the explanation. "2 kills" counts kills, a 5-player kill puts up to five characters on the board, and the label says kills, not characters. The Saltspine board (5 ranked from 2 kills) is consistent with that. No change needed.
+- Still open, accepted as follow-ups (not blocking): the no-JS header lacks "Updated 11 Nov" (text appears on hydration in the meta line), and the Executed column is all dashes on every row.
+
+VERDICT: SHIP (follow-ups: server-render the Updated stamp in a fixed format; hide Executed when every value is empty)
