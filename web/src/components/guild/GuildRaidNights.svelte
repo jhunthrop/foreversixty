@@ -65,6 +65,8 @@
     ...(lootByReport === null ? [] : [{ id: 'loot', label: 'Loot' }]),
   ]);
   const DASH: StatFigure = { value: '–', muted: true };
+  /** Between missed raiders' names, as an expression so the space survives (Svelte trims a literal's edge). */
+  const COMMA = ', ';
 
   /** The night's top healer and damage dealer, healing first, for the sub line. */
   const tops = (row: GuildRaidRow) =>
@@ -100,8 +102,8 @@
 
 <!-- The raiders a night missed, each in class colour (every name on the web is CharacterName). -->
 {#snippet names(raiders: readonly MissedRaider[])}
-  {#each raiders as raider, index (raider.name)}{#if index > 0},
-    {/if}<CharacterName name={raider.name} cls={raider.class} weight="inherit" />{/each}
+  {#each raiders as raider, index (raider.name)}{#if index > 0}<span class="text-muted">{COMMA}</span
+      >{/if}<CharacterName name={raider.name} cls={raider.class} weight="inherit" />{/each}
 {/snippet}
 
 <StatTable {columns} nameHead="Night" barHead="Boss time" dense label="Raid nights" testid="guild-raids-rows">
