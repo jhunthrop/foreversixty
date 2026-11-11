@@ -143,15 +143,20 @@ abstract class CopyAppIcon @Inject constructor(
     @TaskAction
     fun copy() {
         fs.delete { delete(outputDir) }
-        // The adaptive icon (minSdk 28 always has it) and its two 1024 px layers, which the
-        // launcher scales down from the density-independent bucket.
+        // The adaptive icon and its round alias (minSdk 28 always has them) and their two 432 px
+        // layers (108 dp at xxxhdpi), which the launcher scales down from the density-independent
+        // bucket; then the legacy 48 dp PNGs per density, for any launcher that asks for a bitmap.
         fs.copy {
-            from(sourceDir) { include("ic_launcher.xml") }
+            from(sourceDir) { include("ic_launcher*.xml") }
             into(outputDir.dir("mipmap-anydpi-v26"))
         }
         fs.copy {
             from(sourceDir) { include("*.png") }
             into(outputDir.dir("mipmap-nodpi"))
+        }
+        fs.copy {
+            from(sourceDir.dir("legacy"))
+            into(outputDir)
         }
     }
 }

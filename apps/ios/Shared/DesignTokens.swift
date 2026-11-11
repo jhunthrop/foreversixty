@@ -267,6 +267,10 @@ public enum FSSize {
     public static let rowSlim: CGFloat = 44
     public static let barH: CGFloat = 56
     public static let barPhone: CGFloat = 48
+    /// How far a page's last band piece runs its art on past its foot, fading into the ground (web
+    /// ui/band.css --band-fade: 120 on the site, 64 on a phone, the apps' value). The apps' tab
+    /// roots draw it under the bars (iOS BandPage, Android FlowBandPage).
+    public static let bandFade: CGFloat = 64
     public static let segment: CGFloat = 44
     public static let icon28: CGFloat = 28
     public static let icon32: CGFloat = 32
@@ -310,6 +314,21 @@ public enum FSStroke {
 public enum FSElevation {
     /// Overlays and tooltips. Native sheets use the platform's own scrim and no extra shadow.
     public static let overlay = FSShadow(color: Color(tokenHex: 0x000000, opacity: 0.6), x: 0, y: 12, blur: 32, spread: 0)
+}
+
+/// Opacity ramps a surface masks its art with: stops of black at an alpha, positions from the top
+/// (0) to the foot (1).
+public enum FSGradient {
+    /// The band's fade into the ground over size.bandFade: an eased ramp, since a straight one
+    /// shows its start as a line (web ui/band.css mask-image, which tokens.test.mjs holds to these
+    /// stops).
+    public static let bandFade: [Gradient.Stop] = [
+        Gradient.Stop(color: Color(tokenHex: 0x000000, opacity: 1), location: 0),
+        Gradient.Stop(color: Color(tokenHex: 0x000000, opacity: 0.82), location: 0.25),
+        Gradient.Stop(color: Color(tokenHex: 0x000000, opacity: 0.5), location: 0.5),
+        Gradient.Stop(color: Color(tokenHex: 0x000000, opacity: 0.18), location: 0.75),
+        Gradient.Stop(color: Color(tokenHex: 0x000000, opacity: 0), location: 1),
+    ]
 }
 
 /// Every animation is skipped under Reduce Motion / Remove animations.

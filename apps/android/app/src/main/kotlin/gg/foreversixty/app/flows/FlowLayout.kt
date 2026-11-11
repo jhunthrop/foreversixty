@@ -1,5 +1,6 @@
 package gg.foreversixty.app.flows
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,11 +12,14 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,10 +27,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -42,6 +50,7 @@ import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.PanelFrame
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ParityRegion
+import gg.foreversixty.app.designsystem.fadingBand
 import gg.foreversixty.app.designsystem.parityContent
 import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.designsystem.parityRegion
@@ -67,9 +76,12 @@ fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
 }
 
 /**
- * A tab root in the round-5 look (spec Mobile): the painted [band] behind [topBar] (and [head] on
- * Home's hero), then [notice] and the blocks on the ground, 16 under the band, 14 at the sides and 20
- * apart. Parity regions are measured from the bottom of [topBar], as the mocks' are from the nav bar.
+ * A tab root in the round-5 look (spec Mobile): the painted [band] behind the status bar, [topBar]
+ * (and [head] on Home's hero), fading into the ground below its foot as the site's head does
+ * (`fadingBand`), then [notice] and the blocks over the fade, 16 under the band, 14 at the sides and
+ * 20 apart. Once the page scrolls, a strip of the band holds the status bar so the clock never sits
+ * on the content. Parity regions are measured from the bottom of [topBar], as the mocks' are from
+ * the nav bar.
  */
 @Composable
 fun FlowBandPage(
@@ -79,8 +91,28 @@ fun FlowBandPage(
     notice: @Composable () -> Unit = {},
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
-        Column(Modifier.fillMaxWidth().surfaceBand(kind = band)) {
+    val scroll = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scroll.value > 0 } }
+    val statusBar = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+    Box(Modifier.reachUp(statusBar).fillMaxSize()) {
+        BandPageColumn(scroll, statusBar, band, topBar, head, notice, content)
+        if (scrolled) Box(Modifier.fillMaxWidth().height(statusBar).surfaceBand(bottomLine = false, kind = band))
+    }
+}
+
+@Composable
+private fun BandPageColumn(
+    scroll: ScrollState,
+    statusBar: Dp,
+    band: BandKind,
+    topBar: @Composable () -> Unit,
+    head: @Composable () -> Unit,
+    notice: @Composable () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(Modifier.fillMaxSize().screenGround().verticalScroll(scroll)) {
+        Column(Modifier.fillMaxWidth().fadingBand(band)) {
+            Spacer(Modifier.height(statusBar))
             topBar()
             Spacer(Modifier.fillMaxWidth().height(0.dp).parityContent())
             head()
@@ -92,6 +124,21 @@ fun FlowBandPage(
             content = content,
         )
     }
+}
+
+/**
+ * Grows this element up by [reach] past its top: the tab scaffold (ForeverTabScaffold) pads its
+ * content below the status bar, and a band page draws its band back up under it, edge to edge.
+ * With no status bar inset (the screenshot tests) it changes nothing.
+ */
+private fun Modifier.reachUp(reach: Dp): Modifier = layout { measurable, constraints ->
+    val px = reach.roundToPx()
+    val grown = constraints.copy(
+        minHeight = constraints.minHeight + px,
+        maxHeight = if (constraints.hasBoundedHeight) constraints.maxHeight + px else constraints.maxHeight,
+    )
+    val placeable = measurable.measure(grown)
+    layout(placeable.width, placeable.height - px) { placeable.place(0, -px) }
 }
 
 /**

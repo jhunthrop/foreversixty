@@ -23,13 +23,18 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -112,7 +117,10 @@ fun Modifier.screenGround(): Modifier = composed {
 }
 
 /** Which painting a band shows: the blue band on every tab but Home, the camp-road hero on Home. */
-enum class BandKind { Band, Hero }
+enum class BandKind(val art: BrandArt, val ground: Color, val veil: Color) {
+    Band(BrandArt.Band, FsColor.band, FsColor.veilBand),
+    Hero(BrandArt.Hero, FsColor.night, FsColor.veilNight),
+}
 
 /**
  * The painted art behind the bars under its veil, stretched to cover and never tiled (spec round
@@ -120,22 +128,51 @@ enum class BandKind { Band, Hero }
  * the signed-out screens' full-bleed ground (without the line). iOS: `surfaceBand` / `BandArt`.
  */
 fun Modifier.surfaceBand(bottomLine: Boolean = true, kind: BandKind = BandKind.Band): Modifier = composed {
-    val art = ImageBitmap.imageResource(if (kind == BandKind.Band) BrandArt.Band.res else BrandArt.Hero.res)
-    val veil = if (kind == BandKind.Band) FsColor.veilBand else FsColor.veilNight
+    val art = ImageBitmap.imageResource(kind.art.res)
     drawBehind {
-        drawRect(if (kind == BandKind.Band) FsColor.band else FsColor.night)
-        drawCover(art)
-        drawRect(veil)
+        drawBand(art, kind, size)
         if (bottomLine) drawLine(Color.Black, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx())
     }
 }
 
-/** [image] scaled to cover this area, centred, cropped at the edges. */
-private fun DrawScope.drawCover(image: ImageBitmap) {
-    val scale = max(size.width / image.width, size.height / image.height)
+/**
+ * The head fade (web ui/band.css, the page's last band piece): the painted [kind] behind this area,
+ * run on [FsSize.bandFade] past its foot and faded there into the screen ground on the token ramp
+ * ([FsGradient.bandFade]). No rule at the foot; whatever is laid out below draws over the fade. The
+ * tab roots' scaffold (FlowBandPage) wears it. iOS: `FadingBand`.
+ */
+fun Modifier.fadingBand(kind: BandKind = BandKind.Band): Modifier = composed {
+    val art = ImageBitmap.imageResource(kind.art.res)
+    drawBehind {
+        val area = Size(size.width, size.height + FsSize.bandFade.toPx())
+        drawIntoCanvas { canvas ->
+            canvas.saveLayer(Rect(Offset.Zero, area), Paint())
+            drawBand(art, kind, area)
+            drawRect(fadeMask(foot = size.height, end = area.height), size = area, blendMode = BlendMode.DstIn)
+            canvas.restore()
+        }
+    }
+}
+
+/** Opaque down to [foot], then the token ramp to clear at [end]: the ramp's positions are its share of the fade. */
+private fun fadeMask(foot: Float, end: Float): Brush {
+    val ramp = FsGradient.bandFade.map { (position, color) -> (foot + position * (end - foot)) / end to color }
+    return Brush.verticalGradient(*(listOf(0f to Color.Black) + ramp).toTypedArray(), startY = 0f, endY = end)
+}
+
+/** The band's ground colour, its art scaled to cover [area] and its veil. */
+private fun DrawScope.drawBand(art: ImageBitmap, kind: BandKind, area: Size) {
+    drawRect(kind.ground, size = area)
+    drawCover(art, area)
+    drawRect(kind.veil, size = area)
+}
+
+/** [image] scaled to cover [area] from the top left, centred, cropped at its edges. */
+private fun DrawScope.drawCover(image: ImageBitmap, area: Size = size) {
+    val scale = max(area.width / image.width, area.height / image.height)
     val drawn = IntSize((image.width * scale).roundToInt(), (image.height * scale).roundToInt())
-    val offset = IntOffset(((size.width - drawn.width) / 2).roundToInt(), ((size.height - drawn.height) / 2).roundToInt())
-    clipRect { drawImage(image, dstOffset = offset, dstSize = drawn) }
+    val offset = IntOffset(((area.width - drawn.width) / 2).roundToInt(), ((area.height - drawn.height) / 2).roundToInt())
+    clipRect(right = area.width, bottom = area.height) { drawImage(image, dstOffset = offset, dstSize = drawn) }
 }
 
 /**

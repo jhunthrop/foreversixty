@@ -44,6 +44,7 @@ const NATIVE_GROUPS = {
   radius: 'Radius',
   stroke: 'Stroke',
   elevation: 'Elevation',
+  gradient: 'Gradient',
   motion: 'Motion',
 };
 const WEIGHT_SUFFIX = { 400: '', 500: 'Medium', 600: 'Semibold', 700: 'Bold' };
@@ -343,6 +344,16 @@ const alphaHex = (alpha) =>
     .toUpperCase()
     .padStart(2, '0');
 
+/** A gradient token's stops: colour, alpha and position (0 at the start, 1 at the end), in order. */
+export function gradientStops(t) {
+  return t.value.map(({ color, position }) => {
+    if (typeof position !== 'number' || position < 0 || position > 1) {
+      throw new Error(`tokens.json: ${t.path.join('.')} has a stop outside 0 to 1: ${position}`);
+    }
+    return { ...parseColor(color), position };
+  });
+}
+
 /** Tokens of one top group the platform reads. */
 const nativeGroup = (model, top, platform) =>
   model.tokens.filter((t) => t.top === top && isNative(t, platform));
@@ -428,6 +439,16 @@ export function renderSwift(model) {
       `    public static let ${t.name} = FSShadow(color: Color(tokenHex: 0x${hex6(rgb)}, opacity: ${alpha}), x: ${amount(v.offsetX, 'px')}, y: ${amount(v.offsetY, 'px')}, blur: ${amount(v.blur, 'px')}, spread: ${amount(v.spread ?? '0px', 'px')})`,
     );
   });
+  const gradients = nativeGroup(model, 'gradient', P).flatMap((t) =>
+    swiftDocumented(t, [
+      `    public static let ${t.name}: [Gradient.Stop] = [`,
+      ...gradientStops(t).map(
+        ({ rgb, alpha, position }) =>
+          `        Gradient.Stop(color: Color(tokenHex: 0x${hex6(rgb)}, opacity: ${fmt(alpha)}), location: ${fmt(position)}),`,
+      ),
+      '    ]',
+    ].join('\n')),
+  );
   const motion = nativeGroup(model, 'motion', P).flatMap((t) =>
     t.type === 'cubicBezier'
       ? swiftDocumented(
@@ -509,6 +530,7 @@ export function renderSwift(model) {
     ...swiftEnum('Radius', nativeGroup(model, 'radius', P).flatMap(cg)),
     ...swiftEnum('Stroke', nativeGroup(model, 'stroke', P).flatMap(cg)),
     ...swiftEnum('Elevation', shadows.flat()),
+    ...swiftEnum('Gradient', gradients, model.groups.get('gradient')),
     ...swiftEnum('Motion', motion, model.groups.get('motion')),
   ]
     .join('\n')
@@ -563,6 +585,15 @@ export function renderKotlin(model) {
       `    val ${t.name} = FsShadow(Color(0x${alphaHex(alpha)}${hex6(rgb)}), ${amount(v.offsetX, 'px')}.dp, ${amount(v.offsetY, 'px')}.dp, ${amount(v.blur, 'px')}.dp, ${amount(v.spread ?? '0px', 'px')}.dp)`,
     );
   });
+  const gradients = nativeGroup(model, 'gradient', P).flatMap((t) =>
+    kotlinDocumented(t, [
+      `    val ${t.name}: List<Pair<Float, Color>> = listOf(`,
+      ...gradientStops(t).map(
+        ({ rgb, alpha, position }) => `        ${kFloat(position)} to Color(0x${alphaHex(alpha)}${hex6(rgb)}),`,
+      ),
+      '    )',
+    ].join('\n')),
+  );
   const motion = nativeGroup(model, 'motion', P).flatMap((t) =>
     t.type === 'cubicBezier'
       ? kotlinDocumented(t, `    val ${t.name} = CubicBezierEasing(${t.value.map(kFloat).join(', ')})`)
@@ -610,6 +641,7 @@ export function renderKotlin(model) {
     ...kotlinObject('Shape', shapes),
     ...kotlinObject('Stroke', nativeGroup(model, 'stroke', P).flatMap(dp)),
     ...kotlinObject('Elevation', shadows),
+    ...kotlinObject('Gradient', gradients, model.groups.get('gradient')),
     ...kotlinObject('Motion', motion, model.groups.get('motion')),
   ]
     .join('\n')
