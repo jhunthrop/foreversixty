@@ -30,7 +30,7 @@ with the app unchanged, as the site is. That is the expected result, not a gap.
 | Calendar | leveler-07 | leveler-07 | The planned raids pushed (iOS) or the site (Android, as before this lane) |
 | Pull to refresh | leveler-08 | leveler-08 | The tab reloads the raids, the guild home and the badge |
 | Officer: the tab | officer-01, -06 | officer-01, -06 | Needs you, then Officer: Plan a raid (the next two planned raids), Applications (`1 waiting`), Setup (`4 of 8 done`, the steps still to do) |
-| Officer: Ping on Discord | officer-07, -08 | officer-07, -08 | The not-answered list; Mention posts in Discord and the result line reads `Mentioned 2 healers in Discord.` (a repeat too soon: `They were mentioned a moment ago. Try again later.`) |
+| Officer: Ping on Discord | officer-07 | officer-07 | The not-answered list opens on the Guild tab. Mention posts in Discord and the screen keeps a result line: `Mentioned 2 healers in Discord.`, with `1 was mentioned in the last 6 hours and was left out.` when the server skipped someone, `Nobody to mention: none of them has linked Discord.` when nothing posted, and a refusal line for a repeat too soon. The fixture raid carries no `not_signed_raiders`, so the device list is empty and Mention cannot be tapped there; the result lines are pinned by RaidFlowTests (iOS, mentionStatus) and NotAnsweredTest (Android, MentionWords) |
 | Officer: Applications | officer-03 | officer-03 | The newest applicant's sheet, one tap |
 | Officer: Setup | officer-04 | officer-04 | The site's setup checklist (`{guild page}/setup`) |
 | Officer: Plan a raid | officer-05 | officer-05 | The guild page's Raids tab on the site (`#raids`), where Plan a raid lives |

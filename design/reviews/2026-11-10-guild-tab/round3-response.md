@@ -10,7 +10,7 @@ info-density DENSE and brand-consistency CONSISTENT stand: round 3 adds rows ins
 |---|---|
 | All four: the "full-page" renders were one screen tall | `parity/ios-full-*.png` and `parity/android-full-*.png` are now whole pages (ImageRenderer at 2x on iOS, a 4600 dp Robolectric window on Android), every section from the raid head to Pages |
 | ux must 1: the leveler render showed targets (`5 of 8 · 3 short`) under 60 | Under 60 Who is coming shows the counts alone (`Healers 5`), both apps (`countOnly`), with tests; the leveler mock follows. The device walk had no targets only because its fixture raid has none |
-| guild-officer condition 2: Ping on Discord after-state | Both walks now tap Ping on Discord (`officer-07-ping-list`) and Mention (`officer-08-mentioned`): the result line `Mentioned 2 healers in Discord.`, and a repeat too soon reads `They were mentioned a moment ago. Try again later.` |
+| guild-officer condition 2: Ping on Discord after-state | The tap opens the not-answered list (`officer-07-ping-list`, both walks); after Mention the screen keeps a result line (`Mentioned 2 healers in Discord.`, the left-out count, `Nobody to mention...`, or the refusal for a repeat too soon). The fixture raid has no `not_signed_raiders`, so the device list is empty; the result lines are pinned by tests on both apps (iOS RaidFlowTests, Android NotAnsweredTest) |
 | ai-slop 4: `Gear gap 41 DPS` under a `Gear gaps` label | The row reads `41 DPS` |
 | wow-player 7: copy and inventory disagreed | The inventory quotes the shipped `Assigning is on the site.` |
 

@@ -95,6 +95,15 @@ class NotAnsweredTest {
         val HOLD = 4.seconds
     }
 
+    @Test
+    fun `after Ping on Discord the result line says who was mentioned, and who was left out as mentioned lately`() {
+        val words = MentionWords(resources())
+        val result = gg.foreversixty.app.model.RaidPingResult(posted = true, mentioned = 2, noDiscord = 0, recentlyMentioned = 1)
+        assertEquals("Mentioned 2 healers in Discord. 1 was mentioned in the last 6 hours and was left out.", words.line(result, "2 healers"))
+        assertEquals("Mentioned 2 in Discord.", words.line(result.copy(recentlyMentioned = 0), null))
+        assertEquals("Nobody to mention: none of them has linked Discord.", words.line(result.copy(posted = false), null))
+    }
+
     /** Not answered sends no ping in these tests. */
     private object NoFlows : RaidFlowService {
         override suspend fun applications(guild: Long) = error("unused")
