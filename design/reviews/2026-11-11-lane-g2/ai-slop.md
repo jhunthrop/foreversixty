@@ -23,3 +23,19 @@
 
 ## Verdict
 FAIL (tell 13: the "Leaders by spec" empty state beside populated rows). Fixing item 1 gives PASS WITH FIXES for items 2 to 7.
+
+## Round 2
+
+Checked home-1440 and rankings-1440 against about.ts.
+
+- Tell 13 is gone. The empty "Leaders by spec" panel no longer renders, and the rankings page shows only populated encounter tables. "N kills" reads right.
+- Provenance is now "Client build 1.60.1.70790, read 11 Nov. BiS ranked 10 Nov." This is quiet and carries no qualifier (tell 22 closed).
+- Paragraph 1 now says "each piece with its quest, dungeon or vendor". The pitch phrasing is gone (tell 21 closed for that line). "a guide written for Forever's changes" is still mildly pitch-flavoured but acceptable.
+- Paragraph 2 has 6 gold links instead of 13 (tell 19/11 closed). Tanks / Healers / Damage are mixed case and small (tell 6 closed).
+- The Executed column is no longer visible on the rankings page.
+- Tell 7 (lead under the title) is kept by the owner for SEO. The rankings lead is still two sentences and the second one, "The companion uploads your combat log as you play, so your kills join the board.", tells a veteran what they already know. Optional trim, not blocking.
+- Minor, not blocking: the "Latest on Forever" card has dead space under its seven rows. That is pre-existing layout, not this lane.
+
+No visual tells 1, 2, 5, 8, 12, 13 or 15 in the lane's new parts.
+
+**Verdict: PASS WITH FIXES (optional: trim the second sentence of the rankings lead; trim "written for Forever's changes" from paragraph 1)**

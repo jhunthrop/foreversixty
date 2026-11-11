@@ -61,12 +61,25 @@ function boardQuery(slug, metric, phase) {
 /** The first rows, without a character who did nothing on the board (0 DPS, a healer on the DPS
  *  board): a 0 with a percentile beside it reads as a broken row. */
 function trim(page) {
-  return { ...page, rows: page.rows.filter((row) => row.value > 0).slice(0, SNAPSHOT_ROWS) };
+  const active = page.rows.filter((row) => row.value > 0);
+  return {
+    ...page,
+    rows: active.slice(0, SNAPSHOT_ROWS),
+    total: page.total - (page.rows.length - active.length),
+  };
 }
 
 /**
  * Reads the snapshot from the API. A board that fails is left out (its page falls back to the
  * shell); the encounter list failing is the caller's to report.
+ * @param {{
+ *   apiBase: string,
+ *   now: Date,
+ *   phases: { name: string, start: string }[],
+ *   fetchImpl?: (url: string, init?: RequestInit) => Promise<Response>,
+ *   warn?: (line: string) => void,
+ * }} options
+ * @returns {Promise<{ read_at: string, phase: string, encounters: any[], boards: Record<string, any>, hps: any }>}
  */
 export async function readSnapshot({ apiBase, now, phases, fetchImpl = fetch, warn = console.warn }) {
   const phase = phaseAt(phases, now);

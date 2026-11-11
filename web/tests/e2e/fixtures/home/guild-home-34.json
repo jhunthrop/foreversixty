@@ -1,40 +1,44 @@
 {
-  "guild": {
-    "id": 2,
-    "name": "Olympus XXVII",
-    "region": "us",
-    "ruleset": "normal",
-    "slug": "olympus-xxvii",
-    "faction": "alliance"
+ "guild": {
+  "id": 2,
+  "name": "Olympus XXVII",
+  "region": "us",
+  "ruleset": "normal",
+  "slug": "olympus-xxvii",
+  "faction": "alliance"
+ },
+ "claim": {
+  "state": "claimed"
+ },
+ "reports": [],
+ "roster": [],
+ "pending": [],
+ "summary": {
+  "raiders": 14,
+  "waiting_for_approval": 0,
+  "below_rating_floor": 0,
+  "named_encounters_down": 0,
+  "pulls_this_tier": 0,
+  "tier": {
+   "name": "Tier 1",
+   "raids": [
+    "Barrow Deeps",
+    "Hyjal Summit",
+    "Onyxia's Lair"
+   ],
+   "named_encounters": 9,
+   "down": 0,
+   "pulls_total": 0
   },
-  "claim": {
-    "state": "claimed"
-  },
-  "reports": [],
-  "roster": [],
-  "pending": [],
-  "summary": {
-    "raiders": 14,
-    "waiting_for_approval": 0,
-    "below_rating_floor": 0,
-    "named_encounters_down": 0,
-    "pulls_this_tier": 0,
-    "tier": {
-      "name": "Tier 1",
-      "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"],
-      "named_encounters": 9,
-      "down": 0,
-      "pulls_total": 0
-    },
-    "updated_at": "2026-11-06T08:00:00Z"
-  },
-  "standing": {
-    "spec": "Beast Mastery",
-    "class": "Hunter",
-    "same_spec_count": 3,
-    "rank_by_item_level": 2,
-    "item_level": 31,
-    "needs_before_next_raid": [],
-    "needs_raid": null
-  }
+  "updated_at": "2026-11-06T08:00:00Z"
+ },
+ "standing": {
+  "spec": "Beast Mastery",
+  "class": "Hunter",
+  "same_spec_count": 3,
+  "rank_by_item_level": 2,
+  "item_level": 31,
+  "needs_before_next_raid": [],
+  "needs_raid": null
+ }
 }

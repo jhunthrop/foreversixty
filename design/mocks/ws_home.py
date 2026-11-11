@@ -81,6 +81,7 @@ HOME_CSS = f'''
 .lbox .row .sub{{white-space:nowrap}}
 .strail{{display:flex;align-items:center;gap:14px}}.strail .meter{{width:clamp(56px,36cqi,360px)}}.strail .sfig{{display:flex;justify-content:flex-end;min-width:104px}}
 @container (max-width:519px){{.strail .meter{{display:none}}}}
+.hab{{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--gap);align-items:start}}@media(min-width:1100px){{.hab{{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch}}.hab>section{{display:flex;flex-direction:column}}.hab>section>.sbox{{flex:1}}}}.hab-prose{{display:flex;flex-direction:column;gap:12px;max-width:var(--measure-reading,68ch);font-size:15px;line-height:24px}}.hab-prose p{{margin:0}}.hab-prose .hab-build{{font-size:13px;line-height:20px;color:var(--muted)}}.hab-label{{font:700 12px/16px var(--font-body);color:var(--muted)}}.hab-roles{{display:flex;flex-direction:column;gap:14px;margin:0;font-size:15px;line-height:24px}}.hab-roles dd{{margin:4px 0 0}}.hab-specs{{display:flex;flex-wrap:wrap;gap:2px 18px;margin:0;padding:0;list-style:none}}.hab-specs li{{white-space:nowrap}}
 .fpair{{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:var(--gap)}}@media(min-width:1100px){{.fpair{{grid-template-columns:minmax(0,1fr) 400px}}}}@media(min-width:1280px){{.fpair{{grid-template-columns:minmax(0,1fr) 440px}}}}@media(min-width:1800px){{.fpair{{grid-template-columns:minmax(0,1fr) 480px}}}}
 .sp h3{{margin:0;padding:8px 0 2px;font:600 13px/18px var(--font-body);color:var(--muted)}}
 .err{{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}}
@@ -341,10 +342,68 @@ def how_to_start() -> str:
     ], open_=True), plain=True)
 
 
+SNAPSHOT = json.loads((ROOT / 'web/src/fixtures/rankings/snapshot.json').read_text())
+FIRST_RAIDS = ['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"]
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+
+def day_month(iso_text: str) -> str:
+    y, m, d = iso_text[:10].split('-')
+    return f'{int(d)} {MONTHS[int(m) - 1]}'
+
+
+def and_list(items: list[str]) -> str:
+    return items[0] if len(items) == 1 else ', '.join(items[:-1]) + ' and ' + items[-1]
+
+
+def generated_specs() -> list[dict]:
+    """web/src/lib/sim/specs.ts's rows, in its order, with the full names the page reads."""
+    text = (ROOT / 'web/src/lib/sim/specs.ts').read_text()
+    rows = re.findall(r"spec: '([^']+)',\s*class_slug: '([^']+)',\s*spec_slug: '([^']+)',[\s\S]*?role: '([^']+)',[\s\S]*?full_name: '([^']+)'", text)
+    return [dict(spec=a, class_slug=b, spec_slug=c, role=d, full_name=e) for a, b, c, d, e in rows]
+
+
+def about_foot() -> str:
+    """web components/home/HomeAbout (lib/home/about.ts): What's here (three paragraphs and the build line) and BiS by spec
+    by role, two equal halves from 1100. Read from the same data the build reads."""
+    a = lambda label: f'<a class="link" href="#">{label}</a>'
+    bis_dir = ROOT / 'data/builds' / BUILD / 'bis'
+    files = {p.stem: json.loads(p.read_text()) for p in bis_dir.glob('*.json')}
+    bands = sorted({b['band'] for f in files.values() for b in f['bands']})
+    ranked = max(f['generated_at'] for f in files.values())
+    read = json.loads((ROOT / 'data/builds' / BUILD / 'manifest.json').read_text())['fetched_at']
+    opens = raids_open()
+    future = opens is not None and iso(opens) > datetime.now(timezone.utc)
+    raids = and_list(FIRST_RAIDS)
+    bosses = SNAPSHOT['encounters'][:4]
+    kind = 'dungeon bosses' if all((b.get('size') or 99) < 10 for b in bosses) else 'bosses'
+    p1 = (f'Every spec has {a("BiS")} for each ten-level band from {bands[0]} to {bands[-1]}, each piece with its quest, dungeon or '
+          f'vendor, a {a("guide")} written for Forever\'s changes, and talent builds you can open in the {a("planner")}.')
+    p2 = (f'The {a("simulator")} runs your character in the browser on the engine the BiS lists are ranked with: '
+          f'{and_list([a("Top Gear"), a("stat weights"), a("Talent compare"), a("the Droptimizer")])}. The same engine orders every '
+          f'spec on the {a("tier list")} at 60, for damage, healing and tanking. The {a("addon and the companion")} bring your character '
+          f'over with its gear and talents, and upload your combat logs as you play, so your boss kills reach the {a("rankings")} on their own.')
+    p3 = (f'The first raid tier opens on {day_month(opens)} with {raids}.' if future else f'The first raid tier is open: {raids}.')
+    if bosses:
+        p3 += f' The most logged {kind} on the rankings: {and_list([a(b["name"]) for b in bosses])}.'
+    build = f'Client build {BUILD}, read {day_month(read)}. BiS ranked {day_month(ranked)}.'
+    prose = (f'<div class="hab-prose"><p>{p1}</p><p>{p2}</p><p>{p3}</p><p class="hab-build">{build}</p></div>')
+    specs = generated_specs()
+    groups = []
+    for role, label in (('tank', 'Tanks'), ('healer', 'Healers'), ('dps', 'Damage')):
+        items = ''.join(f'<li><a class="link" href="#" style="color:{CLASS_COLOR[s["class_slug"]]}">{s["full_name"]}</a></li>'
+                        for s in specs if s['role'] == role and s['spec'] in files)
+        if items:
+            groups.append(f'<div><dt class="hab-label">{label}</dt><dd><ul class="hab-specs">{items}</ul></dd></div>')
+    roles = f'<dl class="hab-roles">{"".join(groups)}</dl>'
+    return (f'<div class="hab">{sec("What's here", prose)}'
+            f'{sec("BiS by spec", roles, meta=f"Levels {bands[0]} to {bands[-1]}")}</div>')
+
+
 def state_out() -> str:
     head = f'<div class="home-out">{PageHeader("Pick your class")}</div>'
     rows = home_rows(J('feed-out.json')['rows'], False)
-    return head + grid(class_picker(headless=True), feed_section(rows), how_to_start() + first_raids_plaque())
+    return head + grid(class_picker(headless=True), feed_section(rows), how_to_start() + first_raids_plaque(), about_foot())
 
 
 # ------------------------------------------------------------------------------------------------ signed in

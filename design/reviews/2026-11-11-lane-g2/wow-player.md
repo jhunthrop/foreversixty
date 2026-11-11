@@ -26,3 +26,21 @@ None found.
 - Rankings intro ("ranked by DPS and HPS for each spec, class, ruleset and guild") is accurate and short.
 
 SHIP WITH FIXES: (1) stop the dungeon-boss sentence reading as raid bosses, (2) "BiS" not "leveling BiS" in link text and heading, (3) confirm the tier-list "at 60" claim; zero-DPS rows on /rankings/saltspine are a separate data fix.
+
+## Round 2
+
+Seen rendered: home-1440, rankings-1440, rankings-saltspine-1440.
+
+Round-1 items closed:
+- Home now reads "The most logged dungeon bosses on the rankings: Relic Guardian, Saltspine and Shadetooth." Correct, and the rankings landing labels each as "Excavation Site: Wetlands · 5-player".
+- Link and heading say "BiS" and "BiS by spec"; "Levels 20 to 60" beside it is right.
+- "tier list at 60" matches the 'Tier list at 60' title. Character import claim accepted per your note.
+- Landing shows "2 kills" per boss, no 0-DPS rows in the three-row snapshots. Good.
+
+Still wrong:
+1. /rankings/saltspine still lists five rows with "0" DPS and percentiles 50, 40, 30, 20, 10 (Arkadia Starwoven, Glaucus Strom, Spork Xo, Turbo Turkey, Woodz Holditdowntw, all 0:39). A 0-DPS Mage on a 50th percentile is a screenshot for guild chat, and the header says "10 ranked". Apply the same zero-DPS filter to the boss page (and the count).
+2. The "Executed" column on that page is "—" on every row. An empty column on every row reads as broken; hide it when no row has a value.
+
+Minor: the Saltspine 114 DPS top row vs 111/99 on the other two bosses is fine; the "Latest on Forever" feed ends with a blank band under the last row, not this lane's concern.
+
+SHIP WITH FIXES: (1) filter 0-DPS rows and fix the "10 ranked" count on /rankings/saltspine and the other boss pages, (2) hide the all-dash "Executed" column.

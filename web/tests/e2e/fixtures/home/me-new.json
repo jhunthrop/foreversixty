@@ -1,13 +1,13 @@
 {
-  "user": {
-    "id": 7,
-    "battletag": "Hunthrop#1894",
-    "email": null,
-    "role": "user",
-    "anonymize": false
-  },
-  "characters": [],
-  "guilds": [],
-  "bnet_imported_at": "2026-11-06T09:00:00Z",
-  "main_character_key": null
+ "user": {
+  "id": 7,
+  "battletag": "Hunthrop#1894",
+  "email": null,
+  "role": "user",
+  "anonymize": false
+ },
+ "characters": [],
+ "guilds": [],
+ "bnet_imported_at": "2026-11-06T09:00:00Z",
+ "main_character_key": null
 }

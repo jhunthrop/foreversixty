@@ -26,3 +26,28 @@ Judged on the shots in shots/ plus RankingsLanding.svelte, Rankings.svelte, Home
 - PageHeader site-wide: planner and sim-weights both show the lead directly under the title and the meta line under it.
 
 VERDICT: SHIP WITH FIXES (must fix 1, 2, 3 before merge; 4 to 10 are shoulds)
+
+## Round 2
+
+Judged on the round-2 shots (home 1440/390, rankings 1440 with and without JS, Saltspine 1440 with and without JS).
+
+### Must fix
+
+1. **"2 kills" still sits above three characters** (rankings landing, all three encounters, 1440, JS on and off). The label changed, the contradiction did not. Three rows are three ranked kills at minimum, and a reader counts rows. Fix the figure (count of ranked rows on that encounter, not fewer than shown, from the same trimmed data as the rows) or show only as many rows as the count. Verify against the snapshot.
+2. **Saltspine no-JS says "10 ranked" over 5 rows** (rankings-saltspine-1440-nojs: five rows, Buzz Killa last at 27 DPS; heading "10 ranked"). The trim removed the rows but not the count. Compute the count from the trimmed rows.
+3. **No-JS and JS Saltspine boards differ.** The JS shot still shows rows 6 to 10 at 0 DPS with percentiles 50 to 10; the no-JS shot ends at row 5. The table grows by 5 rows on hydration (layout shift) and a player still sees the 0 DPS rows I flagged in round 1. Deferring the live-board fix to the API is acceptable for the API. It is not acceptable that the view and the snapshot disagree: filter 0-DPS rows in the board view too (one line, same rule as the snapshot) so both render 5 rows.
+
+### Fixed since round 1 (verified)
+
+- Leaders by spec panel is gone from the landing (1440).
+- Home foot: two panels end together at y ~1441 (1440); build line is muted 13 px and reads as provenance on 1440 and 390.
+- BiS by spec chips on 390 have visible row spacing and wrap cleanly.
+- Landing label reads "N kills" with the chevron (the label is right, the number is item 1).
+
+### Accepted as not done
+
+- Executed column all dashes, the empty right rail, phone percentile/date line: pre-existing board layout, out of lane. Log them as follow-ups; the all-dash column is the first one to take (hide when every value is empty).
+- "Updated" stamp: the no-JS rankings header is still missing it (JS shot shows "Updated 11 Nov"), so a text change lands in the meta line on hydration. Your locale reason holds for a formatted date; render the ISO date server-side in a fixed format ("11 Nov", en-GB day-month) and let the client keep the same format. Should fix, not blocking.
+- Lead clamp on phone: accepted as a PageHeader-wide change; log it.
+
+VERDICT: SHIP WITH FIXES (must fix 1, 2, 3: kill count equals or exceeds the rows shown, ranked count from trimmed rows, board view filters 0-DPS so no-JS and JS match)

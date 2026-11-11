@@ -6,6 +6,7 @@
 // own links -- clears 44px, with the bar's stack open so its fields are measured too.
 import { apiUnreachable, expect, test } from './support/test';
 import { barToggle, openFilters } from './support/rankings-filters';
+import { gotoHydrated } from './support/hydrated';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/rankings/encounters*'));
@@ -120,8 +121,9 @@ interface Sweep {
 
 /** Opens the board for `query` with the bar's stack open and measures every visible control. */
 async function sweep(page: import('@playwright/test').Page, query: string): Promise<Sweep> {
-  await page.goto(`/rankings/warden-kelthas${query}`);
-  await expect(page.getByTestId('rankings-filters')).toBeVisible();
+  // The snapshot draws the board's rows in the server render, so a visible row no longer means the
+  // island is live: wait for it to hydrate before the bar's toggle is pressed.
+  await gotoHydrated(page, `/rankings/warden-kelthas${query}`, 'rankings-filters');
   await expect(page.getByTestId('ranking-1').or(page.getByTestId('guild-rows'))).toBeVisible();
   // The bar collapses to a summary line on a phone: open its stack, so its controls are measured too.
   await openFilters(page);

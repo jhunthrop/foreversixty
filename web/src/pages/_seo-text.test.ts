@@ -5,6 +5,7 @@
 // as the build does and fails when the words a crawler reads in <main> drop under the floor, so a
 // later change cannot quietly take them away again.
 import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { createPageContainer } from '../test-support/page-container';
 import { staticWords } from '../test-support/static-text';
@@ -49,7 +50,9 @@ describe('server-rendered text floors', () => {
   });
 
   it(`an encounter's rankings page reads at least ${TEXT_FLOORS.encounter} words`, async () => {
-    const html = await container.renderToString(RankingsEncounter, { params: { slug: 'onyxia' } });
+    const html = await container.renderToString(RankingsEncounter as unknown as AstroComponentFactory, {
+      params: { slug: 'onyxia' },
+    });
     expect(staticWords(html).length).toBeGreaterThanOrEqual(TEXT_FLOORS.encounter);
   });
 });

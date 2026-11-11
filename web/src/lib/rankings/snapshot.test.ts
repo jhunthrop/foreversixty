@@ -98,7 +98,7 @@ describe('scripts/sync-rankings.mjs', () => {
           }
         : url.includes('encounter=broken')
           ? null
-          : { rows, total: 40, page: 1, per_page: 100, updated_at: 'x' };
+          : { rows, total: 41, page: 1, per_page: 100, updated_at: 'x' };
       return new Response(JSON.stringify({ ok: data !== null, data }), { status: data === null ? 500 : 200 });
     };
     const warnings: string[] = [];
@@ -113,6 +113,7 @@ describe('scripts/sync-rankings.mjs', () => {
     expect(Object.keys(read.boards)).toEqual(['onyxia']);
     expect(read.boards.onyxia.rows).toHaveLength(SNAPSHOT_ROWS);
     expect(read.boards.onyxia.rows.every((row: { value: number }) => row.value > 0)).toBe(true);
+    expect(read.boards.onyxia.total).toBe(40);
     expect(read.hps?.slug).toBe('onyxia');
     expect(warnings).toEqual([expect.stringContaining('broken left out')]);
     expect(asked).toContain(

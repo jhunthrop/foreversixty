@@ -27,3 +27,14 @@ Reviewed home and /rankings at 1440 and 390, plus the no-JS shots. Ignored the f
 
 ## Verdict
 PASS WITH FIXES (1 rail or reflow for the empty right side of /rankings, 2 hide the empty Leaders card, 3 "ranked" label, 4 drop the all-dash Executed column, 5 verify zero-DPS rows, 6 balance the home foot columns)
+
+## Round 2
+
+Checked home-1440-nojs, rankings-1440-nojs and rankings-saltspine-1440.
+
+- Fixed: the home foot is two equal halves ending together at the same y, with no dead gap. "N kills" now labels the encounter rows. The no-JS snapshot shows 3 nonzero rows per boss, so the zero-DPS rows are gone from the crawler text. The raid sentence now carries the "most logged dungeon bosses" links, which is new information.
+- Not in this lane, accepted: the rankings right-rail space (about 370 px empty at 1440), the all-dash Executed column, and the feed panel height. The skeleton rows under Latest leave the panel mostly empty, which belongs to the feed.
+- Still open, API follow-up: the live board (rankings-saltspine-1440) still shows ranks 6 to 10 at 0 DPS with an empty bar, and that is visible to players. It must not ship as the final board.
+- Leaders by spec is hidden on the live board, as intended.
+
+Verdict: PASS WITH FIXES (zero-DPS rows on the live board via the API follow-up; Executed column and the rankings rail, carried to the board lane)

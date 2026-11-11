@@ -10,6 +10,7 @@
   import { classCrestSrc } from '../../lib/class-crest';
   import { untrack } from 'svelte';
   import { fetchRankings, type RankedEncounter, type RankingsPage } from '../../lib/rankings/api';
+  import { withoutIdleRows } from '../../lib/rankings/row-view';
   import { encounterPickerCopy, rankingsCopy } from '../../lib/rankings/copy';
   import {
     LANDING_ENCOUNTERS,
@@ -32,6 +33,7 @@
   let {
     encounters,
     seed = null,
+    live = true,
     phase,
     hrefFor,
     specHref,
@@ -41,6 +43,8 @@
     encounters: readonly RankedEncounter[];
     /** The build's rankings snapshot for the landing: its boards are drawn until the live ones answer. */
     seed?: RankingsSeed | null;
+    /** False until the board knows who is looking: the snapshot's rows stand, nothing is read yet. */
+    live?: boolean;
     /** The board's phase filter ('' for every phase). */
     phase: string;
     hrefFor: (slug: string) => string;
@@ -74,11 +78,12 @@
   function read(slug: string, metric: 'dps' | 'hps'): Promise<RankingsPage> {
     return fetchRankings({ encounter: slug, metric, phase, distinct: 'character' }).then((page) => {
       onupdated?.(page.updated_at);
-      return page;
+      return withoutIdleRows(page, metric);
     });
   }
 
   $effect(() => {
+    if (!live) return;
     const slugs = shown.map((encounter) => encounter.slug);
     const leader = leaderAt?.slug ?? null;
     let stale = false;

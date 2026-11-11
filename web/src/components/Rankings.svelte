@@ -43,7 +43,7 @@
     specOptions,
   } from '../lib/rankings/options';
   import { rankRowView } from '../lib/rankings/rank-row-view';
-  import { RANK_LEGEND, ownRowPlacement, showRowCrests } from '../lib/rankings/row-view';
+  import { RANK_LEGEND, ownRowPlacement, showRowCrests, withoutIdleRows } from '../lib/rankings/row-view';
   import { LINK, type ControlGroup } from '../lib/ui/primitives';
   import type { RankHead } from '../lib/ui/rank-list';
   import { PENDING_ANSWER, ownRankSpec } from '../lib/rankings/own-rank';
@@ -259,7 +259,7 @@
             ...(own === null ? {} : { character: own }),
           }).then((result) => {
             if (ticket !== loadTicket) return;
-            page = result;
+            page = withoutIdleRows(result, requested.metric);
             updatedAt = result.updated_at;
             guildRows = [];
             status = 'ready';
@@ -525,6 +525,7 @@
         <RankingsLanding
           {encounters}
           {seed}
+          live={aimed}
           phase={state.phase}
           hrefFor={encounterHref}
           specHref={(slug, cls, spec) =>
@@ -532,9 +533,11 @@
           onupdated={stampUpdated}
         />
       </div>
-      {#if !aimed}<div class="contents" data-signed-in-only>{@render pickerSkeleton()}</div>{/if}
+      {#if !aimed}<div class="contents" data-signed-in-only>
+          {@render pickerSkeleton('encounter-picker-pending')}
+        </div>{/if}
     {:else if isIndex}
-      {#if !aimed}{@render pickerSkeleton()}{:else}
+      {#if !aimed}{@render pickerSkeleton('encounter-picker')}{:else}
         <Section title={encounterPickerCopy.heading} panel frame="lead" flush testid="encounter-picker">
           <RankingsEmpty
             line={encounterPickerCopy.noneYet}
@@ -753,8 +756,8 @@
   </div>
 {/snippet}
 
-{#snippet pickerSkeleton()}
-  <Section title={encounterPickerCopy.heading} panel frame="lead" flush testid="encounter-picker">
+{#snippet pickerSkeleton(testid: string)}
+  <Section title={encounterPickerCopy.heading} panel frame="lead" flush {testid}>
     <div class="px-5 pb-4"><Skeleton lines={3} rowHeight="h-11" testid="rankings-skeleton" /></div>
   </Section>
 {/snippet}
