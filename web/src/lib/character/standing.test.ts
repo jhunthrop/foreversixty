@@ -9,8 +9,11 @@ describe('ownActivitySegments', () => {
 
   it('drops the leading own name and capitalises the verb', () => {
     expect(
-      ownActivitySegments([name, { text: ' uploaded Molten Core, 10 bosses in 92 min' }], 'Elyra Duskvale'),
-    ).toEqual([{ text: 'Uploaded Molten Core, 10 bosses in 92 min' }]);
+      ownActivitySegments(
+        [name, { text: ' uploaded Molten Core, 10 bosses in 1 h 32 min' }],
+        'Elyra Duskvale',
+      ),
+    ).toEqual([{ text: 'Uploaded Molten Core, 10 bosses in 1 h 32 min' }]);
   });
 
   it('drops a name mid-sentence without capitalising', () => {

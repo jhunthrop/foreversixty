@@ -11,14 +11,13 @@ describe('countdown clock', () => {
     expect(parts).toEqual([
       { value: '32', unit: 'days' },
       { value: '6', unit: 'hours' },
-      { value: '0', unit: 'min' },
     ]);
-    expect(clockLabel(parts)).toBe('32 days, 6 hours, 0 min');
+    expect(clockLabel(parts)).toBe('32 days, 6 hours');
   });
 
   it('drops the units that are zero ahead of the first, and never shows seconds', () => {
     expect(clockParts(AT, new Date('2026-12-08T23:58:30Z'))).toEqual([{ value: '2', unit: 'min' }]);
-    expect(countdownText(AT, new Date('2026-12-08T21:00:00Z'))).toBe('3 hours, 0 min');
+    expect(countdownText(AT, new Date('2026-12-08T21:00:00Z'))).toBe('3 hours');
   });
 
   it('is gone once the instant has passed', () => {

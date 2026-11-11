@@ -309,7 +309,7 @@ export const compCopy = {
     specs === '' ? `${className} ${n}` : `${className} ${n}: ${specs}`,
   /** `Holy · Healer`. */
   specOption: (spec: string, role: string): string => `${spec}${SEP}${role}`,
-  /** `9:00 pm EST your time`. */
+  /** `9 pm EST your time`. */
   yourTime: (clock: string): string => `${clock} your time`,
 } as const;
 
@@ -348,27 +348,26 @@ export function needsDeadline(
   return `before ${needsRaid.title}, ${weekdayDayMonth(new Date(needsRaid.starts_at), tz)}`;
 }
 
-/** `8:00 pm CST`: a clock with its zone abbreviation (`8 pm CST` when minutes are optional). */
-export function zonedClock(at: Date, tz: string, locale: string = SITE_LOCALE, alwaysMinutes = true): string {
-  return `${clock(at, tz, { locale, alwaysMinutes })} ${zoneAbbreviation(tz, at)}`;
+/** `8 pm CST`, `8:30 pm CST`: a clock with its zone abbreviation. */
+export function zonedClock(at: Date, tz: string, locale: string = SITE_LOCALE): string {
+  return `${clock(at, tz, { locale })} ${zoneAbbreviation(tz, at)}`;
 }
 
 function guildClock(startsAt: Date, tz: string, locale: string): string {
   return zonedClock(startsAt, tz, locale);
 }
 
-/** The viewer's own clock under the guild's (raid comp spec 3.1): `9:00 pm EST your time`, with the
- *  short weekday first when the viewer's date is another (`Fri 2:00 am GMT your time`); `null`
+/** The viewer's own clock under the guild's (raid comp spec 3.1): `9 pm EST your time`, with the
+ *  short weekday first when the viewer's date is another (`Fri 2 am GMT your time`); `null`
  *  when the two zones read the same offset. */
 export function yourTimeLine(
   startsAt: Date,
   guildTz: string,
   viewerTz: string,
   locale: string = SITE_LOCALE,
-  alwaysMinutes = true,
 ): string | null {
   if (!offsetsDiffer(startsAt, viewerTz, guildTz)) return null;
-  const time = zonedClock(startsAt, viewerTz, locale, alwaysMinutes);
+  const time = zonedClock(startsAt, viewerTz, locale);
   const otherDay = calendarDayIn(startsAt, viewerTz) !== calendarDayIn(startsAt, guildTz);
   return compCopy.yourTime(otherDay ? `${weekdayShort(startsAt, viewerTz)} ${time}` : time);
 }
@@ -384,7 +383,7 @@ export function forYouLine(
   const instant = wallClockToInstant(date, time, guildTz);
   if (!offsetsDiffer(instant, guildTz, viewerTz)) return raidCopy.form.forYouSame;
   return raidCopy.form.forYou(
-    `${weekdayDayMonth(instant, viewerTz)}, ${clock(instant, viewerTz, { locale, alwaysMinutes: true })}`,
+    `${weekdayDayMonth(instant, viewerTz)}, ${clock(instant, viewerTz, { locale })}`,
   );
 }
 
@@ -405,7 +404,7 @@ export function whenPhrase(
   guildTz: string,
   viewerTz: string = viewerZone(),
 ): string {
-  const time = zonedClock(startsAt, guildTz, locale, false);
+  const time = zonedClock(startsAt, guildTz, locale);
   const days = calendarDayIn(startsAt, guildTz) - calendarDayIn(now, guildTz);
   let phrase: string;
   if (days === 0) phrase = `${sameDayWord(startsAt, guildTz)} ${time}`;
@@ -413,7 +412,7 @@ export function whenPhrase(
   else if (days > 1 && days <= WEEKDAY_WINDOW_DAYS) {
     phrase = `${weekdayName(startsAt, guildTz)} ${time}`;
   } else phrase = `${weekdayDayMonth(startsAt, guildTz)}, ${time}`;
-  const yours = yourTimeLine(startsAt, guildTz, viewerTz, locale, false);
+  const yours = yourTimeLine(startsAt, guildTz, viewerTz, locale);
   return yours === null ? phrase : `${phrase} (${yours})`;
 }
 

@@ -234,8 +234,8 @@ describe('buildParseChart', () => {
     expect(chart.change).toBe('Up 34 since 17 Nov');
     const readout = parseReadout(chart.kills, 4);
     expect(readout).toMatchObject({ value: '88', word: 'parse', detail: '11 Dec 2026 · kill 5 of 5' });
-    expect(readout.color).toBe('var(--color-parse-purple)');
-    expect(parseReadout(chart.kills, 1).color).toBe('var(--color-parse-blue)');
+    expect(readout.color).toBe('var(--color-rarity-epic-text)');
+    expect(parseReadout(chart.kills, 1).color).toBe('var(--color-rarity-rare-text)');
   });
 });
 

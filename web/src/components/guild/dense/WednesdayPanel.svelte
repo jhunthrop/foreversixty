@@ -62,9 +62,7 @@
   const notAnswered = $derived(raid.not_signed_raiders?.length ?? raid.not_signed.length);
   const canPing = $derived(pingedAt === null && pingAllowed(raid, now));
   const pingedText = $derived(
-    pingedAt === null
-      ? ''
-      : `Pinged ${clock(pingedAt, viewerTz, { locale: viewerLocale(), alwaysMinutes: true })}`,
+    pingedAt === null ? '' : `Pinged ${clock(pingedAt, viewerTz, { locale: viewerLocale() })}`,
   );
 
   function named(state: GuildRaidSignup['state']): GuildRaidSignup[] {

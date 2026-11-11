@@ -2,6 +2,7 @@
 // The healer variant of the "This set" panel, as plain data: a healing sim ranks gear under a
 // stated incoming-damage profile, so every figure here is built together with that profile's
 // name and never on its own. Pure and node-free; all wording lives in `copy.ts`.
+import { oneDecimal } from '../format/number';
 import { bisCopy } from './copy';
 import type { BisBand, BisHealMetrics, BisHealProfile, RateUnit } from './types';
 import { clockSeconds } from '../format/duration';
@@ -101,7 +102,7 @@ export function healerSetViewFor(
   const metrics = isHealMetrics(band.metrics) ? band.metrics : undefined;
   const profileLabel = profile?.label ?? band.profile ?? bisCopy.healerProfileUnstated;
   return {
-    figure: (metrics?.hps ?? band.set_dps).toFixed(1),
+    figure: oneDecimal(metrics?.hps ?? band.set_dps),
     unit: 'HPS',
     profileLabel,
     caption: bisCopy.healerFigureCaption(profileLabel),

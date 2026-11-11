@@ -2,14 +2,31 @@
   "note": "The house formats every surface prints (owner rulings 2026-11-10, component audit clusters 3, 4, 7, 8). Hand-edited: the web (web/src/lib/formats.test.ts), the Go server pages and Discord, the companion and both apps each replay every case. Instants are RFC 3339 UTC; `zone` is an IANA zone; `locale` is the viewer's BCP 47 locale (US players read 8 pm, EU players 20:00; the words stay English). A server page or a build-time page that cannot know the viewer prints `site_locale`.",
   "version": 1,
   "site_locale": "en-US",
-  "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  "months": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ],
   "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   "dates": {
     "day_month": [
       { "in": "2026-09-17T00:00:00Z", "zone": "UTC", "out": "17 Sep" },
       { "in": "2027-06-01T00:00:00Z", "zone": "UTC", "out": "1 Jun" },
       { "in": "2027-07-04T12:00:00Z", "zone": "UTC", "out": "4 Jul" },
-      { "in": "2026-12-10T02:00:00Z", "zone": "America/Chicago", "out": "9 Dec" },
+      {
+        "in": "2026-12-10T02:00:00Z",
+        "zone": "America/Chicago",
+        "out": "9 Dec"
+      },
       { "in": "2026-12-10T02:00:00Z", "zone": "Europe/London", "out": "10 Dec" }
     ],
     "day_month_year": [
@@ -17,33 +34,135 @@
       { "in": "2026-09-17T00:00:00Z", "zone": "UTC", "out": "17 Sep 2026" }
     ],
     "weekday_day_month": [
-      { "in": "2026-12-10T02:00:00Z", "zone": "America/Chicago", "now": "2026-11-10T12:00:00Z", "out": "Wed 9 Dec" },
-      { "in": "2026-12-10T02:00:00Z", "zone": "Europe/London", "now": "2026-11-10T12:00:00Z", "out": "Thu 10 Dec" },
-      { "in": "2027-01-06T02:00:00Z", "zone": "Europe/London", "now": "2026-11-10T12:00:00Z", "out": "Wed 6 Jan 2027" }
+      {
+        "in": "2026-12-10T02:00:00Z",
+        "zone": "America/Chicago",
+        "now": "2026-11-10T12:00:00Z",
+        "out": "Wed 9 Dec"
+      },
+      {
+        "in": "2026-12-10T02:00:00Z",
+        "zone": "Europe/London",
+        "now": "2026-11-10T12:00:00Z",
+        "out": "Thu 10 Dec"
+      },
+      {
+        "in": "2027-01-06T02:00:00Z",
+        "zone": "Europe/London",
+        "now": "2026-11-10T12:00:00Z",
+        "out": "Wed 6 Jan 2027"
+      }
     ],
     "long_day": [
-      { "in": "2026-12-09T00:00:00Z", "zone": "UTC", "out": "Wednesday 9 December" },
-      { "in": "2026-12-10T02:00:00Z", "zone": "America/Chicago", "out": "Wednesday 9 December" }
+      {
+        "in": "2026-12-09T00:00:00Z",
+        "zone": "UTC",
+        "out": "Wednesday 9 December"
+      },
+      {
+        "in": "2026-12-10T02:00:00Z",
+        "zone": "America/Chicago",
+        "out": "Wednesday 9 December"
+      }
     ],
-    "month_heading": [{ "in": "2026-11-05T00:00:00Z", "zone": "UTC", "out": "November 2026" }],
-    "updated": [{ "in": "2026-09-25T18:00:00Z", "zone": "UTC", "out": "Updated 25 Sep" }],
+    "month_heading": [
+      { "in": "2026-11-05T00:00:00Z", "zone": "UTC", "out": "November 2026" }
+    ],
+    "updated": [
+      { "in": "2026-09-25T18:00:00Z", "zone": "UTC", "out": "Updated 25 Sep" }
+    ],
     "stamp": [
-      { "in": "2026-10-19T21:40:00Z", "zone": "UTC", "locale": "en-US", "out": "19 Oct, 9:40 pm" },
-      { "in": "2026-10-19T21:40:00Z", "zone": "UTC", "locale": "en-GB", "out": "19 Oct, 21:40" }
+      {
+        "in": "2026-10-19T21:40:00Z",
+        "zone": "UTC",
+        "locale": "en-US",
+        "out": "19 Oct, 9:40 pm"
+      },
+      {
+        "in": "2026-10-19T21:40:00Z",
+        "zone": "UTC",
+        "locale": "en-GB",
+        "out": "19 Oct, 21:40"
+      }
     ]
   },
+  "clock_note": "The time of day in the viewer's hour cycle, minutes only off the hour. `seconds` is a combat log's event time (UTC, the log file's own clock), where the second is part of the record.",
   "clock": [
-    { "in": "2026-12-10T02:00:00Z", "zone": "America/Chicago", "locale": "en-US", "out": "8 pm" },
-    { "in": "2026-12-10T02:00:00Z", "zone": "America/Chicago", "locale": "en-GB", "out": "20:00" },
-    { "in": "2026-12-10T02:30:00Z", "zone": "America/Chicago", "locale": "en-US", "out": "8:30 pm" },
-    { "in": "2026-12-10T02:30:00Z", "zone": "America/Chicago", "locale": "en-GB", "out": "20:30" },
-    { "in": "2026-12-09T09:00:00Z", "zone": "UTC", "locale": "en-US", "out": "9 am" },
-    { "in": "2026-12-09T09:00:00Z", "zone": "UTC", "locale": "en-GB", "out": "09:00" },
-    { "in": "2026-12-10T06:00:00Z", "zone": "America/Chicago", "locale": "en-US", "out": "12 am" },
-    { "in": "2026-12-10T06:00:00Z", "zone": "America/Chicago", "locale": "en-GB", "out": "00:00" },
-    { "in": "2026-12-09T19:00:00Z", "zone": "Europe/Berlin", "locale": "de-DE", "out": "20:00" },
-    { "in": "2026-12-10T02:00:00Z", "zone": "America/Chicago", "locale": "en-US", "always_minutes": true, "out": "8:00 pm" },
-    { "in": "2026-12-10T02:00:00Z", "zone": "America/Chicago", "locale": "en-GB", "always_minutes": true, "out": "20:00" }
+    {
+      "in": "2026-12-10T02:00:00Z",
+      "zone": "America/Chicago",
+      "locale": "en-US",
+      "out": "8 pm"
+    },
+    {
+      "in": "2026-12-10T02:00:00Z",
+      "zone": "America/Chicago",
+      "locale": "en-GB",
+      "out": "20:00"
+    },
+    {
+      "in": "2026-12-10T02:30:00Z",
+      "zone": "America/Chicago",
+      "locale": "en-US",
+      "out": "8:30 pm"
+    },
+    {
+      "in": "2026-12-10T02:30:00Z",
+      "zone": "America/Chicago",
+      "locale": "en-GB",
+      "out": "20:30"
+    },
+    {
+      "in": "2026-12-09T09:00:00Z",
+      "zone": "UTC",
+      "locale": "en-US",
+      "out": "9 am"
+    },
+    {
+      "in": "2026-12-09T09:00:00Z",
+      "zone": "UTC",
+      "locale": "en-GB",
+      "out": "09:00"
+    },
+    {
+      "in": "2026-12-10T06:00:00Z",
+      "zone": "America/Chicago",
+      "locale": "en-US",
+      "out": "12 am"
+    },
+    {
+      "in": "2026-12-10T06:00:00Z",
+      "zone": "America/Chicago",
+      "locale": "en-GB",
+      "out": "00:00"
+    },
+    {
+      "in": "2026-12-09T19:00:00Z",
+      "zone": "Europe/Berlin",
+      "locale": "de-DE",
+      "out": "20:00"
+    },
+    {
+      "in": "2026-11-09T23:49:25Z",
+      "zone": "UTC",
+      "locale": "en-US",
+      "seconds": true,
+      "out": "11:49:25 pm"
+    },
+    {
+      "in": "2026-11-09T23:49:25Z",
+      "zone": "UTC",
+      "locale": "en-GB",
+      "seconds": true,
+      "out": "23:49:25"
+    },
+    {
+      "in": "2026-11-09T20:00:00Z",
+      "zone": "UTC",
+      "locale": "en-US",
+      "seconds": true,
+      "out": "8:00:00 pm"
+    }
   ],
   "relative": {
     "now": "2026-11-10T12:00:00Z",
@@ -140,14 +259,19 @@
       { "in": 25, "out": "25", "tier": "green", "label": "25th percentile" },
       { "in": 50.2, "out": "50", "tier": "blue", "label": "50th percentile" },
       { "in": 75, "out": "75", "tier": "purple", "label": "75th percentile" },
-      { "in": 94.99, "out": "94", "tier": "purple", "label": "94th percentile" },
+      {
+        "in": 94.99,
+        "out": "94",
+        "tier": "purple",
+        "label": "94th percentile"
+      },
       { "in": 98.6, "out": "98", "tier": "orange", "label": "98th percentile" },
       { "in": 99.53, "out": "99", "tier": "pink", "label": "99th percentile" },
       { "in": 100, "out": "100", "tier": "gold", "label": "100th percentile" }
     ]
   },
   "countdown": {
-    "note": "Days, hours and minutes, the largest non-zero unit first (no zero days), at most three; minutes round up so the clock never reads 0 before the instant. No seconds: every countdown steps once a minute. Passed: no parts. `label` is the clock read aloud and the inline text form.",
+    "note": "Days, hours and minutes, largest first, a zero unit left out; minutes round up so the clock never reads 0 before the instant. No seconds: every countdown steps once a minute. Passed: no parts. `label` is the clock read aloud and the inline text form.",
     "now": "2026-11-10T00:00:00Z",
     "cases": [
       {
@@ -170,11 +294,16 @@
       },
       {
         "target": "2026-11-10T05:00:00Z",
+        "parts": [{ "value": "5", "unit": "hours" }],
+        "label": "5 hours"
+      },
+      {
+        "target": "2026-11-11T00:05:00Z",
         "parts": [
-          { "value": "5", "unit": "hours" },
-          { "value": "0", "unit": "min" }
+          { "value": "1", "unit": "day" },
+          { "value": "5", "unit": "min" }
         ],
-        "label": "5 hours, 0 min"
+        "label": "1 day, 5 min"
       },
       {
         "target": "2026-11-10T00:42:10Z",

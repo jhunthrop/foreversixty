@@ -127,15 +127,14 @@ def raids_open() -> str | None:
 
 def clock_to(target: str) -> list[tuple[str, str]]:
     """The one countdown (web lib/ui/countdown.ts clockParts, apps/shared/formats.json): days, hours and
-    minutes, the largest non-zero unit first, minutes rounded up."""
+    minutes, zero units left out, minutes rounded up."""
     total = -(-int((iso(target) - NOW).total_seconds()) // 60)
     if total <= 0:
         return []
     days, hours, minutes = total // 1440, total % 1440 // 60, total % 60
     parts = [(str(days), 'day' if days == 1 else 'days')] if days else []
-    if days or hours:
-        parts.append((str(hours), 'hour' if hours == 1 else 'hours'))
-    return parts + [(str(minutes), 'min')]
+    parts += [(str(hours), 'hour' if hours == 1 else 'hours')] if hours else []
+    return parts + ([(str(minutes), 'min')] if minutes else [])
 
 
 def day_text(s: str) -> str:

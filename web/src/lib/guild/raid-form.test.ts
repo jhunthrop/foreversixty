@@ -297,12 +297,12 @@ describe('the repeat helper', () => {
 
 describe('forYou', () => {
   it('renders the guild wall time in the viewer zone', () => {
-    expect(forYou(values({ date: '2026-12-10' }), NEW_YORK, NOW)).toBe('For you: Thu 10 Dec, 9:00 pm.');
+    expect(forYou(values({ date: '2026-12-10' }), NEW_YORK, NOW)).toBe('For you: Thu 10 Dec, 9 pm.');
     expect(forYou(values({ date: '2026-12-10' }), CHICAGO, NOW)).toBe('For you: same time.');
   });
 
   it('reads an undated form as today on the guild calendar', () => {
-    expect(forYou(values({ date: '' }), NEW_YORK, NOW)).toBe('For you: Wed 2 Dec, 9:00 pm.');
+    expect(forYou(values({ date: '' }), NEW_YORK, NOW)).toBe('For you: Wed 2 Dec, 9 pm.');
   });
 });
 

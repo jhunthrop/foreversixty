@@ -5,6 +5,7 @@
 // `lib/items/source-labels.ts`, not here, and are only re-attached to this object -- see
 // that file's own header for why (the item tooltip needs those two functions but must
 // never pay for the rest of this much larger, /bis-page-only object).
+import { oneDecimal } from '../format/number';
 import { dropPercentLabel } from '../items/drop-chance';
 import {
   craftedSourceLabel,
@@ -149,7 +150,7 @@ export const bisCopy = {
       : `${count} upgrade${count === 1 ? '' : 's'} since level ${previousBand}`,
   newSlotLabel: 'New slot',
   setDpsDelta: (delta: number, unit: RateUnit = 'DPS'): string =>
-    `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} ${unit} since the last level range`,
+    `${delta >= 0 ? '+' : ''}${oneDecimal(delta)} ${unit} since the last level range`,
   /** Shown under `setDpsLabel`'s big number when `BisBand.set_dps_partial` is true (spec
    *  addendum 3, §E): `count` always equals the number of rows this same band actually
    *  renders with `notSimCheckedTag` (`panel-view.ts`'s `BandInfo.setDpsPartialCount`,
@@ -274,7 +275,7 @@ export const bisCopy = {
    *  rather than the ranker's own `swap_note` sentence -- `panel-view.ts`'s `parseSwapNote`
    *  supplies the item name and the two DPS numbers, this row's own pick first. */
   evidenceLine: (itemName: string, pickDps: number, altDps: number, unit: RateUnit = 'DPS'): string =>
-    `Sim-checked against ${itemName}: ${pickDps.toFixed(1)} vs ${altDps.toFixed(1)} ${unit}`,
+    `Sim-checked against ${itemName}: ${oneDecimal(pickDps)} vs ${oneDecimal(altDps)} ${unit}`,
   /** The row's own evidence line when the slot carries a real `dps_delta` (bis-ranker-
    *  integrity-5): the one number that stays true regardless of which snapshot `swap_note`'s
    *  own two absolute numbers were measured at (`panel-view.ts`'s own doc) -- preferred over
@@ -286,7 +287,7 @@ export const bisCopy = {
    *  still a real sim result (a trinket/proc/weapon-pair tournament winner), just not one
    *  phrased as a swap against a named runner-up. */
   simDpsVerifiedTitle: (dps: number, unit: RateUnit = 'DPS'): string =>
-    `Confirmed by a full sim: ${dps.toFixed(1)} ${unit} with this item`,
+    `Confirmed by a full sim: ${oneDecimal(dps)} ${unit} with this item`,
   /** `sim_status === 'not_in_sim'` (spec addendum 3, §D): this build's sim database does
    *  not carry the item at all, so the pick is ranked by stat weights only, with no full
    *  sim run behind it -- the umbrella statement, shown before `effectUnmodelledTag` when
@@ -307,7 +308,7 @@ export const bisCopy = {
   /** A relic near tie's line under the pick: its gain over an empty relic slot and the bar it
    *  sits inside. */
   nearTieEvidence: (gain: number, error: number, unit: RateUnit = 'DPS'): string =>
-    `${signedFigure(gain, unit)} over an empty relic slot, within the ±${error.toFixed(1)} ${unit} margin of error`,
+    `${signedFigure(gain, unit)} over an empty relic slot, within the ±${oneDecimal(error)} ${unit} margin of error`,
   /** The same tag's hover on a relic near tie (`BisSlot.near_tie`). */
   nearTieTitle: (unit: RateUnit = 'DPS'): string =>
     `Every relic here is within its measured error of an empty slot; this one measured best and its effect reaches a spell you cast, so it is worth wearing for the little ${unit} it adds`,
@@ -452,7 +453,7 @@ export const bisCopy = {
   // --- Character card action (the shared character header carries the rest) ----------------
   upgradesLabel: 'Upgrades',
   togetherLabel: 'Together',
-  togetherDpsValue: (delta: number): string => `+${delta.toFixed(1)} DPS`,
+  togetherDpsValue: (delta: number): string => `+${oneDecimal(delta)} DPS`,
   equippedLabel: 'Equipped',
   equippedValue: (n: number, total: number): string => `${n} / ${total}`,
   /** The addon's inbox carries builds, not lists, so the spec page's card offers the planner. */
@@ -463,7 +464,7 @@ export const bisCopy = {
    *  supplies real data. */
   equippedTickLabel: 'equipped',
   youGainOverWorn: (dpsDelta: number, wornItemName: string, unit: RateUnit = 'DPS'): string =>
-    `+${dpsDelta.toFixed(1)} ${unit} over your ${wornItemName}`,
+    `+${oneDecimal(dpsDelta)} ${unit} over your ${wornItemName}`,
 
   // --- healer band panel (healer BiS lane) ---------------------------------------------------
   // A healing sim ranks gear under a STATED incoming-damage profile and never says one healer
@@ -495,7 +496,7 @@ export const bisCopy = {
  *  Go's `%+.1f`: a kept pick's `dps_delta` is negative whenever the runner-up scored higher
  *  but not significantly enough to promote, holy priest trinket2 at band 60 on 1.60.1.70338). */
 function signedFigure(delta: number, unit: string): string {
-  return `${delta < 0 ? '−' : '+'}${Math.abs(delta).toFixed(1)} ${unit}`;
+  return `${delta < 0 ? '−' : '+'}${oneDecimal(Math.abs(delta))} ${unit}`;
 }
 
 /** `["A"]` -> `"A"`, `["A", "B"]` -> `"A and B"`, `["A", "B", "C"]` -> `"A, B and C"` --
@@ -538,7 +539,7 @@ export const tankCopy = {
   evidenceLineDelta: (itemName: string, delta: number): string =>
     `Sim-checked against ${itemName}: ${signedFigure(delta, 'score')}`,
   simScoreVerifiedTitle: (score: number): string =>
-    `Confirmed by a full sim: ${score.toFixed(1)} score with this item`,
+    `Confirmed by a full sim: ${oneDecimal(score)} score with this item`,
   weightsScaleNote: (topLabel: string): string =>
     `Per point of stat, normalized to ${topLabel} = 1.00, with score per point and the sim error.`,
 } as const;

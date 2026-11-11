@@ -20,7 +20,7 @@ sources:
     kind: blizzard
 ---
 
-The Hardcore panel on Sept 13 confirmed Hardcore for Forever but gave no date beyond the roadmap's "winter." Production Director Clayton Stone announced it; Senior Game Designer Josh Greenfield covered the history.
+The Hardcore panel on 13 Sep confirmed Hardcore for Forever but gave no date beyond the roadmap's "winter." Production Director Clayton Stone announced it; Senior Game Designer Josh Greenfield covered the history.
 
 A character that dies in Hardcore can transfer to any other ruleset, including PvP and Roleplaying, rather than being forced into PvE as in Classic Hardcore. A new layer-refresh system warns you before a refresh, lets you move somewhere safe and then click a button to trigger it; one outlet reports this applies to every version of the game, not only Hardcore.
 

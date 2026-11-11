@@ -70,8 +70,8 @@ describe('rating card', () => {
   });
 
   it('colours an overall on the parse ladder every raider reads', () => {
-    expect(ratingColour(84)).toBe('var(--color-parse-purple)');
-    expect(ratingColour(58)).toBe('var(--color-parse-blue)');
+    expect(ratingColour(84)).toBe('var(--color-rarity-epic-text)');
+    expect(ratingColour(58)).toBe('var(--color-rarity-rare-text)');
     expect(ratingColour(96)).toBe('var(--color-parse-orange)');
   });
 });

@@ -12,7 +12,7 @@ from zoneinfo import ZoneInfo
 
 import guild_overview_data as O
 import guild_raids_fixtures as RF
-from guild_data import NOW, ZONE, countdown_text
+from guild_data import NOW, ZONE, countdown_text, house_clock
 from ws_guild2 import _act, _view, hdr, raid_planner
 from ws_prims import Button, Section, Tag, build_page
 
@@ -64,7 +64,7 @@ def _countdown(at: datetime) -> str:
 
 
 def _clock(at: datetime) -> str:
-    return f"{at.hour % 12 or 12}:{at.minute:02d} {'am' if at.hour < 12 else 'pm'}"
+    return house_clock(at)
 
 
 def planned_row(raid: dict) -> str:

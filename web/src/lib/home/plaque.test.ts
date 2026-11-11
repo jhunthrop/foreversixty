@@ -19,7 +19,6 @@ describe('the raid plaque', () => {
     expect(countdownFigures(new Date('2026-12-10T02:00:00Z'), NOW)).toEqual([
       { value: '33', label: 'days' },
       { value: '8', label: 'hours' },
-      { value: '0', label: 'min' },
     ]);
     expect(countdownFigures(new Date('2026-11-06T18:20:30Z'), NOW)).toEqual([{ value: '21', label: 'min' }]);
     expect(countdownFigures(NOW, NOW)).toEqual([]);

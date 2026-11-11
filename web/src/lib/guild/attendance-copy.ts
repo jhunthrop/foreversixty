@@ -235,7 +235,7 @@ export function matchedElsewhereParts(
 export const postedLine = (time: string): string => `Posted to Discord at ${time}.`;
 
 export function postedTime(postedAt: string, tz: string, locale: string = SITE_LOCALE): string {
-  return clock(new Date(postedAt), tz, { locale, alwaysMinutes: true });
+  return clock(new Date(postedAt), tz, { locale });
 }
 
 /** `after 3 wipes`, or `first pull` for a kill with no wipe before it. */

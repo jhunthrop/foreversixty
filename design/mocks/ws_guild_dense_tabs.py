@@ -252,7 +252,7 @@ def signup_groups(raid: dict, facts: dict, officer: bool) -> str:
 def planner_when(raid: dict) -> str:
     start = at_zone(raid['starts_at'])
     end = start + timedelta(minutes=raid['duration_minutes'])
-    clock_word = lambda t: t.strftime('%I:%M %p').lstrip('0').lower()  # noqa: E731
+    clock_word = gd.house_clock
     left = start - at_zone(D.NOW)
     return (f"{start:%A} {start.day} {start:%B} &middot; {clock_word(start)} to {clock_word(end)} CST &middot; "
             f'<span class="gold">in {gd.countdown_text(left)}</span>')
@@ -447,7 +447,7 @@ def applications() -> str:
                      trail=f'<span class="wipe" style="font-weight:700">{gap_of(g)} short</span>', link=False, slim=True)
                  for g in D.GROUPS if gap_of(g) > 0], list_=True)
     wanted = ', '.join(w[2] for w in WANTED)
-    card = Rows([Row('Looking for', wanted, trail=_act('Edit'), link=False), Row('Raid nights', 'Wed, 8:00 pm to 11:00 pm CST', trail=_act('Edit'), link=False)],
+    card = Rows([Row('Looking for', wanted, trail=_act('Edit'), link=False), Row('Raid nights', gd.RECRUIT_NIGHTS, trail=_act('Edit'), link=False)],
                 open_=True)
     record = Rows([Row(f"{a['character']['name']} {a['status']}", f"{a['votes']['yes']} yes, {a['votes']['no']} no of {a['votes']['voters']} officers &middot; by {a['decided_by']['name']}",
                        link=False, slim=True) for a in decided], open_=True)

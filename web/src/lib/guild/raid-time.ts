@@ -103,9 +103,9 @@ export function stampParts(
   guildTz: string,
   locale: string = SITE_LOCALE,
 ): { when: string; guildTime: string | null } {
-  const when = `${weekdayDayMonth(at, viewerTz)}, ${clock(at, viewerTz, { locale, alwaysMinutes: true })}`;
+  const when = `${weekdayDayMonth(at, viewerTz)}, ${clock(at, viewerTz, { locale })}`;
   if (!offsetsDiffer(at, viewerTz, guildTz)) return { when, guildTime: null };
-  return { when, guildTime: `(${clock(at, guildTz, { locale, alwaysMinutes: true })} guild time)` };
+  return { when, guildTime: `(${clock(at, guildTz, { locale })} guild time)` };
 }
 
 /** The form's default instant: the last raid's weekday and guild wall time, a whole number of weeks

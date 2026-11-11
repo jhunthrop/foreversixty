@@ -29,9 +29,9 @@ describe('report formatting', () => {
   });
 
   it('formats wall-clock times from the engine’s ISO strings', () => {
-    expect(formatClock('2026-09-26T20:12:00Z')).toBe('20:12:00');
-    expect(formatClock('2026-09-26T20:10:04.6Z')).toBe('20:10:04');
-    expect(formatClock('not a time')).toBe('--:--:--');
+    expect(formatClock('2026-09-26T20:12:00Z')).toBe('8:12:00 pm');
+    expect(formatClock('2026-09-26T20:10:04.6Z')).toBe('8:10:04 pm');
+    expect(formatClock('not a time')).toBe('–');
   });
 
   it('groups amounts, and abbreviates from a million up', () => {
@@ -65,8 +65,8 @@ describe('report formatting', () => {
   it('maps a parse percentile onto the ladder the community reads', () => {
     expect(percentileToken(3)).toBe('var(--color-parse-grey-text)');
     expect(percentileToken(40)).toBe('var(--color-parse-green)');
-    expect(percentileToken(60)).toBe('var(--color-parse-blue)');
-    expect(percentileToken(80)).toBe('var(--color-parse-purple)');
+    expect(percentileToken(60)).toBe('var(--color-rarity-rare-text)');
+    expect(percentileToken(80)).toBe('var(--color-rarity-epic-text)');
     expect(percentileToken(96)).toBe('var(--color-parse-orange)');
     expect(percentileToken(99)).toBe('var(--color-parse-pink)');
     expect(percentileToken(100)).toBe('var(--color-parse-gold)');
@@ -75,7 +75,7 @@ describe('report formatting', () => {
   it('floors a percentile onto the scale: 99.53 is pink, 94.9 orange is not, gold only at 100 (B4)', () => {
     expect(percentileToken(99.53)).toBe('var(--color-parse-pink)');
     expect(percentileToken(99.99)).toBe('var(--color-parse-pink)');
-    expect(percentileToken(94.9)).toBe('var(--color-parse-purple)');
+    expect(percentileToken(94.9)).toBe('var(--color-rarity-epic-text)');
     expect(percentileToken(24.6)).toBe('var(--color-parse-grey-text)');
   });
 

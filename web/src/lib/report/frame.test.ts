@@ -52,7 +52,7 @@ describe('the Fight list (decision R2)', () => {
     expect(options[0]).toMatchObject({ label: NO_BOSS_PULLS, disabled: true, group: 'Boss pulls' });
     expect(options.find((option) => option.value === '9')).toMatchObject({ label: 'Trash · 1:47' });
     expect(options.find((option) => option.value === '9')?.description).toMatch(
-      /^\d\d:\d\d:\d\d · 12 mobs died$/,
+      /^\d{1,2}:\d\d:\d\d(?: [ap]m)? · 12 mobs died$/,
     );
   });
 

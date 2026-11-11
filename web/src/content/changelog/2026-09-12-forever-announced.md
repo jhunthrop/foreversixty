@@ -1,5 +1,5 @@
 ---
-title: Forever announced at BlizzCon. Beta Sept 17, launch Nov 4, level 60 forever.
+title: Forever announced at BlizzCon. Beta 17 Sep, launch 4 Nov, level 60 forever.
 date: 2026-09-12
 kind: blizzard
 note: Four new zones, nine dungeons, two raids, Darkspear Islands battleground, 1,000+ quests.

@@ -70,9 +70,7 @@ export const MIDNIGHT = 'midnight';
 const MIDNIGHT_H23 = '00:00';
 
 function endClock(endsAt: Date, tz: string, locale: string): string {
-  return clock(endsAt, tz, { locale: 'en-GB', alwaysMinutes: true }) === MIDNIGHT_H23
-    ? MIDNIGHT
-    : clock(endsAt, tz, { locale, alwaysMinutes: true });
+  return clock(endsAt, tz, { locale: 'en-GB' }) === MIDNIGHT_H23 ? MIDNIGHT : clock(endsAt, tz, { locale });
 }
 
 /** The band's when line (raid comp spec 3.1 line 4): the guild's date, times and zone first, then
@@ -83,7 +81,7 @@ export function raidWhen(raid: GuildRaidView, now: Date, viewerTz: string, local
   const guildTz = raid.guild_timezone ?? viewerTz;
   return {
     date: longDay(startsAt, guildTz),
-    start: clock(startsAt, guildTz, { locale, alwaysMinutes: true }),
+    start: clock(startsAt, guildTz, { locale }),
     end: `${endClock(endsAt, guildTz, locale)}${NO_BREAK_SPACE}${zoneAbbreviation(guildTz, startsAt)}`,
     yourTime: yourTimeLine(startsAt, guildTz, viewerTz, locale),
     countdown: countdown(startsAt, endsAt, now),

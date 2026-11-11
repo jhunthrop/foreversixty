@@ -6,6 +6,7 @@
 // reasons and weights), ships it as one JSON block, and the island derives every view from it with
 // no network request (R2). Every field the nightly adds later (`by_kind`, `ranking`, `run`,
 // `filtered_set_dps`, `set_dps_error`) is read when present and absent otherwise.
+import { oneDecimal } from '../format/number';
 import { bisCopy } from './copy';
 import type { HealerSetView } from './heal-view';
 import type { HitCapLine } from './hit-cap';
@@ -348,7 +349,7 @@ function answerModel(file: BisFile, raw: BisBand, info: BandInfo, deps: PageMode
   const preset = presetOf(raw);
   const meta = preset === 'raid' ? file.presets?.raid : undefined;
   return {
-    figure: info.tank === undefined ? (info.healer?.figure ?? raw.set_dps.toFixed(1)) : undefined,
+    figure: info.tank === undefined ? (info.healer?.figure ?? oneDecimal(raw.set_dps)) : undefined,
     ...(raw.set_dps_error === undefined ? {} : { error: raw.set_dps_error }),
     ...(raw.filtered_set_dps === undefined ? {} : { filtered: raw.filtered_set_dps }),
     ...(info.tank === undefined ? {} : { tank: info.tank }),

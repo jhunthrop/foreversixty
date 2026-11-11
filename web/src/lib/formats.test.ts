@@ -29,7 +29,7 @@ interface DateCase {
   zone: string;
   now?: string;
   locale?: string;
-  always_minutes?: boolean;
+  seconds?: boolean;
   out: string;
 }
 interface Pair<I> {
@@ -86,7 +86,7 @@ describe('apps/shared/formats.json', () => {
 
   it('clock', () => {
     each(formats.clock, (c) =>
-      clock(new Date(c.in), c.zone, { locale: c.locale, alwaysMinutes: c.always_minutes === true }),
+      clock(new Date(c.in), c.zone, { locale: c.locale, seconds: c.seconds === true }),
     );
   });
 

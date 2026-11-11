@@ -116,6 +116,29 @@ function offenders(rule: Rule): string[] {
     });
 }
 
+/** Hand-written prose (the changelog, the content pages) carries dates the formatters never see. */
+const PROSE_DATE = /\bSept\b(?!ember)|\b\d{1,2}:\d{2} [ap]\.m\.|\b[ap]\.m\. P[DS]T\b/g;
+
+function markdownFiles(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) return markdownFiles(full);
+    return entry.name.endsWith('.md') ? [full] : [];
+  });
+}
+
+describe('format guard, prose', () => {
+  it('catches "Sept 17" and "10:00 a.m."', () => {
+    expect('on Sept 17 at 10:00 a.m. PDT'.match(PROSE_DATE)?.length).toBe(2);
+  });
+  it('finds no "Sept" or "a.m./p.m." in the content collections', () => {
+    const found = markdownFiles(path.join(SRC, 'content')).flatMap((file) =>
+      [...readFileSync(file, 'utf8').matchAll(PROSE_DATE)].map((match) => `${relative(file)}: ${match[0]}`),
+    );
+    expect(found).toEqual([]);
+  });
+});
+
 describe('format guard', () => {
   for (const rule of RULES) {
     it(`catches ${rule.name}`, () => {

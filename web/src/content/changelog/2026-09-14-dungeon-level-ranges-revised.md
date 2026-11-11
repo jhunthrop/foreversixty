@@ -11,7 +11,7 @@ sources:
     kind: community
 ---
 
-A second outlet logged the What's Next panel live and recorded level ranges off the slides as they appeared. Seven of its nine ranges match the roundup we used on Sept 12. Two do not.
+A second outlet logged the What's Next panel live and recorded level ranges off the slides as they appeared. Seven of its nine ranges match the roundup we used on 12 Sep. Two do not.
 
 City of Dalaran is given as levels 28 to 30, where the earlier roundup said roughly 20 to 35. Krol'dok Stronghold is given as levels 40 to 55, where the earlier roundup said 35 to 40; the same log describes it as an outdoor dungeon sitting in the Riverglades zone.
 

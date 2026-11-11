@@ -143,7 +143,7 @@ export function formatSyncStamp(
   locale: string = viewerLocale(),
 ): string {
   if (Number.isNaN(d.getTime())) return '';
-  return `${dayMonth(d, zone)}, ${clock(d, zone, { locale, alwaysMinutes: true })}`;
+  return `${dayMonth(d, zone)}, ${clock(d, zone, { locale })}`;
 }
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -358,27 +358,30 @@ export function calendarDayIn(d: Date, zone: string): number {
   return dayNumber(at.year, at.month, at.day);
 }
 
-/** Options for `clock`: the viewer's locale by default, and minutes even on the hour. */
+/** Options for `clock`: the viewer's locale by default; seconds for a log's own timestamp. */
 export interface ClockOptions {
   locale?: string;
-  /** `8:00 pm` rather than `8 pm`: a stamp, where the minute is part of the record. */
-  alwaysMinutes?: boolean;
+  /** `11:49:25 pm` / `23:49:25`: a combat log's event time, where the second is the record. */
+  seconds?: boolean;
 }
 
 /**
  * The time of day on the zone's clock, in the viewer's hour cycle (owner ruling 2026-11-10):
- * `8 pm`, `8:30 pm` (minutes only off the hour unless `alwaysMinutes`) for a 12-hour locale,
- * `20:00` for a 24-hour one. An unreadable date renders as nothing.
+ * `8 pm`, `8:30 pm` (minutes only off the hour) for a 12-hour locale, `20:00` for a 24-hour one.
+ * With `seconds` both carry minutes and seconds (`11:49:25 pm`, `23:49:25`). An unreadable date
+ * renders as nothing.
  */
 export function clock(d: Date, zone: string = viewerZone(), options: ClockOptions = {}): string {
   if (Number.isNaN(d.getTime())) return '';
   const { hour, minute } = zoned(d, zone);
   const mm = String(minute).padStart(2, '0');
+  // Every zone's offset is whole minutes, so the second is the instant's own.
+  const ss = options.seconds === true ? `:${String(d.getUTCSeconds()).padStart(2, '0')}` : '';
   if (!usesTwelveHourClock(options.locale ?? viewerLocale())) {
-    return `${String(hour).padStart(2, '0')}:${mm}`;
+    return `${String(hour).padStart(2, '0')}:${mm}${ss}`;
   }
   const twelve = hour % 12 === 0 ? 12 : hour % 12;
-  const minutes = options.alwaysMinutes === true || minute !== 0 ? `:${mm}` : '';
+  const minutes = ss !== '' || minute !== 0 ? `:${mm}${ss}` : '';
   return `${twelve}${minutes} ${hour < 12 ? 'am' : 'pm'}`;
 }
 

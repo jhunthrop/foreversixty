@@ -68,24 +68,24 @@ describe('raidWhen', () => {
   it('reads the date, times and zone in the guild clock, with no your-time line when the offsets agree', () => {
     expect(raidWhen(plannedRaid(), NOW, CHICAGO, 'en-US')).toEqual({
       date: 'Thursday 10 December',
-      start: '8:00 pm',
-      end: '11:00 pm\u00a0CST',
+      start: '8 pm',
+      end: '11 pm\u00a0CST',
       yourTime: null,
-      countdown: 'in 2 days, 8 hours, 0 min',
+      countdown: 'in 2 days, 8 hours',
     });
   });
 
   it('keeps the guild clock first and adds the viewer’s own start when the offsets differ (spec 3.1)', () => {
     const when = raidWhen(plannedRaid(), NOW, NEW_YORK, 'en-US');
     expect(when.date).toBe('Thursday 10 December');
-    expect(when.start).toBe('8:00 pm');
-    expect(when.end).toBe('11:00 pm\u00a0CST');
-    expect(when.yourTime).toBe('9:00 pm EST your time');
+    expect(when.start).toBe('8 pm');
+    expect(when.end).toBe('11 pm\u00a0CST');
+    expect(when.yourTime).toBe('9 pm EST your time');
   });
 
-  it('reads a raid that runs to midnight as `to midnight`, never 12:00 am (guild loop round 3)', () => {
+  it('reads a raid that runs to midnight as `to midnight`, never 12 am (guild loop round 3)', () => {
     const late = plannedRaid({ starts_at: '2026-12-11T03:00:00Z', duration_minutes: 180 });
-    expect(raidWhen(late, NOW, CHICAGO, 'en-US').start).toBe('9:00 pm');
+    expect(raidWhen(late, NOW, CHICAGO, 'en-US').start).toBe('9 pm');
     expect(raidWhen(late, NOW, CHICAGO, 'en-US').end).toBe('midnight\u00a0CST');
     expect(raidWhen(late, NOW, CHICAGO, 'en-US-u-hc-h23').end).toBe('midnight\u00a0CST');
     const past = plannedRaid({ starts_at: '2026-12-11T03:00:00Z', duration_minutes: 210 });
@@ -93,7 +93,7 @@ describe('raidWhen', () => {
   });
 
   it('names the viewer’s weekday when their date is another', () => {
-    expect(raidWhen(plannedRaid(), NOW, 'Europe/London', 'en-US').yourTime).toBe('Fri 2:00 am GMT your time');
+    expect(raidWhen(plannedRaid(), NOW, 'Europe/London', 'en-US').yourTime).toBe('Fri 2 am GMT your time');
   });
 });
 

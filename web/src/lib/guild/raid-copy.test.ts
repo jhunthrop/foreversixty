@@ -50,7 +50,7 @@ const str3 = (label: string, index = 0, fill: Record<string, string> = {}): stri
 
 const CHICAGO = 'America/Chicago';
 const NEW_YORK = 'America/New_York';
-// Wednesday 9 Dec 2026, 10:00 am Chicago.
+// Wednesday 9 Dec 2026, 10 am Chicago.
 const NOW = new Date('2026-12-09T16:00:00Z');
 const at = (isoUtc: string): Date => new Date(isoUtc);
 
@@ -170,7 +170,7 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
       f.postToDiscordIfMoved,
       f.cancel,
     ]);
-    expect(f.forYou('Thu 10 Dec, 9:00 pm')).toBe(str('Form helpers', 0));
+    expect(f.forYou('Thu 10 Dec, 9 pm')).toBe(str('Form helpers', 0));
     expect(f.forYouSame).toBe(str('Form helpers', 1));
     expect(f.markdownHelper).toBe(str('Form helpers', 2));
     expect(f.onlyFit(2)).toBe(str('Form helpers', 3, { n: '2' }));
@@ -276,19 +276,17 @@ describe('yourTimeLine', () => {
 
   it('reads the viewer’s start and zone, the spec’s words', () => {
     expect(yourTimeLine(at('2026-12-11T02:00:00Z'), CHICAGO, NEW_YORK)).toBe(
-      str4('When, guild first', 1, { start: '9:00 pm', ZONE: 'EST' }),
+      str4('When, guild first', 1, { start: '9 pm', ZONE: 'EST' }),
     );
   });
 
   it('names the viewer’s weekday when their date is another', () => {
     // 8 pm Thursday in Chicago is 2 am Friday in London.
-    expect(yourTimeLine(at('2026-12-11T02:00:00Z'), CHICAGO, 'Europe/London')).toBe(
-      'Fri 2:00 am GMT your time',
-    );
+    expect(yourTimeLine(at('2026-12-11T02:00:00Z'), CHICAGO, 'Europe/London')).toBe('Fri 2 am GMT your time');
   });
 
   it('glues a zone to its clock', () => {
-    expect(zonedClock(at('2026-12-11T02:00:00Z'), CHICAGO)).toBe('8:00 pm CST');
+    expect(zonedClock(at('2026-12-11T02:00:00Z'), CHICAGO)).toBe('8 pm CST');
   });
 });
 
@@ -298,8 +296,8 @@ describe('countdown', () => {
   const cd = (isoNow: string): string => countdown(start, end, at(isoNow));
 
   it('counts down in the one countdown: days, hours and minutes', () => {
-    expect(cd('2026-12-08T02:00:00Z')).toBe('in 2 days, 0 hours, 0 min');
-    expect(cd('2026-12-08T22:00:00Z')).toBe('in 1 day, 4 hours, 0 min');
+    expect(cd('2026-12-08T02:00:00Z')).toBe('in 2 days');
+    expect(cd('2026-12-08T22:00:00Z')).toBe('in 1 day, 4 hours');
   });
 
   it('drops the leading zero units: hours and minutes, then minutes', () => {

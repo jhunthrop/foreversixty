@@ -22,7 +22,7 @@ test('signed out: Pick your class with Sign in, the nine classes, the feed, how 
   await expect(page.getByTestId('home-class-picker').getByRole('link')).toHaveCount(9);
   const plaque = out.getByTestId('home-raids-countdown');
   await expect(plaque.getByRole('heading', { level: 2 })).toHaveText('First raids open');
-  await expect(plaque.getByRole('timer')).toHaveAccessibleName('32 days, 6 hours, 0 min');
+  await expect(plaque.getByRole('timer')).toHaveAccessibleName('32 days, 6 hours');
   await expect(plaque.getByTestId('home-raid-zone')).toHaveText([
     /^\s*Barrow Deeps\s*$/,
     /^\s*Hyjal Summit\s*$/,
@@ -78,7 +78,7 @@ test('signed in at 60 in a guild: the raid plaque, the feed, the sims ladder and
   const plaque = page.getByTestId('home-raid');
   await expect(plaque.getByRole('heading', { level: 2 })).toHaveText("Onyxia's Lair");
   await expect(plaque).toContainText('Olympus XXVII · Wednesday 9 December · 8 pm');
-  await expect(plaque.getByRole('timer')).toHaveAccessibleName('33 days, 8 hours, 0 min');
+  await expect(plaque.getByRole('timer')).toHaveAccessibleName('33 days, 8 hours');
   await expect(plaque).toContainText('3 tanks');
   await expect(page.getByTestId('home-raid-late')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByTestId('home-raid-in')).toHaveAttribute('aria-pressed', 'false');

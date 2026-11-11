@@ -99,9 +99,7 @@ describe('labels', () => {
   it('writes minutes only off the hour, and always when asked', () => {
     expect(clock(instant, CHICAGO, { locale: 'en-US' })).toBe('8:30 pm');
     expect(clock(new Date('2026-12-11T02:00:00Z'), CHICAGO, { locale: 'en-US' })).toBe('8 pm');
-    expect(clock(new Date('2026-12-11T02:00:00Z'), CHICAGO, { locale: 'en-US', alwaysMinutes: true })).toBe(
-      '8:00 pm',
-    );
+    expect(clock(new Date('2026-12-11T02:00:00Z'), CHICAGO, { locale: 'en-US' })).toBe('8 pm');
   });
 
   it("follows the viewer's language for the hour cycle, keeping the English words", () => {

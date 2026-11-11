@@ -5,7 +5,8 @@
 
 import { killCounts, killCountsLabel } from './kill-counts';
 import type { FightEntry, Phase, Taunt } from './types';
-import { compact, ordinal, percent, thousands } from '../format/number';
+import { clock } from '../dates';
+import { EMPTY_FIGURE, compact, ordinal, percent, thousands } from '../format/number';
 import { CLASS_SLUGS } from '../ui/primitives';
 
 /**
@@ -60,11 +61,14 @@ export function schoolName(mask: number | undefined): string {
   return names.join('/');
 }
 
+/**
+ * A log event's wall time: the house clock with seconds, in the viewer's hour cycle (`11:49:25 pm`,
+ * `23:49:25`), read in UTC like the log file itself, so a raid leader comparing a teammate's
+ * screenshot sees the same instant (apps/shared/formats.json `clock` with `seconds`).
+ */
 export function formatClock(iso: string): string {
   const at = new Date(iso);
-  if (Number.isNaN(at.getTime())) return '--:--:--';
-  const pad = (n: number): string => String(n).padStart(2, '0');
-  return `${pad(at.getUTCHours())}:${pad(at.getUTCMinutes())}:${pad(at.getUTCSeconds())}`;
+  return Number.isNaN(at.getTime()) ? EMPTY_FIGURE : clock(at, 'UTC', { seconds: true });
 }
 
 /**
@@ -259,6 +263,16 @@ const PARSE_LADDER: readonly (readonly [number, ParseTier])[] = [
   [25, 'green'],
 ];
 
+const PARSE_TEXT_TOKEN: Readonly<Record<ParseTier, string>> = {
+  grey: 'var(--color-parse-grey-text)',
+  green: 'var(--color-parse-green)',
+  blue: 'var(--color-rarity-rare-text)',
+  purple: 'var(--color-rarity-epic-text)',
+  orange: 'var(--color-parse-orange)',
+  pink: 'var(--color-parse-pink)',
+  gold: 'var(--color-parse-gold)',
+};
+
 function flooredParse(percentile: number): number {
   return Number.isFinite(percentile) ? Math.floor(percentile) : 0;
 }
@@ -281,10 +295,10 @@ export function parseLabel(percentile: number): string {
 
 /** The colour a parse figure is printed in. */
 export function percentileToken(percentile: number): string {
-  const tier = parseTier(percentile);
-  // --color-parse-grey-text, not --color-parse-grey: every caller uses this as a text
-  // color (see tokens.css), and the raw grey fails WCAG AA contrast as text.
-  return tier === 'grey' ? 'var(--color-parse-grey-text)' : `var(--color-parse-${tier})`;
+  // Every caller colours text, so the three steps whose raw colour fails WCAG AA as small text
+  // read their text variants: the grey's own, and the rare and epic text colours the rarity
+  // classes use (tokens.css), the same blue and purple a player reads.
+  return PARSE_TEXT_TOKEN[parseTier(percentile)];
 }
 
 /** Everything a parse cell needs: the floored figure, its colour and its screen-reader name. */

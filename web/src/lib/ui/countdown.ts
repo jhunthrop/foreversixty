@@ -1,6 +1,6 @@
 // web/src/lib/ui/countdown.ts
 // The one countdown (owner ruling 2026-11-10; apps/shared/formats.json `countdown`): days, hours
-// and minutes to a known instant, the largest non-zero unit first and at most three, minutes
+// and minutes to a known instant, zero units left out, minutes
 // rounded up so the clock never reads 0 before the instant. No seconds: every countdown on the
 // site steps on the one minute tick (minute-clock.svelte.ts). Pure; the surfaces tick it.
 
@@ -28,10 +28,12 @@ export function clockParts(target: Date, now: Date): ClockPart[] {
   const days = Math.floor(totalMinutes / MINUTES_PER_DAY);
   const hours = Math.floor((totalMinutes % MINUTES_PER_DAY) / MINUTES_PER_HOUR);
   const minutes = totalMinutes % MINUTES_PER_HOUR;
-  const min = part(minutes, 'min', 'min');
-  if (days > 0) return [part(days, 'day', 'days'), part(hours, 'hour', 'hours'), min];
-  if (hours > 0) return [part(hours, 'hour', 'hours'), min];
-  return [min];
+  // A zero unit is dropped ("4 days, 4 hours", "1 day, 5 min"): it is noise in a sentence.
+  return [
+    ...(days > 0 ? [part(days, 'day', 'days')] : []),
+    ...(hours > 0 ? [part(hours, 'hour', 'hours')] : []),
+    ...(minutes > 0 ? [part(minutes, 'min', 'min')] : []),
+  ];
 }
 
 /** The clock read aloud, and its inline text form: "32 days, 5 hours, 12 min". */
