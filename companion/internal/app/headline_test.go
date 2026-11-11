@@ -120,8 +120,8 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 				Advanced: true, AdvancedKnown: true},
 		}
 		s := Snapshot{
-			AppVersion: "0.2.13", EngineVersion: "1.0.0", Paired: true, AccountLabel: "Jhunt",
-			DeviceName: "JH-DESKTOP", TokenBackend: "keychain", TokenBackendName: "Windows Credential Manager",
+			AppVersion: "0.2.13", EngineVersion: "1.0.0", Paired: true, AccountLabel: "Ashenveil#1902",
+			DeviceName: "RAID-PC", TokenBackend: "keychain", TokenBackendName: "Windows Credential Manager",
 			TokenBackendNote: "A private store in your user profile.",
 			APIBaseURL:       "https://api.foreversixty.gg", SiteBaseURL: "https://foreversixty.gg",
 			Visibility: "public", DetectedCharacter: credit.Name,
@@ -252,7 +252,7 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 		{"status-not-connected.json", unpaired},
 		{"status-signed-out.json", func() Snapshot {
 			s := unpaired()
-			s.SignedOut = &SignedOut{Reason: "device_revoked", AccountLabel: "Jhunt", At: watched}
+			s.SignedOut = &SignedOut{Reason: "device_revoked", AccountLabel: "Ashenveil#1902", At: watched}
 			headline(&s)
 			return s
 		}},

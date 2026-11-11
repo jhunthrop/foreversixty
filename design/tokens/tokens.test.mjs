@@ -42,6 +42,19 @@ describe('design tokens', () => {
     });
   }
 
+  it("keeps the companion-only tokens (native: 'companion') out of every other output", () => {
+    const only = ['--color-veil-rule', '--color-veil-track', '--color-ink-soft', '--color-edge', '--radius-round', '--shadow-heading'];
+    for (const name of only) {
+      assert.ok(generated.companion.includes(`${name}:`), `companion/ui/tokens.css lost ${name}`);
+      assert.ok(!generated.css.includes(`${name}:`), `web tokens.css carries the companion-only ${name}`);
+    }
+    for (const key of ['swift', 'kotlin', 'go', 'companionGo', 'lua']) {
+      for (const name of ['VeilRule', 'veilRule', 'InkSoft', 'inkSoft', 'RadiusRound', 'ElevationHeading']) {
+        assert.ok(!generated[key].includes(name), `${key} carries the companion-only ${name}`);
+      }
+    }
+  });
+
   it('names every group the spec lists', () => {
     const doc = JSON.parse(readFileSync(new URL('./tokens.json', import.meta.url), 'utf8'));
     const { tokens } = flatten(doc);

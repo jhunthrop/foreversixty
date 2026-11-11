@@ -2,6 +2,7 @@ package shell
 
 import (
 	"fmt"
+	"image/color"
 	"os"
 	"regexp"
 	"strconv"
@@ -17,7 +18,7 @@ func tokenRef(t *testing.T, css []byte, name string) uint32 {
 		t.Fatalf("ui/tokens.css has no hex %s", name)
 	}
 	v, _ := strconv.ParseUint(string(m[1]), 16, 32)
-	return colorRef(uint8(v>>16), uint8(v>>8), uint8(v))
+	return colorRef(color.NRGBA{R: uint8(v >> 16), G: uint8(v >> 8), B: uint8(v), A: 0xFF})
 }
 
 // The title bar and the page behind the webview are the window's tokens,

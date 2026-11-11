@@ -1,265 +1,290 @@
 // companion/ui/copy.js
-// Every sentence the window itself owns, in one object so the strings
-// are greppable. What the Go side owns (the Status headline, the addon
-// row, the failure messages, the tray) arrives in the snapshot and is
-// shown as it is: see internal/app/copy.go. Nothing here is ever built
-// from an error's text.
+// Every sentence the window itself owns, in one object, so app.js and install.js read
+// COPY.status.rows.report and never a literal. The words are apps/shared/copy/companion.json,
+// generated into copy_gen.js (COPY_TEXT) by web/scripts/gen-mobile-copy.mjs: edit the JSON and
+// run the generator, never this file's words. What the Go side owns (the Status headline, the
+// addon row, the failure messages, the tray) arrives in the snapshot from the same JSON through
+// internal/copygen. Nothing here is ever built from an error's text.
 'use strict';
 
-const COPY = {
-  title: 'Forever Sixty',
+const COPY = (() => {
+  const T = typeof COPY_TEXT !== 'undefined' ? COPY_TEXT : require('./copy_gen.js');
 
-  nav: { status: 'Status', reports: 'Reports', device: 'Device', settings: 'Settings' },
-  pages: { status: 'Status', reports: 'Your reports', device: 'This device', settings: 'Settings' },
+  // fill puts each value in its {name} marker: fill('Log written {ago}', { ago: '5 min ago' }).
+  const fill = (text, values) => text.replace(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g, (m, name) => (name in values ? String(values[name]) : m));
+  // count is a plural's form for n, the count filled in: "1 fight", "3 fights".
+  const count = (plural, n) => fill(n === 1 ? plural.one : plural.other, { [plural.count]: n });
 
-  // Shown when the companion's own service does not answer. The cause
-  // is never printed.
-  localDown: 'The companion stopped answering, so fights are not uploading. Quit it from the tray icon and open it again.',
-  trayNotice: 'Still running in the tray. Use Quit from the tray icon to stop logging.',
-  dismiss: 'Dismiss',
+  return {
+    title: T.title,
 
-  // Shown in the body until the companion has answered once.
-  checking: 'Checking…',
+    nav: { status: T.navStatus, reports: T.navReports, device: T.navDevice, settings: T.navSettings },
+    pages: { status: T.pagesStatus, reports: T.pagesReports, device: T.pagesDevice, settings: T.pagesSettings },
 
-  footer: {
-    // The footer is "Companion" at first paint and "Companion 0.2.13" from the first answer.
-    product: 'Companion',
-    version: (v) => 'Companion ' + v,
-    site: 'foreversixty.gg',
-    updateReady: 'Update ready. Quit the companion from the tray icon and open it again to install it.',
-    // After "Companion 0.2.13", for the first half minute after a new version's first launch.
-    justUpdated: 'just updated',
-    joint: ' · ',
-  },
+    // Shown when the companion's own service does not answer. The cause is never printed.
+    localDown: T.localDown,
+    trayNotice: T.trayNotice,
+    dismiss: T.dismiss,
 
-  status: {
-    reportLogging: 'Open this report on the site',
-    // The figure at the right of the headline: the fights the site holds.
-    figFights: (n) => (n === 1 ? 'fight uploaded' : 'fights uploaded'),
-    // Under the Queued row once the fight at the head has failed: it holds the rest, in order.
-    held: (h) => (h.fight ? 'Fight ' + h.fight : 'The raw log') + ' failed ' + h.attempts + (h.attempts === 1 ? ' time' : ' times') +
-      ' and retries on its own; the rest wait behind it.',
-    // The Current report row's second line: when the combat log last grew.
-    logWritten: (ago) => 'Log written ' + ago,
-    upToDate: 'up to date',
-    // The headline while the companion's own service does not answer; the
-    // cards under it keep the last numbers it sent, dimmed.
-    unavailableTitle: 'Status unavailable',
-    unavailableSub: 'The numbers below are the last ones the companion sent.',
-    // The caption over the greyed numbers while Status is unavailable.
-    lastKnown: 'Last known',
-    // The Fights uploaded row while the open report has none yet.
-    noFightsYet: '0 so far',
-    noFightsHelp: 'The first fight uploads when it ends.',
-    // The one row while every fight of the report is still waiting to go up.
-    uploadingFights: (n) => 'Uploading ' + n + (n === 1 ? ' fight' : ' fights') + '…',
-    inProgress: 'In progress',
-    rows: {
-      report: 'Current report',
-      fights: 'Fights uploaded',
-      queued: 'Queued',
-      addon: 'Addon',
-      lastSync: 'Characters sent',
+    // Shown in the body until the companion has answered once.
+    checking: T.checking,
+
+    footer: {
+      // The footer is "Companion" at first paint and "Companion 0.2.13" from the first answer.
+      product: T.footerProduct,
+      version: (v) => fill(T.footerVersion, { version: v }),
+      site: T.footerSite,
+      updateReady: T.footerUpdateReady,
+      // After "Companion 0.2.13", for the first half minute after a new version's first launch.
+      justUpdated: T.footerJustUpdated,
+      joint: T.joint,
     },
-    // The Last sync row's sent line; the other lines come from the snapshot.
-    lastSyncSent: (n, ago) => n + (n === 1 ? ' character, ' : ' characters, ') + ago,
-    // Who a report is credited to. Two states: the name-versus-realm split of
-    // why it is not stays in companion.log, because the player's step is the same.
-    credit: {
-      credited: (name) => 'credited to ' + name,
-      notYet: 'not credited yet',
-      // The log has named nobody yet on a report still open: not a fault, so muted.
-      noName: 'name not read yet',
-      // The second line of the Current report row while it is not credited.
-      notYetHelp: 'Log out once in game with the addon loaded. The companion credits this report then.',
-      separator: ' · ',
-    },
-    // The Addon row's Check for builds now button and the line it leaves.
-    checkBuilds: 'Fetch my builds from the site',
-    checking: 'Fetching…',
-    checked: (when, found) => 'Checked ' + when + ' · ' + found,
-    checkedBuilds: (n, who) => n + (n === 1 ? ' build' : ' builds') + (who.length ? ' for ' + who.join(', ') : ''),
-    checkedNothing: 'nothing new',
-    // The Install the addon into <folder> button while it works. The button's label and the
-    // version lines come from the snapshot (copy.go).
-    installingAddon: 'Installing…',
-    noReport: 'None yet',
-    starting: 'Starting…',
-    folders: 'Game folders',
-    noFolders: 'None found yet.',
-    noInstall: 'No WoW Forever install found. Pick its _forever_ folder in',
-    noInstallLink: 'Settings',
-    watching: 'Watching',
-    lastPlayed: 'Last played',
-    notPlayed: 'Not played yet',
-    watchingTitle: 'The companion reads this folder’s combat log',
-    // The watched install is a fault and shouts; any other is just a fact.
-    advancedOffWatched: 'Advanced logging: OFF',
-    advancedOff: 'Advanced logging: off',
-    advancedOn: 'Advanced logging: on',
-    advancedUnknown: 'Not checked yet. Log in once.',
-    // The line a folder row keeps comes from the snapshot (copy.go).
-  },
 
-  reports: {
-    all: 'Open all my reports on the site',
-    emptyTitle: 'No reports yet.',
-    emptyBody: 'Turn /combatlog on in game and your raids land here.',
-    unpairedTitle: 'Sign in first.',
-    unpairedButton: 'Sign in with Battle.net',
-    unnamed: 'Unnamed report',
-    inProgress: 'in progress',
-    // A report the site has not created yet. The companion creates it on its next upload try.
-    notOnSite: 'not on the site yet',
-    notOnSiteWhen: 'uploads when the site answers',
-    fights: (n) => n + (n === 1 ? ' fight' : ' fights'),
-    copyLink: 'Copy link',
-    copied: 'Copied.',
-    today: 'Today',
-    yesterday: 'Yesterday',
-  },
+    status: {
+      reportLogging: T.statusReportLogging,
+      // The figure at the right of the headline: the fights the site holds.
+      figFights: (n) => (n === 1 ? T.statusFigFightsOne : T.statusFigFightsOther),
+      // Under the Queued row once the fight at the head has failed: it holds the rest, in order.
+      held: (h) => fill(T.statusHeld, {
+        what: h.fight ? fill(T.statusHeldFight, { fight: h.fight }) : T.statusHeldRawLog,
+        times: count(T.statusHeldTimes, h.attempts),
+      }),
+      // The Current report row's second line: when the combat log last grew.
+      logWritten: (ago) => fill(T.statusLogWritten, { ago }),
+      upToDate: T.versionUpToDate,
+      // The headline while the companion's own service does not answer; the cards under it keep
+      // the last numbers it sent, dimmed.
+      unavailableTitle: T.statusUnavailableTitle,
+      unavailableSub: T.statusUnavailableSub,
+      // The caption over the greyed numbers while Status is unavailable.
+      lastKnown: T.statusLastKnown,
+      // The Fights uploaded row while the open report has none yet.
+      noFightsYet: T.statusNoFightsYet,
+      noFightsHelp: T.statusNoFightsHelp,
+      // The one row while every fight of the report is still waiting to go up.
+      uploadingFights: (n) => fill(T.statusUploadingFights, { fights: count(T.countFights, n) }),
+      inProgress: T.statusInProgress,
+      rows: {
+        report: T.statusRowsReport,
+        fights: T.statusRowsFights,
+        queued: T.statusRowsQueued,
+        addon: T.statusRowsAddon,
+        lastSync: T.statusRowsLastSync,
+      },
+      // The Last sync row's sent line; the other lines come from the snapshot.
+      lastSyncSent: (n, ago) => fill(T.statusLastSyncSent, { characters: count(T.countCharacters, n), ago }),
+      // Who a report is credited to. Two states: the name-versus-realm split of why it is not
+      // stays in companion.log, because the player's step is the same.
+      credit: {
+        credited: (name) => fill(T.statusCreditCredited, { name }),
+        notYet: T.statusCreditNotYet,
+        // The log has named nobody yet on a report still open: not a fault, so muted.
+        noName: T.statusCreditNoName,
+        // The second line of the Current report row while it is not credited.
+        notYetHelp: T.statusCreditNotYetHelp,
+        separator: T.joint,
+      },
+      // The Addon row's Check for builds now button and the line it leaves.
+      checkBuilds: T.statusCheckBuilds,
+      checking: T.statusChecking,
+      checked: (when, found) => fill(T.statusChecked, { when, found }),
+      checkedBuilds: (n, who) => {
+        const builds = count(T.countBuilds, n);
+        return who.length ? fill(T.statusCheckedBuildsFor, { builds, who: who.join(', ') }) : builds;
+      },
+      checkedNothing: T.statusCheckedNothing,
+      // The Install the addon into <folder> button while it works. The button's label and the
+      // version lines come from the snapshot (copy.go).
+      installingAddon: T.statusInstallingAddon,
+      noReport: T.statusNoReport,
+      starting: T.statusStarting,
+      folders: T.statusFolders,
+      noFolders: T.statusNoFolders,
+      noInstall: T.statusNoInstall,
+      noInstallLink: T.statusNoInstallLink,
+      watching: T.statusWatching,
+      lastPlayed: T.statusLastPlayed,
+      notPlayed: T.statusNotPlayed,
+      watchingTitle: T.statusWatchingTitle,
+      // The watched install is a fault and shouts; any other is just a fact.
+      advancedOffWatched: T.statusAdvancedOffWatched,
+      advancedOff: T.statusAdvancedOff,
+      advancedOn: T.statusAdvancedOn,
+      advancedUnknown: T.statusAdvancedUnknown,
+      // The line a folder row keeps comes from the snapshot (copy.go).
+    },
 
-  device: {
-    // Not connected
-    notConnected: 'Not connected',
-    signedOutBar: (who) => (who ? 'Your sign-in as ' + who : 'Your sign-in') + ' is no longer valid. Sign in again to keep uploading.',
-    intro: 'Sign in on foreversixty.gg so the companion can upload your fights and keep the addon up to date.',
-    signIn: 'Sign in with Battle.net',
-    signInNote: 'Opens your browser. Your Battle.net password never reaches this app.',
-    fallbackToggle: 'Having trouble? Paste a code from the site',
-    fallbackLabel: 'Code from the site',
-    fallbackPlaceholder: 'Paste the code',
-    fallbackHelp: 'On foreversixty.gg open Logs and press Pair a device.',
-    fallbackButton: 'Connect with code',
-    fallbackBusy: 'Connecting…',
-    tryAgain: 'Try again',
-    starting: 'Opening your browser…',
-    // Signing in
-    waiting: 'Waiting for you to sign in…',
-    checkCode: 'Check that your browser shows this code:',
-    // Under the heading while the sign-in page is open in the player's browser.
-    opened: 'Your browser has opened. Sign in with Battle.net there, then come back.',
-    countdown: (m, s) => 'Expires in ' + m + ':' + String(s).padStart(2, '0'),
-    reopen: 'Open the browser again',
-    cancel: 'Cancel',
-    trouble: 'Having trouble reaching the site. Still trying…',
-    // Browser blocked
-    blocked: 'Could not open your browser. Copy this link into any browser, on this PC or another.',
-    copyLink: 'Copy link',
-    copied: 'Copied.',
-    linkLabel: 'Sign-in link',
-    // Connected
-    connectedAs: (who) => (who ? 'Connected as ' + who : 'Connected'),
-    flash: 'Connected. The companion is ready.',
-    savedIn: 'Saved in',
-    // The connected page's facts, from the snapshot.
-    engine: 'Log parser',
-    uploaded: 'Uploaded from this PC',
-    uploadedValue: (reports, fights) => reports + (reports === 1 ? ' report, ' : ' reports, ') + fights + (fights === 1 ? ' fight' : ' fights'),
-    addonSeen: 'Addon last seen in game',
-    joint: ' · ',
-    openReports: 'Open my reports',
-    forget: 'Forget this device',
-    forgetAsk: 'Forget this device? Uploads stop until you sign in again. Your reports on the site stay.',
-    forgetYes: 'Forget',
-    forgetNo: 'Cancel',
-    forgottenRemoved: 'Forgotten. This computer was removed from your account.',
-    forgottenLocal: 'Forgotten on this PC. To remove it from your account too, open ',
-    forgottenLink: 'Account > Devices',
-    forgottenLocalEnd: ' on foreversixty.gg.',
-    forgetting: 'Forgetting…',
-    emptyCode: 'Paste the code from the site first.',
-  },
+    reports: {
+      // The one name for the reports job, as the site's: the tray and the Device page say it too.
+      all: T.reportsOnSite,
+      emptyTitle: T.reportsEmptyTitle,
+      emptyBody: T.reportsEmptyBody,
+      unpairedTitle: T.reportsUnpairedTitle,
+      unpairedButton: T.signIn,
+      unnamed: T.reportsUnnamed,
+      inProgress: T.reportsInProgress,
+      // A report the site has not created yet. The companion creates it on its next upload try.
+      notOnSite: T.reportsNotOnSite,
+      notOnSiteWhen: T.reportsNotOnSiteWhen,
+      fights: (n) => count(T.countFights, n),
+      copyLink: T.copyLink,
+      copied: T.copied,
+      today: T.reportsToday,
+      yesterday: T.reportsYesterday,
+    },
 
-  settings: {
-    visibility: 'New reports are',
-    visibilityOptions: { public: 'Public', unlisted: 'Unlisted', private: 'Private', guild: 'Guild only' },
-    // What each choice means, under the select.
-    visibilityHelp: {
-      public: 'Anyone can find it in rankings and search.',
-      unlisted: 'Anyone with the link can open it. It is not listed.',
-      private: 'Only you.',
-      guild: 'Members of your guild.',
+    device: {
+      // Not connected
+      notConnected: T.deviceNotConnected,
+      signedOutBar: (who) => (who ? fill(T.deviceSignedOutBarAs, { who }) : T.deviceSignedOutBar),
+      intro: T.deviceIntro,
+      signIn: T.signIn,
+      signInNote: T.deviceSignInNote,
+      fallbackToggle: T.deviceFallbackToggle,
+      fallbackLabel: T.deviceFallbackLabel,
+      fallbackPlaceholder: T.deviceFallbackPlaceholder,
+      fallbackHelp: T.deviceFallbackHelp,
+      fallbackButton: T.deviceFallbackButton,
+      fallbackBusy: T.deviceFallbackBusy,
+      tryAgain: T.deviceTryAgain,
+      starting: T.deviceStarting,
+      // Signing in
+      waiting: T.deviceWaiting,
+      checkCode: T.deviceCheckCode,
+      // Under the heading while the sign-in page is open in the player's browser.
+      opened: T.deviceOpened,
+      countdown: (m, s) => fill(T.deviceCountdown, { m, s: String(s).padStart(2, '0') }),
+      reopen: T.deviceReopen,
+      cancel: T.deviceCancel,
+      trouble: T.deviceTrouble,
+      // Browser blocked
+      blocked: T.deviceBlocked,
+      copyLink: T.copyLink,
+      copied: T.copied,
+      linkLabel: T.deviceLinkLabel,
+      // Connected
+      connectedAs: (who) => (who ? fill(T.deviceConnectedAs, { who }) : T.deviceConnected),
+      flash: T.deviceFlash,
+      savedIn: T.deviceSavedIn,
+      // The connected page's facts, from the snapshot.
+      engine: T.deviceEngine,
+      uploaded: T.deviceUploaded,
+      uploadedValue: (reports, fights) => fill(T.deviceUploadedValue, { reports: count(T.countReports, reports), fights: count(T.countFights, fights) }),
+      addonSeen: T.deviceAddonSeen,
+      joint: T.joint,
+      openReports: T.reportsOpen,
+      forget: T.deviceForget,
+      forgetAsk: T.deviceForgetAsk,
+      forgetYes: T.deviceForgetYes,
+      forgetNo: T.deviceForgetNo,
+      forgottenRemoved: T.deviceForgottenRemoved,
+      forgottenLocal: T.deviceForgottenLocal,
+      forgottenLink: T.deviceForgottenLink,
+      forgottenLocalEnd: T.deviceForgottenLocalEnd,
+      forgetting: T.deviceForgetting,
+      emptyCode: T.failureEmptyCode,
     },
-    // What the Saved note says about the choice.
-    visibilitySaved: {
-      public: 'public',
-      unlisted: 'unlisted',
-      private: 'private',
-      guild: 'guild only',
-    },
-    folders: 'Game folders',
-    foundAutomatically: 'Found automatically',
-    remove: 'Remove',
-    removing: 'Removing…',
-    addFolder: 'Add a folder…',
-    adding: 'Choosing…',
-    folderAdded: 'Added.',
-    folderAddedPending: 'Added. Switching to the new folder when the current report closes.',
-    folderRemoved: 'Removed.',
-    noFolders: 'No WoW Forever install found yet. Add its _forever_ folder.',
-    character: 'Reports are credited to',
-    characterAuto: 'Automatic (read from the log)',
-    characterAutoNow: (name) => 'Automatic (currently ' + name + ')',
-    characterHelp: 'Pick a character only if Automatic is wrong.',
-    keepAddon: 'Keep the addon up to date',
-    keepAddonHelp: 'New versions go in when the game is closed. CurseForge and Wago users can leave this on; they get the same files.',
-    savedKeep: { on: 'Saved. The addon will be kept up to date.', off: 'Saved. The companion will not update the addon.' },
-    save: 'Save changes',
-    noChanges: 'No changes',
-    unsaved: 'Unsaved changes',
-    saving: 'Saving…',
-    saved: 'Saved.',
-    savedVisibility: (words) => 'Saved. New reports will be ' + words + '. The report in progress keeps its setting.',
-    rulesets: { normal: 'Normal', pvp: 'PvP', rp: 'Roleplaying', hardcore: 'Hardcore' },
-  },
 
-  // The Mac's first launch from a download (install.html, internal/install).
-  install: {
-    // The Mac's first launch from the disk image or a download (internal/install, offer.go).
-    move: {
-      title: 'Move Forever Sixty to Applications?',
-      lede: 'This download goes in the Trash.',
-      toggle: 'Open at login',
-      action: 'Move to Applications',
-      busy: 'Moving…',
-      failed: 'Move failed. Press Move to Applications to try again.',
+    settings: {
+      visibility: T.settingsVisibility,
+      visibilityOptions: {
+        public: T.settingsVisibilityOptionsPublic,
+        unlisted: T.settingsVisibilityOptionsUnlisted,
+        private: T.settingsVisibilityOptionsPrivate,
+        guild: T.settingsVisibilityOptionsGuild,
+      },
+      // What each choice means, under the select.
+      visibilityHelp: {
+        public: T.settingsVisibilityHelpPublic,
+        unlisted: T.settingsVisibilityHelpUnlisted,
+        private: T.settingsVisibilityHelpPrivate,
+        guild: T.settingsVisibilityHelpGuild,
+      },
+      // What the Saved note says about the choice.
+      visibilitySaved: {
+        public: T.settingsVisibilitySavedPublic,
+        unlisted: T.settingsVisibilitySavedUnlisted,
+        private: T.settingsVisibilitySavedPrivate,
+        guild: T.settingsVisibilitySavedGuild,
+      },
+      folders: T.settingsFolders,
+      foundAutomatically: T.settingsFoundAutomatically,
+      remove: T.settingsRemove,
+      removing: T.settingsRemoving,
+      addFolder: T.settingsAddFolder,
+      adding: T.settingsAdding,
+      folderAdded: T.settingsFolderAdded,
+      folderAddedPending: T.settingsFolderAddedPending,
+      folderRemoved: T.settingsFolderRemoved,
+      noFolders: T.settingsNoFolders,
+      character: T.settingsCharacter,
+      characterAuto: T.settingsCharacterAuto,
+      characterAutoNow: (name) => fill(T.settingsCharacterAutoNow, { name }),
+      characterHelp: T.settingsCharacterHelp,
+      keepAddon: T.settingsKeepAddon,
+      keepAddonHelp: T.settingsKeepAddonHelp,
+      savedKeep: { on: T.settingsSavedKeepOn, off: T.settingsSavedKeepOff },
+      save: T.settingsSave,
+      noChanges: T.settingsNoChanges,
+      unsaved: T.settingsUnsaved,
+      saving: T.settingsSaving,
+      saved: T.settingsSaved,
+      savedVisibility: (words) => fill(T.settingsSavedVisibility, { words }),
+      rulesets: {
+        normal: T.settingsRulesetsNormal,
+        pvp: T.settingsRulesetsPvp,
+        rp: T.settingsRulesetsRp,
+        hardcore: T.settingsRulesetsHardcore,
+      },
     },
-    // The Windows setup download (setup.go); an upgrade when a copy is installed already.
-    setup: {
-      title: 'Install Forever Sixty?',
-      lede: 'Installs in your own Programs folder. No admin needed.',
-      titleUpgrade: 'Update Forever Sixty?',
-      ledeUpgrade: 'Replaces the copy already installed. Your settings stay.',
-      toggle: 'Start with Windows',
-      action: 'Install',
-      actionUpgrade: 'Update',
-      busy: 'Installing…',
-      busyUpgrade: 'Updating…',
-      done: 'Forever Sixty is installed.',
-      doneUpgrade: 'Forever Sixty is updated.',
-      failed: 'Install failed. Press Install to try again.',
+
+    // The install windows (install.html, internal/install).
+    install: {
+      // The Mac's first launch from the disk image or a download (internal/install, offer.go).
+      move: {
+        title: T.installMoveTitle,
+        lede: T.installMoveLede,
+        toggle: T.installMoveToggle,
+        action: T.installMoveAction,
+        busy: T.installMoveBusy,
+        failed: T.installMoveFailed,
+      },
+      // The Windows setup download (setup.go); an upgrade when a copy is installed already.
+      setup: {
+        title: T.installSetupTitle,
+        lede: T.installSetupLede,
+        titleUpgrade: T.installSetupTitleUpgrade,
+        ledeUpgrade: T.installSetupLedeUpgrade,
+        toggle: T.installSetupToggle,
+        action: T.installSetupAction,
+        actionUpgrade: T.installSetupActionUpgrade,
+        busy: T.installSetupBusy,
+        busyUpgrade: T.installSetupBusyUpgrade,
+        done: T.installSetupDone,
+        doneUpgrade: T.installSetupDoneUpgrade,
+        failed: T.installSetupFailed,
+      },
+      // Apps & Features' Uninstall (setup.go).
+      uninstall: {
+        title: T.installUninstallTitle,
+        lede: T.installUninstallLede,
+        toggle: T.installUninstallToggle,
+        action: T.installUninstallAction,
+        busy: T.installUninstallBusy,
+        failed: T.installUninstallFailed,
+        done: T.installUninstallDone,
+      },
+      // The step under the bar, as each one starts.
+      steps: {
+        stop: T.installStepsStop,
+        copy: T.installStepsCopy,
+        shortcut: T.installStepsShortcut,
+        register: T.installStepsRegister,
+        start: T.installStepsStart,
+        remove: T.installStepsRemove,
+      },
     },
-    // Apps & Features' Uninstall (setup.go).
-    uninstall: {
-      title: 'Remove Forever Sixty?',
-      lede: 'Your reports on foreversixty.gg stay.',
-      toggle: 'Keep my settings',
-      action: 'Remove',
-      busy: 'Removing…',
-      failed: 'Remove failed. Press Remove to try again.',
-      done: 'Forever Sixty is removed.',
-    },
-    // The step under the bar, as each one starts.
-    steps: {
-      stop: 'Closing Forever Sixty',
-      copy: 'Copying files',
-      shortcut: 'Adding the Start menu shortcut',
-      register: 'Adding it to Apps & Features',
-      start: 'Starting Forever Sixty',
-      remove: 'Removing files',
-    },
-  },
-};
+  };
+})();
 
 if (typeof module !== 'undefined') module.exports = COPY;
