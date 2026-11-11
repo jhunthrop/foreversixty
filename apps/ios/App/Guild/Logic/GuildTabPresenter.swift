@@ -1,4 +1,5 @@
 import Auth
+import DesignSystem
 import Foundation
 import Models
 
@@ -187,10 +188,9 @@ struct GuildTabPresenter {
         )
     }
 
-    /// `US PvP`, the site's realm words.
+    /// `US PvP`, the site's realm words (the region through `Codes`, the ruleset the account page's label).
     static func realm(region: String, ruleset: String) -> String {
-        let rules = ruleset.lowercased() == "pvp" ? "PvP" : ruleset.prefix(1).uppercased() + ruleset.dropFirst()
-        return "\(region.uppercased()) \(rules)"
+        "\(Codes.region(region)) \(AccountCopy.ruleset(ruleset))"
     }
 
     /// The newest night's drops, each with who won it (Not awarded yet while open).
@@ -356,7 +356,7 @@ struct GuildTabPresenter {
     }
 
     /// The line with its first letter capitalised (the step names run in lower case mid-sentence).
-    static func sentence(_ line: String) -> String { line.prefix(1).uppercased() + line.dropFirst() }
+    static func sentence(_ line: String) -> String { line.prefix(1).capitalized + line.dropFirst() }
 
     /// The setup step's name, as it reads mid-sentence.
     static func stepWord(_ key: String) -> String? {

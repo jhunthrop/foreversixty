@@ -209,15 +209,20 @@ struct RaidTabFactsTests {
 
         let tab = RaidsTabModel(service: try EchoRaidService(), cache: NoRaidCache(), now: { RaidTime.now })
         await tab.load()
+        guard case let .loaded(loaded) = tab.state else { Issue.record("not loaded"); return }
+        // Not synced is a 60's line (spec 2026-11-10-guild-tab.md 2.1): the fixture's officer is 58, so the root
+        // is read with them at 60, and at 58 the line stays off the tab for officers too.
+        let sixty = RaidsTabState.loaded(loaded.at(level: RaidFlowPresenter.maxLevel))
         let badge = { (officer: Bool) in RaidBadge(count: 0, youUnanswered: false, officer: officer, unanswered: 0, applicants: 0) }
         let synced = [FlowPlayer.key: false]
-        func guild(_ officer: Bool) -> RaidGuildContent? {
-            let root = RaidRootComposer(presenter: presenter, synced: synced).content(tab.state, extras: RaidRootExtras(badge: badge(officer)))
+        func guild(_ officer: Bool, _ state: RaidsTabState = sixty) -> RaidGuildContent? {
+            let root = RaidRootComposer(presenter: presenter, synced: synced).content(state, extras: RaidRootExtras(badge: badge(officer)))
             if case let .guild(guild) = root { return guild }
             return nil
         }
         #expect(guild(true)?.notSynced?.keys == [FlowPlayer.key])
         #expect(guild(false)?.notSynced == nil)
+        #expect(guild(true, tab.state)?.notSynced == nil, "under 60 the line stays on the raid page")
         #expect(guild(false)?.notes == "Bring **flasks**")
         #expect(guild(false)?.next?.invites != nil)
     }

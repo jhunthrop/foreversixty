@@ -48,6 +48,27 @@ enum RaidFixture {
     private struct ErrorEnvelope: Decodable { let error: ErrorBody }
 }
 
+extension AccountCharacter {
+    /// The same character at another level (the fixtures' Gorvash is 58; the 60s' lines need a 60).
+    func at(level: Int) -> AccountCharacter {
+        AccountCharacter(
+            key: key, region: region, ruleset: ruleset, name: name, source: source, className: className, realm: realm,
+            level: level, faction: faction, race: race, gender: gender, itemLevel: itemLevel, avatarUrl: avatarUrl,
+            renderUrl: renderUrl, spec: spec, build: build, guild: guild
+        )
+    }
+}
+
+extension RaidsTabContent {
+    /// The same tab content with its character at another level.
+    func at(level: Int) -> RaidsTabContent {
+        RaidsTabContent(
+            head: head, character: character.at(level: level), planned: planned, nights: nights, waiting: waiting,
+            offlineSince: offlineSince, staleSince: staleSince, accountKeys: accountKeys
+        )
+    }
+}
+
 /// Fixed instants: two days before the fixture raid (invites 2026-12-20 00:45Z, pull 01:00Z).
 enum RaidTime {
     static let chicago = TimeZone(identifier: "America/Chicago") ?? .gmt
