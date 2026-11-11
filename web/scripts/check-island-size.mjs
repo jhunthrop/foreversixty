@@ -121,7 +121,10 @@ const PAGE_ISLAND_BUDGETS = [
   // the zoned calendar and the locale clock, lib/format/number.ts, lib/format/duration.ts,
   // lib/ui/countdown.ts) instead of local copies. Measured on the real-data build: 138,302 on
   // the base (already over) -> 139,451, +1,149 bytes, with the usual ~0.5 KB slack.
-  { component: 'Character', limitBytes: 18 * 1024 + 256, closureLimitBytes: 140000 },
+  // Closure 140,000 -> 140,900 (unify-icons on top of house formats, 2026-11-10): the page's icons
+  // draw through ui/SpellIcon, ItemIcon and lib/ui/assets iconUrl. Measured 140,362 on the merged
+  // fixture build, +362 over lane B's figure, with the usual ~0.5 KB slack.
+  { component: 'Character', limitBytes: 18 * 1024 + 256, closureLimitBytes: 140900 },
   // +512 bytes (guild round 3, 2026-11-05): the guild page's first view now carries the week-one
   // card's raider step, the plan gate on the band, the unknown-guild panel and the landing's
   // Your guilds card. Measured 16,564 gzipped against 16,022 at round 2 (main moved too). Lazy
@@ -157,7 +160,10 @@ const PAGE_ISLAND_BUDGETS = [
   // chunks of their own (44 -> 46 files, the same code). Measured 80,065 bytes gzipped on the
   // real-data build (79,241 before): the cost is the two chunks' module boundaries, not new weight.
   // Closure 83,500 since the BiS paperdoll of 2026-11-09: the fixture build read 81,796.
-  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 83500 },
+  // Closure 83,500 -> 85,700 (unify-icons, 2026-11-10): the paperdoll and lists draw their icons
+  // through the shared ui/SpellIcon and ItemIcon with iconUrl. Measured 85,177 on the merged
+  // fixture build, with the usual ~0.5 KB slack.
+  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 85700 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
   // lib/ui/listbox.ts with its list renderer, the popover core and Floating UI, loaded after
   // first paint on a fine pointer only. The spec asked for 9 KB; it measures 10,221 bytes
