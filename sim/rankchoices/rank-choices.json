@@ -1152,18 +1152,6 @@
             "preset": "bare"
           }
         ]
-      },
-      {
-        "spell": "Holy Strike",
-        "authored": 10333,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 40,
-            "rank": 1,
-            "note": "Threat per second at 40, bare: rank 1 +0.73%/+0.78% Human, +0.79%/+0.63% Dwarf, +0.63%/+0.89% Undead over the default (rank 5), above the 0.2% bar at seeds 1 and 50001; rank 2 ties and rank 3 loses. The 5-mana rank 1 leaves the mana for more Judgements, Seals and Hammers of the Righteous; at 30, 50 and 60 rank 1 loses 3% to 5% (round-13 ranks.md). Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2). Sim-accuracy round 24 second pass, on the talents the leveling order gives at each level (spec-breakdown -level N -rank id=rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-05-sim-audit-round24/paladin.md, Second pass). Rank 1 holds at 40; at 41 and 42 the top rank, 5, beats it by 0.5 to 1.1% for a Dwarf and an Undead."
-          }
-        ]
       }
     ],
     "paladin-retribution": [

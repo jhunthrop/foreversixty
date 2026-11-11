@@ -135,9 +135,10 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		{"Gnome Fire Blast at 30", "mage-fire", "mage", BarePreset, "gnome", 30, 2137, 8412},
 		// Sim-accuracy round 18: rank 2 (996, whole at 60) beats rank 1 (596, 55% of its bonus) at bare 60.
 		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 996, 596},
-		// Protection's Holy Strike rank 1 (679) at 40: the mana it saves buys more Judgements
-		// and Hammers of the Righteous (+0.6% to +0.9% threat for every paladin race).
-		{"Dwarf Holy Strike at 40", "paladin-protection", "paladin", BarePreset, "dwarf", 40, 679, 2495},
+		// Protection's Holy Strike: the top rank at 40 too, since the 2026-11-11 paladins lane
+		// fixed the formula (rank 1's saved mana no longer pays for its smaller flat Holy hit;
+		// -4.2% to -4.7% threat at 40 for a Dwarf and an Undead).
+		{"Dwarf Holy Strike at 40", "paladin-protection", "paladin", BarePreset, "dwarf", 40, 2495, 679},
 		{"Holy Strike at 50 keeps the top rank", "paladin-protection", "paladin", BarePreset, "dwarf", 50, 5569, 679},
 		// Lightwell rank 1 now loses or ties for every race at bare 60: the row is gone.
 		{"Troll Lightwell at bare 60", "priest-holy", "priest", BarePreset, "troll", 60, 27871, 724},

@@ -97,7 +97,7 @@ On one target a cheap Consecration rank you can put down far more often beats th
 
 ## Stat priority
 
-Divine Strength adds 10% to your Strength, which goes into every swing, Holy Strike and Seal of Command proc. Seal of Righteousness scales with your weapon's speed and your spell damage instead, and a two-hander takes about 60% more of that spell damage than a one-hander. Champion of the Light turns 60% of your Intellect into spell damage for your Seals, Judgements and Consecration, so Intellect and spell power both add to your damage. A melee crit doubles the hit and feeds Vengeance. Hit counts up to the cap and adds nothing past it; Precision and Artisan's Precision both count toward it.
+Divine Strength adds 10% to your Strength, which goes into every swing, Holy Strike and Seal of Command proc. Seal of Righteousness scales with your weapon's speed and your spell damage instead, and a two-hander takes about 60% more of that spell damage than a one-hander. Champion of the Light turns 60% of your Intellect into spell damage for your Seals, Judgements, Consecration and Holy Strike. Holy Strike adds its 81 to 105 Holy damage and a share of your spell damage on top of half your weapon's damage, and neither is cut by that half, so Intellect and spell power both add to your damage. A melee crit doubles the hit and feeds Vengeance. Hit counts up to the cap and adds nothing past it; Precision and Artisan's Precision both count toward it.
 
 ## Best in slot
 
