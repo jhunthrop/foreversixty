@@ -60,6 +60,18 @@ STAT_WORDS: dict[str, str] = {
     "mcrit": "Critical Strike chance",
 }
 
+#: A bare `$mcrit`-style stat token in already-rendered text, one `STAT_WORDS` names.
+_STAT_TOKEN = re.compile(
+    r"\$(?P<name>" + "|".join(sorted(STAT_WORDS, key=len, reverse=True)) + r")(?!\w)"
+)
+
+
+def name_reader_stats(text: str) -> str:
+    """Each bare stat token the reader would bring as its word (`$mcrit` -> "Critical
+    Strike chance"), for text another source rendered with the token left in."""
+    return _STAT_TOKEN.sub(lambda match: STAT_WORDS[match["name"]], text)
+
+
 _LEVEL_TEST = re.compile(r"\$PL(?P<op>>=|<=|==|!=|>|<|=)(?P<value>\d+)")
 _COMPARE: dict[str, Callable[[int, int], bool]] = {
     ">=": operator.ge,

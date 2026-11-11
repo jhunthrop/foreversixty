@@ -162,6 +162,24 @@ def test_two_talents_in_one_cell_are_refused():
             "Charge.",
         ),
         ("lasts <!--sp1:0-->12 sec<!--sp1-->.  ", "lasts 12 sec."),
+        # Death Mark 1316709: Wowhead's Forever talent payload (nether.wowhead.com/forever/
+        # data/talents-classic, 2026-11-11) prints the reader's melee crit as the bare token
+        # "($mcrit / 100 + 1)"; the spell's own sentence names it "Critical Strike chance",
+        # as the client-table renderer writes it (spelltext_grammar.STAT_WORDS).
+        (
+            "1 point  : 12% stored, (((63 + 102 + 0.04 * Attack Power) * ($mcrit / 100 + 1)) * "
+            "<!--sp14162:0-->1<!--sp14162-->) damage cap",
+            "1 point  : 12% stored, (((63 + 102 + 0.04 * Attack Power) * "
+            "(Critical Strike chance / 100 + 1)) * 1) damage cap",
+        ),
+        # Mind Flay 15407: the payload keeps the client's "over $d  and" double space; a page
+        # shows one. The combo-point table's "1 point  :" layout and the indent stay.
+        (
+            "causing 63 Shadow damage over 3 sec  and slowing",
+            "causing 63 Shadow damage over 3 sec and slowing",
+        ),
+        ("Hits for <!--sp1:0--><!--sp1-->  more damage.", "Hits for more damage."),
+        ("x<br />   1 point  : 14 sec", "x\n   1 point  : 14 sec"),
     ],
 )
 def test_clean_description(html: str, plain: str):
