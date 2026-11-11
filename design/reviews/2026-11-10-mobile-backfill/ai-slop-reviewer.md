@@ -344,3 +344,54 @@ None of the blocking visual tells (1, 2, 5, 8, 12, 13, 15) is present: no glow, 
 
 VERDICT: FAIL
 
+## Round 7
+
+The round-7 changes land well. The Android Gear sheet has one new qualifier line that I'm failing on.
+
+I opened these round-7 captures. I did not open `android-r7/drawer-02-notifications-all-on.png`, `drawer-03-notifications-all-off.png`, or the iOS all-on and all-off menu frames. I read the Gear sheet and push copy in `apps/shared/copy/en.json`, and the format rules in `apps/shared/formats.json`.
+- **Android:** gear-01-top, gear-02-sheet-where, drawer-01-notifications-some-off, push-raid-short-mention-failed, push-applicant-accept-failed.
+- **iOS:** r7-gear-01-top, r7-gear-02-sheet-where-settled, r7-home-01-top, r7-menu-notifications-some-off, r7-push-short-fail-03-result, r7-push-applicant-accept-fail-03-result.
+
+**Round-6 must-fix: cleared**
+- Gear's header reads `182 DPS` on both `android-r7/gear-01-top.png` and `ios/r7-gear-01-top.png`, matching Home, Activity and the house format.
+- `+18.0 DPS from 13 upgrades` is under 100, so one decimal is correct.
+- Home reads `13 upgrades · +18.0 DPS`, in the same format.
+
+**Other round-7 changes: fine**
+- **Push failures:**
+  - Copy is short and names the thing. `Could not mention the healers in Discord`, then `Onyxia's Lair. Open the raid to try again.`
+  - The applicant push reads `Could not accept Mirelle`, then `Mirelle, Holy Priest 60. Open Forever Sixty to try again.`
+  - There is no apology, no "Oops" and no "Something went wrong".
+  - iOS truncates the Mention title to `…in Di...` on the banner. That is the system banner and not a tell.
+- **Drawer Notifications:** `Gear and sims, guild ladder, tiers off` is identical on both platforms. It says what the player is missing.
+- **Gear sheet Where line:**
+  - On iOS, `World drop` and `Runner-up · World drop · −0.3 DPS` are a player's words.
+  - On Android, `Crafted: Blacksmithing` is a real source.
+
+**Must-fix**
+1. **Tell 22, Android Gear sheet (`android-r7/gear-02-sheet-where.png`):** a grey caption `Where to get it` sits under `Crafted: Blacksmithing`. It explains what the row already says.
+   - iOS shows the same row with no caption (`World drop` alone), so the platforms differ.
+   - Drop the caption and the `gear.sheet.where` string (`apps/shared/copy/en.json:718`, `apps/android/app/src/main/res/values/strings.xml:750`). Match iOS.
+   - If it is meant to be a link, it must look like one. It is grey and flat now, so it reads as a label.
+
+**Polish**
+- Per-slot `+0.0 DPS` on `Officer's Pauldrons` (both Gear captures) is still there. Consider `+0 DPS`. This is the second round I've raised it.
+- Home's stamp reads `Synced 10 h ago`, while the drawer reads `Updated 10 h ago from Battle.net`. Both stand under your KEEP, but they read as one fact in two wordings.
+- On Home, the Molten Core row in `ios/r7-home-01-top.png` ends in an orphan `Thu` under `Thu 24 Dec, 8 pm CST.`, while the push-fail captures show `4 h ago`. The row repeats the day. Your round-6 KEEP covers the duplicate day, so the line can go wherever the body already holds the date.
+- iOS's Gear sheet Where row repeats the item icon beside `World drop`, and Android does the same on the helm. It is a mild stutter, since the tooltip above already shows the item.
+
+**Blocking visual tells**
+None of 1, 2, 5, 8, 12, 13 or 15 is present. There are no glows, gradients, hero slogans, glass beyond the system iOS tab bar, or empty frames. The one framed plate on Home still stands.
+
+**Authentic, keep**
+- Quality-coloured item rows with per-slot DPS.
+- `3 of 17 slots match the list`.
+- `Level 58 Fury Warrior · 2 levels to the 60 list`.
+- `Off hand · Crafted: Blacksmithing` on Home.
+- Home's `Next upgrades` list, showing `Lady Palanseer` and `Creeg Bothunk` as sources.
+- The Android sheet's `Kraggor · Fury Warrior · needs it, the pick on their list` list.
+- `3 guildmates have not shared their gear yet`.
+- The notification copy above.
+
+VERDICT: FAIL
+

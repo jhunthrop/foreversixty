@@ -433,3 +433,62 @@ I opened 14 captures and 2 iOS flow snapshots, listed in the Evidence limits sec
 
 VERDICT: SHIP
 
+## Round 7
+
+Round 7 clears all four round-6 items, with two SHOULD fixes and three NITs. The "Where" line works, but Android and iOS label it differently and the iOS row has no label at all.
+
+**Round-6 items**
+- **S1 and S2, push failure copy: cleared on both apps.**
+  - Android `push-raid-short-mention-failed.png` reads `Could not mention the healers in Discord` over `Onyxia's Lair. Open the raid to try again.`.
+  - Android `push-applicant-accept-failed.png` reads `Could not accept Mirelle` over `Mirelle, Holy Priest 60. Open Forever Sixty to try again.`.
+  - iOS `r7-push-short-fail-03-result` and `r7-push-applicant-accept-fail-03-result` carry the same strings. The applicant is named, "save" is gone, and the app is named.
+- **S3, retry: cleared.** The body says where to retry, and the tap opens the raid or the applications list. Neither failure shows action buttons, and the body line is the retry cue.
+- **S4, drawer Notifications states: cleared on both apps.**
+  - Android shows `Gear and sims, guild ladder, tiers off`, `All on` and `All off`. I opened some-off and all-off and took all-on from the file list.
+  - iOS shows `All off` and `All on`, and I took its some-off frame from the file list.
+  - All states fit one line, with no stranded word.
+- **Gear header figure: cleared.** Both apps read `182 DPS` and `+18.0 DPS from 13 upgrades · synced 10 h ago`. The thirteen gains sum to 18.0, and 3 of 17 slots match.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+1. **The "Where" line is labelled differently on each app, and not at all on iOS.**
+   - Android shows `Crafted: Blacksmithing` with `Where to get it` as a grey caption under it, so the label comes after the value.
+   - iOS shows `World drop` in bold beside the item icon, with no caption. It looks like a list row for the item itself rather than a source.
+   - The round-7 decision calls this one `Where` line, the way Home's Best run line reads.
+   - Fix: use one row pattern on both apps. Either put a `Where` caption above the value, or write `Where · World drop` and `Where · Crafted: Blacksmithing`.
+   - The icon is the item's own, so it also matches the `Runner-up` row below it. Drop it from this row or put the caption in front.
+2. **The iOS banner truncates the Mention title.**
+   - It reads `Could not mention the healers in Di...`, so the word that says what failed is the one cut off. Android shows the full title.
+   - Fix: use a shorter `push.short.failed` title, for example `Could not mention the healers`. The body already says Onyxia's Lair, and Discord is implied by the Mention action.
+
+**NIT**
+- **`Shoulder · +0.0 DPS` on both apps.** It reads like an upgrade, but the shoulder is not among the 13. Show the equipped-style line, or a `No gain` line.
+- **The iOS sheet steps do not show the sheet moving.**
+  - `r7-gear-02-sheet-where-t0`, `-t400` and `-settled` all show the sheet at the same height. They differ by at most 2 px.
+  - Only `-scrolled` shows the full-height sheet and the `More about this item` link. I judged the settled layout. I cannot judge the presentation timing from these frames.
+- **The iOS menu captures are scrolled.**
+  - `r7-menu-notifications-all-off` and `-all-on` start mid-drawer.
+  - The status-bar clock sits on top of the `Tools` heading and the `Hunter · 31` line shows above it.
+  - The drawer header and the Notifications row never share a frame on iOS. This is a capture position problem, since I did not see a layout fault.
+- **Fixture differences, no action.** Raid badge `1` on Gear and `6` on Home, and Home reading `Synced 37 d ago` in the iOS push frames (the one kept stale capture).
+
+**Evidence limits**
+- I did not open the mocks in `design/mocks/app/` or the Android goldens under `apps/android/app/src/test/screenshots/`. I judged against the round-7 decisions and my round-6 verdict.
+- I did not open Android `drawer-02-notifications-all-on`, the iOS fail-01, fail-02 and fail-04 frames for the applicant sequence, `r7-gear-03` beyond what is noted, or `r7-home-01-top`.
+- I opened the iOS short-failure sequence only at steps 03 and 04.
+
+**Checklist**
+- [x] Gear in the house format on both apps
+- [x] Mention failure copy specific, with a stated retry
+- [x] Accept failure names the applicant and the app
+- [x] Drawer Notifications value in some-off, All on and All off
+- [x] Gear sheet shows a source row
+- [ ] Source row labelled and identical across apps (SHOULD 1)
+- [ ] Banner title survives one iOS line (SHOULD 2)
+
+Files are under `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/`, in `android-r7/` and `ios/` (the `r7-*` files).
+
+VERDICT: SHIP
+

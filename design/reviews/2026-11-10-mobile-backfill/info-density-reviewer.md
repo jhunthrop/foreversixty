@@ -382,3 +382,45 @@ Files:
 
 VERDICT: DENSE WITH ADDITIONS
 
+## Round 7
+
+Round 7 landed both of my round-6 additions. I have no blocker. I read `android-r7/gear-01-top`, `gear-02-sheet-where` and `drawer-01-notifications-some-off`, and `ios/r7-gear-02-sheet-where-settled` and `r7-menu-notifications-some-off`. I did not open the All on and All off drawer frames, the push-failure frames or `r7-home-01-top`. I also did not open `r7-gear-03-sheet-where-scrolled`, so I did not check the iOS Where row against Android's on the scrolled sheet. The Where-line items below rest on the Android Helm sheet and the iOS Cape sheet.
+
+**Round-6 additions**
+- **S1, Gear source:** landed as a `Where` row in the sheet, not as a cell sub-line. Android reads `Crafted: Blacksmithing` and iOS reads `World drop` for the Dark Phantom Cape. The data is the one `WhereToGo.kt` already loads. The round-7 KEEP on cells without a source sub-line stands. The cells are already full at 390 with name, slot and gain, and one tap reaches the sheet.
+- **S2, Notifications value:** landed. Android `drawer-01-notifications-some-off` and iOS `r7-menu-notifications-some-off` both read `Gear and sims, guild ladder, tiers off`. The fixture `app.notifications.json` is the same file on both.
+- **Gear header:** reads `182 DPS` and `+18.0 DPS from 13 upgrades · synced 10 h ago` on both apps, in the house format.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+1. **The Where row carries no figure on the Android Helm sheet.** It reads `Crafted: Blacksmithing` with nothing after it.
+   - Raiders ask what the profession skill is. For a boss drop they ask for the chance, which is `drop chance` in the `WhereToGo` source model.
+   - Add the figure where the data has one, as a trailing value on the row, for example `Crafted: Blacksmithing · 225`. For a boss drop, `Onyxia · 18%`.
+   - If `loot.json` has no figure for that item, as with the `World drop` cape, leave it off. That is the existing round-7 KEEP on loot rows without a figure.
+   - I could not tell from the captures whether a boss-drop item exists in the fixture. Please confirm one is shown, so the instance, boss and chance path is actually exercised.
+2. **The Android sheet is missing the gain line that iOS has.** The iOS Cape sheet ends the tooltip with `+0.8 DPS` in gold. The Android sheet shows the Helm, which is equipped, so it may be a case difference. Capture an Android sheet for an upgrade piece to confirm the two apps match. This is a capture gap, not a confirmed drift.
+3. **The Android runner-up row has a source but no gain.** The Blood Guard's Plate Helm row reads `Runner-up · PvP rank 11 · Blood Guard · Horde`. iOS shows `Runner-up · World drop · −0.3 DPS` on its runner-up row. Add the gain to the Android row if the runner-up has one. I could not tell whether the Helm's runner-up has a gain in the data.
+
+**NIT**
+- Android's `Where to get it` sub-line under the source reads as an explainer label. If it is the tap target to the Where-to-go screen, as `FlowRows.kt:338` suggests, add a `›` so it reads as a link. The iOS row has no equivalent sub-line, so the two apps differ here. iOS has no drill-down from the row, or I missed it. Please align the two.
+- The Android Helm cell and its sheet repeat `Equipped`, which is fine. The Main hand wrap at 390 is the old KEEP.
+- The `3 guildmates have not shared their gear yet` footer is honest and useful.
+
+**Needs data** (carried from round 6)
+- A per-character gain on `loot.awarded`.
+- Per-group unread counts for the Activity chips.
+- A cached `total_gain` per character for the Switch rows.
+- A last-pulls or progress figure for the Raid tab.
+- The reputation standing number for `needs revered` rows.
+- A founder end date for the Plan row.
+
+Files:
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/android-r7/gear-02-sheet-where.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/design/reviews/2026-11-10-mobile-backfill/ios/r7-gear-02-sheet-where-settled.png
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/main/kotlin/gg/foreversixty/app/gear/flows/GearItemSheet.kt
+- /Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/main/kotlin/gg/foreversixty/app/gear/WhereToGo.kt
+
+VERDICT: DENSE WITH ADDITIONS
+

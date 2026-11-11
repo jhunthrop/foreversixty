@@ -1,4 +1,4 @@
-# Mobile backfill review brief (round 6)
+# Mobile backfill review brief (round 7)
 
 Scope: the four tab roots (Home, Raid, Gear, Activity), the profile drawer, and the raid
 notification, on iOS (SwiftUI, apps/ios) and Android (Compose, apps/android). The tabs are four by
@@ -9,11 +9,12 @@ out of scope here: mention them only if a main-tab interaction lands on them.
 Branch: lane/mobile-review-backfill. Fixture character: Gorvash, Orc Fury Warrior 58, Officer of
 Olympus XXVII; alt Yellfury, Hunter 31, no spec reported. The app is dark only, as the site.
 
-What changed and what a ruling keeps: round-2- to round-6-decisions.md (read them
+What changed and what a ruling keeps: round-2- to round-7-decisions.md (read them
 first; contest a KEEP only with a reason its ruling does not answer). Your earlier verdicts are in
 `<persona>.md` beside this file.
 
-## Captures (round 6)
+## Captures (round 7)
+Round 7 adds `android-r7/` (fresh debug build: Gear `182 DPS`, the Gear sheet with its Where line, both officer push failures, the drawer Notifications value some off / All on / All off) and `ios/r7-*` (the same set plus `r7-home-01-top`). Earlier sets stand for what round 7 did not change.
 Round 6 adds `android-r6/` (fresh debug build: drawer, Activity in the house format, officer roster filtered, push failure results, a stale Gear frame) and `ios/r6-*` (the same set). The round-5 sets below still stand for everything round 6 did not change.
 
 | Set | Where |
@@ -22,7 +23,7 @@ Round 6 adds `android-r6/` (fresh debug build: drawer, Activity in the house for
 | Android step captures (Pixel 9 class emulator, fixture app, adb; `light-*`, `fs2-*` at font scale 2) | design/reviews/2026-11-10-mobile-backfill/android-r5/ (incl. the officer Raid tab and its filtered roster, officer pushes with their results, the drawer Refreshing frame; earlier rounds android-r2/ to android-r4/) |
 | Android mocked states (Roborazzi, incl. `-x1_5`, `-x2_0`) | apps/android/app/src/test/screenshots/parity/android-*.png (+ `.txt` text goldens) |
 | Android flow steps (real controller, a service that echoes the answer: sign-up, Home sign-up, deep links, saving, failed, offline) | apps/android/app/src/test/screenshots/flows/ |
-| iOS flow and parity snapshots | round-5 goldens from record run 42953910502 are in apps/ios/AppTests/**/__Snapshots__ (incl. Flows/); the round-6 run (42959927878) re-records the menu and filtered-roster goldens and is in flight (apps/ios/AppTests/Flows, the parity test data) |
+| iOS flow and parity snapshots | round-5 goldens from record run 42953910502 are in apps/ios/AppTests/**/__Snapshots__ (incl. Flows/); the round-7 run (42963676369) re-records Home, Activity, Gear, menu and roster goldens and is in flight (apps/ios/AppTests/Flows, the parity test data) |
 | Round-5 app mocks (updated for round 5) | design/mocks/app/ios-*.html, android-*.html, regions/ |
 | Web counterparts at 390 px | design/reviews/2026-11-10-mobile-backfill/web/ (README.md) |
 | Push fixtures | docs/contracts/fixtures/app/push.*.json (raid-posted, raid-short with its Mention action, raid-starting, guild-applicant with Accept and Decline) |

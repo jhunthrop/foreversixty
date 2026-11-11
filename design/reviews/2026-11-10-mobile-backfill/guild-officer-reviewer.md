@@ -403,3 +403,30 @@ VERDICT: WORTH PAYING FOR
 
 VERDICT: WORTH PAYING FOR
 
+## Round 7
+
+Round 7 confirmation of the officer push failures. Read-only, and I looked at the captures and the server and fixture data.
+
+**What I checked**
+- **Android mention failure** (`android-r7/push-raid-short-mention-failed.png`): title `Could not mention the healers in Discord`, body `Onyxia's Lair. Open the raid to try again.` It names the action, the role and the raid, and says how to retry.
+- **Android accept failure** (`android-r7/push-applicant-accept-failed.png`): title `Could not accept Mirelle`, body `Mirelle, Holy Priest 60. Open Forever Sixty to try again.` It names the person, the action and the retry path.
+- **iOS** (`ios/r7-push-short-fail-03-result.png` and `ios/r7-push-applicant-accept-fail-03-result.png`): the same copy. I read these two result frames only, not the other six frames in the two iOS sequences. The mention title truncates to `…healers in Di...` on the banner. It expands on long-press, and the body carries the retry line.
+- **Server data:** the copy depends on fields the push already carries. `applicant_event.go:65` sends `applicant_name` and `applicant`. `raids_events.go:220` defines `mention_who`. The fixtures carry `mention_who: healers`, `applicant_name`, `applicant` and the raid title, so the app can build the strings without a new field.
+
+My round-6 S1 (failure copy not naming the person or action) is closed.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+1. **The retry is "open the raid", not a button on the failure.** The officer is told to try again but gets no retry action on the notification. For the mention this costs about three taps (open the raid, find the ping, confirm). It is acceptable for a companion app. If the push system allows a re-post of the actions, a `Try again` action on the failure notification would finish the job. I did not check whether it does.
+2. **I could not verify the Decline failure and the Late failure in the r7 set.** The r7 captures show only the accept and mention failures. `push.applicant.declineFailed` exists in `apps/shared/copy/en.json` (line 620), so the string is there. I am assuming it renders the same way as the accept failure, which I did not see.
+
+**NIT**
+- The iOS banner truncates the mention title to `Could not mention the healers in Di...`. The action and the role are still readable. I would shorten the copy to `Could not mention the healers` and drop `in Discord`, which the body or the tap target can carry.
+- The failure title and the applicant line both say `Mirelle`. It is slightly redundant but reads fine.
+
+**Judgement.** An officer away from the PC gets a failure that says who and what, and where to retry. This matches my round-6 WORTH PAYING FOR, with the S1 gap closed.
+
+VERDICT: WORTH PAYING FOR
+

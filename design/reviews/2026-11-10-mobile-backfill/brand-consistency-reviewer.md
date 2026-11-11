@@ -410,3 +410,30 @@ Round 6 holds up on every item it changed, and I found one carry-over figure in 
 
 VERDICT: CONSISTENT
 
+## Round 7
+
+**Round 7 brand-consistency: Gear, Home, Where line, push failures, drawer Notifications**
+
+I viewed these captures: android-r7 gear-01-top, gear-02-sheet-where, push-raid-short-mention-failed and drawer-01-notifications-some-off, plus ios r7-gear-02-sheet-where-settled and r7-home-01-top. I did not open the other r7 captures (the accept-failed push, drawer all-on and all-off, iOS push and menu frames). I checked copy keys in `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/shared/copy/en.json` and `apps/shared/formats.json`. I did not compare against the web 390 px captures or `design/tokens/tokens.json`, and I did not grep the app sources for hardcoded colours or strings. This verdict rests on the screenshots and the copy and format files only.
+
+**BLOCKER**
+- None.
+
+**SHOULD**
+- None. Round 6 S1 is fixed. Gear now reads `182 DPS` on both platforms, and the whole-from-100 rule matches `formats.json`. Home and Gear agree on `+18.0 DPS` and `13 upgrades`.
+
+**NIT**
+1. **Where line differs between platforms.** On Android the sheet row has the source as its title (`Crafted: Blacksmithing`) with `Where to get it` as a grey sub-line (`gear.sheet.where`). On iOS the row is just `World drop`, with no sub-line.
+   - Fix: pick one anatomy and apply it on both. The label as a sub-line reads like a heading demoted to caption, so I'd drop it on Android to match iOS.
+   - These were different items, so confirm the iOS crafted case before you change anything.
+2. **Where line uses plain source strings, not the gear.where keys.** The `gear.where.*` keys (`drop`, `boss`, `ask`, `rep`) have the shape `{items} · {boss}, {chance}`. The sheet shows bare `World drop` and `Crafted: Blacksmithing`. Check that the sheet reuses `bis.source.crafted` and the shared source strings, not locally built ones.
+3. **Zero gain shows as `+0.0 DPS` on Shoulder.** This is a drift risk if the web prints a neutral `0` or nothing for a zero gain. Check the web BiS and gear row.
+4. **Header sub-line casing.** `synced 10 h ago` is lowercase mid-line (`gear.header.synced`), while Home reads `Synced 10 h ago` as a standalone line. That is the same fact in two casings, and each follows its key's position. It is acceptable.
+5. **Home raid line.** It still shows `7:00 pm CST` and the duplicated `Thu`. The brief lists the app clock as the format lane's work and the duplicate day as a round 6 KEEP, so I did not count either.
+6. **Push failure copy.** I checked only the Mention failure in the capture. It matches the `push.short.failed` and `push.short.retry` keys exactly, uses no em dash, and the title reads `Could not mention the healers in Discord`. Ruled OK.
+7. **Drawer Notifications value.** `Gear and sims, guild ladder, tiers off` is sentence case and states what is off. Ruled OK.
+
+All round 7 changes use shared keys and house formats, and the cross-platform difference in nit 1 is small and fixable in one line.
+
+VERDICT: CONSISTENT
+
