@@ -16,7 +16,7 @@ export interface PlaqueFigure {
 
 export const plaqueCopy = {
   beforePull: 'Before the pull',
-  signedUp: 'signed up',
+  in: 'in',
   late: 'late',
   firstRaids: 'First raids open',
   raidsOpen: 'Raids open now',
@@ -32,7 +32,7 @@ export function countdownFigures(target: Date, now: Date): PlaqueFigure[] {
 /** Signed up and late. */
 export function signupFigures(counts: NextRaidView['counts']): PlaqueFigure[] {
   return [
-    { value: String(counts.in), label: plaqueCopy.signedUp },
+    { value: String(counts.in), label: plaqueCopy.in },
     { value: String(counts.late), label: plaqueCopy.late },
   ];
 }

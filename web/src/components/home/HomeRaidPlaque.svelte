@@ -1,6 +1,6 @@
 <!-- web/src/components/home/HomeRaidPlaque.svelte -->
 <!-- The raid plaque (round 5, the page's one ornate panel on the cave art): the guild's next raid,
-     its day and time, the clock in days and hours, signed up and late, the role counts, your place in the guild (item level among
+     its day and time, the clock in days and hours, in and late, the role counts, your place in the guild (item level among
      your spec, raids attended), the guild's own sign-up control (In, Late, Bench, Out), and Before
      the pull at the right. A choice saves at once through the one sign-up save
      (lib/guild/signup-save.ts); with no role to sign as, the raid page instead. -->

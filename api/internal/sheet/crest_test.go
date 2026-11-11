@@ -124,7 +124,7 @@ func mustCrest(t *testing.T, slug string) []byte {
 // No Go file outside this package builds a bare web crest URL: every Discord crest is the ringed
 // PNG from CrestURL (brand audit 2026-11-10 hand-off D).
 func TestNoBareCrestURLOutsideSheet(t *testing.T) {
-	root := ".."
+	root := "../.."
 	var found []string
 	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil || d.IsDir() || !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {

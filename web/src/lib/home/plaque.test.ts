@@ -24,9 +24,9 @@ describe('the raid plaque', () => {
     expect(countdownFigures(NOW, NOW)).toEqual([]);
   });
 
-  it('reads signed up, late and the four roles', () => {
+  it('reads in, late and the four roles', () => {
     expect(signupFigures(COUNTS)).toEqual([
-      { value: '18', label: 'signed up' },
+      { value: '18', label: 'in' },
       { value: '3', label: 'late' },
     ]);
     expect(roleCounts(COUNTS).map((r) => `${r.n} ${r.word}`)).toEqual([

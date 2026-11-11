@@ -1,6 +1,6 @@
 <!-- web/src/components/ui/BigFigures.svelte -->
 <!-- The plaque's big figures (round 5, the raid plaque: "Days and hours at 44 px, the largest thing
-     on the page, then signed up and late"): groups of a figure over its label, a hairline between
+     on the page, then in and late"): groups of a figure over its label, a hairline between
      groups. The first group may be a live clock (`timer`), read aloud as one label. -->
 <script lang="ts" module>
   export interface BigFigure {
