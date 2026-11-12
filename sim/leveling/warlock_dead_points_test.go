@@ -19,19 +19,19 @@ func TestDemonologyRaidBuildSpendsNothingOnDeadDemons(t *testing.T) {
 		map[string]int{"Improved Voidwalker": 0, "Improved Imp": 0, "Improved Sayaad": 2})
 }
 
-// From 40 the Affliction leveling rotation channels Wrack as its filler and never casts
-// Shadow Bolt, so Nightfall's Shadow Trance (an instant Shadow Bolt) is never spent, and
-// spending it in place of Wrack loses at every band (round 15 A4; round 17 at bare 40, 50
-// and 60). The two points take Malevolence 2 in the same tier: +1.4% to +1.5% at 40, 45
-// and 60, and level or better from 35 to 39, where Shadow Bolt is still the filler
-// (sim-accuracy round 17, seeds 1 and 50001).
-func TestAfflictionLevelingBuildTakesMalevolenceOverNightfall(t *testing.T) {
+// The Affliction leveling build fills Malevolence and takes Nightfall once Wrack is its filler:
+// the card casts the Shadow Trance bolt between two Wracks (the Nightfall line is gated on
+// knowing the talent), and the talent search at bare 60 credits Nightfall and the last three
+// Malevolence points with damage where Improved Drains and the Demonology toll points carry
+// none (sim-accuracy 2026-11-12, warlocks pass 3; round 17 had held Nightfall at 0 while the
+// card never cast the bolt).
+func TestAfflictionLevelingBuildTakesMalevolenceAndNightfall(t *testing.T) {
 	_, digits, err := GuideBuildTalents(filepath.Join("..", ".."), "warlock", "affliction")
 	if err != nil {
 		t.Fatal(err)
 	}
 	checkWarlockRanks(t, "the Affliction leveling build", digits,
-		map[string]int{"Nightfall": 0, "Malevolence": 2})
+		map[string]int{"Nightfall": 2, "Malevolence": 5, "Improved Drains": 0})
 }
 
 // checkWarlockRanks fails unless the guide build's digits put exactly the wanted rank in

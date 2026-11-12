@@ -1404,7 +1404,7 @@
       ]
     },
     "warlock-affliction": {
-      "reason": "Grim Reach (range), Soul Harvest (a Drain Soul kill) and Improved Drains (the rotation never channels a drain) wait: Amplify Curse 22, Pandemic 23 to 25 and Malevolence 26 and 27 (their rows are already paid), Grim Reach as Siphon Life's toll, Siphon Life 30 (round 13), Soul Siphon 31 to 33 as Shadow Mastery's toll and ready for Wrack, Shadow Mastery 35 to 39, Wrack 40. From 45, Unholy Power (the Imp) and Bane (Immolate) before Improved Health Funnel, Demonic Aegis and Improved Voidwalker. Gains at every level that moves, 22 to 59 (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "reason": "Grim Reach (range) and Soul Harvest (a Drain Soul kill) wait: Amplify Curse 22, Pandemic 23 to 25 and Malevolence 26 and 27 (their rows are already paid), Grim Reach as Siphon Life's toll, Siphon Life 30 (round 13), Soul Siphon 31 to 33 as Shadow Mastery's toll and ready for Wrack, Shadow Mastery 35 to 39, Wrack 40, the second Soul Harvest point 41. Gains at every level that moves, 22 to 41 (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md). From 42 the order no longer takes Improved Drains (it stopped reaching Wrack with the 70707 text and the rotation channels no drain) nor the Demonology toll points: Improved Bane of Agony 42 and 43, the last three Malevolence 44 to 46, Bane 47 to 51, Nightfall 52 and 53 (the card's Shadow Trance bolt between two Wracks), Aftermath 54 to 58, Unholy Power 59 and 60; +5.6% at bare 60 and gains at every checkpoint level from 43 (sim-accuracy 2026-11-12, warlocks pass 3, design/reviews/2026-11-12-sim-accuracy/warlocks-3.md).",
       "first": [
         {
           "talent": "Improved Life Tap",
@@ -1459,16 +1459,28 @@
           "rank": 2
         },
         {
-          "talent": "Improved Drains",
-          "rank": 3
+          "talent": "Improved Bane of Agony",
+          "rank": 2
         },
         {
-          "talent": "Unholy Power",
+          "talent": "Malevolence",
           "rank": 5
         },
         {
           "talent": "Bane",
           "rank": 5
+        },
+        {
+          "talent": "Nightfall",
+          "rank": 2
+        },
+        {
+          "talent": "Aftermath",
+          "rank": 5
+        },
+        {
+          "talent": "Unholy Power",
+          "rank": 2
         }
       ]
     },

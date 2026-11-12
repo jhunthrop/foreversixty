@@ -24,13 +24,12 @@ This is the best Affliction Warlock on Forever. Affliction keeps Corruption, Sip
 - Demonic Sacrifice in the raid build, from fifty-five: summon the Imp and sacrifice it before the pull for Burning Shadow. Then summon nothing, since any demon ends it.
 - Demon Armor on from twenty before the pull, with a Healthstone in your bag and Life Tap to full.
 - Curse of the Elements from twenty when it is not already on the target.
-- Corruption whenever it has fallen off.
-- Bane of Doom at sixty, while a minute or more of the fight is left.
-- Amplify Curse from twenty-nine, or twenty-four in the raid build, before each Bane of Agony below sixty. At sixty, press it before the first Agony after your last Doom fires.
-- Bane of Agony whenever no Bane of Doom is on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
-- Siphon Life from thirty whenever it has fallen off.
+- Corruption whenever it has fallen off; from forty, also before a Wrack once it has under three seconds left.
+- Amplify Curse from twenty-two, or twenty in the raid build, on your next Bane of Agony refresh once it is ready. Never clip a running Agony for it.
+- Bane of Agony all fight, at sixty too: Wrack speeds it up and Soul Siphon counts it, and Bane of Doom gets neither. From forty, recast it before a Wrack once it has under three seconds left.
+- Siphon Life from thirty whenever it has fallen off; from forty, also before a Wrack once it has under three seconds left.
 - Immolate while you level, with about three seconds left, so it lands a moment before the old one ends. The fresh hit is worth the tick you give up. The raid build sacrifices the Imp and drops it.
-- Shadow Bolt in the raid build, from thirty-four, the moment Nightfall makes it instant with a Shadow Trance. From forty it goes ahead of your next Wrack. At sixty its crits put up Improved Shadow Bolt.
+- Shadow Bolt the moment Nightfall makes it instant with a Shadow Trance, from forty-three in the raid build and fifty-two while leveling. Let the Wrack you are channelling finish, then cast it before the next one. At sixty its crits put up Improved Shadow Bolt.
 - Wrack from forty with your DoTs up. Before forty, Shadow Bolt fills instead.
 - Life Tap keeps you casting once mana runs low.
 - Curse of Recklessness, Tongues or Weakness only if your raid leader asks. That is only when another warlock holds Curse of the Elements.

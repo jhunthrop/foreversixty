@@ -3,12 +3,12 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.70790:warlock:human:25522300132001351/200522/005:'
+build: 'FS1:1.60.1.70790:warlock:human:25522020135201351/0002/005005:'
 raidBuild: 'FS1:1.60.1.70790:warlock:human:05520020135201351/0050203001/05:'
 recommendedRaces: [human, orc]
 statPriority: [Spell power, Shadow power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'
-updated: 2026-11-11
+updated: 2026-11-12
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -43,21 +43,23 @@ sources:
 
 ## Talents and builds
 
-The leveling build carries you on Soul Siphon and Wrack while you quest, with two points of Malevolence for crit on every Shadow spell. The raid build goes to 35 points in Affliction for all five points of Malevolence, Nightfall, Soul Siphon and Wrack, sacrifices the Imp through Demonic Sacrifice, and spends its Destruction points on Improved Shadow Bolt, so a Nightfall bolt that crits sets up your Wrack and DoTs.
+The leveling build carries you on Soul Siphon and Wrack while you quest, fills Malevolence and takes Nightfall once Wrack is yours, and spends its last points on Bane and Aftermath for a faster, harder Immolate. The raid build goes to 35 points in Affliction for all five points of Malevolence, Nightfall, Soul Siphon and Wrack, sacrifices the Imp through Demonic Sacrifice, and spends its Destruction points on Improved Shadow Bolt, so a Nightfall bolt that crits sets up your Wrack and DoTs.
 
 - **Suppression** (5 points): 5% hit on every spell and 20% less threat. Every warlock build takes all five.
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
 - **Amplify Curse** (1 point): no global cooldown, a 3 minute cooldown and 30 seconds to use it. Your next Bane of Agony or Curse of Weakness is 50% stronger, or your next Curse of Exhaustion 20%. In a raid it goes on your next Bane of Agony refresh once it is off cooldown; never clip a running Agony for it.
 - **Pandemic** (3 points): Corruption, both banes, Siphon Life, the drains and Wrack crit for double the usual bonus.
-- **Malevolence** (2 points leveling, 5 in a raid): 1% crit a point on your Shadow spells, DoT ticks and Wrack included, and Pandemic doubles the bonus on those. The leveling build takes two points at 26 and 27 and skips Nightfall. While Shadow Bolt is still your filler they are about level with Nightfall; from 40 they pull ahead. Wrack replaces Shadow Bolt then, and a Nightfall bolt is instant but still costs full mana, while Wrack does more for less.
-- **Nightfall** (2 points, raid): Corruption and Wrack ticks have a 4% chance to give you a Shadow Trance, which makes your next Shadow Bolt instant, though it still costs full mana.
+- **Improved Bane of Agony** (2 points): 10% more on the Agony you keep up all fight. The leveling build takes it at 42 and 43, right after Wrack.
+- **Malevolence** (5 points): 1% crit a point on your Shadow spells, DoT ticks and Wrack included, and Pandemic doubles the bonus on those. The leveling build takes two points at 26 and 27 and the last three at 44 to 46.
+- **Nightfall** (2 points, at 43 in the raid build and 52 to 53 while leveling): Corruption and Wrack ticks have a 4% chance to give you a Shadow Trance, which makes your next Shadow Bolt instant, though it still costs full mana. Cast it between two Wracks.
 - **Shadow Mastery** (5 points): 10% more Shadow damage on everything you cast.
 - **Siphon Life** (1 point): a 30 second DoT that heals you, and one more Affliction effect for Soul Siphon.
 - **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second, and while it runs your Corruption, Siphon Life and Bane of Agony on that target tick twice as fast. They deal the same ticks, only sooner, so they also run out sooner. Bane of Doom and Immolate keep their own pace. Soul Siphon adds 12% to Wrack and the drains for each of those three on the target, up to 36%; Bane of Doom does not count. With three of your effects on the boss, Wrack and the faster DoTs out-damage Shadow Bolt for a fraction of the mana, so both builds take it and it is your filler from 40.
 - **Demonic Sacrifice** (1 point, raid): sacrifice the Imp before the pull for Burning Shadow, 15% more Shadow damage for two hours. Nearly everything you cast on a boss is Shadow, so it is worth more than any demon at your side. Summoning any demon ends it.
 - **Improved Shadow Bolt** (5 points, raid): each Shadow Bolt crit makes the boss take 20% more Shadow damage from you for 12 seconds, Wrack and your DoTs included.
+- **Bane** and **Aftermath** (10 points, leveling): Immolate casts in 1.5 seconds and its first hit deals 50% more. You keep Immolate up while you level, and nothing left in the Affliction tree pays more for those points once Wrack is yours.
 
-The raid build drops Soul Harvest and the three points of Improved Drains (a raid rotation casts no drain), Improved Life Tap, Improved Health Funnel and Improved Voidwalker. It takes the last three points of Malevolence, Nightfall and both points of Improved Bane of Agony, for 10% more damage on the Agony you keep up all fight, and keeps Grim Reach for range. In Demonology it takes Demonic Embrace and Fel Vitality on the way to Demonic Sacrifice, and Demonic Aegis for Demon Armor. With the Imp gone, Immolate is a slow Fire cast that Burning Shadow does nothing for, so the build skips Bane and Aftermath and drops Immolate from the rotation.
+The raid build drops Soul Harvest, Improved Life Tap, Bane, Aftermath and the two points in Unholy Power, and keeps Grim Reach for range. In Demonology it takes Demonic Embrace and Fel Vitality on the way to Demonic Sacrifice, and Demonic Aegis for Demon Armor. With the Imp gone, Immolate is a slow Fire cast that Burning Shadow does nothing for, so the build skips Bane and Aftermath and drops Immolate from the rotation. Neither build takes Improved Drains: it no longer reaches Wrack, and neither rotation channels a drain.
 
 ## Rotation and priority
 
@@ -127,4 +129,10 @@ Talents after Improved Corruption:
 - **30:** Siphon Life, with Grim Reach paying the row.
 - **31 to 33:** Soul Siphon.
 - **39:** Shadow Mastery full, ready for Wrack at 40.
-- **After 40:** Improved Drains and the rest of Soul Harvest, then Unholy Power for your demon and Bane for a faster Immolate.
+- **41:** the second point of Soul Harvest.
+- **42 and 43:** Improved Bane of Agony.
+- **44 to 46:** the last three points of Malevolence.
+- **47 to 51:** Bane, for a 1.5 second Immolate.
+- **52 and 53:** Nightfall. Cast the instant Shadow Bolt between two Wracks.
+- **54 to 58:** Aftermath, 50% more on Immolate's first hit.
+- **59 and 60:** Unholy Power for your demon.

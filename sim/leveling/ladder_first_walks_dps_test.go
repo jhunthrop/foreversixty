@@ -91,10 +91,11 @@ func TestFrostTakesArcaneMeditationAfterArcaneImpact(t *testing.T) {
 }
 
 // Sim-accuracy round 29 (walks-dps): a leveling Affliction warlock takes Amplify Curse at 22, Pandemic at 23 to 25 and
-// Malevolence at 26 and 27 before Grim Reach (range), Soul Harvest (a Drain Soul kill) and
-// Improved Drains, which the rotation never channels; Soul Siphon pays the row at 31 to 33 so
-// Shadow Mastery is full at 39 and Soul Siphon is ready for Wrack at 40. From 45 Unholy Power and
-// Bane come before the Demonology toll points.
+// Malevolence at 26 and 27 before Grim Reach (range) and Soul Harvest (a Drain Soul kill); Soul Siphon pays
+// the row at 31 to 33 so Shadow Mastery is full at 39 and Soul Siphon is ready for Wrack at 40.
+// Sim-accuracy 2026-11-12 (warlocks pass 3): from 42 the order takes Improved Bane of Agony, the last three
+// Malevolence, Bane, Nightfall, Aftermath and two Unholy Power, and no longer Improved Drains (it stopped
+// reaching Wrack with the 70707 text and the rotation channels no drain) or the Demonology toll points.
 func TestAfflictionTakesPandemicBeforeTheDrainTalents(t *testing.T) {
 	checkLadder(t, "warlock", "affliction", 0, map[int]string{
 		22: "25500000100000000-0000000000000000000-0000000000000000",
@@ -103,10 +104,10 @@ func TestAfflictionTakesPandemicBeforeTheDrainTalents(t *testing.T) {
 		35: "25521000132001310-0000000000000000000-0000000000000000",
 		38: "25521000132001340-0000000000000000000-0000000000000000",
 		40: "25521000132001351-0000000000000000000-0000000000000000",
-		45: "25522300132001351-0001000000000000000-0000000000000000",
-		50: "25522300132001351-0005000000000000000-0010000000000000",
-		55: "25522300132001351-1005000000000000000-0050000000000000",
-		59: "25522300132001351-2005210000000000000-0050000000000000",
+		45: "25522020134001351-0000000000000000000-0000000000000000",
+		50: "25522020135001351-0000000000000000000-0040000000000000",
+		55: "25522020135201351-0000000000000000000-0050020000000000",
+		59: "25522020135201351-0001000000000000000-0050050000000000",
 	})
 }
 

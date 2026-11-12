@@ -375,7 +375,7 @@
       }
     },
     {
-      "notes": "Raid build: when a Wrack ends and a Shadow Trance is up, cast the instant Shadow Bolt before the next channel. At 60 each crit puts up Improved Shadow Bolt, so your Wrack and Shadow DoTs take 20% more for 12 seconds.",
+      "notes": "With Nightfall (the raid build, and the leveling build from 52): when a Wrack ends and a Shadow Trance is up, cast the instant Shadow Bolt before the next channel. At 60 each crit puts up Improved Shadow Bolt, so your Wrack and Shadow DoTs take 20% more for 12 seconds.",
       "action": {
         "condition": {
           "and": {
