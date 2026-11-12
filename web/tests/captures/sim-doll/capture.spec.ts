@@ -4,11 +4,13 @@
 // for one gear look (the character page exists only on the fixture build: its doll is compared from
 // the character lane's own captures). Not a test of behaviour. Built with
 // FOREVER_DATA=real so the sim doll carries a full set; run from web/ against a served copy of dist
-// (see the config). CAPTURE_ONLY=sim-gear (comma list) narrows the shots.
+// (see the config). CAPTURE_ONLY=sim-gear (comma list) narrows the shots. sim-gear is a browser run
+// (this box's wasm carries no stats sheet); sim-result is the parity fixture's server run with one.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
+import { openSimState } from '../../e2e/support/sim-parity';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.resolve(HERE, '../../../../design/reviews/2026-11-11-sim-doll/after');
@@ -80,6 +82,14 @@ async function openSimLanding(page: Page): Promise<void> {
   ).toBeVisible();
 }
 
+/** The parity spec's result state: the fixture's server run (src/fixtures/sim/result-full.json), whose
+ *  stats sheet and measured misses sit beside the frame. */
+async function openSimResult(page: Page): Promise<void> {
+  await openSimState(page, 'result');
+  await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('sim-final-stats')).toBeVisible({ timeout: 30_000 });
+}
+
 async function openBis(page: Page): Promise<void> {
   await page.goto('/bis/warrior/fury/60');
   await expect(page.getByTestId('paperdoll-frame-slot-head')).toBeVisible({ timeout: 30_000 });
@@ -88,6 +98,7 @@ async function openBis(page: Page): Promise<void> {
 const SHOTS = [
   { id: 'sim-gear', open: openSimGear, testid: 'sim-gear-card', widths: WIDTHS },
   { id: 'sim-landing', open: openSimLanding, testid: 'sim-gear-card', widths: WIDTHS },
+  { id: 'sim-result', open: openSimResult, testid: 'sim-gear-card', widths: WIDTHS },
   { id: 'bis-doll', open: openBis, testid: 'bis-page', widths: DESKTOP },
 ] as const;
 

@@ -92,8 +92,8 @@
   /** The run's measured misses only: the boss and the fight are the page's own. */
   const measured = $derived(stats?.hit?.reference?.note ?? null);
   const lines = $derived(setLines(character.gear, sets));
-  /** Anything beside the frame after a run: its stats (or the older-run note), the set lines. */
-  const hasAside = $derived(result !== null || lines.length > 0);
+  /** Anything beside the frame after a run: its stats, the set lines. An older run's note goes under it. */
+  const hasAside = $derived(stats !== null || lines.length > 0);
   /** The frame's title bar, as the character page's: the spec and class, then the level. */
   const dollTitle = $derived(specLabel(request.spec));
   const dollMeta = $derived(copy.dollLevel(character.level));
@@ -132,11 +132,7 @@
         <div class={DOLL_WIDTH} data-testid="sim-gear-paperdoll">{@render doll()}</div>
         {#if hasAside}
           <div class="flex min-w-0 flex-col gap-4" data-testid="sim-gear-aside">
-            {#if result !== null && stats === null}
-              <p class="text-muted text-[13px] leading-5" data-testid="sim-stats-older-run">
-                {copy.statsNeedNewerRun}
-              </p>
-            {:else if stats !== null}
+            {#if stats !== null}
               <div class="flex flex-col gap-2" data-testid="sim-final-stats">
                 <div class={FIGURES_GRID}>
                   {#each figures as figure (figure.id)}
@@ -167,6 +163,11 @@
           </div>
         {/if}
       </div>
+      {#if result !== null && stats === null}
+        <p class="text-muted pt-4 text-[13px] leading-5" data-testid="sim-stats-older-run">
+          {copy.statsNeedNewerRun}
+        </p>
+      {/if}
     </div>
   {/if}
 </Section>
