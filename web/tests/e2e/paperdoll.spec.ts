@@ -78,11 +78,14 @@ test.describe('the sim card on a 390 phone', () => {
     // loadSim's Run is a mouse click, and the card can land under where that mouse rests: its
     // hover would open the panel before the first tap. Park the mouse off the card first.
     await page.mouse.move(0, 0);
+    // The page's floating tooltip; the hidden frame's own centre tooltip is not it.
+    const floating = page.getByTestId('item-tooltip').locator('visible=true');
     const head = slot(page, 'head');
     await head.tap();
-    await expect(page.getByTestId('item-tooltip')).toBeVisible();
+    await expect(floating).toBeVisible();
+    await expect(floating).toContainText('Lionheart Helm');
     await head.tap();
-    await expect(page.getByTestId('item-tooltip')).toHaveCount(0);
+    await expect(floating).toHaveCount(0);
   });
 });
 

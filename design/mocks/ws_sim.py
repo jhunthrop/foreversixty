@@ -25,7 +25,7 @@ from pathlib import Path
 from mocklib import CLASS_COLOR
 from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, LanesLegend, Link, Meter, Notice,
                       Page, PageHeader, Plate, Row, RowGrid, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page, talent_ranks_from_strings, talent_tree_dicts,
-                      control_bar, crest_img, seg, sel, write, PaperdollFrame)
+                      control_bar, crest_img, seg, sel, write, ItemTip, PaperdollFrame)
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA_ROOT = Path(os.environ.get('FS_DATA_ROOT', ROOT))
@@ -608,11 +608,19 @@ def rail_gear() -> list[dict]:
     return [{'slot': s['slot'], 'item_id': s['item_id'], 'enchant': s.get('enchant_id')} for s in band['slots'] if s['item_id'] > 0]
 
 
+# The frame opens on the first worn item in this order (lib/ui/paperdoll.ts OPEN_ORDER: left column, weapons, right column).
+DOLL_OPEN_ORDER = ['head', 'neck', 'shoulder', 'back', 'chest', 'shirt', 'tabard', 'wrist', 'main_hand', 'off_hand', 'ranged',
+                   'hands', 'waist', 'legs', 'feet', 'finger1', 'finger2', 'trinket1', 'trinket2']
+QUALITY_NAME = {0: 'poor', 1: 'common', 2: 'uncommon', 3: 'rare', 4: 'epic', 5: 'legendary'}
+
+
 def doll(gear: list[dict] | None = None) -> str:
-    """The sim's Gear (SimGearSection on character/GearDoll): the shared PaperdollFrame's list form at every width, headless on
-    the section's panel, `facts` rows "Slot · Item level N" with the client enchant green under it (lib/gear/doll-cells.ts,
-    `worn` mode: no gain without an upgrade). In a Plate on the landing, open under a Section on a result. `gear`: the worn
-    rows, the run's character by default."""
+    """The sim's Gear (SimGearSection on character/GearDoll): the shared PaperdollFrame in `worn` mode, as BiS, the character
+    page and the reports draw it (owner ruling 2026-11-11: one gear look), capped at the character page's 640 px. Headless
+    (the page's head names the character); the title bar is the spec and the level; the frame opens on the first worn item,
+    its client tooltip in the centre. Under 423 px the frame's own list form: `facts` rows "Slot · Item level N" with the
+    client enchant green under it (lib/gear/doll-cells.ts; no gain without an upgrade). In a Plate on the landing, open under
+    a Section on a result. `gear`: the worn rows, the run's character by default."""
     names = enchant_names()
     slots = []
     for row in CHAR['gear'] if gear is None else gear:
@@ -621,9 +629,17 @@ def doll(gear: list[dict] | None = None) -> str:
             continue
         enchant = names.get(row.get('enchant') or 0)
         slots.append({'slot': row['slot'], 'label': f"{SLOT_LABEL[row['slot']]}: {it['name']}", 'covered': False, 'selected': False,
-                      'icon': it['icon'], 'quality': it['quality'], 'line2': f"Item level {it['item_level']}",
+                      'icon': it['icon'], 'quality': it['quality'], 'name': it['name'], 'line2': f"Item level {it['item_level']}",
                       **({'enchant': enchant} if enchant else {})})
-    return PaperdollFrame(slots, 'Gear by slot', '', None, '', 'Gear by slot', heading='h2', form='list', head=False, facts=True)
+    by = {s['slot']: s for s in slots}
+    first = next((by[n] for n in DOLL_OPEN_ORDER if n in by), None)
+    centre = ''
+    if first:
+        first['selected'] = True
+        centre = ItemTip(first['name'], QUALITY_NAME.get(first['quality'], 'common'),
+                         [first['name'], first['line2']] + ([first['enchant']] if first.get('enchant') else []), [], '')
+    frame = PaperdollFrame(slots, SPEC_LABEL, f"Level {CHAR['level']}", None, centre, 'Gear by slot', heading='h2', head=False, facts=True)
+    return f'<div style="width:100%;max-width:640px">{frame}</div>'
 
 
 def ilvl() -> float:
