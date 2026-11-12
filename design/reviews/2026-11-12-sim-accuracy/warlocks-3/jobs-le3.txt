@@ -1,0 +1,6 @@
+# The Affliction raid rotation search's hint: the three DoTs recast at 3 s or less instead of under 3 s.
+aff-raid-horde-le3 -spec warlock-affliction -preset raid -band 60 -faction horde -rotation ../design/reviews/2026-11-12-sim-accuracy/warlocks-3/aff-le3.json
+aff-raid-alliance-le3 -spec warlock-affliction -preset raid -band 60 -faction alliance -rotation ../design/reviews/2026-11-12-sim-accuracy/warlocks-3/aff-le3.json
+aff-bare-60-le3 -spec warlock-affliction -preset bare -band 60 -faction horde -rotation ../design/reviews/2026-11-12-sim-accuracy/warlocks-3/aff-le3.json
+aff-bare-40-le3 -spec warlock-affliction -preset bare -band 40 -faction horde -rotation ../design/reviews/2026-11-12-sim-accuracy/warlocks-3/aff-le3.json
+aff-bare-40 -spec warlock-affliction -preset bare -band 40 -faction horde

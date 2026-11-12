@@ -1,0 +1,11 @@
+remote-test: 435558ba3e530f13065586e0d5c2c663eba18aab -> forever-ci on 192.168.1.182 (run 20261112230817-435558ba3-18748, in sim): go test github.com/wowsims/classic/sim/warlock/ -run TestBaneOfHavocTakesTheGlobalCooldown|TestCurseOfShadowIsNotRegistered -count=1
+remote-test: engine pinned to f53b2b7be
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261112230722-f53b2b7be997
+--- FAIL: TestBaneOfHavocTakesTheGlobalCooldown (0.00s)
+    client_rows_test.go:22: Bane of Havoc DefaultCast.GCD = 0s, want 1.5s (push 113766, SpellCooldowns 102518)
+--- FAIL: TestCurseOfShadowIsNotRegistered (0.00s)
+    client_rows_test.go:36: level-60 warlock registers Curse of Shadow 17937, a spell the Forever client does not have
+FAIL
+FAIL	github.com/wowsims/classic/sim/warlock	0.006s
+FAIL
+remote-test: exit 1 in 1s (435558ba3e530f13065586e0d5c2c663eba18aab)

@@ -1,0 +1,7 @@
+remote-test: 435558ba3e530f13065586e0d5c2c663eba18aab -> forever-ci on 192.168.1.182 (run 20261112231134-435558ba3-44276, in sim): go test github.com/wowsims/classic/sim/warlock/... github.com/wowsims/classic/sim/core -count=1
+remote-test: engine pinned to b80063d67
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261112230743-b80063d67da1
+ok  	github.com/wowsims/classic/sim/warlock	0.378s
+ok  	github.com/wowsims/classic/sim/warlock/dps	0.022s
+ok  	github.com/wowsims/classic/sim/core	1.607s
+remote-test: exit 0 in 6s (435558ba3e530f13065586e0d5c2c663eba18aab)
