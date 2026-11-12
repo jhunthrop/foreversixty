@@ -48,7 +48,20 @@ const SET: readonly [string, number, number?][] = [
   ['off_hand', 22384, 1900],
   ['ranged', 12651],
 ];
-const FS1 = `FS1:${BUILD}:warrior:orc:0/5530515/0:${SET.map(([slot, id, ench]) => `${slot}=${id}${ench ? `:${ench}` : ''}`).join(',')}|who=Thandrel:Realm`;
+const GEAR = SET.map(([slot, id, ench]) => `${slot}=${id}${ench ? `:${ench}` : ''}`).join(',');
+
+/** The set as an addon export at level 60: the talents are the BiS rail's Fury set's (a full spend,
+ *  so the sim's talent-implied level is 60, as the fixture's result is), read from the landing. */
+async function furyCode(page: Page): Promise<string> {
+  await page.goto('/sim');
+  const href = await page
+    .locator('[data-region="section-sim-a-best-in-slot-set"] a', { hasText: 'Fury' })
+    .getAttribute('href');
+  const code = new URL(href ?? '', 'http://localhost').searchParams.get('code') ?? '';
+  const talents = code.split(':')[4];
+  if (!talents) throw new Error(`the rail's Fury code carries no talents: ${code}`);
+  return `FS1:${BUILD}:warrior:orc:${talents}:${GEAR}|who=Thandrel:Realm`;
+}
 
 async function shoot(page: Page, id: string, width: number, testid: string): Promise<void> {
   const target = page.getByTestId(testid).first();
@@ -66,8 +79,8 @@ async function shoot(page: Page, id: string, width: number, testid: string): Pro
 }
 
 async function openSimGear(page: Page): Promise<void> {
-  await page.goto('/sim');
-  await page.getByTestId('sim-cold-paste-input').fill(FS1);
+  const code = await furyCode(page);
+  await page.getByTestId('sim-cold-paste-input').fill(code);
   await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 60_000 });
   await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
@@ -79,7 +92,8 @@ async function openSimGear(page: Page): Promise<void> {
 
 /** The same character before its run: the doll is the page's one Plate. */
 async function openSimLanding(page: Page): Promise<void> {
-  await page.goto(`/sim?code=${encodeURIComponent(FS1)}`);
+  const code = await furyCode(page);
+  await page.goto(`/sim?code=${encodeURIComponent(code)}`);
   await expect(page.getByTestId('sim-run-button')).toBeEnabled({ timeout: 60_000 });
   await expect(
     page.getByTestId('sim-gear-doll').locator('.pdf-icon').locator('visible=true').first(),
