@@ -1,0 +1,50 @@
+base-paladin-retribution-raid60-alliance-s1 -spec paladin-retribution -preset raid -band 60 -faction alliance -seed 1
+base-paladin-retribution-raid60-alliance-s50001 -spec paladin-retribution -preset raid -band 60 -faction alliance -seed 50001
+base-paladin-retribution-bare20-alliance -spec paladin-retribution -preset bare -band 20 -faction alliance
+base-paladin-retribution-bare30-alliance -spec paladin-retribution -preset bare -band 30 -faction alliance
+base-paladin-retribution-bare40-alliance -spec paladin-retribution -preset bare -band 40 -faction alliance
+base-paladin-retribution-bare50-alliance -spec paladin-retribution -preset bare -band 50 -faction alliance
+base-paladin-retribution-bare60-alliance -spec paladin-retribution -preset bare -band 60 -faction alliance
+base-paladin-retribution-raid60-horde-s1 -spec paladin-retribution -preset raid -band 60 -faction horde -seed 1
+base-paladin-retribution-raid60-horde-s50001 -spec paladin-retribution -preset raid -band 60 -faction horde -seed 50001
+base-paladin-retribution-bare20-horde -spec paladin-retribution -preset bare -band 20 -faction horde
+base-paladin-retribution-bare30-horde -spec paladin-retribution -preset bare -band 30 -faction horde
+base-paladin-retribution-bare40-horde -spec paladin-retribution -preset bare -band 40 -faction horde
+base-paladin-retribution-bare50-horde -spec paladin-retribution -preset bare -band 50 -faction horde
+base-paladin-retribution-bare60-horde -spec paladin-retribution -preset bare -band 60 -faction horde
+base-paladin-protection-raid60-alliance-s1 -spec paladin-protection -preset raid -band 60 -faction alliance -seed 1 -tank
+base-paladin-protection-raid60-alliance-s50001 -spec paladin-protection -preset raid -band 60 -faction alliance -seed 50001 -tank
+base-paladin-protection-bare20-alliance -spec paladin-protection -preset bare -band 20 -faction alliance -tank
+base-paladin-protection-bare30-alliance -spec paladin-protection -preset bare -band 30 -faction alliance -tank
+base-paladin-protection-bare40-alliance -spec paladin-protection -preset bare -band 40 -faction alliance -tank
+base-paladin-protection-bare50-alliance -spec paladin-protection -preset bare -band 50 -faction alliance -tank
+base-paladin-protection-bare60-alliance -spec paladin-protection -preset bare -band 60 -faction alliance -tank
+base-paladin-protection-raid60-horde-s1 -spec paladin-protection -preset raid -band 60 -faction horde -seed 1 -tank
+base-paladin-protection-raid60-horde-s50001 -spec paladin-protection -preset raid -band 60 -faction horde -seed 50001 -tank
+base-paladin-protection-bare20-horde -spec paladin-protection -preset bare -band 20 -faction horde -tank
+base-paladin-protection-bare30-horde -spec paladin-protection -preset bare -band 30 -faction horde -tank
+base-paladin-protection-bare40-horde -spec paladin-protection -preset bare -band 40 -faction horde -tank
+base-paladin-protection-bare50-horde -spec paladin-protection -preset bare -band 50 -faction horde -tank
+base-paladin-protection-bare60-horde -spec paladin-protection -preset bare -band 60 -faction horde -tank
+base-paladin-retribution-L25-alliance -spec paladin-retribution -preset bare -band 20 -level 25 -faction alliance
+base-paladin-retribution-L30-alliance -spec paladin-retribution -preset bare -band 30 -level 30 -faction alliance
+base-paladin-retribution-L35-alliance -spec paladin-retribution -preset bare -band 30 -level 35 -faction alliance
+base-paladin-retribution-L40-alliance -spec paladin-retribution -preset bare -band 40 -level 40 -faction alliance
+base-paladin-retribution-L45-alliance -spec paladin-retribution -preset bare -band 40 -level 45 -faction alliance
+base-paladin-retribution-L51-alliance -spec paladin-retribution -preset bare -band 50 -level 51 -faction alliance
+base-paladin-retribution-L52-alliance -spec paladin-retribution -preset bare -band 50 -level 52 -faction alliance
+base-paladin-retribution-L53-alliance -spec paladin-retribution -preset bare -band 50 -level 53 -faction alliance
+base-paladin-retribution-L54-alliance -spec paladin-retribution -preset bare -band 50 -level 54 -faction alliance
+base-paladin-retribution-L56-alliance -spec paladin-retribution -preset bare -band 50 -level 56 -faction alliance
+base-paladin-retribution-L59-alliance -spec paladin-retribution -preset bare -band 50 -level 59 -faction alliance
+base-paladin-retribution-L25-horde -spec paladin-retribution -preset bare -band 20 -level 25 -faction horde
+base-paladin-retribution-L30-horde -spec paladin-retribution -preset bare -band 30 -level 30 -faction horde
+base-paladin-retribution-L35-horde -spec paladin-retribution -preset bare -band 30 -level 35 -faction horde
+base-paladin-retribution-L40-horde -spec paladin-retribution -preset bare -band 40 -level 40 -faction horde
+base-paladin-retribution-L45-horde -spec paladin-retribution -preset bare -band 40 -level 45 -faction horde
+base-paladin-retribution-L51-horde -spec paladin-retribution -preset bare -band 50 -level 51 -faction horde
+base-paladin-retribution-L52-horde -spec paladin-retribution -preset bare -band 50 -level 52 -faction horde
+base-paladin-retribution-L53-horde -spec paladin-retribution -preset bare -band 50 -level 53 -faction horde
+base-paladin-retribution-L54-horde -spec paladin-retribution -preset bare -band 50 -level 54 -faction horde
+base-paladin-retribution-L56-horde -spec paladin-retribution -preset bare -band 50 -level 56 -faction horde
+base-paladin-retribution-L59-horde -spec paladin-retribution -preset bare -band 50 -level 59 -faction horde

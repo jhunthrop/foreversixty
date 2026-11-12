@@ -1,0 +1,469 @@
+{
+ "rotation": {
+  "type": "TypeAPL",
+  "prepullActions": [
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 20423,
+       "rank": 7
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-3.5s"
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1239570,
+       "rank": 4
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-2s"
+     }
+    }
+   }
+  ],
+  "priorityList": [
+   {
+    "action": {
+     "autocastOtherCooldowns": {}
+    },
+    "notes": "Lay on Hands fires itself below 10% health: it is the last thing between you and a wipe."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1311015
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "0.35"
+        }
+       }
+      }
+     }
+    },
+    "notes": "Below 35% health, as the first panic button. A shield worth your whole health bar for 8 seconds; it puts Forbearance on you, which locks out Divine Protection, and Divine Shield from 34, for a while."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1020,
+       "rank": 2
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "0.25"
+        }
+       }
+      }
+     }
+    },
+    "notes": "Below 25% health, once Forbearance from Templar's Bulwark has gone. Ten seconds immune, twelve from rank 2 at 50, at half damage dealt."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 5573,
+       "rank": 2
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "0.2"
+        }
+       }
+      }
+     }
+    },
+    "notes": "Below 20% health, the last resort once Forbearance allows it."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 20594
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "0.7"
+        }
+       }
+      }
+     }
+    },
+    "notes": "Dwarf: Stoneform when you drop under 70% health. Ten percent less physical damage for 8 seconds, on the global cooldown, every 3 minutes."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 20423,
+       "rank": 7
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLe",
+          "lhs": {
+           "currentSealRemainingTime": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "2s"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "math": {
+            "op": "OpSub",
+            "lhs": {
+             "currentMana": {}
+            },
+            "rhs": {
+             "spellCurrentCost": {
+              "spellId": {
+               "spellId": 20423,
+               "rank": 7
+              }
+             }
+            }
+           }
+          },
+          "rhs": {
+           "spellCurrentCost": {
+            "spellId": {
+             "spellId": 1239570,
+             "rank": 4
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over. Judgement does not consume it, so this is one cast every 30 seconds."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1239570,
+       "rank": 4
+      }
+     }
+    },
+    "notes": "On cooldown. Its 10 second cooldown matches its duration, so it is up whenever its four charges last, and it is the first claim on your mana."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 10333,
+       "rank": 8
+      }
+     }
+    },
+    "notes": "On cooldown. Strong threat for little mana, twenty mana at 60; with Iron Creed it also cuts your damage taken for 6 seconds, and from 40 Shieldsworn brings it back every 6 seconds. Always your newest rank: the flat Holy damage grows with each rank and is not reduced by the weapon-damage part of the strike."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 407632
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpGe",
+       "lhs": {
+        "math": {
+         "op": "OpSub",
+         "lhs": {
+          "currentMana": {}
+         },
+         "rhs": {
+          "spellCurrentCost": {
+           "spellId": {
+            "spellId": 407632
+           }
+          }
+         }
+        }
+       },
+       "rhs": {
+        "spellCurrentCost": {
+         "spellId": {
+          "spellId": 1239570,
+          "rank": 4
+         }
+        }
+       }
+      }
+     }
+    },
+    "notes": "On cooldown, once Holy Shield's mana is safe. It hits your target and up to three enemies next to it, for Holy damage that Righteous Fury multiplies, so it carries your threat on a pack."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1310994
+      }
+     }
+    },
+    "notes": "Whenever it is ready. A second Judgement of your Seal on its own one minute cooldown, free and off the global cooldown; under Seal of Fury it taunts too, so hold it when a tank swap is coming."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 20271
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpGe",
+       "lhs": {
+        "math": {
+         "op": "OpSub",
+         "lhs": {
+          "currentMana": {}
+         },
+         "rhs": {
+          "spellCurrentCost": {
+           "spellId": {
+            "spellId": 20271
+           }
+          }
+         }
+        }
+       },
+       "rhs": {
+        "spellCurrentCost": {
+         "spellId": {
+          "spellId": 1239570,
+          "rank": 4
+         }
+        }
+       }
+      }
+     }
+    },
+    "notes": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe. Off the global cooldown for 6% of base mana, and under Seal of Fury it is your taunt."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 10314,
+       "rank": 6
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "spellCanCast": {
+          "spellId": {
+           "spellId": 10314,
+           "rank": 6
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "math": {
+            "op": "OpSub",
+            "lhs": {
+             "currentMana": {}
+            },
+            "rhs": {
+             "spellCurrentCost": {
+              "spellId": {
+               "spellId": 10314,
+               "rank": 6
+              }
+             }
+            }
+           }
+          },
+          "rhs": {
+           "spellCurrentCost": {
+            "spellId": {
+             "spellId": 1239570,
+             "rank": 4
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe. It cannot be cast on anything else."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 20924,
+       "rank": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "or": {
+          "vals": [
+           {
+            "cmp": {
+             "op": "OpGe",
+             "lhs": {
+              "math": {
+               "op": "OpAdd",
+               "lhs": {
+                "currentMana": {}
+               },
+               "rhs": {
+                "math": {
+                 "op": "OpMul",
+                 "lhs": {
+                  "math": {
+                   "op": "OpSub",
+                   "lhs": {
+                    "manaIncomePerSecond": {
+                     "windowSeconds": 20
+                    }
+                   },
+                   "rhs": {
+                    "manaSpentPerSecond": {
+                     "windowSeconds": 20
+                    }
+                   }
+                  }
+                 },
+                 "rhs": {
+                  "remainingTime": {}
+                 }
+                }
+               }
+              }
+             },
+             "rhs": {
+              "spellCurrentCost": {
+               "spellId": {
+                "spellId": 20924,
+                "rank": 5
+               }
+              }
+             }
+            }
+           },
+           {
+            "cmp": {
+             "op": "OpLt",
+             "lhs": {
+              "currentHealthPercent": {}
+             },
+             "rhs": {
+              "const": {
+               "val": "0.35"
+              }
+             }
+            }
+           }
+          ]
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "math": {
+            "op": "OpSub",
+            "lhs": {
+             "currentMana": {}
+            },
+            "rhs": {
+             "spellCurrentCost": {
+              "spellId": {
+               "spellId": 20924,
+               "rank": 5
+              }
+             }
+            }
+           }
+          },
+          "rhs": {
+           "spellCurrentCost": {
+            "spellId": {
+             "spellId": 1239570,
+             "rank": 4
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Last, while what you hold plus what you regain, less what you spend, over the rest of the fight still pays for it, or once you drop below 35% health. It spends only mana your strikes and, from 30, Holy Shield will not need, and from 40 Hammer of the Righteous makes far more threat for its mana. Rank 1 does more than the higher ranks at 30 to 33, 40 to 48 and 50 to 57 because it goes down far more often; your newest rank at the other levels, and rank 1 again at 60 without raid buffs."
+   }
+  ]
+ }
+}

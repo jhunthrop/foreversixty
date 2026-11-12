@@ -1,0 +1,124 @@
+rank-L30-top-alliance -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction alliance
+rank-L30-r1-alliance -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction alliance -rank 20924=1
+rank-L31-top-alliance -spec paladin-protection -preset bare -band 30 -level 31 -tank -faction alliance
+rank-L31-r1-alliance -spec paladin-protection -preset bare -band 30 -level 31 -tank -faction alliance -rank 20924=1
+rank-L32-top-alliance -spec paladin-protection -preset bare -band 30 -level 32 -tank -faction alliance
+rank-L32-r1-alliance -spec paladin-protection -preset bare -band 30 -level 32 -tank -faction alliance -rank 20924=1
+rank-L33-top-alliance -spec paladin-protection -preset bare -band 30 -level 33 -tank -faction alliance
+rank-L33-r1-alliance -spec paladin-protection -preset bare -band 30 -level 33 -tank -faction alliance -rank 20924=1
+rank-L34-top-alliance -spec paladin-protection -preset bare -band 30 -level 34 -tank -faction alliance
+rank-L34-r1-alliance -spec paladin-protection -preset bare -band 30 -level 34 -tank -faction alliance -rank 20924=1
+rank-L35-top-alliance -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction alliance
+rank-L35-r1-alliance -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction alliance -rank 20924=1
+rank-L36-top-alliance -spec paladin-protection -preset bare -band 30 -level 36 -tank -faction alliance
+rank-L36-r1-alliance -spec paladin-protection -preset bare -band 30 -level 36 -tank -faction alliance -rank 20924=1
+rank-L37-top-alliance -spec paladin-protection -preset bare -band 30 -level 37 -tank -faction alliance
+rank-L37-r1-alliance -spec paladin-protection -preset bare -band 30 -level 37 -tank -faction alliance -rank 20924=1
+rank-L38-top-alliance -spec paladin-protection -preset bare -band 30 -level 38 -tank -faction alliance
+rank-L38-r1-alliance -spec paladin-protection -preset bare -band 30 -level 38 -tank -faction alliance -rank 20924=1
+rank-L39-top-alliance -spec paladin-protection -preset bare -band 30 -level 39 -tank -faction alliance
+rank-L39-r1-alliance -spec paladin-protection -preset bare -band 30 -level 39 -tank -faction alliance -rank 20924=1
+rank-L40-top-alliance -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction alliance
+rank-L40-r1-alliance -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction alliance -rank 20924=1
+rank-L41-top-alliance -spec paladin-protection -preset bare -band 40 -level 41 -tank -faction alliance
+rank-L41-r1-alliance -spec paladin-protection -preset bare -band 40 -level 41 -tank -faction alliance -rank 20924=1
+rank-L42-top-alliance -spec paladin-protection -preset bare -band 40 -level 42 -tank -faction alliance
+rank-L42-r1-alliance -spec paladin-protection -preset bare -band 40 -level 42 -tank -faction alliance -rank 20924=1
+rank-L43-top-alliance -spec paladin-protection -preset bare -band 40 -level 43 -tank -faction alliance
+rank-L43-r1-alliance -spec paladin-protection -preset bare -band 40 -level 43 -tank -faction alliance -rank 20924=1
+rank-L44-top-alliance -spec paladin-protection -preset bare -band 40 -level 44 -tank -faction alliance
+rank-L44-r1-alliance -spec paladin-protection -preset bare -band 40 -level 44 -tank -faction alliance -rank 20924=1
+rank-L45-top-alliance -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction alliance
+rank-L45-r1-alliance -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction alliance -rank 20924=1
+rank-L46-top-alliance -spec paladin-protection -preset bare -band 40 -level 46 -tank -faction alliance
+rank-L46-r1-alliance -spec paladin-protection -preset bare -band 40 -level 46 -tank -faction alliance -rank 20924=1
+rank-L47-top-alliance -spec paladin-protection -preset bare -band 40 -level 47 -tank -faction alliance
+rank-L47-r1-alliance -spec paladin-protection -preset bare -band 40 -level 47 -tank -faction alliance -rank 20924=1
+rank-L48-top-alliance -spec paladin-protection -preset bare -band 40 -level 48 -tank -faction alliance
+rank-L48-r1-alliance -spec paladin-protection -preset bare -band 40 -level 48 -tank -faction alliance -rank 20924=1
+rank-L49-top-alliance -spec paladin-protection -preset bare -band 40 -level 49 -tank -faction alliance
+rank-L49-r1-alliance -spec paladin-protection -preset bare -band 40 -level 49 -tank -faction alliance -rank 20924=1
+rank-L50-top-alliance -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction alliance
+rank-L50-r1-alliance -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction alliance -rank 20924=1
+rank-L51-top-alliance -spec paladin-protection -preset bare -band 50 -level 51 -tank -faction alliance
+rank-L51-r1-alliance -spec paladin-protection -preset bare -band 50 -level 51 -tank -faction alliance -rank 20924=1
+rank-L52-top-alliance -spec paladin-protection -preset bare -band 50 -level 52 -tank -faction alliance
+rank-L52-r1-alliance -spec paladin-protection -preset bare -band 50 -level 52 -tank -faction alliance -rank 20924=1
+rank-L53-top-alliance -spec paladin-protection -preset bare -band 50 -level 53 -tank -faction alliance
+rank-L53-r1-alliance -spec paladin-protection -preset bare -band 50 -level 53 -tank -faction alliance -rank 20924=1
+rank-L54-top-alliance -spec paladin-protection -preset bare -band 50 -level 54 -tank -faction alliance
+rank-L54-r1-alliance -spec paladin-protection -preset bare -band 50 -level 54 -tank -faction alliance -rank 20924=1
+rank-L55-top-alliance -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction alliance
+rank-L55-r1-alliance -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction alliance -rank 20924=1
+rank-L56-top-alliance -spec paladin-protection -preset bare -band 50 -level 56 -tank -faction alliance
+rank-L56-r1-alliance -spec paladin-protection -preset bare -band 50 -level 56 -tank -faction alliance -rank 20924=1
+rank-L57-top-alliance -spec paladin-protection -preset bare -band 50 -level 57 -tank -faction alliance
+rank-L57-r1-alliance -spec paladin-protection -preset bare -band 50 -level 57 -tank -faction alliance -rank 20924=1
+rank-L58-top-alliance -spec paladin-protection -preset bare -band 50 -level 58 -tank -faction alliance
+rank-L58-r1-alliance -spec paladin-protection -preset bare -band 50 -level 58 -tank -faction alliance -rank 20924=1
+rank-L59-top-alliance -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction alliance
+rank-L59-r1-alliance -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction alliance -rank 20924=1
+rank-L60-top-alliance -spec paladin-protection -preset bare -band 60 -level 60 -tank -faction alliance
+rank-L60-r1-alliance -spec paladin-protection -preset bare -band 60 -level 60 -tank -faction alliance -rank 20924=1
+rank-L30-top-horde -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction horde
+rank-L30-r1-horde -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction horde -rank 20924=1
+rank-L31-top-horde -spec paladin-protection -preset bare -band 30 -level 31 -tank -faction horde
+rank-L31-r1-horde -spec paladin-protection -preset bare -band 30 -level 31 -tank -faction horde -rank 20924=1
+rank-L32-top-horde -spec paladin-protection -preset bare -band 30 -level 32 -tank -faction horde
+rank-L32-r1-horde -spec paladin-protection -preset bare -band 30 -level 32 -tank -faction horde -rank 20924=1
+rank-L33-top-horde -spec paladin-protection -preset bare -band 30 -level 33 -tank -faction horde
+rank-L33-r1-horde -spec paladin-protection -preset bare -band 30 -level 33 -tank -faction horde -rank 20924=1
+rank-L34-top-horde -spec paladin-protection -preset bare -band 30 -level 34 -tank -faction horde
+rank-L34-r1-horde -spec paladin-protection -preset bare -band 30 -level 34 -tank -faction horde -rank 20924=1
+rank-L35-top-horde -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction horde
+rank-L35-r1-horde -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction horde -rank 20924=1
+rank-L36-top-horde -spec paladin-protection -preset bare -band 30 -level 36 -tank -faction horde
+rank-L36-r1-horde -spec paladin-protection -preset bare -band 30 -level 36 -tank -faction horde -rank 20924=1
+rank-L37-top-horde -spec paladin-protection -preset bare -band 30 -level 37 -tank -faction horde
+rank-L37-r1-horde -spec paladin-protection -preset bare -band 30 -level 37 -tank -faction horde -rank 20924=1
+rank-L38-top-horde -spec paladin-protection -preset bare -band 30 -level 38 -tank -faction horde
+rank-L38-r1-horde -spec paladin-protection -preset bare -band 30 -level 38 -tank -faction horde -rank 20924=1
+rank-L39-top-horde -spec paladin-protection -preset bare -band 30 -level 39 -tank -faction horde
+rank-L39-r1-horde -spec paladin-protection -preset bare -band 30 -level 39 -tank -faction horde -rank 20924=1
+rank-L40-top-horde -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction horde
+rank-L40-r1-horde -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction horde -rank 20924=1
+rank-L41-top-horde -spec paladin-protection -preset bare -band 40 -level 41 -tank -faction horde
+rank-L41-r1-horde -spec paladin-protection -preset bare -band 40 -level 41 -tank -faction horde -rank 20924=1
+rank-L42-top-horde -spec paladin-protection -preset bare -band 40 -level 42 -tank -faction horde
+rank-L42-r1-horde -spec paladin-protection -preset bare -band 40 -level 42 -tank -faction horde -rank 20924=1
+rank-L43-top-horde -spec paladin-protection -preset bare -band 40 -level 43 -tank -faction horde
+rank-L43-r1-horde -spec paladin-protection -preset bare -band 40 -level 43 -tank -faction horde -rank 20924=1
+rank-L44-top-horde -spec paladin-protection -preset bare -band 40 -level 44 -tank -faction horde
+rank-L44-r1-horde -spec paladin-protection -preset bare -band 40 -level 44 -tank -faction horde -rank 20924=1
+rank-L45-top-horde -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction horde
+rank-L45-r1-horde -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction horde -rank 20924=1
+rank-L46-top-horde -spec paladin-protection -preset bare -band 40 -level 46 -tank -faction horde
+rank-L46-r1-horde -spec paladin-protection -preset bare -band 40 -level 46 -tank -faction horde -rank 20924=1
+rank-L47-top-horde -spec paladin-protection -preset bare -band 40 -level 47 -tank -faction horde
+rank-L47-r1-horde -spec paladin-protection -preset bare -band 40 -level 47 -tank -faction horde -rank 20924=1
+rank-L48-top-horde -spec paladin-protection -preset bare -band 40 -level 48 -tank -faction horde
+rank-L48-r1-horde -spec paladin-protection -preset bare -band 40 -level 48 -tank -faction horde -rank 20924=1
+rank-L49-top-horde -spec paladin-protection -preset bare -band 40 -level 49 -tank -faction horde
+rank-L49-r1-horde -spec paladin-protection -preset bare -band 40 -level 49 -tank -faction horde -rank 20924=1
+rank-L50-top-horde -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction horde
+rank-L50-r1-horde -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction horde -rank 20924=1
+rank-L51-top-horde -spec paladin-protection -preset bare -band 50 -level 51 -tank -faction horde
+rank-L51-r1-horde -spec paladin-protection -preset bare -band 50 -level 51 -tank -faction horde -rank 20924=1
+rank-L52-top-horde -spec paladin-protection -preset bare -band 50 -level 52 -tank -faction horde
+rank-L52-r1-horde -spec paladin-protection -preset bare -band 50 -level 52 -tank -faction horde -rank 20924=1
+rank-L53-top-horde -spec paladin-protection -preset bare -band 50 -level 53 -tank -faction horde
+rank-L53-r1-horde -spec paladin-protection -preset bare -band 50 -level 53 -tank -faction horde -rank 20924=1
+rank-L54-top-horde -spec paladin-protection -preset bare -band 50 -level 54 -tank -faction horde
+rank-L54-r1-horde -spec paladin-protection -preset bare -band 50 -level 54 -tank -faction horde -rank 20924=1
+rank-L55-top-horde -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction horde
+rank-L55-r1-horde -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction horde -rank 20924=1
+rank-L56-top-horde -spec paladin-protection -preset bare -band 50 -level 56 -tank -faction horde
+rank-L56-r1-horde -spec paladin-protection -preset bare -band 50 -level 56 -tank -faction horde -rank 20924=1
+rank-L57-top-horde -spec paladin-protection -preset bare -band 50 -level 57 -tank -faction horde
+rank-L57-r1-horde -spec paladin-protection -preset bare -band 50 -level 57 -tank -faction horde -rank 20924=1
+rank-L58-top-horde -spec paladin-protection -preset bare -band 50 -level 58 -tank -faction horde
+rank-L58-r1-horde -spec paladin-protection -preset bare -band 50 -level 58 -tank -faction horde -rank 20924=1
+rank-L59-top-horde -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction horde
+rank-L59-r1-horde -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction horde -rank 20924=1
+rank-L60-top-horde -spec paladin-protection -preset bare -band 60 -level 60 -tank -faction horde
+rank-L60-r1-horde -spec paladin-protection -preset bare -band 60 -level 60 -tank -faction horde -rank 20924=1

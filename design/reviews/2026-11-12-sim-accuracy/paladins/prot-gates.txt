@@ -1,0 +1,90 @@
+gate-g0-L30-alliance -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction alliance
+gate-g0-L35-alliance -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction alliance
+gate-g0-L40-alliance -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction alliance
+gate-g0-L45-alliance -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction alliance
+gate-g0-L50-alliance -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction alliance
+gate-g0-L55-alliance -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction alliance
+gate-g0-L59-alliance -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction alliance
+gate-g0-bare60-alliance -spec paladin-protection -preset bare -band 60 -tank -faction alliance
+gate-g0-raid60-alliance -spec paladin-protection -preset raid -band 60 -tank -faction alliance
+gate-g0-L30-horde -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction horde
+gate-g0-L35-horde -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction horde
+gate-g0-L40-horde -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction horde
+gate-g0-L45-horde -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction horde
+gate-g0-L50-horde -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction horde
+gate-g0-L55-horde -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction horde
+gate-g0-L59-horde -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction horde
+gate-g0-bare60-horde -spec paladin-protection -preset bare -band 60 -tank -faction horde
+gate-g0-raid60-horde -spec paladin-protection -preset raid -band 60 -tank -faction horde
+gate-g1-cons-reserve-only-L30-alliance -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction alliance -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L35-alliance -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction alliance -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L40-alliance -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction alliance -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L45-alliance -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction alliance -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L50-alliance -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction alliance -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L55-alliance -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction alliance -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L59-alliance -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction alliance -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-bare60-alliance -spec paladin-protection -preset bare -band 60 -tank -faction alliance -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-raid60-alliance -spec paladin-protection -preset raid -band 60 -tank -faction alliance -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L30-horde -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction horde -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L35-horde -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction horde -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L40-horde -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction horde -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L45-horde -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction horde -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L50-horde -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction horde -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L55-horde -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction horde -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-L59-horde -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction horde -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-bare60-horde -spec paladin-protection -preset bare -band 60 -tank -faction horde -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g1-cons-reserve-only-raid60-horde -spec paladin-protection -preset raid -band 60 -tank -faction horde -rotation @R/g1-cons-reserve-only.rotation.json
+gate-g2-no-reserve-L30-alliance -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction alliance -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L35-alliance -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction alliance -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L40-alliance -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction alliance -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L45-alliance -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction alliance -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L50-alliance -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction alliance -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L55-alliance -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction alliance -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L59-alliance -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction alliance -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-bare60-alliance -spec paladin-protection -preset bare -band 60 -tank -faction alliance -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-raid60-alliance -spec paladin-protection -preset raid -band 60 -tank -faction alliance -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L30-horde -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction horde -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L35-horde -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction horde -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L40-horde -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction horde -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L45-horde -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction horde -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L50-horde -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction horde -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L55-horde -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction horde -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-L59-horde -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction horde -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-bare60-horde -spec paladin-protection -preset bare -band 60 -tank -faction horde -rotation @R/g2-no-reserve.rotation.json
+gate-g2-no-reserve-raid60-horde -spec paladin-protection -preset raid -band 60 -tank -faction horde -rotation @R/g2-no-reserve.rotation.json
+gate-g3-window20-L30-alliance -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction alliance -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L35-alliance -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction alliance -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L40-alliance -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction alliance -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L45-alliance -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction alliance -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L50-alliance -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction alliance -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L55-alliance -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction alliance -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L59-alliance -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction alliance -rotation @R/g3-window20.rotation.json
+gate-g3-window20-bare60-alliance -spec paladin-protection -preset bare -band 60 -tank -faction alliance -rotation @R/g3-window20.rotation.json
+gate-g3-window20-raid60-alliance -spec paladin-protection -preset raid -band 60 -tank -faction alliance -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L30-horde -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction horde -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L35-horde -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction horde -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L40-horde -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction horde -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L45-horde -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction horde -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L50-horde -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction horde -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L55-horde -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction horde -rotation @R/g3-window20.rotation.json
+gate-g3-window20-L59-horde -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction horde -rotation @R/g3-window20.rotation.json
+gate-g3-window20-bare60-horde -spec paladin-protection -preset bare -band 60 -tank -faction horde -rotation @R/g3-window20.rotation.json
+gate-g3-window20-raid60-horde -spec paladin-protection -preset raid -band 60 -tank -faction horde -rotation @R/g3-window20.rotation.json
+gate-g4-seal4s-L30-alliance -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction alliance -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L35-alliance -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction alliance -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L40-alliance -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction alliance -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L45-alliance -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction alliance -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L50-alliance -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction alliance -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L55-alliance -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction alliance -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L59-alliance -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction alliance -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-bare60-alliance -spec paladin-protection -preset bare -band 60 -tank -faction alliance -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-raid60-alliance -spec paladin-protection -preset raid -band 60 -tank -faction alliance -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L30-horde -spec paladin-protection -preset bare -band 30 -level 30 -tank -faction horde -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L35-horde -spec paladin-protection -preset bare -band 30 -level 35 -tank -faction horde -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L40-horde -spec paladin-protection -preset bare -band 40 -level 40 -tank -faction horde -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L45-horde -spec paladin-protection -preset bare -band 40 -level 45 -tank -faction horde -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L50-horde -spec paladin-protection -preset bare -band 50 -level 50 -tank -faction horde -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L55-horde -spec paladin-protection -preset bare -band 50 -level 55 -tank -faction horde -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-L59-horde -spec paladin-protection -preset bare -band 50 -level 59 -tank -faction horde -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-bare60-horde -spec paladin-protection -preset bare -band 60 -tank -faction horde -rotation @R/g4-seal4s.rotation.json
+gate-g4-seal4s-raid60-horde -spec paladin-protection -preset raid -band 60 -tank -faction horde -rotation @R/g4-seal4s.rotation.json
