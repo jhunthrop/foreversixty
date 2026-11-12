@@ -95,17 +95,22 @@ describe('upgradesFacts', () => {
 
   it('reads the whole gap and the slots already best in slot', () => {
     expect(upgradesFacts(result(52.08, 12, 5))).toEqual([
-      { n: '+52.1', text: 'DPS' },
+      { n: '+52.1', text: 'DPS across all 12' },
       { n: '5', text: 'best in slot' },
     ]);
     expect(upgradesFacts(result(0, 1, 16))).toEqual([{ n: '16', text: 'best in slot' }]);
-    expect(upgradesFacts(result(7.8, 14, 0))).toEqual([{ n: '+7.8', text: 'DPS' }]);
+    expect(upgradesFacts(result(7.8, 5, 0))).toEqual([{ n: '+7.8', text: 'DPS' }]);
+    expect(upgradesFacts(result(7.8, 14, 0))).toEqual([{ n: '+7.8', text: 'DPS across all 14' }]);
     expect(upgradesFacts(result(0, 0, 17))).toEqual([]);
     expect(upgradesFacts(undefined)).toEqual([]);
   });
 
   it('counts the gap in the band unit: a tank score, a healer HPS', () => {
     expect(upgradesFacts(result(3895.7, 5, 1, 'tank_score'))[0]).toEqual({ n: '+3,895.7', text: 'score' });
+    expect(upgradesFacts(result(1058.4, 17, 0, 'tank_score'))[0]).toEqual({
+      n: '+1,058.4',
+      text: 'score across all 17',
+    });
     expect(upgradesFacts(result(41.2, 5, 1, 'hps'))[0]).toEqual({ n: '+41.2', text: 'HPS' });
   });
 });

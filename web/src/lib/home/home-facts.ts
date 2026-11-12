@@ -11,6 +11,7 @@ import { scoreUnitWord } from '../bis/tank-view';
 import type { GuildSimRow, MoverRow, Movers } from './home-answer';
 import type { UpgradesResult } from './upgrades';
 import { figureText } from './home-b-view';
+import { UPGRADES_SHOWN } from './home-view';
 
 /** One fact on a line: a strong figure and the words after it (`#2` `of 4 Fury Warriors by item level`). */
 export interface HomeFact {
@@ -29,6 +30,8 @@ export const factsCopy = {
   emptySlot: 'Empty slot',
   seeAll: (n: number) => `See all ${n}`,
   slotsBis: 'best in slot',
+  /** The whole gap's unit when the panel shows fewer rows than it counts: `score across all 17`. */
+  acrossAll: (unit: string, n: number) => `${unit} across all ${n}`,
   climbing: 'Climbing this week',
   top: 'Top this week',
   places: 'places',
@@ -72,14 +75,17 @@ export function guildSummaryFacts(summary: GuildHomeSummary | undefined): HomeFa
 }
 
 /** Your upgrades' foot: `+52.1 DPS · 5 best in slot` (See all N beside it counts the upgrades); each
- *  clause only when it is above zero. */
+ *  clause only when it is above zero. The gap is every measured upgrade's, so with more upgrades
+ *  than the panel's rows it says so (`+1,058.4 score across all 17`), never read as the rows' sum. */
 export function upgradesFacts(result: UpgradesResult | undefined): HomeFact[] {
   if (result === undefined || result.upgrades.length === 0) return [];
   const facts: HomeFact[] = [];
   if (result.totalGainDps > 0) {
+    const unit = scoreUnitWord(result.scoreUnit);
+    const count = result.upgrades.length;
     facts.push({
       n: `+${figureText(result.totalGainDps)}`,
-      text: scoreUnitWord(result.scoreUnit),
+      text: count > UPGRADES_SHOWN ? factsCopy.acrossAll(unit, count) : unit,
     });
   }
   if (result.alreadyBis.length > 0) {
