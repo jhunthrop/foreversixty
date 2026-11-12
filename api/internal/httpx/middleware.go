@@ -43,13 +43,22 @@ type statusWriter struct {
 
 func (s *statusWriter) WriteHeader(code int) { s.status = code; s.ResponseWriter.WriteHeader(code) }
 
+// Logger writes one "request" line per request. A request answered 4xx or 5xx through
+// WriteError carries the error code and message it was refused with, so a rejection can be
+// read from the logs without a client's cooperation.
 func Logger(log *slog.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
 			sw := &statusWriter{ResponseWriter: w, status: 200}
-			next.ServeHTTP(sw, r)
-			log.Info("request", "id", RequestIDFrom(r.Context()), "method", r.Method, "path", LogPath(r.URL.Path), "status", sw.status, "ms", time.Since(start).Milliseconds())
+			ctx, rejected := withRejection(r.Context())
+			next.ServeHTTP(sw, r.WithContext(ctx))
+			attrs := []any{"id", RequestIDFrom(r.Context()), "method", r.Method, "path", LogPath(r.URL.Path),
+				"status", sw.status, "ms", time.Since(start).Milliseconds()}
+			if code, message := rejected.get(); sw.status >= http.StatusBadRequest && code != "" {
+				attrs = append(attrs, "error", code, "reason", message)
+			}
+			log.Info("request", attrs...)
 		})
 	}
 }

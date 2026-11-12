@@ -408,3 +408,44 @@ func TestKeyLimiterAllowsNPerWindow(t *testing.T) {
 		t.Fatal("another key must have its own bucket")
 	}
 }
+
+// A 4xx the handler wrote through WriteError is logged with its code and message, not only its
+// status: the two-day companion 400 of November 2026 was invisible in the logs because the
+// request line carried the status alone.
+func TestARejectionIsLoggedWithItsCodeAndReason(t *testing.T) {
+	buf := &bytes.Buffer{}
+	log := slog.New(slog.NewTextHandler(buf, nil))
+	refuse := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		WriteError(w, r, http.StatusBadRequest, "invalid", "the bundle has no summary part", nil)
+	})
+	h := Chain(refuse, RequestID(), Logger(log))
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest("PUT", "/v1/reports/abc/fights/1", nil))
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("code = %d", rec.Code)
+	}
+	line := buf.String()
+	for _, want := range []string{"status=400", "error=invalid", `reason="the bundle has no summary part"`} {
+		if !strings.Contains(line, want) {
+			t.Errorf("request line lacks %s: %s", want, line)
+		}
+	}
+}
+
+// A request that succeeds carries no error fields, and a WriteError before Logger wrapped
+// the request (a handler mounted outside the chain) does not panic.
+func TestASuccessfulRequestLogsNoReason(t *testing.T) {
+	buf := &bytes.Buffer{}
+	log := slog.New(slog.NewTextHandler(buf, nil))
+	h := Chain(okHandler(), RequestID(), Logger(log))
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest("GET", "/v1/health", nil))
+	if line := buf.String(); strings.Contains(line, "error=") || strings.Contains(line, "reason=") {
+		t.Fatalf("a 200 carried a rejection: %s", line)
+	}
+	rec = httptest.NewRecorder()
+	WriteError(rec, httptest.NewRequest("GET", "/", nil), http.StatusNotFound, "not_found", "no such report", nil)
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf("code = %d", rec.Code)
+	}
+}

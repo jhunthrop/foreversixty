@@ -194,10 +194,11 @@ func New(o Options) (*App, error) {
 	a.prune(a.now())
 
 	a.client, err = client.New(client.Options{
-		BaseURL: a.cfg.APIBaseURL,
-		Token:   a.deviceToken,
-		Retry:   o.Retry,
-		Log:     a.log,
+		BaseURL:   a.cfg.APIBaseURL,
+		Token:     a.deviceToken,
+		Retry:     o.Retry,
+		Log:       a.log,
+		UserAgent: client.UserAgent(updater.Version),
 	})
 	if err != nil {
 		return nil, err

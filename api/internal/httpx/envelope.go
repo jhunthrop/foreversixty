@@ -7,11 +7,50 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 type ctxKey int
 
-const requestIDKey ctxKey = 1
+const (
+	requestIDKey ctxKey = 1
+	rejectionKey ctxKey = 2
+)
+
+// rejection is the error code and message WriteError answered a request with, kept on the
+// request's context so Logger's one "request" line can say why a 4xx was a 4xx. Before this
+// (2026-11-12) a companion refused 400 on every fight bundle for two days showed in the logs
+// as nothing but the status. The message is the one the client was sent: server-written text
+// that names a part or a rule, never a body or a player.
+type rejection struct {
+	mu            sync.Mutex
+	code, message string
+}
+
+func (j *rejection) set(code, message string) {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	j.code, j.message = code, message
+}
+
+func (j *rejection) get() (code, message string) {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	return j.code, j.message
+}
+
+// withRejection gives a request a rejection slot for WriteError to fill.
+func withRejection(ctx context.Context) (context.Context, *rejection) {
+	j := &rejection{}
+	return context.WithValue(ctx, rejectionKey, j), j
+}
+
+// recordRejection fills the request's rejection slot, when Logger gave it one.
+func recordRejection(ctx context.Context, code, message string) {
+	if j, ok := ctx.Value(rejectionKey).(*rejection); ok {
+		j.set(code, message)
+	}
+}
 
 func WithRequestID(ctx context.Context, id string) context.Context {
 	return context.WithValue(ctx, requestIDKey, id)
@@ -95,5 +134,6 @@ func WriteOK(w http.ResponseWriter, r *http.Request, status int, data any) {
 }
 
 func WriteError(w http.ResponseWriter, r *http.Request, status int, code, message string, fields map[string]string) {
+	recordRejection(r.Context(), code, message)
 	write(w, r, status, Envelope{OK: false, Error: &ErrorBody{Code: code, Message: message, Fields: fields}, RequestID: RequestIDFrom(r.Context())})
 }

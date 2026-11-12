@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- A report that begins partway through a combat log the game was already writing (the companion started, or the tail moved to this game folder, mid-session) is now parsed with the header the game wrote when logging began: the companion reads the last `COMBAT_LOG_VERSION` line behind the report's start out of the file, instead of leaving the engine to infer the layout from field counts. A night started that way on 12 Nov had a quarter of its lines unreadable.
+- Every call to the site names the companion and its version (`foreversixty-companion/<version>`), so the site's logs can tell a companion's uploads from the browser's.
 - The companion reads and uploads only the live game, `_forever_`. The Classic beta ended at launch, and its `_classic_beta_` folder is now treated like any other game: never found, never offered, and refused by name if you pick it, so beta characters no longer reach the site beside your live ones. A stored beta folder is dropped at start.
 
 ## 0.2.44

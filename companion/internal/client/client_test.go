@@ -266,3 +266,32 @@ func TestSnippetTrimsAndDescribesAnEmptyBody(t *testing.T) {
 		t.Errorf("long snippet is %d characters", len(long))
 	}
 }
+
+// Every call names the companion and its version, so Cloud Run's request logs can tell a
+// companion's calls from the site's. Until 0.2.45 the companion sent Go's default
+// Go-http-client, and a 400 it was answered for two days could not be traced to it.
+func TestEveryCallCarriesTheCompanionUserAgent(t *testing.T) {
+	var got atomic.Value
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got.Store(r.Header.Get("User-Agent"))
+		w.Write([]byte(`{"ok":true,"data":null,"error":null,"request_id":"r1"}`))
+	}))
+	defer srv.Close()
+	c, err := New(Options{
+		BaseURL: srv.URL, Token: func() string { return "fsd_test" }, UserAgent: UserAgent("0.2.45"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range []request{
+		{Method: http.MethodGet, Path: "/v1/x"},
+		{Method: http.MethodPost, Path: "/v1/devices/pair", Anonymous: true},
+	} {
+		if _, err := c.do(t.Context(), r); err != nil {
+			t.Fatal(err)
+		}
+		if ua := got.Load(); ua != "foreversixty-companion/0.2.45" {
+			t.Fatalf("%s %s User-Agent = %q", r.Method, r.Path, ua)
+		}
+	}
+}

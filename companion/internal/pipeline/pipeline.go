@@ -34,6 +34,8 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/state"
 	"github.com/jhunthrop/foreversixty/companion/internal/watch"
 	"github.com/jhunthrop/foreversixty/logs/engine/fight"
+	"github.com/jhunthrop/foreversixty/logs/engine/layout"
+	"github.com/jhunthrop/foreversixty/logs/engine/lexer"
 	"github.com/jhunthrop/foreversixty/logs/engine/parquet"
 	"github.com/jhunthrop/foreversixty/logs/engine/session"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -293,7 +295,9 @@ func (p *Pipeline) SetWatch(w *watch.Watcher) bool {
 
 // sessionOptions are the engine settings the companion parses with.
 // KeepEvents is on because every closed fight is written as Parquet.
-func sessionOptions(reportKey string, base time.Time) session.Options {
+// layoutName, when it names a registered layout, pins the dialect for a
+// report whose own bytes carry no header (state.Report.Layout).
+func sessionOptions(reportKey string, base time.Time, layoutName string) session.Options {
 	o := session.Options{
 		ReportID:   reportKey,
 		Base:       base,
@@ -304,7 +308,55 @@ func sessionOptions(reportKey string, base time.Time) session.Options {
 		Summary:    summary.DefaultOptions(),
 	}
 	o.Summary.SpecNames = units.RetailSpecName
+	if l, ok := layoutByName(layoutName); ok {
+		o.Layout = l
+	}
 	return o
+}
+
+// layoutByName finds a registered layout row, false for "" and for the inferred layout,
+// which has no row.
+func layoutByName(name string) (layout.Layout, bool) {
+	if name == "" {
+		return layout.Layout{}, false
+	}
+	for _, r := range layout.Rows() {
+		if r.Name == name {
+			return r, true
+		}
+	}
+	return layout.Layout{}, false
+}
+
+// headerLayout reads the layout a report that begins at offset in path should be parsed
+// with: the last COMBAT_LOG_VERSION line before it. A report that begins at zero carries
+// its own header. The answer is the layout's name, empty when none was found or the
+// header names no registered row (the engine then infers, as before).
+func (p *Pipeline) headerLayout(path string, offset int64) string {
+	if offset == 0 {
+		return ""
+	}
+	line, ok, err := watch.LastHeaderBefore(path, offset)
+	if err != nil {
+		p.o.Log.Warn("could not read the log for its header; the layout will be inferred",
+			"component", "pipeline", "path", path, "err", err.Error())
+		return ""
+	}
+	if !ok {
+		p.o.Log.Info("no header within reach before the report; the layout will be inferred",
+			"component", "pipeline", "path", path, "file_offset", offset)
+		return ""
+	}
+	var name string
+	_ = lexer.New().Feed([]byte(line+"\n"), 0, func(ln lexer.Line) error {
+		if h, isHeader := layout.ParseHeader(ln); isHeader {
+			if l, found := layout.Lookup(h); found {
+				name = l.Name
+			}
+		}
+		return nil
+	})
+	return name
 }
 
 // resume restores the report that was still open, if any.
@@ -328,13 +380,13 @@ func (p *Pipeline) resume() error {
 				p.abandon(r)
 				continue
 			}
-			p.sess, p.cur = session.New(sessionOptions(r.Key, r.StartedAt)), &r
+			p.sess, p.cur = session.New(sessionOptions(r.Key, r.StartedAt, r.Layout)), &r
 			p.refillRaw(r)
 			p.o.Log.Info("restarted a report from its first byte",
 				"component", "pipeline", "report", r.Key)
 			return nil
 		}
-		s, err := session.Restore(sessionOptions(r.Key, r.StartedAt), r.Session)
+		s, err := session.Restore(sessionOptions(r.Key, r.StartedAt, r.Layout), r.Session)
 		if err != nil {
 			p.o.Log.Warn("could not restore a report; starting a new one",
 				"component", "pipeline", "report", r.Key, "err", err.Error())
@@ -408,18 +460,23 @@ func (p *Pipeline) Tick(now time.Time) error {
 
 func (p *Pipeline) start(e watch.Event, now time.Time) error {
 	key := p.o.NewKey(now)
+	// A report that begins partway through the file (the game was already logging when
+	// the companion started, or when the tail moved to this folder) never sees the header
+	// the game wrote when logging began; it is read back out of the file so the engine
+	// parses with the real layout instead of inferring one from field counts.
+	layoutName := p.headerLayout(e.Path, e.Offset)
 	p.cur = &state.Report{
-		Key: key, LogPath: e.Path, StartOffset: e.Offset,
+		Key: key, LogPath: e.Path, StartOffset: e.Offset, Layout: layoutName,
 		Visibility: p.o.Config.ReportVisibility, LoggingCharacter: p.o.Config.LoggingCharacter,
 		// Nothing chosen in Settings means the log says whose it is.
 		Auto:      p.o.Config.LoggingCharacter == nil,
 		StartedAt: now, LastAppend: now,
 		EngineVersion: session.Version,
 	}
-	p.sess = session.New(sessionOptions(key, now))
+	p.sess = session.New(sessionOptions(key, now, layoutName))
 	p.raw, p.rawAt, p.lastLive, p.lastSave = nil, 0, time.Time{}, now
 	p.o.Log.Info("a report started", "component", "pipeline", "report", key,
-		"path", e.Path, "file_offset", e.Offset)
+		"path", e.Path, "file_offset", e.Offset, "layout", layoutName)
 	p.startHeartbeat()
 	return p.save()
 }

@@ -156,6 +156,19 @@ type Options struct {
 	Sleep func(ctx context.Context, d time.Duration) error
 	// Frac returns the jitter fraction in [0,1). Tests pin it.
 	Frac func() float64
+	// UserAgent names this companion on every call, UserAgent(version). Empty sends
+	// Go's default, which no log can tell from any other Go program.
+	UserAgent string
+}
+
+// Product is the companion's name in its User-Agent.
+const Product = "foreversixty-companion"
+
+// UserAgent is the User-Agent a companion of this version sends: "foreversixty-companion/0.2.45".
+// Cloud Run's request logs carry it, so a companion's calls can be told apart from the site's
+// and a rejection can be read against the build that earned it.
+func UserAgent(version string) string {
+	return Product + "/" + version
 }
 
 // Client talks to the API.
@@ -167,6 +180,7 @@ type Client struct {
 	log   *slog.Logger
 	sleep func(ctx context.Context, d time.Duration) error
 	frac  func() float64
+	ua    string
 }
 
 // New builds a client. An unparseable base URL is a configuration error
@@ -187,6 +201,7 @@ func New(o Options) (*Client, error) {
 		log:   o.Log,
 		sleep: o.Sleep,
 		frac:  o.Frac,
+		ua:    o.UserAgent,
 	}
 	if c.http == nil {
 		c.http = &http.Client{Timeout: 2 * time.Minute}
@@ -299,6 +314,9 @@ func (c *Client) newRequest(ctx context.Context, r request) (*http.Request, erro
 		req.Header.Set(k, v)
 	}
 	req.Header.Set("Accept", "application/json")
+	if c.ua != "" {
+		req.Header.Set("User-Agent", c.ua)
+	}
 	if !r.Anonymous {
 		tok := c.token()
 		if tok == "" {

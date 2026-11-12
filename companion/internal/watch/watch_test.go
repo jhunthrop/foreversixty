@@ -3,6 +3,7 @@ package watch
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -277,5 +278,60 @@ func TestReadRangeReturnsAFightsBytes(t *testing.T) {
 	}
 	if _, err := ReadRange(log, 8, 99); err == nil {
 		t.Error("ReadRange accepted a range past the end of the file")
+	}
+}
+
+const (
+	header1 = "9/26 20:10:00.000  COMBAT_LOG_VERSION,16,ADVANCED_LOG_ENABLED,1,BUILD_VERSION,9.0.2,PROJECT_ID,1\n"
+	header2 = "9/27 19:00:00.000  COMBAT_LOG_VERSION,16,ADVANCED_LOG_ENABLED,0,BUILD_VERSION,9.0.2,PROJECT_ID,1\n"
+	filler  = "9/26 20:10:00.500  ZONE_CHANGE,2284,\"Sanguine Depths\",8\n"
+)
+
+// A companion that starts over a log the game is already writing begins at the file's end,
+// past the header; the header is still in the file, and the latest one before the start is
+// the one that governs the lines that follow.
+func TestLastHeaderBeforeFindsTheLatestHeaderBehindTheOffset(t *testing.T) {
+	log := filepath.Join(t.TempDir(), "WoWCombatLog.txt")
+	body := header1 + strings.Repeat(filler, 50) + header2 + strings.Repeat(filler, 20)
+	appendTo(t, log, body, t0)
+
+	line, ok, err := LastHeaderBefore(log, int64(len(body)))
+	if err != nil || !ok {
+		t.Fatalf("header = %q, %v, %v", line, ok, err)
+	}
+	if line != strings.TrimSuffix(header2, "\n") {
+		t.Fatalf("header = %q, want the second header", line)
+	}
+	// An offset inside the second header belongs to the report itself, so the one before it is
+	// the answer; and before the first header there is none.
+	line, ok, err = LastHeaderBefore(log, int64(len(header1)+50*len(filler)+10))
+	if err != nil || !ok || line != strings.TrimSuffix(header1, "\n") {
+		t.Fatalf("mid-header offset = %q, %v, %v; want the first header", line, ok, err)
+	}
+	if _, ok, err := LastHeaderBefore(log, 5); err != nil || ok {
+		t.Fatalf("an offset before any header found one: %v, %v", ok, err)
+	}
+}
+
+// The scan steps back through the file in windows; a header cut by a window boundary is
+// still read whole.
+func TestLastHeaderBeforeReadsAHeaderSplitAcrossWindows(t *testing.T) {
+	saved := headerScanWindow
+	headerScanWindow = 40
+	t.Cleanup(func() { headerScanWindow = saved })
+	log := filepath.Join(t.TempDir(), "WoWCombatLog.txt")
+	body := strings.Repeat(filler, 3) + header1 + strings.Repeat(filler, 7)
+	appendTo(t, log, body, t0)
+	line, ok, err := LastHeaderBefore(log, int64(len(body)))
+	if err != nil || !ok || line != strings.TrimSuffix(header1, "\n") {
+		t.Fatalf("header = %q, %v, %v", line, ok, err)
+	}
+}
+
+func TestLastHeaderBeforeIsFalseForAFileWithoutOne(t *testing.T) {
+	log := filepath.Join(t.TempDir(), "WoWCombatLog.txt")
+	appendTo(t, log, strings.Repeat(filler, 9), t0)
+	if line, ok, err := LastHeaderBefore(log, int64(9*len(filler))); err != nil || ok {
+		t.Fatalf("header = %q, %v, %v", line, ok, err)
 	}
 }

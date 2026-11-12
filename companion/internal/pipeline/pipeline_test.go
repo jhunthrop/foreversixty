@@ -781,3 +781,71 @@ func TestAReportWhoseLogVanishedIsAbandonedAndTheNextOneStarts(t *testing.T) {
 		t.Errorf("the new report holds %d fights, want the one it logged", len(rep.Fights))
 	}
 }
+
+// newRigOverLog is newRig over a log the game is already writing: prior is in the file
+// before the companion's first tick, the night it did not watch.
+func newRigOverLog(t *testing.T, prior string) *rig {
+	t.Helper()
+	root := t.TempDir()
+	r := &rig{t: t, srv: fakeapi.New(), clock: t0, rawChunk: 1 << 20}
+	r.dirs.logs = filepath.Join(root, "Logs")
+	r.dirs.queue = filepath.Join(root, "queue")
+	r.dirs.state = filepath.Join(root, "state")
+	for _, d := range []string{r.dirs.logs, r.dirs.queue, r.dirs.state} {
+		if err := os.MkdirAll(d, 0o700); err != nil {
+			t.Fatal(err)
+		}
+	}
+	r.log = filepath.Join(r.dirs.logs, "WoWCombatLog.txt")
+	t.Cleanup(r.srv.Close)
+	r.write(prior)
+	r.open()
+	if err := r.pipe.Tick(r.clock); err != nil {
+		t.Fatal(err)
+	}
+	return r
+}
+
+// A companion started while the game is already logging begins at the file's end, past
+// the COMBAT_LOG_VERSION line the game wrote when logging began. Report 4q5el2 (12 Nov
+// 2026) was one: no header reached the engine, the layout was inferred from field counts,
+// and a quarter of its lines were parse errors. The header is in the file; the report is
+// parsed with it, and a restart before any fight closed keeps it.
+func TestAReportStartedMidFileIsParsedWithTheHeaderBehindIt(t *testing.T) {
+	r := newRigOverLog(t, fixture.Header+fixture.Zone+fixture.Encounter(0)+fixture.Heartbeat(0))
+	r.write(fixture.Zone)
+	if err := r.tick(); err != nil {
+		t.Fatal(err)
+	}
+	saved, err := state.List(r.dirs.state)
+	if err != nil || len(saved) != 1 {
+		t.Fatalf("state = %+v, %v", saved, err)
+	}
+	if saved[0].StartOffset == 0 || saved[0].Layout != "retail-v16" {
+		t.Fatalf("report = %+v, want a mid-file start parsed as retail-v16", saved[0])
+	}
+
+	r.open() // a restart with nothing closed re-feeds the report; the layout must come along
+	r.write(fixture.Encounter(1) + fixture.Heartbeat(1))
+	if err := r.tick(); err != nil {
+		t.Fatal(err)
+	}
+	r.settle()
+
+	reports := r.srv.Reports()
+	if len(reports) != 1 {
+		t.Fatalf("the server holds %d reports, want one", len(reports))
+	}
+	for _, rep := range reports {
+		if len(rep.Fights) != 1 {
+			t.Fatalf("fights = %d, want the one fought after the companion started", len(rep.Fights))
+		}
+		if rep.Complete == nil {
+			t.Fatal("the report was never completed")
+		}
+		h := rep.Complete.Health
+		if h.Layout != "retail-v16" || h.LayoutInferred || h.ParseErrors != 0 {
+			t.Fatalf("health = %+v, want the file's own layout and no parse errors", h)
+		}
+	}
+}

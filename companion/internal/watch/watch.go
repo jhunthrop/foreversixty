@@ -5,6 +5,7 @@
 package watch
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -258,4 +259,77 @@ func ReadRange(path string, start, end int64) ([]byte, error) {
 		return nil, fmt.Errorf("read %s at %d..%d: %w", path, start, end, err)
 	}
 	return buf[:n], nil
+}
+
+// HeaderScanLimit bounds how far back LastHeaderBefore reads for a header: a raid night of
+// logging is a few hundred megabytes, and a header further back than this belongs to a
+// client session the player has long since left.
+const HeaderScanLimit = 256 << 20
+
+// headerScanWindow is how much of the file one backwards step reads. A variable so a test
+// can make the window small enough to split a header line across two steps.
+var headerScanWindow = 1 << 20
+
+// headerMark is what a COMBAT_LOG_VERSION line carries after its timestamp.
+const headerMark = "  COMBAT_LOG_VERSION,"
+
+// LastHeaderBefore finds the last whole COMBAT_LOG_VERSION line that ends at or before offset
+// in the log at path, reading backwards from offset in windows and at most HeaderScanLimit
+// bytes. A report that begins partway through a file (the file was already there and
+// growing when the companion started, or when the tail moved to another game folder) never
+// sees the header the game wrote when logging began, and the engine would have to guess the
+// layout from field counts; the header is in the file, a few megabytes back, and this reads
+// it. It reports false when there is none within reach.
+func LastHeaderBefore(path string, offset int64) (string, bool, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", false, err
+	}
+	defer f.Close()
+	end := offset
+	floor := max(offset-HeaderScanLimit, 0)
+	var carry []byte // the head of a line cut by the previous window, which began at end
+	for end > floor {
+		start := max(end-int64(headerScanWindow), floor)
+		buf := make([]byte, end-start)
+		if _, err := f.ReadAt(buf, start); err != nil {
+			return "", false, fmt.Errorf("read %s at %d..%d: %w", path, start, end, err)
+		}
+		window := append(buf, carry...)
+		if line, ok := lastHeaderLine(window, start > 0); ok {
+			return line, true, nil
+		}
+		// Everything up to and including the first newline is the tail of a line that
+		// starts earlier; the newline comes along so the joined line reads as terminated.
+		if i := bytes.IndexByte(window, '\n'); i >= 0 {
+			carry = append([]byte(nil), window[:i+1]...)
+		} else {
+			carry = append([]byte(nil), window...)
+		}
+		end = start
+	}
+	return "", false, nil
+}
+
+// lastHeaderLine finds the last header line among the whole lines of window. The first line
+// of the window is whole only when the window begins at the file's start (partial false).
+func lastHeaderLine(window []byte, partial bool) (string, bool) {
+	at := len(window)
+	for {
+		i := bytes.LastIndex(window[:at], []byte(headerMark))
+		if i < 0 {
+			return "", false
+		}
+		lineStart := bytes.LastIndexByte(window[:i], '\n') + 1
+		lineEnd := bytes.IndexByte(window[i:], '\n')
+		if lineEnd < 0 {
+			// The line's end lies past offset: the header belongs to the report itself.
+			at = i
+			continue
+		}
+		if lineStart == 0 && partial {
+			return "", false // its start lies in an earlier window; the caller carries it back
+		}
+		return string(window[lineStart : i+lineEnd]), true
+	}
 }

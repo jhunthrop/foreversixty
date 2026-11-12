@@ -35,6 +35,10 @@ type Report struct {
 	StartOffset int64 `json:"start_offset"`
 	Offset      int64 `json:"offset"`
 	RawSent     int64 `json:"raw_sent"`
+	// Layout names the engine layout the report is parsed with when it began partway
+	// through the file, read from the last COMBAT_LOG_VERSION line before StartOffset;
+	// empty when the report's own bytes carry the header, or no header was in reach.
+	Layout string `json:"layout,omitempty"`
 
 	Visibility string `json:"visibility"`
 	// LoggingCharacter attributes the report, captured when it starts
