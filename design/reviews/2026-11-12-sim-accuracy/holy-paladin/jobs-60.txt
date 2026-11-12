@@ -1,0 +1,8 @@
+raid60-alliance-s1 -spec paladin-holy -preset raid -band 60 -faction alliance -seed 1
+raid60-alliance-s50001 -spec paladin-holy -preset raid -band 60 -faction alliance -seed 50001
+raid60-horde-s1 -spec paladin-holy -preset raid -band 60 -faction horde -seed 1
+raid60-horde-s50001 -spec paladin-holy -preset raid -band 60 -faction horde -seed 50001
+bare60-alliance-s1 -spec paladin-holy -preset bare -band 60 -faction alliance -seed 1
+bare60-alliance-s50001 -spec paladin-holy -preset bare -band 60 -faction alliance -seed 50001
+bare60-horde-s1 -spec paladin-holy -preset bare -band 60 -faction horde -seed 1
+bare60-horde-s50001 -spec paladin-holy -preset bare -band 60 -faction horde -seed 50001
