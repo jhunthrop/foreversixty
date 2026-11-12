@@ -89,9 +89,26 @@ type bundle struct {
 	sha         string
 }
 
-// makeBundle builds a multipart bundle from the engine fixture,
-// letting a test bend the metrics before they are posted.
+// makeBundle builds a multipart bundle from the engine fixture with every
+// part written as a file, letting a test bend the metrics before they are
+// posted.
 func makeBundle(t *testing.T, index int, bend func([]metrics.Row)) bundle {
+	t.Helper()
+	return encodeBundle(t, index, bend, false)
+}
+
+// makeCompanionBundle encodes the fixture the way the companion does:
+// summary, metrics and raw_range are form fields (multipart.Writer's
+// CreateFormField, no filename) and only the events are a file. See
+// companion/internal/client.FightBundle.Encode.
+func makeCompanionBundle(t *testing.T, index int) bundle {
+	t.Helper()
+	return encodeBundle(t, index, nil, true)
+}
+
+// encodeBundle writes the fixture's four parts; jsonAsFields picks the
+// companion's field encoding for the JSON parts over the file encoding.
+func encodeBundle(t *testing.T, index int, bend func([]metrics.Row), jsonAsFields bool) bundle {
 	t.Helper()
 	fx, err := engine.NewFixture("fixture")
 	if err != nil {
@@ -107,7 +124,13 @@ func makeBundle(t *testing.T, index int, bend func([]metrics.Row)) bundle {
 	var buf bytes.Buffer
 	w := multipart.NewWriter(&buf)
 	writeJSON := func(name string, v any) {
-		part, err := w.CreateFormFile(name, name+".json")
+		var part io.Writer
+		var err error
+		if jsonAsFields {
+			part, err = w.CreateFormField(name)
+		} else {
+			part, err = w.CreateFormFile(name, name+".json")
+		}
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -264,6 +287,31 @@ func TestAVerifiedBundleIsStoredPublishedAndRanked(t *testing.T) {
 	}
 	if len(ranked[0].Rows) != 3 {
 		t.Fatalf("ranked rows = %d, want one per player", len(ranked[0].Rows))
+	}
+}
+
+// The companion writes its JSON parts as form fields and only the events
+// as a file. From 10 Nov 2026 production answered 400 "the bundle has no
+// summary part" to every companion bundle, because the parts were read
+// with FormFile, which sees files alone; the live reports of that week
+// completed with no fights. A field-encoded bundle must store and verify
+// exactly as a file-encoded one does.
+func TestACompanionEncodedBundleIsStored(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	b := makeCompanionBundle(t, 1)
+
+	res := h.do(http.MethodPut, "/v1/reports/"+id+"/fights/1", b.contentType, b.body)
+	if res.StatusCode != http.StatusCreated {
+		body, _ := io.ReadAll(res.Body)
+		t.Fatalf("status = %d, want 201: %s", res.StatusCode, body)
+	}
+	fights, err := h.store.Fights(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fights) != 1 || !fights[0].Verified {
+		t.Fatalf("fights = %+v, want one verified fight", fights)
 	}
 }
 
