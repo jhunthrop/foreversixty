@@ -3,8 +3,8 @@
   "product": "wowf",
   "fetched_at": "2026-11-12T13:01:36.743837Z",
   "files": {
-    "addon-builds.json": "955fba7798e6f6e69179d6d9918f4bfa44918c831631fd9decfd6a3689e6e899",
-    "addon-data.json": "14f98e1d936508a8fc2229702b7563ce1cfdafe07ed60485862578bce7579e6f",
+    "addon-builds.json": "be159af7f57aa679c8e3c2711530948565173a0b264b14edd09fda032e2c6a11",
+    "addon-data.json": "92f455be53360f537cdb153c578333c490904d979a086e119038fe244076a698",
     "bis/druid-balance.json": "6e84e77f0edd6e5169cc53d275db0ed94376937bc19298eb16ed5e15104d3822",
     "bis/druid-balance.md": "dc77acd06f25a17b4e07f07d969b038cf0073bde854764a7d02a154a75f56456",
     "bis/druid-feral-bear.json": "2054e75b5ee0bfe5b1ec2169ac778e81cd675aa4e70e642b09278f2cb5d66585",
