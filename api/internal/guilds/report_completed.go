@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
+
+	"github.com/jhunthrop/foreversixty/api/internal/reportguild"
 )
 
 // ReportCompleted is the reports.Completed hook: a report has just completed, or a complete
@@ -117,7 +119,7 @@ type raidRefKey struct{ guildID, raidID int64 }
 func (s *Store) foreignMatches(ctx context.Context, reportID string) ([]raidRefKey, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select g.guild_id, g.id from guild_raids g join reports r on r.id = g.report_id
-		where g.report_id = $1 and g.guild_id is distinct from `+matchGuildOf("r"), reportID)
+		where g.report_id = $1 and g.guild_id is distinct from `+reportguild.Of("r"), reportID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: foreign matches: %w", err)
 	}

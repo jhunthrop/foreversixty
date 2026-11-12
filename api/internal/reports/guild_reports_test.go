@@ -49,6 +49,18 @@ func (h *harness) attachReportToGuild(reportID string, guildID int64) {
 	}
 }
 
+// attributeReportToGuild gives an existing report a matched_guild_id
+// directly, as AttributeGuild would from its logger's verified standing,
+// leaving guild_id null: the shape of a member's own upload nobody has
+// claimed for the guild by hand.
+func (h *harness) attributeReportToGuild(reportID string, guildID int64) {
+	h.t.Helper()
+	if _, err := h.store.Pool.Exec(h.t.Context(),
+		`update reports set matched_guild_id = $2 where id = $1`, reportID, guildID); err != nil {
+		h.t.Fatal(err)
+	}
+}
+
 // TestGuildReportsMemberSeesGuildAndPublicRowsNewestFirst covers the
 // member path of GET /v1/guilds/{id}/reports (design/specs/
 // 2026-10-04-logs-landing.md §4.C.1): a verified member sees the

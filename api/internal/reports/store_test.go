@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 )
@@ -323,5 +324,64 @@ func TestKeysBuildsTheReportPrefix(t *testing.T) {
 	k := Keys("abc123def456")
 	if got := k.Report(); got != "reports/abc123def456/report.json" {
 		t.Fatalf("report key = %q", got)
+	}
+}
+
+// TestForGuildListsAnAttributedReport is the guild tab's rule for whose
+// report a guild's is: the one an officer set by hand (guild_id) or the
+// one its logger's verified standing named (matched_guild_id), read as
+// the matcher reads it, coalesce(guild_id, matched_guild_id). A member's
+// public upload nobody has claimed by hand is the guild's report all the
+// same; a report with neither column set is nobody's.
+func TestForGuildListsAnAttributedReport(t *testing.T) {
+	h := newHarness(t)
+	guildID := h.seedGuild("Attributed", "hardcore")
+	now := time.Now().UTC()
+
+	h.seedReport("byhand", "Set by an officer", "Molten Core", GuildTo, StatusComplete, now.Add(-2*time.Hour))
+	h.attachReportToGuild("byhand", guildID)
+	h.seedReport("bystanding", "A member's own upload", "Molten Core", Public, StatusComplete, now.Add(-time.Hour))
+	h.attributeReportToGuild("bystanding", guildID)
+	// Attributed but private: the visibility rule still hides it.
+	h.seedReport("standingpriv", "A member's private upload", "Molten Core", Private, StatusComplete, now.Add(-30*time.Minute))
+	h.attributeReportToGuild("standingpriv", guildID)
+	// Neither column set: nobody's.
+	h.seedReport("nobodys", "Unattributed", "Molten Core", Public, StatusComplete, now)
+
+	rows, total, err := h.store.ForGuild(t.Context(), guildID, 1, MinePerPage)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if total != 2 {
+		t.Fatalf("total = %d, want 2 (one by hand, one by standing)", total)
+	}
+	if len(rows) != 2 || rows[0].ID != "bystanding" || rows[1].ID != "byhand" {
+		t.Fatalf("rows = %+v, want bystanding then byhand", rows)
+	}
+}
+
+// TestForGuildReadsAnOfficersGuildOverTheMatchersGuess is the coalesce
+// order: a report an officer set to one guild never lists under the
+// guild its logger's standing named.
+func TestForGuildReadsAnOfficersGuildOverTheMatchersGuess(t *testing.T) {
+	h := newHarness(t)
+	officers, standing := h.seedGuild("Officers", "hardcore"), h.seedGuild("Standing", "hardcore")
+	h.seedReport("moved", "Moved by an officer", "Molten Core", Public, StatusComplete, time.Now().UTC())
+	h.attachReportToGuild("moved", officers)
+	h.attributeReportToGuild("moved", standing)
+
+	rows, total, err := h.store.ForGuild(t.Context(), standing, 1, MinePerPage)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if total != 0 || len(rows) != 0 {
+		t.Fatalf("the standing guild lists %d rows (%+v), want none", total, rows)
+	}
+	rows, total, err = h.store.ForGuild(t.Context(), officers, 1, MinePerPage)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if total != 1 || len(rows) != 1 || rows[0].ID != "moved" {
+		t.Fatalf("the officers' guild lists %d rows (%+v), want moved", total, rows)
 	}
 }

@@ -172,3 +172,38 @@ func TestRaidsCursorPaginates(t *testing.T) {
 		t.Fatalf("second page = %+v, want exactly cursor-report-2", page.Rows)
 	}
 }
+
+// TestRaidsListAMembersAttributedReport covers the Raids tab for a report nobody set by
+// hand: a member's public upload the matcher reads as the guild's (matched_guild_id) is
+// one of the guild's rows, for a verified member and a signed-out visitor alike; a report
+// with neither column set is nobody's.
+func TestRaidsListAMembersAttributedReport(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	owner := seedUser(t, h.pool, "raids-attributed-owner@example.com")
+	seedCharacter(t, h.pool, gid, owner, "us/hardcore/raidsattributedowner", "member", true)
+	member := seedUser(t, h.pool, "raids-attributed-member@example.com")
+	seedCharacter(t, h.pool, gid, member, "us/hardcore/raidsattributedmember", "member", true)
+	recomputeMembership(t, h.pool, gid, member)
+
+	if _, err := h.pool.Exec(ctx,
+		`insert into reports (id, owner_id, matched_guild_id, visibility, status, created_at)
+		 values ('raidsattributed', $1, $2, 'public', 'complete', now())`, owner, gid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(ctx,
+		`insert into reports (id, owner_id, visibility, status, created_at)
+		 values ('raidsnobodys', $1, 'public', 'complete', now())`, owner); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, actor := range []auth.Actor{{}, {UserID: member, Role: "user", Method: "session"}} {
+		h.actor = actor
+		var page RaidsPage
+		h.data(h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/raids", gid), ""), &page)
+		if len(page.Rows) != 1 || page.Rows[0].ID != "raidsattributed" {
+			t.Fatalf("actor %+v saw %+v, want only the attributed report", actor, page.Rows)
+		}
+	}
+}

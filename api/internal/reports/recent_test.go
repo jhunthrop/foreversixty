@@ -199,3 +199,20 @@ func TestRecentRejectsAGarbageCursor(t *testing.T) {
 		t.Fatal("the 400 should name the cursor field")
 	}
 }
+
+// TestRecentNamesTheGuildAttributionGave covers the feed row's guild name
+// for a report nobody set by hand: the guild its logger's verified standing
+// named (matched_guild_id) is the report's guild, as the guild tab and the
+// matcher read it.
+func TestRecentNamesTheGuildAttributionGave(t *testing.T) {
+	h := newHarness(t)
+	h.seedReport("public00attr", "Attributed night", "Molten Core", Public, StatusComplete, time.Now().UTC())
+	h.attributeReportToGuild("public00attr", h.seedGuild("Standing", "hardcore"))
+
+	res := h.do(http.MethodGet, "/v1/reports/recent", "", nil)
+	var page RecentPage
+	h.data(res, &page)
+	if len(page.Rows) != 1 || page.Rows[0].GuildName != "Standing" {
+		t.Fatalf("rows = %+v, want one row named Standing", page.Rows)
+	}
+}

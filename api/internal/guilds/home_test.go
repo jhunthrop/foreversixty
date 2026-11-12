@@ -506,3 +506,37 @@ func TestHome_ViewerVerifyHasApprover(t *testing.T) {
 		t.Fatal("verify.has_approver = false with a verified officer")
 	}
 }
+
+// TestHomeReportsListAMembersAttributedReport covers the guild page's recent logs for a
+// report nobody set by hand: a member's public upload the guild matcher reads as the
+// guild's (matched_guild_id, from the logger's verified standing) is one of the guild's
+// recent logs too; a report with neither column set is nobody's.
+func TestHomeReportsListAMembersAttributedReport(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	owner := seedUser(t, h.pool, "home-attributed-owner@example.com")
+	seedCharacter(t, h.pool, gid, owner, "us/hardcore/homeattributedowner", "member", true)
+	viewer := seedUser(t, h.pool, "home-attributed-viewer@example.com")
+	seedCharacter(t, h.pool, gid, viewer, "us/hardcore/homeattributedviewer", "member", true)
+	recomputeMembership(t, h.pool, gid, viewer)
+
+	if _, err := h.pool.Exec(ctx,
+		`insert into reports (id, owner_id, matched_guild_id, visibility, status, created_at)
+		 values ('homeattributed', $1, $2, 'public', 'complete', now())`, owner, gid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(ctx,
+		`insert into reports (id, owner_id, visibility, status, created_at)
+		 values ('homenobodys', $1, 'public', 'complete', now())`, owner); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: viewer, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	var view HomeView
+	h.data(res, &view)
+	if len(view.Reports) != 1 || view.Reports[0].ID != "homeattributed" {
+		t.Fatalf("reports = %+v, want only the attributed one", view.Reports)
+	}
+}

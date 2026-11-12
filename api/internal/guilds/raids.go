@@ -24,6 +24,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
+	"github.com/jhunthrop/foreversixty/api/internal/reportguild"
 )
 
 // RaidsDefaultLimit/RaidsMaxLimit bound the ?limit= query parameter (contract's own
@@ -142,7 +143,9 @@ func visibilityClause(verified bool) string {
 }
 
 // Raids lists guildID's reports, newest first, keyset-paginated, each with its fights and
-// present-roster list. userID is 0 for a signed-out visitor - the visibility clause's own
+// present-roster list. A report is the guild's as the matcher reads it (reportguild.Is): set
+// by an officer, or attributed from its logger's verified standing, so a night the matcher
+// linked to a raid is on the tab that links to it. userID is 0 for a signed-out visitor - the visibility clause's own
 // r.owner_id = $2 then simply never matches, which is exactly "a signed-out visitor only
 // ever sees public, unflagged reports."
 func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool, limit int, before *raidsCursor) (RaidsPage, error) {
@@ -159,7 +162,7 @@ func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool,
 	       ` + presence.EvidenceReport("r") + `, gr.id
 	     from reports r
 	     left join guild_raids gr on gr.report_id = r.id and gr.guild_id = $1
-	     where r.guild_id = $1 and ` + visibility
+	     where ` + reportguild.Is("r", "$1") + ` and ` + visibility
 	args := []any{guildID, userID}
 	if before != nil {
 		query += ` and (r.created_at, r.id) < ($3, $4)`
