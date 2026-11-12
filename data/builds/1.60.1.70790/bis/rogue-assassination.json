@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70790",
-  "engine_version": "0e04b1284",
-  "generated_at": "2026-11-10T08:23:06Z",
+  "engine_version": "4f8bb748d",
+  "generated_at": "2026-11-12T16:20:17Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -449,7 +449,7 @@
           "set_bonus": {
             "set": "Defias Leather",
             "pieces": 4,
-            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 65 to 85 Physical damage over 5 sec."
           }
         },
         {
@@ -597,7 +597,7 @@
           "set_bonus": {
             "set": "Defias Leather",
             "pieces": 4,
-            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 65 to 85 Physical damage over 5 sec."
           }
         },
         {
@@ -674,7 +674,7 @@
           "set_bonus": {
             "set": "Defias Leather",
             "pieces": 4,
-            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 65 to 85 Physical damage over 5 sec."
           }
         },
         {
@@ -1174,8 +1174,8 @@
         "off_hand: Blackfang",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 5.049192638,
-      "verify_run_seconds": 22.20712031,
+      "weights_run_seconds": 5.646156503,
+      "verify_run_seconds": 25.147263827,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -1576,7 +1576,7 @@
           "set_bonus": {
             "set": "Defias Leather",
             "pieces": 4,
-            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 65 to 85 Physical damage over 5 sec."
           }
         },
         {
@@ -1855,7 +1855,7 @@
           "set_bonus": {
             "set": "Defias Leather",
             "pieces": 4,
-            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 65 to 85 Physical damage over 5 sec."
           }
         },
         {
@@ -1932,7 +1932,7 @@
           "set_bonus": {
             "set": "Defias Leather",
             "pieces": 4,
-            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 65 to 85 Physical damage over 5 sec."
           }
         },
         {
@@ -2418,8 +2418,8 @@
         "off_hand: Edward's Knife",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 5.049192638,
-      "verify_run_seconds": 22.083370213,
+      "weights_run_seconds": 5.646156503,
+      "verify_run_seconds": 24.599974970999998,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3817,8 +3817,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 4.9107675010000005,
-      "verify_run_seconds": 11.948894674,
+      "weights_run_seconds": 5.644584986,
+      "verify_run_seconds": 13.395943444,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5191,8 +5191,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 4.9107675010000005,
-      "verify_run_seconds": 11.762328599,
+      "weights_run_seconds": 5.644584986,
+      "verify_run_seconds": 13.491046244,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6592,8 +6592,8 @@
         "off_hand: Black Menace",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 5.224039148,
-      "verify_run_seconds": 12.210401264000001,
+      "weights_run_seconds": 5.788549253,
+      "verify_run_seconds": 13.778152845000001,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7985,8 +7985,8 @@
         "off_hand: Coldrage Dagger",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 5.224039148,
-      "verify_run_seconds": 11.797405628,
+      "weights_run_seconds": 5.788549253,
+      "verify_run_seconds": 13.139256051,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9522,8 +9522,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.124860044,
-      "verify_run_seconds": 22.240470999000003,
+      "weights_run_seconds": 5.854675572,
+      "verify_run_seconds": 24.656486570000002,
       "coverage": {
         "back": {
           "eligible": 331,
@@ -9591,12 +9591,12 @@
           "rare_spawn_skipped": 2
         },
         "trinket1": {
-          "eligible": 77,
-          "sourced": 38
+          "eligible": 78,
+          "sourced": 39
         },
         "trinket2": {
-          "eligible": 77,
-          "sourced": 38
+          "eligible": 78,
+          "sourced": 39
         },
         "waist": {
           "eligible": 275,
@@ -11111,8 +11111,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.124860044,
-      "verify_run_seconds": 18.90511393,
+      "weights_run_seconds": 5.854675572,
+      "verify_run_seconds": 20.608211891,
       "coverage": {
         "back": {
           "eligible": 336,
@@ -11180,12 +11180,12 @@
           "rare_spawn_skipped": 2
         },
         "trinket1": {
-          "eligible": 77,
-          "sourced": 38
+          "eligible": 78,
+          "sourced": 39
         },
         "trinket2": {
-          "eligible": 77,
-          "sourced": 38
+          "eligible": 78,
+          "sourced": 39
         },
         "waist": {
           "eligible": 279,
@@ -11976,7 +11976,7 @@
             },
             "pvp": {
               "item_id": 220858,
-              "rank": 7,
+              "rank": 8,
               "source": "PvP rank 6 · Knight · Alliance",
               "dps_delta": 0
             },
@@ -12001,7 +12001,7 @@
             },
             "world": {
               "item_id": 8300,
-              "rank": 8,
+              "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": 0
@@ -12119,7 +12119,7 @@
               "item_name": "Painweaver Band",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -1.674502202
+              "dps_delta": -2.22749444
             },
             {
               "item_id": 11669,
@@ -12191,7 +12191,7 @@
               "item_name": "Painweaver Band",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.139383414
+              "dps_delta": -0.692375653
             },
             {
               "item_id": 19514,
@@ -12229,7 +12229,7 @@
                 "item_id": 13098,
                 "rank": 4,
                 "source": "Blackrock Spire: General Drakkisath",
-                "dps_delta": -0.14
+                "dps_delta": -0.69
               }
             },
             "quest": {
@@ -12512,7 +12512,7 @@
             },
             "quest": {
               "item_id": 13984,
-              "rank": 10,
+              "rank": 12,
               "source": "The Lich, Ras Frostwhisper",
               "dps_delta": -8.24
             },
@@ -12591,7 +12591,7 @@
             },
             "quest": {
               "item_id": 13984,
-              "rank": 10,
+              "rank": 11,
               "source": "The Lich, Ras Frostwhisper",
               "dps_delta": -4.29,
               "not_with": [
@@ -12764,7 +12764,7 @@
           "changed_slots": 0
         },
         "dungeon": {
-          "dps": 309.5,
+          "dps": 309,
           "error": 0.3,
           "changed_slots": 13
         },
@@ -12774,7 +12774,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 1902,
+      "no_source_count": 1919,
       "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -12810,11 +12810,11 @@
         "off_hand: Electrified Dagger",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 5.24131008,
-      "verify_run_seconds": 66.465526278,
+      "weights_run_seconds": 5.936855623,
+      "verify_run_seconds": 74.90380308,
       "coverage": {
         "back": {
-          "eligible": 464,
+          "eligible": 467,
           "sourced": 325,
           "rare_spawn_skipped": 21
         },
@@ -12824,28 +12824,28 @@
           "rare_spawn_skipped": 15
         },
         "feet": {
-          "eligible": 420,
+          "eligible": 422,
           "sourced": 318,
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 392,
+          "eligible": 395,
           "sourced": 147,
           "rare_spawn_skipped": 6
         },
         "finger2": {
-          "eligible": 392,
+          "eligible": 395,
           "sourced": 147,
           "rare_spawn_skipped": 6
         },
         "hands": {
-          "eligible": 431,
+          "eligible": 432,
           "sourced": 323,
           "rare_spawn_skipped": 10
         },
         "head": {
-          "eligible": 338,
-          "sourced": 243,
+          "eligible": 339,
+          "sourced": 244,
           "rare_spawn_skipped": 9
         },
         "legs": {
@@ -12854,22 +12854,22 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 779,
-          "sourced": 478,
+          "eligible": 782,
+          "sourced": 479,
           "rare_spawn_skipped": 14
         },
         "neck": {
-          "eligible": 217,
+          "eligible": 218,
           "sourced": 76,
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 172,
-          "sourced": 99,
+          "eligible": 174,
+          "sourced": 100,
           "rare_spawn_skipped": 14
         },
         "ranged": {
-          "eligible": 249,
+          "eligible": 250,
           "sourced": 139,
           "rare_spawn_skipped": 6
         },
@@ -12879,22 +12879,22 @@
           "rare_spawn_skipped": 3
         },
         "trinket1": {
-          "eligible": 184,
-          "sourced": 85,
+          "eligible": 186,
+          "sourced": 86,
           "rare_spawn_skipped": 1
         },
         "trinket2": {
-          "eligible": 184,
-          "sourced": 85,
+          "eligible": 186,
+          "sourced": 86,
           "rare_spawn_skipped": 1
         },
         "waist": {
-          "eligible": 392,
+          "eligible": 393,
           "sourced": 305,
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 326,
+          "eligible": 327,
           "sourced": 230,
           "rare_spawn_skipped": 7
         }
@@ -13047,7 +13047,7 @@
             },
             "world": {
               "item_id": 14676,
-              "rank": 13,
+              "rank": 14,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -4.88
@@ -13630,7 +13630,7 @@
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -21.281299842,
+              "dps_delta": -21.197877192,
               "verified": true
             }
           ],
@@ -13651,11 +13651,11 @@
               "item_id": 18736,
               "rank": 1,
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -21.28
+              "dps_delta": -21.2
             },
             "pvp": {
               "item_id": 220859,
-              "rank": 2,
+              "rank": 3,
               "source": "PvP rank 6 · Stone Guard · Horde",
               "dps_delta": 0
             },
@@ -13667,14 +13667,14 @@
             },
             "rep": {
               "item_id": 22740,
-              "rank": 3,
+              "rank": 4,
               "source": "Warsong Outriders",
               "dps_delta": 0,
               "standing": "exalted"
             },
             "vendor": {
               "item_id": 220859,
-              "rank": 2,
+              "rank": 3,
               "source": "PvP rank 6 · Stone Guard · Horde",
               "dps_delta": 0
             },
@@ -13798,7 +13798,7 @@
               "item_name": "Painweaver Band",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -2.389162274
+              "dps_delta": -2.640948759
             },
             {
               "item_id": 11669,
@@ -13866,7 +13866,7 @@
               "item_name": "Painweaver Band",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -1.31646043
+              "dps_delta": -1.568246915
             },
             {
               "item_id": 272406,
@@ -13901,7 +13901,7 @@
                 "item_id": 13098,
                 "rank": 4,
                 "source": "Blackrock Spire: General Drakkisath",
-                "dps_delta": -1.32
+                "dps_delta": -1.57
               }
             },
             "quest": {
@@ -14041,7 +14041,7 @@
             {
               "item_id": 11815,
               "source_kind": "dungeon",
-              "dps_delta": -0.55
+              "dps_delta": -0.54
             },
             {
               "item_id": 19120,
@@ -14211,7 +14211,7 @@
             },
             "quest": {
               "item_id": 13984,
-              "rank": 11,
+              "rank": 13,
               "source": "The Lich, Ras Frostwhisper",
               "dps_delta": -3.75
             },
@@ -14300,7 +14300,7 @@
             },
             "quest": {
               "item_id": 13984,
-              "rank": 11,
+              "rank": 12,
               "source": "The Lich, Ras Frostwhisper",
               "dps_delta": -3.57,
               "not_with": [
@@ -14410,7 +14410,7 @@
           "by_kind": {
             "crafted": {
               "item_id": 10508,
-              "rank": 25,
+              "rank": 26,
               "source": "Engineering",
               "dps_delta": -2.04
             },
@@ -14487,7 +14487,7 @@
           "changed_slots": 0
         },
         "dungeon": {
-          "dps": 309.5,
+          "dps": 309.1,
           "error": 0.2,
           "changed_slots": 13
         },
@@ -14497,7 +14497,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 1905,
+      "no_source_count": 1922,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -14533,11 +14533,11 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 5.24131008,
-      "verify_run_seconds": 70.48959797799999,
+      "weights_run_seconds": 5.936855623,
+      "verify_run_seconds": 80.66721402499999,
       "coverage": {
         "back": {
-          "eligible": 470,
+          "eligible": 473,
           "sourced": 332,
           "rare_spawn_skipped": 21
         },
@@ -14547,28 +14547,28 @@
           "rare_spawn_skipped": 15
         },
         "feet": {
-          "eligible": 425,
+          "eligible": 427,
           "sourced": 318,
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 395,
+          "eligible": 398,
           "sourced": 154,
           "rare_spawn_skipped": 6
         },
         "finger2": {
-          "eligible": 395,
+          "eligible": 398,
           "sourced": 154,
           "rare_spawn_skipped": 6
         },
         "hands": {
-          "eligible": 431,
+          "eligible": 432,
           "sourced": 320,
           "rare_spawn_skipped": 10
         },
         "head": {
-          "eligible": 339,
-          "sourced": 244,
+          "eligible": 340,
+          "sourced": 245,
           "rare_spawn_skipped": 9
         },
         "legs": {
@@ -14577,22 +14577,22 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 778,
-          "sourced": 486,
+          "eligible": 781,
+          "sourced": 487,
           "rare_spawn_skipped": 14
         },
         "neck": {
-          "eligible": 221,
+          "eligible": 222,
           "sourced": 79,
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 169,
-          "sourced": 95,
+          "eligible": 171,
+          "sourced": 96,
           "rare_spawn_skipped": 14
         },
         "ranged": {
-          "eligible": 249,
+          "eligible": 250,
           "sourced": 137,
           "rare_spawn_skipped": 6
         },
@@ -14602,22 +14602,22 @@
           "rare_spawn_skipped": 3
         },
         "trinket1": {
-          "eligible": 184,
-          "sourced": 85,
+          "eligible": 186,
+          "sourced": 86,
           "rare_spawn_skipped": 1
         },
         "trinket2": {
-          "eligible": 184,
-          "sourced": 85,
+          "eligible": 186,
+          "sourced": 86,
           "rare_spawn_skipped": 1
         },
         "waist": {
-          "eligible": 395,
+          "eligible": 396,
           "sourced": 305,
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 329,
+          "eligible": 330,
           "sourced": 234,
           "rare_spawn_skipped": 7
         }
@@ -14771,7 +14771,7 @@
             },
             "world": {
               "item_id": 14676,
-              "rank": 12,
+              "rank": 13,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -11.36
@@ -15391,7 +15391,7 @@
             },
             "pvp": {
               "item_id": 220858,
-              "rank": 3,
+              "rank": 4,
               "source": "PvP rank 6 · Knight · Alliance",
               "dps_delta": 0
             },
@@ -15645,7 +15645,7 @@
                 "item_id": 13098,
                 "rank": 6,
                 "source": "Blackrock Spire: General Drakkisath",
-                "dps_delta": -3.76
+                "dps_delta": -4.2
               }
             },
             "quest": {
@@ -15934,7 +15934,7 @@
             },
             "quest": {
               "item_id": 13984,
-              "rank": 11,
+              "rank": 13,
               "source": "The Lich, Ras Frostwhisper",
               "dps_delta": -6.58
             },
@@ -15996,7 +15996,7 @@
             },
             "quest": {
               "item_id": 13984,
-              "rank": 11,
+              "rank": 12,
               "source": "The Lich, Ras Frostwhisper",
               "dps_delta": -4.86,
               "not_with": [
@@ -16120,14 +16120,14 @@
             },
             "rep": {
               "item_id": 19562,
-              "rank": 35,
+              "rank": 36,
               "source": "Silverwing Sentinels",
               "dps_delta": -5.04,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 19562,
-              "rank": 35,
+              "rank": 36,
               "source": "Illiyana Moonblaze",
               "dps_delta": -5.04,
               "standing": "revered"
@@ -16190,7 +16190,7 @@
           "changed_slots": 0
         },
         "dungeon": {
-          "dps": 800.1,
+          "dps": 799.1,
           "error": 0.6,
           "changed_slots": 12
         },
@@ -16200,7 +16200,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 1902,
+      "no_source_count": 1919,
       "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -16237,11 +16237,11 @@
         "off_hand: Heartseeker",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 5.597409832,
-      "verify_run_seconds": 63.663784543000006,
+      "weights_run_seconds": 6.604586549,
+      "verify_run_seconds": 72.514366322,
       "coverage": {
         "back": {
-          "eligible": 464,
+          "eligible": 467,
           "sourced": 325,
           "rare_spawn_skipped": 21
         },
@@ -16251,28 +16251,28 @@
           "rare_spawn_skipped": 15
         },
         "feet": {
-          "eligible": 420,
+          "eligible": 422,
           "sourced": 318,
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 392,
+          "eligible": 395,
           "sourced": 147,
           "rare_spawn_skipped": 6
         },
         "finger2": {
-          "eligible": 392,
+          "eligible": 395,
           "sourced": 147,
           "rare_spawn_skipped": 6
         },
         "hands": {
-          "eligible": 431,
+          "eligible": 432,
           "sourced": 323,
           "rare_spawn_skipped": 10
         },
         "head": {
-          "eligible": 338,
-          "sourced": 243,
+          "eligible": 339,
+          "sourced": 244,
           "rare_spawn_skipped": 9
         },
         "legs": {
@@ -16281,22 +16281,22 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 779,
-          "sourced": 478,
+          "eligible": 782,
+          "sourced": 479,
           "rare_spawn_skipped": 14
         },
         "neck": {
-          "eligible": 217,
+          "eligible": 218,
           "sourced": 76,
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 172,
-          "sourced": 99,
+          "eligible": 174,
+          "sourced": 100,
           "rare_spawn_skipped": 14
         },
         "ranged": {
-          "eligible": 249,
+          "eligible": 250,
           "sourced": 139,
           "rare_spawn_skipped": 6
         },
@@ -16306,22 +16306,22 @@
           "rare_spawn_skipped": 3
         },
         "trinket1": {
-          "eligible": 184,
-          "sourced": 85,
+          "eligible": 186,
+          "sourced": 86,
           "rare_spawn_skipped": 1
         },
         "trinket2": {
-          "eligible": 184,
-          "sourced": 85,
+          "eligible": 186,
+          "sourced": 86,
           "rare_spawn_skipped": 1
         },
         "waist": {
-          "eligible": 392,
+          "eligible": 393,
           "sourced": 305,
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 326,
+          "eligible": 327,
           "sourced": 230,
           "rare_spawn_skipped": 7
         }
@@ -16474,7 +16474,7 @@
             },
             "world": {
               "item_id": 14676,
-              "rank": 12,
+              "rank": 13,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -6.31
@@ -17069,7 +17069,7 @@
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -69.464136698,
+              "dps_delta": -69.373602591,
               "verified": true
             }
           ],
@@ -17090,11 +17090,11 @@
               "item_id": 18736,
               "rank": 1,
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -69.46
+              "dps_delta": -69.37
             },
             "pvp": {
               "item_id": 220859,
-              "rank": 2,
+              "rank": 3,
               "source": "PvP rank 6 · Stone Guard · Horde",
               "dps_delta": 0
             },
@@ -17113,7 +17113,7 @@
             },
             "vendor": {
               "item_id": 220859,
-              "rank": 2,
+              "rank": 3,
               "source": "PvP rank 6 · Stone Guard · Horde",
               "dps_delta": 0
             },
@@ -17341,7 +17341,7 @@
                 "item_id": 13098,
                 "rank": 6,
                 "source": "Blackrock Spire: General Drakkisath",
-                "dps_delta": -3.76
+                "dps_delta": -4.2
               }
             },
             "quest": {
@@ -17697,7 +17697,7 @@
             },
             "quest": {
               "item_id": 13984,
-              "rank": 11,
+              "rank": 13,
               "source": "The Lich, Ras Frostwhisper",
               "dps_delta": -6.58
             },
@@ -17759,7 +17759,7 @@
             },
             "quest": {
               "item_id": 13984,
-              "rank": 11,
+              "rank": 12,
               "source": "The Lich, Ras Frostwhisper",
               "dps_delta": -4.86,
               "not_with": [
@@ -17886,14 +17886,14 @@
             },
             "rep": {
               "item_id": 19558,
-              "rank": 35,
+              "rank": 36,
               "source": "Warsong Outriders",
               "dps_delta": -5.04,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 19558,
-              "rank": 35,
+              "rank": 36,
               "source": "Kelm Hargunth",
               "dps_delta": -5.04,
               "standing": "revered"
@@ -17951,7 +17951,7 @@
           "changed_slots": 0
         },
         "dungeon": {
-          "dps": 802.1,
+          "dps": 801.3,
           "error": 0.6,
           "changed_slots": 12
         },
@@ -17961,7 +17961,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 1905,
+      "no_source_count": 1922,
       "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -17999,11 +17999,11 @@
         "off_hand: Heartseeker",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 5.597409832,
-      "verify_run_seconds": 61.352744459,
+      "weights_run_seconds": 6.604586549,
+      "verify_run_seconds": 70.442225676,
       "coverage": {
         "back": {
-          "eligible": 470,
+          "eligible": 473,
           "sourced": 332,
           "rare_spawn_skipped": 21
         },
@@ -18013,28 +18013,28 @@
           "rare_spawn_skipped": 15
         },
         "feet": {
-          "eligible": 425,
+          "eligible": 427,
           "sourced": 318,
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 395,
+          "eligible": 398,
           "sourced": 154,
           "rare_spawn_skipped": 6
         },
         "finger2": {
-          "eligible": 395,
+          "eligible": 398,
           "sourced": 154,
           "rare_spawn_skipped": 6
         },
         "hands": {
-          "eligible": 431,
+          "eligible": 432,
           "sourced": 320,
           "rare_spawn_skipped": 10
         },
         "head": {
-          "eligible": 339,
-          "sourced": 244,
+          "eligible": 340,
+          "sourced": 245,
           "rare_spawn_skipped": 9
         },
         "legs": {
@@ -18043,22 +18043,22 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 778,
-          "sourced": 486,
+          "eligible": 781,
+          "sourced": 487,
           "rare_spawn_skipped": 14
         },
         "neck": {
-          "eligible": 221,
+          "eligible": 222,
           "sourced": 79,
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 169,
-          "sourced": 95,
+          "eligible": 171,
+          "sourced": 96,
           "rare_spawn_skipped": 14
         },
         "ranged": {
-          "eligible": 249,
+          "eligible": 250,
           "sourced": 137,
           "rare_spawn_skipped": 6
         },
@@ -18068,22 +18068,22 @@
           "rare_spawn_skipped": 3
         },
         "trinket1": {
-          "eligible": 184,
-          "sourced": 85,
+          "eligible": 186,
+          "sourced": 86,
           "rare_spawn_skipped": 1
         },
         "trinket2": {
-          "eligible": 184,
-          "sourced": 85,
+          "eligible": 186,
+          "sourced": 86,
           "rare_spawn_skipped": 1
         },
         "waist": {
-          "eligible": 395,
+          "eligible": 396,
           "sourced": 305,
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 329,
+          "eligible": 330,
           "sourced": 234,
           "rare_spawn_skipped": 7
         }
