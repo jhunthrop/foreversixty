@@ -4,7 +4,7 @@
 // -> design/reviews/2026-11-11-creators/build/<state>-<width>.png, full page, at 1440 and 390.
 // Every API call is answered from the e2e fixtures (web/tests/e2e/fixtures/creators, the owner from
 // fixtures/home/me-60.json), the way web/tests/e2e/creators.spec.ts serves them, so no server is
-// touched and the states are the spec's: the public page signed out; apply empty, filled, pending,
+// touched, the clock is the fixtures' (2026-12-09) and the states are the spec's: the public page signed out; apply empty, filled, pending,
 // approved and declined; the creator's stats; the owner's creators and statements, the payouts-off
 // notice and the Approve confirm. Playwright is found through web/.
 import { createRequire } from "node:module";
@@ -104,6 +104,8 @@ for (const state of STATES) {
   for (const width of WIDTHS) {
     const context = await browser.newContext({ viewport: { width, height: width < 500 ? 844 : 1000 }, reducedMotion: "reduce" });
     const page = await context.newPage();
+    // The fixtures' clock (spec 0B): November is closed and on the statements page, December is open.
+    await page.clock.setFixedTime(new Date("2026-12-09T12:00:00Z"));
     await state.setup(page);
     await page.goto(`${BASE}${state.url}`, { waitUntil: "networkidle" });
     await page.getByTestId(state.ready).first().waitFor({ timeout: 15000 });

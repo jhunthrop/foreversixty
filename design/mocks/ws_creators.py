@@ -38,7 +38,8 @@ CREATOR = OWNER
 CSS = '''<style>
 /* page-level layout only (no surfaces) */
 .stack{display:flex;flex-direction:column;gap:12px;min-width:0}.acts{display:flex;gap:10px 12px;flex-wrap:wrap;align-items:center}
-.figs5{display:flex;flex-wrap:wrap;gap:8px 20px}.figs5>span{width:104px;display:flex;flex-direction:column}.figs5>span.lead{width:220px}.btn[disabled]{opacity:.45;cursor:not-allowed}
+.figs5{display:flex;flex-wrap:wrap;gap:8px 20px}.figs5>span{width:104px;display:flex;flex-direction:column}.figs5>span.lead{width:220px}.figs5.big{gap:12px 24px}.figs5.big>span.lead{width:240px}
+.pn-link{padding:12px 20px;font-size:14px}.pn-note{padding:12px 20px 0;font-size:14px;line-height:20px}.btn[disabled]{opacity:.45;cursor:not-allowed}
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}.f .t-small{font-size:12px;line-height:16px}
 .ro{font-size:15px;color:var(--strong)}.status{min-height:22px}.page-foot{padding-bottom:48px}
 .trail-end{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.amt{font-variant-numeric:tabular-nums}
@@ -64,9 +65,12 @@ def Input(placeholder: str) -> str:
     return f'<input class="field" type="text" placeholder="{placeholder}">'
 
 
-def figures(items: list[dict]) -> str:
-    return '<span class="figs5">' + ''.join(
-        f'<span{" class=\"lead\"" if f["lead"] else ""}>{Figure(e(f["value"]), e(f["label"]), size="sm", tone="gold" if f["lead"] else "")}<span class="t-small">{e(f["note"])}</span></span>' for f in items) + '</span>'
+def figures(items: list[dict], big: bool = False) -> str:
+    """The built Figures: `sm` in a Row's foot; the default size on the stats summary (lead 240 wide)."""
+    size = '' if big else 'sm'
+    cls = ' class="figs5 big"' if big else ' class="figs5"'
+    return f'<span{cls}>' + ''.join(
+        f'<span{" class=\"lead\"" if f["lead"] else ""}>{Figure(e(f["value"]), e(f["label"]), size=size, tone="gold" if f["lead"] else "")}<span class="t-small">{e(f["note"])}</span></span>' for f in items) + '</span>'
 
 
 def render(title: str, body: str, who: tuple | None, note: str) -> str:
@@ -79,8 +83,8 @@ def creators_plate() -> str:
     c = A['copy']
     rows = [Row(e(r['name']), e(r['sub']), link=False, foot=figures(r['figures']),
                 trail=f'<span class="trail-end">{Tag(e(r["status"]), TONE[r["tone"]])}{Btn(e(r["edit"]))}</span>') for r in A['rows']]
-    return Section(e(c['tableTitle']), Plate(Rows(rows), e(c['tableTitle'])) + f'<p style="margin-top:12px">{Link(e(c["statementsLink"]) + " &rsaquo;")}</p>',
-                   meta=e(A['meta']))
+    body = f'<div role="group" aria-label="{e(c["tableTitle"])}">{Rows(rows)}</div><p class="pn-link">{Link(e(c["statementsLink"]) + " &rsaquo;")}</p>'
+    return Section(e(c['tableTitle']), body, meta=e(A['meta']), panel=True, flush=True)
 
 
 def field(f: dict, readonly: str = '') -> str:
@@ -92,7 +96,7 @@ def add_form() -> str:
     c = A['copy']
     return Section(e(c['addTitle']), '<div class="stack">' + f'<p class="t-small">{e(c["formJob"])}</p>'
                    + ''.join(field(f) for f in A['fields'])
-                   + f'<div class="acts">{Btn(e(c["add"]), primary=True, small=False)}</div><div class="status" aria-live="polite"></div></div>')
+                   + f'<div class="acts">{Btn(e(c["add"]), primary=True, small=False)}</div><div class="status" aria-live="polite"></div></div>', panel=True)
 
 
 def edit_form() -> str:
@@ -105,7 +109,7 @@ def edit_form() -> str:
             + f'<div class="acts">{Btn(e(c["save"]), primary=True, small=False)}{Btn(e(c["cancelEdit"]), small=False)}</div>'
             + f'<div class="acts">{Btn(e(c["invite"]))}{Btn(e(c["refresh"]))}</div>'
             + f'<div class="status" aria-live="polite"><p class="t-small">{e(c["inviteCopied"])}</p></div></div>')
-    return Section(e(A['editTitle']), body)
+    return Section(e(A['editTitle']), body, panel=True)
 
 
 def requests_section() -> str:
@@ -114,7 +118,7 @@ def requests_section() -> str:
     rc = R['copy']
     rows = [Row(e(r['title']), e(r['sub']), link=False, foot=f'<span class="t-small">{e(r["about"])}</span>',
                 trail=f'<span class="trail-end">{Btn(e(rc["approve"]), primary=True)}{Btn(e(rc["decline"]))}</span>') for r in R['rows']]
-    return Section(e(rc['title']), Rows(rows, open_=True), meta=e(R['meta']))
+    return Section(e(rc['title']), f'<div role="group" aria-label="{e(rc["title"])}">{Rows(rows)}</div>', meta=e(R['meta']), panel=True, flush=True)
 
 
 def approve_form() -> str:
@@ -125,13 +129,13 @@ def approve_form() -> str:
             + ''.join(f'<label class="f"><span class="t-label">{e(f["label"])}</span><input class="field" type="text" value="{e(v)}">'
                       f'<span class="t-small">{e(f["hint"])}</span></label>' for f, v in zip(fs, values))
             + f'<div class="acts">{Btn(e(A["copy"]["add"]), primary=True, small=False)}{Btn(e(A["copy"]["cancelEdit"]), small=False)}</div></div>')
-    return Section(e(f'Approve {r["title"]}'), body)
+    return Section(e(f'Approve {r["title"]}'), body, panel=True)
 
 
 def admin_creators(rail: str) -> str:
     c = A['copy']
-    main = f'<div class="stack" style="gap:32px">{requests_section()}{creators_plate()}</div>'
-    body = PageHeader(e(c['pageTitle']), lead=e(c['job'])) + f'<div class="page-foot">{Page("split", main, rail)}</div>'
+    main = requests_section() + creators_plate()
+    body = PageHeader(e(c['pageTitle']), lead=e(c['job'])) + f'<div class="page-foot">{Page("split", main, rail, panels=True)}</div>'
     return render('Creators · Forever Sixty', body, OWNER, '/admin/creators mock (the owner); data creators-facts.json (copy.ts, model.ts over fixtures/creators).')
 
 
@@ -145,12 +149,12 @@ def payouts(dialog: bool | str = False, off: bool = False) -> str:
         return f'<span class="trail-end">{tag}{act}{Btn(e(r["lines"]))}</span>'
     rows = [Row(e(r['name']), e(r['sub']), link=False, selected=(i == 0), trail=trail(r), foot=figures(r['figures'])) for i, r in enumerate(P['rows'])]
     control = f'<span aria-label="{e(c["monthLabel"])}">{Select(e(P["month"]))}</span>'
-    notice = f'<p class="notice wipe" style="margin-bottom:16px">{e(P["off"])}</p>' if off else ''
-    main = Section(e(P["title"]), notice + Plate(Rows(rows), e(P["month"])), meta=e(P["meta"]), action=control)
+    notice = f'<p class="wipe pn-note">{e(P["off"])}</p>' if off else ''
+    main = Section(e(P["title"]), notice + f'<div role="group" aria-label="{e(P["month"])}">{Rows(rows)}</div>', meta=e(P["meta"]), action=control, panel=True, flush=True)
     lines = RowsSlim([Row(e(l['text']), link=False, slim=True, trail=f'<span class="amt{" wipe" if l["refund"] else ""}">{e(l["amount"])}</span>') for l in P["lines"]])
-    rail = Section(e(P['linesTitle']), lines)
+    rail = Section(e(P['linesTitle']), lines, panel=True, flush=True)
     head = PageHeader(e(c['pageTitle']), lead=e(c['job']), actions=Link('&lsaquo; ' + e(c['back'])))
-    body = head + f'<div class="page-foot">{Page("split", main, rail)}</div>'
+    body = head + f'<div class="page-foot">{Page("split", main, rail, panels=True)}</div>'
     if dialog:
         d = P['confirm']
         short = dialog == 'short'
@@ -168,20 +172,21 @@ def onboarding(state: str) -> str:
         inner = f'<div class="stack"><p>{e(O["join"])}</p><p class="t-small">{e(c["stripeLead"])}</p><div class="acts">{Btn(e(c["accept"]), primary=True, small=False)}</div></div>'
     else:
         inner = f'<div class="stack"><p>{e(c["doneReady"])}</p><div class="acts">{Link(e(c["statsLink"]) + " &rsaquo;")}</div></div>'
-    body = PageHeader(e(c['pageTitle'])) + f'<div class="page-foot">{PageForm(Section(e(c["inviteTitle"] if state == "invite" else c["stripeTitle"]), inner))}</div>'
+    body = PageHeader(e(c['pageTitle'])) + f'<div class="page-foot">{PageForm(Section(e(c["inviteTitle"] if state == "invite" else c["stripeTitle"]), inner, panel=True))}</div>'
     return render('Creator payouts · Forever Sixty', body, CREATOR, f'/creators/onboarding mock ({state}); data creators-facts.json.')
 
 
 # ================================================================================================ /creators/stats
 def stats() -> str:
     c = S['copy']
-    summary = Plate(f'<div style="padding:16px">{figures(S["figures"])}</div>', e(c['summaryLabel']))
-    players = Section(e(c['playersTitle']), RowsSlim([Row(e(w), link=False, slim=True) for w in S['weeks']]), meta=e(c['playersMeta']))
+    summary = Section(e(c['summaryLabel']), figures(S["figures"], big=True), panel=True)
+    players = Section(e(c['playersTitle']), f'<div role="group" aria-label="{e(c["playersTitle"])}">{RowsSlim([Row(e(w), link=False, slim=True) for w in S["weeks"]])}</div>',
+                      meta=e(c['playersMeta']), panel=True, flush=True)
     paid = (RowsSlim([Row(e(p['text']), link=False, slim=True, trail=f'<span class="amt">{e(p["amount"])}</span>') for p in S['payouts']])
             if S['payouts'] else f'<p class="t-small">{e(S["payoutsEmpty"])}</p>')
     dash = f'<div class="acts" style="margin-top:16px">{Btn(e(S["dashboard"]), small=False)}</div>' if S['dashboard'] else ''
-    payouts_ = Section(e(c['payoutsTitle']), paid + dash)
-    body = PageHeader(e(S['name']), meta=[e(S['meta'])]) + f'<div class="page-foot">{Page("split", f'<div class="stack" style="gap:32px">{summary}{players}</div>', payouts_)}</div>'
+    payouts_ = Section(e(c['payoutsTitle']), paid + dash, panel=True)
+    body = PageHeader(e(S['name']), meta=[e(S['meta'])]) + f'<div class="page-foot">{Page("split", summary + players, payouts_, panels=True)}</div>'
     return render('Creator stats · Forever Sixty', body, CREATOR, '/creators/stats mock (the creator); data creators-facts.json.')
 
 
@@ -249,12 +254,12 @@ def apply(state: str) -> str:
                  + f'<label class="acts" style="align-items:flex-start;min-height:44px"><input type="checkbox" class="radio"> <span>{e(c["disclose"])}</span></label>'
                  + f'<p class="t-small">{e(c["consent"])}</p>'
                  + f'<div class="acts">{Btn(e(c["submit"]), primary=True, small=False)}</div></div>')
-        section = Section(e(c['formTitle']), inner)
+        section = Section(e(c['formTitle']), inner, panel=True)
     else:
         tag, tone, line = {'pending': (c['pendingTag'], 'muted', Y['pending']), 'approved': (c['approvedTag'], 'kill', c['approved']),
                            'declined': (c['declinedTag'], 'muted', c['declined'])}[state]
         act = f'<div class="acts">{Btn(e(c["setup"]), primary=True, small=False)}</div>' if state == 'approved' else ''
-        section = Section(e(c['statusTitle']), f'<div class="stack"><div>{Tag(e(tag), tone)}</div><p>{e(line)}</p>{act}</div>')
+        section = Section(e(c['statusTitle']), f'<div class="stack"><p>{e(line)}</p>{act}</div>', action=Tag(e(tag), tone), panel=True)
     body = PageHeader(e(c['pageTitle'])) + f'<div class="page-foot">{PageForm(section)}</div>'
     return render('Apply · Forever Sixty', body, CREATOR, f'/creators/apply mock ({state}); data creators-facts.json (applyCopy).')
 
