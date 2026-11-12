@@ -23,7 +23,7 @@ from addon_ux import (ADDON, C, CSS, OB_H, OB_W, PAGES, RING, NOTCH, TITLE_FONT,
 
 ROOT = Path(__file__).resolve().parents[2]
 # Onboarding.lua coming(): the plain word, muted (round 3), 6 px after the line.
-COMING = f'<span style="font-size:12px;color:{U["muted"]};margin-left:6px">coming</span>'
+COMING = f'<span style="font-size:12px;color:{U["muted"]};margin-left:4px">coming</span>'
 OUT = Path(os.environ['MOCK_OUT']) if os.environ.get('MOCK_OUT') else ROOT / 'design/reviews/2026-11-11-addon-tour'
 LOCALE = (ROOT / 'addon/ForeverSixty/Locale.lua').read_text()
 DATA = (ROOT / 'addon/ForeverSixty/Data.lua').read_text()
@@ -573,8 +573,9 @@ def board_panel_ask():
 def board_chip_card_ask():
     specs = default_builds('paladin', 'leveling')
     buttons = ''.join(f'<div style="margin-top:8px"><span class="sbtn" style="width:216px;height:20px">{spec_name(s)}'
-                      f'</span><div style="font-size:11px;color:{ADDON["muted"]};margin:4px 0 0 8px">'
-                      f'{tile_line("paladin", s, "leveling", 0)}</div></div>' for s, _, _ in specs)
+                      f'</span><div style="font-size:11px;color:{ADDON["muted"]};margin:4px 0 0 8px">{playstyle(s)}<br>'
+                      f'{locale("pathNext") % next_talent("paladin", s, "leveling", 0)}</div></div>'
+                      for s, _, _ in specs)
     card = (f'<div style="width:240px;background:rgba(16,10,6,.96);border:1px solid {ADDON["line"]};padding:12px;'
             f'font-family:Site,sans-serif;font-size:12.5px;color:{ADDON["body"]}">'
             f'<div style="color:{ADDON["gold"]};line-height:16px">{ask(["Holy", "Retribution"])}</div>{buttons}'

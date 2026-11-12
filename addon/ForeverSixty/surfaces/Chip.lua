@@ -2000,7 +2000,8 @@ function Chip.cardLine(spec)
 	if type(spec.next) == "string" then
 		parts[#parts + 1] = string.format(L.pathNext, spec.next)
 	end
-	return table.concat(parts, L.exportTreeSeparator)
+	-- On its own line, as the panel's Pick rows: a talent name never breaks across the card's width.
+	return table.concat(parts, "\n")
 end
 
 --- The card's heading: the spec question ("Are you Holy or Retribution?", Follow.specQuestion),
@@ -2092,7 +2093,7 @@ function Chip.ensureCard(specs)
 			inner - S.chipCardLabelInset)
 		card.foreverSixtyNotes = card.foreverSixtyNotes or {}
 		card.foreverSixtyNotes[spec.slug] = note
-		y = y + S.gap + math.max(lineHeight, S.chipCardNote * 2 + 2)
+		y = y + S.gap + math.max(lineHeight, S.chipCardNote * 3 + 4)
 	end
 	y = y + S.chipCardRowGap
 	local footer, footerHeight = cardNote(card, cardFooter({}), "muted", pad, y, inner)
