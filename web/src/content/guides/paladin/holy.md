@@ -31,7 +31,7 @@ sources:
 - Oath of Light adds a flat amount to every Holy Light, Flash of Light and Holy Shock you cast on the tank, as long as the rank is close to your level, so a Flash of Light a rank or two below your top one heals for most of what the top rank does and gets more healing out of every point of mana
 - Holy Shock is an instant heal for movement and emergencies, and Divine Favor guarantees a crit when it counts
 - Illumination refunds half the cost of every critical heal
-- Spiritual Focus and Concentration Aura together stop every pushback: a hit while you cast never costs you casting time
+- Spiritual Focus and Concentration Aura together stop every pushback: under the aura, a hit while you cast never costs you casting time
 
 ### Weaknesses
 
@@ -51,7 +51,7 @@ The build is 31 Holy, 12 Protection and 8 Retribution.
 - **Spiritual Focus** (5 points): every hit you take while casting Flash of Light, Holy Light or Light's Vigil has a 70% chance not to push the cast back.
 - **Healing Light** (3 points): 12% more healing on Holy Light, Flash of Light and Holy Shock.
 - **Reverence** (2 points): 30% of your regeneration keeps running while you cast.
-- **Illumination** (5 points): every critical heal gives back half the spell's base cost, and nothing else: the buff that would keep your Spirit regeneration running while you cast never lands on the live server. It is the reason crit is a mana stat for you.
+- **Illumination** (5 points): every critical heal gives back half the spell's base cost. The tooltip also promises 15 seconds of Spirit regeneration while you cast; that part does not happen, so count Illumination as a mana refund and nothing more. It is the reason crit is a mana stat for you.
 - **Divine Favor** (1 point): your next Flash of Light, Holy Light or Holy Shock is a sure crit, on a 2 minute cooldown.
 - **Infusion of Light** (2 points): a Flash of Light or Holy Shock crit makes your next Holy Light within 15 seconds a second faster.
 - **Oath of Light** (1 point): sworn on one ally for 5 minutes, it adds a flat amount to every Holy Light, Flash of Light and Holy Shock you put on them, as long as the rank is close to your level. It took Blessing of Light's place, and it is the biggest point in the tree.
@@ -66,11 +66,11 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 ## Rotation and priority
 
-**Before the pull.** Greater Blessings are an hour long in Forever, so they go out before the first pull and after a wipe, not between trash packs. Swear Oath of Light on the tank a second or two before the pull, and move it when the tank changes. Run Concentration Aura: its 35% and Spiritual Focus's 70% add up, so nothing that hits you pushes a cast back, where Devotion Aura leaves three hits in ten costing you a second of casting.
+**Before the pull.** Greater Blessings are an hour long in Forever, so they go out before the first pull and after a wipe, not between trash packs. Swear Oath of Light on the tank a second or two before the pull, and move it when the tank changes. Run Concentration Aura unless another paladin already has it on your group: its 35% and Spiritual Focus's 70% add up, so nothing that hits you pushes a cast back, where Devotion Aura lets three hits in ten through, the first costing you a second of casting.
 
-**Pace, not health bars.** Divine Favor into Holy Light is for the tank at 40%, the heal that must land. Holy Light and Holy Shock otherwise spend only mana you are ahead on; fall behind and it is Flash of Light alone until you catch up. Holy Shock on the party, where Boundless Light adds 30% crit, gets a large part of its cost back through Illumination.
+**Pace, not health bars.** Divine Favor into Holy Light is for the tank at 40%, the heal that must land. Holy Light and Holy Shock otherwise spend only mana you are ahead on; fall behind and it is Flash of Light alone until you catch up. Holy Shock on the party, where Boundless Light adds 30% crit, gets a good share of its cost back through Illumination.
 
-**Ranks.** Bind the ranks you use. Flash of Light rank 5 carries all of your healing power at 60 for less mana than rank 6, and rank 4 does the tank's job for less again outside a raid. Rank 1 is a trap at 60: Forever takes the healing power off ranks learned far below your level, and the Oath's bonus goes with it, so rank 1 heals for little more than its base. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but it is a level 30 rank, so at 60 it keeps only part of your healing power.
+**Ranks.** Bind the ranks you use. A rank keeps all of your healing power and the Oath's bonus until you are 17 levels past the level you learned it, then loses a twentieth a level, so a cheap rank wins only while that gap is small; past the breakpoints in the leveling section, move up. Flash of Light rank 5 carries all of your healing power at 60 for less mana than rank 6, and rank 4 does the tank's job for less again outside a raid. Rank 1 is a trap at 60: Forever takes the healing power off ranks learned far below your level, and the Oath's bonus goes with it, so rank 1 heals for little more than its base. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but it is a level 30 rank, so at 60 it keeps only part of your healing power.
 
 **Light's Vigil.** At 1,340 mana it waits for a fight where your whole party takes big damage at once.
 
@@ -82,7 +82,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 ## Stat priority
 
-Intellect brings crit with it, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, and ranks learned far below your level lose most or all of it. Spirit only works once you have gone five seconds without a cast, apart from Reverence's 30%; Illumination gives you mana on a crit and no regeneration. Spell damage does nothing for a heal.
+Intellect brings crit with it, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, and ranks learned far below your level lose most or all of it. Spirit only works once you have gone five seconds without a cast, apart from Reverence's 30%. Illumination pays you in mana on a crit, not in regeneration. Spell damage does nothing for a heal.
 
 ## Best in slot
 
@@ -109,8 +109,6 @@ From 18, put Holy Light (Rank 1) on its own key: at 35 mana against rank 3's 110
 - **29:** rank 2.
 - **From 30:** your newest rank, except at 40 to 42 and 47 to 49, where rank 4 heals as much for less mana.
 
-Flash of Light on the tank is rank 1 until 42 (a Dwarf keeps it at 43) and rank 2 from 43, rank 3 from 50 and rank 4 from 54 (an Undead takes rank 4 a level sooner). On the rest of the group it is rank 1 until 41, rank 2 from 42 if you are Human and from 43 if you are a Dwarf, rank 1 until 43 if you are Undead, and rank 2 from 44 to 49.
-
 At 12, the class quest from your trainer teaches Redemption. A healer without it is a long corpse run for the group.
 
 Most Holy paladins level as [Retribution](/guides/paladin/retribution) and respec for raids. If you level as Holy:
@@ -123,7 +121,12 @@ You still kill things with your weapon and your Seal, so take quest rewards over
 
 ### Levels 20 to 60
 
-Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Questing as Holy is slow either way. If you do level as Holy:
+Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. The rank to bind, by level:
+
+- **On the tank:** rank 1 through 42 (a Dwarf keeps rank 1 at 43), rank 2 from 43, rank 3 from 50, rank 4 from 54 (an Undead takes rank 4 at 53). At 60 it is rank 4 on your own buffs and rank 5 in a raid.
+- **On the rest of the group:** rank 1 through 41. Rank 2 from 42 as a Human, from 43 as a Dwarf, from 44 as an Undead; rank 2 stays through 49, and rank 4 takes over from 50.
+
+Questing as Holy is slow either way. If you do level as Holy:
 
 - **20 to 24:** Illumination.
 - **25:** Oath of Light, the first point you can spend in its row, ahead of Divine Precision and Infusion of Light. It is the biggest heal in that row from the day you get it, and Divine Precision only adds Holy spell hit and a little silence reduction, nothing for your heals.

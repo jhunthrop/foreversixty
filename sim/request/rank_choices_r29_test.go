@@ -19,7 +19,7 @@ func TestRound29HealerRankRows(t *testing.T) {
 		// engine without Illumination's casting regen; rank 2 from 43.
 		{"Human Holy tank Flash of Light at 40", "paladin-holy", "paladin", "human", 40, 19750, 19939},
 		{"Undead Holy tank Flash of Light at 42", "paladin-holy", "paladin", "undead", 42, 19750, 19939},
-		{"Undead Holy tank Flash of Light at 43", "paladin-holy", "paladin", "undead", 43, 19939, 19750},
+		{"Human Holy Flash of Light at 43", "paladin-holy", "paladin", "human", 43, 19939, 19750},
 		{"Tauren Restoration Healing Wave at 18", "shaman-restoration", "shaman", "tauren", 18, 331, 547},
 		{"Dwarf Restoration Healing Wave at 19", "shaman-restoration", "shaman", "dwarf", 19, 331, 547},
 		{"Tauren Restoration Healing Wave at 20", "shaman-restoration", "shaman", "tauren", 20, 332, 331},
