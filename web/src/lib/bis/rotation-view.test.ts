@@ -201,7 +201,10 @@ describe('rotationLinesFor with a race-keyed rank row', () => {
     const base = entry.lines.find((line) => line.name === 'Raptor Strike')!;
     expect(base.race_spell_ids?.troll).toBeDefined();
     expect(raptor('troll')?.spellId).toBe(base.race_spell_ids!.troll);
-    expect(raptor('troll')?.rank).toBe(5);
+    // The melee-hunters lane's R2 ruling (design/reviews/2026-11-12-sim-accuracy/melee-hunters.md,
+    // 2026-11-12): on the Lacerate fix a Horde hunter keeps Raptor Strike rank 4 at 48 and 49; the
+    // old rank 5 rows at 46 to 49 are gone.
+    expect(raptor('troll')?.rank).toBe(4);
   });
 
   it('keeps the base row for a race the line does not key, or with no race', () => {
