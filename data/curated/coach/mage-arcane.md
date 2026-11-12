@@ -25,11 +25,11 @@ This is the best Arcane Mage on Forever. Arcane stacks Arcane Blast for spell da
 - Arcane Missiles is your main spell until both ranks of Missile Barrage are in. That is twenty-three with the leveling build, twenty-four with the raid build. After that, Missiles only the moment Missile Barrage lights up: the proc makes it free and halves the channel.
 - Pyroblast with the raid build: instant off Presence of Mind from fifty-four. From fifty-seven, also on three Heating Up stacks, when it is a one and a half second cast.
 - Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a six second cooldown.
-- Arcane Wrath with the raid build, every time it is ready while you hold three Blast stacks.
+- Arcane Wrath every time it is ready while you hold three Blast stacks: with the raid build as soon as you have it, from forty-four with the leveling build.
 - Fireball fills in a raid once you stop blasting.
 - Frostbolt is the filler with the leveling build. In a raid, cast it only when you are too low on mana for a Fireball.
 - Arcane Power from forty on cooldown, with Presence of Mind and your on-use trinkets. Add your damage racial if your race has one.
-- Presence of Mind from thirty-one on cooldown, with Arcane Power once you have it. Spend it on Pyroblast with the raid build from fifty-four. Before that, and with the leveling build, spend it on Frostbolt. Never spend it on an Arcane Blast.
+- Presence of Mind from thirty-one on cooldown, with Arcane Power once you have it. Spend it on Pyroblast with the raid build from fifty-four, on Arcane Wrath before that (from forty-four with the leveling build), and on Frostbolt when Wrath is on cooldown or before you have it. Never spend it on an Arcane Blast.
 - Mage Armor from thirty-four before the pull, with your food buff and Arcane Intellect, or Arcane Brilliance from fifty-six. Before thirty-four, wear Frost Armor or Ice Armor.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
 - Arcane Explosion is instant and hits everything within ten yards, so you stand in the pack with the tank and spam it.

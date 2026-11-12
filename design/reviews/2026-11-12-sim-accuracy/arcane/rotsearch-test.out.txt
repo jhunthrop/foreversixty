@@ -1,0 +1,5 @@
+remote-test: 7721be1072fd9386aaf1ca4ffd1074c3caf4db8f -> forever-ci on 192.168.1.182 (run 20261112112026-7721be107-21197, in sim): bash -c make -C .. simdb >/dev/null && go test ./cmd/rotation-search/ -count=1
+remote-test: engine pinned to 28524da82
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/rotation-search	0.974s
+remote-test: exit 0 in 2s (7721be1072fd9386aaf1ca4ffd1074c3caf4db8f)
+exit 0

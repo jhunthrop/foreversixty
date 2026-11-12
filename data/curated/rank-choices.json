@@ -905,7 +905,7 @@
             "from_level": 24,
             "to_level": 28,
             "rank": 1,
-            "note": "Sim-accuracy round 30 (open items): re-judged level by level on the round 29 leveling order (spec-breakdown -level N -rank, bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, every rank learned; design/reviews/2026-11-11-sim-accuracy/round30-open.md). With Missile Barrage, Arcane Impact and Arcane Meditation at 21 to 28, rank 1 beats rank 4 by 1.2 to 2.0% at 24 to 26 and 0.4 to 0.9% at 27; re-checked on the 9 and 10 Nov hotfix engine (pin 4a3601e1f), rank 1 also wins at 28 (+0.4 to +1.1%, both factions and seeds), so the rank 4 row starts at 29."
+            "note": "Sim-accuracy round 30 (open items): re-judged level by level on the round 29 leveling order (spec-breakdown -level N -rank, bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, every rank learned; design/reviews/2026-11-11-sim-accuracy/round30-open.md). With Missile Barrage, Arcane Impact and Arcane Meditation at 21 to 28, rank 1 beats rank 4 by 1.2 to 2.0% at 24 to 26 and 0.4 to 0.9% at 27; re-checked on the 9 and 10 Nov hotfix engine (pin 4a3601e1f), rank 1 also wins at 28 (+0.4 to +1.1%, both factions and seeds), so the rank 4 row starts at 29. Sim-accuracy 2026-11-12 (Arcane lane): re-judged on the engine that gives a mage its first mana gem at 28, when Conjure Mana Agate trains (the old engine read the Mana Agate item's level 23; design/reviews/2026-11-12-sim-accuracy/arcane.md): rank 1 beats rank 4 by +1.6 to +2.2% at 24 to 27 (both factions, seeds 1 and 50001, 10,000 iterations)."
           },
           {
             "from_level": 29,
@@ -1032,7 +1032,7 @@
               "troll",
               "undead"
             ],
-            "note": "Sim-accuracy round 24 (casters), judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every race of the class; a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). At 24, when rank 5 arrives, rank 4 wins for a Human, Orc, Troll or Undead (+0.2% to +0.6%); a Gnome keeps rank 5 (rank 4 -0.1%). Rank 5 from 25."
+            "note": "Sim-accuracy round 24 (casters), judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001, every race of the class; a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). At 24, when rank 5 arrives, rank 4 wins for a Human, Orc, Troll or Undead (+0.2% to +0.6%); a Gnome keeps rank 5 (rank 4 -0.1%). Rank 5 from 25. Sim-accuracy 2026-11-12 (Arcane lane): re-judged on the engine that gives a mage its first mana gem at 28, when Conjure Mana Agate trains (the old engine read the Mana Agate item's level 23; design/reviews/2026-11-12-sim-accuracy/arcane.md): rank 4 holds at 24: +0.3 to +0.4% for an undead, +0.1 to +0.2% for a gnome, inside the error at one seed (both seeds, 10,000 iterations)."
           },
           {
             "from_level": 60,
@@ -1053,7 +1053,7 @@
             "from_level": 26,
             "to_level": 28,
             "rank": 4,
-            "note": "Rank 4 beats rank 5 by 3 to 6% at 26-29 on the band-20 kit, which runs short of mana on rank 5 (round 16 mage wave 2, per-level sweep). Round 24 holds it at 26 to 28 on the level's talents (rank 5 -1.7% to -5%). Round 28 holds it on the new order (rank 5 -0.2% to -5% at 26 to 28 for a Gnome, Troll or Human)."
+            "note": "Rank 4 beats rank 5 by 3 to 6% at 26-29 on the band-20 kit, which runs short of mana on rank 5 (round 16 mage wave 2, per-level sweep). Round 24 holds it at 26 to 28 on the level's talents (rank 5 -1.7% to -5%). Round 28 holds it on the new order (rank 5 -0.2% to -5% at 26 to 28 for a Gnome, Troll or Human). Sim-accuracy 2026-11-12 (Arcane lane): re-judged on the engine that gives a mage its first mana gem at 28, when Conjure Mana Agate trains (the old engine read the Mana Agate item's level 23; design/reviews/2026-11-12-sim-accuracy/arcane.md): rank 4 beats rank 5 by +3.9 to +5.1% at 26 and 27 (both factions, seeds 1 and 50001, 10,000 iterations)."
           },
           {
             "from_level": 29,

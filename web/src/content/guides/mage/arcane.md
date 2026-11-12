@@ -51,15 +51,15 @@ sources:
 - **Missile Barrage** (2 points): Arcane Blast procs it 40% of the time, and Arcane Wrath, Fireball and Frostbolt 20%. The proc makes your next Arcane Missiles free (30% of its cost inside Arcane Power), halves its channel and fires a missile every half second.
 - **Arcane Concentration** (5 points): 10% of your damage spells make the next one free, and that includes a 4-stack Arcane Blast. A Missiles channel gets one 10% roll shared by its cast and its missiles, about one channel in ten, so Blast, Fireball and Frostbolt are where your free casts come from.
 - **Arcane Meditation** (3 points): half your mana regeneration keeps running while you cast. With Mage Armor on top, all of it runs, and on a boss that regeneration is what pays for the fourth and fifth Blast.
-- **Presence of Mind** (1 point): your next spell under 10 seconds is instant. In a raid spend it on your longest cast: Pyroblast from 54, Arcane Wrath before that. With the leveling build, or with Arcane Wrath on cooldown, spend it on Frostbolt. Never spend it on a 1.5 second Arcane Blast that the global cooldown already caps.
+- **Presence of Mind** (1 point): your next spell under 10 seconds is instant. In a raid spend it on your longest cast: Pyroblast from 54, Arcane Wrath before that. On the leveling build, Arcane Wrath from 44 and Frostbolt before that or while Wrath is on cooldown. Never spend it on a 1.5 second Arcane Blast that the global cooldown already caps.
 - **Arcane Power** (1 point): 30% more spell damage for 15 seconds at 30% more mana per cast, on a 3 minute cooldown.
 - **Arcane Mind** and **Arcane Instability** (8 points): 10% Intellect, which Arcane Blast turns into spell damage, and Arcane Mind also doubles the bonus on your Arcane crits. Arcane Instability adds 3% damage and 3% crit.
 - **Improved Frostbolt** and **Ice Shards** (10 points, leveling build): Frostbolt is half your casts while you level, and once both are in, by 57, a 2.5 second Frostbolt with full crit damage is the filler that pays for the Blast stacks.
-- **Arcane Wrath** (1 point, raid build): a 3.3 second Arcane bolt with Accelerant on a 6 second cooldown that adds 5% of your maximum mana as spell damage. Cast it every time it is ready while you hold 3 Blast stacks.
+- **Arcane Wrath** (1 point): a 3.5 second Arcane bolt on a 6 second cooldown, 3.3 seconds with the raid build's Accelerant, that adds 5% of your maximum mana as spell damage. Cast it every time it is ready while you hold 3 Blast stacks. The leveling build takes it at 44, the first point after Precision, in place of the fourth rank of Incineration.
 - **Ignite**, **Pyroblast**, **Improved Fire Blast** and **Heating Up** (9 points, raid build): Fire Blast every 6 seconds, and every Fire Blast hit and every Fire Blast or Fireball crit cuts your next Pyroblast's cast by 25%, up to 3 stacks. Three stacks make Pyroblast a 1.5 second cast, and every Fire crit burns for another 40% through Ignite.
 - **Precision** (3 points): 6% hit on every school. Take it in every build.
 
-The leveling build spends 31 points in Arcane for Arcane Power, then goes to Frost for the filler: **Frost Channeling** (3 points: 15% cheaper Frostbolts and 30% less threat from them), all five ranks of Ice Shards, and four ranks of **Incineration** in Fire for Arcane Blast crit. Improved Channeling stays at four ranks so mobs hitting you do not push back every Blast, and one point of Arcane Geometry adds 3 yards to Arcane Blast and Missiles, so you can blast from a little further out.
+The leveling build spends 31 points in Arcane for Arcane Power and a 32nd on Arcane Wrath, then goes to Frost for the filler: **Frost Channeling** (3 points: 15% cheaper Frostbolts and 30% less threat from them), all five ranks of Ice Shards, and three ranks of **Incineration** in Fire for Arcane Blast crit. Improved Channeling stays at four ranks so mobs hitting you do not push back every Blast, and one point of Arcane Geometry adds 3 yards to Arcane Blast and Missiles, so you can blast from a little further out.
 
 The raid build puts 32 points in Arcane and takes its second tree from Fire. Both ranks of **Arcane Subtlety** cut 30% of the threat from your Arcane spells, which is what lets you press Arcane Power early in a pull. They and Arcane Wrath are paid for by a rank of Improved Channeling, the point of Arcane Geometry and one point brought over from Frost, which makes 32 in Arcane. Bosses do not push back your casts the way packs of mobs do, and a boss you already reach from 30 yards needs no extra range, so neither of those two costs you anything. All three ranks of Arcane Meditation stay in, since a raid fight is paid for in mana. Sixteen go into Fire: five ranks of Incineration for Fire Blast and Arcane Blast crit, two of **Accelerant** to take 0.2 seconds off Fireball and Arcane Wrath, then Ignite, Pyroblast, Improved Fire Blast and Heating Up. Precision's three points are all it keeps in Frost.
 
@@ -69,11 +69,11 @@ Neither build takes Fire's Impact: its stun does nothing to a boss.
 
 **Pre-pull.** Mage Armor, Arcane Brilliance and your food buff go up. Conjure a Mana Ruby and a Mana Citrine and drink back to full. In a raid, start Pyroblast 6 seconds out so it lands just after the tank's first hit; if it crits, that is your first Ignite. With the leveling build, start a Frostbolt 2.5 seconds out instead; it can roll Missile Barrage before the fight starts.
 
-**Opener.** Blast twice while the tank puts a couple of Sunders up, then press Arcane Power, Presence of Mind, your trinkets and any damage racial together. Put the instant Pyroblast out (an instant Frostbolt with the leveling build) and go back to blasting.
+**Opener.** Blast twice while the tank puts a couple of Sunders up, then press Arcane Power, Presence of Mind, your trinkets and any damage racial together. Put the instant Pyroblast out (an instant Frostbolt with the leveling build before 44, Arcane Wrath after) and go back to blasting.
 
 **Arcane Power windows.** In a 3 minute fight the pull is your one window; the second is ready as the boss dies, so on a longer fight hold it for a phase where the boss takes extra damage or the adds are down.
 
-**Fillers.** In a raid, Fireball fills until the 18 seconds run out. On the way to 60 there is no Arcane Wrath and no Pyroblast. Past 3 stacks, keep blasting only while your mana bar is fuller than the mob's health bar and you are above 20% mana, and on a pull that dies inside a minute that is most of it. On a long dungeon boss stop at 3 and let Frostbolt fill, because the stacked Blasts run you dry before the end.
+**Fillers.** In a raid, Fireball fills until the 18 seconds run out. On the way to 60 there is no Pyroblast, and no Arcane Wrath until 44. Past 3 stacks, keep blasting only while your mana bar is fuller than the mob's health bar and you are above 20% mana, and on a pull that dies inside a minute that is most of it. On a long dungeon boss stop at 3 and let Frostbolt fill, because the stacked Blasts run you dry before the end.
 
 **Mana in a 3 minute fight.** In order: a Mana Ruby when you are 1,200 mana down, a Major Mana Potion the next time you are well down, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Gems and runes share one 2 minute cooldown. The Robe of the Archmage is on its own 5 minute cooldown: use it whenever you are 625 mana down. After all of them comes Evocation, once a fight, with more than 30 seconds left.
 
@@ -81,7 +81,7 @@ Neither build takes Fire's Impact: its stun does nothing to a boss.
 
 **Threat.** Frost Channeling and Arcane Subtlety cut threat only from your Frostbolts and Arcane spells; your Fire spells get no cut, since the raid build has no Burning Soul. There is no Invisibility, and the build has no spare point for Ice Block: if the boss turns, stop casting, let the tank taunt and wait.
 
-**Movement.** If you know a move is coming, hold Presence of Mind for an instant Pyroblast on the run (an instant Frostbolt with the leveling build), Blink through anything you need to cross, and use Fire Blast, or Arcane Explosion when the boss walks into you.
+**Movement.** If you know a move is coming, hold Presence of Mind for an instant Pyroblast on the run (an instant Frostbolt or Wrath with the leveling build), Blink through anything you need to cross, and use Fire Blast, or Arcane Explosion when the boss walks into you.
 
 ## Stat priority
 
@@ -126,7 +126,9 @@ Every point goes into Arcane up to 40, then Frost and Fire for the Frostbolt fil
 - **29 and 39:** Arcane Resilience's armor and Arcane Geometry's range, which only pay for the rows below.
 - **30:** Presence of Mind.
 - **40:** Arcane Power.
-- **41 on:** Precision first, 6% more spell hit, then Incineration, Improved Frostbolt, Ice Shards and Frost Channeling.
+- **41 to 43:** Precision, 6% more spell hit.
+- **44:** Arcane Wrath. Cast it whenever it is ready on 3 Blast stacks, and spend Presence of Mind on it.
+- **45 on:** three ranks of Incineration, then Improved Frostbolt, Ice Shards and Frost Channeling.
 
 Rank 5 Frostbolt arrives at 26, but skip it. From 24 to 28 cast rank 1 and spend the mana on Missiles and Blasts; from 29 cast rank 4 until Mage Armor at 34, because the bigger bolt costs more mana than leveling gear can carry. From 34 wear Mage Armor for the mana, and Ice Armor when you are taking melee hits in the open world.
 

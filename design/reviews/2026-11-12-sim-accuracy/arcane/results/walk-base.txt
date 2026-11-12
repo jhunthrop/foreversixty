@@ -1,0 +1,40 @@
+remote-test: fdb06b9d613984aca4802efd5229c436adae7e9f -> forever-ci on 192.168.1.182 (run 20261112112701-fdb06b9d6-78503, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/arcane/walk.sh mage-arcane
+remote-test: engine pinned to 28524da82
+mage-arcane horde L10 12.9 0.01 116.9
+mage-arcane horde L15 20.22 0.01 106.8
+mage-arcane horde L20 40.65 0.03 52.4
+mage-arcane horde L25 55.38 0.06 30.5
+mage-arcane horde L28 63.94 0.06 3.8
+mage-arcane horde L30 89.73 0.08 12.1
+mage-arcane horde L33 100.06 0.09 11.0
+mage-arcane horde L35 108.54 0.1 12.7
+mage-arcane horde L38 118.81 0.1 16.9
+mage-arcane horde L40 164.12 0.14 9.1
+mage-arcane horde L43 179.5 0.14 8.2
+mage-arcane horde L45 184.7 0.15 14.1
+mage-arcane horde L48 206.04 0.18 14.0
+mage-arcane horde L50 259.37 0.22 15.9
+mage-arcane horde L53 268.23 0.22 18.3
+mage-arcane horde L55 271.79 0.22 17.6
+mage-arcane horde L58 304.91 0.26 19.1
+mage-arcane horde L60 402.41 0.3 10.9
+mage-arcane alliance L10 12.42 0.01 114.5
+mage-arcane alliance L15 19.09 0.01 105.1
+mage-arcane alliance L20 41.76 0.03 44.1
+mage-arcane alliance L25 56.95 0.06 27.1
+mage-arcane alliance L28 64.24 0.06 3.8
+mage-arcane alliance L30 89.91 0.07 11.6
+mage-arcane alliance L33 100.02 0.09 10.9
+mage-arcane alliance L35 108.26 0.09 12.6
+mage-arcane alliance L38 118.65 0.1 16.4
+mage-arcane alliance L40 164.9 0.14 9.6
+mage-arcane alliance L43 180.26 0.14 8.7
+mage-arcane alliance L45 185.18 0.15 14.3
+mage-arcane alliance L48 206.92 0.18 14.0
+mage-arcane alliance L50 263.27 0.23 14.4
+mage-arcane alliance L53 271.86 0.23 16.8
+mage-arcane alliance L55 275.31 0.23 16.2
+mage-arcane alliance L58 308.66 0.27 17.7
+mage-arcane alliance L60 406.68 0.3 12.5
+ORDER mage-arcane [[1, 1, 1], [1, 1, 2], [1, 1, 2], [1, 1, 2], [1, 1, 2], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 3, 4], [1, 2, 4], [1, 2, 4], [1, 3, 2], [1, 3, 2], [1, 3, 2], [1, 4, 3], [1, 4, 3], [1, 4, 3], [1, 1, 3], [1, 5, 2], [1, 5, 3], [1, 5, 3], [1, 5, 3], [1, 5, 3], [1, 5, 3], [1, 6, 3], [1, 6, 3], [1, 6, 3], [1, 3, 1], [1, 7, 2], [3, 1, 3], [3, 1, 3], [3, 1, 3], [2, 1, 2], [2, 1, 2], [2, 1, 2], [2, 1, 2], [3, 1, 2], [3, 1, 2], [3, 1, 2], [3, 1, 2], [3, 1, 2], [3, 2, 1], [3, 2, 1], [3, 2, 1], [3, 2, 1], [3, 2, 1], [3, 3, 1], [3, 3, 1], [3, 3, 1]]
+remote-test: exit 0 in 14s (fdb06b9d613984aca4802efd5229c436adae7e9f)
