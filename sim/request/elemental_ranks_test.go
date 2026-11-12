@@ -82,7 +82,7 @@ func TestElementalLightningBoltRanksByBand(t *testing.T) {
 	}{
 		{30, map[int]bool{3: true, 5: true}}, {33, map[int]bool{3: true, 6: true}},
 		{34, map[int]bool{4: true, 6: true}}, {38, map[int]bool{4: true, 7: true}},
-		{39, map[int]bool{4: true, 7: true}}, {40, map[int]bool{5: true, 7: true}}, {44, map[int]bool{5: true, 8: true}},
+		{39, map[int]bool{5: true, 7: true}}, {40, map[int]bool{5: true, 7: true}}, {44, map[int]bool{5: true, 8: true}},
 		{45, map[int]bool{6: true, 8: true}}, {50, map[int]bool{6: true, 9: true}},
 		{51, map[int]bool{7: true, 9: true}}, {56, map[int]bool{7: true, 10: true}},
 		{57, map[int]bool{8: true, 10: true}}, {59, map[int]bool{8: true, 10: true}},

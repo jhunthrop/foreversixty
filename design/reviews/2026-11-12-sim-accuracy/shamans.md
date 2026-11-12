@@ -144,7 +144,7 @@ Pages and cards changed:
   - 5872d4cba: the fixes.
 - **Fork:** 03b13a6a5 adds the synced Enhancement rotation (Earth Shock at 15%). Master fast-forwarded to it.
 - **Site pin:** 03b13a6a5.
-- **Site:** the card and its two copies, the coach note, the two guides, `rank-choices.json` and its embedded copy, `shaman_earth_shock_gate_test.go`, `rank_choices_shaman_r24_test.go`, the review's run scripts and rotation variants.
+- **Site:** the card and its two copies, the coach note, the two guides, `rank-choices.json` and its embedded copy, `shaman_earth_shock_gate_test.go`, `rank_choices_shaman_r24_test.go`, `elemental_ranks_test.go` (rank 5 at 39 for a troll), the Enhancement ladder golden regenerated on the box (the walk's Earth Shock share rises at every checkpoint; its low-iteration DPS moves within noise, +1.1% at 30 to -0.7% at 60), the review's run scripts and rotation variants.
 - **Shared code:** none. Lightning Shield and Flametongue Weapon are shaman-only.
 
 ## Sources

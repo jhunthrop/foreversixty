@@ -100,13 +100,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-010000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 15.0 | 5 | other:attack/1=70.3, spell:3606=68.3, spell:8044=19.8, spell:3599=5.8, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
-| 20 | 0000000000000000-053030000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 27.5 | 5 | other:attack/1=121.6, spell:6350=69.7, spell:8045=17.8, spell:6363=5.1, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 17364}, {SpellID: 408498} |
-| 30 | 0000000000000000-055030310031000000-0000000000000000 | main_hand:7687 off_hand:4066 | 47.1 | 6 | other:attack/1=78.4, spell:6351=56.9, spell:17364=22.2, spell:8046=6.5, spell:6364=3.6 | {SpellID: 16246}, {SpellID: 408498} |
-| 38 | 0000000000000000-055030310051002040-0000000000000000 | main_hand:868 off_hand:7496 | 67.7 | 7 | other:attack/1=89.5, spell:6351=40.9, spell:17364=21.5, spell:10391=7.2, spell:10412=5.4 | {SpellID: 16246} |
-| 40 | 0000000000000000-055030310051002051-0000000000000000 | main_hand:2164 off_hand:9918 | 73.5 | 8 | other:attack/1=110.4, spell:6352=36.0, spell:17364=21.2, spell:10391=8.4, spell:10412=6.0 | {SpellID: 16246} |
-| 50 | 3000000000000000-055030310051202051-0500000000000000 | main_hand:810 off_hand:10195 | 110.2 | 9 | other:attack/1=96.7, spell:10435=40.0, spell:17364=20.3, spell:15207=9.1, spell:10413=5.0 | {SpellID: 16246} |
-| 60 | 3230030000000000-055030310051202051-0520000000000000 | main_hand:22802 off_hand:22819 | 169.2 | 9 | other:attack/1=115.8, spell:10436=55.8, spell:17364=22.2, spell:15208=9.2, spell:10414=6.0 | {SpellID: 16246} |
+| 10 | 0000000000000000-010000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 15.1 | 5 | other:attack/1=70.3, spell:3606=68.3, spell:8044=20.0, spell:3599=5.8, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
+| 20 | 0000000000000000-053030000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 27.5 | 5 | other:attack/1=121.6, spell:6350=66.6, spell:8045=18.3, spell:6363=4.8, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 17364}, {SpellID: 408498} |
+| 30 | 0000000000000000-055030310031000000-0000000000000000 | main_hand:7687 off_hand:4066 | 47.6 | 6 | other:attack/1=78.4, spell:6351=56.4, spell:17364=21.9, spell:8046=7.0, spell:6364=3.6 | {SpellID: 16246}, {SpellID: 408498} |
+| 38 | 0000000000000000-055030310051002040-0000000000000000 | main_hand:868 off_hand:7496 | 68.0 | 7 | other:attack/1=89.4, spell:6351=31.1, spell:17364=21.1, spell:10391=7.3, spell:10412=6.4 | {SpellID: 16246} |
+| 40 | 0000000000000000-055030310051002051-0000000000000000 | main_hand:2164 off_hand:9918 | 73.6 | 8 | other:attack/1=110.4, spell:6352=31.6, spell:17364=20.6, spell:10391=8.4, spell:10412=6.8 | {SpellID: 16246} |
+| 50 | 3000000000000000-055030310051202051-0500000000000000 | main_hand:810 off_hand:10195 | 110.0 | 9 | other:attack/1=96.8, spell:10435=29.8, spell:17364=19.7, spell:15207=9.1, spell:10413=6.0 | {SpellID: 16246} |
+| 60 | 3230030000000000-055030310051202051-0520000000000000 | main_hand:22802 off_hand:22819 | 168.1 | 9 | other:attack/1=115.6, spell:10436=44.1, spell:17364=21.9, spell:15208=9.2, spell:10414=7.0 | {SpellID: 16246} |
 
 ## Learned but unused (informational)
 
