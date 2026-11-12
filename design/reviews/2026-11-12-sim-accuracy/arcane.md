@@ -111,4 +111,7 @@ At 60 on both seeds (`bare60-seeds.txt`): alliance +1.0% and +1.1%, horde +0.5% 
 
 ## Gates
 
-GATES_PLACEHOLDER
+On the rebased branch (on origin/main dfa77f3d7, the warlocks lane's landing; pin fc2ed8cd3), on the box, one job at a time (`arcane/results/gates-sim.txt`, `gates-web.txt`):
+- sim: `go vet ./...`; `go test` for request (the ladder goldens, mage-arcane regenerated), leveling, rankchoices, cmd/leveling-bis, cmd/rotation-search, cmd/addon-builds, cmd/talent-search: all ok. cmd/spec-breakdown ok on the lane's fork sha before the rebase. The fork's mage suite ok at 28524da82 (`-tags with_db`); fc2ed8cd3 adds only the warlocks lane's commits to it.
+- web: `npm test` on the guide, guides, sim and guide-page suites (132 files, 2,503 tests): 2,502 pass; the one failure, `src/pages/guides/_spec.test.ts` "/guides/warrior/arms rotation rows for the raid build > tags the raid build's own talent rows and no other", fails the same way on origin/main dfa77f3d7 before this landing (the melee-hunters lane's Arms build move; for that lane). `astro check`: 0 errors, 0 warnings. eslint on the touched sim and guides modules: clean.
+- No Playwright spec touches a changed surface (the guide page renders the same components with new text).

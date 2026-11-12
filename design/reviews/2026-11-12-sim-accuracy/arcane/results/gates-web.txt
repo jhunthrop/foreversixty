@@ -1,0 +1,12 @@
+remote-test: 34a94adf19bbe87291204de349859e384dd4af12 -> forever-ci on 192.168.1.182 (run 20261112114712-34a94adf1-56040, in web): bash -c npm test -- src/content/guides src/lib/guides src/pages/guides src/lib/sim 2>&1 | grep -E "FAIL|×|Test Files|Tests " ; npm run check 2>&1 | tail -4; npx eslint src/lib/sim/version.ts src/lib/guides 2>&1 | tail -3
+[31m     [31m×[31m tags the raid build’s own talent rows and no other[39m[33m 724[2mms[22m[39m
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[41m[1m FAIL [22m[49m src/pages/guides/_spec.test.ts[2m > [22m/guides/warrior/arms rotation rows for the raid build[2m > [22mtags the raid build’s own talent rows and no other
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m131 passed[39m[22m[90m (132)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m2502 passed[39m[22m[90m (2503)[39m
+- 0 errors
+- 0 warnings
+- 18 hints
+
+remote-test: exit 0 in 89s (34a94adf19bbe87291204de349859e384dd4af12)
+exit 0
