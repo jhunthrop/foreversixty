@@ -275,7 +275,7 @@
         }
       },
       {
-        "notes": "Shoot only when nothing else can be cast: a wand shot cannot start during the global cooldown and holds you for the wand's full speed, so it never fits between spells.",
+        "notes": "Shoot only when nothing else can be cast: a wand shot cannot start during the global cooldown, so it never fits between spells. Once you are shooting, the first shot fires half a second after you press it and the rest come at the wand's speed until you cast again; below 28 that is most of your damage, so let it run.",
         "action": {
           "castSpell": {
             "spellId": {
