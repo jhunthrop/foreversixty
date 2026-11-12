@@ -1,0 +1,6 @@
+# calibration: reproduce the published figures at the ranked engine, and test the gear override shapes
+arms-bare30-A -spec warrior-arms -preset bare -band 30 -faction alliance   # published set_dps 65.66
+arms-bare30-A-prevband -spec warrior-arms -preset bare -band 30 -faction alliance -gear head:250528,neck:20444,shoulder:3480,back:2316,chest:10399,wrist:2868,hands:10401,waist:10403,legs:10400,feet:252439,finger1:20439,finger2:12054,main_hand:7230,ranged:13136   # band 20's set at band 30, must stay under 65.66
+arms-bare30-A-nohead -spec warrior-arms -preset bare -band 30 -faction alliance -gear head:0   # head emptied, must stay under
+holy-bare40-A -spec priest-holy -preset bare -band 40 -faction alliance -heal   # published 175.91
+prot-bare40-A -spec paladin-protection -preset bare -band 40 -faction alliance -tank   # published tank_score 110.52 tps 272.1
