@@ -10,7 +10,7 @@
   import type { PrecisionId } from '../../../lib/sim/precision';
   import type { PublishedWeights } from '../../../lib/sim/published-weights';
   import { defaultSettings } from '../../../lib/sim/settings';
-  import { pickableStatsFor } from '../../../lib/sim/weights';
+  import { pickableStatsForSpec } from '../../../lib/sim/weights';
   import Page from '../../ui/Page.svelte';
   import SimRunBar from '../SimRunBar.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
@@ -63,7 +63,7 @@
         onmore={nothing}
       />
     {/snippet}
-    <WeightsPicks pickable={pickableStatsFor(undefined)} picked={[]} reference="" />
+    <WeightsPicks pickable={pickableStatsForSpec(published.spec)} picked={[]} reference="" />
     <WeightsPublishedSection {published} isDefault />
   </Page>
 </div>

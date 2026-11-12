@@ -26,7 +26,7 @@ describe('GuildSeatRow', () => {
     expect(body).not.toContain('aria-disabled="true"');
   });
 
-  it('Offered: Waiting pill, the payer line and only Withdraw: no lock date, no Move seat', () => {
+  it('Offered: Waiting tag, the payer line and only Withdraw: no lock date, no Move seat', () => {
     const body = html(offeredSeat(1));
     expect(text(body)).toContain('Waiting');
     expect(text(body)).toContain('They pay for Premium, so they accept it first.');
@@ -37,7 +37,7 @@ describe('GuildSeatRow', () => {
 
   it('Pending: line 1 the holder and Given date; the middle Moving to with Waiting; only Withdraw', () => {
     const body = html(pendingSeat(1, NOON));
-    const name = /data-testid="guild-seat-1-name">([^<]*)</.exec(body)?.[1];
+    const name = /data-testid="guild-seat-1-name"[^>]*>([^<]*)</.exec(body)?.[1];
     expect(name).toBe('Kraggor');
     expect(text(body)).toContain('Given 2 Nov');
     const note = /data-testid="guild-seat-1-note">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';

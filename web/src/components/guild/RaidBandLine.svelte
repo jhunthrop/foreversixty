@@ -5,62 +5,23 @@
      segments take the second (at most 112 px). A press rewrites the sentence in place; a refused
      press shows its line under the row for 6 s, and a lock or cancel race updates the band. `now`
      ticks each minute, so `Tonight` turns over at midnight. -->
-<script module lang="ts">
-  import { GuildApiError, type GuildRaidView, type NextRaidView } from '../../lib/guild/api';
-  import { raidCopy } from '../../lib/guild/raid-copy';
-
-  /** The band's fields after a sign-up, from the PUT's raid: the API's own rule for `own` (the
-   *  current character's sign-up, else the account's first, else none). */
-  export function nextRaidAfter(prev: NextRaidView, view: GuildRaidView, currentKey: string): NextRaidView {
-    const signed = view.viewer.characters.filter((c) => c.state !== null);
-    const own = signed.find((c) => c.character_key === currentKey) ?? signed[0];
-    const { tanks, healers, dps } = view.counts;
-    const note = (key: string): string => view.signups.find((s) => s.character_key === key)?.note ?? '';
-    return {
-      ...prev,
-      starts_at: view.starts_at,
-      status: view.status === 'locked' ? 'locked' : 'planned',
-      size: view.size,
-      counts: { in: view.counts.in, late: view.counts.late, tanks, healers, dps },
-      own:
-        own === undefined || own.state === null
-          ? null
-          : {
-              character_key: own.character_key,
-              state: own.state,
-              role: own.role,
-              note: note(own.character_key),
-            },
-    };
-  }
-
-  /** The status line after a refused press (spec 4 "Races", 6.1 strip status). */
-  export function pressFailedLine(thrown: unknown): string {
-    if (thrown instanceof GuildApiError && thrown.code === 'raid_locked') return raidCopy.races.locked;
-    if (thrown instanceof GuildApiError && thrown.code === 'raid_cancelled') return raidCopy.races.cancelled;
-    return raidCopy.stripStatus.failed;
-  }
-
-  /** The band after a refused press: a lock locks it, a cancel drops the raid (the band then says
-   *  none is planned); `undefined` leaves it as it was. */
-  export function nextRaidAfterRefusal(prev: NextRaidView, thrown: unknown): NextRaidView | null | undefined {
-    if (!(thrown instanceof GuildApiError)) return undefined;
-    if (thrown.code === 'raid_locked') return { ...prev, status: 'locked' };
-    if (thrown.code === 'raid_cancelled') return null;
-    return undefined;
-  }
-</script>
-
 <script lang="ts">
   import { tick } from 'svelte';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { guildRaidHref } from '../../lib/characters';
-  import type { GuildRaidRole, GuildSignupState } from '../../lib/guild/api';
-  import { bandClause, bandLineParts, kindCountsRoles, kindOf, whenPhrase } from '../../lib/guild/raid-copy';
+  import type { GuildRaidRole, GuildSignupState, NextRaidView } from '../../lib/guild/api';
+  import {
+    bandClause,
+    bandLineParts,
+    kindCountsRoles,
+    kindOf,
+    raidCopy,
+    whenPhrase,
+  } from '../../lib/guild/raid-copy';
   import { classTone } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Row from '../ui/Row.svelte';
-  import { putSignup } from '../../lib/guild/raids-api';
+  import { isRaceLine, pressSignup } from '../../lib/guild/signup-save';
   import { guildGateCopy } from '../../lib/guild/copy';
   import { gateAction, type GateFacts } from '../../lib/guild/plan-gate';
   import { viewerLocale, viewerZone } from '../../lib/dates';
@@ -218,18 +179,17 @@
     busy = true;
     clearTimeout(statusTimer);
     status = '';
+    // The PUT replaces the note, so the saved one travels with the press.
+    const body = { state, role: mine?.role ?? defaultRole, note: mine?.note ?? '' };
     try {
-      // The PUT replaces the note, so the saved one travels with the press.
-      const body = { state, role: mine?.role ?? defaultRole, note: mine?.note ?? '' };
-      const { raid } = await putSignup(guildId, prev.id, key, body);
-      onChange(nextRaidAfter(prev, raid, currentKey ?? key));
-    } catch (thrown) {
-      const after = nextRaidAfterRefusal(prev, thrown);
-      if (after !== undefined) onChange(after);
-      showStatus(pressFailedLine(thrown));
-      await tick();
-      // Spec 4 "Races": the race line takes focus; the generic line is only announced.
-      if (status !== raidCopy.stripStatus.failed) statusLine?.focus();
+      const outcome = await pressSignup(guildId, prev, key, body, currentKey ?? key);
+      if (outcome.next !== undefined) onChange(outcome.next);
+      if (!outcome.ok) {
+        showStatus(outcome.line);
+        await tick();
+        // Spec 4 "Races": the race line takes focus; the generic line is only announced.
+        if (isRaceLine(outcome.line)) statusLine?.focus();
+      }
     } finally {
       pending = null;
       busy = false;
@@ -271,7 +231,7 @@
 {:else if layout === 'row'}
   <div data-testid="guild-raid-line" aria-busy={busy ? 'true' : undefined}>
     <Row title={boundName} titleTone={classTone(rowCharacter?.class ?? '')} wrapTrail>
-      {#snippet lead()}<ClassCrestRing characterClass={rowCharacter?.class ?? ''} size={36} />{/snippet}
+      {#snippet lead()}<Crest cls={rowCharacter?.class ?? ''} size={36} />{/snippet}
       {#snippet subContent()}<span data-testid="guild-raid-line-sentence"
           >{rowFacts}{rowClause.head}{#if rowClause.word !== ''}<strong class="text-strong font-semibold"
               >{rowClause.word}</strong

@@ -13,6 +13,7 @@
      Below 768 the labels are 124 px and the plot scrolls sideways while the labels stay put. The
      summary carries no per-player hit stream, so the lanes draw no hit marks. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar, tauntKey } from '../../lib/report/format';
   import { classSlugOf } from '../../lib/report/planner-link';
@@ -23,7 +24,7 @@
   import { CHART_INK, inkCss } from '../../lib/chart/theme';
   import { clockDuration } from '../../lib/format/duration';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Chips from '../ui/Chips.svelte';
   import Section from '../ui/Section.svelte';
 
@@ -336,7 +337,7 @@
 >
   <div>
     {#if lanes.length === 0}
-      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">Nothing in this window.</p>
+      <EmptyState inset message="Nothing in this window." testid="table-empty" />
     {:else}
       <div class="flex flex-col gap-2 px-4 pb-3 md:px-5" data-testid="timelines">
         <Chips {chips} label="Show" onToggle={toggleMark} testid="timeline-show" />
@@ -364,7 +365,7 @@
                 style:height="{rowHeight(pitch)}px"
                 title={lane.name}
               >
-                <ClassCrestRing characterClass="" size={20} />
+                <Crest cls="" size={20} />
                 <span
                   class="text-strong min-w-0 text-[13px] leading-4 font-semibold md:truncate md:text-[14px] md:leading-5"
                   >{lane.name}</span
@@ -377,7 +378,7 @@
                 style:height="{rowHeight(pitch)}px"
                 title={lane.name}
               >
-                <ClassCrestRing characterClass={lane.crest} size={20} />
+                <Crest cls={lane.crest} size={20} />
                 <span
                   class="min-w-0 text-[13px] leading-4 font-semibold md:truncate md:text-[14px] md:leading-5"
                   style:color={lane.color}>{lane.name}</span

@@ -8,6 +8,7 @@ export const myReportsCopy = {
   signedOut: 'Sign in to see your reports.',
   signInAction: 'Sign in with Battle.net',
   uploadAction: 'Upload a log',
+  older: 'Older reports',
 } as const;
 
 /** The /reports page ("Your reports"): its head and the words its states add. */

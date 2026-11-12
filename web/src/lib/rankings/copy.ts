@@ -13,7 +13,8 @@ export const encounterPickerCopy = {
       .filter((part) => part !== null && part !== '')
       .join(' · '),
   /** "212 ranked": the encounter's ranked kills. */
-  ranked: (kills: number): string => `${grouped(kills)} ranked`,
+  /** The encounter's ranked kills: a kill puts several characters on the board, so never "ranked". */
+  ranked: (kills: number): string => `${grouped(kills)} ${kills === 1 ? 'kill' : 'kills'}`,
   /** One line in place of an encounter's top parses, or of the spec leaders. */
   topFailed: 'Top parses did not load.',
   topNone: 'No ranked kill on this board yet.',
@@ -69,6 +70,10 @@ export const rankingsCopy = {
   h1: 'Rankings',
   /** The page's lead: what the boards hold and how a player gets on them. */
   lead: 'Logged boss kills on Forever, ranked by DPS and HPS for each spec, class, ruleset and guild. The companion uploads your combat log as you play, so your kills join the board.',
+  /** The pages' meta descriptions: the landing, and one encounter's board. */
+  description: 'World of Warcraft: Forever rankings by encounter: characters, guilds, specs and phases.',
+  encounterDescription: (encounter: string) =>
+    `${encounter} on Forever: the best logged kills, ranked by DPS and HPS for every class and spec.`,
   tierLink: 'Tier list',
   tierHref: '/tiers',
   updated: (date: string) => `Updated ${date}`,
@@ -99,6 +104,7 @@ export const rankingsCopy = {
   removed: 'Removed by a moderator',
   atRisk: 'Under review by a moderator',
   filtersButton: 'Filters',
+  clearFilters: 'Clear filters',
   boardTabs: 'Board',
   pickerHeading: 'Choose an encounter',
 

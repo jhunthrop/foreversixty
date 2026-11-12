@@ -98,7 +98,7 @@ cannot be reached, the token is still removed here and the window says to remove
 Closing the window does not stop the companion: it stays in the tray (Windows) or the menu bar
 (macOS) and keeps logging. The first time you close the window it says so, then hides. The icon's
 menu shows what the companion is doing in a line at the top (the same words as the Status
-headline, which is also the tooltip), **Open Forever Sixty**, **Open my reports on the site** and
+headline, which is also the tooltip), **Open Forever Sixty**, **Open your reports** and
 **Quit**. Quit is the only way to stop it; on a Mac, **Quit Forever Sixty** in the app menu,
 Command-Q and the Dock's Quit do the same, and clicking the Dock icon opens the window again. On
 Linux, closing the window quits the companion; keep it open while logging.
@@ -197,8 +197,8 @@ while you are not connected, and they go up as soon as you connect, so a missed 
 and `Logs`, on the Settings page. The folder above it works too.
 
 **"Advanced logging: OFF."** The report will be accepted, marked, and will lose the views that
-need the advanced fields: deaths with health, item level, resources, and positions. Turn it on
-in **Options → Network → Advanced Combat Logging** and restart the game.
+need the advanced fields: health at death, item level, resources, and positions. Turn it on
+in **Options > System > Network > Advanced Combat Logging**, then relog.
 
 **Fights are queued and not going up.** Open `logs/companion.log`. Every upload failure is one
 line with the report, the fight and the reason. Uploads are strictly in order, so one failing

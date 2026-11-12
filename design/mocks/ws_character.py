@@ -487,8 +487,11 @@ def state_loading() -> str:
     # meta skeleton line, the whole head one status.
     head_ = (f'<div role="status" style="display:contents">'
              f'{PageHeader("Elyra Duskvale", crest=Skeleton(56, 56, True), meta=[Skeleton(320, 16)])}</div>')
+    # The gear panel's body is one status too (Character.svelte, lane E's shared loading state): role=status, aria-busy, a
+    # sr-only "Loading…" and the empty frame (its own group with the Gear h2) inside it.
     frame = PaperdollFrame([], '', '', None, '', 'Gear', heading='h2')
-    return head_ + split(panel('Gear', f'<div class="doll-c" aria-busy="true"><div class="doll-w">{frame}</div></div>', frame='framed'), '')
+    body = f'<div class="doll-c" role="status" aria-busy="true"><span class="sr-only">Loading&hellip;</span><div class="doll-w">{frame}</div></div>'
+    return head_ + split(panel('Gear', body, frame='framed'), '')
 
 
 def state_error() -> str:

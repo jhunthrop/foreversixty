@@ -222,8 +222,9 @@ test('a named set from the addon export carries its enchant and suffix into the 
   await expect(page.getByTestId('sim-set-Alt Set')).toBeVisible();
   await page.getByTestId('sim-set-Alt Set').getByRole('button', { name: bulkCopy.setsAdd }).click();
   // The raw request lives in More settings, as on /sim (BulkRunBar mounts MoreSettingsSheet).
+  // openRequest opens the drawer; a second summary press would close it, and the shared Disclosure
+  // renders its body only while open.
   await openRequest(page);
-  await page.getByTestId('sim-request-drawer').locator('summary').click();
   // The drawer rebuilds its JSON after the set lands in the store; read it once the set is
   // in it, or a phone-speed run parses an empty textarea.
   const editor = page.getByTestId('sim-request-json');
@@ -361,6 +362,6 @@ test('the winner can be saved, with a title composed from the result rather than
   );
   await page.getByTestId('sim-save-confirm').click();
 
-  await expect(page.getByTestId('sim-save-link')).toBeVisible();
-  await expect(page.getByTestId('sim-save-link')).toHaveValue(/\/sim\/simnew234567$/);
+  await expect(page.getByTestId('sim-save-url')).toBeVisible();
+  await expect(page.getByTestId('sim-save-url')).toHaveValue(/\/sim\/simnew234567$/);
 });

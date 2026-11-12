@@ -230,12 +230,48 @@ PRIM_CSS += '''
 .ck.ok{background:var(--kill)}.ck.warn{background:var(--gold)}.ck.miss{background:var(--wipe)}.ck.gap{background:var(--muted)}
 .gap-tag{font-size:12px;color:var(--muted)}
 .seg.sm a{height:32px;padding:0 10px;font-size:13px}
+.es-line{display:flex;min-height:44px;flex-wrap:wrap;align-items:center;gap:12px;font-size:14px}.es-line .msg{color:var(--muted)}
+.es-panel{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:4px 0}.es-panel .ln{color:var(--strong);font-weight:600}.es-panel .fl{font-size:14px;line-height:20px;color:var(--muted)}.es-panel .rt{margin-top:4px}
+.es-fill{display:flex;flex-direction:column;gap:4px;padding:4px 0}.es-fill .ln{color:var(--strong);font-weight:600}
+.es-fill .fl{font-size:14px;line-height:20px;color:var(--muted)}.es-fill .act{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;margin-top:12px}
+.es-more{display:inline-flex;min-height:44px;align-items:center;align-self:flex-start;font-size:14px;background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
 '''
 
 
 def Segmented(items: list[tuple[str, bool]], small: bool = False) -> str:
     """An inline choice of one among few (sign-up In / Late / Bench). Same look as the ControlBar's segmented control."""
     return seg([(a, on, None, '') for a, on in items], 'sm' if small else '')
+
+
+def EmptyState(message: str, action: str | None = None) -> str:
+    """The shared empty line (ui/EmptyState.svelte, component audit cluster 10): a region whose data loaded with nothing in it,
+    the muted sentence at 44 px and at most one gold link that leads to what would fill it."""
+    act = Link(f'{action} &rsaquo;') if action else ''
+    return f'<div class="es-line"><span class="msg">{message}</span>{act}</div>'
+
+
+def LoadError(message: str, retry: bool = True, title: str | None = None, panel: bool = False) -> str:
+    """The shared load error (ui/LoadError.svelte, cluster 11): the line, a muted sentence at 44 px with the one retry
+    button ("Try again"); `panel`, the strong title over the sentence with the retry under it, for a panel that failed whole."""
+    btn = Button('Try again', small=True).replace('<a ', '<button type="button" ', 1).replace('</a>', '</button>', 1).replace(' href="#"', '', 1) if retry else ''
+    if panel:
+        head = f'<p class="ln">{title}</p>' if title else ''
+        return f'<div class="es-panel" role="alert">{head}<p class="fl">{message}</p><div class="rt">{btn}</div></div>'
+    return f'<div class="es-line" role="alert"><span class="msg">{message}</span>{btn}</div>'
+
+
+def EmptyFill(lead: str, fill: str, action: str, secondary: str = '') -> str:
+    """ui/EmptyState's `fill` shape (the designed empty, owner 2026-11-09): what is missing in strong, what fills it muted
+    under it, then the action (rendered: a small primary button) and a quieter gold link 20 px apart, 12 px under."""
+    return (f'<div class="es-fill"><p class="ln">{lead}</p><p class="fl">{fill}</p>'
+            f'<div class="act">{action}{secondary}</div></div>')
+
+
+def ShowAll(total: int, expanded: bool = False) -> str:
+    """The shared show-all control (ui/ShowAll.svelte, cluster 12): one gold 44 px button under a capped list,
+    "Show all 24" or "Show fewer" once expanded."""
+    label = 'Show fewer' if expanded else f'Show all {total}'
+    return f'<button type="button" class="link es-more" aria-expanded="{str(expanded).lower()}">{label}</button>'
 
 
 def Checklist(items: list[tuple]) -> str:
@@ -951,13 +987,13 @@ _Page0 = Page
 
 def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '',
                lead: str = '', crumb: str = '', notice: str = '', pending: bool = False, second_head: bool = False) -> str:
-    """PageHeader with the optional Lead sentence under the meta line (inside head-title, so the regions are unchanged)."""
+    """PageHeader with the optional Lead sentence directly under the title, the meta line under it (inside head-title,
+    so the regions are unchanged; seo-fix 2026-11-10: the lead is the page's first sentence, never under a caveat)."""
     html = _PageHeader0(title, title_color, crest, meta, answer, actions, tabs, crumb=crumb, notice=notice, pending=pending,
                         second_head=second_head)
     if not lead:
         return html
-    at = re.search(r'<div class="ph-meta" data-region="head-meta">.*?</span></div>', html) if meta else None
-    cut = at.end() if at else html.index('</h1>') + len('</h1>')
+    cut = html.index('</h1>') + len('</h1>') if '</h1>' in html else html.index('</p>') + len('</p>')
     return html[:cut] + f'<p class="ph-lead">{lead}</p>' + html[cut:]
 
 

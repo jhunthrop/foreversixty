@@ -92,7 +92,8 @@ export async function run(changelog, pages) {
       legalTabsLabel: contentPagesCopy.legalTabsLabel,
       login: { ...accountSignInCopy, action: myReportsCopy.signInAction },
     },
-    classes: classes.map((k) => ({ ...k, specs: specs.filter((s) => s.class_slug === k.slug).sort((a, b) => a.tree_index - b.tree_index).map((s) => ({ name: s.name, slug: s.spec_slug, icon: s.icon })) })),
+    // One spec per talent tree, as every picker lists them (lib/class-picker.ts treeSpecs: Feral Bear folds into Feral).
+    classes: classes.map((k) => ({ ...k, specs: specs.filter((s) => s.class_slug === k.slug).sort((a, b) => a.tree_index - b.tree_index).filter((s, i, all) => all.findIndex((o) => o.tree_index === s.tree_index) === i).map((s) => ({ name: s.name, slug: s.spec_slug, icon: s.icon })) })),
     me: { name: c.name, class: c.class, spec: c.spec, level: c.level, identity: d.identity, level_line: d.level, href: characterHref(c.region, c.ruleset, c.name) },
     suggest: { from: SUGGEST_FROM, page: suggestPage(SUGGEST_FROM, known), known: known.length },
   };

@@ -42,7 +42,7 @@ func (s *DiscordSink) Deliver(ctx context.Context, userID int64, e events.Event)
 		if src.UserID != userID {
 			return nil
 		}
-		return d.Deliver(ctx, userID, SimFinishedEmbed(d.PublicBaseURL, src), EventSimFinished)
+		return d.Deliver(ctx, userID, SimFinishedEmbed(d.PublicBaseURL, d.APIBaseURL, src), EventSimFinished)
 	case UploadParsed:
 		if src.UserID != userID {
 			return nil

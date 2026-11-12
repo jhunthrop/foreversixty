@@ -1,12 +1,13 @@
 // web/src/lib/home/plaque.ts
 // Home's raid plaque (design/specs/2026-11-09-directions.md, Home): the guild's next raid with its
-// clock, sign-ups, role counts, the three sign-up buttons and Before the pull; with no guild raid,
+// clock, sign-ups, role counts and Before the pull (the sign-up is the guild's SignupSegments); with no guild raid,
 // the first raids opening. Pure: components/home/HomeGuildRaid.svelte and HomeFirstRaids.svelte
 // read it, the unit tests pin it.
-import type { GuildRaidRole, GuildSignupState, NextRaidView } from '../guild/api';
+import type { GuildRaidRole, NextRaidView } from '../guild/api';
 import { roleForSpec, rolesForClass } from '../guild/raid-roles';
 import { clock, longDay, viewerLocale } from '../dates';
 import { clockParts } from '../ui/countdown';
+import { withRetry } from '../ui/copy';
 
 /** One big figure on the plaque: `32` over `days`. */
 export interface PlaqueFigure {
@@ -14,18 +15,13 @@ export interface PlaqueFigure {
   label: string;
 }
 
-/** The sign-up choices the plaque offers, in order: I'm in (the primary), Late, Can't come. */
-export const PLAQUE_CHOICES = ['in', 'late', 'out'] as const satisfies readonly GuildSignupState[];
-export type PlaqueChoice = (typeof PLAQUE_CHOICES)[number];
-
 export const plaqueCopy = {
-  choices: { in: "I'm in", late: 'Late', out: "Can't come" } satisfies Record<PlaqueChoice, string>,
   beforePull: 'Before the pull',
-  signedUp: 'signed up',
+  in: 'in',
   late: 'late',
   firstRaids: 'First raids open',
   raidsOpen: 'Raids open now',
-  signUpFailed: 'Could not save your sign-up. Try again.',
+  signUpFailed: withRetry('Could not save your sign-up.'),
   roles: { tanks: 'tanks', healers: 'healers', melee: 'melee', ranged: 'ranged' },
 } as const;
 
@@ -38,7 +34,7 @@ export function countdownFigures(target: Date, now: Date): PlaqueFigure[] {
 /** Signed up and late. */
 export function signupFigures(counts: NextRaidView['counts']): PlaqueFigure[] {
   return [
-    { value: String(counts.in), label: plaqueCopy.signedUp },
+    { value: String(counts.in), label: plaqueCopy.in },
     { value: String(counts.late), label: plaqueCopy.late },
   ];
 }
@@ -69,13 +65,6 @@ export function signupRole(
   if (spec !== null) return spec;
   const roles = character.class === undefined ? [] : rolesForClass(character.class);
   return roles.length === 1 ? roles[0] : null;
-}
-
-/** The plaque's choice for a saved state: Bench reads as none of the three. */
-export function choiceOf(state: GuildSignupState | null): PlaqueChoice | null {
-  return state !== null && (PLAQUE_CHOICES as readonly string[]).includes(state)
-    ? (state as PlaqueChoice)
-    : null;
 }
 
 /** The raid's start on the viewer's own calendar and clock, with no zone label:

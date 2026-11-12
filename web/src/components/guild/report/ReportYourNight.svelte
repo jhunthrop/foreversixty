@@ -11,7 +11,7 @@
   import { SEP, raidCopy } from '../../../lib/guild/raid-copy';
   import { specName } from '../../../lib/guild/spec-name';
   import { classTone } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
   import Figures from '../Figures.svelte';
@@ -44,7 +44,7 @@
       {@const awards = awardsOf(row.character_key)}
       <li data-testid="raid-your-night-row">
         <Row title={row.name} titleTone={classTone(row.class)} open>
-          {#snippet lead()}<ClassCrestRing characterClass={row.class} size={32} />{/snippet}
+          {#snippet lead()}<Crest cls={row.class} size={32} />{/snippet}
           {#snippet subContent()}
             <span class="block">{specName(row.spec)}</span>
             <span class="text-text block text-[14px]" data-testid="raid-your-night-sentence"
@@ -73,9 +73,7 @@
     {#each waiting as character (character.character_key)}
       <li data-testid="raid-your-night-waiting">
         <Row title={character.name} sub={raidCopy.waitingCharacter} open>
-          {#snippet lead()}<span class="opacity-60"
-              ><ClassCrestRing characterClass={character.class} size={32} /></span
-            >{/snippet}
+          {#snippet lead()}<span class="opacity-60"><Crest cls={character.class} size={32} /></span>{/snippet}
         </Row>
       </li>
     {/each}

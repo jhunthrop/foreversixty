@@ -1,6 +1,7 @@
 // web/src/lib/guild/recruit-copy.ts
 // The words of recruitment, applications and the member profile (web layout spec 2026-11-05
 // §7.2): plain, in a raider's voice, no em dashes. One place, so a test pins them.
+import { uiCopy, withRetry } from '../ui/copy';
 
 export const recruitCopy = {
   page: {
@@ -49,9 +50,9 @@ export const recruitCopy = {
       not_recruiting: 'This guild stopped taking applications.',
       already_member: 'You are already in this guild.',
       wrong_realm: "That character is not on this guild's realm.",
-      rate_limited: 'Too many applications in a short time. Try again in an hour.',
+      rate_limited: `Too many applications in a short time. ${uiCopy.retry} in an hour.`,
     } as Readonly<Record<string, string>>,
-    failed: 'That did not send. Try again.',
+    failed: withRetry('That did not send.'),
   },
   mine: {
     heading: 'Your application',
@@ -63,7 +64,7 @@ export const recruitCopy = {
     decided: (day: string) => `Decided ${day}`,
     withdraw: 'Withdraw',
     withdrawing: 'Withdrawing',
-    withdrawFailed: 'That did not withdraw. Try again.',
+    withdrawFailed: withRetry('That did not withdraw.'),
     member: (guild: string) => `You are in ${guild}.`,
     openGuild: 'Open the guild',
     officerOpen: (n: number) => (n === 1 ? '1 open application' : `${n} open applications`),
@@ -83,8 +84,8 @@ export const applicationsCopy = {
   accept: 'Accept',
   decline: 'Decline',
   deciding: 'Saving',
-  voteFailed: 'That vote did not save. Try again.',
-  decideFailed: 'That did not save. Try again.',
+  voteFailed: withRetry('That vote did not save.'),
+  decideFailed: withRetry('That did not save.'),
   availability: (text: string) => `Can raid: ${text}`,
   noMessage: 'No message.',
   recent: 'Recent decisions',
@@ -136,7 +137,7 @@ export const applicationsCopy = {
     save: 'Save card',
     saving: 'Saving',
     saved: 'Saved.',
-    saveFailed: 'That did not save. Try again.',
+    saveFailed: withRetry('That did not save.'),
   },
 } as const;
 
@@ -208,8 +209,8 @@ export const profileCopy = {
   saveNote: 'Save note',
   saving: 'Saving',
   deleteNote: 'Delete',
-  noteFailed: 'That note did not save. Try again.',
-  deleteFailed: 'That did not delete. Try again.',
+  noteFailed: withRetry('That note did not save.'),
+  deleteFailed: withRetry('That did not delete.'),
   anOfficer: 'An officer',
   cells: {
     present: 'There',

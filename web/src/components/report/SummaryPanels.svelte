@@ -8,7 +8,7 @@
      every ability and the log site's columns beside the amount: Hits, Crit, Avg and Max (density
      pass 2026-11-09), Overheal on Healing, no Crit on Damage taken. -->
 <script lang="ts">
-  import EmptyLine from './EmptyLine.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import { compact, grouped } from '../../lib/format/number';
   import { formatRate } from '../../lib/report/frame';
   import type { Actor, Summary } from '../../lib/report/types';
@@ -170,7 +170,7 @@
   testid={`panel-${metric}`}
 >
   {#if byAbility.length === 0}
-    <EmptyLine text={EMPTY[metric]} />
+    <EmptyState inset message={EMPTY[metric]} />
   {:else}
     <StatTable {columns} nameHead="Ability" label={TITLE[metric]}>
       {#each byAbility as row (row.name)}

@@ -15,7 +15,7 @@
   import { RecruitPage } from '../../../lib/guild/recruit-page.svelte';
   import { officerRows, realmLabel, wantedRows } from '../../../lib/guild/recruit-view';
   import { classTone } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import { battlenetStartUrl } from '../../../lib/account/api';
   import { viewerLocale, viewerZone } from '../../../lib/dates';
   import Button from '../../ui/Button.svelte';
@@ -83,7 +83,7 @@
         <Section title={copy.card.officers} panel testid="guild-recruit-officers">
           {#each officerRows(p.card.officers) as officer (officer.key)}
             <Row title={officer.name} titleTone={classTone(officer.classSlug)} sub={officer.sub} open>
-              {#snippet lead()}<ClassCrestRing characterClass={officer.classSlug} size={32} />{/snippet}
+              {#snippet lead()}<Crest cls={officer.classSlug} size={32} />{/snippet}
             </Row>
           {/each}
         </Section>
@@ -131,7 +131,7 @@
                     sub={line.note || undefined}
                     open
                   >
-                    {#snippet lead()}<ClassCrestRing characterClass={line.classSlug} size={30} />{/snippet}
+                    {#snippet lead()}<Crest cls={line.classSlug} size={30} />{/snippet}
                   </Row>
                 </li>
               {/each}

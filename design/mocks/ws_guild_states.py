@@ -16,7 +16,7 @@ from guild_data import ALLIANCE, C, GUILD, TABS
 import guild_data as gd
 from ws_guild2 import _view, ch, hdr, pad
 from ws_lib import REGION
-from ws_prims import (Button, Countdown, Emblem, FeedRow, Link, Notice, Page, PageHeader, Row, Rows, Section, TabStrip, Tally, build_page,
+from ws_prims import (EmptyState, Button, Countdown, Emblem, FeedRow, Link, Notice, Page, PageHeader, Row, Rows, Section, TabStrip, Tally, build_page,
                       crest_img, icon)
 
 RAIDS = [('Barrow Deeps', 'spell_shadow_raisedead'), ('Hyjal Summit', 'spell_nature_timestop'), ("Onyxia's Lair", 'inv_misc_head_dragon_black')]
@@ -129,7 +129,7 @@ def last_raid(progression: str, logged: bool) -> str:
                   trail='<span class="gold" style="font-weight:600">Report &rsaquo;</span>')
         body = Rows([row], open_=True)
     else:
-        body = '<p class="muted-line">No raid logged yet.</p>'
+        body = EmptyState('No raid logged yet.', 'Get the companion')  # LastRaid.svelte: the companion fills it
     return Section('Last raid', body, meta=progression, panel=True)
 
 

@@ -187,13 +187,14 @@ describe('the rows', () => {
     expect(rows[1].querySelector('.typeahead-realm')?.textContent).toBe('EU Hardcore');
   });
 
-  it('gives a character with no class a neutral ring and no detail', async () => {
+  it('gives a character with no class the LX seal in a neutral ring and no detail', async () => {
     const { input } = wire(answering([BO]));
     type(input, 'bo');
     await settle();
     const [row] = options();
-    expect(row.querySelector('img')).toBeNull();
-    expect(row.querySelector('.typeahead-crest-none')).not.toBeNull();
+    const crest = row.querySelector('img');
+    expect(crest?.classList.contains('crest-none')).toBe(true);
+    expect(crest?.getAttribute('src')).toContain('seal-flat');
     expect(row.classList.contains('typeahead-row-plain')).toBe(true);
     expect(row.querySelector('.typeahead-detail')).toBeNull();
     expect(row.querySelector('.typeahead-realm')?.textContent).toBe('US PvP');

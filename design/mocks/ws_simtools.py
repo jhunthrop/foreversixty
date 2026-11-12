@@ -362,7 +362,7 @@ def published_weights() -> str:
 # ---- a tool with no character (SourceSwitcher): the addon export on the Plate, the other ways in open
 def gear_empty() -> str:
     """SourceSwitcher, in the landing's own grammar (ws_sim.landing_out's Form, Input and Button)."""
-    paste = ('<div class="paste-b">' + S.Form('From the addon', [('From the addon', S.Input('FS1:&hellip;', 'From the addon', grow=True), True)], S.Button('Load', primary=True))
+    paste = ('<div class="paste-b">' + S.Form('From the addon', [('', S.Input('FS1:&hellip;', 'From the addon', grow=True), True)], S.Button('Load', primary=True))
                   + '<p class="t-small">Paste the export string from the Forever Sixty addon, or let the companion push it. <a class="link" href="#">Get the addon &rsaquo;</a></p></div>')
     form = lambda label, ph: S.Form(label, [('', S.Input(ph, label), False)], S.Button('Load'))
     ways = Rows([Row('From a build', 'Paste a planner link, saved or not, or a saved build id.', trail=form('From a build', 'foreversixty.gg/b/&hellip;'), link=False),

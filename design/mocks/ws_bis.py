@@ -30,9 +30,12 @@ QUALITY = {'poor': 0, 'common': 1, 'uncommon': 2, 'rare': 3, 'epic': 4, 'legenda
 # The page's own layout (BisSpecPage, BisSide, BisItinerary measure the same); no surfaces: the primitives draw those.
 BIS_CSS = '''
 .bis-pg{padding-top:20px}
-.cbar[data-labels-from="1920"] .pc{column-gap:12px}
+/* the built ControlBar wraps its groups with gap 12px 20px, the column gap 12 on the BiS bar (labels from 1920) */
+.cbar[data-labels-from="1920"] .pc{gap:12px}
 .cbar .seg a{height:40px}.cbar .seg a .sp{width:22px;height:22px;border-radius:4px;background:#10141d}
-.src-btn{height:36px;padding:0 10px;font-size:13px;background:none;cursor:pointer}
+.src-btn{height:40px;padding:0 12px;gap:8px;font-size:14px;background:none;cursor:pointer}
+.src-btn::after{width:14px;text-align:center}
+.sel.fixed-field{width:var(--field-w);justify-content:space-between}
 .bis-top{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:start}
 .bis-doll{width:100%;max-width:640px;justify-self:center}
 @media(min-width:1100px){.bis-top{grid-template-columns:minmax(0,640px) minmax(0,1fr);gap:36px}.bis-doll{justify-self:start}}
@@ -54,6 +57,21 @@ BIS_CSS = '''
 '''
 
 
+# The bar's one select is the race, a fixed 112 px field (BisSpecPage RACE_FIELD_PX, ControlBar `fieldWidth`): "Night Elf" fits,
+# the rare long race name truncates in the field.
+RACE_FIELD_PX = 112
+
+
+def field_select(value: str, width: int) -> str:
+    """ws_lib `sel` at a fixed field width (the built ControlBar select with `fieldWidth`), not its content's."""
+    return sel(value).replace('class="sel"', f'class="sel fixed-field" style="--field-w:{width}px"', 1)
+
+
+def sources_button(label: str) -> str:
+    """The Sources group's button on the shared ui/FilterPopover (lane E): 40 px, 12 px padding, 14 px type, the chevron 8 px after."""
+    return f'<button type="button" class="sel src-btn" aria-expanded="false" aria-haspopup="dialog">{label}</button>'
+
+
 def controls(f: dict) -> str:
     c = f['controls']
     groups = []
@@ -62,8 +80,8 @@ def controls(f: dict) -> str:
             items = [(escape(o['label']), o['on'], None, '<span class="sp"></span>' if o['icon'] else '') for o in g['options']]
             groups.append((g['label'], seg(items, label=g['label'])))
         else:
-            groups.append((g['label'], sel(escape(g['value'] or ''))))
-    groups.append(('Sources', f'<button type="button" class="sel src-btn" aria-expanded="false" aria-haspopup="dialog">{escape(c["sources"])}</button>'))
+            groups.append((g['label'], field_select(escape(g['value'] or ''), RACE_FIELD_PX)))
+    groups.append(('Sources', sources_button(escape(c['sources']))))
     summary = ' &middot; '.join(escape(o['label']) for g in c['groups'] for o in g['options'] if o['on'])
     return control_bar(groups, summary, label=c['label'], labels_from=1920)
 

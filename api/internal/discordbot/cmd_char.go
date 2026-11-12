@@ -7,6 +7,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
@@ -285,7 +286,7 @@ func (s *Service) itemFacts(build, class string, id int, name, source, url strin
 		facts.Name = it.Name
 	}
 	if it.Icon != "" {
-		facts.Icon = s.d.PublicBaseURL + "/data/" + build + "/icons/" + it.Icon + ".webp"
+		facts.Icon = sheet.TileURL(s.d.APIBaseURL, build, id)
 	}
 	return facts
 }

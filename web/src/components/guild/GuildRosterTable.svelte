@@ -18,17 +18,16 @@
      Waiting for approval and Roster; the roster's rows are the page's one Plate. No card, no icon
      chip, no hand-drawn rule: ui/Ruled draws the hairlines. -->
 <script lang="ts">
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import CharacterName from '../ui/CharacterName.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Tag from '../ui/Tag.svelte';
   import SupporterChip from '../SupporterChip.svelte';
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
-  import { classColorVar } from '../../lib/report/format';
   import type { CharacterPath } from '../../lib/characters';
   import type { GuildRosterCounts, GuildRosterEntry, GuildRosterRow } from '../../lib/guild/api';
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
   import { focusOnMountIf } from '../../lib/guild/focus-now';
   import type { AttendanceSource } from '../../lib/guild/attendance-contract';
-  import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
   import { professionName } from '../../lib/guild/professions';
   import { rosterHoldsHandoff } from '../../lib/guild/roster-links';
   import {
@@ -71,7 +70,10 @@
   import Page from '../ui/Page.svelte';
   import Ruled from '../ui/Ruled.svelte';
   import Section from '../ui/Section.svelte';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
+  import Button from '../ui/Button.svelte';
+  import Chips from '../ui/Chips.svelte';
+  import Select from '../ui/Select.svelte';
+  import { upperFirst } from '../../lib/text';
   import FactLine from './FactLine.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
 
@@ -215,15 +217,26 @@
   function toggle(key: 'verifiedOnly' | 'belowFloorOnly'): void {
     filters = { ...filters, [key]: !filters[key] };
   }
-  function cycleRole(): void {
-    const order: RosterRoleFilter[] = ['all', 'tank', 'healer', 'dps'];
-    const next = order[(order.indexOf(filters.role) + 1) % order.length];
-    filters = { ...filters, role: next };
-  }
-  function cycleClass(): void {
-    const order = ['all', ...classOptions];
-    const next = order[(order.indexOf(filters.classFilter) + 1) % order.length];
-    filters = { ...filters, classFilter: next };
+  const ROLE_OPTIONS: readonly { value: RosterRoleFilter; label: string }[] = [
+    { value: 'all', label: 'All roles' },
+    { value: 'tank', label: 'Tank' },
+    { value: 'healer', label: 'Healer' },
+    { value: 'dps', label: 'Damage' },
+  ];
+  const classSelectOptions = $derived([
+    { value: 'all', label: 'All classes' },
+    ...classOptions.map((cls) => ({ value: cls, label: upperFirst(cls) })),
+  ]);
+  /** The on/off filters, as the shared chips. */
+  const toggleChips = $derived([
+    { id: 'verified', label: 'Verified only', on: filters.verifiedOnly },
+    { id: 'noaccount', label: guildRosterModelCopy.noAccountFilter, on: noAccountOnly },
+    { id: 'floor', label: 'Below rating floor', on: filters.belowFloorOnly },
+  ]);
+  function onToggleChip(id: string): void {
+    if (id === 'verified') toggle('verifiedOnly');
+    else if (id === 'floor') toggle('belowFloorOnly');
+    else noAccountOnly = !noAccountOnly;
   }
 
   /** Approve all goes straight through unless an officer is waiting, then it asks first. */
@@ -391,12 +404,15 @@
   <Ruled id="guild-roster-unverified" testid="guild-roster-unverified-list">
     {#each shownPending as row (row.character_key)}
       <div class={ROW}>
-        <ClassCrestRing characterClass={row.class ?? ''} size={36} />
+        <Crest cls={row.class ?? ''} size={36} />
         <div class="flex min-w-[150px] flex-col">
           <span class="flex min-w-0 items-center gap-2">
-            <span class="heading-name text-[14px]" style={`color:${classColorVar(row.class ?? '')}`}>
-              {row.name}
-            </span>
+            <CharacterName
+              name={row.name}
+              cls={row.class}
+              weight="inherit"
+              class="heading-name text-[14px]"
+            />
             {#if row.supporter === true}<SupporterChip />{/if}
           </span>
           <span class="text-muted text-[12px]">{specLineOf(row)}</span>
@@ -406,26 +422,31 @@
         {/if}
         <div class="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-3">
           {#if canApprove}
-            <button
-              class={`${button('secondary', 'sm')} ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+            <Button
+              size="sm"
               onclick={() => onApprove(row)}
-              disabled={rosterBusy === row.character_key || frozen}
-              aria-label={`Approve ${row.name}`}
-              data-testid="guild-roster-approve"
+              busy={rosterBusy === row.character_key}
+              busyLabel={guildRosterModelCopy.approving}
+              disabled={frozen}
+              label={`Approve ${row.name}`}
+              testid="guild-roster-approve"
             >
               Approve
-            </button>
+            </Button>
           {/if}
           {#if canRemove && row.may_remove}
-            <button
-              class={`${button('ghost', 'sm')} ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+            <Button
+              tone="ghost"
+              size="sm"
               onclick={() => (decliningKey = row.character_key)}
-              disabled={rosterBusy === row.character_key || (frozen && !removeOverridesFrozen(row))}
-              aria-label={`Decline ${row.name}`}
-              data-testid="guild-roster-decline"
+              busy={rosterBusy === row.character_key}
+              busyLabel={guildRosterModelCopy.declining}
+              disabled={frozen && !removeOverridesFrozen(row)}
+              label={`Decline ${row.name}`}
+              testid="guild-roster-decline"
             >
               {guildRosterModelCopy.decline}
-            </button>
+            </Button>
           {/if}
         </div>
       </div>
@@ -502,53 +523,49 @@
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
           <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
             <span class="quiet-label">Filter</span>
-            <button class={FILTER_BTN} onclick={cycleRole} data-testid="guild-roster-filter-role">
-              Role: {filters.role === 'all' ? 'All' : filters.role}
-            </button>
-            <button class={FILTER_BTN} onclick={cycleClass} data-testid="guild-roster-filter-class">
-              Class: {filters.classFilter === 'all' ? 'All' : filters.classFilter}
-            </button>
-            <button
-              class={`${FILTER_BTN} ${filters.verifiedOnly ? FILTER_BTN_ON : ''}`}
-              onclick={() => toggle('verifiedOnly')}
-              data-testid="guild-roster-filter-verified"
-            >
-              Verified only
-            </button>
-            <button
-              class={`${FILTER_BTN} ${noAccountOnly ? FILTER_BTN_ON : ''}`}
-              onclick={() => (noAccountOnly = !noAccountOnly)}
-              data-testid="guild-roster-filter-noaccount"
-            >
-              {guildRosterModelCopy.noAccountFilter}
-            </button>
-            <button
-              class={`${FILTER_BTN} ${filters.belowFloorOnly ? FILTER_BTN_ON : ''}`}
-              onclick={() => toggle('belowFloorOnly')}
-              data-testid="guild-roster-filter-floor"
-            >
-              Below rating floor
-            </button>
+            <Select
+              id="guild-roster-filter-role"
+              size="dense"
+              label="Role"
+              value={filters.role}
+              options={ROLE_OPTIONS}
+              testid="guild-roster-filter-role"
+              onchange={(event) =>
+                (filters = {
+                  ...filters,
+                  role: (event.currentTarget as HTMLSelectElement).value as RosterRoleFilter,
+                })}
+            />
+            <Select
+              id="guild-roster-filter-class"
+              size="dense"
+              label="Class"
+              value={filters.classFilter}
+              options={classSelectOptions}
+              testid="guild-roster-filter-class"
+              onchange={(event) =>
+                (filters = { ...filters, classFilter: (event.currentTarget as HTMLSelectElement).value })}
+            />
+            <Chips
+              chips={toggleChips}
+              label="Filter"
+              onToggle={onToggleChip}
+              chipTestid="guild-roster-filter"
+            />
           </div>
 
-          <div
-            class="flex flex-wrap items-center gap-2"
-            role="group"
-            aria-label="Sort"
-            data-testid="guild-roster-sort"
-          >
+          <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-sort">
             <span class="quiet-label">Sort</span>
-            {#each sortChips as chip (chip.key)}
-              <button
-                class={`${FILTER_BTN} ${sortKey === chip.key ? FILTER_BTN_ON : ''}`}
-                onclick={() => (sortKey = chip.key)}
-                aria-pressed={sortKey === chip.key}
-                aria-sort={sortKey === chip.key ? 'descending' : undefined}
-                data-testid={`guild-roster-sort-${chip.key}`}
-              >
-                {chip.label}{sortKey === chip.key ? ' ▾' : ''}
-              </button>
-            {/each}
+            <Chips
+              chips={sortChips.map((chip) => ({
+                id: chip.key,
+                label: sortKey === chip.key ? `${chip.label} ▾` : chip.label,
+                on: sortKey === chip.key,
+              }))}
+              label="Sort"
+              onToggle={(id) => (sortKey = id as RosterSortKey)}
+              chipTestid="guild-roster-sort"
+            />
           </div>
         </div>
         <!-- Only while no rank is known: a roster row's rank is the addon's, so the line would read
@@ -589,23 +606,20 @@
                       ? `${specLine}${specLine === '' ? '' : ' · '}alt of ${altOf.get(row.character_key)}`
                       : specLine}
                     <div class={`${ROW} ${ownRowBand(pinned, 0)}`}>
-                      <ClassCrestRing characterClass={row.class ?? ''} size={36} />
+                      <Crest cls={row.class ?? ''} size={36} />
                       <!-- At lg the name block is a fixed 240 px and its subtitle one ellipsised line (the whole
                text in the title), so every row's rank and stats start at the same left edge. -->
                       <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
                         <span class="flex min-w-0 items-center gap-2">
-                          <svelte:element
-                            this={profile === null ? 'span' : 'a'}
+                          <CharacterName
+                            name={`${row.name}${pinned ? ' (you)' : ''}`}
+                            cls={row.class}
                             href={profile ?? undefined}
-                            class="heading-name min-w-0 text-[14px] lg:truncate {profile === null
-                              ? ''
-                              : 'hover:underline focus-visible:underline'}"
-                            style={`color:${classColorVar(row.class ?? '')}`}
                             title={`${row.name}${pinned ? ' (you)' : ''}`}
-                            data-testid="guild-roster-name"
-                          >
-                            {row.name}{pinned ? ' (you)' : ''}
-                          </svelte:element>
+                            weight="inherit"
+                            class="heading-name min-w-0 text-[14px] focus-visible:underline lg:truncate"
+                            testid="guild-roster-name"
+                          />
                           {#if row.supporter === true}<SupporterChip />{/if}
                         </span>
                         <!-- One line per part at lg ("Beast Mastery Hunter in game", then "Survival on the site"), each
@@ -692,16 +706,17 @@
                           </div>
                         {/if}
                         {#if canRemove && row.may_remove}
-                          <button
-                            class={`${button('secondary', 'sm')} ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+                          <Button
+                            size="sm"
                             onclick={() => (removingKey = row.character_key)}
-                            disabled={rosterBusy === row.character_key ||
-                              (frozen && !removeOverridesFrozen(row))}
-                            aria-label={`Remove ${row.name}`}
-                            data-testid="guild-roster-remove"
+                            busy={rosterBusy === row.character_key}
+                            busyLabel={guildRosterModelCopy.removing}
+                            disabled={frozen && !removeOverridesFrozen(row)}
+                            label={`Remove ${row.name}`}
+                            testid="guild-roster-remove"
                           >
-                            Remove
-                          </button>
+                            {guildRosterModelCopy.removeButton}
+                          </Button>
                         {/if}
                       </div>
                     </div>
@@ -718,17 +733,15 @@
                   {#each extras as entry (`${entry.state}:${entry.name}`)}
                     <div class={ENTRY_ROW} data-testid="guild-roster-entry" data-state={entry.state}>
                       <!-- No class known: the component's neutral ringed disc, never an empty outline. -->
-                      <ClassCrestRing
-                        characterClass={entry.class ?? ''}
-                        size={36}
-                        testid="guild-roster-entry-crest"
-                      />
+                      <Crest cls={entry.class ?? ''} size={36} testid="guild-roster-entry-crest" />
                       <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
-                        <span
-                          class="heading-name text-text text-[14px]"
-                          style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)}`}
-                          data-testid="guild-roster-entry-name">{entry.name}</span
-                        >
+                        <CharacterName
+                          name={entry.name}
+                          cls={entry.class}
+                          weight="inherit"
+                          class="heading-name text-[14px]"
+                          testid="guild-roster-entry-name"
+                        />
                         {#if entrySpecLine(entry) !== ''}
                           <span
                             class="text-nav text-[12px] max-lg:break-words lg:truncate"
@@ -766,15 +779,17 @@
                           class="contents lg:ml-auto lg:flex lg:w-[216px] lg:shrink-0 lg:items-center lg:justify-end"
                           data-testid="guild-roster-entry-actions"
                         >
-                          <button
-                            class={`${button('secondary', 'sm')} ${rosterBusy === accountKey ? BUSY_CLASS : ''}`}
+                          <Button
+                            size="sm"
                             onclick={() => (removingKey = accountKey)}
-                            disabled={rosterBusy === accountKey || frozen}
-                            aria-label={`Remove ${entry.name}`}
-                            data-testid="guild-roster-entry-remove"
+                            busy={rosterBusy === accountKey}
+                            busyLabel={guildRosterModelCopy.removing}
+                            disabled={frozen}
+                            label={`Remove ${entry.name}`}
+                            testid="guild-roster-entry-remove"
                           >
-                            Remove
-                          </button>
+                            {guildRosterModelCopy.removeButton}
+                          </Button>
                         </div>
                       {:else}
                         <div class="ml-auto shrink-0 max-lg:hidden lg:w-[216px]" aria-hidden="true"></div>

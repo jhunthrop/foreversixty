@@ -47,7 +47,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "9 Nov",
+      "value": "10 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -66,7 +66,7 @@
      }
     ],
     "gap": {
-     "text": "9 Nov",
+     "text": "10 Nov",
      "label": "Date"
     },
     "links": [
@@ -81,7 +81,7 @@
    {
     "key": "us/normal/thorgrim-ashveil",
     "rank": "2",
-    "rankColor": "var(--color-parse-blue)",
+    "rankColor": "var(--color-rarity-rare-text)",
     "name": "Thorgrim Ashveil",
     "href": "/character/us/normal/thorgrim-ashveil",
     "classSlug": "warrior",
@@ -100,11 +100,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-blue)",
+      "color": "var(--color-rarity-rare-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "8 Nov",
+      "value": "9 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -123,7 +123,7 @@
      }
     ],
     "gap": {
-     "text": "8 Nov",
+     "text": "9 Nov",
      "label": "Date"
     },
     "links": [
@@ -161,7 +161,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "7 Nov",
+      "value": "8 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -180,7 +180,7 @@
      }
     ],
     "gap": {
-     "text": "7 Nov",
+     "text": "8 Nov",
      "label": "Date"
     },
     "links": [
@@ -225,7 +225,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "9 Nov",
+      "value": "10 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -244,7 +244,7 @@
      }
     ],
     "gap": {
-     "text": "9 Nov",
+     "text": "10 Nov",
      "label": "Date"
     },
     "links": [
@@ -282,7 +282,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "8 Nov",
+      "value": "9 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -301,7 +301,7 @@
      }
     ],
     "gap": {
-     "text": "8 Nov",
+     "text": "9 Nov",
      "label": "Date"
     },
     "links": [
@@ -339,7 +339,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "7 Nov",
+      "value": "8 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -358,7 +358,7 @@
      }
     ],
     "gap": {
-     "text": "7 Nov",
+     "text": "8 Nov",
      "label": "Date"
     },
     "links": [
@@ -396,7 +396,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "6 Nov",
+      "value": "7 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -415,7 +415,7 @@
      }
     ],
     "gap": {
-     "text": "6 Nov",
+     "text": "7 Nov",
      "label": "Date"
     },
     "links": [
@@ -453,7 +453,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "5 Nov",
+      "value": "6 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -472,7 +472,7 @@
      }
     ],
     "gap": {
-     "text": "5 Nov",
+     "text": "6 Nov",
      "label": "Date"
     },
     "links": [
@@ -510,7 +510,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "4 Nov",
+      "value": "5 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -529,7 +529,7 @@
      }
     ],
     "gap": {
-     "text": "4 Nov",
+     "text": "5 Nov",
      "label": "Date"
     },
     "links": [
@@ -567,7 +567,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "3 Nov",
+      "value": "4 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -586,7 +586,7 @@
      }
     ],
     "gap": {
-     "text": "3 Nov",
+     "text": "4 Nov",
      "label": "Date"
     },
     "links": [
@@ -624,7 +624,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "2 Nov",
+      "value": "3 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -643,7 +643,7 @@
      }
     ],
     "gap": {
-     "text": "2 Nov",
+     "text": "3 Nov",
      "label": "Date"
     },
     "links": [
@@ -681,7 +681,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "1 Nov",
+      "value": "2 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -700,7 +700,7 @@
      }
     ],
     "gap": {
-     "text": "1 Nov",
+     "text": "2 Nov",
      "label": "Date"
     },
     "links": [
@@ -738,7 +738,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "31 Oct",
+      "value": "1 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -757,7 +757,7 @@
      }
     ],
     "gap": {
-     "text": "31 Oct",
+     "text": "1 Nov",
      "label": "Date"
     },
     "links": [
@@ -795,7 +795,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "30 Oct",
+      "value": "31 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -814,7 +814,7 @@
      }
     ],
     "gap": {
-     "text": "30 Oct",
+     "text": "31 Oct",
      "label": "Date"
     },
     "links": [
@@ -829,7 +829,7 @@
    {
     "key": "us/normal/sellar",
     "rank": "12",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Sellar",
     "href": "/character/us/normal/sellar",
     "classSlug": "warrior",
@@ -848,11 +848,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "29 Oct",
+      "value": "30 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -871,7 +871,7 @@
      }
     ],
     "gap": {
-     "text": "29 Oct",
+     "text": "30 Oct",
      "label": "Date"
     },
     "links": [
@@ -886,7 +886,7 @@
    {
     "key": "us/normal/orsolya",
     "rank": "13",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Orsolya",
     "href": "/character/us/normal/orsolya",
     "classSlug": "warrior",
@@ -905,11 +905,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "28 Oct",
+      "value": "29 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -928,7 +928,7 @@
      }
     ],
     "gap": {
-     "text": "28 Oct",
+     "text": "29 Oct",
      "label": "Date"
     },
     "links": [
@@ -943,7 +943,7 @@
    {
     "key": "us/normal/obnoxious-yell",
     "rank": "14",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Obnoxious Yell",
     "href": "/character/us/normal/obnoxious-yell",
     "classSlug": "warrior",
@@ -962,11 +962,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "27 Oct",
+      "value": "28 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -985,7 +985,7 @@
      }
     ],
     "gap": {
-     "text": "27 Oct",
+     "text": "28 Oct",
      "label": "Date"
     },
     "links": [
@@ -1000,7 +1000,7 @@
    {
     "key": "us/normal/bladewick",
     "rank": "15",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Bladewick",
     "href": "/character/us/normal/bladewick",
     "classSlug": "warrior",
@@ -1019,11 +1019,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "26 Oct",
+      "value": "27 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1042,7 +1042,7 @@
      }
     ],
     "gap": {
-     "text": "26 Oct",
+     "text": "27 Oct",
      "label": "Date"
     },
     "links": [
@@ -1087,7 +1087,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "9 Nov",
+      "value": "10 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1106,7 +1106,7 @@
      }
     ],
     "gap": {
-     "text": "9 Nov",
+     "text": "10 Nov",
      "label": "Date"
     },
     "links": [
@@ -1144,7 +1144,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "8 Nov",
+      "value": "9 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1163,7 +1163,7 @@
      }
     ],
     "gap": {
-     "text": "8 Nov",
+     "text": "9 Nov",
      "label": "Date"
     },
     "links": [
@@ -1201,7 +1201,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "7 Nov",
+      "value": "8 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1220,7 +1220,7 @@
      }
     ],
     "gap": {
-     "text": "7 Nov",
+     "text": "8 Nov",
      "label": "Date"
     },
     "links": [
@@ -1258,7 +1258,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "6 Nov",
+      "value": "7 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1277,7 +1277,7 @@
      }
     ],
     "gap": {
-     "text": "6 Nov",
+     "text": "7 Nov",
      "label": "Date"
     },
     "links": [
@@ -1315,7 +1315,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "5 Nov",
+      "value": "6 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1334,7 +1334,7 @@
      }
     ],
     "gap": {
-     "text": "5 Nov",
+     "text": "6 Nov",
      "label": "Date"
     },
     "links": [
@@ -1372,7 +1372,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "4 Nov",
+      "value": "5 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1391,7 +1391,7 @@
      }
     ],
     "gap": {
-     "text": "4 Nov",
+     "text": "5 Nov",
      "label": "Date"
     },
     "links": [
@@ -1429,7 +1429,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "3 Nov",
+      "value": "4 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1448,7 +1448,7 @@
      }
     ],
     "gap": {
-     "text": "3 Nov",
+     "text": "4 Nov",
      "label": "Date"
     },
     "links": [
@@ -1486,7 +1486,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "2 Nov",
+      "value": "3 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1505,7 +1505,7 @@
      }
     ],
     "gap": {
-     "text": "2 Nov",
+     "text": "3 Nov",
      "label": "Date"
     },
     "links": [
@@ -1543,7 +1543,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "1 Nov",
+      "value": "2 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1562,7 +1562,7 @@
      }
     ],
     "gap": {
-     "text": "1 Nov",
+     "text": "2 Nov",
      "label": "Date"
     },
     "links": [
@@ -1600,7 +1600,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "31 Oct",
+      "value": "1 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1619,7 +1619,7 @@
      }
     ],
     "gap": {
-     "text": "31 Oct",
+     "text": "1 Nov",
      "label": "Date"
     },
     "links": [
@@ -1657,7 +1657,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "30 Oct",
+      "value": "31 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1676,7 +1676,7 @@
      }
     ],
     "gap": {
-     "text": "30 Oct",
+     "text": "31 Oct",
      "label": "Date"
     },
     "links": [
@@ -1691,7 +1691,7 @@
    {
     "key": "us/normal/sellar",
     "rank": "12",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Sellar",
     "href": "/character/us/normal/sellar",
     "classSlug": "warrior",
@@ -1710,11 +1710,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "29 Oct",
+      "value": "30 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1733,7 +1733,7 @@
      }
     ],
     "gap": {
-     "text": "29 Oct",
+     "text": "30 Oct",
      "label": "Date"
     },
     "links": [
@@ -1748,7 +1748,7 @@
    {
     "key": "us/normal/orsolya",
     "rank": "13",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Orsolya",
     "href": "/character/us/normal/orsolya",
     "classSlug": "warrior",
@@ -1767,11 +1767,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "28 Oct",
+      "value": "29 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1790,7 +1790,7 @@
      }
     ],
     "gap": {
-     "text": "28 Oct",
+     "text": "29 Oct",
      "label": "Date"
     },
     "links": [
@@ -1805,7 +1805,7 @@
    {
     "key": "us/normal/grimhollow",
     "rank": "14",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Grimhollow",
     "href": "/character/us/normal/grimhollow",
     "classSlug": "warrior",
@@ -1824,11 +1824,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "27 Oct",
+      "value": "28 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1847,7 +1847,7 @@
      }
     ],
     "gap": {
-     "text": "27 Oct",
+     "text": "28 Oct",
      "label": "Date"
     },
     "links": [
@@ -1862,7 +1862,7 @@
    {
     "key": "us/normal/bladewick",
     "rank": "15",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Bladewick",
     "href": "/character/us/normal/bladewick",
     "classSlug": "warrior",
@@ -1881,11 +1881,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "26 Oct",
+      "value": "27 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -1904,7 +1904,7 @@
      }
     ],
     "gap": {
-     "text": "26 Oct",
+     "text": "27 Oct",
      "label": "Date"
     },
     "links": [
@@ -1942,7 +1942,7 @@
      "testid": "ranking-percentile"
     },
     {
-     "value": "11 Oct",
+     "value": "12 Oct",
      "label": "Date",
      "bare": true,
      "phoneOnly": true,
@@ -1961,7 +1961,7 @@
     }
    ],
    "gap": {
-    "text": "11 Oct",
+    "text": "12 Oct",
     "label": "Date"
    },
    "links": [
@@ -2004,7 +2004,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "9 Nov",
+      "value": "10 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2023,7 +2023,7 @@
      }
     ],
     "gap": {
-     "text": "9 Nov",
+     "text": "10 Nov",
      "label": "Date"
     },
     "links": [
@@ -2061,7 +2061,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "8 Nov",
+      "value": "9 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2080,7 +2080,7 @@
      }
     ],
     "gap": {
-     "text": "8 Nov",
+     "text": "9 Nov",
      "label": "Date"
     },
     "links": [
@@ -2118,7 +2118,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "7 Nov",
+      "value": "8 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2137,7 +2137,7 @@
      }
     ],
     "gap": {
-     "text": "7 Nov",
+     "text": "8 Nov",
      "label": "Date"
     },
     "links": [
@@ -2175,7 +2175,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "6 Nov",
+      "value": "7 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2194,7 +2194,7 @@
      }
     ],
     "gap": {
-     "text": "6 Nov",
+     "text": "7 Nov",
      "label": "Date"
     },
     "links": [
@@ -2232,7 +2232,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "5 Nov",
+      "value": "6 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2251,7 +2251,7 @@
      }
     ],
     "gap": {
-     "text": "5 Nov",
+     "text": "6 Nov",
      "label": "Date"
     },
     "links": [
@@ -2289,7 +2289,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "4 Nov",
+      "value": "5 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2308,7 +2308,7 @@
      }
     ],
     "gap": {
-     "text": "4 Nov",
+     "text": "5 Nov",
      "label": "Date"
     },
     "links": [
@@ -2346,7 +2346,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "3 Nov",
+      "value": "4 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2365,7 +2365,7 @@
      }
     ],
     "gap": {
-     "text": "3 Nov",
+     "text": "4 Nov",
      "label": "Date"
     },
     "links": [
@@ -2403,7 +2403,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "2 Nov",
+      "value": "3 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2422,7 +2422,7 @@
      }
     ],
     "gap": {
-     "text": "2 Nov",
+     "text": "3 Nov",
      "label": "Date"
     },
     "links": [
@@ -2460,7 +2460,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "1 Nov",
+      "value": "2 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2479,7 +2479,7 @@
      }
     ],
     "gap": {
-     "text": "1 Nov",
+     "text": "2 Nov",
      "label": "Date"
     },
     "links": [
@@ -2517,7 +2517,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "31 Oct",
+      "value": "1 Nov",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2536,7 +2536,7 @@
      }
     ],
     "gap": {
-     "text": "31 Oct",
+     "text": "1 Nov",
      "label": "Date"
     },
     "links": [
@@ -2574,7 +2574,7 @@
       "testid": "ranking-percentile"
      },
      {
-      "value": "30 Oct",
+      "value": "31 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2593,7 +2593,7 @@
      }
     ],
     "gap": {
-     "text": "30 Oct",
+     "text": "31 Oct",
      "label": "Date"
     },
     "links": [
@@ -2608,7 +2608,7 @@
    {
     "key": "us/normal/sellar",
     "rank": "12",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Sellar",
     "href": "/character/us/normal/sellar",
     "classSlug": "warrior",
@@ -2627,11 +2627,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "29 Oct",
+      "value": "30 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2650,7 +2650,7 @@
      }
     ],
     "gap": {
-     "text": "29 Oct",
+     "text": "30 Oct",
      "label": "Date"
     },
     "links": [
@@ -2665,7 +2665,7 @@
    {
     "key": "us/normal/orsolya",
     "rank": "13",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Orsolya",
     "href": "/character/us/normal/orsolya",
     "classSlug": "warrior",
@@ -2684,11 +2684,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "28 Oct",
+      "value": "29 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2707,7 +2707,7 @@
      }
     ],
     "gap": {
-     "text": "28 Oct",
+     "text": "29 Oct",
      "label": "Date"
     },
     "links": [
@@ -2722,7 +2722,7 @@
    {
     "key": "us/normal/grimhollow",
     "rank": "14",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Grimhollow",
     "href": "/character/us/normal/grimhollow",
     "classSlug": "warrior",
@@ -2741,11 +2741,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "27 Oct",
+      "value": "28 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2764,7 +2764,7 @@
      }
     ],
     "gap": {
-     "text": "27 Oct",
+     "text": "28 Oct",
      "label": "Date"
     },
     "links": [
@@ -2779,7 +2779,7 @@
    {
     "key": "us/normal/bladewick",
     "rank": "15",
-    "rankColor": "var(--color-parse-purple)",
+    "rankColor": "var(--color-rarity-epic-text)",
     "name": "Bladewick",
     "href": "/character/us/normal/bladewick",
     "classSlug": "warrior",
@@ -2798,11 +2798,11 @@
       "label": "Percentile",
       "title": "Percentile",
       "bare": true,
-      "color": "var(--color-parse-purple)",
+      "color": "var(--color-rarity-epic-text)",
       "testid": "ranking-percentile"
      },
      {
-      "value": "26 Oct",
+      "value": "27 Oct",
       "label": "Date",
       "bare": true,
       "phoneOnly": true,
@@ -2821,7 +2821,7 @@
      }
     ],
     "gap": {
-     "text": "26 Oct",
+     "text": "27 Oct",
      "label": "Date"
     },
     "links": [
@@ -2842,7 +2842,7 @@
    {
     "value": "14th",
     "unit": "of 212 Fury Warriors",
-    "color": "var(--color-parse-purple)"
+    "color": "var(--color-rarity-epic-text)"
    }
   ],
   "note": {
@@ -2893,7 +2893,7 @@
       }
      ],
      "gap": {
-      "text": "9 Nov",
+      "text": "10 Nov",
       "label": "Date"
      },
      "links": [
@@ -2930,7 +2930,7 @@
       }
      ],
      "gap": {
-      "text": "8 Nov",
+      "text": "9 Nov",
       "label": "Date"
      },
      "links": [
@@ -2967,7 +2967,7 @@
       }
      ],
      "gap": {
-      "text": "7 Nov",
+      "text": "8 Nov",
       "label": "Date"
      },
      "links": [
@@ -3006,7 +3006,7 @@
       }
      ],
      "gap": {
-      "text": "9 Nov",
+      "text": "10 Nov",
       "label": "Date"
      },
      "links": [
@@ -3039,11 +3039,11 @@
        "label": "Percentile",
        "title": "Percentile",
        "bare": true,
-       "color": "var(--color-parse-blue)"
+       "color": "var(--color-rarity-rare-text)"
       }
      ],
      "gap": {
-      "text": "8 Nov",
+      "text": "9 Nov",
       "label": "Date"
      },
      "links": [
@@ -3080,7 +3080,7 @@
       }
      ],
      "gap": {
-      "text": "7 Nov",
+      "text": "8 Nov",
       "label": "Date"
      },
      "links": [
@@ -3121,7 +3121,7 @@
       }
      ],
      "gap": {
-      "text": "9 Nov",
+      "text": "10 Nov",
       "label": "Date"
      },
      "links": [
@@ -3158,7 +3158,7 @@
       }
      ],
      "gap": {
-      "text": "8 Nov",
+      "text": "9 Nov",
       "label": "Date"
      },
      "links": [
@@ -3195,7 +3195,7 @@
       }
      ],
      "gap": {
-      "text": "7 Nov",
+      "text": "8 Nov",
       "label": "Date"
      },
      "links": [
@@ -3232,7 +3232,7 @@
       }
      ],
      "gap": {
-      "text": "6 Nov",
+      "text": "7 Nov",
       "label": "Date"
      },
      "links": [
@@ -3269,7 +3269,7 @@
       }
      ],
      "gap": {
-      "text": "5 Nov",
+      "text": "6 Nov",
       "label": "Date"
      },
      "links": [
@@ -3306,7 +3306,7 @@
       }
      ],
      "gap": {
-      "text": "4 Nov",
+      "text": "5 Nov",
       "label": "Date"
      },
      "links": [
@@ -3343,7 +3343,7 @@
       }
      ],
      "gap": {
-      "text": "3 Nov",
+      "text": "4 Nov",
       "label": "Date"
      },
      "links": [
@@ -3380,7 +3380,7 @@
       }
      ],
      "gap": {
-      "text": "2 Nov",
+      "text": "3 Nov",
       "label": "Date"
      },
      "links": [
@@ -3419,7 +3419,7 @@
       }
      ],
      "gap": {
-      "text": "9 Nov",
+      "text": "10 Nov",
       "label": "Date"
      },
      "links": [
@@ -3456,7 +3456,7 @@
       }
      ],
      "gap": {
-      "text": "8 Nov",
+      "text": "9 Nov",
       "label": "Date"
      },
      "links": [
@@ -3493,7 +3493,7 @@
       }
      ],
      "gap": {
-      "text": "7 Nov",
+      "text": "8 Nov",
       "label": "Date"
      },
      "links": [
@@ -3530,7 +3530,7 @@
       }
      ],
      "gap": {
-      "text": "6 Nov",
+      "text": "7 Nov",
       "label": "Date"
      },
      "links": [
@@ -3563,7 +3563,7 @@
     }
    ],
    "gap": {
-    "text": "9 Nov",
+    "text": "10 Nov",
     "label": "Date"
    },
    "links": []
@@ -3584,7 +3584,7 @@
     }
    ],
    "gap": {
-    "text": "8 Nov",
+    "text": "9 Nov",
     "label": "Date"
    },
    "links": []
@@ -3605,7 +3605,7 @@
     }
    ],
    "gap": {
-    "text": "7 Nov",
+    "text": "8 Nov",
     "label": "Date"
    },
    "links": []
@@ -3626,7 +3626,7 @@
     }
    ],
    "gap": {
-    "text": "8 Nov",
+    "text": "9 Nov",
     "label": "Date"
    },
    "links": []
@@ -3652,12 +3652,12 @@
   {
    "label": "75+",
    "floor": 75,
-   "color": "var(--color-parse-purple)"
+   "color": "var(--color-rarity-epic-text)"
   },
   {
    "label": "50+",
    "floor": 50,
-   "color": "var(--color-parse-blue)"
+   "color": "var(--color-rarity-rare-text)"
   },
   {
    "label": "25+",
@@ -3675,6 +3675,8 @@
    "eyebrow": "Characters",
    "h1": "Rankings",
    "lead": "Logged boss kills on Forever, ranked by DPS and HPS for each spec, class, ruleset and guild. The companion uploads your combat log as you play, so your kills join the board.",
+   "description": "World of Warcraft: Forever rankings by encounter: characters, guilds, specs and phases.",
+   "encounterDescription": "[fn]",
    "tierLink": "Tier list",
    "tierHref": "/tiers",
    "updated": "[fn]",
@@ -3695,6 +3697,7 @@
    "removed": "Removed by a moderator",
    "atRisk": "Under review by a moderator",
    "filtersButton": "Filters",
+   "clearFilters": "Clear filters",
    "boardTabs": "Board",
    "pickerHeading": "Choose an encounter",
    "encounterLabel": "Encounter",
@@ -4097,8 +4100,8 @@
    "warden-kelthas": "5-player"
   },
   "ranked": {
-   "onyxia": "212 ranked",
-   "warden-kelthas": "3 ranked"
+   "onyxia": "212 kills",
+   "warden-kelthas": "3 kills"
   },
   "boardEmpty": "No Fury Warrior kills on Warden Kelthas yet.",
   "noneYet": "No boss kills are ranked yet.",

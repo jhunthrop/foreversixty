@@ -68,10 +68,10 @@ func (f *FileIcons) Icon(name string) (image.Image, error) {
 }
 
 // Crest is the embedded crest for classSlug.
-func (f *FileIcons) Crest(classSlug string) (image.Image, error) { return EmbeddedCrest(classSlug) }
+func (f *FileIcons) Crest(classSlug string) (image.Image, error) { return embeddedCrest(classSlug) }
 
-// EmbeddedCrest decodes the class's 128 px HD crest from the embedded copy.
-func EmbeddedCrest(classSlug string) (image.Image, error) {
+// embeddedCrest decodes the class's 128 px HD crest from the embedded copy.
+func embeddedCrest(classSlug string) (image.Image, error) {
 	if _, ok := classColors[classSlug]; !ok {
 		return nil, fmt.Errorf("sheet: crest: %q is not a class", classSlug)
 	}

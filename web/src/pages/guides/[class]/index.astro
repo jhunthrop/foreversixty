@@ -9,7 +9,7 @@
 import { catalogueIconUrl } from '../../../lib/ui/assets';
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
-import ClassCrest from '../../../components/ClassCrest.astro';
+import Crest from '../../../components/ui/Crest.astro';
 import GuideAnswer from '../../../components/guides/GuideAnswer.astro';
 import GuideRaceList from '../../../components/guides/GuideRaceList.astro';
 import GuideSources from '../../../components/guides/GuideSources.astro';
@@ -111,7 +111,7 @@ const tone = { classSlug: classSlug as ClassSlug };
   <main id="main" tabindex="-1" class="guide-landing" data-testid="guide-class-landing">
     <Page layout="ledger">
       <PageHeader slot="header" title={classEntry.name} tone={tone}>
-        <ClassCrest slot="crest" slug={classSlug} size={56} priority />
+        <Crest slot="crest" cls={classSlug} size={56} eager />
         <UpdatedStamp slot="meta" date={entry.data.updated} />
         <GuideAnswer slot="answer" page={{ classSlug }} />
       </PageHeader>

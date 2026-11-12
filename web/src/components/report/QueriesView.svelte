@@ -16,14 +16,14 @@
      the panel `Result`, a StatTable under the query's own column names. The parquet's column
      list is the rail's (QueriesRail). -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { sharedQueryLayer } from '../../lib/report/exact';
-  import { classColorVar } from '../../lib/report/format';
   import { untrack } from 'svelte';
   import { eventsUrl as eventsUrlFor } from '../../lib/report/load';
   import { QUERY_ABANDONED, QUERY_TEMPLATES, withWindow, type QueryResult } from '../../lib/report/query';
   import type { TimeWindow } from '../../lib/report/window';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
   import { FIELD_CONTROL, FIELD_FOCUS, fieldEdge } from '../../lib/ui/field';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import Button from '../ui/Button.svelte';
@@ -220,9 +220,9 @@
       data-testid="query-sql"></textarea>
 
     <div class="flex flex-wrap items-center gap-x-[14px] gap-y-2">
-      <span class={running ? BUSY_CLASS : undefined} aria-busy={running}>
-        <Button tone="primary" disabled={running} onclick={() => void run()} testid="query-run">Run</Button>
-      </span>
+      <Button tone="primary" busy={running} busyLabel="Running…" onclick={() => void run()} testid="query-run"
+        >Run</Button
+      >
       <!-- Always in the DOM, so the first slow run is announced rather than swallowed: a live
            region added at the same moment as its text is not reliably read out. Polite, not
            assertive -- a download finishing is worth hearing, not worth interrupting for. -->
@@ -248,7 +248,7 @@
   <Section title="Result" testid="query-result-panel" panel flush>
     {#snippet head()}{#if rowsShown > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
     {#if rowsShown === 0}
-      <p class="text-muted px-4 pb-4 text-[14px] md:px-5" data-testid="query-empty">No rows matched.</p>
+      <EmptyState inset message="No rows matched." testid="query-empty" />
     {:else}
       <div class="overflow-x-auto">
         <StatTable
@@ -264,9 +264,11 @@
             <StatRow figures={figuresOf(row)} bar={false}>
               {#snippet name()}{#if shape.lead !== -1}{@const first = cellText(
                     row[shape.lead],
-                  )}{#if classByName.has(first)}<span style:color={classColorVar(classByName.get(first))}
-                      >{splitUnitName(first).name}</span
-                    >{:else}{first}{/if}{#each shape.words as index (index)}<span
+                  )}{#if classByName.has(first)}<CharacterName
+                      name={splitUnitName(first).name}
+                      cls={classByName.get(first)}
+                      weight="inherit"
+                    />{:else}{first}{/if}{#each shape.words as index (index)}<span
                       class="text-text font-normal"
                       >{` · ${cellShown(row[index], shape.columns[index] ?? '')}`}</span
                     >{/each}{/if}{/snippet}

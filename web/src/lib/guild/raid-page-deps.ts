@@ -17,7 +17,8 @@ import { clearAssignment, postAssignments, setAssignment } from './assignments-a
 import { pingRaid, postRaidNow, resetCompTarget, setCompTarget } from './overview-api';
 import { browserStorage } from './reserve-keys';
 import type { RaidPageDeps, RaidRoute } from './raid-page-types';
-import { fetchGuildRaid, putSignup, refetchGuildRaid, setRaidStatus, updateRaid } from './raids-api';
+import { fetchGuildRaid, refetchGuildRaid, setRaidStatus, updateRaid } from './raids-api';
+import { sendSignup } from './signup-save';
 
 export function liveRaidPageDeps(route: RaidRoute): RaidPageDeps {
   return {
@@ -26,7 +27,7 @@ export function liveRaidPageDeps(route: RaidRoute): RaidPageDeps {
     loadHome: (guildId) => fetchGuildHome(guildId),
     fetchRaid: (guildId, raidId) => fetchGuildRaid(guildId, raidId),
     refetchRaid: (guildId, raidId) => refetchGuildRaid(guildId, raidId),
-    putSignup: (guildId, raidId, key, body) => putSignup(guildId, raidId, key, body),
+    saveSignup: sendSignup,
     setStatus: (guildId, raidId, action, body) => setRaidStatus(guildId, raidId, action, API_BASE_URL, body),
     updateRaid: (guildId, raidId, body) => updateRaid(guildId, raidId, body),
     loadMatchCandidates: (guildId, raidId) => fetchMatchCandidates(guildId, raidId),

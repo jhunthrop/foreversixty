@@ -5,6 +5,7 @@
      caps label with its count over its rows, never a Section (a Plate holds no headed section).
      After an officer's change moves a row to another group, focus follows it to its new place. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import { tick } from 'svelte';
   import type { GuildRaidView, GuildSignupState } from '../../../lib/guild/api';
   import { kindCountsRoles, kindOf } from '../../../lib/guild/raid-copy';
@@ -55,19 +56,21 @@
       ?.focus();
     return true;
   }
+  /** The last-nights strip has data for someone; without it its column head stays blank. */
+  const nightsKnown = $derived(facts !== null && [...facts.values()].some((f) => f.cells !== null));
 </script>
 
 <div class={closed ? 'opacity-60' : undefined} data-testid="raid-roster">
   <div role="region" aria-label="Sign-ups">
     {#if empty}
-      <p class="text-muted py-3 text-[14px]" data-testid="raid-roster-empty">Nobody has signed up yet.</p>
+      <EmptyState message="Nobody has signed up yet." testid="raid-roster-empty" />
     {:else}
       {#if facts !== null}
         <div class="hidden items-center justify-between gap-4 pt-1 lg:flex">
-          {#if [...facts.values()].some((f) => f.cells !== null)}<AttendanceStrip legend />{:else}<span
-            ></span>{/if}
+          {#if nightsKnown}<AttendanceStrip legend />{:else}<span></span>{/if}
           <span class="{PLANNER_FACT_COLUMNS} text-label text-muted grid font-bold" aria-hidden="true">
-            {#each PLANNER_FACT_HEADS as head (head)}<span>{head}</span>{/each}
+            {#each PLANNER_FACT_HEADS as head, i (head)}<span>{i === 0 && !nightsKnown ? '' : head}</span
+              >{/each}
           </span>
         </div>
       {/if}
@@ -93,6 +96,7 @@
                   busy={busyKey === row.character_key}
                   refusal={line?.control === `roster:${row.character_key}` ? line.message : null}
                   facts={facts?.get(row.character_key) ?? null}
+                  stateNamed={group.id === row.state}
                   onSetState={setState}
                 />
               {/each}

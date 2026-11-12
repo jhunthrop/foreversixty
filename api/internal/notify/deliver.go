@@ -27,7 +27,9 @@ type Deliverer struct {
 	Entitlements  Entitlementer
 	Poster        Poster
 	PublicBaseURL string
-	Log           *slog.Logger
+	// APIBaseURL is the API origin the ringed crest thumbnail is served from.
+	APIBaseURL string
+	Log        *slog.Logger
 	// postTimeout bounds one post; zero means posterTimeout.
 	postTimeout time.Duration
 }
@@ -44,7 +46,7 @@ const (
 func (s *Service) Deliverer() *Deliverer {
 	return &Deliverer{
 		Store: s.Store, Sealer: s.Sealer, Entitlements: s.Entitlements,
-		Poster: s.Poster, PublicBaseURL: s.PublicBaseURL, Log: s.Log,
+		Poster: s.Poster, PublicBaseURL: s.PublicBaseURL, APIBaseURL: s.APIBaseURL, Log: s.Log,
 	}
 }
 
@@ -66,7 +68,7 @@ func (d *Deliverer) logger() *slog.Logger {
 // SimFinished posts the sim message; a failure is logged, never returned,
 // because the sim itself succeeded.
 func (d *Deliverer) SimFinished(ctx context.Context, e SimFinished) {
-	d.deliverQuietly(ctx, e.UserID, SimFinishedEmbed(d.PublicBaseURL, e), EventSimFinished)
+	d.deliverQuietly(ctx, e.UserID, SimFinishedEmbed(d.PublicBaseURL, d.APIBaseURL, e), EventSimFinished)
 }
 
 // UploadParsed posts the log message; see SimFinished. A private report

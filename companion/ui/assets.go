@@ -1,6 +1,6 @@
 // companion/ui/assets.go
 // Package ui is the companion's window: a page, its script, its words
-// (copy.js), its helpers (format.js), its stylesheet, the seal and the
+// (copy_gen.js, generated, and copy.js), its helpers (format.js), its stylesheet, the seal and the
 // site's typefaces, embedded in the binary and served over loopback to
 // a native webview. It cannot import the site's stylesheet, so the
 // design tokens it needs are copied into styles.css and kept in step
@@ -15,7 +15,7 @@ import (
 
 // Assets is index.html and what it loads.
 //
-//go:embed index.html install.html install.js app.js copy.js format.js icons.js styles.css tokens.css seal.svg art/*.webp fonts/*.woff2
+//go:embed index.html install.html install.js app.js copy_gen.js copy.js format.js icons.js styles.css tokens.css seal.svg art/*.webp fonts/*.woff2
 var Assets embed.FS
 
 // Go's built-in table of extensions has no .woff2, and on Windows the

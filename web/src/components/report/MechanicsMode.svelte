@@ -8,8 +8,9 @@
      to brush, is not the answer to "what went wrong".
      The arithmetic lives in lib/report/mechanics.ts; this file is the words and the links. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar } from '../../lib/report/format';
   import {
     cleanMechanicRows,
     mechanicRowKey,
@@ -27,7 +28,7 @@
   } from '../../lib/report/mechanics';
   import { classSlugOf } from '../../lib/report/planner-link';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -285,7 +286,7 @@
 </script>
 
 {#snippet line(text: string, testid: string)}
-  <p class="text-muted px-4 py-4 text-[14px]" data-testid={testid}>{text}</p>
+  <EmptyState inset message={text} {testid} />
 {/snippet}
 
 {#snippet problemLinks(problem: Problem)}
@@ -347,9 +348,7 @@
       {:else if !block.table_found && nightMode}
         {@render line('No boss of the night has a table yet.', 'mechanics-no-table')}
       {:else if !block.table_found && bossAbilities.length === 0}
-        <p class="text-muted px-4 py-4 text-[14px]" data-testid="mechanics-no-table">
-          No mechanics for this boss yet.
-        </p>
+        {@render line('No mechanics for this boss yet.', 'mechanics-no-table')}
       {:else if !block.table_found}
         <!-- A boss no table covers yet: what its side did to whom, ability by ability, from damage taken. -->
         <div class="px-5 py-2" data-testid="mechanics-boss-abilities">
@@ -370,9 +369,11 @@
                   0
                     ? ' '
                     : ''}<span class="whitespace-nowrap" data-testid="mechanics-hit"
-                    >{i > 0 ? '· ' : ''}<span style:color={classColorVar(classOf.get(one.guid))}
-                      >{splitUnitName(one.name).name}</span
-                    >
+                    >{i > 0 ? '· ' : ''}<CharacterName
+                      name={splitUnitName(one.name).name}
+                      cls={classOf.get(one.guid)}
+                      weight="inherit"
+                    />
                     <b class="text-text font-semibold tabular-nums">{compact(one.damage)}</b>
                     <span class="tabular-nums">({one.hits} {one.hits === 1 ? 'hit' : 'hits'})</span></span
                   >{/each}{/snippet}
@@ -535,13 +536,12 @@
       <Section title="By player" meta="What hit them, and what did not" testid="mechanics-players" panel>
         {#each players as player (player.guid)}
           <Row title={splitUnitName(player.name).name} open testid={`mechanics-player-${player.guid}`}>
-            {#snippet lead()}<ClassCrestRing
-                characterClass={classSlugOf(classOf.get(player.guid)) ?? ''}
-                size={28}
+            {#snippet lead()}<Crest cls={classSlugOf(classOf.get(player.guid)) ?? ''} size={28} />{/snippet}
+            {#snippet titleContent()}<CharacterName
+                name={splitUnitName(player.name).name}
+                cls={classOf.get(player.guid)}
+                weight="inherit"
               />{/snippet}
-            {#snippet titleContent()}<span style:color={classColorVar(classOf.get(player.guid))}
-                >{splitUnitName(player.name).name}</span
-              >{/snippet}
             {#snippet subContent()}
               <span class="block">
                 <span class="tabular-nums">{compact(player.damage)}</span> avoidable damage

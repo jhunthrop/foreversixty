@@ -21,7 +21,7 @@ func TestTheFacesArtAndSealAreEmbedded(t *testing.T) {
 		"fonts/archivo-600-subset.woff2",
 		"fonts/jetbrains-mono-500-subset.woff2",
 		"art/ground.webp", "art/band-1200.webp", "seal.svg",
-		"index.html", "styles.css", "tokens.css", "icons.js", "app.js", "copy.js", "format.js",
+		"index.html", "styles.css", "tokens.css", "icons.js", "app.js", "copy_gen.js", "copy.js", "format.js",
 	} {
 		b, err := fs.ReadFile(Assets, name)
 		if err != nil || len(b) == 0 {
@@ -87,23 +87,61 @@ func TestTheStylesheetAndPageNameOnlyFilesThatShip(t *testing.T) {
 	}
 }
 
-// Colour comes from the tokens alone: styles.css composes tokens.css and
-// declares no hex colour, and its only rgba are black and white veils.
-func TestTheStylesheetDeclaresNoColourOfItsOwn(t *testing.T) {
-	b, _ := fs.ReadFile(Assets, "styles.css")
-	css := regexp.MustCompile(`(?s)/\*.*?\*/`).ReplaceAllString(string(b), "")
-	if hex := regexp.MustCompile(`#[0-9a-fA-F]{3,8}(?:[^-\w]|$)`).FindAllString(css, -1); len(hex) > 0 {
-		t.Errorf("styles.css has hex colours %v; use a token from tokens.css", hex)
+// The stylesheet's own literals: colours, font sizes and radii. Each pattern
+// names what it forbids; stylesheetLiterals is the scan, so the self-check
+// below proves it catches each kind.
+var stylesheetLiterals = []struct {
+	what, fix string
+	re        *regexp.Regexp
+}{
+	{"a hex colour", "a --color-* token", regexp.MustCompile(`#[0-9a-fA-F]{3,8}(?:[^-\w]|$)`)},
+	{"an rgb or rgba colour", "a --color-* veil token", regexp.MustCompile(`rgba?\([^)]*\)`)},
+	{"a named black or white", "--color-edge or --color-strong", regexp.MustCompile(`(?i)(?:^|[\s:])(?:black|white)(?:[\s;!]|$)`)},
+	{"a px font size", "a --text-* role", regexp.MustCompile(`font-size:\s*\d+px|font:\s*(?:\d{3}\s+)?\d+px`)},
+	{"a px radius", "a --radius-* token", regexp.MustCompile(`border-radius:\s*[^;]*\d+px`)},
+}
+
+// stylesheetFindings is every own literal in css, comments left out. A radius
+// derived from a token (calc(var(--radius-plate) - 4px)) is the token's, not
+// a literal of its own.
+func stylesheetFindings(css string) []string {
+	css = regexp.MustCompile(`(?s)/\*.*?\*/`).ReplaceAllString(css, "")
+	var out []string
+	for _, line := range strings.Split(css, "\n") {
+		for _, l := range stylesheetLiterals {
+			for _, m := range l.re.FindAllString(line, -1) {
+				if l.what == "a px radius" && strings.Contains(line, "calc(var(--radius-") {
+					continue
+				}
+				out = append(out, l.what+" ("+strings.TrimSpace(m)+"); use "+l.fix)
+			}
+		}
 	}
-	for _, m := range regexp.MustCompile(`rgba?\(([^)]*)\)`).FindAllStringSubmatch(css, -1) {
-		parts := strings.Split(strings.ReplaceAll(m[1], " ", ""), ",")
-		if len(parts) < 3 {
-			t.Errorf("styles.css has %s", m[0])
-			continue
-		}
-		if rgb := strings.Join(parts[:3], ","); rgb != "0,0,0" && rgb != "255,255,255" {
-			t.Errorf("styles.css has %s; only black and white veils are its own", m[0])
-		}
+	return out
+}
+
+// Colour, type size and corner come from the tokens alone: styles.css composes
+// tokens.css (generated from design/tokens/tokens.json) and declares none of
+// its own.
+func TestTheStylesheetDeclaresNoColourSizeOrRadiusOfItsOwn(t *testing.T) {
+	b, _ := fs.ReadFile(Assets, "styles.css")
+	for _, f := range stylesheetFindings(string(b)) {
+		t.Errorf("styles.css has %s", f)
+	}
+}
+
+// The scan catches each kind it names, and leaves token uses and comments alone.
+func TestTheStylesheetScanCatchesEachLiteral(t *testing.T) {
+	planted := ".a { color: #fff; }\n.b { background: rgba(255, 255, 255, 0.1); }\n" +
+		".c { border: 1px solid black; }\n.d { font-size: 14px; }\n.e { font: 600 14px/1 x; }\n" +
+		".f { border-radius: 11px; }\n"
+	if got := len(stylesheetFindings(planted)); got != 6 {
+		t.Errorf("planted 6 literals, the scan found %d: %v", got, stylesheetFindings(planted))
+	}
+	clean := "/* brown-black, white at .72, 14px */\n.a { font: 600 var(--text-small)/18px var(--font-body); " +
+		"border-radius: calc(var(--radius-plate) - 4px); color: var(--color-edge); white-space: nowrap; }\n"
+	if f := stylesheetFindings(clean); len(f) > 0 {
+		t.Errorf("token uses were flagged: %v", f)
 	}
 }
 

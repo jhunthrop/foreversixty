@@ -45,9 +45,33 @@ func newTiles(items TileItems, icons func(string) IconSource, log *slog.Logger) 
 	return &Tiles{items: items, icons: icons, log: log, cache: newLRU(tileCacheEntries, 0)}
 }
 
-// Mount registers the tiles route.
+// Mount registers the tiles route and the crest route.
 func (t *Tiles) Mount(mux *http.ServeMux) {
 	mux.HandleFunc("GET "+TilePath+"{build}/{file}", t.serve)
+	mux.HandleFunc("GET "+CrestPath+"{file}", t.serveCrest)
+}
+
+// serveCrest serves GET /v1/discord/tiles/crest/{slug}.png: a class's ringed crest, or the LX
+// fallback (none.png). Ten images in all, each drawn once and kept.
+func (t *Tiles) serveCrest(w http.ResponseWriter, r *http.Request) {
+	slug, ok := strings.CutSuffix(r.PathValue("file"), ".png")
+	if _, class := ClassColor(slug); !ok || (!class && slug != crestNone) {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such crest", nil)
+		return
+	}
+	key := "crest/" + slug
+	png, hit := t.cache.get(key)
+	if !hit {
+		var err error
+		if png, err = CrestPNG(slug); err != nil {
+			t.log.Error("discord crest", "op", "crest", "class", slug, "err", err)
+			httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not draw the crest", nil)
+			return
+		}
+		t.cache.put(key, png)
+	}
+	httpx.CachePublicImmutable(w)
+	writePNG(w, r, png)
 }
 
 func (t *Tiles) serve(w http.ResponseWriter, r *http.Request) {
@@ -76,6 +100,11 @@ func (t *Tiles) serve(w http.ResponseWriter, r *http.Request) {
 	} else {
 		httpx.CachePublicImmutable(w)
 	}
+	writePNG(w, r, png)
+}
+
+// writePNG writes png as the response body, after the caller's cache headers.
+func writePNG(w http.ResponseWriter, r *http.Request, png []byte) {
 	w.Header().Set("Content-Type", "image/png")
 	w.Header().Set("Content-Length", strconv.Itoa(len(png)))
 	w.WriteHeader(http.StatusOK)

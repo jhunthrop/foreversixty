@@ -19,9 +19,9 @@
   } from '../../lib/coach/history-list';
   import { scrollBehavior } from '../../lib/character/history-layout';
   import type { CharacterPath } from '../../lib/characters';
-  import { button } from '../../lib/ui/button';
   import { ROW_ITEM } from '../../lib/ui/primitives';
   import LoadError from '../ui/LoadError.svelte';
+  import LoadOlder from '../ui/LoadOlder.svelte';
   import Row from '../ui/Row.svelte';
   import Tag from '../ui/Tag.svelte';
 
@@ -107,22 +107,14 @@
         {/each}
       </ul>
       {#if list.cursor !== null}
-        <span class="pt-2">
-          <!-- The shared ghost recipe on a plain button: it is aria-busy while the next page reads. -->
-          <button
-            type="button"
-            class={button('ghost', 'md')}
-            disabled={list.olderLoading}
-            aria-busy={list.olderLoading}
-            onclick={showOlder}
-            data-testid="coach-history-older">{coachCopy.historyOlder}</button
-          >
-        </span>
-      {/if}
-      {#if list.olderFailed}
-        <p class="text-small text-muted" role="alert" data-testid="coach-history-older-error">
-          {coachCopy.historyOlderError}
-        </p>
+        <LoadOlder
+          label={coachCopy.historyOlder}
+          loading={list.olderLoading}
+          failed={list.olderFailed}
+          failedText={coachCopy.historyOlderError}
+          onLoad={showOlder}
+          testid="coach-history-older"
+        />
       {/if}
     {/if}
   </section>

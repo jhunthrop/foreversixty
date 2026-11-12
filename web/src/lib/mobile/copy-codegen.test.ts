@@ -92,6 +92,24 @@ describe('mobile copy codegen', () => {
     for (const [file, text] of client) expect(text, file).not.toContain('discord.common.unbound');
   });
 
+  it('keeps companion.json keys to companion.*, out of both apps, the site and the server', () => {
+    const one = (key: string) => JSON.stringify({ strings: { [key]: 'x' } });
+    const entries = buildCatalog(one('a.b'), undefined, undefined, one('companion.tray.quit'));
+    expect(entries.map((e: { key: string }) => e.key)).toEqual(['a.b', 'companion.tray.quit']);
+    expect(() => buildCatalog(one('a.b'), undefined, undefined, one('tray.quit'))).toThrow(
+      /keys start companion\./,
+    );
+    expect(() => buildCatalog(one('companion.a'))).toThrow(/live in apps\/shared\/copy\/companion.json/);
+    const outputs = generate() as Record<string, string>;
+    const go = Object.entries(outputs).find(([file]) =>
+      file.endsWith('companion/internal/copygen/copy_gen.go'),
+    )?.[1];
+    expect(go).toContain('const TrayQuit = "Quit"');
+    for (const [file, text] of Object.entries(outputs)) {
+      if (!file.includes('/companion/')) expect(text, file).not.toContain('Stop logging and quit');
+    }
+  });
+
   it('lets a server string carry a bare percent but never a printf verb', () => {
     expect(parseEntry('discord.a', '{chance}% from {from}', { server: true }).key).toBe('discord.a');
     expect(() => parseEntry('discord.a', 'Your %s sim', { server: true })).toThrow(/% is not allowed/);

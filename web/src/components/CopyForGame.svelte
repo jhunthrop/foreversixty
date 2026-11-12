@@ -2,7 +2,7 @@
 <!-- Task L8.1: the one "Copy for the game" button. Every surface that holds a build or a sim
      result -- the planner's In the game section, Top Gear's results, a saved sim -- renders this
      with the FSB1 code `buildCodeFor` (lib/addon/build-code.ts) made for it, so the label, the
-     3 s confirmation and the failure fallback are the same everywhere.
+     two-second confirmation and the failure fallback are the same everywhere.
 
      The system Button (`primary` where it is the page's one primary: the planner signed out,
      spec 2026-11-08 ruling Q6). `code` empty disables it: the page has no build it can encode

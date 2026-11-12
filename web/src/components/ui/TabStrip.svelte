@@ -78,7 +78,9 @@
 </script>
 
 {#snippet tabLabel(tab: TabItem)}
-  {tab.label}{#if tab.suffix !== undefined}<span class={TAB_STRIP.suffix}>{tab.suffix}</span>{/if}
+  {tab.label}{#if tab.suffix !== undefined}<span class={TAB_STRIP.suffix}>{tab.suffix}</span>{/if}{#if tab.count !== undefined}<span
+      class={TAB_STRIP.count}>{tab.count}</span
+    >{/if}
 {/snippet}
 
 <div class={TAB_STRIP.wrapper}>
@@ -105,6 +107,7 @@
             id={idPrefix === undefined ? undefined : `${idPrefix}-tab-${tab.id}`}
             aria-controls={idPrefix === undefined ? undefined : `${idPrefix}-panel-${tab.id}`}
             aria-selected={current}
+            aria-label={tab.ariaLabel}
             tabindex={current ? 0 : -1}
             class={tabClass(current, false)}
             data-tab-id={tab.id}
@@ -119,6 +122,7 @@
             id={idPrefix === undefined ? undefined : `${idPrefix}-tab-${tab.id}`}
             aria-controls={idPrefix === undefined ? undefined : `${idPrefix}-panel-${tab.id}`}
             aria-selected={current}
+            aria-label={tab.ariaLabel}
             aria-disabled={disabled || undefined}
             tabindex={current && !disabled ? 0 : -1}
             class={tabClass(current, disabled)}

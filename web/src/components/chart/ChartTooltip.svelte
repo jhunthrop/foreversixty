@@ -23,6 +23,7 @@
   import Icon from '../ui/Icon.svelte';
   import { ICON_BOLT, ICON_SKULL, ICON_TARGET, type UiIconShape } from '../../lib/ui/ui-icons';
   import Overlay from '../ui/Overlay.svelte';
+  import { pointerTipPosition } from '../../lib/items/tooltip-position';
 
   let {
     open,
@@ -64,15 +65,16 @@
     if (!open && element.matches(':popover-open')) element.hidePopover();
   });
 
-  const left = $derived.by(() => {
-    const viewport = typeof window === 'undefined' ? 1440 : window.innerWidth;
-    const wanted = flip ? x - 16 - width : x + 16;
-    return Math.max(8, Math.min(viewport - width - 8, wanted));
-  });
-  const top = $derived.by(() => {
-    const viewport = typeof window === 'undefined' ? 900 : window.innerHeight;
-    return Math.max(8, Math.min(viewport - height - 8, y));
-  });
+  // Placed only in the browser, where the viewport is known; on the server the box is closed.
+  const place = $derived(
+    typeof window === 'undefined'
+      ? { left: 0, top: 0 }
+      : pointerTipPosition(
+          { x, y, flip },
+          { width, height },
+          { width: window.innerWidth, height: window.innerHeight },
+        ),
+  );
 
   const glyphOf = (event: ChartEvent): UiIconShape =>
     event.kind === 'death' ? ICON_SKULL : event.kind === 'target-change' ? ICON_TARGET : ICON_BOLT;
@@ -85,8 +87,8 @@
   class="chart-tooltip"
   class:fallback={!supported}
   class:shown={open}
-  style:left="{left}px"
-  style:top="{top}px"
+  style:left="{place.left}px"
+  style:top="{place.top}px"
   style:width="{width}px"
   data-testid="chart-tooltip"
   aria-hidden="true"

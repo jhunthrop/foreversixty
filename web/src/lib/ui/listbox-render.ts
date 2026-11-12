@@ -3,6 +3,7 @@
 // panel, the filter row, the option rows with their icon, You tag, meta, description and
 // check, the group heads, the no-match row and the multi-select foot. Built from data only;
 // listbox.ts owns state and events.
+import { CREST_CLASS } from '../class-crest';
 import { selectCopy } from './copy';
 import { iconAttributes } from './icon';
 import { ICON_CHECK, ICON_CLOSE, ICON_SEARCH, type UiIconShape } from './ui-icons';
@@ -45,8 +46,6 @@ export function iconSlot(icon: NonNullable<ListRow['icon']>, colour: string | un
   const border = qualityBorder(icon);
   if (border !== undefined) slot.style.setProperty('--sel-quality', border);
   const ring = crestRing(icon, colour);
-  if (ring !== undefined) slot.style.setProperty('--sel-ring', ring);
-  // An empty src is a class the log never named: the slot stays, an empty neutral ring.
   if (icon.src === '') return slot;
   const img = el('img', '');
   img.src = icon.src;
@@ -54,6 +53,10 @@ export function iconSlot(icon: NonNullable<ListRow['icon']>, colour: string | un
   img.width = 20;
   img.height = 20;
   img.decoding = 'async';
+  if (icon.kind === 'crest') {
+    img.className = CREST_CLASS;
+    if (ring !== undefined) img.style.setProperty('--c', ring);
+  }
   slot.append(img);
   return slot;
 }

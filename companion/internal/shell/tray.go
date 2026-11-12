@@ -5,13 +5,14 @@
 // calls (shell_gui.go) so the mapping is testable without a tray.
 package shell
 
-import "unicode/utf8"
+import (
+	"unicode/utf8"
+
+	"github.com/jhunthrop/foreversixty/companion/internal/copygen"
+)
 
 // TooltipMax is where Windows cuts a tray tooltip off: 127 characters.
 const TooltipMax = 127
-
-// tooltipPrefix leads the tooltip; the menu's first line is the title alone.
-const tooltipPrefix = "Forever Sixty · "
 
 // trayView is everything the tray shows that can change: the headline's
 // title (the tooltip and the menu's first line) and its tone (the icon).
@@ -19,7 +20,8 @@ type trayView struct{ Line, Tone string }
 
 // tooltip is "Forever Sixty · Logging", cut to what Windows will show.
 func tooltip(line string) string {
-	t := tooltipPrefix + line
+	// The menu's first line is the title alone; the tooltip names the product first.
+	t := copygen.Fill(copygen.TrayTooltip, "{line}", line)
 	if utf8.RuneCountInString(t) <= TooltipMax {
 		return t
 	}

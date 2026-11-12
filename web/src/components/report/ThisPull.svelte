@@ -6,9 +6,9 @@
      deaths, and Copy link. -->
 <script lang="ts">
   import { reportCopy } from '../../lib/report/copy';
-  import { COPIED_FOR_MS, copyReportLink } from '../../lib/report/copy-link';
   import { simCopy } from '../../lib/sim/copy';
   import { button as buttonClass } from '../../lib/ui/button';
+  import { CopyState } from '../../lib/ui/copy-state.svelte';
   import type { Fact } from '../../lib/ui/facts';
   import Facts from '../ui/Facts.svelte';
   import Section from '../ui/Section.svelte';
@@ -24,12 +24,8 @@
     title?: string;
   } = $props();
 
-  let copied = $state('');
-
-  async function copyLink(): Promise<void> {
-    copied = await copyReportLink(window.location.href);
-    setTimeout(() => (copied = ''), COPIED_FOR_MS);
-  }
+  const copier = new CopyState();
+  $effect(() => () => copier.dispose());
 </script>
 
 <Section {title} panel testid="report-this-pull">
@@ -46,7 +42,7 @@
       class={buttonClass('ghost', 'sm')}
       title="Copy a link to exactly this view"
       data-testid="copy-link"
-      onclick={() => void copyLink()}>{copied === '' ? reportCopy.copyLink : copied}</button
+      onclick={() => void copier.copy(window.location.href)}>{copier.label(reportCopy.copyLink)}</button
     >
   </div>
 </Section>

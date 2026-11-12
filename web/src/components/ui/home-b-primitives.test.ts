@@ -42,12 +42,14 @@ describe('FeedRow', () => {
           href: '/r/1',
           when: '4 min ago',
           kind: 'Logs',
-          lead: text('i'),
+          lead: { crest: 'mage', icon: null, quality: null },
+          build: '70532',
           children: text('Nightfall uploaded'),
         },
       }).body,
     );
     expect(body).toMatch(/^<a class="ui-feed-row[^"]*"[^>]*href="\/r\/1"/);
+    expect(body).toContain('crest');
     expect(body).toContain('4 min ago<span class="ui-feed-kind');
     expect(body).toContain('Nightfall uploaded');
   });

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { FAVICON, SEAL, catalogueIconUrl, iconUrl, sealFor } from './assets';
+import { FAVICON, catalogueIconUrl, iconUrl } from './assets';
+import { SEAL, sealFor } from './seal';
 import { PLACEHOLDER_ICON } from '../icons/placeholder';
 
 const publicFile = (path: string): Buffer => readFileSync(new URL(`../../../public${path}`, import.meta.url));

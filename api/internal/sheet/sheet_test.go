@@ -362,7 +362,7 @@ func TestAssetsAreTheSitesBytes(t *testing.T) {
 }
 
 func TestArtIsNeverUpscaled(t *testing.T) {
-	crest, err := EmbeddedCrest("hunter")
+	crest, err := embeddedCrest("hunter")
 	if err != nil {
 		t.Fatal(err)
 	}

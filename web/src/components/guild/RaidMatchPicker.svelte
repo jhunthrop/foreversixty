@@ -29,6 +29,7 @@
   import LoadError from '../ui/LoadError.svelte';
   import Figures from './Figures.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
+  import Tag from '../ui/Tag.svelte';
 
   let {
     picker,
@@ -162,9 +163,7 @@
             <span class="flex min-w-0 flex-col">
               <span class="flex items-center gap-2">
                 <span class="text-strong text-[14px] font-semibold whitespace-nowrap">{row.zone_name}</span>
-                {#if row.closest}<span class="pill pill-site" data-testid="raid-match-closest"
-                    >{copy.closest}</span
-                  >{/if}
+                {#if row.closest}<Tag testid="raid-match-closest">{copy.closest}</Tag>{/if}
               </span>
               <!-- Phone (final check): line 2 the upload time, never broken; line 3 who, the figures
                    and the duration, figures in mono. -->

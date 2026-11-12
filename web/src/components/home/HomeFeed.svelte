@@ -4,8 +4,6 @@
      minute, and below five lines the floor of real dated site events (lib/home/floor.ts, built at
      build time). Its own skeleton and its own error. -->
 <script lang="ts">
-  import SpellIcon from '../ui/SpellIcon.svelte';
-  import { iconUrl } from '../../lib/ui/assets';
   import { untrack } from 'svelte';
   import { invalidate } from '../../lib/data/query';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
@@ -21,10 +19,8 @@
   } from '../../lib/home/feed';
   import { HOME_FEED_FETCH, signedInRows } from '../../lib/home/feed-mix';
   import { API_BASE_URL } from '../../lib/planner/config';
-  import { LINK } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import FeedRowUi from '../ui/FeedRow.svelte';
-  import ItemIcon from '../ui/ItemIcon.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Section from '../ui/Section.svelte';
   import FeedSentence from './FeedSentence.svelte';
@@ -51,8 +47,6 @@
     build: string;
   } = $props();
 
-  /** The row's crest or icon (round 5 mock: 30 px leads on the boxed feed). */
-  const LEAD_PX = 32;
   /** A line this fresh slides in (when motion is allowed). */
   const FRESH_MS = 5 * 60_000;
   const clock = minuteClock(() => undefined);
@@ -98,9 +92,11 @@
   {:else if status === 'failed'}
     <LoadError message={feedCopy.failed} onRetry={retry} testid="home-feed-error" />
   {:else if shown.length === 0}
-    <p class="text-muted py-3 text-[15px] leading-6" data-testid="home-feed-empty">
-      {feedCopy.logsEmpty} <a class={LINK} href="/logs/upload">{feedCopy.uploadLog} ›</a>
-    </p>
+    <EmptyState
+      message={feedCopy.logsEmpty}
+      action={{ label: feedCopy.uploadLog, href: '/logs/upload' }}
+      testid="home-feed-empty"
+    />
   {:else}
     <div class="flex flex-col" data-testid="home-feed-rows">
       {#each shown as row, index (row.id)}
@@ -108,18 +104,10 @@
           href={row.href}
           when={whenText(row, clock.now)}
           fresh={index === 0 && new Date(row.at).getTime() > freshCut}
+          lead={row}
+          {build}
           testid="home-feed-row"
         >
-          {#snippet lead()}
-            {#if row.crest !== null}
-              <ClassCrestRing characterClass={row.crest} size={LEAD_PX} />
-            {:else if row.quality !== null}
-              <ItemIcon icon={row.icon ?? undefined} quality={row.quality} {build} size={LEAD_PX} />
-            {:else}
-              <!-- A row about a spec or a guide, not an item: its icon in the spell frame. -->
-              <SpellIcon url={iconUrl(build, row.icon)} size={LEAD_PX} />
-            {/if}
-          {/snippet}
           <FeedSentence segments={row.segments} />
         </FeedRowUi>
       {/each}

@@ -80,8 +80,14 @@ test('signed in at 60 in a guild: the raid plaque, the feed, the sims ladder and
   await expect(plaque).toContainText('Olympus XXVII · Wednesday 9 December · 8 pm');
   await expect(plaque.getByRole('timer')).toHaveAccessibleName('33 days, 8 hours');
   await expect(plaque).toContainText('3 tanks');
-  await expect(page.getByTestId('home-raid-late')).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.getByTestId('home-raid-in')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.getByTestId('home-raid-signup-late')).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByTestId('home-raid-signup-in')).toHaveAttribute('aria-checked', 'false');
+  await expect(page.getByTestId('home-raid-signup').getByRole('radio')).toHaveText([
+    'In',
+    'Late',
+    'Bench',
+    'Out',
+  ]);
   await expect(page.getByTestId('home-raid-prep').getByRole('listitem')).toHaveCount(2);
   const feed = page.getByTestId('home-signed-in-root').getByTestId('home-feed');
   await expect(feed).not.toContainText('posted Onyxia');
@@ -138,17 +144,25 @@ test('signed in at 34 in a guild with no raid: one row per sim, the guild beside
   );
 });
 
-test("the plaque signs up in place: I'm in saves and presses", async ({ page }) => {
+test('the plaque signs up in place: In saves and checks', async ({ page }) => {
   await openHome(page, SIXTY);
   let body: unknown = null;
-  const raid = (homeEnvelope('guild-home-60.json').json.data as { next_raid: object }).next_raid;
+  const next = (homeEnvelope('guild-home-60.json').json.data as { next_raid: { counts: object } }).next_raid;
   await page.route('**/v1/guilds/2/raids/41/signups/**', async (route) => {
     body = route.request().postDataJSON();
+    // The PUT answers with the raid page's view: the viewer's characters and the signups.
+    const key = decodeURIComponent(new URL(route.request().url()).pathname.split('/signups/')[1]);
+    const raid = {
+      ...next,
+      counts: { ...next.counts, bench: 0, out: 0 },
+      signups: [],
+      viewer: { characters: [{ character_key: key, state: 'in', role: 'dps' }] },
+    };
     await route.fulfill({ json: { ok: true, data: { raid, moved: null }, error: null, request_id: 'home' } });
   });
-  await page.getByTestId('home-raid-in').click();
-  await expect(page.getByTestId('home-raid-in')).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.getByTestId('home-raid-late')).toHaveAttribute('aria-pressed', 'false');
+  await page.getByTestId('home-raid-signup-in').click();
+  await expect(page.getByTestId('home-raid-signup-in')).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByTestId('home-raid-signup-late')).toHaveAttribute('aria-checked', 'false');
   expect(body).toMatchObject({ state: 'in', role: 'dps' });
 });
 

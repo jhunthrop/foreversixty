@@ -13,6 +13,10 @@ import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
 import { loadTalentFile } from '../lib/guides/build-tree';
 import type { GuideBuild } from '../lib/planner/guide-builds';
 import { searchCopy } from '../lib/search-copy';
+import { legalRacesFor } from '../lib/planner/rules';
+import classes from '../data/generated/classes.json';
+import races from '../data/generated/races.json';
+import combos from '../data/generated/combos.json';
 import { webApplicationLd } from '../lib/seo';
 
 // The opening class's trees, left to right: their art painted by the loading Plate (the page's
@@ -39,6 +43,9 @@ const guideBuilds: GuideBuild[] = (await getCollection('guides')).flatMap((guide
       : [{ ...base, kind: 'raid' as const, code: guide.data.raidBuild }]),
   ];
 });
+// The opening class's legal races: the Race select's options in the server render.
+const openingClassId = classes.find((row) => row.slug === DEFAULT_CLASS_SLUG)?.id ?? null;
+const openingRaces = legalRacesFor(races, combos, openingClassId).map(({ slug, name }) => ({ slug, name }));
 const jsonLd = [
   webApplicationLd({
     name: searchCopy.planner.appName,
@@ -62,6 +69,7 @@ const jsonLd = [
       {openingArt}
       {openingTrees}
       {guideBuilds}
+      {openingRaces}
     />
   </main>
 </Base>

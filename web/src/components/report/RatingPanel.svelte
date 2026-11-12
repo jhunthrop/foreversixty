@@ -4,7 +4,7 @@
      link. A boss pull's only: the report shows no rating panel on trash (directions b1). A rating is not part of summary.json, so the panel fetches its
      own (docs/superpowers/plans/2026-09-21-rating-web.md Ruling 8). -->
 <script lang="ts">
-  import EmptyLine from './EmptyLine.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
   import { classColorVar } from '../../lib/report/format';
   import { ratingColour } from '../../lib/report/rating-card';
@@ -14,7 +14,7 @@
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
-  import ClassIcon from './ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let {
     reportId,
@@ -50,22 +50,19 @@
   {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
     <div data-testid="rating-panel-loading" aria-hidden="true"><Skeleton minHeight="min-h-[58px]" /></div>
   {:else if fetcher.status === 'flagged'}
-    <EmptyLine text={ratingCopy.flagged} testid="rating-panel-flagged" />
+    <EmptyState inset message={ratingCopy.flagged} testid="rating-panel-flagged" />
   {:else if fetcher.status === 'none'}
-    <EmptyLine text={ratingCopy.noRatingForTrash} testid="rating-panel-none" />
+    <EmptyState inset message={ratingCopy.noRatingForTrash} testid="rating-panel-none" />
   {:else if fetcher.status === 'failed'}
-    <EmptyLine text={ratingCopy.fetchFailed} role="alert" testid="rating-panel-error" />
+    <EmptyState inset message={ratingCopy.fetchFailed} role="alert" testid="rating-panel-error" />
   {:else if rows.length === 0}
-    <EmptyLine text={ratingCopy.panelEmpty} testid="rating-panel-empty" />
+    <EmptyState inset message={ratingCopy.panelEmpty} testid="rating-panel-empty" />
   {:else}
     <div data-testid="rating-panel-rows">
       {#each rows as { player, guid } (player.player_key)}
         {@const colour = classColorVar(classForPlayer(guid, player.class, roster))}
         <Row title={unitLabel(player.player_name).text} open>
-          {#snippet lead()}<ClassIcon
-              className={classForPlayer(guid, player.class, roster)}
-              size={28}
-            />{/snippet}
+          {#snippet lead()}<Crest cls={classForPlayer(guid, player.class, roster)} size={28} />{/snippet}
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(player.player_name).text}</span
             >{/snippet}
           {#snippet trail()}<span

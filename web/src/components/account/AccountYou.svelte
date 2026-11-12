@@ -10,7 +10,7 @@
   import Facts from '../ui/Facts.svelte';
   import Section from '../ui/Section.svelte';
   import Switch from '../ui/Switch.svelte';
-  import ConfirmButtons from './ConfirmButtons.svelte';
+  import ConfirmButtons from '../ui/ConfirmButtons.svelte';
 
   let {
     battletag,

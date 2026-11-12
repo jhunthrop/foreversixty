@@ -6,6 +6,7 @@
      While a change saves the control shows it pressed; a refusal reverts it. From 1024 the row
      also carries its figures (PlannerFacts) in fixed columns under the roster's one head line. -->
 <script lang="ts">
+  import { raidCopy } from '../../../lib/guild/raid-copy';
   import type { GuildSignupState } from '../../../lib/guild/api';
   import { rowSub, stateTag } from '../../../lib/guild/raid-planner-view';
   import type { RosterRow } from '../../../lib/guild/raid-roster';
@@ -13,7 +14,7 @@
   import { PLANNER_FACT_COLUMNS } from './planner-columns';
   import AttendanceStrip from '../dense/AttendanceStrip.svelte';
   import { classTone, ROW_ITEM } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Row from '../../ui/Row.svelte';
   import Tag from '../../ui/Tag.svelte';
   import SignupSegments from '../SignupSegments.svelte';
@@ -28,6 +29,7 @@
     busy = false,
     refusal = null,
     facts = null,
+    stateNamed = false,
     onSetState,
   }: {
     row: RosterRow;
@@ -44,6 +46,8 @@
     busy?: boolean;
     /** A refused change's line under this row. */
     refusal?: string | null;
+    /** The group head above already names this row's state (Late, Bench, Out): no Tag repeats it. */
+    stateNamed?: boolean;
     onSetState: (row: RosterRow, state: GuildSignupState) => Promise<boolean>;
   } = $props();
 
@@ -66,7 +70,7 @@
     wrapTrail={officer}
     density={facts === null ? 'default' : 'slim'}
   >
-    {#snippet lead()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
+    {#snippet lead()}<Crest cls={row.class} size={28} />{/snippet}
     {#snippet subContent()}
       <span class="block truncate" title={sub ?? rowSub(row, roles)}>{sub ?? rowSub(row, roles)}</span>
       {#if facts !== null && facts.why.length > 0}<span class="text-wipe block" data-testid="raid-roster-why"
@@ -84,6 +88,8 @@
           >{refusal}</span
         >{/if}
     {/snippet}
+    <!-- In is the roster's default: a raider's row carries a Tag only for Late, Bench and Out, and
+         none under a group head that already names its state. -->
     {#snippet trail()}
       {#if officer}
         <SignupSegments
@@ -95,7 +101,7 @@
           onChange={(state) => void change(state)}
           testid={`raid-roster-state-${row.character_key}`}
         />
-      {:else if row.state !== null}
+      {:else if row.state !== null && row.state !== 'in' && !stateNamed}
         {@const tag = stateTag(row.state)}
         <Tag tone={tag.tone} testid="raid-roster-state">{tag.text}</Tag>
       {/if}
@@ -110,7 +116,8 @@
           </span>
           {#if facts.short === null}<span class="text-muted">–</span>
           {:else if facts.short === 0}<span class="text-kill" aria-label="Ready">✓</span>
-          {:else}<span class="text-wipe" title={facts.why.join(', ')}>{facts.short} short</span>{/if}
+          {:else}<span class="text-wipe" title={facts.why.join(', ')}>{raidCopy.missing(facts.short)}</span
+            >{/if}
           <span>{facts.rating ?? '–'}</span>
           <span>{facts.attendancePct === null ? '–' : `${facts.attendancePct}%`}</span>
         </span>

@@ -13,7 +13,7 @@
   import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../../lib/ui/link';
   import Icon from '../../ui/Icon.svelte';
   import { ICON_CHEVRON_RIGHT } from '../../../lib/ui/ui-icons';
-  import Spinner from '../../ui/Spinner.svelte';
+  import Button from '../../ui/Button.svelte';
   import DiscordEventRows from './DiscordEventRows.svelte';
 
   let {
@@ -100,15 +100,15 @@
     }}
   />
   <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-    <button
+    <Button
       type="submit"
-      class={button(secondary ? 'secondary' : 'primary')}
-      disabled={saving}
-      aria-busy={saving ? 'true' : undefined}
-      data-testid="discord-save"
+      tone={secondary ? 'secondary' : 'primary'}
+      busy={saving}
+      busyLabel={notificationsCopy.saving}
+      testid="discord-save"
     >
-      {#if saving}<Spinner />{/if}{saving ? notificationsCopy.saving : notificationsCopy.save}
-    </button>
+      {notificationsCopy.save}
+    </Button>
     {#if replacing}
       <button
         type="button"

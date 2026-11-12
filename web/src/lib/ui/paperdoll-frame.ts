@@ -7,7 +7,7 @@
 // The slots and their order are lib/gear/slots.ts.
 // The slots and their order are lib/gear/slots.ts.
 import spec from './paperdoll-slots.json';
-import { SEAL } from './assets';
+import { SEAL } from './seal';
 import { FRAME_SLOTS } from '../gear/slots';
 
 /** A box in percent of the frame's width (x, w) and height (y, h). */

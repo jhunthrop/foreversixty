@@ -5,6 +5,7 @@
 import { estimateWords, isOverdue } from './server-runs';
 
 import { grouped } from '../format/number';
+import { withRetry } from '../ui/copy';
 
 export const serverRunsCopy = {
   heading: 'Server runs',
@@ -31,7 +32,7 @@ export const serverRunsCopy = {
   runAgain: 'Run again',
   runAgainPending: 'Starting…',
   runAgainDone: 'Started',
-  runAgainFailed: 'Could not start it again. Try again.',
+  runAgainFailed: withRetry('Could not start it again.'),
   planLapsed: 'Server sims are part of Premium.',
   seePlans: 'See plans',
 
@@ -44,5 +45,5 @@ export const serverRunsCopy = {
   bandOpenPhone: '→',
   moreLabel: (count: number): string => `and ${grouped(count)} more`,
   dismissLabel: (specLabel: string): string => `Dismiss: your ${specLabel} sim finished`,
-  dismissFailed: 'Could not dismiss that. Try again.',
+  dismissFailed: withRetry('Could not dismiss that.'),
 };

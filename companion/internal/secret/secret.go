@@ -11,6 +11,7 @@ import (
 	"fmt"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
+	"github.com/jhunthrop/foreversixty/companion/internal/copygen"
 	"github.com/zalando/go-keyring"
 )
 
@@ -159,7 +160,7 @@ func FallbackNote(b Backend, goos string) string {
 	if b != File {
 		return ""
 	}
-	return Name(Keychain, goos) + " was not available."
+	return copygen.Fill(copygen.SecretUnavailable, "{store}", Name(Keychain, goos))
 }
 
 // Name is where the token lives in the player's words, for the Device
@@ -167,15 +168,15 @@ func FallbackNote(b Backend, goos string) string {
 // is a Mac word on Windows.
 func Name(b Backend, goos string) string {
 	if b == File {
-		return "A private file in your user folder"
+		return copygen.SecretFile
 	}
 	switch goos {
 	case "windows":
-		return "Windows Credential Manager"
+		return copygen.SecretWindows
 	case "darwin":
-		return "macOS Keychain"
+		return copygen.SecretMac
 	}
-	return "Secret Service"
+	return copygen.SecretLinux
 }
 
 // StoreNote is the muted line under a working keychain: what the store is, in
@@ -183,7 +184,7 @@ func Name(b Backend, goos string) string {
 // name a player cannot place; the other systems' names explain themselves.
 func StoreNote(b Backend, goos string) string {
 	if b == Keychain && goos == "windows" {
-		return "A private store in your user profile."
+		return copygen.SecretWindowsNote
 	}
 	return ""
 }

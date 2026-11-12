@@ -32,6 +32,7 @@
   import { bandRangeLabel } from '../../lib/planner/band-title';
   import { bandForLevel } from '../../lib/bis/hover';
   import { plannerCopy } from '../../lib/planner/copy';
+  import { uiCopy } from '../../lib/ui/copy';
   import { levelReached, ranksByTalent } from '../../lib/planner/derive';
   import {
     decodeFS1,
@@ -60,12 +61,11 @@
   import type { LadderOrderFor, LadderOrderForRanks } from '../../lib/planner/ladder-load';
   import { dataUrl } from '../../lib/planner/load';
   import SpellIcon from '../ui/SpellIcon.svelte';
-  import { classColor, classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
+  import { classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
   import { openTreeIndex, type TalentTreesCopy } from '../../lib/ui/talent-tree';
   import classRows from '../../data/classes.json';
-  import { classCrestSrc } from '../../lib/class-crest';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Button from '../ui/Button.svelte';
   import ControlBar from '../ui/ControlBar.svelte';
   import Notice from '../ui/Notice.svelte';
@@ -100,6 +100,7 @@
     views = null,
     hideBar = false,
     guideBuilds = [],
+    openingRaces = [],
   }: {
     treeVersion: string;
     classSlug?: string;
@@ -135,6 +136,9 @@
     hideBar?: boolean;
     /** Every spec guide's published builds (planner.astro reads the guides): the rail's Guide builds. */
     guideBuilds?: readonly GuideBuild[];
+    /** The opening class's legal races (planner.astro reads them): the Race select's options before
+     *  the reference data lands, so the first paint never draws an empty select (seo-fix 2026-11-10). */
+    openingRaces?: readonly { slug: string; name: string }[];
   } = $props();
 
   /** The shared build page (`/b/:id`, spec section 8): its own head, the Edit a copy line, no bar,
@@ -968,11 +972,18 @@
     return specLabel(specOf(store.talentIndex, [...store.order]));
   });
   /** The meta line: race, level, and the spec once a tree leads (spec 4.1). */
-  const metaLine = $derived(
-    [store.raceRow?.name ?? '', `Level ${store.level}`, leadingSpec]
-      .filter((part) => part !== '')
-      .join(' · '),
+  /** A bare build with no character reached no level: it names none (seo-fix 2026-11-10: "Level 9"). */
+  const levelPart = $derived(
+    store.order.length === 0 && store.characterLevel === null ? '' : `Level ${store.level}`,
   );
+  /** The race on screen: the store's, or before the reference data lands the select's (the race the
+   *  link names, else the class's first legal one, which is the race the store will settle on). */
+  const raceName = $derived(
+    store.raceRow?.name ??
+      (raceOptions.find((race) => race.slug === store.raceSlug) ?? raceOptions[0])?.name ??
+      '',
+  );
+  const metaLine = $derived([raceName, levelPart, leadingSpec].filter((part) => part !== '').join(' · '));
   /** The H1: `{Class} talents`; on a shared build its own title, else `{Race} {Class}` (B1). */
   const headTitle = $derived(
     !shared
@@ -1019,6 +1030,13 @@
     }
   });
 
+  /** The Race select's rows: the store's once the reference data lands; until then the opening
+   *  class's, from the build (the server render and the hydration pass alike). */
+  const raceOptions = $derived(
+    store.legalRaces.length > 0 || (mounted && store.classSlug !== DEFAULT_CLASS_SLUG)
+      ? store.legalRaces
+      : openingRaces,
+  );
   /** The bar (spec 4.2): the nine class crests, then the class's legal races. */
   const barGroups = $derived<ControlGroup[]>([
     {
@@ -1030,8 +1048,7 @@
       options: classRows.map((row) => ({
         value: row.slug,
         label: row.name,
-        icon: classCrestSrc(row.slug),
-        ring: classColor(row.slug),
+        crest: row.slug,
         disabled: store.readOnly,
         disabledReason: READ_ONLY_REASON,
       })),
@@ -1042,7 +1059,7 @@
       kind: 'select',
       value: store.raceSlug,
       fieldWidth: 130,
-      options: store.legalRaces.map((race) => ({
+      options: raceOptions.map((race) => ({
         value: race.slug,
         label: race.name,
         disabled: store.readOnly,
@@ -1273,9 +1290,10 @@
 
 {#snippet railSkeleton(title: string)}
   <Section {title} panel>
-    <div class="pl-sec" aria-busy="true">
-      <span class="skeleton-block block max-w-full" style="width:260px;height:20px"></span>
-      <span class="skeleton-block block max-w-full" style="width:200px;height:44px"></span>
+    <div class="pl-sec" role="status" aria-busy="true">
+      <span class="sr-only">{uiCopy.loading}</span>
+      <span class="skeleton-block block max-w-full" style="width:260px;height:20px" aria-hidden="true"></span>
+      <span class="skeleton-block block max-w-full" style="width:200px;height:44px" aria-hidden="true"></span>
     </div>
   </Section>
 {/snippet}
@@ -1284,8 +1302,9 @@
      rail, so without it the level build and everything under it jumped down on load. -->
 {#snippet orderSkeleton()}
   <Section title={plannerCopy.pointOrderTitle} panel>
-    <p class="pl-pad" aria-busy="true">
-      <span class="skeleton-block block max-w-full" style="width:160px;height:20px"></span>
+    <p class="pl-pad" role="status" aria-busy="true">
+      <span class="sr-only">{uiCopy.loading}</span>
+      <span class="skeleton-block block max-w-full" style="width:160px;height:20px" aria-hidden="true"></span>
     </p>
   </Section>
 {/snippet}
@@ -1301,11 +1320,7 @@
       >
         {#snippet crest()}
           <!-- Keyed on mount: hydration keeps the server's src, which is the default class's. -->
-          {#key mounted}<ClassCrestRing
-              characterClass={className}
-              size={56}
-              testid="planner-header-crest"
-            />{/key}
+          {#key mounted}<Crest cls={className} size={56} testid="planner-header-crest" />{/key}
         {/snippet}
         {#snippet meta()}
           {#if shared}<span data-testid="planner-shared-meta">{plannerCopy.sharedMeta}</span>{/if}
@@ -1318,13 +1333,9 @@
             >{/if}
         {/snippet}
         {#snippet answer()}
-          {#if status === 'loading'}
-            <div class="pl-ans-skel" aria-busy="true">
-              <span class="skeleton-block block" style="width:150px;height:68px"></span>
-            </div>
-          {:else}
-            <PlannerAnswer {store} simHref={simLinkShown ? simHref : undefined} />
-          {/if}
+          <!-- Drawn in the server render too (seo-fix 2026-11-10): the count needs no reference data,
+               only the order and the level, so the first paint reads "0 of 51" rather than a blank. -->
+          <PlannerAnswer {store} simHref={simLinkShown ? simHref : undefined} />
         {/snippet}
       </PageHeader>
     {/snippet}
@@ -1483,16 +1494,6 @@
     flex-direction: column;
     gap: 8px;
     padding: 20px;
-  }
-  /* The ready answer's height (spec 5.2): the trees arriving move nothing under the head. */
-  .pl-ans-skel {
-    display: flex;
-    align-items: flex-start;
-  }
-  @media (min-width: 900px) {
-    .pl-ans-skel {
-      align-items: flex-end;
-    }
   }
   .pl-notes {
     padding-inline: var(--page-inset);

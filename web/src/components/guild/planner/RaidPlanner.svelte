@@ -8,6 +8,7 @@
      notes. Phone keeps that order
      in one column. A done raid is GuildRaid's report path, never this page. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import {
     fetchGuildHome,
     fetchGuildReadiness,
@@ -375,7 +376,7 @@
       {/if}
       <Section title={raidCopy.subheads.notes} panel id="raid-notes" testid="raid-notes">
         {#if raid.notes_html.trim() === ''}
-          <p class="text-muted text-[14px]" data-testid="raid-notes-empty">{notesEmptyOf(kind, officer)}</p>
+          <EmptyState message={notesEmptyOf(kind, officer)} testid="raid-notes-empty" />
         {:else}
           <div
             class="prose-forever [&_a]:text-gold [&_li]:marker:text-muted text-[14px] leading-[1.6] [&_ol]:list-decimal [&_ul]:list-disc [&>:last-child]:mb-0"

@@ -129,7 +129,7 @@ test('a rejected build shows the API field message and retries', async ({ page }
   await expect(page.getByTestId('share-panel').getByRole('alert')).toContainText(
     'Talent 1001 is not in this class',
   );
-  await page.getByRole('button', { name: 'Retry' }).click();
+  await page.getByRole('button', { name: 'Try again' }).click();
   await expect(page.getByTestId('share-link')).toBeVisible();
 });
 

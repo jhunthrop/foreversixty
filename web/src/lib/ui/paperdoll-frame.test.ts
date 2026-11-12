@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SEAL } from './assets';
+import { SEAL } from './seal';
 import { FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT, FRAME_SLOTS } from '../gear/slots';
 import {
   CENTRE_BOX,

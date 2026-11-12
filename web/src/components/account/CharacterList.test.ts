@@ -156,7 +156,8 @@ describe('CharacterList', () => {
 
   it('fills the Plate with the empty sentence, Get set up first and Paste an export, when there are no characters', () => {
     const { body } = render(CharacterList, { props: { characters: [] } });
-    expect(body).toContain(characterListCopy.empty);
+    expect(body).toContain(characterListCopy.emptyLead);
+    expect(body).toContain(characterListCopy.emptyKorea);
     expect(body).toContain('data-testid="account-characters-empty"');
     expect(body).toContain(characterListCopy.getSetUp);
     expect(body).toContain(characterListCopy.getSetUpHref);

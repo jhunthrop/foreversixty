@@ -14,6 +14,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/companion/internal/copygen"
 )
 
 // LogGlob matches the combat logs the game writes. The plain
@@ -238,12 +240,12 @@ type Refusal struct {
 func (r *Refusal) Error() string { return "not a Forever variant: " + r.Path }
 
 // PickWords names the folder to pick, in the player's words.
-const PickWords = "Forever Sixty runs on WoW Forever; pick its " + LiveFlavor + " folder."
+const PickWords = copygen.FolderPick
 
 // Words is the refusal in the player's words.
 func (r *Refusal) Words() string {
 	if r.Known {
-		return "That is " + FlavorName(r.Folder) + ". " + PickWords
+		return copygen.Fill(copygen.FolderThatIs, "{flavor}", FlavorName(r.Folder)) + " " + PickWords
 	}
 	return PickWords
 }
@@ -298,10 +300,6 @@ func (i Install) AdvancedLogging() (bool, error) {
 	return false, nil
 }
 
-// AdvancedLoggingHelp is the exact menu path the status page shows when
-// advanced logging is off, per spec section 5.
-const AdvancedLoggingHelp = "Options → Network → Advanced Combat Logging"
-
 // Accounts lists the account folders under WTF/Account, sorted. The
 // game names them after the account, upper-cased.
 func (i Install) Accounts() ([]string, error) {
@@ -342,15 +340,15 @@ func (i Install) SavedVariables(addon string) ([]string, error) {
 func FlavorName(folder string) string {
 	switch folder {
 	case "_anniversary_":
-		return "Classic Anniversary"
+		return copygen.FlavorAnniversary
 	case "_classic_era_":
-		return "Classic Era"
+		return copygen.FlavorClassicEra
 	case LiveFlavor:
-		return "WoW Forever"
+		return copygen.FlavorForever
 	case "_classic_beta_":
-		return "Classic beta"
+		return copygen.FlavorClassicBeta
 	case "_retail_":
-		return "Retail"
+		return copygen.FlavorRetail
 	}
 	return folder
 }

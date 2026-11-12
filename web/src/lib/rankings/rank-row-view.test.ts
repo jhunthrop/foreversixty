@@ -72,3 +72,25 @@ describe('rankRowView', () => {
     expect(killLength(9_400)).toBe('0:09');
   });
 });
+
+describe('a row whose log named no spec', () => {
+  it('names the class alone, never "undefined"', () => {
+    const row = {
+      rank: 1,
+      player: { key: 'us/pvp/psycho-giga', name: 'Psycho Giga', class: 'Shaman' },
+      value: 113,
+      size: 5,
+      fought_at: '2026-11-09T00:20:16Z',
+      duration_ms: 47224,
+      talent_split: '0/0/0',
+      trinkets: [],
+      buff_count: 0,
+      report_id: 'gxrgvz4yzsi2',
+      fight_index: 40,
+      state: 'ok',
+      execution_score: null,
+    } as unknown as RankingRow;
+    const view = rankRowView(row, { total: 2, top: 113, unit: 'DPS', multiClass: true });
+    expect(view.sub).toBe('Shaman');
+  });
+});

@@ -9,7 +9,7 @@ import { RATING_COMPONENT_ORDER } from '../rating/types';
 import type { RatingCardPlayer, RatingComponent, RatingMoment } from '../rating/types';
 import { clockDuration } from '../format/duration';
 
-export const RATING_LOADING = 'Loading ratings.';
+export const RATING_LOADING = 'Loading ratings…';
 
 /** A part scores green from here (section 6.2). */
 export const GOOD_SCORE = 75;

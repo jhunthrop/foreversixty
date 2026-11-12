@@ -12,7 +12,7 @@
      control at its right: Open on a folded card, Last 20 s › (the window) on the open one
      (h-audit 2026-11-09). -->
 <script lang="ts">
-  import EmptyLine from './EmptyLine.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import CopyCsv from './CopyCsv.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { unitLabel } from '../../lib/report/names.svelte';
@@ -26,7 +26,7 @@
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
-  import ClassIcon from './ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import type { CastRow, CombatantRow, DamageRef, Death, HealRef, PullMark } from '../../lib/report/types';
@@ -349,7 +349,7 @@
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}
-      <EmptyLine text="Nobody died." testid="table-empty" />
+      <EmptyState inset message="Nobody died." testid="table-empty" />
     {/if}
     {#each ordered as death (`${death.guid}-${death.at_ms}`)}
       {@const link = linkFor(death)}
@@ -361,7 +361,7 @@
           {#snippet lead()}<span class="text-muted text-[13px] tabular-nums" data-testid="death-label"
               >{#if death.label}{death.label} ·
               {/if}{clockDuration(inPull(death))}</span
-            ><ClassIcon className={death.class ?? classOf.get(death.guid)} size={32} />{/snippet}
+            ><Crest cls={death.class ?? classOf.get(death.guid)} size={32} />{/snippet}
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(death.name).text}</span>{/snippet}
           {#snippet trail()}
             <!-- One control a row: Open on a folded card, the window on the open one. -->

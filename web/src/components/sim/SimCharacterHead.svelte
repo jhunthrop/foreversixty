@@ -6,7 +6,7 @@
      "Change source": the header's selector changes the character (one way to switch). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import { classTone } from '../../lib/ui/primitives';
   import PageHeader from '../ui/PageHeader.svelte';
 
@@ -31,11 +31,7 @@
 </script>
 
 <PageHeader title={name} tone={classTone(classSlug)} testid="sim-head" {answer} {actions} {tabs}>
-  {#snippet crest()}<ClassCrestRing
-      characterClass={classSlug}
-      size={56}
-      testid="sim-character-class-icon"
-    />{/snippet}
+  {#snippet crest()}<Crest cls={classSlug} size={56} testid="sim-character-class-icon" />{/snippet}
   {#snippet meta()}
     {#each lines as line, index (index)}<span data-testid={index === 0 ? 'sim-head-meta' : 'sim-head-source'}
         >{line}</span

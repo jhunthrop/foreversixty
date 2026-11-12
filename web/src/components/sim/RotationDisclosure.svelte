@@ -7,7 +7,7 @@
      them hit the still-broken settings bar link. Rather than fix that link in place --
      a second bespoke toggle re-deriving the same drawer -- this is RotationCard's own
      Disclosure block, extracted so SettingsBar.svelte and RotationCard.svelte render the
-     same never-navigates control (Disclosure.svelte, Ruling 3's one show/hide primitive)
+     same never-navigates control (SimFold.svelte, Ruling 3's one show/hide primitive)
      instead of one safe copy and one unsafe one.
 
      Both callers keep the drawer content and the trigger's own accessible name ("what it
@@ -29,7 +29,7 @@
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
   import { loadRotationNotes, rotationDrawerContent, type RotationNotes } from '../../lib/sim/rotations';
-  import Disclosure from './Disclosure.svelte';
+  import SimFold from './SimFold.svelte';
 
   let {
     spec,
@@ -60,7 +60,7 @@
   const drawer = $derived(rotationDrawerContent(spec, notes));
 </script>
 
-<Disclosure
+<SimFold
   label={simCopy.rotationLink}
   id={`${idPrefix}-drawer-${spec}`}
   {disabled}
@@ -90,4 +90,4 @@
   >
     {simCopy.rotationDrawerFidelityLink}
   </a>
-</Disclosure>
+</SimFold>

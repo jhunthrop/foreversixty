@@ -16,8 +16,9 @@
   import { characterHref } from '../../lib/characters';
   import { lowLevelCopy, splitByLevel } from '../../lib/account/level-filter';
   import { classTone, LINK } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import Button from '../ui/Button.svelte';
+  import Crest from '../ui/Crest.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
+  import ShowAll from '../ui/ShowAll.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Tag from '../ui/Tag.svelte';
@@ -179,16 +180,14 @@
     >
       {#if refreshing}<span class="refresh-bar" aria-hidden="true" data-testid="bnet-refresh-bar"></span>{/if}
       {#if characters.length === 0}
-        <div class="flex flex-col gap-3 px-5 pt-4 pb-5" data-testid="account-characters-empty">
-          <p class="max-w-[72ch] text-[15px] leading-6">
-            {viaBattlenet ? characterListCopy.empty : characterListCopy.emptyByEmail}
-          </p>
-          <div class="flex flex-wrap items-center gap-x-4 gap-y-[10px]">
-            <Button tone="primary" href={characterListCopy.getSetUpHref}>{characterListCopy.getSetUp}</Button>
-            <Button href={characterListCopy.pasteHref} testid="account-characters-empty-secondary"
-              >{characterListCopy.pasteAnExport}</Button
-            >
-          </div>
+        <div class="px-5 pt-4 pb-5">
+          <EmptyState
+            message={viaBattlenet ? characterListCopy.emptyLead : characterListCopy.emptyByEmailLead}
+            fill={viaBattlenet ? characterListCopy.emptyKorea : characterListCopy.emptyByEmailFill}
+            action={{ label: characterListCopy.getSetUp, href: characterListCopy.getSetUpHref }}
+            secondary={{ label: characterListCopy.pasteAnExport, href: characterListCopy.pasteHref }}
+            testid="account-characters-empty"
+          />
         </div>
       {:else}
         {#each listed.shown as character (character.key)}
@@ -199,7 +198,7 @@
             wrapTrail
             testid="account-character-row"
           >
-            {#snippet lead()}<ClassCrestRing characterClass={character.class ?? ''} size={40} />{/snippet}
+            {#snippet lead()}<Crest cls={character.class ?? ''} size={40} />{/snippet}
             {#snippet titleContent()}
               <span class="inline-flex flex-wrap items-center gap-2"
                 ><span data-testid="character-name">{character.name}</span>
@@ -241,14 +240,15 @@
         {/each}
         {#if listed.lowCount > 0}
           <div class="px-5 py-2">
-            <button
-              type="button"
-              class="{LINK} text-[14px] [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
-              aria-expanded={showLow}
-              onclick={() => (showLow = !showLow)}
-              data-testid="account-low-level-toggle"
-              >{showLow ? lowLevelCopy.hide : lowLevelCopy.show(listed.lowCount)}</button
-            >
+            <ShowAll
+              shown={listed.shown.length + listed.hidden - listed.lowCount}
+              total={listed.shown.length + listed.hidden}
+              expanded={showLow}
+              onToggle={() => (showLow = !showLow)}
+              label={lowLevelCopy.show(listed.lowCount)}
+              fewerLabel={lowLevelCopy.hide}
+              testid="account-low-level-toggle"
+            />
           </div>
         {/if}
         <CoachLastRaidLine premium={logCoach} />

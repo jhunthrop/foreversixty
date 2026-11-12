@@ -11,6 +11,7 @@ import type { SpecRole } from './specs';
 import { itemNotInDataLine } from '../items/unknown-item-copy';
 
 import { grouped } from '../format/number';
+import { uiCopy } from '../ui/copy';
 /**
  * One name per sim kind, for every site that names one: each tool page's `<title>`, `<h1>`
  * and `<noscript>`, the history filter and its rows, the saved page and the unfurl. A
@@ -342,7 +343,7 @@ export const simCopy = {
   specWorstActions: 'Largest gaps',
   specCast: 'cast',
   specSimmed: 'simmed',
-  tryAgain: 'Try again',
+  tryAgain: uiCopy.retry,
 
   /** The Damage tab's row for a build that names no character (a pasted export, a planner build). */
   namelessActor: 'You',
@@ -398,6 +399,7 @@ export const simCopy = {
   yourSims: 'Your sims',
   historyLoading: 'Reading your sims…',
   historyEmpty: 'Nothing saved yet. Run a sim and press Save.',
+  historyFailed: 'Your sims did not load.',
   saveThisSim: 'Save this sim',
   saveTitleLabel: 'Name this sim',
   /** sr-only label for the readonly saved-URL field (finding 3, final whole-branch review),
@@ -406,7 +408,6 @@ export const simCopy = {
   saveAction: 'Save',
   cancel: 'Cancel',
   copyLink: 'Copy link',
-  copied: 'Copied',
   runThisYourself: 'Run this yourself',
   /** The save button's disabled title when the last run was stopped rather than finished. */
   saveAbortedDisabled: 'A stopped run has nothing finished to save.',

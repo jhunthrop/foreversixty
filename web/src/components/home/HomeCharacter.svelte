@@ -22,7 +22,7 @@
   import type { ClassSlug } from '../../lib/ui/primitives';
   import { LINK } from '../../lib/ui/primitives';
   import activeBuild from '../../data/active-build.json';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Figure from '../ui/Figure.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
   import HomeFeed from './HomeFeed.svelte';
@@ -113,7 +113,7 @@
 
 <div data-testid="home-signed-in">
   <PageHeader title={character.name} tone={{ classSlug }} art="hero" testid="home-head">
-    {#snippet crest()}<ClassCrestRing characterClass={character.class ?? ''} size={CREST_PX} />{/snippet}
+    {#snippet crest()}<Crest cls={character.class ?? ''} size={CREST_PX} />{/snippet}
     {#snippet meta()}
       <span
         >{whoLine(character)}{#if character.guild}&nbsp;·
@@ -145,6 +145,7 @@
           needs={guildHome.standing?.needs_before_next_raid ?? []}
           {standing}
           characterKey={character.key}
+          characterName={character.name}
           role={signupRole(raid.own, character)}
           raidHref={links.raid}
         />

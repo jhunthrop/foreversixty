@@ -14,9 +14,10 @@
     OPENER_PRESSED,
   } from '../../../lib/guild/billing-styles';
   import { isSeatLocked, seatErrorLine, seatRowKind, staleReadRefusal } from '../../../lib/guild/seat-view';
-  import { BUSY_CLASS } from '../../../lib/ui/busy';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
-  import { classColorVar } from '../../../lib/report/format';
+  import Crest from '../../ui/Crest.svelte';
+  import CharacterName from '../../ui/CharacterName.svelte';
+  import Spinner from '../../ui/Spinner.svelte';
+  import Tag from '../../ui/Tag.svelte';
   import GuildSeatPicker from './GuildSeatPicker.svelte';
 
   let {
@@ -163,28 +164,30 @@
     <!-- Below 768 the row is two lines (spec 7): who and the button on line 1, the middle on line 2. -->
     <div class="col-start-1 row-start-1 flex min-w-0 items-center gap-3">
       {#if seat.holder !== null}
-        <ClassCrestRing characterClass={seat.holder.class} size={32} />
+        <Crest cls={seat.holder.class} size={32} />
         <div class="flex min-w-0 flex-col">
-          <span
+          <CharacterName
+            name={seat.holder.name}
+            cls={seat.holder.class}
             class="heading-name truncate text-[14px]"
-            style={`color: ${classColorVar(seat.holder.class)}`}
-            data-testid={`guild-seat-${seat.slot}-name`}>{seat.holder.name}</span
-          >
+            testid={`guild-seat-${seat.slot}-name`}
+          />
           {#if kind === 'offered'}
-            <span><span class="pill pill-sample">{copy.waiting}</span></span>
+            <span><Tag tone="muted">{copy.waiting}</Tag></span>
           {:else if seat.given_at !== null && (kind === 'held' || moving)}
             <span class="text-muted text-[12px]">{copy.givenOn(seat.given_at)}</span>
           {/if}
         </div>
       {:else if seat.offeree !== null}
-        <ClassCrestRing characterClass={seat.offeree.class} size={32} />
+        <Crest cls={seat.offeree.class} size={32} />
         <div class="flex min-w-0 flex-col">
-          <span
+          <CharacterName
+            name={seat.offeree.name}
+            cls={seat.offeree.class}
             class="heading-name truncate text-[14px]"
-            style={`color: ${classColorVar(seat.offeree.class)}`}
-            data-testid={`guild-seat-${seat.slot}-name`}>{seat.offeree.name}</span
-          >
-          <span><span class="pill pill-sample">{copy.waiting}</span></span>
+            testid={`guild-seat-${seat.slot}-name`}
+          />
+          <span><Tag tone="muted">{copy.waiting}</Tag></span>
         </div>
       {:else}
         <span
@@ -205,7 +208,7 @@
             : ''}"
           data-testid={`guild-seat-${seat.slot}-note`}
         >
-          {middle}{#if moving}<span class="pill pill-sample">{copy.waiting}</span>{/if}
+          {middle}{#if moving}<Tag tone="muted">{copy.waiting}</Tag>{/if}
         </p>
       {/if}
       {#if lockLine !== ''}
@@ -231,14 +234,14 @@
         {#if canWithdraw}
           <button
             type="button"
-            class="{BILLING_TEXT_BUTTON} {busy ? BUSY_CLASS : ''}"
+            class="{BILLING_TEXT_BUTTON} gap-2"
             disabled={busy}
-            aria-busy={busy}
+            aria-busy={busy ? 'true' : undefined}
             onclick={() => void withdraw()}
             data-seat-action={canMove ? undefined : ''}
             data-testid={`guild-seat-${seat.slot}-withdraw`}
           >
-            {busy ? copy.withdrawing : copy.withdraw}
+            {#if busy}<Spinner />{copy.withdrawing}{:else}{copy.withdraw}{/if}
           </button>
         {:else if !canMove}
           <button

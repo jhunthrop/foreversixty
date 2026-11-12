@@ -12,6 +12,10 @@ export interface TabItem {
   disabled?: boolean;
   /** A short muted note after the label (" · read-only"). */
   suffix?: string;
+  /** A tabular count after the label, muted (a boss's kills). */
+  count?: number;
+  /** The tab's accessible name when the visible words say less ("Ragnaros, 4 kills"). */
+  ariaLabel?: string;
   testid?: string;
   /** Extra attributes on the tab (a page's own hook, such as data-sim-tab). */
   attrs?: Readonly<Record<string, string>>;
@@ -38,6 +42,7 @@ export const TAB_STRIP = {
   idle: 'border-transparent text-nav hover:text-strong',
   disabled: 'border-transparent text-muted cursor-not-allowed',
   suffix: 'text-muted ml-1 text-[10px] tracking-normal normal-case',
+  count: 'text-muted ml-2 text-[13px] font-normal tabular-nums',
   fadeStart:
     'pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-bg to-transparent opacity-0 ' +
     'transition-opacity duration-150 motion-reduce:transition-none group-data-[fade-start]:opacity-100',

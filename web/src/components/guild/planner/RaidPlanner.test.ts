@@ -144,13 +144,17 @@ describe('the body', () => {
     expect(body.match(/data-region="plate"/g)?.length).toBeGreaterThan(0);
   });
 
-  it('draws the Raid-Helper groups with each row’s spec, note and state Tag for members', () => {
+  it('draws the Raid-Helper groups with each row’s spec and note, and no Tag for the default In', () => {
     const body = html();
     const ranged = text(between(body, 'raid-roster-ranged', 'raid-roster-bench'));
     expect(ranged).toContain('Ranged 1');
-    expect(ranged).toContain('Frostquill Frost Mage · DPS 20 min late maybe In');
+    expect(ranged).toContain('Frostquill Frost Mage · DPS 20 min late maybe');
+    expect(ranged).not.toContain('maybe In');
     expect(text(between(body, 'raid-roster-melee', 'raid-roster-ranged'))).toContain('No melee yet.');
     expect(body).not.toContain('raid-roster-state-us/pvp/frostquill');
+    // The Bench head names the state: its rows carry no Bench Tag.
+    expect(text(between(body, 'raid-roster-bench', 'raid-notes'))).not.toContain('Bench Bench');
+    expect(body).not.toContain('data-testid="raid-roster-state"');
   });
 
   it('gives officers the in-row control instead of the Tag', () => {

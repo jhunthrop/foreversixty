@@ -4,20 +4,14 @@
      request. Nothing else renders. -->
 <script lang="ts">
   import { pageErrorCopy as copy } from '../../lib/sim/result-copy';
-  import { button } from '../../lib/ui/button';
+  import LoadError from '../ui/LoadError.svelte';
   import Plate from '../ui/Plate.svelte';
 
   let { onRetry }: { onRetry: () => void } = $props();
 </script>
 
 <div class="px-(--page-inset) pt-[22px] md:pt-8">
-  <Plate flush={false} label={copy.label} testid="sim-saved-error">
-    <div class="flex flex-col items-start gap-3" role="alert">
-      <h2 class="text-strong text-[17px] leading-6 font-bold">{copy.title}</h2>
-      <p class="text-text text-[15px]">{copy.body}</p>
-      <button type="button" class={button('secondary')} onclick={onRetry} data-testid="sim-saved-error-retry">
-        {copy.retry}
-      </button>
-    </div>
+  <Plate flush={false} label={copy.label} testid="sim-saved-error-plate">
+    <LoadError title={copy.title} message={copy.body} variant="panel" {onRetry} testid="sim-saved-error" />
   </Plate>
 </div>

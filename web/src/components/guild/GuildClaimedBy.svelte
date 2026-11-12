@@ -5,7 +5,7 @@
 <script lang="ts">
   import type { ClaimHolder } from '../../lib/guild/api';
   import { guildHomeCopy } from '../../lib/guild/copy';
-  import GuildCharacterName from './GuildCharacterName.svelte';
+  import CharacterName from '../ui/CharacterName.svelte';
 
   let { holder, testid = 'guild-claimed-by' }: { holder: ClaimHolder | null | undefined; testid?: string } =
     $props();
@@ -16,6 +16,6 @@
 {:else}
   <span class="inline-flex items-center gap-1.5" data-testid={testid}>
     {guildHomeCopy.claimedBy}
-    <GuildCharacterName {holder} />
+    <CharacterName name={holder.name} cls={holder.class} crestSize={20} />
   </span>
 {/if}

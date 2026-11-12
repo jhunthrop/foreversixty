@@ -22,10 +22,9 @@ const ACTIVE_BUILD_NOTICE = treeSourceNotice(ACTIVE_BUILD);
 test('the planner opens on the default class with an empty build', async ({ page }) => {
   const errors = collectPageErrors(page);
   await page.goto('/planner');
-  // The level is always shown -- it needs no character, only `levelReached(order)`, which a
-  // bare build already computes (9, the base level, before any point is spent). Spec
-  // 2026-11-08 4.1: it lives in the head's meta line, the spent count under Points left.
-  await expect(page.getByTestId('planner-meta')).toContainText('Level 9');
+  // A bare build with no character names no level (seo-fix 2026-11-10: "Level 9" for a build of
+  // nothing); the meta line names the race, and the first point spent names the level it needs.
+  await expect(page.getByTestId('planner-meta')).not.toContainText('Level');
   await expect(pointsSpent(page)).toHaveText(spentIs(0));
   await expectClass(page, 'warrior');
   await expect(page.getByText(ACTIVE_BUILD_NOTICE)).toBeVisible();

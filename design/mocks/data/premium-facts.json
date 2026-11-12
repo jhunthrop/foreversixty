@@ -685,7 +685,8 @@
    "checkout": "Redirecting to secure checkout…",
    "claiming": "Claiming…",
    "starting": "Starting…",
-   "confirming": "Confirming…"
+   "confirming": "Confirming…",
+   "portal": "Opening billing…"
   },
   "claimErrors": {
    "alreadyClaimed": "[fn]",
@@ -805,6 +806,7 @@
   "href": "/premium/checkout?plan=premium&interval=yearly&comeback=cb_9f2"
  },
  "account": {
+  "loadFailed": "Could not reach Forever Sixty. Check your connection.",
   "title": "Your account",
   "battletagLabel": "BattleTag",
   "emailLabel": "Email",
@@ -887,6 +889,8 @@
   "emptyLead": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.",
   "emptyKorea": "Playing in Korea? Install the addon and the companion, or paste an export.",
   "emptyByEmail": "No characters yet. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.",
+  "emptyByEmailLead": "No characters yet.",
+  "emptyByEmailFill": "Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.",
   "getSetUp": "Get set up",
   "getSetUpHref": "/setup",
   "pasteAnExport": "Paste an export",
@@ -1067,7 +1071,8 @@
   "empty": "No reports yet. Upload a log, or let the companion send your next raid.",
   "signedOut": "Sign in to see your reports.",
   "signInAction": "Sign in with Battle.net",
-  "uploadAction": "Upload a log"
+  "uploadAction": "Upload a log",
+  "older": "Older reports"
  },
  "accounts": {
   "free": {

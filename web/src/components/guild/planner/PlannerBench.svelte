@@ -3,12 +3,13 @@
      Swap in, which moves them to In through the same officer sign-up write the roster's control
      uses; the comp tally above shows what the swap does to the seats. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import type { GuildRaidView, GuildSignupState } from '../../../lib/guild/api';
   import { kindCountsRoles, kindOf } from '../../../lib/guild/raid-copy';
   import { benchRows, rowSub } from '../../../lib/guild/raid-planner-view';
   import type { RosterRow } from '../../../lib/guild/raid-roster';
   import { classTone, ROW_ITEM } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
@@ -38,13 +39,13 @@
   testid="raid-bench"
 >
   {#if rows.length === 0}
-    <p class="text-muted text-[14px]" data-testid="raid-bench-empty">Nobody is on the bench.</p>
+    <EmptyState message="Nobody is on the bench." testid="raid-bench-empty" />
   {:else}
     <ul>
       {#each rows as row (row.character_key)}
         <li class={ROW_ITEM} data-testid="raid-bench-row">
           <Row title={row.name} titleTone={classTone(row.class)} sub={rowSub(row, roles)} open density="slim">
-            {#snippet lead()}<ClassCrestRing characterClass={row.class} size={24} />{/snippet}
+            {#snippet lead()}<Crest cls={row.class} size={24} />{/snippet}
             {#snippet trail()}
               <Button
                 size="sm"

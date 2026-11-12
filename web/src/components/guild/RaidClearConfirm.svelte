@@ -1,11 +1,10 @@
 <!-- web/src/components/guild/RaidClearConfirm.svelte -->
 <!-- The clear confirm (attendance spec 3.1 "Clear confirm"): it replaces line 2's `Not this log`
      with the question, `Clear the match` (the cancel confirm's failure outline) and `Keep it`.
-     Focus lands on Keep it, which stays live while the clear is in flight; Escape acts as Keep it. -->
+     ui/ConfirmButtons draws the pair: focus lands on Keep it and Escape acts as Keep it. -->
 <script lang="ts">
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
-  import { focusOnMount } from '../../lib/guild/focus-now';
-  import { RAID_BUTTON, RAID_WIPE_BUTTON } from '../../lib/guild/raid-buttons';
+  import ConfirmButtons from '../ui/ConfirmButtons.svelte';
 
   let {
     busy,
@@ -19,12 +18,6 @@
   } = $props();
 
   const copy = attendanceCopy.clearConfirm;
-
-  function onKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Escape') return;
-    event.preventDefault();
-    onKeep();
-  }
 </script>
 
 <div
@@ -32,20 +25,22 @@
   role="group"
   aria-labelledby="raid-clear-question"
   aria-busy={busy}
-  onkeydown={onKeydown}
   data-testid="raid-clear-confirm"
 >
   <p id="raid-clear-question" class="text-strong text-[14px]">{copy.prompt}</p>
   <div class="flex flex-wrap gap-2">
-    <button
-      type="button"
-      class={RAID_WIPE_BUTTON}
-      disabled={busy}
-      onclick={onConfirm}
-      data-testid="raid-clear-confirm-button">{busy ? attendanceCopy.match.clearing : copy.confirm}</button
-    >
-    <button type="button" class={RAID_BUTTON} use:focusOnMount onclick={onKeep} data-testid="raid-clear-keep"
-      >{copy.keep}</button
-    >
+    <ConfirmButtons
+      size="md"
+      cancelWhileBusy
+      confirm={copy.confirm}
+      cancel={copy.keep}
+      {busy}
+      busyLabel={attendanceCopy.match.clearing}
+      onconfirm={onConfirm}
+      oncancel={onKeep}
+      testid="raid-clear"
+      confirmTestid="raid-clear-confirm-button"
+      cancelTestid="raid-clear-keep"
+    />
   </div>
 </div>

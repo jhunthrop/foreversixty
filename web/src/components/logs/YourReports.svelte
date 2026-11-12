@@ -15,6 +15,7 @@
   import { LINK } from '../../lib/ui/primitives';
   import MyReports from '../MyReports.svelte';
   import Button from '../ui/Button.svelte';
+  import LoadError from '../ui/LoadError.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
   import Plate from '../ui/Plate.svelte';
@@ -60,10 +61,7 @@
     <Plate label={copy.title}>
       <div class="reserve text-muted p-4 text-[14px] leading-5" class:hinted={me === undefined && !failed}>
         {#if failed}
-          <div role="alert" data-testid="your-reports-error">
-            <p>{copy.sessionFailed}</p>
-            <div class="mt-3"><Button size="sm" onclick={() => void load()}>Try again</Button></div>
-          </div>
+          <LoadError message={copy.sessionFailed} onRetry={() => void load()} testid="your-reports-error" />
         {:else}
           <div class:ch-hint-out-only={me === undefined} data-testid="your-reports-signin">
             <p>{copy.signedOut}</p>

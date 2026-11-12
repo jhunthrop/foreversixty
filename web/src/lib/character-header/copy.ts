@@ -1,4 +1,5 @@
 import { ctaCopy } from '../addon/cta-copy';
+import { uiCopy } from '../ui/copy';
 // web/src/lib/character-header/copy.ts
 // The strings the shared character header owns (design/specs/2026-10-11-character-header.md
 // sections 2 and 3): the label, the one shared signed-out line, the stale tail, the retry link.
@@ -17,7 +18,7 @@ export const characterHeaderCopy = {
   staleTail: 'Log out in the game to sync',
   /** The sync line's lead before the age: "Synced 12 minutes ago". */
   synced: 'Synced',
-  tryAgain: 'Try again',
+  tryAgain: uiCopy.retry,
   loading: 'Loading your character',
   levelWord: 'Level',
 } as const;

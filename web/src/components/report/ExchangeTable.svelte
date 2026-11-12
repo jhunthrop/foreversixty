@@ -14,8 +14,10 @@
      below are unconditional: unlike CastTable's approximate marks, nothing here depends
      on whether the window happens to be whole. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, wholeFightMark } from '../../lib/report/format';
+  import { wholeFightMark } from '../../lib/report/format';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { AuraTrack, CastRow, ExchangeRow } from '../../lib/report/types';
   import Section from '../ui/Section.svelte';
@@ -245,7 +247,7 @@
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}
-      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">{emptyText}</p>
+      <EmptyState inset message={emptyText} testid="table-empty" />
     {:else}
       <StatTable
         columns={[{ id: 'count', label: 'Count' }]}
@@ -264,9 +266,11 @@
             {#snippet name()}
               <!-- The anchor a rating moment's link lands on (lib/rating/moments.ts). -->
               <span id={`exchange-${row.source_guid}-${row.spell_id}`} class="scroll-mt-24"
-                ><span style:color={classColorVar(classOf.get(row.source_guid))}
-                  >{splitUnitName(row.source_name).name}</span
-                >{SEPARATOR}{row.spell_name}</span
+                ><CharacterName
+                  name={splitUnitName(row.source_name).name}
+                  cls={classOf.get(row.source_guid)}
+                  weight="inherit"
+                />{SEPARATOR}{row.spell_name}</span
               >
             {/snippet}
             {#snippet sub()}{verb} {row.extra_spell_name} on {splitUnitName(row.target_name).name}{/snippet}

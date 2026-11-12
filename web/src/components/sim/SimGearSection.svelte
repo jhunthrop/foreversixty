@@ -8,6 +8,7 @@
      running (`plated`) the doll is the page's one Plate and the section's action is the link. It
      shows inputs only: a gain or a pick is /bis's job. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import activeBuild from '../../data/active-build.json';
   import { gearCopy } from '../../lib/gear/copy';
   import { loadItems, loadSets } from '../../lib/planner/load';
@@ -105,7 +106,7 @@
   testid="sim-gear-card"
 >
   {#if !hasGear}
-    <p class="text-muted text-[14px]" data-testid="sim-gear-empty">{copy.noGear}</p>
+    <EmptyState message={copy.noGear} testid="sim-gear-empty" />
   {:else if plated}
     <div data-testid="sim-gear-paperdoll">{@render doll()}</div>
   {:else}

@@ -80,6 +80,29 @@ export function tooltipLeftPx(
   return Math.min(maxLeft, Math.max(margin - anchorLeft, anchorWidth - panelWidth));
 }
 
+/** How far a pointer-following tooltip (the chart's crosshair) sits beside the pointer. */
+const POINTER_GAP_PX = 16;
+
+/**
+ * Pure: a pointer-following tooltip's viewport position (the chart crosshair's, controls and
+ * charts spec §B5.7): `POINTER_GAP_PX` right of `x`, or left of it when `flip`, its top at `y`,
+ * clamped `VIEWPORT_MARGIN_PX` inside the viewport on every side.
+ */
+export function pointerTipPosition(
+  pointer: { x: number; y: number; flip: boolean },
+  panel: { width: number; height: number },
+  viewport: { width: number; height: number },
+): { left: number; top: number } {
+  const wanted = pointer.flip ? pointer.x - POINTER_GAP_PX - panel.width : pointer.x + POINTER_GAP_PX;
+  return {
+    left: Math.max(VIEWPORT_MARGIN_PX, Math.min(viewport.width - panel.width - VIEWPORT_MARGIN_PX, wanted)),
+    top: Math.max(
+      VIEWPORT_MARGIN_PX,
+      Math.min(viewport.height - panel.height - VIEWPORT_MARGIN_PX, pointer.y),
+    ),
+  };
+}
+
 export type TooltipVerticalSide = 'below' | 'above';
 
 export interface TooltipVerticalPlacement {

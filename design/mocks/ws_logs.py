@@ -22,9 +22,9 @@ from html import escape
 from pathlib import Path
 
 from mocklib import CLASS_COLOR, PARSE
-from ws_prims import (Button as _Button, DropZone, Facts, Figure, Link, Meter, MeterClass, Notice, Page, PageHeader, Plate, RankList,
-                      RankRow, ColumnHeads, Row, Rows, Section, Spark, StatRow, StatTable, TabStrip, Tag, build_page, control_bar, crest_img,
-                      seg, sel, write)
+from ws_prims import (Button as _Button, DropZone, EmptyFill as _EmptyFill, EmptyState, Facts, Figure, Link, LoadError, Meter, MeterClass, Notice, Page,
+                      PageHeader, Plate, RankList, RankRow, ColumnHeads, Row, Rows, Section, Spark, StatRow, StatTable, TabStrip, Tag, build_page,
+                      control_bar, crest_img, seg, sel, write)
 
 ROOT = Path(__file__).resolve().parents[2]
 MOCKDATA = Path(__file__).resolve().parent / 'data'
@@ -51,6 +51,24 @@ LinkButton = _Button
 
 def Button(label: str, primary: bool = False, small: bool = False) -> str:
     return _Button(label, primary, small).replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
+
+
+def split_lead(message: str) -> tuple[str, str]:
+    """MyReports' designed empty: the first sentence leads, the rest says what fills it (the component's own split rule)."""
+    lead, sep, fill = message.partition('. ')
+    return (lead + '.', fill) if sep else (message, '')
+
+
+def EmptyFill(message: str, action: str, secondary: str) -> str:
+    """MyReports' designed empty: ws_prims.EmptyFill (ui/EmptyState's `fill` shape) on the component's own first-sentence split,
+    the upload as the small primary link button and the sample as the gold link."""
+    lead, fill = split_lead(message)
+    return _EmptyFill(escape(lead), escape(fill), LinkButton(action, primary=True, small=True), Link(escape(secondary) + ' &rsaquo;'))
+
+
+def StatePad(inner: str) -> str:
+    """MyReports' own 16 px around its empty, error and skeleton states (`<div class="p-4">`), inside whatever panel holds it."""
+    return f'<div class="st-pad">{inner}</div>'
 
 
 def day(d: datetime) -> str:
@@ -102,6 +120,8 @@ code{font:13px/20px ui-monospace,Menlo,monospace;color:var(--strong)}
 /* the built StatRow's name line is 20 px (ui/stat-table.css) */
 .st-r .nm{line-height:20px}
 .empty .act{display:flex;gap:16px;align-items:center;margin-top:12px;flex-wrap:wrap}
+/* MyReports' 16 px around its states (the empty, error and fill shapes are ws_prims') */
+.st-pad{padding:16px}
 </style>'''
 
 
@@ -173,7 +193,7 @@ def logs_page(state: str) -> str:
     signed_in = state != 'out'
     main = Section('Upload a log', upload_body('out' if state == 'out' else 'in'), panel=True, frame='lead')
     if state == 'empty':
-        main += Section('Your reports', f'<div class="empty"><p>{escape(COPY["myReportsCopy"]["empty"])}</p></div>', panel=True)
+        main += Section('Your reports', StatePad(EmptyState(escape(COPY['myReportsCopy']['empty']))), panel=True)   # MyReports' line empty
     elif state == 'some':
         main += Section('Your reports', Rows([report_row(r) for r in MINE['rows']], open_=True), action=Link('All &rsaquo;'), panel=True)
     main += recent_section(signed_in)
@@ -193,9 +213,9 @@ def reports_page(state: str) -> str:
     if state == 'out':
         inner = f'<div class="empty"><p>{escape(yc["signedOut"])}</p><div class="act">{LinkButton(mc["signInAction"], primary=True)}{Link(yc["sampleAction"] + " &rsaquo;")}</div></div>'
     elif state == 'empty':
-        inner = f'<div class="empty"><p>{escape(yc["empty"])}</p><div class="act">{LinkButton(mc["uploadAction"], primary=True)}{Link(yc["sampleAction"] + " &rsaquo;")}</div></div>'
+        inner = StatePad(EmptyFill(yc['empty'], mc['uploadAction'], yc['sampleAction']))   # MyReports' designed empty, signed in
     elif state == 'failed':
-        inner = f'<div class="empty" role="alert"><p>{escape(mc["failed"])}</p><div class="act">{Button("Try again", small=True)}</div></div>'
+        inner = StatePad(LoadError(escape(mc['failed'])))
     else:
         inner = Rows([report_row(r) for r in MINE['rows']])
     body = head + Page('ledger', Plate(inner, 'Your reports')) + PAGE_CSS

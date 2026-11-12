@@ -3,14 +3,15 @@
      applications that fit them, the last night's loot with the top candidate on each open drop, and
      the raiders slipping on attendance with their last nights. The buff cover keeps its own panel. -->
 <script lang="ts">
+  import CharacterName from '../../ui/CharacterName.svelte';
   import activeBuild from '../../../data/active-build.json';
   import type { OfficerApplication } from '../../../lib/guild/recruit-api';
   import type { LootCouncilCandidate, LootNight } from '../../../lib/guild/loot-council-api';
-  import { classColorVar, parseText } from '../../../lib/report/format';
+  import { parseText } from '../../../lib/report/format';
   import ItemRow from '../../ui/ItemRow.svelte';
   import { GROUP_WORD } from '../../../lib/guild/dense/roster-board';
   import type { RecruitGap, SlipRow } from '../../../lib/guild/dense/week-board';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
@@ -65,7 +66,7 @@
         href={applicationsHref}
         open
       >
-        {#snippet lead()}<ClassCrestRing characterClass={app.character.class ?? ''} size={32} />{/snippet}
+        {#snippet lead()}<Crest cls={app.character.class ?? ''} size={32} />{/snippet}
       </Row>
     {/each}
   </Section>
@@ -92,9 +93,17 @@
         testid={`guild-week-drop-${drop.item_id}`}
       >
         {#snippet sourceContent()}
-          {#if drop.award !== null}<b style:color={classColorVar(drop.award.class)}>{drop.award.name}</b
-            >{:else if top !== null}Open · <b style:color={classColorVar(top.class)}>{top.name}</b
-            >{#if top.gain_dps !== null}{` +${top.gain_dps} ${(top.gain_unit ?? 'dps').toUpperCase()}`}{/if}{:else}Open{/if}
+          {#if drop.award !== null}<CharacterName
+              name={drop.award.name}
+              cls={drop.award.class}
+              weight="inherit"
+              class="font-bold"
+            />{:else if top !== null}Open · <CharacterName
+              name={top.name}
+              cls={top.class}
+              weight="inherit"
+              class="font-bold"
+            />{#if top.gain_dps !== null}{` +${top.gain_dps} ${(top.gain_unit ?? 'dps').toUpperCase()}`}{/if}{:else}Open{/if}
         {/snippet}
       </ItemRow>
     {/each}
@@ -105,7 +114,7 @@
   <Section title="Slipping" panel action={{ label: 'Roster', href: '#roster' }} testid="guild-week-slipping">
     {#each slipping as row (row.name)}
       <Row title={row.name} titleTone={{ classSlug: row.cls as never }} open>
-        {#snippet lead()}<ClassCrestRing characterClass={row.cls} size={28} />{/snippet}
+        {#snippet lead()}<Crest cls={row.cls} size={28} />{/snippet}
         {#snippet trail()}<AttendanceStrip cells={row.cells} />{/snippet}
       </Row>
     {/each}

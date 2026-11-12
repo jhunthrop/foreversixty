@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 
 
 
-from ws_prims import (Select, SignupRow, RowGroup, control_bar, seg, Button, Figures, Link, Page, PageHeader, Row, Rows, Section, Segmented, StatRow, StatTable, Tag, TabStrip,
+from ws_prims import (EmptyState, Select, SignupRow, RowGroup, control_bar, seg, Button, Figures, Link, Page, PageHeader, Row, Rows, Section, Segmented, StatRow, StatTable, Tag, TabStrip,
                       build_page, crest_img, icon, write)
 import ws_prims
 from guild_data import C
@@ -293,7 +293,7 @@ def planner(officer: bool = True) -> str:
                      trail=_act('Swap in'), link=False, slim=True) for m in raid['signups'] if m['state'] == 'bench']
         rail += Section('Bench and swaps', Rows(bench, open_=True, list_=True), meta=str(len(bench)), panel=True)
     empty = 'No notes yet. Edit the raid to add some.' if officer else 'No notes for this raid.'
-    rail += Section('Notes', f'<p class="t-small" style="font-size:14px">{empty}</p>', named=True, panel=True)
+    rail += Section('Notes', EmptyState(empty), named=True, panel=True)  # RaidPlanner.svelte: the shared empty line
     actions = (''.join(_act(x) for x in ['Edit', 'Lock sign-ups', 'Copy the sign-up list']) + Button('Cancel raid', small=True, tone='ghost', act=True)
                if officer else '')
     hdr = PageHeader(raid['title'], ALLIANCE, meta=[Tag('Planned'), planner_when(raid),

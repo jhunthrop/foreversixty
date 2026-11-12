@@ -62,6 +62,9 @@ export interface FeedRow {
   spec?: string;
 }
 
+/** What a feed row leads with (ui/FeedRow): the crest, else the item, else the spell icon. */
+export type FeedLead = Pick<FeedRow, 'crest' | 'icon' | 'quality'>;
+
 export interface FeedPage {
   rows: FeedRow[];
   next_cursor: string | null;

@@ -3,8 +3,11 @@
 // string on the page lives here -- most of ReportView.svelte and ModeBar.svelte predate
 // this file -- but every new one does, so a copy change is one diff in one file rather
 // than a search through two components.
+import { uiCopy } from '../ui/copy';
 
 export const reportCopy = {
+  /** The roster's show-all under its first rows. */
+  showAllPlayers: (total: number): string => `Show all ${total} players`,
   /** The phone's collapsed chart strip, which expands the chart in place. */
   showChart: 'Show chart',
   /** The category tab row's overflow menu, and its label while none of its own tabs is active. */
@@ -52,8 +55,6 @@ export const reportCopy = {
   copyLink: 'Copy link',
   /** The phone band's ··· menu holding Sim this fight and Copy link. */
   actionsLabel: 'Report actions',
-  copied: 'Copied',
-  copyFailed: 'Copy failed',
   reportActions: 'Report actions',
   /** The Filters button and popover (logs spec 6.1), as the BiS Sources pattern. */
   filters: 'Filters',
@@ -65,7 +66,7 @@ export const reportCopy = {
   reportMissing: 'No report with that id.',
   openYourReports: 'Open your reports',
   viewFailed: 'This view did not load.',
-  tryAgain: 'Try again',
+  tryAgain: uiCopy.retry,
   /** The night view's line on a tab that is one pull's (section 6.3). */
   onePullOnly: 'This tab is one pull’s. Pick a pull from the Fight list to see it.',
   /** A pull the logger's group was not in (the scope falls back to everyone in range). */

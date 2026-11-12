@@ -2,6 +2,7 @@
 // Every visible string on /connect, the page the companion's "Sign in with Battle.net"
 // opens (companion review round 1, UX "Site connect page" and the player's Battle.net
 // sign-in copy). One state per key; the layout never changes between them.
+import { uiCopy } from '../ui/copy';
 
 export const connectCopy = {
   title: 'Connect your companion',
@@ -44,7 +45,7 @@ export const connectCopy = {
   usedBody: 'If this was not you, remove it in Account > Devices.',
   failedTitle: 'Could not reach the site.',
   failedBody: 'Your device was not connected. Check your connection and try again.',
-  tryAgain: 'Try again',
+  tryAgain: uiCopy.retry,
   deviceLabel: 'Device',
   platformLabel: 'Platform',
   codeRowLabel: 'Code',

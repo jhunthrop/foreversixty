@@ -6,6 +6,7 @@ import { titleCase } from '../text';
 import { settingsWords } from '../guild/settings-view';
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { formatCents, type Interval } from './plans';
+import { withRetry } from '../ui/copy';
 
 export const seatsCopy = {
   heading: 'Premium seats',
@@ -42,7 +43,7 @@ export const seatsCopy = {
     move: 'Move seat',
     cancel: 'Cancel',
     everyoneHasPremium: 'Every verified member already has Premium from this guild.',
-    saveFailed: 'That did not save. Try again.',
+    saveFailed: withRetry('That did not save.'),
     // Additions to spec 6.2 (the API's 409 `seat_count` and `offer_pending`), pending an owner line.
     seatCount: 'This plan has no seat to give. Reload to see the current seats.',
     offerPending: 'That seat already has an offer waiting. Withdraw it first.',
@@ -65,9 +66,10 @@ export const seatsCopy = {
     offered: (name: string, date: string, zone?: string): string =>
       `Offered to ${name} on ${zonedDayMonth(date, zone)}. Waiting for them.`,
     withdraw: 'Withdraw',
+    withdrawing: 'Withdrawing…',
     declined: (name: string): string => `${name} declined.`,
     noCandidates: 'No other officer has a Forever Sixty account yet.',
-    failed: 'The offer did not send. Try again.',
+    failed: withRetry('The offer did not send.'),
     // An addition: the design spec has no string for transfer_in_progress.
     // Controller's 2026-10-27 persona-round wording: name the open offer when there is one.
     inProgressOffer: (name: string): string => `An offer to ${name} is already waiting. Withdraw it first.`,
@@ -90,5 +92,6 @@ export const seatsCopy = {
     take: 'Take over the plan',
     opening: 'Opening checkout…',
     notNow: 'Not now',
+    declining: 'Declining…',
   },
 } as const;

@@ -1,11 +1,16 @@
 <!-- web/src/components/ui/FeedRow.svelte -->
-<!-- One feed line (home B spec 2026-11-07 P11): an icon or crest, a sentence in the body face with
+<!-- One feed line (home B spec 2026-11-07 P11): a crest, item or spell icon (from `lead`), a sentence in the body face with
      its names in their colours, and at the right the time and a caps kind (under the sentence on a
      phone). A link to the thing it
      is about, on a --color-line-soft hairline, no box; hover is the S2 ground. `fresh` slides the
      newest line in when the reader allows motion. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import type { FeedLead } from '../../lib/home/feed';
+  import { iconUrl } from '../../lib/ui/assets';
+  import Crest from './Crest.svelte';
+  import ItemIcon from './ItemIcon.svelte';
+  import SpellIcon from './SpellIcon.svelte';
 
   let {
     href,
@@ -13,6 +18,8 @@
     kind,
     fresh = false,
     lead,
+    build,
+    leadSize = 32,
     testid,
     children,
   }: {
@@ -21,7 +28,12 @@
     /** The row's tag under the time ("Your guild"); absent, the time alone. */
     kind?: string;
     fresh?: boolean;
-    lead: Snippet;
+    /** The row's crest, item or spell icon, as data (the feed row's own fields). */
+    lead: FeedLead;
+    /** The client build the icon files are under. */
+    build: string;
+    /** The lead's size; the column is 40 px. */
+    leadSize?: number;
     testid?: string;
     /** The sentence. */
     children: Snippet;
@@ -29,7 +41,17 @@
 </script>
 
 <a class="ui-feed-row" class:fresh {href} data-testid={testid}>
-  <span class="ui-feed-lead">{@render lead()}</span>
+  <span class="ui-feed-lead"
+    >{#if lead.crest !== null}<Crest
+        cls={lead.crest}
+        size={leadSize}
+      />{:else if lead.quality !== null}<ItemIcon
+        icon={lead.icon ?? undefined}
+        quality={lead.quality}
+        {build}
+        size={leadSize}
+      />{:else}<SpellIcon url={iconUrl(build, lead.icon)} size={leadSize} />{/if}</span
+  >
   <span class="ui-feed-text">{@render children()}</span>
   <span class="ui-feed-when"
     >{when}{#if kind}<span class="ui-feed-kind">{kind}</span>{/if}</span

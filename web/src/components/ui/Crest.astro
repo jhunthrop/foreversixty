@@ -1,0 +1,32 @@
+---
+// web/src/components/ui/Crest.astro
+// ui/Crest.svelte's static twin for the server-rendered pages (guides, tiers, the coach sample):
+// the same image choice (lib/class-crest.ts crestImage) and the same styles/crest.css look.
+import { CREST_CLASS, crestImage } from '../../lib/class-crest';
+
+interface Props {
+  /** A class name or slug. */
+  cls: string;
+  size: number;
+  /** Above the fold: skip the lazy deferral (never fetchpriority high, see crest.css). */
+  eager?: boolean;
+  class?: string;
+  testid?: string;
+}
+
+const { cls, size, eager = false, class: extra, testid } = Astro.props;
+const image = crestImage(cls, size);
+---
+
+<img
+  src={image.src}
+  alt=""
+  width={size}
+  height={size}
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? undefined : 'low'}
+  decoding="async"
+  class:list={[CREST_CLASS, { 'crest-none': !image.known }, extra]}
+  style={`--c: ${image.ring};${extra === undefined ? ` width: ${size}px; height: ${size}px;` : ''}`}
+  data-testid={testid}
+/>

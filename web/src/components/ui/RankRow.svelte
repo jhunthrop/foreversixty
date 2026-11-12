@@ -9,6 +9,7 @@
   import type { Snippet } from 'svelte';
   import { titleColor } from '../../lib/ui/primitives';
   import type { RankFigure, RankGap, RankLink, RankNote } from '../../lib/ui/rank-list';
+  import Crest from './Crest.svelte';
   import Meter from './Meter.svelte';
   import './rank-list.css';
 
@@ -29,7 +30,6 @@
     links = [],
     selected = false,
     key,
-    lead,
     tag,
     nameTestid,
     testid,
@@ -42,7 +42,8 @@
     label?: string;
     name: string;
     href: string;
-    /** The name's and the bar's colour; without one both are the strong text and gold. */
+    /** The crest, the name's and the bar's colour; without one no crest, and the name and bar are
+     *  the strong text and gold. */
     classSlug?: string;
     sub?: string;
     /** A third line under the name ("Stat weights less certain"). */
@@ -61,8 +62,6 @@
     selected?: boolean;
     /** `data-rank-key`: what a script finds the row by to mark it. */
     key?: string;
-    /** The crest. */
-    lead?: Snippet;
     /** After the name (a "Your spec" Tag). */
     tag?: Snippet;
     nameTestid?: string;
@@ -107,7 +106,7 @@
 >
   <span class="ui-rr-rank" style:color={rankColor} data-testid="rank-rank">{rank}</span>
   <span class="ui-rr-lead"
-    >{#if lead}{@render lead()}{/if}</span
+    >{#if classSlug !== undefined}<Crest cls={classSlug} size={36} class="ui-rr-crest" />{/if}</span
   >
   <span class="ui-rr-name">
     <span class="ui-rr-title"

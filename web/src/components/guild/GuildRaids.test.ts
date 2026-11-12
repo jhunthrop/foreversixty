@@ -183,7 +183,16 @@ describe('GuildRaids raid nights linked to raids', () => {
   function cell(body: string, testid: string): string {
     const at = body.indexOf(`data-testid="${testid}"`);
     expect(at).toBeGreaterThan(-1);
-    return text(body.slice(body.indexOf('>', at) + 1, body.indexOf('</span>', at)));
+    const start = body.indexOf('>', at) + 1;
+    // The cell's own closing tag: skip the spans nested inside it (the character name).
+    let depth = 1;
+    const tags = /<span\b|<\/span>/g;
+    tags.lastIndex = start;
+    for (let tag = tags.exec(body); tag !== null; tag = tags.exec(body)) {
+      depth += tag[0] === '</span>' ? -1 : 1;
+      if (depth === 0) return text(body.slice(start, tag.index));
+    }
+    return text(body.slice(start));
   }
 
   it('opens a night in place: its raid page by raid_id, with the id the deep link targets', () => {

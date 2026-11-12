@@ -12,6 +12,7 @@
      total under every window, the same lie Interrupts and Dispels tell. It carries the
      `†` mark unconditionally, exactly as ExchangeTable's Count does. -->
 <script lang="ts">
+  import EmptyState from '../ui/EmptyState.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { clearChartCursor, cursorMsFor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel } from '../../lib/chart/time-axis';
@@ -22,7 +23,7 @@
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import { clockDuration } from '../../lib/format/duration';
   import { compact, percent } from '../../lib/format/number';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -223,9 +224,7 @@
       />{/if}{/snippet}
   <div>
     {#if rows.length === 0}
-      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
-        No resource changes in this window.
-      </p>
+      <EmptyState inset message="No resource changes in this window." testid="table-empty" />
     {:else}
       <StatTable
         {columns}
@@ -246,10 +245,7 @@
             phone={`${compact(track.spent)} spent`}
             testid={`resource-${track.guid}-${track.power_type}`}
           >
-            {#snippet icon()}<ClassCrestRing
-                characterClass={classSlugOf(classOf.get(track.guid)) ?? ''}
-                size={28}
-              />{/snippet}
+            {#snippet icon()}<Crest cls={classSlugOf(classOf.get(track.guid)) ?? ''} size={28} />{/snippet}
             {#snippet name()}<span style:color={colour}>{splitUnitName(track.name).name}</span>{/snippet}
             {#snippet sub()}
               <!-- A block, so the figures wrap between pairs on a phone (each pair stays whole). -->

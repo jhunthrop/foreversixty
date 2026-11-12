@@ -6,10 +6,8 @@
   import activeBuild from '../../../data/active-build.json';
   import { minuteClock } from '../../../lib/ui/minute-clock.svelte';
   import { feedCopy, fetchFeed, whenText, type FeedRow } from '../../../lib/home/feed';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import FeedSentence from '../../home/FeedSentence.svelte';
   import FeedRowUi from '../../ui/FeedRow.svelte';
-  import ItemIcon from '../../ui/ItemIcon.svelte';
   import Section from '../../ui/Section.svelte';
 
   let { now }: { now?: Date } = $props();
@@ -33,20 +31,11 @@
           href={row.href}
           when={whenText(row, clock.now)}
           kind={feedCopy.tags[row.tag]}
+          lead={row}
+          build={activeBuild.build}
+          leadSize={40}
           testid="guild-overview-activity-row"
         >
-          {#snippet lead()}
-            {#if row.crest !== null}
-              <ClassCrestRing characterClass={row.crest} size={40} />
-            {:else}
-              <ItemIcon
-                icon={row.icon ?? undefined}
-                quality={row.quality ?? 1}
-                build={activeBuild.build}
-                size={40}
-              />
-            {/if}
-          {/snippet}
           <FeedSentence segments={row.segments} />
         </FeedRowUi>
       {/each}

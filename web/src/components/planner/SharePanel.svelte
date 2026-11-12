@@ -10,6 +10,7 @@
   import Switch from '../ui/Switch.svelte';
   import { tick, untrack } from 'svelte';
   import { plannerCopy } from '../../lib/planner/copy';
+  import { CopyState } from '../../lib/ui/copy-state.svelte';
   import { ensureItems } from '../../lib/planner/items-ready';
   import { unsavedPlannerHref } from '../../lib/planner/current-character-planner';
   import {
@@ -57,16 +58,12 @@
   let outcome = $state<SaveOutcome | null>(null);
   let cardBroken = $state(false);
   /**
-   * Which button last copied, or null. One flag for every copy button rather than one each:
-   * only one thing can be on the clipboard, so only one button should say so, and every
-   * button then behaves identically instead of the panel having three copy idioms.
-   *
-   * No timer. "Copied" stands until the build changes, which the $effect below already
-   * watches for -- and it is true for exactly that long, because the text on the clipboard
-   * goes stale at exactly that moment. A timed revert would need a cleared handle, a named
-   * duration and a cleanup on destroy to say something less accurate.
+   * Which button last copied: one CopyState for every copy button, since only one thing can be
+   * on the clipboard, so only one button says so. "Copied" clears after two seconds (owner
+   * ruling 2026-11-10), and sooner when the build changes and the copied text goes stale.
    */
-  let copiedFrom = $state<'link' | 'unsaved' | 'text' | null>(null);
+  const copier = new CopyState();
+  $effect(() => () => copier.dispose());
 
   // Same story for the confirm step's "unsaved link" alternative: path and query only, no
   // origin (`window.location.origin` is only ever read inside the click handler below, so
@@ -86,13 +83,8 @@
     return plannerCopy.shareTextSummary(store.raceRow.name, store.classRow.name, trees, store.level);
   });
 
-  async function copyToClipboard(text: string, source: 'link' | 'unsaved' | 'text'): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(text);
-      copiedFrom = source;
-    } catch {
-      copiedFrom = null;
-    }
+  function copyToClipboard(text: string, source: 'link' | 'unsaved' | 'text'): Promise<void> {
+    return copier.copy(text, source);
   }
 
   function copyUnsavedLink(): void {
@@ -160,7 +152,7 @@
     void draftOrNull();
     void includeSim;
     outcome = null;
-    copiedFrom = null;
+    copier.reset();
     cardState = 'idle';
     cardDps = '';
     cardVersion = '';
@@ -295,7 +287,7 @@
   async function share(): Promise<void> {
     saving = true;
     cardBroken = false;
-    copiedFrom = null;
+    copier.reset();
     // Stamped onto this save's own attachSim call, below, before anything about it can be
     // stale -- a later share() bumps this past whatever a still-running sim was stamped
     // with, which is how that sim's eventual result recognises it no longer owns the card.
@@ -348,7 +340,7 @@
         disabled={textSummary === ''}
         onclick={() => copyToClipboard(textSummary, 'text')}
         testid="copy-as-text"
-        >{copiedFrom === 'text' ? plannerCopy.copiedText : plannerCopy.copyAsText}</Button
+        >{copier.copied('text') ? plannerCopy.copiedText : plannerCopy.copyAsText}</Button
       >
     </div>
     <div
@@ -394,7 +386,7 @@
           <Button onclick={cancelShare} testid="share-confirm-cancel">{plannerCopy.shareConfirmCancel}</Button
           >
           <Button disabled={unsavedHref === ''} onclick={copyUnsavedLink} testid="share-confirm-copy-unsaved"
-            >{copiedFrom === 'unsaved'
+            >{copier.copied('unsaved')
               ? plannerCopy.copiedUnsavedLink
               : plannerCopy.shareConfirmCopyUnsaved}</Button
           >
@@ -417,7 +409,7 @@
         <div class="pl-acts">
           <a href={saved.url} class="pl-url" data-testid="share-link">{saved.url}</a>
           <Button size="sm" onclick={() => copyToClipboard(saved.url, 'link')}
-            >{copiedFrom === 'link' ? plannerCopy.copied : plannerCopy.copyLink}</Button
+            >{copier.copied('link') ? plannerCopy.copied : plannerCopy.copyLink}</Button
           >
         </div>
         {#if cardState !== 'idle'}

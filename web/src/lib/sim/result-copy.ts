@@ -4,6 +4,7 @@
 // it changed them): the band, Worth knowing, Damage by ability, the DPS spread and the page's errors. Its own
 // module rather than more keys on copy.ts, which is already past the 800-line ceiling. Settings
 // has its own (settings-copy.ts), because that card is its own chunk.
+import { uiCopy } from '../ui/copy';
 
 export const bandCopy = {
   eyebrow: 'SAVED SIM',
@@ -16,8 +17,6 @@ export const bandCopy = {
   error: 'error',
   openInSim: 'Open in the sim',
   copyLink: 'Copy link',
-  copied: 'Copied',
-  copyFailed: 'Copy failed',
   facts: {
     fight: 'Fight',
     targets: 'Targets',
@@ -119,6 +118,6 @@ export const pageErrorCopy = {
   label: 'SAVED SIM',
   title: 'This sim did not load',
   body: 'The server did not answer. Your link is fine; try again in a moment.',
-  retry: 'Try again',
+  retry: uiCopy.retry,
   partFailed: "This part of the page didn't load.",
 } as const;

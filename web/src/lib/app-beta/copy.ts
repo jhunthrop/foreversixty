@@ -4,6 +4,7 @@
 // src/data/apps.json has a store link, the store buttons. design/mocks/ws_app_beta.py reads them
 // through design/mocks/app_beta_facts.mjs.
 import type { Platform } from './platform';
+import { uiCopy } from '../ui/copy';
 
 /** The page's own address, the one the QR encodes. */
 export const APP_PAGE_URL = 'https://foreversixty.gg/app';
@@ -32,8 +33,8 @@ export const appBetaCopy = {
   submitting: 'Signing up',
   consent: "We'll only email you about the app beta.",
   invalidEmail: 'Enter one email address, like you@example.com.',
-  failed: "That didn't go through. Try again in a moment.",
-  tooMany: 'Too many sign-ups from here. Try again in an hour.',
+  failed: `That didn't go through. ${uiCopy.retry} in a moment.`,
+  tooMany: `Too many sign-ups from here. ${uiCopy.retry} in an hour.`,
   /** The one line after a send, a new address or a repeat alike (the API tells them apart to no one). */
   received: (platform: Platform): string =>
     `You're on the list for ${PLATFORM_NAMES[platform]}. We'll email you when the beta opens.`,

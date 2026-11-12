@@ -1,5 +1,5 @@
 // web/src/components/guild/RaidChip.test.ts
-// The spec 3.6 chip table, rendered with svelte/server: text and recipe per status and per
+// The spec 3.6 chip table, rendered with svelte/server: text and Tag tone per status and per
 // viewer answer.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
@@ -17,27 +17,24 @@ function chip(props: ChipProps): { text: string; tag: string } {
   return { text, tag };
 }
 
-const KILL = 'pill-community';
+const KILL = 'data-tone="success"';
 
 describe('RaidChip status', () => {
   it.each([
-    ['planned', 'Planned', 'pill-site'],
-    ['locked', 'Locked', 'pill-sample'],
+    ['planned', 'Planned', 'data-tone="gold"'],
+    ['locked', 'Locked', 'data-tone="muted"'],
     ['done', 'Done', KILL],
-    ['ended', 'Ended', 'pill-sample'],
+    ['ended', 'Ended', 'data-tone="muted"'],
   ])('%s reads %s on %s', (status, text, recipe) => {
     const out = chip({ kind: 'status', status });
     expect(out.text).toBe(text);
-    expect(out.tag).toContain('pill ');
     expect(out.tag).toContain(recipe);
   });
 
   it('draws cancelled in the failure colour', () => {
     const out = chip({ kind: 'status', status: 'cancelled' });
     expect(out.text).toBe('Cancelled');
-    expect(out.tag).toContain('text-wipe');
-    expect(out.tag).toContain('bg-wipe/14');
-    expect(out.tag).toContain('border-wipe/35');
+    expect(out.tag).toContain('data-tone="danger"');
   });
 });
 
@@ -51,14 +48,14 @@ describe('RaidChip viewer', () => {
   it('reads Bench and Out without a role, on the sample recipe', () => {
     const bench = chip({ kind: 'viewer', state: 'bench', role: 'dps' });
     expect(bench.text).toBe('Bench');
-    expect(bench.tag).toContain('pill-sample');
+    expect(bench.tag).toContain('data-tone="muted"');
     expect(chip({ kind: 'viewer', state: 'out', role: 'dps' }).text).toBe('Out');
   });
 
   it('reads Not signed up in gold while unsigned', () => {
     const out = chip({ kind: 'viewer', state: null });
     expect(out.text).toBe('Not signed up');
-    expect(out.tag).toContain('pill-site');
+    expect(out.tag).toContain('data-tone="gold"');
   });
 
   it('reads In alone on a guild event, which counts no roles (guild round 3)', () => {

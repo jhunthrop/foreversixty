@@ -3,7 +3,8 @@
 // Home, round 5 (design/specs/2026-11-09-directions.md "Home"; mocks design/mocks/directions/png/
 // g-home-*; the parity gate in tests/e2e/parity-home.spec.ts). Signed out, server-rendered on the
 // camp-road hero: "Pick your class" with Sign in beside it, the nine classes leading, then Latest
-// on Forever with the rail beside it: How to start and the raid plaque (the first raids opening). Signed in, the HomeSignedIn island
+// on Forever with the rail beside it: How to start and the raid plaque (the first raids opening), and
+// at the foot the site's own words (HomeAbout: what it does, BiS by role, the build). Signed in, the HomeSignedIn island
 // draws the selected character; the session hint hides the signed-out page before paint
 // (global.css, HOME_OUT_ATTR). The feed's floor of real dated site events is built here, at build
 // time. After an account deletion (`/?deleted=1`) a one-time notice sits under the head.
@@ -17,13 +18,17 @@ import { buildFloor } from '../lib/home/floor';
 import { floorInputs, raidsOpenIso } from '../lib/home/floor-load';
 import { loadRaidFacts } from '../lib/home/raid-facts-load';
 import PageHeader from '../components/ui/PageHeader.svelte';
-import HomeClassPicker from '../components/home/HomeClassPicker.svelte';
+import ClassPicker from '../components/ui/ClassPicker.svelte';
+import Plate from '../components/ui/Plate.svelte';
 import HomeDeletedNotice from '../components/home/HomeDeletedNotice.svelte';
 import HomeFeed from '../components/home/HomeFeed.svelte';
 import HomeFirstRaids from '../components/home/HomeFirstRaids.svelte';
 import HomeGrid from '../components/home/HomeGrid.svelte';
 import HomeHowToStart from '../components/home/HomeHowToStart.svelte';
 import HomeSignedIn from '../components/home/HomeSignedIn.svelte';
+import HomeAbout from '../components/home/HomeAbout.svelte';
+import { aboutView } from '../lib/home/about';
+import { loadAboutFacts } from '../lib/home/about-load';
 import activeBuild from '../data/active-build.json';
 
 const now = new Date();
@@ -41,6 +46,7 @@ const changelog = (await getCollection('changelog')).map((e) => ({
 const floor = buildFloor(floorInputs(guides, changelog, now));
 const signInHref = battlenetStartUrl('/account?signed_in=1');
 const raids = loadRaidFacts();
+const about = aboutView(loadAboutFacts(raidsOpen));
 ---
 
 <Base title={SITE_NAME} description={HOME_DESCRIPTION} path="/" art="hero">
@@ -49,7 +55,9 @@ const raids = loadRaidFacts();
       <PageHeader title={homeCopy.pickClass} art="hero" />
       <HomeDeletedNotice client:idle-after-load />
       <HomeGrid>
-        <HomeClassPicker slot="lead" headless />
+        <Plate slot="lead" flush={false} label={homeCopy.pickClass} testid="home-class-picker">
+          <ClassPicker testidPrefix="home-class-" />
+        </Plate>
         <HomeFeed
           client:idle-after-load
           signedIn={false}
@@ -58,6 +66,7 @@ const raids = loadRaidFacts();
         />
         <HomeHowToStart slot="rail" {signInHref} />
         <HomeFirstRaids slot="rail" client:idle-after-load {raidsOpen} {raids} build={activeBuild.build} />
+        <HomeAbout slot="foot" view={about} />
       </HomeGrid>
     </div>
     <HomeSignedIn client:idle-after-load {floor} {raidsOpen} {raids} />

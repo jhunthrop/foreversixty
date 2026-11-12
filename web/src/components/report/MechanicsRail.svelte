@@ -10,7 +10,7 @@
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { Summary } from '../../lib/report/types';
   import { classTone } from '../../lib/ui/primitives';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
@@ -28,7 +28,7 @@
       {#each clean as player (player.guid)}
         {@const slug = classSlugOf(classOf.get(player.guid)) ?? ''}
         <Row title={splitUnitName(player.name).name} titleTone={classTone(slug)} density="slim" open>
-          {#snippet lead()}<ClassCrestRing characterClass={slug} size={24} />{/snippet}
+          {#snippet lead()}<Crest cls={slug} size={24} />{/snippet}
         </Row>
       {/each}
     {/if}

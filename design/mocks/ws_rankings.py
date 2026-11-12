@@ -43,9 +43,9 @@ PAGE_CSS = '''<style>
 .legend b{font:700 13px/20px var(--font-body)}
 .pager{display:flex;gap:16px;align-items:center;justify-content:flex-end;padding:12px 20px 16px;border-top:1px solid var(--line-soft);font-size:14px}
 .pin{border-bottom:1px solid var(--line)}
-.empty{display:flex;flex-direction:column;gap:4px;padding:4px 20px 20px}.empty .ln{color:var(--strong);font-weight:600}
+.empty{padding:4px 20px 20px}.empty .es{display:flex;flex-direction:column;gap:4px;padding:4px 0}.empty .ln{color:var(--strong);font-weight:600}
 .empty .fl{font-size:14px;line-height:20px;color:var(--muted)}.empty .act{display:flex;gap:8px 20px;align-items:center;flex-wrap:wrap;margin-top:12px}
-.else{border-top:1px solid var(--line-soft)}.else .t-label{display:block;padding:12px 20px 0}
+.else{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft)}.else .t-label{display:block;padding:12px 20px 0}
 .encs{padding:0 20px 8px}.ptr{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:16px}
 .you-n{display:flex;flex-direction:column;gap:4px;min-height:88px}.you-n .kv{margin-top:12px}.you-n p.go{margin-top:12px}
 
@@ -134,8 +134,10 @@ def your_rank(answer: dict, unranked: bool = False) -> str:
 def empty_block(line: str, fill: str, widen: bool = False, elsewhere: str = '') -> str:
     w = Link(escape(EMPTY['widen']) + ' &rsaquo;') if widen else ''
     tail = f'<div class="else">{elsewhere}</div>' if elsewhere else ''
-    return (f'<div class="empty"><p class="ln">{escape(line)}</p><p class="fl">{escape(fill)}</p>'
-            f'<div class="act">{Button(escape(EMPTY["action"]), primary=True, small=True)}{w}</div></div>{tail}')
+    # RankingsEmpty.svelte: the padded wrapper, ui/EmptyState's `fill` shape (py-1), and the bosses ranked elsewhere
+    # as its children, behind a hairline inside the same padding.
+    return (f'<div class="empty"><div class="es"><p class="ln">{escape(line)}</p><p class="fl">{escape(fill)}</p>'
+            f'<div class="act">{Button(escape(EMPTY["action"]), primary=True, small=True)}{w}</div>{tail}</div></div>')
 
 
 def encounter_rows(encs: list[dict]) -> str:

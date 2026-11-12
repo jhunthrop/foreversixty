@@ -117,7 +117,9 @@ test('the plot answers the arrow keys, Home and End, and a hover previews withou
   await expect(value).toHaveText('1830');
 });
 
-test('the boss picker is one tab stop with roving focus; Enter selects', async ({ page }) => {
+test('the boss picker is the shared tab strip: one tab stop, arrows move, select and wrap', async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 800 });
   await openHistory(page);
   const pills = page.getByTestId('history-pill');
@@ -129,8 +131,8 @@ test('the boss picker is one tab stop with roving focus; Enter selects', async (
   await expect(pills.nth(1)).toBeFocused();
   await page.keyboard.press('ArrowLeft');
   await expect(pills.nth(0)).toBeFocused();
-  await page.keyboard.press('ArrowRight');
-  await page.keyboard.press('Enter');
+  await page.keyboard.press('ArrowLeft');
+  await expect(pills.nth(1)).toBeFocused();
   await expect(pills.nth(1)).toHaveAttribute('aria-selected', 'true');
   await expect(pills.nth(1)).toHaveAttribute('tabindex', '0');
   await expect(page.getByTestId('history-parse-one-kill')).toBeVisible();

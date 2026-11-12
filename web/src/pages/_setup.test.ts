@@ -285,7 +285,7 @@ describe('/setup: what it does in the game (L8.3)', () => {
 
   it('folds on a phone behind one summary row, open from 768 (U5)', () => {
     const surfaces = section('setup-surfaces');
-    expect(surfaces).toMatch(/<details class="setup-surf-fold[^"]*"[^>]*><summary[^>]*>/);
+    expect(surfaces).toMatch(/<button[^>]*setup-surf-fold[^>]*aria-expanded="false"[^>]*>/);
     expect(surfaces).toContain(addonCopy.surfacesShow);
   });
 

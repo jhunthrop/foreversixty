@@ -143,9 +143,10 @@ func Render(in Input) ([]byte, error) {
 	const fanY, treesY, leadY, titleY = Height - marginY - 34, Height - marginY - 92, Height - marginY - 138, Height - marginY - 204
 	drawText(img, f.body, inkText, marginX, fanY, fit(f.body, copyBuild+lineJoin+copyFanLine, Width-2*marginX))
 	x := marginX
-	if crest, err := sheet.EmbeddedCrest(in.ClassSlug); err == nil {
-		top := (titleY - 54 + leadY - crestPx + 8) / 2
-		brand.PlaceImage(img, image.Pt(marginX, top), crestPx, crestPx, crest, nil)
+	// The crest is the web's ringed crest (sheet.CrestImage), never the bare art; a slug that is
+	// not a class draws the LX seal in a muted ring.
+	if crest, err := sheet.CrestImage(in.ClassSlug); err == nil {
+		brand.PlaceImage(img, crestOrigin(), crestPx, crestPx, crest, nil)
 		x += crestPx + crestGap
 	}
 	maxW := Width - marginX - x
@@ -160,6 +161,12 @@ func Render(in Input) ([]byte, error) {
 	drawText(img, f.lead, inkCream2, lx, leadY, fit(f.lead, stats, Width-marginX-lx))
 	drawTitle(img, f, x, titleY, title, maxW)
 	return encode(img)
+}
+
+// crestOrigin is the crest square's top-left: beside the title and the line under it.
+func crestOrigin() image.Point {
+	const leadY, titleY = Height - marginY - 138, Height - marginY - 204
+	return image.Pt(marginX, (titleY-54+leadY-crestPx+8)/2)
 }
 
 // treesText is the talent split as players read it, each tree named: "31 Arms · 0 Fury · 20

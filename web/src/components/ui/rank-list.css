@@ -156,6 +156,10 @@
 .ui-rr-lead {
   display: flex;
 }
+.ui-rr-crest {
+  width: 36px;
+  height: 36px;
+}
 .ui-rr-name {
   display: flex;
   flex-direction: column;
@@ -476,10 +480,9 @@
     padding: 6px 10px 6px 8px;
   }
   /* The crest at 30 and the name at 15 px, so a full spec name holds one line at 390. */
-  .ui-rank-list[data-compact='true'] .ui-rr-lead > img {
-    /* over the crest's own inline size (ClassCrest.astro has no 30) */
-    width: 30px !important;
-    height: 30px !important;
+  .ui-rank-list[data-compact='true'] .ui-rr-crest {
+    width: 30px;
+    height: 30px;
   }
   .ui-rank-list[data-compact='true'] .ui-rr-link,
   .ui-rank-list[data-compact='true'] .ui-rr-fig {

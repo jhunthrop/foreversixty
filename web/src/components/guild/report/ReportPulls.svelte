@@ -5,6 +5,7 @@
      Inspector at the plate's right (the first wipe with deaths shows at once), below 1024 inline
      under the tapped row. The rows' action is the title's button, stretched over the row. -->
 <script lang="ts">
+  import EmptyState from '../../ui/EmptyState.svelte';
   import { MediaQuery } from 'svelte/reactivity';
   import activeBuild from '../../../data/active-build.json';
   import type { RaidReport } from '../../../lib/guild/attendance-contract';
@@ -81,7 +82,7 @@
 >
   <div role="group" aria-label={copy.pulls.caption} data-testid="raid-pulls">
     {#if rows.length === 0}
-      <p class="text-muted p-4 text-[14px]" data-testid="raid-pulls-empty">{copy.pulls.none}</p>
+      <EmptyState inset message={copy.pulls.none} testid="raid-pulls-empty" />
     {:else}
       <div class="flex min-w-0">
         <div class="min-w-0 flex-1">

@@ -12,6 +12,7 @@
 </script>
 
 <script lang="ts">
+  import { CREST_CLASS } from '../../lib/class-crest';
   import Icon from './Icon.svelte';
   import { ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
   import { selectCopy } from '../../lib/ui/copy';
@@ -276,18 +277,15 @@
     <!-- aria-disabled marks a disabled field's dimmed face as the disabled control's text. -->
     <span class="sel-face" aria-hidden="true" aria-disabled={disabled ? 'true' : undefined}>
       {#if picked?.icon !== undefined && !loading}
-        <span
-          class="sel-icon"
-          data-kind={picked.icon.kind}
-          style:--sel-quality={qualityBorder(picked.icon)}
-          style:--sel-ring={crestRing(picked.icon, picked.colour)}
-        >
+        <span class="sel-icon" data-kind={picked.icon.kind} style:--sel-quality={qualityBorder(picked.icon)}>
           {#if picked.icon.src !== ''}<img
               src={picked.icon.src}
               alt=""
               width="20"
               height="20"
               decoding="async"
+              class={picked.icon.kind === 'crest' ? CREST_CLASS : undefined}
+              style:--c={crestRing(picked.icon, picked.colour)}
             />{/if}
         </span>
       {/if}

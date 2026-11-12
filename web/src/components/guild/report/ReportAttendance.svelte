@@ -17,7 +17,7 @@
   import { fixOptions, fixRows, FIX_STATUSES, nightNames } from '../../../lib/guild/report-attendance-view';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
   import { classTone, LINK, titleColor } from '../../../lib/ui/primitives';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Crest from '../../ui/Crest.svelte';
   import Disclosure from '../../ui/Disclosure.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
@@ -95,7 +95,7 @@
             open
             density="slim"
           >
-            {#snippet lead()}<ClassCrestRing characterClass={model.row.class} size={24} />{/snippet}
+            {#snippet lead()}<Crest cls={model.row.class} size={24} />{/snippet}
             {#snippet subContent()}
               <span class="text-text block" data-testid="raid-attendance-outcome">{model.effective}</span>
               {#if model.auto !== null}

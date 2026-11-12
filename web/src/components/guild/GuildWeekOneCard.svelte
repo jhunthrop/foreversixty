@@ -6,6 +6,8 @@
      own: the Overview's one Plate is the next raid. The words and branches are lib/guild/week-one.ts;
      `loading` and `error` hold the section's height so the page does not shift. -->
 <script lang="ts">
+  import CharacterName from '../ui/CharacterName.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import activeBuild from '../../data/active-build.json';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import {
@@ -24,7 +26,6 @@
   } from '../../lib/guild/week-one';
   import type { GuildRosterEntry, NextRaidView } from '../../lib/guild/api';
 
-  import { classColorVar } from '../../lib/report/format';
   import { REGION } from '../../lib/ui/regions';
   import { viewerLocale } from '../../lib/dates';
   import RaidsCountdown from '../RaidsCountdown.svelte';
@@ -130,7 +131,7 @@
   {:else}
     <div class="flex flex-col gap-4">
       {#if spreadIsEmpty(spread)}
-        <p class="text-muted text-[14px]" data-testid="guild-week-one-empty">{weekOneCopy.empty}</p>
+        <EmptyState message={weekOneCopy.empty} testid="guild-week-one-empty" />
       {:else}
         <div class="flex flex-col gap-2">
           <Tally items={levelTally(spread)} testid="guild-week-one-spread" />
@@ -157,10 +158,10 @@
           class={step.action === null ? 'text-muted text-[14px]' : 'text-[15px] leading-6'}
           data-testid="guild-week-one-sentence"
         >
-          {#if step.name !== null && character !== null}<span
-              class="font-semibold"
-              style={`color:${classColorVar(character.class)}`}>{step.name}</span
-            >{/if}{step.text}
+          {#if step.name !== null && character !== null}<CharacterName
+              name={step.name}
+              cls={character.class}
+            />{/if}{step.text}
         </p>
         <div class="flex flex-wrap items-center gap-4">
           {#if step.invite && inviteHref !== ''}

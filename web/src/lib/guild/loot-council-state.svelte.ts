@@ -28,6 +28,7 @@ import {
 } from './loot-council-api';
 import { defaultNight, tableDrop, type DropRow } from './loot-council-view';
 import { refusalGate } from './officer-tools';
+import { withRetry } from '../ui/copy';
 
 export interface LootCouncilDeps {
   nights: (guildId: number) => Promise<LootNights>;
@@ -57,19 +58,19 @@ export const LOOT_COUNCIL_API: LootCouncilDeps = {
 export const WRITE_COPY = {
   vote: {
     ended: "Vote not recorded. This guild's officer tools have ended.",
-    failed: 'That vote did not go through. Try again.',
+    failed: withRetry('That vote did not go through.'),
   },
   award: {
     ended: "Not awarded. This guild's officer tools have ended.",
-    failed: 'That award did not go through. Try again.',
+    failed: withRetry('That award did not go through.'),
   },
   undo: {
     ended: "Not undone. This guild's officer tools have ended.",
-    failed: 'That did not go through. Try again.',
+    failed: withRetry('That did not go through.'),
   },
   flag: {
     ended: "Not saved. This guild's officer tools have ended.",
-    failed: 'That did not save. Try again.',
+    failed: withRetry('That did not save.'),
   },
   closed: 'That drop was just awarded.',
 } as const;

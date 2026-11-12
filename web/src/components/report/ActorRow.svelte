@@ -11,7 +11,7 @@
   import Meter from '../ui/Meter.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import CoachRowLine from '../coach/CoachRowLine.svelte';
-  import ClassIcon from './ClassIcon.svelte';
+  import Crest from '../ui/Crest.svelte';
 
   let {
     actor,
@@ -49,7 +49,7 @@
 </script>
 
 <StatRow {figures} {phone} testid={`actor-${actor.guid}`}>
-  {#snippet icon()}<ClassIcon className={actor.class} size={28} />{/snippet}
+  {#snippet icon()}<Crest cls={actor.class} size={28} />{/snippet}
   {#snippet name()}{#if href !== undefined}<a
         {href}
         class="font-bold hover:underline [@media(pointer:coarse)]:-my-[13px] [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-[13px]"

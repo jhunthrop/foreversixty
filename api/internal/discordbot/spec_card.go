@@ -130,7 +130,7 @@ func (s *Service) specCard(in specCardIn) (Reply, error) {
 	}
 	embed := notify.Embed{
 		Title: guideCopy.SpecTitle, Description: lead, Color: classColorOf(in.char.Class),
-		Thumbnail: s.d.PublicBaseURL + "/icons/hd/crests/" + in.char.Class + ".webp",
+		Thumbnail: s.crestURL(in.char.Class),
 		Footer:    cardFooter, FooterIcon: s.sealURL(), Timestamp: s.now(),
 	}
 	sel := Component{Kind: KindStringSelect, CustomID: id, Placeholder: guideCopy.SpecPlaceholder, Options: options}

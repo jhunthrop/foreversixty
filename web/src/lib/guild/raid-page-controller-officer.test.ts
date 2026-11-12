@@ -55,7 +55,7 @@ describe('officer actions', () => {
         loadHome: officerHome,
         setStatus: reject,
         updateRaid: reject,
-        putSignup: reject,
+        saveSignup: reject,
       }),
     );
     await expect(c.saveEdit({} as Parameters<typeof c.saveEdit>[0])).resolves.toMatchObject({
@@ -92,8 +92,8 @@ describe('officer actions', () => {
   });
 
   it('sets a roster row with the spec role and keeps its note', async () => {
-    const putSignup = vi.fn(() => Promise.resolve({ raid: plannedRaid(), moved: null }));
-    const { c, stop } = await started(deps({ loadMe: officerMe, loadHome: officerHome, putSignup }));
+    const saveSignup = vi.fn(() => Promise.resolve({ raid: plannedRaid(), moved: null }));
+    const { c, stop } = await started(deps({ loadMe: officerMe, loadHome: officerHome, saveSignup }));
     const row = {
       character_key: 'us/pvp/mira',
       name: 'Mira',
@@ -108,7 +108,7 @@ describe('officer actions', () => {
       also: null,
     };
     await expect(c.setRosterState(row, 'bench')).resolves.toBe(true);
-    expect(putSignup).toHaveBeenCalledWith(2, '7', 'us/pvp/mira', {
+    expect(saveSignup).toHaveBeenCalledWith(2, '7', 'us/pvp/mira', {
       state: 'bench',
       role: 'dps',
       note: 'late',
@@ -131,14 +131,14 @@ describe('officer actions', () => {
       also: null,
     };
     const failing = await started(
-      deps({ loadMe: officerMe, loadHome: officerHome, putSignup: () => Promise.reject(new Error('x')) }),
+      deps({ loadMe: officerMe, loadHome: officerHome, saveSignup: () => Promise.reject(new Error('x')) }),
     );
     await expect(failing.c.setRosterState(row, 'in')).resolves.toBe(false);
     expect(failing.c.line).toEqual({ control: 'roster', message: raidCopy.officerRow.failed });
     failing.stop();
     const plan = new GuildApiError('plan', 403, 'guild_plan_required');
     const gated = await started(
-      deps({ loadMe: officerMe, loadHome: officerHome, putSignup: () => Promise.reject(plan) }),
+      deps({ loadMe: officerMe, loadHome: officerHome, saveSignup: () => Promise.reject(plan) }),
     );
     await gated.c.setRosterState(row, 'in');
     expect(gated.c.line).toEqual({

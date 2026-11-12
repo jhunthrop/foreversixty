@@ -12,11 +12,12 @@
   import { onMount } from 'svelte';
   import { classColorVar } from '../../lib/report/format';
   import { button } from '../../lib/ui/button';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Crest from '../ui/Crest.svelte';
   import ExportNotRead from '../character/ExportNotRead.svelte';
   import BisTooltipHost from '../BisTooltipHost.svelte';
   import GearDoll from '../character/GearDoll.svelte';
   import Section from '../ui/Section.svelte';
+  import Tag from '../ui/Tag.svelte';
   import { simCharacterHasGear } from '../../lib/addon-export';
   import { gearCopy } from '../../lib/gear/copy';
   import { averageItemLevel } from '../../lib/gear/paperdoll';
@@ -232,7 +233,7 @@
   <Section title={gearCopy.paperdoll.simHead} head={changeSource} panel testid="sim-character">
     <div class="flex flex-col gap-4">
       <div class="flex flex-wrap items-center gap-3">
-        <ClassCrestRing characterClass={character.class_slug} size={40} testid="sim-character-class-icon" />
+        <Crest cls={character.class_slug} size={40} testid="sim-character-class-icon" />
         {#if character.name !== ''}
           <span class="text-[17px] font-semibold" style={`color: ${colour}`} data-testid="paperdoll-name">
             {character.name}
@@ -244,7 +245,7 @@
             >{gearCopy.paperdoll.averageItemLevel(itemLevel)}</span
           >
         {/if}
-        <span class="pill pill-site" data-testid="paperdoll-source">{source}</span>
+        <Tag testid="paperdoll-source">{source}</Tag>
       </div>
       {#if !unread && gearKnown}
         {#snippet doll()}

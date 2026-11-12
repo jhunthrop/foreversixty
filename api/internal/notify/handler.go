@@ -62,7 +62,9 @@ type Service struct {
 	CookieSecure bool
 	// PublicBaseURL is the site origin the test message links to.
 	PublicBaseURL string
-	Log           *slog.Logger
+	// APIBaseURL is the API origin; the sim message's crest thumbnail is served from it.
+	APIBaseURL string
+	Log        *slog.Logger
 	// stateHandlers finish the flows other than the guild webhook; see OnState.
 	stateHandlers map[string]StateHandler
 }

@@ -17,6 +17,7 @@ import (
 	"github.com/getlantern/systray"
 	webview "github.com/webview/webview_go"
 
+	"github.com/jhunthrop/foreversixty/companion/internal/copygen"
 	"github.com/jhunthrop/foreversixty/companion/internal/icon"
 )
 
@@ -91,10 +92,10 @@ func Run(ctx context.Context, o Options) error {
 		systray.SetTooltip(tooltip(first.Line))
 		state := systray.AddMenuItem(first.Line, first.Line)
 		state.Disable()
-		open := systray.AddMenuItem("Open Forever Sixty", "Show the companion window")
-		reports := systray.AddMenuItem("Open my reports on the site", "Open your reports in the browser")
+		open := systray.AddMenuItem(copygen.TrayOpen, copygen.TrayOpenTip)
+		reports := systray.AddMenuItem(copygen.ReportsOpen, copygen.TrayReportsTip)
 		systray.AddSeparator()
-		quitItem := systray.AddMenuItem("Quit", "Stop logging and quit")
+		quitItem := systray.AddMenuItem(copygen.TrayQuit, copygen.TrayQuitTip)
 		// Each is rewritten only when what it shows changes.
 		shown := &first
 		go watchLine(ctx, TrayEvery, view, func(now trayView) {

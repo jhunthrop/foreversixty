@@ -6,7 +6,9 @@
 // sentence, the planner as the primary and the guides' builds as a link, then the 404's Pick your
 // class, so the page fills the one page frame (owner 2026-11-10) with the ways on to a build.
 import Base from '../layouts/Base.astro';
-import NotFoundClassPicker from '../components/not-found/NotFoundClassPicker.svelte';
+import { notFoundCopy } from '../lib/not-found/copy';
+import ClassPicker from '../components/ui/ClassPicker.svelte';
+import Section from '../components/ui/Section.svelte';
 import Button from '../components/ui/Button.svelte';
 import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
@@ -37,7 +39,9 @@ const sentence =
           </a>
         </div>
       </Plate>
-      <NotFoundClassPicker />
+      <Section title={notFoundCopy.pick} panel flush testid="not-found-classes">
+        <ClassPicker specLinks testidPrefix="not-found-class-" />
+      </Section>
     </Page>
   </main>
 </Base>

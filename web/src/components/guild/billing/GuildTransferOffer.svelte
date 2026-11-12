@@ -2,7 +2,6 @@
 <!-- The receiving officer's block, at the top of #billing (spec 3.2.6): a 2 px gold left rule, the
      offer sentence, Take over the plan (to Checkout in transfer mode) and Not now (declines). -->
 <script lang="ts">
-  import { button } from '../../../lib/ui/button';
   import { startCheckout } from '../../../lib/billing/api';
   import type { GuildPlanView, TransferView } from '../../../lib/billing/contract';
   import { guildBillingCopy } from '../../../lib/billing/guild-billing-copy';
@@ -14,7 +13,8 @@
     CONFIRM_ACTIONS,
     CONFIRM_BLOCK,
   } from '../../../lib/guild/billing-styles';
-  import { BUSY_CLASS } from '../../../lib/ui/busy';
+  import Button from '../../ui/Button.svelte';
+  import Spinner from '../../ui/Spinner.svelte';
 
   const copy = seatsCopy.receiver;
 
@@ -79,24 +79,26 @@
     <p class="text-[13px]" role="alert" data-testid="guild-transfer-offer-error">{error}</p>
   {/if}
   <div class={CONFIRM_ACTIONS}>
-    <button
-      type="button"
-      class="{button('primary')} {CONFIRM_ACTION_WIDTH} {opening ? BUSY_CLASS : ''}"
-      disabled={opening || declining}
-      aria-busy={opening}
+    <Button
+      tone="primary"
+      class={CONFIRM_ACTION_WIDTH}
+      busy={opening}
+      busyLabel={copy.opening}
+      disabled={declining}
       onclick={() => void take()}
-      data-testid="guild-transfer-take"
+      testid="guild-transfer-take"
     >
-      {opening ? copy.opening : copy.take}
-    </button>
+      {copy.take}
+    </Button>
     <button
       type="button"
-      class="{BILLING_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH} {declining ? BUSY_CLASS : ''}"
+      class="{BILLING_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH} gap-2"
       disabled={opening || declining}
+      aria-busy={declining ? 'true' : undefined}
       onclick={() => void notNow()}
       data-testid="guild-transfer-not-now"
     >
-      {copy.notNow}
+      {#if declining}<Spinner />{copy.declining}{:else}{copy.notNow}{/if}
     </button>
   </div>
 </div>

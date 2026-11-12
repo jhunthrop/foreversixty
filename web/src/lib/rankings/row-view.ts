@@ -69,3 +69,18 @@ export function moderationLine(state: RankingRow['state']): string | null {
   if (state === 'at_risk') return rankingsCopy.atRisk;
   return null;
 }
+
+/** The metrics where a 0 means the character did nothing on the board (a healer's 0 DPS). */
+const IDLE_METRICS = new Set(['dps', 'hps']);
+
+/**
+ * The board without its idle rows: a 0 DPS (or HPS) row beside a percentile reads as broken, so it is
+ * left out and the total drops by as many (they sort last, so the ranks above stay as they are).
+ */
+export function withoutIdleRows<P extends { rows: RankingRow[]; total: number }>(page: P, metric: string): P {
+  if (!IDLE_METRICS.has(metric)) return page;
+  const rows = page.rows.filter((row) => row.value > 0);
+  return rows.length === page.rows.length
+    ? page
+    : { ...page, rows, total: page.total - (page.rows.length - rows.length) };
+}

@@ -60,9 +60,11 @@ describe('GuildUpgradeConfirm', () => {
     expect(text(body)).toContain('From 1 Dec 2026 it is $25 a month.');
   });
 
-  it('Keep Guild shows its gold ring on focus moved in code, and the buttons go full width below 768', () => {
+  it('Keep Guild is the shared confirm pair (gold focus ring), and the buttons go full width below 768', () => {
     const body = html(UPGRADE_PREVIEW);
-    expect(body).toMatch(/class="[^"]*focus:outline-gold[^"]*"[^>]*data-testid="guild-upgrade-keep"/);
+    expect(body).toMatch(
+      /class="[^"]*focus-visible:outline-gold[^"]*w-full[^"]*"[^>]*data-testid="guild-upgrade-keep"/,
+    );
     expect(body).toContain('flex flex-col items-stretch');
     expect(body).toMatch(/class="[^"]*w-full[^"]*md:w-fit[^"]*"[^>]*data-testid="guild-upgrade-commit"/);
   });

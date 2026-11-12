@@ -11,6 +11,8 @@
     on: boolean;
     /** The mark's colour (a token var), drawn as a small square before the label. */
     swatch?: string;
+    /** A tabular count after the label (the slots a source fills). */
+    count?: number;
   }
 </script>
 
@@ -22,12 +24,15 @@
     label,
     onToggle,
     testid,
+    chipTestid = testid,
   }: {
     chips: readonly Chip[];
     /** The group's accessible name ("Show", "Starting points"). */
     label: string;
     onToggle: (id: string) => void;
     testid?: string;
+    /** Each chip's test id prefix (`<prefix>-<id>`), when the group's own id lives on a wrapper. */
+    chipTestid?: string;
   } = $props();
 </script>
 
@@ -37,13 +42,14 @@
       type="button"
       class="ui-chip"
       aria-pressed={chip.on}
-      data-testid={testid === undefined ? undefined : `${testid}-${chip.id}`}
+      data-testid={chipTestid === undefined ? undefined : `${chipTestid}-${chip.id}`}
       onclick={() => onToggle(chip.id)}
       >{#if chip.swatch !== undefined}<i
           class="ui-chip-swatch"
           style:background={chip.swatch}
           aria-hidden="true"
-        ></i>{/if}{chip.label}</button
+        ></i>{/if}{chip.label}{#if chip.count !== undefined}<span class="ui-chip-count">{chip.count}</span
+        >{/if}</button
     >
   {/each}
 </div>

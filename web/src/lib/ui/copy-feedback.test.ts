@@ -7,7 +7,7 @@ describe('createCopyFeedback', () => {
 
   function setup(writeText: (text: string) => Promise<void>) {
     const states: CopyFeedbackState[] = [];
-    const feedback = createCopyFeedback(writeText, (state) => states.push(state));
+    const feedback = createCopyFeedback((state) => states.push(state), writeText);
     return { feedback, states };
   }
 

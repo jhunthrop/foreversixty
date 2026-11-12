@@ -7,6 +7,7 @@
   import { sectionRegion } from '../../lib/ui/regions';
   import Frame from '../ui/Frame.svelte';
   import Row from '../ui/Row.svelte';
+  import SectionTitle from '../ui/SectionTitle.svelte';
 
   let { signInHref }: { signInHref: string } = $props();
 
@@ -14,7 +15,7 @@
 </script>
 
 <Frame plain region={sectionRegion(homeCopy.howToStart)} testid="home-how-to-start">
-  <h2 class="text-section pb-[6px]">{homeCopy.howToStart}</h2>
+  <SectionTitle class="pb-[6px]" title={homeCopy.howToStart} />
   {#each homeCopy.steps as step, index (step.title)}
     <Row
       rank={String(index + 1)}

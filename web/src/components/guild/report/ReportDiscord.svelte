@@ -5,15 +5,14 @@
      `Post again`. Without a connected channel the line points at Settings. `Copy for Discord`
      stays for a guild that pastes by hand. Officer-read-only keeps Copy live and disables Post. -->
 <script lang="ts">
-  import { onDestroy } from 'svelte';
   import type { RaidNight, RaidReport } from '../../../lib/guild/attendance-contract';
   import { attendanceCopy, postedLine, postedTime } from '../../../lib/guild/attendance-copy';
   import { selectOnMount } from '../../../lib/guild/focus-now';
   import { raidCopy } from '../../../lib/guild/raid-copy';
   import { splitAtLink } from '../../../lib/guild/raid-form';
-  import { ReportCopy } from '../../../lib/guild/report-copy.svelte';
   import { discordPreview } from '../../../lib/guild/report-night-view';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
+  import { CopyState } from '../../../lib/ui/copy-state.svelte';
   import Button from '../../ui/Button.svelte';
   import Section from '../../ui/Section.svelte';
 
@@ -33,7 +32,7 @@
     locale,
     copyText,
     onPost,
-    copy: clip = new ReportCopy((text) => navigator.clipboard.writeText(text)),
+    copy: clip = new CopyState(),
   }: {
     title: string;
     report: RaidReport;
@@ -51,10 +50,10 @@
     copyText: () => string;
     onPost: (repost: boolean) => void;
     /** The clipboard state; a test seeds it. */
-    copy?: ReportCopy;
+    copy?: CopyState;
   } = $props();
 
-  onDestroy(() => clip.stop());
+  $effect(() => () => clip.dispose());
 
   const lines = $derived(discordPreview(title, report, night));
   const posted = $derived(report.posted_at);
