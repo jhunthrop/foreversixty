@@ -337,7 +337,7 @@ func TestLoadRotationFollowsTheRace(t *testing.T) {
 	writeFile(t, path, `{"rotation":{"priorityList":[{"action":{"castSpell":{"spellId":{"spellId":10947}}}}]}}`)
 	for _, tc := range []struct {
 		race  string
-		level int32
+		level int
 		want  int32
 	}{{"troll", 34, 8104}, {"gnome", 34, 8105}, {"troll", 40, 8105}, {"gnome", 40, 8105}} {
 		race, want := tc.race, tc.want
