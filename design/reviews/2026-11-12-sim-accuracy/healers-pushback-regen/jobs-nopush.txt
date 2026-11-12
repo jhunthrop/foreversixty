@@ -1,0 +1,17 @@
+# the published entries on the scratch engine 90c598cbc (no cast is ever pushed back): the ceiling a party Concentration Aura could reach
+priest-holy-raid-nopush-s1 -spec priest-holy -preset raid -band 60 -faction alliance -seed 1
+priest-holy-raid-nopush-s50001 -spec priest-holy -preset raid -band 60 -faction alliance -seed 50001
+priest-holy-bare-nopush-s1 -spec priest-holy -preset bare -band 60 -faction alliance -seed 1
+priest-holy-bare-nopush-s50001 -spec priest-holy -preset bare -band 60 -faction alliance -seed 50001
+priest-discipline-raid-nopush-s1 -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1
+priest-discipline-raid-nopush-s50001 -spec priest-discipline -preset raid -band 60 -faction alliance -seed 50001
+priest-discipline-bare-nopush-s1 -spec priest-discipline -preset bare -band 60 -faction alliance -seed 1
+priest-discipline-bare-nopush-s50001 -spec priest-discipline -preset bare -band 60 -faction alliance -seed 50001
+druid-restoration-raid-nopush-s1 -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1
+druid-restoration-raid-nopush-s50001 -spec druid-restoration -preset raid -band 60 -faction alliance -seed 50001
+druid-restoration-bare-nopush-s1 -spec druid-restoration -preset bare -band 60 -faction alliance -seed 1
+druid-restoration-bare-nopush-s50001 -spec druid-restoration -preset bare -band 60 -faction alliance -seed 50001
+shaman-restoration-raid-nopush-s1 -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1
+shaman-restoration-raid-nopush-s50001 -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 50001
+shaman-restoration-bare-nopush-s1 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 1
+shaman-restoration-bare-nopush-s50001 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 50001
