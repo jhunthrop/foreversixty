@@ -186,17 +186,22 @@ func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 // at 30 to 39, rank 4 at 40 to 42, its top
 // rank at 43 to 46, rank 4 at 47 to 49 and its top rank from 50: the cheap
 // ranks round 16 kept at 47 to 59 leaned on an Oath bonus the level rule
-// now takes away.
+// now takes away. Sim-accuracy 2026-11-12 (Holy paladin lane), with
+// Concentration Aura applied and Illumination's casting regen gone: the
+// tank's Flash of Light is rank 1 to 42 and rank 2 from 43, rank 3 to 53
+// for a Human and rank 4 from 54; Holy Light is rank 1 to 28 and rank 2
+// at 29; the group's Flash of Light is rank 1 at 40 and 41 and, for a
+// Human, rank 2 from 42.
 func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) {
 	filler := linesCasting(t, "paladin-holy", 19750, 19942)
 	assertRanks(t, filler, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
-		{20, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 2}, {42, BarePreset, 2}, {43, BarePreset, 2}, {48, BarePreset, 2}, {49, BarePreset, 2},
-		{50, BarePreset, 3}, {54, BarePreset, 3}, {55, BarePreset, 4}, {59, BarePreset, 4},
+		{20, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 1}, {42, BarePreset, 1}, {43, BarePreset, 2}, {48, BarePreset, 2}, {49, BarePreset, 2},
+		{50, BarePreset, 3}, {53, BarePreset, 3}, {54, BarePreset, 4}, {55, BarePreset, 4}, {59, BarePreset, 4},
 		{60, BarePreset, 4}, {60, RaidPreset, 5},
 	})
 	light := linesCasting(t, "paladin-holy", 10329)
 	assertRanks(t, light, "paladin-holy", "paladin", "human", holyLightRanks, []rankCase{
-		{20, BarePreset, 1}, {23, BarePreset, 1}, {24, BarePreset, 4}, {25, BarePreset, 1}, {26, BarePreset, 2}, {29, BarePreset, 2}, {30, BarePreset, 5},
+		{20, BarePreset, 1}, {23, BarePreset, 1}, {24, BarePreset, 1}, {25, BarePreset, 1}, {26, BarePreset, 1}, {28, BarePreset, 1}, {29, BarePreset, 2}, {30, BarePreset, 5},
 		{39, BarePreset, 6}, {40, BarePreset, 4}, {42, BarePreset, 4}, {43, BarePreset, 6}, {46, BarePreset, 7}, {47, BarePreset, 4}, {49, BarePreset, 4}, {50, BarePreset, 7}, {59, BarePreset, 8}, {60, BarePreset, 8}, {60, RaidPreset, 8},
 	})
 }
@@ -213,7 +218,7 @@ func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) 
 func TestHolyPaladinGroupFlashOfLightAndHolyShockBelowFifty(t *testing.T) {
 	group := linesCasting(t, "paladin-holy", 19941)
 	assertRanks(t, group, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
-		{39, BarePreset, 1}, {40, BarePreset, 2}, {42, BarePreset, 2}, {43, BarePreset, 1}, {44, BarePreset, 2}, {46, BarePreset, 2}, {47, BarePreset, 2}, {49, BarePreset, 2},
+		{39, BarePreset, 1}, {40, BarePreset, 1}, {41, BarePreset, 1}, {42, BarePreset, 2}, {43, BarePreset, 2}, {44, BarePreset, 2}, {46, BarePreset, 2}, {47, BarePreset, 2}, {49, BarePreset, 2},
 		{50, BarePreset, 4}, {60, RaidPreset, 5},
 	})
 	shock := linesCasting(t, "paladin-holy", 20930)

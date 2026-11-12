@@ -70,7 +70,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 **Pace, not health bars.** Divine Favor into Holy Light is for the tank at 40%, the heal that must land. Holy Light and Holy Shock otherwise spend only mana you are ahead on; fall behind and it is Flash of Light alone until you catch up. Holy Shock on the party, where Boundless Light adds 30% crit, gets a large part of its cost back through Illumination.
 
-**Ranks.** Bind the ranks you use. Flash of Light rank 5 carries all of your healing power at 60 for less mana than rank 6. Rank 1 is a trap at 60: Forever takes the healing power off ranks learned far below your level, and the Oath's bonus goes with it, so rank 1 heals for little more than its base. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but it is a level 30 rank, so at 60 it keeps only part of your healing power.
+**Ranks.** Bind the ranks you use. Flash of Light rank 5 carries all of your healing power at 60 for less mana than rank 6, and rank 4 does the tank's job for less again outside a raid. Rank 1 is a trap at 60: Forever takes the healing power off ranks learned far below your level, and the Oath's bonus goes with it, so rank 1 heals for little more than its base. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but it is a level 30 rank, so at 60 it keeps only part of your healing power.
 
 **Light's Vigil.** At 1,340 mana it waits for a fight where your whole party takes big damage at once.
 
@@ -105,11 +105,11 @@ Holy Light and Seal of Righteousness come at 1, Judgement at 4, Holy Strike at 6
 From 18, put Holy Light (Rank 1) on its own key: at 35 mana against rank 3's 110 it heals far more per point of mana, even though it keeps a little less of your healing power each level, and over a whole dungeon you heal more before you drink. Rank 3 heals more per cast, but over a fight rank 1 heals more, even on the tank below 40%. Your Holy Light rank while you level:
 
 - **To 17:** rank 3 for everything.
-- **18 to 23:** rank 1, with Flash of Light beside it from 20.
-- **24:** your newest rank heals a touch more.
-- **25:** rank 1 again.
-- **26 to 29:** rank 2.
-- **From 30:** your newest rank, except at 40 to 42 and 47 to 49, where rank 4 heals as much for less mana. At 40 to 42, Flash of Light rank 2 is also the better heal for the rest of the group.
+- **18 to 28:** rank 1, with Flash of Light beside it from 20.
+- **29:** rank 2.
+- **From 30:** your newest rank, except at 40 to 42 and 47 to 49, where rank 4 heals as much for less mana.
+
+Flash of Light on the tank is rank 1 until 42 (a Dwarf keeps it at 43) and rank 2 from 43, rank 3 from 50 and rank 4 from 54 (an Undead takes rank 4 a level sooner). On the rest of the group it is rank 1 until 41, rank 2 from 42 if you are Human and from 43 if you are a Dwarf, rank 1 until 43 if you are Undead, and rank 2 from 44 to 49.
 
 At 12, the class quest from your trainer teaches Redemption. A healer without it is a long corpse run for the group.
 

@@ -1144,33 +1144,27 @@
           },
           {
             "from_level": 20,
-            "to_level": 23,
+            "to_level": 28,
             "rank": 1,
-            "note": "Sim-accuracy round 24 second pass, on the talents the leveling order gives at each level (spec-breakdown -level N -rank id=rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-05-sim-audit-round24/paladin.md, Second pass). At 24 the top rank beats rank 1 by 0.2% for a Human (an Undead ties), so the row ends at 23."
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). Rank 1 beats the top rank learned by 14.7 to 14.9% at 20, 7.2 to 7.3% at 23, 0.5 to 0.7% at 24 (the top rank's old gap) and 1.0% at 25, and beats rank 2 by 0.45 to 0.55% at 26, 0.15 to 0.24% at 27 and 0.12 to 0.15% at 28 (errors 0.03), so the rows at 20 to 23 and 25 and the rank 2 row at 26 to 28 fold into one."
           },
           {
-            "from_level": 25,
-            "to_level": 25,
-            "rank": 1,
-            "note": "Sim-accuracy round 24 second pass, on the talents the leveling order gives at each level (spec-breakdown -level N -rank id=rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-05-sim-audit-round24/paladin.md, Second pass). At 25 rank 1 beats rank 2 by 0.16% (Human) and 0.24% (Undead); at 26 to 29 the ranks tie."
-          },
-          {
-            "from_level": 26,
+            "from_level": 29,
             "to_level": 29,
             "rank": 2,
-            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). Rank 2 beats rank 1 by 0.12 to 0.19% at 29 (error 0.03) and ties the top rank, which the fight never casts there."
           },
           {
             "from_level": 40,
             "to_level": 42,
             "rank": 4,
-            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
+            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md). Sim-accuracy 2026-11-12 (Holy paladin lane): held; the bare fight at 40 to 43 never casts Holy Light on this profile (the tank is never under its gates with mana to spare), so the row is inert there and a tie keeps it."
           },
           {
             "from_level": 47,
             "to_level": 49,
             "rank": 4,
-            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 4 (level 22) keeps 60 to 50% of its bonus at 47 to 49 and beats the top rank by 0.1 to 0.4% at both seeds and factions; at 43 to 46 the two tie, so no row."
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 4 (level 22) keeps 60 to 50% of its bonus at 47 to 49 and beats the top rank by 0.1 to 0.4% at both seeds and factions; at 43 to 46 the two tie, so no row. Sim-accuracy 2026-11-12 (Holy paladin lane): held; rank 4 ties the top rank at 46 to 49 (+0.01 to +0.13%, inside or at the error of 0.05) on the fixed engine."
           }
         ]
       },
@@ -1186,33 +1180,58 @@
           },
           {
             "from_level": 40,
-            "to_level": 42,
+            "to_level": 41,
+            "rank": 1,
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). Rank 1 beats rank 2 by 1.5 to 2.2% at 40 and 0.8 to 1.7% at 41 (errors 0.05 to 0.06) on both races, and rank 3 by 5.3 to 5.8% at 40; round 24's rank 2 row at 40 to 42 leaned on the casting regen."
+          },
+          {
+            "from_level": 42,
+            "to_level": 43,
             "rank": 2,
-            "note": "Sim-accuracy round 24 second pass, on the talents the leveling order gives at each level (spec-breakdown -level N -rank id=rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-05-sim-audit-round24/paladin.md, Second pass). Rank 2 beats rank 1 by 0.12 to 0.26% at 40 to 42 for a Human and an Undead (Dwarf 40 and 41 level); at 42 it pairs with the tank line's rank 1. At 43 rank 1 holds."
+            "races": [
+              "human"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). A Human: rank 2 ties rank 1 at 42 (-0.03 to -0.01%, error 0.06; the old row kept) and beats it by 0.8% at 43 (error 0.06). The Human Spirit's regeneration carries the dearer rank; an Undead keeps rank 1 (its row)."
+          },
+          {
+            "from_level": 42,
+            "to_level": 43,
+            "rank": 1,
+            "races": [
+              "undead"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). An Undead: rank 1 beats rank 2 by 1.2% at 42 and 0.45 to 0.5% at 43 (error 0.05), where a Human takes rank 2 (its row)."
+          },
+          {
+            "from_level": 42,
+            "to_level": 42,
+            "rank": 1,
+            "races": [
+              "dwarf"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). A Dwarf: rank 1 beats rank 2 by 0.5% at 42 (error 0.05), as an Undead's does."
           },
           {
             "from_level": 43,
             "to_level": 43,
-            "rank": 1
+            "rank": 2,
+            "races": [
+              "dwarf"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). A Dwarf: rank 2 beats rank 1 by 0.17 to 0.20% at 43 (error 0.05), as a Human's does."
           },
           {
             "from_level": 44,
-            "to_level": 46,
-            "rank": 2,
-            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
-          },
-          {
-            "from_level": 47,
             "to_level": 49,
             "rank": 2,
-            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 2 beats rank 1 at 47 to 49 (rank 1 keeps 40 to 50% of its bonus there)."
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). Rank 2 beats rank 1 by 0.9 to 1.8% at 44, 2.2 to 3.0% at 46 and 47 and 2.9 to 3.7% at 49, where it also beats rank 4 by 1.2 to 1.9% (errors 0.05); round 19's 44 to 46 and round 20's 47 to 49 rows fold into one. At 50 rank 4 ties rank 3 and the authored rank stands."
           },
           {
             "from_level": 60,
             "to_level": 60,
             "rank": 5,
             "preset": "raid",
-            "note": "Sim-accuracy round 22: at raid 60 the party lines heal more at rank 5 than at the authored rank 4, +0.09 to +0.23% effective HPS at seeds 1 and 50001 on both factions (five seeds, all positive; the pre-crit-change binary agrees). Bare 60 never casts the party lines, so it keeps rank 4 (design/reviews/2026-11-05-sim-audit-round22/paladin.md H1)."
+            "note": "Sim-accuracy round 22: at raid 60 the party lines heal more at rank 5 than at the authored rank 4, +0.09 to +0.23% effective HPS at seeds 1 and 50001 on both factions (five seeds, all positive; the pre-crit-change binary agrees). Bare 60 never casts the party lines, so it keeps rank 4 (design/reviews/2026-11-05-sim-audit-round22/paladin.md H1). Sim-accuracy 2026-11-12 (Holy paladin lane): holds on the fixed engine, +0.45 to +0.49% over rank 4 at seeds 1 and 50001 on both factions (errors 0.10)."
           }
         ]
       },
@@ -1222,34 +1241,72 @@
         "bands": [
           {
             "from_level": 26,
-            "to_level": 39,
+            "to_level": 42,
             "rank": 1,
-            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 wins at band 30 (89.5 against 73.5 with rank 5)."
+            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 wins at band 30 (89.5 against 73.5 with rank 5). Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). Rank 1 beats rank 2 by 18.2 to 18.4% at 26, 12.9 to 13.5% at 39, 12.6 to 13.2% at 40, 9.1 to 9.8% at 41 and 5.2 to 5.8% at 42 (errors 0.04 to 0.05); round 29's rank 2 row from 40 leaned on the casting regen."
           },
           {
-            "from_level": 40,
+            "from_level": 43,
+            "to_level": 43,
+            "rank": 2,
+            "races": [
+              "human",
+              "undead"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). Rank 2 ties rank 1 for a Human at 43 (+0.03 to +0.10%, error 0.05; the old row kept) and beats it for an Undead by 1.0%; a Dwarf keeps rank 1 (its row)."
+          },
+          {
+            "from_level": 43,
+            "to_level": 43,
+            "rank": 1,
+            "races": [
+              "dwarf"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). A Dwarf: rank 1 beats rank 2 by 0.8 to 0.9% at 43 (error 0.04)."
+          },
+          {
+            "from_level": 44,
             "to_level": 49,
             "rank": 2,
-            "note": "Sim-accuracy round 29 (walks-heal): re-judged on the new leveling order's talents at the level (spec-breakdown -level N -rank, bare, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-07-sim-audit-round29/walksheal.md). With Conviction and Divine Intellect in place of Holy Shock and Holy Power at 40 to 42, rank 2 beats rank 1 by 1.6% (Undead 40) to 14.2% (Human 42); the row that kept rank 1 at 40 to 42 is folded in. Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 2 beats rank 1 by 2.9 to 3.6% at 43 and rank 3 by 8% at 49; it holds at 44 to 48."
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). Rank 2 beats rank 1 by 3.5 to 4.2% at 44, 4.6 to 4.8% at 45, 7.3 to 7.7% at 46, 13.4 to 13.9% at 47, 17.5 to 18.0% at 48 and 21.9 to 22.5% at 49, where it also beats rank 3 by 4.4 to 5.6% (both published races)."
           },
           {
             "from_level": 50,
-            "to_level": 54,
+            "to_level": 52,
             "rank": 3,
-            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 3 beats rank 4 by 4 to 11% at 50 to 53 and by 0.15 to 0.3% at 54: with the Oath's whole 100 to 115 on every cast, the cheaper rank heals more before the mana runs out."
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 3 beats rank 4 by 4 to 11% at 50 to 53 and by 0.15 to 0.3% at 54: with the Oath's whole 100 to 115 on every cast, the cheaper rank heals more before the mana runs out. Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). Rank 3 beats rank 2 by 13.2 to 13.6% at 50 and rank 4 by 6.1 to 6.6% at 51 and 3.1 to 3.6% at 52 (errors 0.08 to 0.10)."
           },
           {
-            "from_level": 55,
+            "from_level": 53,
+            "to_level": 53,
+            "rank": 3,
+            "races": [
+              "human",
+              "dwarf"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). A Human at 53: rank 3 beats rank 4 by 0.18% at both seeds (error 0.08); an Undead takes rank 4 (its row). A Dwarf ties (-0.05 to +0.02%, error 0.08) and keeps the row's rank."
+          },
+          {
+            "from_level": 53,
+            "to_level": 53,
+            "rank": 4,
+            "races": [
+              "undead"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). An Undead at 53: rank 4 beats rank 3 by 0.23 to 0.36% (error 0.08), where a Human keeps rank 3 (its row)."
+          },
+          {
+            "from_level": 54,
             "to_level": 59,
             "rank": 4,
-            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 4 beats rank 3 by 11% at 55 and rank 5 by 15% at 56 to 59."
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 4 beats rank 3 by 11% at 55 and rank 5 by 15% at 56 to 59. Sim-accuracy 2026-11-12 (Holy paladin lane): re-judged at the rows' boundary levels on the engine with Concentration Aura applied and Illumination's casting regen gone (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human and Undead; design/reviews/2026-11-12-sim-accuracy/holy-paladin.md). Rank 4 beats rank 3 by 3.3 to 3.9% at 54 (the old rank 3 row's last level), 7.0 to 7.4% at 55 and rank 5 by 12.0 to 12.1% at 59 (errors 0.07 to 0.09)."
           },
           {
             "from_level": 60,
             "to_level": 60,
             "rank": 4,
             "preset": "bare",
-            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Bare 60: rank 4 beats the authored rank 5 by 9.8 to 9.9% at both seeds and factions; the raid preset keeps rank 5 (its ranks all hold at raid 60)."
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Bare 60: rank 4 beats the authored rank 5 by 9.8 to 9.9% at both seeds and factions; the raid preset keeps rank 5 (its ranks all hold at raid 60). Sim-accuracy 2026-11-12 (Holy paladin lane): holds; rank 5 loses 9.0 to 10.5% and rank 3 13.9 to 15.4% to rank 4 at bare 60 on the fixed engine."
           }
         ]
       },
@@ -1261,7 +1318,7 @@
             "from_level": 40,
             "to_level": 49,
             "rank": 1,
-            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md). Round 20: rank 1 also beats rank 2 by 0.3 to 0.4% at 47 to 49 (both seeds and factions); from 50 the ranks tie and no row applies."
+            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md). Round 20: rank 1 also beats rank 2 by 0.3 to 0.4% at 47 to 49 (both seeds and factions); from 50 the ranks tie and no row applies. Sim-accuracy 2026-11-12 (Holy paladin lane): holds; rank 1 beats rank 2 by 0.3 to 0.4% at 45 and rank 3 by 0.4% at 49 (errors 0.05), and ties rank 3 at 50 (-0.02 to -0.07%, error 0.08) and the authored rank at bare 60."
           }
         ]
       }

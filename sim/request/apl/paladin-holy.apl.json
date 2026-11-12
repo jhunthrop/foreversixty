@@ -170,7 +170,7 @@
           }
         }
       },
-      "notes": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana). While you level, Holy Light rank 1 from 18 to 23 and at 25, and rank 2 from 26 to 29, heal far more per point of mana than your top rank, though each keeps less of your healing power every level."
+      "notes": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana). While you level, Holy Light rank 1 from 18 to 28 and rank 2 at 29 heal far more per point of mana than your top rank, though each keeps less of your healing power every level."
     },
     {
       "action": {
@@ -558,7 +558,7 @@
           }
         }
       },
-      "notes": "On the tank below 90%: your staple. From 25, Oath of Light adds the same flat amount to every rank close to your level that you cast on the tank. At 60 without raid buffs, rank 4 does the same job as rank 5 for less mana."
+      "notes": "On the tank below 90%: your staple. From 25, Oath of Light adds the same flat amount to every rank close to your level that you cast on the tank. Rank 1 does the job to 42 (a Dwarf to 43), rank 2 from 43, rank 3 from 50 and rank 4 from 54; at 60 without raid buffs, rank 4 does the same job as rank 5 for less mana."
     },
     {
       "action": {
@@ -591,7 +591,7 @@
           }
         }
       },
-      "notes": "On everyone else below 80%, yourself included. Without the Oath bonus a small rank is the best balance of heal size and mana: rank 1 into your late 30s, rank 2 through most of your 40s, rank 4 from 50, and rank 5 at 60 in a raid, where your buffs pay for the bigger heal."
+      "notes": "On everyone else below 80%, yourself included. Without the Oath bonus a small rank is the best balance of heal size and mana: rank 1 to 41 (a Human moves to rank 2 at 42, a Dwarf at 43, an Undead at 44), rank 2 to 49, rank 4 from 50, and rank 5 at 60 in a raid, where your buffs pay for the bigger heal."
     },
     {
       "action": {
