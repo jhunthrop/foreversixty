@@ -857,6 +857,7 @@ ns.Data = {
 				{ spellId = 5179, name = "Wrath", condition = "once Moonfire is ticking" },
 				{ spellId = 1079, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 1328618, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1822, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 5221, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 28, lines = {
@@ -865,6 +866,7 @@ ns.Data = {
 				{ spellId = 5179, name = "Wrath", condition = "once Moonfire is ticking" },
 				{ spellId = 9492, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 1328618, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1822, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 5221, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 30, lines = {
@@ -873,6 +875,7 @@ ns.Data = {
 				{ spellId = 5180, name = "Wrath", condition = "once Moonfire is ticking" },
 				{ spellId = 9492, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 1328618, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1822, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 6800, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 32, lines = {
@@ -882,6 +885,7 @@ ns.Data = {
 				{ spellId = 5180, name = "Wrath", condition = "once Moonfire is ticking" },
 				{ spellId = 9492, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22568, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1822, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 6800, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 34, lines = {
@@ -891,6 +895,7 @@ ns.Data = {
 				{ spellId = 5180, name = "Wrath", condition = "once Moonfire is ticking" },
 				{ spellId = 9492, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22568, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1823, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 6800, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 36, lines = {
@@ -900,6 +905,7 @@ ns.Data = {
 				{ spellId = 5180, name = "Wrath", condition = "once Moonfire is ticking" },
 				{ spellId = 9493, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22568, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1823, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 6800, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 38, lines = {
@@ -909,6 +915,7 @@ ns.Data = {
 				{ spellId = 6780, name = "Wrath", condition = "once Moonfire is ticking" },
 				{ spellId = 9493, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22568, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1823, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 8992, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 40, lines = {
@@ -919,6 +926,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9493, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22827, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1823, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 8992, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 42, lines = {
@@ -929,6 +937,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9493, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22827, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1823, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 8992, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 44, lines = {
@@ -939,6 +948,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9752, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22827, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1824, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 8992, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 46, lines = {
@@ -949,6 +959,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9752, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22827, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1824, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 9829, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 48, lines = {
@@ -959,6 +970,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9752, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22828, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1824, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 9829, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 50, lines = {
@@ -969,6 +981,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9752, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22828, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1824, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 9829, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 52, lines = {
@@ -979,6 +992,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9894, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22828, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 1824, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 9829, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 54, lines = {
@@ -989,6 +1003,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9894, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22828, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 9904, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 9830, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 56, lines = {
@@ -999,6 +1014,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9894, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22829, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 9904, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 9830, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 58, lines = {
@@ -1009,6 +1025,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9894, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22829, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 9904, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 9830, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 			{ level = 60, lines = {
@@ -1019,6 +1036,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "at 60 energy or less" },
 				{ spellId = 9896, name = "Rip", condition = "at 5 combo points when Rip has under 2 s left" },
 				{ spellId = 22829, name = "Ferocious Bite", condition = "at 5 combo points while Rip has 5+ s left" },
+				{ spellId = 9904, name = "Rake", condition = "when Rake is not on the target" },
 				{ spellId = 9830, name = "Shred", condition = "as your builder, from behind the target" },
 			} },
 		},
@@ -1590,21 +1608,21 @@ ns.Data = {
 			{ level = 18, lines = {
 				{ spellId = 1130, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14281, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 1130, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14282, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 22, lines = {
 				{ spellId = 14323, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14282, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 26, lines = {
@@ -1644,7 +1662,7 @@ ns.Data = {
 				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 13549, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14284, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 40, lines = {
@@ -1653,16 +1671,7 @@ ns.Data = {
 				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 13552, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
-				{ spellId = 14284, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
-			} },
-			{ level = 42, lines = {
-				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 19574, name = "Bestial Wrath", condition = "on cooldown, with Rapid Fire and trinkets" },
-				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
-				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
-				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 13553, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14284, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 44, lines = {
@@ -1671,7 +1680,7 @@ ns.Data = {
 				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 13553, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14285, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 50, lines = {
@@ -1680,7 +1689,7 @@ ns.Data = {
 				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 13554, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14285, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 52, lines = {
@@ -1689,7 +1698,7 @@ ns.Data = {
 				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 13554, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14286, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 58, lines = {
@@ -1698,7 +1707,7 @@ ns.Data = {
 				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 13555, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14286, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 60, lines = {
@@ -1728,18 +1737,24 @@ ns.Data = {
 				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14281, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
+			{ level = 19, lines = {
+				{ spellId = 1130, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 14281, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
+			} },
 			{ level = 20, lines = {
 				{ spellId = 1130, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14282, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 22, lines = {
 				{ spellId = 14323, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14282, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 26, lines = {
@@ -1759,6 +1774,14 @@ ns.Data = {
 				{ spellId = 14283, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 30, lines = {
+				{ spellId = 14323, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
+				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
+				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
+				{ spellId = 1978, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 14283, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
+			} },
+			{ level = 33, lines = {
 				{ spellId = 14323, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
 				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
@@ -1803,7 +1826,7 @@ ns.Data = {
 				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 13553, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14284, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 44, lines = {
@@ -1811,7 +1834,7 @@ ns.Data = {
 				{ spellId = 3045, name = "Rapid Fire", condition = "as Auto Shot fires with Multi-Shot nearly ready" },
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
-				{ spellId = 13553, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14285, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 47, lines = {
@@ -1820,7 +1843,7 @@ ns.Data = {
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
 				{ spellId = 1310687, name = "Sniper Shot", condition = "while Aimed Shot is on cooldown" },
-				{ spellId = 13553, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14285, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 48, lines = {
@@ -1829,7 +1852,7 @@ ns.Data = {
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
 				{ spellId = 1310785, name = "Sniper Shot", condition = "while Aimed Shot is on cooldown" },
-				{ spellId = 13553, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13550, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14285, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 50, lines = {
@@ -1838,7 +1861,7 @@ ns.Data = {
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
 				{ spellId = 1310785, name = "Sniper Shot", condition = "while Aimed Shot is on cooldown" },
-				{ spellId = 13554, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13551, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14285, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 52, lines = {
@@ -1847,7 +1870,7 @@ ns.Data = {
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
 				{ spellId = 1310785, name = "Sniper Shot", condition = "while Aimed Shot is on cooldown" },
-				{ spellId = 13554, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13551, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14286, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 58, lines = {
@@ -1856,7 +1879,7 @@ ns.Data = {
 				{ spellId = 19434, name = "Aimed Shot", condition = "on cooldown, shared with Multi-Shot" },
 				{ spellId = 2643, name = "Multi-Shot", condition = "on cooldown, above 25% mana" },
 				{ spellId = 1310786, name = "Sniper Shot", condition = "while Aimed Shot is on cooldown" },
-				{ spellId = 13555, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
+				{ spellId = 13551, name = "Serpent Sting", condition = "when Serpent Sting has under 1.5 s left" },
 				{ spellId = 14286, name = "Arcane Shot", condition = "when Multi-Shot is 1.5+ s from ready or mana is 25% or less" },
 			} },
 			{ level = 60, lines = {
@@ -1916,14 +1939,14 @@ ns.Data = {
 			} },
 			{ level = 28, lines = {
 				{ spellId = 14323, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14262, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14261, ["high-order-skyborne"] = 14261, ["human"] = 14261, ["night-elf"] = 14261, ["orc"] = 14261, ["tauren"] = 14260, ["troll"] = 14261, ["windshaper-skyborne"] = 14261 } },
+				{ spellId = 14262, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["high-order-skyborne"] = 14261, ["orc"] = 14260, ["tauren"] = 14260, ["troll"] = 14260, ["windshaper-skyborne"] = 14260 } },
 				{ spellId = 1495, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 14302, name = "Immolation Trap", condition = "on cooldown" },
 				{ spellId = 2974, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
 			} },
 			{ level = 29, lines = {
 				{ spellId = 14323, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14261, name = "Raptor Strike", condition = "on cooldown" },
+				{ spellId = 14262, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["orc"] = 14261, ["tauren"] = 14261, ["troll"] = 14261, ["windshaper-skyborne"] = 14261 } },
 				{ spellId = 1495, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 14302, name = "Immolation Trap", condition = "on cooldown" },
 				{ spellId = 2974, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
@@ -1931,15 +1954,6 @@ ns.Data = {
 			{ level = 30, lines = {
 				{ spellId = 14323, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
 				{ spellId = 14262, name = "Raptor Strike", condition = "on cooldown" },
-				{ spellId = 14269, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
-				{ spellId = 24118, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
-				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
-				{ spellId = 14302, name = "Immolation Trap", condition = "on cooldown" },
-				{ spellId = 2974, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
-			} },
-			{ level = 31, lines = {
-				{ spellId = 14323, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 2973, name = "Raptor Strike", condition = "on cooldown" },
 				{ spellId = 14269, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 24118, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
 				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
@@ -1975,7 +1989,7 @@ ns.Data = {
 			} },
 			{ level = 40, lines = {
 				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["troll"] = 14263 } },
+				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["human"] = 14263, ["night-elf"] = 14263, ["orc"] = 14262, ["tauren"] = 14262, ["troll"] = 14262, ["windshaper-skyborne"] = 14262 } },
 				{ spellId = 14269, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 24119, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
 				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
@@ -1984,7 +1998,25 @@ ns.Data = {
 			} },
 			{ level = 41, lines = {
 				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown" },
+				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["night-elf"] = 14263, ["orc"] = 14262, ["tauren"] = 14262, ["troll"] = 14262, ["windshaper-skyborne"] = 14262 } },
+				{ spellId = 14269, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
+				{ spellId = 24119, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
+				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
+				{ spellId = 14303, name = "Immolation Trap", condition = "on cooldown" },
+				{ spellId = 14267, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
+			} },
+			{ level = 42, lines = {
+				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["orc"] = 14262, ["tauren"] = 14262, ["troll"] = 14262, ["windshaper-skyborne"] = 14262 } },
+				{ spellId = 14269, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
+				{ spellId = 24119, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
+				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
+				{ spellId = 14303, name = "Immolation Trap", condition = "on cooldown" },
+				{ spellId = 14267, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
+			} },
+			{ level = 43, lines = {
+				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["orc"] = 14262, ["tauren"] = 14262, ["troll"] = 14262, ["windshaper-skyborne"] = 14262 } },
 				{ spellId = 14269, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 24119, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
 				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
@@ -1993,7 +2025,16 @@ ns.Data = {
 			} },
 			{ level = 44, lines = {
 				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown" },
+				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["orc"] = 14262, ["tauren"] = 14262, ["troll"] = 14262, ["windshaper-skyborne"] = 14262 } },
+				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
+				{ spellId = 24119, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
+				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
+				{ spellId = 14303, name = "Immolation Trap", condition = "on cooldown" },
+				{ spellId = 14267, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
+			} },
+			{ level = 45, lines = {
+				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["orc"] = 14262, ["tauren"] = 14262, ["troll"] = 14262, ["windshaper-skyborne"] = 14262 } },
 				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 24119, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
 				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
@@ -2002,7 +2043,7 @@ ns.Data = {
 			} },
 			{ level = 46, lines = {
 				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14263, name = "Raptor Strike", condition = "on cooldown" },
+				{ spellId = 14264, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14262, ["high-order-skyborne"] = 14262, ["human"] = 14262, ["night-elf"] = 14262, ["orc"] = 14261, ["tauren"] = 14261, ["troll"] = 14261, ["windshaper-skyborne"] = 14261 } },
 				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 24119, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
 				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
@@ -2011,7 +2052,7 @@ ns.Data = {
 			} },
 			{ level = 48, lines = {
 				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14265, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["orc"] = 14263, ["tauren"] = 14263, ["troll"] = 14263, ["windshaper-skyborne"] = 14263 } },
+				{ spellId = 14265, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["human"] = 14263, ["night-elf"] = 14263, ["orc"] = 14262, ["tauren"] = 14262, ["troll"] = 14262, ["windshaper-skyborne"] = 14262 } },
 				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 24119, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
 				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
@@ -2020,7 +2061,7 @@ ns.Data = {
 			} },
 			{ level = 49, lines = {
 				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14265, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["orc"] = 14263, ["tauren"] = 14263, ["troll"] = 14263 } },
+				{ spellId = 14265, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["orc"] = 14262, ["tauren"] = 14262, ["troll"] = 14262, ["windshaper-skyborne"] = 14262 } },
 				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 24119, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
 				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
@@ -2028,6 +2069,33 @@ ns.Data = {
 				{ spellId = 14267, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
 			} },
 			{ level = 50, lines = {
+				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 14265, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["orc"] = 14263, ["tauren"] = 14263, ["troll"] = 14263, ["windshaper-skyborne"] = 14263 } },
+				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
+				{ spellId = 24120, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
+				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
+				{ spellId = 14304, name = "Immolation Trap", condition = "on cooldown" },
+				{ spellId = 14267, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
+			} },
+			{ level = 51, lines = {
+				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 14265, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["orc"] = 14263, ["tauren"] = 14263, ["troll"] = 14263 } },
+				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
+				{ spellId = 24120, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
+				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
+				{ spellId = 14304, name = "Immolation Trap", condition = "on cooldown" },
+				{ spellId = 14267, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
+			} },
+			{ level = 52, lines = {
+				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 14265, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["tauren"] = 14263 } },
+				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
+				{ spellId = 24120, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
+				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
+				{ spellId = 14304, name = "Immolation Trap", condition = "on cooldown" },
+				{ spellId = 14267, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
+			} },
+			{ level = 53, lines = {
 				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
 				{ spellId = 14265, name = "Raptor Strike", condition = "on cooldown" },
 				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
@@ -2038,7 +2106,16 @@ ns.Data = {
 			} },
 			{ level = 56, lines = {
 				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14266, name = "Raptor Strike", condition = "on cooldown" },
+				{ spellId = 14266, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["night-elf"] = 14263, ["orc"] = 14263, ["tauren"] = 14263, ["troll"] = 14263, ["windshaper-skyborne"] = 14263 } },
+				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
+				{ spellId = 24120, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
+				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
+				{ spellId = 14305, name = "Immolation Trap", condition = "on cooldown" },
+				{ spellId = 14267, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
+			} },
+			{ level = 57, lines = {
+				{ spellId = 14324, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 14266, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["orc"] = 14263, ["tauren"] = 14263, ["troll"] = 14263, ["windshaper-skyborne"] = 14263 } },
 				{ spellId = 14270, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 24120, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
 				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
@@ -2047,7 +2124,16 @@ ns.Data = {
 			} },
 			{ level = 58, lines = {
 				{ spellId = 14325, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
-				{ spellId = 14266, name = "Raptor Strike", condition = "on cooldown" },
+				{ spellId = 14266, name = "Raptor Strike", condition = "on cooldown", raceSpellId = { ["dwarf"] = 14263, ["high-order-skyborne"] = 14263, ["night-elf"] = 14263, ["orc"] = 14263, ["tauren"] = 14263, ["troll"] = 14263, ["windshaper-skyborne"] = 14263 } },
+				{ spellId = 14271, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
+				{ spellId = 24120, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
+				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
+				{ spellId = 14305, name = "Immolation Trap", condition = "on cooldown" },
+				{ spellId = 14267, name = "Wing Clip", condition = "with Windfury Totem up, when nothing else is ready" },
+			} },
+			{ level = 59, lines = {
+				{ spellId = 14325, name = "Hunter's Mark", condition = "when Hunter's Mark is not on the target" },
+				{ spellId = 14263, name = "Raptor Strike", condition = "on cooldown" },
 				{ spellId = 14271, name = "Mongoose Bite", condition = "when it lights up, after a dodge or a hit on a marked target" },
 				{ spellId = 24120, name = "Lacerate", condition = "when Lacerate is not ticking on the target" },
 				{ spellId = 1317257, name = "Strider Kick", condition = "on cooldown" },
@@ -7042,7 +7128,7 @@ ns.Data = {
 				{ spellId = 1715, name = "Hamstring", condition = "with Windfury Totem up, target above 25%" },
 				{ spellId = 1608, name = "Heroic Strike", condition = "at 90 rage" },
 			} },
-			{ level = 25, lines = {
+			{ level = 27, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "under 80 rage" },
 				{ spellId = 6192, name = "Battle Shout", condition = "when Battle Shout is down" },
 				{ spellId = 6547, name = "Rend", condition = "when Rend is not ticking on the target" },
@@ -16089,7 +16175,7 @@ ns.Data = {
 			raid = { name = "Restoration raid", order = { {3,1,3}, {3,1,3}, {3,1,3}, {3,1,3}, {3,1,3}, {3,2,2}, {3,2,2}, {3,2,2}, {3,1,2}, {3,1,2}, {3,3,4}, {3,1,2}, {1,1,3}, {3,3,3}, {3,3,3}, {3,3,3}, {3,4,3}, {3,4,4}, {3,4,3}, {3,4,3}, {3,3,3}, {3,5,2}, {3,5,2}, {3,5,2}, {3,3,3}, {1,1,3}, {1,1,3}, {1,1,3}, {1,1,3}, {1,2,3}, {1,2,3}, {1,2,1}, {1,2,1}, {1,2,1}, {1,3,3}, {3,1,2}, {3,6,3}, {3,1,2}, {3,5,4}, {3,5,4}, {3,4,2}, {3,4,2}, {3,4,2}, {3,4,2}, {3,4,2}, {3,2,1}, {3,2,1}, {3,2,1}, {3,2,1}, {3,2,1}, {3,5,1} } },
 		},
 		["hunter-beast-mastery"] = {
-			leveling = { name = "Beast Mastery leveling", order = { {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,2,1}, {1,2,1}, {1,1,3}, {1,1,3}, {1,1,3}, {1,3,3}, {1,3,3}, {1,3,3}, {1,3,3}, {1,3,3}, {1,4,3}, {1,4,3}, {1,4,3}, {1,4,3}, {1,4,3}, {1,5,4}, {1,5,4}, {1,3,2}, {1,5,2}, {1,1,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,7,2}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,2,1}, {2,2,1}, {2,2,2}, {2,2,2}, {2,2,2}, {2,2,2}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,3,1}, {2,4,2}, {2,4,3}, {2,4,3} } },
+			leveling = { name = "Beast Mastery leveling", order = { {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,2,1}, {1,2,1}, {1,1,3}, {1,1,3}, {1,1,3}, {1,3,3}, {1,3,3}, {1,3,3}, {1,3,3}, {1,3,3}, {1,4,3}, {1,4,3}, {1,4,3}, {1,4,3}, {1,4,3}, {1,5,4}, {1,5,4}, {1,3,2}, {1,5,2}, {1,1,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,7,2}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,2,2}, {2,2,2}, {2,2,2}, {2,2,2}, {2,2,2}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,4,2}, {3,1,2}, {3,1,2}, {3,1,2}, {3,1,2} } },
 			raid = { name = "Beast Mastery raid", order = { {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,2,1}, {1,2,1}, {1,1,3}, {1,1,3}, {1,1,3}, {1,3,3}, {1,3,3}, {1,3,3}, {1,3,3}, {1,3,3}, {1,4,3}, {1,4,3}, {1,4,3}, {1,4,3}, {1,4,3}, {1,5,4}, {1,5,4}, {1,3,2}, {1,5,2}, {1,1,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,7,2}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,2,1}, {2,2,1}, {2,2,2}, {2,2,2}, {2,2,2}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,4,2}, {2,4,3}, {2,4,3}, {2,4,3}, {2,4,3} } },
 		},
 		["hunter-marksmanship"] = {
@@ -16101,7 +16187,7 @@ ns.Data = {
 			raid = { name = "Survival raid", order = { {3,1,2}, {3,1,2}, {3,1,2}, {3,1,2}, {3,1,2}, {3,2,2}, {3,2,2}, {3,2,3}, {3,2,3}, {3,2,3}, {3,3,1}, {3,3,1}, {3,3,2}, {3,3,2}, {3,3,2}, {3,4,2}, {3,4,2}, {3,4,2}, {3,4,2}, {3,4,2}, {3,5,4}, {3,5,1}, {3,5,1}, {3,5,2}, {3,5,2}, {3,5,3}, {3,5,3}, {3,6,3}, {3,6,3}, {3,6,3}, {3,7,2}, {3,6,3}, {3,6,3}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,3,1}, {2,3,1}, {2,3,4} } },
 		},
 		["mage-arcane"] = {
-			leveling = { name = "Arcane leveling", order = { {1,1,1}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,2,3}, {1,2,3}, {1,2,3}, {1,2,3}, {1,2,3}, {1,3,4}, {1,2,4}, {1,2,4}, {1,3,2}, {1,3,2}, {1,3,2}, {1,4,3}, {1,4,3}, {1,4,3}, {1,1,3}, {1,5,2}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,3,1}, {1,7,2}, {3,1,3}, {3,1,3}, {3,1,3}, {2,1,2}, {2,1,2}, {2,1,2}, {2,1,2}, {3,1,2}, {3,1,2}, {3,1,2}, {3,1,2}, {3,1,2}, {3,2,1}, {3,2,1}, {3,2,1}, {3,2,1}, {3,2,1}, {3,3,1}, {3,3,1}, {3,3,1} } },
+			leveling = { name = "Arcane leveling", order = { {1,1,1}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,2,3}, {1,2,3}, {1,2,3}, {1,2,3}, {1,2,3}, {1,3,4}, {1,2,4}, {1,2,4}, {1,3,2}, {1,3,2}, {1,3,2}, {1,4,3}, {1,4,3}, {1,4,3}, {1,1,3}, {1,5,2}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,6,3}, {1,6,3}, {1,6,3}, {1,3,1}, {1,7,2}, {3,1,3}, {3,1,3}, {3,1,3}, {1,4,4}, {2,1,2}, {2,1,2}, {2,1,2}, {3,1,2}, {3,1,2}, {3,1,2}, {3,1,2}, {3,1,2}, {3,2,1}, {3,2,1}, {3,2,1}, {3,2,1}, {3,2,1}, {3,3,1}, {3,3,1}, {3,3,1} } },
 			raid = { name = "Arcane raid", order = { {1,1,1}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,3}, {1,2,3}, {1,2,3}, {1,2,3}, {1,2,3}, {1,2,3}, {1,3,4}, {1,2,4}, {1,2,4}, {1,3,2}, {1,3,2}, {1,3,2}, {1,4,3}, {1,4,3}, {1,4,3}, {1,2,1}, {1,5,2}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,6,3}, {1,6,3}, {1,6,3}, {3,1,3}, {3,1,3}, {3,1,3}, {1,2,1}, {1,7,2}, {1,4,4}, {2,1,2}, {2,1,2}, {2,1,2}, {2,1,2}, {2,1,2}, {2,1,3}, {2,1,3}, {2,2,1}, {2,2,1}, {2,2,1}, {2,2,1}, {2,2,1}, {2,3,3}, {2,3,4}, {2,3,4}, {2,4,3} } },
 		},
 		["mage-fire"] = {
@@ -16173,7 +16259,7 @@ ns.Data = {
 			raid = { name = "Destruction raid", order = { {3,1,3}, {3,1,3}, {3,1,3}, {3,1,3}, {3,1,3}, {3,2,3}, {3,2,3}, {3,2,3}, {3,2,2}, {3,2,2}, {3,3,3}, {3,3,2}, {3,3,2}, {3,3,2}, {3,3,2}, {3,4,2}, {3,4,2}, {3,4,2}, {3,3,2}, {3,2,2}, {3,4,3}, {3,5,2}, {3,5,3}, {3,5,3}, {3,5,3}, {3,6,3}, {3,6,3}, {3,6,3}, {3,6,3}, {3,2,3}, {3,7,2}, {3,2,3}, {3,6,3}, {1,1,1}, {1,1,1}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,2}, {1,1,3}, {1,1,3}, {1,1,3}, {1,1,3}, {1,1,3}, {1,3,4}, {1,3,4}, {1,3,4}, {1,4,1}, {1,4,1}, {1,4,1} } },
 		},
 		["warrior-arms"] = {
-			leveling = { name = "Arms leveling", order = { {1,1,3}, {1,1,3}, {1,1,3}, {1,1,1}, {1,1,2}, {1,2,4}, {1,2,4}, {1,1,2}, {1,1,2}, {1,2,1}, {1,2,1}, {1,2,2}, {1,2,2}, {1,2,2}, {1,3,2}, {1,3,3}, {1,3,3}, {1,3,3}, {1,4,2}, {1,4,2}, {1,4,2}, {1,4,3}, {1,4,3}, {1,5,1}, {1,5,1}, {1,5,2}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,7,2}, {1,5,3}, {1,6,1}, {1,6,1}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {3,1,1}, {3,1,1}, {3,1,3}, {3,1,3}, {3,1,3}, {3,1,3}, {3,1,3} } },
+			leveling = { name = "Arms leveling", order = { {1,1,3}, {1,1,3}, {1,1,3}, {1,1,1}, {1,1,2}, {1,2,4}, {1,2,4}, {1,1,2}, {1,2,1}, {1,2,1}, {1,2,2}, {1,2,2}, {1,2,2}, {1,3,2}, {1,3,3}, {1,3,3}, {1,3,3}, {1,4,1}, {1,4,2}, {1,4,2}, {1,4,2}, {1,4,3}, {1,4,3}, {1,5,1}, {1,5,1}, {1,5,2}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,7,2}, {1,5,3}, {1,6,1}, {1,6,1}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {3,1,1}, {3,1,1}, {3,1,3}, {3,1,3}, {3,1,3}, {3,1,3}, {3,1,3} } },
 			raid = { name = "Arms raid", order = { {1,1,3}, {1,1,3}, {1,1,3}, {1,1,1}, {1,1,1}, {1,2,4}, {1,2,4}, {1,1,1}, {1,2,2}, {1,2,2}, {1,2,2}, {1,3,2}, {1,3,3}, {1,3,3}, {1,3,3}, {1,4,1}, {1,4,2}, {1,4,2}, {1,4,2}, {1,4,3}, {1,4,3}, {1,5,1}, {1,5,1}, {1,5,2}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,5,3}, {1,6,1}, {1,7,2}, {1,6,1}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,1,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,2,3}, {2,3,4}, {2,3,4}, {2,3,4}, {2,3,4}, {2,3,4}, {2,4,2}, {2,4,4}, {2,4,4}, {3,1,1} } },
 		},
 		["warrior-fury"] = {
@@ -16468,6 +16554,9 @@ ns.Data = {
 		[1758] = 1,
 		[1759] = 1,
 		[1760] = 1,
+		[1822] = 24,
+		[1823] = 24,
+		[1824] = 24,
 		[1866] = 6,
 		[1943] = 20,
 		[1978] = 4,
@@ -16496,7 +16585,6 @@ ns.Data = {
 		[2941] = 1,
 		[2944] = 20,
 		[2948] = 22,
-		[2973] = 1,
 		[2974] = 12,
 		[3044] = 6,
 		[3045] = 26,
@@ -16686,6 +16774,7 @@ ns.Data = {
 		[9894] = 20,
 		[9896] = 20,
 		[9898] = 10,
+		[9904] = 24,
 		[9907] = 18,
 		[9908] = 16,
 		[9912] = 1,
@@ -16822,10 +16911,9 @@ ns.Data = {
 		[13032] = 40,
 		[13033] = 40,
 		[13549] = 4,
+		[13550] = 4,
 		[13551] = 4,
 		[13552] = 4,
-		[13553] = 4,
-		[13554] = 4,
 		[13555] = 4,
 		[13750] = 40,
 		[13795] = 16,
