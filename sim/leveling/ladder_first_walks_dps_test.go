@@ -16,7 +16,9 @@ func TestFuryTakesFlurryBeforeImprovedBerserkerRage(t *testing.T) {
 	})
 }
 
-// Sim-accuracy round 29 (walks-dps): a leveling Protection warrior takes Improved Revenge at 17 to 19, Defiance at
+// Sim-accuracy 2026-11-12 (Protection warrior lane): Shield Specialization at 10 to 14, Improved Revenge at 15 to 17
+// and Improved Bloodrage at 18 and 19 (threat +3 to +15% at 11 to 18 once Bloodrage costs health and rage from damage
+// taken ignores armor). Round 29 (walks-dps): a leveling Protection warrior takes Improved Revenge before 20, Defiance at
 // 20 to 22 and Master of Defense at 23 and 24 before Anticipation. Round 30: on the dungeon-table
 // boss a bare tank's chance of death is 0 at every level with either order, so under the tank
 // rule Improved Sunder Armor (25 to 27), Improved Thunder Clap (28 to 30) and Focused Rage (31,
@@ -24,7 +26,9 @@ func TestFuryTakesFlurryBeforeImprovedBerserkerRage(t *testing.T) {
 // 37. Concussion Blow 39, Shield Slam 40 and Bastion are unchanged.
 func TestProtectionWarriorTakesDefianceBeforeAnticipation(t *testing.T) {
 	checkLadder(t, "warrior", "protection", 2, map[int]string{
-		17: "00000000000000000-000000000000000000-250010000000000000",
+		14: "00000000000000000-000000000000000000-050000000000000000",
+		17: "00000000000000000-000000000000000000-050030000000000000",
+		19: "00000000000000000-000000000000000000-250030000000000000",
 		20: "00000000000000000-000000000000000000-250030000100000000",
 		25: "00000000000000000-000000000000000000-250030020310000000",
 		28: "00000000000000000-000000000000000000-250031020330000000",
