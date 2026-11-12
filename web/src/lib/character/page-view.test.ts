@@ -156,6 +156,7 @@ describe('fights and builds', () => {
     }));
     const rows = buildRows('Priest', builds);
     expect(rows.map((row) => row.split)).toEqual(['1/0/0', '2/0/0', '0/0/0']);
-    expect(rows[0].sub).toBe('Discipline · 1 Nov');
+    // One point names no tree (the addon's Talents.decideTree asks), so the row keeps its filed spec.
+    expect(rows[0].sub).toBe('Holy · 1 Nov');
   });
 });
