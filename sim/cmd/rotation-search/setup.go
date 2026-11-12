@@ -133,12 +133,17 @@ func guideEngineTalents(o options, spec specInfo, clientBuild string) (string, e
 	return layout.Reposition(activeTrees, talents)
 }
 
-// guideOrOverrideBuild is the build every sim wears: the guide's own, or
-// the FS1 code -build-code names when a search must hold a different one
-// (a rotation can only be searched on the talents it casts).
+// guideOrOverrideBuild is the build every sim wears: the guide's own (its
+// raid build under the raid preset, the build the raid-ready entry is
+// simmed on, as talent-search reads it), or the FS1 code -build-code names
+// when a search must hold a different one (a rotation can only be searched
+// on the talents it casts).
 func guideOrOverrideBuild(o options, spec specInfo) (string, [3]string, error) {
 	if o.buildCode != "" {
 		return leveling.ParseBuildCode(o.buildCode)
+	}
+	if o.preset == request.RaidPreset {
+		return leveling.GuideRaidBuildTalents(o.repoRoot, spec.ClassSlug, spec.SpecSlug)
 	}
 	return leveling.GuideBuildTalents(o.repoRoot, spec.ClassSlug, spec.SpecSlug)
 }
