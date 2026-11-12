@@ -1,0 +1,699 @@
+remote-test: engine pinned to 5c2705564
+ok  	github.com/jhunthrop/foreversixty/sim/request	1.707s
+=== golden warlock-affliction
+# warlock-affliction rotation ladder
+
+Rules this ladder runs under (Phase 1a,
+docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
+
+- Levels: 10, 20, 30, 38, 40, 50, 60. 300 iterations, seed 1, the
+  default encounter (a stationary target three levels above the
+  character).
+- Talents: the guide's level-60 FS1 build code
+  (web/src/content/guides/<class>/<spec>.md), truncated to level-9
+  points (0 below level 10). Each talent's guide-assigned rank is read
+  by the talent's own stable id against the client build the guide
+  names, then re-resolved to that talent's row in the ACTIVE build
+  (data/builds/<active>/talents/<class>.json) - a talent the active
+  build no longer carries is dropped rather than misaligning every
+  digit after it. Points are spent walking the active build's trees
+  top row down, the spec's own tree first, then the other two in the
+  build code's own order (0, 1, 2, skipping the spec's own). A row the
+  budget runs out before reaching is simply left at 0. If the guide
+  build itself spends fewer than level-9 points, the remainder is left
+  unspent.
+- Gear: main_hand always, off_hand for the classes that dual-wield in
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
+  0, so an unfinished/placeholder weapon row this build's item table
+  still carries - equipping one hangs the engine mid-sim rather than
+  simulating a zero-damage weapon, see the report - is never picked)
+  with required_level <= the character's level, from
+  data/builds/<active>/items/<class>.json filtered to
+  data/builds/<active>/simitems.json's known ids, honoring the spec's
+  handedness (warrior-arms and paladin-retribution two-hand only;
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
+  ranged with a wand instead: the same item table's ranged rows whose
+  icon names them a real wand (every wand row's own damage_max is 0 in
+  this build, unlike a bow or gun, so the melee pick's damage_max > 0
+  check is replaced by that icon check rather than dropped), so
+  OtherActionShoot/wand lines have something to resolve against.
+  Every other slot is bare. Consumables: none (see the potion rule
+  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
+  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
+  Might from level 4), at the highest rank the level can learn; no
+  raid buffs.
+- DPS regression: each level's DPS is compared against the ladder's own
+  PREVIOUS rung (not literally level-10, since the ladder's own gaps
+  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
+  1% drop as the 300-iteration run's own noise (shaman-elemental's
+  level 40, 46.0 vs a level-38 46.1, is exactly this). A level scoring
+  more than 1% lower than the rung before it is a violation.
+- Unresolved: an id the engine's ComputeStats warns it cannot resolve,
+  with three standing exceptions before anything counts as a
+  violation: (1) data/curated/apl/<spec>.json's own inert array names
+  it; (2) it is the potion action ({OtherID: 13}) - the ladder
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
+  (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
+  and the ladder's own truncated build (ladderTalentString's budget
+  walk) has spent zero points on that talent at this level - expected
+  right up until the level this ladder's approximation of the guide's
+  build actually reaches that talent's row, a violation only once the
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
+  Anything else is a violation.
+- Zero casts: one of the curated rotation's own castSpell lines, resolved
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
+  in the run - unless the engine could not resolve that id at all
+  (already counted as unresolved) or data/curated/apl/<spec>.json's
+  expected_idle array names the LINE'S AUTHORED id with a reason.
+  LearnedSpellID returning "not learned" means the engine's own
+  rewrite already dropped the line before the request was built, which
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
+- Learned but unused (informational, not a violation): every damage
+  ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
+  ladder.go's isDamageEffect) the class has learned by this level that
+  this level's cast set never touched, regardless of whether the
+  rotation names it at all. An ability whose spellranks.json rows are
+  ALL rank 0 (Bloodrage, Judgement - a single always-known ability, not
+  a rank progression) is not tracked by this rule at all, the same way
+  it is invisible to the engine's own rank rewrite. Heroic
+  Strike-shaped bonus-weapon-damage effects (type 17) are NOT covered
+  by the damage-effect rule and so never appear here even when
+  genuinely unused - see the report for specs where that matters.
+- Strict failures (FOREVER_LADDER_STRICT=1) are the four rules above;
+  see the run's own "Violations" section below for what this file's own
+  run found.
+
+## Ladder
+
+| Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
+|---|---|---|---|---|---|---|
+| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:284287 ranged:286750 | 13.3 | 5 | other:mana_gain=32.6, spell:1454=32.6, spell:695=29.0, spell:172=14.4, spell:707=13.6 | {SpellID: 1316697}, {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18288}, {SpellID: 18788} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:2567 ranged:5243 | 38.7 | 7 | other:mana_gain=22.9, spell:1455=22.9, spell:5019=20.7, spell:1088=18.2, spell:6222=12.6 | {SpellID: 1316697}, {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18288}, {SpellID: 18788} |
+| 30 | 25520000132001000-0000000000000000000-0000000000000000 | main_hand:249392 ranged:5213 | 60.8 | 9 | other:mana_gain=28.3, spell:1456=28.3, spell:1106=20.7, spell:2941=11.4, spell:6223=10.9 | {SpellID: 1316697}, {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788} |
+| 38 | 25521000132001340-0000000000000000000-0000000000000000 | main_hand:873 ranged:10766 | 92.8 | 9 | other:mana_gain=26.5, spell:11687=26.5, spell:7641=24.6, spell:2941=11.7, spell:7648=10.8 | {SpellID: 1316697}, {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788} |
+| 40 | 25521000132001351-0000000000000000000-0000000000000000 | main_hand:873 ranged:5216 | 107.8 | 8 | other:mana_gain=23.2, spell:11687=23.2, spell:7648=14.1, spell:1316697=13.4, spell:11711=11.5 | {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788} |
+| 50 | 25522300132001351-0005000000000000000-0010000000000000 | main_hand:873 ranged:249232 | 163.0 | 8 | other:mana_gain=22.1, spell:11688=22.1, spell:11671=14.7, spell:1316697=14.0, spell:11712=11.6 | {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788} |
+| 60 | 25522300132001351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 296.8 | 8 | other:mana_gain=20.8, spell:11689=20.8, spell:11672=15.7, spell:1316697=15.3, spell:11713=11.0 | {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788} |
+
+## Learned but unused (informational)
+
+
+### Level 10
+
+- Drain Soul (spell 1120)
+- Firebolt (spell 7799)
+- Shadow Cleave (spell 403839)
+
+### Level 20
+
+- Drain Soul (spell 1120)
+- Firebolt (spell 7800)
+- Health Funnel (spell 3698)
+- Lash of Pain (spell 7814)
+- Rain of Fire (spell 5740)
+- Searing Pain (spell 5676)
+- Shadow Cleave (spell 403841)
+- Shadowburn (spell 17877)
+
+### Level 30
+
+- Conflagrate (spell 1293817)
+- Drain Soul (spell 8288)
+- Firebolt (spell 7801)
+- Health Funnel (spell 3699)
+- Hellfire (spell 1949)
+- Hellfire Effect (spell 5857)
+- Lash of Pain (spell 7815)
+- Rain of Fire (spell 5740)
+- Searing Pain (spell 17919)
+- Shadow Cleave (spell 403842)
+- Shadowburn (spell 18867)
+
+### Level 38
+
+- Conflagrate (spell 1293818)
+- Drain Soul (spell 8289)
+- Firebolt (spell 7802)
+- Health Funnel (spell 3700)
+- Hellfire (spell 1949)
+- Hellfire Effect (spell 5857)
+- Lash of Pain (spell 7816)
+- Rain of Fire (spell 6219)
+- Searing Pain (spell 17920)
+- Shadow Cleave (spell 403843)
+- Shadowburn (spell 18868)
+
+### Level 40
+
+- Conflagrate (spell 17962)
+- Drain Soul (spell 8289)
+- Firebolt (spell 7802)
+- Haunt (spell 403501)
+- Health Funnel (spell 3700)
+- Hellfire (spell 1949)
+- Hellfire Effect (spell 5857)
+- Incinerate (spell 412758)
+- Lash of Pain (spell 7816)
+- Rain of Fire (spell 6219)
+- Searing Pain (spell 17920)
+- Shadow Bolt (spell 7641)
+- Shadow Cleave (spell 403843)
+- Shadowburn (spell 18869)
+- Unstable Affliction (spell 427717)
+
+### Level 50
+
+- Conflagrate (spell 18930)
+- Drain Soul (spell 8289)
+- Firebolt (spell 11762)
+- Haunt (spell 1293693)
+- Health Funnel (spell 11693)
+- Hellfire (spell 11683)
+- Hellfire Effect (spell 11681)
+- Incinerate (spell 1293812)
+- Lash of Pain (spell 11778)
+- Rain of Fire (spell 11677)
+- Searing Pain (spell 17922)
+- Shadow Bolt (spell 11659)
+- Shadow Cleave (spell 403844)
+- Shadowburn (spell 18870)
+- Soul Fire (spell 6353)
+- Unstable Affliction (spell 1242972)
+
+### Level 60
+
+- Conflagrate (spell 18932)
+- Drain Soul (spell 11675)
+- Firebolt (spell 11763)
+- Haunt (spell 1293694)
+- Health Funnel (spell 11695)
+- Hellfire (spell 11684)
+- Hellfire Effect (spell 11682)
+- Incinerate (spell 1293813)
+- Lash of Pain (spell 11780)
+- Rain of Fire (spell 11678)
+- Searing Pain (spell 17923)
+- Shadow Bolt (spell 11661)
+- Shadow Cleave (spell 403852)
+- Shadowburn (spell 18871)
+- Soul Fire (spell 17924)
+- Test Curse of Agony (spell 28608)
+- Unstable Affliction (spell 1242972)
+
+## Violations found in this run
+
+- warlock-affliction level=10 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=10 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=20 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=20 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=30 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=30 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=38 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=38 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=40 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=40 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=40 kind=zero_casts spell="Shadow Bolt" id=7641 authored=11661
+- warlock-affliction level=50 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=50 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=50 kind=zero_casts spell="Shadow Bolt" id=11659 authored=11661
+- warlock-affliction level=60 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=60 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=60 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=60 kind=zero_casts spell="Shadow Bolt" id=11661 authored=11661
+=== endgolden
+=== golden warlock-demonology
+# warlock-demonology rotation ladder
+
+Rules this ladder runs under (Phase 1a,
+docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
+
+- Levels: 10, 20, 30, 38, 40, 50, 60. 300 iterations, seed 1, the
+  default encounter (a stationary target three levels above the
+  character).
+- Talents: the guide's level-60 FS1 build code
+  (web/src/content/guides/<class>/<spec>.md), truncated to level-9
+  points (0 below level 10). Each talent's guide-assigned rank is read
+  by the talent's own stable id against the client build the guide
+  names, then re-resolved to that talent's row in the ACTIVE build
+  (data/builds/<active>/talents/<class>.json) - a talent the active
+  build no longer carries is dropped rather than misaligning every
+  digit after it. Points are spent walking the active build's trees
+  top row down, the spec's own tree first, then the other two in the
+  build code's own order (0, 1, 2, skipping the spec's own). A row the
+  budget runs out before reaching is simply left at 0. If the guide
+  build itself spends fewer than level-9 points, the remainder is left
+  unspent.
+- Gear: main_hand always, off_hand for the classes that dual-wield in
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
+  0, so an unfinished/placeholder weapon row this build's item table
+  still carries - equipping one hangs the engine mid-sim rather than
+  simulating a zero-damage weapon, see the report - is never picked)
+  with required_level <= the character's level, from
+  data/builds/<active>/items/<class>.json filtered to
+  data/builds/<active>/simitems.json's known ids, honoring the spec's
+  handedness (warrior-arms and paladin-retribution two-hand only;
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
+  ranged with a wand instead: the same item table's ranged rows whose
+  icon names them a real wand (every wand row's own damage_max is 0 in
+  this build, unlike a bow or gun, so the melee pick's damage_max > 0
+  check is replaced by that icon check rather than dropped), so
+  OtherActionShoot/wand lines have something to resolve against.
+  Every other slot is bare. Consumables: none (see the potion rule
+  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
+  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
+  Might from level 4), at the highest rank the level can learn; no
+  raid buffs.
+- DPS regression: each level's DPS is compared against the ladder's own
+  PREVIOUS rung (not literally level-10, since the ladder's own gaps
+  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
+  1% drop as the 300-iteration run's own noise (shaman-elemental's
+  level 40, 46.0 vs a level-38 46.1, is exactly this). A level scoring
+  more than 1% lower than the rung before it is a violation.
+- Unresolved: an id the engine's ComputeStats warns it cannot resolve,
+  with three standing exceptions before anything counts as a
+  violation: (1) data/curated/apl/<spec>.json's own inert array names
+  it; (2) it is the potion action ({OtherID: 13}) - the ladder
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
+  (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
+  and the ladder's own truncated build (ladderTalentString's budget
+  walk) has spent zero points on that talent at this level - expected
+  right up until the level this ladder's approximation of the guide's
+  build actually reaches that talent's row, a violation only once the
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
+  Anything else is a violation.
+- Zero casts: one of the curated rotation's own castSpell lines, resolved
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
+  in the run - unless the engine could not resolve that id at all
+  (already counted as unresolved) or data/curated/apl/<spec>.json's
+  expected_idle array names the LINE'S AUTHORED id with a reason.
+  LearnedSpellID returning "not learned" means the engine's own
+  rewrite already dropped the line before the request was built, which
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
+- Learned but unused (informational, not a violation): every damage
+  ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
+  ladder.go's isDamageEffect) the class has learned by this level that
+  this level's cast set never touched, regardless of whether the
+  rotation names it at all. An ability whose spellranks.json rows are
+  ALL rank 0 (Bloodrage, Judgement - a single always-known ability, not
+  a rank progression) is not tracked by this rule at all, the same way
+  it is invisible to the engine's own rank rewrite. Heroic
+  Strike-shaped bonus-weapon-damage effects (type 17) are NOT covered
+  by the damage-effect rule and so never appear here even when
+  genuinely unused - see the report for specs where that matters.
+- Strict failures (FOREVER_LADDER_STRICT=1) are the four rules above;
+  see the run's own "Violations" section below for what this file's own
+  run found.
+
+## Ladder
+
+| Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
+|---|---|---|---|---|---|---|
+| 10 | 00000000000000000-0001000000000000000-0000000000000000 | main_hand:284287 ranged:286750 | 13.1 | 5 | other:mana_gain=34.7, spell:1454=34.7, spell:695=28.0, spell:172=14.4, spell:707=13.2 | {SpellID: 18788}, {SpellID: 19028}, {SpellID: 425464}, {SpellID: 603}, {SpellID: 712} |
+| 20 | 00000000000000000-2005003100000000000-0000000000000000 | main_hand:2567 ranged:5243 | 34.9 | 7 | spell:705=27.9, other:mana_gain=27.4, spell:1455=27.4, spell:1094=11.9, spell:6222=11.6 | {SpellID: 18788}, {SpellID: 19028}, {SpellID: 425464}, {SpellID: 603} |
+| 30 | 00000000000000000-2035113101210001000-0000000000000000 | main_hand:249392 ranged:5213 | 54.3 | 8 | other:mana_gain=27.8, spell:1456=27.8, spell:1088=26.6, spell:2941=12.4, spell:6223=10.0 | {SpellID: 425464}, {SpellID: 603} |
+| 38 | 00000000000000000-2035113101220001340-0000000000000000 | main_hand:873 ranged:10766 | 95.8 | 8 | other:mana_gain=28.4, spell:11687=28.4, spell:7641=26.5, spell:2941=12.4, spell:7648=9.9 | {SpellID: 425464}, {SpellID: 603} |
+| 40 | 10000000000000000-2035113101220001350-0000000000000000 | main_hand:873 ranged:5216 | 100.6 | 8 | other:mana_gain=27.9, spell:11687=27.9, spell:7641=26.6, spell:11665=12.5, spell:7648=9.9 | {SpellID: 425464}, {SpellID: 603} |
+| 50 | 25400000000000000-2035113101220001350-0000000000000000 | main_hand:873 ranged:249232 | 157.9 | 9 | other:mana_gain=25.9, spell:11688=25.9, spell:11659=23.4, spell:11667=11.4, spell:11671=10.5 | {SpellID: 425464}, {SpellID: 603} |
+| 60 | 25522000000000000-2035113101220001350-0050000000000000 | main_hand:22630 ranged:22821 | 304.9 | 11 | spell:11661=30.0, other:mana_gain=30.0, spell:11689=30.0, spell:11668=12.0, spell:11672=10.5 | {SpellID: 425464} |
+
+## Learned but unused (informational)
+
+
+### Level 10
+
+- Drain Soul (spell 1120)
+- Firebolt (spell 7799)
+- Shadow Cleave (spell 403839)
+
+### Level 20
+
+- Drain Soul (spell 1120)
+- Firebolt (spell 7800)
+- Health Funnel (spell 3698)
+- Lash of Pain (spell 7814)
+- Rain of Fire (spell 5740)
+- Searing Pain (spell 5676)
+- Shadow Bolt (spell 1088)
+- Shadow Cleave (spell 403841)
+- Shadowburn (spell 17877)
+
+### Level 30
+
+- Conflagrate (spell 1293817)
+- Drain Soul (spell 8288)
+- Firebolt (spell 7801)
+- Health Funnel (spell 3699)
+- Hellfire (spell 1949)
+- Hellfire Effect (spell 5857)
+- Lash of Pain (spell 7815)
+- Rain of Fire (spell 5740)
+- Searing Pain (spell 17919)
+- Shadow Bolt (spell 1106)
+- Shadow Cleave (spell 403842)
+- Shadowburn (spell 18867)
+
+### Level 38
+
+- Conflagrate (spell 1293818)
+- Drain Soul (spell 8289)
+- Firebolt (spell 7802)
+- Health Funnel (spell 3700)
+- Hellfire (spell 1949)
+- Hellfire Effect (spell 5857)
+- Lash of Pain (spell 7816)
+- Rain of Fire (spell 6219)
+- Searing Pain (spell 17920)
+- Shadow Cleave (spell 403843)
+- Shadowburn (spell 18868)
+
+### Level 40
+
+- Conflagrate (spell 17962)
+- Drain Soul (spell 8289)
+- Firebolt (spell 7802)
+- Haunt (spell 403501)
+- Health Funnel (spell 3700)
+- Hellfire (spell 1949)
+- Hellfire Effect (spell 5857)
+- Incinerate (spell 412758)
+- Lash of Pain (spell 7816)
+- Rain of Fire (spell 6219)
+- Searing Pain (spell 17920)
+- Shadow Cleave (spell 403843)
+- Shadowburn (spell 18869)
+- Unstable Affliction (spell 427717)
+- Wrack (spell 1316697)
+
+### Level 50
+
+- Conflagrate (spell 18930)
+- Drain Soul (spell 8289)
+- Firebolt (spell 11762)
+- Haunt (spell 1293693)
+- Health Funnel (spell 11693)
+- Hellfire (spell 11683)
+- Hellfire Effect (spell 11681)
+- Incinerate (spell 1293812)
+- Lash of Pain (spell 11778)
+- Rain of Fire (spell 11677)
+- Searing Pain (spell 17922)
+- Shadow Cleave (spell 403844)
+- Shadowburn (spell 18870)
+- Unstable Affliction (spell 1242972)
+- Wrack (spell 1316697)
+
+### Level 60
+
+- Conflagrate (spell 18932)
+- Drain Soul (spell 11675)
+- Firebolt (spell 11763)
+- Haunt (spell 1293694)
+- Health Funnel (spell 11695)
+- Hellfire (spell 11684)
+- Hellfire Effect (spell 11682)
+- Incinerate (spell 1293813)
+- Lash of Pain (spell 11780)
+- Rain of Fire (spell 11678)
+- Searing Pain (spell 17923)
+- Shadow Cleave (spell 403852)
+- Shadowburn (spell 18871)
+- Test Curse of Agony (spell 28608)
+- Unstable Affliction (spell 1242972)
+- Wrack (spell 1316697)
+
+## Violations found in this run
+
+- warlock-demonology level=10 kind=unresolved_id action={SpellID: 712}
+- warlock-demonology level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=10 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=20 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=20 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=30 kind=zero_casts id=18788 authored=18788 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=30 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=30 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=38 kind=zero_casts id=18788 authored=18788 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=38 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=38 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=40 kind=zero_casts id=18788 authored=18788 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=40 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=50 kind=zero_casts id=18788 authored=18788 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=50 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=60 kind=zero_casts id=18788 authored=18788 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=60 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+=== endgolden
+=== golden warlock-destruction
+# warlock-destruction rotation ladder
+
+Rules this ladder runs under (Phase 1a,
+docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
+
+- Levels: 10, 20, 30, 38, 40, 50, 60. 300 iterations, seed 1, the
+  default encounter (a stationary target three levels above the
+  character).
+- Talents: the guide's level-60 FS1 build code
+  (web/src/content/guides/<class>/<spec>.md), truncated to level-9
+  points (0 below level 10). Each talent's guide-assigned rank is read
+  by the talent's own stable id against the client build the guide
+  names, then re-resolved to that talent's row in the ACTIVE build
+  (data/builds/<active>/talents/<class>.json) - a talent the active
+  build no longer carries is dropped rather than misaligning every
+  digit after it. Points are spent walking the active build's trees
+  top row down, the spec's own tree first, then the other two in the
+  build code's own order (0, 1, 2, skipping the spec's own). A row the
+  budget runs out before reaching is simply left at 0. If the guide
+  build itself spends fewer than level-9 points, the remainder is left
+  unspent.
+- Gear: main_hand always, off_hand for the classes that dual-wield in
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
+  0, so an unfinished/placeholder weapon row this build's item table
+  still carries - equipping one hangs the engine mid-sim rather than
+  simulating a zero-damage weapon, see the report - is never picked)
+  with required_level <= the character's level, from
+  data/builds/<active>/items/<class>.json filtered to
+  data/builds/<active>/simitems.json's known ids, honoring the spec's
+  handedness (warrior-arms and paladin-retribution two-hand only;
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
+  ranged with a wand instead: the same item table's ranged rows whose
+  icon names them a real wand (every wand row's own damage_max is 0 in
+  this build, unlike a bow or gun, so the melee pick's damage_max > 0
+  check is replaced by that icon check rather than dropped), so
+  OtherActionShoot/wand lines have something to resolve against.
+  Every other slot is bare. Consumables: none (see the potion rule
+  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
+  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
+  Might from level 4), at the highest rank the level can learn; no
+  raid buffs.
+- DPS regression: each level's DPS is compared against the ladder's own
+  PREVIOUS rung (not literally level-10, since the ladder's own gaps
+  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
+  1% drop as the 300-iteration run's own noise (shaman-elemental's
+  level 40, 46.0 vs a level-38 46.1, is exactly this). A level scoring
+  more than 1% lower than the rung before it is a violation.
+- Unresolved: an id the engine's ComputeStats warns it cannot resolve,
+  with three standing exceptions before anything counts as a
+  violation: (1) data/curated/apl/<spec>.json's own inert array names
+  it; (2) it is the potion action ({OtherID: 13}) - the ladder
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
+  (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
+  and the ladder's own truncated build (ladderTalentString's budget
+  walk) has spent zero points on that talent at this level - expected
+  right up until the level this ladder's approximation of the guide's
+  build actually reaches that talent's row, a violation only once the
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
+  Anything else is a violation.
+- Zero casts: one of the curated rotation's own castSpell lines, resolved
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
+  in the run - unless the engine could not resolve that id at all
+  (already counted as unresolved) or data/curated/apl/<spec>.json's
+  expected_idle array names the LINE'S AUTHORED id with a reason.
+  LearnedSpellID returning "not learned" means the engine's own
+  rewrite already dropped the line before the request was built, which
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
+- Learned but unused (informational, not a violation): every damage
+  ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
+  ladder.go's isDamageEffect) the class has learned by this level that
+  this level's cast set never touched, regardless of whether the
+  rotation names it at all. An ability whose spellranks.json rows are
+  ALL rank 0 (Bloodrage, Judgement - a single always-known ability, not
+  a rank progression) is not tracked by this rule at all, the same way
+  it is invisible to the engine's own rank rewrite. Heroic
+  Strike-shaped bonus-weapon-damage effects (type 17) are NOT covered
+  by the damage-effect rule and so never appear here even when
+  genuinely unused - see the report for specs where that matters.
+- Strict failures (FOREVER_LADDER_STRICT=1) are the four rules above;
+  see the run's own "Violations" section below for what this file's own
+  run found.
+
+## Ladder
+
+| Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
+|---|---|---|---|---|---|---|
+| 10 | 00000000000000000-0000000000000000000-0010000000000000 | main_hand:284287 ranged:286750 | 13.4 | 5 | other:mana_gain=35.9, spell:1454=35.9, spell:695=29.3, spell:172=14.4, spell:707=13.7 | {SpellID: 412758}, {SpellID: 603} |
+| 20 | 00000000000000000-0000000000000000000-0050230100000000 | main_hand:2567 ranged:5243 | 38.2 | 7 | spell:695=35.7, other:mana_gain=32.1, spell:1455=32.1, spell:1094=13.5, spell:6222=12.2 | {SpellID: 412758}, {SpellID: 603} |
+| 30 | 00000000000000000-0000000000000000000-1050235103001000 | main_hand:249392 ranged:5213 | 61.5 | 7 | other:mana_gain=32.8, spell:1456=32.8, spell:1088=25.1, spell:2941=13.3, spell:6223=10.7 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 426316, Tag: 1}, {SpellID: 603} |
+| 38 | 00000000000000000-0000000000000000000-1050235103101340 | main_hand:873 ranged:10766 | 105.6 | 9 | other:mana_gain=32.6, spell:11687=32.6, spell:7641=16.4, spell:2941=14.9, spell:1293818=13.8 | {SpellID: 412758}, {SpellID: 603} |
+| 40 | 00000000000000000-0000000000000000000-2050235103101341 | main_hand:873 ranged:5216 | 114.6 | 8 | other:mana_gain=38.3, spell:11687=38.3, spell:412758=17.6, spell:11665=14.6, spell:17962=13.6 | {SpellID: 603} |
+| 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:873 ranged:249232 | 183.5 | 8 | other:mana_gain=32.7, spell:11688=32.7, spell:1293812=22.5, spell:18930=13.9, spell:11667=13.5 | {SpellID: 603} |
+| 60 | 25522000000000000-0000000000000000000-2053235103101351 | main_hand:22630 ranged:22821 | 353.7 | 9 | other:mana_gain=32.7, spell:11689=32.7, spell:1293813=25.7, spell:18932=14.4, spell:11668=13.5 | - |
+
+## Learned but unused (informational)
+
+
+### Level 10
+
+- Drain Soul (spell 1120)
+- Firebolt (spell 7799)
+- Shadow Cleave (spell 403839)
+
+### Level 20
+
+- Drain Soul (spell 1120)
+- Firebolt (spell 7800)
+- Health Funnel (spell 3698)
+- Lash of Pain (spell 7814)
+- Rain of Fire (spell 5740)
+- Searing Pain (spell 5676)
+- Shadow Bolt (spell 1088)
+- Shadow Cleave (spell 403841)
+
+### Level 30
+
+- Conflagrate (spell 1293817)
+- Drain Soul (spell 8288)
+- Firebolt (spell 7801)
+- Health Funnel (spell 3699)
+- Hellfire (spell 1949)
+- Hellfire Effect (spell 5857)
+- Lash of Pain (spell 7815)
+- Rain of Fire (spell 5740)
+- Searing Pain (spell 17919)
+- Shadow Bolt (spell 1106)
+- Shadow Cleave (spell 403842)
+
+### Level 38
+
+- Drain Soul (spell 8289)
+- Firebolt (spell 7802)
+- Health Funnel (spell 3700)
+- Hellfire (spell 1949)
+- Hellfire Effect (spell 5857)
+- Lash of Pain (spell 7816)
+- Rain of Fire (spell 6219)
+- Searing Pain (spell 17920)
+- Shadow Cleave (spell 403843)
+
+### Level 40
+
+- Drain Soul (spell 8289)
+- Firebolt (spell 7802)
+- Haunt (spell 403501)
+- Health Funnel (spell 3700)
+- Hellfire (spell 1949)
+- Hellfire Effect (spell 5857)
+- Lash of Pain (spell 7816)
+- Rain of Fire (spell 6219)
+- Searing Pain (spell 17920)
+- Shadow Bolt (spell 7641)
+- Shadow Cleave (spell 403843)
+- Unstable Affliction (spell 427717)
+- Wrack (spell 1316697)
+
+### Level 50
+
+- Drain Soul (spell 8289)
+- Firebolt (spell 11762)
+- Haunt (spell 1293693)
+- Health Funnel (spell 11693)
+- Hellfire (spell 11683)
+- Hellfire Effect (spell 11681)
+- Lash of Pain (spell 11778)
+- Rain of Fire (spell 11677)
+- Searing Pain (spell 17922)
+- Shadow Bolt (spell 11659)
+- Shadow Cleave (spell 403844)
+- Soul Fire (spell 6353)
+- Unstable Affliction (spell 1242972)
+- Wrack (spell 1316697)
+
+### Level 60
+
+- Drain Soul (spell 11675)
+- Firebolt (spell 11763)
+- Haunt (spell 1293694)
+- Health Funnel (spell 11695)
+- Hellfire (spell 11684)
+- Hellfire Effect (spell 11682)
+- Lash of Pain (spell 11780)
+- Rain of Fire (spell 11678)
+- Searing Pain (spell 17923)
+- Shadow Bolt (spell 11661)
+- Shadow Cleave (spell 403852)
+- Soul Fire (spell 17924)
+- Test Curse of Agony (spell 28608)
+- Unstable Affliction (spell 1242972)
+- Wrack (spell 1316697)
+
+## Violations found in this run
+
+- warlock-destruction level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-destruction level=20 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-destruction level=30 kind=unresolved_id action={SpellID: 426316, Tag: 1}
+- warlock-destruction level=30 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-destruction level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-destruction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-destruction level=60 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+=== endgolden
+remote-test: exit 0 in 5s (ccc38577a571c1bb3d1423d6c25b6176b7d4ea23)

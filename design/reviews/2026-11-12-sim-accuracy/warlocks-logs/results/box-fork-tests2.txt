@@ -1,0 +1,20 @@
+== red at 1279751ce
+remote-test: engine pinned to 1279751ce
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261112110705-1279751cec06
+--- FAIL: TestImpFireboltCadenceMatchesTheLogs (0.00s)
+    imp_cadence_test.go:53: the Imp cast Firebolt 66.0 times in 300 s (one every 4.55 s), want one every 2.41 to 2.46 s (122 to 124 casts)
+FAIL
+FAIL	github.com/wowsims/classic/sim/warlock	0.013s
+FAIL
+remote-test: exit 0 in 4s (77c6e9b86b3339ab87503b6cb900822e62d39aa2)
+== green at b8539dcd6
+remote-test: engine pinned to b8539dcd6
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261112110705-b8539dcd6f11
+--- FAIL: TestImpFireboltCadenceMatchesTheLogs (0.00s)
+    imp_cadence_test.go:53: the Imp cast Firebolt 65.0 times in 300 s (one every 4.62 s), want one every 2.41 to 2.46 s (122 to 124 casts)
+FAIL
+FAIL	github.com/wowsims/classic/sim/warlock	0.314s
+ok  	github.com/wowsims/classic/sim/warlock/dps	0.021s
+ok  	github.com/wowsims/classic/sim/core	1.497s
+FAIL
+remote-test: exit 0 in 7s (77c6e9b86b3339ab87503b6cb900822e62d39aa2)

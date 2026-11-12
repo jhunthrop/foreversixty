@@ -1,0 +1,27 @@
+== red at 029a92d73
+remote-test: engine pinned to 029a92d73
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261112111529-029a92d73465
+--- FAIL: TestImpFireboltCadenceMatchesTheLogs (0.00s)
+    imp_cadence_test.go:69: the Imp cast Firebolt 24.7 times in 80 s, want about 33.9 (one every 2.43 s)
+--- FAIL: TestImpFireboltCritIsTheLiveRate (0.00s)
+    imp_cadence_test.go:89: Firebolt crit 2.3% of 1207 hits, want about 5.9% (13 live Imps)
+FAIL
+FAIL	github.com/wowsims/classic/sim/warlock	0.014s
+FAIL
+remote-test: exit 0 in 4s (ccc38577a571c1bb3d1423d6c25b6176b7d4ea23)
+== green at 5c2705564
+remote-test: engine pinned to 5c2705564
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261112111530-5c2705564f74
+--- FAIL: TestImpFireboltCadenceMatchesTheLogs (0.00s)
+    imp_cadence_test.go:69: the Imp cast Firebolt 24.7 times in 80 s, want about 33.9 (one every 2.43 s)
+--- FAIL: TestDemonCritMatchesTheForeverLogs (0.00s)
+    pet_crit_test.go:36: level 20 Imp spell crit = 5.90%, want 2.20%
+    pet_crit_test.go:36: level 30 Imp spell crit = 5.90%, want 2.20%
+    pet_crit_test.go:36: level 40 Imp spell crit = 5.90%, want 2.20%
+    pet_crit_test.go:36: level 60 Imp spell crit = 5.90%, want 2.20%
+FAIL
+FAIL	github.com/wowsims/classic/sim/warlock	0.318s
+ok  	github.com/wowsims/classic/sim/warlock/dps	0.021s
+ok  	github.com/wowsims/classic/sim/core	1.526s
+FAIL
+remote-test: exit 0 in 6s (ccc38577a571c1bb3d1423d6c25b6176b7d4ea23)

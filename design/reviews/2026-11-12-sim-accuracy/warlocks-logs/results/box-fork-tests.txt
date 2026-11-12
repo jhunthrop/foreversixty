@@ -1,0 +1,24 @@
+== red at dbf4d1f4a
+remote-test: engine pinned to dbf4d1f4a
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261112105801-dbf4d1f4aeec
+--- FAIL: TestSummonsBeforeThePullCostNoMana (0.00s)
+    summon_prepull_test.go:75: summon 688 took 1098 mana before the pull, want 0 (the warlock Life Taps back to full before the pull)
+    summon_prepull_test.go:75: summon 712 took 1373 mana before the pull, want 0 (the warlock Life Taps back to full before the pull)
+--- FAIL: TestSummonsDuringTheFightPayTheirCostCutByMasterSummoner (0.00s)
+    summon_prepull_test.go:91: Master Summoner 2 cut the in-fight summon's mana to 2471 of 2746 (0.90), want 0.60
+FAIL
+FAIL	github.com/wowsims/classic/sim/warlock	0.012s
+FAIL
+remote-test: exit 0 in 4s (38ac3720171d10a719adf21a1b114338af6d8797)
+== green at ef85ff869
+remote-test: engine pinned to ef85ff869
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261112105803-ef85ff869a7b
+--- FAIL: TestSummonsDuringTheFightPayTheirCostCutByMasterSummoner (0.00s)
+    summon_prepull_test.go:91: Master Summoner 2 cut the in-fight summon's mana to 2471 of 2746 (0.90), want 0.60
+FAIL
+FAIL	github.com/wowsims/classic/sim/warlock	0.286s
+ok  	github.com/wowsims/classic/sim/warlock/dps	0.019s
+ok  	github.com/wowsims/classic/sim/core	1.486s
+FAIL
+remote-test: exit 0 in 7s (38ac3720171d10a719adf21a1b114338af6d8797)
+exit 0
