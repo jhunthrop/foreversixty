@@ -60,6 +60,46 @@ func TestGuildSimWriterPostsTheMembersPlace(t *testing.T) {
 	}
 }
 
+// A sim that measured nothing (0.0) posts no row, moves nobody and leaves posted_value null.
+func TestGuildSimWriterSkipsASimThatMeasuredNothing(t *testing.T) {
+	s := testStore(t)
+	g, users := guildOf(t, s, 5)
+	w := &GuildSimWriter{Store: s, Now: func() time.Time { return testNow }}
+	sim(t, s, "sZero", "us/normal/mc", users[2], "import", 0, 60, "raid", testNow)
+	w.SimFinished(context.Background(), "sZero")
+	if n := len(read(t, s, Query{Filter: FilterGuild, GuildIDs: []int64{g}}).Rows); n != 0 {
+		t.Fatalf("a 0.0 sim posted: %d rows", n)
+	}
+	var posted *float64
+	if err := s.Pool.QueryRow(context.Background(), `select posted_value from character_sims where sim_id = 'sZero'`).Scan(&posted); err != nil || posted != nil {
+		t.Fatalf("posted_value %v %v, want null", posted, err)
+	}
+}
+
+// A member below the first band plays against its list without being in it: the row names the
+// level, never "20 to 29".
+func TestGuildSimWriterNamesALevelBelowTheFirstBand(t *testing.T) {
+	s := testStore(t)
+	g, _ := guildOf(t, s, 5)
+	low := user(t, s, "Low#1", false)
+	char(t, s, "us/normal/pump", "Pump", "Paladin", 13, low)
+	member(t, s, g, "us/normal/pump", low)
+	sim(t, s, "sPump", "us/normal/pump", low, "import", 41.5, 20, "bare", testNow)
+	w := &GuildSimWriter{Store: s, Now: func() time.Time { return testNow }}
+	w.SimFinished(context.Background(), "sPump")
+	p := read(t, s, Query{Filter: FilterGuild, GuildIDs: []int64{g}})
+	if len(p.Rows) != 1 {
+		t.Fatalf("rows: %+v", p.Rows)
+	}
+	var b strings.Builder
+	for _, sg := range p.Rows[0].Segments {
+		b.WriteString(sg.Text)
+	}
+	if want := "Pump simmed 41.5 DPS in Olympus XXVII (Fury Warrior, level 13)"; b.String() != want {
+		t.Fatalf("sentence %q, want %q", b.String(), want)
+	}
+}
+
 // Ruling R2: hidden below 3 members; anonymised members and old sims drop out.
 func TestGuildLadderRules(t *testing.T) {
 	s := testStore(t)

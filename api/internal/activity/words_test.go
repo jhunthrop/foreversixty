@@ -12,6 +12,9 @@ func TestBandsAndWords(t *testing.T) {
 	if BandWords(20) != "20 to 29" || BandWords(60) != "60" {
 		t.Fatalf("band words: %q %q", BandWords(20), BandWords(60))
 	}
+	if LevelWords(13, 20) != "level 13" || LevelWords(20, 20) != "20 to 29" || LevelWords(0, 60) != "60" {
+		t.Fatalf("level words: %q %q %q", LevelWords(13, 20), LevelWords(20, 20), LevelWords(0, 60))
+	}
 	if ValidBand(25) || !ValidBand(40) {
 		t.Fatal("ValidBand")
 	}

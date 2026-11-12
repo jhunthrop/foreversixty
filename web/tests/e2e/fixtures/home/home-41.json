@@ -1,0 +1,11 @@
+{
+  "import_sim": {
+    "state": "done",
+    "dps": 83.5,
+    "simmed_at": "2026-11-06T09:04:00Z",
+    "sim_id": "imp41"
+  },
+  "spec_week": null,
+  "movers": null,
+  "guild_sims": null
+}

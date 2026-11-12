@@ -71,6 +71,13 @@ describe('feed mix', () => {
     expect(folded[0].segments.find((s) => s.text === '+3.2')?.style).toBe('gain');
   });
 
+  it('drops a sim that measured nothing, and folds to the last one that did', () => {
+    const folded = foldSims([sim('real', 30, 'Vessa', '68.0'), sim('nothing', 3, 'Vessa', '0.0')], GUILD);
+    expect(folded.map((r) => r.id)).toEqual(['real']);
+    expect(words(folded[0].segments)).toBe('Vessa simmed 68.0 DPS (Combat Rogue, 30 to 39)');
+    expect(foldSims([sim('only', 3, 'Shoulder', '0.0')], GUILD)).toEqual([]);
+  });
+
   it('keeps another guild by name, and the ladder place', () => {
     const [shown] = foldSims([sim('a', 3, 'Vessa', '71.2', ', #1 of 6 DPS', 'Other')], GUILD);
     expect(words(shown.segments)).toBe('Vessa simmed 71.2 DPS, #1 of 6 in Other (Combat Rogue, 30 to 39)');

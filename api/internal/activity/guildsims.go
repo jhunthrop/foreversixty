@@ -31,14 +31,14 @@ type GuildSimWriter struct {
 type simFacts struct {
 	key, name, class, spec, preset, role, guild string
 	guildID                                     int64
-	band                                        int
+	band, level                                 int
 	value                                       float64
 	last                                        *float64
 	at                                          time.Time
 }
 
 const simFactsSQL = `select cs.character_key, c.name, lower(coalesce(c.class, '')), cs.spec, cs.preset, cs.role, cs.band,
-	gc.guild_id, g.name, sm.dps_mean, coalesce(sm.finished_at, now()),
+	coalesce(c.level, 0), gc.guild_id, g.name, sm.dps_mean, coalesce(sm.finished_at, now()),
 	(select p.posted_value from character_sims p where p.character_key = cs.character_key and p.sim_id <> cs.sim_id
 	   and p.role = cs.role and p.band = cs.band and p.preset = cs.preset and p.posted_value is not null
 	 order by p.created_at desc limit 1)
@@ -50,7 +50,9 @@ const simFactsSQL = `select cs.character_key, c.name, lower(coalesce(c.class, ''
 	left join users u on u.id = c.user_id
 	where cs.sim_id = $1 and not coalesce(u.anonymize, false)`
 
-// SimFinished writes the row when the sim earns one. Failures are logged: the sim is done.
+// SimFinished writes the row when the sim earns one. A sim whose headline figure is 0 (a healer
+// with nothing to heal) measured nothing and earns no row, no ladder move and no posted value.
+// Failures are logged: the sim is done.
 func (w *GuildSimWriter) SimFinished(ctx context.Context, simID string) {
 	if w == nil || w.Store == nil {
 		return
@@ -63,12 +65,15 @@ func (w *GuildSimWriter) SimFinished(ctx context.Context, simID string) {
 func (w *GuildSimWriter) write(ctx context.Context, simID string) error {
 	var f simFacts
 	err := w.Store.Pool.QueryRow(ctx, simFactsSQL, simID).Scan(&f.key, &f.name, &f.class, &f.spec, &f.preset, &f.role,
-		&f.band, &f.guildID, &f.guild, &f.value, &f.at, &f.last)
+		&f.band, &f.level, &f.guildID, &f.guild, &f.value, &f.at, &f.last)
 	if isNoRows(err) {
 		return nil
 	}
 	if err != nil {
 		return fmt.Errorf("sim facts: %w", err)
+	}
+	if f.value <= 0 {
+		return nil
 	}
 	ladder, err := w.Store.GuildLadder(ctx, LadderGroup{f.guildID, f.role, f.band, f.preset}, w.now())
 	if err != nil {
@@ -96,7 +101,7 @@ func guildSimEvent(f simFacts, simID string, ladder []LadderRow) Event {
 			place = fmt.Sprintf(", #%d of %d %s", r.Rank, len(ladder), members)
 		}
 	}
-	words := BandWords(f.band)
+	words := LevelWords(f.level, f.band)
 	if f.preset != barePreset {
 		words += " " + f.preset
 	}

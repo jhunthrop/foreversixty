@@ -111,6 +111,17 @@ test('signed in at 60 in a guild: the raid plaque, the feed, the sims ladder and
   await expect(page.getByTestId('home-upgrade-over')).toHaveCount(5);
 });
 
+test('signed in at 41 as a tank: every upgrade and the gap count in score, never DPS', async ({ page }) => {
+  await openHome(page, { me: 'me-41.json', feed: 'feed-34.json', home: 'home-41.json' });
+  await expect(page.getByTestId('home-head')).toContainText('Level 41 Human Protection Warrior');
+  const rows = page.getByTestId('home-upgrade');
+  await expect(rows).toHaveCount(5);
+  await expect(rows.first()).toContainText(/\+[0-9.,]+\s*score/);
+  await expect(page.getByTestId('home-upgrades')).not.toContainText('DPS');
+  await expect(page.getByTestId('home-upgrades-total')).toContainText(/\+[0-9.,]+ score/);
+  await expect(page.getByTestId('home-upgrades-all')).toHaveAttribute('href', /^\/bis\/warrior\/protection/);
+});
+
 test('signed in at 34 in a guild with no raid: one row per sim, the guild beside the clock, See all upgrades', async ({
   page,
 }) => {

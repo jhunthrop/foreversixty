@@ -18,12 +18,15 @@ DATA = ROOT / 'data/builds' / BUILD
 OUT = ROOT / 'web/tests/e2e/fixtures/home'
 WEAPONS = {'main_hand', 'off_hand', 'ranged'}
 
-# The two sample characters (spec section 1, H1): a level 34 leveler with no guild and a level 60 raider in one.
+# The sample characters (spec section 1, H1): a level 34 leveler with no guild and a level 60 raider in one; and a
+# level 41 Protection warrior (2026-11-11), whose upgrades count in the ranker's tank score, never DPS.
 SAMPLES = {
     '34': {'name': 'Felsnap', 'class': 'Hunter', 'class_slug': 'hunter', 'spec': 'Beast Mastery', 'spec_key': 'hunter-beast-mastery',
            'level': 34, 'faction': 'alliance', 'race': 'Dwarf', 'item_level': 31, 'points': [23, 0, 0], 'preset': 'bare'},
     '60': {'name': 'Thandrel', 'class': 'Warrior', 'class_slug': 'warrior', 'spec': 'Fury', 'spec_key': 'warrior-fury',
            'level': 60, 'faction': 'alliance', 'race': 'Human', 'item_level': 61, 'points': [17, 34, 0], 'preset': 'raid'},
+    '41': {'name': 'Bulwark', 'class': 'Warrior', 'class_slug': 'warrior', 'spec': 'Protection', 'spec_key': 'warrior-protection',
+           'level': 41, 'faction': 'alliance', 'race': 'Human', 'item_level': 38, 'points': [0, 0, 32], 'preset': 'bare'},
 }
 GUILD = {'id': 2, 'name': 'Olympus XXVII', 'slug': 'olympus-xxvii', 'region': 'us', 'ruleset': 'normal'}
 CAPTURED = '2026-11-04T19:30:00Z'
@@ -86,19 +89,23 @@ def write(name: str, value: dict) -> None:
 
 
 def main() -> None:
+    # One item file per class, carrying every sample of that class (the two warriors share items-warrior.json).
+    item_ids: dict[str, set[int]] = {}
     for state, sample in SAMPLES.items():
         bis = json.loads((DATA / 'bis' / f"{sample['spec_key']}.json").read_text())
         band = band_of(bis, 60 if sample['level'] >= 60 else sample['level'] // 10 * 10, sample['faction'], sample['preset'])
         gear = {**worn_gear(band), **WORN_PICK.get(state, {})}
         ids = set(gear.values()) | {s['item_id'] for s in band['slots'] if 'item_id' in s}
+        item_ids[sample['class_slug']] = item_ids.get(sample['class_slug'], set()) | ids
         write(f"bis-{sample['spec_key']}.json", {**bis, 'bands': [band]})
-        write(f"items-{sample['class_slug']}.json", trimmed_items(sample['class_slug'], ids))
         guilds = [guild_entry()] if state == '60' else []
         write(f'me-{state}.json', me([character(sample, gear, state == '60')], guilds))
         if state == '34':
             # The same leveler in the guild (the owner's own state, 2026-11-09): no raid planned yet, so no
             # raid nights attended, and several sims.
             write('me-34-guild.json', me([character(sample, gear, True, attendance=False)], [guild_entry()]))
+    for class_slug, ids in item_ids.items():
+        write(f'items-{class_slug}.json', trimmed_items(class_slug, ids))
     write('me-new.json', me([], []))
     guild_home = {
         'guild': {'id': GUILD['id'], 'name': GUILD['name'], 'region': 'us', 'ruleset': 'normal', 'slug': GUILD['slug'], 'faction': 'alliance'},
@@ -129,6 +136,11 @@ def main() -> None:
         'movers': {'spec': 'hunter-beast-mastery', 'band': 30, 'baseline': True, 'rows': [
             mover(3, 'Pawsworth', 'hunter', 6), mover(5, 'Ellowen', 'hunter', 4), mover(9, 'Gritfang', 'hunter', 11)]},
         'guild_sims': None,
+    })
+    # The tank's home: a sim (its figure the tank's own), no board place yet, no guild.
+    write('home-41.json', {
+        'import_sim': {'state': 'done', 'dps': 83.5, 'simmed_at': '2026-11-06T09:04:00Z', 'sim_id': 'imp41'},
+        'spec_week': None, 'movers': None, 'guild_sims': None,
     })
     write('home-34-guild.json', {
         'import_sim': {'state': 'done', 'dps': 58.4, 'simmed_at': '2026-11-06T09:04:00Z', 'sim_id': 'imp34'},

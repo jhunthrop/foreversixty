@@ -79,12 +79,17 @@ describe('guildSummaryFacts', () => {
 });
 
 describe('upgradesFacts', () => {
-  const result = (total: number, count: number, bis: number): UpgradesResult =>
+  const result = (
+    total: number,
+    count: number,
+    bis: number,
+    scoreUnit: UpgradesResult['scoreUnit'] = 'dps',
+  ): UpgradesResult =>
     ({
       upgrades: Array.from({ length: count }, () => ({})),
       alreadyBis: Array.from({ length: bis }, () => ({})),
       totalGainDps: total,
-      scoreUnit: 'dps',
+      scoreUnit,
       notSimCheckedCount: 0,
     }) as unknown as UpgradesResult;
 
@@ -97,6 +102,11 @@ describe('upgradesFacts', () => {
     expect(upgradesFacts(result(7.8, 14, 0))).toEqual([{ n: '+7.8', text: 'DPS' }]);
     expect(upgradesFacts(result(0, 0, 17))).toEqual([]);
     expect(upgradesFacts(undefined)).toEqual([]);
+  });
+
+  it('counts the gap in the band unit: a tank score, a healer HPS', () => {
+    expect(upgradesFacts(result(3895.7, 5, 1, 'tank_score'))[0]).toEqual({ n: '+3,895.7', text: 'score' });
+    expect(upgradesFacts(result(41.2, 5, 1, 'hps'))[0]).toEqual({ n: '+41.2', text: 'HPS' });
   });
 });
 

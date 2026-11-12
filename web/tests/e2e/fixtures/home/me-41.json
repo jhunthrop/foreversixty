@@ -1,0 +1,57 @@
+{
+  "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+  },
+  "characters": [
+    {
+      "key": "us/normal/bulwark",
+      "region": "us",
+      "ruleset": "normal",
+      "name": "Bulwark",
+      "class": "Warrior",
+      "spec": "Protection",
+      "race": "Human",
+      "realm": "Skyborne",
+      "level": 41,
+      "faction": "alliance",
+      "item_level": 38,
+      "source": "bnet",
+      "build": {
+        "source": "addon",
+        "captured_at": "2026-11-04T19:30:00Z",
+        "level": 41,
+        "data_build": "1.60.1.70790",
+        "gear": {
+          "head": 14831,
+          "neck": 13088,
+          "shoulder": 13132,
+          "back": 10776,
+          "chest": 10775,
+          "wrist": 9432,
+          "hands": 276200,
+          "waist": 8140,
+          "legs": 250524,
+          "feet": 250547,
+          "finger1": 271915,
+          "finger2": 271915,
+          "trinket1": 18706,
+          "trinket2": 18706,
+          "main_hand": 7761,
+          "off_hand": 276204,
+          "ranged": 9400
+        },
+        "talents": {
+          "trees": ["0000000000000000", "00000000000000000", "000000000000000000"],
+          "points": [0, 0, 32]
+        }
+      }
+    }
+  ],
+  "guilds": [],
+  "bnet_imported_at": "2026-11-06T09:00:00Z",
+  "main_character_key": "us/normal/bulwark"
+}

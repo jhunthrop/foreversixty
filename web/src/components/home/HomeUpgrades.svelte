@@ -2,7 +2,7 @@
 <!-- Your upgrades (on the panel under its heading, as the feed beside it): the five biggest
      upgrades for the character's band, each the item in its quality colour, its slot and source,
      the piece it replaces ("over Mantle of Thieves", in that piece's quality colour) and what the
-     pick adds, with Best in slot at the right of the title; under them the whole gap (every
+     pick adds in the band's own unit (DPS, HPS, a tank's score), with Best in slot at the right of the title; under them the whole gap (every
      measured upgrade's gain), how many slots are already best in slot, and See all N to the band's
      best-in-slot list when there are more than five. Left out with none to show. -->
 <script lang="ts">
@@ -10,7 +10,7 @@
   import type { Item } from '../../lib/planner/types';
   import type { CachedUpgrades } from '../../lib/home/upgrades-loader';
   import type { SlotUpgrade } from '../../lib/home/upgrades';
-  import { UPGRADES_SHOWN, gainText, upgradeLine, type HomeLink } from '../../lib/home/home-view';
+  import { UPGRADES_SHOWN, upgradeGain, upgradeLine, type HomeLink } from '../../lib/home/home-view';
   import { homeBCopy } from '../../lib/home/home-b-view';
   import { factsCopy, upgradesFacts } from '../../lib/home/home-facts';
   import { LINK } from '../../lib/ui/primitives';
@@ -23,6 +23,7 @@
 
   const items = $derived(new Map<number, Item>((upgrades?.items ?? []).map((item) => [item.id, item])));
   const all = $derived(upgrades?.result.upgrades ?? []);
+  const unit = $derived(upgrades?.result.scoreUnit ?? 'dps');
   const list = $derived(all.slice(0, UPGRADES_SHOWN));
   const facts = $derived(upgradesFacts(upgrades?.result));
   const more = $derived(bis !== null && all.length > UPGRADES_SHOWN);
@@ -54,9 +55,7 @@
           {build}
           iconSize={36}
           source={upgradeLine(upgrade)}
-          gain={upgrade.gainDps === null
-            ? undefined
-            : { value: gainText(upgrade.gainDps), unit: 'DPS', tone: 'kill' }}
+          gain={upgradeGain(upgrade, unit)}
           testid="home-upgrade"
         >
           {#snippet detail()}

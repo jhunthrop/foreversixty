@@ -66,6 +66,7 @@ export async function routeHome(page: Page, state: HomeState): Promise<void> {
   for (const [spec, cls] of [
     ['hunter-beast-mastery', 'hunter'],
     ['warrior-fury', 'warrior'],
+    ['warrior-protection', 'warrior'],
   ]) {
     await page.route(`**/data/*/bis/${spec}.json`, (route) =>
       route.fulfill({ json: fixture(`bis-${spec}.json`) }),

@@ -75,10 +75,19 @@ function simSegments(line: SimLine, previous: number | null, ownGuild: string | 
   ];
 }
 
+/** A sim that measured nothing (a healer with nobody to heal, 0.0 HPS): the API never posts one,
+ *  and a row that reached the feed before that rule is dropped here. */
+function measuredNothing(line: SimLine | null): boolean {
+  return line !== null && line.value <= 0;
+}
+
 /** One row per character's sim, newest first: the latest figure with the change since the one
- *  before; the viewer's own guild name dropped. Rows in other words pass through untouched. */
+ *  before; the viewer's own guild name dropped. A sim that measured nothing is left out. Rows in
+ *  other words pass through untouched. */
 export function foldSims(rows: readonly FeedRow[], ownGuild: string | undefined): FeedRow[] {
-  const newest = [...rows].sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
+  const newest = [...rows]
+    .filter((row) => !measuredNothing(simLine(row)))
+    .sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
   const lines = new Map<FeedRow, SimLine>();
   const byCharacter = new Map<string, FeedRow[]>();
   for (const row of newest) {

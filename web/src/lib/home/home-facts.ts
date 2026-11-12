@@ -7,7 +7,7 @@
 import type { GuildHomeStanding, GuildHomeSummary } from '../guild/api';
 import type { AttendanceSource } from '../guild/attendance-contract';
 import type { MeCharacterGuild } from '../account/me-types';
-import type { SlotScoreUnit } from '../bis/tank-view';
+import { scoreUnitWord } from '../bis/tank-view';
 import type { GuildSimRow, MoverRow, Movers } from './home-answer';
 import type { UpgradesResult } from './upgrades';
 import { figureText } from './home-b-view';
@@ -35,8 +35,6 @@ export const factsCopy = {
   ahead: 'ahead of you',
   behind: 'behind you',
 } as const;
-
-const UNIT_WORDS: Record<SlotScoreUnit, string> = { dps: 'DPS', hps: 'HPS', tank_score: 'score' };
 
 /** `#2 of 4 guild Fury Warriors by item level`, `3 of 4 raids attended`: the viewer's place in the guild; a
  *  standing with no peers (one of one) and an account with no attendance are left out. */
@@ -81,7 +79,7 @@ export function upgradesFacts(result: UpgradesResult | undefined): HomeFact[] {
   if (result.totalGainDps > 0) {
     facts.push({
       n: `+${figureText(result.totalGainDps)}`,
-      text: UNIT_WORDS[result.scoreUnit],
+      text: scoreUnitWord(result.scoreUnit),
     });
   }
   if (result.alreadyBis.length > 0) {

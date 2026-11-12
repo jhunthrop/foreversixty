@@ -37,6 +37,16 @@ func BandWords(band int) string {
 	return fmt.Sprintf("%d to %d", band, band+bandWidth-1)
 }
 
+// LevelWords is how a sentence places a character's sim: its band ("20 to 29", "60"), or for a
+// character below the first band, which plays against that band's list without being in it,
+// its own level ("level 13").
+func LevelWords(level, band int) string {
+	if level > 0 && level < firstBand {
+		return fmt.Sprintf("level %d", level)
+	}
+	return BandWords(band)
+}
+
 // SpecName is the spec's player-facing name, the catalogue's full name: "Fury Warrior",
 // "Feral Druid (Bear)"; "" for an unknown key.
 func SpecName(key string) string {
