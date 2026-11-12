@@ -3,10 +3,18 @@
 Card notes are the `notes` strings of curated/apl/<spec>.json's priority steps (and their
 `level_notes`, from their `from_level`). For every sentence of every note, each whole
 talent name (from the class's talent trees) and trained spell name (from its trainables)
-it mentions is checked at every band the row renders on in the active build's
-addon-data.json: the player has a talent from its first point in the spec's published
-leveling order, or in its raid order (`pipeline.talent_levels`: point i is spent at level
-10 + i), and a trained spell from its lowest trainer rank.
+it mentions is checked at every band the step renders on in addon-data.json regenerated
+from the committed inputs (conftest's `regenerated_addon_build`; the committed copy trails
+a curated edit until the push-time or nightly regeneration): the player has a talent from
+its first point in the spec's published leveling order, or in its raid order
+(`pipeline.talent_levels`: point i is spent at level 10 + i), and a trained spell from its
+lowest trainer rank.
+
+A step is found in a band by the condition the pipeline publishes for it at that band's
+level (`pipeline.addonrotation.condition_at`: its `panel_when` line, else its note's first
+sentence). Matching the note's own first sentence, as this test did before the panel_when
+lines of 2026-11-08, found no band for any step with a panel_when line and left every
+allowlist line below without a note to match.
 
 A name is scoped, and passes, when its clause (the sentence split at , ; : and dashes)
 says "from N", "at N", "by N", "until N" or "before N" (N a level), "once you have", or
@@ -30,8 +38,18 @@ from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
 
-from conftest import ACTIVE_BUILD
-from pipeline.addonrotation import _one_line
+import pytest
+
+from conftest import ACTIVE_BUILD, AddonBuild
+from pipeline.addonrotation import (
+    _cast_lines,
+    _family_ranks,
+    _id_to_family,
+    _panel_when,
+    condition_at,
+    load_talent_spells,
+    load_trainable_ids,
+)
 from pipeline.talent_levels import FIRST_TALENT_LEVEL
 
 DATA = Path(__file__).resolve().parents[1]
@@ -85,9 +103,11 @@ def _read(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-@cache
-def _addon_data() -> dict:
-    return _read(BUILD_DIR / "addon-data.json")
+@pytest.fixture(scope="module")
+def rotations(regenerated_addon_build: AddonBuild) -> dict:
+    """Every spec's rotation bands, regenerated from the committed inputs."""
+    build = regenerated_addon_build
+    return _read(build.root / build.build / "addon-data.json")["rotations"]
 
 
 @cache
@@ -127,27 +147,48 @@ def learn_levels(spec: str) -> dict[str, int]:
     return {**trainer_levels(class_slug), **talent_levels(spec, class_slug)}
 
 
-def note_bands(spec: str) -> Iterator[tuple[str, list[int]]]:
-    """Each card note of the spec and the bands it renders on."""
-    rotation = _addon_data()["rotations"][spec]
-    curated = _read(APL_DIR / f"{spec}.json")
-    steps = curated.get("rotation", {}).get("priorityList", [])
+@cache
+def family_names(class_slug: str) -> dict[int, str]:
+    """Spell id -> the name every rank of it is published under, the pipeline's own family map
+    (spellranks.json's families, the class's trainables and its talents' spells)."""
+    families = _family_ranks(
+        _read(BUILD_DIR / "spellranks.json"),
+        class_slug,
+        load_trainable_ids(BUILD_DIR, class_slug),
+        load_talent_spells(BUILD_DIR, class_slug),
+    )
+    return _id_to_family(families)
 
-    def bands_of(note: str) -> list[int]:
-        line = _one_line(note)
+
+def note_bands(spec: str, rotation: list[dict]) -> Iterator[tuple[str, list[int]]]:
+    """Each card note of the spec and the bands its step renders on: a band holds the step
+    when a row of its spell (by family name: a band re-resolves the rank) carries the
+    condition the step publishes at that level. Two steps of different spells may share a
+    condition ("on cooldown"), so the condition alone would place one step on the other's
+    bands."""
+    apl_path = APL_DIR / f"{spec}.json"
+    curated = _read(apl_path)
+    steps = curated.get("rotation", {}).get("priorityList", [])
+    casts = _cast_lines(curated.get("rotation", {}), _panel_when(curated, apl_path))
+    names = family_names(spec.split("-", 1)[0])
+
+    def renders(cast: dict, band: dict) -> bool:
+        condition = condition_at(cast, band["level"])
+        name = names.get(cast["spell_id"])
+        return any(row["condition"] == condition and row["name"] == name for row in band["lines"])
+
+    def bands_of(step: int) -> list[int]:
+        step_casts = [cast for cast in casts if cast["line"] == step]
         return [
-            band["level"]
-            for band in rotation
-            if any(row["condition"] == line for row in band["lines"])
+            band["level"] for band in rotation if any(renders(cast, band) for cast in step_casts)
         ]
 
-    for step in steps:
+    for index, step in enumerate(steps):
         if step.get("notes"):
-            yield step["notes"], bands_of(step["notes"])
+            yield step["notes"], bands_of(index)
     for level_note in curated.get("level_notes", []):
-        base = steps[level_note["step"]].get("notes", "")
         from_level = level_note["from_level"]
-        bands = [band for band in bands_of(base) if band >= from_level]
+        bands = [band for band in bands_of(level_note["step"]) if band >= from_level]
         yield level_note["notes"], bands or [from_level]
 
 
@@ -172,11 +213,11 @@ def is_scoped(sentence: str, start: int) -> bool:
     )
 
 
-def spec_hits(spec: str) -> Iterator[Hit]:
+def spec_hits(spec: str, rotation: list[dict]) -> Iterator[Hit]:
     levels = learn_levels(spec)
     names = sorted(levels, key=len, reverse=True)
     pattern = re.compile(r"(?<![\w-])(?:" + "|".join(map(re.escape, names)) + r")(?![\w-])")
-    for note, bands in note_bands(spec):
+    for note, bands in note_bands(spec, rotation):
         for sentence in SENTENCE_SPLIT.split(note.strip()):
             for match in pattern.finditer(sentence):
                 has_at = levels[match.group(0)]
@@ -196,14 +237,14 @@ def allowlisted() -> set[tuple[str, str, str]]:
     return keys
 
 
-def all_hits() -> list[Hit]:
-    return [hit for spec in sorted(_addon_data()["rotations"]) for hit in spec_hits(spec)]
+def all_hits(rotations: dict) -> list[Hit]:
+    return [hit for spec in sorted(rotations) for hit in spec_hits(spec, rotations[spec])]
 
 
-def test_no_card_note_names_a_talent_or_spell_before_the_player_has_it():
+def test_no_card_note_names_a_talent_or_spell_before_the_player_has_it(rotations: dict):
     accepted = allowlisted()
     unscoped = sorted(
-        {hit.key: hit for hit in all_hits() if hit.key not in accepted}.values(),
+        {hit.key: hit for hit in all_hits(rotations) if hit.key not in accepted}.values(),
         key=lambda h: h.key,
     )
     assert not unscoped, (
@@ -214,8 +255,8 @@ def test_no_card_note_names_a_talent_or_spell_before_the_player_has_it():
     )
 
 
-def test_every_allowlist_line_still_matches_a_note():
-    stale = allowlisted() - {hit.key for hit in all_hits()}
+def test_every_allowlist_line_still_matches_a_note(rotations: dict):
+    stale = allowlisted() - {hit.key for hit in all_hits(rotations)}
     assert not stale, f"{ALLOWLIST.name} lines that match no card note any more: {sorted(stale)}"
 
 

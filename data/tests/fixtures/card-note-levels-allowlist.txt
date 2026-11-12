@@ -4,13 +4,14 @@
 # The test prints the line to copy; a line that matches no note any more fails the test.
 druid-balance Starfire 92a85f985675  the row's own condition; the next clause covers the bands before Starfire at 20
 druid-feral Cat Form 0c5cb3ccea51  conditional: "in Cat Form" applies only once you have it
-druid-feral-bear Primal Bite 0521f76d6f72  the clause opens "in your forties and early fifties", after Primal Bite at 40
+druid-feral-bear Frenzied Regeneration 9ca7b6e000bc  the rage order once each spender is trained; "from 36 to 39" is the clause before the name (feral lane, 2026-11-12)
+druid-feral-bear Lacerate 9ca7b6e000bc  the rage order once each spender is trained (feral lane, 2026-11-12)
+druid-feral-bear Primal Bite 9ca7b6e000bc  the rage order once each spender is trained (feral lane, 2026-11-12)
+hunter-survival Lacerate f05b085675e6  why an older rank: where the mana saved goes, once Lacerate is trained (melee-hunters lane, 2026-11-12)
 hunter-survival Mongoose Bite ef096649bb13  Hunter's Mark mechanic: why marking matters, true whenever Mongoose Bite is trained
+hunter-survival Resourcefulness f05b085675e6  why an older rank: the talent's exception, once it is in (melee-hunters lane, 2026-11-12)
 mage-arcane Arcane Power 6db11e38d193  conditional: "inside Arcane Power" applies only once you have it
-mage-fire Accelerant 323d14f0d30a  the lead sentence scopes the row to Arcane Blast at 54
-mage-fire Heating Up 16d1a9b10d81  the lead sentence scopes the row to Arcane Blast at 54
-mage-fire Heating Up 8ac1afc59d40  mechanic: why Scorch goes first, true once Heating Up is in
-mage-fire Ignite 16d1a9b10d81  the lead sentence scopes the row to Arcane Blast at 54
+mage-arcane Arcane Wrath c79c52288856  conditional: "while Arcane Wrath is on cooldown" applies only once you have it
 mage-fire Improved Scorch f387656aaba3  "Scorch waits for Improved Scorch": says not to cast it before the talent
 mage-fire Missile Barrage 323d14f0d30a  the lead sentence scopes the row to Arcane Blast at 54
 mage-fire Pyroblast ecf5186bd4a5  "in raid gear": a level 60 comparison
@@ -26,8 +27,11 @@ rogue-subtlety Ghostly Strike 24dda91bcf71  the row's own condition: Garrote aft
 rogue-subtlety Rupture 24dda91bcf71  the row's own condition: its order against Rupture once Rupture trains
 rogue-subtlety Rupture 6be8f01a2eb2  two cases: "while Rupture is ticking, or at any time before Rupture trains at 20"
 shaman-elemental Magma Totem 8bf512942822  the parentheses say "Searing Totem until 26, Magma Totem from then on"
-shaman-enhancement Chain Lightning 1d04883f0bac  the list of spells Stormstrike buffs; Chain Lightning when trained
-warlock-affliction Bane of Doom ce525da289e0  the next clause says "all fight before 60, and the last minute at 60"
+shaman-enhancement Chain Lightning f0e4420c2db3  the list of spells Stormstrike buffs; Chain Lightning when trained (shamans lane, 2026-11-12)
+shaman-enhancement Stormstrike 68c8445af4c7  why the mana floor: Stormstrike once trained, the totem drop at every level (shamans lane, 2026-11-12)
+warlock-affliction Soul Siphon 031737fafd8a  mechanic: why Agony beats Doom at 60; the talents count once taken (warlock lane, 2026-11-12)
+warlock-affliction Soul Siphon 30bc476a7ff0  Siphon Life trains at 30, the talent's first point lands at 31: one level apart
+warlock-affliction Wrack 031737fafd8a  mechanic: why Agony beats Doom at 60; the talents count once taken (warlock lane, 2026-11-12)
 warlock-affliction Wrack 2b88fb0c3445  the sentence opens "The raid build"
 warlock-demonology Bane of Doom fb683d565974  the next clause says "all fight before 60, and the last minute at 60"
 warlock-demonology Searing Pain 35a4474c421c  a comparison: why the row beats Searing Pain
@@ -35,7 +39,6 @@ warlock-destruction Bane of Doom fb683d565974  the next clause says "all fight b
 warlock-destruction Conflagrate 4e13bb2a457f  the clause says "once you have Conflagrate"; "it eats" ties the last clause to it
 warlock-destruction Shadow and Flame 6c28e9c5c5da  mechanic: "each point of Shadow and Flame"
 warrior-arms Bloodthrill d2cfe4cc6dc4  the clause says "once the talent is in"
-warrior-arms Mortal Strike 562f887fdc82  the lead sentence scopes the row: "From 50"
 warrior-arms Overpower c05f25e25887  the clause before says "once Bloodthrill is in"; Overpower trains first
 warrior-protection Revenge af051249cbee  why to live in Defensive Stance; true for each ability once trained
 warrior-protection Shield Block af051249cbee  why to live in Defensive Stance; true for each ability once trained

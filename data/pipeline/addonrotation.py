@@ -253,21 +253,27 @@ def _check_panel_when_steps(
         )
 
 
-def _condition_of(cast: dict, level: int, spec: str) -> str:
+def condition_at(cast: dict, level: int) -> str | None:
     """A line's panel condition at `level`: its curated `panel_when` line verbatim (the
     variant with the highest `from_level` at or below `level`), else the first sentence of
-    its step's note (`_one_line`). A step whose first variant starts above a band it prints
-    in is refused: that band would have no line."""
+    its step's note (`_one_line`); None when every variant starts above `level`."""
     when = cast.get("when")
     if when is None:
         return _one_line(cast["notes"])
     lines = [variant.text for variant in when if variant.from_level <= level]
-    if not lines:
+    return lines[-1] if lines else None
+
+
+def _condition_of(cast: dict, level: int, spec: str) -> str:
+    """`condition_at`, refusing a step whose first variant starts above a band it prints
+    in: that band would have no line."""
+    condition = condition_at(cast, level)
+    if condition is None:
         raise AddonRotationError(
-            f"{spec}: panel_when[{cast['line']}] starts at level {when[0].from_level}, "
+            f"{spec}: panel_when[{cast['line']}] starts at level {cast['when'][0].from_level}, "
             f"after the step's band at {level}"
         )
-    return lines[-1]
+    return condition
 
 
 #: The engine's APLValueCompare ops a currentLevel clause can use.
