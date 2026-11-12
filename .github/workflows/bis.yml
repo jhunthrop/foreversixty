@@ -294,7 +294,11 @@ jobs:
         if: steps.inputs.outputs.skip != 'true'
         # Under the job's own timeout, so a slow night fails this step and the
         # artifact step below still runs (a job-level timeout kills everything).
-        timeout-minutes: 250
+        # 250 was too tight: the 12 Nov forced ranking took 239 minutes and the
+        # ranking after it, on the day's engine pins, was still at the priests at
+        # 248 and timed out at rogue-assassination (run 43269156099); 330 leaves
+        # the artifact, commit and push steps 25 minutes inside the job's 355.
+        timeout-minutes: 330
         run: make bis
         env: { BIS_ARGS: '-all -weights-iterations 200' }
       # bis-push lane, 2026-11-05: three rankings were lost overnight (two
