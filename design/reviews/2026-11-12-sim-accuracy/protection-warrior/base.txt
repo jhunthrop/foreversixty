@@ -1,0 +1,10 @@
+# Baselines at the pin: the published bands on the dungeon pull (below 60) and the raid boss (60).
+raid60A -spec warrior-protection -preset raid -band 60 -faction alliance -tank
+raid60H -spec warrior-protection -preset raid -band 60 -faction horde -tank
+bare60A -spec warrior-protection -preset bare -band 60 -faction alliance -tank
+bare50A -spec warrior-protection -preset bare -band 50 -faction alliance -tank
+bare40A -spec warrior-protection -preset bare -band 40 -faction alliance -tank
+bare30A -spec warrior-protection -preset bare -band 30 -faction alliance -tank
+bare20A -spec warrior-protection -preset bare -band 20 -faction alliance -tank
+bare34A -spec warrior-protection -preset bare -band 30 -level 34 -faction alliance -tank
+bare26A -spec warrior-protection -preset bare -band 20 -level 26 -faction alliance -tank
