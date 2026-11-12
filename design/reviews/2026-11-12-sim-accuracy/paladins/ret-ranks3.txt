@@ -1,0 +1,12 @@
+rrd-L57-s1-cur -spec paladin-retribution -preset bare -band 50 -level 57 -faction alliance -race dwarf -seed 1
+rrd-L57-s1-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 57 -faction alliance -race dwarf -seed 1 -rank 20924=4
+rrd-L58-s1-cur -spec paladin-retribution -preset bare -band 50 -level 58 -faction alliance -race dwarf -seed 1
+rrd-L58-s1-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 58 -faction alliance -race dwarf -seed 1 -rank 20924=4
+rrd-L59-s1-cur -spec paladin-retribution -preset bare -band 50 -level 59 -faction alliance -race dwarf -seed 1
+rrd-L59-s1-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 59 -faction alliance -race dwarf -seed 1 -rank 20924=4
+rrd-L57-s50001-cur -spec paladin-retribution -preset bare -band 50 -level 57 -faction alliance -race dwarf -seed 50001
+rrd-L57-s50001-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 57 -faction alliance -race dwarf -seed 50001 -rank 20924=4
+rrd-L58-s50001-cur -spec paladin-retribution -preset bare -band 50 -level 58 -faction alliance -race dwarf -seed 50001
+rrd-L58-s50001-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 58 -faction alliance -race dwarf -seed 50001 -rank 20924=4
+rrd-L59-s50001-cur -spec paladin-retribution -preset bare -band 50 -level 59 -faction alliance -race dwarf -seed 50001
+rrd-L59-s50001-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 59 -faction alliance -race dwarf -seed 50001 -rank 20924=4
