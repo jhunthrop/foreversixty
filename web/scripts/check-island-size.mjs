@@ -145,7 +145,11 @@ const PAGE_ISLAND_BUDGETS = [
   // copy table), and the week-one card's lazy chunk reaches home-view through home-b-view, so two
   // more chunk names landed in the preload map (+37 bytes gzipped). The unit code moved to the leaf
   // lib/home/upgrades-view.ts, which only the home island imports; the map is back to its size.
-  { component: 'GuildShell', limitBytes: 16 * 1024 + 768, closureLimitBytes: 141532 },
+  // +32 bytes (Guild tab landing, 2026-11-12): main read exactly 17,152 at 39898b097 (the deploy build of
+  // the same source read 17,144: hashed chunk names alone move it by ~8), so the line had no headroom.
+  // The Guild tab adds +4 raw / +6 gzipped to the shell (a longer chunk name in the preload map); nothing
+  // in the shell itself changed. 32 bytes covers the hash jitter, not a new feature.
+  { component: 'GuildShell', limitBytes: 16 * 1024 + 800, closureLimitBytes: 141532 },
   // Lane bis-tooltip-host (2026-09-29): one BisTooltipHost per /bis/<class>/<spec> page
   // replaces roughly 840 per-row ItemHover islands with delegated document-level listeners
   // plus the same lazy-loaded ItemTooltip.svelte panel ItemHover already used -- no data,
