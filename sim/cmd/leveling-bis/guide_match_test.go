@@ -70,6 +70,7 @@ var knownStaleBISFiles = map[string]string{
 	"warrior-arms":         "sim-accuracy 2026-11-12 (melee-hunters) moved the level 60 build (Spearing Strike for a point of Deflection) and with it the leveling talents from 17; the batch re-rank lands it",
 	"hunter-beast-mastery": "sim-accuracy 2026-11-12 (melee-hunters) moved the level 60 build (Efficiency 5 and Improved Tracking 4 for Improved Stings, Rapid Killing and Mortal Shots) and the leveling talents from 46; the batch re-rank lands it",
 	"mage-arcane":          "sim-accuracy 2026-11-12 (arcane) moved the level 60 leveling build (Arcane Wrath for the fourth Incineration point) and the leveling talents from 44; the batch re-rank lands it",
+	"mage-frost":           "sim-accuracy 2026-11-12 (casters) moved the level 60 leveling build (Arcane Meditation 3 and Improved Channeling 5 for Incineration) and the leveling talents from 56; the batch re-rank lands it",
 }
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files

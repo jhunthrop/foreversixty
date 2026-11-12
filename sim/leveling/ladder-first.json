@@ -579,7 +579,7 @@
       ]
     },
     "mage-frost": {
-      "reason": "Frost casts Frostbolt from level 4: Improved Frostbolt 10 to 14 (+2.0 to +2.9% at band 10, round 15). Then Precision 15 to 17 before Frost Warding, which only adds armor; Ice Shards 18 and 19 open the row for Frost Channeling at 20 to 22, the mana that keeps Frostbolt going; Ice Shards ends at 25; Frostbite 26 lets Shatter (27, 28) work on frozen mobs; Ice Lance 29 opens Fingers of Frost at 30 and 31, six levels sooner, and Shatter ends at 32. Frost Warding, Permafrost, Ice Block and Cold Snap fill 33 to 37, and Ice Barrier still comes at 40. Bare, band gear, 10,000 iterations, seeds 1 and 50001, both factions: level 15 +2.4%, 16 +4.8 to +4.9%, 19 +0.7 to +0.8%, 20 +2.5 to +2.8%, 22 +7.8 to +8.9%, 25 +7.5 to +8.3%, 29 +2.4 to +2.7%, 30 +6.2 to +6.4%, 32 +14.5%, 36 +6.1 to +6.4%; every level from 15 to 36 gains at both seeds (sim-accuracy round 28, casters lane).",
+      "reason": "Frost casts Frostbolt from level 4: Improved Frostbolt 10 to 14 (+2.0 to +2.9% at band 10, round 15). Then Precision 15 to 17 before Frost Warding, which only adds armor; Ice Shards 18 and 19 open the row for Frost Channeling at 20 to 22, the mana that keeps Frostbolt going; Ice Shards ends at 25; Frostbite 26 lets Shatter (27, 28) work on frozen mobs; Ice Lance 29 opens Fingers of Frost at 30 and 31, six levels sooner, and Shatter ends at 32. Frost Warding, Permafrost, Ice Block and Cold Snap fill 33 to 37, and Ice Barrier still comes at 40. Bare, band gear, 10,000 iterations, seeds 1 and 50001, both factions: level 15 +2.4%, 16 +4.8 to +4.9%, 19 +0.7 to +0.8%, 20 +2.5 to +2.8%, 22 +7.8 to +8.9%, 25 +7.5 to +8.3%, 29 +2.4 to +2.7%, 30 +6.2 to +6.4%, 32 +14.5%, 36 +6.1 to +6.4%; every level from 15 to 36 gains at both seeds (sim-accuracy round 28, casters lane). Sim-accuracy 2026-11-12 (casters): the 33 to 40 tolls are named so the list can go on past Ice Barrier; after it the Arcane points go in the old order (Wand Specialization, Improved Channeling 3, Arcane Concentration, Missile Barrage, Arcane Impact), then Arcane Meditation at 56 to 58 and the last two Improved Channeling points at 59 and 60, the toll the ladder's own rule would have spent at 46 and 47 ahead of Arcane Concentration.",
       "first": [
         {
           "talent": "Improved Frostbolt",
@@ -622,8 +622,56 @@
           "rank": 3
         },
         {
+          "talent": "Frost Warding",
+          "rank": 2
+        },
+        {
+          "talent": "Permafrost",
+          "rank": 1
+        },
+        {
+          "talent": "Ice Block",
+          "rank": 1
+        },
+        {
+          "talent": "Cold Snap",
+          "rank": 1
+        },
+        {
+          "talent": "Winter's Chill",
+          "rank": 2
+        },
+        {
           "talent": "Ice Barrier",
           "rank": 1
+        },
+        {
+          "talent": "Wand Specialization",
+          "rank": 2
+        },
+        {
+          "talent": "Improved Channeling",
+          "rank": 3
+        },
+        {
+          "talent": "Arcane Concentration",
+          "rank": 5
+        },
+        {
+          "talent": "Missile Barrage",
+          "rank": 2
+        },
+        {
+          "talent": "Arcane Impact",
+          "rank": 3
+        },
+        {
+          "talent": "Arcane Meditation",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Channeling",
+          "rank": 5
         }
       ]
     },

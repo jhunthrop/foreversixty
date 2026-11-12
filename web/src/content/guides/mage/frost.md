@@ -3,7 +3,7 @@ title: Frost Mage in Forever
 classSlug: mage
 spec: frost
 role: dps
-build: 'FS1:1.60.1.70790:mage:gnome:230005203/5/253510130101301221:'
+build: 'FS1:1.60.1.70790:mage:gnome:2500052030003/0/253510130101301221:'
 raidBuild: 'FS1:1.60.1.70790:mage:gnome:230005203/5/253510130101301221:'
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Frost power, Critical strike, Intellect, Spell haste, Spell penetration]
@@ -58,7 +58,9 @@ sources:
 - **Missile Barrage** (2 points, Arcane): Frostbolt procs it 20% of the time, and the proc makes your next Arcane Missiles free and halves its channel.
 - **Precision** (3 points): 6% hit on every school. Every mage build takes it.
 
-One build does it all at 60, in a raid or out. Frost takes 31 points to Ice Barrier, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, the toll to reach the 30 points Ice Barrier asks for; each Frostbolt then has a 40% chance to add a stack for your next Cone of Cold. Fifteen go into Arcane: **Arcane Concentration** (a free spell 10% of the time), Missile Barrage, and three ranks of **Arcane Impact** for 6% more crit on the Missiles it fires, with Wand Specialization and Improved Channeling as the toll to get there. The last five go into Fire for five ranks of **Incineration**, which adds 10% crit to Ice Lance.
+Frost takes 31 points to Ice Barrier in both builds, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, the toll to reach the 30 points Ice Barrier asks for; each Frostbolt then has a 40% chance to add a stack for your next Cone of Cold. Fifteen go into Arcane: **Arcane Concentration** (a free spell 10% of the time), Missile Barrage, and three ranks of **Arcane Impact** for 6% more crit on the Missiles it fires, with Wand Specialization and Improved Channeling as the toll to get there.
+
+The last five points are where the raid build and the level 60 build part. In a raid they go into Fire for five ranks of **Incineration**, which adds 10% crit to Ice Lance. Out of a raid, in dungeon gear with no Mana Spring under you, mana runs out before the fight does, so the level 60 build puts three of them into **Arcane Meditation**, half your regeneration kept while you cast, and the other two into Improved Channeling to open its row. Swap them back into Incineration when you start raiding.
 
 If a boss lets you stand within 10 yards, more points in Winter's Chill and Improved Cone of Cold turn Cone of Cold into a real nuke. Most bosses cleave, breathe or stomp at that range, so the build stays at range.
 
@@ -133,6 +135,8 @@ Every point goes into Frost to 40:
 - **32:** the last point of Shatter.
 - **33 to 37:** Frost Warding, Permafrost, Ice Block and Cold Snap.
 - **40:** Ice Barrier.
+
+After Ice Barrier the points go to Arcane: Wand Specialization at 41 and 42, Improved Channeling at 43 to 45, Arcane Concentration at 46 to 50, Missile Barrage at 51 and 52 and Arcane Impact at 53 to 55. Then Arcane Meditation at 56 to 58, and the last two points of Improved Channeling at 59 and 60.
 
 After a Frost Nova or a Frostbite freeze, Ice Lance hits a mob for four times its damage, and with Shatter it crits more often than not. Fingers of Frost makes Ice Lance a single-target nuke too.
 

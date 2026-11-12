@@ -70,6 +70,22 @@ func TestFireTakesPrecisionAfterCombustion(t *testing.T) {
 	})
 }
 
+// Sim-accuracy 2026-11-12 (casters): after Ice Barrier at 40 a leveling Frost mage spends its Arcane
+// points in the round 29 order (Wand Specialization, Improved Channeling 3, Arcane Concentration,
+// Missile Barrage, Arcane Impact to 55), then Arcane Meditation at 56 to 58 and the last two
+// Improved Channeling points at 59 and 60, where the old build took Incineration; the ladder's own
+// rule would have spent the two toll points at 46 and 47 ahead of Arcane Concentration (-1.9 to
+// -2.4% at 48 to 53). Unchanged to 55, +0.5% at 58, +2.2 to +2.3% at 60
+// (design/reviews/2026-11-12-sim-accuracy/casters.md).
+func TestFrostTakesArcaneMeditationAfterArcaneImpact(t *testing.T) {
+	checkLadder(t, "mage", "frost", 2, map[int]string{
+		47: "230002000000000000-00000000000000000-253510130101301221",
+		55: "230005203000000000-00000000000000000-253510130101301221",
+		58: "230005203000300000-00000000000000000-253510130101301221",
+		60: "250005203000300000-00000000000000000-253510130101301221",
+	})
+}
+
 // Sim-accuracy round 29 (walks-dps): a leveling Affliction warlock takes Amplify Curse at 22, Pandemic at 23 to 25 and
 // Malevolence at 26 and 27 before Grim Reach (range), Soul Harvest (a Drain Soul kill) and
 // Improved Drains, which the rotation never channels; Soul Siphon pays the row at 31 to 33 so
