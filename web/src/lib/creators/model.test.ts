@@ -19,19 +19,21 @@ import {
   capDollars,
   channelTitle,
   creatorFigures,
+  approvedByDay,
   dayLabel,
   earningsRows,
   firstYearEarnings,
   lineText,
   money,
   monthLabel,
+  previousMonth,
   recentMonths,
   requestSub,
   statementFigures,
   statementStatusLine,
   statsFigures,
   toPay,
-  weekText,
+  weekRow,
   type Creator,
   type CreatorMe,
   type CreatorRequest,
@@ -49,7 +51,9 @@ describe('money and dates', () => {
     expect(money(200)).toBe('$2.00');
     expect(capDollars(50000)).toBe('$500');
     expect(capDollars(5050)).toBe('$50.50');
-    expect(monthLabel('2026-11')).toBe('November 2026');
+    expect(monthLabel('2026-11')).toBe('Nov 2026');
+    expect(previousMonth('2026-01')).toBe('2025-12');
+    expect(approvedByDay('2026-12')).toBe('7 Dec');
     expect(dayLabel('2026-11-08')).toBe('8 Nov 2026');
     expect(dayLabel('2026-12-02T23:30:00Z')).toBe('2 Dec 2026');
   });
@@ -63,11 +67,12 @@ describe('money and dates', () => {
 });
 
 describe('the figures say what they cover', () => {
-  it('labels four creator counts all time and the owed figure with its month and cap', () => {
+  it('leaves the four creator counts bare (the list says all time once) and notes the owed figure with its month and cap', () => {
     const figs = creatorFigures(list[0]);
-    expect(figs.slice(0, 4).every((f) => f.note === adminCreatorsCopy.allTime)).toBe(true);
-    expect(figs[4]).toMatchObject({ value: '$184.20', note: 'December 2026 · of $500 cap', lead: true });
-    expect(creatorFigures(list[1])[4].note).toBe('December 2026 · $50 cap reached');
+    expect(figs.slice(0, 4).every((f) => f.note === '')).toBe(true);
+    expect(adminCreatorsCopy.tableMeta(3)).toBe('3 creators · counts all time');
+    expect(figs[4]).toMatchObject({ value: '$184.20', note: 'Dec 2026 · of $500 cap', lead: true });
+    expect(creatorFigures(list[1])[4].note).toBe('Dec 2026 · $50 cap reached');
   });
 
   it('leads a statement with its total, and counts the bounties', () => {
@@ -77,14 +82,15 @@ describe('the figures say what they cover', () => {
     expect(statementFigures(statements[1]).find((f) => f.key === 'cap')?.value).toBe('$24.40');
   });
 
-  it('gives the creator their month, all-time counts and who pays now', () => {
+  it('gives the creator their month with its cap, then the counts with each one’s rate', () => {
     const figs = statsFigures(mine);
     expect(figs.map((f) => f.note)).toEqual([
-      'December 2026, an estimate until the month closes · $500 monthly cap',
-      creatorStatsCopy.allTime,
-      creatorStatsCopy.allTime,
-      creatorStatsCopy.payingNote,
+      'Dec 2026 so far · of $500 cap',
+      '',
+      '62% of players · counts after 14 days',
+      '28% of returning · now',
     ]);
+    expect(creatorStatsCopy.summaryMeta).toBe('all time');
   });
 
   it('agrees across the fixtures: the stats page and the owner see the same December', () => {
@@ -116,7 +122,9 @@ describe('a player in a creator first year', () => {
       `Guild, $${PLANS.guild.founderYearly} a year`,
       `Raid guild, $${PLANS.raid_guild.founderYearly} a year`,
     ]);
-    expect(rows[0]?.sub).toBe(`$${PROGRAM_TERMS.bountyUsd + PLANS.premium.yearly / 2} after 6 Jan 2027`);
+    expect(rows[0]?.sub).toBe(
+      `$${PROGRAM_TERMS.bountyUsd + PLANS.premium.yearly / 2} at list price after 6 Jan 2027`,
+    );
     expect(earningsRows(false)[0]?.sub).toBeUndefined();
     expect(rows[0]?.value).toBe(`$${PROGRAM_TERMS.bountyUsd + PLANS.premium.founderYearly / 2}`);
   });
@@ -146,11 +154,14 @@ describe('statements', () => {
       transfer_id: 'tr_1',
     };
     expect(statementStatusLine(paid)).toBe('Paid 2 Dec 2026 · transfer tr_1');
+    expect(payoutsCopy.confirmTitle('Grimbrew', '$168.60', monthLabel('2026-11'))).toBe(
+      'Pay Grimbrew $168.60 for Nov 2026?',
+    );
   });
 
   it('signs a refund line', () => {
     expect(lineText(statements[0].lines[3])).toEqual({
-      text: 'Player #10498 · refund 21 Nov 2026',
+      text: 'Player #10498 · refund 21 Nov',
       amount: '−$2.50',
       refund: true,
     });
@@ -158,9 +169,16 @@ describe('statements', () => {
 });
 
 describe('weeks and requests', () => {
-  it('hides a running week’s returning and paying counts', () => {
-    expect(weekText(mine.weeks[0])).toBe('Week of 7 Dec: 18 signed up so far');
-    expect(weekText(mine.weeks[2])).toBe('Week of 23 Nov: 54 signed up · 36 returning · 10 paying');
+  it('shows a running week’s sign-ups alone, marks a week under 14 days old as still filling', () => {
+    const now = new Date('2026-12-09T12:00:00Z');
+    const running = weekRow(mine.weeks[0], now);
+    expect(running).toMatchObject({ title: 'Week of 7 Dec', filling: true });
+    expect(running.figures.map((f) => [f.label, f.value])).toEqual([['Signed up', '18']]);
+    const last = weekRow(mine.weeks[1], now);
+    expect(last).toMatchObject({ title: 'Week of 30 Nov', filling: true });
+    const closed = weekRow(mine.weeks[2], now);
+    expect(closed.filling).toBe(false);
+    expect(closed.figures.map((f) => f.value)).toEqual(['54', '36', '10']);
   });
 
   it('reads a request', () => {

@@ -71,7 +71,7 @@
 
   // The invite's Copied clears after about two seconds, as every copy control's does.
   let inviteCopied = $state(false);
-  const copier = createCopyFeedback(writeClipboard, (state) => (inviteCopied = state === 'copied'));
+  const copier = createCopyFeedback((state) => (inviteCopied = state === 'copied'), writeClipboard);
   $effect(() => copier.dispose);
 
   function phaseForError(error: unknown): Phase {
@@ -259,17 +259,23 @@
                     onclick={() => setMode({ kind: 'approve', request: r })}
                     testid={`request-approve-${r.id}`}>{requestsCopy.approve}</Button
                   >
-                  <Button size="sm" onclick={() => void onDecline(r.id)} testid={`request-decline-${r.id}`}
-                    >{requestsCopy.decline}</Button
+                  <Button
+                    tone="ghost"
+                    size="sm"
+                    onclick={() => void onDecline(r.id)}
+                    testid={`request-decline-${r.id}`}>{requestsCopy.decline}</Button
                   >
                 </span>
               {/snippet}
               {#snippet foot()}
                 <span class="flex flex-col gap-0.5 text-[13px] leading-5">
                   <span>{r.about}</span>
-                  {#if r.contact_email}<span class="text-muted" data-testid={`request-email-${r.id}`}
-                      >{r.contact_email}</span
-                    >{/if}
+                  <span class="text-muted">
+                    <a class={LINK} href={r.channel_url} rel="noopener" target="_blank">{r.channel_url}</a>
+                    {#if r.contact_email}<span data-testid={`request-email-${r.id}`}>
+                        · {r.contact_email}</span
+                      >{/if}
+                  </span>
                 </span>
               {/snippet}
             </Row>
@@ -299,6 +305,7 @@
               <Row
                 title={c.name}
                 sub={copy.sub(c.slug, c.code, dayLabel(c.starts_on))}
+                selected={mode.kind === 'edit' && mode.creator.id === c.id}
                 wrapTrail
                 testid={`creator-row-${c.slug}`}
               >

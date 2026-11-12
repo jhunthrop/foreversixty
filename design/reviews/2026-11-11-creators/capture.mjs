@@ -72,9 +72,9 @@ const STATES = [
   {
     name: "admin-creators-edit", url: "/admin/creators", ready: "creator-row-grimbrew",
     setup: async (page) => {
-      await signedIn(page);
+      await signedIn(page, { creator_requests: 2 });
       await page.route("**/v1/admin/creators", (r) => r.fulfill(envelope({ creators: read("creators/creators.json"), stripe_enabled: true, payouts_enabled: true, connect_denied: false })));
-      await page.route("**/v1/admin/creators/requests", (r) => r.fulfill(envelope({ requests: [] })));
+      await page.route("**/v1/admin/creators/requests", (r) => r.fulfill(envelope({ requests: read("creators/requests.json") })));
     },
     then: (page) => page.getByTestId("creator-edit-grimbrew").click(),
   },

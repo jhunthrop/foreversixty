@@ -63,12 +63,12 @@ export const programCopy = {
   /** The head's answer: the bounty as the figure, the share on its one line. */
   answer: {
     value: usd(T.bountyUsd),
-    unit: 'a player',
+    unit: 'a returning player',
     line: `then ${T.sharePercent}% of their Premium for ${T.shareMonths} months`,
   },
   /** The worked examples in the first section's lane (lib/creators/model.ts). */
   examplesLabel: 'One player, first year',
-  examplesNote: 'Before Stripe fees.',
+  examplesNote: 'Before Stripe’s fees; you are paid on what is left after them.',
   lanes: [
     {
       section: 'what-you-get',
@@ -84,7 +84,7 @@ export const programCopy = {
       figures: [
         { id: 'window', label: 'Link window', value: `${T.attributionDays} days` },
         { id: 'return', label: 'Coming back', value: `within ${T.returnDays} days` },
-        { id: 'once', label: 'Each account', value: 'once' },
+        { id: 'once', label: 'Each account', value: 'once, for one creator' },
       ],
     },
     {
@@ -92,7 +92,7 @@ export const programCopy = {
       label: 'Each month',
       figures: [
         { id: 'close', label: 'Closes', value: 'the 1st' },
-        { id: 'paid', label: 'Paid', value: 'first week' },
+        { id: 'approved', label: 'Approved', value: 'by the 7th' },
         { id: 'minimum', label: 'Minimum', value: usd(T.minimumPayoutUsd) },
         { id: 'cap', label: 'Cap', value: usd(T.monthlyCapUsd) },
       ],
@@ -103,7 +103,7 @@ export const programCopy = {
       id: 'what-you-get',
       title: 'What you get',
       paragraphs: [
-        `${usd(T.bountyUsd)} for each player you send who comes back. A player comes back when they sign in with Battle.net, import at least one Forever character, and use the site again on a later day within ${T.returnDays} days of signing up.`,
+        `${usd(T.bountyUsd)} for each player you send who comes back. A player comes back when they sign in with Battle.net, import at least one Forever character, and sign in again on a later day within ${T.returnDays} days of signing up.`,
         `Half of the Premium they pay, after Stripe’s fees and any refunds, for ${T.shareMonths} months from their first payment. Guild plans count when the officer who pays came through you.`,
         `Both add up: ${usd(T.bountyUsd)} once when a player comes back, then half of each of their payments for a year.`,
         'You also get Premium on your own account and the Raid guild plan for your guild while you are in the program.',
@@ -113,15 +113,15 @@ export const programCopy = {
       id: 'how-players-count',
       title: 'How players count',
       paragraphs: [
-        `You get a link of your own and a code. Your code gets viewers a free month of Premium, or a free month for their guild; they enter it when they subscribe, and a card is still needed. A player is yours if their first visit came through your link within ${T.attributionDays} days before they signed up, or if they use your code.`,
-        'Each account counts once, for one creator. Accounts made before you joined, and your own account, never count.',
+        `You get a link of your own and a code. Viewers enter your code at checkout and get a free month of Premium, or a free month for their guild; a card is still needed. A player is yours if their first visit came through your link within ${T.attributionDays} days before they signed up, or if they use your code.`,
+        'Each account counts once, for one creator: a player who came through your link and later types another creator’s code stays yours. Accounts made before you joined, and your own account, never count.',
       ],
     },
     {
       id: 'payouts',
       title: 'Payouts',
       paragraphs: [
-        `Each month closes on the 1st. We approve it during the first week and pay it through Stripe to a payout account you set up with them. We never see your bank details. A month under ${usd(T.minimumPayoutUsd)} carries over to the next one. Each creator has a monthly cap, ${usd(T.monthlyCapUsd)} unless we agree another.`,
+        `Each month closes on the 1st. We approve it by the 7th, and the moment we do Stripe moves it to a payout account you set up with them. We never see your bank details. A month under ${usd(T.minimumPayoutUsd)} carries over to the next one. Each creator has a monthly cap, ${usd(T.monthlyCapUsd)} unless we agree another; anything over the cap is not carried over.`,
         `A player counts as coming back up to ${T.returnDays} days after signing up, so the latest weeks fill in late. We never tell you who they are.`,
         'Stripe asks for your tax details when you set up payouts. If you leave the program, your free Premium ends, and the months you already earned are still paid.',
       ],
@@ -130,7 +130,7 @@ export const programCopy = {
       id: 'disclosure',
       title: 'Saying it is sponsored',
       paragraphs: [
-        'You earn money when people use your link or code, so you have to say so wherever you share it. Say “affiliate link” or “sponsored” on stream or in the video, and put the same words next to your link or code. The FTC and Twitch both require it, and so do these terms: the first time it is missing we warn you, and a second time ends your place in the program.',
+        'You earn money when people use your link or code, so you have to say so wherever you share it. Say “affiliate link” or “sponsored” on stream or in the video, and put the same words next to your link or code. The FTC and Twitch both require it, and so do these terms: the first time it is missing we warn you, and a second time can end your place in the program.',
       ],
     },
   ] satisfies readonly ProgramSection[],
@@ -156,7 +156,7 @@ export const adminCreatorsCopy = {
   connectDenied:
     'Stripe payouts key missing or lacks Connect permissions. Payouts can’t be made until it’s set.',
   tableTitle: 'Your creators',
-  tableMeta: (count: number): string => `${count} ${count === 1 ? 'creator' : 'creators'}`,
+  tableMeta: (count: number): string => `${count} ${count === 1 ? 'creator' : 'creators'} · counts all time`,
   empty: 'No creators yet. Add the first one.',
   sub: (slug: string, code: string, since: string): string => `/go/${slug} · code ${code} · since ${since}`,
   columns: {
@@ -166,7 +166,6 @@ export const adminCreatorsCopy = {
     revenue: 'Premium net',
     owed: 'Owed so far',
   },
-  allTime: 'all time',
   /** Under Owed so far: the open month it covers and the cap. */
   owedNote: (month: string, cap: string, capped: boolean): string =>
     capped ? `${month} · ${cap} cap reached` : `${month} · of ${cap} cap`,
@@ -177,12 +176,8 @@ export const adminCreatorsCopy = {
   editTitle: (name: string): string => `Edit ${name}`,
   formJob: 'The link and the code are made once and can’t change after.',
   fields: {
-    name: { label: 'Name', hint: 'What the creator goes by on stream.', placeholder: 'e.g. Grimbrew' },
-    channel: {
-      label: 'Channel',
-      hint: 'Their Twitch or YouTube address.',
-      placeholder: 'https://twitch.tv/…',
-    },
+    name: { label: 'Name', placeholder: 'e.g. Grimbrew' },
+    channel: { label: 'Channel', placeholder: 'https://twitch.tv/…' },
     slug: { label: 'Link', hint: 'Becomes foreversixty.gg/go/your-slug.', placeholder: 'e.g. grimbrew' },
     code: {
       label: 'Creator code',
@@ -194,7 +189,7 @@ export const adminCreatorsCopy = {
       hint: 'Players who signed up before this day never count.',
       placeholder: '2026-11-08',
     },
-    cap: { label: 'Monthly cap', hint: 'Dollars a month at most, like 500.', placeholder: '500' },
+    cap: { label: 'Monthly cap', placeholder: '500' },
   },
   add: 'Add creator',
   save: 'Save',
@@ -313,26 +308,28 @@ export const creatorStatsCopy = {
   loadFailed: 'Your stats didn’t load.',
   signedOut: 'Sign in with Battle.net to see your creator stats.',
   summaryLabel: 'Your figures',
+  summaryMeta: 'all time',
   figures: {
     month: 'Earned so far',
     players: 'Players',
     returning: 'Returning',
     paying: 'Paying',
   },
-  monthNote: (month: string, cap: string): string =>
-    `${month}, an estimate until the month closes · ${cap} monthly cap`,
-  allTime: 'all time',
-  payingNote: 'paying now',
+  /** Under Earned so far: the open month (an estimate until it closes) and its cap. */
+  monthNote: (month: string, cap: string): string => `${month} so far · of ${cap} cap`,
+  returningNote: (share: string): string => `${share} of players · counts after 14 days`,
+  payingNote: (share: string): string => `${share} of returning · now`,
   playersTitle: 'Your players',
-  playersMeta: 'by week · the latest weeks fill in over 14 days · no names',
+  playersMeta: 'by week · latest weeks still filling · no names',
+  columns: { signedUp: 'Signed up', returning: 'Returning', paying: 'Paying' },
+  weekTitle: (week: string): string => `Week of ${week}`,
+  filling: 'still filling',
   playersEmpty: 'No players yet. Share your link or your code.',
-  /** One week of sign-ups. A week still running shows only its sign-ups (spec section 1, Privacy). */
-  week: (week: string, signedUp: number, returning: number | null, paying: number | null): string =>
-    returning === null || paying === null
-      ? `Week of ${week}: ${signedUp} signed up so far`
-      : `Week of ${week}: ${signedUp} signed up · ${returning} returning · ${paying} paying`,
   weeksCapped: 'Showing the last 26 weeks.',
   payoutsTitle: 'Payouts',
+  /** The last closed month and the day it is approved by (the 7th of the open month). */
+  closedMonth: (month: string, by: string): string => `${month} closed on the 1st. We approve it by ${by}.`,
+  paidSoFar: (amount: string): string => `${amount} paid so far`,
   /** Opens the creator's Stripe Express dashboard (payouts, bank details, the 1099) by a fresh login link. */
   dashboard: 'Payouts and tax forms',
   dashboardOpening: 'Opening Stripe…',
@@ -370,7 +367,7 @@ export const applyCopy = {
     email: { label: 'Contact email', hint: 'Optional. Only we see it.', placeholder: 'you@example.com' },
   },
   platforms: { twitch: 'Twitch', youtube: 'YouTube' } satisfies Record<Platform, string>,
-  consent: 'We review every application; we’ll reply on your Forever Sixty account.',
+  consent: 'We review every application and reply on your Forever Sixty account.',
   submit: 'Send application',
   sending: busyCopy.sending,
   sendFailed: withRetry('That wasn’t sent'),
@@ -381,6 +378,7 @@ export const applyCopy = {
   pending: (date: string): string => `Sent ${date}. We’ll reply here.`,
   pendingTag: 'Pending',
   approved: 'You’re in. Set up payouts so we can pay you.',
+  approvedNext: 'Your link and code are on your stats page.',
   approvedTag: 'Approved',
   setup: 'Set up payouts',
   declined: 'Not this time. Thank you for applying.',

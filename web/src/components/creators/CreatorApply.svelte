@@ -120,9 +120,13 @@
             <div>
               <Button tone="primary" href="/creators/onboarding" testid="apply-setup">{copy.setup}</Button>
             </div>
+            <p>
+              {copy.approvedNext}
+              <a class={LINK} href="/creators/stats" data-testid="apply-stats-link">{copy.statsLink} ›</a>
+            </p>
           {:else}
             <p>{copy.declined}</p>
-            {#if mine.reapply_on}<p class="text-muted text-[14px]" data-testid="apply-reapply">
+            {#if mine.reapply_on}<p data-testid="apply-reapply">
                 {copy.reapplyOn(dayLabel(mine.reapply_on))}
               </p>{/if}
           {/if}

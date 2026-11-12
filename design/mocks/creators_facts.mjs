@@ -28,6 +28,8 @@ import me from ${src("tests/e2e/fixtures/creators/me.json")};
 import requests from ${src("tests/e2e/fixtures/creators/requests.json")};
 
 const strip = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'function' ? '[fn]' : v)));
+// The fixtures' clock (spec 0B): 9 Dec 2026, November closed and December open.
+const CLOCK = new Date('2026-12-09T12:00:00Z');
 const a = copy.adminCreatorsCopy, p = copy.payoutsCopy, st = copy.creatorStatsCopy, ob = copy.onboardingCopy;
 const adminRows = creators.map((c) => ({
   name: c.name,
@@ -70,7 +72,10 @@ export default {
   },
   stats: {
     copy: strip(st), name: me.name, meta: st.meta(me.slug, me.code), figures: m.statsFigures(me),
-    weeks: me.weeks.map(m.weekText), payoutsEmpty: st.payoutsEmpty, dashboard: me.stripe_status === 'ready' ? st.dashboard : '',
+    meta2: st.summaryMeta, weeks: me.weeks.map((w) => m.weekRow(w, CLOCK)), filling: st.filling,
+    status: copy.stripeStatusCopy[me.stripe_status], tone: m.STATUS_TONE[me.stripe_status],
+    closed: st.closedMonth(m.monthLabel(m.previousMonth(me.month)), m.approvedByDay(me.month)),
+    payoutsEmpty: st.payoutsEmpty, dashboard: me.stripe_status === 'ready' ? st.dashboard : '',
     payouts: me.payouts.map((x) => ({ text: m.monthLabel(x.month), amount: m.money(x.amount_cents) })),
   },
 };`;

@@ -5,7 +5,7 @@
 
 /** The input itself: the field radius, the page ground, 14 px. */
 export const FIELD_CONTROL =
-  'rounded-field bg-bg text-strong placeholder:text-muted w-full border px-3 text-[14px]';
+  'rounded-field bg-bg text-strong placeholder:text-muted scheme-dark w-full border px-3 text-[14px]';
 /** The focus ring. */
 export const FIELD_FOCUS =
   'focus-visible:outline-gold focus-visible:outline-2 focus-visible:outline-offset-2';

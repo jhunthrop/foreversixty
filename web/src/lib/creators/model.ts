@@ -15,7 +15,7 @@ import {
   type Interval,
   type PlanKey,
 } from '../billing/plans';
-import { monthHeading, utcDayMonth, utcDayMonthYear } from '../dates';
+import { DAY_MS, MONTHS, utcDayMonth, utcDayMonthYear } from '../dates';
 import { grouped, usdCents } from '../format/number';
 import {
   PROGRAM_TERMS,
@@ -53,7 +53,7 @@ export interface EarningsRow {
   readonly label: string;
   /** `$22`. */
   readonly value: string;
-  /** While founder prices last, the same player at list price: `$27 after 6 Jan 2027`. */
+  /** While founder prices last, the same player at list price: `$27 at list price after 6 Jan 2027`. */
   readonly sub?: string;
 }
 
@@ -64,7 +64,9 @@ export function earningsRows(founder: boolean): readonly EarningsRow[] {
     label: `${PLANS[plan].name}, ${formatPrice(entryPrice(PLANS[plan], interval, founder), interval)}`,
     value: formatUsd(firstYearEarnings(plan, interval, founder)),
     ...(founder
-      ? { sub: `${formatUsd(firstYearEarnings(plan, interval, false))} after ${FOUNDER_LAST_DAY}` }
+      ? {
+          sub: `${formatUsd(firstYearEarnings(plan, interval, false))} at list price after ${FOUNDER_LAST_DAY}`,
+        }
       : {}),
   }));
 }
@@ -186,10 +188,22 @@ export function count(value: number): string {
   return grouped(value);
 }
 
-/** "2026-11" -> "November 2026". */
+/** "2026-11" -> "Nov 2026": months are three letters everywhere (owner ruling 2026-11-10). */
 export function monthLabel(month: string): string {
   const [year, mon] = month.split('-').map(Number);
-  return monthHeading(new Date(Date.UTC(year ?? 0, (mon ?? 1) - 1, 1)));
+  return `${MONTHS[(mon ?? 1) - 1] ?? ''} ${year ?? ''}`;
+}
+
+/** The month before "2026-12": "2026-11". */
+export function previousMonth(month: string): string {
+  const [year, mon] = month.split('-').map(Number);
+  const d = new Date(Date.UTC(year ?? 0, (mon ?? 1) - 2, 1));
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+}
+
+/** The day a closed month is approved by: the 7th of the open month, "7 Dec". */
+export function approvedByDay(openMonth: string): string {
+  return utcDayMonth(`${openMonth}-07`);
 }
 
 /** "2026-11-08" or an ISO instant -> "8 Nov 2026", read in UTC as the API wrote it. */
@@ -241,13 +255,12 @@ function shown(key: string, label: string, value: string, note = '', lead = fals
 export function creatorFigures(c: Pick<Creator, 'figures' | 'cap_cents'>): ShownFigure[] {
   const k = adminCreatorsCopy.columns;
   const f = c.figures;
-  const all = adminCreatorsCopy.allTime;
   const owedNote = adminCreatorsCopy.owedNote(monthLabel(f.month), capDollars(c.cap_cents), f.capped);
   return [
-    shown('clicks', k.clicks, count(f.clicks), all),
-    shown('sign-ups', k.signUps, count(f.sign_ups), all),
-    shown('returning', k.returning, count(f.returning), all),
-    shown('revenue', k.revenue, money(f.revenue_cents), all),
+    shown('clicks', k.clicks, count(f.clicks)),
+    shown('sign-ups', k.signUps, count(f.sign_ups)),
+    shown('returning', k.returning, count(f.returning)),
+    shown('revenue', k.revenue, money(f.revenue_cents)),
     shown('owed', k.owed, money(f.owed_cents), owedNote, true),
   ];
 }
@@ -269,7 +282,13 @@ export function statementFigures(s: Statement): ShownFigure[] {
   ];
 }
 
-/** The creator's own four figures on /creators/stats. */
+/** A share as a whole percent, "62%"; nothing of nothing is 0%. */
+function share(part: number, whole: number): string {
+  return `${whole > 0 ? Math.round((part / whole) * 100) : 0}%`;
+}
+
+/** The creator's own four figures on /creators/stats: the open month's estimate, then the all-time
+ *  counts with each one's rate of the one before it. */
 export function statsFigures(me: CreatorMe): ShownFigure[] {
   const c = creatorStatsCopy;
   const k = c.figures;
@@ -281,15 +300,41 @@ export function statsFigures(me: CreatorMe): ShownFigure[] {
       c.monthNote(monthLabel(me.month), capDollars(me.cap_cents)),
       true,
     ),
-    shown('players', k.players, count(me.players), c.allTime),
-    shown('returning', k.returning, count(me.returning), c.allTime),
-    shown('paying', k.paying, count(me.paying), c.payingNote),
+    shown('players', k.players, count(me.players)),
+    shown('returning', k.returning, count(me.returning), c.returningNote(share(me.returning, me.players))),
+    shown('paying', k.paying, count(me.paying), c.payingNote(share(me.paying, me.returning))),
   ];
 }
 
-/** A week of sign-ups as the creator's page lists it ("23 Nov"). */
-export function weekText(w: CreatorWeek): string {
-  return creatorStatsCopy.week(utcDayMonth(w.week_of), w.signed_up, w.returning, w.paying);
+/** One week of sign-ups as a row: the title, its three counts (the running week shows only its
+ *  sign-ups, spec section 1, Privacy) and whether it is still filling (under 14 days old). */
+export interface WeekRow {
+  key: string;
+  title: string;
+  filling: boolean;
+  figures: ShownFigure[];
+}
+
+const FILL_DAYS = 14;
+
+export function weekRow(w: CreatorWeek, now: Date): WeekRow {
+  const k = creatorStatsCopy.columns;
+  const start = new Date(`${w.week_of}T00:00:00Z`).getTime();
+  const running = w.returning === null || w.paying === null;
+  return {
+    key: w.week_of,
+    title: creatorStatsCopy.weekTitle(utcDayMonth(w.week_of)),
+    filling: running || now.getTime() - start < FILL_DAYS * DAY_MS,
+    figures: [
+      shown('signed-up', k.signedUp, count(w.signed_up)),
+      ...(running
+        ? []
+        : [
+            shown('returning', k.returning, count(w.returning ?? 0)),
+            shown('paying', k.paying, count(w.paying ?? 0)),
+          ]),
+    ],
+  };
 }
 
 /** A statement Row's sub line. */
@@ -302,7 +347,7 @@ export function statementStatusLine(s: Statement): string {
 /** A statement line as the Lines rail shows it, a refund signed. */
 export function lineText(l: StatementLine): { text: string; amount: string; refund: boolean } {
   return {
-    text: payoutsCopy.line[l.kind](l.player, dayLabel(l.on)),
+    text: payoutsCopy.line[l.kind](l.player, utcDayMonth(l.on)),
     amount: (l.kind === 'refund' ? '−' : '') + money(l.amount_cents),
     refund: l.kind === 'refund',
   };

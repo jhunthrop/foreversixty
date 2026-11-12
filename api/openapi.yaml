@@ -10676,7 +10676,7 @@ paths:
           description: Signed in, not the owner
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '409':
-          description: Already decided
+          description: Already decided, or the applicant's account is already a creator (already_creator)
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/admin/creators/requests/{id}/decline:
     post:

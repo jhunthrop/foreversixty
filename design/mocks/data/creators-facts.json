@@ -8,11 +8,11 @@
    "contentsLabel": "On this page",
    "answer": {
     "value": "$2",
-    "unit": "a player",
+    "unit": "a returning player",
     "line": "then 50% of their Premium for 12 months"
    },
    "examplesLabel": "One player, first year",
-   "examplesNote": "Before Stripe fees.",
+   "examplesNote": "Before Stripe’s fees; you are paid on what is left after them.",
    "lanes": [
     {
      "section": "what-you-get",
@@ -47,7 +47,7 @@
       {
        "id": "once",
        "label": "Each account",
-       "value": "once"
+       "value": "once, for one creator"
       }
      ]
     },
@@ -61,9 +61,9 @@
        "value": "the 1st"
       },
       {
-       "id": "paid",
-       "label": "Paid",
-       "value": "first week"
+       "id": "approved",
+       "label": "Approved",
+       "value": "by the 7th"
       },
       {
        "id": "minimum",
@@ -83,7 +83,7 @@
      "id": "what-you-get",
      "title": "What you get",
      "paragraphs": [
-      "$2 for each player you send who comes back. A player comes back when they sign in with Battle.net, import at least one Forever character, and use the site again on a later day within 14 days of signing up.",
+      "$2 for each player you send who comes back. A player comes back when they sign in with Battle.net, import at least one Forever character, and sign in again on a later day within 14 days of signing up.",
       "Half of the Premium they pay, after Stripe’s fees and any refunds, for 12 months from their first payment. Guild plans count when the officer who pays came through you.",
       "Both add up: $2 once when a player comes back, then half of each of their payments for a year.",
       "You also get Premium on your own account and the Raid guild plan for your guild while you are in the program."
@@ -93,15 +93,15 @@
      "id": "how-players-count",
      "title": "How players count",
      "paragraphs": [
-      "You get a link of your own and a code. Your code gets viewers a free month of Premium, or a free month for their guild; they enter it when they subscribe, and a card is still needed. A player is yours if their first visit came through your link within 30 days before they signed up, or if they use your code.",
-      "Each account counts once, for one creator. Accounts made before you joined, and your own account, never count."
+      "You get a link of your own and a code. Viewers enter your code at checkout and get a free month of Premium, or a free month for their guild; a card is still needed. A player is yours if their first visit came through your link within 30 days before they signed up, or if they use your code.",
+      "Each account counts once, for one creator: a player who came through your link and later types another creator’s code stays yours. Accounts made before you joined, and your own account, never count."
      ]
     },
     {
      "id": "payouts",
      "title": "Payouts",
      "paragraphs": [
-      "Each month closes on the 1st. We approve it during the first week and pay it through Stripe to a payout account you set up with them. We never see your bank details. A month under $10 carries over to the next one. Each creator has a monthly cap, $500 unless we agree another.",
+      "Each month closes on the 1st. We approve it by the 7th, and the moment we do Stripe moves it to a payout account you set up with them. We never see your bank details. A month under $10 carries over to the next one. Each creator has a monthly cap, $500 unless we agree another; anything over the cap is not carried over.",
       "A player counts as coming back up to 14 days after signing up, so the latest weeks fill in late. We never tell you who they are.",
       "Stripe asks for your tax details when you set up payouts. If you leave the program, your free Premium ends, and the months you already earned are still paid."
      ]
@@ -110,7 +110,7 @@
      "id": "disclosure",
      "title": "Saying it is sponsored",
      "paragraphs": [
-      "You earn money when people use your link or code, so you have to say so wherever you share it. Say “affiliate link” or “sponsored” on stream or in the video, and put the same words next to your link or code. The FTC and Twitch both require it, and so do these terms: the first time it is missing we warn you, and a second time ends your place in the program."
+      "You earn money when people use your link or code, so you have to say so wherever you share it. Say “affiliate link” or “sponsored” on stream or in the video, and put the same words next to your link or code. The FTC and Twitch both require it, and so do these terms: the first time it is missing we warn you, and a second time can end your place in the program."
      ]
     }
    ],
@@ -138,25 +138,25 @@
     "id": "premium-yearly",
     "label": "Premium, $40 a year",
     "value": "$22",
-    "sub": "$27 after 6 Jan 2027"
+    "sub": "$27 at list price after 6 Jan 2027"
    },
    {
     "id": "premium-monthly",
     "label": "Premium, $5 a month",
     "value": "$32",
-    "sub": "$38 after 6 Jan 2027"
+    "sub": "$38 at list price after 6 Jan 2027"
    },
    {
     "id": "guild-yearly",
     "label": "Guild, $120 a year",
     "value": "$62",
-    "sub": "$77 after 6 Jan 2027"
+    "sub": "$77 at list price after 6 Jan 2027"
    },
    {
     "id": "raid_guild-yearly",
     "label": "Raid guild, $200 a year",
     "value": "$102",
-    "sub": "$127 after 6 Jan 2027"
+    "sub": "$127 at list price after 6 Jan 2027"
    }
   ]
  },
@@ -182,7 +182,6 @@
     "revenue": "Premium net",
     "owed": "Owed so far"
    },
-   "allTime": "all time",
    "owedNote": "[fn]",
    "edit": "Edit",
    "editLabel": "[fn]",
@@ -193,12 +192,10 @@
    "fields": {
     "name": {
      "label": "Name",
-     "hint": "What the creator goes by on stream.",
      "placeholder": "e.g. Grimbrew"
     },
     "channel": {
      "label": "Channel",
-     "hint": "Their Twitch or YouTube address.",
      "placeholder": "https://twitch.tv/…"
     },
     "slug": {
@@ -218,26 +215,28 @@
     },
     "cap": {
      "label": "Monthly cap",
-     "hint": "Dollars a month at most, like 500.",
      "placeholder": "500"
     }
    },
    "add": "Add creator",
    "save": "Save",
-   "saving": "Saving",
+   "saving": "Saving…",
    "cancelEdit": "Cancel",
    "added": "[fn]",
    "saved": "Saved.",
-   "saveFailed": "That wasn’t saved; try again.",
+   "saveFailed": "That wasn’t saved Try again.",
    "invite": "Copy onboarding invite",
+   "inviting": "Making the invite…",
+   "inviteCopiedShort": "Invite copied",
    "inviteCopied": "Invite copied. It works once, for 14 days.",
-   "inviteFailed": "The invite wasn’t made; try again.",
+   "inviteFailed": "The invite wasn’t made Try again.",
    "refresh": "Refresh Stripe status",
+   "refreshing": "Asking Stripe…",
    "refreshed": "Stripe status read just now.",
-   "refreshFailed": "Stripe didn’t answer; try again.",
+   "refreshFailed": "Stripe didn’t answer Try again.",
    "fixed": "[fn]"
   },
-  "meta": "3 creators",
+  "meta": "3 creators · counts all time",
   "rows": [
    {
     "name": "Grimbrew",
@@ -250,35 +249,35 @@
       "key": "clicks",
       "label": "Clicks",
       "value": "1,840",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "sign-ups",
       "label": "Signed up",
       "value": "212",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "returning",
       "label": "Returning",
       "value": "131",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "revenue",
       "label": "Premium net",
       "value": "$186.60",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "owed",
       "label": "Owed so far",
       "value": "$184.20",
-      "note": "December 2026 · of $500 cap",
+      "note": "Dec 2026 · of $500 cap",
       "lead": true
      }
     ]
@@ -294,35 +293,35 @@
       "key": "clicks",
       "label": "Clicks",
       "value": "932",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "sign-ups",
       "label": "Signed up",
       "value": "88",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "returning",
       "label": "Returning",
       "value": "51",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "revenue",
       "label": "Premium net",
       "value": "$50.80",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "owed",
       "label": "Owed so far",
       "value": "$50.00",
-      "note": "December 2026 · $50 cap reached",
+      "note": "Dec 2026 · $50 cap reached",
       "lead": true
      }
     ]
@@ -338,35 +337,35 @@
       "key": "clicks",
       "label": "Clicks",
       "value": "0",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "sign-ups",
       "label": "Signed up",
       "value": "0",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "returning",
       "label": "Returning",
       "value": "0",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "revenue",
       "label": "Premium net",
       "value": "$0.00",
-      "note": "all time",
+      "note": "",
       "lead": false
      },
      {
       "key": "owed",
       "label": "Owed so far",
       "value": "$0.00",
-      "note": "December 2026 · of $500 cap",
+      "note": "Dec 2026 · of $500 cap",
       "lead": true
      }
     ]
@@ -376,12 +375,10 @@
   "fields": [
    {
     "label": "Name",
-    "hint": "What the creator goes by on stream.",
     "placeholder": "e.g. Grimbrew"
    },
    {
     "label": "Channel",
-    "hint": "Their Twitch or YouTube address.",
     "placeholder": "https://twitch.tv/…"
    },
    {
@@ -401,7 +398,6 @@
    },
    {
     "label": "Monthly cap",
-    "hint": "Dollars a month at most, like 500.",
     "placeholder": "500"
    }
   ]
@@ -438,14 +434,14 @@
    },
    "notReady": "Stripe not ready",
    "approve": "[fn]",
-   "approving": "Paying",
+   "approving": "Paying…",
    "confirmTitle": "[fn]",
    "confirmBody": "[fn]",
    "confirmPay": "[fn]",
-   "balanceChecking": "Checking your Stripe balance",
+   "balanceChecking": "Checking your Stripe balance…",
    "balanceLine": "[fn]",
    "balanceShort": "Not enough in your Stripe balance. Add funds in Stripe (Balances → Add to balance) or wait for subscription payments to clear.",
-   "balanceFailed": "Your Stripe balance didn’t load; try again.",
+   "balanceFailed": "Your Stripe balance didn’t load Try again.",
    "transferShort": "Stripe didn’t have enough in your balance for this payout. Nothing was paid; approve it again once the balance covers it.",
    "cancel": "Cancel",
    "approveFailed": "[fn]",
@@ -460,7 +456,7 @@
    }
   },
   "off": "Payouts are switched off on the server. Statements can be read but not paid.",
-  "month": "November 2026",
+  "month": "Nov 2026",
   "title": "3 creators",
   "meta": "$168.60 to pay",
   "rows": [
@@ -600,28 +596,28 @@
   "linesTitle": "Lines · Grimbrew",
   "lines": [
    {
-    "text": "Player #10412 · returning · 10 Nov 2026",
+    "text": "Player #10412 · returning · 10 Nov",
     "amount": "$2.00",
     "refund": false
    },
    {
-    "text": "Player #10412 · paid 11 Nov 2026",
+    "text": "Player #10412 · paid 11 Nov",
     "amount": "$2.03",
     "refund": false
    },
    {
-    "text": "Player #10577 · returning · 14 Nov 2026",
+    "text": "Player #10577 · returning · 14 Nov",
     "amount": "$2.00",
     "refund": false
    },
    {
-    "text": "Player #10498 · refund 21 Nov 2026",
+    "text": "Player #10498 · refund 21 Nov",
     "amount": "−$2.50",
     "refund": true
    }
   ],
   "confirm": {
-   "title": "Pay Grimbrew $168.60 for November 2026?",
+   "title": "Pay Grimbrew $168.60 for Nov 2026?",
    "body": "Stripe transfers $168.60 to their account now. This can’t be undone here.",
    "pay": "Pay $168.60",
    "cancel": "Cancel",
@@ -639,17 +635,17 @@
    "inviteSignedOut": "Sign in with Battle.net to accept your invite to the creator program.",
    "inviteJoin": "[fn]",
    "accept": "Accept and set up payouts",
-   "accepting": "Accepting",
+   "accepting": "Accepting…",
    "stripeLead": "Stripe handles your payout details. We never see your bank account.",
    "continue": "Continue to Stripe",
-   "continuing": "Opening Stripe",
+   "continuing": "Opening Stripe…",
    "doneReady": "You’re set up. Payouts arrive after each month is approved.",
    "doneNotReady": "Stripe still needs a few details.",
-   "checking": "Checking with Stripe",
+   "checking": "Checking with Stripe…",
    "statsLink": "Your stats",
    "notCreator": "This page is for creators in the program. Ask us for an invite.",
    "badInvite": "That invite has expired or was already used. Ask us for a new one.",
-   "failed": "Stripe didn’t answer; try again."
+   "failed": "Stripe didn’t answer Try again."
   },
   "join": "You’re joining the creator program as Grimbrew."
  },
@@ -690,11 +686,11 @@
   "contentsLabel": "On this page",
   "answer": {
    "value": "$2",
-   "unit": "a player",
+   "unit": "a returning player",
    "line": "then 50% of their Premium for 12 months"
   },
   "examplesLabel": "One player, first year",
-  "examplesNote": "Before Stripe fees.",
+  "examplesNote": "Before Stripe’s fees; you are paid on what is left after them.",
   "lanes": [
    {
     "section": "what-you-get",
@@ -729,7 +725,7 @@
      {
       "id": "once",
       "label": "Each account",
-      "value": "once"
+      "value": "once, for one creator"
      }
     ]
    },
@@ -743,9 +739,9 @@
       "value": "the 1st"
      },
      {
-      "id": "paid",
-      "label": "Paid",
-      "value": "first week"
+      "id": "approved",
+      "label": "Approved",
+      "value": "by the 7th"
      },
      {
       "id": "minimum",
@@ -765,7 +761,7 @@
     "id": "what-you-get",
     "title": "What you get",
     "paragraphs": [
-     "$2 for each player you send who comes back. A player comes back when they sign in with Battle.net, import at least one Forever character, and use the site again on a later day within 14 days of signing up.",
+     "$2 for each player you send who comes back. A player comes back when they sign in with Battle.net, import at least one Forever character, and sign in again on a later day within 14 days of signing up.",
      "Half of the Premium they pay, after Stripe’s fees and any refunds, for 12 months from their first payment. Guild plans count when the officer who pays came through you.",
      "Both add up: $2 once when a player comes back, then half of each of their payments for a year.",
      "You also get Premium on your own account and the Raid guild plan for your guild while you are in the program."
@@ -775,15 +771,15 @@
     "id": "how-players-count",
     "title": "How players count",
     "paragraphs": [
-     "You get a link of your own and a code. Your code gets viewers a free month of Premium, or a free month for their guild; they enter it when they subscribe, and a card is still needed. A player is yours if their first visit came through your link within 30 days before they signed up, or if they use your code.",
-     "Each account counts once, for one creator. Accounts made before you joined, and your own account, never count."
+     "You get a link of your own and a code. Viewers enter your code at checkout and get a free month of Premium, or a free month for their guild; a card is still needed. A player is yours if their first visit came through your link within 30 days before they signed up, or if they use your code.",
+     "Each account counts once, for one creator: a player who came through your link and later types another creator’s code stays yours. Accounts made before you joined, and your own account, never count."
     ]
    },
    {
     "id": "payouts",
     "title": "Payouts",
     "paragraphs": [
-     "Each month closes on the 1st. We approve it during the first week and pay it through Stripe to a payout account you set up with them. We never see your bank details. A month under $10 carries over to the next one. Each creator has a monthly cap, $500 unless we agree another.",
+     "Each month closes on the 1st. We approve it by the 7th, and the moment we do Stripe moves it to a payout account you set up with them. We never see your bank details. A month under $10 carries over to the next one. Each creator has a monthly cap, $500 unless we agree another; anything over the cap is not carried over.",
      "A player counts as coming back up to 14 days after signing up, so the latest weeks fill in late. We never tell you who they are.",
      "Stripe asks for your tax details when you set up payouts. If you leave the program, your free Premium ends, and the months you already earned are still paid."
     ]
@@ -792,7 +788,7 @@
     "id": "disclosure",
     "title": "Saying it is sponsored",
     "paragraphs": [
-     "You earn money when people use your link or code, so you have to say so wherever you share it. Say “affiliate link” or “sponsored” on stream or in the video, and put the same words next to your link or code. The FTC and Twitch both require it, and so do these terms: the first time it is missing we warn you, and a second time ends your place in the program."
+     "You earn money when people use your link or code, so you have to say so wherever you share it. Say “affiliate link” or “sponsored” on stream or in the video, and put the same words next to your link or code. The FTC and Twitch both require it, and so do these terms: the first time it is missing we warn you, and a second time can end your place in the program."
     ]
    }
   ],
@@ -838,10 +834,10 @@
     "twitch": "Twitch",
     "youtube": "YouTube"
    },
-   "consent": "We review every application; we’ll reply on your Forever Sixty account.",
+   "consent": "We review every application and reply on your Forever Sixty account.",
    "submit": "Send application",
-   "sending": "Sending",
-   "sendFailed": "That wasn’t sent; try again.",
+   "sending": "Sending…",
+   "sendFailed": "That wasn’t sent Try again.",
    "counter": "[fn]",
    "disclose": "I’ll say it’s an affiliate link or sponsored wherever I share my link or code.",
    "discloseNeeded": "Tick this to apply: the FTC and Twitch require it.",
@@ -849,6 +845,7 @@
    "pending": "[fn]",
    "pendingTag": "Pending",
    "approved": "You’re in. Set up payouts so we can pay you.",
+   "approvedNext": "Your link and code are on your stats page.",
    "approvedTag": "Approved",
    "setup": "Set up payouts",
    "declined": "Not this time. Thank you for applying.",
@@ -867,6 +864,7 @@
    "loadFailed": "Your stats didn’t load.",
    "signedOut": "Sign in with Battle.net to see your creator stats.",
    "summaryLabel": "Your figures",
+   "summaryMeta": "all time",
    "figures": {
     "month": "Earned so far",
     "players": "Players",
@@ -874,17 +872,25 @@
     "paying": "Paying"
    },
    "monthNote": "[fn]",
-   "allTime": "all time",
-   "payingNote": "paying now",
+   "returningNote": "[fn]",
+   "payingNote": "[fn]",
    "playersTitle": "Your players",
-   "playersMeta": "by week · the latest weeks fill in over 14 days · no names",
+   "playersMeta": "by week · latest weeks still filling · no names",
+   "columns": {
+    "signedUp": "Signed up",
+    "returning": "Returning",
+    "paying": "Paying"
+   },
+   "weekTitle": "[fn]",
+   "filling": "still filling",
    "playersEmpty": "No players yet. Share your link or your code.",
-   "week": "[fn]",
    "weeksCapped": "Showing the last 26 weeks.",
    "payoutsTitle": "Payouts",
+   "closedMonth": "[fn]",
+   "paidSoFar": "[fn]",
    "dashboard": "Payouts and tax forms",
-   "dashboardOpening": "Opening Stripe",
-   "dashboardFailed": "Stripe didn’t open; try again.",
+   "dashboardOpening": "Opening Stripe…",
+   "dashboardFailed": "Stripe didn’t open Try again.",
    "menuItem": "Creator stats",
    "payoutsEmpty": "No payouts yet. Each month is paid after it closes and is approved.",
    "setup": "Set up payouts"
@@ -896,39 +902,192 @@
     "key": "month",
     "label": "Earned so far",
     "value": "$184.20",
-    "note": "December 2026, an estimate until the month closes · $500 monthly cap",
+    "note": "Dec 2026 so far · of $500 cap",
     "lead": true
    },
    {
     "key": "players",
     "label": "Players",
     "value": "212",
-    "note": "all time",
+    "note": "",
     "lead": false
    },
    {
     "key": "returning",
     "label": "Returning",
     "value": "131",
-    "note": "all time",
+    "note": "62% of players · counts after 14 days",
     "lead": false
    },
    {
     "key": "paying",
     "label": "Paying",
     "value": "37",
-    "note": "paying now",
+    "note": "28% of returning · now",
     "lead": false
    }
   ],
+  "meta2": "all time",
   "weeks": [
-   "Week of 7 Dec: 18 signed up so far",
-   "Week of 30 Nov: 61 signed up · 38 returning · 11 paying",
-   "Week of 23 Nov: 54 signed up · 36 returning · 10 paying",
-   "Week of 16 Nov: 47 signed up · 33 returning · 9 paying",
-   "Week of 9 Nov: 29 signed up · 22 returning · 6 paying",
-   "Week of 2 Nov: 3 signed up · 2 returning · 1 paying"
+   {
+    "key": "2026-12-07",
+    "title": "Week of 7 Dec",
+    "filling": true,
+    "figures": [
+     {
+      "key": "signed-up",
+      "label": "Signed up",
+      "value": "18",
+      "note": "",
+      "lead": false
+     }
+    ]
+   },
+   {
+    "key": "2026-11-30",
+    "title": "Week of 30 Nov",
+    "filling": true,
+    "figures": [
+     {
+      "key": "signed-up",
+      "label": "Signed up",
+      "value": "61",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "returning",
+      "label": "Returning",
+      "value": "38",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "paying",
+      "label": "Paying",
+      "value": "11",
+      "note": "",
+      "lead": false
+     }
+    ]
+   },
+   {
+    "key": "2026-11-23",
+    "title": "Week of 23 Nov",
+    "filling": false,
+    "figures": [
+     {
+      "key": "signed-up",
+      "label": "Signed up",
+      "value": "54",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "returning",
+      "label": "Returning",
+      "value": "36",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "paying",
+      "label": "Paying",
+      "value": "10",
+      "note": "",
+      "lead": false
+     }
+    ]
+   },
+   {
+    "key": "2026-11-16",
+    "title": "Week of 16 Nov",
+    "filling": false,
+    "figures": [
+     {
+      "key": "signed-up",
+      "label": "Signed up",
+      "value": "47",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "returning",
+      "label": "Returning",
+      "value": "33",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "paying",
+      "label": "Paying",
+      "value": "9",
+      "note": "",
+      "lead": false
+     }
+    ]
+   },
+   {
+    "key": "2026-11-09",
+    "title": "Week of 9 Nov",
+    "filling": false,
+    "figures": [
+     {
+      "key": "signed-up",
+      "label": "Signed up",
+      "value": "29",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "returning",
+      "label": "Returning",
+      "value": "22",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "paying",
+      "label": "Paying",
+      "value": "6",
+      "note": "",
+      "lead": false
+     }
+    ]
+   },
+   {
+    "key": "2026-11-02",
+    "title": "Week of 2 Nov",
+    "filling": false,
+    "figures": [
+     {
+      "key": "signed-up",
+      "label": "Signed up",
+      "value": "3",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "returning",
+      "label": "Returning",
+      "value": "2",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "paying",
+      "label": "Paying",
+      "value": "1",
+      "note": "",
+      "lead": false
+     }
+    ]
+   }
   ],
+  "filling": "still filling",
+  "status": "Payouts ready",
+  "tone": "success",
+  "closed": "Nov 2026 closed on the 1st. We approve it by 7 Dec.",
   "payoutsEmpty": "No payouts yet. Each month is paid after it closes and is approved.",
   "dashboard": "Payouts and tax forms",
   "payouts": []

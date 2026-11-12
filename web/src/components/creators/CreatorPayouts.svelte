@@ -203,7 +203,7 @@
       {/snippet}
       <div>
         {#if connectDenied || !payoutsEnabled}
-          <p class="text-wipe px-4 pt-3 text-[14px] leading-5" role="status">
+          <p class="text-wipe px-4 pt-3 pb-3 text-[14px] leading-5" role="status">
             {#if connectDenied}<span data-testid="payouts-connect-denied"
                 >{adminCreatorsCopy.connectDenied}</span
               >{/if}
@@ -237,6 +237,7 @@
                       >
                     {/if}
                     <Button
+                      tone="ghost"
                       size="sm"
                       label={copy.linesLabel(s.name)}
                       onclick={() => void showLines(s.creator_id)}
