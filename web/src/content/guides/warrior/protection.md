@@ -120,9 +120,9 @@ Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feed
 
 Charge and Rend train at 4, Thunder Clap at 6 and Hamstring at 8. At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander to pair with a shield. Shield Bash comes at 12, Revenge and Demoralizing Shout at 14, and Shield Block at 16: two attacks blocked, and every block lights Revenge.
 
-- **10 to 14:** Shield Specialization, more block, and from the fifth point every block gives 5 Rage. Blocks come every pull; Bloodrage comes once a minute and costs health.
+- **10 to 14:** Shield Specialization, more block, and from the fifth point every block gives 5 Rage. You block every pull; Bloodrage is once a minute and costs health.
 - **15 to 17:** Improved Revenge, so Revenge hits 60% harder.
-- **18 and 19:** Improved Bloodrage, half again the Rage.
+- **18 and 19:** Improved Bloodrage, half again as much Rage from every Bloodrage.
 
 Take quest rewards over vendor gear: a one-hander and the best shield you can find beat the starter weapon. You wear mail until plate at 40.
 

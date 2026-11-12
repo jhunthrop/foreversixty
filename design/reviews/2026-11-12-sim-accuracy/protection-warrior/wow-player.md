@@ -59,3 +59,30 @@ None.
 ### Verdict
 
 SHIP. Every first-pass item is in, the figures match what a tank sees in game, and the voice is a guildmate's.
+
+## Third pass
+
+Read the Leveling section top to bottom and the diff against HEAD~1.
+
+True: the point counts add up (10 to 14 is five points for the five-rank Shield Specialization, 15 to 17 is three for Improved Revenge, 18 and 19 is two for Improved Bloodrage, 10 points for levels 10 to 19). Revenge trains at 14, so Improved Revenge at 15 lands the level after you have the spell, and Shield Block at 16 sits inside the Improved Revenge stretch, which makes the "every block lights Revenge" sentence above the list pay off. The 20 to 60 list still opens with Defiance at 20 to 22 and nothing in it contradicts the new order. Order reads naturally: constant benefit first, situational spell second, the once-a-minute cooldown last. No em dashes, no site or sim talk.
+
+The one-sentence reason earns its place. A tank who remembers the old "Improved Bloodrage first" advice will ask why it moved, and the answer is a tank's answer (blocks every pull, Bloodrage once a minute and it costs health), not a number. Keep it.
+
+### MUST
+
+None.
+
+### SHOULD
+
+None.
+
+### NIT
+
+1. First bullet, "comes" is used twice and reads a little clipped. Optional replacement:
+   "**10 to 14:** Shield Specialization, more block, and from the fifth point every block gives 5 Rage. You block every pull; Bloodrage is once a minute and costs health."
+2. Third bullet is looser than the wording agreed for the talent line in the second pass ("half again as much rage from every Bloodrage"). Optional replacement:
+   "**18 and 19:** Improved Bloodrage, half again as much Rage from every Bloodrage."
+
+### Verdict
+
+SHIP. Facts, order and voice are right; the two nits are optional.
