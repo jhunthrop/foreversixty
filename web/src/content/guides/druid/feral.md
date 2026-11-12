@@ -32,8 +32,7 @@ sources:
 
 ### Strengths
 
-- Rip at 5 combo points bleeds the boss for its whole duration, and the bleed keeps Rend and Tear on for every Shred, Rake and Bite
-- Rake is cheap and scales: its hit lands your paw's damage on top of its own, and its bleed takes a share of your attack power on every tick
+- Rip at 5 combo points bleeds the boss for its whole duration, Rake's hit carries your paw's damage and its bleed grows with your attack power, and the bleeds keep Rend and Tear on for every Shred and Bite
 - Shifting Power turns mana into 40 energy every 8 seconds
 - Potions, Thistle Tea, weapon stones and Windfury Totem all work in Cat Form now
 - Your paw hits with your weapon's damage, so a real two-hander is a real upgrade
