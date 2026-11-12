@@ -488,11 +488,23 @@ func (s *Service) ApproveRequest(ctx context.Context, requestID int64, in Input)
 	if err != nil {
 		return Creator{}, err
 	}
+	// Checked before anything is made: a bind that failed after Create would leave a live link
+	// and code with no account and a request still waiting (security review 2026-11-11).
+	already, err := s.Store.IsCreator(ctx, r.UserID)
+	if err != nil {
+		return Creator{}, err
+	}
+	if already {
+		return Creator{}, ErrAlreadyCreator
+	}
 	c, err := s.Add(ctx, AddInput{Input: in, BoundUserID: &r.UserID})
 	if err != nil {
 		return Creator{}, err
 	}
 	if err := s.Store.Decide(ctx, requestID, ApplicationApproved, &c.ID, s.now()); err != nil {
+		// The creator exists and is bound; the request is answered on the next Approve, which
+		// finds the account already a creator. Logged with ids so the owner's report names it.
+		s.logger().Error("creators", "op", "approve_request", "request_id", requestID, "creator_id", c.ID, "err", err)
 		return Creator{}, err
 	}
 	return c, nil

@@ -13,7 +13,7 @@ import (
 
 const maxBody = 4 << 10
 
-// applicationsPerHour is POST /v1/creators/application's per-address budget.
+// applicationsPerHour is POST /v1/creators/application's budget, per address and per account.
 const applicationsPerHour = 5
 
 // Mount registers the program's routes: the owner's under /v1/admin/creators, the signed-in
@@ -40,8 +40,14 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	session("POST /v1/creators/me/onboarding", s.onboarding)
 	session("POST /v1/creators/me/dashboard", s.dashboard)
 	session("GET /v1/creators/application", s.application)
-	limit := httpx.RateLimitPer(applicationsPerHour, time.Hour, trustedProxyHops)
-	mux.Handle("POST /v1/creators/application", limit(auth.RequireSession(s.apply)))
+	// Two budgets: per address before the session check, and per account behind it, so a shared
+	// address (a proxy hop, a campus) and a rotating one are both held to five an hour.
+	perAddress := httpx.RateLimitPer(applicationsPerHour, time.Hour, trustedProxyHops)
+	perAccount := httpx.RateLimitByKey(applicationsPerHour, time.Hour, func(r *http.Request) (string, bool) {
+		id := auth.ActorFrom(r.Context()).UserID
+		return strconv.FormatInt(id, 10), id != 0
+	})
+	mux.Handle("POST /v1/creators/application", perAddress(auth.RequireSession(perAccount(http.HandlerFunc(s.apply)).ServeHTTP)))
 }
 
 // fail answers an error: the program's own errors as what they mean, anything else as a 500 with
@@ -57,6 +63,8 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 		httpx.WriteError(w, r, http.StatusForbidden, "not_creator", "this account is not in the creator program", nil)
 	case errors.Is(err, ErrBadInvite):
 		httpx.WriteError(w, r, http.StatusGone, "invite_used", "that invite has expired or was already used", nil)
+	case errors.Is(err, ErrAlreadyCreator):
+		httpx.WriteError(w, r, http.StatusConflict, "already_creator", "that account is already in the creator program", nil)
 	case errors.Is(err, ErrTaken):
 		httpx.WriteError(w, r, http.StatusConflict, "taken", "that account or link is already a creator's", nil)
 	case errors.Is(err, ErrReapplyTooSoon):
@@ -90,8 +98,11 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 	}
 }
 
+// decode reads one JSON object and nothing else: unknown fields and trailing data are refused.
 func decode(w http.ResponseWriter, r *http.Request, v any) bool {
-	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxBody)).Decode(v); err != nil {
+	dec := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxBody))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(v); err != nil || dec.More() {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "the body must be JSON", nil)
 		return false
 	}

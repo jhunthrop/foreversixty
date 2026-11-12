@@ -66,13 +66,23 @@ func (in *ApplicationInput) Validate() map[string]string {
 	if in.Audience != nil && (*in.Audience < 0 || *in.Audience > MaxAudience) {
 		bad["audience"] = "a whole number, or leave it empty"
 	}
-	if in.About == "" || len([]rune(in.About)) > MaxAbout {
+	if in.About == "" || len([]rune(in.About)) > MaxAbout || hasControl(in.About) {
 		bad["about"] = fmt.Sprintf("1 to %d characters", MaxAbout)
 	}
 	if in.ContactEmail != "" && !validEmail(in.ContactEmail) {
 		bad["contact_email"] = "an email address, or leave it empty"
 	}
 	return bad
+}
+
+// hasControl reports a control character other than a line break or a tab (the owner reads the text).
+func hasControl(s string) bool {
+	for _, r := range s {
+		if (r < 0x20 && r != '\n' && r != '\r' && r != '\t') || r == 0x7f {
+			return true
+		}
+	}
+	return false
 }
 
 func onHost(raw string, hosts []string) bool {

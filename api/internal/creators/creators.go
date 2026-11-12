@@ -86,6 +86,8 @@ var (
 	ErrNotFound = errors.New("creators: not found")
 	// ErrTaken: the slug or the code is already used.
 	ErrTaken = errors.New("creators: that link or code is taken")
+	// ErrAlreadyCreator: the account to bind is a creator already (a second application).
+	ErrAlreadyCreator = errors.New("creators: that account is already a creator")
 	// ErrNotCreator: the signed-in account is not bound to a creator.
 	ErrNotCreator = errors.New("creators: this account is not a creator")
 	// ErrBadInvite: the invite is unknown, used or expired.
