@@ -16272,67 +16272,6 @@
         ]
       },
       {
-        "level": 24,
-        "lines": [
-          {
-            "spell_id": 1026,
-            "name": "Holy Light",
-            "condition": "on the tank below 40%",
-            "icon": "spell_holy_holybolt",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1026,
-            "name": "Holy Light",
-            "condition": "on the tank below 70% while mana % is over boss health %",
-            "icon": "spell_holy_holybolt",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19750,
-            "name": "Flash of Light",
-            "condition": "on the tank below 90%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19750,
-            "name": "Flash of Light",
-            "condition": "on yourself below 80%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19750,
-            "name": "Flash of Light",
-            "condition": "on a party member below 80%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19750,
-            "name": "Flash of Light",
-            "condition": "on a party member below 80%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19750,
-            "name": "Flash of Light",
-            "condition": "on a party member below 80%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19750,
-            "name": "Flash of Light",
-            "condition": "on a party member below 80%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
         "level": 25,
         "lines": [
           {
@@ -16401,7 +16340,7 @@
         ]
       },
       {
-        "level": 26,
+        "level": 29,
         "lines": [
           {
             "spell_id": 1328548,
@@ -16650,46 +16589,141 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19939,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "on the tank below 90%",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19939,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "on yourself below 80%",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19939,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "on a party member below 80%",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19939,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "on a party member below 80%",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19939,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "on a party member below 80%",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19939,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "on a party member below 80%",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 42,
+        "lines": [
+          {
+            "spell_id": 1328548,
+            "name": "Oath of Light",
+            "condition": "when Oath of Light is not on the tank",
+            "icon": "spell_holy_greaterblessingoflight",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20216,
+            "name": "Divine Favor",
+            "condition": "when the tank drops below 40%",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1026,
+            "name": "Holy Light",
+            "condition": "on the tank below 40%",
+            "icon": "spell_holy_holybolt",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1026,
+            "name": "Holy Light",
+            "condition": "on the tank below 70% while mana % is over boss health %",
+            "icon": "spell_holy_holybolt",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 19750,
+            "name": "Flash of Light",
+            "condition": "on the tank below 90%",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 19941,
+            "name": "Flash of Light",
+            "condition": "on yourself below 80%",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {
+              "dwarf": 19750,
+              "human": 19939,
+              "undead": 19750
+            }
+          },
+          {
+            "spell_id": 19941,
+            "name": "Flash of Light",
+            "condition": "on a party member below 80%",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {
+              "dwarf": 19750,
+              "human": 19939,
+              "undead": 19750
+            }
+          },
+          {
+            "spell_id": 19941,
+            "name": "Flash of Light",
+            "condition": "on a party member below 80%",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {
+              "dwarf": 19750,
+              "human": 19939,
+              "undead": 19750
+            }
+          },
+          {
+            "spell_id": 19941,
+            "name": "Flash of Light",
+            "condition": "on a party member below 80%",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {
+              "dwarf": 19750,
+              "human": 19939,
+              "undead": 19750
+            }
+          },
+          {
+            "spell_id": 19941,
+            "name": "Flash of Light",
+            "condition": "on a party member below 80%",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {
+              "dwarf": 19750,
+              "human": 19939,
+              "undead": 19750
+            }
           }
         ]
       },
@@ -16725,46 +16759,70 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19939,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "on the tank below 90%",
             "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 19750,
+              "human": 19939,
+              "undead": 19939
+            }
           },
           {
-            "spell_id": 19750,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "on yourself below 80%",
             "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 19939,
+              "human": 19939,
+              "undead": 19750
+            }
           },
           {
-            "spell_id": 19750,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "on a party member below 80%",
             "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 19939,
+              "human": 19939,
+              "undead": 19750
+            }
           },
           {
-            "spell_id": 19750,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "on a party member below 80%",
             "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 19939,
+              "human": 19939,
+              "undead": 19750
+            }
           },
           {
-            "spell_id": 19750,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "on a party member below 80%",
             "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 19939,
+              "human": 19939,
+              "undead": 19750
+            }
           },
           {
-            "spell_id": 19750,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "on a party member below 80%",
             "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 19939,
+              "human": 19939,
+              "undead": 19750
+            }
           }
         ]
       },
@@ -17312,7 +17370,7 @@
         ]
       },
       {
-        "level": 54,
+        "level": 53,
         "lines": [
           {
             "spell_id": 1328548,
@@ -17329,14 +17387,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10329,
+            "spell_id": 10328,
             "name": "Holy Light",
             "condition": "on the tank below 40%",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10329,
+            "spell_id": 10328,
             "name": "Holy Light",
             "condition": "on the tank below 70% while mana % is over boss health %",
             "icon": "spell_holy_holybolt",
@@ -17385,11 +17443,15 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19940,
+            "spell_id": 19942,
             "name": "Flash of Light",
             "condition": "on the tank below 90%",
             "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 19940,
+              "human": 19940,
+              "undead": 19941
+            }
           },
           {
             "spell_id": 19941,
@@ -17429,7 +17491,7 @@
         ]
       },
       {
-        "level": 55,
+        "level": 54,
         "lines": [
           {
             "spell_id": 1328548,
