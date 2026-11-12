@@ -1,7 +1,7 @@
 ---
 title: Privacy policy
 description: What Forever Sixty collects, how it is used, and how long it is kept.
-updated: 2026-11-08
+updated: 2026-11-07
 sources:
   - label: This site
     url: https://foreversixty.gg/privacy
@@ -17,8 +17,6 @@ that directly.
 
 We count visits and clicks on our links without cookies or any personal data, and record
 which of our links, if any, an account first arrived from.
-
-If you arrive through a creator's link or use their code, we tell that creator how many players they brought and how many keep playing or subscribe, never who you are, and we pay them for it. A creator's code can also give you a free month of Premium or a free month for your guild.
 
 ## How Battle.net data is used
 

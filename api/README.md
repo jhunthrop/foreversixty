@@ -59,7 +59,8 @@ make run
 | `STRIPE_CONNECT_WEBHOOK_SECRET` | no | — | The Connect endpoint's signing secret, on the same URL as `STRIPE_WEBHOOK_SECRET` (`POST /v1/billing/webhook`): `account.updated` for creators' payout accounts. The webhook accepts a signature from either secret. Without it, onboarding status is still re-read on the creator's return (`?done=1`) and by the owner's Refresh. |
 | `STRIPE_PAYOUTS_KEY` | no | — | The creator program's own restricted key, platform-account permissions only (Balance read; Accounts, Login Links and Transfers write): every Connect and transfer call, never on a connected account's behalf. Subscriptions never use it. Missing, onboarding and payouts answer 503; with `CREATOR_PAYOUTS` on, the startup check says so on the admin pages. Secret Manager; never logged. |
 | `CREATOR_PAYOUTS` | no | off | `true` lets the owner approve a creator's month, which makes a Stripe transfer. Off, statements read normally, Approve is disabled and `POST .../approve` answers 503 `payouts_off`. Leave it off until live Connect is set up and a first statement has been checked against the Dashboard. |
-| `OUR_RENEWAL_EMAILS` | no | off | `true` has billing-daily send our own yearly renewal notice a week ahead. Off, it sends none: Stripe's upcoming-renewal email covers renewals (premium-trial spec 0C). Our trial reminder, guild trial reminder and first-charge receipt always go, to the Stripe customer's email read at send time and never stored or logged; the `billing-daily` job needs `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` for that read, and without them a reminder goes in the app alone. |
+| `OUR_RENEWAL_EMAILS` | no | off | `true` has billing-daily send our own yearly renewal notice a week ahead. Off, it sends none: Stripe's upcoming-renewal email covers renewals (premium-trial spec 0C). |
+| `PREMIUM_TRIAL` | no | off | `true` turns the free trial on (premium-trial spec): a first Premium checkout trials 7 days, billing-daily sends the 3-day trial reminder (Premium and guild) with its one-click cancel link, and the first charge after a trial gets a receipt, all to the Stripe customer's email read at send time and never stored or logged (the `billing-daily` job needs `STRIPE_SECRET_KEY` for that read; without it a reminder goes in the app alone). Off until the trial's pages ship; a creator's code gives its free month either way. |
 | `NOTIFY_ENCRYPTION_KEY` | no | — | Base64 of 32 random bytes (`openssl rand -base64 32`); seals Discord webhook tokens at rest (AES-256-GCM). Absent, the Discord notifications feature is off; present but malformed, the service refuses to start. Lives in Secret Manager; never logged or printed. When set, the sim-run and parse-report jobs post one Discord embed per finished server sim or parsed upload; five consecutive counted failures (a 429 does not count) switch the webhook off. Migration 0047 adds `webhook_name` and backfills `upload_private` true for existing webhooks (new ones default off). |
 | `DISCORD_CLIENT_ID` | no | — | The Discord application's Client ID (public). Together with `DISCORD_CLIENT_SECRET` it turns the one-click Discord connect on (needs `NOTIFY_ENCRYPTION_KEY` too); `/v1/me` then carries `notifications.connect: true`. Both unset leaves connect off (its routes answer 404); exactly one set refuses to start, naming the missing variable. The redirect URI is `API_BASE_URL` + `/v1/notifications/discord/callback`. |
 | `DISCORD_CLIENT_SECRET` | no | — | The Discord application's Client Secret. Lives in Secret Manager; never logged, printed or returned. |
@@ -370,8 +371,8 @@ Both run the same image as the API, dispatched on their first argument.
 ## Stripe: going live
 
 Billing is off until the three `STRIPE_*` variables exist on the Cloud Run service; the
-deploy workflow touches no Stripe secret but the creator program's (`STRIPE_PAYOUTS_KEY` and `CREATOR_PAYOUTS`,
-merged in by `api.yml`), so the rest are set once and survive every deploy.
+deploy workflow touches no Stripe secret or switch (the creator program's `STRIPE_PAYOUTS_KEY` and
+`CREATOR_PAYOUTS` included), so each is set once by hand and survives every deploy.
 The account runs Stripe's Managed Payments (Stripe is the merchant of record and handles
 sales tax), which is why `stripe-setup` gives every product a tax code. In order:
 
@@ -425,6 +426,15 @@ A creator's code is our own, not a Stripe promotion code: `POST /v1/billing/chec
 (once per account, `premium_trials`; once per guild, `guild_trials`). The buyer becomes the creator's
 player when `checkout.session.completed` lands.
 
+The free trial (`design/specs/2026-11-08-premium-trial.md`) sits behind `PREMIUM_TRIAL=true`, off by
+default: on, a first Premium checkout trials `catalog.PremiumTrialDays` (7), billing-daily sends the
+3-day trial reminder (Premium and guild) with the one-click cancel link, and the first charge after a
+trial gets a receipt. The reminder and receipt go to the Stripe customer's email, read at send time
+and never stored. Its server side is landed (`POST /v1/billing/checkout/terms`, `/trial/cancel`,
+`/trial/keep`, `/cancel-link/preview`, `/cancel-link`, migration `0101_trial_reminders`); the
+chooser, the account page's trial row and the `/premium/cancel` page are not built yet, so the
+switch stays off until they ship. A creator's code gives its free month either way.
+
 Going live, in order (the owner's Stripe account, never a key in a shell history):
 
 1. Turn on Connect for the live account (Express, US recipients) and finish the platform profile.
@@ -462,12 +472,15 @@ Going live, in order (the owner's Stripe account, never a key in a shell history
    with `connect: true`, the same `api_version` as the first (`2025-08-27.basil`) and the one event
    `account.updated`. Put its signing secret in Secret Manager as `STRIPE_CONNECT_WEBHOOK_SECRET`
    and wire it with `--update-secrets` as the first one was.
-5. Payouts are on in production through the deploy config, not a console change: `api.yml`'s
-   deploy step merges `CREATOR_PAYOUTS=true` and the secret `STRIPE_PAYOUTS_KEY=STRIPE_PAYOUTS_KEY:latest`
-   into the service (the runtime account `api-runtime@foreversixty` holds secretAccessor on that
-   secret, granted 2026-11-08). Payouts are still one statement at a time, only on the owner's
-   Approve. After a deploy, `/admin/creators` shows neither `Payouts are switched off` nor the
-   payouts key notice.
+5. Turn payouts on by hand on the service, never from the deploy (the deploy step merges its own
+   variables and leaves these alone): `gcloud run services update api --region us-east1
+   --update-env-vars CREATOR_PAYOUTS=true --update-secrets STRIPE_PAYOUTS_KEY=STRIPE_PAYOUTS_KEY:latest`
+   (the runtime account `api-runtime@foreversixty` holds secretAccessor on that secret, granted
+   2026-11-08). Until then the program runs with payouts off: applications, approvals, invites,
+   links, codes and statements all work, Approve is disabled, both admin pages say `Payouts are
+   switched off on the server. Statements can be read but not paid.`, and the API answers 503
+   `payouts_off`. Payouts are still one statement at a time, only on the owner's Approve. After the
+   switch, `/admin/creators` shows neither `Payouts are switched off` nor the payouts key notice.
 6. Approve checks the platform's available USD balance first (Balance read on the payouts key) and
    the dialog shows `Available in Stripe: $X. This payout: $Y.`; a short balance turns Pay off with
    `Not enough in your Stripe balance. Add funds in Stripe (Balances → Add to balance) or wait for
