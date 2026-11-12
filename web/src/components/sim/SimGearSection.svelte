@@ -6,9 +6,11 @@
      enchant after its slot in green (else its item level). The saved-runs strip (CharacterStrip)
      keeps the list form: a compact strip, not a gear panel.
      After a run it is open (no Plate, ruling S3) with the five stats the engine computed, the
-     run's own measured miss rate, the set line and the Best in slot link. On the landing and while
-     running (`plated`) the doll is the page's one Plate and the section's action is the link. It
-     shows inputs only: a gain or a pick is /bis's job. -->
+     run's own measured miss rate and the set lines beside the frame once both fit (a 760 px
+     panel, as the report's Gear at the pull), under it on narrower panels; alone, the frame is
+     centred. On the landing and while running (`plated`) the doll is the page's one Plate. The
+     Best in slot link is the section's action in every state. It shows inputs only: a gain or a
+     pick is /bis's job. -->
 <script lang="ts">
   import EmptyState from '../ui/EmptyState.svelte';
   import activeBuild from '../../data/active-build.json';
@@ -20,7 +22,6 @@
   import { gearCardCopy as copy } from '../../lib/sim/input-cards-copy';
   import { specLabel } from '../../lib/sim/spec-label';
   import type { SimRequest, SimResult } from '../../lib/sim/types';
-  import { LINK } from '../../lib/ui/primitives';
   import GearDoll from '../character/GearDoll.svelte';
   import Figure from '../ui/Figure.svelte';
   import Section from '../ui/Section.svelte';
@@ -39,8 +40,13 @@
 
   const build = activeBuild.build;
   const character = $derived(request.character);
-  /** The frame's width cap, the character page's (CharacterGear): the stats and set lines run under it. */
-  const DOLL_WIDTH = 'w-full max-w-[640px]';
+  /** The frame's width cap, the character page's (CharacterGear), centred when nothing sits beside it. */
+  const DOLL_WIDTH = 'mx-auto w-full max-w-[640px]';
+  /** The frame beside the run's stats and set lines once both fit (the report's Gear at the pull). */
+  const PAIR_GRID = '@min-[760px]:grid-cols-[minmax(0,640px)_minmax(240px,1fr)] @min-[760px]:items-start';
+  /** The figures: two columns beside the frame, three where the aside is wide; under the frame, by its width. */
+  const FIGURES_GRID =
+    'grid grid-cols-2 gap-x-6 gap-y-5 @min-[480px]:grid-cols-3 @min-[760px]:grid-cols-2 @min-[1100px]:grid-cols-3';
   const hasGear = $derived(character.gear.length > 0);
   const bisHref = $derived(`/bis/${classSpecPath(request.spec)}`);
 
@@ -86,6 +92,8 @@
   /** The run's measured misses only: the boss and the fight are the page's own. */
   const measured = $derived(stats?.hit?.reference?.note ?? null);
   const lines = $derived(setLines(character.gear, sets));
+  /** Anything beside the frame after a run: its stats (or the older-run note), the set lines. */
+  const hasAside = $derived(result !== null || lines.length > 0);
   /** The frame's title bar, as the character page's: the spec and class, then the level. */
   const dollTitle = $derived(specLabel(request.spec));
   const dollMeta = $derived(copy.dollLevel(character.level));
@@ -111,7 +119,7 @@
 <Section
   panel
   title={copy.title}
-  action={plated && hasGear ? { label: copy.bisAction, href: bisHref } : undefined}
+  action={hasGear ? { label: copy.bisAction, href: bisHref } : undefined}
   testid="sim-gear-card"
 >
   {#if !hasGear}
@@ -119,36 +127,46 @@
   {:else if plated}
     <div class={DOLL_WIDTH} data-testid="sim-gear-paperdoll">{@render doll()}</div>
   {:else}
-    <div class={DOLL_WIDTH} data-testid="sim-gear-paperdoll">{@render doll()}</div>
-    {#if result !== null && stats === null}
-      <p class="text-muted pt-4 text-[13px] leading-5" data-testid="sim-stats-older-run">
-        {copy.statsNeedNewerRun}
-      </p>
-    {:else if stats !== null}
-      <div class="flex flex-col gap-2 pt-4" data-testid="sim-final-stats">
-        <div class="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
-          {#each figures as figure (figure.id)}
-            <Figure label={figure.label} value={figure.value} size="sm" testid={`sim-stat-${figure.id}`} />
-          {/each}
-        </div>
-        {#if measured}<p class="text-muted text-[13px] leading-5" data-testid="sim-stat-hit-measured">
-            {measured}
-          </p>{/if}
+    <div class="@container">
+      <div class="grid gap-5 {hasAside ? PAIR_GRID : ''}">
+        <div class={DOLL_WIDTH} data-testid="sim-gear-paperdoll">{@render doll()}</div>
+        {#if hasAside}
+          <div class="flex min-w-0 flex-col gap-4" data-testid="sim-gear-aside">
+            {#if result !== null && stats === null}
+              <p class="text-muted text-[13px] leading-5" data-testid="sim-stats-older-run">
+                {copy.statsNeedNewerRun}
+              </p>
+            {:else if stats !== null}
+              <div class="flex flex-col gap-2" data-testid="sim-final-stats">
+                <div class={FIGURES_GRID}>
+                  {#each figures as figure (figure.id)}
+                    <Figure
+                      label={figure.label}
+                      value={figure.value}
+                      size="sm"
+                      testid={`sim-stat-${figure.id}`}
+                    />
+                  {/each}
+                </div>
+                {#if measured}<p class="text-muted text-[13px] leading-5" data-testid="sim-stat-hit-measured">
+                    {measured}
+                  </p>{/if}
+              </div>
+            {/if}
+            {#if lines.length > 0}
+              <span class="text-muted min-w-0 text-[13px] leading-5" data-testid="sim-gear-sets">
+                {#each lines as line (line.id)}
+                  <span class="block" data-testid="sim-gear-set"
+                    >{line.head}{#each line.bonuses as bonus (bonus.text)}
+                      · <span class={bonus.active ? 'text-rarity-uncommon' : ''}>{bonus.text}</span>
+                    {/each}</span
+                  >
+                {/each}
+              </span>
+            {/if}
+          </div>
+        {/if}
       </div>
-    {/if}
-    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 pt-4">
-      {#if lines.length > 0}
-        <span class="text-muted min-w-0 text-[13px] leading-5" data-testid="sim-gear-sets">
-          {#each lines as line (line.id)}
-            <span class="block" data-testid="sim-gear-set"
-              >{line.head}{#each line.bonuses as bonus (bonus.text)}
-                · <span class={bonus.active ? 'text-rarity-uncommon' : ''}>{bonus.text}</span>
-              {/each}</span
-            >
-          {/each}
-        </span>
-      {/if}
-      <a class="{LINK} ml-auto text-[14px]" href={bisHref}>{copy.bisLink} ›</a>
     </div>
   {/if}
 </Section>

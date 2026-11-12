@@ -106,8 +106,9 @@ def Figure(value: str, label: str = '', unit: str = '', tone: str = '', size: st
     return f'<div class="fig {size} {tone}">{lab}<span class="v">{value}{u}</span></div>'
 
 
-def Figures(items: list[tuple]) -> str:
-    return f'<div class="figs" style="--c:{len(items) if len(items) != 3 else 3}">' + ''.join(Figure(*i) for i in items) + '</div>'
+def Figures(items: list[tuple], cols: int | None = None) -> str:
+    """cols: the column count where the page sets one (a figures grid beside a doll); else one per figure."""
+    return f'<div class="figs" style="--c:{cols or (len(items) if len(items) != 3 else 3)}">' + ''.join(Figure(*i) for i in items) + '</div>'
 
 
 def Meter(frac: float, tone: str = '') -> str:

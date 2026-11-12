@@ -639,7 +639,7 @@ def doll(gear: list[dict] | None = None) -> str:
         centre = ItemTip(first['name'], QUALITY_NAME.get(first['quality'], 'common'),
                          [first['name'], first['line2']] + ([first['enchant']] if first.get('enchant') else []), [], '')
     frame = PaperdollFrame(slots, SPEC_LABEL, f"Level {CHAR['level']}", None, centre, 'Gear by slot', heading='h2', head=False, facts=True)
-    return f'<div style="width:100%;max-width:640px">{frame}</div>'
+    return f'<div style="width:100%;max-width:640px;margin:0 auto">{frame}</div>'
 
 
 def ilvl() -> float:
@@ -663,12 +663,13 @@ def gear_section(with_stats: bool = True) -> str:
     stats = Figures([(f"{fs['attack_power']:,}", 'Attack power', '', '', 'sm'), (f"{fs['melee_hit_pct']:.1f}%", 'Hit', '', '', 'sm'),
                      (f"{fs['melee_crit_pct_vs_target']:.1f}%", 'Crit on the boss', '', '', 'sm'),
                      (f"{fs['weapon_skill']['main_hand']} &middot; {fs['weapon_skill']['off_hand']}", 'Weapon skill', '', '', 'sm'),
-                     (f"{fs['melee_haste_pct']:.0f}%", 'Haste from gear', '', '', 'sm')])
+                     (f"{fs['melee_haste_pct']:.0f}%", 'Haste from gear', '', '', 'sm')], cols=2)
     measured = (f'<p class="t-small">Missed in this run: {miss["sp"][0] / miss["sp"][1] * 100:.0f}% of specials '
                 f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% of white swings.</p>')
-    foot = f'<div class="gear-foot"><span class="t-small"></span>{Link("Best in slot &rsaquo;")}</div>'
-    extra = f'<div class="gear-stats">{stats}{measured}</div>' if with_stats else ''
-    return Section('Gear', doll() + extra + foot)
+    # SimGearSection: the frame beside its stats from a 760 px panel, centred alone; the link is the action in every state.
+    aside = f'<div class="gear-aside">{stats}{measured}</div>' if with_stats else ''
+    body = f'<div class="gear-c"><div class="gear-grid{" two" if aside else ""}">{doll()}{aside}</div></div>'
+    return Section('Gear', body, Link('Upgrades on Best in slot &rsaquo;'))
 
 
 def talents_section() -> str:
@@ -843,7 +844,8 @@ main{padding-bottom:80px}@media(min-width:1024px){main{padding-bottom:104px}}
 .two{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);padding-top:8px}@media(min-width:1024px){.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .layout-split .main>section>.figs{padding-top:12px}
 .tl-tools{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;min-height:56px;padding:10px 0;margin-top:12px}.tl-sw{display:inline-flex;gap:12px;align-items:center}.tl-tools .lg{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;font-size:13px;line-height:20px;color:var(--muted);list-style:none;margin:0 0 0 auto;padding:0}.tl-tools .lg li{display:inline-flex;align-items:center;gap:6px}.tl-tools .lg i{display:inline-block;border-radius:1px;background:var(--k)}.tl-brush{display:grid;grid-template-columns:200px minmax(0,1fr);height:44px;align-items:center}.tl-brush .tr{height:20px;border-radius:4px;background:#ffffff08}.tl-foot{padding-top:10px}
-.gear-stats{display:flex;flex-direction:column;gap:8px;padding-top:16px}.gear-foot{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-top:12px}
+.gear-c{container-type:inline-size}.gear-grid{display:grid;gap:20px}.gear-aside{display:flex;flex-direction:column;gap:8px;min-width:0}
+@container (min-width:760px){.gear-grid.two{grid-template-columns:minmax(0,640px) minmax(240px,1fr);align-items:start}}
 .empty-open{padding:12px 0;color:var(--muted);font-size:14px}
 .btn.is-off{opacity:.45;pointer-events:none}
 button.link{background:none;border:0;padding:0;cursor:pointer;font:600 14px/20px var(--font-body);color:var(--gold)}
@@ -872,7 +874,6 @@ body .hist .ax{padding-top:8px;line-height:20px}
 .tt-trees{min-width:0}
 /* the built Section's body starts 12 px under its hairline (ui/Section.svelte); a Plate already has it, open blocks take it here */
 .sec-h+.doll,.sec-h+div>.tt-trees{margin-top:12px}.sec-h+.two{padding-top:12px}
-.gear-foot{line-height:20px}
 /* the built Section head wraps its action under a long meta (gap-y 4 px); a Row is --row-h, 58 px (spec 2026-11-05 P4) */
 body .sec-h{flex-wrap:wrap;row-gap:4px}body .sec-h .act{line-height:21px}body .row{min-height:58px}body .sec-h+.rows{margin-top:12px}
 /* Rotation as the built rows draw it: the icon in the title (ActionMark) */

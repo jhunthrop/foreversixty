@@ -23,17 +23,17 @@ const WIDTHS = [
 ] as const;
 const DESKTOP = [WIDTHS[0]] as const;
 
-/** A level 60 Fury set from the real items file, a few slots enchanted (id:enchant); h-doll's set. */
+/** A level 60 Fury set from the real items file, enchanted as a Fury warrior would (id:enchant). */
 const SET: readonly [string, number, number?][] = [
-  ['head', 12640, 2583],
+  ['head', 12640, 1506],
   ['neck', 15411],
-  ['shoulder', 12927, 2717],
+  ['shoulder', 12927],
   ['back', 13340, 849],
   ['chest', 11726, 1891],
   ['wrist', 13400, 1885],
-  ['hands', 14551, 2564],
+  ['hands', 14551, 8207],
   ['waist', 13142],
-  ['legs', 14554, 2583],
+  ['legs', 14554, 1506],
   ['feet', 14616, 911],
   ['finger1', 17713],
   ['finger2', 13098],
