@@ -282,6 +282,34 @@ function Follow.currentSpec(data, classSlug, ranks)
 	return ok and talentSpec or nil
 end
 
+--- The spec question, when the character's points do not name a tree (Talents.decideTree):
+--- "Are you Holy or Retribution?" over the trees that hold points when two or more do, else over
+--- every tree of the class; nil when the points decide. `ranks` defaults to the client's. Pure
+--- on its arguments. The tour's last page, the panel and the chip's path card all ask it.
+function Follow.specQuestion(data, classSlug, ranks)
+	local class = type(data) == "table" and type(data.classes) == "table" and data.classes[classSlug] or nil
+	if type(class) ~= "table" or type(class.tabs) ~= "table" then
+		return nil
+	end
+	local tab, trees = Talents.decideTree(Talents.tabPoints(ranks or Talents.readRanks(data)))
+	if tab ~= nil then
+		return nil
+	end
+	if #trees < 2 then
+		trees = {}
+		for index = 1, #class.tabs do
+			trees[index] = index
+		end
+	end
+	local names = {}
+	for index, tree in ipairs(trees) do
+		names[index] = type(class.tabs[tree]) == "table" and class.tabs[tree].name or "?"
+	end
+	local last = table.remove(names)
+	local list = #names > 0 and (table.concat(names, L.pathAskComma) .. L.pathAskOr .. last) or last
+	return string.format(L.pathAsk, list)
+end
+
 --- A character with no build saved in any slot follows the data's default for its spec
 --- (`data.defaultBuilds[<spec>]`, contract 1): leveling, raid at RAID_LEVEL. The spec is
 --- Gear.specOf's, which is the tree with the most points (a tie, or none spent, the first tree;
@@ -317,7 +345,14 @@ function Follow.ensureDefault(data, character)
 	if spec == nil then
 		spec = gearModule().specOf(data, classSlug, character.ranks or Talents.readRanks(data))
 	end
-	local builds = spec ~= nil and data.defaultBuilds[spec] or nil
+	if spec == nil then
+		-- The points do not name a tree (Talents.decideTree): nothing is followed until the
+		-- player answers the spec question (Chip.choosePath remembers the answer).
+		Follow.noBuildReason = string.format(L.diagBuildUndecided, Follow.specQuestion(data, classSlug,
+			character.ranks or Talents.readRanks(data)) or "")
+		return nil
+	end
+	local builds = data.defaultBuilds[spec] or nil
 	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
 	local default = type(builds) == "table" and builds[kind] or nil
 	if type(default) ~= "table" then

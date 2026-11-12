@@ -156,18 +156,25 @@ describe("PLAYER_LOGIN adopts the default build for a character with no saved bu
 	end
 
 	for _, classSlug in ipairs(CLASSES) do
-		it(classSlug .. ": no ranks readable yet (no trait config at PLAYER_LOGIN): the first tree's default",
+		it(classSlug .. ": no ranks readable yet (no trait config at PLAYER_LOGIN): nothing, and the reason asks",
 			function()
 				login(classSlug, { configID = nil, ranks = {} })
-				local spec = assertDefault(classSlug, "empty")
-				assert.are.equal(classSlug .. "-" .. require("Export").slugify(Data.classes[classSlug].tabs[1].name),
-					spec)
+				local Follow = require("Follow")
+				assert.is_nil(Follow.build, classSlug)
+				assert.is_truthy(Follow.noBuildReason:find("^spec undecided: Are you "), Follow.noBuildReason)
 			end)
 
-		it(classSlug .. ": points over all three trees: the default for the tree with most", function()
-			login(classSlug, { configID = 7, ranks = traitRanks(classSlug, { [1] = 8, [2] = 4, [3] = 3 }) })
-			assertDefault(classSlug, "mixed")
+		it(classSlug .. ": points over three trees with a clear leader: the leader's default", function()
+			login(classSlug, { configID = 7, ranks = traitRanks(classSlug, { [1] = 9, [2] = 3, [3] = 2 }) })
+			local spec = assertDefault(classSlug, "mixed")
+			assert.are.equal(classSlug .. "-" .. require("Export").slugify(Data.classes[classSlug].tabs[1].name), spec)
 		end)
+
+		it(classSlug .. ": points over three trees with no clear leader (8/4/3): nothing, the player is asked",
+			function()
+				login(classSlug, { configID = 7, ranks = traitRanks(classSlug, { [1] = 8, [2] = 4, [3] = 3 }) })
+				assert.is_nil(require("Follow").build, classSlug)
+			end)
 
 		it(classSlug .. ": one tree dominant: that tree's default", function()
 			login(classSlug, { configID = 7, ranks = traitRanks(classSlug, { [3] = 14, [1] = 1 }) })
@@ -229,7 +236,8 @@ describe("ranks that arrive after PLAYER_LOGIN", function()
 
 	it("adopt the default for the spec they say, on the first PLAYER_ENTERING_WORLD", function()
 		local Options = login("hunter", { configID = nil, ranks = {} })
-		assert.are.equal("Beast Mastery leveling", require("Follow").build.name)
+		-- No ranks readable yet names no tree (spec section 6.2): nothing is followed until they arrive.
+		assert.is_nil(require("Follow").build)
 		state.traits.configID = 7
 		state.traits.ranks = traitRanks("hunter", { [2] = 12, [1] = 3 })
 		Options.onEvent(Options.frame, "PLAYER_ENTERING_WORLD")
@@ -346,7 +354,7 @@ describe("a PLAYER_ENTERING_WORLD that still reads no ranks", function()
 	it("keeps the retry, so the first TRAIT_CONFIG_UPDATED swaps the default exactly once", function()
 		local Options = login("hunter", { configID = nil, ranks = {} })
 		local Follow, Codec = require("Follow"), require("Codec")
-		assert.are.equal("Beast Mastery leveling", Follow.build.name)
+		assert.is_nil(Follow.build)
 		local loadBuild = Codec.loadBuild
 		local decoded = 0
 		Codec.loadBuild = function(...)
@@ -354,7 +362,7 @@ describe("a PLAYER_ENTERING_WORLD that still reads no ranks", function()
 			return loadBuild(...)
 		end
 		Options.onEvent(Options.frame, "PLAYER_ENTERING_WORLD")
-		assert.are.equal("Beast Mastery leveling", Follow.build.name)
+		assert.is_nil(Follow.build)
 		assert.is_true(Options.defaultPending)
 		state.traits.configID = 7
 		state.traits.ranks = traitRanks("hunter", { [2] = 12, [1] = 3 })
@@ -377,7 +385,7 @@ describe("one definition of a saved build", function()
 
 	it("ignores a build saved under another character's key", function()
 		local other = "us/Other Realm/Someone"
-		login("hunter", { configID = nil, ranks = {} },
+		login("hunter", { configID = 7, ranks = traitRanks("hunter", { [1] = 10 }) },
 			{ others = { [other] = { active = "raid", slots = { raid = { code = MINE, name = "Theirs" } } } } })
 		local Follow = require("Follow")
 		assert.are.equal("Beast Mastery leveling", Follow.build.name)
@@ -389,7 +397,7 @@ describe("one definition of a saved build", function()
 	-- never wrote under the character's key is neither followed, nor deleted, nor a reason to keep
 	-- the default out.
 	it("ignores a slot name that is not one of the three, keeps it, and adopts the default", function()
-		login("hunter", { configID = 7, ranks = {} }, { follows = { active = "raid", slots = {
+		login("hunter", { configID = 7, ranks = traitRanks("hunter", { [1] = 10 }) }, { follows = { active = "raid", slots = {
 			extra = { code = MINE, name = "Odd" },
 		} } })
 		local Follow = require("Follow")
@@ -442,15 +450,15 @@ describe("the default build's reasons and kinds", function()
 	end
 
 	it("takes the raid default at level 60", function()
-		local Options = login("hunter", { configID = nil, ranks = {} }, { level = 60 })
+		local Options = login("hunter", { configID = 7, ranks = traitRanks("hunter", { [1] = 20 }) }, { level = 60 })
 		local build = require("Follow").build
 		assert.are.equal("Beast Mastery raid", build.name)
 		assert.are.equal("raid", build.kind)
 		assert.are.equal("Build: Beast Mastery build (default for Beast Mastery)", buildLine(Options.handle("diag")))
 	end)
 
-	it("names the winning tree for a mixed spend: Marksmanship with most", function()
-		login("hunter", { configID = 7, ranks = traitRanks("hunter", { [1] = 4, [2] = 8, [3] = 3 }) })
+	it("names the winning tree for a mixed spend: Marksmanship clearly ahead", function()
+		login("hunter", { configID = 7, ranks = traitRanks("hunter", { [1] = 2, [2] = 9, [3] = 3 }) })
 		assert.are.equal("Marksmanship leveling", require("Follow").build.name)
 		assert.are.equal("hunter-marksmanship", require("Follow").build.spec)
 	end)
@@ -464,7 +472,7 @@ describe("the default build's reasons and kinds", function()
 
 	it("says the spec has no default", function()
 		local L = require("Locale")
-		local Options = login("hunter", { configID = nil, ranks = {} })
+		local Options = login("hunter", { configID = 7, ranks = traitRanks("hunter", { [1] = 10 }) })
 		local Follow = require("Follow")
 		Follow.build = nil
 		local builds = {}
@@ -486,7 +494,7 @@ describe("the default build's reasons and kinds", function()
 		for index = 1, require("Codec").MAX_CODE_LENGTH do
 			order[index] = { 1, 1, 1 }
 		end
-		local Options = login("hunter", { configID = nil, ranks = {} })
+		local Options = login("hunter", { configID = 7, ranks = traitRanks("hunter", { [1] = 10 }) })
 		local Follow = require("Follow")
 		Follow.build = nil
 		assert.is_nil(Follow.ensureDefault({ build = Data.build, classes = Data.classes, defaultBuilds = {
@@ -499,7 +507,7 @@ describe("the default build's reasons and kinds", function()
 
 	it("says the default does not load", function()
 		local L = require("Locale")
-		local Options = login("hunter", { configID = nil, ranks = {} })
+		local Options = login("hunter", { configID = 7, ranks = traitRanks("hunter", { [1] = 10 }) })
 		local Follow = require("Follow")
 		Follow.build = nil
 		assert.is_nil(Follow.ensureDefault({ build = Data.build, classes = Data.classes, defaultBuilds = {

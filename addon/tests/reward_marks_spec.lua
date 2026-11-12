@@ -173,6 +173,7 @@ describe("RewardMarks", function()
 		state = mock.install({
 			class = { name = "Warrior", token = "WARRIOR" },
 			level = level or 21,
+			talents = helper.decidedTalents({ "Arms", "Fury", "Protection" }),
 			equipped = equipped,
 			itemStats = itemStats,
 			globals = globals,
@@ -819,6 +820,7 @@ describe("the dungeon line", function()
 	local function enter(classToken, className, level, instance, instanceType, names)
 		state = mock.install({
 			class = { name = className, token = classToken }, level = level,
+			talents = helper.decidedTalents({ "First", "Second", "Third" }),
 			globals = {
 				UnitFactionGroup = function() return "Alliance" end,
 				GetInstanceInfo = function() return instance, instanceType end,

@@ -140,6 +140,7 @@ describe("GuildTab", function()
 			region = 1,
 			playerName = "Bow Jackzon",
 			level = 26,
+			talents = options.talents or helper.decidedTalents({ "Beast Mastery", "Marksmanship", "Survival" }),
 			globals = globals,
 		})
 		state.guild = { name = "Employed Millennials", rankName = "Rank", rankIndex = playerRank }

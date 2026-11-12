@@ -57,10 +57,11 @@ describe("the current spec follows the build", function()
 		Follow.build = nil
 	end)
 
-	it("reads the talents' tie rule (the first tree) with no build", function()
+	it("names no spec with no build and no points: the player is asked (spec section 6.2)", function()
 		Follow.build = nil
-		assert.are.equal("paladin-holy", Follow.currentSpec(DATA))
-		assert.are.equal("paladin-holy", ItemTooltip.baseContext(DATA).spec)
+		assert.is_nil(Follow.currentSpec(DATA))
+		assert.is_nil(ItemTooltip.baseContext(DATA).spec)
+		assert.are.equal("paladin-protection", Follow.currentSpec(DATA, "paladin", { [2] = { ["1:1"] = 2 } }))
 	end)
 
 	it("reads the followed default build's spec on the tooltip, the weights, the hello and the rotation", function()

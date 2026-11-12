@@ -13,6 +13,22 @@ function helper.vectors()
 	return decoded
 end
 
+--- A classic talent fixture whose points name a tree beyond doubt (Talents.decideTree:
+--- SURE_MIN_POINTS in one tree, none elsewhere): `names` the three tab names, `tab` the tree
+--- that holds the points (the first by default). Specs about tooltips, marks and rows install
+--- it so the character has a spec without caring which rule names it.
+function helper.decidedTalents(names, tab)
+	local tabs = {}
+	for index, name in ipairs(names) do
+		local talents = {}
+		if index == (tab or 1) then
+			talents[1] = { name = "Decided", tier = 1, column = 1, rank = 2, maxRank = 5 }
+		end
+		tabs[index] = { name = name, talents = talents }
+	end
+	return tabs
+end
+
 --- Load an addon module fresh, so one spec's state never reaches another.
 -- Every module in ForeverSixty/ ends with `return X`, which is what makes
 -- this work under require as well as under the game's TOC loading.

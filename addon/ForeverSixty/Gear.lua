@@ -326,28 +326,23 @@ local function treeSpec(data, classSlug, slug, ranks)
 	return best or slug
 end
 
---- The spec key: the tree with the most points, ties to the first tree (the one a character
---- with no points spent is in). Design "Stat weights" states exactly this rule; the site's own
---- spec derivation uses it too, so a build reads the same in both places. A tree the data
---- splits into two specs answers the one the ranks fit (L3.7 item 3).
+--- The spec key the character's own points name, or nil when they do not (Talents.decideTree,
+--- the one rule: every point in one tree, or a tree clearly ahead; a tie, a split or no points
+--- is nil, and the player is asked). Before 2026-11-11 a tie went to the first tree, which locked
+--- a 2/2 paladin into Holy. A tree the data splits into two specs answers the one the ranks fit
+--- (L3.7 item 3).
 function Gear.specOf(data, classSlug, ranks)
-	local class = data.classes[classSlug]
+	local class = type(data) == "table" and type(data.classes) == "table" and data.classes[classSlug] or nil
 	if class == nil then
 		return nil
 	end
-	local best, bestTab = -1, 1
-	for tab = 1, #class.tabs do
-		local total = 0
-		for _, rank in pairs(ranks[tab] or {}) do
-			total = total + rank
-		end
-		if total > best then
-			best, bestTab = total, tab
-		end
+	local tab = Talents.decideTree(Talents.tabPoints(ranks))
+	if tab == nil or type(class.tabs[tab]) ~= "table" or type(class.tabs[tab].name) ~= "string" then
+		return nil
 	end
 	-- The spec slug is the tab name lowercased, which is how
 	-- curated/specs.json's spec_slug is built from the tree name.
-	return treeSpec(data, classSlug, classSlug .. "-" .. Export.slugify(class.tabs[bestTab].name), ranks)
+	return treeSpec(data, classSlug, classSlug .. "-" .. Export.slugify(class.tabs[tab].name), ranks)
 end
 
 --- Decoded BiS picks, keyed by their packed string. Weak values: a pick

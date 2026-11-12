@@ -13,9 +13,8 @@ local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
 
---- paladin, tab 1 (Holy) -- the same shape tooltip_spec.lua's DATA uses,
---- so Gear.specOf's tie-break (no ranks set) resolves "paladin-holy" with
---- no talent fixture needed.
+--- paladin, tab 1 (Holy) -- the same shape tooltip_spec.lua's DATA uses; the mock's two points
+--- in the first tree (helper.decidedTalents) make Gear.specOf answer "paladin-holy".
 local DATA = {
 	build = "1.60.1.70009",
 	classes = { paladin = { tabs = {
@@ -108,6 +107,8 @@ describe("Tooltip's slot hovers", function()
 	local function start(install)
 		install = install or {}
 		install.class = install.class or { name = "Paladin", token = "PALADIN" }
+		-- Two points in the first tree: the character has a spec (Talents.decideTree) without a build.
+		install.talents = install.talents or helper.decidedTalents({ "Holy", "Protection", "Retribution" })
 		install.globals = install.globals or {}
 		if install.globals.UnitFactionGroup == nil then
 			install.globals.UnitFactionGroup = function()

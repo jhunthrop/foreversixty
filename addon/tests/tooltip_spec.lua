@@ -16,7 +16,10 @@ describe("Tooltip", function()
 	local Theme, Tooltip
 
 	local function start(install)
-		mock.install(install or {})
+		install = install or {}
+		-- Two points in the first tree: the character has a spec (Talents.decideTree) without a build.
+		install.talents = install.talents or helper.decidedTalents({ "Holy", "Protection", "Retribution" })
+		mock.install(install)
 		Theme = helper.load("Theme")
 		Theme.reset()
 		helper.load("Export")

@@ -31,6 +31,9 @@ local function cell(point)
 	return { point.tab, point.tier, point.column }
 end
 
+--- Two points in Arms: the tree is named beyond doubt (Talents.decideTree).
+local ARMS = { [1] = { ["1:1"] = 2 } }
+
 describe("Follow.ensureDefault", function()
 	local Follow
 	local savedDB
@@ -47,7 +50,7 @@ describe("Follow.ensureDefault", function()
 	end)
 
 	it("loads the leveling default for the spec, marked default and named from the data", function()
-		local build = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 12 })
+		local build = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 12 })
 		assert.is_not_nil(build)
 		assert.is_true(build.default)
 		assert.are.equal("Arms leveling", build.name)
@@ -61,11 +64,11 @@ describe("Follow.ensureDefault", function()
 	-- X.5: one noun. The data names its defaults "Arms leveling" and "Arms raid"; every surface that names
 	-- the build says "Arms build", the word a build from the site and any other carries.
 	it("names a default build with the one noun, 'build', whatever the data calls its kind", function()
-		local leveling = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 12 })
+		local leveling = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 12 })
 		assert.are.equal("Arms leveling", leveling.name)
 		assert.are.equal("Arms build", Follow.buildName(DATA, leveling))
 		Follow.build = nil
-		local raid = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 60 })
+		local raid = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 60 })
 		assert.are.equal("Arms build", Follow.buildName(DATA, raid))
 		-- A build with a name of its own that merely ends in a kind word keeps it.
 		local named = require("Codec").loadBuild("FSB1:1.60.1.70291:warrior:111:", DATA)
@@ -76,7 +79,7 @@ describe("Follow.ensureDefault", function()
 	end)
 
 	it("loads the raid default at level 60", function()
-		local build = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 60 })
+		local build = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 60 })
 		assert.are.equal("Arms raid", build.name)
 		assert.is_true(build.default)
 		assert.are.same({ 2, 1, 3 }, cell(build.order[2]))
@@ -87,13 +90,16 @@ describe("Follow.ensureDefault", function()
 		assert.are.equal("Fury leveling", build.name)
 	end)
 
-	it("takes the class's first tree with no points spent", function()
-		local build = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 5 })
-		assert.are.equal("Arms leveling", build.name)
+	it("follows nothing with no points spent or one point: the player is asked (spec section 6.2)", function()
+		assert.is_nil(Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 5 }))
+		assert.is_nil(Follow.build)
+		assert.is_nil(Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = { [1] = { ["1:1"] = 1 } }, level = 10 }))
+		assert.are.equal(string.format(require("Locale").diagBuildUndecided, "Are you Arms, Fury or Protection?"),
+			Follow.noBuildReason)
 	end)
 
 	it("writes nothing into saved variables", function()
-		Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 12 })
+		Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 12 })
 		assert.are.same({}, _G.ForeverSixtyDB)
 	end)
 
@@ -109,7 +115,7 @@ describe("Follow.ensureDefault", function()
 
 	it("does nothing while the data carries no default builds", function()
 		local data = { build = DATA.build, classes = DATA.classes }
-		assert.is_nil(Follow.ensureDefault(data, { classSlug = "warrior", ranks = {}, level = 12 }))
+		assert.is_nil(Follow.ensureDefault(data, { classSlug = "warrior", ranks = ARMS, level = 12 }))
 		assert.is_nil(Follow.build)
 	end)
 

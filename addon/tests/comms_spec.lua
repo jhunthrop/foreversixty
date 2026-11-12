@@ -246,7 +246,9 @@ describe("Comms, the FS1 protocol", function()
 
 		it("measures in the build's spec, and is nil with nothing to score", function()
 			assert.are.equal("hunter-marksmanship", Comms.ownSpec(DATA, BUILD, "hunter", {}))
-			assert.are.equal("hunter-beast-mastery", Comms.ownSpec(DATA, nil, "hunter", {}))
+			-- No build and no points: nothing to name (Talents.decideTree), so the hello carries no spec.
+			assert.is_nil(Comms.ownSpec(DATA, nil, "hunter", {}))
+			assert.are.equal("hunter-beast-mastery", Comms.ownSpec(DATA, nil, "hunter", { [1] = { ["1:1"] = 2 } }))
 			assert.is_nil(Comms.gearGap(DATA, "hunter-beast-mastery", WORN, 26))
 			assert.is_nil(Comms.gearGap(DATA, "hunter-marksmanship", WORN, 26))
 		end)

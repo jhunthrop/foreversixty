@@ -346,6 +346,7 @@ describe("GroupPanel", function()
 			region = 1,
 			playerName = "Tester",
 			level = 60,
+			talents = options.talents or helper.decidedTalents({ "First", "Second", "Third" }),
 			globals = globals,
 		})
 		-- The client's clock as date("%H:%M") reads it.

@@ -1929,7 +1929,8 @@ end)
 describe("one floor for the chip and the tooltip", function()
 	local data = { classes = { warrior = { tabs = { { name = "Arms" } } } },
 		weights = { ["warrior-arms"] = { strength = 1 } } }
-	local build = { classSlug = "warrior", order = {}, gear = {} }
+	-- One Arms point in the plan names the spec (Follow.buildSpec); the character has no points of its own.
+	local build = { classSlug = "warrior", order = { { tab = 1, tier = 1, column = 1 } }, gear = {} }
 	local worn = { chest = { itemId = 50, link = "item:50", stats = { strength = 4 } } }
 	local cases = {
 		{ strength = 100, gain = 0.96, upgrade = true },
@@ -2556,7 +2557,8 @@ describe("the hook's width contract and enchant wiring", function()
 		assert.are.same({ strength = 8, attack_power = 4, armor = 16 }, equipped.chest.stats)
 		local data = { classes = { warrior = { tabs = { { name = "Arms" } } } },
 			weights = { ["warrior-arms"] = { strength = 2, attack_power = 1 } } }
-		local build = { classSlug = "warrior", order = {}, gear = {} }
+		-- One Arms point in the plan names the spec (Follow.buildSpec); the character has no points of its own.
+	local build = { classSlug = "warrior", order = { { tab = 1, tier = 1, column = 1 } }, gear = {} }
 		local bag = { link = "item:900", itemId = 900, equipLocation = "INVTYPE_CHEST", itemClass = 4,
 			itemSubClass = 3, stats = { strength = 9 } }
 		local bare = { chest = { itemId = 51, link = link, stats = { strength = 8 } } }

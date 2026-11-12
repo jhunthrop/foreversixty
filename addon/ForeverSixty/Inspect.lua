@@ -158,22 +158,25 @@ local function tabNameAndPoints(first, second, third, _, fifth)
 	return first, third
 end
 
---- The tree the inspected player has most points in, as the name the client gives it; nil with
---- no talent function, no tabs, or no points spent anywhere.
-local function highestTreeName()
+--- The tree the inspected player's points name beyond doubt (Talents.decideTree, the one rule
+--- every surface reads), as the name the client gives it; nil with no talent function, no tabs,
+--- or points that do not decide. There is nobody to ask for another player, so an undecided spec
+--- is simply nil.
+local function decidedTreeName()
 	local info = client("GetTalentTabInfo")
 	local count = try(client("GetNumTalentTabs"), true)
 	if info == nil or type(count) ~= "number" then
 		return nil
 	end
-	local bestName, best = nil, 0
+	local names, points = {}, {}
 	for tab = 1, count do
-		local name, points = tabNameAndPoints(try(info, tab, true))
-		if type(name) == "string" and type(points) == "number" and points > best then
-			bestName, best = name, points
+		local name, total = tabNameAndPoints(try(info, tab, true))
+		if type(name) == "string" and type(total) == "number" then
+			names[tab], points[tab] = name, total
 		end
 	end
-	return bestName
+	local tab = Talents.decideTree(points)
+	return tab ~= nil and names[tab] or nil
 end
 
 --- The inspected player's spec name where the client exposes the inspected specialisation
@@ -199,7 +202,7 @@ local function specOf(classSlug)
 	if classSlug == nil then
 		return nil
 	end
-	local name = inspectedSpecName() or highestTreeName()
+	local name = inspectedSpecName() or decidedTreeName()
 	local slug = name and Export.slugify(name)
 	if slug == nil then
 		return nil

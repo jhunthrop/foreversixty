@@ -153,6 +153,7 @@ describe("SlotMarks", function()
 		state = mock.install({
 			class = { name = "Warrior", token = "WARRIOR" },
 			level = level or 21,
+			talents = helper.decidedTalents({ "Arms", "Fury", "Protection" }),
 			equipped = equipped,
 			bags = { [0] = bag or {} },
 			itemStats = itemStats,
@@ -957,6 +958,7 @@ describe("SlotMarks", function()
 				[BELT_PICK_LINK] = REAL_BY_ID[BELT_PICK_ID].stats }
 			mock.install({
 				class = { name = "Hunter", token = "HUNTER" }, level = 24,
+				talents = helper.decidedTalents({ "Beast Mastery", "Marksmanship", "Survival" }),
 				equipped = { [10] = GLOVES, [6] = BELT },
 				itemStats = itemStats,
 				globals = {

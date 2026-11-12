@@ -816,6 +816,7 @@ local L = {
 	diagBuildNoClass = "this class is not in the addon's data",
 	diagBuildNoSpec = "no default build for %s",
 	diagBuildRefused = "the default build for %s does not load",
+	diagBuildUndecided = "spec undecided: %s Nothing loads until the player picks one.",
 	diagBuildSavedRefused = "the saved build does not load",
 	-- Below 10, and in the hover when the next point is not spendable yet: "Next at 22: Improved Tactical Mastery".
 	chipNextAt = "Next at %d: %s",
@@ -1609,6 +1610,13 @@ L.panelSpendNow = "Spend %d now"
 L.panelChange = "Change"
 L.panelTalentsButton = "Talents"
 L.panelPickPath = "Pick your path"
+-- The spec question (Follow.specQuestion, spec section 6.2): asked wherever a spec is needed and the
+-- character's points do not name a tree (Talents.decideTree). "Are you Holy or Retribution?": the
+-- trees that hold points when two or more do, else every tree of the class. Shared by the tour's
+-- last page, the panel, the chip's path card and the Builds dialog.
+L.pathAsk = "Are you %s?"
+L.pathAskComma = ", "
+L.pathAskOr = " or "
 L.panelPick = "Pick"
 L.panelPathFoot = "First talent point at level %d"
 L.homeRotationTitle = "Rotation at %d"

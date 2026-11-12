@@ -233,6 +233,73 @@ function Talents.cellOf(data, classSlug, tab, tier, column)
 	return nil
 end
 
+--- The points a character has in each tab, from Talents.readRanks' shape
+--- (ranks[tab]["<tier>:<column>"]): { [tab] = points }, tabs with none left
+--- out. Pure.
+function Talents.tabPoints(ranks)
+	local points = {}
+	for tab, cells in pairs(type(ranks) == "table" and ranks or {}) do
+		local total = 0
+		for _, rank in pairs(type(cells) == "table" and cells or {}) do
+			total = total + (tonumber(rank) or 0)
+		end
+		if total > 0 then
+			points[tab] = total
+		end
+	end
+	return points
+end
+
+--- How far ahead of every other tree the leading tree must be before the
+--- addon names a character's spec on its own (design/specs/2026-11-08-addon-ux.md
+--- section 6, owner 2026-11-11: "a wrong silent guess is worse than one question").
+Talents.SURE_LEAD = 5
+--- The fewest spent points that can name a tree at all: a level 10 with one
+--- point is asked (the owner's words, 2026-11-11).
+Talents.SURE_MIN_POINTS = 2
+
+--- The one rule for reading a spec off a character's points (`points`,
+--- Talents.tabPoints' shape). The tab the points name beyond doubt: at
+--- least SURE_MIN_POINTS spent and every one of them in one tree, or the
+--- leading tree holding more than half of all spent points and leading
+--- every other tree by at least SURE_LEAD. Anything else, zero or one
+--- point included, is nil: the player is asked. The second answer is the
+--- tabs that hold points, in tab order, for the question's wording. Pure.
+--- Every surface that derives a spec from points (Gear.specOf,
+--- Follow.ensureDefault, Comms.ownSpec, the guild tab's own row, Inspect)
+--- reads this and nothing else.
+function Talents.decideTree(points)
+	local spent, trees = 0, {}
+	for tab, total in pairs(type(points) == "table" and points or {}) do
+		if type(total) == "number" and total > 0 then
+			spent = spent + total
+			trees[#trees + 1] = tab
+		end
+	end
+	table.sort(trees)
+	if spent < Talents.SURE_MIN_POINTS then
+		return nil, trees
+	end
+	local lead, second = nil, 0
+	for _, tab in ipairs(trees) do
+		local total = points[tab]
+		if lead == nil or total > points[lead] then
+			second = lead ~= nil and points[lead] or second
+			lead = tab
+		elseif total > second then
+			second = total
+		end
+	end
+	if second == 0 then
+		return lead, trees
+	end
+	local top = points[lead]
+	if top * 2 > spent and top - second >= Talents.SURE_LEAD then
+		return lead, trees
+	end
+	return nil, trees
+end
+
 --- The tab name Data.lua carries, for the "next point" line's tree name.
 function Talents.tabName(data, classSlug, tab)
 	local class = data and data.classes and data.classes[classSlug]
