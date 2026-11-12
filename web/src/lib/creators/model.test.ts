@@ -20,6 +20,7 @@ import {
   channelTitle,
   creatorFigures,
   approvedByDay,
+  closedMonthLine,
   dayLabel,
   earningsRows,
   firstYearEarnings,
@@ -87,10 +88,9 @@ describe('the figures say what they cover', () => {
     expect(figs.map((f) => f.note)).toEqual([
       'Dec 2026 so far · of $500 cap',
       '',
-      '62% of players · counts after 14 days',
-      '28% of returning · now',
+      '62% of players',
+      '28% of returning',
     ]);
-    expect(creatorStatsCopy.summaryMeta).toBe('all time');
   });
 
   it('agrees across the fixtures: the stats page and the owner see the same December', () => {
@@ -173,7 +173,15 @@ describe('weeks and requests', () => {
     const now = new Date('2026-12-09T12:00:00Z');
     const running = weekRow(mine.weeks[0], now);
     expect(running).toMatchObject({ title: 'Week of 7 Dec', filling: true });
-    expect(running.figures.map((f) => [f.label, f.value])).toEqual([['Signed up', '18']]);
+    expect(running.figures.map((f) => [f.label, f.value])).toEqual([
+      ['Signed up', '18'],
+      ['Returning', '–'],
+      ['Paying', '–'],
+    ]);
+    expect(closedMonthLine('2026-12', new Date('2026-12-05T12:00:00Z'))).toBe(
+      'Nov 2026 closed on the 1st. We approve it by 7 Dec.',
+    );
+    expect(closedMonthLine('2026-12', now)).toBe('Nov 2026 closed on the 1st. We are approving it now.');
     const last = weekRow(mine.weeks[1], now);
     expect(last).toMatchObject({ title: 'Week of 30 Nov', filling: true });
     const closed = weekRow(mine.weeks[2], now);

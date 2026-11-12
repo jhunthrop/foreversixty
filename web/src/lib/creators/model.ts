@@ -16,7 +16,7 @@ import {
   type PlanKey,
 } from '../billing/plans';
 import { DAY_MS, MONTHS, utcDayMonth, utcDayMonthYear } from '../dates';
-import { grouped, usdCents } from '../format/number';
+import { EMPTY_FIGURE, grouped, usdCents } from '../format/number';
 import {
   PROGRAM_TERMS,
   adminCreatorsCopy,
@@ -201,9 +201,22 @@ export function previousMonth(month: string): string {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
 }
 
+const APPROVE_BY_DAY = 7;
+
 /** The day a closed month is approved by: the 7th of the open month, "7 Dec". */
 export function approvedByDay(openMonth: string): string {
-  return utcDayMonth(`${openMonth}-07`);
+  return utcDayMonth(`${openMonth}-${String(APPROVE_BY_DAY).padStart(2, '0')}`);
+}
+
+/** The Payouts rail's line on the last closed month: the day it is approved by, or, once that day
+ *  has passed, that it is being approved now. */
+export function closedMonthLine(openMonth: string, now: Date): string {
+  const closed = monthLabel(previousMonth(openMonth));
+  const due =
+    new Date(`${openMonth}-${String(APPROVE_BY_DAY).padStart(2, '0')}T00:00:00Z`).getTime() + DAY_MS;
+  return now.getTime() >= due
+    ? creatorStatsCopy.closedMonthNow(closed)
+    : creatorStatsCopy.closedMonth(closed, approvedByDay(openMonth));
 }
 
 /** "2026-11-08" or an ISO instant -> "8 Nov 2026", read in UTC as the API wrote it. */
@@ -307,7 +320,8 @@ export function statsFigures(me: CreatorMe): ShownFigure[] {
 }
 
 /** One week of sign-ups as a row: the title, its three counts (the running week shows only its
- *  sign-ups, spec section 1, Privacy) and whether it is still filling (under 14 days old). */
+ *  sign-ups, spec section 1, Privacy; the other two cells read the empty figure so the columns hold)
+ *  and whether it is still filling (under 14 days old). */
 export interface WeekRow {
   key: string;
   title: string;
@@ -327,12 +341,8 @@ export function weekRow(w: CreatorWeek, now: Date): WeekRow {
     filling: running || now.getTime() - start < FILL_DAYS * DAY_MS,
     figures: [
       shown('signed-up', k.signedUp, count(w.signed_up)),
-      ...(running
-        ? []
-        : [
-            shown('returning', k.returning, count(w.returning ?? 0)),
-            shown('paying', k.paying, count(w.paying ?? 0)),
-          ]),
+      shown('returning', k.returning, running ? EMPTY_FIGURE : count(w.returning ?? 0)),
+      shown('paying', k.paying, running ? EMPTY_FIGURE : count(w.paying ?? 0)),
     ],
   };
 }

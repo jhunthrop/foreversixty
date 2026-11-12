@@ -242,7 +242,7 @@ test.describe('the creator', () => {
     await expect(page.getByTestId('stats-week-2026-11-23')).toHaveText(
       'Week of 23 Nov: 54 signed up · 36 returning · 10 paying',
     );
-    await expect(page.getByTestId('stats-payouts-empty')).toBeVisible();
+    await expect(page.getByTestId('stats-paid-so-far')).toHaveText('$0.00 paid so far');
     await page.getByTestId('stats-dashboard').click();
     await expect(page).toHaveURL(/dash=1/);
   });

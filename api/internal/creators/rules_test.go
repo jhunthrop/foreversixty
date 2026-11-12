@@ -179,6 +179,12 @@ func TestApplicationValidation(t *testing.T) {
 		{ApplicationInput{ChannelURL: "https://twitch.tv/x", Platform: "twitch", About: strings.Repeat("é", MaxAbout+1)}, "about"},
 		{ApplicationInput{ChannelURL: "https://twitch.tv/x", Platform: "twitch", About: "x", Audience: &neg}, "audience"},
 		{ApplicationInput{ChannelURL: "https://twitch.tv/x", Platform: "twitch", About: "x", ContactEmail: "not an email"}, "contact_email"},
+		{ApplicationInput{ChannelURL: "https://twitch.tv/x", Platform: "twitch", About: "x\x00y"}, "about"},
+		{ApplicationInput{ChannelURL: "https://twitch.tv/x", Platform: "twitch", About: "x\x1b[31my"}, "about"},
+	}
+	lines := ApplicationInput{ChannelURL: "https://twitch.tv/x", Platform: "twitch", About: "line one\nline two\ttabbed"}
+	if bad := lines.Validate(); len(bad) != 0 {
+		t.Errorf("line breaks and tabs refused: %v", bad)
 	}
 	for _, c := range cases {
 		if bad := c.in.Validate(); bad[c.field] == "" {

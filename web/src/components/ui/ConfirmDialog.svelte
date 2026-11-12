@@ -99,7 +99,7 @@
       {#if children}{@render children()}{/if}
     </div>
     <div class="ui-confirm-actions ui-overlay-rule-t">
-      <Button onclick={close} disabled={busy} testid={`${testid}-cancel`}>{cancelLabel}</Button>
+      <Button tone="ghost" onclick={close} disabled={busy} testid={`${testid}-cancel`}>{cancelLabel}</Button>
       <Button
         tone={disabled ? 'secondary' : tone}
         {busy}

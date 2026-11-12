@@ -3,6 +3,7 @@ package creators
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -378,6 +379,45 @@ func TestApplicationsOneOpenApproveAndDecline(t *testing.T) {
 	h.now = h.now.Add(ReapplyAfter)
 	if err := h.svc.Apply(ctx, other, again); err != nil {
 		t.Fatal(err)
+	}
+}
+
+// An applicant who became a creator before their request was decided (an invite, or the owner's
+// Add bound to them) is refused before any link or code is made, so nothing is left half made.
+func TestApproveRequestRefusesAnApplicantAlreadyACreator(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	uid := h.user(h.now.Add(-time.Hour))
+	if err := h.svc.Apply(ctx, uid, ApplicationInput{ChannelURL: "https://twitch.tv/emberfall", Platform: "twitch", About: "Runs"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.svc.Add(ctx, AddInput{Input: Input{Name: "Ember", ChannelURL: "https://twitch.tv/emberfall", Slug: "ember", Code: "EMBER", StartsOn: "2026-12-01"}, BoundUserID: &uid}); err != nil {
+		t.Fatal(err)
+	}
+	reqs, _ := h.svc.Store.Requests(ctx)
+	if len(reqs) != 1 {
+		t.Fatalf("requests = %+v", reqs)
+	}
+	_, err := h.svc.ApproveRequest(ctx, reqs[0].ID, Input{Name: "Emberfall", ChannelURL: "https://twitch.tv/emberfall", Slug: "emberfall", Code: "EMBERFALL", StartsOn: "2026-12-09"})
+	if !errors.Is(err, ErrAlreadyCreator) {
+		t.Fatalf("approve a creator's request = %v", err)
+	}
+	if taken, _ := h.svc.Store.SlugOrCodeTaken(ctx, "emberfall", "EMBERFALL"); taken {
+		t.Fatal("a link or code was made for the refused request")
+	}
+	if w := h.request(http.MethodPost, fmt.Sprintf("/v1/admin/creators/requests/%d/approve", reqs[0].ID), owner,
+		map[string]any{"name": "Emberfall", "channel_url": "https://twitch.tv/emberfall", "slug": "emberfall", "code": "EMBERFALL", "starts_on": "2026-12-09", "cap_cents": 50000}); w.Code != http.StatusConflict {
+		t.Fatalf("approve over HTTP = %d %s", w.Code, w.Body.String())
+	}
+}
+
+// Bodies are strict: an unknown field is a 400, so a typo never passes silently.
+func TestApplicationBodyIsStrict(t *testing.T) {
+	h := newHarness(t)
+	uid := h.user(h.now)
+	body := map[string]any{"channel_url": "https://twitch.tv/x", "platform": "twitch", "about": "Runs", "audiance": 12}
+	if w := h.request(http.MethodPost, "/v1/creators/application", member(uid), body); w.Code != http.StatusBadRequest {
+		t.Fatalf("unknown field = %d %s", w.Code, w.Body.String())
 	}
 }
 

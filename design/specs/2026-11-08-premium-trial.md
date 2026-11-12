@@ -35,6 +35,10 @@ System: `design/specs/2026-11-05-web-layout.md`; the shipped premium, checkout a
 - **No change to renewal email recipients.** Our renewal emails do not move to the Stripe customer's email, so the earlier side effect is dropped. Stripe owns renewals. Our renewal email (billing-daily's yearly renewal notice) sits behind a server switch, `OUR_RENEWAL_EMAILS`, which is off by default. Off, billing-daily sends no renewal notice. The spec and `api/README.md` both say so.
 - **Our reminder never contradicts Stripe's.** It gives the same dates and the same price, and says once: `You may also get a reminder from Stripe, our payment processor.`
 
+## 0E. Landing, 2026-11-11
+
+The server side landed on main behind `PREMIUM_TRIAL` (off by default; `api/README.md`): with it off, Premium has no default trial, no trial reminder or receipt goes out, and a creator's code still gives its free month. Migration `0101_trial_reminders`. The chooser, the account page's trial row and the `/premium/cancel` page are not built, so the switch stays off until they ship. The branch's mock generator and facts reader (`ws_premium_trial.py`, `premium_trial_facts.mjs`) were not carried: they predate the redesign and the design lane redraws the trial mocks against the new system (0D); the 2026-11-08 renders stay under `design/reviews/2026-11-08-premium-trial/mock/` as the record. `trial-copy.ts` stays as the copy the UI will build on.
+
 ## 0D. Server side as built, 2026-11-09 (UI waits for the design system)
 
 The coordinator split the landing: the server side is built now on `premium-trial` (off `creator-program`); the chooser, the account trial state and the confirmation are built on the new design system (`docs/design-system.md`) once `land/design-system` is on main, against the trial mocks the design lane redraws (batch 4). The old look is not built.

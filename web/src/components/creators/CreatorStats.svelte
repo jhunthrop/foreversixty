@@ -12,10 +12,9 @@
   import { creatorStatsCopy as copy, onboardingCopy, stripeStatusCopy } from '../../lib/creators/copy';
   import {
     STATUS_TONE,
-    approvedByDay,
+    closedMonthLine,
     money,
     monthLabel,
-    previousMonth,
     statsFigures,
     weekRow,
     type CreatorMe,
@@ -76,12 +75,11 @@
 
 {#if phase === 'ready' && me !== null}
   {@const mine = me}
-  {@const closed = previousMonth(mine.month)}
   <PageHeader title={mine.name}>
     {#snippet meta()}<span data-testid="stats-meta">{copy.meta(mine.slug, mine.code)}</span>{/snippet}
   </PageHeader>
   <Page layout="split" panels testid="stats-page-body">
-    <Section title={copy.summaryLabel} meta={copy.summaryMeta} panel testid="stats-summary">
+    <Section title={copy.summaryLabel} panel testid="stats-summary">
       <div class="flex flex-wrap items-start gap-x-6 gap-y-3" data-testid="stats-figures">
         {#each statsFigures(mine) as fig (fig.key)}
           <span class={fig.lead ? 'w-[240px]' : 'w-[150px]'}
@@ -130,16 +128,14 @@
         {/snippet}
         <div class="flex flex-col gap-4">
           <p class="text-[14px] leading-5" data-testid="stats-closed-month">
-            {copy.closedMonth(monthLabel(closed), approvedByDay(mine.month))}
+            {closedMonthLine(mine.month, now())}
           </p>
           {#if mine.stripe_status !== 'ready'}
             <div>
               <Button tone="primary" href="/creators/onboarding" testid="stats-setup">{copy.setup}</Button>
             </div>
           {/if}
-          {#if mine.payouts.length === 0}
-            <EmptyState message={copy.payoutsEmpty} testid="stats-payouts-empty" />
-          {:else}
+          {#if mine.payouts.length > 0}
             <div role="group" aria-label={copy.payoutsTitle}>
               {#each mine.payouts as p (p.month)}
                 <Row title={monthLabel(p.month)} density="slim">
@@ -147,10 +143,10 @@
                 </Row>
               {/each}
             </div>
-            <p class="text-muted text-[14px]" data-testid="stats-paid-so-far">
-              {copy.paidSoFar(money(paidSoFar(mine)))}
-            </p>
           {/if}
+          <p class="text-muted text-[14px]" data-testid="stats-paid-so-far">
+            {copy.paidSoFar(money(paidSoFar(mine)))}
+          </p>
           {#if mine.stripe_status === 'ready'}
             <div>
               <Button

@@ -72,10 +72,9 @@ export default {
   },
   stats: {
     copy: strip(st), name: me.name, meta: st.meta(me.slug, me.code), figures: m.statsFigures(me),
-    meta2: st.summaryMeta, weeks: me.weeks.map((w) => m.weekRow(w, CLOCK)), filling: st.filling,
+    weeks: me.weeks.map((w) => m.weekRow(w, CLOCK)), filling: st.filling,
     status: copy.stripeStatusCopy[me.stripe_status], tone: m.STATUS_TONE[me.stripe_status],
-    closed: st.closedMonth(m.monthLabel(m.previousMonth(me.month)), m.approvedByDay(me.month)),
-    payoutsEmpty: st.payoutsEmpty, dashboard: me.stripe_status === 'ready' ? st.dashboard : '',
+    closed: m.closedMonthLine(me.month, CLOCK), paidSoFar: st.paidSoFar(m.money(me.payouts.reduce((n, p) => n + p.amount_cents, 0))), dashboard: me.stripe_status === 'ready' ? st.dashboard : '',
     payouts: me.payouts.map((x) => ({ text: m.monthLabel(x.month), amount: m.money(x.amount_cents) })),
   },
 };`;

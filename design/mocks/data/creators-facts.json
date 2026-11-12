@@ -864,7 +864,6 @@
    "loadFailed": "Your stats didn’t load.",
    "signedOut": "Sign in with Battle.net to see your creator stats.",
    "summaryLabel": "Your figures",
-   "summaryMeta": "all time",
    "figures": {
     "month": "Earned so far",
     "players": "Players",
@@ -875,7 +874,7 @@
    "returningNote": "[fn]",
    "payingNote": "[fn]",
    "playersTitle": "Your players",
-   "playersMeta": "by week · latest weeks still filling · no names",
+   "playersMeta": "no names, by design",
    "columns": {
     "signedUp": "Signed up",
     "returning": "Returning",
@@ -887,12 +886,12 @@
    "weeksCapped": "Showing the last 26 weeks.",
    "payoutsTitle": "Payouts",
    "closedMonth": "[fn]",
+   "closedMonthNow": "[fn]",
    "paidSoFar": "[fn]",
    "dashboard": "Payouts and tax forms",
    "dashboardOpening": "Opening Stripe…",
    "dashboardFailed": "Stripe didn’t open Try again.",
    "menuItem": "Creator stats",
-   "payoutsEmpty": "No payouts yet. Each month is paid after it closes and is approved.",
    "setup": "Set up payouts"
   },
   "name": "Grimbrew",
@@ -916,18 +915,17 @@
     "key": "returning",
     "label": "Returning",
     "value": "131",
-    "note": "62% of players · counts after 14 days",
+    "note": "62% of players",
     "lead": false
    },
    {
     "key": "paying",
     "label": "Paying",
     "value": "37",
-    "note": "28% of returning · now",
+    "note": "28% of returning",
     "lead": false
    }
   ],
-  "meta2": "all time",
   "weeks": [
    {
     "key": "2026-12-07",
@@ -938,6 +936,20 @@
       "key": "signed-up",
       "label": "Signed up",
       "value": "18",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "returning",
+      "label": "Returning",
+      "value": "–",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "paying",
+      "label": "Paying",
+      "value": "–",
       "note": "",
       "lead": false
      }
@@ -1087,8 +1099,8 @@
   "filling": "still filling",
   "status": "Payouts ready",
   "tone": "success",
-  "closed": "Nov 2026 closed on the 1st. We approve it by 7 Dec.",
-  "payoutsEmpty": "No payouts yet. Each month is paid after it closes and is approved.",
+  "closed": "Nov 2026 closed on the 1st. We are approving it now.",
+  "paidSoFar": "$0.00 paid so far",
   "dashboard": "Payouts and tax forms",
   "payouts": []
  }

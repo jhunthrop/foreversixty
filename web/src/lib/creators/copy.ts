@@ -308,7 +308,6 @@ export const creatorStatsCopy = {
   loadFailed: 'Your stats didn’t load.',
   signedOut: 'Sign in with Battle.net to see your creator stats.',
   summaryLabel: 'Your figures',
-  summaryMeta: 'all time',
   figures: {
     month: 'Earned so far',
     players: 'Players',
@@ -317,10 +316,10 @@ export const creatorStatsCopy = {
   },
   /** Under Earned so far: the open month (an estimate until it closes) and its cap. */
   monthNote: (month: string, cap: string): string => `${month} so far · of ${cap} cap`,
-  returningNote: (share: string): string => `${share} of players · counts after 14 days`,
-  payingNote: (share: string): string => `${share} of returning · now`,
+  returningNote: (share: string): string => `${share} of players`,
+  payingNote: (share: string): string => `${share} of returning`,
   playersTitle: 'Your players',
-  playersMeta: 'by week · latest weeks still filling · no names',
+  playersMeta: 'no names, by design',
   columns: { signedUp: 'Signed up', returning: 'Returning', paying: 'Paying' },
   weekTitle: (week: string): string => `Week of ${week}`,
   filling: 'still filling',
@@ -329,6 +328,8 @@ export const creatorStatsCopy = {
   payoutsTitle: 'Payouts',
   /** The last closed month and the day it is approved by (the 7th of the open month). */
   closedMonth: (month: string, by: string): string => `${month} closed on the 1st. We approve it by ${by}.`,
+  /** The same month once its approval day has passed. */
+  closedMonthNow: (month: string): string => `${month} closed on the 1st. We are approving it now.`,
   paidSoFar: (amount: string): string => `${amount} paid so far`,
   /** Opens the creator's Stripe Express dashboard (payouts, bank details, the 1099) by a fresh login link. */
   dashboard: 'Payouts and tax forms',
@@ -336,7 +337,6 @@ export const creatorStatsCopy = {
   dashboardFailed: withRetry('Stripe didn’t open'),
   /** The profile and account menu item for a signed-in creator. */
   menuItem: 'Creator stats',
-  payoutsEmpty: 'No payouts yet. Each month is paid after it closes and is approved.',
   setup: 'Set up payouts',
 } as const;
 

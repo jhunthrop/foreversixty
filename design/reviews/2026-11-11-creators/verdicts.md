@@ -76,3 +76,14 @@ Needs data: clicks per creator on `/v1/creators/me` is a follow-up for the API.
 ### security-reviewer: no critical, no high
 
 Fixed: approving a request refuses an applicant who is already a creator before anything is made (409 `already_creator`); strict JSON bodies (unknown fields and trailing data refused); an application's text takes no control characters; the application budget is five an hour per account as well as per address. Held with a note in spec 0G: the browser's click time on `/v1/me/arrival` is the client's claim, like the slug itself; the second-day and character rules, the cap and the owner's Approve bound what a false claim can earn.
+
+## Round 2 (commit a7871d703, fresh captures)
+
+- ux-designer: SHIP WITH FIXES. MUST: the running week's lone figure sat in the Paying column. Fixed: every week keeps three cells; a running week reads `–` in Returning and Paying. Polish taken: Cancel in the shared ConfirmDialog is ghost so Pay is the louder button; Copy onboarding invite and Refresh Stripe status are ghost. Held: the Lines button's edge on a Row with no Tag (the shared trail's gap); the Row wrap order at 390.
+- wow-player: SHIP WITH FIXES. MUST: `We approve it by 7 Dec` read as a missed promise on the 9th. Fixed: once the 7th has passed the line reads `Nov 2026 closed on the 1st. We are approving it now.` Minors: `No payouts yet…` replaced by `$0.00 paid so far`; the `Needs info` Tag is Stripe's own state (spec 3a) and stays.
+- ai-slop-reviewer: PASS WITH FIXES. Fixed: the empty payouts line is the paid-so-far figure; `all time` is gone from Your figures (kept once on the owner's list); the captions read `62% of players` and `28% of returning`; the players meta reads `no names, by design`.
+- info-density-reviewer: PASS WITH FIXES. Fixed: `–` in the running week's empty cells; the paid-so-far line always shows. Held: a paid fixture and a payout history capture (the fixtures hold no paid month); clicks on `/v1/creators/me` stays an API follow-up.
+
+## Round 3 (the fixes above, captures in `build/`)
+
+Checked by the integrator against each MUST above on the final captures; every MUST is on screen, and the round-2 polish items are in. Verdicts stand at SHIP and PASS.

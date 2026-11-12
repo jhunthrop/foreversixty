@@ -180,14 +180,14 @@ def onboarding(state: str) -> str:
 # ================================================================================================ /creators/stats
 def stats() -> str:
     c = S['copy']
-    summary = Section(e(c['summaryLabel']), figures(S["figures"], big=True), meta=e(S['meta2']), panel=True)
+    summary = Section(e(c['summaryLabel']), figures(S["figures"], big=True), panel=True)
     def week(w: dict) -> str:
         trail = '<span class="figs5 wk">' + ''.join(f'<span>{Figure(e(f["value"]), e(f["label"]), size="sm")}</span>' for f in w['figures']) + '</span>'
         return Row(e(w['title']), e(S['filling']) if w['filling'] else '', link=False, slim=True, trail=trail)
     players = Section(e(c['playersTitle']), f'<div role="group" aria-label="{e(c["playersTitle"])}">{RowsSlim([week(w) for w in S["weeks"]])}</div>',
                       meta=e(c['playersMeta']), panel=True, flush=True)
-    paid = (f'<div role="group" aria-label="{e(c["payoutsTitle"])}">' + RowsSlim([Row(e(p['text']), link=False, slim=True, trail=f'<span class="amt">{e(p["amount"])}</span>') for p in S['payouts']]) + '</div>'
-            if S['payouts'] else f'<p class="t-small">{e(S["payoutsEmpty"])}</p>')
+    paid = ((f'<div role="group" aria-label="{e(c["payoutsTitle"])}">' + RowsSlim([Row(e(p['text']), link=False, slim=True, trail=f'<span class="amt">{e(p["amount"])}</span>') for p in S['payouts']]) + '</div>')
+            if S['payouts'] else '') + f'<p class="t-small">{e(S["paidSoFar"])}</p>'
     closed = f'<p class="t-body">{e(S["closed"])}</p>'
     dash = f'<div class="acts" style="margin-top:16px">{Btn(e(S["dashboard"]), small=False)}</div>' if S['dashboard'] else ''
     payouts_ = Section(e(c['payoutsTitle']), f'<div class="stack" style="gap:16px">{closed}{paid}</div>' + dash, action=Tag(e(S['status']), TONE[S['tone']]), panel=True)

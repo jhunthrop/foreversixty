@@ -384,6 +384,7 @@
               {@const editing = mode.creator}
               <div class="flex flex-wrap items-center gap-2.5">
                 <Button
+                  tone="ghost"
                   size="sm"
                   busy={inviting}
                   busyLabel={copy.inviting}
@@ -391,6 +392,7 @@
                   testid="creators-invite">{inviteCopied ? copy.inviteCopiedShort : copy.invite}</Button
                 >
                 <Button
+                  tone="ghost"
                   size="sm"
                   busy={refreshing}
                   busyLabel={copy.refreshing}
