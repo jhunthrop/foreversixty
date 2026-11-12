@@ -1,0 +1,14 @@
+# Arms raid 60: the guide build against builds that reach Death Wish (21 Fury points), both factions, seed 1.
+arms-raid-guide-horde -spec warrior-arms -preset raid -band 60 -faction horde
+arms-raid-guide-alliance -spec warrior-arms -preset raid -band 60 -faction alliance
+arms-raid-A-ihs1-bv2-dw-horde -spec warrior-arms -preset raid -band 60 -faction horde -talents 10303213132215201-250500050121000000-000000000000000000
+arms-raid-A-ihs1-bv2-dw-alliance -spec warrior-arms -preset raid -band 60 -faction alliance -talents 10303213132215201-250500050121000000-000000000000000000
+arms-raid-C-ihs0-ibr1-bv2-dw-horde -spec warrior-arms -preset raid -band 60 -faction horde -talents 00303213132215201-250500050121000000-100000000000000000
+arms-raid-C-ihs0-ibr1-bv2-dw-alliance -spec warrior-arms -preset raid -band 60 -faction alliance -talents 00303213132215201-250500050121000000-100000000000000000
+arms-raid-E-itm1-bv2-dw-horde -spec warrior-arms -preset raid -band 60 -faction horde -talents 30301213132215201-250500050121000000-000000000000000000
+arms-raid-F-wm3-bv2-dw-horde -spec warrior-arms -preset raid -band 60 -faction horde -talents 30303213132213201-250500050121000000-000000000000000000
+arms-raid-G-ihs1-fp2-dw-horde -spec warrior-arms -preset raid -band 60 -faction horde -talents 10303213132215201-050520050121000000-000000000000000000
+fury-raid-guide-horde -spec warrior-fury -preset raid -band 60 -faction horde
+fury-raid-guide-alliance -spec warrior-fury -preset raid -band 60 -faction alliance
+arms-bare-guide-horde -spec warrior-arms -preset bare -band 60 -faction horde
+fury-bare-guide-horde -spec warrior-fury -preset bare -band 60 -faction horde
