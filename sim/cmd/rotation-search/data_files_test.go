@@ -271,3 +271,24 @@ func TestRunWritesTheFullSearchReport(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy 2026-11-12 (Arcane lane): a raid search wore the guide's
+// leveling build on the raid band's gear, so every raid line gated on a
+// raid-build talent (Arcane's Pyroblast, Fire Blast and Arcane Wrath) was
+// dead and the probe called removing them "no effect". Under the raid
+// preset the search wears the guide's raidBuild, as talent-search does.
+func TestPrepareWearsTheGuidesRaidBuildUnderTheRaidPreset(t *testing.T) {
+	bare, err := prepare(realOptions("mage-arcane"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := realOptions("mage-arcane")
+	o.preset = "raid"
+	raid, err := prepare(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if raid.setup.engineTalents == bare.setup.engineTalents {
+		t.Fatalf("the raid preset wore the leveling build %q", raid.setup.engineTalents)
+	}
+}
