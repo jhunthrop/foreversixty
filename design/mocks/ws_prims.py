@@ -231,6 +231,10 @@ PRIM_CSS += '''
 .gap-tag{font-size:12px;color:var(--muted)}
 .seg.sm a{height:32px;padding:0 10px;font-size:13px}
 .es-line{display:flex;min-height:44px;flex-wrap:wrap;align-items:center;gap:12px;font-size:14px}.es-line .msg{color:var(--muted)}
+.es-panel{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:4px 0}.es-panel .ln{color:var(--strong);font-weight:600}.es-panel .fl{font-size:14px;line-height:20px;color:var(--muted)}.es-panel .rt{margin-top:4px}
+.es-fill{display:flex;flex-direction:column;gap:4px;padding:4px 0}.es-fill .ln{color:var(--strong);font-weight:600}
+.es-fill .fl{font-size:14px;line-height:20px;color:var(--muted)}.es-fill .act{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;margin-top:12px}
+.es-more{display:inline-flex;min-height:44px;align-items:center;align-self:flex-start;font-size:14px;background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
 '''
 
 
@@ -244,6 +248,30 @@ def EmptyState(message: str, action: str | None = None) -> str:
     the muted sentence at 44 px and at most one gold link that leads to what would fill it."""
     act = Link(f'{action} &rsaquo;') if action else ''
     return f'<div class="es-line"><span class="msg">{message}</span>{act}</div>'
+
+
+def LoadError(message: str, retry: bool = True, title: str | None = None, panel: bool = False) -> str:
+    """The shared load error (ui/LoadError.svelte, cluster 11): the line, a muted sentence at 44 px with the one retry
+    button ("Try again"); `panel`, the strong title over the sentence with the retry under it, for a panel that failed whole."""
+    btn = Button('Try again', small=True).replace('<a ', '<button type="button" ', 1).replace('</a>', '</button>', 1).replace(' href="#"', '', 1) if retry else ''
+    if panel:
+        head = f'<p class="ln">{title}</p>' if title else ''
+        return f'<div class="es-panel" role="alert">{head}<p class="fl">{message}</p><div class="rt">{btn}</div></div>'
+    return f'<div class="es-line" role="alert"><span class="msg">{message}</span>{btn}</div>'
+
+
+def EmptyFill(lead: str, fill: str, action: str, secondary: str = '') -> str:
+    """ui/EmptyState's `fill` shape (the designed empty, owner 2026-11-09): what is missing in strong, what fills it muted
+    under it, then the action (rendered: a small primary button) and a quieter gold link 20 px apart, 12 px under."""
+    return (f'<div class="es-fill"><p class="ln">{lead}</p><p class="fl">{fill}</p>'
+            f'<div class="act">{action}{secondary}</div></div>')
+
+
+def ShowAll(total: int, expanded: bool = False) -> str:
+    """The shared show-all control (ui/ShowAll.svelte, cluster 12): one gold 44 px button under a capped list,
+    "Show all 24" or "Show fewer" once expanded."""
+    label = 'Show fewer' if expanded else f'Show all {total}'
+    return f'<button type="button" class="link es-more" aria-expanded="{str(expanded).lower()}">{label}</button>'
 
 
 def Checklist(items: list[tuple]) -> str:

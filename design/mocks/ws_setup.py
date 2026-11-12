@@ -46,6 +46,12 @@ def arrow(label: str) -> str:
     return Link(f'{escape(label)} &rsaquo;')
 
 
+def disclosure_summary(label: str) -> str:
+    """The built ui/Disclosure's `link` summary: the label and a gold caret 8 px apart (the caret is its own span, so
+    the phone's wrap point is the build's)."""
+    return f'<summary class="link">{escape(label)}<span aria-hidden="true">&rsaquo;</span></summary>'
+
+
 def sentences(text: str) -> list[str]:
     """A copy paragraph split at its full stops, each sentence verbatim (the companion's three steps)."""
     return [s.strip() for s in re.split(r'(?<=\.)\s+(?=[A-Z])', text) if s.strip()]
@@ -73,15 +79,15 @@ section>.sec-h+*{margin-top:12px}
 .cmds .kv dt{color:var(--text);padding-right:12px}
 .cc{display:flex;flex-direction:column;gap:8px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.cmds .kv{grid-template-columns:minmax(0,1fr) auto}.cmds .kv dd{white-space:nowrap}
 .alert{color:var(--strong)}.steps .row .sub .tx{color:var(--text)}
-.surf-fold{display:none}.surf-fold summary{cursor:pointer;min-height:44px;list-style:none}.surf-fold summary::-webkit-details-marker{display:none}
-@media(max-width:767px){.surf-fold{display:block}.surf{display:none}}
+.surf-fold{display:none}
+@media(max-width:767px){.surf-fold{display:inline-flex}.surf{display:none}}
 @media(max-width:600px){.steps .row{align-items:start}}
 /* the built sm Button is a 44 px target below 1024 (web/src/lib/ui/button.ts BUTTON_SM) */@media(max-width:1023px){.btn.sm{height:44px}}
 .tm{display:inline-flex;align-items:center;gap:12px}
 .dl{display:flex;flex-direction:column;gap:4px}.dl .acts{column-gap:16px;row-gap:8px}.dl-meta{min-height:20px}
 .dl-copy{gap:8px;align-items:flex-start}
 @media(min-width:900px){.head .ph-actions .dl{align-items:flex-end}.head .ph-actions .dl .acts{justify-content:flex-end}}
-.dl-other summary{cursor:pointer;color:var(--gold);display:inline-flex;align-items:center}@media(max-width:767px){.dl-other summary{min-height:44px}}.dl-other ul{margin-top:8px;display:flex;flex-direction:column;gap:4px;list-style:none;padding:0}
+.dl-other summary{cursor:pointer;color:var(--gold);display:inline-flex;align-items:center;gap:8px}@media(max-width:767px){.dl-other summary{min-height:44px}}.dl-other ul{margin-top:8px;display:flex;flex-direction:column;gap:4px;list-style:none;padding:0}
 .mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;background:var(--kill);flex:none}
 </style>'''
 
@@ -124,7 +130,7 @@ def download_block(state: str, primary: bool) -> str:
         return f'<div class="dl" role="group" aria-label="{escape(A["setupDownloadCompanion"])}"><div class="acts">{buttons}</div>{meta(FACTS["version_line"])}</div>'
     own = d['own']
     other = ''.join(f'<li class="t-small">{arrow(b["label"])} <span>{escape(b["meta"] or "")}</span></li>' for b in d['others'])
-    fold = f'<details class="dl-other"><summary class="link">{escape(A["setupOtherPlatforms"])}</summary><ul>{other}</ul></details>' if other else ''
+    fold = f'<details class="dl-other">{disclosure_summary(A["setupOtherPlatforms"])}<ul>{other}</ul></details>' if other else ''
     return f'<div class="dl"><div class="acts">{LinkButton(own["label"], primary=primary)}{fold}</div>{meta(own["meta"])}</div>'
 
 
@@ -218,8 +224,8 @@ def surfaces_section() -> str:
     for s in A['surfaces']:
         caps = ''.join(Capture(img(i['src']), i['width'], i['height'], i['alt'], lazy=False) for i in s['images'])
         rows.append(Row(escape(s['title']), escape(s['body']), link=False, foot=caps))
-    # U5 (rulings): open from 768, folded on a phone behind one summary row.
-    fold = f'<details class="surf-fold"><summary class="btn">{escape(A["surfacesShow"])}</summary></details>'
+    # U5 (rulings): open from 768, folded on a phone behind one button (SetupSurfaces.svelte: aria-expanded, no details).
+    fold = Button(A['surfacesShow']).replace('class="btn', 'class="btn surf-fold', 1).replace('<button ', '<button aria-expanded="false" ', 1)
     return Section(A['surfacesTitle'], f'{fold}<div class="surf">{RowGrid(rows, 2)}</div>', panel=True)
 
 

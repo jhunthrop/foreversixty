@@ -34,12 +34,20 @@ from `design/mocks/companion/shoot_ui.cjs`).
   read the same): Rankings 122,238, Character 143,102, BisSpecPage 88,966, listbox 17,460 and
   planner-island 109,083; the shared Crest, CharacterName and crest.css (D) and the shared states (E)
   now ride in every island's startup closure. Reasons recorded in web/scripts/check-island-size.mjs.
-- Mock parity reconciled to the lanes' shared components (none of the lanes had run these specs):
-  the home plaque mock draws D's four-choice sign-up radiogroup with "as DPS" (ws_home.py); the
-  rankings empty board mock mirrors RankingsEmpty's EmptyState shape (ws_rankings.py); a shared
-  `EmptyState` line primitive in ws_prims.py stands in for E's ui/EmptyState on the guild Last raid
-  (with "Get the companion") and raid Notes panels (ws_guild_states.py, ws_guild_dense_tabs.py). The
-  home, rankings and guild reference mocks are regenerated through their generators.
+- Mock parity reconciled to the lanes' shared components (the full parity set passes on origin/main
+  and failed 24 states on the merged tree; none of the lanes had run these specs): ws_prims.py gains
+  the mocks of E's shared states, `EmptyState` (the line), `EmptyFill` (the designed empty),
+  `LoadError` (role=alert with a real retry button) and `ShowAll`; the home plaque draws D's
+  four-choice sign-up radiogroup with "as DPS" (ws_home.py); the rankings empty board mirrors
+  RankingsEmpty (ws_rankings.py); the guild Last raid (with "Get the companion") and raid Notes
+  panels, the /logs and /reports empties and the failed list (ws_logs.py), the account Characters
+  empty and list (ws_premium.py), the character loading gear status (ws_character.py), the BiS bar's
+  112 px race field and FilterPopover Sources button (ws_bis.py) and the /setup phone fold as a
+  button (ws_setup.py) follow their components. Every touched reference mock is regenerated.
+- One E regression fixed in the component, not mirrored: account/CharacterList rendered an empty
+  16 px Show all slot under every character list; the slot now renders only when the list is capped.
+- The sim-gear named-set spec stopped toggling the request drawer shut (E's Disclosure renders its
+  body only while open; the redundant press passed on the Mac and failed on Linux).
 - Tests reconciled to the merged behaviour: the typeahead's no-class row shows the LX seal in a neutral
   ring (D's crest, the test predated it); the home text floor is 290 (the shared class picker names one
   spec per talent tree, so home draws about 296 words).
@@ -80,5 +88,12 @@ from `design/mocks/companion/shoot_ui.cjs`).
 - G2: the live board's 0 DPS rows and spec-less rows (API follow-up); the no-JS rankings header lacks
   the Updated stamp; the Executed all-dash column and the empty right rail at 1440 (board lane); with
   JavaScript off, rankings shows "Filters (1)".
+- Batch L overlap, for the BiS and controls owners: at 1440 the priest BiS control bar wraps "All
+  sources" to a second row, 2 px over, since D's fixed 112 px race field met E's FilterPopover button
+  (40 px, 12 px padding); the designed wrap holds and the mock mirrors it, but one of the two widths
+  should give.
+- For the setup owner (lane E): at 390 the /setup download row wraps "Other platforms ›" under
+  "Download for Windows" (and "Download for Mac" inside the plate) since the shared Disclosure link
+  summary gained its 8 px gap and caret span (130 px against 117); the mock mirrors the wrap.
 - BA4: companion SHOULDs 2 to 7 (dim caption contrast, banner and save-bar padding, 560 Reports wrap,
   disabled Save contrast, Dismiss focus ring, 560 captures).

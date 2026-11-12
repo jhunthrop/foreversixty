@@ -238,17 +238,19 @@
             {/snippet}
           </Row>
         {/each}
-        <div class="px-5 py-2">
-          <ShowAll
-            shown={listed.shown.length + listed.hidden - listed.lowCount}
-            total={listed.shown.length + listed.hidden}
-            expanded={showLow}
-            onToggle={() => (showLow = !showLow)}
-            label={lowLevelCopy.show(listed.lowCount)}
-            fewerLabel={lowLevelCopy.hide}
-            testid="account-low-level-toggle"
-          />
-        </div>
+        {#if listed.lowCount > 0}
+          <div class="px-5 py-2">
+            <ShowAll
+              shown={listed.shown.length + listed.hidden - listed.lowCount}
+              total={listed.shown.length + listed.hidden}
+              expanded={showLow}
+              onToggle={() => (showLow = !showLow)}
+              label={lowLevelCopy.show(listed.lowCount)}
+              fewerLabel={lowLevelCopy.hide}
+              testid="account-low-level-toggle"
+            />
+          </div>
+        {/if}
         <CoachLastRaidLine premium={logCoach} />
       {/if}
     </div>

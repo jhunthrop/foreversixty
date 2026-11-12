@@ -24,7 +24,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 import ws_prims
-from ws_prims import (Button as _Button, Columns, Emblem, Facts, Figure, Link, Notice, Page, PageForm, PageHeader, Plate, PlateColumns,
+from ws_prims import (Button as _Button, Columns, Emblem, EmptyFill, Facts, Figure, Link, Notice, Page, PageForm, PageHeader, Plate, PlateColumns,
                       PlanHead, Prose, Row, RowGrid, Rows, RowsSlim, Section, Skeleton, Steps, Switch, Tag, assert_no_surface_styles,
                       control_bar, crest_img, icon, seg, sel, write, REGION)
 from ws_lib import page as _page
@@ -97,7 +97,10 @@ CSS = '''<style>
 # /premium's and /b/:id's Sections open on a Plate, Columns or the planner's own blocks, which carry their own.
 ACCOUNT_CSS = ('<style>section>.sec-h+*{margin-top:12px}.acc-foot{padding:0 20px 10px}'
                '@media(min-width:1024px){.plan-rows .row>.trail{grid-column:1/-1;justify-self:start}}'
-               '@media(max-width:767px){.acc-foot{padding:0 14px 8px}}</style>')
+               '@media(max-width:767px){.acc-foot{padding:0 14px 8px}}'
+               # The Characters panel's inset around its EmptyFill (CharacterList.svelte px-5 pt-4 pb-5) and the Show all slot
+               # under its rows (px-5 py-2, drawn even when the list already fits).
+               '.es-fill-wrap{padding:16px 20px 20px}</style>')
 
 
 def render(title: str, body: str, nav: str, who, chrome_state: str, note: str, extra_css: str = '') -> str:
@@ -347,6 +350,12 @@ def checkout_page(state: str) -> str:
 
 
 # ================================================================================================ /account
+def empty_fill_inset(lead: str, fill: str, action: str, secondary: str) -> str:
+    """ws_prims.EmptyFill (ui/EmptyState `fill`) inside a flush panel (CharacterList.svelte): the panel's 20 px inset around
+    the strong lead, the muted fill, the small primary button and the quieter gold link."""
+    return f'<div class="es-fill-wrap">{EmptyFill(lead, fill, action, Link(f"{secondary} &rsaquo;"))}</div>'
+
+
 def characters_section(a: dict, refreshing: bool = False) -> str:
     rows = []
     for c in a['characters']:
@@ -359,8 +368,7 @@ def characters_section(a: dict, refreshing: bool = False) -> str:
                         trail=f'{ilvl}{src}{setmain}{r(CL['open'])}', link=False))
     refresh = f'<span class="t-small">{e(CL["refreshing"])}</span>' if refreshing else r(CL['refreshFromBattlenet'])
     if not rows:
-        inner = (f'<div class="stack" style="padding:16px 20px 20px"><p class="lede">{e(CL["empty"])}</p>'
-                 f'<div class="acts">{LinkBtn(e(CL["getSetUp"]), primary=True)}{LinkBtn(e(CL["pasteAnExport"]))}</div></div>')
+        inner = empty_fill_inset(e(CL['emptyLead']), e(CL['emptyKorea']), LinkBtn(e(CL['getSetUp']), primary=True, small=True), e(CL['pasteAnExport']))
         return Section(e(CL['heading']), inner, action=refresh, panel=True, frame='framed', flush=True)
     foot = (f'<div class="acc-foot"><p class="t-small" style="padding-top:12px">{e(CL["introBattlenetLine"])} {Link(e(CL["introInstallAddonLink"]))} {e(CL["introAddonTail"])} '
             f'{Link(e(CL["introPasteLink"]))} {e(CL["introPasteTail"])}</p><p style="padding-top:8px">{r(ACC["reportsLink"])}</p></div>')
