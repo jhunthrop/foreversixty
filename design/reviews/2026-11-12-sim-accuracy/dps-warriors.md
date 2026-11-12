@@ -80,7 +80,16 @@ Protection warrior's threat moves with it (Deep Wounds is on the tank build): th
 
 ## Builds, rotations and rank rows
 
-[SEARCHES]
+Talent searches at 60 on the fixed engine (`job_c_searches.sh`, seed 7, both factions; the raid keep lists are `raid-keeps.json`'s):
+
+| spec | raid 60 | bare 60 (the level 60 build) |
+|---|---|---|
+| Arms | guide best, Horde and Alliance | the guide with its Iron Will, Deflection and Improved Charge points re-spent into Reckless Swings and Improved Execute through Lingering Rage or Booming Voice fillers, +3.0 to +3.5%; keeping every unmodelled guide talent, +0.1 to +0.4% (within error) |
+| Fury | guide best (Horde); Alliance best variant +0.8 DPS, within error | guide best (Alliance); Horde: 2 Enrage to Booming Voice +0.4%, under the bar |
+
+**Held.** The Arms bare 60 winners drop Iron Will (15% off every stun and fear) and Deflection, both unmodelled, for 20 more rage every 15 s and a 10-rage Execute; the melee lane adopted Spearing Strike for one Deflection point yesterday on the same rule and kept Iron Will, and the clean variant here is inside the error. Fury's Booming Voice swap is under 1%.
+
+Rotation searches at 60 on the fixed engine (raid on the raid build, bare on the leveling build): every Arms raid line helps when removed (Overpower +134 DPS, Rend +85, Mortal Strike +80, Execute +65, Slam +53, Hamstring under the Windfury Totem +27, Spearing Strike +16, Reckless Swings +13, Heroic Strike at 90 rage +10, the execute swap +10; Bloodrage and Battle Shout within error, the shout because the raid preset carries it); every Fury raid line helps (Execute +138, Bloodthirst +77, Heroic Strike at 60 rage +72, Whirlwind +66, Reckless Swings +18, Recklessness +14, Death Wish +8, Berserker Rage +6; the pre-36 Overpower line is dead at 60 by design); no insertion helps either (Hamstring hurts Fury by 40%). Bare 60: the same picture; Arms' Heroic Strike line at 90 rage reads -1.0 ± 1.0 (a cast every few fights), under any bar.
 
 Arms and Fury have no rank rows. Leveling orders: the round 29 walks and the melee lane's Arms walk stand; Deep Wounds keeps about three quarters of its damage at the levels the orders take it (crit is 5 to 10% there), it is the prerequisite of Impale either way, and nothing else competes for those points, so the orders were not re-walked.
 

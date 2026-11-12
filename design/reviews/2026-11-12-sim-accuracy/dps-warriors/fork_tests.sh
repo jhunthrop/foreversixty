@@ -18,10 +18,11 @@ git checkout -q -- . && git checkout -q "$fix"
 echo "### green at $fix"
 nice -n 15 go test -tags=with_db -count=1 -run 'TestDeepWoundsTicksNeverCrit' ./sim/warrior/dps_warrior/ 2>&1 | tail -3
 echo "### suites"
-nice -n 15 go test -tags=with_db -p 1 -count=1 ./sim/core/ ./sim/warrior/... ./sim/common/... ./sim/conformance/ 2>&1 | grep -v "^ok\|no test files" | tail -40
+nice -n 15 go test -tags=with_db -p 1 -count=1 ./sim/core/ ./sim/warrior/... ./sim/common/... ./sim/conformance/ 2>&1 | grep -E "^(ok|FAIL|---|\s+--- FAIL|panic)" | grep -v "no test files" | cut -c1-160
 echo "### goldens"
-nice -n 15 go test -tags=with_db -count=1 -update ./sim/warrior/dps_warrior/ ./sim/warrior/tank_warrior/ 2>&1 | tail -4
+for f in $(find sim/warrior -name "*.results.tmp"); do cp "$f" "${f%.results.tmp}.results"; echo "updated ${f%.results.tmp}.results"; done
+nice -n 15 go test -tags=with_db -count=1 ./sim/warrior/dps_warrior/ ./sim/warrior/tank_warrior/ 2>&1 | tail -3
 echo "=====PATCH====="
-git diff -- sim/warrior/dps_warrior/TestP1DPSWarrior.results sim/warrior/tank_warrior/TestP1TankWarrior.results | head -400
+git diff -- sim/warrior/dps_warrior/TestP1DPSWarrior.results sim/warrior/tank_warrior/TestP1TankWarrior.results
 echo "=====END====="
 git -C $repo worktree remove --force $wt
