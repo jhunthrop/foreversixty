@@ -117,7 +117,7 @@
       }
     },
     {
-      "notes": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
+      "notes": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11. It costs a fifth of your base health, so it will not fire when you are nearly dead.",
       "action": {
         "condition": {
           "cmp": {
@@ -183,7 +183,7 @@
       }
     },
     {
-      "notes": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take. Refresh it in its last 3 seconds.",
+      "notes": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take, and its damage grows with your attack power. Refresh it in its last 3 seconds.",
       "action": {
         "condition": {
           "or": {

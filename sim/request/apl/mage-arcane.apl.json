@@ -72,7 +72,7 @@
       }
     },
     {
-      "notes": "Presence of Mind on cooldown, and with Arcane Power once you have it. Your next spell is instant: spend it on your longest cast, Pyroblast once the raid build has it at 54 and Arcane Wrath before that, and on Frostbolt with the leveling build or while Arcane Wrath is on cooldown. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
+      "notes": "Presence of Mind on cooldown, and with Arcane Power once you have it. Your next spell is instant: spend it on your longest cast, Pyroblast once the raid build has it at 54 and Arcane Wrath before that and from 44 on the leveling build, and Frostbolt before 44 on the leveling build or while Arcane Wrath is on cooldown. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
       "action": {
         "condition": {
           "cmp": {
@@ -134,7 +134,7 @@
       }
     },
     {
-      "notes": "Arcane Wrath the moment Presence of Mind is up, on the raid build before Pyroblast at 54, if it is off cooldown. At 3.5 seconds, 3.3 once Accelerant is in, it is your longest cast until then, so the instant saves the most time.",
+      "notes": "Arcane Wrath the moment Presence of Mind is up, from 44 with the leveling build and on the raid build before Pyroblast at 54, if it is off cooldown. At 3.5 seconds, 3.3 once Accelerant is in, it is your longest cast until Pyroblast, and the whole way on the leveling build, so the instant saves the most time.",
       "action": {
         "condition": {
           "and": {
@@ -185,7 +185,7 @@
       }
     },
     {
-      "notes": "Frostbolt the moment Presence of Mind is up with the leveling build, or on the raid build before 54 while Arcane Wrath is on cooldown, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
+      "notes": "Frostbolt the moment Presence of Mind is up before 44 with the leveling build, or while Arcane Wrath is on cooldown, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
       "action": {
         "condition": {
           "and": {
@@ -341,7 +341,7 @@
       }
     },
     {
-      "notes": "Arcane Wrath every time it is ready while you hold 3 Blast stacks: the stacks' spell damage and 5% of your maximum mana both go into it.",
+      "notes": "Arcane Wrath every time it is ready while you hold 3 Blast stacks, from 44 with the leveling build: the stacks' spell damage and 5% of your maximum mana both go into it.",
       "action": {
         "condition": {
           "cmp": {

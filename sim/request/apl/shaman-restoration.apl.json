@@ -919,7 +919,7 @@
           }
         }
       },
-      "notes": "Healing Wave when the tank drops below 60%. To save mana at 60 drop to rank 8, never lower: a rank loses your healing bonus once you are 17 levels past it, and ranks 1 to 4 keep none of it at 60. While leveling a cheaper rank heals more before your mana runs out than your top rank: rank 1 at 18 and 19, and once you wear healing gear from 20, rank 2 to 22 (a dwarf or Windshaper takes rank 3 at 22), 3 at 23 and 24, 2 at 25 (a dwarf stays on 3), 3 until 36, 4 until 41, 5 from 42 to 45, 6 from 46 to 55, 7 from 56 to 58, and 8 at 59."
+      "notes": "Healing Wave when the tank drops below 60%. To save mana at 60 drop to rank 8, never lower: a rank loses your healing bonus once you are 17 levels past it, and ranks 1 to 4 keep none of it at 60. While leveling a cheaper rank heals more before your mana runs out than your top rank: rank 1 at 18 and 19, and once you wear healing gear from 20, rank 2 to 22 (a dwarf or Windshaper takes rank 3 at 22), 3 at 23 and 24, 2 at 25 (a dwarf stays on 3), 3 until 36, your newest rank (6) at 37 to 39, 5 from 40 to 43, 6 from 44 to 55, 7 from 56 to 58, and 8 at 59."
     }
   ]
 }

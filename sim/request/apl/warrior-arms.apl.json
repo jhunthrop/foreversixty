@@ -256,7 +256,7 @@
       }
     },
     {
-      "notes": "On a free global in Battle Stance, raid build only: 75% weapon damage, twice that on dragons and giants.",
+      "notes": "On a free global in Battle Stance, from 27: 75% weapon damage, twice that on dragons and giants.",
       "action": {
         "castSpell": {
           "spellId": {
