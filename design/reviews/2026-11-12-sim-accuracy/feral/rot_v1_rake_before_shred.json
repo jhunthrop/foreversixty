@@ -1,0 +1,321 @@
+{
+ "rotation": {
+  "type": "TypeAPL",
+  "prepullActions": [
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 9913,
+       "rank": 3
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-2s"
+     }
+    }
+   }
+  ],
+  "priorityList": [
+   {
+    "action": {
+     "autocastOtherCooldowns": {}
+    }
+   },
+   {
+    "notes": "Your opener, from Prowl and from behind the target. It only works while you prowl, so it fires once; open at full energy so Poised makes it cheaper.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 9867,
+       "rank": 4
+      }
+     }
+    }
+   },
+   {
+    "notes": "When the target has no Faerie Fire on it. In Cat Form it is free on a 6 second cooldown, so keep your own up when no one else does.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "sourceUnit": {
+          "type": "CurrentTarget"
+         },
+         "auraId": {
+          "spellId": 9907,
+          "rank": 4
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 9907,
+       "rank": 4,
+       "tag": 1
+      }
+     }
+    }
+   },
+   {
+    "notes": "Below level 20, before Cat Form, when Moonfire is not ticking on the target. Rank 1 from 10 to 13 and rank 2 from 16 to 19 do more for your mana than the newest rank.",
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "not": {
+          "val": {
+           "spellIsKnown": {
+            "spellId": {
+             "spellId": 9850,
+             "rank": 5
+            }
+           }
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "dotIsActive": {
+            "spellId": {
+             "spellId": 9835,
+             "rank": 10
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 9835,
+       "rank": 10
+      }
+     }
+    }
+   },
+   {
+    "notes": "Below level 20, before Cat Form, once Moonfire is ticking. Rank 1 from 10 to 13 does more for your mana than rank 2.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "spellIsKnown": {
+         "spellId": {
+          "spellId": 9850,
+          "rank": 5
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 9912,
+       "rank": 8
+      }
+     }
+    }
+   },
+   {
+    "notes": "At 60 energy or less, so all 40 energy fits under the cap. It costs mana, not energy, and comes back every 8 seconds.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLe",
+       "lhs": {
+        "currentEnergy": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "60"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 1322605
+      }
+     }
+    }
+   },
+   {
+    "notes": "At 5 combo points when Rip is off the boss or has under 2 seconds left. A new Rip throws away the ticks the old one had left, so let it run almost to the end. Rip comes first, and once you have Rend and Tear (from 36 in either order) it is also the bleed that keeps Rend and Tear on.",
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpEq",
+          "lhs": {
+           "currentComboPoints": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "5"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "dotRemainingTime": {
+            "spellId": {
+             "spellId": 9896,
+             "rank": 6
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "2s"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 9896,
+       "rank": 6
+      }
+     }
+    }
+   },
+   {
+    "notes": "At 5 combo points while Rip still has 5 seconds or more. Between 2 and 5 seconds, keep Shredding and hold the points for the Rip. With Predatory Discipline the Bite keeps the damage from your spare energy without spending it.",
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpEq",
+          "lhs": {
+           "currentComboPoints": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "5"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "dotRemainingTime": {
+            "spellId": {
+             "spellId": 9896,
+             "rank": 6
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "5s"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 22829,
+       "rank": 5
+      }
+     }
+    }
+   },
+   {
+    "notes": "Keep Rake on the target.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "dotIsActive": {
+         "spellId": {
+          "spellId": 9904,
+          "rank": 4
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 9904,
+       "rank": 4
+      }
+     }
+    }
+   },
+   {
+    "notes": "Your builder from level 21, always from behind the target. Shred hits harder than Claw at every rank; only at 20, before the second point of Shredding Attacks, does its cost make Claw the better buy.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpGe",
+       "lhs": {
+        "currentLevel": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "21"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 9830,
+       "rank": 5
+      }
+     }
+    }
+   },
+   {
+    "notes": "Your builder at 20, before the second point of Shredding Attacks: Claw costs 40 to Shred's 54 there and does more for its energy. Later, it is the button for a target you cannot get behind.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentLevel": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "21"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 9850,
+       "rank": 5
+      }
+     }
+    }
+   }
+  ]
+ }
+}
