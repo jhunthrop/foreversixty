@@ -1,17 +1,15 @@
 // web/src/lib/home/home-facts.ts
 // Home's density pass (2026-11-09): the short facts the panels carry beside their own figures,
 // each read from a field the page already loads. Your standing in the guild (GuildHomeStanding and
-// the account's attendance), the guild's own summary when no raid is planned, the upgrades' total
-// and best-in-slot count (UpgradesResult), the movers on the spec's board (/v1/home movers) and a
-// guild sim's gap to yours. Pure: the home islands read it, the unit tests pin it.
+// the account's attendance), the guild's own summary when no raid is planned, the movers on the
+// spec's board (/v1/home movers) and a guild sim's gap to yours. The upgrades' foot is in
+// upgrades-view.ts, the one home module that may read bis/tank-view (see its header). Pure: the
+// home islands read it, the unit tests pin it.
 import type { GuildHomeStanding, GuildHomeSummary } from '../guild/api';
 import type { AttendanceSource } from '../guild/attendance-contract';
 import type { MeCharacterGuild } from '../account/me-types';
-import { scoreUnitWord } from '../bis/tank-view';
 import type { GuildSimRow, MoverRow, Movers } from './home-answer';
-import type { UpgradesResult } from './upgrades';
 import { figureText } from './home-b-view';
-import { UPGRADES_SHOWN } from './home-view';
 
 /** One fact on a line: a strong figure and the words after it (`#2` `of 4 Fury Warriors by item level`). */
 export interface HomeFact {
@@ -70,26 +68,6 @@ export function guildSummaryFacts(summary: GuildHomeSummary | undefined): HomeFa
   const facts: HomeFact[] = [{ n: String(summary.raiders), text: factsCopy.raiders(summary.raiders) }];
   if (summary.tier.pulls_total > 0) {
     facts.push({ n: String(summary.tier.down), text: factsCopy.bossesDown(summary.tier.named_encounters) });
-  }
-  return facts;
-}
-
-/** Your upgrades' foot: `+52.1 DPS · 5 best in slot` (See all N beside it counts the upgrades); each
- *  clause only when it is above zero. The gap is every measured upgrade's, so with more upgrades
- *  than the panel's rows it says so (`+1,058.4 score across all 17`), never read as the rows' sum. */
-export function upgradesFacts(result: UpgradesResult | undefined): HomeFact[] {
-  if (result === undefined || result.upgrades.length === 0) return [];
-  const facts: HomeFact[] = [];
-  if (result.totalGainDps > 0) {
-    const unit = scoreUnitWord(result.scoreUnit);
-    const count = result.upgrades.length;
-    facts.push({
-      n: `+${figureText(result.totalGainDps)}`,
-      text: count > UPGRADES_SHOWN ? factsCopy.acrossAll(unit, count) : unit,
-    });
-  }
-  if (result.alreadyBis.length > 0) {
-    facts.push({ n: String(result.alreadyBis.length), text: factsCopy.slotsBis });
   }
   return facts;
 }

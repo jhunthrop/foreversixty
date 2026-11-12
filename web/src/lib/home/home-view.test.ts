@@ -1,7 +1,7 @@
 // The signed-in home's facts and words (design/specs/2026-11-06-home.md §1).
 import { describe, expect, it } from 'vitest';
 import type { Me, MeCharacter } from '../account/api';
-import { bandWords, gainText, guildLinks, shortDate, upgradeGain, upgradeLine, whoLine } from './home-view';
+import { bandWords, gainText, guildLinks, shortDate, upgradeLine, whoLine } from './home-view';
 import type { SlotUpgrade } from './upgrades';
 
 function hunter(over: Partial<MeCharacter> = {}): MeCharacter {
@@ -89,21 +89,5 @@ describe('home view', () => {
     const links = guildLinks(account, 2, 41);
     expect(links.raid).toBe(`${links.guild}/raids/41`);
     expect(guildLinks(account, 9, null)).toEqual({ guild: null, raid: null });
-  });
-});
-
-describe('upgradeGain', () => {
-  it('words the row in the band unit the paperdoll uses: DPS, HPS, a tank score', () => {
-    expect(upgradeGain({ gainDps: 1182.64 }, 'tank_score')).toEqual({
-      value: '+1,182.6',
-      unit: 'score',
-      tone: 'kill',
-    });
-    expect(upgradeGain({ gainDps: 12.34 }, 'hps')).toEqual({ value: '+12.3', unit: 'HPS', tone: 'kill' });
-    expect(upgradeGain({ gainDps: 5.06 }, 'dps')).toEqual({ value: '+5.1', unit: 'DPS', tone: 'kill' });
-  });
-
-  it('has no figure for a slot with no measured gain', () => {
-    expect(upgradeGain({ gainDps: null }, 'dps')).toBeUndefined();
   });
 });

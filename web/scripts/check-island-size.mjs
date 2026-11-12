@@ -140,6 +140,11 @@ const PAGE_ISLAND_BUDGETS = [
   // +256 bytes (batch H, h-guild-tabs, 2026-11-10): measured 16,995 with lane/h-edges merged on main
   // (GuildLanding's restyle) before any guild-tab change, 17,020 after: the tabs' new lazy chunks
   // add their names to the shell's preload map. The tabs themselves stay lazy.
+  // Not raised for the home units lane (2026-11-11), which read 17,189 against this line: nothing
+  // in the shell changed; home-view had gained a static import of bis/tank-view (and so the BiS
+  // copy table), and the week-one card's lazy chunk reaches home-view through home-b-view, so two
+  // more chunk names landed in the preload map (+37 bytes gzipped). The unit code moved to the leaf
+  // lib/home/upgrades-view.ts, which only the home island imports; the map is back to its size.
   { component: 'GuildShell', limitBytes: 16 * 1024 + 768, closureLimitBytes: 141532 },
   // Lane bis-tooltip-host (2026-09-29): one BisTooltipHost per /bis/<class>/<spec> page
   // replaces roughly 840 per-row ItemHover islands with delegated document-level listeners

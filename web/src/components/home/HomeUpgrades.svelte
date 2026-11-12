@@ -10,9 +10,10 @@
   import type { Item } from '../../lib/planner/types';
   import type { CachedUpgrades } from '../../lib/home/upgrades-loader';
   import type { SlotUpgrade } from '../../lib/home/upgrades';
-  import { UPGRADES_SHOWN, upgradeGain, upgradeLine, type HomeLink } from '../../lib/home/home-view';
+  import { UPGRADES_SHOWN, upgradeLine, type HomeLink } from '../../lib/home/home-view';
   import { homeBCopy } from '../../lib/home/home-b-view';
-  import { factsCopy, upgradesFacts } from '../../lib/home/home-facts';
+  import { factsCopy } from '../../lib/home/home-facts';
+  import { upgradeGain, upgradesFacts } from '../../lib/home/upgrades-view';
   import { LINK } from '../../lib/ui/primitives';
   import ItemRow from '../ui/ItemRow.svelte';
   import Section from '../ui/Section.svelte';

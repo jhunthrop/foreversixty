@@ -7,8 +7,6 @@ import type { Me, MeCharacter } from '../account/api';
 import { ctaCopy } from '../addon/cta-copy';
 import { bisHref } from '../character-profile';
 import { guildHref, guildRaidHref } from '../characters';
-import { scoreUnitWord, type SlotScoreUnit } from '../bis/tank-view';
-import type { GainFigure } from '../ui/primitives';
 import type { SlotUpgrade } from './upgrades';
 import { SLOT_LABELS } from '../planner/types';
 import {
@@ -98,19 +96,9 @@ export function upgradeLine(upgrade: Pick<SlotUpgrade, 'slot' | 'pick'>): string
   return `${slot} · ${upgrade.pick.source}`;
 }
 
-/** `+5.1` */
+/** `+5.1`; the row's unit word is upgrades-view.ts's, kept out of this shared module on purpose. */
 export function gainText(dps: number): string {
   return `+${oneDecimal(dps)}`;
-}
-
-/** An upgrade row's gain at its right: the figure in the band's own unit, the word the paperdoll
- *  uses (`+5.1 DPS`, `+5.1 HPS`, a tank's `+5.1 score`); undefined with no measured gain. */
-export function upgradeGain(
-  upgrade: Pick<SlotUpgrade, 'gainDps'>,
-  unit: SlotScoreUnit,
-): GainFigure | undefined {
-  if (upgrade.gainDps === null) return undefined;
-  return { value: gainText(upgrade.gainDps), unit: scoreUnitWord(unit), tone: 'kill' };
 }
 
 /** The character's guild page and the raid page, from the account's guild entry. */
