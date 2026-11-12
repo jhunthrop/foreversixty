@@ -102,11 +102,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:4570 | 7.0 | 3 | spell:5176=41.0, other:attack/1=27.4, spell:8921=12.4, spell:1259799=1.5 | {SpellID: 1322605}, {SpellID: 9850} |
 | 20 | 0000000000000000-50212010000000000000-0000000000000000 | bare | 60.4 | 5 | other:attack/1=182.1, spell:1082=49.5, spell:1079=9.3, spell:770/1=5.8, spell:1259799=1.5 | {SpellID: 1322605} |
-| 30 | 0000000000000000-50212032123000000000-0000000000000000 | bare | 88.0 | 5 | other:attack/1=182.1, spell:6800=47.3, spell:9492=9.0, spell:778/1=5.8, spell:1259799=1.5 | {SpellID: 1322605} |
-| 38 | 0000000000000000-50212032123002123000-0000000000000000 | bare | 105.7 | 6 | other:attack/1=182.1, spell:8992=46.2, spell:9493=9.6, spell:778/1=5.8, spell:1259799=1.5 | {SpellID: 1322605} |
-| 40 | 0000000000000000-50212032123012123001-0000000000000000 | bare | 117.9 | 7 | other:attack/1=182.1, spell:8992=53.4, spell:9493=11.4, spell:1322605=8.1, spell:778/1=5.8 | - |
-| 50 | 0500220000000000-50212032123012123001-0100000000000000 | bare | 156.0 | 7 | other:attack/1=182.1, spell:9829=51.9, spell:9752=11.3, spell:1322605=7.8, spell:9749/1=5.5 | - |
-| 60 | 0500220000000000-50212032123012123001-0550100000000000 | bare | 229.7 | 7 | other:attack/1=182.1, spell:9830=52.7, spell:9896=11.5, spell:1322605=8.7, spell:9907/1=5.6 | - |
+| 30 | 0000000000000000-50212032123000000000-0000000000000000 | bare | 98.6 | 6 | other:attack/1=182.1, spell:6800=30.9, spell:1822=19.3, spell:9492=9.5, spell:778/1=5.8 | {SpellID: 1322605} |
+| 38 | 0000000000000000-50212032123002123000-0000000000000000 | bare | 123.3 | 7 | other:attack/1=182.1, spell:8992=29.7, spell:1823=18.7, spell:9493=10.2, spell:778/1=5.9 | {SpellID: 1322605} |
+| 40 | 0000000000000000-50212032123012123001-0000000000000000 | bare | 136.3 | 8 | other:attack/1=182.1, spell:8992=36.6, spell:1823=19.3, spell:9493=11.8, spell:1322605=8.1 | - |
+| 50 | 0500220000000000-50212032123012123001-0100000000000000 | bare | 183.8 | 9 | other:attack/1=182.1, spell:9829=35.8, spell:1824=18.5, spell:9752=11.9, spell:1322605=7.8 | - |
+| 60 | 0500220000000000-50212032123012123001-0550100000000000 | bare | 274.6 | 9 | other:attack/1=182.1, spell:9830=36.6, spell:9904=18.7, spell:9896=12.0, spell:1322605=8.8 | - |
 
 ## Learned but unused (informational)
 
@@ -137,7 +137,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lacerate (spell 1328617)
 - Maul (spell 6809)
 - Moonfire (spell 8927)
-- Rake (spell 1822)
 - Starfire (spell 8949)
 - Swipe (spell 780)
 - Wrath (spell 5180)
@@ -151,7 +150,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lacerate (spell 1328616)
 - Maul (spell 8972)
 - Moonfire (spell 8928)
-- Rake (spell 1823)
 - Starfire (spell 8950)
 - Swipe (spell 769)
 - Wrath (spell 6780)
@@ -167,7 +165,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Maul (spell 8972)
 - Moonfire (spell 8929)
 - Primal Bite (spell 407995)
-- Rake (spell 1823)
 - Starfire (spell 8950)
 - Swipe (spell 769)
 - Wrath (spell 6780)
@@ -176,14 +173,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 9849)
 - Entangling Roots (spell 9852)
-- Ferocious Bite (spell 22828)
 - Hurricane (spell 17401)
 - Insect Swarm (spell 24976)
 - Lacerate (spell 1235826)
 - Maul (spell 9880)
 - Moonfire (spell 9833)
 - Primal Bite (spell 1238069)
-- Rake (spell 1824)
 - Starfire (spell 9875)
 - Swipe (spell 9754)
 - Wrath (spell 8905)
@@ -192,14 +187,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 9850)
 - Entangling Roots (spell 9853)
-- Ferocious Bite (spell 22829)
 - Hurricane (spell 17402)
 - Insect Swarm (spell 24977)
 - Lacerate (spell 1235827)
 - Maul (spell 9881)
 - Moonfire (spell 9835)
 - Primal Bite (spell 1238073)
-- Rake (spell 9904)
 - Starfire (spell 9876)
 - Swipe (spell 9908)
 - Test Maul (spell 24042)
