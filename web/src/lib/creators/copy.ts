@@ -3,7 +3,9 @@
 // the public /creators page (its terms are numbers in PROGRAM_TERMS, written once; every sentence
 // and figure builds from them), the owner's /admin/creators and its statements, the creator's
 // /creators/onboarding and /creators/stats, and /creators/apply. The mocks read this module
-// (design/mocks/creators_facts.mjs).
+// (design/mocks/creators_facts.mjs). Failure lines end in the shared retry word (lib/ui/copy.ts);
+// busy words are the shared ones or name the call ("Opening Stripe…").
+import { busyCopy, withRetry } from '../ui/copy';
 
 /** The program's numbers, one place (the terms the sentences below are built from). */
 export const PROGRAM_TERMS = {
@@ -196,17 +198,21 @@ export const adminCreatorsCopy = {
   },
   add: 'Add creator',
   save: 'Save',
-  saving: 'Saving',
+  saving: busyCopy.saving,
   cancelEdit: 'Cancel',
   added: (name: string): string => `${name} is in. Copy their invite from Edit.`,
   saved: 'Saved.',
-  saveFailed: 'That wasn’t saved; try again.',
+  saveFailed: withRetry('That wasn’t saved'),
   invite: 'Copy onboarding invite',
+  inviting: 'Making the invite…',
+  /** The button's word for about two seconds after the copy (the shared Copied rule). */
+  inviteCopiedShort: 'Invite copied',
   inviteCopied: 'Invite copied. It works once, for 14 days.',
-  inviteFailed: 'The invite wasn’t made; try again.',
+  inviteFailed: withRetry('The invite wasn’t made'),
   refresh: 'Refresh Stripe status',
+  refreshing: 'Asking Stripe…',
   refreshed: 'Stripe status read just now.',
-  refreshFailed: 'Stripe didn’t answer; try again.',
+  refreshFailed: withRetry('Stripe didn’t answer'),
   fixed: (slug: string, code: string): string => `/go/${slug} · code ${code}`,
 } as const;
 
@@ -248,23 +254,27 @@ export const payoutsCopy = {
   },
   notReady: 'Stripe not ready',
   approve: (amount: string): string => `Approve ${amount}`,
-  approving: 'Paying',
+  approving: 'Paying…',
   confirmTitle: (name: string, amount: string, month: string): string =>
     `Pay ${name} ${amount} for ${month}?`,
   confirmBody: (amount: string): string =>
     `Stripe transfers ${amount} to their account now. This can’t be undone here.`,
   confirmPay: (amount: string): string => `Pay ${amount}`,
-  balanceChecking: 'Checking your Stripe balance',
+  balanceChecking: 'Checking your Stripe balance…',
   balanceLine: (available: string, amount: string): string =>
     `Available in Stripe: ${available}. This payout: ${amount}.`,
   balanceShort:
     'Not enough in your Stripe balance. Add funds in Stripe (Balances → Add to balance) or wait for subscription payments to clear.',
-  balanceFailed: 'Your Stripe balance didn’t load; try again.',
+  balanceFailed: withRetry('Your Stripe balance didn’t load'),
   transferShort:
     'Stripe didn’t have enough in your balance for this payout. Nothing was paid; approve it again once the balance covers it.',
   cancel: 'Cancel',
   approveFailed: (reason: string): string =>
-    `Stripe didn’t take the transfer: ${reason}. Nothing was paid; try again.`,
+    withRetry(
+      reason === ''
+        ? 'Stripe didn’t take the transfer. Nothing was paid'
+        : `Stripe didn’t take the transfer: ${reason}. Nothing was paid`,
+    ),
   lines: 'Lines',
   linesLabel: (name: string): string => `Show the lines for ${name}`,
   linesTitle: (name: string): string => `Lines · ${name}`,
@@ -284,17 +294,17 @@ export const onboardingCopy = {
   inviteSignedOut: 'Sign in with Battle.net to accept your invite to the creator program.',
   inviteJoin: (name: string): string => `You’re joining the creator program as ${name}.`,
   accept: 'Accept and set up payouts',
-  accepting: 'Accepting',
+  accepting: 'Accepting…',
   stripeLead: 'Stripe handles your payout details. We never see your bank account.',
   continue: 'Continue to Stripe',
-  continuing: 'Opening Stripe',
+  continuing: 'Opening Stripe…',
   doneReady: 'You’re set up. Payouts arrive after each month is approved.',
   doneNotReady: 'Stripe still needs a few details.',
-  checking: 'Checking with Stripe',
+  checking: 'Checking with Stripe…',
   statsLink: 'Your stats',
   notCreator: 'This page is for creators in the program. Ask us for an invite.',
   badInvite: 'That invite has expired or was already used. Ask us for a new one.',
-  failed: 'Stripe didn’t answer; try again.',
+  failed: withRetry('Stripe didn’t answer'),
 } as const;
 
 export const creatorStatsCopy = {
@@ -325,8 +335,8 @@ export const creatorStatsCopy = {
   payoutsTitle: 'Payouts',
   /** Opens the creator's Stripe Express dashboard (payouts, bank details, the 1099) by a fresh login link. */
   dashboard: 'Payouts and tax forms',
-  dashboardOpening: 'Opening Stripe',
-  dashboardFailed: 'Stripe didn’t open; try again.',
+  dashboardOpening: 'Opening Stripe…',
+  dashboardFailed: withRetry('Stripe didn’t open'),
   /** The profile and account menu item for a signed-in creator. */
   menuItem: 'Creator stats',
   payoutsEmpty: 'No payouts yet. Each month is paid after it closes and is approved.',
@@ -362,8 +372,8 @@ export const applyCopy = {
   platforms: { twitch: 'Twitch', youtube: 'YouTube' } satisfies Record<Platform, string>,
   consent: 'We review every application; we’ll reply on your Forever Sixty account.',
   submit: 'Send application',
-  sending: 'Sending',
-  sendFailed: 'That wasn’t sent; try again.',
+  sending: busyCopy.sending,
+  sendFailed: withRetry('That wasn’t sent'),
   counter: (used: number, max: number): string => `${used} of ${max} characters`,
   disclose: 'I’ll say it’s an affiliate link or sponsored wherever I share my link or code.',
   discloseNeeded: 'Tick this to apply: the FTC and Twitch require it.',

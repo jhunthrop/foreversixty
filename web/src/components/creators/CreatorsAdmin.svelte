@@ -1,13 +1,12 @@
 <!-- web/src/components/creators/CreatorsAdmin.svelte -->
-<!-- The owner's /admin/creators (design/specs/2026-11-08-creator-program.md 3a, 3g): a split Page.
-     Main: the Requests (open Rows, only while any wait) above Your creators (the page's one Plate: a
-     Row per creator, the status Tag and Edit in the trail, five Figures in the foot, Owed so far in
-     gold). Rail: one form in three modes, Add a creator, Edit {name} (link and code fixed; invite and
-     Stripe refresh) and Approve {channel} (prefilled from the request). Anyone but the owner sees
-     one line: the API answers 403 for them whatever this page shows. -->
+<!-- The owner's /admin/creators (design/specs/2026-11-08-creator-program.md 3a, 3g): a split Page of
+     panels, the grammar of /admin/links. Main: the Requests panel (open Rows, only while any wait)
+     above Your creators (a Row per creator, the status Tag and Edit in the trail, five Figures in the
+     foot, Owed so far in gold). Rail: one form panel in three modes, Add a creator, Edit {name} (link
+     and code fixed; invite and Stripe refresh) and Approve {channel} (prefilled from the request).
+     Anyone but the owner sees one line: the API answers 403 for them whatever this page shows. -->
 <script lang="ts">
   import { AccountError, fetchMeOnce } from '../../lib/account/api';
-  import { smallButton } from '../../lib/account/small-button';
   import {
     addCreator,
     approveRequest,
@@ -35,14 +34,16 @@
     type Creator,
     type CreatorRequest,
   } from '../../lib/creators/model';
-  import { button } from '../../lib/ui/button';
+  import { createCopyFeedback, writeClipboard } from '../../lib/ui/copy-feedback';
   import { FIELD_LABEL } from '../../lib/ui/field';
+  import { LINK } from '../../lib/ui/primitives';
   import SignInPrompt from '../SignInPrompt.svelte';
+  import Button from '../ui/Button.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import Field from '../ui/Field.svelte';
   import Figure from '../ui/Figure.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Page from '../ui/Page.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -62,9 +63,16 @@
   let mode = $state<Mode>({ kind: 'add' });
   let values = $state<CreatorFormValues>(emptyForm(new Date()));
   let saving = $state(false);
+  let refreshing = $state(false);
+  let inviting = $state(false);
   let fieldErrors = $state<Readonly<Record<string, string>>>({});
   let notice = $state('');
   let formError = $state('');
+
+  // The invite's Copied clears after about two seconds, as every copy control's does.
+  let inviteCopied = $state(false);
+  const copier = createCopyFeedback(writeClipboard, (state) => (inviteCopied = state === 'copied'));
+  $effect(() => copier.dispose);
 
   function phaseForError(error: unknown): Phase {
     if (error instanceof AccountError && error.status === 401) return 'signed-out';
@@ -147,23 +155,30 @@
   async function onInvite(id: number): Promise<void> {
     notice = '';
     formError = '';
+    inviting = true;
     try {
-      await navigator.clipboard.writeText(await makeInvite(id));
+      const url = await makeInvite(id);
+      await copier.copy(url);
       notice = copy.inviteCopied;
     } catch {
       formError = copy.inviteFailed;
+    } finally {
+      inviting = false;
     }
   }
 
   async function onRefresh(id: number): Promise<void> {
     notice = '';
     formError = '';
+    refreshing = true;
     try {
       await refreshStripe(id);
       await reload();
       notice = copy.refreshed;
     } catch {
       formError = copy.refreshFailed;
+    } finally {
+      refreshing = false;
     }
   }
 
@@ -224,99 +239,98 @@
     <LoadError message={copy.loadFailed} onRetry={() => void load()} testid="creators-load-error" />
   </div>
 {:else}
-  <Page layout="split" testid="creators-page-body">
-    <div class="flex flex-col gap-8">
-      {#if requests.length > 0}
-        <Section
-          title={requestsCopy.title}
-          meta={requestsCopy.meta(requests.length)}
-          testid="creators-requests"
-        >
-          <div>
-            {#each requests as r (r.id)}
+  <Page layout="split" panels testid="creators-page-body">
+    {#if requests.length > 0}
+      <Section
+        title={requestsCopy.title}
+        meta={requestsCopy.meta(requests.length)}
+        panel
+        flush
+        testid="creators-requests"
+      >
+        <div role="group" aria-label={requestsCopy.title}>
+          {#each requests as r (r.id)}
+            <Row title={channelTitle(r.channel_url)} sub={requestSub(r)} wrapTrail testid={`request-${r.id}`}>
+              {#snippet trail()}
+                <span class="flex shrink-0 items-center gap-2.5">
+                  <Button
+                    tone="primary"
+                    size="sm"
+                    onclick={() => setMode({ kind: 'approve', request: r })}
+                    testid={`request-approve-${r.id}`}>{requestsCopy.approve}</Button
+                  >
+                  <Button size="sm" onclick={() => void onDecline(r.id)} testid={`request-decline-${r.id}`}
+                    >{requestsCopy.decline}</Button
+                  >
+                </span>
+              {/snippet}
+              {#snippet foot()}
+                <span class="flex flex-col gap-0.5 text-[13px] leading-5">
+                  <span>{r.about}</span>
+                  {#if r.contact_email}<span class="text-muted" data-testid={`request-email-${r.id}`}
+                      >{r.contact_email}</span
+                    >{/if}
+                </span>
+              {/snippet}
+            </Row>
+          {/each}
+        </div>
+      </Section>
+    {/if}
+    <Section
+      title={copy.tableTitle}
+      meta={copy.tableMeta(creators.length)}
+      panel
+      flush
+      testid="creators-table"
+    >
+      <div>
+        {#if connectDenied || !stripeEnabled}
+          <p class="text-wipe px-4 pt-3 text-[14px] leading-5" role="alert">
+            {#if connectDenied}<span data-testid="creators-connect-denied">{copy.connectDenied}</span>{/if}
+            {#if !stripeEnabled}<span data-testid="creators-stripe-off">{copy.stripeOff}</span>{/if}
+          </p>
+        {/if}
+        {#if creators.length === 0}
+          <EmptyState message={copy.empty} inset testid="creators-empty" />
+        {:else}
+          <div role="group" aria-label={copy.tableTitle}>
+            {#each creators as c (c.id)}
               <Row
-                title={channelTitle(r.channel_url)}
-                sub={requestSub(r)}
-                open
+                title={c.name}
+                sub={copy.sub(c.slug, c.code, dayLabel(c.starts_on))}
                 wrapTrail
-                testid={`request-${r.id}`}
+                testid={`creator-row-${c.slug}`}
               >
                 {#snippet trail()}
                   <span class="flex shrink-0 items-center gap-2.5">
-                    <button
-                      type="button"
-                      class={smallButton('primary')}
-                      onclick={() => setMode({ kind: 'approve', request: r })}
-                      data-testid={`request-approve-${r.id}`}>{requestsCopy.approve}</button
+                    <Tag tone={STATUS_TONE[c.stripe_status]} testid={`creator-status-${c.slug}`}
+                      >{stripeStatusCopy[c.stripe_status]}</Tag
                     >
-                    <button
-                      type="button"
-                      class={smallButton()}
-                      onclick={() => void onDecline(r.id)}
-                      data-testid={`request-decline-${r.id}`}>{requestsCopy.decline}</button
+                    <Button
+                      size="sm"
+                      label={copy.editLabel(c.name)}
+                      onclick={() => setMode({ kind: 'edit', creator: c })}
+                      testid={`creator-edit-${c.slug}`}>{copy.edit}</Button
                     >
                   </span>
                 {/snippet}
-                {#snippet foot()}
-                  <span class="text-muted text-[12px] leading-4"
-                    >{r.about}{r.contact_email ? ` · ${r.contact_email}` : ''}</span
-                  >
-                {/snippet}
+                {#snippet foot()}{@render figures(c)}{/snippet}
               </Row>
             {/each}
           </div>
-        </Section>
-      {/if}
-      <Section title={copy.tableTitle} meta={copy.tableMeta(creators.length)} testid="creators-table">
-        <div>
-          {#if connectDenied}<p class="text-wipe mb-3 text-[14px]" data-testid="creators-connect-denied">
-              {copy.connectDenied}
-            </p>{/if}
-          {#if !stripeEnabled}<p class="text-wipe mb-3 text-[14px]" data-testid="creators-stripe-off">
-              {copy.stripeOff}
-            </p>{/if}
-          {#if creators.length === 0}
-            <p data-testid="creators-empty">{copy.empty}</p>
-          {:else}
-            <Plate label={copy.tableTitle}>
-              {#each creators as c (c.id)}
-                <Row
-                  title={c.name}
-                  sub={copy.sub(c.slug, c.code, dayLabel(c.starts_on))}
-                  wrapTrail
-                  testid={`creator-row-${c.slug}`}
-                >
-                  {#snippet trail()}
-                    <span class="flex shrink-0 items-center gap-2.5">
-                      <Tag tone={STATUS_TONE[c.stripe_status]} testid={`creator-status-${c.slug}`}
-                        >{stripeStatusCopy[c.stripe_status]}</Tag
-                      >
-                      <button
-                        type="button"
-                        class={smallButton()}
-                        aria-label={copy.editLabel(c.name)}
-                        onclick={() => setMode({ kind: 'edit', creator: c })}
-                        data-testid={`creator-edit-${c.slug}`}>{copy.edit}</button
-                      >
-                    </span>
-                  {/snippet}
-                  {#snippet foot()}{@render figures(c)}{/snippet}
-                </Row>
-              {/each}
-            </Plate>
-          {/if}
-          <p class="mt-3">
-            <a class="link" href="/admin/creators/payouts" data-testid="creators-statements-link"
-              >{copy.statementsLink} ›</a
-            >
-          </p>
-        </div>
-      </Section>
-    </div>
+        {/if}
+        <p class="px-4 py-3 text-[14px]">
+          <a class={LINK} href="/admin/creators/payouts" data-testid="creators-statements-link"
+            >{copy.statementsLink} ›</a
+          >
+        </p>
+      </div>
+    </Section>
     {#snippet rail()}
-      <Section title={railTitle} testid="creators-form-card">
+      <Section title={railTitle} panel testid="creators-form-card">
         <div class="flex flex-col gap-3">
-          <p class="text-muted text-[13px] leading-5">
+          <p class="text-muted text-[14px]">
             {mode.kind === 'approve' ? requestsCopy.approveJob : copy.formJob}
           </p>
           <form class="flex flex-col gap-3" onsubmit={onSubmit} novalidate data-testid="creators-form">
@@ -346,38 +360,35 @@
               {/if}
             {/each}
             <div class="flex flex-wrap items-center gap-3">
-              <button
+              <Button
                 type="submit"
-                class={button('primary')}
-                disabled={saving}
-                aria-busy={saving}
-                data-testid="creators-save"
+                tone="primary"
+                busy={saving}
+                busyLabel={copy.saving}
+                testid="creators-save">{mode.kind === 'edit' ? copy.save : copy.add}</Button
               >
-                {saving ? copy.saving : mode.kind === 'edit' ? copy.save : copy.add}
-              </button>
               {#if mode.kind !== 'add'}
-                <button
-                  type="button"
-                  class={button('secondary')}
-                  onclick={() => setMode({ kind: 'add' })}
-                  data-testid="creators-cancel">{copy.cancelEdit}</button
+                <Button onclick={() => setMode({ kind: 'add' })} testid="creators-cancel"
+                  >{copy.cancelEdit}</Button
                 >
               {/if}
             </div>
             {#if mode.kind === 'edit'}
               {@const editing = mode.creator}
               <div class="flex flex-wrap items-center gap-2.5">
-                <button
-                  type="button"
-                  class={smallButton()}
+                <Button
+                  size="sm"
+                  busy={inviting}
+                  busyLabel={copy.inviting}
                   onclick={() => void onInvite(editing.id)}
-                  data-testid="creators-invite">{copy.invite}</button
+                  testid="creators-invite">{inviteCopied ? copy.inviteCopiedShort : copy.invite}</Button
                 >
-                <button
-                  type="button"
-                  class={smallButton()}
+                <Button
+                  size="sm"
+                  busy={refreshing}
+                  busyLabel={copy.refreshing}
                   onclick={() => void onRefresh(editing.id)}
-                  data-testid="creators-refresh">{copy.refresh}</button
+                  testid="creators-refresh">{copy.refresh}</Button
                 >
               </div>
             {/if}

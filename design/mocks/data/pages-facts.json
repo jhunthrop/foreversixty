@@ -1153,6 +1153,10 @@
     "href": "/about"
    },
    {
+    "label": "Creators",
+    "href": "/creators"
+   },
+   {
     "label": "Changelog",
     "href": "/changelog"
    }
@@ -1457,6 +1461,6 @@
    "/guides/hunter/beast-mastery",
    "Beast Mastery Hunter guide"
   ],
-  "known": 81
+  "known": 82
  }
 }

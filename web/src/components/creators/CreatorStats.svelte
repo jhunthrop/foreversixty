@@ -1,20 +1,21 @@
 <!-- web/src/components/creators/CreatorStats.svelte -->
 <!-- The creator's own /creators/stats (design/specs/2026-11-08-creator-program.md 3d): the creator's
-     name as the page title, a split Page. Main: the one Plate of four Figures (Earned so far in gold),
-     then Your players, one row per week and never a name. Rail: Payouts, with Set up payouts while
-     Stripe is not ready and Payouts and tax forms (a fresh Express dashboard link per press) once it is. -->
+     name as the page title, a split Page of panels. Main: Your figures (four Figures, Earned so far in
+     gold), then Your players, one row per week and never a name. Rail: Payouts, with Set up payouts
+     while Stripe is not ready and Payouts and tax forms (a fresh Express dashboard link per press)
+     once it is. -->
 <script lang="ts">
   import { AccountError } from '../../lib/account/api';
   import { dashboardLink, fetchCreatorMe } from '../../lib/creators/api';
   import { creatorStatsCopy as copy, onboardingCopy } from '../../lib/creators/copy';
   import { money, monthLabel, statsFigures, weekText, type CreatorMe } from '../../lib/creators/model';
-  import { button } from '../../lib/ui/button';
   import SignInPrompt from '../SignInPrompt.svelte';
+  import Button from '../ui/Button.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import Figure from '../ui/Figure.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -61,51 +62,46 @@
   <PageHeader title={mine.name}>
     {#snippet meta()}<span data-testid="stats-meta">{copy.meta(mine.slug, mine.code)}</span>{/snippet}
   </PageHeader>
-  <Page layout="split" testid="stats-page-body">
-    <div class="flex flex-col gap-8">
-      <Plate label={copy.summaryLabel}>
-        <div class="flex flex-wrap items-start gap-x-5 gap-y-2 p-4" data-testid="stats-figures">
-          {#each statsFigures(mine) as fig (fig.key)}
-            <span class={fig.lead ? 'w-[220px]' : 'w-[104px]'}
-              ><Figure
-                value={fig.value}
-                label={fig.label}
-                caption={fig.note}
-                size="sm"
-                tone={fig.lead ? 'gold' : 'strong'}
-              /></span
-            >
+  <Page layout="split" panels testid="stats-page-body">
+    <Section title={copy.summaryLabel} panel testid="stats-summary">
+      <div class="flex flex-wrap items-start gap-x-6 gap-y-3" data-testid="stats-figures">
+        {#each statsFigures(mine) as fig (fig.key)}
+          <span class={fig.lead ? 'w-[240px]' : 'w-[104px]'}
+            ><Figure
+              value={fig.value}
+              label={fig.label}
+              caption={fig.note}
+              tone={fig.lead ? 'gold' : 'strong'}
+            /></span
+          >
+        {/each}
+      </div>
+    </Section>
+    <Section title={copy.playersTitle} meta={copy.playersMeta} panel flush testid="stats-players">
+      {#if mine.weeks.length === 0}
+        <EmptyState message={copy.playersEmpty} inset testid="stats-players-empty" />
+      {:else}
+        <div role="group" aria-label={copy.playersTitle}>
+          {#each mine.weeks as week (week.week_of)}
+            <Row title={weekText(week)} density="slim" testid={`stats-week-${week.week_of}`} />
           {/each}
         </div>
-      </Plate>
-      <Section title={copy.playersTitle} meta={copy.playersMeta} testid="stats-players">
-        {#if mine.weeks.length === 0}
-          <p data-testid="stats-players-empty">{copy.playersEmpty}</p>
-        {:else}
-          <div>
-            {#each mine.weeks as week (week.week_of)}
-              <Row title={weekText(week)} density="slim" open testid={`stats-week-${week.week_of}`} />
-            {/each}
-          </div>
-        {/if}
-      </Section>
-    </div>
+      {/if}
+    </Section>
     {#snippet rail()}
-      <Section title={copy.payoutsTitle} testid="stats-payouts">
+      <Section title={copy.payoutsTitle} panel testid="stats-payouts">
         <div class="flex flex-col gap-4">
           {#if mine.stripe_status !== 'ready'}
             <div>
-              <a class={button('primary')} href="/creators/onboarding" data-testid="stats-setup"
-                >{copy.setup}</a
-              >
+              <Button tone="primary" href="/creators/onboarding" testid="stats-setup">{copy.setup}</Button>
             </div>
           {/if}
           {#if mine.payouts.length === 0}
-            <p class="text-muted text-[14px]" data-testid="stats-payouts-empty">{copy.payoutsEmpty}</p>
+            <EmptyState message={copy.payoutsEmpty} testid="stats-payouts-empty" />
           {:else}
-            <div>
+            <div role="group" aria-label={copy.payoutsTitle}>
               {#each mine.payouts as p (p.month)}
-                <Row title={monthLabel(p.month)} density="slim" open>
+                <Row title={monthLabel(p.month)} density="slim">
                   {#snippet trail()}<span class="tabular-nums">{money(p.amount_cents)}</span>{/snippet}
                 </Row>
               {/each}
@@ -113,13 +109,11 @@
           {/if}
           {#if mine.stripe_status === 'ready'}
             <div>
-              <button
-                type="button"
-                class={button('secondary')}
-                disabled={opening}
-                aria-busy={opening}
+              <Button
+                busy={opening}
+                busyLabel={copy.dashboardOpening}
                 onclick={() => void openDashboard()}
-                data-testid="stats-dashboard">{opening ? copy.dashboardOpening : copy.dashboard}</button
+                testid="stats-dashboard">{copy.dashboard}</Button
               >
             </div>
             {#if dashError !== ''}<p class="text-wipe text-[14px]" role="alert">{dashError}</p>{/if}
@@ -136,7 +130,9 @@
     {:else if phase === 'signed-out'}
       <SignInPrompt line={copy.signedOut} next="/creators/stats" testid="stats-signin" />
     {:else if phase === 'not-creator'}
-      <p data-testid="stats-not-creator">{onboardingCopy.notCreator}</p>
+      <Section title={onboardingCopy.stripeTitle} panel>
+        <p data-testid="stats-not-creator">{onboardingCopy.notCreator}</p>
+      </Section>
     {:else}
       <LoadError message={copy.loadFailed} onRetry={() => void load()} testid="stats-load-error" />
     {/if}

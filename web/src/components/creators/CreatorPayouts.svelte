@@ -1,14 +1,13 @@
 <!-- web/src/components/creators/CreatorPayouts.svelte -->
-<!-- The owner's /admin/creators/payouts (design/specs/2026-11-08-creator-program.md 3b): a split Page.
-     Main: Section `{n} creators` with the month Select in its head, the payout switch's notice when it
-     is off, and the page's one Plate (a Row per creator: the status line, a `Stripe not ready` Tag
-     when blocked, Approve when the month is ready and owes money, Lines; five Figures in the foot,
-     Total first in gold). Rail: the selected creator's lines. Approve asks once in PayConfirmDialog;
-     nothing is ever paid without it. -->
+<!-- The owner's /admin/creators/payouts (design/specs/2026-11-08-creator-program.md 3b): a split Page
+     of panels. Main: the `{n} creators` panel with the month Select in its head, the payout switch's
+     notice when it is off, and a Row per creator (the status line, a `Stripe not ready` Tag when
+     blocked, Approve when the month is ready and owes money, Lines; five Figures in the foot, Total
+     first in gold). Rail: the selected creator's lines. Approve asks once in the shared ConfirmDialog
+     with the Stripe balance it is checked against; nothing is ever paid without it. -->
 <script lang="ts">
   import { tick } from 'svelte';
   import { AccountError, fetchMeOnce } from '../../lib/account/api';
-  import { smallButton } from '../../lib/account/small-button';
   import { approveStatement, listStatements, payoutBalance } from '../../lib/creators/api';
   import { adminCreatorsCopy, payoutsCopy as copy } from '../../lib/creators/copy';
   import {
@@ -23,16 +22,17 @@
     type Statement,
   } from '../../lib/creators/model';
   import SignInPrompt from '../SignInPrompt.svelte';
+  import Button from '../ui/Button.svelte';
+  import ConfirmDialog from '../ui/ConfirmDialog.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
   import Figure from '../ui/Figure.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Page from '../ui/Page.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Select from '../ui/Select.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import Tag from '../ui/Tag.svelte';
-  import PayConfirmDialog from './PayConfirmDialog.svelte';
 
   const LINES_HEADING = 'payout-lines-title';
 
@@ -61,6 +61,7 @@
   let dialogProblem = $state('');
 
   const current = $derived(statements.find((s) => s.creator_id === selected) ?? statements[0] ?? null);
+  const canPay = $derived(payoutsEnabled && !connectDenied);
 
   function phaseForError(error: unknown): Phase {
     if (error instanceof AccountError && error.status === 401) return 'signed-out';
@@ -140,6 +141,7 @@
         : copy.balanceLine(money(available), money(confirming.total_cents)),
   );
   const blocked = $derived(available === null || Number.isNaN(available) || short);
+  const problem = $derived(dialogProblem !== '' ? dialogProblem : short ? copy.balanceShort : '');
 
   async function pay(): Promise<void> {
     if (confirming === null) return;
@@ -179,10 +181,12 @@
     <LoadError message={copy.loadFailed} onRetry={() => void load()} testid="payouts-load-error" />
   </div>
 {:else}
-  <Page layout="split" testid="payouts-page-body">
+  <Page layout="split" panels testid="payouts-page-body">
     <Section
       title={copy.tableTitle(statements.length)}
       meta={copy.tableMeta(money(toPay(statements)))}
+      panel
+      flush
       testid="payouts-table"
     >
       {#snippet head()}
@@ -198,16 +202,18 @@
         />
       {/snippet}
       <div>
-        {#if connectDenied}<p class="text-wipe mb-4 text-[15px]" data-testid="payouts-connect-denied">
-            {adminCreatorsCopy.connectDenied}
-          </p>{/if}
-        {#if !payoutsEnabled}<p class="text-wipe mb-4 text-[15px]" data-testid="payouts-off">
-            {copy.payoutsOff}
-          </p>{/if}
+        {#if connectDenied || !payoutsEnabled}
+          <p class="text-wipe px-4 pt-3 text-[14px] leading-5" role="status">
+            {#if connectDenied}<span data-testid="payouts-connect-denied"
+                >{adminCreatorsCopy.connectDenied}</span
+              >{/if}
+            {#if !payoutsEnabled}<span data-testid="payouts-off">{copy.payoutsOff}</span>{/if}
+          </p>
+        {/if}
         {#if statements.length === 0}
-          <p data-testid="payouts-empty">{copy.empty}</p>
+          <EmptyState message={copy.empty} inset testid="payouts-empty" />
         {:else}
-          <Plate label={monthLabel(month)}>
+          <div role="group" aria-label={monthLabel(month)}>
             {#each statements as s (s.creator_id)}
               <Row
                 title={s.name}
@@ -222,21 +228,19 @@
                         >{copy.notReady}</Tag
                       >{/if}
                     {#if canApprove(s)}
-                      <button
-                        type="button"
-                        class={smallButton(payoutsEnabled && !connectDenied ? 'primary' : 'secondary')}
-                        disabled={!payoutsEnabled || connectDenied}
+                      <Button
+                        tone={canPay ? 'primary' : 'secondary'}
+                        size="sm"
+                        disabled={!canPay}
                         onclick={() => void confirm(s)}
-                        data-testid={`payout-approve-${s.creator_id}`}
-                        >{copy.approve(money(s.total_cents))}</button
+                        testid={`payout-approve-${s.creator_id}`}>{copy.approve(money(s.total_cents))}</Button
                       >
                     {/if}
-                    <button
-                      type="button"
-                      class={smallButton()}
-                      aria-label={copy.linesLabel(s.name)}
+                    <Button
+                      size="sm"
+                      label={copy.linesLabel(s.name)}
                       onclick={() => void showLines(s.creator_id)}
-                      data-testid={`payout-lines-${s.creator_id}`}>{copy.lines}</button
+                      testid={`payout-lines-${s.creator_id}`}>{copy.lines}</Button
                     >
                   </span>
                 {/snippet}
@@ -257,10 +261,10 @@
                 {/snippet}
               </Row>
             {/each}
-          </Plate>
+          </div>
         {/if}
         {#if payError !== ''}<p
-            class="text-wipe mt-3 text-[14px]"
+            class="text-wipe px-4 py-3 text-[14px]"
             role="alert"
             data-testid="payouts-error-line"
           >
@@ -270,14 +274,20 @@
     </Section>
     {#snippet rail()}
       {#if current !== null}
-        <Section title={copy.linesTitle(current.name)} focusId={LINES_HEADING} testid="payout-lines">
+        <Section
+          title={copy.linesTitle(current.name)}
+          focusId={LINES_HEADING}
+          panel
+          flush
+          testid="payout-lines"
+        >
           {#if current.lines.length === 0}
-            <p class="text-muted text-[14px]">{copy.linesEmpty}</p>
+            <EmptyState message={copy.linesEmpty} inset testid="payout-lines-empty" />
           {:else}
-            <div>
+            <div role="group" aria-label={copy.linesTitle(current.name)}>
               {#each current.lines as line, i (i)}
                 {@const shown = lineText(line)}
-                <Row title={shown.text} density="slim" open>
+                <Row title={shown.text} density="slim">
                   {#snippet trail()}<span class="tabular-nums {shown.refund ? 'text-wipe' : ''}"
                       >{shown.amount}</span
                     >{/snippet}
@@ -290,15 +300,26 @@
     {/snippet}
   </Page>
   {#if confirming !== null}
-    <PayConfirmDialog
-      title={copy.confirmTitle(confirming.name, money(confirming.total_cents), monthLabel(confirming.month))}
-      amount={money(confirming.total_cents)}
+    {@const amount = money(confirming.total_cents)}
+    <ConfirmDialog
+      title={copy.confirmTitle(confirming.name, amount, monthLabel(confirming.month))}
+      line={copy.confirmBody(amount)}
+      confirmLabel={copy.confirmPay(amount)}
       busy={paying}
-      balance={balanceLine}
-      {blocked}
-      problem={dialogProblem !== '' ? dialogProblem : short ? copy.balanceShort : ''}
+      busyLabel={copy.approving}
+      disabled={blocked}
       onconfirm={() => void pay()}
       onclose={() => (confirming = null)}
-    />
+      testid="pay"
+    >
+      <p class="text-muted m-0 mt-2 text-[14px] leading-5" data-testid="pay-balance">{balanceLine}</p>
+      {#if problem !== ''}<p
+          class="text-wipe m-0 mt-1 text-[14px] leading-5"
+          role="alert"
+          data-testid="pay-problem"
+        >
+          {problem}
+        </p>{/if}
+    </ConfirmDialog>
   {/if}
 {/if}

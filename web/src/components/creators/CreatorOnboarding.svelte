@@ -1,15 +1,15 @@
 <!-- web/src/components/creators/CreatorOnboarding.svelte -->
 <!-- /creators/onboarding (design/specs/2026-11-08-creator-program.md 3c): accepting the owner's invite,
-     and Stripe's return_url (?done=1) and refresh_url (?refresh=1). One Section, one job per state.
+     and Stripe's return_url (?done=1) and refresh_url (?refresh=1). One form panel, one job per state.
      The invite token is sent in a POST body, never put in another URL; the Stripe link is made on
      each press and the page goes straight to it. -->
 <script lang="ts">
   import { AccountError, fetchMeOnce } from '../../lib/account/api';
   import { acceptInvite, fetchCreatorMe, invitePreview, onboardingLink } from '../../lib/creators/api';
   import { onboardingCopy as copy } from '../../lib/creators/copy';
-  import { button } from '../../lib/ui/button';
   import { LINK } from '../../lib/ui/primitives';
   import SignInPrompt from '../SignInPrompt.svelte';
+  import Button from '../ui/Button.svelte';
   import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
 
@@ -106,7 +106,7 @@
   );
 </script>
 
-<Section {title} testid="onboarding-section">
+<Section {title} panel testid="onboarding-section">
   <div class="flex flex-col gap-3" aria-live="polite">
     {#if view.kind === 'loading'}
       <Skeleton lines={3} testid="onboarding-loading" />
@@ -121,13 +121,12 @@
       <p data-testid="onboarding-join">{copy.inviteJoin(view.name)}</p>
       <p class="text-muted text-[14px]">{copy.stripeLead}</p>
       <div>
-        <button
-          type="button"
-          class={button('primary')}
-          disabled={busy}
-          aria-busy={busy}
+        <Button
+          tone="primary"
+          {busy}
+          busyLabel={copy.accepting}
           onclick={() => void accept(token)}
-          data-testid="onboarding-accept">{busy ? copy.accepting : copy.accept}</button
+          testid="onboarding-accept">{copy.accept}</Button
         >
       </div>
     {:else if view.kind === 'bad-invite'}
@@ -140,13 +139,12 @@
     {:else}
       <p data-testid="onboarding-continue-line">{view.done ? copy.doneNotReady : copy.stripeLead}</p>
       <div>
-        <button
-          type="button"
-          class={button('primary')}
-          disabled={busy}
-          aria-busy={busy}
+        <Button
+          tone="primary"
+          {busy}
+          busyLabel={copy.continuing}
           onclick={() => void toStripe()}
-          data-testid="onboarding-continue">{busy ? copy.continuing : copy.continue}</button
+          testid="onboarding-continue">{copy.continue}</Button
         >
       </div>
     {/if}

@@ -6,6 +6,7 @@
 // date ("15 Nov 2026"); every price comes from plans.ts. The API's billingmail mirrors the email
 // sentences and a test holds the two together.
 import { priceFor } from './plan-costs';
+import { withRetry } from '../ui/copy';
 import { FOUNDER_LAST_DAY, GUILD_TRIAL_DAYS, PLANS, formatPrice, type Interval, type PlanKey } from './plans';
 import { formatDayMonthYear } from '../dates';
 
@@ -136,7 +137,7 @@ export const trialCopy = {
     resume: 'Keep Premium after the trial',
     resumeGuild: 'Keep the plan after the trial',
     canceling: 'Cancelling',
-    cancelFailed: 'That didn’t go through; nothing changed. Try again.',
+    cancelFailed: withRetry('That didn’t go through; nothing changed'),
   },
   confirm: {
     title: 'Cancel your free trial?',

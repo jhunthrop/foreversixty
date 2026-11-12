@@ -1,17 +1,18 @@
 <!-- web/src/components/creators/CreatorApply.svelte -->
 <!-- /creators/apply (design/specs/2026-11-08-creator-program.md 3f): the application form (channel,
-     main platform, a rough size, what they make, an optional contact email only the owner sees), then
-     its status: Pending, Approved (Set up payouts) or Not this time (the form comes back). A creator
-     already in the program sees their stats link instead. -->
+     main platform, a rough size, what they make, an optional contact email only the owner sees) on
+     one form panel, then its status: Pending, Approved (Set up payouts) or Not this time (the form
+     comes back once the reapply day passes). A creator already in the program sees their stats link
+     instead. -->
 <script lang="ts">
   import { AccountError, fetchMeOnce } from '../../lib/account/api';
   import { fetchApplication, sendApplication, type MyApplicationRead } from '../../lib/creators/api';
   import { PLATFORMS, applyCopy as copy, type Platform } from '../../lib/creators/copy';
   import { ABOUT_MAX, dayLabel } from '../../lib/creators/model';
-  import { button } from '../../lib/ui/button';
   import { FIELD_LABEL } from '../../lib/ui/field';
   import { LINK } from '../../lib/ui/primitives';
   import SignInPrompt from '../SignInPrompt.svelte';
+  import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Section from '../ui/Section.svelte';
@@ -96,30 +97,30 @@
 {:else if phase === 'failed'}
   <LoadError message={copy.sendFailed} onRetry={() => void load()} testid="apply-load-error" />
 {:else if mine !== null}
-  <div class="flex flex-col gap-8">
+  <div class="flex flex-col gap-[22px]">
     {#if mine.creator}
-      <Section title={copy.statusTitle} testid="apply-creator">
+      <Section title={copy.statusTitle} panel testid="apply-creator">
         <div class="flex flex-col gap-3">
           <p>{copy.alreadyCreator}</p>
           <p><a class={LINK} href="/creators/stats" data-testid="apply-stats">{copy.statsLink} ›</a></p>
         </div>
       </Section>
     {:else if mine.status !== null}
-      <Section title={copy.statusTitle} testid={`apply-status-${mine.status}`}>
+      <Section title={copy.statusTitle} panel testid={`apply-status-${mine.status}`}>
+        {#snippet head()}
+          {#if mine.status === 'pending'}<Tag tone="muted">{copy.pendingTag}</Tag>
+          {:else if mine.status === 'approved'}<Tag tone="success">{copy.approvedTag}</Tag>
+          {:else}<Tag tone="muted">{copy.declinedTag}</Tag>{/if}
+        {/snippet}
         <div class="flex flex-col gap-3">
           {#if mine.status === 'pending'}
-            <div><Tag tone="muted">{copy.pendingTag}</Tag></div>
             <p>{copy.pending(dayLabel(mine.created_at ?? ''))}</p>
           {:else if mine.status === 'approved'}
-            <div><Tag tone="success">{copy.approvedTag}</Tag></div>
             <p>{copy.approved}</p>
             <div>
-              <a class={button('primary')} href="/creators/onboarding" data-testid="apply-setup"
-                >{copy.setup}</a
-              >
+              <Button tone="primary" href="/creators/onboarding" testid="apply-setup">{copy.setup}</Button>
             </div>
           {:else}
-            <div><Tag tone="muted">{copy.declinedTag}</Tag></div>
             <p>{copy.declined}</p>
             {#if mine.reapply_on}<p class="text-muted text-[14px]" data-testid="apply-reapply">
                 {copy.reapplyOn(dayLabel(mine.reapply_on))}
@@ -129,7 +130,7 @@
       </Section>
     {/if}
     {#if showForm}
-      <Section title={copy.formTitle} testid="apply-form-section">
+      <Section title={copy.formTitle} panel testid="apply-form-section">
         <form class="flex flex-col gap-3" onsubmit={onSubmit} novalidate data-testid="apply-form">
           <Field
             id="apply-channel"
@@ -203,12 +204,8 @@
           </label>
           <p class="text-muted text-[14px]">{copy.consent}</p>
           <div>
-            <button
-              type="submit"
-              class={button('primary')}
-              disabled={sending}
-              aria-busy={sending}
-              data-testid="apply-submit">{sending ? copy.sending : copy.submit}</button
+            <Button type="submit" tone="primary" busy={sending} busyLabel={copy.sending} testid="apply-submit"
+              >{copy.submit}</Button
             >
           </div>
           {#if formError !== ''}<p class="text-wipe text-[14px]" role="alert" data-testid="apply-error">
