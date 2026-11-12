@@ -78,9 +78,8 @@
 </script>
 
 {#snippet tabLabel(tab: TabItem)}
-  {tab.label}{#if tab.suffix !== undefined}<span class={TAB_STRIP.suffix}>{tab.suffix}</span>{/if}{#if tab.count !== undefined}<span
-      class={TAB_STRIP.count}>{tab.count}</span
-    >{/if}
+  {tab.label}{#if tab.suffix !== undefined}<span class={TAB_STRIP.suffix}>{tab.suffix}</span
+    >{/if}{#if tab.count !== undefined}<span class={TAB_STRIP.count}>{tab.count}</span>{/if}
 {/snippet}
 
 <div class={TAB_STRIP.wrapper}>

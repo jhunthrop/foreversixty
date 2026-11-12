@@ -30,6 +30,7 @@
   {#if failed && !loading}
     <LoadError message={failedText} onRetry={onLoad} testid="{testid}-error" />
   {:else}
-    <Button size="sm" busy={loading} busyLabel={uiCopy.loadingOlder} onclick={onLoad} {testid}>{label}</Button>
+    <Button size="sm" busy={loading} busyLabel={uiCopy.loadingOlder} onclick={onLoad} {testid}>{label}</Button
+    >
   {/if}
 </div>

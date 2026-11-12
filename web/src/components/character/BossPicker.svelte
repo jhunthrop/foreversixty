@@ -27,5 +27,11 @@
 </script>
 
 <div class="-mx-3">
-  <TabStrip {tabs} active={activeId} label={historyCopy.pickerLabel} onSelect={onpick} testid="history-picker" />
+  <TabStrip
+    {tabs}
+    active={activeId}
+    label={historyCopy.pickerLabel}
+    onSelect={onpick}
+    testid="history-picker"
+  />
 </div>
