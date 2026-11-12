@@ -70,10 +70,10 @@ sources:
 - **Shield Specialization** (5 points): 5% more block chance, and every block gives you 5 rage.
 - **Master of Defense** (2 points): 5 rage on every dodge and parry with a shield on. With Shield Specialization, a tank that is being hit is never short of rage.
 - **Anticipation** (5 points): 20 Defense Skill, so fewer hits land and fewer crit.
-- **Improved Revenge**, **Improved Thunder Clap** and **Improved Sunder Armor** (9 points): Revenge hits 60% harder, Thunder Clap costs 6 less and Sunder Armor 3 less. These are the three buttons you press most after Shield Slam. Revenge and Thunder Clap both grow with your attack power, Revenge by a quarter of it.
+- **Improved Revenge**, **Improved Thunder Clap** and **Improved Sunder Armor** (9 points): Revenge hits 60% harder, Thunder Clap costs 6 less and Sunder Armor 3 less. These are the three buttons you press most after Shield Slam.
 - **Focused Rage** (3 points): every offensive ability costs 3 less, which makes Revenge nearly free.
 - **Last Stand** (1 point): 30% of your maximum health for 20 seconds, lost again when it ends. Your emergency button.
-- **Improved Bloodrage** (2 points): half again as much rage from every Bloodrage. Bloodrage costs a fifth of your base health each press, so with the talent you buy more rage for the same health.
+- **Improved Bloodrage** (2 points): half again as much rage from every Bloodrage.
 - **Concussion Blow** (1 point): a 5 second stun, and the point that opens Shield Slam.
 
 The Arms points go to **Deflection** for 5% parry, **Improved Heroic Strike** for a cheaper rage dump, and **Improved Rend** into **Deep Wounds**. Improved Tactical Mastery and Anger Management are left out: a tank who stays in Defensive Stance gets more from Bastion's last ranks and Improved Bloodrage.
@@ -82,9 +82,11 @@ Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you 
 
 ## Rotation and priority
 
-**The pull.** Bloodrage before you pull so your first Sunder Armor or Shield Slam is paid for, and Battle Shout with it unless a raid warrior's shout is already up. Bloodrage takes a fifth of your base health every time, which is nothing to a tank at full health and the reason it refuses to fire when you are nearly dead. Open with Shield Slam or Sunder Armor, and let the damage dealers start after your first two or three globals. Taunt only to take a target back; it does nothing for you on a boss you already hold.
+**The pull.** Bloodrage before you pull so your first Sunder Armor or Shield Slam is paid for, and Battle Shout with it unless a raid warrior's shout is already up. Bloodrage takes a fifth of your base health, about 340 at 60, so pull with it before the first hit lands and let the healers top you up, and do not press it mid-fight when you are low. Open with Shield Slam or Sunder Armor, and let the damage dealers start after your first two or three globals. Taunt only to take a target back; it does nothing for you on a boss you already hold.
 
 **Shield Block.** It is your mitigation and your rage engine at once, so it never waits for a big hit: keep it up.
+
+**Attack power.** Revenge adds a quarter of your attack power to every hit, which is why attack power on gear counts for a tank. Thunder Clap adds about a sixteenth.
 
 **Demoralizing Shout.** If a druid or another warrior already holds it, leave it to them: two do not stack.
 
