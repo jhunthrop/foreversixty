@@ -41,8 +41,9 @@
 
   const build = activeBuild.build;
   const character = $derived(request.character);
-  /** The frame's width cap, the character page's (CharacterGear), centred under 760 px. */
-  const DOLL_WIDTH = 'mx-auto w-full max-w-[640px]';
+  /** The frame's width cap, the character page's (CharacterGear), centred in its grid cell under
+   *  760 px (the site-column rule keeps auto margins to .page-column and the .measure-* classes). */
+  const DOLL_WIDTH = 'justify-self-center w-full max-w-[640px]';
   /** The frame beside its column once both fit (the report's Gear at the pull). */
   const PAIR_GRID =
     'grid gap-5 @min-[760px]:grid-cols-[minmax(0,640px)_minmax(240px,1fr)] @min-[760px]:items-start';
