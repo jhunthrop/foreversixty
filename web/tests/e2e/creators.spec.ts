@@ -54,10 +54,10 @@ test.describe('/admin/creators', () => {
     const grim = page.getByTestId('creator-row-grimbrew');
     await expect(grim).toContainText('/go/grimbrew · code GRIMBREW · since 8 Nov 2026');
     await expect(grim).toContainText('$184.20');
-    await expect(grim).toContainText('December 2026 · of $500 cap');
+    await expect(grim).toContainText('Dec 2026 · of $500 cap');
     await expect(grim).toContainText('all time');
     await expect(page.getByTestId('creator-status-grimbrew')).toHaveText('Payouts ready');
-    await expect(page.getByTestId('creator-row-lunawick')).toContainText('December 2026 · $50 cap reached');
+    await expect(page.getByTestId('creator-row-lunawick')).toContainText('Dec 2026 · $50 cap reached');
   });
 
   test('approve prefills the form from the request and makes the creator', async ({ page }) => {
@@ -148,7 +148,7 @@ test.describe('/admin/creators/payouts', () => {
     await expect(page.getByTestId('payout-blocked-2')).toHaveText('Stripe not ready');
     await expect(page.getByTestId('payout-approve-3')).toHaveCount(0);
     await page.getByTestId('payout-approve-1').click();
-    await expect(page.getByTestId('pay-dialog')).toContainText('Pay Grimbrew $168.60 for November 2026?');
+    await expect(page.getByTestId('pay-dialog')).toContainText('Pay Grimbrew $168.60 for Nov 2026?');
     await expect(page.getByTestId('pay-balance')).toHaveText(
       'Available in Stripe: $500.00. This payout: $168.60.',
     );
@@ -219,7 +219,7 @@ test.describe('/admin/creators/payouts', () => {
   test('Lines shows a creator’s lines, a refund signed', async ({ page }) => {
     await statements(page);
     await page.goto('/admin/creators/payouts');
-    await expect(page.getByTestId('payout-lines')).toContainText('Player #10498 · refund 21 Nov 2026');
+    await expect(page.getByTestId('payout-lines')).toContainText('Player #10498 · refund 21 Nov');
     await expect(page.getByTestId('payout-lines')).toContainText('−$2.50');
     await page.getByTestId('payout-lines-2').click();
     await expect(page.getByTestId('payout-lines')).toContainText('No lines this month.');
@@ -236,7 +236,7 @@ test.describe('the creator', () => {
     await page.goto('/creators/stats');
     await expect(page.getByRole('heading', { level: 1, name: 'Grimbrew' })).toBeVisible();
     await expect(page.getByTestId('stats-figures')).toContainText(
-      'December 2026, an estimate until the month closes · $500 monthly cap',
+      'Dec 2026 so far · of $500 cap',
     );
     await expect(page.getByTestId('stats-week-2026-12-07')).toHaveText('Week of 7 Dec: 18 signed up so far');
     await expect(page.getByTestId('stats-week-2026-11-23')).toHaveText(
@@ -286,7 +286,7 @@ test.describe('/creators and /creators/apply', () => {
       '$2 for each player you send who comes back',
     );
     await expect(page.getByTestId('creators-section-disclosure')).toContainText(
-      'the first time it is missing we warn you, and a second time ends your place in the program.',
+      'the first time it is missing we warn you, and a second time can end your place in the program.',
     );
     await expect(page.getByTestId('creators-section-payouts')).toContainText(
       'A month under $10 carries over',

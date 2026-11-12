@@ -160,6 +160,8 @@ const STATES: State[] = [
     url: '/creators/stats',
     ready: 'stats-figures',
     setup: async (page) => {
+      // The fixtures' clock (spec 0B): the week marks and the closed month's line depend on it.
+      await page.clock.setFixedTime(new Date('2026-12-09T12:00:00Z'));
       await signedInAsOwner(page, { creator: true });
       await page.route('**/v1/creators/me', (route) => route.fulfill(envelope(read('me.json'))));
     },

@@ -38,7 +38,7 @@ CREATOR = OWNER
 CSS = '''<style>
 /* page-level layout only (no surfaces) */
 .stack{display:flex;flex-direction:column;gap:12px;min-width:0}.acts{display:flex;gap:10px 12px;flex-wrap:wrap;align-items:center}
-.figs5{display:flex;flex-wrap:wrap;gap:8px 20px}.figs5>span{width:104px;display:flex;flex-direction:column}.figs5>span.lead{width:220px}.figs5.big{gap:12px 24px}.figs5.big>span{width:150px}.figs5.big>span.lead{width:240px}.figs5.wk{gap:0 20px}.figs5.wk>span{width:84px}.t-body{font-size:14px;line-height:20px}
+.figs5{display:flex;flex-wrap:wrap;gap:8px 20px}.figs5>span{width:104px;display:flex;flex-direction:column}.figs5>span.lead{width:220px}.figs5.big{gap:12px 24px;padding-bottom:4px}.figs5.big>span{width:150px}.figs5.big>span.lead{width:240px}.figs5.wk{gap:0 20px;padding:1px 0}.figs5.wk>span{width:84px}.t-body{font-size:14px;line-height:20px}
 .pn-link{padding:12px 20px;font-size:14px}.pn-note{padding:12px 20px 0;font-size:14px;line-height:20px}.btn[disabled]{opacity:.45;cursor:not-allowed}
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}.f .t-small{font-size:12px;line-height:16px}
 .ro{font-size:15px;color:var(--strong)}.status{min-height:22px}.page-foot{padding-bottom:48px}
@@ -117,7 +117,10 @@ def requests_section() -> str:
     """The Requests Section above Your creators: open Rows (no Plate: the page's one Plate is the creators'), the channel as the
     title, platform, size and day under it, the applicant's own words in the foot, Approve and Decline in the trail."""
     rc = R['copy']
-    rows = [Row(e(r['title']), e(r['sub']), link=False, foot=f'<span class="t-small">{e(r["about"])}</span>',
+    def foot(r: dict) -> str:
+        email = f'<span> · {e(r["email"])}</span>' if r.get('email') else ''
+        return f'<span class="stack" style="gap:2px;font-size:13px;line-height:20px"><span>{e(r["about"])}</span><span class="t-small">{Link(e(r["url"]))}{email}</span></span>'
+    rows = [Row(e(r['title']), e(r['sub']), link=False, foot=foot(r),
                 trail=f'<span class="trail-end">{Btn(e(rc["approve"]), primary=True)}{Btn(e(rc["decline"]))}</span>') for r in R['rows']]
     return Section(e(rc['title']), f'<div role="group" aria-label="{e(rc["title"])}">{Rows(rows)}</div>', meta=e(R['meta']), panel=True, flush=True)
 
@@ -256,7 +259,7 @@ def apply(state: str) -> str:
                  + f'<label class="f"><span class="t-label">{e(f["about"]["label"])}</span><textarea class="field" rows="5" style="height:118px;padding-top:10px"></textarea>'
                    f'<span class="t-small">{e(Y["counter"])}</span></label>'
                  + field(f['email'])
-                 + f'<label class="acts" style="align-items:flex-start;min-height:44px"><input type="checkbox" class="radio"> <span>{e(c["disclose"])}</span></label>'
+                 + f'<label class="acts" style="align-items:flex-start;min-height:44px;flex-wrap:nowrap"><input type="checkbox" class="radio" style="margin-top:3px;flex:none"> <span>{e(c["disclose"])}</span></label>'
                  + f'<p class="t-small">{e(c["consent"])}</p>'
                  + f'<div class="acts">{Btn(e(c["submit"]), primary=True, small=False)}</div></div>')
         section = Section(e(c['formTitle']), inner, panel=True)

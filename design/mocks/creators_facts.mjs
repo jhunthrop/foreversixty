@@ -63,7 +63,7 @@ export default {
   onboarding: { copy: strip(ob), join: ob.inviteJoin(me.name) },
   requests: {
     copy: strip(copy.requestsCopy), meta: copy.requestsCopy.meta(requests.length),
-    rows: requests.map((r) => ({ title: m.channelTitle(r.channel_url), sub: m.requestSub(r), about: r.about })),
+    rows: requests.map((r) => ({ title: m.channelTitle(r.channel_url), sub: m.requestSub(r), about: r.about, url: r.channel_url, email: r.contact_email })),
   },
   program: strip(copy.programCopy),
   apply: {
