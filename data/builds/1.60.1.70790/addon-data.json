@@ -14293,12 +14293,76 @@
             "name": "Fireball",
             "condition": "as your filler",
             "icon": "spell_fire_flamebolt",
+            "race_spell_ids": {
+              "human": 3140
+            }
+          }
+        ]
+      },
+      {
+        "level": 26,
+        "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "below 5% mana, with over 30 s left",
+            "icon": "spell_nature_purge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2138,
+            "name": "Fire Blast",
+            "condition": "on cooldown",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8400,
+            "name": "Fireball",
+            "condition": "as your filler",
+            "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
         ]
       },
       {
         "level": 27,
+        "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "below 5% mana, with over 30 s left",
+            "icon": "spell_nature_purge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2948,
+            "name": "Scorch",
+            "condition": "to 5 Improved Scorch stacks or under 5 s left",
+            "icon": "spell_fire_soulburn",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2138,
+            "name": "Fire Blast",
+            "condition": "on cooldown",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8400,
+            "name": "Fireball",
+            "condition": "as your filler",
+            "icon": "spell_fire_flamebolt",
+            "race_spell_ids": {
+              "gnome": 3140,
+              "human": 3140
+            }
+          }
+        ]
+      },
+      {
+        "level": 28,
         "lines": [
           {
             "spell_id": 12051,
@@ -137350,27 +137414,27 @@
             2
           ],
           [
-            2,
+            1,
+            4,
+            3
+          ],
+          [
+            1,
+            4,
+            3
+          ],
+          [
+            1,
+            4,
+            3
+          ],
+          [
+            1,
             1,
             2
           ],
           [
-            2,
             1,
-            2
-          ],
-          [
-            2,
-            1,
-            2
-          ],
-          [
-            2,
-            1,
-            2
-          ],
-          [
-            2,
             1,
             2
           ]
