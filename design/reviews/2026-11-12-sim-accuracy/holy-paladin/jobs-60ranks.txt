@@ -1,0 +1,16 @@
+raid60-alliance-s1-FP-r5 -spec paladin-holy -preset raid -band 60 -faction alliance -seed 1
+raid60-alliance-s1-FP-r4 -spec paladin-holy -preset raid -band 60 -faction alliance -seed 1 -rank 19941=4
+raid60-horde-s1-FP-r5 -spec paladin-holy -preset raid -band 60 -faction horde -seed 1
+raid60-horde-s1-FP-r4 -spec paladin-holy -preset raid -band 60 -faction horde -seed 1 -rank 19941=4
+raid60-alliance-s50001-FP-r4 -spec paladin-holy -preset raid -band 60 -faction alliance -seed 50001 -rank 19941=4
+raid60-horde-s50001-FP-r4 -spec paladin-holy -preset raid -band 60 -faction horde -seed 50001 -rank 19941=4
+bare60-alliance-s1-FT-r5 -spec paladin-holy -preset bare -band 60 -faction alliance -seed 1 -rank 19942=5
+bare60-horde-s1-FT-r5 -spec paladin-holy -preset bare -band 60 -faction horde -seed 1 -rank 19942=5
+bare60-alliance-s1-FT-r3 -spec paladin-holy -preset bare -band 60 -faction alliance -seed 1 -rank 19942=3
+bare60-horde-s1-FT-r3 -spec paladin-holy -preset bare -band 60 -faction horde -seed 1 -rank 19942=3
+bare60-alliance-s1-FP-r3 -spec paladin-holy -preset bare -band 60 -faction alliance -seed 1 -rank 19941=3
+bare60-horde-s1-FP-r3 -spec paladin-holy -preset bare -band 60 -faction horde -seed 1 -rank 19941=3
+bare60-alliance-s1-FP-r5 -spec paladin-holy -preset bare -band 60 -faction alliance -seed 1 -rank 19941=5
+bare60-horde-s1-FP-r5 -spec paladin-holy -preset bare -band 60 -faction horde -seed 1 -rank 19941=5
+bare60-alliance-s1-HS-r3 -spec paladin-holy -preset bare -band 60 -faction alliance -seed 1 -rank 20930=3
+bare60-horde-s1-HS-r3 -spec paladin-holy -preset bare -band 60 -faction horde -seed 1 -rank 20930=3

@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70790:paladin:human:50320215012101251/50322/0503:'
 recommendedRaces: [human, undead]
 statPriority: [MP5, Intellect, Healing power, Critical strike, Spirit]
 description: 'Tank healing with Oath of Light, Flash of Light and Divine Favor, and how to make your mana last.'
-updated: 2026-11-04
+updated: 2026-11-12
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -31,7 +31,7 @@ sources:
 - Oath of Light adds a flat amount to every Holy Light, Flash of Light and Holy Shock you cast on the tank, as long as the rank is close to your level, so a Flash of Light a rank or two below your top one heals for most of what the top rank does and gets more healing out of every point of mana
 - Holy Shock is an instant heal for movement and emergencies, and Divine Favor guarantees a crit when it counts
 - Illumination refunds half the cost of every critical heal
-- Spiritual Focus and Concentration Aura keep your casts going while you take damage
+- Spiritual Focus and Concentration Aura together stop every pushback: a hit while you cast never costs you casting time
 
 ### Weaknesses
 
@@ -51,7 +51,7 @@ The build is 31 Holy, 12 Protection and 8 Retribution.
 - **Spiritual Focus** (5 points): every hit you take while casting Flash of Light, Holy Light or Light's Vigil has a 70% chance not to push the cast back.
 - **Healing Light** (3 points): 12% more healing on Holy Light, Flash of Light and Holy Shock.
 - **Reverence** (2 points): 30% of your regeneration keeps running while you cast.
-- **Illumination** (5 points): every critical heal gives back half the spell's base cost. It also keeps half your Spirit regeneration running while you cast for 15 seconds. It is the reason crit is a mana stat for you.
+- **Illumination** (5 points): every critical heal gives back half the spell's base cost, and nothing else: the buff that would keep your Spirit regeneration running while you cast never lands on the live server. It is the reason crit is a mana stat for you.
 - **Divine Favor** (1 point): your next Flash of Light, Holy Light or Holy Shock is a sure crit, on a 2 minute cooldown.
 - **Infusion of Light** (2 points): a Flash of Light or Holy Shock crit makes your next Holy Light within 15 seconds a second faster.
 - **Oath of Light** (1 point): sworn on one ally for 5 minutes, it adds a flat amount to every Holy Light, Flash of Light and Holy Shock you put on them, as long as the rank is close to your level. It took Blessing of Light's place, and it is the biggest point in the tree.
@@ -66,7 +66,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 ## Rotation and priority
 
-**Before the pull.** Greater Blessings are an hour long in Forever, so they go out before the first pull and after a wipe, not between trash packs. Swear Oath of Light on the tank a second or two before the pull, and move it when the tank changes. Concentration Aura if nobody else in your group runs it.
+**Before the pull.** Greater Blessings are an hour long in Forever, so they go out before the first pull and after a wipe, not between trash packs. Swear Oath of Light on the tank a second or two before the pull, and move it when the tank changes. Run Concentration Aura: its 35% and Spiritual Focus's 70% add up, so nothing that hits you pushes a cast back, where Devotion Aura leaves three hits in ten costing you a second of casting.
 
 **Pace, not health bars.** Divine Favor into Holy Light is for the tank at 40%, the heal that must land. Holy Light and Holy Shock otherwise spend only mana you are ahead on; fall behind and it is Flash of Light alone until you catch up. Holy Shock on the party, where Boundless Light adds 30% crit, gets a large part of its cost back through Illumination.
 
@@ -82,7 +82,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 ## Stat priority
 
-Intellect brings crit with it, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, and ranks learned far below your level lose most or all of it. Spirit only works once you have gone five seconds without a cast, apart from Reverence's 30% and the 50% Illumination gives you for 15 seconds after every critical heal. Spell damage does nothing for a heal.
+Intellect brings crit with it, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, and ranks learned far below your level lose most or all of it. Spirit only works once you have gone five seconds without a cast, apart from Reverence's 30%; Illumination gives you mana on a crit and no regeneration. Spell damage does nothing for a heal.
 
 ## Best in slot
 
