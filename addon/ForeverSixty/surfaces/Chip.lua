@@ -16,7 +16,6 @@ ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
-local Cards = ns.Cards or require("Cards")
 local Prefs = ns.Prefs or require("Prefs")
 local Compat = ns.Compat or require("Compat")
 local Talents = ns.Talents or require("Talents")
@@ -758,8 +757,10 @@ end
 
 --- The specs the "pick a path" card offers for a class: every spec the data
 --- has a default build for, in talent-tree order, each { slug, name,
---- playstyle }. A spec that shares a tree ("feral-bear") sits beside it.
-function Chip.pathSpecs(data, classSlug)
+--- playstyle, next }. A spec that shares a tree ("feral-bear") sits beside it.
+--- `next` (the talent the character would take next on that spec's default,
+--- Follow.defaultNext) is filled only when `ranks` is given.
+function Chip.pathSpecs(data, classSlug, ranks, level)
 	local list = {}
 	local builds = type(data) == "table" and type(data.defaultBuilds) == "table" and data.defaultBuilds or nil
 	if builds == nil or type(classSlug) ~= "string" then
@@ -775,6 +776,7 @@ function Chip.pathSpecs(data, classSlug)
 				name = Talents.titleCase(part),
 				playstyle = L.specPlaystyle[slug],
 				tree = treeIndex(class, part),
+				next = ranks ~= nil and Follow.defaultNext(data, slug, ranks, level) or nil,
 			}
 		end
 	end
@@ -1988,15 +1990,29 @@ function Chip.choosePath(slug)
 	return build
 end
 
+--- A card row's line under its button: the spec's playstyle, then the talent the character would
+--- take next on its build ("Next: Divine Strength", Follow.defaultNext when `spec.next` is set).
+function Chip.cardLine(spec)
+	local parts = {}
+	if type(spec.playstyle) == "string" and spec.playstyle ~= "" then
+		parts[#parts + 1] = spec.playstyle
+	end
+	if type(spec.next) == "string" then
+		parts[#parts + 1] = string.format(L.pathNext, spec.next)
+	end
+	return table.concat(parts, L.exportTreeSeparator)
+end
+
 --- The card's heading: the spec question ("Are you Holy or Retribution?", Follow.specQuestion),
 --- or the chip's own "Pick a path" when the points happen to decide.
 local function cardHeading(ranks)
 	return Follow.specQuestion(Chip.data or ns.Data, Talents.playerClassSlug(), ranks) or L.chipPath
 end
 
---- The card's footer: what choosing loads, the leveling build or the raid build at 60.
-local function cardFooter()
-	return Chip.level() >= Follow.RAID_LEVEL and L.chipPathFooterRaid or L.chipPathFooter
+--- The card's foot: the character's points by tree ("2 Holy · 2 Retribution", Follow.specSplit),
+--- the one fact that says why the card asks; nothing with no points.
+local function cardFooter(ranks)
+	return Follow.specSplit(Chip.data or ns.Data, Talents.playerClassSlug(), ranks) or ""
 end
 
 --- Escape closes the card (UISpecialFrames); so does a click anywhere but
@@ -2034,10 +2050,10 @@ local function cardNote(card, text, hexKey, x, y, width)
 	return line, (line:GetStringHeight() or S.rowHeight)
 end
 
---- The card under the chip: a heading in gold, then one gold button per spec
---- (its label left-aligned) with its playstyle line under it, and a muted
---- footer saying what choosing does. Laid out top to bottom from the card's
---- own corner. Built once; the class does not change.
+--- The card under the chip: the question in gold, then one client button per spec (the site's
+--- secondary recipe, as the tour's tiles and the panel's Pick; its label left-aligned) with its
+--- playstyle line under it, and the points split muted at the foot. Laid out top to bottom from
+--- the card's own corner. Built once; the class does not change.
 function Chip.ensureCard(specs)
 	if Chip.card ~= nil then
 		return Chip.card
@@ -2063,25 +2079,25 @@ function Chip.ensureCard(specs)
 	local y = pad + (heading:GetStringHeight() or S.rowHeight)
 	for _, spec in ipairs(specs) do
 		y = y + S.chipCardRowGap
-		local button = Cards.primaryButton(card, spec.name, function()
+		-- The site's secondary button as the tour's tiles and the panel's Pick draw it, label centred.
+		local button = Widgets.clientButton(card, spec.name, function()
 			Chip.choosePath(spec.slug)
 		end)
+		button:SetWidth(inner)
 		button:SetPoint("TOPLEFT", card, "TOPLEFT", pad, -y)
-		local label = button.foreverSixtyLabel
-		if label ~= nil then
-			label:ClearAllPoints()
-			label:SetPoint("LEFT", button, "LEFT", S.chipCardLabelInset, 0)
-		end
-		y = y + S.buttonHeight + S.gap
-		if spec.playstyle ~= nil then
-			local _, lineHeight = cardNote(card, spec.playstyle, "muted", labelX, y + S.gap, inner - S.chipCardLabelInset)
-			y = y + S.gap + lineHeight
-		end
+		y = y + S.clientButtonHeight + S.gap
+		-- The playstyle and, set on every show, the talent the character would take next (two lines
+		-- reserved: the note changes with the points while the card is built once).
+		local note, lineHeight = cardNote(card, Chip.cardLine(spec), "muted", labelX, y + S.gap,
+			inner - S.chipCardLabelInset)
+		card.foreverSixtyNotes = card.foreverSixtyNotes or {}
+		card.foreverSixtyNotes[spec.slug] = note
+		y = y + S.gap + math.max(lineHeight, S.chipCardNote * 2 + 2)
 	end
 	y = y + S.chipCardRowGap
-	local footer, footerHeight = cardNote(card, cardFooter(), "muted", pad, y, inner)
+	local footer, footerHeight = cardNote(card, cardFooter({}), "muted", pad, y, inner)
 	card.foreverSixtyFooter = footer
-	card:SetHeight(y + footerHeight + pad)
+	card:SetHeight(y + math.max(footerHeight, S.chipCardNote) + pad)
 	Theme.makeEscapable(Chip.CARD_NAME)
 	Chip.closeOnClickOutside(card)
 	card:Hide()
@@ -2094,13 +2110,20 @@ function Chip.togglePath()
 		Chip.closePath()
 		return
 	end
-	local specs = Chip.pathSpecs(Chip.data or ns.Data, Talents.playerClassSlug())
+	local ranks = Talents.readRanks(Chip.data or ns.Data)
+	local specs = Chip.pathSpecs(Chip.data or ns.Data, Talents.playerClassSlug(), ranks, Chip.level())
 	if #specs == 0 or Chip.frame == nil then
 		return
 	end
 	local card = Chip.ensureCard(specs)
-	card.foreverSixtyHeading:SetText(cardHeading())
-	card.foreverSixtyFooter:SetText(cardFooter())
+	card.foreverSixtyHeading:SetText(cardHeading(ranks))
+	card.foreverSixtyFooter:SetText(cardFooter(ranks))
+	for _, spec in ipairs(specs) do
+		local note = card.foreverSixtyNotes ~= nil and card.foreverSixtyNotes[spec.slug] or nil
+		if note ~= nil then
+			note:SetText(Chip.cardLine(spec))
+		end
+	end
 	card:Show()
 end
 

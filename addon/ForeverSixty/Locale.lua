@@ -847,15 +847,13 @@ local L = {
 	chipShownLine = "Forever Sixty line shown.",
 	-- The badge past nine waiting.
 	chipWaitingMany = "9+",
-	-- Under the card's buttons: what choosing does (the card's heading is the spec question, L.pathAsk).
-	chipPathFooter = "Loads the leveling build. You can change it later.",
-	chipPathFooterRaid = "Loads the raid build. You can change it later.",
+	-- The card's heading is the spec question (L.pathAsk); its foot the points split (L.pathSplit).
 	-- One line under each spec's button on the "pick a path" card: plain words,
 	-- at most eight, naming the weapons or the signature talents the tree is
 	-- known for in this client's data (Data.classes tabs). Keyed by spec slug.
 	specPlaystyle = {
-		["druid-balance"] = "Moonkin Form, Wrath and Moonfire from range",
-		["druid-feral"] = "Cat form, bleeds and Berserk",
+		["druid-balance"] = "Moonkin Form, Wrath and Moonfire",
+		["druid-feral"] = "Cat form, bleeds and Savage Fury",
 		["druid-feral-bear"] = "Bear form tank, Leader of the Pack",
 		["druid-restoration"] = "Heals over time, Wild Growth for groups",
 		["hunter-beast-mastery"] = "Your pet fights, Bestial Wrath",
@@ -864,9 +862,9 @@ local L = {
 		["mage-arcane"] = "Arcane Missiles and Arcane Power",
 		["mage-fire"] = "Fireball crits, Blast Wave and Combustion",
 		["mage-frost"] = "Frostbolt, Fingers of Frost, slows and freezes",
-		["paladin-holy"] = "Plate healer, Holy Shock and Holy Light",
+		["paladin-holy"] = "Healer, Holy Shock and Holy Light",
 		["paladin-protection"] = "Shield tank, Holy Shield and Consecration",
-		["paladin-retribution"] = "Two-handed weapons, seals and Twist of Light",
+		["paladin-retribution"] = "Two-handed weapons, Seal of Command and Vengeance",
 		["priest-discipline"] = "Shields first, Penance and Power Infusion",
 		["priest-holy"] = "Group healer, Prayer of Mending",
 		["priest-shadow"] = "Shadowform, Shadow Word: Pain and drains",
@@ -923,7 +921,7 @@ L.dialogEnterPreview = "Enter to preview"
 L.dialogOwnLeveling = "%s leveling builds"
 L.dialogOwnRaid = "%s raid builds"
 L.dialogFollowingMark = "Following"
-L.dialogCustomHeading = "Custom build"
+L.dialogSiteHeading = "From the site"
 L.dialogEnterFollow = "Enter to follow"
 L.dialogOwnFailed = "This build did not load."
 -- The preview's second line, its parts joined by dialogSeparator:
@@ -1471,14 +1469,12 @@ L.timePm = "pm"
 -- The first-run tour (surfaces/Onboarding.lua, design/specs/2026-11-08-addon-ux.md 3.1).
 L.tourTitle = "Welcome to Forever Sixty"
 -- Each page's lead (spec section 6.3): what the player gets, in a veteran's words, then the page.
-L.tourLoopLead = "Your next talent gets a gold ring and a better bag item gets a green arrow. Once the companion "
-	.. "uploads your fights, you get reports and a coach."
-L.tourSiteLead = "You see what to wear, which point to take and which button to press, right in the game."
-L.tourBackLead = "Once the companion has your fights, the site shows your parse on each boss, what cost you most and "
-	.. "what to fix first."
+L.tourLoopLead = "Your next talent gets a gold ring and a better bag item gets a green arrow."
+L.tourSiteLead = "What you pick on the site shows up on your bags, in your talent window and in your panel."
+L.tourBackLead = "Each boss gets a parse and a biggest loss once the companion uploads the fight."
 L.tourGuildLead = "Your officers post the raid on the site. On the day, the line by your minimap says Tonight, and "
 	.. "your panel has your job if they set one."
-L.tourSetupLead = "The gold ring, the bag arrows and the rotation all follow your path."
+L.tourSetupLead = "The gold ring, the bag arrows and the rotation all follow the build you pick."
 L.tourLoopHeading = "How Forever Sixty works"
 L.tourSiteHeading = "The site, in your game"
 L.tourBackHeading = "Your game, back to the site"
@@ -1487,9 +1483,9 @@ L.tourSetupHeading = "Set it up"
 L.tourCharacter = "Your character"
 L.tourCharacterLine = "Imported from Battle.net when you sign in."
 L.tourSite = "foreversixty.gg"
-L.tourSiteLine = "Best in slot for your level, the sim on your gear, guides, tiers."
+L.tourSiteLine = "Best in slot, the sim, guides, tier lists."
 L.tourGame = "In game"
-L.tourGameLine = "The arrow on your bags, the talent ring, your panel."
+L.tourGameLine = "Your bags, your talent window, your panel."
 L.tourFights = "Your fights"
 L.tourFightsLine = "The companion app uploads each one."
 L.tourBack = "Back on the site"
@@ -1528,8 +1524,6 @@ L.tourAnswerSite = "On foreversixty.gg"
 L.tourAnswerDiscord = "In Discord, on the raid post"
 L.tourAnswerLater = "In game and on the phone app"
 L.tourComing = "coming"
-L.tourPathLeveling = "loads its leveling build"
-L.tourPathRaid = "loads its raid build"
 L.tourYourPath = "Your path: %s"
 L.tourNextPoint = "Next point at level %d: %s"
 L.tourSignIn = "Sign in on the site"
@@ -1632,6 +1626,12 @@ L.panelPickPath = "Pick your path"
 L.pathAsk = "Are you %s?"
 L.pathAskComma = ", "
 L.pathAskOr = " or "
+-- The points split beside the question ("2 Holy · 2 Retribution", Follow.specSplit, joined by
+-- exportTreeSeparator), and the talent the character would take next on a spec's build
+-- (Follow.defaultNext), under the tour's tiles, on the panel's Pick rows and at the right of the
+-- Builds dialog's own rows.
+L.pathSplit = "%d %s"
+L.pathNext = "Next: %s"
 L.panelPick = "Pick"
 L.panelPathFoot = "First talent point at level %d"
 L.homeRotationTitle = "Rotation at %d"

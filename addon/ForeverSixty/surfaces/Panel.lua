@@ -328,7 +328,21 @@ function Panel.path(input)
 	end
 	local first = Progress.levelForPoint(1).level
 	local foot = type(input.level) == "number" and input.level < first and string.format(L.panelPathFoot, first) or nil
-	return { kind = "path", heading = input.question, specs = specs, foot = foot }
+	return { kind = "path", heading = input.question, split = input.split, specs = specs, foot = foot }
+end
+
+--- A Pick row's lines: the spec's playstyle, then on its own line the talent the character would
+--- take next on its build ("Next: Divine Strength"), so a talent name never breaks across lines
+--- at the panel's width. Pure.
+function Panel.pathLine(spec)
+	local parts = {}
+	if type(spec.playstyle) == "string" and spec.playstyle ~= "" then
+		parts[#parts + 1] = spec.playstyle
+	end
+	if type(spec.next) == "string" then
+		parts[#parts + 1] = string.format(L.pathNext, spec.next)
+	end
+	return #parts > 0 and table.concat(parts, "\n") or nil
 end
 
 --- The first clause of a plain condition: up to the first ";" or ", and" or ", unless", so the
@@ -602,8 +616,9 @@ function Panel.inputs(data)
 		offPlanTalents = PanelTab.offPlanTalents(build, stagedRanks, data),
 		rows = PanelTab.rotationRows(data, build, ranks, level),
 		expanded = Panel.rotationExpanded(),
-		specs = Chip.pathSpecs(data, Talents.playerClassSlug()),
+		specs = Chip.pathSpecs(data, Talents.playerClassSlug(), ranks, level),
 		question = Follow.specQuestion(data, Talents.playerClassSlug(), ranks),
+		split = Follow.specSplit(data, Talents.playerClassSlug(), ranks),
 	}
 	if tonight ~= nil then
 		input.signup = Panel.signupFor(ForeverSixtyInbox, key, tonight.raid_id)
@@ -1130,7 +1145,9 @@ local function drawTalents(content, region, y, width)
 end
 
 local function drawPath(content, region, y, width)
-	-- The question in the heading face, wrapped to the panel's width (two lines at most).
+	-- The question in the heading face, wrapped to the panel's width (two lines at most), then the
+	-- points split ("2 Holy · 2 Retribution") muted on its own line under it (round 3: beside the
+	-- question it broke mid-phrase at the panel's width).
 	local title = text(content, region.heading, "bone", "title")
 	title:SetWidth(width)
 	if type(title.SetWordWrap) == "function" then
@@ -1138,7 +1155,10 @@ local function drawPath(content, region, y, width)
 	end
 	title:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 	local measured = title:GetStringHeight()
-	y = y + math.max(Panel.H.heading, (type(measured) == "number" and measured > 0 and math.ceil(measured) or 0) + 6)
+	y = y + math.max(Panel.H.heading, (type(measured) == "number" and measured > 0 and math.ceil(measured) or 0) + 4)
+	if region.split ~= nil then
+		y = y + wrapped(content, region.split, "umberMuted", 0, y, width) + 6
+	end
 	for _, spec in ipairs(region.specs) do
 		local name = text(content, spec.name, "ink", "normal")
 		name:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
@@ -1148,8 +1168,9 @@ local function drawPath(content, region, y, width)
 		end)
 		pick:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
 		local lineHeight = Panel.H.line
-		if spec.playstyle ~= nil then
-			lineHeight = wrapped(content, spec.playstyle, "umberMuted", 0, y + Panel.H.line, width - 60)
+		local line = Panel.pathLine(spec)
+		if line ~= nil then
+			lineHeight = wrapped(content, line, "umberMuted", 0, y + Panel.H.line, width - 60)
 		end
 		y = y + Panel.H.line + lineHeight + 6
 	end

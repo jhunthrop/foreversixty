@@ -310,6 +310,50 @@ function Follow.specQuestion(data, classSlug, ranks)
 	return string.format(L.pathAsk, list)
 end
 
+--- The character's points by tree, as the question shows them beside itself (spec 6.2, round 2):
+--- "2 Holy · 2 Retribution", the trees that hold points in tab order; nil with none. Pure on its
+--- arguments; `ranks` defaults to the client's.
+function Follow.specSplit(data, classSlug, ranks)
+	local class = type(data) == "table" and type(data.classes) == "table" and data.classes[classSlug] or nil
+	if type(class) ~= "table" or type(class.tabs) ~= "table" then
+		return nil
+	end
+	local points = Talents.tabPoints(ranks or Talents.readRanks(data))
+	local parts = {}
+	for tab = 1, #class.tabs do
+		if (points[tab] or 0) > 0 and type(class.tabs[tab]) == "table" then
+			parts[#parts + 1] = string.format(L.pathSplit, points[tab], class.tabs[tab].name)
+		end
+	end
+	return #parts > 0 and table.concat(parts, L.exportTreeSeparator) or nil
+end
+
+--- The talent the character would take next on `spec`'s default build for its level (the
+--- leveling build under RAID_LEVEL, the raid build at it), by name: the first point in that order
+--- the character has not taken (Progress.build over the real ranks). The tiles, the panel's Pick
+--- rows and the Builds dialog's own rows show it (spec 6.2 and 6.4, round 2). nil without a default
+--- or once every point of it is taken.
+function Follow.defaultNext(data, spec, ranks, level)
+	local builds = type(data) == "table" and type(data.defaultBuilds) == "table" and data.defaultBuilds[spec] or nil
+	level = level or Compat.playerLevel()
+	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	local default = type(builds) == "table" and builds[kind] or nil
+	local classSlug = type(spec) == "string" and spec:match("^([^-]+)") or nil
+	if type(default) ~= "table" or type(default.order) ~= "table" or classSlug == nil then
+		return nil
+	end
+	local order = {}
+	for index, triple in ipairs(default.order) do
+		order[index] = { tab = triple[1], tier = triple[2], column = triple[3] }
+	end
+	-- Progress requires Follow, so it is reached at call time (progressModule's own way, defined below).
+	local Progress = ns.Progress or require("Progress")
+	local progress = Progress.build({ classSlug = classSlug, order = order }, ranks or Talents.readRanks(data), level)
+	local point = type(progress) == "table" and progress.point or nil
+	local cell = point ~= nil and Talents.cellOf(data, classSlug, point.tab, point.tier, point.column) or nil
+	return type(cell) == "table" and cell.name or nil
+end
+
 --- A character with no build saved in any slot follows the data's default for its spec
 --- (`data.defaultBuilds[<spec>]`, contract 1): leveling, raid at RAID_LEVEL. The spec is
 --- Gear.specOf's, which is the tree with the most points (a tie, or none spent, the first tree;

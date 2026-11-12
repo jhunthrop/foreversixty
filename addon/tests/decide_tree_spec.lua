@@ -119,6 +119,20 @@ describe("Follow.ensureDefault under the rule", function()
 		assert.are.equal("Holy leveling", sure.name)
 	end)
 
+	it("shows the points split beside the question, in tab order, and nothing with no points", function()
+		assert.are.equal("2 Holy · 2 Retribution", Follow.specSplit(DATA, "paladin",
+			{ [3] = { ["1:2"] = 2 }, [1] = { ["1:1"] = 2 } }))
+		assert.is_nil(Follow.specSplit(DATA, "paladin", {}))
+	end)
+
+	it("names the talent the character would take next on a spec's default", function()
+		assert.are.equal("Divine Strength", Follow.defaultNext(DATA, "paladin-holy", {}, 10))
+		assert.are.equal("Benediction", Follow.defaultNext(DATA, "paladin-retribution", {}, 10))
+		-- Every point of the one-point default taken: nothing next.
+		assert.is_nil(Follow.defaultNext(DATA, "paladin-holy", { [1] = { ["1:1"] = 1 } }, 10))
+		assert.is_nil(Follow.defaultNext(DATA, "paladin-protection", {}, 10))
+	end)
+
 	it("words the question from the trees that hold points, else every tree", function()
 		assert.are.equal("Are you Holy or Retribution?", Follow.specQuestion(DATA, "paladin",
 			{ [1] = { ["1:1"] = 2 }, [3] = { ["1:2"] = 2 } }))

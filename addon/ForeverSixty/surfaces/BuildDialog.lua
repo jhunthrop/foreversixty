@@ -63,6 +63,8 @@ BuildDialog.LAYOUT = {
 BuildDialog.OWN_ROWS = 4
 --- The crest beside the own builds' heading, in UI units.
 BuildDialog.HEADING_CREST = 20
+--- The gap between two own-build rows (round 2: wider than the lines inside a row, so rows read as rows).
+BuildDialog.OWN_ROW_GAP = 6
 
 --- Injection points Options fills: the data to read, what to redraw after a build is
 --- used (Options.refreshSurfaces), and what to do instead when the dialog cannot show
@@ -1123,12 +1125,13 @@ end
 
 --- The addon's own builds for `classSlug` at `level`, one row per spec the data has a build for,
 --- in tree order (Chip.pathSpecs): { spec, kind, name ("Retribution build"), detail (the split,
---- "Retribution 51"), order, following }. `followed` is the build in force, marked when it spends
---- the same points. Pure.
-function BuildDialog.ownRows(data, classSlug, level, followed)
+--- "Retribution 51"), order, following, next }. `followed` is the build in force, marked when it
+--- spends the same points; `next` (with `ranks`) is the talent the character would take next on
+--- that build, Follow.defaultNext. Pure.
+function BuildDialog.ownRows(data, classSlug, level, followed, ranks)
 	local rows = {}
 	local kind = BuildDialog.ownKind(level)
-	for _, spec in ipairs(Chip.pathSpecs(data, classSlug)) do
+	for _, spec in ipairs(Chip.pathSpecs(data, classSlug, ranks, level)) do
 		local builds = data.defaultBuilds[spec.slug]
 		local default = type(builds) == "table" and builds[kind] or nil
 		if type(default) == "table" and type(default.order) == "table" then
@@ -1142,6 +1145,7 @@ function BuildDialog.ownRows(data, classSlug, level, followed)
 				name = Follow.buildName(data, build),
 				detail = BuildDialog.split(build, data),
 				following = followed ~= nil and BuildDialog.sameOrder(followed.order, order),
+				next = spec.next,
 			}
 		end
 	end
@@ -1149,9 +1153,13 @@ function BuildDialog.ownRows(data, classSlug, level, followed)
 end
 
 --- The heading over the own builds: the spec question while the character's points do not name
---- a tree (`question`, Follow.specQuestion), else "Paladin leveling builds" ("raid" at 60). Pure.
-function BuildDialog.ownHeading(className, level, question)
+--- a tree (`question`, Follow.specQuestion) with the points split muted after it (`split`,
+--- Follow.specSplit), else "Paladin leveling builds" ("raid" at 60). Pure.
+function BuildDialog.ownHeading(className, level, question, split)
 	if question ~= nil then
+		if split ~= nil then
+			return question .. L.exportTreeSeparator .. Theme.inlineColor("muted", split)
+		end
 		return question
 	end
 	local key = BuildDialog.ownKind(level) == "raid" and L.dialogOwnRaid or L.dialogOwnLeveling
@@ -1464,7 +1472,7 @@ local function currentOwn()
 	if player == nil or type(data) ~= "table" or type(data.defaultBuilds) ~= "table" then
 		return {}
 	end
-	return BuildDialog.ownRows(data, player.classSlug, liveLevel(), Follow.build)
+	return BuildDialog.ownRows(data, player.classSlug, liveLevel(), Follow.build, liveRanks(data))
 end
 
 --- The heading over the own builds for this character: the spec question while the points do not
@@ -1477,8 +1485,10 @@ local function currentOwnHeading()
 	end
 	local names = type(player.classNames) == "table" and player.classNames or {}
 	local className = names[player.classSlug:upper()] or Talents.titleCase(player.classSlug)
-	local ok, question = pcall(Follow.specQuestion, data, player.classSlug, liveRanks(data))
-	return BuildDialog.ownHeading(className, liveLevel(), ok and question or nil)
+	local ranks = liveRanks(data)
+	local ok, question = pcall(Follow.specQuestion, data, player.classSlug, ranks)
+	local has, split = pcall(Follow.specSplit, data, player.classSlug, ranks)
+	return BuildDialog.ownHeading(className, liveLevel(), ok and question or nil, has and split or nil)
 end
 
 local SLOT_WORDS = setmetatable({}, {
@@ -2070,6 +2080,7 @@ local function buildOwnRow(content)
 	row.edge:SetPoint("BOTTOMRIGHT", row.frame, "BOTTOMLEFT", -S.gap, 0)
 	row.edge:SetWidth(E.width)
 	row.edge:Hide()
+	-- "Following" in gold on the followed row; the next talent muted on the others.
 	row.mark = text(row.frame, "gold")
 	row.mark:SetText(L.dialogFollowingMark)
 	row.mark:SetJustifyH("RIGHT")
@@ -2119,7 +2130,7 @@ local function buildPaste(frame, top, bottom)
 		paste.own[index] = buildOwnRow(content)
 	end
 	paste.custom = text(content, "body", width)
-	paste.custom:SetText(L.dialogCustomHeading)
+	paste.custom:SetText(L.dialogSiteHeading)
 	for index = 1, S.dialogInboxRows do
 		paste.rows[index] = buildRow(content)
 	end
@@ -2712,9 +2723,14 @@ function BuildDialog.drawPaste()
 				y = stack(paste.crest, content, y, BuildDialog.HEADING_CREST + S.gap)
 			end
 			row.selected = BuildDialog.cursor == index
-			row.name:SetText(BuildDialog.rowText(entry.name, widthOf(row.name), contentWidth() - S.gap * 2
-				- (entry.following and (widthOf(row.mark)(L.dialogFollowingMark) or 0) or 0)))
-			if entry.following then
+			local mark = entry.following and L.dialogFollowingMark
+				or (entry.next ~= nil and string.format(L.pathNext, entry.next) or nil)
+			local markWidth = mark ~= nil and (widthOf(row.mark)(mark) or 0) or 0
+			row.name:SetText(BuildDialog.rowText(entry.name, widthOf(row.name),
+				contentWidth() - S.gap * 2 - markWidth))
+			if mark ~= nil then
+				row.mark:SetText(mark)
+				row.mark:SetTextColor(Theme.rgb(Theme.HEX[entry.following and "gold" or "muted"]))
 				row.mark:Show()
 			else
 				row.mark:Hide()
@@ -2730,7 +2746,7 @@ function BuildDialog.drawPaste()
 				row.edge:Hide()
 				row.highlight:Hide()
 			end
-			y = stack(row.frame, content, y, ownHeight + S.gap)
+			y = stack(row.frame, content, y, ownHeight + BuildDialog.OWN_ROW_GAP)
 		end
 	end
 	if #own > 0 then

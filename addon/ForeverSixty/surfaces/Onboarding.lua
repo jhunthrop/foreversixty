@@ -118,9 +118,10 @@ function Onboarding.setup(input)
 		end
 	else
 		page.tiles = input.specs or {}
-		-- The spec question when the points do not name a tree (spec 6.2), else the plain heading.
+		-- The spec question when the points do not name a tree (spec 6.2), else the plain heading, with
+		-- the points split beside it ("2 Holy · 2 Retribution").
 		page.ask = input.question or L.panelPickPath
-		page.tilesNote = (input.level or 0) >= Progress.MAX_LEVEL and L.tourPathRaid or L.tourPathLeveling
+		page.split = input.split
 	end
 	local age = input.siteAge
 	if type(age) == "number" and age <= SiteStatus.FRESH_SECONDS then
@@ -143,6 +144,19 @@ end
 function Onboarding.tileWidth(count)
 	count = math.max(1, count or 1)
 	return math.floor((Onboarding.WIDTH - 2 * Onboarding.PAD - Onboarding.TILE_GAP * (count - 1)) / count)
+end
+
+--- A tile's line under its button: the spec's playstyle, then the talent the character would take
+--- next on its build ("Next: Divine Strength"). Pure.
+function Onboarding.tileLine(spec)
+	local parts = {}
+	if type(spec.playstyle) == "string" and spec.playstyle ~= "" then
+		parts[#parts + 1] = spec.playstyle
+	end
+	if type(spec.next) == "string" then
+		parts[#parts + 1] = string.format(L.pathNext, spec.next)
+	end
+	return table.concat(parts, L.exportTreeSeparator)
 end
 
 --- The lead every page opens with (spec 6.3): what the player gets, in one or two lines. Pure.
@@ -238,8 +252,9 @@ function Onboarding.inputs(data)
 		inGuild = guild ~= nil and type(guild.name) == "string" and guild.name ~= "",
 		faction = Compat.playerFaction(), classToken = Chip.classToken(), level = level, name = Compat.playerName(),
 		build = build, buildName = build ~= nil and Follow.buildName(data, build) or nil, progress = progress,
-		specs = Chip.pathSpecs(data, Talents.playerClassSlug()),
+		specs = Chip.pathSpecs(data, Talents.playerClassSlug(), ranks, level),
 		question = Follow.specQuestion(data, Talents.playerClassSlug(), ranks),
+		split = Follow.specSplit(data, Talents.playerClassSlug(), ranks),
 	}
 	local ok, facts = pcall(SiteStatus.facts)
 	input.siteAge = ok and type(facts) == "table" and facts.age or nil
@@ -423,7 +438,8 @@ local function addressBox(parent, value)
 end
 
 local function coming(parent, region)
-	local tag = text(parent, L.tourComing, "clientGold")
+	-- Muted, not gold (round 3): gold on page 4 is the job's; a status tag is quiet.
+	local tag = text(parent, L.tourComing, "umberMuted")
 	tag:SetPoint("LEFT", region, "RIGHT", 6, 0)
 	return tag
 end
@@ -545,8 +561,10 @@ local function drawSetup(content, input)
 	else
 		local title = text(content, page.ask, "ink", "normal")
 		title:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-		local note = text(content, page.tilesNote, "umberMuted")
-		note:SetPoint("LEFT", title, "RIGHT", 8, 0)
+		if page.split ~= nil then
+			local note = text(content, page.split, "umberMuted")
+			note:SetPoint("LEFT", title, "RIGHT", 8, 0)
+		end
 		y = y + 20
 		local tileWidth = Onboarding.tileWidth(#page.tiles)
 		local tallest = 0
@@ -558,11 +576,11 @@ local function drawSetup(content, input)
 			end)
 			pick:SetPoint("TOPLEFT", content, "TOPLEFT", x, -y)
 			pick:SetWidth(tileWidth)
-			local line = text(content, spec.playstyle or "", "umberMuted", "small", tileWidth)
+			local line = text(content, Onboarding.tileLine(spec), "umberMuted", "small", tileWidth)
 			line:SetPoint("TOPLEFT", content, "TOPLEFT", x, -y - 28)
 			tallest = math.max(tallest, height(line))
 		end
-		y = y + 28 + tallest + 8
+		y = y + 28 + tallest + 2
 	end
 	local left = Onboarding.WIDTH - 60 - Onboarding.QR_SIZE - 120
 	if page.seen ~= nil then
@@ -589,7 +607,8 @@ local function drawSetup(content, input)
 		line:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 18)
 		local box = addressBox(content, row[3])
 		box:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 22 - height(line))
-		y = y + 50 + height(line)
+		-- 46: the lead above the page (spec 6.3) took the slack the rows had at 50.
+		y = y + 46 + height(line)
 	end
 	if #rows > 0 then
 		local links = text(content, L.tourLinks, "umberMuted", "small", left)
@@ -684,8 +703,10 @@ end
 
 --- The title band for page `index` of `count` on `key`, Widgets.setTitleBand's shape. Pure.
 function Onboarding.head(key, index, count, input)
-	return { title = L[HEADINGS[key]], meta = L.tourTitle, classToken = input.classToken, faction = input.faction,
-		number = index, unit = string.format(L.tourPageOf, count) }
+	-- "Welcome to Forever Sixty" under the heading on page 1 only (round 2: the same line on every
+	-- page carried nothing).
+	return { title = L[HEADINGS[key]], meta = index == 1 and L.tourTitle or nil, classToken = input.classToken,
+		faction = input.faction, number = index, unit = string.format(L.tourPageOf, count) }
 end
 
 --- The footer for page `index` of `count`: Skip tour (and Tooltips only on page 1) left, Back and
@@ -703,7 +724,7 @@ local function drawFooter(index, count)
 	else
 		-- The last page has no Skip tour: "/fs help opens this again." takes its place (spec 6.3).
 		local again = text(footer, L.tourAgain, "umberMuted", "small")
-		again:SetPoint("LEFT", footer, "LEFT", 4, 0)
+		again:SetPoint("LEFT", footer, "LEFT", 0, 0)
 	end
 	local right
 	if last then

@@ -38,8 +38,10 @@ describe("Onboarding, the pure model", function()
 	it("offers the path tiles with no build, the build followed otherwise", function()
 		local tiles = Onboarding.setup({ level = 6, specs = { { slug = "hunter-beast-mastery", name = "Beast Mastery" } } })
 		assert.are.equal(1, #tiles.tiles)
-		assert.are.equal(L.tourPathLeveling, tiles.tilesNote)
-		assert.are.equal(L.tourPathRaid, Onboarding.setup({ level = 60, specs = {} }).tilesNote)
+		-- Round 2: the note "loads its leveling build" went; the points split sits beside the question.
+		assert.is_nil(tiles.tilesNote)
+		assert.are.equal("2 Holy · 2 Retribution", Onboarding.setup({ level = 13, specs = {},
+			split = "2 Holy · 2 Retribution" }).split)
 		local followed = Onboarding.setup({ level = 24, build = { order = { {}, {} } }, buildName = "Beast Mastery leveling",
 			progress = { matched = 1, nextLevel = 25 }, pointName = "Lethal Attacks" })
 		assert.are.equal(string.format(L.tourYourPath, "Beast Mastery leveling"), followed.path.name)
@@ -89,7 +91,9 @@ describe("Onboarding, the pure model", function()
 
 	it("heads each page in the panel's title band: the heading, the welcome, and 2 of 5", function()
 		local head = Onboarding.head("site", 2, 5, { classToken = "HUNTER", faction = "horde" })
-		assert.are.same({ title = L.tourSiteHeading, meta = L.tourTitle, classToken = "HUNTER", faction = "horde",
+		-- Round 2: the welcome line sits under page 1's heading only.
+		assert.are.equal(L.tourTitle, Onboarding.head("loop", 1, 5, { classToken = "HUNTER", faction = "horde" }).meta)
+		assert.are.same({ title = L.tourSiteHeading, classToken = "HUNTER", faction = "horde",
 			number = 2, unit = "of 5" }, head)
 	end)
 

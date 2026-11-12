@@ -188,10 +188,21 @@ describe("the Builds dialog's own builds (spec 6.4), the pure model", function()
 		assert.are.equal("Arms 1 / Fury 1", raid[1].detail)
 	end)
 
-	it("heads the list with the class's builds, or with the question while the points name no tree", function()
+	it("heads the list with the class's builds, or with the question and the split while the points name no tree",
+		function()
 		assert.are.equal("Warrior leveling builds", BuildDialog.ownHeading("Warrior", 13, nil))
 		assert.are.equal("Warrior raid builds", BuildDialog.ownHeading("Warrior", 60, nil))
 		assert.are.equal("Are you Arms or Fury?", BuildDialog.ownHeading("Warrior", 13, "Are you Arms or Fury?"))
+		local Theme = require("Theme")
+		assert.are.equal("Are you Arms or Fury? · " .. Theme.inlineColor("muted", "1 Arms · 1 Fury"),
+			BuildDialog.ownHeading("Warrior", 13, "Are you Arms or Fury?", "1 Arms · 1 Fury"))
+	end)
+
+	it("names the talent the character would take next on each build, from the real ranks", function()
+		local rows = BuildDialog.ownRows(DATA, "warrior", 13, nil, { [1] = { ["1:1"] = 1 } })
+		assert.are.equal("Improved Heroic Strike", rows[1].next)
+		assert.are.equal("Cruelty", rows[2].next)
+		assert.is_nil(BuildDialog.ownRows(DATA, "warrior", 13, nil)[1].next)
 	end)
 
 	it("shows two site rows beside up to three own rows and one beside four", function()
@@ -246,15 +257,20 @@ describe("the Builds dialog's own builds (spec 6.4), the frame", function()
 		assert.is_true(BuildDialog.open("paste"))
 		mock.runTimers(state)
 		local paste = BuildDialog.paste
-		assert.are.equal("Are you Arms or Fury?", paste.heading:GetText())
+		-- The question with the points split muted after it (round 2).
+		assert.are.equal("Are you Arms or Fury? · " .. require("Theme").inlineColor("muted", "1 Arms · 1 Fury"),
+			paste.heading:GetText())
 		assert.is_true(paste.heading:IsShown())
 		assert.is_true(paste.custom:IsShown())
-		assert.are.equal(L.dialogCustomHeading, paste.custom:GetText())
+		assert.are.equal(L.dialogSiteHeading, paste.custom:GetText())
+		assert.are.equal("From the site", L.dialogSiteHeading)
 		assert.are.equal("Arms build", paste.own[1].name:GetText())
 		assert.is_true(paste.own[1].frame:IsShown())
 		assert.is_true(paste.own[2].frame:IsShown())
 		assert.is_false(paste.own[3].frame:IsShown())
-		assert.is_false(paste.own[1].mark:IsShown())
+		-- Nothing followed: each row's right says the talent the character would take next, muted.
+		assert.are.equal("Next: Improved Heroic Strike", paste.own[1].mark:GetText())
+		assert.are.equal("Next: Cruelty", paste.own[2].mark:GetText())
 		assert.is_false(paste.own[1].edge:IsShown())
 		assert.are.equal(0, BuildDialog.cursor)
 		assert.is_false(BuildDialog.enterHint:IsShown())
@@ -275,8 +291,8 @@ describe("the Builds dialog's own builds (spec 6.4), the frame", function()
 		-- Opened again: Fury is marked Following, the heading is still the question (the points are 1/1).
 		BuildDialog.open("paste")
 		mock.runTimers(state)
-		assert.is_true(BuildDialog.paste.own[2].mark:IsShown())
-		assert.is_false(BuildDialog.paste.own[1].mark:IsShown())
+		assert.are.equal(L.dialogFollowingMark, BuildDialog.paste.own[2].mark:GetText())
+		assert.are.equal("Next: Improved Heroic Strike", BuildDialog.paste.own[1].mark:GetText())
 		assert.is_false(BuildDialog.paste.following:IsShown())
 		-- Enter on an own row follows it; the hint says so.
 		BuildDialog.setCursor(1)
