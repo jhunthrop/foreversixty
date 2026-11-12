@@ -127,7 +127,11 @@ The Shadow card's Shoot note said a shot "holds you for the wand's full speed, s
 
 ## Gates
 
-GATES
+All on the box through `tools/remote-test.sh`, engine fea547248:
+
+- Fork: the full suite in a writable clone (`go test --tags=with_db ./sim/...`): every package green; the one results golden that moved is the mage's (regenerated in fea547248); `go test ./sim/core/ -run "Shoot|Wand"` green on the new test.
+- Site: `npm run lint` (0 errors), `npm run check` (0 errors, 18 hints), `npm test` on `src/lib/sim`, `src/content/guides` (the prose guard reads the new notes and the guide) and `src/fixtures` (104 files, 2,054 tests green); `tools/apl_check.py` (every fork and site copy matches its curated rotation; the notes are the curated file's alone); `gofmt`; `go test ./rankchoices/ ./request/` whole (green, including the round 23, round 24, remeasured, level-gap and lookup pins rewritten to the moved rows, the rotations and APL checks, and `TestRotationLadder` on the seven regenerated goldens: priest-shadow, the three mages, the three warlocks); `go test ./adapter/ ./cmd/spec-breakdown/` green.
+- No Playwright spec renders the Shoot note or a rank line by text, so no e2e spec was touched or run.
 
 ## Measure at refresh
 
