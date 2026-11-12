@@ -1,0 +1,16 @@
+rr-L57-alliance-s1-cur -spec paladin-retribution -preset bare -band 50 -level 57 -faction alliance -seed 1
+rr-L57-alliance-s1-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 57 -faction alliance -seed 1 -rank 20924=4
+rr-L58-alliance-s1-cur -spec paladin-retribution -preset bare -band 50 -level 58 -faction alliance -seed 1
+rr-L58-alliance-s1-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 58 -faction alliance -seed 1 -rank 20924=4
+rr-L57-alliance-s50001-cur -spec paladin-retribution -preset bare -band 50 -level 57 -faction alliance -seed 50001
+rr-L57-alliance-s50001-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 57 -faction alliance -seed 50001 -rank 20924=4
+rr-L58-alliance-s50001-cur -spec paladin-retribution -preset bare -band 50 -level 58 -faction alliance -seed 50001
+rr-L58-alliance-s50001-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 58 -faction alliance -seed 50001 -rank 20924=4
+rr-L57-horde-s1-cur -spec paladin-retribution -preset bare -band 50 -level 57 -faction horde -seed 1
+rr-L57-horde-s1-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 57 -faction horde -seed 1 -rank 20924=4
+rr-L58-horde-s1-cur -spec paladin-retribution -preset bare -band 50 -level 58 -faction horde -seed 1
+rr-L58-horde-s1-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 58 -faction horde -seed 1 -rank 20924=4
+rr-L57-horde-s50001-cur -spec paladin-retribution -preset bare -band 50 -level 57 -faction horde -seed 50001
+rr-L57-horde-s50001-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 57 -faction horde -seed 50001 -rank 20924=4
+rr-L58-horde-s50001-cur -spec paladin-retribution -preset bare -band 50 -level 58 -faction horde -seed 50001
+rr-L58-horde-s50001-cons-r4 -spec paladin-retribution -preset bare -band 50 -level 58 -faction horde -seed 50001 -rank 20924=4
