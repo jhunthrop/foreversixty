@@ -274,10 +274,13 @@ type bisEntry struct {
 	Slots   []bisSlot `json:"slots"`
 }
 
-// bisSlot is one published slot: its pick and the band's runners-up for it.
+// bisSlot is one published slot: its pick, the permanent enchant the raid
+// pass ranked it with (leveling-bis enchants.go; 0 on a bare entry) and the
+// band's runners-up for it.
 type bisSlot struct {
 	Slot         string    `json:"slot"`
 	ItemID       int       `json:"item_id"`
+	EnchantID    int       `json:"enchant_id"`
 	Alternatives []bisItem `json:"alternatives"`
 	RunnersUp    []bisItem `json:"runners_up"`
 }
@@ -409,9 +412,12 @@ func buildRequest(o options) (api.SimRequest, error) {
 	if !ok {
 		return api.SimRequest{}, fmt.Errorf("unknown spec %q", o.spec)
 	}
+	// The entry's enchants travel with its items: the ranker measured the
+	// published set wearing them, and a breakdown that dropped them read a
+	// raid caster 8 to 10% under its own page (2026-11-11 casters lane).
 	gear := make([]api.GearSlot, 0, len(entry.Slots))
 	for _, s := range entry.Slots {
-		gear = append(gear, api.GearSlot{Slot: s.Slot, ItemID: s.ItemID})
+		gear = append(gear, api.GearSlot{Slot: s.Slot, ItemID: s.ItemID, Enchant: s.EnchantID})
 	}
 	gear, err = replaceGear(gear, o.gear)
 	if err != nil {

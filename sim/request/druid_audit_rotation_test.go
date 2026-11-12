@@ -330,9 +330,12 @@ func TestRestorationTankRejuvenationAtTwentyNine(t *testing.T) {
 
 // Round 19: Balance at 40-59 judged level by level (10,000 iterations, seeds
 // 1 and 50001, night elf and tauren). Wrath rank 6 beats rank 7 by 0.1 to
-// 0.7% at 46 to 48 (tie at 49); Insect Swarm rank 3 beats rank 4 by 0.1 to
-// 0.6% at 54 to 58 (tie at 53 and 59). Moonfire and Starfire keep the top
-// rank at every level checked.
+// 0.7% at 46 to 48 (tie at 49); Insect Swarm rank 3 beat rank 4 by 0.1 to
+// 0.6% at 54 to 58 (tie at 53 and 59) on the old order. Moonfire and
+// Starfire keep the top rank at every level checked. Sim-accuracy 2026-11-11
+// (casters lane): on round 29's order (Heart of the Wild and Naturalist at 42
+// to 51) rank 4 beats rank 3 by 0.5 to 1.0% at 53 to 58 for both races and
+// seeds, so no Insect Swarm row remains above 38.
 func TestBalanceRankRowsFortyToFiftyNine(t *testing.T) {
 	const (
 		wrath6, wrath7             = 6780, 8905
@@ -348,8 +351,9 @@ func TestBalanceRankRowsFortyToFiftyNine(t *testing.T) {
 		{"Wrath at 47 is rank 6", 47, wrath6, wrath7},
 		{"Wrath at 49 is rank 7", 49, wrath7, wrath6},
 		{"Insect Swarm at 53 is rank 4", 53, insectSwarm4, insectSwarm3},
-		{"Insect Swarm at 54 is rank 3", 54, insectSwarm3, insectSwarm4},
-		{"Insect Swarm at 56 is rank 3", 56, insectSwarm3, insectSwarm4},
+		{"Insect Swarm at 54 is rank 4", 54, insectSwarm4, insectSwarm3},
+		{"Insect Swarm at 55 is rank 4", 55, insectSwarm4, insectSwarm3},
+		{"Insect Swarm at 56 is rank 4", 56, insectSwarm4, insectSwarm3},
 		{"Insect Swarm at 57 is rank 4", 57, insectSwarm4, insectSwarm3},
 		{"Insect Swarm at 58 is rank 4", 58, insectSwarm4, insectSwarm3},
 	} {

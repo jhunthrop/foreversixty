@@ -142,6 +142,6 @@ Mana runs out before mobs do in your 20s and 30s, so the newest rank is not alwa
 
 - **Moonfire:** rank 2 through 28 (at 26 alone rank 3 edges it), rank 3 from 29 through 34 and rank 4 from 35 through 39.
 - **Wrath:** rank 3 at 22 and 23, then rank 4 from 24 all the way through 39, and rank 6 at 46 and 47.
-- **Insect Swarm**, your talent at 27: rank 1 through 38, and rank 3 from 54 to 56.
+- **Insect Swarm**, your talent at 27: rank 1 through 38.
 
 Everywhere else, cast the newest rank.

@@ -164,13 +164,7 @@
             "from_level": 30,
             "to_level": 38,
             "rank": 1,
-            "note": "Sim-accuracy round 16 wave 2: judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001). At 39 rank 2 beats rank 1 by 1.8%, so the row stops at 38; below it the two are within 1%."
-          },
-          {
-            "from_level": 54,
-            "to_level": 56,
-            "rank": 3,
-            "note": "Sim-accuracy round 19: judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 3 beats rank 4 by 0.2 to 0.6% at 54 to 58 (night elf) and 0.1 to 0.2% at 54 to 56 (tauren, a tie at 57 and 58); they tie at 53 and 59. Sim-accuracy round 24, second pass (spec-breakdown -level N wearing the talents the player has at that level, forced -rank, 10,000 iterations, seeds 1 and 50001, night elf and tauren): rank 3 still wins at 54 to 56 (night elf 0.3 to 0.5% beyond error; tauren 0.1 to 0.2%, ahead at both seeds), but rank 4 wins at 57 (+0.3 to 0.6%) and 58 (+0.8 to 0.9%) for both races, so the row ends at 56."
+            "note": "Sim-accuracy round 16 wave 2: judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001). At 39 rank 2 beats rank 1 by 1.8%, so the row stops at 38; below it the two are within 1%. Sim-accuracy 2026-11-11 (casters lane): the round 19 rank 3 row at 54 to 56 is gone; on round 29's order (Heart of the Wild and Naturalist at 42 to 51) rank 4 beats rank 3 by 0.5 to 1.0% at 53 to 58 for a night elf and a tauren at seeds 1 and 50001 (10,000 iterations), so the newest rank is cast from 39 on."
           }
         ]
       }
