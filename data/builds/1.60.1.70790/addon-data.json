@@ -4593,7 +4593,7 @@
         ]
       },
       {
-        "level": 49,
+        "level": 48,
         "lines": [
           {
             "spell_id": 9833,
@@ -4756,60 +4756,6 @@
       },
       {
         "level": 54,
-        "lines": [
-          {
-            "spell_id": 9834,
-            "name": "Moonfire",
-            "condition": "when the fight ends before a Wrath finishes",
-            "icon": "spell_nature_starfall",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 9912,
-            "name": "Wrath",
-            "condition": "when the fight ends before a Starfire finishes",
-            "icon": "spell_nature_abolishmagic",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 9834,
-            "name": "Moonfire",
-            "condition": "when Moonfire is not ticking on the target",
-            "icon": "spell_nature_starfall",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 24975,
-            "name": "Insect Swarm",
-            "condition": "when Insect Swarm is not ticking on the target",
-            "icon": "spell_nature_insectswarm",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 9912,
-            "name": "Wrath",
-            "condition": "when you have no Eclipse charge",
-            "icon": "spell_nature_abolishmagic",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 9912,
-            "name": "Wrath",
-            "condition": "when mana % is under boss health % and Innervate is down",
-            "icon": "spell_nature_abolishmagic",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 9875,
-            "name": "Starfire",
-            "condition": "as your filler",
-            "icon": "spell_arcane_starfire",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 57,
         "lines": [
           {
             "spell_id": 9834,
@@ -8967,35 +8913,117 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "when you are under 70% and Rejuvenation is not on you",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2090,
+            "name": "Rejuvenation",
+            "condition": "on a party member under 70% with no Rejuvenation",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 45,
+        "lines": [
+          {
+            "spell_id": 29166,
+            "name": "Innervate",
+            "condition": "below 30% mana",
+            "icon": "spell_nature_lightning",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18562,
+            "name": "Swiftmend",
+            "condition": "on the tank under 75% while mana % is over boss health %",
+            "icon": "inv_relics_idolofrejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8918,
+            "name": "Tranquility",
+            "condition": "when 2 party members are under 70%",
+            "icon": "spell_nature_tranquility",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 9750,
+            "name": "Regrowth",
+            "condition": "when Regrowth is not ticking on the tank",
+            "icon": "spell_nature_resistnature",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2091,
+            "name": "Rejuvenation",
+            "condition": "when Rejuvenation is not ticking on the tank",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5189,
+            "name": "Healing Touch",
+            "condition": "on the tank under 55% while mana % is over boss health %",
+            "icon": "spell_nature_healingtouch",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2091,
+            "name": "Rejuvenation",
+            "condition": "when you are under 70% and Rejuvenation is not on you",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2091,
+            "name": "Rejuvenation",
+            "condition": "on a party member under 70% with no Rejuvenation",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2091,
+            "name": "Rejuvenation",
+            "condition": "on a party member under 70% with no Rejuvenation",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2091,
+            "name": "Rejuvenation",
+            "condition": "on a party member under 70% with no Rejuvenation",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
@@ -9049,35 +9077,35 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "when you are under 70% and Rejuvenation is not on you",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
@@ -9131,35 +9159,35 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "when you are under 70% and Rejuvenation is not on you",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 2091,
             "name": "Rejuvenation",
             "condition": "on a party member under 70% with no Rejuvenation",
             "icon": "spell_nature_rejuvenation",
@@ -9445,7 +9473,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3627,
+            "spell_id": 9840,
             "name": "Rejuvenation",
             "condition": "when Rejuvenation is not ticking on the tank",
             "icon": "spell_nature_rejuvenation",
@@ -9496,7 +9524,7 @@
         ]
       },
       {
-        "level": 57,
+        "level": 59,
         "lines": [
           {
             "spell_id": 29166,
@@ -9728,58 +9756,6 @@
         ]
       },
       {
-        "level": 14,
-        "lines": [
-          {
-            "spell_id": 1130,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13549,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 3044,
-            "name": "Arcane Shot",
-            "condition": "when nothing else is ready",
-            "icon": "ability_impalingbolt",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 17,
-        "lines": [
-          {
-            "spell_id": 1130,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13549,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14281,
-            "name": "Arcane Shot",
-            "condition": "when nothing else is ready",
-            "icon": "ability_impalingbolt",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
         "level": 18,
         "lines": [
           {
@@ -9804,7 +9780,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14281,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -9844,7 +9820,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14282,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -9884,7 +9860,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14282,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -9931,7 +9907,54 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14282,
+            "name": "Arcane Shot",
+            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 28,
+        "lines": [
+          {
+            "spell_id": 14323,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 3045,
+            "name": "Rapid Fire",
+            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
+            "icon": "ability_hunter_runningshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 19434,
+            "name": "Aimed Shot",
+            "condition": "on cooldown, shared with Multi-Shot",
+            "icon": "inv_spear_07",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2643,
+            "name": "Multi-Shot",
+            "condition": "on cooldown, above 25% mana",
+            "icon": "ability_upgrademoonglaive",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1978,
+            "name": "Serpent Sting",
+            "condition": "when Serpent Sting has under 1.5 s left",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14283,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -9978,7 +10001,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14283,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -9987,7 +10010,7 @@
         ]
       },
       {
-        "level": 34,
+        "level": 36,
         "lines": [
           {
             "spell_id": 14323,
@@ -10025,7 +10048,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14282,
+            "spell_id": 14284,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10072,7 +10095,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14282,
+            "spell_id": 14284,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10126,7 +10149,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14284,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10180,7 +10203,61 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14284,
+            "name": "Arcane Shot",
+            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 44,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 19574,
+            "name": "Bestial Wrath",
+            "condition": "on cooldown, with Rapid Fire and trinkets",
+            "icon": "ability_druid_ferociousbite",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 3045,
+            "name": "Rapid Fire",
+            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
+            "icon": "ability_hunter_runningshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 19434,
+            "name": "Aimed Shot",
+            "condition": "on cooldown, shared with Multi-Shot",
+            "icon": "inv_spear_07",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2643,
+            "name": "Multi-Shot",
+            "condition": "on cooldown, above 25% mana",
+            "icon": "ability_upgrademoonglaive",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 13553,
+            "name": "Serpent Sting",
+            "condition": "when Serpent Sting has under 1.5 s left",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14285,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10234,7 +10311,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14282,
+            "spell_id": 14285,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10243,7 +10320,7 @@
         ]
       },
       {
-        "level": 53,
+        "level": 52,
         "lines": [
           {
             "spell_id": 14324,
@@ -10289,69 +10366,6 @@
           },
           {
             "spell_id": 14286,
-            "name": "Arcane Shot",
-            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
-            "icon": "ability_impalingbolt",
-            "race_spell_ids": {
-              "dwarf": 14282,
-              "high-order-skyborne": 14282,
-              "human": 14282,
-              "night-elf": 14282,
-              "orc": 14282,
-              "tauren": 14282,
-              "troll": 14283,
-              "windshaper-skyborne": 14282
-            }
-          }
-        ]
-      },
-      {
-        "level": 54,
-        "lines": [
-          {
-            "spell_id": 14324,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19574,
-            "name": "Bestial Wrath",
-            "condition": "on cooldown, with Rapid Fire and trinkets",
-            "icon": "ability_druid_ferociousbite",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 3045,
-            "name": "Rapid Fire",
-            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
-            "icon": "ability_hunter_runningshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19434,
-            "name": "Aimed Shot",
-            "condition": "on cooldown, shared with Multi-Shot",
-            "icon": "inv_spear_07",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "on cooldown, above 25% mana",
-            "icon": "ability_upgrademoonglaive",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13554,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14283,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10405,7 +10419,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14282,
+            "spell_id": 14286,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10522,86 +10536,6 @@
         ]
       },
       {
-        "level": 13,
-        "lines": [
-          {
-            "spell_id": 1130,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13549,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14281,
-            "name": "Arcane Shot",
-            "condition": "when nothing else is ready",
-            "icon": "ability_impalingbolt",
-            "race_spell_ids": {
-              "troll": 3044
-            }
-          }
-        ]
-      },
-      {
-        "level": 14,
-        "lines": [
-          {
-            "spell_id": 1130,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13549,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 3044,
-            "name": "Arcane Shot",
-            "condition": "when nothing else is ready",
-            "icon": "ability_impalingbolt",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 16,
-        "lines": [
-          {
-            "spell_id": 1130,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13549,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14281,
-            "name": "Arcane Shot",
-            "condition": "when nothing else is ready",
-            "icon": "ability_impalingbolt",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
         "level": 18,
         "lines": [
           {
@@ -10626,7 +10560,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14281,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10666,7 +10600,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14282,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10706,7 +10640,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14282,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10753,7 +10687,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14282,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10762,7 +10696,7 @@
         ]
       },
       {
-        "level": 30,
+        "level": 28,
         "lines": [
           {
             "spell_id": 14323,
@@ -10793,14 +10727,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13551,
+            "spell_id": 1978,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14282,
+            "spell_id": 14283,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -10809,7 +10743,7 @@
         ]
       },
       {
-        "level": 33,
+        "level": 30,
         "lines": [
           {
             "spell_id": 14323,
@@ -11082,7 +11016,54 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14283,
+            "spell_id": 14284,
+            "name": "Arcane Shot",
+            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 44,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 3045,
+            "name": "Rapid Fire",
+            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
+            "icon": "ability_hunter_runningshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 19434,
+            "name": "Aimed Shot",
+            "condition": "on cooldown, shared with Multi-Shot",
+            "icon": "inv_spear_07",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2643,
+            "name": "Multi-Shot",
+            "condition": "on cooldown, above 25% mana",
+            "icon": "ability_upgrademoonglaive",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 13553,
+            "name": "Serpent Sting",
+            "condition": "when Serpent Sting has under 1.5 s left",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14285,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -11136,7 +11117,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14283,
+            "spell_id": 14285,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -11194,192 +11175,12 @@
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
-            "race_spell_ids": {
-              "dwarf": 14283,
-              "high-order-skyborne": 14283,
-              "human": 14283,
-              "night-elf": 14283,
-              "orc": 14283,
-              "tauren": 14283,
-              "troll": 14284,
-              "windshaper-skyborne": 14283
-            }
-          }
-        ]
-      },
-      {
-        "level": 49,
-        "lines": [
-          {
-            "spell_id": 14324,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 3045,
-            "name": "Rapid Fire",
-            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
-            "icon": "ability_hunter_runningshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19434,
-            "name": "Aimed Shot",
-            "condition": "on cooldown, shared with Multi-Shot",
-            "icon": "inv_spear_07",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "on cooldown, above 25% mana",
-            "icon": "ability_upgrademoonglaive",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1310785,
-            "name": "Sniper Shot",
-            "condition": "while Aimed Shot is on cooldown",
-            "icon": "hunter_pvp_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13553,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14284,
-            "name": "Arcane Shot",
-            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
-            "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
         ]
       },
       {
         "level": 50,
-        "lines": [
-          {
-            "spell_id": 14324,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 3045,
-            "name": "Rapid Fire",
-            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
-            "icon": "ability_hunter_runningshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19434,
-            "name": "Aimed Shot",
-            "condition": "on cooldown, shared with Multi-Shot",
-            "icon": "inv_spear_07",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "on cooldown, above 25% mana",
-            "icon": "ability_upgrademoonglaive",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1310785,
-            "name": "Sniper Shot",
-            "condition": "while Aimed Shot is on cooldown",
-            "icon": "hunter_pvp_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13554,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14284,
-            "name": "Arcane Shot",
-            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
-            "icon": "ability_impalingbolt",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 54,
-        "lines": [
-          {
-            "spell_id": 14324,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 3045,
-            "name": "Rapid Fire",
-            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
-            "icon": "ability_hunter_runningshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19434,
-            "name": "Aimed Shot",
-            "condition": "on cooldown, shared with Multi-Shot",
-            "icon": "inv_spear_07",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "on cooldown, above 25% mana",
-            "icon": "ability_upgrademoonglaive",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1310785,
-            "name": "Sniper Shot",
-            "condition": "while Aimed Shot is on cooldown",
-            "icon": "hunter_pvp_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13554,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14286,
-            "name": "Arcane Shot",
-            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
-            "icon": "ability_impalingbolt",
-            "race_spell_ids": {
-              "dwarf": 14285,
-              "high-order-skyborne": 14284,
-              "human": 14284,
-              "night-elf": 14284,
-              "orc": 14284,
-              "tauren": 14284,
-              "troll": 14284,
-              "windshaper-skyborne": 14284
-            }
-          }
-        ]
-      },
-      {
-        "level": 57,
         "lines": [
           {
             "spell_id": 14324,
@@ -11433,6 +11234,60 @@
         ]
       },
       {
+        "level": 52,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 3045,
+            "name": "Rapid Fire",
+            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
+            "icon": "ability_hunter_runningshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 19434,
+            "name": "Aimed Shot",
+            "condition": "on cooldown, shared with Multi-Shot",
+            "icon": "inv_spear_07",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2643,
+            "name": "Multi-Shot",
+            "condition": "on cooldown, above 25% mana",
+            "icon": "ability_upgrademoonglaive",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310785,
+            "name": "Sniper Shot",
+            "condition": "while Aimed Shot is on cooldown",
+            "icon": "hunter_pvp_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 13554,
+            "name": "Serpent Sting",
+            "condition": "when Serpent Sting has under 1.5 s left",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14286,
+            "name": "Arcane Shot",
+            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 58,
         "lines": [
           {
@@ -11478,7 +11333,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14284,
+            "spell_id": 14286,
             "name": "Arcane Shot",
             "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
             "icon": "ability_impalingbolt",
@@ -12896,6 +12751,39 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 116,
+            "name": "Frostbolt",
+            "condition": "as your filler once you stop blasting",
+            "icon": "spell_frost_frostbolt02",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 29,
+        "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "below 5% mana, with over 30 s left",
+            "icon": "spell_nature_purge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5145,
+            "name": "Arcane Missiles",
+            "condition": "when Missile Barrage procs",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 400574,
+            "name": "Arcane Blast",
+            "condition": "to 3 stacks, then while mana % is over boss health %",
+            "icon": "spell_arcane_blast",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7322,
             "name": "Frostbolt",
             "condition": "as your filler once you stop blasting",
@@ -14088,7 +13976,6 @@
             "condition": "at 3 Heating Up stacks",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {
-              "human": 12522,
               "orc": 12522,
               "troll": 12522,
               "undead": 12522
@@ -14351,7 +14238,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10205,
+            "spell_id": 8445,
             "name": "Scorch",
             "condition": "to 5 Improved Scorch stacks or under 5 s left",
             "icon": "spell_fire_soulburn",
@@ -14372,7 +14259,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10205,
+            "spell_id": 8445,
             "name": "Scorch",
             "condition": "as your filler",
             "icon": "spell_fire_soulburn",
@@ -14405,7 +14292,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10206,
+            "spell_id": 8446,
             "name": "Scorch",
             "condition": "to 5 Improved Scorch stacks or under 5 s left",
             "icon": "spell_fire_soulburn",
@@ -14426,7 +14313,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10206,
+            "spell_id": 8446,
             "name": "Scorch",
             "condition": "as your filler",
             "icon": "spell_fire_soulburn",
@@ -14459,7 +14346,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10206,
+            "spell_id": 8446,
             "name": "Scorch",
             "condition": "to 5 Improved Scorch stacks or under 5 s left",
             "icon": "spell_fire_soulburn",
@@ -14487,14 +14374,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10206,
+            "spell_id": 8446,
             "name": "Scorch",
             "condition": "when Fire Blast is ready before Scorch finishes",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10206,
+            "spell_id": 8446,
             "name": "Scorch",
             "condition": "as your filler until you learn Arcane Blast",
             "icon": "spell_fire_soulburn",
@@ -14534,7 +14421,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10206,
+            "spell_id": 8446,
             "name": "Scorch",
             "condition": "to 5 Improved Scorch stacks or under 5 s left",
             "icon": "spell_fire_soulburn",
@@ -14569,14 +14456,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10206,
+            "spell_id": 8446,
             "name": "Scorch",
             "condition": "when Fire Blast is ready before Scorch finishes",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10206,
+            "spell_id": 8446,
             "name": "Scorch",
             "condition": "as your filler until you learn Arcane Blast",
             "icon": "spell_fire_soulburn",
@@ -17835,88 +17722,6 @@
       },
       {
         "level": 40,
-        "lines": [
-          {
-            "spell_id": 1311015,
-            "name": "Templar's Bulwark",
-            "condition": "below 35% health",
-            "icon": "ability_paladin_shieldofthetemplar",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 642,
-            "name": "Divine Shield",
-            "condition": "below 25% health",
-            "icon": "spell_holy_divineintervention",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5573,
-            "name": "Divine Protection",
-            "condition": "below 20% health",
-            "icon": "spell_holy_restoration",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20419,
-            "name": "Seal of Fury",
-            "condition": "under 2 s left on the seal, saving mana for Holy Shield",
-            "icon": "spell_holy_retributionaura",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20927,
-            "name": "Holy Shield",
-            "condition": "on cooldown",
-            "icon": "spell_holy_blessingofprotection",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 679,
-            "name": "Holy Strike",
-            "condition": "on cooldown",
-            "icon": "classicon_paladin",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 407632,
-            "name": "Hammer of the Righteous",
-            "condition": "on cooldown, saving mana for Holy Shield",
-            "icon": "ability_paladin_hammeroftherighteous",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1310994,
-            "name": "Swift Judgement",
-            "condition": "on cooldown",
-            "icon": "ability_paladin_judgementred",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20271,
-            "name": "Judgement",
-            "condition": "on cooldown, saving mana for Holy Shield",
-            "icon": "spell_holy_righteousfury",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5615,
-            "name": "Exorcism",
-            "condition": "on Undead and Demons, saving mana for Holy Shield",
-            "icon": "spell_holy_excorcism_02",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 26573,
-            "name": "Consecration",
-            "condition": "when mana lasts to the end of the fight, or below 35% health",
-            "icon": "spell_holy_innerfire",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 41,
         "lines": [
           {
             "spell_id": 1311015,
@@ -21409,18 +21214,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6077,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "when Renew is not on the tank",
             "icon": "spell_holy_renew",
-            "race_spell_ids": {
-              "dwarf": 6074,
-              "gnome": 6074,
-              "human": 6075,
-              "night-elf": 6074,
-              "troll": 6074,
-              "undead": 6074
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 9473,
@@ -22327,11 +22125,18 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6076,
+            "spell_id": 6078,
             "name": "Renew",
             "condition": "when Renew is not on the tank",
             "icon": "spell_holy_renew",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 6076,
+              "gnome": 6076,
+              "human": 6077,
+              "night-elf": 6076,
+              "troll": 6076,
+              "undead": 6076
+            }
           },
           {
             "spell_id": 9474,
@@ -22521,9 +22326,9 @@
             "race_spell_ids": {
               "dwarf": 6076,
               "gnome": 6076,
-              "human": 6077,
               "night-elf": 6076,
-              "undead": 6077
+              "troll": 6076,
+              "undead": 6076
             }
           },
           {
@@ -23706,7 +23511,13 @@
             "name": "Prayer of Healing",
             "condition": "when 3 party members are below 85%",
             "icon": "spell_holy_prayerofhealing02",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 596,
+              "gnome": 596,
+              "human": 596,
+              "night-elf": 596,
+              "troll": 596
+            }
           },
           {
             "spell_id": 2060,
@@ -23895,7 +23706,208 @@
             "name": "Prayer of Healing",
             "condition": "when 3 party members are below 85%",
             "icon": "spell_holy_prayerofhealing02",
+            "race_spell_ids": {
+              "dwarf": 596,
+              "gnome": 596,
+              "human": 596,
+              "night-elf": 596,
+              "troll": 596
+            }
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on the tank below 80% while mana % is over boss health %",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6064,
+            "name": "Heal",
+            "condition": "on the tank below 80% until Greater Heal at level 40",
+            "icon": "spell_holy_heal02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on a party member below 65% while mana holds",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on a party member below 65% while mana holds",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on a party member below 65% while mana holds",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on a party member below 65% while mana holds",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on the tank below 50% when mana % is under boss health %",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6064,
+            "name": "Heal",
+            "condition": "on the tank below 50% when mana % is under boss health %",
+            "icon": "spell_holy_heal02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on a party member below 35% when mana is low",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on a party member below 35% when mana is low",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on a party member below 35% when mana is low",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "on a party member below 35% when mana is low",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 55,
+        "lines": [
+          {
+            "spell_id": 1277327,
+            "name": "Dark Sacrifice",
+            "condition": "below 70% mana and above 70% health, Undead only",
+            "icon": "spell_holy_powerinfusion_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1240721,
+            "name": "Penance",
+            "condition": "on the tank below 95%",
+            "icon": "spell_holy_penance",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1240721,
+            "name": "Penance",
+            "condition": "on a party member below 70%",
+            "icon": "spell_holy_penance",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1240721,
+            "name": "Penance",
+            "condition": "on a party member below 70%",
+            "icon": "spell_holy_penance",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1240721,
+            "name": "Penance",
+            "condition": "on a party member below 70%",
+            "icon": "spell_holy_penance",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1240721,
+            "name": "Penance",
+            "condition": "on a party member below 70%",
+            "icon": "spell_holy_penance",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10900,
+            "name": "Power Word: Shield",
+            "condition": "on the tank below 90% with no Weakened Soul",
+            "icon": "spell_holy_powerwordshield",
+            "race_spell_ids": {
+              "human": 10899
+            }
+          },
+          {
+            "spell_id": 10927,
+            "name": "Renew",
+            "condition": "when Renew is not on the tank",
+            "icon": "spell_holy_renew",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10916,
+            "name": "Flash Heal",
+            "condition": "on the tank below 35%",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10916,
+            "name": "Flash Heal",
+            "condition": "on a party member below 30% while mana holds",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10916,
+            "name": "Flash Heal",
+            "condition": "on a party member below 30% while mana holds",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10916,
+            "name": "Flash Heal",
+            "condition": "on a party member below 30% while mana holds",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10916,
+            "name": "Flash Heal",
+            "condition": "on a party member below 30% while mana holds",
+            "icon": "spell_holy_flashheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10960,
+            "name": "Prayer of Healing",
+            "condition": "when 3 party members are below 85%",
+            "icon": "spell_holy_prayerofhealing02",
+            "race_spell_ids": {
+              "dwarf": 996,
+              "gnome": 996,
+              "human": 996,
+              "night-elf": 996,
+              "troll": 996
+            }
           },
           {
             "spell_id": 2060,
@@ -24087,7 +24099,13 @@
             "name": "Prayer of Healing",
             "condition": "when 3 party members are below 85%",
             "icon": "spell_holy_prayerofhealing02",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 996,
+              "gnome": 996,
+              "human": 996,
+              "night-elf": 996,
+              "troll": 996
+            }
           },
           {
             "spell_id": 2060,
@@ -24279,7 +24297,12 @@
             "name": "Prayer of Healing",
             "condition": "when 3 party members are below 85%",
             "icon": "spell_holy_prayerofhealing02",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 996,
+              "gnome": 996,
+              "human": 996,
+              "troll": 996
+            }
           },
           {
             "spell_id": 2060,
@@ -24471,7 +24494,13 @@
             "name": "Prayer of Healing",
             "condition": "when 3 party members are below 85%",
             "icon": "spell_holy_prayerofhealing02",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 996,
+              "gnome": 996,
+              "human": 996,
+              "night-elf": 996,
+              "troll": 996
+            }
           },
           {
             "spell_id": 2060,
@@ -24660,7 +24689,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10960,
+            "spell_id": 996,
             "name": "Prayer of Healing",
             "condition": "when 3 party members are below 85%",
             "icon": "spell_holy_prayerofhealing02",
@@ -25025,88 +25054,6 @@
       },
       {
         "level": 16,
-        "lines": [
-          {
-            "spell_id": 6074,
-            "name": "Renew",
-            "condition": "when Renew is not on the tank",
-            "icon": "spell_holy_renew",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on the tank below 80% while mana % is over boss health %",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on a party member below 65% while mana holds",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on a party member below 65% while mana holds",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on a party member below 65% while mana holds",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on a party member below 65% while mana holds",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on the tank below 50% when mana % is under boss health %",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on a party member below 35% when mana is low",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on a party member below 35% when mana is low",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on a party member below 35% when mana is low",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "on a party member below 35% when mana is low",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 17,
         "lines": [
           {
             "spell_id": 139,
@@ -25610,18 +25557,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6076,
+            "spell_id": 139,
             "name": "Renew",
             "condition": "when Renew is not on the tank",
             "icon": "spell_holy_renew",
-            "race_spell_ids": {
-              "dwarf": 139,
-              "gnome": 139,
-              "human": 139,
-              "night-elf": 139,
-              "troll": 139,
-              "undead": 6074
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 9472,
@@ -25771,18 +25711,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6076,
+            "spell_id": 139,
             "name": "Renew",
             "condition": "when Renew is not on the tank",
             "icon": "spell_holy_renew",
-            "race_spell_ids": {
-              "dwarf": 6074,
-              "gnome": 139,
-              "human": 139,
-              "night-elf": 139,
-              "troll": 139,
-              "undead": 6074
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 9472,
@@ -25909,9 +25842,9 @@
             "race_spell_ids": {
               "dwarf": 6074,
               "gnome": 6074,
-              "human": 139,
+              "human": 6074,
               "night-elf": 6074,
-              "troll": 6074,
+              "troll": 139,
               "undead": 139
             }
           },
@@ -26090,18 +26023,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6076,
+            "spell_id": 6074,
             "name": "Renew",
             "condition": "when Renew is not on the tank",
             "icon": "spell_holy_renew",
-            "race_spell_ids": {
-              "dwarf": 139,
-              "gnome": 139,
-              "human": 6075,
-              "night-elf": 139,
-              "troll": 6074,
-              "undead": 6074
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 9472,
@@ -26283,12 +26209,12 @@
             "condition": "when Renew is not on the tank",
             "icon": "spell_holy_renew",
             "race_spell_ids": {
-              "dwarf": 6074,
-              "gnome": 6074,
-              "human": 6074,
-              "night-elf": 6074,
+              "dwarf": 139,
+              "gnome": 139,
+              "human": 139,
+              "night-elf": 139,
               "troll": 6074,
-              "undead": 139
+              "undead": 6074
             }
           },
           {
@@ -26456,18 +26382,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6077,
+            "spell_id": 6074,
             "name": "Renew",
             "condition": "when Renew is not on the tank",
             "icon": "spell_holy_renew",
-            "race_spell_ids": {
-              "dwarf": 6075,
-              "gnome": 6074,
-              "human": 6075,
-              "night-elf": 6074,
-              "troll": 6074,
-              "undead": 6074
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 9473,
@@ -26599,11 +26518,11 @@
             "condition": "when Renew is not on the tank",
             "icon": "spell_holy_renew",
             "race_spell_ids": {
-              "dwarf": 6075,
+              "dwarf": 139,
               "gnome": 6075,
-              "human": 6074,
+              "human": 6075,
               "night-elf": 6075,
-              "troll": 6074,
+              "troll": 6075,
               "undead": 6075
             }
           },
@@ -26793,214 +26712,6 @@
       },
       {
         "level": 35,
-        "lines": [
-          {
-            "spell_id": 1277325,
-            "name": "Dark Sacrifice",
-            "condition": "below 70% mana and above 70% health, Undead only",
-            "icon": "spell_holy_powerinfusion_shadow",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6077,
-            "name": "Renew",
-            "condition": "when Renew is not on the tank",
-            "icon": "spell_holy_renew",
-            "race_spell_ids": {
-              "dwarf": 6075,
-              "gnome": 6075,
-              "human": 6074,
-              "night-elf": 6075,
-              "troll": 6075,
-              "undead": 6075
-            }
-          },
-          {
-            "spell_id": 9473,
-            "name": "Flash Heal",
-            "condition": "on the tank below 35%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 9473,
-            "name": "Flash Heal",
-            "condition": "on a party member below 30%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 9473,
-            "name": "Flash Heal",
-            "condition": "on a party member below 30%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 9473,
-            "name": "Flash Heal",
-            "condition": "on a party member below 30%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 9473,
-            "name": "Flash Heal",
-            "condition": "on a party member below 30%",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 596,
-            "name": "Prayer of Healing",
-            "condition": "when 3 party members are below 85%",
-            "icon": "spell_holy_prayerofhealing02",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on the tank below 80% while mana % is over boss health %",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on a party member below 65% while mana holds",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on a party member below 65% while mana holds",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on a party member below 65% while mana holds",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on a party member below 65% while mana holds",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on the tank below 50% when mana % is under boss health %",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on a party member below 35% when mana is low",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on a party member below 35% when mana is low",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on a party member below 35% when mana is low",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "on a party member below 35% when mana is low",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {
-              "dwarf": 6063,
-              "gnome": 6063,
-              "human": 6063,
-              "night-elf": 6063,
-              "troll": 6063,
-              "undead": 6063
-            }
-          }
-        ]
-      },
-      {
-        "level": 36,
         "lines": [
           {
             "spell_id": 1277325,
@@ -36190,10 +35901,10 @@
             "condition": "as your filler",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {
-              "dwarf": 915,
+              "dwarf": 943,
               "orc": 943,
-              "tauren": 915,
-              "troll": 915,
+              "tauren": 943,
+              "troll": 943,
               "windshaper-skyborne": 915
             }
           }
@@ -36953,7 +36664,7 @@
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -36979,7 +36690,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37005,7 +36716,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37031,7 +36742,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37064,78 +36775,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
-            "icon": "spell_nature_earthshock",
-            "race_spell_ids": {
-              "dwarf": 8045,
-              "tauren": 8045,
-              "troll": 8045,
-              "windshaper-skyborne": 8045
-            }
-          }
-        ]
-      },
-      {
-        "level": 26,
-        "lines": [
-          {
-            "spell_id": 8160,
-            "name": "Strength of Earth Totem",
-            "condition": "when your Earth totem is down",
-            "icon": "spell_nature_earthbindtotem",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 17364,
-            "name": "Stormstrike",
-            "condition": "on cooldown",
-            "icon": "ability_shaman_stormstrike",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6363,
-            "name": "Searing Totem",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
-            "icon": "spell_fire_searingtotem",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8045,
-            "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
-            "icon": "spell_nature_earthshock",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 27,
-        "lines": [
-          {
-            "spell_id": 8160,
-            "name": "Strength of Earth Totem",
-            "condition": "when your Earth totem is down",
-            "icon": "spell_nature_earthbindtotem",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 17364,
-            "name": "Stormstrike",
-            "condition": "on cooldown",
-            "icon": "ability_shaman_stormstrike",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6363,
-            "name": "Searing Totem",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
-            "icon": "spell_fire_searingtotem",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8046,
-            "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37168,7 +36808,47 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
+            "icon": "spell_nature_earthshock",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 35,
+        "lines": [
+          {
+            "spell_id": 8160,
+            "name": "Strength of Earth Totem",
+            "condition": "when your Earth totem is down",
+            "icon": "spell_nature_earthbindtotem",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 17364,
+            "name": "Stormstrike",
+            "condition": "on cooldown",
+            "icon": "ability_shaman_stormstrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6041,
+            "name": "Lightning Bolt",
+            "condition": "at 5 Maelstrom Weapon stacks",
+            "icon": "spell_nature_lightning",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6364,
+            "name": "Searing Totem",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "icon": "spell_fire_searingtotem",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8046,
+            "name": "Earth Shock",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37192,6 +36872,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 6041,
+            "name": "Lightning Bolt",
+            "condition": "at 5 Maelstrom Weapon stacks",
+            "icon": "spell_nature_lightning",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6364,
             "name": "Searing Totem",
             "condition": "when Searing Totem is down and the fight has 20+ s left",
@@ -37201,7 +36888,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37209,39 +36896,6 @@
       },
       {
         "level": 38,
-        "lines": [
-          {
-            "spell_id": 8161,
-            "name": "Strength of Earth Totem",
-            "condition": "when your Earth totem is down",
-            "icon": "spell_nature_earthbindtotem",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 17364,
-            "name": "Stormstrike",
-            "condition": "on cooldown",
-            "icon": "ability_shaman_stormstrike",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6364,
-            "name": "Searing Totem",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
-            "icon": "spell_fire_searingtotem",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10412,
-            "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
-            "icon": "spell_nature_earthshock",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 39,
         "lines": [
           {
             "spell_id": 8161,
@@ -37274,7 +36928,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37314,7 +36968,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37361,7 +37015,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37408,7 +37062,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37455,7 +37109,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37502,7 +37156,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37549,7 +37203,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37596,7 +37250,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37650,7 +37304,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -37704,7 +37358,7 @@
           {
             "spell_id": 10414,
             "name": "Earth Shock",
-            "condition": "on cooldown, above 25% mana",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -38343,7 +37997,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 913,
+            "spell_id": 959,
             "name": "Healing Wave",
             "condition": "when the tank drops below 60%",
             "icon": "spell_nature_magicimmunity",
@@ -38411,7 +38065,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 913,
+            "spell_id": 959,
             "name": "Healing Wave",
             "condition": "when the tank drops below 60%",
             "icon": "spell_nature_magicimmunity",
@@ -38421,116 +38075,6 @@
       },
       {
         "level": 40,
-        "lines": [
-          {
-            "spell_id": 17354,
-            "name": "Mana Tide Totem",
-            "condition": "below 25% mana",
-            "icon": "spell_frost_summonwaterelemental",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408510,
-            "name": "Water Shield",
-            "condition": "when Water Shield is down",
-            "icon": "ability_shaman_watershield",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6377,
-            "name": "Healing Stream Totem",
-            "condition": "when your Water totem is down",
-            "icon": "inv_spear_04",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "when the tank is below 90% with no Riptide",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8010,
-            "name": "Lesser Healing Wave",
-            "condition": "when the tank drops below 30%",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8010,
-            "name": "Lesser Healing Wave",
-            "condition": "on a party member below 25%, above 50% mana",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8010,
-            "name": "Lesser Healing Wave",
-            "condition": "on a party member below 25%, above 50% mana",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8010,
-            "name": "Lesser Healing Wave",
-            "condition": "on a party member below 25%, above 50% mana",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8010,
-            "name": "Lesser Healing Wave",
-            "condition": "on a party member below 25%, above 50% mana",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "on a party member below 50% with no Riptide, above 50% mana",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "on a party member below 50% with no Riptide, above 50% mana",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "on a party member below 50% with no Riptide, above 50% mana",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "on a party member below 50% with no Riptide, above 50% mana",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1064,
-            "name": "Chain Heal",
-            "condition": "when anyone is below 90% while mana % is over boss health %",
-            "icon": "spell_nature_healingwavegreater",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 913,
-            "name": "Healing Wave",
-            "condition": "when the tank drops below 60%",
-            "icon": "spell_nature_magicimmunity",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 42,
         "lines": [
           {
             "spell_id": 17354,
@@ -38641,116 +38185,6 @@
       },
       {
         "level": 44,
-        "lines": [
-          {
-            "spell_id": 17354,
-            "name": "Mana Tide Totem",
-            "condition": "below 25% mana",
-            "icon": "spell_frost_summonwaterelemental",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408510,
-            "name": "Water Shield",
-            "condition": "when Water Shield is down",
-            "icon": "ability_shaman_watershield",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6377,
-            "name": "Healing Stream Totem",
-            "condition": "when your Water totem is down",
-            "icon": "inv_spear_04",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "when the tank is below 90% with no Riptide",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10466,
-            "name": "Lesser Healing Wave",
-            "condition": "when the tank drops below 30%",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10466,
-            "name": "Lesser Healing Wave",
-            "condition": "on a party member below 25%, above 50% mana",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10466,
-            "name": "Lesser Healing Wave",
-            "condition": "on a party member below 25%, above 50% mana",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10466,
-            "name": "Lesser Healing Wave",
-            "condition": "on a party member below 25%, above 50% mana",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10466,
-            "name": "Lesser Healing Wave",
-            "condition": "on a party member below 25%, above 50% mana",
-            "icon": "spell_nature_healingwavelesser",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "on a party member below 50% with no Riptide, above 50% mana",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "on a party member below 50% with no Riptide, above 50% mana",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "on a party member below 50% with no Riptide, above 50% mana",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
-            "condition": "on a party member below 50% with no Riptide, above 50% mana",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1064,
-            "name": "Chain Heal",
-            "condition": "when anyone is below 90% while mana % is over boss health %",
-            "icon": "spell_nature_healingwavegreater",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 939,
-            "name": "Healing Wave",
-            "condition": "when the tank drops below 60%",
-            "icon": "spell_nature_magicimmunity",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 46,
         "lines": [
           {
             "spell_id": 17354,
@@ -40085,7 +39519,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40139,7 +39573,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40193,7 +39627,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40247,7 +39681,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40301,7 +39735,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40362,7 +39796,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40423,7 +39857,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40484,7 +39918,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40538,28 +39972,28 @@
           {
             "spell_id": 7648,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18879,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -40606,28 +40040,28 @@
           {
             "spell_id": 7648,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18879,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -40681,28 +40115,28 @@
           {
             "spell_id": 11671,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18879,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -40756,28 +40190,28 @@
           {
             "spell_id": 11671,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18879,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -40831,28 +40265,28 @@
           {
             "spell_id": 11671,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11712,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18880,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -40906,28 +40340,28 @@
           {
             "spell_id": 11671,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11712,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18880,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -40981,28 +40415,28 @@
           {
             "spell_id": 11671,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11712,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18880,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -41056,28 +40490,28 @@
           {
             "spell_id": 11672,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11712,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18880,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -41131,28 +40565,28 @@
           {
             "spell_id": 11672,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11712,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18880,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -41206,28 +40640,28 @@
           {
             "spell_id": 11672,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11713,
             "name": "Bane of Agony",
-            "condition": "when Bane of Agony is not on the target",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18881,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -41281,35 +40715,28 @@
           {
             "spell_id": 11672,
             "name": "Corruption",
-            "condition": "when Corruption is not on the target",
+            "condition": "when Corruption is off or has under 3 s left",
             "icon": "spell_shadow_abominationexplosion",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 603,
-            "name": "Bane of Doom",
-            "condition": "when Bane of Doom is not on the target, with 60+ s left",
-            "icon": "spell_shadow_auraofdarkness",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "right before Bane of Agony",
+            "condition": "on your next Bane of Agony",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11713,
             "name": "Bane of Agony",
-            "condition": "when neither Bane of Agony nor Bane of Doom is up",
+            "condition": "when Bane of Agony is off or has under 3 s left",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18881,
             "name": "Siphon Life",
-            "condition": "when Siphon Life is not on the target",
+            "condition": "when Siphon Life is off or has under 3 s left",
             "icon": "spell_shadow_requiem",
             "race_spell_ids": {}
           },
@@ -47494,13 +46921,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 12975,
-            "name": "Last Stand",
-            "condition": "below 35% health",
-            "icon": "spell_holy_ashestoashes",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 871,
             "name": "Shield Wall",
             "condition": "below 40% health",
@@ -47573,13 +46993,6 @@
             "name": "Defensive Stance",
             "condition": "when out of Defensive Stance",
             "icon": "ability_warrior_defensivestance",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 12975,
-            "name": "Last Stand",
-            "condition": "below 35% health",
-            "icon": "spell_holy_ashestoashes",
             "race_spell_ids": {}
           },
           {
@@ -47658,13 +47071,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 12975,
-            "name": "Last Stand",
-            "condition": "below 35% health",
-            "icon": "spell_holy_ashestoashes",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 871,
             "name": "Shield Wall",
             "condition": "below 40% health",
@@ -47731,6 +47137,81 @@
       },
       {
         "level": 34,
+        "lines": [
+          {
+            "spell_id": 71,
+            "name": "Defensive Stance",
+            "condition": "when out of Defensive Stance",
+            "icon": "ability_warrior_defensivestance",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 871,
+            "name": "Shield Wall",
+            "condition": "below 40% health",
+            "icon": "ability_warrior_shieldwall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2687,
+            "name": "Bloodrage",
+            "condition": "under 60 rage",
+            "icon": "ability_racial_bloodrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2565,
+            "name": "Shield Block",
+            "condition": "when Shield Block is down",
+            "icon": "ability_defend",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 7379,
+            "name": "Revenge",
+            "condition": "the moment it lights up",
+            "icon": "ability_warrior_revenge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8204,
+            "name": "Thunder Clap",
+            "condition": "when Thunder Clap is missing or has under 3 s left",
+            "icon": "spell_nature_thunderclap",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11554,
+            "name": "Demoralizing Shout",
+            "condition": "when Demoralizing Shout is missing or has under 3 s left",
+            "icon": "ability_warrior_warcry",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11549,
+            "name": "Battle Shout",
+            "condition": "when Battle Shout is down",
+            "icon": "ability_warrior_battleshout",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8380,
+            "name": "Sunder Armor",
+            "condition": "when nothing else is ready",
+            "icon": "ability_warrior_sunder",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11564,
+            "name": "Heroic Strike",
+            "condition": "at 40 rage",
+            "icon": "ability_rogue_ambush",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 36,
         "lines": [
           {
             "spell_id": 71,
@@ -146485,36 +145966,6 @@
           ],
           [
             3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            3,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
             4,
             1
           ],
@@ -146552,6 +146003,36 @@
             3,
             5,
             3
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
           ],
           [
             3,
@@ -146745,36 +146226,6 @@
           ],
           [
             3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            3,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
             4,
             1
           ],
@@ -146812,6 +146263,36 @@
             3,
             5,
             3
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
           ],
           [
             3,
@@ -148065,6 +147546,7 @@
     "53": 4,
     "71": 10,
     "99": 10,
+    "116": 4,
     "120": 26,
     "139": 8,
     "143": 1,
@@ -148115,6 +147597,7 @@
     "970": 4,
     "980": 8,
     "992": 4,
+    "996": 30,
     "1014": 8,
     "1020": 34,
     "1026": 1,
@@ -148290,6 +147773,7 @@
     "8417": 8,
     "8444": 22,
     "8445": 22,
+    "8446": 22,
     "8492": 26,
     "8621": 1,
     "8623": 1,
@@ -148342,6 +147826,7 @@
     "9834": 4,
     "9835": 4,
     "9839": 4,
+    "9840": 4,
     "9841": 4,
     "9856": 12,
     "9857": 12,
@@ -148374,7 +147859,6 @@
     "10181": 4,
     "10197": 6,
     "10199": 6,
-    "10205": 22,
     "10206": 22,
     "10207": 22,
     "10211": 8,
