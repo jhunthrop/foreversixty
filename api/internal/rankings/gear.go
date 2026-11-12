@@ -42,7 +42,7 @@ type CharacterGear struct {
 	Slots    []GearSlot
 	GapTotal *float64
 	// Spec is the spec the picks are for (the site's slug, "warrior-fury") and SpecSource where
-	// it came from: "fight", "talents" or "default" (character.SpecFor). Both are empty when the
+	// it came from: "fight", "talents", "ask" or "default" (character.SpecFor). Both are empty when the
 	// character has no export or no spec the data knows.
 	Spec, SpecSource string
 }

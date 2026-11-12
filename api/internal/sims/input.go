@@ -29,8 +29,9 @@ const inputMaxAge = 60
 type Input struct {
 	Spec string `json:"spec"`
 	// SpecSource says where Spec came from: "fight" (a logged fight named it), "talents" (the
-	// export's talent points, the dominant tree) or "default" (no points spent: the class's
-	// first spec). Empty when Spec is.
+	// export's talent points name a tree, character.DecideTree), "ask" (points spent that name
+	// no tree: the class's first spec as a placeholder) or "default" (no points spent: the
+	// class's first spec). Empty when Spec is.
 	SpecSource string `json:"spec_source"`
 	// Gear is the source's own shape: the addon's export string for an
 	// addon read, {"trinkets": […]} for a fight. web/src/lib/sim/character.ts

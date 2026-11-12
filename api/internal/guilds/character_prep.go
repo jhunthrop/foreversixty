@@ -64,14 +64,17 @@ func (s *Store) characterPrepOf(ctx context.Context, key, consent string) (chara
 	return p, true, nil
 }
 
-// exportSpecName is the spec the export's talents point to, by its catalogue name; "" when they
-// point to none.
+// exportSpecName is the spec the export's talents name, by its catalogue name; "" when they
+// name none (character.SpecFromAsk) or the data has no such spec.
 func exportSpecName(classSlug, export string) string {
 	d, ok := fs1.Decode(export)
 	if !ok {
 		return ""
 	}
-	key, _ := character.SpecFor(strings.ToLower(classSlug), "", d.Talents.Points)
+	key, source := character.SpecFor(strings.ToLower(classSlug), "", d.Talents.Points)
+	if source == character.SpecFromAsk {
+		return ""
+	}
 	if sp, ok := raidspec.ByKey(key); ok {
 		return sp.Name
 	}

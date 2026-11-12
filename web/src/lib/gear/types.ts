@@ -52,5 +52,5 @@ export interface CharacterGear {
   /** The spec the picks are for, the site's slug ("warrior-fury"); null with no export. */
   gear_spec?: string | null;
   /** Where `gear_spec` came from: a logged fight, the export's talents, or the class default. */
-  gear_spec_source?: 'fight' | 'talents' | 'default' | null;
+  gear_spec_source?: 'fight' | 'talents' | 'ask' | 'default' | null;
 }

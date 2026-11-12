@@ -16,20 +16,41 @@ function treeNames(classSlug: string): string[] {
 }
 
 /**
- * The spec named by a per-tree point split: the tree with the most points, ties to the first
- * tree. Null when nothing is spent, or the class has no tree for the largest position.
+ * How far the leading tree must lead every other before the points name it, and the fewest spent
+ * points that can name a tree at all: the addon's Talents.SURE_LEAD and SURE_MIN_POINTS (owner
+ * 2026-11-11, "a wrong silent guess is worse than one question"). api/internal/character holds
+ * the Go copy; all three read the same cases in their tests.
+ */
+export const SURE_LEAD = 5;
+export const SURE_MIN_POINTS = 2;
+
+/**
+ * The tab index the points name beyond doubt, as the addon's Talents.decideTree reads them: at
+ * least SURE_MIN_POINTS spent and all in one tree, or the leading tree holding more than half of
+ * the points and leading every other by SURE_LEAD. Null otherwise: a tie, a close split, nothing
+ * spent, where the addon asks the player.
+ */
+export function decideTree(points: readonly number[]): number | null {
+  const spent = points.reduce((sum, count) => sum + Math.max(count, 0), 0);
+  if (spent < SURE_MIN_POINTS) return null;
+  const ranked = points
+    .map((count, index) => ({ count, index }))
+    .sort((a, b) => b.count - a.count || a.index - b.index);
+  const [lead, second] = ranked;
+  if (lead === undefined) return null;
+  const runnerUp = Math.max(second?.count ?? 0, 0);
+  if (runnerUp === 0) return lead.index;
+  return lead.count * 2 > spent && lead.count - runnerUp >= SURE_LEAD ? lead.index : null;
+}
+
+/**
+ * The spec named by a per-tree point split (decideTree). Null when the points do not name a tree,
+ * or the class has no tree at that position; callers fall back to the spec the addon reported.
  */
 export function specFromPoints(classSlug: string, points: readonly number[]): string | null {
-  let best = -1;
-  let at = -1;
-  points.forEach((count, index) => {
-    if (count > best) {
-      best = count;
-      at = index;
-    }
-  });
-  if (best <= 0) return null;
-  return treeNames(classSlug.toLowerCase())[at] ?? null;
+  const tree = decideTree(points);
+  if (tree === null) return null;
+  return treeNames(classSlug.toLowerCase())[tree] ?? null;
 }
 
 /** The pieces of a character record the rule reads. */

@@ -29,11 +29,20 @@ const BOW = {
 const PAGE = { character: { class: 'hunter' }, history: [], best: [] };
 
 describe('specFromPoints', () => {
-  it('names the tree with the most points, ties to the first', () => {
+  it('names the tree the points name beyond doubt', () => {
     expect(specFromPoints('hunter', [31, 16, 4])).toBe('Beast Mastery');
     expect(specFromPoints('hunter', [0, 5, 46])).toBe('Survival');
     expect(specFromPoints('priest', [0, 46, 5])).toBe('Holy');
-    expect(specFromPoints('priest', [20, 20, 0])).toBe('Discipline');
+    expect(specFromPoints('paladin', [0, 0, 2])).toBe('Retribution');
+    expect(specFromPoints('paladin', [8, 0, 3])).toBe('Holy');
+  });
+  // The addon's Talents.decideTree: a tie, a lead under five or under half of the points asks.
+  it('names nothing where the addon asks', () => {
+    expect(specFromPoints('paladin', [2, 0, 2])).toBeNull();
+    expect(specFromPoints('priest', [20, 20, 0])).toBeNull();
+    expect(specFromPoints('paladin', [7, 3, 0])).toBeNull();
+    expect(specFromPoints('paladin', [6, 4, 4])).toBeNull();
+    expect(specFromPoints('paladin', [1, 0, 0])).toBeNull();
   });
   it('names nothing when nothing is spent', () => {
     expect(specFromPoints('hunter', [0, 0, 0])).toBeNull();
