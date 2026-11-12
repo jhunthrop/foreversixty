@@ -489,8 +489,9 @@ describe('/guides/priest/shadow leveling tree', () => {
 });
 
 describe('/guides/warrior/arms rotation rows for the raid build', () => {
-  // Sim-accuracy round 16: the priority is the level 60 raid list; Reckless Swings and
-  // Spearing Strike are talents only the raid build takes, so their rows say so.
+  // Sim-accuracy round 16: the priority is the level 60 raid list; Reckless Swings is a
+  // talent only the raid build takes, so its row says so. Spearing Strike was raid-only
+  // until the 2026-11-12 melee lane put it in the level 60 leveling build too.
   it('tags the raid build’s own talent rows and no other', async () => {
     const rotation = sectionOf(mainOf(await pageHtml('warrior/arms')), 'rotation-and-priority');
     const priority = blockOf(rotation, 'guide-rotation-priority').split(
@@ -500,7 +501,7 @@ describe('/guides/warrior/arms rotation rows for the raid build', () => {
     const tagged = rows
       .filter((row) => row.includes(`>${guidesCopy.raidBuildTag}</span>`))
       .map((row) => /data-game-tip="[^"]+"[^>]*>([^<]+)</.exec(row)?.[1]);
-    expect(tagged.sort()).toEqual(['Reckless Swings', 'Spearing Strike']);
+    expect(tagged.sort()).toEqual(['Reckless Swings']);
     // The tag on the row says it; no grey legend explains it above the lists (h-guide-spec).
     expect(rotation).not.toContain('data-testid="guide-raid-build-legend"');
     // Tagged rows say whose list it is: no "For the raid build." line beside them.
