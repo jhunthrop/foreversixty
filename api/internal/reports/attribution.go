@@ -27,11 +27,13 @@ const attributedGuild = `coalesce(
 
 // AttributeGuild gives a report with no guild the guild its owner's standing names
 // (attributedGuild) in reports.matched_guild_id, and returns the report's guild for matching
-// as it now stands: coalesce(guild_id, matched_guild_id). It never writes guild_id, which only
-// the officer PATCH sets because it carries edit rights, the guild leaderboards and character
-// verification; the guild matcher and a member's own guild figures (guilds.memberLogIs: roster
-// best, rating, last log) read matched_guild_id, nothing else does. A guild already set, by
-// hand or by an earlier attribution, is never overridden.
+// as it now stands: coalesce(guild_id, matched_guild_id) (reportguild.Of). It never writes
+// guild_id, which only the officer PATCH sets because it carries edit rights, the guild
+// leaderboards and character verification. matched_guild_id is read through reportguild by the
+// guild matcher, a member's own guild figures (guilds.memberLogIs: roster best, rating, last
+// log) and the guild's member-facing lists (the /logs guild tab, ForGuild; the guild page's
+// recent logs and Raids tab; the recent feed's guild name), nothing else. A guild already set,
+// by hand or by an earlier attribution, is never overridden.
 func (s *Store) AttributeGuild(ctx context.Context, reportID string) (*int64, error) {
 	if _, err := s.Pool.Exec(ctx,
 		`update reports set matched_guild_id = `+attributedGuild+`

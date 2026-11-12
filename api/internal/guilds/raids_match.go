@@ -16,6 +16,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
+	"github.com/jhunthrop/foreversixty/api/internal/reportguild"
 )
 
 // How a raid came by its log (guild_raids.matched_by).
@@ -30,26 +31,13 @@ const (
 	matchTailHours = 6
 )
 
-// matchGuildOf is the SQL for the guild the reports row aliased alias is read as by the matcher:
-// the officer's guild_id, else the guild its owner's standing named (matched_guild_id). The
-// matcher and a member's own figures (memberLogIs) read it; what an officer vouches for (the
-// guild's nights, attendance, loot, progression, leaderboards, log verification) reads guild_id
-// alone.
-func matchGuildOf(alias string) string {
-	return "coalesce(" + alias + ".guild_id, " + alias + ".matched_guild_id)"
-}
-
-// matchGuildIs is the condition that the reports row aliased alias is read by the matcher as the
-// guild in the parameter param, written so either column's index serves it.
-func matchGuildIs(alias, param string) string {
-	return "(" + alias + ".guild_id = " + param + " or (" + alias + ".guild_id is null and " +
-		alias + ".matched_guild_id = " + param + "))"
-}
-
 // memberLogIs is the condition that the reports row aliased alias is a log of the guild in param
 // as a member's own figures read it (roster best, rating, last log, the member profile): the
-// officer's guild_id, or the guild its owner's standing named (matchGuildIs) when the report is
+// officer's guild_id, or the guild its owner's standing named (reportguild.Is) when the report is
 // evidence (presence.EvidenceReport), so an attributed private log never reaches a guildmate.
+// The matcher and the guild's member-facing lists read reportguild directly; what an officer
+// vouches for (the guild's nights, attendance, loot, progression, leaderboards, log
+// verification) reads guild_id alone.
 func memberLogIs(alias, param string) string {
 	return "(" + alias + ".guild_id = " + param + " or (" + alias + ".guild_id is null and " +
 		alias + ".matched_guild_id = " + param + " and " + presence.EvidenceReport(alias) + "))"
@@ -94,7 +82,7 @@ func (s *Store) reportAnchor(ctx context.Context, reportID string) (logAnchor, b
 	var guildID *int64
 	var zone *string
 	err := s.Pool.QueryRow(ctx, `
-		select `+matchGuildOf("r")+`, r.log_zone, `+logAnchorSQL("r")+`
+		select `+reportguild.Of("r")+`, r.log_zone, `+logAnchorSQL("r")+`
 		from reports r where r.id = $1 and `+presence.EvidenceReport("r"), reportID).Scan(&guildID, &zone, &a.at)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return logAnchor{}, false, nil
@@ -227,7 +215,7 @@ func (s *Store) SetMatch(ctx context.Context, guildID, raidID int64, reportID, h
 func (s *Store) requireGuildReport(ctx context.Context, guildID int64, reportID string) error {
 	var found bool
 	if err := s.Pool.QueryRow(ctx,
-		`select exists (select 1 from reports r where r.id = $1 and `+matchGuildIs("r", "$2")+` and r.status = 'complete'
+		`select exists (select 1 from reports r where r.id = $1 and `+reportguild.Is("r", "$2")+` and r.status = 'complete'
 		   and `+presence.EvidenceReport("r")+`)`,
 		reportID, guildID).Scan(&found); err != nil {
 		return fmt.Errorf("guilds: set match: read report: %w", err)

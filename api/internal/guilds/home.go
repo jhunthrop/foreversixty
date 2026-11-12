@@ -18,6 +18,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
+	"github.com/jhunthrop/foreversixty/api/internal/reportguild"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
@@ -365,7 +366,9 @@ type HomeView struct {
 }
 
 // HomeReports lists this guild's reports from the trailing week, newest
-// first, keyset-paginated. A member sees their own report regardless of
+// first, keyset-paginated. A report is the guild's as the matcher reads it
+// (reportguild.Is): set by an officer, or attributed from its logger's
+// verified standing. A member sees their own report regardless of
 // visibility, every public report regardless of their own verification,
 // and a guild-visible report only once they are verified - never a
 // private or unlisted row that is not their own, even once verified: an
@@ -384,12 +387,12 @@ func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified
 		visibility = `(r.owner_id = $3 or r.visibility = 'public' or r.visibility = 'guild')`
 	}
 	query := `select ` + columns + ` from reports r
-		where r.guild_id = $1 and r.created_at >= $2 and ` + visibility + `
+		where ` + reportguild.Is("r", "$1") + ` and r.created_at >= $2 and ` + visibility + `
 		order by r.created_at desc, r.id desc limit $4`
 	args := []any{guildID, since, userID, HomeReportsPerPage}
 	if before != nil {
 		query = `select ` + columns + ` from reports r
-			where r.guild_id = $1 and r.created_at >= $2 and ` + visibility + `
+			where ` + reportguild.Is("r", "$1") + ` and r.created_at >= $2 and ` + visibility + `
 			  and (r.created_at, r.id) < ($4, $5)
 			order by r.created_at desc, r.id desc limit $6`
 		args = []any{guildID, since, userID, before.CreatedAt, before.ID, HomeReportsPerPage}

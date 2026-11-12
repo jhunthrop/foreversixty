@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
+	"github.com/jhunthrop/foreversixty/api/internal/reportguild"
 )
 
 // candidateWindowDays is how far back the picker lists a guild's logs.
@@ -79,7 +80,7 @@ func (s *Store) guildLogs(ctx context.Context, guildID int64, logZone string, st
 		         coalesce(max(start_ms + duration_ms) - min(start_ms), 0) as duration_ms
 		  from fights where report_id = r.id) f on true
 		left join guild_raids mr on mr.report_id = r.id and mr.guild_id = $1
-		where `+matchGuildIs("r", "$1")+` and `+presence.EvidenceReport("r")+` and ($2 = '' or r.log_zone = $2)
+		where `+reportguild.Is("r", "$1")+` and `+presence.EvidenceReport("r")+` and ($2 = '' or r.log_zone = $2)
 		  and coalesce(r.completed_at, r.created_at) between $3 and $4
 		order by abs(extract(epoch from (`+logAnchorSQL("r")+` - $5::timestamptz))), r.id
 		limit $6`,

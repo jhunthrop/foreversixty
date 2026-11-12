@@ -11,6 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
+	"github.com/jhunthrop/foreversixty/api/internal/reportguild"
 	"github.com/jhunthrop/foreversixty/logs/engine/fight"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
@@ -129,19 +130,21 @@ func (s *Store) OwnedBy(ctx context.Context, userID int64, page, perPage int) ([
 // ForGuild lists a guild's own reports, newest first: its
 // guild-visibility reports plus its public ones - the same set a
 // member's mayView already grants them on any one report of that
-// guild's (handler.go). Shaped and queried exactly like OwnedBy, whose
+// guild's (handler.go). A report is the guild's as the matcher reads it
+// (reportguild.Is): set by an officer, or attributed from its logger's
+// verified standing. Shaped and queried exactly like OwnedBy, whose
 // column list and scan it shares (reportSummaryColumns, scanSummaries);
 // only the where clause differs.
 func (s *Store) ForGuild(ctx context.Context, guildID int64, page, perPage int) ([]Summary, int, error) {
 	var total int
 	if err := s.Pool.QueryRow(ctx,
-		`select count(*) from reports where guild_id = $1 and visibility in ($2, $3)`,
+		`select count(*) from reports r where `+reportguild.Is("r", "$1")+` and r.visibility in ($2, $3)`,
 		guildID, GuildTo, Public).Scan(&total); err != nil {
 		return nil, 0, fmt.Errorf("reports: count for guild %d: %w", guildID, err)
 	}
 	rows, err := s.Pool.Query(ctx,
 		`select `+reportSummaryColumns+`
-		 from reports r where r.guild_id = $1 and r.visibility in ($2, $3)
+		 from reports r where `+reportguild.Is("r", "$1")+` and r.visibility in ($2, $3)
 		 order by r.created_at desc limit $4 offset $5`,
 		guildID, GuildTo, Public, perPage, (page-1)*perPage)
 	if err != nil {
@@ -158,7 +161,8 @@ func (s *Store) ForGuild(ctx context.Context, guildID int64, page, perPage int) 
 // a flagged report is evidence of nothing, so the public feed does not list it), keyset-paged on
 // (created_at, id) so a page inserted between two reads of the feed is
 // never duplicated or skipped the way an offset page would be. before
-// nil reads the first page.
+// nil reads the first page. The row's guild is the report's as the matcher reads it
+// (reportguild.Of): set by an officer, or attributed from its logger's verified standing.
 func (s *Store) Recent(ctx context.Context, before *recentCursor, limit int) ([]RecentSummary, error) {
 	var beforeCreated *time.Time
 	var beforeID *string
@@ -174,7 +178,7 @@ func (s *Store) Recent(ctx context.Context, before *recentCursor, limit int) ([]
 		           and f.encounter_id is not null),
 		        coalesce(g.name, '')
 		 from reports r
-		 left join guilds g on g.id = r.guild_id
+		 left join guilds g on g.id = `+reportguild.Of("r")+`
 		 where r.visibility = $1 and `+presence.EvidenceReport("r")+` and r.status = $2
 		   and ($3::timestamptz is null or (r.created_at, r.id) < ($3, $4))
 		 order by r.created_at desc, r.id desc
