@@ -48,8 +48,12 @@ on:
     types: [completed]
     branches: [main]
 permissions: { contents: read }
+# A workflow_run start that the job below skips (a push-triggered data run, or a red one)
+# must not enter the `bis` group: with cancel-in-progress off, a new pending start replaces
+# the one already queued, so such a start cancelled a queued pin ranking (2026-11-12,
+# run 43257973261). It gets a group of its own and skips alone.
 concurrency:
-  group: bis
+  group: ${{ (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion != 'success' || github.event.workflow_run.event != 'workflow_dispatch')) && format('bis-skip-{0}', github.run_id) || 'bis' }}
   cancel-in-progress: false
 jobs:
   run:
