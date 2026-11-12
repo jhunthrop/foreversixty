@@ -228,7 +228,7 @@ export function renderBisLandingMocks(mocks: readonly string[]): string {
  */
 export function renderCreatorsMocks(): string {
   const dir = freshDir('creators');
-  const facts = path.join(dir, 'creators-page-facts.json');
+  const facts = path.join(dir, 'creators-facts.json');
   run('node', [path.join(GENERATORS, 'creators_facts.mjs'), facts]);
   run(PYTHON, [path.join(GENERATORS, 'ws_creators.py')], { FS_CREATORS_FACTS: facts, FS_MOCK_OUT: dir });
   return dir;

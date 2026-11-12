@@ -1,0 +1,59 @@
+[
+  {
+    "id": 1,
+    "name": "Grimbrew",
+    "channel_url": "https://twitch.tv/grimbrew",
+    "slug": "grimbrew",
+    "code": "GRIMBREW",
+    "starts_on": "2026-11-08",
+    "cap_cents": 50000,
+    "stripe_status": "ready",
+    "figures": {
+      "clicks": 1840,
+      "sign_ups": 212,
+      "returning": 131,
+      "revenue_cents": 18660,
+      "month": "2026-12",
+      "owed_cents": 18420,
+      "capped": false
+    }
+  },
+  {
+    "id": 2,
+    "name": "Lunawick",
+    "channel_url": "https://youtube.com/@lunawick",
+    "slug": "lunawick",
+    "code": "LUNAWICK",
+    "starts_on": "2026-11-12",
+    "cap_cents": 5000,
+    "stripe_status": "needs_info",
+    "figures": {
+      "clicks": 932,
+      "sign_ups": 88,
+      "returning": 51,
+      "revenue_cents": 5080,
+      "month": "2026-12",
+      "owed_cents": 5000,
+      "capped": true
+    }
+  },
+  {
+    "id": 3,
+    "name": "Tallowmere",
+    "channel_url": "https://twitch.tv/tallowmere",
+    "slug": "tallowmere",
+    "code": "TALLOW",
+    "starts_on": "2026-11-30",
+    "cap_cents": 50000,
+    "stripe_status": "none",
+    "figures": {
+      "clicks": 0,
+      "sign_ups": 0,
+      "returning": 0,
+      "revenue_cents": 0,
+      "month": "2026-12",
+      "owed_cents": 0,
+      "capped": false
+    }
+  }
+]

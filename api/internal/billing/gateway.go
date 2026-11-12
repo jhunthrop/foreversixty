@@ -201,4 +201,7 @@ type Gateway interface {
 	// account's default portal configuration (the one stripe-setup does not
 	// own), so no portal session can switch plans across products.
 	DisableDefaultPortalSwitching(ctx context.Context) error
+	// CustomerEmail is the Stripe customer's email, "" when it has none: the address a trial
+	// reminder or receipt goes to, read at send time and never stored or logged.
+	CustomerEmail(ctx context.Context, customerID string) (string, error)
 }

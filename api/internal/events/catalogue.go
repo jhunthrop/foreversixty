@@ -34,10 +34,12 @@ const (
 	RaidLateChange  Kind = "raid.late_change"
 	PremiumSeat     Kind = "premium.seat"
 	BillingFailed   Kind = "billing.failed"
-	GameMilestone   Kind = "game.milestone"
-	GuildSimPassed  Kind = "guildsim.passed"
-	TierMoved       Kind = "tier.moved"
-	GuildApplicant  Kind = "guild.applicant"
+	// BillingTrialEnding is the free trial's reminder a few days before its first charge.
+	BillingTrialEnding Kind = "billing.trial_ending"
+	GameMilestone      Kind = "game.milestone"
+	GuildSimPassed     Kind = "guildsim.passed"
+	TierMoved          Kind = "tier.moved"
+	GuildApplicant     Kind = "guild.applicant"
 )
 
 // Channel is one way a notification reaches a player.
@@ -110,6 +112,7 @@ var Catalogue = []Spec{
 	{Kind: RaidLateChange, Who: WhoOfficers, DefaultOn: true, Officer: true},
 	{Kind: PremiumSeat, Who: WhoPlayer, DefaultOn: true},
 	{Kind: BillingFailed, Who: WhoPayer, DefaultOn: true},
+	{Kind: BillingTrialEnding, Who: WhoPayer, DefaultOn: true},
 	{Kind: GameMilestone, Who: WhoEveryone, DefaultOn: true},
 	// guildsim.passed is the Guild ladder group, off by default (spec 2026-11-08-app-flows F4).
 	{Kind: GuildSimPassed, Who: WhoPlayer, DefaultOn: false},

@@ -186,6 +186,18 @@ type Config struct {
 	// exist yet).
 	StripeSecretKey     string
 	StripeWebhookSecret string
+	// StripeConnectWebhookSecret (STRIPE_CONNECT_WEBHOOK_SECRET) is the Connect endpoint's secret on
+	// the same webhook URL: account.updated for creators' payout accounts. Optional.
+	StripeConnectWebhookSecret string
+	// StripePayoutsKey (STRIPE_PAYOUTS_KEY) is the creator program's own restricted key: Connect
+	// Accounts, Account Links and Login Links, and Transfers. Subscriptions never use it. Never logged.
+	StripePayoutsKey string
+	// CreatorPayouts (CREATOR_PAYOUTS=true) lets the owner approve creator payouts, which makes
+	// Stripe transfers. Off by default: statements read, nothing can be paid.
+	CreatorPayouts bool
+	// OurRenewalEmails (OUR_RENEWAL_EMAILS=true) has billing-daily send our own yearly renewal
+	// notice. Off by default: Stripe sends the upcoming-renewal email (premium-trial spec 0C).
+	OurRenewalEmails bool
 	// StripeEnvironment is "test" or "live", from STRIPE_ENVIRONMENT. It
 	// must be "live" exactly when PublicBaseURL is the production origin
 	// (see ValidateStripeKeyEnvironment) — this is a separate value from
@@ -356,6 +368,10 @@ func Load(getenv func(string) string) (Config, error) {
 
 	c.StripeSecretKey = getenv("STRIPE_SECRET_KEY")
 	c.StripeWebhookSecret = getenv("STRIPE_WEBHOOK_SECRET")
+	c.StripeConnectWebhookSecret = getenv("STRIPE_CONNECT_WEBHOOK_SECRET")
+	c.StripePayoutsKey = getenv("STRIPE_PAYOUTS_KEY")
+	c.CreatorPayouts = getenv("CREATOR_PAYOUTS") == "true"
+	c.OurRenewalEmails = getenv("OUR_RENEWAL_EMAILS") == "true"
 	c.StripeEnvironment = getenv("STRIPE_ENVIRONMENT")
 
 	key, err := decodeNotifyKey(getenv("NOTIFY_ENCRYPTION_KEY"))

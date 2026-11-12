@@ -56,6 +56,10 @@ make run
 | `STRIPE_SECRET_KEY` | no | — | Stripe secret or restricted key. Absent, every `/v1/billing/*` route answers 503 and the Premium page's buttons fail honestly; present, billing is on. Lives in Secret Manager (`STRIPE_SECRET_KEY`, live; `STRIPE_SECRET_KEY_TEST`, the sandbox). |
 | `STRIPE_WEBHOOK_SECRET` | no | — | The signing secret of the `POST /v1/billing/webhook` endpoint in the same mode as the key. |
 | `STRIPE_ENVIRONMENT` | no | — | `test` or `live`. Must be `live` exactly when `PUBLIC_BASE_URL` is the production origin, and the key's own prefix must agree; `config.ValidateStripeKeyEnvironment` refuses to start otherwise. |
+| `STRIPE_CONNECT_WEBHOOK_SECRET` | no | — | The Connect endpoint's signing secret, on the same URL as `STRIPE_WEBHOOK_SECRET` (`POST /v1/billing/webhook`): `account.updated` for creators' payout accounts. The webhook accepts a signature from either secret. Without it, onboarding status is still re-read on the creator's return (`?done=1`) and by the owner's Refresh. |
+| `STRIPE_PAYOUTS_KEY` | no | — | The creator program's own restricted key, platform-account permissions only (Balance read; Accounts, Login Links and Transfers write): every Connect and transfer call, never on a connected account's behalf. Subscriptions never use it. Missing, onboarding and payouts answer 503; with `CREATOR_PAYOUTS` on, the startup check says so on the admin pages. Secret Manager; never logged. |
+| `CREATOR_PAYOUTS` | no | off | `true` lets the owner approve a creator's month, which makes a Stripe transfer. Off, statements read normally, Approve is disabled and `POST .../approve` answers 503 `payouts_off`. Leave it off until live Connect is set up and a first statement has been checked against the Dashboard. |
+| `OUR_RENEWAL_EMAILS` | no | off | `true` has billing-daily send our own yearly renewal notice a week ahead. Off, it sends none: Stripe's upcoming-renewal email covers renewals (premium-trial spec 0C). Our trial reminder, guild trial reminder and first-charge receipt always go, to the Stripe customer's email read at send time and never stored or logged; the `billing-daily` job needs `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` for that read, and without them a reminder goes in the app alone. |
 | `NOTIFY_ENCRYPTION_KEY` | no | — | Base64 of 32 random bytes (`openssl rand -base64 32`); seals Discord webhook tokens at rest (AES-256-GCM). Absent, the Discord notifications feature is off; present but malformed, the service refuses to start. Lives in Secret Manager; never logged or printed. When set, the sim-run and parse-report jobs post one Discord embed per finished server sim or parsed upload; five consecutive counted failures (a 429 does not count) switch the webhook off. Migration 0047 adds `webhook_name` and backfills `upload_private` true for existing webhooks (new ones default off). |
 | `DISCORD_CLIENT_ID` | no | — | The Discord application's Client ID (public). Together with `DISCORD_CLIENT_SECRET` it turns the one-click Discord connect on (needs `NOTIFY_ENCRYPTION_KEY` too); `/v1/me` then carries `notifications.connect: true`. Both unset leaves connect off (its routes answer 404); exactly one set refuses to start, naming the missing variable. The redirect URI is `API_BASE_URL` + `/v1/notifications/discord/callback`. |
 | `DISCORD_CLIENT_SECRET` | no | — | The Discord application's Client Secret. Lives in Secret Manager; never logged, printed or returned. |
@@ -366,7 +370,8 @@ Both run the same image as the API, dispatched on their first argument.
 ## Stripe: going live
 
 Billing is off until the three `STRIPE_*` variables exist on the Cloud Run service; the
-deploy workflow never touches env or secrets, so they are set once and survive every deploy.
+deploy workflow touches no Stripe secret but the creator program's (`STRIPE_PAYOUTS_KEY` and `CREATOR_PAYOUTS`,
+merged in by `api.yml`), so the rest are set once and survive every deploy.
 The account runs Stripe's Managed Payments (Stripe is the merchant of record and handles
 sales tax), which is why `stripe-setup` gives every product a tax code. In order:
 
@@ -403,6 +408,79 @@ nightly the same way `sim-validate` already is:
     gcloud scheduler jobs create http stripe-reconcile-nightly \
       --schedule "0 4 * * *" --uri "https://us-east1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/foreversixty/jobs/stripe-reconcile:run" \
       --http-method POST --oauth-service-account-email api-runtime@foreversixty.iam.gserviceaccount.com
+
+## Creator program
+
+The creator program (`internal/creators`, `design/specs/2026-11-08-creator-program.md`) runs on the
+deployment's own Stripe key: the sandbox until the owner sets up live Connect. Creators are paid $2
+per returning player and half of their players' net subscription revenue for 12 months, monthly,
+through Stripe Connect Express. Nothing is paid until the owner presses Approve on
+`/admin/creators/payouts`, and only while `CREATOR_PAYOUTS=true`. The owner's pages are
+`/admin/creators` and `/admin/creators/payouts`; a creator's are `/creators/onboarding` (Stripe's
+return and refresh URLs) and `/creators/stats`; the public page is `/creators` with
+`/creators/apply`.
+
+A creator's code is our own, not a Stripe promotion code: `POST /v1/billing/checkout` takes
+`creator_code`, and a live code gives the subscription a 30-day trial on Premium or a guild plan
+(once per account, `premium_trials`; once per guild, `guild_trials`). The buyer becomes the creator's
+player when `checkout.session.completed` lands.
+
+Going live, in order (the owner's Stripe account, never a key in a shell history):
+
+1. Turn on Connect for the live account (Express, US recipients) and finish the platform profile.
+   Live Connect is on (an accounts list answers, with 0 accounts); check that transfers work under
+   Managed Payments, which the sandbox could not show.
+2. Make the payouts key; the subscription key is never widened. The subscription key stays the
+   restricted `rk_live_…` key in Secret Manager project `foreversixty`, secret `STRIPE_SECRET_KEY`
+   (it also reads a creator's player's invoices, invoice payments, payment intents, charges,
+   refunds and balance transactions for the revenue share, which billing already reads). Creator
+   payouts use a separate restricted key with exactly these four platform-account permissions,
+   and none "in connected accounts":
+   - **Balance: Read**;
+   - **Accounts: Write** (makes the Express account, reads its status, lists accounts for the
+     startup check; it covers Account Links, the onboarding link);
+   - **Login Links: Write** (the creator's Express dashboard link);
+   - **Transfers: Write** (the approved payout, and reading a transfer back by its group).
+
+   No call is ever made on a connected account's behalf (no `Stripe-Account` header; a test holds
+   it): what a creator sees comes from our own records, and their Express dashboard covers the rest.
+
+   Put it in Secret Manager project `foreversixty` as `STRIPE_PAYOUTS_KEY` without it touching a
+   terminal, and wire it: `gcloud run services update api --region us-east1 --update-secrets
+   STRIPE_PAYOUTS_KEY=STRIPE_PAYOUTS_KEY:latest`. Every Connect and transfer call goes through it.
+   In tests and the sandbox both keys are the Connect sandbox's `STRIPE_SANDBOX_SECRET_KEY`
+   (project `trycommish`).
+
+   With `CREATOR_PAYOUTS=true` the API lists one connected account with the payouts key at
+   startup. A missing key, or one without Connect access, logs `creators op=connect_check
+   state="the stripe payouts key is missing or lacks connect permissions"` at ERROR, both admin
+   pages say `Stripe payouts key missing or lacks Connect permissions`, and Approve answers 503
+   `connect_denied` until the key is fixed and the service restarts.
+3. Add `charge.refunded` to the live account endpoint's events (refunds of a creator's player's
+   payment become refund lines), keeping the six it has.
+4. Create a second endpoint for the same URL, `https://api.foreversixty.gg/v1/billing/webhook`,
+   with `connect: true`, the same `api_version` as the first (`2025-08-27.basil`) and the one event
+   `account.updated`. Put its signing secret in Secret Manager as `STRIPE_CONNECT_WEBHOOK_SECRET`
+   and wire it with `--update-secrets` as the first one was.
+5. Payouts are on in production through the deploy config, not a console change: `api.yml`'s
+   deploy step merges `CREATOR_PAYOUTS=true` and the secret `STRIPE_PAYOUTS_KEY=STRIPE_PAYOUTS_KEY:latest`
+   into the service (the runtime account `api-runtime@foreversixty` holds secretAccessor on that
+   secret, granted 2026-11-08). Payouts are still one statement at a time, only on the owner's
+   Approve. After a deploy, `/admin/creators` shows neither `Payouts are switched off` nor the
+   payouts key notice.
+6. Approve checks the platform's available USD balance first (Balance read on the payouts key) and
+   the dialog shows `Available in Stripe: $X. This payout: $Y.`; a short balance turns Pay off with
+   `Not enough in your Stripe balance. Add funds in Stripe (Balances → Add to balance) or wait for
+   subscription payments to clear.` The owner's balance pays out to the bank automatically, so it is
+   often low. A transfer Stripe still refuses with `balance_insufficient` leaves the statement unpaid
+   with nothing recorded (the claim is undone); the same Approve later is safe (same transfer group
+   and idempotency key).
+
+Adding a creator (from the form or by approving an application) gives the creator's own account
+Premium, as an entitlements row with source `creator`; it never replaces a paid subscription, and
+removing the creator ends only that row. The Raid guild plan for a creator's guild stays a hand
+grant: when the owner asks, the coordinator runs `api grant --guild <id> --plan guild --note
+"creator program"` from the deployed sha (the grant CLI migrates at start).
 
 `stripe-reconcile` heals any webhook Stripe's own three-day retry window never successfully
 delivered (design spec §2.8): it is a backstop, not the primary path — the webhook itself

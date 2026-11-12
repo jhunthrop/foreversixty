@@ -50,6 +50,10 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 		"/v1/phases",
 		"/v1/me/widget", "/v1/me/live-activities", "/v1/me/live-activities/{id}",
 		"/v1/golinks/{slug}", "/v1/golinks/{slug}/clicks", "/v1/me/arrival", "/v1/admin/golinks",
+		"/v1/admin/creators", "/v1/admin/creators/{id}", "/v1/admin/creators/{id}/invite", "/v1/admin/creators/{id}/stripe-status",
+		"/v1/admin/creators/statements", "/v1/admin/creators/{id}/statements/{month}/approve", "/v1/admin/creators/requests", "/v1/admin/creators/balance",
+		"/v1/admin/creators/requests/{id}/approve", "/v1/admin/creators/requests/{id}/decline", "/v1/creators/invite/preview",
+		"/v1/creators/invite", "/v1/creators/me", "/v1/creators/me/onboarding", "/v1/creators/me/dashboard", "/v1/creators/application",
 		"/v1/app-testers", "/v1/admin/app-testers",
 	}
 	for _, p := range requiredPaths {

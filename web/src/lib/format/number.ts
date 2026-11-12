@@ -86,3 +86,10 @@ export function ordinal(n: number): string {
 export function counted(n: number, one: string, many = `${one}s`): string {
   return `${grouped(n)} ${n === 1 ? one : many}`;
 }
+
+/** An amount in cents as money, always to the cent and grouped: `$2.00`, `$1,234.56`. A column
+ *  of amounts lines up; a whole amount reads `$10.00`, not `$10`, beside `$9.50`. */
+export function usdCents(cents: number): string {
+  const amount = Math.abs(finite(cents)) / 100;
+  return `${cents < 0 ? '-' : ''}$${numberFormat(2, 2).format(amount)}`;
+}

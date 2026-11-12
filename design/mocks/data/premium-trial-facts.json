@@ -1,0 +1,138 @@
+{
+ "copy": {
+  "cardTag": "Free trial",
+  "chooser": {
+   "title": "Start your free trial",
+   "intervalLabel": "Billing",
+   "codeLabel": "Creator code",
+   "codeHint": "Optional. A creator’s code makes the trial a free month.",
+   "codePlaceholder": "e.g. GRIMBREW",
+   "apply": "Apply",
+   "checking": "Checking",
+   "codeApplied": "[fn]",
+   "remove": "Remove",
+   "codeUnknown": "That isn’t a creator’s code. Check the spelling, or start without one.",
+   "trialUsed": "This account already had its free trial, so a code can’t give another. You can still subscribe.",
+   "guildTrialUsed": "This guild already had its free trial, so a code can’t give another. You can still subscribe.",
+   "cardNote": "Stripe asks for a card now and shows the same dates before you confirm.",
+   "start": "[fn]",
+   "subscribe": "[fn]"
+  },
+  "confirmation": {
+   "title": "Your free Premium is on",
+   "guildTitle": "[fn]",
+   "cancel": "Cancel the trial",
+   "keep": "Nothing else to do. We remind you 3 days before the first charge."
+  },
+  "account": {
+   "cancel": "Cancel trial",
+   "canceled": "[fn]",
+   "resume": "Keep Premium after the trial",
+   "resumeGuild": "Keep the plan after the trial",
+   "canceling": "Cancelling",
+   "cancelFailed": "That didn’t go through; nothing changed. Try again."
+  },
+  "confirm": {
+   "title": "Cancel your free trial?",
+   "body": "[fn]",
+   "guildBody": "[fn]",
+   "yes": "Cancel trial",
+   "no": "Keep my trial"
+  },
+  "cancelPage": {
+   "title": "Cancel your free trial",
+   "expired": "This link has expired or was already used. You can cancel from your account page.",
+   "done": "[fn]",
+   "accountLink": "Your account"
+  }
+ },
+ "founder": true,
+ "premium": {
+  "monthly": {
+   "plan": "premium",
+   "days": 7,
+   "endsAt": "2026-11-15T10:00:00.000Z",
+   "endDate": "15 Nov 2026",
+   "price": "$5 a month",
+   "otherPrice": "$40 a year",
+   "founder": true
+  },
+  "yearly": {
+   "plan": "premium",
+   "days": 7,
+   "endsAt": "2026-11-15T10:00:00.000Z",
+   "endDate": "15 Nov 2026",
+   "price": "$40 a year",
+   "otherPrice": "$5 a month",
+   "founder": true
+  },
+  "code": {
+   "plan": "premium",
+   "days": 30,
+   "endsAt": "2026-12-08T10:00:00.000Z",
+   "endDate": "8 Dec 2026",
+   "price": "$5 a month",
+   "otherPrice": "$40 a year",
+   "founder": true
+  },
+  "name": "Premium"
+ },
+ "lines": {
+  "monthly": "Free for 7 days, then $5 a month (or $40 a year). Cancel any time before 15 Nov 2026 and you pay nothing. Founder price for anyone who subscribes by 6 Jan 2027.",
+  "yearly": "Free for 7 days, then $40 a year (or $5 a month). Cancel any time before 15 Nov 2026 and you pay nothing. Founder price for anyone who subscribes by 6 Jan 2027.",
+  "code": "Free for 30 days, then $5 a month (or $40 a year). Cancel any time before 8 Dec 2026 and you pay nothing. Founder price for anyone who subscribes by 6 Jan 2027.",
+  "codeYearly": "Free for 30 days, then $40 a year (or $5 a month). Cancel any time before 8 Dec 2026 and you pay nothing. Founder price for anyone who subscribes by 6 Jan 2027.",
+  "guild": "Free for 7 days, then $120 a year (or $12 a month) for the whole guild. Cancel any time before 15 Nov 2026 and you pay nothing. Founder price for anyone who subscribes by 6 Jan 2027.",
+  "guildCode": "Free for 30 days, then $120 a year (or $12 a month) for the whole guild. Cancel any time before 8 Dec 2026 and you pay nothing. Founder price for anyone who subscribes by 6 Jan 2027."
+ },
+ "chooser": {
+  "start": "Start 7 free days",
+  "startCode": "Start 30 free days",
+  "subscribeYearly": "Subscribe · $40 a year",
+  "subscribe": "Subscribe · $5 a month",
+  "applied": "GRIMBREW applied: your first month is free."
+ },
+ "status": {
+  "premium": "Trial ends 15 Nov 2026, then $5 a month.",
+  "premiumCanceled": "Trial ends 15 Nov 2026. You won’t be charged.",
+  "guild": "Trial ends 15 Nov 2026, then $120 a year."
+ },
+ "confirm": {
+  "body": "Premium stays on until 15 Nov 2026 and you won’t be charged.",
+  "guildBody": "Olympus XXVII keeps the plan until 15 Nov 2026 and you won’t be charged."
+ },
+ "guild": {
+  "name": "Olympus XXVII",
+  "plan": "Guild",
+  "terms": {
+   "plan": "guild",
+   "days": 7,
+   "endsAt": "2026-11-15T10:00:00.000Z",
+   "endDate": "15 Nov 2026",
+   "price": "$120 a year",
+   "otherPrice": "$12 a month",
+   "founder": true
+  },
+  "title": "Olympus XXVII’s free trial is on"
+ },
+ "email": {
+  "remindOn": "12 Nov 2026",
+  "lead": 3,
+  "reminder": {
+   "subject": "Your free Premium ends on 15 Nov 2026",
+   "text": "Your free Premium ends on 15 Nov 2026. On that day you'll be charged $5 a month. Cancel in one click: https://foreversixty.gg/premium/cancel?t=…\n\nTo keep Premium, do nothing."
+  },
+  "guildReminder": {
+   "subject": "Olympus XXVII's free Guild ends on 15 Nov 2026",
+   "text": "Olympus XXVII's free Guild ends on 15 Nov 2026. On that day you'll be charged $120 a year. Cancel in one click: https://foreversixty.gg/premium/cancel?t=…\n\nTo keep the plan, do nothing."
+  },
+  "notification": {
+   "title": "Free Premium ends 15 Nov 2026",
+   "body": "On that day you'll be charged $5 a month. Tap to cancel."
+  },
+  "receipt": {
+   "subject": "Receipt: Premium, $5 a month",
+   "text": "Your free trial ended and we charged $5 a month on 15 Nov 2026. Your receipt: https://invoice.stripe.com/i/…\n\nThe next charge is on 15 Dec 2026. Change or cancel any time: https://foreversixty.gg/account#plan"
+  }
+ }
+}

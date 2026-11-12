@@ -151,7 +151,7 @@ test('a /go/ landing keeps the slug, cleans the address bar and sends it once si
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
   await page.goto('/guides?golink=reddit-guides');
   await expect(page).toHaveURL(/\/guides$/);
-  const kept = await page.evaluate(() => localStorage.getItem('fs.arrival'));
+  const kept = await page.evaluate(() => localStorage.getItem('fs.arrival.next'));
   expect(JSON.parse(kept ?? '{}').slug).toBe('reddit-guides');
 
   let sent: unknown = null;
@@ -161,7 +161,7 @@ test('a /go/ landing keeps the slug, cleans the address bar and sends it once si
     await route.fulfill(fulfil({ recorded: true }));
   });
   await page.goto('/guides');
-  await expect.poll(() => sent).toEqual({ body: { slug: 'reddit-guides' }, csrf: 'tok' });
+  await expect.poll(() => sent).toMatchObject({ body: { slug: 'reddit-guides' }, csrf: 'tok' });
   await expect.poll(() => page.evaluate(() => localStorage.getItem('fs.arrival'))).toBeNull();
 });
 

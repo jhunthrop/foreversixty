@@ -74,6 +74,7 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
     links: [
       { label: 'Premium', href: '/premium' },
       { label: 'About', href: '/about' },
+      { label: 'Creators', href: '/creators' },
       { label: 'Changelog', href: '/changelog' },
     ],
   },

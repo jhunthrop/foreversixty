@@ -65,6 +65,18 @@ func customerCreateParams(userID int64, email string) *stripe.CustomerCreatePara
 	return params
 }
 
+// CustomerEmail reads the customer's email; a deleted customer has none.
+func (g *StripeGateway) CustomerEmail(ctx context.Context, customerID string) (string, error) {
+	c, err := g.client.V1Customers.Retrieve(ctx, customerID, nil)
+	if err != nil {
+		return "", fmt.Errorf("billing: customer %s: %w", customerID, err)
+	}
+	if c.Deleted {
+		return "", nil
+	}
+	return c.Email, nil
+}
+
 // checkoutSessionLifetime is how long a Checkout page stays valid: the
 // minimum Stripe allows, so an abandoned one stops blocking a guild soon.
 const checkoutSessionLifetime = 30 * time.Minute

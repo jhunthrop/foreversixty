@@ -15,6 +15,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/coach"
+	"github.com/jhunthrop/foreversixty/api/internal/creators"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/golinks"
@@ -95,6 +96,8 @@ type Deps struct {
 	// GoLinks serves the tracked links: the Worker's resolve and count, the site's arrival and
 	// the owner's funnel; nil leaves them unmounted.
 	GoLinks *golinks.Service
+	// Creators serves the creator program (internal/creators); nil leaves its routes unmounted.
+	Creators *creators.Service
 	// Activity serves the site feed (GET /v1/feed) and the home blocks (GET /v1/home); nil
 	// leaves them unmounted.
 	Activity *activity.Service
@@ -198,6 +201,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.GoLinks != nil {
 		golinks.Mount(mux, d.GoLinks)
+	}
+	if d.Creators != nil {
+		creators.Mount(mux, d.Creators, d.TrustedProxyHops)
 	}
 	if d.Activity != nil {
 		activity.Mount(mux, d.Activity)

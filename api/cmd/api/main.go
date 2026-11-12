@@ -766,6 +766,8 @@ func serve(log *slog.Logger) error {
 	wireActivity(ctx, activityWiring{cfg: cfg, pool: pool, trees: treeData, auth: authStore, accounts: accounts,
 		events: publisher, log: log}, &deps)
 	wireBnetRefresh(ctx, cfg, accounts, authenticator, log)
+	wireCreators(creatorsWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, accounts: accounts,
+		authenticator: authenticator, log: log})
 	srv := &http.Server{
 		Addr:              net.JoinHostPort(cfg.ListenHost, cfg.Port),
 		Handler:           server.NewRouter(deps),

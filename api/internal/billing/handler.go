@@ -28,6 +28,10 @@ const maxBillingBody = 1 << 10
 // would otherwise mint many Stripe sessions for free.
 const billingRateLimitPerHour = 20
 
+// termsRateLimitPerHour is the chooser's terms read's per-IP budget: it reads again on every
+// interval switch and code, so it has a reader's room, still bounding a code-guessing script.
+const termsRateLimitPerHour = 120
+
 // retentionGraceDays is the retention grace's length past a
 // subscription's last known period end (spec §2.7).
 const retentionGraceDays = 30 * 24 * time.Hour
@@ -100,13 +104,20 @@ type Service struct {
 	// (no STRIPE_SECRET_KEY) — every route answers 503 rather than the
 	// API failing to start (coordinator's lane constraint).
 	Gateway Gateway
-	// Mailer sends the billing-daily notices; the routes never use it.
+	// Mailer sends the billing-daily notices and the webhook's trial receipt.
 	Mailer mail.Mailer
+	// RenewalEmails (OUR_RENEWAL_EMAILS) sends our own yearly renewal notice; off, Stripe's alone goes.
+	RenewalEmails bool
 	// Events publishes billing.failed to the payer; nil publishes nothing.
 	Events        events.Publisher
 	PublicBaseURL string
 	WebhookSecret string
-	Log           *slog.Logger
+	// ConnectWebhookSecret is the Connect endpoint's secret (account.updated for creators' payout
+	// accounts) on the same URL; empty accepts the account endpoint alone.
+	ConnectWebhookSecret string
+	// Creators is the creator program (creator_code.go); nil refuses codes.
+	Creators Creators
+	Log      *slog.Logger
 	// Now is the clock; nil means time.Now.
 	Now func() time.Time
 }
@@ -125,6 +136,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.Handle("POST /v1/billing/portal", limit()(auth.RequireBrowserSession(s.portal)))
 	mux.HandleFunc("POST /v1/billing/webhook", s.webhook)
 	mountGuild(mux, s, trustedProxyHops)
+	mountTrial(mux, s, trustedProxyHops)
 }
 
 func (s *Service) logger() *slog.Logger {

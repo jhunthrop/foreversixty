@@ -6,12 +6,11 @@ Words and data are read at render time, never retyped:
 - design/mocks/data/pages-facts.json (about and the legal pages as rendered, the changelog's entries, the 404's copy)
 - web/src/lib/app-links/handoff-copy.ts (the /app/auth hand-off) and web/src/pages/b-unavailable.astro (its sentence)
 - design/mocks/guild_directory_fixtures.py (the guild landing's top guilds)
-- design/mocks/data/creators-facts.json, read from the creator-program branch until it lands (the program and stats)
+- design/mocks/data/creators-facts.json (the program and stats; node design/mocks/creators_facts.mjs)
 Drawn by prims.py.
 """
 import json
 import re
-import subprocess
 import sys
 from html import escape
 from pathlib import Path
@@ -35,13 +34,8 @@ SIGNED_OUT = ('', 'warrior', None)
 
 
 def creators_facts() -> dict:
-    """The creator program's facts: in this tree once the creator-program branch lands, from that branch until then."""
-    local = MOCKS / 'data/creators-facts.json'
-    if local.exists():
-        return json.loads(local.read_text())
-    blob = subprocess.run(['git', 'show', 'origin/creator-program:design/mocks/data/creators-facts.json'], cwd=D.ROOT,
-                          capture_output=True, text=True, check=True).stdout
-    return json.loads(blob)
+    """The creator program's facts (creators_facts.mjs over lib/creators/copy.ts and the e2e fixtures)."""
+    return json.loads((MOCKS / 'data/creators-facts.json').read_text())
 
 
 SITE_CSS = PRIMS_CSS + '''

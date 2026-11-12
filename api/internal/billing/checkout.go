@@ -21,6 +21,8 @@ type checkoutRequest struct {
 	GuildID    *int64 `json:"guild_id"`
 	Intent     string `json:"intent"`
 	ComebackID *int64 `json:"comeback_id"`
+	// CreatorCode is a creator's code: a free month on the plan (creator_code.go).
+	CreatorCode string `json:"creator_code"`
 }
 
 // intentTransfer is the checkout intent of a guild's billing transfer,
@@ -75,6 +77,10 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 	actor := auth.ActorFrom(r.Context())
 	userIDStr := strconv.FormatInt(actor.UserID, 10)
 	metadata := map[string]string{"plan": offer.EntitlementPlan(), "user_id": userIDStr}
+	code := creatorsNormalize(in.CreatorCode)
+	if code != "" {
+		metadata[metadataCreatorCode] = code
+	}
 
 	if offer == catalog.OfferPremium {
 		if in.ComebackID != nil {
@@ -82,7 +88,7 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 		}
 		s.premiumCheckout(w, r, premiumCheckoutRequest{
 			userID: actor.UserID, interval: interval, comebackID: in.ComebackID,
-			clientRef: "user:" + userIDStr, metadata: metadata,
+			clientRef: "user:" + userIDStr, metadata: metadata, creatorCode: code,
 		})
 		return
 	}
@@ -92,6 +98,10 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 	}
 	metadata["guild_id"] = strconv.FormatInt(*in.GuildID, 10)
 	transfer := in.Intent == intentTransfer
+	if transfer && code != "" {
+		httpx.WriteError(w, r, http.StatusBadRequest, "creator_code", "a creator code is for a new plan, not a billing transfer", nil)
+		return
+	}
 	if transfer {
 		// Carried onto the Subscription itself (subscription_data.metadata)
 		// so the webhook can tell a deliberate billing transfer apart from
@@ -100,7 +110,7 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 		metadata["intent"] = intentTransfer
 	}
 	s.guildCheckout(w, r, guildCheckoutRequest{
-		guildID: *in.GuildID, userID: actor.UserID, transfer: transfer, offer: offer, interval: interval,
+		guildID: *in.GuildID, userID: actor.UserID, transfer: transfer, offer: offer, interval: interval, creatorCode: code,
 		clientRef: fmt.Sprintf("guild:%d:user:%d", *in.GuildID, actor.UserID), metadata: metadata,
 	})
 }
@@ -173,6 +183,8 @@ type premiumCheckoutRequest struct {
 	comebackID *int64
 	clientRef  string
 	metadata   map[string]string
+	// creatorCode is a normalized creator code, "" for none.
+	creatorCode string
 }
 
 // premiumCheckout is the personal path, serialized per user by the same
@@ -197,8 +209,12 @@ func (s *Service) premiumCheckout(w http.ResponseWriter, r *http.Request, req pr
 		if err != nil {
 			return err
 		}
+		trial, err := s.premiumTrial(ctx, req)
+		if err != nil {
+			return err
+		}
 		session, err := s.createSession(ctx, req.userID, lookupKey, req.clientRef,
-			successPath(catalog.OfferPremium, req.interval, nil), req.metadata, nil)
+			successPath(catalog.OfferPremium, req.interval, nil), req.metadata, trial)
 		if err != nil {
 			return err
 		}
@@ -233,6 +249,8 @@ type guildCheckoutRequest struct {
 	interval  catalog.Interval
 	clientRef string
 	metadata  map[string]string
+	// creatorCode is a normalized creator code, "" for none.
+	creatorCode string
 }
 
 // guildCheckout is the guild-plan checkout path, wholly serialized per
@@ -279,11 +297,8 @@ func (s *Service) guildTerms(ctx context.Context, req guildCheckoutRequest) (str
 	if err != nil {
 		return "", nil, err
 	}
-	var trial *checkoutTrial
-	if !used {
-		trial = &checkoutTrial{days: catalog.GuildTrialDays}
-	}
-	return catalog.CheckoutLookupKey(req.offer, req.interval, s.now()), trial, nil
+	trial, err := s.creatorCodeTrial(ctx, req.creatorCode, used, catalog.GuildTrialDays)
+	return catalog.CheckoutLookupKey(req.offer, req.interval, s.now()), trial, err
 }
 
 // transferTerms needs the open offer to the caller, keeps the plan's

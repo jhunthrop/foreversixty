@@ -1,0 +1,21 @@
+---
+// web/src/pages/creators/onboarding.astro
+// /creators/onboarding: the creator accepts the owner's invite, and Stripe's onboarding returns here
+// (?done=1) or asks for a fresh link (?refresh=1) (design/specs/2026-11-08-creator-program.md 3c).
+// Never indexed, never in the sitemap.
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/ui/PageHeader.svelte';
+import Page from '../../components/ui/Page.svelte';
+import CreatorOnboarding from '../../components/creators/CreatorOnboarding.svelte';
+import { onboardingCopy as copy } from '../../lib/creators/copy';
+---
+
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/creators/onboarding">
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="creators-onboarding-page">
+    <PageHeader title={copy.pageTitle} />
+    <Page layout="form">
+      <CreatorOnboarding client:load />
+    </Page>
+  </main>
+</Base>

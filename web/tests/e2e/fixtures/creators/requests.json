@@ -1,0 +1,22 @@
+[
+  {
+    "id": 7,
+    "channel_url": "https://twitch.tv/emberfall",
+    "platform": "twitch",
+    "audience": 1200,
+    "about": "Hardcore Forever runs three nights a week, mostly warrior and rogue leveling with a route overlay.",
+    "contact_email": null,
+    "created_at": "2026-12-08T16:20:00Z",
+    "suggested": { "name": "emberfall", "slug": "emberfall", "code": "EMBERFALL" }
+  },
+  {
+    "id": 8,
+    "channel_url": "https://youtube.com/@saltmarshguides",
+    "platform": "youtube",
+    "audience": null,
+    "about": "Short class guides for Forever, one a week, built from the in-game numbers.",
+    "contact_email": null,
+    "created_at": "2026-12-09T09:05:00Z",
+    "suggested": { "name": "saltmarshguides", "slug": "saltmarshguides", "code": "SALTMARSH" }
+  }
+]

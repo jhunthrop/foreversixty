@@ -13,8 +13,13 @@ const pagesRoot = fileURLToPath(new URL('../pages', import.meta.url));
 const NO_CARD = new Set([
   '404',
   'admin/links',
+  'admin/creators',
+  'admin/creators/payouts',
   'admin/testers',
   'app/auth',
+  'creators/apply',
+  'creators/onboarding',
+  'creators/stats',
   'design-sheet',
   'guild-shell',
   'report-shell',

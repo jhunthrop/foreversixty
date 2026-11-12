@@ -179,6 +179,8 @@ export interface BillingView extends BillingFacts {
   status: string;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
+  /** The free trial's end (its first charge) while the plan trials; absent from older APIs. */
+  trial_end?: string | null;
 }
 
 export interface GuildBillingView {
@@ -234,6 +236,10 @@ export interface Me {
   /** The account's chosen main character's key; omitted until chosen. Every other
    *  character is an alt. */
   main_character_key?: string;
+  /** True for an account in the creator program (the menu's Creator stats row); omitted otherwise. */
+  creator?: boolean;
+  /** The owner only: creator applications waiting (the menu's badge row); omitted at none. */
+  creator_requests?: number;
   /** Unseen finished server runs, newest first, at most 3. Absent on an older API. */
   finished_sims?: FinishedSim[];
   seat?: MeSeat | null;

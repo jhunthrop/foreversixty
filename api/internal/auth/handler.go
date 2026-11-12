@@ -121,6 +121,8 @@ type Service struct {
 	DiscordLinks DiscordLinkView
 	// Seats answers GET /v1/me's seat, seat_offer and ended_seat. Nil means they are left out.
 	Seats SeatFactsSource
+	// Creators answers GET /v1/me's creator and creator_requests. Nil leaves them out.
+	Creators CreatorFacts
 	// Standing answers each guilds[] entry's identity and step facts on GET /v1/me. Nil means
 	// they are left out (the older shape).
 	Standing GuildStandingSource
@@ -463,13 +465,18 @@ func (s *Service) loadMe(ctx context.Context, userID int64, moderator bool) (Me,
 	if err != nil {
 		return Me{}, err
 	}
+	creatorView, err := s.buildCreatorView(ctx, u)
+	if err != nil {
+		return Me{}, err
+	}
 	return Me{
 		User: u, Characters: chars, Guilds: guilds, Entitlements: ev,
 		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt), MainCharacterKey: u.MainCharacterKey,
 		BnetImport:   bnetImportViewOf(u, time.Now()),
 		FinishedSims: finished, ServerSims: serverSims, Notifications: notifications,
 		DiscordLinkAvailable: link.available, DiscordLink: link.block, DiscordLinkSuggested: link.suggested,
-		SeatViews: seatViewsOf(facts, ev.Billing),
+		SeatViews:   seatViewsOf(facts, ev.Billing),
+		CreatorView: creatorView,
 	}, nil
 }
 

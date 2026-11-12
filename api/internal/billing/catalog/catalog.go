@@ -235,8 +235,11 @@ const (
 	GuildTierMemberLimit = 25
 	// GuildTrialDays is the card-up-front trial on a guild's first plan.
 	GuildTrialDays = 7
-	SeatsGuild     = 1
-	SeatsRaidGuild = 3
+	// PremiumTrialDays is the card-up-front trial on an account's first Premium (web plans.ts
+	// PREMIUM_TRIAL_DAYS).
+	PremiumTrialDays = 7
+	SeatsGuild       = 1
+	SeatsRaidGuild   = 3
 
 	SeatMoveLock      = 30 * 24 * time.Hour
 	SeatReturnedShown = 14 * 24 * time.Hour

@@ -22,6 +22,10 @@ const (
 // email link takes up to 20 minutes, so an hour covers every sign-up and no returning account.
 const ArrivalWindow = time.Hour
 
+// ClickWindow is how long the site keeps a click before sign-up (the web's ARRIVAL_TTL_MS): a
+// creator's link counts for 30 days (creators.LinkWindow).
+const ClickWindow = 30 * 24 * time.Hour
+
 var slugPattern = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{0,39}$`)
 
 // ValidSlug reports whether s is a link's slug: lowercase letters, digits and dashes, 1 to 40.

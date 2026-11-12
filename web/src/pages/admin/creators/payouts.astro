@@ -1,0 +1,22 @@
+---
+// web/src/pages/admin/creators/payouts.astro
+// /admin/creators/payouts: the owner's monthly creator statements (design/specs/2026-11-08-creator-program.md
+// 3b). Nothing is paid until the owner approves a month here. Never indexed, never in the sitemap.
+import Base from '../../../layouts/Base.astro';
+import PageHeader from '../../../components/ui/PageHeader.svelte';
+import CreatorPayouts from '../../../components/creators/CreatorPayouts.svelte';
+import { payoutsCopy as copy } from '../../../lib/creators/copy';
+import { LINK } from '../../../lib/ui/primitives';
+---
+
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/creators/payouts" wide>
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="admin-payouts-page">
+    <PageHeader title={copy.pageTitle} lead={copy.job}>
+      <a slot="actions" class={`${LINK} text-[15px]`} href="/admin/creators" data-testid="payouts-back">
+        ‹ {copy.back}
+      </a>
+    </PageHeader>
+    <CreatorPayouts client:load />
+  </main>
+</Base>

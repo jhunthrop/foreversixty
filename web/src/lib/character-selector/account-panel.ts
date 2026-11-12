@@ -9,6 +9,7 @@ import type { PremiumSource } from '../billing/contract';
 import { CENTS_PER_DOLLAR, formatUsd } from '../billing/plans';
 import { characterHref } from '../characters';
 import { zonedDayMonthYear } from '../dates';
+import { creatorStatsCopy, requestsCopy } from '../creators/copy';
 import { selectorCopy } from './copy';
 
 export interface AccountHead {
@@ -33,6 +34,14 @@ export interface ProfileRow {
   href: string;
 }
 
+/** A row the creator program adds: the creator's stats, or the owner's waiting requests. */
+export interface CreatorRow {
+  href: string;
+  title: string;
+  /** The owner's badge: how many requests wait; null on the creator's own row. */
+  badge: number | null;
+}
+
 export interface AccountPanel {
   /** Who pays for the account's Premium; the header's Premium tag follows it. */
   source: PremiumSource;
@@ -40,6 +49,18 @@ export interface AccountPanel {
   plan: PlanRow;
   /** Null when the current character is not saved to the account. */
   profile: ProfileRow | null;
+  /** The creator program's rows, in order; empty for everyone else. */
+  creator: CreatorRow[];
+}
+
+/** The creator program's menu rows: Creator stats for a creator, the requests badge for the owner. */
+export function creatorRowsOf(me: Me): CreatorRow[] {
+  const rows: CreatorRow[] = [];
+  if (me.creator === true)
+    rows.push({ href: '/creators/stats', title: creatorStatsCopy.menuItem, badge: null });
+  const waiting = me.creator_requests ?? 0;
+  if (waiting > 0) rows.push({ href: '/admin/creators', title: requestsCopy.badge(waiting), badge: waiting });
+  return rows;
 }
 
 function headOf(me: Me, premium: boolean): AccountHead {
@@ -92,5 +113,6 @@ export function accountPanelOf(me: Me, current: MeCharacter | null, nowMs: numbe
     head: headOf(me, source !== 'none' && source !== 'fallback'),
     plan: planOf(me, source, line),
     profile: current === null ? null : { href: characterHref(current.region, current.ruleset, current.name) },
+    creator: creatorRowsOf(me),
   };
 }

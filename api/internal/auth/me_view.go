@@ -53,6 +53,8 @@ type Me struct {
 	DiscordLinkSuggested *string `json:"discord_link_suggested"`
 	// SeatViews adds seat, seat_offer and ended_seat; each is omitted while absent.
 	SeatViews
+	// CreatorView adds creator and creator_requests (me_creator.go); each is omitted while it says nothing.
+	CreatorView
 }
 
 // buildNotifications resolves the notifications half of /v1/me; nil when the feature is off.

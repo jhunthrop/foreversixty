@@ -194,7 +194,9 @@ export default defineConfig({
         !page.includes('/admin/') &&
         // An alias canonical to another page (/60/pre-raid while it is the /60 list) stays out:
         // the sitemap names only URLs the pages themselves ask to be indexed.
-        isSelfCanonical(distDir, page),
+        isSelfCanonical(distDir, page) &&
+        // The creator program's own pages; the public /creators page stays.
+        !/\/creators\/(apply|onboarding|stats)\/?$/.test(page),
       // lastmod comes from each content file's `updated` field, so a page's sitemap entry
       // moves only when its facts do; pages without a content file carry no lastmod.
       serialize: (item) => {

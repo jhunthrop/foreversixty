@@ -1,0 +1,11 @@
+update entitlements set source = 'grant' where source = 'creator';
+alter table entitlements drop constraint if exists entitlements_source_check;
+alter table entitlements add constraint entitlements_source_check check (source in ('stripe', 'grant', 'trial'));
+drop table if exists premium_trials;
+drop table if exists creator_applications;
+drop table if exists creator_refunds;
+drop table if exists creator_revenue;
+drop table if exists creator_players;
+drop table if exists creator_payouts;
+drop table if exists creator_invites;
+drop table if exists creators;

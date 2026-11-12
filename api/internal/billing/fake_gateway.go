@@ -76,6 +76,11 @@ type FakeGateway struct {
 	// mutex and must not call back into the gateway.
 	OnGetSubscription func(id string, call int)
 
+	// CustomerEmails is CustomerEmail's answer by customer id ("" when absent).
+	CustomerEmails map[string]string
+	// CustomerEmailCalls records the ids passed to CustomerEmail, in order.
+	CustomerEmailCalls []string
+
 	NextCheckoutURL       string
 	NextCheckoutExpiresAt time.Time
 	NextPortalURL         string
@@ -319,4 +324,14 @@ func (f *FakeGateway) DisableDefaultPortalSwitching(_ context.Context) error {
 	}
 	f.DisabledDefaultPortal++
 	return nil
+}
+
+func (f *FakeGateway) CustomerEmail(_ context.Context, customerID string) (string, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return "", f.Err
+	}
+	f.CustomerEmailCalls = append(f.CustomerEmailCalls, customerID)
+	return f.CustomerEmails[customerID], nil
 }

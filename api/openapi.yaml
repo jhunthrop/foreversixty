@@ -1410,6 +1410,137 @@ components:
             Whether this account may run sims on our servers. Set by hand until
             payments exist; the web reads it to decide whether to offer the
             server lane at all.
+    CreatorInput:
+      type: object
+      description: >-
+        A creator the owner adds or edits. slug and code are fixed once added (PATCH ignores
+        them). cap_cents is the monthly cap, default 50000.
+      required: [name, channel_url, starts_on]
+      properties:
+        name: { type: string, maxLength: 60 }
+        channel_url: { type: string, maxLength: 200, description: An https address. }
+        slug: { type: string, pattern: '^[a-z0-9][a-z0-9-]{0,39}$' }
+        code: { type: string, pattern: '^[A-Z0-9]{4,20}$', description: Uppercased on the way in. }
+        starts_on: { type: string, format: date, description: Accounts made before this UTC day never count. }
+        cap_cents: { type: integer, format: int64, minimum: 0, maximum: 1000000 }
+    Creator:
+      type: object
+      description: >-
+        One creator on the owner's page. figures' four counts are all time; owed_cents is the
+        open month (figures.month) so far, after the cap.
+      required: [id, name, channel_url, slug, code, starts_on, cap_cents, stripe_status, figures]
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+        channel_url: { type: string }
+        slug: { type: string }
+        code: { type: string }
+        starts_on: { type: string, format: date }
+        cap_cents: { type: integer, format: int64 }
+        stripe_status: { type: string, enum: [none, onboarding, needs_info, ready] }
+        figures:
+          type: object
+          required: [clicks, sign_ups, returning, revenue_cents, month, owed_cents, capped]
+          properties:
+            clicks: { type: integer, format: int64 }
+            sign_ups: { type: integer, format: int64 }
+            returning: { type: integer, format: int64 }
+            revenue_cents: { type: integer, format: int64, description: 'Net after Stripe fees, tax and refunds.' }
+            month: { type: string, pattern: '^[0-9]{4}-[0-9]{2}$' }
+            owed_cents: { type: integer, format: int64 }
+            capped: { type: boolean }
+    CreatorStatement:
+      type: object
+      description: >-
+        One creator's month. status open (the month has not ended), ready (approve pays it),
+        nothing (owes nothing; no action), blocked (Stripe cannot pay the creator yet), paid.
+        lines are the settled lines of a paid month, else every unsettled line before its end.
+      required: [creator_id, name, month, status, bounty_count, bounty_cents, share_cents, refund_cents, capped_cents, total_cents, paid_at, transfer_id, lines]
+      properties:
+        creator_id: { type: integer, format: int64 }
+        name: { type: string }
+        month: { type: string }
+        status: { type: string, enum: [open, ready, nothing, carry, blocked, paid], description: 'carry: owes less than the $10 minimum, which carries over.' }
+        bounty_count: { type: integer, format: int64 }
+        bounty_cents: { type: integer, format: int64 }
+        share_cents: { type: integer, format: int64 }
+        refund_cents: { type: integer, format: int64 }
+        capped_cents: { type: integer, format: int64 }
+        total_cents: { type: integer, format: int64 }
+        paid_at: { type: string, format: date-time, nullable: true }
+        transfer_id: { type: string, nullable: true }
+        lines:
+          type: array
+          items:
+            type: object
+            required: [kind, player, on, amount_cents]
+            properties:
+              kind: { type: string, enum: [bounty, share, refund] }
+              player: { type: integer, format: int64, description: The account id; never a name. }
+              on: { type: string, format: date }
+              amount_cents: { type: integer, format: int64 }
+    CreatorMe:
+      type: object
+      description: >-
+        The signed-in creator's own page. weeks is one row per week of sign-ups (a Monday, UTC),
+        newest first, at most 26; returning and paying are null for the week still running.
+        Never a player's name.
+      required: [name, slug, code, cap_cents, month, month_cents, players, returning, paying, weeks, payouts, stripe_status]
+      properties:
+        name: { type: string }
+        slug: { type: string }
+        code: { type: string }
+        cap_cents: { type: integer, format: int64 }
+        month: { type: string }
+        month_cents: { type: integer, format: int64 }
+        players: { type: integer, format: int64 }
+        returning: { type: integer, format: int64 }
+        paying: { type: integer, format: int64 }
+        weeks:
+          type: array
+          items:
+            type: object
+            required: [week_of, signed_up, returning, paying]
+            properties:
+              week_of: { type: string, format: date }
+              signed_up: { type: integer, format: int64 }
+              returning: { type: integer, format: int64, nullable: true }
+              paying: { type: integer, format: int64, nullable: true }
+        payouts:
+          type: array
+          items:
+            type: object
+            required: [month, amount_cents, paid_at]
+            properties:
+              month: { type: string }
+              amount_cents: { type: integer, format: int64 }
+              paid_at: { type: string, format: date-time }
+        stripe_status: { type: string, enum: [none, onboarding, needs_info, ready] }
+    CreatorApplicationInput:
+      type: object
+      required: [channel_url, platform, about]
+      properties:
+        channel_url: { type: string, description: 'A twitch.tv or youtube.com https address.' }
+        platform: { type: string, enum: [twitch, youtube] }
+        audience: { type: integer, format: int64, nullable: true }
+        about: { type: string, maxLength: 500 }
+        contact_email: { type: string, description: 'Optional; shown to the owner only, never logged.' }
+    CreatorRequest:
+      type: object
+      description: A waiting application, for the owner; suggested prefills the Approve form.
+      required: [id, channel_url, platform, audience, about, contact_email, created_at, suggested]
+      properties:
+        id: { type: integer, format: int64 }
+        channel_url: { type: string }
+        platform: { type: string, enum: [twitch, youtube] }
+        audience: { type: integer, format: int64, nullable: true }
+        about: { type: string }
+        contact_email: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        suggested:
+          type: object
+          required: [name, slug, code]
+          properties: { name: { type: string }, slug: { type: string }, code: { type: string } }
     GoLink:
       type: object
       description: >-
@@ -1558,6 +1689,8 @@ components:
         discord_link: { oneOf: [{ $ref: '#/components/schemas/DiscordLink' }, { type: "null" }] }
         discord_link_suggested: { type: [string, "null"] }
         main_character_key: { type: string, description: Omitted until the account picks a main. }
+        creator: { type: boolean, description: True for an account in the creator program; omitted otherwise. }
+        creator_requests: { type: integer, format: int64, description: 'The owner only: creator applications waiting; omitted at none.' }
         bnet_imported_at:
           type: string
           format: date-time
@@ -1725,6 +1858,7 @@ components:
         status: { type: string }
         current_period_end: { type: [string, "null"] }
         cancel_at_period_end: { type: boolean }
+        trial_end: { type: [string, "null"], description: "The free trial's end (its first charge) while the plan trials, else null." }
         amount_cents: { type: integer, format: int64 }
         interval: { type: string }
         founder: { type: boolean }
@@ -10213,7 +10347,12 @@ paths:
         required: true
         content:
           application/json:
-            schema: { type: object, required: [slug], properties: { slug: { type: string } } }
+            schema:
+              type: object
+              required: [slug]
+              properties:
+                slug: { type: string }
+                at: { type: integer, format: int64, description: 'When the link was clicked, ms since the epoch; the creator program reads it (a creator link counts 30 days). Clamped to now.' }
       responses:
         '200':
           description: Whether the arrival was recorded
@@ -10230,6 +10369,517 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '401':
           description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators:
+    get:
+      summary: Every creator in the program with its figures
+      operationId: listCreators
+      description: >-
+        Owner only. private, no-store.
+      responses:
+        '200':
+          description: The creators
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [creators, stripe_enabled, payouts_enabled], properties: { creators: { type: array, items: { $ref: '#/components/schemas/Creator' } }, stripe_enabled: { type: boolean }, payouts_enabled: { type: boolean } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    post:
+      summary: Add a creator
+      operationId: addCreator
+      description: >-
+        Owner only. Makes the go link and reserves the code.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/CreatorInput' } } }
+      responses:
+        '201':
+          description: The creator
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/Creator' }
+        '400':
+          description: A field is wrong or the link or code is taken (error.fields names it)
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/{id}:
+    patch:
+      summary: Edit a creator's name, channel, start date and cap
+      operationId: editCreator
+      description: >-
+        Owner only.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/CreatorInput' } } }
+      responses:
+        '200':
+          description: The creator
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/Creator' }
+        '400':
+          description: A field is wrong
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: No such creator
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    delete:
+      summary: Remove a creator from the program
+      operationId: removeCreator
+      description: >-
+        Owner only. No new players; the creator Premium ends (a paid plan is untouched); statements stay.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '204':
+          description: Removed
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: No such creator, or already removed
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/{id}/invite:
+    post:
+      summary: A fresh one-time invite URL
+      operationId: inviteCreator
+      description: >-
+        Owner only. 14 days; an earlier unused invite stops working.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: The invite
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [url], properties: { url: { type: string } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: No such creator
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/{id}/stripe-status:
+    post:
+      summary: Re-read the creator's Express account
+      operationId: refreshCreatorStripe
+      description: >-
+        Owner only.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: The status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [stripe_status], properties: { stripe_status: { type: string } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: No such creator
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '503':
+          description: Stripe is not configured
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/statements:
+    get:
+      summary: Every creator's statement for a month
+      operationId: listCreatorStatements
+      description: >-
+        Owner only. month defaults to the last closed one. payouts_enabled is the server switch CREATOR_PAYOUTS.
+      parameters:
+        - { name: month, in: query, required: false, schema: { type: string } }
+      responses:
+        '200':
+          description: The month
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [month, payouts_enabled, statements], properties: { month: { type: string }, payouts_enabled: { type: boolean }, statements: { type: array, items: { $ref: '#/components/schemas/CreatorStatement' } } } }
+        '400':
+          description: month is not YYYY-MM
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/{id}/statements/{month}/approve:
+    post:
+      summary: Approve a closed month and transfer it
+      operationId: approveCreatorStatement
+      description: >-
+        Owner only, never automatic. Settles the lines and makes one Stripe transfer with the idempotency key and transfer group creator-{id}-{month}; a second call answers the same payout.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: month, in: path, required: true, schema: { type: string, pattern: '^[0-9]{4}-[0-9]{2}$' } }
+      responses:
+        '200':
+          description: The paid statement
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/CreatorStatement' }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: No such creator
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: month_open, nothing_owed or not_payable
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '503':
+          description: payouts_off (the server switch) or stripe_off
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/balance:
+    get:
+      summary: The platform's available USD balance, for the Approve dialog
+      operationId: creatorPayoutBalance
+      description: >-
+        Owner only, read with the payouts key (Balance read). Approve also checks it and answers
+        409 balance_insufficient, with nothing paid or recorded, when the balance cannot cover the
+        statement.
+      responses:
+        '200':
+          description: The balance
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [available_cents], properties: { available_cents: { type: integer, format: int64 } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/requests:
+    get:
+      summary: Waiting creator applications
+      operationId: listCreatorRequests
+      description: >-
+        Owner only. Oldest first.
+      responses:
+        '200':
+          description: The requests
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [requests], properties: { requests: { type: array, items: { $ref: '#/components/schemas/CreatorRequest' } } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/requests/{id}/approve:
+    post:
+      summary: Make the creator from a request, bound to the applicant
+      operationId: approveCreatorRequest
+      description: >-
+        Owner only. The applicant gets the creator Premium; no invite is needed.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/CreatorInput' } } }
+      responses:
+        '201':
+          description: The creator
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/Creator' }
+        '400':
+          description: A field is wrong
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: Already decided
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/requests/{id}/decline:
+    post:
+      summary: Decline a request
+      operationId: declineCreatorRequest
+      description: >-
+        Owner only. No reason is asked.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '204':
+          description: Declined
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: Already decided
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/creators/invite/preview:
+    post:
+      summary: The name an open invite names
+      operationId: previewCreatorInvite
+      description: >-
+        Session. The token rides the body, never a URL.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, required: [token], properties: { token: { type: string } } } } }
+      responses:
+        '200':
+          description: The name
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [name], properties: { name: { type: string } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '410':
+          description: Expired or used
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/creators/invite:
+    post:
+      summary: Accept an invite
+      operationId: acceptCreatorInvite
+      description: >-
+        Session. Binds the account to the creator and gives it the creator Premium.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, required: [token], properties: { token: { type: string } } } } }
+      responses:
+        '200':
+          description: The creator joined
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [name], properties: { name: { type: string } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: This account is already a creator
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '410':
+          description: Expired or used
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/creators/me:
+    get:
+      summary: The signed-in creator's own page
+      operationId: getCreatorMe
+      description: >-
+        Session. sync=1 re-reads an unfinished Stripe onboarding first (the ?done=1 return).
+      parameters:
+        - { name: sync, in: query, required: false, schema: { type: string, enum: ['1'] } }
+      responses:
+        '200':
+          description: The page
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/CreatorMe' }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: not_creator
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/creators/me/onboarding:
+    post:
+      summary: A fresh Stripe onboarding link
+      operationId: creatorOnboardingLink
+      description: >-
+        Session, a creator. Makes the Express account when it has none; return_url /creators/onboarding?done=1, refresh_url ?refresh=1.
+      responses:
+        '200':
+          description: The link
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [url], properties: { url: { type: string } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: not_creator
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '503':
+          description: Stripe is not configured
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/creators/me/dashboard:
+    post:
+      summary: A one-time link into the creator's Express dashboard
+      operationId: creatorDashboardLink
+      description: >-
+        Session, a creator whose Stripe account is ready. Made on each press, never stored (payouts, bank details, the 1099).
+      responses:
+        '200':
+          description: The link
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [url], properties: { url: { type: string } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: not_creator
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: not_payable
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/creators/application:
+    get:
+      summary: The account's latest application
+      operationId: getCreatorApplication
+      description: >-
+        Session.
+      responses:
+        '200':
+          description: The application
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [status, created_at, creator], properties: { status: { type: string, enum: [pending, approved, declined], nullable: true }, created_at: { type: string, format: date-time, nullable: true }, creator: { type: boolean }, reapply_on: { type: string, format: date, nullable: true, description: 'The day a declined account may apply again (30 days), while ahead.' } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    post:
+      summary: Apply to the creator program
+      operationId: sendCreatorApplication
+      description: >-
+        Session, 5 an hour per address. One open application per account; a creator cannot apply.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/CreatorApplicationInput' } } }
+      responses:
+        '201':
+          description: Sent
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [status], properties: { status: { type: string } } }
+        '400':
+          description: A field is wrong (error.fields)
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: application_open
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: Too many
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/admin/golinks:
     get:

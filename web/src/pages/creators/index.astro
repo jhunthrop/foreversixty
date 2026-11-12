@@ -4,8 +4,9 @@
 // png/b4-creators-*; parity twin design/mocks/ws_creators.py). A reading page: the PageHeader with
 // the bounty as its answer and Apply, the contents rail from 1024, then one panel holding the lead
 // and a ReadingSection per part of the terms, each with its figures in the lane (the first also
-// what one player is worth in a first year), and Apply last. Static, nothing is fetched. The
-// program's server side is not on main, so Apply is an email (lib/creators/copy.ts).
+// what one player is worth in a first year), and Apply last. Static, nothing is fetched. Apply
+// goes to /creators/apply (lib/creators/copy.ts), which asks a signed-out visitor to sign in with
+// Battle.net and comes back there.
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/ui/Button.svelte';
 import Facts from '../../components/ui/Facts.svelte';
@@ -18,7 +19,7 @@ import ReadingPanel from '../../components/ui/ReadingPanel.svelte';
 import ReadingSection from '../../components/ui/ReadingSection.svelte';
 import Toc from '../../components/ui/Toc.svelte';
 import { founderOpen } from '../../lib/billing/plans';
-import { CREATORS_APPLY_HREF, programCopy as copy } from '../../lib/creators/copy';
+import { CREATORS_APPLY_PATH, programCopy as copy } from '../../lib/creators/copy';
 import { earningsRows } from '../../lib/creators/model';
 import { REGION } from '../../lib/ui/regions';
 
@@ -43,7 +44,7 @@ const examples = earningsRows(founderOpen(new Date()));
             align="end"
             testid="creators-answer"
           />
-          <Button tone="primary" href={CREATORS_APPLY_HREF} testid="creators-apply-top">
+          <Button tone="primary" href={CREATORS_APPLY_PATH} testid="creators-apply-top">
             {copy.apply}
           </Button>
         </div>
@@ -98,7 +99,7 @@ const examples = earningsRows(founderOpen(new Date()));
         >
           <Prose html={paragraphs(copy.applySection.paragraphs)} />
           <div class="creators-apply">
-            <Button tone="primary" href={CREATORS_APPLY_HREF} testid="creators-apply-end">
+            <Button tone="primary" href={CREATORS_APPLY_PATH} testid="creators-apply-end">
               {copy.applyAction}
             </Button>
           </div>

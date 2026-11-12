@@ -1,0 +1,57 @@
+{
+  "month": "2026-11",
+  "payouts_enabled": true,
+  "connect_denied": false,
+  "statements": [
+    {
+      "creator_id": 1,
+      "name": "Grimbrew",
+      "month": "2026-11",
+      "status": "ready",
+      "bounty_count": 64,
+      "bounty_cents": 12800,
+      "share_cents": 4310,
+      "refund_cents": 250,
+      "capped_cents": 0,
+      "total_cents": 16860,
+      "paid_at": null,
+      "transfer_id": null,
+      "lines": [
+        { "kind": "bounty", "player": 10412, "on": "2026-11-10", "amount_cents": 200 },
+        { "kind": "share", "player": 10412, "on": "2026-11-11", "amount_cents": 203 },
+        { "kind": "bounty", "player": 10577, "on": "2026-11-14", "amount_cents": 200 },
+        { "kind": "refund", "player": 10498, "on": "2026-11-21", "amount_cents": 250 }
+      ]
+    },
+    {
+      "creator_id": 2,
+      "name": "Lunawick",
+      "month": "2026-11",
+      "status": "blocked",
+      "bounty_count": 31,
+      "bounty_cents": 6200,
+      "share_cents": 1240,
+      "refund_cents": 0,
+      "capped_cents": 2440,
+      "total_cents": 5000,
+      "paid_at": null,
+      "transfer_id": null,
+      "lines": []
+    },
+    {
+      "creator_id": 3,
+      "name": "Tallowmere",
+      "month": "2026-11",
+      "status": "nothing",
+      "bounty_count": 0,
+      "bounty_cents": 0,
+      "share_cents": 0,
+      "refund_cents": 0,
+      "capped_cents": 0,
+      "total_cents": 0,
+      "paid_at": null,
+      "transfer_id": null,
+      "lines": []
+    }
+  ]
+}

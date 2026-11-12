@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { FOUNDER_PREMIUM_FACTS, ME_SEAT, mockEntitlements } from '../../test-support/billing-fixtures';
 import type { BillingView, Me, MeCharacter } from '../account/api';
 import type { PremiumSource } from '../billing/contract';
-import { accountPanelOf } from './account-panel';
+import { accountPanelOf, creatorRowsOf } from './account-panel';
 import { selectorCopy } from './copy';
 
 const NOW = Date.parse('2026-11-12T12:00:00Z');
@@ -110,5 +110,21 @@ describe('accountPanelOf', () => {
       href: '/character/us/normal/lightningbolltz',
     });
     expect(accountPanelOf(meWith({}), null, NOW).profile).toBeNull();
+  });
+});
+
+describe('the creator program rows', () => {
+  it('adds Creator stats for a creator and nothing for anyone else', () => {
+    expect(creatorRowsOf(meWith({}))).toEqual([]);
+    expect(creatorRowsOf(meWith({}, null, { creator: true }))).toEqual([
+      { href: '/creators/stats', title: 'Creator stats', badge: null },
+    ]);
+  });
+
+  it('gives the owner a badge while requests wait', () => {
+    expect(creatorRowsOf(meWith({ role: 'admin' }, null, { creator_requests: 2 }))).toEqual([
+      { href: '/admin/creators', title: '2 creator requests', badge: 2 },
+    ]);
+    expect(creatorRowsOf(meWith({ role: 'admin' }, null, { creator_requests: 0 }))).toEqual([]);
   });
 });

@@ -25,6 +25,8 @@
     ICON_MANAGE,
     ICON_PASTE_EXPORT,
     ICON_PREMIUM,
+    ICON_RANKINGS,
+    ICON_SEND,
     ICON_SETUP,
     ICON_SIGN_OUT,
     type UiIconShape,
@@ -47,6 +49,8 @@
     account: ICON_MANAGE,
     plan: ICON_PREMIUM,
     setUp: ICON_SETUP,
+    creator: ICON_RANKINGS,
+    requests: ICON_SEND,
     signOut: ICON_SIGN_OUT,
   } as const satisfies Record<string, UiIconShape>;
   const TILE_ICON_PX = 20;
@@ -267,6 +271,22 @@
       {/if}
       {@render chevron(panel.plan.seePlans)}
     </a>
+    {#each panel.creator as row (row.href)}
+      <!-- The creator program's rows: the creator's own stats, and the owner's waiting requests. -->
+      <a
+        class="csel-arow"
+        href={row.href}
+        data-testid={row.badge === null ? 'selector-row-creator' : 'selector-row-creator-requests'}
+      >
+        <span class="csel-tile"
+          >{@render glyph(row.badge === null ? TILE_ICONS.creator : TILE_ICONS.requests)}</span
+        >
+        <span class="csel-arow-text">
+          <span class="csel-arow-title">{row.title}</span>
+        </span>
+        {@render chevron()}
+      </a>
+    {/each}
     {@render setUpRow()}
     <button
       type="button"

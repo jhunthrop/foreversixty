@@ -268,6 +268,8 @@ data class Billing(
     @SerialName("status") val status: String,
     @SerialName("current_period_end") val currentPeriodEnd: String? = null,
     @SerialName("cancel_at_period_end") val cancelAtPeriodEnd: Boolean,
+    /** The free trial's end (its first charge) while the plan trials, else null. */
+    @SerialName("trial_end") val trialEnd: String? = null,
     @SerialName("amount_cents") val amountCents: Long? = null,
     @SerialName("interval") val interval: String? = null,
     @SerialName("founder") val founder: Boolean? = null,
@@ -2125,6 +2127,10 @@ data class Me(
     @SerialName("discord_link_suggested") val discordLinkSuggested: String? = null,
     /** Omitted until the account picks a main. */
     @SerialName("main_character_key") val mainCharacterKey: String? = null,
+    /** True for an account in the creator program; omitted otherwise. */
+    @SerialName("creator") val creator: Boolean? = null,
+    /** The owner only: creator applications waiting; omitted at none. */
+    @SerialName("creator_requests") val creatorRequests: Long? = null,
     /** When the account was last updated from Battle.net: a sign-in import, a refresh on a signed-in visit (at most hourly) or the background refresh of any of its characters (every 3 h for an account active in the last 14 days, else nightly). Every Battle.net sign-in imports the account's Forever characters (us, eu, tw) at any level; omitted when it never ran. */
     @SerialName("bnet_imported_at") val bnetImportedAt: String? = null,
     /** The last Battle.net import's state, omitted until a sign-in has tracked one. Sign-in records running when its import starts; the import ends inside the sign-in's 5 s budget or in a background run of up to 2 minutes, then records done (no error) or failed. A running state older than 3 minutes 5 seconds reads as failed: the instance running it stopped. Poll /v1/me while it reads running. */

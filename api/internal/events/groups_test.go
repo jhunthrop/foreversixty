@@ -39,7 +39,7 @@ func TestGroupsMatchTheAppsSettings(t *testing.T) {
 		GroupLadder:  {GuildSimPassed},
 		GroupTiers:   {TierMoved},
 		GroupOfficer: {RosterPending, RaidShort, RaidLateChange, GuildApplicant},
-		GroupAccount: {CharacterLinked, GuildApproved, PremiumSeat, BillingFailed},
+		GroupAccount: {CharacterLinked, GuildApproved, PremiumSeat, BillingFailed, BillingTrialEnding},
 	}
 	for g, want := range cases {
 		if got := KindsOf(g); !slices.Equal(got, want) {
