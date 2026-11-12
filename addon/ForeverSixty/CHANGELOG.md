@@ -1,6 +1,6 @@
 # Forever Sixty
 
-## Unreleased
+## 2.0.40
 
 - The addon no longer guesses your spec. When your talent points do not name one tree (none yet, one point, a tie or a split like 2 Holy and 2 Retribution), it asks "Are you Holy or Retribution?" on the tour's last page, in the panel and on the line by your minimap, and remembers your answer for that character. The guild tab and Inspect leave the spec blank instead of guessing too.
 - Each page of the first-run tour now opens with what you get: the gold ring on your next talent, the green arrow on a better bag item, the rotation in your panel, reports and the coach once the companion uploads, your guild's raid on the day.
