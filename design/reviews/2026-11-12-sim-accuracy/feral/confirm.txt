@@ -1,0 +1,21 @@
+# seed 50001 confirmation of the Rake line (v1) against the published rotation, cat bare bands 30 to 60 and raid 60
+cat-bare30-A -spec druid-feral -preset bare -band 30 -faction alliance
+cat-bare30-A-v1 -spec druid-feral -preset bare -band 30 -faction alliance -rotation @R/rot_v1_rake_before_shred.json
+cat-bare40-A -spec druid-feral -preset bare -band 40 -faction alliance
+cat-bare40-A-v1 -spec druid-feral -preset bare -band 40 -faction alliance -rotation @R/rot_v1_rake_before_shred.json
+cat-bare50-A -spec druid-feral -preset bare -band 50 -faction alliance
+cat-bare50-A-v1 -spec druid-feral -preset bare -band 50 -faction alliance -rotation @R/rot_v1_rake_before_shred.json
+cat-bare60-A -spec druid-feral -preset bare -band 60 -faction alliance
+cat-bare60-A-v1 -spec druid-feral -preset bare -band 60 -faction alliance -rotation @R/rot_v1_rake_before_shred.json
+cat-raid60-A -spec druid-feral -preset raid -band 60 -faction alliance
+cat-raid60-A-v1 -spec druid-feral -preset raid -band 60 -faction alliance -rotation @R/rot_v1_rake_before_shred.json
+cat-bare30-H -spec druid-feral -preset bare -band 30 -faction horde
+cat-bare30-H-v1 -spec druid-feral -preset bare -band 30 -faction horde -rotation @R/rot_v1_rake_before_shred.json
+cat-bare40-H -spec druid-feral -preset bare -band 40 -faction horde
+cat-bare40-H-v1 -spec druid-feral -preset bare -band 40 -faction horde -rotation @R/rot_v1_rake_before_shred.json
+cat-bare50-H -spec druid-feral -preset bare -band 50 -faction horde
+cat-bare50-H-v1 -spec druid-feral -preset bare -band 50 -faction horde -rotation @R/rot_v1_rake_before_shred.json
+cat-bare60-H -spec druid-feral -preset bare -band 60 -faction horde
+cat-bare60-H-v1 -spec druid-feral -preset bare -band 60 -faction horde -rotation @R/rot_v1_rake_before_shred.json
+cat-raid60-H -spec druid-feral -preset raid -band 60 -faction horde
+cat-raid60-H-v1 -spec druid-feral -preset raid -band 60 -faction horde -rotation @R/rot_v1_rake_before_shred.json
