@@ -31185,8 +31185,7 @@
             "icon": "spell_shadow_devouringplague",
             "race_spell_ids": {
               "gnome": 2944,
-              "night-elf": 2944,
-              "troll": 2944
+              "night-elf": 2944
             }
           },
           {
@@ -31401,7 +31400,6 @@
             "condition": "on cooldown",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
-              "gnome": 8104,
               "troll": 8104,
               "undead": 8104
             }
@@ -31412,7 +31410,6 @@
             "condition": "on cooldown",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
-              "gnome": 8104,
               "troll": 8104,
               "undead": 8104
             }
@@ -31675,32 +31672,18 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 8106,
+            "spell_id": 8105,
             "name": "Mind Blast",
             "condition": "on cooldown",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8104,
-              "gnome": 8105,
-              "human": 8105,
-              "night-elf": 8104,
-              "troll": 8104,
-              "undead": 8105
-            }
+            "race_spell_ids": {}
           },
           {
-            "spell_id": 8106,
+            "spell_id": 8105,
             "name": "Mind Blast",
             "condition": "on cooldown",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8104,
-              "gnome": 8105,
-              "human": 8105,
-              "night-elf": 8104,
-              "troll": 8104,
-              "undead": 8105
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1309633,
@@ -31709,7 +31692,6 @@
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {
               "dwarf": 1309595,
-              "human": 1309595,
               "night-elf": 1309595
             }
           },
@@ -32162,17 +32144,20 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19278,
+            "spell_id": 19276,
             "name": "Devouring Plague",
             "condition": "when Devouring Plague is not ticking",
             "icon": "spell_shadow_devouringplague",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10945,
+            "name": "Mind Blast",
+            "condition": "on cooldown",
+            "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
-              "dwarf": 19276,
-              "gnome": 19276,
-              "human": 2944,
-              "night-elf": 19276,
-              "troll": 19276,
-              "undead": 19276
+              "dwarf": 8106,
+              "night-elf": 8106
             }
           },
           {
@@ -32181,22 +32166,8 @@
             "condition": "on cooldown",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
-              "dwarf": 8105,
-              "night-elf": 8105,
-              "troll": 8105,
-              "undead": 8106
-            }
-          },
-          {
-            "spell_id": 10945,
-            "name": "Mind Blast",
-            "condition": "on cooldown",
-            "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8105,
-              "night-elf": 8105,
-              "troll": 8105,
-              "undead": 8106
+              "dwarf": 8106,
+              "night-elf": 8106
             }
           },
           {
@@ -32245,11 +32216,11 @@
             "condition": "when Devouring Plague is not ticking",
             "icon": "spell_shadow_devouringplague",
             "race_spell_ids": {
-              "dwarf": 19276,
+              "dwarf": 19277,
               "gnome": 19276,
-              "human": 2944,
-              "night-elf": 19276,
-              "troll": 19276,
+              "human": 19276,
+              "night-elf": 19277,
+              "troll": 19277,
               "undead": 19276
             }
           },
@@ -32258,22 +32229,14 @@
             "name": "Mind Blast",
             "condition": "on cooldown",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8105,
-              "night-elf": 8105,
-              "troll": 8105
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 10945,
             "name": "Mind Blast",
             "condition": "on cooldown",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8105,
-              "night-elf": 8105,
-              "troll": 8105
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1309633,
@@ -32293,136 +32256,6 @@
       },
       {
         "level": 52,
-        "lines": [
-          {
-            "spell_id": 1277327,
-            "name": "Dark Sacrifice",
-            "condition": "below 20% mana and boss health %, Undead only",
-            "icon": "spell_holy_powerinfusion_shadow",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10893,
-            "name": "Shadow Word: Pain",
-            "condition": "when Shadow Word: Pain is not on the target",
-            "icon": "spell_shadow_shadowwordpain",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 15286,
-            "name": "Vampiric Embrace",
-            "condition": "when Vampiric Embrace is not on the target",
-            "icon": "spell_shadow_unsummonbuilding",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19276,
-            "name": "Devouring Plague",
-            "condition": "when Devouring Plague is not ticking",
-            "icon": "spell_shadow_devouringplague",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10946,
-            "name": "Mind Blast",
-            "condition": "on cooldown",
-            "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8105
-            }
-          },
-          {
-            "spell_id": 10946,
-            "name": "Mind Blast",
-            "condition": "on cooldown",
-            "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8105
-            }
-          },
-          {
-            "spell_id": 1309633,
-            "name": "Shadow Word: Death",
-            "condition": "on cooldown",
-            "icon": "spell_shadow_demonicfortitude",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 17314,
-            "name": "Mind Flay",
-            "condition": "when nothing else is ready",
-            "icon": "spell_shadow_siphonmana",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 53,
-        "lines": [
-          {
-            "spell_id": 1277327,
-            "name": "Dark Sacrifice",
-            "condition": "below 20% mana and boss health %, Undead only",
-            "icon": "spell_holy_powerinfusion_shadow",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10893,
-            "name": "Shadow Word: Pain",
-            "condition": "when Shadow Word: Pain is not on the target",
-            "icon": "spell_shadow_shadowwordpain",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 15286,
-            "name": "Vampiric Embrace",
-            "condition": "when Vampiric Embrace is not on the target",
-            "icon": "spell_shadow_unsummonbuilding",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19276,
-            "name": "Devouring Plague",
-            "condition": "when Devouring Plague is not ticking",
-            "icon": "spell_shadow_devouringplague",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10946,
-            "name": "Mind Blast",
-            "condition": "on cooldown",
-            "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "human": 8106
-            }
-          },
-          {
-            "spell_id": 10946,
-            "name": "Mind Blast",
-            "condition": "on cooldown",
-            "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "human": 8106
-            }
-          },
-          {
-            "spell_id": 1309633,
-            "name": "Shadow Word: Death",
-            "condition": "on cooldown",
-            "icon": "spell_shadow_demonicfortitude",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 17314,
-            "name": "Mind Flay",
-            "condition": "when nothing else is ready",
-            "icon": "spell_shadow_siphonmana",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 54,
         "lines": [
           {
             "spell_id": 1277327,
@@ -32576,6 +32409,74 @@
           },
           {
             "spell_id": 19276,
+            "name": "Devouring Plague",
+            "condition": "when Devouring Plague is not ticking",
+            "icon": "spell_shadow_devouringplague",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14751,
+            "name": "Inner Focus",
+            "condition": "on cooldown, Inner Focus first",
+            "icon": "spell_frost_windwalkon",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10947,
+            "name": "Mind Blast",
+            "condition": "on cooldown, Inner Focus first",
+            "icon": "spell_shadow_unholyfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10947,
+            "name": "Mind Blast",
+            "condition": "on cooldown",
+            "icon": "spell_shadow_unholyfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1309633,
+            "name": "Shadow Word: Death",
+            "condition": "on cooldown",
+            "icon": "spell_shadow_demonicfortitude",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 17314,
+            "name": "Mind Flay",
+            "condition": "when nothing else is ready",
+            "icon": "spell_shadow_siphonmana",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 59,
+        "lines": [
+          {
+            "spell_id": 1277327,
+            "name": "Dark Sacrifice",
+            "condition": "below 20% mana and boss health %, Undead only",
+            "icon": "spell_holy_powerinfusion_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10894,
+            "name": "Shadow Word: Pain",
+            "condition": "when Shadow Word: Pain is not on the target",
+            "icon": "spell_shadow_shadowwordpain",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 15286,
+            "name": "Vampiric Embrace",
+            "condition": "when Vampiric Embrace is not on the target",
+            "icon": "spell_shadow_unsummonbuilding",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 19277,
             "name": "Devouring Plague",
             "condition": "when Devouring Plague is not ticking",
             "icon": "spell_shadow_devouringplague",
