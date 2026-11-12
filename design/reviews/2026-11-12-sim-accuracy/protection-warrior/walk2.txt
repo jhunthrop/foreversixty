@@ -1,0 +1,22 @@
+# The swap: Shield Specialization 10 to 14, Improved Revenge 15 to 17, Improved Bloodrage 18 and 19 (the order has Improved Bloodrage first), and Improved Thunder Clap at 18 and 19 instead with Improved Bloodrage at 28 and 29.
+w15_order -spec warrior-protection -preset bare -band 20 -level 15 -faction alliance -tank
+w15_swap -spec warrior-protection -preset bare -band 20 -level 15 -faction alliance -tank -talents 00000000000000000-000000000000000000-050010000000000000
+w17_order -spec warrior-protection -preset bare -band 20 -level 17 -faction alliance -tank
+w17_swap -spec warrior-protection -preset bare -band 20 -level 17 -faction alliance -tank -talents 00000000000000000-000000000000000000-050030000000000000
+w18_order -spec warrior-protection -preset bare -band 20 -level 18 -faction alliance -tank
+w18_swap_ib -spec warrior-protection -preset bare -band 20 -level 18 -faction alliance -tank -talents 00000000000000000-000000000000000000-150030000000000000
+w18_swap_tc -spec warrior-protection -preset bare -band 20 -level 18 -faction alliance -tank -talents 00000000000000000-000000000000000000-050031000000000000
+w19_order -spec warrior-protection -preset bare -band 20 -level 19 -faction alliance -tank
+w19_tc -spec warrior-protection -preset bare -band 20 -level 19 -faction alliance -tank -talents 00000000000000000-000000000000000000-050032000000000000
+w28_order -spec warrior-protection -preset bare -band 20 -level 28 -faction alliance -tank
+w28_alt -spec warrior-protection -preset bare -band 20 -level 28 -faction alliance -tank -talents 00000000000000000-000000000000000000-150032020330000000
+w29_order -spec warrior-protection -preset bare -band 20 -level 29 -faction alliance -tank
+w29_alt -spec warrior-protection -preset bare -band 20 -level 29 -faction alliance -tank -talents 00000000000000000-000000000000000000-150033020330000000
+w11_order_s2 -spec warrior-protection -preset bare -band 20 -level 11 -faction alliance -tank -seed 50001
+w11_ss_s2 -spec warrior-protection -preset bare -band 20 -level 11 -faction alliance -tank -talents 00000000000000000-000000000000000000-020000000000000000 -seed 50001
+w14_order_s2 -spec warrior-protection -preset bare -band 20 -level 14 -faction alliance -tank -seed 50001
+w14_ss_s2 -spec warrior-protection -preset bare -band 20 -level 14 -faction alliance -tank -talents 00000000000000000-000000000000000000-050000000000000000 -seed 50001
+w18_order_s2 -spec warrior-protection -preset bare -band 20 -level 18 -faction alliance -tank -seed 50001
+w18_swap_ib_s2 -spec warrior-protection -preset bare -band 20 -level 18 -faction alliance -tank -talents 00000000000000000-000000000000000000-150030000000000000 -seed 50001
+w13_order_h -spec warrior-protection -preset bare -band 20 -level 13 -faction horde -tank
+w13_ss_h -spec warrior-protection -preset bare -band 20 -level 13 -faction horde -tank -talents 00000000000000000-000000000000000000-040000000000000000
