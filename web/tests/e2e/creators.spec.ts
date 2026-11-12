@@ -55,7 +55,7 @@ test.describe('/admin/creators', () => {
     await expect(grim).toContainText('/go/grimbrew · code GRIMBREW · since 8 Nov 2026');
     await expect(grim).toContainText('$184.20');
     await expect(grim).toContainText('Dec 2026 · of $500 cap');
-    await expect(grim).toContainText('all time');
+    await expect(page.getByTestId('creators-table')).toContainText('counts all time');
     await expect(page.getByTestId('creator-status-grimbrew')).toHaveText('Payouts ready');
     await expect(page.getByTestId('creator-row-lunawick')).toContainText('Dec 2026 · $50 cap reached');
   });
@@ -235,13 +235,16 @@ test.describe('the creator', () => {
     );
     await page.goto('/creators/stats');
     await expect(page.getByRole('heading', { level: 1, name: 'Grimbrew' })).toBeVisible();
-    await expect(page.getByTestId('stats-figures')).toContainText(
-      'Dec 2026 so far · of $500 cap',
-    );
-    await expect(page.getByTestId('stats-week-2026-12-07')).toHaveText('Week of 7 Dec: 18 signed up so far');
-    await expect(page.getByTestId('stats-week-2026-11-23')).toHaveText(
-      'Week of 23 Nov: 54 signed up · 36 returning · 10 paying',
-    );
+    await expect(page.getByTestId('stats-figures')).toContainText('Dec 2026 so far · of $500 cap');
+    // The running week shows its sign-ups alone (the other two cells empty) and is still filling.
+    const running = page.getByTestId('stats-week-2026-12-07');
+    await expect(running).toContainText('Week of 7 Dec');
+    await expect(running).toContainText('still filling');
+    await expect(running).toContainText('Signed up 18');
+    await expect(running).toContainText('Returning –');
+    await expect(page.getByTestId('stats-week-2026-11-23')).toContainText('Signed up 54');
+    await expect(page.getByTestId('stats-week-2026-11-23')).toContainText('Returning 36');
+    await expect(page.getByTestId('stats-week-2026-11-23')).toContainText('Paying 10');
     await expect(page.getByTestId('stats-paid-so-far')).toHaveText('$0.00 paid so far');
     await page.getByTestId('stats-dashboard').click();
     await expect(page).toHaveURL(/dash=1/);

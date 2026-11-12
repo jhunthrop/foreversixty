@@ -151,8 +151,13 @@ test('a /go/ landing keeps the slug, cleans the address bar and sends it once si
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
   await page.goto('/guides?golink=reddit-guides');
   await expect(page).toHaveURL(/\/guides$/);
-  const kept = await page.evaluate(() => localStorage.getItem('fs.arrival.next'));
-  expect(JSON.parse(kept ?? '{}').slug).toBe('reddit-guides');
+  // The click is kept after first paint (lib/golinks/later.ts), so the read waits for it.
+  await expect
+    .poll(async () => {
+      const kept = await page.evaluate(() => localStorage.getItem('fs.arrival.next'));
+      return (JSON.parse(kept ?? '{}') as { slug?: string }).slug;
+    })
+    .toBe('reddit-guides');
 
   let sent: unknown = null;
   await page.context().addCookies([{ name: 'fs_csrf', value: 'tok', domain: 'localhost', path: '/' }]);
