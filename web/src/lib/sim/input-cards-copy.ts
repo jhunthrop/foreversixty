@@ -6,6 +6,8 @@
 
 export const gearCardCopy = {
   title: 'Gear',
+  /** After the frame's title bar's spec, small: "Level 60". */
+  dollLevel: (level: number) => `Level ${level}`,
   statsHead: (level: number) => `In the fight, against a level ${level} boss.`,
   /** A run from before the engine reported its stats sheet. */
   statsNeedNewerRun: 'Your stats in the fight show after a rerun.',

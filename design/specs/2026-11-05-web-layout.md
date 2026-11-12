@@ -202,7 +202,7 @@ Captures: `design/reviews/2026-10-31-paperdoll/build/character-beta-1440.png`, `
 |---|---|---|---|
 | `pick` | BiS, signed out | The BiS pick: icon, name, source line | `+1.8 over next` (lead over the best runner-up) or `Tie next best` |
 | `compare` | BiS, signed in | The BiS pick as in `pick`, with the worn item's 28 px icon at the right | `+1.8 DPS` in gold for an upgrade; a green check and `Worn` when the player has the pick |
-| `worn` | Character page, sim character card | The worn item: icon, name, enchant line | Upgrade `+1.8 DPS` with the pick's icon, or `Best in slot`; `Not scored` when unscored |
+| `worn` | Character page, the sim's Gear section (the frame on both, owner ruling 2026-11-11; the sim's saved-runs strip keeps the list form) | The worn item: icon, name, enchant line | Upgrade `+1.8 DPS` with the pick's icon, or `Best in slot`; `Not scored` when unscored |
 | `report` | Reports (GearList) | The worn item and its detail line ("Item level 66 · Enchanted") | none |
 
 The frame, the cell, the inspector, the states and the keyboard model are identical in all four. A caller passes `PaperdollSlot[]` (existing type) plus, for BiS, a `pick` and `alternatives` per slot; `PaperdollUpgrade.points` becomes `dps` (section 4.6).

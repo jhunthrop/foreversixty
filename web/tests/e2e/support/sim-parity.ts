@@ -120,7 +120,7 @@ async function openFuryWarrior(page: Page): Promise<void> {
   url.searchParams.delete('run');
   await page.goto(`${url.pathname}${url.search}`);
   await expect(page.getByTestId('sim-run-button')).toBeEnabled({ timeout: 15_000 });
-  // The Gear section's worn list (SimGearSection on the shared frame's list form, h-doll).
+  // The Gear section's worn doll (SimGearSection on the shared frame; the list form under 423 px).
   await expect(page.getByTestId('sim-gear-doll')).toBeVisible();
 }
 

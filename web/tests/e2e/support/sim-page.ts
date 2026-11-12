@@ -114,3 +114,29 @@ export async function gotoSavedSim(page: Page, path: string): Promise<void> {
   await page.goto(path);
   await expect(page.getByTestId('sim-view')).toBeVisible();
 }
+
+/** The sim's Gear doll (SimGearSection on the shared PaperdollFrame): the frame from 423 px (the
+ *  desktop project), its list form under that (the mobile project). */
+export function simGearDoll(page: Page) {
+  return page.getByTestId('sim-gear-doll');
+}
+
+/** The doll's slot in the form the width shows: the frame's socket or the list's row. */
+function shownGearSlot(page: Page, slot: string) {
+  return simGearDoll(page).locator(
+    `[data-testid="paperdoll-frame-slot-${slot}"]:visible, [data-testid="paperdoll-list-slot-${slot}"]:visible`,
+  );
+}
+
+const escapeRegExp = (text: string): string => text.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/** Waits for the slot to show, and with `item` reads its name where the form carries it: the
+ *  socket's accessible name ("Head: Lionheart Helm") or the list row's text. */
+export async function expectSimGearSlot(page: Page, slot: string, item?: string): Promise<void> {
+  const shown = shownGearSlot(page, slot);
+  await expect(shown).toBeVisible();
+  if (item === undefined) return;
+  const inFrame = ((await shown.getAttribute('data-testid')) ?? '').startsWith('paperdoll-frame-slot-');
+  if (inFrame) await expect(shown).toHaveAccessibleName(new RegExp(`: ${escapeRegExp(item)}`));
+  else await expect(shown).toContainText(item);
+}

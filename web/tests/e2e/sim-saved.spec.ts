@@ -8,7 +8,14 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { curatedRotationNotes } from './support/rotation-notes';
-import { gotoSavedSim, gotoSim, openSimSection, simCharacter } from './support/sim-page';
+import {
+  expectSimGearSlot,
+  gotoSavedSim,
+  gotoSim,
+  openSimSection,
+  simCharacter,
+  simGearDoll,
+} from './support/sim-page';
 import { expect, test } from './support/test';
 import type { CharacterSpec } from '../../src/lib/sim/types';
 
@@ -173,7 +180,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(simCharacter(page)).toBeVisible();
     // The stored request's own character, not a guess: the same class and gear the saved
     // sim ran with (src/fixtures/sim/result.json's request.character).
-    await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toBeVisible();
+    await expectSimGearSlot(page, 'head');
   });
 });
 
@@ -280,7 +287,7 @@ test('a saved sim whose stored request has no gear says so and draws no doll', a
   await expect(page.getByTestId('sim-saved')).toBeVisible();
   await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('sim-gear-empty')).toBeVisible();
-  await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toHaveCount(0);
+  await expect(simGearDoll(page)).toHaveCount(0);
 });
 
 // Defect fix: the name typed into "Name this sim" (SaveSimForm.svelte) used to be discarded
@@ -338,8 +345,8 @@ test.describe('a saved sim renders the results view its own kind calls for', () 
 
     await expect(page.getByTestId('sim-weights')).toBeVisible();
     await expect(page.getByTestId('sim-weights-table')).toContainText('1.00');
-    // A weights result has no gear story (design 7): the strip's grid does not claim one.
-    await expect(page.getByTestId('paperdoll-list-slot-head')).toHaveCount(0);
+    // A weights result has no gear story (design 7): neither doll form claims one.
+    await expect(page.locator('[data-testid^="paperdoll-"][data-testid$="-slot-head"]')).toHaveCount(0);
   });
 });
 

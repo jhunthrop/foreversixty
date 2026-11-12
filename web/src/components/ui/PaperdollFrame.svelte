@@ -20,8 +20,8 @@
      narrower (every phone), a container query swaps in the list form, the header strip and the
      slots in two columns on the panel, and the frame image is never fetched there. Cells are
      DollCells (lib/bis/doll-view.ts for BiS, lib/gear/doll-cells.ts for a worn set).
-     - `form="list"` draws the list form at every width (the sim, which lists what it ran: one job
-       per page, the BiS page owns the frame); `head={false}` drops its strip where the page already
+     - `form="list"` draws the list form at every width (the sim's saved-runs strip, a compact strip
+       and not a gear panel; every gear panel is the frame); `head={false}` drops its strip where the page already
        names the character, and the slots sit straight on the page's panel; `facts` gives each list
        row the cell's line 2 after the slot and its enchant in the client's green ("Head · Item
        level 61 · Crusader") and its gain at the right. With no `centre`, or `listCentre={false}`

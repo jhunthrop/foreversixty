@@ -138,13 +138,13 @@ async function sectionsKeepGutter(page: Page): Promise<void> {
 }
 
 /**
- * The shared paperdoll's list form (design/specs/2026-11-09-directions.md, Paperdoll; the b2 sim
- * mock): the frame is never drawn on the sim, and the slots run in the client's order -- neck
- * after head, beside it in two columns or under it where the panel is too narrow for two names.
+ * The shared paperdoll's list form (design/specs/2026-11-09-directions.md, Paperdoll): under the
+ * frame's 423 px minimum the frame gives way to the list, and the slots run in the client's order,
+ * neck after head, beside it in two columns or under it where the panel is too narrow for two names.
  */
 async function gearListInClientOrder(page: Page): Promise<void> {
   const doll = page.getByTestId('sim-gear-doll');
-  await expect(doll.locator('.pdf-frame')).toHaveCount(0);
+  await expect(doll.locator('.pdf-frame')).toBeHidden();
   // One read of both, so a scroll still settling cannot move one between them.
   const [head, neck] = await doll.evaluate((root) =>
     [...root.querySelectorAll('.pdf-items > li')].slice(0, 2).map((cell) => {

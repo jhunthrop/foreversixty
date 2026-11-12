@@ -1,8 +1,10 @@
 <!-- web/src/components/sim/SimGearSection.svelte -->
 <!-- The character's gear (sim spec 2026-11-06 §4.3, §4.5; spec 2026-11-04-sim-results 3.8): the
-     shared paperdoll's list form in `worn` mode (the b2 sim result mock: the BiS page owns the
-     frame, the sim lists what it ran), each slot's client enchant after its slot in green (else its
-     item level).
+     shared paperdoll frame in `worn` mode, as BiS, the character page and the reports draw it
+     (owner ruling 2026-11-11: one gear look), its title bar the spec and the level; under the
+     frame's 423 px minimum (every phone) it is the frame's own list form, each slot's client
+     enchant after its slot in green (else its item level). The saved-runs strip (CharacterStrip)
+     keeps the list form: a compact strip, not a gear panel.
      After a run it is open (no Plate, ruling S3) with the five stats the engine computed, the
      run's own measured miss rate, the set line and the Best in slot link. On the landing and while
      running (`plated`) the doll is the page's one Plate and the section's action is the link. It
@@ -16,6 +18,7 @@
   import { loadEnchants } from '../../lib/sim/enchants';
   import { classSpecPath, enchantNames, gearSlots, setLines, statsBlock } from '../../lib/sim/gear-card';
   import { gearCardCopy as copy } from '../../lib/sim/input-cards-copy';
+  import { specLabel } from '../../lib/sim/spec-label';
   import type { SimRequest, SimResult } from '../../lib/sim/types';
   import { LINK } from '../../lib/ui/primitives';
   import GearDoll from '../character/GearDoll.svelte';
@@ -36,6 +39,8 @@
 
   const build = activeBuild.build;
   const character = $derived(request.character);
+  /** The frame's width cap, the character page's (CharacterGear): the stats and set lines run under it. */
+  const DOLL_WIDTH = 'w-full max-w-[640px]';
   const hasGear = $derived(character.gear.length > 0);
   const bisHref = $derived(`/bis/${classSpecPath(request.spec)}`);
 
@@ -81,6 +86,9 @@
   /** The run's measured misses only: the boss and the fight are the page's own. */
   const measured = $derived(stats?.hit?.reference?.note ?? null);
   const lines = $derived(setLines(character.gear, sets));
+  /** The frame's title bar, as the character page's: the spec and class, then the level. */
+  const dollTitle = $derived(specLabel(request.spec));
+  const dollMeta = $derived(copy.dollLevel(character.level));
 </script>
 
 {#snippet doll()}
@@ -91,8 +99,9 @@
     classSlug={character.class}
     loading={itemsState === 'loading'}
     failed={itemsState === 'failed'}
-    title={gearCopy.listLabel}
-    form="list"
+    title={dollTitle}
+    meta={dollMeta}
+    form="auto"
     head={false}
     label={gearCopy.listLabel}
     testid="sim-gear-doll"
@@ -108,9 +117,9 @@
   {#if !hasGear}
     <EmptyState message={copy.noGear} testid="sim-gear-empty" />
   {:else if plated}
-    <div data-testid="sim-gear-paperdoll">{@render doll()}</div>
+    <div class={DOLL_WIDTH} data-testid="sim-gear-paperdoll">{@render doll()}</div>
   {:else}
-    <div data-testid="sim-gear-paperdoll">{@render doll()}</div>
+    <div class={DOLL_WIDTH} data-testid="sim-gear-paperdoll">{@render doll()}</div>
     {#if result !== null && stats === null}
       <p class="text-muted pt-4 text-[13px] leading-5" data-testid="sim-stats-older-run">
         {copy.statsNeedNewerRun}
