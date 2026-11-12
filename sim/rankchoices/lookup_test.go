@@ -141,10 +141,11 @@ func TestPriestRenewRowsBelowSixty(t *testing.T) {
 }
 
 // Devouring Plague rank 1 (learned at 20) loses its bonus from 38; rank 2
-// wins from 52 on both factions (round 16 wave 2), and at 50 and 51 for every
-// race but a Human, who keeps rank 1 there (round 19).
+// wins from 52 on both factions (round 16 wave 2). Sim-accuracy 2026-11-12
+// (shadow), on the wand's first-shot windup: at 51 a Dwarf, Night Elf or
+// Troll casts rank 3, and at 59 everyone does.
 func TestShadowDevouringPlagueMovesToRankTwoAtFiftyTwo(t *testing.T) {
-	for level, want := range map[int][]int{51: {1, 2}, 52: {2}, 59: {2}} {
+	for level, want := range map[int][]int{51: {2, 3}, 52: {2}, 59: {3}} {
 		got, err := ChosenRanks("priest-shadow", "Devouring Plague", level)
 		if err != nil {
 			t.Fatal(err)
@@ -166,7 +167,7 @@ func TestShadowRowsSwitchAtFortyFour(t *testing.T) {
 		level int
 		want  []int
 	}{
-		{"Mind Blast", 40, []int{4, 5}}, // round 24: rank 5 for a Human, Gnome or Undead
+		{"Mind Blast", 40, []int{5}}, // sim-accuracy 2026-11-12 (shadow): rank 5 for every race
 		{"Mind Blast", 43, []int{4}},
 		{"Mind Blast", 44, nil},
 		{"Mind Blast", 49, nil},
