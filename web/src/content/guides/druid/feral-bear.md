@@ -8,7 +8,7 @@ recommendedRaces: [night-elf, tauren]
 statPriority:
   [Defense, Stamina, Dodge, Agility, Armor, Hit, Expertise, Critical strike, Strength, Attack power]
 description: 'Bear tanking in Forever: the build, the threat opener, Lacerate and Primal Bite, cooldowns, and the potions a bear can drink in form.'
-updated: 2026-11-04
+updated: 2026-11-12
 confidence: inferred
 sources:
   - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
@@ -52,11 +52,11 @@ The build is 41 points of Feral and 10 of Restoration. It tanks from level 10 to
 - **Thick Hide** (3 points): more base armor for your level and for every point of Defense over five times your level, all multiplied by the form.
 - **Natural Reaction** and **Feral Swiftness**: 9% Dodge, and 5 rage every time you dodge, which keeps your threat going on a dodge streak.
 - **Furor** (1 point): a 20% chance of 10 rage when you shift into Bear Form. A tank seldom shifts in a fight, so the build keeps one point and puts the rest into Naturalist.
-- **Lacerate** (1 point): your bleed. It stacks five times, each cast hits for more per stack already up, and it carries high threat.
+- **Lacerate** (1 point): your bleed. It stacks five times, each cast hits for 10% of your weapon damage for every stack on the target plus one for the stack it adds, so a cast on a full stack hits for 60%, and it carries high threat.
 - **Primal Bite** (1 point): the capstone. Weapon damage plus a bonus and very high threat, on a 6 second cooldown for 15 rage.
 - **Ferocity** (5 points): Maul, Swipe and Primal Bite 5 rage cheaper.
 - **Shredding Attacks** (3 points)
-- **Savage Fury**, **Feral Instinct** and **Rend and Tear**: more damage, so more threat, from Maul and Swipe, and 15% more from your melee abilities while Lacerate bleeds the target.
+- **Savage Fury**, **Feral Instinct** and **Rend and Tear**: more damage, so more threat, from Maul and Swipe, and 15% more from your melee abilities while Lacerate bleeds the target, the bleed itself included once the first stack is up.
 - **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and 5 rage on every crit.
 - **Leader of the Pack** (1 point)
 - **Heart of the Wild** and **Naturalist** (5 points each): 20% more Stamina in Bear Form, and 10% more damage of every kind, which is threat.

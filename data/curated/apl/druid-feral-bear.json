@@ -103,7 +103,7 @@
         }
       },
       {
-        "notes": "Until it has five stacks, and again when it has under 3 seconds left. Each stack makes the next cast hit harder, and from 36 the bleed turns on Rend and Tear.",
+        "notes": "Until it has five stacks, and again when it has under 3 seconds left. Each cast hits for 10% of your weapon damage for every stack on the target, plus one for the stack it adds, so a cast on a full stack hits for 60%. From 36 the bleed turns on Rend and Tear: a cast on a target that already bleeds ticks 15% harder.",
         "action": {
           "castSpell": {
             "spellId": {
