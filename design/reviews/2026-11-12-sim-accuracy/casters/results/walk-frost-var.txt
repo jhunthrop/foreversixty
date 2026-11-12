@@ -1,0 +1,41 @@
+remote-test: 0fc356f6d7874e6a43f2bcb1525e885a472de236 -> forever-ci on 192.168.1.182 (run 20261112151442-0fc356f6d-28501, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/casters/walk.sh mage-frost
+remote-test: engine pinned to 4f8bb748d
+mage-frost horde L10 12.16 0.01 116.0
+mage-frost horde L15 22.55 0.01 117.3
+mage-frost horde L20 49.2 0.03 49.6
+mage-frost horde L25 56.74 0.04 25.3
+mage-frost horde L28 62.53 0.03 6.3
+mage-frost horde L30 87.86 0.07 22.1
+mage-frost horde L33 98.11 0.08 15.8
+mage-frost horde L35 110.37 0.09 14.2
+mage-frost horde L38 120.26 0.11 22.5
+mage-frost horde L40 170.02 0.13 10.1
+mage-frost horde L43 181.18 0.14 7.8
+mage-frost horde L45 187.88 0.18 26.4
+mage-frost horde L48 201.31 0.18 19.4
+mage-frost horde L50 247.33 0.23 17.0
+mage-frost horde L53 270.86 0.19 3.3
+mage-frost horde L55 279.04 0.18 1.0
+mage-frost horde L58 321.95 0.21 1.1
+mage-frost horde L60 407.6 0.25 2.2
+mage-frost alliance L10 11.8 0.01 110.8
+mage-frost alliance L15 21.51 0.01 114.0
+mage-frost alliance L20 50.56 0.03 43.9
+mage-frost alliance L25 58.46 0.04 19.2
+mage-frost alliance L28 63.21 0.03 4.4
+mage-frost alliance L30 89.52 0.07 15.2
+mage-frost alliance L33 99.08 0.08 10.7
+mage-frost alliance L35 111.38 0.09 9.8
+mage-frost alliance L38 121.59 0.11 18.4
+mage-frost alliance L40 171.76 0.13 7.8
+mage-frost alliance L43 182.07 0.14 6.0
+mage-frost alliance L45 191.46 0.18 23.0
+mage-frost alliance L48 204.34 0.18 16.3
+mage-frost alliance L50 248.48 0.22 14.3
+mage-frost alliance L53 266.88 0.18 3.2
+mage-frost alliance L55 273.73 0.17 0.8
+mage-frost alliance L58 317.14 0.2 1.1
+mage-frost alliance L60 411.65 0.25 2.3
+ORDER mage-frost [[3, 1, 2], [3, 1, 2], [3, 1, 2], [3, 1, 2], [3, 1, 2], [3, 1, 3], [3, 1, 3], [3, 1, 3], [3, 2, 1], [3, 2, 1], [3, 3, 1], [3, 3, 1], [3, 3, 1], [3, 2, 1], [3, 2, 1], [3, 2, 1], [3, 2, 2], [3, 4, 4], [3, 4, 4], [3, 3, 3], [3, 5, 3], [3, 5, 3], [3, 4, 4], [3, 1, 1], [3, 1, 1], [3, 2, 4], [3, 4, 2], [3, 5, 2], [3, 6, 3], [3, 6, 3], [3, 7, 2], [1, 1, 1], [1, 1, 1], [1, 1, 2], [1, 1, 2], [1, 1, 2], [1, 1, 2], [1, 1, 2], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 4], [1, 2, 4], [1, 3, 2], [1, 3, 2], [1, 3, 2], [1, 4, 3], [1, 4, 3], [1, 4, 3]]
+remote-test: exit 0 in 12s (0fc356f6d7874e6a43f2bcb1525e885a472de236)
+exit 0

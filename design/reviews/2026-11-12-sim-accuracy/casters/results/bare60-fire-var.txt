@@ -1,0 +1,8 @@
+remote-test: 09de9233f6c2d22161ee8801d2b1fbdf53192f4b -> forever-ci on 192.168.1.182 (run 20261112151735-09de9233f-41691, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/casters/bare60.sh mage-fire
+remote-test: engine pinned to 4f8bb748d
+mage-fire alliance seed 1 399.86 0.37 21.0
+mage-fire alliance seed 50001 400.25 0.37 20.8
+mage-fire horde seed 1 393.43 0.37 24.5
+mage-fire horde seed 50001 394.09 0.38 24.3
+remote-test: exit 0 in 3s (09de9233f6c2d22161ee8801d2b1fbdf53192f4b)
+exit 0

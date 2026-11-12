@@ -1,0 +1,41 @@
+remote-test: 1adf4311fe13635a938e26f39dc91e3b3a2ac898 -> forever-ci on 192.168.1.182 (run 20261112151537-1adf4311f-63740, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/casters/walk.sh druid-balance
+remote-test: engine pinned to 4f8bb748d
+druid-balance horde L10 7.87 0.01 78.1
+druid-balance horde L15 16.05 0.01 26.0
+druid-balance horde L20 44.04 0.03 7.9
+druid-balance horde L25 49.77 0.03 8.7
+druid-balance horde L28 55.38 0.04 12.9
+druid-balance horde L30 81.87 0.05 9.9
+druid-balance horde L33 84.94 0.05 6.7
+druid-balance horde L35 86.43 0.06 11.3
+druid-balance horde L38 92.9 0.06 7.9
+druid-balance horde L40 159.73 0.09 4.7
+druid-balance horde L43 170.31 0.1 4.3
+druid-balance horde L45 172.53 0.1 3.7
+druid-balance horde L48 185.14 0.12 6.8
+druid-balance horde L50 238.69 0.14 3.7
+druid-balance horde L53 257.14 0.14 1.1
+druid-balance horde L55 268.58 0.14 0.8
+druid-balance horde L58 294.92 0.17 1.2
+druid-balance horde L60 376.03 0.23 1.7
+druid-balance alliance L10 8.32 0.01 74.1
+druid-balance alliance L15 15.89 0.01 22.5
+druid-balance alliance L20 46.37 0.03 8.9
+druid-balance alliance L25 52.22 0.03 9.9
+druid-balance alliance L28 58.15 0.04 14.1
+druid-balance alliance L30 82.14 0.05 8.8
+druid-balance alliance L33 85.47 0.04 5.8
+druid-balance alliance L35 87.28 0.06 10.0
+druid-balance alliance L38 93.63 0.06 7.0
+druid-balance alliance L40 161.89 0.09 4.5
+druid-balance alliance L43 172.72 0.1 4.0
+druid-balance alliance L45 174.97 0.1 3.4
+druid-balance alliance L48 187.66 0.12 6.4
+druid-balance alliance L50 240.92 0.14 3.3
+druid-balance alliance L53 259.15 0.14 1.0
+druid-balance alliance L55 270.5 0.14 0.8
+druid-balance alliance L58 297.18 0.17 1.2
+druid-balance alliance L60 386.22 0.21 0.9
+ORDER druid-balance [[1, 1, 2], [1, 1, 2], [1, 1, 2], [1, 1, 2], [1, 1, 2], [1, 1, 3], [1, 1, 3], [1, 2, 1], [1, 2, 1], [1, 2, 1], [1, 2, 2], [1, 2, 2], [1, 2, 3], [1, 2, 3], [1, 2, 4], [1, 2, 4], [1, 3, 3], [1, 4, 1], [1, 4, 2], [1, 4, 2], [1, 4, 2], [1, 4, 2], [1, 4, 2], [1, 4, 3], [1, 5, 2], [1, 5, 3], [1, 6, 2], [1, 6, 2], [1, 6, 2], [1, 6, 2], [1, 7, 2], [1, 6, 2], [3, 1, 3], [3, 1, 3], [3, 1, 3], [3, 1, 3], [3, 1, 3], [3, 2, 1], [3, 2, 1], [3, 2, 1], [3, 2, 1], [3, 2, 1], [3, 2, 2], [3, 2, 2], [3, 2, 2], [1, 4, 3], [1, 4, 3], [1, 4, 3], [1, 5, 3], [1, 5, 3], [3, 3, 2]]
+remote-test: exit 0 in 15s (1adf4311fe13635a938e26f39dc91e3b3a2ac898)
+exit 0

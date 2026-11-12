@@ -1,0 +1,8 @@
+remote-test: 1adf4311fe13635a938e26f39dc91e3b3a2ac898 -> forever-ci on 192.168.1.182 (run 20261112152056-1adf4311f-71965, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/casters/bare60.sh druid-balance
+remote-test: engine pinned to 4f8bb748d
+druid-balance alliance seed 1 386.22 0.21 0.9
+druid-balance alliance seed 50001 386.35 0.21 0.9
+druid-balance horde seed 1 376.03 0.23 1.7
+druid-balance horde seed 50001 375.96 0.22 1.7
+remote-test: exit 0 in 3s (1adf4311fe13635a938e26f39dc91e3b3a2ac898)
+exit 0

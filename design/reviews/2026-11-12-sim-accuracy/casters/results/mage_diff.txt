@@ -1,0 +1,16 @@
+SpellEffect 1283419 Frost Armor row 1297736 NEW {'ID': '1297736', 'EffectAura': '674', 'Effect': '6', 'EffectChainAmplitude': '1', 'EffectRealPointsPerLevel': '12', 'PvpMultiplier': '1', 'GroupSizeBasePointsCoefficient': '1', 'EffectBasePointsF': '12', 'EffectMiscValue_0': '1', 'ImplicitTarget_0': '1', 'SpellID': '1283419'}
+SpellEffect 1283419 Frost Armor row 1297737 NEW {'ID': '1297737', 'EffectAura': '42', 'EffectIndex': '1', 'Effect': '6', 'EffectChainAmplitude': '1', 'EffectTriggerSpell': '6136', 'PvpMultiplier': '1', 'GroupSizeBasePointsCoefficient': '1', 'ImplicitTarget_0': '1', 'SpellID': '1283419'}
+SpellEffect 1291176 Blast Wave row 1310429 NEW {'ID': '1310429', 'Effect': '2', 'EffectBonusCoefficient': '1', 'EffectChainAmplitude': '1', 'PvpMultiplier': '1', 'Variance': '0.14933332801', 'GroupSizeBasePointsCoefficient': '1', 'EffectBasePointsF': '15', 'EffectRadiusIndex_1': '11', 'ImplicitTarget_0': '22', 'ImplicitTarget_1': '15', 'SpellID': '1291176'}
+SpellEffect 1291176 Blast Wave row 1310430 NEW {'ID': '1310430', 'EffectAura': '33', 'EffectIndex': '1', 'Effect': '6', 'EffectChainAmplitude': '1', 'PvpMultiplier': '1', 'GroupSizeBasePointsCoefficient': '1', 'EffectBasePointsF': '-10', 'EffectRadiusIndex_1': '11', 'ImplicitTarget_0': '22', 'ImplicitTarget_1': '15', 'SpellID': '1291176'}
+SpellMisc 1283419 Frost Armor row 831043 NEW {'ID': '831043', 'Attributes_0': '33554432', 'CastingTimeIndex': '1', 'DurationIndex': '30', 'RangeIndex': '1', 'SchoolMask': '16', 'SpellIconFileDataID': '135843', 'SpellID': '1283419'}
+SpellMisc 1291176 Blast Wave row 838735 NEW {'ID': '838735', 'Attributes_1': '136', 'CastingTimeIndex': '1', 'DurationIndex': '39', 'RangeIndex': '1', 'SchoolMask': '4', 'SpellIconFileDataID': '135903', 'SpellID': '1291176'}
+SpellCooldowns 1283419 Frost Armor row 98592 NEW {'ID': '98592', 'RecoveryTime': '10000', 'SpellID': '1283419'}
+SpellPower 1283419 Frost Armor row 313058 NEW {'ID': '313058', 'ManaCost': '10', 'ManaCostPerLevel': '5', 'SpellID': '1283419'}
+SpellAuraOptions 1283419 Frost Armor row 245199 NEW {'ID': '245199', 'ProcChance': '100', 'ProcTypeMask_0': '40', 'SpellID': '1283419'}
+SpellCategories 1283419 Frost Armor row 181474 NEW {'ID': '181474', 'DefenseType': '1', 'DispelType': '1', 'PreventionType': '1', 'StartRecoveryCategory': '133', 'SpellID': '1283419'}
+SpellCategories 1291176 Blast Wave row 183076 NEW {'ID': '183076', 'DefenseType': '1', 'DispelType': '1', 'PreventionType': '1', 'SpellID': '1291176'}
+SpellClassOptions 1283419 Frost Armor row 83098 NEW {'ID': '83098', 'SpellID': '1283419', 'SpellClassSet': '3', 'SpellClassMask_0': '524288'}
+SpellClassOptions 1291176 Blast Wave row 83393 NEW {'ID': '83393', 'SpellID': '1291176', 'SpellClassSet': '3', 'SpellClassMask_0': '131072'}
+SpellLevels 1283419 Frost Armor row 151521 NEW {'ID': '151521', 'SpellLevel': '1', 'SpellID': '1283419'}
+SpellLevels 1291176 Blast Wave row 151929 NEW {'ID': '151929', 'SpellID': '1291176'}
+SpellInterrupts 1283419 Frost Armor row 238813 NEW {'ID': '238813', 'InterruptFlags': '15', 'SpellID': '1283419'}

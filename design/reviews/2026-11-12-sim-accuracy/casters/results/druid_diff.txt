@@ -1,0 +1,23 @@
+SpellEffect 17116 Nature's Swiftness row 695239 changed {'EffectSpellClassMask_1': ('33554432', '100663296')}
+SpellEffect 27851 Reduced Claw and Rake Cost row 704563 changed {'EffectSpellClassMask_1': ('1024', '0')}
+SpellEffect 1223242 Natural Instinct row 1211036 changed {'EffectSpellClassMask_3': ('0', '136')}
+SpellEffect 1330763 Poised row 1371063 NEW {'ID': '1371063', 'EffectAura': '4', 'Effect': '6', 'EffectChainAmplitude': '1', 'PvpMultiplier': '1', 'GroupSizeBasePointsCoefficient': '1', 'ImplicitTarget_0': '1', 'SpellID': '1330763'}
+SpellEffect 1330765 Poised row 1371065 NEW {'ID': '1371065', 'EffectAura': '226', 'Effect': '6', 'EffectAuraPeriod': '500', 'EffectChainAmplitude': '1', 'PvpMultiplier': '1', 'GroupSizeBasePointsCoefficient': '1', 'ImplicitTarget_0': '1', 'SpellID': '1330765'}
+SpellMisc 9005 Pounce row 322309 changed {'Attributes_1': ('469762560', '201327104'), 'Attributes_13': ('0', '128')}
+SpellMisc 9823 Pounce row 321651 changed {'Attributes_1': ('469762560', '201327104'), 'Attributes_13': ('0', '128')}
+SpellMisc 9827 Pounce row 321654 changed {'Attributes_1': ('469762560', '201327104'), 'Attributes_13': ('0', '128')}
+SpellMisc 414924 Feral Charge (Cat) row 705261 changed {'Attributes_1': ('1024', '512'), 'Attributes_2': ('256', '1073742080'), 'Attributes_6': ('0', '8388608')}
+SpellMisc 1328827 Poised row 874125 changed {'Attributes_0': ('262160', '-2147221488')}
+SpellMisc 1330763 Poised row 875915 NEW {'ID': '875915', 'Attributes_0': '151257232', 'Attributes_1': '32', 'Attributes_2': '540672', 'Attributes_5': '393224', 'Attributes_6': '4096', 'Attributes_8': '32', 'Attributes_9': '2048', 'Attributes_10': '4194304', 'Attributes_11': '67108864', 'Attributes_13': '2', 'Attributes_14': '16', 'Attributes_15': '8192', 'CastingTimeIndex': '1', 'DurationIndex': '21', 'RangeIndex': '1', 'SchoolMask': '1', 'SpellIconFileDataID': '136243', 'SpellID': '1330763'}
+SpellMisc 1330765 Poised row 875917 NEW {'ID': '875917', 'Attributes_0': '151257232', 'Attributes_1': '32', 'Attributes_2': '540672', 'Attributes_5': '393224', 'Attributes_6': '4096', 'Attributes_8': '32', 'Attributes_9': '2048', 'Attributes_10': '4194304', 'Attributes_11': '67108864', 'Attributes_13': '2', 'Attributes_14': '16', 'Attributes_15': '8192', 'CastingTimeIndex': '1', 'DurationIndex': '21', 'RangeIndex': '1', 'SchoolMask': '1', 'SpellIconFileDataID': '136243', 'SpellID': '1330765'}
+SpellPower 1330763 Poised row 315225 NEW {'ID': '315225', 'PowerType': '-2', 'SpellID': '1330763'}
+SpellPower 1330765 Poised row 315226 NEW {'ID': '315226', 'PowerType': '-2', 'SpellID': '1330765'}
+SpellClassOptions 9007 Pounce Bleed row 85385 NEW {'ID': '85385', 'SpellID': '9007', 'SpellClassSet': '7', 'SpellClassMask_3': '128'}
+SpellClassOptions 9824 Pounce Bleed row 85384 NEW {'ID': '85384', 'SpellID': '9824', 'SpellClassSet': '7', 'SpellClassMask_3': '128'}
+SpellClassOptions 9826 Pounce Bleed row 85383 NEW {'ID': '85383', 'SpellID': '9826', 'SpellClassSet': '7', 'SpellClassMask_3': '128'}
+SpellClassOptions 1330763 Poised row 85380 NEW {'ID': '85380', 'SpellID': '1330763', 'SpellClassSet': '7'}
+SpellClassOptions 1330765 Poised row 85381 NEW {'ID': '85381', 'SpellID': '1330765', 'SpellClassSet': '7'}
+SpellLevels 1330763 Poised row 154390 NEW {'ID': '154390', 'SpellID': '1330763'}
+SpellLevels 1330765 Poised row 154391 NEW {'ID': '154391', 'SpellID': '1330765'}
+SpellInterrupts 1330763 Poised row 252722 NEW {'ID': '252722', 'AuraInterruptFlags_0': '-2147483648', 'SpellID': '1330763'}
+SpellInterrupts 1330765 Poised row 252725 NEW {'ID': '252725', 'AuraInterruptFlags_0': '268435456', 'SpellID': '1330765'}

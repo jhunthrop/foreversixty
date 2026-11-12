@@ -1,0 +1,142 @@
+# Sim accuracy 2026-11-12: Fire mage, Frost mage and Balance druid, second pass
+
+Lane brief: `design/reviews/sim-accuracy/brief.md`. Lane `sim-casters2`. Site from origin/main e9eddbd7f (rebased on TODO before the push), fork at the pin 4f8bb748d. Client on the site: 1.60.1.70790; live client 1.60.1.70888 with its hotfix push. The three specs had their spell-by-spell pass against the client on 2026-11-11 (`design/reviews/2026-11-11-sim-accuracy/casters.md`); the Arcane lane (2026-11-12) then found that `rotation-search` had worn every spec's leveling build under the raid preset, so this lane re-ran the raid searches for Fire and Balance (whose raid builds differ from their leveling builds) and re-judged the mage rank rows at 23 to 27 on the conjure-level mana gem (ledger MR67).
+
+**Totals: 0 engine bugs. Every mechanic the three cards lean on reads as the client and the talent texts of 1.60.1.70790 have it, nothing the 70888 client or Blizzard's 11 and 12 Nov posts changes reaches them, and no new log holds a Fire, Frost or Balance caster above the levels the earlier lanes read. Two site changes: the Fire and Balance raid rotation searches re-run on the raid builds confirm both curated rotations (the earlier raid reports were made on the leveling builds); the Frost level 60 leveling build takes Arcane Meditation for Incineration (+2.2% at 58 and 60 in dungeon gear, both factions and seeds, unchanged below). Two Fireball rank rows added at 25 and 27 (R1). Held for the owner: the Balance leveling build's Nature's Focus points (+5.4 to +6.1% at bare 60 for Improved Starfire and Eclipse). Engine pin 4f8bb748d, unchanged.**
+
+## Method
+
+1. **Blizzard since 11 Nov.** "WoW: Forever Hotfixes" (t/2403040), the 12 Nov 00:54 UTC copy (posts 1 to 8): post 7 (12 Nov) pulls the auction house lines to the 17 Nov maintenance, post 8 (the 11 Nov hotfixes) has no mage or Balance line; its one line this lane reads is "Earthen Silk Slippers no longer give more spell damage than intended", the item the 2026-11-11 lane already recorded as the Frost raid feet's data drift (MR54). "Class Tuning Incoming" (t/2404092) and the development notes thread (t/2360696) carry nothing new for the three specs.
+2. **Client and push.** The rogues lane's wago.tools CSVs for 1.60.1.70888 with `useHotfixes=1` against the 70790 hotfixed set, over every SpellClassSet 3 (mage, 756 spells) and SpellClassSet 7 (druid, 730 spells) spell, every talent rank and two hops of their trigger spells, twelve tables (`casters/client_diff.py`, the rogue lane's script with the class ids; outputs in the scratchpad). Mage: only the two NPC spells the Arcane lane saw (Frost Armor 1283419, Blast Wave 1291176). Druid: Nature's Swiftness's mask (the healers lane's row), Idol of Ferocity's mask, Natural Instinct's mask, Pounce and Poised (the feral and rogue lanes' rows). No row of any spell or talent the Fire, Frost or Balance card uses changes between the two clients.
+3. **Engine against the client.** Every mage and druid file the three cards and the six guide builds touch at the pin 4f8bb748d (`sim/mage/{fireball,scorch,pyroblast,fire_blast,ignite,heating_up,fire_power,talents,frostbolt,ice_lance,fingers_of_frost,chill,cone_of_cold,ice_barrier,frostfire_bolt,missile_barrage,mage}.go`, `sim/druid/{wrath,starfire,moonfire,insect_swarm,innervate,faerie_fire,talents,forms,druid}.go`, `sim/druid/balance/balance.go`, `sim/core/debuffs.go`'s Improved Scorch, Winter's Chill and Insect Swarm auras, `sim/core/buffs.go`'s Innervate, `sim/core/spell_result.go`'s dot snapshot), read against `data/builds/1.60.1.70790/spellconst/{mage,druid}.json` and `talents/{mage,druid}.json` (every rank's text) and the raid preset (`data/curated/presets.json`). The fork's only changes to these files since the 2026-11-11 pin are the Arcane lane's mana gem level and the feral and rage-refund lanes' druid and core rows, none of which a caster reads.
+4. **Real fights.** Our API (`/v1/reports/recent`): still gxrgvz4yzsi2 (8 Nov) and z2opt2x2gs5u (20 Oct), both read by the earlier lanes; no mage or druid caster above 28 in either. foreverlogs.gg: the public list is unchanged since the Arcane lane (25 reports, 2815 to 2853, the newest 12 Nov 01:37 UTC). Every mage and druid in the cached rosters of 2821, 2823, 2834, 2849, 2850 and 2853 was listed; the ones whose roster spec names Fire, Frost or Balance and that the earlier lanes had not fetched were fetched in full (`casters/fl/fetch_all.sh`, the Arcane lane's fetcher; `casters/fl/analyze.py`): Briana (2853, Fire) and Tirian (2834, Fire); Ariwen and Weeman (2853, Frost), Aneon, Euge and Zwicc (2834, Frost); Krackzilla, Xyvre and Losemid (2834, "Balance" in the roster). Section "Real fights" has what each holds.
+5. **Sims** on the Windows box (`tools/remote-test.sh --dir sim --pin-engine`, one job at a time, `nice -n 15`, GOMAXPROCS=5, two other sim lanes on the box): the talent and rotation searches at raid 60 (on each guide's `raidBuild`) and bare 60 (the leveling build) for the three specs (`casters/searches.sh`, then `casters/searches2.sh` with the guides' threat and pushback points kept); the rank-row sweep at 23 to 27 (`casters/rows.sh`, `casters/rows2.sh`); the leveling walks and the bare-60 two-seed cells for the build variants (`casters/walk.sh`, `casters/bare60.sh`). Outputs under `casters/results/`.
+
+## Engine against the client
+
+Nothing to change. The 2026-11-11 lane's row-by-row table stands; this pass re-read the mechanics around the rows rather than the rows:
+
+- **Fire.** Ignite is one rolling aura per target (412538, CumulativeAura 1): a new crit's 8% a rank joins what the burn has left and the sum spreads over a fresh two 2 s ticks, the ticks take no attacker or target multiplier a second time (`SpellFlagIgnoreTargetModifiers`, snapshot multiplier 1: Blizzard's beta note), and they crit as every Forever dot does. Heating Up: a landed Fire Blast is a stack and a critical one two, a Fireball, Frostfire Bolt or Scorch crit one, Pyroblast's own crit none; a Pyroblast that completes with a cast time spends every stack, an instant one (Presence of Mind) leaves them (Blizzard's 16 Oct note). Fire Power counts the mage's own Fire effects on the target (the Fireball, Pyroblast and Flamestrike burns, Ignite, the Improved Scorch stacks) at the moment a Fire spell resolves, 1/2/3% each to 4; Frostfire Bolt's burn is not tagged, as the text's "effects which mix multiple schools" asks. Improved Scorch is the engine's own 12873 on the target, 3% a stack to 5 for 30 s, stacked by the mage's landed Scorches at 33/67/100%, and the raid preset carries no Improved Scorch of its own (`presets.json` lists Faerie Fire, the auras and the totems; the mage's Fire damage is its own stacks). Combustion: +10% Fire crit a landed Fire hit to 10 stacks, over after three non-periodic Fire crits, on 3 minutes (28682 aura 107 misc 7 at 10; 11129 RecoveryTime 180,000). Master of Elements refunds 10% a rank of the flat cost on a Fire or Frost direct crit and nothing on a free cast. Improved Fire Blast is 1 s a rank off the 8 s category 19 timer Fire Blast shares with Ice Lance; Accelerant 0.1 s a rank off Fireball, Frostfire Bolt and Arcane Wrath; Critical Mass 2% a rank on the Fire mask; Incineration 2% a rank on Fire Blast, Ice Lance, Arcane Blast and Scorch; Burning Soul 10% threat a rank; Precision 2% hit a rank on every school. The hand tables (Fire Blast's seven ranks, Fireball's and Pyroblast's flat burns, Frostfire Bolt's 9/13/19) were read against the client rows again: Fire Blast 28/58/100/163/236/331/438 at the client's variance, 0.6 to 3.0 a level, 40 to 340 mana, levels 6 to 54; Pyroblast rank 8 583 at 1.0 plus 53 a tick at 0.15; Fireball rank 11 483 plus 15 a tick at 0.
+- **Frost.** Fingers of Frost rolls 15% on every landed Chill application (Frostbolt, Cone of Cold, Frostfire Bolt, the Improved Blizzard chill), sets the rank's charges and refreshes the 15 s rather than adding, and a charge is spent by a direct-damage cast of the mage's own as it resolves (a channel, Ice Barrier and a proc spend none); Shatter's 17/33/50% crit rides on any cast resolving against a Frozen target, Frost Nova's, Frostbite's or a charge's; Ice Lance multiplies the whole hit by four on a Frozen target (the hotfixed 300%), with 0.107 of spell power from the beta logs (the 2026-11-11 lane's 2839 log agrees), on the shared 8 s timer. Winter's Chill: 20% a rank on a landed Frostbolt or a charge-spent Ice Lance, 20% more Cone of Cold damage and 7% of spell power a stack to 5, spent by the cast. Ice Barrier: 480 mana at rank 4, 30 s, the 15% Frost damage for a minute from the cast and the 5% while the shield holds (nothing hits a simmed mage, so the shield holds its minute); the client rows still read 5 and 5 (1364979/1364980) under the hotfixed text's 15 and 5. Frost Channeling 5% cost and 10% threat a rank on the Frost mask with Ice Barrier in it; Ice Shards 20% crit damage a rank; Improved Frostbolt 0.1 s a rank; Frostbite 5% a rank, a root a boss ignores; Improved Cone of Cold 12/23/35 on the client's own table. Frostbolt and Cone of Cold are binary.
+- **Balance.** Eclipse banks two charges a completed Wrath (to 4, 15 s) and spends one a completed Starfire, 0.17/0.33/0.5 s off while any charge stands; Nature's Grace is a 10% cast speed and a 150 ms global for 3 s on every non-periodic spell crit, taken from the landing for a Wrath (the beta timelines) and from the hit for the instants; Moonkin Form is the 3% crit aura once (the raid's Moonkin Aura or Leader of the Pack leaves the form nothing to add), 35% of base mana less Natural Shapeshifter, Omen's chance doubled and its proc cooldown halved in the form (24858 effects 4 and 5); Omen of Clarity is 4% a spell on a 10 s cooldown, one charge of a free Balance spell, never Wrath (16870's mask); Improved Moonfire 5% damage and 5% crit a rank on the hit and the ticks; Vengeance 20% crit damage a rank on Wrath, Starfire, Moonfire and Insect Swarm; Moonfury 2% a rank on both schools as a school multiplier; Moonglow 8/17/25% and Improved Wrath 10% a rank off the costs; Genesis 2% a rank on the periodic mask; Nature's Splendor one more tick on Moonfire and Insect Swarm; Nature's Reach 2% hit a rank on everything; Nature's Majesty 2% crit a rank; Naturalist 2% a rank on all damage; Living Spirit 5% a rank; Innervate 5% of base mana, 20 s of regen x5 and all of it while casting, 6 min, self-cast at 500 mana. Wrath's and Starfire's hand tables (91 at 54 plus 1.0 a level to 60 at 0.571; 533 at 60 plus 3.4 a level at 1.0) are the spellconst rows the package's `spellconst_damage_test.go` pins.
+
+The talent texts of 1.60.1.70790 (`talents/{mage,druid}.json`) were read rank by rank against the constants above; every value matches. Wand Specialization's 13/25%, Arcane Mind, Arcane Impact and Arcane Meditation (the Fire and Frost builds' Arcane points) are the Arcane lane's rows.
+
+## Real fights
+
+No fetched log holds a Fire mage with Ignite, Heating Up and Scorch in a boss fight, a Frost mage at 40 or above with damage events, or a Balance druid casting at 40 or above; the three open log items of the 2026-11-11 lane stay open.
+
+| who | what the log holds | verdict |
+|---|---|---|
+| Briana (2853, SFK, Fire by roster, about level 20) | 38 casts, 32 damage events: Fireball rank 4 at the client's roll with its 3-a-tick burn, one Ignite (412545) tick of 28 off a 140 crit, Flamestrike's ground ticks 11 to 12 | aligned where readable; the 28 tick 2.1 s after a 140 crit is 140 x 40% / 2, Ignite 5/5; no Scorch, Pyroblast or Heating Up |
+| Tirian (2834, Fire, Pyroblast rank 2, Fire Blast rank 4, about 31 to 33) | 21 casts and 9 damage events in 60 encounters: the logger's party was elsewhere. Heating Up (400625, logged as "Hot Streak") is applied at the start of 62 encounters: its stacks persist between pulls, as the engine's 20 s buff does within one | nothing to measure |
+| Ariwen (2853, SFK, Frost, Frostbolt rank 4, Ice Lance rank 1, about 22 to 25) | 96 Frostbolts, 15 hits at 94 to 102 non-crit and 162 crit (1.5x, no Ice Shards), 50 Blizzard ticks at 25 to 26, Frost Nova 22 to 24, Fire Blast rank 3 76 to 111 | aligned with the client rows plus the gear's spell power; no Fingers of Frost point yet |
+| Weeman (2853, Frost, Frostbolt rank 6, Ice Lance 400640, about 32 to 35) | 21 casts, 4 damage events | nothing to measure |
+| Aneon and Euge (2834, City of Dalaran, Frost at 40 or above: Ice Barrier rank 1, Fingers of Frost, Ice Lance rank 4) | no damage events (out of the logger's range); the buff stream shows Ice Barrier (11426) and its Frost damage aura ("Frigid Power" 1326891) applied together on the cast, the shield removed 15.7 s later on one pull with Frigid Power still standing 4 s after that on the same pull and 3.5 s after the shield on another; two Fingers of Frost charges refreshed on a Frostbolt landing with Ice Lance cast in the same instant | the empowerment outlives the shield, as the engine's two auras do; no amount to read |
+| Zwicc (2834, Frost) | one Blink | nothing |
+| Krackzilla, Xyvre, Losemid (2834, "Balance" in the roster) | a bear with two Mauls, a cat with one shift, and a Feral cat with 1,217 damage events (the feral lane's territory) | no Balance caster |
+
+Our 8 Nov report has no caster above 28 (the 2026-11-11 lane's read).
+
+## The rank rows at 23 to 27 (MR67)
+
+The Arcane lane re-judged the rows that sit there (Fire Fireball rank 4 at 24, Frost Frostbolt rank 4 at 26 and 27) and every one held. This lane asked the other question: with the gem gone from 23 to 27, does a lower rank now win at a level with no row (`casters/rows.sh`, bare band-20 gear, 10,000 iterations, seeds 1 and 50001, both factions' default races; `casters/results/rows.out.txt`):
+
+| row asked | levels | result |
+|---|---|---|
+| Fire, Fireball rank 4 against 5 | 25, 26, 27 | 26: rank 5 for both factions (+0.6 to +1.0%). 25 and 27: the Alliance race keeps +0.2% on rank 4 at both seeds, the Horde one is on rank 5 at 25 (-0.2 to -0.3%) and ties at 27; the race sweep below |
+| Fire, Fire Blast rank 2 against 3 | 23 to 27 | rank 3 at every level (+1.1 to +3.1%); no row. The 30 to 35 rank 2 row is Heating Up's, which the mage has from 30 |
+| Frost, Frostbolt rank 3 against 4 | 23 to 25 | rank 4 at every level (+4.4 to +5.8%); no row |
+
+**The Fireball race sweep at 25 and 27** (`casters/rows2.sh` and `rows3.sh`, every mage race, seeds 1 and 50001, 10,000 iterations, the round 24 standard: a row needs a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error):
+
+| level | human | gnome | High Order Skyborne | undead | orc | troll |
+|---|---|---|---|---|---|---|
+| 25 | rank 4 +0.26 / +0.24% | rank 5 (+0.75 / +0.66%) | rank 5 (+0.40 / +0.22%) | rank 5 (+0.17 / +0.28%) | tie (+0.03 / +0.24% for rank 4) | tie (-0.14 / +0.06%) |
+| 27 | rank 4 +0.18 / +0.22% | rank 4 +0.20 / +0.29% | rank 4 at one seed only (+0.19 / +0.15%) | tie (+0.03 / -0.03%) | rank 5 (+0.07 / +0.23%) | rank 4 at one seed only (+0.23 / +0.11%) |
+
+**R1, two rows added** (`data/curated/rank-choices.json`, the synced `sim/rankchoices` copy, `TestCastersTwoFireballRowsAtTwentyFiveAndTwentySeven`): Fireball rank 4 at 25 for a Human, and at 27 for a Human or a Gnome. The gains are the standard's floor (0.2%), of a piece with the round 24 row at 24; the guide's rank list names them. Every existing row at 23 to 27 holds, as the Arcane lane found; no new Fire Blast or Frost row.
+
+## Searches
+
+On the pinned engine and the fixed `rotation-search` (`casters/searches.sh`, seed 7, 800 final iterations, the committed Alliance BiS gear of each band; `casters/results/searches.out.txt`), then a second talent pass with each guide's threat and pushback points kept (`casters/searches2.sh`, `casters/results/searches2.out.txt`):
+
+| search | result |
+|---|---|
+| rotation-search, Fire, raid 60, raid build | **the curated rotation is the best found** (747.9 +/- 1.5; best variant +0.7 +/- 2.1). Every line is live on the right talents now: removing Pyroblast -118.4, Fire Blast -113.4, the Improved Scorch stacking Scorch -31.6, Arcane Missiles on Missile Barrage -19.0, the gap Scorch -12.9, Arcane Blast -4.7, Combustion -3.1. The 70009-era report under `design/reviews/rotation-search/` was made on the leveling build and is superseded by this one |
+| rotation-search, Fire, bare 60, leveling build | the curated rotation is the best found (390.9 +/- 1.4). The one line that reads against it there is the gap Scorch (#9, "Scorch when Fire Blast is back before a Scorch would finish"): removing it +2.7 +/- 1.9 at bare 60, where the same line is worth +12.9 in raid gear; held, see Held |
+| rotation-search, Frost, raid 60 and bare 60 (one build) | the curated rotation is the best found at both (619.3 +/- 1.2; 403.8 +/- 0.9) |
+| rotation-search, Balance, raid 60, raid build | **the curated rotation is the best found** (655.8 +/- 1.2; best variant +0.0). Insect Swarm -37.8, the Moonfire refresh -43.2, the Eclipse Wrath -41.5, the mana Wrath -3.3 |
+| rotation-search, Balance, bare 60, leveling build | Insect Swarm's refresh ahead of Moonfire's measures +1.6 +/- 1.3 (+0.4%), under the adoption rule's bar; held |
+| talent-search, Fire, raid 60 (keep: the card's talents, Burning Soul, Arcane Subtlety) | **the guide build is the best found.** With the threat points free to move, the first pass's winner re-spent two of Burning Soul and one of Arcane Subtlety on Arcane Impact and Arcane Meditation for +9.0 +/- 2.2 (+1.2%); the guide keeps them for the threat a Fire mage makes, so the second pass kept them and nothing else beats the guide |
+| talent-search, Fire, bare 60 (same keep) | "deep Fire", a point of Accelerant and a point of Master of Elements moved to Arcane Impact and Arcane Meditation, +7.9 +/- 1.9 (+2.0%); not adopted, see Held |
+| talent-search, Frost, raid 60 | no variant beats the guide beyond error (best +0.9 +/- 1.7) |
+| talent-search, Frost, bare 60 | "deep Arcane", the five Incineration points moved to Arcane Meditation 3 and Improved Channeling 2, +8.8 +/- 1.3 (+2.2%); adopted, see B1 |
+| talent-search, Balance, raid 60 (keep: the card's talents, Subtlety, Nature's Focus) | **the guide build is the best found.** With Nature's Focus free, Heart of the Wild for its five points measures +4.9 +/- 1.7 (+0.75%), under the bar either way |
+| talent-search, Balance, bare 60 (keep: the card's talents, Subtlety) | the five Nature's Focus points (55 to 59 on the leveling order) moved to Improved Starfire 3 and Eclipse 2, +22.7 +/- 1.0 (+6.2%); held for the owner, see Held |
+
+## Confirmed and fixed
+
+| # | finding | source | fix |
+|---|---|---|---|
+| B1 | **The Frost level 60 leveling build spends its last five points on Incineration (10% crit on Ice Lance), where Arcane Meditation 3 (half the regeneration kept while casting) and the two Improved Channeling points that open its row are worth +2.2 to +2.3% at bare 60 and +2.2% at 58.** The bare band wears dungeon gear with no Mana Spring and the 180 s fight runs the mage dry (6.3 s out of mana on the old build, 2.3 s on the new); the raid build keeps Incineration (the same move is +0.9 +/- 1.7 there, inside error). The ladder's own rule would have spent the two toll points at 46 and 47 ahead of Arcane Concentration and lost 1.9 to 2.4% at 48 to 53, so `ladder-first.json` now names the Frost tolls of 33 to 40 and the Arcane order to 55, then Arcane Meditation at 56 to 58 and Improved Channeling at 59 and 60: the walk is unchanged at every level to 55. Keeps every unmodeled guide talent, holds the Frost tree, drops nothing the card casts. | talent-search bare 60; the walks | site dcb1fe8d1: frontmatter build `2500052030003/0/253510130101301221`, the Talents and Leveling prose, `ladder-first.json` (both copies), `TestFrostTakesArcaneMeditationAfterArcaneImpact`, `knownStaleBISFiles`; the ladder golden and `addon-builds.json` regenerated |
+| R1 | Fireball rank 4 rows at 25 (Human) and 27 (Human, Gnome) on the conjure-level gem engine, above | the rank sweeps | site 8813448ad |
+| T1 | The Fire and Balance raid rotation reports under `design/reviews/rotation-search/` (client 70009) were made on the leveling builds; the raid searches re-run on the raid builds confirm both curated rotations, every raid line live | the Arcane lane's T1 | no change to the cards; this report's Searches table is the record |
+
+## Held
+
+- **The Balance leveling build's last five points (B1, for the owner).** The leveling order spends 55 to 59 on Nature's Focus, which the guide calls the filler that "only saves casts from pushback", and 60 on Subtlety. The search's clean winner moves those five points to Improved Starfire 3 and Eclipse 2 (the raid build's own talents), the build `5232220115401351/0/055301`: on the walk (`casters/results/walk-balance-*.txt`, bare band gear, 10,000 iterations, seed 1) nothing moves to 53, then +1.05 / +1.00% at 55 (Alliance / Horde), +4.10 / +4.13% at 58 and +6.14 / +5.43% at 60; at 60 on both seeds (`bare60-balance-*.txt`) +6.1% Alliance and +5.4% Horde. It keeps every talent the card casts and holds the spec tree. It is held because Nature's Focus is a pushback talent the bare fight never exercises (nothing hits the simmed druid), the same class of talent the Arcane lane held Improved Channeling for and the Fire search here kept Burning Soul for; a leveling Moonkin does take hits mid-Starfire, and whether 70% pushback protection at 55 to 59 is worth 5 to 6% of a stationary fight is the owner's call, as Arcane Precision before 40 is. If adopted: the guide's Talents, Leveling (55 to 59) and the raid-against-leveling paragraph, `ladder-first.json`'s Balance entry (Improved Starfire and Eclipse after Reflection), `TestBalanceTakesNaturalistBeforeNaturesFocus`, the ladder golden and `knownStaleBISFiles`.
+- **The Fire leveling build's Arcane Meditation point (not adopted).** With the threat points kept, the bare-60 search's winner moves a point of Accelerant and a point of Master of Elements to Arcane Impact and Arcane Meditation (+7.9 +/- 1.9 at seed 7; on the walk +1.95 / +1.87% at 60, both seeds). Under the ladder's own rule the moved points reorder the whole climb: Combustion slips from 40 to 56 and the walk loses 1.2 to 7.9% at every level from 40 to 58 (`walk-fire-*.txt`), so it fails the rule's every-level test as it stands. A hand order could keep the climb to 56 and buy the 60 gain alone, at the price of the guide's 3 second Fireball line (Accelerant 5/5) and a fourth difference between the leveling and raid builds; not pursued this lane, recorded for the next Fire pass.
+- **The gap Scorch line at bare 60 (Fire).** "Scorch when Fire Blast is back before a Scorch would finish" is worth +12.9 +/- 2.2 in raid gear and costs 2.7 +/- 1.9 at bare 60 (the leveling build fills with Fireball from 57 either way). One card serves both presets; the raid gain is the larger and the line stays.
+- **Balance bare 60, Insect Swarm's refresh ahead of Moonfire's:** +1.6 +/- 1.3 (+0.4%), under the bar.
+- **Balance raid, Heart of the Wild for Nature's Focus:** +4.9 +/- 1.7 (+0.75%), under the bar, and the raid build takes Nature's Focus for the raid's pushback on purpose.
+- **Open from the logs** (unchanged from 2026-11-11): a Fire log with Ignite, Heating Up and Improved Scorch on a boss at 40 or above; a Frost log at 60 (Ice Lance rank 6's coefficient, Winter's Chill, Ice Barrier's 15% against a hit); a Balance log at 40 or above (Eclipse on a missed Wrath, Nature's Grace from the hit, Omen's rate in Moonkin Form).
+
+## Before and after
+
+**Engine:** no change; every published DPS, weight and rank is what the pin 4f8bb748d gave it.
+
+**B1, Frost's leveling walk** (`casters/results/walk-frost-base.txt` against `walk-frost-var3.txt`; bare band gear at the checkpoint levels, 10,000 iterations, seed 1):
+
+| level | alliance | horde |
+|---|---|---|
+| 10 to 55 | unchanged | unchanged |
+| 58 | +2.15% | +2.22% |
+| 60 | +2.29% | +2.22% |
+
+At 60 on both seeds (`bare60-frost-base.txt`, `bare60-frost-var3.txt`): alliance +2.29% and +2.39%, horde +2.22% and +2.19%, every cell beyond its 0.07% error. Raid 60 is unchanged (the raid build keeps Incineration). The two earlier variant walks (`walk-frost-var.txt`, `walk-frost-var2.txt`) are the ladder's own order and a half-written ladder-first list, kept to show why the list names the tolls.
+
+**R1:** the rows' own levels only, +0.2% each; no band entry moves (band 20 sims at 20, band 30 at 30).
+
+**The held Balance variant** (`walk-balance-*.txt`, `bare60-balance-*.txt`): unchanged to 53, +1.0% at 55, +4.1% at 58, +6.1% / +5.4% at 60 (alliance / horde, both seeds).
+
+## Guide and card
+
+- **Frost (`frost.md`):** the Talents section's one-build paragraph is now two (the shared 46 points, then where the raid build and the level 60 build part: Incineration in a raid, Arcane Meditation and the Improved Channeling toll out of one, "swap them back into Incineration when you start raiding"); the Leveling section names the 41 to 60 order. The card and the coach card name no talent that moved. wow-player: HOLD on the first read (an "open its row" clause that contradicted the order; Improved Channeling's effect unnamed), SHIP on the second (`casters/wow-player.md`).
+- **Fire (`fire.md`):** the leveling rank list gains the Fireball line (R1). wow-player: HOLD on the first read (three clauses naming a Human, no default), SHIP on the second with the line leading on rank 5 from 24 and its exceptions.
+- **Balance:** no change (the build question is held).
+
+## Measure at refresh (ledger MR72, MR73)
+
+- **MR72, Frost on the 2026-11-12 level 60 leveling build:** mage-frost bare bands 50 and 60: talents (from 56), picks, weights (Spirit and mp5 now reach the fight through Arcane Meditation); then drop its `knownStaleBISFiles` entry.
+- **MR73, the Fireball rows at 25 and 27:** mage-fire leveling walk at 25 and 27 (any published per-level figure there); no band entry moves.
+
+## Gates
+
+On the lane's head fd761c3a0 (the pin 4f8bb748d), on the box, one job at a time (`casters/results/gates-sim.txt`, `gates-web.txt`):
+- sim: `go vet ./...`; `go test` for request (the ladder goldens, mage-frost regenerated; `TestCastersTwoFireballRowsAtTwentyFiveAndTwentySeven`; `TestEmbeddedRankChoicesMatchCurated`), leveling (`TestFrostTakesArcaneMeditationAfterArcaneImpact`, `TestCuratedLadderFirstIsSound`, `TestEmbeddedLadderFirstMatchesCurated`), rankchoices, cmd/leveling-bis (`TestPublishedBISMatchesGuides` with mage-frost in `knownStaleBISFiles`), cmd/rotation-search, cmd/addon-builds, cmd/talent-search: all ok.
+- web: GATES-WEB
+- No Playwright spec touches a changed surface (the guide pages render the same components with new text); no fork change, so the engine suite is the Arcane lane's at the same pin.
+
+## Sim changes in this landing
+
+- **Fork:** none; the pin stays 4f8bb748d.
+- **Site:** 8813448ad (the Fireball rows, both rank-choices copies, `TestCastersTwoFireballRowsAtTwentyFiveAndTwentySeven`, the Fire guide's rank line); dcb1fe8d1 (the Frost build, prose, ladder-first, the walk pin, the stale entry); the regenerated `mage-frost.golden.md` and `addon-builds.json`; this report, the scripts and results under `casters/`, the ledger row and MR72 and MR73. No APL, preset or engine number moved; `apl-check` holds.
+
+## Sources
+
+- Blizzard, WoW: Forever Hotfixes, https://us.forums.blizzard.com/en/wow/t/2403040 (posts 1 to 8, the 12 Nov copy).
+- Blizzard, Class Tuning Incoming, https://us.forums.blizzard.com/en/wow/t/2404092; development notes, https://us.forums.blizzard.com/en/wow/t/2360696.
+- data/builds/1.60.1.70790: spellconst, talents, hotfix-push.json; wago.tools 1.60.1.70888 with useHotfixes=1 (the rogues lane's CSVs, 12 Nov).
+- foreverlogs.gg reports 2834 and 2853 (this lane's fetches), 2815 to 2850 (the earlier lanes' caches).
+- api.foreversixty.gg `/v1/reports/recent`.

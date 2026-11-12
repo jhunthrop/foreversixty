@@ -1,0 +1,28 @@
+remote-test: e3e4144c324b695c39101eeddfe36a98dac1bd6e -> forever-ci on 192.168.1.182 (run 20261112152155-e3e4144c3-10011, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/casters/rows3.sh
+remote-test: engine pinned to 4f8bb748d
+43.141 0.034 77.4	mage-fire level 25 10151 rank 4 undead seed 1
+43.213 0.036 94.4	mage-fire level 25 10151 rank 5 undead seed 1
+43.118 0.034 77.2	mage-fire level 25 10151 rank 4 undead seed 50001
+43.241 0.037 94.1	mage-fire level 25 10151 rank 5 undead seed 50001
+41.838 0.035 77.3	mage-fire level 25 10151 rank 4 orc seed 1
+41.824 0.036 94.6	mage-fire level 25 10151 rank 5 orc seed 1
+41.901 0.034 77.1	mage-fire level 25 10151 rank 4 orc seed 50001
+41.8 0.036 94.4	mage-fire level 25 10151 rank 5 orc seed 50001
+41.655 0.034 79.3	mage-fire level 25 10151 rank 4 troll seed 1
+41.715 0.036 95.7	mage-fire level 25 10151 rank 5 troll seed 1
+41.696 0.035 79.1	mage-fire level 25 10151 rank 4 troll seed 50001
+41.673 0.036 95.5	mage-fire level 25 10151 rank 5 troll seed 50001
+47.079 0.039 62.8	mage-fire level 27 10151 rank 4 undead seed 1
+47.064 0.04 68.0	mage-fire level 27 10151 rank 5 undead seed 1
+47.038 0.039 62.7	mage-fire level 27 10151 rank 4 undead seed 50001
+47.051 0.04 67.9	mage-fire level 27 10151 rank 5 undead seed 50001
+45.492 0.039 63.7	mage-fire level 27 10151 rank 4 orc seed 1
+45.525 0.04 68.3	mage-fire level 27 10151 rank 5 orc seed 1
+45.444 0.039 63.5	mage-fire level 27 10151 rank 4 orc seed 50001
+45.551 0.04 68.1	mage-fire level 27 10151 rank 5 orc seed 50001
+45.099 0.038 63.9	mage-fire level 27 10151 rank 4 troll seed 1
+44.996 0.039 69.4	mage-fire level 27 10151 rank 5 troll seed 1
+45.059 0.038 63.8	mage-fire level 27 10151 rank 4 troll seed 50001
+45.009 0.04 69.3	mage-fire level 27 10151 rank 5 troll seed 50001
+remote-test: exit 0 in 9s (e3e4144c324b695c39101eeddfe36a98dac1bd6e)
+exit 0

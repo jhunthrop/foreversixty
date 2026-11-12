@@ -1,0 +1,8 @@
+remote-test: 6a8e991e834148d1ae8803ff781b723194c96c9e -> forever-ci on 192.168.1.182 (run 20261112151820-6a8e991e8-70641, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/casters/bare60.sh mage-frost
+remote-test: engine pinned to 4f8bb748d
+mage-frost alliance seed 1 402.43 0.27 6.3
+mage-frost alliance seed 50001 402.08 0.27 6.2
+mage-frost horde seed 1 398.76 0.26 5.5
+mage-frost horde seed 50001 398.46 0.26 5.6
+remote-test: exit 0 in 3s (6a8e991e834148d1ae8803ff781b723194c96c9e)
+exit 0
