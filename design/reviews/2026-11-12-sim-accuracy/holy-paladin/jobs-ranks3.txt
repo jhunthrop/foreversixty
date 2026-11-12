@@ -1,0 +1,16 @@
+FP42-r1-dwarf-s1 -spec paladin-holy -preset bare -band 40 -level 42 -faction alliance -race dwarf -seed 1 -rank 19941=1
+FP42-r1-dwarf-s50001 -spec paladin-holy -preset bare -band 40 -level 42 -faction alliance -race dwarf -seed 50001 -rank 19941=1
+FP42-r2-dwarf-s1 -spec paladin-holy -preset bare -band 40 -level 42 -faction alliance -race dwarf -seed 1 -rank 19941=2
+FP42-r2-dwarf-s50001 -spec paladin-holy -preset bare -band 40 -level 42 -faction alliance -race dwarf -seed 50001 -rank 19941=2
+FP43-r1-dwarf-s1 -spec paladin-holy -preset bare -band 40 -level 43 -faction alliance -race dwarf -seed 1 -rank 19941=1
+FP43-r1-dwarf-s50001 -spec paladin-holy -preset bare -band 40 -level 43 -faction alliance -race dwarf -seed 50001 -rank 19941=1
+FP43-r2-dwarf-s1 -spec paladin-holy -preset bare -band 40 -level 43 -faction alliance -race dwarf -seed 1 -rank 19941=2
+FP43-r2-dwarf-s50001 -spec paladin-holy -preset bare -band 40 -level 43 -faction alliance -race dwarf -seed 50001 -rank 19941=2
+FT43-r1-dwarf-s1 -spec paladin-holy -preset bare -band 40 -level 43 -faction alliance -race dwarf -seed 1 -rank 19942=1
+FT43-r1-dwarf-s50001 -spec paladin-holy -preset bare -band 40 -level 43 -faction alliance -race dwarf -seed 50001 -rank 19942=1
+FT43-r2-dwarf-s1 -spec paladin-holy -preset bare -band 40 -level 43 -faction alliance -race dwarf -seed 1 -rank 19942=2
+FT43-r2-dwarf-s50001 -spec paladin-holy -preset bare -band 40 -level 43 -faction alliance -race dwarf -seed 50001 -rank 19942=2
+FT53-r3-dwarf-s1 -spec paladin-holy -preset bare -band 50 -level 53 -faction alliance -race dwarf -seed 1 -rank 19942=3
+FT53-r3-dwarf-s50001 -spec paladin-holy -preset bare -band 50 -level 53 -faction alliance -race dwarf -seed 50001 -rank 19942=3
+FT53-r4-dwarf-s1 -spec paladin-holy -preset bare -band 50 -level 53 -faction alliance -race dwarf -seed 1 -rank 19942=4
+FT53-r4-dwarf-s50001 -spec paladin-holy -preset bare -band 50 -level 53 -faction alliance -race dwarf -seed 50001 -rank 19942=4
