@@ -1,0 +1,9 @@
+# Heroic Strike's rage gate on the fixed engine (313699c2a): the card's 40 against 30, 50 and 60.
+raid60A_hs40 -spec warrior-protection -preset raid -band 60 -faction alliance -tank
+raid60A_hs30 -spec warrior-protection -preset raid -band 60 -faction alliance -tank -rotation @R/hs30.rotation.json
+raid60A_hs50 -spec warrior-protection -preset raid -band 60 -faction alliance -tank -rotation @R/hs50.rotation.json
+raid60A_hs60 -spec warrior-protection -preset raid -band 60 -faction alliance -tank -rotation @R/hs60.rotation.json
+bare60A_hs30 -spec warrior-protection -preset bare -band 60 -faction alliance -tank -rotation @R/hs30.rotation.json
+bare60A_hs50 -spec warrior-protection -preset bare -band 60 -faction alliance -tank -rotation @R/hs50.rotation.json
+bare40A_hs30 -spec warrior-protection -preset bare -band 40 -faction alliance -tank -rotation @R/hs30.rotation.json
+bare40A_hs50 -spec warrior-protection -preset bare -band 40 -faction alliance -tank -rotation @R/hs50.rotation.json

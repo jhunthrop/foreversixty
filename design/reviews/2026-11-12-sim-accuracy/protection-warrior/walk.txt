@@ -1,0 +1,9 @@
+# The walk's first points on the fixed engine: Improved Bloodrage at 10 and 11 (the order) against Shield Specialization first.
+w11_order -spec warrior-protection -preset bare -band 20 -level 11 -faction alliance -tank
+w11_ss -spec warrior-protection -preset bare -band 20 -level 11 -faction alliance -tank -talents 00000000000000000-000000000000000000-020000000000000000
+w13_order -spec warrior-protection -preset bare -band 20 -level 13 -faction alliance -tank
+w13_ss -spec warrior-protection -preset bare -band 20 -level 13 -faction alliance -tank -talents 00000000000000000-000000000000000000-040000000000000000
+w14_order -spec warrior-protection -preset bare -band 20 -level 14 -faction alliance -tank
+w14_ss -spec warrior-protection -preset bare -band 20 -level 14 -faction alliance -tank -talents 00000000000000000-000000000000000000-050000000000000000
+w16_order -spec warrior-protection -preset bare -band 20 -level 16 -faction alliance -tank
+w16_ss -spec warrior-protection -preset bare -band 20 -level 16 -faction alliance -tank -talents 00000000000000000-000000000000000000-050020000000000000

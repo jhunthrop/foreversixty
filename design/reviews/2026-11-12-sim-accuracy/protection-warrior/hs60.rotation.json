@@ -1,0 +1,353 @@
+{
+ "rotation": {
+  "type": "TypeAPL",
+  "prepullActions": [
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2687
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-2.5s"
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "auraId": {
+          "spellId": 11551,
+          "rank": 6
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11551,
+       "rank": 6
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-1.5s"
+     }
+    }
+   }
+  ],
+  "priorityList": [
+   {
+    "action": {
+     "autocastOtherCooldowns": {}
+    }
+   },
+   {
+    "notes": "Live in it: the threat bonus, Revenge, Shield Block and Shield Wall all need it.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "auraId": {
+          "spellId": 71
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 71
+      }
+     }
+    }
+   },
+   {
+    "notes": "Below 35% health: 30% of your maximum health for 20 seconds, lost again when it ends.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "0.35"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 12975
+      }
+     }
+    }
+   },
+   {
+    "notes": "Below 40% health: 60% less damage taken for 12 seconds, on a 15-minute cooldown.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "0.4"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 871
+      }
+     }
+    }
+   },
+   {
+    "notes": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentRage": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "60"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 2687
+      }
+     }
+    }
+   },
+   {
+    "notes": "Whenever it is down: 75% more block chance for 7 seconds, off the global cooldown. Every block also lights Revenge.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "auraId": {
+          "spellId": 2565
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 2565
+      }
+     }
+    }
+   },
+   {
+    "notes": "The moment it lights: a dodge, parry or block opens it, and it is the most threat per rage you have.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 11601,
+       "rank": 5
+      }
+     }
+    }
+   },
+   {
+    "notes": "On cooldown: a hard hit with a very high amount of threat, and it grows with your block value.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 23925,
+       "rank": 4
+      }
+     }
+    }
+   },
+   {
+    "notes": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take. Refresh it in its last 3 seconds.",
+    "action": {
+     "condition": {
+      "or": {
+       "vals": [
+        {
+         "not": {
+          "val": {
+           "auraIsActive": {
+            "auraId": {
+             "spellId": 11581,
+             "rank": 6
+            },
+            "sourceUnit": {
+             "type": "CurrentTarget"
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "auraRemainingTime": {
+            "sourceUnit": {
+             "type": "CurrentTarget"
+            },
+            "auraId": {
+             "spellId": 11581,
+             "rank": 6
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "3s"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11581,
+       "rank": 6
+      }
+     }
+    }
+   },
+   {
+    "notes": "Keep it on the boss: the attack power it strips takes a real slice off every swing. One is enough, since it does not stack with a druid's Demoralizing Roar. Refresh it in its last 3 seconds.",
+    "action": {
+     "condition": {
+      "or": {
+       "vals": [
+        {
+         "not": {
+          "val": {
+           "auraIsActive": {
+            "auraId": {
+             "spellId": 11556,
+             "rank": 5
+            },
+            "sourceUnit": {
+             "type": "CurrentTarget"
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "auraRemainingTime": {
+            "sourceUnit": {
+             "type": "CurrentTarget"
+            },
+            "auraId": {
+             "spellId": 11556,
+             "rank": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "3s"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11556,
+       "rank": 5
+      }
+     }
+    }
+   },
+   {
+    "notes": "Whenever it drops. In a raid at 60 another warrior's Battle Shout is the same aura, so you only shout when nobody else has.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "auraId": {
+          "spellId": 11551,
+          "rank": 6
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11551,
+       "rank": 6
+      }
+     }
+    }
+   },
+   {
+    "notes": "On every free global: five stacks for the raid, then flat threat on every cast.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 11597,
+       "rank": 5
+      }
+     }
+    }
+   },
+   {
+    "notes": "Only above 40 rage, queued on your next swing. It costs no global cooldown, so it never delays the buttons above.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpGe",
+       "lhs": {
+        "currentRage": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "60"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11567,
+       "rank": 8,
+       "tag": 1
+      }
+     }
+    }
+   }
+  ]
+ }
+}
