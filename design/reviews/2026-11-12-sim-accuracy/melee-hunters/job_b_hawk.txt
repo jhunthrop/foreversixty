@@ -1,0 +1,28 @@
+# Summon Hawk, Beast Mastery: the guide builds as -talents, then ET 4->3 + hawk
+hawk-raid-horde-guide -spec hunter-beast-mastery -preset raid -band 60 -faction horde -talents 5420001505001251-0052350001400000-000000000000000000
+hawk-raid-horde-a -spec hunter-beast-mastery -preset raid -band 60 -faction horde -talents 5320001505101251-0052350001400000-000000000000000000 -rotation @R/bm-hawk-a.json
+hawk-raid-horde-b -spec hunter-beast-mastery -preset raid -band 60 -faction horde -talents 5320001505101251-0052350001400000-000000000000000000 -rotation @R/bm-hawk-b.json
+hawk-bare-horde-guide -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5420001505001251-0052451001200000-000000000000000000
+hawk-bare-horde-a -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5320001505101251-0052451001200000-000000000000000000 -rotation @R/bm-hawk-a.json
+hawk-bare-horde-b -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5320001505101251-0052451001200000-000000000000000000 -rotation @R/bm-hawk-b.json
+hawk-raid-alliance-guide -spec hunter-beast-mastery -preset raid -band 60 -faction alliance -talents 5420001505001251-0052350001400000-000000000000000000
+hawk-raid-alliance-a -spec hunter-beast-mastery -preset raid -band 60 -faction alliance -talents 5320001505101251-0052350001400000-000000000000000000 -rotation @R/bm-hawk-a.json
+hawk-raid-alliance-b -spec hunter-beast-mastery -preset raid -band 60 -faction alliance -talents 5320001505101251-0052350001400000-000000000000000000 -rotation @R/bm-hawk-b.json
+hawk-bare-alliance-guide -spec hunter-beast-mastery -preset bare -band 60 -faction alliance -talents 5420001505001251-0052451001200000-000000000000000000
+hawk-bare-alliance-a -spec hunter-beast-mastery -preset bare -band 60 -faction alliance -talents 5320001505101251-0052451001200000-000000000000000000 -rotation @R/bm-hawk-a.json
+hawk-bare-alliance-b -spec hunter-beast-mastery -preset bare -band 60 -faction alliance -talents 5320001505101251-0052451001200000-000000000000000000 -rotation @R/bm-hawk-b.json
+# Level 60 (bare) build candidates from talent-search
+b60-arms-horde-guide -spec warrior-arms -preset bare -band 60 -faction horde -talents 13323213032215201-050500000000000000-205000000000000000
+b60-arms-horde-ic-ss -spec warrior-arms -preset bare -band 60 -faction horde -talents 13313213132215201-050500000000000000-205000000000000000
+b60-arms-horde-defl-ss -spec warrior-arms -preset bare -band 60 -faction horde -talents 12323213132215201-050500000000000000-205000000000000000
+b60-arms-alliance-guide -spec warrior-arms -preset bare -band 60 -faction alliance -talents 13323213032215201-050500000000000000-205000000000000000
+b60-arms-alliance-ic-ss -spec warrior-arms -preset bare -band 60 -faction alliance -talents 13313213132215201-050500000000000000-205000000000000000
+b60-arms-alliance-defl-ss -spec warrior-arms -preset bare -band 60 -faction alliance -talents 12323213132215201-050500000000000000-205000000000000000
+b60-bm-horde-guide -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5420001505001251-0052451001200000-000000000000000000
+b60-bm-horde-it4 -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5420001505001251-0050550001000000-400000000000000000
+b60-bm-alliance-guide -spec hunter-beast-mastery -preset bare -band 60 -faction alliance -talents 5420001505001251-0052451001200000-000000000000000000
+b60-bm-alliance-it4 -spec hunter-beast-mastery -preset bare -band 60 -faction alliance -talents 5420001505001251-0050550001000000-400000000000000000
+b60-sv-horde-guide -spec hunter-survival -preset bare -band 60 -faction horde -talents 5000000000000000-0050052010000000-500230230050222151
+b60-sv-horde-pet -spec hunter-survival -preset bare -band 60 -faction horde -talents 5000100000000000-0050052000000000-500230230050222151
+b60-sv-alliance-guide -spec hunter-survival -preset bare -band 60 -faction alliance -talents 5000000000000000-0050052010000000-500230230050222151
+b60-sv-alliance-pet -spec hunter-survival -preset bare -band 60 -faction alliance -talents 5000100000000000-0050052000000000-500230230050222151

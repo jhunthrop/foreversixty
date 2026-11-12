@@ -288,63 +288,6 @@ func TestRound20DevouringPlagueRankOneAt28ForGnomeAndTroll(t *testing.T) {
 	}
 }
 
-// Round 19 (hunter lane): at 46 and 47 Survival queues Raptor Strike rank 5.
-// Immolation Trap rank 4 arrives at 46 and runs the mana dry; rank 5's lower
-// cost buys back traps and gains beyond error at seeds 1 and 50001 (Horde
-// +0.3%, Alliance +0.1%). From 40 to 45 the top rank wins or ties; from 48
-// see round 21's rows.
-func TestRound19SurvivalRaptorStrikeRankFiveAt46(t *testing.T) {
-	for _, c := range []struct {
-		name      string
-		level     int
-		want, not int32
-	}{
-		{"Survival Raptor Strike at 45", 45, 14264, 14263},
-		{"Survival Raptor Strike at 46", 46, 14263, 14264},
-		{"Survival Raptor Strike at 47", 47, 14263, 14264},
-	} {
-		ids := rotationIDs(t, "hunter-survival", "hunter", c.level, specRankChoices("hunter-survival", BarePreset, "orc"))
-		if !ids[c.want] || ids[c.not] {
-			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
-		}
-	}
-}
-
-// Round 21 (hunter lane): Immolation Trap rank 2 arrives at 26 and the mana
-// runs short, so Raptor Strike rank 3 beats rank 4 at 26 to 29 for every
-// race, and the Horde races that still run dry take rank 2 at 26 (and 27,
-// 28 by race). From 48 an Orc, a Tauren and a Troll keep rank 5 to 49 and a
-// Windshaper Skyborne at 48; the Alliance races take rank 7 from 48.
-func TestRound21SurvivalRaptorStrikeRows(t *testing.T) {
-	const r2, r3, r4, r5, r7 = 14260, 14261, 14262, 14263, 14265
-	for _, c := range []struct {
-		name, race string
-		level      int
-		want, not  int32
-	}{
-		{"Troll at 25 is the top rank", "troll", 25, r4, r3},
-		{"Troll at 26", "troll", 26, r2, r4},
-		{"Dwarf at 26", "dwarf", 26, r3, r4},
-		// Round 28 (hybrids H5): an Orc at 27 gains 0.2% with rank 2 on the new order.
-		{"Orc at 27", "orc", 27, r2, r3},
-		{"Tauren at 28", "tauren", 28, r2, r3},
-		{"Troll at 28", "troll", 28, r3, r2},
-		{"Night Elf at 29", "night-elf", 29, r3, r4},
-		{"Human at 30 is the top rank", "human", 30, r4, r3},
-		{"Orc at 48", "orc", 48, r5, r7},
-		{"Troll at 49", "troll", 49, r5, r7},
-		{"Windshaper at 48", "windshaper-skyborne", 48, r5, r7},
-		{"Windshaper at 49 is the top rank", "windshaper-skyborne", 49, r7, r5},
-		{"Dwarf at 48 is the top rank", "dwarf", 48, r7, r5},
-		{"Night Elf at 47 keeps rank 5", "night-elf", 47, r5, 14264},
-	} {
-		ids := rotationIDs(t, "hunter-survival", "hunter", c.level, specRankChoices("hunter-survival", BarePreset, c.race))
-		if !ids[c.want] || ids[c.not] {
-			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
-		}
-	}
-}
-
 // Sim-accuracy round 24 (casters lane): the mage and warlock rows re-judged on the talents the
 // player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1
 // and 50001, every race of the class), and the rank sweep at the two levels after each new rank

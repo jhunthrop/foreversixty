@@ -162,8 +162,11 @@ Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. Out in the world
 
 Arcane Shot costs 11% of your base mana at every rank, so always cast the newest one. Serpent Sting is different: every rank adds a share of your ranged attack power, so a low rank keeps most of the damage for a fraction of the mana. Drag the old rank back onto the bar after every trainer visit.
 
-- **Until 17:** the newest Serpent Sting.
-- **18 to 29:** Serpent Sting rank 1.
-- **From 30:** your newest Serpent Sting.
+- **Until 25:** the newest Serpent Sting.
+- **26 to 32:** Serpent Sting rank 1.
+- **33 to 41:** the newest Serpent Sting. Rapid Recuperation is in by 34 and keeps your mana up.
+- **42 to 49:** Serpent Sting rank 3. From 42 the new ranks cost more than Rapid Recuperation gives back.
+- **50 to 59:** Serpent Sting rank 4.
+- **60, out in the world:** rank 1 again. In a raid, with Judgement of Wisdom on the boss, cast the top rank.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get.

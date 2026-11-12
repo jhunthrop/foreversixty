@@ -55,9 +55,9 @@ func TestArmsTakesImprovedOverpowerBeforeTacticalMastery(t *testing.T) {
 	const rest = "-000000000000000000-000000000000000000"
 	want := map[int]string{
 		10: "00100000000000000" + rest, // Improved Rend first since round 27
-		20: "13320200000000000" + rest,
-		25: "13323211000000000" + rest,
-		40: "13323213032214001" + rest,
+		20: "12321200000000000" + rest,
+		25: "12323212000000000" + rest,
+		40: "12323213132214001" + rest,
 	}
 	for level, w := range want {
 		if got := ladderAt(t, "warrior", "arms", armsTree, level); got != w {
@@ -93,7 +93,9 @@ func TestSubtletyTakesOpportunityBeforeMasterOfDeception(t *testing.T) {
 // Rend, which the rotation keeps up from 4) at 10 to 12, then Improved Heroic Strike at
 // 13, before Deflection, whose parry does nothing while the target is hitting someone
 // else. Deflection's first point at 14 pays the row toll for Improved Overpower at 15,
-// and its other two follow at 17 and 18, so level 20 does not change.
+// and its second follows at 17. Since sim-accuracy 2026-11-12 (melee-hunters) the level
+// 60 build has two points of Deflection and Spearing Strike, so Improved Charge comes at
+// 18 and 19 and Spearing Strike at 27.
 func TestArmsTakesImprovedRendBeforeDeflection(t *testing.T) {
 	const armsTree = 0
 	const rest = "-000000000000000000-000000000000000000"
@@ -104,8 +106,9 @@ func TestArmsTakesImprovedRendBeforeDeflection(t *testing.T) {
 		14: "11300000000000000" + rest,
 		15: "11300100000000000" + rest,
 		16: "11300200000000000" + rest,
-		18: "13300200000000000" + rest,
-		20: "13320200000000000" + rest,
+		17: "12300200000000000" + rest,
+		18: "12310200000000000" + rest,
+		20: "12321200000000000" + rest,
 	}
 	for level, w := range want {
 		if got := ladderAt(t, "warrior", "arms", armsTree, level); got != w {

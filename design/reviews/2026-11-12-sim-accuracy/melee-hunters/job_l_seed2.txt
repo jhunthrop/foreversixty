@@ -1,0 +1,8 @@
+b60-arms-horde-guide -spec warrior-arms -preset bare -band 60 -faction horde -talents 13323213032215201-050500000000000000-205000000000000000
+b60-arms-horde-defl-ss -spec warrior-arms -preset bare -band 60 -faction horde -talents 12323213132215201-050500000000000000-205000000000000000
+b60-arms-alliance-guide -spec warrior-arms -preset bare -band 60 -faction alliance -talents 13323213032215201-050500000000000000-205000000000000000
+b60-arms-alliance-defl-ss -spec warrior-arms -preset bare -band 60 -faction alliance -talents 12323213132215201-050500000000000000-205000000000000000
+b60-bm-horde-guide -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5420001505001251-0052451001200000-000000000000000000
+b60-bm-horde-it4 -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5420001505001251-0050550001000000-400000000000000000
+b60-bm-alliance-guide -spec hunter-beast-mastery -preset bare -band 60 -faction alliance -talents 5420001505001251-0052451001200000-000000000000000000
+b60-bm-alliance-it4 -spec hunter-beast-mastery -preset bare -band 60 -faction alliance -talents 5420001505001251-0050550001000000-400000000000000000

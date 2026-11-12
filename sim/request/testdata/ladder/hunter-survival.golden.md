@@ -103,10 +103,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 0000000000000000-0000000000000000-100000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 23.2 | 2 | other:attack/2=129.9, other:attack/1=46.5, spell:14260=23.7, spell:1130=1.0 | {SpellID: 1317257} |
 | 20 | 0000000000000000-0000000000000000-500230100000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 43.0 | 3 | other:attack/2=107.2, other:attack/1=93.4, spell:14261=28.0, spell:13795=6.2, spell:1130=1.0 | {SpellID: 10610}, {SpellID: 1317257} |
 | 30 | 0000000000000000-0000000000000000-500230230050000100 | main_hand:6692 off_hand:23168 ranged:274748 | 81.5 | 7 | other:attack/2=134.2, other:attack/1=68.0, spell:1317257=16.7, spell:14262=10.6, spell:24118=9.7 | {SpellID: 10610} |
-| 38 | 0000000000000000-0000000000000000-500230230050222120 | main_hand:869 off_hand:6829 ranged:2825 | 125.9 | 8 | other:attack/2=85.6, other:attack/1=50.5, spell:14263=22.1, spell:1317257=20.7, spell:14269=13.7 | {SpellID: 10610} |
-| 40 | 0000000000000000-0000000000000000-500230230050222131 | main_hand:2164 off_hand:9465 ranged:2825 | 132.1 | 8 | other:attack/2=104.5, other:attack/1=83.2, spell:14264=21.3, spell:1317257=19.1, spell:14269=16.6 | {SpellID: 10610} |
-| 50 | 5000000000000000-0030000000000000-500230230050222151 | main_hand:2163 off_hand:6660 ranged:2824 | 193.1 | 8 | other:attack/2=174.7, other:attack/1=103.7, spell:14265=22.6, spell:14270=20.5, spell:1317257=19.2 | {SpellID: 10610} |
-| 60 | 5000000000000000-0050052010000000-500230230050222151 | main_hand:22736 off_hand:23054 ranged:22811 | 358.1 | 8 | other:attack/2=79.3, other:attack/1=53.5, spell:14266=23.1, spell:1317257=20.8, spell:14271=13.6 | {SpellID: 10610} |
+| 38 | 0000000000000000-0000000000000000-500230230050222120 | main_hand:869 off_hand:6829 ranged:2825 | 123.0 | 8 | other:attack/2=85.6, other:attack/1=52.1, spell:14263=20.5, spell:1317257=19.7, spell:14269=13.6 | {SpellID: 10610} |
+| 40 | 0000000000000000-0000000000000000-500230230050222131 | main_hand:2164 off_hand:9465 ranged:2825 | 127.0 | 8 | other:attack/2=104.5, other:attack/1=83.0, spell:14263=21.6, spell:1317257=19.0, spell:14269=16.2 | {SpellID: 10610} |
+| 50 | 5000000000000000-0030000000000000-500230230050222151 | main_hand:2163 off_hand:6660 ranged:2824 | 185.2 | 8 | other:attack/2=175.0, other:attack/1=106.2, spell:14265=20.4, spell:14270=20.4, spell:1317257=18.5 | {SpellID: 10610} |
+| 60 | 5000000000000000-0050052010000000-500230230050222151 | main_hand:22736 off_hand:23054 ranged:22811 | 345.8 | 8 | other:attack/2=79.4, other:attack/1=55.6, spell:14266=21.1, spell:1317257=20.2, spell:14271=13.5 | {SpellID: 10610} |
 
 ## Learned but unused (informational)
 
@@ -205,6 +205,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265057)
 - Pinch (spell 1264739)
+- Raptor Strike (spell 14264)
 - Savage Rend (spell 1265067)
 - Scorpid Poison (spell 24586)
 - Serpent Sting (spell 13552)

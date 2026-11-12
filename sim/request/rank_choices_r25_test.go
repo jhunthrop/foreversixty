@@ -11,9 +11,6 @@ import "testing"
 // Shot rows are gone since the 10 November hotfix: hotfix_arcane_shot_rank_test.go.)
 func TestRound25LowLevelHunterRankRows(t *testing.T) {
 	checkHunterRankCases(t, []hunterRankCase{
-		{"BM Serpent Sting at 17 keeps rank 2", hBM, BarePreset, "troll", 17, 13549, 1978},
-		{"BM Serpent Sting at 18", hBM, BarePreset, "troll", 18, 1978, 13550},
-		{"BM Serpent Sting at 19", hBM, BarePreset, "dwarf", 19, 1978, 13550},
 		{"MM Serpent Sting at 18", hMM, BarePreset, "dwarf", 18, 1978, 13550},
 	})
 }

@@ -1,0 +1,387 @@
+{
+ "rotation": {
+  "type": "TypeAPL",
+  "prepullActions": [
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 14325,
+       "rank": 4
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-20s"
+     }
+    }
+   },
+   {
+    "action": {
+     "move": {
+      "rangeFromTarget": {
+       "const": {
+        "val": "30"
+       }
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-15s"
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 14322,
+       "rank": 6
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-10s"
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 20904,
+       "rank": 6
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-2s"
+     }
+    }
+   }
+  ],
+  "priorityList": [
+   {
+    "action": {
+     "autocastOtherCooldowns": {}
+    },
+    "notes": ""
+   },
+   {
+    "notes": "Hunter's Mark whenever the target is not marked. One mark per target is enough: if another hunter's mark is already up, leave it.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "auraId": {
+          "spellId": 14325,
+          "rank": 4
+         },
+         "sourceUnit": {
+          "type": "CurrentTarget"
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 14325,
+       "rank": 4
+      }
+     }
+    }
+   },
+   {
+    "notes": "Bestial Wrath on the pull with Rapid Fire and your trinkets, then again every two minutes. The pet hits 50% harder for 18 seconds and shrugs off fear, so send it in first and press it once the pet is on the boss.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 19574
+      }
+     }
+    }
+   },
+   {
+    "notes": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath. The haste starts on a fresh shot and the first Aimed Shot lands inside it. It is a five minute cooldown, four once the level 60 build's point in Rapid Killing is in at 57, so a normal boss fight gets one: put your trinkets and your damage racial, if your race has one, on the same press.",
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "autoTimeToNext": {
+            "autoType": "Ranged"
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.1"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "spellTimeToReady": {
+            "spellId": {
+             "spellId": 2643,
+             "rank": 0
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.5"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 3045
+      }
+     }
+    }
+   },
+   {
+    "notes": "Aimed Shot whenever the cooldown it shares with Multi-Shot is up. Your auto shots keep firing while you cast it, so there is no auto shot to wait for, and it hits harder than Multi-Shot.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 20904,
+       "rank": 6
+      }
+     }
+    }
+   },
+   {
+    "notes": "Multi-Shot on cooldown at 18 and 19, while you are above a quarter of your mana. From 20 Aimed Shot takes the shared cooldown whenever it is up, so Multi-Shot is for packs and for moving. It is the worst damage for its mana you fire, so it is the first shot to go when the mana runs low.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpGt",
+       "lhs": {
+        "currentManaPercent": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "25%"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 2643,
+       "rank": 0
+      }
+     }
+    }
+   },
+   {
+    "notes": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana. Refreshing any earlier throws away a tick. Every tick carries 5% of your ranged attack power on top of its own damage, so from 18 it does more for its mana than Multi-Shot: keep it rolling for the whole fight. From 18, when both are ready and your mana is above a quarter, the shared cooldown goes first: a late Multi-Shot, or from 20 a late Aimed Shot, pushes it back, while a late sting costs only a moment of its damage.",
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "dotRemainingTime": {
+            "spellId": {
+             "spellId": 13555,
+             "rank": 8
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "1.5s"
+           }
+          }
+         }
+        },
+        {
+         "or": {
+          "vals": [
+           {
+            "cmp": {
+             "op": "OpGe",
+             "lhs": {
+              "spellTimeToReady": {
+               "spellId": {
+                "spellId": 2643,
+                "rank": 0
+               }
+              }
+             },
+             "rhs": {
+              "const": {
+               "val": "0.5"
+              }
+             }
+            }
+           },
+           {
+            "cmp": {
+             "op": "OpLe",
+             "lhs": {
+              "currentManaPercent": {}
+             },
+             "rhs": {
+              "const": {
+               "val": "25%"
+              }
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 13555,
+       "rank": 8
+      }
+     }
+    }
+   },
+   {
+    "notes": "Summon Hawk (variant)",
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "or": {
+          "vals": [
+           {
+            "cmp": {
+             "op": "OpGt",
+             "lhs": {
+              "spellTimeToReady": {
+               "spellId": {
+                "spellId": 2643,
+                "rank": 0
+               }
+              }
+             },
+             "rhs": {
+              "const": {
+               "val": "1.5s"
+              }
+             }
+            }
+           },
+           {
+            "cmp": {
+             "op": "OpLe",
+             "lhs": {
+              "currentManaPercent": {}
+             },
+             "rhs": {
+              "const": {
+               "val": "25%"
+              }
+             }
+            }
+           }
+          ]
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "auraNumStacks": {
+            "auraId": {
+             "spellId": 1312639
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "2"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 1293527,
+       "rank": 4
+      }
+     }
+    }
+   },
+   {
+    "notes": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana. It is instant and never holds an auto shot, and every hit carries 15% of your ranged attack power, so from 18 it does more for its mana than Multi-Shot: keep it going even when the mana runs low.",
+    "action": {
+     "condition": {
+      "or": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "spellTimeToReady": {
+            "spellId": {
+             "spellId": 2643,
+             "rank": 0
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "1.5s"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLe",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "25%"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 14287,
+       "rank": 8
+      }
+     }
+    }
+   }
+  ]
+ }
+}

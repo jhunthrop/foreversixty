@@ -1,0 +1,12 @@
+raid-hunter-beast-mastery-horde-r1 hunter-beast-mastery DPS 930.8 +/- 0.3 out of mana: 0.0 s of 180 s
+raid-hunter-beast-mastery-horde-r3 hunter-beast-mastery DPS 935.9 +/- 0.3 out of mana: 0.0 s of 180 s
+raid-hunter-beast-mastery-horde-r8 hunter-beast-mastery DPS 976.3 +/- 0.3 out of mana: 0.0 s of 180 s
+raid-hunter-beast-mastery-alliance-r1 hunter-beast-mastery DPS 937.4 +/- 0.3 out of mana: 0.0 s of 180 s
+raid-hunter-beast-mastery-alliance-r3 hunter-beast-mastery DPS 942.7 +/- 0.3 out of mana: 0.0 s of 180 s
+raid-hunter-beast-mastery-alliance-r8 hunter-beast-mastery DPS 984.1 +/- 0.3 out of mana: 0.0 s of 180 s
+raid-hunter-marksmanship-horde-r1 hunter-marksmanship DPS 1030.0 +/- 0.4 out of mana: 0.0 s of 180 s
+raid-hunter-marksmanship-horde-r3 hunter-marksmanship DPS 1036.4 +/- 0.4 out of mana: 0.0 s of 180 s
+raid-hunter-marksmanship-horde-r8 hunter-marksmanship DPS 1082.4 +/- 0.4 out of mana: 1.1 s of 180 s
+raid-hunter-marksmanship-alliance-r1 hunter-marksmanship DPS 1048.6 +/- 0.4 out of mana: 0.0 s of 180 s
+raid-hunter-marksmanship-alliance-r3 hunter-marksmanship DPS 1054.7 +/- 0.4 out of mana: 0.0 s of 180 s
+raid-hunter-marksmanship-alliance-r8 hunter-marksmanship DPS 1101.4 +/- 0.4 out of mana: 1.0 s of 180 s

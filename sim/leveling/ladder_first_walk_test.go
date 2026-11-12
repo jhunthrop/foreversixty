@@ -39,7 +39,7 @@ func TestBandBuildsTakeTheCastTalentsThatFit(t *testing.T) {
 		// Soul Harvest and Improved Drains (TestAfflictionTakesPandemicBeforeTheDrainTalents).
 		{"warlock-affliction", "warlock", "affliction", 0, 30, "Siphon Life", "25520000132001000-0000000000000000000-0000000000000000"},
 		{"warlock-demonology", "warlock", "demonology", 1, 30, "Soul Link", "00000000000000000-2035113101210001000-0000000000000000"},
-		{"warrior-arms", "warrior", "arms", 0, 40, "Mortal Strike", "13323213032214001-000000000000000000-000000000000000000"},
+		{"warrior-arms", "warrior", "arms", 0, 40, "Mortal Strike", "12323213132214001-000000000000000000-000000000000000000"},
 		// Sim-accuracy round 15 (warrior): the guide build dropped Lingering Rage and Piercing
 		// Howl for Improved Berserker Rage, so band 30 spends those two points in Dual Wield
 		// Specialization (5, not 3) and still takes Death Wish (+3.5% at seeds 1 and 50001).

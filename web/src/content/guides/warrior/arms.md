@@ -3,7 +3,7 @@ title: Arms Warrior in Forever
 classSlug: warrior
 spec: arms
 role: dps
-build: 'FS1:1.60.1.70790:warrior:night-elf:13323213032215201/0505/205:'
+build: 'FS1:1.60.1.70790:warrior:night-elf:12323213132215201/0505/205:'
 raidBuild: 'FS1:1.60.1.70790:warrior:night-elf:30303213132215201/05050005012/1:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
@@ -72,9 +72,9 @@ sources:
 - **Improved Bloodrage** (Protection): two points in the level 60 build for half again as much rage from every Bloodrage, one point in the raid build for a quarter more.
 - **Cruelty** and **Unbridled Wrath** (10 points in Fury): 5% crit and a 60% chance at an extra rage point on every white swing that lands. Heroic Strike and Cleave take the place of a swing and never proc it.
 
-The level 60 build puts one point in **Improved Heroic Strike**, three in **Deflection** and five in **Iron Will**, which takes 15% off every stun and fear on you.
+The level 60 build puts one point in **Improved Heroic Strike**, two in **Deflection** and five in **Iron Will**, which takes 15% off every stun and fear on you. Both builds take **Spearing Strike**, a second weapon strike, 15 rage on a 20 second cooldown in Battle Stance, that hits twice as hard on dragons and giants.
 
-The raid build drops Iron Will, Deflection and Improved Charge. Two more points of **Improved Heroic Strike** make Heroic Strike cost 3 less. **Spearing Strike** is a second weapon strike, 15 rage on a 20 second cooldown in Battle Stance, that hits twice as hard on dragons and giants. Fifteen points in Fury reach **Reckless Swings**: for 8 seconds your white swings bring 5 more rage each, which is two or three swings with a slow two-hander, at a quarter of your base health. The same points reach **Improved Execute**, which takes Execute down to 10 rage. **Enrage** is the way there, and it pays whenever raid damage lands on you.
+The raid build drops Iron Will, Deflection and Improved Charge. Two more points of **Improved Heroic Strike** make Heroic Strike cost 3 less. Fifteen points in Fury reach **Reckless Swings**: for 8 seconds your white swings bring 5 more rage each, which is two or three swings with a slow two-hander, at a quarter of your base health. The same points reach **Improved Execute**, which takes Execute down to 10 rage. **Enrage** is the way there, and it pays whenever raid damage lands on you.
 
 ## Rotation and priority
 
@@ -122,8 +122,8 @@ At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance,
 - **13:** Improved Heroic Strike, so Heroic Strike costs 1 less Rage.
 - **14:** a first point of Deflection to open the next row.
 - **15 and 16:** Improved Overpower, so the Overpowers your target's dodges open crit far more often.
-- **17 and 18:** the rest of Deflection, for parry.
-- **19 and 20:** Improved Charge, 6 more Rage on every opener.
+- **17:** a second point of Deflection, for parry.
+- **18 and 19:** Improved Charge, 6 more Rage on every opener.
 
 Swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
 
@@ -131,4 +131,4 @@ Swap the starter weapon for the first quest or dungeon two-hander you can get, a
 
 Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, and Victory Rush whenever it is up: it heals 10%, works for 20 seconds after a kill and comes back every 30 seconds, so when the next mob is close, press it right after the Charge. Sweeping Strikes into Whirlwind for pulls of two or three.
 
-Bloodthrill comes in at 33, after Deep Wounds and Impale; once it is in, keep Rend on everything and every pull turns into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which is easier to keep up to date.
+From 20, Improved Tactical Mastery, Anger Management and Deep Wounds, then take Spearing Strike at 27 and press it on any free global in Battle Stance. Bloodthrill comes in at 33, after Deep Wounds and Impale; once it is in, keep Rend on everything and every pull turns into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which is easier to keep up to date.

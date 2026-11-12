@@ -3,7 +3,7 @@ title: Beast Mastery Hunter in Forever
 classSlug: hunter
 spec: beast-mastery
 role: dps
-build: 'FS1:1.60.1.70790:hunter:night-elf:5420001505001251/00524510012/0:'
+build: 'FS1:1.60.1.70790:hunter:night-elf:5420001505001251/0050550001/4:'
 raidBuild: 'FS1:1.60.1.70790:hunter:night-elf:5420001505001251/00523500014/0:'
 recommendedRaces: [night-elf, orc]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
@@ -65,7 +65,7 @@ sources:
 
 ## Talents and builds
 
-Thirty-one points in Beast Mastery buys every talent that makes the pet hit harder, then twenty in Marksmanship buys what makes you hit harder.
+Thirty-one points in Beast Mastery buys every talent that makes the pet hit harder, then twenty more buy what makes you hit harder: sixteen in Marksmanship and four in Survival's Improved Tracking in the level 60 build, all twenty in Marksmanship in the raid build.
 
 - **Unleashed Fury** (5 points): 15% more damage for the pet on every hit, white or special
 - **Ferocity** (5 points): 10% pet crit on top of the crit it already copies from you, and every crit feeds Frenzy
@@ -74,11 +74,13 @@ Thirty-one points in Beast Mastery buys every talent that makes the pet hit hard
 - **Bestial Wrath** (1 point): 50% more pet damage for 18 seconds every two minutes, and the pet ignores fear while it lasts
 - **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
 - **Careful Aim** (5 points): attack power equal to your Intellect, so a mail Intellect piece is an attack power piece for you and the pet
-- **Mortal Shots** (2 points): your shot crits hit for 212% of a normal hit instead of double, 224% with the 4 points in the raid build
+- **Efficiency** (5 points, level 60 build): 15% off the mana of your shots and stings, so you keep shooting through a chain of pulls
+- **Improved Tracking** (4 points, level 60 build): 4% more damage against the creature type you track, so set Track to your target's type before the pull
+- **Mortal Shots** (4 points, raid build): your shot crits hit for 224% of a normal hit instead of double
 
-Endurance Training (4 points) keeps the pet alive through raid damage, Bestial Discipline (2 points) keeps half your mana regeneration running while you shoot, and Intimidation (1 point) opens Bestial Wrath and stuns trash: press it to stop a runner or to peel an add off a healer, since bosses cannot be stunned. Bestial Swiftness gets the cat to the target sooner after every pull. Improved Stings (2 points) adds Serpent Sting damage and, in the raid build, is the way down to Trueshot Aura and Mortal Shots. The level 60 build's point in Rapid Killing takes a minute off Rapid Fire and makes your next shot after a kill hit 10% harder, which is worth more out in the world than in a raid. Hawk Eye, Improved Concussive Shot and Deflection add nothing to raid damage, so the build skips them.
+Endurance Training (4 points) keeps the pet alive through raid damage, Bestial Discipline (2 points) keeps half your mana regeneration running while you shoot, and Intimidation (1 point) opens Bestial Wrath and stuns trash: press it to stop a runner or to peel an add off a healer, since bosses cannot be stunned. Bestial Swiftness gets the cat to the target sooner after every pull. In the raid build, Improved Stings (2 points) adds Serpent Sting damage and is the way down to Mortal Shots. Hawk Eye, Improved Concussive Shot and Deflection add nothing to raid damage, so the build skips them.
 
-The raid build moves one point out of Efficiency and the point in Rapid Killing into Mortal Shots. With Judgement of Wisdom on the boss and a Major Mana Potion you do not run dry, and two more ranks of Mortal Shots beat the mana. Out in the world, keep the level 60 build: you will run out of mana long before you run out of targets.
+The raid build moves two points out of Efficiency and the four in Improved Tracking into Improved Stings and Mortal Shots. With Judgement of Wisdom on the boss and a Major Mana Potion you do not run dry, and Mortal Shots beats the mana. Out in the world, keep the level 60 build: all five points of Efficiency keep you shooting, and you will run out of mana long before you run out of targets.
 
 ## Rotation and priority
 
@@ -157,9 +159,7 @@ Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. When rank 2 arri
 
 Arcane Shot costs 11% of your base mana at every rank, so always cast the newest one. Serpent Sting is different: every rank adds a share of your ranged attack power, so a low rank keeps most of the damage for a fraction of the mana. Drag the old rank back onto the bar after every trainer visit.
 
-- **Until 17:** the newest Serpent Sting.
-- **18 to 37:** Serpent Sting rank 1.
-- **38 and 39:** Serpent Sting up to rank 2.
-- **From 40:** your newest Serpent Sting.
+- **Until 25:** the newest Serpent Sting.
+- **26 to 60:** Serpent Sting rank 1, all the way up: it keeps most of the damage for a fraction of the mana. In a raid at 60, with Judgement of Wisdom on the boss, cast the top rank.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get, and Bestial Wrath comes the same level.

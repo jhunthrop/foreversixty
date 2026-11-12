@@ -66,7 +66,9 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
 var knownStaleBISFiles = map[string]string{
-	"warrior-protection": "sim-accuracy round 30 moved band 30's leveling talents (threat talents before Anticipation on the dungeon-table boss); the batch re-rank lands it",
+	"warrior-protection":   "sim-accuracy round 30 moved band 30's leveling talents (threat talents before Anticipation on the dungeon-table boss); the batch re-rank lands it",
+	"warrior-arms":         "sim-accuracy 2026-11-12 (melee-hunters) moved the level 60 build (Spearing Strike for a point of Deflection) and with it the leveling talents from 17; the batch re-rank lands it",
+	"hunter-beast-mastery": "sim-accuracy 2026-11-12 (melee-hunters) moved the level 60 build (Efficiency 5 and Improved Tracking 4 for Improved Stings, Rapid Killing and Mortal Shots) and the leveling talents from 46; the batch re-rank lands it",
 }
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files

@@ -101,12 +101,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 1000000000000000-0000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 37.3 | 4 | other:shoot=82.4, spell:3044=26.5, spell:13549=8.2, spell:1130=2.4, other:move=1.0 | {SpellID: 19574}, {SpellID: 2643} |
-| 20 | 5320000100000000-0000000000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 61.5 | 5 | other:shoot=82.4, spell:14282=15.9, spell:1978=13.0, spell:19434=6.1, spell:1130=2.5 | {SpellID: 19574} |
+| 20 | 5320000100000000-0000000000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 62.8 | 5 | other:shoot=82.2, spell:14282=13.4, spell:13550=11.7, spell:19434=5.2, spell:1130=2.4 | {SpellID: 19574} |
 | 30 | 5320000505000100-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 99.4 | 6 | other:shoot=83.4, spell:19434=16.3, spell:1978=13.9, spell:14283=7.8, spell:14323=2.5 | {SpellID: 19574} |
-| 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 135.1 | 6 | other:shoot=87.1, spell:19434=19.4, spell:13549=13.2, spell:14284=9.5, spell:14323=2.5 | {SpellID: 19574} |
-| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 148.8 | 7 | other:shoot=88.1, spell:19434=22.0, spell:14284=6.6, spell:13552=4.1, spell:14324=2.5 | - |
-| 50 | 5420001505001251-0052300000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 200.2 | 7 | other:shoot=88.1, spell:19434=22.6, spell:14285=8.5, spell:13554=4.2, spell:14324=2.4 | - |
-| 60 | 5420001505001251-0052451001200000-000000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 324.4 | 7 | other:shoot=83.2, spell:14287=15.8, spell:20904=4.9, spell:13555=2.6, spell:14325=2.5 | - |
+| 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 136.2 | 6 | other:shoot=87.3, spell:19434=20.9, spell:1978=13.7, spell:14284=10.1, spell:14323=2.4 | {SpellID: 19574} |
+| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 152.8 | 7 | other:shoot=88.3, spell:19434=20.4, spell:1978=13.8, spell:14284=9.2, spell:14324=2.4 | - |
+| 50 | 5420001505001251-0050500000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 206.7 | 7 | other:shoot=88.2, spell:19434=23.0, spell:1978=13.6, spell:14285=13.4, spell:14324=2.5 | - |
+| 60 | 5420001505001251-0050550001000000-400000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 334.6 | 7 | other:shoot=83.2, spell:14287=16.4, spell:20904=5.0, spell:13555=2.8, spell:14325=2.4 | - |
 
 ## Learned but unused (informational)
 
@@ -134,7 +134,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14261)
 - Savage Rend (spell 1265065)
 - Scorpid Poison (spell 24640)
-- Serpent Sting (spell 13550)
 - Sonic Blast (spell 1264478)
 - Swipe (spell 1264494)
 - Tendon Rip (spell 1265038)
@@ -210,6 +209,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14264)
 - Savage Rend (spell 1265067)
 - Scorpid Poison (spell 24586)
+- Serpent Sting (spell 13552)
 - Sniper Shot (spell 1310687)
 - Sonic Blast (spell 1264480)
 - Summon Hawk (spell 1293525)
@@ -238,6 +238,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14265)
 - Savage Rend (spell 1265068)
 - Scorpid Poison (spell 24586)
+- Serpent Sting (spell 13554)
 - Sniper Shot (spell 1310785)
 - Sonic Blast (spell 1264481)
 - Summon Hawk (spell 1293526)

@@ -850,7 +850,7 @@ describe('raid build rows', () => {
     expect(marked.priority.map((item) => item.raidBuildOnly === true)).toEqual([true, false, false]);
   });
 
-  it('marks Arms’ Reckless Swings and Spearing Strike, which only the raid build takes', () => {
+  it('marks Arms’ Reckless Swings, which only the raid build takes, and not Spearing Strike, which both take', () => {
     const arms = readFileSync(path.join(GUIDES_DIR, 'warrior/arms.md'), 'utf8');
     const code = (key: string): string => new RegExp(`^${key}: '([^']+)'`, 'm').exec(arms)![1]!;
     const only = raidBuildOnlyTalents(
@@ -859,7 +859,7 @@ describe('raid build rows', () => {
       litTalentsOf(decodeBuildTrees(BUILD, code('raidBuild')) ?? []),
     );
     expect(only.has('Reckless Swings')).toBe(true);
-    expect(only.has('Spearing Strike')).toBe(true);
+    expect(only.has('Spearing Strike')).toBe(false);
     expect(only.has('Mortal Strike')).toBe(false);
   });
 });

@@ -1,0 +1,12 @@
+raid-hunter-beast-mastery-horde-r1 -spec hunter-beast-mastery -preset raid -band 60 -faction horde -rank 13555=1
+raid-hunter-beast-mastery-horde-r3 -spec hunter-beast-mastery -preset raid -band 60 -faction horde -rank 13555=3
+raid-hunter-beast-mastery-horde-r8 -spec hunter-beast-mastery -preset raid -band 60 -faction horde -rank 13555=8
+raid-hunter-beast-mastery-alliance-r1 -spec hunter-beast-mastery -preset raid -band 60 -faction alliance -rank 13555=1
+raid-hunter-beast-mastery-alliance-r3 -spec hunter-beast-mastery -preset raid -band 60 -faction alliance -rank 13555=3
+raid-hunter-beast-mastery-alliance-r8 -spec hunter-beast-mastery -preset raid -band 60 -faction alliance -rank 13555=8
+raid-hunter-marksmanship-horde-r1 -spec hunter-marksmanship -preset raid -band 60 -faction horde -rank 13555=1
+raid-hunter-marksmanship-horde-r3 -spec hunter-marksmanship -preset raid -band 60 -faction horde -rank 13555=3
+raid-hunter-marksmanship-horde-r8 -spec hunter-marksmanship -preset raid -band 60 -faction horde -rank 13555=8
+raid-hunter-marksmanship-alliance-r1 -spec hunter-marksmanship -preset raid -band 60 -faction alliance -rank 13555=1
+raid-hunter-marksmanship-alliance-r3 -spec hunter-marksmanship -preset raid -band 60 -faction alliance -rank 13555=3
+raid-hunter-marksmanship-alliance-r8 -spec hunter-marksmanship -preset raid -band 60 -faction alliance -rank 13555=8

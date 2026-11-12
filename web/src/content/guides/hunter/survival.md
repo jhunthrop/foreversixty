@@ -49,7 +49,7 @@ sources:
 
 - Lone Wolf's 20% damage on every attack, with no pet to keep alive
 - Expose Prey opens Mongoose Bite off your own hits on a marked target, so it fires even on a boss that never swings at you
-- Resourcefulness takes 60% off your melee and trap costs, so you do not run dry
+- Resourcefulness takes 60% off Raptor Strike, Mongoose Bite, Strider Kick, Wing Clip and your traps, so your mana goes a long way
 - Rapid Fire speeds your melee swings
 
 ### Weaknesses
@@ -86,7 +86,7 @@ The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk
 
 **Aspect.** From 30 to 59 Beast is your only melee aspect: put it up and leave it up. At 60 Aspect of the Falcon gives the same melee attack power as Aspect of the Beast (10 more with Hawk's Ahn'Qiraj rank), and Deadly Aspects procs under either one, so Falcon is not a clear upgrade.
 
-**Mana.** With Resourcefulness your mana holds through Raptor Strike on every swing and Immolation Trap on cooldown. Rapid Fire speeds your swings, so it is a melee cooldown for you.
+**Mana.** With Resourcefulness your mana holds through Raptor Strike on every swing and Immolation Trap on cooldown. Lacerate is the one melee attack it leaves at full price. Rapid Fire speeds your swings, so it is a melee cooldown for you.
 
 **Windfury.** Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
 
@@ -146,10 +146,24 @@ Talents after Survivalist:
 - **43 to 57:** Deadly Aspects, then Lethal Attacks and Careful Aim.
 - **58 to 60:** Rapid Killing at 58 and 59, Lone Wolf the last point at 60.
 
-With a trap on every pull your mana runs short, so at a few levels you keep an older Raptor Strike rank on your bar: most of the hit is your weapon, so it does nearly what the new rank does for less mana, and the mana goes into traps. Drag the lower rank onto your bar from the spellbook.
+With a trap on every pull and Lacerate at full price your mana runs short, so at many levels you keep an older Raptor Strike rank on your bar: most of the hit is your weapon, so it does nearly what the new rank does for less mana, and the mana goes into traps and Lacerate. Drag the lower rank onto your bar from the spellbook. Horde races run drier than Alliance ones, so a Horde hunter goes a rank lower.
 
-- **26 to 29:** rank 3 instead of rank 4, once Immolation Trap rank 2 arrives at 26. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Put rank 4 back at 30.
-- **31:** rank 1, while you have only the first point of Resourcefulness; it costs almost nothing. Put rank 5 on at 32, when you train it and the second point makes every rank cheap.
-- **40 to 45:** rank 6, trained at 40, though a Troll does a touch better keeping rank 5 at 40 itself.
-- **46 and 47:** rank 5 instead of rank 6, since the new Immolation Trap rank at 46 costs more.
-- **48:** rank 7. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.
+On a Horde character (Orc, Troll, Tauren, Windshaper Skyborne):
+
+- **26 to 28:** rank 2.
+- **29:** rank 3.
+- **40 to 45:** rank 4.
+- **46 and 47:** rank 3: the Immolation Trap rank you train at 46 costs more.
+- **48 and 49:** rank 4.
+- **50 and 51:** rank 5. A Windshaper Skyborne goes back to the newest at 51, a Tauren keeps rank 5 to 52.
+- **56 to 59:** rank 5.
+
+On an Alliance character (Human, Dwarf, Night Elf, High Order Skyborne):
+
+- **26 and 27:** rank 3, and at 28 on a High Order Skyborne.
+- **40:** rank 5. A Dwarf stays on rank 5 to 45, a High Order Skyborne at 41, 42 and 44, a Night Elf at 41; a Human takes the newest from 41.
+- **46 and 47:** rank 4.
+- **48:** rank 5, and a Dwarf or High Order Skyborne keeps it to 50, a Dwarf to 51.
+- **56 to 59:** rank 5. A Human casts the newest to 58 and rank 5 at 59; a Night Elf casts the newest at 57 only.
+
+Every other level, cast the newest rank.

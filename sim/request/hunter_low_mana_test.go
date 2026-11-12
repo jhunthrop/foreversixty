@@ -45,10 +45,12 @@ func TestLowManaHunterKeepsShootingAt18(t *testing.T) {
 				}
 			}
 			t.Logf("level %d: Arcane Shot %.1f, Multi-Shot %.1f casts in 300 s", level, arcane, multi)
-			// One Arcane Shot every 12 s at least: its cooldown is 6 s and a
-			// hunter out of Multi-Shot mana still has mana for it.
-			if arcane < 25 {
-				t.Errorf("Arcane Shot cast %.1f times in 300 s at level %d, want 25 or more", arcane, level)
+			// About one Arcane Shot every 15 s at least: its cooldown is 6 s and
+			// a hunter out of Multi-Shot mana still has mana for it. (The stall
+			// this guards cast none. Since 2026-11-12 a Beast Mastery hunter at
+			// 18 keeps the newest Serpent Sting, which costs more than rank 1.)
+			if arcane < 20 {
+				t.Errorf("Arcane Shot cast %.1f times in 300 s at level %d, want 20 or more", arcane, level)
 			}
 		})
 	}

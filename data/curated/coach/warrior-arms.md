@@ -27,7 +27,7 @@ This is the best Arms Warrior on Forever. Arms is the two-handed warrior: Rend, 
 - Overpower the moment it lights up, even ahead of Mortal Strike from forty. A dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in.
 - Mortal Strike on cooldown from forty, and from fifty-seven in the raid build Reckless Swings right behind it.
 - Slam only with Improved Slam, between Mortal Strikes from forty: the talent keeps your swing timer running through the cast.
-- Spearing Strike from twenty-five in the raid build, on any free global in Battle Stance. It stops at the execute swap.
+- Spearing Strike from twenty-seven, on any free global in Battle Stance. It stops at the execute swap.
 - Heroic Strike only when you are about to cap at ninety or more. Below that, keep the rage for Overpower from twelve, Execute from twenty-four and Mortal Strike from forty.
 - Hamstring only with a Windfury Totem in the group, on a free global for ten rage. Never from twenty-five percent down: that rage is the first Execute.
 - Execute from twenty-four, at twenty percent, in Battle Stance first. It spends your whole bar, so that first Execute is your biggest hit of the fight.

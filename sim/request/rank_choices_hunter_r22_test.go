@@ -28,25 +28,3 @@ func TestRound22MarksmanshipAimedShotRankOneAt50And51(t *testing.T) {
 		}
 	}
 }
-
-// Round 22: the same sweep for Serpent Sting (5% of ranged attack power a tick on every rank):
-// rank 1 wins at 20 to 29 for Marksmanship and at 26 to 39 for Beast Mastery, the newest rank
-// after that.
-func TestRound22HunterSerpentStingRankRows(t *testing.T) {
-	for _, c := range []struct {
-		name, spec string
-		level      int
-		want, not  int32
-	}{
-		{"Marksmanship at 20", "hunter-marksmanship", 20, 1978, 13550},
-		{"Marksmanship at 29", "hunter-marksmanship", 29, 1978, 13551},
-		{"Marksmanship at 30 keeps the default", "hunter-marksmanship", 30, 13551, 1978},
-		{"Beast Mastery at 26", "hunter-beast-mastery", 26, 1978, 13551},
-		{"Beast Mastery at 40 keeps the default", "hunter-beast-mastery", 40, 13552, 1978},
-	} {
-		ids := rotationIDs(t, c.spec, "hunter", c.level, specRankChoices(c.spec, BarePreset, "night-elf"))
-		if !ids[c.want] || ids[c.not] {
-			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
-		}
-	}
-}
