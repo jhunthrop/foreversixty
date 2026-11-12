@@ -3,21 +3,16 @@
      Gear at the pull): the shared paperdoll frame titled with the player, the spec and the pull's
      rate, the selected slot's client tooltip in its centre, and beside it the worn list in the
      client's slot order, each row the item in its quality colour over "Head · Item level 66 ·
-     Crusader" (the log's own item level, then its enchant in green, named from the build's enchant
-     table, else "Enchanted"); a two-hander's off hand says so. Under the frame's minimum the frame's
-     list form carries those lines itself. The class's items file (the planner's) names the ids,
+     Crusader" (character/WornList: the log's own item level, then its enchant in green, named from
+     the build's enchant table, else "Enchanted"); a two-hander's off hand says so. Under the frame's
+     minimum the frame's list form carries those lines itself. The class's items file (the planner's) names the ids,
      fetched once; an id the build does not know is an unknown item with its slot word, never
      dropped. No gain. The set's item level is the section's meta (the log's own). -->
 <script lang="ts">
   import BisTooltipHost from '../BisTooltipHost.svelte';
   import GearDoll from '../character/GearDoll.svelte';
-  import ItemIcon from '../ui/ItemIcon.svelte';
-  import ItemRow from '../ui/ItemRow.svelte';
-  import Ruled from '../ui/Ruled.svelte';
+  import WornList from '../character/WornList.svelte';
   import { gearCopy } from '../../lib/gear/copy';
-  import { dollCellsFromSlots } from '../../lib/gear/doll-cells';
-  import { FRAME_SLOTS } from '../../lib/gear/slots';
-  import { FACT_SEPARATOR } from '../../lib/ui/primitives';
   import { slotsFromWorn } from '../../lib/gear/paperdoll-slots';
   import { loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
@@ -93,15 +88,6 @@
     }),
   );
   const loading = $derived(items === null && !failed);
-  /** The side list: every worn piece in the frame's order, and an off hand a two-hander covers. */
-  const worn = $derived.by(() => {
-    if (loading) return [];
-    const bySlot = new Map(dollCellsFromSlots(slots, 'report', classSlug).map((cell) => [cell.slot, cell]));
-    return FRAME_SLOTS.flatMap((slot) => {
-      const cell = bySlot.get(slot);
-      return cell?.item || cell?.coveredBy ? [cell] : [];
-    });
-  });
   const resolveItem = async (id: number) => {
     const { fetchItemTooltipModel } = await import('../../lib/items/lookup');
     return fetchItemTooltipModel(dataBuild, classSlug, id);
@@ -127,44 +113,17 @@
         testid="paperdoll"
       />
     </div>
-    {#if worn.length > 0}
-      <div class="gear-at-pull-list">
-        <Ruled edge="bottom" testid="gear-list-rows">
-          {#each worn as cell (cell.slot)}
-            {#snippet facts()}{cell.label}{#if cell.source}{FACT_SEPARATOR}{cell.source}{/if}{/snippet}
-            {#snippet enchant()}<span class="text-rarity-uncommon">{cell.enchant}</span>{/snippet}
-            {#if cell.item}<ItemRow
-                item={cell.item}
-                build={dataBuild}
-                sourceContent={facts}
-                detail={cell.enchant ? enchant : undefined}
-                unknown={cell.unknown}
-                iconSize={28}
-                bare
-                testid={`gear-list-row-${cell.slot}`}
-              />{:else if cell.coveredBy}
-              <!-- The off hand a two-hander covers: its icon greyed, as the frame and the client draw it. -->
-              <div class="gear-at-pull-covered" data-testid={`gear-list-row-${cell.slot}`}>
-                <span class="gear-at-pull-covered-icon"
-                  ><ItemIcon
-                    icon={cell.coveredBy.icon}
-                    quality={cell.coveredBy.quality}
-                    build={dataBuild}
-                    size={28}
-                  /></span
-                >
-                <span class="min-w-0">
-                  <span class="text-muted block text-[15px] leading-5">{cell.label}</span>
-                  <span class="text-muted block text-[13px] leading-[18px]"
-                    >{gearCopy.paperdoll.twoHanded}</span
-                  >
-                </span>
-              </div>
-            {/if}
-          {/each}
-        </Ruled>
-      </div>
-    {/if}
+    <div class="gear-at-pull-list">
+      <WornList
+        {slots}
+        mode="report"
+        build={dataBuild}
+        {classSlug}
+        {loading}
+        testid="gear-list-rows"
+        rowTestid="gear-list-row"
+      />
+    </div>
   </div>
 </div>
 <BisTooltipHost build={dataBuild} modelsElementId="report-gear-tooltip-models" resolve={resolveItem} />
@@ -185,15 +144,6 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
-  }
-  .gear-at-pull-covered {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    column-gap: 12px;
-    align-items: center;
-  }
-  .gear-at-pull-covered-icon {
-    filter: grayscale(1) brightness(0.55);
   }
   /* The frame beside its list once both fit; the frame's own list form says it all on a phone. */
   @container (min-width: 760px) {

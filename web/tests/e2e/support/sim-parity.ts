@@ -59,7 +59,8 @@ const HISTORY = [
   finished_at: row.created_at,
 }));
 
-async function stubSession(page: Page, serverSims: boolean): Promise<void> {
+/** A signed-in session (premium with `serverSims`, so the More settings sheet offers a server run). */
+export async function stubSession(page: Page, serverSims: boolean): Promise<void> {
   const port = process.env.E2E_PORT ?? '4321';
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', url: `http://localhost:${port}` }]);
   await page.route('**/v1/me', (route) =>
@@ -103,6 +104,13 @@ async function settleCachedMe(page: Page): Promise<void> {
   });
 }
 
+export function readFixtureResult(): string {
+  return readFileSync(
+    path.join(import.meta.dirname, '..', '..', '..', 'src', 'fixtures', 'sim', 'result-full.json'),
+    'utf8',
+  );
+}
+
 async function openFuryWarrior(page: Page): Promise<void> {
   await page.goto('/sim');
   await settleCachedMe(page);
@@ -124,11 +132,8 @@ async function openFuryWarrior(page: Page): Promise<void> {
   await expect(page.getByTestId('sim-gear-doll')).toBeVisible();
 }
 
-async function stubServerRun(page: Page): Promise<void> {
-  const result = readFileSync(
-    path.join(import.meta.dirname, '..', '..', '..', 'src', 'fixtures', 'sim', 'result-full.json'),
-    'utf8',
-  );
+/** The fixture's server run (src/fixtures/sim/result-full.json), or `result` in its place. */
+export async function stubServerRun(page: Page, result = readFixtureResult()): Promise<void> {
   await page.route('**/v1/sims/run', (route) => route.fulfill(envelope({ sim_id: SERVER_RUN_ID })));
   await page.route(`**/v1/sims/${SERVER_RUN_ID}/progress`, (route) =>
     route.fulfill(envelope({ state: 'done', iterations_done: 10_000 })),

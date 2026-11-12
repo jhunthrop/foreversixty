@@ -22,10 +22,12 @@ import re
 import sys
 from pathlib import Path
 
+from html import escape
+
 from mocklib import CLASS_COLOR
 from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, LanesLegend, Link, Meter, Notice,
                       Page, PageHeader, Plate, Row, RowGrid, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page, talent_ranks_from_strings, talent_tree_dicts,
-                      control_bar, crest_img, seg, sel, write, ItemTip, PaperdollFrame)
+                      control_bar, crest_img, seg, sel, write, ItemTip, PaperdollFrame, QCOL)
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA_ROOT = Path(os.environ.get('FS_DATA_ROOT', ROOT))
@@ -612,6 +614,26 @@ def rail_gear() -> list[dict]:
 DOLL_OPEN_ORDER = ['head', 'neck', 'shoulder', 'back', 'chest', 'shirt', 'tabard', 'wrist', 'main_hand', 'off_hand', 'ranged',
                    'hands', 'waist', 'legs', 'feet', 'finger1', 'finger2', 'trinket1', 'trinket2']
 QUALITY_NAME = {0: 'poor', 1: 'common', 2: 'uncommon', 3: 'rare', 4: 'epic', 5: 'legendary'}
+# The worn list's order (lib/gear/slots.ts FRAME_SLOTS: the left column, the right column, the weapons).
+WORN_ORDER = ['head', 'neck', 'shoulder', 'back', 'chest', 'shirt', 'tabard', 'wrist',
+              'hands', 'waist', 'legs', 'feet', 'finger1', 'finger2', 'trinket1', 'trinket2', 'main_hand', 'off_hand', 'ranged']
+
+
+def worn_rows(slots: list[dict]) -> str:
+    """The worn list beside the frame (character/WornList on ui/ItemRow `bare` in a Ruled): each piece in its quality colour
+    over "Head · Item level 61", the enchant green under it; hidden under 423 px, where the frame's list form says it."""
+    by = {s['slot']: s for s in slots}
+    rows = []
+    for n in WORN_ORDER:
+        s = by.get(n)
+        if s is None:
+            continue
+        slot_word = s['label'].partition(': ')[0]
+        enchant = f'<span class="src ench">{escape(s["enchant"])}</span>' if s.get('enchant') else ''
+        rows.append(f'<div class="gear-row"><span>{gicon(s["icon"], 28, s["quality"])}</span><span class="bd">'
+                    f'<span class="nm" style="color:{QCOL.get(s["quality"], QCOL[1])}">{escape(s["name"])}</span>'
+                    f'<span class="src">{escape(slot_word)} &middot; {escape(s["line2"])}</span>{enchant}</span></div>')
+    return f'<div class="gear-rows">{"".join(rows)}</div>'
 
 
 def doll(gear: list[dict] | None = None) -> str:
@@ -639,7 +661,14 @@ def doll(gear: list[dict] | None = None) -> str:
         centre = ItemTip(first['name'], QUALITY_NAME.get(first['quality'], 'common'),
                          [first['name'], first['line2']] + ([first['enchant']] if first.get('enchant') else []), [], '')
     frame = PaperdollFrame(slots, SPEC_LABEL, f"Level {CHAR['level']}", None, centre, 'Gear by slot', heading='h2', head=False, facts=True)
-    return f'<div style="width:100%;max-width:640px;margin:0 auto">{frame}</div>'
+    return f'<div style="width:100%;max-width:640px;margin:0 auto">{frame}</div>', worn_rows(slots)
+
+
+def gear_pair(gear: list[dict] | None = None, aside: str = '') -> str:
+    """SimGearSection's body: the frame beside its column (the run's stats, then the worn list) from a 760 px panel,
+    stacked under it below that; the frame centred alone under 760."""
+    frame, rows = doll(gear)
+    return f'<div class="gear-c"><div class="gear-grid"><div>{frame}</div><div class="gear-aside">{aside}{rows}</div></div></div>'
 
 
 def ilvl() -> float:
@@ -666,10 +695,9 @@ def gear_section(with_stats: bool = True) -> str:
                      (f"{fs['melee_haste_pct']:.0f}%", 'Haste from gear', '', '', 'sm')], cols=2)
     measured = (f'<p class="t-small">Missed in this run: {miss["sp"][0] / miss["sp"][1] * 100:.0f}% of specials '
                 f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% of white swings.</p>')
-    # SimGearSection: the frame beside its stats from a 760 px panel, centred alone; the link is the action in every state.
-    aside = f'<div class="gear-aside">{stats}{measured}</div>' if with_stats else ''
-    body = f'<div class="gear-c"><div class="gear-grid{" pair" if aside else ""}">{doll()}{aside}</div></div>'
-    return Section('Gear', body, Link('Upgrades on Best in slot &rsaquo;'))
+    # SimGearSection: the frame beside its stats and worn list; the link is the action in every state.
+    aside = f'<div class="gear-stats">{stats}{measured}</div>' if with_stats else ''
+    return Section('Gear', gear_pair(aside=aside), Link('Upgrades on Best in slot &rsaquo;'))
 
 
 def talents_section() -> str:
@@ -844,8 +872,13 @@ main{padding-bottom:80px}@media(min-width:1024px){main{padding-bottom:104px}}
 .two{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);padding-top:8px}@media(min-width:1024px){.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .layout-split .main>section>.figs{padding-top:12px}
 .tl-tools{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;min-height:56px;padding:10px 0;margin-top:12px}.tl-sw{display:inline-flex;gap:12px;align-items:center}.tl-tools .lg{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;font-size:13px;line-height:20px;color:var(--muted);list-style:none;margin:0 0 0 auto;padding:0}.tl-tools .lg li{display:inline-flex;align-items:center;gap:6px}.tl-tools .lg i{display:inline-block;border-radius:1px;background:var(--k)}.tl-brush{display:grid;grid-template-columns:200px minmax(0,1fr);height:44px;align-items:center}.tl-brush .tr{height:20px;border-radius:4px;background:#ffffff08}.tl-foot{padding-top:10px}
-.gear-c{container-type:inline-size}.gear-grid{display:grid;gap:20px}.gear-aside{display:flex;flex-direction:column;gap:8px;min-width:0}
-@container (min-width:760px){.gear-grid.pair{grid-template-columns:minmax(0,640px) minmax(240px,1fr);align-items:start}}
+.gear-c{container-type:inline-size}.gear-grid{display:grid;gap:20px}.gear-aside{display:flex;flex-direction:column;gap:16px;min-width:0}
+.gear-stats{display:flex;flex-direction:column;gap:8px}.gear-rows{display:flex;flex-direction:column}
+.gear-row{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;align-items:center;border-bottom:1px solid var(--line-soft)}
+.gear-row .bd{min-width:0}.gear-row .nm{display:block;font:700 15px/20px var(--font-body)}.gear-row .src{display:block;font:400 13px/18px var(--font-body);color:var(--muted)}
+.gear-row .src.ench{color:#1eff00}
+@container (min-width:760px){.gear-grid{grid-template-columns:minmax(0,640px) minmax(240px,1fr);align-items:start}}
+@container (max-width:422.98px){.gear-rows{display:none}}
 .empty-open{padding:12px 0;color:var(--muted);font-size:14px}
 .btn.is-off{opacity:.45;pointer-events:none}
 button.link{background:none;border:0;padding:0;cursor:pointer;font:600 14px/20px var(--font-body);color:var(--gold)}
@@ -930,7 +963,7 @@ def Ledger(main: str) -> str:
 # ---- 2. /sim, signed in, the header's character loaded, not run yet
 def landing_you() -> str:
     # Your sims under the talents, so the columns end together (SimPreRun); the rail is the rotation
-    main = Section('Gear', doll(rail_gear()), Link('Upgrades on Best in slot &rsaquo;')) + talents_section() + history_section()
+    main = Section('Gear', gear_pair(rail_gear()), Link('Upgrades on Best in slot &rsaquo;')) + talents_section() + history_section()
     return finish('Simulator', you_header(answer_none()) + run_bar() + Page('split', main, rotation_section(ran=False)), YOU)
 
 
@@ -956,7 +989,7 @@ def result_saved() -> str:
 
 # ---- 6. phone: the bar's choices open
 def bar_open() -> str:
-    main = Section('Gear', doll())
+    main = Section('Gear', gear_pair())
     return finish('Simulator, choices', you_header(answer_none()) + run_bar(open_m=True) + Page('split', main, history_section()), YOU)
 
 

@@ -5,12 +5,14 @@
 // the character lane's own captures). Not a test of behaviour. Built with
 // FOREVER_DATA=real so the sim doll carries a full set; run from web/ against a served copy of dist
 // (see the config). CAPTURE_ONLY=sim-gear (comma list) narrows the shots. sim-gear is a browser run
-// (this box's wasm carries no stats sheet); sim-result is the parity fixture's server run with one.
+// (this box's wasm carries no stats sheet); sim-result is the parity fixture's server run answering
+// for the same set, with one.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
-import { openSimState } from '../../e2e/support/sim-parity';
+import { openRunLine } from '../../e2e/support/sim-page';
+import { readFixtureResult, stubServerRun, stubSession } from '../../e2e/support/sim-parity';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.resolve(HERE, '../../../../design/reviews/2026-11-11-sim-doll/after');
@@ -82,10 +84,25 @@ async function openSimLanding(page: Page): Promise<void> {
   ).toBeVisible();
 }
 
-/** The parity spec's result state: the fixture's server run (src/fixtures/sim/result-full.json), whose
- *  stats sheet and measured misses sit beside the frame. */
+/** The same character after a server run: the parity fixture's result (its stats sheet and measured
+ *  misses) answering for this set, so every state wears the one set. */
 async function openSimResult(page: Page): Promise<void> {
-  await openSimState(page, 'result');
+  const result = JSON.parse(readFixtureResult()) as {
+    request: { character: { name: string; gear: unknown[] } };
+  };
+  result.request.character.name = 'Thandrel';
+  result.request.character.gear = SET.map(([slot, item_id, enchant]) => ({
+    slot,
+    item_id,
+    ...(enchant ? { enchant } : {}),
+  }));
+  await stubSession(page, true);
+  await stubServerRun(page, JSON.stringify(result));
+  await openSimLanding(page);
+  await openRunLine(page);
+  await page.getByTestId('sim-settings-more').click();
+  await page.getByTestId('sim-server-run').click();
+  await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result', { timeout: 30_000 });
   await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('sim-final-stats')).toBeVisible({ timeout: 30_000 });
 }

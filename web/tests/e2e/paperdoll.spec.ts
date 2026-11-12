@@ -50,6 +50,11 @@ test.describe('the sim card at 1280', () => {
     await expect(socket(page, 'off_hand')).toHaveAccessibleName(/Arcanite Reaper, two-handed$/);
     const head = socket(page, 'head');
     await expect(head).toHaveAccessibleName('Head: Lionheart Helm');
+    // Beside the frame, the worn list (character/WornList): each piece over its slot and item level,
+    // the off hand a two-hander covers saying so.
+    const rows = page.getByTestId('sim-gear-card').getByTestId('sim-gear-rows');
+    await expect(rows.getByTestId('sim-gear-row-head')).toContainText('Head · Item level 61');
+    await expect(rows.getByTestId('sim-gear-row-off_hand')).toContainText('Two-handed');
     // The frame opens on the first item: its client tooltip in the centre, with the binding and
     // armour lines, and the floating host leaves the frame alone (one tooltip on the page).
     const centre = doll(page).locator('[data-region="paperdoll-centre"]');
@@ -75,6 +80,8 @@ test.describe('the sim card on a 390 phone', () => {
     // Under the frame's 423 px minimum the frame gives way to the list, and its image is never fetched.
     await expect(doll(page).locator('.pdf-frame')).toBeHidden();
     await expect(slot(page, 'off_hand')).toContainText('Two-handed');
+    // The frame's list form says it all: the worn list beside the frame is hidden here.
+    await expect(page.getByTestId('sim-gear-rows')).toBeHidden();
     // loadSim's Run is a mouse click, and the card can land under where that mouse rests: its
     // hover would open the panel before the first tap. Park the mouse off the card first.
     await page.mouse.move(0, 0);
