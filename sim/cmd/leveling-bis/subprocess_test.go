@@ -92,7 +92,7 @@ func TestRunAllSpecsIsolatedRunsEveryWrittenSpec(t *testing.T) {
 	// (mage-fire is "draft", priest-shadow has no apl file) - see
 	// data_test.go's TestWrittenSpecs for the same fixture asserted
 	// directly.
-	err := runAllSpecsIsolated(script, 5*time.Second, repoRootFixture, "testbuild", t.TempDir(), defaultBandsFlag, 5, "")
+	err := runAllSpecsIsolated(script, 5*time.Second, repoRootFixture, "testbuild", t.TempDir(), nil, defaultBandsFlag, 5, "")
 	if err != nil {
 		t.Fatalf("runAllSpecsIsolated: %v", err)
 	}
@@ -120,7 +120,7 @@ func TestRunAllSpecsIsolatedOneFailureFailsTheRunButNotBeforeTryingEveryOne(t *t
 
 	t.Setenv("LBIS_FAKE_BEHAVIOR", "fail")
 	script := fakeLevelingBisScript(t)
-	err := runAllSpecsIsolated(script, 5*time.Second, dir, "testbuild", t.TempDir(), defaultBandsFlag, 5, "")
+	err := runAllSpecsIsolated(script, 5*time.Second, dir, "testbuild", t.TempDir(), nil, defaultBandsFlag, 5, "")
 	if err == nil {
 		t.Fatal("runAllSpecsIsolated with every subprocess failing: want an error, got nil")
 	}

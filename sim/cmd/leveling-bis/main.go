@@ -13,6 +13,7 @@
 //
 //	go run ./sim/cmd/leveling-bis -spec hunter-marksmanship -bands 20,30,40,60
 //	go run ./sim/cmd/leveling-bis -all
+//	go run ./sim/cmd/leveling-bis -all -specs priest-discipline,priest-holy,priest-shadow
 //
 // See docs/superpowers/specs/2026-09-28-leveling-bis-design.md for the
 // design this implements and this lane's own brief (repeated in the
@@ -69,6 +70,7 @@ func run(execPath string, args []string) error {
 	repoRoot := fs.String("repo-root", ".", "the site repository root (data/curated/specs.json must be under it)")
 	spec := fs.String("spec", "hunter-marksmanship", "the spec to rank (data/curated/specs.json's spec slug); ignored when -all is set")
 	all := fs.Bool("all", false, "rank every spec in data/curated/specs.json with a written rotation (data/curated/apl/<spec>.json state == \"written\"), one output file per spec - what make bis and the nightly workflow run")
+	specsFlag := fs.String("specs", "", "under -all: rank only these written specs (comma-separated slugs, one of bis.yml's matrix legs); every name must have a written rotation")
 	bandsFlag := fs.String("bands", defaultBandsFlag, "comma-separated level bands")
 	build := fs.String("build", "", "data build to read from data/builds/<build>; defaults to web/src/data/active-build.json's build")
 	weightsIterations := fs.Int("weights-iterations", 100, "iterations PER DIRECTION the weights sweep runs (multiplied by the engine's own WeightsIterationsFactor); the brief allows reducing this to stay under the time budget")
@@ -84,6 +86,10 @@ func run(execPath string, args []string) error {
 
 	if *memProfile != "" && !*all {
 		defer writeHeapProfile(*memProfile)
+	}
+	only := parseSpecsFlag(*specsFlag)
+	if len(only) > 0 && !*all {
+		return fmt.Errorf("-specs narrows -all; a single spec is -spec %s", only[0])
 	}
 
 	if _, err := os.Stat(filepath.Join(*repoRoot, "data", "curated", "specs.json")); err != nil {
@@ -139,7 +145,7 @@ func run(execPath string, args []string) error {
 		}, resolveTalentLayout)
 	}
 	if *all {
-		return runAllSpecsIsolated(execPath, specTimeout, *repoRoot, activeBuild, outDir, *bandsFlag, *weightsIterations, *memProfile)
+		return runAllSpecsIsolated(execPath, specTimeout, *repoRoot, activeBuild, outDir, only, *bandsFlag, *weightsIterations, *memProfile)
 	}
 	return runSpec(realEngine{}, *repoRoot, buildDir, activeBuild, outDir, *spec, bands, *weightsIterations, resolveTalentLayout)
 }
@@ -156,19 +162,20 @@ func run(execPath string, args []string) error {
 // every spec's picks. Forty-five minutes fits them while the -all run still
 // ends inside bis.yml's 300-minute job (about 142 min for the other 25 specs).
 // Eighty since 2026-11-05: the re-admitted items and raid enchants put the
-// slowest healer near the old cap, and a run now ranks a shard
-// (data/curated/bis-shard.json, shard.go), so the job budget is per shard.
+// slowest healer near the old cap. Since 2026-11-12 bis.yml ranks one class
+// per matrix leg (-specs), so the job budget is per class, not per night.
 const specTimeout = 80 * time.Minute
 
-// runAllSpecsIsolated runs writtenSpecs, one subprocess per spec, and
-// reports which (if any) failed or hung - see run()'s own doc for why
-// this is a subprocess loop and not an in-process one. execPath and
-// timeout are run()'s own explicit dependencies threaded one level
-// further (execPath is normally os.Args[0]; timeout is normally
-// specTimeout) so a test can point both at a fast, scripted stand-in
-// process instead of re-execing the real, slow ranking binary.
-func runAllSpecsIsolated(execPath string, timeout time.Duration, repoRoot, activeBuild, outDir, bandsFlag string, weightsIterations int, memProfile string) error {
-	specs, err := specsToRank(repoRoot)
+// runAllSpecsIsolated runs specsToRank's list (the written specs, or the
+// ones only names), one subprocess per spec, and reports which (if any)
+// failed or hung - see run()'s own doc for why this is a subprocess loop
+// and not an in-process one. execPath and timeout are run()'s own
+// explicit dependencies threaded one level further (execPath is normally
+// os.Args[0]; timeout is normally specTimeout) so a test can point both
+// at a fast, scripted stand-in process instead of re-execing the real,
+// slow ranking binary.
+func runAllSpecsIsolated(execPath string, timeout time.Duration, repoRoot, activeBuild, outDir string, only []string, bandsFlag string, weightsIterations int, memProfile string) error {
+	specs, err := specsToRank(repoRoot, only)
 	if err != nil {
 		return err
 	}

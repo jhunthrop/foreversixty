@@ -12,6 +12,7 @@
 # tools/tests/test_land.sh (the integrator's land/** landing command and tools/land_workflows.py),
 # tools/tests/test_prod_smoke.sh (smoke.yml's launch-mode production smoke),
 # tools/tests/test_go_test_shard.sh (api.yml's go test shards),
+# tools/tests/test_bis_matrix.sh (bis.yml's rank matrix, one leg per class),
 # tools/tests/test_apl_check.py (apl-check and apl-sync ignore the curated-only notes),
 # tools/tests/test_revert_check.py (the merge revert check),
 # tools/tests/test_land_workflows.py (a disabled_manually workflow never gates a landing) and
@@ -91,6 +92,9 @@ jobs:
       - name: the api test shards
         if: vars.LAUNCH_MODE != 'true'
         run: bash tools/tests/test_go_test_shard.sh
+      - name: the bis rank matrix
+        if: vars.LAUNCH_MODE != 'true'
+        run: bash tools/tests/test_bis_matrix.sh
       - name: apl-check and apl-sync, notes curated-only
         if: vars.LAUNCH_MODE != 'true'
         run: python3 -m unittest discover -s tools/tests -p 'test_apl*.py'

@@ -158,6 +158,26 @@ By hand: `gh workflow run data.yml -f product=<key> -f build=<build>` fetches an
 `gh workflow run bis.yml -f force=true` ranks whatever main holds now. A workflow_run or push
 start of bis checks out main's head at start time, not the event's sha.
 
+bis's shape (since 2026-11-12, when a full ranking outgrew one job): a `prepare` job
+checks out main's head, commits the wowhead crawl, reads the engine verdict and the inputs hash,
+and prints the matrix (`tools/bis-matrix.sh`: one `rank <class>` leg per class, every spec with a
+written rotation); each leg runs `make bis` with `-all -specs <its specs>` from the sha prepare
+pushed and uploads its `<spec>.json` and `.md` as the artifact `bis-picks-<class>`; one `commit`
+job downloads every leg's picks over its checkout, runs the sanity tests, the dps-per-point
+re-measure and the addon data, and pushes the one `chore(bis)` commit, then dispatches web and
+api. The wall clock is the priest leg (Holy and Discipline, about 80 minutes on a fast host, 120
+on a slow one) plus a few minutes at each end. A leg that does not finish green fails the
+commit job by name and nothing lands; the green legs' picks stay 14 days
+(`gh run download <run> -p 'bis-picks-*'`). A spec that fails inside a green leg keeps its
+previous file, as before. A ranking stalled on the engine for a second night is the red
+`stalled` job.
+
+To prove a bis.yml change without a nightly: push it to a lane branch and dispatch two quick
+specs there, `gh workflow run bis.yml --ref <branch> -f force=true -f specs=rogue-assassination,hunter-marksmanship`.
+Off main the run pushes and deploys nothing: the crawl and the picks commit are built and
+printed. On main, `-f specs=...` ranks only those specs and the commit's `Inputs:` trailer is
+marked partial, so the next full run still ranks everything.
+
 The addon tag stays a hand step. bis commits the new picks into `addon/ForeverSixty/Data.lua`
 on main, but players get them only with the next `addon-v<version>` release: a
 `chore(addon): <version>` commit (TOC version and changelog heading) and the tag, as
