@@ -140,8 +140,8 @@ If you would rather not wait, reset your talents at your trainer at 40: all 31 p
 Your mana runs out before your health does, so keep cheaper ranks on your bars:
 
 - **Shadow Word: Pain:** rank 3 from 26 through your thirties, then the top rank. At 28, when Mind Flay arrives and your mana runs dry, cast rank 2 for a level or two, since the cheap rank stays up all fight (a Human or Undead goes back to rank 3 at 29).
-- **Devouring Plague:** rank 1 from 30 to 43 (a Human casts rank 2 at 36, a Troll at 37), then rank 2 from 44 to 59 (a Human casts rank 3 at 49, and drops back to rank 1 at 50 and 51).
-- **Mind Blast:** rank 4 stays on your bars when rank 5 arrives at 34, for a level or two. When rank 6 arrives at 40, keep rank 4 or 5 for the next four levels instead, whichever your race does best with (a Gnome goes to the top rank at 43), then go back to the top rank. At 50 and 51 a Dwarf, Night Elf or Troll is better off on rank 5 again, a Dwarf through 52.
-- **Shadow Word: Death:** rank 2 from 48 through your fifties; a Human, Dwarf or Night Elf keeps rank 1 at 40, the level rank 2 arrives.
+- **Devouring Plague:** rank 1 from 30 to 43 (a Human casts rank 2 at 36, a Troll at 37), then rank 2 from 44 to 58 (a Human casts rank 3 at 49; at 51 a Dwarf, Night Elf or Troll casts rank 3), rank 3 at 59, and at 60 a Troll stays on rank 3 while everyone else takes the top rank.
+- **Mind Blast:** rank 4 stays on your bars when rank 5 arrives at 34, for a level or two (a Gnome takes rank 5 at 35). When rank 6 arrives at 40, cast rank 5 at 40, then rank 4 or 5 through 43, whichever your race does best with (a Gnome goes to the top rank at 43), then go back to the top rank. At 50 a Dwarf or Night Elf is better off on rank 6.
+- **Shadow Word: Death:** rank 2 from 48 through your fifties; a Dwarf or Night Elf keeps rank 1 at 40, the level rank 2 arrives.
 
 Power Word: Shield still works in Shadowform, so shield before the pull and let Vampiric Embrace and Devouring Plague top you up. Leave the form only for a heal you really need. Solo, cast Shadow Word: Death only when it will kill or you are well above half health: the backlash is real.

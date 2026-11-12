@@ -52,7 +52,9 @@ func TestRound23ShadowMindBlastAndDeathRankRows(t *testing.T) {
 		{"Mind Blast Undead at 35", "undead", 35, mb4, mb5},
 		{"Mind Blast Human at 35 is the top rank", "human", 35, mb5, mb4},
 		{"Mind Blast Night Elf at 36", "night-elf", 36, mb4, mb5},
-		{"Death Human at 40", "human", 40, swd1, swd2},
+		// Sim-accuracy 2026-11-12 (shadow): on the wand's first-shot windup a Human casts rank 2 at 40.
+		{"Death Human at 40 is the top rank", "human", 40, swd2, swd1},
+		{"Death Dwarf at 40", "dwarf", 40, swd1, swd2},
 		{"Death Gnome at 40 is the top rank", "gnome", 40, swd2, swd1},
 		{"Death Night Elf at 41", "night-elf", 41, swd1, swd2},
 		{"Death Gnome at 43", "gnome", 43, swd1, swd2},

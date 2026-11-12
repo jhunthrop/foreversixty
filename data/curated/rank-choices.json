@@ -2192,11 +2192,10 @@
             "to_level": 35,
             "rank": 4,
             "races": [
-              "gnome",
               "troll",
               "undead"
             ],
-            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). At 35 a Gnome (+0.9%), Troll (+0.5%) and Undead (+0.4%) keep rank 4; a Human gains with rank 5 and a Dwarf or Night Elf ties."
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). A Gnome now casts rank 5 at 35 (+0.4% at both seeds); a Troll and an Undead keep rank 4."
           },
           {
             "from_level": 36,
@@ -2211,24 +2210,8 @@
           {
             "from_level": 40,
             "to_level": 40,
-            "rank": 4,
-            "races": [
-              "dwarf",
-              "night-elf",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). Rank 5 (learned at 34) against rank 4 and the top rank 6 at 40 to 43: rank 5 wins at 40 for a Human, Gnome or Undead (+0.3% to +1.3%), at 41 for a Dwarf, Gnome or Human (+0.6% to +2.4%; an Undead +0.9% on rank 6) and at 42 for a Gnome or Undead (+0.2% to +1.0%). Rank 4 holds elsewhere (a Gnome takes rank 6 at 43, rank 5 -0.8%)."
-          },
-          {
-            "from_level": 40,
-            "to_level": 40,
             "rank": 5,
-            "races": [
-              "human",
-              "gnome",
-              "undead"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). Rank 5 (learned at 34) against rank 4 and the top rank 6 at 40 to 43: rank 5 wins at 40 for a Human, Gnome or Undead (+0.3% to +1.3%), at 41 for a Dwarf, Gnome or Human (+0.6% to +2.4%; an Undead +0.9% on rank 6) and at 42 for a Gnome or Undead (+0.2% to +1.0%). Rank 4 holds elsewhere (a Gnome takes rank 6 at 43, rank 5 -0.8%)."
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). Rank 5 for every race at 40: a Dwarf (+0.4%), Night Elf (+0.4%) and Troll (+0.6%) move up from rank 4, and a Human, Gnome and Undead keep it over rank 6 (ties within error)."
           },
           {
             "from_level": 41,
@@ -2289,51 +2272,12 @@
           {
             "from_level": 50,
             "to_level": 50,
-            "rank": 5,
-            "races": [
-              "dwarf",
-              "night-elf",
-              "troll"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). At 50 and 51 a Dwarf, Night Elf or Troll casts rank 5 (+0.3% to +0.8% over rank 7), an Undead rank 6 at 50 and rank 7 at 51 (+0.3% over rank 6); a Human and Gnome keep rank 7. At 52, when rank 8 arrives, a Dwarf keeps rank 5 (+0.2% to +0.3%); at 53 a Human casts rank 6 (+0.3% to +0.4%). Rank 5 loses 2% to 3% for a Dwarf at 47 to 49."
-          },
-          {
-            "from_level": 50,
-            "to_level": 50,
             "rank": 6,
             "races": [
-              "undead"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). At 50 and 51 a Dwarf, Night Elf or Troll casts rank 5 (+0.3% to +0.8% over rank 7), an Undead rank 6 at 50 and rank 7 at 51 (+0.3% over rank 6); a Human and Gnome keep rank 7. At 52, when rank 8 arrives, a Dwarf keeps rank 5 (+0.2% to +0.3%); at 53 a Human casts rank 6 (+0.3% to +0.4%). Rank 5 loses 2% to 3% for a Dwarf at 47 to 49."
-          },
-          {
-            "from_level": 51,
-            "to_level": 51,
-            "rank": 5,
-            "races": [
               "dwarf",
-              "night-elf",
-              "troll"
+              "night-elf"
             ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). At 50 and 51 a Dwarf, Night Elf or Troll casts rank 5 (+0.3% to +0.8% over rank 7), an Undead rank 6 at 50 and rank 7 at 51 (+0.3% over rank 6); a Human and Gnome keep rank 7. At 52, when rank 8 arrives, a Dwarf keeps rank 5 (+0.2% to +0.3%); at 53 a Human casts rank 6 (+0.3% to +0.4%). Rank 5 loses 2% to 3% for a Dwarf at 47 to 49."
-          },
-          {
-            "from_level": 52,
-            "to_level": 52,
-            "rank": 5,
-            "races": [
-              "dwarf"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). At 50 and 51 a Dwarf, Night Elf or Troll casts rank 5 (+0.3% to +0.8% over rank 7), an Undead rank 6 at 50 and rank 7 at 51 (+0.3% over rank 6); a Human and Gnome keep rank 7. At 52, when rank 8 arrives, a Dwarf keeps rank 5 (+0.2% to +0.3%); at 53 a Human casts rank 6 (+0.3% to +0.4%). Rank 5 loses 2% to 3% for a Dwarf at 47 to 49."
-          },
-          {
-            "from_level": 53,
-            "to_level": 53,
-            "rank": 6,
-            "races": [
-              "human"
-            ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). At 50 and 51 a Dwarf, Night Elf or Troll casts rank 5 (+0.3% to +0.8% over rank 7), an Undead rank 6 at 50 and rank 7 at 51 (+0.3% over rank 6); a Human and Gnome keep rank 7. At 52, when rank 8 arrives, a Dwarf keeps rank 5 (+0.2% to +0.3%); at 53 a Human casts rank 6 (+0.3% to +0.4%). Rank 5 loses 2% to 3% for a Dwarf at 47 to 49."
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). At 50 a Dwarf (+0.7%) and a Night Elf (+0.7%) move from rank 5 to rank 6, which also beats rank 7 (+0.2%); a Troll goes to the top rank (+0.6%)."
           }
         ]
       },
@@ -2347,10 +2291,9 @@
             "rank": 1,
             "races": [
               "gnome",
-              "night-elf",
-              "troll"
+              "night-elf"
             ],
-            "note": "Sim-accuracy round 24, re-judged on the talents the player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on a gain above 0.15% at both seeds, a race key only where the races' best ranks differ beyond error). Rank 1 at 28 for a Gnome, Night Elf or Troll and at 29 for a Gnome, Night Elf or Dwarf; at 29 a Troll casts rank 2 (+0.3% to +0.4%)."
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). A Troll now casts rank 2 at 28 (+0.5% at both seeds); a Gnome and a Night Elf keep rank 1."
           },
           {
             "from_level": 29,
@@ -2458,43 +2401,52 @@
           },
           {
             "from_level": 50,
-            "to_level": 51,
-            "rank": 1,
-            "races": [
-              "human"
-            ],
-            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). A Human with rank 1 and the top Mind Blast beats rank 2 by +0.9% at 50 and +0.8% at 51, both seeds, and every other pairing (rank 6 Mind Blast with rank 1 +0.5% / +0.7%). Rank 2 wins again from 52 (+2.5%)."
+            "to_level": 50,
+            "rank": 2,
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). Rank 2 for every race at 50: a Human moves up from rank 1 (+0.3%)."
           },
           {
-            "from_level": 50,
+            "from_level": 51,
             "to_level": 51,
             "rank": 2,
             "races": [
+              "human",
               "gnome",
+              "undead"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). A Human moves from rank 1 to rank 2 at 51 (+0.5%); a Gnome and an Undead keep rank 2."
+          },
+          {
+            "from_level": 51,
+            "to_level": 51,
+            "rank": 3,
+            "races": [
               "dwarf",
               "night-elf",
-              "undead",
               "troll"
             ],
-            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). Judged jointly with Mind Blast (top rank or rank 6) and Shadow Word: Death rank 2. Rank 2 holds for a Gnome (+1.2% / +1.0% over rank 1 at 50 / 51), Troll (+1.7% / +1.4%), Dwarf (+0.6% / +0.2%) and Night Elf (+0.5% at 50; -0.2% at 51, within error); an Undead ties."
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). A Dwarf (+0.4%), Night Elf (+0.4%) and Troll (+0.2%) cast rank 3 at 51; rank 4 trails both."
           },
           {
             "from_level": 52,
-            "to_level": 59,
+            "to_level": 58,
             "rank": 2,
             "note": "Sim-accuracy round 16 wave 2 (MaxLevel + 12 rule, level by level, 10000 iterations, seeds 1 and 50001): rank 1 (learned at 20) loses its bonus from 38, and from 52 rank 2 wins on both factions: horde 251.5 against 247.2 at 52, 256.2 against 252.0 at 56; alliance 223.4 against 217.5 at 52, 228.0 against 223.8 at 56. Rank 3 ties rank 2 at 59."
           },
           {
+            "from_level": 59,
+            "to_level": 59,
+            "rank": 3,
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). Rank 3 at 59 for a Human (+0.5%) and an Undead (+0.9%); the top rank trails it."
+          },
+          {
             "from_level": 60,
             "to_level": 60,
-            "rank": 2,
-            "preset": "bare",
+            "rank": 3,
             "races": [
-              "dwarf",
-              "night-elf",
               "troll"
             ],
-            "note": "Rank 2 at bare 60: Dwarf +1.0%, Night Elf +1.0%, Troll +1.1% at seeds 1 and 50001 (round-14 data.md). A Human (-0.3%) and a Gnome (-0.2%) lose with it since Shadow keeps Vampiric Embrace up, and an Undead loses 4.6% (Dark Sacrifice pays for the top rank); they cast the default (round-13 ranks.md, round-14 data.md)."
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). A Troll casts rank 3 at bare 60 (+1.2% over rank 2, +0.7% over the top rank); a Dwarf and a Night Elf go to the top rank (+3.6%)."
           }
         ]
       },
@@ -2507,11 +2459,10 @@
             "to_level": 40,
             "rank": 1,
             "races": [
-              "human",
               "dwarf",
               "night-elf"
             ],
-            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). Rank 2 arrives at 40; rank 1 beats it there for a Human (+1.0% to +1.2%), Dwarf (+0.3% to +0.4%) and Night Elf (+0.2% to +0.3%). A Gnome gains with rank 2, a Troll or Undead ties."
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). A Human now casts rank 2 at 40 (+0.3% at both seeds); a Dwarf and a Night Elf keep rank 1 (a Night Elf within error)."
           },
           {
             "from_level": 41,

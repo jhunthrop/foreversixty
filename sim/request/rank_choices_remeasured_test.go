@@ -54,7 +54,8 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned (10945):
 		// ranks 2 and 3 keep 15% and 45% of spell power there, and the rows lost 3.3%. Round 19:
 		// an Undead casts rank 6 (8106, whole bonus) at 50 and 51.
-		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 8106, 8103},
+		// Sim-accuracy 2026-11-12 (shadow): on the wand's first-shot windup an Undead casts the top rank at 50.
+		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 10945, 8106},
 		{"Gnome Mind Blast at 50", "priest-shadow", "priest", BarePreset, "gnome", 50, 10945, 8102},
 		{"Undead Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "undead", 60, 19280, 19276},
 		{"Gnome Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, "gnome", 60, 19280, 19276},
@@ -111,11 +112,13 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		// never beats; a Gnome casts the top rank, 6 (8106). Re-judged level by level at
 		// sim-accuracy round 18. Round 24, on the talents at 40: a Gnome casts rank 5 (8105).
 		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8105, 8106},
-		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8104, 8103},
-		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8104, 8103},
+		// Sim-accuracy 2026-11-12 (shadow): on the wand's first-shot windup a Dwarf and a Night Elf cast rank 5 (8105) at 40.
+		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8105, 8104},
+		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8105, 8104},
 		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned for every race.
 		// Round 24: a Night Elf casts rank 5 (8105) at 50 and 51.
-		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 8105, 10945},
+		// Sim-accuracy 2026-11-12 (shadow): a Night Elf casts rank 6 (8106) at 50, ahead of rank 5 and the top rank.
+		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 8106, 10945},
 		{"Human Mind Blast at 50", "priest-shadow", "priest", BarePreset, "human", 50, 10945, 8103},
 		// Devouring Plague at 50: rank 2 (19276) for every race since sim-accuracy round 18
 		// (rank 1 for most races until then).
