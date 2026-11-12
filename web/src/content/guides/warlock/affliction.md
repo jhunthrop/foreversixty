@@ -43,13 +43,13 @@ sources:
 
 ## Talents and builds
 
-The leveling build carries you on Soul Siphon and Wrack while you quest, fills Malevolence and takes Nightfall once Wrack is yours, and spends its last points on Bane and Aftermath for a faster, harder Immolate. The raid build goes to 35 points in Affliction for all five points of Malevolence, Nightfall, Soul Siphon and Wrack, sacrifices the Imp through Demonic Sacrifice, and spends its Destruction points on Improved Shadow Bolt, so a Nightfall bolt that crits sets up your Wrack and DoTs.
+The leveling build carries you on Soul Siphon and Wrack while you quest, fills Malevolence and takes Nightfall once Wrack is yours, and from 47 spends its points on Bane and Aftermath for a faster, harder Immolate. The raid build goes to 35 points in Affliction for all five points of Malevolence, Nightfall, Soul Siphon and Wrack, sacrifices the Imp through Demonic Sacrifice, and spends its Destruction points on Improved Shadow Bolt, so a Nightfall bolt that crits sets up your Wrack and DoTs.
 
 - **Suppression** (5 points): 5% hit on every spell and 20% less threat. Every warlock build takes all five.
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
 - **Amplify Curse** (1 point): no global cooldown, a 3 minute cooldown and 30 seconds to use it. Your next Bane of Agony or Curse of Weakness is 50% stronger, or your next Curse of Exhaustion 20%. In a raid it goes on your next Bane of Agony refresh once it is off cooldown; never clip a running Agony for it.
 - **Pandemic** (3 points): Corruption, both banes, Siphon Life, the drains and Wrack crit for double the usual bonus.
-- **Improved Bane of Agony** (2 points): 10% more on the Agony you keep up all fight. The leveling build takes it at 42 and 43, right after Wrack.
+- **Improved Bane of Agony** (2 points): 10% more on the Agony you keep up all fight. The leveling build takes it at 42 and 43, after Wrack.
 - **Malevolence** (5 points): 1% crit a point on your Shadow spells, DoT ticks and Wrack included, and Pandemic doubles the bonus on those. The leveling build takes two points at 26 and 27 and the last three at 44 to 46.
 - **Nightfall** (2 points, at 43 in the raid build and 52 to 53 while leveling): Corruption and Wrack ticks have a 4% chance to give you a Shadow Trance, which makes your next Shadow Bolt instant, though it still costs full mana. Cast it between two Wracks.
 - **Shadow Mastery** (5 points): 10% more Shadow damage on everything you cast.
@@ -59,7 +59,7 @@ The leveling build carries you on Soul Siphon and Wrack while you quest, fills M
 - **Improved Shadow Bolt** (5 points, raid): each Shadow Bolt crit makes the boss take 20% more Shadow damage from you for 12 seconds, Wrack and your DoTs included.
 - **Bane** and **Aftermath** (10 points, leveling): Immolate casts in 1.5 seconds and its first hit deals 50% more. You keep Immolate up while you level, and nothing left in the Affliction tree pays more for those points once Wrack is yours.
 
-The raid build drops Soul Harvest, Improved Life Tap, Bane, Aftermath and the two points in Unholy Power, and keeps Grim Reach for range. In Demonology it takes Demonic Embrace and Fel Vitality on the way to Demonic Sacrifice, and Demonic Aegis for Demon Armor. With the Imp gone, Immolate is a slow Fire cast that Burning Shadow does nothing for, so the build skips Bane and Aftermath and drops Immolate from the rotation. Neither build takes Improved Drains: it no longer reaches Wrack, and neither rotation channels a drain.
+The raid build drops Soul Harvest, Improved Life Tap, Bane, Aftermath and the two points in Unholy Power, and keeps Grim Reach for range. In Demonology it takes Demonic Embrace and Fel Vitality on the way to Demonic Sacrifice, and Demonic Aegis for Demon Armor. With the Imp gone, Immolate is a slow Fire cast that Burning Shadow does nothing for, so the build skips Bane and Aftermath and drops Immolate from the rotation. Neither build takes Improved Drains: it does nothing for Wrack, and Wrack replaces Drain Life from 40.
 
 ## Rotation and priority
 
@@ -67,7 +67,7 @@ The raid build drops Soul Harvest, Improved Life Tap, Bane, Aftermath and the tw
 
 **Curses.** Curse of the Elements goes up first if you hold it, since every spell the raid casts hits harder from that global on. When another warlock holds it, your curse slot is free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid (505 armor), Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard. Amplify Curse also strengthens Curse of Weakness and goes to whichever of the two you cast first, so if you carry Weakness, press Amplify Curse on your Bane of Agony and cast Weakness after it.
 
-**DoTs.** Keep Corruption, Siphon Life and Bane of Agony up all fight, even at 60: Bane of Doom gets nothing from Wrack or Soul Siphon, so Agony stays your bane. From 40, each Wrack burns through about 12 seconds of those three. Check them before every channel and recast any with under 3 seconds left; one with a little more will lapse in the channel's last seconds, and you refresh it right after. Otherwise never clip them: a recast throws away whatever was left on the old one. Immolate, while you level without the sacrifice, is the one you recast early.
+**DoTs.** Keep Corruption, Siphon Life and Bane of Agony up all fight, even at 60: Bane of Doom gets nothing from Wrack or Soul Siphon, so Agony stays your bane. From 40, each Wrack burns through about 12 seconds of those three. Check them before every channel and recast any with 3 seconds or less left; one with a little more lapses partway through the channel, since the channel burns 12 seconds of its clock, and you refresh it right after. Otherwise never clip them: a recast throws away whatever was left on the old one. Immolate, while you level without the sacrifice, is the one you recast early.
 
 **Nightfall.** When a Shadow Trance comes up mid-channel, let the current Wrack finish, then cast the instant Shadow Bolt before the next one.
 
@@ -115,9 +115,9 @@ Wands do most of your killing before 20: a Lesser Magic Wand at 5 and a Greater 
 
 ### Levels 20 to 60
 
-Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit. Drain Life while the DoTs run, and wand the mob down when the DoTs are enough.
+Affliction is the easiest warlock to level. Put Corruption, Immolate and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit. Drain Life while the DoTs run, and wand the mob down when the DoTs are enough.
 
-From 22, press Amplify Curse before every Bane of Agony as soon as it is ready. From 40, channel Wrack where you used to Drain Life: with Soul Siphon full, Corruption, Siphon Life and Bane of Agony on the target add 36% to both, Wrack makes those three tick twice as fast, and it costs far less mana than the Shadow Bolts it replaces.
+From 22, press Amplify Curse on your Bane of Agony whenever it is ready. From 40, channel Wrack where you used to Drain Life: with Soul Siphon full, Corruption, Siphon Life and Bane of Agony on the target add 36% to both, Wrack makes those three tick twice as fast, and it costs far less mana than the Shadow Bolts it replaces.
 
 Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards; from 34, Soul Harvest turns each of those kills into mana regeneration, so you drink less.
 
@@ -126,9 +126,12 @@ Talents after Improved Corruption:
 - **22:** Amplify Curse.
 - **23 to 25:** Pandemic.
 - **26 and 27:** Malevolence.
-- **30:** Siphon Life, with Grim Reach paying the row.
+- **28 and 29:** Grim Reach, paying the row for Siphon Life.
+- **30:** Siphon Life.
 - **31 to 33:** Soul Siphon.
-- **39:** Shadow Mastery full, ready for Wrack at 40.
+- **34:** the first point of Soul Harvest.
+- **35 to 39:** Shadow Mastery.
+- **40:** Wrack.
 - **41:** the second point of Soul Harvest.
 - **42 and 43:** Improved Bane of Agony.
 - **44 to 46:** the last three points of Malevolence.

@@ -10,7 +10,7 @@ sources:
   - sim/request/raid-consumes.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
-reviewed: wow-player, 2026-10-28
+reviewed: wow-player, 2026-11-12
 ---
 
 ## Who they are
@@ -24,16 +24,16 @@ This is the best Affliction Warlock on Forever. Affliction keeps Corruption, Sip
 - Demonic Sacrifice in the raid build, from fifty-five: summon the Imp and sacrifice it before the pull for Burning Shadow. Then summon nothing, since any demon ends it.
 - Demon Armor on from twenty before the pull, with a Healthstone in your bag and Life Tap to full.
 - Curse of the Elements from twenty when it is not already on the target.
-- Corruption whenever it has fallen off; from forty, also before a Wrack once it has under three seconds left.
+- Corruption whenever it has fallen off; from forty, also before a Wrack once it has three seconds or less left.
 - Amplify Curse from twenty-two, or twenty in the raid build, on your next Bane of Agony refresh once it is ready. Never clip a running Agony for it.
-- Bane of Agony all fight, at sixty too: Wrack speeds it up and Soul Siphon counts it, and Bane of Doom gets neither. From forty, recast it before a Wrack once it has under three seconds left.
-- Siphon Life from thirty whenever it has fallen off; from forty, also before a Wrack once it has under three seconds left.
+- Bane of Agony all fight, at sixty too: Wrack speeds it up and Soul Siphon counts it, and Bane of Doom gets neither. From forty, recast it before a Wrack once it has three seconds or less left.
+- Siphon Life from thirty whenever it has fallen off; from forty, also before a Wrack once it has three seconds or less left.
 - Immolate while you level, with about three seconds left, so it lands a moment before the old one ends. The fresh hit is worth the tick you give up. The raid build sacrifices the Imp and drops it.
-- Shadow Bolt the moment Nightfall makes it instant with a Shadow Trance, from forty-three in the raid build and fifty-two while leveling. Let the Wrack you are channelling finish, then cast it before the next one. At sixty its crits put up Improved Shadow Bolt.
+- Shadow Bolt the moment Nightfall makes it instant with a Shadow Trance, from forty-three in the raid build and fifty-two while leveling. Let the Wrack you are channelling finish, then cast it before the next one. In the raid build at sixty its crits put up Improved Shadow Bolt.
 - Wrack from forty with your DoTs up. Before forty, Shadow Bolt fills instead.
 - Life Tap keeps you casting once mana runs low.
 - Curse of Recklessness, Tongues or Weakness only if your raid leader asks. That is only when another warlock holds Curse of the Elements.
-- Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
+- Soul Shards: each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
 - In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
 - Rain of Fire for trash packs that stay put.
 
@@ -56,7 +56,7 @@ This is the best Affliction Warlock on Forever. Affliction keeps Corruption, Sip
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
-- drill.preparation: Before every boss, check a flask from fifty, food from thirty-five, a weapon enchant from forty-five and a combat potion from forty-nine on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check a flask from fifty, food from forty-five, a weapon enchant from forty-five and a combat potion from forty-nine on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On trash pulls, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 
