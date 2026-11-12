@@ -25,7 +25,7 @@ import java.time.Instant
 import java.time.ZoneOffset
 
 /** A data source answering from the contract fixtures, with switches for offline and errors. */
-private class FakeBisSource(
+internal class FakeBisSource(
     var bis: ApiResult<CachedFile<BisFile>>,
     var character: AccountCharacter?,
 ) : BisDataSource {
@@ -45,7 +45,7 @@ private class FakeBisSource(
     override suspend fun keyDates(): List<KeyDate> = BisTestData.fixture("cdn.dates", ListSerializer(KeyDate.serializer()))
 }
 
-private class MemoryPreferences : BisPreferences {
+internal class MemoryPreferences : BisPreferences {
     override var lastSelection: BisSelection? = null
     override var hasOpenedPicker: Boolean = false
 }

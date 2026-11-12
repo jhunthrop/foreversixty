@@ -2,9 +2,15 @@ package gg.foreversixty.app.network
 
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.AppConfig
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.SerializationException
 import java.io.File
 import java.io.IOException
+import kotlin.time.Duration
 
 /** Where the last good `GET /v1/app/config` answer is kept between launches (not a secret). */
 interface AppConfigCache {
@@ -44,9 +50,18 @@ class InMemoryAppConfigCache(private var stored: String? = null) : AppConfigCach
  * ignored.
  */
 class AppConfigRepository(private val client: ApiClient, private val cache: AppConfigCache) {
-    @Volatile
-    var current: AppConfig? = cache.load()?.let(::decode)
-        private set
+    private val state = MutableStateFlow(cache.load()?.let(::decode))
+
+    /** Completes when this process's first [refresh] has answered, with a config or a failure. */
+    private val firstAnswer = CompletableDeferred<Unit>()
+
+    /**
+     * The config as it stands: the cached answer at launch, then each [refresh]. The shell reads
+     * its feature switches from here, so a switch the API turns on shows without a restart.
+     */
+    val config: StateFlow<AppConfig?> = state.asStateFlow()
+
+    val current: AppConfig? get() = state.value
 
     /**
      * Fetches the config and caches it. On failure the cached or bundled answer stands and the
@@ -55,10 +70,24 @@ class AppConfigRepository(private val client: ApiClient, private val cache: AppC
     suspend fun refresh(): ApiResult<AppConfig> {
         val result = client.send(ApiEndpoints.getAppConfig())
         if (result is ApiResult.Success) {
-            current = result.data
+            state.value = result.data
             cache.save(ApiJson.encodeToString(AppConfig.serializer(), result.data))
         }
+        firstAnswer.complete(Unit)
         return result
+    }
+
+    /**
+     * A fresh install has no cached config, so until the first [refresh] answers every switch
+     * reads its bundled default (all off) and the shell would show every tab as not yet here.
+     * Holds for that first answer, a config or a failure that leaves the defaults, for at most
+     * [hold]; returns at once when a config is already known. The refresh itself runs on its
+     * own and keeps going after the hold, so a slow answer still lands in [config].
+     */
+    suspend fun awaitFirstAnswer(hold: Duration): Boolean {
+        if (current != null) return true
+        withTimeoutOrNull(hold) { firstAnswer.await() }
+        return current != null
     }
 
     fun isEnabled(feature: Feature): Boolean = current?.features?.get(feature.key) ?: feature.bundledDefault

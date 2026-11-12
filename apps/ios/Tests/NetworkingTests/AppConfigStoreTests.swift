@@ -1,6 +1,7 @@
 import Foundation
 import Models
 @testable import Networking
+import Observation
 import TestSupport
 import Testing
 
@@ -43,6 +44,26 @@ struct AppConfigStoreTests {
         #expect(await nextLaunch.refresh() != nil)
         #expect(nextLaunch.isEnabled(.raids))
         #expect(nextLaunch.current?.activeBuild.isEmpty == false)
+    }
+
+    @Test("a view reading the config is told when a refresh lands, so the shell switches on without a restart")
+    func observable() async {
+        let config = store(FixtureTransport(directory: FixtureLocation.directory))
+        #expect(config.current == nil)
+        await confirmation("current changed") { landed in
+            withObservationTracking { _ = config.isEnabled(.raids) } onChange: { landed() }
+            #expect(await config.refresh() == nil)
+        }
+        #expect(config.isEnabled(.raids))
+    }
+
+    @Test("a failed refresh changes nothing a view would redraw for")
+    func failureIsQuiet() async {
+        let config = store(offline)
+        await confirmation("current changed", expectedCount: 0) { landed in
+            withObservationTracking { _ = config.current } onChange: { landed() }
+            #expect(await config.refresh() != nil)
+        }
     }
 
     @Test("an unreadable cache is ignored")

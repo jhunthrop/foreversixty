@@ -1,5 +1,6 @@
 package gg.foreversixty.app
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import gg.foreversixty.app.common.LocalLatestBuild
 import gg.foreversixty.app.system.logic.AppShortcut
@@ -21,24 +22,32 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.navigation.DeepLink
-import gg.foreversixty.app.navigation.ForeverAppScaffold
-import gg.foreversixty.app.navigation.ShellFeatures
+import gg.foreversixty.app.navigation.ForeverAppShell
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.menu.MenuDestination
 import gg.foreversixty.app.bis.BisSelection
-import gg.foreversixty.app.network.Feature
 import gg.foreversixty.app.update.PLAY_STORE_URL
 import gg.foreversixty.app.update.UpdateRequiredScreen
 import gg.foreversixty.app.auth.session.isSignedIn
 import gg.foreversixty.app.push.FcmToken
 import gg.foreversixty.app.push.PushGroup
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class MainActivity : ComponentActivity() {
-    private val graph: AppGraph get() = (application as ForeverApplication).graph
+    private val app: ForeverApplication get() = application as ForeverApplication
+    private val bootstrap: AppBootstrap get() = app.bootstrap
+    private val graph: AppGraph get() = app.graph
+
+    /** True once [startShell] ran: the graph exists and the shell draws from it. */
+    private val shellStarted = MutableStateFlow(false)
+
+    /** An intent that arrived before the shell started; handled when it does. */
+    private var pendingIntent: Intent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,35 +56,48 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge(statusBarStyle = darkBars, navigationBarStyle = darkBars)
         setContent {
             ForeverTheme {
-                val gate by graph.updateGate.state.collectAsStateWithLifecycle()
+                val gate by bootstrap.updateGate.state.collectAsStateWithLifecycle()
+                val started by shellStarted.collectAsStateWithLifecycle()
                 val answer = gate
-                if (answer == null) {
-                    // Lane F15: the build-data screens' new-data strip reads the fresh active build.
-                    CompositionLocalProvider(LocalLatestBuild provides graph::latestBuild) {
-                    ForeverAppScaffold(
-                        ShellFeatures(
-                            home = graph.home,
-                            bis = graph.bisModel,
-                            account = graph.account.takeIf { graph.isAvailable(Feature.SignIn) },
-                            raids = graph.raids.takeIf { it.enabled },
-                            search = graph.search.takeIf { it.enabled },
-                            guides = graph.guides,
-                            system = graph.system.navigator,
-                            planner = graph.planner,
-                            activity = graph.activity,
-                            openLink = { link -> handleAppLink(Intent(Intent.ACTION_VIEW, link.toUri())) },
-                        ),
-                    )
-                    }
-                } else {
-                    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+                when {
+                    answer != null -> Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                         UpdateRequiredScreen(onOpenStore = { openStore(answer.storeUrl ?: PLAY_STORE_URL) })
                     }
+                    // A fresh install holds for its first config: the launch window's background, a moment longer.
+                    !started -> Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+                    else -> Shell()
                 }
             }
         }
-        handleAppLink(intent)
-        lifecycleScope.launch { graph.appConfig.refresh() }
+        pendingIntent = intent
+        lifecycleScope.launch { bootstrap.appConfig.refresh() }
+        lifecycleScope.launch {
+            bootstrap.appConfig.awaitFirstAnswer(FIRST_CONFIG_HOLD)
+            startShell()
+        }
+    }
+
+    /** The tabs over the graph, read again on every config change so a switch the API turns on shows at once. */
+    @Composable
+    private fun Shell() {
+        // Lane F15: the build-data screens' new-data strip reads the fresh active build.
+        CompositionLocalProvider(LocalLatestBuild provides graph::latestBuild) {
+            ForeverAppShell(graph.appConfig.config) { graph.shellFeatures(::openLink) }
+        }
+    }
+
+    /** Opens an app link the way an App Link intent does (a notification, an Activity row). */
+    private fun openLink(link: String) = handleAppLink(Intent(Intent.ACTION_VIEW, link.toUri()))
+
+    /**
+     * Builds the graph from the config as it now stands and starts the account's background work.
+     * Runs once the first config is known, or the hold has passed, so no feature is decided from
+     * the bundled defaults while the real switches are a moment away.
+     */
+    private fun startShell() {
+        shellStarted.value = true
+        handleAppLink(pendingIntent)
+        pendingIntent = null
         lifecycleScope.launch {
             graph.session.start()
             graph.session.refresh()
@@ -94,12 +116,21 @@ class MainActivity : ComponentActivity() {
         }
         // Lane F14: the 30-minute snapshot refresh behind the widgets, tile and countdown.
         if (graph.widgets != null) gg.foreversixty.app.widgets.WidgetRefreshWork.periodic(this)
+        // The activity is already in front: the foreground refreshes run now.
+        refreshOnForeground()
     }
 
     override fun onResume() {
         super.onResume()
+        // Before the shell starts there is nothing to come back to; startShell runs these itself.
+        if (!shellStarted.value) return
         // A Custom Tab closed without a redirect: back to signed out (spec F1.2's cancel).
         graph.session.onReturnedToApp()
+        refreshOnForeground()
+    }
+
+    /** What every foreground refreshes: guides, the widgets' snapshot, the Activity badge, the shortcuts. */
+    private fun refreshOnForeground() {
         // Lane F9: the active build and the player's classes' guides, at most hourly.
         graph.guides?.let { guides -> lifecycleScope.launch { guides.sync() } }
         // Lane F14: every foreground rewrites the snapshot the widgets and the tile read.
@@ -112,7 +143,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        handleAppLink(intent)
+        if (shellStarted.value) handleAppLink(intent) else pendingIntent = intent
     }
 
     /** A static shortcut's extra, or the Assistant's `feature`; true when it named a screen. */
@@ -196,3 +227,10 @@ class MainActivity : ComponentActivity() {
 
 /** The Assistant's `OPEN_APP_FEATURE` parameter (shortcuts.xml). */
 private const val ASSISTANT_FEATURE = "feature"
+
+/**
+ * How long a fresh install waits for its first config before the shell builds from the bundled
+ * defaults (every switch off). The fetch is one small GET right after launch; past this the
+ * tabs show, and the config still lands into the shell when it arrives.
+ */
+private val FIRST_CONFIG_HOLD = 4.seconds

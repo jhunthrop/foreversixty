@@ -1,5 +1,6 @@
 import Foundation
 import Models
+import Observation
 import Synchronization
 
 /// Where the last good `GET /v1/app/config` answer is kept between launches. Not a secret, so
@@ -13,6 +14,11 @@ public protocol AppConfigCache: Sendable {
 /// the bundled defaults when offline. A feature is on when the API says so, else when its
 /// bundled default (apps/shared/features.json) is; a key the API sends that the build does not
 /// know is ignored.
+///
+/// Observable: a view that reads `current` (every `isEnabled` does) is updated when a refresh
+/// lands, so the shell's tabs switch on without a restart. On a fresh install nothing is
+/// cached and every switch reads its default, off, until the first answer.
+@Observable
 public final class AppConfigStore: Sendable {
     private let client: APIClient
     private let cache: any AppConfigCache
@@ -26,7 +32,10 @@ public final class AppConfigStore: Sendable {
     }
 
     /// The last config the API gave, from this launch or a cached earlier one; nil before the first.
-    public var current: AppConfig? { state.withLock { $0 } }
+    public var current: AppConfig? {
+        access(keyPath: \.current)
+        return state.withLock { $0 }
+    }
 
     /// Fetches the config and caches it. On failure the cached or bundled answer stands, and the
     /// error is returned for the caller to log, never shown: the app works offline.
@@ -34,7 +43,7 @@ public final class AppConfigStore: Sendable {
     public func refresh() async -> APIError? {
         do throws(APIError) {
             let config = try await client.send(.getAppConfig)
-            state.withLock { $0 = config }
+            withMutation(keyPath: \.current) { state.withLock { $0 = config } }
             if let data = try? WireFormat.encoder().encode(config) { cache.save(data) }
             return nil
         } catch {

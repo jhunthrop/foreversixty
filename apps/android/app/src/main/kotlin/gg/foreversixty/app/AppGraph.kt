@@ -10,15 +10,12 @@ import gg.foreversixty.app.system.SystemFeature
 import gg.foreversixty.app.bis.staticDataStore
 import android.content.Context
 import android.os.Build
-import java.io.File
 import gg.foreversixty.app.account.AccountDeps
-import gg.foreversixty.app.auth.AndroidTokenStore
 import gg.foreversixty.app.auth.AppSignIn
 import gg.foreversixty.app.auth.CustomTabsLauncher
 import gg.foreversixty.app.auth.TokenStore
 import gg.foreversixty.app.auth.session.FixtureBrowser
 import gg.foreversixty.app.auth.session.SessionManager
-import gg.foreversixty.app.auth.session.SessionTokens
 import gg.foreversixty.app.guides.GuidesFeature
 import gg.foreversixty.app.home.HomeDependencies
 import gg.foreversixty.app.premium.DebugStorefront
@@ -29,6 +26,7 @@ import kotlinx.coroutines.MainScope
 import gg.foreversixty.app.bis.BisModel
 import gg.foreversixty.app.bis.createBisDataSource
 import gg.foreversixty.app.bis.createBisModel
+import gg.foreversixty.app.navigation.ShellFeatures
 import gg.foreversixty.app.search.SearchFeature
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
@@ -37,7 +35,6 @@ import gg.foreversixty.app.network.ApiConfig
 import gg.foreversixty.app.network.AssetFixtureSource
 import gg.foreversixty.app.network.ClientIdentity
 import gg.foreversixty.app.network.Feature
-import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.talents.TalentsFeature
 import gg.foreversixty.app.planner.PlannerFeature
@@ -48,7 +45,6 @@ import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.raids.logic.LiveRaidService
 import gg.foreversixty.app.auth.EncryptedSecretStore
 import gg.foreversixty.app.guild.GuildExtrasFeature
-import gg.foreversixty.app.update.InstallId
 import gg.foreversixty.app.widgets.WidgetsFeature
 import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.auth.session.isSignedIn
@@ -58,37 +54,20 @@ import gg.foreversixty.app.activity.LiveActivityService
 import gg.foreversixty.app.push.FcmToken
 
 /**
- * The app's object graph, built once per process and passed down explicitly. Feature lanes add
+ * The app's object graph, built once per process over [AppBootstrap] and passed down explicitly.
+ * Each feature is built from its switch as the config stands at that moment, so the graph is
+ * asked for only once the config is known (MainActivity's first-launch hold). Feature lanes add
  * their `XxxApi(apiClient)` here. A DI framework can replace this when the graph outgrows it.
  */
-class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConfig()) {
-    /** The device token, reporting every 401 discard to [session] (lane F1). */
-    private val sessionTokens = SessionTokens(AndroidTokenStore.create(context))
-    val tokens: TokenStore = sessionTokens
-
-    /** Shuts when the API says this build is below its minimum; MainActivity then blocks. */
-    val updateGate = UpdateGate()
-
-    val identity = ClientIdentity(
-        version = BuildConfig.VERSION_NAME,
-        build = BuildConfig.VERSION_CODE,
-        installId = InstallId.current(context),
-    )
-
-    val apiClient: ApiClient = ApiClient(
-        ForeverHttpClient.create(
-            config = config,
-            tokens = tokens,
-            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets), { DebugFixtures.latencyMillis }) { DebugFixtures.variants },
-            identity = identity,
-        ),
-        updateGate,
-    )
+class AppGraph(context: Context, private val bootstrap: AppBootstrap) {
+    val config: ApiConfig get() = bootstrap.config
+    val tokens: TokenStore get() = bootstrap.tokens
+    val updateGate: UpdateGate get() = bootstrap.updateGate
+    val identity: ClientIdentity get() = bootstrap.identity
+    val apiClient: ApiClient get() = bootstrap.apiClient
+    val appConfig: AppConfigRepository get() = bootstrap.appConfig
 
     val accountApi = AccountApi(apiClient)
-
-    /** Read at launch (MainActivity) and cached; feature lanes ask it `isEnabled(feature)`. */
-    val appConfig = AppConfigRepository(apiClient, FileAppConfigCache(File(context.filesDir, "app-config.json")))
 
     /**
      * Lane F15: the active build fresh from the site (never a saved copy), for the new-data strip.
@@ -102,7 +81,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     }
 
     /** Whether a feature's screens show: on in debug and fixture builds, else as the config says. */
-    fun isAvailable(feature: Feature): Boolean = appConfig.isAvailable(feature, config.mode, BuildConfig.DEBUG)
+    fun isAvailable(feature: Feature): Boolean = bootstrap.isAvailable(feature)
 
     /**
      * The one static data store (lanes F12 and F15): guides, BiS lists, talents, the tooltip's files,
@@ -226,7 +205,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     /** The account (lane F1): signed in or out, the current character, sign-in and sign-out. */
     val session: SessionManager = SessionManager(
         client = apiClient,
-        tokens = sessionTokens,
+        tokens = bootstrap.sessionTokens,
         signInFlow = signIn,
         picked = PrefsValue(context, PrefsValue.PICKED_CHARACTER),
         scope = MainScope(),
@@ -329,6 +308,23 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         ItemIconLoader.mayDownload = system::mayDownload
         guides?.mayPrefetch = system::mayPrefetch
     }
+
+    /**
+     * What the shell draws, from the switches as they stand now. MainActivity reads it again on
+     * every config change, so a tab whose switch the API turns on shows its screen at once.
+     */
+    fun shellFeatures(openLink: (String) -> Unit): ShellFeatures = ShellFeatures(
+        home = home,
+        bis = bisModel,
+        account = account.takeIf { isAvailable(Feature.SignIn) },
+        raids = raids.takeIf { it.enabled },
+        search = search.takeIf { it.enabled },
+        guides = guides,
+        system = system.navigator,
+        planner = planner,
+        activity = activity,
+        openLink = openLink,
+    )
 }
 
 /** The calendar link's sealed store (W3-C17): beside the device token, under the same keyset. */

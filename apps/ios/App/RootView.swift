@@ -49,9 +49,15 @@ struct RootView: View {
     @State private var firstRun: FirstRunModel
     /// Answers saved anywhere in the app: the Raid badge reads again after each.
     @State private var raidSignupSaves = 0
+    /// A fresh install has no cached config, so every switch would read its bundled default (off)
+    /// and every tab open as a placeholder. The tabs hold for the first answer, `firstConfigHold`
+    /// at most; the fetch itself keeps going, and `AppConfigStore` is observable, so a slow answer
+    /// still switches the tabs on when it lands.
+    @State private var holdingForConfig: Bool
 
     init(environment: AppEnvironment) {
         self.environment = environment
+        _holdingForConfig = State(initialValue: environment.appConfig.current == nil)
         let session = environment.session
         _firstRun = State(initialValue: FirstRunModel(dependencies: .init(
             setMain: { key in try await session.setMain(key) },
@@ -71,12 +77,31 @@ struct RootView: View {
     }
 
     var body: some View {
-        if environment.updateGate.isRequired {
-            UpdateRequiredView(storeURL: environment.updateGate.storeURL)
-        } else {
-            tabs
+        Group {
+            if environment.updateGate.isRequired {
+                UpdateRequiredView(storeURL: environment.updateGate.storeURL)
+            } else if holdingForConfig {
+                // The launch screen's background, a moment longer, while the first config answers.
+                Theme.Palette.background.ignoresSafeArea()
+            } else {
+                tabs
+            }
+        }
+        // Whichever ends first lifts the hold: the first answer (a config, or a failure that leaves
+        // the bundled defaults) or the hold itself.
+        .task {
+            await environment.appConfig.refresh()
+            holdingForConfig = false
+        }
+        .task {
+            try? await Task.sleep(for: Self.firstConfigHold)
+            holdingForConfig = false
         }
     }
+
+    /// How long a fresh install waits for its first config before the tabs show on the bundled
+    /// defaults. The fetch is one small GET right after launch.
+    static let firstConfigHold: Duration = .seconds(4)
 
     private var tabs: some View {
         TabView(selection: $shell.selection) {
@@ -104,7 +129,6 @@ struct RootView: View {
         .environment(rankingsRouter)
         .environment(plannerRouter)
         .modifier(PlannerHost(router: plannerRouter, newBuild: plannerNewBuild))
-        .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
         // Flows spec 5.1: the device token follows the account; the ask itself comes in context (E6).

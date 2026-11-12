@@ -37,6 +37,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import gg.foreversixty.app.AppGraph
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.account.HomeAccountGate
@@ -64,6 +65,7 @@ import gg.foreversixty.app.menu.MenuDestination
 import gg.foreversixty.app.menu.ProfileMenuDrawer
 import gg.foreversixty.app.menu.MenuScreen
 import gg.foreversixty.app.menu.ProfileBar
+import gg.foreversixty.app.model.AppConfig
 import gg.foreversixty.app.planner.PlannerFeature
 import gg.foreversixty.app.planner.PlannerScreenHost
 import gg.foreversixty.app.planner.logic.PlannerScreen
@@ -80,9 +82,13 @@ import gg.foreversixty.app.search.SearchOverlay
 import gg.foreversixty.app.search.SearchOwner
 import gg.foreversixty.app.search.ui.RootSearchBar
 import gg.foreversixty.app.system.SystemNavigator
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-/** What the shell draws; built once in MainActivity from the app graph. */
+/**
+ * What the shell draws, from the app graph ([AppGraph.shellFeatures]); a feature is null while
+ * its switch is off. Built again on every config change ([ForeverAppShell]).
+ */
 data class ShellFeatures(
     val home: HomeDependencies,
     val bis: BisModel? = null,
@@ -97,6 +103,17 @@ data class ShellFeatures(
     /** Opens an app link the way MainActivity routes one (a notification, an Activity row). */
     val openLink: (String) -> Unit = {},
 )
+
+/**
+ * The shell over the app config: [features] is read again whenever the config changes, so a tab
+ * whose switch the API turns on shows its screen without a restart. Until a fresh install's first
+ * config lands every switch reads its bundled default, off, and every tab would stay a placeholder.
+ */
+@Composable
+fun ForeverAppShell(config: StateFlow<AppConfig?>, features: () -> ShellFeatures) {
+    val current by config.collectAsStateWithLifecycle()
+    ForeverAppScaffold(remember(current) { features() })
+}
 
 /**
  * The app shell (spec 2026-11-08 section 3): four tabs, Home, Raid, Gear and Activity, under the
@@ -182,7 +199,7 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
     val context = LocalContext.current
     val uri = LocalUriHandler.current
     val flows = HomeFlows(
-        raids = features.raids?.takeIf { it.enabled },
+        raids = features.raids,
         activity = features.activity,
         exits = HomeExits(
             openActivity = { select(ForeverTab.Activity) },
