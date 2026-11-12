@@ -1770,7 +1770,7 @@ _PD_SLOTS = ['head', 'neck', 'shoulder', 'back', 'chest', 'shirt', 'tabard', 'wr
              'hands', 'waist', 'legs', 'feet', 'finger1', 'finger2', 'trinket1', 'trinket2',
              'main_hand', 'off_hand', 'ranged']
 _PD_LIST = [s for s in _PD_SLOTS if s not in ('shirt', 'tabard')]
-_PD_SEAL = _data_uri(_WEB / 'public/art/seal-128.webp')
+_PD_SEAL = _data_uri(_WEB / 'public/art/seal-disc-128.webp')
 
 PRIM_CSS += '''
 .pdf{container-type:inline-size;width:100%}.pdf-frame,.pdf-list{display:none}
@@ -1780,7 +1780,7 @@ PRIM_CSS += '''
 .pdf-icon{position:absolute;inset:6%;width:88%;height:88%;box-sizing:border-box;border:2px solid var(--qb);border-radius:3px;box-shadow:0 0 0 1px #000;background:#100a06}
 .pdf-covered{filter:grayscale(1) brightness(.55)}
 .pdf-slot.pdf-sel::after{content:'';position:absolute;inset:-4%;border:2px solid #f3eee2;border-radius:6px;box-shadow:0 0 0 1px #000}
-.pdf-medal{position:absolute;display:flex;align-items:center;justify-content:center}.pdf-medal img{width:92%;height:92%;border-radius:50%;object-fit:cover}
+.pdf-medal{position:absolute;display:flex;align-items:center;justify-content:center}.pdf-medal img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 .pdf-title{position:absolute;display:flex;align-items:center;gap:2cqw;margin:0;padding:0 2.2cqw;color:#f3eee2;font:400 3.4cqw/1 var(--font-title);
   letter-spacing:-.015em;text-shadow:0 1px 2px #000;white-space:nowrap}
 .pdf-meta{font:600 2.3cqw var(--font-body);color:#e3dfd9}

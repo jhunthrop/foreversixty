@@ -389,9 +389,11 @@
     align-items: center;
     justify-content: center;
   }
+  /* The frame paints the medallion's ring; the image fills the hole inside it (the seal is its
+     ring-free disc, an avatar is cropped round). */
   .pdf-medal-img {
-    width: 92%;
-    height: 92%;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     object-fit: cover;
   }

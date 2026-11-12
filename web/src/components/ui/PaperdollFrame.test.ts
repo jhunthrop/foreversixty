@@ -71,7 +71,7 @@ describe('PaperdollFrame', () => {
   });
 
   it('holds the seal in the medallion with no portrait, the portrait when given', () => {
-    expect(doll()).toContain(`src="${SEAL.painted128}"`);
+    expect(doll()).toContain(`src="${SEAL.disc128}"`);
     expect(doll({ avatar: 'https://example.test/a.jpg' })).toContain('src="https://example.test/a.jpg"');
   });
 

@@ -57,8 +57,8 @@ export function frameFits(widthPx: number): boolean {
 }
 
 /** The medallion's image (owner 2026-11-08): the character's Battle.net head render when there is
- *  one, else the painted LX seal, signed out included; never the class crest. A render that failed
+ *  one, else the LX seal's disc (the frame paints the ring), signed out included; never the class crest. A render that failed
  *  to load (`failed`, e.g. a 403) falls back to the seal in the same box. */
 export function medallionSrc(avatar: string | null | undefined, failed = false): string {
-  return avatar && !failed ? avatar : SEAL.painted128;
+  return avatar && !failed ? avatar : SEAL.disc128;
 }

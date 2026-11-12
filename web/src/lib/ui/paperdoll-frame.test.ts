@@ -64,8 +64,8 @@ describe('the paperdoll frame', () => {
 
   it('shows the Battle.net head render, else the painted seal, and the seal when the render fails', () => {
     expect(medallionSrc(STUB_AVATAR)).toBe(STUB_AVATAR);
-    expect(medallionSrc(null)).toBe(SEAL.painted128);
-    expect(medallionSrc('')).toBe(SEAL.painted128);
-    expect(medallionSrc(STUB_AVATAR, true)).toBe(SEAL.painted128);
+    expect(medallionSrc(null)).toBe(SEAL.disc128);
+    expect(medallionSrc('')).toBe(SEAL.disc128);
+    expect(medallionSrc(STUB_AVATAR, true)).toBe(SEAL.disc128);
   });
 });

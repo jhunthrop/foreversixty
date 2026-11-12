@@ -12,6 +12,9 @@ export const SEAL = {
   flatSmall: `${DIR}/seal-flat-small.svg`,
   painted88: `${DIR}/seal-88.webp`,
   painted128: `${DIR}/seal-128.webp`,
+  /** The painted seal's blue disc alone, no bronze ring: for a medallion whose frame paints the
+   *  ring itself (the paperdoll), so the seal never sits as a ring inside a ring (owner 2026-11-12). */
+  disc128: `${DIR}/seal-disc-128.webp`,
 } as const;
 
 /** The tiny bold seal up to 24 CSS px. */
