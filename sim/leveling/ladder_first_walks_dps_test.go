@@ -40,7 +40,9 @@ func TestProtectionWarriorTakesDefianceBeforeAnticipation(t *testing.T) {
 // Sim-accuracy round 29 (walks-dps): a leveling Arcane mage takes Missile Barrage at 21 and 22, Arcane Impact at 23 to 25
 // and Arcane Meditation at 26 to 28 before Arcane Resilience (armor) and Arcane Geometry
 // (range), which pay the rows at 29 and 39; Presence of Mind comes at 30. From 41 Precision
-// comes first, ahead of Incineration and Improved Frostbolt.
+// comes first, ahead of Incineration and Improved Frostbolt. Sim-accuracy 2026-11-12 (arcane):
+// Arcane Wrath at 44, right after Precision, for the fourth rank of Incineration (+6.8% at 45,
+// +2.7 to +2.9% at 50, +0.4 to +1.0% at 60; design/reviews/2026-11-12-sim-accuracy/arcane.md).
 func TestArcaneTakesItsDamageTalentsBeforeArmor(t *testing.T) {
 	checkLadder(t, "mage", "arcane", 0, map[int]string{
 		21: "140005100100000000-00000000000000000-000000000000000000",
@@ -48,9 +50,9 @@ func TestArcaneTakesItsDamageTalentsBeforeArmor(t *testing.T) {
 		30: "141005203100301000-00000000000000000-000000000000000000",
 		35: "141005203100301500-00000000000000000-000000000000000000",
 		38: "141005203100301530-00000000000000000-000000000000000000",
-		45: "141005213100301531-20000000000000000-003000000000000000",
-		50: "141005213100301531-40000000000000000-033000000000000000",
-		51: "141005213100301531-40000000000000000-043000000000000000",
+		45: "141005213100311531-10000000000000000-003000000000000000",
+		50: "141005213100311531-30000000000000000-033000000000000000",
+		51: "141005213100311531-30000000000000000-043000000000000000",
 	})
 }
 
