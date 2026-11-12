@@ -1,0 +1,11 @@
+# Pre-pull summon mana (round 29 W2): the bands whose prepull summons a demon.
+demo-raid-horde -spec warlock-demonology -preset raid -band 60 -faction horde
+demo-raid-alliance -spec warlock-demonology -preset raid -band 60 -faction alliance
+aff-raid-horde -spec warlock-affliction -preset raid -band 60 -faction horde
+aff-raid-alliance -spec warlock-affliction -preset raid -band 60 -faction alliance
+dest-raid-horde -spec warlock-destruction -preset raid -band 60 -faction horde
+demo-bare-30 -spec warlock-demonology -preset bare -band 30 -faction horde
+demo-bare-40 -spec warlock-demonology -preset bare -band 40 -faction horde
+demo-bare-50 -spec warlock-demonology -preset bare -band 50 -faction horde
+demo-bare-60 -spec warlock-demonology -preset bare -band 60 -faction horde
+aff-bare-60 -spec warlock-affliction -preset bare -band 60 -faction horde

@@ -1,0 +1,4 @@
+# Master Summoner 2 against Improved Sayaad 3 plus Demonic Brand 1 or Fel Vitality 1 (raid build, fixed engine).
+demo-raid-horde-ms2 -spec warlock-demonology -preset raid -band 60 -faction horde
+demo-raid-horde-isay3-brand1 -spec warlock-demonology -preset raid -band 60 -faction horde -talents 05-2035103031200101351-0550005
+demo-raid-horde-isay3-felvit -spec warlock-demonology -preset raid -band 60 -faction horde -talents 05-2035103131200001351-0550005
