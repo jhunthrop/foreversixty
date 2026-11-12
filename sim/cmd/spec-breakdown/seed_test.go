@@ -21,9 +21,10 @@ func breakdownDPS(t *testing.T, o options) float64 {
 	return got.DPS
 }
 
-// The 2026-11-12 shamans lane found -seed 50001 reproducing seed 1 to the
-// decimal, which made every "mean of two seeds" in the audits one seed.
-// Two seeds must give two answers; one seed twice must give one.
+// The 2026-11-12 shamans lane read -seed 50001 as reproducing seed 1: the
+// header printed DPS to one decimal and two seeds 0.02 DPS apart printed
+// alike. The seed does reach the engine; this guards that it keeps doing
+// so. Two seeds must give two answers; one seed twice must give one.
 func TestSeedReachesTheEngine(t *testing.T) {
 	cases := []options{
 		realOptions(testSpec),

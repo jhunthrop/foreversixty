@@ -642,7 +642,7 @@ func actionName(id *proto.ActionID, names map[int32]string) string {
 
 func (r report) markdown() string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "%s  DPS %.1f +/- %.1f\nout of mana: %.1f s of %.0f s\nconsumes: %v\nbuffs: %v\n\n",
+	fmt.Fprintf(&b, "%s  DPS %.2f +/- %.2f\nout of mana: %.1f s of %.0f s\nconsumes: %v\nbuffs: %v\n\n",
 		r.Spec, r.DPS, r.Error, r.SecondsOOM, r.FightSeconds, r.Consumes, r.Buffs)
 	b.WriteString("| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |\n|---|---|---|---|---|---|---|---|---|---|---|\n")
 	for _, a := range r.Actions {

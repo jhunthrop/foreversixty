@@ -177,7 +177,7 @@ func TestNewReportFoldsPetActionsUnderThePetName(t *testing.T) {
 func TestMarkdownRendersTablesAndSkipsEmptyRows(t *testing.T) {
 	out := sampleReport().markdown()
 	for _, want := range []string{
-		testSpec + "  DPS 50.0 +/- 1.5", "out of mana: 2.5 s of 10 s", "consumes: [a]", "buffs: [b]",
+		testSpec + "  DPS 50.00 +/- 1.50", "out of mana: 2.5 s of 10 s", "consumes: [a]", "buffs: [b]",
 		"| High (2) | 40.0 | 80.0 |", "| Long (11) | 50.0 | 2.00 |", "| Combo (20) | ResourceTypeEnergy | 50.0 | 40.0 |",
 	} {
 		if !strings.Contains(out, want) {
