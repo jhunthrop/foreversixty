@@ -1,24 +1,14 @@
 // web/tests/captures/sim-doll/capture.spec.ts
 // Review captures for lane sim-doll (design/reviews/2026-11-11-sim-doll): the sim result's Gear
-// section on the shared paperdoll frame at 1440, 2000 and 390, beside the BiS page's and the
-// character page's dolls at 1440 for one gear look. Not a test of behaviour. Built with
+// section on the shared paperdoll frame at 1440, 2000 and 390, beside the BiS page's doll at 1440
+// for one gear look (the character page exists only on the fixture build: its doll is compared from
+// the character lane's own captures). Not a test of behaviour. Built with
 // FOREVER_DATA=real so the sim doll carries a full set; run from web/ against a served copy of dist
 // (see the config). CAPTURE_ONLY=sim-gear (comma list) narrows the shots.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
-import {
-  CHARACTER,
-  CHARACTER_PATH,
-  CHARACTER_URL,
-  GEAR,
-  GEAR_BIS,
-  GEAR_ITEMS,
-  OWNER_SCORE,
-  routeGearIcons,
-  routeOwner,
-} from '../../e2e/support/character-fixture';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.resolve(HERE, '../../../../design/reviews/2026-11-11-sim-doll/after');
@@ -76,14 +66,18 @@ async function openSimGear(page: Page): Promise<void> {
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 60_000 });
   await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('sim-gear-card')).toBeVisible();
-  await expect(page.getByTestId('sim-gear-doll').locator('.pdf-icon').first()).toBeVisible();
+  await expect(
+    page.getByTestId('sim-gear-doll').locator('.pdf-icon').locator('visible=true').first(),
+  ).toBeVisible();
 }
 
 /** The same character before its run: the doll is the page's one Plate. */
 async function openSimLanding(page: Page): Promise<void> {
   await page.goto(`/sim?code=${encodeURIComponent(FS1)}`);
   await expect(page.getByTestId('sim-run-button')).toBeEnabled({ timeout: 60_000 });
-  await expect(page.getByTestId('sim-gear-doll').locator('.pdf-icon').first()).toBeVisible();
+  await expect(
+    page.getByTestId('sim-gear-doll').locator('.pdf-icon').locator('visible=true').first(),
+  ).toBeVisible();
 }
 
 async function openBis(page: Page): Promise<void> {
@@ -91,38 +85,10 @@ async function openBis(page: Page): Promise<void> {
   await expect(page.getByTestId('paperdoll-frame-slot-head')).toBeVisible({ timeout: 30_000 });
 }
 
-/** The character page on its e2e fixture (character-gear.spec.ts's stubs), as its owner. */
-async function openCharacter(page: Page): Promise<void> {
-  const ok = (data: unknown) => ({
-    status: 200,
-    contentType: 'application/json',
-    body: JSON.stringify({ ok: true, data, error: null, request_id: 'r' }),
-  });
-  await routeOwner(page);
-  await page.route(CHARACTER_URL, (route) =>
-    route.fulfill(ok({ ...CHARACTER.data, ...OWNER_SCORE, ...GEAR })),
-  );
-  await page.route(`${CHARACTER_URL}/rating`, (route) =>
-    route.fulfill({ status: 404, contentType: 'application/json', body: '{"ok":false}' }),
-  );
-  await page.route('**/data/*/items/priest.json', (route) =>
-    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GEAR_ITEMS) }),
-  );
-  await page.route('**/data/*/bis/priest-holy.json', (route) =>
-    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GEAR_BIS) }),
-  );
-  await routeGearIcons(page);
-  await page.goto(CHARACTER_PATH);
-  await expect(page.getByTestId('character-doll').locator('.pdf-icon').first()).toBeVisible({
-    timeout: 30_000,
-  });
-}
-
 const SHOTS = [
   { id: 'sim-gear', open: openSimGear, testid: 'sim-gear-card', widths: WIDTHS },
   { id: 'sim-landing', open: openSimLanding, testid: 'sim-gear-card', widths: WIDTHS },
   { id: 'bis-doll', open: openBis, testid: 'bis-page', widths: DESKTOP },
-  { id: 'character-doll', open: openCharacter, testid: 'character-gear', widths: DESKTOP },
 ] as const;
 
 const ONLY = process.env.CAPTURE_ONLY?.split(',');
