@@ -18252,7 +18252,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20116,
+            "spell_id": 26573,
             "name": "Consecration",
             "condition": "when mana lasts to the end of the fight, or below 35% health",
             "icon": "spell_holy_innerfire",
@@ -18327,7 +18327,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20116,
+            "spell_id": 26573,
             "name": "Consecration",
             "condition": "when mana lasts to the end of the fight, or below 35% health",
             "icon": "spell_holy_innerfire",
@@ -18337,6 +18337,81 @@
       },
       {
         "level": 38,
+        "lines": [
+          {
+            "spell_id": 1311015,
+            "name": "Templar's Bulwark",
+            "condition": "below 35% health",
+            "icon": "ability_paladin_shieldofthetemplar",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 642,
+            "name": "Divine Shield",
+            "condition": "below 25% health",
+            "icon": "spell_holy_divineintervention",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5573,
+            "name": "Divine Protection",
+            "condition": "below 20% health",
+            "icon": "spell_holy_restoration",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20419,
+            "name": "Seal of Fury",
+            "condition": "under 2 s left on the seal, saving mana for Holy Shield",
+            "icon": "spell_holy_retributionaura",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20925,
+            "name": "Holy Shield",
+            "condition": "on cooldown",
+            "icon": "spell_holy_blessingofprotection",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2495,
+            "name": "Holy Strike",
+            "condition": "on cooldown",
+            "icon": "classicon_paladin",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310994,
+            "name": "Swift Judgement",
+            "condition": "on cooldown",
+            "icon": "ability_paladin_judgementred",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20271,
+            "name": "Judgement",
+            "condition": "on cooldown, saving mana for Holy Shield",
+            "icon": "spell_holy_righteousfury",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5615,
+            "name": "Exorcism",
+            "condition": "on Undead and Demons, saving mana for Holy Shield",
+            "icon": "spell_holy_excorcism_02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 26573,
+            "name": "Consecration",
+            "condition": "when mana lasts to the end of the fight, or below 35% health",
+            "icon": "spell_holy_innerfire",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 39,
         "lines": [
           {
             "spell_id": 1311015,
@@ -18484,7 +18559,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 26573,
+            "spell_id": 20922,
             "name": "Consecration",
             "condition": "when mana lasts to the end of the fight, or below 35% health",
             "icon": "spell_holy_innerfire",
@@ -18566,7 +18641,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 26573,
+            "spell_id": 20922,
             "name": "Consecration",
             "condition": "when mana lasts to the end of the fight, or below 35% health",
             "icon": "spell_holy_innerfire",
@@ -18576,88 +18651,6 @@
       },
       {
         "level": 44,
-        "lines": [
-          {
-            "spell_id": 1311015,
-            "name": "Templar's Bulwark",
-            "condition": "below 35% health",
-            "icon": "ability_paladin_shieldofthetemplar",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 642,
-            "name": "Divine Shield",
-            "condition": "below 25% health",
-            "icon": "spell_holy_divineintervention",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5573,
-            "name": "Divine Protection",
-            "condition": "below 20% health",
-            "icon": "spell_holy_restoration",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20421,
-            "name": "Seal of Fury",
-            "condition": "under 2 s left on the seal, saving mana for Holy Shield",
-            "icon": "spell_holy_retributionaura",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20927,
-            "name": "Holy Shield",
-            "condition": "on cooldown",
-            "icon": "spell_holy_blessingofprotection",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5569,
-            "name": "Holy Strike",
-            "condition": "on cooldown",
-            "icon": "classicon_paladin",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 407632,
-            "name": "Hammer of the Righteous",
-            "condition": "on cooldown, saving mana for Holy Shield",
-            "icon": "ability_paladin_hammeroftherighteous",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1310994,
-            "name": "Swift Judgement",
-            "condition": "on cooldown",
-            "icon": "ability_paladin_judgementred",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20271,
-            "name": "Judgement",
-            "condition": "on cooldown, saving mana for Holy Shield",
-            "icon": "spell_holy_righteousfury",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10312,
-            "name": "Exorcism",
-            "condition": "on Undead and Demons, saving mana for Holy Shield",
-            "icon": "spell_holy_excorcism_02",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 26573,
-            "name": "Consecration",
-            "condition": "when mana lasts to the end of the fight, or below 35% health",
-            "icon": "spell_holy_innerfire",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 49,
         "lines": [
           {
             "spell_id": 1311015,
@@ -18812,7 +18805,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 26573,
+            "spell_id": 20923,
             "name": "Consecration",
             "condition": "when mana lasts to the end of the fight, or below 35% health",
             "icon": "spell_holy_innerfire",
@@ -18894,7 +18887,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 26573,
+            "spell_id": 20923,
             "name": "Consecration",
             "condition": "when mana lasts to the end of the fight, or below 35% health",
             "icon": "spell_holy_innerfire",
@@ -19924,172 +19917,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 24275,
-            "name": "Hammer of Wrath",
-            "condition": "when the target is below 20%",
-            "icon": "ability_thunderclap",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20292,
-            "name": "Seal of Righteousness",
-            "condition": "at 3 Unsealed Wrath stacks while mana holds",
-            "icon": "ability_thunderbolt",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "right after one swing under Righteousness",
-            "icon": "ability_warrior_innerrage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "in the seal's last second while mana % is over boss health %",
-            "icon": "ability_warrior_innerrage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20292,
-            "name": "Seal of Righteousness",
-            "condition": "in the seal's last second",
-            "icon": "ability_thunderbolt",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10332,
-            "name": "Holy Strike",
-            "condition": "on cooldown",
-            "icon": "classicon_paladin",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20922,
-            "name": "Consecration",
-            "condition": "when mana lasts to the end of the fight",
-            "icon": "spell_holy_innerfire",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 54,
-        "lines": [
-          {
-            "spell_id": 20271,
-            "name": "Judgement",
-            "condition": "on cooldown",
-            "icon": "spell_holy_righteousfury",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "after the opening Crusader Judgement, with Unsealed Wrath",
-            "icon": "ability_warrior_innerrage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20292,
-            "name": "Seal of Righteousness",
-            "condition": "after the opening Crusader Judgement, with no Unsealed Wrath",
-            "icon": "ability_thunderbolt",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10313,
-            "name": "Exorcism",
-            "condition": "on cooldown against Undead and Demons",
-            "icon": "spell_holy_excorcism_02",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 24274,
-            "name": "Hammer of Wrath",
-            "condition": "when the target is below 20%",
-            "icon": "ability_thunderclap",
-            "race_spell_ids": {
-              "undead": 24275
-            }
-          },
-          {
-            "spell_id": 20292,
-            "name": "Seal of Righteousness",
-            "condition": "at 3 Unsealed Wrath stacks while mana holds",
-            "icon": "ability_thunderbolt",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "right after one swing under Righteousness",
-            "icon": "ability_warrior_innerrage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "in the seal's last second while mana % is over boss health %",
-            "icon": "ability_warrior_innerrage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20292,
-            "name": "Seal of Righteousness",
-            "condition": "in the seal's last second",
-            "icon": "ability_thunderbolt",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10332,
-            "name": "Holy Strike",
-            "condition": "on cooldown",
-            "icon": "classicon_paladin",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20922,
-            "name": "Consecration",
-            "condition": "when mana lasts to the end of the fight",
-            "icon": "spell_holy_innerfire",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 55,
-        "lines": [
-          {
-            "spell_id": 20271,
-            "name": "Judgement",
-            "condition": "on cooldown",
-            "icon": "spell_holy_righteousfury",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "after the opening Crusader Judgement, with Unsealed Wrath",
-            "icon": "ability_warrior_innerrage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20292,
-            "name": "Seal of Righteousness",
-            "condition": "after the opening Crusader Judgement, with no Unsealed Wrath",
-            "icon": "ability_thunderbolt",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10313,
-            "name": "Exorcism",
-            "condition": "on cooldown against Undead and Demons",
-            "icon": "spell_holy_excorcism_02",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 24274,
             "name": "Hammer of Wrath",
             "condition": "when the target is below 20%",
@@ -20214,11 +20041,13 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20922,
+            "spell_id": 20923,
             "name": "Consecration",
             "condition": "when mana lasts to the end of the fight",
             "icon": "spell_holy_innerfire",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "undead": 20922
+            }
           }
         ]
       },
