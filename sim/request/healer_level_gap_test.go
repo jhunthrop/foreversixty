@@ -225,13 +225,13 @@ func TestHolyPaladinGroupFlashOfLightAndHolyShockBelowFifty(t *testing.T) {
 
 // Shadow's Mind Blast at 50 to 59 casts the highest rank learned: ranks 2 and
 // 3 keep 15% and 45% of spell power at 50, and the rows lost 3.3% there.
-// Round 24 (on the talents at each level): an Undead casts rank 6 at 50 only;
-// a Dwarf casts rank 5 at 50 to 52 (whole bonus, cheaper); a Gnome and Human
-// keep the highest rank learned.
+// Sim-accuracy 2026-11-12 (shadow), on the wand's first-shot windup: a Dwarf
+// casts rank 6 at 50 (whole bonus, cheaper, ahead of rank 7) and the top rank
+// from 51; a Gnome, Human and Undead cast the highest rank learned.
 func TestShadowMindBlastAtFiftyIsTheHighestRankLearned(t *testing.T) {
 	blast := linesCasting(t, "priest-shadow", 10947)
 	for race, at := range map[string][3]int{
-		"gnome": {7, 7, 8}, "human": {7, 7, 8}, "undead": {6, 7, 8}, "dwarf": {5, 5, 5},
+		"gnome": {7, 7, 8}, "human": {7, 7, 8}, "undead": {7, 7, 8}, "dwarf": {6, 7, 8},
 	} {
 		assertRanks(t, blast, "priest-shadow", "priest", race, mindBlastRanks, []rankCase{
 			{50, BarePreset, at[0]}, {51, BarePreset, at[1]}, {52, BarePreset, at[2]}, {58, BarePreset, 9},
