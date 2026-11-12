@@ -413,12 +413,19 @@ describe("Chip.model", function()
 		assert.are.equal("idle", model.chosen.kind)
 	end)
 
-	it("asks a default-build character below 10 to pick a path, above the next talent", function()
-		local model = Chip.model(inputs({
-			level = 4, build = { default = true, order = { {} } }, progress = pointAt(1, 10),
-			pointName = "Improved Heroic Strike",
-		}))
-		assert.are.same({ "path", "next" }, kinds(model))
+	it("asks a character with no build whose points name no tree to pick a path, at any level (6.2)", function()
+		-- `inputs` cannot clear a field: the character with no build is built by hand.
+		local function noBuild(level, question)
+			local input = inputs({ level = level, question = question })
+			input.build, input.progress = nil, nil
+			return input
+		end
+		local model = Chip.model(noBuild(4, "Are you Arms, Fury or Protection?"))
+		assert.are.same({ "path" }, kinds(model))
+		assert.are.equal("path", Chip.model(noBuild(13, "Are you Arms or Fury?")).chosen.kind)
+		-- A build in force, or points that decide, and the card is not offered.
+		assert.are_not.equal("path", Chip.model(inputs({ level = 13, question = "Are you Arms or Fury?" })).chosen.kind)
+		assert.are_not.equal("path", Chip.model(noBuild(13, nil)).chosen.kind)
 		assert.are.equal(L.chipPath, model.chosen.text)
 		assert.are.equal(CLASS_ICON, model.chosen.icon)
 		assert.are.equal("path", model.chosen.action)
@@ -718,13 +725,6 @@ describe("Chip.talentName", function()
 		local nine = Chip.model(inputs({ level = 9, progress = pointAt(1, 10) }))
 		assert.are.equal("Next talent at 10", nine.chosen.text)
 		assert.are.equal("Next talent at 10", nine.chosen.tip)
-	end)
-end)
-
-describe("Chip.pathHeading", function()
-	it("names the race and class in the class colour", function()
-		-- Fix round 3: one colour for the whole heading (the label's gold).
-		assert.are.equal("Gnome Rogue. Pick a path:", Chip.pathHeading("Gnome", "Rogue"))
 	end)
 end)
 

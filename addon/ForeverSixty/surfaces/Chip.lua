@@ -211,10 +211,6 @@ local function nextTalentAt(at, name)
 end
 
 --- "Gnome Rogue. Pick a path:", one colour throughout (the card's gold).
-function Chip.pathHeading(race, className)
-	return string.format(L.chipPathHeading, string.format(L.chipRaceClass, race, className))
-end
-
 --- /fs diag's line for a shown chip: whether its line was shortened, or fell back to its short form.
 --- `usedShort`: the line fell back to its short form (a state's `short`) rather than being cut.
 function Chip.shownLine(shortened, usedShort)
@@ -255,10 +251,10 @@ local function nextPoint(input)
 	return point, progress.nextLevel
 end
 
---- "Pick a path": a default build below the first talent level, no path chosen.
+--- "Pick a path" (spec section 6.2): nothing followed and the points do not name a tree
+--- (`input.question`, Follow.specQuestion), at any level.
 local function pathState(input)
-	local build = input.build
-	if build == nil or not build.default or (input.level or 0) >= firstTalentLevel() or input.pathChosen ~= nil then
+	if input.build ~= nil or input.question == nil then
 		return nil
 	end
 	return { kind = "path", icon = input.classIcon, text = L.chipPath, action = "path", hint = L.chipHintPath }
@@ -1021,6 +1017,7 @@ function Chip.inputs(data)
 		shown = Prefs.get("chip", "shown"),
 		hiddenUntilLevel = hiddenUntil(),
 		pathChosen = chosenPath(classSlug),
+		question = classSlug ~= nil and Follow.specQuestion(data, classSlug, ranks) or nil,
 		raidCheck = Chip.raidCheck,
 		loot = Chip.loot,
 		lastRaid = lastRaid(),
@@ -1973,10 +1970,11 @@ function Chip.closePath()
 	end
 end
 
---- Follow the default build for `slug`, remember the choice for this
---- character, and close the card. Never replaces a build the player saved.
+--- The player's answer to the spec question: follow the default build for `slug`
+--- (Follow.chooseDefault, over a saved build too), remember the choice for this character, and
+--- close the card.
 function Chip.choosePath(slug)
-	Follow.ensureDefault(Chip.data or ns.Data, { spec = slug })
+	local build = Follow.chooseDefault(Chip.data or ns.Data, slug)
 	local mine = characterPrefs(true)
 	if mine ~= nil then
 		mine.pathChosen = slug
@@ -1987,16 +1985,18 @@ function Chip.choosePath(slug)
 	else
 		Chip.refresh()
 	end
+	return build
 end
 
---- The card's heading: "Gnome Rogue. Pick a path:", or the chip's own
---- "Pick a path" where the client cannot name the race and class.
-local function cardHeading()
-	local race, className = Compat.playerRaceClass()
-	if race == nil or className == nil then
-		return L.chipPath
-	end
-	return Chip.pathHeading(race, className)
+--- The card's heading: the spec question ("Are you Holy or Retribution?", Follow.specQuestion),
+--- or the chip's own "Pick a path" when the points happen to decide.
+local function cardHeading(ranks)
+	return Follow.specQuestion(Chip.data or ns.Data, Talents.playerClassSlug(), ranks) or L.chipPath
+end
+
+--- The card's footer: what choosing loads, the leveling build or the raid build at 60.
+local function cardFooter()
+	return Chip.level() >= Follow.RAID_LEVEL and L.chipPathFooterRaid or L.chipPathFooter
 end
 
 --- Escape closes the card (UISpecialFrames); so does a click anywhere but
@@ -2051,9 +2051,15 @@ function Chip.ensureCard(specs)
 	card:SetClampedToScreen(true)
 	card:EnableMouse(true)
 	card:SetPoint("TOPRIGHT", Chip.frame, "BOTTOMRIGHT", 0, -S.chipCardGap)
-	local heading = Widgets.label(card, cardHeading(), "gold", "normal")
+	-- The heading is set on every show (the points change while the card is built once); the room
+	-- it gets is the longest question's, every tree named, so the card never resizes between shows.
+	local heading = Widgets.label(card, cardHeading({}), "gold", "normal")
 	heading:SetWidth(inner)
+	if type(heading.SetWordWrap) == "function" then
+		heading:SetWordWrap(true)
+	end
 	heading:SetPoint("TOPLEFT", card, "TOPLEFT", pad, -pad)
+	card.foreverSixtyHeading = heading
 	local y = pad + (heading:GetStringHeight() or S.rowHeight)
 	for _, spec in ipairs(specs) do
 		y = y + S.chipCardRowGap
@@ -2073,7 +2079,8 @@ function Chip.ensureCard(specs)
 		end
 	end
 	y = y + S.chipCardRowGap
-	local _, footerHeight = cardNote(card, L.chipPathFooter, "muted", pad, y, inner)
+	local footer, footerHeight = cardNote(card, cardFooter(), "muted", pad, y, inner)
+	card.foreverSixtyFooter = footer
 	card:SetHeight(y + footerHeight + pad)
 	Theme.makeEscapable(Chip.CARD_NAME)
 	Chip.closeOnClickOutside(card)
@@ -2091,7 +2098,10 @@ function Chip.togglePath()
 	if #specs == 0 or Chip.frame == nil then
 		return
 	end
-	Chip.ensureCard(specs):Show()
+	local card = Chip.ensureCard(specs)
+	card.foreverSixtyHeading:SetText(cardHeading())
+	card.foreverSixtyFooter:SetText(cardFooter())
+	card:Show()
 end
 
 ns.Chip = Chip

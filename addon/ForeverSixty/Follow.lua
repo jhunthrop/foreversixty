@@ -377,6 +377,37 @@ function Follow.ensureDefault(data, character)
 	return build
 end
 
+--- The player's answer to the spec question (the tour's tiles, the panel's Pick, the chip's
+--- card, the Builds dialog's rows; spec section 6.4): follow `spec`'s default for the character's
+--- level. With no saved build it is Follow.ensureDefault (default = true, so a data update
+--- replaces it). With a saved build in any slot, which ensureDefault leaves alone, the default's
+--- own code is loaded into the active slot (Follow.load), named as the player reads it, so the
+--- choice survives the next login. The build, or nil with the reason in Follow.noBuildReason.
+function Follow.chooseDefault(data, spec, level)
+	local classSlug = type(spec) == "string" and spec:match("^([^-]+)") or nil
+	if not hasSavedBuild() then
+		return Follow.ensureDefault(data, { spec = spec, level = level, classSlug = classSlug })
+	end
+	local builds = type(data) == "table" and type(data.defaultBuilds) == "table" and data.defaultBuilds[spec] or nil
+	level = level or Compat.playerLevel()
+	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	local default = type(builds) == "table" and builds[kind] or nil
+	if classSlug == nil or type(default) ~= "table" then
+		Follow.noBuildReason = string.format(L.diagBuildNoSpec, Follow.specName(spec))
+		return nil
+	end
+	local code = defaultCode(data, classSlug, default.order)
+	local name = Follow.buildName(data, { name = default.name, default = true, kind = kind })
+	local build = code ~= nil and Follow.load(code, data, name) or nil
+	if build == nil then
+		Follow.noBuildReason = string.format(L.diagBuildRefused, Follow.specName(spec))
+		return nil
+	end
+	build.spec, build.kind = spec, kind
+	Follow.noBuildReason = nil
+	return build
+end
+
 --- A slot id's display name ("raid" -> L.slotRaid), the one lookup rule
 --- both Follow.slotsFor and the Talents page's slot picker use, so a slot
 --- id and its Locale key can never drift into two different rules for

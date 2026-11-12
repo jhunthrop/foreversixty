@@ -1106,8 +1106,9 @@ describe("BuildDialog, X.5 builds from the site", function()
 		local row = paste.rows[1]
 		assert.is_true(row.edge:IsShown())
 		assert.is_true(row.highlight:IsShown())
+		-- Spec 6.4: the cursor never turns a name gold; gold is the build followed.
 		local color = mock.lastCall(row.name, "SetTextColor")
-		local r, g, b = Theme.rgb(Theme.HEX.gold)
+		local r, g, b = Theme.rgb(Theme.HEX.body)
 		assert.are.same({ r, g, b }, { color[1], color[2], color[3] })
 		assert.are.equal("Enter to preview", BuildDialog.enterHint:GetText())
 		assert.is_true(BuildDialog.enterHint:IsShown())

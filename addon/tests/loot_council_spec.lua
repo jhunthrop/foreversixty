@@ -149,7 +149,8 @@ describe("LootCouncil", function()
 		}
 		state = mock.install({
 			class = { name = "Hunter", token = "HUNTER" }, realm = "Classic Beta PvP", region = 1, playerName = "Tester",
-			level = opts.level or 60, globals = globals, talents = opts.talents or helper.decidedTalents({ "Beast Mastery", "Marksmanship", "Survival" }),
+			level = opts.level or 60, globals = globals,
+			talents = opts.talents or helper.decidedTalents({ "Beast Mastery", "Marksmanship", "Survival" }),
 		})
 		state.date = "21:04"
 		_G.ForeverSixtyData = nil

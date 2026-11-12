@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## Unreleased
+
+- The addon no longer guesses your spec. When your talent points do not name one tree (none yet, one point, a tie or a split like 2 Holy and 2 Retribution), it asks "Are you Holy or Retribution?" on the tour's last page, in the panel and on the line by your minimap, and remembers your answer for that character. The guild tab and Inspect leave the spec blank instead of guessing too.
+- Each page of the first-run tour now opens with what you get: the gold ring on your next talent, the green arrow on a better bag item, the rotation in your panel, reports and the coach once the companion uploads, your guild's raid on the day.
+- The Builds dialog leads with the builds the addon ships for your class, the one you follow marked Following; one tap follows another. Builds from the site and the paste box sit under "Custom build".
+- Pressing Change on the tour no longer opens the Builds dialog underneath it. The tour steps aside and comes back on the same page when the dialog closes, showing the build you picked.
+
 ## 2.0.39
 
 - An item tooltip no longer opens on its own after your mouse has left it, after looting, or when another addon reads an item in the background. Thanks to Nick.

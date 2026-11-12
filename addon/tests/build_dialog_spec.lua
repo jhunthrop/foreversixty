@@ -1111,14 +1111,17 @@ describe("BuildDialog, builds from the site", function()
 		assert.are.equal("", BuildDialog.rowText(nil))
 	end)
 
-	it("highlights the first row by default, or the one the cursor is on, with a 2 px gold edge (X.5)", function()
+	it("highlights the first row by default, or the one the cursor is on, with a 2 px body edge (X.5, 6.4)",
+		function()
 		local rows = { { id = 1 }, { id = 2 }, { id = 3 } }
 		assert.are.equal(1, BuildDialog.rowsView(rows, 2).active)
 		assert.are.equal(2, BuildDialog.rowsView(rows, 2, nil, 2).active)
-		-- Past the rows shown, the last one shown; with no rows, none.
+		-- Past the rows shown, the last one shown; with no rows, none; a cursor of 0 is on no site row.
 		assert.are.equal(2, BuildDialog.rowsView(rows, 2, nil, 9).active)
 		assert.is_nil(BuildDialog.rowsView({}, 2).active)
-		assert.are.same({ width = 2, token = "gold" }, BuildDialog.ROW_ACTIVE_EDGE)
+		assert.is_nil(BuildDialog.rowsView(rows, 2, nil, 0).active)
+		-- Spec 6.4: gold means the build followed, so the cursor's edge is the body colour.
+		assert.are.same({ width = 2, token = "body" }, BuildDialog.ROW_ACTIVE_EDGE)
 		assert.are.equal(require("Theme").CONTROL_STATES.secondary.hover, BuildDialog.ROW_HOVER)
 	end)
 

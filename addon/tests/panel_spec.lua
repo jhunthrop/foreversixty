@@ -214,13 +214,20 @@ describe("Panel, the pure model", function()
 			assert.is_true(off.finished)
 		end)
 
-		it("offers Pick your path under 10 with no build, and nothing otherwise", function()
+		it("asks the spec question with no build and undecided points, at any level (spec 6.2)", function()
 			local specs = { { slug = "warrior-arms", name = "Arms", playstyle = "Big hits" } }
-			local path = Panel.path({ level = 5, specs = specs })
+			local question = "Are you Arms, Fury or Protection?"
+			local path = Panel.path({ level = 5, specs = specs, question = question })
 			assert.are.equal("path", path.kind)
+			assert.are.equal(question, path.heading)
 			assert.are.equal("First talent point at level 10", path.foot)
-			assert.is_nil(Panel.path({ level = 12, specs = specs }))
-			assert.is_nil(Panel.path({ level = 5, build = BUILD, specs = specs }))
+			-- From the first talent level the point is there to spend: no foot.
+			local later = Panel.path({ level = 13, specs = specs, question = "Are you Arms or Fury?" })
+			assert.are.equal("Are you Arms or Fury?", later.heading)
+			assert.is_nil(later.foot)
+			-- Points that decide, or a build in force, and the Talents row takes the slot.
+			assert.is_nil(Panel.path({ level = 5, specs = specs }))
+			assert.is_nil(Panel.path({ level = 5, build = BUILD, specs = specs, question = question }))
 		end)
 	end)
 

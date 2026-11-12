@@ -847,11 +847,9 @@ local L = {
 	chipShownLine = "Forever Sixty line shown.",
 	-- The badge past nine waiting.
 	chipWaitingMany = "9+",
-	-- The "pick a path" card's heading: "Gnome Warrior. Pick a path:", all in the card's gold.
-	chipPathHeading = "%s. Pick a path:",
-	chipRaceClass = "%s %s",
-	-- Under the card's buttons: what choosing does.
+	-- Under the card's buttons: what choosing does (the card's heading is the spec question, L.pathAsk).
 	chipPathFooter = "Loads the leveling build. You can change it later.",
+	chipPathFooterRaid = "Loads the raid build. You can change it later.",
 	-- One line under each spec's button on the "pick a path" card: plain words,
 	-- at most eight, naming the weapons or the signature talents the tree is
 	-- known for in this client's data (Data.classes tabs). Keyed by spec slug.
@@ -918,6 +916,16 @@ L.dialogUnnamedTalent = "a talent with no name in this data"
 -- Dim, at the bottom right while a preview shows ("Enter to preview" while builds wait, none chosen).
 L.dialogEnterHint = "Enter to use"
 L.dialogEnterPreview = "Enter to preview"
+-- The addon's own builds at the top of the Builds tab (spec section 6.4): the heading over them
+-- ("Paladin leveling builds"; the spec question, L.pathAsk, while the points do not name a tree),
+-- the gold mark on the followed row, the heading over the site rows and the paste box, the Enter
+-- hint while the cursor sits on an own row, and the row's line when its default does not load.
+L.dialogOwnLeveling = "%s leveling builds"
+L.dialogOwnRaid = "%s raid builds"
+L.dialogFollowingMark = "Following"
+L.dialogCustomHeading = "Custom build"
+L.dialogEnterFollow = "Enter to follow"
+L.dialogOwnFailed = "This build did not load."
 -- The preview's second line, its parts joined by dialogSeparator:
 -- "Warrior · Arms 33 / Fury 16 / Protection 2 · 51 points"; then, on its own line in body colour,
 -- "You can place 12 now." while points wait.
@@ -1462,6 +1470,15 @@ L.timePm = "pm"
 
 -- The first-run tour (surfaces/Onboarding.lua, design/specs/2026-11-08-addon-ux.md 3.1).
 L.tourTitle = "Welcome to Forever Sixty"
+-- Each page's lead (spec section 6.3): what the player gets, in a veteran's words, then the page.
+L.tourLoopLead = "Your next talent gets a gold ring and a better bag item gets a green arrow. Once the companion "
+	.. "uploads your fights, you get reports and a coach."
+L.tourSiteLead = "You see what to wear, which point to take and which button to press, right in the game."
+L.tourBackLead = "Once the companion has your fights, the site shows your parse on each boss, what cost you most and "
+	.. "what to fix first."
+L.tourGuildLead = "Your officers post the raid on the site. On the day, the line by your minimap says Tonight, and "
+	.. "your panel has your job if they set one."
+L.tourSetupLead = "The gold ring, the bag arrows and the rotation all follow your path."
 L.tourLoopHeading = "How Forever Sixty works"
 L.tourSiteHeading = "The site, in your game"
 L.tourBackHeading = "Your game, back to the site"
@@ -1502,10 +1519,8 @@ L.tourScoreLine = "Gear, experience, parses, attendance and preparation, in one 
 	.. "players with Forever Sixty and Forever Sixty Data."
 -- The coordinator's ruling (2026-11-08): one short line that the score can be hidden.
 L.tourScoreHide = "Settings can hide it from others."
-L.tourGuildIntro = "Your officers post a raid on the site (and in your Discord, if your guild has linked it). On raid "
-	.. "day, it is here:"
 L.tourGuildRaid = "Onyxia's Lair"
-L.tourGuildChipNote = "The line by your minimap, on raid day."
+L.tourGuildChipNote = "The line by your minimap."
 L.tourGuildJob = "Whelps, west cave"
 L.tourGuildJobNote = "In your panel, and in chat when you zone in."
 L.tourAnswer = "Answer In, Late, Bench or Out"

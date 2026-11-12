@@ -62,7 +62,8 @@ describe("Talents.decideTree, the one rule", function()
 	end)
 
 	it("counts a character's ranks into points per tab", function()
-		assert.are.same({ [1] = 2, [3] = 7 }, Talents.tabPoints({ [1] = { ["1:1"] = 2 }, [3] = { ["1:2"] = 5, ["2:1"] = 2 } }))
+		assert.are.same({ [1] = 2, [3] = 7 },
+			Talents.tabPoints({ [1] = { ["1:1"] = 2 }, [3] = { ["1:2"] = 5, ["2:1"] = 2 } }))
 	end)
 end)
 
@@ -81,7 +82,8 @@ describe("Gear.specOf under the rule", function()
 
 	it("answers the tree the points name beyond doubt", function()
 		assert.are.equal("paladin-retribution", Gear.specOf(DATA, "paladin", { [3] = { ["1:2"] = 2 } }))
-		assert.are.equal("paladin-protection", Gear.specOf(DATA, "paladin", { [2] = { ["1:1"] = 5 }, [1] = { ["1:1"] = 0 } }))
+		assert.are.equal("paladin-protection",
+			Gear.specOf(DATA, "paladin", { [2] = { ["1:1"] = 5 }, [1] = { ["1:1"] = 0 } }))
 	end)
 end)
 
@@ -101,7 +103,8 @@ describe("Follow.ensureDefault under the rule", function()
 
 	it("loads no default for an undecided character and says why", function()
 		assert.is_nil(Follow.ensureDefault(DATA, { classSlug = "paladin", ranks = {}, level = 10 }))
-		assert.are.equal(string.format(L.diagBuildUndecided, "Are you Holy, Protection or Retribution?"), Follow.noBuildReason)
+		assert.are.equal(string.format(L.diagBuildUndecided, "Are you Holy, Protection or Retribution?"),
+			Follow.noBuildReason)
 		local split = { [1] = { ["1:1"] = 2 }, [3] = { ["1:2"] = 2 } }
 		assert.is_nil(Follow.ensureDefault(DATA, { classSlug = "paladin", ranks = split, level = 13 }))
 		assert.is_nil(Follow.build)
@@ -119,7 +122,8 @@ describe("Follow.ensureDefault under the rule", function()
 	it("words the question from the trees that hold points, else every tree", function()
 		assert.are.equal("Are you Holy or Retribution?", Follow.specQuestion(DATA, "paladin",
 			{ [1] = { ["1:1"] = 2 }, [3] = { ["1:2"] = 2 } }))
-		assert.are.equal("Are you Holy, Protection or Retribution?", Follow.specQuestion(DATA, "paladin", {}))
+		assert.are.equal("Are you Holy, Protection or Retribution?",
+			Follow.specQuestion(DATA, "paladin", {}))
 		-- One point names nothing yet; two in one tree do.
 		assert.are.equal("Are you Holy, Protection or Retribution?", Follow.specQuestion(DATA, "paladin",
 			{ [2] = { ["1:1"] = 1 } }))

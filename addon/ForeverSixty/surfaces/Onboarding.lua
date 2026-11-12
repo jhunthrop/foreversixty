@@ -14,6 +14,10 @@
 -- Truth rule: every claim is what is built today. What is designed but not live carries a gold
 -- "coming" tag (answering in game, the phone app); the app QR is small and labelled "Join the
 -- app beta" until the apps ship (Onboarding.QR_SIZE makes it large then).
+--
+-- Spec section 6 (2026-11-11): every page opens with one lead saying what the player gets; the
+-- last page asks the spec question when the points do not name a tree (Follow.specQuestion);
+-- and the tour steps aside while the Builds dialog is open, coming back on the same page.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -29,6 +33,7 @@ local Chip = ns.Chip or require("Chip")
 local TourExample = ns.TourExample or require("TourExample")
 local SiteStatus = ns.SiteStatus or require("SiteStatus")
 local SettingsPage = ns.SettingsPage or require("Settings")
+local BuildDialog = ns.BuildDialog or require("BuildDialog")
 
 local Onboarding = {}
 
@@ -47,6 +52,9 @@ Onboarding.QR_TEXTURE = "Interface\\AddOns\\ForeverSixty\\media\\app-qr"
 --- The footer's and the set-up page's buttons: the client's red button, a step taller than the
 --- panel's small ones.
 Onboarding.BUTTON_HEIGHT = 22
+--- The gap between a page's lead and its content, and between the set-up page's tiles.
+Onboarding.LEAD_GAP = 12
+Onboarding.TILE_GAP = 8
 --- The addresses the set-up page offers to copy.
 Onboarding.SITE = "foreversixty.gg"
 Onboarding.SETUP = "foreversixty.gg/setup"
@@ -110,6 +118,8 @@ function Onboarding.setup(input)
 		end
 	else
 		page.tiles = input.specs or {}
+		-- The spec question when the points do not name a tree (spec 6.2), else the plain heading.
+		page.ask = input.question or L.panelPickPath
 		page.tilesNote = (input.level or 0) >= Progress.MAX_LEVEL and L.tourPathRaid or L.tourPathLeveling
 	end
 	local age = input.siteAge
@@ -126,6 +136,20 @@ function Onboarding.setup(input)
 		page.signIn, page.companion = true, true
 	end
 	return page
+end
+
+--- A spec tile's width with `count` tiles across the content (spec 6.2): 188 for three, 141 for
+--- the druid's four. Pure.
+function Onboarding.tileWidth(count)
+	count = math.max(1, count or 1)
+	return math.floor((Onboarding.WIDTH - 2 * Onboarding.PAD - Onboarding.TILE_GAP * (count - 1)) / count)
+end
+
+--- The lead every page opens with (spec 6.3): what the player gets, in one or two lines. Pure.
+Onboarding.LEADS = { loop = "tourLoopLead", site = "tourSiteLead", back = "tourBackLead", guild = "tourGuildLead",
+	setup = "tourSetupLead" }
+function Onboarding.lead(key)
+	return L[Onboarding.LEADS[key]]
 end
 
 --- "2 hours ago", "25 minutes ago", "just now". Pure.
@@ -160,6 +184,30 @@ function Onboarding.finish()
 	end
 end
 
+--- The Builds dialog opens over the tour (Change, /fs build, the panel): the tour steps aside,
+--- hidden without ending, and remembers its page (spec 6.1). False when it was not showing.
+function Onboarding.stepAside()
+	if Onboarding.frame == nil or not Onboarding.frame:IsShown() then
+		return false
+	end
+	Onboarding.asidePage = Onboarding.page or 1
+	Onboarding.steppingAside = true
+	Onboarding.frame:Hide()
+	Onboarding.steppingAside = nil
+	return true
+end
+
+--- The dialog closed: the tour comes back on the page it left, read afresh, so a build picked in
+--- the dialog shows as the new path. False when the tour had not stepped aside.
+function Onboarding.stepBack()
+	local page = Onboarding.asidePage
+	if page == nil then
+		return false
+	end
+	Onboarding.asidePage = nil
+	return Onboarding.open(page)
+end
+
 --- "Tooltips only" (page 1): the setting on (the chip, the talent marks and the slot marks off), and
 --- the tour ends.
 function Onboarding.justTooltips()
@@ -191,6 +239,7 @@ function Onboarding.inputs(data)
 		faction = Compat.playerFaction(), classToken = Chip.classToken(), level = level, name = Compat.playerName(),
 		build = build, buildName = build ~= nil and Follow.buildName(data, build) or nil, progress = progress,
 		specs = Chip.pathSpecs(data, Talents.playerClassSlug()),
+		question = Follow.specQuestion(data, Talents.playerClassSlug(), ranks),
 	}
 	local ok, facts = pcall(SiteStatus.facts)
 	input.siteAge = ok and type(facts) == "table" and facts.age or nil
@@ -451,9 +500,7 @@ local function drawBack(content)
 end
 
 local function drawGuild(content)
-	local intro = text(content, L.tourGuildIntro, "ink", "normal", Onboarding.WIDTH - 60)
-	intro:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
-	local y = height(intro) + 14
+	local y = 0
 	local chipLine = text(content, string.format(L.chipTonight, Compat.clockText(20, 0), L.tourGuildRaid), "ink",
 		"normal")
 	chipLine:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
@@ -489,32 +536,33 @@ local function drawSetup(content, input)
 			local nextLine = text(content, page.path.next, "umberMuted")
 			nextLine:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 18)
 		end
+		-- The Builds dialog (its open steps the tour aside; its close brings it back here).
 		local change = button(content, L.panelChange, function()
-			local BuildDialog = ns.BuildDialog
-			if BuildDialog ~= nil then
-				BuildDialog.open("paste")
-			end
+			BuildDialog.open("paste")
 		end)
 		change:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
 		y = y + 44
 	else
-		local title = text(content, L.panelPickPath, "ink", "normal")
+		local title = text(content, page.ask, "ink", "normal")
 		title:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 		local note = text(content, page.tilesNote, "umberMuted")
 		note:SetPoint("LEFT", title, "RIGHT", 8, 0)
 		y = y + 20
+		local tileWidth = Onboarding.tileWidth(#page.tiles)
+		local tallest = 0
 		for index, spec in ipairs(page.tiles) do
-			local x = (index - 1) * 196
+			local x = (index - 1) * (tileWidth + Onboarding.TILE_GAP)
 			local pick = button(content, spec.name, function()
 				Chip.choosePath(spec.slug)
 				Onboarding.draw()
 			end)
 			pick:SetPoint("TOPLEFT", content, "TOPLEFT", x, -y)
-			pick:SetWidth(188)
-			local line = text(content, spec.playstyle or "", "umberMuted", "small", 188)
+			pick:SetWidth(tileWidth)
+			local line = text(content, spec.playstyle or "", "umberMuted", "small", tileWidth)
 			line:SetPoint("TOPLEFT", content, "TOPLEFT", x, -y - 28)
+			tallest = math.max(tallest, height(line))
 		end
-		y = y + 64
+		y = y + 28 + tallest + 8
 	end
 	local left = Onboarding.WIDTH - 60 - Onboarding.QR_SIZE - 120
 	if page.seen ~= nil then
@@ -546,17 +594,16 @@ local function drawSetup(content, input)
 	if #rows > 0 then
 		local links = text(content, L.tourLinks, "umberMuted", "small", left)
 		links:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-		y = y + height(links) + 4
+		y = y + height(links)
 	end
-	local again = text(content, L.tourAgain, "umberMuted", "small", left)
-	again:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
+	-- "/fs help opens this again." sits in the footer's empty left on this page (spec 6.3).
 	local qr = icon(content, Onboarding.QR_TEXTURE, Onboarding.QR_SIZE)
 	qr:SetPoint("TOPRIGHT", content, "TOPRIGHT", -40, -(page.path ~= nil and 54 or 92))
 	local label = text(content, L.tourAppBeta, "ink", "small")
 	label:SetPoint("TOP", qr, "BOTTOM", 0, -4)
 	local address = text(content, Onboarding.APP, "umberMuted", "small")
 	address:SetPoint("TOP", label, "BOTTOM", 0, -2)
-	return math.max(y + height(again), (page.path ~= nil and 54 or 92) + Onboarding.QR_SIZE + 36)
+	return math.max(y, (page.path ~= nil and 54 or 92) + Onboarding.QR_SIZE + 36)
 end
 
 local DRAW = { loop = drawLoop, site = drawSite, back = drawBack, guild = drawGuild, setup = drawSetup }
@@ -585,6 +632,17 @@ function Onboarding.ensure()
 	content:SetPoint("TOPLEFT", frame, "TOPLEFT", Onboarding.PAD, -(Theme.SIZES.titleBand + 16))
 	content:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -Onboarding.PAD, 50)
 	Onboarding.content = content
+	-- The page's lead (spec 6.3) at the content's top; the page's own parts draw in the body under it.
+	local lead = Widgets.label(content, "", "ink", "normal")
+	lead:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
+	lead:SetWidth(Onboarding.WIDTH - 2 * Onboarding.PAD)
+	if type(lead.SetWordWrap) == "function" then
+		lead:SetWordWrap(true)
+	end
+	Onboarding.leadText = lead
+	local body = CreateFrame("Frame", nil, content)
+	body:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", 0, 0)
+	Onboarding.body = body
 	local footer = CreateFrame("Frame", nil, frame)
 	footer:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 16, 14)
 	footer:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 14)
@@ -604,9 +662,10 @@ function Onboarding.ensure()
 	if type(UISpecialFrames) == "table" then
 		table.insert(UISpecialFrames, Onboarding.FRAME_NAME)
 	end
-	-- Escape (UISpecialFrames) hides the frame: that ends the tour for good, unless combat hid it.
+	-- Escape (UISpecialFrames) hides the frame: that ends the tour for good, unless combat hid it or
+	-- it stepped aside for the Builds dialog.
 	frame:SetScript("OnHide", function()
-		if not Onboarding.hidingForCombat then
+		if not Onboarding.hidingForCombat and not Onboarding.steppingAside then
 			ForeverSixtyDB = ForeverSixtyDB or {}
 			ForeverSixtyDB.welcomedAt = ForeverSixtyDB.welcomedAt or (type(time) == "function" and time() or 0)
 		end
@@ -641,6 +700,10 @@ local function drawFooter(index, count)
 			local quiet = button(footer, L.tourJustTooltips, Onboarding.justTooltips, L.tourJustTooltipsHint)
 			quiet:SetPoint("LEFT", skip, "RIGHT", 8, 0)
 		end
+	else
+		-- The last page has no Skip tour: "/fs help opens this again." takes its place (spec 6.3).
+		local again = text(footer, L.tourAgain, "umberMuted", "small")
+		again:SetPoint("LEFT", footer, "LEFT", 4, 0)
 	end
 	local right
 	if last then
@@ -668,7 +731,11 @@ function Onboarding.draw()
 	Onboarding.page = math.max(1, math.min(Onboarding.page or 1, #keys))
 	local key = keys[Onboarding.page]
 	Widgets.setTitleBand(Onboarding.band, Onboarding.head(key, Onboarding.page, #keys, input))
-	frame:SetHeight(Onboarding.frameHeight(DRAW[key](Onboarding.content, input)))
+	Onboarding.leadText:SetText(Onboarding.lead(key) or "")
+	local leadHeight = height(Onboarding.leadText, 17)
+	Onboarding.body:SetPoint("TOPLEFT", Onboarding.content, "TOPLEFT", 0, -(leadHeight + Onboarding.LEAD_GAP))
+	local bodyHeight = DRAW[key](Onboarding.body, input)
+	frame:SetHeight(Onboarding.frameHeight(leadHeight + Onboarding.LEAD_GAP + bodyHeight))
 	drawFooter(Onboarding.page, #keys)
 	frame:Show()
 	return key
@@ -762,6 +829,11 @@ function Onboarding.register()
 	end
 	return frame
 end
+
+-- The Builds dialog's open and close drive the step aside (spec 6.1): any opener, the tour's own
+-- Change, the panel's, /fs build, behaves the same.
+BuildDialog.beforeOpen = Onboarding.stepAside
+BuildDialog.afterHide = Onboarding.stepBack
 
 ns.Onboarding = Onboarding
 return Onboarding

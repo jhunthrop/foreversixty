@@ -1,7 +1,8 @@
 -- addon/ForeverSixty/surfaces/BuildDialog.lua
--- The build dialog (spec section 4.10): the one frame of the addon's own, 420x300.
--- Two tabs, one job each: take a build in ("Builds": the ones the site sent as rows, and the paste
--- box under them), copy the character out ("Copy my character", the site's own words).
+-- The build dialog (spec section 4.10; 2026-11-08-addon-ux.md section 6.4): the one frame of the
+-- addon's own, 420x300. Two tabs, one job each: take a build in ("Builds": the addon's own builds
+-- for the class first, one tap follows one; then the ones the site sent as rows, and the paste box
+-- under them), copy the character out ("Copy my character", the site's own words).
 --
 -- Pure model, thin frame. BuildDialog.evaluate is the paste box's whole verdict
 -- (Codec.loadBuild's own answer, the codec's own reason on a refusal); pasteView,
@@ -58,13 +59,22 @@ BuildDialog.LAYOUT = {
 	hintClearance = 10, hintMargin = 2,
 }
 
+--- The most own-build rows the dialog draws (the druid's four specs); built on the first open.
+BuildDialog.OWN_ROWS = 4
+--- The crest beside the own builds' heading, in UI units.
+BuildDialog.HEADING_CREST = 20
+
 --- Injection points Options fills: the data to read, what to redraw after a build is
 --- used (Options.refreshSurfaces), and what to do instead when the dialog cannot show
---- itself (Options.showHint). `say` prints the chat line (Theme.say when nil).
+--- itself (Options.showHint). `say` prints the chat line (Theme.say when nil). Onboarding
+--- fills `beforeOpen` and `afterHide` (spec 6.1): the tour steps aside while the dialog is
+--- open and comes back when it hides.
 BuildDialog.data = nil
 BuildDialog.afterUse = nil
 BuildDialog.fallback = nil
 BuildDialog.say = nil
+BuildDialog.beforeOpen = nil
+BuildDialog.afterHide = nil
 
 --- Item ids whose names the preview is waiting on (GET_ITEM_INFO_RECEIVED redraws it).
 BuildDialog.pending = {}
@@ -1089,6 +1099,95 @@ function BuildDialog.inboxRows(builds, dismissed, data, player, stamp)
 	return rows, refusal
 end
 
+-- The addon's own builds (spec 6.4) --------------------------------------------------------
+
+--- Whether two plans spend the same points in the same order. Pure.
+function BuildDialog.sameOrder(a, b)
+	if type(a) ~= "table" or type(b) ~= "table" or #a ~= #b then
+		return false
+	end
+	for index, point in ipairs(a) do
+		local other = b[index]
+		if type(point) ~= "table" or type(other) ~= "table" or point.tab ~= other.tab or point.tier ~= other.tier
+			or point.column ~= other.column then
+			return false
+		end
+	end
+	return true
+end
+
+--- The build's kind for a level: the raid build at RAID_LEVEL, the leveling one under it. Pure.
+function BuildDialog.ownKind(level)
+	return (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+end
+
+--- The addon's own builds for `classSlug` at `level`, one row per spec the data has a build for,
+--- in tree order (Chip.pathSpecs): { spec, kind, name ("Retribution build"), detail (the split,
+--- "Retribution 51"), order, following }. `followed` is the build in force, marked when it spends
+--- the same points. Pure.
+function BuildDialog.ownRows(data, classSlug, level, followed)
+	local rows = {}
+	local kind = BuildDialog.ownKind(level)
+	for _, spec in ipairs(Chip.pathSpecs(data, classSlug)) do
+		local builds = data.defaultBuilds[spec.slug]
+		local default = type(builds) == "table" and builds[kind] or nil
+		if type(default) == "table" and type(default.order) == "table" then
+			local order = {}
+			for index, triple in ipairs(default.order) do
+				order[index] = { tab = triple[1], tier = triple[2], column = triple[3] }
+			end
+			local build = { classSlug = classSlug, order = order, name = default.name, default = true, kind = kind }
+			rows[#rows + 1] = {
+				spec = spec.slug, kind = kind, order = order,
+				name = Follow.buildName(data, build),
+				detail = BuildDialog.split(build, data),
+				following = followed ~= nil and BuildDialog.sameOrder(followed.order, order),
+			}
+		end
+	end
+	return rows
+end
+
+--- The heading over the own builds: the spec question while the character's points do not name
+--- a tree (`question`, Follow.specQuestion), else "Paladin leveling builds" ("raid" at 60). Pure.
+function BuildDialog.ownHeading(className, level, question)
+	if question ~= nil then
+		return question
+	end
+	local key = BuildDialog.ownKind(level) == "raid" and L.dialogOwnRaid or L.dialogOwnLeveling
+	return string.format(key, className or "")
+end
+
+--- How many site rows show beside `ownCount` own rows: the usual two, one once four own rows
+--- stand above them (the druid), so the content stays within PREVIEW_MAX_HEIGHT. Pure.
+function BuildDialog.siteRowLimit(ownCount)
+	if (ownCount or 0) > 3 then
+		return 1
+	end
+	return Theme.SIZES.dialogInboxRows
+end
+
+--- The rows the cursor walks: the own rows first, then the site rows shown. Pure.
+function BuildDialog.cursorItems(own, shown)
+	local items = {}
+	for _, entry in ipairs(own or {}) do
+		items[#items + 1] = { own = true, entry = entry }
+	end
+	for _, entry in ipairs(shown or {}) do
+		items[#items + 1] = { own = false, entry = entry }
+	end
+	return items
+end
+
+--- Where the cursor starts: the first site row when any wait, else on nothing (0): with the spec
+--- undecided, Enter on open must never follow a spec. Pure.
+function BuildDialog.startCursor(ownCount, siteCount)
+	if (siteCount or 0) > 0 then
+		return (ownCount or 0) + 1
+	end
+	return 0
+end
+
 --- The muted line under a row's detail: "For Bow Jackzon · Classic Beta PvP · from the site", the
 --- source "pushed by <officer>" for a build an officer pushed (L3.7 item 44). The "For ..." part
 --- only for a build addressed to a character (`entry.character`) while the player's name is known;
@@ -1143,6 +1242,11 @@ function BuildDialog.rowHeight(line)
 	return math.max(S.dialogClassIcon, line * 3 + S.gap)
 end
 
+--- An own-build row's height: its two lines and the gap between them (spec 6.4). Pure.
+function BuildDialog.ownRowHeight(line)
+	return line * 2 + Theme.SIZES.gap
+end
+
 --- The rows paste mode shows: with nothing previewed, at most `limit` and "and 2 more" for the
 --- rest, the one at `cursor` (the first by default) as `active`, the highlighted row Enter
 --- previews; while any build previews or a pasted code is refused, none (the preview carries the
@@ -1156,13 +1260,15 @@ function BuildDialog.rowsView(rows, limit, verdict, cursor)
 		shown[index] = rows[index]
 	end
 	local more = #rows > limit and string.format(L.dialogInboxMore, #rows - limit) or nil
-	local active = shown[math.max(1, math.min(cursor or 1, #shown))]
+	-- A cursor of 0 sits on no site row (it is on an own row, or nowhere); nil means the first.
+	local active = (cursor == nil or cursor >= 1) and shown[math.max(1, math.min(cursor or 1, #shown))] or nil
 	return { shown = shown, more = more, active = active ~= nil and active.id or nil }
 end
 
---- The highlighted row: a 2 px gold edge at its left. Every row hovers in the secondary buttons'
---- hover ground, the cue that it can be clicked.
-BuildDialog.ROW_ACTIVE_EDGE = { width = 2, token = "gold" }
+--- The cursor's row: a 2 px edge in the body colour at its left (spec 6.4: gold means one thing
+--- in this dialog, the build followed). Every row hovers in the secondary buttons' hover ground,
+--- the cue that it can be clicked.
+BuildDialog.ROW_ACTIVE_EDGE = { width = 2, token = "body" }
 BuildDialog.ROW_HOVER = Theme.CONTROL_STATES.secondary.hover
 
 --- The paste tab's badge while builds wait ("· 1 waiting"), in its own slot after the label in
@@ -1351,6 +1457,30 @@ local function currentRows()
 		BuildDialog.inboxDay(ForeverSixtyInbox, BuildDialog.liveClock()))
 end
 
+--- The addon's own builds for this character (BuildDialog.ownRows), the followed one marked.
+local function currentOwn()
+	local player = BuildDialog.player()
+	local data = dataOf()
+	if player == nil or type(data) ~= "table" or type(data.defaultBuilds) ~= "table" then
+		return {}
+	end
+	return BuildDialog.ownRows(data, player.classSlug, liveLevel(), Follow.build)
+end
+
+--- The heading over the own builds for this character: the spec question while the points do not
+--- name a tree, else the class's builds (BuildDialog.ownHeading).
+local function currentOwnHeading()
+	local player = BuildDialog.player()
+	local data = dataOf()
+	if player == nil then
+		return nil
+	end
+	local names = type(player.classNames) == "table" and player.classNames or {}
+	local className = names[player.classSlug:upper()] or Talents.titleCase(player.classSlug)
+	local ok, question = pcall(Follow.specQuestion, data, player.classSlug, liveRanks(data))
+	return BuildDialog.ownHeading(className, liveLevel(), ok and question or nil)
+end
+
 local SLOT_WORDS = setmetatable({}, {
 	__index = function(_, name)
 		return Compat.globalString(name)
@@ -1429,29 +1559,83 @@ function BuildDialog.choose(row)
 	return BuildDialog.drawPaste()
 end
 
---- The highlight to the `index`th row shown (kept within the rows there are), and the dialog redrawn.
+--- The rows the cursor can sit on now: the own rows, then the site rows shown.
+local function currentItems()
+	local own = BuildDialog.own or {}
+	local limit = BuildDialog.siteRowLimit(#own)
+	local shown = {}
+	for index = 1, math.min(limit, #(BuildDialog.rows or {})) do
+		shown[index] = BuildDialog.rows[index]
+	end
+	return BuildDialog.cursorItems(own, shown)
+end
+
+--- The item under the cursor: { own, entry }, or nil when the cursor is on nothing.
+function BuildDialog.cursorItem()
+	return currentItems()[BuildDialog.cursor or 0]
+end
+
+--- The cursor to the `index`th row (kept within the rows there are; 0 is none), and the dialog redrawn.
 function BuildDialog.setCursor(index)
-	local shown = math.min(#(BuildDialog.rows or {}), Theme.SIZES.dialogInboxRows)
-	BuildDialog.cursor = math.max(1, math.min(index, math.max(1, shown)))
+	local count = #currentItems()
+	BuildDialog.cursor = math.max(count > 0 and 1 or 0, math.min(index, count))
 	return BuildDialog.drawPaste()
 end
 
---- Up or Down in the paste box: the highlight moves a row while builds wait and none is previewed.
+--- Up or Down in the paste box: the cursor moves a row while none is previewed.
 function BuildDialog.moveCursor(step)
-	if BuildDialog.verdict ~= nil or BuildDialog.mode ~= "paste" or #(BuildDialog.rows or {}) == 0 then
+	if BuildDialog.verdict ~= nil or BuildDialog.mode ~= "paste" or #currentItems() == 0 then
 		return nil
 	end
-	return BuildDialog.setCursor((BuildDialog.cursor or 1) + step)
+	return BuildDialog.setCursor((BuildDialog.cursor or 0) + step)
 end
 
---- Enter with builds waiting and none previewed: the highlighted build previews.
+--- Enter with none previewed: the cursor's own row is followed, a site row previews, nothing
+--- happens on no row.
 function BuildDialog.previewCursor()
-	local rows = BuildDialog.rows or {}
-	local row = rows[BuildDialog.cursor or 1] or rows[1]
-	if row == nil then
+	local item = BuildDialog.cursorItem()
+	if item == nil then
 		return nil
 	end
-	return BuildDialog.choose(row)
+	if item.own then
+		return BuildDialog.followOwn(item.entry)
+	end
+	return BuildDialog.choose(item.entry)
+end
+
+--- One tap on an own-build row (spec 6.4): the row already followed only closes the dialog; any
+--- other is the player's answer to the spec question (Chip.choosePath: Follow.chooseDefault,
+--- the choice remembered for the character), then the dialog closes and the chat line says
+--- what is followed and the next talent. A default that does not load marks the row instead.
+function BuildDialog.followOwn(entry)
+	if entry == nil then
+		return nil
+	end
+	if entry.following then
+		BuildDialog.close()
+		return Follow.build
+	end
+	local data = dataOf()
+	Chip.data = Chip.data or data
+	local build = Chip.choosePath(entry.spec)
+	if build == nil then
+		BuildDialog.ownFailed = BuildDialog.ownFailed or {}
+		BuildDialog.ownFailed[entry.spec] = true
+		BuildDialog.drawPaste()
+		return nil
+	end
+	if BuildDialog.afterUse ~= nil then
+		BuildDialog.afterUse()
+	end
+	BuildDialog.close()
+	local level, ranks = liveLevel(), liveRanks(data)
+	local atLevel
+	if type(level) == "number" and Progress.unspentPoints(level, ranks) == 0 then
+		atLevel = Progress.nextPointLevel(level, ranks)
+	end
+	local say = BuildDialog.say or Theme.say
+	say(BuildDialog.chatLine(Follow.buildName(data, build), liveNext(build), atLevel))
+	return build
 end
 
 --- The Use button, and Enter in the paste box: only while a preview shows, and not while the build
@@ -1869,18 +2053,73 @@ local function buildRow(content)
 	return row
 end
 
+--- An own-build row (spec 6.4): two lines, the name in the body colour with a gold "Following" at
+--- its right on the followed row, the split muted under it; the whole row is the target.
+local function buildOwnRow(content)
+	local S = Theme.SIZES
+	local width = contentWidth()
+	local row = { frame = Theme.createFrame("Button", nil, content) }
+	row.frame:SetSize(width, BuildDialog.ownRowHeight(lineHeight()))
+	local highlight = Theme.texture(row.frame, "BACKGROUND", BuildDialog.ROW_HOVER)
+	highlight:SetAllPoints(row.frame)
+	highlight:Hide()
+	row.highlight = highlight
+	local E = BuildDialog.ROW_ACTIVE_EDGE
+	row.edge = Theme.texture(row.frame, "ARTWORK", E.token)
+	row.edge:SetPoint("TOPRIGHT", row.frame, "TOPLEFT", -S.gap, 0)
+	row.edge:SetPoint("BOTTOMRIGHT", row.frame, "BOTTOMLEFT", -S.gap, 0)
+	row.edge:SetWidth(E.width)
+	row.edge:Hide()
+	row.mark = text(row.frame, "gold")
+	row.mark:SetText(L.dialogFollowingMark)
+	row.mark:SetJustifyH("RIGHT")
+	row.mark:SetPoint("TOPRIGHT", row.frame, "TOPRIGHT", 0, 0)
+	row.name = text(row.frame, "body", width)
+	row.name:SetPoint("TOPLEFT", row.frame, "TOPLEFT", 0, 0)
+	row.detail = text(row.frame, "muted", width)
+	row.detail:SetPoint("TOPLEFT", row.name, "BOTTOMLEFT", 0, -S.gap / 2)
+	for _, region in ipairs({ row.name, row.detail }) do
+		if type(region.SetWordWrap) == "function" then
+			region:SetWordWrap(false)
+		end
+	end
+	row.frame:SetScript("OnEnter", function()
+		if row.index ~= nil and BuildDialog.cursor ~= row.index then
+			BuildDialog.setCursor(row.index)
+		end
+	end)
+	row.frame:SetScript("OnClick", function()
+		BuildDialog.followOwn(row.entry)
+	end)
+	row.frame:Hide()
+	return row
+end
+
 local function buildPaste(frame, top, bottom)
 	local S = Theme.SIZES
 	local width = contentWidth()
 	local content = Theme.createFrame("Frame", nil, frame)
 	content:SetPoint("TOPLEFT", frame, "TOPLEFT", S.padding, -top)
 	content:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -S.padding, bottom)
-	local paste = { content = content, rows = {} }
+	local paste = { content = content, rows = {}, own = {} }
 	paste.following = text(content, "body", width)
 	if type(paste.following.SetWordWrap) == "function" then
 		paste.following:SetWordWrap(false)
 	end
 	paste.next = text(content, "muted", width)
+	-- The own builds' heading with the class crest, the rows, then the "Custom build" heading.
+	paste.crest = content:CreateTexture(nil, "ARTWORK")
+	paste.crest:SetSize(BuildDialog.HEADING_CREST, BuildDialog.HEADING_CREST)
+	paste.heading = text(content, "body", width - BuildDialog.HEADING_CREST - S.gap * 2)
+	paste.heading:SetPoint("LEFT", paste.crest, "RIGHT", S.gap * 2, 0)
+	if type(paste.heading.SetWordWrap) == "function" then
+		paste.heading:SetWordWrap(false)
+	end
+	for index = 1, BuildDialog.OWN_ROWS do
+		paste.own[index] = buildOwnRow(content)
+	end
+	paste.custom = text(content, "body", width)
+	paste.custom:SetText(L.dialogCustomHeading)
 	for index = 1, S.dialogInboxRows do
 		paste.rows[index] = buildRow(content)
 	end
@@ -1944,8 +2183,9 @@ local function buildPaste(frame, top, bottom)
 			BuildDialog.drawPaste()
 			return
 		end
-		if BuildDialog.verdict == nil and #(BuildDialog.rows or {}) > 0 then
-			-- Builds wait and nothing is previewed: Enter previews the highlighted one.
+		if BuildDialog.verdict == nil then
+			-- Nothing is previewed: Enter acts on the cursor's row (an own row follows, a site row
+			-- previews, no row does nothing).
 			BuildDialog.previewCursor()
 			return
 		end
@@ -2151,7 +2391,15 @@ function BuildDialog.ensure()
 		BuildDialog.copyTab.box:ClearFocus()
 		BuildDialog.copiedAt = nil
 		BuildDialog.link = nil
+		-- The tour comes back from where it stepped aside (spec 6.1).
+		if BuildDialog.afterHide ~= nil then
+			BuildDialog.afterHide()
+		end
 	end)
+	-- Above whatever else sits on the DIALOG strata (the tour, spec 6.1).
+	if type(frame.SetToplevel) == "function" then
+		frame:SetToplevel(true)
+	end
 	frame:SetScript("OnEvent", onEvent)
 	-- Escape from any focus state, every other key passed on (BuildDialog.onKey).
 	if type(frame.EnableKeyboard) == "function" then
@@ -2412,16 +2660,24 @@ function BuildDialog.drawPaste()
 	local view = BuildDialog.pasteView(verdict, BuildDialog.editing == true, BuildDialog.focused == true, resting)
 	local content = paste.content
 	for _, region in ipairs({ paste.following, paste.next, paste.more, paste.lead, paste.body, paste.still,
-		paste.replaces, paste.short, paste.nextWould, paste.companion, paste.useReason }) do
+		paste.replaces, paste.short, paste.nextWould, paste.companion, paste.useReason, paste.heading, paste.crest,
+		paste.custom }) do
 		region:Hide()
 	end
 	paste.preview.frame:Hide()
 	paste.use:Hide()
 	BuildDialog.useBlocked = nil
 	BuildDialog.enterHint:Hide()
+	local own = verdict == nil and (BuildDialog.own or {}) or {}
+	local followedOwn = false
+	for _, entry in ipairs(own) do
+		followedOwn = followedOwn or entry.following == true
+	end
 	local y = 0
 	if verdict == nil then
-		local line = BuildDialog.followingLine(Follow.build, data, widthOf(paste.following), contentWidth())
+		-- "Following: ..." only for a build that is not one of the own rows (a paste, a site build).
+		local line = not followedOwn
+			and BuildDialog.followingLine(Follow.build, data, widthOf(paste.following), contentWidth()) or nil
 		if line ~= nil then
 			paste.following:SetText(line)
 			y = stack(paste.following, content, y, textHeight(paste.following) + S.gap / 2)
@@ -2435,7 +2691,55 @@ function BuildDialog.drawPaste()
 			y = y + S.gap * 2
 		end
 	end
-	local rows = BuildDialog.rowsView(BuildDialog.rows or {}, S.dialogInboxRows, verdict, BuildDialog.cursor)
+	-- The addon's own builds (spec 6.4): the heading with the crest, a row per spec, then "Custom build".
+	local ownHeight = BuildDialog.ownRowHeight(lineHeight())
+	for index, row in ipairs(paste.own) do
+		local entry = own[index]
+		row.entry, row.index = entry, entry ~= nil and index or nil
+		if entry == nil then
+			row.frame:Hide()
+		else
+			if index == 1 then
+				local player = BuildDialog.player()
+				local path, coords = Theme.classIcon(player ~= nil and player.classSlug:upper() or nil)
+				paste.crest:SetTexture(path)
+				if type(paste.crest.SetTexCoord) == "function" then
+					paste.crest:SetTexCoord(coords[1], coords[2], coords[3], coords[4])
+				end
+				paste.heading:SetText(currentOwnHeading() or "")
+				paste.crest:Show()
+				paste.heading:Show()
+				y = stack(paste.crest, content, y, BuildDialog.HEADING_CREST + S.gap)
+			end
+			row.selected = BuildDialog.cursor == index
+			row.name:SetText(BuildDialog.rowText(entry.name, widthOf(row.name), contentWidth() - S.gap * 2
+				- (entry.following and (widthOf(row.mark)(L.dialogFollowingMark) or 0) or 0)))
+			if entry.following then
+				row.mark:Show()
+			else
+				row.mark:Hide()
+			end
+			local failed = BuildDialog.ownFailed ~= nil and BuildDialog.ownFailed[entry.spec]
+			row.detail:SetText(failed and L.dialogOwnFailed or BuildDialog.rowText(entry.detail, widthOf(row.detail),
+				contentWidth()))
+			row.detail:SetTextColor(Theme.rgb(Theme.HEX[failed and "warning" or "muted"]))
+			if row.selected then
+				row.edge:Show()
+				row.highlight:Show()
+			else
+				row.edge:Hide()
+				row.highlight:Hide()
+			end
+			y = stack(row.frame, content, y, ownHeight + S.gap)
+		end
+	end
+	if #own > 0 then
+		paste.custom:Show()
+		y = stack(paste.custom, content, y + S.gap, textHeight(paste.custom) + S.gap)
+	end
+	local siteCursor = (BuildDialog.cursor or 0) - #own
+	local rows = BuildDialog.rowsView(BuildDialog.rows or {}, BuildDialog.siteRowLimit(#own), verdict,
+		#own > 0 and siteCursor or BuildDialog.cursor)
 	local rowHeight = BuildDialog.rowHeight(lineHeight())
 	local inner = contentWidth() - S.dialogClassIcon - S.gap * 2
 	for index, row in ipairs(paste.rows) do
@@ -2450,7 +2754,8 @@ function BuildDialog.drawPaste()
 				row.icon:SetTexCoord(coords[1], coords[2], coords[3], coords[4])
 			end
 			row.selected = rows.active == entry.id
-			row.name:SetTextColor(Theme.rgb(Theme.HEX[row.selected and "gold" or "body"]))
+			-- The cursor never turns a name gold: gold is the build followed (spec 6.4).
+			row.name:SetTextColor(Theme.rgb(Theme.HEX.body))
 			if entry.stamp ~= nil then
 				row.name:SetText(BuildDialog.siteTitle(entry.name, entry.stamp, entry.points, widthOf(row.name), inner))
 			else
@@ -2540,9 +2845,13 @@ function BuildDialog.drawPaste()
 			BuildDialog.enterHint:SetText(BuildDialog.useBlocked == nil and L.dialogEnterHint or L.dialogUseFurtherHint)
 			BuildDialog.enterHint:Show()
 		end
-	elseif waiting and BuildDialog.mode == "paste" then
-		BuildDialog.enterHint:SetText(L.dialogEnterPreview)
-		BuildDialog.enterHint:Show()
+	elseif BuildDialog.mode == "paste" then
+		-- The hint follows the cursor: an own row follows, a site row previews, no row says nothing.
+		local item = BuildDialog.cursorItem()
+		if item ~= nil then
+			BuildDialog.enterHint:SetText(item.own and L.dialogEnterFollow or L.dialogEnterPreview)
+			BuildDialog.enterHint:Show()
+		end
 	end
 	BuildDialog.fitHeight(used)
 	BuildDialog.placeHint(verdict == nil and not view.collapsed and y or nil)
@@ -2843,14 +3152,22 @@ function BuildDialog.open(mode, link)
 		end
 		return false
 	end
+	if BuildDialog.beforeOpen ~= nil then
+		BuildDialog.beforeOpen()
+	end
 	BuildDialog.link = link
 	local frame = BuildDialog.ensure()
 	BuildDialog.place()
 	BuildDialog.verdict, BuildDialog.editing = nil, false
-	BuildDialog.cursor, BuildDialog.touched = 1, false
+	BuildDialog.touched, BuildDialog.ownFailed = false, nil
 	BuildDialog.rows = currentRows()
+	BuildDialog.own = currentOwn()
+	BuildDialog.cursor = BuildDialog.startCursor(#BuildDialog.own, #BuildDialog.rows)
 	BuildDialog.paste.box:SetText("")
 	frame:Show()
+	if type(frame.Raise) == "function" then
+		frame:Raise()
+	end
 	BuildDialog.setMode(mode)
 	local deferred = Theme.after(0, function()
 		if not frame:IsShown() then
@@ -2881,7 +3198,8 @@ end
 --- (L3.7 item 44: an officer's push just arrived).
 function BuildDialog.refreshRows()
 	BuildDialog.rows = currentRows()
-	BuildDialog.cursor = math.max(1, math.min(BuildDialog.cursor or 1, math.max(1, #BuildDialog.rows)))
+	BuildDialog.own = currentOwn()
+	BuildDialog.cursor = math.max(0, math.min(BuildDialog.cursor or 0, #currentItems()))
 	if BuildDialog.frame ~= nil and BuildDialog.frame:IsShown() and BuildDialog.mode == "paste" then
 		BuildDialog.drawPaste()
 	end

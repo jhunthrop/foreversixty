@@ -314,19 +314,21 @@ function Panel.talents(input)
 	return region
 end
 
---- Pick your path (spec 4.3 item 3): under the first talent level (Progress.levelForPoint(1),
---- 10) with no build, the class's specs with their one-line playstyle (Chip.pathSpecs), and
---- "First talent point at level 10" under them. nil otherwise.
+--- The spec question (spec section 6.2, replacing 4.3 item 3's "Pick your path"): with no build
+--- and points that do not name a tree (`input.question`, Follow.specQuestion), at any level, the
+--- question as the heading, the class's specs with their one-line playstyle (Chip.pathSpecs),
+--- and "First talent point at level 10" under them below the first talent level. nil otherwise.
 function Panel.path(input)
-	local first = Progress.levelForPoint(1).level
-	if input.build ~= nil or type(input.level) ~= "number" or input.level >= first then
+	if input.build ~= nil or input.question == nil then
 		return nil
 	end
 	local specs = input.specs or {}
 	if #specs == 0 then
 		return nil
 	end
-	return { kind = "path", specs = specs, foot = string.format(L.panelPathFoot, first) }
+	local first = Progress.levelForPoint(1).level
+	local foot = type(input.level) == "number" and input.level < first and string.format(L.panelPathFoot, first) or nil
+	return { kind = "path", heading = input.question, specs = specs, foot = foot }
 end
 
 --- The first clause of a plain condition: up to the first ";" or ", and" or ", unless", so the
@@ -601,6 +603,7 @@ function Panel.inputs(data)
 		rows = PanelTab.rotationRows(data, build, ranks, level),
 		expanded = Panel.rotationExpanded(),
 		specs = Chip.pathSpecs(data, Talents.playerClassSlug()),
+		question = Follow.specQuestion(data, Talents.playerClassSlug(), ranks),
 	}
 	if tonight ~= nil then
 		input.signup = Panel.signupFor(ForeverSixtyInbox, key, tonight.raid_id)
@@ -1127,7 +1130,15 @@ local function drawTalents(content, region, y, width)
 end
 
 local function drawPath(content, region, y, width)
-	y = heading(content, y, L.panelPickPath, nil, width)
+	-- The question in the heading face, wrapped to the panel's width (two lines at most).
+	local title = text(content, region.heading, "bone", "title")
+	title:SetWidth(width)
+	if type(title.SetWordWrap) == "function" then
+		title:SetWordWrap(true)
+	end
+	title:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
+	local measured = title:GetStringHeight()
+	y = y + math.max(Panel.H.heading, (type(measured) == "number" and measured > 0 and math.ceil(measured) or 0) + 6)
 	for _, spec in ipairs(region.specs) do
 		local name = text(content, spec.name, "ink", "normal")
 		name:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
@@ -1142,7 +1153,10 @@ local function drawPath(content, region, y, width)
 		end
 		y = y + Panel.H.line + lineHeight + 6
 	end
-	return y + wrapped(content, region.foot, "umberMuted", 0, y, width) + Panel.H.gap
+	if region.foot ~= nil then
+		y = y + wrapped(content, region.foot, "umberMuted", 0, y, width)
+	end
+	return y + Panel.H.gap
 end
 
 --- One rotation row's height: the name, then its condition on one line or two. Pure.
