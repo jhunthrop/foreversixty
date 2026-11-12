@@ -1,0 +1,31 @@
+# baseline at the pin: cat bare bands and raid 60, bear tank bands and raid 60, both factions
+cat-bare20-A -spec druid-feral -preset bare -band 20 -faction alliance
+cat-bare30-A -spec druid-feral -preset bare -band 30 -faction alliance
+cat-bare40-A -spec druid-feral -preset bare -band 40 -faction alliance
+cat-bare50-A -spec druid-feral -preset bare -band 50 -faction alliance
+cat-bare60-A -spec druid-feral -preset bare -band 60 -faction alliance
+cat-raid60-A -spec druid-feral -preset raid -band 60 -faction alliance
+bear-bare20-A -spec druid-feral-bear -tank -preset bare -band 20 -level 20 -faction alliance
+bear-bare25-A -spec druid-feral-bear -tank -preset bare -band 20 -level 25 -faction alliance
+bear-bare30-A -spec druid-feral-bear -tank -preset bare -band 30 -level 30 -faction alliance
+bear-bare32-A -spec druid-feral-bear -tank -preset bare -band 30 -level 32 -faction alliance
+bear-bare35-A -spec druid-feral-bear -tank -preset bare -band 30 -level 35 -faction alliance
+bear-bare40-A -spec druid-feral-bear -tank -preset bare -band 40 -level 40 -faction alliance
+bear-bare50-A -spec druid-feral-bear -tank -preset bare -band 50 -level 50 -faction alliance
+bear-bare60-A -spec druid-feral-bear -tank -preset bare -band 60 -level 60 -faction alliance
+bear-raid60-A -spec druid-feral-bear -tank -preset raid -band 60 -faction alliance
+cat-bare20-H -spec druid-feral -preset bare -band 20 -faction horde
+cat-bare30-H -spec druid-feral -preset bare -band 30 -faction horde
+cat-bare40-H -spec druid-feral -preset bare -band 40 -faction horde
+cat-bare50-H -spec druid-feral -preset bare -band 50 -faction horde
+cat-bare60-H -spec druid-feral -preset bare -band 60 -faction horde
+cat-raid60-H -spec druid-feral -preset raid -band 60 -faction horde
+bear-bare20-H -spec druid-feral-bear -tank -preset bare -band 20 -level 20 -faction horde
+bear-bare25-H -spec druid-feral-bear -tank -preset bare -band 20 -level 25 -faction horde
+bear-bare30-H -spec druid-feral-bear -tank -preset bare -band 30 -level 30 -faction horde
+bear-bare32-H -spec druid-feral-bear -tank -preset bare -band 30 -level 32 -faction horde
+bear-bare35-H -spec druid-feral-bear -tank -preset bare -band 30 -level 35 -faction horde
+bear-bare40-H -spec druid-feral-bear -tank -preset bare -band 40 -level 40 -faction horde
+bear-bare50-H -spec druid-feral-bear -tank -preset bare -band 50 -level 50 -faction horde
+bear-bare60-H -spec druid-feral-bear -tank -preset bare -band 60 -level 60 -faction horde
+bear-raid60-H -spec druid-feral-bear -tank -preset raid -band 60 -faction horde
