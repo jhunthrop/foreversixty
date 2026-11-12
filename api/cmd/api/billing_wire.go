@@ -51,6 +51,7 @@ func wireBilling(w billingWiring) *seats.Store {
 		Accounts: authStore, Users: authStore, Guilds: guildStore, Gateway: gateway,
 		Seats:         seats.BillingReader{Store: seatStore, Sweeper: deps.Seats},
 		Mailer:        mailer,
+		PremiumTrial:  cfg.PremiumTrial,
 		PublicBaseURL: cfg.PublicBaseURL, WebhookSecret: cfg.StripeWebhookSecret, Log: log,
 	}
 	deps.Seats.Canceller = cancellerFor(gateway)

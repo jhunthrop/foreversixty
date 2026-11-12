@@ -57,7 +57,7 @@ func newBillingDailyServices(cfg config.Config, pool *pgxpool.Pool, mailer mail.
 		// reminder in the app (nil without push: email alone).
 		Billing: &billing.Service{
 			Store: &billing.Store{Pool: pool}, Users: &auth.Store{Pool: pool}, Gateway: stripeGatewayFor(cfg),
-			Events: jobEvents(cfg, pool, log), RenewalEmails: cfg.OurRenewalEmails,
+			Events: jobEvents(cfg, pool, log), RenewalEmails: cfg.OurRenewalEmails, PremiumTrial: cfg.PremiumTrial,
 			Mailer: mailer, PublicBaseURL: cfg.PublicBaseURL, Log: log,
 		},
 	}

@@ -23,6 +23,7 @@ test('on a phone the footer carries its seven links as 44px targets, the fan-mad
     'Addon',
     'Discord',
     'Premium',
+    'Creators',
     'Report a bug',
     'Privacy',
     'Terms',

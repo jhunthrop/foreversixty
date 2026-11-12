@@ -34,8 +34,13 @@ func (s *Service) SendNotices(ctx context.Context, now time.Time) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	sent, trialErr := s.sendTrialReminders(ctx, now)
-	errs := []error{trialErr}
+	var sent int
+	var errs []error
+	if s.PremiumTrial {
+		var trialErr error
+		sent, trialErr = s.sendTrialReminders(ctx, now)
+		errs = append(errs, trialErr)
+	}
 	send := func(kind string, dues []DueNotice, build messageBuilder) {
 		for _, due := range dues {
 			ok, err := s.sendNotice(ctx, kind, due, build)

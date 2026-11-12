@@ -311,16 +311,9 @@ jobs:
           # 512Mi; the boot-time tree load and the guild membership sweep peak near the old
           # limit, and a revision that cannot start never takes traffic.
           flags: --memory=1Gi
-          # The creator program (api/README.md, "Creator program"): payouts on in production, on the
-          # program's own restricted key. Both merge into what the service already has (the other
-          # Stripe secrets stay as they were set by hand). Payouts still need the owner's Approve
-          # per statement. The runtime account holds secretAccessor on STRIPE_PAYOUTS_KEY.
-          env_vars: |-
-            CREATOR_PAYOUTS=true
-          env_vars_update_strategy: merge
-          secrets: |-
-            STRIPE_PAYOUTS_KEY=STRIPE_PAYOUTS_KEY:latest
-          secrets_update_strategy: merge
+          # The creator program's payouts (CREATOR_PAYOUTS, STRIPE_PAYOUTS_KEY) and the free
+          # trial (PREMIUM_TRIAL) are the owner's switches, set by hand on the service
+          # (api/README.md, "Creator program"); the deploy never sets them.
         # Every job is the same image run with different arguments, so
         # each has to move with the service. The jobs are created once
         # by hand (see api/README.md); until one exists this step says

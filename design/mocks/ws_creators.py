@@ -219,13 +219,13 @@ def program() -> str:
     a = PR['answer']
     # The built Figure's caption: its one 12/16 muted line under the value.
     answer = Figure(e(a['value']), unit=e(a['unit']), tone='gold')[:-len('</div>')] + f'<span class="cr-cap">{e(a["line"])}</span></div>'
-    head = PageHeader(e(PR['pageTitle']), answer=f'<div class="cr-ans">{answer}{Button(e(PR["apply"]), primary=True)}</div>')
+    head = PageHeader(e(PR['pageTitle']), answer=f'<div class="cr-ans">{answer}{_Button(e(PR["apply"]), primary=True)}</div>')
     toc = Toc(e(PR['contentsLabel']), [(e(s['title']), s['id']) for s in PR['sections']], PR['sections'][0]['id'])
     lead = f'<div class="cr-lead" data-region="{REGION["intro"]}">{paragraphs([PR["lead"]])}</div>'
     body = (lead + ''.join(ReadingSection(e(s['title']), paragraphs(s['paragraphs']), lane(s['id'], i == 0), s['id'])
                            for i, s in enumerate(PR['sections']))
             + ReadingSection(e(PR['applySection']['title']),
-                             paragraphs(PR['applySection']['paragraphs']) + f'<div class="cr-apply">{Button(e(PR["applyAction"]), primary=True)}</div>',
+                             paragraphs(PR['applySection']['paragraphs']) + f'<div class="cr-apply">{_Button(e(PR["applyAction"]), primary=True)}</div>',
                              '', PR['applySection']['id']))
     html = head + Page('reading', ReadingPanel(body), toc, toc_from=1024, toc_label=e(PR['contentsLabel'])) + PAGE_CSS
     note = '/creators mock (public, signed out); data creators-facts.json page (lib/creators/copy.ts, model.ts). Apply goes to /creators/apply.'

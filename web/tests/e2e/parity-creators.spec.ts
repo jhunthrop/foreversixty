@@ -92,6 +92,7 @@ test('Apply at the head and at the end goes to the application form', async ({ p
   await expect(page.getByTestId('creators-figures-what-you-get')).toBeVisible();
 });
 
+const VIEWPORT = { width: 1440, height: HEIGHT };
 const FIX = path.join(REPO_ROOT, 'web/tests/e2e/fixtures/creators');
 const read = (name: string): unknown => JSON.parse(readFileSync(path.join(FIX, name), 'utf8'));
 

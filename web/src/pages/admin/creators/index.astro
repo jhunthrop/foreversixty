@@ -9,7 +9,7 @@ import CreatorsAdmin from '../../../components/creators/CreatorsAdmin.svelte';
 import { adminCreatorsCopy as copy } from '../../../lib/creators/copy';
 ---
 
-<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/creators" wide>
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/creators">
   <meta slot="head" name="robots" content="noindex" />
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="admin-creators-page">
     <PageHeader title={copy.pageTitle} lead={copy.job} />

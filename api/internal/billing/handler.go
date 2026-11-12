@@ -108,6 +108,10 @@ type Service struct {
 	Mailer mail.Mailer
 	// RenewalEmails (OUR_RENEWAL_EMAILS) sends our own yearly renewal notice; off, Stripe's alone goes.
 	RenewalEmails bool
+	// PremiumTrial (PREMIUM_TRIAL) is the free trial switch: on, a first Premium checkout trials
+	// catalog.PremiumTrialDays and the trial reminder and receipt go out; off, Premium has no default
+	// trial and neither is sent. A creator's code gives its free month either way.
+	PremiumTrial bool
 	// Events publishes billing.failed to the payer; nil publishes nothing.
 	Events        events.Publisher
 	PublicBaseURL string

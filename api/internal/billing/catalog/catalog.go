@@ -236,7 +236,7 @@ const (
 	// GuildTrialDays is the card-up-front trial on a guild's first plan.
 	GuildTrialDays = 7
 	// PremiumTrialDays is the card-up-front trial on an account's first Premium (web plans.ts
-	// PREMIUM_TRIAL_DAYS).
+	// PREMIUM_TRIAL_DAYS), given only while the server's PREMIUM_TRIAL switch is on.
 	PremiumTrialDays = 7
 	SeatsGuild       = 1
 	SeatsRaidGuild   = 3

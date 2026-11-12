@@ -198,6 +198,11 @@ type Config struct {
 	// OurRenewalEmails (OUR_RENEWAL_EMAILS=true) has billing-daily send our own yearly renewal
 	// notice. Off by default: Stripe sends the upcoming-renewal email (premium-trial spec 0C).
 	OurRenewalEmails bool
+	// PremiumTrial (PREMIUM_TRIAL=true) turns on the free trial (design/specs/2026-11-08-premium-trial.md):
+	// a first Premium checkout trials catalog.PremiumTrialDays, and billing sends the trial reminder
+	// and the first-charge receipt. Off by default until the trial's pages ship: a creator's code
+	// still gives its free month, and nothing else about checkout changes.
+	PremiumTrial bool
 	// StripeEnvironment is "test" or "live", from STRIPE_ENVIRONMENT. It
 	// must be "live" exactly when PublicBaseURL is the production origin
 	// (see ValidateStripeKeyEnvironment) — this is a separate value from
@@ -372,6 +377,7 @@ func Load(getenv func(string) string) (Config, error) {
 	c.StripePayoutsKey = getenv("STRIPE_PAYOUTS_KEY")
 	c.CreatorPayouts = getenv("CREATOR_PAYOUTS") == "true"
 	c.OurRenewalEmails = getenv("OUR_RENEWAL_EMAILS") == "true"
+	c.PremiumTrial = getenv("PREMIUM_TRIAL") == "true"
 	c.StripeEnvironment = getenv("STRIPE_ENVIRONMENT")
 
 	key, err := decodeNotifyKey(getenv("NOTIFY_ENCRYPTION_KEY"))

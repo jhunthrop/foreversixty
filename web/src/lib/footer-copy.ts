@@ -1,7 +1,7 @@
 // web/src/lib/footer-copy.ts
 // The footer's copy and link set, one source for Footer.astro and its tests: round 5's one-row
 // footer (the mock, design/mocks/directions/png/g-home-1440.png; coordinator ruling 2026-11-09):
-// the seal and name, the seven links and the fan-made line. FOOTER_LEGAL_LINKS are the legal pages'
+// the seal and name, the eight links and the fan-made line. FOOTER_LEGAL_LINKS are the legal pages'
 // own tabs (layouts/Content.astro). FOOTER_COLUMNS is not drawn; it is the site's page list the 404
 // page suggests from (lib/not-found/suggest.ts).
 import communityLinks from '../data/links.json';
@@ -20,12 +20,14 @@ export interface FooterColumn {
 
 // Bugs are reported in the Discord's #bug-reports forum; the invite lands a newcomer there.
 /** The footer's one row of links, beside the seal (the round 5 mock, design/mocks/directions/png/
- *  g-home-1440.png): Get set up left the bar for here and the account menu. */
+ *  g-home-1440.png): Get set up left the bar for here and the account menu; Creators joined it when the
+ *  program landed (2026-11-11). */
 export const FOOTER_LINKS: readonly FooterLink[] = [
   { label: 'Get set up', href: '/setup' },
   { label: 'Addon', href: '/setup#addon' },
   { label: 'Discord', href: communityLinks.discordInvite },
   { label: 'Premium', href: '/premium' },
+  { label: 'Creators', href: '/creators' },
   { label: 'Report a bug', href: communityLinks.discordInvite },
   { label: 'Privacy', href: '/privacy' },
   { label: 'Terms', href: '/terms' },

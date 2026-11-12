@@ -125,12 +125,21 @@ func (s *Service) termsFor(ctx context.Context, offer catalog.Offer, interval ca
 	return view, nil
 }
 
+// premiumTrialDays is a first Premium's default trial: catalog.PremiumTrialDays while the trial is
+// switched on, else none.
+func (s *Service) premiumTrialDays() int64 {
+	if s.PremiumTrial {
+		return catalog.PremiumTrialDays
+	}
+	return 0
+}
+
 // trialSpent is whether the buyer's (Premium) or the guild's trial is gone, and the plan's
 // default trial length.
 func (s *Service) trialSpent(ctx context.Context, offer catalog.Offer, userID int64, guildID *int64) (bool, int64, error) {
 	if offer == catalog.OfferPremium {
 		spent, err := s.Store.PremiumTrialSpent(ctx, userID)
-		return spent, catalog.PremiumTrialDays, err
+		return spent, s.premiumTrialDays(), err
 	}
 	used, err := s.Store.GuildTrialUsed(ctx, *guildID)
 	return used, catalog.GuildTrialDays, err

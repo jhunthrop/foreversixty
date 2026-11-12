@@ -22,13 +22,14 @@ function routeExists(href: string): boolean {
 }
 
 describe('Footer', () => {
-  it('is the mock’s one row: the seven links and the fan-made line, no tagline', async () => {
+  it('is the mock’s one row: the eight links and the fan-made line, no tagline', async () => {
     const html = await renderFooter();
     expect(FOOTER_LINKS.map((link) => link.label)).toEqual([
       'Get set up',
       'Addon',
       'Discord',
       'Premium',
+      'Creators',
       'Report a bug',
       'Privacy',
       'Terms',

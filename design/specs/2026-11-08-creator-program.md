@@ -185,4 +185,4 @@ A Section `Requests` (meta `{n} waiting`) above `Your creators`: open Rows (the 
 
 The webhook stays `POST /v1/billing/webhook`: `checkout.session.completed` (a creator code -> attribution, then the first invoice's share), `invoice.paid` (shares), `charge.refunded` (refund lines) and `account.updated` from a second, Connect endpoint on the same URL whose secret is `STRIPE_CONNECT_WEBHOOK_SECRET` (the handler accepts either secret). Onboarding status is also re-read on `?done=1` and by the owner's Refresh, so a missed event never strands a creator. Stripe calls run only with the sandbox key in this lane; go-live steps go in `api/README.md`.
 
-Migration `0094_creators`: `creators`, `creator_invites`, `creator_players`, `creator_revenue`, `creator_refunds`, `creator_payouts`, `creator_applications`. Only the deployed API applies it.
+Migration `0100_creators` (0094 on the branch; renumbered at landing, 2026-11-11): `creators`, `creator_invites`, `creator_players`, `creator_revenue`, `creator_refunds`, `creator_payouts`, `creator_applications`. Only the deployed API applies it.

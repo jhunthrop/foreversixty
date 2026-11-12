@@ -6,11 +6,11 @@ import (
 )
 
 // creatorsVersion is the creator program's migration (design/specs/2026-11-08-creator-program.md).
-const creatorsVersion = 94
+const creatorsVersion = 100
 
 // beforeCreators is the newest migration on main before ours (going down to it also takes back
 // any lane's migration numbered between, which the cleanup restores).
-const beforeCreators = 93
+const beforeCreators = 99
 
 // The creator program's migration adds its tables and the entitlements source 'creator', holds
 // one open application per account and the code and channel rules, and its down removes all of

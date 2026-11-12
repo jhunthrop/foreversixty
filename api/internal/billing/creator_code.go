@@ -12,7 +12,6 @@ import (
 	stripe "github.com/stripe/stripe-go/v82"
 	"github.com/stripe/stripe-go/v82/webhook"
 
-	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
@@ -162,8 +161,8 @@ func constructEvent(payload []byte, signature string, secrets []string) (stripe.
 func creatorsNormalize(code string) string { return strings.ToUpper(strings.TrimSpace(code)) }
 
 // premiumTrial is a Premium checkout's trial: the first Premium of an account trials
-// catalog.PremiumTrialDays, a creator's code makes it a free month, and a comeback (a seat holder
-// returning at their own price) has had its Premium already.
+// catalog.PremiumTrialDays while PremiumTrial is on, a creator's code makes it a free month, and a
+// comeback (a seat holder returning at their own price) has had its Premium already.
 func (s *Service) premiumTrial(ctx context.Context, req premiumCheckoutRequest) (*checkoutTrial, error) {
 	spent := req.comebackID != nil
 	if !spent {
@@ -172,5 +171,5 @@ func (s *Service) premiumTrial(ctx context.Context, req premiumCheckoutRequest) 
 			return nil, err
 		}
 	}
-	return s.creatorCodeTrial(ctx, req.creatorCode, spent, catalog.PremiumTrialDays)
+	return s.creatorCodeTrial(ctx, req.creatorCode, spent, s.premiumTrialDays())
 }

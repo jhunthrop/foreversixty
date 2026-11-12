@@ -8,7 +8,7 @@ import CreatorStats from '../../components/creators/CreatorStats.svelte';
 import { creatorStatsCopy as copy } from '../../lib/creators/copy';
 ---
 
-<Base title={copy.menuItem} description={copy.pageDescription} path="/creators/stats" wide>
+<Base title={copy.menuItem} description={copy.pageDescription} path="/creators/stats">
   <meta slot="head" name="robots" content="noindex" />
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="creators-stats-page">
     <CreatorStats client:load />

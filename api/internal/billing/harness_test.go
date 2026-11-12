@@ -47,6 +47,7 @@ func newHarness(t *testing.T) *harness {
 		Accounts: authStore, Users: authStore, Guilds: nil, Gateway: gw,
 		Seats:         seats.BillingReader{Store: seatStore, Sweeper: &seats.Service{Store: seatStore, Log: slog.Default()}},
 		PublicBaseURL: testPublicBaseURL, WebhookSecret: testWebhookSecret, Log: slog.Default(),
+		PremiumTrial: true,
 	}
 	mux := http.NewServeMux()
 	Mount(mux, svc, 1)

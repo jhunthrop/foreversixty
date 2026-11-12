@@ -44,7 +44,7 @@ The coordinator split the landing: the server side is built now on `premium-tria
 - **Reminder:** only trials recorded in `premium_trials` or `guild_trials` (a billing transfer's trial never gets one). The notice is claimed, the in-app `billing.trial_ending` goes (dedupe key per trial), then the email with a fresh token; a failed send releases the claim and drops the token. A free trial is never also sent our renewal notice.
 - **Receipt:** `invoice.paid` with `amount_paid > 0` and `billing_reason = subscription_cycle` on a recorded free trial, claimed once (`trial_receipt`); a failed send fails the event so Stripe redelivers.
 - **Email copy contract:** `api/internal/billingmail/testdata/trial-emails.json` (rewrite with `go test ./internal/billingmail -update`); `trial-copy.ts` is held to it when the UI lands.
-- **Migration** `0095_trial_reminders`: `billing_cancel_tokens` and the two notice kinds.
+- **Migration** `0101_trial_reminders` (0095 on the branch; renumbered at landing): `billing_cancel_tokens` and the two notice kinds.
 
 ## 1. Files
 

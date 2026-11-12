@@ -75,7 +75,7 @@ func invoiceString(invoice map[string]any, key string) string {
 // next charge's date. A failed send releases the claim and fails the event, so Stripe redelivers.
 func (s *Service) sendTrialReceipt(ctx context.Context, event stripe.Event, subscriptionID string) error {
 	invoice := event.Data.Object
-	if s.Mailer == nil {
+	if s.Mailer == nil || !s.PremiumTrial {
 		return nil
 	}
 	if invoiceInt(invoice, "amount_paid") <= 0 || invoiceString(invoice, "billing_reason") != billingReasonCycle {
