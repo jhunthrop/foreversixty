@@ -1,0 +1,16 @@
+# Heroic Strike at 50 rage against the card's 40 on the other bare bands and a second seed (fixed engine).
+bare50A_hs40 -spec warrior-protection -preset bare -band 50 -faction alliance -tank
+bare50A_hs50 -spec warrior-protection -preset bare -band 50 -faction alliance -tank -rotation @R/hs50.rotation.json
+bare30A_hs40 -spec warrior-protection -preset bare -band 30 -faction alliance -tank
+bare30A_hs50 -spec warrior-protection -preset bare -band 30 -faction alliance -tank -rotation @R/hs50.rotation.json
+bare20A_hs40 -spec warrior-protection -preset bare -band 20 -faction alliance -tank
+bare20A_hs50 -spec warrior-protection -preset bare -band 20 -faction alliance -tank -rotation @R/hs50.rotation.json
+bare40A_hs60 -spec warrior-protection -preset bare -band 40 -faction alliance -tank -rotation @R/hs60.rotation.json
+bare40A_hs40_s2 -spec warrior-protection -preset bare -band 40 -faction alliance -tank -seed 50001
+bare40A_hs50_s2 -spec warrior-protection -preset bare -band 40 -faction alliance -tank -rotation @R/hs50.rotation.json -seed 50001
+bare45A_hs40 -spec warrior-protection -preset bare -band 40 -level 45 -faction alliance -tank
+bare45A_hs50 -spec warrior-protection -preset bare -band 40 -level 45 -faction alliance -tank -rotation @R/hs50.rotation.json
+bare40H_hs40 -spec warrior-protection -preset bare -band 40 -faction horde -tank
+bare40H_hs50 -spec warrior-protection -preset bare -band 40 -faction horde -tank -rotation @R/hs50.rotation.json
+raid60A_hs50_s2 -spec warrior-protection -preset raid -band 60 -faction alliance -tank -rotation @R/hs50.rotation.json -seed 50001
+raid60A_hs40_s2 -spec warrior-protection -preset raid -band 60 -faction alliance -tank -seed 50001
