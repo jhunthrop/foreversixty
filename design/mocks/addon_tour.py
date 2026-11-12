@@ -61,19 +61,39 @@ def tabs(class_slug: str):
     return re.findall(r'\{ name = "([^"]+)", talents = \{', block)[:3]
 
 
+#: A level 60 holds 51 talent points; every default build's order spends them all.
+POINTS_AT_60 = 51
+
+
+def order_triples(body: str, kind: str):
+    """(name, [(tab, tier, column)]) of one default build in a spec's Data.lua block, or None.
+
+    The list is matched triple by triple up to its own closing brace. A lazy
+    `\\{(.*?)\\} \\}` stopped inside the last triple and dropped it, which is
+    how the 2026-11-11 tour boards showed raid builds at 50 points."""
+    k = re.search(r'%s = \{ name = "([^"]+)", order = \{((?:\s*\{\d+,\d+,\d+\},?)*)\s*\}' % kind, body)
+    if k is None:
+        return None
+    order = [tuple(int(x) for x in t) for t in re.findall(r'\{(\d+),(\d+),(\d+)\}', k.group(2))]
+    if len(order) != POINTS_AT_60:
+        raise ValueError(f'{kind} build {k.group(1)!r} reads {len(order)} points, not {POINTS_AT_60}')
+    return k.group(1), order
+
+
 def default_builds(class_slug: str, kind: str):
     """[(spec slug, data name, {tab: points})] in tree order, as BuildDialog.ownRows lists them."""
     rows = []
     start = DATA.index('defaultBuilds = {')
     for m in re.finditer(r'\["(%s-[a-z-]+)"\] = \{(.*?)\n\t\t\},' % class_slug, DATA[start:], re.S):
         spec, body = m.group(1), m.group(2)
-        k = re.search(r'%s = \{ name = "([^"]+)", order = \{(.*?)\} \}' % kind, body, re.S)
-        if k is None:
+        found = order_triples(body, kind)
+        if found is None:
             continue
+        name, order = found
         split = {}
-        for tab in re.findall(r'\{(\d),\d+,\d+\}', k.group(2)):
-            split[int(tab)] = split.get(int(tab), 0) + 1
-        rows.append((spec, k.group(1), split))
+        for tab, _, _ in order:
+            split[tab] = split.get(tab, 0) + 1
+        rows.append((spec, name, split))
     names = tabs(class_slug)
     order = {name.split()[0].lower(): i for i, name in enumerate(names)}
     rows.sort(key=lambda r: (order.get(r[0].split('-')[1], 9), r[0]))
@@ -93,8 +113,7 @@ def talent_names(class_slug: str):
 def default_order(class_slug: str, spec: str, kind: str):
     start = DATA.index('defaultBuilds = {')
     body = re.search(r'\["%s"\] = \{(.*?)\n\t\t\},' % re.escape(spec), DATA[start:], re.S).group(1)
-    k = re.search(r'%s = \{ name = "[^"]+", order = \{(.*?)\} \}' % kind, body, re.S)
-    return [tuple(int(x) for x in t) for t in re.findall(r'\{(\d+),(\d+),(\d+)\}', k.group(1))]
+    return order_triples(body, kind)[1]
 
 
 def next_talent(class_slug: str, spec: str, kind: str, taken: int):
