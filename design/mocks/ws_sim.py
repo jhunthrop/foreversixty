@@ -693,8 +693,9 @@ def gear_section(with_stats: bool = True) -> str:
                      (f"{fs['melee_crit_pct_vs_target']:.1f}%", 'Crit on the boss', '', '', 'sm'),
                      (f"{fs['weapon_skill']['main_hand']} &middot; {fs['weapon_skill']['off_hand']}", 'Weapon skill', '', '', 'sm'),
                      (f"{fs['melee_haste_pct']:.0f}%", 'Haste from gear', '', '', 'sm')], cols=2)
-    measured = (f'<p class="t-small">Missed in this run: {miss["sp"][0] / miss["sp"][1] * 100:.0f}% of specials '
-                f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% of white swings.</p>')
+    # lib/sim/gear-card measuredMiss: "Miss 0% specials · 13.9% white".
+    measured = (f'<p class="t-small">Miss {miss["sp"][0] / miss["sp"][1] * 100:.0f}% specials '
+                f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% white</p>')
     # SimGearSection: the frame beside its stats and worn list; the link is the action in every state.
     aside = f'<div class="gear-stats">{stats}{measured}</div>' if with_stats else ''
     return Section('Gear', gear_pair(aside=aside), Link('Upgrades on Best in slot &rsaquo;'))
@@ -873,7 +874,7 @@ main{padding-bottom:80px}@media(min-width:1024px){main{padding-bottom:104px}}
 .layout-split .main>section>.figs{padding-top:12px}
 .tl-tools{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;min-height:56px;padding:10px 0;margin-top:12px}.tl-sw{display:inline-flex;gap:12px;align-items:center}.tl-tools .lg{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;font-size:13px;line-height:20px;color:var(--muted);list-style:none;margin:0 0 0 auto;padding:0}.tl-tools .lg li{display:inline-flex;align-items:center;gap:6px}.tl-tools .lg i{display:inline-block;border-radius:1px;background:var(--k)}.tl-brush{display:grid;grid-template-columns:200px minmax(0,1fr);height:44px;align-items:center}.tl-brush .tr{height:20px;border-radius:4px;background:#ffffff08}.tl-foot{padding-top:10px}
 .gear-c{container-type:inline-size}.gear-grid{display:grid;gap:20px}.gear-aside{display:flex;flex-direction:column;gap:16px;min-width:0}
-.gear-stats{display:flex;flex-direction:column;gap:8px}.gear-rows{display:flex;flex-direction:column}
+.gear-stats{display:flex;flex-direction:column;gap:8px}.gear-stats p{margin:0}.gear-rows{display:flex;flex-direction:column}
 .gear-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:12px;align-items:center;border-bottom:1px solid var(--line-soft)}
 .gear-row .bd{min-width:0}.gear-row .nm{display:block;font:700 15px/20px var(--font-body)}.gear-row .src{display:block;font:400 13px/18px var(--font-body);color:var(--muted)}
 .gear-row .src.ench{color:#1eff00}
