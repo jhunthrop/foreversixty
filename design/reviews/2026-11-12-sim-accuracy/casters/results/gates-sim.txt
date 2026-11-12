@@ -1,0 +1,11 @@
+remote-test: fd761c3a042e64785abf61630e0a8c166a624d0d -> forever-ci on 192.168.1.182 (run 20261112153200-fd761c3a0-3613, in sim): bash -c make -C .. simdb >/dev/null && go vet ./... && go test -count=1 ./request/ ./leveling/ ./rankchoices/ ./cmd/leveling-bis/ ./cmd/rotation-search/ ./cmd/addon-builds/ ./cmd/talent-search/ 2>&1 | tail -30
+remote-test: engine pinned to 4f8bb748d
+ok  	github.com/jhunthrop/foreversixty/sim/request	52.136s
+ok  	github.com/jhunthrop/foreversixty/sim/leveling	2.868s
+ok  	github.com/jhunthrop/foreversixty/sim/rankchoices	0.003s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/leveling-bis	9.252s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/rotation-search	1.085s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/addon-builds	0.078s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/talent-search	0.271s
+remote-test: exit 0 in 50s (fd761c3a042e64785abf61630e0a8c166a624d0d)
+exit 0

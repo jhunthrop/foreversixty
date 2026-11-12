@@ -1,0 +1,4 @@
+remote-test: 87bd60f33e063bb410106004386a25841387e9cc -> forever-ci on 192.168.1.182 (run 20261112154112-87bd60f33-64945, in web): bash -c npm test -- src/pages/guides/_spec.test.ts src/content/guides src/lib/guides 2>&1 | grep -E "Test Files|Tests |FAIL|failed" | head
+[2m Test Files [22m [1m[32m38 passed[39m[22m[90m (38)[39m
+[2m      Tests [22m [1m[32m1165 passed[39m[22m[90m (1165)[39m
+remote-test: exit 0 in 26s (87bd60f33e063bb410106004386a25841387e9cc)

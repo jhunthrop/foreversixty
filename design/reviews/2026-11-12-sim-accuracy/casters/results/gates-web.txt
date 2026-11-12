@@ -1,0 +1,20 @@
+remote-test: fd761c3a042e64785abf61630e0a8c166a624d0d -> forever-ci on 192.168.1.182 (run 20261112153535-fd761c3a0-45377, in web): bash -c npm test -- src/content/guides src/lib/guides src/pages/guides 2>&1 | tail -12; npm run check 2>&1 | tail -4; npx eslint src/content/guides src/lib/guides 2>&1 | tail -5; echo ESLINT-DONE
+    [90m   |[39m                         [31m^[39m
+    [90m274|[39m     expect(talents).not.toContain('data-testid="guide-raid-diff"');
+    [90m275|[39m     const keys = blockOf(talents, 'guide-key-talents', 20_000);
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m37 passed[39m[22m[90m (38)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1164 passed[39m[22m[90m (1165)[39m
+[2m   Start at [22m 15:36:20
+[2m   Duration [22m 18.52s[2m (tests 70%, transform 24%, import 5%, environment 1%, setup 1%)[22m
+
+- 0 errors
+- 0 warnings
+- 18 hints
+
+ESLINT-DONE
+remote-test: exit 0 in 86s (fd761c3a042e64785abf61630e0a8c166a624d0d)
+exit 0
