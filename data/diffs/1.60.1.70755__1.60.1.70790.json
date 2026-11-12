@@ -1703,6 +1703,22 @@
           "superseded_by": null
         },
         {
+          "id": 276069,
+          "name": "Gravetoll Gavel",
+          "quality": 3,
+          "item_level": 59,
+          "required_level": 54,
+          "class_id": 2,
+          "subclass_id": 5,
+          "inventory_type": 17,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 276071,
           "name": "The Black Helm",
           "quality": 3,
@@ -1711,6 +1727,38 @@
           "class_id": 4,
           "subclass_id": 4,
           "inventory_type": 1,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 276072,
+          "name": "Soulwoven Drape",
+          "quality": 3,
+          "item_level": 61,
+          "required_level": 56,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 16,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 276073,
+          "name": "Band of the Damned",
+          "quality": 3,
+          "item_level": 61,
+          "required_level": 56,
+          "class_id": 4,
+          "subclass_id": 0,
+          "inventory_type": 11,
           "suffixes": [],
           "faction_restriction": "",
           "required_level_source": null,
@@ -4183,6 +4231,22 @@
           "superseded_by": null
         },
         {
+          "id": 283387,
+          "name": "Scrawled Note",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 15,
+          "subclass_id": 4,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 284040,
           "name": "Cliff Jumpers",
           "quality": 2,
@@ -5735,6 +5799,38 @@
           "superseded_by": null
         },
         {
+          "id": 287038,
+          "name": "Naturopathy Footpads",
+          "quality": 3,
+          "item_level": 59,
+          "required_level": 54,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 8,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287039,
+          "name": "Tattered Explorer's Cuffs",
+          "quality": 3,
+          "item_level": 60,
+          "required_level": 55,
+          "class_id": 4,
+          "subclass_id": 2,
+          "inventory_type": 9,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 287040,
           "name": "Dinosaur Hide Belt",
           "quality": 3,
@@ -5831,6 +5927,22 @@
           "superseded_by": null
         },
         {
+          "id": 287046,
+          "name": "Pylon Poker",
+          "quality": 3,
+          "item_level": 61,
+          "required_level": 56,
+          "class_id": 2,
+          "subclass_id": 10,
+          "inventory_type": 17,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 287072,
           "name": "Bladewhisper's Namesake",
           "quality": 2,
@@ -5919,6 +6031,22 @@
           "class_id": 2,
           "subclass_id": 16,
           "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 288206,
+          "name": "Recipe: Draught of Water Walking",
+          "quality": 2,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 9,
+          "subclass_id": 6,
+          "inventory_type": 0,
           "suffixes": [],
           "faction_restriction": "",
           "required_level_source": null,
@@ -6165,13 +6293,15 @@
               2080
             ],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -7556,44 +7686,6 @@
           ]
         },
         {
-          "id": 4534,
-          "before": {
-            "id": 4534,
-            "name": "Steel-clasped Bracers",
-            "quality": 2,
-            "item_level": 28,
-            "required_level": 0,
-            "class_id": 4,
-            "subclass_id": 3,
-            "inventory_type": 9,
-            "suffixes": [],
-            "faction_restriction": "horde_only",
-            "required_level_source": null,
-            "stats_source": null,
-            "client_unconfirmed": false,
-            "superseded_by": null
-          },
-          "after": {
-            "id": 4534,
-            "name": "Steel-clasped Bracers",
-            "quality": 3,
-            "item_level": 28,
-            "required_level": 0,
-            "class_id": 4,
-            "subclass_id": 3,
-            "inventory_type": 9,
-            "suffixes": [],
-            "faction_restriction": "horde_only",
-            "required_level_source": null,
-            "stats_source": null,
-            "client_unconfirmed": false,
-            "superseded_by": null
-          },
-          "fields": [
-            "quality"
-          ]
-        },
-        {
           "id": 4642,
           "before": {
             "id": 4642,
@@ -7629,44 +7721,6 @@
           },
           "fields": [
             "client_unconfirmed"
-          ]
-        },
-        {
-          "id": 4643,
-          "before": {
-            "id": 4643,
-            "name": "Grimsteel Cape",
-            "quality": 2,
-            "item_level": 35,
-            "required_level": 0,
-            "class_id": 4,
-            "subclass_id": 1,
-            "inventory_type": 16,
-            "suffixes": [],
-            "faction_restriction": "horde_only",
-            "required_level_source": null,
-            "stats_source": null,
-            "client_unconfirmed": false,
-            "superseded_by": null
-          },
-          "after": {
-            "id": 4643,
-            "name": "Grimsteel Cape",
-            "quality": 3,
-            "item_level": 35,
-            "required_level": 0,
-            "class_id": 4,
-            "subclass_id": 1,
-            "inventory_type": 16,
-            "suffixes": [],
-            "faction_restriction": "horde_only",
-            "required_level_source": null,
-            "stats_source": null,
-            "client_unconfirmed": false,
-            "superseded_by": null
-          },
-          "fields": [
-            "quality"
           ]
         },
         {
@@ -10560,6 +10614,44 @@
           },
           "fields": [
             "client_unconfirmed"
+          ]
+        },
+        {
+          "id": 10418,
+          "before": {
+            "id": 10418,
+            "name": "Glimmering Mithril Insignia",
+            "quality": 2,
+            "item_level": 50,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 12,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 10418,
+            "name": "Glimmering Mithril Insignia",
+            "quality": 2,
+            "item_level": 50,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 12,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "subclass_id"
           ]
         },
         {
@@ -19611,13 +19703,15 @@
             "inventory_type": 17,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -19889,13 +19983,15 @@
             "inventory_type": 10,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -20565,13 +20661,15 @@
             "inventory_type": 17,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21433,13 +21531,15 @@
             "inventory_type": 5,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21471,13 +21571,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -21889,13 +21991,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -29322,13 +29426,15 @@
             "inventory_type": 5,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -29846,6 +29952,46 @@
           ]
         },
         {
+          "id": 14576,
+          "before": {
+            "id": 14576,
+            "name": "Ebon Hilt of Marduk",
+            "quality": 3,
+            "item_level": 59,
+            "required_level": 54,
+            "class_id": 2,
+            "subclass_id": 7,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 14576,
+            "name": "Ebon Hilt of Marduk",
+            "quality": 3,
+            "item_level": 59,
+            "required_level": 54,
+            "class_id": 2,
+            "subclass_id": 7,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
           "id": 14577,
           "before": {
             "id": 14577,
@@ -29874,13 +30020,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -31371,13 +31519,15 @@
             "inventory_type": 13,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -31409,13 +31559,15 @@
             "inventory_type": 17,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -40351,6 +40503,46 @@
           ]
         },
         {
+          "id": 18047,
+          "before": {
+            "id": 18047,
+            "name": "Flame Walkers",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18047,
+            "name": "Flame Walkers",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
           "id": 18048,
           "before": {
             "id": 18048,
@@ -47631,13 +47823,15 @@
             "inventory_type": 2,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -47669,13 +47863,15 @@
             "inventory_type": 8,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -47867,13 +48063,15 @@
             "inventory_type": 8,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -48025,13 +48223,15 @@
             "inventory_type": 11,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -48701,13 +48901,15 @@
             "inventory_type": 7,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -48899,13 +49101,15 @@
             "inventory_type": 9,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -49211,13 +49415,15 @@
             "inventory_type": 13,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -49249,13 +49455,15 @@
             "inventory_type": 17,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -49287,13 +49495,15 @@
             "inventory_type": 26,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "classic-db",
-            "stats_source": "classic-db",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
           "fields": [
-            "client_unconfirmed"
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
           ]
         },
         {
@@ -60234,6 +60444,44 @@
           },
           "fields": [
             "superseded_by"
+          ]
+        },
+        {
+          "id": 21547,
+          "before": {
+            "id": 21547,
+            "name": "Recipe: Elixir of Greater Firepower",
+            "quality": 2,
+            "item_level": 50,
+            "required_level": 0,
+            "class_id": 9,
+            "subclass_id": 6,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 21547,
+            "name": "Recipe: Elixir of Holy Power",
+            "quality": 2,
+            "item_level": 50,
+            "required_level": 0,
+            "class_id": 9,
+            "subclass_id": 6,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "name"
           ]
         },
         {

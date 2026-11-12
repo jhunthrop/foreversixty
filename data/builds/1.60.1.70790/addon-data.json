@@ -5223,6 +5223,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1822,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5221,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -5270,6 +5277,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1822,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5221,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -5314,6 +5328,13 @@
             "name": "Ferocious Bite",
             "condition": "at 5 combo points while Rip has 5+ s left",
             "icon": "ability_druid_ferociousbite",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1822,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
             "race_spell_ids": {}
           },
           {
@@ -5371,6 +5392,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1822,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6800,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -5422,6 +5450,13 @@
             "name": "Ferocious Bite",
             "condition": "at 5 combo points while Rip has 5+ s left",
             "icon": "ability_druid_ferociousbite",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1823,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
             "race_spell_ids": {}
           },
           {
@@ -5479,6 +5514,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1823,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6800,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -5530,6 +5572,13 @@
             "name": "Ferocious Bite",
             "condition": "at 5 combo points while Rip has 5+ s left",
             "icon": "ability_druid_ferociousbite",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1823,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
             "race_spell_ids": {}
           },
           {
@@ -5594,6 +5643,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1823,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8992,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -5652,6 +5708,13 @@
             "name": "Ferocious Bite",
             "condition": "at 5 combo points while Rip has 5+ s left",
             "icon": "ability_druid_ferociousbite",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1823,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
             "race_spell_ids": {}
           },
           {
@@ -5716,6 +5779,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1824,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8992,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -5774,6 +5844,13 @@
             "name": "Ferocious Bite",
             "condition": "at 5 combo points while Rip has 5+ s left",
             "icon": "ability_druid_ferociousbite",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1824,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
             "race_spell_ids": {}
           },
           {
@@ -5838,6 +5915,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1824,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 9829,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -5896,6 +5980,13 @@
             "name": "Ferocious Bite",
             "condition": "at 5 combo points while Rip has 5+ s left",
             "icon": "ability_druid_ferociousbite",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1824,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
             "race_spell_ids": {}
           },
           {
@@ -5960,6 +6051,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1824,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 9829,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -6018,6 +6116,13 @@
             "name": "Ferocious Bite",
             "condition": "at 5 combo points while Rip has 5+ s left",
             "icon": "ability_druid_ferociousbite",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 9904,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
             "race_spell_ids": {}
           },
           {
@@ -6082,6 +6187,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 9904,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 9830,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -6143,6 +6255,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 9904,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 9830,
             "name": "Shred",
             "condition": "as your builder, from behind the target",
@@ -6201,6 +6320,13 @@
             "name": "Ferocious Bite",
             "condition": "at 5 combo points while Rip has 5+ s left",
             "icon": "ability_druid_ferociousbite",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 9904,
+            "name": "Rake",
+            "condition": "when Rake is not on the target",
+            "icon": "ability_druid_disembowel",
             "race_spell_ids": {}
           },
           {
@@ -9773,7 +9899,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1978,
+            "spell_id": 13550,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -9813,7 +9939,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1978,
+            "spell_id": 13550,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -9853,7 +9979,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1978,
+            "spell_id": 13550,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -10088,7 +10214,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13549,
+            "spell_id": 1978,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -10142,61 +10268,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13552,
-            "name": "Serpent Sting",
-            "condition": "when Serpent Sting has under 1.5 s left",
-            "icon": "ability_hunter_quickshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14284,
-            "name": "Arcane Shot",
-            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
-            "icon": "ability_impalingbolt",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 42,
-        "lines": [
-          {
-            "spell_id": 14324,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19574,
-            "name": "Bestial Wrath",
-            "condition": "on cooldown, with Rapid Fire and trinkets",
-            "icon": "ability_druid_ferociousbite",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 3045,
-            "name": "Rapid Fire",
-            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
-            "icon": "ability_hunter_runningshot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19434,
-            "name": "Aimed Shot",
-            "condition": "on cooldown, shared with Multi-Shot",
-            "icon": "inv_spear_07",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "on cooldown, above 25% mana",
-            "icon": "ability_upgrademoonglaive",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13553,
+            "spell_id": 1978,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -10250,7 +10322,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13553,
+            "spell_id": 1978,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -10304,7 +10376,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13554,
+            "spell_id": 1978,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -10358,7 +10430,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13554,
+            "spell_id": 1978,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -10412,7 +10484,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13555,
+            "spell_id": 1978,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -10569,6 +10641,39 @@
         ]
       },
       {
+        "level": 19,
+        "lines": [
+          {
+            "spell_id": 1130,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2643,
+            "name": "Multi-Shot",
+            "condition": "on cooldown, above 25% mana",
+            "icon": "ability_upgrademoonglaive",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 13550,
+            "name": "Serpent Sting",
+            "condition": "when Serpent Sting has under 1.5 s left",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14281,
+            "name": "Arcane Shot",
+            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 20,
         "lines": [
           {
@@ -10593,7 +10698,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1978,
+            "spell_id": 13550,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -10633,7 +10738,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1978,
+            "spell_id": 13550,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -10744,6 +10849,53 @@
       },
       {
         "level": 30,
+        "lines": [
+          {
+            "spell_id": 14323,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 3045,
+            "name": "Rapid Fire",
+            "condition": "as Auto Shot fires with Multi-Shot nearly ready",
+            "icon": "ability_hunter_runningshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 19434,
+            "name": "Aimed Shot",
+            "condition": "on cooldown, shared with Multi-Shot",
+            "icon": "inv_spear_07",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2643,
+            "name": "Multi-Shot",
+            "condition": "on cooldown, above 25% mana",
+            "icon": "ability_upgrademoonglaive",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1978,
+            "name": "Serpent Sting",
+            "condition": "when Serpent Sting has under 1.5 s left",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14283,
+            "name": "Arcane Shot",
+            "condition": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 33,
         "lines": [
           {
             "spell_id": 14323,
@@ -11009,7 +11161,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13553,
+            "spell_id": 13550,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -11056,7 +11208,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13553,
+            "spell_id": 13550,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -11110,7 +11262,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13553,
+            "spell_id": 13550,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -11164,7 +11316,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13553,
+            "spell_id": 13550,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -11218,7 +11370,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13554,
+            "spell_id": 13551,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -11272,7 +11424,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13554,
+            "spell_id": 13551,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -11326,7 +11478,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13555,
+            "spell_id": 13551,
             "name": "Serpent Sting",
             "condition": "when Serpent Sting has under 1.5 s left",
             "icon": "ability_hunter_quickshot",
@@ -11667,14 +11819,11 @@
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
-              "dwarf": 14261,
               "high-order-skyborne": 14261,
-              "human": 14261,
-              "night-elf": 14261,
-              "orc": 14261,
+              "orc": 14260,
               "tauren": 14260,
-              "troll": 14261,
-              "windshaper-skyborne": 14261
+              "troll": 14260,
+              "windshaper-skyborne": 14260
             }
           },
           {
@@ -11711,11 +11860,16 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14261,
+            "spell_id": 14262,
             "name": "Raptor Strike",
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "orc": 14261,
+              "tauren": 14261,
+              "troll": 14261,
+              "windshaper-skyborne": 14261
+            }
           },
           {
             "spell_id": 1495,
@@ -11752,60 +11906,6 @@
           },
           {
             "spell_id": 14262,
-            "name": "Raptor Strike",
-            "condition": "on cooldown",
-            "icon": "ability_meleedamage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14269,
-            "name": "Mongoose Bite",
-            "condition": "when it lights up, after a dodge or a hit on a marked target",
-            "icon": "ability_hunter_swiftstrike",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 24118,
-            "name": "Lacerate",
-            "condition": "when Lacerate is not ticking on the target",
-            "icon": "ability_gouge",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1317257,
-            "name": "Strider Kick",
-            "condition": "on cooldown",
-            "icon": "ability_hunter_pet_tallstrider",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14302,
-            "name": "Immolation Trap",
-            "condition": "on cooldown",
-            "icon": "spell_fire_flameshock",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2974,
-            "name": "Wing Clip",
-            "condition": "with Windfury Totem up, when nothing else is ready",
-            "icon": "ability_rogue_trip",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 31,
-        "lines": [
-          {
-            "spell_id": 14323,
-            "name": "Hunter's Mark",
-            "condition": "when Hunter's Mark is not on the target",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2973,
             "name": "Raptor Strike",
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
@@ -12026,7 +12126,14 @@
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
-              "troll": 14263
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "human": 14263,
+              "night-elf": 14263,
+              "orc": 14262,
+              "tauren": 14262,
+              "troll": 14262,
+              "windshaper-skyborne": 14262
             }
           },
           {
@@ -12081,7 +12188,136 @@
             "name": "Raptor Strike",
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "night-elf": 14263,
+              "orc": 14262,
+              "tauren": 14262,
+              "troll": 14262,
+              "windshaper-skyborne": 14262
+            }
+          },
+          {
+            "spell_id": 14269,
+            "name": "Mongoose Bite",
+            "condition": "when it lights up, after a dodge or a hit on a marked target",
+            "icon": "ability_hunter_swiftstrike",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24119,
+            "name": "Lacerate",
+            "condition": "when Lacerate is not ticking on the target",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "on cooldown",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14303,
+            "name": "Immolation Trap",
+            "condition": "on cooldown",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14267,
+            "name": "Wing Clip",
+            "condition": "with Windfury Totem up, when nothing else is ready",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 42,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14264,
+            "name": "Raptor Strike",
+            "condition": "on cooldown",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "orc": 14262,
+              "tauren": 14262,
+              "troll": 14262,
+              "windshaper-skyborne": 14262
+            }
+          },
+          {
+            "spell_id": 14269,
+            "name": "Mongoose Bite",
+            "condition": "when it lights up, after a dodge or a hit on a marked target",
+            "icon": "ability_hunter_swiftstrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24119,
+            "name": "Lacerate",
+            "condition": "when Lacerate is not ticking on the target",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "on cooldown",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14303,
+            "name": "Immolation Trap",
+            "condition": "on cooldown",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14267,
+            "name": "Wing Clip",
+            "condition": "with Windfury Totem up, when nothing else is ready",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 43,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14264,
+            "name": "Raptor Strike",
+            "condition": "on cooldown",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "orc": 14262,
+              "tauren": 14262,
+              "troll": 14262,
+              "windshaper-skyborne": 14262
+            }
           },
           {
             "spell_id": 14269,
@@ -12135,7 +12371,74 @@
             "name": "Raptor Strike",
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "orc": 14262,
+              "tauren": 14262,
+              "troll": 14262,
+              "windshaper-skyborne": 14262
+            }
+          },
+          {
+            "spell_id": 14270,
+            "name": "Mongoose Bite",
+            "condition": "when it lights up, after a dodge or a hit on a marked target",
+            "icon": "ability_hunter_swiftstrike",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24119,
+            "name": "Lacerate",
+            "condition": "when Lacerate is not ticking on the target",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "on cooldown",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14303,
+            "name": "Immolation Trap",
+            "condition": "on cooldown",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14267,
+            "name": "Wing Clip",
+            "condition": "with Windfury Totem up, when nothing else is ready",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 45,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14264,
+            "name": "Raptor Strike",
+            "condition": "on cooldown",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "orc": 14262,
+              "tauren": 14262,
+              "troll": 14262,
+              "windshaper-skyborne": 14262
+            }
           },
           {
             "spell_id": 14270,
@@ -12185,11 +12488,20 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14263,
+            "spell_id": 14264,
             "name": "Raptor Strike",
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "dwarf": 14262,
+              "high-order-skyborne": 14262,
+              "human": 14262,
+              "night-elf": 14262,
+              "orc": 14261,
+              "tauren": 14261,
+              "troll": 14261,
+              "windshaper-skyborne": 14261
+            }
           },
           {
             "spell_id": 14270,
@@ -12244,10 +12556,14 @@
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
-              "orc": 14263,
-              "tauren": 14263,
-              "troll": 14263,
-              "windshaper-skyborne": 14263
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "human": 14263,
+              "night-elf": 14263,
+              "orc": 14262,
+              "tauren": 14262,
+              "troll": 14262,
+              "windshaper-skyborne": 14262
             }
           },
           {
@@ -12303,9 +12619,12 @@
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
-              "orc": 14263,
-              "tauren": 14263,
-              "troll": 14263
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "orc": 14262,
+              "tauren": 14262,
+              "troll": 14262,
+              "windshaper-skyborne": 14262
             }
           },
           {
@@ -12347,6 +12666,182 @@
       },
       {
         "level": 50,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14265,
+            "name": "Raptor Strike",
+            "condition": "on cooldown",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "orc": 14263,
+              "tauren": 14263,
+              "troll": 14263,
+              "windshaper-skyborne": 14263
+            }
+          },
+          {
+            "spell_id": 14270,
+            "name": "Mongoose Bite",
+            "condition": "when it lights up, after a dodge or a hit on a marked target",
+            "icon": "ability_hunter_swiftstrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24120,
+            "name": "Lacerate",
+            "condition": "when Lacerate is not ticking on the target",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "on cooldown",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14304,
+            "name": "Immolation Trap",
+            "condition": "on cooldown",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14267,
+            "name": "Wing Clip",
+            "condition": "with Windfury Totem up, when nothing else is ready",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 51,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14265,
+            "name": "Raptor Strike",
+            "condition": "on cooldown",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "orc": 14263,
+              "tauren": 14263,
+              "troll": 14263
+            }
+          },
+          {
+            "spell_id": 14270,
+            "name": "Mongoose Bite",
+            "condition": "when it lights up, after a dodge or a hit on a marked target",
+            "icon": "ability_hunter_swiftstrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24120,
+            "name": "Lacerate",
+            "condition": "when Lacerate is not ticking on the target",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "on cooldown",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14304,
+            "name": "Immolation Trap",
+            "condition": "on cooldown",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14267,
+            "name": "Wing Clip",
+            "condition": "with Windfury Totem up, when nothing else is ready",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 52,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14265,
+            "name": "Raptor Strike",
+            "condition": "on cooldown",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "tauren": 14263
+            }
+          },
+          {
+            "spell_id": 14270,
+            "name": "Mongoose Bite",
+            "condition": "when it lights up, after a dodge or a hit on a marked target",
+            "icon": "ability_hunter_swiftstrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24120,
+            "name": "Lacerate",
+            "condition": "when Lacerate is not ticking on the target",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "on cooldown",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14304,
+            "name": "Immolation Trap",
+            "condition": "on cooldown",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14267,
+            "name": "Wing Clip",
+            "condition": "with Windfury Totem up, when nothing else is ready",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 53,
         "lines": [
           {
             "spell_id": 14324,
@@ -12414,7 +12909,76 @@
             "name": "Raptor Strike",
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "night-elf": 14263,
+              "orc": 14263,
+              "tauren": 14263,
+              "troll": 14263,
+              "windshaper-skyborne": 14263
+            }
+          },
+          {
+            "spell_id": 14270,
+            "name": "Mongoose Bite",
+            "condition": "when it lights up, after a dodge or a hit on a marked target",
+            "icon": "ability_hunter_swiftstrike",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24120,
+            "name": "Lacerate",
+            "condition": "when Lacerate is not ticking on the target",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "on cooldown",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14305,
+            "name": "Immolation Trap",
+            "condition": "on cooldown",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14267,
+            "name": "Wing Clip",
+            "condition": "with Windfury Totem up, when nothing else is ready",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 57,
+        "lines": [
+          {
+            "spell_id": 14324,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14266,
+            "name": "Raptor Strike",
+            "condition": "on cooldown",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "orc": 14263,
+              "tauren": 14263,
+              "troll": 14263,
+              "windshaper-skyborne": 14263
+            }
           },
           {
             "spell_id": 14270,
@@ -12465,6 +13029,68 @@
           },
           {
             "spell_id": 14266,
+            "name": "Raptor Strike",
+            "condition": "on cooldown",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {
+              "dwarf": 14263,
+              "high-order-skyborne": 14263,
+              "night-elf": 14263,
+              "orc": 14263,
+              "tauren": 14263,
+              "troll": 14263,
+              "windshaper-skyborne": 14263
+            }
+          },
+          {
+            "spell_id": 14271,
+            "name": "Mongoose Bite",
+            "condition": "when it lights up, after a dodge or a hit on a marked target",
+            "icon": "ability_hunter_swiftstrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24120,
+            "name": "Lacerate",
+            "condition": "when Lacerate is not ticking on the target",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "on cooldown",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14305,
+            "name": "Immolation Trap",
+            "condition": "on cooldown",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14267,
+            "name": "Wing Clip",
+            "condition": "with Windfury Totem up, when nothing else is ready",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 59,
+        "lines": [
+          {
+            "spell_id": 14325,
+            "name": "Hunter's Mark",
+            "condition": "when Hunter's Mark is not on the target",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14263,
             "name": "Raptor Strike",
             "condition": "on cooldown",
             "icon": "ability_meleedamage",
@@ -44097,7 +44723,7 @@
         ]
       },
       {
-        "level": 25,
+        "level": 27,
         "lines": [
           {
             "spell_id": 2687,
@@ -134066,16 +134692,6 @@
           [
             2,
             2,
-            1
-          ],
-          [
-            2,
-            2,
-            1
-          ],
-          [
-            2,
-            2,
             2
           ],
           [
@@ -134096,7 +134712,7 @@
           [
             2,
             2,
-            3
+            2
           ],
           [
             2,
@@ -134120,23 +134736,33 @@
           ],
           [
             2,
+            2,
+            3
+          ],
+          [
+            2,
+            4,
+            2
+          ],
+          [
             3,
-            1
-          ],
-          [
-            2,
-            4,
+            1,
             2
           ],
           [
-            2,
-            4,
-            3
+            3,
+            1,
+            2
           ],
           [
-            2,
-            4,
-            3
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
           ]
         ]
       },
@@ -135620,9 +136246,9 @@
             3
           ],
           [
-            2,
             1,
-            2
+            4,
+            4
           ],
           [
             2,
@@ -144887,11 +145513,6 @@
           ],
           [
             1,
-            1,
-            2
-          ],
-          [
-            1,
             2,
             1
           ],
@@ -144934,6 +145555,11 @@
             1,
             3,
             3
+          ],
+          [
+            1,
+            4,
+            1
           ],
           [
             1,
@@ -147626,6 +148252,9 @@
     "1758": 1,
     "1759": 1,
     "1760": 1,
+    "1822": 24,
+    "1823": 24,
+    "1824": 24,
     "1866": 6,
     "1943": 20,
     "1978": 4,
@@ -147654,7 +148283,6 @@
     "2941": 1,
     "2944": 20,
     "2948": 22,
-    "2973": 1,
     "2974": 12,
     "3044": 6,
     "3045": 26,
@@ -147844,6 +148472,7 @@
     "9894": 20,
     "9896": 20,
     "9898": 10,
+    "9904": 24,
     "9907": 18,
     "9908": 16,
     "9912": 1,
@@ -147980,10 +148609,9 @@
     "13032": 40,
     "13033": 40,
     "13549": 4,
+    "13550": 4,
     "13551": 4,
     "13552": 4,
-    "13553": 4,
-    "13554": 4,
     "13555": 4,
     "13750": 40,
     "13795": 16,
