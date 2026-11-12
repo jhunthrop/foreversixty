@@ -1035,8 +1035,10 @@ def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts
     )
     flash = [line.spell_id for line in band.lines if line.name == "Flash of Light"]
     # Round 24: the group's Flash of Light is rank 2 (19939) at 40 to 42. Round 29: the tank's is
-    # rank 2 from 40 too, so band 40 casts rank 2 only.
-    assert set(flash) == {19939}
+    # rank 2 from 40 too. Sim-accuracy 2026-11-12 (Holy paladin lane), with Concentration Aura
+    # applied and Illumination's casting regen gone: rank 1 (19750) on both at 40 and 41, so band
+    # 40 casts rank 1 only.
+    assert set(flash) == {19750}
     assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {1026}
     assert {line.spell_id for line in band.lines if line.name == "Holy Shock"} == {1311606}
 
