@@ -3,7 +3,7 @@ title: Arcane Mage in Forever
 classSlug: mage
 spec: arcane
 role: dps
-build: 'FS1:1.60.1.70790:mage:gnome:141005213100301531/4/05350003:'
+build: 'FS1:1.60.1.70790:mage:gnome:141005213100311531/3/05350003:'
 raidBuild: 'FS1:1.60.1.70790:mage:gnome:131205203100311531/525000012001/003:'
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Intellect, Arcane power, Critical strike, Spell haste, Spell penetration]
