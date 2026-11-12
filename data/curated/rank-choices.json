@@ -2446,7 +2446,8 @@
             "races": [
               "troll"
             ],
-            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). A Troll casts rank 3 at bare 60 (+1.2% over rank 2, +0.7% over the top rank); a Dwarf and a Night Elf go to the top rank (+3.6%)."
+            "note": "Sim-accuracy 2026-11-12 (shadow lane), re-judged on the engine with the wand's first-shot windup (spec-breakdown -level, the level's bare band gear, 5,000 iterations, seeds 1 and 50001; a row moves on 0.2 DPS or more at both seeds, a race key only where the races differ). A Troll casts rank 3 at bare 60 (+1.2% over rank 2, +0.7% over the top rank); a Dwarf and a Night Elf go to the top rank (+3.6%).",
+            "preset": "bare"
           }
         ]
       },

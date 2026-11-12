@@ -77,7 +77,7 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 // A request's rank choices follow its character's race: the same Shadow priest at 40 casts
 // Mind Blast rank 4 as a Dwarf and rank 5 as a Gnome (round 24).
 func TestBuildCastsTheRacesRankChoice(t *testing.T) {
-	for race, want := range map[string]string{"dwarf": `"spellId":8104`, "gnome": `"spellId":8105`} {
+	for race, want := range map[string]string{"dwarf": `"spellId":8105`, "gnome": `"spellId":8105`} {
 		req := api.SimRequest{
 			EngineVersion: enginever.Version, Spec: "priest-shadow",
 			Source:    api.CharacterSource{Kind: api.SourceManual},
@@ -125,8 +125,9 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		{"Undead Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 19276, 2944},
 		{"Night Elf Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 19276, 2944},
 		// Devouring Plague at bare 60: rank 2 for every race but the Undead.
-		{"Troll Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "troll", 60, 19276, 19280},
-		{"Night Elf Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "night-elf", 60, 19276, 19280},
+		// Sim-accuracy 2026-11-12 (shadow), on the wand's first-shot windup: a Troll casts rank 3 (19277) at bare 60, a Night Elf the top rank.
+		{"Troll Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "troll", 60, 19277, 19280},
+		{"Night Elf Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "night-elf", 60, 19280, 19276},
 		// Shadow Word: Death at 50: rank 2 for every race, the Human too since sim-accuracy
 		// round 18 (+2.2% at 50, +1.5% at 56 over the top rank learned).
 		{"Human Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "human", 50, 1309633, 1309635},
@@ -165,7 +166,7 @@ func TestRound14RankChoicesCastTheWinningRank(t *testing.T) {
 	}{
 		{"Human Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "human", 60, 19280, 19276},
 		{"Gnome Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "gnome", 60, 19280, 19276},
-		{"Troll Devouring Plague at bare 60 keeps rank 2", "priest-shadow", "priest", BarePreset, "troll", 60, 19276, 19280},
+		{"Troll Devouring Plague at bare 60 keeps a lower rank", "priest-shadow", "priest", BarePreset, "troll", 60, 19277, 19280},
 		{"Corruption at 40 is the default rank 4", "warlock-destruction", "warlock", BarePreset, "troll", 40, 7648, 6223},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.race))
@@ -277,7 +278,7 @@ func TestRound20DevouringPlagueRankOneAt28ForGnomeAndTroll(t *testing.T) {
 	}{
 		{"Gnome Devouring Plague at 28", "gnome", 28, 2944, 19276},
 		{"Gnome Devouring Plague at 29", "gnome", 29, 2944, 19276},
-		{"Troll Devouring Plague at 28", "troll", 28, 2944, 19276},
+		{"Troll Devouring Plague at 28", "troll", 28, 19276, 2944}, // sim-accuracy 2026-11-12 (shadow): rank 2
 		// Round 24, on the talents at 29: a Troll casts rank 2 (+0.3% / +0.4%).
 		{"Troll Devouring Plague at 29", "troll", 29, 19276, 2944},
 		{"Human Devouring Plague at 28 is the top rank", "human", 28, 19276, 2944},
