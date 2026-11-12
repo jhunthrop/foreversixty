@@ -78,9 +78,11 @@ permissions: { contents: read }
 # A workflow_run start that the job below skips (a push-triggered data run, or a red one)
 # must not enter the `bis` group: with cancel-in-progress off, a new pending start replaces
 # the one already queued, so such a start cancelled a queued pin ranking (2026-11-12,
-# run 43257973261). It gets a group of its own and skips alone.
+# run 43257973261). It gets a group of its own and skips alone. A start off main (a lane
+# branch's proof run) gets the branch's own group: it neither waits behind main's ranking
+# nor replaces a start queued there.
 concurrency:
-  group: ${{ (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion != 'success' || github.event.workflow_run.event != 'workflow_dispatch')) && format('bis-skip-{0}', github.run_id) || 'bis' }}
+  group: ${{ (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion != 'success' || github.event.workflow_run.event != 'workflow_dispatch')) && format('bis-skip-{0}', github.run_id) || (github.ref != 'refs/heads/main' && format('bis-{0}', github.ref_name)) || 'bis' }}
   cancel-in-progress: false
 env:
   # Only main is ever pushed to or deployed; see "Off main" above.
