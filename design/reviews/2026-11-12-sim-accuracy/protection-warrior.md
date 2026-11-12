@@ -154,7 +154,14 @@ Every cell is beyond the error, Defiance still opens at 20 on ten points, and no
 
 ## Gates
 
-GATES_PENDING
+On the box, one run at a time (`protection-warrior/gates.sh`, `regen.sh`, the fork clone):
+
+- **Fork, in the box's clone:** red at f770ad173, green at 313699c2a; `go test -tags=with_db -p 1` over `sim/core`, `sim/warrior/...`, `sim/druid/...`, `sim/common/...` and `sim/conformance`: ok, with the two suite goldens that moved (`TestP1TankWarrior`, `TestFeralTank`) regenerated at 837cca30a; `TestP1DPSWarrior` unchanged.
+- **Site, pinned to 837cca30a:** `go vet ./...`; `go test ./request/` (rotations, APL, rank choices, the tank fight and fight-seconds tests; `TestRotationLadder` with the three tank goldens regenerated, the bear's and the Protection warrior's moved: the ladder's weapon-only character has no armor, so the assumed 40% now costs it rage), `./leveling/` (the order test on its new 14, 17 and 19 strings), `./rankchoices/`, `./score/`, `./adapter/`, `./cmd/leveling-bis/`, `./cmd/addon-builds/` (addon-builds.json regenerated on the walk): ok. `./cmd/spec-breakdown/`: every test ok but `TestLoadRotationFollowsTheRace`, which expects a troll at 40 to cast Mind Blast rank 4 where the shadow lane's rank rows (2026-11-12, "Mind Blast rank 5 at 40 for every race") give rank 5; the expectation is moved to the rows in this landing.
+- **apl-check** against the pinned fork: every copy matches.
+- **Web:** `npm run lint` clean; `astro check` 0 errors (2,310 files) after the fixture sync; `npm test -- src/lib/sim src/content/guides src/lib/guides`: 131 files, 2,481 tests passed (the prose, sections, builds, card and sim version tests).
+- **Python:** `data/tests/test_apl.py`, `test_card_note_levels.py`, `test_addonrotation.py`: 113 passed.
+- **wow-player:** three passes (`protection-warrior/wow-player.md`), SHIP on the second and third.
 
 ## Measure at refresh
 
@@ -168,6 +175,6 @@ GATES_PENDING
 ## Shas
 
 - **Fork `lane/sim-protwar` on master 0fb4dcebb:** f770ad173 (tests, red), 313699c2a (the three fixes), 837cca30a (the tank warrior and bear suite goldens). Master fast-forwarded to 837cca30a.
-- **Site:** SHAS_PENDING
+- **Site:** 12f78230c, 97124926b, b96012b31 (the lane's job files), 91313321c (the pin, the first card notes and guide text), e36b5e70a and 84cb9c2bf (the reviewed prose, the web sim version, the gates), 92817775b (the walk's first points, the order test, the ladder goldens, this report), b68e6b676 (the leveling bullets, the ledger rows), df01e8535 (addon-builds.json and the Protection ladder golden on the walk), then the Mind Blast expectation and this report's last edit.
 - **Engine pin after:** 837cca30a.
 - **wow-player:** NO-SHIP on the first wording (four MUSTs: "fire" is sim talk, the Bloodrage rule is health below the cost, Thunder Clap's attack power share is small and the note should say so; three SHOULDs), every item taken verbatim, then SHIP on the second pass with one nit, taken (`protection-warrior/wow-player.md`).
