@@ -1,0 +1,19 @@
+# Arms and Fury, every published entry, seed 1: run once at the pin and once at the fix.
+arms-raid-horde -spec warrior-arms -preset raid -band 60 -faction horde
+arms-raid-alliance -spec warrior-arms -preset raid -band 60 -faction alliance
+arms-bare60-horde -spec warrior-arms -preset bare -band 60 -faction horde
+arms-bare60-alliance -spec warrior-arms -preset bare -band 60 -faction alliance
+arms-bare50-horde -spec warrior-arms -preset bare -band 50 -faction horde
+arms-bare40-horde -spec warrior-arms -preset bare -band 40 -faction horde
+arms-bare30-horde -spec warrior-arms -preset bare -band 30 -faction horde
+arms-bare20-horde -spec warrior-arms -preset bare -band 20 -faction horde
+fury-raid-horde -spec warrior-fury -preset raid -band 60 -faction horde
+fury-raid-alliance -spec warrior-fury -preset raid -band 60 -faction alliance
+fury-bare60-horde -spec warrior-fury -preset bare -band 60 -faction horde
+fury-bare60-alliance -spec warrior-fury -preset bare -band 60 -faction alliance
+fury-bare50-horde -spec warrior-fury -preset bare -band 50 -faction horde
+fury-bare40-horde -spec warrior-fury -preset bare -band 40 -faction horde
+fury-bare30-horde -spec warrior-fury -preset bare -band 30 -faction horde
+fury-bare20-horde -spec warrior-fury -preset bare -band 20 -faction horde
+prot-raid-alliance-tank -spec warrior-protection -preset raid -band 60 -faction alliance -tank
+prot-bare60-tank -spec warrior-protection -preset bare -band 60 -faction alliance -tank
