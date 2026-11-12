@@ -73,7 +73,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 **Fire Nova and Flame Shock.** Outside a Clearcasting proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target, and so does Flame Shock.
 
-**Mana.** Stop casting Earth Shock at a quarter of your mana: that last quarter pays for Stormstrike and for dropping your totems again. In a raid, Judgement of Wisdom and Mana Spring bring in enough mana that you shock freely down to that quarter.
+**Mana.** Shock on cooldown until your bar is down to about a sixth, then hold that for Stormstrike and your next totem drop. Keeping a quarter back throws shocks away now that Stormstrike comes every 8 seconds and spends less mana over a fight: about 3% of your damage at 60 in a five-man. Shocking all the way to empty adds a little more, but at 40 you spend about a third of a long fight dry, with no Stormstrike and no totems. In a raid, Judgement of Wisdom and Mana Spring keep the bar high enough that you shock on cooldown and never reach the reserve.
 
 **Packs.** Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it. On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning while your mana lasts, and keep spending five Maelstrom Weapon stacks on Lightning Bolt.
 
@@ -105,7 +105,7 @@ Take Enchanting for Frozen Heart of the Mountain, and on the Alliance Molten Hea
 
 ### Levels 1 to 19
 
-Rockbiter Weapon goes on at 1; below 20 its attack power is worth more than Flametongue Weapon. Earth Shock comes at 4, and Lightning Shield at 8 stays up while you quest, since mobs hit you. Do the Call of Earth class quest at 4 and Call of Fire at 10: without the Earth Totem and Fire Totem they give, carried in your bags, those totems do not cast. From 10, Searing Totem and Strength of Earth Totem go down on every pull that lasts.
+Rockbiter Weapon goes on at 1. From 10, run Flametongue Weapon: it beats Rockbiter by a point or two, and by 29 it is a coin flip, so a new Rockbiter rank is not worth a trip to town; swap to Rockbiter on fire-immune mobs. Windfury Weapon takes over at 30. Earth Shock comes at 4, and Lightning Shield at 8 stays up while you quest, since mobs hit you. Do the Call of Earth class quest at 4 and Call of Fire at 10: without the Earth Totem and Fire Totem they give, carried in your bags, those totems do not cast. From 10, Searing Totem and Strength of Earth Totem go down on every pull that lasts.
 
 - **10 to 14:** Thundering Strikes, 1% crit with spells and attacks per point.
 - **15 to 17:** Mental Dexterity, a third of your Intellect as attack power per point.
@@ -115,7 +115,7 @@ Replace the starter weapon with the first slow two-hander a quest gives you: sta
 
 ### Levels 20 to 60
 
-Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Windfury Weapon at 30 replaces Rockbiter and stays on while you level. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and you wear leather until 40 and mail from 40.
+Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Windfury Weapon at 30 replaces whatever imbue you were running and stays on while you level. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and you wear leather until 40 and mail from 40.
 
 - **20 to 25:** fill Ancestral Knowledge, two points in Elemental Weapons, and Stormstrike at 25, the first level the fourth row opens. Press it the moment you learn it.
 - **26 to 32:** finish Elemental Weapons, take Shamanistic Focus and fill Flurry by 32.

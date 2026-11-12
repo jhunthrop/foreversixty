@@ -124,8 +124,8 @@ From 20, Lightning Bolt and Flame Shock carry you the whole way. On packs keep d
 Cast the top rank of Lightning Bolt when you drink after every pull. On a long fight where your mana, not the mob, runs out first, a lower rank costs far less, keeps most of your spell damage and does more in total before you run dry. A rank further down loses more of your gear's bonus with every level, so step down to:
 
 - **20 to 33:** rank 3, while each new rank still costs more than it is worth.
-- **34 to 38:** rank 4, and at 39 too unless you are an orc.
-- **39 or 40 to 44:** rank 5, from 39 for an orc and from 40 for every other race.
+- **34 to 38:** rank 4, and at 39 too for a Windshaper Skyborne.
+- **39 to 44:** rank 5, from 40 for a Windshaper Skyborne.
 - **45 to 50:** rank 6.
 - **51 to 56:** rank 7.
 - **From 57:** rank 8.

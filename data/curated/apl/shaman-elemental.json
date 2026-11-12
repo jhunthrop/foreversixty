@@ -307,7 +307,7 @@
         }
       },
       {
-        "notes": "Lightning Bolt for everything else, at the rank your mana can carry to the end of the fight. In a raid at 60 that is rank 10, since raid buffs carry its mana so close to the end that the bigger bolt is worth it. Without raid buffs at 60 it is rank 8, and while leveling it is the rank for your level: 3 from 20 to 33, 4 until 38 (39 too unless you are an orc), 5 until 44, 6 until 50, 7 until 56 and 8 from 57.",
+        "notes": "Lightning Bolt for everything else, at the rank your mana can carry to the end of the fight. In a raid at 60 that is rank 10, since raid buffs carry its mana so close to the end that the bigger bolt is worth it. Without raid buffs at 60 it is rank 8, and while leveling it is the rank for your level: 3 from 20 to 33, 4 until 38 (a Windshaper Skyborne keeps it at 39), 5 until 44, 6 until 50, 7 until 56 and 8 from 57.",
         "action": {
           "castSpell": {
             "spellId": {

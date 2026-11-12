@@ -21,14 +21,20 @@ const maelstromWeaponTalentSpellID = 408498
 // (+1.9% to +3.7% at 38 to 46 without it), so the bolt waits for all five
 // points and the half reserve that paid for those bolts is gone
 // (design/reviews/2026-11-05-sim-audit-round21/shaman.md).
-func TestEnhancementShocksDownToAQuarterOfItsMana(t *testing.T) {
+// Sim-accuracy 2026-11-12, shamans: on the 10 November Stormstrike (100% on
+// 8 s, less mana spent) the quarter costs shocks: shocking down to 15%
+// gains 3.1% at bare 60 and 1.3% at bare 40 over it and never runs dry,
+// where shocking to empty gains 2.2% and 0.8% more but spends 9 s of a
+// bare-60 fight and 55 s of a bare-40 one with no mana for Stormstrike or
+// a totem (design/reviews/2026-11-12-sim-accuracy/shamans.md).
+func TestEnhancementShocksDownToFifteenPercentOfItsMana(t *testing.T) {
 	const earthShock = 10414
 	for _, item := range enhancementRotation(t).PriorityList {
 		action := item.GetAction()
 		if action.GetCastSpell().GetSpellId().GetSpellId() != earthShock {
 			continue
 		}
-		assertManaAbove(t, action.GetCondition(), "25%")
+		assertManaAbove(t, action.GetCondition(), "15%")
 		return
 	}
 	t.Fatal("the Enhancement rotation casts no Earth Shock rank 7")

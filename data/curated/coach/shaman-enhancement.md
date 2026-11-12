@@ -31,7 +31,7 @@ This is the best Enhancement Shaman on Forever. Enhancement is the shaman's mele
 - Lightning Bolt at five Maelstrom Weapon stacks once you have all five points: it is instant and free then.
 - Searing Totem when it is down, unless the boss is about to die.
 - Fire Nova on a Clearcasting proc, with the raid build. It is free then, and in melee your Searing Totem stands within its ten yards of the boss.
-- Earth Shock last, on cooldown while your mana is above a quarter. Keep that last quarter for your totems, and from twenty-five for Stormstrike.
+- Earth Shock last, on cooldown while your mana is above a sixth. That last sixth keeps Stormstrike and a totem drop paid for.
 - Magma Totem from twenty-six on a big pack, with Fire Nova on cooldown and Chain Lightning while mana lasts. Both totems' bursts reach a few yards, and in melee you stand at the totem.
 - Lightning Shield only fires when something hits you, which behind a boss is never.
 

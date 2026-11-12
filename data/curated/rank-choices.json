@@ -2425,19 +2425,19 @@
             "to_level": 39,
             "rank": 4,
             "races": [
-              "dwarf",
-              "tauren",
-              "troll",
               "windshaper-skyborne"
             ],
-            "note": "Sim-accuracy round 24, second pass: judged on the talents a player has at each level (spec-breakdown -level N -rank, 10,000 iterations, seeds 1 and 50001, every race). At 39, a level after rank 7 arrives, rank 4 still beats rank 5 for a dwarf (+0.3%), a tauren (+0.3% to +0.4%), a troll (+0.45%) and a Windshaper Skyborne (+1.2%); an orc's Blood Fury pays for rank 5 (+0.35%, next row). From 40 rank 5 wins for every race (+1.0% to +1.4%)."
+            "note": "Sim-accuracy 2026-11-12 (shamans): re-judged at 39 on the 9 November overload (half the bolt again) with spec-breakdown -level 39 -race R -rank, 10,000 iterations, seed 1, bare band 30. Rank 5 now beats rank 4 for a dwarf (+2.0%), a tauren (+0.8%) and a troll (+0.8%) as it already did for an orc (+1.5%); only a Windshaper Skyborne keeps rank 4 (+0.4%). Round 24's rank 4 row for the other three races is gone (design/reviews/2026-11-12-sim-accuracy/shamans.md)."
           },
           {
             "from_level": 39,
             "to_level": 39,
             "rank": 5,
             "races": [
-              "orc"
+              "orc",
+              "dwarf",
+              "tauren",
+              "troll"
             ]
           },
           {
@@ -2487,35 +2487,7 @@
         ]
       }
     ],
-    "shaman-enhancement": [
-      {
-        "spell": "Earth Shock",
-        "authored": 10414,
-        "lines": [
-          7
-        ],
-        "bands": [
-          {
-            "from_level": 25,
-            "to_level": 25,
-            "rank": 3,
-            "races": [
-              "dwarf",
-              "tauren",
-              "troll",
-              "windshaper-skyborne"
-            ],
-            "note": "Sim-accuracy round 24, second pass: judged on the talents a player has at each level (spec-breakdown -level N -rank, 10,000 iterations, seeds 1 and 50001, every race). At 25, the level Stormstrike arrives, Earth Shock rank 3 beats rank 4 for a dwarf (+0.9%), a tauren (+1.0%), a troll (+0.85%) and a Windshaper Skyborne (+0.9%); an orc keeps rank 4 (+0.5%). At 26 rank 3 wins for every race (next row); from 27 rank 4 wins again (+1.5% to +2.0%)."
-          },
-          {
-            "from_level": 26,
-            "to_level": 26,
-            "rank": 3,
-            "note": "Sim-accuracy round 24, second pass: judged on the talents a player has at each level (spec-breakdown -level N -rank, 10,000 iterations, seeds 1 and 50001, every race). Rank 3 beats rank 4 at 26 by 0.6% to 0.9% for every race."
-          }
-        ]
-      }
-    ],
+    "shaman-enhancement": [],
     "shaman-restoration": [
       {
         "spell": "Healing Wave",
