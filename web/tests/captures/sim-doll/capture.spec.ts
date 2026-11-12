@@ -27,7 +27,8 @@ const WIDTHS = [
 ] as const;
 const DESKTOP = [WIDTHS[0]] as const;
 
-/** A level 60 Fury set from the real items file, enchanted as a Fury warrior would (id:enchant). */
+/** A level 60 Fury set from the real items file, enchanted as a Fury warrior would (id:enchant); dual
+ *  wielding, as the fixture's measured misses were (result-full.json: a dual-wield white miss rate). */
 const SET: readonly [string, number, number?][] = [
   ['head', 12640, 1506],
   ['neck', 15411],
@@ -43,7 +44,8 @@ const SET: readonly [string, number, number?][] = [
   ['finger2', 13098],
   ['trinket1', 11815],
   ['trinket2', 13965],
-  ['main_hand', 12784, 1900],
+  ['main_hand', 279259, 1900],
+  ['off_hand', 22384, 1900],
   ['ranged', 12651],
 ];
 const FS1 = `FS1:${BUILD}:warrior:orc:0/5530515/0:${SET.map(([slot, id, ench]) => `${slot}=${id}${ench ? `:${ench}` : ''}`).join(',')}|who=Thandrel:Realm`;

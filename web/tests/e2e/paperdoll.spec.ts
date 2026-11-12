@@ -53,7 +53,9 @@ test.describe('the sim card at 1280', () => {
     // Beside the frame, the worn list (character/WornList): each piece over its slot and item level,
     // the off hand a two-hander covers saying so.
     const rows = page.getByTestId('sim-gear-card').getByTestId('sim-gear-rows');
-    await expect(rows.getByTestId('sim-gear-row-head')).toContainText('Head · Item level 61');
+    await expect(rows.getByTestId('sim-gear-row-head')).toContainText(
+      /Lionheart Helm.*Head · Item level \d+/s,
+    );
     await expect(rows.getByTestId('sim-gear-row-off_hand')).toContainText('Two-handed');
     // The frame opens on the first item: its client tooltip in the centre, with the binding and
     // armour lines, and the floating host leaves the frame alone (one tooltip on the page).

@@ -631,8 +631,8 @@ def worn_rows(slots: list[dict]) -> str:
         slot_word = s['label'].partition(': ')[0]
         enchant = f'<span class="src ench">{escape(s["enchant"])}</span>' if s.get('enchant') else ''
         rows.append(f'<div class="gear-row"><span>{gicon(s["icon"], 28, s["quality"])}</span><span class="bd">'
-                    f'<span class="nm" style="color:{QCOL.get(s["quality"], QCOL[1])}">{escape(s["name"])}</span>'
-                    f'<span class="src">{escape(slot_word)} &middot; {escape(s["line2"])}</span>{enchant}</span></div>')
+                    f'<span class="nm" style="color:{QCOL.get(s["quality"], QCOL[1])}" role="button" tabindex="0" aria-haspopup="true">{escape(s["name"])}</span>'
+                    f'<span class="src">{escape(slot_word)} &middot; {escape(s["line2"])}</span>{enchant}</span><span></span></div>')
     return f'<div class="gear-rows">{"".join(rows)}</div>'
 
 
@@ -874,7 +874,7 @@ main{padding-bottom:80px}@media(min-width:1024px){main{padding-bottom:104px}}
 .tl-tools{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;min-height:56px;padding:10px 0;margin-top:12px}.tl-sw{display:inline-flex;gap:12px;align-items:center}.tl-tools .lg{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;font-size:13px;line-height:20px;color:var(--muted);list-style:none;margin:0 0 0 auto;padding:0}.tl-tools .lg li{display:inline-flex;align-items:center;gap:6px}.tl-tools .lg i{display:inline-block;border-radius:1px;background:var(--k)}.tl-brush{display:grid;grid-template-columns:200px minmax(0,1fr);height:44px;align-items:center}.tl-brush .tr{height:20px;border-radius:4px;background:#ffffff08}.tl-foot{padding-top:10px}
 .gear-c{container-type:inline-size}.gear-grid{display:grid;gap:20px}.gear-aside{display:flex;flex-direction:column;gap:16px;min-width:0}
 .gear-stats{display:flex;flex-direction:column;gap:8px}.gear-rows{display:flex;flex-direction:column}
-.gear-row{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;align-items:center;border-bottom:1px solid var(--line-soft)}
+.gear-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:12px;align-items:center;border-bottom:1px solid var(--line-soft)}
 .gear-row .bd{min-width:0}.gear-row .nm{display:block;font:700 15px/20px var(--font-body)}.gear-row .src{display:block;font:400 13px/18px var(--font-body);color:var(--muted)}
 .gear-row .src.ench{color:#1eff00}
 @container (min-width:760px){.gear-grid{grid-template-columns:minmax(0,640px) minmax(240px,1fr);align-items:start}}
