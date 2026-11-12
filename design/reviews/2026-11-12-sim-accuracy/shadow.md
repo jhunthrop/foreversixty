@@ -36,7 +36,7 @@ The 11 Nov table stands (every Shadow spell, talent, racial and heal). Added thi
 
 | # | finding | evidence | where it lands |
 |---|---|---|---|
-| D1 | **Earthen Silk Slippers (254013) carried +24 spell damage and 18 healing until Blizzard's 11 Nov hotfix; the row is now 6 spell damage, 17 healing, 7 Spirit.** The site's `items/priest.json` moved with the 11 Nov nightly (4fb79c6d9 on 10 Nov still had 24/18/7; 1c0ff79f9 on 11 Nov has 6/17/7), but the published BiS was ranked on 10 Nov 08:17 from the old row, so a level-36 green is the Shadow feet pick at bare 40 and raid 60 (score 24, Omnicast Boots 0.4 DPS behind), and sits in the Balance, Elemental, three mage, Holy, Discipline and Retribution files too. The engine's `simdb.bin` row and the ranker both read the data, so nothing in the engine or the ranker is wrong; the re-rank running on CI (bis.yml) reads the 11 Nov row. | Blizzard 11 Nov; `git log` of `items/priest.json`; `bis/priest-shadow.json` bands 4, 5, 10, 11 | MR72 |
+| D1 | **Earthen Silk Slippers (254013) carried +24 spell damage and 18 healing until Blizzard's 11 Nov hotfix; the row is now 6 spell damage, 17 healing, 7 Spirit.** The site's `items/priest.json` moved with the 11 Nov nightly (4fb79c6d9 on 10 Nov still had 24/18/7; 1c0ff79f9 on 11 Nov has 6/17/7), but the published BiS was ranked on 10 Nov 08:17 from the old row, so a level-36 green is the Shadow feet pick at bare 40 and raid 60 (score 24, Omnicast Boots 0.4 DPS behind), and sits in the Balance, Elemental, three mage, Holy, Discipline and Retribution files too. The engine's `simdb.bin` row and the ranker both read the data, so nothing in the engine or the ranker is wrong; the re-rank running on CI (bis.yml) reads the 11 Nov row. | Blizzard 11 Nov; `git log` of `items/priest.json`; `bis/priest-shadow.json` bands 4, 5, 10, 11 | MR74 |
 
 ## Open
 
@@ -100,7 +100,26 @@ Shadow's gain is largest where the wand is the filler (10 to 27, no Mind Flay ye
 
 ## Builds, rotations and rank rows
 
-RANKROWS
+Nothing in the client moved, so the builds, the card and the three leveling orders stand. The rank rows were re-judged on the new engine, because a cheaper dry spell is exactly what a cheaper rank buys: every Shadow rank row's band edges (`shadow/rankcells.txt`, 109 cells), the level's bare band gear, the row's rank against the next rank and the top rank the level can train, seed 1 at 5,000 iterations, then seed 50001 for every cell whose best rank was not the row's (`shadow/rankcells-seed2.txt`, 100 cells). A row moves on 0.2 DPS or more at both seeds, the round 23 rule. **73 rows hold, 8 tie within error, 25 move** (`shadow/rankjob*.sh`, the runs are the lane's `rankjob*.out`):
+
+| spell, level | was | now | gain, seed 1 and 50001 |
+|---|---|---|---|
+| Mind Blast 35, Gnome | rank 4 | rank 5 | +0.4%, +0.4% |
+| Mind Blast 40, Dwarf, Night Elf, Troll | rank 4 | rank 5 (every race now) | +0.4% and +0.3%; +0.4% and +0.4%; +0.6% and +0.5% |
+| Mind Blast 50, Dwarf, Night Elf | rank 5 | rank 6 (ahead of rank 7 by 0.2%) | +0.7%, +0.7% |
+| Mind Blast 50, Troll | rank 5 | the top rank (7) | +0.6%, +0.5% |
+| Mind Blast 50, Undead | rank 6 | the top rank (7) | +1.0%, +0.9% |
+| Mind Blast 51, Dwarf, Night Elf, Troll | rank 5 | the top rank (7) | +1.6%, +1.6%, +1.1% at both seeds |
+| Mind Blast 52, Dwarf; 53, Human | rank 5; rank 6 | the top rank (8) | +1.9%; +0.3% at both seeds |
+| Devouring Plague 28, Troll | rank 1 | rank 2 | +0.6%, +0.5% |
+| Devouring Plague 50, Human; 51, Human | rank 1 | rank 2 | +0.3%; +0.5% at both seeds |
+| Devouring Plague 51, Dwarf, Night Elf, Troll | rank 2 | rank 3 | +0.4%, +0.4%, +0.2% at both seeds |
+| Devouring Plague 59, Human, Undead | rank 2 | rank 3 | +0.5%, +0.9% at both seeds |
+| Devouring Plague bare 60, Dwarf, Night Elf | rank 2 | the top rank (6) | +3.7%, +3.6% |
+| Devouring Plague bare 60, Troll | rank 2 | rank 3 (ahead of the top rank by 0.7%) | +1.2%, +1.2% |
+| Shadow Word: Death 40, Human | rank 1 | rank 2 | +0.3%, +0.3% |
+
+Held within error (the row stays): Mind Blast 35 Troll, 36 Undead, 40 Human and Undead (rank 5 against 6); Devouring Plague 36 Dwarf and Troll, 37 Dwarf, 38 Troll, 43 Undead, 49 Dwarf, 52 Human; Shadow Word: Death 40 Night Elf. Every Shadow Word: Pain row holds (26 to 39, every race). The rows between a band's edges keep the band's rank and are re-judged with MR75. `data/curated/rank-choices.json` carries the moves with their notes; `rank_choices_priest_r23_test.go` and `rank_choices_remeasured_test.go` pin them; the guide's three rank lines say the same.
 
 ## Guide and card
 
@@ -114,9 +133,9 @@ GATES
 
 Three rows added to the ledger's table:
 
-- **MR72**, the casters' feet on the 11 Nov Earthen Silk Slippers hotfix (D1): every band whose feet pick is 254013 (Shadow bare 40 and raid 60 both factions; Balance, Elemental, the three mages, Holy, Discipline, Retribution).
-- **MR73**, Shadow on the wand's first-shot windup (W1): bare bands 20 to 60, BiS (the wand slot and the mana stats), weights (Intellect, Spirit and mp5 against spell power, now that a dry spell costs less), races, the leveling walks at 10 to 27; the rank rows are re-judged below.
-- **MR74**, the mages on the wand's first-shot windup (W1): bare bands 20 to 50 where the sets run dry (the wand slot, weights, walks, rank rows); raid 60 never shoots. Warlocks Life Tap and never shoot: every warlock cell is identical.
+- **MR74**, the casters' feet on the 11 Nov Earthen Silk Slippers hotfix (D1): every band whose feet pick is 254013 (Shadow bare 40 and raid 60 both factions; Balance, Elemental, the three mages, Holy, Discipline, Retribution).
+- **MR75**, Shadow on the wand's first-shot windup (W1): bare bands 20 to 60, BiS (the wand slot and the mana stats), weights (Intellect, Spirit and mp5 against spell power, now that a dry spell costs less), races, the leveling walks at 10 to 27; the rank rows are re-judged below.
+- **MR76**, the mages on the wand's first-shot windup (W1): bare bands 20 to 50 where the sets run dry (the wand slot, weights, walks, rank rows); raid 60 never shoots. Warlocks Life Tap and never shoot: every warlock cell is identical.
 
 ## For the owner
 
