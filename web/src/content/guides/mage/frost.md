@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70790:mage:gnome:230005203/5/253510130101301221:'
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Frost power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Frost Mage in Forever: Ice Barrier as a damage buff, the pre-pull Frostbolt, Fingers of Frost into Ice Lance, threat and mana on a boss, talents and leveling.'
-updated: 2026-11-04
+updated: 2026-11-12
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -60,7 +60,7 @@ sources:
 
 Frost takes 31 points to Ice Barrier in both builds, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, the toll to reach the 30 points Ice Barrier asks for; each Frostbolt then has a 40% chance to add a stack for your next Cone of Cold. Fifteen go into Arcane: **Arcane Concentration** (a free spell 10% of the time), Missile Barrage, and three ranks of **Arcane Impact** for 6% more crit on the Missiles it fires, with Wand Specialization and Improved Channeling as the toll to get there.
 
-The last five points are where the raid build and the level 60 build part. In a raid they go into Fire for five ranks of **Incineration**, which adds 10% crit to Ice Lance. Out of a raid, in dungeon gear with no Mana Spring under you, mana runs out before the fight does, so the level 60 build puts three of them into **Arcane Meditation**, half your regeneration kept while you cast, and the other two into Improved Channeling to open its row. Swap them back into Incineration when you start raiding.
+The last five points are where the raid build and the level 60 build part. In a raid they go into Fire for five ranks of **Incineration**, which adds 10% crit to Ice Lance. Out of a raid, in dungeon gear with no Mana Spring under you, mana runs out before the fight does, so the level 60 build puts three of them into **Arcane Meditation**, which keeps half your mana regeneration going while you cast, and the other two into Improved Channeling, the last Arcane points worth taking: with all five, your Arcane Missiles never lose casting time when you take a hit. Swap them back into Incineration when you start raiding.
 
 If a boss lets you stand within 10 yards, more points in Winter's Chill and Improved Cone of Cold turn Cone of Cold into a real nuke. Most bosses cleave, breathe or stomp at that range, so the build stays at range.
 

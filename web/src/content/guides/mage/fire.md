@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70790:mage:human:0501052001000/55500201230133031/003:'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Spell power, Fire power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Fire Mage in Forever: the pre-pull Pyroblast, Fireball, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'
-updated: 2026-11-04
+updated: 2026-11-12
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -131,7 +131,7 @@ On leveling mana the cheap ranks win from here, because each one earns the same 
 - Scorch rank 1 from 28 to 39, rank 2 from 40 to 45, rank 3 from 46 to 51 and rank 4 from 52 to 55, then the newest rank.
 - Fire Blast rank 2 to 35 and rank 3 from 36 to 39.
 - Pyroblast rank 2 to 33, rank 3 at 34 and 35, rank 2 at 36 and 37, rank 3 from 38 to 40, rank 4 at 41 and 42, then the newest rank.
-- Fireball rank 4 at 24 for a Human, Undead, Orc or Troll, at 25 for a Human, and at 27 for a Human or a Gnome; rank 5 everywhere else from 24.
+- Fireball rank 5 from 24, except that you stay on rank 4 at 24 as a Human, Undead, Orc or Troll, at 25 as a Human, and at 27 as a Human or a Gnome. Then the newest rank.
 
 Open on a mob with Pyroblast from range, Fireball (Scorch from 30) as it closes, and finish it with Fire Blast. Keep Frost Nova and Blink for anything that reaches you, and Frostbolt for kiting: none of your Fire spells slow until Frostfire Bolt at 40, and Frostbolt is still the cheaper slow after that. Flamestrike into Arcane Explosion clears packs once you have the Stamina for it. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.
 
