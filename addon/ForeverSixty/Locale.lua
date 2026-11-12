@@ -1631,7 +1631,7 @@ L.pathAskOr = " or "
 -- (Follow.defaultNext), under the tour's tiles, on the panel's Pick rows and at the right of the
 -- Builds dialog's own rows.
 L.pathSplit = "%d %s"
-L.pathNext = "Next: %s"
+L.pathNext = "%s next"
 L.panelPick = "Pick"
 L.panelPathFoot = "First talent point at level %d"
 L.homeRotationTitle = "Rotation at %d"

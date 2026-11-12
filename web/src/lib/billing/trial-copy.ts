@@ -165,7 +165,7 @@ export function reminderEmail(
   return {
     subject: `Your free Premium ends on ${endDate}`,
     text:
-      `Your free Premium ends on ${endDate}. On that day you'll be charged ${price}. Cancel in one click: ${link}\n\n` +
+      `Your free Premium ends on ${endDate}. On that day you'll be charged ${price}. Cancel here: ${link}\n\n` +
       `To keep Premium, do nothing.`,
   };
 }
@@ -180,7 +180,7 @@ export function guildReminderEmail(
   return {
     subject: `${guild}'s free ${plan} ends on ${endDate}`,
     text:
-      `${guild}'s free ${plan} ends on ${endDate}. On that day you'll be charged ${price}. Cancel in one click: ${link}\n\n` +
+      `${guild}'s free ${plan} ends on ${endDate}. On that day you'll be charged ${price}. Cancel here: ${link}\n\n` +
       `To keep the plan, do nothing.`,
   };
 }
