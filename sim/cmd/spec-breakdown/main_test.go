@@ -328,7 +328,7 @@ func TestBuildRequestTakesTheRace(t *testing.T) {
 	}
 }
 
-// A -rotation file casts the race's rank choices: Shadow at 34 casts Mind Blast
+// A -rotation file casts the race's rank choices: Shadow at 41 casts Mind Blast
 // rank 4 (8104) as a Troll and rank 5 (8105) as a Gnome (race-keyed rows
 // re-judged on the player's talents at sim-accuracy round 24), and at 40 rank 5
 // as either (the 2026-11-12 shadow lane's rows).
@@ -339,7 +339,7 @@ func TestLoadRotationFollowsTheRace(t *testing.T) {
 		race  string
 		level int
 		want  int32
-	}{{"troll", 34, 8104}, {"gnome", 34, 8105}, {"troll", 40, 8105}, {"gnome", 40, 8105}} {
+	}{{"troll", 41, 8104}, {"gnome", 41, 8105}, {"troll", 40, 8105}, {"gnome", 40, 8105}} {
 		race, want := tc.race, tc.want
 		rot, err := loadRotation(path, "priest-shadow", "priest", "bare", race, tc.level)
 		if err != nil {
