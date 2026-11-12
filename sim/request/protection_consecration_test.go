@@ -73,11 +73,12 @@ func TestProtectionConsecrationSpendsWhatTheNetRateCovers(t *testing.T) {
 	}
 }
 
-// Re-judged on the net-rate line (sim-accuracy round 24): rank 1 at 30 to 33,
-// 40 to 48 and 50 to 57; rank 1 at bare 60; the trained top rank everywhere
-// else (rank 2 at 34 to 39, rank 3 at 49, rank 4 at 58 and 59, which need no
-// row). The second pass, on the talents at each level, moved 32 and 33 to
-// rank 1 (+0.35 to 0.5%; an Undead ties at 32).
+// Re-judged on the net-rate line (sim-accuracy round 24) on the old 180 s
+// fight: rank 1 at 30 to 33, 40 to 48 and 50 to 57. Re-judged on the 48 s
+// dungeon pull (sim-accuracy 2026-11-12, paladins): rank 1 ties rank 2 at 30
+// to 33 and beats it by 0.2 to 0.8% at 34 to 38, loses 0.7 to 1.4% to rank 3
+// at 40 to 49 and 1.2 to 2.1% to rank 4 at 50 to 59, so the row is 30 to 38
+// and the trained top rank follows from 39; rank 1 keeps bare 60 (+0.6%).
 func TestProtectionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	for _, c := range []struct {
 		preset string
@@ -85,14 +86,15 @@ func TestProtectionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 		want   int32
 	}{
 		{BarePreset, 30, 26573},
-		{BarePreset, 31, 26573},
-		{BarePreset, 32, 26573},
 		{BarePreset, 33, 26573},
-		{BarePreset, 34, 20116},
-		{BarePreset, 48, 26573},
+		{BarePreset, 34, 26573},
+		{BarePreset, 38, 26573},
+		{BarePreset, 39, 20116},
+		{BarePreset, 40, 20922},
+		{BarePreset, 48, 20922},
 		{BarePreset, 49, 20922},
-		{BarePreset, 57, 26573},
-		{BarePreset, 58, 20923},
+		{BarePreset, 50, 20923},
+		{BarePreset, 57, 20923},
 		{BarePreset, 59, 20923},
 		{BarePreset, 60, 26573},
 		{RaidPreset, 60, protectionConsecrationID},

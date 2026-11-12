@@ -115,34 +115,37 @@ func containsKey(node any, key string) bool {
 }
 
 // Re-measured on the talents the leveling order gives at each level
-// (sim-accuracy round 24, second pass; 10,000 iterations, seeds 1 and 50001,
-// Human, Dwarf and Undead, every level from 29 to 60). Rank 1 wins at 30 to
-// 52 for every race. Holy Conduit's second point at 53 (Consecration 40%
-// cheaper) makes rank 3 the best from 53 to 59 by 0.4 to 10%; the races no
-// longer split. At 60 the bare fight casts
-// rank 4, the raid fight keeps rank 5.
+// (sim-accuracy round 24, second pass, and again on 2026-11-12 with
+// Judgement a ranged attack; 10,000 iterations, seeds 1 and 50001, Human,
+// Dwarf and Undead). Rank 1 wins at 30 to 52 for every race. Holy Conduit's
+// second point at 53 (Consecration 40% cheaper) makes rank 3 the best from
+// 53 to 57 by 0.2 to 11% for every race; at 58 and 59 rank 4 beats it by 1.0
+// to 1.8% for a Human and a Dwarf while an Undead keeps rank 3. At 60 the
+// bare fight casts rank 4, the raid fight keeps rank 5.
 func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	for _, c := range []struct {
 		preset string
 		level  int
-		want   int32
+		want   map[string]int32
 	}{
-		{BarePreset, 30, 26573},
-		{BarePreset, 43, 26573},
-		{BarePreset, 47, 26573},
-		{BarePreset, 49, 26573},
-		{BarePreset, 51, 26573},
-		{BarePreset, 52, 26573},
-		{BarePreset, 53, 20922},
-		{BarePreset, 56, 20922},
-		{BarePreset, 59, 20922},
-		{BarePreset, 60, 20923},
-		{RaidPreset, 60, retributionConsecrationID},
+		{BarePreset, 30, map[string]int32{"human": 26573, "dwarf": 26573, "undead": 26573}},
+		{BarePreset, 43, map[string]int32{"human": 26573, "dwarf": 26573, "undead": 26573}},
+		{BarePreset, 47, map[string]int32{"human": 26573, "dwarf": 26573, "undead": 26573}},
+		{BarePreset, 49, map[string]int32{"human": 26573, "dwarf": 26573, "undead": 26573}},
+		{BarePreset, 51, map[string]int32{"human": 26573, "dwarf": 26573, "undead": 26573}},
+		{BarePreset, 52, map[string]int32{"human": 26573, "dwarf": 26573, "undead": 26573}},
+		{BarePreset, 53, map[string]int32{"human": 20922, "dwarf": 20922, "undead": 20922}},
+		{BarePreset, 56, map[string]int32{"human": 20922, "dwarf": 20922, "undead": 20922}},
+		{BarePreset, 57, map[string]int32{"human": 20922, "dwarf": 20922, "undead": 20922}},
+		{BarePreset, 58, map[string]int32{"human": 20923, "dwarf": 20923, "undead": 20922}},
+		{BarePreset, 59, map[string]int32{"human": 20923, "dwarf": 20923, "undead": 20922}},
+		{BarePreset, 60, map[string]int32{"human": 20923, "dwarf": 20923, "undead": 20923}},
+		{RaidPreset, 60, map[string]int32{"human": retributionConsecrationID, "dwarf": retributionConsecrationID, "undead": retributionConsecrationID}},
 	} {
-		for _, race := range []string{"human", "dwarf", "undead"} {
+		for race, want := range c.want {
 			ids := rotationIDs(t, "paladin-retribution", "paladin", c.level, specRankChoices("paladin-retribution", c.preset, race))
-			if !ids[c.want] {
-				t.Errorf("%s %s %d: Consecration does not cast %d", race, c.preset, c.level, c.want)
+			if !ids[want] {
+				t.Errorf("%s %s %d: Consecration does not cast %d", race, c.preset, c.level, want)
 			}
 		}
 	}

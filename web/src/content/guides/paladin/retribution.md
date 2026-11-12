@@ -77,21 +77,20 @@ Leveling order: Benediction and Improved Judgement first, then Conviction and Sa
 
 **Seals while leveling.** Stay in Seal of Righteousness at the top rank you have trained. Train rank 8 at 58: every rank takes the same share of your spell damage, so the newest rank always hits hardest. Do not twist the way 1.12 guides tell you. In Forever a new Seal replaces the old one, no swing gets both, and every swap costs a global and a Seal's worth of mana. Spend those globals on Holy Strike instead.
 
-**The Seal twist.** With Unsealed Wrath, three swings under Seal of Command store three Commands, and one swing under Seal of Righteousness releases them, each with its normal chance to fire. Switch back to Seal of Command the moment that swing lands, and the next swing releases the stored Righteousness hit. Keep pace at four fifths of the fight to come: 80% mana at the pull, 40% halfway and 20% with a quarter left. A swing timer and a stack counter on Unsealed Wrath make this easy.
+**The Seal twist.** With Unsealed Wrath, three swings under Seal of Command store three Commands, and one swing under Seal of Righteousness releases them, each with its normal chance to fire. Windfury Totem's extra swings store nothing, so count your own swings, not the totem's. Switch back to Seal of Command the moment that swing lands, and the next swing releases the stored Righteousness hit. Keep pace at four fifths of the fight to come: 80% mana at the pull, 40% halfway and 20% with a quarter left. A swing timer and a stack counter on Unsealed Wrath make this easy.
 
-**Judgements in a raid.** Your own Judgement is for damage. The debuff Judgements are assigned: one paladin keeps Judgement of the Crusader on the boss and another keeps Judgement of Wisdom. If that is you, open with that Seal, Judge it, then go to your damage Seal. The debuff lasts 40 seconds and Holy Strike refreshes it, so after the first one it costs you nothing.
+**Judgements in a raid.** Your own Judgement is for damage. The debuff Judgements are assigned: one paladin keeps Judgement of the Crusader on the boss and another keeps Judgement of Wisdom. If that is you, open with that Seal, Judge it, then go to your damage Seal. The debuff lasts 40 seconds and Holy Strike refreshes it, so after the first one it costs you nothing. Judgement is a ranged attack: it lands on your ranged hit chance, nothing dodges, parries or blocks it, and your weapon's enchant, Windfury Totem and a Hand of Justice never fire from it. Only your swings and Holy Strike can fire those.
 
 **Consecration.** On one target it is filler: running dry for your Seal costs far more than a skipped one. Your regen pays for it almost every time it is ready with Blessing of Wisdom, Judgement of Wisdom and Mana Spring; on your own, hold it for the mana your Seal and Judgements need. On two or more targets, cast it freely.
 
 On one target a cheap Consecration rank you can put down far more often beats the higher ranks:
 
-- **To 46:** rank 1.
-- **47 to 49:** rank 2 for a Human or Dwarf. An Undead paladin keeps rank 1 at 47 and takes rank 3 from 48.
-- **50 to 53:** rank 4 arrives at 50, but go back to rank 1 and keep it to 53.
-- **54 to 59:** the gaps are small. A Human keeps rank 1 to 55, a Dwarf or an Undead paladin does best with Consecration rank 3 from 54, and by 59 every rank but 2 is close.
+- **To 52:** rank 1, even after rank 4 arrives at 50.
+- **53 to 57:** rank 3. The second point of Holy Conduit at 53 takes 40% off its cost.
+- **58 and 59:** rank 4 for a Human or Dwarf. An Undead paladin keeps rank 3.
 - **60:** rank 4 without raid buffs, rank 5, the top rank, with them.
 
-**The execute.** Save a Major Mana Potion for it if you are low. While you level, Hammer of Wrath rank 1 does a little more than rank 2 at 53, and at 54 for an Undead paladin, for less mana; at every other level use your top rank.
+**The execute.** Save a Major Mana Potion for it if you are low. Hammer of Wrath at your top rank at every level.
 
 **Movement and adds.** Hammer of Wrath works at range and Judgement from 10 yards, so keep pressing them while you close on the boss. On a pack, Consecration first, then the kill target. Against a pack of Undead or Demons, Holy Wrath hits all of them; on anything else it does nothing, so leave it off your bars outside Scholomance, Stratholme and the like.
 
@@ -135,7 +134,7 @@ Retribution is the paladin leveling spec, even if you want to heal or tank at 60
 
 From level 20 Consecration is your AoE: two or three mobs on you is the time for it. Rank 1, about 120 mana after Benediction, keeps almost all of its spell damage through your 30s for a fraction of the cost, so until your mid 40s it gives you the most damage for your mana. From 40, when a pack is on you and you have the mana, cast the newest rank instead: it hits every mob about twice as hard for the same global. From your mid to late 40s the newest rank also wins on mana on a pack, because rank 1 has lost about half of its spell damage bonus by then.
 
-Against one target, keep Consecration rank 1 all the way to 52. At 53 the second point of Holy Conduit takes 40% off Consecration's cost, and rank 3 becomes the best Consecration you have until 60: it hits far harder than rank 1 and still costs less than your newest rank.
+Against one target, keep Consecration rank 1 all the way to 52. At 53 the second point of Holy Conduit takes 40% off Consecration's cost, and rank 3 becomes the best Consecration you have: it hits far harder than rank 1 and still costs less than your newest rank. A Human or Dwarf moves to rank 4 at 58; an Undead paladin keeps rank 3 to 59.
 
 Exorcism (level 20) and Holy Wrath (level 50) are easy kills on Undead and Demons, so quest zones full of them, like the Plaguelands, are paladin country. From 31, Repentance takes one Humanoid out of a bad pull, and Hammer of Justice stops a runner or a caster.
 

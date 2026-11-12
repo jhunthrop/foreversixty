@@ -87,7 +87,7 @@ Left out: Reckoning (extra attacks after a block or a crit; it adds a little thr
 
 **Mana.** You run on blocks, and Holy Strike under Shieldsworn triggers Shield Specialization too. Hold Holy Shield's cost in reserve at all times. If you are going dry, cut Consecration first, then Hammer of the Righteous, and never Holy Shield. Below 35% health Consecration goes down anyway, because mana held back then may never get used. At 60 without raid buffs, Consecration rank 1 goes down far more often and does more than the higher ranks.
 
-**Taunts and swaps.** Judgement under Seal of Fury makes the target attack you for 3 seconds, from 10 yards, and Swift Judgement judges the same Seal, so it is a second taunt on its own minute. On a fight with a tank swap, hold one of them for the swap.
+**Taunts and swaps.** Judgement under Seal of Fury makes the target attack you for 3 seconds, from 10 yards, and Swift Judgement judges the same Seal, so it is a second taunt on its own minute. On a fight with a tank swap, hold one of them for the swap. Judgement is a ranged attack: it lands on your ranged hit chance and nothing dodges, parries or blocks it. Judgement of Fury replaces your own Judgement of the Crusader on the target, so leave the Crusader debuff to a Retribution or Holy paladin.
 
 **Adds.** Consecration and Hammer of the Righteous are your multi-target threat; Holy Shield and Shieldsworn's block keep the damage down. Judge the add that is loose, Holy Strike your main target.
 
@@ -136,7 +136,7 @@ Level as Retribution and tank dungeons in it: Righteous Fury and Seal of Fury ar
 - **25:** Swift Judgement, the first level its row opens. A second Judgement and a second taunt are worth more threat than the rest of Toughness.
 - **26 to 29:** the rest of Toughness.
 
-While you level, Consecration rank 1 does more than the higher ranks at 30 to 33, 40 to 48 and 50 to 57, because it goes down far more often; at the other levels use your newest rank.
+While you level, Consecration rank 1 does a little more than rank 2 at 30 to 38, because it costs less and you can drop it far more often on a dungeon pull; from 39 use your newest rank, and at 60 without raid buffs go back to rank 1.
 
 Common mistakes:
 

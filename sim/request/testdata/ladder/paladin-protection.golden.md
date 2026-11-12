@@ -103,9 +103,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 00000000000000000-10000000000000000-00000000000000000 | main_hand:263407 | 11.6 | 7 | other:attack/1=15.7, spell:1311647=11.2, spell:679=5.3, spell:1311650=5.3, spell:20271=5.3 | {SpellID: 1239570}, {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20594} |
 | 20 | 00000000000000000-15301100000000000-00000000000000000 | main_hand:7230 | 22.2 | 9 | other:attack/1=14.3, spell:1311654=8.9, spell:1866=4.8, spell:1311655=3.5, spell:20271=3.5 | {SpellID: 1239570}, {SpellID: 1310994}, {SpellID: 20594} |
 | 30 | 00000000000000000-15302102510001000-00000000000000000 | main_hand:13045 | 34.8 | 10 | other:attack/1=17.4, spell:20231=10.4, spell:680=5.3, spell:20183=4.3, spell:20271=3.3 | {SpellID: 20594} |
-| 38 | 00000000000000000-15302102513501000-00000000000000000 | main_hand:7758 | 47.5 | 10 | other:attack/1=18.9, spell:20415=13.6, spell:20411=5.5, spell:2495=5.3, spell:20271=4.5 | {SpellID: 20594} |
-| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:7758 | 53.1 | 12 | other:attack/1=18.8, spell:2495=8.4, spell:20415=8.0, spell:407632=3.3, spell:20411=2.9 | {SpellID: 20594} |
-| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:7758 | 65.4 | 12 | other:attack/1=18.9, spell:5569=8.4, spell:20417=7.7, spell:20413=2.9, spell:407632=2.8 | {SpellID: 20594} |
+| 38 | 00000000000000000-15302102513501000-00000000000000000 | main_hand:7758 | 46.3 | 10 | other:attack/1=18.9, spell:20415=13.5, spell:2495=5.3, spell:20411=5.3, spell:20271=4.3 | {SpellID: 20594} |
+| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:7758 | 54.7 | 12 | other:attack/1=18.8, spell:2495=8.4, spell:20415=7.9, spell:407632=3.2, spell:20411=2.9 | {SpellID: 20594} |
+| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:7758 | 69.8 | 12 | other:attack/1=18.8, spell:5569=8.5, spell:20417=8.0, spell:407632=3.5, spell:20413=3.4 | {SpellID: 20594} |
 | 60 | 05005000000000000-15302102513501031-50030000000000000 | main_hand:22736 | 106.9 | 12 | other:attack/1=67.9, spell:10333=30.3, spell:20418=7.5, spell:20414=2.3, spell:407632=1.5 | {SpellID: 20594} |
 
 ## Learned but unused (informational)
@@ -130,20 +130,19 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
+- Consecration (spell 20116)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20962)
 - Judgement of Righteousness (spell 20283)
 
 ### Level 40
 
-- Consecration (spell 20922)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20961)
 - Judgement of Righteousness (spell 20283)
 
 ### Level 50
 
-- Consecration (spell 20923)
 - Exorcism (spell 10312)
 - Hammer of Wrath (spell 24275)
 - Holy Wrath (spell 2812)

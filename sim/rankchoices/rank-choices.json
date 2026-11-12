@@ -1273,19 +1273,9 @@
         "bands": [
           {
             "from_level": 30,
-            "to_level": 33,
+            "to_level": 38,
             "rank": 1,
-            "note": "Sim-accuracy round 24: re-judged level by level on the net-rate Consecration line (pool plus income less spend over 60 s, times the fight's remaining time, covers the cast; or below 35% health), spec-breakdown -tank -level -rank 20924=r, 10,000 iterations, seeds 1 and 50001, Dwarf and Undead (design/reviews/2026-11-05-sim-audit-round24/paladin.md P1). Rank 1 beats rank 2 by 0.3 to 0.7% at 30 (Dwarf +0.4 to +0.6% at 31, Undead level); from 34 rank 2 ties or wins. Ranks 2 and 3 lose 0.3 to 0.8% at 40 to 46 and tie at 47 and 48; rank 3 beats rank 1 by 0.3 to 0.4% at 49. Ranks 3 and 4 lose 0.2 to 0.7% at 50 to 55 and tie at 56 and 57; rank 4 beats rank 1 by 0.2 to 0.8% at 58 and 0.5 to 0.8% at 59. Bare 60 keeps rank 1 (rank 4 -0.4 to -0.6%, rank 5 level). Sim-accuracy round 24 second pass, on the talents the leveling order gives at each level (spec-breakdown -level N -rank id=rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-05-sim-audit-round24/paladin.md, Second pass). At 32 a Dwarf gains 0.5% with rank 1 (an Undead ties) and at 33 both gain 0.35%, so the row runs to 33; ranks 3 at 49 and 4 at 58 and 59 are the top ranks trained there and need no row."
-          },
-          {
-            "from_level": 40,
-            "to_level": 48,
-            "rank": 1
-          },
-          {
-            "from_level": 50,
-            "to_level": 57,
-            "rank": 1
+            "note": "Sim-accuracy 2026-11-12 (paladins lane): re-judged level by level on the 48 s dungeon pull the tanks lane gave the fight below 60 on 2026-11-11 (spec-breakdown -tank -level -rank 20924=r against the top rank trained, bare, 10,000 iterations, seeds 1 and 50001 and four more at 33 to 39, Dwarf and Undead; design/reviews/2026-11-12-sim-accuracy/paladins.md). On the pull rank 1 ties rank 2 at 30 to 33 (within 0.3%) and beats it by 0.2 to 0.8% at 34 to 38; 39 ties. The rows at 40 to 48 and 50 to 57, judged on the old 180 s fight, are gone: on the pull rank 1 loses 0.7 to 1.4% to rank 3 at 40 to 49 and 1.2 to 2.1% to rank 4 at 50 to 59, because a 48 s pull never runs the tank dry. Bare 60 keeps rank 1 (+0.6% over rank 5, chance of death level)."
           },
           {
             "from_level": 60,
@@ -1309,36 +1299,24 @@
           },
           {
             "from_level": 53,
+            "to_level": 57,
+            "rank": 3,
+            "note": "Sim-accuracy 2026-11-12 (paladins lane): re-judged at 51 to 59 on the engine with Judgement a ranged attack and a relic adding no weapon skill (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human, Dwarf and Undead; design/reviews/2026-11-12-sim-accuracy/paladins.md). Rank 1 keeps 30 to 52 (rank 4 loses 1.4 to 2.1% at 51 and ties a Human at 52). From 53, with Holy Conduit's second point, rank 3 beats rank 1 by 8 to 11% and rank 4 by 0.9 to 1.4% for an Undead at 53 to 58 and 0.2 to 1.0% for the Alliance at 53 to 56; at 57 rank 4 ties a Human (+0.2%) and loses for a Dwarf and an Undead, so rank 3 holds. At 58 and 59 rank 4 beats rank 3 by 1.0 to 1.8% for a Human and a Dwarf, so their row ends at 57; an Undead keeps rank 3 to 59 (rank 4 -0.6% at 58, a tie at 59)."
+          },
+          {
+            "from_level": 58,
             "to_level": 59,
             "rank": 3,
-            "note": "Sim-accuracy round 24 second pass, on the talents the leveling order gives at each level (spec-breakdown -level N -rank id=rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-05-sim-audit-round24/paladin.md, Second pass). Holy Conduit's second point (40% cheaper) comes at 53: rank 3 beats rank 1 by 5 to 10% and rank 4 by 0.4 to 1.4% at 53 to 59 for every race, so the race split of round 23 is gone."
+            "races": [
+              "undead"
+            ],
+            "note": "Sim-accuracy 2026-11-12 (paladins lane): re-judged at 51 to 59 on the engine with Judgement a ranged attack and a relic adding no weapon skill (spec-breakdown -level -rank, bare, 10,000 iterations, seeds 1 and 50001, Human, Dwarf and Undead; design/reviews/2026-11-12-sim-accuracy/paladins.md). Rank 1 keeps 30 to 52 (rank 4 loses 1.4 to 2.1% at 51 and ties a Human at 52). From 53, with Holy Conduit's second point, rank 3 beats rank 1 by 8 to 11% and rank 4 by 0.9 to 1.4% for an Undead at 53 to 58 and 0.2 to 1.0% for the Alliance at 53 to 56; at 57 rank 4 ties a Human (+0.2%) and loses for a Dwarf and an Undead, so rank 3 holds. At 58 and 59 rank 4 beats rank 3 by 1.0 to 1.8% for a Human and a Dwarf, so their row ends at 57; an Undead keeps rank 3 to 59 (rank 4 -0.6% at 58, a tie at 59)."
           },
           {
             "from_level": 60,
             "to_level": 60,
             "rank": 4,
             "preset": "bare"
-          }
-        ]
-      },
-      {
-        "spell": "Hammer of Wrath",
-        "authored": 24239,
-        "bands": [
-          {
-            "from_level": 53,
-            "to_level": 53,
-            "rank": 1,
-            "note": "Sim-accuracy round 24 second pass, on the talents the leveling order gives at each level (spec-breakdown -level N -rank id=rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-05-sim-audit-round24/paladin.md, Second pass). Judged with the new Consecration rows: rank 2 beats rank 1 by 0.9 to 1.1% at 52 (that row is gone); at 53 rank 1 beats rank 2 by 0.13 to 0.27% for a Human, a Dwarf and an Undead; at 56 rank 2 wins by 0.3 to 0.4% for the Alliance and ties for an Undead (that row is gone too)."
-          },
-          {
-            "from_level": 54,
-            "to_level": 54,
-            "rank": 1,
-            "races": [
-              "undead"
-            ],
-            "note": "Sim-accuracy round 24 second pass, on the talents the leveling order gives at each level (spec-breakdown -level N -rank id=rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-05-sim-audit-round24/paladin.md, Second pass). At 54 an Undead gains 0.13% with rank 1 (both seeds beyond error); a Human loses 0.1% and a Dwarf ties."
           }
         ]
       }

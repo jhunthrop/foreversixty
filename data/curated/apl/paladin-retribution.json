@@ -157,7 +157,7 @@
         }
       },
       {
-        "notes": "On cooldown. Judgement is off the global cooldown, costs 6% of base mana, a tenth less once Benediction is full at 14, and never consumes your Seal, and from 22 Sanctified Judgement hands back 60% of the judged Seal's cost.",
+        "notes": "On cooldown. Judgement is off the global cooldown, costs 6% of base mana, a tenth less once Benediction is full at 14, and never consumes your Seal, and from 22 Sanctified Judgement hands back 60% of the judged Seal's cost. It is a ranged attack: it lands on your ranged hit chance, nothing dodges, parries or blocks it, and your weapon's enchant, Windfury Totem and a Hand of Justice never fire from it.",
         "action": {
           "condition": {
             "spellCanCast": {
@@ -174,7 +174,7 @@
         }
       },
       {
-        "notes": "With Unsealed Wrath, straight after the opening Crusader Judgement, in a dungeon or a raid. On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then go straight to Seal of Command: three swings store three Commands and the twist is under way. Your swings keep the debuff up, so the target takes more Holy damage for the whole fight.",
+        "notes": "With Unsealed Wrath, straight after the opening Crusader Judgement, in a dungeon or a raid. On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then go straight to Seal of Command: three swings store three Commands and the twist is under way. Windfury Totem's extra swings store nothing, so count your own swings. Your swings keep the debuff up, so the target takes more Holy damage for the whole fight.",
         "action": {
           "condition": {
             "and": {
@@ -261,7 +261,7 @@
         }
       },
       {
-        "notes": "Below 20% health, on its 6 second cooldown. Champion of the Light makes it instant, so you never stop swinging to cast it. At 53, and at 54 for an Undead paladin, rank 1 does a little more than rank 2 for less mana.",
+        "notes": "Below 20% health, on its 6 second cooldown. Champion of the Light makes it instant, so you never stop swinging to cast it.",
         "action": {
           "condition": {
             "isExecutePhase": {
@@ -277,7 +277,7 @@
         }
       },
       {
-        "notes": "With Unsealed Wrath, once three swings have stored Seal of Command, while your mana percent is at least four fifths of the fight left. Switch to Seal of Righteousness for one swing, and that swing releases all three stored Commands. Every Seal costs a global and its mana, 180 to 190 at 60, so once you fall behind that pace, stay in Seal of Righteousness until you catch up.",
+        "notes": "With Unsealed Wrath, once three of your own swings have stored Seal of Command (a Windfury Totem swing stores nothing), while your mana percent is at least four fifths of the fight left. Switch to Seal of Righteousness for one swing, and that swing releases all three stored Commands. Every Seal costs a global and its mana, 180 to 190 at 60, so once you fall behind that pace, stay in Seal of Righteousness until you catch up.",
         "action": {
           "condition": {
             "and": {
