@@ -35,3 +35,27 @@ Surfaces read: the guide (web/src/content/guides/warrior/protection.md), the coa
 ## Verdict
 
 NO-SHIP as written. The facts are right and the Revenge point is useful, but "will not fire" and "refuses to fire" read like the sim talking, "never notices" and "nothing" overstate a cost healers do see, and the Thunder Clap line implies a benefit that is tiny. Apply MUST 1 to 4 and SHOULD 5 and 6 and it is a SHIP.
+
+## Second pass
+
+Re-read the current text in the guide, the coach paragraph and the two card notes against the first pass.
+
+Applied as worded: MUST 1 to 4 (card Bloodrage "you cannot press it when you are that low", guide pull sentence, coach "so not when you are already low", card Thunder Clap "adds a sixteenth of your attack power, which is small"), SHOULD 5 (the Attack power line now sits in the Rotation section, with the Thunder Clap share given), SHOULD 6 (Improved Bloodrage bullet is "half again as much rage from every Bloodrage"), SHOULD 7 ("about 340 at 60" matches a fifth of 1,689). The Bloodrage cost now appears in three places, as asked. No em dashes in the changed lines, no site or sim talk in the guide or coach text.
+
+### MUST
+
+None.
+
+### SHOULD
+
+None.
+
+### NIT
+
+1. Guide, Attack power line: "Thunder Clap adds about a sixteenth." Reads fine, but "adds" after "to every hit" could be taken as a flat number. Optional replacement:
+   "Thunder Clap adds about a sixteenth of it."
+   Leave as is if you prefer the shorter line; it does not mislead a tank.
+
+### Verdict
+
+SHIP. Every first-pass item is in, the figures match what a tank sees in game, and the voice is a guildmate's.

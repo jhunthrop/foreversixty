@@ -86,7 +86,7 @@ Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you 
 
 **Shield Block.** It is your mitigation and your rage engine at once, so it never waits for a big hit: keep it up.
 
-**Attack power.** Revenge adds a quarter of your attack power to every hit, which is why attack power on gear counts for a tank. Thunder Clap adds about a sixteenth.
+**Attack power.** Revenge adds a quarter of your attack power to every hit, which is why attack power on gear counts for a tank. Thunder Clap adds about a sixteenth of it.
 
 **Demoralizing Shout.** If a druid or another warrior already holds it, leave it to them: two do not stack.
 
