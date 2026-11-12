@@ -18,8 +18,8 @@ that exact commit when it is green. Target: 30 to 45 minutes from merge to main.
      2026-11-07, bnet-refresh: only companion ran). land.sh dispatches each missing workflow
      on the land branch (`gh workflow run`) and waits for it; one that still never starts is
      a timeout, never a landing;
-   - leaves out a workflow turned off on GitHub (`disabled_manually`, as the refresh hold keeps data,
-     bis and engine), saying "skipping <workflow>: disabled (disabled_manually); not gating this
+   - leaves out a workflow turned off on GitHub (`disabled_manually`, as the refresh hold kept data,
+     bis and engine until 2026-11-12), saying "skipping <workflow>: disabled (disabled_manually); not gating this
      landing" for each; any other disabled state fails the landing, so a workflow switched off by
      mistake never lets a batch through quietly (2026-11-08: data.yml's `addon/**` path held every
      addon batch);
@@ -95,8 +95,8 @@ Turning it off (after launch):
    ```
 
    Not data.yml: its dispatch always runs the fetch job, which downloads and commits a
-   build (the data run is held). Run its `test` job's steps locally instead (in data/, with
-   that job's `HELD_OUTPUT` deselect), or let the next push that touches data/ run it.
+   build and then starts a ranking (see "The refresh chain"). Run its `test` job's steps
+   locally instead (in data/), or let the next push that touches data/ run it.
    An empty land branch is not enough: a land branch is diffed against main, so an empty
    one starts only companion.
 3. Fix what it finds, in one landing, before the next feature batch.
@@ -127,8 +127,38 @@ Every check job that runs on a `land/**` push checks out only what it reads:
   with `filter: blob:none`.
 
 A job that starts reading one of the left-out trees adds it back in its own checkout (a
-`/<tree>/` line after the `!` lines re-includes it). data.yml is held, and deploy and release
-jobs, which no landing runs, keep the full checkout.
+`/<tree>/` line after the `!` lines re-includes it). data.yml's fetch job, and the deploy and
+release jobs, which no landing runs, keep the full checkout.
 
 `tools/land.sh` needs `gh` (signed in), `jq` and Python 3 with PyYAML. Tunables: `LAND_POLL_SECONDS` (30),
 `LAND_SETTLE_SECONDS` (90), `LAND_TIMEOUT_SECONDS` (5400). Tests: `bash tools/tests/test_land.sh`.
+
+## The refresh chain
+
+Since 2026-11-12 the data, engine and ranking workflows run on events; their schedules
+(client 03:41, engine 05:07, bis 06:23 UTC) stay as the safety net. Every link skips when
+nothing it reads has moved (engine's `Follow-Inputs`, bis's `Inputs:` trailer), and bis's
+`bis` concurrency group never runs two rankings at once. No link loops: every bot commit is
+pushed with `GITHUB_TOKEN`, which starts no workflow, so bis's commit to `data/builds/*/bis`,
+`addon-data.json` and `Data.lua` never re-enters data.yml's push run, and data.yml's own
+commits never re-enter data.yml.
+
+| Event | Starts | How |
+|---|---|---|
+| wago.tools lists a newer Forever build (client's 03:41 watch, or `gh workflow run client.yml -f build=<build>`) | data.yml's fetch for it, then `tools/activate-build.sh` | `workflow_call` inside client.yml |
+| The activation lands on main | web, api, sim, addon-release (the `addon-v<version>` tag it made) and engine with force; bis with force only when the pinned engine already follows the build | `gh workflow run` from the script |
+| engine.yml pins a fork that follows the active build | web, api, sim and bis with force | `gh workflow run` from the pin job (also after it auto-merges a green `engine: pin <sha>` pull request) |
+| A person pushes `sim/enginever/version.go` to main (a sim lane's hand pin) | bis | `on.push` paths filter in bis.yml |
+| A dispatched data.yml run finishes green on main (a hand refresh: `gh workflow run data.yml -f product=<key> -f build=<build>`) | bis | `on.workflow_run` in bis.yml; a push-triggered data run starts nothing |
+| client's push-check finds a new hotfix push for the active build | data.yml's fetch again (refetch), then engine; engine's pin then ranks | `workflow_call`, then `gh workflow run engine.yml` from client's refollow job |
+| bis commits new picks | the web and api deploys | `gh workflow run` from bis.yml |
+
+By hand: `gh workflow run data.yml -f product=<key> -f build=<build>` fetches and then ranks;
+`gh workflow run engine.yml -f force=true` follows the active build and ranks on a green pin;
+`gh workflow run bis.yml -f force=true` ranks whatever main holds now. A workflow_run or push
+start of bis checks out main's head at start time, not the event's sha.
+
+The addon tag stays a hand step. bis commits the new picks into `addon/ForeverSixty/Data.lua`
+on main, but players get them only with the next `addon-v<version>` release: a
+`chore(addon): <version>` commit (TOC version and changelog heading) and the tag, as
+`tools/activate-build.sh` does for a client move. Nothing tags on a re-rank.

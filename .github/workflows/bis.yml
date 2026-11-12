@@ -8,10 +8,28 @@
 # only to a throwaway packaging checkout for the release zip - so this
 # follows data.yml's shape instead; see the lane report).
 #
-# Scheduled at 06:23 UTC: an off-minute (avoids the top-of-hour pile-up
-# GitHub Actions' own scheduler docs warn about) and after data.yml's
-# nightly-adjacent runs have room to land first, since this job reads
-# data/builds/<build>/items*.json and loot.json.
+# The ranking is event driven (docs/runbooks/landing.md, "The refresh chain"):
+#
+#   workflow_run -- a dispatched data.yml run finished green on main, so its fetch job
+#                   committed new data for a build (a hand refresh); a push-triggered
+#                   data run (the test and addon-data jobs) starts nothing here, the
+#                   push itself carried the change and the nightly's inputs hash sees it;
+#   push         -- sim/enginever/version.go moved on main by a person's push: a hand pin
+#                   from a sim lane, whose fixes reach the picks only through a re-rank.
+#                   engine.yml's own pin is pushed with GITHUB_TOKEN, which starts no push
+#                   run, so that job dispatches this workflow itself, with force;
+#   dispatch     -- by hand, or by engine.yml's green pin and tools/activate-build.sh (the
+#                   client move), both with force;
+#   schedule     -- 06:23 UTC, the safety net: an off-minute (avoids the top-of-hour
+#                   pile-up GitHub Actions' own scheduler docs warn about) and after the
+#                   client watcher (03:41) and the engine follow (05:07) have room to land.
+#
+# Every start but a forced dispatch ranks only when the inputs hash below moved, so a
+# chained run that finds nothing new skips the ranking after the crawl. The `bis`
+# concurrency group keeps two rankings from ever overlapping: a start while one runs
+# queues behind it (and replaces any start already queued). This workflow's own commits
+# are pushed with GITHUB_TOKEN, which starts no workflow: they never loop back into
+# data.yml's push run or this one.
 name: bis
 on:
   schedule:
@@ -22,19 +40,35 @@ on:
         description: Rank even if nothing the ranker reads has changed since the last picks
         type: boolean
         default: false
+  push:
+    branches: [main]
+    paths: ['sim/enginever/version.go']
+  workflow_run:
+    workflows: [data]
+    types: [completed]
+    branches: [main]
 permissions: { contents: read }
 concurrency:
   group: bis
   cancel-in-progress: false
 jobs:
   run:
+    # A data run counts only when it finished green and was a dispatch (the fetch job
+    # commits on a dispatch, never on a push); every other start runs as before.
+    if: >-
+      github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 355
     permissions:
       contents: write
       actions: write
     steps:
+      # main's head as it is now, not the sha the event names: a workflow_run names the
+      # default branch's head when the data run finished, a push names the pushed commit,
+      # and the ranking reads (and commits over) whatever main holds when it starts.
       - uses: actions/checkout@v4
+        with: { ref: main }
       - uses: actions/setup-go@v5
         with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
       - uses: ./.github/actions/pin-engine

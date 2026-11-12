@@ -25,11 +25,14 @@
 #
 #   push     -- when no newer build exists: asks whether the server pushed hotfixes for
 #               the active build since it was layered (pipeline push-check) and, if so,
-#               runs data.yml's fetch job for the active build again (refetch). While the
-#               data workflow is disabled (the refresh hold) nothing would layer it, so
-#               push-alert opens "Hotfix push for <build> is not layered" (label
-#               hotfix-push-unlayered) or comments on it; a run that finds the record
-#               current closes it (tools/client-alert.sh push | push-layered).
+#               runs data.yml's fetch job for the active build again (refetch) and then
+#               dispatches the engine follow (engine.yml; its green pin dispatches the
+#               ranking with force), so the new rows reach the picks without waiting for
+#               the 05:07 and 06:23 schedules. While the data workflow is disabled (a
+#               refresh hold) nothing would layer it, so push-alert opens "Hotfix push for
+#               <build> is not layered" (label hotfix-push-unlayered) or comments on it; a
+#               run that finds the record current closes it (tools/client-alert.sh push |
+#               push-layered).
 #
 # A stopped move (the watch, the fetch or the activation) opens the issue "Client build
 # <build> is blocked" (label client-build-blocked) with the step, the reason, the hand
@@ -193,6 +196,29 @@ jobs:
     with:
       product: ${{ needs.push.outputs.product }}
       build: ${{ needs.watch.outputs.active }}
+
+  # The refetch's commit is pushed with GITHUB_TOKEN, which starts no workflow, and a
+  # workflow called from here is not a data.yml run (bis.yml's workflow_run never sees it):
+  # the follow is dispatched here, as the activation does after a move. No force: the
+  # follow's own inputs hash moves with the refetched hotfix-push.json, a clean follow
+  # pins, and the pin ranks (engine.yml, "deploy the new engine").
+  refollow:
+    needs: [watch, refetch]
+    if: needs.refetch.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: { contents: read, actions: write }
+    env:
+      GH_TOKEN: ${{ github.token }}
+      # No checkout here, so gh is told the repository.
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: dispatch the engine follow for the refetched build
+        env:
+          ACTIVE: ${{ needs.watch.outputs.active }}
+        run: |
+          gh workflow run engine.yml --ref main
+          echo "::notice title=engine follow dispatched::$ACTIVE was refetched with the server's newest hotfix push; engine.yml follows it and its green pin ranks it"
 
   # A push nothing will layer gets an issue that stays open until the record is current.
   push-alert:
