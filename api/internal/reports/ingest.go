@@ -698,8 +698,16 @@ func partJSON(r *http.Request, name string, into any) error {
 	return nil
 }
 
-// partBytes reads one part of a bundle whole.
+// partBytes reads one part of a bundle whole. The companion writes its
+// JSON parts as form fields (multipart.Writer.CreateFormField, no
+// filename) and only the events as a file, and FormFile sees files
+// alone, so a field is read from the parsed form's values first. The
+// form was parsed under MaxBundleBytes, which bounds a field as it
+// bounds a file.
 func partBytes(r *http.Request, name string) ([]byte, error) {
+	if values := r.MultipartForm.Value[name]; len(values) > 0 {
+		return []byte(values[0]), nil
+	}
 	f, _, err := r.FormFile(name)
 	if err != nil {
 		return nil, fmt.Errorf("the bundle has no %s part", name)
