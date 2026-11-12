@@ -16,7 +16,7 @@ beforeAll(async () => {
 const FROSTBOLT_NOTE_START = 'Frostbolt is the filler';
 const isFrostboltNote = (note: string) => note.startsWith(FROSTBOLT_NOTE_START);
 const WAND_NOTE =
-  "Shoot only when you are out of mana and waiting on a gem, a rune or Evocation. A wand shot holds you for the wand's full speed, so never weave it between spells.";
+  "Shoot only when you are out of mana and waiting on a gem, a rune or Evocation. A wand shot cannot start during the global cooldown, so it never fits between spells; once you are shooting, the first shot fires half a second after you press it and the rest come at the wand's speed until you cast again.";
 
 describe('rotationNotesFor', () => {
   // Pins the two notes the brief names and their order, not the whole list: the curated

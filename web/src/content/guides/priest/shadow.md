@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70790:priest:human:00510503103/0/50052201211312251:'
 recommendedRaces: [human, undead]
 statPriority: [Spell power, Shadow power, Hit, Spell haste, Critical strike, Intellect, Spell penetration]
 description: 'How to play Shadow Priest in Forever: talents for leveling and raids, the opener and priority, Vampiric Embrace, threat, mana, races and consumables.'
-updated: 2026-11-06
+updated: 2026-11-12
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -36,7 +36,7 @@ sources:
 
 ### Weaknesses
 
-- The leveling build reaches Mind Flay at 28 and Shadowform at 42, so early on you wand between casts
+- The leveling build reaches Mind Flay at 28 and Shadowform at 42, so early on the wand does much of your damage
 - Mind Blast and Shadow Word: Death throw a lot of threat early in a pull
 - Shadowform blocks every healing spell, so helping your healers means leaving the form
 
