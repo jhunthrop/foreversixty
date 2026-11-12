@@ -4,6 +4,7 @@
 # the warrior touches, with the two suite goldens rewritten and printed back as a patch.
 set -uo pipefail
 pin=$1; fix=$2
+export PATH=/usr/local/go/bin:/home/ci/go/bin:$HOME/go/bin:$PATH
 repo=/home/ci/wowsims-forever; wt=/home/ci/wf-dpswar
 git -C $repo fetch -q origin "+refs/heads/lane/sim-dpswar:refs/remotes/origin/lane/sim-dpswar" master
 git -C $repo worktree remove --force $wt 2>/dev/null; git -C $repo worktree add -q --detach $wt "$fix" || exit 1
