@@ -1,0 +1,11 @@
+# Bare bands 20 to 60 (horde), the fights the logged warlocks at 20 to 37 are compared with.
+aff-bare-20 -spec warlock-affliction -preset bare -band 20 -faction horde
+aff-bare-30 -spec warlock-affliction -preset bare -band 30 -faction horde
+aff-bare-40 -spec warlock-affliction -preset bare -band 40 -faction horde
+aff-bare-50 -spec warlock-affliction -preset bare -band 50 -faction horde
+aff-bare-60 -spec warlock-affliction -preset bare -band 60 -faction horde
+dest-bare-20 -spec warlock-destruction -preset bare -band 20 -faction horde
+dest-bare-30 -spec warlock-destruction -preset bare -band 30 -faction horde
+dest-bare-40 -spec warlock-destruction -preset bare -band 40 -faction horde
+dest-bare-50 -spec warlock-destruction -preset bare -band 50 -faction horde
+dest-bare-60 -spec warlock-destruction -preset bare -band 60 -faction horde

@@ -1,0 +1,6 @@
+# Raid 60, guide raid builds, published BiS: the before/after fights and the breakdowns the report reads.
+aff-raid-horde -spec warlock-affliction -preset raid -band 60 -faction horde
+aff-raid-alliance -spec warlock-affliction -preset raid -band 60 -faction alliance
+dest-raid-horde -spec warlock-destruction -preset raid -band 60 -faction horde
+dest-raid-alliance -spec warlock-destruction -preset raid -band 60 -faction alliance
+demo-raid-horde -spec warlock-demonology -preset raid -band 60 -faction horde
