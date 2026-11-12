@@ -1,0 +1,18 @@
+druid-synthesis-raid-60-alliance-s50001 -spec druid-restoration -preset raid -band 60 -faction alliance -seed 50001 -gear ranged:272429
+druid-synthesis-bare-60-alliance-s50001 -spec druid-restoration -preset bare -band 60 -faction alliance -seed 50001 -gear ranged:272429
+druid-synthesis-raid-60-horde-s1 -spec druid-restoration -preset raid -band 60 -faction horde -seed 1 -gear ranged:272429
+druid-synthesis-bare-60-horde-s1 -spec druid-restoration -preset bare -band 60 -faction horde -seed 1 -gear ranged:272429
+druid-synthesis-raid-60-horde-s50001 -spec druid-restoration -preset raid -band 60 -faction horde -seed 50001 -gear ranged:272429
+druid-synthesis-bare-60-horde-s50001 -spec druid-restoration -preset bare -band 60 -faction horde -seed 50001 -gear ranged:272429
+shaman-raid-60-alliance-s1 -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1
+shaman-tidal-raid-60-alliance-s1 -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -gear ranged:272431
+shaman-sustaining-raid-60-alliance-s1 -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -gear ranged:23200
+shaman-bare-60-alliance-s1 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 1
+shaman-tidal-bare-60-alliance-s1 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 1 -gear ranged:272431
+shaman-sustaining-bare-60-alliance-s1 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 1 -gear ranged:23200
+shaman-raid-60-alliance-s50001 -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 50001
+shaman-tidal-raid-60-alliance-s50001 -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 50001 -gear ranged:272431
+shaman-sustaining-raid-60-alliance-s50001 -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 50001 -gear ranged:23200
+shaman-bare-60-alliance-s50001 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 50001
+shaman-tidal-bare-60-alliance-s50001 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 50001 -gear ranged:272431
+shaman-sustaining-bare-60-alliance-s50001 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 50001 -gear ranged:23200

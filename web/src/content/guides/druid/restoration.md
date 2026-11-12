@@ -51,7 +51,7 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
 - **Gift of Nature** (5 points): 10% more healing on your heals. In Forever it does not reach Tranquility.
 - **Improved Rejuvenation** (3 points)
 - **Bloom** (1 point): when a Rejuvenation or Regrowth runs out on its own, the target is healed for your Spirit. With HoTs doing most of your healing, it is the best single point you take.
-- **Swiftmend** (1 point): an instant heal for the whole of your own Regrowth or Rejuvenation on the target (another druid's does not count), and in Forever the HoT keeps ticking.
+- **Swiftmend** (1 point): an instant heal for the whole of your own Regrowth or Rejuvenation on the target, whichever heals more over its run (another druid's does not count), and in Forever the HoT keeps ticking.
 - **Nature's Swiftness** (1 point): your next Healing Touch or Wild Growth is instant, the save for a dying tank or a raid that just took a burst.
 - **Naturalist** (5 points): Healing Touch and Wild Growth half a second faster.
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
@@ -60,7 +60,7 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
 - **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) is the price of reaching Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
 - **Improved Regrowth** (1 point): 10% more crit on the Regrowth you keep on the tank.
 
-**Wild Growth.** The capstone heals a whole party over 7 seconds, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility, put one point in Wild Growth and the other in a second point of Improved Regrowth.
+**Wild Growth.** The capstone heals a whole party over 7 seconds, and since the 10 November hotfix Nature's Swiftness makes it instant, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility, put one point in Wild Growth and the other in a second point of Improved Regrowth.
 
 ## Rotation and priority
 
@@ -68,7 +68,7 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
 
 **The tank.** Regrowth and Rejuvenation stay up on the tank for the whole fight. A refresh on top of a running HoT throws away its Bloom heal.
 
-**Swiftmend.** Cast it on cooldown whenever there is damage to heal, not only in an emergency.
+**Swiftmend.** Cast it whenever the tank is under about three quarters and your mana is keeping pace with the fight, not only in an emergency.
 
 **Healing Touch** fills the real holes: a tank under about half, while your mana is ahead of the fight. If your mana is behind, let the HoTs and Swiftmend carry it.
 
@@ -78,15 +78,17 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
 
 **Ranks.** In Forever a rank learned far below your level loses its share of your healing power: at 60, ranks 8, 9 and 10 keep all of it, rank 7 most of it, and rank 1 none, though it costs so little that its base heal is still cheap healing. In a raid, keep the top rank on the tank and put rank 7 on a hurt party member: most of the heal for far less mana. When there is no raid behind you and the fight will run you dry, as in a long five-man, rank 1 on the party is the most healing your mana buys.
 
-While leveling, your healing power is still low and your mana runs out first, so the tank's Rejuvenation sits below the newest rank you know all the way to 59, rank 10 included once you learn it at 58. The ranks by level are under [Leveling](#leveling).
+While leveling, your healing power is still low and your mana runs out first, so the tank's Rejuvenation sits below the newest rank you know from 49 to 55 and again at 58 and 59, rank 10 included once you learn it at 58. The ranks by level are under [Leveling](#leveling).
 
 **Mana.** Innervate is yours from level 40. A Major Mana Potion and a Demonic Rune cover the rest.
 
 ## Stat priority
 
-A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count for you. Healing power is every heal except Bloom and a rank far below your level, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. Spell power with no healing on it adds nothing to your heals.
+A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count for you. Healing power adds to every heal except Bloom, and to a rank far below your level only in part, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. Spell power with no healing on it adds nothing to your heals.
 
 ## Best in slot
+
+Two idols touch Swiftmend. Idol of Synthesis, sold by Pix Xizzix, takes a second off Swiftmend's remaining cooldown for each of your heal over time effects on the target when you cast it, so with Regrowth and Rejuvenation on the tank it comes back every 13 seconds instead of 15. Idol of Swiftness, an Enchanting recipe that opens with the raids, takes 3 seconds off the cooldown itself. The best in slot list picks between them for your gear.
 
 ## Enchants and consumables
 
@@ -112,9 +114,9 @@ Healing Touch comes at level 1, Rejuvenation at 4, Regrowth at 12 and Cure Poiso
 
 Healing a dungeon at these levels, your mana runs out before a long pull does, so the cheap ranks heal more for it:
 
-- **10 to 12:** Rejuvenation rank 2 on the tank and the party. At 10 alone a night elf or tauren puts rank 1 on the tank, and a night elf goes all the way to rank 1 of Rejuvenation and Healing Touch that level, while a Skyborne keeps rank 2 of everything. An Alliance Skyborne moves the tank to rank 1 a level early, at 12.
+- **10 to 12:** Rejuvenation rank 2 on the tank and the party. At 10 alone a night elf or tauren puts rank 1 on the tank, and a night elf also drops the party's Rejuvenation and Healing Touch to rank 1 that level, while a Skyborne keeps rank 2 of everything. An Alliance Skyborne moves the tank to rank 1 a level early, at 12.
 - **13 to 16:** the tank's Rejuvenation is rank 1 and stays there. The party keeps rank 2 at 13 and 14 (a Horde Skyborne already uses rank 1), takes rank 1 at 15, and at 16 a tauren moves to the new rank 3 while everyone else keeps rank 1. Fill holes with Healing Touch rank 2 from 14 to 16; a night elf and either Skyborne drop to rank 1 at 15 and 16, and a Horde Skyborne fills with rank 1 from 13.
-- **17 to 19:** rank 1 of everything: Rejuvenation on the tank and the party, Healing Touch for the hole, and Regrowth rank 1 once rank 2 arrives at 18.
+- **17 to 19:** rank 1 of everything: Rejuvenation on the tank and the party, Healing Touch for the hole, and stay on Regrowth rank 1 when rank 2 arrives at 18.
 
 Heart of the Wild takes your points from 10 to 14: 10% more Intellect, 20% more Stamina in Bear Form. Reflection from 15 to 17 keeps half your mana regeneration going while you cast, and Nature's Focus at 18 and 19 saves a heal from pushback more than a quarter of the time.
 

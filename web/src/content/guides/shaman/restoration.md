@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70790:shaman:dwarf:0/055/5530003315513151:'
 recommendedRaces: [dwarf, orc]
 statPriority: [MP5, Intellect, Healing power, Spirit, Critical strike]
 description: 'Restoration Shaman in Forever: Riptide into Chain Heal, Water Shield and Mana Tide for mana, which totems to drop, Chain Heal ranks, stats, races and leveling.'
-updated: 2026-11-04
+updated: 2026-11-11
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -27,7 +27,7 @@ sources:
 
 - Chain Heal cast on a target with your Riptide heals it 25% more
 - Chain Heal heals three people for one cast
-- Water Shield turns the hits you take and your critical heals into mana, three globes at a time
+- Water Shield turns the hits you take and your critical heals into mana, three globes at a time (four with Totem of Sustaining)
 - Nature's Swiftness makes your biggest Healing Wave instant when the tank is about to die
 
 ### Weaknesses
@@ -62,7 +62,7 @@ Ancestral Healing is three points for 25% more armor on your target for 15 secon
 
 ## Rotation and priority
 
-**Before the pull.** Water Shield, then Healing Stream Totem with your party. Water Shield lasts 10 minutes but only holds three globes, and only one globe fires every few seconds; recast it when the globes are gone.
+**Before the pull.** Water Shield, then Healing Stream Totem with your party. Water Shield lasts 10 minutes but only holds three globes (four with Totem of Sustaining), and only one globe fires every few seconds; recast it when the globes are gone.
 
 **Tank first.** Riptide heals over its 15 seconds with nothing up front, so it never answers a big hit on its own; it is there to set up the Chain Heal, whose two jumps go to the most injured people near the tank, each for half the heal before. Keep Nature's Swiftness for the tank under 25%, and never spend it on a low rank.
 
@@ -87,6 +87,8 @@ Healing power counts from any source, including items that add damage and healin
 ## Best in slot
 
 Your raid set leans on crafts. Dormant Heart of the Mountain is an Enchanting craft that binds on pickup, so you make that one yourself; every other craft in it binds when equipped, so you can buy it. Carry a healing staff, or a one-hander with a shield or held off-hand item, and at 60 the staff usually wins.
+
+The totem slot has three real choices. Tidal Totem, sold by Pix Xizzix, makes Healing Wave 5% cheaper. Totem of Sustaining, from the Scholomance bosses, gives Water Shield a fourth globe: in Forever that is its whole effect, and the Lesser Healing Wave healing it carried in Classic is gone. Totem of Urgency, an Enchanting recipe that opens with the raids, puts 4% crit on Lesser Healing Wave. The best in slot list picks between them for your gear.
 
 ## Enchants and consumables
 
@@ -119,7 +121,9 @@ Healing Wave gets new ranks at 6, 12 and 18; train each one before a dungeon, bu
 
 Lesser Healing Wave, Healing Stream Totem and Water Shield come at 20; do the Call of Water quest the same day, since every Water totem needs the Water Totem in your bags.
 
-- **To 23:** Improved Healing Wave, full at 23.
+- **20:** Water Shield, the first level the third row opens; it goes up before every pull from here.
+- **21 to 23:** Improved Healing Wave, full at 23.
+- **24:** a point of Ancestral Healing.
 - **25:** Mana Tide Totem, the first level the fourth row opens. The talent teaches its first rank; train the others at 38, 48 and 58, each one a big step up.
 - **From 26:** Restorative Totems, then Healing Way from 30, and you can heal any dungeon the day you walk in.
 - **By 39:** one point of Tidal Mastery and Purification, which open Riptide at 40. The talent only teaches the first rank; train its second at 50 and its third at 60.

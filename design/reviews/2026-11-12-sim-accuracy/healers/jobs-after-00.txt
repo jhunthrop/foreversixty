@@ -1,0 +1,18 @@
+druid-raid-60-alliance-s1 -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1
+druid-bare-60-alliance-s1 -spec druid-restoration -preset bare -band 60 -faction alliance -seed 1
+druid-raid-60-alliance-s50001 -spec druid-restoration -preset raid -band 60 -faction alliance -seed 50001
+druid-bare-60-alliance-s50001 -spec druid-restoration -preset bare -band 60 -faction alliance -seed 50001
+druid-raid-60-horde-s1 -spec druid-restoration -preset raid -band 60 -faction horde -seed 1
+druid-bare-60-horde-s1 -spec druid-restoration -preset bare -band 60 -faction horde -seed 1
+druid-raid-60-horde-s50001 -spec druid-restoration -preset raid -band 60 -faction horde -seed 50001
+druid-bare-60-horde-s50001 -spec druid-restoration -preset bare -band 60 -faction horde -seed 50001
+druid-bare-20-alliance-s1 -spec druid-restoration -preset bare -band 20 -faction alliance -seed 1
+druid-bare-30-alliance-s1 -spec druid-restoration -preset bare -band 30 -faction alliance -seed 1
+druid-bare-40-alliance-s1 -spec druid-restoration -preset bare -band 40 -faction alliance -seed 1
+druid-bare-50-alliance-s1 -spec druid-restoration -preset bare -band 50 -faction alliance -seed 1
+druid-bare-20-horde-s1 -spec druid-restoration -preset bare -band 20 -faction horde -seed 1
+druid-bare-30-horde-s1 -spec druid-restoration -preset bare -band 30 -faction horde -seed 1
+druid-bare-40-horde-s1 -spec druid-restoration -preset bare -band 40 -faction horde -seed 1
+druid-bare-50-horde-s1 -spec druid-restoration -preset bare -band 50 -faction horde -seed 1
+druid-synthesis-raid-60-alliance-s1 -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -gear ranged:272429
+druid-synthesis-bare-60-alliance-s1 -spec druid-restoration -preset bare -band 60 -faction alliance -seed 1 -gear ranged:272429
