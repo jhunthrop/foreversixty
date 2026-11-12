@@ -266,12 +266,14 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
   });
 
   it('names the raid build’s difference in one line and lists the key talents with icons', async () => {
-    // Frost plays one build at 60 in and out of raids; Arcane's raid build differs.
+    // Arcane's raid build differs from its leveling build, and since sim-accuracy 2026-11-12
+    // (casters) so does Frost's: the raid build keeps Incineration where the level 60 build
+    // takes Arcane Meditation and the Improved Channeling toll.
     const arcane = await pageHtml('mage/arcane');
     expect(arcane).toMatch(/data-testid="guide-raid-diff"[^>]*>The raid build moves \d+ points? from /);
     const talents = sectionOf(mainOf(frost), 'talents-and-builds');
-    expect(talents).not.toContain('data-testid="guide-builds"');
-    expect(talents).not.toContain('data-testid="guide-raid-diff"');
+    expect(talents).toContain('data-testid="guide-builds"');
+    expect(talents).toMatch(/data-testid="guide-raid-diff"[^>]*>The raid build moves 5 points from /);
     const keys = blockOf(talents, 'guide-key-talents', 20_000);
     expect(keys).toContain('Improved Frostbolt');
     expect(keys).toMatch(/<img src="\/data\/[^"]+\/icons\/[^"]+\.webp"/);
