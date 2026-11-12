@@ -66,7 +66,9 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
 var knownStaleBISFiles = map[string]string{
-	"mage-frost": "sim-accuracy 2026-11-12 (casters) moved the level 60 leveling build (Arcane Meditation 3 and Improved Channeling 5 for Incineration) and the leveling talents from 56 after the b84481ef5 ranking started; bis run 43269156099 lands it",
+	"shaman-elemental":   "sim-accuracy 2026-11-12 (shamans at 60) moved the level 60 leveling build (Ancestral Knowledge 5 and Shamanistic Focus 1 for Totemic Focus and the third point of Mindfulness) and the leveling talents from 46; the next bis run lands it (MR87)",
+	"shaman-enhancement": "sim-accuracy 2026-11-12 (shamans at 60) moved the level 60 leveling build (Convection 5, Improved Stormstrike 2 and Mindfulness 3 for Concussion and Call of Flame) and the leveling talents from 51; the next bis run lands it (MR88)",
+	"mage-frost":         "sim-accuracy 2026-11-12 (casters) moved the level 60 leveling build (Arcane Meditation 3 and Improved Channeling 5 for Incineration) and the leveling talents from 56 after the b84481ef5 ranking started; bis run 43269156099 lands it",
 }
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files

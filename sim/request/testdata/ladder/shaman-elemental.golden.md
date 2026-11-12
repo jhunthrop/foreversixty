@@ -105,8 +105,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 5500331210001000-000000000000000000-0000000000000000 | main_hand:271931 off_hand:4066 | 27.1 | 7 | spell:548=47.2, spell:6351=25.4, spell:8053=4.4, spell:20572=2.0, spell:6364=1.6 | {SpellID: 16166}, {SpellID: 20554} |
 | 38 | 5500331220001340-000000000000000000-0000000000000000 | main_hand:271930 off_hand:7496 | 40.2 | 7 | spell:6351=59.3, spell:915=42.6, spell:8053=4.5, spell:6364=4.1, spell:20572=2.0 | {SpellID: 16166}, {SpellID: 20554} |
 | 40 | 5500331220001351-000000000000000000-0000000000000000 | main_hand:271930 off_hand:9918 | 44.3 | 8 | spell:6352=42.6, spell:943=34.7, spell:10447=3.5, spell:6365=2.6, spell:20572=2.0 | {SpellID: 20554} |
-| 50 | 5500331220001351-050000000000000000-0500000000000000 | main_hand:271929 off_hand:10195 | 60.4 | 7 | spell:6041=36.7, spell:10435=20.1, spell:10447=3.8, spell:20572=2.0, spell:16166=1.5 | {SpellID: 20554} |
-| 60 | 5500331220001351-050000000000000000-0530520000000000 | main_hand:23451 off_hand:22819 | 114.7 | 7 | spell:10436=70.3, spell:15208=28.5, spell:10438=3.7, spell:29228=2.8, spell:20572=2.0 | {SpellID: 20554} |
+| 50 | 5500331220001351-030000000000000000-0520000000000000 | main_hand:271929 off_hand:10195 | 66.2 | 8 | spell:6041=41.8, spell:10435=20.2, spell:10447=4.1, spell:20572=2.0, spell:16166=1.5 | {SpellID: 20554} |
+| 60 | 5500331220001351-055000010000000000-0520020000000000 | main_hand:23451 off_hand:22819 | 127.1 | 7 | spell:10436=67.9, spell:15208=23.9, spell:29228=7.7, spell:10438=3.6, spell:20572=2.0 | {SpellID: 20554} |
 
 ## Learned but unused (informational)
 
@@ -157,7 +157,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
 - Lava Burst (spell 1238300)
-- Lightning Bolt (spell 15207)
 
 ### Level 60
 

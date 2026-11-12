@@ -1,0 +1,354 @@
+remote-test: 9f5e4c439a6333e4a11880032753b87351f34d56 -> forever-ci on 192.168.1.182 (run 20261112190126-9f5e4c439-37460, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/shamans-60/baseline.sh
+remote-test: engine pinned to 0fb4dcebb
+### shaman-enhancement raid 60 horde 
+2026/11/12 19:03:31 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 19:03:32 All 16 sims finished successfully.
+shaman-enhancement  DPS 857.45 +/- 0.67
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:windfury_weapon major_frenzy_potion food_smoked_desert_dumpling flask_of_natural_aggression elixir_of_the_mongoose juju_power r_o_i_d_s juju_might]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#1 | 271.1 | 31.6 | 61.64 | 57.03 | 856 | 42.5 | 1.0 | 6.5 | 39.9 | 58.1 |
+| Windfury Weapon (16362)#1 | 195.8 | 22.8 | 0.00 | 31.60 | 1115 | 39.5 | 1.0 | 6.4 | 0.0 | 0.0 |
+| Earth Shock (10414) | 133.1 | 15.5 | 31.36 | 28.53 | 840 | 27.0 | 9.0 | 0.0 | 0.0 | 0.0 |
+| Stormstrike (17364) | 99.3 | 11.6 | 22.20 | 20.56 | 869 | 39.3 | 1.0 | 6.4 | 0.0 | 0.0 |
+| OtherActionAttack#3 | 93.2 | 10.9 | 19.38 | 17.93 | 935 | 42.4 | 1.0 | 6.5 | 40.0 | 20.1 |
+| Lightning Bolt (15208) | 40.4 | 4.7 | 13.48 | 12.25 | 593 | 26.8 | 9.2 | 0.0 | 0.0 | 0.0 |
+| Attack (10436) | 20.3 | 2.4 | 69.78 | 63.53 | 58 | 26.8 | 9.0 | 0.0 | 0.0 | 0.0 |
+| Fire Nova (408428) | 5.2 | 0.6 | 0.00 | 3.06 | 307 | 26.8 | 8.8 | 0.0 | 0.0 | 0.0 |
+| Rage of the Farseer (425336) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 88.34 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Fire Nova (408345) | 0.0 | 0.0 | 3.36 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.39 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Strength of Earth Totem (10442) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Grace of Air Totem (10627) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250943 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Grace of Air Totem (10627) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 2.00 |
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Flurry (16257) | 91.5 | 56.57 |
+| Maelstrom Weapon (408498) | 73.7 | 76.33 |
+| Elemental Devastation (30165) | 54.3 | 12.98 |
+| Holy Strength (20007)#1 | 45.5 | 7.62 |
+| item 250943 | 33.2 | 2.00 |
+| Rage of the Farseer (425336) | 18.4 | 1.50 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| item 13965 | 11.1 | 1.00 |
+| Clearcasting (16246) | 5.8 | 4.82 |
+| Windfury Totem (10610) | 4.4 | 19.38 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 4814.4 | 4795.4 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 239.5 | 228.1 |
+| Earth Shock (10414) | ResourceTypeMana | -7598.3 | -7598.3 |
+| Stormstrike (17364) | ResourceTypeMana | -2699.1 | -2699.1 |
+| Strength of Earth Totem (10442) | ResourceTypeMana | -225.0 | -225.0 |
+| Searing Totem (10438) | ResourceTypeMana | -575.5 | -575.5 |
+| Grace of Air Totem (10627) | ResourceTypeMana | -250.0 | -250.0 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 5211.8 | 5187.2 |
+### shaman-enhancement raid 60 alliance 
+2026/11/12 19:03:32 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 19:03:32 All 16 sims finished successfully.
+shaman-enhancement  DPS 873.41 +/- 0.68
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:windfury_weapon major_frenzy_potion food_smoked_desert_dumpling flask_of_natural_aggression elixir_of_the_mongoose juju_power r_o_i_d_s juju_might]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#1 | 272.1 | 31.2 | 61.58 | 57.57 | 851 | 43.4 | 0.0 | 6.5 | 40.1 | 57.6 |
+| Windfury Weapon (16362)#1 | 199.4 | 22.8 | 0.00 | 32.31 | 1111 | 40.6 | 0.0 | 6.4 | 0.0 | 0.0 |
+| Earth Shock (10414) | 134.2 | 15.4 | 31.31 | 28.81 | 839 | 27.7 | 8.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#3 | 101.3 | 11.6 | 21.00 | 19.64 | 928 | 43.5 | 0.0 | 6.5 | 39.8 | 21.3 |
+| Stormstrike (17364) | 99.9 | 11.4 | 22.20 | 20.76 | 867 | 40.5 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Lightning Bolt (15208) | 41.6 | 4.8 | 13.78 | 12.68 | 590 | 27.6 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Attack (10436) | 20.6 | 2.4 | 69.78 | 64.17 | 58 | 27.5 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Fire Nova (408428) | 5.4 | 0.6 | 0.00 | 3.14 | 308 | 28.0 | 7.7 | 0.0 | 0.0 | 0.0 |
+| Rage of the Farseer (425336) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250943 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Strength of Earth Totem (10442) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Grace of Air Totem (10627) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 90.04 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.39 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Fire Nova (408345) | 0.0 | 0.0 | 3.41 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Grace of Air Totem (10627) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 2.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Flurry (16257) | 92.5 | 58.89 |
+| Maelstrom Weapon (408498) | 73.5 | 78.19 |
+| Elemental Devastation (30165) | 55.7 | 13.41 |
+| Holy Strength (20007)#1 | 46.4 | 7.80 |
+| item 250943 | 33.2 | 2.00 |
+| Rage of the Farseer (425336) | 18.4 | 1.50 |
+| item 13965 | 11.1 | 1.00 |
+| Clearcasting (16246) | 5.9 | 4.89 |
+| Windfury Totem (10610) | 4.3 | 19.71 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 4834.4 | 4808.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 240.1 | 226.0 |
+| Earth Shock (10414) | ResourceTypeMana | -7585.1 | -7585.1 |
+| Stormstrike (17364) | ResourceTypeMana | -2699.6 | -2699.6 |
+| Strength of Earth Totem (10442) | ResourceTypeMana | -225.0 | -225.0 |
+| Searing Totem (10438) | ResourceTypeMana | -575.6 | -575.6 |
+| Grace of Air Totem (10627) | ResourceTypeMana | -250.0 | -250.0 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 5312.3 | 5279.0 |
+### shaman-enhancement bare 60 horde 
+2026/11/12 19:03:33 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 19:03:33 All 16 sims finished successfully.
+shaman-enhancement  DPS 313.91 +/- 0.24
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:windfury_weapon]
+buffs: []
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Earth Shock (10414) | 83.4 | 26.6 | 21.98 | 20.22 | 742 | 17.3 | 8.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#1 | 82.2 | 26.2 | 59.85 | 55.90 | 265 | 18.9 | 0.0 | 6.6 | 40.1 | 21.8 |
+| Windfury Weapon (16362)#1 | 58.3 | 18.6 | 0.00 | 27.31 | 384 | 17.7 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Lightning Bolt (15208) | 35.1 | 11.2 | 11.88 | 10.93 | 578 | 17.4 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Stormstrike (17364) | 33.1 | 10.5 | 22.23 | 20.80 | 286 | 17.7 | 0.0 | 6.4 | 0.0 | 0.0 |
+| Attack (10436) | 21.1 | 6.7 | 69.88 | 64.28 | 59 | 17.3 | 8.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Strength of Earth Totem (10442) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Grace of Air Totem (10627) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Second Wind (15604) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rage of the Farseer (425336) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 10.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.39 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Grace of Air Totem (10627) | 100.1 | 1.00 |
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Maelstrom Weapon (408498) | 81.6 | 65.74 |
+| Flurry (16257) | 58.3 | 20.45 |
+| Elemental Devastation (30165) | 28.8 | 5.87 |
+| Rage of the Farseer (425336) | 18.4 | 1.50 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| item 11832 | 5.6 | 1.00 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1489.1 | 1489.1 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 502.8 | 479.6 |
+| Second Wind (15604) | ResourceTypeMana | 630.0 | 550.0 |
+| Earth Shock (10414) | ResourceTypeMana | -4727.8 | -4727.8 |
+| Stormstrike (17364) | ResourceTypeMana | -2460.2 | -2460.2 |
+| Strength of Earth Totem (10442) | ResourceTypeMana | -225.0 | -225.0 |
+| Searing Totem (10438) | ResourceTypeMana | -426.8 | -426.8 |
+| Grace of Air Totem (10627) | ResourceTypeMana | -250.0 | -250.0 |
+### shaman-enhancement bare 50 horde 
+2026/11/12 19:03:33 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 19:03:34 All 16 sims finished successfully.
+shaman-enhancement  DPS 212.30 +/- 0.16
+out of mana: 6.8 s of 180 s
+consumes: [main_hand_imbue:windfury_weapon]
+buffs: []
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#1 | 57.8 | 27.2 | 56.40 | 52.76 | 197 | 9.5 | 0.0 | 6.5 | 40.0 | 16.8 |
+| Earth Shock (10413) | 43.1 | 20.3 | 15.70 | 14.46 | 537 | 13.8 | 7.9 | 0.0 | 0.0 | 0.0 |
+| Windfury Weapon (10486)#1 | 41.6 | 19.6 | 0.00 | 26.11 | 287 | 8.9 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Lightning Bolt (15207) | 26.4 | 12.4 | 10.79 | 9.94 | 478 | 13.6 | 7.9 | 0.0 | 0.0 | 0.0 |
+| Stormstrike (17364) | 24.8 | 11.7 | 21.93 | 20.50 | 217 | 8.8 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Attack (10435) | 14.4 | 6.8 | 66.43 | 61.20 | 42 | 13.7 | 7.9 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 3.8 | 1.8 | 0.00 | 5.96 | 116 | 9.7 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Grace of Air Totem (8835) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10437) | 0.0 | 0.0 | 3.42 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Strength of Earth Totem (8161) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rage of the Farseer (425336) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Strength of Earth Totem (8161) | 100.1 | 1.00 |
+| Grace of Air Totem (8835) | 100.1 | 1.00 |
+| Stoneskin (10404) | 100.1 | 1.00 |
+| Maelstrom Weapon (408498) | 75.7 | 59.63 |
+| Flurry (16257) | 34.1 | 9.79 |
+| Rage of the Farseer (425336) | 18.4 | 1.50 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 0.0 | 0.0 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 706.4 | 706.4 |
+| Earth Shock (10413) | ResourceTypeMana | -2653.8 | -2653.8 |
+| Stormstrike (17364) | ResourceTypeMana | -2201.7 | -2201.7 |
+| Strength of Earth Totem (8161) | ResourceTypeMana | -125.0 | -125.0 |
+| Searing Totem (10437) | ResourceTypeMana | -495.8 | -495.8 |
+| Grace of Air Totem (8835) | ResourceTypeMana | -155.0 | -155.0 |
+### shaman-elemental raid 60 horde 
+2026/11/12 19:03:34 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 19:03:34 All 16 sims finished successfully.
+shaman-elemental  DPS 749.64 +/- 0.31
+out of mana: 1.4 s of 180 s
+consumes: [major_mana_potion flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (15208) | 621.4 | 82.9 | 84.79 | 109.14 | 1025 | 27.7 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (29228) | 96.1 | 12.8 | 8.69 | 65.35 | 265 | 21.8 | 0.1 | 0.0 | 0.0 | 0.0 |
+| Attack (10436) | 32.7 | 4.4 | 70.60 | 69.89 | 84 | 21.7 | 1.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 1.99 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.66 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 62.01 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.55 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Lightning Mastery (16166) | 11.5 | 1.49 |
+| Clearcasting (16246) | 9.9 | 9.35 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 5157.1 | 5057.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 55.3 | 55.1 |
+| OtherActionDamageTaken | ResourceTypeHealth | -1592.2 | -1592.2 |
+| item 13444 | ResourceTypeMana | 2801.0 | 2801.0 |
+| item 12662 | ResourceTypeMana | 2389.9 | 2389.9 |
+| Lightning Bolt (15208) | ResourceTypeMana | -15131.8 | -15131.8 |
+| Flame Shock (29228) | ResourceTypeMana | -2875.4 | -2875.4 |
+| Searing Totem (10438) | ResourceTypeMana | -622.8 | -622.8 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 3449.4 | 3447.9 |
+### shaman-elemental raid 60 alliance 
+2026/11/12 19:03:34 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 19:03:34 All 16 sims finished successfully.
+shaman-elemental  DPS 747.98 +/- 0.31
+out of mana: 1.6 s of 180 s
+consumes: [major_mana_potion flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (15208) | 619.3 | 82.8 | 84.71 | 109.06 | 1022 | 29.6 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (29228) | 96.3 | 12.9 | 8.68 | 65.30 | 266 | 23.7 | 0.1 | 0.0 | 0.0 | 0.0 |
+| Attack (10436) | 33.0 | 4.4 | 70.59 | 69.88 | 85 | 23.5 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.66 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 61.95 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.55 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 1.99 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Thrash (21919) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Lightning Mastery (16166) | 11.5 | 1.49 |
+| Clearcasting (16246) | 9.9 | 9.31 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 5226.9 | 5126.2 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 57.2 | 57.0 |
+| OtherActionDamageTaken | ResourceTypeHealth | -1591.4 | -1591.4 |
+| item 13444 | ResourceTypeMana | 2788.6 | 2788.6 |
+| item 12662 | ResourceTypeMana | 2389.2 | 2389.2 |
+| Lightning Bolt (15208) | ResourceTypeMana | -15122.0 | -15122.0 |
+| Flame Shock (29228) | ResourceTypeMana | -2873.8 | -2873.8 |
+| Searing Totem (10438) | ResourceTypeMana | -622.9 | -622.9 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 3446.3 | 3444.9 |
+### shaman-elemental bare 60 horde 
+2026/11/12 19:03:35 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 19:03:35 All 16 sims finished successfully.
+shaman-elemental  DPS 287.89 +/- 0.27
+out of mana: 42.7 s of 180 s
+consumes: []
+buffs: []
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (10392) | 187.1 | 65.0 | 59.07 | 69.06 | 488 | 16.1 | 10.1 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (29228) | 45.6 | 15.8 | 6.06 | 47.89 | 171 | 12.8 | 1.2 | 0.0 | 0.0 | 0.0 |
+| Lightning Bolt (15208) | 26.8 | 9.3 | 6.67 | 7.81 | 619 | 16.0 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Attack (10436) | 22.4 | 7.8 | 69.83 | 62.85 | 64 | 11.6 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 4.3 | 1.5 | 8.24 | 8.24 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.62 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mana Spring Totem (10497) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 18.24 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Second Wind (15604) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Mana Spring Totem (10497) | 100.1 | 1.00 |
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Lightning Mastery (16166) | 11.6 | 1.50 |
+| Clearcasting (16246) | 6.8 | 7.21 |
+| item 11832 | 5.6 | 1.00 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 3537.9 | 3455.2 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 617.5 | 617.1 |
+| Second Wind (15604) | ResourceTypeMana | 630.0 | 402.1 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 823.7 | 777.3 |
+| Lightning Bolt (10392) | ResourceTypeMana | -7655.5 | -7655.5 |
+| Lightning Bolt (15208) | ResourceTypeMana | -823.7 | -823.7 |
+| Flame Shock (29228) | ResourceTypeMana | -1592.5 | -1592.5 |
+| Searing Totem (10438) | ResourceTypeMana | -349.5 | -349.5 |
+| Mana Spring Totem (10497) | ResourceTypeMana | -75.0 | -75.0 |
+### shaman-elemental bare 50 horde 
+2026/11/12 19:03:35 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 19:03:35 All 16 sims finished successfully.
+shaman-elemental  DPS 166.48 +/- 0.17
+out of mana: 62.1 s of 180 s
+consumes: []
+buffs: []
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (6041) | 122.1 | 73.3 | 56.29 | 65.09 | 338 | 14.6 | 11.0 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (10447) | 23.5 | 14.1 | 5.76 | 40.15 | 106 | 11.2 | 1.5 | 0.0 | 0.0 | 0.0 |
+| Attack (10435) | 16.1 | 9.7 | 62.58 | 55.70 | 52 | 10.2 | 11.0 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 3.6 | 2.2 | 6.98 | 6.98 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Bolt (15207) | 0.1 | 0.1 | 0.04 | 0.04 | 383 | 18.2 | 12.8 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 6.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10437) | 0.0 | 0.0 | 3.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mana Spring Totem (10496) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Mana Spring Totem (10496) | 100.1 | 1.00 |
+| Stoneskin (10404) | 100.1 | 1.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Lightning Mastery (16166) | 11.6 | 1.50 |
+| Clearcasting (16246) | 5.5 | 6.23 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1106.5 | 1106.5 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1021.0 | 1021.0 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 697.5 | 697.4 |
+| Lightning Bolt (6041) | ResourceTypeMana | -5116.0 | -5116.0 |
+| Lightning Bolt (15207) | ResourceTypeMana | -4.9 | -4.9 |
+| Flame Shock (10447) | ResourceTypeMana | -939.4 | -939.4 |
+| Searing Totem (10437) | ResourceTypeMana | -505.8 | -505.8 |
+| Mana Spring Totem (10496) | ResourceTypeMana | -80.0 | -80.0 |
+remote-test: exit 0 in 6s (9f5e4c439a6333e4a11880032753b87351f34d56)

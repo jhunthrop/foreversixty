@@ -1,0 +1,261 @@
+remote-test: d58ed2715660a4d9e2ca597818b6ae7e0fc980b3 -> forever-ci on 192.168.1.182 (run 20261112190611-d58ed2715-23160, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/shamans-60/jobs.sh
+remote-test: engine pinned to 0fb4dcebb
+## A. Elemental Lightning Bolt rows
+ele level 50 alliance seed 1 rank 6	166.43 0.17 63.7
+ele level 50 alliance seed 1 rank 9	153.89 0.16 104.1
+ele level 50 alliance seed 50001 rank 6	166.47 0.17 63.5
+ele level 50 alliance seed 50001 rank 9	154.06 0.17 104.0
+ele level 50 horde seed 1 rank 6	166.48 0.17 62.1
+ele level 50 horde seed 1 rank 9	154.47 0.16 103.4
+ele level 50 horde seed 50001 rank 6	166.42 0.17 61.9
+ele level 50 horde seed 50001 rank 9	154.47 0.16 103.2
+ele level 51 alliance seed 1 rank 7	173.98 0.18 72.8
+ele level 51 alliance seed 1 rank 9	163.22 0.17 99.2
+ele level 51 alliance seed 50001 rank 7	174.04 0.18 72.7
+ele level 51 alliance seed 50001 rank 9	163.46 0.17 99.1
+ele level 51 horde seed 1 rank 7	174.27 0.18 71.2
+ele level 51 horde seed 1 rank 9	163.48 0.17 98.3
+ele level 51 horde seed 50001 rank 7	174.45 0.18 71.1
+ele level 51 horde seed 50001 rank 9	163.7 0.17 98.1
+ele level 51 alliance seed 1 rank 6	173.82 0.18 53.6
+ele level 51 alliance seed 1 rank 9	163.22 0.17 99.2
+ele level 51 alliance seed 50001 rank 6	173.83 0.18 53.5
+ele level 51 alliance seed 50001 rank 9	163.46 0.17 99.1
+ele level 51 horde seed 1 rank 6	174.62 0.18 51.7
+ele level 51 horde seed 1 rank 9	163.48 0.17 98.3
+ele level 51 horde seed 50001 rank 6	174.65 0.18 51.6
+ele level 51 horde seed 50001 rank 9	163.7 0.17 98.1
+ele level 56 alliance seed 1 rank 7	206.02 0.2 53.1
+ele level 56 alliance seed 1 rank 10	188.28 0.19 95.8
+ele level 56 alliance seed 50001 rank 7	206.23 0.2 53.0
+ele level 56 alliance seed 50001 rank 10	188.38 0.19 95.6
+ele level 56 horde seed 1 rank 7	206.1 0.2 51.7
+ele level 56 horde seed 1 rank 10	188.41 0.19 94.9
+ele level 56 horde seed 50001 rank 7	206.2 0.2 51.5
+ele level 56 horde seed 50001 rank 10	188.45 0.2 94.7
+ele level 56 alliance seed 1 rank 9	195.19 0.2 84.4
+ele level 56 alliance seed 1 rank 10	188.28 0.19 95.8
+ele level 56 alliance seed 50001 rank 9	195.13 0.2 84.2
+ele level 56 alliance seed 50001 rank 10	188.38 0.19 95.6
+ele level 56 horde seed 1 rank 9	195.63 0.2 83.2
+ele level 56 horde seed 1 rank 10	188.41 0.19 94.9
+ele level 56 horde seed 50001 rank 9	195.62 0.2 83.1
+ele level 56 horde seed 50001 rank 10	188.45 0.2 94.7
+ele level 57 alliance seed 1 rank 8	204.74 0.2 68.1
+ele level 57 alliance seed 1 rank 10	190.95 0.2 94.7
+ele level 57 alliance seed 50001 rank 8	204.99 0.2 67.9
+ele level 57 alliance seed 50001 rank 10	191.0 0.2 94.6
+ele level 57 horde seed 1 rank 8	204.79 0.2 66.8
+ele level 57 horde seed 1 rank 10	191.17 0.2 93.7
+ele level 57 horde seed 50001 rank 8	205.03 0.2 66.6
+ele level 57 horde seed 50001 rank 10	191.38 0.2 93.6
+ele level 57 alliance seed 1 rank 9	197.5 0.2 83.0
+ele level 57 alliance seed 1 rank 10	190.95 0.2 94.7
+ele level 57 alliance seed 50001 rank 9	197.43 0.2 82.9
+ele level 57 alliance seed 50001 rank 10	191.0 0.2 94.6
+ele level 57 horde seed 1 rank 9	197.82 0.2 81.9
+ele level 57 horde seed 1 rank 10	191.17 0.2 93.7
+ele level 57 horde seed 50001 rank 9	197.96 0.2 81.7
+ele level 57 horde seed 50001 rank 10	191.38 0.2 93.6
+ele bare 60 alliance seed 1 rank 8	285.73 0.27 42.1
+ele bare 60 alliance seed 1 rank 9	277.35 0.26 58.3
+ele bare 60 alliance seed 1 rank 10	272.52 0.26 70.9
+ele bare 60 alliance seed 50001 rank 8	285.87 0.26 42.1
+ele bare 60 alliance seed 50001 rank 9	277.65 0.26 58.2
+ele bare 60 alliance seed 50001 rank 10	272.73 0.26 70.9
+ele bare 60 horde seed 1 rank 8	286.89 0.27 40.5
+ele bare 60 horde seed 1 rank 9	278.11 0.26 57.1
+ele bare 60 horde seed 1 rank 10	272.79 0.26 70.1
+ele bare 60 horde seed 50001 rank 8	287.08 0.27 40.4
+ele bare 60 horde seed 50001 rank 9	278.17 0.26 57.0
+ele bare 60 horde seed 50001 rank 10	273.16 0.26 69.9
+## B. Enhancement imbue
+enh bare 50 horde windfury_weapon	212.3 0.16 6.8
+enh bare 60 horde windfury_weapon	313.91 0.24 0
+enh raid 60 alliance seed 1 windfury_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh raid 60 alliance seed 50001 windfury_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh raid 60 horde seed 1 windfury_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh raid 60 horde seed 50001 windfury_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh bare 50 horde rockbiter_weapon	199.9 0.12 7.5
+enh bare 60 horde rockbiter_weapon	301.42 0.19 0
+enh raid 60 alliance seed 1 rockbiter_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh raid 60 alliance seed 50001 rockbiter_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh raid 60 horde seed 1 rockbiter_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh raid 60 horde seed 50001 rockbiter_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh bare 50 horde flametongue_weapon	203.08 0.11 7.6
+enh bare 60 horde flametongue_weapon	301.4 0.17 0
+enh raid 60 alliance seed 1 flametongue_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh raid 60 alliance seed 50001 flametongue_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh raid 60 horde seed 1 flametongue_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+enh raid 60 horde seed 50001 flametongue_weapon	Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+FAILED
+## C. Searches
+2026/11/12 19:08:47 request: decoding ../data/curated/presets.json: invalid character 'W' after object key:value pair
+remote-test: exit 1 in 44s (d58ed2715660a4d9e2ca597818b6ae7e0fc980b3)

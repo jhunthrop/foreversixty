@@ -105,8 +105,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 0000000000000000-055030310031000000-0000000000000000 | main_hand:7687 off_hand:4066 | 47.6 | 6 | other:attack/1=78.4, spell:6351=56.4, spell:17364=21.9, spell:8046=7.0, spell:6364=3.6 | {SpellID: 16246}, {SpellID: 408498} |
 | 38 | 0000000000000000-055030310051002040-0000000000000000 | main_hand:868 off_hand:7496 | 68.0 | 7 | other:attack/1=89.4, spell:6351=31.1, spell:17364=21.1, spell:10391=7.3, spell:10412=6.4 | {SpellID: 16246} |
 | 40 | 0000000000000000-055030310051002051-0000000000000000 | main_hand:2164 off_hand:9918 | 73.6 | 8 | other:attack/1=110.4, spell:6352=31.6, spell:17364=20.6, spell:10391=8.4, spell:10412=6.8 | {SpellID: 16246} |
-| 50 | 3000000000000000-055030310051202051-0500000000000000 | main_hand:810 off_hand:10195 | 110.0 | 9 | other:attack/1=96.8, spell:10435=29.8, spell:17364=19.7, spell:15207=9.1, spell:10413=6.0 | {SpellID: 16246} |
-| 60 | 3230030000000000-055030310051202051-0520000000000000 | main_hand:22802 off_hand:22819 | 168.1 | 9 | other:attack/1=115.6, spell:10436=44.1, spell:17364=21.9, spell:15208=9.2, spell:10414=7.0 | {SpellID: 16246} |
+| 50 | 1000000000000000-055030310051202251-0500000000000000 | main_hand:810 off_hand:10195 | 117.6 | 9 | other:attack/1=96.7, spell:10435=42.7, spell:17364=22.5, spell:15207=9.3, spell:10413=7.2 | {SpellID: 16246} |
+| 60 | 5030000000000000-055030310051202251-0530000000000000 | main_hand:22802 off_hand:22819 | 188.2 | 9 | other:attack/1=115.8, spell:10436=70.6, spell:17364=22.7, spell:10414=11.9, spell:15208=9.3 | {SpellID: 16246} |
 
 ## Learned but unused (informational)
 

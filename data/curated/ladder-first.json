@@ -1169,7 +1169,7 @@
       ]
     },
     "shaman-elemental": {
-      "reason": "Elemental Alacrity 15 to 17 before Concussion; Elemental Warding and Trial by Fire (damage taken; Fire Nova and Magma Totem are two-target lines) only pay the 20-point row, so Call of Thunder comes at 30 and Lightning Overload 31 to 33 before Trial by Fire's second point; after Lightning Mastery, Tidal Focus (5% spell hit) before Thundering Strikes. Gains at every level that moves, 15 to 20, 30 to 33 and 41 to 49; 21 ties (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "reason": "Elemental Alacrity 15 to 17 before Concussion; Elemental Warding and Trial by Fire (damage taken; Fire Nova and Magma Totem are two-target lines) only pay the 20-point row, so Call of Thunder comes at 30 and Lightning Overload 31 to 33 before Trial by Fire's second point; after Lightning Mastery, Tidal Focus (5% spell hit) before Thundering Strikes. Gains at every level that moves, 15 to 20, 30 to 33 and 41 to 49; 21 ties (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md). Sim-accuracy 2026-11-12 (shamans at 60, design/reviews/2026-11-12-sim-accuracy/shamans-60.md): the level 60 build moved to Ancestral Knowledge 5, Shamanistic Focus 1, Mindfulness 2 and Improved Reincarnation 2 (Totemic Focus gone); after Tidal Focus, Mindfulness 2 at 46 and 47 ahead of Thundering Strikes (+10% at 47, +11.6% at 50 over Thundering Strikes 5, +10% at 55 over Ancestral Knowledge), then Thundering Strikes 48 to 52, Ancestral Knowledge 53 to 57, Shamanistic Focus (+3.5% over the third point of Mindfulness at 58), Improved Reincarnation last.",
       "first": [
         {
           "talent": "Convection",
@@ -1222,11 +1222,27 @@
         {
           "talent": "Tidal Focus",
           "rank": 5
+        },
+        {
+          "talent": "Mindfulness",
+          "rank": 2
+        },
+        {
+          "talent": "Thundering Strikes",
+          "rank": 5
+        },
+        {
+          "talent": "Ancestral Knowledge",
+          "rank": 5
+        },
+        {
+          "talent": "Shamanistic Focus",
+          "rank": 1
         }
       ]
     },
     "shaman-enhancement": {
-      "reason": "Mental Dexterity (attack power from Intellect) 15 to 17 before Ancestral Knowledge; Stormstrike as soon as its row opens and Rage of the Farseer at 40 (round 15). Improved Ghost Wolf (travel) waits for 41: Mental Quickness 33 and 34 and Maelstrom Weapon 35 to 39, so the instant Lightning Bolt the rotation waits for at five points comes at 39 instead of 42. After one point of Convection, Tidal Focus (5% hit for your swings) at 44 to 48. Gains at every level that moves except 36 to 38 and 44, which tie (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "reason": "Mental Dexterity (attack power from Intellect) 15 to 17 before Ancestral Knowledge; Stormstrike as soon as its row opens and Rage of the Farseer at 40 (round 15). Improved Ghost Wolf (travel) waits for 41: Mental Quickness 33 and 34 and Maelstrom Weapon 35 to 39, so the instant Lightning Bolt the rotation waits for at five points comes at 39 instead of 42. After one point of Convection, Tidal Focus (5% hit for your swings) at 44 to 48. Gains at every level that moves except 36 to 38 and 44, which tie (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md). Sim-accuracy 2026-11-12 (shamans at 60, design/reviews/2026-11-12-sim-accuracy/shamans-60.md): the level 60 build moved to Convection 5, Elemental Devastation 3, Improved Stormstrike 2 and Mindfulness 3; Improved Stormstrike at 49 and 50 ahead of Convection's second and third points (+5.0% at 50, never dry), then Mindfulness 3 at 51 to 53 (Mindfulness 3 with Convection 3 beats Mindfulness 1 with Convection 5 by 2.9% at 55), Convection to 5 at 54 to 57, Elemental Devastation 58 to 60 (Mindfulness 2 before Elemental Devastation 2 and 3: +3.7% at 57).",
       "first": [
         {
           "talent": "Thundering Strikes",
@@ -1283,6 +1299,22 @@
         {
           "talent": "Tidal Focus",
           "rank": 5
+        },
+        {
+          "talent": "Improved Stormstrike",
+          "rank": 2
+        },
+        {
+          "talent": "Mindfulness",
+          "rank": 3
+        },
+        {
+          "talent": "Convection",
+          "rank": 5
+        },
+        {
+          "talent": "Elemental Devastation",
+          "rank": 3
         }
       ]
     },

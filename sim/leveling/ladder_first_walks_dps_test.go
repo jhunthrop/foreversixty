@@ -200,21 +200,25 @@ func TestShadowTakesShadowWeavingBeforeBlackout(t *testing.T) {
 // Sim-accuracy round 29 (walks-dps): a leveling Elemental shaman takes Elemental Alacrity at 15 to 17 before
 // Concussion, Call of Thunder at 30 and Lightning Overload at 31 to 33 before Trial by Fire's
 // second point (Fire Nova and Magma Totem are pack spells), and Tidal Focus's spell hit at 41 to
-// 45 before Thundering Strikes.
+// 45 before Thundering Strikes. Sim-accuracy 2026-11-12 (shamans at 60): Mindfulness 2 at 46 and 47 ahead of
+// Thundering Strikes (+10% at 47), then Thundering Strikes, Ancestral Knowledge, Shamanistic Focus.
 func TestElementalTakesAlacrityAndCallOfThunderEarly(t *testing.T) {
 	checkLadder(t, "shaman", "elemental", 0, map[int]string{
 		15: "5000100000000000-000000000000000000-0000000000000000",
 		20: "5300300000000000-000000000000000000-0000000000000000",
 		30: "5500331210001000-000000000000000000-0000000000000000",
 		45: "5500331220001351-000000000000000000-0500000000000000",
-		49: "5500331220001351-040000000000000000-0500000000000000",
+		47: "5500331220001351-000000000000000000-0520000000000000",
+		49: "5500331220001351-020000000000000000-0520000000000000",
+		58: "5500331220001351-055000010000000000-0520000000000000",
 	})
 }
 
 // Sim-accuracy round 29 (walks-dps): a leveling Enhancement shaman takes Mental Dexterity at 15 to 17 before
 // Ancestral Knowledge, Mental Quickness at 33 and 34 and Maelstrom Weapon at 35 to 39 before
 // Improved Ghost Wolf (a travel talent), so the instant Lightning Bolt arrives at 39, and Tidal
-// Focus's hit at 44 to 48 after one point of Convection.
+// Focus's hit at 44 to 48 after one point of Convection. Sim-accuracy 2026-11-12 (shamans at 60): Improved
+// Stormstrike at 49 and 50 (+5% at 50), Mindfulness 51 to 53, Convection 54 to 57, Elemental Devastation last.
 func TestEnhancementTakesMentalDexterityAndMaelstromEarly(t *testing.T) {
 	checkLadder(t, "shaman", "enhancement", 1, map[int]string{
 		15: "0000000000000000-050010000000000000-0000000000000000",
@@ -223,8 +227,9 @@ func TestEnhancementTakesMentalDexterityAndMaelstromEarly(t *testing.T) {
 		38: "0000000000000000-055030310051002040-0000000000000000",
 		40: "0000000000000000-055030310051002051-0000000000000000",
 		45: "1000000000000000-055030310051202051-0200000000000000",
-		50: "3000000000000000-055030310051202051-0500000000000000",
-		55: "3230000000000000-055030310051202051-0500000000000000",
-		57: "3230020000000000-055030310051202051-0500000000000000",
+		50: "1000000000000000-055030310051202251-0500000000000000",
+		55: "3000000000000000-055030310051202251-0530000000000000",
+		57: "5000000000000000-055030310051202251-0530000000000000",
+		60: "5030000000000000-055030310051202251-0530000000000000",
 	})
 }

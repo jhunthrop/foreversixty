@@ -3,12 +3,12 @@ title: Enhancement Shaman in Forever
 classSlug: shaman
 spec: enhancement
 role: dps
-build: 'FS1:1.60.1.70790:shaman:dwarf:323003/055030310051202051/052:'
+build: 'FS1:1.60.1.70790:shaman:dwarf:503/055030310051202251/053:'
 raidBuild: 'FS1:1.60.1.70790:shaman:dwarf:0533001/053030310051202051/053:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and your imbue, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
-updated: 2026-11-11
+updated: 2026-11-12
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -47,7 +47,7 @@ sources:
 
 ## Talents and builds
 
-Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells. The leveling build puts its Elemental points into Convection, Concussion, Elemental Devastation and Call of Flame: cheaper shocks and bolts, harder Lightning Bolts and Earth Shocks, 9% melee crit for 10 seconds after a spell crits, and a stronger Searing Totem. The raid build keeps Elemental Devastation, fills Concussion and moves the rest to Reverberation and Elemental Focus: Earth Shock hits harder and comes back sooner, and now and then a spell is free. Both builds take Shamanistic Focus, which cuts the cost of your shocks by 45%, and Improved Ghost Wolf, which makes Ghost Wolf instant and usable indoors: the fastest way across a raid room when the boss moves. The raid build pays for its twelfth Elemental point and the third point of Mindfulness with two points of Ancestral Knowledge.
+Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells. The leveling build puts its Elemental points into Convection and Elemental Devastation: shocks and bolts a tenth cheaper, and 9% melee crit for 10 seconds after a spell crits. It also takes both points of Improved Stormstrike, which keeps half your regeneration running for 15 seconds after every Stormstrike, and all three of Mindfulness, which adds half whenever you cast: with no Mana Spring and no paladin beside you, that is what pays for your shocks on a long pull. The raid build drops Convection and spends its Elemental points on Concussion, Elemental Devastation, Reverberation and Elemental Focus: Earth Shock hits harder and comes back sooner, and now and then a spell is free. Both builds take Shamanistic Focus, which cuts the cost of your shocks by 45%, and Improved Ghost Wolf, which makes Ghost Wolf instant and usable indoors: the fastest way across a raid room when the boss moves. The raid build pays for four more Elemental points with two of Ancestral Knowledge and both of Improved Stormstrike.
 
 - **Thundering Strikes** (5 points): 5% crit on every attack and spell, and crits are what start Flurry.
 - **Ancestral Knowledge** (5 points, 3 in the raid build): up to 10% more Intellect. With Mental Dexterity, Intellect is attack power. If your raid never asks you to run, the two Improved Ghost Wolf points go here instead for a little more damage.
@@ -56,6 +56,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 - **Flurry** (5 points): 30% attack speed for your next three swings after a melee crit.
 - **Stormstrike** (1 point): an instant strike for 100% weapon damage on an 8 second cooldown that makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder.
 - **Mental Quickness** (2 points): 30% of your Intellect as spell power, for your shocks and bolts.
+- **Improved Stormstrike** (2 points, leveling build only): every Stormstrike keeps half your mana regeneration running while you cast for 15 seconds, and each time you dodge or parry, Stormstrike's cooldown resets. Judgement of Wisdom and Mana Spring make it dead weight in a raid.
 - **Maelstrom Weapon** (5 points): your main hand adds a stack six times a minute with one point, ten with five, so a slow weapon gets more out of every swing. Each stack takes 20% off your next Lightning Bolt's cast time and mana at every rank, so five make it instant and free; spend them inside 30 seconds.
 - **Rage of the Farseer** (1 point): 30% attack speed for 25 seconds every 3 minutes. Press it with your trinkets.
 
@@ -121,5 +122,10 @@ Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits
 - **26 to 32:** finish Elemental Weapons, take Shamanistic Focus and fill Flurry by 32.
 - **33 and 34:** Mental Quickness.
 - **35 to 39:** Maelstrom Weapon, full at 39. Five stacks make the bolt instant and free from your first point, so spend them.
+- **40:** Rage of the Farseer.
 - **41 and 42:** Improved Ghost Wolf.
 - **43 to 48:** a point of Convection, then Tidal Focus at 44 to 48 for 5% more hit on your swings.
+- **49 and 50:** Improved Stormstrike. Half your regeneration keeps running while you cast for 15 seconds after every Stormstrike, and Stormstrike comes every 8 seconds, so it never drops: you shock all the way through a long pull instead of running dry.
+- **51 to 53:** Mindfulness, half your regeneration while casting on top of Improved Stormstrike.
+- **54 to 57:** fill Convection.
+- **58 to 60:** Elemental Devastation, 9% melee crit for 10 seconds after a spell crits.

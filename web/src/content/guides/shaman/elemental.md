@@ -3,12 +3,12 @@ title: Elemental Shaman in Forever
 classSlug: shaman
 spec: elemental
 role: dps
-build: 'FS1:1.60.1.70790:shaman:dwarf:5500331220001351/05/053052:'
+build: 'FS1:1.60.1.70790:shaman:dwarf:5500331220001351/05500001/052002:'
 raidBuild: 'FS1:1.60.1.70790:shaman:dwarf:5500331220001351/055/053002:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Spell power, Hit, Nature power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman in Forever: the raid build, Flame Shock up and Lightning Bolt behind Lightning Mastery, bolt ranks for mana, totems, stats, races and leveling.'
-updated: 2026-11-11
+updated: 2026-11-12
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -47,7 +47,9 @@ sources:
 
 ## Talents and builds
 
-The leveling build spends every point in Elemental until Lightning Mastery at 40: Call of Thunder at 30 and Lightning Overload at 31 to 33 come before Trial by Fire's second point at 34. The next five go to Tidal Focus for 5% spell hit, then Thundering Strikes, 5% crit on every spell. The rest go to Restoration: all three points of Mindfulness, so half your mana regeneration keeps running while you cast, then Totemic Focus for cheaper totems and Improved Reincarnation (2 points) for 4% more maximum health, a 40 minute Reincarnation cooldown and more health and mana when you come back. Tidal Focus comes ahead of Improved Healing Wave because a Lightning Bolt that misses throws away its mana and its cast time. The raid build keeps the same 31 Elemental points, Thundering Strikes and Tidal Focus, and trades Totemic Focus for Ancestral Knowledge (10% more Intellect).
+The leveling build spends every point in Elemental until Lightning Mastery at 40: Call of Thunder at 30 and Lightning Overload at 31 to 33 come before Trial by Fire's second point at 34. The next five go to Tidal Focus for 5% spell hit.
+
+At 46 and 47 take two points of Mindfulness, so a third of your mana regeneration keeps running while you cast; on a long pull it is worth taking before Thundering Strikes. Thundering Strikes fills 48 to 52, 5% crit on every spell. Ancestral Knowledge fills 53 to 57, 10% more Intellect for your mana pool and your crit. Shamanistic Focus at 58 takes 45% off the cost of your shocks. Improved Reincarnation (2 points) comes last, for 4% more maximum health, a 40 minute Reincarnation cooldown and more health and mana when you come back. Totemic Focus is out: you drop one Searing Totem about every minute, and the Intellect and the cheaper shocks are worth more. Tidal Focus comes ahead of Improved Healing Wave because a Lightning Bolt that misses throws away its mana and its cast time. The raid build keeps the same 31 Elemental points, Thundering Strikes, Ancestral Knowledge and Tidal Focus, and trades Shamanistic Focus for the third point of Mindfulness.
 
 Lightning Mastery is the 31st point, and Call of Thunder above it is the point that opens it.
 
