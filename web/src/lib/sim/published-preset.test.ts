@@ -130,6 +130,7 @@ describe('the page defaults to the preset the band publishes', () => {
     expect(swapped.preset).toBe('raid-buffed');
     expect(swapped.buffs).toEqual([...RAID_BUFFS]);
     const protection = withSpecForPreset(picked, 'paladin-protection', 40);
-    expect([...protection.buffs].sort()).toEqual(['devotion_aura', ...RAID_BUFFS].sort());
+    // A tank also carries the raid's Thunder Clap on its boss (presets.json debuffs_by_role).
+    expect([...protection.buffs].sort()).toEqual(['devotion_aura', 'thunder_clap', ...RAID_BUFFS].sort());
   });
 });

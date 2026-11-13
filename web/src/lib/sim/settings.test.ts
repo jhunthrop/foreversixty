@@ -195,8 +195,10 @@ describe('the Raid-buffed preset', () => {
   // Devotion Aura; the page sent the raid list alone.
   it('layers the class kit’s buffs under the raid list, as the published numbers do', () => {
     const protection = presetBuffs('raid-buffed', 'paladin-protection', MAX);
-    expect([...protection].sort()).toEqual(['devotion_aura', ...RAID_BUFFS].sort());
+    // A tank's boss also carries a raid warrior's Thunder Clap (presets.json debuffs_by_role).
+    expect([...protection].sort()).toEqual(['devotion_aura', 'thunder_clap', ...RAID_BUFFS].sort());
     expect(presetBuffs('raid-buffed', 'paladin-protection', 40)).toContain('devotion_aura');
+    expect(presetBuffs('raid-buffed', 'warrior-fury', MAX)).not.toContain('thunder_clap');
   });
 
   it('carries Heart of the Lion and none of the buffs the raid preset refuses (round 3 C3)', () => {

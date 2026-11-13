@@ -84,3 +84,61 @@ MR94 in the ledger: every tank band's `metrics.health` (all three tank specs, ev
 ## Gates
 
 All on the box. Go: `go test ./cmd/leveling-bis/ -run TestTankReportPublishesMaximumHealth` red at the test commit (`report.Health undefined`), then `go vet` and `go test ./score/ ./cmd/leveling-bis/` green. Web: `vitest` over `src/lib/tiers`, `src/lib/app-data/tiers` and `src/lib/bis/tank` (141 passed), eslint and prettier on the touched files, `astro check` 0 errors after the e2e type gained `health`, `playwright test tests/e2e/tiers.spec.ts` (desktop and mobile): every tank test passes; the two failures are the DPS "one link per row" check that 1b3853d60 (a DPS figure opens the ranking sim, not this lane) leaves behind when the published files carry sim links. `src/lib/app-data/app-files.test.ts` fails on origin/main too (the shaman-elemental leveling build code), not touched here. The captures carried `health` written into the box's copy of the bis files for the run only; nothing under `bis/` is committed.
+
+## Follow-ups, 2026-11-13 (lane `tank-followups`)
+
+Site branch from origin/main 8083f0650; engine pin 5515ae0ef (unchanged); client 1.60.1.70790. Every sim on the Windows box (`tools/remote-test.sh --pin-engine`, `nice -n 15`, `GOMAXPROCS=5`, one at a time): `spec-breakdown -tank`, raid 60 Alliance, 3,000 iterations, seed 7.
+
+### F1. Thunder Clap on every tank's boss (owner ruling: yes). Fixed
+
+Before, the raid preset's debuffs (Sunder Armor, Faerie Fire, the curses, the Judgements) were the same for every spec and named no Thunder Clap, so only a warrior tank slowed the boss, with its own clap. The preset gains `debuffs_by_role` (`data/curated/presets.json`, `sim/request/preset.go` `Resolve`, validated like `debuffs`): the three tanks carry `thunder_clap`, the engine's `Debuffs.ThunderClap` at Regular, which is rank 6 (11581) at the client's 20% (aura 319, -20). Damage dealers and healers are never swung at and do not carry it. `sim/request/raid-consumes.json` (the /sim page's per-spec rows) regenerated: 23 tank rows gain the id, nothing else moved; `published-presets.json` unchanged.
+
+No stacking. `core.ThunderClapAura` and the warrior's own `thunderClapAura` register one aura by one label (`ThunderClap-20`) with one exclusive `AtkSpdReduction` effect, so the warrior's clap refreshes the raid one instead of adding a second slow. The run shows it: the warrior's boss swings 84.1 then 83.5 times a fight, not the 70 a doubled slow would give. With the slow always up, the Protection APL's "keep it on the boss" line never fires (Thunder Clap 7.3 casts to 0); the globals go to Sunder Armor (47.4 to 54.7 casts).
+
+| raid 60 Alliance | taken / s | TMI | threat / s | boss swings |
+|---|---|---|---|---|
+| Protection Warrior | 230.0 to 226.1 (-1.7%) | 23.5 to 23.0 | 1,675.4 to 1,666.8 (-0.5%) | 84.1 to 83.5 |
+| Feral Bear | 351.2 to 297.3 (-15.3%) | 28.5 to 24.3 | 2,027.0 to 1,938.8 (-4.4%) | 98.2 to 83.3 |
+| Protection Paladin | 351.9 to 298.4 (-15.2%) | 38.2 to 32.7 | 1,216.7 to 1,180.5 (-3.0%) | 96.1 to 81.1 |
+
+The warrior's own small gain is the slow from the pull and through every refresh window. The bear and paladin lose threat because the slower boss gives them less rage (the bear) and fewer blocks for Holy Shield (the paladin). The warrior's lead in damage taken narrows from 35% to 24% against the bear and 24% against the paladin. Needs a re-rank: MR99.
+
+### F2. Bear threat above the warrior. Checked: no bug in what the client or Blizzard states; the order rests on constants nothing published settles
+
+Threat at raid 60 after F1: bear 1,939 a second, warrior 1,667. Where it comes from (threat a second): bear Maul 915 (71 casts), Lacerate 572 (78), Primal Bite 347 (29), white 73; warrior Revenge 634 (30), Shield Slam 356 (30), Heroic Strike 348 (50), Sunder Armor 145 (55), white 148. Rage, per fight (the tank report now prints it): both earn about the same, the bear 1,537 (918 from damage taken, Blood Frenzy 171, Natural Reaction 115, potion 116, white 190, Enrage 27) against the warrior's 1,584 (619 from damage taken, white 393, Shield Specialization 226, Master of Defense 137, potion 106, Bloodrage 103). The bear spends every point on threat; the warrior puts 286 of its 1,839 spent into Shield Block, which is why it takes 24% less. Threat per point of threat-spent rage is 188 for the bear and 193 for the warrior.
+
+| item | engine | evidence | verdict |
+|---|---|---|---|
+| Dire Bear Form | x2.15 | 21178 aura 10 at 115 (push 113326; Blizzard 3 Nov "increased from 50% to 115%"); `BearFormPassive2BaseDamage` {115} | Aligned |
+| Defensive Stance x Defiance | x1.80 x 1.20 = x2.16 | 7376 aura 10 at 80 and trait curve 109358 at 7/13/20 (push 113326; Blizzard 3 Nov); multiplied, as two MOD_THREAT auras are | Aligned |
+| Feral Instinct | no threat | Forever text: Swipe damage +10% a rank and Prowl. The client row keeps Classic's shape (16947 effect 0, aura 107 on EFFECT1, +3), whose target mask our tables do not hold; if it still lifted Bear Form's threat the bear would gain, not lose | Aligned with the text |
+| Faerie Fire (Feral) | 108 flat | not cast in the raid 60 rotation (0 casts), so it moves nothing here | n/a |
+| Swipe | x1.75 | not cast on one target since round 21 (B3) | n/a |
+| Sunder Armor | 206 + 5% of attack power | client effect 63 (11597) and the 24 Sep notes | Aligned |
+| Maul | x1.75 damage | Classic's value; no Forever client column or note (cmangos gives a flat 207 instead) | Unconfirmed |
+| Lacerate | x2.0 on the hit and the bleed | "a high amount of threat", no number; MR70 changed its damage (the hit counts its stack), not its threat | Unconfirmed |
+| Primal Bite | x2.0 | 1 Oct "roughly doubled" | Single source |
+| Shield Slam | +508 flat | "very high", no number | Unconfirmed |
+| Revenge | x2.25 + 243 flat | the fork's long-standing figure, no client column | Unconfirmed |
+| Heroic Strike | +145 | Classic server rows | Unconfirmed for Forever |
+
+So the two tanks' global threat multipliers are equal to 0.5%, their rage incomes are within 3%, and the bear leads because none of its rage goes to mitigation. That is the model behaving as the client says. Whether the lead is 16% or reversed rests on the unconfirmed per-ability factors: on cmangos' flat 207 for Maul instead of x1.75 the bear would lose about 215 a second, and on x1.0 for Lacerate about 285; either alone closes most of the 272 gap, and both reverse it. Combat logs carry no threat, so no log settles them; a Forever threat meter reading (an in-game `UnitDetailedThreatSituation` capture on one boss) would. Held as O4 with that ask.
+
+Guides: no guide, coach starter or tier-list copy says a bear out-threatens a warrior. The bear guide says Bear Form adds 115% and Primal Bite and Lacerate carry high threat; the Protection warrior guide states the stance's 80% and Defiance's 20%. Nothing changed, so no wow-player round.
+
+### F3. The tiers e2e failure since 1b3853d60. Stale assertion, fixed
+
+`tests/e2e/tiers.spec.ts` "dps: rows follow the published files in order" required exactly one link per row. Since 1b3853d60 a DPS row's figure is a second link, to its ranking sim (the design: spec name to BiS, figure to the sim; tanks and healers keep a plain figure), so every DPS row has two. Not a page bug. The test now finds the BiS link by its href, counts two links on a DPS row and one on a tank or healer row, and checks the DPS figure opens `/sim?`. Its CI run was green because the four-shard `e2e` job is skipped in ship-fast mode (`vars.SHIP_FAST`); only the box run caught it.
+
+### Findings added
+
+| id | finding | status |
+|---|---|---|
+| O1 | Thunder Clap on the boss only for a warrior tank | Fixed (F1), owner ruling 2026-11-13; MR99 |
+| O2 | Bear threat above the warrior | Checked (F2): every client and Blizzard-stated factor aligned; the order rests on unconfirmed ability factors (O4) |
+| O4 | Maul, Lacerate, Shield Slam, Revenge and Heroic Strike threat factors have no Forever number | Open: needs an in-game threat reading |
+| T1 | Tiers e2e one-link check stale since 1b3853d60 | Fixed (F3) |
+
+### Gates
+
+On the box: `go test ./request/` red at the test commit (the three tanks without `thunder_clap`, the role list unvalidated), then `go vet` and `go test -p 1 ./request/ ./cmd/spec-breakdown/ ./cmd/leveling-bis/ ./score/` green. Web: prettier and eslint on the e2e spec, `vitest` over `src/lib/sim`, `src/lib/tiers` and `src/lib/bis`, and `playwright test tests/e2e/tiers.spec.ts` (desktop and mobile). Nothing under `bis/` regenerated.
