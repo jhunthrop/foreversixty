@@ -1,8 +1,8 @@
 {
   "spec": "priest-holy",
   "build": "1.60.1.70790",
-  "engine_version": "4f8bb748d",
-  "generated_at": "2026-11-12T16:12:19Z",
+  "engine_version": "4c595ee6b",
+  "generated_at": "2026-11-13T01:12:01Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -1143,8 +1143,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 16.092353322,
-      "verify_run_seconds": 73.779415516,
+      "weights_run_seconds": 18.9416224,
+      "verify_run_seconds": 87.390788581,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2374,8 +2374,8 @@
         "main_hand: Living Root",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 16.092353322,
-      "verify_run_seconds": 72.77784136700001,
+      "weights_run_seconds": 18.9416224,
+      "verify_run_seconds": 85.92071980600001,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3786,8 +3786,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Thunderwood"
       ],
-      "weights_run_seconds": 16.171548426,
-      "verify_run_seconds": 101.839045946,
+      "weights_run_seconds": 19.298550806,
+      "verify_run_seconds": 123.555123726,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5176,8 +5176,8 @@
         "off_hand: Orb of Souls",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 16.171548426,
-      "verify_run_seconds": 97.112998101,
+      "weights_run_seconds": 19.298550806,
+      "verify_run_seconds": 118.23426684500001,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6645,8 +6645,8 @@
         "off_hand: Beacon of Hope",
         "ranged: Earthen Rod"
       ],
-      "weights_run_seconds": 28.168492728,
-      "verify_run_seconds": 182.808048844,
+      "weights_run_seconds": 34.708124352,
+      "verify_run_seconds": 230.658502075,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8085,8 +8085,8 @@
         "off_hand: Beacon of Hope",
         "ranged: Earthen Rod"
       ],
-      "weights_run_seconds": 28.168492728,
-      "verify_run_seconds": 176.830379168,
+      "weights_run_seconds": 34.708124352,
+      "verify_run_seconds": 217.199878071,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9753,8 +9753,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 30.383001845,
-      "verify_run_seconds": 259.68329818,
+      "weights_run_seconds": 37.121293296,
+      "verify_run_seconds": 318.481735284,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11346,8 +11346,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 30.383001845,
-      "verify_run_seconds": 250.550018827,
+      "weights_run_seconds": 37.121293296,
+      "verify_run_seconds": 307.070708346,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13005,8 +13005,8 @@
         "main_hand: Redemption",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 28.616433285,
-      "verify_run_seconds": 748.285743154,
+      "weights_run_seconds": 34.543857582,
+      "verify_run_seconds": 911.224621199,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14732,8 +14732,8 @@
         "main_hand: Redemption",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 28.616433285,
-      "verify_run_seconds": 736.6753665250001,
+      "weights_run_seconds": 34.543857582,
+      "verify_run_seconds": 889.4533848799999,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16503,8 +16503,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 18.511876871,
-      "verify_run_seconds": 452.325487073,
+      "weights_run_seconds": 22.137365373,
+      "verify_run_seconds": 546.4917855299999,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18232,8 +18232,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 18.511876871,
-      "verify_run_seconds": 450.522423425,
+      "weights_run_seconds": 22.137365373,
+      "verify_run_seconds": 544.7414912869999,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -18487,7 +18487,7 @@
           "label": "Demonic Rune"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; only Mana Spring qualifies, through the Restoration shaman's Restorative Totems (watch forever-bugs #215, which asks for that talent's removal: if it goes, the preset goes back to the plain totem). Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. Paladins and shamans are on both factions in Forever, so the blessings and the totems reach either faction's raid entry. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries one potion: Mighty Rage Potion for the warrior and the bear, a mana potion and then Major Spellblasting Potion for the paladin. Each tank also carries the main-hand imbue that measured best for its threat: an Elemental Sharpening Stone for the warrior and the bear, Brilliant Wizard Oil for the paladin (round 10). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free. Forever's foods give the stat of the Well Fed their aura 227 effect triggers, not Era's: Baked Salmon (28 spell damage) is the caster's and a paladin tank's food, Smoked Desert Dumplings (20 Strength) a strength user's and a warrior or bear tank's, and Poached Sunscale Salmon (40 attack power and ranged attack power) an agility user's (rounds 8 and 9, design/reviews/2026-11-02-sim-audit-round8/auras.md and design/reviews/2026-11-02-sim-audit-round9/auras.md). Where a slot lists two consumables the first one the character's level can use is carried, the spec's list before the class's before the group's, so a lower-level food follows the item it stands in for. Forever's 30-second potions share the two-minute potion category (4) with the mana and rage potions, so each spec carries the potion that measured best: Major Frenzy Potion for the rogues, the Survival hunter and Enhancement, Major Spellblasting Potion for Balance, Frost, Shadow and the paladin tank, the mana or rage potion for the rest (round 10). Their recipes are sold by the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens. Forever lets a druid drink any potion and Thistle Tea in a form without leaving it, and weapon enchantments and Windfury Totem work in a form (the druid deep dive, news.blizzard.com article 24301515), so the cat carries the melee group's stone, Major Frenzy Potion and Thistle Tea, and Windfury Totem reaches the cat and the bear. The Blasted Lands buffs share one hour-long category (103), so each spec carries one: R.O.I.D.S. for strength users and tanks, Ground Scorpok Assay for rogues, hunters and Feral, Cerebral Cortex Compound for the damage casters and the Holy paladin and Restoration shaman, Gizzard Gum for the druid and priest healers (round 9)."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; only Mana Spring qualifies, through the Restoration shaman's Restorative Totems (watch forever-bugs #215, which asks for that talent's removal: if it goes, the preset goes back to the plain totem). Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Since Blizzard's 10 November 2026 hotfix (Weapon imbues and Weapon totems can now be used at the same time) a shaman keeps its own Windfury Weapon and receives the totem as well. Paladins and shamans are on both factions in Forever, so the blessings and the totems reach either faction's raid entry. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries one potion: Mighty Rage Potion for the warrior and the bear, a mana potion and then Major Spellblasting Potion for the paladin. Each tank also carries the main-hand imbue that measured best for its threat: an Elemental Sharpening Stone for the warrior and the bear, Brilliant Wizard Oil for the paladin (round 10). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free. Forever's foods give the stat of the Well Fed their aura 227 effect triggers, not Era's: Baked Salmon (28 spell damage) is the caster's and a paladin tank's food, Smoked Desert Dumplings (20 Strength) a strength user's and a warrior or bear tank's, and Poached Sunscale Salmon (40 attack power and ranged attack power) an agility user's (rounds 8 and 9, design/reviews/2026-11-02-sim-audit-round8/auras.md and design/reviews/2026-11-02-sim-audit-round9/auras.md). Where a slot lists two consumables the first one the character's level can use is carried, the spec's list before the class's before the group's, so a lower-level food follows the item it stands in for. Forever's 30-second potions share the two-minute potion category (4) with the mana and rage potions, so each spec carries the potion that measured best: Major Frenzy Potion for the rogues, the Survival hunter and Enhancement, Major Spellblasting Potion for Balance, Frost, Shadow and the paladin tank, the mana or rage potion for the rest (round 10). Their recipes are sold by the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens. Forever lets a druid drink any potion and Thistle Tea in a form without leaving it, and weapon enchantments and Windfury Totem work in a form (the druid deep dive, news.blizzard.com article 24301515), so the cat carries the melee group's stone, Major Frenzy Potion and Thistle Tea, and Windfury Totem reaches the cat and the bear. The Blasted Lands buffs share one hour-long category (103), so each spec carries one: R.O.I.D.S. for strength users and tanks, Ground Scorpok Assay for rogues, hunters and Feral, Cerebral Cortex Compound for the damage casters and the Holy paladin and Restoration shaman, Gizzard Gum for the druid and priest healers (round 9)."
     }
   },
   "heal_profile": {

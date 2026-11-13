@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 0000000000000000-50212010000000000000-0000000000000000)
 
-Set DPS (verified): 53.1. Weights run: 6.1s. Verify run: 10.3s. 251 eligible items had no known source.
+Set DPS (verified): 53.1. Weights run: 6.3s. Verify run: 10.0s. 251 eligible items had no known source.
 
 Race sweep: night-elf 53.1 ± 0.0, high-order-skyborne 52.6 ± 0.0 (dps); the guide race night-elf is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 251, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-50212032123000000000-0000000000000000)
 
-Set DPS (verified): 116.0. Weights run: 7.0s. Verify run: 8.3s. 424 eligible items had no known source.
+Set DPS (verified): 116.0. Weights run: 7.1s. Verify run: 8.3s. 424 eligible items had no known source.
 
 Race sweep: night-elf 116.0 ± 0.1, high-order-skyborne 115.2 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 424, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-50212032123012123001-0000000000000000)
 
-Set DPS (verified): 180.0. Weights run: 8.8s. Verify run: 25.6s. 607 eligible items had no known source.
+Set DPS (verified): 180.0. Weights run: 8.9s. Verify run: 26.3s. 607 eligible items had no known source.
 
 Race sweep: night-elf 180.0 ± 0.1, high-order-skyborne 177.9 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 607, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0500220000000000-50212032123012123001-0100000000000000)
 
-Set DPS (verified): 270.6. Weights run: 8.8s. Verify run: 32.3s. 815 eligible items had no known source.
+Set DPS (verified): 270.6. Weights run: 9.0s. Verify run: 32.5s. 815 eligible items had no known source.
 
 Race sweep: night-elf 270.6 ± 0.2, high-order-skyborne 267.7 ± 0.2 (dps); the guide race night-elf is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 815, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0500220000000000-50212032123012123001-0550100000000000)
 
-Set DPS (verified): 466.3. Weights run: 8.8s. Verify run: 34.6s. 1986 eligible items had no known source.
+Set DPS (verified): 466.3. Weights run: 9.0s. Verify run: 34.1s. 1986 eligible items had no known source.
 
 Race sweep: night-elf 466.3 ± 0.3, high-order-skyborne 461.8 ± 0.3 (dps); the guide race night-elf is best.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1986, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0500220000000000-50230032023012125001-0550000000000000)
 
-Set DPS (verified): 1090.0. Weights run: 9.2s. Verify run: 65.2s. 1986 eligible items had no known source.
+Set DPS (verified): 1090.0. Weights run: 9.4s. Verify run: 65.0s. 1986 eligible items had no known source.
 
 Race sweep: night-elf 1090.0 ± 0.7, high-order-skyborne 1089.9 ± 0.7 (dps); the guide race night-elf is best.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 1986, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-50212010000000000000-0000000000000000)
 
-Set DPS (verified): 52.2. Weights run: 6.1s. Verify run: 10.1s. 247 eligible items had no known source.
+Set DPS (verified): 52.2. Weights run: 6.3s. Verify run: 10.0s. 247 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 52.5 ± 0.0, tauren 52.2 ± 0.0 (dps); windshaper-skyborne beats the guide race tauren by 0.3 (0.59%) ± 0.0, beyond error.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-50212032123000000000-0000000000000000)
 
-Set DPS (verified): 114.3. Weights run: 7.0s. Verify run: 8.2s. 425 eligible items had no known source.
+Set DPS (verified): 114.3. Weights run: 7.1s. Verify run: 8.1s. 425 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 115.2 ± 0.1, tauren 114.3 ± 0.1 (dps); windshaper-skyborne beats the guide race tauren by 0.9 (0.78%) ± 0.1, beyond error.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 425, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-50212032123012123001-0000000000000000)
 
-Set DPS (verified): 175.8. Weights run: 8.8s. Verify run: 26.4s. 606 eligible items had no known source.
+Set DPS (verified): 175.8. Weights run: 8.9s. Verify run: 27.1s. 606 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 176.7 ± 0.1, tauren 175.8 ± 0.1 (dps); windshaper-skyborne beats the guide race tauren by 0.9 (0.54%) ± 0.2, beyond error.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 606, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0500220000000000-50212032123012123001-0100000000000000)
 
-Set DPS (verified): 266.4. Weights run: 8.8s. Verify run: 32.6s. 814 eligible items had no known source.
+Set DPS (verified): 266.4. Weights run: 9.0s. Verify run: 33.4s. 814 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 268.2 ± 0.2, tauren 266.4 ± 0.2 (dps); windshaper-skyborne beats the guide race tauren by 1.8 (0.68%) ± 0.3, beyond error.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 814, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0500220000000000-50212032123012123001-0550100000000000)
 
-Set DPS (verified): 459.9. Weights run: 8.8s. Verify run: 35.2s. 1990 eligible items had no known source.
+Set DPS (verified): 459.9. Weights run: 9.0s. Verify run: 35.8s. 1990 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 462.1 ± 0.3, tauren 459.9 ± 0.3 (dps); windshaper-skyborne beats the guide race tauren by 2.2 (0.47%) ± 0.5, beyond error.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 1990, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 0500220000000000-50230032023012125001-0550000000000000)
 
-Set DPS (verified): 1075.5. Weights run: 9.2s. Verify run: 63.3s. 1990 eligible items had no known source.
+Set DPS (verified): 1075.5. Weights run: 9.4s. Verify run: 64.0s. 1990 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 1085.8 ± 0.7, tauren 1075.5 ± 0.7 (dps); windshaper-skyborne beats the guide race tauren by 10.3 (0.95%) ± 0.9, beyond error.
 

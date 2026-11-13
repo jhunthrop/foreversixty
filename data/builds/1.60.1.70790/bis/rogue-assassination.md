@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 00530200100000000-0000000000000000000-000000000000000000)
 
-Set DPS (verified): 45.6. Weights run: 5.6s. Verify run: 25.1s. 275 eligible items had no known source.
+Set DPS (verified): 45.6. Weights run: 5.7s. Verify run: 24.7s. 275 eligible items had no known source.
 
 Race sweep: night-elf 45.6 ± 0.0, high-order-skyborne 45.0 ± 0.0, human 44.9 ± 0.0, gnome 44.8 ± 0.0, dwarf 44.2 ± 0.0 (dps); the guide race night-elf is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 275, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 32530200230001000-0000000000000000000-000000000000000000)
 
-Set DPS (verified): 76.6. Weights run: 5.6s. Verify run: 13.4s. 460 eligible items had no known source.
+Set DPS (verified): 76.6. Weights run: 5.7s. Verify run: 13.2s. 460 eligible items had no known source.
 
 Race sweep: night-elf 76.6 ± 0.1, high-order-skyborne 75.9 ± 0.1, human 75.9 ± 0.1, gnome 75.7 ± 0.1, dwarf 74.8 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 460, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 32530200251511001-0000000000000000000-000000000000000000)
 
-Set DPS (verified): 131.6. Weights run: 5.8s. Verify run: 13.8s. 662 eligible items had no known source.
+Set DPS (verified): 131.6. Weights run: 5.9s. Verify run: 13.2s. 662 eligible items had no known source.
 
 Race sweep: night-elf 131.6 ± 0.1, high-order-skyborne 131.2 ± 0.1, human 130.9 ± 0.1, gnome 130.8 ± 0.1, dwarf 129.3 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 662, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 32530200251551031-3000000000000000000-000000000000000000)
 
-Set DPS (verified): 220.7. Weights run: 5.9s. Verify run: 24.7s. 849 eligible items had no known source.
+Set DPS (verified): 220.7. Weights run: 5.9s. Verify run: 24.4s. 849 eligible items had no known source.
 
 Race sweep: night-elf 220.7 ± 0.2, gnome 220.1 ± 0.2, human 219.6 ± 0.2, high-order-skyborne 219.4 ± 0.2, dwarf 219.3 ± 0.2 (dps); the guide race night-elf is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 849, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 32530200251551031-3023030000000000000-011000000000000000)
 
-Set DPS (verified): 344.4. Weights run: 5.9s. Verify run: 74.9s. 1919 eligible items had no known source.
+Set DPS (verified): 344.4. Weights run: 6.1s. Verify run: 74.0s. 1919 eligible items had no known source.
 
 Race sweep: gnome 345.2 ± 0.3, night-elf 344.4 ± 0.3, dwarf 343.9 ± 0.3, high-order-skyborne 343.8 ± 0.3, human 343.2 ± 0.3 (dps); gnome beats the guide race night-elf by 0.8 (0.22%) ± 0.5, beyond error.
 
@@ -170,7 +170,7 @@ No-known-source sample (15 of 1919, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 00530311251051031-3023030202012200000-000000000000000000)
 
-Set DPS (verified): 918.3. Weights run: 6.6s. Verify run: 72.5s. 1919 eligible items had no known source.
+Set DPS (verified): 918.3. Weights run: 6.7s. Verify run: 71.5s. 1919 eligible items had no known source.
 
 Race sweep: gnome 924.1 ± 0.9, night-elf 918.3 ± 0.8, high-order-skyborne 918.0 ± 0.8, human 917.2 ± 0.8, dwarf 913.6 ± 0.8 (dps); gnome beats the guide race night-elf by 5.8 (0.63%) ± 1.2, beyond error.
 
@@ -206,7 +206,7 @@ No-known-source sample (15 of 1919, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 00530200100000000-0000000000000000000-000000000000000000)
 
-Set DPS (verified): 45.8. Weights run: 5.6s. Verify run: 24.6s. 273 eligible items had no known source.
+Set DPS (verified): 45.8. Weights run: 5.7s. Verify run: 25.1s. 273 eligible items had no known source.
 
 Race sweep: undead 45.8 ± 0.0, windshaper-skyborne 45.1 ± 0.0, troll 45.0 ± 0.0, orc 44.5 ± 0.0 (dps); the guide race undead is best.
 
@@ -238,7 +238,7 @@ No-known-source sample (15 of 273, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 32530200230001000-0000000000000000000-000000000000000000)
 
-Set DPS (verified): 76.9. Weights run: 5.6s. Verify run: 13.5s. 460 eligible items had no known source.
+Set DPS (verified): 76.9. Weights run: 5.7s. Verify run: 13.5s. 460 eligible items had no known source.
 
 Race sweep: undead 76.9 ± 0.1, troll 76.3 ± 0.1, windshaper-skyborne 76.2 ± 0.1, orc 75.6 ± 0.1 (dps); the guide race undead is best.
 
@@ -270,7 +270,7 @@ No-known-source sample (15 of 460, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 32530200251511001-0000000000000000000-000000000000000000)
 
-Set DPS (verified): 132.3. Weights run: 5.8s. Verify run: 13.1s. 660 eligible items had no known source.
+Set DPS (verified): 132.3. Weights run: 5.9s. Verify run: 12.8s. 660 eligible items had no known source.
 
 Race sweep: undead 132.3 ± 0.1, windshaper-skyborne 131.0 ± 0.1, troll 130.5 ± 0.1, orc 129.8 ± 0.1 (dps); the guide race undead is best.
 
@@ -302,7 +302,7 @@ No-known-source sample (15 of 660, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 32530200251551031-3000000000000000000-000000000000000000)
 
-Set DPS (verified): 224.0. Weights run: 5.9s. Verify run: 20.6s. 847 eligible items had no known source.
+Set DPS (verified): 224.0. Weights run: 5.9s. Verify run: 20.1s. 847 eligible items had no known source.
 
 Race sweep: undead 224.0 ± 0.2, windshaper-skyborne 220.6 ± 0.2, troll 220.1 ± 0.2, orc 219.6 ± 0.2 (dps); the guide race undead is best.
 
@@ -334,7 +334,7 @@ No-known-source sample (15 of 847, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 32530200251551031-3023030000000000000-011000000000000000)
 
-Set DPS (verified): 351.1. Weights run: 5.9s. Verify run: 80.7s. 1922 eligible items had no known source.
+Set DPS (verified): 351.1. Weights run: 6.1s. Verify run: 79.7s. 1922 eligible items had no known source.
 
 Race sweep: undead 351.1 ± 0.3, windshaper-skyborne 347.1 ± 0.3, troll 345.8 ± 0.3, orc 344.6 ± 0.3 (dps); the guide race undead is best.
 
@@ -366,7 +366,7 @@ No-known-source sample (15 of 1922, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 00530311251051031-3023030202012200000-000000000000000000)
 
-Set DPS (verified): 919.9. Weights run: 6.6s. Verify run: 70.4s. 1922 eligible items had no known source.
+Set DPS (verified): 919.9. Weights run: 6.7s. Verify run: 69.6s. 1922 eligible items had no known source.
 
 Race sweep: undead 919.9 ± 0.8, windshaper-skyborne 917.3 ± 0.8, orc 914.5 ± 0.9, troll 913.9 ± 0.8 (dps); the guide race undead is best.
 
