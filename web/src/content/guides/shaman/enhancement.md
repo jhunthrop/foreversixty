@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70938:shaman:dwarf:503/055030310051202251/053:'
 buildWhy: 'Improved Stormstrike and Mindfulness fund shocks on long pulls'
 raidBuild: 'FS1:1.60.1.70938:shaman:dwarf:0535001/054030310051202051/05:'
-raidBuildWhy: 'Trades Convection, Improved Stormstrike, Mindfulness and a point of Ancestral Knowledge for Concussion and Reverberation'
+raidBuildWhy: 'Trades the mana talents for Concussion and full Reverberation'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and your imbue, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
