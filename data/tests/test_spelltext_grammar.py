@@ -238,6 +238,26 @@ def test_a_level_gain_is_capped_at_the_spells_max_level():
     assert text.describe(348) == "Burns the enemy for 11 Fire damage."
 
 
+def test_a_fractional_amount_is_kept_and_rounded_only_when_printed():
+    """Wrack's tick 1349556 on 1.60.1.70938: 25.2 at level 40 plus 1.75 a level to 60 is
+    60.2 a tick, six ticks 361.2. The game keeps the float and rounds what it prints:
+    60 a tick, and a formula over it works on 60.2 (361), where a base rounded
+    first (25) worked on 60 (360)."""
+    spell = {"ID": "1316697", "Description_lang": "$s1 a sec, ${$s1*6} in all."}
+    misc = {"SpellID": "1316697", "DurationIndex": "1", "SpellIconFileDataID": "0"}
+    effect = {
+        "SpellID": "1316697",
+        "EffectIndex": "0",
+        "EffectBasePointsF": "25.2000007629",
+        "EffectAuraPeriod": "1000",
+        "EffectRealPointsPerLevel": "1.75",
+    }
+    levels = {"SpellID": "1316697", "MaxLevel": "60", "BaseLevel": "40", "SpellLevel": "40"}
+    durations = [{"ID": "1", "Duration": "6000"}]
+    text = load_spell_text([spell], [misc], [effect], durations, ExtraRows(levels=[levels]))
+    assert text.describe(1316697) == "60 a sec, 361 in all."
+
+
 def test_a_spell_with_no_text_of_its_own_still_lends_its_duration():
     # Berserking 20554's "$26635d" reads spell 26635's duration; 26635 has no Spell row.
     spell = {"ID": "20554", "Description_lang": "for $26635d."}

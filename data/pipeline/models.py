@@ -5,6 +5,7 @@ from pydantic import (
     BaseModel,
     Field,
     SerializerFunctionWrapHandler,
+    field_serializer,
     field_validator,
     model_serializer,
 )
@@ -1264,10 +1265,12 @@ class SpellEffectConstant(BaseModel):
     index: int
     effect: int
     aura: int
-    #: The amount the client shows, via pipeline.spelltext.effect_amount: the
-    #: 1.60 client states it outright, Classic Era states it one short with the
-    #: last point in EffectDieSides. One number, not two columns to recombine.
-    amount: int
+    #: The amount the client states, via pipeline.spelltext.effect_amount: the
+    #: 1.60 client states it outright, fraction included (Wrack's tick 25.2),
+    #: Classic Era states it one short with the last point in EffectDieSides.
+    #: One number, not two columns to recombine, and never rounded: a tooltip
+    #: rounds when it prints it. A whole amount is written as an integer.
+    amount: float
     sp_coefficient: float
     ap_coefficient: float
     period_ms: int
@@ -1280,6 +1283,10 @@ class SpellEffectConstant(BaseModel):
     #: SpellEffect.EffectRealPointsPerLevel: added to the amount per caster
     #: level above the spell's own level, up to the spell's `max_level`.
     points_per_level: float = 0.0
+
+    @field_serializer("amount")
+    def _whole_amount_as_int(self, amount: float) -> int | float:
+        return int(amount) if amount.is_integer() else amount
 
 
 class SpellConstant(BaseModel):

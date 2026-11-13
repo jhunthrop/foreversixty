@@ -293,6 +293,15 @@ def test_effect_amount_keeps_a_negative_amount_negative():
     assert effect_amount({"EffectBasePointsF": "-40"}) == -40
 
 
+def test_effect_amount_keeps_the_clients_fraction():
+    """Wrack's tick (SpellEffect 1349556) is 25.2 and the Lightning Bolt rank 4
+    overload (408442) 36.5 on 1.60.1.70938. The data keeps them exactly; only a
+    tooltip rounds, when it prints them."""
+    assert effect_amount({"EffectBasePointsF": "25.2000007629"}) == 25.2000007629
+    assert effect_amount({"EffectBasePointsF": "36.5"}) == 36.5
+    assert effect_amount({"EffectBasePointsF": "107.5"}) == 107.5
+
+
 def _one(description: str, **effects: int) -> str:
     """One spell's rendered description; `s1=300` makes effect 1 display 300."""
     from pipeline.spelltext import Effect, SpellRow, SpellText

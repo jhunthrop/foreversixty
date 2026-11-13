@@ -561,11 +561,14 @@ class SpellText:
         return _render(amount.low * multiplier, amount.high * multiplier, divisor)
 
 
-def _base_points(row: dict[str, str]) -> int:
-    """The effect's base points: Classic Era exports the integer column, the 1.60 client
-    (Forever beta) the modern float column; either way the formulas want a whole number.
-    The 1.60 client also has no EffectDieSides (its spread is the Variance column, which
-    the descriptions do not use yet), so a missing die-sides column reads as no spread.
+def _base_points(row: dict[str, str]) -> float:
+    """The effect's base points exactly as the client states them: Classic Era exports
+    the integer column, the 1.60 client (Forever beta) the modern float column, and a
+    float keeps its fraction (Wrack's tick 1349556 is 25.2, the Lightning Bolt rank 4
+    overload 408442 is 36.5). Nothing here rounds: the game keeps the float and rounds
+    only when a tooltip prints it, which `_bounds`, `_amount` and `work_out` do at
+    display. The 1.60 client also has no EffectDieSides (its spread is the Variance
+    column), so a missing die-sides column reads as no spread.
 
     Both builds' SpellEffect rows carry both column headers, but only one is ever
     populated: Era's own EffectBasePoints is always populated and its EffectBasePointsF
@@ -574,13 +577,12 @@ def _base_points(row: dict[str, str]) -> int:
     every row of both builds' own SpellEffect tables (see data/README.md). Reading
     the float column whenever it merely exists, as an earlier version of this
     function did, silently zeroed every Era description's numbers (see
-    test_effect_base_points_read_the_float_column_when_the_build_has_it, which this
-    still satisfies: the integer column is genuinely absent from that test's beta
-    fixture, not merely empty). Preferring the int column when both are populated is
-    the same rule `pipeline/normalize/item_curves.py`'s `_budget` uses for
-    RandPropPoints. When both are populated and differ (first seen 2026-09-30 on
-    spell 370100, where wowhead's live-client value matches the integer column) the
-    integer column wins and the row is logged -- see the inline note below.
+    test_either_base_points_column_lands_on_the_same_number). Preferring the int
+    column when both are populated is the same rule
+    `pipeline/normalize/item_curves.py`'s `_budget` uses for RandPropPoints. When both
+    are populated and differ (first seen 2026-09-30 on spell 370100, where wowhead's
+    live-client value matches the integer column) the integer column wins and the row
+    is logged -- see the inline note below.
 
     Era's EffectBasePointsF padding is the literal string "0", which `populated`
     (correctly) still reports as present -- a column being non-empty is not the same
@@ -594,7 +596,7 @@ def _base_points(row: dict[str, str]) -> int:
     """
     raw, float_raw = populated(row, "EffectBasePoints"), populated(row, "EffectBasePointsF")
     if raw is not None and float_raw is not None and float_raw != "0":
-        int_value, float_value = int(raw), round(float(float_raw))
+        int_value, float_value = int(raw), float(float_raw)
         if int_value != float_value:
             # 2026-09-30: the "only one column is ever real" premise broke on
             # wago.tools' fresh 1.60.1.70009 export -- spell 370100 (Illusionary
@@ -605,32 +607,33 @@ def _base_points(row: dict[str, str]) -> int:
             # `pipeline/normalize/item_curves.py`'s `_budget` already applies,
             # and every such row is logged so the count is visible in the run.
             logger.warning(
-                "spell %s effect %s: EffectBasePoints %d and EffectBasePointsF %d disagree; "
+                "spell %s effect %s: EffectBasePoints %d and EffectBasePointsF %s disagree; "
                 "using the integer column (wowhead corroborates it for spell 370100)",
                 row.get("SpellID"),
                 row.get("EffectIndex"),
                 int_value,
-                float_value,
+                float_raw,
             )
-        return int_value
+        return float(int_value)
     if raw is not None:
-        return int(raw)
-    return round(float(row["EffectBasePointsF"]))
+        return float(int(raw))
+    return float(row["EffectBasePointsF"])
 
 
-def effect_amount(row: dict[str, str]) -> int:
-    """One SpellEffect row's final amount, on either client schema.
+def effect_amount(row: dict[str, str]) -> float:
+    """One SpellEffect row's final amount, on either client schema, exactly as stated.
 
     Classic Era states an amount one short and puts the last point in
     EffectDieSides -- "Increase Spell Dam 85" is 84 + 1, "Attack Power 24" is
     23 + 1. The 1.60 client (Forever beta) has no EffectDieSides column at all
     and its EffectBasePointsF is already final: spell 9103, the "+8 Strength"
-    enchant's spell, reads 8 where Era read 7. Adding a missing die-sides
-    column as zero makes one expression right on both.
+    enchant's spell, reads 8 where Era read 7, and Wrack's tick 1349556 reads
+    25.2. Adding a missing die-sides column as zero makes one expression right
+    on both.
 
-    Public so `pipeline/simdb/equip.py` reads amounts the same way the
-    description renderer does; the per-build column choice lives in
-    `_base_points` and nowhere else.
+    Public so `pipeline/simdb/equip.py` and `pipeline/simconst.py` read amounts
+    the same way the description renderer does; the per-build column choice lives
+    in `_base_points` and nowhere else, and no reader rounds (display rounds).
     """
     return _base_points(row) + int(row.get("EffectDieSides") or 0)
 

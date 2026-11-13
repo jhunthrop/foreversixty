@@ -118,3 +118,28 @@ def test_the_new_damage_keys_are_appended_after_the_existing_ones():
     effect = list(by_slug()["mage"].spells["25304"].effects[1].model_dump())
     assert effect[-3:] == ["trigger_spell", "variance", "points_per_level"]
     assert list(by_slug()["mage"].spells["25304"].model_dump())[-2:] == ["cost_pct", "max_level"]
+
+
+def test_a_fractional_amount_is_written_exactly_and_a_whole_one_as_an_integer():
+    """The engine reads spellconst's amount as the client states it: Wrack's tick is
+    25.2 and the Lightning Bolt rank 4 overload 36.5 (1.60.1.70938), never 25 or 36.
+    A whole amount stays an integer in the file, so the generated tables do not churn."""
+    from pipeline.models import SpellEffectConstant
+
+    def effect(amount: float) -> dict[str, object]:
+        return SpellEffectConstant(
+            index=0,
+            effect=6,
+            aura=3,
+            amount=amount,
+            sp_coefficient=0.2002,
+            ap_coefficient=0,
+            period_ms=1000,
+            misc_value=0,
+            trigger_spell=0,
+        ).model_dump()
+
+    assert effect(25.2000007629)["amount"] == 25.2000007629
+    assert effect(36.5)["amount"] == 36.5
+    whole = effect(48.0)["amount"]
+    assert whole == 48 and isinstance(whole, int)
