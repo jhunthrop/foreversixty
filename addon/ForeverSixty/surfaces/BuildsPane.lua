@@ -193,8 +193,9 @@ function BuildsPane.question(question, split)
 	return question
 end
 
---- The window header's figures, the panel's own: "Level 42 · 27 of 33 points · 5 points off plan" (the
---- off-plan count in the warning colour), "Level 42" with nothing followed; nil without a level. Pure.
+--- The window header's figures, the panel's own and the points waiting: "Level 42 · 27 of 33 points · 5
+--- points off plan · 1 to spend" (the off-plan count in the warning colour, the points waiting in the
+--- client gold), "Level 42" with nothing followed and none waiting; nil without a level. Pure.
 function BuildsPane.note(level, followed, ranks)
 	if type(level) ~= "number" then
 		return nil
@@ -207,6 +208,10 @@ function BuildsPane.note(level, followed, ranks)
 		if (progress.offPlan or 0) > 0 then
 			parts[#parts + 1] = Theme.inlineColor("warning", string.format(L.panelOffPlanCount, progress.offPlan))
 		end
+	end
+	local unspent = Progress.unspentPoints(level, ranks or {})
+	if unspent > 0 then
+		parts[#parts + 1] = Theme.inlineColor("clientGold", string.format(L.windowToSpend, unspent))
 	end
 	return table.concat(parts, L.dialogSeparator)
 end

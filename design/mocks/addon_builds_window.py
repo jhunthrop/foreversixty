@@ -14,6 +14,7 @@ next points from the followed build's order over talents/<class>.json (name, ico
 hunter's figures from the owner's capture of 2026-11-12.
 """
 import collections
+import re
 import os
 import sys
 
@@ -29,13 +30,14 @@ CLIENT_GOLD = ab.CLIENT_GOLD
 
 # The spec's new strings (section 6), until Locale.lua carries them.
 NEW = {
-    'windowUpNext': 'Up next', 'windowUpNextNow': 'Now', 'windowUpNextLevel': 'Level %d', 'windowUpNextLevels': 'Level %d to %d',
+    'windowUpNext': 'Up next', 'windowUpNextNow': 'Now', 'windowUpNextLevel': 'Level %d', 'windowUpNextLevels': 'Levels %d to %d',
     'windowUpNextRank': '%d/%d', 'windowUpNextNone': 'Follow a build to see its next points.',
-    'windowUpNextDone': 'Every point of this build is placed.',
+    'windowUpNextDone': 'Every point is placed.', 'windowUpNextMore': '%d more points after these',
+    'windowUpNextMoreOne': '1 more point after these', 'windowToSpend': '%d to spend', 'windowOffPlan': 'Off plan',
     'windowFromSiteWhat': 'On the planner, press Copy for the game, then paste the code here.',
     'windowPaste': 'Paste a build code (Ctrl+V)', 'windowRead': 'Read: %s. Check it on the left.',
     'windowToSite': 'To the site',
-    'windowToSiteWhat': "Your talents, gear and professions as one code, for the planner's Import from addon box.",
+    'windowToSiteWhat': 'Talents, gear and professions in one code for the planner’s Import from addon box.',
     'windowClickToSelect': 'Click the box, then press Ctrl+C.', 'windowEscClose': 'Esc to close',
     'windowEscBack': 'Esc for your builds', 'windowNoBuilds': 'No builds for this class yet.',
 }
@@ -59,7 +61,11 @@ CSS = ab.CSS + f'''
   display: flex; align-items: center; justify-content: center; font-size: 14px; }}
 .win .bd {{ display: flex; padding: 12px {PAD}px; }}
 .win .lc {{ width: {LEFT}px; flex: none; }}
-.win .rule {{ width: 1px; background: {ADDON['line']}; margin: -12px {GUTTER // 2 - 1}px -12px {GUTTER // 2}px; flex: none; }}
+.win .vr {{ position: absolute; left: {PAD + LEFT + GUTTER // 2}px; top: {HEADER}px; bottom: {FOOTER}px;
+  width: 1px; background: {ADDON['line']}; }}
+.win .lc {{ margin-right: {GUTTER}px; }}
+.win .rule {{ width: 1px; background: {ADDON['line']}; margin: -12px {GUTTER // 2 - 1}px -12px {GUTTER // 2}px; flex: none;
+  align-self: stretch; }}
 .win .rc {{ width: {RIGHT}px; flex: none; }}
 .win .ft {{ height: {FOOTER}px; border-top: 1px solid {ADDON['line']}; display: flex; align-items: center;
   justify-content: space-between; padding: 0 {PAD}px; color: {ADDON['muted']}; }}
@@ -67,7 +73,8 @@ CSS = ab.CSS + f'''
 .sec {{ margin-bottom: 20px; }}
 .sec:last-child {{ margin-bottom: 0; }}
 .sh {{ height: 18px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  font-weight: 600; color: {ADDON['strong']}; }}
+  font-family: Title, serif; font-size: 14px; color: {ADDON['cream']}; }}
+.sh .r {{ font-family: Site, sans-serif; font-size: 12px; }}
 .sh .r {{ font-weight: 400; color: {ADDON['muted']}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 .what {{ color: {ADDON['muted']}; margin: 2px 0 6px; }}
 .un {{ height: 18px; display: flex; align-items: center; gap: 6px; }}
@@ -79,6 +86,7 @@ CSS = ab.CSS + f'''
 .rc .box {{ height: 42px; }}
 .rc .box.warn {{ border-color: {ADDON['warning']}; }}
 .rc .box.gold {{ border-color: {ADDON['gold']}; }}
+.rc .box.one-line {{ height: 27px; }}
 .rc .box.code {{ word-break: break-all; overflow: hidden; }}
 .rc .box.code span {{ display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }}
 .rc .box.sel {{ border-color: {ADDON['gold']}; }}
@@ -107,7 +115,7 @@ def cells(cls):
     return out
 
 
-def up_next(spec, kind, start_name, unspent, level):
+def up_next(spec, kind, start_name, unspent, level, start_index=None):
     """BuildsWindow.upNext: the order from the first `start_name` point on, a run of points on one talent as
     one row. A point waiting reads Now; the rest arrive one a level from level + 1. The row's rank is the
     talent's rank once the run is taken."""
@@ -115,7 +123,7 @@ def up_next(spec, kind, start_name, unspent, level):
     order = [tuple(p) for p in ab.BUILDS[spec][kind]['order']]
     table = cells(cls)
     names = [table[p]['name'] for p in order]
-    start = names.index(start_name) if start_name else len(order)
+    start = start_index if start_index is not None else (names.index(start_name) if start_name else len(order))
     groups = []
     for i in range(start, len(order)):
         k = i - start
@@ -129,6 +137,7 @@ def up_next(spec, kind, start_name, unspent, level):
             break
         rank = sum(1 for p in order[:i + 1] if p == order[i])
         groups.append({'cell': order[i], 'now': now, 'from': at, 'to': at, 'rank': rank})
+    total = len([1 for i in range(start, len(order)) if level + (i - start) - unspent + 1 <= 60 or i - start < unspent])
     rows = []
     for g in groups:
         cell = table[g['cell']]
@@ -139,10 +148,12 @@ def up_next(spec, kind, start_name, unspent, level):
         else:
             when = lua_format(T('windowUpNextLevel'), g['from'])
         rows.append((cell['icon'], when, g['now'], cell['name'], g['rank'], cell['max_rank']))
-    return rows
+    shown = sum(g['to'] - g['from'] + 1 if not g['now'] else 1 for g in groups)
+    return rows, max(0, total - shown)
 
 
-def up_next_html(build_name, rows, empty=None):
+def up_next_html(build_name, rows_more, empty=None):
+    rows, more = rows_more if rows_more else ([], 0)
     head = f'<div class="sh"><span>{T("windowUpNext")}</span><span class="r">{esc(build_name or "")}</span></div>'
     if empty:
         return f'<div class="sec">{head}<div class="what">{empty}</div></div>'
@@ -151,6 +162,9 @@ def up_next_html(build_name, rows, empty=None):
         rk = f' <span class="rk">{lua_format(T("windowUpNextRank"), rank, top)}</span>' if top > 1 else ''
         body += (f'<div class="un">{ux.img(icon, 16)}<span class="lv{" now" if now else ""}">{when}</span>'
                  f'<span class="nm">{esc(name)}{rk}</span></div>')
+    if more:
+        text = T('windowUpNextMoreOne') if more == 1 else lua_format(T('windowUpNextMore'), more)
+        body += f'<div class="m" style="margin:2px 0 0 22px">{text}</div>'
     return f'<div class="sec">{head}<div style="height:4px"></div>{body}</div>'
 
 
@@ -198,7 +212,7 @@ def header(cls, title, note_html):
 
 def window(cls, title, note_html, left, right, esc_hint, enter_hint=''):
     return (f'<div class="win">{header(cls, title, note_html)}<div class="bd"><div class="lc">{left}</div>'
-            f'<div class="rule"></div><div class="rc">{right}</div></div>'
+            f'<div class="rc">{right}</div></div><div class="vr"></div>'
             f'<div class="ft"><span>{esc_hint}</span><span>{enter_hint}</span></div></div>')
 
 
@@ -211,18 +225,46 @@ def board(caption, html):
     return ux.page(f'<style>{CSS}</style><div title="{esc(caption)}">{html}</div>')
 
 
+def name_of(spec_name, kind):
+    """Follow.buildName for a default build: "Beast Mastery level 60 build", "Marksmanship raid build"."""
+    word = re.search(rf'followKindWord = {{ leveling = "([^"]*)", raid = "([^"]*)" }}', ab.LOCALE)
+    return lua_format(L('followKindBuildName'), spec_name, word.group(1 if kind == 'leveling' else 2))
+
+
+def note(level, matched=None, allowed=None, off=0, spend=0):
+    out = ab.note(level, matched, allowed, off)
+    if spend:
+        out += L('dialogSeparator') + f'<span style="color:{CLIENT_GOLD}">{lua_format(T("windowToSpend"), spend)}</span>'
+    return out
+
+
+def off_plan(lines):
+    """BuildDialog's drawOffPlan: "Off plan" in the warning colour, a muted line a talent."""
+    body = ''.join(f'<div class="one m">{esc(line)}</div>' for line in lines)
+    return f'<div class="warn-t">{T("windowOffPlan")}</div>{body}<div style="height:8px"></div>'
+
+
+# The owner's capture named the count (5 off plan), not the talents: two of the hunter's own tier-1 talents
+# stand in for them, in PanelTab.offPlanTalents' own line (L.panelOffPlanTalent).
+HUNTER_OFF_PLAN = [lua_format(re.sub(r'%d off plan \(Rank %d/%d\)', '{0} off plan (Rank {0}/{1})',
+                                     L('panelOffPlanTalent')).replace('{0}', '%d').replace('{1}', '%d'),
+                              *args) for args in (('Hawk Eye', 'Marksmanship', 3, 3, 3),
+                                                  ('Deflection', 'Survival', 2, 2, 5))]
+
+
 def board_hunter_42():
     nxt = ab.next_line('hunter', 'Intimidation', 1)
     blocks = ab.class_blocks('hunter', 42, 'hunter-beast-mastery', 'leveling', nxt,
                              states={'hunter-marksmanship': {1: 'cursor'}})
     rows = up_next('hunter-beast-mastery', 'leveling', 'Intimidation', 1, 42)
-    right = (up_next_html('Beast Mastery leveling build', rows) + from_site()
+    right = (up_next_html(name_of('Beast Mastery', 'leveling'), rows) + from_site(box_cls='gold')
              + to_site('rest', facts_hunter()))
-    return board("The Builds window · level 42 Hunter following Beast Mastery's leveling build, one point to spend, "
-                 "27 of 33 on plan and 5 off (the owner's case, 2026-11-12); the cursor on Marksmanship's raid build; "
-                 "740 wide",
-                 window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), ab.note(42, 27, 33, 5),
-                        blocks_html(blocks), right, T('windowEscClose'), L('dialogEnterFollow')))
+    return board("The Builds window · level 42 Hunter following Beast Mastery's level 60 build, one point to spend, "
+                 "27 of 33 on plan and 5 off (the owner's case, 2026-11-12); the cursor on Marksmanship's raid build "
+                 "after the arrow keys, the paste box holding the keyboard; 740 wide",
+                 window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), note(42, 27, 33, 5, 1),
+                        off_plan(HUNTER_OFF_PLAN) + blocks_html(blocks), right, T('windowEscClose'),
+                        L('dialogEnterFollow')))
 
 
 def site_druid():
@@ -230,42 +272,50 @@ def site_druid():
         (f'Moonkin for Molten Core{L("dialogSeparator")}51 points', 'Balance 31 / Restoration 20',
          f'{lua_format(L("dialogForCharacter"), "Leafcall")}{L("dialogSeparator")}12 Nov', 'druid'),
         (f'Bear for Onyxia{L("dialogSeparator")}51 points', 'Feral Combat 34 / Restoration 17',
-         f'{lua_format(L("dialogFromPush"), "Boss")}{L("dialogSeparator")}12 Nov', 'druid')], 2)
+         f'{lua_format(L("dialogFromPush"), "Varnok")}{L("dialogSeparator")}12 Nov', 'druid')], 2)
+
+
+def druid_up_next():
+    """Level 24 with the order's first 15 points taken: the next point is the 16th, at level 25."""
+    return up_next('druid-feral', 'leveling', None, 0, 24, start_index=15)
+
+
+def druid_next_line():
+    order = ab.BUILDS['druid-feral']['leveling']['order']
+    return ab.next_line('druid', cells('druid')[tuple(order[15])]['name'], 0, 25)
 
 
 def board_druid_24():
-    nxt = ab.next_line('druid', 'Feral Instinct', 0, 25)
-    blocks = ab.class_blocks('druid', 24, 'druid-feral', 'leveling', nxt,
+    blocks = ab.class_blocks('druid', 24, 'druid-feral', 'leveling', druid_next_line(),
                              specs=['druid-balance', 'druid-feral', 'druid-feral-bear', 'druid-restoration'])
-    rows = up_next('druid-feral', 'leveling', 'Feral Instinct', 0, 24)
     facts = [L('dialogSeparator').join([lua_format(L('dialogSummaryWho'), 24, 'Druid'),
                                         lua_format(L('dialogSummaryItems'), 11), L('dialogSummarySharedRealm')]),
              L('dialogNotSent')]
-    right = up_next_html('Feral leveling build', rows) + from_site(site_druid()) + to_site('selected', facts, 'druid', 24)
-    return board('The Builds window · level 24 Druid following Feral, four builds waiting from the site (two rows and '
-                 '"and 2 more"), the copy box selected after Tab',
-                 window('druid', lua_format(L('dialogOwnBuilds'), 'Druid'), ab.note(24, 15, 15),
-                        blocks_html(blocks), right, T('windowEscClose'), L('dialogEnterFollow')))
+    right = (up_next_html(name_of('Feral', 'leveling'), druid_up_next()) + from_site(site_druid())
+             + to_site('selected', facts, 'druid', 24))
+    return board('The Builds window · level 24 Druid following Feral, every point on plan, four builds waiting from '
+                 'the site (two rows and "and 2 more"), the copy box selected after Tab',
+                 window('druid', lua_format(L('dialogOwnBuilds'), 'Druid'), note(24, 15, 15),
+                        blocks_html(blocks), right, T('windowEscClose')))
 
 
 def board_hunter_60_copied():
     blocks = ab.class_blocks('hunter', 60, 'hunter-marksmanship', 'raid', None)
     sim = L('dialogSimDone')
-    right = (up_next_html('Marksmanship raid build', [], T('windowUpNextDone')) + from_site()
+    right = (up_next_html(name_of('Marksmanship', 'raid'), None, T('windowUpNextDone')) + from_site()
              + to_site('copied', facts_hunter(60)[:1] + [lua_format(L('dialogSeen'), '2 min ago'), sim], 'hunter', 60))
     return board('The Builds window · level 60 Hunter following the Marksmanship raid build, every point placed; '
                  'the export copied with Ctrl+C, the site\'s ack and the sim line under it',
-                 window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), ab.note(60, 51, 51),
+                 window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), note(60, 51, 51),
                         blocks_html(blocks), right, T('windowEscClose')))
 
 
 def preview_left():
-    gear = [('Head', 'inv_helmet_09', 'Cenarion Helm', 4), ('Chest', 'inv_chest_cloth_06', 'Robe of Volatile Power', 4),
-            ('Neck', 'inv_jewelry_necklace_01', 'Choker of Enlightenment', 4),
-            ('Hands', 'inv_gauntlets_14', 'Cenarion Gloves', 4)]
-    rows = ''.join(f'<div class="gr"><span class="sl">{s}</span>'
-                   f'<span style="color:{ux.QUALITY[q]}">{n}</span></div>' for s, i, n, q in gear)
-    replaces = lua_format(L('dialogReplacesDiffers'), 'Feral leveling build', '15 points', 1, 'Improved Wrath')
+    gear = [('Head', 'Cenarion Helm', 4), ('Chest', 'Robe of Volatile Power', 4),
+            ('Neck', 'Choker of Enlightenment', 4), ('Hands', 'Cenarion Gloves', 4)]
+    rows = ''.join(f'<div class="gr"><span class="sl">{slot}</span>'
+                   f'<span style="color:{ux.QUALITY[q]}">{n}</span></div>' for slot, n, q in gear)
+    replaces = lua_format(L('dialogReplacesDiffers'), name_of('Feral', 'leveling'), '15 points', 1, 'Improved Wrath')
     return (f'<div class="pv"><div class="ph">{ab.crest("druid", 32)}<div><div>Moonkin for Molten Core'
             f'{L("dialogSeparator")}51 points</div><div class="m">Balance 31 / Restoration 20</div></div></div>'
             f'<div class="gh">{L("dialogGearHeading")}{L("dialogSeparator")}4 of 17 slots</div>{rows}'
@@ -275,13 +325,14 @@ def preview_left():
 
 
 def board_paste_preview():
-    rows = up_next('druid-feral', 'leveling', 'Feral Instinct', 0, 24)
     after = f'<div class="st ok">{esc(lua_format(T("windowRead"), "Moonkin for Molten Core"))}</div>'
     box = '<span class="one" style="display:block">FSB1:70938:druid:1a21a21a21b31b31b3…</span>'
-    right = (up_next_html('Feral leveling build', rows) + from_site(box_cls='gold', box_text=box, after=after)
+    right = (up_next_html(name_of('Feral', 'leveling'), druid_up_next())
+             + from_site(box_cls='gold one-line', box_text=box, after=after)
              + to_site('rest', facts_hunter(24)[1:], 'druid', 24))
-    return board('The Builds window · a pasted Balance code previewing on the left; "Read" under the box; Enter uses it',
-                 window('druid', lua_format(L('dialogOwnBuilds'), 'Druid'), ab.note(24, 15, 15),
+    return board('The Builds window · a pasted Balance code previewing on the left; the box one line, "Read" under '
+                 'it; Enter uses it',
+                 window('druid', lua_format(L('dialogOwnBuilds'), 'Druid'), note(24, 15, 15),
                         preview_left(), right, T('windowEscBack'), L('dialogEnterHint')))
 
 
@@ -289,16 +340,17 @@ def board_bad_code():
     nxt = ab.next_line('hunter', 'Intimidation', 1)
     blocks = ab.class_blocks('hunter', 42, 'hunter-beast-mastery', 'leveling', nxt)
     rows = up_next('hunter-beast-mastery', 'leveling', 'Intimidation', 1, 42)
-    reason = L('codecWrongPrefix').split('. ')[0] + '.'
-    after = (f'<div class="st warn-t">{esc(reason)}</div>'
-             f'<div class="m">{esc(lua_format(L("dialogStillFollowing"), "Beast Mastery leveling build"))}</div>')
-    box = '<span>https://www.wowhead.com/classic/talent-calc/hunter/5300052-0505</span>'
-    right = (up_next_html('Beast Mastery leveling build', rows) + from_site(box_cls='warn', box_text=box, after=after)
-             + to_site('rest', facts_hunter()))
+    lead, body = L('codecWrongPrefix').split('. ', 1)
+    tail = re.search(r'codecWrongPrefix = .*\n\t\t\.\. "([^"]*)"', ab.LOCALE).group(1)
+    after = (f'<div class="st warn-t">{esc(lead)}.</div><div class="m">{esc(body + tail)}</div>'
+             f'<div class="m">{esc(lua_format(L("dialogStillFollowing"), name_of("Beast Mastery", "leveling")))}</div>')
+    box = '<span class="one" style="display:block">https://www.wowhead.com/classic/talent-calc/hunter/5300052-0505</span>'
+    right = (up_next_html(name_of('Beast Mastery', 'leveling'), rows)
+             + from_site(box_cls='warn one-line', box_text=box, after=after) + to_site('rest', facts_hunter()))
     return board('The Builds window · a pasted link that is not a build code: the warning edge and the refusal, the '
                  'list kept; Esc clears the box',
-                 window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), ab.note(42, 27, 33, 5),
-                        blocks_html(blocks), right, T('windowEscClose')))
+                 window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), note(42, 27, 33, 5, 1),
+                        off_plan(HUNTER_OFF_PLAN) + blocks_html(blocks), right, T('windowEscClose')))
 
 
 BOARDS = {

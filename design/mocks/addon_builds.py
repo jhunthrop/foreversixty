@@ -53,7 +53,13 @@ def L(key: str) -> str:
         raise KeyError(key)
     expr = m.group(1).rstrip(',')
     parts = re.findall(r'"((?:[^"\\]|\\.)*)"|(SITE)', expr)
-    return ''.join('foreversixty.gg' if site else lit for lit, site in parts)
+    return ''.join('foreversixty.gg' if site else lua_unescape(lit) for lit, site in parts)
+
+
+def lua_unescape(lit: str) -> str:
+    """A Lua string literal's decimal byte escapes (\\194\\183 is the middle dot) decoded as the client does."""
+    raw = re.sub(rb'\\(\d{1,3})', lambda m: bytes([int(m.group(1))]), lit.encode('utf-8'))
+    return raw.decode('utf-8')
 
 
 def playstyle(spec: str) -> str:

@@ -52,7 +52,7 @@ describe("Up next (BuildsWindow.upNext)", function()
 		assert.are.same({ "Anticipation", 15, 15, 1 }, { rows[2].name, rows[2].from, rows[2].to, rows[2].rank })
 		assert.are.same({ "Cruelty", 16, 20, 5 }, { rows[3].name, rows[3].from, rows[3].to, rows[3].rank })
 		assert.are.equal("Level 14", BuildsWindow.when(rows[1]))
-		assert.are.equal("Level 16 to 20", BuildsWindow.when(rows[3]))
+		assert.are.equal("Levels 16 to 20", BuildsWindow.when(rows[3]))
 		assert.are.equal("Deflection " .. require("Theme").inlineColor("muted", "3/5"), BuildsWindow.rowName(rows[1]))
 		assert.are.equal("Anticipation", BuildsWindow.rowName(rows[2]))
 	end)
@@ -75,7 +75,13 @@ describe("Up next (BuildsWindow.upNext)", function()
 		for index = 1, 51 do
 			long.order[index] = index % 2 == 0 and point(1, 1, 1) or point(1, 1, 2)
 		end
-		assert.are.equal(BuildsWindow.UP_NEXT_ROWS, #BuildsWindow.upNext(long, {}, 10, DATA))
+		local rows = BuildsWindow.upNext(long, {}, 10, DATA)
+		assert.are.equal(BuildsWindow.UP_NEXT_ROWS, #rows)
+		-- Point 1 waits at 10, then one a level to 60: 51 points, six rows of one, 45 after them.
+		assert.are.equal(45, rows.more)
+		assert.are.equal(string.format(L.windowUpNextMore, 45), BuildsWindow.moreLine(rows))
+		assert.are.equal(L.windowUpNextMoreOne, BuildsWindow.moreLine({ more = 1 }))
+		assert.is_nil(BuildsWindow.moreLine({}))
 		local late = { classSlug = "warrior", order = { point(1, 1, 1), point(1, 1, 2) } }
 		assert.are.same({}, BuildsWindow.upNext(late, { [1] = { ["1:1"] = 1, ["1:2"] = 1 } }, 60, DATA))
 	end)

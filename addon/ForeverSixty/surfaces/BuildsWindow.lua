@@ -27,10 +27,11 @@ local function cellKey(point)
 	return point.tab .. ":" .. point.tier .. ":" .. point.column
 end
 
---- The followed build's next points, a run on one talent as one row (spec 3.3 item 1): { icon, when,
---- now, name, rank, maxRank }. The points waiting read "Now" (`now` true); the rest arrive one a level
---- from the next one. `rank` is the talent's rank once the row is taken. At most `limit` rows
---- (UP_NEXT_ROWS). nil without a build; an empty list once every point is placed. Pure over its inputs.
+--- The followed build's next points, a run on one talent as one row (spec 3.3 item 1): { icon, now,
+--- from, to, name, rank, maxRank, points }. The points waiting read "Now" (`now` true); the rest arrive
+--- one a level from the next one. `rank` is the talent's rank once the row is taken. At most `limit`
+--- rows (UP_NEXT_ROWS); `more` counts the points past them up to level 60. nil without a build; an
+--- empty list once every point is placed. Pure over its inputs.
 function BuildsWindow.upNext(build, ranks, level, data, limit)
 	if type(build) ~= "table" or type(build.order) ~= "table" then
 		return nil
@@ -54,14 +55,17 @@ function BuildsWindow.upNext(build, ranks, level, data, limit)
 				break
 			end
 			local last = rows[#rows]
-			if last ~= nil and last.key == key and last.now == now then
-				last.rank, last.to = wanted[key], at
+			if rows.more ~= nil then
+				-- Past the last row: only counted.
+				rows.more = rows.more + 1
+			elseif last ~= nil and last.key == key and last.now == now then
+				last.rank, last.to, last.points = wanted[key], at, last.points + 1
 			elseif #rows >= limit then
-				break
+				rows.more = 1
 			else
 				local cell = Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column)
 				rows[#rows + 1] = {
-					key = key, now = now, from = at, to = at, rank = wanted[key],
+					key = key, now = now, from = at, to = at, rank = wanted[key], points = 1,
 					name = type(cell) == "table" and cell.name or L.dialogUnnamedTalent,
 					maxRank = type(cell) == "table" and cell.maxRank or nil,
 					icon = Talents.iconFor(cell),
@@ -89,6 +93,16 @@ function BuildsWindow.rowName(row)
 		return row.name .. " " .. Theme.inlineColor("muted", string.format(L.windowUpNextRank, row.rank, row.maxRank))
 	end
 	return row.name
+end
+
+--- The muted line under the rows: "14 more points after these"; nil when the rows hold every point left.
+--- Pure.
+function BuildsWindow.moreLine(rows)
+	local more = type(rows) == "table" and rows.more or nil
+	if more == nil or more <= 0 then
+		return nil
+	end
+	return more == 1 and L.windowUpNextMoreOne or string.format(L.windowUpNextMore, more)
 end
 
 --- The line Up next shows instead of rows: nothing followed, or every point placed; nil with rows. Pure.
@@ -124,8 +138,8 @@ end
 --- and the explanation under it. `deps.text(parent, hexKey, width)` makes a line at the window's size.
 function BuildsWindow.buildSection(parent, width, deps, heading, what)
 	local section = {}
-	section.heading = deps.text(parent, "strong")
-	Theme.setFace(section.heading, Theme.FONT_ROLES.highlight, Theme.SIZES.dialogText)
+	-- The title face, as the planner's panel titles (brand review 2026-11-13).
+	section.heading = Theme.titleFont(deps.text(parent, "bone"), Theme.SIZES.windowSection)
 	section.heading:SetText(heading)
 	section.note = deps.text(parent, "muted")
 	section.note:SetJustifyH("RIGHT")
@@ -144,6 +158,7 @@ function BuildsWindow.buildUpNext(parent, width, deps)
 	local G = BuildsWindow.LAYOUT
 	local up = BuildsWindow.buildSection(parent, width, deps, L.windowUpNext, nil)
 	up.empty = deps.text(parent, "muted", width)
+	up.more = deps.text(parent, "muted", width)
 	up.rows = {}
 	for index = 1, BuildsWindow.UP_NEXT_ROWS do
 		local row = {}
@@ -214,13 +229,21 @@ function BuildsWindow.drawUpNext(up, parent, width, y, rows, name, fit, textHeig
 			place(row.name, parent, x, top + (G.upNextRow - textHeight(row.name)) / 2)
 		end
 	end
+	up.more:Hide()
 	if empty ~= nil then
 		up.empty:SetText(empty)
 		place(up.empty, parent, 0, y)
 		return y + textHeight(up.empty)
 	end
 	up.empty:Hide()
-	return y + #rows * G.upNextRow
+	y = y + #rows * G.upNextRow
+	local more = BuildsWindow.moreLine(rows)
+	if more ~= nil then
+		up.more:SetText(more)
+		place(up.more, parent, G.upNextIcon + G.upNextGap, y + 2)
+		y = y + 2 + textHeight(up.more)
+	end
+	return y
 end
 
 ns.BuildsWindow = BuildsWindow

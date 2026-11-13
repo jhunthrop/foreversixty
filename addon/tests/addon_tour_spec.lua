@@ -227,13 +227,16 @@ describe("the Builds dialog's own builds (2026-11-13 spec 1), the pure model", f
 
 	it("titles the window with the class's builds and the level, and heads the list with the question", function()
 		assert.are.equal("Warrior builds", BuildsPane.title("Warrior"))
-		assert.are.equal("Level 13", BuildsPane.note(13, nil, {}))
+		local spentAll = { [3] = { ["1:2"] = 4 } }
+		assert.are.equal("Level 13", BuildsPane.note(13, nil, spentAll))
 		local followed = { classSlug = "warrior", order = { { tab = 1, tier = 1, column = 1 },
 			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 2 } } }
-		assert.are.equal("Level 13 · 0 of 3 points", BuildsPane.note(13, followed, {}))
+		-- The points waiting, in the client gold, last (wow-player 2026-11-13).
+		local Theme = require("Theme")
+		assert.are.equal("Level 13 · 0 of 3 points · " .. Theme.inlineColor("clientGold", "4 to spend"),
+			BuildsPane.note(13, followed, {}))
 		assert.is_nil(BuildsPane.question(nil, "1 Arms · 1 Fury"))
 		assert.are.equal("Are you Arms or Fury?", BuildsPane.question("Are you Arms or Fury?"))
-		local Theme = require("Theme")
 		assert.are.equal("Are you Arms or Fury? · " .. Theme.inlineColor("muted", "1 Arms · 1 Fury"),
 			BuildsPane.question("Are you Arms or Fury?", "1 Arms · 1 Fury"))
 	end)
@@ -317,7 +320,7 @@ describe("the Builds dialog's own builds (2026-11-13 spec 1), the frame", functi
 		assert.is_true(header.crest:IsShown())
 		assert.is_true(header.ring:IsShown())
 		assert.are.equal("Warrior builds", header.title:GetText())
-		assert.are.equal("Level 13", header.note:GetText())
+		assert.are.equal("Level 13 · " .. require("Theme").inlineColor("clientGold", "2 to spend"), header.note:GetText())
 		assert.is_true(paste.site.heading:IsShown())
 		assert.are.equal(L.dialogSiteHeading, paste.site.heading:GetText())
 		assert.are.equal(L.dialogKindLeveling, pane.rows[1].label:GetText())

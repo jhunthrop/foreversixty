@@ -362,7 +362,7 @@ end
 
 --- Reset positions: Prefs puts the placements back, and its onReset listeners move the
 --- chip, the minimap button and the build dialog at once (Chip.place,
---- MinimapButton.refresh, BuildDialog.place). The button then says so for 2 s; a client
+--- MinimapButton.refresh, Hub.place). The button then says so for 2 s; a client
 --- that cannot wait says nothing rather than stick on "Positions reset".
 function SettingsPage.reset()
 	local ui = Prefs.resetPositions()

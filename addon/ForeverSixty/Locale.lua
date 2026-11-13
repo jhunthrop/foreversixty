@@ -923,17 +923,25 @@ L.windowEscBack = "Esc for your builds"
 L.windowUpNext = "Up next"
 L.windowUpNextNow = "Now"
 L.windowUpNextLevel = "Level %d"
-L.windowUpNextLevels = "Level %d to %d"
+L.windowUpNextLevels = "Levels %d to %d"
 L.windowUpNextRank = "%d/%d"
 L.windowUpNextNone = "Follow a build to see its next points."
-L.windowUpNextDone = "Every point of this build is placed."
+-- Under the rows: the points of the build still to come past the ones listed.
+L.windowUpNextMore = "%d more points after these"
+L.windowUpNextMoreOne = "1 more point after these"
+L.windowUpNextDone = "Every point is placed."
 -- From the site: what the box is for, in the planner's own words; the line under a good paste.
-L.windowFromSiteWhat = "On the planner, press Copy for the game, then paste the code here."
-L.windowRead = "Read: %s. Check it on the left."
+L.windowFromSiteWhat = "On the planner, press Copy for the game, then paste here."
+L.windowRead = "Read: %s."
 -- To the site: the copy box, and the line under it before a click selects the code.
 L.windowToSite = "To the site"
-L.windowToSiteWhat = "Your talents, gear and professions as one code, for the planner's Import from addon box."
+L.windowToSiteWhat = "Talents, gear and professions in one code for the planner\226\128\153s Import from addon box."
 L.windowClickToSelect = "Click the box, then press Ctrl+C."
+-- The header's figures: the points waiting to be spent, in the client gold ("1 to spend").
+L.windowToSpend = "%d to spend"
+-- Over the build list while points sit where the followed build has none: the heading in the warning
+-- colour, then a line a talent (PanelTab.offPlanTalents' own lines), at most OFF_PLAN_ROWS of them.
+L.windowOffPlan = "Off plan"
 -- The build list for a class the data has no builds for.
 L.windowNoBuilds = "No builds for this class yet."
 -- L3.7 item 30: the newest sim result says it failed.

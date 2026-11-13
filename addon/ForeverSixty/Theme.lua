@@ -285,6 +285,7 @@ Theme.SIZES = {
 	windowGutter = 32,
 	windowRight = 288,
 	windowTitle = 16,
+	windowSection = 14,
 	dialogText = 12,
 	dialogClose = 20,
 	dialogLine = 24,

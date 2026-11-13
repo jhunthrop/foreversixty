@@ -642,12 +642,12 @@ describe("SettingsPage, Reset positions", function()
 		_G.ForeverSixtyDB = nil
 	end)
 
-	it("puts the placements back and moves the chip, the minimap button and the dialog at once", function()
-		local Chip, MinimapButton, BuildDialog = require("Chip"), require("Minimap"), require("BuildDialog")
+	it("puts the placements back and moves the chip, the minimap button and the window at once", function()
+		local Chip, MinimapButton, Hub = require("Chip"), require("Minimap"), require("Hub")
 		local calls = {}
 		Chip.place = function() calls[#calls + 1] = "chip" end
 		MinimapButton.refresh = function() calls[#calls + 1] = "minimap" end
-		BuildDialog.place = function() calls[#calls + 1] = "dialog" end
+		Hub.place = function() calls[#calls + 1] = "dialog" end
 		Prefs.set("chip", "point", "TOPRIGHT")
 		Prefs.set("chip", "x", -300)
 		Prefs.set("minimap", "angle", 45)
@@ -662,7 +662,7 @@ describe("SettingsPage, Reset positions", function()
 	it("reads Positions reset and stays disabled for 2 s after a click (fix 1, item 13)", function()
 		require("Chip").place = function() end
 		require("Minimap").refresh = function() end
-		require("BuildDialog").place = function() end
+		require("Hub").place = function() end
 		local resting = { label = L.settingsReset, enabled = true, text = "gold", edge = "border" }
 		local done = { label = L.settingsResetDone, enabled = false, text = "muted", edge = "muted" }
 		assert.are.same(resting, SettingsPage.resetLook())

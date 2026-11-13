@@ -62,6 +62,8 @@ BuildDialog.LAYOUT = {
 BuildDialog.SITE_CREST = 20
 --- The room between "and N more" and the paste box under it.
 BuildDialog.MORE_GAP = 6
+--- The most off-plan talents named over the build list; the rest are "and N more" (spec 3.2).
+BuildDialog.OFF_PLAN_ROWS = 3
 
 --- Injection points Options fills: the data to read and what to redraw after a build is used
 --- (Options.refreshSurfaces). `say` prints the chat line (Theme.say when nil). What runs when the
@@ -1144,6 +1146,22 @@ function BuildDialog.rowsView(rows, limit, verdict, cursor)
 	return { shown = shown, more = more, active = active ~= nil and active.id or nil }
 end
 
+--- The off-plan lines over the build list: the first OFF_PLAN_ROWS talents (PanelTab.offPlanTalents'
+--- lines), then "and N more" for the rest; nil with none. Pure.
+function BuildDialog.offPlanLines(talents)
+	if type(talents) ~= "table" or #talents == 0 then
+		return nil
+	end
+	local lines = {}
+	for index = 1, math.min(#talents, BuildDialog.OFF_PLAN_ROWS) do
+		lines[index] = talents[index]
+	end
+	if #talents > BuildDialog.OFF_PLAN_ROWS then
+		lines[#lines + 1] = string.format(L.dialogInboxMore, #talents - BuildDialog.OFF_PLAN_ROWS)
+	end
+	return lines
+end
+
 --- The cursor's row: a 2 px edge in the body colour at its left (spec 6.4: gold means one thing
 --- in this dialog, the build followed). Every row hovers in the secondary buttons' hover ground,
 --- the cue that it can be clicked.
@@ -1899,6 +1917,12 @@ local function buildPaste(body, top, bottom)
 		end,
 		hover = BuildDialog.ROW_HOVER, edge = BuildDialog.ROW_ACTIVE_EDGE,
 	})
+	paste.offPlanHead = text(content, "warning", width)
+	paste.offPlanHead:SetText(L.windowOffPlan)
+	paste.offPlan = {}
+	for index = 1, BuildDialog.OFF_PLAN_ROWS + 1 do
+		paste.offPlan[index] = text(content, "muted", width)
+	end
 	paste.noBuilds = text(content, "muted", width)
 	paste.noBuilds:SetText(L.windowNoBuilds)
 	paste.upNext = BuildsWindow.buildUpNext(right, rightWidth(), { text = makeText })
@@ -2368,6 +2392,25 @@ local function drawHeader()
 	})
 end
 
+--- The talents spent off the followed build, over the list at `y` (spec 3.2): "Off plan" in the warning
+--- colour, then a line each, at most OFF_PLAN_ROWS, then "and N more". The y under them.
+local function drawOffPlan(y)
+	local S = Theme.SIZES
+	local paste = BuildDialog.paste
+	local view = BuildDialog.ownView
+	local lines = BuildDialog.offPlanLines(view ~= nil and view.offPlanTalents or nil)
+	if lines == nil then
+		return y
+	end
+	y = stack(paste.offPlanHead, paste.content, y, textHeight(paste.offPlanHead))
+	for index, line in ipairs(lines) do
+		local region = paste.offPlan[index]
+		fitLine(region, line, contentWidth())
+		y = stack(region, paste.content, y, textHeight(region))
+	end
+	return y + S.gap * 2
+end
+
 --- The left column (spec 3.2): the lead lines for a build that is not a row, the build list (the spec
 --- question over it while the points name no tree), or the preview of a code with its Use button.
 --- The y it used.
@@ -2377,7 +2420,10 @@ local function drawLeft(view, verdict)
 	local content = paste.content
 	local data = dataOf()
 	for _, region in ipairs({ paste.following, paste.next, paste.replaces, paste.short, paste.nextWould,
-		paste.useReason, paste.noBuilds }) do
+		paste.useReason, paste.noBuilds, paste.offPlanHead }) do
+		region:Hide()
+	end
+	for _, region in ipairs(paste.offPlan) do
 		region:Hide()
 	end
 	paste.preview.frame:Hide()
@@ -2408,6 +2454,7 @@ local function drawLeft(view, verdict)
 		end
 		y = y + S.gap * 2
 	end
+	y = drawOffPlan(y)
 	y = BuildsPane.draw(paste.builds, BuildDialog.ownView, y,
 		{ line = lineHeight(), cursor = BuildDialog.cursor, failed = BuildDialog.ownFailed })
 	if #own == 0 then
