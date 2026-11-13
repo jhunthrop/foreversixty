@@ -151000,7 +151000,11 @@
         1311680,
         9907
       ],
-      "resist": null
+      "resist": "fire",
+      "item": null,
+      "consumables": [
+        "fire_protection"
+      ]
     },
     "11502": {
       "buffs": [
@@ -151016,7 +151020,11 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": [
+        "fire_protection"
+      ]
     },
     "11583": {
       "buffs": [
@@ -151032,7 +151040,9 @@
         1311680,
         9907
       ],
-      "resist": null
+      "resist": null,
+      "item": 15138,
+      "consumables": []
     },
     "11981": {
       "buffs": [
@@ -151048,7 +151058,9 @@
         1311680,
         9907
       ],
-      "resist": null
+      "resist": null,
+      "item": null,
+      "consumables": []
     },
     "11982": {
       "buffs": [
@@ -151064,7 +151076,9 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": []
     },
     "11983": {
       "buffs": [
@@ -151080,7 +151094,9 @@
         1311680,
         9907
       ],
-      "resist": null
+      "resist": null,
+      "item": null,
+      "consumables": []
     },
     "11988": {
       "buffs": [
@@ -151096,7 +151112,9 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": []
     },
     "12017": {
       "buffs": [
@@ -151112,7 +151130,9 @@
         1311680,
         9907
       ],
-      "resist": null
+      "resist": null,
+      "item": null,
+      "consumables": []
     },
     "12018": {
       "buffs": [
@@ -151128,7 +151148,9 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": []
     },
     "12056": {
       "buffs": [
@@ -151144,7 +151166,9 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": []
     },
     "12057": {
       "buffs": [
@@ -151160,7 +151184,9 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": []
     },
     "12098": {
       "buffs": [
@@ -151176,7 +151202,9 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": []
     },
     "12118": {
       "buffs": [
@@ -151192,7 +151220,9 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": []
     },
     "12259": {
       "buffs": [
@@ -151208,7 +151238,9 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": []
     },
     "12264": {
       "buffs": [
@@ -151224,7 +151256,9 @@
         1311680,
         9907
       ],
-      "resist": "fire"
+      "resist": "fire",
+      "item": null,
+      "consumables": []
     },
     "12435": {
       "buffs": [
@@ -151240,7 +151274,9 @@
         1311680,
         9907
       ],
-      "resist": null
+      "resist": null,
+      "item": null,
+      "consumables": []
     },
     "13020": {
       "buffs": [
@@ -151256,7 +151292,9 @@
         1311680,
         9907
       ],
-      "resist": null
+      "resist": null,
+      "item": null,
+      "consumables": []
     },
     "14020": {
       "buffs": [
@@ -151272,7 +151310,9 @@
         1311680,
         9907
       ],
-      "resist": null
+      "resist": null,
+      "item": null,
+      "consumables": []
     },
     "14601": {
       "buffs": [
@@ -151288,8 +151328,94 @@
         1311680,
         9907
       ],
-      "resist": null
+      "resist": null,
+      "item": null,
+      "consumables": []
     }
+  },
+  "consumables": {
+    "6048": "shadow_protection",
+    "6049": "fire_protection",
+    "6050": "frost_protection",
+    "6052": "nature_protection",
+    "6887": "food",
+    "8410": "elixir",
+    "8411": "elixir",
+    "8412": "elixir",
+    "8423": "elixir",
+    "8957": "food",
+    "9088": "elixir",
+    "9155": "elixir",
+    "9179": "elixir",
+    "9187": "elixir",
+    "9264": "elixir",
+    "12212": "food",
+    "12820": "elixir",
+    "13445": "elixir",
+    "13447": "elixir",
+    "13452": "elixir",
+    "13453": "elixir",
+    "13454": "elixir",
+    "13456": "frost_protection",
+    "13457": "fire_protection",
+    "13458": "nature_protection",
+    "13459": "shadow_protection",
+    "13461": "arcane_protection",
+    "13510": "flask",
+    "13511": "flask",
+    "13512": "flask",
+    "13513": "flask",
+    "13810": "food",
+    "13813": "food",
+    "13927": "food",
+    "13928": "food",
+    "13929": "food",
+    "13930": "food",
+    "13931": "food",
+    "13932": "food",
+    "13933": "food",
+    "13934": "food",
+    "13935": "food",
+    "17222": "food",
+    "17708": "elixir",
+    "18045": "food",
+    "18254": "food",
+    "20004": "elixir",
+    "20007": "elixir",
+    "20079": "elixir",
+    "20080": "elixir",
+    "20081": "elixir",
+    "20452": "food",
+    "21023": "food",
+    "21217": "food",
+    "23715": "elixir",
+    "23718": "elixir",
+    "23719": "elixir",
+    "23722": "elixir",
+    "23794": "elixir",
+    "23795": "elixir",
+    "23796": "elixir",
+    "250065": "food",
+    "250066": "food",
+    "250067": "food",
+    "250068": "food",
+    "250069": "food",
+    "250070": "food",
+    "250071": "food",
+    "250072": "food",
+    "250075": "food",
+    "250076": "food",
+    "250334": "elixir",
+    "250335": "elixir",
+    "250341": "elixir",
+    "267341": "food",
+    "274273": "flask",
+    "274274": "flask",
+    "274275": "flask",
+    "274276": "flask",
+    "286152": "food",
+    "287973": "food",
+    "287974": "food"
   },
   "ability_levels": {
     "17": 6,
