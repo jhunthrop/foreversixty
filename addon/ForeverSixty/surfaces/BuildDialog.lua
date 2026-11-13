@@ -2563,7 +2563,9 @@ function BuildDialog.drawPaste()
 		region:Hide()
 	end
 	paste.preview.frame:Hide()
-	paste.use:Hide()
+	-- Never hidden and shown again in one draw: the mouse-down on Use takes the box's focus and
+	-- redraws, and a Button hidden while held loses its click (BuildsPane.draw's own rule).
+	Theme.setShown({ paste.use }, view.preview == true and not view.reason)
 	BuildDialog.useBlocked = nil
 	BuildDialog.enterHint:Hide()
 	local own = verdict == nil and (BuildDialog.own or {}) or {}

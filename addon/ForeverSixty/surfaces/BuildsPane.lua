@@ -428,10 +428,9 @@ local function drawHeading(pane, view, y)
 	pane.ring:Show()
 	local noteWidth = 0
 	pane.offPlanTalents = view.offPlanTalents
+	Theme.setShown({ pane.note, pane.noteHover }, view.note ~= nil)
 	if view.note ~= nil then
 		pane.note:SetText(view.note)
-		pane.note:Show()
-		pane.noteHover:Show()
 		noteWidth = textWidth(pane.note) + Theme.SIZES.gap * 2
 	end
 	pane.deps.fit(pane.heading, view.heading, pane.width - G.crest - Theme.SIZES.gap * 2 - noteWidth)
@@ -533,20 +532,35 @@ local function drawRow(pane, row, entry, index, y, state)
 	return y + height + G.rowGap
 end
 
+--- The spec lines from `specs` on and the rows from `rows` on hidden: the parts a draw left unused.
+local function hideUnused(pane, specs, rows)
+	for index = specs, #pane.specs do
+		local line = pane.specs[index]
+		Theme.setShown({ line.icon, line.name, line.playstyle }, false)
+	end
+	for index = rows, #pane.rows do
+		pane.rows[index].frame:Hide()
+	end
+end
+
 --- Lays `view` ({ classToken, heading, note, offPlanTalents, blocks }) out from `y`; returns the y
 --- under it. `state`: { line (px a line), cursor (the own row index under the cursor), failed }.
+--- A part drawn again stays shown and only the unused ones are hidden: the dialog redraws on the
+--- mouse-down that takes the paste box's focus and on every hover, and a Button hidden while held
+--- never gets its click (2.0.43: Follow did nothing).
 function BuildsPane.draw(pane, view, y, state)
-	BuildsPane.hide(pane)
 	if view == nil or #(view.blocks or {}) == 0 then
+		BuildsPane.hide(pane)
 		return y
 	end
 	y = drawHeading(pane, view, y)
-	local index = 0
+	local index, specs = 0, 0
 	for blockIndex, block in ipairs(view.blocks) do
 		local line = pane.specs[blockIndex]
 		if line == nil then
 			break
 		end
+		specs = blockIndex
 		y = drawSpecLine(pane, line, block, y + (blockIndex > 1 and BuildsPane.LAYOUT.blockGap or 0))
 		for _, entry in ipairs(block.rows) do
 			index = index + 1
@@ -556,6 +570,7 @@ function BuildsPane.draw(pane, view, y, state)
 			end
 		end
 	end
+	hideUnused(pane, specs + 1, index + 1)
 	return y
 end
 
