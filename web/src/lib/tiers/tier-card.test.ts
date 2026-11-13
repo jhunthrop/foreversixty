@@ -29,7 +29,7 @@ describe('tierCardModel', () => {
     );
     expect(model.groups.flatMap((g) => g.specs).length).toBe(data.lists.alliance.dps.length);
     expect(model.title).toBe('Tier list at 60');
-    expect(model.role).toBe(ROLE_TABS.dps);
+    expect(model.role).toBe(`${ROLE_TABS.dps} · Alliance`);
   });
 
   it('carries the page meta line and the Updated stamp', () => {
@@ -44,6 +44,7 @@ describe('tierCardModel', () => {
       expect(group?.letter).toBeNull();
       expect(group?.specs.map((s) => s.name)).toEqual(data.lists.alliance[role].map(specFullName));
       expect(group?.specs.map((s) => s.rank)).toEqual(data.lists.alliance[role].map(tiersCopy.rankLabel));
+      expect(group?.specs.every((s) => /\d/.test(s.figure ?? ''))).toBe(true);
     }
   });
 

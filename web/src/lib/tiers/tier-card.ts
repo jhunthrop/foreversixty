@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import type { BisRole } from '../bis/types';
 import { updatedLabel } from '../dates';
 import { DEFAULT_FACTION } from './tier-controls';
-import { ROLE_TABS, specFullName, tiersCopy } from './tier-copy';
+import { FACTION_LABELS, ROLE_TABS, formatMetric, specFullName, tiersCopy } from './tier-copy';
 import { groupByTier, roleHasTiers, type TierRow } from './tier-list';
 import type { TierData } from './tier-load';
 import type { TierLetter } from './tier-rules';
@@ -17,6 +17,8 @@ export interface TierCardSpec {
   classSlug: string;
   /** The row's rank as the page prints it ("2", "=2"); the damage list leads with its letter instead. */
   rank: string;
+  /** The sorted figure with its column's unit ("812.3 HPS"), on a ranked list only. */
+  figure?: string;
 }
 
 export interface TierCardGroup {
@@ -27,7 +29,7 @@ export interface TierCardGroup {
 
 export interface TierCardModel {
   title: string;
-  /** "Damage", "Tanks", "Healers": the page's role tab. */
+  /** "Damage · Alliance": the page's role tab and the faction its numbers are for. */
   role: string;
   /** "Best in slot, raid buffs · vs a level 63 boss · 3 min · Updated 12 Nov" */
   meta: string;
@@ -37,15 +39,23 @@ export interface TierCardModel {
 /** The hash length of the card's cache-busting query: enough to never collide across deploys. */
 const VERSION_LENGTH = 10;
 
+/** The figure column's head, which names its unit ("HPS", "Taken / s"). */
+const FIGURE_HEAD = 4;
+
 function cardSpec(row: TierRow): TierCardSpec {
   return { name: specFullName(row), classSlug: row.classSlug, rank: tiersCopy.rankLabel(row) };
+}
+
+function rankedSpec(row: TierRow): TierCardSpec {
+  const unit = tiersCopy.heads[row.role][FIGURE_HEAD];
+  return { ...cardSpec(row), figure: `${formatMetric(row.role, row.metric)} ${unit}` };
 }
 
 export function tierCardModel(data: TierData, role: BisRole): TierCardModel {
   const rows = data.lists[DEFAULT_FACTION][role];
   const groups: TierCardGroup[] = roleHasTiers(role)
     ? groupByTier(rows).map((group) => ({ letter: group.letter, specs: group.rows.map(cardSpec) }))
-    : [{ letter: null, specs: rows.map(cardSpec) }];
+    : [{ letter: null, specs: rows.map(rankedSpec) }];
   const meta = tiersCopy.metaLine({
     role,
     healerBasis: data.healerBasis,
@@ -55,7 +65,7 @@ export function tierCardModel(data: TierData, role: BisRole): TierCardModel {
   const updated = data.updated === null ? '' : updatedLabel(data.updated);
   return {
     title: tiersCopy.title,
-    role: ROLE_TABS[role],
+    role: `${ROLE_TABS[role]} · ${FACTION_LABELS[DEFAULT_FACTION]}`,
     meta: updated === '' ? meta : `${meta} · ${updated}`,
     groups,
   };

@@ -44,12 +44,13 @@ const PANEL = {
 const PAD = 44;
 const LETTER_WIDTH = 64;
 const CELL_GAP = 10;
-const CREST_PX = 34;
-const NAME_PX = 18;
+const CREST_PX = 38;
+const NAME_PX = 22;
 /** A ranked list (tanks, healers: a handful of rows, no letters) draws one spec a row, larger. */
 const RANKED = { crest: 52, name: 30, rankWidth: 64 } as const;
-/** Specs per strip line: four keep the longest name ("Beast Mastery Hunter") on one line. */
-const PER_LINE = 4;
+/** Specs per strip line: three keep the longest name ("Beast Mastery Hunter") on one line at a
+ *  size a phone preview can read. */
+const PER_LINE = 3;
 const LIST_WIDTH = OG_SIZE.width - PAD * 2;
 /** The list's inner padding beside the cells. */
 const CELLS_PAD = 12;
@@ -83,7 +84,7 @@ function crestImage(slug: string, uri: string, px: number): unknown {
 }
 
 async function specCell(spec: TierCardSpec): Promise<unknown> {
-  return box({ alignItems: 'center', gap: CELL_GAP, width: CELL_WIDTH, height: CREST_PX + 8 }, [
+  return box({ alignItems: 'center', gap: CELL_GAP, width: CELL_WIDTH, height: CREST_PX + 10 }, [
     crestImage(spec.classSlug, await crestUri(spec.classSlug), CREST_PX),
     text(NAME_PX, classColour(spec.classSlug), spec.name, { whiteSpace: 'nowrap' }),
   ]);
@@ -104,11 +105,12 @@ async function letterStrip(
     box({ width: LETTER_WIDTH, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }, [
       text(40, tokenValue(LETTER_TOKEN[letter]), letter, { fontFamily: 'Marcellus' }),
     ]),
-    box({ flexWrap: 'wrap', alignContent: 'center', padding: `6px ${CELLS_PAD}px`, flexGrow: 1 }, cells),
+    box({ flexWrap: 'wrap', alignContent: 'center', padding: `2px ${CELLS_PAD}px`, flexGrow: 1 }, cells),
   ]);
 }
 
-/** One spec's row on a ranked list: its rank as the page prints it, its crest and its name. */
+/** One spec's row on a ranked list: its rank as the page prints it, its crest, its name and the
+ *  figure the list is sorted on. */
 async function rankedRow(spec: TierCardSpec, last: boolean): Promise<unknown> {
   return box(
     { alignItems: 'center', gap: 18, borderBottom: rule(last), flexGrow: 1, padding: `0 ${CELLS_PAD}px` },
@@ -118,7 +120,8 @@ async function rankedRow(spec: TierCardSpec, last: boolean): Promise<unknown> {
         justifyContent: 'center',
       }),
       crestImage(spec.classSlug, await crestUri(spec.classSlug), RANKED.crest),
-      text(RANKED.name, classColour(spec.classSlug), spec.name),
+      text(RANKED.name, classColour(spec.classSlug), spec.name, { flexGrow: 1 }),
+      text(RANKED.name - 4, PANEL.text, spec.figure ?? '', { paddingRight: CELLS_PAD }),
     ],
   );
 }
@@ -149,7 +152,7 @@ async function head(model: TierCardModel): Promise<unknown> {
         text(28, INK.cream2, OG_BRAND, { fontFamily: 'Marcellus' }),
       ]),
     ]),
-    text(20, PANEL.text, model.meta),
+    text(22, PANEL.text, model.meta),
   ]);
 }
 

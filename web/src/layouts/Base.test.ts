@@ -19,6 +19,14 @@ describe('Base layout', () => {
     expect(html).toContain('<main>body</main>');
   });
 
+  it('versions a data-drawn card so a new card is a new URL', async () => {
+    const container = await createPageContainer();
+    const html = await container.renderToString(Base, {
+      props: { title: 'Tier list', description: 'x', path: '/tiers', ogVersion: 'abc123' },
+    });
+    expect(html).toContain('content="https://foreversixty.gg/og/tiers.png?v=abc123"');
+  });
+
   it('keeps og:title in step with the title and names the site', async () => {
     const container = await createPageContainer();
     const html = await container.renderToString(Base, {
