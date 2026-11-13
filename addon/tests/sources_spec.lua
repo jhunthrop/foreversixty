@@ -6,7 +6,8 @@ local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
 
-local PLACES = { "World drop", "Blacksmithing", "Kelm Hargunth", "Warsong Outriders", "Shadowfang Keep: Baron Silverlaine" }
+local PLACES = { "World drop", "Blacksmithing", "Kelm Hargunth", "Warsong Outriders",
+	"Shadowfang Keep: Baron Silverlaine" }
 
 --- A band like the Fury warrior's 30 horde one (data/builds/1.60.1.70790/bis/warrior-fury.json): an
 --- Honored reputation ring its quartermaster also sells, a world-drop ring beside it, a dungeon chest

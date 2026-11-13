@@ -447,10 +447,9 @@ def _faction_picks(
             kinds=kinds,
             standings=standings,
             two_hand=pick["item_id"] in facts.two_hand or bool(pick.get("two_hand")),
-            not_with=list((pick.get("not_with") or [])) if second else [],
+            not_with=list(pick.get("not_with") or []) if second else [],
             by_kind=[
-                entry for entry in _by_kind(row, facts, second)
-                if entry.item_id != pick["item_id"]
+                entry for entry in _by_kind(row, facts, second) if entry.item_id != pick["item_id"]
             ],
         )
     return picks
@@ -499,18 +498,20 @@ def _by_kind(entry: dict, facts: _ItemFacts, second: bool) -> list[AddonBisKindE
                 source_kind = node.get("source_kind") or kind
                 if FILTER_KIND_OF_SOURCE.get(source_kind) != kind:
                     raise AddonBisError(f"by_kind {kind!r} lists a {source_kind!r} item {item_id}")
-                rows.append((
-                    int(node.get("rank", 0)),
-                    SOURCE_FILTER_KINDS.index(kind),
-                    AddonBisKindEntry(
-                        item_id=item_id,
-                        source_kind=source_kind,
-                        source=node.get("source", ""),
-                        standing=_standing(node.get("standing")),
-                        two_hand=bool(node.get("two_hand")) or item_id in facts.two_hand,
-                        not_with=list(node.get("not_with") or []) if second else [],
-                    ),
-                ))
+                rows.append(
+                    (
+                        int(node.get("rank", 0)),
+                        SOURCE_FILTER_KINDS.index(kind),
+                        AddonBisKindEntry(
+                            item_id=item_id,
+                            source_kind=source_kind,
+                            source=node.get("source", ""),
+                            standing=_standing(node.get("standing")),
+                            two_hand=bool(node.get("two_hand")) or item_id in facts.two_hand,
+                            not_with=list(node.get("not_with") or []) if second else [],
+                        ),
+                    )
+                )
             node = node.get("next")
     rows.sort(key=lambda row: (row[0], row[1]))
     return [row[2] for row in rows]

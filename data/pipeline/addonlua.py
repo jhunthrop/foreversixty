@@ -137,9 +137,14 @@ def _pick_head(item) -> str:
     own = FILTER_KIND_OF_SOURCE.get(item.source_kind)
     kinds = list(item.kinds) or ([own] if own else [])
     gated = [kind for kind in kinds if item.standings.get(kind)]
-    letters = "".join(
-        FILTER_KIND_CODES[kind] + STANDING_CODES.get(item.standings.get(kind, ""), "") for kind in kinds
-    ) if item.kinds or gated else ""
+    letters = (
+        "".join(
+            FILTER_KIND_CODES[kind] + STANDING_CODES.get(item.standings.get(kind, ""), "")
+            for kind in kinds
+        )
+        if item.kinds or gated
+        else ""
+    )
     mark = (BIS_TWO_HAND_MARK if item.two_hand else "") + letters
     if not mark and not item.not_with:
         return ""
@@ -172,7 +177,9 @@ def _bis_tail(item, source_index: dict[str, int]) -> str:
     """The by-kind tail: the head entry, then one entry per by_kind item in rank order,
     `;`-joined. Empty when the pick carries nothing beyond its own fields."""
     head = _pick_head(item)
-    entries = ([head] if head else []) + [_kind_entry(entry, source_index) for entry in item.by_kind]
+    entries = ([head] if head else []) + [
+        _kind_entry(entry, source_index) for entry in item.by_kind
+    ]
     return BIS_ENTRY_SEPARATOR.join(entries)
 
 
