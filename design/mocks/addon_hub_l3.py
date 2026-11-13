@@ -477,8 +477,8 @@ def conditions_tips(ch):
                                ('Consumables', entry['consumes'])], 'Hover: Raid-ready'),
         hover('Bare', [(None, 'Bare character: no raid buffs, debuffs or consumables.')], 'Hover: Bare'),
         hover('Hit cap', [(None, 'Hit is worth its full weight up to the cap and nothing past it. An item\'s '
-                                 '"Improves your chance to hit by 1.0%." counts 1% toward it. Counted with this list '
-                                 'worn.')], 'Hover: the hit lines'),
+                                 '"Equip: Improves your chance to hit by 1.0%." counts 1% toward it, 10 hit rating is '
+                                 '1%. Counted with this list worn.')], 'Hover: the hit lines'),
     ]
 
 
