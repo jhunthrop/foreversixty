@@ -29,6 +29,8 @@
 #   PUBLISH       "true" pushes; anything else is the dry run (off main)
 #   FIGURES       a re-measured dps-per-point.json to land with the picks (optional)
 #   RANKED_HEAD   the sha the ranking started from, for the log (optional)
+#   LAND_SUBJECT  the commit subject (default the nightly picks subject; the re-measure
+#                 job lands its figures with its own)
 #   LAND_RENDER   the command that renders the derived files, run from the landing
 #                 worktree's root with BUILD exported (tests stub it); default the pipeline
 #   LAND_ATTEMPTS how many fetch-apply-render-push rounds (default 5)
@@ -70,7 +72,7 @@ apply() {
 message() {
 	local now_pin
 	now_pin=$(engine_pin "$1")
-	MSG=(-m "chore(bis): nightly leveling BiS for $BUILD @ $PIN")
+	MSG=(-m "${LAND_SUBJECT:-chore(bis): nightly leveling BiS for $BUILD @ $PIN}")
 	if [[ $now_pin != "$PIN" ]]; then
 		MSG+=(-m "Ranked on engine $PIN; $BRANCH pins $now_pin since the ranking started, so the next ranking replaces these picks.")
 		echo "::notice title=engine pin moved during the ranking::ranked on $PIN, $BRANCH pins $now_pin; the picks land and name $PIN"

@@ -39,11 +39,11 @@ import (
 const publishedRepoRoot = "../../.."
 
 // TestPublishedBISFilesPassSanityChecks walks every
-// data/builds/<build>/bis/<spec>.json the repository currently
-// carries. A build with no bis directory at all (not every
-// data/builds/<build> has been ranked - most never will be) is
-// skipped cleanly: filepath.Glob against a directory that does not
-// exist returns no matches and no error, not a failure.
+// data/builds/<active build>/bis/<spec>.json: the files the site reads.
+// An older build's bis directory is a record of a ranking the site no
+// longer serves, so its findings were only noise in the nightly's log
+// (2026-11-13: 1.60.1.70753's files buried tonight's real ones). An
+// active build not ranked yet has no files and the test skips.
 func TestPublishedBISFilesPassSanityChecks(t *testing.T) {
 	// The committed bis files are the NIGHTLY's output: a ranker fix
 	// lands on main before the files that carry it, so this check
@@ -52,30 +52,24 @@ func TestPublishedBISFilesPassSanityChecks(t *testing.T) {
 	if os.Getenv("FOREVER_BIS_SANITY") == "" {
 		t.Skip("set FOREVER_BIS_SANITY=1 to check the committed bis files (the nightly does)")
 	}
-	buildDirs, err := filepath.Glob(filepath.Join(publishedRepoRoot, "data", "builds", "*"))
+	active, err := leveling.ReadActiveBuild(publishedRepoRoot)
 	if err != nil {
-		t.Fatalf("glob data/builds/*: %v", err)
+		t.Fatalf("leveling.ReadActiveBuild: %v", err)
 	}
-	if len(buildDirs) == 0 {
-		t.Fatalf("no data/builds/* found under %s - publishedRepoRoot looks wrong", publishedRepoRoot)
+	buildDir := filepath.Join(publishedRepoRoot, "data", "builds", active)
+	files, err := filepath.Glob(filepath.Join(buildDir, "bis", "*.json"))
+	if err != nil {
+		t.Fatalf("glob %s/bis/*.json: %v", buildDir, err)
 	}
-
 	tested := 0
-	for _, buildDir := range buildDirs {
-		files, err := filepath.Glob(filepath.Join(buildDir, "bis", "*.json"))
-		if err != nil {
-			t.Fatalf("glob %s/bis/*.json: %v", buildDir, err)
-		}
-		for _, f := range files {
-			f := f
-			t.Run(filepath.Base(buildDir)+"/"+strings.TrimSuffix(filepath.Base(f), ".json"), func(t *testing.T) {
-				checkPublishedSpecFile(t, f)
-			})
-			tested++
-		}
+	for _, f := range files {
+		t.Run(active+"/"+strings.TrimSuffix(filepath.Base(f), ".json"), func(t *testing.T) {
+			checkPublishedSpecFile(t, f)
+		})
+		tested++
 	}
 	if tested == 0 {
-		t.Skip("no data/builds/*/bis/*.json published yet - nothing to check")
+		t.Skipf("no data/builds/%s/bis/*.json published yet - nothing to check", active)
 	}
 }
 

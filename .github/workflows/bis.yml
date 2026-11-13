@@ -39,8 +39,8 @@
 #               matrix (tools/bis-matrix.sh: one leg per class, every written spec);
 #   rank     -- the matrix, each leg `make bis` for its class's specs (-all -specs) from the
 #               sha prepare committed, its picks uploaded as an artifact on every exit;
-#   commit   -- downloads every leg's picks, runs the post-ranking steps (sanity, the
-#               dps-per-point re-measure) over the ranking's base, then lands the one picks
+#   commit   -- downloads every leg's picks, runs the sanity checks over the ranking's
+#               base, then lands the one picks
 #               commit on main as it is NOW (tools/bis-land.sh: fetch, copy the picks over,
 #               render the addon data there, push; retried on a rejected push), never a
 #               rebase of a commit made on the old base (run 43386119123 lost a night to
@@ -48,6 +48,14 @@
 #               a red leg fails it before any commit, the green legs' artifacts stay 14 days
 #               (no half-ranked night ever lands: the single job committed nothing after a
 #               timeout either);
+#   remeasure -- only on the first full ranking after a client move (the build's
+#               dps-per-point.carried-from): one leg per class re-measures its specs'
+#               dps-per-point on tonight's picks, after the picks have landed;
+#   remeasure-land -- merges the legs' figures over the carry and lands them (the marker
+#               deleted, the manifest and Data.lua in step) when every leg is green. A dead
+#               or red re-measure never costs a ranking: the picks are on main already
+#               (run 43445589374 lost its runner 57 minutes into the single-process
+#               re-measure inside the commit job and every class's picks with it);
 #   stalled  -- the red run for a ranking stalled on the engine for a second night.
 #
 # The wall clock is the slowest class plus the two ends: the priests (Holy 44 to 67
@@ -116,6 +124,10 @@ jobs:
       # commit, so all of them rank and commit over one tree.
       head: ${{ steps.inputs.outputs.head }}
       matrix: ${{ steps.matrix.outputs.matrix }}
+      # Every class in data/curated/specs.json (the re-measure covers every spec, written
+      # rotation or not), and whether the build's dps-per-point.json is still a carry.
+      classes: ${{ steps.matrix.outputs.classes }}
+      remeasure: ${{ steps.matrix.outputs.remeasure }}
     steps:
       # main's head as it is now, not the sha the event names: a workflow_run names the
       # default branch's head when the data run finished, a push names the pushed commit,
@@ -298,11 +310,21 @@ jobs:
       # never an empty expression.
       - name: the rank matrix
         id: matrix
-        env: { SPECS: '${{ github.event.inputs.specs }}' }
+        env:
+          SPECS: ${{ github.event.inputs.specs }}
+          BUILD: ${{ steps.identity.outputs.build }}
         run: |
           matrix=$(tools/bis-matrix.sh . "$SPECS")
           echo "$matrix" | jq .
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo "classes=$(jq -c '[.[].class_slug] | unique' data/curated/specs.json)" >> "$GITHUB_OUTPUT"
+          # A partial ranking (the specs input) never re-measures: the figures are measured
+          # on every spec's picks at once, and the marker goes only when all of them are.
+          if [ -f "data/builds/$BUILD/dps-per-point.carried-from" ] && [ "$SPECS" = "" ]; then
+            echo "remeasure=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "remeasure=false" >> "$GITHUB_OUTPUT"
+          fi
       # ci-minutes lane, 2026-10-15: the ranking is deterministic ("the same
       # input always gives the same picks", the 2.0.0 changelog), and it is
       # the single most expensive job in the repository (~70 runner-minutes a
@@ -427,11 +449,13 @@ jobs:
     # than leaving the run with a skipped commit and no word on why.
     if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.skip != 'true'
     runs-on: ubuntu-latest
-    # The dps-per-point re-measure's 90 minutes, the embeds and the addon data.
-    timeout-minutes: 150
+    # The embeds, the sanity checks and the addon data render.
+    timeout-minutes: 60
     permissions:
       contents: write
       actions: write
+    outputs:
+      landed: ${{ steps.land.outputs.landed }}
     env:
       BUILD: ${{ needs.prepare.outputs.build }}
     steps:
@@ -453,13 +477,12 @@ jobs:
       - uses: actions/setup-go@v5
         with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
       - uses: ./.github/actions/pin-engine
-      # The sanity tests and the dps-per-point re-measure below compile the sim: the
-      # embeds, as in every leg.
+      # The sanity tests below compile the sim: the embeds, as in every leg.
       - run: make simdb
       - uses: astral-sh/setup-uv@v3
       # Every leg's files, merged into one directory: the artifacts hold <spec>.json and
-      # <spec>.md at their top level. They go over the checkout's bis/ for the checks and
-      # the re-measure below, and the landing step copies them again onto main's head.
+      # <spec>.md at their top level. They go over the checkout's bis/ for the checks
+      # below, and the landing step copies them again onto main's head.
       - name: tonight's picks from every leg
         uses: actions/download-artifact@v4
         with:
@@ -491,22 +514,8 @@ jobs:
         continue-on-error: true
         working-directory: sim
         run: FOREVER_BIS_SANITY=1 go test ./cmd/leveling-bis -run 'TestPublishedBISFilesPassSanityChecks|TestKnownGoodItemsAreSeenAndRanked|TestNoBannedItemIsAPublishedBand60Pick|TestTheBand60PicksComeOnlyFromContentOpenAtLaunch' -count=1
-      # tools/activate-build.sh carries the previous build's dps-per-point.json unchanged
-      # (the addon's "+N DPS" and the API's loot values read it) and writes
-      # dps-per-point.carried-from beside it. Only then, on a move, does the first ranking
-      # on an engine stamped for the build re-measure it on the new picks; a build with no
-      # carried-from (every build before this rule, and any build already re-measured) is
-      # never re-measured here. Failure-isolated: a red or slow measure keeps the carry and
-      # the night's picks still land (the commit step stages the file only on success).
-      - name: re-measure dps-per-point where it is still a carry
-        id: dpp
-        continue-on-error: true
-        timeout-minutes: 90
-        # The script deletes the marker and keeps the build's manifest in step with it.
-        run: tools/remeasure-dps-per-point.sh "$BUILD"
       # The picks land on main as it is when the ranking ends, not on the ranking's base:
-      # tools/bis-land.sh fetches main, copies the picks (and the re-measured figures) over
-      # it, renders the addon data there (Data.lua's bis/bis_new tables and addon-data.json
+      # tools/bis-land.sh fetches main, copies the picks over it, renders the addon data there (Data.lua's bis/bis_new tables and addon-data.json
       # derive from the picks AND main's curated inputs, and data.yml's drift check compares
       # the committed Data.lua with what the pipeline renders, so the commit carries them),
       # commits and pushes, starting over from a fresh fetch when the push is rejected.
@@ -516,7 +525,6 @@ jobs:
       - name: land the picks on ${{ github.ref_name }} as it is now
         id: land
         env:
-          MEASURED: ${{ steps.dpp.outputs.measured }}
           SPECS: ${{ github.event.inputs.specs }}
           BRANCH: ${{ github.ref_name }}
           PIN: ${{ needs.prepare.outputs.sha }}
@@ -529,15 +537,7 @@ jobs:
           # matches, so the next full run still ranks everything.
           trailer="Inputs: ${{ needs.prepare.outputs.hash }}"
           if [ "$SPECS" != "" ]; then trailer="$trailer (partial: $SPECS)"; fi
-          # The re-measured figures only when the measure succeeded; a failed one may have
-          # left a partial file, and main's carry stands instead.
-          if [ "$MEASURED" = true ]; then
-            figures="$RUNNER_TEMP/dps-per-point.json"
-            cp "data/builds/$BUILD/dps-per-point.json" "$figures"
-          else
-            figures=""
-          fi
-          FIGURES="$figures" tools/bis-land.sh "$BUILD" "$PIN" "$RUNNER_TEMP/picks" "$trailer"
+          tools/bis-land.sh "$BUILD" "$PIN" "$RUNNER_TEMP/picks" "$trailer"
       # A push made with GITHUB_TOKEN never triggers another workflow, so
       # the site would keep serving last night's picks until someone else
       # pushed. Dispatch the web deploy explicitly (actions: write above),
@@ -545,6 +545,111 @@ jobs:
       # sims/lootvalues.go and sims/gearscore.go serve the picks and the
       # dps-per-point figures from that copy (review M5).
       - name: deploy the site and the API with tonight's picks
+        if: success() && env.PUBLISH == 'true' && steps.land.outputs.landed == 'true'
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          gh workflow run web.yml --ref main
+          gh workflow run api.yml --ref main
+  # tools/activate-build.sh carries the previous build's dps-per-point.json unchanged (the
+  # addon's "+N DPS" and the API's loot values read it) and writes
+  # dps-per-point.carried-from beside it. The first full ranking on the new build
+  # re-measures it on the new picks, here, after they have landed: one leg per class, each
+  # its own process on its own runner (the single-process run of every spec and band lost
+  # its runner after 57 minutes in run 43445589374). A build with no marker is never
+  # re-measured.
+  remeasure:
+    needs: [prepare, commit]
+    if: >-
+      always() && needs.commit.result == 'success' && needs.prepare.outputs.remeasure == 'true' &&
+      (needs.commit.outputs.landed == 'true' || github.ref != 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        class: ${{ fromJSON(needs.prepare.outputs.classes) }}
+    name: remeasure ${{ matrix.class }}
+    env:
+      BUILD: ${{ needs.prepare.outputs.build }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ needs.prepare.outputs.head }}' }
+      - uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+      - uses: ./.github/actions/pin-engine
+      - run: make simdb
+      - name: tonight's picks from every leg
+        uses: actions/download-artifact@v4
+        with:
+          pattern: bis-picks-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/picks
+      - name: re-measure the ${{ matrix.class }} specs on tonight's picks
+        timeout-minutes: 100
+        env: { CLASS: '${{ matrix.class }}' }
+        run: |
+          cp "$RUNNER_TEMP"/picks/* "data/builds/$BUILD/bis/"
+          specs=$(jq -r --arg c "$CLASS" '[.[] | select(.class_slug == $c) | .spec] | join(",")' data/curated/specs.json)
+          go run ./sim/cmd/dps-per-point -repo-root . -specs "$specs"
+          # Only this class's entries go up; the land job merges them over the carry.
+          mkdir -p "$RUNNER_TEMP/dpp"
+          jq --arg c "$CLASS" 'with_entries(select(.key | startswith($c + "-")))' \
+            "data/builds/$BUILD/dps-per-point.json" > "$RUNNER_TEMP/dpp/$CLASS.json"
+          jq -c 'keys' "$RUNNER_TEMP/dpp/$CLASS.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dpp-${{ matrix.class }}
+          path: ${{ runner.temp }}/dpp
+          retention-days: 14
+          if-no-files-found: error
+  # Every class re-measured green: the figures merged over main's carry and landed through
+  # tools/bis-land.sh (the same picks again, so only the figures, the marker, the manifest
+  # and the derived addon data change). One red leg keeps the whole carry and the marker,
+  # so the next full ranking measures again.
+  remeasure-land:
+    needs: [prepare, remeasure]
+    if: always() && needs.remeasure.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: write
+    env:
+      BUILD: ${{ needs.prepare.outputs.build }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ github.ref_name }}' }
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bis-picks-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/picks
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dpp-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/dpp
+      # The carry with every class's entries replaced, in dps-per-point's own layout (one
+      # spec per line, sorted).
+      - name: merge the classes' figures over the carry
+        run: |
+          jq -r -s 'reduce .[1:][] as $class (.[0]; . + $class)
+                    | to_entries | sort_by(.key)
+                    | "{\n" + (map("  \(.key | tojson): \(.value | tojson)") | join(",\n")) + "\n}"' \
+            "data/builds/$BUILD/dps-per-point.json" "$RUNNER_TEMP"/dpp/*.json > "$RUNNER_TEMP/dps-per-point.json"
+          diff "data/builds/$BUILD/dps-per-point.json" "$RUNNER_TEMP/dps-per-point.json" | head -40 || true
+      - name: land the re-measured figures on ${{ github.ref_name }}
+        id: land
+        env:
+          BRANCH: ${{ github.ref_name }}
+          PIN: ${{ needs.prepare.outputs.sha }}
+          LAND_SUBJECT: 'chore(bis): re-measured dps-per-point for ${{ needs.prepare.outputs.build }}'
+        run: |
+          git config user.name "forever-bis-bot"
+          git config user.email "bot@foreversixty.gg"
+          FIGURES="$RUNNER_TEMP/dps-per-point.json" tools/bis-land.sh "$BUILD" "$PIN" "$RUNNER_TEMP/picks" "Re-measured in run $GITHUB_RUN_ID"
+      - name: deploy the site and the API with the figures
         if: success() && env.PUBLISH == 'true' && steps.land.outputs.landed == 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
