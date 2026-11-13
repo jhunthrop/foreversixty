@@ -1,0 +1,981 @@
+remote-test: a55f20593eaf884943b6925579a109def6177ab3 -> forever-ci on 192.168.1.182 (run 20261113025159-a55f20593-25725, in sim): bash ../design/reviews/2026-11-13-sim-accuracy/hunters-60/base.sh 10000
+remote-test: engine pinned to 5515ae0ef
+######## hunter-beast-mastery raid 60 horde
+2026/11/13 02:55:12 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:13 All 16 sims finished successfully.
+hunter-beast-mastery  DPS 976.28 +/- 0.29
+out of mana: 0.0 s of 180 s
+consumes: [major_mana_potion flask_of_natural_aggression elixir_of_the_mongoose ground_scorpok_assay food_poached_sunscale_salmon juju_might]
+buffs: [heart_of_the_lion arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 380.0 | 38.9 | 140.10 | 137.89 | 496 | 26.0 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 200.0 | 20.5 | 194.87 | 179.18 | 201 | 36.5 | 1.5 | 6.5 | 40.0 | 45.3 |
+| Aimed Shot (20904) | 150.7 | 15.4 | 24.51 | 24.10 | 1126 | 25.9 | 1.7 | 0.0 | 0.0 | 0.0 |
+| Arcane Shot (14287) | 114.5 | 11.7 | 24.46 | 24.08 | 856 | 26.1 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (13555) | 99.5 | 10.2 | 12.58 | 53.50 | 335 | 26.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17261) | 17.0 | 1.7 | 16.26 | 14.93 | 205 | 33.3 | 1.6 | 6.5 | 0.0 | 0.0 |
+| Cat: Claw (3009) | 14.5 | 1.5 | 23.11 | 21.28 | 122 | 34.1 | 1.5 | 6.4 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.02 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 99.87 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14322) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 1.00 | 0.90 | 0 | 0.0 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Bestial Wrath (19574) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Aspect of the Hawk (14322) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Deadly Aspects (19552) | 57.8 | 13.76 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| item 13965 | 11.1 | 1.00 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 4025.4 | 3934.1 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1616.6 | 1248.5 |
+| Bestial Wrath (19574) | ResourceTypeMana | -412.8 | -412.8 |
+| item 13444 | ResourceTypeMana | 1825.9 | 1825.9 |
+| Aspect of the Hawk (14322) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -60.0 | -60.0 |
+| Serpent Sting (13555) | ResourceTypeMana | -2633.3 | -2633.3 |
+| Arcane Shot (14287) | ResourceTypeMana | -4212.2 | -4212.2 |
+| Aimed Shot (20904) | ResourceTypeMana | -6913.4 | -6913.4 |
+| Rapid Fire (3045) | ResourceTypeMana | -99.8 | -99.8 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 5832.5 | 5825.3 |
+######## hunter-beast-mastery bare 60 horde
+2026/11/13 02:55:13 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:14 All 16 sims finished successfully.
+hunter-beast-mastery  DPS 483.33 +/- 0.15
+out of mana: 5.2 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 190.3 | 39.4 | 140.13 | 138.25 | 248 | 13.9 | 1.3 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 110.0 | 22.8 | 192.01 | 176.97 | 112 | 24.1 | 1.3 | 6.5 | 40.0 | 27.9 |
+| Arcane Shot (14287) | 81.4 | 16.8 | 23.44 | 23.13 | 633 | 13.9 | 1.3 | 0.0 | 0.0 | 0.0 |
+| Aimed Shot (19434) | 50.3 | 10.4 | 24.33 | 23.99 | 377 | 13.7 | 1.4 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (1978) | 32.3 | 6.7 | 12.59 | 53.25 | 109 | 14.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17261) | 10.2 | 2.1 | 16.26 | 14.98 | 122 | 22.0 | 1.4 | 6.5 | 0.0 | 0.0 |
+| Cat: Claw (3009) | 8.5 | 1.7 | 23.11 | 21.30 | 71 | 22.2 | 1.3 | 6.5 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 2.21 | 2.00 | 0 | 0.0 | 9.6 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14322) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bestial Wrath (19574) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Aspect of the Hawk (14322) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Deadly Aspects (19552) | 57.9 | 13.77 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| item 11832 | 5.6 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1615.4 | 1614.9 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 781.3 | 664.3 |
+| Bestial Wrath (19574) | ResourceTypeMana | -262.8 | -262.8 |
+| Aspect of the Hawk (14322) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -126.4 | -126.4 |
+| Serpent Sting (1978) | ResourceTypeMana | -147.8 | -147.8 |
+| Arcane Shot (14287) | ResourceTypeMana | -3515.4 | -3515.4 |
+| Aimed Shot (19434) | ResourceTypeMana | -1487.3 | -1487.3 |
+| Rapid Fire (3045) | ResourceTypeMana | -90.9 | -90.9 |
+######## hunter-beast-mastery bare 50 horde
+2026/11/13 02:55:14 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:15 All 16 sims finished successfully.
+hunter-beast-mastery  DPS 316.72 +/- 0.11
+out of mana: 10.7 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 117.6 | 37.1 | 88.04 | 86.39 | 245 | 9.2 | 1.9 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 84.1 | 26.5 | 189.20 | 171.54 | 88 | 19.3 | 2.9 | 6.5 | 40.0 | 22.8 |
+| Arcane Shot (14285) | 44.5 | 14.0 | 22.17 | 21.77 | 368 | 9.1 | 1.8 | 0.0 | 0.0 | 0.0 |
+| Aimed Shot (19434) | 36.1 | 11.4 | 23.83 | 23.37 | 278 | 9.1 | 1.9 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (1978) | 19.2 | 6.1 | 12.62 | 53.03 | 65 | 9.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17260) | 8.1 | 2.5 | 16.26 | 14.72 | 99 | 17.5 | 3.0 | 6.5 | 0.0 | 0.0 |
+| Cat: Claw (3010) | 6.8 | 2.1 | 23.11 | 20.93 | 58 | 17.6 | 2.9 | 6.6 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bestial Wrath (19574) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14321) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14324) | 0.0 | 0.0 | 2.25 | 2.00 | 0 | 0.0 | 11.2 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Aspect of the Hawk (14321) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Deadly Aspects (19552) | 42.6 | 8.60 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1479.2 | 1473.6 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 794.7 | 658.4 |
+| Bestial Wrath (19574) | ResourceTypeMana | -340.8 | -340.8 |
+| Aspect of the Hawk (14321) | ResourceTypeMana | -90.0 | -90.0 |
+| Hunter's Mark (14324) | ResourceTypeMana | -101.3 | -101.3 |
+| Serpent Sting (1978) | ResourceTypeMana | -160.9 | -160.9 |
+| Arcane Shot (14285) | ResourceTypeMana | -2944.1 | -2944.1 |
+| Aimed Shot (19434) | ResourceTypeMana | -1519.1 | -1519.1 |
+| Rapid Fire (3045) | ResourceTypeMana | -99.8 | -99.8 |
+######## hunter-beast-mastery raid 60 alliance
+2026/11/13 02:55:15 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:16 All 16 sims finished successfully.
+hunter-beast-mastery  DPS 984.07 +/- 0.29
+out of mana: 0.0 s of 180 s
+consumes: [major_mana_potion flask_of_natural_aggression elixir_of_the_mongoose ground_scorpok_assay food_poached_sunscale_salmon juju_might]
+buffs: [heart_of_the_lion arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 386.5 | 39.3 | 140.10 | 137.90 | 504 | 28.3 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 195.7 | 19.9 | 195.04 | 179.35 | 196 | 38.8 | 1.5 | 6.5 | 40.0 | 43.3 |
+| Aimed Shot (20904) | 153.5 | 15.6 | 24.51 | 24.10 | 1147 | 28.2 | 1.7 | 0.0 | 0.0 | 0.0 |
+| Arcane Shot (14287) | 116.6 | 11.9 | 24.47 | 24.08 | 872 | 28.6 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (13555) | 101.3 | 10.3 | 12.58 | 53.50 | 341 | 28.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17261) | 16.6 | 1.7 | 16.26 | 14.92 | 200 | 35.3 | 1.7 | 6.6 | 0.0 | 0.0 |
+| Cat: Claw (3009) | 14.2 | 1.4 | 23.11 | 21.28 | 120 | 36.4 | 1.5 | 6.4 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bestial Wrath (19574) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14322) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 1.00 | 0.90 | 0 | 0.0 | 10.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 99.95 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.02 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Aspect of the Hawk (14322) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Deadly Aspects (19552) | 57.8 | 13.76 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Elune's Light (1259799) | 11.5 | 1.49 |
+| item 13965 | 11.1 | 1.00 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 3996.5 | 3906.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1601.5 | 1237.0 |
+| Bestial Wrath (19574) | ResourceTypeMana | -412.8 | -412.8 |
+| item 13444 | ResourceTypeMana | 1837.0 | 1837.0 |
+| Aspect of the Hawk (14322) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -60.0 | -60.0 |
+| Serpent Sting (13555) | ResourceTypeMana | -2633.4 | -2633.4 |
+| Arcane Shot (14287) | ResourceTypeMana | -4212.4 | -4212.4 |
+| Aimed Shot (20904) | ResourceTypeMana | -6914.0 | -6914.0 |
+| Rapid Fire (3045) | ResourceTypeMana | -99.9 | -99.9 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 5836.8 | 5829.4 |
+######## hunter-beast-mastery bare 60 alliance
+2026/11/13 02:55:16 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:17 All 16 sims finished successfully.
+hunter-beast-mastery  DPS 482.67 +/- 0.15
+out of mana: 9.2 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 191.7 | 39.7 | 139.88 | 135.69 | 254 | 18.2 | 3.0 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 109.2 | 22.6 | 193.48 | 175.15 | 112 | 28.9 | 3.0 | 6.5 | 40.0 | 26.8 |
+| Arcane Shot (14287) | 79.6 | 16.5 | 22.68 | 22.00 | 651 | 18.3 | 3.0 | 0.0 | 0.0 | 0.0 |
+| Aimed Shot (19434) | 50.7 | 10.5 | 24.27 | 23.53 | 388 | 18.1 | 3.0 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (1978) | 32.6 | 6.8 | 12.83 | 53.11 | 111 | 18.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17261) | 10.0 | 2.1 | 16.26 | 14.71 | 122 | 25.9 | 3.1 | 6.5 | 0.0 | 0.0 |
+| Cat: Claw (3009) | 8.3 | 1.7 | 23.11 | 20.94 | 72 | 26.7 | 3.0 | 6.4 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 2.25 | 2.00 | 0 | 0.0 | 11.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14322) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bestial Wrath (19574) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Aspect of the Hawk (14322) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Deadly Aspects (19552) | 57.2 | 13.56 |
+| Elune's Light (1259799) | 11.5 | 1.49 |
+| item 13965 | 11.1 | 1.00 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| item 11832 | 5.6 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1519.5 | 1519.4 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 731.1 | 633.5 |
+| Bestial Wrath (19574) | ResourceTypeMana | -262.8 | -262.8 |
+| Aspect of the Hawk (14322) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -127.5 | -127.5 |
+| Serpent Sting (1978) | ResourceTypeMana | -150.4 | -150.4 |
+| Arcane Shot (14287) | ResourceTypeMana | -3394.2 | -3394.2 |
+| Aimed Shot (19434) | ResourceTypeMana | -1483.5 | -1483.5 |
+| Rapid Fire (3045) | ResourceTypeMana | -91.3 | -91.3 |
+######## hunter-beast-mastery bare 50 alliance
+2026/11/13 02:55:17 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:18 All 16 sims finished successfully.
+hunter-beast-mastery  DPS 316.01 +/- 0.10
+out of mana: 7.7 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 117.1 | 37.1 | 87.98 | 85.67 | 246 | 10.4 | 2.6 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 81.6 | 25.8 | 189.99 | 170.92 | 86 | 20.8 | 3.6 | 6.5 | 40.0 | 21.8 |
+| Arcane Shot (14285) | 45.4 | 14.4 | 22.71 | 22.16 | 368 | 10.2 | 2.5 | 0.0 | 0.0 | 0.0 |
+| Aimed Shot (19434) | 36.1 | 11.4 | 23.89 | 23.25 | 279 | 10.4 | 2.7 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (1978) | 19.2 | 6.1 | 12.68 | 53.07 | 65 | 10.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17260) | 7.8 | 2.5 | 16.26 | 14.61 | 96 | 18.5 | 3.7 | 6.5 | 0.0 | 0.0 |
+| Cat: Claw (3010) | 6.6 | 2.1 | 23.11 | 20.79 | 57 | 18.8 | 3.5 | 6.6 | 0.0 | 0.0 |
+| Breath of Fire (12278) | 2.0 | 0.6 | 0.00 | 4.50 | 80 | 20.7 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bestial Wrath (19574) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12257) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14324) | 0.0 | 0.0 | 2.27 | 2.00 | 0 | 0.0 | 11.8 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14321) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Aspect of the Hawk (14321) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Deadly Aspects (19552) | 42.3 | 8.53 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Elune's Light (1259799) | 11.6 | 1.49 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1529.1 | 1522.6 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 815.9 | 671.6 |
+| Bestial Wrath (19574) | ResourceTypeMana | -340.8 | -340.8 |
+| Aspect of the Hawk (14321) | ResourceTypeMana | -90.0 | -90.0 |
+| Hunter's Mark (14324) | ResourceTypeMana | -102.0 | -102.0 |
+| Serpent Sting (1978) | ResourceTypeMana | -161.7 | -161.7 |
+| Arcane Shot (14285) | ResourceTypeMana | -3015.6 | -3015.6 |
+| Aimed Shot (19434) | ResourceTypeMana | -1522.8 | -1522.8 |
+| Rapid Fire (3045) | ResourceTypeMana | -99.8 | -99.8 |
+######## hunter-marksmanship raid 60 horde
+2026/11/13 02:55:18 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:18 All 16 sims finished successfully.
+hunter-marksmanship  DPS 1082.39 +/- 0.44
+out of mana: 1.1 s of 180 s
+consumes: [major_mana_potion flask_of_natural_aggression elixir_of_the_mongoose ground_scorpok_assay food_poached_sunscale_salmon juju_might]
+buffs: [heart_of_the_lion arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 515.0 | 47.6 | 141.69 | 139.55 | 664 | 26.1 | 1.5 | 0.0 | 0.0 | 0.0 |
+| Aimed Shot (20904) | 215.1 | 19.9 | 22.95 | 22.58 | 1715 | 25.7 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Arcane Shot (14287) | 131.4 | 12.1 | 21.21 | 20.88 | 1133 | 25.8 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (13555) | 117.3 | 10.8 | 11.77 | 49.99 | 423 | 26.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Sniper Shot (1310786) | 103.9 | 9.6 | 9.96 | 9.80 | 1907 | 25.9 | 1.6 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 103.38 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14322) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 1.00 | 0.90 | 0 | 0.0 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Berserking (20554) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Aspect of the Hawk (14322) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Deadly Aspects (19552) | 58.4 | 13.87 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Berserking (20554) | 11.5 | 1.49 |
+| item 13965 | 11.1 | 1.00 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2220.3 | 2209.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1290.0 | 974.9 |
+| item 13444 | ResourceTypeMana | 2693.8 | 2693.8 |
+| Aspect of the Hawk (14322) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -60.0 | -60.0 |
+| Serpent Sting (13555) | ResourceTypeMana | -2301.0 | -2301.0 |
+| Arcane Shot (14287) | ResourceTypeMana | -3411.7 | -3411.7 |
+| Aimed Shot (20904) | ResourceTypeMana | -6047.3 | -6047.3 |
+| Sniper Shot (1310786) | ResourceTypeMana | -3090.3 | -3090.3 |
+| Rapid Fire (3045) | ResourceTypeMana | -100.0 | -100.0 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 6011.0 | 6008.1 |
+######## hunter-marksmanship bare 60 horde
+2026/11/13 02:55:18 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:19 All 16 sims finished successfully.
+hunter-marksmanship  DPS 474.20 +/- 0.16
+out of mana: 5.2 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 211.9 | 44.7 | 141.84 | 138.26 | 276 | 14.8 | 2.5 | 0.0 | 0.0 | 0.0 |
+| Arcane Shot (14287) | 89.2 | 18.8 | 23.44 | 22.85 | 703 | 14.8 | 2.5 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 67.6 | 14.3 | 150.61 | 136.99 | 89 | 15.2 | 2.5 | 6.5 | 40.0 | 19.1 |
+| Aimed Shot (19434) | 58.1 | 12.3 | 24.38 | 23.73 | 441 | 14.8 | 2.7 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (1978) | 34.4 | 7.3 | 12.74 | 53.55 | 116 | 15.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17261) | 7.8 | 1.6 | 15.53 | 14.09 | 99 | 13.6 | 2.7 | 6.6 | 0.0 | 0.0 |
+| Cat: Claw (3009) | 4.9 | 1.0 | 17.12 | 15.61 | 56 | 13.9 | 2.3 | 6.5 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 2.24 | 2.00 | 0 | 0.0 | 10.6 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.11 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14322) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Berserking (20554) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Aspect of the Hawk (14322) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Rapid Recuperation (1223987) | 97.8 | 12.38 |
+| Deadly Aspects (19552) | 57.9 | 13.76 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Berserking (20554) | 11.5 | 1.49 |
+| Rapid Fire (3045) | 8.9 | 1.11 |
+| item 11832 | 5.6 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1404.3 | 1403.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 754.1 | 708.7 |
+| Aspect of the Hawk (14322) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -127.0 | -127.0 |
+| Serpent Sting (1978) | ResourceTypeMana | -149.6 | -149.6 |
+| Arcane Shot (14287) | ResourceTypeMana | -3515.7 | -3515.7 |
+| Aimed Shot (19434) | ResourceTypeMana | -1490.7 | -1490.7 |
+| Rapid Fire (3045) | ResourceTypeMana | -29.9 | -29.9 |
+######## hunter-marksmanship bare 50 horde
+2026/11/13 02:55:19 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:20 All 16 sims finished successfully.
+hunter-marksmanship  DPS 323.24 +/- 0.12
+out of mana: 11.7 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 141.9 | 43.9 | 89.15 | 87.50 | 292 | 9.0 | 1.9 | 0.0 | 0.0 | 0.0 |
+| Arcane Shot (14285) | 51.7 | 16.0 | 22.10 | 21.71 | 428 | 9.1 | 1.8 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 46.3 | 14.3 | 150.61 | 136.52 | 61 | 9.2 | 2.9 | 6.5 | 40.0 | 14.0 |
+| Aimed Shot (19434) | 44.7 | 13.8 | 23.88 | 23.42 | 344 | 8.9 | 1.9 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (13551) | 29.4 | 9.1 | 11.98 | 52.00 | 102 | 9.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17260) | 5.4 | 1.7 | 15.53 | 14.06 | 69 | 8.3 | 3.0 | 6.5 | 0.0 | 0.0 |
+| Cat: Claw (3010) | 3.4 | 1.1 | 17.12 | 15.57 | 40 | 8.4 | 2.6 | 6.4 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14321) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.01 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Berserking (20554) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14324) | 0.0 | 0.0 | 2.25 | 2.00 | 0 | 0.0 | 11.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Aspect of the Hawk (14321) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Trueshot Aura (20905) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Rapid Recuperation (1223987) | 94.3 | 11.75 |
+| Deadly Aspects (19552) | 43.0 | 8.73 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Berserking (20554) | 11.6 | 1.49 |
+| Rapid Fire (3045) | 8.4 | 1.01 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1412.4 | 1412.4 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 883.7 | 813.8 |
+| Aspect of the Hawk (14321) | ResourceTypeMana | -90.0 | -90.0 |
+| Hunter's Mark (14324) | ResourceTypeMana | -101.1 | -101.1 |
+| Serpent Sting (13551) | ResourceTypeMana | -814.7 | -814.7 |
+| Arcane Shot (14285) | ResourceTypeMana | -2934.1 | -2934.1 |
+| Aimed Shot (19434) | ResourceTypeMana | -1522.1 | -1522.1 |
+| Rapid Fire (3045) | ResourceTypeMana | -100.7 | -100.7 |
+######## hunter-marksmanship raid 60 alliance
+2026/11/13 02:55:20 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:21 All 16 sims finished successfully.
+hunter-marksmanship  DPS 1101.59 +/- 0.45
+out of mana: 1.0 s of 180 s
+consumes: [major_mana_potion flask_of_natural_aggression elixir_of_the_mongoose ground_scorpok_assay food_poached_sunscale_salmon juju_might]
+buffs: [heart_of_the_lion arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 520.0 | 47.2 | 140.05 | 137.85 | 679 | 28.1 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Aimed Shot (20904) | 221.1 | 20.1 | 22.98 | 22.60 | 1761 | 28.0 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Arcane Shot (14287) | 134.9 | 12.2 | 21.24 | 20.89 | 1163 | 28.1 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (13555) | 119.5 | 10.8 | 11.76 | 49.86 | 431 | 28.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Sniper Shot (1310786) | 106.6 | 9.7 | 9.95 | 9.79 | 1960 | 28.5 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14322) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 1.00 | 0.90 | 0 | 0.0 | 10.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.51 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 102.48 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Aspect of the Hawk (14322) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Deadly Aspects (19552) | 57.8 | 13.71 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Elune's Light (1259799) | 11.5 | 1.49 |
+| item 13965 | 11.1 | 1.00 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2232.1 | 2221.3 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1253.7 | 940.2 |
+| item 13444 | ResourceTypeMana | 2718.7 | 2718.7 |
+| Aspect of the Hawk (14322) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -60.0 | -60.0 |
+| Serpent Sting (13555) | ResourceTypeMana | -2299.5 | -2299.5 |
+| Arcane Shot (14287) | ResourceTypeMana | -3415.4 | -3415.4 |
+| Aimed Shot (20904) | ResourceTypeMana | -6054.4 | -6054.4 |
+| Sniper Shot (1310786) | ResourceTypeMana | -3087.2 | -3087.2 |
+| Rapid Fire (3045) | ResourceTypeMana | -99.7 | -99.7 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 5957.5 | 5953.1 |
+######## hunter-marksmanship bare 60 alliance
+2026/11/13 02:55:21 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:19 All 16 sims finished successfully.
+hunter-marksmanship  DPS 483.26 +/- 0.16
+out of mana: 5.2 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 214.6 | 44.4 | 140.36 | 140.36 | 275 | 16.7 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Shot (14287) | 91.7 | 19.0 | 23.44 | 23.44 | 704 | 16.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 70.3 | 14.5 | 150.61 | 140.82 | 90 | 16.7 | 0.0 | 6.5 | 40.0 | 19.0 |
+| Aimed Shot (19434) | 59.4 | 12.3 | 24.33 | 24.33 | 440 | 16.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (1978) | 33.8 | 7.0 | 12.45 | 53.28 | 114 | 16.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17261) | 8.1 | 1.7 | 15.53 | 14.52 | 101 | 15.5 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Cat: Claw (3009) | 5.1 | 1.1 | 17.12 | 16.00 | 58 | 16.6 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.02 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14322) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 2.17 | 2.00 | 0 | 0.0 | 7.9 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Aspect of the Hawk (14322) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Rapid Recuperation (1223987) | 98.1 | 12.40 |
+| Deadly Aspects (19552) | 58.4 | 13.96 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Elune's Light (1259799) | 11.5 | 1.49 |
+| Rapid Fire (3045) | 8.4 | 1.02 |
+| item 11832 | 5.6 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1406.9 | 1406.0 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 736.0 | 688.7 |
+| Aspect of the Hawk (14322) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -125.2 | -125.2 |
+| Serpent Sting (1978) | ResourceTypeMana | -146.0 | -146.0 |
+| Arcane Shot (14287) | ResourceTypeMana | -3514.6 | -3514.6 |
+| Aimed Shot (19434) | ResourceTypeMana | -1487.5 | -1487.5 |
+| Rapid Fire (3045) | ResourceTypeMana | -93.4 | -93.4 |
+######## hunter-marksmanship bare 50 alliance
+2026/11/13 02:55:19 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:20 All 16 sims finished successfully.
+hunter-marksmanship  DPS 326.79 +/- 0.11
+out of mana: 7.4 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 140.5 | 43.0 | 87.98 | 85.72 | 295 | 10.0 | 2.6 | 0.0 | 0.0 | 0.0 |
+| Arcane Shot (14285) | 53.5 | 16.4 | 22.79 | 22.23 | 433 | 10.0 | 2.5 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 46.6 | 14.2 | 150.61 | 135.45 | 62 | 10.4 | 3.6 | 6.5 | 40.0 | 14.0 |
+| Aimed Shot (19434) | 45.2 | 13.8 | 23.96 | 23.31 | 349 | 10.1 | 2.7 | 0.0 | 0.0 | 0.0 |
+| Serpent Sting (13551) | 30.0 | 9.2 | 12.23 | 52.30 | 103 | 10.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17260) | 5.4 | 1.6 | 15.53 | 13.96 | 69 | 9.2 | 3.7 | 6.4 | 0.0 | 0.0 |
+| Cat: Claw (3010) | 3.5 | 1.1 | 17.12 | 15.44 | 40 | 10.3 | 3.3 | 6.5 | 0.0 | 0.0 |
+| Breath of Fire (12278) | 2.0 | 0.6 | 0.00 | 4.50 | 80 | 20.8 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12257) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14321) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14324) | 0.0 | 0.0 | 2.27 | 2.00 | 0 | 0.0 | 11.8 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Aspect of the Hawk (14321) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Trueshot Aura (20905) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Rapid Recuperation (1223987) | 95.4 | 11.90 |
+| Deadly Aspects (19552) | 42.3 | 8.53 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Elune's Light (1259799) | 11.6 | 1.49 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1485.3 | 1485.3 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 921.1 | 845.0 |
+| Aspect of the Hawk (14321) | ResourceTypeMana | -90.0 | -90.0 |
+| Hunter's Mark (14324) | ResourceTypeMana | -102.1 | -102.1 |
+| Serpent Sting (13551) | ResourceTypeMana | -831.4 | -831.4 |
+| Arcane Shot (14285) | ResourceTypeMana | -3026.4 | -3026.4 |
+| Aimed Shot (19434) | ResourceTypeMana | -1527.2 | -1527.2 |
+| Rapid Fire (3045) | ResourceTypeMana | -100.4 | -100.4 |
+######## hunter-survival raid 60 horde
+2026/11/13 02:55:20 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:21 All 16 sims finished successfully.
+hunter-survival  DPS 990.05 +/- 0.53
+out of mana: 0.0 s of 180 s
+consumes: [major_frenzy_potion main_hand_imbue:elemental_sharpening_stone off_hand_imbue:dense_sharpening_stone juju_power flask_of_natural_aggression elixir_of_the_mongoose ground_scorpok_assay food_poached_sunscale_salmon juju_might]
+buffs: [heart_of_the_lion hunters_mark arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#2 | 207.4 | 21.0 | 132.20 | 103.29 | 362 | 30.7 | 15.4 | 6.5 | 40.0 | 56.9 |
+| OtherActionAttack#1 | 159.1 | 16.1 | 46.13 | 35.49 | 807 | 31.0 | 16.6 | 6.5 | 40.0 | 44.0 |
+| Raptor Strike (14266)#1 | 148.6 | 15.0 | 0.00 | 24.31 | 1100 | 34.5 | 0.0 | 6.6 | 0.0 | 0.0 |
+| OtherActionAttack#3 | 103.9 | 10.5 | 27.77 | 21.33 | 877 | 30.9 | 16.7 | 6.5 | 40.1 | 28.8 |
+| Mongoose Bite (14271) | 103.6 | 10.5 | 21.02 | 19.66 | 948 | 34.8 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Strider Kick (1317257) | 84.1 | 8.5 | 19.08 | 17.84 | 848 | 34.4 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Immolation Trap (14305) | 75.4 | 7.6 | 9.69 | 38.41 | 354 | 30.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lacerate (1299332) | 35.2 | 3.6 | 9.52 | 58.52 | 108 | 36.9 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Wing Clip (14268) | 27.3 | 2.8 | 61.28 | 57.29 | 86 | 34.4 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Lacerating Strikes (1310533) | 23.9 | 2.4 | 0.00 | 53.75 | 80 | 36.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 12.6 | 1.3 | 0.00 | 11.85 | 192 | 31.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Firebolt (1300753) | 9.7 | 1.0 | 0.00 | 8.31 | 210 | 28.6 | 6.3 | 0.0 | 0.0 | 0.0 |
+| Raptor Strike (14266) | 0.0 | 0.0 | 26.03 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250943 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Beast (1299447) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 1.00 | 0.93 | 0 | 0.0 | 7.2 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 171.06 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Thrash (21919) | 100.1 | 1.00 |
+| Aspect of the Beast (1299447) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Resourcefulness (440529) | 98.4 | 43.91 |
+| Quick Strikes (469144) | 62.6 | 16.02 |
+| Holy Strength (20007)#1 | 51.4 | 8.93 |
+| item 250943 | 33.2 | 2.00 |
+| Defensive State (5302) | 32.1 | 28.86 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Holy Strength (20007)#2 | 21.0 | 2.94 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Rapid Fire (3045) | 11.7 | 1.50 |
+| item 13965 | 11.1 | 1.00 |
+| Raptor Strike (14266) | 10.8 | 26.12 |
+| Windfury Totem (10610) | 9.3 | 31.58 |
+| Felstriker (16551) | 4.7 | 2.92 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 4722.1 | 1808.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 376.3 | 43.4 |
+| Aspect of the Beast (1299447) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -60.0 | -60.0 |
+| Raptor Strike (14266) | ResourceTypeMana | -1041.0 | -1041.0 |
+| Mongoose Bite (14271) | ResourceTypeMana | -546.6 | -546.6 |
+| Lacerate (1299332) | ResourceTypeMana | -904.4 | -904.4 |
+| Wing Clip (14268) | ResourceTypeMana | -1961.0 | -1961.0 |
+| Strider Kick (1317257) | ResourceTypeMana | -762.6 | -762.6 |
+| Immolation Trap (14305) | ResourceTypeMana | -949.7 | -949.7 |
+| Rapid Fire (3045) | ResourceTypeMana | -150.4 | -150.4 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 10092.5 | 4615.5 |
+######## hunter-survival bare 60 horde
+2026/11/13 02:55:21 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:22 All 16 sims finished successfully.
+hunter-survival  DPS 410.86 +/- 0.23
+out of mana: 0.5 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion hunters_mark]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#2 | 81.0 | 19.7 | 130.35 | 100.38 | 145 | 19.7 | 16.5 | 6.5 | 40.0 | 25.5 |
+| OtherActionAttack#1 | 72.2 | 17.6 | 51.49 | 38.58 | 337 | 20.0 | 18.5 | 6.5 | 39.9 | 23.1 |
+| Immolation Trap (14305) | 63.1 | 15.4 | 9.82 | 38.87 | 292 | 22.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Raptor Strike (14266)#1 | 63.1 | 15.4 | 0.00 | 23.30 | 487 | 24.1 | 0.7 | 6.5 | 0.0 | 0.0 |
+| Strider Kick (1317257) | 41.2 | 10.0 | 21.73 | 20.15 | 368 | 24.0 | 0.8 | 6.5 | 0.0 | 0.0 |
+| Mongoose Bite (14271) | 38.9 | 9.5 | 17.63 | 16.35 | 428 | 24.6 | 0.7 | 6.6 | 0.0 | 0.0 |
+| Lacerate (1299332) | 31.6 | 7.7 | 9.54 | 58.37 | 98 | 25.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lacerating Strikes (1310533) | 8.0 | 1.9 | 0.00 | 44.06 | 33 | 25.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 7.2 | 1.7 | 0.00 | 7.96 | 162 | 22.0 | 0.7 | 0.0 | 0.0 | 0.0 |
+| Firebolt (1300753) | 4.9 | 1.2 | 0.00 | 4.79 | 185 | 21.8 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Raptor Strike (14266) | 0.0 | 0.0 | 25.12 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Beast (1299447) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 1.00 | 0.91 | 0 | 0.0 | 9.1 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Aspect of the Beast (1299447) | 100.1 | 1.00 |
+| Resourcefulness (440529) | 90.3 | 15.61 |
+| Quick Strikes (469144) | 57.5 | 13.91 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Defensive State (5302) | 17.8 | 20.78 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Raptor Strike (14266) | 14.6 | 25.28 |
+| Rapid Fire (3045) | 11.6 | 1.50 |
+| item 13965 | 11.1 | 1.00 |
+| Felstriker (16551) | 4.6 | 2.85 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1289.7 | 1289.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 249.2 | 227.2 |
+| Aspect of the Beast (1299447) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -60.0 | -60.0 |
+| Raptor Strike (14266) | ResourceTypeMana | -1004.7 | -1004.7 |
+| Mongoose Bite (14271) | ResourceTypeMana | -458.4 | -458.4 |
+| Lacerate (1299332) | ResourceTypeMana | -906.5 | -906.5 |
+| Strider Kick (1317257) | ResourceTypeMana | -868.8 | -868.8 |
+| Immolation Trap (14305) | ResourceTypeMana | -962.3 | -962.3 |
+| Rapid Fire (3045) | ResourceTypeMana | -149.9 | -149.9 |
+######## hunter-survival bare 50 horde
+2026/11/13 02:55:22 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:23 All 16 sims finished successfully.
+hunter-survival  DPS 278.76 +/- 0.13
+out of mana: 1.8 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion hunters_mark]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Cat: OtherActionAttack#1 | 47.2 | 16.9 | 150.61 | 136.57 | 62 | 10.2 | 2.8 | 6.5 | 40.0 | 14.1 |
+| OtherActionAttack#2 | 44.0 | 15.8 | 102.57 | 75.61 | 105 | 10.2 | 19.8 | 6.5 | 39.9 | 16.3 |
+| OtherActionAttack#1 | 39.0 | 14.0 | 53.97 | 38.75 | 181 | 10.2 | 21.7 | 6.5 | 40.0 | 14.9 |
+| Immolation Trap (14304) | 36.8 | 13.2 | 9.73 | 38.77 | 171 | 11.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Raptor Strike (14263)#1 | 32.9 | 11.8 | 0.00 | 23.50 | 252 | 12.8 | 2.8 | 6.5 | 0.0 | 0.0 |
+| Strider Kick (1317257) | 22.8 | 8.2 | 21.70 | 19.67 | 209 | 12.8 | 2.8 | 6.5 | 0.0 | 0.0 |
+| Mongoose Bite (14270) | 18.9 | 6.8 | 15.76 | 14.30 | 237 | 12.9 | 2.8 | 6.4 | 0.0 | 0.0 |
+| Lacerate (24120) | 16.0 | 5.7 | 9.68 | 57.95 | 50 | 14.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17260) | 5.6 | 2.0 | 15.53 | 14.07 | 71 | 9.3 | 2.9 | 6.5 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 4.8 | 1.7 | 0.00 | 7.17 | 122 | 9.8 | 2.9 | 0.0 | 0.0 | 0.0 |
+| Lacerating Strikes (1310533) | 3.8 | 1.4 | 0.00 | 42.83 | 16 | 14.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Claw (3010) | 3.6 | 1.3 | 17.12 | 15.56 | 41 | 9.3 | 2.6 | 6.5 | 0.0 | 0.0 |
+| Rend (17504) | 3.4 | 1.2 | 0.00 | 21.33 | 29 | 7.9 | 0.6 | 1.4 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Beast (1299446) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Raptor Strike (14263) | 0.0 | 0.0 | 25.92 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14324) | 0.0 | 0.0 | 1.00 | 0.89 | 0 | 0.0 | 11.5 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Aspect of the Beast (1299446) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Resourcefulness (440529) | 71.8 | 8.14 |
+| Quick Strikes (469144) | 51.2 | 11.48 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Defensive State (5302) | 15.1 | 18.07 |
+| Raptor Strike (14263) | 12.2 | 26.06 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1117.3 | 1117.3 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 277.1 | 224.2 |
+| Aspect of the Beast (1299446) | ResourceTypeMana | -90.0 | -90.0 |
+| Hunter's Mark (14324) | ResourceTypeMana | -45.0 | -45.0 |
+| Raptor Strike (14263) | ResourceTypeMana | -570.2 | -570.2 |
+| Mongoose Bite (14270) | ResourceTypeMana | -315.2 | -315.2 |
+| Lacerate (24120) | ResourceTypeMana | -774.4 | -774.4 |
+| Strider Kick (1317257) | ResourceTypeMana | -716.0 | -716.0 |
+| Immolation Trap (14304) | ResourceTypeMana | -739.6 | -739.6 |
+| Rapid Fire (3045) | ResourceTypeMana | -100.0 | -100.0 |
+######## hunter-survival raid 60 alliance
+2026/11/13 02:55:23 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:23 All 16 sims finished successfully.
+hunter-survival  DPS 997.13 +/- 0.53
+out of mana: 0.0 s of 180 s
+consumes: [major_frenzy_potion main_hand_imbue:elemental_sharpening_stone off_hand_imbue:dense_sharpening_stone juju_power flask_of_natural_aggression elixir_of_the_mongoose ground_scorpok_assay food_poached_sunscale_salmon juju_might]
+buffs: [heart_of_the_lion hunters_mark arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#2 | 209.2 | 21.0 | 132.37 | 104.43 | 361 | 32.0 | 14.6 | 6.5 | 40.0 | 56.1 |
+| OtherActionAttack#1 | 160.3 | 16.1 | 46.19 | 35.90 | 804 | 32.2 | 15.8 | 6.5 | 40.0 | 43.4 |
+| Raptor Strike (14266)#1 | 149.2 | 15.0 | 0.00 | 24.33 | 1104 | 36.3 | 0.0 | 6.6 | 0.0 | 0.0 |
+| OtherActionAttack#3 | 105.3 | 10.6 | 27.89 | 21.69 | 874 | 32.2 | 15.8 | 6.5 | 40.0 | 28.5 |
+| Mongoose Bite (14271) | 104.0 | 10.4 | 21.04 | 19.68 | 951 | 36.3 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Strider Kick (1317257) | 84.3 | 8.5 | 19.07 | 17.81 | 852 | 36.2 | 0.0 | 6.6 | 0.0 | 0.0 |
+| Immolation Trap (14305) | 75.6 | 7.6 | 9.69 | 38.36 | 355 | 31.7 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lacerate (1299332) | 35.7 | 3.6 | 9.53 | 58.51 | 110 | 38.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Wing Clip (14268) | 27.7 | 2.8 | 61.26 | 57.26 | 87 | 35.9 | 0.0 | 6.5 | 0.0 | 0.0 |
+| Lacerating Strikes (1310533) | 24.3 | 2.4 | 0.00 | 53.75 | 81 | 38.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 12.9 | 1.3 | 0.00 | 11.90 | 194 | 33.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Firebolt (1300753) | 9.9 | 1.0 | 0.00 | 8.41 | 212 | 30.6 | 5.3 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 171.12 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Beast (1299447) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 1.00 | 0.94 | 0 | 0.0 | 6.3 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250943 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Raptor Strike (14266) | 0.0 | 0.0 | 26.04 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Thrash (21919) | 100.1 | 1.00 |
+| Aspect of the Beast (1299447) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Resourcefulness (440529) | 98.9 | 45.97 |
+| Quick Strikes (469144) | 63.1 | 16.23 |
+| Holy Strength (20007)#1 | 51.3 | 8.95 |
+| item 250943 | 33.2 | 2.00 |
+| Defensive State (5302) | 32.2 | 29.00 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Holy Strength (20007)#2 | 21.3 | 2.99 |
+| Rapid Fire (3045) | 11.7 | 1.50 |
+| Elune's Light (1259799) | 11.7 | 1.50 |
+| item 13965 | 11.1 | 1.00 |
+| Raptor Strike (14266) | 10.8 | 26.14 |
+| Windfury Totem (10610) | 9.3 | 31.69 |
+| Felstriker (16551) | 4.8 | 2.94 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 4700.0 | 1809.9 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 372.6 | 43.4 |
+| Aspect of the Beast (1299447) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -60.0 | -60.0 |
+| Raptor Strike (14266) | ResourceTypeMana | -1041.6 | -1041.6 |
+| Mongoose Bite (14271) | ResourceTypeMana | -547.1 | -547.1 |
+| Lacerate (1299332) | ResourceTypeMana | -905.5 | -905.5 |
+| Wing Clip (14268) | ResourceTypeMana | -1960.2 | -1960.2 |
+| Strider Kick (1317257) | ResourceTypeMana | -762.3 | -762.3 |
+| Immolation Trap (14305) | ResourceTypeMana | -949.6 | -949.6 |
+| Rapid Fire (3045) | ResourceTypeMana | -150.4 | -150.4 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 10096.3 | 4615.4 |
+######## hunter-survival bare 60 alliance
+2026/11/13 02:55:23 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:24 All 16 sims finished successfully.
+hunter-survival  DPS 418.13 +/- 0.24
+out of mana: 0.3 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion hunters_mark]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#2 | 82.8 | 19.8 | 130.35 | 100.38 | 148 | 22.3 | 16.5 | 6.5 | 40.0 | 25.2 |
+| OtherActionAttack#1 | 73.9 | 17.7 | 51.47 | 38.55 | 345 | 22.7 | 18.6 | 6.5 | 39.9 | 22.9 |
+| Raptor Strike (14266)#1 | 64.2 | 15.4 | 0.00 | 23.32 | 495 | 26.5 | 0.7 | 6.5 | 0.0 | 0.0 |
+| Immolation Trap (14305) | 63.7 | 15.2 | 9.84 | 38.91 | 295 | 24.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Strider Kick (1317257) | 41.8 | 10.0 | 21.74 | 20.16 | 374 | 26.2 | 0.8 | 6.5 | 0.0 | 0.0 |
+| Mongoose Bite (14271) | 39.5 | 9.4 | 17.64 | 16.36 | 434 | 26.8 | 0.7 | 6.6 | 0.0 | 0.0 |
+| Lacerate (1299332) | 32.3 | 7.7 | 9.56 | 58.40 | 100 | 27.9 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lacerating Strikes (1310533) | 8.2 | 2.0 | 0.00 | 44.06 | 34 | 27.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 7.3 | 1.8 | 0.00 | 7.96 | 166 | 24.6 | 0.7 | 0.0 | 0.0 | 0.0 |
+| Firebolt (1300753) | 5.0 | 1.2 | 0.00 | 4.79 | 187 | 24.1 | 8.1 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Raptor Strike (14266) | 0.0 | 0.0 | 25.15 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Beast (1299447) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14325) | 0.0 | 0.0 | 1.00 | 0.91 | 0 | 0.0 | 9.1 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Aspect of the Beast (1299447) | 100.1 | 1.00 |
+| Resourcefulness (440529) | 92.6 | 17.11 |
+| Quick Strikes (469144) | 57.5 | 13.91 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Defensive State (5302) | 17.8 | 20.79 |
+| Raptor Strike (14266) | 14.6 | 25.30 |
+| Elune's Light (1259799) | 11.6 | 1.50 |
+| Rapid Fire (3045) | 11.6 | 1.50 |
+| item 13965 | 11.1 | 1.00 |
+| Felstriker (16551) | 4.6 | 2.85 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1293.3 | 1293.3 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 243.4 | 223.2 |
+| Aspect of the Beast (1299447) | ResourceTypeMana | -110.0 | -110.0 |
+| Hunter's Mark (14325) | ResourceTypeMana | -60.0 | -60.0 |
+| Raptor Strike (14266) | ResourceTypeMana | -1005.8 | -1005.8 |
+| Mongoose Bite (14271) | ResourceTypeMana | -458.5 | -458.5 |
+| Lacerate (1299332) | ResourceTypeMana | -908.0 | -908.0 |
+| Strider Kick (1317257) | ResourceTypeMana | -869.1 | -869.1 |
+| Immolation Trap (14305) | ResourceTypeMana | -964.1 | -964.1 |
+| Rapid Fire (3045) | ResourceTypeMana | -150.0 | -150.0 |
+######## hunter-survival bare 50 alliance
+2026/11/13 02:55:24 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 02:55:25 All 16 sims finished successfully.
+hunter-survival  DPS 279.22 +/- 0.13
+out of mana: 4.8 s of 180 s
+consumes: []
+buffs: [heart_of_the_lion hunters_mark]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Cat: OtherActionAttack#1 | 45.7 | 16.4 | 150.61 | 136.88 | 60 | 11.6 | 2.7 | 6.5 | 40.0 | 13.4 |
+| OtherActionAttack#2 | 44.4 | 15.9 | 102.64 | 76.00 | 105 | 11.8 | 19.5 | 6.5 | 39.9 | 16.0 |
+| OtherActionAttack#1 | 39.7 | 14.2 | 54.40 | 39.25 | 182 | 12.0 | 21.4 | 6.5 | 40.0 | 14.7 |
+| Immolation Trap (14304) | 36.2 | 13.0 | 9.51 | 38.10 | 171 | 12.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Raptor Strike (14265)#1 | 34.5 | 12.3 | 0.00 | 23.23 | 267 | 14.2 | 2.6 | 6.5 | 0.0 | 0.0 |
+| Strider Kick (1317257) | 22.7 | 8.1 | 21.60 | 19.63 | 208 | 14.1 | 2.6 | 6.5 | 0.0 | 0.0 |
+| Mongoose Bite (14270) | 18.9 | 6.8 | 15.72 | 14.29 | 238 | 14.4 | 2.6 | 6.5 | 0.0 | 0.0 |
+| Lacerate (24120) | 16.0 | 5.7 | 9.46 | 57.19 | 50 | 15.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17260) | 5.4 | 1.9 | 15.53 | 14.10 | 69 | 10.3 | 2.7 | 6.5 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 4.9 | 1.8 | 0.00 | 7.20 | 124 | 11.4 | 2.7 | 0.0 | 0.0 | 0.0 |
+| Lacerating Strikes (1310533) | 3.9 | 1.4 | 0.00 | 42.83 | 16 | 15.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cat: Claw (3010) | 3.5 | 1.2 | 17.12 | 15.61 | 40 | 11.6 | 2.4 | 6.4 | 0.0 | 0.0 |
+| Rend (17504) | 3.4 | 1.2 | 0.00 | 21.30 | 29 | 8.8 | 0.5 | 1.4 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hunter's Mark (14324) | 0.0 | 0.0 | 1.00 | 0.89 | 0 | 0.0 | 11.3 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devilsaur Glare (24352) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Raptor Strike (14265) | 0.0 | 0.0 | 25.55 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Beast (1299446) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Aspect of the Beast (1299446) | 100.1 | 1.00 |
+| Resourcefulness (440529) | 75.7 | 8.95 |
+| Quick Strikes (469144) | 51.5 | 11.59 |
+| Devilsaur Glare (24352) | 22.2 | 2.00 |
+| Defensive State (5302) | 15.2 | 18.06 |
+| Raptor Strike (14265) | 12.9 | 25.74 |
+| Elune's Light (1259799) | 11.6 | 1.50 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 1153.3 | 1153.3 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 275.8 | 225.8 |
+| Aspect of the Beast (1299446) | ResourceTypeMana | -90.0 | -90.0 |
+| Hunter's Mark (14324) | ResourceTypeMana | -45.0 | -45.0 |
+| Raptor Strike (14265) | ResourceTypeMana | -868.5 | -868.5 |
+| Mongoose Bite (14270) | ResourceTypeMana | -314.4 | -314.4 |
+| Lacerate (24120) | ResourceTypeMana | -757.0 | -757.0 |
+| Strider Kick (1317257) | ResourceTypeMana | -712.8 | -712.8 |
+| Immolation Trap (14304) | ResourceTypeMana | -722.5 | -722.5 |
+| Rapid Fire (3045) | ResourceTypeMana | -100.0 | -100.0 |
+remote-test: exit 0 in 14s (a55f20593eaf884943b6925579a109def6177ab3)

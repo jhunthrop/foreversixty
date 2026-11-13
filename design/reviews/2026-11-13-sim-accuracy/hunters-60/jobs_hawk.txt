@@ -1,0 +1,12 @@
+# Summon Hawk, Beast Mastery: the guide builds as -talents, then ET 4->3 + hawk
+hawk-raid-horde-guide -spec hunter-beast-mastery -preset raid -band 60 -faction horde -talents 5420001505001251-0052350001400000-000000000000000000
+hawk-raid-horde-a -spec hunter-beast-mastery -preset raid -band 60 -faction horde -talents 5320001505101251-0052350001400000-000000000000000000 -rotation @R/bm-hawk-a.json
+hawk-raid-horde-b -spec hunter-beast-mastery -preset raid -band 60 -faction horde -talents 5320001505101251-0052350001400000-000000000000000000 -rotation @R/bm-hawk-b.json
+hawk-bare-horde-guide -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5420001505001251-0050550001000000-400000000000000000
+hawk-bare-horde-a -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5320001505101251-0050550001000000-400000000000000000 -rotation @R/bm-hawk-a.json
+hawk-bare-horde-b -spec hunter-beast-mastery -preset bare -band 60 -faction horde -talents 5320001505101251-0050550001000000-400000000000000000 -rotation @R/bm-hawk-b.json
+hawk-raid-alliance-guide -spec hunter-beast-mastery -preset raid -band 60 -faction alliance -talents 5420001505001251-0052350001400000-000000000000000000
+hawk-raid-alliance-a -spec hunter-beast-mastery -preset raid -band 60 -faction alliance -talents 5320001505101251-0052350001400000-000000000000000000 -rotation @R/bm-hawk-a.json
+hawk-raid-alliance-b -spec hunter-beast-mastery -preset raid -band 60 -faction alliance -talents 5320001505101251-0052350001400000-000000000000000000 -rotation @R/bm-hawk-b.json
+hawk-bare-alliance-guide -spec hunter-beast-mastery -preset bare -band 60 -faction alliance -talents 5420001505001251-0050550001000000-400000000000000000
+hawk-bare-alliance-a -spec hunter-beast-mastery -preset bare -band 60 -faction alliance -talents 5320001505101251-0050550001000000-400000000000000000 -rotation @R/bm-hawk-a.json
