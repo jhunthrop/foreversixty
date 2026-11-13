@@ -1,0 +1,19 @@
+SpellEffect 2912 Starfire row 680527 changed {'EffectRealPointsPerLevel': ('1.7999999523163', '1.79999995232'), 'Variance': ('0.20202019810677', '0.20202019811')}
+SpellEffect 8949 Starfire row 685525 changed {'EffectRealPointsPerLevel': ('2.0999999046326', '2.09999990463'), 'Variance': ('0.19736842811108', '0.19736842811')}
+SpellEffect 8950 Starfire row 687888 changed {'EffectRealPointsPerLevel': ('2.2000000476837', '2.20000004768'), 'Variance': ('0.18099547922611', '0.18099547923')}
+SpellEffect 8951 Starfire row 685632 changed {'Variance': ('0.17589576542377', '0.17589576542')}
+SpellEffect 9752 Rip row 684145 changed {'EffectPointsPerResource': ('15.800000190735', '15.80000019073')}
+SpellEffect 9875 Starfire row 687806 changed {'Variance': ('0.16708861291409', '0.16708861291')}
+SpellEffect 9876 Starfire row 688325 changed {'EffectRealPointsPerLevel': ('3.2000000476837', '3.20000004768'), 'Variance': ('0.16494844853878', '0.16494844854')}
+SpellEffect 22568 Ferocious Bite row 700435 changed {'Variance': ('0.72727274894714', '0.72727274895')}
+SpellEffect 22828 Ferocious Bite row 699876 changed {'Variance': ('0.80000001192093', '0.80000001192')}
+SpellEffect 22829 Ferocious Bite row 699984 changed {'Variance': ('0.71428573131561', '0.71428573132')}
+SpellEffect 25298 Starfire row 702704 changed {'EffectRealPointsPerLevel': ('3.4000000953674', '3.40000009537'), 'Variance': ('0.16296295821667', '0.16296295822')}
+SpellEffect 31018 Ferocious Bite row 705079 changed {'Variance': ('0.73170733451843', '0.73170733452')}
+SpellEffect 408120 Wild Growth row 1072065 changed {'EffectBonusCoefficient': ('0.03299999982', '0.06599999964')}
+SpellEffect 1238214 Wild Growth row 1235327 changed {'EffectBonusCoefficient': ('0.03299999982', '0.06599999964')}
+SpellEffect 1238215 Wild Growth row 1235329 changed {'EffectBonusCoefficient': ('0.03299999982', '0.06599999964')}
+SpellEffect 1328618 Ferocious Bite row 1367722 changed {'Variance': ('0.71428573131561', '0.71428573132')}
+SpellInterrupts 408120 Wild Growth row 195631 changed {'InterruptFlags': ('8', '15')}
+SpellInterrupts 1238214 Wild Growth row 224519 changed {'InterruptFlags': ('8', '15')}
+SpellInterrupts 1238215 Wild Growth row 224520 changed {'InterruptFlags': ('8', '15')}
