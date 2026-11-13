@@ -22,7 +22,7 @@
     isolation: isolate;
   }
   /* The desktop file lies over the phone file, which is inlined in the page (lib/ui/assets.ts
-     BAND_ART_INLINE): the band paints with the first frame and sharpens when the wide copy lands,
+     ART_INLINE): the band paints with the first frame and sharpens when the wide copy lands,
      instead of waiting on a request found only after this stylesheet (the band LCP, 2026-11-13). */
   .ui-band {
     --band-size: max(100%, 1440px) auto;
@@ -33,9 +33,10 @@
     background: var(--band-paint);
   }
   .ui-band[data-art='hero'] {
+    --hero-at: 0 calc(-10vw - var(--band-y, 0px)) / 124% auto no-repeat;
     --band-paint:
       linear-gradient(var(--color-veil-night), var(--color-veil-night)),
-      var(--art-hero, none) 0 calc(-10vw - var(--band-y, 0px)) / 124% auto no-repeat, var(--color-night);
+      var(--art-hero, none) var(--hero-at), var(--art-hero-phone, none) var(--hero-at), var(--color-night);
   }
   .ui-band-end {
     border-bottom: 1px solid black;
