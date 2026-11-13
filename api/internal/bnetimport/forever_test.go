@@ -2,10 +2,13 @@
 package bnetimport
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 )
@@ -146,9 +149,13 @@ func TestImportAccountKeysByTheProfilesRulesetWhenRealmsAreGone(t *testing.T) {
 	}
 }
 
-// With the realm index gone and the profile not yet public, nothing names
-// the ruleset: the character is skipped and counted, never keyed as normal.
-func TestImportAccountSkipsACharacterNoSourceNamesARulesetFor(t *testing.T) {
+// Blizzard lists no Forever realm at all (the realm index, the connected-realm
+// index and every realm by id or slug answered 404 on 2026-11-12; the realm
+// search answers an empty page). The realm id the protected-character link
+// carries still names the realm, and the committed Forever realm table
+// (bnetapi.KnownRealm) names its type, so every character is keyed without a
+// profile call: Elyra and Bank on 6798 (PvP), Tor on 6928 (RP).
+func TestImportAccountKeysByTheRealmTableWhenBlizzardListsNoRealm(t *testing.T) {
 	f := foreverFixture(t)
 	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-forever-us", http.StatusNotFound, nil)
 	svc := foreverService(t, f)
@@ -158,10 +165,53 @@ func TestImportAccountSkipsACharacterNoSourceNamesARulesetFor(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// Elyra's profile is public and says nothing of a ruleset in this
-	// fixture; Tor and Bank answer 404. None may be written.
-	if summary.Characters != 0 || summary.Skipped != 3 {
-		t.Fatalf("summary = %+v, want all three skipped", summary)
+	if summary.Characters != 3 || summary.Skipped != 0 {
+		t.Fatalf("summary = %+v, want all three keyed by the realm table", summary)
+	}
+	rows, err := svc.Pool.Query(context.Background(), `select key from characters where user_id = $1 order by key`, uid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rows.Close()
+	var keys []string
+	for rows.Next() {
+		var k string
+		if err := rows.Scan(&k); err != nil {
+			t.Fatal(err)
+		}
+		keys = append(keys, k)
+	}
+	want := []string{"us/pvp/bank-holder", "us/pvp/elyra-duskvale", "us/rp/tor-ashbrand"}
+	if strings.Join(keys, " ") != strings.Join(want, " ") {
+		t.Fatalf("keys = %v, want %v", keys, want)
+	}
+}
+
+// With the realm index gone, the realm id unknown to the table and the profile
+// not yet public, nothing names the ruleset: the character is skipped and
+// counted, never keyed as normal, and the log line names the realm id and that
+// the character was skipped.
+func TestImportAccountSkipsACharacterNoSourceNamesARulesetFor(t *testing.T) {
+	f := newBlizzardFixture(t)
+	f.rawJSON(foreverAccountPath, []byte(`{"wow_accounts":[{"id":1,"characters":[
+		{"name":"Newly","surname":"Rolled","id":9100,"playable_class":{"name":"Rogue"},
+		 "playable_race":{"name":"Gnome"},"gender":{"type":"FEMALE"},"faction":{"type":"ALLIANCE"},"level":3,
+		 "protected_character":{"href":"https://us.api.blizzard.com/profile/user/wow/protected-character/6999-9100?namespace=profile-forever-us"}}]}]}`))
+	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-forever-us", http.StatusNotFound, nil)
+	for _, sub := range []string{"", "/equipment", "/character-media"} {
+		f.json(http.MethodGet, "/profile/wow/character/newly-rolled"+sub+"?namespace=profile-forever-us", http.StatusNotFound, nil)
+	}
+	svc := foreverService(t, f)
+	var logs bytes.Buffer
+	svc.Log = slog.New(slog.NewTextHandler(&logs, nil))
+	uid := seedUser(t, svc.Pool)
+
+	summary, err := svc.ImportAccount(context.Background(), uid, "user-oauth-token")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if summary.Characters != 0 || summary.Skipped != 1 {
+		t.Fatalf("summary = %+v, want the one character skipped", summary)
 	}
 	var n int
 	if err := svc.Pool.QueryRow(context.Background(),
@@ -170,6 +220,15 @@ func TestImportAccountSkipsACharacterNoSourceNamesARulesetFor(t *testing.T) {
 	}
 	if n != 0 {
 		t.Fatalf("characters = %d, want none keyed by a guessed ruleset", n)
+	}
+	line := logs.String()
+	for _, want := range []string{"op=needs_ruleset", "realm_id=6999", "realm_known=false", "fallback=skip"} {
+		if !strings.Contains(line, want) {
+			t.Errorf("needs_ruleset line lacks %s:\n%s", want, line)
+		}
+	}
+	if strings.Contains(line, "op=realms") {
+		t.Errorf("the import warned about the realm index itself; bnetapi owns that line once an hour:\n%s", line)
 	}
 }
 

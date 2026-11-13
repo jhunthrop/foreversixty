@@ -76,6 +76,9 @@ type Service struct {
 	// staticSeen remembers which static namespaces noteStaticNamespace has
 	// already logged.
 	staticSeen sync.Map
+	// unlistedRealms remembers which region/realm ids noteUnlistedRealm has
+	// already logged.
+	unlistedRealms sync.Map
 
 	enrichSlotsOnce sync.Once
 	enrichSlots     chan struct{}
@@ -248,10 +251,13 @@ func (s *Service) writeAccountRows(ctx context.Context, userID int64, region str
 		ref, wrote, err := s.writeAccountRow(ctx, userID, region, realms, ch)
 		if errors.Is(err, errNeedsRuleset) {
 			// Counted by the bnet_needs_ruleset log-based metric
-			// (docs/runbooks/launch-day.md); the next sign-in retries it.
+			// (docs/runbooks/launch-day.md); the next sign-in retries it. The
+			// line names the realm id so the Forever realm table can learn it.
 			summary.Skipped++
+			_, realmKnown := s.Client.KnownRealm(region, ch.RealmID)
 			s.logger().Warn("bnetimport", "op", opNeedsRuleset, "user_id", userID, "region", region,
-				"bnet_character_id", ch.ID, "realm_id", ch.RealmID, "fields_checked", rulesetSources)
+				"bnet_character_id", ch.ID, "realm_id", ch.RealmID, "realm_known", realmKnown,
+				"fields_checked", rulesetSources, "fallback", "skip")
 			continue
 		}
 		if err != nil {

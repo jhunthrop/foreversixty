@@ -4,7 +4,9 @@ package bnetapi
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"sync"
 	"testing"
@@ -154,5 +156,101 @@ func TestRealmsFetchesDetailsConcurrently(t *testing.T) {
 	mu.Unlock()
 	if got < 2 {
 		t.Fatalf("maxInFlight = %d, want concurrent requests (>1)", got)
+	}
+}
+
+// recordingHandler keeps every slog record for assertions on what a client logged.
+type recordingHandler struct {
+	mu      sync.Mutex
+	records []slog.Record
+}
+
+func (h *recordingHandler) Enabled(context.Context, slog.Level) bool { return true }
+func (h *recordingHandler) Handle(_ context.Context, r slog.Record) error {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.records = append(h.records, r)
+	return nil
+}
+func (h *recordingHandler) WithAttrs([]slog.Attr) slog.Handler { return h }
+func (h *recordingHandler) WithGroup(string) slog.Handler      { return h }
+
+// warnings counts the WARN records whose "op" attribute is op.
+func (h *recordingHandler) warnings(op string) int {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	n := 0
+	for _, r := range h.records {
+		if r.Level != slog.LevelWarn {
+			continue
+		}
+		r.Attrs(func(a slog.Attr) bool {
+			if a.Key == "op" && a.Value.String() == op {
+				n++
+			}
+			return true
+		})
+	}
+	return n
+}
+
+// Forever's realm index has answered 404 since 2026-11-05 (and still did on
+// 2026-11-12, as did the connected-realm index and every realm by id or slug).
+// That is a fact about the namespace, not a failure of the run: Realms answers
+// an empty list with no error, remembers the absence for an hour, and says so
+// once, so an import a minute is not a WARN a minute.
+func TestRealmsRemembersAMissingIndexForAnHourAndWarnsOnce(t *testing.T) {
+	fs := newFixtureServer(t)
+	fs.json(http.MethodPost, "/token", http.StatusOK, map[string]any{"access_token": "tok", "expires_in": 3600})
+	const index = "/data/wow/realm/index?namespace=dynamic-forever-us"
+	fs.json(http.MethodGet, index, http.StatusNotFound, map[string]any{"code": 404, "detail": "Not Found"})
+
+	logs := &recordingHandler{}
+	c := newTestClient(fs)
+	c.Game = "forever"
+	c.Log = slog.New(logs)
+	now := time.Date(2026, 11, 12, 16, 0, 0, 0, time.UTC)
+	c.now = func() time.Time { return now }
+
+	for i := 0; i < 3; i++ {
+		realms, err := c.Realms(context.Background(), "us")
+		if err != nil || len(realms) != 0 {
+			t.Fatalf("call %d: realms = %v, err = %v; want an empty list and no error", i, realms, err)
+		}
+	}
+	if n := fs.count(http.MethodGet, index); n != 1 {
+		t.Fatalf("realm index fetched %d times in an hour, want 1", n)
+	}
+	if n := logs.warnings("realm_index"); n != 1 {
+		t.Fatalf("realm_index warned %d times, want once", n)
+	}
+
+	now = now.Add(realmIndexMissingTTL + time.Second)
+	if _, err := c.Realms(context.Background(), "us"); err != nil {
+		t.Fatal(err)
+	}
+	if n := fs.count(http.MethodGet, index); n != 2 {
+		t.Fatalf("realm index fetched %d times after the hour, want 2", n)
+	}
+	if n := logs.warnings("realm_index"); n != 2 {
+		t.Fatalf("realm_index warned %d times after the hour, want 2", n)
+	}
+}
+
+// Any other failure (a 403 namespace, a 5xx) stays an error and is never
+// remembered: the next call tries again.
+func TestRealmsDoesNotRememberOtherIndexFailures(t *testing.T) {
+	fs := newFixtureServer(t)
+	fs.json(http.MethodPost, "/token", http.StatusOK, map[string]any{"access_token": "tok", "expires_in": 3600})
+	const index = "/data/wow/realm/index?namespace=dynamic-classic1x-us"
+	fs.json(http.MethodGet, index, http.StatusForbidden, nil)
+	c := newTestClient(fs)
+	for i := 0; i < 2; i++ {
+		if _, err := c.Realms(context.Background(), "us"); !errors.Is(err, ErrForbidden) {
+			t.Fatalf("call %d: err = %v, want ErrForbidden", i, err)
+		}
+	}
+	if n := fs.count(http.MethodGet, index); n != 2 {
+		t.Fatalf("realm index fetched %d times, want 2 (a 403 is not cached)", n)
 	}
 }

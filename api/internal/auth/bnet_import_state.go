@@ -15,7 +15,13 @@ import (
 const (
 	BnetImportRunning = "running"
 	BnetImportDone    = "done"
-	BnetImportFailed  = "failed"
+	// BnetImportPartial is a run that keyed some of the account's characters and
+	// could not key the rest (no source named their ruleset, or a key collision);
+	// BnetImportView.Unresolved counts those. The keyed ones are usable.
+	BnetImportPartial = "partial"
+	// BnetImportFailed is a run that keyed nothing: it errored before any row was
+	// written, or every character was skipped.
+	BnetImportFailed = "failed"
 )
 
 // bnetImportStaleMargin is the slack past the longest an import can run (the sign-in
@@ -37,6 +43,9 @@ const bnetImportStateWriteBudget = 5 * time.Second
 type BnetImportView struct {
 	State string `json:"state"`
 	At    string `json:"at"`
+	// Unresolved is how many of the account's characters the run could not key
+	// (partial, or failed with every character skipped); omitted when none.
+	Unresolved int `json:"unresolved,omitempty"`
 }
 
 // bnetImportViewOf is the bnet_import /v1/me answers for an account, nil when no import
@@ -50,35 +59,57 @@ func bnetImportViewOf(u User, now time.Time) *BnetImportView {
 	if state == BnetImportRunning && now.Sub(*u.BnetImportStateAt) > bnetImportStaleAfter {
 		state = BnetImportFailed
 	}
-	return &BnetImportView{State: state, At: u.BnetImportStateAt.UTC().Format(time.RFC3339)}
+	view := &BnetImportView{State: state, At: u.BnetImportStateAt.UTC().Format(time.RFC3339)}
+	if u.BnetImportUnresolved != nil {
+		view.Unresolved = *u.BnetImportUnresolved
+	}
+	return view
 }
 
-// SetBnetImportState records the account's Battle.net import state, stamped now.
-func (s *Store) SetBnetImportState(ctx context.Context, userID int64, state string) error {
+// SetBnetImportState records the account's Battle.net import state, stamped now, with how
+// many characters that run could not key (0 clears the count).
+func (s *Store) SetBnetImportState(ctx context.Context, userID int64, state string, unresolved int) error {
 	if _, err := s.Pool.Exec(ctx,
-		`update users set bnet_import_state = $2, bnet_import_state_at = now() where id = $1`,
-		userID, state); err != nil {
+		`update users set bnet_import_state = $2, bnet_import_state_at = now(),
+		        bnet_import_unresolved = nullif($3, 0) where id = $1`,
+		userID, state, unresolved); err != nil {
 		return fmt.Errorf("auth: set bnet import state: %w", err)
 	}
 	return nil
 }
 
 // recordImportState writes the state and logs a failure to: it never fails the sign-in.
-func (s *Service) recordImportState(id string, userID int64, state string) {
+func (s *Service) recordImportState(id string, userID int64, state string, unresolved int) {
 	ctx, cancel := context.WithTimeout(context.Background(), bnetImportStateWriteBudget)
 	defer cancel()
-	if err := s.Store.SetBnetImportState(ctx, userID, state); err != nil {
+	if err := s.Store.SetBnetImportState(ctx, userID, state, unresolved); err != nil {
 		s.logger().Warn("auth", "id", id, "op", "battlenet_import_state", "user_id", userID,
-			"state", state, "err", err)
+			"state", state, "unresolved", unresolved, "err", err)
 	}
 }
 
-// importEndState is the state an import run that ended this way records.
-func importEndState(err error) string {
-	if err != nil {
-		return BnetImportFailed
+// recordImportEnd records the state and count importEndState reads off a finished run.
+func (s *Service) recordImportEnd(id string, userID int64, summary ImportSummary, err error) {
+	state, unresolved := importEndState(summary, err)
+	s.recordImportState(id, userID, state, unresolved)
+}
+
+// importEndState is the state an import run that ended this way records, with how many
+// characters it could not key. It reads what the run resolved, not only whether it
+// returned an error: a run cut short by its budget after writing every row (the common
+// case since 2026-11-02, with Pending 0) keyed the account and is done; a run that skipped
+// characters is partial, and the player is told how many; failed is kept for a run that
+// keyed nothing, whether it errored or skipped every character.
+func importEndState(summary ImportSummary, err error) (state string, unresolved int) {
+	nothingResolved := summary.Characters == 0
+	switch {
+	case nothingResolved && (err != nil || summary.Skipped > 0):
+		return BnetImportFailed, summary.Skipped
+	case summary.Skipped > 0:
+		return BnetImportPartial, summary.Skipped
+	default:
+		return BnetImportDone, 0
 	}
-	return BnetImportDone
 }
 
 // runImport calls the Battle.net importer, bounded by importBudget, and
@@ -94,7 +125,7 @@ func (s *Service) runImport(r *http.Request, userID int64, accessToken string, e
 	if keeper, ok := s.Importer.(TokenKeeper); ok {
 		keeper.KeepToken(r.Context(), userID, accessToken, expiresAt)
 	}
-	s.recordImportState(id, userID, BnetImportRunning)
+	s.recordImportState(id, userID, BnetImportRunning, 0)
 	ctx, cancel := context.WithTimeout(r.Context(), importBudget)
 	defer cancel()
 	summary, err := s.Importer.ImportAccount(ctx, userID, accessToken)
@@ -103,7 +134,7 @@ func (s *Service) runImport(r *http.Request, userID int64, accessToken string, e
 		s.continueImport(id, userID, accessToken)
 		return
 	}
-	s.recordImportState(id, userID, importEndState(err))
+	s.recordImportEnd(id, userID, summary, err)
 }
 
 // continueImport finishes, in the background, an import the sign-in budget
@@ -115,7 +146,7 @@ func (s *Service) continueImport(id string, userID int64, accessToken string) {
 		defer cancel()
 		summary, err := s.Importer.ImportAccount(ctx, userID, accessToken)
 		s.logImport(id, "battlenet_import_continued", userID, summary, err)
-		s.recordImportState(id, userID, importEndState(err))
+		s.recordImportEnd(id, userID, summary, err)
 	}()
 }
 

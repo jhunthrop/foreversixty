@@ -12,6 +12,7 @@ import (
 func TestBnetImportViewReadsAStaleRunningStateAsFailed(t *testing.T) {
 	at := time.Date(2026, 11, 7, 12, 0, 0, 0, time.UTC)
 	state := func(s string) *string { return &s }
+	count := func(n int) *int { return &n }
 	cases := []struct {
 		name string
 		user User
@@ -25,6 +26,9 @@ func TestBnetImportViewReadsAStaleRunningStateAsFailed(t *testing.T) {
 			at.Add(bnetImportStaleAfter + time.Second), &BnetImportView{State: BnetImportFailed, At: "2026-11-07T12:00:00Z"}},
 		{"old done stays done", User{BnetImportState: state(BnetImportDone), BnetImportStateAt: &at},
 			at.Add(24 * time.Hour), &BnetImportView{State: BnetImportDone, At: "2026-11-07T12:00:00Z"}},
+		{"partial names the missing count", User{BnetImportState: state(BnetImportPartial), BnetImportStateAt: &at,
+			BnetImportUnresolved: count(2)},
+			at, &BnetImportView{State: BnetImportPartial, At: "2026-11-07T12:00:00Z", Unresolved: 2}},
 	}
 	for _, c := range cases {
 		got := bnetImportViewOf(c.user, c.now)
@@ -83,6 +87,7 @@ func (h *harness) signInWithBattleNet(t *testing.T) {
 // continuation then waits for release and ends with result.
 type heldImporter struct {
 	release chan struct{}
+	final   ImportSummary
 	result  error
 	calls   int
 }
@@ -93,13 +98,44 @@ func (b *heldImporter) ImportAccount(ctx context.Context, _ int64, _ string) (Im
 		return ImportSummary{Characters: 3, Pending: 2}, errors.New("budget")
 	}
 	<-b.release
-	return ImportSummary{Characters: 3}, b.result
+	return b.final, b.result
 }
 
-type quickImporter struct{ err error }
+type quickImporter struct {
+	summary ImportSummary
+	err     error
+}
 
 func (q quickImporter) ImportAccount(context.Context, int64, string) (ImportSummary, error) {
-	return ImportSummary{Characters: 1}, q.err
+	return q.summary, q.err
+}
+
+// The end state reads what the run resolved, not only whether it returned an error:
+// a run that keyed every character is done; one that keyed some and skipped the rest
+// is partial, naming how many are missing; failed is for a run that keyed nothing.
+func TestImportEndStateClassifiesByWhatResolved(t *testing.T) {
+	budget := errors.New("bnetimport: import budget exceeded")
+	cases := []struct {
+		name       string
+		summary    ImportSummary
+		err        error
+		want       string
+		unresolved int
+	}{
+		{"all keyed", ImportSummary{Characters: 3}, nil, BnetImportDone, 0},
+		{"no characters at all", ImportSummary{}, nil, BnetImportDone, 0},
+		{"some skipped", ImportSummary{Characters: 1, Skipped: 5}, nil, BnetImportPartial, 5},
+		{"budget after everything written", ImportSummary{Characters: 2}, budget, BnetImportDone, 0},
+		{"budget with some skipped", ImportSummary{Characters: 2, Skipped: 1}, budget, BnetImportPartial, 1},
+		{"every character skipped", ImportSummary{Skipped: 3}, nil, BnetImportFailed, 3},
+		{"nothing written and an error", ImportSummary{}, budget, BnetImportFailed, 0},
+	}
+	for _, c := range cases {
+		state, unresolved := importEndState(c.summary, c.err)
+		if state != c.want || unresolved != c.unresolved {
+			t.Errorf("%s: = %q, %d; want %q, %d", c.name, state, unresolved, c.want, c.unresolved)
+		}
+	}
 }
 
 func TestBnetImportIsAbsentUntilAnImportIsTracked(t *testing.T) {
@@ -113,16 +149,22 @@ func TestBnetImportIsAbsentUntilAnImportIsTracked(t *testing.T) {
 
 func TestBnetImportReadsDoneOrFailedWhenTheSignInRunEnds(t *testing.T) {
 	for _, c := range []struct {
-		err  error
-		want string
-	}{{nil, BnetImportDone}, {errors.New("blizzard answered 503"), BnetImportFailed}} {
+		summary    ImportSummary
+		err        error
+		want       string
+		unresolved int
+	}{
+		{ImportSummary{Characters: 1}, nil, BnetImportDone, 0},
+		{ImportSummary{}, errors.New("blizzard answered 503"), BnetImportFailed, 0},
+		{ImportSummary{Characters: 2, Skipped: 3}, nil, BnetImportPartial, 3},
+	} {
 		h := newHarness(t)
 		h.withBattleNet(t, "22002", "Swift#1234")
-		h.svc.Importer = quickImporter{c.err}
+		h.svc.Importer = quickImporter{c.summary, c.err}
 		h.signInWithBattleNet(t)
 		got := h.meBnetImport(t)
-		if got == nil || got.State != c.want {
-			t.Fatalf("err %v: bnet_import = %+v, want %q", c.err, got, c.want)
+		if got == nil || got.State != c.want || got.Unresolved != c.unresolved {
+			t.Fatalf("err %v: bnet_import = %+v, want %q with %d unresolved", c.err, got, c.want, c.unresolved)
 		}
 		if _, err := time.Parse(time.RFC3339, got.At); err != nil {
 			t.Fatalf("at = %q, want RFC 3339: %v", got.At, err)
@@ -134,12 +176,13 @@ func TestBnetImportReadsDoneOrFailedWhenTheSignInRunEnds(t *testing.T) {
 // continuation ends, then done or failed by its result.
 func TestBnetImportRunsUntilTheBackgroundContinuationEnds(t *testing.T) {
 	for _, c := range []struct {
-		err  error
-		want string
-	}{{nil, BnetImportDone}, {errors.New("budget"), BnetImportFailed}} {
+		final ImportSummary
+		err   error
+		want  string
+	}{{ImportSummary{Characters: 3}, nil, BnetImportDone}, {ImportSummary{}, errors.New("budget"), BnetImportFailed}} {
 		h := newHarness(t)
 		h.withBattleNet(t, "22003", "Slow#1234")
-		importer := &heldImporter{release: make(chan struct{}), result: c.err}
+		importer := &heldImporter{release: make(chan struct{}), final: c.final, result: c.err}
 		h.svc.Importer = importer
 		h.signInWithBattleNet(t)
 		if got := h.meBnetImport(t); got == nil || got.State != BnetImportRunning {

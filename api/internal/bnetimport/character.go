@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -367,23 +368,25 @@ func rulesetForRealm(realms []bnetapi.Realm, slug string) (ruleset string, ok bo
 
 // rulesetSources names, for the needs_ruleset log line, every field
 // rulesetFor reads, in order.
-const rulesetSources = "realm.slug,protected_character.realm_id,profile.ruleset,addon_row"
+const rulesetSources = "realm.slug,protected_character.realm_id,realm_table,profile.ruleset,addon_row"
 
 // rulesetFor resolves an account character's ruleset, the middle segment
 // of its key, from the first source that names one:
 //
 //  1. the realm slug, for a realmed game;
 //  2. the realm id from the protected-character link, whose realm type
-//     (PvE, PvP, RP, RP PvP) is the ruleset, while Blizzard still lists
-//     the region's realms (Forever's realm index has answered 404 since
-//     2026-11-05);
+//     (PvE, PvP, RP, RP PvP) is the ruleset: first in the region's realm
+//     list, while Blizzard lists one (Forever's has answered 404 since
+//     2026-11-05), then in the committed Forever realm table
+//     (bnetapi.Client.KnownRealm), which needs no call at all;
 //  3. the character profile's own ruleset ("PvP", "Roleplay PvP");
 //  4. this account's own addon row of the same name (rulesetFromAddonRow).
 //
-// ok is false when none does (a profile not yet public, or private). There
-// is no default: a guessed ruleset keys the character, and its guild,
-// wrongly, which is how every sign-up from 2026-11-05 to 2026-11-09 landed
-// on normal. The caller skips such a character and says so.
+// ok is false when none does (a realm the table has no evidence for and a
+// profile not yet public, or private). There is no default: a guessed ruleset
+// keys the character, and its guild, wrongly, which is how every sign-up from
+// 2026-11-05 to 2026-11-09 landed on normal. The caller skips such a
+// character and says so.
 func (s *Service) rulesetFor(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
 	ch bnetapi.AccountCharacter) (ruleset string, ok bool, err error) {
 	if ch.RealmSlug != "" {
@@ -391,14 +394,8 @@ func (s *Service) rulesetFor(ctx context.Context, userID int64, region string, r
 			return ruleset, true, nil
 		}
 	}
-	if ch.RealmID != 0 {
-		for _, r := range realms {
-			if r.ID == ch.RealmID {
-				if ruleset, ok := bnetapi.RulesetOf(r); ok {
-					return ruleset, true, nil
-				}
-			}
-		}
+	if ruleset, ok := s.rulesetForRealmID(region, realms, ch.RealmID); ok {
+		return ruleset, true, nil
 	}
 	profile, _, err := s.Client.Character(ctx, region, ch.RealmSlug, ch.Name)
 	switch {
@@ -406,9 +403,47 @@ func (s *Service) rulesetFor(ctx context.Context, userID int64, region string, r
 	case err != nil:
 		return "", false, fmt.Errorf("bnetimport: ruleset from profile of %s: %w", ch.Name, err)
 	case profile.Ruleset != "":
+		s.noteUnlistedRealm(region, ch.RealmID, profile.Ruleset)
 		return profile.Ruleset, true, nil
 	}
 	return s.rulesetFromAddonRow(ctx, userID, region, ch.Name)
+}
+
+// rulesetForRealmID is the ruleset of the realm with this id: from the
+// region's realm list when Blizzard serves one, else from the committed
+// Forever realm table. ok is false for id 0, an id neither holds, or a realm
+// type RulesetOf does not know.
+func (s *Service) rulesetForRealmID(region string, realms []bnetapi.Realm, id int64) (string, bool) {
+	if id == 0 {
+		return "", false
+	}
+	for _, r := range realms {
+		if r.ID == id {
+			if ruleset, ok := bnetapi.RulesetOf(r); ok {
+				return ruleset, true
+			}
+		}
+	}
+	if r, ok := s.Client.KnownRealm(region, id); ok {
+		return bnetapi.RulesetOf(r)
+	}
+	return "", false
+}
+
+// noteUnlistedRealm logs, once per realm per process, a realm id the profile
+// named a ruleset for but the committed realm table does not hold: the line
+// is the evidence the next table row is added from (bnetapi/forever_realms.go).
+func (s *Service) noteUnlistedRealm(region string, realmID int64, ruleset string) {
+	if realmID == 0 {
+		return
+	}
+	if _, known := s.Client.KnownRealm(region, realmID); known {
+		return
+	}
+	if _, seen := s.unlistedRealms.LoadOrStore(region+"/"+strconv.FormatInt(realmID, 10), true); seen {
+		return
+	}
+	s.logger().Info("bnetimport", "op", "realm_unlisted", "region", region, "realm_id", realmID, "ruleset", ruleset)
 }
 
 // rulesetFromAddonRow is the ruleset this account's own addon or companion

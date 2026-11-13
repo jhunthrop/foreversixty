@@ -3,6 +3,7 @@ package bnetapi
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -47,6 +48,11 @@ var knownRealmTypes = map[string]bool{"NORMAL": true, "PVP": true, "RP": true, "
 // full region's fetch under a second.
 const realmWorkerCount = 8
 
+// realmIndexMissingTTL is how long Realms remembers that a region's realm
+// index answered 404 before asking Blizzard again: one WARN per process per
+// hour, not one per import (40 to 80 a day in production, 2026-11-10 to 12).
+const realmIndexMissingTTL = time.Hour
+
 // warmRealmsTimeout bounds WarmRealms's own startup fetch, independent of
 // whatever context main.go passes it, so a slow Blizzard response at
 // service start can never block indefinitely.
@@ -59,17 +65,26 @@ const warmRealmsTimeout = 30 * time.Second
 // is never cached: Realms returns the error instead, so the caller falls
 // through to its next ruleset source for that run only, rather than a bad
 // result being cached for realmCacheTTL.
+//
+// A region whose realm index answers 404 has no realm list on the public API
+// (Forever's, in both regions, since 2026-11-05): that is a fact about the
+// namespace, not a failure of this call, so Realms answers an empty list with
+// no error, logs it once, and remembers the absence for realmIndexMissingTTL
+// before asking again. The caller's next realm source (KnownRealm) covers it.
 func (c *Client) Realms(ctx context.Context, region string) ([]Realm, error) {
-	c.realmMu.Lock()
-	if entry, ok := c.realmCache[region]; ok && c.clock().Sub(entry.cachedAt) < realmCacheTTL {
-		c.realmMu.Unlock()
-		return entry.realms, nil
+	if realms, ok := c.cachedRealms(region); ok {
+		return realms, nil
 	}
-	c.realmMu.Unlock()
 
 	var idx realmIndexResponse
 	indexURL := c.APIHost(region) + "/data/wow/realm/index?namespace=" + c.DynamicNamespace(region)
 	if err := c.getJSON(ctx, "realms", indexURL, &idx); err != nil {
+		if errors.Is(err, ErrNotFound) {
+			c.logger().Warn("bnetapi", "op", "realm_index", "region", region, "namespace", c.DynamicNamespace(region),
+				"err", err, "retry_after", realmIndexMissingTTL.String())
+			c.rememberRealms(region, realmCacheEntry{missing: true, cachedAt: c.clock()})
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -82,10 +97,34 @@ func (c *Client) Realms(ctx context.Context, region string) ([]Realm, error) {
 		return nil, err
 	}
 
-	c.realmMu.Lock()
-	c.realmCache[region] = realmCacheEntry{realms: realms, cachedAt: c.clock()}
-	c.realmMu.Unlock()
+	c.rememberRealms(region, realmCacheEntry{realms: realms, cachedAt: c.clock()})
 	return realms, nil
+}
+
+// cachedRealms is region's remembered realm list while it is still fresh: a
+// fetched list for realmCacheTTL, a missing index (an empty list) for
+// realmIndexMissingTTL.
+func (c *Client) cachedRealms(region string) ([]Realm, bool) {
+	c.realmMu.Lock()
+	defer c.realmMu.Unlock()
+	entry, ok := c.realmCache[region]
+	if !ok {
+		return nil, false
+	}
+	ttl := realmCacheTTL
+	if entry.missing {
+		ttl = realmIndexMissingTTL
+	}
+	if c.clock().Sub(entry.cachedAt) >= ttl {
+		return nil, false
+	}
+	return entry.realms, true
+}
+
+func (c *Client) rememberRealms(region string, entry realmCacheEntry) {
+	c.realmMu.Lock()
+	c.realmCache[region] = entry
+	c.realmMu.Unlock()
 }
 
 // fetchRealmDetails fills in each of realms' Type and Category

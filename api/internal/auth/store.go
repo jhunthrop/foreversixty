@@ -65,6 +65,9 @@ type User struct {
 	// and when it was recorded, nil until one is. Me carries them as bnet_import.
 	BnetImportState   *string    `json:"-"`
 	BnetImportStateAt *time.Time `json:"-"`
+	// BnetImportUnresolved is how many characters the last tracked import could not key,
+	// nil when none (or never tracked). Me carries it as bnet_import.unresolved.
+	BnetImportUnresolved *int `json:"-"`
 }
 
 // PublicName is what strangers may be told an account is called: the
@@ -267,12 +270,12 @@ func (s *Store) logger() *slog.Logger {
 }
 
 const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize, bnet_imported_at, main_character_key,
-	bnet_import_state, bnet_import_state_at, bnet_synced_at`
+	bnet_import_state, bnet_import_state_at, bnet_synced_at, bnet_import_unresolved`
 
 func scanUser(row pgx.Row) (User, error) {
 	var u User
 	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize, &u.BnetImportedAt, &u.MainCharacterKey,
-		&u.BnetImportState, &u.BnetImportStateAt, &u.BnetSyncedAt); err != nil {
+		&u.BnetImportState, &u.BnetImportStateAt, &u.BnetSyncedAt, &u.BnetImportUnresolved); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return User{}, ErrNotFound
 		}

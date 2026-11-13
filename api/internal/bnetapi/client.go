@@ -93,6 +93,9 @@ type Client struct {
 type realmCacheEntry struct {
 	realms   []Realm
 	cachedAt time.Time
+	// missing records that the region's realm index answered 404 (realms is
+	// nil); the entry then lives realmIndexMissingTTL, not realmCacheTTL.
+	missing bool
 }
 
 // DefaultAPIHost is the production Blizzard regional host mapping.
