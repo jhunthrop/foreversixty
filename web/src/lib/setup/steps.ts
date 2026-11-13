@@ -86,7 +86,18 @@ export function importPending(me: Me, now: Date): boolean {
   const run = me.bnet_import;
   if (run === undefined) return false;
   if (run.state === 'running') return true;
-  return run.state === 'done' && now.getTime() - new Date(run.at).getTime() < IMPORT_WAIT_MS;
+  const finished = run.state === 'done' || run.state === 'partial';
+  return finished && now.getTime() - new Date(run.at).getTime() < IMPORT_WAIT_MS;
+}
+
+/** The line that says what the last import left out, when it did: the missing count (partial, or
+ *  failed with every character skipped), else that a failed run did not finish. Empty otherwise. */
+function importShortfall(me: Me): StepLineOut[] {
+  const run = me.bnet_import;
+  if (run === undefined || run.state === 'running' || run.state === 'done') return [];
+  const missing = run.unresolved ?? 0;
+  if (missing > 0) return [line(addonCopy.setupImportMissing(missing), 'warn')];
+  return run.state === 'failed' ? [line(addonCopy.setupImportFailed, 'warn')] : [];
 }
 
 const line = (text: string, tone: StepTone = 'muted', extra: Partial<StepLineOut> = {}): StepLineOut => ({
@@ -193,7 +204,7 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
       me.bnet_imported_at === undefined
         ? ''
         : ` · ${characterListCopy.updatedFrom(me.bnet_imported_at, now)}`;
-    return row('signin', 'ok', [line(`${signed}${imported}`, 'ok')], null);
+    return row('signin', 'ok', [line(`${signed}${imported}`, 'ok'), ...importShortfall(me)], null);
   }
   if (me.bnet_import?.state === 'running') {
     return row('signin', 'busy', [line(signed, 'text'), line(addonCopy.setupImportWait)], null);
@@ -207,7 +218,7 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
       retry,
     );
   }
-  const wait = importPending(me, now) ? [line(addonCopy.setupImportWait, 'warn')] : [];
+  const wait = importPending(me, now) ? [line(addonCopy.setupImportWait, 'warn')] : importShortfall(me);
   return row(
     'signin',
     'warn',

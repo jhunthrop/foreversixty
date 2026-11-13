@@ -185,6 +185,40 @@ describe('setupSteps: signed in', () => {
     expect(texts(steps({ me: old })[0])).not.toContain(addonCopy.setupImportWait);
   });
 
+  it('web-setup-partial: characters in, the missing count under the signed-in line, step still done', () => {
+    const partial: Me = { ...me34, bnet_import: { state: 'partial', at: '2026-11-06T09:00:00Z', unresolved: 2 } };
+    const rows = steps({ me: partial });
+    expect(rows[0]).toMatchObject({ mark: 'ok', action: null });
+    expect(texts(rows[0])).toEqual([
+      `Signed in as Hunthrop#1894 · ${characterListCopy.updatedFrom(me34.bnet_imported_at as string, NOW)}`,
+      addonCopy.setupImportMissing(2),
+    ]);
+    expect(rows[0].lines[1]).toMatchObject({ tone: 'warn' });
+    const one: Me = { ...me34, bnet_import: { state: 'partial', at: '2026-11-06T09:00:00Z', unresolved: 1 } };
+    expect(texts(steps({ me: one })[0])[1]).toBe('One character is still missing. It comes in on a later visit.');
+    const done: Me = { ...me34, bnet_import: { state: 'done', at: '2026-11-06T09:00:00Z' } };
+    expect(texts(steps({ me: done })[0])).toHaveLength(1);
+  });
+
+  it('web-setup-import-failed: no characters, the failed line leads the no-character lines, Refresh stays primary', () => {
+    const failed: Me = { ...meNew, bnet_import: { state: 'failed', at: '2026-11-06T09:00:00Z' } };
+    const rows = steps({ me: failed });
+    expect(rows[0]).toMatchObject({ mark: 'warn' });
+    expect(texts(rows[0])).toEqual([
+      'Signed in as Hunthrop#1894',
+      addonCopy.setupImportFailed,
+      characterListCopy.emptyLead,
+      characterListCopy.emptyKorea,
+    ]);
+    expect(rows[0].action).toMatchObject({ id: 'refresh', primary: true });
+    // Every character skipped: the count, not the generic line.
+    const skipped: Me = { ...meNew, bnet_import: { state: 'failed', at: '2026-11-06T09:00:00Z', unresolved: 3 } };
+    expect(texts(steps({ me: skipped })[0])[1]).toBe(addonCopy.setupImportMissing(3));
+    // A partial finished under two minutes ago still leads with the wait line.
+    const recent: Me = { ...meNew, bnet_import: { state: 'partial', at: '2026-11-06T09:59:00Z', unresolved: 1 } };
+    expect(texts(steps({ me: recent })[0])[1]).toBe(addonCopy.setupImportWait);
+  });
+
   it('web-setup-failed: back from Refresh with no import, row 1 failed with the refresh error and Try again', () => {
     const rows = steps({ me: meNew, refreshFailed: true });
     expect(rows[0]).toMatchObject({

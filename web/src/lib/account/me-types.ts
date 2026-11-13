@@ -231,8 +231,10 @@ export interface Me {
   bnet_imported_at?: string;
   /** The last Battle.net import's state and when it was recorded (RFC3339); omitted until a
    *  sign-in has tracked one. A stale running state already reads as failed. Poll while
-   *  running (design/specs/2026-11-07-setup.md G1). */
-  bnet_import?: { state: 'running' | 'done' | 'failed'; at: string };
+   *  running (design/specs/2026-11-07-setup.md G1). `partial` keyed some characters and
+   *  could not key `unresolved` of them; `failed` keyed none (with `unresolved` when it
+   *  skipped every one). */
+  bnet_import?: { state: 'running' | 'done' | 'partial' | 'failed'; at: string; unresolved?: number };
   /** The account's chosen main character's key; omitted until chosen. Every other
    *  character is an alt. */
   main_character_key?: string;

@@ -164,6 +164,15 @@ export const addonCopy = {
   setupImportWait: 'Your characters can take up to two minutes to arrive.',
   /** Step 1 after `?signin=failed` (the API's callback redirect). */
   setupSignInFailed: 'Battle.net sign-in did not finish. Nothing was saved.',
+  /** Step 1 when the last import could not key some characters (`bnet_import.state` partial, or
+   *  failed with `unresolved`): the visit refresh brings them in once Battle.net names their realm. */
+  setupImportMissing: (count: number): string =>
+    count === 1
+      ? 'One character is still missing. It comes in on a later visit.'
+      : `${count} characters are still missing. They come in on a later visit.`,
+  /** Step 1 when the last import keyed nothing (`bnet_import.state` failed, no count): the row's
+   *  Refresh runs it again. */
+  setupImportFailed: 'The Battle.net import did not finish. Refresh to run it again.',
   /** The hand install under The addon: the folders each zip holds (addon-release.yml ships
    *  ForeverSixty and ForeverSixtyInbox; addon-data-release.yml ForeverSixtyData). */
   setupHandInstall: 'Installing by hand',
