@@ -221,10 +221,11 @@ def _bis_items_lua(bis_names: dict, bis_dps: dict) -> list[str]:
 
 
 def _default_builds_lua(default_builds: dict) -> list[str]:
-    """`defaultBuilds[spec].leveling|raid = { name, order = { {tab,tier,column}, ... } }`
-    (docs/contracts/addon-v2.md, contract 1): one 1-based triple per point
-    in learning order, the codec's own triple, written without spaces
-    inside a triple to keep 28 specs x 2 builds x 51 points small."""
+    """`defaultBuilds[spec].leveling|raid = { name, why, order = { {tab,tier,column}, ... } }`
+    (docs/contracts/addon-v2.md, contract 1): the guide's why for the build,
+    then one 1-based triple per point in learning order, the codec's own
+    triple, written without spaces inside a triple to keep 28 specs x 2
+    builds x 51 points small."""
     lines = ["	defaultBuilds = {"]
     for spec in sorted(default_builds):
         lines.append(f"		[{_quote(spec)}] = {{")
@@ -234,10 +235,21 @@ def _default_builds_lua(default_builds: dict) -> list[str]:
                 continue
             order = ", ".join("{" + ",".join(str(n) for n in point) + "}" for point in build.order)
             lines.append(
-                f"			{kind} = {{ name = {_quote(build.name)}, order = {{ {order} }} }},"
+                f"			{kind} = {{ name = {_quote(build.name)}, why = {_quote(build.why)},"
+                f" order = {{ {order} }} }},"
             )
         lines.append("		},")
     lines.append("	},")
+    return lines
+
+
+def _spec_icons_lua(spec_icons: dict[str, str]) -> list[str]:
+    """`specIcons[spec] = "<client icon name>"` (contract 1): the icon the
+    Builds pane draws beside each spec, the planner's own."""
+    lines = ["\tspecIcons = {"]
+    for spec in sorted(spec_icons):
+        lines.append(f"\t\t[{_quote(spec)}] = {_quote(spec_icons[spec])},")
+    lines.append("\t},")
     return lines
 
 
@@ -325,6 +337,7 @@ def render_lua(data: AddonData) -> str:
     lines.extend(_bis_weights_lua(data.bis))
     lines.extend(_bis_items_lua(data.bis_names, data.bis_dps))
     lines.extend(_default_builds_lua(data.default_builds))
+    lines.extend(_spec_icons_lua(data.spec_icons))
     lines.extend(_dps_per_point_lua(data.dps_per_point))
     lines.extend(_encounter_needs_lua(data.encounter_needs))
     lines.extend(_ability_levels_lua(data.ability_levels))

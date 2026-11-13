@@ -32,10 +32,12 @@ func main() {
 	}
 }
 
-// build is one default build as addon-builds.json carries it: order is
-// one [tab, tier, column] triple per point, 1-based.
+// build is one default build as addon-builds.json carries it: why is the
+// guide's own sentence for it (leveling.GuideBuildWhy), order is one
+// [tab, tier, column] triple per point, 1-based.
 type build struct {
 	Name  string   `json:"name"`
+	Why   string   `json:"why"`
 	Order [][3]int `json:"order"`
 }
 
@@ -69,11 +71,11 @@ func generate(repoRoot string) (string, []byte, error) {
 	out := make(map[string]map[string]build, len(specs.All))
 	var failed []string
 	for _, spec := range specs.All {
-		levelingBuild, levelingErr := specBuild(repoRoot, active, spec, leveling.GuideBuildTalents, spec.Name+" leveling")
+		levelingBuild, levelingErr := specBuild(repoRoot, active, spec, leveling.GuideBuildTalents, "leveling")
 		if levelingErr != nil {
 			failed = append(failed, fmt.Sprintf("%s leveling: %v", spec.Spec, levelingErr))
 		}
-		raidBuild, raidErr := specBuild(repoRoot, active, spec, leveling.GuideRaidBuildTalents, spec.Name+" raid")
+		raidBuild, raidErr := specBuild(repoRoot, active, spec, leveling.GuideRaidBuildTalents, "raid")
 		if raidErr != nil {
 			failed = append(failed, fmt.Sprintf("%s raid: %v", spec.Spec, raidErr))
 		}
@@ -88,9 +90,9 @@ func generate(repoRoot string) (string, []byte, error) {
 	return active, b, err
 }
 
-// specBuild reads one of spec's guide builds against the active build's
-// trees and orders its points.
-func specBuild(repoRoot, active string, spec specs.Spec, read guideReader, name string) (build, error) {
+// specBuild reads spec's guide build of kind ("leveling" or "raid") against
+// the active build's trees, orders its points and takes the guide's why.
+func specBuild(repoRoot, active string, spec specs.Spec, read guideReader, kind string) (build, error) {
 	stamp, digits, err := read(repoRoot, spec.ClassSlug, spec.SpecSlug)
 	if err != nil {
 		return build{}, err
@@ -110,7 +112,14 @@ func specBuild(repoRoot, active string, spec specs.Spec, read guideReader, name 
 	for i, p := range points {
 		order[i] = [3]int{p.Tab, p.Tier, p.Column}
 	}
-	return build{Name: name, Order: order}, nil
+	why, err := leveling.GuideBuildWhy(repoRoot, spec.ClassSlug, spec.SpecSlug, kind)
+	if err != nil {
+		return build{}, err
+	}
+	if why == "" {
+		return build{}, fmt.Errorf("the guide's Talents and builds section has no prose for the %s build's why", kind)
+	}
+	return build{Name: spec.Name + " " + kind, Why: why, Order: order}, nil
 }
 
 // render writes one spec per block and one build per line, specs in

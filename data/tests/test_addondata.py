@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -10,10 +11,10 @@ import pytest
 from pipeline.addondata import AddonDataError, build_addon_data, check_addon_data, write_addon_data
 from pipeline.addonlua import render_lua, write_lua
 
+REPO = Path(__file__).resolve().parents[2]
+DATA = REPO / "data"
 # The active build, so this test follows every client move instead of pinning one.
-BUILD = json.loads(
-    (Path(__file__).resolve().parents[2] / "web" / "src" / "data" / "active-build.json").read_text()
-)["build"]
+BUILD = json.loads((REPO / "web" / "src" / "data" / "active-build.json").read_text())["build"]
 
 
 def test_every_class_has_three_tabs_in_position_order():
@@ -140,8 +141,13 @@ def test_check_addon_data_agrees_with_a_deliberately_drifted_copy(tmp_path):
     """The Lua half has both directions covered by test_write_lua_and_check_agree;
     this is the same shape for the JSON half."""
     (tmp_path / BUILD / "talents").mkdir(parents=True)
+    # Three empty trees, each with the icon the spec icons are read from.
+    trees = [
+        {"id": 380 + i, "name": name, "position": i, "icon": f"spell_paladin_{i}", "talents": []}
+        for i, name in enumerate(("Holy", "Protection", "Retribution"))
+    ]
     (tmp_path / BUILD / "talents" / "paladin.json").write_text(
-        json.dumps({"build": BUILD, "class_id": 2, "class_slug": "paladin", "trees": []}),
+        json.dumps({"build": BUILD, "class_id": 2, "class_slug": "paladin", "trees": trees}),
         encoding="utf-8",
     )
     (tmp_path / BUILD / "classes.json").write_text(
@@ -282,6 +288,74 @@ def test_every_weighted_spec_has_a_51_point_leveling_and_raid_build():
     assert arms["leveling"].order[0][:2] == (1, 1)
 
 
+def _guide_codes(class_slug: str, spec_slug: str) -> dict[str, str]:
+    """The guide's own build codes, as its page, the planner rail and the
+    tier list's raid preset read them: frontmatter `build:` (the level 60
+    build) and `raidBuild:` (the raid build; the level 60 build when absent)."""
+    guide = REPO / "web" / "src" / "content" / "guides" / class_slug / f"{spec_slug}.md"
+    front = guide.read_text(encoding="utf-8").split("---")[1]
+    codes = dict(re.findall(r"^(build|raidBuild): '([^']*)'$", front, re.M))
+    return {"leveling": codes["build"], "raid": codes.get("raidBuild", codes["build"])}
+
+
+def _code_trees(code: str) -> list[str]:
+    """A build code's three per-tree rank strings, trailing zeros dropped."""
+    trees = code.split(":")[4].split("/")
+    return [(trees[i] if i < len(trees) else "").rstrip("0") for i in range(3)]
+
+
+def _order_trees(order, talent_trees) -> list[str]:
+    """The ranks an addon build ends on, as the build code spells them: one
+    digit per talent in each tree's site order."""
+    ranks: dict[tuple[int, int, int], int] = {}
+    for point in order:
+        ranks[tuple(point)] = ranks.get(tuple(point), 0) + 1
+    return [
+        "".join(
+            str(ranks.get((index + 1, talent["tier"] + 1, talent["column"] + 1), 0))
+            for talent in tree["talents"]
+        ).rstrip("0")
+        for index, tree in enumerate(talent_trees)
+    ]
+
+
+def test_every_addon_build_ends_on_the_sites_guide_build():
+    """The owner, 2026-11-12: "the builds in the game don't follow our tier
+    list specs". The addon's two builds per spec (Data.lua's defaultBuilds,
+    from addon-builds.json) must end on the guide's own codes: the level 60
+    build on `build:`, the raid build on `raidBuild:`, which the guide page,
+    the planner's Guide builds rail and the tier list's raid preset (bis.yml
+    sims band 60 on it) are all built from. Every spec the site publishes
+    has both, a why from its guide, and the planner's icon."""
+    data = build_addon_data(BUILD)
+    specs = json.loads((REPO / "web" / "src" / "data" / "specs.json").read_text(encoding="utf-8"))
+    disagree = []
+    for row in specs:
+        spec, class_slug = row["spec"], row["class_slug"]
+        talent_trees = json.loads(
+            (DATA / "builds" / BUILD / "talents" / f"{class_slug}.json").read_text(encoding="utf-8")
+        )["trees"]
+        codes = _guide_codes(class_slug, row["spec_slug"])
+        builds = data.default_builds.get(spec, {})
+        for kind in ("leveling", "raid"):
+            build = builds.get(kind)
+            if build is None:
+                disagree.append(f"{spec} {kind}: no addon build")
+                continue
+            got, want = _order_trees(build.order, talent_trees), _code_trees(codes[kind])
+            if got != want:
+                disagree.append(f"{spec} {kind}: addon {'/'.join(got)} != guide {'/'.join(want)}")
+            if not build.why.strip():
+                disagree.append(f"{spec} {kind}: no why")
+        if not data.spec_icons.get(spec):
+            disagree.append(f"{spec}: no icon")
+    assert not disagree, (
+        "addon builds disagree with the site's guides; regenerate addon-builds.json with "
+        "go run ./sim/cmd/addon-builds -repo-root . and let data.yml regenerate Data.lua:\n  "
+        + "\n  ".join(disagree)
+    )
+
+
 def test_default_builds_are_absent_when_the_build_has_no_addon_builds_file(tmp_path):
     (tmp_path / BUILD).mkdir(parents=True)
     (tmp_path / BUILD / "classes.json").write_text("[]", encoding="utf-8")
@@ -300,19 +374,24 @@ def test_default_builds_lua_is_triples_per_point():
         weights={},
         default_builds={
             "warrior-arms": {
-                "leveling": AddonDefaultBuild(name="Arms leveling", order=[(1, 1, 2), (1, 2, 3)]),
-                "raid": AddonDefaultBuild(name="Arms raid", order=[(1, 1, 3)]),
+                "leveling": AddonDefaultBuild(
+                    name="Arms leveling", why="Iron Will.", order=[(1, 1, 2), (1, 2, 3)]
+                ),
+                "raid": AddonDefaultBuild(name="Arms raid", why='No "Will".', order=[(1, 1, 3)]),
             }
         },
+        spec_icons={"warrior-arms": "ability_warrior_savageblow"},
     )
     lua = render_lua(data)
     start = lua.index("defaultBuilds = {")
     assert (
         '\t\t["warrior-arms"] = {\n'
-        '\t\t\tleveling = { name = "Arms leveling", order = { {1,1,2}, {1,2,3} } },\n'
-        '\t\t\traid = { name = "Arms raid", order = { {1,1,3} } },\n'
+        '\t\t\tleveling = { name = "Arms leveling", why = "Iron Will.", '
+        "order = { {1,1,2}, {1,2,3} } },\n"
+        '\t\t\traid = { name = "Arms raid", why = "No \\"Will\\".", order = { {1,1,3} } },\n'
         "\t\t},"
     ) in lua[start:]
+    assert '\tspecIcons = {\n\t\t["warrior-arms"] = "ability_warrior_savageblow",\n\t},' in lua
 
 
 def test_the_rendered_default_builds_load_in_a_real_lua(tmp_path):

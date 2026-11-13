@@ -956,9 +956,12 @@ class AddonDefaultBuild(BaseModel):
     """One default talent build the addon loads for a character with none
     saved (docs/contracts/addon-v2.md, contract 1): the guide's leveling or
     raid build as sim/cmd/addon-builds orders it -- one (tab, tier, column)
-    triple per point in learning order, 1-based, the codec's own triple."""
+    triple per point in learning order, 1-based, the codec's own triple --
+    and the guide's own one-sentence why for it, read from its Talents and
+    builds prose (sim/leveling.GuideBuildWhy), for the Builds pane."""
 
     name: str
+    why: str
     order: list[tuple[int, int, int]]
 
 
@@ -1031,6 +1034,10 @@ class AddonData(BaseModel):
     #: addon-builds.json, written by sim/cmd/addon-builds. Empty when that
     #: file does not exist.
     default_builds: dict[str, dict[str, AddonDefaultBuild]] = {}
+    #: Keyed by spec: the client icon that stands for it, the one the site's
+    #: planner draws (pipeline.specs.spec_icons). Empty for a build directory
+    #: with no talent trees.
+    spec_icons: dict[str, str] = {}
     #: Keyed by spec: data/builds/<build>/dps-per-point.json, written by
     #: sim/cmd/dps-per-point. A spec with no entry (every tank, or one the
     #: sim has not measured) is the addon's cue to fall back to "score" units.

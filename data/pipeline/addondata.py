@@ -40,6 +40,7 @@ from pipeline.models import (
     AddonTalent,
 )
 from pipeline.normalize import write_model
+from pipeline.specs import load_specs, spec_icons
 from pipeline.weights import load_weights
 
 #: What is added to a tree's `position` to get the client's tab index.
@@ -105,6 +106,17 @@ def _default_builds(root: Path, build: str) -> dict[str, dict[str, AddonDefaultB
     }
 
 
+def _spec_icons(root: Path, build: str, curated_dir: Path) -> dict[str, str]:
+    """Each spec's icon as the site's planner draws it (pipeline.specs.
+    spec_icons, the rule specs.ts is generated from), for every class whose
+    talent trees the build directory holds (a real build holds all nine;
+    test_every_addon_build_ends_on_the_sites_guide_build asks for every
+    spec's icon)."""
+    talents = root / build / "talents"
+    specs = [s for s in load_specs(curated_dir) if (talents / f"{s.class_slug}.json").exists()]
+    return spec_icons(specs, root / build) if specs else {}
+
+
 def _dps_per_point(root: Path, build: str) -> dict[str, AddonDpsPerPoint]:
     """data/builds/<build>/dps-per-point.json, which sim/cmd/dps-per-point
     writes: each spec's DPS (HPS for a healer) per point of its reference
@@ -150,6 +162,7 @@ def build_addon_data(
         rotations=rotations,
         bis=bis,
         default_builds=_default_builds(root, build),
+        spec_icons=_spec_icons(root, build, curated_dir),
         dps_per_point=_dps_per_point(root, build),
         encounter_needs=load_encounter_needs(root, build, curated_dir),
         ability_levels=build_ability_levels(root, build, curated_dir=curated_dir),

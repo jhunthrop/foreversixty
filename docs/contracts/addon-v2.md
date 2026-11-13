@@ -69,10 +69,12 @@ ns.Data = {
   -- "Using the default Arms leveling build".
   defaultBuilds = {
     ["warrior-arms"] = {
-      leveling = { name = "Arms leveling", order = { {1,1,1}, {1,1,1}, ... } },  -- 51 triples
-      raid     = { name = "Arms raid",     order = { ... } },
+      leveling = { name = "Arms leveling", why = "The level 60 build puts ...", order = { {1,1,1}, ... } },  -- 51 triples
+      raid     = { name = "Arms raid",     why = "The raid build drops ...",     order = { ... } },
     }, ...
   },
+  -- NEW (2026-11-13): the client icon that stands for each spec, the one the site's planner draws
+  specIcons = { ["warrior-arms"] = "ability_warrior_savageblow", ... },
   -- NEW: per BiS pick, the drop chance and two alternatives (addonbis renders these beside each pick)
   --   bis[spec][band][faction][slot] = { item_id, kind, source, chance = 0.14 | nil,
   --                                      alternatives = { { item_id, kind, source }, { ... } } }
@@ -111,7 +113,12 @@ Notes for the reader:
 - `defaultBuilds` order lists are the 51 point spends in learning order, one `{tab, tier,
   column}` triple per point, 1-based, exactly what `Codec` encodes. The saved copy of a default
   carries `default = true`; the first time the player saves, imports or is pushed a build for
-  that character the flag is dropped.
+  that character the flag is dropped. Both builds end on the spec guide's own codes (`build:` and
+  `raidBuild:`, the level 60 build when the guide has one build); `why` is the guide's own
+  sentence for that build from its Talents and builds prose (`sim/leveling.GuideBuildWhy`), and
+  `data/tests/test_addondata.py` fails when either disagrees with the guide.
+- `specIcons[spec]` is an icon file name under `Interface\Icons`, from
+  `pipeline.specs.spec_icons`, the rule the site's `specs.ts` is generated from.
 - `chance` is a fraction (0.14 is 14 percent) or nil when the pick is not a drop. `source` is
   the plain name a player knows ("Lucifron", "Blackrock Depths", "Tailoring"), never an id.
 - A rare spawn's drop (a creature that is not there on every run: Ironspine, Swiftmane) is
