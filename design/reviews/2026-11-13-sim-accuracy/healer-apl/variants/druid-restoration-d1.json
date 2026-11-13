@@ -1,0 +1,1071 @@
+{
+ "rotation": {
+  "type": "TypeAPL",
+  "priorityList": [
+   {
+    "action": {
+     "autocastOtherCooldowns": {}
+    }
+   },
+   {
+    "notes": "On yourself below 30% mana. It multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 29166
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentManaPercent": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "0.3"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "notes": "Alliance Skyborne only: Read Leyline every time it is ready. 50% more mana regeneration for 15 seconds is worth a global cooldown on a fight that drains your mana bar. It will not cast under Innervate, and an Innervate replaces it.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1259705
+      }
+     }
+    }
+   },
+   {
+    "notes": "When the tank drops under 35%: Nature's Swiftness, then an instant Healing Touch on him.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 17116
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.35"
+           }
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "auraIsActive": {
+            "auraId": {
+             "spellId": 17116
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "notes": "Right after Nature's Swiftness, as the instant save on the tank.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 9889,
+       "rank": 10
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "spellIsKnown": {
+          "spellId": {
+           "spellId": 17116
+          }
+         }
+        },
+        {
+         "auraIsActive": {
+          "auraId": {
+           "spellId": 17116
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "notes": "When the tank is under 75% and your mana is keeping pace with the fight. In Forever it does not use up the HoT, so it is a heal of its own on a 15 second cooldown, for 20% of your base mana.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 18562
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.75"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpMul",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "0.8"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "notes": "When two of your party, you included, are under 70% at once. It heals the whole party every 2 seconds.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 9863,
+       "rank": 4
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "or": {
+          "vals": [
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 0
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 1
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 0
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 2
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 0
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 3
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 0
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 4
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 1
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 2
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 1
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 3
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 1
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 4
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 2
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 3
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 2
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 4
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 3
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 4
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.7"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           }
+          ]
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "0.15"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "notes": "On the tank whenever it is not ticking. Let it run out before you recast it: from 20, Bloom heals him when it does. At 18 and 19 rank 1 heals more for your mana than rank 2.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 9858,
+       "rank": 9
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "not": {
+          "val": {
+           "dotIsActive": {
+            "spellId": {
+             "spellId": 9858,
+             "rank": 9
+            },
+            "targetUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "0.05"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it: from 20, Bloom heals him when it does. While leveling your mana runs out first, so a lower rank heals more for it: rank 1 at 10 (a Skyborne keeps rank 2) and from 13 to 22 (from 12 for an Alliance Skyborne), rank 2 from 23 to 39 (a night elf takes rank 3 for level 29 alone), rank 4 from 40 to 43, rank 5 from 44 to 48, rank 6 from 49 to 55, rank 9 from 56 to 58 and rank 8 at 59.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 9841,
+       "rank": 10
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "not": {
+          "val": {
+           "dotIsActive": {
+            "spellId": {
+             "spellId": 9841,
+             "rank": 10
+            },
+            "targetUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "0.05"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "notes": "On the tank under 55%, only while your mana is ahead of the fight. While leveling, a lower rank heals more for the mana than the top rank: rank 2 from 14 to 16 (a night elf and either Skyborne drop to rank 1 at 15 and 16, and a Horde Skyborne casts rank 1 from 13), rank 1 from 17 to 19, rank 2 at 20 (a tauren keeps it to 23, and takes rank 4 at 26 to 28), rank 3 from 30 to 33, rank 4 from 34 to 39, rank 5 from 40 to 45 and rank 6 from 46 to 48.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 9889,
+       "rank": 10
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.55"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpMul",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "0.9"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "notes": "On a hurt party member under 70%, you included. It does not wait on the mana pace the costly heals follow. While leveling, rank 1 heals the most for your mana, except rank 2 at 10 to 14 (a night elf takes rank 1 at 10, a Horde Skyborne rank 1 from 13, and a tauren rank 3 at 16), 26 to 29 (25 too for an Alliance druid) and 40 to 42, rank 4 at 44 and rank 5 at 45 to 48.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 8910,
+       "rank": 7
+      },
+      "target": {
+       "type": "Player",
+       "index": 0
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 0
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.9"
+           }
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "dotIsActive": {
+            "spellId": {
+             "spellId": 8910,
+             "rank": 7
+            },
+            "targetUnit": {
+             "type": "Player",
+             "index": 0
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 8910,
+       "rank": 7
+      },
+      "target": {
+       "type": "Player",
+       "index": 1
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 1
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.9"
+           }
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "dotIsActive": {
+            "spellId": {
+             "spellId": 8910,
+             "rank": 7
+            },
+            "targetUnit": {
+             "type": "Player",
+             "index": 1
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 8910,
+       "rank": 7
+      },
+      "target": {
+       "type": "Player",
+       "index": 2
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 2
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.9"
+           }
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "dotIsActive": {
+            "spellId": {
+             "spellId": 8910,
+             "rank": 7
+            },
+            "targetUnit": {
+             "type": "Player",
+             "index": 2
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 8910,
+       "rank": 7
+      },
+      "target": {
+       "type": "Player",
+       "index": 3
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 3
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.9"
+           }
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "dotIsActive": {
+            "spellId": {
+             "spellId": 8910,
+             "rank": 7
+            },
+            "targetUnit": {
+             "type": "Player",
+             "index": 3
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 8910,
+       "rank": 7
+      },
+      "target": {
+       "type": "Player",
+       "index": 4
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 4
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.9"
+           }
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "dotIsActive": {
+            "spellId": {
+             "spellId": 8910,
+             "rank": 7
+            },
+            "targetUnit": {
+             "type": "Player",
+             "index": 4
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,14 @@
+shaman-restoration-s5-raid -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight -rotation @V/shaman-restoration-s5.json
+shaman-restoration-s5-bis -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/shaman-restoration-s5.json
+druid-restoration-d4-raid -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight -rotation @V/druid-restoration-d4.json
+druid-restoration-d4-bis -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/druid-restoration-d4.json
+paladin-holy-base-bis-bare40 -spec paladin-holy -preset bare -band 40 -faction alliance -seed 1 -iterations 2000
+paladin-holy-p2-bis-bare40 -spec paladin-holy -preset bare -band 40 -faction alliance -seed 1 -iterations 2000 -rotation @V/paladin-holy-p2.json
+shaman-restoration-base-bis-bare40 -spec shaman-restoration -preset bare -band 40 -faction alliance -seed 1 -iterations 2000
+shaman-restoration-s5-bis-bare40 -spec shaman-restoration -preset bare -band 40 -faction alliance -seed 1 -iterations 2000 -rotation @V/shaman-restoration-s5.json
+priest-holy-base-bis-bare40 -spec priest-holy -preset bare -band 40 -faction alliance -seed 1 -iterations 2000
+priest-holy-h3-bis-bare40 -spec priest-holy -preset bare -band 40 -faction alliance -seed 1 -iterations 2000 -rotation @V/priest-holy-h3.json
+priest-discipline-base-bis-bare40 -spec priest-discipline -preset bare -band 40 -faction alliance -seed 1 -iterations 2000
+priest-discipline-h3-bis-bare40 -spec priest-discipline -preset bare -band 40 -faction alliance -seed 1 -iterations 2000 -rotation @V/priest-discipline-h3.json
+druid-restoration-base-bis-bare40 -spec druid-restoration -preset bare -band 40 -faction alliance -seed 1 -iterations 2000
+druid-restoration-d4-bis-bare40 -spec druid-restoration -preset bare -band 40 -faction alliance -seed 1 -iterations 2000 -rotation @V/druid-restoration-d4.json

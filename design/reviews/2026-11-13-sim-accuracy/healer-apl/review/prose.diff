@@ -1,0 +1,86 @@
+diff --git a/web/src/content/guides/druid/restoration.md b/web/src/content/guides/druid/restoration.md
+index 368a1d15c..d62947289 100644
+--- a/web/src/content/guides/druid/restoration.md
++++ b/web/src/content/guides/druid/restoration.md
+@@ -67,7 +67,7 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
+ 
+ **Before the pull.** Rejuvenation on the tank a few seconds before he pulls. Keep Gift of the Wild up on the raid.
+ 
+-**The tank.** Regrowth and Rejuvenation stay up on the tank for the whole fight. A refresh on top of a running HoT throws away its Bloom heal.
++**The tank.** Rejuvenation goes on the tank once he takes a hit and Regrowth once he is under 90%, and from then on they stay up. A refresh on top of a running HoT throws away its Bloom heal.
+ 
+ **Swiftmend.** Cast it whenever the tank is under about three quarters and your mana is keeping pace with the fight, not only in an emergency.
+ 
+@@ -77,7 +77,7 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
+ 
+ **The party.** Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
+ 
+-**Ranks.** In Forever a rank learned far below your level loses its share of your healing power: at 60, ranks 8, 9 and 10 keep all of it, rank 7 most of it, and rank 1 none, though it costs so little that its base heal is still cheap healing. In a raid, keep the top rank on the tank and put rank 7 on a hurt party member: most of the heal for far less mana. When there is no raid behind you and the fight will run you dry, as in a long five-man, rank 1 on the party is the most healing your mana buys.
++**Ranks.** In Forever a rank learned far below your level loses its share of your healing power: at 60, ranks 8, 9 and 10 keep all of it, rank 7 most of it, and rank 1 none, though it costs so little that its base heal is still cheap healing. In a raid, keep the top rank on the tank and put rank 7 on a hurt party member: most of the heal for far less mana. With your mana level with the fight or ahead of it, that Rejuvenation goes on anyone in your party under 90%, you included. When there is no raid behind you and the fight will run you dry, as in a long five-man, rank 1 on the party is the most healing your mana buys.
+ 
+ While leveling, your healing power is still low and your mana runs out first, so the tank's Rejuvenation sits below the newest rank you know from 49 to 55 and again at 58 and 59, rank 10 included once you learn it at 58. The ranks by level are under [Leveling](#leveling).
+ 
+diff --git a/web/src/content/guides/paladin/holy.md b/web/src/content/guides/paladin/holy.md
+index fb1f621e1..84cfae07e 100644
+--- a/web/src/content/guides/paladin/holy.md
++++ b/web/src/content/guides/paladin/holy.md
+@@ -69,7 +69,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
+ 
+ **Before the pull.** Greater Blessings are an hour long in Forever, so they go out before the first pull and after a wipe, not between trash packs. Swear Oath of Light on the tank a second or two before the pull, and move it when the tank changes. Run Concentration Aura unless another paladin already has it on your group: its 35% and Spiritual Focus's 70% add up, so nothing that hits you pushes a cast back, where Devotion Aura lets three hits in ten through, the first costing you a second of casting.
+ 
+-**Pace, not health bars.** Divine Favor into Holy Light is for the tank at 40%, the heal that must land. Holy Light and Holy Shock otherwise spend only mana you are ahead on; fall behind and it is Flash of Light alone until you catch up. Holy Shock on the party, where Boundless Light adds 30% crit, gets a good share of its cost back through Illumination.
++**Pace, not health bars.** Divine Favor into Holy Light is for the tank at 40%, the heal that must land. Holy Light and Holy Shock otherwise spend only mana you are ahead on; fall behind and it is Flash of Light alone until you catch up. In a raid, Flash of Light goes on the tank as soon as one hit lands and on anyone in your party a hit or two down: it is most of what you cast, and some of it will land on someone another healer already topped. Holy Shock on the party, where Boundless Light adds 30% crit, gets a good share of its cost back through Illumination.
+ 
+ **Ranks.** Bind the ranks you use. A rank keeps all of your healing power and the Oath's bonus until you are 17 levels past the level you learned it, then loses a twentieth a level, so a cheap rank wins only while that gap is small; past the breakpoints in the leveling section, move up. Flash of Light rank 5 carries all of your healing power at 60 for less mana than rank 6, and rank 4 does the tank's job for less again outside a raid. Rank 1 is a trap at 60: Forever takes the healing power off ranks learned far below your level, and the Oath's bonus goes with it, so rank 1 heals for little more than its base. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but it is a level 30 rank, so at 60 it keeps only part of your healing power.
+ 
+diff --git a/web/src/content/guides/priest/discipline.md b/web/src/content/guides/priest/discipline.md
+index a6c9b54b3..eb2d89973 100644
+--- a/web/src/content/guides/priest/discipline.md
++++ b/web/src/content/guides/priest/discipline.md
+@@ -62,11 +62,11 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
+ 
+ **Before the pull.** Drop Lightwell and tell the raid it is up. Fear Ward the tank if the boss fears. Renew the tank just before he engages, so it is already ticking when the first hits land.
+ 
+-**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Greater Heal rank 1 on everyone else. Renew stays on the tank at rank 7 or higher.
++**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Greater Heal rank 1 on everyone else. Renew goes back on the tank once he takes a hit, at rank 7 or higher.
+ 
+ **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus: at 60, Lesser Heal and the first ranks of Heal and Renew heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank only within the ranks you learned from your forties on, and keep Lesser Heal off your bars for good: when even Greater Heal rank 1 is more than you can afford, wait the few seconds for your regeneration.
+ 
+-**Flash Heal** costs the most mana for what it heals, so it never becomes the filler. A tank about to die gets it whatever your bar says. For a tank who is only low, cast it while your mana keeps up with the fight; once you are behind, a Greater Heal started before the hit saves more of your bar.
++**Flash Heal** costs the most mana for what it heals. A tank about to die gets it whatever your bar says. For a tank who is only low, cast it while your mana keeps up with the fight; once you are behind, a Greater Heal started before the hit saves more of your bar. While your mana is level with the fight or ahead of it, it also tops off small holes: the tank under 90%, anyone else under 85%.
+ 
+ **Prayer of Healing** heals the target's party, so target a member of the group that took the damage.
+ 
+diff --git a/web/src/content/guides/priest/holy.md b/web/src/content/guides/priest/holy.md
+index 78d0193db..00e4c2442 100644
+--- a/web/src/content/guides/priest/holy.md
++++ b/web/src/content/guides/priest/holy.md
+@@ -64,13 +64,13 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
+ 
+ **Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Fear Ward the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
+ 
+-**On the tank.** Renew stays at rank 7 or higher; go up to the top rank on a tank who is dropping through it. Leave Power Word: Shield on the tank to a Discipline priest: without the shield talents it costs more mana than it saves, and Weakened Soul locks it out for 15 seconds.
++**On the tank.** Renew goes back on the tank once he takes a hit, at rank 7 or higher; go up to the top rank on a tank who is dropping through it. Leave Power Word: Shield on the tank to a Discipline priest: without the shield talents it costs more mana than it saves, and Weakened Soul locks it out for 15 seconds.
+ 
+ **Stepping down.** When the top Greater Heal would overheal or your mana runs short, step down to rank 1: a small heal wastes less on a small hole, so leave ranks 2 and 3 off your bars. Heal rank 4 is cheaper still, but it keeps only about half your bonus, so it is the last step down. With Divine Fury every one of them is a 2.5 second cast.
+ 
+ **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus: at 60, Lesser Heal and the first ranks of Heal and Renew heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank only within the ranks you learned from your forties on: Greater Heal rank 1 is the one to keep.
+ 
+-**Flash Heal** at the top rank in a raid, a lower rank while leveling. Holy Binding heals you off every one of them. It heals the least for its mana of anything you cast. A tank about to die gets it whatever your bar says. For a tank who is only low, cast it while your mana keeps up with the fight, and once you are behind, start the Greater Heal early instead.
++**Flash Heal** at the top rank in a raid, a lower rank while leveling. Holy Binding heals you off every one of them. It heals the least for its mana of anything you cast. A tank about to die gets it whatever your bar says. For a tank who is only low, cast it while your mana keeps up with the fight, and once you are behind, start the Greater Heal early instead. While your mana is level with the fight or ahead of it, Flash Heal also tops people off between the big hits: the tank under 90%, anyone else under 85%.
+ 
+ **Prayer of Healing** is not limited to your own party: target a member of whichever group took the hit.
+ 
+diff --git a/web/src/content/guides/shaman/restoration.md b/web/src/content/guides/shaman/restoration.md
+index 4cbfdaca9..55dcb83e3 100644
+--- a/web/src/content/guides/shaman/restoration.md
++++ b/web/src/content/guides/shaman/restoration.md
+@@ -69,7 +69,7 @@ Ancestral Healing is three points for 25% more armor on your target for 15 secon
+ 
+ **Low ranks.** A rank keeps your whole healing bonus until you are 17 levels past the level you learned it, then loses a twentieth of it every level after, so at 60 a rank learned at 23 or earlier gets none of your gear. The ranks that keep all of it at 60 are Healing Wave 8 to 10, Lesser Healing Wave 4 to 6 and Chain Heal 2 and 3. Healing Wave 7 and Chain Heal 1, both learned at 40, keep most of it, Lesser Healing Wave 3 about two thirds and Healing Wave 6 under half.
+ 
+-**Everyone else.** Heal them directly only while your mana is above half: Riptide under 50%, Lesser Healing Wave under 25%. Otherwise Chain Heal heals them.
++**Everyone else.** Heal them directly only while your mana is above half: Riptide under 50%, Lesser Healing Wave under 25%. Otherwise Chain Heal heals them: cast it on the tank as soon as anyone near him is a hit down, not when they are low.
+ 
+ **Chain Heal ranks.** Rank 3 costs about 385 mana with Tidal Focus for a 490 base heal, rank 2 about 300 for 335. With a raid's healing gear rank 2 heals the most per point of mana and rank 3 the most per cast. At 60, rank 1 is never better than rank 2. Cast rank 3 while your mana is ahead of the fight, and drop to rank 2 on fights where you would run dry.
+ 

@@ -1,0 +1,10 @@
+shaman-restoration-s3-raid -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight -rotation @V/shaman-restoration-s3.json
+shaman-restoration-s3-bis -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/shaman-restoration-s3.json
+shaman-restoration-s4-raid -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight -rotation @V/shaman-restoration-s4.json
+shaman-restoration-s4-bis -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/shaman-restoration-s4.json
+priest-holy-h3-raid -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight -rotation @V/priest-holy-h3.json
+priest-holy-h3-bis -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/priest-holy-h3.json
+priest-discipline-h3-raid -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight -rotation @V/priest-discipline-h3.json
+priest-discipline-h3-bis -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/priest-discipline-h3.json
+druid-restoration-d3-raid -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight -rotation @V/druid-restoration-d3.json
+druid-restoration-d3-bis -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/druid-restoration-d3.json

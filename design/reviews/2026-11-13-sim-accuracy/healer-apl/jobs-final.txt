@@ -1,0 +1,30 @@
+paladin-holy-final-raid-alliance -spec paladin-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+paladin-holy-final-raid-horde -spec paladin-holy -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+paladin-holy-final-bis -spec paladin-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+paladin-holy-final-bis-bare60 -spec paladin-holy -preset bare -band 60 -faction alliance -seed 1 -iterations 2000
+shaman-restoration-final-raid-alliance -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+shaman-restoration-final-raid-horde -spec shaman-restoration -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+shaman-restoration-final-bis -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+shaman-restoration-final-bis-bare60 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 1 -iterations 2000
+priest-holy-final-raid-alliance -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+priest-holy-final-raid-horde -spec priest-holy -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+priest-holy-final-bis -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+priest-holy-final-bis-bare60 -spec priest-holy -preset bare -band 60 -faction alliance -seed 1 -iterations 2000
+priest-discipline-final-raid-alliance -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+priest-discipline-final-raid-horde -spec priest-discipline -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+priest-discipline-final-bis -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+priest-discipline-final-bis-bare60 -spec priest-discipline -preset bare -band 60 -faction alliance -seed 1 -iterations 2000
+druid-restoration-final-raid-alliance -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+druid-restoration-final-raid-horde -spec druid-restoration -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+druid-restoration-final-bis -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+druid-restoration-final-bis-bare60 -spec druid-restoration -preset bare -band 60 -faction alliance -seed 1 -iterations 2000
+paladin-holy-orig-raid-horde -spec paladin-holy -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight -rotation @V/paladin-holy-orig.json
+paladin-holy-orig-bis-bare60 -spec paladin-holy -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/paladin-holy-orig.json
+shaman-restoration-orig-raid-horde -spec shaman-restoration -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight -rotation @V/shaman-restoration-orig.json
+shaman-restoration-orig-bis-bare60 -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/shaman-restoration-orig.json
+priest-holy-orig-raid-horde -spec priest-holy -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight -rotation @V/priest-holy-orig.json
+priest-holy-orig-bis-bare60 -spec priest-holy -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/priest-holy-orig.json
+priest-discipline-orig-raid-horde -spec priest-discipline -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight -rotation @V/priest-discipline-orig.json
+priest-discipline-orig-bis-bare60 -spec priest-discipline -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/priest-discipline-orig.json
+druid-restoration-orig-raid-horde -spec druid-restoration -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight -rotation @V/druid-restoration-orig.json
+druid-restoration-orig-bis-bare60 -spec druid-restoration -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -rotation @V/druid-restoration-orig.json

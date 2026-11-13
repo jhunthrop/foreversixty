@@ -1,0 +1,1997 @@
+remote-test: 04b24494bf56f2fbee840ab2c5d80068093fc545 -> forever-ci on 192.168.1.182 (run 20261113081604-04b24494b-13515, in sim): bash ../design/reviews/2026-11-13-sim-accuracy/healer-apl/jobs.sh jobs-r1.txt
+remote-test: engine pinned to 8f61b9e6a
+##### paladin-holy-base-raid
+2026/11/13 08:18:15 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:15 All 16 sims finished successfully.
+paladin-holy healer fight, 2000 iterations, 110 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [blessing_of_wisdom arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9820.45 |
+| intellect | 439.23 |
+| spirit | 337.59 |
+| mp5 | 120.25 |
+| healing power | 722.00 |
+| spell power | 218.00 |
+| crit (every table) | 12.00 |
+| spell crit (spell table only) | 10.84 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 109.62 +/- 0.15 |
+| raw HPS | 112.3 |
+| mana lasts (s) | 3600.0 |
+| overheal | 2.4% |
+| mana left at the end | 9776 of 9820 (99.5%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 31.8 | 1618 | 14.71 |
+| Illumination (20210) | 3.8 | 216 | 1.96 |
+| Sudden Insight (450554) | 0.8 | 98 | 0.89 |
+| OtherActionManaRegen#2 | 23.9 | 31 | 0.28 |
+| total | | 1962 | 17.84 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Flash of Light (19942) | 16.4 | 1886 | 17.14 | 12058 | 6.39 |
+| Oath of Light (1328548) | 1.0 | 121 | 1.10 | 0 | 0.00 |
+| total | | 2007 | 18.24 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 4.6 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Flash of Light (19942) | 12356 | 0 | 12058 | 100.0 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Flash of Light (19942) | 16.4 | 22.9 | 0.0 | - |
+##### paladin-holy-base-bis
+2026/11/13 08:18:15 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:15 All 16 sims finished successfully.
+paladin-holy healer fight, 2000 iterations, 300 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [blessing_of_wisdom arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9820.45 |
+| intellect | 439.23 |
+| spirit | 337.59 |
+| mp5 | 120.25 |
+| healing power | 722.00 |
+| spell power | 218.00 |
+| crit (every table) | 12.00 |
+| spell crit (spell table only) | 10.84 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 719.66 +/- 0.81 |
+| raw HPS | 723.0 |
+| mana lasts (s) | 201.1 |
+| overheal | 0.5% |
+| mana left at the end | 499 of 9820 (5.1%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 150.5 | 10910 | 36.37 |
+| item 13444 | 3.0 | 5412 | 18.04 |
+| Illumination (20210) | 42.0 | 4759 | 15.86 |
+| item 12662 | 3.0 | 3605 | 12.02 |
+| Sudden Insight (450554) | 8.5 | 1695 | 5.65 |
+| OtherActionManaRegen#2 | 0.2 | 0 | 0.00 |
+| total | | 26381 | 87.94 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Holy Light (10329) | 32.4 | 18771 | 62.57 | 94474 | 5.03 |
+| Flash of Light (19942) | 132.5 | 15238 | 50.79 | 116404 | 7.64 |
+| Holy Shock (20930) | 4.8 | 1413 | 4.71 | 0 | 0.00 |
+| Divine Favor (20216) | 2.7 | 160 | 0.53 | 0 | 0.00 |
+| Oath of Light (1328548) | 1.0 | 121 | 0.40 | 0 | 0.00 |
+| total | | 35703 | 119.01 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Holy Shock (25903) | 4.8 | 5021 |
+| OtherActionManaGain | 56.5 | 0 |
+| item 13444 | 3.0 | 0 |
+| item 12662 | 3.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Flash of Light (19942) | 116423 | 0 | 116404 | 53.9 |
+| Holy Shock (25903) | 5022 | 0 | 5021 | 2.3 |
+| Holy Light (10329) | 95454 | 0 | 94474 | 43.8 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Flash of Light (19942) | 132.5 | 23.1 | 0.0 | - |
+| Holy Shock (25903) | 4.8 | 49.4 | 0.0 | - |
+| Holy Light (10329) | 32.4 | 27.8 | 0.0 | - |
+##### paladin-holy-p1-raid
+2026/11/13 08:18:15 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:16 All 16 sims finished successfully.
+paladin-holy healer fight, 2000 iterations, 110 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [blessing_of_wisdom arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9820.45 |
+| intellect | 439.23 |
+| spirit | 337.59 |
+| mp5 | 120.25 |
+| healing power | 722.00 |
+| spell power | 218.00 |
+| crit (every table) | 12.00 |
+| spell crit (spell table only) | 10.84 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 129.85 +/- 0.11 |
+| raw HPS | 165.0 |
+| mana lasts (s) | 3599.6 |
+| overheal | 21.3% |
+| mana left at the end | 9760 of 9820 (99.4%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 41.7 | 2306 | 20.97 |
+| Illumination (20210) | 5.5 | 319 | 2.90 |
+| Sudden Insight (450554) | 1.2 | 157 | 1.43 |
+| OtherActionManaRegen#2 | 14.0 | 67 | 0.61 |
+| total | | 2849 | 25.90 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Flash of Light (19942) | 24.3 | 2789 | 25.36 | 14284 | 5.12 |
+| Oath of Light (1328548) | 1.0 | 121 | 1.10 | 0 | 0.00 |
+| total | | 2910 | 26.46 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 6.7 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Flash of Light (19942) | 18146 | 0 | 14284 | 100.0 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Flash of Light (19942) | 24.3 | 22.9 | 0.0 | - |
+##### paladin-holy-p1-bis
+2026/11/13 08:18:16 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:16 All 16 sims finished successfully.
+paladin-holy healer fight, 2000 iterations, 300 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [blessing_of_wisdom arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9820.45 |
+| intellect | 439.23 |
+| spirit | 337.59 |
+| mp5 | 120.25 |
+| healing power | 722.00 |
+| spell power | 218.00 |
+| crit (every table) | 12.00 |
+| spell crit (spell table only) | 10.84 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 718.26 +/- 0.83 |
+| raw HPS | 721.8 |
+| mana lasts (s) | 203.8 |
+| overheal | 0.5% |
+| mana left at the end | 522 of 9820 (5.3%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 150.6 | 10924 | 36.41 |
+| item 13444 | 3.0 | 5387 | 17.96 |
+| Illumination (20210) | 42.0 | 4691 | 15.64 |
+| item 12662 | 3.0 | 3603 | 12.01 |
+| Sudden Insight (450554) | 8.6 | 1719 | 5.73 |
+| OtherActionManaRegen#2 | 0.1 | 0 | 0.00 |
+| total | | 26324 | 87.75 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Holy Light (10329) | 31.7 | 18406 | 61.35 | 92331 | 5.02 |
+| Flash of Light (19942) | 134.2 | 15429 | 51.43 | 117802 | 7.64 |
+| Holy Shock (20930) | 5.2 | 1512 | 5.04 | 0 | 0.00 |
+| Divine Favor (20216) | 2.6 | 155 | 0.52 | 0 | 0.00 |
+| Oath of Light (1328548) | 1.0 | 121 | 0.40 | 0 | 0.00 |
+| total | | 35622 | 118.74 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 56.6 | 0 |
+| item 12662 | 3.0 | 0 |
+| Holy Shock (25903) | 5.2 | 5345 |
+| item 13444 | 3.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Holy Shock (25903) | 5346 | 0 | 5345 | 2.5 |
+| Flash of Light (19942) | 117942 | 0 | 117802 | 54.7 |
+| Holy Light (10329) | 93253 | 0 | 92331 | 42.8 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Holy Shock (25903) | 5.2 | 49.1 | 0.0 | - |
+| Flash of Light (19942) | 134.2 | 23.0 | 0.0 | - |
+| Holy Light (10329) | 31.7 | 27.2 | 0.0 | - |
+##### paladin-holy-p2-raid
+2026/11/13 08:18:16 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:16 All 16 sims finished successfully.
+paladin-holy healer fight, 2000 iterations, 110 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [blessing_of_wisdom arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9820.45 |
+| intellect | 439.23 |
+| spirit | 337.59 |
+| mp5 | 120.25 |
+| healing power | 722.00 |
+| spell power | 218.00 |
+| crit (every table) | 12.00 |
+| spell crit (spell table only) | 10.84 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 134.82 +/- 0.09 |
+| raw HPS | 249.9 |
+| mana lasts (s) | 3565.0 |
+| overheal | 46.1% |
+| mana left at the end | 9684 of 9820 (98.6%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 51.0 | 3277 | 29.79 |
+| Illumination (20210) | 8.3 | 479 | 4.36 |
+| Sudden Insight (450554) | 1.8 | 282 | 2.57 |
+| OtherActionManaRegen#2 | 4.7 | 117 | 1.07 |
+| total | | 4156 | 37.79 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Flash of Light (19942) | 36.3 | 4172 | 37.92 | 14831 | 3.56 |
+| Oath of Light (1328548) | 1.0 | 121 | 1.10 | 0 | 0.00 |
+| total | | 4293 | 39.02 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 10.1 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Flash of Light (19942) | 27494 | 0 | 14831 | 100.0 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Flash of Light (19942) | 36.3 | 23.0 | 0.0 | - |
+##### paladin-holy-p2-bis
+2026/11/13 08:18:16 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:16 All 16 sims finished successfully.
+paladin-holy healer fight, 2000 iterations, 300 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [blessing_of_wisdom arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9820.45 |
+| intellect | 439.23 |
+| spirit | 337.59 |
+| mp5 | 120.25 |
+| healing power | 722.00 |
+| spell power | 218.00 |
+| crit (every table) | 12.00 |
+| spell crit (spell table only) | 10.84 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 718.42 +/- 0.83 |
+| raw HPS | 722.0 |
+| mana lasts (s) | 204.9 |
+| overheal | 0.5% |
+| mana left at the end | 525 of 9820 (5.3%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 150.6 | 10924 | 36.41 |
+| item 13444 | 3.0 | 5387 | 17.96 |
+| Illumination (20210) | 42.1 | 4697 | 15.66 |
+| item 12662 | 3.0 | 3596 | 11.99 |
+| Sudden Insight (450554) | 8.6 | 1712 | 5.71 |
+| OtherActionManaRegen#2 | 0.1 | 0 | 0.00 |
+| total | | 26317 | 87.72 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Holy Light (10329) | 31.6 | 18341 | 61.14 | 91999 | 5.02 |
+| Flash of Light (19942) | 134.4 | 15457 | 51.52 | 118087 | 7.64 |
+| Holy Shock (20930) | 5.3 | 1540 | 5.13 | 0 | 0.00 |
+| Divine Favor (20216) | 2.5 | 154 | 0.51 | 0 | 0.00 |
+| Oath of Light (1328548) | 1.0 | 121 | 0.40 | 0 | 0.00 |
+| total | | 35612 | 118.71 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 56.7 | 0 |
+| Holy Shock (25903) | 5.3 | 5441 |
+| item 13444 | 3.0 | 0 |
+| item 12662 | 3.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Holy Shock (25903) | 5441 | 0 | 5441 | 2.5 |
+| Holy Light (10329) | 92918 | 0 | 91999 | 42.7 |
+| Flash of Light (19942) | 118230 | 0 | 118087 | 54.8 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Holy Shock (25903) | 5.3 | 49.3 | 0.0 | - |
+| Holy Light (10329) | 31.6 | 27.2 | 0.0 | - |
+| Flash of Light (19942) | 134.4 | 23.0 | 0.0 | - |
+##### shaman-restoration-base-raid
+2026/11/13 08:18:16 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:17 All 16 sims finished successfully.
+shaman-restoration healer fight, 2000 iterations, 110 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9810.30 |
+| intellect | 438.02 |
+| spirit | 320.10 |
+| mp5 | 115.25 |
+| healing power | 802.00 |
+| spell power | 242.00 |
+| crit (every table) | 10.00 |
+| spell crit (spell table only) | 9.70 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 131.59 +/- 0.11 |
+| raw HPS | 181.7 |
+| mana lasts (s) | 3588.5 |
+| overheal | 27.6% |
+| mana left at the end | 9782 of 9810 (99.7%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 13.2 | 739 | 6.72 |
+| Water Shield (408511) | 13.3 | 410 | 3.73 |
+| OtherActionManaRegen#2 | 43.3 | 105 | 0.95 |
+| total | | 1254 | 11.40 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Chain Heal (10623) | 1.8 | 700 | 6.36 | 2291 | 3.27 |
+| Riptide (1239243) | 2.3 | 503 | 4.57 | 2648 | 5.26 |
+| Healing Stream Totem (10463) | 1.0 | 80 | 0.73 | 0 | 0.00 |
+| total | | 1283 | 11.66 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 13.2 | 0 |
+| Water Shield (408510) | 5.1 | 0 |
+| Healing Stream (10461) | 275.0 | 9536 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Chain Heal (10623) | 4485 | 0 | 2291 | 15.8 |
+| Riptide (1239243) | 3091 | 0 | 2648 | 18.3 |
+| Healing Stream (10461) | 12409 | 0 | 9536 | 65.9 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Chain Heal (10623) | 5.5 | 25.4 | 0.0 | - |
+| Riptide (1239243) | 0.0 | - | 10.4 | 24.7 |
+| Healing Stream (10461) | 275.0 | 10.0 | 0.0 | - |
+##### shaman-restoration-base-bis
+2026/11/13 08:18:17 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:17 All 16 sims finished successfully.
+shaman-restoration healer fight, 2000 iterations, 300 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9810.30 |
+| intellect | 438.02 |
+| spirit | 320.10 |
+| mp5 | 115.25 |
+| healing power | 802.00 |
+| spell power | 242.00 |
+| crit (every table) | 10.00 |
+| spell crit (spell table only) | 9.70 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 889.59 +/- 0.68 |
+| raw HPS | 895.5 |
+| mana lasts (s) | 229.3 |
+| overheal | 0.7% |
+| mana left at the end | 1071 of 9810 (10.9%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 145.3 | 12399 | 41.33 |
+| Water Shield (408511) | 44.3 | 8633 | 28.78 |
+| item 13444 | 2.9 | 5278 | 17.59 |
+| item 12662 | 3.0 | 3595 | 11.98 |
+| Mana Tide Totem (1325256) | 5.0 | 1100 | 3.67 |
+| OtherActionManaRegen#2 | 6.2 | 768 | 2.56 |
+| total | | 31774 | 105.91 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Healing Wave (10396) | 34.0 | 17142 | 57.14 | 107031 | 6.24 |
+| Lesser Healing Wave (10468) | 29.1 | 10498 | 34.99 | 41970 | 4.00 |
+| Chain Heal (10623) | 22.2 | 8530 | 28.43 | 58056 | 6.81 |
+| Riptide (1239243) | 19.1 | 4184 | 13.95 | 27996 | 6.69 |
+| Healing Stream Totem (10463) | 2.0 | 160 | 0.53 | 0 | 0.00 |
+| total | | 40513 | 135.04 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| item 12662 | 3.0 | 0 |
+| Healing Stream (10461) | 716.1 | 31824 |
+| Mana Tide Totem (1325256) | 1.0 | 0 |
+| OtherActionManaGain | 54.3 | 0 |
+| Nature's Swiftness (16188) | 2.0 | 0 |
+| Water Shield (408510) | 15.4 | 0 |
+| item 13444 | 2.9 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Healing Stream (10461) | 32916 | 0 | 31824 | 11.9 |
+| Healing Wave (10396) | 107440 | 0 | 107031 | 40.1 |
+| Chain Heal (10623) | 58296 | 0 | 58056 | 21.8 |
+| Riptide (1239243) | 28038 | 0 | 27996 | 10.5 |
+| Lesser Healing Wave (10468) | 41970 | 0 | 41970 | 15.7 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Healing Stream (10461) | 716.1 | 10.0 | 0.0 | - |
+| Healing Wave (10396) | 34.0 | 24.6 | 0.0 | - |
+| Chain Heal (10623) | 66.5 | 24.7 | 0.0 | - |
+| Riptide (1239243) | 0.0 | - | 93.0 | 24.8 |
+| Lesser Healing Wave (10468) | 29.1 | 24.7 | 0.0 | - |
+##### shaman-restoration-s1-raid
+2026/11/13 08:18:17 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:17 All 16 sims finished successfully.
+shaman-restoration healer fight, 2000 iterations, 110 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9810.30 |
+| intellect | 438.02 |
+| spirit | 320.10 |
+| mp5 | 115.25 |
+| healing power | 802.00 |
+| spell power | 242.00 |
+| crit (every table) | 10.00 |
+| spell crit (spell table only) | 9.70 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 137.62 +/- 0.09 |
+| raw HPS | 344.4 |
+| mana lasts (s) | 3529.5 |
+| overheal | 60.0% |
+| mana left at the end | 9708 of 9810 (99.0%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 30.0 | 2121 | 19.29 |
+| Water Shield (408511) | 14.6 | 1556 | 14.14 |
+| OtherActionManaRegen#2 | 26.5 | 422 | 3.84 |
+| total | | 4099 | 37.27 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Chain Heal (10623) | 10.2 | 3915 | 35.59 | 7193 | 1.84 |
+| Riptide (1239243) | 0.9 | 207 | 1.88 | 625 | 3.02 |
+| Healing Stream Totem (10463) | 1.0 | 80 | 0.73 | 0 | 0.00 |
+| total | | 4202 | 38.20 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 14.6 | 0 |
+| Water Shield (408510) | 5.5 | 0 |
+| Healing Stream (10461) | 275.0 | 7320 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Chain Heal (10623) | 24185 | 0 | 7193 | 47.5 |
+| Riptide (1239243) | 1298 | 0 | 625 | 4.1 |
+| Healing Stream (10461) | 12405 | 0 | 7320 | 48.4 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Chain Heal (10623) | 30.5 | 24.6 | 0.0 | - |
+| Riptide (1239243) | 0.0 | - | 4.4 | 24.7 |
+| Healing Stream (10461) | 275.0 | 10.0 | 0.0 | - |
+##### shaman-restoration-s1-bis
+2026/11/13 08:18:17 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:18 All 16 sims finished successfully.
+shaman-restoration healer fight, 2000 iterations, 300 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9810.30 |
+| intellect | 438.02 |
+| spirit | 320.10 |
+| mp5 | 115.25 |
+| healing power | 802.00 |
+| spell power | 242.00 |
+| crit (every table) | 10.00 |
+| spell crit (spell table only) | 9.70 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 889.74 +/- 0.67 |
+| raw HPS | 896.6 |
+| mana lasts (s) | 229.7 |
+| overheal | 0.8% |
+| mana left at the end | 1045 of 9810 (10.7%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 145.1 | 12385 | 41.28 |
+| Water Shield (408511) | 44.4 | 8654 | 28.85 |
+| item 13444 | 3.0 | 5338 | 17.79 |
+| item 12662 | 3.0 | 3592 | 11.97 |
+| Mana Tide Totem (1325256) | 5.0 | 1100 | 3.67 |
+| OtherActionManaRegen#2 | 6.3 | 791 | 2.64 |
+| total | | 31859 | 106.20 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Healing Wave (10396) | 33.9 | 17063 | 56.88 | 106640 | 6.25 |
+| Lesser Healing Wave (10468) | 29.5 | 10646 | 35.49 | 42561 | 4.00 |
+| Chain Heal (10623) | 22.3 | 8563 | 28.54 | 58036 | 6.78 |
+| Riptide (1239243) | 19.2 | 4192 | 13.97 | 28040 | 6.69 |
+| Healing Stream Totem (10463) | 2.0 | 160 | 0.53 | 0 | 0.00 |
+| total | | 40624 | 135.41 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 54.4 | 0 |
+| item 13444 | 3.0 | 0 |
+| item 12662 | 3.0 | 0 |
+| Mana Tide Totem (1325256) | 1.0 | 0 |
+| Nature's Swiftness (16188) | 2.0 | 0 |
+| Water Shield (408510) | 15.4 | 0 |
+| Healing Stream (10461) | 716.2 | 31645 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Lesser Healing Wave (10468) | 42561 | 0 | 42561 | 15.9 |
+| Chain Heal (10623) | 58402 | 0 | 58036 | 21.7 |
+| Riptide (1239243) | 28082 | 0 | 28040 | 10.5 |
+| Healing Wave (10396) | 107049 | 0 | 106640 | 40.0 |
+| Healing Stream (10461) | 32895 | 0 | 31645 | 11.9 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Lesser Healing Wave (10468) | 29.5 | 24.7 | 0.0 | - |
+| Chain Heal (10623) | 66.8 | 24.8 | 0.0 | - |
+| Riptide (1239243) | 0.0 | - | 93.2 | 24.8 |
+| Healing Wave (10396) | 33.9 | 24.7 | 0.0 | - |
+| Healing Stream (10461) | 716.2 | 10.0 | 0.0 | - |
+##### shaman-restoration-s2-raid
+2026/11/13 08:18:18 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:18 All 16 sims finished successfully.
+shaman-restoration healer fight, 2000 iterations, 110 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9810.30 |
+| intellect | 438.02 |
+| spirit | 320.10 |
+| mp5 | 115.25 |
+| healing power | 802.00 |
+| spell power | 242.00 |
+| crit (every table) | 10.00 |
+| spell crit (spell table only) | 9.70 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 137.62 +/- 0.09 |
+| raw HPS | 344.4 |
+| mana lasts (s) | 3529.5 |
+| overheal | 60.0% |
+| mana left at the end | 9708 of 9810 (99.0%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 30.0 | 2121 | 19.29 |
+| Water Shield (408511) | 14.6 | 1556 | 14.14 |
+| OtherActionManaRegen#2 | 26.5 | 422 | 3.84 |
+| total | | 4099 | 37.27 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Chain Heal (10623) | 10.2 | 3915 | 35.59 | 7193 | 1.84 |
+| Riptide (1239243) | 0.9 | 207 | 1.88 | 625 | 3.02 |
+| Healing Stream Totem (10463) | 1.0 | 80 | 0.73 | 0 | 0.00 |
+| total | | 4202 | 38.20 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 14.6 | 0 |
+| Water Shield (408510) | 5.5 | 0 |
+| Healing Stream (10461) | 275.0 | 7320 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Riptide (1239243) | 1298 | 0 | 625 | 4.1 |
+| Healing Stream (10461) | 12405 | 0 | 7320 | 48.4 |
+| Chain Heal (10623) | 24185 | 0 | 7193 | 47.5 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Riptide (1239243) | 0.0 | - | 4.4 | 24.7 |
+| Healing Stream (10461) | 275.0 | 10.0 | 0.0 | - |
+| Chain Heal (10623) | 30.5 | 24.6 | 0.0 | - |
+##### shaman-restoration-s2-bis
+2026/11/13 08:18:18 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:18 All 16 sims finished successfully.
+shaman-restoration healer fight, 2000 iterations, 300 s
+
+consumes: [major_mana_potion flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages cerebral_cortex_compound food_sages_tea main_hand_imbue:brilliant_mana_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9810.30 |
+| intellect | 438.02 |
+| spirit | 320.10 |
+| mp5 | 115.25 |
+| healing power | 802.00 |
+| spell power | 242.00 |
+| crit (every table) | 10.00 |
+| spell crit (spell table only) | 9.70 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 891.88 +/- 0.69 |
+| raw HPS | 898.7 |
+| mana lasts (s) | 230.1 |
+| overheal | 0.8% |
+| mana left at the end | 1022 of 9810 (10.4%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 145.3 | 12413 | 41.38 |
+| Water Shield (408511) | 44.5 | 8685 | 28.95 |
+| item 13444 | 3.0 | 5346 | 17.82 |
+| item 12662 | 3.0 | 3596 | 11.99 |
+| Mana Tide Totem (1325256) | 5.0 | 1100 | 3.67 |
+| OtherActionManaRegen#2 | 6.2 | 781 | 2.60 |
+| total | | 31921 | 106.40 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Healing Wave (10396) | 33.8 | 17047 | 56.82 | 106577 | 6.25 |
+| Lesser Healing Wave (10468) | 29.5 | 10646 | 35.49 | 42607 | 4.00 |
+| Chain Heal (10623) | 22.5 | 8666 | 28.89 | 58709 | 6.77 |
+| Riptide (1239243) | 19.2 | 4191 | 13.97 | 28005 | 6.68 |
+| Healing Stream Totem (10463) | 2.0 | 160 | 0.53 | 0 | 0.00 |
+| total | | 40710 | 135.70 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 54.5 | 0 |
+| Nature's Swiftness (16188) | 2.0 | 0 |
+| Healing Stream (10461) | 716.2 | 31664 |
+| Mana Tide Totem (1325256) | 1.0 | 0 |
+| Water Shield (408510) | 15.5 | 0 |
+| item 13444 | 3.0 | 0 |
+| item 12662 | 3.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Healing Stream (10461) | 32896 | 0 | 31664 | 11.8 |
+| Chain Heal (10623) | 59075 | 0 | 58709 | 21.9 |
+| Riptide (1239243) | 28051 | 0 | 28005 | 10.5 |
+| Healing Wave (10396) | 106985 | 0 | 106577 | 39.8 |
+| Lesser Healing Wave (10468) | 42610 | 0 | 42607 | 15.9 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Healing Stream (10461) | 716.2 | 10.0 | 0.0 | - |
+| Chain Heal (10623) | 67.6 | 24.8 | 0.0 | - |
+| Riptide (1239243) | 0.0 | - | 93.2 | 24.6 |
+| Healing Wave (10396) | 33.8 | 24.8 | 0.0 | - |
+| Lesser Healing Wave (10468) | 29.5 | 24.9 | 0.0 | - |
+##### priest-holy-base-raid
+2026/11/13 08:18:19 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:19 All 16 sims finished successfully.
+priest-holy healer fight, 2000 iterations, 110 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9575.55 |
+| intellect | 431.97 |
+| spirit | 457.38 |
+| mp5 | 124.25 |
+| healing power | 806.48 |
+| spell power | 215.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.06 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 125.62 +/- 0.23 |
+| raw HPS | 363.6 |
+| mana lasts (s) | 2825.3 |
+| overheal | 65.4% |
+| mana left at the end | 9142 of 9576 (95.5%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 39.0 | 3932 | 35.74 |
+| OtherActionManaRegen#2 | 17.2 | 745 | 6.77 |
+| Litany of Light (1317006) | 16.5 | 565 | 5.14 |
+| Sudden Insight (450554) | 1.0 | 206 | 1.87 |
+| total | | 5447 | 49.52 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Prayer of Mending (1240827) | 11.8 | 3173 | 28.85 | 8902 | 2.81 |
+| Renew (10927) | 8.0 | 1800 | 16.36 | 194 | 0.11 |
+| Prayer of Healing (10961) | 0.5 | 539 | 4.90 | 1986 | 3.68 |
+| Lightwell (27871) | 1.0 | 365 | 3.32 | 0 | 0.00 |
+| Greater Heal (10965) | 0.0 | 3 | 0.03 | 9 | 3.27 |
+| total | | 5880 | 53.46 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 17.5 | 0 |
+| Inner Focus (14751) | 1.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Prayer of Healing (10961) | 2549 | 0 | 1986 | 14.4 |
+| Greater Heal (10965) | 14 | 0 | 9 | 0.1 |
+| Renew (10927) | 12295 | 0 | 194 | 1.4 |
+| Prayer of Mending (1240827) | 19666 | 0 | 8902 | 64.4 |
+| Lightwell Renew (27874) | 5471 | 0 | 2728 | 19.7 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Prayer of Healing (10961) | 2.6 | 17.6 | 0.0 | - |
+| Greater Heal (10965) | 0.0 | 10.0 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 35.9 | 19.2 |
+| Prayer of Mending (1240827) | 20.5 | 19.3 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.2 |
+##### priest-holy-base-bis
+2026/11/13 08:18:19 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:20 All 16 sims finished successfully.
+priest-holy healer fight, 2000 iterations, 300 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9575.55 |
+| intellect | 431.97 |
+| spirit | 457.38 |
+| mp5 | 124.25 |
+| healing power | 806.48 |
+| spell power | 215.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.06 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 881.85 +/- 0.65 |
+| raw HPS | 932.1 |
+| mana lasts (s) | 125.8 |
+| overheal | 5.4% |
+| mana left at the end | 230 of 9576 (2.4%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 139.7 | 15719 | 52.40 |
+| item 13444 | 3.0 | 5402 | 18.01 |
+| item 12662 | 3.0 | 3602 | 12.01 |
+| Litany of Light (1317006) | 84.3 | 3581 | 11.94 |
+| OtherActionManaRegen#2 | 11.5 | 2004 | 6.68 |
+| Sudden Insight (450554) | 5.5 | 1098 | 3.66 |
+| total | | 31406 | 104.69 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Greater Heal (10965) | 21.6 | 12013 | 40.04 | 62805 | 5.23 |
+| Flash Heal (10917) | 19.4 | 7243 | 24.14 | 28066 | 3.88 |
+| Prayer of Mending (1240827) | 24.7 | 6795 | 22.65 | 77037 | 11.34 |
+| Prayer of Healing (10961) | 4.4 | 4492 | 14.97 | 18188 | 4.05 |
+| Renew (10927) | 18.8 | 4202 | 14.01 | 31789 | 7.57 |
+| Heal (6064) | 11.3 | 2942 | 9.81 | 14575 | 4.95 |
+| Greater Heal (2060) | 8.6 | 2701 | 9.00 | 15235 | 5.64 |
+| Lightwell (27871) | 1.0 | 365 | 1.22 | 0 | 0.00 |
+| total | | 40752 | 135.84 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Inner Focus (14751) | 2.0 | 0 |
+| item 13444 | 3.0 | 0 |
+| item 12662 | 3.0 | 0 |
+| OtherActionManaGain | 95.8 | 0 |
+| Divine Grace (1277378) | 1.0 | 2219 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Heal (6064) | 14575 | 0 | 14575 | 5.5 |
+| Renew (10927) | 31985 | 0 | 31789 | 12.0 |
+| Prayer of Healing (10961) | 21663 | 0 | 18188 | 6.9 |
+| Flash Heal (10917) | 28066 | 0 | 28066 | 10.6 |
+| Greater Heal (10965) | 65574 | 0 | 62805 | 23.7 |
+| Prayer of Mending (1240827) | 80807 | 0 | 77037 | 29.1 |
+| Lightwell Renew (27874) | 5471 | 0 | 3311 | 1.3 |
+| Divine Grace (1277378) | 2219 | 0 | 2219 | 0.8 |
+| Holy Binding (1328569) | 14033 | 0 | 11329 | 4.3 |
+| Greater Heal (2060) | 15235 | 0 | 15235 | 5.8 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Heal (6064) | 11.3 | 19.4 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 91.1 | 19.0 |
+| Prayer of Healing (10961) | 21.8 | 19.0 | 0.0 | - |
+| Flash Heal (10917) | 19.4 | 19.6 | 0.0 | - |
+| Greater Heal (10965) | 21.6 | 19.0 | 0.0 | - |
+| Prayer of Mending (1240827) | 82.6 | 19.3 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.0 |
+| Divine Grace (1277378) | 1.0 | 18.2 | 0.0 | - |
+| Holy Binding (1328569) | 19.4 | 0.0 | 0.0 | - |
+| Greater Heal (2060) | 8.6 | 18.9 | 0.0 | - |
+##### priest-holy-h1-raid
+2026/11/13 08:18:20 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:20 All 16 sims finished successfully.
+priest-holy healer fight, 2000 iterations, 110 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9575.55 |
+| intellect | 431.97 |
+| spirit | 457.38 |
+| mp5 | 124.25 |
+| healing power | 806.48 |
+| spell power | 215.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.06 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 130.73 +/- 0.14 |
+| raw HPS | 395.0 |
+| mana lasts (s) | 2367.6 |
+| overheal | 66.9% |
+| mana left at the end | 9023 of 9576 (94.2%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 41.1 | 4234 | 38.49 |
+| OtherActionManaRegen#2 | 15.2 | 792 | 7.20 |
+| Litany of Light (1317006) | 18.7 | 618 | 5.61 |
+| Sudden Insight (450554) | 1.1 | 229 | 2.08 |
+| item 12662 | 0.0 | 11 | 0.10 |
+| total | | 5883 | 53.48 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Prayer of Mending (1240827) | 11.8 | 3159 | 28.71 | 8621 | 2.73 |
+| Renew (10927) | 8.0 | 1800 | 16.36 | 195 | 0.11 |
+| Flash Heal (10917) | 2.9 | 1099 | 9.99 | 2330 | 2.12 |
+| Lightwell (27871) | 1.0 | 365 | 3.32 | 0 | 0.00 |
+| Prayer of Healing (10961) | 0.0 | 14 | 0.13 | 45 | 3.21 |
+| total | | 6436 | 58.51 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Inner Focus (14751) | 1.0 | 0 |
+| OtherActionManaGain | 19.9 | 0 |
+| item 12662 | 0.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Renew (10927) | 12268 | 0 | 195 | 1.4 |
+| Prayer of Mending (1240827) | 19831 | 0 | 8621 | 59.9 |
+| Lightwell Renew (27874) | 5475 | 0 | 2717 | 18.9 |
+| Holy Binding (1328569) | 1686 | 0 | 472 | 3.3 |
+| Flash Heal (10917) | 4123 | 0 | 2330 | 16.2 |
+| Prayer of Healing (10961) | 65 | 0 | 45 | 0.3 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Renew (10927) | 0.0 | - | 35.8 | 19.2 |
+| Prayer of Mending (1240827) | 20.6 | 19.2 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.2 |
+| Holy Binding (1328569) | 2.4 | 0.0 | 0.0 | - |
+| Flash Heal (10917) | 2.9 | 18.3 | 0.0 | - |
+| Prayer of Healing (10961) | 0.1 | 15.6 | 0.0 | - |
+##### priest-holy-h1-bis
+2026/11/13 08:18:20 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:21 All 16 sims finished successfully.
+priest-holy healer fight, 2000 iterations, 300 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9575.55 |
+| intellect | 431.97 |
+| spirit | 457.38 |
+| mp5 | 124.25 |
+| healing power | 806.48 |
+| spell power | 215.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.06 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 872.86 +/- 0.64 |
+| raw HPS | 936.2 |
+| mana lasts (s) | 122.0 |
+| overheal | 6.8% |
+| mana left at the end | 221 of 9576 (2.3%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 140.2 | 15777 | 52.59 |
+| item 13444 | 3.0 | 5395 | 17.98 |
+| Litany of Light (1317006) | 87.0 | 3633 | 12.11 |
+| item 12662 | 3.0 | 3603 | 12.01 |
+| OtherActionManaRegen#2 | 11.0 | 1944 | 6.48 |
+| Sudden Insight (450554) | 5.5 | 1104 | 3.68 |
+| total | | 31456 | 104.85 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Greater Heal (10965) | 19.5 | 10845 | 36.15 | 57299 | 5.28 |
+| Flash Heal (10917) | 24.0 | 8949 | 29.83 | 33143 | 3.70 |
+| Prayer of Mending (1240827) | 24.6 | 6777 | 22.59 | 76426 | 11.28 |
+| Renew (10927) | 18.8 | 4205 | 14.02 | 31718 | 7.54 |
+| Prayer of Healing (10961) | 3.8 | 3919 | 13.06 | 15444 | 3.94 |
+| Heal (6064) | 11.7 | 3040 | 10.13 | 15011 | 4.94 |
+| Greater Heal (2060) | 8.6 | 2710 | 9.03 | 15278 | 5.64 |
+| Lightwell (27871) | 1.0 | 365 | 1.22 | 0 | 0.00 |
+| total | | 40811 | 136.04 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Inner Focus (14751) | 2.0 | 0 |
+| item 12662 | 3.0 | 0 |
+| Divine Grace (1277378) | 1.0 | 2237 |
+| OtherActionManaGain | 98.5 | 0 |
+| item 13444 | 3.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Heal (6064) | 15011 | 0 | 15011 | 5.7 |
+| Prayer of Healing (10961) | 18929 | 0 | 15444 | 5.9 |
+| Lightwell Renew (27874) | 5478 | 0 | 2939 | 1.1 |
+| Divine Grace (1277378) | 2237 | 0 | 2237 | 0.9 |
+| Greater Heal (2060) | 15278 | 0 | 15278 | 5.8 |
+| Renew (10927) | 31975 | 0 | 31718 | 12.1 |
+| Holy Binding (1328569) | 16710 | 0 | 12362 | 4.7 |
+| Flash Heal (10917) | 34699 | 0 | 33143 | 12.7 |
+| Greater Heal (10965) | 59242 | 0 | 57299 | 21.9 |
+| Prayer of Mending (1240827) | 81308 | 0 | 76426 | 29.2 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Heal (6064) | 11.7 | 18.7 | 0.0 | - |
+| Prayer of Healing (10961) | 19.0 | 19.3 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.0 |
+| Divine Grace (1277378) | 1.0 | 19.9 | 0.0 | - |
+| Greater Heal (2060) | 8.6 | 18.9 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 91.1 | 19.0 |
+| Holy Binding (1328569) | 23.1 | 0.0 | 0.0 | - |
+| Flash Heal (10917) | 24.0 | 19.9 | 0.0 | - |
+| Greater Heal (10965) | 19.5 | 19.3 | 0.0 | - |
+| Prayer of Mending (1240827) | 83.3 | 19.0 | 0.0 | - |
+##### priest-holy-h2-raid
+2026/11/13 08:18:21 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:21 All 16 sims finished successfully.
+priest-holy healer fight, 2000 iterations, 110 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9575.55 |
+| intellect | 431.97 |
+| spirit | 457.38 |
+| mp5 | 124.25 |
+| healing power | 806.48 |
+| spell power | 215.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.06 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 135.30 +/- 0.11 |
+| raw HPS | 454.9 |
+| mana lasts (s) | 2503.5 |
+| overheal | 70.3% |
+| mana left at the end | 9116 of 9576 (95.2%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 45.4 | 4890 | 44.45 |
+| OtherActionManaRegen#2 | 10.9 | 1028 | 9.35 |
+| Litany of Light (1317006) | 19.4 | 619 | 5.63 |
+| Sudden Insight (450554) | 1.4 | 281 | 2.55 |
+| total | | 6818 | 61.98 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Renew (10927) | 16.9 | 3804 | 34.58 | 5235 | 1.38 |
+| Prayer of Mending (1240827) | 11.5 | 3075 | 27.95 | 7563 | 2.46 |
+| Lightwell (27871) | 1.0 | 365 | 3.32 | 0 | 0.00 |
+| Flash Heal (10917) | 0.1 | 34 | 0.31 | 46 | 1.34 |
+| total | | 7278 | 66.16 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 20.8 | 0 |
+| Inner Focus (14751) | 1.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Flash Heal (10917) | 129 | 0 | 46 | 0.3 |
+| Holy Binding (1328569) | 38 | 0 | 8 | 0.1 |
+| Renew (10927) | 25973 | 0 | 5235 | 35.2 |
+| Prayer of Mending (1240827) | 18475 | 0 | 7563 | 50.8 |
+| Lightwell Renew (27874) | 5425 | 0 | 2032 | 13.7 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Flash Heal (10917) | 0.1 | 19.6 | 0.0 | - |
+| Holy Binding (1328569) | 0.1 | 0.0 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 75.9 | 19.1 |
+| Prayer of Mending (1240827) | 19.2 | 19.0 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 15.8 | 14.0 |
+##### priest-holy-h2-bis
+2026/11/13 08:18:22 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:22 All 16 sims finished successfully.
+priest-holy healer fight, 2000 iterations, 300 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9575.55 |
+| intellect | 431.97 |
+| spirit | 457.38 |
+| mp5 | 124.25 |
+| healing power | 806.48 |
+| spell power | 215.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.06 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 873.40 +/- 0.65 |
+| raw HPS | 937.5 |
+| mana lasts (s) | 122.1 |
+| overheal | 6.8% |
+| mana left at the end | 178 of 9576 (1.9%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 140.2 | 15776 | 52.59 |
+| item 13444 | 3.0 | 5408 | 18.03 |
+| Litany of Light (1317006) | 87.7 | 3647 | 12.16 |
+| item 12662 | 3.0 | 3598 | 11.99 |
+| OtherActionManaRegen#2 | 11.0 | 1947 | 6.49 |
+| Sudden Insight (450554) | 5.5 | 1110 | 3.70 |
+| total | | 31486 | 104.95 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Greater Heal (10965) | 19.4 | 10791 | 35.97 | 57252 | 5.31 |
+| Flash Heal (10917) | 24.0 | 8951 | 29.84 | 33121 | 3.70 |
+| Prayer of Mending (1240827) | 24.5 | 6736 | 22.45 | 76372 | 11.34 |
+| Renew (10927) | 20.1 | 4484 | 14.95 | 32571 | 7.26 |
+| Prayer of Healing (10961) | 3.7 | 3848 | 12.83 | 15070 | 3.92 |
+| Heal (6064) | 11.6 | 3018 | 10.06 | 14913 | 4.94 |
+| Greater Heal (2060) | 8.6 | 2690 | 8.97 | 15188 | 5.65 |
+| Lightwell (27871) | 1.0 | 365 | 1.22 | 0 | 0.00 |
+| total | | 40883 | 136.28 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Divine Grace (1277378) | 1.0 | 2236 |
+| item 12662 | 3.0 | 0 |
+| OtherActionManaGain | 99.2 | 0 |
+| Inner Focus (14751) | 2.0 | 0 |
+| item 13444 | 3.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Greater Heal (2060) | 15188 | 0 | 15188 | 5.8 |
+| Renew (10927) | 33382 | 0 | 32571 | 12.4 |
+| Prayer of Healing (10961) | 18571 | 0 | 15070 | 5.8 |
+| Divine Grace (1277378) | 2236 | 0 | 2236 | 0.9 |
+| Holy Binding (1328569) | 16700 | 0 | 12400 | 4.7 |
+| Flash Heal (10917) | 34658 | 0 | 33121 | 12.6 |
+| Greater Heal (10965) | 58944 | 0 | 57252 | 21.9 |
+| Heal (6064) | 14913 | 0 | 14913 | 5.7 |
+| Prayer of Mending (1240827) | 81162 | 0 | 76372 | 29.1 |
+| Lightwell Renew (27874) | 5485 | 0 | 2897 | 1.1 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Greater Heal (2060) | 8.6 | 19.2 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 95.1 | 19.2 |
+| Prayer of Healing (10961) | 18.7 | 19.2 | 0.0 | - |
+| Divine Grace (1277378) | 1.0 | 19.8 | 0.0 | - |
+| Holy Binding (1328569) | 23.1 | 0.0 | 0.0 | - |
+| Flash Heal (10917) | 24.0 | 19.6 | 0.0 | - |
+| Greater Heal (10965) | 19.4 | 19.3 | 0.0 | - |
+| Heal (6064) | 11.6 | 18.8 | 0.0 | - |
+| Prayer of Mending (1240827) | 83.1 | 19.0 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.0 |
+##### priest-discipline-base-raid
+2026/11/13 08:18:22 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:23 All 16 sims finished successfully.
+priest-discipline healer fight, 2000 iterations, 110 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9775.20 |
+| intellect | 445.28 |
+| spirit | 450.12 |
+| mp5 | 108.25 |
+| healing power | 749.00 |
+| spell power | 216.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.28 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 119.24 +/- 0.31 |
+| raw HPS | 216.5 |
+| mana lasts (s) | 2551.7 |
+| overheal | 44.9% |
+| mana left at the end | 9353 of 9775 (95.7%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 20.8 | 1892 | 17.20 |
+| OtherActionManaRegen#2 | 35.7 | 1192 | 10.84 |
+| Sudden Insight (450554) | 0.5 | 87 | 0.79 |
+| total | | 3171 | 28.83 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Renew (10927) | 8.0 | 1575 | 14.32 | 4113 | 2.61 |
+| Prayer of Healing (10961) | 1.5 | 1542 | 14.02 | 5535 | 3.59 |
+| Lightwell (27871) | 1.0 | 365 | 3.32 | 0 | 0.00 |
+| Penance (1316995) | 0.3 | 109 | 0.99 | 509 | 4.67 |
+| Greater Heal (2060) | 0.0 | 2 | 0.02 | 10 | 4.88 |
+| total | | 3593 | 32.66 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 0.5 | 0 |
+| Inner Focus (14751) | 1.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Penance (1316995) | 627 | 0 | 509 | 3.9 |
+| Renew (10927) | 10884 | 0 | 4113 | 31.4 |
+| Prayer of Healing (10961) | 6522 | 0 | 5535 | 42.2 |
+| Lightwell Renew (27874) | 5491 | 0 | 2731 | 20.8 |
+| Divine Aegis (431624) | 281 | 281 | 218 | 1.7 |
+| Greater Heal (2060) | 11 | 0 | 10 | 0.1 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Penance (1316995) | 1.0 | 19.6 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 36.7 | 19.3 |
+| Prayer of Healing (10961) | 7.5 | 18.6 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.3 |
+| Greater Heal (2060) | 0.0 | 30.8 | 0.0 | - |
+##### priest-discipline-base-bis
+2026/11/13 08:18:23 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:23 All 16 sims finished successfully.
+priest-discipline healer fight, 2000 iterations, 300 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9775.20 |
+| intellect | 445.28 |
+| spirit | 450.12 |
+| mp5 | 108.25 |
+| healing power | 749.00 |
+| spell power | 216.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.28 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 624.61 +/- 0.43 |
+| raw HPS | 644.0 |
+| mana lasts (s) | 94.5 |
+| overheal | 3.0% |
+| mana left at the end | 167 of 9775 (1.7%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 135.7 | 14279 | 47.60 |
+| item 13444 | 3.0 | 5409 | 18.03 |
+| item 12662 | 3.0 | 3602 | 12.01 |
+| OtherActionManaRegen#2 | 15.8 | 2655 | 8.85 |
+| Sudden Insight (450554) | 4.8 | 969 | 3.23 |
+| total | | 26913 | 89.71 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Greater Heal (10965) | 16.9 | 9336 | 31.12 | 45428 | 4.87 |
+| Penance (1316995) | 20.8 | 6370 | 21.23 | 40131 | 6.30 |
+| Flash Heal (10917) | 16.5 | 6089 | 20.30 | 21435 | 3.52 |
+| Renew (10927) | 18.6 | 4157 | 13.86 | 27173 | 6.54 |
+| Prayer of Healing (10961) | 3.8 | 3956 | 13.19 | 15214 | 3.85 |
+| Greater Heal (2060) | 12.0 | 3773 | 12.58 | 18851 | 5.00 |
+| Power Word: Shield (10901) | 6.6 | 2475 | 8.25 | 7844 | 3.17 |
+| Lightwell (27871) | 1.0 | 365 | 1.22 | 0 | 0.00 |
+| total | | 36522 | 121.74 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| item 13444 | 3.0 | 0 |
+| Divine Grace (1277378) | 1.0 | 2010 |
+| item 12662 | 3.0 | 0 |
+| OtherActionManaGain | 10.8 | 0 |
+| Inner Focus (14751) | 2.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Divine Aegis (431624) | 6636 | 6636 | 5955 | 3.2 |
+| Greater Heal (2060) | 18857 | 0 | 18851 | 10.1 |
+| Flash Heal (10917) | 21435 | 0 | 21435 | 11.4 |
+| Greater Heal (10965) | 46053 | 0 | 45428 | 24.2 |
+| Prayer of Healing (10961) | 17052 | 0 | 15214 | 8.1 |
+| Divine Grace (1277378) | 2010 | 0 | 2010 | 1.1 |
+| Renew (10927) | 27427 | 0 | 27173 | 14.5 |
+| Penance (1316995) | 40283 | 0 | 40131 | 21.4 |
+| Power Word: Shield (10901) | 7965 | 7965 | 7844 | 4.2 |
+| Lightwell Renew (27874) | 5481 | 0 | 3341 | 1.8 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Greater Heal (2060) | 12.0 | 19.0 | 0.0 | - |
+| Flash Heal (10917) | 16.5 | 22.1 | 0.0 | - |
+| Greater Heal (10965) | 16.9 | 21.5 | 0.0 | - |
+| Prayer of Healing (10961) | 19.2 | 19.5 | 0.0 | - |
+| Divine Grace (1277378) | 1.0 | 20.4 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 90.4 | 19.3 |
+| Penance (1316995) | 60.8 | 20.2 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.6 |
+##### priest-discipline-h1-raid
+2026/11/13 08:18:23 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:24 All 16 sims finished successfully.
+priest-discipline healer fight, 2000 iterations, 110 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9775.20 |
+| intellect | 445.28 |
+| spirit | 450.12 |
+| mp5 | 108.25 |
+| healing power | 749.00 |
+| spell power | 216.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.28 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 127.53 +/- 0.13 |
+| raw HPS | 253.2 |
+| mana lasts (s) | 2009.0 |
+| overheal | 49.6% |
+| mana left at the end | 9143 of 9775 (93.5%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 29.8 | 2970 | 27.00 |
+| OtherActionManaRegen#2 | 26.7 | 1452 | 13.20 |
+| Sudden Insight (450554) | 0.9 | 161 | 1.46 |
+| item 12662 | 0.0 | 3 | 0.03 |
+| total | | 4586 | 41.69 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Flash Heal (10917) | 8.5 | 3233 | 29.39 | 6807 | 2.11 |
+| Renew (10927) | 8.0 | 1576 | 14.33 | 4107 | 2.61 |
+| Lightwell (27871) | 1.0 | 365 | 3.32 | 0 | 0.00 |
+| Prayer of Healing (10961) | 0.0 | 45 | 0.41 | 130 | 2.89 |
+| total | | 5219 | 47.44 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Inner Focus (14751) | 1.0 | 0 |
+| item 12662 | 0.0 | 0 |
+| OtherActionManaGain | 0.8 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Divine Aegis (431624) | 434 | 434 | 284 | 2.0 |
+| Renew (10927) | 10877 | 0 | 4107 | 29.3 |
+| Flash Heal (10917) | 10845 | 0 | 6807 | 48.5 |
+| Lightwell Renew (27874) | 5506 | 0 | 2701 | 19.3 |
+| Prayer of Healing (10961) | 191 | 0 | 130 | 0.9 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Renew (10927) | 0.0 | - | 36.7 | 19.2 |
+| Flash Heal (10917) | 8.5 | 19.1 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.1 | 14.4 |
+| Prayer of Healing (10961) | 0.2 | 20.0 | 0.0 | - |
+##### priest-discipline-h1-bis
+2026/11/13 08:18:24 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:24 All 16 sims finished successfully.
+priest-discipline healer fight, 2000 iterations, 300 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9775.20 |
+| intellect | 445.28 |
+| spirit | 450.12 |
+| mp5 | 108.25 |
+| healing power | 749.00 |
+| spell power | 216.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.28 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 618.00 +/- 0.43 |
+| raw HPS | 640.3 |
+| mana lasts (s) | 91.8 |
+| overheal | 3.5% |
+| mana left at the end | 172 of 9775 (1.8%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 135.7 | 14281 | 47.60 |
+| item 13444 | 3.0 | 5405 | 18.02 |
+| item 12662 | 3.0 | 3603 | 12.01 |
+| OtherActionManaRegen#2 | 15.8 | 2653 | 8.84 |
+| Sudden Insight (450554) | 4.9 | 983 | 3.28 |
+| total | | 26924 | 89.75 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Greater Heal (10965) | 16.0 | 8853 | 29.51 | 43251 | 4.89 |
+| Flash Heal (10917) | 18.8 | 6857 | 22.86 | 23610 | 3.44 |
+| Penance (1316995) | 20.8 | 6456 | 21.52 | 40053 | 6.20 |
+| Renew (10927) | 18.6 | 4152 | 13.84 | 27128 | 6.53 |
+| Greater Heal (2060) | 12.2 | 3836 | 12.79 | 19178 | 5.00 |
+| Prayer of Healing (10961) | 3.6 | 3663 | 12.21 | 13940 | 3.81 |
+| Power Word: Shield (10901) | 6.3 | 2347 | 7.82 | 7468 | 3.18 |
+| Lightwell (27871) | 1.0 | 365 | 1.22 | 0 | 0.00 |
+| total | | 36528 | 121.76 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 10.9 | 0 |
+| item 13444 | 3.0 | 0 |
+| Divine Grace (1277378) | 1.0 | 2011 |
+| Inner Focus (14751) | 2.0 | 0 |
+| item 12662 | 3.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Penance (1316995) | 40149 | 0 | 40053 | 21.6 |
+| Lightwell Renew (27874) | 5491 | 0 | 2880 | 1.6 |
+| Flash Heal (10917) | 24437 | 0 | 23610 | 12.7 |
+| Greater Heal (2060) | 19181 | 0 | 19178 | 10.3 |
+| Power Word: Shield (10901) | 7552 | 7552 | 7468 | 4.0 |
+| Divine Grace (1277378) | 2011 | 0 | 2011 | 1.1 |
+| Renew (10927) | 27362 | 0 | 27128 | 14.6 |
+| Divine Aegis (431624) | 6545 | 6545 | 5882 | 3.2 |
+| Greater Heal (10965) | 43585 | 0 | 43251 | 23.3 |
+| Prayer of Healing (10961) | 15781 | 0 | 13940 | 7.5 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Penance (1316995) | 60.7 | 19.9 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.4 |
+| Flash Heal (10917) | 18.8 | 22.2 | 0.0 | - |
+| Greater Heal (2060) | 12.2 | 19.1 | 0.0 | - |
+| Divine Grace (1277378) | 1.0 | 20.1 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 90.2 | 19.1 |
+| Greater Heal (10965) | 16.0 | 21.1 | 0.0 | - |
+| Prayer of Healing (10961) | 17.8 | 19.4 | 0.0 | - |
+##### priest-discipline-h2-raid
+2026/11/13 08:18:25 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:25 All 16 sims finished successfully.
+priest-discipline healer fight, 2000 iterations, 110 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9775.20 |
+| intellect | 445.28 |
+| spirit | 450.12 |
+| mp5 | 108.25 |
+| healing power | 749.00 |
+| spell power | 216.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.28 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 133.45 +/- 0.11 |
+| raw HPS | 307.6 |
+| mana lasts (s) | 3354.4 |
+| overheal | 56.6% |
+| mana left at the end | 9586 of 9775 (98.1%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 37.1 | 3619 | 32.90 |
+| OtherActionManaRegen#2 | 19.3 | 896 | 8.14 |
+| Sudden Insight (450554) | 1.0 | 189 | 1.72 |
+| total | | 4704 | 42.77 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Renew (10927) | 20.8 | 4447 | 40.43 | 12528 | 2.82 |
+| Lightwell (27871) | 1.0 | 365 | 3.32 | 0 | 0.00 |
+| Flash Heal (10917) | 0.2 | 82 | 0.74 | 121 | 1.48 |
+| total | | 4894 | 44.49 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 1.0 | 0 |
+| Inner Focus (14751) | 1.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Divine Aegis (431624) | 11 | 11 | 6 | 0.0 |
+| Flash Heal (10917) | 279 | 0 | 121 | 0.8 |
+| Renew (10927) | 28070 | 0 | 12528 | 85.3 |
+| Lightwell Renew (27874) | 5480 | 0 | 2024 | 13.8 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Flash Heal (10917) | 0.2 | 18.4 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 94.7 | 19.3 |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.1 |
+##### priest-discipline-h2-bis
+2026/11/13 08:18:25 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:26 All 16 sims finished successfully.
+priest-discipline healer fight, 2000 iterations, 300 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 9775.20 |
+| intellect | 445.28 |
+| spirit | 450.12 |
+| mp5 | 108.25 |
+| healing power | 749.00 |
+| spell power | 216.00 |
+| crit (every table) | 6.00 |
+| spell crit (spell table only) | 8.28 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 615.70 +/- 0.43 |
+| raw HPS | 638.3 |
+| mana lasts (s) | 91.9 |
+| overheal | 3.5% |
+| mana left at the end | 112 of 9775 (1.1%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 136.4 | 14355 | 47.85 |
+| item 13444 | 3.0 | 5411 | 18.04 |
+| item 12662 | 3.0 | 3602 | 12.01 |
+| OtherActionManaRegen#2 | 15.1 | 2536 | 8.45 |
+| Sudden Insight (450554) | 4.9 | 980 | 3.27 |
+| total | | 26884 | 89.61 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Greater Heal (10965) | 16.0 | 8883 | 29.61 | 43390 | 4.88 |
+| Flash Heal (10917) | 18.6 | 6787 | 22.62 | 23408 | 3.45 |
+| Penance (1316995) | 20.4 | 6348 | 21.16 | 39403 | 6.21 |
+| Renew (10927) | 20.3 | 4535 | 15.12 | 28049 | 6.18 |
+| Greater Heal (2060) | 12.1 | 3801 | 12.67 | 18992 | 5.00 |
+| Prayer of Healing (10961) | 3.5 | 3594 | 11.98 | 13652 | 3.80 |
+| Power Word: Shield (10901) | 6.0 | 2235 | 7.45 | 7164 | 3.21 |
+| Lightwell (27871) | 1.0 | 365 | 1.22 | 0 | 0.00 |
+| total | | 36547 | 121.82 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Inner Focus (14751) | 2.0 | 0 |
+| OtherActionManaGain | 10.9 | 0 |
+| item 13444 | 3.0 | 0 |
+| item 12662 | 3.0 | 0 |
+| Divine Grace (1277378) | 1.0 | 2002 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Flash Heal (10917) | 24192 | 0 | 23408 | 12.7 |
+| Greater Heal (2060) | 18994 | 0 | 18992 | 10.3 |
+| Renew (10927) | 28479 | 0 | 28049 | 15.2 |
+| Penance (1316995) | 39502 | 0 | 39403 | 21.3 |
+| Prayer of Healing (10961) | 15496 | 0 | 13652 | 7.4 |
+| Power Word: Shield (10901) | 7191 | 7191 | 7164 | 3.9 |
+| Lightwell Renew (27874) | 5480 | 0 | 2838 | 1.5 |
+| Divine Aegis (431624) | 6474 | 6474 | 5814 | 3.1 |
+| Divine Grace (1277378) | 2002 | 0 | 2002 | 1.1 |
+| Greater Heal (10965) | 43675 | 0 | 43390 | 23.5 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Flash Heal (10917) | 18.6 | 22.0 | 0.0 | - |
+| Greater Heal (2060) | 12.1 | 18.9 | 0.0 | - |
+| Renew (10927) | 0.0 | - | 93.9 | 19.1 |
+| Penance (1316995) | 59.7 | 19.9 | 0.0 | - |
+| Prayer of Healing (10961) | 17.5 | 19.6 | 0.0 | - |
+| Lightwell Renew (27874) | 0.0 | - | 16.0 | 14.6 |
+| Divine Grace (1277378) | 1.0 | 19.3 | 0.0 | - |
+| Greater Heal (10965) | 16.0 | 20.8 | 0.0 | - |
+##### druid-restoration-base-raid
+2026/11/13 08:18:26 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:26 All 16 sims finished successfully.
+druid-restoration healer fight, 2000 iterations, 110 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [gift_of_the_wild arcane_brilliance power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 8572.35 |
+| intellect | 373.89 |
+| spirit | 493.35 |
+| mp5 | 110.25 |
+| healing power | 771.00 |
+| spell power | 211.00 |
+| crit (every table) | 9.00 |
+| spell crit (spell table only) | 8.04 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 111.94 +/- 0.22 |
+| raw HPS | 433.4 |
+| mana lasts (s) | 3254.7 |
+| overheal | 74.2% |
+| mana left at the end | 8350 of 8572 (97.4%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#2 | 29.0 | 2750 | 25.00 |
+| OtherActionManaRegen#1 | 26.0 | 2610 | 23.73 |
+| item 12662 | 0.0 | 1 | 0.01 |
+| total | | 5362 | 48.74 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Rejuvenation (9841) | 7.7 | 2507 | 22.79 | 1426 | 0.57 |
+| Regrowth (9858) | 4.0 | 2034 | 18.49 | 1948 | 0.96 |
+| Tranquility (9863) | 0.7 | 526 | 4.78 | 3863 | 7.35 |
+| Rejuvenation (8910) | 2.8 | 518 | 4.71 | 3321 | 6.41 |
+| total | | 5584 | 50.76 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Elune's Light (1259799) | 1.0 | 0 |
+| OtherActionManaGain | 0.0 | 0 |
+| item 12662 | 0.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Tranquility (9863) | 5523 | 0 | 3863 | 31.4 |
+| Bloom (1328622) | 6512 | 0 | 1755 | 14.3 |
+| Regrowth (9858) | 15275 | 0 | 1948 | 15.8 |
+| Rejuvenation (8910) | 3902 | 0 | 3321 | 27.0 |
+| Rejuvenation (9841) | 16458 | 0 | 1426 | 11.6 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Tranquility (9863) | 0.0 | - | 15.1 | 17.3 |
+| Bloom (1328622) | 12.2 | 16.6 | 0.0 | - |
+| Regrowth (9858) | 4.0 | 29.8 | 33.2 | 27.9 |
+| Rejuvenation (8910) | 0.0 | - | 12.9 | 17.2 |
+| Rejuvenation (9841) | 0.0 | - | 34.8 | 18.2 |
+##### druid-restoration-base-bis
+2026/11/13 08:18:26 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:26 All 16 sims finished successfully.
+druid-restoration healer fight, 2000 iterations, 300 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [gift_of_the_wild arcane_brilliance power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 8572.35 |
+| intellect | 373.89 |
+| spirit | 493.35 |
+| mp5 | 110.25 |
+| healing power | 771.00 |
+| spell power | 211.00 |
+| crit (every table) | 9.00 |
+| spell crit (spell table only) | 8.04 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 1028.32 +/- 0.48 |
+| raw HPS | 1058.3 |
+| mana lasts (s) | 273.6 |
+| overheal | 2.8% |
+| mana left at the end | 608 of 8572 (7.1%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 131.9 | 18326 | 61.09 |
+| item 13444 | 3.0 | 5397 | 17.99 |
+| item 12662 | 3.0 | 3601 | 12.00 |
+| OtherActionManaRegen#2 | 18.1 | 2777 | 9.26 |
+| total | | 30100 | 100.33 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Healing Touch (9889) | 17.7 | 11574 | 38.58 | 57819 | 5.00 |
+| Rejuvenation (8910) | 50.1 | 9422 | 31.41 | 73417 | 7.79 |
+| Rejuvenation (9841) | 17.7 | 5722 | 19.07 | 40897 | 7.15 |
+| Regrowth (9858) | 10.0 | 5107 | 17.02 | 38873 | 7.61 |
+| Swiftmend (18562) | 15.7 | 3779 | 12.60 | 37478 | 9.92 |
+| Tranquility (9863) | 3.0 | 2398 | 7.99 | 21249 | 8.86 |
+| Innervate (29166) | 1.0 | 62 | 0.21 | 0 | 0.00 |
+| total | | 38065 | 126.88 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| item 13444 | 3.0 | 0 |
+| OtherActionManaGain | 6.0 | 0 |
+| Nature's Swiftness (17116) | 2.0 | 0 |
+| item 12662 | 3.0 | 0 |
+| Elune's Light (1259799) | 2.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Healing Touch (9889) | 58131 | 0 | 57819 | 18.7 |
+| Regrowth (9858) | 39754 | 0 | 38873 | 12.6 |
+| Bloom (1328622) | 39931 | 0 | 38763 | 12.6 |
+| Rejuvenation (8910) | 75108 | 0 | 73417 | 23.8 |
+| Rejuvenation (9841) | 41381 | 0 | 40897 | 13.3 |
+| Swiftmend (18562) | 37700 | 0 | 37478 | 12.1 |
+| Tranquility (9863) | 25471 | 0 | 21249 | 6.9 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Healing Touch (9889) | 17.7 | 18.0 | 0.0 | - |
+| Regrowth (9858) | 10.0 | 28.6 | 87.9 | 27.8 |
+| Bloom (1328622) | 74.5 | 17.4 | 0.0 | - |
+| Rejuvenation (8910) | 0.0 | - | 243.9 | 17.6 |
+| Rejuvenation (9841) | 0.0 | - | 86.4 | 18.1 |
+| Swiftmend (18562) | 15.7 | 18.6 | 0.0 | - |
+| Tranquility (9863) | 0.0 | - | 69.4 | 17.5 |
+##### druid-restoration-d1-raid
+2026/11/13 08:18:27 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:27 All 16 sims finished successfully.
+druid-restoration healer fight, 2000 iterations, 110 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [gift_of_the_wild arcane_brilliance power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 8572.35 |
+| intellect | 373.89 |
+| spirit | 493.35 |
+| mp5 | 110.25 |
+| healing power | 771.00 |
+| spell power | 211.00 |
+| crit (every table) | 9.00 |
+| spell crit (spell table only) | 8.04 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 133.94 +/- 0.11 |
+| raw HPS | 557.5 |
+| mana lasts (s) | 1318.5 |
+| overheal | 76.0% |
+| mana left at the end | 7735 of 8572 (90.2%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 37.2 | 3747 | 34.07 |
+| OtherActionManaRegen#2 | 17.8 | 2461 | 22.38 |
+| item 12662 | 0.0 | 36 | 0.33 |
+| total | | 6245 | 56.77 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Rejuvenation (9841) | 8.0 | 2584 | 23.49 | 1495 | 0.58 |
+| Rejuvenation (8910) | 13.1 | 2457 | 22.34 | 9541 | 3.88 |
+| Regrowth (9858) | 4.0 | 2041 | 18.55 | 1851 | 0.91 |
+| total | | 7082 | 64.38 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Elune's Light (1259799) | 1.0 | 0 |
+| OtherActionManaGain | 0.0 | 0 |
+| item 12662 | 0.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Bloom (1328622) | 11309 | 0 | 1847 | 12.5 |
+| Regrowth (9858) | 15336 | 0 | 1851 | 12.6 |
+| Rejuvenation (8910) | 17994 | 0 | 9541 | 64.8 |
+| Rejuvenation (9841) | 16685 | 0 | 1495 | 10.1 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Bloom (1328622) | 21.2 | 16.7 | 0.0 | - |
+| Regrowth (9858) | 4.0 | 29.9 | 33.3 | 28.4 |
+| Rejuvenation (8910) | 0.0 | - | 59.7 | 17.1 |
+| Rejuvenation (9841) | 0.0 | - | 35.3 | 18.4 |
+##### druid-restoration-d1-bis
+2026/11/13 08:18:27 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:27 All 16 sims finished successfully.
+druid-restoration healer fight, 2000 iterations, 300 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [gift_of_the_wild arcane_brilliance power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 8572.35 |
+| intellect | 373.89 |
+| spirit | 493.35 |
+| mp5 | 110.25 |
+| healing power | 771.00 |
+| spell power | 211.00 |
+| crit (every table) | 9.00 |
+| spell crit (spell table only) | 8.04 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 999.24 +/- 0.69 |
+| raw HPS | 1082.8 |
+| mana lasts (s) | 264.8 |
+| overheal | 7.7% |
+| mana left at the end | 215 of 8572 (2.5%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 137.1 | 18768 | 62.56 |
+| item 13444 | 3.0 | 5393 | 17.98 |
+| item 12662 | 3.0 | 3587 | 11.96 |
+| OtherActionManaRegen#2 | 12.9 | 2018 | 6.73 |
+| total | | 29767 | 99.22 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Rejuvenation (8910) | 64.0 | 12055 | 40.18 | 83835 | 6.95 |
+| Healing Touch (9889) | 15.9 | 10420 | 34.73 | 52120 | 5.00 |
+| Rejuvenation (9841) | 17.6 | 5701 | 19.00 | 41403 | 7.26 |
+| Regrowth (9858) | 9.9 | 5028 | 16.76 | 38404 | 7.64 |
+| Swiftmend (18562) | 13.8 | 3313 | 11.04 | 32796 | 9.90 |
+| Tranquility (9863) | 1.9 | 1544 | 5.15 | 10390 | 6.73 |
+| Innervate (29166) | 1.0 | 62 | 0.21 | 0 | 0.00 |
+| total | | 38124 | 127.08 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| OtherActionManaGain | 6.0 | 0 |
+| item 13444 | 3.0 | 0 |
+| Elune's Light (1259799) | 2.0 | 0 |
+| Nature's Swiftness (17116) | 2.0 | 0 |
+| item 12662 | 3.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Tranquility (9863) | 16538 | 0 | 10390 | 3.5 |
+| Rejuvenation (8910) | 95335 | 0 | 83835 | 28.0 |
+| Rejuvenation (9841) | 41747 | 0 | 41403 | 13.8 |
+| Swiftmend (18562) | 32983 | 0 | 32796 | 10.9 |
+| Bloom (1328622) | 46783 | 0 | 40822 | 13.6 |
+| Healing Touch (9889) | 52259 | 0 | 52120 | 17.4 |
+| Regrowth (9858) | 39197 | 0 | 38404 | 12.8 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Tranquility (9863) | 0.0 | - | 44.9 | 17.8 |
+| Rejuvenation (8910) | 0.0 | - | 310.3 | 17.7 |
+| Rejuvenation (9841) | 0.0 | - | 87.3 | 18.0 |
+| Swiftmend (18562) | 13.8 | 18.4 | 0.0 | - |
+| Bloom (1328622) | 87.2 | 17.4 | 0.0 | - |
+| Healing Touch (9889) | 15.9 | 17.9 | 0.0 | - |
+| Regrowth (9858) | 9.9 | 28.4 | 86.6 | 28.1 |
+##### druid-restoration-d2-raid
+2026/11/13 08:18:27 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:27 All 16 sims finished successfully.
+druid-restoration healer fight, 2000 iterations, 110 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [gift_of_the_wild arcane_brilliance power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 8572.35 |
+| intellect | 373.89 |
+| spirit | 493.35 |
+| mp5 | 110.25 |
+| healing power | 771.00 |
+| spell power | 211.00 |
+| crit (every table) | 9.00 |
+| spell crit (spell table only) | 8.04 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 133.50 +/- 0.11 |
+| raw HPS | 405.1 |
+| mana lasts (s) | 2972.6 |
+| overheal | 67.0% |
+| mana left at the end | 8284 of 8572 (96.6%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 36.3 | 3600 | 32.72 |
+| OtherActionManaRegen#2 | 18.7 | 1151 | 10.46 |
+| total | | 4750 | 43.18 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Rejuvenation (9841) | 8.0 | 2596 | 23.60 | 3310 | 1.28 |
+| Rejuvenation (8910) | 13.0 | 2443 | 22.21 | 9449 | 3.87 |
+| total | | 5038 | 45.80 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Elune's Light (1259799) | 1.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Rejuvenation (9841) | 17022 | 0 | 3310 | 22.5 |
+| Bloom (1328622) | 9679 | 0 | 1927 | 13.1 |
+| Rejuvenation (8910) | 17858 | 0 | 9449 | 64.3 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Rejuvenation (9841) | 0.0 | - | 36.0 | 18.2 |
+| Bloom (1328622) | 18.1 | 16.9 | 0.0 | - |
+| Rejuvenation (8910) | 0.0 | - | 59.2 | 17.1 |
+##### druid-restoration-d2-bis
+2026/11/13 08:18:28 Running 2000 iterations on 16 concurrent sims.
+2026/11/13 08:18:28 All 16 sims finished successfully.
+druid-restoration healer fight, 2000 iterations, 300 s
+
+consumes: [gizzard_gum flask_of_distilled_wisdom greater_mageblood_elixir greater_clerics_elixir elixir_of_sages food_sages_tea main_hand_imbue:brilliant_mana_oil major_mana_potion conjured_demonic_rune]
+buffs: [gift_of_the_wild arcane_brilliance power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Stat before the fight's auras | Value |
+|---|---|
+| mana pool | 8572.35 |
+| intellect | 373.89 |
+| spirit | 493.35 |
+| mp5 | 110.25 |
+| healing power | 771.00 |
+| spell power | 211.00 |
+| crit (every table) | 9.00 |
+| spell crit (spell table only) | 8.04 |
+
+| Metric | Value |
+|---|---|
+| effective HPS | 1001.99 +/- 0.74 |
+| raw HPS | 1083.9 |
+| mana lasts (s) | 262.1 |
+| overheal | 7.6% |
+| mana left at the end | 231 of 8572 (2.7%) |
+
+| Mana income | events | mana per fight | mana per second |
+|---|---|---|---|
+| OtherActionManaRegen#1 | 138.4 | 18890 | 62.97 |
+| item 13444 | 3.0 | 5387 | 17.96 |
+| item 12662 | 3.0 | 3587 | 11.96 |
+| OtherActionManaRegen#2 | 11.6 | 1983 | 6.61 |
+| total | | 29847 | 99.49 |
+
+| Mana spend | events | mana per fight | mana per second | healed per fight | healed per mana |
+|---|---|---|---|---|---|
+| Rejuvenation (8910) | 64.1 | 12048 | 40.16 | 83998 | 6.97 |
+| Healing Touch (9889) | 16.0 | 10455 | 34.85 | 52249 | 5.00 |
+| Rejuvenation (9841) | 17.8 | 5772 | 19.24 | 41762 | 7.24 |
+| Regrowth (9858) | 9.8 | 4977 | 16.59 | 38336 | 7.70 |
+| Swiftmend (18562) | 14.0 | 3372 | 11.24 | 33270 | 9.87 |
+| Tranquility (9863) | 1.9 | 1501 | 5.00 | 10065 | 6.71 |
+| Innervate (29166) | 1.0 | 62 | 0.21 | 0 | 0.00 |
+| total | | 38188 | 127.29 | | |
+
+| Cast without a mana row | casts per fight | healed per fight |
+|---|---|---|
+| Elune's Light (1259799) | 2.0 | 0 |
+| item 12662 | 3.0 | 0 |
+| OtherActionManaGain | 6.0 | 0 |
+| Nature's Swiftness (17116) | 2.0 | 0 |
+| item 13444 | 3.0 | 0 |
+
+| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |
+|---|---|---|---|---|
+| Swiftmend (18562) | 33516 | 0 | 33270 | 11.1 |
+| Bloom (1328622) | 46843 | 0 | 40917 | 13.6 |
+| Regrowth (9858) | 38589 | 0 | 38336 | 12.8 |
+| Tranquility (9863) | 16135 | 0 | 10065 | 3.3 |
+| Healing Touch (9889) | 52406 | 0 | 52249 | 17.4 |
+| Rejuvenation (8910) | 95497 | 0 | 83998 | 27.9 |
+| Rejuvenation (9841) | 42187 | 0 | 41762 | 13.9 |
+
+| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |
+|---|---|---|---|---|
+| Swiftmend (18562) | 14.0 | 18.4 | 0.0 | - |
+| Bloom (1328622) | 87.4 | 17.3 | 0.0 | - |
+| Regrowth (9858) | 9.8 | 28.6 | 84.9 | 27.8 |
+| Tranquility (9863) | 0.0 | - | 43.8 | 17.8 |
+| Healing Touch (9889) | 16.0 | 17.7 | 0.0 | - |
+| Rejuvenation (8910) | 0.0 | - | 310.8 | 17.7 |
+| Rejuvenation (9841) | 0.0 | - | 88.2 | 18.0 |
+remote-test: exit 0 in 15s (04b24494bf56f2fbee840ab2c5d80068093fc545)

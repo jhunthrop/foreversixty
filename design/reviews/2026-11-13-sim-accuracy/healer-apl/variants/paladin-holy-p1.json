@@ -1,0 +1,747 @@
+{
+ "rotation": {
+  "type": "TypeAPL",
+  "priorityList": [
+   {
+    "action": {
+     "autocastOtherCooldowns": {}
+    },
+    "notes": "Mana potions and Demonic Runes, each used once it is ready and your bar has room for it. Divine Favor stays off this list: it is saved for the heal that must land."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1328548
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "not": {
+          "val": {
+           "auraIsActive": {
+            "auraId": {
+             "spellId": 1328548
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "remainingTime": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "10s"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Keep it sworn on the tank. It adds a flat amount to every Holy Light and Flash of Light the tank gets from you, and to Holy Shock once you have it, as long as the rank is close to your level, and it lasts 5 minutes, so renew it only in a long fight."
+   },
+   {
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 5
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.4"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 20216
+      }
+     }
+    },
+    "notes": "When the tank drops below 40%. The Holy Light that follows is a sure crit, and on a 2 minute cooldown it is for the heal that must land."
+   },
+   {
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 5
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.4"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 10329,
+       "rank": 8
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     }
+    },
+    "notes": "On the tank below 40%, right behind Divine Favor once you have it at 30. At 60 rank 8 is your top rank: the trainer stops there, and the rank 9 book has no known source in Forever yet. From 25, Holy Light is the only heal you can keep casting that outheals a tank by itself."
+   },
+   {
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.7"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpAdd",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "-0.05"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 10329,
+       "rank": 8
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     }
+    },
+    "notes": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana). While you level, Holy Light rank 1 from 18 to 28 and rank 2 at 29 heal far more per point of mana than your top rank, though each keeps less of your healing power every level."
+   },
+   {
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.7"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpAdd",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "-0.05"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 20930,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     }
+    },
+    "notes": "On anyone below 70%, with the same mana to spare. From 46, on anyone but your Oath target, Boundless Light adds 30% crit, which Illumination turns back into mana."
+   },
+   {
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 0
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.7"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpAdd",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "-0.05"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 20930,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 0
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 1
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.7"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpAdd",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "-0.05"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 20930,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 1
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 2
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.7"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpAdd",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "-0.05"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 20930,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 2
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 3
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.7"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpAdd",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "-0.05"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 20930,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 3
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 4
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.7"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpAdd",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "-0.05"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 20930,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 4
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 5
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.95"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 19942,
+       "rank": 5
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     }
+    },
+    "notes": "On the tank below 90%: your staple. From 25, Oath of Light adds the same flat amount to every rank close to your level that you cast on the tank. Rank 1 does the job to 42 (a Dwarf to 43), rank 2 from 43, rank 3 from 50 and rank 4 from 54; at 60 without raid buffs, rank 4 does the same job as rank 5 for less mana."
+   },
+   {
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 0
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.9"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 19941,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 0
+      }
+     }
+    },
+    "notes": "On everyone else below 80%, yourself included. Without the Oath bonus a small rank is the best balance of heal size and mana: rank 1 to 41 (a Human moves to rank 2 at 42, a Dwarf at 43, an Undead at 44), rank 2 to 49, rank 4 from 50, and rank 5 at 60 in a raid, where your buffs pay for the bigger heal."
+   },
+   {
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 1
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.9"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 19941,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 1
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 2
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.9"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 19941,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 2
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 3
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.9"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 19941,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 3
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 4
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.9"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 19941,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 4
+      }
+     }
+    }
+   }
+  ],
+  "prepullActions": [
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1328548
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-1.5s"
+     }
+    }
+   }
+  ]
+ }
+}
