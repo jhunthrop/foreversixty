@@ -152,8 +152,8 @@ def tooltip_board():
     width = 262
     left = tooltip(worn + before, tag='2.0.42: cut at the client\'s widest row', width=width)
     right = tooltip(worn + ours, tag='2.0.43: whole, wrapped like the client\'s lines', width=width)
-    caption = ('Tooltip · the shipped data\'s longest pick name and longest source on a worn belt\'s hover, at the '
-               'belt tooltip\'s own width')
+    caption = ('Tooltip · a stress test, not one real hover: the shipped data\'s longest pick name and its longest '
+               'source (two different picks) on a worn belt\'s hover, at the belt tooltip\'s own width')
     return page(f'<p class="cap">{caption}</p><div class="row" style="margin-top:22px">{left}{right}</div>')
 
 
