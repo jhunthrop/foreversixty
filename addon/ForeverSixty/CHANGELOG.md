@@ -1,7 +1,12 @@
 # Forever Sixty
 
-## Unreleased
+## 2.0.41
 
+- The Builds tab shows every spec's Level 60 build and Raid build, each with the guide's reason in one line. Follow any of them with one click; the one you follow is gold and shows your next point.
+- Choose where your gear comes from: Dungeon, Raid, World / BoE, Quest, Crafted, Reputation, Vendor and PvP, on the gear pane and in Settings. Turn one off and every slot shows the best pick from the rest. Saved per character.
+- The X on the window the minimap chip opens now closes it, and one click on the chip opens it again.
+- The Talents row shows the whole talent and "Spend 1 now" line, and its Change button keeps its label.
+- The addon uses about a third less memory.
 - Builds are named as on the site's planner: "Level 60 build" and "Raid build", in the Builds dialog, the panel and chat.
 - Hovering what you wear names the band's pick for the slot in every case: "Best for 40 to 49" in gold when you wear it, "Better than the 40 to 49 pick: Stalker's Leather Belt" or "As good as the 40 to 49 pick: ..." when yours holds, then "At level 50: Stalker's Mail Belt". "No upgrade until level 50" no longer hides the pick. A pick that holds for two bands reads "Best for 30 to 49". The top band reads "Best at level 60". With Shift, the pick's own figure reads "Pick: −0.3 DPS".
 - A worn item the band's pick beats shows "Next upgrade: <pick>" and then the next band's pick, "At level 50: <pick>"; where the upgrade drops waits under Shift.
