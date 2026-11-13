@@ -48,7 +48,7 @@ describe("Widgets", function()
 
 	it("builds no frame merely by being loaded", function()
 		start({ templates = {} })
-		assert.are.equal(0, #state.frames)
+		assert.are.equal(0, #helper.builtFrames(state))
 	end)
 
 	it("draws a panel from a background and four border edges, with no template", function()

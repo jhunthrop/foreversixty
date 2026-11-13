@@ -542,9 +542,9 @@ end
 --- Theme.icon's own bevel-trim texture coords -- meant for square
 --- inventory icons -- would cut into the circle rather than clean it up.
 function Theme.buildCrest(parent, size)
-	local crest = parent:CreateTexture(nil, "ARTWORK")
+	local crest = Theme.newTexture(parent, "ARTWORK")
 	crest:SetSize(size, size)
-	local ring = parent:CreateTexture(nil, "OVERLAY")
+	local ring = Theme.newTexture(parent, "OVERLAY")
 	ring:SetAllPoints(crest)
 	ring:SetTexture(Theme.MEDIA.crestRing)
 	return crest, ring
@@ -1069,8 +1069,55 @@ function Theme.paint(texture, hexKey, alpha)
 	return Theme.paintRGB(texture, Theme.rgb(Theme.HEX[hexKey], alpha))
 end
 
+--- The client draws a texture's corners where its anchors fall, blending across the pixels an edge
+--- straddles, unless the texture snaps to the pixel grid (off by default). At most UI scales a unit is
+--- not a whole pixel (1.875 at 1440p), so every flat edge, rule and outline in the addon's frames drew
+--- soft (2.0.44, "every dialog box looks kind of blurry"). Snapped, the corners round to whole pixels;
+--- a bias of 0 keeps the art's own filtering, so a crest is not sharpened into jaggies.
+function Theme.snapTexture(texture)
+	if type(texture.SetSnapToPixelGrid) == "function" then
+		texture:SetSnapToPixelGrid(true)
+	end
+	if type(texture.SetTexelSnappingBias) == "function" then
+		texture:SetTexelSnappingBias(0)
+	end
+	return texture
+end
+
+--- A texture on `parent` that snaps to the pixel grid (Theme.snapTexture). Every texture the addon's
+--- own windows draw is made here (the marks it lays on the client's slots keep their own).
+function Theme.newTexture(parent, layer, sublevel)
+	return Theme.snapTexture(parent:CreateTexture(nil, layer, nil, sublevel))
+end
+
+--- One physical pixel in `region`'s units (the client's 768-unit-high screen over its physical
+--- height, at the region's effective scale), or nil where the client cannot say.
+function Theme.pixelUnits(region)
+	if type(GetPhysicalScreenSize) ~= "function" or type(region.GetEffectiveScale) ~= "function" then
+		return nil
+	end
+	local _, height = GetPhysicalScreenSize()
+	local scale = region:GetEffectiveScale()
+	if type(height) ~= "number" or height <= 0 or type(scale) ~= "number" or scale <= 0 then
+		return nil
+	end
+	return Theme.SCREEN_UNITS_HIGH / height / scale
+end
+Theme.SCREEN_UNITS_HIGH = 768
+
+--- `units` on `region` rounded to whole physical pixels, never under one: a snapped 1-unit edge at
+--- 1.875 pixels a unit would round to 1 or 2 pixels by where it falls, so the four sides of one
+--- outline drew different widths. `units` itself where the client cannot say. Pure but for the client.
+function Theme.wholePixels(region, units)
+	local pixel = Theme.pixelUnits(region)
+	if pixel == nil then
+		return units
+	end
+	return math.max(1, math.floor(units / pixel + 0.5)) * pixel
+end
+
 function Theme.texture(parent, layer, hexKey, alpha)
-	return Theme.paint(parent:CreateTexture(nil, layer), hexKey, alpha)
+	return Theme.paint(Theme.newTexture(parent, layer), hexKey, alpha)
 end
 
 --- The measure helper (L4.3): a function text -> width in UI units as `region` (a font
@@ -1094,7 +1141,7 @@ end
 --- One of the client's own textures (a Theme.MEDIA path) in a token's colour: the
 --- texture's white is multiplied by it, so a light glyph reads in that colour.
 function Theme.tinted(parent, layer, path, hexKey)
-	local texture = parent:CreateTexture(nil, layer)
+	local texture = Theme.newTexture(parent, layer)
 	texture:SetTexture(path)
 	texture:SetVertexColor(Theme.rgb(Theme.HEX[hexKey]))
 	return texture
@@ -1102,6 +1149,7 @@ end
 
 --- A one-colour border drawn from four textures, which needs no template.
 function Theme.outline(parent, thickness, hexKey)
+	thickness = Theme.wholePixels(parent, thickness)
 	local edges = {}
 	for index, edge in ipairs(Theme.EDGES) do
 		local texture = Theme.texture(parent, "OVERLAY", hexKey)
@@ -1201,7 +1249,7 @@ Theme.SLOT_ICONS = {
 --- A game icon with its bevel cropped. `path` may be a texture path or a
 --- file id; nil draws the neutral tile rather than nothing.
 function Theme.icon(parent, layer, path, size)
-	local texture = parent:CreateTexture(nil, layer or "ARTWORK")
+	local texture = Theme.newTexture(parent, layer or "ARTWORK")
 	texture:SetSize(size, size)
 	texture:SetTexture(path or Theme.UNKNOWN_ICON)
 	if type(texture.SetTexCoord) == "function" then
@@ -2001,6 +2049,36 @@ function Theme.hideCompareTooltip()
 	end
 	return nil
 end
+
+--- Asks the client for every face the addon ships (Tokens.font) while the loading screen is up, so
+--- each file loads with it. A file first asked for later loads over the next frames, and a string
+--- laid out before then draws nothing until its text changes: a button that keeps one label (the
+--- tour's Skip tour, the panel's Change) stayed an empty box (2.0.44). The holder is a near-clear
+--- speck in the screen's corner; the client may skip loading for a string it never draws. Returns
+--- how many faces it asked for (0 where the client cannot make frames).
+function Theme.preloadFaces()
+	if type(CreateFrame) ~= "function" or type(UIParent) ~= "table" then
+		return 0
+	end
+	local holder = CreateFrame("Frame", nil, UIParent)
+	holder:SetSize(1, 1)
+	holder:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0, 0)
+	holder:SetAlpha(Theme.PRELOAD_ALPHA)
+	local asked = 0
+	for _, family in pairs(Tokens.font) do
+		for _, face in pairs(family.faces) do
+			local region = holder:CreateFontString(nil, "BACKGROUND")
+			region:SetPoint("BOTTOMLEFT", holder, "BOTTOMLEFT", 0, 0)
+			pcall(region.SetFont, region, face, Theme.PRELOAD_SIZE, "")
+			region:SetText(Theme.PRELOAD_TEXT)
+			asked = asked + 1
+		end
+	end
+	Theme.fontHolder = holder
+	return asked
+end
+Theme.PRELOAD_ALPHA, Theme.PRELOAD_SIZE, Theme.PRELOAD_TEXT = 0.01, 2, "Ag"
+Theme.preloadFaces()
 
 ns.Theme = Theme
 return Theme

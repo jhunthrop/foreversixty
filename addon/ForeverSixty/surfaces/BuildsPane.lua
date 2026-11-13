@@ -266,7 +266,7 @@ end
 --- playstyle muted after it, left out when it does not fit whole.
 local function buildSpecLine(content, deps)
 	local G = BuildsPane.LAYOUT
-	local line = { icon = content:CreateTexture(nil, "ARTWORK") }
+	local line = { icon = Theme.newTexture(content, "ARTWORK") }
 	line.icon:SetSize(G.specIcon, G.specIcon)
 	line.name = noWrap(deps.text(content, "strong"))
 	Theme.setFace(line.name, Theme.FONT_ROLES.highlight, Theme.SIZES.dialogText)
@@ -338,7 +338,7 @@ local function buildRow(content, width, deps)
 	for index = 1, 3 do
 		row.lines[index] = noWrap(deps.text(row.frame, "muted"))
 	end
-	row.nextIcon = row.frame:CreateTexture(nil, "ARTWORK")
+	row.nextIcon = Theme.newTexture(row.frame, "ARTWORK")
 	row.nextIcon:SetSize(G.nextIcon, G.nextIcon)
 	row.nextIcon:Hide()
 	row.frame:SetScript("OnEnter", function(self)

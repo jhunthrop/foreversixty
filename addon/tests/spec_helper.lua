@@ -29,6 +29,20 @@ function helper.decidedTalents(names, tab)
 	return tabs
 end
 
+--- The frames a module built, past the one Theme makes as it loads to ask for the shipped font
+--- faces (Theme.preloadFaces).
+function helper.builtFrames(state)
+	local theme = package.loaded.Theme
+	local holder = type(theme) == "table" and theme.fontHolder or nil
+	local built = {}
+	for _, frame in ipairs(state.frames) do
+		if frame ~= holder then
+			built[#built + 1] = frame
+		end
+	end
+	return built
+end
+
 --- Load an addon module fresh, so one spec's state never reaches another.
 -- Every module in ForeverSixty/ ends with `return X`, which is what makes
 -- this work under require as well as under the game's TOC loading.

@@ -42,6 +42,8 @@ read_globals = {
 	"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 	"GetCursorPosition", "InterfaceOptionsFrame_OpenToCategory",
 	"AddonCompartmentFrame",
+	-- The pixel grid (Theme.pixelUnits), behind its own capability check.
+	"GetPhysicalScreenSize",
 	-- The chip (surfaces/Chip.lua), each behind a Theme capability check.
 	"GetInstanceInfo", "IsShiftKeyDown", "ToggleTalentFrame", "PlayerSpellsUtil", "CLASS_ICON_TCOORDS",
 	-- The build dialog (surfaces/BuildDialog.lua), through Compat.classNames.
@@ -103,7 +105,7 @@ files["tests/"] = {
 		"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 		"GetCursorPosition", "Settings", "InterfaceOptions_AddCategory",
 		"InterfaceOptionsFrame_OpenToCategory", "PlayerTalentFrame", "TalentFrame",
-		"AddonCompartmentFrame",
+		"AddonCompartmentFrame", "GetPhysicalScreenSize",
 		-- The chip (surfaces/Chip.lua), each behind a Theme capability check.
 		"GetInstanceInfo", "IsShiftKeyDown", "ToggleTalentFrame", "PlayerSpellsUtil",
 	},

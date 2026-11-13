@@ -1607,7 +1607,7 @@ function Chip.ensure()
 	Theme.noteFrame("Chip icon", "login")
 	iconFrame:SetSize(S.chipIcon, S.chipIcon)
 	iconFrame:SetPoint("LEFT", frame, "LEFT", S.chipIconInset, 0)
-	local icon = iconFrame:CreateTexture(nil, "ARTWORK")
+	local icon = Theme.newTexture(iconFrame, "ARTWORK")
 	icon:SetAllPoints(iconFrame)
 	Chip.iconFrame, Chip.icon = iconFrame, icon
 	Chip.iconBorder = Theme.outline(iconFrame, S.border, "border")

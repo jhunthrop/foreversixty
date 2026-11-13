@@ -130,6 +130,41 @@ function mock.runVisibility(frame, script)
 	end
 end
 
+--- The client's font files (2026-11-13, the blank Skip tour): a file an addon first asks for while
+--- the loading screen is up loads with it; one first asked for later loads over the next frames
+--- (mock.renderFrame), and a string laid out before then draws nothing until it is laid out again.
+--- Off unless a spec sets `state.fontFiles`; the loading screen lasts until mock.enterWorld.
+function mock.requestFont(state, path)
+	if not state.fontFiles or type(path) ~= "string" or state.loadedFonts[path] then
+		return
+	end
+	if state.loadingScreen then
+		state.loadedFonts[path] = true
+	else
+		state.pendingFonts[path] = true
+	end
+end
+
+--- `region`'s layout: its text drawn when its font file has loaded (or no file is set), else nothing.
+function mock.fontLayout(state, region)
+	local file = region.fontFile
+	local ready = not state.fontFiles or file == nil or state.loadedFonts[file] == true
+	region.drawn = ready and region.text or ""
+end
+
+--- The loading screen ends: a font file asked for from now on loads late.
+function mock.enterWorld(state)
+	state.loadingScreen = false
+end
+
+--- A frame goes by: every font file asked for since loads. Strings already laid out keep what they drew.
+function mock.renderFrame(state)
+	for path in pairs(state.pendingFonts) do
+		state.loadedFonts[path] = true
+	end
+	state.pendingFonts = {}
+end
+
 --- Install a fresh mock into _G and return its state table.
 -- @param state table with any of: talents, traits, equipped, bags, itemStats,
 --   class, race, realm, region, professions, build, guild
@@ -154,6 +189,7 @@ function mock.install(state)
 	state.extraGlobals = {}
 	state.refusedEvents = state.refusedEvents or {}
 	state.missingMethods = state.missingMethods or {}
+	state.loadedFonts, state.pendingFonts, state.loadingScreen = {}, {}, true
 	do
 		local named = {}
 		for _, template in ipairs(state.templates or {}) do
@@ -361,9 +397,22 @@ function mock.install(state)
 			shown = true, enabled = true, focused = (kind == "EditBox"), autoFocus = (kind == "EditBox"),
 			calls = {}, children = {}, regions = {}, points = {}, events = {},
 		}
+		--- The client lays a string out when its text changes or its font is set, never on a SetText of
+		--- the text it already holds; `drawn` is what that layout put on screen (mock.fontLayout).
 		function frame:SetText(value)
 			record(self, "SetText", value)
+			local changed = value ~= self.text
 			self.text = value
+			if changed then
+				mock.fontLayout(state, self)
+			end
+		end
+		function frame:SetFont(path, size, flags)
+			record(self, "SetFont", path, size, flags)
+			self.fontFile, self.fontSize, self.fontFlags = path, size, flags
+			mock.requestFont(state, path)
+			mock.fontLayout(state, self)
+			return true
 		end
 		function frame:GetText()
 			return self.text
@@ -384,7 +433,12 @@ function mock.install(state)
 				self.font = fontObject
 			end
 		end
+		--- The client answers the file, size and flags a region draws in: SetFont's, else its font
+		--- object's (named here, as the mock has no files behind its font objects).
 		function frame:GetFont()
+			if self.fontFile ~= nil then
+				return self.fontFile, self.fontSize, self.fontFlags
+			end
 			return self.font
 		end
 		--- Show and Hide run the visibility scripts the client runs (L5.2 fix round 2): a frame

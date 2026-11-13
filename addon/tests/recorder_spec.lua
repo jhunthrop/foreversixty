@@ -115,7 +115,7 @@ describe("Recorder", function()
 	describe("off", function()
 		it("is off by default and has made no frame, no event and no saved table", function()
 			assert.is_false(Recorder.isOn())
-			assert.are.equal(0, #state.frames)
+			assert.are.equal(0, #helper.builtFrames(state))
 			assert.is_nil(ForeverSixtyDB)
 		end)
 
