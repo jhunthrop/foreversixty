@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70790:mage:gnome:2500052030003/0/253510130101301221:'
 buildWhy: 'Fingers of Frost into Ice Lance, with Arcane Meditation for mana'
 raidBuild: 'FS1:1.60.1.70790:mage:gnome:230005203/5/253510130101301221:'
-raidBuildWhy: 'Trades Arcane Meditation for Incineration''s Ice Lance crit'
+raidBuildWhy: "Trades Arcane Meditation for Incineration's Ice Lance crit"
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Frost power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Frost Mage in Forever: Ice Barrier as a damage buff, the pre-pull Frostbolt, Fingers of Frost into Ice Lance, threat and mana on a boss, talents and leveling.'

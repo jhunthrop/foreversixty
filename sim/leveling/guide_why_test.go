@@ -26,6 +26,14 @@ func TestBuildWhyReadsEachKindsFrontmatterLine(t *testing.T) {
 	}
 }
 
+func TestBuildWhyReadsADoubleQuotedLine(t *testing.T) {
+	guide := "---\nbuild: 'FS1:x'\nbuildWhy: \"Melee hunter: Predator's Edge\"\n---\n"
+	got, err := BuildWhy(guide, "leveling")
+	if err != nil || got != "Melee hunter: Predator's Edge" {
+		t.Fatalf("why = %q, %v", got, err)
+	}
+}
+
 func TestAOneBuildGuidesRaidWhyIsItsBuildWhy(t *testing.T) {
 	guide := "---\nbuild: 'FS1:x'\nbuildWhy: 'Every melee talent in Survival'\n---\n"
 	got, err := BuildWhy(guide, "raid")

@@ -50,13 +50,18 @@ func BuildWhy(guide, kind string) (string, error) {
 	return why, nil
 }
 
-// frontmatterValue is a single-quoted frontmatter value (`key: '...'`, a
-// doubled quote standing for one), "" when the key is absent.
+// frontmatterValue is a quoted frontmatter value, "" when the key is absent:
+// single-quoted (`key: '...'`, a doubled quote standing for one) or, as
+// Prettier writes a value holding an apostrophe, double-quoted.
 func frontmatterValue(guide, key string) string {
-	re := regexp.MustCompile(`(?m)^` + regexp.QuoteMeta(key) + `:\s*'((?:[^']|'')*)'\s*$`)
+	re := regexp.MustCompile(`(?m)^` + regexp.QuoteMeta(key) + `:\s*(?:'((?:[^']|'')*)'|"((?:[^"\\]|\\.)*)")\s*$`)
 	m := re.FindStringSubmatch(guide)
-	if m == nil {
+	switch {
+	case m == nil:
 		return ""
+	case m[2] != "":
+		return strings.ReplaceAll(strings.ReplaceAll(m[2], `\"`, `"`), `\\`, `\`)
+	default:
+		return strings.ReplaceAll(m[1], "''", "'")
 	}
-	return strings.ReplaceAll(m[1], "''", "'")
 }
