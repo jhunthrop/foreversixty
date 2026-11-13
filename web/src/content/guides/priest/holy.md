@@ -70,7 +70,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus: at 60, Lesser Heal and the first ranks of Heal and Renew heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank only within the ranks you learned from your forties on: Greater Heal rank 1 is the one to keep.
 
-**Flash Heal** at the top rank in a raid, a lower rank while leveling. Holy Binding heals you off every one of them. It heals the least for its mana of anything you cast, so on the tank keep it for a real emergency while your mana keeps up with the fight; once you are behind, start the Greater Heal early instead.
+**Flash Heal** at the top rank in a raid, a lower rank while leveling. Holy Binding heals you off every one of them. It heals the least for its mana of anything you cast. A tank about to die gets it whatever your bar says. For a tank who is only low, cast it while your mana keeps up with the fight, and once you are behind, start the Greater Heal early instead.
 
 **Prayer of Healing** is not limited to your own party: target a member of whichever group took the hit.
 
