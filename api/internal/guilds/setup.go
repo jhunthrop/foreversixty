@@ -112,10 +112,13 @@ type SetupRanks struct {
 	Ranks               []RankLine `json:"ranks"`
 }
 
-// RankLine is one rank: its index, how many characters hold it and the first few names.
+// RankLine is one rank: its index, how many characters hold it, how many of them are level 60
+// (a level the site knows from the Blizzard import; an unknown level is not counted) and the
+// first few names, level 60s first.
 type RankLine struct {
 	RankIndex int      `json:"rank_index"`
 	Members   int      `json:"members"`
+	AtSixty   int      `json:"at_sixty"`
 	Names     []string `json:"names"`
 }
 
@@ -406,18 +409,21 @@ func (s *Store) setupMarks(ctx context.Context, guildID int64) (map[string]strin
 func (s *Store) setupRanks(ctx context.Context, guildID int64, maxRank int) (SetupRanks, error) {
 	out := SetupRanks{OfficerMaxRankIndex: maxRank, Ranks: []RankLine{}}
 	rows, err := s.Pool.Query(ctx, `
-		select gc.rank_index, count(*)::int,
-		       (array_agg(ae.name order by ae.name) filter (where ae.name is not null))[1:$2]
-		from guild_characters gc left join addon_exports ae on ae.character_key = gc.character_key
+		select gc.rank_index, count(*)::int, (count(*) filter (where c.level >= $3))::int,
+		       (array_agg(ae.name order by c.level >= $3 desc nulls last, ae.name)
+		          filter (where ae.name is not null))[1:$2]
+		from guild_characters gc
+		left join addon_exports ae on ae.character_key = gc.character_key
+		left join characters c on c.key = gc.character_key
 		where gc.guild_id = $1 and gc.rank_index is not null and gc.character_key not like 'account:%'
-		group by gc.rank_index order by gc.rank_index`, guildID, rankSampleNames)
+		group by gc.rank_index order by gc.rank_index`, guildID, rankSampleNames, raidLevel)
 	if err != nil {
 		return SetupRanks{}, fmt.Errorf("guilds: setup ranks: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var line RankLine
-		if err := rows.Scan(&line.RankIndex, &line.Members, &line.Names); err != nil {
+		if err := rows.Scan(&line.RankIndex, &line.Members, &line.AtSixty, &line.Names); err != nil {
 			return SetupRanks{}, fmt.Errorf("guilds: setup ranks: %w", err)
 		}
 		if line.Names == nil {

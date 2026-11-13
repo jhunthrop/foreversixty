@@ -33,6 +33,7 @@
   import GuildBillingSection from './guild/GuildBillingSection.svelte';
   import GuildClaimedBy from './guild/GuildClaimedBy.svelte';
   import GuildInviteLink from './guild/GuildInviteLink.svelte';
+  import GuildRaiderRanks from './guild/GuildRaiderRanks.svelte';
   import GuildRecords from './guild/billing/GuildRecords.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import Page from './ui/Page.svelte';
@@ -64,6 +65,8 @@
   let guildName = $state('');
   /** The setup checklist, best-effort: the row above the page shows until every step is settled. */
   let setup = $state<GuildSetup | null>(null);
+  /** The setup read failed: the raider ranks row has no rank lines to list. */
+  let setupFailed = $state(false);
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
   let notice = $state('');
@@ -86,8 +89,14 @@
       settings = await fetchGuildSettings(page.guild.id, undefined, (fresh) => (settings = fresh));
       status = 'ready';
       void fetchGuildSetup(page.guild.id)
-        .then((fresh) => (setup = fresh))
-        .catch(() => (setup = null));
+        .then((fresh) => {
+          setup = fresh;
+          setupFailed = false;
+        })
+        .catch(() => {
+          setup = null;
+          setupFailed = true;
+        });
     } catch (thrown) {
       status = thrown instanceof GuildApiError && thrown.status === 403 ? 'forbidden' : 'failed';
       return;
@@ -162,6 +171,16 @@
       settings = await updateGuildSettings(guildId, patch);
       if (field === 'officer_max_rank_index') rankSaved = true;
       else notice = guildSettingsCopy.saved;
+    });
+
+  /** The raider ranks row's last save took; cleared by its next change. */
+  let raiderRanksSaved = $state(false);
+
+  const onSaveRaiderRanks = (ranks: number[]): void =>
+    void run(async () => {
+      if (guildId === null) return;
+      settings = await updateGuildSettings(guildId, { raider_rank_indexes: ranks });
+      raiderRanksSaved = true;
     });
 
   /**
@@ -257,6 +276,16 @@
         {/if}
       {/snippet}
     </SettingsRow>
+    <GuildRaiderRanks
+      lines={setupFailed ? 'failed' : (setup?.ranks.ranks ?? null)}
+      officerMax={current.officer_max_rank_index}
+      saved={current.raider_rank_indexes}
+      {busy}
+      disabled={frozen}
+      justSaved={raiderRanksSaved}
+      onSave={onSaveRaiderRanks}
+      onEdit={() => (raiderRanksSaved = false)}
+    />
     <SettingsRow open label={guildSettingsCopy.defaultVisibility} controlBelow>
       {#snippet control()}
         <div class="w-40">

@@ -35,10 +35,10 @@ export function setupFixture(
       officer_max_rank_index: 1,
       officers: 3,
       ranks: [
-        { rank_index: 0, members: 1, names: ['Dunmaro'] },
-        { rank_index: 1, members: 2, names: ['Kraggor', 'Mirelle'] },
-        { rank_index: 2, members: 5, names: ['Ashvane', 'Brightwell', 'Corvane'] },
-        { rank_index: 3, members: 12, names: ['Dawnhollow', 'Embersong', 'Frostquill'] },
+        { rank_index: 0, members: 1, at_sixty: 1, names: ['Dunmaro'] },
+        { rank_index: 1, members: 2, at_sixty: 2, names: ['Kraggor', 'Mirelle'] },
+        { rank_index: 2, members: 5, at_sixty: 5, names: ['Ashvane', 'Brightwell', 'Corvane'] },
+        { rank_index: 3, members: 12, at_sixty: 9, names: ['Dawnhollow', 'Embersong', 'Frostquill'] },
       ],
     },
     discord: {

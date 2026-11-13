@@ -82,6 +82,12 @@ func TestSetupDerivesFromTheGuildsData(t *testing.T) {
 	w.exec(t, fmt.Sprintf(`update guild_characters set rank_index = 3 where guild_id = %d and rank = 'member'`, w.gid))
 	w.exec(t, fmt.Sprintf(`update guild_characters set source = 'invite' where guild_id = %d and user_id = %d`, w.gid, w.member2))
 	w.createRaid(t)
+	// Three of rank 3's characters are level 60 and one is 58: the rank line counts the three.
+	w.exec(t, fmt.Sprintf(`insert into characters (key, region, ruleset, name, level)
+		select gc.character_key, 'us', 'hardcore', gc.character_key,
+		       case when row_number() over (order by gc.character_key) = 1 then 58 else 60 end
+		from guild_characters gc where gc.guild_id = %d and gc.rank_index = 3
+		on conflict (key) do update set level = excluded.level`, w.gid))
 	v := w.setup(t)
 	for _, step := range []string{StepOfficerRanks, StepRaidSchedule, StepInviteLink, StepReportVisibility} {
 		if got := stateOf(v, step); got != SetupDone {
@@ -96,7 +102,8 @@ func TestSetupDerivesFromTheGuildsData(t *testing.T) {
 		t.Fatalf("a Raid guild gets no preview: %+v", v.Readiness)
 	}
 	if len(v.Ranks.Ranks) != 2 || v.Ranks.Ranks[0].RankIndex != 0 || v.Ranks.Ranks[0].Members != 1 ||
-		v.Ranks.Ranks[1].Members != 4 || v.Ranks.Officers != 1 {
+		v.Ranks.Ranks[1].Members != 4 || v.Ranks.Ranks[1].AtSixty != 3 ||
+		v.Ranks.Officers != 1 {
 		t.Fatalf("ranks = %+v", v.Ranks)
 	}
 }

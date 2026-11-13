@@ -239,3 +239,44 @@ func TestUpdateSettingsRaiderRanks(t *testing.T) {
 		t.Fatalf("cleared = %v, %v, want null", view.RaiderRankIndexes, err)
 	}
 }
+
+// The site's raider ranks control round trip: an officer's PATCH of raider_rank_indexes reads back
+// sorted on the next GET, an empty list clears it to null, and a member is refused.
+func TestPatchSettingsRaiderRanksRoundTrip(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	officer := seedUser(t, h.pool, "raider-ranks-officer@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/rankofficer", "officer", true)
+	syncMembership(t, h.pool, gid, officer)
+	member := seedUser(t, h.pool, "raider-ranks-member@example.com")
+	seedCharacter(t, h.pool, gid, member, "us/hardcore/rankmember", "member", true)
+	syncMembership(t, h.pool, gid, member)
+	path := fmt.Sprintf("/v1/guilds/%d/settings", gid)
+
+	h.actor = auth.Actor{UserID: officer, Role: "user", Method: "session"}
+	var patched, read SettingsView
+	h.data(h.do(http.MethodPatch, path, `{"raider_rank_indexes":[3,0,2]}`), &patched)
+	h.data(h.do(http.MethodGet, path, ""), &read)
+	if fmt.Sprint(patched.RaiderRankIndexes) != "[0 2 3]" || fmt.Sprint(read.RaiderRankIndexes) != "[0 2 3]" {
+		t.Fatalf("patched %v, read %v; want [0 2 3]", patched.RaiderRankIndexes, read.RaiderRankIndexes)
+	}
+	res := h.do(http.MethodPatch, path, `{"raider_rank_indexes":[10]}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("rank 10 = %d, want 400", res.StatusCode)
+	}
+	raw := bodyOf(t, h.do(http.MethodPatch, path, `{"raider_rank_indexes":[]}`))
+	var cleared struct {
+		Data map[string]json.RawMessage `json:"data"`
+	}
+	if err := json.Unmarshal([]byte(raw), &cleared); err != nil || string(cleared.Data["raider_rank_indexes"]) != "null" {
+		t.Fatalf("cleared body = %s (%v), want raider_rank_indexes null", raw, err)
+	}
+
+	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+	res = h.do(http.MethodPatch, path, `{"raider_rank_indexes":[1]}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("member patch = %d, want 403", res.StatusCode)
+	}
+}

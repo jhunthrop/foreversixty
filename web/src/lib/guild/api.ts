@@ -386,6 +386,9 @@ export type GuildCapability = 'approve' | 'remove' | 'settings' | 'award' | 'bil
 export interface GuildSettingsData {
   default_visibility: GuildVisibility;
   officer_max_rank_index: number;
+  /** The rank indexes the guild counts as raiders (the addon's Guild and Officer tabs), sorted;
+   *  null until an officer says, and the addon then counts every level 60. */
+  raider_rank_indexes: number[] | null;
   claimed_by: ClaimHolder | null;
   claim_pending: ClaimPendingView | null;
   claim: ClaimStateView;
@@ -665,7 +668,12 @@ export async function clearCachedBotRefusal(guildId: number, apiBase: string = A
 
 export async function updateGuildSettings(
   guildId: number,
-  patch: { default_visibility?: GuildVisibility; officer_max_rank_index?: number },
+  patch: {
+    default_visibility?: GuildVisibility;
+    officer_max_rank_index?: number;
+    /** Replaces the raider ranks; an empty list clears them to null. */
+    raider_rank_indexes?: number[];
+  },
   apiBase: string = API_BASE_URL,
 ): Promise<GuildSettingsData> {
   const data = await call<GuildSettingsData>(`/v1/guilds/${guildId}/settings`, apiBase, {

@@ -53,6 +53,7 @@ function guildSettingsFixture(): GuildSettingsData {
   return {
     default_visibility: 'guild',
     officer_max_rank_index: 1,
+    raider_rank_indexes: null,
     claimed_by: null,
     claim_pending: null,
     claim: { state: 'claimed', frozen: false },

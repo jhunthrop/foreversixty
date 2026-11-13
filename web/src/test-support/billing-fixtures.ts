@@ -131,6 +131,7 @@ export function meWithGuildPlan(plan: GuildBillingView | null, can: readonly str
 const GUILD_SETTINGS = {
   default_visibility: 'guild',
   officer_max_rank_index: 1,
+  raider_rank_indexes: [2, 3],
   claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
   claim_pending: null,
   claim: { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },

@@ -28,6 +28,8 @@ export interface SetupStep {
 export interface SetupRankLine {
   rank_index: number;
   members: number;
+  /** How many of them the site knows are level 60; absent from an API older than 2026-11-13. */
+  at_sixty?: number;
   names: string[];
 }
 
