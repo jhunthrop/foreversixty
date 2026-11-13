@@ -726,7 +726,8 @@ local builtNames = setmetatable({}, { __mode = "k" })
 function Follow.buildName(data, build)
 	if type(build.name) == "string" and build.name ~= "" then
 		-- The data's own default is "Beast Mastery leveling" / "Arms raid": the player reads "Beast
-		-- Mastery leveling build", the noun every other build carries, with its kind.
+		-- Mastery level 60 build" (the site planner's word, L.followKindWord), the noun every other
+		-- build carries, with its kind.
 		local stem = build.default and type(build.kind) == "string"
 			and build.name:match("^(.-) " .. build.kind .. "$") or nil
 		if stem ~= nil and stem ~= "" then

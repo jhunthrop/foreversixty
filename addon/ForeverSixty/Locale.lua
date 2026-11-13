@@ -200,9 +200,10 @@ local L = {
 	-- Controller ruling 2: neither code format carries a build name, so a
 	-- pasted code is named after its class.
 	followBuildName = "%s build",
-	-- A default build names its kind (2026-11-13): "Beast Mastery leveling build", "Arms raid build".
+	-- A default build names its kind (2026-11-13) in the site planner's words: "Beast Mastery level 60
+	-- build", "Arms raid build".
 	followKindBuildName = "%s %s build",
-	followKindWord = { leveling = "leveling", raid = "raid" },
+	followKindWord = { leveling = "level 60", raid = "raid" },
 	-- Between the two trees an unnamed build is named after: "Arms / Fury build".
 	followSplitSeparator = " / ",
 	-- One row of the order: tier, then the talent's name.
@@ -941,9 +942,9 @@ L.dialogEnterPreview = "Enter to preview"
 -- "27 of 33 points"; each row's label says what the build is for (a player levels with the first).
 L.dialogOwnBuilds = "%s builds"
 L.dialogLevelPoints = "Level %d"
-L.dialogKindLeveling = "Leveling build"
+L.dialogKindLeveling = "Level 60 build"
 L.dialogKindRaid = "Raid build"
-L.dialogKindBoth = "Leveling and raid build"
+L.dialogKindBoth = "Level 60 and raid build"
 L.dialogFollow = "Follow"
 L.dialogClickFollow = "Click to follow"
 L.dialogFollowingMark = "Following"

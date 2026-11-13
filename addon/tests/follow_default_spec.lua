@@ -62,11 +62,11 @@ describe("Follow.ensureDefault", function()
 	end)
 
 	-- X.5: one noun, and since 2026-11-13 its kind. The data names its defaults "Arms leveling" and "Arms
-	-- raid"; every surface that names the build says "Arms leveling build" or "Arms raid build".
+	-- raid"; every surface that names the build says "Arms level 60 build" or "Arms raid build".
 	it("names a default of the level's own kind for its spec alone on the panel, the other kind in full", function()
 		local leveling = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 12 })
 		assert.are.equal("Arms build", Follow.panelBuildName(DATA, leveling, 12))
-		assert.are.equal("Arms leveling build", Follow.panelBuildName(DATA, leveling, 60))
+		assert.are.equal("Arms level 60 build", Follow.panelBuildName(DATA, leveling, 60))
 		Follow.build = nil
 		local raid = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 60 })
 		assert.are.equal("Arms build", Follow.panelBuildName(DATA, raid, 60))
@@ -77,7 +77,7 @@ describe("Follow.ensureDefault", function()
 	it("names a default build with the noun 'build' and its kind", function()
 		local leveling = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 12 })
 		assert.are.equal("Arms leveling", leveling.name)
-		assert.are.equal("Arms leveling build", Follow.buildName(DATA, leveling))
+		assert.are.equal("Arms level 60 build", Follow.buildName(DATA, leveling))
 		Follow.build = nil
 		local raid = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 60 })
 		assert.are.equal("Arms raid build", Follow.buildName(DATA, raid))

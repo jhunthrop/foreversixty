@@ -304,7 +304,7 @@ describe("/fs diag's build line", function()
 
 	it("names a default build and the spec it is the default for", function()
 		local Options = login("hunter", { configID = 7, ranks = traitRanks("hunter", { [2] = 10 }) })
-		assert.are.equal("Build: Marksmanship leveling build (default for Marksmanship)", buildLine(Options.handle("diag")))
+		assert.are.equal("Build: Marksmanship level 60 build (default for Marksmanship)", buildLine(Options.handle("diag")))
 	end)
 
 	it("names a saved build as saved", function()

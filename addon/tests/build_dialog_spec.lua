@@ -621,10 +621,10 @@ describe("BuildDialog, paste mode's model", function()
 		end
 	end)
 
-	it("names a default build's kind in the plan line, 'Arms leveling build' (2026-11-13)", function()
+	it("names a default build's kind in the plan line, 'Arms level 60 build' (2026-11-13)", function()
 		local plan = ordered("DDI", "Arms leveling")
 		plan.default, plan.kind = true, "leveling"
-		assert.are.equal("Following: Arms leveling build \194\183 Warrior \194\183 3 points",
+		assert.are.equal("Following: Arms level 60 build \194\183 Warrior \194\183 3 points",
 			BuildDialog.followingLine(plan, DATA))
 		plan.name, plan.default = "Arms raid", false
 		assert.are.equal("Following: Arms raid \194\183 Warrior \194\183 3 points", BuildDialog.followingLine(plan, DATA))
