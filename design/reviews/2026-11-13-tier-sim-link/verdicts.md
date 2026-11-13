@@ -22,3 +22,20 @@ focus; tooltip "Open in the sim: <Spec>", accessible name "<value> DPS, open <Sp
   touch darker at 390.
 
 Captures: tiers-1440*.png, tiers-390*.png (local dev build, dev toolbar hidden).
+
+## Round 3: live pass (ai-slop-reviewer, info-density-reviewer)
+Captures of https://foreversixty.gg/tiers, Damage tab, 2x scale: live-tiers-1440*.png,
+live-tiers-390*.png (the full-page captures stayed in the scratch dir).
+
+- ai-slop-reviewer: SHIP. One dotted underline is the only cue, no chip, icon or arrow; the
+  tooltip names the spec and does not restate the number; tank and healer rows stay plain, so
+  the cue marks where something happens. Yes to the phone nit.
+- info-density-reviewer: SHIP. The figure exposes `simHref` we already build for every DPS row;
+  no duplicate sim link renders in the row. Yes to the phone nit. Follow-ups, not blockers:
+  the talent build or band in the figure tooltip, a sort control and Copy CSV, and a figure on
+  tank and healer rows that opens something real (BiS or the guide), never the sim.
+
+Fix (wow-player's optional nit, both agreed): at 767 px and below the rest underline sits at
+60% of the text colour instead of 40%; hover and focus stay solid at full colour. Also moved
+the stray "Below 1280" comment back above its media query. after-tiers-390-row-rest.png shows
+the darker dots (live page with the rule injected).

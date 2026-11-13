@@ -264,8 +264,6 @@
   outline-offset: 2px;
 }
 
-/* Below 1280 the letter column is a header strip above its rows. */
-/* A figure that opens something: the figure's own colour, underlined on hover. */
 /* A linked figure reads as one at rest (a quiet dotted underline, plain figures have none) and
    goes solid on hover and focus. */
 .ui-rr-fig-link {
@@ -289,8 +287,14 @@
     min-height: 44px;
     margin-block: -12px;
   }
+  /* No hover on touch: the rest underline is the only cue, so it sits a step darker (hover and
+     focus still win on specificity). */
+  .ui-rr-fig-link {
+    text-decoration-color: color-mix(in srgb, currentColor 60%, transparent);
+  }
 }
 
+/* Below 1280 the letter column is a header strip above its rows. */
 @media (max-width: 1279px) {
   .ui-rank-group {
     grid-template-columns: minmax(0, 1fr);
