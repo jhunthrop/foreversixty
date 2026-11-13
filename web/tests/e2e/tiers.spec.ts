@@ -107,7 +107,9 @@ test('the title band names the fight, and the bars are the accent from 90% of th
 }) => {
   await page.goto('/tiers');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Tier list at 60');
-  await expect(page.getByTestId('tier-page')).toContainText('Best in slot, raid buffs · vs a level 63 boss · 3 min');
+  await expect(page.getByTestId('tier-page')).toContainText(
+    'Best in slot, raid buffs · vs a level 63 boss · 3 min',
+  );
   await expect(activePanel(page).getByTestId('rank-group-letter').first()).toHaveAttribute(
     'title',
     'Within 5% of #1',
@@ -156,7 +158,7 @@ test('tank list sorts on damage taken, shows maximum health, and the best of eac
   );
 });
 
-test('tank bars are the least damage taken over the row\'s own, from zero', async ({ page }) => {
+test("tank bars are the least damage taken over the row's own, from zero", async ({ page }) => {
   await page.goto('/tiers/tank');
   const expected = expectedRows('tank', 'alliance');
   const rows = activePanel(page).locator('[data-testid^="tier-row-"]');

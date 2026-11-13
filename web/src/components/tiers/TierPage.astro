@@ -72,7 +72,8 @@ const stampTitle =
     ? undefined
     : `Ranked on build ${data.build}, engine ${data.engineVersion ?? ''}`.trim();
 // A tank list shows Health only when every band publishes it (no half-filled column).
-const tankHealth = isTank && TIER_FACTION_ORDER.every((f) => data.lists[f].tank.every((r) => r.health !== undefined));
+const tankHealth =
+  isTank && TIER_FACTION_ORDER.every((f) => data.lists[f].tank.every((r) => r.health !== undefined));
 const headLabels: readonly string[] =
   isTank && !tankHealth ? tiersCopy.tankHeadsWithoutHealth : tiersCopy.heads[role];
 const heads: RankHead[] = headLabels.map((label, index, all) => ({

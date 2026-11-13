@@ -224,10 +224,7 @@ function healerTiesAndRanks(sorted: readonly Scored[]): { ties: (TierTie | null)
 
 /** Ranks where a row tied with the one above shares that row's rank, down the chain. */
 function sharedRanks(tiedAbove: readonly boolean[]): number[] {
-  return tiedAbove.reduce<number[]>(
-    (acc, tied, index) => [...acc, tied ? acc[index - 1]! : index + 1],
-    [],
-  );
+  return tiedAbove.reduce<number[]>((acc, tied, index) => [...acc, tied ? acc[index - 1]! : index + 1], []);
 }
 
 /** The tie marks and ranks of one sorted role: healers by error, DPS and tanks by the fixed

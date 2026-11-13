@@ -14,8 +14,18 @@ const dps = rankRole(
 );
 const tanks = rankRole(
   [
-    tankInput('warrior', 'protection', 'Protection', { dtps: 245, effective_health: 40000, tps: 1633, health: 7484 }),
-    tankInput('paladin', 'protection', 'Protection', { dtps: 300, effective_health: 49794, tps: 1200, health: 9171 }),
+    tankInput('warrior', 'protection', 'Protection', {
+      dtps: 245,
+      effective_health: 40000,
+      tps: 1633,
+      health: 7484,
+    }),
+    tankInput('paladin', 'protection', 'Protection', {
+      dtps: 300,
+      effective_health: 49794,
+      tps: 1200,
+      health: 9171,
+    }),
   ],
   'tank',
 );
