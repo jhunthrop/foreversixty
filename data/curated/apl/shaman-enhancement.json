@@ -306,9 +306,10 @@
     "1": "when your Earth totem is down",
     "2": "when your Air totem is down",
     "3": "on cooldown",
-    "4": "at 5 Maelstrom Weapon stacks",
-    "5": "when Searing Totem is down and the fight has 20+ s left",
-    "6": "on a Clearcasting proc",
-    "7": "on cooldown, above about a sixth of your mana"
+    "4": "when it is off the target, above a third of your mana",
+    "5": "at 5 Maelstrom Weapon stacks",
+    "6": "when Searing Totem is down and the fight has 20+ s left",
+    "7": "on a Clearcasting proc",
+    "8": "on cooldown, above about a sixth of your mana"
   }
 }
