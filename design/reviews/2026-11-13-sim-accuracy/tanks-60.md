@@ -141,4 +141,4 @@ Guides: no guide, coach starter or tier-list copy says a bear out-threatens a wa
 
 ### Gates
 
-On the box: `go test ./request/` red at the test commit (the three tanks without `thunder_clap`, the role list unvalidated), then `go vet` and `go test -p 1 ./request/ ./cmd/spec-breakdown/ ./cmd/leveling-bis/ ./score/` green. Web: prettier and eslint on the e2e spec, `vitest` over `src/lib/sim`, `src/lib/tiers` and `src/lib/bis`, and `playwright test tests/e2e/tiers.spec.ts` (desktop and mobile). Nothing under `bis/` regenerated.
+On the box: `go test ./request/` red at the test commit (the three tanks without `thunder_clap`, the role list unvalidated), then `go vet` and `go test -p 1 ./request/ ./cmd/spec-breakdown/ ./cmd/leveling-bis/ ./score/` green. Web: prettier and eslint on the e2e spec, `vitest` over `src/lib/sim`, `src/lib/tiers` and `src/lib/bis` (two preset tests now expect a tank's `thunder_clap`; 2,121 passed), and `playwright test tests/e2e/tiers.spec.ts` (desktop and mobile). Nothing under `bis/` regenerated.
