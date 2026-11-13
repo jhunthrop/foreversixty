@@ -1,6 +1,6 @@
 # Forever Sixty
 
-## 2.0.46
+## 2.0.47
 
 - Builds now has its own bigger window. Your class's builds are on the left with one-click Follow, and the window stays open so you see the change at once. On the right: your next talent points by level, the box for pasting a build from the site, and your character code to copy for the site, each with a line on what it is for. Open it with /fs, the minimap button, Change on the panel, or the new "Open the Forever Sixty window" key binding.
 

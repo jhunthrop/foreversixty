@@ -194,7 +194,8 @@ describe("what the site has and what the inbox holds", function()
 			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M %p "
 			inbox()
 			fire("PLAYER_ENTERING_WORLD", true, false)
-			assert.is_truthy(SiteStatus.inboxLine(DATA):find("as of your login at 12:00 pm.", 1, true))
+			-- The site's clock drops ":00" on the hour (Compat.clockText, 2026-11-13).
+			assert.is_truthy(SiteStatus.inboxLine(DATA):find("as of your login at 12 pm.", 1, true))
 		end)
 	end)
 
