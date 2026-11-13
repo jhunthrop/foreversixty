@@ -1,5 +1,11 @@
 # Forever Sixty
 
+## 2.0.43
+
+- Follow on the Builds tab follows that build again: the Raid build, another spec's Level 60 build, any row. Before, the click did nothing.
+- The green upgrade arrow shows in Baganator's bags, at the top right of the item, the same arrow as on your character. Baganator lists it under its icon corners as "Forever Sixty upgrade".
+- Long item names and long "where it drops" lines in tooltips are no longer cut off. They wrap onto the next line like the game's own text.
+
 ## 2.0.42
 
 Data for client build 1.60.1.70938: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher. Nothing else changed.
