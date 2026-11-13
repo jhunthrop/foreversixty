@@ -41,6 +41,8 @@
   import SetupRail from './SetupRail.svelte';
   import SetupStepList from './SetupStepList.svelte';
   import SetupSurfaces from './SetupSurfaces.svelte';
+  import UnknownRealmQuestion from './UnknownRealmQuestion.svelte';
+  import { awaitingRealm } from '../../lib/account/unknown-realm';
 
   /** While Battle.net's import runs, `/v1/me` is read again this often (setup spec G1). */
   const IMPORT_POLL_MS = 5000;
@@ -181,6 +183,8 @@
   ];
   const settled = $derived(mounted && session !== 'loading');
   const signedIn = $derived(session === 'in' && me !== null);
+  /** Battle.net characters on a realm no source has typed: the plate asks their realm type first. */
+  const awaiting = $derived(signedIn ? awaitingRealm(me) : []);
   const addonDone = $derived(rows.find((row) => row.id === 'addon')?.mark === 'ok');
 </script>
 
@@ -220,6 +224,13 @@
   {/snippet}
 
   <Plate label="Your setup" frame="framed" testid="setup-plate">
+    <UnknownRealmQuestion
+      characters={awaiting}
+      onAnswered={() => {
+        invalidateMe();
+        void read(true);
+      }}
+    />
     <div class={mounted ? undefined : 'setup-hint'} data-hint={mounted ? undefined : 'out'}>
       <SetupStepList
         rows={mounted ? rows : HINT_OUT_ROWS}

@@ -50,8 +50,13 @@ export function rulesetFromRealm(realm: string): Ruleset | '' {
   return words.map((word) => RULESET_WORDS[word]).find((ruleset) => ruleset !== undefined) ?? '';
 }
 
+/** A Battle.net character whose realm type no source has named yet (the API's
+ *  `character.RulesetUnknown`): never one of RULESETS; /setup asks its player. */
+export const UNKNOWN_RULESET = 'unknown';
+
 /** A ruleset the site has not heard of is echoed rather than hidden: the API is the truth. */
 export function rulesetLabel(id: string): string {
+  if (id === UNKNOWN_RULESET) return 'Realm type?';
   return RULESETS.find((ruleset) => ruleset.id === id)?.label ?? id;
 }
 

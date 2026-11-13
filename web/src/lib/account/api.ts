@@ -26,6 +26,7 @@ import { clearPointerOnSignOut } from './session-pointer';
 import type { Me, MeCharacter } from './me-types';
 import { premiumSource } from './plan-line';
 import { clearMeGuildCount, clearPremiumHint, rememberMeHints, writePremiumHint } from './premium-hint';
+import { REALM_ANSWER_PATH } from './unknown-realm';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
 export const ACCOUNT_FAILED = 'That did not work; try again';
@@ -513,6 +514,14 @@ export async function setAnonymize(value: boolean, apiBase: string = API_BASE_UR
 /** Chooses the account's main character (one of its own); the rest become alts. */
 export async function setMainCharacter(key: string, apiBase: string = API_BASE_URL): Promise<void> {
   await patchMe({ main_character_key: key }, apiBase);
+}
+
+/** Answers the unknown-realm question for one of the account's characters
+ *  (lib/account/unknown-realm.ts); resolves to the character's new key. */
+export async function answerRealm(key: string, ruleset: string, apiBase: string = API_BASE_URL): Promise<string> {
+  const result = await call<{ key: string }>(REALM_ANSWER_PATH, apiBase, { method: 'POST', body: { key, ruleset } });
+  invalidate(meKey(apiBase));
+  return result?.key ?? key;
 }
 
 /** One character's export, matching `POST /v1/me/exports`'s body (spec 2026-09-22 §4.5) --
