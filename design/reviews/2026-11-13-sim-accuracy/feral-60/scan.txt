@@ -1,0 +1,30 @@
+ctxicu4cuyek cat1 lvl (29, 29) fights 2 {'Claw': 66, 'Rake': 27, 'Ferocious Bite': 23}
+gxrgvz4yzsi2 cat3 lvl (27, 27) fights 1 {'Claw': 4, 'Rip': 2, 'Rake': 1}
+gxrgvz4yzsi2 cat5 lvl (25, 25) fights 1 {'Rake': 2, 'Ferocious Bite': 1, 'Claw': 1}
+ctxicu4cuyek player lvl (24, 24) fights 1 {'Shred': 1, 'Claw': 1, 'Ferocious Bite': 1}
+gxrgvz4yzsi2 player lvl (24, 24) fights 1 {'Maul': 3, 'Claw': 2, 'Demoralizing Roar': 1, 'Rake': 1}
+gxrgvz4yzsi2 cat9 lvl (24, 24) fights 1 {'Claw': 4, 'Rake': 1}
+4q5el2xsgoy7 cat2 lvl (21, 21) fights 1 {'Claw': 5, 'Rake': 3, 'Ferocious Bite': 1}
+ctxicu4cuyek cat2 lvl (21, 21) fights 3 {'Claw': 22, 'Rake': 11, 'Ferocious Bite': 5}
+gxrgvz4yzsi2 player lvl (21, 21) fights 1 {'Swipe': 6, 'Maul': 6}
+gxrgvz4yzsi2 player lvl (21, 21) fights 1 {'Shred': 2}
+ctxicu4cuyek player lvl (20, 20) fights 4 {'Claw': 7, 'Rake': 3, 'Ferocious Bite': 1}
+gxrgvz4yzsi2 cat7 lvl (20, 20) fights 2 {'Claw': 10, 'Rake': 6, 'Ferocious Bite': 3}
+gxrgvz4yzsi2 player lvl (20, 20) fights 1 {'Claw': 3, 'Maul': 2, 'Ferocious Bite': 2, 'Rip': 1, 'Demoralizing Roar': 1}
+ctxicu4cuyek player lvl (19, 19) fights 1 {'Claw': 1, 'Rake': 1}
+gxrgvz4yzsi2 player lvl (19, 19) fights 1 {'Claw': 5, 'Rake': 3, 'Rip': 1}
+gxrgvz4yzsi2 player lvl (19, 19) fights 1 {'Claw': 4, 'Rake': 1, 'Rip': 1}
+gxrgvz4yzsi2 player lvl (18, 18) fights 1 {'Claw': 2, 'Ferocious Bite': 2, 'Rake': 1}
+gxrgvz4yzsi2 cat4 lvl (18, 18) fights 1 {'Rip': 1, 'Claw': 1}
+gxrgvz4yzsi2 player lvl (16, 16) fights 1 {'Swipe': 9}
+ctxicu4cuyek player lvl (14, 14) fights 1 {'Claw': 3, 'Rake': 1, 'Ferocious Bite': 1}
+ctxicu4cuyek player lvl (14, 14) fights 1 {'Claw': 5, 'Rip': 1}
+gxrgvz4yzsi2 player lvl (14, 14) fights 1 {'Claw': 4, 'Shred': 1}
+gxrgvz4yzsi2 player lvl (13, 13) fights 1 {'Claw': 3, 'Rip': 1}
+gxrgvz4yzsi2 cat6 lvl (13, 13) fights 1 {'Claw': 10, 'Rip': 3, 'Shred': 1}
+gxrgvz4yzsi2 player lvl (12, 12) fights 2 {'Swipe': 4, 'Maul': 2, 'Demoralizing Roar': 1}
+gxrgvz4yzsi2 player lvl (12, 12) fights 1 {'Maul': 3, 'Swipe': 2, 'Demoralizing Roar': 2}
+ctxicu4cuyek player lvl (11, 11) fights 8 {'Maul': 42, 'Demoralizing Roar': 9}
+gxrgvz4yzsi2 player lvl (11, 11) fights 1 {'Claw': 6}
+gxrgvz4yzsi2 cat8 lvl (9, 9) fights 1 {'Claw': 4, 'Rip': 2, 'Shred': 1}
+gxrgvz4yzsi2 player lvl (7, 7) fights 3 {'Maul': 5}
