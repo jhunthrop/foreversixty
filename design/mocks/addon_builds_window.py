@@ -64,6 +64,7 @@ CSS = ab.CSS + f'''
 .win .vr {{ position: absolute; left: {PAD + LEFT + GUTTER // 2}px; top: {HEADER}px; bottom: {FOOTER}px;
   width: 1px; background: {ADDON['line']}; }}
 .win .lc {{ margin-right: {GUTTER}px; }}
+.win .brow::before {{ right: -{ab.G['groundLead']}px; }}
 .win .rule {{ width: 1px; background: {ADDON['line']}; margin: -12px {GUTTER // 2 - 1}px -12px {GUTTER // 2}px; flex: none;
   align-self: stretch; }}
 .win .rc {{ width: {RIGHT}px; flex: none; }}
@@ -196,8 +197,7 @@ def to_site(state='rest', facts=(), cls='hunter', level=42):
 
 
 def facts_hunter(level=42):
-    return [L('dialogSeparator').join([lua_format(L('dialogSummaryWho'), level, 'Hunter'),
-                                       lua_format(L('dialogSummaryItems'), 14),
+    return [L('dialogSeparator').join([lua_format(L('dialogSummaryItems'), 14),
                                        lua_format(L('dialogSummaryProfessions'), 2), L('dialogSummaryShared')]),
             lua_format(L('dialogSeen'), '1 h 35 min ago')]
 
@@ -232,7 +232,13 @@ def name_of(spec_name, kind):
 
 
 def note(level, matched=None, allowed=None, off=0, spend=0):
-    out = ab.note(level, matched, allowed, off)
+    """BuildsPane.note: the level, then parts that add up to its points: on plan, off plan, to spend."""
+    parts = [lua_format(L('dialogLevelPoints'), level)]
+    if allowed:
+        parts.append(lua_format(L('windowOnPlan'), matched))
+    if off:
+        parts.append(f'<span style="color:{ADDON["warning"]}">{lua_format(L("windowOffPlanCount"), off)}</span>')
+    out = L('dialogSeparator').join(parts)
     if spend:
         out += L('dialogSeparator') + f'<span style="color:{CLIENT_GOLD}">{lua_format(T("windowToSpend"), spend)}</span>'
     return out
@@ -246,10 +252,8 @@ def off_plan(lines):
 
 # The owner's capture named the count (5 off plan), not the talents: two of the hunter's own tier-1 talents
 # stand in for them, in PanelTab.offPlanTalents' own line (L.panelOffPlanTalent).
-HUNTER_OFF_PLAN = [lua_format(re.sub(r'%d off plan \(Rank %d/%d\)', '{0} off plan (Rank {0}/{1})',
-                                     L('panelOffPlanTalent')).replace('{0}', '%d').replace('{1}', '%d'),
-                              *args) for args in (('Hawk Eye', 'Marksmanship', 3, 3, 3),
-                                                  ('Deflection', 'Survival', 2, 2, 5))]
+HUNTER_OFF_PLAN = [lua_format(L('windowTalentHave'), *args)
+                   for args in (('Hawk Eye', 3, 3, 'Marksmanship'), ('Deflection', 2, 5, 'Survival'))]
 
 
 def board_hunter_42():
@@ -270,7 +274,7 @@ def board_hunter_42():
 def site_druid():
     return ab.site_rows([
         (f'Moonkin for Molten Core{L("dialogSeparator")}51 points', 'Balance 31 / Restoration 20',
-         f'{lua_format(L("dialogForCharacter"), "Leafcall")}{L("dialogSeparator")}12 Nov', 'druid'),
+         f'{lua_format(L("dialogForCharacter"), "Brindlefen")}{L("dialogSeparator")}12 Nov', 'druid'),
         (f'Bear for Onyxia{L("dialogSeparator")}51 points', 'Feral Combat 34 / Restoration 17',
          f'{lua_format(L("dialogFromPush"), "Varnok")}{L("dialogSeparator")}12 Nov', 'druid')], 2)
 
@@ -288,8 +292,7 @@ def druid_next_line():
 def board_druid_24():
     blocks = ab.class_blocks('druid', 24, 'druid-feral', 'leveling', druid_next_line(),
                              specs=['druid-balance', 'druid-feral', 'druid-feral-bear', 'druid-restoration'])
-    facts = [L('dialogSeparator').join([lua_format(L('dialogSummaryWho'), 24, 'Druid'),
-                                        lua_format(L('dialogSummaryItems'), 11), L('dialogSummarySharedRealm')]),
+    facts = [L('dialogSeparator').join([lua_format(L('dialogSummaryItems'), 11), L('dialogSummarySharedRealm')]),
              L('dialogNotSent')]
     right = (up_next_html(name_of('Feral', 'leveling'), druid_up_next()) + from_site(site_druid())
              + to_site('selected', facts, 'druid', 24))
@@ -310,15 +313,41 @@ def board_hunter_60_copied():
                         blocks_html(blocks), right, T('windowEscClose')))
 
 
+def preview_changes():
+    """BuildsWindow.talentDiff of the pasted Balance build against the level 24 druid's 15 Feral points, in tree
+    order, CHANGE_ROWS lines then "and N more" (BuildsWindow.talentLines with L.windowTalentBuild)."""
+    feral = ab.BUILDS['druid-feral']['leveling']['order'][:15]
+    moonkin = ab.BUILDS['druid-balance']['raid']['order']
+    table = cells('druid')
+    have = collections.Counter(tuple(p) for p in feral)
+    want = collections.Counter(tuple(p) for p in moonkin)
+    trees = [t['name'] for t in ab.trees('druid')]
+    keys = sorted(set(have) | set(want))
+    entries = [k for k in keys if have[k] != want[k]]
+    lines = []
+    for k in entries[:6]:
+        cell = table[k]
+        if want[k] == 0:
+            lines.append(lua_format(L('windowTalentHave'), cell['name'], have[k], cell['max_rank'], trees[k[0] - 1]))
+        else:
+            lines.append(lua_format(L('windowTalentBuild'), cell['name'], have[k], cell['max_rank'], trees[k[0] - 1],
+                                    want[k]))
+    if len(entries) > 6:
+        lines.append(lua_format(L('dialogInboxMore'), len(entries) - 6))
+    return lines
+
+
 def preview_left():
     gear = [('Head', 'Cenarion Helm', 4), ('Chest', 'Robe of Volatile Power', 4),
             ('Neck', 'Choker of Enlightenment', 4), ('Hands', 'Cenarion Gloves', 4)]
     rows = ''.join(f'<div class="gr"><span class="sl">{slot}</span>'
                    f'<span style="color:{ux.QUALITY[q]}">{n}</span></div>' for slot, n, q in gear)
     replaces = lua_format(L('dialogReplacesDiffers'), name_of('Feral', 'leveling'), '15 points', 1, 'Improved Wrath')
+    changes = ''.join(f'<div class="one m">{esc(line)}</div>' for line in preview_changes())
     return (f'<div class="pv"><div class="ph">{ab.crest("druid", 32)}<div><div>Moonkin for Molten Core'
             f'{L("dialogSeparator")}51 points</div><div class="m">Balance 31 / Restoration 20</div></div></div>'
             f'<div class="gh">{L("dialogGearHeading")}{L("dialogSeparator")}4 of 17 slots</div>{rows}'
+            f'<div style="margin-top:8px">{T("windowChanges")}</div>{changes}'
             f'<div class="warn-t" style="margin-top:10px">{esc(replaces)}</div>'
             f'<div class="m" style="margin:2px 0 6px">{lua_format(L("dialogNextWould"), "Improved Wrath")}</div>'
             f'<span class="gold-btn">{L("dialogUse")}</span></div>')
@@ -342,8 +371,7 @@ def board_bad_code():
     rows = up_next('hunter-beast-mastery', 'leveling', 'Intimidation', 1, 42)
     lead, body = L('codecWrongPrefix').split('. ', 1)
     tail = re.search(r'codecWrongPrefix = .*\n\t\t\.\. "([^"]*)"', ab.LOCALE).group(1)
-    after = (f'<div class="st warn-t">{esc(lead)}.</div><div class="m">{esc(body + tail)}</div>'
-             f'<div class="m">{esc(lua_format(L("dialogStillFollowing"), name_of("Beast Mastery", "leveling")))}</div>')
+    after = f'<div class="st warn-t">{esc(lead)}.</div><div class="m">{esc(body + tail)}</div>'
     box = '<span class="one" style="display:block">https://www.wowhead.com/classic/talent-calc/hunter/5300052-0505</span>'
     right = (up_next_html(name_of('Beast Mastery', 'leveling'), rows)
              + from_site(box_cls='warn one-line', box_text=box, after=after) + to_site('rest', facts_hunter()))

@@ -76,6 +76,81 @@ function BuildsWindow.upNext(build, ranks, level, data, limit)
 	return rows
 end
 
+local function cellOrder(left, right)
+	if left.tab ~= right.tab then
+		return left.tab < right.tab
+	end
+	if left.tier ~= right.tier then
+		return left.tier < right.tier
+	end
+	return left.column < right.column
+end
+
+--- Every talent where the character's ranks and `build` disagree, in tree order: { name, tree, have,
+--- want, maxRank }; a talent the build has none of has want 0. Pure over its inputs.
+function BuildsWindow.talentDiff(build, ranks, data)
+	if type(build) ~= "table" or type(build.order) ~= "table" then
+		return {}
+	end
+	local found = {}
+	for _, cell in ipairs(Progress.cells(build, ranks or {}, data)) do
+		if cell.have ~= cell.want then
+			found[#found + 1] = { tab = cell.tab, tier = cell.tier, column = cell.column, have = cell.have, want = cell.want }
+		end
+	end
+	for _, cell in ipairs(Progress.offPlanCells(build, ranks or {}, data)) do
+		found[#found + 1] = { tab = cell.tab, tier = cell.tier, column = cell.column, have = cell.have, want = 0 }
+	end
+	table.sort(found, cellOrder)
+	local entries = {}
+	for _, cell in ipairs(found) do
+		local talent = Talents.cellOf(data, build.classSlug, cell.tab, cell.tier, cell.column)
+		local tree = Talents.tabName(data, build.classSlug, cell.tab)
+		if talent ~= nil and tree ~= nil then
+			entries[#entries + 1] = { name = talent.name, tree = tree, have = cell.have, want = cell.want,
+				maxRank = tonumber(talent.maxRank) or math.max(cell.have, cell.want) }
+		end
+	end
+	return entries
+end
+
+--- One talent's line against a plan (`wantFormat`: L.windowTalentPlan, or L.windowTalentBuild for a
+--- pasted build): "Deflection 5/5 · Survival · plan 3"; with want 0, "Hawk Eye 3/3 · Marksmanship". Pure.
+function BuildsWindow.talentLine(entry, wantFormat)
+	if entry.want == 0 then
+		return string.format(L.windowTalentHave, entry.name, entry.have, entry.maxRank, entry.tree)
+	end
+	return string.format(wantFormat, entry.name, entry.have, entry.maxRank, entry.tree, entry.want)
+end
+
+--- At most `limit` lines from `entries` (BuildsWindow.talentLine in `wantFormat`), then "and N more";
+--- nil with none. Pure.
+function BuildsWindow.talentLines(entries, wantFormat, limit)
+	if type(entries) ~= "table" or #entries == 0 then
+		return nil
+	end
+	local lines = {}
+	for index = 1, math.min(#entries, limit) do
+		lines[index] = BuildsWindow.talentLine(entries[index], wantFormat)
+	end
+	if #entries > limit then
+		lines[#lines + 1] = string.format(L.dialogInboxMore, #entries - limit)
+	end
+	return lines
+end
+
+--- The talents spent past the followed build (spec 3.2): the diff's entries where the character has more
+--- than the plan wants. Pure.
+function BuildsWindow.offPlan(build, ranks, data)
+	local over = {}
+	for _, entry in ipairs(BuildsWindow.talentDiff(build, ranks, data)) do
+		if entry.have > entry.want then
+			over[#over + 1] = entry
+		end
+	end
+	return over
+end
+
 --- When an Up next row arrives: "Now", "Level 43" or "Level 44 to 48". Pure.
 function BuildsWindow.when(row)
 	if row.now then

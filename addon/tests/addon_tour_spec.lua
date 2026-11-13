@@ -231,9 +231,10 @@ describe("the Builds dialog's own builds (2026-11-13 spec 1), the pure model", f
 		assert.are.equal("Level 13", BuildsPane.note(13, nil, spentAll))
 		local followed = { classSlug = "warrior", order = { { tab = 1, tier = 1, column = 1 },
 			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 2 } } }
-		-- The points waiting, in the client gold, last (wow-player 2026-11-13).
+		-- Parts that add up to the level's points: on plan, off plan, the points waiting in the client gold
+		-- (wow-player 2026-11-13, rounds 1 and 2).
 		local Theme = require("Theme")
-		assert.are.equal("Level 13 · 0 of 3 points · " .. Theme.inlineColor("clientGold", "4 to spend"),
+		assert.are.equal("Level 13 · 0 on plan · " .. Theme.inlineColor("clientGold", "4 to spend"),
 			BuildsPane.note(13, followed, {}))
 		assert.is_nil(BuildsPane.question(nil, "1 Arms · 1 Fury"))
 		assert.are.equal("Are you Arms or Fury?", BuildsPane.question("Are you Arms or Fury?"))
@@ -241,12 +242,12 @@ describe("the Builds dialog's own builds (2026-11-13 spec 1), the pure model", f
 			BuildsPane.question("Are you Arms or Fury?", "1 Arms · 1 Fury"))
 	end)
 
-	it("counts the points off plan in the note, in the warning colour, as the panel does", function()
+	it("counts the points off plan in the note, in the warning colour", function()
 		local followed = { classSlug = "warrior", order = { { tab = 1, tier = 1, column = 1 },
 			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 2 } } }
 		local ranks = { [2] = { ["1:3"] = 2 } }
 		local note = BuildsPane.note(13, followed, ranks)
-		assert.is_truthy(note:find(require("Theme").inlineColor("warning", string.format(L.panelOffPlanCount, 2)),
+		assert.is_truthy(note:find(require("Theme").inlineColor("warning", string.format(L.windowOffPlanCount, 2)),
 			1, true), note)
 	end)
 

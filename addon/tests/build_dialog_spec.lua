@@ -288,29 +288,27 @@ describe("BuildDialog, paste mode's model", function()
 		assert.are.equal("gold", BuildDialog.pasteView({ ok = true }, false, true).border)
 	end)
 
-	it("splits a refusal into a red lead, a body and what the player still follows", function()
-		local refusal = BuildDialog.refusal(L.codecNewerBuild, "Arms / Fury build")
+	it("splits a refusal into a red lead and a body, the list beside it saying what is still followed", function()
+		local refusal = BuildDialog.refusal(L.codecNewerBuild)
 		assert.are.equal("That code is for a newer patch than this addon.", refusal.lead)
 		assert.are.equal("Update the addon, then paste it again.", refusal.body)
-		assert.are.equal(string.format(L.dialogStillFollowing, "Arms / Fury build"), refusal.following)
-		local plain = BuildDialog.refusal(L.codecTooLong, nil)
+		assert.is_nil(refusal.following)
+		local plain = BuildDialog.refusal(L.codecTooLong)
 		assert.are.equal(L.codecTooLong, plain.lead)
 		assert.is_nil(plain.body)
-		assert.is_nil(plain.following)
 	end)
 
 	it("gives garbage text advice naming the site (fix 2, 7)", function()
-		local refusal = BuildDialog.refusal(L.codecWrongPrefix, nil)
+		local refusal = BuildDialog.refusal(L.codecWrongPrefix)
 		assert.are.equal("That is not a Forever Sixty build code.", refusal.lead)
 		assert.are.equal("Copy the whole code from " .. L.siteName .. ", it starts with FSB1.", refusal.body)
 	end)
 
 	it("gives another class's code advice naming the player's class (fix 3, 2 and 10)", function()
 		local reason = BuildDialog.evaluate(code(0, 0, nil, nil, "mage"), DATA, WARRIOR).reason
-		local refusal = BuildDialog.refusal(reason, "Arms raid")
+		local refusal = BuildDialog.refusal(reason)
 		assert.are.equal("That code is for a Mage, not a Warrior.", refusal.lead)
 		assert.are.equal("Pick a Warrior build on " .. L.siteName .. ".", refusal.body)
-		assert.are.equal(string.format(L.dialogStillFollowing, "Arms raid"), refusal.following)
 	end)
 
 	it("caps a long refusal so it never runs past two lines", function()
@@ -771,7 +769,7 @@ describe("BuildDialog, copy mode's model", function()
 		assert.is_true(copy.selected)
 		assert.is_nil(copy.button)
 		assert.are.same({ text = L.dialogSelectedLead, hexKey = "body" }, copy.lead)
-		assert.are.equal("Selected. Press Ctrl+C, then paste it on " .. L.siteName .. ".", L.dialogSelectedLead)
+		assert.are.equal("Selected. Press Ctrl+C.", L.dialogSelectedLead)
 	end)
 
 	it("claims a copy only after a real Ctrl+C, in the gain green, and keeps saying so", function()
@@ -1295,23 +1293,23 @@ describe("BuildDialog, the gear row's source and the build's title (A.2)", funct
 		assert.is_nil(BuildDialog.inboxDay(nil, clock))
 	end)
 
-	it("says what the export holds in one line above its box", function()
+	it("says what the export holds in one line, the level and class left to the header", function()
 		local function export(level, professions, guild)
 			return Codec.encodeFS1({ dataBuild = DATA.build, classSlug = "hunter", raceSlug = "night-elf",
 				treeRanks = { {}, {}, {} }, level = level, professions = professions, guild = guild,
 				gearSlots = { { slot = "head", itemId = 12640, stats = {} }, { slot = "neck", itemId = 15411, stats = {} } } })
 		end
-		assert.are.equal("Level 24 Hunter \194\183 2 items \194\183 3 professions \194\183 your guild and realm are included",
+		assert.are.equal("2 items \194\183 3 professions \194\183 your guild and realm are included",
 			BuildDialog.exportSummary(export(24, { "leatherworking", "skinning", "first-aid" },
 				{ name = "Guild", rankIndex = 1 })))
-		assert.are.equal("Level 24 Hunter \194\183 2 items \194\183 1 profession \194\183 your realm is included",
+		assert.are.equal("2 items \194\183 1 profession \194\183 your realm is included",
 			BuildDialog.exportSummary(export(24, { "skinning" })))
-		assert.are.equal("Hunter \194\183 2 items \194\183 your realm is included", BuildDialog.exportSummary(export(nil)))
+		assert.are.equal("2 items \194\183 your realm is included", BuildDialog.exportSummary(export(nil)))
 		assert.is_nil(BuildDialog.exportSummary("not an export"))
 		assert.is_nil(BuildDialog.exportSummary(nil))
 		-- Copy mode carries it; a /fs link page holds none.
 		local model = BuildDialog.copyModel({ code = export(24), clock = BuildDialog.utcClock(0, NOV4_1402) })
-		assert.are.equal("Level 24 Hunter \194\183 2 items \194\183 your realm is included", model.summary)
+		assert.are.equal("2 items \194\183 your realm is included", model.summary)
 		assert.is_nil(BuildDialog.copyModel({ link = { url = "foreversixty.gg/x", name = "Bob" },
 			clock = BuildDialog.utcClock(0, NOV4_1402) }).summary)
 	end)

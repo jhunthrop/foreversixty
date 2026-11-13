@@ -942,6 +942,17 @@ L.windowToSpend = "%d to spend"
 -- Over the build list while points sit where the followed build has none: the heading in the warning
 -- colour, then a line a talent (PanelTab.offPlanTalents' own lines), at most OFF_PLAN_ROWS of them.
 L.windowOffPlan = "Off plan"
+-- A talent against a plan, on the Off plan lines and the preview's changes: the name with the ranks you
+-- have, the tree, and what the plan or the pasted build wants ("Deflection 5/5 \194\183 Survival \194\183 plan 3");
+-- a talent the plan has none of drops the last part ("Hawk Eye 3/3 \194\183 Marksmanship").
+L.windowTalentHave = "%s %d/%d \194\183 %s"
+L.windowTalentPlan = "%s %d/%d \194\183 %s \194\183 plan %d"
+L.windowTalentBuild = "%s %d/%d \194\183 %s \194\183 build %d"
+-- The preview's changes against the character's talents, under its gear.
+L.windowChanges = "Against your talents"
+-- The header's figures, which add up to the points the level gives: on plan, off plan, to spend.
+L.windowOnPlan = "%d on plan"
+L.windowOffPlanCount = "%d off plan"
 -- The build list for a class the data has no builds for.
 L.windowNoBuilds = "No builds for this class yet."
 -- L3.7 item 30: the newest sim result says it failed.
@@ -1014,8 +1025,6 @@ L.dialogUseFurtherHint = "Your plan is further along"
 -- points spent and the point it keeps following from; above the "first differs at" sentence.
 L.dialogEndsShort = "This build ends at %s; you have spent %d. It keeps following from point %d."
 L.dialogNextWould = "Next talent would be: %s"
--- A refusal's last line, muted.
-L.dialogStillFollowing = "You are still following %s."
 -- L3.7 item 32: after a paste was adopted beside a raid build (both "%s" the raid slot's id; fix round 1,
 -- item 11: it says the raid build is kept).
 L.dialogUsingPaste = "Using your paste. Your %s build is kept; /fs build %s switches back."
@@ -1041,15 +1050,13 @@ L.dialogInboxMore = "and %d more"
 -- Copy mode. The lead line under the tabs until a real Ctrl+C, then the copy claim.
 -- A.2: one line above the export box saying what it holds ("Level 24 Hunter · 14 items · 3 professions ·
 -- your guild and realm are included"; no guild: "your realm is included").
-L.dialogSummaryWho = "Level %d %s"
-L.dialogSummaryWhoNoLevel = "%s"
 L.dialogSummaryItems = "%d items"
 L.dialogSummaryItemOne = "1 item"
 L.dialogSummaryProfessions = "%d professions"
 L.dialogSummaryProfessionOne = "1 profession"
 L.dialogSummaryShared = "your guild and realm are included"
 L.dialogSummarySharedRealm = "your realm is included"
-L.dialogSelectedLead = "Selected. Press Ctrl+C, then paste it on " .. SITE .. "."
+L.dialogSelectedLead = "Selected. Press Ctrl+C."
 L.dialogYouCopied = "You copied %s. Now paste it on " .. SITE .. "."
 -- The ack: the site has this export, or an older one.
 -- A.2: an age on the chat's clock, never a time of day the player has to compare with the game's.

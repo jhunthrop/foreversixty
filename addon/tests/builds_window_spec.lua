@@ -191,7 +191,6 @@ describe("the Builds tab's flows (shipped data, a level 42 hunter)", function()
 		local paste = BuildDialog.paste
 		assert.is_true(paste.lead:IsShown())
 		assert.is_truthy(paste.lead:GetText():find("^That"), paste.lead:GetText())
-		assert.is_true(paste.still:IsShown())
 		assert.is_true(rowsShown() >= 5)
 		assert.is_false(paste.preview.frame:IsShown())
 		assert.are.equal(before, Follow.build)
@@ -237,5 +236,107 @@ describe("the Builds tab's flows (shipped data, a level 42 hunter)", function()
 		BuildDialog.open("paste")
 		mock.runTimers(state)
 		assert.is_true(BuildDialog.paste.box:HasFocus())
+	end)
+end)
+
+describe("the talents against a plan (BuildsWindow.talentDiff)", function()
+	local BuildsWindow
+
+	before_each(function()
+		mock.install({})
+		helper.load("Theme").reset()
+		BuildsWindow = helper.load("BuildsWindow")
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	local BUILD = { classSlug = "warrior", order = { point(1, 1, 1), point(1, 1, 1), point(2, 1, 3) } }
+
+	it("lists every talent where the ranks and the build disagree, in tree order, none for a match", function()
+		local ranks = { [1] = { ["1:1"] = 3, ["1:2"] = 2 }, [3] = { ["1:2"] = 1 } }
+		local diff = BuildsWindow.talentDiff(BUILD, ranks, DATA)
+		local names = {}
+		for index, entry in ipairs(diff) do
+			names[index] = entry.name .. " " .. entry.have .. "/" .. entry.want
+		end
+		assert.are.same({ "Improved Heroic Strike 3/2", "Deflection 2/0", "Cruelty 0/1", "Anticipation 1/0" }, names)
+		assert.are.same({}, BuildsWindow.talentDiff(BUILD, { [1] = { ["1:1"] = 2 }, [2] = { ["1:3"] = 1 } }, DATA))
+		assert.are.same({}, BuildsWindow.talentDiff(nil, ranks, DATA))
+	end)
+
+	it("words a talent against the plan or a pasted build, and drops the want for one it has none of", function()
+		local ranks = { [1] = { ["1:1"] = 3, ["1:2"] = 2 } }
+		local diff = BuildsWindow.talentDiff(BUILD, ranks, DATA)
+		assert.are.equal("Improved Heroic Strike 3/3 \194\183 Arms \194\183 plan 2",
+			BuildsWindow.talentLine(diff[1], L.windowTalentPlan))
+		assert.are.equal("Deflection 2/5 \194\183 Arms", BuildsWindow.talentLine(diff[2], L.windowTalentPlan))
+		assert.are.equal("Cruelty 0/5 \194\183 Fury \194\183 build 1", BuildsWindow.talentLine(diff[3], L.windowTalentBuild))
+		-- The off-plan list is the talents spent past the plan.
+		local over = BuildsWindow.offPlan(BUILD, ranks, DATA)
+		assert.are.same({ "Improved Heroic Strike", "Deflection" }, { over[1].name, over[2].name })
+		local lines = BuildsWindow.talentLines(diff, L.windowTalentPlan, 2)
+		assert.are.same(3, #lines)
+		assert.are.equal(string.format(L.dialogInboxMore, 1), lines[3])
+		assert.is_nil(BuildsWindow.talentLines({}, L.windowTalentPlan, 2))
+	end)
+end)
+
+describe("the window's off-plan list and the preview's changes (shipped data)", function()
+	local Data = require("Data")
+	local state, BuildDialog
+
+	before_each(function()
+		-- Level 20 with 5 points in a Survival talent, past what the Beast Mastery build wants there.
+		state = mock.install({ class = { name = "Hunter", token = "HUNTER" }, race = { name = "Dwarf", token = "Dwarf" },
+			level = 20, playerName = "Bob", realm = "Ashbringer", region = 1,
+			talents = { { name = "Beast Mastery", talents = {} }, { name = "Marksmanship", talents = {} },
+				{ name = "Survival", talents = { { name = "Deflection", tier = 1, column = 2, rank = 5, maxRank = 5 } } } } })
+		helper.load("Theme").reset()
+		_G.ForeverSixtyDB = {}
+		_G.ForeverSixtyInbox = nil
+		for _, name in ipairs({ "Prefs", "Widgets", "Cards", "Export", "Talents", "Gear", "Progress" }) do
+			helper.load(name)
+		end
+		local Follow = helper.load("Follow")
+		helper.load("Chip").data = Data
+		helper.load("ItemTooltip")
+		helper.load("BuildsPane")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = Data
+		BuildDialog.say = function() end
+		Follow.chooseDefault(Data, "hunter-beast-mastery", 20)
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+	end)
+
+	after_each(function()
+		_G.ForeverSixtyDB = nil
+		mock.uninstall()
+	end)
+
+	it("names the talents off the followed build over the list", function()
+		local paste = BuildDialog.paste
+		assert.is_true(paste.offPlanHead:IsShown())
+		assert.are.equal(L.windowOffPlan, paste.offPlanHead:GetText())
+		local line = paste.offPlan[1]:GetText()
+		assert.is_truthy(line:find("^.+ 5/5 \194\183 Survival"), line)
+		assert.is_truthy(require("Hub").header.note:GetText():find(" off plan", 1, true))
+	end)
+
+	it("lists the pasted build's talents against the character's under the preview", function()
+		local order = {}
+		for index, triple in ipairs(Data.defaultBuilds["hunter-survival"].leveling.order) do
+			order[index] = { tab = triple[1], tier = triple[2], column = triple[3] }
+		end
+		local box = BuildDialog.paste.box
+		box:SetText(require("Codec").encodeFSB1({ dataBuild = Data.build, classSlug = "hunter", order = order }))
+		box:GetScript("OnTextChanged")(box, true)
+		local paste = BuildDialog.paste
+		assert.is_true(paste.changesHead:IsShown())
+		assert.are.equal(L.windowChanges, paste.changesHead:GetText())
+		assert.is_true(paste.changes[1]:IsShown())
+		assert.is_false(paste.offPlanHead:IsShown())
 	end)
 end)

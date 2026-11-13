@@ -64,6 +64,8 @@ BuildDialog.SITE_CREST = 20
 BuildDialog.MORE_GAP = 6
 --- The most off-plan talents named over the build list; the rest are "and N more" (spec 3.2).
 BuildDialog.OFF_PLAN_ROWS = 3
+--- The most talents the preview names against the character's own; the rest are "and N more".
+BuildDialog.CHANGE_ROWS = 6
 
 --- Injection points Options fills: the data to read and what to redraw after a build is used
 --- (Options.refreshSurfaces). `say` prints the chat line (Theme.say when nil). What runs when the
@@ -135,10 +137,10 @@ local function cut(text, limit)
 	return text:sub(1, stop)
 end
 
---- A refusal as the dialog shows it: the codec's first sentence as the red lead (capped at
---- REASON_CHARS, so it never runs past two lines), the rest as the body, and a muted
---- "You are still following ..." when a build is followed.
-function BuildDialog.refusal(reason, followingName)
+--- A refusal as the window shows it: the codec's first sentence as the red lead (capped at
+--- REASON_CHARS, so it never runs past two lines), the rest as the body. The build list beside it
+--- still marks what is followed, so the refusal does not say it again (round 2).
+function BuildDialog.refusal(reason)
 	local lead, body = reason:match("^(.-%.)%s+(.+)$")
 	if lead == nil then
 		lead = reason
@@ -149,7 +151,6 @@ function BuildDialog.refusal(reason, followingName)
 	return {
 		lead = lead,
 		body = body,
-		following = followingName ~= nil and string.format(L.dialogStillFollowing, followingName) or nil,
 	}
 end
 
@@ -834,9 +835,9 @@ function BuildDialog.copyKey(key, control, focused, selected)
 	return key == "C" and control == true and focused == true and selected == true
 end
 
---- What the export holds in one line: "Level 24 Hunter · 14 items · 3 professions · your guild and
---- realm are included" (a count of none is left out; "your realm is included" with no guild); nil for
---- a code that is not an export.
+--- What the export holds in one line: "14 items · 3 professions · your guild and realm are included" (a
+--- count of none is left out; "your realm is included" with no guild); the level and class are the
+--- window's header, never said again (ai-slop round 2). nil for a code that is not an export.
 function BuildDialog.exportSummary(code)
 	if type(code) ~= "string" then
 		return nil
@@ -845,13 +846,9 @@ function BuildDialog.exportSummary(code)
 	if not ok or type(build) ~= "table" then
 		return nil
 	end
-	local class = Talents.titleCase(build.classSlug)
-	local who = build.level ~= nil and string.format(L.dialogSummaryWho, build.level, class)
-		or string.format(L.dialogSummaryWhoNoLevel, class)
 	local items = #(build.gearSlots or {})
 	local professions = #(build.professions or {})
 	return joined(
-		who,
 		items > 0 and (items == 1 and L.dialogSummaryItemOne or string.format(L.dialogSummaryItems, items)) or nil,
 		professions > 0 and (professions == 1 and L.dialogSummaryProfessionOne
 			or string.format(L.dialogSummaryProfessions, professions)) or nil,
@@ -1146,22 +1143,6 @@ function BuildDialog.rowsView(rows, limit, verdict, cursor)
 	return { shown = shown, more = more, active = active ~= nil and active.id or nil }
 end
 
---- The off-plan lines over the build list: the first OFF_PLAN_ROWS talents (PanelTab.offPlanTalents'
---- lines), then "and N more" for the rest; nil with none. Pure.
-function BuildDialog.offPlanLines(talents)
-	if type(talents) ~= "table" or #talents == 0 then
-		return nil
-	end
-	local lines = {}
-	for index = 1, math.min(#talents, BuildDialog.OFF_PLAN_ROWS) do
-		lines[index] = talents[index]
-	end
-	if #talents > BuildDialog.OFF_PLAN_ROWS then
-		lines[#lines + 1] = string.format(L.dialogInboxMore, #talents - BuildDialog.OFF_PLAN_ROWS)
-	end
-	return lines
-end
-
 --- The cursor's row: a 2 px edge in the body colour at its left (spec 6.4: gold means one thing
 --- in this dialog, the build followed). Every row hovers in the secondary buttons' hover ground,
 --- the cue that it can be clicked.
@@ -1344,6 +1325,7 @@ local function currentOwnView()
 		question = BuildsPane.question(question, split),
 		note = BuildsPane.note(level, Follow.build, ranks),
 		offPlanTalents = PanelTab.offPlanTalents(Follow.build, ranks, data),
+		offPlan = BuildsWindow.offPlan(Follow.build, ranks, data),
 		blocks = BuildsPane.blocks(data, player.classSlug, level, Follow.build, ranks),
 	}
 end
@@ -2002,10 +1984,16 @@ local function buildPaste(body, top, bottom)
 	setMaxLines(paste.lead, 2)
 	paste.body = text(right, "muted", rightWidth())
 	setMaxLines(paste.body, 2)
-	paste.still = text(right, "muted", rightWidth())
 	paste.status = text(right, "success", rightWidth())
 	setMaxLines(paste.status, 2)
 	paste.preview = buildPreview(content)
+	-- Under the preview's gear: the talents the pasted build changes against the character's own.
+	paste.changesHead = text(content, "body", width)
+	paste.changesHead:SetText(L.windowChanges)
+	paste.changes = {}
+	for index = 1, BuildDialog.CHANGE_ROWS + 1 do
+		paste.changes[index] = text(content, "muted", width)
+	end
 	paste.use = Cards.primaryButton(content, L.dialogUse, function()
 		BuildDialog.useCurrent()
 	end)
@@ -2266,6 +2254,31 @@ function BuildDialog.scrollGear(rows)
 	return preview.offset
 end
 
+--- The pasted build's talents against the character's (spec 3.2, info-density round 2), at `y` under the
+--- preview: "Against your talents", then a line a talent that differs (BuildsWindow.talentLine with
+--- "build N"), CHANGE_ROWS at most, then "and N more". The height it took.
+local function drawChanges(build, ranks, data, y)
+	local S = Theme.SIZES
+	local paste = BuildDialog.paste
+	paste.changesHead:Hide()
+	for _, region in ipairs(paste.changes) do
+		region:Hide()
+	end
+	local lines = BuildsWindow.talentLines(BuildsWindow.talentDiff(build, ranks, data), L.windowTalentBuild,
+		BuildDialog.CHANGE_ROWS)
+	if lines == nil then
+		return 0
+	end
+	local top = y + S.gap * 2
+	local at = stack(paste.changesHead, paste.content, top, textHeight(paste.changesHead))
+	for index, line in ipairs(lines) do
+		local region = paste.changes[index]
+		fitLine(region, line, contentWidth())
+		at = stack(region, paste.content, at, textHeight(region))
+	end
+	return at - y
+end
+
 local function drawPreview(verdict, y)
 	local S = Theme.SIZES
 	local paste = BuildDialog.paste
@@ -2335,6 +2348,7 @@ local function drawPreview(verdict, y)
 	headY = headY + BuildDialog.paintGear()
 	preview.frame:SetHeight(headY)
 	stack(preview.frame, paste.content, y, headY)
+	headY = headY + drawChanges(verdict.build, ranks, data, y + headY)
 	-- What Use replaces and how the orders compare, and the next talent the candidate gives.
 	-- A paste goes to the leveling slot while the raid slot is active, so it replaces that slot's
 	-- build (or nothing), never the raid build Follow.build holds.
@@ -2398,7 +2412,8 @@ local function drawOffPlan(y)
 	local S = Theme.SIZES
 	local paste = BuildDialog.paste
 	local view = BuildDialog.ownView
-	local lines = BuildDialog.offPlanLines(view ~= nil and view.offPlanTalents or nil)
+	local lines = view ~= nil and BuildsWindow.talentLines(view.offPlan, L.windowTalentPlan, BuildDialog.OFF_PLAN_ROWS)
+		or nil
 	if lines == nil then
 		return y
 	end
@@ -2427,6 +2442,10 @@ local function drawLeft(view, verdict)
 		region:Hide()
 	end
 	paste.preview.frame:Hide()
+	paste.changesHead:Hide()
+	for _, region in ipairs(paste.changes) do
+		region:Hide()
+	end
 	-- Never hidden and shown again in one draw: the mouse-down on Use takes the box's focus and
 	-- redraws, and a Button hidden while held loses its click (BuildsPane.draw's own rule).
 	Theme.setShown({ paste.use }, view.preview == true)
@@ -2555,27 +2574,22 @@ local function drawPasteBox(view, verdict, y)
 end
 
 --- Under the paste box, at `y`: a refusal's lines (the codec's first sentence in the warning colour,
---- the rest muted, "You are still following ..."), else "Read: <name>. Check it on the left." while a
+--- the rest muted), else "Read: <name>. Check it on the left." while a
 --- paste previews, else the status line a follow left ("Now following ..."). The y under them.
 local function drawUnderBox(view, verdict, y)
 	local S, W = Theme.SIZES, BuildsWindow.LAYOUT
 	local paste = BuildDialog.paste
 	local data = dataOf()
-	for _, region in ipairs({ paste.lead, paste.body, paste.still, paste.status }) do
+	for _, region in ipairs({ paste.lead, paste.body, paste.status }) do
 		region:Hide()
 	end
 	if view.reason then
-		local followed = Follow.build ~= nil and Follow.buildName(data, Follow.build) or nil
-		local refusal = BuildDialog.refusal(verdict.reason, followed and followed:gsub("|", "||") or nil)
+		local refusal = BuildDialog.refusal(verdict.reason)
 		paste.lead:SetText(refusal.lead)
 		y = stack(paste.lead, paste.right, y + W.statusGap, textHeight(paste.lead))
 		if refusal.body ~= nil then
 			paste.body:SetText(refusal.body)
 			y = stack(paste.body, paste.right, y + S.gap / 2, textHeight(paste.body))
-		end
-		if refusal.following ~= nil then
-			paste.still:SetText(refusal.following)
-			y = stack(paste.still, paste.right, y + S.gap / 2, textHeight(paste.still))
 		end
 		return y
 	end

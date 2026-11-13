@@ -193,9 +193,9 @@ function BuildsPane.question(question, split)
 	return question
 end
 
---- The window header's figures, the panel's own and the points waiting: "Level 42 · 27 of 33 points · 5
---- points off plan · 1 to spend" (the off-plan count in the warning colour, the points waiting in the
---- client gold), "Level 42" with nothing followed and none waiting; nil without a level. Pure.
+--- The window header's figures, parts that add up to the points the level gives (wow-player round 2):
+--- "Level 42 · 27 on plan · 5 off plan · 1 to spend" (off plan in the warning colour, the points waiting
+--- in the client gold), "Level 42" with nothing followed and none waiting; nil without a level. Pure.
 function BuildsPane.note(level, followed, ranks)
 	if type(level) ~= "number" then
 		return nil
@@ -204,9 +204,9 @@ function BuildsPane.note(level, followed, ranks)
 	local allowed = followed ~= nil and Progress.pointsAllowed(followed, level) or 0
 	if allowed > 0 then
 		local progress = Progress.build(followed, ranks, level)
-		parts[#parts + 1] = string.format(L.panelOnPlan, math.min(progress.matched or 0, allowed), allowed)
+		parts[#parts + 1] = string.format(L.windowOnPlan, math.min(progress.matched or 0, allowed))
 		if (progress.offPlan or 0) > 0 then
-			parts[#parts + 1] = Theme.inlineColor("warning", string.format(L.panelOffPlanCount, progress.offPlan))
+			parts[#parts + 1] = Theme.inlineColor("warning", string.format(L.windowOffPlanCount, progress.offPlan))
 		end
 	end
 	local unspent = Progress.unspentPoints(level, ranks or {})
@@ -295,7 +295,8 @@ local function buildGrounds(row, deps)
 	local function ground(hexKey, alpha)
 		local texture = Theme.texture(frame, "BACKGROUND", hexKey, alpha)
 		texture:SetPoint("TOPLEFT", frame, "TOPLEFT", -G.groundLead, 0)
-		texture:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 0)
+		-- As far past the right edge as the left: Following never touches the ground's edge (round 2).
+		texture:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", G.groundLead, 0)
 		texture:Hide()
 		return texture
 	end
