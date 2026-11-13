@@ -10,6 +10,9 @@
 -- the next point and the points spent off plan. A point off plan turns
 -- that count warning-coloured; nothing pops up and nothing sounds. A
 -- planned node's own tooltip gains one line naming its points in the plan.
+-- The strip leads to the tab that owns the build (design/specs/2026-11-13-
+-- addon-hub.md 5): a click on it opens Builds, and its hover says so in the
+-- marks' one wording, "Click: open Builds". Never in combat.
 --
 -- Pure rules, thin frames: every number comes from Progress (Progress.cells
 -- for the badges, Progress.build for the strip); TalentMarks.stripSegments,
@@ -581,8 +584,37 @@ local function raiseStrip(strip, host)
 	end
 end
 
+--- What opens the Builds tab (its tab sets it); nil until the tab loads, and
+--- the strip neither answers a click nor says it can.
+TalentMarks.openBuilds = nil
+
+--- Whether a click on the strip opens Builds now.
+function TalentMarks.stripOpens()
+	return TalentMarks.openBuilds ~= nil and not Theme.inCombat()
+end
+
+--- The strip's hover: the one line naming what a click does, dim as every
+--- mark's, or nothing while a click would not open the tab.
+function TalentMarks.stripHover(strip)
+	if TalentMarks.stripOpens() then
+		-- Under the strip, off the window's bottom edge: it never covers a talent (L10 review).
+		Theme.showLines(strip, { { text = Theme.inlineColor("tooltipDim", L.markClickBuilds) } }, "ANCHOR_BOTTOM")
+	end
+end
+
+--- A click on the strip: the left button opens Builds. True when it did.
+function TalentMarks.onStripClick(button)
+	if button ~= "LeftButton" or not TalentMarks.stripOpens() then
+		return false
+	end
+	Theme.hideTooltip()
+	TalentMarks.openBuilds()
+	return true
+end
+
 --- The strip, built the first time a window with a build opens, and moved
---- to whichever talent window is open.
+--- to whichever talent window is open. Its own frame takes the mouse: a click
+--- on it opens Builds; nothing of the client's window is touched.
 local function ensureStrip(frame)
 	local S = Theme.SIZES
 	local host = stripHost(frame)
@@ -598,6 +630,14 @@ local function ensureStrip(frame)
 			label:SetWordWrap(false)
 		end
 		strip.label = label
+		strip:EnableMouse(true)
+		strip:SetScript("OnEnter", TalentMarks.stripHover)
+		strip:SetScript("OnLeave", function()
+			Theme.hideTooltip()
+		end)
+		strip:SetScript("OnMouseUp", function(_, button)
+			TalentMarks.onStripClick(button)
+		end)
 		TalentMarks.strip = strip
 		TalentMarks.stripWindow = nil
 	end

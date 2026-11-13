@@ -605,3 +605,46 @@ describe("Theme.showGlow's dark edge", function()
 		end
 	end)
 end)
+
+-- design/specs/2026-11-13-addon-hub.md 5: the strip leads to the Builds tab.
+describe("TalentMarks, the strip's click", function()
+	local opened, combat, inCombat
+
+	before_each(function()
+		opened, combat = 0, false
+		inCombat = Theme.inCombat
+		Theme.inCombat = function()
+			return combat
+		end
+		TalentMarks.openBuilds = function()
+			opened = opened + 1
+		end
+	end)
+
+	after_each(function()
+		Theme.inCombat = inCombat
+		TalentMarks.openBuilds = nil
+	end)
+
+	it("opens Builds on a left click, never on another button", function()
+		assert.is_false(TalentMarks.onStripClick("RightButton"))
+		assert.is_true(TalentMarks.onStripClick("LeftButton"))
+		assert.are.equal(1, opened)
+	end)
+
+	it("opens nothing in combat, nor before the Builds tab loaded", function()
+		combat = true
+		assert.is_false(TalentMarks.stripOpens())
+		assert.is_false(TalentMarks.onStripClick("LeftButton"))
+		combat = false
+		TalentMarks.openBuilds = nil
+		assert.is_false(TalentMarks.onStripClick("LeftButton"))
+		assert.are.equal(0, opened)
+	end)
+
+	it("words its hover as every mark that opens a tab", function()
+		assert.are.equal("Click: open Builds", L.markClickBuilds)
+		assert.are.equal(string.format(L.markOpens, L.markClick, L.hubTabBuilds), L.markClickBuilds)
+		assert.are.equal(string.format(L.markOpens, L.markAltClick, L.hubTabGear), L.markAltGear)
+	end)
+end)

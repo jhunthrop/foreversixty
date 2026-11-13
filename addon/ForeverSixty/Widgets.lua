@@ -724,7 +724,7 @@ function Widgets.toggle(parent, text, checked, onChange, hint, hintWidth)
 		frame:SetSize(indent + (hintWidth or S.buttonWidth), S.settingsRow)
 		box:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -S.gap)
 		label:SetPoint("TOPLEFT", frame, "TOPLEFT", indent, -S.gap)
-		-- The explanation is the body size at full contrast (A.2), not the weakest text on the page.
+		-- The explanation is the body size in the muted token: the label leads, the hint follows (L10 review).
 		local hintLabel = Widgets.label(frame, hint, states.hint, "normal")
 		hintLabel:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -S.gap)
 		hintLabel:SetWidth(hintWidth or S.buttonWidth)

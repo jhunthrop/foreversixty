@@ -25,14 +25,20 @@ describe("SettingsPage, the switches", function()
 		_G.ForeverSixtyDB = nil
 	end)
 
-	-- design/specs/2026-11-08-addon-ux.md 3.3: "Tooltips only" first, the slot marks after the talent marks.
-	it("lists twelve switches in page order, Tooltips only first", function()
+	-- design/specs/2026-11-08-addon-ux.md 3.3: "Tooltips only" first; 2026-11-13-addon-hub 7: three sections.
+	it("lists twelve switches in page order, Tooltips only first, in three sections", function()
 		local keys = {}
 		for index, switch in ipairs(SettingsPage.switches()) do
-			keys[index] = switch.key
+			keys[index] = switch.key .. "@" .. switch.section
 		end
-		assert.are.same({ "tooltipsOnly", "chip.shown", "chip.combatHide", "talentMarks", "slotMarks", "minimap.shown",
-			"tooltip", "badges", "showScore", "broadcast", "autoSave", "lootRares" }, keys)
+		assert.are.same({ "tooltipsOnly@world", "tooltip@world", "slotMarks@world", "talentMarks@world",
+			"badges@world", "chip.shown@line", "chip.combatHide@line", "minimap.shown@line", "broadcast@shared",
+			"showScore@shared", "autoSave@shared", "lootRares@shared" }, keys)
+		assert.are.same({
+			{ id = "world", heading = "Tooltips and marks", first = 1, last = 5 },
+			{ id = "line", heading = "The Forever Sixty line", first = 6, last = 8 },
+			{ id = "shared", heading = "Guild and the site", first = 9, last = 12 },
+		}, SettingsPage.sections())
 	end)
 
 	it("turns the chip, the talent marks and the slot marks off in one step with Tooltips only", function()
@@ -72,27 +78,20 @@ describe("SettingsPage, the switches", function()
 			words[#words + 1] = { switch.label, switch.hint }
 		end
 		assert.are.same({
-			{ "Tooltips only", "Turns off everything but the tooltip lines." },
-			{ "Show the Forever Sixty line", "Beside the minimap. Shift-drag moves it." },
-			{ "Hide the Forever Sixty line in combat", "On: the line hides when combat starts. Off: it stays, faded to 25%." },
-			{ "Marks on the talent window",
-				"Numbers your build's talents in order, rings the next one and adds a progress strip." },
-			{ "Marks on your bags and character pane",
-				"A green arrow on gear that beats yours, a gold corner on a slot with an upgrade to chase." },
-			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
-				.. "Off: type /fs options or use Options > AddOns." },
+			{ "Tooltips only", "Turns off the line and every mark." },
 			{ "Gear tips on item tooltips",
 				"Hold Shift for the details. Off also hides player scores and the quest and roll marks." },
-			{ "Score badges in chat",
-				"Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers." },
-			{ "Show my Forever Score to others",
-				"Off: other players see no score for you. You still see yours. Applies after the companion's next upload." },
-			{ "Share my build with my guild",
-				"Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see nothing." },
-			{ "Save my character for the companion app",
-				"Written at logout for the companion app on your PC, so the site can read your gear and talents." },
-			{ "Ask the group about rare drops too",
-				"As the master looter you ask the group about epics. On: rares too, whatever the loot threshold. Off by default." },
+			{ "Marks on your bags and character pane", "Green arrow: beats what you wear. Gold corner: an upgrade to chase." },
+			{ "Marks on the talent window", "Numbers your build in order and rings the next talent." },
+			{ "Score badges in chat", "In LFG, Trade, guild chat and whispers." },
+			{ "Show the Forever Sixty line", "Shift-drag moves it." },
+			{ "Hide the Forever Sixty line in combat", "Off: it fades to 25% instead." },
+			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
+				.. "Off: type /fs options or use Options > AddOns." },
+			{ "Share my build with my guild", "Guildmates see your level, spec, build and gear gap." },
+			{ "Show my Forever Score to others", "Applies after the companion's next upload." },
+			{ "Save my character for the companion app", "Written at logout for the companion app." },
+			{ "Ask the group about rare drops too", "As master looter, rares as well as epics." },
 		}, words)
 	end)
 
@@ -358,16 +357,16 @@ describe("SettingsPage, the data lines", function()
 	it("names the player ratings' state, their place and the site, one sentence per state", function()
 		local cases = {
 			{ { available = false, absent = true },
-				"Player ratings (on player tooltips): not installed. Get Forever Sixty Data at foreversixty.gg.", "muted" },
-			{ { available = true, stale = false }, "Player ratings (on player tooltips): current", "muted" },
+				"Forever Scores: not installed. Get Forever Sixty Data at foreversixty.gg.", "muted" },
+			{ { available = true, stale = false }, "Forever Scores: current", "muted" },
 			{ { available = true, stale = true },
-				"Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at foreversixty.gg.",
+				"Forever Scores: too old. Get the new Forever Sixty Data at foreversixty.gg.",
 				"warning" },
 			{ { available = false, reason = L.ratingsUnreadable },
-				"Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at foreversixty.gg.",
+				"Forever Scores: too old. Get the new Forever Sixty Data at foreversixty.gg.",
 				"warning" },
 			{ { available = false, reason = L.ratingsUpdateAddon },
-				"Player ratings (on player tooltips): made for a newer addon. Update Forever Sixty at foreversixty.gg.",
+				"Forever Scores: made for a newer addon. Update Forever Sixty at foreversixty.gg.",
 				"warning" },
 		}
 		for _, case in ipairs(cases) do
@@ -381,7 +380,7 @@ describe("SettingsPage, the data lines", function()
 	it("says broken or missing for a data global that is not a table", function()
 		local text, tone = words(SettingsPage.ratingsLine({ available = false, broken = true,
 			reason = L.ratingsBroken }))
-		assert.are.equal("Player ratings (on player tooltips): broken or missing. Get Forever Sixty Data at "
+		assert.are.equal("Forever Scores: broken or missing. Get Forever Sixty Data at "
 			.. "foreversixty.gg.", text)
 		assert.are.equal("warning", tone)
 		_G.ForeverSixtyData = "garbage"
@@ -393,7 +392,7 @@ describe("SettingsPage, the data lines", function()
 	-- record's `generated` ("made 9 Oct", like the chip's "as of 12 Oct"), never by a patch.
 	it("dates too-old ratings by the date they were made, when it is known", function()
 		local dated = { available = true, stale = true, generated = "2026-10-09" }
-		assert.are.equal("Player ratings (on player tooltips): too old (made 9 Oct). Get the new Forever Sixty "
+		assert.are.equal("Forever Scores: too old (made 9 Oct). Get the new Forever Sixty "
 			.. "Data at foreversixty.gg.", words(SettingsPage.ratingsLine(dated)))
 		dated = { available = false, reason = L.ratingsUnreadable, generated = "2026-09-01" }
 		assert.are.equal(string.format(L.settingsRatingsOldDated, "1 Sep"), words(SettingsPage.ratingsLine(dated)))
@@ -410,10 +409,10 @@ describe("SettingsPage, the data lines", function()
 		assert.are.same({
 			"Addon data: current for this patch",
 			"Addon data: for an older patch. Update Forever Sixty at foreversixty.gg.",
-			"Player ratings (on player tooltips): current",
-			"Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at foreversixty.gg.",
-			"Player ratings (on player tooltips): not installed. Get Forever Sixty Data at foreversixty.gg.",
-			"Player ratings (on player tooltips): made for a newer addon. Update Forever Sixty at foreversixty.gg.",
+			"Forever Scores: current",
+			"Forever Scores: too old. Get the new Forever Sixty Data at foreversixty.gg.",
+			"Forever Scores: not installed. Get Forever Sixty Data at foreversixty.gg.",
+			"Forever Scores: made for a newer addon. Update Forever Sixty at foreversixty.gg.",
 		}, { L.settingsAddonDataCurrent, L.settingsAddonDataOlder, L.settingsRatingsCurrent, L.settingsRatingsOld,
 			L.settingsRatingsMissing, L.settingsRatingsNewer })
 		assert.is_nil(L.settingsAddonDataLabel)
@@ -455,7 +454,7 @@ describe("SettingsPage, the data lines", function()
 			.. Theme.inlineColor("warning", "for an older patch. Update Forever Sixty at foreversixty.gg."),
 			SettingsPage.lineText(entry))
 		local ratings = SettingsPage.ratingsLine({ available = true, stale = true })
-		assert.are.equal("Player ratings (on player tooltips): "
+		assert.are.equal("Forever Scores: "
 			.. Theme.inlineColor("warning", "too old. Get the new Forever Sixty Data at foreversixty.gg."),
 			SettingsPage.lineText(ratings))
 	end)
@@ -500,10 +499,10 @@ describe("SettingsPage, the layout", function()
 	end)
 
 	it("puts each row under the one before by that row's measured height", function()
-		local heights = { 44, 44, 44, 44, 44, 56, 44 }
+		local heights = { 44, 44, 44, 56, 44 }
 		local plain, measured = SettingsPage.layout(600), SettingsPage.layout(600, heights)
-		assert.are.equal(-56, measured.rows[7] - measured.rows[6])
-		assert.are.equal(plain.rows[6], measured.rows[6])
+		assert.are.equal(-56, measured.rows[5] - measured.rows[4])
+		assert.are.equal(plain.rows[4], measured.rows[4])
 		assert.are.equal(plain.reset - 12, measured.reset)
 		assert.are.equal(plain.height + 12, measured.height)
 	end)
@@ -558,32 +557,49 @@ describe("SettingsPage, the layout", function()
 		assert.are.equal(-layout.data[2] + S.settingsLine + S.settingsFootPad, layout.height)
 	end)
 
-	it("gives every switch a 44 px row, one under the other", function()
-		local layout = SettingsPage.layout(600)
-		assert.are.equal(44, Theme.SIZES.settingsRow)
-		assert.are.equal(#SettingsPage.SWITCHES, #layout.rows)
-		for index = 2, #layout.rows do
-			assert.are.equal(-Theme.SIZES.settingsRow, layout.rows[index] - layout.rows[index - 1])
-		end
-		assert.is_true(layout.rows[1] < layout.title)
-	end)
+	it("gives every switch a 44 px row, one under the other within its section, each section under its heading",
+		function()
+			local S = Theme.SIZES
+			local layout = SettingsPage.layout(600)
+			assert.are.equal(44, S.settingsRow)
+			assert.are.equal(#SettingsPage.SWITCHES, #layout.rows)
+			for index, section in ipairs(SettingsPage.sections()) do
+				assert.are.equal(layout.sections[index] - S.settingsLine, layout.rows[section.first])
+				for row = section.first + 1, section.last do
+					assert.are.equal(-S.settingsRow, layout.rows[row] - layout.rows[row - 1])
+				end
+				if index > 1 then
+					local above = SettingsPage.sections()[index - 1].last
+					assert.are.equal(layout.rows[above] - S.settingsRow - S.padding, layout.sections[index])
+				end
+			end
+			assert.is_true(layout.rows[1] < layout.title)
+		end)
 
 	it("puts the commands first under the title, then the switches, Reset and the two data lines at the foot", function()
 		local S = Theme.SIZES
 		local layout = SettingsPage.layout(600)
 		assert.is_true(layout.title > layout.commandsHeading)
-		assert.is_true(layout.divider < layout.commandsHeading)
-		assert.is_true(layout.commands[1] < layout.divider)
-		assert.is_true(layout.rows[1] <= layout.commands[#layout.commands] - S.settingsLine)
+		assert.is_nil(layout.divider)
+		assert.are.equal(layout.commandsHeading - S.settingsLine - S.gap, layout.commands[1])
+		assert.is_true(layout.sections[1] <= layout.commands[#layout.commands] - S.settingsLine)
 		local lastRow = layout.rows[#layout.rows] - S.settingsRow
 		assert.is_true(layout.reset <= lastRow)
 		-- A.2: the first five commands and the line sending the rest to /fs help, never a cut row.
 		assert.are.equal(6, #layout.commands)
 		assert.are.equal(#SettingsPage.commandLines(), #layout.commands)
 		assert.are.equal(2, #layout.data)
-		assert.is_true(layout.data[1] <= layout.reset - S.buttonHeight)
+		assert.is_true(layout.data[1] <= layout.reset - S.clientButtonHeight)
 		assert.are.equal(-S.settingsLine, layout.data[2] - layout.data[1])
 		assert.is_true(layout.height >= -layout.data[2] + S.settingsLine)
+	end)
+
+	it("gives a wrapped foot line its measured height, never less than one line", function()
+		local S = Theme.SIZES
+		local plain = SettingsPage.layout(600)
+		local wrapped = SettingsPage.layout(600, nil, nil, { 10, 2 * S.settingsLine })
+		assert.are.same(plain.data, wrapped.data)
+		assert.are.equal(plain.height + S.settingsLine, wrapped.height)
 	end)
 
 	it("falls back to a fixed width when the client has not sized the canvas yet", function()
@@ -611,7 +627,7 @@ describe("SettingsPage, the layout", function()
 		assert.are.equal(8, Theme.SIZES.settingsInset)
 		assert.is_true(Theme.ALPHA.window >= 0.9)
 		-- A.2: the explanation lines are the body size at full contrast, not the weakest text on the page.
-		assert.are.equal("body", Theme.CONTROL_STATES.toggle.hint)
+		assert.are.equal("muted", Theme.CONTROL_STATES.toggle.hint)
 		assert.are.equal("muted", Theme.CONTROL_STATES.toggle.edge)
 	end)
 
@@ -659,8 +675,8 @@ describe("SettingsPage, Reset positions", function()
 		require("Chip").place = function() end
 		require("Minimap").refresh = function() end
 		require("Hub").place = function() end
-		local resting = { label = L.settingsReset, enabled = true, text = "gold", edge = "border" }
-		local done = { label = L.settingsResetDone, enabled = false, text = "muted", edge = "muted" }
+		local resting = { label = L.settingsReset, enabled = true }
+		local done = { label = L.settingsResetDone, enabled = false }
 		assert.are.same(resting, SettingsPage.resetLook())
 		assert.are.equal("Positions reset", L.settingsResetDone)
 		assert.are.equal(2, SettingsPage.RESET_SECONDS)
@@ -673,7 +689,6 @@ describe("SettingsPage, Reset positions", function()
 		end
 		SettingsPage.reset()
 		Theme.after = after
-		-- Fix round 2, item 4: the muted label and a muted 1 px border, never the faded button.
 		assert.are.same(done, SettingsPage.resetLook())
 		assert.are.equal(2, waited[1])
 		waited[2]()
@@ -681,7 +696,8 @@ describe("SettingsPage, Reset positions", function()
 	end)
 
 	it("words its sentence as the designer ruled", function()
-		assert.are.equal("Puts the Forever Sixty line, the minimap button and the build dialog back in their default places.",
+		assert.are.equal("Puts the Forever Sixty line, the minimap button and the Forever Sixty window back in their "
+			.. "default places.",
 			L.settingsResetHint)
 	end)
 end)

@@ -600,6 +600,7 @@ describe("SlotMarks", function()
 			altDown, opened = false, {}
 			start({ chest = WORN_CHEST }, { BAG_CHEST }, {
 				PaperDollItemSlotButton_OnModifiedClick = function() end,
+				HandleModifiedItemClick = function() end,
 				IsAltKeyDown = function()
 					return altDown
 				end,
@@ -641,12 +642,61 @@ describe("SlotMarks", function()
 			local chest, head = startAlt()
 			local entry = { lines = { { kind = "verdict", text = "x" } } }
 			local shown = ItemTooltip.withAltClick(entry, "chest", chest)
-			assert.are.same({ kind = "altClick", role = "shift", color = "tooltipDim", text = L.gearAltClick },
+			assert.are.same({ kind = "altClick", role = "shift", color = "tooltipDim", text = L.markAltGear },
 				shown.lines[2])
+			assert.are.equal("Alt-click: open Gear", L.markAltGear)
 			assert.are.equal(1, #entry.lines)
 			assert.are.equal(entry, ItemTooltip.withAltClick(entry, "head", head))
 			-- Another frame showing the chest's item (a bag, a link) is not the slot.
 			assert.are.equal(entry, ItemTooltip.withAltClick(entry, "chest", head))
+		end)
+
+		it("opens Gear on the arrow's slot from an Alt-click on the bag item that carries it", function()
+			startAlt()
+			SlotMarks.register()
+			_G.HandleModifiedItemClick(BAG_CHEST)
+			assert.are.same({}, opened)
+			altDown = true
+			_G.HandleModifiedItemClick(BAG_CHEST)
+			-- What is worn, or an item with no arrow, keeps the client's own click.
+			_G.HandleModifiedItemClick(WORN_CHEST)
+			_G.HandleModifiedItemClick(PLATE_CHEST)
+			assert.are.same({ "chest" }, opened)
+			assert.are.equal("chest", SlotMarks.bagSlotOf(BAG_CHEST, { { link = BAG_CHEST, slot = "chest" } }))
+			assert.is_nil(SlotMarks.bagSlotOf(nil, { { link = BAG_CHEST, slot = "chest" } }))
+		end)
+
+		it("opens nothing from a bag item in combat or with the marks switched off", function()
+			startAlt()
+			altDown = true
+			Theme.inCombat = function()
+				return true
+			end
+			assert.is_false(SlotMarks.onModifiedItemClick(BAG_CHEST))
+			Theme.inCombat = function()
+				return false
+			end
+			Prefs.setFlag("slotMarks", false)
+			assert.is_false(SlotMarks.onModifiedItemClick(BAG_CHEST))
+			assert.are.same({}, opened)
+		end)
+
+		it("says Alt-click under Shift on the bag item's own button while it carries the arrow, nowhere else", function()
+			startAlt()
+			local frame = containerFrame(0, 1)
+			_G.ContainerFrame_Update = function() end
+			SlotMarks.register()
+			_G.ContainerFrame_Update(frame)
+			local button = _G.ContainerFrame1Item1
+			assert.is_true(arrowOn(button))
+			local entry = { lines = { { kind = "verdict", text = "x" } } }
+			local shown = ItemTooltip.withAltClick(entry, nil, button, BAG_CHEST)
+			assert.are.equal(L.markAltGear, shown.lines[2].text)
+			assert.are.equal("shift", shown.lines[2].role)
+			-- The same item hovered from a chat link: its owner is no bag button, so no promise.
+			assert.are.equal(entry, ItemTooltip.withAltClick(entry, nil, _G.UIParent, BAG_CHEST))
+			Prefs.setFlag("slotMarks", false)
+			assert.are.equal(entry, ItemTooltip.withAltClick(entry, nil, button, BAG_CHEST))
 		end)
 	end)
 

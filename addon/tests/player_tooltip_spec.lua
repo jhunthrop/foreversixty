@@ -114,22 +114,24 @@ describe("PlayerTooltip", function()
 			assert.are.equal(1, mock.countCalls(tooltip, "Show"))
 		end)
 
-		it("dates a record more than a week old: Forever Score 700 (13 Oct)", function()
+		it("dates a stale record and mutes it, as the chat badge does: Forever Score 700 (13 Oct)", function()
 			start(record())
 			names.mouseover = { "Bob", "Whitemane" }
 			local lines = hover()
 			assert.are.equal(1, #lines)
 			assert.are.equal(string.format(L.scoreDated, 700, "13 Oct"), lines[1].text)
+			assert.are.same(rgbOf("tooltipMuted"), { lines[1].r, lines[1].g, lines[1].b })
 		end)
 
-		it("dates on the record's own as_of, after seven days and not before", function()
+		it("dates on the record's own as_of by the one staleness rule, after three days and not before", function()
 			start(record())
 			local base = { score = 900, as_of = "2026-11-01" }
 			local day = 24 * 60 * 60
 			local midnight = Score.dateSeconds("2026-11-01")
-			assert.are.equal(7 * day, PlayerTooltip.DATED_AFTER_SECONDS)
-			assert.are.equal("Forever Score 900", PlayerTooltip.scoreText(base, midnight + 7 * day))
-			assert.are.equal("Forever Score 900 (1 Nov)", PlayerTooltip.scoreText(base, midnight + 7 * day + 1))
+			assert.are.equal(3 * day, Score.STALE_AFTER_SECONDS)
+			assert.is_nil(PlayerTooltip.DATED_AFTER_SECONDS)
+			assert.are.equal("Forever Score 900", PlayerTooltip.scoreText(base, midnight + 3 * day))
+			assert.are.equal("Forever Score 900 (1 Nov)", PlayerTooltip.scoreText(base, midnight + 3 * day + 1))
 			assert.are.equal("Forever Score 900", PlayerTooltip.scoreText({ score = 900 }, midnight + 30 * day))
 		end)
 

@@ -291,7 +291,7 @@ describe("every visible button draws its label", function()
 		DATA.rotations = nil
 	end)
 
-	it("labels the Settings page's toggles and Reset", function()
+	it("labels the Settings page's toggles and Reset, drawn twice and through Reset's wait", function()
 		local Settings = modules.Settings
 		assert.is_true(Settings.register())
 		local panel = Settings.panel
@@ -300,6 +300,15 @@ describe("every visible button draws its label", function()
 		panel:GetScript("OnShow")(panel)
 		mock.renderFrame(state)
 		assert.are.same({}, blankLabels(state))
+		panel:GetScript("OnShow")(panel)
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "drawn again")
+		Settings.resetButton:GetScript("OnClick")(Settings.resetButton)
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "Positions reset")
+		mock.runTimers(state)
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "Reset positions again")
 	end)
 
 	it("labels the chip and its card", function()

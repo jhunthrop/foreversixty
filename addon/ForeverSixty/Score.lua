@@ -25,6 +25,12 @@ Score.FORMAT = 2
 --- A file older than this is shown, but marked stale.
 Score.STALE_AFTER_SECONDS = 3 * 24 * 60 * 60
 
+--- The one staleness rule (design/specs/2026-11-13-addon-hub.md 5): `dated` (epoch seconds, nil for
+--- unknown) is older than Score.STALE_AFTER_SECONDS at `now`. Unknown is not stale. Pure.
+function Score.isStale(dated, now)
+	return type(dated) == "number" and type(now) == "number" and now - dated > Score.STALE_AFTER_SECONDS
+end
+
 --- Below this level "no logs yet" is not said (L3.7 item 34): no logs is the ordinary state of a
 --- new character, and nothing is a better line than a reproach.
 Score.LEVEL_FLOOR = 10
@@ -134,7 +140,7 @@ function Score.status()
 		return status
 	end
 	local written = Score.dateSeconds(data.generated)
-	local stale = written == nil or clockTime() - written > Score.STALE_AFTER_SECONDS
+	local stale = written == nil or Score.isStale(written, clockTime())
 	return { available = true, generated = data.generated, stale = stale }
 end
 
@@ -260,7 +266,7 @@ function Score.forCharacter(name, realm)
 	local record = copy(row)
 	-- Older than the window (L3.7 item 34): the badge shows muted. The row's own date, else the file's.
 	local dated = Score.dateSeconds(row.as_of) or Score.dateSeconds(data.generated)
-	record.stale = dated ~= nil and clockTime() - dated > Score.STALE_AFTER_SECONDS
+	record.stale = Score.isStale(dated, clockTime())
 	local shortDate = Compat.shortDate(row.as_of) or Compat.shortDate(data.generated)
 	record.asOfText = shortDate and string.format(L.scoreAsOf, shortDate) or nil
 	local r, g, b, a = Score.tierColor(row.tier)

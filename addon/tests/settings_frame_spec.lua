@@ -69,7 +69,7 @@ describe("SettingsPage, the canvas", function()
 	local function start(globals, build)
 		registered, opened = nil, {}
 		state = mock.install({ globals = globals or { Settings = settingsApi(true) }, build = build,
-			fonts = { "GameFontNormal", "GameFontNormalSmall", "GameFontNormalLarge" } })
+			fonts = { "GameFontNormal", "GameFontNormalSmall", "GameFontNormalLarge", "GameFontHighlight" } })
 		local create = _G.CreateFrame
 		_G.CreateFrame = function(...)
 			return clientChildren(create(...))
@@ -293,16 +293,15 @@ describe("SettingsPage, the canvas", function()
 		SettingsPage.register()
 		show()
 		local S = Theme.SIZES
-		local tooltip, badges = toggleFor("tooltip"), toggleFor("badges")
-		local share, save = toggleFor("broadcast"), toggleFor("autoSave")
+		local tooltip, slots = toggleFor("tooltip"), toggleFor("slotMarks")
+		local share, score, save = toggleFor("broadcast"), toggleFor("showScore"), toggleFor("autoSave")
 		assert.are.equal(S.settingsRow, tooltip.frame:GetHeight())
 		assert.are.equal(SettingsPage.rowHeight(12, 20), share.frame:GetHeight())
 		assert.are.equal(S.settingsRow + 10, share.frame:GetHeight())
-		assert.are.equal(-S.settingsRow, rowY(badges) - rowY(tooltip))
-		-- "Show my Forever Score to others" sits between the badges and sharing.
-		assert.are.equal(-S.settingsRow, rowY(toggleFor("showScore")) - rowY(badges))
-		assert.are.equal(-S.settingsRow, rowY(share) - rowY(toggleFor("showScore")))
-		assert.are.equal(-share.frame:GetHeight(), rowY(save) - rowY(share))
+		assert.are.equal(-S.settingsRow, rowY(slots) - rowY(tooltip))
+		-- Sharing leads its section; the score switch follows it by sharing's measured height.
+		assert.are.equal(-share.frame:GetHeight(), rowY(score) - rowY(share))
+		assert.are.equal(-S.settingsRow, rowY(save) - rowY(score))
 		local heights = {}
 		for index, toggle in ipairs(SettingsPage.toggles) do
 			heights[index] = toggle.frame:GetHeight()
@@ -406,19 +405,42 @@ describe("SettingsPage, the canvas", function()
 		for _, toggle in ipairs(SettingsPage.toggles) do
 			assert.are.equal(width, mock.lastCall(toggle.hint, "SetWidth")[1])
 			assert.are.equal(Theme.SIZES.settingsRow, toggle.frame:GetHeight())
-			assert.are.same(color("body"), { table.unpack(mock.lastCall(toggle.hint, "SetTextColor")) })
+			assert.are.same(color("muted"), { table.unpack(mock.lastCall(toggle.hint, "SetTextColor")) })
 			assert.are.equal("GameFontNormal", toggle.hint.inherits)
 			assert.are.equal(toggle.label.inherits, toggle.hint.inherits)
 			assert.is_nil(mock.lastCall(toggle.hint, "SetAlpha"))
 		end
 	end)
 
-	it("lists the commands under a gold heading and a 1 px divider, tokens in body", function()
+	-- design/specs/2026-11-13-addon-hub.md 3.5, 7: the window's type, headings in the title face, no rules.
+	it("titles the page and heads each section in the window's own type, with no rule anywhere", function()
 		start()
 		SettingsPage.register()
 		show()
-		assert.are.same(color("gold"), { table.unpack(mock.lastCall(SettingsPage.commandsHeading, "SetTextColor")) })
-		assert.are.equal(Theme.SIZES.border, mock.lastCall(SettingsPage.divider, "SetHeight")[1])
+		assert.are.same(color("bone"), { table.unpack(mock.lastCall(SettingsPage.title, "SetTextColor")) })
+		assert.are.equal(Theme.SIZES.windowTitle, mock.lastCall(SettingsPage.title, "SetFont")[2])
+		local headings = { SettingsPage.commandsHeading }
+		for _, heading in ipairs(SettingsPage.sectionHeadings) do
+			headings[#headings + 1] = heading
+		end
+		local words = {}
+		for index, heading in ipairs(headings) do
+			words[index] = heading:GetText()
+			assert.are.same(color("bone"), { table.unpack(mock.lastCall(heading, "SetTextColor")) })
+			assert.are.equal(Theme.TITLE_FONT, mock.lastCall(heading, "SetFont")[1])
+			assert.are.equal(Theme.SIZES.windowSection, mock.lastCall(heading, "SetFont")[2])
+		end
+		assert.are.same({ "Commands", "Tooltips and marks", "The Forever Sixty line", "Guild and the site" }, words)
+		assert.is_nil(SettingsPage.divider)
+		for _, label in ipairs(SettingsPage.dataLabels) do
+			assert.are.equal("GameFontNormal", label.inherits)
+		end
+	end)
+
+	it("lists the commands under their heading at the window's text size, tokens in body", function()
+		start()
+		SettingsPage.register()
+		show()
 		-- A.2: five commands (the tour's among them) and the line for the rest, so the list ends on a whole row.
 		assert.are.equal(6, #SettingsPage.commandLabels)
 		assert.are.equal(#SettingsPage.commandLines(), #SettingsPage.commandLabels)
@@ -427,6 +449,7 @@ describe("SettingsPage, the canvas", function()
 		for index, label in ipairs(SettingsPage.commandLabels) do
 			assert.are.equal(SettingsPage.commandText(SettingsPage.commandLines()[index]), label:GetText())
 			assert.are.same(color("muted"), { table.unpack(mock.lastCall(label, "SetTextColor")) })
+			assert.are.equal("GameFontNormal", label.inherits)
 		end
 	end)
 
@@ -516,46 +539,30 @@ describe("SettingsPage, the canvas", function()
 		assert.is_true(reset:IsEnabled())
 	end)
 
-	-- Fix round 2, item 4: readable while it waits, and a second click does nothing.
-	it("reads Positions reset in the muted grey at full alpha inside a muted 1 px border", function()
+	-- The window's one button recipe (spec 3.5): blue with a white label, muted while it waits, and a second
+	-- click does nothing.
+	it("is the window's blue button, reading Positions reset disabled for 2 s after a click", function()
 		start()
 		SettingsPage.register()
 		show()
 		local reset = SettingsPage.resetButton
-		local function alpha()
-			local call = mock.lastCall(reset, "SetAlpha")
-			return call == nil and 1 or call[1]
-		end
-		local function edgeColors()
-			local colors = {}
-			for index, edge in ipairs(reset.foreverSixtyEdges) do
-				colors[index] = { table.unpack(mock.lastCall(edge, "SetColorTexture")) }
-			end
-			return colors
-		end
-		local function all(hexKey)
-			local colors = {}
-			for index = 1, #reset.foreverSixtyEdges do
-				colors[index] = color(hexKey)
-			end
-			return colors
-		end
-		assert.are.equal(4, #reset.foreverSixtyEdges)
+		local states = Theme.CONTROL_STATES.siteButton
+		assert.are.equal(L.settingsReset, reset:GetText())
+		assert.are.equal(Theme.SIZES.clientButtonHeight, reset:GetHeight())
+		assert.are.same(color(states.rest.ground), { table.unpack(mock.lastCall(reset.foreverSixtyGround,
+			"SetColorTexture")) })
+		assert.are.same(color(states.label), { table.unpack(mock.lastCall(reset.foreverSixtyLabel, "SetTextColor")) })
 		reset:GetScript("OnClick")(reset)
 		assert.is_false(reset:IsEnabled())
-		assert.are.equal(1, alpha())
-		assert.is_nil(mock.lastCall(reset.foreverSixtyLabel, "SetAlpha"))
-		assert.are.same(color("muted"), { table.unpack(mock.lastCall(reset.foreverSixtyLabel, "SetTextColor")) })
-		assert.are.same(all("muted"), edgeColors())
-		assert.are.equal(Theme.SIZES.border, mock.lastCall(reset.foreverSixtyEdges[1], "SetHeight")[1])
+		assert.are.equal(L.settingsResetDone, reset:GetText())
+		assert.are.equal(Theme.ALPHA.disabled, mock.lastCall(reset, "SetAlpha")[1])
 		local timers = #state.timers
 		reset:GetScript("OnClick")(reset)
 		assert.are.equal(timers, #state.timers)
 		mock.runTimers(state)
 		assert.is_true(reset:IsEnabled())
-		assert.are.equal(1, alpha())
-		assert.are.same(color("gold"), { table.unpack(mock.lastCall(reset.foreverSixtyLabel, "SetTextColor")) })
-		assert.are.same(all("border"), edgeColors())
+		assert.are.equal(L.settingsReset, reset:GetText())
+		assert.are.equal(1, mock.lastCall(reset, "SetAlpha")[1])
 	end)
 
 	it("notes a page short of its controls in /fs diag, once", function()
@@ -585,11 +592,11 @@ describe("SettingsPage, the canvas", function()
 		start(nil, "1.61.0")
 		SettingsPage.register()
 		show()
-		assert.are.equal(SettingsPage.lineText(SettingsPage.addonDataLine(DATA.build, "1.61.0")),
+		-- The title carries the whole sentence; the foot keeps the state alone.
+		assert.are.equal(SettingsPage.lineText(SettingsPage.addonDataLine(DATA.build, "1.61.0"), true),
 			SettingsPage.dataLabels[1]:GetText())
-		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find(
-			"for an older patch. Update Forever Sixty at foreversixty.gg.",
-			1, true))
+		assert.are.equal("Addon data: " .. Theme.inlineColor("warning", "for an older patch"),
+			SettingsPage.dataLabels[1]:GetText())
 	end)
 
 	-- Fix round 2, item 5a, and round 3, items 2 and 3: the warning-coloured state in view
@@ -607,9 +614,7 @@ describe("SettingsPage, the canvas", function()
 		assert.are.equal(layout.warning, mock.lastCall(warning, "SetPoint")[5])
 		assert.are.equal(layout.rows[1], rowY(SettingsPage.toggles[1]))
 		assert.are.equal(layout.height, SettingsPage.scroll.contentHeight)
-		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find(
-			"for an older patch. Update Forever Sixty at foreversixty.gg.",
-			1, true))
+		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find("for an older patch", 1, true))
 		assert.are.equal(SettingsPage.lineText(SettingsPage.ratingsLine({ available = true, stale = false })),
 			SettingsPage.dataLabels[2]:GetText())
 	end)
@@ -639,7 +644,7 @@ describe("SettingsPage, the canvas", function()
 		SettingsPage.register()
 		show()
 		assert.are.equal(L.settingsAddonDataOlder .. L.settingsAlsoOld, SettingsPage.warningLabel:GetText())
-		assert.are.equal(" (and the player ratings are too old as well)", L.settingsAlsoOld)
+		assert.are.equal(" (and the Forever Scores are too old as well)", L.settingsAlsoOld)
 		assert.is_truthy(SettingsPage.dataLabels[2]:GetText():find("too old (made 9 Oct)", 1, true))
 	end)
 
@@ -650,6 +655,9 @@ describe("SettingsPage, the canvas", function()
 		show()
 		assert.is_true(SettingsPage.warningLabel:IsShown())
 		assert.are.equal(L.settingsRatingsOld, SettingsPage.warningLabel:GetText())
+		-- The whole sentence once: the foot keeps the state, the action stays under the title.
+		assert.are.equal("Forever Scores: " .. Theme.inlineColor("warning", "too old"),
+			SettingsPage.dataLabels[2]:GetText())
 	end)
 
 	-- Fix round 3, item 2: the data addon is optional; "not installed" stays at the foot.

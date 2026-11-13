@@ -19,8 +19,13 @@
 -- written into a client frame and nothing on the character pane is hooked, so no
 -- addon code runs in the pane's own Show or Hide (that tainted the pane on the live
 -- client). The overlays are made the first time a mark is needed (never at load) and
--- show and hide with their buttons. Nothing polls. They follow the "Gear tips on
--- item tooltips" switch (ruling 6).
+-- show and hide with their buttons. Nothing polls. They follow their own switch, "Marks
+-- on your bags and character pane" (the `slotMarks` flag), which "Tooltips only" turns off.
+--
+-- Each mark leads to the tab that owns its detail (design/specs/2026-11-13-addon-hub.md 5): an
+-- Alt-click on a marked paper-doll slot, or on a bag item carrying the arrow, opens Gear on that
+-- slot, after the client's own click (function hooks only); the hover says so under Shift in the
+-- marks' one wording, "Alt-click: open Gear". Never in combat.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -751,10 +756,77 @@ ItemTooltip.altClickOpensGear = function(slot)
 	return SlotMarks.onAltClick ~= nil and enabled() and SlotMarks.opensGear(slot, SlotMarks.current(true))
 end
 
---- Hooks the paper doll's modified click once, after the client's own (a function hook, never the pane).
+--- The paper-doll slot whose arrow bag item `link` carries (the chip's list: Progress.bagUpgrades), or nil
+--- for an item without the arrow. Pure over `upgrades`.
+function SlotMarks.bagSlotOf(link, upgrades)
+	if link == nil then
+		return nil
+	end
+	for _, upgrade in ipairs(upgrades or {}) do
+		if upgrade.link == link then
+			return upgrade.slot
+		end
+	end
+	return nil
+end
+
+--- The slot an Alt-click on bag item `link` opens Gear on now, or nil: the marks on, the tab loaded,
+--- the item carrying the arrow.
+local function bagAltSlot(link)
+	if SlotMarks.onAltClick == nil or not enabled() then
+		return nil
+	end
+	return SlotMarks.bagSlotOf(link, SlotMarks.current().read.upgrades)
+end
+
+--- The client's modified click on an item (every bag item button, the client's and the bag addons' alike,
+--- hands its link to HandleModifiedItemClick), after its own: with Alt held on a bag item carrying the
+--- arrow, the Gear tab opens on that item's slot. Any other item keeps the client's own click; never in
+--- combat.
+function SlotMarks.onModifiedItemClick(link)
+	if SlotMarks.onAltClick == nil or Theme.inCombat() then
+		return false
+	end
+	local altDown = Compat.clientGlobal("IsAltKeyDown", "function")
+	if altDown == nil or not altDown() then
+		return false
+	end
+	local slot = bagAltSlot(link)
+	if slot == nil then
+		return false
+	end
+	SlotMarks.onAltClick(slot)
+	return true
+end
+
+-- A bag item's hover says it under Shift while its own button shows the arrow (ItemTooltip.withAltClick),
+-- read from that button's bag and slot as the arrow is: the hover of the same item anywhere else (a chat
+-- link) promises nothing.
+ItemTooltip.bagAltClickOpensGear = function(_, owner)
+	local bag = bagButtons[owner]
+	if bag == nil then
+		return false
+	end
+	local slot = ask(owner, "GetID")
+	if type(slot) ~= "number" then
+		return false
+	end
+	return bagAltSlot(Export.containerLink(ask(owner, "GetBagID") or bag, slot)) ~= nil
+end
+
+--- Hooks the paper doll's modified click and the client's item click once, each after the client's own (function
+--- hooks, never the pane). True when the paper doll's was taken.
 function SlotMarks.hookAltClick()
 	local hook = Compat.clientGlobal("hooksecurefunc", "function")
-	if hook == nil or Compat.clientGlobal("PaperDollItemSlotButton_OnModifiedClick", "function") == nil then
+	if hook == nil then
+		return false
+	end
+	if Compat.clientGlobal("HandleModifiedItemClick", "function") ~= nil then
+		hook("HandleModifiedItemClick", function(link)
+			guarded(SlotMarks.onModifiedItemClick, link)
+		end)
+	end
+	if Compat.clientGlobal("PaperDollItemSlotButton_OnModifiedClick", "function") == nil then
 		return false
 	end
 	hook("PaperDollItemSlotButton_OnModifiedClick", function(button)

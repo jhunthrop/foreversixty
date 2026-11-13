@@ -307,21 +307,20 @@ local L = {
 	-- is not current repeated under the title). ASCII ">" only: this client's font has no
 	-- angle quote (fix round 2, item 1).
 	settingsChipShown = "Show the Forever Sixty line",
-	settingsChipShownHint = "Beside the minimap. Shift-drag moves it.",
+	settingsChipShownHint = "Shift-drag moves it.",
 	-- First on the page (design/specs/2026-11-08-addon-ux.md 3.3): one switch for the player who wants
 	-- only the tooltip lines.
 	settingsTooltipsOnly = "Tooltips only",
-	settingsTooltipsOnlyHint = "Turns off everything but the tooltip lines.",
+	settingsTooltipsOnlyHint = "Turns off the line and every mark.",
 	-- The owner's ruling (2026-11-08): a player can hide their own score from others.
 	settingsShowScore = "Show my Forever Score to others",
-	settingsShowScoreHint = "Off: other players see no score for you. You still see yours. Applies after the "
-		.. "companion's next upload.",
+	settingsShowScoreHint = "Applies after the companion's next upload.",
 	settingsSlotMarks = "Marks on your bags and character pane",
-	settingsSlotMarksHint = "A green arrow on gear that beats yours, a gold corner on a slot with an upgrade to chase.",
+	settingsSlotMarksHint = "Green arrow: beats what you wear. Gold corner: an upgrade to chase.",
 	settingsCombatHide = "Hide the Forever Sixty line in combat",
-	settingsCombatHideHint = "On: the line hides when combat starts. Off: it stays, faded to 25%.",
+	settingsCombatHideHint = "Off: it fades to 25% instead.",
 	settingsTalentMarks = "Marks on the talent window",
-	settingsTalentMarksHint = "Numbers your build's talents in order, rings the next one and adds a progress strip.",
+	settingsTalentMarksHint = "Numbers your build in order and rings the next talent.",
 	settingsMinimap = "Show the minimap button",
 	settingsMinimapHint = "Left-click pastes or copies a build; right-click opens this page. "
 		.. "Off: type /fs options or use Options > AddOns.",
@@ -331,49 +330,49 @@ local L = {
 	-- L4.4: the eighth switch (spec section 4.11). The badge leads the message, after the
 	-- name: a chat filter cannot touch the name without breaking its link and the reply.
 	settingsBadges = "Score badges in chat",
-	settingsBadgesHint = "Shows a player's Forever Score before their message in LFG, Trade, guild chat and "
-		.. "whispers.",
+	settingsBadgesHint = "In LFG, Trade, guild chat and whispers.",
 	-- L3.7 item 49: the ninth switch, the loot council's quality rule: epics only unless this is on.
 	settingsLootRares = "Ask the group about rare drops too",
-	settingsLootRaresHint = "As the master looter you ask the group about epics. On: rares too, "
-		.. "whatever the loot threshold. Off by default.",
+	settingsLootRaresHint = "As master looter, rares as well as epics.",
 	settingsBroadcast = "Share my build with my guild",
 	-- One line in player words; the ticked box shows the default (fix round 2, item 2).
-	settingsBroadcastHint = "Guildmates with Forever Sixty see your level, spec, build and gear gap. "
-		.. "Off: they see nothing.",
+	settingsBroadcastHint = "Guildmates see your level, spec, build and gear gap.",
 	settingsAutoSave = "Save my character for the companion app",
 	-- Claims no upload (spec section 4.10): the addon cannot see the companion send it. It
 	-- says what the save is for (fix round 2, item 9), on one line (fix round 3, item 4).
-	settingsAutoSaveHint = "Written at logout for the companion app on your PC, so the site can read your gear "
-		.. "and talents.",
+	settingsAutoSaveHint = "Written at logout for the companion app.",
 	settingsCommandsHeading = "Commands",
+	-- The switch sections (2026-11-13-addon-hub 7): what shows in the game, the launcher, what leaves it.
+	settingsSectionWorld = "Tooltips and marks",
+	settingsSectionLine = "The Forever Sixty line",
+	settingsSectionShared = "Guild and the site",
 	-- A.2: the page shows the first four commands and this line, so the list never ends in a cut row.
 	settingsCommandsMore = "/fs help: all the commands",
 	settingsReset = "Reset positions",
 	settingsResetDone = "Positions reset",
-	settingsResetHint = "Puts the Forever Sixty line, the minimap button and the build dialog back "
+	settingsResetHint = "Puts the Forever Sixty line, the minimap button and the Forever Sixty window back "
 		.. "in their default places.",
 	-- The data lines: one sentence per state, the foot's and the title line's alike (fix
 	-- round 3, item 3). The foot draws the subject (up to the first ": ") muted and the state
 	-- muted or (stale) in the warning colour, action first; the title line draws a warning
-	-- state's whole sentence in the warning colour. "Player ratings (on player tooltips)": a
-	-- player read "ratings" as hit and crit ratings; the place to get them is named. /fs diag
-	-- keeps its own wording.
+	-- state's whole sentence in the warning colour, and the foot then only the state ("too old (made
+	-- 5 Dec)"). "Forever Scores", the tooltip's own word (a player read "ratings" as hit and crit
+	-- ratings); the place to get them is named. /fs diag keeps its own wording.
 	settingsAddonDataCurrent = "Addon data: current for this patch",
 	settingsAddonDataOlder = "Addon data: for an older patch. Update Forever Sixty at " .. SITE .. ".",
-	settingsRatingsCurrent = "Player ratings (on player tooltips): current",
-	settingsRatingsOld = "Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at " .. SITE .. ".",
+	settingsRatingsCurrent = "Forever Scores: current",
+	settingsRatingsOld = "Forever Scores: too old. Get the new Forever Sixty Data at " .. SITE .. ".",
 	-- L3.7 item 38: the dated form, "%s" the day the record was made ("9 Oct"); item 2: a global that
 	-- is not a table at all.
-	settingsRatingsOldDated = "Player ratings (on player tooltips): too old (made %s). Get the new Forever Sixty "
+	settingsRatingsOldDated = "Forever Scores: too old (made %s). Get the new Forever Sixty "
 		.. "Data at " .. SITE .. ".",
-	settingsRatingsBroken = "Player ratings (on player tooltips): broken or missing. Get Forever Sixty Data at "
+	settingsRatingsBroken = "Forever Scores: broken or missing. Get Forever Sixty Data at "
 		.. SITE .. ".",
 	-- Added to the title's warning line when the addon data and the ratings are both out of date.
-	settingsAlsoOld = " (and the player ratings are too old as well)",
-	settingsRatingsNewer = "Player ratings (on player tooltips): made for a newer addon. Update Forever Sixty at "
+	settingsAlsoOld = " (and the Forever Scores are too old as well)",
+	settingsRatingsNewer = "Forever Scores: made for a newer addon. Update Forever Sixty at "
 		.. SITE .. ".",
-	settingsRatingsMissing = "Player ratings (on player tooltips): not installed. Get Forever Sixty Data at " .. SITE
+	settingsRatingsMissing = "Forever Scores: not installed. Get Forever Sixty Data at " .. SITE
 		.. ".",
 	diagSettingsDrawn = "The Settings page drew %d of its %d controls.",
 	diagSettingsNoOpen = "This client did not open the Settings page; right-click prints the commands instead.",
@@ -683,11 +682,11 @@ local L = {
 	baganatorArrow = "Forever Sixty upgrade",
 	diagNoBagHook = "Bag marks: this client has no bag hook; the bag marks are off.",
 	diagSlotMarksFailed = "The paper-doll and bag marks failed once and turned themselves off until /reload: %s",
-	-- The quest reward and roll marks (design/specs/2026-11-08-addon-ux.md section 2.4): gold
-	-- under the band's pick, muted under the reward that sells for the most when none helps.
-	rewardBest = "Best in slot",
+	-- The quest reward and roll marks (design/specs/2026-11-08-addon-ux.md section 2.4): the band's pick
+	-- says the item tooltip's own line in the client gold (ItemTooltip.bestText: "Best for 20 to 29",
+	-- 2026-11-13-addon-hub 5), muted under the reward that sells for the most when none helps.
 	rewardSellsForMost = "Sells for most",
-	-- The roll frame's short verdict: "+5.8 DPS · Best in slot".
+	-- The roll frame's short verdict: "+5.8 DPS · Best at level 60".
 	rollBestJoin = " · ",
 	rollNotForYou = "Not for you",
 	rollDowngrade = "%s",
@@ -1656,7 +1655,13 @@ L.gearBestOf = "%d of %d best in slot"
 L.gearEnchantMissing = "1 enchant missing"
 L.gearEnchantsMissing = "%d enchants missing"
 L.gearShiftLink = "Shift-click an item to link it"
-L.gearAltClick = "Alt-click: open Gear"
+-- A mark in the world names the tab it opens in one wording (design/specs/2026-11-13-addon-hub.md 2, 5):
+-- "Alt-click: open Gear" on a marked paper-doll slot or bag item, "Click: open Builds" on the talent strip.
+L.markOpens = "%s: open %s"
+L.markAltClick = "Alt-click"
+L.markClick = "Click"
+L.markAltGear = string.format(L.markOpens, L.markAltClick, L.hubTabGear)
+L.markClickBuilds = string.format(L.markOpens, L.markClick, L.hubTabBuilds)
 L.gearEquipLine = "Equip %s %s"
 L.gearGainBare = "+%.1f"
 L.gearGainScoreBare = "+%d"

@@ -2,7 +2,8 @@
 -- The player tooltip (design/specs/2026-11-08-addon-ux.md section 2.5): after the client's own
 -- lines on a player's tooltip, one line, "Forever Score 1240" in its tier's colour (Common
 -- white, Uncommon green, Rare blue, Epic purple, Legendary orange), "Forever Score 1240 (13 Oct)"
--- once the record is more than a week old. While Shift is held, the five parts under it: the
+-- once the record is stale by the one rule every surface shares (Score.isStale, 3 days). While
+-- Shift is held, the five parts under it: the
 -- label muted left, the points right-aligned in white. Nothing at all for a character with no
 -- record or no rated fights, a non-player, or while "Gear tips on item tooltips" is off: the
 -- absence says it.
@@ -23,9 +24,6 @@ local Export = ns.Export or require("Export")
 
 local PlayerTooltip = {}
 
---- A record older than this (from its own date) shows its date on the score line.
-PlayerTooltip.DATED_AFTER_SECONDS = 7 * 24 * 60 * 60
-
 -- The section, pure ---------------------------------------------------------------------
 
 local function line(text, hexKey)
@@ -43,12 +41,11 @@ local function double(left, right, leftKey, rightKey)
 end
 
 --- The score line's text: "Forever Score 1240", or with the record's date, "Forever Score 1240
---- (13 Oct)", when its `as_of` is more than PlayerTooltip.DATED_AFTER_SECONDS before `now`
---- (seconds since the epoch). Pure.
+--- (13 Oct)", when its `as_of` is stale at `now` (seconds since the epoch; Score.isStale). Pure.
 function PlayerTooltip.scoreText(record, now)
 	local dated = Score.dateSeconds(record.as_of)
 	local shortDate = Compat.shortDate(record.as_of)
-	if dated ~= nil and shortDate ~= nil and type(now) == "number" and now - dated > PlayerTooltip.DATED_AFTER_SECONDS then
+	if shortDate ~= nil and Score.isStale(dated, now) then
 		return string.format(L.scoreDated, record.score, shortDate)
 	end
 	return string.format(L.scoreLine, record.score)
@@ -56,7 +53,8 @@ end
 
 --- The lines after the client's own, each { text, r, g, b }, a double line also { right, rr,
 --- rg, rb }: `record` is Score.forCharacter's (nil for none: no lines), `shift` whether Shift
---- is held, `now` the epoch clock (Score.clock). The score line in the tier's colour; while
+--- is held, `now` the epoch clock (Score.clock). The score line in the tier's colour, muted and dated
+--- once stale; while
 --- Shift is held each part, the label muted left and the points right in white (Preparation
 --- says what it measures). Pure.
 function PlayerTooltip.section(record, shift, now)
@@ -66,7 +64,10 @@ function PlayerTooltip.section(record, shift, now)
 	end
 	local text = PlayerTooltip.scoreText(record, now)
 	local color = record.tierColor
-	if color ~= nil then
+	if Score.isStale(Score.dateSeconds(record.as_of), now) then
+		-- Stale: dated and muted, as the chat badge mutes it (one rule, one look).
+		out[1] = line(text, "tooltipMuted")
+	elseif color ~= nil then
 		out[1] = { text = text, r = color.r, g = color.g, b = color.b }
 	else
 		out[1] = line(text, "tooltipBody")

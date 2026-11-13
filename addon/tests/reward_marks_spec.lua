@@ -23,9 +23,16 @@ local DATA = {
 		[20] = { alliance = {
 			chest = "300|D|Wailing Caverns: Mutanus the Devourer|0.33",
 		} },
+		[30] = { alliance = {
+			chest = "301|D|Scarlet Monastery: Herod|0.2",
+		} },
 	} },
-	bisNames = { [300] = "Mutant Scale Breastplate" },
+	bisNames = { [300] = "Mutant Scale Breastplate", [301] = "Herod's Shoulder" },
 }
+
+--- The band's pick in the item tooltip's own words (ItemTooltip.bestText, hub spec 5): it holds from 20 until
+--- the 30 band's pick takes over.
+local BEST = "Best for 20 to 29"
 
 local function link(id, name)
 	return "|Hitem:" .. id .. "::::::::21:::::|h[" .. name .. "]|h"
@@ -94,6 +101,7 @@ for itemLink, info in pairs(ITEMS) do
 	info.link = itemLink
 	BY_ID[info.id] = info
 end
+
 
 --- A Theme.HEX key's red, green and blue (Theme.rgb's alpha left off).
 local function rgb3(key)
@@ -326,16 +334,17 @@ describe("RewardMarks", function()
 			end
 		end)
 
-		it("writes Best in slot in the parchment gold under the band's pick, with the arrow when it is an upgrade",
-			function()
+		it("writes the tooltip's own Best for 20 to 29 in the client gold under the band's pick, with the arrow "
+			.. "when it is an upgrade", function()
 				start({ chest = WORN_CHEST, back = WORN_BACK })
 				local buttons = offer({ THIN_CLOAK, PICK_CHEST })
 				RewardMarks.onEvent("QUEST_COMPLETE")
 				mock.runTimers(state)
-				assert.are.equal(L.rewardBest, labelText(buttons[2]))
-				assert.are.equal("Best in slot", L.rewardBest)
+				assert.are.equal(BEST, labelText(buttons[2]))
+				assert.are.equal(require("ItemTooltip").bestText(20, 30), BEST)
 				local label = RewardMarks.labelOn(buttons[2])
-				assert.are.same(rgb3("parchmentGold"), { table.unpack(mock.lastCall(label.text, "SetTextColor"), 1, 3) })
+				assert.are.same(rgb3("clientGold"), { table.unpack(mock.lastCall(label.text, "SetTextColor"), 1, 3) })
+				assert.are.same({ 1, -1 }, { table.unpack(mock.lastCall(label.text, "SetShadowOffset"), 1, 2) })
 				assert.is_true(arrowOn(buttons[2]))
 				assert.is_nil(labelText(buttons[1]))
 			end)
@@ -346,7 +355,7 @@ describe("RewardMarks", function()
 			local buttons = offer({ PICK_CHEST, BAG_CHEST })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.are.equal(L.rewardBest, labelText(buttons[1]))
+			assert.are.equal(BEST, labelText(buttons[1]))
 			assert.is_false(arrowOn(buttons[1]))
 			assert.is_true(arrowOn(buttons[2]))
 			assert.is_nil(labelText(buttons[2]))
@@ -364,7 +373,7 @@ describe("RewardMarks", function()
 			assert.are.equal(L.rewardSellsForMost, labelText(buttons[2]))
 			assert.is_nil(labelText(buttons[3]))
 			local label = RewardMarks.labelOn(buttons[2])
-			assert.are.same(rgb3("parchmentMuted"), { table.unpack(mock.lastCall(label.text, "SetTextColor"), 1, 3) })
+			assert.are.same(rgb3("tooltipMuted"), { table.unpack(mock.lastCall(label.text, "SetTextColor"), 1, 3) })
 			sells(THIN_CLOAK, nil)
 			sells(RAG_CHEST, nil)
 			sells(SOFT_BOOTS, nil)
@@ -487,13 +496,13 @@ describe("RewardMarks", function()
 			RewardMarks.register()
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.are.equal(L.rewardBest, labelText(buttons[2]))
+			assert.are.equal(BEST, labelText(buttons[2]))
 			RewardMarks.onEvent("QUEST_FINISHED")
 			assert.is_nil(labelText(buttons[2]))
 			assert.is_false(arrowOn(buttons[2]))
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.are.equal(L.rewardBest, labelText(buttons[2]))
+			assert.are.equal(BEST, labelText(buttons[2]))
 			raw("QuestInfoFrame").questLog = true
 			_G.QuestInfo_Display()
 			assert.is_nil(labelText(buttons[2]))
@@ -542,11 +551,11 @@ describe("RewardMarks", function()
 			assert.is_truthy(raw_:find(require("Theme").HEX.tooltipGreen, 1, true))
 		end)
 
-		it("adds Best in slot in gold after the gain on the band's pick", function()
+		it("adds the tooltip's own Best line in the client gold after the gain on the band's pick", function()
 			start({ chest = WORN_CHEST })
 			local frame = rollFrame(3, PICK_CHEST)
 			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
-			assert.are.equal("+1.0 DPS · Best in slot", lineText(frame))
+			assert.are.equal("+1.0 DPS · " .. BEST, lineText(frame))
 			assert.is_truthy(RewardMarks.lineOn(frame).text:GetText():find(require("Theme").HEX.clientGold, 1, true))
 		end)
 
@@ -642,8 +651,9 @@ describe("RewardMarks", function()
 			assert.is_nil(RewardMarks.rollLine({ gear = false }))
 			assert.is_nil(RewardMarks.rollLine({ gear = true, pending = true }))
 			assert.is_nil(RewardMarks.rollLine({ gear = true, wearable = true }))
-			local best = RewardMarks.rollLine({ gear = true, wearable = true, isPick = true, gain = 0.2 })
-			assert.are.equal(L.rewardBest, ItemTooltip.stripEscapes(best.text))
+			local best = RewardMarks.rollLine({ gear = true, wearable = true, isPick = true, gain = 0.2,
+				best = "Best at level 60" })
+			assert.are.equal("Best at level 60", ItemTooltip.stripEscapes(best.text))
 			assert.is_nil(best.arrow)
 		end)
 	end)
@@ -746,7 +756,7 @@ describe("RewardMarks", function()
 			assert.is_nil(lineText(frame))
 			Prefs.setFlag("tooltip", true)
 			RewardMarks.refresh(DATA)
-			assert.are.equal(L.rewardBest, labelText(buttons[2]))
+			assert.are.equal(BEST, labelText(buttons[2]))
 			assert.are.equal("+2.0 DPS", lineText(frame))
 		end)
 	end)

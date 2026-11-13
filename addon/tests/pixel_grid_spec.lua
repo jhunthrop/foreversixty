@@ -143,6 +143,26 @@ describe("the addon's windows on the pixel grid", function()
 		assert.are.same({}, unsnapped(state))
 	end)
 
+	it("snaps every texture on the Settings page, Reset's button among them", function()
+		start(1440, 1)
+		local registered
+		_G.Settings = {
+			RegisterCanvasLayoutCategory = function(panel)
+				registered = panel
+				return { GetID = function() return 1 end }
+			end,
+			RegisterAddOnCategory = function() end,
+		}
+		helper.load("Minimap")
+		local SettingsPage = helper.load("Settings")
+		assert.is_true(SettingsPage.register())
+		registered:SetSize(600, 560)
+		registered:Show()
+		registered:GetScript("OnShow")(registered)
+		assert.are.same({}, unsnapped(state))
+		_G.Settings = nil
+	end)
+
 	it("draws an outline a whole number of pixels thick, never under one", function()
 		start(1440, 1)
 		-- 1440 pixels over 768 units: 1.875 a unit, so a 1-unit edge is 2 pixels.

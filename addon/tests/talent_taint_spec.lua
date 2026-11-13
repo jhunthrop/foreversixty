@@ -64,6 +64,29 @@ describe("the talent window's taint rules", function()
 		assert.are.same({}, state.clientWrites)
 	end)
 
+	-- design/specs/2026-11-13-addon-hub.md 5: the strip opens Builds, its hover says so in the marks' wording.
+	it("opens Builds from a click on the strip and says so on its hover, with no client write", function()
+		local opened = 0
+		TalentMarks.openBuilds = function()
+			opened = opened + 1
+		end
+		TalentGlow.watch(DATA)
+		window:Show()
+		local strip = TalentMarks.strip
+		local lines = {}
+		_G.GameTooltip.AddLine = function(_, text)
+			lines[#lines + 1] = text
+		end
+		strip:GetScript("OnEnter")(strip)
+		assert.are.same({ Theme.inlineColor("tooltipDim", "Click: open Builds") }, lines)
+		strip:GetScript("OnMouseUp")(strip, "RightButton")
+		assert.are.equal(0, opened)
+		strip:GetScript("OnMouseUp")(strip, "LeftButton")
+		assert.are.equal(1, opened)
+		assert.are.same({}, state.clientWrites)
+		TalentMarks.openBuilds = nil
+	end)
+
 	it("adds the node's plan line from GameTooltip's own OnShow, not from a hook on the node", function()
 		TalentGlow.watch(DATA)
 		window:Show()

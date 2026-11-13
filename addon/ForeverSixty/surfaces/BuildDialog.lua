@@ -30,6 +30,7 @@ local Chip = ns.Chip or require("Chip")
 local BuildsPane = ns.BuildsPane or require("BuildsPane")
 local BuildsWindow = ns.BuildsWindow or require("BuildsWindow")
 local Hub = ns.Hub or require("Hub")
+local TalentMarks = ns.TalentMarks or require("TalentMarks")
 
 local BuildDialog = {}
 
@@ -2991,6 +2992,11 @@ function BuildDialog.selfCheck()
 		return false
 	end
 	return true
+end
+
+-- A click on the talent window's strip opens this tab (spec 2026-11-13-addon-hub 5).
+TalentMarks.openBuilds = function()
+	return Hub.open("builds")
 end
 
 -- The hub's Builds tab (spec 2026-11-13-addon-hub 3.3: second on the strip, after Me).

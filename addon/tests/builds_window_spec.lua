@@ -165,6 +165,15 @@ describe("the Builds tab's flows (shipped data, a level 42 hunter)", function()
 		assert.are.equal(L.windowEscClose, Hub.footer.escape:GetText())
 	end)
 
+	-- design/specs/2026-11-13-addon-hub.md 5: a click on the talent window's strip opens this tab.
+	it("is the tab the talent strip opens", function()
+		Hub.close()
+		assert.is_false(Hub.isShown())
+		require("TalentMarks").openBuilds()
+		assert.is_true(Hub.isShown())
+		assert.are.equal("builds", Hub.active)
+	end)
+
 	it("previews a good code on the left, says it read it, and Use follows it with the window kept open", function()
 		pasteCode(codeFor("hunter-survival", "raid"))
 		local paste = BuildDialog.paste

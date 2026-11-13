@@ -1951,20 +1951,37 @@ end
 --- slot with the arrow lists the very bag item its hover leads with.
 ItemTooltip.bagLead = bagLead
 
---- Injection (SlotMarks sets it): whether an Alt-click on paper-doll `slot` opens the Gear tab.
+--- Injections (SlotMarks sets them): whether an Alt-click on paper-doll `slot` opens the Gear tab, and
+--- whether one on bag item `link` under its own button `owner` does.
 ItemTooltip.altClickOpensGear = nil
+ItemTooltip.bagAltClickOpensGear = nil
 
---- `entry` with the Shift block's last line "Alt-click: open Gear" when the hover is on paper-doll
---- `slot`'s own button and an Alt-click there opens the Gear tab (spec 2026-11-13-addon-hub 3.7, 5).
---- The entry itself otherwise; never a broken hover.
-local function withAltClick(entry, slot, owner)
-	local opens = ItemTooltip.altClickOpensGear
-	local buttonName = slot ~= nil and ItemTooltip.SLOT_BUTTONS[slot] or nil
-	if buttonName == nil or opens == nil or owner == nil or Compat.clientGlobal(buttonName, "table") ~= owner then
+--- Whether `ask(...)` answers true; false for no question or a failed one (never a broken hover).
+local function answers(ask, ...)
+	if ask == nil then
+		return false
+	end
+	local ok, yes = pcall(ask, ...)
+	return ok and yes == true
+end
+
+--- `entry` with the Shift block's last line, the marks' one wording "Alt-click: open Gear", when the hover
+--- is on a mark an Alt-click opens the Gear tab from (spec 2026-11-13-addon-hub 2, 3.7, 5): paper-doll
+--- `slot`'s own marked button, or (`slot` nil) bag item `link` under its own button carrying the arrow.
+--- The entry itself otherwise.
+local function withAltClick(entry, slot, owner, link)
+	if owner == nil then
 		return entry
 	end
-	local ok, yes = pcall(opens, slot)
-	if not ok or yes ~= true then
+	local opens
+	if slot ~= nil then
+		local buttonName = ItemTooltip.SLOT_BUTTONS[slot]
+		opens = buttonName ~= nil and Compat.clientGlobal(buttonName, "table") == owner
+			and answers(ItemTooltip.altClickOpensGear, slot)
+	else
+		opens = answers(ItemTooltip.bagAltClickOpensGear, link, owner)
+	end
+	if not opens then
 		return entry
 	end
 	local copy, lines = {}, {}
@@ -1974,7 +1991,7 @@ local function withAltClick(entry, slot, owner)
 	for index, line in ipairs(entry.lines) do
 		lines[index] = line
 	end
-	lines[#lines + 1] = { kind = "altClick", role = "shift", color = "tooltipDim", text = L.gearAltClick }
+	lines[#lines + 1] = { kind = "altClick", role = "shift", color = "tooltipDim", text = L.markAltGear }
 	copy.lines = lines
 	return copy
 end
@@ -2031,8 +2048,11 @@ local function addLines(tooltip, itemLink)
 	if #entry.lines == 0 then
 		return
 	end
+	local owner = type(tooltip.GetOwner) == "function" and tooltip:GetOwner() or nil
 	if head.equipped then
-		entry = withAltClick(entry, head.slot, type(tooltip.GetOwner) == "function" and tooltip:GetOwner() or nil)
+		entry = withAltClick(entry, head.slot, owner)
+	else
+		entry = withAltClick(entry, nil, owner, itemLink)
 	end
 	local shown = entry
 	if level > 0 then

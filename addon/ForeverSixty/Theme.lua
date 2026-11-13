@@ -68,9 +68,6 @@ Theme.HEX = {
 	tooltipGreen = C.addon.tooltipGreen,
 	--- The item tooltip's last Shift line (the attribution), one step dimmer than tooltipMuted.
 	tooltipDim = C.addon.tooltipDim,
-	--- Labels written on the quest frame's parchment, under a reward's name.
-	parchmentGold = C.addon.parchmentGold,
-	parchmentMuted = C.addon.parchmentMuted,
 	--- The addon's own frames (the panel, the onboarding) as the site's plates: the raised ground
 	--- inside one hairline, cream titles in the title face, text and muted details as the site sets
 	--- them, the site's secondary button (blue in its blue edge) and its one primary (teal in the
@@ -769,10 +766,10 @@ Theme.CONTROL_STATES = {
 	},
 	--- A Settings switch (L3.5, fix round 1): on, a gold square (goldHover under the cursor,
 	--- goldPressed held) with the check in onGold; off, a 1 px outline in the muted-text grey,
-	--- body under the cursor, an inset ground while held. The hint is body text at full alpha (A.2).
+	--- body under the cursor, an inset ground while held. The hint is muted body-size text (L10 review).
 	toggle = {
 		on = "gold", onHover = "goldHover", onPressed = "goldPressed", check = "onGold",
-		edge = "muted", edgeHover = "body", offPressed = "inset", hint = "body",
+		edge = "muted", edgeHover = "body", offPressed = "inset", hint = "muted",
 	},
 }
 Theme.PRESSED_LABEL_DROP = 1

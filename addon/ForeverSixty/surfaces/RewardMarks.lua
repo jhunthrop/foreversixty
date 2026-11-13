@@ -3,13 +3,15 @@
 -- is for me?
 --
 -- On the quest frame's reward choices: the green arrow on the icon of the reward with the best
--- gain from the 1.0 floor (only one), "Best in slot" in gold under the name of the reward that
--- is the band's pick (it may be the same one), and, when no reward helps, "Sells for most",
+-- gain from the 1.0 floor (only one), "Best for 20 to 29" in the client gold under the name of the
+-- reward that is the band's pick (it may be the same one; the item tooltip's own line in its own gold,
+-- ItemTooltip.bestText, so the three never word the pick two ways: design/specs/2026-11-13-addon-hub.md
+-- 5), and, when no reward helps, "Sells for most",
 -- muted, under the reward with the highest sell price (the client's own GetItemInfo price, so
 -- it is exact); nothing on the others. A reward the character cannot use gets no label: its
 -- hover says why. On a group loot roll frame, the green arrow on the item's icon when it is an
--- upgrade and one short line under the item's name: "+5.8 DPS", "+5.8 DPS · Best in slot",
--- "Best in slot", "Sidegrade", "Downgrade", "Not for you". No source: the item is dropping in
+-- upgrade and one short line under the item's name: "+5.8 DPS", "+5.8 DPS · Best at level 60",
+-- "Best at level 60", "Sidegrade", "Downgrade", "Not for you". No source: the item is dropping in
 -- front of the player.
 --
 -- One verdict source: every item is judged by ItemTooltip.judge, the part of the tooltip's own
@@ -67,24 +69,33 @@ local function scorable(base)
 	return type(base) == "table" and type(base.current) == "table" and type(base.current.weights) == "table"
 end
 
---- Whether `ctx`'s item is the band's own pick at the character's level (ItemTooltip.plannedBand
---- at the current band).
-local function isBandPick(ctx)
+--- The tooltip's own gold line when `ctx`'s item is the band's pick at the character's level
+--- (ItemTooltip.plannedBand at the current band): "Best for 20 to 29", "Best at level 60"
+--- (ItemTooltip.bestText, up to the band whose pick changes); nil for any other item.
+local function bandPickWords(ctx)
 	local data = ctx.data or {}
 	local specBis = ctx.spec ~= nil and type(data.bis) == "table" and data.bis[ctx.spec] or nil
 	local band = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
-	if band == nil then
-		return false
+	local itemId = ctx.item.itemId
+	local slots = Gear.slotsFor(ctx.item.equipLocation)
+	if band == nil or ItemTooltip.plannedBand(data, ctx.spec, ctx.faction, slots, itemId, ctx.level) ~= band then
+		return nil
 	end
-	return ItemTooltip.plannedBand(data, ctx.spec, ctx.faction, Gear.slotsFor(ctx.item.equipLocation),
-		ctx.item.itemId, ctx.level) == band
+	for _, slot in ipairs(slots) do
+		local pick = Gear.pick(ctx.spec, band, ctx.faction, slot, data)
+		if pick ~= nil and pick.item_id == itemId then
+			return ItemTooltip.bestText(band, ItemTooltip.bandAfter(data, ctx.spec, ctx.faction, slot, band, itemId))
+		end
+	end
+	return ItemTooltip.bestText(band, nil)
 end
 
 --- One item judged as the tooltip judges it: { itemId, gear, pending, wearable, gain, upgrade,
---- isPick, sellPrice, primary, waits }. `gear`: it goes in a slot the plan covers; `pending`:
+--- isPick, best, sellPrice, primary, waits }. `gear`: it goes in a slot the plan covers; `pending`:
 --- the client has not sent it yet (nothing else is said); `wearable`: the character can put it
 --- on now; `gain`: its gain over what is worn, rounded as shown (nil where it cannot be
---- scored); `upgrade`: its tooltip calls it one; `isPick`: it is the band's pick; `sellPrice`:
+--- scored); `upgrade`: its tooltip calls it one; `isPick`: it is the band's pick, `best` the
+--- tooltip's line naming it so ("Best for 20 to 29"); `sellPrice`:
 --- the client's vendor price in copper (0 or nil: none); `primary`: the tooltip's own verdict
 --- line; `waits`: the item ids that line still waits on.
 function RewardMarks.judge(link, base)
@@ -102,7 +113,8 @@ function RewardMarks.judge(link, base)
 		return result
 	end
 	result.wearable = #judged.usable > 0
-	result.isPick = result.wearable and isBandPick(ctx)
+	result.best = result.wearable and bandPickWords(ctx) or nil
+	result.isPick = result.best ~= nil
 	local verdict = judged.verdict
 	if verdict ~= nil and verdict.delta ~= nil then
 		local gain = Progress.roundedGain(-verdict.delta, judged.unit == "score" and "score" or "dps")
@@ -130,7 +142,7 @@ end
 --- - the arrow on the choice with the biggest gain the character can wear now that its
 ---   tooltip calls an upgrade (the first on a tie): never a plate choice at 21, never a +0.3
 ---   Sidegrade;
---- - "Best in slot" (gold) under the choice that is the band's pick, wearable now;
+--- - the tooltip's "Best for 20 to 29" (the client gold) under the choice that is the band's pick, wearable now;
 --- - with neither, and only when no choice is of any use (each is gear that scores nothing over
 ---   what is worn, or cannot be worn now; a choice that is not gear, or that the weights cannot
 ---   price, may be of use): "Sells for most" (muted) under the choice with the highest sell
@@ -154,7 +166,7 @@ function RewardMarks.rewardLabels(judgements, count)
 			end
 		end
 		if judged.isPick then
-			labels[index] = { kind = "best", text = L.rewardBest, color = "parchmentGold" }
+			labels[index] = { kind = "best", text = judged.best, color = "clientGold" }
 		end
 	end
 	if best ~= nil then
@@ -171,16 +183,16 @@ function RewardMarks.rewardLabels(judgements, count)
 			end
 		end
 		if richest ~= nil then
-			labels[richest] = { kind = "vendor", text = L.rewardSellsForMost, color = "parchmentMuted" }
+			labels[richest] = { kind = "vendor", text = L.rewardSellsForMost, color = "tooltipMuted" }
 		end
 	end
 	return labels
 end
 
 --- The roll frame's short verdict for a judgement (spec 2.4): { text, arrow? } with the colours
---- inline: "+5.8 DPS" green with the arrow, "+5.8 DPS · Best in slot" (green, gold), "Best in
---- slot" (gold), "Sidegrade", "Downgrade", "Not for you" (grey). nil for an item that is not gear,
---- is still on its way, or cannot be priced. Pure.
+--- inline: "+5.8 DPS" green with the arrow, "+5.8 DPS · Best at level 60" (green, the client gold),
+--- "Best at level 60" (the client gold), "Sidegrade", "Downgrade", "Not for you" (grey). nil for an
+--- item that is not gear, is still on its way, or cannot be priced. Pure.
 function RewardMarks.rollLine(judged)
 	if type(judged) ~= "table" or not judged.gear or judged.pending then
 		return nil
@@ -188,18 +200,18 @@ function RewardMarks.rollLine(judged)
 	local function paint(key, text)
 		return Theme.inlineColor(key, text)
 	end
-	local best = paint("clientGold", L.rewardBest)
+	local best = judged.best ~= nil and paint("clientGold", judged.best) or nil
 	if judged.wearable == false or (judged.primary ~= nil and judged.primary.kind == "refusal") then
 		return { text = paint("tooltipMuted", L.rollNotForYou) }
 	end
 	if judged.upgrade then
 		local text = paint("tooltipGreen", ItemTooltip.figure(judged.gain, judged.unit))
-		if judged.isPick then
+		if best ~= nil then
 			text = text .. paint("tooltipMuted", L.rollBestJoin) .. best
 		end
 		return { text = text, arrow = true }
 	end
-	if judged.isPick then
+	if best ~= nil then
 		return { text = best }
 	end
 	if judged.gain == nil then
@@ -330,10 +342,15 @@ local function paintText(text, color)
 	text:SetTextColor(Theme.rgb(Theme.HEX[color] or Theme.HEX.body))
 end
 
---- A small font string on a new overlay of `owner`, and the green arrow (hidden) on it.
+--- A small font string on a new overlay of `owner`, and the green arrow (hidden) on it. The text casts
+--- the client's own 1 px shadow, as its gold text does wherever it sits on the quest frame.
 local function labelParts(owner)
 	local overlay = overlayFor(owner)
 	local text = Theme.fontString(overlay, "OVERLAY", "small")
+	if type(text.SetShadowColor) == "function" then
+		text:SetShadowColor(Theme.rgb(Theme.HEX.shadow))
+		text:SetShadowOffset(1, -1)
+	end
 	local arrow = overlay:CreateTexture(nil, "OVERLAY")
 	arrow:SetTexture(Theme.MEDIA.arrowInline)
 	arrow:SetSize(Theme.SIZES.mark, Theme.SIZES.mark)

@@ -1,8 +1,12 @@
 -- addon/ForeverSixty/surfaces/Settings.lua
--- The Settings page (spec section 4.11, L3.5): the client's own Settings, one canvas.
--- The switches ("Tooltips only" first), Reset positions, the /fs command list, and two lines at the foot: whether
--- the addon's data is for this client's patch, and the player ratings' state. The first of
--- those in the warning colour is repeated under the title, its whole sentence in that colour.
+-- The Settings page (spec section 4.11, L3.5; rebuilt for the hub, design/specs/2026-11-13-addon-hub.md 7):
+-- the client's own Settings, one canvas, in the Forever Sixty window's type: the title in the title face,
+-- section headings as the window's (BuildsWindow.buildSection), text at the window's 12 px, no rules.
+-- The /fs command list, the switches in three sections ("Tooltips only" first), Reset positions on the
+-- window's one button recipe (Widgets.clientButton), and two lines at the foot: whether the addon's data
+-- is for this client's patch, and the player ratings' state. The first of those in the warning colour is
+-- repeated under the title, its whole sentence in that colour. Switches only: every choice that is not
+-- on or off lives in the tab that owns it (the gear sources are the Gear tab's).
 --
 -- Pure model, thin frame. SettingsPage.SWITCHES is the whole of what the page can change
 -- (each key a Prefs.DEFAULTS boolean); read, checked and apply are its only way to the prefs;
@@ -29,22 +33,28 @@ local SettingsPage = {}
 
 SettingsPage.FRAME_NAME = "ForeverSixtySettingsPanel"
 
---- The switches, in page order (L3.5 ruling 1, fix round 1 item 4; L4.4 adds the chat badges
---- after the tooltips). A key is a Prefs section and field ("chip.shown") or a top-level flag
---- ("tooltip").
+--- The switch sections, in page order: what shows in the game, the launcher, what leaves the game.
+SettingsPage.SECTIONS = {
+	{ id = "world", heading = L.settingsSectionWorld },
+	{ id = "line", heading = L.settingsSectionLine },
+	{ id = "shared", heading = L.settingsSectionShared },
+}
+
+--- The switches, in page order (L3.5 ruling 1: "Tooltips only" first), each in its section. A key is a
+--- Prefs section and field ("chip.shown") or a top-level flag ("tooltip").
 SettingsPage.SWITCHES = {
-	{ key = "tooltipsOnly", label = L.settingsTooltipsOnly, hint = L.settingsTooltipsOnlyHint },
-	{ key = "chip.shown", label = L.settingsChipShown, hint = L.settingsChipShownHint },
-	{ key = "chip.combatHide", label = L.settingsCombatHide, hint = L.settingsCombatHideHint },
-	{ key = "talentMarks", label = L.settingsTalentMarks, hint = L.settingsTalentMarksHint },
-	{ key = "slotMarks", label = L.settingsSlotMarks, hint = L.settingsSlotMarksHint },
-	{ key = "minimap.shown", label = L.settingsMinimap, hint = L.settingsMinimapHint },
-	{ key = "tooltip", label = L.settingsTooltip, hint = L.settingsTooltipHint },
-	{ key = "badges", label = L.settingsBadges, hint = L.settingsBadgesHint },
-	{ key = "showScore", label = L.settingsShowScore, hint = L.settingsShowScoreHint },
-	{ key = "broadcast", label = L.settingsBroadcast, hint = L.settingsBroadcastHint },
-	{ key = "autoSave", label = L.settingsAutoSave, hint = L.settingsAutoSaveHint },
-	{ key = "lootRares", label = L.settingsLootRares, hint = L.settingsLootRaresHint },
+	{ key = "tooltipsOnly", section = "world", label = L.settingsTooltipsOnly, hint = L.settingsTooltipsOnlyHint },
+	{ key = "tooltip", section = "world", label = L.settingsTooltip, hint = L.settingsTooltipHint },
+	{ key = "slotMarks", section = "world", label = L.settingsSlotMarks, hint = L.settingsSlotMarksHint },
+	{ key = "talentMarks", section = "world", label = L.settingsTalentMarks, hint = L.settingsTalentMarksHint },
+	{ key = "badges", section = "world", label = L.settingsBadges, hint = L.settingsBadgesHint },
+	{ key = "chip.shown", section = "line", label = L.settingsChipShown, hint = L.settingsChipShownHint },
+	{ key = "chip.combatHide", section = "line", label = L.settingsCombatHide, hint = L.settingsCombatHideHint },
+	{ key = "minimap.shown", section = "line", label = L.settingsMinimap, hint = L.settingsMinimapHint },
+	{ key = "broadcast", section = "shared", label = L.settingsBroadcast, hint = L.settingsBroadcastHint },
+	{ key = "showScore", section = "shared", label = L.settingsShowScore, hint = L.settingsShowScoreHint },
+	{ key = "autoSave", section = "shared", label = L.settingsAutoSave, hint = L.settingsAutoSaveHint },
+	{ key = "lootRares", section = "shared", label = L.settingsLootRares, hint = L.settingsLootRaresHint },
 }
 
 --- Injection points Options fills: the data the foot line reads (its `build`), and what runs after a
@@ -70,12 +80,30 @@ function SettingsPage.defaultOf(key)
 	return Prefs.DEFAULTS[key]
 end
 
---- The switch table with each default filled in: { key, label, hint, default }.
+--- The switch table with each default filled in: { key, section, label, hint, default }.
 function SettingsPage.switches()
 	local out = {}
 	for index, switch in ipairs(SettingsPage.SWITCHES) do
-		out[index] = { key = switch.key, label = switch.label, hint = switch.hint,
+		out[index] = { key = switch.key, section = switch.section, label = switch.label, hint = switch.hint,
 			default = SettingsPage.defaultOf(switch.key) }
+	end
+	return out
+end
+
+--- The sections as drawn: { heading, first, last } with the switch indexes each holds, in page order;
+--- a section with no switch is left out. Pure.
+function SettingsPage.sections()
+	local out = {}
+	for _, section in ipairs(SettingsPage.SECTIONS) do
+		local first, last
+		for index, switch in ipairs(SettingsPage.SWITCHES) do
+			if switch.section == section.id then
+				first, last = first or index, index
+			end
+		end
+		if first ~= nil then
+			out[#out + 1] = { id = section.id, heading = section.heading, first = first, last = last }
+		end
 	end
 	return out
 end
@@ -210,8 +238,14 @@ function SettingsPage.warningLine(addon, ratings)
 end
 
 --- A foot line as drawn on a muted font string: the subject, then the state in its tone.
-function SettingsPage.lineText(entry)
-	return entry.label .. " " .. Theme.inlineColor(entry.tone, entry.value)
+--- With `short` (the title already carries the whole sentence) a warning state keeps only its first sentence,
+--- the state without the action: "too old (made 5 Dec)".
+function SettingsPage.lineText(entry, short)
+	local value = entry.value
+	if short and entry.tone == "warning" then
+		value = value:match("^(.-)%.%s") or value
+	end
+	return entry.label .. " " .. Theme.inlineColor(entry.tone, value)
 end
 
 --- How many commands the page lists before "/fs help: all the commands": the first five, so the
@@ -247,14 +281,15 @@ SettingsPage.rowHeight = Widgets.toggleRowHeight
 --- Every number on the page, from the width of its backdrop, each row's measured height
 --- (`rowHeights`, in switch order; Theme.SIZES.settingsRow where one is missing) and whether
 --- the title carries the warning line (`warned`: true for one line, or the line's measured
---- height, never less than one line; L3.7 item 39): the left edge, the hint's indent and width
+--- height, never less than one line; L3.7 item 39), and the foot lines' measured heights
+--- (`dataHeights`, never less than one line each): the left edge, the hint's indent and width
 --- (the width minus the 40 px indent and the right padding), the width of Reset's sentence
---- and of the divider, and the y of the title, the warning line (nil without one), each
---- command heading, its divider and lines (first, under the title), each switch row, Reset, and the two foot lines,
---- and the height it all needs with the foot's pad (the page scrolls when the canvas is
---- shorter). A backdrop the client has not sized yet is laid out at
+--- and of a full line, and the y of the title, the warning line (nil without one), the Commands
+--- heading and its lines (first, under the title), each switch section's heading and each switch
+--- row, Reset, and the two foot lines, and the height it all needs with the foot's pad (the page
+--- scrolls when the canvas is shorter). A backdrop the client has not sized yet is laid out at
 --- Theme.SIZES.settingsWidth. Pure.
-function SettingsPage.layout(width, rowHeights, warned)
+function SettingsPage.layout(width, rowHeights, warned, dataHeights)
 	local S = Theme.SIZES
 	if type(width) ~= "number" or width <= 0 then
 		width = S.settingsWidth
@@ -265,9 +300,10 @@ function SettingsPage.layout(width, rowHeights, warned)
 		hintWidth = width - S.settingsHintInset - S.padding,
 		-- Reset's sentence sits right of the button and wraps before the right padding.
 		resetHintWidth = width - S.padding * 2 - S.buttonWidth - S.gap * 2,
-		dividerWidth = width - S.padding * 2,
+		lineWidth = width - S.padding * 2,
 		rows = {},
 		commands = {},
+		sections = {},
 		data = {},
 	}
 	local y = S.padding
@@ -281,32 +317,37 @@ function SettingsPage.layout(width, rowHeights, warned)
 	-- A.2: the commands lead, right under the title, where the list is short and always on the first
 	-- screen; the switches (the long part) follow and the page scrolls through them.
 	layout.commandsHeading = -y
-	y = y + S.settingsLine
-	layout.divider = -y
-	y = y + S.border + S.gap * 2
+	y = y + S.settingsLine + S.gap
 	for index = 1, #SettingsPage.commandLines() do
 		layout.commands[index] = -y
 		y = y + S.settingsLine
 	end
-	y = y + S.padding
-	for index = 1, #SettingsPage.SWITCHES do
-		layout.rows[index] = -y
-		local height = type(rowHeights) == "table" and rowHeights[index] or nil
-		y = y + ((type(height) == "number" and height > 0) and height or S.settingsRow)
+	for index, section in ipairs(SettingsPage.sections()) do
+		y = y + S.padding
+		layout.sections[index] = -y
+		y = y + S.settingsLine
+		for row = section.first, section.last do
+			layout.rows[row] = -y
+			local height = type(rowHeights) == "table" and rowHeights[row] or nil
+			y = y + ((type(height) == "number" and height > 0) and height or S.settingsRow)
+		end
 	end
 	y = y + S.padding
 	layout.reset = -y
-	y = y + S.buttonHeight + S.padding
+	y = y + S.clientButtonHeight + S.padding
 	for index = 1, 2 do
 		layout.data[index] = -y
-		y = y + S.settingsLine
+		-- A foot line wraps at the page's width (a too-old sentence at 12 px): its measured height, never
+		-- under one line.
+		local height = type(dataHeights) == "table" and dataHeights[index] or nil
+		y = y + ((type(height) == "number" and height > S.settingsLine) and height or S.settingsLine)
 	end
 	layout.height = y + S.settingsFootPad
 	return layout
 end
 
---- The page's own controls: one toggle per switch and the Reset button (labels and the divider are
---- regions, not children). The gear sources are the Gear tab's.
+--- The page's own controls: one toggle per switch and the Reset button (labels are regions, not
+--- children). The gear sources are the Gear tab's.
 function SettingsPage.expectedChildren()
 	return #SettingsPage.SWITCHES + 1
 end
@@ -314,17 +355,14 @@ end
 --- How long Reset reads "Positions reset", disabled, after a click.
 SettingsPage.RESET_SECONDS = 2
 
---- Reset's look: "Reset positions" (gold, in the border colour), or "Positions reset" and
---- disabled for SettingsPage.RESET_SECONDS after a click, its label and its 1 px border in
---- the muted-text grey at full alpha (fix round 2, item 4: the faded disabled look did not
---- read). { label, enabled, text, edge }, the colours Theme.HEX keys. Pure: reads
---- SettingsPage.resetting.
+--- Reset's look: "Reset positions", or "Positions reset" and disabled (the window's muted disabled
+--- button, as Sim again's Queued) for SettingsPage.RESET_SECONDS after a click. { label, enabled }.
+--- Pure: reads SettingsPage.resetting.
 function SettingsPage.resetLook()
-	local states = Theme.CONTROL_STATES.face
 	if SettingsPage.resetting then
-		return { label = L.settingsResetDone, enabled = false, text = states.waitingLabel, edge = states.waitingEdge }
+		return { label = L.settingsResetDone, enabled = false }
 	end
-	return { label = L.settingsReset, enabled = true, text = states.label, edge = states.edge }
+	return { label = L.settingsReset, enabled = true }
 end
 
 local function drawReset()
@@ -333,8 +371,8 @@ local function drawReset()
 		return
 	end
 	local look = SettingsPage.resetLook()
-	button:SetText(look.label)
-	Widgets.setButtonLook(button, look.enabled, look.text, look.edge)
+	Widgets.resetButtonLabel(button, look.label)
+	Widgets.setEnabled(button, look.enabled)
 end
 
 --- Reset positions: Prefs puts the placements back, and its onReset listeners move the
@@ -357,6 +395,11 @@ end
 
 -- The frame -------------------------------------------------------------------
 
+--- A section heading in the window's own recipe (BuildsWindow.buildSection's: the title face, cream, 14 px).
+function SettingsPage.heading(parent, text)
+	return Theme.titleFont(Widgets.label(parent, text, "bone"), Theme.SIZES.windowSection)
+end
+
 local function place(region, parent, x, y)
 	region:ClearAllPoints()
 	region:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
@@ -376,7 +419,12 @@ local function arrange(warned)
 		local measured = SettingsPage.warningLabel:GetStringHeight()
 		warned = type(measured) == "number" and measured > 0 and measured or true
 	end
-	local layout = SettingsPage.layout(SettingsPage.backdrop:GetWidth(), heights, warned)
+	local dataHeights = {}
+	for index, label in ipairs(SettingsPage.dataLabels) do
+		local measured = type(label.GetStringHeight) == "function" and label:GetStringHeight() or nil
+		dataHeights[index] = type(measured) == "number" and measured or nil
+	end
+	local layout = SettingsPage.layout(SettingsPage.backdrop:GetWidth(), heights, warned, dataHeights)
 	place(SettingsPage.title, content, layout.x, layout.title)
 	place(SettingsPage.warningLabel, content, layout.x, layout.warning or layout.title)
 	for index, toggle in ipairs(SettingsPage.toggles) do
@@ -384,7 +432,9 @@ local function arrange(warned)
 	end
 	place(SettingsPage.resetButton, content, layout.x, layout.reset)
 	place(SettingsPage.commandsHeading, content, layout.x, layout.commandsHeading)
-	place(SettingsPage.divider, content, layout.x, layout.divider)
+	for index, heading in ipairs(SettingsPage.sectionHeadings) do
+		place(heading, content, layout.x, layout.sections[index])
+	end
 	for index, label in ipairs(SettingsPage.commandLabels) do
 		place(label, content, layout.x, layout.commands[index])
 	end
@@ -417,10 +467,10 @@ function SettingsPage.build(panel)
 	SettingsPage.scroll = scroll
 	local content = scroll.content
 	SettingsPage.content = content
-	SettingsPage.title = Widgets.label(content, L.addonName, "gold", "large")
+	SettingsPage.title = Theme.titleFont(Widgets.label(content, L.addonName, "bone"), S.windowTitle)
 	-- The first data state that is not current, repeated where the page opens (item 5).
-	local warning = Widgets.label(content, "", "warning", "small")
-	warning:SetWidth(layout.dividerWidth)
+	local warning = Widgets.label(content, "", "warning")
+	warning:SetWidth(layout.lineWidth)
 	warning:Hide()
 	SettingsPage.warningLabel = warning
 	SettingsPage.toggles = {}
@@ -432,23 +482,25 @@ function SettingsPage.build(panel)
 		toggle.key = key
 		SettingsPage.toggles[index] = toggle
 	end
-	local reset = Widgets.button(content, L.settingsReset, SettingsPage.reset)
+	local reset = Widgets.fitButton(Widgets.clientButton(content, L.settingsReset, SettingsPage.reset),
+		S.buttonWidth)
 	SettingsPage.resetButton = reset
-	local resetHint = Widgets.label(content, L.settingsResetHint, "muted", "small")
+	local resetHint = Widgets.label(content, L.settingsResetHint, "muted")
 	resetHint:SetPoint("LEFT", reset, "RIGHT", S.gap * 2, 0)
 	resetHint:SetWidth(layout.resetHintWidth)
-	SettingsPage.commandsHeading = Widgets.label(content, L.settingsCommandsHeading, "gold", "normal")
-	local divider = Theme.texture(content, "ARTWORK", "border")
-	divider:SetWidth(layout.dividerWidth)
-	divider:SetHeight(S.border)
-	SettingsPage.divider = divider
+	SettingsPage.commandsHeading = SettingsPage.heading(content, L.settingsCommandsHeading)
+	SettingsPage.sectionHeadings = {}
+	for index, section in ipairs(SettingsPage.sections()) do
+		SettingsPage.sectionHeadings[index] = SettingsPage.heading(content, section.heading)
+	end
 	SettingsPage.commandLabels = {}
 	for index, line in ipairs(SettingsPage.commandLines()) do
-		SettingsPage.commandLabels[index] = Widgets.label(content, SettingsPage.commandText(line), "muted", "small")
+		SettingsPage.commandLabels[index] = Widgets.label(content, SettingsPage.commandText(line), "muted")
 	end
 	SettingsPage.dataLabels = {}
 	for index = 1, #layout.data do
-		SettingsPage.dataLabels[index] = Widgets.label(content, "", "muted", "small")
+		SettingsPage.dataLabels[index] = Widgets.label(content, "", "muted")
+		SettingsPage.dataLabels[index]:SetWidth(layout.lineWidth)
 	end
 	arrange(false)
 	return panel
@@ -466,9 +518,10 @@ function SettingsPage.refresh()
 		local data = SettingsPage.data or ns.Data
 		local addon = SettingsPage.addonDataLine(type(data) == "table" and data.build or nil, Compat.clientVersion())
 		local ratings = SettingsPage.ratingsLine(Score.status())
-		SettingsPage.dataLabels[1]:SetText(addon ~= nil and SettingsPage.lineText(addon) or "")
-		SettingsPage.dataLabels[2]:SetText(SettingsPage.lineText(ratings))
 		local warning = SettingsPage.warningLine(addon, ratings)
+		local short = warning ~= nil
+		SettingsPage.dataLabels[1]:SetText(addon ~= nil and SettingsPage.lineText(addon, short) or "")
+		SettingsPage.dataLabels[2]:SetText(SettingsPage.lineText(ratings, short))
 		SettingsPage.warningLabel:SetText(warning or "")
 		if warning ~= nil then
 			SettingsPage.warningLabel:Show()
