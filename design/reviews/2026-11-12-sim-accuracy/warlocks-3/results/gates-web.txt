@@ -1,0 +1,183 @@
+remote-test: c04975ead17fd79af1d26a722282d3ac01b9ed75 -> forever-ci on 192.168.1.182 (run 20261113003157-c04975ead-86661, in web): npm test -- src/lib/sim/version.test.ts src/lib/sim/api.test.ts src/lib/sim/details.test.ts src/lib/sim/rotation-apl.test.ts src/lib/sim/rotations.test.ts src/lib/guides src/pages/guides
+
+> web@0.0.1 pretest
+> FOREVER_DATA=fixture npm run sync
+
+
+> web@0.0.1 sync
+> npm run sync:app-links && npm run sync:data && npm run sync:sim-ids && npm run sync:rotations && npm run sync:raid-preset && npm run sync:report-fixture && npm run sync:duckdb && npm run sync:rankings
+
+
+> web@0.0.1 sync:app-links
+> node scripts/app-links.mjs
+
+
+> web@0.0.1 sync:data
+> node scripts/sync-data.mjs
+
+sync-data: active build 1.60.1.70790 -> public/data/1.60.1.70790 (talents, items, icons, trees, sets.json, loot.json, enchants.json, suffixes.json, simitems.json, classes.json, races.json, combos.json, simbuffs.json, stat-weights.json, bis/hunter-marksmanship.json, bis/priest-holy.json, bis/warrior-protection.json, icons (624 from data/builds), spellicons-by-name.json, spellicons.json, spell icons (170)) [fixture]
+sync-data: published /data/active-build.json, /data/dates.json
+sync-data: published 1 build(s) from fixture data: 1.60.1.70790
+
+> web@0.0.1 sync:sim-ids
+> node scripts/sync-sim-ids.mjs
+
+sync-sim-ids: 91 buffs, 206 consumables, 9 professions, 41 stats -> src/data/generated/sim-ids.json
+
+> web@0.0.1 sync:rotations
+> node scripts/sync-rotations.mjs
+
+sync-rotations: 28 curated specs, 28 with rotation prose -> src/data/generated/rotations.json
+
+> web@0.0.1 sync:raid-preset
+> node scripts/sync-raid-preset.mjs
+
+sync-raid-preset: 14 buffs, 8 debuffs, 28 specs' consumables -> src/data/generated/raid-preset.json
+
+> web@0.0.1 sync:report-fixture
+> node scripts/sync-report-fixture.mjs
+
+report fixture published to public/logs-data/reports/fixture2abcd
+
+> web@0.0.1 sync:duckdb
+> node scripts/sync-duckdb.mjs
+
+duckdb published to public/duckdb/1.32.0 (2 workers, 2 v1.4.3 extensions, 6 copied, 0 stale entries removed)
+duckdb engine modules staged in build/duckdb-runtime/1.32.0, too large to be static assets. Upload them once per version with `npm run upload:duckdb`, or:
+  npx wrangler r2 object put foreversixty-logs/runtime/duckdb/1.32.0/duckdb-eh.wasm --file build/duckdb-runtime/1.32.0/duckdb-eh.wasm --content-type application/wasm --remote
+  npx wrangler r2 object put foreversixty-logs/runtime/duckdb/1.32.0/duckdb-mvp.wasm --file build/duckdb-runtime/1.32.0/duckdb-mvp.wasm --content-type application/wasm --remote
+
+> web@0.0.1 sync:rankings
+> node scripts/sync-rankings.mjs
+
+sync-rankings: the fixture snapshot
+
+> web@0.0.1 test
+> vitest run src/lib/sim/version.test.ts src/lib/sim/api.test.ts src/lib/sim/details.test.ts src/lib/sim/rotation-apl.test.ts src/lib/sim/rotations.test.ts src/lib/guides src/pages/guides
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90m/home/ci/forever-ci/runs/20261113003157-c04975ead-86661/web[39m
+
+ [32m✓[39m src/lib/sim/rotation-apl.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m src/lib/guides/glance.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/lib/guides/hit-cap-line.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/lib/guides/race-table.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 119[2mms[22m[39m
+ [32m✓[39m src/lib/guides/key-talents.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/lib/guides/guide-answer.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/lib/guides/class-landing.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/lib/guides/rotation-lists.test.ts [2m([22m[2m95 tests[22m[2m)[22m[32m 175[2mms[22m[39m
+ [32m✓[39m src/lib/guides/prose-tips.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/lib/guides/build-diff.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/lib/guides/guide-bis-doll.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/lib/sim/rotations.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m src/lib/sim/version.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/lib/guides/rail-stats.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/lib/guides/bis-lane.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m src/lib/guides/stat-lane.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m src/lib/guides/talent-hit.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/lib/guides/copy.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/lib/sim/details.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m src/lib/guides/build-tree.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/lib/guides/class-dps.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/lib/guides/guide-character.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/lib/guides/overview.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/lib/guides/guide-builds.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/lib/guides/sections.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/lib/guides/talent-cells.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/lib/guides/build-links.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/lib/guides/first-paragraph.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/lib/guides/guide-header.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/lib/guides/page-script.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/lib/guides/role-metric.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/lib/guides/guide-answer-mount.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 102[2mms[22m[39m
+ [32m✓[39m src/lib/guides/markdown.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 37[2mms[22m[39m
+ [32m✓[39m src/lib/sim/api.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+ [32m✓[39m src/lib/guides/guide-bis.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/lib/guides/leveling-builds.test.ts [2m([22m[2m94 tests[22m[2m)[22m[33m 1500[2mms[22m[39m
+12:33:53 AM [vite-plugin-svelte] src/components/nav/SelectorPanel.svelte:301:0 Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus
+12:33:53 AM [vite-plugin-svelte] src/components/nav/SelectorPanel.svelte:504:2 Unused CSS selector ":global(.csel-arow:hover) > .csel-arow-chev.is-gold"
+https://svelte.dev/e/css_unused_selector
+12:33:53 AM [vite-plugin-svelte] src/components/ui/CharacterAnswer.svelte:80:6 Buttons and links should either contain text or have an `aria-label`, `aria-labelledby` or `title` attribute
+https://svelte.dev/e/a11y_consider_explicit_label
+12:33:53 AM [vite-plugin-svelte] src/components/ui/CharacterAnswer.svelte:94:2 Unused CSS selector ".ui-cans[data-state='hidden']"
+https://svelte.dev/e/css_unused_selector
+12:33:53 AM [vite-plugin-svelte] src/components/ui/ItemRow.svelte:79:2 `<svelte:element>` with a click handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+12:33:53 AM [vite-plugin-svelte] src/components/ui/ItemRow.svelte:103:8 noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex
+ [32m✓[39m src/lib/guides/guide-rotation.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 3015[2mms[22m[39m
+   [32m✓[39m every guide card [2m(4)[22m
+     [33m[2m✓[22m[39m lists no cast whose talent gate rules out the build it describes[33m 1651[2mms[22m[39m
+     [33m[2m✓[22m[39m words no talent gate the build it describes settles[33m 1262[2mms[22m[39m
+ [32m✓[39m src/pages/guides/_spec.test.ts [2m([22m[2m22 tests[22m[2m)[22m[33m 4175[2mms[22m[39m
+   [32m✓[39m /guides/warrior/fury (the page structure) [2m(7)[22m
+     [33m[2m✓[22m[39m runs the nine sections of SPEC_SECTIONS as ReadingSections, in order, each with its anchor and region[33m 1018[2mms[22m[39m
+   [32m✓[39m /guides/rogue/assassination (a spec with a raid build) [2m(1)[22m
+     [33m[2m✓[22m[39m lists the leveling build and the raid build as two labelled rows with their own links[33m 781[2mms[22m[39m
+   [32m✓[39m /guides/mage/frost (the class-guide blocks) [2m(11)[22m
+     [33m[2m✓[22m[39m names the raid build’s difference in one line and lists the key talents with icons[33m 763[2mms[22m[39m
+   [32m✓[39m /guides/warrior/arms rotation rows for the raid build [2m(1)[22m
+     [33m[2m✓[22m[39m tags the raid build’s own talent rows and no other[33m 789[2mms[22m[39m
+ [32m✓[39m src/lib/guides/gear-extras.test.ts [2m([22m[2m110 tests[22m[2m)[22m[33m 16426[2mms[22m[39m
+   [32m✓[39m every guide’s enchant table, from the real data [2m(29)[22m
+     [33m[2m✓[22m[39m druid-balance: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 965[2mms[22m[39m
+     [33m[2m✓[22m[39m druid-feral: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 690[2mms[22m[39m
+     [33m[2m✓[22m[39m druid-feral-bear: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 694[2mms[22m[39m
+     [33m[2m✓[22m[39m druid-restoration: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 628[2mms[22m[39m
+     [33m[2m✓[22m[39m hunter-beast-mastery: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 671[2mms[22m[39m
+     [33m[2m✓[22m[39m hunter-marksmanship: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 626[2mms[22m[39m
+     [33m[2m✓[22m[39m hunter-survival: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 653[2mms[22m[39m
+     [33m[2m✓[22m[39m mage-arcane: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 653[2mms[22m[39m
+     [33m[2m✓[22m[39m mage-fire: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 655[2mms[22m[39m
+     [33m[2m✓[22m[39m mage-frost: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 664[2mms[22m[39m
+     [33m[2m✓[22m[39m paladin-holy: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 646[2mms[22m[39m
+     [33m[2m✓[22m[39m paladin-protection: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 638[2mms[22m[39m
+     [33m[2m✓[22m[39m paladin-retribution: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 578[2mms[22m[39m
+     [33m[2m✓[22m[39m priest-discipline: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 646[2mms[22m[39m
+     [33m[2m✓[22m[39m priest-holy: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 610[2mms[22m[39m
+     [33m[2m✓[22m[39m priest-shadow: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 609[2mms[22m[39m
+     [33m[2m✓[22m[39m rogue-assassination: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 632[2mms[22m[39m
+     [33m[2m✓[22m[39m rogue-combat: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 629[2mms[22m[39m
+     [33m[2m✓[22m[39m rogue-subtlety: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 642[2mms[22m[39m
+     [33m[2m✓[22m[39m warlock-affliction: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 601[2mms[22m[39m
+     [33m[2m✓[22m[39m warlock-demonology: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 622[2mms[22m[39m
+     [33m[2m✓[22m[39m warlock-destruction: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 635[2mms[22m[39m
+     [33m[2m✓[22m[39m warrior-arms: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 633[2mms[22m[39m
+     [33m[2m✓[22m[39m warrior-fury: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 623[2mms[22m[39m
+     [33m[2m✓[22m[39m warrior-protection: each enchant fits the level 60 pick in its slot, by the client’s rule[33m 677[2mms[22m[39m
+ [32m✓[39m src/lib/guides/guide-tips.test.ts [2m([22m[2m59 tests[22m[2m)[22m[33m 17230[2mms[22m[39m
+   [32m✓[39m the guide tooltip bundle, on the active build [2m(59)[22m
+     [33m[2m✓[22m[39m druid-balance: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 1029[2mms[22m[39m
+     [33m[2m✓[22m[39m druid-feral-bear: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 767[2mms[22m[39m
+     [33m[2m✓[22m[39m druid-feral: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 654[2mms[22m[39m
+     [33m[2m✓[22m[39m druid-restoration: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 640[2mms[22m[39m
+     [33m[2m✓[22m[39m hunter-beast-mastery: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 666[2mms[22m[39m
+     [33m[2m✓[22m[39m hunter-marksmanship: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 632[2mms[22m[39m
+     [33m[2m✓[22m[39m hunter-survival: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 668[2mms[22m[39m
+     [33m[2m✓[22m[39m mage-arcane: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 658[2mms[22m[39m
+     [33m[2m✓[22m[39m mage-fire: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 659[2mms[22m[39m
+     [33m[2m✓[22m[39m mage-frost: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 662[2mms[22m[39m
+     [33m[2m✓[22m[39m paladin-holy: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 643[2mms[22m[39m
+     [33m[2m✓[22m[39m paladin-protection: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 647[2mms[22m[39m
+     [33m[2m✓[22m[39m paladin-retribution: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 567[2mms[22m[39m
+     [33m[2m✓[22m[39m priest-discipline: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 634[2mms[22m[39m
+     [33m[2m✓[22m[39m priest-holy: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 612[2mms[22m[39m
+     [33m[2m✓[22m[39m priest-shadow: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 617[2mms[22m[39m
+     [33m[2m✓[22m[39m rogue-assassination: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 641[2mms[22m[39m
+     [33m[2m✓[22m[39m rogue-combat: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 623[2mms[22m[39m
+     [33m[2m✓[22m[39m rogue-subtlety: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 604[2mms[22m[39m
+     [33m[2m✓[22m[39m warlock-affliction: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 628[2mms[22m[39m
+     [33m[2m✓[22m[39m warlock-demonology: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 622[2mms[22m[39m
+     [33m[2m✓[22m[39m warlock-destruction: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 639[2mms[22m[39m
+     [33m[2m✓[22m[39m warrior-arms: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 635[2mms[22m[39m
+     [33m[2m✓[22m[39m warrior-fury: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 641[2mms[22m[39m
+     [33m[2m✓[22m[39m warrior-protection: every talent, gear piece, enchant and consumable it shows opens a tooltip[33m 701[2mms[22m[39m
+     [33m[2m✓[22m[39m marks the abilities a Fury warrior guide names, at their top rank[33m 594[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m40 passed[39m[22m[90m (40)[39m
+[2m      Tests [22m [1m[32m700 passed[39m[22m[90m (700)[39m
+[2m   Start at [22m 00:33:49
+[2m   Duration [22m 18.49s[2m (tests 67%, transform 25%, import 4%, environment 3%, setup 1%)[22m
+
+remote-test: exit 0 in 20s (c04975ead17fd79af1d26a722282d3ac01b9ed75)

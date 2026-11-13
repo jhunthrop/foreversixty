@@ -1,0 +1,5 @@
+remote-test: c04975ead17fd79af1d26a722282d3ac01b9ed75 -> forever-ci on 192.168.1.182 (run 20261113002809-c04975ead-39079, in api): go test ./internal/coach/ ./cmd/api/ -run Coach|coach -count=1
+remote-test: engine pinned to 5515ae0ef
+ok  	github.com/jhunthrop/foreversixty/api/internal/coach	4.036s
+ok  	github.com/jhunthrop/foreversixty/api/cmd/api	0.318s
+remote-test: exit 0 in 10s (c04975ead17fd79af1d26a722282d3ac01b9ed75)

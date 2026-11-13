@@ -1,0 +1,160 @@
+remote-test: c04975ead17fd79af1d26a722282d3ac01b9ed75 -> forever-ci on 192.168.1.182 (run 20261113003408-c04975ead-69784, in web): npm run check
+
+> web@0.0.1 precheck
+> npm run sync
+
+
+> web@0.0.1 sync
+> npm run sync:app-links && npm run sync:data && npm run sync:sim-ids && npm run sync:rotations && npm run sync:raid-preset && npm run sync:report-fixture && npm run sync:duckdb && npm run sync:rankings
+
+
+> web@0.0.1 sync:app-links
+> node scripts/app-links.mjs
+
+
+> web@0.0.1 sync:data
+> node scripts/sync-data.mjs
+
+sync-data: active build 1.60.1.70790 -> public/data/1.60.1.70790 (talents, items, icons, trees, sets.json, loot.json, bis, enchants.json, suffixes.json, simitems.json, itemnames.json, classes.json, races.json, combos.json, spellconst, spells.json, spellicons.json, simconsumes.json, simbuffs.json, stat-weights.json, simnames/druid.json, simnames/hunter.json, simnames/mage.json, simnames/paladin.json, simnames/priest.json, simnames/rogue.json, simnames/shaman.json, simnames/warlock.json, simnames/warrior.json, simnames/_shared.json, simnames/spell/, simnames/item/, spellicons-by-name.json)
+sync-data: published /data/active-build.json, /data/dates.json
+sync-data: published 17 build(s) from real data: 1.60.1.70790, 1.15.9.69722, 1.60.1.69893, 1.60.1.70009, 1.60.1.70291, 1.60.1.70338, 1.60.1.70374, 1.60.1.70425, 1.60.1.70450, 1.60.1.70532, 1.60.1.70630, 1.60.1.70658, 1.60.1.70685, 1.60.1.70707, 1.60.1.70753, 1.60.1.70755, forever-prebeta
+
+> web@0.0.1 sync:sim-ids
+> node scripts/sync-sim-ids.mjs
+
+sync-sim-ids: 91 buffs, 206 consumables, 9 professions, 41 stats -> src/data/generated/sim-ids.json
+
+> web@0.0.1 sync:rotations
+> node scripts/sync-rotations.mjs
+
+sync-rotations: 28 curated specs, 28 with rotation prose -> src/data/generated/rotations.json
+
+> web@0.0.1 sync:raid-preset
+> node scripts/sync-raid-preset.mjs
+
+sync-raid-preset: 14 buffs, 8 debuffs, 28 specs' consumables -> src/data/generated/raid-preset.json
+
+> web@0.0.1 sync:report-fixture
+> node scripts/sync-report-fixture.mjs
+
+report fixture: FOREVER_DATA is not fixture, nothing published
+
+> web@0.0.1 sync:duckdb
+> node scripts/sync-duckdb.mjs
+
+duckdb published to public/duckdb/1.32.0 (2 workers, 2 v1.4.3 extensions, 6 copied, 0 stale entries removed)
+duckdb engine modules staged in build/duckdb-runtime/1.32.0, too large to be static assets. Upload them once per version with `npm run upload:duckdb`, or:
+  npx wrangler r2 object put foreversixty-logs/runtime/duckdb/1.32.0/duckdb-eh.wasm --file build/duckdb-runtime/1.32.0/duckdb-eh.wasm --content-type application/wasm --remote
+  npx wrangler r2 object put foreversixty-logs/runtime/duckdb/1.32.0/duckdb-mvp.wasm --file build/duckdb-runtime/1.32.0/duckdb-mvp.wasm --content-type application/wasm --remote
+
+> web@0.0.1 sync:rankings
+> node scripts/sync-rankings.mjs
+
+sync-rankings: 3 encounters, 3 boards from https://api.foreversixty.gg
+
+> web@0.0.1 check
+> astro check
+
+[2m00:36:24[22m [34m[content][39m Syncing content
+[2m00:36:24[22m [34m[content][39m Synced content
+[2m00:36:24[22m [34m[types][39m Generated [2m818ms[22m
+[2m00:36:24[22m [34m[check][39m Getting diagnostics for Astro files in /home/ci/forever-ci/runs/20261113003408-c04975ead-69784/web...
+[96mscripts/inline-code.mjs[0m:[93m70[0m:[93m63[0m - [93mwarning[0m[90m ts(6133): [0m'styleAttrs' is declared but its value is never read.
+
+[7m70[0m   return html.replace(BLOCK, (whole, scriptAttrs, scriptBody, styleAttrs, _styleBody, comment) => {
+[7m  [0m [93m                                                              ~~~~~~~~~~[0m
+
+[96msrc/components/Header.astro[0m:[93m65[0m:[93m11[0m - [93mwarning[0m[90m ts(2570): [0mCould not find name 'sources'. Did you mean 'source'?
+
+[7m65[0m       if (sources.includes(source)) root.dataset.premium = source;
+[7m  [0m [93m          ~~~~~~~[0m
+
+[96msrc/layouts/Base.astro[0m:[93m118[0m:[93m36[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m118[0m     {ldNodes.length > 0 && <script type="application/ld+json" set:html={toJsonLd(ldNodes)}></script>}
+[7m   [0m [93m                                   ~~~~[0m
+
+[96msrc/lib/app-data/tiers-file.ts[0m:[93m87[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'build' is declared but its value is never read.
+
+[7m87[0m   build: string,
+[7m  [0m [93m  ~~~~~[0m
+
+[96msrc/lib/bis/character-card-state.svelte.test.ts[0m:[93m9[0m:[93m10[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m9[0m function flush(): Promise<void> {
+[7m [0m [93m         ~~~~~[0m
+
+[96msrc/lib/character-selector/follow-page-run.ts[0m:[93m12[0m:[93m10[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m12[0m function sessionOrNull(): Promise<Me | null> {
+[7m  [0m [93m         ~~~~~~~~~~~~~[0m
+
+[96msrc/lib/data/query.svelte.test.ts[0m:[93m15[0m:[93m10[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m15[0m function flush(): Promise<void> {
+[7m  [0m [93m         ~~~~~[0m
+
+[96msrc/lib/golinks/redirect.ts[0m:[93m69[0m:[93m10[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m69[0m function countClick(slug: string, bot: boolean, env: GoLinkEnv): Promise<unknown> {
+[7m  [0m [93m         ~~~~~~~~~~[0m
+
+[96msrc/lib/guild/setup-copy.ts[0m:[93m13[0m:[93m16[0m - [93mwarning[0m[90m ts(6133): [0m'done' is declared but its value is never read.
+
+[7m13[0m   doneFigure: (done: number, total: number): string => `of ${total} done`,
+[7m  [0m [93m               ~~~~[0m
+
+[96msrc/lib/rating/copy.ts[0m:[93m72[0m:[93m64[0m - [93mwarning[0m[90m ts(6133): [0m'pct' is declared but its value is never read.
+
+[7m72[0m   percentileBasis: (spec: string, klass: string, role: string, pct: number, n: number): string =>
+[7m  [0m [93m                                                               ~~~[0m
+
+[96msrc/lib/report/lazy-component.test.ts[0m:[93m9[0m:[93m10[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m9[0m function flush(): Promise<void> {
+[7m [0m [93m         ~~~~~[0m
+
+[96msrc/lib/report/query.ts[0m:[93m503[0m:[93m12[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m503[0m   function withTimeout(work: Promise<QueryResult>): Promise<QueryResult> {
+[7m   [0m [93m           ~~~~~~~~~~~[0m
+[96msrc/lib/report/query.ts[0m:[93m294[0m:[93m10[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m294[0m function withDeadline(work: Promise<unknown>, ms: number): Promise<void> {
+[7m   [0m [93m         ~~~~~~~~~~~~[0m
+
+[96msrc/lib/sim/rotation-apl.test.ts[0m:[93m134[0m:[93m53[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m134[0m     expect(() => rotationNotesOf(apl, 'mage-fire')).toThrowError(/mage-fire step 0/);
+[7m   [0m [93m                                                    ~~~~~~~~~~~~[0m
+
+[96msrc/lib/sim/worker.ts[0m:[93m178[0m:[93m5[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m178[0m     run(shards, callbackId, onProgress) {
+[7m   [0m [93m    ~~~[0m
+
+[96msrc/lib/ui/control-bar.ts[0m:[93m105[0m:[93m21[0m - [93mwarning[0m[90m ts(6133): [0m'bar' is declared but its value is never read.
+
+[7m105[0m function onRadioKey(bar: HTMLElement, event: KeyboardEvent): void {
+[7m   [0m [93m                    ~~~[0m
+
+[96mtests/e2e/header-account.spec.ts[0m:[93m161[0m:[93m29[0m - [93mwarning[0m[90m ts(6387): [0mThe signature '(options?: { signal?: AbortSignal | undefined; timeout?: number | undefined; url?: string | RegExp | URLPattern | ((url: URL) => boolean) | undefined; waitUntil?: "load" | ... 3 more ... | undefined; } | undefined): Promise<...>' of 'page.waitForNavigation' is deprecated.
+
+[7m161[0m     await Promise.all([page.waitForNavigation(), rows(page).getByTestId('selector-row-sign-out').click()]);
+[7m   [0m [93m                            ~~~~~~~~~~~~~~~~~[0m
+
+[96mtests/e2e/select.spec.ts[0m:[93m42[0m:[93m30[0m - [93mwarning[0m[90m ts(6133): [0m'page' is declared but its value is never read.
+
+[7m42[0m async function topmostInside(page: Page, targets: Locator, owner: string): Promise<boolean[]> {
+[7m  [0m [93m                             ~~~~[0m
+
+Result (2310 files): 
+- 0 errors
+- 0 warnings
+- 18 hints
+
+remote-test: exit 0 in 68s (c04975ead17fd79af1d26a722282d3ac01b9ed75)

@@ -1,0 +1,12 @@
+remote-test: c04975ead17fd79af1d26a722282d3ac01b9ed75 -> forever-ci on 192.168.1.182 (run 20261113001646-c04975ead-98509, in sim): bash -c make -C .. simdb >/dev/null && go test ./request/ ./cmd/spec-breakdown/ ./leveling/ ./enginever/... ./cmd/leveling-bis/ ./cmd/addon-builds/ ./cmd/rotation-search/ ./cmd/talent-search/ -count=1
+remote-test: engine pinned to 5515ae0ef
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261113000759-5515ae0efc8e
+ok  	github.com/jhunthrop/foreversixty/sim/request	71.496s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/spec-breakdown	365.215s
+ok  	github.com/jhunthrop/foreversixty/sim/leveling	4.680s
+ok  	github.com/jhunthrop/foreversixty/sim/enginever	0.002s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/leveling-bis	15.308s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/addon-builds	0.114s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/rotation-search	1.828s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/talent-search	0.502s
+remote-test: exit 0 in 342s (c04975ead17fd79af1d26a722282d3ac01b9ed75)

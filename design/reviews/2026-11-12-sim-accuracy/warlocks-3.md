@@ -156,7 +156,12 @@ Bare, horde, seed 1: Affliction 20 to 60 and Destruction 20 to 60 unchanged to t
 
 ## Gates
 
-GATES GO HERE.
+On the rebased branch (on origin/main ba1013858, the dps warriors and companion landings; pin 5515ae0ef), on the box, one job at a time (`results/gates-*.txt`):
+- Fork: `go test` for sim/warlock/..., sim/warlock/dps and sim/core at f53b2b7be (the two new tests red: `box-fork-tests-red.txt`), at b80063d67 and at 06822d834 (ok).
+- sim: `go test` for request (every ladder golden, warlock-affliction regenerated, the warriors' on the merged Deep Wounds pin), cmd/spec-breakdown (the four warlock tests among them), leveling (the Affliction walk and dead-points tests on the new order), enginever, cmd/leveling-bis (warlock-affliction skipped as known stale), cmd/addon-builds (the regenerated file), cmd/rotation-search, cmd/talent-search: all ok.
+- api: the coach suites (`internal/coach`, `cmd/api -run Coach`) ok on the rewritten card.
+- web: vitest on the sim version, api, details, rotation-apl and rotations suites and the guides and guide-page suites: 40 files, 700 tests, all pass. `astro check`: 0 errors, 0 warnings.
+- No Playwright spec touches a changed surface (the guide page renders the same components with new text).
 
 ## Sources
 
