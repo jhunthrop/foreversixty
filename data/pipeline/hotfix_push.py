@@ -11,7 +11,10 @@ wago.tools keeps every pushed row it saw at https://wago.tools/hotfixes: one
 entry per (push, record) with the record's status and, for a valid record, its
 values in the table's column order. `layer_rows` is the one layering rule:
 
-* per record id, the newest push wins (push id, then wago's entry id);
+* per record id, the newest push wins (push id, then wago's entry id); a
+  valid entry wago kept no values for (the enUS copies of push 16778086 at
+  70938, whose deDE and frFR copies carry them) never outranks an older one
+  that has values;
 * status 1 (valid) replaces the shipped row, or adds one the client lacks;
 * status 2 (record removed) drops the row;
 * status 3 (invalidated) and 4 (not public) carry no values: the shipped row,
@@ -117,6 +120,7 @@ class PushEntry:
     record_id: int
     status: int
     data: list[Any] | None
+    locale: str = _LOCALE
 
 
 @dataclass(frozen=True)
@@ -142,6 +146,15 @@ def _same(a: str, b: str) -> bool:
         return a == b
 
 
+#: A column's suffix when the client localises it: a pushed row read from
+#: another locale keeps the shipped text (Feurige Kriegsaxt is Fiery War Axe).
+_LOCALISED_SUFFIX = "_lang"
+
+
+def _localised_from(entry: PushEntry, column: str) -> bool:
+    return entry.locale != _LOCALE and column.endswith(_LOCALISED_SUFFIX)
+
+
 def _pushed_row(
     entry: PushEntry, columns: list[str], base: dict[str, str] | None, table: str
 ) -> dict[str, str]:
@@ -159,14 +172,26 @@ def _pushed_row(
         )
     if base is None:
         return row
-    return {k: base[k] if _same(base[k], v) else v for k, v in row.items()}
+    return {
+        k: base[k] if k in base and (_same(base[k], v) or _localised_from(entry, k)) else v
+        for k, v in row.items()
+    }
+
+
+def _carries_values(e: PushEntry) -> bool:
+    """Whether an entry decides its record: a removal, an invalidation, or a
+    valid record with its values (a valid entry without them says nothing)."""
+    return e.status != STATUS_VALID or bool(e.data)
 
 
 def newest_per_record(entries: Iterable[PushEntry]) -> dict[int, PushEntry]:
-    """The newest entry per record id: the higher push id, then wago's entry id."""
+    """The newest entry per record id (the higher push id, then wago's entry
+    id), skipping valid entries without values while an older entry has some."""
     newest: dict[int, PushEntry] = {}
     for e in sorted(entries, key=lambda e: (e.push_id, e.entry_id)):
-        newest[e.record_id] = e
+        held = newest.get(e.record_id)
+        if _carries_values(e) or held is None or not _carries_values(held):
+            newest[e.record_id] = e
     return newest
 
 
@@ -399,20 +424,33 @@ def _by_locale(
     return [e for e in found if str(e["record_id"]) == suffix]
 
 
-class PushCollector:
-    """The build's own enUS entries of the wanted tables, from any number of
-    wago searches; an entry seen twice is kept once."""
+#: The locales a collector keeps: enUS for the spell side, every locale for
+#: the item tables (`pipeline.item_push`), whose enUS copies of a push can
+#: come without values.
+ENUS_ONLY: frozenset[str] | None = frozenset({_LOCALE})
+EVERY_LOCALE: frozenset[str] | None = None
 
-    def __init__(self, number: int, tables: Iterable[str]) -> None:
+
+class PushCollector:
+    """The build's own entries of the wanted tables in the wanted locales,
+    from any number of wago searches; an entry seen twice is kept once."""
+
+    def __init__(
+        self, number: int, tables: Iterable[str], locales: frozenset[str] | None = ENUS_ONLY
+    ) -> None:
         self.number = number
         self.tables = tuple(tables)
+        self.locales = locales
         self._wanted = {t.lower(): t for t in self.tables}
         self._seen: dict[int, tuple[str, PushEntry]] = {}
 
     def add(self, entries: Iterable[Mapping[str, Any]]) -> None:
         for e in entries:
             table = self._wanted.get(str(e["table_name"]).lower())
-            if table is None or e["build"] != self.number or e.get("locale", _LOCALE) != _LOCALE:
+            locale = str(e.get("locale", _LOCALE))
+            if table is None or e["build"] != self.number:
+                continue
+            if self.locales is not None and locale not in self.locales:
                 continue
             entry = PushEntry(
                 int(e["id"]),
@@ -420,6 +458,7 @@ class PushCollector:
                 int(e["record_id"]),
                 int(e["status"]),
                 e.get("data") or None,
+                locale,
             )
             self._seen[entry.entry_id] = (table, entry)
 

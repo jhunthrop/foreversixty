@@ -29,6 +29,7 @@ from pipeline.hotfix_cache import (
     decode_table_hotfixes,
     read_cache,
 )
+from pipeline.item_push import layer_item_push
 from pipeline.wago_hotfixes import HOTFIX_BUILD_COLUMN, WAGO_HOTFIX_DIR
 
 #: Column `hotfix_csv_rows` adds to mark a row's hotfix status. Not a real
@@ -119,8 +120,18 @@ def merge_hotfix_table(raw: Path, table: str) -> list[dict[str, str]]:
     hotfix directory carrying SEEDED_MARKER merges add-only. wago.tools'
     layered pushes (`raw/wago-hotfixes/<table>.csv`, written by
     `python -m pipeline fetch-wago-hotfixes`) go over both, by
-    `merge_wago_rows`' rule."""
+    `merge_wago_rows`' rule, and the server's item push read from wago's
+    hotfix page (`pipeline.item_push`) goes over everything: the CSV export
+    can drop a push (issue #27), the page keeps it."""
     shipped = read_csv(raw / f"{table}.csv")
+    columns = list(shipped[0]) if shipped else []
+    return layer_item_push(_merge_export_layers(raw, table, shipped), columns, raw, table)
+
+
+def _merge_export_layers(
+    raw: Path, table: str, shipped: list[dict[str, str]]
+) -> list[dict[str, str]]:
+    """`shipped` with the play-session dump and wago's hotfixed CSV export over it."""
     hotfix_dir = raw / "hotfixes"
     hotfix_path = hotfix_dir / f"{table}.csv"
     seeded = (hotfix_dir / SEEDED_MARKER).exists()

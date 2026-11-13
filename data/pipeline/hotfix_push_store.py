@@ -41,6 +41,7 @@ from typing import Any
 import httpx
 
 from pipeline.hotfix_push import (
+    ENUS_ONLY,
     NodeTotals,
     PushCollector,
     PushEntry,
@@ -72,8 +73,8 @@ def cache_dir_from_env() -> Path | None:
     return Path(value) if value else None
 
 
-def _cached_copy(cache_dir: Path | None, build: str) -> Path | None:
-    return cache_dir / build / STORE if cache_dir is not None else None
+def _cached_copy(cache_dir: Path | None, build: str, name: str) -> Path | None:
+    return cache_dir / build / name if cache_dir is not None else None
 
 
 def _start_from_cache(store: Path, cached: Path | None, build: str) -> None:
@@ -92,13 +93,18 @@ def _keep_in_cache(store: Path, cache_dir: Path | None, build: str) -> None:
     for stale in cache_dir.iterdir() if cache_dir.is_dir() else ():
         if stale.name != build:
             shutil.rmtree(stale, ignore_errors=True)
-    cached = cache_dir / build / STORE
+    cached = cache_dir / build / store.name
     cached.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(store, cached)
 
 
 def _entry_line(e: PushEntry) -> str:
-    return json.dumps([e.entry_id, e.push_id, e.record_id, e.status, e.data], separators=(",", ":"))
+    """An enUS entry is five fields (every spell-side store as it was); another
+    locale's entry adds its locale."""
+    fields: list[object] = [e.entry_id, e.push_id, e.record_id, e.status, e.data]
+    if e.locale != PushEntry.locale:
+        fields.append(e.locale)
+    return json.dumps(fields, separators=(",", ":"))
 
 
 def write_store(
@@ -180,17 +186,20 @@ def fetch_saved(
     full: bool = False,
     client: httpx.Client | None = None,
     cache_dir: Path | None = None,
+    locales: frozenset[str] | None = ENUS_ONLY,
+    keep: Callable[[list[PushEntry]], list[PushEntry]] | None = None,
 ) -> dict[str, list[PushEntry]]:
-    """The build's push for `tables` (enUS), crawled where it moved since the
+    """The build's push for `tables` in `locales`, crawled where it moved since the
     push saved at `store` (all of it when nothing is saved or `full`), and
     saved back. With `cache_dir`, a missing `store` starts from the copy kept
-    there, and the saved file is copied back into it."""
-    _start_from_cache(store, _cached_copy(cache_dir, build), build)
+    there, and the saved file is copied back into it. `keep`, when given,
+    picks the entries of each table that are saved and returned."""
+    _start_from_cache(store, _cached_copy(cache_dir, build, store.name), build)
     saved = read_store(store)
     if saved is not None and saved["build"] != build:
         raise SystemExit(f"{store} is the push of {saved['build']}, not {build}")
     known, entries, mode = _starting_point(saved, build, tables, full)
-    collector = PushCollector(_build_number(build), tables)
+    collector = PushCollector(_build_number(build), tables, locales)
     collector.add_pushed(entries)
     own = client is None
     client = client or open_client()
@@ -201,6 +210,8 @@ def fetch_saved(
         if own:
             client.close()
     pushed = collector.by_table()
+    if keep is not None:
+        pushed = {table: keep(entries) for table, entries in pushed.items()}
     write_store(store, build, tables, {**known, **observed}, pushed)
     _keep_in_cache(store, cache_dir, build)
     logger.info("hotfix push %s: %s crawl, %d wago.tools requests", build, mode, requests[0])

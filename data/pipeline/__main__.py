@@ -18,8 +18,9 @@ def build_parser() -> argparse.ArgumentParser:
     f = sub.add_parser(
         "fetch",
         help="download DB2 CSV exports for a build, then layer the server's hotfix push "
-        "into them (pipeline.hotfix_push) and fetch the item pair's pushes into "
-        "raw/wago-hotfixes/ (pipeline.wago_hotfixes)",
+        "into them (pipeline.hotfix_push), fetch the item pair's pushes into "
+        "raw/wago-hotfixes/ (pipeline.wago_hotfixes) and the ItemSparse push from the "
+        "hotfix page into raw/wago-push/items.json (pipeline.item_push)",
     )
     f.add_argument("--product", required=True, help="wago.tools product key, e.g. wow_classic_era")
     f.add_argument("--build", help="build string like 1.15.7.61582; default: latest for product")
@@ -38,6 +39,14 @@ def build_parser() -> argparse.ArgumentParser:
         "fails when there is no cache",
     )
     lhp.add_argument("--full", action="store_true", help=_FULL_HELP)
+
+    fip = sub.add_parser(
+        "fetch-item-push",
+        help="read the build's ItemSparse push from wago.tools' hotfix page, every locale, "
+        "into raw/wago-push/items.json; the hotfix merge layers it last; `fetch` already does this",
+    )
+    fip.add_argument("--build", required=True)
+    fip.add_argument("--full", action="store_true", help=_FULL_HELP)
 
     pc = sub.add_parser(
         "push-check",
@@ -491,11 +500,17 @@ def _log_layer(summary: dict) -> None:
     )
 
 
+def _log_item_push(counts: dict[str, int]) -> None:
+    """Logged, like the layer: stdout's last line is the build data.yml reads."""
+    for table, count in counts.items():
+        logging.getLogger("pipeline.item_push").info("item push %s: %d records", table, count)
+
+
 def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     args = build_parser().parse_args(argv)
     if args.command == "fetch":
-        from pipeline import hotfix_push, wago, wago_hotfixes
+        from pipeline import hotfix_push, item_push, wago, wago_hotfixes
         from pipeline.hotfix_push_store import full_requested
 
         build_dir = wago.fetch_build(args.product, args.build)
@@ -509,6 +524,12 @@ def main(argv: list[str] | None = None) -> int:
             logging.getLogger("pipeline.wago_hotfixes").info(
                 "fetch-wago-hotfixes %s: %d rows", table, count
             )
+        _log_item_push(item_push.fetch_item_push(build, full=full_requested(args.full)))
+    elif args.command == "fetch-item-push":
+        from pipeline import item_push
+        from pipeline.hotfix_push_store import full_requested
+
+        _log_item_push(item_push.fetch_item_push(args.build, full=full_requested(args.full)))
     elif args.command == "push-check":
         import os
 

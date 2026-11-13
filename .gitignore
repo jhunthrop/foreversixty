@@ -134,6 +134,9 @@ data/builds/*/raw/client/*
 !data/builds/*/raw/wago-push/
 data/builds/*/raw/wago-push/*
 !data/builds/*/raw/wago-push/entries.json
+# 2026-11-13 (issue #27): the item push read from the hotfix page (pipeline.item_push),
+# one deciding entry per record, layered last over the item tables.
+!data/builds/*/raw/wago-push/items.json
 data/.icon-cache/
 data/.wago-push-cache/
 
