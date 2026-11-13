@@ -26,7 +26,7 @@ from pipeline.addonbis import (
     AddonBisError,
 )
 from pipeline.addondata import build_addon_data
-from pipeline.models import AddonData
+from pipeline.models import AddonBisConditions, AddonData, AddonHitToCap
 
 LUA_PATH = Path("../addon/ForeverSixty/Data.lua")
 
@@ -266,7 +266,7 @@ def _source_index(bis_sources: list[str]) -> dict[str, int]:
     return {source: index for index, source in enumerate(bis_sources, start=1)}
 
 
-def _bis_lua(bis: dict, bis_sources: list[str] | None = None) -> list[str]:
+def _bis_lua(bis: dict, bis_sources: list[str] | None = None, name: str = "bis") -> list[str]:
     """`bis[spec][band][faction][slot] = "itemId|sourceKindCode|source|chance|..."`,
     one packed string per pick (_bis_pick_packed's own doc). Until task
     L1.2's fix round 2 a pick was the positional table `{ itemId,
@@ -280,9 +280,10 @@ def _bis_lua(bis: dict, bis_sources: list[str] | None = None) -> list[str]:
     single-letter code back for the tooltip's muted source line; `source`
     (the third, optional element -- left out of the table literal entirely
     for a pick with none, rather than an empty string, saving two bytes
-    each) is the short place name that line reads beside it."""
+    each) is the short place name that line reads beside it. `name` is the
+    table's key: `bisRaid` renders the raid preset's bands in the same shape."""
     source_index = _source_index(bis_sources or [])
-    lines = ["\tbis = {"]
+    lines = [f"\t{name} = {{"]
     for spec in sorted(bis):
         lines.append(f"\t\t[{_quote(spec)}] = {{")
         for band in bis[spec]:
@@ -295,6 +296,87 @@ def _bis_lua(bis: dict, bis_sources: list[str] | None = None) -> list[str]:
                 lines.append("\t\t\t\t},")
             lines.append("\t\t\t},")
         lines.append("\t\t},")
+    lines.append("\t},")
+    return lines
+
+
+#: The shared pool of hit-to-cap entries (_hit_to_cap_lua).
+HIT_CAP_POOL = "hitCaps"
+
+#: The presets hitToCap keys a spec's bands by, in render order (pipeline.addonbis's tags).
+HIT_CAP_PRESETS = ("bare", "raid")
+
+
+def _hit_cap_lua(hit: AddonHitToCap) -> str:
+    """`{ hit = { toCap, cap }, white = ..., spell = ..., school = { toCap, "Shadow" } }`,
+    the parts the band publishes only."""
+    parts = [
+        f"{key} = {{ {_number(pair[0])}, {_number(pair[1])} }}"
+        for key in ("hit", "white", "spell")
+        if (pair := getattr(hit, key)) is not None
+    ]
+    if hit.school is not None:
+        parts.append(f"school = {{ {_number(hit.school[0])}, {_quote(hit.school[1])} }}")
+    return "{ " + ", ".join(parts) + " }"
+
+
+def _hit_to_cap_lua(by_preset: dict[str, dict]) -> tuple[list[str], list[str]]:
+    """The hit-cap pool, then `hitToCap[spec].bare|raid[band][faction] = hitCaps[n]`
+    (AddonHitToCap): the Gear tab's hit line. A few dozen distinct entries stand for
+    every spec, band and faction, so each is one pooled table. `by_preset` is
+    {"bare": bis, "raid": bis_raid}. A spec or preset with no band publishing one has
+    no key. Returns (pool lines, data lines)."""
+    index = _pool(
+        [
+            _hit_cap_lua(band.hit_to_cap[faction])
+            for preset in HIT_CAP_PRESETS
+            for spec in sorted(by_preset.get(preset, {}))
+            for band in by_preset[preset][spec]
+            for faction in sorted(band.hit_to_cap)
+        ]
+    )
+    if not index:
+        return [], []
+    lines = ["\thitToCap = {"]
+    specs = sorted({spec for table in by_preset.values() for spec in table})
+    for spec in specs:
+        presets = {
+            preset: [band for band in by_preset.get(preset, {}).get(spec, []) if band.hit_to_cap]
+            for preset in HIT_CAP_PRESETS
+        }
+        if not any(presets.values()):
+            continue
+        lines.append(f"\t\t[{_quote(spec)}] = {{")
+        for preset, bands in presets.items():
+            if not bands:
+                continue
+            lines.append(f"\t\t\t{preset} = {{")
+            for band in bands:
+                refs = ", ".join(
+                    f"{faction} = {HIT_CAP_POOL}[{index[_hit_cap_lua(band.hit_to_cap[faction])]}]"
+                    for faction in sorted(band.hit_to_cap)
+                )
+                lines.append(f"\t\t\t\t[{band.level}] = {{ {refs} }},")
+            lines.append("\t\t\t},")
+        lines.append("\t\t},")
+    lines.append("\t},")
+    return _pool_lua(HIT_CAP_POOL, index), lines
+
+
+def _bis_conditions_lua(conditions: dict[str, AddonBisConditions]) -> list[str]:
+    """`bisConditions[spec] = { label, buffs, debuffs, consumes }`: the raid preset's
+    conditions for the Gear tab's Conditions hover, each group one joined string (the
+    specs that share a group share the one interned string)."""
+    if not conditions:
+        return []
+    lines = ["\tbisConditions = {"]
+    for spec in sorted(conditions):
+        entry = conditions[spec]
+        fields = ", ".join(
+            f"{key} = {_quote(getattr(entry, key))}"
+            for key in ("label", "buffs", "debuffs", "consumes")
+        )
+        lines.append(f"\t\t[{_quote(spec)}] = {{ {fields} }},")
     lines.append("\t},")
     return lines
 
@@ -494,6 +576,7 @@ def _ability_levels_lua(ability_levels: dict) -> list[str]:
 def render_lua(data: AddonData) -> str:
     rotation_pool, rotations = _rotations_lua(data.rotations)
     point_pool, default_builds = _default_builds_lua(data.default_builds)
+    hit_cap_pool, hit_to_cap = _hit_to_cap_lua({"bare": data.bis, "raid": data.bis_raid})
     lines = [
         GENERATED,
         "-- Source: data/builds/<build>/addon-data.json",
@@ -503,6 +586,7 @@ def render_lua(data: AddonData) -> str:
         "-- Tables many entries below share; the addon only reads them.",
         *rotation_pool,
         *point_pool,
+        *hit_cap_pool,
         "",
         "ns.Data = {",
         f"\tbuild = {_quote(data.build)},",
@@ -521,6 +605,10 @@ def render_lua(data: AddonData) -> str:
     lines.append("\t},")
     lines.extend(rotations)
     lines.extend(_bis_lua(data.bis, data.bis_sources))
+    if data.bis_raid:
+        lines.extend(_bis_lua(data.bis_raid, data.bis_sources, name="bisRaid"))
+    lines.extend(_bis_conditions_lua(data.bis_conditions))
+    lines.extend(hit_to_cap)
     lines.extend(_bis_new_lua(data.bis))
     lines.extend(_bis_weights_lua(data.bis))
     lines.extend(_bis_items_lua(data.bis_names, data.bis_dps))

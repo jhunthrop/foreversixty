@@ -27,7 +27,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pipeline.addonbis import build_bis_items, build_bis_sources, build_bis_with_skips
+from pipeline.addonbis import build_bis_items, build_bis_sources, build_bis_tables
 from pipeline.addonrotation import build_ability_levels, build_rotations
 from pipeline.encounters import load_encounter_needs
 from pipeline.models import (
@@ -154,14 +154,16 @@ def build_addon_data(
     }
     weights = {key: entry.weights for key, entry in load_weights(curated_dir).items()}
     rotations = build_rotations(root, build, curated_dir=curated_dir)
-    bis, bis_unconfirmed_skips = build_bis_with_skips(root, build)
-    bis_names, bis_dps = build_bis_items(root, build, bis)
+    bis = build_bis_tables(root, build)
+    bis_names, bis_dps = build_bis_items(root, build, bis.bare, bis.raid)
     return AddonData(
         build=build,
         classes=classes,
         weights=weights,
         rotations=rotations,
-        bis=bis,
+        bis=bis.bare,
+        bis_raid=bis.raid,
+        bis_conditions=bis.conditions,
         default_builds=_default_builds(root, build),
         spec_icons=_spec_icons(root, build, curated_dir),
         dps_per_point=_dps_per_point(root, build),
@@ -170,8 +172,8 @@ def build_addon_data(
         ability_levels=build_ability_levels(root, build, curated_dir=curated_dir),
         bis_names=bis_names,
         bis_dps=bis_dps,
-        bis_sources=build_bis_sources(bis),
-        bis_unconfirmed_skips=bis_unconfirmed_skips,
+        bis_sources=build_bis_sources(bis.bare, bis.raid),
+        bis_unconfirmed_skips=bis.skips,
     )
 
 

@@ -19,6 +19,9 @@ approved board's:
   inbox weights message carries an error, so the table has no error column.
 - Source lines: ItemTooltip.sourceParts' rule; the drop chance only where Data.lua carries one.
 - Source counts: Sources.counts over the band's published picks.
+- Conditions (the gear-hit lane): at a band with a Raid-ready list (Data.lua `bisRaid`) the row shows, Raid-ready by
+  default, and the doll, Upgrades and counts read that list (GearTab.withCondition); its hover is Data.lua
+  `bisConditions`. The hit lines under the weights are GearTab.hitCap's over Data.lua `hitToCap`.
 
 Every character here is made up: Velisandre, a level 60 Night Elf hunter, and Brannoc, a level 34 Orc warrior.
 """
@@ -29,6 +32,7 @@ import sys
 
 import addon_hub as hub
 from addon_hub import ADDON, CLIENT_GOLD, QUALITY, esc, section, window
+import addon_ux as ux
 from addon_ux import ROOT, icon_uri
 
 OUT = ROOT / 'design/reviews/2026-11-13-addon-hub/l3'
@@ -71,12 +75,56 @@ def lua_block(start, key):
 PLACES = re.findall(r'"((?:[^"\\]|\\.)*)"', lua_block('\tbisSources = {', 'bisSources'))
 
 
-def picks_of(spec, band, faction):
-    spec_block = lua_block('\tbis = {', f'["{spec}"] = {{')
+def picks_of(spec, band, faction, table='bis'):
+    spec_block = lua_block(f'\t{table} = {{', f'["{spec}"] = {{')
     band_block = spec_block[spec_block.index(f'[{band}] = {{'):]
     fac = band_block[band_block.index(f'{faction} = {{'):]
     fac = fac[:fac.index('}')]
     return dict(re.findall(r'(\w+) = "([^"]*)"', fac))
+
+
+def has_raid(spec, band, faction):
+    try:
+        return bool(picks_of(spec, band, faction, 'bisRaid'))
+    except ValueError:
+        return False
+
+
+def cap_percent(value):
+    return f'{value:g}' if value == int(value) else f'{value:.1f}'
+
+
+def hit_lines(spec, band, faction, condition):
+    """GearTab.hitCap's lines over Data.lua's hitToCap and its hitCaps pool."""
+    pool = re.findall(r'^\t(\{.*\}),$', lua_block('local hitCaps = {', 'hitCaps'), re.M)
+    try:
+        block = lua_block('\thitToCap = {', f'["{spec}"] = {{')
+    except ValueError:
+        return []
+    preset = block[block.index(f'{condition} = {{'):] if f'{condition} = {{' in block else ''
+    preset = preset[:preset.index('\n\t\t\t},')] if preset else ''
+    found = re.search(rf'\[{band}\] = \{{[^}}]*?{faction} = hitCaps\[(\d+)\]', preset)
+    if not found:
+        return []
+    entry = pool[int(found.group(1)) - 1]
+    parts = {k: (float(a), float(b)) for k, a, b in re.findall(r'(hit|white|spell) = \{ ([\d.]+), ([\d.]+) \}', entry)}
+    school = re.search(r'school = \{ ([\d.]+), "([^"]+)" \}', entry)
+    lines = []
+    for key, word in (('hit', 'Hit'), ('white', 'White swings'), ('spell', 'Spell hit')):
+        if key in parts:
+            to, cap = parts[key]
+            lines.append(f'{word}: at the {cap_percent(cap)}% cap' if to <= 0
+                         else f'{word}: {cap_percent(to)}% to the {cap_percent(cap)}% cap')
+    if school and 'spell' in parts:
+        lines.append(f'{school.group(2)} spells: {cap_percent(float(school.group(1)))}% to the '
+                     f'{cap_percent(parts["spell"][1])}% cap')
+    return lines
+
+
+def conditions_of(spec):
+    block = lua_block('\tbisConditions = {', 'bisConditions')
+    line = re.search(rf'\["{re.escape(spec)}"\] = \{{ (.*) \}},', block)
+    return dict(re.findall(r'(\w+) = "((?:[^"\\]|\\.)*)"', line.group(1)))
 
 
 def weights_of(spec):
@@ -156,7 +204,7 @@ def counts(picks):
 
 
 class Character:
-    def __init__(self, cls, spec, band, faction, worn, bags, unenchanted, on=None, rep_cap=None):
+    def __init__(self, cls, spec, band, faction, worn, bags, unenchanted, on=None, rep_cap=None, condition=None):
         self.items = {it['id']: it for it in json.loads((BUILD / f'items/{cls}.json').read_text())['items']}
         self.cls, self.spec, self.band, self.faction = cls, spec, band, faction
         self.worn, self.bags, self.unenchanted = worn, bags, unenchanted
@@ -164,7 +212,10 @@ class Character:
         self.rep_cap = rep_cap
         self.weights = weights_of(spec)
         self.pp = per_point(spec, band)
-        self.packed = {slot: decode(p) for slot, p in picks_of(spec, band, faction).items()}
+        self.raid = has_raid(spec, band, faction)
+        self.condition = (condition or 'raid') if self.raid else 'bare'
+        table = 'bisRaid' if self.condition == 'raid' else 'bis'
+        self.packed = {slot: decode(p) for slot, p in picks_of(spec, band, faction, table).items()}
 
     def score(self, item_id, slot):
         it = self.items[item_id]
@@ -320,7 +371,10 @@ def upgrades_block(ch, cells):
         f'<span class="one" style="flex:1">{name_of(ch, c["pick"]["item_id"])}</span>'
         f'<span class="ok">+{c["gain"]:.1f} DPS</span></div>{where(ch, c)}</div></div>'
         for c in found[:4])
-    return f'<div class="sec">{heading("Upgrades", f"+{total:.1f} DPS in all")}{rows}</div>', found[4:]
+    # GearTabView: no total without an upgrade, and the empty line in its place.
+    note = f"+{total:.1f} DPS in all" if found else ''
+    rows = rows or '<div class="m">Nothing on this list beats what you wear.</div>'
+    return f'<div class="sec">{heading("Upgrades", note)}{rows}</div>', found[4:]
 
 
 def weights_block(ch, sim):
@@ -338,8 +392,10 @@ def weights_block(ch, sim):
     haste = sum(ch.weights.get(k, 0) for k in ('melee_haste', 'spell_haste'))
     haste_line = (f'<div class="m" style="height:18px">Haste {haste * ch.pp["dps"]:.2f} DPS per 1%</div>'
                   if haste else '')
+    hit = ''.join(f'<div class="m" style="height:18px">{line}</div>'
+                  for line in hit_lines(ch.spec, ch.band, ch.faction, ch.condition))
     note = 'your sim, per rating point' if sim else 'per rating point'
-    return f'<div class="sec">{heading("Stat weights", note)}<table class="tbl">{body}</table>{haste_line}</div>'
+    return f'<div class="sec">{heading("Stat weights", note)}<table class="tbl">{body}</table>{haste_line}{hit}</div>'
 
 
 def checkbox(on):
@@ -366,13 +422,20 @@ def sources_block(ch, words, off, saved):
     return f'<div class="sec">{heading("Sources", "" if words == "All sources" else words)}<div class="kinds">{rows}</div>{foot}</div>'
 
 
-def board(ch, caption, title, identity, band_on, words, off=None, saved=False, sim=False):
+def board(ch, caption, title, identity, band_on, words, off=None, saved=False, sim=False, tips=()):
     cells = ch.doll()
     bands = ''.join(f'<span class="btn{" sel" if b == band_on else ""}" style="width:32px;justify-content:center;'
                     f'padding:0">{b}</span>' for b in (20, 30, 40, 50, 60))
     left_cells = [cells[s] for s in LEFT if s in cells]
     right_cells = [cells[s] for s in RIGHT if s in cells]
-    left = (f'<div class="bands" style="margin-bottom:12px"><span class="m" style="width:62px">Level</span>{bands}</div>'
+    conditions = ''
+    if ch.raid:
+        conditions = ''.join(f'<span class="btn{" sel" if c == ch.condition else ""}">{w}</span>'
+                             for c, w in (('raid', 'Raid-ready'), ('bare', 'Bare')))
+        conditions = (f'<div class="bands" style="margin-bottom:12px"><span class="m" style="width:62px">Conditions'
+                      f'</span>{conditions}</div>')
+    left = (f'<div class="bands" style="margin-bottom:{10 if ch.raid else 12}px"><span class="m" style="width:62px">'
+            f'Level</span>{bands}</div>{conditions}'
             f'<div class="doll"><div class="dcol" style="width:191px">{"".join(doll_cell(ch, c, False) for c in left_cells)}</div>'
             f'<div class="dcol" style="width:191px">{"".join(doll_cell(ch, c, True) for c in right_cells)}</div></div>')
     up_html, rest = upgrades_block(ch, cells)
@@ -394,16 +457,46 @@ def board(ch, caption, title, identity, band_on, words, off=None, saved=False, s
         figures.append('1 enchant missing' if missing == 1 else f'{missing} enchants missing')
     html = window('Gear', ' · '.join([identity] + figures), left, right, ('Esc to close', 'Shift-click an item to link it'),
                   cls=ch.cls, title=title, dots=('Gear',))
-    return hub.board2(caption, html)
+    return hub.board2(caption, html + (f'<div class="row" style="margin-top:18px">{"".join(tips)}</div>' if tips else ''))
 
 
-def velisandre():
-    # Level 60 Night Elf hunter: the list's picks but for a few older pieces, the list's gloves in her bags.
+def hover(title, groups, tag):
+    """A text hover as Theme.showLines draws it: the title, then muted headings over wrapped lines."""
+    lines = [f'<div class="t">{title}</div>']
+    for heading_text, body in groups:
+        if heading_text:
+            lines.append(f'<div class="gap"></div><div style="color:{ADDON["muted"]}">{heading_text}</div>')
+        lines.append(f'<div style="white-space:normal">{body}</div>')
+    return ux.tooltip(lines, tag=tag, width=300)
+
+
+def conditions_tips(ch):
+    entry = conditions_of(ch.spec)
+    return [
+        hover(entry['label'], [('Buffs', entry['buffs']), ('Debuffs', entry['debuffs']),
+                               ('Consumables', entry['consumes'])], 'Hover: Raid-ready'),
+        hover('Bare', [(None, 'Bare character: no raid buffs, debuffs or consumables.')], 'Hover: Bare'),
+        hover('Hit cap', [(None, 'Hit is worth its full weight up to the cap and nothing past it. An item\'s '
+                                 '"Improves your chance to hit by 1.0%." counts 1% toward it. Counted with this list '
+                                 'worn.')], 'Hover: the hit lines'),
+    ]
+
+
+def velisandre(condition='bare'):
+    # Level 60 Night Elf hunter: the bare list's picks but for a few older pieces, the list's gloves in her bags.
     worn = {s: p['item_id'] for s, p in Character('hunter', 'hunter-beast-mastery', 60, 'alliance', {}, set(),
-                                                     set()).picks().items()}
+                                                     set(), condition='bare').picks().items()}
     worn.update({'back': 22269, 'neck': 22403, 'wrist': 13211, 'hands': 13255, 'feet': 14616, 'finger2': 13098,
                  'main_hand': 13052})
-    return Character('hunter', 'hunter-beast-mastery', 60, 'alliance', worn, {271948}, {'chest', 'feet'})
+    return Character('hunter', 'hunter-beast-mastery', 60, 'alliance', worn, {271948}, {'chest', 'feet'},
+                     condition=condition)
+
+
+def torvald(condition):
+    # Level 60 Dwarf warrior (Fury, dual wield): wears the bare list, its legs without an enchant.
+    worn = {s: p['item_id'] for s, p in Character('warrior', 'warrior-fury', 60, 'alliance', {}, set(), set(),
+                                                     condition='bare').picks().items()}
+    return Character('warrior', 'warrior-fury', 60, 'alliance', worn, set(), {'legs'}, condition=condition)
 
 
 def brannoc():
@@ -421,8 +514,17 @@ def brannoc():
 
 
 BOARDS = {
+    'gear-hunter-60-raid': lambda: board(
+        velisandre('raid'), '<b>Gear, level 60, Raid-ready (the gear-hit lane)</b> · the Conditions row opens on '
+        'Raid-ready: the doll, Upgrades and the counts read the list ranked under raid buffs and consumables; under '
+        'the weights the hit cap of that list. The three hovers below are the row\'s and the hit lines\'.',
+        'Velisandre', 'Level 60 Hunter', 60, 'All sources', tips=conditions_tips(velisandre('raid'))),
+    'gear-warrior-60-bare': lambda: board(
+        torvald('bare'), '<b>Gear, level 60, Bare (the gear-hit lane)</b> · a dual-wield Fury warrior who wears the '
+        'bare list, Bare chosen: every slot best in slot, the hit lines for specials and white swings.',
+        'Torvald', 'Level 60 Warrior', 60, 'All sources'),
     'gear-hunter-60': lambda: board(
-        velisandre(), '<b>Gear, level 60, as built</b> · the doll at her band against what she wears, the list\'s '
+        velisandre('bare'), '<b>Gear, level 60, as built</b> · the doll at her band against what she wears, the list\'s '
         'gloves in her bags; Upgrades with the drop chance only where the data has one; the shipped weights; '
         'All sources.', 'Velisandre', 'Level 60 Hunter', 60, 'All sources'),
     'gear-warrior-34': lambda: board(

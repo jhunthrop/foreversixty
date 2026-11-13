@@ -1,6 +1,6 @@
 -- addon/ForeverSixty/surfaces/GearTabView.lua
 -- The Gear tab's frames (design/specs/2026-11-13-addon-hub.md 4.3, board hub-gear.png): on the left the
--- Level control over the doll, two columns of slots as the character pane lays them out; on the right
+-- Level and Conditions controls over the doll, two columns of slots as the character pane lays them out; on the right
 -- Upgrades, Stat weights and Sources. Every part is built once into the tab's content frame and drawn
 -- from GearTab's model on each show and each change (the bags, what is worn, an item the client sent,
 -- the source choice). Items show the client's own tooltip and shift-click links them; a source kind is
@@ -21,11 +21,12 @@ local GearTab = ns.GearTab or require("GearTab")
 
 local GearTabView = {}
 
---- Pixel layout: the Level row and its label column and buttons; the doll's cells (pitch, icon, the
---- gap to the text, the gap between the columns); the Upgrades rows; the weights table's rows and its
---- number columns' right edges; the Sources rows and their columns' gap; the room between sections.
+--- Pixel layout: the Level row and its label column and buttons, the gap to the Conditions row; the doll's
+--- cells (pitch, icon, the gap to the text, the gap between the columns); the Upgrades rows; the weights
+--- table's rows and its number columns' right edges; the Sources rows and their columns' gap; the room
+--- between sections.
 GearTabView.LAYOUT = {
-	control = 20, controlLabel = 66, band = 32, bandGap = 4, dollTop = 12,
+	control = 20, controlLabel = 66, band = 32, bandGap = 4, controlGap = 10, dollTop = 12,
 	cell = 36, cellIcon = 28, cellGap = 6, columnGap = 6, moreRow = 18, moreIcon = 16,
 	upgrade = 36, upgradeIcon = 24,
 	weightRow = 18, weightNumber = 52, weightGap = 8,
@@ -34,6 +35,8 @@ GearTabView.LAYOUT = {
 }
 --- The most "More upgrades" rows under the doll (ranks after Upgrades' four).
 GearTabView.MORE_ROWS = 6
+--- The most hit-cap lines under the weights (hit, white swings, spell hit, a school).
+GearTabView.HIT_LINES = 4
 --- Seconds a cell keeps the hover ground after an Alt-click on its paper-doll slot opened the tab.
 GearTabView.FLASH_SECONDS = 2
 
@@ -243,7 +246,47 @@ local function buildWeights(parent, width)
 		section.rows[index] = columns("body")
 	end
 	section.haste = text(parent, "muted", width)
+	section.hit = {}
+	for index = 1, GearTabView.HIT_LINES do
+		section.hit[index] = text(parent, "muted", width)
+	end
+	-- The hit lines' hover: what the cap is, in the client's own words for hit on an item.
+	section.hitHover = Theme.createFrame("Frame", nil, parent)
+	section.hitHover:EnableMouse(true)
+	section.hitHover:SetScript("OnEnter", function(self)
+		if section.hitTip ~= nil then
+			Theme.showLines(self, section.hitTip, "ANCHOR_RIGHT")
+		end
+	end)
+	section.hitHover:SetScript("OnLeave", function()
+		Theme.hideTooltip()
+	end)
 	return section
+end
+
+--- A client button whose hover shows `view.conditionTips[condition]`, its own hover look kept.
+local function conditionButton(view, condition, label)
+	local button = Widgets.clientButton(view.left, label, function()
+		GearTabView.condition = condition
+		GearTabView.draw()
+	end)
+	local enter, leave = button:GetScript("OnEnter"), button:GetScript("OnLeave")
+	button:SetScript("OnEnter", function(self, ...)
+		if enter ~= nil then
+			enter(self, ...)
+		end
+		local tip = view.conditionTips ~= nil and view.conditionTips[condition] or nil
+		if tip ~= nil then
+			Theme.showLines(self, tip, "ANCHOR_RIGHT")
+		end
+	end)
+	button:SetScript("OnLeave", function(self, ...)
+		if leave ~= nil then
+			leave(self, ...)
+		end
+		Theme.hideTooltip()
+	end)
+	return Widgets.fitButton(button)
 end
 
 local function buildSources(parent, width)
@@ -327,6 +370,16 @@ function GearTabView.build(content)
 		view.bands[index] = button
 	end
 	place(view.levelLabel, view.left, 0, (G.control - textHeight(view.levelLabel)) / 2)
+	view.conditionsLabel = text(view.left, "muted", G.controlLabel)
+	view.conditionsLabel:SetText(L.gearConditions)
+	view.conditions = {}
+	local x = G.controlLabel
+	for index, condition in ipairs(GearTab.CONDITIONS) do
+		local button = conditionButton(view, condition, condition == GearTab.RAID and L.gearRaidReady or L.gearBare)
+		button:SetPoint("TOPLEFT", view.left, "TOPLEFT", x, -(G.control + G.controlGap))
+		x = x + button:GetWidth() + G.bandGap
+		view.conditions[index] = button
+	end
 	view.noList = text(view.left, "muted", S.windowLeft)
 	view.noList:SetText(L.gearNoList)
 	view.cells = {}
@@ -357,9 +410,32 @@ end
 
 -- Draw ---------------------------------------------------------------------------------------------
 
-local function drawDoll(view, doll)
+--- The Conditions row at a band with a Raid-ready list (`condition` teal), else hidden. The doll's top.
+local function drawConditions(view, input, band, condition)
 	local G = GearTabView.LAYOUT
-	local top = G.control + G.dollTop
+	if not GearTab.hasRaidList(input, band) then
+		view.conditionsLabel:Hide()
+		for _, button in ipairs(view.conditions) do
+			button:Hide()
+		end
+		view.conditionTips = nil
+		return G.control + G.dollTop
+	end
+	local row = G.control + G.controlGap
+	place(view.conditionsLabel, view.left, 0, row + (G.control - textHeight(view.conditionsLabel)) / 2)
+	view.conditionTips = {}
+	for index, shown in ipairs(GearTab.CONDITIONS) do
+		local button = view.conditions[index]
+		Widgets.setSelected(button, shown == condition)
+		Widgets.resetButtonLabel(button, shown == GearTab.RAID and L.gearRaidReady or L.gearBare)
+		button:Show()
+		view.conditionTips[shown] = GearTab.conditionsTip(input.data, input.spec, shown)
+	end
+	return row + G.control + G.dollTop
+end
+
+local function drawDoll(view, doll, top)
+	local G = GearTabView.LAYOUT
 	for _, cell in pairs(view.cells) do
 		cell.frame:Hide()
 	end
@@ -498,9 +574,37 @@ local function hideWeights(section)
 		row.dps:Hide()
 	end
 	section.haste:Hide()
+	for _, line in ipairs(section.hit) do
+		line:Hide()
+	end
+	section.hitHover:Hide()
+	section.hitTip = nil
 end
 
-local function drawWeights(section, parent, width, y, weights)
+--- The hit-cap lines under the weights (GearTab.hitCap), with their hover. The y after them.
+local function drawHitCap(section, parent, width, y, hitCap)
+	local G = GearTabView.LAYOUT
+	if hitCap == nil then
+		return y
+	end
+	local top = y
+	for index, line in ipairs(hitCap.lines) do
+		local region = section.hit[index]
+		if region ~= nil then
+			region:SetText(line)
+			place(region, parent, 0, y)
+			y = y + G.weightRow
+		end
+	end
+	section.hitTip = hitCap.tip
+	section.hitHover:ClearAllPoints()
+	section.hitHover:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -top)
+	section.hitHover:SetSize(width, y - top)
+	section.hitHover:Show()
+	return y
+end
+
+local function drawWeights(section, parent, width, y, weights, hitCap)
 	local G = GearTabView.LAYOUT
 	hideWeights(section)
 	if weights == nil or #weights.rows == 0 then
@@ -526,7 +630,7 @@ local function drawWeights(section, parent, width, y, weights)
 		place(section.haste, parent, 0, y)
 		y = y + G.weightRow
 	end
-	return y
+	return drawHitCap(section, parent, width, y, hitCap)
 end
 
 local function drawSources(section, parent, width, y, sources)
@@ -593,14 +697,18 @@ function GearTabView.draw()
 	local band = GearTabView.band or GearTab.ownBand(input) or GearTab.BANDS[1]
 	GearTabView.band = band
 	drawBands(view, input, band)
-	local doll = GearTab.doll(input, band)
+	local condition = GearTab.conditionAt(input, band, GearTabView.condition)
+	local dollTop = drawConditions(view, input, band, condition)
+	local shown = GearTab.withCondition(input, band, condition)
+	local doll = GearTab.doll(shown, band)
 	GearTabView.doll = doll
-	GearTabView.sourcesModel = GearTab.sources(input.data, input.spec, band, input.faction)
+	GearTabView.sourcesModel = GearTab.sources(shown.data, input.spec, band, input.faction)
 	local upgrades = GearTab.upgrades(doll)
-	local left = drawMore(view, upgrades.rest, doll.unit, drawDoll(view, doll))
+	local left = drawMore(view, upgrades.rest, doll.unit, drawDoll(view, doll, dollTop))
 	local width = S.windowRight
 	local y = drawUpgrades(view.upgrades, view.right, width, 0, upgrades, doll)
-	y = drawWeights(view.weights, view.right, width, y + G.sectionGap, GearTab.weights(input.current))
+	y = drawWeights(view.weights, view.right, width, y + G.sectionGap, GearTab.weights(input.current),
+		GearTab.hitCap(input.data, input.spec, band, input.faction, condition))
 	y = drawSources(view.sources, view.right, width, y + G.sectionGap, GearTabView.sourcesModel)
 	local body = math.max(left, y)
 	Hub.fitHeight(body)
@@ -626,6 +734,7 @@ end
 function GearTabView.show(options)
 	GearTabView.shown = true
 	GearTabView.band = nil
+	GearTabView.condition = nil
 	Hub.setHints(nil, L.gearShiftLink)
 	GearTabView.draw()
 	if type(options) == "table" and options.slot ~= nil then
@@ -655,14 +764,16 @@ function GearTabView.onEvent(_, event, itemId)
 	GearTabView.refresh()
 end
 
---- The header's figures at the character's own band: "9 of 16 best in slot", "2 enchants missing".
+--- The header's figures at the character's own band under the Conditions shown (Raid-ready where the band
+--- has it, as the doll opens): "9 of 16 best in slot", "2 enchants missing".
 function GearTabView.figures()
 	local input = GearTab.read(Hub.data or ns.Data)
 	local band = GearTab.ownBand(input)
 	if band == nil then
 		return {}
 	end
-	return GearTab.figures(GearTab.doll(input, band))
+	local condition = GearTab.conditionAt(input, band, GearTabView.condition)
+	return GearTab.figures(GearTab.doll(GearTab.withCondition(input, band, condition), band))
 end
 
 --- The bag item that beats what you wear (the list the arrows are drawn from).

@@ -967,6 +967,37 @@ class AddonBisItem(BaseModel):
     by_kind: list[AddonBisKindEntry] = Field(default_factory=list, exclude=True)
 
 
+class AddonHitToCap(BaseModel):
+    """A band's distance to the hit cap (leveling-bis's `hit_to_cap`, written from the
+    engine's hit profile, sim/cmd/leveling-bis/hitcap.go), as the Gear tab's hit line
+    reads it: each part is (percent still to gain, the cap it counts toward), one decimal.
+    The caps are pipeline.addonbis' SPECIAL_HIT_CAP, WHITE_HIT_CAP and SPELL_HIT_CAP (9%
+    for special attacks and ranged shots against a target three levels up, 28% for a dual
+    wielder's white swings, 16% for spells), so the addon states no figure of its own."""
+
+    #: Special attacks and ranged shots (`specials`); None for a caster.
+    hit: tuple[float, float] | None = None
+    #: White swings, for a spec that dual wields (`white`).
+    white: tuple[float, float] | None = None
+    #: Spells: a caster's one line (`kind: "spell"`), or a melee spec that also casts
+    #: damaging spells (`spell` beside `specials`).
+    spell: tuple[float, float] | None = None
+    #: A caster whose talent adds hit to some schools (`school`): those schools' own
+    #: distance to the same spell cap, and their names joined for the line ("Shadow").
+    school: tuple[float, str] | None = None
+
+
+class AddonBisConditions(BaseModel):
+    """What the raid preset's list was ranked under (leveling-bis's `presets.raid`), for
+    the Gear tab's Conditions hover: the label and each group's names, joined for display
+    in the file's own order, so one string stands for a group every spec shares."""
+
+    label: str
+    buffs: str
+    debuffs: str
+    consumes: str
+
+
 class AddonBisBand(BaseModel):
     """One level's leveling BiS, both factions inline (addonbis.py's own
     regrouping of leveling-bis's flat per-(band, faction) list -- see that
@@ -989,6 +1020,11 @@ class AddonBisBand(BaseModel):
     #: band/spec yet -- the tooltip's verdict falls back to the curated
     #: static table (ns.Data.weights) in that case.
     weights: dict[str, float] = {}
+    #: faction -> this band's distance to the hit cap (AddonHitToCap). A faction is
+    #: absent where leveling-bis published no `hit_to_cap` (a healer, a tank, or a file
+    #: written before the key); the race can move it (a racial weapon skill), so each
+    #: faction keeps its own.
+    hit_to_cap: dict[str, AddonHitToCap] = {}
 
 
 class AddonDefaultBuild(BaseModel):
@@ -1073,6 +1109,13 @@ class AddonData(BaseModel):
     #: missing curated/apl entry (the two directories have different
     #: maturity, hence the different rule).
     bis: dict[str, list[AddonBisBand]] = {}
+    #: Keyed by spec, the same shape as `bis`, for the bands leveling-bis also ranked
+    #: under its raid preset (level 60 today): the Gear tab's Raid-ready list. Only the
+    #: Gear tab reads it; every other surface keeps the bare list.
+    bis_raid: dict[str, list[AddonBisBand]] = {}
+    #: Keyed by spec: the raid preset's conditions (AddonBisConditions). A spec whose
+    #: file has no raid preset has no key.
+    bis_conditions: dict[str, AddonBisConditions] = {}
     #: Keyed by spec, then "leveling" or "raid": data/builds/<build>/
     #: addon-builds.json, written by sim/cmd/addon-builds. Empty when that
     #: file does not exist.

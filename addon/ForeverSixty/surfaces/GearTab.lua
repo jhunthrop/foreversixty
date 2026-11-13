@@ -23,6 +23,11 @@ local GearTab = {}
 
 --- The Level control's bands (the web BiS page's), lowest first.
 GearTab.BANDS = { 20, 30, 40, 50, 60 }
+--- The Conditions control's choices in its order (the web's): the list ranked under raid buffs and
+--- consumables (Data.bisRaid), then the bare character's (Data.bis). Raid-ready where the band has it.
+GearTab.RAID = "raid"
+GearTab.BARE = "bare"
+GearTab.CONDITIONS = { GearTab.RAID, GearTab.BARE }
 --- The doll's two columns, top to bottom, as the character pane draws them: the off hand follows the
 --- main hand only beside a one-hander.
 GearTab.LEFT = { "head", "neck", "shoulder", "back", "chest", "wrist", "main_hand", "off_hand", "ranged" }
@@ -93,6 +98,121 @@ function GearTab.hasList(input, band)
 	local bySpec = specBis(input)
 	local byBand = bySpec ~= nil and band ~= nil and bySpec[band] or nil
 	return type(byBand) == "table" and type(byBand[input.faction]) == "table"
+end
+
+-- Conditions -----------------------------------------------------------------------------------
+
+--- Whether the data carries a Raid-ready list for `band` on the character's faction (Data.bisRaid):
+--- the Conditions control shows only then.
+function GearTab.hasRaidList(input, band)
+	local raid = type(input.data) == "table" and type(input.data.bisRaid) == "table"
+		and input.spec ~= nil and input.data.bisRaid[input.spec] or nil
+	local byBand = type(raid) == "table" and band ~= nil and raid[band] or nil
+	return type(byBand) == "table" and type(byBand[input.faction]) == "table"
+end
+
+--- The conditions the doll shows at `band`: `chosen` while the band has a Raid-ready list, Raid-ready
+--- when nothing is chosen there, and the bare character at a band without one.
+function GearTab.conditionAt(input, band, chosen)
+	if not GearTab.hasRaidList(input, band) then
+		return GearTab.BARE
+	end
+	return chosen == GearTab.BARE and GearTab.BARE or GearTab.RAID
+end
+
+local function copyOf(source)
+	local copy = {}
+	for key, value in pairs(source) do
+		copy[key] = value
+	end
+	return copy
+end
+
+--- The tab's input as `condition` reads it at `band`: `input` itself for the bare character, else a copy
+--- whose data names the Raid-ready list as the spec's list at that band, so every pick, gain and source
+--- count below reads it through the one path (Gear.pick, Progress.slotTargets). Never changes `input` or
+--- its data.
+function GearTab.withCondition(input, band, condition)
+	if condition ~= GearTab.RAID or not GearTab.hasRaidList(input, band) then
+		return input
+	end
+	local bySpec = copyOf(type(input.data.bis) == "table" and input.data.bis[input.spec] or {})
+	bySpec[band] = input.data.bisRaid[input.spec][band]
+	local bis = copyOf(type(input.data.bis) == "table" and input.data.bis or {})
+	bis[input.spec] = bySpec
+	local data = copyOf(input.data)
+	data.bis = bis
+	local shown = copyOf(input)
+	shown.data = data
+	return shown
+end
+
+--- The Conditions row's hover for `condition`: the raid preset's label and its buffs, debuffs and
+--- consumables (Data.bisConditions), or the bare character's line. nil without the data. Pure.
+function GearTab.conditionsTip(data, spec, condition)
+	if condition == GearTab.BARE then
+		return { L.gearBare, { text = L.gearBareTip, wrap = true } }
+	end
+	local entry = type(data) == "table" and type(data.bisConditions) == "table" and data.bisConditions[spec] or nil
+	if type(entry) ~= "table" then
+		return nil
+	end
+	local lines = { entry.label or L.gearRaidReady }
+	for _, group in ipairs({ { L.gearBuffs, entry.buffs }, { L.gearDebuffs, entry.debuffs },
+		{ L.gearConsumes, entry.consumes } }) do
+		if type(group[2]) == "string" and group[2] ~= "" then
+			lines[#lines + 1] = " "
+			lines[#lines + 1] = Theme.inlineColor("tooltipMuted", group[1])
+			lines[#lines + 1] = { text = group[2], wrap = true }
+		end
+	end
+	return lines
+end
+
+-- The hit cap ------------------------------------------------------------------------------------
+
+--- A percent as the client's hit line prints it: whole bare ("9"), else one decimal ("6.5").
+local function capPercent(value)
+	return value == math.floor(value) and string.format("%d", value) or string.format("%.1f", value)
+end
+
+--- One part's line: "Hit: 2% to the 9% cap", or "Hit: at the 9% cap" with nothing left to gain.
+local function capLine(word, part)
+	if part[1] <= 0 then
+		return string.format(L.gearHitCapReached, word, capPercent(part[2]))
+	end
+	return string.format(L.gearHitCapTo, word, capPercent(part[1]), capPercent(part[2]))
+end
+
+--- The hit cap under the stat weights (spec 13): { lines, tip }, one line per part the band publishes
+--- (Data.hitToCap[spec][condition][band][faction]): special attacks and ranged shots against the 9% cap,
+--- white swings for a dual wielder, spells against the 16% cap, and a school a talent adds hit to. The
+--- figures are the list's character's (its gear and, Raid-ready, its buffs), never the addon's own.
+--- nil where the band publishes none (a healer). Pure.
+function GearTab.hitCap(data, spec, band, faction, condition)
+	local bySpec = type(data) == "table" and type(data.hitToCap) == "table" and spec ~= nil and data.hitToCap[spec]
+		or nil
+	local byCondition = type(bySpec) == "table" and bySpec[condition or GearTab.BARE] or nil
+	local byBand = type(byCondition) == "table" and band ~= nil and byCondition[band] or nil
+	local entry = type(byBand) == "table" and byBand[faction] or nil
+	if type(entry) ~= "table" then
+		return nil
+	end
+	local lines = {}
+	for _, part in ipairs({ { L.gearHitWord, entry.hit }, { L.gearHitWhiteWord, entry.white },
+		{ L.gearHitSpellWord, entry.spell } }) do
+		if type(part[2]) == "table" then
+			lines[#lines + 1] = capLine(part[1], part[2])
+		end
+	end
+	if type(entry.school) == "table" and type(entry.spell) == "table" then
+		lines[#lines + 1] = capLine(string.format(L.gearHitSchoolWord, entry.school[2]),
+			{ entry.school[1], entry.spell[2] })
+	end
+	if #lines == 0 then
+		return nil
+	end
+	return { lines = lines, tip = { L.gearHitCapTitle, { text = L.gearHitCapTip, wrap = true } } }
 end
 
 -- The doll ---------------------------------------------------------------------------------------

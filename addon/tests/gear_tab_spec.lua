@@ -32,9 +32,27 @@ local DATA = {
 	} },
 }
 
+--- DATA with a Raid-ready list at 30 (horde): a better helm (19) ranked under raid buffs, the rest the bare
+--- list's; the hit cap per condition, and what Raid-ready assumes.
+local RAID_DATA = {}
+for key, value in pairs(DATA) do
+	RAID_DATA[key] = value
+end
+RAID_DATA.bisRaid = { [SPEC] = { [30] = { horde = {
+	head = "19|D|Scarlet Monastery: Herod",
+	chest = "11|C|Blacksmithing",
+	legs = "13|Q|The Ravaged Caravan",
+} } } }
+RAID_DATA.hitToCap = { [SPEC] = {
+	bare = { [30] = { horde = { hit = { 2, 9 }, white = { 21, 28 } } } },
+	raid = { [30] = { horde = { hit = { 0, 9 }, white = { 19, 28 } } } },
+} }
+RAID_DATA.bisConditions = { [SPEC] = { label = "Raid-ready, Phase 1", buffs = "Battle Shout, Mark of the Wild",
+	debuffs = "Sunder Armor", consumes = "Juju Might" } }
+
 local STATS = { [10] = { strength = 20 }, [11] = { strength = 15 }, [12] = { strength = 12 }, [13] = { strength = 30 },
 	[14] = { strength = 8 }, [15] = { strength = 26 }, [16] = { strength = 6 }, [17] = { strength = 5 },
-	[18] = { strength = 9 } }
+	[18] = { strength = 9 }, [19] = { strength = 24 } }
 
 local function worn(itemId, equipLoc, strength)
 	return { itemId = itemId, link = "item:" .. itemId, equipLoc = equipLoc, stats = { strength = strength } }
@@ -246,6 +264,73 @@ describe("the Gear tab's model (GearTab)", function()
 		assert.are.equal(GearTab.WEIGHT_ROWS, #GearTab.weights({ weights = many }).rows)
 	end)
 
+	it("offers Raid-ready only at a band with that list, and opens on it", function()
+		local raid = input({ data = RAID_DATA })
+		assert.is_true(GearTab.hasRaidList(raid, 30))
+		assert.is_false(GearTab.hasRaidList(raid, 40))
+		assert.is_false(GearTab.hasRaidList(input(), 30))
+		assert.is_false(GearTab.hasRaidList(input({ data = RAID_DATA, faction = "alliance" }), 30))
+		assert.are.equal(GearTab.RAID, GearTab.conditionAt(raid, 30, nil))
+		assert.are.equal(GearTab.BARE, GearTab.conditionAt(raid, 30, GearTab.BARE))
+		assert.are.equal(GearTab.BARE, GearTab.conditionAt(raid, 40, GearTab.RAID))
+		assert.are.same({ GearTab.RAID, GearTab.BARE }, GearTab.CONDITIONS)
+	end)
+
+	it("reads the Raid-ready list through the one pick path and never changes the data", function()
+		local raid = input({ data = RAID_DATA })
+		local shown = GearTab.withCondition(raid, 30, GearTab.RAID)
+		local doll = GearTab.doll(shown, 30)
+		-- The raid helm: (24 - 10) strength at 0.5 DPS a point; slots the raid list leaves out have no pick.
+		assert.are.same({ 19, 7 }, { doll.cells.head.pick.item_id, doll.cells.head.gain })
+		assert.is_nil(doll.cells.hands.pick)
+		-- The source counts are the raid list's: one quest pick, where the bare list has two.
+		assert.are.equal(1, GearTab.sources(shown.data, SPEC, 30, "horde").counts.quest)
+		assert.are.equal(2, GearTab.sources(DATA, SPEC, 30, "horde").counts.quest)
+		-- The bare list is untouched, and Bare is the input itself.
+		assert.are.equal("10|D|Scarlet Monastery: Herod|0.2", RAID_DATA.bis[SPEC][30].horde.head)
+		assert.are.equal(10, GearTab.doll(raid, 30).cells.head.pick.item_id)
+		assert.are.equal(raid, GearTab.withCondition(raid, 30, GearTab.BARE))
+		assert.are.equal(raid, GearTab.withCondition(raid, 40, GearTab.RAID))
+	end)
+
+	it("says what Raid-ready assumes and what Bare leaves out", function()
+		local raid = GearTab.conditionsTip(RAID_DATA, SPEC, GearTab.RAID)
+		assert.are.equal("Raid-ready, Phase 1", raid[1])
+		local texts = {}
+		for _, line in ipairs(raid) do
+			texts[#texts + 1] = type(line) == "table" and line.text or line
+		end
+		local joined = table.concat(texts, "\n")
+		for _, part in ipairs({ L.gearBuffs, "Battle Shout, Mark of the Wild", L.gearDebuffs, "Sunder Armor",
+			L.gearConsumes, "Juju Might" }) do
+			assert.is_truthy(joined:find(part, 1, true), part)
+		end
+		assert.are.same({ L.gearBare, { text = L.gearBareTip, wrap = true } },
+			GearTab.conditionsTip(RAID_DATA, SPEC, GearTab.BARE))
+		assert.is_nil(GearTab.conditionsTip(DATA, SPEC, GearTab.RAID))
+	end)
+
+	it("words the hit cap per part the band publishes, against the list's own figures", function()
+		assert.are.same({ "Hit: 2% to the 9% cap", "White swings: 21% to the 28% cap" },
+			GearTab.hitCap(RAID_DATA, SPEC, 30, "horde", GearTab.BARE).lines)
+		local raid = GearTab.hitCap(RAID_DATA, SPEC, 30, "horde", GearTab.RAID)
+		assert.are.same({ "Hit: at the 9% cap", "White swings: 19% to the 28% cap" }, raid.lines)
+		assert.are.equal(L.gearHitCapTitle, raid.tip[1])
+		assert.is_truthy(raid.tip[2].text:find("Improves your chance to hit by 1.0%.", 1, true))
+		local caster = { hitToCap = { ["priest-shadow"] = { bare = { [40] = { alliance = {
+			spell = { 9.5, 16 }, school = { 3, "Shadow" } } } } } } }
+		assert.are.same({ "Spell hit: 9.5% to the 16% cap", "Shadow spells: 3% to the 16% cap" },
+			GearTab.hitCap(caster, "priest-shadow", 40, "alliance", GearTab.BARE).lines)
+		local hybrid = { hitToCap = { [SPEC] = { bare = { [60] = { horde = {
+			hit = { 2.9, 9 }, spell = { 9.9, 16 } } } } } } }
+		assert.are.same({ "Hit: 2.9% to the 9% cap", "Spell hit: 9.9% to the 16% cap" },
+			GearTab.hitCap(hybrid, SPEC, 60, "horde", GearTab.BARE).lines)
+		-- A healer's band, another faction, another band: nothing to say.
+		assert.is_nil(GearTab.hitCap(DATA, SPEC, 30, "horde", GearTab.BARE))
+		assert.is_nil(GearTab.hitCap(RAID_DATA, SPEC, 30, "alliance", GearTab.BARE))
+		assert.is_nil(GearTab.hitCap(RAID_DATA, SPEC, 40, "horde", GearTab.BARE))
+	end)
+
 	it("has the best bag upgrade waiting, in the chip's words", function()
 		local items = GearTab.waitingFrom({ { link = "|Hitem:867|h[Gloves of Holy Might]|h", itemId = 867, delta = 11.24,
 			unit = "dps" }, { link = "item:2", delta = 1, unit = "dps" } })
@@ -328,6 +413,35 @@ describe("the Gear tab in the window", function()
 		-- The legs' quest pick is gone from the doll at once.
 		assert.is_falsy(GearTabView.view.cells.legs.status:GetText():find("DPS", 1, true))
 		assert.is_true(GearTabView.view.sources.default:IsShown())
+	end)
+
+	it("shows Conditions where the band has a Raid-ready list, opens on it and switches the list", function()
+		GearTab.read = function()
+			return input({ data = RAID_DATA })
+		end
+		Hub.open("gear")
+		local view = GearTabView.view
+		local raidReady, bare = view.conditions[1], view.conditions[2]
+		assert.is_true(view.conditionsLabel:IsShown())
+		assert.are.equal(L.gearConditions, view.conditionsLabel:GetText())
+		assert.are.same({ L.gearRaidReady, L.gearBare }, { raidReady:GetText(), bare:GetText() })
+		assert.is_true(raidReady.foreverSixtySelected)
+		assert.is_false(bare.foreverSixtySelected)
+		assert.is_truthy(view.cells.head.status:GetText():find("+7.0 DPS", 1, true))
+		assert.are.equal("Hit: at the 9% cap", view.weights.hit[1]:GetText())
+		assert.is_true(view.weights.hitHover:IsShown())
+		-- The header counts what the doll shows.
+		assert.is_truthy(Hub.headerFor(Hub.tab("gear")).note:find("1 of 3 best in slot", 1, true))
+		bare:GetScript("OnClick")(bare)
+		assert.are.equal(GearTab.BARE, GearTabView.condition)
+		assert.is_true(bare.foreverSixtySelected)
+		assert.is_truthy(view.cells.head.status:GetText():find("+5.0 DPS", 1, true))
+		assert.are.equal("Hit: 2% to the 9% cap", view.weights.hit[1]:GetText())
+		-- 40 has no Raid-ready list: no Conditions row.
+		view.bands[3]:GetScript("OnClick")(view.bands[3])
+		assert.is_false(view.conditionsLabel:IsShown())
+		assert.is_false(raidReady:IsShown())
+		assert.is_false(view.weights.hit[1]:IsShown())
 	end)
 
 	it("opens on a slot from an Alt-click, its cell on the hover ground for two seconds", function()

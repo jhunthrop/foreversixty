@@ -8,7 +8,10 @@ data/builds/<build>/bis/<spec>.json per spec, nightly
 (.github/workflows/bis.yml); this module turns that flat per-(band,
 faction) report into the {spec -> band -> faction -> slot} shape
 pipeline.addondata hands the addon, the same way pipeline.addonrotation
-turns a curated APL into the rotation card's table.
+turns a curated APL into the rotation card's table. The bare character's
+bands are `bis`; the bands leveling-bis also ranked under its raid preset
+are `bisRaid` beside them, with the preset's conditions and each band's
+hit cap (the Gear tab's Conditions row and hit line).
 
 Four decisions are load-bearing:
 
@@ -54,10 +57,35 @@ from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from pipeline.models import AddonBisAlternative, AddonBisBand, AddonBisItem, AddonBisKindEntry
+from pipeline.models import (
+    AddonBisAlternative,
+    AddonBisBand,
+    AddonBisConditions,
+    AddonBisItem,
+    AddonBisKindEntry,
+    AddonHitToCap,
+)
 
 #: The `preset` tag of a band entry measured on the bare character (sim/cmd/leveling-bis/preset.go).
 BARE_PRESET = "bare"
+#: The `preset` tag of a band entry ranked under the raid conditions (`presets.raid`): the Gear
+#: tab's Raid-ready list.
+RAID_PRESET = "raid"
+
+#: Joins a raid preset group's names for the Conditions hover (AddonBisConditions).
+CONDITIONS_SEPARATOR = ", "
+
+#: The hit caps against a target three levels up, in percent (sim/cmd/leveling-bis/hitcap.go and
+#: the engine's hit profile; spec 13 of design/specs/2026-11-13-addon-hub.md): special attacks and
+#: ranged shots, a dual wielder's white swings (19 points more), and spells (17% base miss, 1%
+#: always left). hit_to_cap publishes only the distance, which is 0 at or past the cap, so the cap
+#: itself is stated here once and checked against every band still short of it.
+SPECIAL_HIT_CAP = 9.0
+WHITE_HIT_CAP = 28.0
+SPELL_HIT_CAP = 16.0
+#: How far baseline plus distance may sit from the cap before the generator refuses (engine sums
+#: carry float noise such as 6.1000000000000005).
+HIT_CAP_TOLERANCE = 0.05
 
 #: sim/cmd/leveling-bis/main.go's own defaultBandsFlag: 20 through 60 step
 #: 10 (owner ruling 2026-09-29). Not the rotation ladder's seven rungs
@@ -178,6 +206,61 @@ def _significant_weights(weights: list[dict]) -> dict[str, float]:
         for entry in weights
         if not entry.get("insignificant", False)
     }
+
+
+def _percent(value: float) -> float:
+    """A hit percent at one decimal, as the web's formatCapPercent prints it (engine sums
+    such as 2.8999999999999995 come out 2.9)."""
+    return round(float(value), 1)
+
+
+def _to_cap(
+    path: Path, where: str, have: float, distance: float, cap: float
+) -> tuple[float, float]:
+    """(percent still to gain, the cap it counts toward). A distance short of the cap must
+    land on it from `have` (the hit already counted), or the engine's caps moved and this
+    generator's constants with them: refuse rather than print a wrong cap."""
+    if distance > 0 and abs(have + distance - cap) > HIT_CAP_TOLERANCE:
+        raise AddonBisError(
+            f"{path}: hit_to_cap at {where} reaches {have + distance:g}%, not the {cap:g}% cap"
+        )
+    return _percent(distance), cap
+
+
+def _hit_to_cap(path: Path, where: str, raw: dict | None) -> AddonHitToCap | None:
+    """leveling-bis's `hit_to_cap` (web/src/lib/bis/types.ts's BisHitToCap) as the Gear
+    tab reads it. None where the band publishes none; a shape the addon cannot word
+    refuses rather than shipping a line that says nothing."""
+    if raw is None:
+        return None
+    baseline = raw.get("baseline")
+    if not isinstance(baseline, int | float):
+        raise AddonBisError(f"{path}: hit_to_cap at {where} has no baseline")
+    if raw.get("kind") == "spell":
+        if "spell" not in raw:
+            raise AddonBisError(f"{path}: a spell hit_to_cap at {where} has no spell distance")
+        school = raw.get("school")
+        if school is not None:
+            _to_cap(path, f"{where} (school)", school["hit"], school["to_cap"], SPELL_HIT_CAP)
+        return AddonHitToCap(
+            spell=_to_cap(path, where, baseline, raw["spell"], SPELL_HIT_CAP),
+            school=None
+            if school is None
+            else (_percent(school["to_cap"]), CONDITIONS_SEPARATOR.join(school["names"])),
+        )
+    if "kind" in raw or "specials" not in raw:
+        raise AddonBisError(
+            f"{path}: hit_to_cap at {where} is neither a spell nor a weapon profile"
+        )
+    return AddonHitToCap(
+        hit=_to_cap(path, where, baseline, raw["specials"], SPECIAL_HIT_CAP),
+        white=_to_cap(path, where, baseline, raw["white"], WHITE_HIT_CAP)
+        if "white" in raw
+        else None,
+        spell=_to_cap(path, where, baseline, raw["spell"], SPELL_HIT_CAP)
+        if "spell" in raw
+        else None,
+    )
 
 
 def _runners_up(path: Path, where: str, entry: dict) -> list[dict]:
@@ -545,6 +628,7 @@ def _one_band(
     factions: dict[str, dict[str, AddonBisItem]] = {}
     new_at_band: dict[str, list[int]] = {}
     weights: dict[str, float] = {}
+    hit_to_cap: dict[str, AddonHitToCap] = {}
     for index, (faction, band) in enumerate(sorted(by_faction.items())):
         if faction not in KNOWN_FACTIONS:
             raise AddonBisError(f"{path}: unknown faction {faction!r} at band {level}")
@@ -556,27 +640,34 @@ def _one_band(
         factions[faction] = picks
         new_at_band[faction] = _new_item_ids(picks, previous.get(faction))
         previous[faction] = {slot: pick.item_id for slot, pick in picks.items()}
+        hit = _hit_to_cap(path, f"band {level}/{faction}", band.get("hit_to_cap"))
+        if hit is not None:
+            hit_to_cap[faction] = hit
         # The first faction (sorted, so always the same one for a given
         # band) stands for the band as a whole -- see AddonBisBand.weights'
         # own docstring on why factions are not kept apart here.
         if index == 0:
             weights = _significant_weights(band.get("weights") or [])
-    return AddonBisBand(level=level, factions=factions, new_at_band=new_at_band, weights=weights)
+    return AddonBisBand(
+        level=level,
+        factions=factions,
+        new_at_band=new_at_band,
+        weights=weights,
+        hit_to_cap=hit_to_cap,
+    )
 
 
-def _spec_bis(path: Path, facts: _ItemFacts, skips: list[int]) -> list[AddonBisBand]:
-    """One spec's bis/<spec>.json, regrouped from leveling-bis's flat list
-    of (band, faction) reports into one AddonBisBand per level, both
-    factions inline -- the shape the addon actually indexes by."""
-    payload = json.loads(path.read_text(encoding="utf-8"))
+def _preset_bands(
+    path: Path, payload: dict, preset: str, facts: _ItemFacts, skips: list[int]
+) -> list[AddonBisBand]:
+    """The spec's bands ranked under `preset`, regrouped from leveling-bis's flat list
+    of (band, faction) reports into one AddonBisBand per level, both factions inline --
+    the shape the addon actually indexes by. Level 60 carries a bare and a raid entry
+    per faction; each preset keeps its own, so neither overwrites the other."""
     by_level: dict[int, dict[str, dict]] = {}
     for band in payload.get("bands", []):
-        # Level 60 also carries a "raid" entry per faction (leveling-bis's
-        # presets); the addon's table is the bare character's, and a later
-        # entry would otherwise overwrite the bare one.
-        if band.get("preset", BARE_PRESET) != BARE_PRESET:
-            continue
-        by_level.setdefault(band["band"], {})[band["faction"]] = band
+        if band.get("preset", BARE_PRESET) == preset:
+            by_level.setdefault(band["band"], {})[band["faction"]] = band
     previous: dict[str, dict[str, int]] = {}
     return [
         _one_band(path, level, by_faction, facts, skips, previous)
@@ -584,17 +675,74 @@ def _spec_bis(path: Path, facts: _ItemFacts, skips: list[int]) -> list[AddonBisB
     ]
 
 
+def _conditions(path: Path, payload: dict) -> AddonBisConditions | None:
+    """The raid preset's conditions (`presets.raid`), each group's labels joined; None
+    for a file with no raid preset."""
+    raid = (payload.get("presets") or {}).get(RAID_PRESET)
+    if raid is None:
+        return None
+    try:
+        conditions = AddonBisConditions(
+            label=raid["label"],
+            **{
+                group: CONDITIONS_SEPARATOR.join(entry["label"] for entry in raid[group])
+                for group in ("buffs", "debuffs", "consumes")
+            },
+        )
+    except KeyError as missing:
+        raise AddonBisError(f"{path}: presets.raid has no {missing}") from None
+    # A tooltip reads `|` as the start of an escape sequence.
+    if any("|" in text for text in conditions.model_dump().values()):
+        raise AddonBisError(f"{path}: a presets.raid label carries '|'")
+    return conditions
+
+
+@dataclass
+class BisTables:
+    """Every BiS table the addon data carries from one build's bis/ directory."""
+
+    #: spec -> the bare character's bands (AddonData.bis).
+    bare: dict[str, list[AddonBisBand]] = field(default_factory=dict)
+    #: spec -> the bands ranked under the raid preset (AddonData.bis_raid).
+    raid: dict[str, list[AddonBisBand]] = field(default_factory=dict)
+    #: spec -> the raid preset's conditions (AddonData.bis_conditions).
+    conditions: dict[str, AddonBisConditions] = field(default_factory=dict)
+    #: The id of every candidate passed over as client_unconfirmed, one per skip.
+    skips: list[int] = field(default_factory=list)
+
+
+def _spec_bis(path: Path, facts: _ItemFacts, tables: BisTables) -> None:
+    """One spec's bis/<spec>.json, parsed once, into `tables`: its bare bands, its raid
+    bands and conditions where the file has a raid preset."""
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    tables.bare[path.stem] = _preset_bands(path, payload, BARE_PRESET, facts, tables.skips)
+    raid = _preset_bands(path, payload, RAID_PRESET, facts, tables.skips)
+    if raid:
+        tables.raid[path.stem] = raid
+    conditions = _conditions(path, payload)
+    if conditions is not None:
+        tables.conditions[path.stem] = conditions
+
+
+def build_bis_tables(root: Path, build: str) -> BisTables:
+    """Every spec's bare and raid bands and raid conditions, each bis/<spec>.json read
+    once. Empty when data/builds/<build>/bis does not exist at all."""
+    bis_dir = root / build / "bis"
+    tables = BisTables()
+    if not bis_dir.exists():
+        return tables
+    facts = _item_facts(root, build)
+    for path in sorted(bis_dir.glob("*.json")):
+        _spec_bis(path, facts, tables)
+    return tables
+
+
 def build_bis_with_skips(root: Path, build: str) -> tuple[dict[str, list[AddonBisBand]], list[int]]:
     """build_bis, plus the id of every candidate it passed over because
     items.json marks it `client_unconfirmed` (one entry per skip, across
-    every spec, band and faction) -- unconfirmed_skips_line's input."""
-    bis_dir = root / build / "bis"
-    if not bis_dir.exists():
-        return {}, []
-    facts = _item_facts(root, build)
-    skips: list[int] = []
-    bis = {path.stem: _spec_bis(path, facts, skips) for path in sorted(bis_dir.glob("*.json"))}
-    return bis, skips
+    every spec, band, preset and faction) -- unconfirmed_skips_line's input."""
+    tables = build_bis_tables(root, build)
+    return tables.bare, tables.skips
 
 
 def build_bis(root: Path, build: str) -> dict[str, list[AddonBisBand]]:
@@ -634,20 +782,25 @@ def _class_dps(root: Path, build: str) -> dict[int, float]:
     return dps
 
 
+def _bands(tables: tuple[dict[str, list[AddonBisBand]], ...]) -> list[AddonBisBand]:
+    """Every band of every table given (the bare and the raid ones alike)."""
+    return [band for table in tables for bands in table.values() for band in bands]
+
+
 def build_bis_items(
-    root: Path, build: str, bis: dict[str, list[AddonBisBand]]
+    root: Path, build: str, *tables: dict[str, list[AddonBisBand]]
 ) -> tuple[dict[int, str], dict[int, float]]:
     """Data.lua's `bisNames` and `bisDps` side tables (task L1.4): every item
     id that is a pick or an alternative in any band, to its items.json
     display name; and, for a weapon, to its own dps at one decimal. The
     tooltip names a pick and prices a weapon pick before the client's item
     cache fills; the packed pick strings stay exactly as they were, so
-    Gear.decodePick reads them unchanged."""
+    Gear.decodePick reads them unchanged. `tables` are the bare and the raid
+    tables: a raid pick is named like any other."""
     ids = sorted(
         {
             item_id
-            for bands in bis.values()
-            for band in bands
+            for band in _bands(tables)
             for slots in band.factions.values()
             for pick in slots.values()
             for item_id in [pick.item_id]
@@ -671,14 +824,14 @@ def build_bis_items(
     return names, dps
 
 
-def build_bis_sources(bis: dict[str, list[AddonBisBand]]) -> list[str]:
+def build_bis_sources(*tables: dict[str, list[AddonBisBand]]) -> list[str]:
     """Data.lua's `bisSources` list: every distinct place a by_kind entry names, the
     most used first (ties by name), so the packed by-kind tail carries a short 1-based
-    index into it rather than the text (pipeline.addonlua._kind_entry)."""
+    index into it rather than the text (pipeline.addonlua._kind_entry). `tables` as for
+    build_bis_items."""
     uses = Counter(
         entry.source
-        for bands in bis.values()
-        for band in bands
+        for band in _bands(tables)
         for slots in band.factions.values()
         for pick in slots.values()
         for entry in pick.by_kind
