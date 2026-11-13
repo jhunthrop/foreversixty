@@ -1,0 +1,21 @@
+reports	26
+class	spell	name	event	events	crits	players
+?	1279983	Flamestrike	damage	4	0	1
+?	1280345	Consecration	damage	28	1	3
+?	26365	Lightning Shield	damage	2	0	1
+Hunter	1279721	Volley	damage	478	52	1
+Mage	1279976	Blizzard	damage	368	11	4
+Mage	1279977	Blizzard	damage	994	70	2
+Mage	1279983	Flamestrike	damage	418	27	6
+Mage	1279985	Flamestrike	damage	517	28	4
+Mage	412545	Ignite	damage	1	0	1
+Paladin	1280345	Consecration	damage	22706	2249	27
+Paladin	1280346	Consecration	damage	5874	798	5
+Paladin	1280347	Consecration	damage	493	78	1
+Shaman	26364	Lightning Shield	damage	26	0	5
+Shaman	26365	Lightning Shield	damage	179	0	8
+Shaman	26366	Lightning Shield	damage	78	0	8
+Shaman	26367	Lightning Shield	damage	22	0	3
+Shaman	26369	Lightning Shield	damage	33	0	1
+Warlock	1282380	Rain of Fire	damage	3286	196	14
+Warrior	412613	Deep Wound	damage	146	0	2
