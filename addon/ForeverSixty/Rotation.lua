@@ -4,36 +4,18 @@
 -- against spellranks.json into ns.Data.rotations[spec]: a band at each of its
 -- LEVEL_BANDS rungs (10, 20, 30, 38, 40, 50, 60) and at every level between
 -- where a line changes (a rank row or a rank learned mid-band). This module
--- picks the right band for a character's level and slices it for novice
--- (top four lines) or advanced (every line) display. Rotation.newAbilities
--- fed the level-up rotation toast, which went with the chip (L3.1). The
--- character-panel tab's rotation region (L4.3) reads Rotation.model with
--- Rotation.plainCondition, Rotation.learnedAt and Rotation.upcoming.
+-- picks the spec and the band for a level, the levels the priority changes at,
+-- the level an ability is learned at, and a condition in plain words: the
+-- window's Rotation tab (surfaces/RotationTab.lua, hub spec 4.4) reads them.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Gear = ns.Gear or require("Gear")
 local Follow = ns.Follow or require("Follow")
 local Compat = ns.Compat or require("Compat")
+local Export = ns.Export or require("Export")
 
 local Rotation = {}
-
---- The rotation card's novice-mode line count (design section 2 item 3:
---- "the top 4 lines"; section 6's own wording for the card).
-Rotation.NOVICE_LINES = 4
-
---- `data.rotations[spec]` for the build's own spec (Gear.specOf's rule:
---- the tree with the most points), or nil when there is no build loaded,
---- the class has no curated rotation, or Data.lua predates this field.
-local function specBands(data, build, ranks)
-	if build == nil or type(data.rotations) ~= "table" then
-		return nil
-	end
-	-- The build's own spec first (hotfix 2.0.2: a level-6 character on the Retribution path has no
-	-- points yet, and the talents' tie would read Holy), the talents' leading tree otherwise.
-	local spec = Follow.buildSpec(data, build) or Gear.specOf(data, build.classSlug, ranks)
-	return spec and data.rotations[spec] or nil
-end
 
 --- The band whose level is the highest one <= `level`: a band starts at each
 --- rung and wherever a line changes between rungs (a rank row from 34), so
@@ -79,93 +61,68 @@ local function ofRace(band)
 	return { level = band.level, lines = lines }
 end
 
---- The rotation card's model. `visible` is false only when the spec has
---- no rotation at all (an unwritten APL, or Data.lua predates this
---- field); a band that resolved but is genuinely empty (mage-frost below
---- its first learned rank, say) still reports visible with zero lines,
---- which the card draws as nothing rather than hiding the whole card.
-function Rotation.model(data, build, ranks, level, advanced)
-	local bands = specBands(data, build, ranks)
-	local band = ofRace(bandFor(bands, level))
-	if band == nil then
-		return { visible = false, lines = {} }
+--- The spec the Rotation tab shows (hub spec 4.4 and 8) and whether a followed build names it: the
+--- build's own (specBands' rule), else the tree the points name (Gear.specOf), else the class's first
+--- tree that has a rotation, so a character with no build still reads its class's priority. nil for a
+--- class with no rotation at all.
+function Rotation.specFor(data, build, ranks, classSlug)
+	local rotations = type(data) == "table" and data.rotations or nil
+	if type(rotations) ~= "table" then
+		return nil, false
 	end
-	local lines = band.lines
-	local shown = lines
-	if not advanced and #lines > Rotation.NOVICE_LINES then
-		shown = {}
-		for index = 1, Rotation.NOVICE_LINES do
-			shown[index] = lines[index]
+	if build ~= nil then
+		local spec = Follow.buildSpec(data, build) or Gear.specOf(data, build.classSlug, ranks)
+		if spec ~= nil and rotations[spec] ~= nil then
+			return spec, true
 		end
 	end
-	return {
-		visible = true,
-		level = band.level,
-		lines = shown,
-		hasMore = not advanced and #lines > #shown,
-	}
-end
-
---- The lines newly in `level`'s band that were not in the band the
---- character read from at `previousLevel` (by spellId): "Level 20: Sunder
---- Armor opens your rotation now" (design section 2).
---- Compared by NAME, not spellId: a line's spellId is already the
---- highest rank learned by that band (pipeline.addonrotation's own
---- resolving), so the same ability ranking up between two bands (Heroic
---- Strike rank 2 to rank 3, say) would otherwise misread as a brand new
---- ability entering the rotation -- a rank-up is the talent and spell
---- trainer's news, not the rotation's.
---- Empty (never an error) when: the spec has no rotation at all;
---- `previousLevel` is nil (nothing to diff against -- a caller with no
---- known prior level, such as the very first event after the addon
---- loads, must not read whatever band a fabricated "level 0" would
---- resolve to as if it were real prior state); or the two levels share a
---- band (nothing crossed a rung).
-function Rotation.newAbilities(data, build, ranks, previousLevel, level)
-	if previousLevel == nil then
-		return {}
+	local own = Gear.specOf(data, classSlug, ranks)
+	if own ~= nil and rotations[own] ~= nil then
+		return own, false
 	end
-	local bands = specBands(data, build, ranks)
-	local before = ofRace(bandFor(bands, previousLevel))
-	local after = ofRace(bandFor(bands, level))
-	if after == nil then
-		return {}
-	end
-	local had = {}
-	if before ~= nil then
-		for _, line in ipairs(before.lines) do
-			had[line.name] = true
+	local class = type(data.classes) == "table" and data.classes[classSlug] or nil
+	for _, tab in ipairs(type(class) == "table" and class.tabs or {}) do
+		local spec = type(tab.name) == "string" and classSlug .. "-" .. Export.slugify(tab.name) or nil
+		if spec ~= nil and rotations[spec] ~= nil then
+			return spec, false
 		end
 	end
-	local fresh = {}
-	for _, line in ipairs(after.lines) do
-		if not had[line.name] then
-			fresh[#fresh + 1] = line
+	return nil, false
+end
+
+--- What a band shows the player: each line's name and condition, in order (a rank-up changes neither).
+local function shownKey(band)
+	local parts = {}
+	for _, line in ipairs(band.lines) do
+		parts[#parts + 1] = tostring(line.name) .. "\n" .. tostring(line.condition)
+	end
+	return table.concat(parts, "\n\n")
+end
+
+--- The levels `spec`'s priority changes at (the stepper's stops, hub spec 4.4): each band's level
+--- whose lines read differently from the band before it, ascending. A band that only ranks a line up
+--- is no stop. Empty for a spec with no rotation.
+function Rotation.changeLevels(data, spec)
+	local bands = type(data) == "table" and type(data.rotations) == "table" and data.rotations[spec] or nil
+	local levels, previous = {}, nil
+	for _, band in ipairs(type(bands) == "table" and bands or {}) do
+		local key = shownKey(band)
+		if key ~= previous then
+			levels[#levels + 1] = band.level
 		end
+		previous = key
 	end
-	return fresh
+	return levels
 end
 
---- spellId -> true for every line Rotation.newAbilities last found fresh,
---- so a rotation surface can glow the matching row (docs/
---- tenets.md's standard: "the row for the ability the player just
---- learned this level glows") with a plain table
---- lookup rather than a require of a surface that loads later in the TOC.
---- Its caller calls this explicitly, right after computing `fresh` -- a
---- visible side effect at its call site, not a hidden one inside this
---- file's own pure functions above.
-Rotation.recentlyLearned = {}
-
-function Rotation.markLearned(lines)
-	local set = {}
-	for _, line in ipairs(lines or {}) do
-		set[line.spellId] = true
-	end
-	Rotation.recentlyLearned = set
-	return set
+--- `spec`'s band for `level` as the player's race casts it (bandFor's rule: the first band covers
+--- a level below it), or nil.
+function Rotation.bandAt(data, spec, level)
+	local bands = type(data) == "table" and type(data.rotations) == "table" and data.rotations[spec] or nil
+	return ofRace(bandFor(bands, level))
 end
 
--- The character-panel tab's rotation region (L4.3) -------------------------------
+-- Learned levels and plain conditions -------------------------------------------
 
 --- The level an ability is first learned at (Data.abilityLevels, contract 1: every rank of
 --- an ability maps to its first rank's level, keyed by the very id a band's line carries),
@@ -177,46 +134,6 @@ function Rotation.learnedAt(spellId, data)
 		return nil
 	end
 	return tonumber(levels[spellId])
-end
-
---- The next band's lines whose ability the character has not learned yet (fix round 1, item
---- 4: the band already holds only learned abilities, so "at level N" never fired on the shipped
---- data): the rung after the one `level` reads, its lines in order whose Rotation.learnedAt is
---- above `level` and whose ability the band read now does not already hold (by name, as
---- Rotation.newAbilities compares), at most `limit`. Each { line, at }. Empty at the top rung,
---- with no build, or with no rotation for the spec.
-function Rotation.upcoming(data, build, ranks, level, limit)
-	local bands = specBands(data, build, ranks)
-	local band = bandFor(bands, level)
-	if band == nil or type(level) ~= "number" then
-		return {}
-	end
-	local nextBand
-	for _, candidate in ipairs(bands) do
-		if candidate.level > band.level and (nextBand == nil or candidate.level < nextBand.level) then
-			nextBand = candidate
-		end
-	end
-	if nextBand == nil then
-		return {}
-	end
-	local held = {}
-	for _, line in ipairs(band.lines) do
-		held[line.name] = true
-	end
-	nextBand = ofRace(nextBand)
-	local found = {}
-	for _, line in ipairs(nextBand.lines) do
-		if limit ~= nil and #found >= limit then
-			break
-		end
-		local at = Rotation.learnedAt(line.spellId, data)
-		if not held[line.name] and at ~= nil and at > level then
-			held[line.name] = true
-			found[#found + 1] = { line = line, at = at }
-		end
-	end
-	return found
 end
 
 --- The ellipsis a cut condition ends with (the tooltip's own).

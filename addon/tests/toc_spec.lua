@@ -20,7 +20,10 @@ describe("the TOC", function()
 		-- The raid jobs (guild assignments): read Codec, Theme and the inbox; /fs job prints them.
 		"RaidAssign.lua",
 		-- Comms reads Progress, Score, Gear and Theme, so it loads after Score.
-		"Score.lua", "Comms.lua", "Inspect.lua",
+		"Score.lua",
+		-- The newest last_raid message read for the window (the Rotation tab, Me's weakest boss).
+		"LastRaid.lua",
+		"Comms.lua", "Inspect.lua",
 		-- The loot council helper (L5.3): reads Comms, Gear, Progress and the inbox; the group panel shows it.
 		"LootCouncil.lua", "surfaces/ItemTooltip.lua",
 		-- The player tooltip and the chat badges (L4.4): read Score and Comms.seen.
@@ -46,6 +49,8 @@ describe("the TOC", function()
 		"surfaces/SiteStatus.lua",
 		-- The Settings page (L3.5): registered at login; Options opens it.
 		"surfaces/Settings.lua",
+		-- The window's Rotation tab (hub spec 4.4): registers with the hub.
+		"surfaces/RotationTab.lua",
 		-- The character-panel tab (L4.3): reads the tooltip's Next lines, the rotation, the
 		-- build dialog's split and opens it; Options refreshes it.
 		"surfaces/PanelTab.lua",

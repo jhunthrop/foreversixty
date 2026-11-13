@@ -1117,9 +1117,6 @@ L.panelHeader = L.addonName
 -- A target's second line: the slot in the client's own word, then the item tooltip's own
 -- source line ("Chest · Wailing Caverns · Mutanus the Devourer · 33% drop").
 L.panelTargetDetail = "%s · %s"
--- An ability the character has not learned yet, muted and listed last; the next band's
--- abilities not learned yet come after them (fix round 1, item 4).
-L.panelRotationAt = "at level %d"
 -- The off-plan count's hover, one talent a line: a node the plan never touches ("Improved
 -- Wrath · Balance · Rank 2/5"), and a planned node holding more than the plan asks
 -- ("Improved Wrath · Balance · Rank 4/5 (plan 3)").
@@ -1575,9 +1572,6 @@ L.pathSplit = "%d %s"
 L.pathNext = "%s next"
 L.panelPick = "Pick"
 L.panelPathFoot = "First talent point at level %d"
-L.homeRotationTitle = "Rotation at %d"
-L.panelShow = "show"
-L.panelAtLevelRow = "at level %d"
 
 
 -- The gear source filter (Sources.lua, design/specs/2026-11-13-addon-source-filter.md): the web BiS
@@ -1781,6 +1775,62 @@ L.guildYouFollow = "you follow it"
 L.guildFollow = "Follow"
 L.guildSignUp = "Sign up"
 L.guildChipLine = "%s %s · %s"
+
+-- The Rotation tab (surfaces/RotationTab.lua, hub spec 4.4 and 11).
+L.rotPriority = "Priority"
+L.rotFor = "for %s"
+L.rotLevel = "Level %d"
+-- The stepper's buttons: plain ASCII, the client's font draws the angle quotes as dots.
+L.rotPrevious = "<"
+L.rotNext = ">"
+L.rotAtLevel = "at level %d"
+L.rotPlayed = "How you played it"
+L.rotAllBosses = "%d bosses"
+L.rotNoFigures = "No rotation figures for these fights."
+L.rotBoss = "Boss"
+L.rotFollowed = "Followed"
+L.rotBiggestLoss = "Biggest loss"
+L.rotPercent = "%d%%"
+L.rotMore = "%d more bosses"
+L.rotLost = "Lost across the night"
+L.rotSeconds = "%d s"
+L.rotNone = "-"
+L.rotOnMe = "See parses and deaths"
+L.rotNoRaidLogged = "No raid logged yet."
+L.rotFiguresFollowed = "followed %d%% on %s"
+L.rotWeekdays = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" }
+-- A boss's hover in How you played it.
+L.rotHoverFollowed = "Followed %d%% of the rotation"
+L.rotHoverParse = "Parse %d"
+L.rotHoverLoss = "Biggest loss: %s"
+L.rotHoverDied = "Died %d time"
+L.rotHoverDiedMany = "Died %d times"
+L.rotHoverMissed = "Pulled without: %s"
+-- Stat weights: the source as the section's note, the columns, haste apart per 1%.
+L.rotWeights = "Stat weights"
+L.rotWeightsSim = "your sim"
+L.rotWeightsSimOn = "your sim, %s"
+L.rotWeightsShipped = "at level %d"
+L.rotStat = "Stat"
+L.rotWeight = "Weight"
+L.rotDps = "DPS"
+L.rotHps = "HPS"
+L.rotPerPoint = "%s per point"
+L.rotHaste = "Haste: %.2f %s per 1%% haste"
+L.rotCapped = "Capped"
+-- A rating stat's row ("Hit rating") and its hover, the web's ratingConversion ("10 hit rating is 1% hit").
+L.rotRating = "%s rating"
+L.rotRatingConversion = "%d %s rating is 1%% %s"
+-- The stat names of the web's weights tables (web/src/lib/sim/copy.ts statLabel).
+L.rotStatNames = {
+	strength = "Strength", agility = "Agility", stamina = "Stamina", intellect = "Intellect", spirit = "Spirit",
+	spell_power = "Spell power", healing_power = "Healing power", spell_damage = "Spell damage", mp5 = "MP5",
+	hit = "Hit", crit = "Crit", attack_power = "Attack power", ranged_attack_power = "Ranged attack power",
+	expertise = "Expertise",
+	armor_penetration = "Armor penetration", spell_penetration = "Spell penetration", defense = "Defense",
+	dodge = "Dodge", parry = "Parry", block = "Block", block_value = "Block value", armor = "Armor",
+	feral_attack_power = "Feral attack power",
+}
 
 ns.L = L
 return L

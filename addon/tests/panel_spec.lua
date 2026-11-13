@@ -1,8 +1,8 @@
 -- addon/tests/panel_spec.lua
 -- The addon panel (design/specs/2026-11-08-addon-ux.md section 4): the pure model's regions in
--- priority order (Upgrades, Talents or Pick your path, Rotation; tonight's raid lives on the hub's
--- Guild tab, guild_hub_tab_spec), the height budget's shedding, and the frame drawn through the
--- client mock without writing into a client frame.
+-- priority order (Upgrades, Talents or Pick your path; tonight's raid lives on the hub's Guild tab,
+-- guild_hub_tab_spec, the rotation on its Rotation tab), the height budget's shedding, and the frame
+-- drawn through the client mock without writing into a client frame.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
@@ -105,45 +105,6 @@ describe("Panel, the pure model", function()
 		end)
 	end)
 
-	describe("Rotation", function()
-		local function rows(count, upcoming)
-			local list = {}
-			for index = 1, count do
-				list[index] = { spellId = index, name = "Spell " .. index,
-					fullCondition = "Spell " .. index .. " when ready; never at low mana." }
-			end
-			if upcoming then
-				list[#list + 1] = { spellId = 99, name = "Rapid Fire", muted = true, atLevel = 26 }
-			end
-			return list
-		end
-
-		it("shows every line of the band under 60 (six at most), first clauses, and the next ability dimmed", function()
-			local region = Panel.rotation({ level = 24, rows = rows(8, true) })
-			assert.are.equal(Panel.MAX_ROTATION, #region.rows)
-			assert.are.equal("Spell 1 when ready", region.rows[1].clause)
-			assert.are.equal(string.format(L.panelAtLevelRow, 26), region.nextRow.clause)
-			assert.is_nil(region.collapsed)
-		end)
-
-		it("counts a row as the name and its condition, a long condition on two lines", function()
-			local H = Panel.H
-			local one = H.rotationName + H.rotationClause + H.rotationGap
-			assert.are.equal(one, Panel.rotationRowHeight({ clause = "on cooldown" }))
-			assert.are.equal(one + H.rotationClause,
-				Panel.rotationRowHeight({ clause = string.rep("x", Panel.CLAUSE_WRAP_CHARS + 1) }))
-			assert.are.equal(H.rotationName + H.rotationGap, Panel.rotationRowHeight({ clause = "" }))
-			assert.are.equal("at level 26", string.format(L.panelAtLevelRow, 26))
-		end)
-
-		it("collapses at 60 unless opened, or a new rank was learned", function()
-			assert.is_true(Panel.rotation({ level = 60, rows = rows(3) }).collapsed)
-			assert.is_false(Panel.rotation({ level = 60, rows = rows(3), expanded = true }).collapsed)
-			assert.is_false(Panel.rotation({ level = 60, rows = rows(3), newRank = true }).collapsed)
-			assert.is_nil(Panel.rotation({ level = 24, rows = {} }))
-		end)
-	end)
-
 	describe("the title band", function()
 		it("names the character, the level and class; the score lives on the window's Me tab", function()
 			local head = Panel.head({ who = "Bow Jackzon", fact = "Level 24 Hunter", classToken = "HUNTER",
@@ -154,30 +115,24 @@ describe("Panel, the pure model", function()
 	end)
 
 	describe("the model and its height", function()
-		it("orders Upgrades, Talents, Rotation and never passes the budget", function()
+		it("orders Upgrades, Talents and never passes the budget", function()
 			local input = baseInput({ level = 24, targets = {},
 				build = { classSlug = "warrior", order = { {}, {} } }, unspent = 0, pointName = "X",
-				progress = { matched = 1, total = 2, offPlan = 0, nextLevel = 25, point = {} },
-				rows = { { spellId = 1, name = "A", fullCondition = "A." } } })
+				progress = { matched = 1, total = 2, offPlan = 0, nextLevel = 25, point = {} } })
 			local model = Panel.model(input)
 			local kinds = {}
 			for index, region in ipairs(model.regions) do
 				kinds[index] = region.kind
 			end
-			assert.are.same({ "upgrades", "talents", "rotation" }, kinds)
+			assert.are.same({ "upgrades", "talents" }, kinds)
 			assert.is_true(model.height <= Panel.MAX_HEIGHT)
 		end)
 
-		it("sheds the rotation to four rows, then the upgrades to two, then the next-ability row", function()
-			local regions = {
-				{ kind = "upgrades", rows = { {}, {}, {} }, rest = nil },
-				{ kind = "rotation", rows = { {}, {}, {}, {}, {}, {} }, nextRow = {} },
-			}
-			local model = Panel.fit({ head = {}, regions = regions }, 200)
-			assert.are.equal(Panel.SHED_ROTATION, #regions[2].rows)
+		it("sheds the upgrades to two past the budget", function()
+			local regions = { { kind = "upgrades", rows = { {}, {}, {} }, rest = nil } }
+			local model = Panel.fit({ head = {}, regions = regions }, 100)
 			assert.are.equal(Panel.SHED_UPGRADES, #regions[1].rows)
-			assert.is_nil(regions[2].nextRow)
-			assert.is_true(model.height <= 200)
+			assert.is_true(model.height <= 100)
 		end)
 	end)
 
@@ -202,7 +157,6 @@ describe("Panel, the frame", function()
 				source = "World drop" }, { itemId = 2, name = "Gloves", gain = 1.2, unit = "dps", bag = true, link = "x" } },
 			build = { classSlug = "hunter", order = { {}, {} } }, unspent = 1, pointName = "Lethal Attacks",
 			progress = { matched = 1, total = 2, offPlan = 1, nextLevel = 25, point = {} },
-			rows = { { spellId = 1, name = "Aimed Shot", fullCondition = "Aimed Shot when ready." } },
 			score = { score = 1240, tierColor = { r = 0, g = 0.44, b = 0.87 } } }))
 		assert.has_no.errors(function()
 			Panel.draw(model)

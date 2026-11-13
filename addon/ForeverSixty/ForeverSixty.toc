@@ -32,6 +32,7 @@ Progress.lua
 Rotation.lua
 RaidAssign.lua
 Score.lua
+LastRaid.lua
 Comms.lua
 Inspect.lua
 LootCouncil.lua
@@ -56,6 +57,7 @@ surfaces\GearTab.lua
 surfaces\GearTabView.lua
 surfaces\SiteStatus.lua
 surfaces\Settings.lua
+surfaces\RotationTab.lua
 surfaces\PanelTab.lua
 surfaces\Panel.lua
 surfaces\TourExample.lua

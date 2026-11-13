@@ -3,7 +3,7 @@
 -- B): ns.Data.rotations[spec] is a band at each data/pipeline/addonrotation
 -- LEVEL_BANDS rung (10, 20, 30, 38, 40, 50, 60) and at every level between
 -- where a line changes.
--- Rotation.lua picks the band for a level and slices it novice/advanced;
+-- Rotation.lua picks the spec and the band for a level and the levels it changes at;
 -- this covers that against a small hand-built rotations table, the same
 -- shape addonlua.py renders into Data.lua.
 local helper = require("spec_helper")
@@ -59,118 +59,50 @@ describe("Rotation", function()
 		mock.uninstall()
 	end)
 
-	describe("model", function()
-		it("is not visible with no build loaded", function()
-			local model = Rotation.model(DATA, nil, RANKS, 10, false)
-			assert.is_false(model.visible)
-		end)
+	describe("bandAt", function()
+		local SPEC = "warrior-fury"
 
 		it("picks the earliest band for a level below every rung", function()
-			local model = Rotation.model(DATA, BUILD, RANKS, 5, false)
-			assert.is_true(model.visible)
-			assert.are.equal(10, model.level)
+			assert.are.equal(10, Rotation.bandAt(DATA, SPEC, 5).level)
 		end)
 
 		it("picks the highest rung at or below the level, not the nearest", function()
-			local model = Rotation.model(DATA, BUILD, RANKS, 25, false)
-			assert.are.equal(20, model.level)
-			model = Rotation.model(DATA, BUILD, RANKS, 60, false)
-			assert.are.equal(40, model.level)
+			assert.are.equal(20, Rotation.bandAt(DATA, SPEC, 25).level)
+			assert.are.equal(40, Rotation.bandAt(DATA, SPEC, 60).level)
+			assert.are.equal(5, #Rotation.bandAt(DATA, SPEC, 40).lines)
 		end)
 
 		-- Round 16: a band starts wherever a line changes (a rank row from 34, a rank learned
 		-- at 34), not only at the ladder's rungs; the player reads it from its own level.
 		it("reads a band that starts between two rungs from its own level", function()
 			local data = { build = DATA.build, classes = DATA.classes, weights = {}, rotations = {
-				["warrior-fury"] = {
+				[SPEC] = {
 					{ level = 30, lines = { line(285, "Heroic Strike") } },
 					{ level = 34, lines = { line(1608, "Heroic Strike") } },
 					{ level = 38, lines = { line(1608, "Heroic Strike"), line(1680, "Whirlwind") } },
 				},
 			} }
-			assert.are.equal(30, Rotation.model(data, BUILD, RANKS, 33, true).level)
-			local at35 = Rotation.model(data, BUILD, RANKS, 35, true)
+			assert.are.equal(30, Rotation.bandAt(data, SPEC, 33).level)
+			local at35 = Rotation.bandAt(data, SPEC, 35)
 			assert.are.equal(34, at35.level)
 			assert.are.equal(1608, at35.lines[1].spellId)
+			-- A rank-up is no stop for the stepper; a new line is.
+			assert.are.same({ 30, 38 }, Rotation.changeLevels(data, SPEC))
 		end)
 
-		it("trims to the novice line count and flags that there is more", function()
-			local model = Rotation.model(DATA, BUILD, RANKS, 40, false)
-			assert.are.equal(Rotation.NOVICE_LINES, #model.lines)
-			assert.is_true(model.hasMore)
-		end)
-
-		it("shows every line in advanced mode and never flags more", function()
-			local model = Rotation.model(DATA, BUILD, RANKS, 40, true)
-			assert.are.equal(5, #model.lines)
-			assert.is_false(model.hasMore)
-		end)
-
-		it("is not visible for a spec with no curated rotation", function()
-			local model = Rotation.model(DATA, { classSlug = "warrior", order = {} }, { [1] = {} }, 10, false)
-			assert.is_false(model.visible)
+		it("is nothing for a spec with no curated rotation", function()
+			assert.is_nil(Rotation.bandAt(DATA, "warrior-arms", 10))
+			assert.are.same({}, Rotation.changeLevels(DATA, "warrior-arms"))
 		end)
 	end)
 
-	describe("newAbilities", function()
-		it("is empty across two levels that resolve to the same band", function()
-			local fresh = Rotation.newAbilities(DATA, BUILD, RANKS, 11, 15)
-			assert.are.same({}, fresh)
-		end)
-
-		it("names the line that entered at a new rung", function()
-			local fresh = Rotation.newAbilities(DATA, BUILD, RANKS, 15, 20)
-			assert.are.equal(0, #fresh)
-			fresh = Rotation.newAbilities(DATA, BUILD, RANKS, 20, 40)
-			local names = {}
-			for index, entry in ipairs(fresh) do
-				names[index] = entry.name
-			end
-			assert.are.same({ "Death Wish", "Bloodthirst", "Whirlwind" }, names)
-		end)
-
-		it("does not re-announce an ability that only ranked up (same name, new id)", function()
-			-- Heroic Strike's id changes between the level-10 and level-20
-			-- bands (a rank-up, the talent-point toast's own job); it must
-			-- not also show up here as though it were new.
-			local fresh = Rotation.newAbilities(DATA, BUILD, RANKS, 10, 20)
-			for _, entry in ipairs(fresh) do
-				assert.are_not.equal("Heroic Strike", entry.name)
-			end
-		end)
-
-		it("is empty with no earlier level to diff against", function()
-			assert.are.same({}, Rotation.newAbilities(DATA, BUILD, RANKS, nil, 40))
+	describe("specFor", function()
+		it("reads the build's spec, else the tree the points name", function()
+			assert.are.same({ "warrior-fury", true }, { Rotation.specFor(DATA, BUILD, RANKS, "warrior") })
+			assert.are.same({ "warrior-fury", false }, { Rotation.specFor(DATA, nil, RANKS, "warrior") })
 		end)
 	end)
 
-	-- docs/tenets.md's standard: the rotation card glows the row for the
-	-- ability the player just learned, off the toast's own event.
-	describe("markLearned/recentlyLearned", function()
-		it("marks every fresh line's spellId", function()
-			local fresh = Rotation.newAbilities(DATA, BUILD, RANKS, 20, 40)
-			Rotation.markLearned(fresh)
-			assert.is_true(Rotation.recentlyLearned[12328]) -- Death Wish
-			assert.is_true(Rotation.recentlyLearned[23881]) -- Bloodthirst
-			assert.is_nil(Rotation.recentlyLearned[2687]) -- Bloodrage: not fresh
-		end)
-
-		it("replaces the previous mark rather than accumulating it", function()
-			Rotation.markLearned(Rotation.newAbilities(DATA, BUILD, RANKS, 20, 40))
-			Rotation.markLearned(Rotation.newAbilities(DATA, BUILD, RANKS, 11, 15))
-			assert.are.same({}, Rotation.recentlyLearned)
-		end)
-
-		it("treats a nil list the same as an empty one", function()
-			Rotation.markLearned(Rotation.newAbilities(DATA, BUILD, RANKS, 20, 40))
-			Rotation.markLearned(nil)
-			assert.are.same({}, Rotation.recentlyLearned)
-		end)
-	end)
-
-	-- L4.3 ruling 3: the character-panel tab's rotation region prints each line's condition in
-	-- plain words (parentheticals stripped, cut at the first sentence end, at most two lines of
-	-- the panel's width as the panel measures it).
 	describe("plainCondition", function()
 		--- One unit per character: the width the specs measure lines in.
 		local function measure(text)
@@ -289,35 +221,6 @@ describe("Rotation", function()
 			assert.are.equal(24, Rotation.learnedAt(20662, data))
 		end)
 	end)
-
-	-- L4.3 fix round 1, item 4: the next band's abilities the character has not learned yet.
-	describe("upcoming", function()
-		local data = {
-			classes = DATA.classes, rotations = DATA.rotations,
-			abilityLevels = { [2687] = 10, [12328] = 30, [23881] = 40, [1680] = 36, [1608] = 8 },
-		}
-
-		local function names(found)
-			local list = {}
-			for index, entry in ipairs(found) do
-				list[index] = entry.line.name .. "@" .. entry.at
-			end
-			return list
-		end
-
-		it("lists the next rung's lines not learned yet and not in the band read now, in order, at most the limit", function()
-			assert.are.same({ "Death Wish@30", "Bloodthirst@40" }, names(Rotation.upcoming(data, BUILD, RANKS, 25, 2)))
-			assert.are.same({ "Death Wish@30" }, names(Rotation.upcoming(data, BUILD, RANKS, 25, 1)))
-			-- Death Wish learned by 32: it is the trainer's news, not this list's.
-			assert.are.same({ "Bloodthirst@40", "Whirlwind@36" }, names(Rotation.upcoming(data, BUILD, RANKS, 32, 2)))
-		end)
-
-		it("is empty at the top rung, with no build, and with no level", function()
-			assert.are.same({}, Rotation.upcoming(data, BUILD, RANKS, 40, 2))
-			assert.are.same({}, Rotation.upcoming(data, nil, RANKS, 25, 2))
-			assert.are.same({}, Rotation.upcoming(data, BUILD, RANKS, nil, 2))
-		end)
-	end)
 end)
 
 -- A rank-choice band scoped to its own lines (round 17: rank 2 at 50-59 on line 4 only) is
@@ -347,9 +250,9 @@ describe("Rotation with a band scoped to one line", function()
 		helper.load("Compat")
 		helper.load("Gear")
 		local Rotation = helper.load("Rotation")
-		local model = Rotation.model(SCOPED, BUILD, RANKS, 55, true)
+		local band = Rotation.bandAt(SCOPED, "warrior-fury", 55)
 		mock.uninstall()
-		return { model.lines[1].spellId, model.lines[2].spellId }
+		return { band.lines[1].spellId, band.lines[2].spellId }
 	end
 
 	it("shows each line of one spell its own rank", function()
@@ -387,9 +290,9 @@ describe("Rotation with a race's rank", function()
 		helper.load("Compat")
 		helper.load("Gear")
 		local Rotation = helper.load("Rotation")
-		local model = Rotation.model(SPLIT, BUILD, RANKS, 55, true)
+		local band = Rotation.bandAt(SPLIT, "warrior-fury", 55)
 		mock.uninstall()
-		return model.lines[1].spellId
+		return band.lines[1].spellId
 	end
 
 	it("shows each keyed race its own id, by the client's race token", function()

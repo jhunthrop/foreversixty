@@ -1,8 +1,8 @@
 -- addon/tests/panel_tab_spec.lua
 -- The character pane's "Forever Sixty" button (design/specs/2026-11-08-addon-ux.md 4.6): an
 -- addon-owned button right of the client's last tab that opens the addon panel docked to the pane,
--- and the readers the panel shares (the next targets, the tooltip's own Next lines, and the
--- rotation rows). The taint rule: nothing is written into a client frame, the recorder stays empty.
+-- and the readers the panel shares (the next targets, the tooltip's own Next lines and the
+-- off-plan talents). The taint rule: nothing is written into a client frame, the recorder stays empty.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
@@ -322,43 +322,6 @@ describe("PanelTab", function()
 			assert.are.equal(1, #rows)
 			assert.are.equal("finger2", rows[1].slot)
 			assert.are.equal(2.0, rows[1].gain)
-		end)
-	end)
-
-	-- Ruling 3: the band's priority list, plain words, abilities not learned yet muted and last.
-	describe("rotation", function()
-		it("lists the learned lines in priority order, then the unlearned ones marked at level N", function()
-			start()
-			local rows = PanelTab.rotationRows(DATA, BUILD, { [1] = { ["1:1"] = 3 } }, 21)
-			local names = {}
-			for index, row in ipairs(rows) do
-				names[index] = row.name
-			end
-			assert.are.same({ "Rend", "Execute", "Slam" }, names)
-			assert.are.equal(1, rows[1].number)
-			assert.is_false(rows[1].muted)
-			assert.are.equal("Rend kept up.", rows[1].condition)
-			assert.is_nil(rows[2].number)
-			assert.is_true(rows[2].muted)
-			assert.are.equal(string.format(L.panelRotationAt, 24), rows[2].at)
-			assert.are.equal("Execute below 20% health.", rows[2].condition)
-			assert.are.equal(string.format(L.panelRotationAt, 30), rows[3].at)
-		end)
-
-		it("numbers every line once the character has learned them all", function()
-			start()
-			local rows = PanelTab.rotationRows(DATA, BUILD, { [1] = { ["1:1"] = 3 } }, 30)
-			assert.are.same({ 1, 2, 3 }, { rows[1].number, rows[2].number, rows[3].number })
-			assert.is_nil(rows[2].at)
-		end)
-
-		it("is empty with no build, or a spec with no rotation", function()
-			start()
-			assert.are.same({}, PanelTab.rotationRows(DATA, nil, {}, 21))
-			-- A followed build names the spec (hotfix 2.0.2): a Fury plan has no rotation in the data.
-			local fury = { classSlug = "warrior", order = { { tab = 2, tier = 1, column = 1 },
-				{ tab = 2, tier = 1, column = 1 } } }
-			assert.are.same({}, PanelTab.rotationRows(DATA, fury, {}, 21))
 		end)
 	end)
 

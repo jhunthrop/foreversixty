@@ -1,8 +1,7 @@
 -- addon/ForeverSixty/surfaces/PanelTab.lua
 -- The character pane's "Forever Sixty" button (design/specs/2026-11-13-addon-hub.md 5): the door to the
 -- Forever Sixty window's Gear tab. What the panel still shares with it stays here until the panel folds
--- into the window: the next targets (the tooltip's own Next lines), the rotation rows and the off-plan
--- talents.
+-- into the window: the next targets (the tooltip's own Next lines) and the off-plan talents.
 --
 -- The taint rule (L4.1): the 1.60 client taints the whole character pane on any HookScript,
 -- CreateTexture or field write into CharacterFrame or PaperDollFrame. The button is an
@@ -18,7 +17,6 @@ local Compat = ns.Compat or require("Compat")
 local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
 local Progress = ns.Progress or require("Progress")
-local Rotation = ns.Rotation or require("Rotation")
 local Hub = ns.Hub or require("Hub")
 
 local PanelTab = {}
@@ -26,8 +24,6 @@ local PanelTab = {}
 PanelTab.BUTTON_NAME = "ForeverSixtyPanelTab"
 --- The most next targets the readers list (the panel shows three of them).
 PanelTab.MAX_TARGETS = 5
---- The next band's abilities not learned yet, after the band's own rows.
-PanelTab.MAX_UPCOMING = 2
 --- The client's own tabs the button sits right of.
 PanelTab.MAX_TABS = 10
 PanelTab.TAB_PREFIXES = { "CharacterFrameTab" }
@@ -37,8 +33,6 @@ PanelTab.LINE_SAMPLE = "Agjy"
 
 local S = Theme.SIZES
 
---- Rotation.plainCondition's answers by measure, then by width and text.
-PanelTab.conditionCache = setmetatable({}, { __mode = "k" })
 
 local placed = Widgets.placed
 
@@ -152,72 +146,6 @@ function PanelTab.targets(ctx, sectionOf, bagOf)
 		rows[index] = found[index]
 	end
 	return rows, waiting
-end
-
---- Rotation.plainCondition, its answer kept by `measure`, then by `width` and `text`: the
---- same condition at the same width is measured once (fix round 1, item 7).
-local function plainCondition(text, measure, width)
-	if type(text) ~= "string" or type(measure) ~= "function" or type(width) ~= "number" then
-		return Rotation.plainCondition(text, measure, width)
-	end
-	local byMeasure = PanelTab.conditionCache[measure]
-	if byMeasure == nil then
-		byMeasure = {}
-		PanelTab.conditionCache[measure] = byMeasure
-	end
-	local key = width .. "\n" .. text
-	local kept = byMeasure[key]
-	if kept == nil then
-		local plain, lines = Rotation.plainCondition(text, measure, width)
-		kept = { plain = plain, lines = lines }
-		byMeasure[key] = kept
-	end
-	return kept.plain, kept.lines
-end
-
---- The rotation (ruling 3): the band's whole priority list (Rotation.model, advanced), each
---- { spellId, name, condition, conditionLines, number, muted, at }: the condition in plain
---- words (Rotation.plainCondition at `width` as `measure` reads it, both optional), the
---- learned lines numbered in priority order, then each line the character has not learned
---- yet (Rotation.learnedAt above `level`), muted, unnumbered, "at level N", in its own order;
---- then the next band's abilities not learned yet (Rotation.upcoming, at most
---- PanelTab.MAX_UPCOMING; fix round 1, item 4), the same way. Each row also keeps the whole
---- plain condition (`fullCondition`, never cut) and the level a later one is learned at
---- (`atLevel`) for its hover (fix round 3, item 2). Empty with no build or no rotation for
---- the spec.
-function PanelTab.rotationRows(data, build, ranks, level, measure, width)
-	local model = Rotation.model(data, build, ranks or {}, level, true)
-	local rows, later = {}, {}
-	local function rowOf(line)
-		local condition, lines = plainCondition(line.condition, measure, width)
-		return { spellId = line.spellId, name = line.name, condition = condition, conditionLines = lines,
-			fullCondition = Rotation.plainCondition(line.condition), muted = false }
-	end
-	for _, line in ipairs(model.lines or {}) do
-		local row = rowOf(line)
-		local at = Rotation.learnedAt(line.spellId, data)
-		if at ~= nil and type(level) == "number" and at > level then
-			row.muted = true
-			row.at = string.format(L.panelRotationAt, at)
-			row.atLevel = at
-			later[#later + 1] = row
-		else
-			rows[#rows + 1] = row
-			row.number = #rows
-		end
-	end
-	for _, row in ipairs(later) do
-		rows[#rows + 1] = row
-	end
-	for _, found in ipairs(Rotation.upcoming(data, build, ranks or {}, level, PanelTab.MAX_UPCOMING)) do
-		local row = rowOf(found.line)
-		row.muted = true
-		row.at = string.format(L.panelRotationAt, found.at)
-		row.atLevel = found.at
-		row.upcoming = true
-		rows[#rows + 1] = row
-	end
-	return rows
 end
 
 --- The plan's points the character's level allows (fix round 3, item 1): one a level from 10

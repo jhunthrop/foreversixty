@@ -666,7 +666,9 @@ end
 --- message with no usable weights falls back to the shipped ones but keeps its
 --- caps. nil for a spec with no weights at all. `healing` is the shipped spec's
 --- own flag (HPS, not DPS). DPS per point only ever multiplies the static weights
---- or the message's own weights, never a band's measured bis_weights. Pure.
+--- or the message's own weights, never a band's measured bis_weights. `measuredBand` is the band
+--- the DPS per point was measured at (nil: the spec-level figure, the level-60 raid character's, or
+--- none): with `tag`, what the weights' source says. Pure.
 --- ("build" is the tag a build carrying its own weights will take; none
 --- does yet.)
 function Gear.currentWeights(data, spec, inbox, characterKey, level)
@@ -676,7 +678,7 @@ function Gear.currentWeights(data, spec, inbox, characterKey, level)
 	local shipped = type(data.weights) == "table" and data.weights[spec] or nil
 	local perSpec = type(data.dpsPerPoint) == "table" and data.dpsPerPoint[spec] or nil
 	local healing = type(perSpec) == "table" and perSpec.healing == true
-	local perPoint = Gear.dpsFigure(data, spec, level)
+	local perPoint, band = Gear.dpsFigure(data, spec, level)
 	local weaponDps = perPoint ~= nil and tonumber(perPoint.weaponDps) or nil
 	local message
 	for _, candidate in ipairs(Follow.messages(inbox, characterKey, "weights")) do
@@ -694,7 +696,7 @@ function Gear.currentWeights(data, spec, inbox, characterKey, level)
 			-- (L1.3 carry-over): a sim that names none counts in score.
 			dpsPerPoint = message.dps_per_point,
 			weaponDps = weaponDps, weapon = Gear.weaponTerm(perPoint, message.dps_per_point),
-			tag = "sim", caps = caps, healing = healing, spec = spec,
+			tag = "sim", caps = caps, healing = healing, spec = spec, measuredBand = band,
 			-- When the sim ran (contract 3, once the API sends it): the build dialog names its copy.
 			generatedAt = message.generated_at,
 			reference = perPoint ~= nil and perPoint.reference or Gear.referenceStat(simWeights),
@@ -707,7 +709,7 @@ function Gear.currentWeights(data, spec, inbox, characterKey, level)
 		weights = shipped,
 		dpsPerPoint = perPoint ~= nil and perPoint.dps or nil,
 		weaponDps = weaponDps, weapon = Gear.weaponTerm(perPoint),
-		tag = "default", caps = caps, healing = healing, spec = spec,
+		tag = "default", caps = caps, healing = healing, spec = spec, measuredBand = band,
 		reference = perPoint ~= nil and perPoint.reference or Gear.referenceStat(shipped),
 	}
 end

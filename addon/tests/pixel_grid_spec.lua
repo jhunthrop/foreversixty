@@ -127,6 +127,19 @@ describe("the addon's windows on the pixel grid", function()
 				end }
 		end
 		assert.are.equal("gear", require("Hub").open("gear"))
+	end)
+
+	it("snaps every texture on the Rotation tab", function()
+		start(1440, 1)
+		local data = { rotations = { ["warrior-arms"] = {
+			{ level = 10, lines = { { spellId = 772, name = "Rend", condition = "when Rend is off the target" } } },
+		} }, classes = { warrior = { tabs = { { name = "Arms", talents = {} } } } } }
+		local Hub = require("Hub")
+		Hub.data = data
+		package.loaded.RotationTab = nil
+		require("RotationTab").data = data
+		assert.are.equal("rotation", Hub.open("rotation"))
+		mock.runTimers(state)
 		assert.are.same({}, unsnapped(state))
 	end)
 

@@ -233,8 +233,7 @@ describe("every visible button draws its label", function()
 			targets = { { itemId = 1, name = "Axe", hex = "0070dd", gain = 3.5, unit = "dps", slotWord = "Two-hand",
 				source = "World drop" } },
 			build = { classSlug = "warrior", order = { {}, {} } }, unspent = 1, pointName = "Cruelty",
-			progress = { matched = 1, total = 2, offPlan = 1, nextLevel = 25, point = {} },
-			rows = { { spellId = 1, name = "Mortal Strike", fullCondition = "Mortal Strike when ready." } } })
+			progress = { matched = 1, total = 2, offPlan = 1, nextLevel = 25, point = {} } })
 		Panel.draw(model)
 		Panel.frame:Show()
 		mock.renderFrame(state)
@@ -269,6 +268,27 @@ describe("every visible button draws its label", function()
 		require("GearTabView").draw()
 		assert.are.same({}, blankLabels(state), "the Gear tab")
 		assert.is_true(require("GearTabView").view.sources.default:IsVisible())
+	end)
+
+	it("labels the Rotation tab's stepper at every stop", function()
+		DATA.rotations = { ["warrior-arms"] = {
+			{ level = 10, lines = { { spellId = 772, name = "Rend", condition = "when Rend is off the target" } } },
+			{ level = 20, lines = { { spellId = 772, name = "Rend", condition = "when Rend is off the target" },
+				{ spellId = 12294, name = "Mortal Strike", condition = "on cooldown" } } },
+		} }
+		local Hub = require("Hub")
+		Hub.data = DATA
+		package.loaded.RotationTab = nil
+		local RotationTab = require("RotationTab")
+		RotationTab.data = DATA
+		assert.are.equal("rotation", Hub.open("rotation"))
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "level 13")
+		local previous = RotationTab.view.stepper.previous
+		previous:GetScript("OnClick")(previous)
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "level 10")
+		DATA.rotations = nil
 	end)
 
 	it("labels the Settings page's toggles and Reset", function()

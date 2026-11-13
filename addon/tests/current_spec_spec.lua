@@ -79,8 +79,8 @@ describe("the current spec follows the build", function()
 		assert.are.equal("paladin-retribution", Options.refreshWeightsMessage(6).spec)
 		assert.are.equal("paladin-retribution", Comms.ownSpec(DATA, Follow.build, "paladin", {}))
 		-- The rotation the panel and card show.
-		local model = Rotation.model(DATA, Follow.build, {}, 10)
-		assert.are.equal("Judgement", model.lines[1].name)
+		local spec = Rotation.specFor(DATA, Follow.build, {}, "paladin")
+		assert.are.equal("Judgement", Rotation.bandAt(DATA, spec, 10).lines[1].name)
 	end)
 
 	it("lets a saved build's explicit spec win over its order", function()

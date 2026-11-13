@@ -9,11 +9,10 @@
 -- Hunter" muted under it (the score, the last raid and the sim live on the window's Me tab). Then, in
 -- priority order, each region only when it has something to say:
 --   1. Upgrades (at most three, the item tooltip's own Next lines);
---   2. Talents (the next point), or Pick your path under 10 with no build;
---   3. Rotation at <level> (collapsed at 60).
--- Tonight's raid lives on the window's Guild tab.
+--   2. Talents (the next point), or Pick your path under 10 with no build.
+-- Tonight's raid lives on the window's Guild tab, the rotation on its Rotation tab.
 --
--- Pure model, thin frame: Panel.upgrades, talents, path, rotation, model and
+-- Pure model, thin frame: Panel.upgrades, talents, path, model and
 -- fit are plain tables in, plain tables out; Panel.inputs reads the client; Panel.draw lays the
 -- frame out. The frame is built on first open, never at load; it never opens in combat and
 -- closes when combat starts. Nothing is written into a client frame: docked to the character
@@ -25,7 +24,6 @@ local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
 local Compat = ns.Compat or require("Compat")
 local Talents = ns.Talents or require("Talents")
-local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Progress = ns.Progress or require("Progress")
 local Gear = ns.Gear or require("Gear")
@@ -45,20 +43,13 @@ Panel.FRAME_NAME = "ForeverSixtyPanel"
 Panel.WIDTH = 340
 Panel.MAX_HEIGHT = 520
 Panel.MAX_UPGRADES = 3
-Panel.MAX_ROTATION = 6
---- The height budget's shedding (spec 4.4): the rotation drops to this many rows first, then the
---- upgrades to this many, then the next-ability row goes.
-Panel.SHED_ROTATION = 4
+--- The height budget's shedding (spec 4.4): the upgrades drop to this many rows.
 Panel.SHED_UPGRADES = 2
 
 --- Nominal heights the budget is counted in (the frame measures its own lines when it draws):
 --- `head` is the title band and the body's top padding, `foot` the body's bottom padding.
 Panel.H = { head = Theme.SIZES.titleBand + 12, foot = 14, heading = 22, rule = 9, line = 14, row = 34,
-	rotationName = 15, rotationClause = 13, rotationGap = 5, button = 22, gap = 6, talentRow = 38, sources = 18 }
---- A rotation row's condition sits under the spell's name and wraps to a second line past this
---- many characters (a 60-character panel line never runs past two); the budget counts it so.
-Panel.CLAUSE_WRAP_CHARS = 44
-Panel.CLAUSE_MAX_LINES = 2
+	button = 22, gap = 6, talentRow = 38, sources = 18 }
 --- The body's side padding, and the gap between two buttons side by side.
 Panel.PAD = 14
 Panel.BUTTON_GAP = 6
@@ -180,44 +171,6 @@ function Panel.pathLine(spec)
 	return #parts > 0 and table.concat(parts, "\n") or nil
 end
 
---- The first clause of a plain condition: up to the first ";" or ", and" or ", unless", so the
---- row reads one short line ("Whenever the cooldown it shares with Multi-Shot is up"). Pure.
-function Panel.firstClause(text)
-	if type(text) ~= "string" then
-		return nil
-	end
-	local cut = text:find(";", 1, true) or text:find(", and ", 1, true) or text:find(", unless ", 1, true)
-	local clause = cut ~= nil and text:sub(1, cut - 1) or text
-	return (clause:gsub("%.$", ""))
-end
-
---- The Rotation region (spec 4.3 item 4), or nil with no rows. `input`: { rows
---- (PanelTab.rotationRows), level, expanded (the player opened it at 60), newRank (a rank was
---- learned since the panel was last opened) }. Under 60: the learned rows (at most MAX_ROTATION)
---- and one dimmed row for the next ability. At 60: collapsed unless expanded or a new rank.
-function Panel.rotation(input)
-	local learned, nextRow = {}, nil
-	for _, row in ipairs(input.rows or {}) do
-		if not row.muted and #learned < Panel.MAX_ROTATION then
-			learned[#learned + 1] = { spellId = row.spellId, name = row.name,
-				clause = Panel.firstClause(row.fullCondition or row.condition), full = row.fullCondition }
-		elseif row.muted and nextRow == nil and type(row.atLevel) == "number" then
-			nextRow = { spellId = row.spellId, name = row.name, clause = string.format(L.panelAtLevelRow, row.atLevel),
-				full = row.fullCondition }
-		end
-	end
-	if #learned == 0 then
-		return nil
-	end
-	local level = input.level or 0
-	local region = { kind = "rotation", level = level, rows = learned, nextRow = nextRow }
-	if level >= Progress.MAX_LEVEL then
-		region.nextRow = nil
-		region.collapsed = not (input.expanded or input.newRank)
-	end
-	return region
-end
-
 --- The regions' nominal heights (Panel.H): what the budget counts in. Pure.
 function Panel.regionHeight(region)
 	local H = Panel.H
@@ -228,16 +181,6 @@ function Panel.regionHeight(region)
 		height = height + (region.finished and 0 or H.talentRow)
 	elseif region.kind == "path" then
 		height = height + H.row * #region.specs + H.line * 2
-	elseif region.kind == "rotation" then
-		if region.collapsed then
-			return H.heading + H.rule
-		end
-		for _, row in ipairs(region.rows) do
-			height = height + Panel.rotationRowHeight(row)
-		end
-		if region.nextRow ~= nil then
-			height = height + Panel.rotationRowHeight(region.nextRow)
-		end
 	end
 	return height
 end
@@ -260,22 +203,12 @@ local function regionOf(model, kind)
 	return nil
 end
 
---- The model within `limit` (spec 4.4): past it the rotation drops to SHED_ROTATION rows, then the
---- upgrades to SHED_UPGRADES, then the next-ability row goes. The next talent never
---- drops. Returns the model (shed in place on a copy of the lists).
+--- The model within `limit` (spec 4.4): past it the upgrades drop to SHED_UPGRADES. The next talent
+--- never drops. Returns the model (shed in place on a copy of the lists).
 function Panel.fit(model, limit)
 	limit = limit or Panel.MAX_HEIGHT
-	local rotation, upgrades = regionOf(model, "rotation"), regionOf(model, "upgrades")
+	local upgrades = regionOf(model, "upgrades")
 	local steps = {
-		function()
-			if rotation ~= nil and #rotation.rows > Panel.SHED_ROTATION then
-				local kept = {}
-				for index = 1, Panel.SHED_ROTATION do
-					kept[index] = rotation.rows[index]
-				end
-				rotation.rows = kept
-			end
-		end,
 		function()
 			if upgrades ~= nil and #upgrades.rows > Panel.SHED_UPGRADES then
 				local kept = {}
@@ -283,11 +216,6 @@ function Panel.fit(model, limit)
 					kept[index] = upgrades.rows[index]
 				end
 				upgrades.rows = kept
-			end
-		end,
-		function()
-			if rotation ~= nil then
-				rotation.nextRow = nil
 			end
 		end,
 	}
@@ -313,10 +241,6 @@ function Panel.model(input)
 		if talents ~= nil then
 			regions[#regions + 1] = talents
 		end
-	end
-	local rotation = Panel.rotation(input)
-	if rotation ~= nil then
-		regions[#regions + 1] = rotation
 	end
 	return Panel.fit({ head = Panel.head(input), regions = regions })
 end
@@ -379,8 +303,6 @@ function Panel.inputs(data)
 		progress = Progress.build(build, stagedRanks, level),
 		unspent = Progress.unspentPoints(level, ranks),
 		offPlanTalents = PanelTab.offPlanTalents(build, stagedRanks, data),
-		rows = PanelTab.rotationRows(data, build, ranks, level),
-		expanded = Panel.rotationExpanded(),
 		specs = Chip.pathSpecs(data, Talents.playerClassSlug(), ranks, level),
 		question = Follow.specQuestion(data, Talents.playerClassSlug(), ranks),
 		split = Follow.specSplit(data, Talents.playerClassSlug(), ranks),
@@ -395,21 +317,6 @@ function Panel.inputs(data)
 		input.pointIcon = talent ~= nil and Talents.iconFor(talent) or nil
 	end
 	return input
-end
-
---- Whether the player opened the collapsed rotation at 60, remembered per character.
-function Panel.rotationExpanded()
-	local panel = type(ForeverSixtyDB) == "table" and ForeverSixtyDB.panelState or nil
-	local mine = type(panel) == "table" and panel[Export.characterKey() or ""] or nil
-	return type(mine) == "table" and mine.rotationOpen == true
-end
-
-function Panel.setRotationExpanded(open)
-	ForeverSixtyDB = ForeverSixtyDB or {}
-	ForeverSixtyDB.panelState = ForeverSixtyDB.panelState or {}
-	local key = Export.characterKey() or ""
-	ForeverSixtyDB.panelState[key] = ForeverSixtyDB.panelState[key] or {}
-	ForeverSixtyDB.panelState[key].rotationOpen = open and true or nil
 end
 
 -- What the buttons do -----------------------------------------------------------------------------
@@ -550,7 +457,7 @@ local function hover(content, provider)
 		return made
 	end)
 	frame.foreverSixtyProvider = provider
-	-- A pooled frame keeps no click from its last use (the collapsed rotation's "show").
+	-- A pooled frame keeps no click from its last use.
 	frame:SetScript("OnMouseUp", nil)
 	return frame
 end
@@ -570,9 +477,6 @@ local function itemHover(itemId)
 	end
 end
 
-local function spellIcon(spellId)
-	return Compat.spellTexture(spellId) or Theme.UNKNOWN_ICON
-end
 
 --- The frame: the umber ground, the title band (the medallion, the name, the meta;
 --- the band is the drag handle), the client's red close X top right. Built on first open;
@@ -853,69 +757,9 @@ local function drawPath(content, region, y, width)
 	return y + Panel.H.gap
 end
 
---- One rotation row's height: the name, then its condition on one line or two. Pure.
-function Panel.rotationRowHeight(row)
-	local clause = type(row) == "table" and row.clause or nil
-	local lines = 0
-	if type(clause) == "string" and clause ~= "" then
-		lines = #clause > Panel.CLAUSE_WRAP_CHARS and Panel.CLAUSE_MAX_LINES or 1
-	end
-	return Panel.H.rotationName + Panel.H.rotationClause * lines + Panel.H.rotationGap
-end
-
-local function drawRotation(content, region, y, width)
-	local title = string.format(L.homeRotationTitle, region.level)
-	if region.collapsed then
-		y = heading(content, y, title, L.panelShow, width)
-		local over = hover(content, nil)
-		over:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y + Panel.H.heading)
-		over:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y + Panel.H.heading)
-		over:SetHeight(Panel.H.heading)
-		over:SetScript("OnMouseUp", function()
-			Panel.setRotationExpanded(true)
-			Panel.refresh()
-		end)
-		return y
-	end
-	y = heading(content, y, title, nil, width)
-	local rows = {}
-	for _, row in ipairs(region.rows) do
-		rows[#rows + 1] = { row = row, dim = false }
-	end
-	if region.nextRow ~= nil then
-		rows[#rows + 1] = { row = region.nextRow, dim = true }
-	end
-	for _, entry in ipairs(rows) do
-		local row = entry.row
-		local mark = icon(content, spellIcon(row.spellId), 16)
-		mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-		mark:SetAlpha(entry.dim and Theme.ALPHA.dim or 1)
-		local label = text(content, row.name, entry.dim and "umberMuted" or "ink")
-		label:SetPoint("TOPLEFT", content, "TOPLEFT", 22, -y)
-		local clause = text(content, row.clause, "umberMuted")
-		clause:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -1)
-		clause:SetWidth(width - 22)
-		if clause.SetWordWrap ~= nil then
-			clause:SetWordWrap(true)
-		end
-		if clause.SetMaxLines ~= nil then
-			clause:SetMaxLines(Panel.CLAUSE_MAX_LINES)
-		end
-		local rowHeight = Panel.rotationRowHeight(row)
-		local over = hover(content, function()
-			return row.full ~= nil and { row.name, row.full } or nil
-		end)
-		over:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-		over:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
-		over:SetHeight(rowHeight)
-		y = y + rowHeight
-	end
-	return y + Panel.H.gap
-end
-
 local DRAW = {
 	upgrades = drawUpgrades, talents = drawTalents,
-	path = drawPath, rotation = drawRotation,
+	path = drawPath,
 }
 
 --- Lays the model out on the frame and sizes it to fit, never past MAX_HEIGHT.
