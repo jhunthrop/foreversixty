@@ -13,6 +13,8 @@ import { ordinal } from '../format/number';
 
 const flat = (column: ReadColumn): string => column.body.map((segment) => segment.text).join('');
 const CTX = { faction: 'horde', presetLabel: 'Raid-ready, Phase 1' } as const;
+const HEALER_LEAD_SHORT =
+  'HPS is effective healing. Shields count for what they soak, and buffs on others are not counted.';
 const HEALER_LEAD =
   'HPS is effective healing, overheal left out. A shield counts for what it soaks, not for the death it stopped by being up before the big hit, and buffs on others, like Power Infusion, are not counted.';
 describe('ordinal', () => {
@@ -110,13 +112,16 @@ describe('the title band', () => {
   });
 
   it('says under the healer title what HPS does not count, and says it on no other list', () => {
-    expect(tiersCopy.lead('healer')).toBe(HEALER_LEAD);
-    expect(tiersCopy.lead('dps')).toBeUndefined();
-    expect(tiersCopy.lead('tank')).toBeUndefined();
+    expect(
+      tiersCopy.lead('healer', { healerBasis: 'gear', healSeconds: 300 })!.endsWith(HEALER_LEAD_SHORT),
+    ).toBe(true);
+    expect(tiersCopy.lead('dps', {})).toBeUndefined();
+    expect(tiersCopy.lead('tank', {})).toBeUndefined();
     expect(HEALER_LEAD).not.toMatch(/[—–]/);
+    expect(HEALER_LEAD_SHORT).not.toMatch(/[—–]/);
   });
 
-  it('the healer notes say the same thing the healer title does', () => {
+  it('the healer notes carry the long form of the title’s caveat', () => {
     const leavesOut = readColumns({ ...CTX, role: 'healer', healSeconds: 300 })[1]!;
     expect(flat(leavesOut)).toContain(HEALER_LEAD);
   });
@@ -209,6 +214,68 @@ describe('tier page head', () => {
   it('keeps every description inside a search snippet', () => {
     for (const role of ['dps', 'tank', 'healer'] as const) {
       expect(tiersCopy.metaDescription(role).length).toBeLessThanOrEqual(160);
+    }
+  });
+});
+
+describe('the healer list names the fight it ranks on', () => {
+  const RAID = { healerBasis: 'raid', raidFightSeconds: 110, healSeconds: 300 } as const;
+  const GEAR = { healerBasis: 'gear', raidFightSeconds: 110, healSeconds: 300 } as const;
+
+  it('names the raid kill under the title and says the figure is a share; the meta line owns the length', () => {
+    const lead = tiersCopy.lead('healer', RAID)!;
+    expect(lead).toMatch(/^Ranked on one healer’s share of a Molten Core or Onyxia kill/);
+    expect(lead).toContain('lower than your meter');
+    expect(lead).not.toMatch(/\d/);
+    expect(lead.endsWith(HEALER_LEAD_SHORT)).toBe(true);
+    expect(tiersCopy.metaLine({ role: 'healer', ...RAID })).toBe('Best in slot, raid buffs · 110 s');
+  });
+
+  it('says the fallback is a stand-in, not a boss, and what replaces it', () => {
+    const lead = tiersCopy.lead('healer', GEAR)!;
+    expect(lead).toMatch(/^Ranked on a stand-in fight, not a boss/);
+    expect(lead).toContain('A Molten Core or Onyxia kill replaces it');
+    expect(lead).not.toMatch(/\d/);
+    expect(lead.endsWith(HEALER_LEAD_SHORT)).toBe(true);
+    expect(tiersCopy.metaLine({ role: 'healer', ...GEAR })).toBe('Best in slot, raid buffs · 5 min');
+  });
+
+  it('explains the raid fight in the notes, and a tie by the error alone, with no tuning to cite', () => {
+    const text = readColumns({ ...CTX, role: 'healer', ...RAID })
+      .map(flat)
+      .join(' ');
+    expect(text).toContain('over 110 seconds');
+    expect(text).toContain('Classic Era');
+    expect(text).toContain('own group of five');
+    expect(text).toContain(HEALER_LEAD);
+    expect(text).not.toContain('tuning');
+    expect(text).toContain('Tied healers share a rank: =2, =2, then 4.');
+  });
+
+  it('gives a tied raid-fight healer the error as its reason, not the tuning', () => {
+    const tie = tiersCopy.rowTie({
+      role: 'healer',
+      healerBasis: 'raid',
+      tiedWith: [{ classSlug: 'shaman', specSlug: 'restoration', name: 'Restoration', tier: null }],
+    });
+    expect(tie?.title).toBe(
+      'The sim cannot order this healer and Restoration Shaman: the gap is within the measured error',
+    );
+  });
+
+  it('fails fast when the raid fight length is missing', () => {
+    expect(() => tiersCopy.metaLine({ role: 'healer', healerBasis: 'raid', healSeconds: 300 })).toThrow(
+      /raid fight duration/,
+    );
+  });
+
+  it('writes no em or en dash', () => {
+    for (const ctx of [RAID, GEAR]) {
+      const all = [
+        tiersCopy.lead('healer', ctx),
+        ...readColumns({ ...CTX, role: 'healer', ...ctx }).map(flat),
+      ];
+      expect(all.join(' ')).not.toMatch(/[—–]/);
     }
   });
 });

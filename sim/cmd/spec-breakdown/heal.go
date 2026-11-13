@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
 	"github.com/jhunthrop/foreversixty/sim/request"
+	"github.com/jhunthrop/foreversixty/sim/score"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
@@ -62,11 +63,11 @@ func runHealReport(o options) (string, error) {
 	if specs.ByKey[req.Spec].Role != healerRole {
 		return "", fmt.Errorf("-heal needs a healer spec, got %q", req.Spec)
 	}
-	profile, err := request.LoadHealProfile(filepath.Join(o.repoRoot, "data", "curated", healFile))
+	fight, seconds, err := healFightFor(o)
 	if err != nil {
 		return "", err
 	}
-	req.Encounter.DurationSec = profile.DurationSec
+	req.Encounter.DurationSec = seconds
 	if o.duration > 0 {
 		req.Encounter.DurationSec = o.duration
 	}
@@ -76,7 +77,7 @@ func runHealReport(o options) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("building the request: %w", err)
 	}
-	profile.Attach(engineReq)
+	fight.Attach(engineReq)
 	engineReq.Encounter.Duration = float64(req.Encounter.DurationSec)
 	if err := simdb.Attach(engineReq); err != nil {
 		return "", fmt.Errorf("attaching the item database: %w", err)
@@ -113,6 +114,18 @@ func runHealReport(o options) (string, error) {
 	return healMarkdown(req, computed, res, player, names), nil
 }
 
+// healFightFor is the fight -heal runs: the BiS profile, or with -raid-fight the raid-shaped
+// one, and its length.
+func healFightFor(o options) (request.HealFight, int, error) {
+	curated := filepath.Join(o.repoRoot, "data", "curated")
+	if o.raidFight {
+		fight, err := request.LoadRaidHealProfile(filepath.Join(curated, request.RaidHealProfileFile))
+		return fight, fight.DurationSec, err
+	}
+	profile, err := request.LoadHealProfile(filepath.Join(curated, healFile))
+	return profile, profile.DurationSec, err
+}
+
 func healMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *proto.RaidSimResult, p *proto.UnitMetrics, names map[int32]string) string {
 	var b strings.Builder
 	iters := float64(res.IterationsDone)
@@ -125,6 +138,11 @@ func healMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *p
 	}
 	fmt.Fprintf(&b, "\n| Metric | Value |\n|---|---|\n| effective HPS | %.2f +/- %.2f |\n| raw HPS | %.1f |\n| mana lasts (s) | %.1f |\n",
 		p.GetEffectiveHps().GetAvg(), meanError(p.GetEffectiveHps(), iters), p.GetHps().GetAvg(), p.GetTto().GetAvg())
+	if final := firstFinalStats(computed); final != nil {
+		result := score.HealingResultOf(p, res.IterationsDone, secs).WithManaPool(final.GetStats()[stats.Mana])
+		fmt.Fprintf(&b, "| overheal | %.1f%% |\n| mana left at the end | %.0f of %.0f (%.1f%%) |\n",
+			100*result.OverhealShare(), result.ManaLeft, result.ManaPool, 100*result.ManaLeftShare())
+	}
 
 	income, spend := splitManaFlows(p, names, iters)
 	writeManaTable(&b, "Mana income", "per fight", "per second", income, secs, false)

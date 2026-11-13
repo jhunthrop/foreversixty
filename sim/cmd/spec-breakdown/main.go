@@ -65,6 +65,7 @@ type options struct {
 	jsonOut     bool
 	tank        bool
 	heal        bool
+	raidFight   bool
 	duration    int
 	targetType  string
 	targets     int
@@ -91,6 +92,7 @@ func main() {
 	flag.StringVar(&o.rotation, "rotation", "", "JSON file whose \"rotation\" object (the curated file's shape) replaces the spec's own priority list")
 	flag.StringVar(&o.gear, "gear", "", "comma list of slot:item_id pairs replacing the published entry's items, e.g. off_hand:20688")
 	flag.BoolVar(&o.heal, "heal", false, "print the healer fight: mana income and spend against data/curated/heal-profile.json (healer specs only)")
+	flag.BoolVar(&o.raidFight, "raid-fight", false, "with -heal: run the raid-shaped fight (data/curated/heal-raid-profile.json, the /tiers healer ranking's) instead of heal-profile.json")
 	flag.IntVar(&o.duration, "duration", 0, "fight length in seconds instead of the default (with -heal: instead of the profile's, where a shorter window shows a healer's mana rates before it runs dry)")
 	flag.IntVar(&o.targets, "targets", 0, "number of targets instead of the ranker's one (a pack fight; threat /s and DPS sum over every target)")
 	flag.StringVar(&o.targetType, "target-type", api.TargetTypeUnknown, "creature type of the target (beast, demon, dragonkin, elemental, giant, humanoid, mechanical, undead or unknown); the ranker's is unknown")

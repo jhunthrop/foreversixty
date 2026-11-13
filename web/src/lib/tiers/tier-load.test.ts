@@ -115,6 +115,43 @@ describe('buildTierData', () => {
     expect(data.healerOrderMeasured).toEqual({ alliance: true, horde: false });
   });
 
+  it('ranks both factions’ healers on the raid fight only when every healer band of both publishes it', () => {
+    const HOLY = catalogEntry('priest', 'holy', 'Holy', 'healer');
+    const metrics = { hps: 600, raw_hps: 600, overheal_pct: 0, mana_lasts_sec: 300, hpm: 1, hps_error: 1 };
+    const raid_fight = {
+      profile: 'raid60-logs',
+      duration_sec: 110,
+      hps: 130,
+      hps_error: 0.2,
+      raw_hps: 200,
+      overheal_pct: 0.35,
+      mana_left: 9000,
+      mana_left_pct: 0.95,
+    };
+    const fileWith = (hordeHasRaid: boolean) => ({
+      ...filesFor(),
+      [HOLY.spec]: bisFile(
+        HOLY,
+        [
+          band(HOLY, { set_dps: 600, metrics: { ...metrics, raid_fight } }),
+          band(HOLY, {
+            set_dps: 600,
+            faction: 'horde',
+            metrics: hordeHasRaid ? { ...metrics, raid_fight } : metrics,
+          }),
+        ],
+        '2026-10-08T10:00:00Z',
+      ),
+    });
+    const both = buildTierData({ ...deps(fileWith(true)), catalog: [FURY, ARMS, PROT, HOLY] });
+    expect(both.healerBasis).toBe('raid');
+    expect(both.raidFightSeconds).toBe(110);
+    expect(both.lists.alliance.healer.map((r) => [r.metric, r.healerBasis])).toEqual([[130, 'raid']]);
+    const half = buildTierData({ ...deps(fileWith(false)), catalog: [FURY, ARMS, PROT, HOLY] });
+    expect(half.healerBasis).toBe('gear');
+    expect(half.lists.alliance.healer.map((r) => [r.metric, r.healerBasis])).toEqual([[600, 'gear']]);
+  });
+
   it('gives empty lists and no stamp when nothing is published', () => {
     const data = buildTierData(deps({}));
     expect(data.lists.alliance).toEqual({ dps: [], tank: [], healer: [] });

@@ -82,7 +82,12 @@ const heads: RankHead[] = headLabels.map((label, index, all) => ({
   align: index > 3 && index < all.length - 1 ? 'end' : 'start',
 }));
 const figureCount = isTank ? (tankHealth ? 3 : 2) : 1;
-const metaLine = tiersCopy.metaLine({ role, healSeconds: data.healSeconds });
+const healerFight = {
+  healerBasis: data.healerBasis,
+  healSeconds: data.healSeconds,
+  raidFightSeconds: data.raidFightSeconds,
+};
+const metaLine = tiersCopy.metaLine({ role, ...healerFight });
 ---
 
 <Base
@@ -112,7 +117,12 @@ const metaLine = tiersCopy.metaLine({ role, healSeconds: data.healSeconds });
   </script>
   <main id="main" tabindex="-1" class="tier-page" data-testid="tier-page" data-role={role}>
     <Page layout="split" railFirst splitFrom={1280} testid="tier-body">
-      <PageHeader slot="header" title={tiersCopy.title} lead={tiersCopy.lead(role)} tone="strong">
+      <PageHeader
+        slot="header"
+        title={tiersCopy.title}
+        lead={tiersCopy.lead(role, healerFight)}
+        tone="strong"
+      >
         <span slot="meta">
           {metaLine}
           {data.updated !== null && (

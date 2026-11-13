@@ -13,7 +13,15 @@ import { rankingSimHrefFor } from '../bis/sim-link';
 import type { BisBand, BisFile, BisRole, Faction, SpecCatalogEntry } from '../bis/types';
 import { loadTalentFile } from '../guides/build-tree';
 import { indexTalents, type TalentIndex } from '../planner/rules';
-import { TIER_ROLES, healerOrderMeasured, rankRole, type TierInput, type TierRow } from './tier-list';
+import {
+  TIER_ROLES,
+  healerBasisOf,
+  healerOrderMeasured,
+  rankRole,
+  type HealerBasis,
+  type TierInput,
+  type TierRow,
+} from './tier-list';
 
 const TIER_BAND = 60;
 
@@ -35,8 +43,13 @@ export interface TierData {
   /** Per faction: every healer band publishes its error and both tuning bounds, so the
    *  healer list can order at all. Without them every healer shows tied. */
   healerOrderMeasured: Record<Faction, boolean>;
-  /** `heal_profile.duration_sec` from a healer file. */
+  /** The fight both factions' healer lists rank on: the raid fight once every healer band of
+   *  both publishes it, the gear fight until then, so the page names one fight. */
+  healerBasis: HealerBasis;
+  /** `heal_profile.duration_sec` from a healer file: the gear fight's length. */
   healSeconds?: number;
+  /** `metrics.raid_fight.duration_sec` from a healer band: the raid fight's length. */
+  raidFightSeconds?: number;
   /** `tank-encounter.json` boss swing speed. */
   bossSwingSeconds?: number;
 }
@@ -66,8 +79,10 @@ function inputsFor(
   });
 }
 
-function listsFor(inputs: readonly TierInput[]): RoleLists {
-  return Object.fromEntries(TIER_ROLES.map((role) => [role, rankRole(inputs, role)])) as RoleLists;
+function listsFor(inputs: readonly TierInput[], healerBasis: HealerBasis): RoleLists {
+  return Object.fromEntries(
+    TIER_ROLES.map((role) => [role, rankRole(inputs, role, healerBasis)]),
+  ) as RoleLists;
 }
 
 function newestFile(files: readonly BisFile[]): BisFile | undefined {
@@ -78,6 +93,16 @@ function healSecondsOf(files: readonly BisFile[]): number | undefined {
   return files.find((file) => file.heal_profile !== undefined)?.heal_profile?.duration_sec;
 }
 
+function raidFightSecondsOf(inputs: readonly TierInput[]): number | undefined {
+  for (const { band } of inputs) {
+    const metrics = band.metrics;
+    if (metrics !== null && metrics !== undefined && 'hps' in metrics && metrics.raid_fight !== undefined) {
+      return metrics.raid_fight.duration_sec;
+    }
+  }
+  return undefined;
+}
+
 /** The tier data from the supplied files: pure, so the tests feed it fixtures. */
 export function buildTierData(deps: TierLoadDeps): TierData {
   const loaded = deps.catalog.flatMap((entry) => {
@@ -86,24 +111,32 @@ export function buildTierData(deps: TierLoadDeps): TierData {
   });
   const files = loaded.map(({ file }) => file);
   const newest = newestFile(files);
+  const healerBasis = healerBasisOf([...inputsFor(loaded, 'alliance'), ...inputsFor(loaded, 'horde')]);
   const firstBand = loaded
     .map(({ file }) => ({ file, band: bandEntry(file, TIER_BAND, 'alliance') }))
     .find((candidate) => candidate.band !== undefined);
   return {
     lists: {
       alliance:
-        loaded.length === 0 ? emptyLists() : listsFor(inputsFor(loaded, 'alliance', deps.rankingSimHref)),
-      horde: loaded.length === 0 ? emptyLists() : listsFor(inputsFor(loaded, 'horde', deps.rankingSimHref)),
+        loaded.length === 0
+          ? emptyLists()
+          : listsFor(inputsFor(loaded, 'alliance', deps.rankingSimHref), healerBasis),
+      horde:
+        loaded.length === 0
+          ? emptyLists()
+          : listsFor(inputsFor(loaded, 'horde', deps.rankingSimHref), healerBasis),
     },
     presetLabel: firstBand?.band === undefined ? null : presetLabelFor(firstBand.file, firstBand.band),
     updated: files.length === 0 ? null : latest(files.map((file) => new Date(file.generated_at))),
     build: newest?.build ?? null,
     engineVersion: newest?.engine_version ?? null,
     healerOrderMeasured: {
-      alliance: healerOrderMeasured(inputsFor(loaded, 'alliance')),
-      horde: healerOrderMeasured(inputsFor(loaded, 'horde')),
+      alliance: healerOrderMeasured(inputsFor(loaded, 'alliance'), healerBasis),
+      horde: healerOrderMeasured(inputsFor(loaded, 'horde'), healerBasis),
     },
+    healerBasis,
     healSeconds: healSecondsOf(files),
+    raidFightSeconds: raidFightSecondsOf(inputsFor(loaded, 'alliance')),
     bossSwingSeconds: deps.readBossSwingSeconds(),
   };
 }

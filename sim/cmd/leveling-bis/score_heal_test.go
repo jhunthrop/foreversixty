@@ -22,18 +22,35 @@ func testHealProfile(t *testing.T) request.HealProfile {
 	return profile
 }
 
-// fakeHealing answers every healing run with a canned result per gear
-// signature and records the requests it was asked.
-type fakeHealing struct {
-	result   simscore.HealingResult
-	byGear   func(api.SimRequest) simscore.HealingResult
-	requests []api.SimRequest
-	profile  request.HealProfile
+// testRaidHealProfile is the curated raid-shaped fight.
+func testRaidHealProfile(t *testing.T) request.RaidHealProfile {
+	t.Helper()
+	fight, err := request.LoadRaidHealProfile(filepath.Join("..", "..", "..", "data", "curated", request.RaidHealProfileFile))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return fight
 }
 
-func (f *fakeHealing) Run(req api.SimRequest, profile request.HealProfile) (simscore.HealingResult, error) {
+// fakeHealing answers every healing run with a canned result per gear
+// signature and records the requests it was asked. A run on the raid-shaped
+// fight answers raidResult and is recorded in raidRequests instead.
+type fakeHealing struct {
+	result       simscore.HealingResult
+	raidResult   simscore.HealingResult
+	byGear       func(api.SimRequest) simscore.HealingResult
+	requests     []api.SimRequest
+	raidRequests []api.SimRequest
+	profile      request.HealProfile
+}
+
+func (f *fakeHealing) Run(req api.SimRequest, fight request.HealFight) (simscore.HealingResult, error) {
+	if _, raid := fight.(request.RaidHealProfile); raid {
+		f.raidRequests = append(f.raidRequests, req)
+		return f.raidResult, nil
+	}
 	f.requests = append(f.requests, req)
-	f.profile = profile
+	f.profile = fight.(request.HealProfile)
 	if f.byGear != nil {
 		return f.byGear(req), nil
 	}
@@ -170,8 +187,75 @@ func TestWithHealerEngineLoadsTheProfileForAHealer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, ok := got.(healEngine); !ok || profile == nil || profile.ID == "" {
-		t.Errorf("got %T with profile %v, want a healEngine carrying the curated profile", got, profile)
+	engine, ok := got.(healEngine)
+	if !ok || profile == nil || profile.ID == "" {
+		t.Fatalf("got %T with profile %v, want a healEngine carrying the curated profile", got, profile)
+	}
+	if engine.raidFight.ID == "" || engine.raidFight.ID == profile.ID {
+		t.Errorf("raid fight = %q, want the curated raid-shaped fight beside %q", engine.raidFight.ID, profile.ID)
+	}
+}
+
+// The raid-shaped fight picks nothing: a band 60 set runs it once more for the metrics, and
+// the BiS figures (hps, set_dps) stay the BiS profile's (owner ruling, 2026-11-13).
+func TestAttachHealerFieldsRunsTheRaidFightAtBand60(t *testing.T) {
+	raid := healingResult(120, 200, 3600).WithManaPool(9000)
+	backend := &fakeHealing{result: healingResult(800, 820, 200), raidResult: raid}
+	engine := healEngine{backend: backend, profile: testHealProfile(t), raidFight: testRaidHealProfile(t)}
+	var report bandReport
+	spec := specInfo{Spec: "priest-holy", ClassSlug: "priest", Role: "healer"}
+	if err := attachHealerFields(&report, engine, spec, "human", "priest", raidFightBand, "", map[string]slotPick{}); err != nil {
+		t.Fatal(err)
+	}
+	metrics := report.Metrics.(*healingMetrics)
+	if report.SetDPS != 800 || metrics.HPS != 800 {
+		t.Errorf("set_dps = %v, hps = %v, want the BiS profile's 800", report.SetDPS, metrics.HPS)
+	}
+	got := metrics.RaidFight
+	if got == nil {
+		t.Fatal("a band 60 healer published no raid_fight block")
+	}
+	want := raidFightMetrics{
+		Profile: engine.raidFight.ID, DurationSec: engine.raidFight.DurationSec,
+		HPS: 120, HPSError: raid.Effective.Error, RawHPS: 200, OverhealPct: 0.4,
+		ManaLeft: raid.ManaLeft, ManaLeftPct: raid.ManaLeftShare(),
+	}
+	if math.Abs(got.OverhealPct-want.OverhealPct) > 1e-9 {
+		t.Errorf("overheal = %v, want %v", got.OverhealPct, want.OverhealPct)
+	}
+	got.OverhealPct = want.OverhealPct
+	if *got != want {
+		t.Errorf("raid_fight = %+v, want %+v", *got, want)
+	}
+	if len(backend.raidRequests) != 1 {
+		t.Fatalf("ran the raid fight %d times, want once", len(backend.raidRequests))
+	}
+	req := backend.raidRequests[0]
+	if req.Encounter.DurationSec != engine.raidFight.DurationSec || req.Encounter.Variation != 0 || req.Iterations != healMetricsIterations {
+		t.Errorf("raid fight request = %d s +/- %v at %d iterations, want %d s exactly at %d", req.Encounter.DurationSec, req.Encounter.Variation, req.Iterations, engine.raidFight.DurationSec, healMetricsIterations)
+	}
+	raw, err := json.Marshal(report)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var file struct {
+		Metrics map[string]json.RawMessage `json:"metrics"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil || file.Metrics["raid_fight"] == nil {
+		t.Errorf("the band entry's metrics carry no raid_fight key: %s", raw)
+	}
+}
+
+func TestAttachHealerFieldsSkipsTheRaidFightBelow60(t *testing.T) {
+	backend := &fakeHealing{result: healingResult(300, 320, 200)}
+	engine := healEngine{backend: backend, profile: testHealProfile(t), raidFight: testRaidHealProfile(t)}
+	var report bandReport
+	spec := specInfo{Spec: "priest-holy", ClassSlug: "priest", Role: "healer"}
+	if err := attachHealerFields(&report, engine, spec, "human", "priest", 50, "", map[string]slotPick{}); err != nil {
+		t.Fatal(err)
+	}
+	if report.Metrics.(*healingMetrics).RaidFight != nil || len(backend.raidRequests) != 0 {
+		t.Error("a band 50 set ran the level 60 raid fight")
 	}
 }
 

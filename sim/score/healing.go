@@ -21,6 +21,30 @@ type HealingResult struct {
 	// their ratio is healing per mana without a per-iteration rounding.
 	ManaSpent       float64
 	EffectiveHealed float64
+	// ManaLeft is the mana in the bar when the fight ends, averaged over the
+	// iterations: the pool it started with plus every point gained (none over
+	// the cap) less every point spent. Zero until WithManaPool sets the pool.
+	ManaLeft float64
+	// ManaPool is the mana the healer started the fight with.
+	ManaPool float64
+	// manaNet is the mana gained less spent per iteration, kept for WithManaPool.
+	manaNet float64
+}
+
+// WithManaPool is the result with the starting pool known, so its mana left
+// at the end can be stated. The receiver is not changed.
+func (r HealingResult) WithManaPool(pool float64) HealingResult {
+	r.ManaPool = pool
+	r.ManaLeft = math.Max(0, pool+r.manaNet)
+	return r
+}
+
+// ManaLeftShare is the mana left at the end as a share of the pool, 0 to 1.
+func (r HealingResult) ManaLeftShare() float64 {
+	if r.ManaPool <= 0 {
+		return 0
+	}
+	return math.Min(1, r.ManaLeft/r.ManaPool)
 }
 
 // HealingPerMana is effective healing per point of mana spent.
@@ -47,6 +71,9 @@ func HealingResultOf(player *proto.UnitMetrics, iterations int32, durationSec fl
 		ManaLastsSec: player.GetTto().GetAvg(),
 		ManaSpent:    ManaSpent(player.Resources),
 	}
+	if iterations > 0 {
+		out.manaNet = manaNet(player.Resources) / float64(iterations)
+	}
 	out.EffectiveHealed = out.Effective.Mean * durationSec * float64(iterations)
 	return out
 }
@@ -61,6 +88,18 @@ func ManaSpent(resources []*proto.ResourceMetrics) float64 {
 		}
 	}
 	return spent
+}
+
+// manaNet is every point of mana the healer gained (none over the cap) less
+// every point it spent, over the run.
+func manaNet(resources []*proto.ResourceMetrics) float64 {
+	net := 0.0
+	for _, r := range resources {
+		if r.Type == proto.ResourceType_ResourceTypeMana {
+			net += r.ActualGain
+		}
+	}
+	return net
 }
 
 // Block is the envelope's healing block for the run.

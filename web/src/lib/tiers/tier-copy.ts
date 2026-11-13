@@ -7,7 +7,7 @@ import { answerCopy } from '../account/answer-copy';
 import { SPEC_BY_KEY } from '../sim/specs';
 import type { BisRole, Faction } from '../bis/types';
 import { TIE_MARGIN_PERCENT, TIER_BANDS, type TierLetter } from './tier-rules';
-import type { TierRow } from './tier-list';
+import type { HealerBasis, TierRow } from './tier-list';
 
 import { grouped, oneDecimal } from '../format/number';
 import { classDisplayName } from '../sim/spec-label';
@@ -56,8 +56,13 @@ export interface NoteContext {
   role: BisRole;
   faction: Faction;
   presetLabel: string;
-  /** `heal_profile.duration_sec`; healer copy only. */
+  /** `heal_profile.duration_sec`, the gear fight's length; healer copy only. */
   healSeconds?: number;
+  /** The fight the healer list ranks on (`TierData.healerBasis`); healer copy only, `gear` when
+   *  absent. */
+  healerBasis?: HealerBasis;
+  /** `metrics.raid_fight.duration_sec`, the raid fight's length; healer copy on `raid` only. */
+  raidFightSeconds?: number;
   /** `tank-encounter.json` `boss.swing_speed_sec.value`; tank copy only. */
   bossSwingSeconds?: number;
   /** Whether the healer list's order is measured (`TierData.healerOrderMeasured`); healer copy only. */
@@ -140,11 +145,16 @@ function dpsColumns(ctx: NoteContext): ReadColumn[] {
   ];
 }
 
+const SHARED_HEALER_RANK = 'Tied healers share a rank: =2, =2, then 4.';
+
 /** The healer list's rule in plain words: why a pair ties and how a shared rank counts, or,
- *  with no measured error published yet, that the ranks are still to come. */
-function healerOrderNote(measured: boolean): string {
+ *  with no measured error published yet, that the ranks are still to come. The raid fight has
+ *  no tuning, so only its error ties a pair. */
+function healerOrderNote(measured: boolean, basis: HealerBasis): string {
   if (!measured) return 'Ranks appear once the next ranking publishes the measured error.';
-  return '≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error. Tied healers share a rank: =2, =2, then 4.';
+  return basis === 'raid'
+    ? `≈ tie means the gap is within the measured error. ${SHARED_HEALER_RANK}`
+    : `≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error. ${SHARED_HEALER_RANK}`;
 }
 
 /** What a healer's HPS cannot show, under the healer list's title and in its notes: a shield's
@@ -153,13 +163,70 @@ function healerOrderNote(measured: boolean): string {
 const HEALER_LEAD =
   'HPS is effective healing, overheal left out. A shield counts for what it soaks, not for the death it stopped by being up before the big hit, and buffs on others, like Power Infusion, are not counted.';
 
-/** The sentence under a list's title: the healer list's only. */
-function lead(role: BisRole): string | undefined {
-  return role === 'healer' ? HEALER_LEAD : undefined;
+type HealerFightContext = Pick<NoteContext, 'healerBasis' | 'healSeconds' | 'raidFightSeconds'>;
+
+function basisOf(ctx: HealerFightContext): HealerBasis {
+  return ctx.healerBasis ?? 'gear';
+}
+
+/** The length of the fight the healer list ranks on. */
+function healerSeconds(ctx: HealerFightContext): number {
+  return basisOf(ctx) === 'raid'
+    ? requireContext(ctx.raidFightSeconds, 'the raid fight duration', 'healer')
+    : requireContext(ctx.healSeconds, 'the heal profile duration', 'healer');
+}
+
+/** The fight in a sentence, first under the healer title: the logged raid kill, or the
+ *  stand-in drain fight until a raid kill replaces it. The length is the meta line's. */
+function healerFightSentence(ctx: HealerFightContext): string {
+  return basisOf(ctx) === 'raid'
+    ? 'Ranked on one healer’s share of a Molten Core or Onyxia kill, so it reads lower than your meter.'
+    : 'Ranked on a stand-in fight, not a boss, that runs every healer dry. A Molten Core or Onyxia kill replaces it with the next update.';
+}
+
+/** The short form of HEALER_LEAD under the title, so a phone lead stays about three lines; the
+ *  notes keep the long form with its example. */
+const HEALER_LEAD_SHORT =
+  'HPS is effective healing. Shields count for what they soak, and buffs on others are not counted.';
+
+/** The sentence under a list's title: the healer list's only, naming its fight. */
+function lead(role: BisRole, ctx: HealerFightContext): string | undefined {
+  return role === 'healer' ? `${healerFightSentence(ctx)} ${HEALER_LEAD_SHORT}` : undefined;
 }
 
 function healerColumns(ctx: NoteContext): ReadColumn[] {
-  const seconds = requireContext(ctx.healSeconds, 'the heal profile duration', ctx.role);
+  return basisOf(ctx) === 'raid' ? raidFightColumns(ctx) : gearFightColumns(ctx);
+}
+
+function raidFightColumns(ctx: NoteContext): ReadColumn[] {
+  const seconds = healerSeconds(ctx);
+  return [
+    {
+      label: 'What the number is',
+      body: [
+        {
+          text: `Effective healing per second over ${seconds} seconds: one healer’s share of a Molten Core or Onyxia kill. The tank’s share lands in spikes and the healer’s own group of five takes the rest. Fitted to Classic Era Hardcore Fresh logs: Phase 1 gear, raid buffs, no world buffs. Overhealing is not counted, and it is a share of the fight, so it reads lower than your own meter. ${gearSentence(ctx)}`,
+        },
+      ],
+    },
+    {
+      label: 'What it leaves out',
+      body: [
+        {
+          text: `${HEALER_LEAD} The healer heals its share alone, so no other healer snipes its heals. No level-60 Forever log exists yet: the fight is fitted to Classic logs until launch logs exist.`,
+        },
+        ...freshSixty(),
+      ],
+    },
+    {
+      label: 'Ties and ranks',
+      body: [{ text: healerOrderNote(ctx.healerOrderMeasured !== false, 'raid') }],
+    },
+  ];
+}
+
+function gearFightColumns(ctx: NoteContext): ReadColumn[] {
+  const seconds = healerSeconds(ctx);
   return [
     {
       label: 'What the number is',
@@ -182,7 +249,7 @@ function healerColumns(ctx: NoteContext): ReadColumn[] {
       label: 'Ties and ranks',
       body: [
         {
-          text: healerOrderNote(ctx.healerOrderMeasured !== false),
+          text: healerOrderNote(ctx.healerOrderMeasured !== false, 'gear'),
         },
       ],
     },
@@ -252,10 +319,10 @@ function fightLength(seconds: number): string {
 const RANKED_ON = 'Best in slot, raid buffs';
 
 /** The title band's one fact line: the gear, then the fight (the target's level, its length). */
-function metaLine(ctx: Pick<NoteContext, 'role' | 'healSeconds'>): string {
+function metaLine(ctx: Pick<NoteContext, 'role'> & HealerFightContext): string {
   const fight =
     ctx.role === 'healer'
-      ? [fightLength(requireContext(ctx.healSeconds, 'the heal profile duration', ctx.role))]
+      ? [fightLength(healerSeconds(ctx))]
       : ctx.role === 'tank'
         ? [`vs a level ${TANK_BOSS_LEVEL} boss`]
         : [`vs a level ${TANK_BOSS_LEVEL} boss`, fightLength(DPS_FIGHT_SECONDS)];
@@ -277,21 +344,28 @@ function sharesRank(row: Pick<TierRow, 'role' | 'tie'>): boolean {
   return row.role !== 'dps' && row.tie !== null;
 }
 
-const SHARED_RANK_REASON: Record<Exclude<BisRole, 'dps'>, (joined: string) => string> = {
-  healer: (joined) =>
-    `The sim cannot order this healer and ${joined}: the order changes with the heal profile’s tuning, or the gap is within the measured error`,
+const SHARED_RANK_REASON: Record<Exclude<BisRole, 'dps'>, (joined: string, basis: HealerBasis) => string> = {
+  healer: (joined, basis) =>
+    basis === 'raid'
+      ? `The sim cannot order this healer and ${joined}: the gap is within the measured error`
+      : `The sim cannot order this healer and ${joined}: the order changes with the heal profile’s tuning, or the gap is within the measured error`,
   tank: (joined) =>
     `This tank and ${joined} take damage within 1% of each other: too close for the sim to order`,
 };
 
 /** A shared rank's partners in full ("≈ tie with Restoration Shaman"), so the rank reads as the
  *  sim's answer and not a slip; `null` on a DPS row or an untied one. */
-function rowTie(row: Pick<TierRow, 'role' | 'tiedWith'>): { text: string; title: string } | null {
+function rowTie(
+  row: Pick<TierRow, 'role' | 'tiedWith' | 'healerBasis'>,
+): { text: string; title: string } | null {
   if (row.role === 'dps' || row.tiedWith.length === 0) return null;
   const names = row.tiedWith.map(specFullName);
   const joined =
     names.length === 1 ? names[0]! : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
-  return { text: `≈ tie with ${joined}`, title: SHARED_RANK_REASON[row.role](joined) };
+  return {
+    text: `≈ tie with ${joined}`,
+    title: SHARED_RANK_REASON[row.role](joined, row.healerBasis ?? 'gear'),
+  };
 }
 
 export const tiersCopy = {

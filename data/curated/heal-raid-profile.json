@@ -1,0 +1,42 @@
+{
+  "id": "raid60-logs",
+  "label": "One healer's share of a logged Phase 1 raid kill",
+  "summary": "A level 60 raid boss as one healer of eleven meets it: a 110 second kill (the 90th percentile of the logged kills), about 144 damage a second split between the main tank and the healer's group the way the logs split it, the tank's share landing in spikes as uneven as the logged main tank's. Healing has room to wait and to overheal, so mana is part of the story, not all of it.",
+  "notes": "The second heal profile, beside heal-profile.json (owner ruling, 2026-11-13, option 2 of design/reviews/2026-11-13-sim-accuracy/healer-mana.md O1). heal-profile.json stays the fight the BiS ranking picks gear on, because it is scaled until gear separates. This one is the fight the /tiers Healers tab ranks the five healers on: each healer's final raid 60 set runs it once in the ranker and the figures are published as the band entry's raid_fight block. It is fitted to logs, not to a gear rule. No level 60 Forever log exists (raids open 9 December), so the sample is the nearest public analogue of a Forever Phase 1 raid: Classic Era Hardcore Fresh on vanilla.warcraftlogs.com (partition 8, Phase 1 gear, no world buffs), every Molten Core boss and Onyxia, 3 kills each from the hps rankings at pages 2, 5 and 10, one kill per report, raid size 30 or more. The collector is design/reviews/2026-11-13-sim-accuracy/healer-mana/logs/collect.py, the kills (no player names) are healer-mana/logs-kills.json and the summary healer-mana/logs-summary.txt. log_sample states the figures this file is derived from, and loading refuses a file whose fight length, tank hit or pulse is not the derivation of those figures (sim/request/raidhealprofile.go). The health figures are heal-profile.json's: the logs carry no health bars.",
+  "log_sample": {
+    "source": "vanilla.warcraftlogs.com partition 8 (Classic Era Hardcore Fresh), Molten Core and Onyxia, collected 2026-11-13",
+    "collector": "design/reviews/2026-11-13-sim-accuracy/healer-mana/logs/collect.py",
+    "kills": 33,
+    "healer_kills": 342,
+    "kill_seconds_median": 61,
+    "kill_seconds_p90": 107,
+    "healer_damage_per_second": 143.7,
+    "tank_share": 0.264,
+    "tank_spike5": 2.33,
+    "overheal_median_by_spec": {"priest-holy": 0.44, "paladin-holy": 0.44, "shaman-restoration": 0.39, "druid-restoration": 0.48},
+    "reason": "healer_damage_per_second is the median over the kills of the damage one healer answers: the main tank's damage taken plus every non-tank player's, over the kill, over the healers in the raid (median 11). tank_share is the median of the main tank's part of that. tank_spike5 is the main tank's largest 5 seconds of damage over his mean 5 seconds, the median over the kills. The overheal medians are what the logged healers overhealed, for comparison with what this fight leaves; they are not an input."
+  },
+  "duration_sec": 110,
+  "damage_spread": 0.25,
+  "tank": {
+    "health": 9500,
+    "hit_damage": 360,
+    "swing_seconds": 9.5,
+    "reason": "The healer's share of the main tank's damage: 143.7 a second times the tank share 0.264, about 38 a second, landing as one hit every 9.5 seconds. The cadence is the logs' spikiness, not a boss's swing timer: with the profile's 25 percent spread, a hit every 9.5 seconds over a 110 second fight gives a largest 5 seconds of about 2.3 times the mean 5 seconds, the logged main tank's median (TestRaidHealProfileTankSpikeMatchesTheLogs). The health is heal-profile.json's raid tank."
+  },
+  "members": {
+    "health": 5000,
+    "reason": "heal-profile.json's raid member: about 5,000 health in Phase 1 gear."
+  },
+  "pulse": {
+    "damage": 176,
+    "interval_seconds": 5.0,
+    "members": 3,
+    "reaches_healer": true,
+    "reason": "The rest of the healer's share, 143.7 a second times 0.736, about 106 a second, on the group the healer stands in: three of its five members, the healer among the five, every five seconds (heal-profile.json's cadence; the logs sampled no spikiness for the raid's other players)."
+  },
+  "sources": [
+    {"label": "Warcraft Logs, Classic Era: the healing rankings of Hardcore Fresh (partition 8) for encounters 50663 to 50672 (Molten Core) and 51084 (Onyxia), read through its v1 API", "url": "https://vanilla.warcraftlogs.com/", "kind": "logs"},
+    {"label": "This site, design/reviews/2026-11-13-sim-accuracy/healer-mana.md: the log sample and what it shows", "url": "https://github.com/jhunthrop/foreversixty/blob/main/design/reviews/2026-11-13-sim-accuracy/healer-mana.md", "kind": "site"}
+  ]
+}

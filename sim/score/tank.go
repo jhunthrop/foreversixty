@@ -164,14 +164,25 @@ func TankBlockOf(run TankRunResult, level int) (*api.TankResult, error) {
 // MaxHealth is the first player's maximum health as the engine computes
 // it for raid: gear, talents, buffs and consumables included.
 func MaxHealth(raid *proto.Raid, encounter *proto.Encounter) (float64, error) {
+	return firstPlayerStat(raid, encounter, stats.Health, "maximum health")
+}
+
+// MaxMana is the first player's mana pool as the engine computes it for
+// raid, which is the mana a healer starts the fight with.
+func MaxMana(raid *proto.Raid, encounter *proto.Encounter) (float64, error) {
+	return firstPlayerStat(raid, encounter, stats.Mana, "mana pool")
+}
+
+// firstPlayerStat is one final stat of the first player in raid.
+func firstPlayerStat(raid *proto.Raid, encounter *proto.Encounter, stat stats.Stat, name string) (float64, error) {
 	result := core.ComputeStats(&proto.ComputeStatsRequest{Raid: raid, Encounter: encounter})
 	for _, party := range result.GetRaidStats().GetParties() {
 		for _, player := range party.GetPlayers() {
 			final := player.GetFinalStats().GetStats()
-			if int(stats.Health) < len(final) && final[stats.Health] > 0 {
-				return final[stats.Health], nil
+			if int(stat) < len(final) && final[stat] > 0 {
+				return final[stat], nil
 			}
 		}
 	}
-	return 0, fmt.Errorf("the engine computed no maximum health for the character")
+	return 0, fmt.Errorf("the engine computed no %s for the character", name)
 }

@@ -77,6 +77,25 @@ export function healerInput(
   return { entry, band: band(entry, { set_dps: hps, metrics }) };
 }
 
+/** `input` with its band's raid-fight figures (`metrics.raid_fight`): `hps` and its error. */
+export function withRaidFight(input: TierInput, hps: number, hpsError: number): TierInput {
+  const metrics = input.band.metrics;
+  if (metrics === null || metrics === undefined || !('hps' in metrics)) {
+    throw new Error('withRaidFight needs a healer input');
+  }
+  const raidFight = {
+    profile: 'raid60-logs',
+    duration_sec: 110,
+    hps,
+    hps_error: hpsError,
+    raw_hps: hps * 1.5,
+    overheal_pct: 1 / 3,
+    mana_left: 9000,
+    mana_left_pct: 0.95,
+  };
+  return { ...input, band: { ...input.band, metrics: { ...metrics, raid_fight: raidFight } } };
+}
+
 export function tankInput(
   classSlug: string,
   specSlug: string,

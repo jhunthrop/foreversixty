@@ -136,7 +136,11 @@ test('the title band names the fight, and the bars are the accent from 90% of th
 test('only the healer list says under its title what HPS does not count', async ({ page }) => {
   await page.goto('/tiers/healer');
   // The sentence itself is tier-copy.test.ts's; here it is the one lead on the page, on this list only.
-  await expect(page.locator('.ui-page-header-lead')).toContainText('Power Infusion');
+  await expect(page.locator('.ui-page-header-lead')).toContainText('Shields count for what they soak');
+  // It names the fight the list ranks on: the logged raid kill, or the stand-in until then.
+  await expect(page.locator('.ui-page-header-lead')).toContainText(
+    /Ranked on (one healer’s share|a stand-in fight)/,
+  );
   await page.goto('/tiers');
   await expect(page.locator('.ui-page-header-lead')).toHaveCount(0);
 });

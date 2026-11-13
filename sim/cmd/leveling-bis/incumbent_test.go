@@ -272,7 +272,7 @@ func TestLoadIncumbentSetsReadsTheCommittedReport(t *testing.T) {
 // the square root of the iterations asked for.
 type noisyBackend struct{ fakeHealing }
 
-func (b *noisyBackend) Run(req api.SimRequest, _ request.HealProfile) (simscore.HealingResult, error) {
+func (b *noisyBackend) Run(req api.SimRequest, _ request.HealFight) (simscore.HealingResult, error) {
 	b.requests = append(b.requests, req)
 	return simscore.HealingResult{
 		Effective:    api.Estimate{Mean: 600, Error: 14 / math.Sqrt(float64(req.Iterations))},

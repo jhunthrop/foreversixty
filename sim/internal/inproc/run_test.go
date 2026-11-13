@@ -179,8 +179,34 @@ func TestHealingRunReportsAHealersThroughput(t *testing.T) {
 	if share := got.OverhealShare(); share < 0 || share > 1 {
 		t.Fatalf("overheal share %v out of range", share)
 	}
+	if got.ManaPool <= 0 || got.ManaLeft < 0 || got.ManaLeft > got.ManaPool {
+		t.Fatalf("mana left %v of a %v pool is out of range", got.ManaLeft, got.ManaPool)
+	}
 	req.Spec = "no-such-spec"
 	if _, err := HealingRun(req, profile); err == nil {
 		t.Fatal("an unknown spec ran")
+	}
+}
+
+// The raid-shaped fight asks a healer for its logged share, far under what it can heal, so
+// it overheals and ends with mana in the bar, where the BiS profile drains it.
+func TestHealingRunOnTheRaidFightLeavesOverhealAndMana(t *testing.T) {
+	req := bandRequest(t, "priest-holy")
+	fight, err := request.LoadRaidHealProfile(filepath.Join(realRoot, "data", "curated", request.RaidHealProfileFile))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := HealingRun(req, fight)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Effective.Mean <= 0 || got.Effective.Mean > fight.LogSample.HealerDamagePerSecond*1.1 {
+		t.Errorf("effective HPS %v on a fight dealing %v a second", got.Effective.Mean, fight.LogSample.HealerDamagePerSecond)
+	}
+	if got.OverhealShare() <= 0 {
+		t.Errorf("overheal %v, want some on a raid-shaped fight", got.OverhealShare())
+	}
+	if got.ManaLeft <= 0 {
+		t.Errorf("mana left %v of %v, want some on a raid-shaped fight", got.ManaLeft, got.ManaPool)
 	}
 }

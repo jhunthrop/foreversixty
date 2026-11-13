@@ -100,6 +100,8 @@ function listsOf(
               faction,
               presetLabel: data.presetLabel,
               healSeconds: data.healSeconds,
+              healerBasis: data.healerBasis,
+              raidFightSeconds: data.raidFightSeconds,
               healerOrderMeasured: data.healerOrderMeasured[faction],
               bossSwingSeconds: data.bossSwingSeconds,
             }).map((column) => column.body.map((segment) => segment.text).join(''));

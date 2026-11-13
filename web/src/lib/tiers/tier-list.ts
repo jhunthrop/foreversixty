@@ -3,7 +3,7 @@
 // tier-list.md, section 9). Which number sorts a role, what a gap and a bar are, where the
 // tier a gap falls in and which rows tie are rules, not nightly figures: every value comes from the
 // published band at build time and nothing here is typed in.
-import type { BisBand, BisRole, SpecCatalogEntry, TankMetrics } from '../bis/types';
+import type { BisBand, BisHealMetrics, BisRole, SpecCatalogEntry, TankMetrics } from '../bis/types';
 import { isTankMetrics } from '../bis/tank-view';
 import { bisBandPath } from '../bis/band-path';
 import { MAX_BAND, MIN_BAND } from '../bis/band-levels';
@@ -23,6 +23,11 @@ export interface TierInput {
 }
 
 export type TierTie = 'above' | 'below' | 'both';
+
+/** Which fight a healer list is ranked on: `raid` is the raid-shaped fight (metrics.raid_fight,
+ *  one healer's share of a logged raid kill, owner ruling 2026-11-13); `gear` is the BiS gear
+ *  fight (set_dps), the fallback until every healer band publishes the raid fight. */
+export type HealerBasis = 'raid' | 'gear';
 
 /** A spec a row ties with: enough to name it ("≈ tie with Arms") and to say when the two sit
  *  in different letters. */
@@ -66,6 +71,8 @@ export interface TierRow {
   talents: string;
   /** The ranking sim behind the number (`TierInput.simHref`); absent on tank and healer rows. */
   simHref?: string;
+  /** Healer only: the fight `metric` was measured on. */
+  healerBasis?: HealerBasis;
   /** Tank only. `health` is the maximum health, absent on a band ranked before it was published. */
   health?: number;
   threat?: number;
@@ -100,10 +107,27 @@ function tankMetricsOf(band: BisBand): TankMetrics {
   return band.metrics;
 }
 
-/** The figure a role is sorted on: damage taken per second for a tank, `set_dps` otherwise
- *  (a healer's equals its effective healing per second). */
-export function sortMetricOf(band: BisBand): number {
-  return roleOf(band) === 'tank' ? tankMetricsOf(band).dtps : band.set_dps;
+function healMetricsOf(band: BisBand): BisHealMetrics | undefined {
+  const metrics = band.metrics;
+  return metrics !== null && metrics !== undefined && 'hps' in metrics ? metrics : undefined;
+}
+
+/** The fight a healer list ranks on: the raid fight once every healer band publishes it, the
+ *  gear fight until then, so a list never mixes the two figures. */
+export function healerBasisOf(inputs: readonly TierInput[]): HealerBasis {
+  const healers = inputs.filter((input) => roleOf(input.band) === 'healer');
+  return healers.length > 0 && healers.every((input) => healMetricsOf(input.band)?.raid_fight !== undefined)
+    ? 'raid'
+    : 'gear';
+}
+
+/** The figure a role is sorted on: damage taken per second for a tank, a healer's effective
+ *  healing per second on its list's fight, `set_dps` for damage. */
+export function sortMetricOf(band: BisBand, basis: HealerBasis = 'gear'): number {
+  const role = roleOf(band);
+  if (role === 'tank') return tankMetricsOf(band).dtps;
+  const raid = role === 'healer' && basis === 'raid' ? healMetricsOf(band)?.raid_fight : undefined;
+  return raid?.hps ?? band.set_dps;
 }
 
 interface Scored {
@@ -171,13 +195,16 @@ interface HealerPoint {
   error: number;
 }
 
-/** A healer's measurements: the tuned profile and each tuning bound. `null` until the file
+/** A healer's measurements. On the raid fight, its one figure and error (the fight has no
+ *  tuning). On the gear fight, the tuned profile and each tuning bound, `null` until the file
  *  publishes the error and the bounds, and without them no order is measured. */
-function healerPoints(band: BisBand, metric: number): HealerPoint[] | null {
-  const metrics = band.metrics;
-  if (metrics === null || metrics === undefined || !('hps' in metrics) || metrics.hps_error === undefined) {
-    return null;
+function healerPoints(band: BisBand, metric: number, basis: HealerBasis): HealerPoint[] | null {
+  const metrics = healMetricsOf(band);
+  if (basis === 'raid') {
+    const raid = metrics?.raid_fight;
+    return raid === undefined ? null : [{ hps: raid.hps, error: raid.hps_error }];
   }
+  if (metrics?.hps_error === undefined) return null;
   const bounds = metrics.hps_at_bounds ?? [];
   if (bounds.length === 0) return null;
   return [
@@ -191,27 +218,37 @@ function leadsBeyondError(above: HealerPoint, below: HealerPoint): boolean {
   return above.hps - below.hps > HEALER_ERROR_Z * Math.hypot(above.error, below.error);
 }
 
-/** Whether two neighbouring healers tie: unless the one above leads beyond the error at the
- *  tuned profile and at every tuning bound, the order is the error's or the tuning's, not the
- *  healers'. A pair missing the error or the bounds is never ordered (owner ruling, round 5). */
-function healerTiedWith(above: Scored, below: Scored): boolean {
-  const pointsAbove = healerPoints(above.input.band, above.metric);
-  const pointsBelow = healerPoints(below.input.band, below.metric);
+/** Whether two neighbouring healers tie: unless the one above leads beyond the error at every
+ *  measurement (on the gear fight, the tuned profile and every tuning bound), the order is the
+ *  error's or the tuning's, not the healers'. A pair missing a measurement is never ordered
+ *  (owner ruling, round 5). */
+function healerTiedWith(above: Scored, below: Scored, basis: HealerBasis): boolean {
+  const pointsAbove = healerPoints(above.input.band, above.metric, basis);
+  const pointsBelow = healerPoints(below.input.band, below.metric, basis);
   if (pointsAbove === null || pointsBelow === null || pointsAbove.length !== pointsBelow.length) return true;
   return !pointsAbove.every((point, index) => leadsBeyondError(point, pointsBelow[index]!));
 }
 
-/** Whether every healer band carries the error and both bounds, so the list can order at all. */
-export function healerOrderMeasured(inputs: readonly TierInput[]): boolean {
+/** Whether every healer band carries what its list's fight needs to order (the error, and on
+ *  the gear fight both bounds), so the list can order at all. */
+export function healerOrderMeasured(
+  inputs: readonly TierInput[],
+  basis: HealerBasis = healerBasisOf(inputs),
+): boolean {
   return inputs
     .filter((input) => roleOf(input.band) === 'healer')
-    .every((input) => healerPoints(input.band, sortMetricOf(input.band)) !== null);
+    .every((input) => healerPoints(input.band, sortMetricOf(input.band, basis), basis) !== null);
 }
 
 /** Healer tie marks and ranks. A healer within error of the one above shares its rank, and
  *  the chain carries on, so no two healers are ever ordered by a gap the error cannot tell. */
-function healerTiesAndRanks(sorted: readonly Scored[]): { ties: (TierTie | null)[]; ranks: number[] } {
-  const tiedAbove = sorted.map((scored, index) => index > 0 && healerTiedWith(sorted[index - 1]!, scored));
+function healerTiesAndRanks(
+  sorted: readonly Scored[],
+  basis: HealerBasis,
+): { ties: (TierTie | null)[]; ranks: number[] } {
+  const tiedAbove = sorted.map(
+    (scored, index) => index > 0 && healerTiedWith(sorted[index - 1]!, scored, basis),
+  );
   const ranks = sharedRanks(tiedAbove);
   const ties = tiedAbove.map((above, index): TierTie | null => {
     const below = tiedAbove[index + 1] === true;
@@ -234,9 +271,10 @@ function tiesAndRanks(
   sorted: readonly Scored[],
   role: BisRole,
   ranked: boolean,
+  basis: HealerBasis,
 ): { ties: (TierTie | null)[]; ranks: number[] } {
   if (!ranked) return { ties: sorted.map(() => null), ranks: sorted.map((_scored, index) => index + 1) };
-  if (role === 'healer') return healerTiesAndRanks(sorted);
+  if (role === 'healer') return healerTiesAndRanks(sorted, basis);
   const ties = tieMarks(sorted.map((scored) => scored.metric));
   const ranks =
     role === 'tank'
@@ -249,19 +287,25 @@ function bestOf(values: readonly number[]): number {
   return Math.max(...values);
 }
 
-/** The ranked rows of one role, best first. An empty role gives an empty list. */
-export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[] {
+/** The ranked rows of one role, best first. An empty role gives an empty list. `healerBasis`
+ *  is the healer list's fight, by default the one its own bands support (`healerBasisOf`). */
+export function rankRole(
+  inputs: readonly TierInput[],
+  role: BisRole,
+  healerBasis: HealerBasis = healerBasisOf(inputs),
+): TierRow[] {
   const tank = role === 'tank';
   const pool = inputs.filter((input) => roleOf(input.band) === role);
   if (pool.length === 0) return [];
+  const basis = healerBasis;
   const sorted = sortScored(
-    pool.map((input) => ({ input, metric: sortMetricOf(input.band) })),
+    pool.map((input) => ({ input, metric: sortMetricOf(input.band, basis) })),
     tank,
   );
   const top = sorted[0]!.metric;
   // A healer list published without the measured error claims neither an order nor a tie.
-  const ranked = role !== 'healer' || healerOrderMeasured(pool);
-  const { ties, ranks } = tiesAndRanks(sorted, role, ranked);
+  const ranked = role !== 'healer' || healerOrderMeasured(pool, basis);
+  const { ties, ranks } = tiesAndRanks(sorted, role, ranked, basis);
   const sortedMetrics = sorted.map((scored) => scored.metric);
   const tiers = sortedMetrics.map((metric) =>
     roleHasTiers(role) ? tierOf(gapAndFraction(metric, top, tank).gap) : null,
@@ -306,6 +350,7 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
       lowConfidence: band.weights_low_confidence === true,
       talents: band.talents,
       ...(input.simHref === undefined ? {} : { simHref: input.simHref }),
+      ...(role === 'healer' ? { healerBasis: basis } : {}),
     };
     if (!tank) return row;
     const metrics = tankMetricsOf(band);

@@ -39,6 +39,13 @@ package main
 // Every published healer number carries the profile's name: the band
 // entry names it (healerFields.Profile) and the file carries the profile
 // itself, reasons included (specReport.HealProfile).
+//
+// The raid-shaped fight (data/curated/heal-raid-profile.json, owner ruling
+// 2026-11-13) is the second fight. It picks nothing: every band 60 entry's
+// final set runs it once more and the figures are published beside the
+// others as metrics.raid_fight, which /tiers/healer ranks the healers on.
+// It is one healer's share of a logged raid kill, so a healer idles,
+// overheals and ends with mana, where the profile above drains every bar.
 
 import (
 	"fmt"
@@ -74,6 +81,9 @@ const (
 	// 0.1 percent of the score. The ratio between a screen (100) and a
 	// verification (300) is kept.
 	healIterationScale = 7
+	// raidFightBand is the band whose entries run the raid-shaped fight: it
+	// is a level 60 raid kill.
+	raidFightBand = 60
 	// maxManaLastsSec caps the published "mana lasts" figure; the engine
 	// projects a time past the fight for a set that never ran out, and an
 	// hour is where its own convention stops.
@@ -111,6 +121,22 @@ type healingMetrics struct {
 	ManaLastsSec float64 `json:"mana_lasts_sec"`
 	// HPM is effective healing per point of mana spent.
 	HPM float64 `json:"hpm"`
+	// RaidFight is the same set on the raid-shaped fight; band 60 only.
+	RaidFight *raidFightMetrics `json:"raid_fight,omitempty"`
+}
+
+// raidFightMetrics is a set's figures on the raid-shaped fight: effective
+// healing (a shield for what it soaked), the share that overhealed and the
+// mana left in the bar when the kill ends.
+type raidFightMetrics struct {
+	Profile     string  `json:"profile"`
+	DurationSec int     `json:"duration_sec"`
+	HPS         float64 `json:"hps"`
+	HPSError    float64 `json:"hps_error"`
+	RawHPS      float64 `json:"raw_hps"`
+	OverhealPct float64 `json:"overheal_pct"`
+	ManaLeft    float64 `json:"mana_left"`
+	ManaLeftPct float64 `json:"mana_left_pct"`
 }
 
 // boundHPS is a set's effective HPS and its error under the profile at one tuning bound.
@@ -131,14 +157,16 @@ type healerFields struct {
 // healingBackend is where a healing run and a healing weights sweep come
 // from: the engine in production, a fake in a test.
 type healingBackend interface {
-	Run(req api.SimRequest, profile request.HealProfile) (simscore.HealingResult, error)
+	Run(req api.SimRequest, fight request.HealFight) (simscore.HealingResult, error)
 	Weights(req api.SimRequest, profile request.HealProfile) (map[string]api.StatWeight, float64, error)
 }
 
-// healEngine is the engineRunner of a healer ranked under one profile.
+// healEngine is the engineRunner of a healer ranked under one profile; its
+// band 60 sets also run the raid-shaped fight for the metrics.
 type healEngine struct {
-	backend healingBackend
-	profile request.HealProfile
+	backend   healingBackend
+	profile   request.HealProfile
+	raidFight request.RaidHealProfile
 }
 
 // withHealerEngine swaps in the healing engine for a healer spec and loads
@@ -147,17 +175,27 @@ func withHealerEngine(runner engineRunner, repoRoot string, spec specInfo) (engi
 	if !isHealer(spec) {
 		return runner, nil, nil
 	}
-	profile, err := request.LoadHealProfile(filepath.Join(repoRoot, "data", "curated", healProfileFile))
+	curated := filepath.Join(repoRoot, "data", "curated")
+	profile, err := request.LoadHealProfile(filepath.Join(curated, healProfileFile))
 	if err != nil {
 		return nil, nil, fmt.Errorf("loading the heal profile for %s: %w", spec.Spec, err)
 	}
-	return healEngine{backend: realHealingBackend{}, profile: profile}, &profile, nil
+	raidFight, err := request.LoadRaidHealProfile(filepath.Join(curated, request.RaidHealProfileFile))
+	if err != nil {
+		return nil, nil, fmt.Errorf("loading the raid heal profile for %s: %w", spec.Spec, err)
+	}
+	return healEngine{backend: realHealingBackend{}, profile: profile, raidFight: raidFight}, &profile, nil
 }
 
 // forProfile fixes the fight to the profile's: a healer is ranked over one
 // stated fight, whatever length the request carried.
 func (h healEngine) forProfile(req api.SimRequest) api.SimRequest {
-	req.Encounter.DurationSec = h.profile.DurationSec
+	return overFight(req, h.profile.DurationSec)
+}
+
+// overFight is req fixed to a fight of the given length with no variation.
+func overFight(req api.SimRequest, seconds int) api.SimRequest {
+	req.Encounter.DurationSec = seconds
 	req.Encounter.Variation = 0
 	return req
 }
@@ -227,6 +265,11 @@ func (h healEngine) healerFieldsFor(spec specInfo, race, classSlug string, band 
 		return healerFields{}, 0, err
 	}
 	metrics.AtBounds = atBounds
+	if band == raidFightBand {
+		if metrics.RaidFight, err = h.measureRaidFight(req); err != nil {
+			return healerFields{}, 0, err
+		}
+	}
 	return healerFields{Role: healerRole, Profile: h.profile.ID, Metrics: &metrics}, metrics.HPS, nil
 }
 
@@ -242,6 +285,25 @@ func (h healEngine) measureAtBounds(req api.SimRequest) ([]boundHPS, error) {
 		out = append(out, boundHPS{Scale: scale, HPS: result.Effective.Mean, HPSError: result.Effective.Error})
 	}
 	return out, nil
+}
+
+// measureRaidFight runs req on the raid-shaped fight.
+func (h healEngine) measureRaidFight(req api.SimRequest) (*raidFightMetrics, error) {
+	fight := h.raidFight
+	result, err := h.backend.Run(overFight(req, fight.DurationSec), fight)
+	if err != nil {
+		return nil, fmt.Errorf("measuring the set on the raid fight %s: %w", fight.ID, err)
+	}
+	return &raidFightMetrics{
+		Profile:     fight.ID,
+		DurationSec: fight.DurationSec,
+		HPS:         result.Effective.Mean,
+		HPSError:    result.Effective.Error,
+		RawHPS:      result.Raw.Mean,
+		OverhealPct: result.OverhealShare(),
+		ManaLeft:    result.ManaLeft,
+		ManaLeftPct: result.ManaLeftShare(),
+	}, nil
 }
 
 // healFieldsAttacher is what a band report needs of a healer's engine; a
@@ -271,8 +333,8 @@ func attachHealerFields(report *bandReport, runner engineRunner, spec specInfo, 
 // realHealingBackend runs the engine in this process.
 type realHealingBackend struct{}
 
-func (realHealingBackend) Run(req api.SimRequest, profile request.HealProfile) (simscore.HealingResult, error) {
-	return inproc.HealingRun(req, profile)
+func (realHealingBackend) Run(req api.SimRequest, fight request.HealFight) (simscore.HealingResult, error) {
+	return inproc.HealingRun(req, fight)
 }
 
 // Weights is runWeights for a healer: the same request, the profile laid

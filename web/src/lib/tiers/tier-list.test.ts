@@ -1,9 +1,10 @@
 // web/src/lib/tiers/tier-list.test.ts
 import { describe, expect, it } from 'vitest';
-import { band, catalogEntry, dpsInput, healerInput, tankInput } from './tier-test-support';
+import { band, catalogEntry, dpsInput, healerInput, tankInput, withRaidFight } from './tier-test-support';
 import {
   hrefsFor,
   groupByTier,
+  healerBasisOf,
   healerOrderMeasured,
   rankRole,
   raceLabel,
@@ -556,5 +557,56 @@ describe('hrefsFor', () => {
     const [linked, bare] = rankRole([withSim, dpsInput('warrior', 'arms', 'Arms', 90)], 'dps');
     expect(hrefsFor(linked!).sim).toBe('/sim?code=x&run=1');
     expect(hrefsFor(bare!).sim).toBeUndefined();
+  });
+});
+
+describe('the healer list’s fight: the raid kill once published, the gear fight until then', () => {
+  // The gear fight's figures say druid over paladin; the raid kill's say paladin over druid.
+  const druid = healerInput('druid', 'restoration', 'Restoration', 1000, 1, [
+    { scale: 1.85, hps: 1000, hps_error: 1 },
+    { scale: 2.3, hps: 1000, hps_error: 1 },
+  ]);
+  const paladin = healerInput('paladin', 'holy', 'Holy', 700, 1, [
+    { scale: 1.85, hps: 700, hps_error: 1 },
+    { scale: 2.3, hps: 700, hps_error: 1 },
+  ]);
+
+  it('ranks on the raid fight’s HPS and error when every healer band publishes it', () => {
+    const inputs = [withRaidFight(druid, 112, 0.2), withRaidFight(paladin, 130, 0.2)];
+    expect(healerBasisOf(inputs)).toBe('raid');
+    const rows = rankRole(inputs, 'healer');
+    expect(rows.map((r) => [r.specSlug, r.metric, r.rank, r.healerBasis])).toEqual([
+      ['holy', 130, 1, 'raid'],
+      ['restoration', 112, 2, 'raid'],
+    ]);
+    expect(rows.every((r) => r.ranked)).toBe(true);
+  });
+
+  it('ties raid-fight healers the error cannot tell apart; the raid fight has no tuning bounds', () => {
+    const rows = rankRole([withRaidFight(druid, 120, 2), withRaidFight(paladin, 119, 2)], 'healer');
+    expect(rows.map((r) => r.rank)).toEqual([1, 1]);
+  });
+
+  it('falls back to the gear fight while any healer band lacks the raid fight, never mixing the two', () => {
+    const inputs = [withRaidFight(druid, 112, 0.2), paladin];
+    expect(healerBasisOf(inputs)).toBe('gear');
+    const rows = rankRole(inputs, 'healer');
+    expect(rows.map((r) => [r.specSlug, r.metric, r.healerBasis])).toEqual([
+      ['restoration', 1000, 'gear'],
+      ['holy', 700, 'gear'],
+    ]);
+  });
+
+  it('ranks on the basis it is handed, so both factions name one fight', () => {
+    const rows = rankRole(
+      [withRaidFight(druid, 112, 0.2), withRaidFight(paladin, 130, 0.2)],
+      'healer',
+      'gear',
+    );
+    expect(rows.map((r) => r.metric)).toEqual([1000, 700]);
+  });
+
+  it('gives DPS and tank rows no healer basis', () => {
+    expect(rankRole([dpsInput('a', 'a', 'A', 100)], 'dps')[0]!.healerBasis).toBeUndefined();
   });
 });

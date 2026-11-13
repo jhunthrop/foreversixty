@@ -376,6 +376,25 @@ export interface BisHealMetrics {
   mana_lasts_sec: number;
   /** Effective healing per point of mana spent. */
   hpm: number;
+  /** The same set on the raid-shaped fight (`data/curated/heal-raid-profile.json`), band 60
+   *  only; /tiers/healer ranks on it. Absent on a file ranked before 2026-11-13. */
+  raid_fight?: BisRaidFightMetrics;
+}
+
+/** A healer set on the raid-shaped fight: one healer's share of a logged raid kill. */
+export interface BisRaidFightMetrics {
+  /** The fight's id (`heal-raid-profile.json` `id`). */
+  profile: string;
+  duration_sec: number;
+  /** Effective healing per second; a shield counts for what it soaked. */
+  hps: number;
+  hps_error: number;
+  raw_hps: number;
+  /** 0..1 share of raw healing that landed on full health. */
+  overheal_pct: number;
+  /** Mana in the bar when the kill ends, and as a 0..1 share of the pool. */
+  mana_left: number;
+  mana_left_pct: number;
 }
 
 /** The incoming-damage profile a healer file ranks gear under
