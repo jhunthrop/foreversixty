@@ -137,9 +137,8 @@ function withinTieMargin(metric: number, neighbour: number): boolean {
 }
 
 /** Both rows of a tied pair carry the mark; a row tied on both sides says so. */
-function tieMarks(metrics: readonly number[], enabled: boolean): (TierTie | null)[] {
+function tieMarks(metrics: readonly number[]): (TierTie | null)[] {
   return metrics.map((metric, index) => {
-    if (!enabled) return null;
     const above = index > 0 && withinTieMargin(metric, metrics[index - 1]!);
     const below = index < metrics.length - 1 && withinTieMargin(metrics[index + 1]!, metric);
     if (above && below) return 'both';
@@ -241,10 +240,7 @@ function tiesAndRanks(
 ): { ties: (TierTie | null)[]; ranks: number[] } {
   if (!ranked) return { ties: sorted.map(() => null), ranks: sorted.map((_scored, index) => index + 1) };
   if (role === 'healer') return healerTiesAndRanks(sorted);
-  const ties = tieMarks(
-    sorted.map((scored) => scored.metric),
-    true,
-  );
+  const ties = tieMarks(sorted.map((scored) => scored.metric));
   const ranks =
     role === 'tank'
       ? sharedRanks(ties.map((tie) => tie === 'above' || tie === 'both'))
