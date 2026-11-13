@@ -31,6 +31,7 @@ import { tierSpecViews } from '../../lib/tiers/tier-callout';
 import { FACTION_LABELS, ROLE_PATHS, ROLE_TABS, tiersCopy } from '../../lib/tiers/tier-copy';
 import { TIER_ROLES, groupByTier, roleHasTiers } from '../../lib/tiers/tier-list';
 import { loadTierData } from '../../lib/tiers/tier-load';
+import { tierCardModel, tierCardVersion } from '../../lib/tiers/tier-card';
 import type { BisRole } from '../../lib/bis/types';
 import { searchCopy } from '../../lib/search-copy';
 
@@ -88,12 +89,14 @@ const healerFight = {
   raidFightSeconds: data.raidFightSeconds,
 };
 const metaLine = tiersCopy.metaLine({ role, ...healerFight });
+const ogVersion = tierCardVersion(tierCardModel(data, role));
 ---
 
 <Base
   title={searchCopy.tiers.title(role)}
   description={searchCopy.tiers.description(role)}
   path={ROLE_PATHS[role]}
+  {ogVersion}
 >
   <script
     is:inline

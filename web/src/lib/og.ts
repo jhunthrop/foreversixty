@@ -19,7 +19,7 @@ const marcellus = font('@fontsource/marcellus/files/marcellus-latin-400-normal.w
 const openSans = font('@fontsource/open-sans/files/open-sans-latin-400-normal.woff');
 
 /** The public file the site serves at `url` (/art/og-art.jpg), as a data URI. */
-async function publicDataUri(url: string, type: string): Promise<string> {
+export async function publicDataUri(url: string, type: string): Promise<string> {
   const bytes = await readFile(path.resolve(process.cwd(), 'public', url.replace(/^\//, '')));
   return `data:${type};base64,${bytes.toString('base64')}`;
 }
@@ -29,7 +29,7 @@ const art = publicDataUri(OG_ART, 'image/jpeg');
 const seal = publicDataUri(FAVICON.appleTouch, 'image/png');
 
 /** The token values the card paints (satori reads no CSS). */
-const INK = {
+export const INK = {
   cream: '#f3eee2', // --color-cream
   cream2: '#fcedcf', // --color-cream-2
   text: '#dcd8d2', // --color-text
@@ -55,17 +55,25 @@ export function ogLayout({ title }: OgContent): 'brand' | 'page' {
   return title === OG_BRAND ? 'brand' : 'page';
 }
 
-const text = (fontSize: number, color: string, children: string, extra: Record<string, unknown> = {}) => ({
+export const text = (
+  fontSize: number,
+  color: string,
+  children: string,
+  extra: Record<string, unknown> = {},
+) => ({
   type: 'div',
   props: { style: { fontSize, color, ...extra }, children },
 });
 
-const box = (style: Record<string, unknown>, children: unknown[]) => ({
+export const box = (style: Record<string, unknown>, children: unknown[]) => ({
   type: 'div',
   props: { style: { display: 'flex', ...style }, children },
 });
 
-const sealImage = async (px: number) => ({ type: 'img', props: { src: await seal, width: px, height: px } });
+export const sealImage = async (px: number) => ({
+  type: 'img',
+  props: { src: await seal, width: px, height: px },
+});
 
 async function pageCard({ title, kicker }: OgContent): Promise<unknown[]> {
   return [
@@ -94,37 +102,39 @@ async function brandCard(): Promise<unknown[]> {
   ];
 }
 
-export async function renderOg(content: OgContent): Promise<Uint8Array<ArrayBuffer>> {
-  const svg = await satori(
-    {
-      type: 'div',
-      props: {
-        style: {
-          width: 1200,
-          height: 630,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: 64,
-          backgroundImage: `linear-gradient(${INK.veil}, ${INK.veil}), url(${await art})`,
-          backgroundSize: '1200px 630px',
-          fontFamily: 'Open Sans',
-        },
-        children: ogLayout(content) === 'brand' ? await brandCard() : await pageCard(content),
-      },
-    },
-    {
-      width: 1200,
-      height: 630,
-      fonts: [
-        { name: 'Marcellus', data: await marcellus, weight: 400, style: 'normal' },
-        { name: 'Open Sans', data: await openSans, weight: 400, style: 'normal' },
-      ],
-    },
-  );
-  const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
+export const OG_SIZE = { width: 1200, height: 630 } as const;
+
+/** A satori tree painted to the 1200 by 630 PNG every link preview is. */
+export async function renderCardPng(root: unknown): Promise<Uint8Array<ArrayBuffer>> {
+  const svg = await satori(root as Parameters<typeof satori>[0], {
+    ...OG_SIZE,
+    fonts: [
+      { name: 'Marcellus', data: await marcellus, weight: 400, style: 'normal' },
+      { name: 'Open Sans', data: await openSans, weight: 400, style: 'normal' },
+    ],
+  });
+  const png = new Resvg(svg, { fitTo: { mode: 'width', value: OG_SIZE.width } }).render().asPng();
   // Buffer is typed as Uint8Array<ArrayBufferLike>, which the DOM lib's BodyInit no
   // longer accepts (it wants Uint8Array<ArrayBuffer>). Uint8Array.from copies into a
   // fresh ArrayBuffer-backed array so `new Response(png)` type-checks at the call site.
   return Uint8Array.from(png);
+}
+
+export async function renderOg(content: OgContent): Promise<Uint8Array<ArrayBuffer>> {
+  return renderCardPng({
+    type: 'div',
+    props: {
+      style: {
+        ...OG_SIZE,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: 64,
+        backgroundImage: `linear-gradient(${INK.veil}, ${INK.veil}), url(${await art})`,
+        backgroundSize: '1200px 630px',
+        fontFamily: 'Open Sans',
+      },
+      children: ogLayout(content) === 'brand' ? await brandCard() : await pageCard(content),
+    },
+  });
 }

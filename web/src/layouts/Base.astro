@@ -71,8 +71,12 @@ interface Props {
   jsonLd?: object[];
   /** The art behind the bar: the painted band, or home's hero (with PageHeader's `art="hero"`). */
   art?: BandArt;
+  /** The share card's version, for a card drawn from data (the tier lists): a new version is a
+   *  new og:image URL, so Reddit and Discord fetch the new card instead of their cached one. */
+  ogVersion?: string;
 }
-const { title, description, path, canonicalPath = path, jsonLd = [], art = 'band' } = Astro.props;
+const { title, description, path, canonicalPath = path, jsonLd = [], art = 'band', ogVersion } = Astro.props;
+const ogImage = `${SITE_URL}/og${path === '/' ? '/index' : path}.png${ogVersion === undefined ? '' : `?v=${ogVersion}`}`;
 const site = SITE_URL;
 const fullTitle = pageTitle(path, title);
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
@@ -106,11 +110,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <meta property="og:title" content={fullTitle} data-og="og-title" />
     <meta property="og:description" content={description} data-og="og-description" />
     <meta property="og:url" content={`${site}${canonicalPath}`} data-og="og-url" />
-    <meta
-      property="og:image"
-      content={`${site}/og${path === '/' ? '/index' : path}.png`}
-      data-og="og-image"
-    />
+    <meta property="og:image" content={ogImage} data-og="og-image" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:locale" content="en_US" />
