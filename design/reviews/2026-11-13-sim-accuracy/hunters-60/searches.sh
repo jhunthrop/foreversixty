@@ -11,10 +11,11 @@ go build -o "$bin/ts" ./cmd/talent-search && go build -o "$bin/rs" ./cmd/rotatio
 keeps() { python3 -c "import json,sys;print(\",\".join(json.load(open(\"../design/reviews/talent-search/raid-keeps.json\"))[\"keep\"].get(sys.argv[1],[])))" "$1"; }
 run() { nice -n 15 env GOMAXPROCS=5 "$@" 2>&1 | grep -v "^$" | tail -2; }
 for s in $specs; do
+  [ -n "${RS_ONLY:-}" ] && { echo "### rs $s raid"; run "$bin/rs" -repo-root .. -out "$out/rs-raid" -spec "$s" -preset raid; echo "### rs $s bare"; run "$bin/rs" -repo-root .. -out "$out/rs-bare" -spec "$s"; continue; }
   for f in horde alliance; do
     echo "### ts $s raid $f"; run "$bin/ts" -repo-root .. -out "$out/ts-raid-$f" -spec "$s" -preset raid -faction "$f" -keep "$(keeps "$s")"
   done
   echo "### rs $s raid"; run "$bin/rs" -repo-root .. -out "$out/rs-raid" -spec "$s" -preset raid
   echo "### rs $s bare"; run "$bin/rs" -repo-root .. -out "$out/rs-bare" -spec "$s"
 done
-for f in "$out"/*/*.md; do echo "=== $(basename "$(dirname "$f")")/$(basename "$f")"; sed -n 1,60p "$f"; done
+for f in "$out"/*/*.md; do echo "=== $(basename "$(dirname "$f")")/$(basename "$f")"; sed -n 1,400p "$f"; done
