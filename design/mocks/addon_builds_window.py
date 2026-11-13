@@ -25,7 +25,7 @@ from addon_ux import ADDON, ROOT
 
 OUT = ROOT / 'design/reviews/2026-11-13-addon-builds-window'
 W, PAD, LEFT, GUTTER, RIGHT = 740, 16, 388, 32, 288
-HEADER, FOOTER, UP_NEXT_ROWS = 56, 28, 6
+HEADER, FOOTER, UP_NEXT_ROWS, STRIP = 56, 28, 6, 28
 CLIENT_GOLD = ab.CLIENT_GOLD
 
 # The spec's new strings (section 6), until Locale.lua carries them.
@@ -59,6 +59,11 @@ CSS = ab.CSS + f'''
 .win .hd .tt2 {{ font-family: Title, serif; font-size: 16px; line-height: 20px; color: {ADDON['cream']}; }}
 .win .x {{ position: absolute; top: 18px; right: 12px; width: 20px; height: 20px; border: 1px solid {ADDON['line']};
   display: flex; align-items: center; justify-content: center; font-size: 14px; }}
+.strip {{ height: {STRIP}px; display: flex; gap: 4px; padding: 0 {PAD}px; border-bottom: 1px solid {ADDON['line']}; }}
+.strip .tab {{ min-width: 96px; padding: 0 12px; display: flex; align-items: center; justify-content: center;
+  color: {ADDON['muted']}; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }}
+.strip .tab.on {{ color: {ADDON['gold']}; border-color: {ADDON['gold']}; }}
+.strip .tab .dot {{ width: 6px; height: 6px; border-radius: 50%; background: {CLIENT_GOLD}; margin-left: 4px; }}
 .win .bd {{ display: flex; padding: 12px {PAD}px; }}
 .win .lc {{ width: {LEFT}px; flex: none; }}
 .win .vr {{ position: absolute; left: {PAD + LEFT + GUTTER // 2}px; top: {HEADER}px; bottom: {FOOTER}px;
@@ -210,9 +215,18 @@ def header(cls, title, note_html):
             f'<div class="m">{note_html}</div></div></div><div class="x">×</div>')
 
 
-def window(cls, title, note_html, left, right, esc_hint, enter_hint=''):
-    return (f'<div class="win">{header(cls, title, note_html)}<div class="bd"><div class="lc">{left}</div>'
-            f'<div class="rc">{right}</div></div><div class="vr"></div>'
+def strip_html(active, dots):
+    tabs = ''.join(f'<div class="tab{" on" if t == active else ""}">{t}'
+                   f'{"<span class=dot></span>" if t in dots else ""}</div>' for t in TABS)
+    return f'<div class="strip">{tabs}</div>'
+
+
+def window(cls, title, note_html, left, right, esc_hint, enter_hint='', strip=None):
+    """`strip`: None while Builds is the only tab (the strip hides), else (active tab, tabs with a dot)."""
+    tabs = strip_html(*strip) if strip else ''
+    vr = f' style="top:{HEADER + STRIP}px"' if strip else ''
+    return (f'<div class="win">{header(cls, title, note_html)}{tabs}<div class="bd"><div class="lc">{left}</div>'
+            f'<div class="rc">{right}</div></div><div class="vr"{vr}></div>'
             f'<div class="ft"><span>{esc_hint}</span><span>{enter_hint}</span></div></div>')
 
 
@@ -231,17 +245,23 @@ def name_of(spec_name, kind):
     return lua_format(L('followKindBuildName'), spec_name, word.group(1 if kind == 'leveling' else 2))
 
 
-def note(level, matched=None, allowed=None, off=0, spend=0):
-    """BuildsPane.note: the level, then parts that add up to its points: on plan, off plan, to spend."""
-    parts = [lua_format(L('dialogLevelPoints'), level)]
+# The hub's header (spec 2026-11-13-addon-hub 3.2): the character's name as the title on every tab, then
+# `Level 42 Hunter` and at most two figures the tab owns. The characters are made up.
+NAMES = {'hunter': 'Velisandre', 'druid': 'Thessaly'}
+TABS = ['Me', 'Builds', 'Gear', 'Rotation', 'Guild', 'Officer']
+
+
+def note(level, matched=None, allowed=None, off=0, spend=0, cls='hunter'):
+    """Hub.headerFor over BuildsPane.figures: `Level 42 Hunter`, the points on plan of those the level gives,
+    then the points off plan in the warning colour, else the points waiting in the client gold."""
+    parts = [lua_format(L('hubIdentity'), level, cls.title())]
     if allowed:
-        parts.append(lua_format(L('windowOnPlan'), matched))
+        parts.append(lua_format(L('windowOnPlan'), matched, allowed))
     if off:
         parts.append(f'<span style="color:{ADDON["warning"]}">{lua_format(L("windowOffPlanCount"), off)}</span>')
-    out = L('dialogSeparator').join(parts)
-    if spend:
-        out += L('dialogSeparator') + f'<span style="color:{CLIENT_GOLD}">{lua_format(T("windowToSpend"), spend)}</span>'
-    return out
+    elif spend:
+        parts.append(f'<span style="color:{CLIENT_GOLD}">{lua_format(T("windowToSpend"), spend)}</span>')
+    return L('dialogSeparator').join(parts)
 
 
 def off_plan(lines):
@@ -266,7 +286,7 @@ def board_hunter_42():
     return board("The Builds window · level 42 Hunter following Beast Mastery's level 60 build, one point to spend, "
                  "27 of 33 on plan and 5 off (the owner's case, 2026-11-12); the cursor on Marksmanship's raid build "
                  "after the arrow keys, the paste box holding the keyboard; 740 wide",
-                 window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), note(42, 27, 33, 5, 1),
+                 window('hunter', NAMES['hunter'], note(42, 27, 33, 5, 1),
                         off_plan(HUNTER_OFF_PLAN) + blocks_html(blocks), right, T('windowEscClose'),
                         L('dialogEnterFollow')))
 
@@ -298,7 +318,7 @@ def board_druid_24():
              + to_site('selected', facts, 'druid', 24))
     return board('The Builds window · level 24 Druid following Feral, every point on plan, four builds waiting from '
                  'the site (two rows and "and 2 more"), the copy box selected after Tab',
-                 window('druid', lua_format(L('dialogOwnBuilds'), 'Druid'), note(24, 15, 15),
+                 window('druid', NAMES['druid'], note(24, 15, 15, cls='druid'),
                         blocks_html(blocks), right, T('windowEscClose')))
 
 
@@ -309,7 +329,7 @@ def board_hunter_60_copied():
              + to_site('copied', facts_hunter(60)[:1] + [lua_format(L('dialogSeen'), '2 min ago'), sim], 'hunter', 60))
     return board('The Builds window · level 60 Hunter following the Marksmanship raid build, every point placed; '
                  'the export copied with Ctrl+C, the site\'s ack and the sim line under it',
-                 window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), note(60, 51, 51),
+                 window('hunter', NAMES['hunter'], note(60, 51, 51),
                         blocks_html(blocks), right, T('windowEscClose')))
 
 
@@ -356,7 +376,7 @@ def board_paste_preview():
              + to_site('rest', facts_hunter(24)[1:], 'druid', 24))
     return board('The Builds window · a pasted Balance code previewing on the left; the box one line, "Read" under '
                  'it; Enter uses it',
-                 window('druid', lua_format(L('dialogOwnBuilds'), 'Druid'), note(24, 15, 15),
+                 window('druid', NAMES['druid'], note(24, 15, 15, cls='druid'),
                         preview_left(), right, T('windowEscBack'), L('dialogEnterHint')))
 
 
@@ -372,11 +392,20 @@ def board_bad_code():
              + from_site(box_cls='warn one-line', box_text=box, after=after) + to_site('rest', facts_hunter()))
     return board('The Builds window · a pasted link that is not a build code: the warning edge and the refusal, the '
                  'list kept; Esc clears the box',
-                 window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), note(42, 27, 33, 5, 1),
+                 window('hunter', NAMES['hunter'], note(42, 27, 33, 5, 1),
                         off_plan(HUNTER_OFF_PLAN) + blocks_html(blocks), right, T('windowEscClose')))
 
 
+def board_hunter_42_hub():
+    """board_hunter_42 inside the hub once the other tabs land: the strip, Builds active, its dot (a point waits)
+    and Guild's (tonight's raid not signed up)."""
+    html = board_hunter_42()
+    return html.replace('<div class="bd">', strip_html('Builds', ('Builds', 'Guild')) + '<div class="bd">', 1).replace(
+        '<div class="vr">', f'<div class="vr" style="top:{HEADER + STRIP}px">', 1)
+
+
 BOARDS = {
+    'window-hunter-42-hub': board_hunter_42_hub,
     'window-hunter-42': board_hunter_42,
     'window-druid-24-site': board_druid_24,
     'window-paste-preview': board_paste_preview,

@@ -153,7 +153,7 @@ describe("the Builds tab's flows (shipped data, a level 42 hunter)", function()
 	end)
 
 	it("opens with the header, the list on the left and the three sections on the right", function()
-		assert.are.equal("Hunter builds", Hub.header.title:GetText())
+		assert.are.equal("Bob", Hub.header.title:GetText())
 		assert.is_true(rowsShown() >= 5)
 		local paste = BuildDialog.paste
 		assert.are.equal(L.windowUpNext, paste.upNext.heading:GetText())
@@ -324,7 +324,11 @@ describe("the window's off-plan list and the preview's changes (shipped data)", 
 		assert.are.equal(L.windowOffPlan, paste.offPlanHead:GetText())
 		local line = paste.offPlan[1]:GetText()
 		assert.is_truthy(line:find("^.+ 5/5 \194\183 Survival"), line)
-		assert.is_truthy(require("Hub").header.note:GetText():find(" off plan", 1, true))
+		-- The header's two figures carry the points off plan ahead of the points waiting; the talents are on
+		-- the figures' hover and over the list (spec 2026-11-13-addon-hub 3.2).
+		local header = require("Hub").header
+		assert.is_truthy(header.note:GetText():find(" off plan", 1, true))
+		assert.is_truthy(header.noteLines[1]:find("Survival", 1, true), header.noteLines[1])
 	end)
 
 	it("lists the pasted build's talents against the character's under the preview", function()

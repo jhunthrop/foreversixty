@@ -33,6 +33,7 @@ local Follow = ns.Follow or require("Follow")
 local Score = ns.Score or require("Score")
 local Progress = ns.Progress or require("Progress")
 local Comms = ns.Comms or require("Comms")
+local Hub = ns.Hub or require("Hub")
 local Compat = ns.Compat or require("Compat")
 local Talents = ns.Talents or require("Talents")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
@@ -493,18 +494,18 @@ end
 local CLAIMS = { unclaimed = L.guildClaimUnclaimed, pending = L.guildClaimPending, claimed = L.guildClaimClaimed,
 	contested = L.guildClaimContested }
 
---- Whether a guild rank index may push a build: Comms.canPush, the rule the receiver checks too
---- (the guild master, rank 0, and rank 1).
-function GuildTab.isOfficer(rankIndex)
-	return Comms.canPush(rankIndex)
+--- Whether the player may push a build and sees the officer region: the hub's one officer gate
+--- (Hub.officer, the client's officer-note right), the rule a receiver checks too (Hub.officerRank).
+function GuildTab.isOfficer()
+	return Hub.officer()
 end
 
---- The officer region, nil below an officer: from the inbox `guild` message (`message`,
---- optional) its approvals ("2 approvals waiting on the site", "No approvals waiting") and
---- claim state; the build a push would send (`buildName`, Follow.buildName) and whether one
+--- The officer region, nil without the gate (`officer` false): from the inbox `guild` message
+--- (`message`, optional) its approvals ("2 approvals waiting on the site", "No approvals waiting")
+--- and claim state; the build a push would send (`buildName`, Follow.buildName) and whether one
 --- can go (`canPush`), with a note when there is no build.
-function GuildTab.officerRegion(message, rankIndex, build, data)
-	if not GuildTab.isOfficer(rankIndex) then
+function GuildTab.officerRegion(message, officer, build, data)
+	if officer ~= true then
 		return nil
 	end
 	local region = { canPush = build ~= nil }
@@ -1334,8 +1335,7 @@ function GuildTab.draw()
 		notice = GuildTab.ratingsNotice(status)
 	end
 	GuildTab.defaultKey = counts.defaultKey
-	local _, rank = Theme.playerGuild()
-	local officer = GuildTab.officerRegion(guildMessage(), rank, Follow.build, GuildTab.data or ns.Data)
+	local officer = GuildTab.officerRegion(guildMessage(), GuildTab.isOfficer(), Follow.build, GuildTab.data or ns.Data)
 	if officer ~= nil then
 		officer.pushed = GuildTab.pushed
 	end
@@ -1578,9 +1578,8 @@ function GuildTab.diagLine()
 		counts = { shown = 0, live = 0 }
 	end
 	local open = Widgets.isShown(GuildTab.flyout) and Widgets.isShown(pane())
-	local _, rank = Theme.playerGuild()
 	return string.format(L.diagGuildTab, open and L.diagPanelOpen or L.diagPanelClosed, counts.shown, counts.live,
-		GuildTab.isOfficer(rank) and L.diagGuildTabYes or L.diagGuildTabNo)
+		GuildTab.isOfficer() and L.diagGuildTabYes or L.diagGuildTabNo)
 end
 
 ns.GuildTab = GuildTab

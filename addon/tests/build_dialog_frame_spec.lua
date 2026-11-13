@@ -1217,8 +1217,8 @@ describe("BuildDialog, X.5 builds from the site", function()
 			return 500, 400
 		end
 		Hub.savePosition()
-		assert.are.equal(0, require("Prefs").get("dialog", "x"))
-		assert.are.equal(0, require("Prefs").get("dialog", "y"))
+		assert.are.equal(0, require("Prefs").get("hub", "x"))
+		assert.are.equal(0, require("Prefs").get("hub", "y"))
 	end)
 
 	it("keeps a same-named character's build off the row when its realm differs (X.5)", function()

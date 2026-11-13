@@ -61,34 +61,68 @@ describe("Options", function()
 		mock.uninstall()
 	end)
 
-	it("opens the window on its last tab on a bare /fs, and the Builds tab on /fs builds and /fs copy, printing nothing",
+	-- Spec 2026-11-13-addon-hub 10: a bare /fs toggles the window (it lands on the urgent tab), /fs builds and
+	-- /fs copy open the Builds tab, printing nothing.
+	it("toggles the window on a bare /fs, and opens the Builds tab on /fs builds and /fs copy, printing nothing",
 		function()
 		local opened = {}
 		require("BuildDialog").open = function(focus)
 			opened[#opened + 1] = focus
 		end
-		require("Hub").open = function(id)
-			opened[#opened + 1] = "hub " .. tostring(id)
+		require("Hub").toggle = function(id)
+			opened[#opened + 1] = "toggle " .. tostring(id)
 		end
 		assert.are.same({}, Options.handle(""))
 		assert.are.same({}, Options.handle("builds"))
 		assert.are.same({}, Options.handle("copy"))
-		assert.are.same({ "hub nil", "paste", "copy" }, opened)
+		assert.are.same({ "toggle nil", "paste", "copy" }, opened)
 	end)
 
-	-- A.3 ruling 5: every command answers. Alone, /fs group and /fs panel say where the group panel
-	-- is and when it fills; in a group /fs panel toggles it as /fs group does.
-	describe("/fs group and /fs panel", function()
+	it("opens a tab by its name, or says in one line why it cannot open now", function()
+		local Hub, Locale = require("Hub"), require("Locale")
+		local opened = {}
+		Hub.open = function(id)
+			opened[#opened + 1] = id
+			return id
+		end
+		Hub.register({ id = "gear", label = "Gear", build = function() end })
+		Hub.register({ id = "officer", label = "Officer", build = function() end })
+		assert.are.same({}, Options.handle("gear"))
+		assert.are.same({ "gear" }, opened)
+		-- The mock's player is in no guild and the officer gate answers nothing: both say why.
+		assert.are.same({ Locale.offOnly }, Options.handle("officer"))
+		-- A tab its lane has not built yet.
+		assert.are.same({ Locale.hubTabSoon }, Options.handle("rotation"))
+		assert.are.same({ "gear" }, opened)
+		_G.UnitLevel = function()
+			return 5
+		end
+		assert.are.same({ string.format(Locale.hubGearLevel, 10) }, Options.handle("gear"))
+	end)
+
+	it("closes the window when combat starts", function()
+		local Hub = require("Hub")
+		local closed = 0
+		Hub.close = function()
+			closed = closed + 1
+		end
+		Options.onEvent(nil, "PLAYER_REGEN_DISABLED")
+		assert.are.equal(1, closed)
+		Options.onEvent(nil, "PLAYER_REGEN_ENABLED")
+		assert.are.equal(1, closed)
+	end)
+
+	-- A.3 ruling 5: every command answers. Alone, /fs group says where the group panel is and when it
+	-- fills; in a group it toggles it.
+	describe("/fs group", function()
 		local SOLO = "The group panel is on the Raid tab of the Social window (O). It fills when you join a group."
 
-		it("both print where the panel is and when it fills while solo", function()
+		it("prints where the panel is and when it fills while solo", function()
 			assert.are.equal(SOLO, require("Locale").groupSoloCommand)
 			assert.are.same({ SOLO }, Options.handle("group"))
-			assert.are.same({ SOLO }, Options.handle("panel"))
-			assert.are.same({ SOLO }, Options.handle("panel "))
 		end)
 
-		it("toggles the panel with /fs panel in a group, as /fs group does", function()
+		it("toggles the panel in a group", function()
 			_G.IsInGroup = function()
 				return true
 			end
@@ -105,11 +139,10 @@ describe("Options", function()
 				toggled = toggled + 1
 				return {}
 			end
-			assert.are.same({}, Options.handle("panel"))
 			assert.are.same({}, Options.handle("group"))
 			GroupPanel.command = real
 			_G.IsInGroup, _G.IsInRaid, _G.GetNumGroupMembers = nil, nil, nil
-			assert.are.equal(2, toggled)
+			assert.are.equal(1, toggled)
 		end)
 	end)
 
@@ -302,7 +335,7 @@ describe("Options", function()
 		end)
 	end)
 
-	it("opens the tour again on /fs tour, and still on the testers' /fs welcome", function()
+	it("opens the tour again on /fs tour, and never on /fs help", function()
 		local Onboarding = require("Onboarding")
 		local opened = {}
 		Onboarding.open = function(page)
@@ -310,13 +343,17 @@ describe("Options", function()
 			return true
 		end
 		assert.are.same({}, Options.handle("tour"))
-		assert.are.same({}, Options.handle("welcome"))
-		assert.are.same({ 1, 1 }, opened)
+		Options.handle("help")
+		Options.handle("help all")
+		assert.are.same({ 1 }, opened)
 		assert.are.equal("/fs tour: see the tour again", require("Locale").settingsCommands[5])
 	end)
 
-	it("has dropped the window's tab subcommands", function()
-		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "gear", "settings" }) do
+	-- Spec 2026-11-13-addon-hub 10: /fs welcome, /fs panel, /fs job and /fs jobs are gone; like the old
+	-- window's tab subcommands they print the command list.
+	it("has dropped the old routes and the window's tab subcommands", function()
+		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "settings", "welcome", "panel",
+			"job", "jobs" }) do
 			assert.are.same(Options.helpLines(), Options.handle(command), command)
 		end
 		assert.is_nil(require("Follow").build)

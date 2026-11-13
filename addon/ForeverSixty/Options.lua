@@ -23,7 +23,6 @@ local ChatBadges = ns.ChatBadges or require("ChatBadges")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
-local RaidAssign = ns.RaidAssign or require("RaidAssign")
 local Recorder = ns.Recorder or require("Recorder")
 local Theme = ns.Theme or require("Theme")
 local Comms = ns.Comms or require("Comms")
@@ -175,18 +174,37 @@ function Options.onPush(named, sender)
 	return true
 end
 
+--- `/fs <tab>` (spec 2026-11-13-addon-hub 10): the window on that tab, printing nothing; a tab that
+--- cannot open now says why in one line ("Officers only."). /fs builds keeps the paste box ready.
+function Options.openTab(id)
+	BuildDialog.data = Options.data
+	local reason = Hub.reason(id)
+	if reason ~= nil then
+		return { reason }
+	end
+	if id == "builds" then
+		BuildDialog.open("paste")
+	else
+		Hub.open(id)
+	end
+	return {}
+end
+
 function Options.handle(input)
 	local command, rest = (input or ""):match("^(%S*)%s*(.*)$")
 	if command == "" then
-		-- The Forever Sixty window on the tab the player last had. It prints nothing; if it cannot
-		-- show itself it prints the commands instead (Hub.fallback).
+		-- The Forever Sixty window, toggled; it opens on the first thing waiting that the player has not
+		-- seen, else the tab they last had (Hub.landing). It prints nothing; if it cannot show itself it
+		-- prints the commands instead (Hub.fallback).
 		BuildDialog.data = Options.data
-		Hub.open()
+		Hub.toggle()
 		return {}
-	elseif command == "builds" or command == "copy" then
-		-- The Builds tab: /fs builds with the paste box ready, /fs copy with the copy box selected.
+	elseif Hub.ORDER[command] ~= nil then
+		return Options.openTab(command)
+	elseif command == "copy" then
+		-- The Builds tab with the copy box selected.
 		BuildDialog.data = Options.data
-		BuildDialog.open(command == "copy" and "copy" or "paste")
+		BuildDialog.open("copy")
 		return {}
 	elseif command == "inbox" then
 		local count, message = Options.readInbox()
@@ -194,23 +212,19 @@ function Options.handle(input)
 			return { message or L.inboxEmpty }
 		end
 		return { string.format(L.inboxCount, count) }
-	elseif command == "job" or command == "jobs" then
-		-- The raid jobs the raid leader set on the site for this character's next raid.
-		return RaidAssign.command(ForeverSixtyInbox, Export.characterKey(), RaidAssign.now())
 	elseif command == "build" then
 		-- Switch the active build slot (L3.7 item 32): a paste leaves the raid build in its slot.
 		return Options.buildCommand(rest)
 	elseif command == "record" then
 		return Recorder.command(rest)
-	elseif command == "tour" or command == "welcome" then
-		-- The tour again, from page 1 (/fs welcome is the testers' older name for it).
+	elseif command == "tour" then
+		-- The tour again, from page 1.
 		Onboarding.open(1)
 		return {}
 	elseif command == "help" then
-		-- The tour on page 1 (design/specs/2026-11-08-addon-ux.md 3.1), then the command list.
-		Onboarding.open(1)
-		-- The player's commands; "/fs help all" adds the testers' two lines, muted (A.2: the
-		-- player's help carries nothing a tester reads).
+		-- The player's commands, printed; it never opens a window (spec 2026-11-13-addon-hub 10).
+		-- "/fs help all" adds the testers' two lines, muted (A.2: the player's help carries nothing a
+		-- tester reads).
 		local lines = Options.helpLines()
 		if rest:lower() == "all" then
 			for _, line in ipairs(L.helpTesters) do
@@ -236,9 +250,8 @@ function Options.handle(input)
 		return Options.inspectLines()
 	elseif command == "link" then
 		return Options.link(rest)
-	elseif command == "group" or command == "panel" then
-		-- The group panel (L5.2 ruling 1): toggled from anywhere; alone, a line says where it is
-		-- (/fs panel is the same command, A.3 ruling 5).
+	elseif command == "group" then
+		-- The group panel (L5.2 ruling 1): toggled from anywhere; alone, a line says where it is.
 		GroupPanel.data = Options.data
 		return GroupPanel.command()
 	elseif command == "ready" then
@@ -570,6 +583,10 @@ function Options.onEvent(_, event, ...)
 		-- Combat: the chip hides (or fades and ignores the mouse) until it ends.
 		Inspect.onEvent(event, ...)
 		Chip.setCombat(event == "PLAYER_REGEN_DISABLED")
+		if event == "PLAYER_REGEN_DISABLED" then
+			-- The window closes as combat starts and does not come back by itself (spec 2026-11-13-addon-hub 3.1).
+			Hub.close()
+		end
 		if event == "PLAYER_REGEN_ENABLED" then
 			-- A slot mark held back in combat (a new overlay on a client button) draws now.
 			SlotMarks.onCombatEnd()
@@ -703,7 +720,7 @@ function Options.register()
 		Panel.data = Options.data
 		return Panel.toggle("key")
 	end
-	-- The second binding opens or closes the Forever Sixty window on the tab the player last had.
+	-- The second binding toggles the Forever Sixty window as /fs does (Hub.landing's tab, else the last).
 	BINDING_NAME_FOREVERSIXTY_HUB = L.bindingHub
 	FOREVERSIXTY_TOGGLE_HUB = function()
 		BuildDialog.data = Options.data
@@ -785,6 +802,7 @@ function Options.register()
 		SettingsPage.refreshSources()
 	end)
 	BuildDialog.data = Options.data
+	Hub.data = Options.data
 	Hub.fallback = Options.showHint
 	BuildDialog.afterUse = function()
 		Options.refreshSurfaces(Options.data)

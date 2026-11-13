@@ -463,3 +463,70 @@ describe("Comms, the FS1 protocol", function()
 		end)
 	end)
 end)
+
+-- A pushed build is heard only from a sender who passes the hub's one officer gate (spec
+-- 2026-11-13-addon-hub 3.3, Hub.officerRank: the client's officer-note right, by rank) or leads the group.
+describe("Comms.mayPush, the push gate", function()
+	local mock = require("wow_mock")
+	local Comms, Theme, ranks, leader
+
+	before_each(function()
+		ranks, leader = {}, false
+		mock.install({ class = { name = "Warrior", token = "WARRIOR" }, playerName = "Bob", globals = {
+			C_GuildInfo = {
+				CanEditOfficerNote = function()
+					return false
+				end,
+				GuildControlGetRankFlags = function(rankOrder)
+					return { [12] = rankOrder == 2 }
+				end,
+			},
+		} })
+		Theme = require("Theme")
+		Theme.reset()
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Hub")
+		Comms = helper.load("Comms")
+		Theme.guildRankOf = function(sender)
+			return ranks[sender]
+		end
+		Theme.isGroupLeader = function()
+			return leader
+		end
+		Theme.playerGuild = function()
+			return "Thornwake Company", 3
+		end
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("hears the guild master and a rank with officer-note rights, not a rank without or a stranger", function()
+		ranks = { ["Master-Realm"] = 0, ["Officer-Realm"] = 1, ["Raider-Realm"] = 2 }
+		assert.is_true(Comms.mayPush("Master-Realm"))
+		assert.is_true(Comms.mayPush("Officer-Realm"))
+		assert.is_false(Comms.mayPush("Raider-Realm"))
+		assert.is_false(Comms.mayPush("Stranger-Realm"))
+	end)
+
+	it("hears the group's leader whatever the rank", function()
+		leader = true
+		assert.is_true(Comms.mayPush("Stranger-Realm"))
+	end)
+
+	it("drops a push from a sender without the gate before any listener hears it", function()
+		local heard = 0
+		Comms.reset()
+		Comms.on("push", function()
+			heard = heard + 1
+		end)
+		ranks = { ["Raider-Realm"] = 2, ["Officer-Realm"] = 1 }
+		local line = "1|push|FSB1:1.60.1.70291:warrior:111121|Arms"
+		Comms.onEvent("FS1", line, "GUILD", "Raider-Realm")
+		assert.are.equal(0, heard)
+		Comms.onEvent("FS1", line, "GUILD", "Officer-Realm")
+		assert.are.equal(1, heard)
+	end)
+end)

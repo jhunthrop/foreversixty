@@ -1301,9 +1301,9 @@ local function currentRows()
 		BuildDialog.inboxDay(ForeverSixtyInbox, BuildDialog.liveClock()))
 end
 
---- The own builds' view for this character: { classToken, title, note, offPlanTalents, question,
---- blocks }, the followed row marked; nil without a player or data. The title ("Hunter builds") and
---- the note (the level and the points) head the window; the spec question heads the build list while
+--- The own builds' view for this character: { classToken, figures, offPlanTalents, question, blocks },
+--- the followed row marked; nil without a player or data. The figures (the points) and the off-plan
+--- talents on their hover head the window (Hub.headerFor); the spec question heads the build list while
 --- the points do not name a tree.
 local function currentOwnView()
 	local player = BuildDialog.player()
@@ -1312,8 +1312,6 @@ local function currentOwnView()
 		return nil
 	end
 	local level, ranks = liveLevel(), liveRanks(data)
-	local names = type(player.classNames) == "table" and player.classNames or {}
-	local className = names[player.classSlug:upper()] or Talents.titleCase(player.classSlug)
 	local ok, question = pcall(Follow.specQuestion, data, player.classSlug, ranks)
 	local has, split = pcall(Follow.specSplit, data, player.classSlug, ranks)
 	question, split = ok and question or nil, has and split or nil
@@ -1321,9 +1319,8 @@ local function currentOwnView()
 	local PanelTab = ns.PanelTab or require("PanelTab")
 	return {
 		classToken = player.classSlug:upper(),
-		title = BuildsPane.title(className),
 		question = BuildsPane.question(question, split),
-		note = BuildsPane.note(level, Follow.build, ranks),
+		figures = BuildsPane.figures(level, Follow.build, ranks),
 		offPlanTalents = PanelTab.offPlanTalents(Follow.build, ranks, data),
 		offPlan = BuildsWindow.offPlan(Follow.build, ranks, data),
 		blocks = BuildsPane.blocks(data, player.classSlug, level, Follow.build, ranks),
@@ -2393,17 +2390,47 @@ local function drawPreview(verdict, y)
 	return y + headY + G.aboveReplaces + contextHeight + G.buttonGap + S.buttonHeight + S.gap
 end
 
---- The hub's header for the Builds tab (spec 3.1): the class crest, "Hunter builds" and the panel's
---- figures, the off-plan talents on the figures' hover.
-local function drawHeader()
-	local view = BuildDialog.ownView
-	local player = BuildDialog.player()
-	Hub.setHeader({
-		classToken = view ~= nil and view.classToken or (player ~= nil and player.classSlug:upper() or nil),
-		title = view ~= nil and view.title or nil,
-		note = view ~= nil and view.note or nil,
-		noteLines = view ~= nil and view.offPlanTalents or nil,
-	})
+--- The Builds tab's header figures (Hub's `figures`, spec 2026-11-13-addon-hub 3.2): the points on the
+--- followed build and the points waiting or off plan, the off-plan talents on their hover.
+function BuildDialog.figures()
+	local view = BuildDialog.ownView or currentOwnView()
+	if view == nil then
+		return {}
+	end
+	return view.figures, view.offPlanTalents
+end
+
+--- What the Builds tab has waiting (Hub's `waiting`, spec 3.6), in this order: the spec to choose (no
+--- build followed and the points name no tree), the points to spend with the talent the followed build
+--- takes next, the builds the site sent that are not dismissed.
+function BuildDialog.waiting()
+	local data, player = dataOf(), BuildDialog.player()
+	if player == nil or type(data) ~= "table" then
+		return {}
+	end
+	local items = {}
+	local level, ranks = liveLevel(), liveRanks(data)
+	local asked, question = pcall(Follow.specQuestion, data, player.classSlug, ranks)
+	if Follow.build == nil and asked and question ~= nil then
+		items[#items + 1] = { key = "spec", line = L.hubPickSpec, fact = player.classSlug }
+	end
+	local unspent = type(level) == "number" and Progress.unspentPoints(level, ranks) or 0
+	if unspent > 0 then
+		local spend = unspent == 1 and L.hubSpendOne or string.format(L.hubSpendMany, unspent)
+		local named, talent = pcall(BuildDialog.nextTalent, Follow.build, ranks, data, level)
+		local line = named and talent ~= nil and string.format(L.hubSpendOn, spend, talent) or spend
+		items[#items + 1] = { key = "spend", line = line, fact = level .. ":" .. unspent }
+	end
+	local rows = currentRows()
+	if #rows > 0 then
+		local ids = {}
+		for _, row in ipairs(rows) do
+			ids[#ids + 1] = tostring(row.id or row.code)
+		end
+		items[#items + 1] = { key = "site", fact = table.concat(ids, ","),
+			line = #rows == 1 and L.hubBuildOne or string.format(L.chipBuilds, #rows) }
+	end
+	return items
 end
 
 --- The talents spent off the followed build, over the list at `y` (spec 3.2): "Off plan" in the warning
@@ -2648,7 +2675,8 @@ function BuildDialog.draw(select)
 	local waiting = #(BuildDialog.rows or {}) > 0
 	local resting = waiting and verdict == nil and BuildDialog.touched ~= true
 	local view = BuildDialog.pasteView(verdict, BuildDialog.editing == true, BuildDialog.focused == true, resting)
-	drawHeader()
+	-- The figures follow the points and the dots the site rows (a follow, a push, a dismiss).
+	Hub.refresh()
 	local left = drawLeft(view, verdict)
 	local right = drawRight(view, verdict, select)
 	Hub.fitHeight(math.max(left, right))
@@ -2946,15 +2974,16 @@ function BuildDialog.selfCheck()
 	return true
 end
 
--- The hub's first tab (spec section 3): the window opens on it until other tabs have content.
+-- The hub's Builds tab (spec 2026-11-13-addon-hub 3.3: second on the strip, after Me).
 Hub.register({
 	id = "builds",
 	label = L.hubTabBuilds,
-	order = 1,
 	build = BuildDialog.buildInto,
 	show = BuildDialog.onShow,
 	hide = BuildDialog.onHide,
 	escape = BuildDialog.escape,
+	figures = BuildDialog.figures,
+	waiting = BuildDialog.waiting,
 })
 
 ns.BuildDialog = BuildDialog

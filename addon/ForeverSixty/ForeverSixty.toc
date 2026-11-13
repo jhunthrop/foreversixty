@@ -47,6 +47,7 @@ surfaces\SlotMarks.lua
 surfaces\RewardMarks.lua
 surfaces\BuildsPane.lua
 surfaces\BuildsWindow.lua
+surfaces\HubFrame.lua
 surfaces\Hub.lua
 surfaces\BuildDialog.lua
 surfaces\SiteStatus.lua

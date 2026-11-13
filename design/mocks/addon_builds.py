@@ -46,9 +46,15 @@ G = {'heading': 24, 'crest': 20, 'specLine': 18, 'specIcon': 16, 'indent': 22, '
      'siteCrest': 20, 'moreGap': 6}
 
 
+# Keys the Builds window's header retired (spec 2026-11-13-addon-hub 3.2), kept for this older board set.
+RETIRED = {'dialogOwnBuilds': '%s builds', 'dialogLevelPoints': 'Level %d'}
+
+
 def L(key: str) -> str:
     """A Locale.lua string by key, SITE substituted."""
     m = re.search(rf'(?:^L\.|^\t){key} = (.+)$', LOCALE, re.M)
+    if not m and key in RETIRED:
+        return RETIRED[key]
     if not m:
         raise KeyError(key)
     expr = m.group(1).rstrip(',')

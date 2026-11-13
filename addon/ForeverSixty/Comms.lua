@@ -96,8 +96,6 @@ Comms.LIMITS = { ["hello"] = 60, ["snapshot!"] = 10, ["push"] = 60 }
 Comms.LOOT_WINDOW = 30
 --- How long a sender stays in Comms.seen after their last hello or snapshot!.
 Comms.SEEN_FOR = 3600
---- The highest guild rank index allowed to push a build (0 is the guild master).
-Comms.PUSH_RANK = 1
 
 -- Field checks ----------------------------------------------------------------------------
 
@@ -640,12 +638,6 @@ function Comms.gapUnit(data, spec, level) -- luacheck: ignore 212/level
 	return row.healing == true and "hps" or "dps"
 end
 
---- Whether a guild rank index may push a build (0 is the guild master): the one rule the
---- sender's officer region and the receiver's check share (L5.1 review).
-function Comms.canPush(rankIndex)
-	return type(rankIndex) == "number" and rankIndex <= Comms.PUSH_RANK
-end
-
 --- Whether "Share my build with my guild" is on: off, no hello goes and no snapshot
 --- request is answered.
 function Comms.sharing()
@@ -691,11 +683,13 @@ local function unitOf(sender)
 	return sender
 end
 
---- Whether a push from `sender` may be heard: an officer of this player's guild (rank
---- index 1 or lower) or the group's leader, as this client sees them.
+--- Whether a push from `sender` may be heard: an officer of this player's guild (a rank that passes
+--- the hub's one officer gate, Hub.officerRank) or the group's leader, as this client sees them.
 function Comms.mayPush(sender)
 	local unit = unitOf(sender)
-	if Comms.canPush(Theme.guildRankOf(sender, unit)) then
+	-- The hub loads after this file: reached at call time.
+	local Hub = ns.Hub or require("Hub")
+	if Hub.officerRank(Theme.guildRankOf(sender, unit)) then
 		return true
 	end
 	return Theme.isGroupLeader(unit)

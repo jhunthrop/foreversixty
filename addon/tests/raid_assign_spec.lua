@@ -134,8 +134,9 @@ describe("RaidAssign", function()
 	end)
 end)
 
-describe("/fs job", function()
-	local Options, RaidAssign
+-- /fs job is gone (spec 2026-11-13-addon-hub 10); its printing stays until the Guild tab replaces it.
+describe("RaidAssign.command", function()
+	local RaidAssign
 
 	before_each(function()
 		mock.install({
@@ -150,7 +151,6 @@ describe("/fs job", function()
 		require("Theme").reset()
 		helper.load("Export")
 		RaidAssign = helper.load("RaidAssign")
-		Options = helper.load("Options")
 	end)
 
 	after_each(function()
@@ -161,10 +161,10 @@ describe("/fs job", function()
 	it("prints this character's jobs, and says so when there are none", function()
 		local key = require("Export").characterKey()
 		_G.ForeverSixtyInbox = { messages = { job({ character = key }) } }
-		local lines = Options.handle("job")
+		local lines = RaidAssign.command(_G.ForeverSixtyInbox, key, RaidAssign.now())
 		assert.are.equal("Your jobs for Ony farm, Onyxia:", lines[1])
 		assert.are.equal(2, #lines)
 		_G.ForeverSixtyInbox = { messages = {} }
-		assert.are.same({ RaidAssign.COPY.none }, Options.handle("job"))
+		assert.are.same({ RaidAssign.COPY.none }, RaidAssign.command(_G.ForeverSixtyInbox, key, RaidAssign.now()))
 	end)
 end)

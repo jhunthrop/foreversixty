@@ -176,11 +176,6 @@ function BuildsPane.flatten(blocks)
 	return rows
 end
 
---- The window's title for the class: "Hunter builds". Pure.
-function BuildsPane.title(className)
-	return string.format(L.dialogOwnBuilds, className or "")
-end
-
 --- The line over the build list while the points name no tree: the spec question, the points split
 --- muted after it (Follow.specQuestion, Follow.specSplit); nil once a tree leads. Pure.
 function BuildsPane.question(question, split)
@@ -193,27 +188,28 @@ function BuildsPane.question(question, split)
 	return question
 end
 
---- The window header's figures, parts that add up to the points the level gives (wow-player round 2):
---- "Level 42 · 27 on plan · 5 off plan · 1 to spend" (off plan in the warning colour, the points waiting
---- in the client gold), "Level 42" with nothing followed and none waiting; nil without a level. Pure.
-function BuildsPane.note(level, followed, ranks)
+--- The Builds tab's two figures for the window header, after the hub's "Level 42 Hunter" (spec
+--- 2026-11-13-addon-hub 3.2): the points on the followed build of those the level gives it, then the
+--- points off plan in the warning colour (a respin must never hide), else the points waiting in the
+--- client gold: { "27 of 33 on plan", "5 off plan" } (the 1 waiting is what the two leave; Up next and
+--- the tab's dot say it). Only the points waiting with nothing followed; none without a level. Pure.
+function BuildsPane.figures(level, followed, ranks)
 	if type(level) ~= "number" then
-		return nil
+		return {}
 	end
-	local parts = { string.format(L.dialogLevelPoints, level) }
+	local parts = {}
 	local allowed = followed ~= nil and Progress.pointsAllowed(followed, level) or 0
+	local progress = allowed > 0 and Progress.build(followed, ranks, level) or {}
 	if allowed > 0 then
-		local progress = Progress.build(followed, ranks, level)
-		parts[#parts + 1] = string.format(L.windowOnPlan, math.min(progress.matched or 0, allowed))
-		if (progress.offPlan or 0) > 0 then
-			parts[#parts + 1] = Theme.inlineColor("warning", string.format(L.windowOffPlanCount, progress.offPlan))
-		end
+		parts[#parts + 1] = string.format(L.windowOnPlan, math.min(progress.matched or 0, allowed), allowed)
 	end
 	local unspent = Progress.unspentPoints(level, ranks or {})
-	if unspent > 0 then
+	if (progress.offPlan or 0) > 0 then
+		parts[#parts + 1] = Theme.inlineColor("warning", string.format(L.windowOffPlanCount, progress.offPlan))
+	elseif unspent > 0 then
 		parts[#parts + 1] = Theme.inlineColor("clientGold", string.format(L.windowToSpend, unspent))
 	end
-	return table.concat(parts, L.dialogSeparator)
+	return parts
 end
 
 --- How many lines a row shows: label and split, the next point on the followed row, the why. Pure.

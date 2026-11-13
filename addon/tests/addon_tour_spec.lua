@@ -225,30 +225,31 @@ describe("the Builds dialog's own builds (2026-11-13 spec 1), the pure model", f
 		assert.are.equal(2, BuildsPane.rowLines(bare.rows[1]))
 	end)
 
-	it("titles the window with the class's builds and the level, and heads the list with the question", function()
-		assert.are.equal("Warrior builds", BuildsPane.title("Warrior"))
+	it("hands the window two figures, the points on plan then the points waiting, and heads the list with the question",
+		function()
 		local spentAll = { [3] = { ["1:2"] = 4 } }
-		assert.are.equal("Level 13", BuildsPane.note(13, nil, spentAll))
+		assert.are.same({}, BuildsPane.figures(13, nil, spentAll))
+		assert.are.same({}, BuildsPane.figures(nil, nil, {}))
 		local followed = { classSlug = "warrior", order = { { tab = 1, tier = 1, column = 1 },
 			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 2 } } }
-		-- Parts that add up to the level's points: on plan, off plan, the points waiting in the client gold
-		-- (wow-player 2026-11-13, rounds 1 and 2).
+		-- On plan of the points the level gives, then the points waiting in the client gold (spec
+		-- 2026-11-13-addon-hub 3.2: two figures).
 		local Theme = require("Theme")
-		assert.are.equal("Level 13 · 0 on plan · " .. Theme.inlineColor("clientGold", "4 to spend"),
-			BuildsPane.note(13, followed, {}))
+		assert.are.same({ "0 of 3 on plan", Theme.inlineColor("clientGold", "4 to spend") },
+			BuildsPane.figures(13, followed, {}))
 		assert.is_nil(BuildsPane.question(nil, "1 Arms · 1 Fury"))
 		assert.are.equal("Are you Arms or Fury?", BuildsPane.question("Are you Arms or Fury?"))
 		assert.are.equal("Are you Arms or Fury? · " .. Theme.inlineColor("muted", "1 Arms · 1 Fury"),
 			BuildsPane.question("Are you Arms or Fury?", "1 Arms · 1 Fury"))
 	end)
 
-	it("counts the points off plan in the note, in the warning colour", function()
+	it("counts the points off plan in the warning colour, ahead of the points waiting", function()
 		local followed = { classSlug = "warrior", order = { { tab = 1, tier = 1, column = 1 },
 			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 2 } } }
 		local ranks = { [2] = { ["1:3"] = 2 } }
-		local note = BuildsPane.note(13, followed, ranks)
-		assert.is_truthy(note:find(require("Theme").inlineColor("warning", string.format(L.windowOffPlanCount, 2)),
-			1, true), note)
+		local figures = BuildsPane.figures(13, followed, ranks)
+		assert.are.same({ "0 of 3 on plan",
+			require("Theme").inlineColor("warning", string.format(L.windowOffPlanCount, 2)) }, figures)
 	end)
 
 	it("titles the row tooltip with the label, then the split, the whole why, and Click to follow", function()
@@ -320,8 +321,10 @@ describe("the Builds dialog's own builds (2026-11-13 spec 1), the frame", functi
 		local header = require("Hub").header
 		assert.is_true(header.crest:IsShown())
 		assert.is_true(header.ring:IsShown())
-		assert.are.equal("Warrior builds", header.title:GetText())
-		assert.are.equal("Level 13 · " .. require("Theme").inlineColor("clientGold", "2 to spend"), header.note:GetText())
+		-- The character's name over Level 13 Warrior and the tab's figures (spec 2026-11-13-addon-hub 3.2).
+		assert.are.equal("Bob", header.title:GetText())
+		assert.are.equal("Level 13 Warrior · " .. require("Theme").inlineColor("clientGold", "2 to spend"),
+			header.note:GetText())
 		assert.is_true(paste.site.heading:IsShown())
 		assert.are.equal(L.dialogSiteHeading, paste.site.heading:GetText())
 		assert.are.equal(L.dialogKindLeveling, pane.rows[1].label:GetText())

@@ -252,11 +252,11 @@ describe("SettingsPage, the command list", function()
 		SettingsPage = helper.load("Settings")
 	end)
 
-	it("is the fifteen player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
-		assert.are.equal(15, #L.settingsCommands)
+	it("is the thirteen player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
+		assert.are.equal(13, #L.settingsCommands)
 		local options = 0
 		for _, line in ipairs(L.settingsCommands) do
-			assert.is_truthy(line:find("^/fs[%a ]*: "), line)
+			assert.is_truthy(line:find("^/fs[%a, ]*: "), line)
 			if line:find("^/fs options: ") then
 				options = options + 1
 			end
@@ -265,26 +265,22 @@ describe("SettingsPage, the command list", function()
 		assert.is_truthy(L.settingsCommands[1]:find("^/fs: "))
 		assert.is_truthy(L.settingsCommands[2]:find("^/fs copy: "))
 		assert.is_truthy(L.settingsCommands[5]:find("^/fs tour: "))
-		assert.is_truthy(L.settingsCommands[15]:find("^/fs help: "))
+		assert.is_truthy(L.settingsCommands[13]:find("^/fs help: "))
 	end)
 
-	-- Fix round 2, item 10: the list word for word. L4.4 adds /fs link; L5.2 fix round 1 adds the
-	-- group panel's /fs group, /fs ready and /fs floor.  L5.3 adds /fs loot.
-	-- L3.7 item 32 adds /fs build. Guild redesign 2026-11-06 adds /fs job (raid assignments): the
-	-- owner ruled a command players cannot find does not exist. 2026-11-13 adds /fs tour, fifth, so
-	-- the Settings page lists it: the tour must be replayable from the options.
-	it("words the fifteen player commands as ruled", function()
+	-- Fix round 2, item 10: the list word for word. The hub (spec 2026-11-13-addon-hub 10): /fs opens the
+	-- window and a tab's name opens that tab; /fs job is gone; /fs build and /fs inspect are the testers';
+	-- /fs chip, /fs group and /fs floor stay until the chip and Officer lanes replace them.
+	it("words the thirteen player commands as ruled", function()
 		assert.are.same({
-			"/fs: paste or copy a build",
+			"/fs: open the Forever Sixty window",
 			"/fs copy: copy my character for the site",
-			"/fs build: switch between saved builds",
-			"/fs chip: show or hide the Forever Sixty line",
-			"/fs tour: see the tour again",
-			"/fs inspect: gear and talents of your target",
+			"/fs me, builds, gear, rotation, guild, officer: open that tab",
 			"/fs link: copy a player's site page",
+			"/fs tour: see the tour again",
+			"/fs chip: show or hide the Forever Sixty line",
 			"/fs group: your group's specs, gear and buffs",
 			"/fs ready: check flasks, food and buffs now",
-			"/fs job: your jobs for the next raid",
 			"/fs loot: what an item is worth to you",
 			"/fs floor N: tag members scored under N",
 			"/fs options: open the settings page",
@@ -297,7 +293,7 @@ describe("SettingsPage, the command list", function()
 	-- others for options; /fs record's arguments live in its own usage.
 	it("names every tester command in two short chat lines, no pipes", function()
 		assert.are.same({ "For testers: /fs diag verbose",
-			"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs drops" },
+			"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs drops, /fs inspect, /fs build" },
 			L.helpTesters)
 		for _, line in ipairs(L.helpTesters) do
 			assert.is_nil(line:find("|", 1, true))
@@ -598,17 +594,17 @@ describe("SettingsPage, the layout", function()
 	it("lists the first five commands and a line for the rest, so the list never ends in a cut row (A.2)", function()
 		local L = require("Locale")
 		assert.are.same({
-			"/fs: paste or copy a build",
+			"/fs: open the Forever Sixty window",
 			"/fs copy: copy my character for the site",
-			"/fs build: switch between saved builds",
-			"/fs chip: show or hide the Forever Sixty line",
+			"/fs me, builds, gear, rotation, guild, officer: open that tab",
+			"/fs link: copy a player's site page",
 			"/fs tour: see the tour again",
 			"/fs help: all the commands",
 		}, SettingsPage.commandLines())
 		assert.are.equal(5, SettingsPage.COMMANDS_SHOWN)
 		assert.are.equal("/fs help: all the commands", L.settingsCommandsMore)
 		-- /fs help still lists every one of them.
-		assert.are.equal(15, #L.settingsCommands)
+		assert.are.equal(13, #L.settingsCommands)
 	end)
 
 	it("sits the page on an opaque backdrop 8 px inside the canvas, hints in the body token", function()

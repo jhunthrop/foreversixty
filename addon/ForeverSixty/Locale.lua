@@ -15,19 +15,18 @@ local L = {
 	-- and the Settings page all print it (Options.helpLines, L3.5 ruling 3); /fs help alone
 	-- adds the testers' two lines after it, muted (fix round 1, item 16; fix round 3, item 5:
 	-- one line read as options of /fs diag; /fs record's arguments are in its own usage,
-	-- recorderHelp). Guild redesign 2026-11-06 (owner): /fs job joins as the fourteenth, because a
-	-- command players cannot find does not exist; the raid entry line alone is not enough.
+	-- recorderHelp). The hub (design/specs/2026-11-13-addon-hub.md 10): /fs opens the window, a tab's
+	-- name opens that tab; /fs build and /fs inspect move to the testers' lines; /fs chip, /fs group and
+	-- /fs floor stay until the chip and Officer lanes replace them.
 	settingsCommands = {
-		"/fs: paste or copy a build",
+		"/fs: open the Forever Sixty window",
 		"/fs copy: copy my character for the site",
-		"/fs build: switch between saved builds",
-		"/fs chip: show or hide the Forever Sixty line",
-		"/fs tour: see the tour again",
-		"/fs inspect: gear and talents of your target",
+		"/fs me, builds, gear, rotation, guild, officer: open that tab",
 		"/fs link: copy a player's site page",
+		"/fs tour: see the tour again",
+		"/fs chip: show or hide the Forever Sixty line",
 		"/fs group: your group's specs, gear and buffs",
 		"/fs ready: check flasks, food and buffs now",
-		"/fs job: your jobs for the next raid",
 		"/fs loot: what an item is worth to you",
 		"/fs floor N: tag members scored under N",
 		"/fs options: open the settings page",
@@ -36,7 +35,7 @@ local L = {
 	},
 	helpTesters = {
 		"For testers: /fs diag verbose",
-		"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs drops",
+		"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs drops, /fs inspect, /fs build",
 	},
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
@@ -434,8 +433,8 @@ local L = {
 	minimapProgress = "%d of %d points",
 	minimapUpgrades = "%d upgrade(s) waiting",
 	bindingHeader = "Forever Sixty",
-	bindingToggle = "Toggle Forever Sixty",
-	bindingHub = "Open the Forever Sixty window",
+	bindingToggle = "Toggle the Forever Sixty panel",
+	bindingHub = "Toggle the Forever Sixty window",
 	diagNoTooltipHook = "This client has no tooltip hook API; item tooltips will not show Forever Sixty's lines.",
 	diagCompartmentFailed = "This client's addon compartment did not accept Forever Sixty; "
 		.. "the minimap button is used instead.",
@@ -908,13 +907,30 @@ local L = {
 	},
 }
 
--- The Forever Sixty window (design/specs/2026-11-13-addon-builds-window.md): the hub's tabs. Only a tab
+-- The Forever Sixty window (design/specs/2026-11-13-addon-hub.md 3 and 11): the hub's tabs. Only a tab
 -- with content shows; the others are the lanes still to come.
 L.hubTabBuilds = "Builds"
 L.hubTabMe = "Me"
 L.hubTabGear = "Gear"
 L.hubTabRotation = "Rotation"
 L.hubTabGuild = "Guild"
+L.hubTabOfficer = "Officer"
+-- The header's figures line starts with the character on every tab (spec 3.2): "Level 60 Hunter".
+L.hubIdentity = "Level %d %s"
+-- Why `/fs <tab>` cannot open a tab now, one line each (spec 10).
+L.hubGearLevel = "Gear opens at level %d."
+L.hubNoRotation = "No rotation for your class yet."
+L.hubNotInGuild = "Not in a guild."
+L.offOnly = "Officers only."
+L.hubTabSoon = "That tab is not in this version yet."
+-- What the Builds tab has waiting (spec 3.6), the chip's own words (spec 6): the spec to choose, the points
+-- to spend with the talent the build takes next, the builds the site sent.
+L.hubPickSpec = "Pick your spec"
+L.hubSpendOne = "Spend 1 point"
+L.hubSpendMany = "Spend %d points"
+L.hubSpendOn = "%s: %s"
+L.hubBuildOne = "1 build from the site"
+L.chipBuilds = "%d builds from the site"
 -- The footer's Escape hint: closing, or stepping back from a code previewing to the build list.
 L.windowEscClose = "Esc to close"
 L.windowEscBack = "Esc for your builds"
@@ -952,7 +968,7 @@ L.windowTalentBuild = "%s \194\183 you %d, build %d \194\183 %s"
 -- The preview's changes against the character's talents, under its gear.
 L.windowChanges = "Against your talents"
 -- The header's figures, which add up to the points the level gives: on plan, off plan, to spend.
-L.windowOnPlan = "%d on plan"
+L.windowOnPlan = "%d of %d on plan"
 L.windowOffPlanCount = "%d off plan"
 -- The build list for a class the data has no builds for.
 L.windowNoBuilds = "No builds for this class yet."
@@ -975,10 +991,8 @@ L.dialogEnterPreview = "Enter to preview"
 -- ("Paladin leveling builds"; the spec question, L.pathAsk, while the points do not name a tree),
 -- the gold mark on the followed row, the heading over the site rows and the paste box, the Enter
 -- hint while the cursor sits on an own row, and the row's line when its default does not load.
--- The Builds tab's own builds (2026-11-13 spec 1.4): "Hunter builds", "Level 42" before the panel's
--- "27 of 33 points"; each row's label says what the build is for (a player levels with the first).
-L.dialogOwnBuilds = "%s builds"
-L.dialogLevelPoints = "Level %d"
+-- The Builds tab's own builds (2026-11-13 spec 1.4): each row's label says what the build is for (a
+-- player levels with the first).
 L.dialogKindLeveling = "Level 60 build"
 L.dialogKindRaid = "Raid build"
 L.dialogKindBoth = "Level 60 and raid build"
