@@ -25,8 +25,9 @@ on:
       allow_shrink: { type: boolean, required: false, default: false }
 permissions: { contents: read }
 env:
-  # The fast addon-data contract tests, run in every mode (the `test` job's note).
-  ADDON_DATA_TESTS: tests/test_addondata.py tests/test_addonbis.py tests/test_addonrotation.py tests/test_audit_addon.py
+  # The fast addon-data contract tests, run in every mode (the `test` job's note), and the
+  # server-pushed item values the sim must carry (issue #27).
+  ADDON_DATA_TESTS: tests/test_addondata.py tests/test_addonbis.py tests/test_addonrotation.py tests/test_audit_addon.py tests/test_server_pushed_items.py
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -397,6 +398,10 @@ jobs:
       # tree art rather than before it; simconst and levels ran before icons
       # (above) because icons and addon-data read what they write.
       - run: uv run python -m pipeline simdb --build "$BUILD"
+      # The server-pushed values the regenerated build must carry (issue #27: the 70938 run
+      # committed Fiery War Axe at its client 2.9 s when wago's export dropped the push).
+      - name: the server-pushed item values
+        run: uv run pytest -q --no-cov tests/test_server_pushed_items.py
       - run: |
           PREV=$(ls builds | grep -E '^[0-9]+(\.[0-9]+)+$' | grep -vx "$BUILD" | sort -V | tail -1)
           if [ -n "$PREV" ]; then uv run python -m pipeline diff --from "$PREV" --to "$BUILD"; fi
