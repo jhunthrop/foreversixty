@@ -1299,3 +1299,165 @@ def test_petrolspill_leggings_are_named_by_gnomeregan_alone():
                             seen += 1
                             assert source == "Gnomeregan"
     assert seen > 0
+
+
+# The source filter's facts (design/specs/2026-11-13-addon-source-filter.md): the best item of
+# every other kind, the pick's own kinds and standings, packed after the alternatives.
+
+_FILTERED_PICK = {
+    "slot": "finger2",
+    "item_id": 20439,
+    "source_kind": "rep",
+    "source": "Silverwing Sentinels",
+    "kinds": ["rep", "vendor"],
+    "standing": "honored",
+    "kind_standings": {"rep": "honored", "vendor": "honored"},
+    "not_with": [20439],
+    "runners_up": [{"item_id": 1156, "source_kind": "dungeon", "source": "The Deadmines: Gilnid"}],
+    "by_kind": {
+        "world": {
+            "item_id": 12053,
+            "rank": 4,
+            "source_kind": "world_drop",
+            "source": "World drop",
+            "dps_delta": -1.35,
+            "not_with": [12053],
+            "next": {"item_id": 286745, "rank": 5, "source": "Dustwind Eggtender", "dps_delta": -1.52},
+        },
+        "quest": {"item_id": 1449, "rank": 2, "source": "WANTED: Chok'sul", "dps_delta": -0.3,
+                  "not_with": [1449, 1450]},
+        "dungeon": {"item_id": 1156, "rank": 3, "source": "The Deadmines: Gilnid", "dps_delta": -0.4},
+        "crafted": {"item_id": 7000, "rank": 9, "source": "Blacksmithing", "two_hand": True},
+    },
+}
+
+
+def _filtered_pick(tmp_path):
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [_FILTERED_PICK])])
+    return build_bis(tmp_path, BUILD)["druid-balance"][0].factions["alliance"]["finger2"]
+
+
+def test_a_pick_carries_the_best_item_of_every_other_kind_in_rank_order(tmp_path):
+    pick = _filtered_pick(tmp_path)
+    assert pick.kinds == ["rep", "vendor"]
+    assert pick.standings == {"rep": "honored", "vendor": "honored"}
+    assert pick.two_hand is False
+    assert pick.not_with == [20439]
+    rows = [(e.item_id, e.source_kind, e.source, e.standing, e.two_hand, e.not_with) for e in pick.by_kind]
+    assert rows == [
+        (1449, "quest", "WANTED: Chok'sul", "", False, [1449, 1450]),
+        (1156, "dungeon", "The Deadmines: Gilnid", "", False, []),
+        (12053, "world_drop", "World drop", "", False, [12053]),
+        (286745, "world", "Dustwind Eggtender", "", False, []),
+        (7000, "crafted", "Blacksmithing", "", True, []),
+    ]
+
+
+def test_a_tie_in_rank_goes_to_the_kind_the_site_lists_first(tmp_path):
+    row = dict(_FILTERED_PICK, by_kind={
+        "vendor": {"item_id": 20429, "rank": 4, "source": "Kelm Hargunth", "standing": "honored"},
+        "rep": {"item_id": 20429, "rank": 4, "source": "Warsong Outriders", "standing": "honored"},
+    })
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [row])])
+    pick = build_bis(tmp_path, BUILD)["druid-balance"][0].factions["alliance"]["finger2"]
+    assert [(e.source_kind, e.standing) for e in pick.by_kind] == [("rep", "honored"), ("vendor", "honored")]
+
+
+def test_only_a_pairs_second_slot_carries_not_with(tmp_path):
+    row = dict(_FILTERED_PICK, slot="finger1")
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [row])])
+    pick = build_bis(tmp_path, BUILD)["druid-balance"][0].factions["alliance"]["finger1"]
+    assert pick.not_with == []
+    assert all(entry.not_with == [] for entry in pick.by_kind)
+
+
+def test_a_by_kind_item_listed_under_another_kind_refuses(tmp_path):
+    row = dict(_FILTERED_PICK, by_kind={"quest": {"item_id": 1, "rank": 1, "source_kind": "dungeon"}})
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [row])])
+    with pytest.raises(AddonBisError, match="by_kind"):
+        build_bis(tmp_path, BUILD)
+
+
+def test_a_pick_its_source_kind_alone_describes_carries_no_kinds_or_standings(tmp_path):
+    _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(_DEADMINES_PICK))
+    pick = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]["main_hand"]
+    assert pick.kinds == [] and pick.standings == {} and pick.by_kind == [] and pick.two_hand is False
+
+
+def test_an_unknown_standing_refuses(tmp_path):
+    row = dict(_FILTERED_PICK, standing="best friends", kind_standings={})
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [row])])
+    with pytest.raises(AddonBisError, match="standing"):
+        build_bis(tmp_path, BUILD)
+
+
+def test_the_by_kind_tail_packs_after_one_empty_field_with_indexed_places(tmp_path):
+    """`...|alt1_source||<head>;<entry>;...`: the empty field is where a third alternative's
+    id would be, so Gear.decodePick's alternatives loop ends there and the next field is
+    the tail. Places are 1-based indexes into bisSources, the most used first."""
+    from pipeline.addonbis import build_bis_sources
+    from pipeline.addonlua import render_lua
+    from pipeline.models import AddonData
+
+    second = dict(_FILTERED_PICK, slot="trinket2", item_id=1, by_kind={
+        "crafted": {"item_id": 7001, "rank": 1, "source": "Blacksmithing"},
+    })
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [_FILTERED_PICK, second])])
+    bis = build_bis(tmp_path, BUILD)
+    sources = build_bis_sources(bis)
+    assert sources == ["Blacksmithing", "Dustwind Eggtender", "The Deadmines: Gilnid", "WANTED: Chok'sul",
+                       "World drop"]
+    lua = render_lua(AddonData(build="x", classes={}, weights={}, bis=bis, bis_sources=sources))
+    assert (
+        'finger2 = "20439|R|Silverwing Sentinels||1156|D|The Deadmines: Gilnid||'
+        "*RhVh,20439;Q1449,4,1449+1450;D1156,3;B12053,5,12053;W286745,2;C!7000,1\","
+    ) in lua
+    assert (
+        "\tbisSources = {\n"
+        '\t\t"Blacksmithing",\n'
+        '\t\t"Dustwind Eggtender",\n'
+        '\t\t"The Deadmines: Gilnid",\n'
+        "\t\t\"WANTED: Chok'sul\",\n"
+        '\t\t"World drop",\n'
+        "\t},\n"
+    ) in lua
+
+
+def test_a_two_handed_pick_with_one_kind_still_packs_a_head(tmp_path):
+    from pipeline.addonlua import _bis_pick_packed
+    from pipeline.models import AddonBisItem
+
+    pick = AddonBisItem(item_id=1, source_kind="dungeon", two_hand=True)
+    assert _bis_pick_packed(pick) == "1|D||||*!"
+    plain = AddonBisItem(item_id=1, source_kind="dungeon")
+    assert _bis_pick_packed(plain) == "1|D"
+
+
+def test_a_by_kind_place_missing_from_bis_sources_refuses(tmp_path):
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [_FILTERED_PICK])])
+    with pytest.raises(AddonBisError, match="bisSources"):
+        _render_bis(build_bis(tmp_path, BUILD))
+
+
+def test_by_kind_items_are_named_too(tmp_path):
+    from pipeline.addonbis import build_bis_items
+
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [_FILTERED_PICK])])
+    bis = build_bis(tmp_path, BUILD)
+    ids = [20439, 1156, 1449, 12053, 286745, 7000]
+    (tmp_path / BUILD / "items.json").write_text(
+        json.dumps([{"id": item_id, "name": f"Item {item_id}"} for item_id in ids]), encoding="utf-8"
+    )
+    (tmp_path / BUILD / "items").mkdir()
+    names, _ = build_bis_items(tmp_path, BUILD, bis)
+    assert sorted(names) == sorted(ids)
+
+
+def test_an_unconfirmed_by_kind_item_is_passed_over(tmp_path):
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [_FILTERED_PICK])])
+    (tmp_path / BUILD / "items.json").write_text(
+        json.dumps([{"id": 1449, "name": "Ring", "client_unconfirmed": True}]), encoding="utf-8"
+    )
+    (tmp_path / BUILD / "items").mkdir()
+    pick = build_bis(tmp_path, BUILD)["druid-balance"][0].factions["alliance"]["finger2"]
+    assert 1449 not in [entry.item_id for entry in pick.by_kind]

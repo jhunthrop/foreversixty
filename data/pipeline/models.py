@@ -896,6 +896,31 @@ class AddonBisAlternative(BaseModel):
     source: str = ""
 
 
+class AddonBisKindEntry(BaseModel):
+    """The best item of one source kind for a slot (leveling-bis's `by_kind`, its
+    chained `next` flattened, best rank first): what the slot shows in game when
+    the player turned the pick's own kinds off (the addon's source filter, the
+    twin of the site's; design/specs/2026-11-13-addon-source-filter.md)."""
+
+    item_id: int
+    #: One of pipeline.addonbis.SOURCE_KIND_CODES' keys: the entry's own
+    #: `source_kind` when leveling-bis names one, else its by_kind key.
+    source_kind: str
+    #: The short place, as on AddonBisItem.source; empty for none. leveling-bis's
+    #: dps_delta is not carried: the addon prices the gap from the two items' stats,
+    #: as it prices every other gap, which keeps a fifth of the tail out of Data.lua.
+    source: str = ""
+    #: The standing a reputation or vendor item asks ("friendly", "honored",
+    #: "revered", "exalted", "neutral"); empty for none.
+    standing: str = ""
+    #: A two-handed weapon (an off hand never sits beside it).
+    two_hand: bool = False
+    #: The ids the pair's first slot must not hold for this entry to be usable
+    #: (leveling-bis's `not_with`, its own id included for a unique item); carried
+    #: only on a pair's second slot (finger2, trinket2, off_hand), the one that reads it.
+    not_with: list[int] = []
+
+
 class AddonBisItem(BaseModel):
     """One slot's leveling BiS pick, ids only (pipeline.addonbis's own
     load-bearing decision: the item's name and swap_note are not carried
@@ -926,6 +951,19 @@ class AddonBisItem(BaseModel):
     #: bis file written before leveling-bis emitted that field, the first two
     #: of the row's own `alternatives` list instead (pipeline.addonbis._pick).
     alternatives: list[AddonBisAlternative] = []
+    #: The source filter's facts about the pick itself (leveling-bis's `kinds`,
+    #: `standing`, `kind_standings`, `two_hand`, `not_with`): every filter kind the
+    #: pick can be had from when there is more than its source_kind's own, the
+    #: standing each gated kind asks, whether it is a two-hander, and the ids the
+    #: pair's first slot must not hold (a pair's second slot only). Empty when the
+    #: pick's source_kind says it all. Data.lua only (the packed tail): the filter
+    #: facts would more than double addon-data.json, which nothing reads them from.
+    kinds: list[str] = Field(default_factory=list, exclude=True)
+    standings: dict[str, str] = Field(default_factory=dict, exclude=True)
+    two_hand: bool = Field(default=False, exclude=True)
+    not_with: list[int] = Field(default_factory=list, exclude=True)
+    #: The best item of each other source kind, best rank first (`by_kind`).
+    by_kind: list[AddonBisKindEntry] = Field(default_factory=list, exclude=True)
 
 
 class AddonBisBand(BaseModel):
@@ -1057,6 +1095,11 @@ class AddonData(BaseModel):
     #: The weapons among bis_names -> their own dps at one decimal, from
     #: items/<class>.json's `dps` (what sim/cmd/leveling-bis ranks on).
     bis_dps: dict[int, float] = {}
+    #: Every distinct source place a by_kind entry names, the most used first:
+    #: Data.lua's `bisSources` list, which the packed by-kind tail indexes into
+    #: (one short number per entry instead of the place's text, for the idle budget).
+    #: Data.lua only, like AddonBisItem.by_kind.
+    bis_sources: list[str] = Field(default_factory=list, exclude=True)
     #: The id of every BiS candidate pipeline.addonbis passed over because
     #: items.json marks it client_unconfirmed (one per skip). Never written
     #: to addon-data.json or Data.lua: it feeds the addon-data command's

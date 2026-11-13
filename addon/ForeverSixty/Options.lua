@@ -42,6 +42,8 @@ local LootCouncil = ns.LootCouncil or require("LootCouncil")
 local RaidDrops = ns.RaidDrops or require("RaidDrops")
 local SiteStatus = ns.SiteStatus or require("SiteStatus")
 local Panel = ns.Panel or require("Panel")
+local Sources = ns.Sources or require("Sources")
+local SourcesFlyout = ns.SourcesFlyout or require("SourcesFlyout")
 local Onboarding = ns.Onboarding or require("Onboarding")
 
 local Options = {}
@@ -756,6 +758,18 @@ function Options.register()
 			Options.sayHello()
 		end
 	end
+	-- The gear source filter (Sources.lua): the Settings group reads the panel's band and counts; a
+	-- change made in the flyout or on the Settings page re-picks every surface at once.
+	SettingsPage.sourcesContext = function()
+		local line = Panel.currentSourceLine(Options.data)
+		return line ~= nil and line.band or nil, line ~= nil and line.counts or nil
+	end
+	Sources.listen("surfaces", function()
+		Options.refreshSurfaces(Options.data)
+		Panel.refresh()
+		SourcesFlyout.refresh()
+		SettingsPage.refreshSources()
+	end)
 	BuildDialog.data = Options.data
 	BuildDialog.fallback = Options.showHint
 	BuildDialog.afterUse = function()

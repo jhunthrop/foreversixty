@@ -28,6 +28,7 @@ local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Progress = ns.Progress or require("Progress")
+local Sources = ns.Sources or require("Sources")
 local Rules = ns.Rules or require("Rules")
 local Talents = ns.Talents or require("Talents")
 local Comms = ns.Comms or require("Comms")
@@ -301,8 +302,9 @@ function LootCouncil.valueFor(data, itemId, who, statsOf, allowGated)
 	end
 	local specBis = type(data.bis) == "table" and data.bis[who.spec] or nil
 	local band = who.faction and Gear.bandFor(specBis, who.level) or nil
+	-- Another player's pick: the published one, never this character's source choice.
 	local target = Progress.targetFor(data, who.spec, band, who.faction, slots, bestSlot, itemId, equipped,
-		who.isMissing)
+		who.isMissing, Sources.ALL)
 	return {
 		value = best, unit = current.dpsPerPoint ~= nil and "dps" or "score",
 		currentItemId = worn ~= nil and tonumber(worn.itemId) or 0, planned = target.isPick == true, slot = bestSlot,

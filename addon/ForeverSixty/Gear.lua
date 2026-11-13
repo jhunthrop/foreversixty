@@ -15,6 +15,7 @@ local Talents = ns.Talents or require("Talents")
 local Compat = ns.Compat or require("Compat")
 local Rules = ns.Rules or require("Rules")
 local Follow = ns.Follow or require("Follow")
+local Sources = ns.Sources or require("Sources")
 
 local Gear = {}
 
@@ -371,16 +372,75 @@ local function nonEmpty(value)
 	return value
 end
 
+--- The ids of a not-with list ("19513+19514").
+local function idList(text)
+	local ids = {}
+	for id in string.gmatch(text or "", "%d+") do
+		ids[#ids + 1] = tonumber(id)
+	end
+	return ids
+end
+
+--- The tail's head entry ("*!RhVh,19513"): the two-hander mark, the pick's own filter kinds each
+--- with the standing it asks, then the ids its pair mate must not hold.
+local function decodeHead(entry)
+	local marks, notWith = entry:match("^%*([^,]*),?(.*)$")
+	local head = { kinds = {}, standings = {}, twoHand = marks:find("!", 1, true) ~= nil, notWith = idList(notWith) }
+	for code, standing in marks:gmatch("(%u)(%l?)") do
+		local kind = Sources.KIND_OF_CODE[code]
+		if kind ~= nil then
+			head.kinds[#head.kinds + 1] = kind
+			head.standings[kind] = Sources.STANDING_OF_CODE[standing]
+		end
+	end
+	return head
+end
+
+--- One by-kind entry ("Dh!26686,12,1234+5678"): the kind letter, a standing letter, the two-hander
+--- mark and the id; the place's index into `places` (Data.bisSources); the ids the pair mate must
+--- not hold. nil for anything else.
+local function decodeEntry(entry, places)
+	local lead, place, notWith = entry:match("^([^,]*),?([^,]*),?(.*)$")
+	local code, standing, two, id = (lead or ""):match("^(%u)(%l?)(!?)(%d+)$")
+	local kind = code ~= nil and Sources.KIND_OF_CODE[code] or nil
+	if kind == nil then
+		return nil
+	end
+	local index = tonumber(place or "")
+	return { item_id = tonumber(id), kind = code, filterKind = kind, standing = Sources.STANDING_OF_CODE[standing],
+		twoHand = two == "!", source = index ~= nil and type(places) == "table" and places[index] or nil,
+		notWith = idList(notWith) }
+end
+
+--- The by-kind tail (pipeline.addonlua._bis_tail): `;`-joined entries, the head first when there
+--- is one. Answers the head (nil for none) and the entries in rank order.
+local function decodeTail(tail, places)
+	local head, byKind = nil, {}
+	for entry in string.gmatch(tail or "", "[^;]+") do
+		if entry:sub(1, 1) == "*" then
+			head = decodeHead(entry)
+		else
+			byKind[#byKind + 1] = decodeEntry(entry, places)
+		end
+	end
+	return head, byKind
+end
+
 --- One Data.lua BiS pick, packed by data/pipeline/addonlua.py as one string
 --- ("item_id|kind|source|chance|alt1_id|alt1_kind|alt1_source|alt2_id|...",
 --- trailing empty fields trimmed), decoded into contract 1's logical table:
 --- { item_id, kind, source, chance, alternatives = { { item_id, kind,
 --- source }, ... } }. source and chance are nil when empty, and alternatives
 --- is always a list (empty when there are none). Positions 1-3 also hold id,
---- kind and source, the pick tuple's old positional meaning. The table is
---- shared between callers (memoised by string), so it must not be changed.
---- nil for anything that is not a packed pick.
-function Gear.decodePick(packed)
+--- kind and source, the pick tuple's old positional meaning.
+---
+--- The source filter's facts (2026-11-13) follow the alternatives after one empty field: `head`
+--- ({ kinds, standings, twoHand, notWith }, nil when the pick's kind letter says it all), `byKind`
+--- (the best item of every other kind, rank order, each { item_id, kind, filterKind, standing,
+--- twoHand, source, notWith }), `standing` (the one its own kind asks) and `twoHand`. `places` is
+--- Data.bisSources, which the entries index into. The table is shared between callers (memoised
+--- by string), so it must not be changed. nil for anything that is not a packed pick.
+function Gear.decodePick(packed, places)
 	if type(packed) ~= "string" or packed == "" then
 		return nil
 	end
@@ -413,19 +473,41 @@ function Gear.decodePick(packed)
 		}
 		index = index + 3
 	end
+	pick.head, pick.byKind = decodeTail(fields[index + 1], places)
+	local head = pick.head
+	pick.twoHand = head ~= nil and head.twoHand or false
+	pick.standing = head ~= nil and head.standings[Sources.KIND_OF_CODE[pick.kind or ""] or ""] or nil
 	decodedPicks[packed] = pick
 	return pick
 end
 
---- The decoded BiS pick for one spec, level band, faction ("alliance" |
---- "horde") and slot, or nil when the data names none. `data` defaults to
---- ns.Data.
-function Gear.pick(spec, band, faction, slot, data)
+--- The published BiS pick for one spec, level band, faction ("alliance" | "horde") and slot, every
+--- source on, or nil when the data names none. `data` defaults to ns.Data.
+function Gear.publishedPick(spec, band, faction, slot, data)
 	data = data or ns.Data
 	local bySpec = data ~= nil and type(data.bis) == "table" and data.bis[spec] or nil
 	local byBand = bySpec ~= nil and bySpec[band] or nil
 	local byFaction = byBand ~= nil and byBand[faction] or nil
-	return Gear.decodePick(byFaction ~= nil and byFaction[slot] or nil)
+	return Gear.decodePick(byFaction ~= nil and byFaction[slot] or nil, data ~= nil and data.bisSources or nil)
+end
+
+--- The BiS pick for one spec, band, faction and slot under the source filter (Sources.resolve):
+--- `sources` is a Sources state, this character's for the band by default (Sources.ALL for another
+--- player's gear). A pair's second slot resolves its first slot's pick first. nil when the data names
+--- none; nil and true when it names one but the sources on leave the slot without an option.
+function Gear.pick(spec, band, faction, slot, data, sources)
+	local published = Gear.publishedPick(spec, band, faction, slot, data)
+	if published == nil then
+		return nil
+	end
+	sources = sources or Sources.state(band)
+	if sources.all then
+		return published
+	end
+	local first = Sources.PAIR_FIRST[slot]
+	local mate = first ~= nil and Gear.pick(spec, band, faction, first, data, sources) or nil
+	local pick = Sources.resolve(published, sources, slot, mate)
+	return pick, pick == nil
 end
 
 --- Below this level a character has no BiS band yet (design: "below 20

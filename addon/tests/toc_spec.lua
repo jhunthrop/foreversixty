@@ -13,7 +13,9 @@ describe("the TOC", function()
 		-- The raid-prep reads (D14): Export writes them into the code.
 		"RaidPrep.lua",
 		-- What dropped in a raid (guild slice 7): Export writes it into the code as drops=.
-		"RaidDrops.lua", "Export.lua", "Follow.lua", "Gear.lua",
+		"RaidDrops.lua", "Export.lua", "Follow.lua",
+		-- The gear source filter: reads Prefs, Export and Follow; Gear.pick resolves through it.
+		"Sources.lua", "Gear.lua",
 		"Progress.lua", "Rotation.lua",
 		-- The raid jobs (guild assignments): read Codec, Theme and the inbox; /fs job prints them.
 		"RaidAssign.lua",
@@ -43,7 +45,8 @@ describe("the TOC", function()
 		-- The addon panel (design/specs/2026-11-08-addon-ux.md 4): reads the chip, the tooltip's
 		-- sections and PanelTab's readers; the chip, the pane button, the keybind and the compartment
 		-- open it.
-		"surfaces/Panel.lua",
+		-- The Sources flyout (source filter spec 4): the panel's foot line opens it beside the panel.
+		"surfaces/SourcesFlyout.lua", "surfaces/Panel.lua",
 		-- The first-run tour (spec 3.1): reads the chip, the panel and SiteStatus; Options opens it.
 		-- Its page 2 example reads the panel's upgrades and the item tooltip's lines.
 		"surfaces/TourExample.lua", "surfaces/Onboarding.lua",

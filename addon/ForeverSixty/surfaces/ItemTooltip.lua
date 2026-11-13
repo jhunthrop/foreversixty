@@ -21,6 +21,7 @@ ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Talents = ns.Talents or require("Talents")
 local Gear = ns.Gear or require("Gear")
+local Sources = ns.Sources or require("Sources")
 local Export = ns.Export or require("Export")
 local Compat = ns.Compat or require("Compat")
 local Theme = ns.Theme or require("Theme")
@@ -381,7 +382,12 @@ function ItemTooltip.sourceParts(pick, _boe)
 	else
 		first = pick.source
 		local kindName = ItemTooltip.SOURCE_KIND_NAMES[pick.kind]
-		if kindName ~= nil and kindName:lower() ~= first:lower() then
+		-- A reputation or vendor item that asks a standing names it instead of its kind
+		-- ("Silverwing Sentinels · Friendly"): the standing is the gate (source filter spec 7).
+		local standing = Sources.standingWord(pick.standing)
+		if standing ~= nil then
+			second = standing
+		elseif kindName ~= nil and kindName:lower() ~= first:lower() then
 			second = kindName
 		end
 	end
@@ -673,6 +679,24 @@ function ItemTooltip.shortSource(pick)
 		return place or pick.source
 	end
 	return ItemTooltip.SOURCE_KIND_NAMES[pick.kind] or place or pick.source
+end
+
+--- The Shift line naming the published pick a source choice set aside (source filter spec 6):
+--- "Best with all sources: <name>, 0.3 DPS more", the gap left out when there is none to price.
+--- `name` is already in its quality colour. Pure.
+function ItemTooltip.setAsideText(name, gap, unit)
+	if type(gap) ~= "number" or gap <= 0 then
+		return string.format(L.tipSetAsideBare, name)
+	end
+	local figure = unit == "score" and string.format(L.tipSetAsideScore, gap)
+		or string.format(L.tipSetAsideDps, gap, unitWord(unit))
+	return string.format(L.tipSetAside, name, figure)
+end
+
+--- The empty slot's line when the sources on leave it without an option: "No finger from these
+--- sources at this level". Pure.
+function ItemTooltip.noSlotFromSourcesText(slot)
+	return string.format(L.tipNoSlotFromSources, string.lower(L.gearSlotLabels[slot] or slot))
 end
 
 --- A figure as printed in the upgrade green: "+12.3 DPS" ("+12 score").
@@ -1274,9 +1298,27 @@ function ItemTooltip.section(ctx)
 		return slot
 	end
 
+	--- The published pick a source choice set aside for `pick` (a re-picked slot only), as its Shift
+	--- line: its name and how much more it gains than `pick` (`pickGain`), nil when the pick is the
+	--- published one or the client has not sent its name yet.
+	local function setAsideLine(chosen, pickGain)
+		local best = chosen.unfiltered
+		if best == nil or best.item_id == chosen.item_id then
+			return nil
+		end
+		local name = pickName(best.item_id)
+		if name == nil then
+			return nil
+		end
+		local bestGain = gainOf(best.item_id)
+		local gap = type(bestGain) == "number" and type(pickGain) == "number" and bestGain - pickGain or nil
+		return { kind = "setAside", itemId = best.item_id, color = "muted",
+			text = ItemTooltip.setAsideText(colored(name, qualityHex(best.item_id)), gap, unit) }
+	end
+
 	-- The pick's own line: its gain over what is worn, from the floor up (`nextLine`), or why
 	-- what is worn holds (`holds`, with `holdGain` the pick's gain under the floor).
-	local nextLine, target, sourceLine
+	local nextLine, target, sourceLine, setAside
 	local holds, holdGain = false, nil
 	if pick ~= nil and not isPick and not pickWorn then
 		local name = pickName(pick.item_id)
@@ -1311,6 +1353,7 @@ function ItemTooltip.section(ctx)
 			if source ~= nil then
 				sourceLine = { kind = "source", pick = pick, boe = boe, text = source, color = "muted" }
 			end
+			setAside = setAsideLine(pick, nextLine.upgrade.gain)
 		end
 	elseif pick ~= nil and pickWorn then
 		holds = wornSlot ~= nil
@@ -1417,6 +1460,10 @@ function ItemTooltip.section(ctx)
 				pick.item_id)
 			local at = after ~= nil and atLineFor(after, false) or nil
 			support = at or sourceLine
+			-- Behind Shift first, the published pick a source choice set aside.
+			if setAside ~= nil then
+				reasons[#reasons + 1] = setAside
+			end
 			if nextLine.breakdown ~= nil then
 				reasons[#reasons + 1] = nextLine.breakdown
 			end
@@ -1617,7 +1664,9 @@ function ItemTooltip.emptySlotSection(ctx, slot)
 	local picks = Progress.slotPicks(data, ctx.spec, band, ctx.faction, equipped)
 	local pick = reachablePick(picks[slot], isMissing)
 	if pick == nil then
-		lines[1] = noPick
+		local _, filteredOut = Gear.pick(ctx.spec, band, ctx.faction, slot, data)
+		lines[1] = filteredOut and { kind = "noPick", text = ItemTooltip.noSlotFromSourcesText(slot), color = "muted",
+			role = "verdict" } or noPick
 		return lines, nil, pending, head
 	end
 	local itemId = pick.item_id

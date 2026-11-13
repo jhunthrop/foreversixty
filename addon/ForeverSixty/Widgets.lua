@@ -174,10 +174,12 @@ end
 --- -- a "+N more" or "Show fewer" affordance sitting inside a card,
 --- muted at rest and gold under the cursor like a plain text link. Sizes
 --- itself to the text's own width (GetStringWidth), so the caller only
---- ever positions it, never sizes it.
-function Widgets.textButton(parent, text, onClick)
+--- ever positions it, never sizes it. `restKey` (a Theme.HEX key, muted by default) is its colour at
+--- rest: the panel's gold "Change" is the same link at rest in the client's gold.
+function Widgets.textButton(parent, text, onClick, restKey)
+	restKey = restKey or "muted"
 	local button = Theme.createFrame("Button", nil, parent)
-	local label = Widgets.label(button, "", "muted", "small")
+	local label = Widgets.label(button, "", restKey, "small")
 	label:SetPoint("LEFT", button, "LEFT", 0, 0)
 	button.foreverSixtyLabel = label
 	button:SetHeight(Theme.SIZES.rowHeight)
@@ -193,7 +195,7 @@ function Widgets.textButton(parent, text, onClick)
 		label:SetTextColor(Theme.rgb(Theme.HEX.gold))
 	end)
 	button:SetScript("OnLeave", function()
-		label:SetTextColor(Theme.rgb(Theme.HEX.muted))
+		label:SetTextColor(Theme.rgb(Theme.HEX[restKey]))
 	end)
 	button:SetScript("OnClick", function(self, ...)
 		if self:IsEnabled() then

@@ -727,13 +727,14 @@ function Progress.isMissing(itemId)
 	return Compat.itemExists(itemId) == false
 end
 
---- The one target for `slot`: the band's pick (Gear.pick, with its source and alternatives); nil
---- with no spec, band or faction. A build's gear list is never a target (fix round 4).
-function Progress.slotTarget(data, spec, band, faction, slot)
+--- The one target for `slot`: the band's pick (Gear.pick, with its source and alternatives, under
+--- `sources`: a Sources state, this character's by default); nil with no spec, band or faction. A
+--- build's gear list is never a target (fix round 4).
+function Progress.slotTarget(data, spec, band, faction, slot, sources)
 	if spec == nil or not band or not faction then
 		return nil
 	end
-	return Gear.pick(spec, band, faction, slot, data)
+	return (Gear.pick(spec, band, faction, slot, data, sources))
 end
 
 --- The target to go and get: `pick`, or, when the client cannot show it (`isMissing`), the
@@ -765,19 +766,20 @@ end
 --- - else `pick` is `slot`'s target or the first of its alternatives the client can show
 ---   (Progress.reachablePick), and `unshowable` says the data names one it can show none of;
 --- - `worn`: `pick` is worn in one of `slots`.
-function Progress.targetFor(data, spec, band, faction, slots, slot, itemId, equipped, isMissing)
+--- `sources` as for Progress.slotTarget.
+function Progress.targetFor(data, spec, band, faction, slots, slot, itemId, equipped, isMissing, sources)
 	isMissing = isMissing or Progress.isMissing
 	equipped = equipped or {}
 	local pick, isPick, worn, unshowable
 	for _, candidate in ipairs(slots) do
-		local found = Progress.slotTarget(data, spec, band, faction, candidate)
+		local found = Progress.slotTarget(data, spec, band, faction, candidate, sources)
 		if found ~= nil and found.item_id == itemId then
 			pick, isPick = found, true
 			break
 		end
 	end
 	if pick == nil then
-		local named = Progress.slotTarget(data, spec, band, faction, slot)
+		local named = Progress.slotTarget(data, spec, band, faction, slot, sources)
 		pick = Progress.reachablePick(named, isMissing)
 		unshowable = named ~= nil and pick == nil
 	end
@@ -854,8 +856,8 @@ end
 --- - a gain under the tooltip's floor (Progress.MIN_GAIN) is kept: the gap still counts it.
 ---
 --- A slot with no target is left out. `current` is Gear.currentWeights' answer; `statsOf`
---- (Gear.itemStatsOf) and `isMissing` (Progress.isMissing) are optional.
-function Progress.slotTargets(data, spec, band, faction, equipped, current, statsOf, isMissing)
+--- (Gear.itemStatsOf), `isMissing` (Progress.isMissing) and `sources` (Progress.slotTarget's) are optional.
+function Progress.slotTargets(data, spec, band, faction, equipped, current, statsOf, isMissing, sources)
 	equipped = equipped or {}
 	local wornIds = {}
 	for _, worn in pairs(equipped) do
@@ -881,7 +883,7 @@ function Progress.slotTargets(data, spec, band, faction, equipped, current, stat
 			end
 		end
 		local target = Progress.targetFor(data, spec, band, faction, slots, slot,
-			worn ~= nil and worn.itemId or nil, equipped, isMissing)
+			worn ~= nil and worn.itemId or nil, equipped, isMissing, sources)
 		local pick = target.pick
 		if pick ~= nil and worn ~= nil and (target.isPick or target.worn) then
 			rows[#rows + 1] = { slot = slot, itemId = pick.item_id, gain = 0, holds = true }
@@ -907,14 +909,15 @@ end
 --- plan or ahead), its unit ("dps" with a DPS per point, "hps" for a healer's, else "pts"), the slot row it is in
 --- (nil at 0), and every row. nil when nothing could be scored: no data or spec, no weights, or
 --- every target unscored. The one gap rule Comms.gearGap (the guild row, the hello) and the
---- group panel's rows share.
-function Progress.gearPlan(data, spec, level, faction, equipped, current, isMissing)
+--- group panel's rows share. `sources` as for Progress.slotTarget: both pass Sources.ALL, so a gap
+--- others read is never narrowed by one player's source choice.
+function Progress.gearPlan(data, spec, level, faction, equipped, current, isMissing, sources)
 	if type(data) ~= "table" or spec == nil or type(current) ~= "table" or type(current.weights) ~= "table" then
 		return nil
 	end
 	local specBis = type(data.bis) == "table" and data.bis[spec] or nil
 	local band = faction and Gear.bandFor(specBis, level) or nil
-	local rows = Progress.slotTargets(data, spec, band, faction, equipped or {}, current, nil, isMissing)
+	local rows = Progress.slotTargets(data, spec, band, faction, equipped or {}, current, nil, isMissing, sources)
 	local scored, best, weakest = false, 0, nil
 	for _, row in ipairs(rows) do
 		if row.gain ~= nil then

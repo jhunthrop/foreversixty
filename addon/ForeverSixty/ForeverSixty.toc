@@ -26,6 +26,7 @@ RaidPrep.lua
 RaidDrops.lua
 Export.lua
 Follow.lua
+Sources.lua
 Gear.lua
 Progress.lua
 Rotation.lua
@@ -48,6 +49,7 @@ surfaces\BuildDialog.lua
 surfaces\SiteStatus.lua
 surfaces\Settings.lua
 surfaces\PanelTab.lua
+surfaces\SourcesFlyout.lua
 surfaces\Panel.lua
 surfaces\TourExample.lua
 surfaces\Onboarding.lua

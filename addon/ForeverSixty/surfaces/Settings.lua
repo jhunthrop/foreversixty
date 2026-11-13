@@ -24,6 +24,7 @@ local Codec = ns.Codec or require("Codec")
 local MinimapButton = ns.Minimap or require("Minimap")
 local Chip = ns.Chip or require("Chip")
 local Score = ns.Score or require("Score")
+local Sources = ns.Sources or require("Sources")
 
 local SettingsPage = {}
 
@@ -47,11 +48,23 @@ SettingsPage.SWITCHES = {
 	{ key = "lootRares", label = L.settingsLootRares, hint = L.settingsLootRaresHint },
 }
 
---- Injection points Options fills: the data the foot line reads (its `build`), and what
---- runs after a switch changes (Options redraws the surfaces, and says hello when sharing
---- is turned on).
+--- The Gear sources group (source filter spec 5), after the switches: a heading with Default at its
+--- right (only while a choice is saved), one hint line, then one switch row per kind, generated from
+--- Sources.KINDS like the Sources flyout's rows, each with its count at the right. A second list:
+--- SWITCHES stays booleans of Prefs.
+SettingsPage.SOURCE_ROWS = {}
+for index, kind in ipairs(Sources.KINDS) do
+	SettingsPage.SOURCE_ROWS[index] = { kind = kind, label = Sources.label(kind) }
+end
+
+--- Injection points Options fills: the data the foot line reads (its `build`), what runs after a
+--- switch changes (Options redraws the surfaces, and says hello when sharing is turned on), and the
+--- character's band and counts for the Gear sources group (Panel.currentSourceLine's).
 SettingsPage.data = nil
 SettingsPage.afterChange = nil
+SettingsPage.sourcesContext = function()
+	return nil, nil
+end
 
 local function split(key)
 	local section, field = key:match("^([^.]+)%.([^.]+)$")
@@ -296,6 +309,16 @@ function SettingsPage.layout(width, rowHeights, warned)
 		y = y + ((type(height) == "number" and height > 0) and height or S.settingsRow)
 	end
 	y = y + S.padding
+	layout.sourcesHeading = -y
+	y = y + S.settingsLine
+	layout.sourcesHint = -y
+	y = y + S.settingsLine + S.gap
+	layout.sourceRows = {}
+	for index = 1, #SettingsPage.SOURCE_ROWS do
+		layout.sourceRows[index] = -y
+		y = y + S.rowHeight + S.gap
+	end
+	y = y + S.padding
 	layout.reset = -y
 	y = y + S.buttonHeight + S.padding
 	for index = 1, 2 do
@@ -306,10 +329,10 @@ function SettingsPage.layout(width, rowHeights, warned)
 	return layout
 end
 
---- The page's own controls: one toggle per switch and the Reset button (labels and the
---- divider are regions, not children).
+--- The page's own controls: one toggle per switch, one per source kind, Default and the Reset button
+--- (labels and the divider are regions, not children).
 function SettingsPage.expectedChildren()
-	return #SettingsPage.SWITCHES + 1
+	return #SettingsPage.SWITCHES + #SettingsPage.SOURCE_ROWS + 2
 end
 
 --- How long Reset reads "Positions reset", disabled, after a click.
@@ -383,6 +406,14 @@ local function arrange(warned)
 	for index, toggle in ipairs(SettingsPage.toggles) do
 		place(toggle.frame, content, layout.x, layout.rows[index])
 	end
+	place(SettingsPage.sourcesHeading, content, layout.x, layout.sourcesHeading)
+	SettingsPage.sourcesDefault:ClearAllPoints()
+	SettingsPage.sourcesDefault:SetPoint("TOPRIGHT", content, "TOPLEFT", layout.x + layout.dividerWidth,
+		layout.sourcesHeading)
+	place(SettingsPage.sourcesHint, content, layout.x, layout.sourcesHint)
+	for index, row in ipairs(SettingsPage.sourceToggles) do
+		place(row.toggle.frame, content, layout.x, layout.sourceRows[index])
+	end
 	place(SettingsPage.resetButton, content, layout.x, layout.reset)
 	place(SettingsPage.commandsHeading, content, layout.x, layout.commandsHeading)
 	place(SettingsPage.divider, content, layout.x, layout.divider)
@@ -433,6 +464,7 @@ function SettingsPage.build(panel)
 		toggle.key = key
 		SettingsPage.toggles[index] = toggle
 	end
+	SettingsPage.buildSources(content, layout)
 	local reset = Widgets.button(content, L.settingsReset, SettingsPage.reset)
 	SettingsPage.resetButton = reset
 	local resetHint = Widgets.label(content, L.settingsResetHint, "muted", "small")
@@ -455,6 +487,46 @@ function SettingsPage.build(panel)
 	return panel
 end
 
+--- The Gear sources group's parts: the heading in the commands heading's style with Default at its
+--- right, the hint, and a switch row per kind with its count right-aligned in the row.
+function SettingsPage.buildSources(content, layout)
+	local S = Theme.SIZES
+	SettingsPage.sourcesHeading = Widgets.label(content, L.sourcesSettingsHeading, "gold", "normal")
+	local default = Widgets.textButton(content, L.sourcesDefault, function()
+		Sources.reset()
+	end)
+	SettingsPage.sourcesDefault = default
+	SettingsPage.sourcesHint = Widgets.label(content, L.sourcesSettingsHint, "muted", "small")
+	SettingsPage.sourceToggles = {}
+	for index, row in ipairs(SettingsPage.SOURCE_ROWS) do
+		local kind = row.kind
+		local toggle = Widgets.toggle(content, row.label, false, function()
+			Sources.toggle(kind, (SettingsPage.sourcesContext()))
+		end)
+		toggle.frame:SetWidth(layout.dividerWidth)
+		local count = Widgets.label(content, "", "muted", "small")
+		count:SetJustifyH("RIGHT")
+		count:SetPoint("RIGHT", toggle.frame, "RIGHT", -S.gap, 0)
+		SettingsPage.sourceToggles[index] = { kind = kind, toggle = toggle, count = count }
+	end
+end
+
+--- The Gear sources group for the character's band now: each switch, each count ("-" with none),
+--- and Default while a choice is saved: the Sources flyout's rows (Sources.choiceRows).
+function SettingsPage.refreshSources()
+	if SettingsPage.sourceToggles == nil then
+		return
+	end
+	local band, counts = SettingsPage.sourcesContext()
+	local model = Sources.choiceRows(Sources.state(band), counts)
+	for index, row in ipairs(model.rows) do
+		local parts = SettingsPage.sourceToggles[index]
+		parts.toggle:SetChecked(row.checked)
+		parts.count:SetText(row.count)
+	end
+	Theme.setShown({ SettingsPage.sourcesDefault }, model.showDefault)
+end
+
 --- Show the live prefs on every toggle ("Show the chip" off while a right-click hides it),
 --- Reset's look, the two foot lines for this client and, while either is in the warning colour, the
 --- line under the title (the page moves down to make room for it).
@@ -463,6 +535,7 @@ function SettingsPage.refresh()
 		toggle:SetChecked(SettingsPage.checked(toggle.key))
 	end
 	drawReset()
+	SettingsPage.refreshSources()
 	if SettingsPage.dataLabels ~= nil then
 		local data = SettingsPage.data or ns.Data
 		local addon = SettingsPage.addonDataLine(type(data) == "table" and data.build or nil, Compat.clientVersion())

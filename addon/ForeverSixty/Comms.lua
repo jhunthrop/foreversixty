@@ -20,6 +20,7 @@ local Theme = ns.Theme or require("Theme")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Progress = ns.Progress or require("Progress")
+local Sources = ns.Sources or require("Sources")
 local Score = ns.Score or require("Score")
 local Prefs = ns.Prefs or require("Prefs")
 
@@ -408,7 +409,7 @@ function Comms.ownPlan(data, spec, equipped, level, faction)
 	-- guild row shows and the hello names. The two agree whenever the talents lead in the build's tree.
 	local tooltip = ns.ItemTooltip
 	local plan = Progress.gearPlan(data, spec, level, faction or Compat.playerFaction(),
-		equipped or Gear.readEquipped(), current, tooltip ~= nil and tooltip.isMissing or nil)
+		equipped or Gear.readEquipped(), current, tooltip ~= nil and tooltip.isMissing or nil, Sources.ALL)
 	if plan ~= nil then
 		plan.current = current
 	end

@@ -48,6 +48,7 @@ local Compat = ns.Compat or require("Compat")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Progress = ns.Progress or require("Progress")
+local Sources = ns.Sources or require("Sources")
 local Score = ns.Score or require("Score")
 local Comms = ns.Comms or require("Comms")
 local Talents = ns.Talents or require("Talents")
@@ -1073,7 +1074,7 @@ function GroupPanel.memberGear(data, spec, level, faction, items)
 	end
 	local equipped = Gear.equippedFrom(items)
 	local current = Gear.currentWeights(data, spec, nil, nil, level)
-	local plan = Progress.gearPlan(data, spec, level, faction, equipped, current, ItemTooltip.isMissing)
+	local plan = Progress.gearPlan(data, spec, level, faction, equipped, current, ItemTooltip.isMissing, Sources.ALL)
 	if plan == nil then
 		return nil
 	end

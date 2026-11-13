@@ -42,6 +42,8 @@ local BuildDialog = ns.BuildDialog or require("BuildDialog")
 local PanelTab = ns.PanelTab or require("PanelTab")
 local Prefs = ns.Prefs or require("Prefs")
 local TalentClick = ns.TalentClick or require("TalentClick")
+local Sources = ns.Sources or require("Sources")
+local SourcesFlyout = ns.SourcesFlyout or require("SourcesFlyout")
 
 local Panel = {}
 
@@ -67,7 +69,7 @@ Codec.MESSAGE_TYPES[Panel.SIGNUP_KIND] = true
 --- Nominal heights the budget is counted in (the frame measures its own lines when it draws):
 --- `head` is the title band and the body's top padding, `foot` the body's bottom padding.
 Panel.H = { head = Theme.SIZES.titleBand + 12, foot = 14, heading = 22, rule = 9, line = 14, row = 34,
-	rotationName = 15, rotationClause = 13, rotationGap = 5, button = 22, gap = 6, talentRow = 38 }
+	rotationName = 15, rotationClause = 13, rotationGap = 5, button = 22, gap = 6, talentRow = 38, sources = 18 }
 --- A rotation row's condition sits under the spell's name and wraps to a second line past this
 --- many characters (a 60-character panel line never runs past two); the budget counts it so.
 Panel.CLAUSE_WRAP_CHARS = 44
@@ -249,8 +251,10 @@ end
 --- gain, unit, detail, bag, link }, `detail` "<slot> · <source>" plus " · level 27" when the item
 --- asks for a higher level. `input`: { targets, level, sim (the note's parts: { age, queued } or
 --- nil), picksStart }. A rest line only with no rows ("Picks start at level 20" below the first
---- band, else "Every slot is best for your build."); the sim note is the age alone, beside Sim
---- again. Never nil: the region always shows.
+--- band, else "Every slot is best for your build."; "No upgrades from these sources" when the
+--- sources on leave every slot without an option); the sim note is the age alone, beside Sim
+--- again. `input.sources` (Panel.sourceLine's) adds the foot line under the rows: the state's
+--- words and Change. Never nil: the region always shows.
 function Panel.upgrades(input)
 	local rows = {}
 	for _, target in ipairs(input.targets or {}) do
@@ -268,10 +272,16 @@ function Panel.upgrades(input)
 		end
 	end
 	local region = { kind = "upgrades", rows = rows }
+	local sources = input.sources
 	if input.picksStart ~= nil and #rows == 0 then
 		region.rest = string.format(L.homePicksStart, input.picksStart)
+	elseif #rows == 0 and sources ~= nil and sources.empty then
+		region.rest = L.panelNoUpgradesFromSources
 	elseif #rows == 0 then
 		region.rest = L.panelAllBest
+	end
+	if sources ~= nil then
+		region.sources = { words = sources.words, off = sources.off }
 	end
 	if type(input.sim) == "table" then
 		region.note = input.sim.age
@@ -395,7 +405,7 @@ function Panel.regionHeight(region)
 	elseif region.kind == "lastRaid" then
 		height = height + H.line * (#region.bosses + (region.loss and 1 or 0))
 	elseif region.kind == "upgrades" then
-		height = height + H.row * #region.rows + (region.rest and H.line or 0)
+		height = height + H.row * #region.rows + (region.rest and H.line or 0) + (region.sources and H.sources or 0)
 	elseif region.kind == "talents" then
 		height = height + (region.finished and 0 or H.talentRow)
 	elseif region.kind == "path" then
@@ -631,6 +641,7 @@ function Panel.inputs(data)
 	end
 	local specBis = base.spec ~= nil and type(data.bis) == "table" and data.bis[base.spec] or nil
 	input.picksStart = base.faction and Gear.firstBand(specBis, level) or nil
+	input.sources = Panel.sourceLine(data, base.spec, base.faction and Gear.bandFor(specBis, level) or nil, base.faction)
 	local current = base.current
 	if current ~= nil and current.tag == "sim" then
 		local result = newestMessage("sim_result", function(message)
@@ -647,6 +658,36 @@ function Panel.inputs(data)
 		input.pointIcon = talent ~= nil and Talents.iconFor(talent) or nil
 	end
 	return input
+end
+
+--- The source filter at the character's band (Sources.state): { words, off (the hover's line, nil at
+--- All sources), empty (the sources on leave every slot without an option), band, counts (the
+--- flyout's, Sources.counts over the band's published picks) }. nil with no spec, band or faction.
+function Panel.sourceLine(data, spec, band, faction)
+	local bySpec = spec ~= nil and type(data) == "table" and type(data.bis) == "table" and data.bis[spec] or nil
+	local slots = bySpec ~= nil and band ~= nil and bySpec[band] ~= nil and bySpec[band][faction] or nil
+	if type(slots) ~= "table" then
+		return nil
+	end
+	local state = Sources.state(band)
+	local published, empty = {}, not state.all
+	for slot in pairs(slots) do
+		published[slot] = Gear.publishedPick(spec, band, faction, slot, data)
+		if empty and Gear.pick(spec, band, faction, slot, data, state) ~= nil then
+			empty = false
+		end
+	end
+	return { words = Sources.words(state), off = Sources.offLine(state), empty = empty, band = band,
+		counts = Sources.counts(published) }
+end
+
+--- Panel.sourceLine for this character now (its spec, band and faction): the Settings page's Gear
+--- sources group reads the same band and counts as the panel and the flyout.
+function Panel.currentSourceLine(data)
+	data = data or Panel.data or ns.Data
+	local base = ItemTooltip.baseContext(data)
+	local specBis = base.spec ~= nil and type(data.bis) == "table" and data.bis[base.spec] or nil
+	return Panel.sourceLine(data, base.spec, base.faction and Gear.bandFor(specBis, Chip.level()) or nil, base.faction)
 end
 
 --- "2 days ago", "5 h ago", "just now": how old a sim is. Pure.
@@ -696,13 +737,15 @@ end
 --- "Change": the build dialog on its paste tab.
 function Panel.change()
 	BuildDialog.data = BuildDialog.data or Panel.data
+	-- The Builds dialog takes the screen's attention: the Sources flyout closes (spec 4).
+	SourcesFlyout.close()
 	return BuildDialog.open("paste")
 end
 
 -- The frame ---------------------------------------------------------------------------------------
 
 --- Pools of the frame's parts, reused on every draw: nothing is created after the first draws.
-local pools = { text = {}, icon = {}, button = {}, rule = {}, hover = {} }
+local pools = { text = {}, icon = {}, button = {}, rule = {}, hover = {}, link = {} }
 local used = {}
 
 local function reset()
@@ -772,6 +815,21 @@ local function button(content, label, onClick, selected)
 	Widgets.fitButton(made)
 	Widgets.setEnabled(made, true)
 	Widgets.setSelected(made, selected)
+	return made
+end
+
+--- A pooled text link (Widgets.textButton) in the client's gold: the foot line's Change.
+local function link(content, label, onClick)
+	local made = take("link", function()
+		return Widgets.textButton(content, "", function(self)
+			if self.foreverSixtyAction ~= nil then
+				self.foreverSixtyAction()
+			end
+		end, "clientGold")
+	end)
+	made:SetText(label)
+	made.foreverSixtyAction = onClick
+	Widgets.setEnabled(made, not Theme.inCombat())
 	return made
 end
 
@@ -1086,6 +1144,27 @@ local function drawUpgradeRow(content, row, y, width)
 	return y + math.max(Panel.H.row, Panel.H.line + detailHeight + 4)
 end
 
+--- The Upgrades region's foot line: the source state's words, muted (their hover names the kinds
+--- off), then Change in gold, which opens the Sources flyout. Always one line, so a toggle never
+--- moves the regions under it.
+local function drawSourceLine(content, sources, y)
+	local words = text(content, sources.words, "umberMuted")
+	words:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 2)
+	local dot = text(content, L.exportTreeSeparator, "umberMuted")
+	dot:SetPoint("LEFT", words, "RIGHT", 0, 0)
+	local change = link(content, L.panelChange, Panel.toggleSources)
+	change:SetPoint("LEFT", dot, "RIGHT", 0, 0)
+	Panel.sourcesChange = change
+	if sources.off ~= nil then
+		local over = hover(content, function()
+			return { L.sourcesTitle, Theme.inlineColor("tooltipMuted", sources.off) }
+		end)
+		over:SetPoint("TOPLEFT", words, "TOPLEFT")
+		over:SetPoint("BOTTOMRIGHT", words, "BOTTOMRIGHT")
+	end
+	return y + Panel.H.sources
+end
+
 local function drawUpgrades(content, region, y, width)
 	local top = y
 	y = heading(content, y, L.panelUpgrades, region.simAgain == nil and region.note or nil, width)
@@ -1097,6 +1176,9 @@ local function drawUpgrades(content, region, y, width)
 	end
 	if region.rest ~= nil then
 		y = y + wrapped(content, region.rest, "umberMuted", 0, y, width) + 2
+	end
+	if region.sources ~= nil then
+		y = drawSourceLine(content, region.sources, y)
 	end
 	return y + Panel.H.gap
 end
@@ -1330,9 +1412,27 @@ function Panel.open(from)
 end
 
 function Panel.close()
+	SourcesFlyout.close()
 	if Panel.frame ~= nil then
 		Panel.frame:Hide()
 	end
+end
+
+--- The foot line's Change: the Sources flyout beside the panel, or closed when it is open.
+function Panel.toggleSources()
+	if Panel.frame == nil then
+		return false
+	end
+	return SourcesFlyout.toggle(Panel.frame)
+end
+
+--- The flyout reads the panel's band and counts (the last draw's).
+SourcesFlyout.context = function()
+	local sources = Panel.sources
+	if sources == nil then
+		return nil, nil
+	end
+	return sources.band, sources.counts
 end
 
 function Panel.isOpen()
@@ -1348,7 +1448,9 @@ function Panel.refresh(data)
 		return nil
 	end
 	local ok, model = pcall(function()
-		return Panel.draw(Panel.model(Panel.inputs(Panel.data or ns.Data)))
+		local input = Panel.inputs(Panel.data or ns.Data)
+		Panel.sources = input.sources
+		return Panel.draw(Panel.model(input))
 	end)
 	if not ok then
 		Panel.disabled = true

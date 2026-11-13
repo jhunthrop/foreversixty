@@ -50,10 +50,11 @@ from __future__ import annotations
 
 import json
 import math
+from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from pipeline.models import AddonBisAlternative, AddonBisBand, AddonBisItem
+from pipeline.models import AddonBisAlternative, AddonBisBand, AddonBisItem, AddonBisKindEntry
 
 #: The `preset` tag of a band entry measured on the bare character (sim/cmd/leveling-bis/preset.go).
 BARE_PRESET = "bare"
@@ -121,6 +122,33 @@ KNOWN_FACTIONS = {"alliance", "horde"}
 #: How many runners-up a pick carries as alternatives (contract 1 in
 #: docs/contracts/addon-v2.md: "up to two").
 MAX_ALTERNATIVES = 2
+
+#: The site's source filter kinds in the filter row's order (web/src/lib/bis/source-filter.ts's
+#: SOURCE_FILTER_KINDS); a tie in rank goes to the kind listed first, as on the site.
+SOURCE_FILTER_KINDS: tuple[str, ...] = (
+    "dungeon", "raid", "world", "quest", "crafted", "rep", "vendor", "pvp",
+)  # fmt: skip
+
+#: loot.json kind -> filter kind (source-filter.ts's FILTER_KIND_OF_SOURCE).
+FILTER_KIND_OF_SOURCE: dict[str, str] = {
+    "dungeon": "dungeon",
+    "raid": "raid",
+    "world": "world",
+    "world_drop": "world",
+    "zone": "world",
+    "quest": "quest",
+    "crafted": "crafted",
+    "rep": "rep",
+    "vendor": "vendor",
+    "pvp": "pvp",
+}
+
+#: The second slot of each pair (source-filter.ts's PAIR_FIRST): the only slots whose
+#: filtered pick reads the first slot's, so the only ones that carry `not_with`.
+PAIR_SECOND = {"finger2", "trinket2", "off_hand"}
+
+#: The reputation standings a gated item can ask, as leveling-bis spells them.
+STANDINGS = ("neutral", "friendly", "honored", "revered", "exalted")
 
 
 class AddonBisError(SystemExit):
@@ -398,6 +426,11 @@ def _faction_picks(
         skips.extend(row["item_id"] for row in considered if row["item_id"] in facts.unconfirmed)
         if pick is None:
             continue
+        # The filter facts: the pick's own kinds and standings (a promoted pick's from its
+        # candidate row), and the row's by_kind, which still ranks every other kind's best.
+        row = slot_lookup[slot]
+        kinds, standings = _pick_kinds(row if pick["item_id"] == row["item_id"] else pick)
+        second = slot in PAIR_SECOND
         picks[slot] = AddonBisItem(
             item_id=pick["item_id"],
             source_kind=pick["source_kind"],
@@ -411,8 +444,76 @@ def _faction_picks(
                 )
                 for alternative in alternatives
             ],
+            kinds=kinds,
+            standings=standings,
+            two_hand=pick["item_id"] in facts.two_hand or bool(pick.get("two_hand")),
+            not_with=list((pick.get("not_with") or [])) if second else [],
+            by_kind=[
+                entry for entry in _by_kind(row, facts, second)
+                if entry.item_id != pick["item_id"]
+            ],
         )
     return picks
+
+
+def _standing(value) -> str:
+    """A standing leveling-bis names, or empty; anything else is a generator bug."""
+    if value is None or value == "":
+        return ""
+    if value not in STANDINGS:
+        raise AddonBisError(f"unknown reputation standing {value!r}")
+    return value
+
+
+def _pick_kinds(entry: dict) -> tuple[list[str], dict[str, str]]:
+    """The pick's own filter kinds when they say more than its source_kind's, and the
+    standing each gated kind asks (leveling-bis's `kinds`, `kind_standings`, `standing`;
+    a file without kind_standings knows only the rep kind's standing, as on the site)."""
+    own = FILTER_KIND_OF_SOURCE.get(entry.get("source_kind", ""))
+    kinds = [kind for kind in entry.get("kinds") or [] if kind in SOURCE_FILTER_KINDS]
+    standings = {
+        kind: _standing(value)
+        for kind, value in (entry.get("kind_standings") or {}).items()
+        if kind in SOURCE_FILTER_KINDS and _standing(value)
+    }
+    if not standings and _standing(entry.get("standing")):
+        standings = {"rep": _standing(entry.get("standing"))}
+    if kinds == ([own] if own else []):
+        kinds = []
+    return kinds, standings
+
+
+def _by_kind(entry: dict, facts: _ItemFacts, second: bool) -> list[AddonBisKindEntry]:
+    """leveling-bis's `by_kind` (the best item of each kind, a chained `next` behind it),
+    flattened and sorted by its own rank, best first, a tie to the kind the site lists
+    first. An entry carries `not_with` only on a pair's second slot, the one slot that
+    reads it. A client-unconfirmed id is passed over (the L1.4 safety net)."""
+    rows: list[tuple[int, int, AddonBisKindEntry]] = []
+    for kind, head in (entry.get("by_kind") or {}).items():
+        if kind not in SOURCE_FILTER_KINDS:
+            raise AddonBisError(f"unknown by_kind source kind {kind!r}")
+        node = head
+        while node is not None:
+            item_id = node["item_id"]
+            if item_id not in facts.unconfirmed:
+                source_kind = node.get("source_kind") or kind
+                if FILTER_KIND_OF_SOURCE.get(source_kind) != kind:
+                    raise AddonBisError(f"by_kind {kind!r} lists a {source_kind!r} item {item_id}")
+                rows.append((
+                    int(node.get("rank", 0)),
+                    SOURCE_FILTER_KINDS.index(kind),
+                    AddonBisKindEntry(
+                        item_id=item_id,
+                        source_kind=source_kind,
+                        source=node.get("source", ""),
+                        standing=_standing(node.get("standing")),
+                        two_hand=bool(node.get("two_hand")) or item_id in facts.two_hand,
+                        not_with=list(node.get("not_with") or []) if second else [],
+                    ),
+                ))
+            node = node.get("next")
+    rows.sort(key=lambda row: (row[0], row[1]))
+    return [row[2] for row in rows]
 
 
 def _new_item_ids(picks: dict[str, AddonBisItem], previous: dict[str, int] | None) -> list[int]:
@@ -548,7 +649,9 @@ def build_bis_items(
             for band in bands
             for slots in band.factions.values()
             for pick in slots.values()
-            for item_id in [pick.item_id] + [alt.item_id for alt in pick.alternatives]
+            for item_id in [pick.item_id]
+            + [alt.item_id for alt in pick.alternatives]
+            + [entry.item_id for entry in pick.by_kind]
         }
     )
     if not ids:
@@ -565,3 +668,19 @@ def build_bis_items(
         if item_id in class_dps:
             dps[item_id] = round(class_dps[item_id], 1)
     return names, dps
+
+
+def build_bis_sources(bis: dict[str, list[AddonBisBand]]) -> list[str]:
+    """Data.lua's `bisSources` list: every distinct place a by_kind entry names, the
+    most used first (ties by name), so the packed by-kind tail carries a short 1-based
+    index into it rather than the text (pipeline.addonlua._kind_entry)."""
+    uses = Counter(
+        entry.source
+        for bands in bis.values()
+        for band in bands
+        for slots in band.factions.values()
+        for pick in slots.values()
+        for entry in pick.by_kind
+        if entry.source
+    )
+    return sorted(uses, key=lambda source: (-uses[source], source))

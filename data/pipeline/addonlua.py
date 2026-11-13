@@ -18,7 +18,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pipeline.addonbis import SOURCE_KIND_CODES, AddonBisError
+from pipeline.addonbis import (
+    FILTER_KIND_OF_SOURCE,
+    SOURCE_FILTER_KINDS,
+    SOURCE_KIND_CODES,
+    STANDINGS,
+    AddonBisError,
+)
 from pipeline.addondata import build_addon_data
 from pipeline.models import AddonData
 
@@ -100,17 +106,94 @@ def _bis_field(value: str) -> str:
     return value
 
 
-def _bis_pick_packed(item) -> str:
+#: The site's filter kinds as one letter each, for the tail's head entry (the pick's own
+#: kinds): SOURCE_KIND_CODES' letters, world_drop's B folded into world's W.
+FILTER_KIND_CODES: dict[str, str] = {kind: SOURCE_KIND_CODES[kind] for kind in SOURCE_FILTER_KINDS}
+
+#: A reputation standing as one lower-case letter, after a kind's letter.
+STANDING_CODES: dict[str, str] = {standing: standing[0] for standing in STANDINGS}
+
+#: Separators inside the by-kind tail (one `|` field): entries, then an entry's fields,
+#: then the ids inside its not_with list. None of them is `|`, and none can appear in a
+#: number or a letter code, so the tail never shifts the fields before it.
+BIS_ENTRY_SEPARATOR = ";"
+BIS_ENTRY_FIELD_SEPARATOR = ","
+BIS_NOT_WITH_SEPARATOR = "+"
+#: The head entry's mark (the pick's own filter facts), and the two-hander mark; neither
+#: is a digit or a letter, so `C!7000` never reads as another id.
+BIS_HEAD_MARK = "*"
+BIS_TWO_HAND_MARK = "!"
+
+
+def _not_with(ids: list[int]) -> str:
+    return BIS_NOT_WITH_SEPARATOR.join(str(other) for other in ids)
+
+
+def _pick_head(item) -> str:
+    """The tail's head entry, `*!RhVh,19513`: the two-hander mark, the pick's own filter
+    kinds each with the standing it asks, then the ids its pair mate must not hold. Empty
+    when the pick's source_kind alone describes it. The decoder reads an entry with no
+    kind letters as the pick's own code's kind."""
+    own = FILTER_KIND_OF_SOURCE.get(item.source_kind)
+    kinds = list(item.kinds) or ([own] if own else [])
+    gated = [kind for kind in kinds if item.standings.get(kind)]
+    letters = "".join(
+        FILTER_KIND_CODES[kind] + STANDING_CODES.get(item.standings.get(kind, ""), "") for kind in kinds
+    ) if item.kinds or gated else ""
+    mark = (BIS_TWO_HAND_MARK if item.two_hand else "") + letters
+    if not mark and not item.not_with:
+        return ""
+    head = BIS_HEAD_MARK + mark
+    if item.not_with:
+        head += BIS_ENTRY_FIELD_SEPARATOR + _not_with(item.not_with)
+    return head
+
+
+def _kind_entry(entry, source_index: dict[str, int]) -> str:
+    """`Dh!26686,12,1234+5678`: the kind letter, a standing letter, the two-hander mark,
+    the id; the place's 1-based bisSources index (empty for none); the ids the pair
+    mate must not hold, when any."""
+    if entry.source and entry.source not in source_index:
+        raise AddonBisError(f"bisSources does not list the by-kind place {entry.source!r}")
+    fields = [
+        _source_kind_code(entry.source_kind)
+        + STANDING_CODES.get(entry.standing, "")
+        + (BIS_TWO_HAND_MARK if entry.two_hand else "")
+        + str(entry.item_id),
+        str(source_index[entry.source]) if entry.source else "",
+        _not_with(entry.not_with),
+    ]
+    while fields[-1] == "":
+        fields.pop()
+    return BIS_ENTRY_FIELD_SEPARATOR.join(fields)
+
+
+def _bis_tail(item, source_index: dict[str, int]) -> str:
+    """The by-kind tail: the head entry, then one entry per by_kind item in rank order,
+    `;`-joined. Empty when the pick carries nothing beyond its own fields."""
+    head = _pick_head(item)
+    entries = ([head] if head else []) + [_kind_entry(entry, source_index) for entry in item.by_kind]
+    return BIS_ENTRY_SEPARATOR.join(entries)
+
+
+def _bis_pick_packed(item, source_index: dict[str, int] | None = None) -> str:
     """One pick as ONE string, `|`-joined in the order
     `item_id|kind|source|chance|alt1_id|alt1_kind|alt1_source|alt2_id|
     alt2_kind|alt2_source` (contract 1's "physical encoding" note in
     docs/contracts/addon-v2.md). A string per pick instead of a table plus
     a table per alternative is what keeps Data.lua's loaded heap under the
-    addon's 2 MB idle budget; Gear.pick decodes it back into the logical
+    addon's idle budget; Gear.pick decodes it back into the logical
     table. `kind` is the single-letter SOURCE_KIND_CODES code, `chance` a
     plain number, and a missing field is empty, so the positions never
     shift; trailing empty fields are trimmed (Gear.decodePick reads a
-    missing field as empty)."""
+    missing field as empty).
+
+    The source filter's facts (2026-11-13) follow the alternatives as ONE more
+    field after ONE empty one: `...|alt2_source||<tail>`. The empty field is
+    where a third alternative's id would be, which is how the decoder knows the
+    alternatives have ended; the tail (_bis_tail) is the pick's own kinds and the
+    best item of every other kind, so a slot can be re-picked in game with a
+    kind off. A pick with no such facts packs exactly as before."""
     fields = [
         str(item.item_id),
         _source_kind_code(item.source_kind),
@@ -123,12 +206,20 @@ def _bis_pick_packed(item) -> str:
             _source_kind_code(alternative.source_kind),
             _bis_field(alternative.source),
         ]
+    tail = _bis_tail(item, source_index or {})
+    if tail:
+        fields += ["", tail]
     while fields[-1] == "":
         fields.pop()
     return BIS_FIELD_SEPARATOR.join(fields)
 
 
-def _bis_lua(bis: dict) -> list[str]:
+def _source_index(bis_sources: list[str]) -> dict[str, int]:
+    """Place -> its 1-based position in Data.lua's bisSources list."""
+    return {source: index for index, source in enumerate(bis_sources, start=1)}
+
+
+def _bis_lua(bis: dict, bis_sources: list[str] | None = None) -> list[str]:
     """`bis[spec][band][faction][slot] = "itemId|sourceKindCode|source|chance|..."`,
     one packed string per pick (_bis_pick_packed's own doc). Until task
     L1.2's fix round 2 a pick was the positional table `{ itemId,
@@ -143,6 +234,7 @@ def _bis_lua(bis: dict) -> list[str]:
     (the third, optional element -- left out of the table literal entirely
     for a pick with none, rather than an empty string, saving two bytes
     each) is the short place name that line reads beside it."""
+    source_index = _source_index(bis_sources or [])
     lines = ["\tbis = {"]
     for spec in sorted(bis):
         lines.append(f"\t\t[{_quote(spec)}] = {{")
@@ -151,7 +243,7 @@ def _bis_lua(bis: dict) -> list[str]:
             for faction in sorted(band.factions):
                 lines.append(f"\t\t\t\t{faction} = {{")
                 for slot in sorted(band.factions[faction]):
-                    packed = _bis_pick_packed(band.factions[faction][slot])
+                    packed = _bis_pick_packed(band.factions[faction][slot], source_index)
                     lines.append(f"\t\t\t\t\t{slot} = {_quote(packed)},")
                 lines.append("\t\t\t\t},")
             lines.append("\t\t\t},")
@@ -198,6 +290,19 @@ def _bis_new_lua(bis: dict) -> list[str]:
                 lines.append(f"\t\t\t\t{faction} = {{ {ids} }},")
             lines.append("\t\t\t},")
         lines.append("\t\t},")
+    lines.append("\t},")
+    return lines
+
+
+def _bis_sources_lua(bis_sources: list[str]) -> list[str]:
+    """`bisSources = { "World drop", ... }`: the places the by-kind tail indexes
+    into, 1-based, in the order pipeline.addonbis.build_bis_sources gives.
+    Absent when no pick carries a by-kind entry."""
+    if not bis_sources:
+        return []
+    lines = ["\tbisSources = {"]
+    for source in bis_sources:
+        lines.append(f"\t\t{_quote(_bis_field(source))},")
     lines.append("\t},")
     return lines
 
@@ -332,10 +437,11 @@ def render_lua(data: AddonData) -> str:
         lines.append(f"\t\t[{_quote(spec)}] = {{ {pairs} }},")
     lines.append("\t},")
     lines.extend(_rotations_lua(data.rotations))
-    lines.extend(_bis_lua(data.bis))
+    lines.extend(_bis_lua(data.bis, data.bis_sources))
     lines.extend(_bis_new_lua(data.bis))
     lines.extend(_bis_weights_lua(data.bis))
     lines.extend(_bis_items_lua(data.bis_names, data.bis_dps))
+    lines.extend(_bis_sources_lua(data.bis_sources))
     lines.extend(_default_builds_lua(data.default_builds))
     lines.extend(_spec_icons_lua(data.spec_icons))
     lines.extend(_dps_per_point_lua(data.dps_per_point))

@@ -77,6 +77,9 @@ Prefs.DEFAULTS = {
 	-- The guild tab's "Online only" choice (L3.7 item 42), one entry per character key
 	-- ({ onlineOnly = true|false }); none until the player flips the switch.
 	guildTab = { byCharacter = {} },
+	-- The gear source filter (Sources.lua, design/specs/2026-11-13-addon-source-filter.md), one entry per
+	-- character key ({ on = { "dungeon", ... } }); none means the site's default for the band.
+	gearSources = { byCharacter = {} },
 }
 
 --- The sections resetPositions puts back.

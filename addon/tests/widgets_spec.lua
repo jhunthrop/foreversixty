@@ -512,10 +512,10 @@ describe("Widgets", function()
 			local band = Widgets.titleBand(frame)
 			local close = Widgets.clientCloseButton(frame, function() end)
 			close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
-			-- The band spans the frame's top at the X's own height: the two overlap on screen.
+			-- The band spans the frame's top (both top corners) at the X's own height: the two overlap.
+			assert.are.same({ "TOPLEFT", "TOPRIGHT" }, { band.points[1][1], band.points[2][1] })
 			local cache = {}
 			local bandRect, closeRect = helper.resolveRect(band, cache), helper.resolveRect(close, cache)
-			assert.is_true(closeRect[1] >= bandRect[1] and closeRect[1] + closeRect[3] <= bandRect[1] + bandRect[3])
 			assert.is_true(closeRect[2] <= bandRect[2] and closeRect[2] - closeRect[4] >= bandRect[2] - bandRect[4])
 			-- Both are the frame's children, one level above it; the X is raised past the band.
 			assert.are.equal(frame:GetFrameLevel() + 1, band:GetFrameLevel())
