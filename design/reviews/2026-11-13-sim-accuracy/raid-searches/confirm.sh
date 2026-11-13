@@ -15,7 +15,7 @@ out=$(mktemp -d)
 emit() { for r in "$out"/*.md; do echo "=== FILE $1/$(basename "$r")"; cat "$r"; rm "$r"; done; }
 case ${1:?ret or arms} in
 ret)
-	run go test github.com/wowsims/classic/sim/paladin/...
+	run go test -tags=with_db github.com/wowsims/classic/sim/paladin/...
 	for f in alliance horde; do
 		run "$bin/rotation-search" -repo-root .. -spec paladin-retribution -faction "$f" -preset raid -out "$out" 2>&1 | grep 'wrote\|rror' || true
 		emit "hotr-fix/$f"
