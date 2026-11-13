@@ -292,6 +292,9 @@ export const tiersCopy = {
     if (!row.ranked) return '';
     return row.role === 'healer' && row.tie !== null ? `=${row.rank}` : String(row.rank);
   },
+  /** A DPS row's figure opens the ranking sim behind it (the words of /bis's "Open in the sim"). */
+  simLinkTitle: (spec: string): string => `Open in the sim: ${spec}`,
+  simLinkLabel: (spec: string, value: string): string => `${value} DPS, open ${spec} in the sim`,
   topGap: 'Top',
   leastGap: 'Least',
   bestTitle: (count: number, role: BisRole): string =>

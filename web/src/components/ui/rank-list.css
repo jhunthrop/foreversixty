@@ -258,6 +258,7 @@
   background: var(--color-pressed);
 }
 .ui-rr-link:focus-visible,
+.ui-rr-fig-link:focus-visible,
 .ui-rr-links a:focus-visible {
   outline: 2px solid var(--color-gold);
   outline-offset: 2px;
@@ -265,12 +266,18 @@
 
 /* Below 1280 the letter column is a header strip above its rows. */
 /* A figure that opens something: the figure's own colour, underlined on hover. */
+/* A linked figure reads as one at rest (a quiet dotted underline, plain figures have none) and
+   goes solid on hover and focus. */
 .ui-rr-fig-link {
   color: inherit;
+  text-decoration: underline dotted 1px;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-underline-offset: 3px;
 }
-.ui-rr-fig-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
+.ui-rr-fig-link:hover,
+.ui-rr-fig-link:focus-visible {
+  text-decoration-style: solid;
+  text-decoration-color: currentColor;
 }
 
 /* Phone: the name's and a figure's links are 44 px targets that take no more room than their line. */

@@ -1,6 +1,7 @@
 // web/src/lib/tiers/tier-row-view.ts
 // A tier row as the ui/RankRow preset reads it (directions mock g-tiers, round 5): the spec's
-// full name as the row's one link (its best in slot), the accent bar, the figures under heads
+// full name as the row's main link (its best in slot; a DPS row's figure opens the ranking sim
+// run behind it), the accent bar, the figures under heads
 // that name their units, and the gap to the top. Pure, so the row's text is tested once here and
 // the page only places it.
 import type { RankFigure, RankGap, RankNote } from '../ui/rank-list';
@@ -47,11 +48,13 @@ function bestOf(on: boolean | undefined, title: string): Pick<RankFigure, 'best'
  *  column heads carry the units. */
 export function tierFigures(row: TierRow, count: number): RankFigure[] {
   const title = tiersCopy.bestTitle(count, row.role);
+  const value = formatMetric(row.role, row.metric);
   const sorted: RankFigure = {
-    value: formatMetric(row.role, row.metric),
+    value,
     label: tiersCopy.figureLabels[row.role],
     testid: 'tier-number',
     ...bestOf(row.role === 'tank' && isLeader(row), title),
+    ...simLinkOf(row, value),
   };
   if (row.role !== 'tank' || row.effectiveHealth === undefined || row.threat === undefined)
     return [sorted, phoneGap(row)];
@@ -70,6 +73,18 @@ export function tierFigures(row: TierRow, count: number): RankFigure[] {
       ...bestOf(row.isBestThreat, title),
     },
   ];
+}
+
+/** A DPS row's figure links the ranking sim run behind it (`simHref`; absent on tanks and
+ *  healers, whose numbers the browser sim does not produce). */
+function simLinkOf(row: TierRow, value: string): Pick<RankFigure, 'href' | 'title' | 'ariaLabel'> {
+  if (row.simHref === undefined) return {};
+  const spec = specFullName(row);
+  return {
+    href: row.simHref,
+    title: tiersCopy.simLinkTitle(spec),
+    ariaLabel: tiersCopy.simLinkLabel(spec, value),
+  };
 }
 
 /** Below 768 the gap column goes: the row's vs #1 rides under its figure instead. */

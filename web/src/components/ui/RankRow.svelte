@@ -85,6 +85,7 @@
         class="ui-rr-fig-value ui-rr-fig-link"
         href={item.href}
         title={item.title}
+        aria-label={item.ariaLabel}
         style:color={item.color}
         data-testid={item.testid}>{item.value}</a
       >{:else}<span

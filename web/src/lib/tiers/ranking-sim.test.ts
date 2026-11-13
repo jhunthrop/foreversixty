@@ -6,7 +6,9 @@
 // the same gear and enchants, talents, race, level, raid buffs and consumables, and fight. The
 // caster stand-off the ranker uses is not in the request; sim/request applies it for every
 // caster spec (TestCasterSpecsStandAtCasterDistance).
+import { render } from 'svelte/server';
 import { beforeAll, describe, expect, it } from 'vitest';
+import RankRow from '../../components/ui/RankRow.svelte';
 import activeBuild from '../../data/active-build.json';
 import { bandEntry, loadBisFile, readSpecCatalog } from '../bis/load';
 import type { BisBand, BisFile, Faction } from '../bis/types';
@@ -21,7 +23,8 @@ import { createRequestMethods, type StoreRequestDeps } from '../sim/store-reques
 import type { SimRequest } from '../sim/types';
 import { parseSimState } from '../sim/url';
 import { loadTierData } from './tier-load';
-import type { TierRow } from './tier-list';
+import { hrefsFor, type TierRow } from './tier-list';
+import { rankRowProps } from './tier-row-view';
 
 const BUILD = activeBuild.build;
 const FACTIONS: readonly Faction[] = ['alliance', 'horde'];
@@ -103,6 +106,10 @@ function spentPoints(talents: string): string {
     .join('-');
 }
 
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function raidBuffIds(file: BisFile): string[] {
   const raid = file.presets?.raid;
   if (raid === undefined) throw new Error(`${file.spec}: no raid preset in the file`);
@@ -127,6 +134,21 @@ describe('View ranking sim reproduces the tier number', () => {
       expect(lists.dps.map((row) => row.spec).sort()).toEqual(published.map((entry) => entry.spec).sort());
       expect(lists.dps.every((row) => row.simHref !== undefined)).toBe(true);
       expect([...lists.tank, ...lists.healer].every((row) => row.simHref === undefined)).toBe(true);
+    }
+  });
+
+  it('renders every DPS row with its figure as an anchor to the sim run, and its name to BiS', () => {
+    const escape = (href: string) => href.replaceAll('&', '&amp;');
+    for (const faction of FACTIONS) {
+      const rows = data.lists[faction].dps;
+      for (const row of rows) {
+        const body = render(RankRow, { props: rankRowProps(row, rows) }).body;
+        const simAnchor = new RegExp(
+          `<a[^>]*href="${escapeRegExp(escape(row.simHref!))}"[^>]*data-testid="tier-number"`,
+        );
+        expect(body, `${faction} ${row.spec}`).toMatch(simAnchor);
+        expect(body).toContain(`href="${hrefsFor(row).bis}"`);
+      }
     }
   });
 

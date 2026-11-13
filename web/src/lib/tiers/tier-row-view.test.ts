@@ -41,6 +41,21 @@ describe('rankRowProps', () => {
     ]);
   });
 
+  it("links a DPS row's figure to the ranking sim run behind it, keeping the name on BiS", () => {
+    const fire = rankRowProps(dps[2]!, dps);
+    expect(fire.href).toBe('/bis/mage/fire/60');
+    expect(fire.figures[0]).toEqual({
+      value: '800.0',
+      label: 'Damage per second',
+      testid: 'tier-number',
+      href: '/sim?code=x&run=1',
+      title: 'Open in the sim: Fire Mage',
+      ariaLabel: '800.0 DPS, open Fire Mage in the sim',
+    });
+    // No sim run behind a tank's number: its figure is plain text.
+    expect(rankRowProps(tanks[0]!, tanks).figures[0]!.href).toBeUndefined();
+  });
+
   it("reads the leader's gap as best: the column reads against it", () => {
     expect(rankRowProps(dps[0]!, dps).gap).toMatchObject({ text: 'best', leader: true });
     expect(rankRowProps(tanks[0]!, tanks).gap).toMatchObject({ text: 'best', leader: true });
