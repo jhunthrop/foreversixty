@@ -4,13 +4,31 @@
 # the sim version unit tests, the request suite with its ladder goldens read
 # (not rewritten: Hammer of the Righteous' weapon rule moves no golden), and
 # the three search tools and the tools that load the engine.
+#   gates.sh [vitest|request|tools ...]   (default: all three)
 set -uo pipefail
+root=$PWD
 status=0
-run() { echo "### $*"; "$@" || { echo "### FAILED: $*"; status=1; }; }
-run make simdb
-(cd web && run npx vitest run src/lib/sim 2>&1 | tail -6)
-(cd sim && run go vet ./cmd/heal-builds/ ./cmd/rotation-search/ ./cmd/talent-search/ ./enginever/)
-(cd sim && run nice -n 15 env GOMAXPROCS=5 go test ./request/ -count=1 2>&1 | tail -4)
-(cd sim && run nice -n 15 env GOMAXPROCS=5 go test ./enginever/ ./score/ ./cmd/heal-builds/ ./cmd/rotation-search/ ./cmd/talent-search/ ./cmd/spec-breakdown/ -count=1 2>&1 | tail -10)
+gate() {
+	local dir=$1 log
+	shift
+	log=$(mktemp)
+	echo "### $dir: $*"
+	if ! (cd "$root/$dir" && "$@") >"$log" 2>&1; then
+		status=1
+		echo "### FAILED"
+		grep -E -- '--- FAIL|FAIL|✗|×|Error|expected|golden|differs' "$log" | head -60
+	fi
+	tail -8 "$log"
+}
+make simdb >/dev/null
+for g in ${*:-vitest request tools}; do
+	case $g in
+	vitest) gate web npx vitest run src/lib/sim ;;
+	request) gate sim nice -n 15 env GOMAXPROCS=5 go test ./request/ -count=1 ;;
+	tools)
+		gate sim go vet ./cmd/heal-builds/ ./cmd/rotation-search/ ./cmd/talent-search/ ./enginever/
+		gate sim nice -n 15 env GOMAXPROCS=5 go test ./enginever/ ./score/ ./cmd/heal-builds/ ./cmd/rotation-search/ ./cmd/talent-search/ -count=1 ;;
+	esac
+done
 echo "gates status $status"
 exit $status
