@@ -1,7 +1,7 @@
 {
-  "engine_version": "45c009ce3",
+  "engine_version": "5603877e4",
   "request": {
-    "engine_version": "45c009ce3",
+    "engine_version": "5603877e4",
     "spec": "warrior-fury",
     "source": {
       "kind": "build",
@@ -142,7 +142,7 @@
   "iterations_run": 10000,
   "duration_ms": 2636,
   "summary": {
-    "engine_version": "sim:45c009ce3",
+    "engine_version": "sim:5603877e4",
     "fight_index": 1,
     "duration_ms": 179920,
     "damage_done": [
