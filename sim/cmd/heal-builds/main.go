@@ -81,7 +81,22 @@ type bisBand struct {
 	Slots   []struct {
 		Slot   string `json:"slot"`
 		ItemID int    `json:"item_id"`
+		// EnchantID is the permanent enchant the ranker measured the set
+		// wearing (leveling-bis enchants.go).
+		EnchantID int `json:"enchant_id"`
 	} `json:"slots"`
+}
+
+// gear is the band's items with their published enchants: a comparison
+// wears what the ranker measured, as spec-breakdown and the searches do.
+func (b bisBand) gear() []api.GearSlot {
+	out := make([]api.GearSlot, 0, len(b.Slots))
+	for _, s := range b.Slots {
+		if s.ItemID != 0 {
+			out = append(out, api.GearSlot{Slot: s.Slot, ItemID: s.ItemID, Enchant: s.EnchantID})
+		}
+	}
+	return out
 }
 
 func loadBand(path, faction string) (bisBand, error) {
@@ -166,19 +181,13 @@ func report(o options) error {
 }
 
 func buildRequest(o options, spec specs.Spec, band bisBand, talents string, buffs, consumes []string) api.SimRequest {
-	gear := make([]api.GearSlot, 0, len(band.Slots))
-	for _, s := range band.Slots {
-		if s.ItemID != 0 {
-			gear = append(gear, api.GearSlot{Slot: s.Slot, ItemID: s.ItemID})
-		}
-	}
 	return api.SimRequest{
 		EngineVersion: enginever.Version,
 		Spec:          spec.Spec,
 		Source:        api.CharacterSource{Kind: api.SourceBuild},
 		Character: api.CharacterSpec{
 			Name: "heal-builds", Race: band.Race, Class: spec.ClassSlug, Level: level,
-			Talents: talents, Gear: gear, Buffs: buffs, Consumes: consumes,
+			Talents: talents, Gear: band.gear(), Buffs: buffs, Consumes: consumes,
 			DistanceFromTarget: leveling.CasterDistanceFromTarget,
 		},
 		Encounter:  api.DefaultEncounter(),
