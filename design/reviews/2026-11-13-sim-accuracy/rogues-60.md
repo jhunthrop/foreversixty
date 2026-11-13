@@ -60,7 +60,7 @@ Raid 60 Assassination: Slice and Dice 91.3% up, Venom 59.6%, Deadly Poison crits
 
 ## T1: the searches wore no enchants (CONFIRMED-BUG, tool, fixed)
 
-**Finding.** `sim/cmd/rotation-search` and `sim/cmd/talent-search` built their gear from the band's `item_id`s alone (`bisBand.gear()`), while the ranker measures every raid set wearing its permanent enchants and the published slots carry them as `enchant_id`. The 2026-11-11 casters lane fixed `spec-breakdown` (T1 there) and left the two searches. The rogue raid searches showed it: the curated baselines read 869.6 (Assassination) and 851.3 (Combat) where `spec-breakdown` on the same band reads 917.65 and 902.21 (-5.2% and -5.6%).
+**Finding.** `sim/cmd/rotation-search` and `sim/cmd/talent-search` built their gear from the band's `item_id`s alone (`bisBand.gear()`), while the ranker measures every raid set wearing its permanent enchants and the published slots carry them as `enchant_id`. The 2026-11-11 casters lane fixed `spec-breakdown` (T1 there) and left the two searches. The rogue raid searches showed it: the curated baselines read 869.6 (Assassination), 851.3 (Combat) and 841.1 (Subtlety) where `spec-breakdown` on the same bands reads 917.65, 902.21 and 890.81 (-5.2%, -5.6% and -5.6%).
 
 **Fix.** Both tools read `enchant_id` and wear it (`Enchant` on each `api.GearSlot`), as `spec-breakdown` does. Red first: `TestBISBandGearWearsItsPublishedEnchants` in both packages fails at d26f86d06 (`gear enchants map[head:0 main_hand:0]`) and passes at the fix.
 
@@ -72,7 +72,7 @@ Raid 60 Assassination: Slice and Dice 91.3% up, Venom 59.6%, Deadly Poison crits
 |---|---|---|---|
 | Assassination rotation | 869.6 ± 1.6, curated best | 919.0 ± 1.6, curated best (+0.1, ±2.3) | holds |
 | Combat rotation | 851.3 ± 1.2, curated best | 901.3 ± 1.3, curated best (+0.0, ±1.9) | holds |
-| Subtlety rotation | 841.1 ± 1.2 (2026-11-12), curated best | 891.6 ± 1.2, curated best (+0.0, ±1.8) | holds |
+| Subtlety rotation | 841.1 ± 1.2, curated best | 891.6 ± 1.2, curated best (+0.0, ±1.8) | holds |
 | Assassination talents | guide best | guide 919.0; best variant +0.2 (±2.2) | holds |
 | Combat talents | guide best | guide best (901.3) | holds |
 | Subtlety talents | guide best | guide 891.6; best variant +1.3 (±1.7), within error | holds |
