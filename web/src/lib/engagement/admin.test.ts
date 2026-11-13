@@ -84,8 +84,8 @@ describe("the owner's activity page", () => {
       text: '≥\u00a030%*',
       label: '6 of 20, ≥\u00a030%, so far',
     });
-    expect(rows[2].cells[2].text).toBe('');
-    expect(rows[0].cells.every((c) => c.text === '')).toBe(true);
+    expect(rows[2].cells[2]).toEqual({ tone: 'none', text: '–', label: 'not reached yet' });
+    expect(rows[0].cells.every((c) => c.text === '–')).toBe(true);
   });
 
   it('heads the page with today, the week split new and returning, and last week back', () => {

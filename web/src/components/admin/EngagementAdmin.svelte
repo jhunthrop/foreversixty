@@ -26,6 +26,9 @@
    *  inside its panel on a phone rather than widening the page. Positioned, so the Grid's sr-only
    *  cell labels (absolute) stay inside the scroller instead of stretching the page. */
   const GRID_BOX = 'relative w-full max-w-[760px] overflow-x-auto';
+  /** On a phone, a fade at the scroller's right edge says more columns sit off screen. */
+  const MORE_FADE =
+    'pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-(--color-raised) to-transparent sm:hidden';
 
   type Phase = 'loading' | 'signed-out' | 'not-owner' | 'failed' | 'ready';
 
@@ -91,39 +94,48 @@
       </div>
     </Section>
     <Section title={copy.weeksTitle} meta={copy.weeksMeta} panel flush testid="activity-weeks">
-      <div class={GRID_BOX}>
-        <Grid
-          caption={copy.weeksCaption}
-          labelHeader={copy.weekHeader}
-          columns={copy.periodColumns}
-          rows={weekRows(report.weeks)}
-          edge
-          testid="activity-weeks-grid"
-        />
+      <div class="relative">
+        <div class={GRID_BOX}>
+          <Grid
+            caption={copy.weeksCaption}
+            labelHeader={copy.weekHeader}
+            columns={copy.periodColumns}
+            rows={weekRows(report.weeks)}
+            edge
+            testid="activity-weeks-grid"
+          />
+        </div>
+        <span class={MORE_FADE} aria-hidden="true"></span>
       </div>
     </Section>
     <Section title={copy.cohortsTitle} meta={copy.cohortsMeta} panel flush testid="activity-cohorts">
-      <div class={GRID_BOX}>
-        <Grid
-          caption={copy.cohortsCaption}
-          labelHeader={copy.cohortHeader}
-          columns={copy.cohortColumns}
-          rows={cohortRows(report.cohorts)}
-          edge
-          testid="activity-cohorts-grid"
-        />
+      <div class="relative">
+        <div class={GRID_BOX}>
+          <Grid
+            caption={copy.cohortsCaption}
+            labelHeader={copy.cohortHeader}
+            columns={copy.cohortColumns}
+            rows={cohortRows(report.cohorts)}
+            edge
+            testid="activity-cohorts-grid"
+          />
+        </div>
+        <span class={MORE_FADE} aria-hidden="true"></span>
       </div>
     </Section>
     <Section title={copy.daysTitle} meta={copy.weeksMeta} panel flush testid="activity-days">
-      <div class={GRID_BOX}>
-        <Grid
-          caption={copy.daysCaption}
-          labelHeader={copy.dayHeader}
-          columns={copy.periodColumns}
-          rows={dayRows(report.days)}
-          edge
-          testid="activity-days-grid"
-        />
+      <div class="relative">
+        <div class={GRID_BOX}>
+          <Grid
+            caption={copy.daysCaption}
+            labelHeader={copy.dayHeader}
+            columns={copy.periodColumns}
+            rows={dayRows(report.days)}
+            edge
+            testid="activity-days-grid"
+          />
+        </div>
+        <span class={MORE_FADE} aria-hidden="true"></span>
       </div>
     </Section>
   </Page>

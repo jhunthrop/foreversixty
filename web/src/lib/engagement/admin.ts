@@ -2,6 +2,7 @@
 // Every word and row on /admin/activity, the owner's view of who comes back. A figure from before
 // the live record (the backfill) is a floor and shows as "≥ n".
 import { utcDayMonth } from '../dates';
+import { EMPTY_FIGURE } from '../format/number';
 import { countLabel, shareOf } from '../golinks/funnel';
 import type { GridCell, GridRowModel } from '../ui/cells';
 import type { CohortWeek, EngagementCohort, EngagementPeriod, EngagementReport } from './api';
@@ -38,7 +39,8 @@ export const adminActivityCopy = {
   thisWeek: 'so far',
   /** After a retention share whose week is still running. */
   runningMark: '*',
-  cohortsMeta: '* this week, still running',
+  cohortsMeta: '* this week, still running; – not reached yet',
+  notYet: 'not reached yet',
   weeksMeta: 'Active counts an account once; Site, Addon and App overlap.',
   today: 'today',
   figures: {
@@ -58,7 +60,6 @@ export const adminActivityCopy = {
     'Site is a signed-in page, Addon the addon’s syncs through the companion, App the phone app. One account can be on several.',
 } as const;
 
-const NOTHING = '';
 /** The floor mark, held to its figure by a no-break space so a narrow column never splits them. */
 const FLOOR = '≥\u00a0';
 
@@ -95,7 +96,8 @@ export function dayRows(days: readonly EngagementPeriod[]): GridRowModel[] {
 }
 
 function cohortCell(week: CohortWeek | undefined, joined: number, running: boolean): GridCell {
-  if (week === undefined || joined === 0) return { tone: 'none', text: NOTHING };
+  if (week === undefined || joined === 0)
+    return { tone: 'none', text: EMPTY_FIGURE, label: adminActivityCopy.notYet };
   const share = shareOf(week.active, joined);
   const floored = week.partial && week.active > 0 ? `${FLOOR}${share}` : share;
   const text = running ? `${floored}${adminActivityCopy.runningMark}` : floored;
