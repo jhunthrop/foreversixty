@@ -52,7 +52,7 @@ sources:
 - **Improved Scorch** (3 points): every Scorch that lands adds 3% Fire damage taken from you, up to 5 stacks for 30 seconds. A missed Scorch adds no stack.
 - **Heating Up** (1 point): Scorch, Fire Blast and Fireball crits cut your next Pyroblast's cast by 25%, up to 3 stacks, and every Fire Blast hit adds a stack on top. Three stacks make Pyroblast a 1.5 second cast.
 - **Pyroblast** (1 point): the payoff for Heating Up, and the spell you cast before the pull.
-- **Ignite** (5 points): every Fire crit burns the boss for another 40% of the hit over 4 seconds.
+- **Ignite** (5 points): every Fire crit burns the boss for another 40% of the hit over 4 seconds. The burn itself never crits.
 - **Fire Power** (3 points): 3% more Fire damage for each of your Fire effects on the target, up to 12%. Improved Scorch, Ignite and Pyroblast's burn are three of them.
 - **Incineration** and **Critical Mass** (8 points): 10% more crit on Scorch, Fire Blast and Arcane Blast and 6% more on every Fire spell, which is what keeps Ignite and Heating Up rolling.
 - **Master of Elements** (3 points): every Fire crit refunds 30% of the spell's base cost. It is the steady trickle that makes the gems and potions last.
