@@ -90,14 +90,16 @@ for (const role of ['dps', 'tank', 'healer'] as const) {
         `tier-row-${row.entry.class_slug}-${row.entry.spec_slug}`,
       );
       await expect(rendered.getByTestId('tier-number')).toHaveText(metricText(role, row.metric));
-      // One link per row: the spec's full name, to its best in slot.
-      const links = rendered.getByRole('link');
-      await expect(links).toHaveCount(1);
-      await expect(links).toHaveAttribute(
-        'href',
-        new RegExp(`^/bis/${row.entry.class_slug}/${row.entry.spec_slug}/60`),
-      );
-      await expect(links).toContainText(fullName(row.entry.class_slug, row.entry.spec_slug));
+      // The spec's full name links to its best in slot. A DPS row's figure links to the
+      // ranking sim behind it (1b3853d60); a tank or healer figure stays plain, since the
+      // browser sim reproduces neither damage taken nor healing.
+      const bisLink = rendered.locator(`a[href^="/bis/${row.entry.class_slug}/${row.entry.spec_slug}/60"]`);
+      await expect(bisLink).toHaveCount(1);
+      await expect(bisLink).toContainText(fullName(row.entry.class_slug, row.entry.spec_slug));
+      await expect(rendered.getByRole('link')).toHaveCount(role === 'dps' ? 2 : 1);
+      if (role === 'dps') {
+        await expect(rendered.getByTestId('tier-number')).toHaveAttribute('href', /^\/sim\?/);
+      }
     }
   });
 }
