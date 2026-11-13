@@ -32,12 +32,18 @@ async function openWaiting(page: Page): Promise<{ answers: unknown[] }> {
   const answers: unknown[] = [];
   const fixture = meBnet();
   // A neutral BattleTag in the review captures.
-  const base = { ...fixture, user: { ...(fixture.user as Record<string, unknown>), battletag: 'Player#1001' } };
+  const base = {
+    ...fixture,
+    user: { ...(fixture.user as Record<string, unknown>), battletag: 'Player#1001' },
+  };
   let account: Record<string, unknown> = { ...base, characters: [WAITING, ...base.characters] };
   await page.route('**/v1/me', (route) => route.fulfill(envelope(account)));
   await page.route(`**${REALM_ANSWER_PATH}`, async (route) => {
     answers.push(route.request().postDataJSON());
-    account = { ...base, characters: [{ ...WAITING, key: 'us/pvp/newly-rolled', ruleset: 'pvp' }, ...base.characters] };
+    account = {
+      ...base,
+      characters: [{ ...WAITING, key: 'us/pvp/newly-rolled', ruleset: 'pvp' }, ...base.characters],
+    };
     await route.fulfill(envelope({ key: 'us/pvp/newly-rolled', ruleset: 'pvp' }));
   });
   await openSetupState(page, 'bnet');
@@ -56,7 +62,8 @@ async function shoot(page: Page, name: string): Promise<void> {
   }
   await page.setViewportSize({ width: 1440, height: 1100 });
   const question = page.getByTestId('unknown-realm');
-  if ((await question.count()) > 0) await question.screenshot({ path: `test-results/unknown-realm/${name}-close.png` });
+  if ((await question.count()) > 0)
+    await question.screenshot({ path: `test-results/unknown-realm/${name}-close.png` });
 }
 
 test('asks the realm type of a character on an unknown realm, and an answer clears the question', async ({
@@ -90,7 +97,11 @@ test('a refused answer says why in the wipe colour and keeps the question', asyn
       body: JSON.stringify({
         ok: false,
         data: null,
-        error: { code: 'taken', message: 'Another account already has a character of that name on that realm type. Check the realm type in game.' },
+        error: {
+          code: 'taken',
+          message:
+            'Another account already has a character of that name on that realm type. Check the realm type in game.',
+        },
         request_id: 'unknown-realm',
       }),
     }),
@@ -99,5 +110,7 @@ test('a refused answer says why in the wipe colour and keeps the question', asyn
   await question.getByRole('button', { name: 'Roleplay' }).click();
   await expect(question.getByRole('alert')).toContainText('Another account already has a character');
   await expect(question.getByRole('button', { name: 'Normal' })).toBeEnabled();
-  await page.getByTestId('unknown-realm').screenshot({ path: 'test-results/unknown-realm/refused-close.png' });
+  await page
+    .getByTestId('unknown-realm')
+    .screenshot({ path: 'test-results/unknown-realm/refused-close.png' });
 });

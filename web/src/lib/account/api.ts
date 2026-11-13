@@ -518,8 +518,15 @@ export async function setMainCharacter(key: string, apiBase: string = API_BASE_U
 
 /** Answers the unknown-realm question for one of the account's characters
  *  (lib/account/unknown-realm.ts); resolves to the character's new key. */
-export async function answerRealm(key: string, ruleset: string, apiBase: string = API_BASE_URL): Promise<string> {
-  const result = await call<{ key: string }>(REALM_ANSWER_PATH, apiBase, { method: 'POST', body: { key, ruleset } });
+export async function answerRealm(
+  key: string,
+  ruleset: string,
+  apiBase: string = API_BASE_URL,
+): Promise<string> {
+  const result = await call<{ key: string }>(REALM_ANSWER_PATH, apiBase, {
+    method: 'POST',
+    body: { key, ruleset },
+  });
   invalidate(meKey(apiBase));
   return result?.key ?? key;
 }

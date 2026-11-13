@@ -32,7 +32,8 @@
 
   /** The API's sentence, capitalised and closed, then the retry word. */
   function refusal(error: unknown): string {
-    const raw = error instanceof Error && error.message.trim() !== '' ? error.message.trim() : unknownRealmCopy.failed;
+    const raw =
+      error instanceof Error && error.message.trim() !== '' ? error.message.trim() : unknownRealmCopy.failed;
     const sentence = `${raw.charAt(0).toUpperCase()}${raw.slice(1)}`;
     return withRetry(sentence.endsWith('.') ? sentence : `${sentence}.`);
   }

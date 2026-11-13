@@ -7,8 +7,20 @@ import { awaitingRealm, unknownRealmCopy } from '../../lib/account/unknown-realm
 import { rulesetLabel } from '../../lib/characters';
 import UnknownRealmQuestion from './UnknownRealmQuestion.svelte';
 
-const waiting: MeCharacter = { key: 'us/unknown/newly-rolled', region: 'us', ruleset: 'unknown', name: 'Newly Rolled', class: 'rogue' };
-const known: MeCharacter = { key: 'us/pvp/elyra-duskvale', region: 'us', ruleset: 'pvp', name: 'Elyra Duskvale', class: 'mage' };
+const waiting: MeCharacter = {
+  key: 'us/unknown/newly-rolled',
+  region: 'us',
+  ruleset: 'unknown',
+  name: 'Newly Rolled',
+  class: 'rogue',
+};
+const known: MeCharacter = {
+  key: 'us/pvp/elyra-duskvale',
+  region: 'us',
+  ruleset: 'pvp',
+  name: 'Elyra Duskvale',
+  class: 'mage',
+};
 
 function body(characters: readonly MeCharacter[]): string {
   return render(UnknownRealmQuestion, { props: { characters, answer: async (key: string) => key } }).body;
@@ -26,7 +38,9 @@ describe('UnknownRealmQuestion', () => {
       ['rp', 'Roleplay'],
       ['hardcore', 'Hardcore'],
     ]) {
-      expect(html).toMatch(new RegExp(`<button[^>]*data-testid="unknown-realm-choice-${id}"[^>]*>[\\s\\S]*?${label}`));
+      expect(html).toMatch(
+        new RegExp(`<button[^>]*data-testid="unknown-realm-choice-${id}"[^>]*>[\\s\\S]*?${label}`),
+      );
     }
     expect(html).toContain(unknownRealmCopy.rpPvp);
     expect(html.indexOf(unknownRealmCopy.rpPvp)).toBeLessThan(html.indexOf('unknown-realm-choice-normal'));
@@ -34,7 +48,11 @@ describe('UnknownRealmQuestion', () => {
   });
 
   it('draws one block per waiting character and nothing when none waits', () => {
-    expect(body([waiting, { ...waiting, key: 'us/unknown/second-roll', name: 'Second Roll' }]).match(/data-testid="unknown-realm-item"/g)).toHaveLength(2);
+    expect(
+      body([waiting, { ...waiting, key: 'us/unknown/second-roll', name: 'Second Roll' }]).match(
+        /data-testid="unknown-realm-item"/g,
+      ),
+    ).toHaveLength(2);
     expect(body([])).not.toContain('unknown-realm');
   });
 
