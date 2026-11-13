@@ -1,0 +1,2 @@
+disc-raid-a -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+holy-raid-a -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
