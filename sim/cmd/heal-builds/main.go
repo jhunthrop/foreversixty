@@ -74,10 +74,10 @@ func run(args []string) error {
 }
 
 type bisBand struct {
-	Preset  string `json:"preset"`
-	Band    int    `json:"band"`
-	Faction string `json:"faction"`
-	Race    string `json:"race"`
+	Preset  string     `json:"preset"`
+	Band    int        `json:"band"`
+	Faction string     `json:"faction"`
+	Race    string     `json:"race"`
 	Slots   []bandSlot `json:"slots"`
 }
 
