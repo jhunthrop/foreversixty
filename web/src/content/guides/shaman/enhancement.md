@@ -5,8 +5,8 @@ spec: enhancement
 role: dps
 build: 'FS1:1.60.1.70938:shaman:dwarf:503/055030310051202251/053:'
 buildWhy: 'Improved Stormstrike and Mindfulness fund shocks on long pulls'
-raidBuild: 'FS1:1.60.1.70938:shaman:dwarf:0533001/053030310051202051/053:'
-raidBuildWhy: 'Trades Convection and Improved Stormstrike for Concussion'
+raidBuild: 'FS1:1.60.1.70938:shaman:dwarf:0535001/054030310051202051/05:'
+raidBuildWhy: 'Trades Convection, Improved Stormstrike and Mindfulness for Concussion and Reverberation'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and your imbue, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
@@ -49,10 +49,10 @@ sources:
 
 ## Talents and builds
 
-Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells. The leveling build puts its Elemental points into Convection and Elemental Devastation: shocks and bolts a tenth cheaper, and 9% melee crit for 10 seconds after a spell crits. It also takes both points of Improved Stormstrike, which keeps half your regeneration running for 15 seconds after every Stormstrike, and all three of Mindfulness, which adds half whenever you cast: with no Mana Spring and no paladin beside you, that is what pays for your shocks on a long pull. The raid build drops Convection and spends its Elemental points on Concussion, Elemental Devastation, Reverberation and Elemental Focus: Earth Shock hits harder and comes back sooner, and now and then a spell is free. Both builds take Shamanistic Focus, which cuts the cost of your shocks by 45%, and Improved Ghost Wolf, which makes Ghost Wolf instant and usable indoors: the fastest way across a raid room when the boss moves. The raid build pays for four more Elemental points with two of Ancestral Knowledge and both of Improved Stormstrike.
+Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells. The leveling build puts its Elemental points into Convection and Elemental Devastation: shocks and bolts a tenth cheaper, and 9% melee crit for 10 seconds after a spell crits. It also takes both points of Improved Stormstrike, which keeps half your regeneration running for 15 seconds after every Stormstrike, and all three of Mindfulness, which adds half whenever you cast: with no Mana Spring and no paladin beside you, that is what pays for your shocks on a long pull. The raid build drops Convection and spends its Elemental points on Concussion, Elemental Devastation, all five of Reverberation and Elemental Focus: Earth Shock hits harder, both shocks come back a second sooner, and now and then a spell is free. Both builds take Shamanistic Focus, which cuts the cost of your shocks by 45%, and Improved Ghost Wolf, which makes Ghost Wolf instant and usable indoors: the fastest way across a raid room when the boss moves. The raid build pays for six more Elemental points with one point of Ancestral Knowledge, both of Improved Stormstrike and all three of Mindfulness: Judgement of Wisdom and Mana Spring keep your bar up in a raid, so regeneration while casting buys nothing there.
 
 - **Thundering Strikes** (5 points): 5% crit on every attack and spell, and crits are what start Flurry.
-- **Ancestral Knowledge** (5 points, 3 in the raid build): up to 10% more Intellect. With Mental Dexterity, Intellect is attack power. If your raid never asks you to run, the two Improved Ghost Wolf points go here instead for a little more damage.
+- **Ancestral Knowledge** (5 points, 4 in the raid build): up to 10% more Intellect. With Mental Dexterity, Intellect is attack power. If your raid never asks you to run, the two Improved Ghost Wolf points go here instead for a little more damage.
 - **Mental Dexterity** (3 points): attack power equal to a third of your Intellect per point, all of it at three.
 - **Elemental Weapons** (3 points): Windfury Weapon's extra attacks carry 40% more attack power, and Rockbiter Weapon's attack power is 20% bigger.
 - **Flurry** (5 points): 30% attack speed for your next three swings after a melee crit.
@@ -74,7 +74,9 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 **Which Air totem.** One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and for them it is worth far more than Grace of Air's Agility. If you drop it yourself, its extra swings count for you too, on top of your weapon's. There is nothing to twist: Windfury Totem is an aura around the totem, so it ends the moment you replace the totem.
 
-**Fire Nova and Flame Shock.** Outside a Clearcasting proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target, and so does Flame Shock.
+**Flame Shock.** Right after Stormstrike, put Flame Shock on the boss whenever it is not burning and you have more than about a third of your mana. It shares the shock cooldown with Earth Shock and takes nothing from Stormstrike, but its burn ticks through two whole shock cooldowns, so one Flame Shock between your Earth Shocks does more than another Earth Shock. Below a third, keep the mana for Stormstrike and Earth Shock.
+
+**Fire Nova.** Outside a Clearcasting proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target.
 
 **Mana.** Shock on cooldown until your bar is down to about a sixth, then hold that for Stormstrike and your next totem drop. Keeping a quarter back throws shocks away now that Stormstrike comes every 8 seconds and spends less mana over a fight: about 3% of your damage at 60 in a five-man. Shocking all the way to empty adds a little more, but at 40 you spend about a third of a long fight dry, with no Stormstrike and no totems. In a raid, Judgement of Wisdom and Mana Spring keep the bar high enough that you shock on cooldown and never reach the reserve.
 
