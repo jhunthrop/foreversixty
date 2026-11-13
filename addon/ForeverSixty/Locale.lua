@@ -237,10 +237,6 @@ local L = {
 
 	-- Gear
 	gearTitle = "Upgrades",
-	gearNoWeights = "No stat weights for this spec yet, so nothing is scored.",
-	gearNoBuild = "No build loaded, so there is nothing to compare against.",
-	gearUpgrade = "%s: %+.1f over %s",
-	gearNone = "Nothing in your bags beats what you are wearing.",
 	-- What finishes "Not for you: ..." when a carried piece asks for more than the character has
 	-- (Gear.restriction): the line, the Gear page and /fs loot all read these.
 	gearRequiresLevel = "requires level %d",
@@ -431,7 +427,6 @@ local L = {
 	-- own expand-in-place affordance now (overviewRotationMoreCount).
 	overviewRotationMore = "Turn on advanced detail in Settings to see the rest.",
 	minimapProgress = "%d of %d points",
-	minimapUpgrades = "%d upgrade(s) waiting",
 	bindingHeader = "Forever Sixty",
 	bindingToggle = "Toggle the Forever Sixty panel",
 	bindingHub = "Toggle the Forever Sixty window",
@@ -500,7 +495,7 @@ local L = {
 	-- The member standing line (wave-1 scope item 4, shown first, ahead
 	-- of the roster): the rank half is never invented -- the data addon
 	-- carries no item level or spec per guild member yet -- the gap half
-	-- is this addon's own Gear.upgrades, real the instant a build loads.
+	-- is this addon's own gear plan, real the instant a build loads.
 	guildStandingNoRank = "Your item-level rank among guildmates is not available yet.",
 	guildStandingGap = "Your biggest gear gap: %s, +%.0f.",
 	guildStandingGapNone = "Nothing in your gear is behind your plan right now.",
@@ -1540,7 +1535,7 @@ L.diagOnboardingFailed = "The first-run tour failed once: %s"
 
 -- The addon panel, the in-game home (surfaces/Panel.lua, design/specs/2026-11-08-addon-ux.md section 4).
 -- The title band's number: the Forever Score in its tier colour, then this unit in bone-dim.
-L.panelTabOpens = "Opens your upgrades, talents and rotation."
+L.panelTabOpens = "Opens Gear."
 L.diagPanelState = "Panel: %s"
 -- The chip's hover once the panel is wired: its click opens the panel.
 L.chipHintOpen = "Click: open Forever Sixty"
@@ -1614,7 +1609,6 @@ L.sourcesStandingFriendly = "Friendly"
 L.sourcesStandingHonored = "Honored"
 L.sourcesStandingRevered = "Revered"
 L.sourcesStandingExalted = "Exalted"
-L.sourcesSettingsHeading = "Gear sources"
 L.tipSetAside = "All sources: %s %s"
 L.tipSetAsideBare = "All sources: %s"
 L.tipSetAsideDps = "+%.1f %s"
@@ -1623,6 +1617,38 @@ L.tipSetAsideScore = "+%d score"
 L.sourcesKindItem = "%s: %s"
 L.tipNoSlotFromSources = "No %s from these sources at this level"
 L.panelNoUpgradesFromSources = "No upgrades from these sources"
+
+-- The Gear tab (design/specs/2026-11-13-addon-hub.md 4.3 and 11): the Level control, the doll's cell
+-- lines, Upgrades, Stat weights (the weight over the top stat's, the DPS per rating point; haste per 1%)
+-- and the header's figures. The chip's line for a bag upgrade: "Equip Gloves of Holy Might +11.2".
+L.gearLevel = "Level"
+L.gearBest = "Best in slot"
+L.gearBeatsPick = "Better than the list"
+L.gearInBags = "in your bags"
+L.gearInBagsLead = "In your bags"
+L.gearNoEnchant = "No enchant"
+L.gearNoList = "No list for this band yet."
+L.gearNoSpec = "Pick your spec on the Builds tab to see your gear."
+L.gearNothingBeats = "Nothing on this list beats what you wear."
+L.gearUpgrades = "Upgrades"
+L.gearMoreUpgrades = "More upgrades"
+L.gearNoEnchantSlots = "No enchant: %s"
+L.gearInAll = "%s in all"
+L.gearWhere = "%s \194\183 %s"
+L.gearWeights = "Stat weights"
+L.gearWeightsSim = "your sim, per rating point"
+L.gearWeightsShipped = "per rating point"
+L.gearStat = "Stat"
+L.gearWeight = "Weight"
+L.gearHaste = "Haste %.2f %s per 1%%"
+L.gearBestOf = "%d of %d best in slot"
+L.gearEnchantMissing = "1 enchant missing"
+L.gearEnchantsMissing = "%d enchants missing"
+L.gearShiftLink = "Shift-click an item to link it"
+L.gearAltClick = "Alt-click: open Gear"
+L.gearEquipLine = "Equip %s %s"
+L.gearGainBare = "+%.1f"
+L.gearGainScoreBare = "+%d"
 
 
 -- /fs drops (RaidDrops.lua): the raid nights the loot window recorded for the export's drops=.

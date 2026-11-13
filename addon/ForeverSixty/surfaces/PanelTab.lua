@@ -1,8 +1,8 @@
 -- addon/ForeverSixty/surfaces/PanelTab.lua
--- The character pane's "Forever Sixty" button (design/specs/2026-11-08-addon-ux.md 4.6): a second
--- door to the addon panel (surfaces/Panel.lua), which opens docked to the pane's right edge. The
--- flyout this button used to open is merged into the panel; what the panel shares with it stays
--- here: the next targets (the tooltip's own Next lines), the rotation rows and the off-plan talents.
+-- The character pane's "Forever Sixty" button (design/specs/2026-11-13-addon-hub.md 5): the door to the
+-- Forever Sixty window's Gear tab. What the panel still shares with it stays here until the panel folds
+-- into the window: the next targets (the tooltip's own Next lines), the rotation rows and the off-plan
+-- talents.
 --
 -- The taint rule (L4.1): the 1.60 client taints the whole character pane on any HookScript,
 -- CreateTexture or field write into CharacterFrame or PaperDollFrame. The button is an
@@ -19,6 +19,7 @@ local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
 local Progress = ns.Progress or require("Progress")
 local Rotation = ns.Rotation or require("Rotation")
+local Hub = ns.Hub or require("Hub")
 
 local PanelTab = {}
 
@@ -35,9 +36,6 @@ PanelTab.MODE_TABS = "CharacterFrameModeTabs"
 PanelTab.LINE_SAMPLE = "Agjy"
 
 local S = Theme.SIZES
-
---- Injection point: the addon panel's toggle from the pane (Panel.register sets it).
-PanelTab.openPanel = nil
 
 --- Rotation.plainCondition's answers by measure, then by width and text.
 PanelTab.conditionCache = setmetatable({}, { __mode = "k" })
@@ -358,12 +356,11 @@ function PanelTab.ensureButton()
 	return button
 end
 
---- The button's click: the addon panel, docked to the pane.
+--- The button's click: the window on Gear, or closed when it shows Gear already.
 function PanelTab.toggle()
-	if PanelTab.openPanel == nil then
-		return false
-	end
-	return guarded(PanelTab.openPanel)
+	return guarded(function()
+		return Hub.toggle("gear")
+	end)
 end
 
 --- The chip's events (Options): the button is made and placed; the open panel redraws itself.

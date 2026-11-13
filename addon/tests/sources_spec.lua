@@ -1,7 +1,7 @@
 -- addon/tests/sources_spec.lua
 -- The gear source filter (Sources.lua, design/specs/2026-11-13-addon-source-filter.md): the web BiS
 -- page's kinds, default and words, the packed by-kind tail Gear.decodePick reads, the re-pick
--- Gear.pick serves every surface, and the panel's foot line, the Sources flyout and the Settings group.
+-- Gear.pick serves every surface, and the panel's foot line (the Gear tab owns the choice).
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
@@ -264,14 +264,14 @@ describe("Sources in the tooltip's words", function()
 end)
 
 describe("Sources on the panel", function()
-	local Panel, SourcesFlyout, Sources
+	local Panel, GearTab, Sources
 
 	before_each(function()
 		mock.install({ class = { name = "Warrior", token = "WARRIOR" }, level = 34, playerName = "Ashvale" })
 		ForeverSixtyDB = nil
 		helper.load("Theme").reset()
 		Sources = helper.load("Sources")
-		SourcesFlyout = helper.load("SourcesFlyout")
+		GearTab = helper.load("GearTab")
 		Panel = helper.load("Panel")
 	end)
 
@@ -280,58 +280,30 @@ describe("Sources on the panel", function()
 	end)
 
 	it("reads the state under the Upgrades rows, in the same height at every choice", function()
-		local line = Panel.sourceLine(DATA, "warrior-fury", 30, "horde")
+		local line = GearTab.sources(DATA, "warrior-fury", 30, "horde")
 		assert.are.equal(L.sourcesLevelingDefault, line.words)
 		assert.is_false(line.empty)
 		local region = Panel.upgrades({ targets = {}, sources = line })
 		assert.are.same({ words = line.words, off = line.off }, region.sources)
 		local height = Panel.regionHeight(region)
 		Sources.choose({ "pvp" })
-		local none = Panel.sourceLine(DATA, "warrior-fury", 30, "horde")
+		local none = GearTab.sources(DATA, "warrior-fury", 30, "horde")
 		assert.is_true(none.empty)
 		local empty = Panel.upgrades({ targets = {}, sources = none })
 		assert.are.equal(L.panelNoUpgradesFromSources, empty.rest)
 		assert.are.equal(height, Panel.regionHeight(empty))
 	end)
 
-	it("opens the flyout beside the panel from Change, and its X and Change again close it", function()
-		Panel.refresh = function() end
-		local frame = Panel.ensure()
-		assert.is_true(Panel.toggleSources())
-		assert.is_true(SourcesFlyout.isOpen())
-		assert.are.equal(SourcesFlyout.WIDTH, SourcesFlyout.frame:GetWidth())
-		local close = SourcesFlyout.closeButton
-		assert.is_true(close:GetFrameLevel() > SourcesFlyout.frame:GetFrameLevel())
-		close:GetScript("OnClick")(close)
-		assert.is_false(SourcesFlyout.isOpen())
-		assert.is_true(Panel.toggleSources())
-		assert.is_false(Panel.toggleSources())
-		assert.is_true(Panel.toggleSources())
-		Panel.close()
-		assert.is_false(SourcesFlyout.isOpen())
-		assert.is_not_nil(frame)
-	end)
-
-	it("lists a kind's items in its row's hover, and closes with the panel when combat starts", function()
-		local lines = SourcesFlyout.rowTip({ label = "Dungeon" }, { "Chest: Blackened Defias Armor" })
-		assert.are.equal("Dungeon", lines[1])
-		assert.is_truthy(lines[2]:find("Chest: Blackened Defias Armor", 1, true))
-		assert.is_nil(SourcesFlyout.rowTip({ label = "Raid" }, {}))
-		Panel.refresh = function() end
-		Panel.ensure()
-		assert.is_true(Panel.toggleSources())
-		Panel.onCombatStart()
-		assert.is_false(SourcesFlyout.isOpen())
-	end)
-
-	it("saves a click on a row at once", function()
-		Panel.refresh = function() end
-		Panel.ensure()
-		Panel.sources = Panel.sourceLine(DATA, "warrior-fury", 30, "horde")
-		assert.is_true(Panel.toggleSources())
-		local rep = SourcesFlyout.rows[6].toggle
-		rep.frame:GetScript("OnClick")(rep.frame)
-		assert.is_true(Sources.state(30).all)
-		assert.is_true(Sources.state(30).saved)
+	it("opens the Gear tab from Change, where the sources are chosen", function()
+		local Hub = require("Hub")
+		local asked
+		local open = Hub.open
+		Hub.open = function(id)
+			asked = id
+			return id
+		end
+		assert.are.equal("gear", Panel.openSources())
+		Hub.open = open
+		assert.are.equal("gear", asked)
 	end)
 end)

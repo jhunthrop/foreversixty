@@ -111,7 +111,6 @@ local function loadAddon(state)
 	helper.load("MeTab")
 	package.loaded.MeFrame = nil
 	modules.MeFrame = require("MeFrame")
-	modules.SourcesFlyout = helper.load("SourcesFlyout")
 	helper.load("Minimap")
 	modules.Settings = helper.load("Settings")
 	modules.Settings.data = DATA
@@ -250,8 +249,26 @@ describe("every visible button draws its label", function()
 		end
 		assert.is_true(labelled > 0)
 		assert.is_string(L.panelChange)
-		assert.is_true(modules.SourcesFlyout.open(Panel.frame))
-		assert.are.same({}, blankLabels(state), "the sources flyout")
+	end)
+
+	it("labels the Level buttons, the source switches and Default on the Gear tab, drawn twice", function()
+		local GearTab = helper.load("GearTab")
+		helper.load("GearTabView")
+		GearTab.read = function()
+			return { data = { bis = { ["warrior-arms"] = { [20] = { horde = { chest = "1|D|Wailing Caverns: Mutanus",
+				legs = "2|Q|The Ravaged Caravan" } } } } }, spec = "warrior-arms", level = 13, faction = "horde",
+				current = { weights = { strength = 1 } }, equipped = {}, bagIds = {}, noEnchant = {},
+				isMissing = function()
+					return false
+				end }
+		end
+		require("Sources").choose({ "dungeon" })
+		local Hub = require("Hub")
+		assert.are.equal("gear", Hub.open("gear"))
+		mock.renderFrame(state)
+		require("GearTabView").draw()
+		assert.are.same({}, blankLabels(state), "the Gear tab")
+		assert.is_true(require("GearTabView").view.sources.default:IsVisible())
 	end)
 
 	it("labels the Settings page's toggles and Reset", function()

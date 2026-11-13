@@ -704,9 +704,69 @@ function SlotMarks.hookBags()
 	return SlotMarks.bagHooks
 end
 
+-- Alt-click on a marked slot (design/specs/2026-11-13-addon-hub.md 3.7, 5) -------------------------
+
+--- What opens the Gear tab on a slot (the tab sets it); nil until the tab loads.
+SlotMarks.onAltClick = nil
+
+--- The paper-doll slot a client slot button is (the global ItemTooltip.SLOT_BUTTONS names), or nil.
+function SlotMarks.slotOfButton(button)
+	for slot, buttonName in pairs(ItemTooltip.SLOT_BUTTONS) do
+		if button ~= nil and Compat.clientGlobal(buttonName, "table") == button then
+			return slot
+		end
+	end
+	return nil
+end
+
+--- Whether an Alt-click on `slot` opens the Gear tab: the slot carries a mark (an arrow or a target
+--- corner) in `state` (SlotMarks.current's). Pure.
+function SlotMarks.opensGear(slot, state)
+	if slot == nil or type(state) ~= "table" then
+		return false
+	end
+	return (state.arrows or {})[slot] == true or (state.targets or {})[slot] ~= nil
+end
+
+--- The client's modified click on a paper-doll slot, after its own: with Alt held on a marked slot,
+--- the Gear tab opens on that cell. An unmarked slot keeps the client's own Alt-click; never in combat.
+function SlotMarks.onModifiedSlotClick(button)
+	if SlotMarks.onAltClick == nil or not enabled() or Theme.inCombat() then
+		return false
+	end
+	local altDown = Compat.clientGlobal("IsAltKeyDown", "function")
+	if altDown == nil or not altDown() then
+		return false
+	end
+	local slot = SlotMarks.slotOfButton(button)
+	if not SlotMarks.opensGear(slot, SlotMarks.current(true)) then
+		return false
+	end
+	SlotMarks.onAltClick(slot)
+	return true
+end
+
+-- The slot's hover says it under Shift (ItemTooltip.withAltClick).
+ItemTooltip.altClickOpensGear = function(slot)
+	return SlotMarks.onAltClick ~= nil and enabled() and SlotMarks.opensGear(slot, SlotMarks.current(true))
+end
+
+--- Hooks the paper doll's modified click once, after the client's own (a function hook, never the pane).
+function SlotMarks.hookAltClick()
+	local hook = Compat.clientGlobal("hooksecurefunc", "function")
+	if hook == nil or Compat.clientGlobal("PaperDollItemSlotButton_OnModifiedClick", "function") == nil then
+		return false
+	end
+	hook("PaperDollItemSlotButton_OnModifiedClick", function(button)
+		guarded(SlotMarks.onModifiedSlotClick, button)
+	end)
+	return true
+end
+
 --- Hooks the bags (function hooks through hooksecurefunc only). Nothing on the
 --- character pane is hooked (fix round 2): its marks are drawn on the events
---- (SlotMarks.refresh) onto addon overlays that show with the pane. Idempotent.
+--- (SlotMarks.refresh) onto addon overlays that show with the pane; the paper doll's
+--- modified click is a function hook (SlotMarks.hookAltClick). Idempotent.
 function SlotMarks.register()
 	if SlotMarks.registered then
 		return
@@ -720,6 +780,7 @@ function SlotMarks.register()
 		Theme.noteVerbose(L.diagNoBagHook)
 	end
 	SlotMarks.hookBagOpen()
+	SlotMarks.hookAltClick()
 end
 
 --- The client's own ways to open the bags (the B key, the bag bar, open-all): a bag

@@ -115,6 +115,21 @@ describe("the addon's windows on the pixel grid", function()
 		_G.ForeverSixtyInbox, _G.IsInGuild = nil, nil
 	end)
 
+	it("snaps every texture on the Gear tab", function()
+		start(1440, 1)
+		local GearTab = helper.load("GearTab")
+		helper.load("GearTabView")
+		GearTab.read = function()
+			return { data = { bis = { ["warrior-arms"] = { [20] = { horde = { chest = "1|D|Wailing Caverns: Mutanus" } } } } },
+				spec = "warrior-arms", level = 13, faction = "horde", current = { weights = { strength = 1 } },
+				equipped = {}, bagIds = {}, noEnchant = {}, isMissing = function()
+					return false
+				end }
+		end
+		assert.are.equal("gear", require("Hub").open("gear"))
+		assert.are.same({}, unsnapped(state))
+	end)
+
 	it("draws an outline a whole number of pixels thick, never under one", function()
 		start(1440, 1)
 		-- 1440 pixels over 768 units: 1.875 a unit, so a 1-unit edge is 2 pixels.

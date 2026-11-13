@@ -283,37 +283,12 @@ describe("Minimap", function()
 		assert.are.equal(Button.hintLines()[1], lines[3])
 	end)
 
-	it("names how many upgrades are waiting", function()
-		-- Gear.upgrades is exercised end to end by gear_spec.lua already;
-		-- this only proves tooltipLines() uses what it returns, so the
-		-- example does not have to re-stage a whole bag and stat scenario.
+	it("counts no upgrades: the Gear tab owns them", function()
 		start()
 		Button.data = DATA
 		assert(Follow.load(CODE, DATA))
-		local Gear = require("Gear")
-		local real = Gear.upgrades
-		Gear.upgrades = function()
-			return { {}, {} }
-		end
-		local ok, lines = pcall(Button.tooltipLines)
-		Gear.upgrades = real
-		assert.is_true(ok)
-		-- Lines: name, build, progress, the next talent, then upgrades.
-		assert.are.equal(string.format(require("Locale").minimapUpgrades, 2), lines[5])
-	end)
-
-	it("says nothing about upgrades when there are none waiting", function()
-		start()
-		Button.data = DATA
-		assert(Follow.load(CODE, DATA))
-		local Gear = require("Gear")
-		local real = Gear.upgrades
-		Gear.upgrades = function()
-			return {}
-		end
-		local ok, lines = pcall(Button.tooltipLines)
-		Gear.upgrades = real
-		assert.is_true(ok)
+		local lines = Button.tooltipLines()
+		-- Lines: name, build, progress, the next talent, then the hints.
 		assert.are.equal(Button.hintLines()[1], lines[5])
 	end)
 

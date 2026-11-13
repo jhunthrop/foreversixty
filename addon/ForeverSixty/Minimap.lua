@@ -17,7 +17,6 @@ local Theme = ns.Theme or require("Theme")
 local Prefs = ns.Prefs or require("Prefs")
 local Follow = ns.Follow or require("Follow")
 local Talents = ns.Talents or require("Talents")
-local Gear = ns.Gear or require("Gear")
 
 local MinimapButton = {}
 
@@ -84,10 +83,6 @@ function MinimapButton.tooltipLines()
 		local progress = Follow.progress(build, ranks)
 		lines[#lines + 1] = string.format(L.minimapProgress, progress.matched, #build.order)
 		lines[#lines + 1] = Follow.line(MinimapButton.data, build, ranks)
-		local upgrades = Gear.upgrades(MinimapButton.data, build)
-		if #upgrades > 0 then
-			lines[#lines + 1] = string.format(L.minimapUpgrades, #upgrades)
-		end
 	end
 	return withHints(lines)
 end

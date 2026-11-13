@@ -52,10 +52,11 @@ surfaces\Hub.lua
 surfaces\BuildDialog.lua
 surfaces\MeTab.lua
 surfaces\MeFrame.lua
+surfaces\GearTab.lua
+surfaces\GearTabView.lua
 surfaces\SiteStatus.lua
 surfaces\Settings.lua
 surfaces\PanelTab.lua
-surfaces\SourcesFlyout.lua
 surfaces\Panel.lua
 surfaces\TourExample.lua
 surfaces\Onboarding.lua

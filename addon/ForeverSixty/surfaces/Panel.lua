@@ -36,8 +36,8 @@ local BuildDialog = ns.BuildDialog or require("BuildDialog")
 local PanelTab = ns.PanelTab or require("PanelTab")
 local Prefs = ns.Prefs or require("Prefs")
 local TalentClick = ns.TalentClick or require("TalentClick")
-local Sources = ns.Sources or require("Sources")
-local SourcesFlyout = ns.SourcesFlyout or require("SourcesFlyout")
+local GearTab = ns.GearTab or require("GearTab")
+local Hub = ns.Hub or require("Hub")
 
 local Panel = {}
 
@@ -80,7 +80,7 @@ Panel.TALENTS_COVER_RAISE = 5
 --- asks for a higher level. `input`: { targets, level, picksStart }. A rest line only with no rows
 --- ("Picks start at level 20" below the first band, else "Every slot is best for your build."; "No
 --- upgrades from these sources" when the sources on leave every slot without an option).
---- `input.sources` (Panel.sourceLine's) adds the foot line under the rows: the state's
+--- `input.sources` (GearTab.sources') adds the foot line under the rows: the state's
 --- words and Change. Never nil: the region always shows.
 function Panel.upgrades(input)
 	local rows = {}
@@ -387,7 +387,7 @@ function Panel.inputs(data)
 	}
 	local specBis = base.spec ~= nil and type(data.bis) == "table" and data.bis[base.spec] or nil
 	input.picksStart = base.faction and Gear.firstBand(specBis, level) or nil
-	input.sources = Panel.sourceLine(data, base.spec, base.faction and Gear.bandFor(specBis, level) or nil, base.faction)
+	input.sources = GearTab.sources(data, base.spec, base.faction and Gear.bandFor(specBis, level) or nil, base.faction)
 	local point = input.progress.point
 	if point ~= nil and build ~= nil then
 		local talent = Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column)
@@ -395,49 +395,6 @@ function Panel.inputs(data)
 		input.pointIcon = talent ~= nil and Talents.iconFor(talent) or nil
 	end
 	return input
-end
-
---- The source filter at the character's band (Sources.state): { words, off (the hover's line, nil at
---- All sources), empty (the sources on leave every slot without an option), band, counts (the
---- flyout's, Sources.counts over the band's published picks), items (kind -> the "Slot: Item" lines
---- of its rows' hover, Sources.kindItems named) }. nil with no spec, band or faction.
-function Panel.sourceLine(data, spec, band, faction)
-	local bySpec = spec ~= nil and type(data) == "table" and type(data.bis) == "table" and data.bis[spec] or nil
-	local slots = bySpec ~= nil and band ~= nil and bySpec[band] ~= nil and bySpec[band][faction] or nil
-	if type(slots) ~= "table" then
-		return nil
-	end
-	local state = Sources.state(band)
-	local published, empty = {}, not state.all
-	for slot in pairs(slots) do
-		published[slot] = Gear.publishedPick(spec, band, faction, slot, data)
-		if empty and Gear.pick(spec, band, faction, slot, data, state) ~= nil then
-			empty = false
-		end
-	end
-	local names = type(data.bisNames) == "table" and data.bisNames or {}
-	local items = {}
-	for kind, list in pairs(Sources.kindItems(published)) do
-		items[kind] = {}
-		for _, entry in ipairs(list) do
-			local name = Compat.itemName(entry.itemId) or names[entry.itemId]
-			if name ~= nil then
-				items[kind][#items[kind] + 1] = string.format(L.sourcesKindItem, L.gearSlotLabels[entry.slot] or entry.slot,
-					name)
-			end
-		end
-	end
-	return { words = Sources.words(state), off = Sources.offLine(state), empty = empty, band = band,
-		counts = Sources.counts(published), items = items }
-end
-
---- Panel.sourceLine for this character now (its spec, band and faction): the Settings page's Gear
---- sources group reads the same band and counts as the panel and the flyout.
-function Panel.currentSourceLine(data)
-	data = data or Panel.data or ns.Data
-	local base = ItemTooltip.baseContext(data)
-	local specBis = base.spec ~= nil and type(data.bis) == "table" and data.bis[base.spec] or nil
-	return Panel.sourceLine(data, base.spec, base.faction and Gear.bandFor(specBis, Chip.level()) or nil, base.faction)
 end
 
 --- Whether the player opened the collapsed rotation at 60, remembered per character.
@@ -468,8 +425,6 @@ end
 --- "Change": the build dialog on its paste tab.
 function Panel.change()
 	BuildDialog.data = BuildDialog.data or Panel.data
-	-- The Builds dialog takes the screen's attention: the Sources flyout closes (spec 4).
-	SourcesFlyout.close()
 	return BuildDialog.open("paste")
 end
 
@@ -781,14 +736,14 @@ local function drawUpgradeRow(content, row, y, width)
 end
 
 --- The Upgrades region's foot line: the source state's words, muted (their hover names the kinds
---- off), then Change in gold, which opens the Sources flyout. Always one line, so a toggle never
+--- off), then Change in gold, which opens the Gear tab. Always one line, so a toggle never
 --- moves the regions under it.
 local function drawSourceLine(content, sources, y)
 	local words = text(content, sources.words, "umberMuted")
 	words:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 2)
 	local dot = text(content, L.exportTreeSeparator, "umberMuted")
 	dot:SetPoint("LEFT", words, "RIGHT", 0, 0)
-	local change = link(content, L.panelChange, Panel.toggleSources)
+	local change = link(content, L.panelChange, Panel.openSources)
 	change:SetPoint("LEFT", dot, "RIGHT", 0, 0)
 	Panel.sourcesChange = change
 	if sources.off ~= nil then
@@ -1039,27 +994,14 @@ function Panel.open(from)
 end
 
 function Panel.close()
-	SourcesFlyout.close()
 	if Panel.frame ~= nil then
 		Panel.frame:Hide()
 	end
 end
 
---- The foot line's Change: the Sources flyout beside the panel, or closed when it is open.
-function Panel.toggleSources()
-	if Panel.frame == nil then
-		return false
-	end
-	return SourcesFlyout.toggle(Panel.frame)
-end
-
---- The flyout reads the panel's band, counts and item lines (the last draw's).
-SourcesFlyout.context = function()
-	local sources = Panel.sources
-	if sources == nil then
-		return nil, nil, nil
-	end
-	return sources.band, sources.counts, sources.items
+--- The foot line's Change: the window on Gear, where the sources are chosen.
+function Panel.openSources()
+	return Hub.open("gear")
 end
 
 function Panel.isOpen()
@@ -1102,9 +1044,6 @@ function Panel.register()
 	Panel.registered = true
 	Chip.openPanel = function()
 		return Panel.toggle("chip")
-	end
-	PanelTab.openPanel = function()
-		return Panel.toggle("pane")
 	end
 	local frame = CreateFrame("Frame")
 	Theme.noteFrame("Panel events", "login")

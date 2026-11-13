@@ -224,44 +224,6 @@ describe("what the character can wear", function()
 		end)
 	end)
 
-	describe("the minimap's count (Gear.upgrades)", function()
-		local function paladin(options)
-			options = options or {}
-			options.class = { name = "Paladin", token = "PALADIN" }
-			options.bags = { [0] = { EARTHFURY, PLAIN } }
-			start(options)
-			state.talents = {
-				{ name = "Holy", talents = { { name = "A", tier = 1, column = 1, rank = 5, maxRank = 5 } } },
-				{ name = "Protection", talents = {} },
-				{ name = "Retribution", talents = {} },
-			}
-			state.itemStats[PLAIN] = item(7001, "Plain Gloves", "INVTYPE_HAND",
-				{ __subclass = 2, ITEM_MOD_SPELL_POWER_SHORT = 30 })
-			state.itemStats[EARTHFURY] = item(16860, "Earthfury Gauntlets", "INVTYPE_HAND",
-				{ __subclass = 3, __minLevel = 60, ITEM_MOD_SPELL_POWER_SHORT = 40 })
-		end
-
-		local plan = { classSlug = "paladin", statsUnknown = false, gear = {
-			{ slot = "hands", itemId = 1, stats = { spell_power = 20 } },
-		} }
-
-		it("counts only what the character can wear", function()
-			paladin()
-			local found = Gear.upgrades(DATA, plan)
-			assert.are.equal(1, #found)
-			assert.are.equal(7001, found[1].itemId)
-		end)
-
-		it("skips a piece of a type the class does not wear yet, per slot", function()
-			paladin()
-			-- Plate for a paladin is 40.
-			state.itemStats[PLAIN].__subclass = 4
-			assert.are.same({}, Gear.upgrades(DATA, plan))
-			state.level = 40
-			assert.are.equal(1, #Gear.upgrades(DATA, plan))
-		end)
-	end)
-
 	describe("one baseline for the line and the gap (Progress.slotGain)", function()
 		it("gives the line's delta the number the gap's pick gain rounds from", function()
 			start({ tips = {} })

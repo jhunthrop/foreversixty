@@ -1951,6 +1951,35 @@ end
 --- slot with the arrow lists the very bag item its hover leads with.
 ItemTooltip.bagLead = bagLead
 
+--- Injection (SlotMarks sets it): whether an Alt-click on paper-doll `slot` opens the Gear tab.
+ItemTooltip.altClickOpensGear = nil
+
+--- `entry` with the Shift block's last line "Alt-click: open Gear" when the hover is on paper-doll
+--- `slot`'s own button and an Alt-click there opens the Gear tab (spec 2026-11-13-addon-hub 3.7, 5).
+--- The entry itself otherwise; never a broken hover.
+local function withAltClick(entry, slot, owner)
+	local opens = ItemTooltip.altClickOpensGear
+	local buttonName = slot ~= nil and ItemTooltip.SLOT_BUTTONS[slot] or nil
+	if buttonName == nil or opens == nil or owner == nil or Compat.clientGlobal(buttonName, "table") ~= owner then
+		return entry
+	end
+	local ok, yes = pcall(opens, slot)
+	if not ok or yes ~= true then
+		return entry
+	end
+	local copy, lines = {}, {}
+	for key, value in pairs(entry) do
+		copy[key] = value
+	end
+	for index, line in ipairs(entry.lines) do
+		lines[index] = line
+	end
+	lines[#lines + 1] = { kind = "altClick", role = "shift", color = "tooltipDim", text = L.gearAltClick }
+	copy.lines = lines
+	return copy
+end
+ItemTooltip.withAltClick = withAltClick
+
 --- The lines dropped, in order, when a tooltip would pass the top of the screen (spec 1.1): the
 --- support line first, then the Shift block's alternatives. Keys are roles or kinds.
 ItemTooltip.CAP_KINDS = { { support = true }, { support = true, alternatives = true } }
@@ -2001,6 +2030,9 @@ local function addLines(tooltip, itemLink)
 	end
 	if #entry.lines == 0 then
 		return
+	end
+	if head.equipped then
+		entry = withAltClick(entry, head.slot, type(tooltip.GetOwner) == "function" and tooltip:GetOwner() or nil)
 	end
 	local shown = entry
 	if level > 0 then
@@ -2143,6 +2175,7 @@ function ItemTooltip.appendEmptySlotSection(tooltip, slot, button)
 		end
 		return
 	end
+	entry = withAltClick(entry, slot, button)
 	drawEntry(tooltip, entry, redraw)
 	appendedSection[tooltip] = true
 	ItemTooltip.noteShiftHover(tooltip, entry.lines, function()

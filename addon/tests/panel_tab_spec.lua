@@ -395,20 +395,20 @@ describe("PanelTab", function()
 			assert.is_not_nil(PanelTab.button)
 		end)
 
-		-- design/specs/2026-11-08-addon-ux.md 4.6: the flyout is merged into the panel; the button is
-		-- its second door, docked to the pane.
-		it("opens the addon panel through the injection point the panel sets", function()
+		-- design/specs/2026-11-13-addon-hub.md 5: the button is the door to the window's Gear tab.
+		it("opens the Forever Sixty window on Gear, and closes it when Gear shows", function()
 			start({})
 			PanelTab.refresh(DATA)
-			local opened = 0
-			PanelTab.openPanel = function()
-				opened = opened + 1
-				return true
+			local Hub = require("Hub")
+			local asked = {}
+			local toggle = Hub.toggle
+			Hub.toggle = function(id)
+				asked[#asked + 1] = id
+				return id
 			end
 			click(PanelTab.button)
-			assert.are.equal(1, opened)
-			PanelTab.openPanel = nil
-			assert.is_false(PanelTab.toggle())
+			Hub.toggle = toggle
+			assert.are.same({ "gear" }, asked)
 			assert.is_nil(_G.ForeverSixtyPanelFlyout)
 		end)
 

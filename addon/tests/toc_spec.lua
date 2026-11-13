@@ -39,6 +39,9 @@ describe("the TOC", function()
 		"surfaces/BuildDialog.lua",
 		-- The window's Me tab (hub spec 4.1): the model, then its frame, which registers the tab.
 		"surfaces/MeTab.lua", "surfaces/MeFrame.lua",
+		-- The Gear tab (hub spec 4.3): its model reads the tooltip's targets, the slot marks' list and the
+		-- source filter; its frames register the tab with the hub.
+		"surfaces/GearTab.lua", "surfaces/GearTabView.lua",
 		-- The site-status lines (X.3): /fs diag, the login line and the chip read the inbox and the clock.
 		"surfaces/SiteStatus.lua",
 		-- The Settings page (L3.5): registered at login; Options opens it.
@@ -49,8 +52,7 @@ describe("the TOC", function()
 		-- The addon panel (design/specs/2026-11-08-addon-ux.md 4): reads the chip, the tooltip's
 		-- sections and PanelTab's readers; the chip, the pane button, the keybind and the compartment
 		-- open it.
-		-- The Sources flyout (source filter spec 4): the panel's foot line opens it beside the panel.
-		"surfaces/SourcesFlyout.lua", "surfaces/Panel.lua",
+		"surfaces/Panel.lua",
 		-- The first-run tour (spec 3.1): reads the chip, the panel and SiteStatus; Options opens it.
 		-- Its page 2 example reads the panel's upgrades and the item tooltip's lines.
 		"surfaces/TourExample.lua", "surfaces/Onboarding.lua",

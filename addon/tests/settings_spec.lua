@@ -615,9 +615,9 @@ describe("SettingsPage, the layout", function()
 		assert.are.equal("muted", Theme.CONTROL_STATES.toggle.edge)
 	end)
 
-	it("expects one control per switch, one per gear source with Default, and the Reset button", function()
-		assert.are.equal(#SettingsPage.SWITCHES + #SettingsPage.SOURCE_ROWS + 2, SettingsPage.expectedChildren())
-		assert.are.equal(8, #SettingsPage.SOURCE_ROWS)
+	it("expects one control per switch and the Reset button: the gear sources are the Gear tab's", function()
+		assert.are.equal(#SettingsPage.SWITCHES + 1, SettingsPage.expectedChildren())
+		assert.is_nil(SettingsPage.SOURCE_ROWS)
 	end)
 end)
 

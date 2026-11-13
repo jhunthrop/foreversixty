@@ -712,18 +712,6 @@ function Gear.currentWeights(data, spec, inbox, characterKey, level)
 	}
 end
 
-local function plannedBySlot(build)
-	local planned = {}
-	for _, entry in ipairs(build.gear or {}) do
-		planned[entry.slot] = entry
-	end
-	return planned
-end
-
-local function hasAnyStat(stats)
-	return next(stats or {}) ~= nil
-end
-
 --- Every item the player can reach, equipped or bagged, with its own link.
 --- The design scores both: an item already on the character can still beat the
 --- planned one, and hiding that would tell a player to swap something they
@@ -879,81 +867,6 @@ function Gear.restriction(link, classToken, level)
 		return "class", string.format(L.gearClassOnly, table.concat(names, L.gearClassOr))
 	end
 	return nil
-end
-
---- Everything the player is carrying that beats the planned item in a
---- slot it fits.
-function Gear.upgrades(data, build)
-	local ranks = Talents.readRanks(data)
-	local spec = Follow.buildSpec(data, build) or Gear.specOf(data, build.classSlug, ranks)
-	local weights = spec and data.weights[spec] or nil
-	if weights == nil then
-		return {}
-	end
-	local planned = plannedBySlot(build)
-	local found = {}
-	local classToken = build.classSlug ~= nil and build.classSlug:upper() or nil
-	local level = Compat.playerLevel()
-	for _, link in ipairs(Gear.bagLinks()) do
-		-- Through Compat, like Export.lua's itemIdOf and isEquippable, so
-		-- every call site finds the function in the same place on a client
-		-- that moved it to C_Item.
-		local id, itemType, itemSubType, equipLocation, _, classId, subClassId = Compat.itemInfoInstant(link)
-		-- A piece the character cannot wear (not equippable, a level or a class it is not) is
-		-- skipped silently; the armor and weapon proficiency is judged per slot below.
-		local unfit = Gear.restriction(link, classToken, level) ~= nil
-		for _, target in ipairs(not unfit and Gear.SLOTS_BY_EQUIP_LOCATION[equipLocation] or {}) do
-			local against = planned[target]
-			if against ~= nil and Rules.canEquip(classToken, level, classId or itemType, subClassId or itemSubType,
-				equipLocation, target) ~= "ok" then
-				against = nil
-			end
-			-- A planned item with no stats is an FS1 code, which carries none.
-			-- Scoring it at zero would call every item an upgrade; saying
-			-- nothing about that slot is honest. An item that IS the planned
-			-- item scores a delta of exactly zero, which the `delta > 0` check
-			-- below excludes, so a correctly geared slot never lists itself.
-			if against ~= nil and hasAnyStat(against.stats) then
-				local delta = Gear.score(Gear.statsOf(link), weights)
-					- Gear.score(against.stats, weights)
-				if delta > 0 then
-					found[#found + 1] = {
-						slot = target,
-						itemId = tonumber(id),
-						link = link,
-						delta = delta,
-						againstItemId = against.itemId,
-					}
-				end
-			end
-		end
-	end
-	table.sort(found, function(left, right)
-		if left.delta ~= right.delta then
-			return left.delta > right.delta
-		end
-		return left.slot < right.slot
-	end)
-	return found
-end
-
-function Gear.lines(data, build)
-	if build == nil then
-		return { L.gearNoBuild }
-	end
-	local spec = Follow.buildSpec(data, build) or Gear.specOf(data, build.classSlug, Talents.readRanks(data))
-	if spec == nil or data.weights[spec] == nil then
-		return { L.gearNoWeights }
-	end
-	local upgrades = Gear.upgrades(data, build)
-	if #upgrades == 0 then
-		return { L.gearNone }
-	end
-	local lines = {}
-	for index, upgrade in ipairs(upgrades) do
-		lines[index] = string.format(L.gearUpgrade, upgrade.slot, upgrade.delta, upgrade.againstItemId)
-	end
-	return lines
 end
 
 ns.Gear = Gear

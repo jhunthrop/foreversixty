@@ -591,6 +591,65 @@ describe("SlotMarks", function()
 		end)
 	end)
 
+	-- design/specs/2026-11-13-addon-hub.md 3.7, 5: an Alt-click on a marked paper-doll slot opens the Gear
+	-- tab on that cell; an unmarked slot keeps the client's own Alt-click; the slot's hover says so under Shift.
+	describe("the Alt-click into Gear", function()
+		local altDown, opened
+
+		local function startAlt()
+			altDown, opened = false, {}
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, {
+				PaperDollItemSlotButton_OnModifiedClick = function() end,
+				IsAltKeyDown = function()
+					return altDown
+				end,
+			})
+			SlotMarks.onAltClick = function(slot)
+				opened[#opened + 1] = slot
+			end
+			return slotButton("CharacterChestSlot"), slotButton("CharacterHeadSlot")
+		end
+
+		it("opens Gear on a marked slot with Alt held, never on an unmarked one or without Alt", function()
+			local chest, head = startAlt()
+			SlotMarks.register()
+			_G.PaperDollItemSlotButton_OnModifiedClick(chest, "LeftButton")
+			assert.are.same({}, opened)
+			altDown = true
+			_G.PaperDollItemSlotButton_OnModifiedClick(chest, "LeftButton")
+			_G.PaperDollItemSlotButton_OnModifiedClick(head, "LeftButton")
+			assert.are.same({ "chest" }, opened)
+			assert.are.equal("chest", SlotMarks.slotOfButton(chest))
+		end)
+
+		it("does nothing in combat or with the marks switched off", function()
+			local chest = startAlt()
+			altDown = true
+			Theme.inCombat = function()
+				return true
+			end
+			assert.is_false(SlotMarks.onModifiedSlotClick(chest))
+			Theme.inCombat = function()
+				return false
+			end
+			Prefs.setFlag("slotMarks", false)
+			assert.is_false(SlotMarks.onModifiedSlotClick(chest))
+			assert.are.same({}, opened)
+		end)
+
+		it("says Alt-click under Shift on a marked slot's own hover", function()
+			local chest, head = startAlt()
+			local entry = { lines = { { kind = "verdict", text = "x" } } }
+			local shown = ItemTooltip.withAltClick(entry, "chest", chest)
+			assert.are.same({ kind = "altClick", role = "shift", color = "tooltipDim", text = L.gearAltClick },
+				shown.lines[2])
+			assert.are.equal(1, #entry.lines)
+			assert.are.equal(entry, ItemTooltip.withAltClick(entry, "head", head))
+			-- Another frame showing the chest's item (a bag, a link) is not the slot.
+			assert.are.equal(entry, ItemTooltip.withAltClick(entry, "chest", head))
+		end)
+	end)
+
 	describe("the bag hook", function()
 		it("reaches a later button built from the client's item button mixin (a bag addon's)", function()
 			local mixin = { UpdateNewItem = function() end }
