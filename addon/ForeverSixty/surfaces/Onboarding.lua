@@ -453,9 +453,10 @@ local function addressBox(parent, value)
 end
 
 local function coming(parent, region)
-	-- Muted, not gold (round 3): gold on page 4 is the job's; a status tag is quiet.
+	-- Muted, not gold (round 3): gold on page 4 is the job's; a status tag is quiet. The dot in
+	-- L.tourComing parts it from the line it tags (2026-11-13: a bare word read as the line's own).
 	local tag = text(parent, L.tourComing, "umberMuted")
-	tag:SetPoint("LEFT", region, "RIGHT", 6, 0)
+	tag:SetPoint("LEFT", region, "RIGHT", 4, 0)
 	return tag
 end
 

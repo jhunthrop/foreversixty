@@ -22,8 +22,8 @@ from addon_ux import (ADDON, C, CSS, OB_H, OB_W, PAGES, RING, NOTCH, TITLE_FONT,
                       icon_uri, qr_block, url_box, page, tga_uri)
 
 ROOT = Path(__file__).resolve().parents[2]
-# Onboarding.lua coming(): the plain word, muted (round 3), 6 px after the line.
-COMING = f'<span style="font-size:12px;color:{U["muted"]};margin-left:4px">coming</span>'
+# Onboarding.lua coming(): L.tourComing ("· coming"), muted (round 3), 4 px after the line.
+COMING_GAP = 4
 OUT = Path(os.environ['MOCK_OUT']) if os.environ.get('MOCK_OUT') else ROOT / 'design/reviews/2026-11-11-addon-tour'
 LOCALE = (ROOT / 'addon/ForeverSixty/Locale.lua').read_text()
 DATA = (ROOT / 'addon/ForeverSixty/Data.lua').read_text()
@@ -262,17 +262,28 @@ def board_onboarding_3():
 
 
 def board_onboarding_4():
-    chip_line = (f'<div style="font-size:13.5px;color:{U["ink"]}">'
-                 f'{locale("chipTonight") % ("8:00 pm", locale("tourGuildRaid"))}</div>')
-    content = (f'<div style="display:flex;gap:28px;align-items:flex-start">'
-               f'<div style="width:300px">{chip_line}<div style="font-size:12px;color:{U["muted"]};margin:8px 0 14px">'
-               f'{locale("tourGuildChipNote")}</div>'
-               f'<div style="font-size:13px">{locale("panelJob") % ("<span style=\"color:" + C["gold"] + "\">" + locale("tourGuildJob") + "</span>")}'
-               f'</div><div style="font-size:12px;color:{U["muted"]};margin-top:2px">{locale("tourGuildJobNote")}</div></div>'
-               f'<div><div style="color:{U["ink"]};font-size:14px;margin-bottom:6px">{locale("tourAnswer")}</div>'
-               f'{ux.answer_place(locale("tourAnswerSite"), True)}{ux.answer_place(locale("tourAnswerDiscord"), True)}'
-               f'<div style="font-size:12px;color:{U["muted"]};margin:2px 0 0">{locale("tourAnswerLater")}{COMING}</div>'
-               f'</div></div>')
+    """Onboarding.lua drawGuild(), placed as it places them: two columns from the same top, the left
+    at 0, the right at 320; "normal" text 13.5 px, the rest "small" 12 px; the chip's clock as
+    Compat.clockText prints 20:00 on a 12-hour client (the site's "8 pm")."""
+    normal, small = 'font-size:13.5px;line-height:16px', 'font-size:12px;line-height:15px'
+
+    def at(x, y, style, color, body):
+        return (f'<div style="position:absolute;left:{x}px;top:{y}px;white-space:nowrap;{style};'
+                f'color:{color}">{body}</div>')
+
+    clock = locale('timeTwelveHour') % (8, locale('timePm'))
+    job = locale('panelJob') % f'<span style="color:{C["gold"]}">{locale("tourGuildJob")}</span>'
+    coming = f'<span style="margin-left:{COMING_GAP}px">{locale("tourComing")}</span>'
+    content = (f'<div style="position:relative;height:{62 + 15}px">'
+               + at(0, 0, normal, U['ink'], locale('chipTonight') % (clock, locale('tourGuildRaid')))
+               + at(0, 20, small, U['muted'], locale('tourGuildChipNote'))
+               + at(0, 46, small, U['ink'], job)
+               + at(0, 62, small, U['muted'], locale('tourGuildJobNote'))
+               + at(320, 0, normal, U['ink'], locale('tourAnswer'))
+               + at(320, 20, small, U['ink'], locale('tourAnswerSite'))
+               + at(320, 36, small, U['ink'], locale('tourAnswerDiscord'))
+               + at(320, 52, small, U['muted'], locale('tourAnswerLater') + coming)
+               + '</div>')
     return board('<b>Page 4, in a guild</b> · the lead takes the old intro\'s slot and its claim; the minimap note '
                  'lost "on raid day" because the lead says it',
                  tour(4, locale('tourGuildHeading'), content, 'tourGuildLead'))

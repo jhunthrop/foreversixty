@@ -15,7 +15,7 @@ local function tonightInput(overrides)
 		tonight = { raid_id = 42, raid = "Onyxia's Lair", start = START,
 			jobs = { { label = "Phase 2 ranged, west side", purpose = "Keeps the whelps off the healers.",
 				with = "Thornhide" } } },
-		clock = START - (3 * 3600 + 12 * 60), clockText = "8:00 pm", who = "Ashvale",
+		clock = START - (3 * 3600 + 12 * 60), clockText = "8 pm", who = "Ashvale",
 	}
 	for key, value in pairs(overrides or {}) do
 		base[key] = value
@@ -41,7 +41,7 @@ describe("Panel, the pure model", function()
 			local region = Panel.tonight(tonightInput())
 			assert.are.equal("tonight", region.kind)
 			assert.are.equal("Onyxia's Lair", region.raid)
-			assert.are.equal(string.format(L.panelTonightNote, "8:00 pm", "in 3 h 12 min"), region.note)
+			assert.are.equal(string.format(L.panelTonightNote, "8 pm", "in 3 h 12 min"), region.note)
 			assert.is_nil(Panel.tonight(tonightInput({ clock = START - Panel.TONIGHT_SECONDS - 1 })))
 			assert.is_nil(Panel.tonight(tonightInput({ clock = START + RaidAssign.SHOWN_FOR_SECONDS + 1 })))
 			assert.are.equal(L.panelTonightNow, Panel.countdown(START, START + 60))

@@ -469,7 +469,7 @@ function Chip.raidDay(tonight, now, seenAt)
 	return demoted
 end
 
---- "Tonight 8:00 pm: Onyxia's Lair", the client's own clock for the start (Compat.clockText).
+--- "Tonight 8 pm: Onyxia's Lair", the client's own clock for the start (Compat.clockText).
 local function raidText(tonight)
 	local stamp = Compat.localTime(tonight.start)
 	local clock = stamp ~= nil and Compat.clockText(stamp.hour, stamp.min) or ""

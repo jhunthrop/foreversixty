@@ -694,7 +694,8 @@ function Compat.twelveHour()
 	return TWELVE_HOUR_LOCALES[locale] == true
 end
 
---- A time of day as the chat prints it ("18:20", or "06:20 pm" on a 12-hour client): every time
+--- A time of day as the chat prints it ("18:20", or "6:20 pm" and "8 pm" on a 12-hour client, the
+--- site's clock in apps/shared/formats.json): every time
 --- the addon says (Site: seen, Export: built, as of your login) goes through here, so "06:21" in
 --- the chat and "18:20" from the addon never sit side by side (X.5).
 function Compat.clockText(hour, minute)
@@ -706,7 +707,11 @@ function Compat.clockText(hour, minute)
 	if shown == 0 then
 		shown = 12
 	end
-	return string.format(L.timeTwelve, shown, minute, hour >= 12 and L.timePm or L.timeAm)
+	local marker = hour >= 12 and L.timePm or L.timeAm
+	if minute == 0 then
+		return string.format(L.timeTwelveHour, shown, marker)
+	end
+	return string.format(L.timeTwelve, shown, minute, marker)
 end
 
 --- The client's local date and time for epoch `seconds` (`date("*t", ...)`: hour, min, ...), or

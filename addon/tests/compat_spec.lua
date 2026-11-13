@@ -420,13 +420,13 @@ describe("Compat.spellbookRank", function()
 		it("prints 12-hour with am and pm where the chat format is 12-hour", function()
 			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M %p "
 			assert.is_true(Compat.twelveHour())
-			assert.are.equal("06:20 pm", Compat.clockText(18, 20))
+			assert.are.equal("6:20 pm", Compat.clockText(18, 20))
 			assert.are.equal("12:05 am", Compat.clockText(0, 5))
 			assert.are.equal("12:30 pm", Compat.clockText(12, 30))
-			assert.are.equal("09:00 am", Compat.clockText(9, 0))
+			assert.are.equal("9 am", Compat.clockText(9, 0))
 			-- The chat's "%I:%M " (no marker, as the walk's capture showed) is 12-hour too.
 			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M "
-			assert.are.equal("06:21 pm", Compat.clockText(18, 21))
+			assert.are.equal("6:21 pm", Compat.clockText(18, 21))
 		end)
 
 		it("follows the locale when the player set no chat format", function()
@@ -434,7 +434,7 @@ describe("Compat.spellbookRank", function()
 				return "enUS"
 			end
 			assert.is_true(Compat.twelveHour())
-			assert.are.equal("06:20 pm", Compat.clockText(18, 20))
+			assert.are.equal("6:20 pm", Compat.clockText(18, 20))
 			-- A chat format the player set wins over the locale.
 			_G.CHAT_TIMESTAMP_FORMAT = "%H:%M "
 			assert.are.equal("18:20", Compat.clockText(18, 20))
@@ -443,10 +443,37 @@ describe("Compat.spellbookRank", function()
 			assert.is_false(Compat.twelveHour())
 		end)
 
+		-- The site's clock (apps/shared/formats.json `clock`), every case but the combat log's seconds:
+		-- "8 pm" and "8:30 pm" with no leading zero, "20:00" and "09:00" in 24-hour. Each case's local
+		-- hour and minute from its UTC instant and its zone's December offset.
+		it("prints every clock case of the site's shared formats", function()
+			local json = require("dkjson")
+			local file = assert(io.open("../apps/shared/formats.json", "r"))
+			local formats = assert(json.decode(file:read("*a")))
+			file:close()
+			local offsets = { UTC = 0, ["America/Chicago"] = -6, ["Europe/Berlin"] = 1 }
+			local locales = { ["en-US"] = "enUS", ["en-GB"] = "enGB", ["de-DE"] = "deDE" }
+			local replayed = 0
+			for _, case in ipairs(formats.clock) do
+				if not case.seconds then
+					local hour, minute = case["in"]:match("T(%d%d):(%d%d)")
+					local offset = assert(offsets[case.zone], "no offset for zone " .. case.zone)
+					local locale = assert(locales[case.locale], "no client locale for " .. case.locale)
+					_G.GetLocale = function()
+						return locale
+					end
+					local text = Compat.clockText((tonumber(hour) + offset) % 24, tonumber(minute))
+					assert.are.equal(case.out, text, case["in"] .. " " .. case.zone .. " " .. case.locale)
+					replayed = replayed + 1
+				end
+			end
+			assert.is_true(replayed >= 9)
+		end)
+
 		it("prints the export's own wall time in the same clock, and leaves what is not a time alone", function()
 			assert.are.equal("18:21", Compat.clockOf("18:21"))
 			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M %p "
-			assert.are.equal("06:21 pm", Compat.clockOf("18:21"))
+			assert.are.equal("6:21 pm", Compat.clockOf("18:21"))
 			assert.are.equal("?", Compat.clockOf("?"))
 			assert.are.equal("25:99", Compat.clockOf("25:99"))
 			assert.is_nil(Compat.clockOf(nil))

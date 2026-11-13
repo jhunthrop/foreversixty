@@ -1487,9 +1487,11 @@ L.siteLoginSilent = "the companion has not picked up your data since %s. "
 L.chipInboxWaiting = "A build from the site is waiting. Click to open."
 
 -- X.5: every time the addon prints is in the chat's own clock (Compat.clockText): 24-hour "18:20", or
--- 12-hour "06:20 pm" where the client's chat timestamps (or its locale) are 12-hour.
+-- 12-hour "6:20 pm" ("8 pm" on the hour) where the client's chat timestamps (or its locale) are
+-- 12-hour, the site's clock (apps/shared/formats.json).
 L.timeTwentyFour = "%02d:%02d"
-L.timeTwelve = "%02d:%02d %s"
+L.timeTwelve = "%d:%02d %s"
+L.timeTwelveHour = "%d %s"
 L.timeAm = "am"
 L.timePm = "pm"
 
@@ -1550,7 +1552,7 @@ L.tourAnswer = "Answer In, Late, Bench or Out"
 L.tourAnswerSite = "On foreversixty.gg"
 L.tourAnswerDiscord = "In Discord, on the raid post"
 L.tourAnswerLater = "In game and on the phone app"
-L.tourComing = "coming"
+L.tourComing = "\194\183 coming"
 L.tourYourPath = "Your path: %s"
 L.tourNextPoint = "Next point at level %d: %s"
 L.tourSignIn = "Sign in on the site"
