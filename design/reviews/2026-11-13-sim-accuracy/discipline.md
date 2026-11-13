@@ -80,7 +80,7 @@ The fully paced line gains the most at raid 60, but measured over every band it 
 | bare 30 Alliance / Horde | 94.71 / 96.51 | 94.92 / 96.76 | +0.22 / +0.26% | 76.68 / 79.89 | 76.71 / 80.30 | +0.04 / +0.51% |
 | bare 20 Alliance / Horde | 46.39 / 45.43 | 46.49 / 45.53 | +0.22 / +0.22% | 41.97 / 40.61 | 42.16 / 40.85 | +0.45 / +0.59% |
 
-The mana lasts 3 to 4 s longer at raid 60 for Discipline and about 2 s for Holy. On the tier list's Alliance raid row, Discipline moves from 31% behind Holy to 29% behind, and from 41.7% to about 39% behind the top. The published numbers move at the next ranking (MR94).
+The mana lasts 3 to 4 s longer at raid 60 for Discipline and about 2 s for Holy. On the tier list's Alliance raid row, Discipline moves from 31% behind Holy to 29% behind, and from 41.7% to about 39% behind the top. The published numbers move at the next ranking (MR95).
 
 ## Is the rest of the gap real?
 
@@ -114,7 +114,7 @@ Suggested tier page line for the Discipline row (the other lane owns the page; n
 
 ## Measure at refresh
 
-- **MR94.** priest-discipline and priest-holy, every bare band 20 to 60 and raid 60: picks, weights (mana stats against healing power move with a card that spends less on Flash Heal), races, the published HPS and the tier list's healer row.
+- **MR95.** priest-discipline and priest-holy, every bare band 20 to 60 and raid 60: picks, weights (mana stats against healing power move with a card that spends less on Flash Heal), races, the published HPS and the tier list's healer row.
 
 ## Gates
 
