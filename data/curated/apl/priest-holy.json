@@ -186,7 +186,7 @@
             }
           }
         },
-        "notes": "Flash Heal on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters, and on the tank only while your mana keeps up with the fight."
+        "notes": "Flash Heal on a tank who is really low or on anyone about to die, as long as your mana keeps up with the fight: it heals less for its mana than your slower heals, so spend it where the speed matters."
       },
       {
         "action": {
