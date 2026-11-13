@@ -102,6 +102,42 @@ describe('stepWords', () => {
     expect(stepWords({ condition: fallsBehind })).toBeNull();
   });
 
+  it("reads an or of the target's health thresholds, each with its own mana clause", () => {
+    const pace = {
+      cmp: {
+        op: 'OpGe',
+        lhs: { currentManaPercent: {} },
+        rhs: { math: { op: 'OpMul', lhs: { remainingTimePercent: {} }, rhs: { const: { val: '0.9' } } } },
+      },
+    };
+    const condition = {
+      or: { vals: [healthBelow(5, '0.2'), { and: { vals: [healthBelow(5, '0.35'), pace] } }] },
+    };
+    expect(stepWords({ target: player(5), condition })).toEqual({
+      subject:
+        'the tank below 20%, or below 35% while your mana is at least 90% of the share of the fight left',
+      qualifiers: [],
+    });
+  });
+
+  it("gives up on an or that is not about the target's health", () => {
+    const lowMana = { cmp: { op: 'OpLt', lhs: { currentManaPercent: {} }, rhs: { const: { val: '0.5' } } } };
+    expect(
+      stepWords({ target: player(5), condition: { or: { vals: [healthBelow(5, '0.2'), lowMana] } } }),
+    ).toBeNull();
+    expect(
+      stepWords({
+        target: player(5),
+        condition: { or: { vals: [healthBelow(2, '0.2'), healthBelow(5, '0.3')] } },
+      }),
+    ).toBeNull();
+    expect(
+      stepWords({
+        condition: { or: { vals: [healthBelow(undefined, '0.2'), healthBelow(undefined, '0.3')] } },
+      }),
+    ).toBeNull();
+  });
+
   it('has no target phrase and no qualifiers for an unconditional self-cast', () => {
     expect(stepWords({})).toEqual({ subject: null, qualifiers: [] });
   });
@@ -125,6 +161,15 @@ describe('describeSteps', () => {
     ).toBe(
       'Cast on the tank below 80%, then a party member below 65%, when mana keeps pace; or on the tank below 50%.',
     );
+  });
+
+  it('sets the next target apart with a semicolon after an or of thresholds', () => {
+    expect(
+      describeSteps([
+        { subject: 'the tank below 20%, or below 35% while mana keeps pace', qualifiers: [] },
+        { subject: 'a party member below 30%', qualifiers: [] },
+      ]),
+    ).toBe('Cast on the tank below 20%, or below 35% while mana keeps pace; then a party member below 30%.');
   });
 
   it('is empty when the steps say nothing', () => {

@@ -5,7 +5,8 @@
 // one of them, so the words have to come from the condition tree itself.
 //
 // Only the shapes the lists use today are read (health and mana comparisons, the mana
-// pace, the mana budget, income against spend, "not already on the target"); a step with any other clause reads as `null` and
+// pace, the mana budget, income against spend, "not already on the target", and an `or` of
+// the target's own health thresholds); a step with any other clause reads as `null` and
 // keeps its note alone rather than a half-translated sentence.
 
 /** The fake raid the healer lists are written against: player 5 is the tank, 1-4 the party. */
@@ -147,9 +148,34 @@ function atomsOf(condition: unknown): Atom[] | null {
   return null;
 }
 
+/** One branch of a target's `or`: its health thresholds on the target, then any clause about
+ *  no one ("below 35% while your mana is ..."). Null when the branch names no threshold on the
+ *  target or names anyone else. */
+function branchPhrase(target: string, branch: unknown): string | null {
+  const atoms = atomsOf(branch);
+  if (atoms === null || atoms.some((atom) => atom.who !== null && atom.who !== target)) return null;
+  const onTarget = atoms.filter((atom) => atom.who === target).map((atom) => atom.predicate);
+  const others = atoms.filter((atom) => atom.who === null).map((atom) => atom.predicate);
+  if (onTarget.length === 0) return null;
+  return [onTarget.join(' and '), ...others].join(' while ');
+}
+
+/** `or` over the target's health ("the tank below 20%, or below 35% while your mana is at
+ *  least 90% of the share of the fight left"), or null for any other `or`. */
+function orSubject(target: string | null, condition: unknown): string | null {
+  if (target === null || !isNode(condition) || !isNode(condition.or)) return null;
+  const vals = condition.or.vals;
+  if (!Array.isArray(vals) || vals.length < 2) return null;
+  const branches = vals.map((branch) => branchPhrase(target, branch));
+  if (branches.some((branch) => branch === null)) return null;
+  return `${target} ${branches.join(', or ')}`;
+}
+
 /** The step in words, or `null` when its condition has a clause this module does not read. */
 export function stepWords(step: AplStepInput): StepWords | null {
   const target = playerWho(step.target);
+  const orWords = orSubject(target, step.condition);
+  if (orWords !== null) return { subject: orWords, qualifiers: [] };
   const atoms = step.condition === undefined ? [] : atomsOf(step.condition);
   if (atoms === null) return null;
   const subjectParts: string[] = [];
@@ -163,6 +189,12 @@ export function stepWords(step: AplStepInput): StepWords | null {
   return { subject: [target, ...subjectParts].join(' '), qualifiers };
 }
 
+/** ", then " between subjects, or "; then " once a subject carries commas of its own (an `or`
+ *  of thresholds), so the next target does not read as part of its last branch. */
+function subjectJoin(subjects: readonly string[]): string {
+  return subjects.some((subject) => subject.includes(',')) ? '; then ' : ', then ';
+}
+
 /** Groups steps that share qualifiers and lists each group's distinct subjects in order. */
 export function describeSteps(steps: readonly StepWords[]): string {
   const groups = new Map<string, { qualifiers: string[]; subjects: string[] }>();
@@ -174,7 +206,7 @@ export function describeSteps(steps: readonly StepWords[]): string {
   }
   const clauses = [...groups.values()]
     .map(({ qualifiers, subjects }) => {
-      const onWhom = subjects.length > 0 ? `on ${subjects.join(', then ')}` : '';
+      const onWhom = subjects.length > 0 ? `on ${subjects.join(subjectJoin(subjects))}` : '';
       const when = qualifiers.length > 0 ? `when ${qualifiers.join(' and ')}` : '';
       return [onWhom, when].filter((part) => part !== '').join(', ');
     })
