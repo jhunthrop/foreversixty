@@ -3031,7 +3031,7 @@
     "1": "below 70% mana and above 70% health, Undead only",
     "2": "on cooldown, on the tank",
     "3": "when Renew is not on the tank and he is below 95%",
-    "4": "on the tank below 35%",
+    "4": "on the tank below 20%, or below 35% while mana holds",
     "5": "on a party member below 30%",
     "6": "on a party member below 30%",
     "7": "on a party member below 30%",

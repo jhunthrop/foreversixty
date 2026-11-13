@@ -26,7 +26,7 @@ This is the best Feral Druid on Forever. The cat opens with Ravage, keeps Rip an
 - Shifting Power from forty, every time it comes off cooldown, but only at sixty energy or lower. Then the whole forty energy fits under the cap.
 - Rip at five combo points when it is off the boss or has under two seconds left.
 - Ferocious Bite is for five points while Rip still has five seconds or more; between two and five seconds, keep Shredding and hold the points for the Rip.
-- Rake whenever it is off the target, from twenty-four: its hit carries your paw's damage and its bleed grows with your attack power, and it is a combo point.
+- Rake whenever it is off the target, from twenty-four: its hit and its bleed both grow with your attack power, and it is a combo point.
 - Shred fills every other global from twenty-one, building combo points. At twenty, Claw is the builder.
 - Claw: When the boss turns to you, or you cannot get behind, Claw in place of Shred until you can.
 - Cower.

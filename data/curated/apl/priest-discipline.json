@@ -2602,7 +2602,7 @@
     "6": "on a party member below 70%",
     "7": "on the tank below 90% with no Weakened Soul",
     "8": "when Renew is not on the tank and he is below 95%",
-    "9": "on the tank below 35%",
+    "9": "on the tank below 20%, or below 35% while mana holds",
     "10": "on a party member below 30% while mana holds",
     "11": "on a party member below 30% while mana holds",
     "12": "on a party member below 30% while mana holds",

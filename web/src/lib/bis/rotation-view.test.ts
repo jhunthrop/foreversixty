@@ -130,11 +130,11 @@ describe('rotationLinesFor on the holy priest band 20 list', () => {
       /^Behind the mana pace.*Cast on the tank below \d+%, then a party member below \d+%\./,
     );
     // ebb2fa545 made the tank Flash Heal an `or` (under 20% always, under 35% on the mana
-    // pace), which the step phrasing does not put in words, so the collapsed Flash Heal row
-    // keeps only its note rather than words that would misstate the thresholds.
+    // pace): both thresholds are said, the paced one with its mana clause.
     const flash = rows().find((row) => row.name === 'Flash Heal');
-    expect(flash?.condition).toMatch(/^Flash Heal is the fast heal/);
-    expect(flash?.condition).not.toMatch(/Cast on the tank below/);
+    expect(flash?.condition).toMatch(
+      /Cast on the tank below \d+%, or below \d+% while your mana is at least \d+% of the share of the fight left; then a party member below \d+%\./,
+    );
   });
 
   it("shows the rank the band casts and corrects the note's rank to it", () => {

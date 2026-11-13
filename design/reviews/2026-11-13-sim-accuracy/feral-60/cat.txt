@@ -1,0 +1,21 @@
+# cat bare 30 to 60 and raid 60, both factions, the published rotation and the same list without Rake
+cat-bare30-A -spec druid-feral -preset bare -band 30 -faction alliance
+cat-bare30-A-norake -spec druid-feral -preset bare -band 30 -faction alliance -rotation @R/rot_no_rake.json
+cat-bare40-A -spec druid-feral -preset bare -band 40 -faction alliance
+cat-bare40-A-norake -spec druid-feral -preset bare -band 40 -faction alliance -rotation @R/rot_no_rake.json
+cat-bare50-A -spec druid-feral -preset bare -band 50 -faction alliance
+cat-bare50-A-norake -spec druid-feral -preset bare -band 50 -faction alliance -rotation @R/rot_no_rake.json
+cat-bare60-A -spec druid-feral -preset bare -band 60 -faction alliance
+cat-bare60-A-norake -spec druid-feral -preset bare -band 60 -faction alliance -rotation @R/rot_no_rake.json
+cat-raid60-A -spec druid-feral -preset raid -band 60 -faction alliance
+cat-raid60-A-norake -spec druid-feral -preset raid -band 60 -faction alliance -rotation @R/rot_no_rake.json
+cat-bare30-H -spec druid-feral -preset bare -band 30 -faction horde
+cat-bare30-H-norake -spec druid-feral -preset bare -band 30 -faction horde -rotation @R/rot_no_rake.json
+cat-bare40-H -spec druid-feral -preset bare -band 40 -faction horde
+cat-bare40-H-norake -spec druid-feral -preset bare -band 40 -faction horde -rotation @R/rot_no_rake.json
+cat-bare50-H -spec druid-feral -preset bare -band 50 -faction horde
+cat-bare50-H-norake -spec druid-feral -preset bare -band 50 -faction horde -rotation @R/rot_no_rake.json
+cat-bare60-H -spec druid-feral -preset bare -band 60 -faction horde
+cat-bare60-H-norake -spec druid-feral -preset bare -band 60 -faction horde -rotation @R/rot_no_rake.json
+cat-raid60-H -spec druid-feral -preset raid -band 60 -faction horde
+cat-raid60-H-norake -spec druid-feral -preset raid -band 60 -faction horde -rotation @R/rot_no_rake.json
