@@ -78,13 +78,16 @@ type bisBand struct {
 	Band    int    `json:"band"`
 	Faction string `json:"faction"`
 	Race    string `json:"race"`
-	Slots   []struct {
-		Slot   string `json:"slot"`
-		ItemID int    `json:"item_id"`
-		// EnchantID is the permanent enchant the ranker measured the set
-		// wearing (leveling-bis enchants.go).
-		EnchantID int `json:"enchant_id"`
-	} `json:"slots"`
+	Slots   []bandSlot `json:"slots"`
+}
+
+// bandSlot is one gear slot of a BiS band.
+type bandSlot struct {
+	Slot   string `json:"slot"`
+	ItemID int    `json:"item_id"`
+	// EnchantID is the permanent enchant the ranker measured the set
+	// wearing (leveling-bis enchants.go).
+	EnchantID int `json:"enchant_id"`
 }
 
 // gear is the band's items with their published enchants: a comparison

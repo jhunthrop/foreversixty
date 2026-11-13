@@ -118,14 +118,8 @@ func TestBuildRequestWearsTheBandsNonEmptySlotsAndTheCasterDistance(t *testing.T
 	spec := specs.ByKey["priest-holy"]
 	band := bisBand{Race: "Gnome"}
 	band.Slots = append(band.Slots,
-		struct {
-			Slot   string `json:"slot"`
-			ItemID int    `json:"item_id"`
-		}{"head", 5},
-		struct {
-			Slot   string `json:"slot"`
-			ItemID int    `json:"item_id"`
-		}{"neck", 0})
+		bandSlot{Slot: "head", ItemID: 5},
+		bandSlot{Slot: "neck"})
 	req := buildRequest(options{iterations: 12}, spec, band, "ENGINE", []string{"b"}, []string{"c"})
 	c := req.Character
 	if len(c.Gear) != 1 || c.Gear[0] != (api.GearSlot{Slot: "head", ItemID: 5}) {
