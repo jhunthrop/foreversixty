@@ -1,0 +1,590 @@
+class	spell	name	event	events	crits	players
+?	1159	Primeiros Socorros	SPELL_PERIODIC_HEAL	6	0	1
+?	5019	Atirar	RANGE_DAMAGE	1	0	1
+?	1309725	Poção de Cura	SPELL_HEAL	1	0	1
+Druid	78	Heroic Strike	SPELL_DAMAGE	4	0	1
+Druid	441	Poção de Cura	SPELL_HEAL	1	1	1
+Druid	740	Tranquilidade	SPELL_PERIODIC_HEAL	36	2	2
+Druid	769	Revés	SPELL_DAMAGE	139	28	6
+Druid	772	Rend	SPELL_PERIODIC_DAMAGE	7	0	1
+Druid	774	Rejuvenation	SPELL_PERIODIC_HEAL	192	0	30
+Druid	780	Swipe	SPELL_DAMAGE	2	0	1
+Druid	1058	Rejuvenescer	SPELL_PERIODIC_HEAL	11	0	5
+Druid	1062	Entangling Roots	SPELL_PERIODIC_DAMAGE	3	1	1
+Druid	1079	Rasgar	SPELL_PERIODIC_DAMAGE	24	3	4
+Druid	1082	Claw	SPELL_DAMAGE	15	2	6
+Druid	1430	Rejuvenation	SPELL_PERIODIC_HEAL	27	1	5
+Druid	1757	Sinister Strike	SPELL_DAMAGE	13	1	1
+Druid	1822	Estraçalhar	SPELL_DAMAGE	68	12	13
+Druid	1822	Estraçalhar	SPELL_PERIODIC_DAMAGE	137	25	14
+Druid	1823	Estraçalhar	SPELL_DAMAGE	2503	426	19
+Druid	1823	Estraçalhar	SPELL_PERIODIC_DAMAGE	3498	531	19
+Druid	1824	Estraçalhar	SPELL_DAMAGE	1	0	1
+Druid	2024	Poção de Cura	SPELL_HEAL	17	2	5
+Druid	2090	Rejuvenescer	SPELL_PERIODIC_HEAL	66	5	12
+Druid	2091	Rejuvenescer	SPELL_PERIODIC_HEAL	120	13	11
+Druid	2098	Eviscerate	SPELL_DAMAGE	4	0	1
+Druid	2480	Shoot Bow	RANGE_DAMAGE	1	0	1
+Druid	2912	Starfire	SPELL_DAMAGE	1	0	1
+Druid	3029	Garra	SPELL_DAMAGE	1318	198	32
+Druid	3627	Rejuvenescer	SPELL_PERIODIC_HEAL	394	43	19
+Druid	5176	Wrath	SPELL_DAMAGE	999	54	131
+Druid	5177	Ira	SPELL_DAMAGE	104	8	14
+Druid	5179	Wrath	SPELL_DAMAGE	154	16	2
+Druid	5180	Ira	SPELL_DAMAGE	6	0	3
+Druid	5185	Healing Touch	SPELL_HEAL	46	4	34
+Druid	5187	Toque de Cura	SPELL_HEAL	3	0	3
+Druid	5188	Toque de Cura	SPELL_HEAL	1	0	1
+Druid	5189	Toque de Cura	SPELL_HEAL	9	1	5
+Druid	5195	Entangling Roots	SPELL_PERIODIC_DAMAGE	2	0	1
+Druid	5196	Raízes Enredantes	SPELL_PERIODIC_DAMAGE	1	0	1
+Druid	5201	Garra	SPELL_DAMAGE	442	88	7
+Druid	5221	Shred	SPELL_DAMAGE	5	1	3
+Druid	5570	Insect Swarm	SPELL_PERIODIC_DAMAGE	250	14	1
+Druid	6343	Trovoada	SPELL_DAMAGE	2	0	1
+Druid	6778	Toque de Cura	SPELL_HEAL	11	0	7
+Druid	6780	Ira	SPELL_DAMAGE	2	0	1
+Druid	6785	Assolar	SPELL_DAMAGE	339	55	12
+Druid	6787	Assolar	SPELL_DAMAGE	1	1	1
+Druid	6800	Despedaçar	SPELL_DAMAGE	11	2	4
+Druid	6807	Maul	SPELL_DAMAGE	2	0	1
+Druid	6808	Maul	SPELL_DAMAGE	31	1	1
+Druid	6809	Malho	SPELL_DAMAGE	8	3	3
+Druid	6910	Maldição dos Espinhos	SPELL_DAMAGE	55	0	2
+Druid	7914	Capturar Espírito	SPELL_PERIODIC_DAMAGE	25	0	2
+Druid	8903	Toque de Cura	SPELL_HEAL	4	0	2
+Druid	8910	Rejuvenescer	SPELL_PERIODIC_HEAL	64	3	3
+Druid	8921	Moonfire	SPELL_DAMAGE	222	16	65
+Druid	8921	Moonfire	SPELL_PERIODIC_DAMAGE	448	21	65
+Druid	8924	Fogo Lunar	SPELL_DAMAGE	1	0	1
+Druid	8924	Fogo Lunar	SPELL_PERIODIC_DAMAGE	1	0	1
+Druid	8925	Moonfire	SPELL_DAMAGE	5	0	2
+Druid	8925	Moonfire	SPELL_PERIODIC_DAMAGE	28	1	2
+Druid	8926	Moonfire	SPELL_DAMAGE	3	0	2
+Druid	8926	Moonfire	SPELL_PERIODIC_DAMAGE	12	0	3
+Druid	8927	Fogo Lunar	SPELL_DAMAGE	52	10	5
+Druid	8927	Fogo Lunar	SPELL_PERIODIC_DAMAGE	195	45	3
+Druid	8928	Fogo Lunar	SPELL_DAMAGE	85	8	8
+Druid	8928	Fogo Lunar	SPELL_PERIODIC_DAMAGE	246	35	9
+Druid	8929	Fogo Lunar	SPELL_DAMAGE	8	0	1
+Druid	8929	Fogo Lunar	SPELL_PERIODIC_DAMAGE	25	5	1
+Druid	8936	Recrescimento	SPELL_HEAL	5	1	2
+Druid	8936	Recrescimento	SPELL_PERIODIC_HEAL	9	1	2
+Druid	8938	Recrescimento	SPELL_HEAL	4	1	3
+Druid	8938	Recrescimento	SPELL_PERIODIC_HEAL	33	3	6
+Druid	8939	Recrescimento	SPELL_HEAL	22	3	6
+Druid	8939	Recrescimento	SPELL_PERIODIC_HEAL	174	18	6
+Druid	8940	Recrescimento	SPELL_HEAL	100	3	13
+Druid	8940	Recrescimento	SPELL_PERIODIC_HEAL	621	80	18
+Druid	8941	Recrescimento	SPELL_HEAL	150	4	11
+Druid	8941	Recrescimento	SPELL_PERIODIC_HEAL	778	85	11
+Druid	8949	Starfire	SPELL_DAMAGE	2	0	1
+Druid	8950	Fogo Estelar	SPELL_DAMAGE	2	0	2
+Druid	8972	Malho	SPELL_DAMAGE	12	2	3
+Druid	8992	Despedaçar	SPELL_DAMAGE	133	20	1
+Druid	9007	Investida Sangrenta	SPELL_PERIODIC_DAMAGE	9	3	3
+Druid	9492	Rasgar	SPELL_PERIODIC_DAMAGE	149	13	11
+Druid	9493	Rasgar	SPELL_PERIODIC_DAMAGE	114	24	8
+Druid	9750	Recrescimento	SPELL_HEAL	4	1	1
+Druid	9750	Recrescimento	SPELL_PERIODIC_HEAL	18	1	1
+Druid	9849	Garra	SPELL_DAMAGE	1	0	1
+Druid	10838	Primeiros Socorros	SPELL_PERIODIC_HEAL	1	0	1
+Druid	16368	Golpe de Labaredas	SPELL_DAMAGE	384	54	1
+Druid	18562	Recomposição Rápida	SPELL_HEAL	1	0	1
+Druid	19972	Raízes Enredantes	SPELL_PERIODIC_DAMAGE	2	0	1
+Druid	19973	Raízes Enredantes	SPELL_PERIODIC_DAMAGE	34	3	9
+Druid	19974	Raízes Enredantes	SPELL_PERIODIC_DAMAGE	1	0	1
+Druid	22568	Mordida Feroz	SPELL_DAMAGE	603	97	16
+Druid	22827	Mordida Feroz	SPELL_DAMAGE	122	14	1
+Druid	22845	Regeneração Frenética	SPELL_HEAL	29	0	2
+Druid	24974	Nuvem de Insetos	SPELL_PERIODIC_DAMAGE	76	8	4
+Druid	414647	Lacerar	SPELL_DAMAGE	24	2	3
+Druid	1261483	Emoção da Aventura	SPELL_PERIODIC_HEAL	183	0	8
+Druid	1292675	Olho de Murloc Amaldiçoado	SPELL_DAMAGE	39	2	1
+Druid	1293333	Pragacardo	SPELL_DAMAGE	315	38	2
+Druid	1309725	Poção de Cura	SPELL_HEAL	1	0	1
+Druid	1328616	Lacerar	SPELL_PERIODIC_DAMAGE	36	6	2
+Druid	1328618	Ferocious Bite	SPELL_DAMAGE	29	8	4
+Druid	1328622	Florir	SPELL_HEAL	3	1	3
+Hunter	75	Tiro Automático	RANGE_DAMAGE	880	52	95
+Hunter	136	Mend Pet	SPELL_PERIODIC_HEAL	5	1	1
+Hunter	439	Poção de Cura	SPELL_HEAL	1	0	1
+Hunter	440	Poção de Cura	SPELL_HEAL	1	0	1
+Hunter	441	Poção de Cura	SPELL_HEAL	2	1	2
+Hunter	1159	Primeiros Socorros	SPELL_PERIODIC_HEAL	18	0	1
+Hunter	1495	Mongoose Bite	SPELL_DAMAGE	1	0	1
+Hunter	1978	Picada de Serpente	SPELL_PERIODIC_DAMAGE	232	9	16
+Hunter	2643	Tiro Múltiplo	SPELL_DAMAGE	33	3	12
+Hunter	2973	Raptor Strike	SPELL_DAMAGE	277	15	49
+Hunter	2974	Cortar Asas	SPELL_DAMAGE	9	0	6
+Hunter	3044	Arcane Shot	SPELL_DAMAGE	40	1	3
+Hunter	3111	Mend Pet	SPELL_PERIODIC_HEAL	5	1	1
+Hunter	3268	Primeiros Socorros	SPELL_PERIODIC_HEAL	7	0	2
+Hunter	3661	Curar Ajudante	SPELL_PERIODIC_HEAL	24	1	2
+Hunter	4042	Poção de Cura	SPELL_HEAL	2	0	2
+Hunter	7914	Capturar Espírito	SPELL_PERIODIC_DAMAGE	10	0	3
+Hunter	7927	Primeiros Socorros	SPELL_PERIODIC_HEAL	26	0	3
+Hunter	13549	Picada de Serpente	SPELL_PERIODIC_DAMAGE	22	2	2
+Hunter	13550	Picada de Serpente	SPELL_PERIODIC_DAMAGE	31	4	7
+Hunter	13551	Picada de Serpente	SPELL_PERIODIC_DAMAGE	231	6	18
+Hunter	13552	Picada de Serpente	SPELL_PERIODIC_DAMAGE	146	8	15
+Hunter	13797	Immolation Trap	SPELL_PERIODIC_DAMAGE	3	1	1
+Hunter	13812	Armadilha Explosiva	SPELL_DAMAGE	8	1	3
+Hunter	13812	Armadilha Explosiva	SPELL_PERIODIC_DAMAGE	24	2	2
+Hunter	14261	Raptor Strike	SPELL_DAMAGE	10	0	5
+Hunter	14262	Golpe do Raptor	SPELL_DAMAGE	6	1	2
+Hunter	14263	Golpe do Raptor	SPELL_DAMAGE	28	3	9
+Hunter	14264	Golpe do Raptor	SPELL_DAMAGE	1	0	1
+Hunter	14267	Cortar Asas	SPELL_DAMAGE	2	0	2
+Hunter	14269	Mordida de Mangusto	SPELL_DAMAGE	4	1	2
+Hunter	14281	Arcane Shot	SPELL_DAMAGE	1	0	1
+Hunter	14282	Tiro Arcano	SPELL_DAMAGE	11	2	6
+Hunter	14283	Tiro Arcano	SPELL_DAMAGE	97	7	22
+Hunter	14284	Tiro Arcano	SPELL_DAMAGE	24	5	9
+Hunter	14298	Armadilha Imolante	SPELL_PERIODIC_DAMAGE	28	3	6
+Hunter	19434	Tiro Certo	SPELL_DAMAGE	6	0	3
+Hunter	20900	Tiro Certo	SPELL_DAMAGE	63	3	19
+Hunter	20901	Tiro Certo	SPELL_DAMAGE	21	1	10
+Hunter	29646	Disparo de Aguilhão	SPELL_DAMAGE	1	0	1
+Hunter	1259231	Infusion of Wind	SPELL_HEAL	1	0	1
+Hunter	1260270	Regeneração Rápida	SPELL_PERIODIC_HEAL	5	0	1
+Hunter	1261483	Emoção da Aventura	SPELL_PERIODIC_HEAL	322	0	17
+Hunter	1292675	Olho de Murloc Amaldiçoado	SPELL_DAMAGE	248	11	2
+Hunter	1293241	Evocar Falcão	SPELL_DAMAGE	133	8	19
+Hunter	1293333	Pragacardo	SPELL_DAMAGE	85	14	2
+Hunter	1293525	Evocar Falcão	SPELL_DAMAGE	35	0	6
+Hunter	1293714	Corta-feitiços	SPELL_DAMAGE	3	0	3
+Hunter	1317257	Chute de Moa	SPELL_DAMAGE	11	2	2
+Mage	116	Seta de Gelo	SPELL_DAMAGE	118	6	25
+Mage	120	Cone de Frio	SPELL_DAMAGE	17	0	4
+Mage	122	Nova Congelante	SPELL_DAMAGE	56	4	11
+Mage	133	Bola de Fogo	SPELL_DAMAGE	375	17	65
+Mage	133	Bola de Fogo	SPELL_PERIODIC_DAMAGE	220	16	63
+Mage	143	Fireball	SPELL_DAMAGE	22	3	5
+Mage	143	Fireball	SPELL_PERIODIC_DAMAGE	18	1	4
+Mage	145	Fireball	SPELL_DAMAGE	5	0	1
+Mage	145	Fireball	SPELL_PERIODIC_DAMAGE	16	2	1
+Mage	205	Frostbolt	SPELL_DAMAGE	161	8	1
+Mage	837	Frostbolt	SPELL_DAMAGE	4	0	1
+Mage	865	Nova Congelante	SPELL_DAMAGE	44	6	14
+Mage	2024	Poção de Cura	SPELL_HEAL	3	0	3
+Mage	2136	Impacto de Fogo	SPELL_DAMAGE	15	0	7
+Mage	2137	Impacto de Fogo	SPELL_DAMAGE	6	0	3
+Mage	2138	Fire Blast	SPELL_DAMAGE	1	1	1
+Mage	3140	Bola de Fogo	SPELL_DAMAGE	1	0	1
+Mage	3140	Bola de Fogo	SPELL_PERIODIC_DAMAGE	3	0	1
+Mage	5019	Atirar	RANGE_DAMAGE	234	20	15
+Mage	7268	Míssil Arcano	SPELL_DAMAGE	3	0	1
+Mage	7270	Mísseis Arcanos	SPELL_DAMAGE	221	35	3
+Mage	7322	Seta de Gelo	SPELL_DAMAGE	33	2	3
+Mage	7914	Capturar Espírito	SPELL_PERIODIC_DAMAGE	23	0	1
+Mage	7927	Primeiros Socorros	SPELL_PERIODIC_HEAL	8	0	1
+Mage	8400	Fireball	SPELL_DAMAGE	2	0	1
+Mage	8400	Fireball	SPELL_PERIODIC_DAMAGE	3	0	1
+Mage	8401	Bola de Fogo	SPELL_DAMAGE	1	0	1
+Mage	8402	Bola de Fogo	SPELL_DAMAGE	6	2	1
+Mage	8402	Bola de Fogo	SPELL_PERIODIC_DAMAGE	10	2	1
+Mage	8406	Seta de Gelo	SPELL_DAMAGE	21	5	5
+Mage	8407	Seta de Gelo	SPELL_DAMAGE	265	42	11
+Mage	8408	Seta de Gelo	SPELL_DAMAGE	10	4	1
+Mage	8412	Impacto de Fogo	SPELL_DAMAGE	133	15	21
+Mage	8413	Impacto de Fogo	SPELL_DAMAGE	1	1	1
+Mage	8419	Mísseis Arcanos	SPELL_DAMAGE	286	23	13
+Mage	8422	Golpe Flamejante	SPELL_DAMAGE	2	0	2
+Mage	8438	Explosão Arcana	SPELL_DAMAGE	174	30	15
+Mage	8439	Explosão Arcana	SPELL_DAMAGE	2	0	1
+Mage	8445	Calcinar	SPELL_DAMAGE	1	0	1
+Mage	8492	Cone de Frio	SPELL_DAMAGE	78	4	7
+Mage	10159	Cone de Frio	SPELL_DAMAGE	2	0	1
+Mage	10179	Seta de Gelo	SPELL_DAMAGE	2	1	1
+Mage	12523	Ignimpacto	SPELL_DAMAGE	1	0	1
+Mage	12523	Ignimpacto	SPELL_PERIODIC_DAMAGE	2	0	1
+Mage	20578	Canibalizar	SPELL_PERIODIC_HEAL	20	0	4
+Mage	400574	Impacto Arcano	SPELL_DAMAGE	21	1	2
+Mage	400640	Lança de Gelo	SPELL_DAMAGE	7	2	3
+Mage	412545	Incendiar	SPELL_DAMAGE	2	0	1
+Mage	1239696	Impacto Arcano	SPELL_DAMAGE	110	17	12
+Mage	1240044	Lança de Gelo	SPELL_DAMAGE	32	13	7
+Mage	1260198	Toque do Túmulo	SPELL_DAMAGE	109	0	15
+Mage	1260198	Toque do Túmulo	SPELL_HEAL	166	0	18
+Mage	1260270	Regeneração Rápida	SPELL_PERIODIC_HEAL	5	0	1
+Mage	1261483	Emoção da Aventura	SPELL_PERIODIC_HEAL	111	0	4
+Mage	1279977	Nevasca	SPELL_DAMAGE	28	0	1
+Mage	1279978	Nevasca	SPELL_DAMAGE	1377	821	1
+Mage	1292675	Olho de Murloc Amaldiçoado	SPELL_DAMAGE	8	0	1
+Mage	1312002	Lança de Gelo	SPELL_DAMAGE	2	1	1
+Mage	1326079	Ira Arcana	SPELL_DAMAGE	39	5	8
+Mage	1326080	Ira Arcana	SPELL_DAMAGE	14	2	1
+Paladin	440	Poção de Cura	SPELL_HEAL	1	0	1
+Paladin	441	Poção de Cura	SPELL_HEAL	4	0	4
+Paladin	635	Luz Sagrada	SPELL_HEAL	1	0	1
+Paladin	647	Luz Sagrada	SPELL_HEAL	3	0	1
+Paladin	678	Holy Strike	SPELL_DAMAGE	1	0	1
+Paladin	680	Golpe Sagrado	SPELL_DAMAGE	314	35	26
+Paladin	879	Exorcism	SPELL_DAMAGE	1	0	1
+Paladin	1026	Luz Sagrada	SPELL_HEAL	15	0	7
+Paladin	1042	Luz Sagrada	SPELL_HEAL	69	7	17
+Paladin	1866	Holy Strike	SPELL_DAMAGE	11	0	4
+Paladin	2495	Golpe Sagrado	SPELL_DAMAGE	204	21	12
+Paladin	2800	Impor as Mãos	SPELL_HEAL	14	2	12
+Paladin	3268	Primeiros Socorros	SPELL_PERIODIC_HEAL	14	0	1
+Paladin	3472	Luz Sagrada	SPELL_HEAL	5	1	3
+Paladin	5569	Golpe Sagrado	SPELL_DAMAGE	4	0	1
+Paladin	5614	Exorcismo	SPELL_DAMAGE	1	0	1
+Paladin	5615	Exorcismo	SPELL_DAMAGE	2	0	2
+Paladin	6064	Cura	SPELL_HEAL	1	0	1
+Paladin	6078	Renovar	SPELL_PERIODIC_HEAL	1	0	1
+Paladin	6263	Pedra de Vida Inferior	SPELL_HEAL	1	0	1
+Paladin	6910	Maldição dos Espinhos	SPELL_DAMAGE	17	0	2
+Paladin	7914	Capturar Espírito	SPELL_PERIODIC_DAMAGE	2	0	1
+Paladin	7926	Primeiros Socorros	SPELL_PERIODIC_HEAL	1	0	1
+Paladin	9784	Espigão de Escudo de Ferro	SPELL_DAMAGE	85	0	1
+Paladin	10328	Luz Sagrada	SPELL_HEAL	1	0	1
+Paladin	16368	Golpe de Labaredas	SPELL_DAMAGE	340	33	3
+Paladin	19939	Clarão de Luz	SPELL_HEAL	7	1	2
+Paladin	19940	Clarão de Luz	SPELL_HEAL	17	1	9
+Paladin	20167	Selo da Luz	SPELL_HEAL	2	0	1
+Paladin	20183	Julgamento da Fúria	SPELL_DAMAGE	5	0	1
+Paladin	20231	Selo da Fúria	SPELL_DAMAGE	13	0	1
+Paladin	20267	Julgamento da Luz	SPELL_HEAL	5	0	1
+Paladin	20280	Judgement of Righteousness	SPELL_DAMAGE	1	0	1
+Paladin	20281	Judgement of Righteousness	SPELL_DAMAGE	2	0	2
+Paladin	20282	Julgamento de Retidão	SPELL_DAMAGE	11	2	1
+Paladin	20283	Julgamento de Retidão	SPELL_DAMAGE	27	5	5
+Paladin	20411	Julgamento da Fúria	SPELL_DAMAGE	242	34	7
+Paladin	20412	Julgamento da Fúria	SPELL_DAMAGE	5	0	1
+Paladin	20415	Selo da Fúria	SPELL_DAMAGE	847	77	8
+Paladin	20416	Selo da Fúria	SPELL_DAMAGE	13	0	1
+Paladin	20424	Selo de Comando	SPELL_DAMAGE	267	25	21
+Paladin	20467	Julgamento de Comando	SPELL_DAMAGE	22	4	3
+Paladin	20578	Canibalizar	SPELL_PERIODIC_HEAL	29	0	10
+Paladin	20925	Escudo Sagrado	SPELL_DAMAGE	116	0	3
+Paladin	20927	Escudo Sagrado	SPELL_DAMAGE	1	0	1
+Paladin	20963	Julgamento de Comando	SPELL_DAMAGE	333	43	23
+Paladin	20964	Julgamento de Comando	SPELL_DAMAGE	3	1	2
+Paladin	25737	Selo da Retidão	SPELL_DAMAGE	77	4	5
+Paladin	25738	Selo da Retidão	SPELL_DAMAGE	21	2	1
+Paladin	25739	Selo da Retidão	SPELL_DAMAGE	6	2	3
+Paladin	25740	Seal of Righteousness	SPELL_DAMAGE	1	0	1
+Paladin	25741	Seal of Righteousness	SPELL_DAMAGE	1	0	1
+Paladin	25914	Choque Sagrado	SPELL_HEAL	1	1	1
+Paladin	25997	Olho por Olho	SPELL_DAMAGE	15	2	3
+Paladin	401863	Prayer of Mending	SPELL_HEAL	1	0	1
+Paladin	436432	Petisco do Rastro	SPELL_HEAL	1	0	1
+Paladin	436432	Petisco do Rastro	SPELL_PERIODIC_HEAL	2	0	1
+Paladin	456544	Escudo Sagrado	SPELL_DAMAGE	3	0	1
+Paladin	1260198	Toque do Túmulo	SPELL_DAMAGE	241	0	24
+Paladin	1260198	Toque do Túmulo	SPELL_HEAL	370	0	35
+Paladin	1261483	Emoção da Aventura	SPELL_PERIODIC_HEAL	485	0	10
+Paladin	1280345	Consagração	SPELL_DAMAGE	100	4	4
+Paladin	1280346	Consagração	SPELL_DAMAGE	6347	814	25
+Paladin	1280347	Consagração	SPELL_DAMAGE	17	1	1
+Paladin	1282503	Impacto Lufardente	SPELL_DAMAGE	35	3	2
+Paladin	1292657	Veneno Corrosivo	SPELL_PERIODIC_DAMAGE	23	1	2
+Paladin	1292675	Olho de Murloc Amaldiçoado	SPELL_DAMAGE	37	1	1
+Paladin	1292738	Golpe da Hidra	SPELL_DAMAGE	16	1	3
+Paladin	1292739	Golpe da Hidra	SPELL_DAMAGE	16	1	3
+Paladin	1292851	Raio	SPELL_DAMAGE	14	2	1
+Paladin	1292879	Raio	SPELL_DAMAGE	5	0	2
+Paladin	1293539	Retaliação Escarlate	SPELL_DAMAGE	1	0	1
+Paladin	1299850	Fireball	SPELL_DAMAGE	2	0	1
+Paladin	1299850	Fireball	SPELL_PERIODIC_DAMAGE	1	0	1
+Paladin	1309685	Algibeira de Poções	SPELL_DAMAGE	2	0	2
+Paladin	1311604	Choque Sagrado	SPELL_DAMAGE	2	1	1
+Paladin	1311647	Selo da Fúria	SPELL_DAMAGE	1	0	1
+Paladin	1311654	Seal of Fury	SPELL_DAMAGE	8	0	1
+Paladin	1311655	Judgement of Fury	SPELL_DAMAGE	2	0	1
+Paladin	1322218	Holy Forgefire	SPELL_DAMAGE	85	10	2
+Priest	441	Poção de Cura	SPELL_HEAL	1	0	1
+Priest	585	Smite	SPELL_DAMAGE	1	0	1
+Priest	589	Shadow Word: Pain	SPELL_PERIODIC_DAMAGE	4	1	2
+Priest	591	Smite	SPELL_DAMAGE	1	0	1
+Priest	594	Shadow Word: Pain	SPELL_PERIODIC_DAMAGE	2	0	1
+Priest	598	Smite	SPELL_DAMAGE	1	0	1
+Priest	970	Palavra Sombria: Dor	SPELL_PERIODIC_DAMAGE	20	1	3
+Priest	984	Punição	SPELL_DAMAGE	1	0	1
+Priest	992	Palavra Sombria: Dor	SPELL_PERIODIC_DAMAGE	106	6	13
+Priest	2053	Cura Inferior	SPELL_HEAL	9	0	4
+Priest	2055	Cura	SPELL_HEAL	3	0	3
+Priest	2061	Cura Célere	SPELL_HEAL	2	0	1
+Priest	2767	Palavra Sombria: Dor	SPELL_PERIODIC_DAMAGE	572	32	16
+Priest	2944	Peste Devoradora	SPELL_HEAL	89	0	8
+Priest	2944	Peste Devoradora	SPELL_PERIODIC_DAMAGE	27	0	3
+Priest	5019	Atirar	RANGE_DAMAGE	669	50	25
+Priest	6063	Heal	SPELL_HEAL	1	0	1
+Priest	6064	Cura	SPELL_HEAL	3	0	2
+Priest	6074	Renovar	SPELL_PERIODIC_HEAL	4	0	2
+Priest	6075	Renovar	SPELL_PERIODIC_HEAL	41	0	6
+Priest	6076	Renovar	SPELL_PERIODIC_HEAL	101	6	8
+Priest	6077	Renovar	SPELL_PERIODIC_HEAL	339	24	15
+Priest	6078	Renovar	SPELL_PERIODIC_HEAL	3	0	1
+Priest	8103	Impacto Mental	SPELL_DAMAGE	4	0	1
+Priest	8104	Impacto Mental	SPELL_DAMAGE	6	0	2
+Priest	8105	Impacto Mental	SPELL_DAMAGE	56	4	8
+Priest	8131	Exaurir Mana	SPELL_DAMAGE	14	0	1
+Priest	9472	Cura Célere	SPELL_HEAL	7	0	3
+Priest	9473	Cura Célere	SPELL_HEAL	37	1	4
+Priest	9474	Cura Célere	SPELL_HEAL	2	0	1
+Priest	10797	Fragmentos Estelares	SPELL_PERIODIC_DAMAGE	14	1	1
+Priest	14914	Holy Fire	SPELL_DAMAGE	1	0	1
+Priest	14914	Holy Fire	SPELL_PERIODIC_DAMAGE	2	0	1
+Priest	15262	Holy Fire	SPELL_DAMAGE	1	0	1
+Priest	15262	Holy Fire	SPELL_PERIODIC_DAMAGE	3	0	1
+Priest	15263	Fogo Sagrado	SPELL_DAMAGE	1	0	1
+Priest	15263	Fogo Sagrado	SPELL_PERIODIC_DAMAGE	5	1	2
+Priest	15264	Fogo Sagrado	SPELL_DAMAGE	4	1	1
+Priest	15264	Fogo Sagrado	SPELL_PERIODIC_DAMAGE	26	3	1
+Priest	15290	Abraço Vampírico	SPELL_HEAL	423	0	3
+Priest	17311	Açoite Mental	SPELL_PERIODIC_DAMAGE	46	0	1
+Priest	17312	Mind Flay	SPELL_PERIODIC_DAMAGE	115	11	2
+Priest	19238	Prece Desesperada	SPELL_HEAL	1	0	1
+Priest	19251	Toque de Fraqueza	SPELL_DAMAGE	8	0	3
+Priest	19276	Peste Devoradora	SPELL_HEAL	196	0	14
+Priest	19276	Peste Devoradora	SPELL_PERIODIC_DAMAGE	82	3	10
+Priest	19277	Peste Devoradora	SPELL_HEAL	260	0	9
+Priest	19277	Peste Devoradora	SPELL_PERIODIC_DAMAGE	235	20	5
+Priest	19299	Fragmentos Estelares	SPELL_PERIODIC_DAMAGE	27	2	2
+Priest	20578	Canibalizar	SPELL_PERIODIC_HEAL	26	0	3
+Priest	402284	Penitência	SPELL_DAMAGE	44	2	6
+Priest	402289	Penitência	SPELL_HEAL	49	3	5
+Priest	1260198	Toque do Túmulo	SPELL_DAMAGE	63	0	9
+Priest	1260198	Toque do Túmulo	SPELL_HEAL	91	0	14
+Priest	1261483	Emoção da Aventura	SPELL_PERIODIC_HEAL	107	0	8
+Priest	1292675	Olho de Murloc Amaldiçoado	SPELL_DAMAGE	21	0	2
+Priest	1309595	Palavra Sombria: Morte	SPELL_DAMAGE	58	2	10
+Rogue	53	Backstab	SPELL_DAMAGE	6	0	4
+Rogue	441	Poção de Cura	SPELL_HEAL	1	0	1
+Rogue	703	Garrote	SPELL_PERIODIC_DAMAGE	1	0	1
+Rogue	1159	Primeiros Socorros	SPELL_PERIODIC_HEAL	5	0	1
+Rogue	1752	Sinister Strike	SPELL_DAMAGE	162	13	33
+Rogue	1757	Sinister Strike	SPELL_DAMAGE	14	3	4
+Rogue	1758	Golpe Sinistro	SPELL_DAMAGE	13	1	7
+Rogue	1759	Golpe Sinistro	SPELL_DAMAGE	452	64	13
+Rogue	1760	Golpe Sinistro	SPELL_DAMAGE	804	86	28
+Rogue	1767	Chute	SPELL_DAMAGE	40	4	8
+Rogue	1776	Gouge	SPELL_DAMAGE	3	0	2
+Rogue	1777	Esfaquear	SPELL_DAMAGE	6	0	5
+Rogue	2024	Poção de Cura	SPELL_HEAL	5	0	4
+Rogue	2098	Eviscerate	SPELL_DAMAGE	58	4	27
+Rogue	2590	Punhalada pelas Costas	SPELL_DAMAGE	1	0	1
+Rogue	2591	Punhalada pelas Costas	SPELL_DAMAGE	6	4	1
+Rogue	2764	Lançar	RANGE_DAMAGE	39	5	18
+Rogue	2818	Veneno Mortal	SPELL_PERIODIC_DAMAGE	76	1	6
+Rogue	3267	First Aid	SPELL_PERIODIC_HEAL	7	0	1
+Rogue	3268	Primeiros Socorros	SPELL_PERIODIC_HEAL	55	0	4
+Rogue	4067	Bomba Grande de Bronze	SPELL_DAMAGE	2	0	1
+Rogue	6761	Eviscerar	SPELL_DAMAGE	1	0	1
+Rogue	6762	Eviscerar	SPELL_DAMAGE	69	2	9
+Rogue	7914	Capturar Espírito	SPELL_PERIODIC_DAMAGE	8	0	1
+Rogue	7918	Disparar Pistola	RANGE_DAMAGE	20	2	3
+Rogue	7926	Primeiros Socorros	SPELL_PERIODIC_HEAL	4	0	1
+Rogue	7927	Primeiros Socorros	SPELL_PERIODIC_HEAL	15	0	4
+Rogue	8313	Poison	SPELL_PERIODIC_DAMAGE	33	1	1
+Rogue	8621	Golpe Sinistro	SPELL_DAMAGE	33	4	5
+Rogue	8623	Eviscerar	SPELL_DAMAGE	158	18	26
+Rogue	8629	Esfaquear	SPELL_DAMAGE	18	1	10
+Rogue	8631	Garrote	SPELL_PERIODIC_DAMAGE	84	9	3
+Rogue	8632	Garrote	SPELL_PERIODIC_DAMAGE	176	21	7
+Rogue	8639	Ruptura	SPELL_PERIODIC_DAMAGE	24	3	4
+Rogue	8640	Ruptura	SPELL_PERIODIC_DAMAGE	17	1	2
+Rogue	8680	Veneno Instantâneo	SPELL_DAMAGE	358	7	10
+Rogue	8685	Veneno Instantâneo II	SPELL_DAMAGE	344	7	9
+Rogue	8689	Veneno Instantâneo III	SPELL_DAMAGE	25	1	4
+Rogue	8721	Punhalada pelas Costas	SPELL_DAMAGE	1	1	1
+Rogue	8724	Emboscar	SPELL_DAMAGE	6	0	3
+Rogue	8725	Emboscar	SPELL_DAMAGE	8	5	3
+Rogue	11790	Nuvem de Veneno	SPELL_PERIODIC_DAMAGE	6	0	2
+Rogue	14251	Ripostar	SPELL_DAMAGE	62	8	18
+Rogue	14278	Golpe Fantasmagórico	SPELL_DAMAGE	4	2	3
+Rogue	16368	Golpe de Labaredas	SPELL_DAMAGE	48	0	1
+Rogue	16403	Dilacerar	SPELL_PERIODIC_DAMAGE	7	0	1
+Rogue	16408	Seta Sombria	SPELL_DAMAGE	11	0	3
+Rogue	16409	Seta Sombria	SPELL_DAMAGE	2	0	2
+Rogue	16511	Hemorragia	SPELL_DAMAGE	17	1	4
+Rogue	20578	Canibalizar	SPELL_PERIODIC_HEAL	14	0	4
+Rogue	1230700	Rajada de Lâminas	SPELL_DAMAGE	326	0	9
+Rogue	1260198	Toque do Túmulo	SPELL_DAMAGE	182	0	18
+Rogue	1260198	Toque do Túmulo	SPELL_HEAL	266	0	20
+Rogue	1261483	Emoção da Aventura	SPELL_PERIODIC_HEAL	161	0	6
+Rogue	1292152	Seta de Fogo	SPELL_DAMAGE	8	1	5
+Rogue	1292675	Olho de Murloc Amaldiçoado	SPELL_DAMAGE	1797	25	3
+Rogue	1293183	Punhal Espinhado	SPELL_DAMAGE	3	0	2
+Rogue	1293333	Pragacardo	SPELL_DAMAGE	536	1	2
+Rogue	1309685	Algibeira de Poções	SPELL_DAMAGE	1	0	1
+Rogue	1309725	Poção de Cura	SPELL_HEAL	3	0	3
+Rogue	1329283	Estocar	SPELL_DAMAGE	411	49	39
+Rogue	1329549	Estocar	SPELL_DAMAGE	1	0	1
+Shaman	331	Healing Wave	SPELL_HEAL	1	0	1
+Shaman	403	Lightning Bolt	SPELL_DAMAGE	1	0	1
+Shaman	421	Cadeia de Raios	SPELL_DAMAGE	6	0	2
+Shaman	441	Poção de Cura	SPELL_HEAL	2	0	2
+Shaman	547	Healing Wave	SPELL_HEAL	1	0	1
+Shaman	913	Onda Curativa	SPELL_HEAL	12	2	4
+Shaman	930	Cadeia de Raios	SPELL_DAMAGE	5	0	1
+Shaman	939	Onda Curativa	SPELL_HEAL	3	0	3
+Shaman	943	Lightning Bolt	SPELL_DAMAGE	2	0	1
+Shaman	959	Onda Curativa	SPELL_HEAL	85	7	10
+Shaman	1064	Cura Encadeada	SPELL_HEAL	207	31	1
+Shaman	2024	Poção de Cura	SPELL_HEAL	1	0	1
+Shaman	6041	Raio	SPELL_DAMAGE	124	10	5
+Shaman	7914	Capturar Espírito	SPELL_PERIODIC_DAMAGE	2	0	1
+Shaman	7927	Primeiros Socorros	SPELL_PERIODIC_HEAL	3	0	1
+Shaman	8004	Lesser Healing Wave	SPELL_HEAL	3	1	2
+Shaman	8005	Onda Curativa	SPELL_HEAL	23	4	1
+Shaman	8008	Onda Curativa Menor	SPELL_HEAL	105	13	12
+Shaman	8010	Onda Curativa Menor	SPELL_HEAL	228	32	7
+Shaman	8045	Choque Terreno	SPELL_DAMAGE	3	1	1
+Shaman	8046	Choque Terreno	SPELL_DAMAGE	154	16	18
+Shaman	8052	Choque Flamejante	SPELL_DAMAGE	1	0	1
+Shaman	8052	Choque Flamejante	SPELL_PERIODIC_DAMAGE	1	0	1
+Shaman	8053	Choque Flamejante	SPELL_DAMAGE	96	6	13
+Shaman	8053	Choque Flamejante	SPELL_PERIODIC_DAMAGE	255	28	12
+Shaman	8056	Choque Gélido	SPELL_DAMAGE	10	1	4
+Shaman	8058	Choque Gélido	SPELL_DAMAGE	31	1	10
+Shaman	10391	Raio	SPELL_DAMAGE	1	0	1
+Shaman	10412	Choque Terreno	SPELL_DAMAGE	78	9	8
+Shaman	10444	Golpe de Labaredas	SPELL_DAMAGE	66	8	1
+Shaman	10447	Choque Flamejante	SPELL_DAMAGE	25	2	1
+Shaman	10447	Choque Flamejante	SPELL_PERIODIC_DAMAGE	35	7	1
+Shaman	16368	Golpe de Labaredas	SPELL_DAMAGE	278	34	3
+Shaman	17364	Ataque da Tempestade	SPELL_DAMAGE	399	46	32
+Shaman	26366	Escudo de Raios	SPELL_DAMAGE	55	0	6
+Shaman	26367	Escudo de Raios	SPELL_DAMAGE	48	0	14
+Shaman	408424	Fire Nova	SPELL_DAMAGE	75	5	3
+Shaman	408426	Nova de Fogo	SPELL_DAMAGE	47	6	7
+Shaman	439440	Arma de Fúria dos Ventos	SPELL_DAMAGE	165	22	20
+Shaman	1260270	Regeneração Rápida	SPELL_PERIODIC_HEAL	2	0	1
+Shaman	1261483	Emoção da Aventura	SPELL_PERIODIC_HEAL	206	0	9
+Shaman	1292675	Olho de Murloc Amaldiçoado	SPELL_DAMAGE	37	3	3
+Shaman	1292679	Lightning Bolt	SPELL_DAMAGE	47	9	1
+Shaman	1293333	Pragacardo	SPELL_DAMAGE	124	7	3
+Shaman	1293421	Seta Sombria	SPELL_DAMAGE	2	0	1
+Shaman	1293429	Tortura	SPELL_DAMAGE	45	0	1
+Shaman	1309685	Algibeira de Poções	SPELL_DAMAGE	1	0	1
+Shaman	1309725	Poção de Cura	SPELL_HEAL	1	0	1
+Warlock	348	Immolate	SPELL_DAMAGE	2	0	2
+Warlock	348	Immolate	SPELL_PERIODIC_DAMAGE	5	0	3
+Warlock	439	Poção de Cura	SPELL_HEAL	1	0	1
+Warlock	689	Drain Life	SPELL_HEAL	17	0	2
+Warlock	689	Drain Life	SPELL_PERIODIC_DAMAGE	5	0	1
+Warlock	695	Shadow Bolt	SPELL_DAMAGE	1	0	1
+Warlock	699	Drain Life	SPELL_HEAL	37	0	2
+Warlock	699	Drain Life	SPELL_PERIODIC_DAMAGE	3	0	1
+Warlock	707	Immolate	SPELL_PERIODIC_DAMAGE	3	0	2
+Warlock	709	Drenar Vida	SPELL_HEAL	176	0	11
+Warlock	709	Drenar Vida	SPELL_PERIODIC_DAMAGE	46	3	6
+Warlock	980	Ruína da Agonia	SPELL_PERIODIC_DAMAGE	5	0	2
+Warlock	1014	Bane of Agony	SPELL_PERIODIC_DAMAGE	41	2	6
+Warlock	1088	Shadow Bolt	SPELL_DAMAGE	5	1	1
+Warlock	1094	Immolate	SPELL_DAMAGE	5	0	3
+Warlock	1094	Immolate	SPELL_PERIODIC_DAMAGE	21	1	3
+Warlock	1106	Seta Sombria	SPELL_DAMAGE	8	2	3
+Warlock	1120	Drenar Alma	SPELL_PERIODIC_DAMAGE	1	0	1
+Warlock	2941	Imolação	SPELL_DAMAGE	9	0	6
+Warlock	2941	Imolação	SPELL_PERIODIC_DAMAGE	24	0	6
+Warlock	3699	Funil de Vida	SPELL_PERIODIC_DAMAGE	19	0	2
+Warlock	3699	Funil de Vida	SPELL_PERIODIC_HEAL	19	0	2
+Warlock	4042	Poção de Cura	SPELL_HEAL	1	0	1
+Warlock	5019	Atirar	RANGE_DAMAGE	75	5	14
+Warlock	5720	Pedra de Vida	SPELL_HEAL	1	0	1
+Warlock	6217	Ruína da Agonia	SPELL_PERIODIC_DAMAGE	233	9	17
+Warlock	6222	Corruption	SPELL_PERIODIC_DAMAGE	12	2	4
+Warlock	6223	Corrupção	SPELL_PERIODIC_DAMAGE	52	0	6
+Warlock	7641	Seta Sombria	SPELL_DAMAGE	4	1	2
+Warlock	7648	Corrupção	SPELL_PERIODIC_DAMAGE	123	9	15
+Warlock	7914	Capturar Espírito	SPELL_PERIODIC_DAMAGE	1	0	1
+Warlock	7926	Primeiros Socorros	SPELL_PERIODIC_HEAL	16	0	1
+Warlock	8288	Drain Soul	SPELL_PERIODIC_DAMAGE	6	0	3
+Warlock	11683	Fogo do Inferno	SPELL_PERIODIC_DAMAGE	7	0	1
+Warlock	11711	Ruína da Agonia	SPELL_PERIODIC_DAMAGE	28	1	2
+Warlock	17920	Dor Lancinante	SPELL_DAMAGE	9	0	2
+Warlock	18265	Sifão de Vida	SPELL_HEAL	157	0	9
+Warlock	18265	Sifão de Vida	SPELL_PERIODIC_DAMAGE	76	7	8
+Warlock	18879	Sifão de Vida	SPELL_HEAL	37	0	1
+Warlock	18879	Sifão de Vida	SPELL_PERIODIC_DAMAGE	9	0	1
+Warlock	20578	Canibalizar	SPELL_PERIODIC_HEAL	13	0	3
+Warlock	1243028	Energias Demoníacas	SPELL_HEAL	328	0	6
+Warlock	1260198	Toque do Túmulo	SPELL_DAMAGE	8	0	4
+Warlock	1260198	Toque do Túmulo	SPELL_HEAL	20	0	9
+Warlock	1261483	Emoção da Aventura	SPELL_PERIODIC_HEAL	46	0	4
+Warlock	1282380	Chuva de Fogo	SPELL_DAMAGE	25	4	2
+Warlock	1282383	Chuva de Fogo	SPELL_DAMAGE	4	0	1
+Warlock	1292675	Olho de Murloc Amaldiçoado	SPELL_DAMAGE	9	2	1
+Warlock	1316697	Destruição	SPELL_PERIODIC_DAMAGE	13	1	1
+Warrior	72	Trombada com Escudo	SPELL_DAMAGE	2	0	2
+Warrior	78	Heroic Strike	SPELL_DAMAGE	24	1	11
+Warrior	284	Golpe Heroico	SPELL_DAMAGE	4	1	3
+Warrior	285	Golpe Heroico	SPELL_DAMAGE	1	0	1
+Warrior	440	Poção de Cura	SPELL_HEAL	1	0	1
+Warrior	441	Poção de Cura	SPELL_HEAL	4	0	4
+Warrior	772	Rend	SPELL_PERIODIC_DAMAGE	41	0	11
+Warrior	845	Cutilada	SPELL_DAMAGE	45	7	3
+Warrior	1464	Slam	SPELL_DAMAGE	2	0	1
+Warrior	1608	Heroic Strike	SPELL_DAMAGE	17	2	5
+Warrior	1671	Trombada com Escudo	SPELL_DAMAGE	27	0	3
+Warrior	1680	Redemoinho	SPELL_DAMAGE	6	1	4
+Warrior	1715	Cortar Tendão	SPELL_DAMAGE	9	1	3
+Warrior	2024	Poção de Cura	SPELL_HEAL	3	0	3
+Warrior	2480	Shoot Bow	RANGE_DAMAGE	1	0	1
+Warrior	2764	Lançar	RANGE_DAMAGE	4	0	2
+Warrior	4062	Dinamite Pesada	SPELL_DAMAGE	6	0	1
+Warrior	4066	Small Bronze Bomb	SPELL_DAMAGE	28	0	1
+Warrior	6343	Trovoada	SPELL_DAMAGE	4	0	2
+Warrior	6546	Dilacerar	SPELL_PERIODIC_DAMAGE	1	0	1
+Warrior	6547	Dilacerar	SPELL_PERIODIC_DAMAGE	35	2	6
+Warrior	6548	Dilacerar	SPELL_PERIODIC_DAMAGE	693	52	31
+Warrior	6552	Murro	SPELL_DAMAGE	1	0	1
+Warrior	6572	Revenge	SPELL_DAMAGE	7	1	3
+Warrior	6574	Revanche	SPELL_DAMAGE	115	8	8
+Warrior	6910	Maldição dos Espinhos	SPELL_DAMAGE	9	0	2
+Warrior	7369	Cutilada	SPELL_DAMAGE	130	7	9
+Warrior	7372	Cortar Tendão	SPELL_DAMAGE	47	4	11
+Warrior	7379	Revanche	SPELL_DAMAGE	342	19	12
+Warrior	7887	Subjugar	SPELL_DAMAGE	22	11	12
+Warrior	7914	Capturar Espírito	SPELL_PERIODIC_DAMAGE	16	0	2
+Warrior	7918	Disparar Pistola	RANGE_DAMAGE	1	0	1
+Warrior	7926	Primeiros Socorros	SPELL_PERIODIC_HEAL	7	0	3
+Warrior	7927	Primeiros Socorros	SPELL_PERIODIC_HEAL	50	0	6
+Warrior	8198	Thunder Clap	SPELL_DAMAGE	7	0	3
+Warrior	8204	Trovoada	SPELL_DAMAGE	591	8	21
+Warrior	8205	Trovoada	SPELL_DAMAGE	143	4	4
+Warrior	9784	Espigão de Escudo de Ferro	SPELL_DAMAGE	5	0	1
+Warrior	11564	Golpe Heroico	SPELL_DAMAGE	82	6	15
+Warrior	11572	Dilacerar	SPELL_PERIODIC_DAMAGE	1	0	1
+Warrior	12723	Golpes a Esmo	SPELL_DAMAGE	15	0	4
+Warrior	13530	Corrupção	SPELL_PERIODIC_DAMAGE	3	0	1
+Warrior	16368	Golpe de Labaredas	SPELL_DAMAGE	55	0	1
+Warrior	16408	Seta Sombria	SPELL_DAMAGE	2	0	1
+Warrior	16488	Fervor Sangrento	SPELL_PERIODIC_HEAL	15	0	4
+Warrior	18091	Arcane Blast	SPELL_DAMAGE	1	0	1
+Warrior	20240	Retaliação	SPELL_DAMAGE	34	3	3
+Warrior	20253	Atordoamento de Interceptar	SPELL_DAMAGE	13	1	10
+Warrior	20578	Canibalizar	SPELL_PERIODIC_HEAL	1	0	1
+Warrior	20647	Executar	SPELL_DAMAGE	32	5	15
+Warrior	23881	Sede de Sangue	SPELL_DAMAGE	3	0	2
+Warrior	23922	Escudada	SPELL_DAMAGE	27	1	1
+Warrior	26654	Golpes a Esmo	SPELL_DAMAGE	1	0	1
+Warrior	402927	Ímpeto da Vitória	SPELL_DAMAGE	56	3	17
+Warrior	402927	Ímpeto da Vitória	SPELL_HEAL	135	4	30
+Warrior	412613	Ferida Profunda	SPELL_DAMAGE	60	0	12
+Warrior	462891	Redemoinho	SPELL_DAMAGE	7	0	4
+Warrior	1240193	Batida	SPELL_DAMAGE	1	1	1
+Warrior	1260198	Toque do Túmulo	SPELL_DAMAGE	35	0	3
+Warrior	1260198	Toque do Túmulo	SPELL_HEAL	54	0	6
+Warrior	1261483	Emoção da Aventura	SPELL_PERIODIC_HEAL	307	0	14
+Warrior	1292039	Spikes	SPELL_DAMAGE	3	0	1
+Warrior	1292657	Veneno Corrosivo	SPELL_PERIODIC_DAMAGE	2	0	1
+Warrior	1292675	Olho de Murloc Amaldiçoado	SPELL_DAMAGE	117	1	3
+Warrior	1292738	Golpe da Hidra	SPELL_DAMAGE	1	0	1
+Warrior	1292739	Golpe da Hidra	SPELL_DAMAGE	1	0	1
+Warrior	1292746	Martírio	SPELL_DAMAGE	2	0	1
+Warrior	1292879	Raio	SPELL_DAMAGE	1	0	1
+Warrior	1293183	Punhal Espinhado	SPELL_DAMAGE	2	0	1
+Warrior	1293421	Seta Sombria	SPELL_DAMAGE	28	0	2
+Warrior	1295065	Mordida Fatal	SPELL_DAMAGE	19	3	1
+Warrior	1295065	Mordida Fatal	SPELL_HEAL	22	0	1
+Warrior	1309685	Algibeira de Poções	SPELL_DAMAGE	1	0	1
+Warrior	1310197	Batida	SPELL_DAMAGE	15	2	3
+Warrior	1310198	Batida	SPELL_DAMAGE	1	0	1
+Warrior	1310222	Golpe Lanceador	SPELL_DAMAGE	29	0	7
+Warrior	1323968	Bebedor de Sangue	SPELL_HEAL	227	0	6

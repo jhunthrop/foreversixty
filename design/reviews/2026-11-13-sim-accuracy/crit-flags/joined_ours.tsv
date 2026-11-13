@@ -1,0 +1,590 @@
+class	spell	name	event	events	crits	pct	players	cant	pcc
+?	1159	First Aid	SPELL_PERIODIC_HEAL	6	0	0.0	1	-	-
+?	1309725	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+?	5019	Shoot	RANGE_DAMAGE	1	0	0.0	1	-	-
+Druid	1058	Rejuvenation	SPELL_PERIODIC_HEAL	11	0	0.0	5	-	PCC
+Druid	1062	Entangling Roots	SPELL_PERIODIC_DAMAGE	3	1	33.3	1	-	PCC
+Druid	1079	Rip	SPELL_PERIODIC_DAMAGE	24	3	12.5	4	-	PCC
+Druid	1082	Claw	SPELL_DAMAGE	15	2	13.3	6	-	-
+Druid	10838	First Aid	SPELL_PERIODIC_HEAL	1	0	0.0	1	-	-
+Druid	1261483	Thrill of Adventure	SPELL_PERIODIC_HEAL	183	0	0.0	8	-	-
+Druid	1292675	Cursed Murloc Eye	SPELL_DAMAGE	39	2	5.1	1	-	-
+Druid	1293333	Thorncurse	SPELL_DAMAGE	315	38	12.1	2	-	-
+Druid	1309725	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Druid	1328616	Lacerate	SPELL_PERIODIC_DAMAGE	36	6	16.7	2	-	PCC
+Druid	1328618	Ferocious Bite	SPELL_DAMAGE	29	8	27.6	4	-	-
+Druid	1328622	Bloom	SPELL_HEAL	3	1	33.3	3	-	-
+Druid	1430	Rejuvenation	SPELL_PERIODIC_HEAL	27	1	3.7	5	-	PCC
+Druid	16368	Flametongue Attack	SPELL_DAMAGE	384	54	14.1	1	-	-
+Druid	1757	Sinister Strike	SPELL_DAMAGE	13	1	7.7	1	-	-
+Druid	1822	Rake	SPELL_DAMAGE	68	12	17.6	13	-	PCC
+Druid	1822	Rake	SPELL_PERIODIC_DAMAGE	137	25	18.2	14	-	PCC
+Druid	1823	Rake	SPELL_DAMAGE	2503	426	17.0	19	-	PCC
+Druid	1823	Rake	SPELL_PERIODIC_DAMAGE	3498	531	15.2	19	-	PCC
+Druid	1824	Rake	SPELL_DAMAGE	1	0	0.0	1	-	PCC
+Druid	18562	Swiftmend	SPELL_HEAL	1	0	0.0	1	-	-
+Druid	19972	Entangling Roots	SPELL_PERIODIC_DAMAGE	2	0	0.0	1	-	PCC
+Druid	19973	Entangling Roots	SPELL_PERIODIC_DAMAGE	34	3	8.8	9	-	PCC
+Druid	19974	Entangling Roots	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	PCC
+Druid	2024	Healing Potion	SPELL_HEAL	17	2	11.8	5	-	-
+Druid	2090	Rejuvenation	SPELL_PERIODIC_HEAL	66	5	7.6	12	-	PCC
+Druid	2091	Rejuvenation	SPELL_PERIODIC_HEAL	120	13	10.8	11	-	PCC
+Druid	2098	Eviscerate	SPELL_DAMAGE	4	0	0.0	1	-	-
+Druid	22568	Ferocious Bite	SPELL_DAMAGE	603	97	16.1	16	-	-
+Druid	22827	Ferocious Bite	SPELL_DAMAGE	122	14	11.5	1	-	-
+Druid	22845	Frenzied Regeneration	SPELL_HEAL	29	0	0.0	2	CANT	-
+Druid	2480	Shoot Bow	RANGE_DAMAGE	1	0	0.0	1	-	-
+Druid	24974	Insect Swarm	SPELL_PERIODIC_DAMAGE	76	8	10.5	4	-	PCC
+Druid	2912	Starfire	SPELL_DAMAGE	1	0	0.0	1	-	-
+Druid	3029	Claw	SPELL_DAMAGE	1318	198	15.0	32	-	-
+Druid	3627	Rejuvenation	SPELL_PERIODIC_HEAL	394	43	10.9	19	-	PCC
+Druid	414647	Lacerate	SPELL_DAMAGE	24	2	8.3	3	-	-
+Druid	441	Healing Potion	SPELL_HEAL	1	1	100.0	1	-	-
+Druid	5176	Wrath	SPELL_DAMAGE	999	54	5.4	131	-	-
+Druid	5177	Wrath	SPELL_DAMAGE	104	8	7.7	14	-	-
+Druid	5179	Wrath	SPELL_DAMAGE	154	16	10.4	2	-	-
+Druid	5180	Wrath	SPELL_DAMAGE	6	0	0.0	3	-	-
+Druid	5185	Healing Touch	SPELL_HEAL	46	4	8.7	34	-	-
+Druid	5187	Healing Touch	SPELL_HEAL	3	0	0.0	3	-	-
+Druid	5188	Healing Touch	SPELL_HEAL	1	0	0.0	1	-	-
+Druid	5189	Healing Touch	SPELL_HEAL	9	1	11.1	5	-	-
+Druid	5195	Entangling Roots	SPELL_PERIODIC_DAMAGE	2	0	0.0	1	-	PCC
+Druid	5196	Entangling Roots	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	PCC
+Druid	5201	Claw	SPELL_DAMAGE	442	88	19.9	7	-	-
+Druid	5221	Shred	SPELL_DAMAGE	5	1	20.0	3	-	-
+Druid	5570	Insect Swarm	SPELL_PERIODIC_DAMAGE	250	14	5.6	1	-	PCC
+Druid	6343	Thunder Clap	SPELL_DAMAGE	2	0	0.0	1	-	-
+Druid	6778	Healing Touch	SPELL_HEAL	11	0	0.0	7	-	-
+Druid	6780	Wrath	SPELL_DAMAGE	2	0	0.0	1	-	-
+Druid	6785	Ravage	SPELL_DAMAGE	339	55	16.2	12	-	-
+Druid	6787	Ravage	SPELL_DAMAGE	1	1	100.0	1	-	-
+Druid	6800	Shred	SPELL_DAMAGE	11	2	18.2	4	-	-
+Druid	6807	Maul	SPELL_DAMAGE	2	0	0.0	1	-	-
+Druid	6808	Maul	SPELL_DAMAGE	31	1	3.2	1	-	-
+Druid	6809	Maul	SPELL_DAMAGE	8	3	37.5	3	-	-
+Druid	6910	Curse of Thorns	SPELL_DAMAGE	55	0	0.0	2	-	-
+Druid	740	Tranquility	SPELL_PERIODIC_HEAL	36	2	5.6	2	-	PCC
+Druid	769	Swipe	SPELL_DAMAGE	139	28	20.1	6	-	-
+Druid	772	Rend	SPELL_PERIODIC_DAMAGE	7	0	0.0	1	-	PCC
+Druid	774	Rejuvenation	SPELL_PERIODIC_HEAL	192	0	0.0	30	-	PCC
+Druid	78	Heroic Strike	SPELL_DAMAGE	4	0	0.0	1	-	-
+Druid	780	Swipe	SPELL_DAMAGE	2	0	0.0	1	-	-
+Druid	7914	Capture Spirit	SPELL_PERIODIC_DAMAGE	25	0	0.0	2	-	-
+Druid	8903	Healing Touch	SPELL_HEAL	4	0	0.0	2	-	-
+Druid	8910	Rejuvenation	SPELL_PERIODIC_HEAL	64	3	4.7	3	-	PCC
+Druid	8921	Moonfire	SPELL_DAMAGE	222	16	7.2	65	-	PCC
+Druid	8921	Moonfire	SPELL_PERIODIC_DAMAGE	448	21	4.7	65	-	PCC
+Druid	8924	Moonfire	SPELL_DAMAGE	1	0	0.0	1	-	PCC
+Druid	8924	Moonfire	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	PCC
+Druid	8925	Moonfire	SPELL_DAMAGE	5	0	0.0	2	-	PCC
+Druid	8925	Moonfire	SPELL_PERIODIC_DAMAGE	28	1	3.6	2	-	PCC
+Druid	8926	Moonfire	SPELL_DAMAGE	3	0	0.0	2	-	PCC
+Druid	8926	Moonfire	SPELL_PERIODIC_DAMAGE	12	0	0.0	3	-	PCC
+Druid	8927	Moonfire	SPELL_DAMAGE	52	10	19.2	5	-	PCC
+Druid	8927	Moonfire	SPELL_PERIODIC_DAMAGE	195	45	23.1	3	-	PCC
+Druid	8928	Moonfire	SPELL_DAMAGE	85	8	9.4	8	-	PCC
+Druid	8928	Moonfire	SPELL_PERIODIC_DAMAGE	246	35	14.2	9	-	PCC
+Druid	8929	Moonfire	SPELL_DAMAGE	8	0	0.0	1	-	PCC
+Druid	8929	Moonfire	SPELL_PERIODIC_DAMAGE	25	5	20.0	1	-	PCC
+Druid	8936	Regrowth	SPELL_HEAL	5	1	20.0	2	-	PCC
+Druid	8936	Regrowth	SPELL_PERIODIC_HEAL	9	1	11.1	2	-	PCC
+Druid	8938	Regrowth	SPELL_HEAL	4	1	25.0	3	-	PCC
+Druid	8938	Regrowth	SPELL_PERIODIC_HEAL	33	3	9.1	6	-	PCC
+Druid	8939	Regrowth	SPELL_HEAL	22	3	13.6	6	-	PCC
+Druid	8939	Regrowth	SPELL_PERIODIC_HEAL	174	18	10.3	6	-	PCC
+Druid	8940	Regrowth	SPELL_HEAL	100	3	3.0	13	-	PCC
+Druid	8940	Regrowth	SPELL_PERIODIC_HEAL	621	80	12.9	18	-	PCC
+Druid	8941	Regrowth	SPELL_HEAL	150	4	2.7	11	-	PCC
+Druid	8941	Regrowth	SPELL_PERIODIC_HEAL	778	85	10.9	11	-	PCC
+Druid	8949	Starfire	SPELL_DAMAGE	2	0	0.0	1	-	-
+Druid	8950	Starfire	SPELL_DAMAGE	2	0	0.0	2	-	-
+Druid	8972	Maul	SPELL_DAMAGE	12	2	16.7	3	-	-
+Druid	8992	Shred	SPELL_DAMAGE	133	20	15.0	1	-	-
+Druid	9007	Pounce Bleed	SPELL_PERIODIC_DAMAGE	9	3	33.3	3	-	PCC
+Druid	9492	Rip	SPELL_PERIODIC_DAMAGE	149	13	8.7	11	-	PCC
+Druid	9493	Rip	SPELL_PERIODIC_DAMAGE	114	24	21.1	8	-	PCC
+Druid	9750	Regrowth	SPELL_HEAL	4	1	25.0	1	-	PCC
+Druid	9750	Regrowth	SPELL_PERIODIC_HEAL	18	1	5.6	1	-	PCC
+Druid	9849	Claw	SPELL_DAMAGE	1	0	0.0	1	-	-
+Hunter	1159	First Aid	SPELL_PERIODIC_HEAL	18	0	0.0	1	-	-
+Hunter	1259231	Infusion of Wind	SPELL_HEAL	1	0	0.0	1	-	-
+Hunter	1260270	Rapid Regeneration	SPELL_PERIODIC_HEAL	5	0	0.0	1	-	-
+Hunter	1261483	Thrill of Adventure	SPELL_PERIODIC_HEAL	322	0	0.0	17	-	-
+Hunter	1292675	Cursed Murloc Eye	SPELL_DAMAGE	248	11	4.4	2	-	-
+Hunter	1293241	Summon Hawk	SPELL_DAMAGE	133	8	6.0	19	-	-
+Hunter	1293333	Thorncurse	SPELL_DAMAGE	85	14	16.5	2	-	-
+Hunter	1293525	Summon Hawk	SPELL_DAMAGE	35	0	0.0	6	-	-
+Hunter	1293714	Spellsever	SPELL_DAMAGE	3	0	0.0	3	-	-
+Hunter	1317257	Strider Kick	SPELL_DAMAGE	11	2	18.2	2	-	-
+Hunter	13549	Serpent Sting	SPELL_PERIODIC_DAMAGE	22	2	9.1	2	-	PCC
+Hunter	13550	Serpent Sting	SPELL_PERIODIC_DAMAGE	31	4	12.9	7	-	PCC
+Hunter	13551	Serpent Sting	SPELL_PERIODIC_DAMAGE	231	6	2.6	18	-	PCC
+Hunter	13552	Serpent Sting	SPELL_PERIODIC_DAMAGE	146	8	5.5	15	-	PCC
+Hunter	136	Mend Pet	SPELL_PERIODIC_HEAL	5	1	20.0	1	-	PCC
+Hunter	13797	Immolation Trap	SPELL_PERIODIC_DAMAGE	3	1	33.3	1	-	PCC
+Hunter	13812	Explosive Trap	SPELL_DAMAGE	8	1	12.5	3	-	PCC
+Hunter	13812	Explosive Trap	SPELL_PERIODIC_DAMAGE	24	2	8.3	2	-	PCC
+Hunter	14261	Raptor Strike	SPELL_DAMAGE	10	0	0.0	5	-	-
+Hunter	14262	Raptor Strike	SPELL_DAMAGE	6	1	16.7	2	-	-
+Hunter	14263	Raptor Strike	SPELL_DAMAGE	28	3	10.7	9	-	-
+Hunter	14264	Raptor Strike	SPELL_DAMAGE	1	0	0.0	1	-	-
+Hunter	14267	Wing Clip	SPELL_DAMAGE	2	0	0.0	2	-	-
+Hunter	14269	Mongoose Bite	SPELL_DAMAGE	4	1	25.0	2	-	-
+Hunter	14281	Arcane Shot	SPELL_DAMAGE	1	0	0.0	1	-	-
+Hunter	14282	Arcane Shot	SPELL_DAMAGE	11	2	18.2	6	-	-
+Hunter	14283	Arcane Shot	SPELL_DAMAGE	97	7	7.2	22	-	-
+Hunter	14284	Arcane Shot	SPELL_DAMAGE	24	5	20.8	9	-	-
+Hunter	14298	Immolation Trap	SPELL_PERIODIC_DAMAGE	28	3	10.7	6	-	PCC
+Hunter	1495	Mongoose Bite	SPELL_DAMAGE	1	0	0.0	1	-	-
+Hunter	19434	Aimed Shot	SPELL_DAMAGE	6	0	0.0	3	-	-
+Hunter	1978	Serpent Sting	SPELL_PERIODIC_DAMAGE	232	9	3.9	16	-	PCC
+Hunter	20900	Aimed Shot	SPELL_DAMAGE	63	3	4.8	19	-	-
+Hunter	20901	Aimed Shot	SPELL_DAMAGE	21	1	4.8	10	-	-
+Hunter	2643	Multi-Shot	SPELL_DAMAGE	33	3	9.1	12	-	-
+Hunter	29646	Quill Shot	SPELL_DAMAGE	1	0	0.0	1	-	-
+Hunter	2973	Raptor Strike	SPELL_DAMAGE	277	15	5.4	49	-	-
+Hunter	2974	Wing Clip	SPELL_DAMAGE	9	0	0.0	6	-	-
+Hunter	3044	Arcane Shot	SPELL_DAMAGE	40	1	2.5	3	-	-
+Hunter	3111	Mend Pet	SPELL_PERIODIC_HEAL	5	1	20.0	1	-	PCC
+Hunter	3268	First Aid	SPELL_PERIODIC_HEAL	7	0	0.0	2	-	-
+Hunter	3661	Mend Pet	SPELL_PERIODIC_HEAL	24	1	4.2	2	-	PCC
+Hunter	4042	Healing Potion	SPELL_HEAL	2	0	0.0	2	-	-
+Hunter	439	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Hunter	440	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Hunter	441	Healing Potion	SPELL_HEAL	2	1	50.0	2	-	-
+Hunter	75	Auto Shot	RANGE_DAMAGE	880	52	5.9	95	-	-
+Hunter	7914	Capture Spirit	SPELL_PERIODIC_DAMAGE	10	0	0.0	3	-	-
+Hunter	7927	First Aid	SPELL_PERIODIC_HEAL	26	0	0.0	3	-	-
+Mage	10159	Cone of Cold	SPELL_DAMAGE	2	0	0.0	1	-	-
+Mage	10179	Frostbolt	SPELL_DAMAGE	2	1	50.0	1	-	-
+Mage	116	Frostbolt	SPELL_DAMAGE	118	6	5.1	25	-	-
+Mage	120	Cone of Cold	SPELL_DAMAGE	17	0	0.0	4	-	-
+Mage	122	Frost Nova	SPELL_DAMAGE	56	4	7.1	11	-	-
+Mage	1239696	Arcane Blast	SPELL_DAMAGE	110	17	15.5	12	-	-
+Mage	1240044	Ice Lance	SPELL_DAMAGE	32	13	40.6	7	-	-
+Mage	12523	Pyroblast	SPELL_DAMAGE	1	0	0.0	1	-	PCC
+Mage	12523	Pyroblast	SPELL_PERIODIC_DAMAGE	2	0	0.0	1	-	PCC
+Mage	1260198	Touch of the Grave	SPELL_DAMAGE	109	0	0.0	15	CANT	-
+Mage	1260198	Touch of the Grave	SPELL_HEAL	166	0	0.0	18	CANT	-
+Mage	1260270	Rapid Regeneration	SPELL_PERIODIC_HEAL	5	0	0.0	1	-	-
+Mage	1261483	Thrill of Adventure	SPELL_PERIODIC_HEAL	111	0	0.0	4	-	-
+Mage	1279977	Blizzard	SPELL_DAMAGE	28	0	0.0	1	-	-
+Mage	1279978	Blizzard	SPELL_DAMAGE	1377	821	59.6	1	-	-
+Mage	1292675	Cursed Murloc Eye	SPELL_DAMAGE	8	0	0.0	1	-	-
+Mage	1312002	Ice Lance	SPELL_DAMAGE	2	1	50.0	1	-	-
+Mage	1326079	Arcane Wrath	SPELL_DAMAGE	39	5	12.8	8	-	-
+Mage	1326080	Arcane Wrath	SPELL_DAMAGE	14	2	14.3	1	-	-
+Mage	133	Fireball	SPELL_DAMAGE	375	17	4.5	65	-	PCC
+Mage	133	Fireball	SPELL_PERIODIC_DAMAGE	220	16	7.3	63	-	PCC
+Mage	143	Fireball	SPELL_DAMAGE	22	3	13.6	5	-	PCC
+Mage	143	Fireball	SPELL_PERIODIC_DAMAGE	18	1	5.6	4	-	PCC
+Mage	145	Fireball	SPELL_DAMAGE	5	0	0.0	1	-	PCC
+Mage	145	Fireball	SPELL_PERIODIC_DAMAGE	16	2	12.5	1	-	PCC
+Mage	2024	Healing Potion	SPELL_HEAL	3	0	0.0	3	-	-
+Mage	205	Frostbolt	SPELL_DAMAGE	161	8	5.0	1	-	-
+Mage	20578	Cannibalize	SPELL_PERIODIC_HEAL	20	0	0.0	4	-	-
+Mage	2136	Fire Blast	SPELL_DAMAGE	15	0	0.0	7	-	-
+Mage	2137	Fire Blast	SPELL_DAMAGE	6	0	0.0	3	-	-
+Mage	2138	Fire Blast	SPELL_DAMAGE	1	1	100.0	1	-	-
+Mage	3140	Fireball	SPELL_DAMAGE	1	0	0.0	1	-	PCC
+Mage	3140	Fireball	SPELL_PERIODIC_DAMAGE	3	0	0.0	1	-	PCC
+Mage	400574	Arcane Blast	SPELL_DAMAGE	21	1	4.8	2	-	-
+Mage	400640	Ice Lance	SPELL_DAMAGE	7	2	28.6	3	-	-
+Mage	412545	Ignite	SPELL_DAMAGE	2	0	0.0	1	CANT	-
+Mage	5019	Shoot	RANGE_DAMAGE	234	20	8.5	15	-	-
+Mage	7268	Arcane Missile	SPELL_DAMAGE	3	0	0.0	1	-	-
+Mage	7270	Arcane Missiles	SPELL_DAMAGE	221	35	15.8	3	-	-
+Mage	7322	Frostbolt	SPELL_DAMAGE	33	2	6.1	3	-	-
+Mage	7914	Capture Spirit	SPELL_PERIODIC_DAMAGE	23	0	0.0	1	-	-
+Mage	7927	First Aid	SPELL_PERIODIC_HEAL	8	0	0.0	1	-	-
+Mage	837	Frostbolt	SPELL_DAMAGE	4	0	0.0	1	-	-
+Mage	8400	Fireball	SPELL_DAMAGE	2	0	0.0	1	-	PCC
+Mage	8400	Fireball	SPELL_PERIODIC_DAMAGE	3	0	0.0	1	-	PCC
+Mage	8401	Fireball	SPELL_DAMAGE	1	0	0.0	1	-	PCC
+Mage	8402	Fireball	SPELL_DAMAGE	6	2	33.3	1	-	PCC
+Mage	8402	Fireball	SPELL_PERIODIC_DAMAGE	10	2	20.0	1	-	PCC
+Mage	8406	Frostbolt	SPELL_DAMAGE	21	5	23.8	5	-	-
+Mage	8407	Frostbolt	SPELL_DAMAGE	265	42	15.8	11	-	-
+Mage	8408	Frostbolt	SPELL_DAMAGE	10	4	40.0	1	-	-
+Mage	8412	Fire Blast	SPELL_DAMAGE	133	15	11.3	21	-	-
+Mage	8413	Fire Blast	SPELL_DAMAGE	1	1	100.0	1	-	-
+Mage	8419	Arcane Missiles	SPELL_DAMAGE	286	23	8.0	13	-	-
+Mage	8422	Flamestrike	SPELL_DAMAGE	2	0	0.0	2	-	-
+Mage	8438	Arcane Explosion	SPELL_DAMAGE	174	30	17.2	15	-	-
+Mage	8439	Arcane Explosion	SPELL_DAMAGE	2	0	0.0	1	-	-
+Mage	8445	Scorch	SPELL_DAMAGE	1	0	0.0	1	-	-
+Mage	8492	Cone of Cold	SPELL_DAMAGE	78	4	5.1	7	-	-
+Mage	865	Frost Nova	SPELL_DAMAGE	44	6	13.6	14	-	-
+Paladin	1026	Holy Light	SPELL_HEAL	15	0	0.0	7	-	-
+Paladin	10328	Holy Light	SPELL_HEAL	1	0	0.0	1	-	-
+Paladin	1042	Holy Light	SPELL_HEAL	69	7	10.1	17	-	-
+Paladin	1260198	Touch of the Grave	SPELL_DAMAGE	241	0	0.0	24	CANT	-
+Paladin	1260198	Touch of the Grave	SPELL_HEAL	370	0	0.0	35	CANT	-
+Paladin	1261483	Thrill of Adventure	SPELL_PERIODIC_HEAL	485	0	0.0	10	-	-
+Paladin	1280345	Consecration	SPELL_DAMAGE	100	4	4.0	4	-	-
+Paladin	1280346	Consecration	SPELL_DAMAGE	6347	814	12.8	25	-	-
+Paladin	1280347	Consecration	SPELL_DAMAGE	17	1	5.9	1	-	-
+Paladin	1282503	Blazewind Blast	SPELL_DAMAGE	35	3	8.6	2	-	-
+Paladin	1292657	Corrosive Poison	SPELL_PERIODIC_DAMAGE	23	1	4.3	2	-	PCC
+Paladin	1292675	Cursed Murloc Eye	SPELL_DAMAGE	37	1	2.7	1	-	-
+Paladin	1292738	Hydra Strike	SPELL_DAMAGE	16	1	6.2	3	-	-
+Paladin	1292739	Hydra Strike	SPELL_DAMAGE	16	1	6.2	3	-	-
+Paladin	1292851	Lightning Bolt	SPELL_DAMAGE	14	2	14.3	1	-	-
+Paladin	1292879	Lightning Bolt	SPELL_DAMAGE	5	0	0.0	2	-	-
+Paladin	1293539	Scarlet Retribution	SPELL_DAMAGE	1	0	0.0	1	-	-
+Paladin	1299850	Fireball	SPELL_DAMAGE	2	0	0.0	1	-	PCC
+Paladin	1299850	Fireball	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	PCC
+Paladin	1309685	Satchel of Potions	SPELL_DAMAGE	2	0	0.0	2	-	-
+Paladin	1311604	Holy Shock	SPELL_DAMAGE	2	1	50.0	1	-	-
+Paladin	1311647	Seal of Fury	SPELL_DAMAGE	1	0	0.0	1	-	-
+Paladin	1311654	Seal of Fury	SPELL_DAMAGE	8	0	0.0	1	-	-
+Paladin	1311655	Judgement of Fury	SPELL_DAMAGE	2	0	0.0	1	-	-
+Paladin	1322218	Holy Forgefire	SPELL_DAMAGE	85	10	11.8	2	-	-
+Paladin	16368	Flametongue Attack	SPELL_DAMAGE	340	33	9.7	3	-	-
+Paladin	1866	Holy Strike	SPELL_DAMAGE	11	0	0.0	4	-	-
+Paladin	19939	Flash of Light	SPELL_HEAL	7	1	14.3	2	-	-
+Paladin	19940	Flash of Light	SPELL_HEAL	17	1	5.9	9	-	-
+Paladin	20167	Seal of Light	SPELL_HEAL	2	0	0.0	1	CANT	-
+Paladin	20183	Judgement of Fury	SPELL_DAMAGE	5	0	0.0	1	-	-
+Paladin	20231	Seal of Fury	SPELL_DAMAGE	13	0	0.0	1	-	-
+Paladin	20267	Judgement of Light	SPELL_HEAL	5	0	0.0	1	CANT	-
+Paladin	20280	Judgement of Righteousness	SPELL_DAMAGE	1	0	0.0	1	-	-
+Paladin	20281	Judgement of Righteousness	SPELL_DAMAGE	2	0	0.0	2	-	-
+Paladin	20282	Judgement of Righteousness	SPELL_DAMAGE	11	2	18.2	1	-	-
+Paladin	20283	Judgement of Righteousness	SPELL_DAMAGE	27	5	18.5	5	-	-
+Paladin	20411	Judgement of Fury	SPELL_DAMAGE	242	34	14.0	7	-	-
+Paladin	20412	Judgement of Fury	SPELL_DAMAGE	5	0	0.0	1	-	-
+Paladin	20415	Seal of Fury	SPELL_DAMAGE	847	77	9.1	8	-	-
+Paladin	20416	Seal of Fury	SPELL_DAMAGE	13	0	0.0	1	-	-
+Paladin	20424	Seal of Command	SPELL_DAMAGE	267	25	9.4	21	-	-
+Paladin	20467	Judgement of Command	SPELL_DAMAGE	22	4	18.2	3	-	-
+Paladin	20578	Cannibalize	SPELL_PERIODIC_HEAL	29	0	0.0	10	-	-
+Paladin	20925	Holy Shield	SPELL_DAMAGE	116	0	0.0	3	-	-
+Paladin	20927	Holy Shield	SPELL_DAMAGE	1	0	0.0	1	-	-
+Paladin	20963	Judgement of Command	SPELL_DAMAGE	333	43	12.9	23	-	-
+Paladin	20964	Judgement of Command	SPELL_DAMAGE	3	1	33.3	2	-	-
+Paladin	2495	Holy Strike	SPELL_DAMAGE	204	21	10.3	12	-	-
+Paladin	25737	Seal of Righteousness	SPELL_DAMAGE	77	4	5.2	5	-	-
+Paladin	25738	Seal of Righteousness	SPELL_DAMAGE	21	2	9.5	1	-	-
+Paladin	25739	Seal of Righteousness	SPELL_DAMAGE	6	2	33.3	3	-	-
+Paladin	25740	Seal of Righteousness	SPELL_DAMAGE	1	0	0.0	1	-	-
+Paladin	25741	Seal of Righteousness	SPELL_DAMAGE	1	0	0.0	1	-	-
+Paladin	25914	Holy Shock	SPELL_HEAL	1	1	100.0	1	-	-
+Paladin	25997	Eye for an Eye	SPELL_DAMAGE	15	2	13.3	3	-	-
+Paladin	2800	Lay on Hands	SPELL_HEAL	14	2	14.3	12	-	-
+Paladin	3268	First Aid	SPELL_PERIODIC_HEAL	14	0	0.0	1	-	-
+Paladin	3472	Holy Light	SPELL_HEAL	5	1	20.0	3	-	-
+Paladin	401863	Prayer of Mending	SPELL_HEAL	1	0	0.0	1	-	-
+Paladin	436432	Trail Snack	SPELL_HEAL	1	0	0.0	1	-	-
+Paladin	436432	Trail Snack	SPELL_PERIODIC_HEAL	2	0	0.0	1	-	-
+Paladin	440	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Paladin	441	Healing Potion	SPELL_HEAL	4	0	0.0	4	-	-
+Paladin	456544	Holy Shield	SPELL_DAMAGE	3	0	0.0	1	-	-
+Paladin	5569	Holy Strike	SPELL_DAMAGE	4	0	0.0	1	-	-
+Paladin	5614	Exorcism	SPELL_DAMAGE	1	0	0.0	1	-	-
+Paladin	5615	Exorcism	SPELL_DAMAGE	2	0	0.0	2	-	-
+Paladin	6064	Heal	SPELL_HEAL	1	0	0.0	1	-	-
+Paladin	6078	Renew	SPELL_PERIODIC_HEAL	1	0	0.0	1	-	PCC
+Paladin	6263	Lesser Healthstone	SPELL_HEAL	1	0	0.0	1	-	-
+Paladin	635	Holy Light	SPELL_HEAL	1	0	0.0	1	-	-
+Paladin	647	Holy Light	SPELL_HEAL	3	0	0.0	1	-	-
+Paladin	678	Holy Strike	SPELL_DAMAGE	1	0	0.0	1	-	-
+Paladin	680	Holy Strike	SPELL_DAMAGE	314	35	11.1	26	-	-
+Paladin	6910	Curse of Thorns	SPELL_DAMAGE	17	0	0.0	2	-	-
+Paladin	7914	Capture Spirit	SPELL_PERIODIC_DAMAGE	2	0	0.0	1	-	-
+Paladin	7926	First Aid	SPELL_PERIODIC_HEAL	1	0	0.0	1	-	-
+Paladin	879	Exorcism	SPELL_DAMAGE	1	0	0.0	1	-	-
+Paladin	9784	Iron Shield Spike	SPELL_DAMAGE	85	0	0.0	1	-	-
+Priest	10797	Starshards	SPELL_PERIODIC_DAMAGE	14	1	7.1	1	-	PCC
+Priest	1260198	Touch of the Grave	SPELL_DAMAGE	63	0	0.0	9	CANT	-
+Priest	1260198	Touch of the Grave	SPELL_HEAL	91	0	0.0	14	CANT	-
+Priest	1261483	Thrill of Adventure	SPELL_PERIODIC_HEAL	107	0	0.0	8	-	-
+Priest	1292675	Cursed Murloc Eye	SPELL_DAMAGE	21	0	0.0	2	-	-
+Priest	1309595	Shadow Word: Death	SPELL_DAMAGE	58	2	3.4	10	-	-
+Priest	14914	Holy Fire	SPELL_DAMAGE	1	0	0.0	1	-	PCC
+Priest	14914	Holy Fire	SPELL_PERIODIC_DAMAGE	2	0	0.0	1	-	PCC
+Priest	15262	Holy Fire	SPELL_DAMAGE	1	0	0.0	1	-	PCC
+Priest	15262	Holy Fire	SPELL_PERIODIC_DAMAGE	3	0	0.0	1	-	PCC
+Priest	15263	Holy Fire	SPELL_DAMAGE	1	0	0.0	1	-	PCC
+Priest	15263	Holy Fire	SPELL_PERIODIC_DAMAGE	5	1	20.0	2	-	PCC
+Priest	15264	Holy Fire	SPELL_DAMAGE	4	1	25.0	1	-	PCC
+Priest	15264	Holy Fire	SPELL_PERIODIC_DAMAGE	26	3	11.5	1	-	PCC
+Priest	15290	Vampiric Embrace	SPELL_HEAL	423	0	0.0	3	CANT	-
+Priest	17311	Mind Flay	SPELL_PERIODIC_DAMAGE	46	0	0.0	1	-	PCC
+Priest	17312	Mind Flay	SPELL_PERIODIC_DAMAGE	115	11	9.6	2	-	PCC
+Priest	19238	Desperate Prayer	SPELL_HEAL	1	0	0.0	1	-	-
+Priest	19251	Touch of Weakness	SPELL_DAMAGE	8	0	0.0	3	-	-
+Priest	19276	Devouring Plague	SPELL_HEAL	196	0	0.0	14	-	PCC
+Priest	19276	Devouring Plague	SPELL_PERIODIC_DAMAGE	82	3	3.7	10	-	PCC
+Priest	19277	Devouring Plague	SPELL_HEAL	260	0	0.0	9	-	PCC
+Priest	19277	Devouring Plague	SPELL_PERIODIC_DAMAGE	235	20	8.5	5	-	PCC
+Priest	19299	Starshards	SPELL_PERIODIC_DAMAGE	27	2	7.4	2	-	PCC
+Priest	2053	Lesser Heal	SPELL_HEAL	9	0	0.0	4	-	-
+Priest	2055	Heal	SPELL_HEAL	3	0	0.0	3	-	-
+Priest	20578	Cannibalize	SPELL_PERIODIC_HEAL	26	0	0.0	3	-	-
+Priest	2061	Flash Heal	SPELL_HEAL	2	0	0.0	1	-	-
+Priest	2767	Shadow Word: Pain	SPELL_PERIODIC_DAMAGE	572	32	5.6	16	-	PCC
+Priest	2944	Devouring Plague	SPELL_HEAL	89	0	0.0	8	-	PCC
+Priest	2944	Devouring Plague	SPELL_PERIODIC_DAMAGE	27	0	0.0	3	-	PCC
+Priest	402284	Penance	SPELL_DAMAGE	44	2	4.5	6	-	-
+Priest	402289	Penance	SPELL_HEAL	49	3	6.1	5	-	-
+Priest	441	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Priest	5019	Shoot	RANGE_DAMAGE	669	50	7.5	25	-	-
+Priest	585	Smite	SPELL_DAMAGE	1	0	0.0	1	-	-
+Priest	589	Shadow Word: Pain	SPELL_PERIODIC_DAMAGE	4	1	25.0	2	-	PCC
+Priest	591	Smite	SPELL_DAMAGE	1	0	0.0	1	-	-
+Priest	594	Shadow Word: Pain	SPELL_PERIODIC_DAMAGE	2	0	0.0	1	-	PCC
+Priest	598	Smite	SPELL_DAMAGE	1	0	0.0	1	-	-
+Priest	6063	Heal	SPELL_HEAL	1	0	0.0	1	-	-
+Priest	6064	Heal	SPELL_HEAL	3	0	0.0	2	-	-
+Priest	6074	Renew	SPELL_PERIODIC_HEAL	4	0	0.0	2	-	PCC
+Priest	6075	Renew	SPELL_PERIODIC_HEAL	41	0	0.0	6	-	PCC
+Priest	6076	Renew	SPELL_PERIODIC_HEAL	101	6	5.9	8	-	PCC
+Priest	6077	Renew	SPELL_PERIODIC_HEAL	339	24	7.1	15	-	PCC
+Priest	6078	Renew	SPELL_PERIODIC_HEAL	3	0	0.0	1	-	PCC
+Priest	8103	Mind Blast	SPELL_DAMAGE	4	0	0.0	1	-	-
+Priest	8104	Mind Blast	SPELL_DAMAGE	6	0	0.0	2	-	-
+Priest	8105	Mind Blast	SPELL_DAMAGE	56	4	7.1	8	-	-
+Priest	8131	Mana Burn	SPELL_DAMAGE	14	0	0.0	1	-	-
+Priest	9472	Flash Heal	SPELL_HEAL	7	0	0.0	3	-	-
+Priest	9473	Flash Heal	SPELL_HEAL	37	1	2.7	4	-	-
+Priest	9474	Flash Heal	SPELL_HEAL	2	0	0.0	1	-	-
+Priest	970	Shadow Word: Pain	SPELL_PERIODIC_DAMAGE	20	1	5.0	3	-	PCC
+Priest	984	Smite	SPELL_DAMAGE	1	0	0.0	1	-	-
+Priest	992	Shadow Word: Pain	SPELL_PERIODIC_DAMAGE	106	6	5.7	13	-	PCC
+Rogue	1159	First Aid	SPELL_PERIODIC_HEAL	5	0	0.0	1	-	-
+Rogue	11790	Poison Cloud	SPELL_PERIODIC_DAMAGE	6	0	0.0	2	-	PCC
+Rogue	1230700	Blade Flurry	SPELL_DAMAGE	326	0	0.0	9	CANT	-
+Rogue	1260198	Touch of the Grave	SPELL_DAMAGE	182	0	0.0	18	CANT	-
+Rogue	1260198	Touch of the Grave	SPELL_HEAL	266	0	0.0	20	CANT	-
+Rogue	1261483	Thrill of Adventure	SPELL_PERIODIC_HEAL	161	0	0.0	6	-	-
+Rogue	1292152	Firebolt	SPELL_DAMAGE	8	1	12.5	5	-	-
+Rogue	1292675	Cursed Murloc Eye	SPELL_DAMAGE	1797	25	1.4	3	-	-
+Rogue	1293183	Thornspike	SPELL_DAMAGE	3	0	0.0	2	-	-
+Rogue	1293333	Thorncurse	SPELL_DAMAGE	536	1	0.2	2	-	-
+Rogue	1309685	Satchel of Potions	SPELL_DAMAGE	1	0	0.0	1	-	-
+Rogue	1309725	Healing Potion	SPELL_HEAL	3	0	0.0	3	-	-
+Rogue	1329283	Shank	SPELL_DAMAGE	411	49	11.9	39	-	-
+Rogue	1329549	Shank	SPELL_DAMAGE	1	0	0.0	1	-	-
+Rogue	14251	Riposte	SPELL_DAMAGE	62	8	12.9	18	-	-
+Rogue	14278	Ghostly Strike	SPELL_DAMAGE	4	2	50.0	3	-	-
+Rogue	16368	Flametongue Attack	SPELL_DAMAGE	48	0	0.0	1	-	-
+Rogue	16403	Rend	SPELL_PERIODIC_DAMAGE	7	0	0.0	1	-	PCC
+Rogue	16408	Shadow Bolt	SPELL_DAMAGE	11	0	0.0	3	-	-
+Rogue	16409	Shadow Bolt	SPELL_DAMAGE	2	0	0.0	2	-	-
+Rogue	16511	Hemorrhage	SPELL_DAMAGE	17	1	5.9	4	-	-
+Rogue	1752	Sinister Strike	SPELL_DAMAGE	162	13	8.0	33	-	-
+Rogue	1757	Sinister Strike	SPELL_DAMAGE	14	3	21.4	4	-	-
+Rogue	1758	Sinister Strike	SPELL_DAMAGE	13	1	7.7	7	-	-
+Rogue	1759	Sinister Strike	SPELL_DAMAGE	452	64	14.2	13	-	-
+Rogue	1760	Sinister Strike	SPELL_DAMAGE	804	86	10.7	28	-	-
+Rogue	1767	Kick	SPELL_DAMAGE	40	4	10.0	8	-	-
+Rogue	1776	Gouge	SPELL_DAMAGE	3	0	0.0	2	-	-
+Rogue	1777	Gouge	SPELL_DAMAGE	6	0	0.0	5	-	-
+Rogue	2024	Healing Potion	SPELL_HEAL	5	0	0.0	4	-	-
+Rogue	20578	Cannibalize	SPELL_PERIODIC_HEAL	14	0	0.0	4	-	-
+Rogue	2098	Eviscerate	SPELL_DAMAGE	58	4	6.9	27	-	-
+Rogue	2590	Backstab	SPELL_DAMAGE	1	0	0.0	1	-	-
+Rogue	2591	Backstab	SPELL_DAMAGE	6	4	66.7	1	-	-
+Rogue	2764	Throw	RANGE_DAMAGE	39	5	12.8	18	-	-
+Rogue	2818	Deadly Poison	SPELL_PERIODIC_DAMAGE	76	1	1.3	6	-	PCC
+Rogue	3267	First Aid	SPELL_PERIODIC_HEAL	7	0	0.0	1	-	-
+Rogue	3268	First Aid	SPELL_PERIODIC_HEAL	55	0	0.0	4	-	-
+Rogue	4067	Big Bronze Bomb	SPELL_DAMAGE	2	0	0.0	1	-	-
+Rogue	441	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Rogue	53	Backstab	SPELL_DAMAGE	6	0	0.0	4	-	-
+Rogue	6761	Eviscerate	SPELL_DAMAGE	1	0	0.0	1	-	-
+Rogue	6762	Eviscerate	SPELL_DAMAGE	69	2	2.9	9	-	-
+Rogue	703	Garrote	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	PCC
+Rogue	7914	Capture Spirit	SPELL_PERIODIC_DAMAGE	8	0	0.0	1	-	-
+Rogue	7918	Shoot Gun	RANGE_DAMAGE	20	2	10.0	3	-	-
+Rogue	7926	First Aid	SPELL_PERIODIC_HEAL	4	0	0.0	1	-	-
+Rogue	7927	First Aid	SPELL_PERIODIC_HEAL	15	0	0.0	4	-	-
+Rogue	8313	Poison	SPELL_PERIODIC_DAMAGE	33	1	3.0	1	-	PCC
+Rogue	8621	Sinister Strike	SPELL_DAMAGE	33	4	12.1	5	-	-
+Rogue	8623	Eviscerate	SPELL_DAMAGE	158	18	11.4	26	-	-
+Rogue	8629	Gouge	SPELL_DAMAGE	18	1	5.6	10	-	-
+Rogue	8631	Garrote	SPELL_PERIODIC_DAMAGE	84	9	10.7	3	-	PCC
+Rogue	8632	Garrote	SPELL_PERIODIC_DAMAGE	176	21	11.9	7	-	PCC
+Rogue	8639	Rupture	SPELL_PERIODIC_DAMAGE	24	3	12.5	4	-	PCC
+Rogue	8640	Rupture	SPELL_PERIODIC_DAMAGE	17	1	5.9	2	-	PCC
+Rogue	8680	Instant Poison	SPELL_DAMAGE	358	7	2.0	10	-	-
+Rogue	8685	Instant Poison II	SPELL_DAMAGE	344	7	2.0	9	-	-
+Rogue	8689	Instant Poison III	SPELL_DAMAGE	25	1	4.0	4	-	-
+Rogue	8721	Backstab	SPELL_DAMAGE	1	1	100.0	1	-	-
+Rogue	8724	Ambush	SPELL_DAMAGE	6	0	0.0	3	-	-
+Rogue	8725	Ambush	SPELL_DAMAGE	8	5	62.5	3	-	-
+Shaman	10391	Lightning Bolt	SPELL_DAMAGE	1	0	0.0	1	-	-
+Shaman	10412	Earth Shock	SPELL_DAMAGE	78	9	11.5	8	-	-
+Shaman	10444	Flametongue Attack	SPELL_DAMAGE	66	8	12.1	1	-	-
+Shaman	10447	Flame Shock	SPELL_DAMAGE	25	2	8.0	1	-	PCC
+Shaman	10447	Flame Shock	SPELL_PERIODIC_DAMAGE	35	7	20.0	1	-	PCC
+Shaman	1064	Chain Heal	SPELL_HEAL	207	31	15.0	1	-	-
+Shaman	1260270	Rapid Regeneration	SPELL_PERIODIC_HEAL	2	0	0.0	1	-	-
+Shaman	1261483	Thrill of Adventure	SPELL_PERIODIC_HEAL	206	0	0.0	9	-	-
+Shaman	1292675	Cursed Murloc Eye	SPELL_DAMAGE	37	3	8.1	3	-	-
+Shaman	1292679	Lightning Bolt	SPELL_DAMAGE	47	9	19.1	1	-	-
+Shaman	1293333	Thorncurse	SPELL_DAMAGE	124	7	5.6	3	-	-
+Shaman	1293421	Shadow Bolt	SPELL_DAMAGE	2	0	0.0	1	-	-
+Shaman	1293429	Torture	SPELL_DAMAGE	45	0	0.0	1	CANT	-
+Shaman	1309685	Satchel of Potions	SPELL_DAMAGE	1	0	0.0	1	-	-
+Shaman	1309725	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Shaman	16368	Flametongue Attack	SPELL_DAMAGE	278	34	12.2	3	-	-
+Shaman	17364	Stormstrike	SPELL_DAMAGE	399	46	11.5	32	-	-
+Shaman	2024	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Shaman	26366	Lightning Shield	SPELL_DAMAGE	55	0	0.0	6	CANT	-
+Shaman	26367	Lightning Shield	SPELL_DAMAGE	48	0	0.0	14	CANT	-
+Shaman	331	Healing Wave	SPELL_HEAL	1	0	0.0	1	-	-
+Shaman	403	Lightning Bolt	SPELL_DAMAGE	1	0	0.0	1	-	-
+Shaman	408424	Fire Nova	SPELL_DAMAGE	75	5	6.7	3	-	-
+Shaman	408426	Fire Nova	SPELL_DAMAGE	47	6	12.8	7	-	-
+Shaman	421	Chain Lightning	SPELL_DAMAGE	6	0	0.0	2	-	-
+Shaman	439440	Windfury Weapon	SPELL_DAMAGE	165	22	13.3	20	-	-
+Shaman	441	Healing Potion	SPELL_HEAL	2	0	0.0	2	-	-
+Shaman	547	Healing Wave	SPELL_HEAL	1	0	0.0	1	-	-
+Shaman	6041	Lightning Bolt	SPELL_DAMAGE	124	10	8.1	5	-	-
+Shaman	7914	Capture Spirit	SPELL_PERIODIC_DAMAGE	2	0	0.0	1	-	-
+Shaman	7927	First Aid	SPELL_PERIODIC_HEAL	3	0	0.0	1	-	-
+Shaman	8004	Lesser Healing Wave	SPELL_HEAL	3	1	33.3	2	-	-
+Shaman	8005	Healing Wave	SPELL_HEAL	23	4	17.4	1	-	-
+Shaman	8008	Lesser Healing Wave	SPELL_HEAL	105	13	12.4	12	-	-
+Shaman	8010	Lesser Healing Wave	SPELL_HEAL	228	32	14.0	7	-	-
+Shaman	8045	Earth Shock	SPELL_DAMAGE	3	1	33.3	1	-	-
+Shaman	8046	Earth Shock	SPELL_DAMAGE	154	16	10.4	18	-	-
+Shaman	8052	Flame Shock	SPELL_DAMAGE	1	0	0.0	1	-	PCC
+Shaman	8052	Flame Shock	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	PCC
+Shaman	8053	Flame Shock	SPELL_DAMAGE	96	6	6.2	13	-	PCC
+Shaman	8053	Flame Shock	SPELL_PERIODIC_DAMAGE	255	28	11.0	12	-	PCC
+Shaman	8056	Frost Shock	SPELL_DAMAGE	10	1	10.0	4	-	-
+Shaman	8058	Frost Shock	SPELL_DAMAGE	31	1	3.2	10	-	-
+Shaman	913	Healing Wave	SPELL_HEAL	12	2	16.7	4	-	-
+Shaman	930	Chain Lightning	SPELL_DAMAGE	5	0	0.0	1	-	-
+Shaman	939	Healing Wave	SPELL_HEAL	3	0	0.0	3	-	-
+Shaman	943	Lightning Bolt	SPELL_DAMAGE	2	0	0.0	1	-	-
+Shaman	959	Healing Wave	SPELL_HEAL	85	7	8.2	10	-	-
+Warlock	1014	Bane of Agony	SPELL_PERIODIC_DAMAGE	41	2	4.9	6	-	PCC
+Warlock	1088	Shadow Bolt	SPELL_DAMAGE	5	1	20.0	1	-	-
+Warlock	1094	Immolate	SPELL_DAMAGE	5	0	0.0	3	-	PCC
+Warlock	1094	Immolate	SPELL_PERIODIC_DAMAGE	21	1	4.8	3	-	PCC
+Warlock	1106	Shadow Bolt	SPELL_DAMAGE	8	2	25.0	3	-	-
+Warlock	1120	Drain Soul	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	PCC
+Warlock	11683	Hellfire	SPELL_PERIODIC_DAMAGE	7	0	0.0	1	-	PCC
+Warlock	11711	Bane of Agony	SPELL_PERIODIC_DAMAGE	28	1	3.6	2	-	PCC
+Warlock	1243028	Demonic Energies	SPELL_HEAL	328	0	0.0	6	CANT	-
+Warlock	1260198	Touch of the Grave	SPELL_DAMAGE	8	0	0.0	4	CANT	-
+Warlock	1260198	Touch of the Grave	SPELL_HEAL	20	0	0.0	9	CANT	-
+Warlock	1261483	Thrill of Adventure	SPELL_PERIODIC_HEAL	46	0	0.0	4	-	-
+Warlock	1282380	Rain of Fire	SPELL_DAMAGE	25	4	16.0	2	-	-
+Warlock	1282383	Rain of Fire	SPELL_DAMAGE	4	0	0.0	1	-	-
+Warlock	1292675	Cursed Murloc Eye	SPELL_DAMAGE	9	2	22.2	1	-	-
+Warlock	1316697	Wrack	SPELL_PERIODIC_DAMAGE	13	1	7.7	1	-	PCC
+Warlock	17920	Searing Pain	SPELL_DAMAGE	9	0	0.0	2	-	-
+Warlock	18265	Siphon Life	SPELL_HEAL	157	0	0.0	9	-	PCC
+Warlock	18265	Siphon Life	SPELL_PERIODIC_DAMAGE	76	7	9.2	8	-	PCC
+Warlock	18879	Siphon Life	SPELL_HEAL	37	0	0.0	1	-	PCC
+Warlock	18879	Siphon Life	SPELL_PERIODIC_DAMAGE	9	0	0.0	1	-	PCC
+Warlock	20578	Cannibalize	SPELL_PERIODIC_HEAL	13	0	0.0	3	-	-
+Warlock	2941	Immolate	SPELL_DAMAGE	9	0	0.0	6	-	PCC
+Warlock	2941	Immolate	SPELL_PERIODIC_DAMAGE	24	0	0.0	6	-	PCC
+Warlock	348	Immolate	SPELL_DAMAGE	2	0	0.0	2	-	PCC
+Warlock	348	Immolate	SPELL_PERIODIC_DAMAGE	5	0	0.0	3	-	PCC
+Warlock	3699	Health Funnel	SPELL_PERIODIC_DAMAGE	19	0	0.0	2	CANT	-
+Warlock	3699	Health Funnel	SPELL_PERIODIC_HEAL	19	0	0.0	2	CANT	-
+Warlock	4042	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Warlock	439	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Warlock	5019	Shoot	RANGE_DAMAGE	75	5	6.7	14	-	-
+Warlock	5720	Healthstone	SPELL_HEAL	1	0	0.0	1	-	-
+Warlock	6217	Bane of Agony	SPELL_PERIODIC_DAMAGE	233	9	3.9	17	-	PCC
+Warlock	6222	Corruption	SPELL_PERIODIC_DAMAGE	12	2	16.7	4	-	PCC
+Warlock	6223	Corruption	SPELL_PERIODIC_DAMAGE	52	0	0.0	6	-	PCC
+Warlock	689	Drain Life	SPELL_HEAL	17	0	0.0	2	-	PCC
+Warlock	689	Drain Life	SPELL_PERIODIC_DAMAGE	5	0	0.0	1	-	PCC
+Warlock	695	Shadow Bolt	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warlock	699	Drain Life	SPELL_HEAL	37	0	0.0	2	-	PCC
+Warlock	699	Drain Life	SPELL_PERIODIC_DAMAGE	3	0	0.0	1	-	PCC
+Warlock	707	Immolate	SPELL_PERIODIC_DAMAGE	3	0	0.0	2	-	PCC
+Warlock	709	Drain Life	SPELL_HEAL	176	0	0.0	11	-	PCC
+Warlock	709	Drain Life	SPELL_PERIODIC_DAMAGE	46	3	6.5	6	-	PCC
+Warlock	7641	Shadow Bolt	SPELL_DAMAGE	4	1	25.0	2	-	-
+Warlock	7648	Corruption	SPELL_PERIODIC_DAMAGE	123	9	7.3	15	-	PCC
+Warlock	7914	Capture Spirit	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	-
+Warlock	7926	First Aid	SPELL_PERIODIC_HEAL	16	0	0.0	1	-	-
+Warlock	8288	Drain Soul	SPELL_PERIODIC_DAMAGE	6	0	0.0	3	-	PCC
+Warlock	980	Bane of Agony	SPELL_PERIODIC_DAMAGE	5	0	0.0	2	-	PCC
+Warrior	11564	Heroic Strike	SPELL_DAMAGE	82	6	7.3	15	-	-
+Warrior	11572	Rend	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	PCC
+Warrior	1240193	Slam	SPELL_DAMAGE	1	1	100.0	1	-	-
+Warrior	1260198	Touch of the Grave	SPELL_DAMAGE	35	0	0.0	3	CANT	-
+Warrior	1260198	Touch of the Grave	SPELL_HEAL	54	0	0.0	6	CANT	-
+Warrior	1261483	Thrill of Adventure	SPELL_PERIODIC_HEAL	307	0	0.0	14	-	-
+Warrior	12723	Sweeping Strikes	SPELL_DAMAGE	15	0	0.0	4	CANT	-
+Warrior	1292039	Spikes	SPELL_DAMAGE	3	0	0.0	1	-	-
+Warrior	1292657	Corrosive Poison	SPELL_PERIODIC_DAMAGE	2	0	0.0	1	-	PCC
+Warrior	1292675	Cursed Murloc Eye	SPELL_DAMAGE	117	1	0.9	3	-	-
+Warrior	1292738	Hydra Strike	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warrior	1292739	Hydra Strike	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warrior	1292746	Martyrdom	SPELL_DAMAGE	2	0	0.0	1	CANT	-
+Warrior	1292879	Lightning Bolt	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warrior	1293183	Thornspike	SPELL_DAMAGE	2	0	0.0	1	-	-
+Warrior	1293421	Shadow Bolt	SPELL_DAMAGE	28	0	0.0	2	-	-
+Warrior	1295065	Fatal Bite	SPELL_DAMAGE	19	3	15.8	1	-	-
+Warrior	1295065	Fatal Bite	SPELL_HEAL	22	0	0.0	1	-	-
+Warrior	1309685	Satchel of Potions	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warrior	1310197	Slam	SPELL_DAMAGE	15	2	13.3	3	-	-
+Warrior	1310198	Slam	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warrior	1310222	Spearing Strike	SPELL_DAMAGE	29	0	0.0	7	-	-
+Warrior	1323968	Gore Drinker	SPELL_HEAL	227	0	0.0	6	CANT	-
+Warrior	13530	Corruption	SPELL_PERIODIC_DAMAGE	3	0	0.0	1	-	PCC
+Warrior	1464	Slam	SPELL_DAMAGE	2	0	0.0	1	-	-
+Warrior	1608	Heroic Strike	SPELL_DAMAGE	17	2	11.8	5	-	-
+Warrior	16368	Flametongue Attack	SPELL_DAMAGE	55	0	0.0	1	-	-
+Warrior	16408	Shadow Bolt	SPELL_DAMAGE	2	0	0.0	1	-	-
+Warrior	16488	Blood Craze	SPELL_PERIODIC_HEAL	15	0	0.0	4	-	-
+Warrior	1671	Shield Bash	SPELL_DAMAGE	27	0	0.0	3	-	-
+Warrior	1680	Whirlwind	SPELL_DAMAGE	6	1	16.7	4	-	-
+Warrior	1715	Hamstring	SPELL_DAMAGE	9	1	11.1	3	-	-
+Warrior	18091	Arcane Blast	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warrior	2024	Healing Potion	SPELL_HEAL	3	0	0.0	3	-	-
+Warrior	20240	Retaliation	SPELL_DAMAGE	34	3	8.8	3	-	-
+Warrior	20253	Intercept Stun	SPELL_DAMAGE	13	1	7.7	10	-	-
+Warrior	20578	Cannibalize	SPELL_PERIODIC_HEAL	1	0	0.0	1	-	-
+Warrior	20647	Execute	SPELL_DAMAGE	32	5	15.6	15	-	-
+Warrior	23881	Bloodthirst	SPELL_DAMAGE	3	0	0.0	2	-	-
+Warrior	23922	Shield Slam	SPELL_DAMAGE	27	1	3.7	1	-	-
+Warrior	2480	Shoot Bow	RANGE_DAMAGE	1	0	0.0	1	-	-
+Warrior	26654	Sweeping Strikes	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warrior	2764	Throw	RANGE_DAMAGE	4	0	0.0	2	-	-
+Warrior	284	Heroic Strike	SPELL_DAMAGE	4	1	25.0	3	-	-
+Warrior	285	Heroic Strike	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warrior	402927	Victory Rush	SPELL_DAMAGE	56	3	5.4	17	-	-
+Warrior	402927	Victory Rush	SPELL_HEAL	135	4	3.0	30	-	-
+Warrior	4062	Heavy Dynamite	SPELL_DAMAGE	6	0	0.0	1	-	-
+Warrior	4066	Small Bronze Bomb	SPELL_DAMAGE	28	0	0.0	1	-	-
+Warrior	412613	Deep Wound	SPELL_DAMAGE	60	0	0.0	12	CANT	-
+Warrior	440	Healing Potion	SPELL_HEAL	1	0	0.0	1	-	-
+Warrior	441	Healing Potion	SPELL_HEAL	4	0	0.0	4	-	-
+Warrior	462891	Whirlwind	SPELL_DAMAGE	7	0	0.0	4	-	-
+Warrior	6343	Thunder Clap	SPELL_DAMAGE	4	0	0.0	2	-	-
+Warrior	6546	Rend	SPELL_PERIODIC_DAMAGE	1	0	0.0	1	-	PCC
+Warrior	6547	Rend	SPELL_PERIODIC_DAMAGE	35	2	5.7	6	-	PCC
+Warrior	6548	Rend	SPELL_PERIODIC_DAMAGE	693	52	7.5	31	-	PCC
+Warrior	6552	Pummel	SPELL_DAMAGE	1	0	0.0	1	-	-
+Warrior	6572	Revenge	SPELL_DAMAGE	7	1	14.3	3	-	-
+Warrior	6574	Revenge	SPELL_DAMAGE	115	8	7.0	8	-	-
+Warrior	6910	Curse of Thorns	SPELL_DAMAGE	9	0	0.0	2	-	-
+Warrior	72	Shield Bash	SPELL_DAMAGE	2	0	0.0	2	-	-
+Warrior	7369	Cleave	SPELL_DAMAGE	130	7	5.4	9	-	-
+Warrior	7372	Hamstring	SPELL_DAMAGE	47	4	8.5	11	-	-
+Warrior	7379	Revenge	SPELL_DAMAGE	342	19	5.6	12	-	-
+Warrior	772	Rend	SPELL_PERIODIC_DAMAGE	41	0	0.0	11	-	PCC
+Warrior	78	Heroic Strike	SPELL_DAMAGE	24	1	4.2	11	-	-
+Warrior	7887	Overpower	SPELL_DAMAGE	22	11	50.0	12	-	-
+Warrior	7914	Capture Spirit	SPELL_PERIODIC_DAMAGE	16	0	0.0	2	-	-
+Warrior	7918	Shoot Gun	RANGE_DAMAGE	1	0	0.0	1	-	-
+Warrior	7926	First Aid	SPELL_PERIODIC_HEAL	7	0	0.0	3	-	-
+Warrior	7927	First Aid	SPELL_PERIODIC_HEAL	50	0	0.0	6	-	-
+Warrior	8198	Thunder Clap	SPELL_DAMAGE	7	0	0.0	3	-	-
+Warrior	8204	Thunder Clap	SPELL_DAMAGE	591	8	1.4	21	-	-
+Warrior	8205	Thunder Clap	SPELL_DAMAGE	143	4	2.8	4	-	-
+Warrior	845	Cleave	SPELL_DAMAGE	45	7	15.6	3	-	-
+Warrior	9784	Iron Shield Spike	SPELL_DAMAGE	5	0	0.0	1	-	-

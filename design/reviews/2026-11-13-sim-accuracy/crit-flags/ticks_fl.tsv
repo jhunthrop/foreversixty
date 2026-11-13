@@ -1,0 +1,99 @@
+class	spell	name	event	events	crits	players
+Paladin	-1	Auto Attack	damage	12975	1290	156
+Paladin	-10608	Auto Attack [Windfury Totem]	damage	73	10	3
+Paladin	-20178	Auto Attack [Reckoning]	damage	24	1	3
+Paladin	-8516	Auto Attack [Totem Furie-des-vents]	damage	103	13	3
+Paladin	1026	Holy Light	heal	206	27	10
+Paladin	10298	Retribution Aura	damage	6032	0	11
+Paladin	10299	Retribution Aura	damage	131	0	5
+Paladin	1042	Holy Light	heal	10	2	5
+Paladin	1075	Thorns	damage	2666	0	3
+Paladin	1260198	Touch of the Grave	damage	1323	0	41
+Paladin	1260198	Touch of the Grave	heal	919	0	68
+Paladin	1261483	Thrill of Adventure	heal	259	0	4
+Paladin	1280345	Consecration	damage	22678	2248	23
+Paladin	1280346	Consecration	damage	5874	798	5
+Paladin	1280347	Consecration	damage	493	78	1
+Paladin	1282503	Blazewind Blast	damage	126	18	4
+Paladin	1291663	Poison	damage	438	53	3
+Paladin	1291698	Toxic Sporidium	damage	1079	0	3
+Paladin	1292670	Spiked Shell	damage	1083	0	2
+Paladin	1292675	Cursed Murloc Eye	damage	86	3	2
+Paladin	1292679	Lightning Bolt	damage	102	15	1
+Paladin	1292738	Hydra Strike	damage	1	0	1
+Paladin	1292739	Hydra Strike	damage	1	0	1
+Paladin	1293539	Scarlet Retribution	damage	4	0	1
+Paladin	1304472	Curse of Thorns	damage	14	0	2
+Paladin	1309685	Satchel of Potions	damage	2	0	2
+Paladin	1311647	Seal of Fury	damage	931	44	3
+Paladin	1311650	Judgement of Fury	damage	308	12	2
+Paladin	1311654	Seal of Fury	damage	1977	177	13
+Paladin	1311655	Judgement of Fury	damage	675	63	11
+Paladin	1322218	Holy Forgefire	damage	62	13	2
+Paladin	1322295	Firebolt	damage	215	27	2
+Paladin	1326475	Flash Bundle	damage	7	1	1
+Paladin	16368	Flametongue Attack	damage	118	11	1
+Paladin	16408	Shadow Bolt	damage	109	12	1
+Paladin	18208	Poison	damage	3	0	1
+Paladin	1866	Holy Strike	damage	1425	138	39
+Paladin	19750	Flash of Light	heal	176	10	7
+Paladin	19939	Flash of Light	heal	242	17	2
+Paladin	19940	Flash of Light	heal	1	0	1
+Paladin	19941	Flash of Light	heal	100	10	1
+Paladin	20167	Seal of Light	heal	20	0	2
+Paladin	20183	Judgement of Fury	damage	635	73	4
+Paladin	20187	Judgement of Righteousness	damage	143	20	6
+Paladin	20231	Seal of Fury	damage	2124	231	6
+Paladin	2024	Healing Potion	heal	4	0	1
+Paladin	20267	Judgement of Light	heal	45	0	4
+Paladin	20280	Judgement of Righteousness	damage	311	25	13
+Paladin	20281	Judgement of Righteousness	damage	265	15	13
+Paladin	20282	Judgement of Righteousness	damage	41	1	4
+Paladin	20283	Judgement of Righteousness	damage	5	0	1
+Paladin	20284	Judgement of Righteousness	damage	47	8	1
+Paladin	20411	Judgement of Fury	damage	11	0	2
+Paladin	20415	Seal of Fury	damage	49	1	2
+Paladin	20424	Seal of Command	damage	430	59	19
+Paladin	20467	Judgement of Command	damage	304	34	21
+Paladin	20578	Cannibalize	heal	20	0	4
+Paladin	20925	Holy Shield	damage	138	0	2
+Paladin	20927	Holy Shield	damage	4	0	1
+Paladin	20963	Judgement of Command	damage	187	18	3
+Paladin	20964	Judgement of Command	damage	130	22	3
+Paladin	24275	Hammer of Wrath	damage	12	1	1
+Paladin	2495	Holy Strike	damage	127	26	3
+Paladin	25736	Seal of Righteousness	damage	157	28	1
+Paladin	25737	Seal of Righteousness	damage	17	1	1
+Paladin	25738	Seal of Righteousness	damage	121	6	6
+Paladin	25739	Seal of Righteousness	damage	1090	73	15
+Paladin	25740	Seal of Righteousness	damage	827	70	16
+Paladin	25741	Seal of Righteousness	damage	355	48	9
+Paladin	25742	Seal of Righteousness	damage	2	1	1
+Paladin	2800	Lay on Hands	heal	6	1	2
+Paladin	2947	Fire Shield	damage	1172	0	4
+Paladin	3472	Holy Light	heal	103	17	1
+Paladin	4054	Rough Dynamite	damage	134	14	2
+Paladin	4061	Coarse Dynamite	damage	19	3	2
+Paladin	4062	Heavy Dynamite	damage	56	9	1
+Paladin	4064	Rough Copper Bomb	damage	119	15	2
+Paladin	439	Healing Potion	heal	5	1	3
+Paladin	440	Healing Potion	heal	6	1	4
+Paladin	441	Healing Potion	heal	6	0	5
+Paladin	456544	Holy Shield	damage	4	0	1
+Paladin	467	Thorns	damage	43	0	1
+Paladin	5569	Holy Strike	damage	51	4	1
+Paladin	5614	Exorcism	damage	22	0	1
+Paladin	6263	Lesser Healthstone	heal	2	0	2
+Paladin	633	Lay on Hands	heal	11	0	9
+Paladin	635	Holy Light	heal	4	0	2
+Paladin	639	Holy Light	heal	16	2	5
+Paladin	647	Holy Light	heal	115	6	10
+Paladin	678	Holy Strike	damage	981	86	19
+Paladin	679	Holy Strike	damage	8	0	6
+Paladin	680	Holy Strike	damage	442	46	5
+Paladin	7294	Retribution Aura	damage	5758	0	24
+Paladin	782	Thorns	damage	1324	0	8
+Paladin	8316	Fire Shield	damage	2774	0	3
+Paladin	879	Exorcism	damage	122	0	7
+Paladin	8914	Thorns	damage	103	0	1
+Paladin	9756	Thorns	damage	4	0	1
