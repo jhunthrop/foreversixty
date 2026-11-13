@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.44
+
+- The green upgrade arrow now shows in Bagnon, AdiBags, ArkInventory and BetterBags bags too, at the top right of the item, the same arrow as on your character. /fs diag names your bag addon and says whether the arrow shows in it.
+
 ## 2.0.43
 
 - Follow on the Builds tab follows that build again: the Raid build, another spec's Level 60 build, any row. Before, the click did nothing.
