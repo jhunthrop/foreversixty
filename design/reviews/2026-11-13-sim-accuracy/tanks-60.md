@@ -79,8 +79,8 @@ MR94 in the ledger: every tank band's `metrics.health` (all three tank specs, ev
 
 - ux-designer (proposal): SHIP with changes, `design/reviews/2026-11-13-tank-tiers/ux-designer-proposal.md`.
 - wow-player (proposal): SHIP with changes, `design/reviews/2026-11-13-tank-tiers/wow-player-proposal.md`. Not taken: "Damage taken / s" as the head (the heads hold to ten characters at 96 px; the rail note and the figure's label say damage taken). Avoidance and crush columns left open (O3).
-- Final verdicts on the built page: same folder.
+- Final, on the built page (after-1440.png, after-390.png beside before-*.png): ux-designer SHIP (`ux-designer.md`), wow-player SHIP (`wow-player.md`). Their polish items stay open: one phone slot for vs #1, a sorted-column mark, phone units, one bar rule across the three tabs, avoidance and crush columns, the bear threat pass (O2).
 
 ## Gates
 
-Go: `go test ./cmd/leveling-bis/ ./score/` on the box (red at the test commit, green after). Web: `vitest run src/lib/tiers src/lib/app-data`, `astro check`, eslint and prettier on the touched files, `playwright test tests/e2e/tiers.spec.ts` on the box.
+All on the box. Go: `go test ./cmd/leveling-bis/ -run TestTankReportPublishesMaximumHealth` red at the test commit (`report.Health undefined`), then `go vet` and `go test ./score/ ./cmd/leveling-bis/` green. Web: `vitest` over `src/lib/tiers`, `src/lib/app-data/tiers` and `src/lib/bis/tank` (141 passed), eslint and prettier on the touched files, `astro check` 0 errors after the e2e type gained `health`, `playwright test tests/e2e/tiers.spec.ts` (desktop and mobile): every tank test passes; the two failures are the DPS "one link per row" check that 1b3853d60 (a DPS figure opens the ranking sim, not this lane) leaves behind when the published files carry sim links. `src/lib/app-data/app-files.test.ts` fails on origin/main too (the shaman-elemental leveling build code), not touched here. The captures carried `health` written into the box's copy of the bis files for the run only; nothing under `bis/` is committed.
