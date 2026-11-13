@@ -24,6 +24,8 @@ const foreverGame = "forever"
 // ruleset Blizzard's own profile answered for characters of that realm in
 // production (characters.bnet_profile.ruleset.name, read 2026-11-12), or,
 // for 6922, the key the realm index itself gave its rows before 2026-11-05.
+// US 6929 and EU 6942 are the profile rulesets of characters on those realms,
+// re-read live from Blizzard's character profile 2026-11-13.
 // A realm id not listed here resolves nothing (KnownRealm reports !ok) and
 // the import falls through to the profile; the needs_ruleset log line names
 // the id so it can be added once a profile of that realm has answered.
@@ -39,6 +41,7 @@ var foreverRealms = map[string]map[int64]Realm{
 		6923: {ID: 6923, Type: "NORMAL"},
 		6927: {ID: 6927, Type: "PVP_RP"},
 		6928: {ID: 6928, Slug: "camwow-us1-realm-10-rp", Name: "CAMWOW US1 Realm 10 RP", Type: "RP"},
+		6929: {ID: 6929, Type: "NORMAL"},
 		6930: {ID: 6930, Type: "PVP"},
 		6932: {ID: 6932, Type: "PVP"},
 		6934: {ID: 6934, Type: "PVP"},
@@ -50,6 +53,7 @@ var foreverRealms = map[string]map[int64]Realm{
 		6938: {ID: 6938, Type: "PVP"},
 		6939: {ID: 6939, Type: "NORMAL"},
 		6940: {ID: 6940, Type: "PVP"},
+		6942: {ID: 6942, Type: "PVP"},
 		6945: {ID: 6945, Type: "NORMAL"},
 		6946: {ID: 6946, Type: "PVP"},
 		6947: {ID: 6947, Type: "NORMAL"},

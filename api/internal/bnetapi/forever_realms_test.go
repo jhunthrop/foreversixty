@@ -8,7 +8,7 @@ import (
 )
 
 // productionRealmIDs is every realm id the import's needs_ruleset lines
-// named in Cloud Run logs on 2026-11-12, per region, with the ruleset the
+// named in Cloud Run logs from 2026-11-12 to 2026-11-13, per region, with the ruleset the
 // production evidence (profile rulesets on rows of the same realm) gives it.
 // The table must cover each one, or the next sign-in from that realm skips
 // its characters again.
@@ -16,10 +16,12 @@ var productionRealmIDs = map[string]map[int64]string{
 	"us": {
 		6800: character.RulesetPvP,
 		6801: character.RulesetPvP,
+		6929: character.RulesetNormal,
 		6930: character.RulesetPvP,
 	},
 	"eu": {
 		6939: character.RulesetNormal,
+		6942: character.RulesetPvP,
 		6947: character.RulesetNormal,
 		6950: character.RulesetPvP,
 	},
