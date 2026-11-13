@@ -15,12 +15,16 @@
   } from '../../lib/engagement/admin';
   import { fetchEngagement, type EngagementReport } from '../../lib/engagement/api';
   import SignInPrompt from '../SignInPrompt.svelte';
-  import BigFigures from '../ui/BigFigures.svelte';
+  import Figure from '../ui/Figure.svelte';
   import Grid from '../ui/Grid.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Page from '../ui/Page.svelte';
   import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
+
+  /** Each Grid: capped so the figures stay near their labels on a wide screen, scrolled sideways
+   *  inside its panel on a phone rather than widening the page. */
+  const GRID_BOX = 'max-w-[760px] overflow-x-auto';
 
   type Phase = 'loading' | 'signed-out' | 'not-owner' | 'failed' | 'ready';
 
@@ -73,7 +77,11 @@
   <Page layout="ledger" testid="activity-page-body">
     <Section title={copy.nowTitle} panel testid="activity-now">
       <div class="flex flex-col gap-4">
-        <BigFigures groups={headlineFigures(report)} testid="activity-figures" />
+        <div class="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-5" data-testid="activity-figures">
+          {#each headlineFigures(report).flat() as figure (figure.label)}
+            <Figure value={figure.value} caption={figure.label} size="big" />
+          {/each}
+        </div>
         <div class="text-muted text-small flex flex-col gap-1">
           <p class="m-0" data-testid="activity-floor">{copy.floor(report.live_since)}</p>
           <p class="m-0" data-testid="activity-internal">{copy.internal(report.internal_accounts)}</p>
@@ -81,33 +89,41 @@
         </div>
       </div>
     </Section>
-    <Section title={copy.weeksTitle} panel flush testid="activity-weeks">
-      <Grid
-        caption={copy.weeksCaption}
-        columns={copy.periodColumns}
-        rows={weekRows(report.weeks)}
-        edge
-        testid="activity-weeks-grid"
-      />
+    <Section title={copy.weeksTitle} meta={copy.weeksMeta} panel flush testid="activity-weeks">
+      <div class={GRID_BOX}>
+        <Grid
+          caption={copy.weeksCaption}
+          labelHeader={copy.weekHeader}
+          columns={copy.periodColumns}
+          rows={weekRows(report.weeks)}
+          edge
+          testid="activity-weeks-grid"
+        />
+      </div>
     </Section>
-    <Section title={copy.cohortsTitle} panel flush testid="activity-cohorts">
-      <Grid
-        caption={copy.cohortsCaption}
-        labelHeader={copy.cohortHeader}
-        columns={copy.cohortColumns}
-        rows={cohortRows(report.cohorts)}
-        edge
-        testid="activity-cohorts-grid"
-      />
+    <Section title={copy.cohortsTitle} meta={copy.cohortsMeta} panel flush testid="activity-cohorts">
+      <div class={GRID_BOX}>
+        <Grid
+          caption={copy.cohortsCaption}
+          labelHeader={copy.cohortHeader}
+          columns={copy.cohortColumns}
+          rows={cohortRows(report.cohorts)}
+          edge
+          testid="activity-cohorts-grid"
+        />
+      </div>
     </Section>
-    <Section title={copy.daysTitle} panel flush testid="activity-days">
-      <Grid
-        caption={copy.daysCaption}
-        columns={copy.periodColumns}
-        rows={dayRows(report.days)}
-        edge
-        testid="activity-days-grid"
-      />
+    <Section title={copy.daysTitle} meta={copy.weeksMeta} panel flush testid="activity-days">
+      <div class={GRID_BOX}>
+        <Grid
+          caption={copy.daysCaption}
+          labelHeader={copy.dayHeader}
+          columns={copy.periodColumns}
+          rows={dayRows(report.days)}
+          edge
+          testid="activity-days-grid"
+        />
+      </div>
     </Section>
   </Page>
 {/if}

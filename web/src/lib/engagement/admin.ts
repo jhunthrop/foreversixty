@@ -17,12 +17,12 @@ export const COHORT_WEEKS = 7;
 
 export const adminActivityCopy = {
   pageTitle: 'Activity',
-  job: 'Who signs in and who comes back: accounts active each day and week, and how each signup week returns.',
+  job: 'Who signs in and who comes back.',
   pageDescription: 'The owner’s daily and weekly active accounts and retention.',
   signedOut: 'Sign in with the owner’s account to see the activity.',
   notOwner: 'This page is for the site’s owner. Your account can’t see the activity.',
   loadFailed: 'The activity didn’t load.',
-  nowTitle: 'This week',
+  nowTitle: 'Now',
   weeksTitle: 'Weeks',
   weeksCaption: 'Active accounts by week',
   daysTitle: 'Days',
@@ -32,16 +32,21 @@ export const adminActivityCopy = {
   periodColumns: ['Active', 'New', 'Returning', 'Site', 'Addon', 'App'],
   cohortHeader: 'Signed up',
   cohortColumns: Array.from({ length: COHORT_WEEKS }, (_, k) => `+${k + 1}\u00a0wk`),
-  weekOf: (start: string): string => `Week of ${utcDayMonth(start)}`,
+  weekHeader: 'Week of',
+  dayHeader: 'Day',
   joined: (n: number): string => `${countLabel(n)} joined`,
-  thisWeek: 'this week so far',
+  thisWeek: 'so far',
+  /** After a retention share whose week is still running. */
+  runningMark: '*',
+  cohortsMeta: '* this week, still running',
+  weeksMeta: 'Active counts an account once; Site, Addon and App overlap.',
   today: 'today',
   figures: {
     today: 'active today',
     week: 'active this week',
     fresh: 'new this week',
     returning: 'returning this week',
-    lastWeek: 'of last week back',
+    lastWeek: 'of last week’s signups back so far',
   },
   internal: (n: number): string =>
     `Leaves out ${countLabel(n)} internal ${n === 1 ? 'account' : 'accounts'}: yours and every granted Premium.`,
@@ -73,7 +78,7 @@ function periodCells(p: EngagementPeriod): GridCell[] {
 export function weekRows(weeks: readonly EngagementPeriod[]): GridRowModel[] {
   return weeks.map((w, i) => ({
     key: w.start,
-    label: adminActivityCopy.weekOf(w.start),
+    label: utcDayMonth(w.start),
     sub: i === 0 ? adminActivityCopy.thisWeek : undefined,
     cells: periodCells(w),
   }));
@@ -89,20 +94,25 @@ export function dayRows(days: readonly EngagementPeriod[]): GridRowModel[] {
   }));
 }
 
-function cohortCell(week: CohortWeek | undefined, joined: number): GridCell {
+function cohortCell(week: CohortWeek | undefined, joined: number, running: boolean): GridCell {
   if (week === undefined || joined === 0) return { tone: 'none', text: NOTHING };
   const share = shareOf(week.active, joined);
-  const text = week.partial && week.active > 0 ? `${FLOOR}${share}` : share;
-  return { tone: 'none', text, label: `${week.active} of ${joined}, ${text}` };
+  const floored = week.partial && week.active > 0 ? `${FLOOR}${share}` : share;
+  const text = running ? `${floored}${adminActivityCopy.runningMark}` : floored;
+  const label = `${week.active} of ${joined}, ${floored}${running ? `, ${adminActivityCopy.thisWeek}` : ''}`;
+  return { tone: 'none', text, label };
 }
 
-/** The retention Grid: newest signup week first, one cell per week after it. */
+/** The retention Grid: newest signup week first, one cell per week after it; a cohort's last
+ *  cell is this week, still running, and carries the running mark. */
 export function cohortRows(cohorts: readonly EngagementCohort[]): GridRowModel[] {
   return [...cohorts].reverse().map((c) => ({
     key: c.week,
     label: utcDayMonth(c.week),
     sub: adminActivityCopy.joined(c.joined),
-    cells: Array.from({ length: COHORT_WEEKS }, (_, k) => cohortCell(c.weeks[k], c.joined)),
+    cells: Array.from({ length: COHORT_WEEKS }, (_, k) =>
+      cohortCell(c.weeks[k], c.joined, k === c.weeks.length - 1),
+    ),
   }));
 }
 

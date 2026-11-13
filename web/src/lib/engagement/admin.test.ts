@@ -61,7 +61,7 @@ describe("the owner's activity page", () => {
 
   it('names the weeks by their Monday and marks this one as running', () => {
     const rows = weekRows(REPORT.weeks);
-    expect(rows[0].label).toBe('Week of 9 Nov');
+    expect(rows[0].label).toBe('9 Nov');
     expect(rows[0].sub).toBe(copy.thisWeek);
     expect(rows[1].cells.map((c) => c.text)).toEqual([
       '≥\u00a052',
@@ -73,12 +73,17 @@ describe("the owner's activity page", () => {
     ]);
   });
 
-  it('lays retention out newest signup week first, a share of the joined per later week', () => {
+  it('lays retention out newest signup week first, a share of the joined per later week, this week marked running', () => {
     const rows = cohortRows(REPORT.cohorts);
     expect(rows.map((r) => r.label)).toEqual(['9 Nov', '2 Nov', '26 Oct']);
     expect(rows[2].sub).toBe('20 joined');
     expect(rows[2].cells).toHaveLength(copy.cohortColumns.length);
     expect(rows[2].cells[0]).toEqual({ tone: 'none', text: '≥\u00a045%', label: '9 of 20, ≥\u00a045%' });
+    expect(rows[2].cells[1]).toEqual({
+      tone: 'none',
+      text: '≥\u00a030%*',
+      label: '6 of 20, ≥\u00a030%, so far',
+    });
     expect(rows[2].cells[2].text).toBe('');
     expect(rows[0].cells.every((c) => c.text === '')).toBe(true);
   });
@@ -93,7 +98,7 @@ describe("the owner's activity page", () => {
         { value: '≥\u00a011', label: 'new this week' },
         { value: '≥\u00a029', label: 'returning this week' },
       ],
-      [{ value: '40%', label: 'of last week back' }],
+      [{ value: '40%', label: 'of last week’s signups back so far' }],
     ]);
     expect(headlineFigures({ ...REPORT, days: [], weeks: [] })).toEqual([]);
   });

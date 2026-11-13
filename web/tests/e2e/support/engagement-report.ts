@@ -21,7 +21,7 @@ function periods(start: string, n: number, days: number): EngagementPeriod[] {
       returning: active - fresh,
       site: Math.max(0, active - 3),
       addon: Math.round(active / 2),
-      app: i % 3,
+      app: Math.min(active, i % 3),
       partial: day < LIVE_SINCE,
     };
   });
