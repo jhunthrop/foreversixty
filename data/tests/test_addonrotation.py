@@ -1144,8 +1144,9 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
         # rank, so the gate names the talent untagged and the row starts at its first point.
         ("shaman-enhancement", "at 5 Maelstrom Weapon stacks", 35),
         # Round 24 (platform): the gate is on Clearcasting (16246), the aura Elemental Focus
-        # (16164) gives; the raid order takes the talent at 52, the leveling build never does.
-        ("shaman-enhancement", "on a Clearcasting proc", 57),
+        # (16164) gives; the leveling build never takes the talent, and since the shaman lane's
+        # level 60 builds (12 Nov) the raid order spends its last point, at 60, on it.
+        ("shaman-enhancement", "on a Clearcasting proc", 60),
         # The mage proc buffs (Missile Barrage 400589, Heating Up 400625) and the Improved
         # Scorch debuff (12873) printed from 10, 20 and 22, before the talents.
         ("mage-fire", "at 3 Heating Up stacks", 30),
