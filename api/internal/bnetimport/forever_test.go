@@ -185,7 +185,6 @@ func TestImportAccountKeysByTheRealmTableWhenBlizzardListsNoRealm(t *testing.T) 
 	}
 }
 
-
 func TestImportAccountListsEveryCharacterBeforeTheBudgetRunsOut(t *testing.T) {
 	f := foreverFixture(t)
 	slow := f.handlers[http.MethodGet+" /profile/wow/character/elyra-duskvale?namespace=profile-forever-us"]
