@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from conftest import ACTIVE_BUILD
 from pipeline.addonrotation import (
     CONDITION_MAX_CHARS,
     LEVEL_BANDS,
@@ -1230,15 +1231,17 @@ def _active_build_bands(spec):
         load_talent_spells,
         load_trainable_ids,
     )
-    from pipeline.manifest import newest_build
     from pipeline.talent_levels import (
         load_spec_rank_levels,
         load_talent_owned_auras,
         load_talent_spell_levels,
     )
 
+    # The ACTIVE build, not the newest directory: a fetched build waits for its
+    # addon-builds.json until the activation writes it, and without that every
+    # talent-gated row starts at its tier (data.yml went red the morning 70938 landed).
     data = Path(__file__).resolve().parents[1]
-    build_dir = data / "builds" / newest_build(data / "builds")
+    build_dir = data / "builds" / ACTIVE_BUILD
     records = sr.load_class_spell_constants(build_dir / "spellconst")
     talent_levels = {
         r.class_slug: load_talent_spell_levels(build_dir / "talents", r.class_slug) for r in records
