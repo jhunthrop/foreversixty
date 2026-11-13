@@ -24,6 +24,8 @@ export interface BisHitToCapFile {
 
 export interface TankMetricsFile {
   effective_health: number;
+  /** Maximum health; absent on a file ranked before it was published. */
+  health?: number;
   dtps: number;
   chance_of_death: number;
   tps: number;
