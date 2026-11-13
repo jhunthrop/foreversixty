@@ -1,6 +1,6 @@
 # Sim accuracy 2026-11-13: every class's periodic crit flags
 
-Lane brief: `design/reviews/sim-accuracy/brief.md`. Lane `crit-flags`. Site from origin/main 25f3696db, fork from master 79358b3c2 (the pin). Client on the site: 1.60.1.70790; the reference here is the live 1.60.1.70888 with every hotfix push (`useHotfixes=1`), checked again on 70938 (no crit attribute moved on any row below). The client move to 70938 has not landed on the site.
+Lane brief: `design/reviews/sim-accuracy/brief.md`. Lane `crit-flags`. Site from origin/main 25f3696db, fork from master 79358b3c2 (the pin). Client on the site: 1.60.1.70790; the reference here is the live 1.60.1.70888 with every hotfix push (`useHotfixes=1`), checked again on 70938 (no Can't Crit or PERIODIC_CAN_CRIT bit moved on any row between the two builds). The 70938 data run reached main during the lane (52cd11091) but the site's active build is still 70790.
 
 Why: the owner's 31 October rule ("bleeds and non-channelled DoTs always crit; channels follow the client PERIODIC_CAN_CRIT flag") went into the engine as a blanket rule (`core.periodicDamageCanCrit`, fork 09ca529f3). Deep Wound (412613) turned out to be flagged Can't Crit with zero crits in the logs (dps-warriors.md, 12 Nov) and the rogues were all aligned (rogues-60.md). This lane does the same check for every other class.
 
