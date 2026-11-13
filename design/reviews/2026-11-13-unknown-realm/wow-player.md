@@ -27,3 +27,17 @@ Seen rendered: question-1440, question-390, question-close, refused-close, answe
 Must-fix: capitalise and rewrite the refusal sentence (item 1).
 Shoulds: move or promote the RP PvP line (2), say whether the answer can be changed (3), mark the block as needing an answer (4), 2 by 2 buttons at 390 (5), where to find the realm type and the pooled-answer line (section 3).
 With item 1 done this is SHIP.
+
+## Round 2
+
+Re-read: question-close, refused-close, question-390.
+
+- Refusal: capitalised, tells the player what to check ("Check the realm type in game. Try again."). Fixed.
+- RP PvP: now in the line above the buttons, read before the tap. Fixed.
+- Phone: 2 by 2 buttons, no orphaned Hardcore. Fixed.
+- Gold left rule marks the block as the open task. Fixed.
+- One-time answer with no change-later line: accepted. The refusal line and the realm table or public profile are the recovery path, and I will not hold SHIP on it.
+- Crest colour: rogue yellow is the client rogue colour. Withdrawn.
+- Remaining optional: the pooled-answer line and a "find it on the realm list at login" hint. Not blockers.
+
+Verdict: SHIP.

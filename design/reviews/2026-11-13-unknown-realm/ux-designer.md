@@ -29,3 +29,17 @@ The question is right: first thing in the plate, one sentence, four equal one-ta
 - [ ] Refusal copy capitalised
 - [ ] 390 button layout without an orphan
 - [ ] Focus-visible and busy captures attached
+
+## Round 2
+
+Re-read: question-390, question-close, refused-close, and UnknownRealmQuestion.svelte.
+
+Verdict: SHIP.
+
+- Refusal capitalised, now directly under the buttons, with the extra sentence "Check the realm type in game." (refused-close). Fixed.
+- 390 layout is a 2 by 2 grid of equal buttons, no orphan (question-390). Fixed.
+- Buttons are equal width (7.5 rem at desktop, 1fr on phone), so "Saving…" cannot move neighbours. Fixed.
+- 2 px gold inset left rule marks the block as the next step. Fixed.
+- RP PvP note folded into the muted line above the buttons. Fine; at 390 it wraps to three lines, acceptable.
+
+Remaining should (not blocking): attach one focus-visible capture and one busy ("Saving…") capture from a real run; the static captures still show neither state.
