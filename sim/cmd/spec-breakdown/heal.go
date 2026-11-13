@@ -130,6 +130,7 @@ func healMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *p
 	writeManaTable(&b, "Mana income", "per fight", "per second", income, secs, false)
 	writeManaTable(&b, "Mana spend", "per fight", "per second", spend, secs, true)
 	writeFreeCasts(&b, p, names, iters, spend)
+	writeHealSources(&b, p, names, iters)
 	writeHealCrits(&b, p, names, iters)
 	return b.String()
 }
@@ -213,6 +214,33 @@ func writeFreeCasts(b *strings.Builder, p *proto.UnitMetrics, names map[int32]st
 			continue
 		}
 		fmt.Fprintf(b, "| %s | %.1f | %.0f |\n", name, casts/iters, healed/iters)
+	}
+}
+
+// writeHealSources lists every action that healed or shielded with what it
+// landed per fight: healing and shields as cast (shields at the amount
+// applied), and the effective part (healing that raised a health bar,
+// shields that soaked damage). A shield's gap between the two is what
+// expired or was overwritten unused.
+func writeHealSources(b *strings.Builder, p *proto.UnitMetrics, names map[int32]string, iters float64) {
+	b.WriteString("\n| Healing source | healed or shielded per fight | of it shielding | effective per fight | effective share |\n|---|---|---|---|---|\n")
+	var total float64
+	for _, a := range p.GetActions() {
+		for _, t := range a.GetTargets() {
+			total += t.GetEffectiveHealing()
+		}
+	}
+	for _, a := range p.GetActions() {
+		var raw, shielding, effective float64
+		for _, t := range a.GetTargets() {
+			raw += t.GetHealing() + t.GetShielding()
+			shielding += t.GetShielding()
+			effective += t.GetEffectiveHealing()
+		}
+		if raw == 0 {
+			continue
+		}
+		fmt.Fprintf(b, "| %s | %.0f | %.0f | %.0f | %s |\n", actionName(a.GetId(), names), raw/iters, shielding/iters, effective/iters, percentOf(effective, total))
 	}
 }
 

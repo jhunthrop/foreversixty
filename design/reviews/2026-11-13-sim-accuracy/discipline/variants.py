@@ -13,7 +13,7 @@ def player(i):
 
 
 def const(v):
-    return {'const': {'val': v}}
+    return {'const': {'val': str(v)}}
 
 
 def pace(share):

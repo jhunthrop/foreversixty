@@ -1,0 +1,10 @@
+base -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000
+a-party-shield-90 -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/a-party-shield-90.rotation.json
+a-party-shield-any -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/a-party-shield-any.rotation.json
+d-shield-any-no-party-flash -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/d-shield-any-no-party-flash.rotation.json
+e-tank-shield-any -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/e-tank-shield-any.rotation.json
+holy-no-flash -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/holy-no-flash.rotation.json
+disc-90s -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -duration 90
+holy-90s -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -duration 90
+druid-90s -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -duration 90
+shaman-90s -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -duration 90

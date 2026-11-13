@@ -110,3 +110,27 @@ func TestWriteHealCritsShowsDirectAndTickCritRates(t *testing.T) {
 		t.Errorf("an action that healed nothing is listed:\n%s", out)
 	}
 }
+
+// A shield's row shows what it applied beside what it soaked, so a shield
+// that expires unused reads as the gap between the two.
+func TestWriteHealSourcesSeparatesShieldsAppliedFromAbsorbed(t *testing.T) {
+	player := &proto.UnitMetrics{Actions: []*proto.ActionMetrics{
+		{Id: spellID(10901, 0), Targets: []*proto.TargetedActionMetrics{{Shielding: 2000, EffectiveHealing: 1500}}},
+		{Id: spellID(2060, 0), Targets: []*proto.TargetedActionMetrics{{Healing: 1000, EffectiveHealing: 500}}},
+		{Id: spellID(14751, 0), Targets: []*proto.TargetedActionMetrics{{Casts: 2}}},
+	}}
+	names := map[int32]string{10901: "Power Word: Shield", 2060: "Greater Heal", 14751: "Inner Focus"}
+	var b strings.Builder
+
+	writeHealSources(&b, player, names, healTestIterations)
+
+	out := b.String()
+	for _, want := range []string{"| Power Word: Shield (10901) | 1000 | 1000 | 750 | 75.0 |", "| Greater Heal (2060) | 500 | 0 | 250 | 25.0 |"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("table lacks %q:\n%s", want, out)
+		}
+	}
+	if strings.Contains(out, "Inner Focus") {
+		t.Errorf("an action that never healed is listed:\n%s", out)
+	}
+}
