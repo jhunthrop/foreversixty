@@ -8,7 +8,7 @@ buildWhy: 'Shield healer on Penance, Divine Aegis and Soul Warding'
 recommendedRaces: [human, undead]
 statPriority: [MP5, Spirit, Healing power, Intellect, Critical strike]
 description: 'How to heal as a Discipline Priest in Forever: Penance, the shield and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
-updated: 2026-11-04
+updated: 2026-11-13
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -66,7 +66,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus: at 60, Lesser Heal and the first ranks of Heal and Renew heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank only within the ranks you learned from your forties on, and keep Lesser Heal off your bars for good: when even Greater Heal rank 1 is more than you can afford, wait the few seconds for your regeneration.
 
-**Flash Heal** costs the most mana for what it heals, so it never becomes the filler.
+**Flash Heal** costs the most mana for what it heals, so it never becomes the filler. Keep it for a tank about to die, and only while your mana keeps up with the fight: once you are behind, a Greater Heal started before the hit saves more of your bar.
 
 **Prayer of Healing** heals the target's party, so target a member of the group that took the damage.
 
