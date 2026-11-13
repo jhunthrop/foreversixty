@@ -174,16 +174,6 @@ describe("Panel, the pure model", function()
 			assert.are.equal(L.panelAllBest, Panel.upgrades({ targets = {} }).rest)
 			assert.are.equal("Picks start at level 20", Panel.upgrades({ targets = {}, picksStart = 20 }).rest)
 		end)
-
-		it("carries the sim's age alone and Sim again only once the character has a sim", function()
-			assert.is_nil(Panel.upgrades({ targets = {} }).note)
-			local region = Panel.upgrades({ targets = {}, sim = { age = "2 days ago" } })
-			assert.are.equal("2 days ago", region.note)
-			assert.are.equal(L.panelSimAgain, region.simAgain)
-			local queued = Panel.upgrades({ targets = {}, sim = { queued = true } })
-			assert.are.equal(L.homeSimQueued, queued.simAgain)
-			assert.is_nil(queued.note)
-		end)
 	end)
 
 	describe("Talents and Pick your path", function()
@@ -273,19 +263,11 @@ describe("Panel, the pure model", function()
 	end)
 
 	describe("the title band", function()
-		it("names the character, the level and class, and the score in its tier colour with its unit", function()
-			local tier = { r = 0, g = 0.44, b = 0.87 }
+		it("names the character, the level and class; the score lives on the window's Me tab", function()
 			local head = Panel.head({ who = "Bow Jackzon", fact = "Level 24 Hunter", classToken = "HUNTER",
-				faction = "alliance", score = { score = 1240, tierColor = tier } })
+				faction = "alliance", score = { score = 1240 } })
 			assert.are.same({ title = "Bow Jackzon", meta = "Level 24 Hunter", classToken = "HUNTER",
-				faction = "alliance", number = 1240, numberColor = tier, unit = "score" }, head)
-		end)
-
-		it("carries no number and no unit without a score", function()
-			local head = Panel.head({ who = "Bow Jackzon", fact = "Level 6 Hunter", classToken = "HUNTER" })
-			assert.is_nil(head.number)
-			assert.is_nil(head.unit)
-			assert.are.equal("Level 6 Hunter", head.meta)
+				faction = "alliance" }, head)
 		end)
 	end)
 
@@ -317,13 +299,6 @@ describe("Panel, the pure model", function()
 		end)
 	end)
 
-	it("colours a percentile as the log sites do, in the site's parse tokens", function()
-		local parse = require("Tokens").color.parse
-		assert.are.equal(parse.gold, Panel.parseHex(100))
-		assert.are.equal(parse.orange, Panel.parseHex(96))
-		assert.are.equal(parse.blue, Panel.parseHex(71))
-		assert.are.equal(parse.greyText, Panel.parseHex(10))
-	end)
 end)
 
 describe("Panel, the frame", function()
@@ -424,13 +399,12 @@ describe("Panel, the frame", function()
 		end)
 	end)
 
-	it("draws the title band: the medallion with its faction notch, the name, the meta and the score", function()
+	it("draws the title band: the medallion with its faction notch, the name and the meta, no score", function()
 		Panel.draw(raidModel({ raid_id = 42, answer = "none", role = "dps" }))
 		local band = Panel.band
 		assert.are.equal("Ashvale", band.foreverSixtyTitle.text)
 		assert.are.equal("Level 60 Hunter", band.foreverSixtyMeta.text)
-		assert.are.equal("1840", band.foreverSixtyNumber.text)
-		assert.are.equal("score", band.foreverSixtyUnit.text)
+		assert.are.equal("", band.foreverSixtyNumber.text)
 		local medallion = band.foreverSixtyMedallion
 		local crest
 		for _, call in ipairs(medallion.foreverSixtyCrest.calls) do
@@ -471,7 +445,6 @@ describe("Panel, the frame", function()
 		local text = drawn(Panel.frame)
 		assert.is_truthy(text:find("\nDamage\n", 1, true))
 		assert.is_truthy(text:find("Job: ", 1, true))
-		assert.is_truthy(text:find("2 days ago", 1, true))
 		for _, cut in ipairs({ "as Ashvale", "Your job", "You're In", "Sends when", "your sim", "Your other slots",
 			"hover for the full rule", "you can change it later", "Forever Score", "Forever Sixty" }) do
 			assert.is_falsy(text:find(cut, 1, true), cut)

@@ -44,26 +44,19 @@ export interface ScorePoint {
   tier: string;
 }
 
-/** The most points each component can give (score_v2.go's *Max constants). */
-export const COMPONENT_MAX: Readonly<ScoreComponents> = {
-  gear: 500,
-  experience: 700,
-  parses: 600,
-  attendance: 200,
-  discipline: 100,
-};
+/** The most points each component can give (score_v2.go's *Max constants), from the shared
+ *  fixture the addon's Score.lua reads too. */
+export const COMPONENT_MAX: Readonly<ScoreComponents> = Object.fromEntries(
+  labels.components.map((component) => [component.key, component.max]),
+) as ScoreComponents;
 
 export type Tier = keyof typeof labels.tiers;
 
-/** The lowest score of each tier, lowest tier first (score_v2.go's *From constants;
- *  provisional there, so provisional here). */
-export const TIER_FROM: Readonly<Record<Tier, number>> = {
-  common: 0,
-  uncommon: 500,
-  rare: 1000,
-  epic: 1500,
-  legendary: 2000,
-};
+/** The lowest score of each tier, lowest tier first (score_v2.go's *From constants), from the
+ *  shared fixture. */
+export const TIER_FROM: Readonly<Record<Tier, number>> = Object.fromEntries(
+  Object.entries(labels.tiers).map(([tier, entry]) => [tier, entry.from]),
+) as Record<Tier, number>;
 
 const TIERS = Object.keys(TIER_FROM) as Tier[];
 

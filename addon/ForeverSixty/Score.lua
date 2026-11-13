@@ -29,23 +29,30 @@ Score.STALE_AFTER_SECONDS = 3 * 24 * 60 * 60
 --- new character, and nothing is a better line than a reproach.
 Score.LEVEL_FLOOR = 10
 
---- The record's components in the order a tooltip lists them, with their labels.
+--- The record's components in the order a tooltip lists them, with their labels and the most points
+--- each can give (the formula's ceilings, pinned to docs/contracts/fixtures/score-labels.json).
 Score.COMPONENTS = {
-	{ key = "gear", label = "scoreGear" },
-	{ key = "experience", label = "scoreExperience" },
-	{ key = "parses", label = "scoreParses" },
-	{ key = "attendance", label = "scoreAttendance" },
-	{ key = "discipline", label = "scoreDiscipline" },
+	{ key = "gear", label = "scoreGear", max = 500 },
+	{ key = "experience", label = "scoreExperience", max = 700 },
+	{ key = "parses", label = "scoreParses", max = 600 },
+	{ key = "attendance", label = "scoreAttendance", max = 200 },
+	{ key = "discipline", label = "scoreDiscipline", max = 100 },
 }
 
---- The client's item-quality index for each tier name, and the tier's label.
+--- The client's item-quality index for each tier name, the tier's label and its lowest score (the
+--- formula's tier floors, pinned to score-labels.json).
 local TIERS = {
-	common = { quality = 1, label = "scoreTierCommon" },
-	uncommon = { quality = 2, label = "scoreTierUncommon" },
-	rare = { quality = 3, label = "scoreTierRare" },
-	epic = { quality = 4, label = "scoreTierEpic" },
-	legendary = { quality = 5, label = "scoreTierLegendary" },
+	common = { quality = 1, label = "scoreTierCommon", from = 0 },
+	uncommon = { quality = 2, label = "scoreTierUncommon", from = 500 },
+	rare = { quality = 3, label = "scoreTierRare", from = 1000 },
+	epic = { quality = 4, label = "scoreTierEpic", from = 1500 },
+	legendary = { quality = 5, label = "scoreTierLegendary", from = 2000 },
 }
+Score.TIERS = TIERS
+
+--- A part's share of its own maximum on the item quality ladder (the web's partQuality), highest
+--- floor first: 90 % or more is epic.
+Score.PART_QUALITY = { { 0.9, "epic" }, { 0.75, "rare" }, { 0.5, "uncommon" } }
 
 -- The client has no `os` table; its clock is the `time` global. The specs run on
 -- plain Lua, where only os.time exists.
@@ -60,22 +67,8 @@ end
 --- other text. Plain arithmetic (days from civil), so the host's time zone
 --- never enters into it.
 function Score.dateSeconds(text)
-	local y, m, d = tostring(text or ""):match("^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
-	if y == nil then
-		return nil
-	end
-	y, m, d = tonumber(y), tonumber(m), tonumber(d)
-	if m < 1 or m > 12 or d < 1 or d > 31 then
-		return nil
-	end
-	if m <= 2 then
-		y = y - 1
-	end
-	local era = math.floor(y / 400)
-	local yoe = y - era * 400
-	local doy = math.floor((153 * (m + (m > 2 and -3 or 9)) + 2) / 5) + d - 1
-	local doe = yoe * 365 + math.floor(yoe / 4) - math.floor(yoe / 100) + doy
-	return (era * 146097 + doe - 719468) * 86400
+	local days = Compat.epochDays(text)
+	return days ~= nil and days * 86400 or nil
 end
 
 local function wellFormed(data)
@@ -196,7 +189,8 @@ function Score.tierColor(tier)
 	return Theme.qualityColor(entry.quality)
 end
 
-local function tierLabel(tier)
+--- A tier's label ("Rare"), or nil for a tier this addon does not know.
+function Score.tierLabel(tier)
 	local entry = type(tier) == "string" and TIERS[tier] or nil
 	return entry and L[entry.label] or nil
 end
@@ -281,7 +275,7 @@ function Score.lines(record)
 		return {}
 	end
 	local head = { string.format(L.scoreLine, record.score) }
-	local tier = tierLabel(record.tier)
+	local tier = Score.tierLabel(record.tier)
 	if tier ~= nil then
 		head[#head + 1] = tier
 	end
@@ -308,6 +302,70 @@ function Score.components(record)
 		end
 	end
 	return parts
+end
+
+--- A tier's colour on the window's dark ground as six hex digits (Theme.panelTierHex over its quality
+--- colour), or nil for a tier this addon does not know.
+function Score.tierHex(tier)
+	local entry = type(tier) == "string" and TIERS[tier] or nil
+	if entry == nil then
+		return nil
+	end
+	return Theme.panelTierHex(tier, Theme.QUALITY_HEX[entry.quality])
+end
+
+--- The tier above `score` and how far it is: { tier, label, from, gap } ("316 to Epic (1500)"), or nil
+--- at the top tier (or without a number). Pure.
+function Score.nextTier(score)
+	if type(score) ~= "number" then
+		return nil
+	end
+	local best
+	for tier, entry in pairs(TIERS) do
+		if entry.from > score and (best == nil or entry.from < best.from) then
+			best = { tier = tier, label = L[entry.label], from = entry.from, gap = entry.from - score }
+		end
+	end
+	return best
+end
+
+--- The tier name for a part's share `fill` (0 to 1) of its maximum, the web's partQuality. Pure.
+function Score.partQuality(fill)
+	for _, floor in ipairs(Score.PART_QUALITY) do
+		if (fill or 0) >= floor[1] then
+			return floor[2]
+		end
+	end
+	return "common"
+end
+
+--- Every part on one scale (the web's scorePartRows): { key, label, points, max, track (the part's
+--- maximum against the largest, 0 to 1), fill (its share of its own maximum, 0 to 1), quality }, in
+--- Score.COMPONENTS order; a part the record lacks counts 0. Pure.
+function Score.parts(record)
+	local components = type(record) == "table" and type(record.components) == "table" and record.components or {}
+	local longest = 0
+	for _, component in ipairs(Score.COMPONENTS) do
+		longest = math.max(longest, component.max)
+	end
+	local rows = {}
+	for _, component in ipairs(Score.COMPONENTS) do
+		local points = type(components[component.key]) == "number" and components[component.key] or 0
+		local fill = math.max(0, math.min(1, points / component.max))
+		rows[#rows + 1] = { key = component.key, label = L[component.label], points = points, max = component.max,
+			track = component.max / longest, fill = fill, quality = Score.partQuality(fill) }
+	end
+	return rows
+end
+
+--- How many whole days old the ratings pack is at `now` (its `generated` date), or nil where it
+--- does not say. Pure over a Score.status() result.
+function Score.ageDays(status, now)
+	local written = type(status) == "table" and Score.dateSeconds(status.generated) or nil
+	if written == nil or type(now) ~= "number" then
+		return nil
+	end
+	return math.max(0, math.floor((now - written) / 86400))
 end
 
 --- The guild's record by name, or nil.

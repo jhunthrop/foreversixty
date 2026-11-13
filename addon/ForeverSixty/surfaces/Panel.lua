@@ -6,14 +6,14 @@
 -- The site's frame style (Widgets.umberFrame): umber ground, bone titles in the game's title
 -- font, the client's own red buttons, one teal button for the chosen answer. Head: the title band
 -- (Widgets.titleBand): the class medallion with its faction notch, the name in bone, "Level 24
--- Hunter" muted under it, and "1240 score" on the right (the number in its tier colour, absent
--- with no record). Then, in priority order, each region only when it has something to say:
---   1. Tonight (a raid within 18 hours or running), or Last raid the day after one;
+-- Hunter" muted under it (the score, the last raid and the sim live on the window's Me tab). Then, in
+-- priority order, each region only when it has something to say:
+--   1. Tonight (a raid within 18 hours or running);
 --   2. Upgrades (at most three, the item tooltip's own Next lines);
 --   3. Talents (the next point), or Pick your path under 10 with no build;
 --   4. Rotation at <level> (collapsed at 60).
 --
--- Pure model, thin frame: Panel.tonight, upgrades, talents, path, rotation, lastRaid, model and
+-- Pure model, thin frame: Panel.tonight, upgrades, talents, path, rotation, model and
 -- fit are plain tables in, plain tables out; Panel.inputs reads the client; Panel.draw lays the
 -- frame out. The frame is built on first open, never at load; it never opens in combat and
 -- closes when combat starts. Nothing is written into a client frame: docked to the character
@@ -58,8 +58,6 @@ Panel.SHED_ROTATION = 4
 Panel.SHED_UPGRADES = 2
 --- Tonight shows from this long before a raid's start (and while it runs, RaidAssign.SHOWN_FOR_SECONDS).
 Panel.TONIGHT_SECONDS = 18 * 60 * 60
---- Last raid shows while the newest last_raid message is under this old.
-Panel.LAST_RAID_SECONDS = 2 * 24 * 60 * 60
 --- The four answers, in the apps' and Discord's order.
 Panel.ANSWERS = { "in", "late", "bench", "out" }
 --- The inbox message the answers read.
@@ -216,44 +214,13 @@ function Panel.tonight(input)
 	return region
 end
 
---- The Last raid region (spec 4.3, the day after a raid): the date, each boss with its
---- percentile, and the worst boss's biggest loss. nil without a message under two days old.
-function Panel.lastRaid(message, clock)
-	if type(message) ~= "table" or type(message.bosses) ~= "table" then
-		return nil
-	end
-	local day = Score.dateSeconds(message.date)
-	if day == nil or type(clock) ~= "number" or clock - day > Panel.LAST_RAID_SECONDS then
-		return nil
-	end
-	local bosses, worst = {}, nil
-	for _, boss in ipairs(message.bosses) do
-		if type(boss) == "table" and type(boss.name) == "string" and type(boss.percentile) == "number" then
-			bosses[#bosses + 1] = { name = boss.name, percentile = boss.percentile,
-				text = string.format(L.homeRaidBoss, boss.name, Chip.ordinal(boss.percentile)) }
-			if worst == nil or boss.percentile < worst.percentile then
-				worst = boss
-			end
-		end
-	end
-	if #bosses == 0 then
-		return nil
-	end
-	local region = { kind = "lastRaid", note = Compat.shortDate(message.date), bosses = bosses }
-	if worst ~= nil and type(worst.biggest_loss) == "string" and worst.biggest_loss ~= "" then
-		region.loss = string.format(L.panelWorstLoss, worst.name, worst.biggest_loss)
-	end
-	return region
-end
-
 --- The Upgrades region (spec 4.3 item 2): at most MAX_UPGRADES rows from PanelTab.targets (the
 --- tooltip's own Next lines, or the bag item a slot's hover leads with), each { itemId, name, hex,
 --- gain, unit, detail, bag, link }, `detail` "<slot> · <source>" plus " · level 27" when the item
---- asks for a higher level. `input`: { targets, level, sim (the note's parts: { age, queued } or
---- nil), picksStart }. A rest line only with no rows ("Picks start at level 20" below the first
---- band, else "Every slot is best for your build."; "No upgrades from these sources" when the
---- sources on leave every slot without an option); the sim note is the age alone, beside Sim
---- again. `input.sources` (Panel.sourceLine's) adds the foot line under the rows: the state's
+--- asks for a higher level. `input`: { targets, level, picksStart }. A rest line only with no rows
+--- ("Picks start at level 20" below the first band, else "Every slot is best for your build."; "No
+--- upgrades from these sources" when the sources on leave every slot without an option).
+--- `input.sources` (Panel.sourceLine's) adds the foot line under the rows: the state's
 --- words and Change. Never nil: the region always shows.
 function Panel.upgrades(input)
 	local rows = {}
@@ -282,11 +249,6 @@ function Panel.upgrades(input)
 	end
 	if sources ~= nil then
 		region.sources = { words = sources.words, off = sources.off }
-	end
-	if type(input.sim) == "table" then
-		region.note = input.sim.age
-		region.simAgain = input.sim.queued and L.homeSimQueued or L.panelSimAgain
-		region.simQueued = input.sim.queued == true
 	end
 	return region
 end
@@ -402,8 +364,6 @@ function Panel.regionHeight(region)
 	local height = H.heading + H.rule
 	if region.kind == "tonight" then
 		height = height + H.row + H.line * (region.with and 2 or 1) + (region.buttons and H.button + H.gap or 0)
-	elseif region.kind == "lastRaid" then
-		height = height + H.line * (#region.bosses + (region.loss and 1 or 0))
 	elseif region.kind == "upgrades" then
 		height = height + H.row * #region.rows + (region.rest and H.line or 0) + (region.sources and H.sources or 0)
 	elseif region.kind == "talents" then
@@ -489,11 +449,6 @@ function Panel.model(input)
 	local tonight = Panel.tonight(input)
 	if tonight ~= nil then
 		regions[#regions + 1] = tonight
-	else
-		local last = Panel.lastRaid(input.lastRaid, input.clock)
-		if last ~= nil then
-			regions[#regions + 1] = last
-		end
 	end
 	regions[#regions + 1] = Panel.upgrades(input)
 	local path = Panel.path(input)
@@ -513,17 +468,9 @@ function Panel.model(input)
 end
 
 --- The title band (Widgets.setTitleBand's shape): the name, the meta "Level 24 Hunter" (level
---- and class only, `input.fact`), the class and faction for the medallion, and the Forever Score
---- in its tier colour with the unit "score"; no number with no score. Pure.
+--- and class only, `input.fact`), the class and faction for the medallion. Pure.
 function Panel.head(input)
-	local head = { title = input.who or "", meta = input.fact or "", classToken = input.classToken,
-		faction = input.faction }
-	if type(input.score) == "table" and type(input.score.score) == "number" then
-		head.number = input.score.score
-		head.numberColor = input.score.tierColor
-		head.unit = L.panelScoreUnit
-	end
-	return head
+	return { title = input.who or "", meta = input.fact or "", classToken = input.classToken, faction = input.faction }
 end
 
 -- The raid answer, through the companion outbox ----------------------------------------------
@@ -586,16 +533,6 @@ local function upgradeTargets(base)
 	return targets
 end
 
---- The newest inbox message of `kind` for this character, the first `keep` accepts.
-local function newestMessage(kind, keep)
-	for _, message in ipairs(Follow.messages(ForeverSixtyInbox, Export.characterKey(), kind)) do
-		if keep == nil or keep(message) then
-			return message
-		end
-	end
-	return nil
-end
-
 --- The model's inputs from the live modules and the client.
 function Panel.inputs(data)
 	data = data or Panel.data or ns.Data
@@ -619,9 +556,7 @@ function Panel.inputs(data)
 	local input = {
 		level = level, classToken = classToken, who = name, fact = factLine(level, classToken),
 		faction = base.faction,
-		score = name ~= nil and Score.forCharacter(name) or nil,
 		clock = clock, tonight = tonight, accepts = accepts,
-		lastRaid = newestMessage("last_raid"),
 		targets = upgradeTargets(base),
 		build = build, buildName = build ~= nil and Follow.panelBuildName(data, build, level) or nil,
 		progress = Progress.build(build, stagedRanks, level),
@@ -642,15 +577,6 @@ function Panel.inputs(data)
 	local specBis = base.spec ~= nil and type(data.bis) == "table" and data.bis[base.spec] or nil
 	input.picksStart = base.faction and Gear.firstBand(specBis, level) or nil
 	input.sources = Panel.sourceLine(data, base.spec, base.faction and Gear.bandFor(specBis, level) or nil, base.faction)
-	local current = base.current
-	if current ~= nil and current.tag == "sim" then
-		local result = newestMessage("sim_result", function(message)
-			return message.spec == current.spec
-		end)
-		local made = result ~= nil and RaidAssign.epochOf(result.generated_at) or nil
-		input.sim = { queued = Export.simRequest ~= nil,
-			age = made ~= nil and Panel.age(made, clock) or nil }
-	end
 	local point = input.progress.point
 	if point ~= nil and build ~= nil then
 		local talent = Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column)
@@ -703,19 +629,6 @@ function Panel.currentSourceLine(data)
 	return Panel.sourceLine(data, base.spec, base.faction and Gear.bandFor(specBis, Chip.level()) or nil, base.faction)
 end
 
---- "2 days ago", "5 h ago", "just now": how old a sim is. Pure.
-function Panel.age(made, now)
-	local seconds = math.max(0, now - made)
-	if seconds >= 2 * 86400 then
-		return string.format(L.panelDaysAgo, math.floor(seconds / 86400))
-	elseif seconds >= 86400 then
-		return L.panelDayAgo
-	elseif seconds >= 3600 then
-		return string.format(L.panelHoursAgo, math.floor(seconds / 3600))
-	end
-	return L.panelJustNow
-end
-
 --- Whether the player opened the collapsed rotation at 60, remembered per character.
 function Panel.rotationExpanded()
 	local panel = type(ForeverSixtyDB) == "table" and ForeverSixtyDB.panelState or nil
@@ -732,12 +645,6 @@ function Panel.setRotationExpanded(open)
 end
 
 -- What the buttons do -----------------------------------------------------------------------------
-
---- "Sim again": the sim request queued in the outbox (contract 4), as the flyout's "Sim me" did.
-function Panel.simAgain()
-	local current = ItemTooltip.baseContext(Panel.data or ns.Data).current
-	return PanelTab.simMe(current ~= nil and current.spec or nil)
-end
 
 --- "Equip": the bag item, out of combat only.
 function Panel.equip(link)
@@ -910,21 +817,7 @@ Panel.RAID_ICONS = {
 }
 Panel.RAID_ICON_DEFAULT = "Interface\\Icons\\INV_Misc_Bone_HumanSkull_01"
 
---- Percentile colours, the parse colours every log site uses: grey, green, blue, purple, orange,
---- pink at 99 and gold at 100.
-Panel.PARSE_COLORS = Theme.PARSE_STEPS
-
---- A percentile's colour as a hex. Pure.
-function Panel.parseHex(percentile)
-	for _, step in ipairs(Panel.PARSE_COLORS) do
-		if (percentile or 0) >= step[1] then
-			return step[2]
-		end
-	end
-	return Panel.PARSE_COLORS[#Panel.PARSE_COLORS][2]
-end
-
---- The frame: the umber ground, the title band (the medallion, the name, the meta, the score;
+--- The frame: the umber ground, the title band (the medallion, the name, the meta;
 --- the band is the drag handle), the client's red close X top right. Built on first open;
 --- Escape closes it (UISpecialFrames).
 function Panel.ensure()
@@ -1100,35 +993,6 @@ local function drawTonight(content, region, y, width)
 	return y + Panel.H.gap
 end
 
-local function drawLastRaid(content, region, y, width)
-	y = heading(content, y, L.panelLastRaidTitle, region.note, width)
-	for _, boss in ipairs(region.bosses) do
-		local line = text(content, boss.name .. " |cff" .. Panel.parseHex(boss.percentile)
-			.. Chip.ordinal(boss.percentile) .. "|r", "ink")
-		line:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-		y = y + Panel.H.line
-	end
-	if region.loss ~= nil then
-		y = y + wrapped(content, region.loss, "umberMuted", 0, y, width)
-	end
-	return y + Panel.H.gap
-end
-
---- The Upgrades heading's right side: the sim's age beside Sim again (Sim queued, disabled, once
---- queued).
-local function drawSimAgain(content, region, top)
-	local again = button(content, region.simAgain, function()
-		Panel.simAgain()
-	end)
-	again:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -top)
-	Widgets.setEnabled(again, not region.simQueued)
-	if region.note ~= nil then
-		local age = text(content, region.note, "umberMuted")
-		age:SetJustifyH("RIGHT")
-		age:SetPoint("RIGHT", again, "LEFT", -Panel.BUTTON_GAP, 0)
-	end
-end
-
 local function drawUpgradeRow(content, row, y, width)
 	local mark = icon(content, Compat.itemIcon(row.itemId), 28)
 	mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
@@ -1179,11 +1043,7 @@ local function drawSourceLine(content, sources, y)
 end
 
 local function drawUpgrades(content, region, y, width)
-	local top = y
-	y = heading(content, y, L.panelUpgrades, region.simAgain == nil and region.note or nil, width)
-	if region.simAgain ~= nil then
-		drawSimAgain(content, region, top)
-	end
+	y = heading(content, y, L.panelUpgrades, nil, width)
 	for _, row in ipairs(region.rows) do
 		y = drawUpgradeRow(content, row, y, width)
 	end
@@ -1340,7 +1200,7 @@ local function drawRotation(content, region, y, width)
 end
 
 local DRAW = {
-	tonight = drawTonight, lastRaid = drawLastRaid, upgrades = drawUpgrades, talents = drawTalents,
+	tonight = drawTonight, upgrades = drawUpgrades, talents = drawTalents,
 	path = drawPath, rotation = drawRotation,
 }
 

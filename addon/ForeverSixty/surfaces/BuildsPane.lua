@@ -192,8 +192,9 @@ end
 --- 2026-11-13-addon-hub 3.2): the points on the followed build of those the level gives it, then the
 --- points off plan in the warning colour (a respin must never hide), else the points waiting in the
 --- client gold: { "27 of 33 on plan", "5 off plan" } (the 1 waiting is what the two leave; Up next and
---- the tab's dot say it). Only the points waiting with nothing followed; none without a level. Pure.
-function BuildsPane.figures(level, followed, ranks)
+--- the tab's dot say it). Only the points waiting with nothing followed; none without a level.
+--- `onPlanFormat` words the first part another way (the Me tab's "51 of 51 points on plan"). Pure.
+function BuildsPane.figures(level, followed, ranks, onPlanFormat)
 	if type(level) ~= "number" then
 		return {}
 	end
@@ -201,7 +202,7 @@ function BuildsPane.figures(level, followed, ranks)
 	local allowed = followed ~= nil and Progress.pointsAllowed(followed, level) or 0
 	local progress = allowed > 0 and Progress.build(followed, ranks, level) or {}
 	if allowed > 0 then
-		parts[#parts + 1] = string.format(L.windowOnPlan, math.min(progress.matched or 0, allowed), allowed)
+		parts[#parts + 1] = string.format(onPlanFormat or L.windowOnPlan, math.min(progress.matched or 0, allowed), allowed)
 	end
 	local unspent = Progress.unspentPoints(level, ranks or {})
 	if (progress.offPlan or 0) > 0 then

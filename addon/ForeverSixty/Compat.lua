@@ -677,6 +677,45 @@ function Compat.shortDate(text)
 	return tonumber(day) .. " " .. name
 end
 
+local WEEKDAYS = { "Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed" }
+local WEEKDAY_NAMES = { "Thursday", "Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday" }
+
+--- Days since 1 Jan 1970 for a YYYY-MM-DD date (days from civil, plain arithmetic, so no time zone
+--- enters into it), or nil for any other text or an impossible month or day.
+function Compat.epochDays(text)
+	local y, m, d = tostring(text or ""):match("^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
+	if y == nil then
+		return nil
+	end
+	y, m, d = tonumber(y), tonumber(m), tonumber(d)
+	if m < 1 or m > 12 or d < 1 or d > 31 then
+		return nil
+	end
+	if m <= 2 then
+		y = y - 1
+	end
+	local era = math.floor(y / 400)
+	local yoe = y - era * 400
+	local doy = math.floor((153 * (m + (m > 2 and -3 or 9)) + 2) / 5) + d - 1
+	return era * 146097 + yoe * 365 + math.floor(yoe / 4) - math.floor(yoe / 100) + doy - 719468
+end
+
+--- "2026-12-08" as "Tue 8 Dec": the weekday (1 Jan 1970 was a Thursday) and Compat.shortDate. Nil for
+--- any other text.
+function Compat.dayDate(text)
+	local short, days = Compat.shortDate(text), Compat.epochDays(text)
+	if short == nil or days == nil then
+		return nil
+	end
+	return WEEKDAYS[days % 7 + 1] .. " " .. short
+end
+
+--- "2026-12-08" as "Tuesday", or nil for any other text.
+function Compat.weekdayName(text)
+	local days = Compat.epochDays(text)
+	return days ~= nil and WEEKDAY_NAMES[days % 7 + 1] or nil
+end
+
 -- The clock ---------------------------------------------------------------------------------
 
 --- The locales whose chat timestamps are 12-hour when the player has not chosen a format.

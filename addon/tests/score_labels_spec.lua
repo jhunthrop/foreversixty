@@ -1,7 +1,7 @@
 -- addon/tests/score_labels_spec.lua
 -- The site shows the Forever Score with the addon's own words: the five component labels, the
--- tier names and colours, the score line, "as of" and the no-logs line. Both read them from
--- one shared fixture, docs/contracts/fixtures/score-labels.json (the web imports it). This
+-- tier names, colours and floors, each part's maximum, the score line, "as of" and the no-logs line.
+-- Both read them from one shared fixture, docs/contracts/fixtures/score-labels.json (the web imports it). This
 -- spec pins the fixture to Locale.lua and Score.COMPONENTS, so a label changed here and not
 -- there fails until both say the same thing.
 --
@@ -64,7 +64,8 @@ describe("score-labels.json", function()
 		assert.are.equal(5, #Score.COMPONENTS)
 		local last = 0
 		for _, component in ipairs(Score.COMPONENTS) do
-			local entry = string.format('{ "key": "%s", "label": "%s" }', component.key, L[component.label])
+			local entry = string.format('{ "key": "%s", "label": "%s", "max": %d }', component.key, L[component.label],
+				component.max)
 			local at = text:find(entry, 1, true)
 			assert.is_truthy(at, "score-labels.json is missing " .. entry)
 			assert.is_true(at > last, component.key .. " is out of Score.COMPONENTS order")
@@ -72,9 +73,10 @@ describe("score-labels.json", function()
 		end
 	end)
 
-	it("names every tier with Locale's label and the client's quality colour", function()
+	it("names every tier with Locale's label, the client's quality colour and Score's tier floor", function()
 		for _, tier in ipairs(TIERS) do
-			has(string.format('"%s": { "label": "%s", "color": "%s" }', tier.tier, L[tier.label], tier.color))
+			has(string.format('"%s": { "label": "%s", "color": "%s", "from": %d }', tier.tier, L[tier.label], tier.color,
+				Score.TIERS[tier.tier].from))
 		end
 	end)
 end)

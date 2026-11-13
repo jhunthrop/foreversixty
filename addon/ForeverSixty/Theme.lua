@@ -951,6 +951,16 @@ Theme.PARSE_STEPS = {
 	{ 0, Tokens.color.parse.greyText },
 }
 
+--- A percentile's colour as six hex digits, the parse colours every log site uses. Pure.
+function Theme.parseHex(percentile)
+	for _, step in ipairs(Theme.PARSE_STEPS) do
+		if (percentile or 0) >= step[1] then
+			return step[2]
+		end
+	end
+	return Theme.PARSE_STEPS[#Theme.PARSE_STEPS][2]
+end
+
 --- The score tiers whose client colour does not read on the dark panel, and the Theme.HEX
 --- key each is drawn in there instead (common white and uncommon green read as they are).
 Theme.PANEL_TIER = { rare = "rareBright", epic = "epicBright", legendary = "legendaryBright" }

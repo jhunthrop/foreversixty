@@ -9,7 +9,7 @@
 -- add a tab"):
 --
 --   Hub.register { id, label, build(content), show(options), hide(), escape(), empty(), figures(),
---                  waiting(), available(), order }
+--                  waiting(), lead(), available(), order }
 --     id        one of Hub.ORDER's keys (me, builds, gear, rotation, guild, officer); `order` and the
 --               shared availability rule (Hub.RULES, spec 3.3) come from the id. Registering an id again
 --               replaces the tab (the placeholders below are replaced this way).
@@ -23,6 +23,9 @@
 --     waiting   the items this tab has for the player now, each { key, line, fact }: `key` names the kind
 --               ("spend"), `line` is what the chip says, `fact` changes when the item is new again
 --               (default: the line). While it returns any, the strip draws the tab's dot.
+--     lead      the line the tab leads with on the Me tab's Right now (spec 4.1), from the tab's own
+--               function so the two never disagree: { line, sub, icon (a texture path) or itemId }, or
+--               nil. A tab without one shows its first waiting line there, if any.
 --     available an extra rule on top of the shared one (both must pass); an error counts as false.
 --
 --   Hub.open(id, options) / Hub.toggle(id) / Hub.close() / Hub.isShown() / Hub.select(id, options)

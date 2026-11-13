@@ -339,26 +339,15 @@ describe("what the site has and what the inbox holds", function()
 			assert.are.same({ Theme.chatLine(text) }, state.printed)
 		end
 
-		it("says the site has not seen the character, when it never has", function()
-			record(GEAR)
+		it("says nothing at login without builds waiting: the site and the companion are the Me tab's footer", function()
+			record(GEAR, { gearAt = "2026-10-19 11:00" })
 			inbox()
 			login()
-			only(L.siteLoginNever)
-			assert.are.equal("the site has not seen this character yet. Keep the companion running and signed in; "
-				.. "log out once from the world.", L.siteLoginNever)
-		end)
-
-		it("says the gear is on its way when the site last saw the character before it had gear", function()
-			record(GEAR, { gearAt = "2026-10-19 11:00" })
-			inbox(ack(2 * 3600), build("Arms raid", ARMS))
-			login()
-			only(L.siteLoginGear)
-			assert.are.equal("your gear is on its way to the site; check it after your next logout.", L.siteLoginGear)
-		end)
-
-		it("says nothing of the gear once the site has seen the record that has it", function()
-			record(GEAR, { gearAt = "2026-10-19 09:00" })
+			assert.are.same({}, state.printed)
 			inbox(ack(2 * 3600))
+			login()
+			assert.are.same({}, state.printed)
+			inbox(ack(5 * 86400))
 			login()
 			assert.are.same({}, state.printed)
 		end)
@@ -379,43 +368,21 @@ describe("what the site has and what the inbox holds", function()
 			only("2 builds for Bob are waiting: Fury leveling, Arms raid. /fs opens them.")
 		end)
 
-		it("says the companion has gone quiet after three days, with the day it last picked up", function()
-			record(GEAR)
-			inbox(ack(5 * 86400))
-			login()
-			only(string.format(L.siteLoginSilent, "14 Oct"))
-			assert.are.equal("the companion has not picked up your data since 14 Oct. Start it, or paste an export at "
-				.. "foreversixty.gg/setup.", string.format(L.siteLoginSilent, "14 Oct"))
-		end)
-
-		it("says nothing at two days, or when all is well", function()
-			record(GEAR)
-			inbox(ack(2 * 86400))
-			login()
-			assert.are.same({}, state.printed)
-		end)
-
-		it("is the first that applies, never two lines", function()
-			-- Never seen and a build waiting: only the first.
+		it("says a waiting build even when the site has never seen the character", function()
 			record(GEAR)
 			inbox(build("Arms raid", ARMS))
-			login()
-			only(L.siteLoginNever)
-			-- Silent for days and a build waiting: the build.
-			state.printed = {}
-			inbox(ack(6 * 86400), build("Arms raid", ARMS))
 			login()
 			only(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
 		end)
 
 		it("waits five seconds, after the export's refresh", function()
 			record(GEAR)
-			inbox()
+			inbox(ack(3600), build("Arms raid", ARMS))
 			fire("PLAYER_ENTERING_WORLD", true, false)
 			assert.are.same({}, state.printed)
 			assert.are.equal(2, timersAt(5))
 			mock.runTimers(state)
-			only(L.siteLoginNever)
+			only(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
 		end)
 
 		-- X.5: once per login. A login says its line; a /reload says it only when it changed; a
@@ -491,57 +458,6 @@ describe("what the site has and what the inbox holds", function()
 			assert.are.same({}, state.printed)
 		end)
 
-		-- X.5: "the site has your gear" settles an earlier "on its way", once.
-		it("says the site has the gear, once, after it said the gear was on its way", function()
-			record(GEAR, { gearAt = "2026-10-19 11:00" })
-			inbox(ack(2 * 3600))
-			login()
-			only(L.siteLoginGear)
-			assert.is_true(_G.ForeverSixtyDB.site[KEY].gearPending)
-			-- The companion uploads: the ack is newer than the export's build time (11:30).
-			state.printed = {}
-			inbox(ack(10 * 60))
-			login()
-			only("the site has your gear (saved 10 min ago).")
-			assert.is_nil(_G.ForeverSixtyDB.site[KEY].gearPending)
-			state.printed = {}
-			login()
-			assert.are.same({}, state.printed)
-		end)
-
-		it("keeps saying the gear is on its way while the ack is older than the export's build time", function()
-			record(GEAR, { gearAt = "2026-10-19 11:00" })
-			inbox(ack(2 * 3600))
-			login()
-			state.printed = {}
-			-- 11:10 is after the gear first appeared (11:00) but before the export was last built (11:30).
-			inbox(ack(50 * 60))
-			login()
-			assert.are.same({}, state.printed)
-			assert.is_true(_G.ForeverSixtyDB.site[KEY].gearPending)
-		end)
-
-		it("does not say the site has the gear when it never said it was on its way", function()
-			record(GEAR, { gearAt = "2026-10-19 09:00" })
-			inbox(ack(10 * 60))
-			login()
-			assert.are.same({}, state.printed)
-		end)
-
-		it("names a waiting build before the settled gear, and keeps the gear for a quieter login", function()
-			record(GEAR, { gearAt = "2026-10-19 11:00" })
-			inbox(ack(2 * 3600))
-			login()
-			state.printed = {}
-			inbox(ack(10 * 60), build("Arms raid", ARMS))
-			login()
-			only(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
-			state.printed = {}
-			inbox(ack(10 * 60))
-			login()
-			only("the site has your gear (saved 10 min ago).")
-		end)
-
 		it("reads the ack's receive time and ignores the export's own change time", function()
 			record(GEAR, { gearAt = "2026-10-19 11:00" })
 			local acked = ack(10 * 60)
@@ -549,20 +465,6 @@ describe("what the site has and what the inbox holds", function()
 			inbox(acked)
 			assert.are.equal(NOW - 600, SiteStatus.facts().seen)
 			assert.are.equal("Site: has your save from 10 min ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
-		end)
-
-		it("reads the record after the refresh has run", function()
-			-- The record gains gear in the world's first build, before the line is worked out.
-			record(NO_GEAR, { gearAt = nil })
-			_G.ForeverSixtyDB.characters[KEY].gearAt = nil
-			inbox(ack(2 * 3600))
-			state.equipped = { [1] = HEAD }
-			state.date = "2026-10-19 11:59"
-			login()
-			local mine = _G.ForeverSixtyDB.characters[KEY]
-			assert.is_true(require("Export").hasGear(mine.export))
-			assert.are.equal("2026-10-19 11:59", mine.gearAt)
-			only(L.siteLoginGear)
 		end)
 	end)
 

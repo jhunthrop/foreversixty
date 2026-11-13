@@ -1,6 +1,8 @@
 -- addon/ForeverSixty/surfaces/SiteStatus.lua
 -- What the site has of this character and what the inbox holds (X.3): the two /fs diag lines,
--- the headline's verdict, the one chat line at login, and the chip's "a build is waiting".
+-- the headline's verdict, the one chat line at login (builds the site sent; the companion's freshness
+-- is the window's Me tab footer, design/specs/2026-11-13-addon-hub.md 3.4), and the chip's "a build is
+-- waiting".
 -- Reads the companion's inbox (the per-character "ack" and the builds), the character's
 -- record in ForeverSixtyDB, and the clock. Writes no frame and runs no OnUpdate: the login
 -- line is one timer through Theme.after.
@@ -17,7 +19,8 @@ local BuildDialog = ns.BuildDialog or require("BuildDialog")
 
 local SiteStatus = {}
 
---- The site has seen the character "recently" within a day; the companion is "silent" past three.
+--- The site has seen the character "recently" within a day; the companion is "silent" past three (the
+--- tour's companion step reads it).
 SiteStatus.FRESH_SECONDS = 24 * 3600
 SiteStatus.SILENT_SECONDS = 72 * 3600
 --- Seconds after PLAYER_ENTERING_WORLD of the login line: with the export's first refresh.
@@ -96,9 +99,8 @@ local function messageWords(counts)
 end
 
 --- What the addon remembers of this character's logins, in ForeverSixtyDB.site[key] so a /reload
---- keeps it: { loginAt (epoch of the last login), said (the login line said last), gearPending (the
---- "on its way" line was said and not yet settled) }. Nil when nothing is kept and `create` is not
---- set.
+--- keeps it: { loginAt (epoch of the last login), said (the login line said last) }. Nil when nothing
+--- is kept and `create` is not set.
 function SiteStatus.memory(create)
 	if type(ForeverSixtyDB) ~= "table" then
 		if not create then
@@ -123,8 +125,7 @@ end
 
 --- Everything the lines need, read once: { seen (epoch of the newest ack or nil: the site's receive
 --- time, whatever `export_changed_at` says), age (seconds), characters, gear (the record carries gear),
---- gearAt (epoch the record first had gear), builtAt (epoch the record was last built), loginAt (epoch
---- of the last login), gearPending, clock }.
+--- loginAt (epoch of the last login), clock }.
 function SiteStatus.facts(clock)
 	clock = clock or BuildDialog.liveClock()
 	local mine = record()
@@ -138,15 +139,9 @@ function SiteStatus.facts(clock)
 		hasRecord = mine ~= nil,
 		gear = mine ~= nil and Export.hasGear(mine.export),
 	}
-	if mine ~= nil and type(mine.gearAt) == "string" then
-		facts.gearAt = BuildDialog.parseLocal(mine.gearAt, clock)
-	end
-	if mine ~= nil and type(mine.builtAt) == "string" then
-		facts.builtAt = BuildDialog.parseLocal(mine.builtAt, clock)
-	end
 	local remembered = SiteStatus.memory(false)
 	if remembered ~= nil then
-		facts.loginAt, facts.gearPending = remembered.loginAt, remembered.gearPending == true
+		facts.loginAt = remembered.loginAt
 	end
 	return facts
 end
@@ -220,38 +215,21 @@ function SiteStatus.diag(data)
 	return { SiteStatus.siteLine(facts), SiteStatus.inboxLine(data, facts) }, SiteStatus.healthy(facts)
 end
 
---- The one chat line at login (the text after the addon's prefix), the first that applies, or nil:
---- the site has not seen the character; the gear "on its way" (the site's last copy was seen before
---- this record first had gear and before it was last built); the builds waiting, named with the
---- character they are for; the gear the site has after all (the ack is no older than the export's
---- build time, and an "on its way" was said before: once); the companion silent for days.
-function SiteStatus.loginLine(data, facts)
-	facts = facts or SiteStatus.facts()
-	if facts.seen == nil then
-		return L.siteLoginNever, "never"
-	end
-	-- The site's last copy was seen before this record first carried gear, and before it was last built.
-	if facts.gear and facts.gearAt ~= nil and facts.seen < facts.gearAt
-		and (facts.builtAt == nil or facts.seen < facts.builtAt) then
-		return L.siteLoginGear, "gear"
-	end
+--- The one chat line at login (the text after the addon's prefix): the builds the site sent that wait,
+--- named with the character they are for; nil with none. Everything else the site and the companion
+--- say is on the window's Me tab, not in chat.
+function SiteStatus.loginLine(data)
 	local rows = SiteStatus.waiting(data)
-	if #rows > 0 then
-		local who = BuildDialog.player()
-		who = who ~= nil and who.name or nil
-		who = who ~= nil and who ~= "" and who or L.siteLoginSelf
-		if #rows == 1 then
-			return string.format(L.siteLoginBuild, who, nameList(rows)), "build"
-		end
-		return string.format(L.siteLoginBuilds, #rows, who, nameList(rows)), "build"
+	if #rows == 0 then
+		return nil
 	end
-	if facts.gear and facts.gearPending and (facts.builtAt == nil or facts.seen >= facts.builtAt) then
-		return string.format(L.siteLoginGearSeen, BuildDialog.ago(facts.seen, facts.clock)), "gearSeen"
+	local who = BuildDialog.player()
+	who = who ~= nil and who.name or nil
+	who = who ~= nil and who ~= "" and who or L.siteLoginSelf
+	if #rows == 1 then
+		return string.format(L.siteLoginBuild, who, nameList(rows))
 	end
-	if facts.hasRecord and facts.age > SiteStatus.SILENT_SECONDS then
-		return string.format(L.siteLoginSilent, dayOf(facts.seen, facts.clock)), "silent"
-	end
-	return nil
+	return string.format(L.siteLoginBuilds, #rows, who, nameList(rows))
 end
 
 --- Whether the welcome (the tour) is due at this entering of the world: the tour's own rule when
@@ -298,15 +276,10 @@ function SiteStatus.afterEnteringWorld(data, initial, reloading)
 		if welcoming and SiteStatus.openTour ~= nil then
 			SiteStatus.openTour()
 		end
-		local line, kind = SiteStatus.loginLine(data)
+		local line = SiteStatus.loginLine(data)
 		local again = not login and line == remembered.said
 		if line ~= nil and not again then
 			Theme.say(line)
-			if kind == "gear" then
-				remembered.gearPending = true
-			elseif kind == "gearSeen" then
-				remembered.gearPending = nil
-			end
 		end
 		if line ~= nil or login then
 			remembered.said = line

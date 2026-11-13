@@ -37,6 +37,8 @@ describe("the TOC", function()
 		-- The build dialog (L3.4): built on its first open; Options opens it.
 		"surfaces/BuildsPane.lua", "surfaces/BuildsWindow.lua", "surfaces/HubFrame.lua", "surfaces/Hub.lua",
 		"surfaces/BuildDialog.lua",
+		-- The window's Me tab (hub spec 4.1): the model, then its frame, which registers the tab.
+		"surfaces/MeTab.lua", "surfaces/MeFrame.lua",
 		-- The site-status lines (X.3): /fs diag, the login line and the chip read the inbox and the clock.
 		"surfaces/SiteStatus.lua",
 		-- The Settings page (L3.5): registered at login; Options opens it.

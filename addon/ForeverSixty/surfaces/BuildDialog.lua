@@ -928,7 +928,8 @@ end
 --- box itself is what the player copies from (fix round 2, item 4).
 --- `input` = { code, reason, copiedAt, ack, savedAt, clock, simInUse, simGeneratedAt, nextStep,
 --- link, simFailed }. With `link` ({ url, name }, /fs link, L4.4) the box holds that character's site
---- page instead of the export, under its own two leads, and nothing about the export follows.
+--- page instead of the export, under its own two leads, and nothing about the export follows; a link may
+--- bring its own two leads ({ lead, copied }, the Me tab's Full log and app address).
 function BuildDialog.copyModel(input)
 	local clock = input.clock
 	local link = type(input.link) == "table" and input.link or nil
@@ -937,11 +938,11 @@ function BuildDialog.copyModel(input)
 	if not code then
 		lead = { text = input.reason or "", hexKey = "muted" }
 	elseif input.copiedAt ~= nil then
-		lead = { text = link ~= nil and string.format(L.dialogLinkCopied, link.name)
+		lead = { text = link ~= nil and (link.copied or string.format(L.dialogLinkCopied, link.name))
 			or string.format(L.dialogYouCopied, hhmm(clock.fields(input.copiedAt))), hexKey = "success" }
 	else
-		lead = { text = link ~= nil and string.format(L.dialogLinkLead, link.name) or L.dialogSelectedLead,
-			hexKey = "body" }
+		lead = { text = link ~= nil and (link.lead or string.format(L.dialogLinkLead, link.name))
+			or L.dialogSelectedLead, hexKey = "body" }
 	end
 	local ack = link == nil and type(input.ack) == "table" and input.ack or nil
 	local companion
@@ -2433,6 +2434,23 @@ function BuildDialog.waiting()
 	return items
 end
 
+--- What the Builds tab leads with on the Me tab's Right now (spec 4.1): the build followed with its
+--- spec's icon, and the header's figures under it, "51 of 51 points on plan" in the success colour while
+--- nothing is off plan or waiting. nil with no build followed (the spec question waits instead).
+function BuildDialog.lead()
+	local build = Follow.build
+	if type(build) ~= "table" or type(build.name) ~= "string" or build.name == "" then
+		return nil
+	end
+	local data = dataOf()
+	local figures = BuildsPane.figures(liveLevel(), build, liveRanks(data), L.mePointsOnPlan)
+	local sub = #figures > 0 and table.concat(figures, L.dialogSeparator) or nil
+	if #figures == 1 and not sub:find("|c", 1, true) then
+		sub = Theme.inlineColor("success", sub)
+	end
+	return { icon = BuildsPane.specIcon(data, Follow.buildSpec(data, build)), line = build.name, sub = sub }
+end
+
 --- The talents spent off the followed build, over the list at `y` (spec 3.2): "Off plan" in the warning
 --- colour, then a line each, at most OFF_PLAN_ROWS, then "and N more". The y under them.
 local function drawOffPlan(y)
@@ -2914,9 +2932,10 @@ end
 --- /fs link (L4.4): the copy box holding a character's site page (`url`) instead of the export,
 --- selected for Ctrl+C, under "<name>'s page on foreversixty.gg. Press Ctrl+C, then paste it in your
 --- browser." Closing the window goes back to the export. False when the window cannot show itself
---- (the caller prints the address instead).
-function BuildDialog.openLink(url, name)
-	return BuildDialog.open("copy", { url = url, name = name })
+--- (the caller prints the address instead). `leads` ({ lead, copied }, optional) replace the two lines.
+function BuildDialog.openLink(url, name, leads)
+	leads = leads or {}
+	return BuildDialog.open("copy", { url = url, name = name, lead = leads.lead, copied = leads.copied })
 end
 
 --- The site rows and the list read again, and the tab redrawn while it shows (L3.7 item 44: an
@@ -2984,6 +3003,7 @@ Hub.register({
 	escape = BuildDialog.escape,
 	figures = BuildDialog.figures,
 	waiting = BuildDialog.waiting,
+	lead = BuildDialog.lead,
 })
 
 ns.BuildDialog = BuildDialog

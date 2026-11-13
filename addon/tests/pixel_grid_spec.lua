@@ -52,6 +52,9 @@ describe("the addon's windows on the pixel grid", function()
 		helper.load("ItemTooltip")
 		helper.load("BuildsPane")
 		helper.load("BuildDialog")
+		helper.load("MeTab")
+		package.loaded.MeFrame = nil
+		require("MeFrame")
 		return helper.load("Onboarding")
 	end
 
@@ -75,6 +78,17 @@ describe("the addon's windows on the pixel grid", function()
 		assert.is_true(BuildDialog.open("paste"))
 		mock.runTimers(state)
 		assert.are.same({}, unsnapped(state))
+	end)
+
+	it("snaps every texture on the window's Me tab", function()
+		start(1440, 1)
+		_G.ForeverSixtyInbox = { format = 2, generated_at = "2026-12-09T09:00:00Z", messages = {
+			{ type = "sim_result", dps = 412.6, error = 3.1, generated_at = "2026-12-08T20:00:00Z",
+				slots = { { slot = "chest", item_id = 6627, delta = 4.2 } } },
+		} }
+		assert.are.equal("me", require("Hub").open("me"))
+		assert.are.same({}, unsnapped(state))
+		_G.ForeverSixtyInbox = nil
 	end)
 
 	it("draws an outline a whole number of pixels thick, never under one", function()

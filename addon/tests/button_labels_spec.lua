@@ -108,6 +108,9 @@ local function loadAddon(state)
 		Onboarding = helper.load("Onboarding"),
 		Panel = helper.load("Panel"),
 	}
+	helper.load("MeTab")
+	package.loaded.MeFrame = nil
+	modules.MeFrame = require("MeFrame")
 	modules.SourcesFlyout = helper.load("SourcesFlyout")
 	helper.load("Minimap")
 	modules.Settings = helper.load("Settings")
@@ -175,6 +178,27 @@ describe("every visible button draws its label", function()
 		box:GetScript("OnTextChanged")(box, true)
 		mock.renderFrame(state)
 		assert.are.same({}, blankLabels(state), "preview")
+	end)
+
+	it("labels Sim again and every link on the window's Me tab, drawn twice", function()
+		_G.ForeverSixtyInbox = { format = 2, generated_at = "2026-12-09T09:00:00Z", messages = {
+			{ type = "sim_result", dps = 412.6, error = 3.1, generated_at = "2026-12-08T20:00:00Z",
+				slots = { { slot = "chest", item_id = 6627, delta = 4.2 } } },
+			{ type = "last_raid", report_id = "r_1", date = "2026-12-08", bosses = {
+				{ name = "Lucifron", percentile = 71, biggest_loss = "downtime", loss_seconds = 18, deaths = 0,
+					consumables_missed = {} } } },
+		} }
+		require("Follow").build = { name = "Arms raid", spec = "warrior-arms", classSlug = "warrior", order = {} }
+		local Hub = require("Hub")
+		assert.are.equal("me", Hub.open("me"))
+		mock.renderFrame(state)
+		modules.MeFrame.show()
+		local parts = modules.MeFrame.parts
+		assert.is_true(parts.sim.button:IsShown())
+		assert.is_true(parts.raid.fullLog:IsShown())
+		assert.are.same({}, blankLabels(state))
+		_G.ForeverSixtyInbox = nil
+		require("Follow").build = nil
 	end)
 
 	it("labels the panel's Change and every other button, drawn twice", function()

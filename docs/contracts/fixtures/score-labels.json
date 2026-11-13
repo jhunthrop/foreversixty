@@ -1,18 +1,18 @@
 {
   "line": "Forever Score %d",
   "components": [
-    { "key": "gear", "label": "Gear" },
-    { "key": "experience", "label": "Experience" },
-    { "key": "parses", "label": "Parses" },
-    { "key": "attendance", "label": "Attendance" },
-    { "key": "discipline", "label": "Preparation" }
+    { "key": "gear", "label": "Gear", "max": 500 },
+    { "key": "experience", "label": "Experience", "max": 700 },
+    { "key": "parses", "label": "Parses", "max": 600 },
+    { "key": "attendance", "label": "Attendance", "max": 200 },
+    { "key": "discipline", "label": "Preparation", "max": 100 }
   ],
   "tiers": {
-    "common": { "label": "Common", "color": "#ffffff" },
-    "uncommon": { "label": "Uncommon", "color": "#1eff00" },
-    "rare": { "label": "Rare", "color": "#0070dd" },
-    "epic": { "label": "Epic", "color": "#a335ee" },
-    "legendary": { "label": "Legendary", "color": "#ff8000" }
+    "common": { "label": "Common", "color": "#ffffff", "from": 0 },
+    "uncommon": { "label": "Uncommon", "color": "#1eff00", "from": 500 },
+    "rare": { "label": "Rare", "color": "#0070dd", "from": 1000 },
+    "epic": { "label": "Epic", "color": "#a335ee", "from": 1500 },
+    "legendary": { "label": "Legendary", "color": "#ff8000", "from": 2000 }
   },
   "noLogs": "Forever Score: no logs yet",
   "asOf": "as of %s"

@@ -274,30 +274,6 @@ function PanelTab.offPlanTalents(build, ranks, data)
 	return #lines > 0 and lines or nil
 end
 
---- "Sim me" (ruling 5): the sim request the outbox carries (contract 4: { character, spec,
---- requested_at, gear_code }, as of now), set as Export.outbox's `simRequest` part and written
---- into the outbox at once; then the button reads "Sim queued". False when one is already
---- queued this session, or there is no export or spec to send.
-function PanelTab.simMe(spec)
-	if Export.simRequest ~= nil or spec == nil then
-		return false
-	end
-	local data = PanelTab.data or ns.Data
-	local code = Export.string(data)
-	if code == nil then
-		return false
-	end
-	Export.simRequest = {
-		character = Export.outboxCharacter(),
-		spec = spec,
-		requested_at = date(Export.SAVED_AT_FORMAT),
-		gear_code = code,
-	}
-	Export.saveOutbox(data, code)
-	PanelTab.refresh()
-	return true
-end
-
 --- The client's character pane, or nil on a client without one.
 local function pane()
 	return Compat.clientGlobal("CharacterFrame", "table")

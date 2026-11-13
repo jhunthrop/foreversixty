@@ -50,6 +50,8 @@ surfaces\BuildsWindow.lua
 surfaces\HubFrame.lua
 surfaces\Hub.lua
 surfaces\BuildDialog.lua
+surfaces\MeTab.lua
+surfaces\MeFrame.lua
 surfaces\SiteStatus.lua
 surfaces\Settings.lua
 surfaces\PanelTab.lua
