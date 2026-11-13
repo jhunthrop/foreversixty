@@ -200,9 +200,13 @@ type Message struct {
 	GeneratedAt string     `json:"generated_at,omitempty"`
 	Slots       *[]SimSlot `json:"slots,omitempty"`
 
-	// MessageLastRaid: the character's newest rated raid.
+	// MessageLastRaid: the character's newest rated raid. Zone (the
+	// name to print) and ZoneKey (the client's instance name) are
+	// optional and written only when the API sent them.
 	ReportID string         `json:"report_id,omitempty"`
 	Date     string         `json:"date,omitempty"`
+	Zone     string         `json:"zone,omitempty"`
+	ZoneKey  string         `json:"zone_key,omitempty"`
 	Bosses   []LastRaidBoss `json:"bosses,omitempty"`
 
 	// MessageLootValues: what each item of Raid is worth to the
@@ -544,6 +548,12 @@ func renderMessage(b *strings.Builder, m Message) {
 	case MessageLastRaid:
 		field(b, in, "report_id", quote(m.ReportID))
 		field(b, in, "date", quote(m.Date))
+		if m.Zone != "" {
+			field(b, in, "zone", quote(m.Zone))
+		}
+		if m.ZoneKey != "" {
+			field(b, in, "zone_key", quote(m.ZoneKey))
+		}
 		b.WriteString(in + "[\"bosses\"] = {\n")
 		for _, boss := range m.Bosses {
 			renderBoss(b, in+"\t", boss)

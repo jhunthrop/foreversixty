@@ -175,7 +175,7 @@ describe("the v2 wire contracts, addon side", function()
 			upgrade = { "character", "delta", "item_id", "item_name", "slot", "source", "type", "unit" },
 			weights = { "caps", "character", "dps_per_point", "export_seen_at", "generated_at", "spec", "type", "weights" },
 			sim_result = { "character", "dps", "error", "generated_at", "slots", "spec", "type" },
-			last_raid = { "bosses", "character", "date", "report_id", "type" },
+			last_raid = { "bosses", "character", "date", "report_id", "type", "zone", "zone_key" },
 			loot_values = { "character", "items", "raid", "type" },
 			guild = { "character", "claim_state", "guild_name", "pending_approvals", "rank", "type" },
 			ack = { "character", "export_seen_at", "requested_at", "sim_request_state", "type" },

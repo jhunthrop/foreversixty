@@ -19,7 +19,11 @@ const LastRaidWindow = 14 * 24 * time.Hour
 
 // LastRaidFight is one rated boss fight of a character's last raid.
 type LastRaidFight struct {
-	CharacterKey, ReportID, Zone, Boss string
+	CharacterKey, ReportID, Boss string
+	// Zone is the zone typed when the report was created, empty for a whole-file upload;
+	// LogZone is the client's instance name the log itself recorded, empty until a parse
+	// learns it.
+	Zone, LogZone string
 	// FightIndex is the fight's index in its report, counted from one.
 	FightIndex int
 	// Class and Spec are the log's own names ("Warrior", "Arms").
@@ -61,7 +65,7 @@ func (s *Store) LastRaidFights(ctx context.Context, keys []string, since time.Ti
 		   select distinct on (player_key) player_key, report_id
 		     from mine order by player_key, fought_at desc, report_id desc
 		 )
-		 select m.player_key, m.report_id, m.fight_index, coalesce(r.zone, ''),
+		 select m.player_key, m.report_id, m.fight_index, coalesce(r.zone, ''), coalesce(r.log_zone, ''),
 		        coalesce(nullif(f.name, ''),
 		          (select f2.name from fights f2 where f2.encounter_id = m.encounter_id and f2.name <> ''
 		            order by f2.start_ms desc limit 1), ''),
@@ -80,7 +84,7 @@ func (s *Store) LastRaidFights(ctx context.Context, keys []string, since time.Ti
 	var out []LastRaidFight
 	for rows.Next() {
 		var f LastRaidFight
-		if err := rows.Scan(&f.CharacterKey, &f.ReportID, &f.FightIndex, &f.Zone, &f.Boss, &f.Class, &f.Spec, &f.FoughtAt,
+		if err := rows.Scan(&f.CharacterKey, &f.ReportID, &f.FightIndex, &f.Zone, &f.LogZone, &f.Boss, &f.Class, &f.Spec, &f.FoughtAt,
 			&f.Overall, &f.BiggestLoss, &f.LossSeconds, &f.Deaths, &f.ConsumablesMissed, &f.Adherence); err != nil {
 			return nil, fmt.Errorf("addon: read last raids: %w", err)
 		}

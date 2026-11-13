@@ -1139,6 +1139,20 @@ function Codec.inboxMessages(inbox, key, kind)
 	return usable
 end
 
+local function nonEmpty(value)
+	return type(value) == "string" and value ~= "" and value or nil
+end
+
+--- A last_raid message's raid (contract 3, 2026-11-13): its name to print and its zone key (the
+--- client's instance name, the key RaidPrep.BOSSES and MeTab.RAID_BOSSES use), each nil when the
+--- message lacks it (an older companion, a report with no zone). Pure.
+function Codec.lastRaidZone(message)
+	if type(message) ~= "table" or message.type ~= "last_raid" then
+		return nil, nil
+	end
+	return nonEmpty(message.zone), nonEmpty(message.zone_key)
+end
+
 --- The four answer counts and the not-signed count a raid_roster's `signups` must carry.
 local ROSTER_COUNTS = { "in", "late", "bench", "out", "none" }
 

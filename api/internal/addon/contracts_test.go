@@ -141,7 +141,8 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 			t.Errorf("sim_result = %+v", s)
 		}
 		lr := byType[messageLastRaid]
-		if lr.ReportID != "r_8f2a1c" || lr.Date != "2026-12-09" || len(lr.Bosses) != 1 {
+		if lr.ReportID != "r_8f2a1c" || lr.Date != "2026-12-09" || lr.Zone != "Molten Core" ||
+			lr.ZoneKey != "Molten Core" || len(lr.Bosses) != 1 {
 			t.Fatalf("last_raid = %+v", lr)
 		}
 		if b := lr.Bosses[0]; b.Name != "Lucifron" || b.Percentile != 71 || b.BiggestLoss != "downtime" ||

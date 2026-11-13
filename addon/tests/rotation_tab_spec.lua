@@ -158,6 +158,12 @@ describe("the Rotation tab", function()
 			assert.are.equal("Tuesday", played.day)
 		end)
 
+		it("names the raid before the day when the last raid carries its zone", function()
+			local message = { type = "last_raid", date = LAST_RAID.date, zone = "Molten Core", zone_key = "Molten Core",
+				bosses = LAST_RAID.bosses }
+			assert.are.equal("Molten Core · Tue 8 Dec", LastRaid.played(message, RotationTab.MAX_BOSSES).note)
+		end)
+
 		it("sums the losses by kind, the most seconds first, a kind without seconds by its bosses", function()
 			local lost = LastRaid.played(LAST_RAID).lost
 			assert.are.same({ "Downtime", 73, "73 s" }, { lost[1].label, lost[1].seconds, lost[1].value })

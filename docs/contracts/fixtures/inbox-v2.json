@@ -71,6 +71,8 @@
       "character": "us/normal/obnoxious",
       "report_id": "r_8f2a1c",
       "date": "2026-12-09",
+      "zone": "Molten Core",
+      "zone_key": "Molten Core",
       "bosses": [
         {
           "name": "Lucifron",

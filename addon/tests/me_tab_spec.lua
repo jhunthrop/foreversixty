@@ -102,6 +102,18 @@ describe("the Me tab", function()
 			assert.are.equal("foreversixty.gg/reports/r_8f2a1c", raid.url)
 		end)
 
+		it("names the raid from the last raid's own zone and counts its bosses by the zone key", function()
+			local message = { type = "last_raid", date = "2026-12-08", zone = "Onyxia's Lair",
+				zone_key = "Onyxia's Lair", bosses = { { name = "Onyxia", percentile = 99 } } }
+			local raid = MeTab.lastRaid({ lastRaid = message, raidName = "Molten Core", companion = true })
+			assert.are.equal("Onyxia's Lair · Tue 8 Dec · 1 of 1 bosses", raid.note)
+			message.zone_key = nil
+			assert.are.equal("Onyxia's Lair · Tue 8 Dec · 1 of 1 bosses",
+				MeTab.lastRaid({ lastRaid = message, companion = true }).note)
+			message.zone = "Ony night"
+			assert.are.equal("Ony night · Tue 8 Dec · 1 bosses", MeTab.lastRaid({ lastRaid = message, companion = true }).note)
+		end)
+
 		it("counts bosses without a raid name it knows, and shows a loss-free boss plainly", function()
 			local message = { date = "2026-12-08", bosses = { { name = "Onyxia", percentile = 99 } } }
 			local raid = MeTab.lastRaid({ lastRaid = message, companion = true })

@@ -70,14 +70,16 @@ func (h *harness) exportL63(code string) {
 // name, and the player's rating_scores row carrying what the rater stores.
 type ratedFight struct {
 	report, visibility, zone, boss string
-	index                          int
-	encounter                      int64
-	foughtAt                       time.Time
-	overall                        float64
-	kill, insufficient             bool
-	biggestLoss                    string
-	lossSeconds, deaths            int
-	missed                         []string
+	// logZone is the zone the log recorded (reports.log_zone); empty seeds NULL.
+	logZone             string
+	index               int
+	encounter           int64
+	foughtAt            time.Time
+	overall             float64
+	kill, insufficient  bool
+	biggestLoss         string
+	lossSeconds, deaths int
+	missed              []string
 	// adherence is the stored rotation adherence; nil seeds a row rated before migration
 	// 0037, which has none.
 	adherence *float64
@@ -94,9 +96,9 @@ func (h *harness) seedRatedFight(f ratedFight) {
 			h.t.Fatalf("%s: %v", sql, err)
 		}
 	}
-	exec(`insert into reports (id, owner_id, title, visibility, zone, status, created_at)
-		values ($1, $2, 'raid', $3, $4, 'complete', $5) on conflict (id) do nothing`,
-		f.report, h.owner, f.visibility, f.zone, f.foughtAt)
+	exec(`insert into reports (id, owner_id, title, visibility, zone, log_zone, status, created_at)
+		values ($1, $2, 'raid', $3, $4, nullif($5, ''), 'complete', $6) on conflict (id) do nothing`,
+		f.report, h.owner, f.visibility, f.zone, f.logZone, f.foughtAt)
 	exec(`insert into fights (report_id, fight_index, encounter_id, name, difficulty, kill, start_ms)
 		values ($1, $2, $3, $4, 3, $5, $6)`, f.report, f.index, f.encounter, f.boss, f.kill, f.foughtAt.UnixMilli())
 	if err := db.EnsureRatingsPartition(ctx, h.pool, f.foughtAt); err != nil {
@@ -188,6 +190,45 @@ func TestLastRaidMessageNamesEveryBossOfTheNewestRankedRaid(t *testing.T) {
 	}
 	if string(wire.Bosses[1]["consumables_missed"]) != "[]" {
 		t.Errorf("consumables_missed = %s, want []", wire.Bosses[1]["consumables_missed"])
+	}
+}
+
+func TestLastRaidNamesItsZone(t *testing.T) {
+	now := time.Now().UTC()
+	cases := []struct {
+		name, typed, logged string
+		wantZone, wantKey   string
+	}{
+		{name: "the log's zone is the name and the key", typed: "MC night", logged: "Molten Core",
+			wantZone: "Molten Core", wantKey: "Molten Core"},
+		{name: "a typed zone alone is the name, with no key", typed: "Molten Core",
+			wantZone: "Molten Core"},
+		{name: "neither leaves both out"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			h := newHarness(t)
+			cleanL63(t, h)
+			h.exportL63(l63Export)
+			h.seedRatedFight(ratedFight{report: "l63-zone", visibility: "public", zone: c.typed, logZone: c.logged,
+				boss: "Lucifron", index: 1, encounter: 663, foughtAt: now.Add(-2 * time.Hour), overall: 70, kill: true,
+				missed: []string{}})
+			s := &Service{Store: h.store, Log: quietLog()}
+			got := messagesOf(s.messages(context.Background(), h.owner, now), messageLastRaid)
+			if len(got) != 1 || got[0].Zone != c.wantZone || got[0].ZoneKey != c.wantKey {
+				t.Fatalf("last_raid = %+v, want zone %q, zone_key %q", got, c.wantZone, c.wantKey)
+			}
+			b, err := json.Marshal(got[0])
+			if err != nil {
+				t.Fatal(err)
+			}
+			if c.wantKey == "" && strings.Contains(string(b), `"zone_key"`) {
+				t.Errorf("zone_key is on the wire with no log zone: %s", b)
+			}
+			if c.wantZone == "" && strings.Contains(string(b), `"zone"`) {
+				t.Errorf("zone is on the wire with no zone: %s", b)
+			}
+		})
 	}
 }
 

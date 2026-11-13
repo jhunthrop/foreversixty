@@ -7,7 +7,8 @@
 --
 -- Pure model, thin frame: MeTab.model(input) is plain tables in, plain tables out (MeTab.inputs reads the
 -- client); surfaces/MeFrame.lua draws it. Sources: the ratings pack (Score.forCharacter, else the inbox's
--- own_score), the companion inbox (last_raid, loot_values for the raid's name, sim_result, upgrade, ack)
+-- own_score), the companion inbox (last_raid with its zone, else loot_values for the raid's name, sim_result,
+-- upgrade, ack)
 -- and each other tab's `lead` and `waiting` through the hub.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
@@ -29,7 +30,7 @@ MeTab.RAID_NIGHT_SECONDS = 2 * 24 * 60 * 60
 --- Right now's order for the tabs with nothing waiting, after the waiting ones (Hub.URGENT_ORDER): the
 --- weakest boss before the build that is on plan.
 MeTab.CALM_ORDER = { "guild", "officer", "gear", "rotation", "builds" }
---- The bosses each raid has, for "8 of 10 bosses" (the raid's name comes from the inbox's loot_values).
+--- The bosses each raid has, for "8 of 10 bosses", by zone key (the client's instance name: last_raid.zone_key).
 MeTab.RAID_BOSSES = {
 	["Molten Core"] = 10,
 	["Onyxia's Lair"] = 1,
@@ -181,8 +182,9 @@ end
 
 --- The last raid section: { note, rows, summary, url, day, weekday } from the inbox's last_raid; { empty,
 --- link } without the companion from level 10 (Score.LEVEL_FLOOR, as "No logs yet"); nil with the companion
---- and no raid (nothing to say, nothing to do) or below that level. `input`: { lastRaid, raidName
---- (loot_values.raid), companion, level }. Pure.
+--- and no raid (nothing to say, nothing to do) or below that level. The note names the raid by the message's
+--- own zone (Codec.lastRaidZone), else `raidName` (loot_values.raid, for an older companion), else gives the
+--- date alone. `input`: { lastRaid, raidName, companion, level }. Pure.
 function MeTab.lastRaid(input)
 	local message = input.lastRaid
 	local rows = {}
@@ -198,12 +200,11 @@ function MeTab.lastRaid(input)
 		end
 		return { empty = L.meNoRaid, link = L.meAppLink }
 	end
-	local note = {}
-	if type(input.raidName) == "string" and input.raidName ~= "" then
-		note[#note + 1] = input.raidName
-	end
+	local zone, zoneKey = Codec.lastRaidZone(message)
+	local raidName = zone or (type(input.raidName) == "string" and input.raidName ~= "" and input.raidName or nil)
+	local note = { raidName }
 	note[#note + 1] = Compat.dayDate(message.date)
-	local total = MeTab.RAID_BOSSES[input.raidName or ""]
+	local total = MeTab.RAID_BOSSES[zoneKey or ""] or MeTab.RAID_BOSSES[raidName or ""]
 	note[#note + 1] = total ~= nil and string.format(L.meBossesOf, #rows, total) or string.format(L.meBosses, #rows)
 	local url = type(message.report_id) == "string" and message.report_id ~= ""
 		and (L.siteName .. "/reports/" .. message.report_id) or nil

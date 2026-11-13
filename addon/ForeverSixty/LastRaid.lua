@@ -7,6 +7,7 @@ local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Compat = ns.Compat or require("Compat")
+local Codec = ns.Codec or require("Codec")
 local Follow = ns.Follow or require("Follow")
 local Score = ns.Score or require("Score")
 
@@ -142,8 +143,20 @@ local function bossRows(message)
 	return rows, counted > 0 and percentOf(total / counted) or nil, counted
 end
 
---- The night read for the window, or nil without a message or a boss: { note ("Tue 15 Dec"), day
---- ("Tuesday"), mean, counted, bosses (at most `limit`), more (the rest's count), lost }.
+--- The night's right note: the raid's name when the message carries it (Codec.lastRaidZone), then the
+--- day ("Molten Core · Tue 15 Dec"); the day alone from an older companion. nil with neither.
+local function nightNote(message)
+	local day, date = LastRaid.weekday(message.date), Compat.shortDate(message.date)
+	local when = day ~= nil and date ~= nil and (day:sub(1, 3) .. " " .. date) or date
+	local zone = Codec.lastRaidZone(message)
+	if zone ~= nil and when ~= nil then
+		return zone .. L.dialogSeparator .. when
+	end
+	return zone or when
+end
+
+--- The night read for the window, or nil without a message or a boss: { note ("Molten Core · Tue 15
+--- Dec"), day ("Tuesday"), mean, counted, bosses (at most `limit`), more (the rest's count), lost }.
 function LastRaid.played(message, limit)
 	if type(message) ~= "table" or type(message.bosses) ~= "table" then
 		return nil
@@ -152,12 +165,11 @@ function LastRaid.played(message, limit)
 	if #rows == 0 then
 		return nil
 	end
-	local day, date = LastRaid.weekday(message.date), Compat.shortDate(message.date)
 	local shown = {}
 	for index = 1, math.min(#rows, limit or #rows) do
 		shown[index] = rows[index]
 	end
-	return { note = day ~= nil and date ~= nil and (day:sub(1, 3) .. " " .. date) or date, day = day,
+	return { note = nightNote(message), day = LastRaid.weekday(message.date),
 		mean = mean, counted = counted, bosses = shown, more = #rows - #shown, lost = lostByKind(message.bosses) }
 end
 

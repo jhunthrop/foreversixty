@@ -142,6 +142,8 @@ components:
             character: { type: string }
             report_id: { type: string }
             date: { type: string, format: date }
+            zone: { type: string, description: "the raid's name to print: the zone the log recorded, else the zone typed at create; absent with neither" }
+            zone_key: { type: string, description: "the client's instance name the log recorded, the key the addon's raid tables use; a lookup key, never printed; absent until a parse learns it" }
             bosses:
               type: array
               items:

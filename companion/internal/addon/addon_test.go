@@ -675,7 +675,7 @@ func TestHostileStringsInEveryFieldLoadUnderLua51(t *testing.T) {
 				Caps: []string{h}, DPSPerPoint: &one},
 			{Type: MessageSimResult, Character: h, Spec: h, DPS: &one, Error: &one, GeneratedAt: h,
 				Slots: &[]SimSlot{{Slot: h, ItemID: 1, Delta: 1}}},
-			{Type: MessageLastRaid, Character: h, ReportID: h, Date: h, Bosses: []LastRaidBoss{{
+			{Type: MessageLastRaid, Character: h, ReportID: h, Date: h, Zone: h, ZoneKey: h, Bosses: []LastRaidBoss{{
 				Name: h, Percentile: 1, BiggestLoss: h, ConsumablesMissed: []string{h, h}, Adherence: &one}}},
 			{Type: MessageLootValues, Character: h, Raid: h, Items: map[int]LootItemValue{17076: {Value: 1, Unit: h}}},
 			{Type: MessageGuild, Character: h, GuildName: h, ClaimState: h, Rank: h},
@@ -709,7 +709,7 @@ eq(m[1].name, "build.name"); eq(m[1].code, "build.code")
 eq(m[2].slot, "upgrade.slot"); eq(m[2].item_name, "upgrade.item_name"); eq(m[2].source, "upgrade.source"); eq(m[2].unit, "upgrade.unit")
 eq(m[3].spec, "weights.spec"); eq(m[3].weights[1].stat, "weights.stat"); eq(m[3].caps[1], "caps")
 eq(m[4].spec, "sim_result.spec"); eq(m[4].generated_at, "sim_result.generated_at"); eq(m[4].slots[1].slot, "slots.slot")
-eq(m[5].report_id, "last_raid.report_id"); eq(m[5].date, "last_raid.date")
+eq(m[5].report_id, "last_raid.report_id"); eq(m[5].date, "last_raid.date"); eq(m[5].zone, "last_raid.zone"); eq(m[5].zone_key, "last_raid.zone_key")
 local boss = m[5].bosses[1]
 eq(boss.name, "boss.name"); eq(boss.biggest_loss, "boss.biggest_loss")
 eq(boss.consumables_missed[1], "consumables_missed[1]"); eq(boss.consumables_missed[2], "consumables_missed[2]")

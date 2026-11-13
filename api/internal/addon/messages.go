@@ -111,9 +111,13 @@ type MessageEntry struct {
 	// while every other type carries no slots at all.
 	Slots *[]SimSlot `json:"slots,omitempty"`
 
-	// messageLastRaid
+	// messageLastRaid. Zone is the raid's name to print (lastRaidZone); ZoneKey is the
+	// client's instance name the log recorded, the key the addon's raid tables use. Each is
+	// absent when the report has none.
 	ReportID string         `json:"report_id,omitempty"`
 	Date     string         `json:"date,omitempty"`
+	Zone     string         `json:"zone,omitempty"`
+	ZoneKey  string         `json:"zone_key,omitempty"`
 	Bosses   []LastRaidBoss `json:"bosses,omitempty"`
 
 	// messageLootValues
@@ -617,8 +621,10 @@ func (s *Service) lastRaidMessages(ctx context.Context, keys []string, now time.
 	var raids []lastRaid
 	for _, f := range fights {
 		if len(out) == 0 || out[len(out)-1].Character != f.CharacterKey {
-			out = append(out, MessageEntry{Type: messageLastRaid, Character: f.CharacterKey, ReportID: f.ReportID})
-			raids = append(raids, lastRaid{key: f.CharacterKey, zone: f.Zone})
+			zone := lastRaidZone(f)
+			out = append(out, MessageEntry{Type: messageLastRaid, Character: f.CharacterKey, ReportID: f.ReportID,
+				Zone: zone, ZoneKey: f.LogZone})
+			raids = append(raids, lastRaid{key: f.CharacterKey, zone: zone})
 		}
 		m := &out[len(out)-1]
 		// Fights arrive oldest first, so the last one names the date and the spec.
@@ -644,6 +650,15 @@ func (s *Service) lastRaidMessages(ctx context.Context, keys []string, now time.
 		}
 	}
 	return kept, keptRaids
+}
+
+// lastRaidZone is the raid's name as the site shows it: the zone the log recorded, else the
+// zone typed when the report was created (the order the activity board reads them in).
+func lastRaidZone(f LastRaidFight) string {
+	if f.LogZone != "" {
+		return f.LogZone
+	}
+	return f.Zone
 }
 
 // lootValuesMessages is one "loot_values" per character with a last raid: the raid's loot

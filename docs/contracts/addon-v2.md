@@ -269,7 +269,7 @@ ForeverSixtyInbox = {
     { type = "weights",    character = ..., spec = "warrior-arms", weights = { {stat="attack_power", weight=1}, ... },
       caps = {"hit"}, dps_per_point = 0.42, generated_at = "2026-11-04T14:11:00Z", export_seen_at = "2026-11-04T14:03:00Z" },
     { type = "sim_result", character = ..., spec = ..., dps = 412.6, error = 3.1, generated_at = ..., slots = { {slot="chest", item_id=6627, delta=4.2}, ... } },
-    { type = "last_raid",  character = ..., report_id = "r_...", date = "2026-12-09", bosses = { {name="Lucifron", percentile=71, biggest_loss="downtime", loss_seconds=18, deaths=0, consumables_missed={"flask"}, adherence=0.82}, ... } },
+    { type = "last_raid",  character = ..., report_id = "r_...", date = "2026-12-09", zone = "Molten Core", zone_key = "Molten Core", bosses = { {name="Lucifron", percentile=71, biggest_loss="downtime", loss_seconds=18, deaths=0, consumables_missed={"flask"}, adherence=0.82}, ... } },
     { type = "loot_values", character = ..., raid = "Molten Core", items = { [17076] = { value = 6.3, unit = "dps", planned = true }, ... } },
     { type = "guild",      character = ..., guild_name = ..., claim_state = ..., pending_approvals = 2, rank = "officer" },
     { type = "ack",        character = ..., export_seen_at = "2026-11-04T14:03:00Z", sim_request_state = "done",
@@ -304,7 +304,14 @@ Notes for the reader:
   and never recomputes it.
 - Which `unit` values each message may carry: `upgrade` and `loot_values` items carry `"dps"` or
   `"score"`; `sim_result` slots carry no `unit` field and are always `"dps"`.
-- `last_raid.date` is `YYYY-MM-DD`, shown as "as of 9 Dec". `biggest_loss` is a short plain
+- `last_raid.date` is `YYYY-MM-DD`, shown as "as of 9 Dec". `last_raid.zone` is the raid's name
+  to print: the zone the log itself recorded, else the zone typed when the report was created.
+  `last_raid.zone_key` is the client's instance name the log recorded (`"Molten Core"`,
+  `"Onyxia's Lair"`), the key the addon's raid tables use (`RaidPrep.BOSSES`, `MeTab.RAID_BOSSES`,
+  and through them `encounterNeeds`); a lookup key, never printed. Both are optional (added
+  2026-11-13): `zone_key` is absent until a parse learns the log's zone, and both are absent when
+  the report has neither; an older companion drops them. Without `zone` the addon falls back to
+  the matching `loot_values.raid`, else the date alone. `biggest_loss` is a short plain
   phrase ("downtime", "standing in fire", "dead early") written by the API; the addon shows it
   as given. It is absent on a perfect card, where no component cost a point. `consumables_missed` entries are plain item names ("flask"), not ids.
   `adherence` is a fraction of the rotation followed (0.82 is 82 percent), to two decimals: of

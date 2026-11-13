@@ -183,6 +183,7 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 		raid := byType[MessageLastRaid]
 		boss := raid.Fields["bosses"].(*Table).Items[0].(*Table)
 		if raid.Get("report_id") != "r_8f2a1c" || raid.Get("date") != "2026-12-09" ||
+			raid.Get("zone") != "Molten Core" || raid.Get("zone_key") != "Molten Core" ||
 			boss.Get("name") != "Lucifron" || keyOf(boss.Fields["percentile"]) != "71" ||
 			boss.Get("biggest_loss") != "downtime" || keyOf(boss.Fields["loss_seconds"]) != "18" ||
 			keyOf(boss.Fields["deaths"]) != "0" || keyOf(boss.Fields["adherence"]) != "0.82" ||
@@ -228,7 +229,7 @@ assert(m[3].caps[1] == "hit" and m[3].dps_per_point == 0.42, "caps, dps_per_poin
 assert(m[4].dps == 412.6 and m[4].error == 3.1 and m[4].generated_at == "2026-11-04T20:55:00Z", "sim_result")
 assert(#m[4].slots == 1 and m[4].slots[1].slot == "chest" and m[4].slots[1].item_id == 6627 and m[4].slots[1].delta == 4.2, "slots")
 local boss = m[5].bosses[1]
-assert(m[5].report_id == "r_8f2a1c" and m[5].date == "2026-12-09" and #m[5].bosses == 1, "last_raid")
+assert(m[5].report_id == "r_8f2a1c" and m[5].date == "2026-12-09" and m[5].zone == "Molten Core" and m[5].zone_key == "Molten Core" and #m[5].bosses == 1, "last_raid")
 assert(boss.name == "Lucifron" and boss.percentile == 71 and boss.biggest_loss == "downtime", "boss")
 assert(boss.loss_seconds == 18 and boss.deaths == 0 and boss.adherence == 0.82, "boss numbers")
 assert(type(boss.consumables_missed) == "table" and boss.consumables_missed[1] == "flask", "consumables_missed")
@@ -253,6 +254,7 @@ assert(m[8].export_seen_at == "2026-11-04T14:03:00Z" and m[8].sim_request_state 
 				boss := m.Bosses[0]
 				boss.Adherence, boss.BiggestLoss, boss.ConsumablesMissed = nil, "", []string{}
 				m.Bosses = []LastRaidBoss{boss}
+				m.Zone, m.ZoneKey = "", ""
 			case MessageAck:
 				m.SimRequestState, m.RequestedAt = "", ""
 			case MessageWeights:
@@ -265,7 +267,7 @@ assert(m[8].export_seen_at == "2026-11-04T14:03:00Z" and m[8].sim_request_state 
 			bare = append(bare, m)
 		}
 		body := RenderInbox(Inbox{Messages: bare}, t0)
-		for _, absent := range []string{`["adherence"]`, `["biggest_loss"]`, `["sim_request_state"]`, `["requested_at"]`, `["dps_per_point"]`} {
+		for _, absent := range []string{`["adherence"]`, `["biggest_loss"]`, `["zone"]`, `["zone_key"]`, `["sim_request_state"]`, `["requested_at"]`, `["dps_per_point"]`} {
 			if strings.Contains(string(body), absent) {
 				t.Errorf("the render carries %s for a message without it:\n%s", absent, body)
 			}

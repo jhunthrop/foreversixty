@@ -123,6 +123,16 @@ describe("Codec.inboxMessages, the last raid (contract 3)", function()
 		assert.are.equal(1, #usable)
 		assert.are.equal("Lucifron", usable[1].bosses[1].name)
 	end)
+
+	it("reads the raid's name and zone key, each nil when the message lacks it", function()
+		local Codec = helper.load("Codec")
+		assert.are.same({ "Molten Core", "Molten Core" }, { Codec.lastRaidZone({ type = "last_raid",
+			zone = "Molten Core", zone_key = "Molten Core" }) })
+		assert.are.same({ "Molten Core" }, { Codec.lastRaidZone({ type = "last_raid", zone = "Molten Core" }) })
+		assert.are.same({}, { Codec.lastRaidZone({ type = "last_raid", zone = "", zone_key = 7 }) })
+		assert.are.same({}, { Codec.lastRaidZone({ type = "loot_values", zone = "Molten Core" }) })
+		assert.are.same({}, { Codec.lastRaidZone(nil) })
+	end)
 end)
 
 -- The raid_roster message (hub L9): the shared fixture is an officer's, so it carries names; a
