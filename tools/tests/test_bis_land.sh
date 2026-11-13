@@ -123,6 +123,7 @@ assert "moved: main's other change is kept" equal "$(origin_file "$d" other.txt)
 assert "moved: the subject names the build and pin" contains "$(origin_msg "$d")" "chore(bis): nightly leveling BiS for $BUILD @ $PIN"
 assert "moved: the trailer is kept" contains "$(origin_msg "$d")" "Inputs: 0123456789abcdef"
 assert "moved: an unmoved pin adds no note" lacks "$(origin_msg "$d")" "Ranked on engine"
+assert "moved: no marker without one in the picks" lacks "$(git -C "$d/origin.git" ls-tree -r --name-only main)" ".inputs"
 assert "moved: names how far main moved" contains "$OUT" "1 commits ago"
 
 # Run again on the landed tree: nothing to commit, nothing pushed.
@@ -131,6 +132,14 @@ run_land "$d"
 assert "again: exits 0" equal "$STATUS" 0
 assert "again: says nothing to commit" contains "$OUT" "nothing to commit"
 assert "again: pushes nothing" equal "$(origin_head "$d")" "$before"
+
+# A spec's inputs marker lands with its picks; a picks dir without markers lands as before.
+d=$SCRATCH/inputs
+scaffold "$d"
+echo 0123456789abcdef >"$d/picks/rogue-combat.inputs"
+run_land "$d"
+assert "inputs: exits 0" equal "$STATUS" 0
+assert "inputs: the marker landed" equal "$(origin_file "$d" "data/builds/$BUILD/bis/rogue-combat.inputs")" 0123456789abcdef
 
 # The engine pin moved during the ranking: the picks still land, the body says on which pin.
 d=$SCRATCH/pin
@@ -201,6 +210,14 @@ before=$(origin_head "$d")
 run_land "$d" LAND_RENDER='exit 3'
 assert "broken: fails" test "$STATUS" -ne 0
 assert "broken: pushes nothing" equal "$(origin_head "$d")" "$before"
+
+# LAND_SUBJECT replaces the subject (the re-measure's landing).
+d=$SCRATCH/subject
+scaffold "$d"
+run_land "$d" LAND_SUBJECT="chore(bis): re-measured dps-per-point for $BUILD"
+assert "subject: exits 0" equal "$STATUS" 0
+assert "subject: the given subject" contains "$(origin_msg "$d")" "chore(bis): re-measured dps-per-point for $BUILD"
+assert "subject: not the nightly's" lacks "$(origin_msg "$d")" "nightly leveling BiS"
 
 # Usage errors.
 d=$SCRATCH/usage

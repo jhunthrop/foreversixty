@@ -13,7 +13,7 @@
 #   2. stops, with a warning and exit 0, when that head's active build is no longer the
 #      build that was ranked: picks ranked for an older build never land in a newer one,
 #      and the ranking's artifacts stay on the run;
-#   3. copies the picks (<spec>.json, <spec>.md) over data/builds/<build>/bis/, and the
+#   3. copies the picks (<spec>.json, <spec>.md, <spec>.inputs) over data/builds/<build>/bis/, and the
 #      re-measured dps-per-point.json when there is one, through
 #      tools/remeasure-dps-per-point.sh so the marker and the manifest follow the fresh base;
 #   4. renders the derived files (addon-data.json, the addon's Data.lua) on that base;
@@ -58,6 +58,9 @@ engine_pin() { sed -n 's/.*Version = "\(.*\)"/\1/p' "$1/$PIN_FILE"; }
 apply() {
 	local tree=$1 dir=$1/data/builds/$BUILD
 	cp "$PICKS"/*.json "$PICKS"/*.md "$dir/bis/"
+	# Each ranked spec's inputs marker (<spec>.inputs, the hash it was ranked on): bis.yml's
+	# resume skips a spec whose marker on the branch matches the run's inputs.
+	if compgen -G "$PICKS/*.inputs" >/dev/null; then cp "$PICKS"/*.inputs "$dir/bis/"; fi
 	if [[ -n ${FIGURES:-} ]]; then
 		# The re-measure script with the measure replaced by a copy of tonight's figures:
 		# it deletes the carried-from marker and re-hashes the manifest of THIS base. A base

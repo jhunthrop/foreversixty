@@ -1,0 +1,17 @@
+name: deploy the site and the API with new picks
+description: >
+  A push made with GITHUB_TOKEN never triggers another workflow, so the site would keep
+  serving the old picks until someone else pushed. Dispatches the web deploy and the API's
+  (its image copies data/builds; api/internal/bis, sims/lootvalues.go and sims/gearscore.go
+  serve the picks and the dps-per-point figures from that copy, review M5). The calling job
+  needs `actions: write`.
+inputs:
+  token: { description: the job's github.token, required: true }
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env: { GH_TOKEN: '${{ inputs.token }}' }
+      run: |
+        gh workflow run web.yml --ref main
+        gh workflow run api.yml --ref main

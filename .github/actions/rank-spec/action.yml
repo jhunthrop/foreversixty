@@ -1,0 +1,66 @@
+name: rank one spec
+description: >
+  One spec of a bis.yml rank leg: skipped when the branch already holds its picks ranked on
+  these inputs (the resume after a lost leg), otherwise ranked, and its picks uploaded as an
+  artifact the moment it finishes, so a leg that dies on its next spec never loses this one.
+  The finished picks also go to $RUNNER_TEMP/leg for the leg's landing step. Fails when the
+  spec's ranking fails; the leg's later specs still run (their steps use !cancelled()).
+inputs:
+  spec: { description: the spec key, required: true }
+  class: { description: the leg's class, required: true }
+  build: { description: the active build, required: true }
+  hash: { description: "the run's inputs hash (tools/bis-inputs-hash.sh)", required: true }
+  force: { description: "'true' ranks even when the branch's picks match the hash", required: false, default: 'false' }
+  fail: { description: "proof runs only: the spec named here fails before ranking", required: false, default: '' }
+runs:
+  using: composite
+  steps:
+    - id: check
+      shell: bash
+      env:
+        SPEC: ${{ inputs.spec }}
+        BUILD: ${{ inputs.build }}
+        HASH: ${{ inputs.hash }}
+        FORCE: ${{ inputs.force }}
+      run: |
+        # The branch as it is now: an earlier run's leg may have landed this spec since
+        # this checkout was made.
+        git fetch --quiet --depth=1 origin "$GITHUB_REF_NAME"
+        marker=$(git show "FETCH_HEAD:data/builds/$BUILD/bis/$SPEC.inputs" 2>/dev/null || true)
+        if [ "$FORCE" != true ] && [ "$marker" = "$HASH" ]; then
+          echo "::notice title=$SPEC already ranked::$GITHUB_REF_NAME holds $SPEC's picks ranked on inputs $HASH; skipped"
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+        fi
+    - if: steps.check.outputs.skip != 'true'
+      shell: bash
+      env:
+        SPEC: ${{ inputs.spec }}
+        BUILD: ${{ inputs.build }}
+        HASH: ${{ inputs.hash }}
+        FAIL: ${{ inputs.fail }}
+      run: |
+        if [ "$SPEC" = "$FAIL" ]; then
+          echo "::error title=forced failure::$SPEC fails by the fail_spec input (a proof run)"
+          exit 1
+        fi
+        # -all: bands 20-60 step 10, both factions. weights-iterations 200 per direction,
+        # double the command's default (the ranker-weights-anchor lane, 2026-10-05). The
+        # ranker's own 80-minute per-spec cap ends a hung spec with a non-zero exit.
+        if ! go run ./sim/cmd/leveling-bis -all -specs "$SPEC" -weights-iterations 200; then
+          echo "::error title=leveling-bis::$SPEC failed; its previous file stands"
+          exit 1
+        fi
+        out="$RUNNER_TEMP/spec/$SPEC"
+        mkdir -p "$out" "$RUNNER_TEMP/leg"
+        cp "data/builds/$BUILD/bis/$SPEC.json" "data/builds/$BUILD/bis/$SPEC.md" "$out/"
+        echo "$HASH" > "$out/$SPEC.inputs"
+        cp "$out"/* "$RUNNER_TEMP/leg/"
+    - if: steps.check.outputs.skip != 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: bis-picks-${{ inputs.class }}-${{ inputs.spec }}
+        path: ${{ runner.temp }}/spec/${{ inputs.spec }}
+        retention-days: 14
+        if-no-files-found: error
