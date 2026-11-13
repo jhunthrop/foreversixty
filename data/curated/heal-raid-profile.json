@@ -37,6 +37,6 @@
   },
   "sources": [
     {"label": "Warcraft Logs, Classic Era: the healing rankings of Hardcore Fresh (partition 8) for encounters 50663 to 50672 (Molten Core) and 51084 (Onyxia), read through its v1 API", "url": "https://vanilla.warcraftlogs.com/", "kind": "logs"},
-    {"label": "This site, design/reviews/2026-11-13-sim-accuracy/healer-mana.md: the log sample and what it shows", "url": "https://github.com/jhunthrop/foreversixty/blob/main/design/reviews/2026-11-13-sim-accuracy/healer-mana.md", "kind": "site"}
+    {"label": "This site, the healer mana review of 13 November 2026: the log sample and what it shows", "url": "https://foreversixty.gg/sources", "kind": "site"}
   ]
 }

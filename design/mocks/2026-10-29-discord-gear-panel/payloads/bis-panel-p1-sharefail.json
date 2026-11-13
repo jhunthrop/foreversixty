@@ -27,7 +27,7 @@
             "accessory": {
               "type": 11,
               "media": {
-                "url": "https://foreversixty.gg/icons/hd/crests/hunter.webp"
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/crest/hunter.png"
               },
               "description": "Hunter crest"
             }

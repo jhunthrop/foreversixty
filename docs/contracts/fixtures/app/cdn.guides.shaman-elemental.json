@@ -109,11 +109,11 @@
       }
     ],
     "leveling_build": {
-      "code": "FS1:1.60.1.70790:shaman:dwarf:5500331220001351/05/053052:",
+      "code": "FS1:1.60.1.70790:shaman:dwarf:5500331220001351/05500001/052002:",
       "totals": [
         31,
-        5,
-        15
+        11,
+        9
       ],
       "tree_names": [
         "Elemental",

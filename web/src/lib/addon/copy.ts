@@ -396,6 +396,7 @@ export const addonCopy = {
     { command: '/fs copy', description: 'copy my character for the site' },
     { command: '/fs build', description: 'switch between saved builds' },
     { command: '/fs chip', description: 'show or hide the Forever Sixty line' },
+    { command: '/fs tour', description: 'see the tour again' },
     { command: '/fs inspect', description: 'gear and talents of your target' },
     { command: '/fs link', description: "copy a player's site page" },
     { command: '/fs group', description: "your group's specs, gear and buffs" },
