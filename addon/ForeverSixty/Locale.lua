@@ -435,6 +435,7 @@ local L = {
 	minimapUpgrades = "%d upgrade(s) waiting",
 	bindingHeader = "Forever Sixty",
 	bindingToggle = "Toggle Forever Sixty",
+	bindingHub = "Open the Forever Sixty window",
 	diagNoTooltipHook = "This client has no tooltip hook API; item tooltips will not show Forever Sixty's lines.",
 	diagCompartmentFailed = "This client's addon compartment did not accept Forever Sixty; "
 		.. "the minimap button is used instead.",
@@ -907,26 +908,38 @@ local L = {
 	},
 }
 
--- The build dialog (spec section 4.10): the one frame of the addon's own.
--- X.5: the tab holds the builds the site sent and the paste box, so it is named for both.
-L.dialogTabPaste = "Builds"
--- The paste tab's badge, muted in its own slot after the label, while the site has sent builds:
--- "Builds · 1 waiting".
-L.dialogWaitingCount = "\194\183 %d waiting"
--- The site's own words (L8.2): the copy tab is named this (copy mode has no button).
-L.dialogCopy = "Copy my character"
--- L3.7 item 29: the copy tab's label while the box holds a /fs link ("%s" the linked player).
-L.dialogCopyLink = "Copy %s's link"
--- Fix round 1, item 12: the same label when the name would not fit beside the Paste tab.
-L.dialogCopyLinkShort = "Copy link"
--- L3.7 item 28: under the empty paste box, a muted line on where builds come from.
-L.dialogPasteCompanion = "Builds you pick on " .. SITE .. " arrive here through the companion app. Run it on your PC."
+-- The Forever Sixty window (design/specs/2026-11-13-addon-builds-window.md): the hub's tabs. Only a tab
+-- with content shows; the others are the lanes still to come.
+L.hubTabBuilds = "Builds"
+L.hubTabMe = "Me"
+L.hubTabGear = "Gear"
+L.hubTabRotation = "Rotation"
+L.hubTabGuild = "Guild"
+-- The footer's Escape hint: closing, or stepping back from a code previewing to the build list.
+L.windowEscClose = "Esc to close"
+L.windowEscBack = "Esc for your builds"
+-- The Builds tab's right column (spec section 3.3). Up next: the followed build's next points, a run on one
+-- talent as one row ("Now", "Level 43", "Level 44 to 48"; the rank muted, "4/5").
+L.windowUpNext = "Up next"
+L.windowUpNextNow = "Now"
+L.windowUpNextLevel = "Level %d"
+L.windowUpNextLevels = "Level %d to %d"
+L.windowUpNextRank = "%d/%d"
+L.windowUpNextNone = "Follow a build to see its next points."
+L.windowUpNextDone = "Every point of this build is placed."
+-- From the site: what the box is for, in the planner's own words; the line under a good paste.
+L.windowFromSiteWhat = "On the planner, press Copy for the game, then paste the code here."
+L.windowRead = "Read: %s. Check it on the left."
+-- To the site: the copy box, and the line under it before a click selects the code.
+L.windowToSite = "To the site"
+L.windowToSiteWhat = "Your talents, gear and professions as one code, for the planner's Import from addon box."
+L.windowClickToSelect = "Click the box, then press Ctrl+C."
+-- The build list for a class the data has no builds for.
+L.windowNoBuilds = "No builds for this class yet."
 -- L3.7 item 30: the newest sim result says it failed.
 L.dialogSimFailed = "Sim failed \194\183 ask again"
--- At the panel's bottom left, a step dimmer than an inactive tab.
-L.dialogTabHint = "Tab to switch"
 -- Paste mode: the box's placeholder, and the one gold button once a code loads.
-L.dialogPaste = "Paste a build code from " .. SITE .. " (Ctrl+V)"
+L.dialogPaste = "Paste a build code (Ctrl+V)"
 L.dialogUse = "Use this build"
 -- Above the empty box: "Following: Arms / Fury build · Warrior · 51 points".
 L.dialogFollowingLine = "Following: %s"

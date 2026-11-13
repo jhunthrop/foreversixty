@@ -35,6 +35,7 @@ local TourExample = ns.TourExample or require("TourExample")
 local SiteStatus = ns.SiteStatus or require("SiteStatus")
 local SettingsPage = ns.SettingsPage or require("Settings")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
+local Hub = ns.Hub or require("Hub")
 
 local Onboarding = {}
 
@@ -872,8 +873,8 @@ end
 
 -- The Builds dialog's open and close drive the step aside (spec 6.1): any opener, the tour's own
 -- Change, the panel's, /fs build, behaves the same.
-BuildDialog.beforeOpen = Onboarding.stepAside
-BuildDialog.afterHide = Onboarding.stepBack
+Hub.beforeOpen = Onboarding.stepAside
+Hub.afterHide = Onboarding.stepBack
 
 ns.Onboarding = Onboarding
 return Onboarding

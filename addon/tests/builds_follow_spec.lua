@@ -103,6 +103,23 @@ for _, case in ipairs({ { level = 60 }, { level = 60, saved = true }, { level = 
 			assert.is_true(pressed >= count - 1)
 		end)
 
+		it("moves Following to every row pressed with the window kept open, Up next following it", function()
+			local rows = reopen(BuildDialog, state)
+			local count = shownRows(BuildDialog)
+			for index = 1, count do
+				local row = rows[index]
+				local entry = row.entry
+				if not entry.following then
+					press(BuildDialog, row.follow, row.frame)
+					local label = index .. " " .. entry.spec .. " " .. entry.kind
+					assert.is_true(BuildDialog.frame:IsShown(), label)
+					assert.is_true(rows[index].entry.following, label)
+					assert.is_true(rows[index].mark:IsShown(), label)
+					assert.are.equal(Follow.buildName(Data, Follow.build), BuildDialog.paste.upNext.note:GetText(), label)
+				end
+			end
+		end)
+
 		it("keeps a pressed row's Follow shown through the hover redraw", function()
 			local row = reopen(BuildDialog, state)[3]
 			local hides = mock.countCalls(row.follow, "Hide") + mock.countCalls(row.frame, "Hide")

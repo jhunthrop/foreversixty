@@ -6,6 +6,7 @@
 -- inboxRows and rowsView are the "from the site" list. Pure: hand-built tables only,
 -- no client mock and no frame.
 local BuildDialog = require("BuildDialog")
+local Hub = require("Hub")
 local Codec = require("Codec")
 local Follow = require("Follow")
 local Prefs = require("Prefs")
@@ -638,14 +639,14 @@ describe("BuildDialog, paste mode's model", function()
 
 	it("fits the worst preview in its tallest window at the Theme's line heights (fix 3, 9 and 14)", function()
 		local S = require("Theme").SIZES
-		-- A chosen inbox row (or the collapsed code, never both), "You can place N now.",
-		-- "Replaces", "Next talent would be", GEAR_VISIBLE two-line gear rows (the rest of the list
-		-- scrolls, A.2), the button and the hint.
+		-- "You can place N now.", "Replaces", "Next talent would be", GEAR_VISIBLE two-line gear rows
+		-- (the rest of the list scrolls, A.2), the button; the code sits in the right column.
 		for _, line in ipairs({ 12, 13, 14 }) do
 			local height, parts = BuildDialog.previewLayout(line)
 			assert.is_true(height <= BuildDialog.PREVIEW_MAX_HEIGHT, line .. " px lines: " .. height)
 			assert.are.equal(BuildDialog.GEAR_VISIBLE * BuildDialog.GEAR_PITCH, parts.gearRows)
-			assert.is_true(parts.hintClearance >= 10)
+			-- The window's footer under the preview, its header over it (spec 3.1, 3.4).
+			assert.are.equal(Hub.LAYOUT.footer + Hub.LAYOUT.bodyPad, parts.bottom)
 			assert.are.equal(8, parts.aboveReplaces)
 			-- Fix 4, 9: the gaps the frame draws (S.gap / 2 between the header's lines).
 			assert.are.equal(math.max(S.dialogClassIcon, line * 3 + S.gap) + BuildDialog.LAYOUT.previewGap, parts.header)
@@ -655,13 +656,12 @@ describe("BuildDialog, paste mode's model", function()
 		assert.are.equal(4, BuildDialog.GEAR_VISIBLE)
 	end)
 
-	it("lays a build from the site out with a fourth header line and no code, and grows by each wrapped line (X.5)",
+	it("lays a build from the site out with a fourth header line, and grows by each wrapped line (X.5)",
 		function()
 			local S = require("Theme").SIZES
 			for _, line in ipairs({ 12, 13, 14 }) do
 				local site, parts = BuildDialog.previewLayout(line, 2, true)
 				assert.is_true(site <= BuildDialog.PREVIEW_MAX_HEIGHT, line .. " px lines: " .. site)
-				assert.are.equal(0, parts.code)
 				assert.are.equal(math.max(S.dialogClassIcon, line * 4 + S.gap / 2 * 3) + BuildDialog.LAYOUT.previewGap,
 					parts.header)
 				-- Five context lines (a two-line Replaces, a two-line "ends at" and the next talent) take
@@ -765,13 +765,6 @@ describe("BuildDialog, copy mode's model", function()
 		assert.is_nil(model({ simFailed = true, link = { url = "x.gg/c", name = "Bob" } }).sim)
 	end)
 
-	-- L3.7 item 29: the Copy tab's label follows what the box holds.
-	it("labels the copy tab for the link it holds, else for the character", function()
-		assert.are.equal("Copy Smoke Gouda's link", BuildDialog.copyTabLabel({ url = "u", name = "Smoke Gouda" }))
-		assert.are.equal(L.dialogCopy, BuildDialog.copyTabLabel(nil))
-		assert.are.equal("Copy my character", L.dialogCopy)
-	end)
-
 	it("shows the whole export selected under the lead line, and no button (fix 2, 4)", function()
 		local copy = model()
 		assert.are.equal(CODE, copy.text)
@@ -872,15 +865,6 @@ describe("BuildDialog, copy mode's model", function()
 		assert.are.equal(string.format(L.dialogSeen, "59 min ago"), seenAfter.seen)
 		-- No ack, no companion: nothing to wait for; it was not sent, the companion lines say why.
 		assert.are.equal(L.dialogNotSent, model({ copiedAt = NOV4_1402 }).seen)
-	end)
-
-	it("keeps the copy tab's lead to the same number of lines in both states (fix 3, 7)", function()
-		assert.are.equal(1, BuildDialog.leadLines({ 300, 320 }, 388))
-		assert.are.equal(2, BuildDialog.leadLines({ 300, 400 }, 388))
-		assert.are.equal(2, BuildDialog.leadLines({ 400, 300 }, 388))
-		assert.are.equal(1, BuildDialog.leadLines({ nil, nil }, 388))
-		-- Fix 4, 9: a no-export reason in the lead counts too.
-		assert.are.equal(2, BuildDialog.leadLines({ 300, 320, 500 }, 388))
 	end)
 
 	it("says the site's copy is older in one line (fix 5, 11)", function()
@@ -1128,31 +1112,9 @@ describe("BuildDialog, builds from the site", function()
 		assert.are.equal(require("Theme").CONTROL_STATES.secondary.hover, BuildDialog.ROW_HOVER)
 	end)
 
-	it("puts the waiting count in the paste tab's own badge slot, in both modes (fix 6, 1)", function()
-		assert.are.equal("\194\183 2 waiting", BuildDialog.pasteBadge(2))
-		assert.is_nil(BuildDialog.pasteBadge(0))
-		assert.is_nil(BuildDialog.pasteBadge(nil))
-	end)
-
-	it("sizes the paste tab for its whole label whenever a build waits, the same in both modes (fix 6, 12)", function()
-		local S = require("Theme").SIZES
-		local narrow = BuildDialog.pasteTabWidth(80, 60, false)
-		local wide = BuildDialog.pasteTabWidth(80, 60, true)
-		assert.are.equal(math.max(S.tabWidth, 80 + S.padding * 2), narrow)
-		assert.are.equal(80 + S.gap * 2 + 60 + S.padding * 2, wide)
-		assert.is_true(wide > narrow)
-	end)
 end)
 
 describe("BuildDialog, the frame's pure rules", function()
-	it("switches between the two modes", function()
-		assert.are.equal("copy", BuildDialog.nextMode("paste"))
-		assert.are.equal("paste", BuildDialog.nextMode("copy"))
-		assert.are.equal("paste", BuildDialog.modeOf(nil))
-		assert.are.equal("copy", BuildDialog.modeOf("copy"))
-		assert.are.equal("paste", BuildDialog.modeOf("anything"))
-	end)
-
 	it("is on screen within a pixel, and an edge the client cannot say passes", function()
 		local parent = { left = 0, right = 1920, top = 1080, bottom = 0 }
 		assert.is_true(BuildDialog.onScreen({ left = 750, right = 1170, top = 690, bottom = 390 }, parent))
@@ -1165,9 +1127,11 @@ describe("BuildDialog, the frame's pure rules", function()
 		assert.is_true(BuildDialog.onScreen({ left = 750, right = 1170, top = 690, bottom = 390 }, {}))
 	end)
 
-	it("is 420 by 300, as the spec draws it, and its meaning-bearing text is 12 px", function()
+	it("is 740 wide and at least 300 tall, as the spec draws it, and its meaning-bearing text is 12 px", function()
 		local S = require("Theme").SIZES
-		assert.are.equal(420, S.dialogWidth)
+		assert.are.equal(740, Hub.width())
+		assert.are.equal(388, S.windowLeft)
+		assert.are.equal(288, S.windowRight)
 		assert.are.equal(300, S.dialogHeight)
 		assert.are.equal(12, S.dialogText)
 		assert.are.equal(20, S.dialogClose)
@@ -1199,21 +1163,27 @@ describe("BuildDialog, the frame's pure rules", function()
 		assert.are.equal(20, Theme.SIZES.closeButton)
 	end)
 
-	it("names the copy tab with the site's own words (L8.2), and the site once", function()
-		-- The site's copy says "press Copy my character": the tab keeps the name.
-		assert.are.equal("Copy my character", L.dialogCopy)
+	it("names the planner's own controls in the transfer sections (spec 3.3), and the site once", function()
+		assert.is_truthy(L.windowFromSiteWhat:find("Copy for the game", 1, true))
+		assert.is_truthy(L.windowToSiteWhat:find("Import from addon", 1, true))
 		assert.are.equal("foreversixty.gg", L.siteName)
 		assert.is_nil(L.siteHost)
-		assert.are.equal("Paste a build code from " .. L.siteName .. " (Ctrl+V)", L.dialogPaste)
+		assert.are.equal("Paste a build code (Ctrl+V)", L.dialogPaste)
+		assert.is_nil(L.dialogCopy)
+		assert.is_nil(L.dialogTabHint)
 	end)
 
-	it("hints the Tab key at the bottom left, a step dimmer than an inactive tab (fix 2, 6 and 14)", function()
-		assert.are.equal("Tab to switch", L.dialogTabHint)
+	it("hints Escape and Enter in the footer, a step dimmer than the text (spec 3.4)", function()
 		local Theme = require("Theme")
-		-- Fix 5, 7 and 12: one step brighter than before, at the muted token.
-		assert.are.equal(0.75, BuildDialog.HINT_ALPHA)
-		assert.are.equal(Theme.dimHex("muted", 0.75), BuildDialog.hintHex())
-		assert.are.equal("BOTTOMLEFT", BuildDialog.HINT_POINT)
+		assert.are.equal(0.75, Hub.HINT_ALPHA)
+		local BuildsWindow = require("BuildsWindow")
+		assert.are.same({ L.windowEscClose }, { BuildsWindow.footer({}) })
+		assert.are.same({ L.windowEscClose, L.dialogEnterFollow }, { BuildsWindow.footer({ cursor = "own" }) })
+		assert.are.same({ L.windowEscClose, L.dialogEnterPreview }, { BuildsWindow.footer({ cursor = "site" }) })
+		assert.are.same({ L.windowEscBack, L.dialogEnterHint }, { BuildsWindow.footer({ previewing = true }) })
+		assert.are.same({ L.windowEscBack, L.dialogUseFurtherHint },
+			{ BuildsWindow.footer({ previewing = true, useBlocked = true }) })
+		assert.is_truthy(Theme.dimHex("muted", Hub.HINT_ALPHA))
 	end)
 
 	it("notes a missing keyboard once a session (fix 2, 21)", function()
@@ -1247,15 +1217,15 @@ describe("BuildDialog, the frame's pure rules", function()
 
 	it("is put back in place when the positions are reset while it is open", function()
 		local placed = 0
-		local realPlace = BuildDialog.place
-		BuildDialog.place = function()
+		local realPlace = Hub.place
+		Hub.place = function()
 			placed = placed + 1
 		end
 		local savedDB = _G.ForeverSixtyDB
 		_G.ForeverSixtyDB = {}
 		Prefs.resetPositions()
 		_G.ForeverSixtyDB = savedDB
-		BuildDialog.place = realPlace
+		Hub.place = realPlace
 		assert.are.equal(1, placed)
 	end)
 end)

@@ -30,9 +30,10 @@ Prefs.DEFAULTS = {
 		hiddenUntilLevel = 0, hiddenFor = "", pathChosen = "", pathFor = "",
 		byCharacter = {},
 	},
-	-- The build dialog (spec section 4.10): `point` "" is the centre of the screen; a drag
-	-- by its title saves CENTER and the offset from the screen's centre.
-	dialog = { point = "", x = 0, y = 0 },
+	-- The Forever Sixty window (design/specs/2026-11-13-addon-builds-window.md): `point` "" is the centre
+	-- of the screen; a drag by its header saves CENTER and the offset from the screen's centre. `tab` is
+	-- the tab the player last had ("" none yet: the first tab), a choice a reset keeps.
+	dialog = { point = "", x = 0, y = 0, tab = "" },
 	-- Score badges in chat ("Score badges in chat", L4.4, surfaces/ChatBadges.lua), and this
 	-- player's own hello on GUILD and answer to a snapshot request ("Share my build with my
 	-- guild").

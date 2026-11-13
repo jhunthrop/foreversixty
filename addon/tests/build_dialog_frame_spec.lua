@@ -55,7 +55,7 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 	end)
 
 	local function box()
-		return BuildDialog.copyTab.box
+		return BuildDialog.copyBox.box
 	end
 
 	local function press(key)
@@ -63,20 +63,21 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 	end
 
 	local function claimed()
-		return BuildDialog.copyTab.lead:GetText() ~= L.dialogSelectedLead
+		local before = L.dialogYouCopied:match("^(.-)%%s")
+		return BuildDialog.copyBox.lead:GetText():sub(1, #before) == before
 	end
 
 	it("opens with the export selected in a focused box and no claim", function()
 		assert.is_true(box():HasFocus())
 		assert.is_true(BuildDialog.selected)
-		assert.are.equal(L.dialogSelectedLead, BuildDialog.copyTab.lead:GetText())
+		assert.are.equal(L.dialogSelectedLead, BuildDialog.copyBox.lead:GetText())
 	end)
 
 	it("claims the copy on Ctrl+C in the focused, selected box", function()
 		control = true
 		press("C")
 		assert.is_true(claimed())
-		assert.is_truthy(BuildDialog.copyTab.lead:GetText():find(L.siteName, 1, true))
+		assert.is_truthy(BuildDialog.copyBox.lead:GetText():find(L.siteName, 1, true))
 	end)
 
 	it("claims nothing for a plain C", function()
@@ -111,11 +112,11 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 		assert.is_nil(BuildDialog.copiedAt)
 	end)
 
-	it("keeps the claim across a tab switch and drops it when the dialog closes (fix 3, 15)", function()
+	it("keeps the claim while the keyboard moves between the boxes and drops it on close (fix 3, 15)", function()
 		control = true
 		press("C")
-		BuildDialog.setMode("paste")
-		BuildDialog.setMode("copy")
+		BuildDialog.focusBox("paste")
+		BuildDialog.focusBox("copy")
 		assert.is_true(claimed())
 		BuildDialog.close()
 		assert.is_nil(BuildDialog.copiedAt)
@@ -124,17 +125,17 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 	end)
 
 	-- L4.4 ruling 2: /fs link.
-	it("holds a /fs link page selected in the box, and the export again after a tab click or a close", function()
+	it("holds a /fs link page selected in the box, and the export again after a close", function()
 		local url = "foreversixty.gg/character/us/normal/smoke-gouda"
 		assert.is_true(BuildDialog.openLink(url, "Smoke Gouda"))
 		mock.runTimers(state)
 		assert.are.equal(url, box():GetText())
 		assert.is_true(box():HasFocus())
 		assert.is_true(BuildDialog.selected)
-		assert.are.equal(string.format(L.dialogLinkLead, "Smoke Gouda"), BuildDialog.copyTab.lead:GetText())
+		assert.are.equal(string.format(L.dialogLinkLead, "Smoke Gouda"), BuildDialog.copyBox.lead:GetText())
 		-- Fix round 2, item 6: a link reads in the tooltip text colour, not muted, still selected.
 		local function displayColor()
-			local color = mock.lastCall(BuildDialog.copyTab.display, "SetTextColor")
+			local color = mock.lastCall(BuildDialog.copyBox.display, "SetTextColor")
 			return { color[1], color[2], color[3] }
 		end
 		local function hexColor(key)
@@ -143,30 +144,17 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 			return { r, g, b }
 		end
 		assert.are.same(hexColor("tooltipText"), displayColor())
-		assert.is_true(BuildDialog.copyTab.selection:IsShown())
+		assert.is_true(BuildDialog.copyBox.selection:IsShown())
 		control = true
 		press("C")
-		assert.are.equal(string.format(L.dialogLinkCopied, "Smoke Gouda"), BuildDialog.copyTab.lead:GetText())
+		assert.are.equal(string.format(L.dialogLinkCopied, "Smoke Gouda"), BuildDialog.copyBox.lead:GetText())
 		assert.are.same(hexColor("tooltipText"), displayColor())
 		local export = require("Export").string(DATA)
-		BuildDialog.tabs.copy:GetScript("OnClick")(BuildDialog.tabs.copy)
-		assert.are.equal(export, box():GetText())
-		assert.are.same(hexColor("muted"), displayColor())
-		BuildDialog.openLink(url, "Smoke Gouda")
 		BuildDialog.close()
 		BuildDialog.open("copy")
 		assert.are.equal(export, box():GetText())
+		assert.are.same(hexColor("muted"), displayColor())
 		assert.are.same({}, state.clientWrites)
-	end)
-
-	-- L3.7 item 29: the tab says whose link the box holds.
-	it("labels the Copy tab for a /fs link while the box holds one, and for the character again after", function()
-		local label = BuildDialog.tabs.copy.foreverSixtyLabel
-		assert.are.equal(L.dialogCopy, label:GetText())
-		BuildDialog.openLink("foreversixty.gg/character/us/normal/smoke-gouda", "Smoke Gouda")
-		assert.are.equal(string.format(L.dialogCopyLink, "Smoke Gouda"), label:GetText())
-		BuildDialog.tabs.copy:GetScript("OnClick")(BuildDialog.tabs.copy)
-		assert.are.equal(L.dialogCopy, label:GetText())
 	end)
 
 	it("holds the export byte for byte in the box Ctrl+C copies from (fix 3, 3)", function()
@@ -178,14 +166,14 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 
 	it("keeps the box focused, wholly selected and the same height after Ctrl+C (fix 5, 8)", function()
 		control = true
-		local height = BuildDialog.copyTab.field.height
+		local height = BuildDialog.copyBox.field.height
 		press("C")
 		assert.is_true(claimed())
 		mock.runTimers(state)
 		assert.is_true(box():HasFocus())
 		assert.is_true(BuildDialog.selected)
-		assert.is_true(BuildDialog.copyTab.selection:IsShown())
-		assert.are.equal(height, BuildDialog.copyTab.field.height)
+		assert.is_true(BuildDialog.copyBox.selection:IsShown())
+		assert.are.equal(height, BuildDialog.copyBox.field.height)
 		-- A second Ctrl+C copies again.
 		press("C")
 		assert.is_true(claimed())
@@ -347,7 +335,7 @@ describe("BuildDialog, the preview's gear rows carry a source", function()
 		-- build starts at the top.
 		wheel(preview.picks[1].frame, -1)
 		wheel(preview.picks[1].frame, -1)
-		BuildDialog.drawPaste()
+		BuildDialog.draw()
 		assert.are.equal(2, preview.offset)
 		BuildDialog.paste.box:SetText(code .. " ")
 		BuildDialog.paste.box:GetScript("OnTextChanged")(BuildDialog.paste.box, true)
@@ -455,14 +443,15 @@ describe("BuildDialog, round 4 frame checks", function()
 		local box = BuildDialog.paste.box
 		box:SetText("FSB1:1.60.1.70291:warrior:111:")
 		box:GetScript("OnTextChanged")(box, true)
-		assert.is_true(BuildDialog.enterHint:IsShown())
+		assert.is_true(require("Hub").footer.enter:IsShown())
+		-- Tab hands the keyboard to the copy box, where Enter only selects the code again.
 		box:GetScript("OnTabPressed")(box)
-		assert.is_false(BuildDialog.enterHint:IsShown())
+		assert.is_false(require("Hub").footer.enter:IsShown())
 		BuildDialog.close()
 		BuildDialog.open("copy")
-		assert.is_false(BuildDialog.enterHint:IsShown())
+		assert.is_false(require("Hub").footer.enter:IsShown())
 		BuildDialog.open("paste")
-		assert.is_false(BuildDialog.enterHint:IsShown())
+		assert.is_false(require("Hub").footer.enter:IsShown())
 	end)
 
 	it("draws the collapsed code muted, over a selection it never shows (fix 4, 7)", function()
@@ -488,7 +477,7 @@ describe("BuildDialog, round 4 frame checks", function()
 		function()
 			BuildDialog.open("copy")
 			mock.runTimers(state)
-			local copy = BuildDialog.copyTab
+			local copy = BuildDialog.copyBox
 			assert.is_true(BuildDialog.selected)
 			assert.are.equal(0, mock.lastCall(copy.box, "SetHighlightColor")[4])
 			assert.are.equal(export, copy.display:GetText())
@@ -498,19 +487,19 @@ describe("BuildDialog, round 4 frame checks", function()
 			assert.are.same(rgb("muted"), { color[1], color[2], color[3] })
 		end)
 
-	it("is exact after a Tab switch, before any deferred select runs (fix 4, 7)", function()
+	it("is exact after Tab moves the keyboard, before any deferred select runs (fix 4, 7)", function()
 		BuildDialog.open("copy")
 		mock.runTimers(state)
-		BuildDialog.setMode("paste")
-		BuildDialog.setMode("copy")
-		assert.are.equal(export, BuildDialog.copyTab.box:GetText())
-		assert.are.equal(export, BuildDialog.copyTab.display:GetText())
+		BuildDialog.focusBox("paste")
+		BuildDialog.focusBox("copy")
+		assert.are.equal(export, BuildDialog.copyBox.box:GetText())
+		assert.are.equal(export, BuildDialog.copyBox.display:GetText())
 	end)
 
 	it("scrolls the export with the wheel past the cap, with the thumb shown (fix 4, 7)", function()
 		BuildDialog.open("copy")
 		mock.runTimers(state)
-		local copy = BuildDialog.copyTab
+		local copy = BuildDialog.copyBox
 		copy.display.GetStringHeight = function()
 			return 40 * 14
 		end
@@ -549,16 +538,16 @@ describe("BuildDialog, copy mode says what it holds and whether the site has it 
 		mock.uninstall()
 	end)
 
-	it("puts a one-line summary of the export above its box, and says nothing has been sent without an ack", function()
+	it("puts a one-line summary of the export under its box, and says nothing has been sent without an ack", function()
 		BuildDialog.open("copy")
 		mock.runTimers(state)
-		local copy = BuildDialog.copyTab
+		local copy = BuildDialog.copyBox
 		assert.is_true(copy.summary:IsShown())
 		assert.are.equal(BuildDialog.exportSummary(BuildDialog.exportCode), copy.summary:GetText())
 		assert.is_truthy(copy.summary:GetText():find("your realm is included", 1, true))
-		-- The box starts under the summary, which sits under the lead.
-		assert.is_true(mock.lastCall(copy.summary, "SetPoint")[5] < 0)
-		assert.is_true(mock.lastCall(copy.field, "SetPoint")[5] < mock.lastCall(copy.summary, "SetPoint")[5])
+		-- Spec 3.3 item 3: the box, the status line under it, then the summary.
+		assert.is_true(mock.lastCall(copy.field, "SetPoint")[5] > mock.lastCall(copy.lead, "SetPoint")[5])
+		assert.is_true(mock.lastCall(copy.lead, "SetPoint")[5] > mock.lastCall(copy.summary, "SetPoint")[5])
 		assert.are.equal("Not sent to the site yet \194\183 log out to send", copy.seen:GetText())
 		assert.is_true(copy.seen:IsShown())
 	end)
@@ -566,7 +555,7 @@ describe("BuildDialog, copy mode says what it holds and whether the site has it 
 	it("has no summary on a /fs link page", function()
 		BuildDialog.openLink("foreversixty.gg/character/us/pvp/bob", "Bob")
 		mock.runTimers(state)
-		assert.is_false(BuildDialog.copyTab.summary:IsShown())
+		assert.is_false(BuildDialog.copyBox.summary:IsShown())
 	end)
 end)
 
@@ -609,18 +598,19 @@ describe("BuildDialog, round 5 frame checks", function()
 		box:GetScript("OnTextChanged")(box, true)
 	end
 
-	it("never shows Enter to use on the copy tab, even when an item name arrives (fix 5, 13)", function()
+	it("never shows Enter to use while the copy box has the keyboard, even when an item name arrives (fix 5, 13)",
+		function()
 		BuildDialog.open("paste")
 		mock.runTimers(state)
 		paste("FSB1:1.60.1.70291:warrior:111:head=12640")
-		BuildDialog.setMode("copy")
+		BuildDialog.focusBox("copy")
 		BuildDialog.pending[12640] = true
-		BuildDialog.frame:GetScript("OnEvent")(BuildDialog.frame, "GET_ITEM_INFO_RECEIVED", 12640)
-		assert.is_false(BuildDialog.enterHint:IsShown())
-		BuildDialog.setMode("paste")
-		assert.is_true(BuildDialog.enterHint:IsShown())
+		BuildDialog.body:GetScript("OnEvent")(BuildDialog.body, "GET_ITEM_INFO_RECEIVED", 12640)
+		assert.is_false(require("Hub").footer.enter:IsShown())
+		BuildDialog.focusBox("paste")
+		assert.is_true(require("Hub").footer.enter:IsShown())
 		BuildDialog.close()
-		assert.is_false(BuildDialog.enterHint:IsShown())
+		assert.is_false(require("Hub").footer.enter:IsShown())
 	end)
 
 	it("gives the collapsed box no mouse, and opens it from a click on its field (fix 5, 16)", function()
@@ -647,22 +637,19 @@ describe("BuildDialog, round 5 frame checks", function()
 
 	it("lays the copy label over the box (fix 5, 16)", function()
 		BuildDialog.open("copy")
-		local copy = BuildDialog.copyTab
+		local copy = BuildDialog.copyBox
 		assert.is_true(lastLevel(copy.over) > lastLevel(copy.box))
 	end)
 
-	it("reserves two lead lines for a two-line no-export reason (fix 5, 16)", function()
+	it("shows a no-export reason in place of the box (spec 3.3 item 3)", function()
+		local reason = "This character's export cannot be built on this client right now, so there is nothing to copy."
 		require("Export").string = function()
-			return nil, "This character's export cannot be built on this client right now, so there is nothing to copy."
+			return nil, reason
 		end
 		BuildDialog.open("copy")
-		local copy = BuildDialog.copyTab
-		copy.probe.GetUnboundedStringWidth = function(region)
-			return utf8.len(region:GetText() or "") * 6
-		end
-		BuildDialog.drawCopy(true)
-		local first, advance = 14, 14
-		assert.are.equal(-(first + advance + Theme.SIZES.gap * 2), mock.lastCall(copy.field, "SetPoint")[5])
+		local copy = BuildDialog.copyBox
+		assert.is_false(copy.field:IsShown())
+		assert.are.equal(reason, copy.lead:GetText())
 	end)
 
 	it("wraps the Replaces sentence whole through the preview's own measure, and grows the dialog (fix 5, 16; X.5)",
@@ -692,10 +679,9 @@ describe("BuildDialog, round 5 frame checks", function()
 				return 140
 			end
 			paste("FSB1:1.60.1.70291:warrior:113:")
-			assert.is_true(BuildDialog.height > Theme.SIZES.dialogHeight, BuildDialog.height)
-			assert.are.equal(BuildDialog.height, mock.lastCall(BuildDialog.frame, "SetHeight")[1])
-			assert.are.equal(BuildDialog.height - BuildDialog.chrome.top - BuildDialog.chrome.bottom,
-				BuildDialog.contentHeight)
+			local Hub = require("Hub")
+			assert.is_true(Hub.height > Theme.SIZES.dialogHeight, Hub.height)
+			assert.are.equal(Hub.height, mock.lastCall(Hub.frame, "SetHeight")[1])
 		end)
 
 	it("draws the Replaces line in the warning colour, the one warning before a plan changes (A.2)", function()
@@ -729,7 +715,7 @@ describe("BuildDialog, round 5 frame checks", function()
 			return 140
 		end
 		paste("FSB1:1.60.1.70291:warrior:113:")
-		assert.is_true(BuildDialog.height > Theme.SIZES.dialogHeight, BuildDialog.height)
+		assert.is_true(require("Hub").height > Theme.SIZES.dialogHeight, require("Hub").height)
 	end)
 end)
 
@@ -770,44 +756,6 @@ describe("BuildDialog, round 6 frame checks", function()
 	after_each(function()
 		_G.ForeverSixtyInbox = nil
 		mock.uninstall()
-	end)
-
-	it("keeps both tabs where they are in both modes, the badge in its slot (fix 6, 1 and 4)", function()
-		BuildDialog.open("paste")
-		local paste, copy = BuildDialog.tabs.paste, BuildDialog.tabs.copy
-		local width = lastCall(paste, "SetWidth")[1]
-		local anchor = lastCall(copy, "SetPoint")
-		assert.are.equal(BuildDialog.pasteBadge(1), paste.badge:GetText())
-		assert.is_true(paste.badge:IsShown())
-		BuildDialog.setMode("copy")
-		assert.are.equal(width, lastCall(paste, "SetWidth")[1])
-		assert.are.same(anchor, lastCall(copy, "SetPoint"))
-		assert.is_true(paste.badge:IsShown())
-		local color = lastCall(paste.badge, "SetTextColor")
-		local r, g, b = Theme.rgb(Theme.HEX.muted)
-		assert.are.same({ r, g, b }, { color[1], color[2], color[3] })
-		-- Fix 7, 3: both tabs' x and the badge's gap.
-		local S = Theme.SIZES
-		assert.are.same({ "TOPLEFT", BuildDialog.frame, "TOPLEFT", S.padding, -S.titleBarHeight },
-			{ lastCall(paste, "SetPoint")[1], lastCall(paste, "SetPoint")[2], lastCall(paste, "SetPoint")[3],
-				lastCall(paste, "SetPoint")[4], lastCall(paste, "SetPoint")[5] })
-		assert.are.same({ "LEFT", paste, "RIGHT", S.gap * 2, 0 }, { anchor[1], anchor[2], anchor[3], anchor[4], anchor[5] })
-		local badgeAt = lastCall(paste.badge, "SetPoint")
-		assert.are.same({ "LEFT", paste.foreverSixtyLabel, "RIGHT", S.gap * 2, 0 },
-			{ badgeAt[1], badgeAt[2], badgeAt[3], badgeAt[4], badgeAt[5] })
-	end)
-
-	it("keeps both tabs where they are in both modes with no build waiting (fix 7, 3)", function()
-		_G.ForeverSixtyInbox = nil
-		BuildDialog.open("paste")
-		local paste, copy = BuildDialog.tabs.paste, BuildDialog.tabs.copy
-		local width = lastCall(paste, "SetWidth")[1]
-		local anchor = lastCall(copy, "SetPoint")
-		assert.is_false(paste.badge:IsShown())
-		BuildDialog.setMode("copy")
-		assert.are.equal(width, lastCall(paste, "SetWidth")[1])
-		assert.are.same(anchor, lastCall(copy, "SetPoint"))
-		assert.is_false(paste.badge:IsShown())
 	end)
 
 	it("starts a row's icon at the content margin and draws its edge outside the row (fix 7, 3; X.5)", function()
@@ -859,7 +807,7 @@ describe("BuildDialog, round 6 frame checks", function()
 			BuildDialog.close()
 			BuildDialog.copiedAt = nil
 			BuildDialog.open("copy")
-			local copy = BuildDialog.copyTab
+			local copy = BuildDialog.copyBox
 			copy.seen.GetStringHeight = function(region)
 				return (region:GetText() or ""):find("Waiting", 1, true) and 28 or 14
 			end
@@ -885,14 +833,14 @@ describe("BuildDialog, round 6 frame checks", function()
 	it("shows 'Sim failed' on the copy tab when the inbox's sim result failed", function()
 		_G.ForeverSixtyInbox.messages[#_G.ForeverSixtyInbox.messages + 1] = { type = "sim_result", failed = true }
 		BuildDialog.open("copy")
-		assert.are.equal(L.dialogSimFailed, BuildDialog.copyTab.sim:GetText())
+		assert.are.equal(L.dialogSimFailed, BuildDialog.copyBox.sim:GetText())
 	end)
 
 	it("wires the sim's answer and the chip's next step into the copy tab (fix 6, 10)", function()
 		require("ItemTooltip").current = { tag = "sim" }
 		require("Chip").current = { chosen = { text = "Take Deflection (1 of 2)" } }
 		BuildDialog.open("copy")
-		local copy = BuildDialog.copyTab
+		local copy = BuildDialog.copyBox
 		assert.are.equal(L.dialogSimDone, copy.sim:GetText())
 		assert.are.equal("Take Deflection (1 of 2)", copy.simNext:GetText())
 	end)
@@ -905,50 +853,25 @@ describe("BuildDialog, round 6 frame checks", function()
 		row.name.GetStringWidth = function(region)
 			return utf8.len(region:GetText() or "") * 5
 		end
-		BuildDialog.drawPaste()
-		local inner = 388 - BuildDialog.SITE_CREST - Theme.SIZES.gap * 2
+		BuildDialog.draw()
+		local inner = Theme.SIZES.windowRight - BuildDialog.SITE_CREST - Theme.SIZES.gap * 2
 		assert.is_true(utf8.len(row.name:GetText()) * 5 <= inner, row.name:GetText())
 		assert.is_truthy(row.name:GetText():find(L.ellipsis, 1, true))
 	end)
 
-	-- L3.7 item 28: the empty space under the empty paste box holds the Tab hint and a companion line
-	-- (X.5: only while no build waits; a waiting build is the news, and the tabs are the switch).
-	it("puts the Tab hint and a companion line under the empty paste box, and the hint back at the corner otherwise",
-		function()
-			_G.ForeverSixtyInbox = nil
-			BuildDialog.open("paste")
-			local paste = BuildDialog.paste
-			assert.are.equal(L.dialogPasteCompanion, paste.companion:GetText())
-			assert.is_true(paste.companion:IsShown())
-			local point = lastCall(BuildDialog.tabHint, "SetPoint")
-			assert.are.equal(paste.content, point[2])
-			-- A verdict (here a refusal) fills the space: the hint is at the panel's corner again.
-			BuildDialog.onPaste("not a build code")
-			assert.is_false(paste.companion:IsShown())
-			point = lastCall(BuildDialog.tabHint, "SetPoint")
-			assert.are.equal(BuildDialog.frame, point[2])
-			assert.are.equal(BuildDialog.HINT_POINT, point[1])
-			-- And on the copy tab.
-			BuildDialog.clearPaste()
-			BuildDialog.setMode("copy")
-			assert.are.equal(BuildDialog.frame, lastCall(BuildDialog.tabHint, "SetPoint")[2])
-		end)
-
-	it("paints the corner hints in the hint colour (fix 6, 10)", function()
+	it("paints the footer's hints in the hint colour (fix 6, 10; spec 3.4)", function()
 		BuildDialog.open("paste")
-		local r, g, b = Theme.rgb(BuildDialog.hintHex())
-		assert.is_not_nil(BuildDialog.tabHint)
-		assert.is_not_nil(BuildDialog.enterHint)
-		for _, hint in ipairs({ BuildDialog.tabHint, BuildDialog.enterHint }) do
+		local Hub = require("Hub")
+		local r, g, b = Theme.rgb(Theme.dimHex("muted", Hub.HINT_ALPHA))
+		for _, hint in ipairs({ Hub.footer.escape, Hub.footer.enter }) do
 			local color = lastCall(hint, "SetTextColor")
 			assert.are.same({ r, g, b }, { color[1], color[2], color[3] })
 		end
 	end)
 end)
 
-
 describe("BuildDialog, polish round B fix round 1", function()
-	local BuildDialog, Theme, L, Follow
+	local BuildDialog, Theme, Follow
 
 	local RAID = "FSB1:1.60.1.70291:warrior:111:"
 	local LEVELING = "FSB1:1.60.1.70291:warrior:112:"
@@ -962,7 +885,6 @@ describe("BuildDialog, polish round B fix round 1", function()
 		})
 		Theme = require("Theme")
 		Theme.reset()
-		L = require("Locale")
 		_G.ForeverSixtyDB = {}
 		_G.ForeverSixtyInbox = nil
 		helper.load("Prefs")
@@ -1003,26 +925,6 @@ describe("BuildDialog, polish round B fix round 1", function()
 		assert.is_nil(text:find("Arms raid", 1, true), text)
 	end)
 
-	-- Item 12: the Copy tab never grows past what the dialog's content width leaves beside the Paste
-	-- tab; past it the label reads "Copy link".
-	it("caps the Copy tab's width and falls back to 'Copy link' past it", function()
-		BuildDialog.open("paste")
-		local copy = BuildDialog.tabs.copy
-		local label = copy.foreverSixtyLabel
-		label.GetStringWidth = function(region)
-			return utf8.len(region:GetText() or "") * 7
-		end
-		local S = Theme.SIZES
-		local available = S.dialogWidth - S.padding * 2 - mock.lastCall(BuildDialog.tabs.paste, "SetWidth")[1] - S.gap * 2
-		BuildDialog.openLink("foreversixty.gg/character/us/normal/bob", "Bob")
-		assert.are.equal(string.format(L.dialogCopyLink, "Bob"), label:GetText())
-		assert.is_true(mock.lastCall(copy, "SetWidth")[1] <= available)
-		local long = string.rep("W", 40)
-		BuildDialog.openLink("foreversixty.gg/character/us/normal/long", long)
-		assert.are.equal(L.dialogCopyLinkShort, label:GetText())
-		assert.are.equal("Copy link", label:GetText())
-		assert.is_true(mock.lastCall(copy, "SetWidth")[1] <= available)
-	end)
 end)
 
 -- X.5: the builds the site sent are rows above the paste box, the preview never cuts a sentence, a build
@@ -1123,32 +1025,22 @@ describe("BuildDialog, X.5 builds from the site", function()
 		local color = mock.lastCall(row.name, "SetTextColor")
 		local r, g, b = Theme.rgb(Theme.HEX.body)
 		assert.are.same({ r, g, b }, { color[1], color[2], color[3] })
-		assert.are.equal("Enter to preview", BuildDialog.enterHint:GetText())
-		assert.is_true(BuildDialog.enterHint:IsShown())
+		assert.are.equal("Enter to preview", require("Hub").footer.enter:GetText())
+		assert.is_true(require("Hub").footer.enter:IsShown())
 		assert.are.equal("Enter to preview", L.dialogEnterPreview)
 	end)
 
-	it("drops the companion paragraph and Tab hint while a build waits, and shows them when none does (X.5)", function()
+	it("explains the paste box in the planner's words, whether a build waits or not (spec 3.3 item 2)", function()
 		local paste = open()
-		assert.is_false(paste.companion:IsShown())
-		assert.is_false(BuildDialog.tabHint:IsShown())
+		assert.are.equal(L.windowFromSiteWhat, paste.site.what:GetText())
+		assert.is_true(paste.site.what:IsShown())
 		BuildDialog.close()
 		_G.ForeverSixtyInbox = nil
 		paste = open()
-		assert.is_true(paste.companion:IsShown())
-		assert.are.equal(L.dialogPasteCompanion, paste.companion:GetText())
-		assert.is_true(BuildDialog.tabHint:IsShown())
-		assert.are.equal("Tab to switch", BuildDialog.tabHint:GetText())
+		assert.is_true(paste.site.what:IsShown())
 		assert.is_false(paste.rows[1].frame:IsShown())
 		assert.are.equal("Enter to use", L.dialogEnterHint)
-		assert.is_false(BuildDialog.enterHint:IsShown())
-	end)
-
-	it("names the tab Builds, with the waiting count in its badge (X.5)", function()
-		open()
-		assert.are.equal("Builds", BuildDialog.tabs.paste.foreverSixtyLabel:GetText())
-		assert.are.equal("\194\183 1 waiting", BuildDialog.tabs.paste.badge:GetText())
-		assert.are.equal("Builds \194\183 1 waiting", "Builds " .. BuildDialog.tabs.paste.badge:GetText())
+		assert.is_false(require("Hub").footer.enter:IsShown())
 	end)
 
 	it("keeps the paste box's border quiet until the player works in it (X.5)", function()
@@ -1189,7 +1081,7 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.are.equal("For Bob \194\183 Ashbringer", paste.preview.target:GetText())
 		assert.is_true(paste.preview.target:IsShown())
 		assert.is_true(paste.use:IsShown())
-		assert.are.equal("Enter to use", BuildDialog.enterHint:GetText())
+		assert.are.equal("Enter to use", require("Hub").footer.enter:GetText())
 		-- Escape goes back to the rows.
 		paste.box:GetScript("OnEscapePressed")(paste.box)
 		assert.is_nil(BuildDialog.verdict)
@@ -1242,7 +1134,7 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.is_true(paste.use:IsEnabled())
 		assert.is_false(paste.useReason:IsShown())
 		assert.is_nil(BuildDialog.useBlocked)
-		assert.are.equal("Enter to use", BuildDialog.enterHint:GetText())
+		assert.are.equal("Enter to use", require("Hub").footer.enter:GetText())
 	end)
 
 	it("disables Use for a build that is a prefix of the plan, with the reason beside the button (X.5)", function()
@@ -1255,8 +1147,8 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.is_true(paste.useReason:IsShown())
 		assert.are.equal("Your plan is further along.", paste.useReason:GetText())
 		-- The hint follows the button: no instruction that does nothing, the reason's short form instead (X.6).
-		assert.are.equal("Your plan is further along", BuildDialog.enterHint:GetText())
-		assert.is_true(BuildDialog.enterHint:IsShown())
+		assert.are.equal("Your plan is further along", require("Hub").footer.enter:GetText())
+		assert.is_true(require("Hub").footer.enter:IsShown())
 		assert.is_truthy(paste.replaces:GetText():find("Same as your plan for 2 points. Yours goes on with", 1, true))
 		-- Neither the button nor Enter loads it.
 		local before = Follow.build
@@ -1284,26 +1176,28 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.is_true(paste.use:IsEnabled())
 	end)
 
-	it("keeps the dialog's top where it was when the content makes it taller (X.5)", function()
+	it("keeps the window's top where it was when the content makes it taller (X.5)", function()
+		local Hub = require("Hub")
 		Follow.build = require("Codec").loadBuild(THREE, DATA)
 		Follow.build.name = "Arms raid"
 		local paste = open()
 		local frame = BuildDialog.frame
-		assert.are.equal(Theme.SIZES.dialogHeight, BuildDialog.height)
+		local before = Hub.height
 		paste.box:GetScript("OnEnterPressed")(paste.box)
 		paste.replaces.GetStringHeight = function()
-			return 120
+			return 600
 		end
-		BuildDialog.drawPaste()
-		local grown = BuildDialog.height - Theme.SIZES.dialogHeight
-		assert.is_true(grown > 0)
+		BuildDialog.draw()
+		local grown = Hub.height - Theme.SIZES.dialogHeight
+		assert.is_true(Hub.height > before)
 		local at = mock.lastCall(frame, "SetPoint")
 		assert.are.same({ "CENTER", UIParent, "CENTER", 0, -grown / 2 }, { at[1], at[2], at[3], at[4], at[5] })
-		-- Back to the ordinary height on the copy tab, and centred again.
-		BuildDialog.setMode("copy")
-		assert.are.equal(Theme.SIZES.dialogHeight, BuildDialog.height)
+		-- Back to the list: the window shrinks to it and keeps its top.
+		BuildDialog.clearPaste()
+		assert.is_true(Hub.height < Theme.SIZES.dialogHeight + grown)
 		at = mock.lastCall(frame, "SetPoint")
-		assert.are.same({ "CENTER", UIParent, "CENTER", 0, 0 }, { at[1], at[2], at[3], at[4], at[5] })
+		assert.are.same({ "CENTER", UIParent, "CENTER", 0, -(Hub.height - Theme.SIZES.dialogHeight) / 2 },
+			{ at[1], at[2], at[3], at[4], at[5] })
 	end)
 
 	it("saves the position of the ordinary-height frame, whatever it has grown to (X.5)", function()
@@ -1313,15 +1207,16 @@ describe("BuildDialog, X.5 builds from the site", function()
 		paste.replaces.GetStringHeight = function()
 			return 120
 		end
-		BuildDialog.drawPaste()
-		local grown = BuildDialog.height - Theme.SIZES.dialogHeight
+		BuildDialog.draw()
+		local Hub = require("Hub")
+		local grown = Hub.height - Theme.SIZES.dialogHeight
 		BuildDialog.frame.GetCenter = function()
 			return 500, 400 - grown / 2
 		end
 		UIParent.GetCenter = function()
 			return 500, 400
 		end
-		BuildDialog.savePosition()
+		Hub.savePosition()
 		assert.are.equal(0, require("Prefs").get("dialog", "x"))
 		assert.are.equal(0, require("Prefs").get("dialog", "y"))
 	end)
@@ -1372,7 +1267,7 @@ describe("BuildDialog, X.7 Escape from any focus and the keys it leaves alone", 
 		assert.is_true(mock.lastCall(BuildDialog.frame, "EnableKeyboard")[1])
 		local listed = false
 		for _, name in ipairs(UISpecialFrames) do
-			listed = listed or name == BuildDialog.FRAME_NAME
+			listed = listed or name == require("Hub").FRAME_NAME
 		end
 		assert.is_true(listed)
 		assert.is_function(BuildDialog.frame:GetScript("OnKeyDown"))
@@ -1393,9 +1288,9 @@ describe("BuildDialog, X.7 Escape from any focus and the keys it leaves alone", 
 		assert.is_false(BuildDialog.frame:IsShown())
 	end)
 
-	it("closes on Escape from either tab", function()
-		BuildDialog.setMode("copy")
-		BuildDialog.copyTab.box:ClearFocus()
+	it("closes on Escape from either box", function()
+		BuildDialog.focusBox("copy")
+		BuildDialog.copyBox.box:ClearFocus()
 		key("ESCAPE")
 		assert.is_false(BuildDialog.frame:IsShown())
 		BuildDialog.open("paste")

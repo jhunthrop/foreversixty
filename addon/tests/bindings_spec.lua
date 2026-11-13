@@ -10,6 +10,9 @@ describe("the keybind", function()
 		assert.is_truthy(xml:find('name="FOREVERSIXTY_TOGGLE"', 1, true))
 		assert.is_truthy(xml:find('header="FOREVERSIXTY"', 1, true))
 		assert.is_truthy(xml:find("FOREVERSIXTY_TOGGLE_WINDOW()", 1, true))
+		-- The second binding toggles the Forever Sixty window (2026-11-13-addon-builds-window.md 5).
+		assert.is_truthy(xml:find('name="FOREVERSIXTY_HUB"', 1, true))
+		assert.is_truthy(xml:find("FOREVERSIXTY_TOGGLE_HUB()", 1, true))
 	end)
 
 	describe("what Options.register wires up for it", function()

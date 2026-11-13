@@ -274,12 +274,17 @@ Theme.SIZES = {
 	minimapRing = 54,
 	minimapGround = 24,
 	minimapEdge = 10,
-	--- The build dialog (spec section 4.10): 420 by 300; every line that says something
-	--- at `dialogText` px; the close button's hit area (boxes are sized in measured whole lines,
-	--- BuildDialog.boxLines); the preview's class icon; the most "from the site" rows it
-	--- lists; the gear rows' height.
-	dialogWidth = 420,
+	--- The Forever Sixty window (design/specs/2026-11-13-addon-builds-window.md section 3): at least
+	--- 300 tall; the Builds tab's left column (the build list, a preview), the gutter with the rule at
+	--- its middle, the right column; the title's size in the title face. Every line that says
+	--- something at `dialogText` px; the close button's hit area (boxes are sized in measured whole
+	--- lines, BuildDialog.boxLines); the preview's class icon; the most "from the site" rows it lists;
+	--- the gear rows' height.
 	dialogHeight = 300,
+	windowLeft = 388,
+	windowGutter = 32,
+	windowRight = 288,
+	windowTitle = 16,
 	dialogText = 12,
 	dialogClose = 20,
 	dialogLine = 24,

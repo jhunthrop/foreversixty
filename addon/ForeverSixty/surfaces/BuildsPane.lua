@@ -1,8 +1,8 @@
 -- addon/ForeverSixty/surfaces/BuildsPane.lua
--- The Builds tab's own builds (design/specs/2026-11-13-addon-builds-pane.md section 1): every build
--- the site publishes for the class, the level 60 build and the raid build of each spec, under the
--- ringed class crest. The followed one is marked Following with the next point under it, every
--- other one has a Follow button, and each says why the guide builds it so in one line.
+-- The Builds tab's build list (design/specs/2026-11-13-addon-builds-pane.md section 1, in the window of
+-- 2026-11-13-addon-builds-window.md section 3.2): every build the site publishes for the class, the
+-- level 60 build and the raid build of each spec. The followed one is marked Following with the next
+-- point under it, every other one has a Follow button, and each says why the guide builds it so.
 --
 -- Pure model, thin frame. BuildsPane.blocks is the whole model (one block per spec, its rows) from
 -- Data.lua's defaultBuilds, the same orders the guides and the planner are built on; BuildsPane.draw
@@ -25,12 +25,12 @@ BuildsPane.KINDS = { "leveling", "raid" }
 --- Most specs a class has (the druid's four) and rows per spec: the parts built once.
 BuildsPane.MAX_SPECS = 4
 BuildsPane.MAX_ROWS = BuildsPane.MAX_SPECS * #BuildsPane.KINDS
---- Pixel layout (spec 1.1): the heading row with the 20 px crest, the 16 px spec icon, the rows'
+--- Pixel layout (spec 1.1): the question's line over the list, the 16 px spec icon, the rows'
 --- indent under the spec line, and the gaps between rows and between spec blocks.
 --- A row's grounds reach groundLead px left of its text (a 2 px edge, then 4 px to the text); the
 --- followed row lies on gold at followedAlpha; the next point's talent icon is nextIcon px.
 BuildsPane.LAYOUT = {
-	heading = 24, crest = 20, specLine = 18, specIcon = 16, indent = 22, playstyleGap = 6,
+	heading = 24, specLine = 18, specIcon = 16, indent = 22, playstyleGap = 6,
 	rowGap = 6, blockGap = 8, lineGap = 1, afterHeading = 4,
 	groundLead = 6, followedGround = "gold", followedAlpha = 0.08, pressedGround = "inset",
 	nextIcon = 14, nextIconGap = 4,
@@ -176,23 +176,27 @@ function BuildsPane.flatten(blocks)
 	return rows
 end
 
---- The heading: "Hunter builds", or the spec question with the points split muted after it while
---- the points name no tree (Follow.specQuestion, Follow.specSplit). Pure.
-function BuildsPane.heading(className, question, split)
-	if question ~= nil then
-		if split ~= nil then
-			return question .. L.exportTreeSeparator .. Theme.inlineColor("muted", split)
-		end
-		return question
-	end
+--- The window's title for the class: "Hunter builds". Pure.
+function BuildsPane.title(className)
 	return string.format(L.dialogOwnBuilds, className or "")
 end
 
---- The heading's note at the right, the panel's own figures: "Level 42 · 27 of 33 points · 5 points
---- off plan" (the off-plan count in the warning colour), "Level 42" with nothing followed; nil while
---- the question shows. Pure.
-function BuildsPane.note(level, followed, ranks, question)
-	if question ~= nil or type(level) ~= "number" then
+--- The line over the build list while the points name no tree: the spec question, the points split
+--- muted after it (Follow.specQuestion, Follow.specSplit); nil once a tree leads. Pure.
+function BuildsPane.question(question, split)
+	if question == nil then
+		return nil
+	end
+	if split ~= nil then
+		return question .. L.exportTreeSeparator .. Theme.inlineColor("muted", split)
+	end
+	return question
+end
+
+--- The window header's figures, the panel's own: "Level 42 · 27 of 33 points · 5 points off plan" (the
+--- off-plan count in the warning colour), "Level 42" with nothing followed; nil without a level. Pure.
+function BuildsPane.note(level, followed, ranks)
+	if type(level) ~= "number" then
 		return nil
 	end
 	local parts = { string.format(L.dialogLevelPoints, level) }
@@ -218,14 +222,14 @@ function BuildsPane.rowHeight(row, line)
 	return lines * line + (lines - 1) * BuildsPane.LAYOUT.lineGap
 end
 
---- The whole own block's height at `line` px a line: the heading, then each spec line and its rows.
---- Pure.
-function BuildsPane.height(blocks, line)
+--- The whole build list's height at `line` px a line: the question when it shows, then each spec line
+--- and its rows. Pure.
+function BuildsPane.height(blocks, line, question)
 	local G = BuildsPane.LAYOUT
 	if #(blocks or {}) == 0 then
 		return 0
 	end
-	local height = G.heading + G.afterHeading
+	local height = question ~= nil and G.heading + G.afterHeading or 0
 	for index, block in ipairs(blocks) do
 		height = height + (index > 1 and G.blockGap or 0) + G.specLine
 		for _, row in ipairs(block.rows) do
@@ -358,37 +362,13 @@ local function buildRow(content, width, deps)
 	return row
 end
 
---- An invisible frame over the heading's note: the off-plan talents by name on hover, as the panel's.
-local function buildNoteHover(pane)
-	local over = Theme.createFrame("Frame", nil, pane.content)
-	over:EnableMouse(true)
-	over:SetAllPoints(pane.note)
-	over:SetScript("OnEnter", function(self)
-		local lines = pane.offPlanTalents
-		if type(lines) == "table" and #lines > 0 then
-			Theme.showLines(self, lines, "ANCHOR_RIGHT")
-		end
-	end)
-	over:SetScript("OnLeave", function()
-		Theme.hideTooltip()
-	end)
-	return over
-end
-
 --- The pane's parts, built once on `content` (`width` wide). `deps`: text(parent, hexKey) makes a
 --- line at the dialog's size, fit(region, raw, width) sets a line cut with an ellipsis, follow(row)
 --- and hovered(index) are BuildDialog's, hover and edge the cursor's look.
 function BuildsPane.build(content, width, deps)
 	local G = BuildsPane.LAYOUT
 	local pane = { content = content, width = width, deps = deps, specs = {}, rows = {} }
-	pane.crest, pane.ring = Theme.buildCrest(content, G.crest)
 	pane.heading = noWrap(deps.text(content, "body"))
-	pane.heading:SetPoint("LEFT", pane.crest, "RIGHT", Theme.SIZES.gap * 2, 0)
-	pane.note = noWrap(deps.text(content, "muted"))
-	pane.note:SetJustifyH("RIGHT")
-	pane.note:SetPoint("RIGHT", content, "RIGHT", 0, 0)
-	pane.note:SetPoint("TOP", pane.heading, "TOP", 0, 0)
-	pane.noteHover = buildNoteHover(pane)
 	for index = 1, BuildsPane.MAX_SPECS do
 		pane.specs[index] = buildSpecLine(content, deps)
 	end
@@ -401,9 +381,7 @@ end
 
 --- Every part hidden: the pane while a preview shows, or for a class with no builds.
 function BuildsPane.hide(pane)
-	for _, region in ipairs({ pane.crest, pane.ring, pane.heading, pane.note, pane.noteHover }) do
-		region:Hide()
-	end
+	pane.heading:Hide()
 	for _, line in ipairs(pane.specs) do
 		line.icon:Hide()
 		line.name:Hide()
@@ -420,21 +398,15 @@ local function place(region, content, x, y)
 	region:Show()
 end
 
---- The heading row at `y`: the crest painted for the class, the heading, the note at the right.
+--- The spec question over the list at `y` (only while the points name no tree); the y under it.
 local function drawHeading(pane, view, y)
 	local G = BuildsPane.LAYOUT
-	Theme.paintCrest(pane.crest, pane.ring, view.classToken)
-	place(pane.crest, pane.content, 0, y + (G.heading - G.crest) / 2)
-	pane.ring:Show()
-	local noteWidth = 0
-	pane.offPlanTalents = view.offPlanTalents
-	Theme.setShown({ pane.note, pane.noteHover }, view.note ~= nil)
-	if view.note ~= nil then
-		pane.note:SetText(view.note)
-		noteWidth = textWidth(pane.note) + Theme.SIZES.gap * 2
+	if view.question == nil then
+		pane.heading:Hide()
+		return y
 	end
-	pane.deps.fit(pane.heading, view.heading, pane.width - G.crest - Theme.SIZES.gap * 2 - noteWidth)
-	pane.heading:Show()
+	pane.deps.fit(pane.heading, view.question, pane.width)
+	place(pane.heading, pane.content, 0, y)
 	return y + G.heading + G.afterHeading
 end
 

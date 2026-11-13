@@ -2,4 +2,7 @@
 	<Binding name="FOREVERSIXTY_TOGGLE" header="FOREVERSIXTY">
 		FOREVERSIXTY_TOGGLE_WINDOW()
 	</Binding>
+	<Binding name="FOREVERSIXTY_HUB" header="FOREVERSIXTY">
+		FOREVERSIXTY_TOGGLE_HUB()
+	</Binding>
 </Bindings>

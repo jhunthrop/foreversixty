@@ -34,6 +34,7 @@ local SlotMarks = ns.SlotMarks or require("SlotMarks")
 local RewardMarks = ns.RewardMarks or require("RewardMarks")
 local Score = ns.Score or require("Score")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
+local Hub = ns.Hub or require("Hub")
 local SettingsPage = ns.SettingsPage or require("Settings")
 local PanelTab = ns.PanelTab or require("PanelTab")
 local GuildTab = ns.GuildTab or require("GuildTab")
@@ -176,9 +177,14 @@ end
 
 function Options.handle(input)
 	local command, rest = (input or ""):match("^(%S*)%s*(.*)$")
-	if command == "" or command == "copy" then
-		-- The build dialog (L3.4): bare /fs pastes a build in, /fs copy copies the character
-		-- out. It prints nothing; if it cannot show itself it prints the commands instead.
+	if command == "" then
+		-- The Forever Sixty window on the tab the player last had. It prints nothing; if it cannot
+		-- show itself it prints the commands instead (Hub.fallback).
+		BuildDialog.data = Options.data
+		Hub.open()
+		return {}
+	elseif command == "builds" or command == "copy" then
+		-- The Builds tab: /fs builds with the paste box ready, /fs copy with the copy box selected.
 		BuildDialog.data = Options.data
 		BuildDialog.open(command == "copy" and "copy" or "paste")
 		return {}
@@ -697,6 +703,12 @@ function Options.register()
 		Panel.data = Options.data
 		return Panel.toggle("key")
 	end
+	-- The second binding opens or closes the Forever Sixty window on the tab the player last had.
+	BINDING_NAME_FOREVERSIXTY_HUB = L.bindingHub
+	FOREVERSIXTY_TOGGLE_HUB = function()
+		BuildDialog.data = Options.data
+		return Hub.toggle()
+	end
 
 	SLASH_FOREVERSIXTY1 = "/fs"
 	SLASH_FOREVERSIXTY2 = "/foreversixty"
@@ -749,7 +761,7 @@ function Options.register()
 	-- paste tab, right-click the Settings page (the command list where it cannot open).
 	MinimapButton.open = function()
 		BuildDialog.data = Options.data
-		BuildDialog.open("paste")
+		Hub.toggle()
 	end
 	MinimapButton.openSettings = Options.openSettings
 	-- A Settings switch redraws every surface; turning sharing on says hello at once.
@@ -773,7 +785,7 @@ function Options.register()
 		SettingsPage.refreshSources()
 	end)
 	BuildDialog.data = Options.data
-	BuildDialog.fallback = Options.showHint
+	Hub.fallback = Options.showHint
 	BuildDialog.afterUse = function()
 		Options.refreshSurfaces(Options.data)
 	end

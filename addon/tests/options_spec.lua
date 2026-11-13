@@ -61,14 +61,19 @@ describe("Options", function()
 		mock.uninstall()
 	end)
 
-	it("opens the build dialog on a bare /fs, paste mode, and on /fs copy, copy mode, printing nothing", function()
+	it("opens the window on its last tab on a bare /fs, and the Builds tab on /fs builds and /fs copy, printing nothing",
+		function()
 		local opened = {}
-		require("BuildDialog").open = function(mode)
-			opened[#opened + 1] = mode
+		require("BuildDialog").open = function(focus)
+			opened[#opened + 1] = focus
+		end
+		require("Hub").open = function(id)
+			opened[#opened + 1] = "hub " .. tostring(id)
 		end
 		assert.are.same({}, Options.handle(""))
+		assert.are.same({}, Options.handle("builds"))
 		assert.are.same({}, Options.handle("copy"))
-		assert.are.same({ "paste", "copy" }, opened)
+		assert.are.same({ "hub nil", "paste", "copy" }, opened)
 	end)
 
 	-- A.3 ruling 5: every command answers. Alone, /fs group and /fs panel say where the group panel
@@ -689,14 +694,16 @@ describe("Options", function()
 		assert.are.equal("|cffffec71Forever Sixty|r: " .. Locale.settingsCommands[1], state.printed[1])
 	end)
 
-	-- design/specs/2026-11-08-addon-ux.md 1.6 and 4.2: the minimap button opens the build dialog;
-	-- the compartment entry and the keybind open the addon panel.
-	it("has the minimap button open the dialog, and the compartment and the keybind toggle the panel", function()
-		local BuildDialog = require("BuildDialog")
+	-- design/specs/2026-11-08-addon-ux.md 1.6 and 4.2, 2026-11-13-addon-builds-window.md 5: the minimap
+	-- button and the window's binding toggle the window; the compartment entry and the panel's binding
+	-- toggle the addon panel.
+	it("has the minimap button and its binding toggle the window, the compartment and the keybind the panel",
+		function()
+		local Hub = require("Hub")
 		local Panel = require("Panel")
 		local calls = {}
-		BuildDialog.open = function(mode)
-			calls[#calls + 1] = "open " .. tostring(mode)
+		Hub.toggle = function(id)
+			calls[#calls + 1] = "window " .. tostring(id)
 		end
 		Panel.toggle = function(from)
 			calls[#calls + 1] = "panel " .. tostring(from)
@@ -705,11 +712,13 @@ describe("Options", function()
 		require("Minimap").open()
 		require("Minimap").openPanel()
 		_G.FOREVERSIXTY_TOGGLE_WINDOW()
-		assert.are.same({ "open paste", "panel compartment", "panel key" }, calls)
+		_G.FOREVERSIXTY_TOGGLE_HUB()
+		assert.are.same({ "window nil", "panel compartment", "panel key", "window nil" }, calls)
+		assert.are.equal(require("Locale").bindingHub, _G.BINDING_NAME_FOREVERSIXTY_HUB)
 		-- Right-click is the Settings page's (L3.5), or the commands where it cannot open.
 		assert.are.equal(Options.openSettings, require("Minimap").openSettings)
-		-- The dialog falls back to the command list when it cannot show itself.
-		assert.are.equal(Options.showHint, BuildDialog.fallback)
+		-- The window falls back to the command list when it cannot show itself.
+		assert.are.equal(Options.showHint, Hub.fallback)
 		Options.showHint()
 		local Locale = require("Locale")
 		assert.are.equal(#Locale.settingsCommands, #state.printed)

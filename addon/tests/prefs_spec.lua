@@ -188,12 +188,13 @@ describe("Prefs, the v2 keys", function()
 		assert.are.same({ "chip", "minimap", "dialog" }, Prefs.POSITION_SECTIONS)
 	end)
 
-	it("opens the build dialog in the middle of the screen until it is dragged, and again on Reset", function()
-		-- L3.4: an empty point is the centre of the screen; a drag saves CENTER and the offset.
-		assert.are.same({ point = "", x = 0, y = 0 }, Prefs.withDefaults(nil).dialog)
-		_G.ForeverSixtyDB = { ui = { dialog = { point = "CENTER", x = 40, y = -12 } } }
+	it("opens the window in the middle of the screen until it is dragged, and again on Reset, keeping its tab", function()
+		-- L3.4: an empty point is the centre of the screen; a drag saves CENTER and the offset. The tab the
+		-- player last had is a choice, not a placement: a reset keeps it.
+		assert.are.same({ point = "", x = 0, y = 0, tab = "" }, Prefs.withDefaults(nil).dialog)
+		_G.ForeverSixtyDB = { ui = { dialog = { point = "CENTER", x = 40, y = -12, tab = "builds" } } }
 		Prefs.resetPositions()
-		assert.are.same({ point = "", x = 0, y = 0 }, _G.ForeverSixtyDB.ui.dialog)
+		assert.are.same({ point = "", x = 0, y = 0, tab = "builds" }, _G.ForeverSixtyDB.ui.dialog)
 	end)
 
 	it("turns the badges and the broadcast on by default", function()
