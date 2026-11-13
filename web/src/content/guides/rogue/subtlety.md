@@ -3,7 +3,7 @@ title: Subtlety Rogue in Forever
 classSlug: rogue
 spec: subtlety
 role: dps
-build: 'FS1:1.60.1.70790:rogue:night-elf:005302011/320003/035230031321001151:'
+build: 'FS1:1.60.1.70938:rogue:night-elf:005302011/320003/035230031321001151:'
 buildWhy: 'Hemorrhage builds, Boot Knife adds points, Death Mark cashes in'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]

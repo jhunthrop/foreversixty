@@ -1,6 +1,6 @@
 {
   "spec": "druid-restoration",
-  "build": "1.60.1.70790",
+  "build": "1.60.1.70938",
   "core": [],
   "auras": [],
   "downranks": [],
@@ -11,7 +11,7 @@
         22812
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/druid.json#22812"
+      "verified": "1.60.1.70938/spellconst/druid.json#22812"
     }
   ],
   "efficiency": []

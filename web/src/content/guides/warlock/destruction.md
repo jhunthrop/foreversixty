@@ -3,9 +3,9 @@ title: Destruction Warlock in Forever
 classSlug: warlock
 spec: destruction
 role: dps
-build: 'FS1:1.60.1.70790:warlock:human:25522/0/2053235103101351:'
+build: 'FS1:1.60.1.70938:warlock:human:25522/0/2053235103101351:'
 buildWhy: 'Molten Skin and Destructive Reach keep you safe while questing'
-raidBuild: 'FS1:1.60.1.70790:warlock:human:25500000033/0/0050355103101351:'
+raidBuild: 'FS1:1.60.1.70938:warlock:human:25500000033/0/0050355103101351:'
 raidBuildWhy: 'Trades Molten Skin for full Aftermath, Cataclysm and Pandemic'
 recommendedRaces: [human, orc]
 statPriority:

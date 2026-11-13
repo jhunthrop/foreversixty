@@ -3,9 +3,9 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70790:mage:human:2301052001000/55500201230133031/003:'
+build: 'FS1:1.60.1.70938:mage:human:2301052001/55500201230133031/003:'
 buildWhy: 'Wand Specialization finishes mobs while your mana comes back'
-raidBuild: 'FS1:1.60.1.70790:mage:human:0501052001000/55500201230133031/003:'
+raidBuild: 'FS1:1.60.1.70938:mage:human:0501052001/55500201230133031/003:'
 raidBuildWhy: 'Trades Wand Specialization for full Improved Channeling'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Spell power, Fire power, Critical strike, Intellect, Spell haste, Spell penetration]

@@ -3,7 +3,7 @@ title: Restoration Druid in Forever
 classSlug: druid
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.70790:druid:night-elf:05302001/0/555300515311321:'
+build: 'FS1:1.60.1.70938:druid:night-elf:05302001/0/555300515311321:'
 buildWhy: 'HoT tank healer: Bloom heals on expiry, Reflection saves mana'
 recommendedRaces: [night-elf, tauren]
 statPriority: [MP5, Spirit, Intellect, Healing power, Critical strike]

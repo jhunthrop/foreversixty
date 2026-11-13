@@ -6,7 +6,7 @@
 // client does not name yet (Barrow Deeps and Hyjal Summit on 1.60.1.70790) has no entry.
 package guilds
 
-//go:generate go run ../../cmd/genraidbosses -build 1.60.1.70790
+//go:generate go run ../../cmd/genraidbosses -build 1.60.1.70938
 
 // tierItem is one boss drop: id, name and quality with items.json's item_level, required_level,
 // class_id, subclass_id and inventory_type.

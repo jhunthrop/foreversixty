@@ -3,9 +3,9 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.70790:warlock:human:25522020135201351/0002/005005:'
+build: 'FS1:1.60.1.70938:warlock:human:25522020135201351/0002/005005:'
 buildWhy: 'Wrack and Soul Siphon carry the quests, Bane speeds Immolate'
-raidBuild: 'FS1:1.60.1.70790:warlock:human:05520020135201351/0050203001/05:'
+raidBuild: 'FS1:1.60.1.70938:warlock:human:05520020135201351/0050203001/05:'
 raidBuildWhy: 'Sacrifices the Imp and trades Bane for Improved Shadow Bolt'
 recommendedRaces: [human, orc]
 statPriority: [Spell power, Shadow power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]

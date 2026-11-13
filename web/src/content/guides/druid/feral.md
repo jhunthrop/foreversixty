@@ -3,9 +3,9 @@ title: Feral Druid in Forever
 classSlug: druid
 spec: feral
 role: dps
-build: 'FS1:1.60.1.70790:druid:night-elf:050022/50212032123012123001/05501:'
+build: 'FS1:1.60.1.70938:druid:night-elf:050022/50212032123012123001/05501:'
 buildWhy: 'Brutal Impact for Pounce, Feral Charge to leap behind for Shred'
-raidBuild: 'FS1:1.60.1.70790:druid:night-elf:050022/50230032023012125001/055:'
+raidBuild: 'FS1:1.60.1.70938:druid:night-elf:050022/50230032023012125001/055:'
 raidBuildWhy: 'Trades Brutal Impact and Feral Charge for full Rend and Tear'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Agility, Hit, Critical strike, Strength, Attack power, Feral attack power, Melee haste]

@@ -1,6 +1,6 @@
 {
   "spec": "warlock-demonology",
-  "build": "1.60.1.70790",
+  "build": "1.60.1.70938",
   "core": [
     {
       "family": "Bane of Doom",
@@ -8,7 +8,7 @@
         603
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/warlock.json#603"
+      "verified": "1.60.1.70938/spellconst/warlock.json#603"
     }
   ],
   "auras": [
@@ -26,7 +26,7 @@
       ],
       "name": "Corruption",
       "kind": "dot",
-      "verified": "1.60.1.70790/spellconst/warlock.json#11672"
+      "verified": "1.60.1.70938/spellconst/warlock.json#11672"
     },
     {
       "spell_id": 603,
@@ -35,7 +35,7 @@
       ],
       "name": "Bane of Doom",
       "kind": "dot",
-      "verified": "1.60.1.70790/spellconst/warlock.json#603"
+      "verified": "1.60.1.70938/spellconst/warlock.json#603"
     },
     {
       "spell_id": 11668,
@@ -51,7 +51,7 @@
       ],
       "name": "Immolate",
       "kind": "dot",
-      "verified": "1.60.1.70790/spellconst/warlock.json#11668"
+      "verified": "1.60.1.70938/spellconst/warlock.json#11668"
     }
   ],
   "downranks": [],
@@ -64,7 +64,7 @@
         17926
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/warlock.json#17926"
+      "verified": "1.60.1.70938/spellconst/warlock.json#17926"
     }
   ],
   "efficiency": []

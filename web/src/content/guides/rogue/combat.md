@@ -3,9 +3,9 @@ title: Combat Rogue in Forever
 classSlug: rogue
 spec: combat
 role: dps
-build: 'FS1:1.60.1.70790:rogue:gnome:325301/3153030000012321541/03:'
+build: 'FS1:1.60.1.70938:rogue:gnome:325301/3153030000012321541/03:'
 buildWhy: 'Improved Gouge and Efficient Strikes for trash and the way up'
-raidBuild: 'FS1:1.60.1.70790:rogue:gnome:005203002/3043030002012321451/005:'
+raidBuild: 'FS1:1.60.1.70938:rogue:gnome:005203002/3043030002012321451/005:'
 raidBuildWhy: 'Trades Improved Gouge for Lethality, Opportunity and Composure'
 recommendedRaces: [gnome, undead]
 statPriority: [Hit, Agility, Strength, Attack power, Critical strike, Melee haste]

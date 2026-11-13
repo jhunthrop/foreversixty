@@ -3,7 +3,7 @@ title: Protection Warrior in Forever
 classSlug: warrior
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70790:warrior:night-elf:35300003/0/250533120330001351:'
+build: 'FS1:1.60.1.70938:warrior:night-elf:35300003/0/250533120330001351:'
 buildWhy: 'Shield tank on Shield Slam, Defiance and Bastion threat'
 recommendedRaces: [night-elf, undead]
 statPriority:

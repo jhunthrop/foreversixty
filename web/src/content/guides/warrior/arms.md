@@ -3,9 +3,9 @@ title: Arms Warrior in Forever
 classSlug: warrior
 spec: arms
 role: dps
-build: 'FS1:1.60.1.70790:warrior:night-elf:12323213132215201/0505/205:'
+build: 'FS1:1.60.1.70938:warrior:night-elf:12323213132215201/0505/205:'
 buildWhy: 'Improved Charge for pull rage, Iron Will against stuns and fears'
-raidBuild: 'FS1:1.60.1.70790:warrior:night-elf:30303213132215201/05050005012/1:'
+raidBuild: 'FS1:1.60.1.70938:warrior:night-elf:30303213132215201/05050005012/1:'
 raidBuildWhy: 'Iron Will and Charge go to Enrage, Execute and Reckless Swings'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]

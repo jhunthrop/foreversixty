@@ -1,6 +1,6 @@
 {
   "spec": "paladin-retribution",
-  "build": "1.60.1.70790",
+  "build": "1.60.1.70938",
   "core": [
     {
       "family": "Judgement",
@@ -8,7 +8,7 @@
         20271
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/paladin.json#20271"
+      "verified": "1.60.1.70938/spellconst/paladin.json#20271"
     },
     {
       "family": "Holy Strike",
@@ -23,7 +23,7 @@
         10333
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/paladin.json#10333"
+      "verified": "1.60.1.70938/spellconst/paladin.json#10333"
     }
   ],
   "auras": [],
@@ -36,7 +36,7 @@
         1020
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/paladin.json#1020"
+      "verified": "1.60.1.70938/spellconst/paladin.json#1020"
     },
     {
       "family": "Divine Protection",
@@ -47,7 +47,7 @@
         5573
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/paladin.json#5573"
+      "verified": "1.60.1.70938/spellconst/paladin.json#5573"
     },
     {
       "family": "Lay on Hands",
@@ -57,7 +57,7 @@
         10310
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/paladin.json#10310"
+      "verified": "1.60.1.70938/spellconst/paladin.json#10310"
     }
   ],
   "efficiency": []

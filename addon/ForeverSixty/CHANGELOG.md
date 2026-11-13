@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.42
+
+Data for client build 1.60.1.70938: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher. Nothing else changed.
+
 ## 2.0.41
 
 - The Builds tab shows every spec's Level 60 build and Raid build, each with the guide's reason in one line. Follow any of them with one click; the one you follow is gold and shows your next point.

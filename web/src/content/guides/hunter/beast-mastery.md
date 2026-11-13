@@ -3,9 +3,9 @@ title: Beast Mastery Hunter in Forever
 classSlug: hunter
 spec: beast-mastery
 role: dps
-build: 'FS1:1.60.1.70790:hunter:night-elf:5420001505001251/0050550001/4:'
+build: 'FS1:1.60.1.70938:hunter:night-elf:5420001505001251/0050550001/4:'
 buildWhy: 'Efficiency keeps you shooting, Improved Tracking adds damage'
-raidBuild: 'FS1:1.60.1.70790:hunter:night-elf:5420001505001251/00523500014/0:'
+raidBuild: 'FS1:1.60.1.70938:hunter:night-elf:5420001505001251/00523500014/0:'
 raidBuildWhy: 'Drops Improved Tracking for Mortal Shots and Improved Stings'
 recommendedRaces: [night-elf, orc]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
@@ -32,10 +32,10 @@ sources:
     url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
   - label: 'Forever Sixty, spell values'
-    url: https://foreversixty.gg/data/1.60.1.70790/spellconst/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70938/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty, racial abilities'
-    url: https://foreversixty.gg/data/1.60.1.70790/races.json
+    url: https://foreversixty.gg/data/1.60.1.70938/races.json
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights

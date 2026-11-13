@@ -1,6 +1,6 @@
 {
   "spec": "mage-arcane",
-  "build": "1.60.1.70790",
+  "build": "1.60.1.70938",
   "core": [
     {
       "family": "Arcane Power",
@@ -8,7 +8,7 @@
         12042
       ],
       "talent": true,
-      "verified": "1.60.1.70790/spellconst/mage.json#12042"
+      "verified": "1.60.1.70938/spellconst/mage.json#12042"
     },
     {
       "family": "Presence of Mind",
@@ -16,7 +16,7 @@
         12043
       ],
       "talent": true,
-      "verified": "1.60.1.70790/spellconst/mage.json#12043"
+      "verified": "1.60.1.70938/spellconst/mage.json#12043"
     }
   ],
   "auras": [],

@@ -3,9 +3,9 @@ title: Balance Druid in Forever
 classSlug: druid
 spec: balance
 role: dps
-build: 'FS1:1.60.1.70790:druid:night-elf:5232220115101151/0/555301:'
+build: 'FS1:1.60.1.70938:druid:night-elf:5232220115101151/0/555301:'
 buildWhy: 'Heart of the Wild and Reflection keep your mana up for questing'
-raidBuild: 'FS1:1.60.1.70790:druid:night-elf:5232220115501351/0/505003:'
+raidBuild: 'FS1:1.60.1.70938:druid:night-elf:5232220115501351/0/505003:'
 raidBuildWhy: 'Trades Heart of the Wild and Reflection for the Starfire loop'
 recommendedRaces: [night-elf, tauren]
 statPriority:

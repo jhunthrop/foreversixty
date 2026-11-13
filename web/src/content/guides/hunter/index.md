@@ -21,7 +21,7 @@ sources:
     url: https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829
     kind: community
   - label: 'Forever Sixty, race and class pairs'
-    url: https://foreversixty.gg/data/1.60.1.70790/combos.json
+    url: https://foreversixty.gg/data/1.60.1.70938/combos.json
     kind: datamined
 ---
 

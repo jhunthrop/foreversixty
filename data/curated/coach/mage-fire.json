@@ -1,6 +1,6 @@
 {
   "spec": "mage-fire",
-  "build": "1.60.1.70790",
+  "build": "1.60.1.70938",
   "core": [
     {
       "family": "Combustion",
@@ -8,7 +8,7 @@
         11129
       ],
       "talent": true,
-      "verified": "1.60.1.70790/spellconst/mage.json#11129"
+      "verified": "1.60.1.70938/spellconst/mage.json#11129"
     },
     {
       "family": "Fire Blast",
@@ -29,7 +29,7 @@
         10199
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/mage.json#10199"
+      "verified": "1.60.1.70938/spellconst/mage.json#10199"
     }
   ],
   "downranks": [],

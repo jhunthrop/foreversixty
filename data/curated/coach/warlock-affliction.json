@@ -1,6 +1,6 @@
 {
   "spec": "warlock-affliction",
-  "build": "1.60.1.70790",
+  "build": "1.60.1.70938",
   "core": [],
   "auras": [
     {
@@ -17,7 +17,7 @@
       ],
       "name": "Corruption",
       "kind": "dot",
-      "verified": "1.60.1.70790/spellconst/warlock.json#11672"
+      "verified": "1.60.1.70938/spellconst/warlock.json#11672"
     },
     {
       "spell_id": 11713,
@@ -31,7 +31,7 @@
       ],
       "name": "Bane of Agony",
       "kind": "dot",
-      "verified": "1.60.1.70790/spellconst/warlock.json#11713"
+      "verified": "1.60.1.70938/spellconst/warlock.json#11713"
     },
     {
       "spell_id": 18881,
@@ -44,7 +44,7 @@
       "name": "Siphon Life",
       "kind": "dot",
       "talent": true,
-      "verified": "1.60.1.70790/spellconst/warlock.json#18881"
+      "verified": "1.60.1.70938/spellconst/warlock.json#18881"
     }
   ],
   "downranks": [],
@@ -57,7 +57,7 @@
         17926
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/warlock.json#17926"
+      "verified": "1.60.1.70938/spellconst/warlock.json#17926"
     }
   ],
   "efficiency": []

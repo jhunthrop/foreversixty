@@ -1,6 +1,6 @@
 {
   "spec": "hunter-beast-mastery",
-  "build": "1.60.1.70790",
+  "build": "1.60.1.70938",
   "core": [
     {
       "family": "Bestial Wrath",
@@ -8,7 +8,7 @@
         19574
       ],
       "talent": true,
-      "verified": "1.60.1.70790/spellconst/hunter.json#19574"
+      "verified": "1.60.1.70938/spellconst/hunter.json#19574"
     },
     {
       "family": "Rapid Fire",
@@ -16,7 +16,7 @@
         3045
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/hunter.json#3045"
+      "verified": "1.60.1.70938/spellconst/hunter.json#3045"
     }
   ],
   "auras": [
@@ -48,7 +48,7 @@
       ],
       "name": "Serpent Sting",
       "kind": "dot",
-      "verified": "1.60.1.70790/spellconst/hunter.json#13555"
+      "verified": "1.60.1.70938/spellconst/hunter.json#13555"
     },
     {
       "spell_id": 14322,
@@ -63,7 +63,7 @@
       ],
       "name": "Aspect of the Hawk",
       "kind": "self_buff",
-      "verified": "1.60.1.70790/spellconst/hunter.json#14322"
+      "verified": "1.60.1.70938/spellconst/hunter.json#14322"
     }
   ],
   "downranks": [],
@@ -74,7 +74,7 @@
         5384
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/hunter.json#5384"
+      "verified": "1.60.1.70938/spellconst/hunter.json#5384"
     },
     {
       "family": "Deterrence",
@@ -82,7 +82,7 @@
         19263
       ],
       "talent": true,
-      "verified": "1.60.1.70790/spellconst/hunter.json#19263"
+      "verified": "1.60.1.70938/spellconst/hunter.json#19263"
     }
   ],
   "efficiency": []

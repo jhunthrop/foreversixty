@@ -1,6 +1,6 @@
 {
   "spec": "shaman-elemental",
-  "build": "1.60.1.70790",
+  "build": "1.60.1.70938",
   "core": [],
   "auras": [
     {
@@ -15,7 +15,7 @@
       ],
       "name": "Flame Shock",
       "kind": "dot",
-      "verified": "1.60.1.70790/spellconst/shaman.json#29228"
+      "verified": "1.60.1.70938/spellconst/shaman.json#29228"
     }
   ],
   "downranks": [],

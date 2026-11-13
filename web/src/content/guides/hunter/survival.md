@@ -3,7 +3,7 @@ title: Survival Hunter in Forever
 classSlug: hunter
 spec: survival
 role: dps
-build: 'FS1:1.60.1.70790:hunter:night-elf:5/005005201/500230230050222151:'
+build: 'FS1:1.60.1.70938:hunter:night-elf:5/005005201/500230230050222151:'
 buildWhy: "Melee hunter: Lone Wolf, Predator's Edge and Lightning Reflexes"
 recommendedRaces: [night-elf, orc]
 alsoRecommendedRaces: [troll]
@@ -31,10 +31,10 @@ sources:
     url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
   - label: 'Forever Sixty, spell values'
-    url: https://foreversixty.gg/data/1.60.1.70790/spellconst/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70938/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty, racial abilities'
-    url: https://foreversixty.gg/data/1.60.1.70790/races.json
+    url: https://foreversixty.gg/data/1.60.1.70938/races.json
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights

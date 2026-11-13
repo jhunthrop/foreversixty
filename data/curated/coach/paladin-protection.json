@@ -1,6 +1,6 @@
 {
   "spec": "paladin-protection",
-  "build": "1.60.1.70790",
+  "build": "1.60.1.70938",
   "core": [
     {
       "family": "Holy Shield",
@@ -11,7 +11,7 @@
         1239570
       ],
       "talent": true,
-      "verified": "1.60.1.70790/spellconst/paladin.json#1239570"
+      "verified": "1.60.1.70938/spellconst/paladin.json#1239570"
     },
     {
       "family": "Holy Strike",
@@ -26,7 +26,7 @@
         10333
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/paladin.json#10333"
+      "verified": "1.60.1.70938/spellconst/paladin.json#10333"
     }
   ],
   "auras": [
@@ -41,7 +41,7 @@
       "name": "Holy Shield",
       "kind": "defensive",
       "talent": true,
-      "verified": "1.60.1.70790/spellconst/paladin.json#1239570"
+      "verified": "1.60.1.70938/spellconst/paladin.json#1239570"
     }
   ],
   "downranks": [],
@@ -52,7 +52,7 @@
         1311015
       ],
       "talent": true,
-      "verified": "1.60.1.70790/spellconst/paladin.json#1311015"
+      "verified": "1.60.1.70938/spellconst/paladin.json#1311015"
     },
     {
       "family": "Divine Shield",
@@ -61,7 +61,7 @@
         1020
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/paladin.json#1020"
+      "verified": "1.60.1.70938/spellconst/paladin.json#1020"
     },
     {
       "family": "Divine Protection",
@@ -72,7 +72,7 @@
         5573
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/paladin.json#5573"
+      "verified": "1.60.1.70938/spellconst/paladin.json#5573"
     },
     {
       "family": "Lay on Hands",
@@ -82,7 +82,7 @@
         10310
       ],
       "talent": false,
-      "verified": "1.60.1.70790/spellconst/paladin.json#10310"
+      "verified": "1.60.1.70938/spellconst/paladin.json#10310"
     }
   ],
   "efficiency": []

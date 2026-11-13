@@ -3,7 +3,7 @@ title: Fury Warrior in Forever
 classSlug: warrior
 spec: fury
 role: dps
-build: 'FS1:1.60.1.70790:warrior:night-elf:30323013002/050530025122100231/2:'
+build: 'FS1:1.60.1.70938:warrior:night-elf:30323013002/050530025122100231/2:'
 buildWhy: 'Dual wield on Flurry and Bloodthirst, Reckless Swings for rage'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
