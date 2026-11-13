@@ -82,7 +82,8 @@ run_api() {
 	packages=$(api_packages)
 	[ -n "$packages" ] || { echo "no API package reads the active build" >"$WORK/api.log"; return 1; }
 	# shellcheck disable=SC2086 # one argument per package
-	(cd "$ROOT/api" && "$GO" test -p 1 -count=1 -json $packages) >"$WORK/api.json" 2>"$WORK/api.log"
+	# FOREVER_ACTIVATION_GATE: timing budgets (sheet's TestBudget) skip beside the web build.
+	(cd "$ROOT/api" && FOREVER_ACTIVATION_GATE=1 "$GO" test -p 1 -count=1 -json $packages) >"$WORK/api.json" 2>"$WORK/api.log"
 }
 
 # web_failures: "web <file> > <test>" per failed assertion, "(suite)" for a file that

@@ -158,8 +158,14 @@ describe.skipIf(!hasBuild)('W3-C1 generator', () => {
   // fixture left on an old guide build tests the apps against a build no guide recommends. The
   // build id is dropped: a client move that keeps the trees leaves the vectors valid.
   it("carries each guide's current build codes in its fixture", () => {
-    const talentsOf = (code: string | undefined): string | null =>
-      code === undefined ? null : code.replace(/^FS1:[^:]+:/, '');
+    // Trailing zeros in a tree spend nothing: the move's re-encoder drops them, a hand-written
+    // code may keep them (the 70938 move re-encoded Fire's 2301052001000 to 2301052001).
+    const talentsOf = (code: string | undefined): string | null => {
+      if (code === undefined) return null;
+      const [cls, race, trees, ...rest] = code.replace(/^FS1:[^:]+:/, '').split(':');
+      const trimmed = (trees ?? '').split('/').map((tree) => tree.replace(/0+$/, ''));
+      return [cls, race, trimmed.join('/'), ...rest].join(':');
+    };
     const named = readdirSync(FIXTURES)
       .map((file) => /^cdn\.guides\.(?!index\.)(.+)\.json$/.exec(file)?.[1])
       .filter((spec): spec is string => spec !== undefined);
