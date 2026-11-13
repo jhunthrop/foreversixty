@@ -10,7 +10,7 @@ raidBuildWhy: 'Trades Wand Specialization for full Improved Channeling'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Spell power, Fire power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Fire Mage in Forever: the pre-pull Pyroblast, Fireball, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'
-updated: 2026-11-12
+updated: 2026-11-13
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -78,7 +78,7 @@ The level 60 build is the raid build with one change for the open world: **Wand 
 
 **Ignite and threat.** Ignite's damage is your threat too. Fire mages pull more than anyone else in the first twenty seconds, mostly off a Combustion window that crits three times in a row. You have no Ice Block and no Invisibility, so the only fix is not to pull: watch your threat, hold Combustion on a fresh tank, and stop casting for a global if you are close.
 
-**Mana in a 3 minute fight.** Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down, a Major Mana Potion the next time you are well down, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Gems and runes share one 2 minute cooldown, and the Robe of the Archmage has its own 5 minute one: use it whenever you are 625 mana down. After all of them comes Evocation, once a fight, with more than 30 seconds left.
+**Mana in a 3 minute fight.** Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down, a Major Mana Potion the next time you are well down, then a Demonic Rune two minutes after the Ruby, or the Mana Citrine if you have no rune. Gems and runes share one 2 minute cooldown, so a 3 minute fight has room for two of them and a smaller gem spent first wastes one. The Robe of the Archmage has its own 5 minute cooldown: use it whenever you are 625 mana down. After all of them comes Evocation, once a fight, with more than 30 seconds left.
 
 **Short on mana.** Fireball stays your filler: Master of Elements hands back 30% of its cost on every crit, and the Arcane Missiles its Missile Barrage procs buy are free.
 

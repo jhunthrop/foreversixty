@@ -4,7 +4,7 @@
 # at the fix, then the named packages whole, with any suite golden rewritten and printed back as a patch.
 # Run: ssh -o BatchMode=yes jh@192.168.1.182 "wsl -d forever-ci -- bash -l -s -- <pin> <fix> <regex> <pkgs>" < fork_tests.sh
 set -uo pipefail
-pin=$1; fix=$2; tests=$3; shift 3; pk="$*"
+pin=$1; fix=$2; tests=${3//,/|}; shift 3; pk="$*"  # commas in the regex stand for | (cmd.exe eats a bare pipe)
 export PATH=/usr/local/go/bin:/home/ci/go/bin:$HOME/go/bin:$PATH
 repo=/home/ci/wowsims-forever; wt=/home/ci/wf-arcshadow
 git -C $repo fetch -q origin "+refs/heads/lane/sim-arcshadow:refs/remotes/origin/lane/sim-arcshadow" master

@@ -10,7 +10,7 @@ raidBuildWhy: 'Trades Ice Shards and Frostbolt talents for Ignite and Pyroblast'
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Intellect, Arcane power, Critical strike, Spell haste, Spell penetration]
 description: 'Arcane Mage in Forever: the Arcane Blast loop, the opener, Arcane Power windows, mana over a boss fight, talents, stats and leveling.'
-updated: 2026-11-11
+updated: 2026-11-13
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -77,7 +77,7 @@ Neither build takes Fire's Impact: its stun does nothing to a boss.
 
 **Fillers.** In a raid, Fireball fills until the 18 seconds run out. On the way to 60 there is no Pyroblast, and no Arcane Wrath until 44. Past 3 stacks, keep blasting only while your mana bar is fuller than the mob's health bar and you are above 20% mana, and on a pull that dies inside a minute that is most of it. On a long dungeon boss stop at 3 and let Frostbolt fill, because the stacked Blasts run you dry before the end.
 
-**Mana in a 3 minute fight.** In order: a Mana Ruby when you are 1,200 mana down, a Major Mana Potion the next time you are well down, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Gems and runes share one 2 minute cooldown. The Robe of the Archmage is on its own 5 minute cooldown: use it whenever you are 625 mana down. After all of them comes Evocation, once a fight, with more than 30 seconds left.
+**Mana in a 3 minute fight.** In order: a Mana Ruby when you are 1,200 mana down, a Major Mana Potion the next time you are well down, then a Demonic Rune two minutes after the Ruby, or the Mana Citrine if you have no rune. Gems and runes share one 2 minute cooldown, so a 3 minute fight has room for two of them: the Ruby and the rune give the most, and a smaller gem spent first wastes one of the two. The Robe of the Archmage is on its own 5 minute cooldown: use it whenever you are 625 mana down. After all of them comes Evocation, once a fight, with more than 30 seconds left.
 
 **AoE.** Arcane Explosion is instant and hits everything within 10 yards, so you stand in the pack with the tank and spam it. At 390 mana a cast it drains a full bar in under a minute: let the tank get two or three seconds of threat, Frost Nova when the pack turns on you and Blink out. On spread packs or anything that hits hard, stand back and Blizzard instead.
 
