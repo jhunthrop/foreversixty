@@ -114,8 +114,9 @@ Notes for the reader:
   column}` triple per point, 1-based, exactly what `Codec` encodes. The saved copy of a default
   carries `default = true`; the first time the player saves, imports or is pushed a build for
   that character the flag is dropped. Both builds end on the spec guide's own codes (`build:` and
-  `raidBuild:`, the level 60 build when the guide has one build); `why` is the guide's own
-  sentence for that build from its Talents and builds prose (`sim/leveling.GuideBuildWhy`), and
+  `raidBuild:`, the level 60 build when the guide has one build); `why` is the guide's own line
+  for that build, its frontmatter `buildWhy:` or `raidBuildWhy:` of 64 characters or fewer
+  (`sim/leveling.GuideBuildWhy`), and
   `data/tests/test_addondata.py` fails when either disagrees with the guide.
 - `specIcons[spec]` is an icon file name under `Interface\Icons`, from
   `pipeline.specs.spec_icons`, the rule the site's `specs.ts` is generated from.

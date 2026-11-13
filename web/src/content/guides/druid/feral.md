@@ -4,7 +4,9 @@ classSlug: druid
 spec: feral
 role: dps
 build: 'FS1:1.60.1.70790:druid:night-elf:050022/50212032123012123001/05501:'
+buildWhy: 'Brutal Impact for Pounce, Feral Charge to leap behind for Shred'
 raidBuild: 'FS1:1.60.1.70790:druid:night-elf:050022/50230032023012125001/055:'
+raidBuildWhy: 'Trades Brutal Impact and Feral Charge for full Rend and Tear'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Agility, Hit, Critical strike, Strength, Attack power, Feral attack power, Melee haste]
 description: 'Cat Form DPS in Forever: the raid build, the Ravage opener, Rip and Shred from behind, Shifting Power for energy, and what to drink in form.'

@@ -957,8 +957,8 @@ class AddonDefaultBuild(BaseModel):
     saved (docs/contracts/addon-v2.md, contract 1): the guide's leveling or
     raid build as sim/cmd/addon-builds orders it -- one (tab, tier, column)
     triple per point in learning order, 1-based, the codec's own triple --
-    and the guide's own one-sentence why for it, read from its Talents and
-    builds prose (sim/leveling.GuideBuildWhy), for the Builds pane."""
+    and the guide's own short why for it, its frontmatter `buildWhy:` or
+    `raidBuildWhy:` (sim/leveling.GuideBuildWhy), for the Builds pane."""
 
     name: str
     why: str

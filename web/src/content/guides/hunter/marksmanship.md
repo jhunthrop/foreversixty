@@ -4,7 +4,9 @@ classSlug: hunter
 spec: marksmanship
 role: dps
 build: 'FS1:1.60.1.70790:hunter:night-elf:53200005/005055200152105/5:'
+buildWhy: 'Rapid Recuperation refills mana and Rapid Killing chains kills'
 raidBuild: 'FS1:1.60.1.70790:hunter:night-elf:5/0052550011503051/50005003:'
+raidBuildWhy: 'Drops the pet for Lone Wolf, Sniper Shot and full Barrage'
 recommendedRaces: [night-elf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Marksmanship Hunter in Forever: talents for leveling and raids, the shot priority, auto shot discipline, stats, consumables and race picks.'

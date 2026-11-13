@@ -4,6 +4,7 @@ classSlug: hunter
 spec: survival
 role: dps
 build: 'FS1:1.60.1.70790:hunter:night-elf:5/005005201/500230230050222151:'
+buildWhy: 'Melee hunter: Lone Wolf, Predator''s Edge and Lightning Reflexes'
 recommendedRaces: [night-elf, orc]
 alsoRecommendedRaces: [troll]
 statPriority: [Hit, Critical strike, Agility, Intellect, Strength, Attack power, Attack speed]

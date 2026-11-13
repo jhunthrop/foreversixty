@@ -4,7 +4,9 @@ classSlug: shaman
 spec: enhancement
 role: dps
 build: 'FS1:1.60.1.70790:shaman:dwarf:503/055030310051202251/053:'
+buildWhy: 'Improved Stormstrike and Mindfulness fund shocks on long pulls'
 raidBuild: 'FS1:1.60.1.70790:shaman:dwarf:0533001/053030310051202051/053:'
+raidBuildWhy: 'Trades Convection and Improved Stormstrike for Concussion'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and your imbue, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'

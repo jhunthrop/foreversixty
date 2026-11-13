@@ -4,7 +4,9 @@ classSlug: warlock
 spec: demonology
 role: dps
 build: 'FS1:1.60.1.70790:warlock:human:25522/203511310122000135/005:'
+buildWhy: 'Soul Link and Unholy Power with a Voidwalker or Succubus out'
 raidBuild: 'FS1:1.60.1.70790:warlock:human:05/2035103021220001351/0550005:'
+raidBuildWhy: 'Trades Improved Corruption for Demonic Pact and Ruin'
 recommendedRaces: [human, orc]
 statPriority:
   [Spell power, Shadow power, Hit, Critical strike, Intellect, Fire power, Spell haste, Spell penetration]

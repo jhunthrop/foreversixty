@@ -345,8 +345,8 @@ def test_every_addon_build_ends_on_the_sites_guide_build():
             got, want = _order_trees(build.order, talent_trees), _code_trees(codes[kind])
             if got != want:
                 disagree.append(f"{spec} {kind}: addon {'/'.join(got)} != guide {'/'.join(want)}")
-            if not build.why.strip():
-                disagree.append(f"{spec} {kind}: no why")
+            if not build.why.strip() or len(build.why) > 64:
+                disagree.append(f"{spec} {kind}: why missing or over 64 characters")
         if not data.spec_icons.get(spec):
             disagree.append(f"{spec}: no icon")
     assert not disagree, (

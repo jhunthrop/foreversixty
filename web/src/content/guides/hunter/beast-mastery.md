@@ -4,7 +4,9 @@ classSlug: hunter
 spec: beast-mastery
 role: dps
 build: 'FS1:1.60.1.70790:hunter:night-elf:5420001505001251/0050550001/4:'
+buildWhy: 'Efficiency and Improved Tracking keep you killing between drinks'
 raidBuild: 'FS1:1.60.1.70790:hunter:night-elf:5420001505001251/00523500014/0:'
+raidBuildWhy: 'Trades Efficiency for Improved Stings and Mortal Shots'
 recommendedRaces: [night-elf, orc]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Beast Mastery Hunter in Forever: talents for leveling and raids, the shot priority, pet handling, stats, consumables and race picks.'

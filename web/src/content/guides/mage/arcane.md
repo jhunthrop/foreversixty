@@ -4,7 +4,9 @@ classSlug: mage
 spec: arcane
 role: dps
 build: 'FS1:1.60.1.70790:mage:gnome:141005213100311531/3/05350003:'
+buildWhy: 'Arcane Blast stacks, with an Ice Shards Frostbolt as your filler'
 raidBuild: 'FS1:1.60.1.70790:mage:gnome:131205203100311531/525000012001/003:'
+raidBuildWhy: 'Trades Ice Shards and Frostbolt talents for Ignite and Pyroblast'
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Intellect, Arcane power, Critical strike, Spell haste, Spell penetration]
 description: 'Arcane Mage in Forever: the Arcane Blast loop, the opener, Arcane Power windows, mana over a boss fight, talents, stats and leveling.'

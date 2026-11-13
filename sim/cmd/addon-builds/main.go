@@ -33,7 +33,7 @@ func main() {
 }
 
 // build is one default build as addon-builds.json carries it: why is the
-// guide's own sentence for it (leveling.GuideBuildWhy), order is one
+// guide's own line for it (leveling.GuideBuildWhy), order is one
 // [tab, tier, column] triple per point, 1-based.
 type build struct {
 	Name  string   `json:"name"`
@@ -115,9 +115,6 @@ func specBuild(repoRoot, active string, spec specs.Spec, read guideReader, kind 
 	why, err := leveling.GuideBuildWhy(repoRoot, spec.ClassSlug, spec.SpecSlug, kind)
 	if err != nil {
 		return build{}, err
-	}
-	if why == "" {
-		return build{}, fmt.Errorf("the guide's Talents and builds section has no prose for the %s build's why", kind)
 	}
 	return build{Name: spec.Name + " " + kind, Why: why, Order: order}, nil
 }

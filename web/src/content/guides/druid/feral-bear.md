@@ -4,6 +4,7 @@ classSlug: druid
 spec: feral-bear
 role: tank
 build: 'FS1:1.60.1.70790:druid:night-elf:0/5123033202310212551/055:'
+buildWhy: 'Bear tank on Thick Hide armor, Natural Reaction and Lacerate'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Defense, Stamina, Dodge, Agility, Armor, Hit, Expertise, Critical strike, Strength, Attack power]

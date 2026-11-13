@@ -4,6 +4,7 @@ classSlug: paladin
 spec: protection
 role: tank
 build: 'FS1:1.60.1.70790:paladin:dwarf:05005/15302102513501031/5003:'
+buildWhy: 'Block tank on Holy Shield, Iron Creed and Shieldsworn'
 recommendedRaces: [dwarf, undead]
 statPriority:
   [

@@ -4,7 +4,9 @@ classSlug: rogue
 spec: assassination
 role: dps
 build: 'FS1:1.60.1.70790:rogue:night-elf:32530200251551031/302303/011:'
+buildWhy: 'Improved Poisons and Improved Gouge carry trash and leveling'
 raidBuild: 'FS1:1.60.1.70790:rogue:night-elf:00530311251051031/30230302020122/:'
+raidBuildWhy: 'Trades Improved Poisons for Weapon Expertise and Aggression'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Assassination Rogue for Forever: Mutilate on two daggers, Seal Fate, Cold Blood Eviscerates, Shank and Venom behind your poisons, Relentless Strikes for energy.'

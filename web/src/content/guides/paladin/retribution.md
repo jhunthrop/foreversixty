@@ -4,7 +4,9 @@ classSlug: paladin
 spec: retribution
 role: dps
 build: 'FS1:1.60.1.70790:paladin:human:050250002/502/0523330100130135:'
+buildWhy: 'Champion of the Light by 40, and Reverence for questing mana'
 raidBuild: 'FS1:1.60.1.70790:paladin:human:050050002/503/05233301001301351:'
+raidBuildWhy: 'Trades Reverence for Precision and the Unsealed Wrath twist'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Intellect, Strength, Critical strike, Agility, Spell power, Attack power, Melee haste]
 description: 'Leveling and raiding with Seals, Judgement and an instant Hammer of Wrath, including the raid Unsealed Wrath swap.'

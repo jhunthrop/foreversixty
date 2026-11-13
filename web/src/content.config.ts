@@ -64,6 +64,8 @@ export const guideSchema = factSchema.extend({
    *  the raid search found nothing better than `build`, so the leveling build is also the
    *  raid build. Same legality rules as `build`; `builds.test.ts` checks it the same way. */
   raidBuild: z.string().optional(),
+  buildWhy: z.string().max(64).optional(),
+  raidBuildWhy: z.string().max(64).optional(),
   /** Race slugs (races.json's own `slug`) this guide calls a strong pick, in the order the
    *  guide's own Races prose names them. RacePillRow.astro marks these among the class's
    *  full legal race list; an empty array (the default, and every class landing page's
