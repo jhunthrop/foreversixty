@@ -1,0 +1,8 @@
+base -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000
+a-party-shield-90 -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/a-party-shield-90.rotation.json
+a-party-shield-any -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/a-party-shield-any.rotation.json
+a-party-shield-nopace -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/a-party-shield-nopace.rotation.json
+b-no-flash -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/b-no-flash.rotation.json
+c-tank-flash-only -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/c-tank-flash-only.rotation.json
+d-shield-any-no-party-flash -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/d-shield-any-no-party-flash.rotation.json
+e-tank-shield-any -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 5000 -rotation ../design/reviews/2026-11-13-sim-accuracy/discipline/e-tank-shield-any.rotation.json

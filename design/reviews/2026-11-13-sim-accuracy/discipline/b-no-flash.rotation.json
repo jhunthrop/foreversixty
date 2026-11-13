@@ -1,0 +1,1943 @@
+{
+ "spec": "priest-discipline",
+ "state": "written",
+ "notes": "Discipline priest healer rotation, written against the fork's fake raid: the healer is raid player 0, the four fake party members are players 1 to 4 and the tank is player 5. Reference build: 33 points in Discipline and 18 in Holy (engine talent string 005203031305101531-0350500302: Twin Disciplines 5, Silent Resolve 2, Improved Power Word: Shield 3, Mental Agility 3, Inner Focus, Meditation 3, Mental Strength 5, Soul Warding, Penance, Renewed Hope 5, Divine Aegis 3, Power Infusion; Improved Renew 3, Holy Specialization 5, Divine Fury 5, Inspiration 3, Improved Healing 2). Penance is cast on its cooldown at whoever is hurt, the tank is shielded when he is hurt and Weakened Soul is off, and the party filler is Lesser Heal rank 3 (2053), the tank's Greater Heal. Lesser Heal rank 3 replaced Heal rank 1 in round 11 (design/reviews/2026-11-03-sim-audit-round11/healers.md): once a heal learned below level 20 kept its whole coefficient, rank 3's 0.714 at 75 mana out-healed Heal rank 1's 0.857 at 155 for a list that runs dry, at raid and bare 60 alike. Power Infusion is only used when the player names a target for it; the major-cooldown pass casts it. Renew is left out on purpose: against the fork's test profile it returned less health per mana than Penance and Heal. Mana: the list opens with the autocast line, which is how the Major Mana Potion, the Demonic Rune and Inner Focus are used (each fires whenever it is ready and the bar has room for it; Inner Focus goes on whichever priest spell is cast next). Dark Sacrifice follows the autocast line behind a mana gate (below 70% mana with the healer's own health above 70%). Mana pacing: the filler, Prayer of Healing and Power Word: Shield fire at their normal thresholds only while the mana bar is at least 90% of the share of the fight left (currentManaPercent against remainingTimePercent); behind that pace the filler waits for a tank under 50% and a member under 35% and the shield waits. Penance and the emergency Flash Heals are never paced. Ranks follow one rule, stated in design/reviews/2026-10-08-healer-mana-audit.md: starting from the top ranks, a lower rank (never one learned below level 20) is taken for a spell when it raises the ranker's guarded score by more than two percent, the biggest gain first, the tank's casts and the party members' casts counted apart, and compared on the raid gear the ranker published for the list being tried. The engine states the client's own numbers for every rank with no downrank penalty, so a lower rank is a statement about this profile, not a measurement of the game. The site runs this list as written at band 60; below 60 each ranked spell casts the highest rank learned that is not above the rank named here, unless data/curated/rank-choices.json names another rank for the band (owner ruling 3, sim-accuracy round 9). Here that is Power Word: Shield at rank 4; every other spell keeps the top rank a trainer teaches (Prayer of Healing rank 5, Greater Heal rank 5 and Renew rank 10 are Ahn'Qiraj book ranks, so their tops in Phase 1 are ranks 4, 4 and 9). The comparison is repeated on the gear each new list makes the ranker choose until no spell moves. The review lists what each rank returned. Round-3 audit (design/reviews/2026-11-01-sim-audit-round3/casters.md): Shadowfiend (401977) is not cast; a Forever priest cannot learn it (no learn level on its skill-line row, and no beta priest ever cast it). Lightwell is placed before the pull (a prepull cast, 365 mana at rank 3): the fake raid members the damage model hurts click it for a renew each, five charges, and its client rows are 320 health every 2 seconds for 10 seconds that being attacked cancels, so over the profile it returned about 1.4 percent more effective healing and 8 more seconds of mana than the same list without it (spec-breakdown -heal, 2026-10-08, design/reviews/2026-10-08-remaining-trainables.md). Client 1.60.1.70707 review (2026-10-31): Renew on the tank (rank 3, the Holy list's line) now follows Power Word: Shield; the page and the build's Improved Renew 3/3 had promised it while the list never cast it. About +2% healing and +10% guarded score in heal-builds, and it makes Improved Renew worth about +1% over the same points elsewhere. Round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md): the heal profile's raid-wide pulses now land on the healer as well, three of the five members of the group a pulse. Round 6 also changed two lines: the tank's filler is Greater Heal instead of Heal (the party members kept Heal, Lesser Heal rank 3 since round 11), and the party members' emergency Flash Heals are paced (mana at least 70% of the share of the fight left). Together about +4% effective healing; the list had never cast Greater Heal. Binding Heal stood in front of every emergency Flash Heal from the 70707 hotfix push until client 1.60.1.70755, whose hotfix push removed its trainer rows: no priest can learn it, so the emergency heal is Flash Heal again.",
+ "sources": [
+  {
+   "label": "This build's own client spell data: data/builds/1.60.1.70009/spellconst/priest.json, trainables/priest.json and talents/priest.json (Holy tree index 1, Discipline tree index 0)",
+   "url": "https://foreversixty.gg/data/1.60.1.70009/spellconst/priest.json",
+   "kind": "datamined"
+  },
+  {
+   "label": "Forever Sixty default rotation, unvalidated until the nightly job runs",
+   "url": "https://foreversixty.gg/sim/specs",
+   "kind": "site"
+  }
+ ],
+ "rotation": {
+  "type": "TypeAPL",
+  "prepullActions": [
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 27871,
+       "rank": 3
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-3s"
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 10927,
+       "rank": 7
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-1.5s"
+     }
+    }
+   }
+  ],
+  "priorityList": [
+   {
+    "action": {
+     "autocastOtherCooldowns": {}
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1277328,
+       "rank": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "0.7"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGt",
+          "lhs": {
+           "currentHealthPercent": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "0.7"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1316995,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 5
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.95"
+        }
+       }
+      }
+     }
+    },
+    "notes": "Penance on cooldown, on whoever is hurt: three heals one second apart for one cast every 12 seconds, cheap for all it heals."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1316995,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 1
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 1
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.7"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1316995,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 2
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 2
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.7"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1316995,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 3
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 3
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.7"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1316995,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 4
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 4
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.7"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 10901,
+       "rank": 10
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "not": {
+          "val": {
+           "auraIsActive": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            },
+            "auraId": {
+             "spellId": 6788,
+             "rank": 0
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.9"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpMul",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "0.9"
+             }
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "On the tank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage. Cast the top rank at 60; while leveling, some races keep the older rank for a few levels after a new one arrives. Once you have Renewed Hope, the Weakened Soul it leaves makes your next heals on him crit more, and with Divine Aegis every one of those crits leaves a shield."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 10927,
+       "rank": 7
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "not": {
+       "val": {
+        "dotIsActive": {
+         "targetUnit": {
+          "type": "Player",
+          "index": 5
+         },
+         "spellId": {
+          "spellId": 10927,
+          "rank": 7
+         }
+        }
+       }
+      }
+     }
+    },
+    "notes": "Keep Renew on the tank all fight; at 60 that means rank 7 or higher."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 10961,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 1
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpMul",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "0.6"
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "or": {
+          "vals": [
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 1
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 2
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 3
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 1
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 2
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 4
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 1
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 3
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 4
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           },
+           {
+            "and": {
+             "vals": [
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 2
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 3
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              },
+              {
+               "cmp": {
+                "op": "OpLt",
+                "lhs": {
+                 "currentHealthPercent": {
+                  "sourceUnit": {
+                   "type": "Player",
+                   "index": 4
+                  }
+                 }
+                },
+                "rhs": {
+                 "const": {
+                  "val": "0.85"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Prayer of Healing once three of your four party members are under 85%: it heals the target and the target's whole party. Rank 4 is the top rank a trainer teaches."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 10965,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpMul",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "0.9"
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.8"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Greater Heal at the top rank as the tank's filler at 60: he takes the big hits, so the big heal goes on him."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 6064,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "and": {
+          "vals": [
+           {
+            "cmp": {
+             "op": "OpGe",
+             "lhs": {
+              "currentManaPercent": {}
+             },
+             "rhs": {
+              "math": {
+               "op": "OpMul",
+               "lhs": {
+                "remainingTimePercent": {}
+               },
+               "rhs": {
+                "const": {
+                 "val": "0.9"
+                }
+               }
+              }
+             }
+            }
+           },
+           {
+            "cmp": {
+             "op": "OpLt",
+             "lhs": {
+              "currentHealthPercent": {
+               "sourceUnit": {
+                "type": "Player",
+                "index": 5
+               }
+              }
+             },
+             "rhs": {
+              "const": {
+               "val": "0.8"
+              }
+             }
+            }
+           }
+          ]
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "spellIsKnown": {
+            "spellId": {
+             "spellId": 2060,
+             "rank": 1
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Heal rank 1 on the tank through 35 (36 as an Undead) and rank 3 from 36, until you learn Greater Heal at 40: rank 1 keeps your whole healing bonus until 33 and heals the most for its mana, and rank 4 costs more mana than its extra healing is worth."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "and": {
+          "vals": [
+           {
+            "cmp": {
+             "op": "OpGe",
+             "lhs": {
+              "currentManaPercent": {}
+             },
+             "rhs": {
+              "math": {
+               "op": "OpMul",
+               "lhs": {
+                "remainingTimePercent": {}
+               },
+               "rhs": {
+                "const": {
+                 "val": "0.9"
+                }
+               }
+              }
+             }
+            }
+           },
+           {
+            "cmp": {
+             "op": "OpLt",
+             "lhs": {
+              "currentHealthPercent": {
+               "sourceUnit": {
+                "type": "Player",
+                "index": 5
+               }
+              }
+             },
+             "rhs": {
+              "const": {
+               "val": "0.8"
+              }
+             }
+            }
+           }
+          ]
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "16"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Lesser Heal rank 3 on the tank until you learn Heal at 16: your shield and Renew alone will not keep him up."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2060,
+       "rank": 1
+      },
+      "target": {
+       "type": "Player",
+       "index": 1
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpMul",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "0.9"
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 1
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.65"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 1
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "and": {
+          "vals": [
+           {
+            "cmp": {
+             "op": "OpGe",
+             "lhs": {
+              "currentManaPercent": {}
+             },
+             "rhs": {
+              "math": {
+               "op": "OpMul",
+               "lhs": {
+                "remainingTimePercent": {}
+               },
+               "rhs": {
+                "const": {
+                 "val": "0.9"
+                }
+               }
+              }
+             }
+            }
+           },
+           {
+            "cmp": {
+             "op": "OpLt",
+             "lhs": {
+              "currentHealthPercent": {
+               "sourceUnit": {
+                "type": "Player",
+                "index": 1
+               }
+              }
+             },
+             "rhs": {
+              "const": {
+               "val": "0.65"
+              }
+             }
+            }
+           }
+          ]
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "40"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Lesser Heal is the party's small top-up for little mana before 40. From 40 on, leave it off your bars for good: by your late forties it has lost your healing bonus, and every cast costs regeneration you need."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2060,
+       "rank": 1
+      },
+      "target": {
+       "type": "Player",
+       "index": 2
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpMul",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "0.9"
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 2
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.65"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 2
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "and": {
+          "vals": [
+           {
+            "cmp": {
+             "op": "OpGe",
+             "lhs": {
+              "currentManaPercent": {}
+             },
+             "rhs": {
+              "math": {
+               "op": "OpMul",
+               "lhs": {
+                "remainingTimePercent": {}
+               },
+               "rhs": {
+                "const": {
+                 "val": "0.9"
+                }
+               }
+              }
+             }
+            }
+           },
+           {
+            "cmp": {
+             "op": "OpLt",
+             "lhs": {
+              "currentHealthPercent": {
+               "sourceUnit": {
+                "type": "Player",
+                "index": 2
+               }
+              }
+             },
+             "rhs": {
+              "const": {
+               "val": "0.65"
+              }
+             }
+            }
+           }
+          ]
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "40"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2060,
+       "rank": 1
+      },
+      "target": {
+       "type": "Player",
+       "index": 3
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpMul",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "0.9"
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 3
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.65"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 3
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "and": {
+          "vals": [
+           {
+            "cmp": {
+             "op": "OpGe",
+             "lhs": {
+              "currentManaPercent": {}
+             },
+             "rhs": {
+              "math": {
+               "op": "OpMul",
+               "lhs": {
+                "remainingTimePercent": {}
+               },
+               "rhs": {
+                "const": {
+                 "val": "0.9"
+                }
+               }
+              }
+             }
+            }
+           },
+           {
+            "cmp": {
+             "op": "OpLt",
+             "lhs": {
+              "currentHealthPercent": {
+               "sourceUnit": {
+                "type": "Player",
+                "index": 3
+               }
+              }
+             },
+             "rhs": {
+              "const": {
+               "val": "0.65"
+              }
+             }
+            }
+           }
+          ]
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "40"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2060,
+       "rank": 1
+      },
+      "target": {
+       "type": "Player",
+       "index": 4
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "currentManaPercent": {}
+          },
+          "rhs": {
+           "math": {
+            "op": "OpMul",
+            "lhs": {
+             "remainingTimePercent": {}
+            },
+            "rhs": {
+             "const": {
+              "val": "0.9"
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 4
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.65"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 4
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "and": {
+          "vals": [
+           {
+            "cmp": {
+             "op": "OpGe",
+             "lhs": {
+              "currentManaPercent": {}
+             },
+             "rhs": {
+              "math": {
+               "op": "OpMul",
+               "lhs": {
+                "remainingTimePercent": {}
+               },
+               "rhs": {
+                "const": {
+                 "val": "0.9"
+                }
+               }
+              }
+             }
+            }
+           },
+           {
+            "cmp": {
+             "op": "OpLt",
+             "lhs": {
+              "currentHealthPercent": {
+               "sourceUnit": {
+                "type": "Player",
+                "index": 4
+               }
+              }
+             },
+             "rhs": {
+              "const": {
+               "val": "0.65"
+              }
+             }
+            }
+           }
+          ]
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "40"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 10965,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 5
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.5"
+        }
+       }
+      }
+     }
+    },
+    "notes": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 6064,
+       "rank": 4
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.5"
+           }
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "spellIsKnown": {
+            "spellId": {
+             "spellId": 2060,
+             "rank": 1
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 5
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 5
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.5"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "16"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2060,
+       "rank": 1
+      },
+      "target": {
+       "type": "Player",
+       "index": 1
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 1
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.35"
+        }
+       }
+      }
+     }
+    },
+    "notes": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too."
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 1
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 1
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.35"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "40"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2060,
+       "rank": 1
+      },
+      "target": {
+       "type": "Player",
+       "index": 2
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 2
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.35"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 2
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 2
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.35"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "40"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2060,
+       "rank": 1
+      },
+      "target": {
+       "type": "Player",
+       "index": 3
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 3
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.35"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 3
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 3
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.35"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "40"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2060,
+       "rank": 1
+      },
+      "target": {
+       "type": "Player",
+       "index": 4
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentHealthPercent": {
+         "sourceUnit": {
+          "type": "Player",
+          "index": 4
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "0.35"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2053,
+       "rank": 3
+      },
+      "target": {
+       "type": "Player",
+       "index": 4
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentHealthPercent": {
+            "sourceUnit": {
+             "type": "Player",
+             "index": 4
+            }
+           }
+          },
+          "rhs": {
+           "const": {
+            "val": "0.35"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "40"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   }
+  ]
+ },
+ "panel_when": {
+  "1": "below 70% mana and above 70% health, Undead only",
+  "2": "on the tank below 95%",
+  "3": "on a party member below 70%",
+  "4": "on a party member below 70%",
+  "5": "on a party member below 70%",
+  "6": "on a party member below 70%",
+  "7": "on the tank below 90% with no Weakened Soul",
+  "8": "when Renew is not on the tank",
+  "9": "on the tank below 35%",
+  "10": "on a party member below 30% while mana holds",
+  "11": "on a party member below 30% while mana holds",
+  "12": "on a party member below 30% while mana holds",
+  "13": "on a party member below 30% while mana holds",
+  "14": "when 3 party members are below 85%",
+  "15": "on the tank below 80% while mana % is over boss health %",
+  "16": [
+   {
+    "from_level": 1,
+    "text": "on the tank below 80%"
+   },
+   {
+    "from_level": 40,
+    "text": "on the tank below 80% until Greater Heal at level 40"
+   }
+  ],
+  "17": "on the tank below 80% while mana % is over boss health %",
+  "18": "on a party member below 65% while mana holds",
+  "19": "on a party member below 65% while mana holds",
+  "20": "on a party member below 65% while mana holds",
+  "21": "on a party member below 65% while mana holds",
+  "22": "on a party member below 65% while mana holds",
+  "23": "on a party member below 65% while mana holds",
+  "24": "on a party member below 65% while mana holds",
+  "25": "on a party member below 65% while mana holds",
+  "26": "on the tank below 50% when mana % is under boss health %",
+  "27": "on the tank below 50% when mana % is under boss health %",
+  "28": "on the tank below 50% when mana % is under boss health %",
+  "29": "on a party member below 35% when mana is low",
+  "30": "on a party member below 35% when mana is low",
+  "31": "on a party member below 35% when mana is low",
+  "32": "on a party member below 35% when mana is low",
+  "33": "on a party member below 35% when mana is low",
+  "34": "on a party member below 35% when mana is low",
+  "35": "on a party member below 35% when mana is low",
+  "36": "on a party member below 35% when mana is low"
+ }
+}
