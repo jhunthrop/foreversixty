@@ -27,8 +27,9 @@ const foreverGame = "forever"
 // US 6929 and EU 6942 are the profile rulesets of characters on those realms,
 // re-read live from Blizzard's character profile 2026-11-13.
 // A realm id not listed here resolves nothing (KnownRealm reports !ok) and
-// the import falls through to the profile; the needs_ruleset log line names
-// the id so it can be added once a profile of that realm has answered.
+// the import falls through to the profile, then to its players' answers
+// (bnetimport/unknown_realm.go); the needs_ruleset log line names the id so
+// it can be added once a profile of that realm has answered.
 var foreverRealms = map[string]map[int64]Realm{
 	"us": {
 		6794: {ID: 6794, Slug: "camwow-us1-realm-1-pve", Name: "CAMWOW US1 Realm 1 PvE", Type: "NORMAL"},

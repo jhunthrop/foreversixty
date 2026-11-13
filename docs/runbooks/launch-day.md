@@ -93,15 +93,20 @@ Signals to watch for:
   and 100 a second per client). Sign-in still works and characters are listed. Their gear and
   talents fill in on the nightly `bnet-refresh` (03:30 UTC) or the player's next sign-in.
 - **`bnetimport op=needs_ruleset`**: no source named a Battle.net character's ruleset (realm
-  type, profile `ruleset`, or the account's own addon row), so the character was skipped, never
-  keyed as normal. The line lists `fields_checked`. A trickle is new characters whose profile
-  Blizzard has not published yet; the next sign-in retries them. A burst means Blizzard moved
-  the profile's `ruleset` field: read a stored `characters.bnet_profile`. It is counted by the
+  type, profile `ruleset`, the account's own addon row, the character's own earlier row, or the
+  realm's agreed player answers), so the character was imported under the ruleset `unknown`
+  (`fallback=ask`) and /setup asks its player "Which realm type is ... on?". The answer moves the
+  character and is stored in `realm_ruleset_answers`; two or more players agreeing on a realm with
+  none disagreeing resolve it for everyone (`op=realm_answer ... resolved=true`), and a
+  disagreement logs `op=realm_answers_disagree` and resolves nothing. The line lists
+  `fields_checked`. A trickle is new characters whose profile Blizzard has not published yet. A
+  burst means Blizzard moved the profile's `ruleset` field: read a stored
+  `characters.bnet_profile`. It is counted by the
   log-based metric `bnet_needs_ruleset`, created once:
 
   ```bash
   gcloud logging metrics create bnet_needs_ruleset --project foreversixty \
-    --description='Battle.net characters skipped because no source named their ruleset' \
+    --description='Battle.net characters no source named a ruleset for (imported as unknown, player asked)' \
     --log-filter='resource.type="cloud_run_revision" AND jsonPayload.msg="bnetimport" AND jsonPayload.op="needs_ruleset"'
   ```
 - **Rising latency with low CPU**: requests are waiting on the database (pool or commish-pg). See

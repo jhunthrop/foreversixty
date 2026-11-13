@@ -73,6 +73,7 @@ left join users u on u.id = c.user_id
 where lower(c.name) like lower($1) || '%'
   and ($2 = '' or c.region = $2)
   and ($3 = '' or c.ruleset = $3)
+  and c.ruleset <> 'unknown' -- a realm no source has typed has no page yet (character.RulesetUnknown)
   and not coalesce(u.anonymize, false)
 order by lower(c.name) = lower($4) desc, c.name, c.region = 'us' desc, c.ruleset = 'normal' desc, c.key
 limit $5`
