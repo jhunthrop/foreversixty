@@ -1,1 +1,479 @@
 remote-test: 74c257eeeeefd3225a3924444de91fc955ba1d28 -> forever-ci on 192.168.1.182 (run 20261113105346-74c257eee-72943, in sim): bash ../design/reviews/2026-11-13-sim-accuracy/casters-60/baseline.sh
+remote-test: engine pinned to b0a43f004
+### druid-balance raid 60 alliance 
+2026/11/13 10:55:55 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:56 All 16 sims finished successfully.
+druid-balance  DPS 737.46 +/- 0.37
+out of mana: 0.1 s of 180 s
+consumes: [major_spellblasting_potion flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil conjured_demonic_rune]
+buffs: [gift_of_the_wild arcane_brilliance power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Starfire (9876) | 410.3 | 55.6 | 43.18 | 40.01 | 1846 | 20.9 | 7.3 | 0.0 | 0.0 | 0.0 |
+| Moonfire (9835) | 119.0 | 16.1 | 13.33 | 68.56 | 312 | 32.0 | 1.3 | 0.0 | 0.0 | 0.0 |
+| Insect Swarm (24977) | 106.4 | 14.4 | 12.41 | 78.52 | 244 | 22.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Wrath (9912) | 102.0 | 13.8 | 26.40 | 24.43 | 752 | 20.3 | 7.5 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 1.95 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Innervate (29166) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 45.84 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250937 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Poised (1328827) | 100.1 | 1.00 |
+| Moonkin Form (24858) | 100.1 | 1.00 |
+| Omen of Clarity (16864) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Eclipse (408248) | 80.0 | 26.40 |
+| item 250937 | 33.1 | 2.00 |
+| Nature's Grace (16886) | 27.2 | 18.29 |
+| Elune's Light (1259799) | 11.5 | 1.49 |
+| item 13968 | 11.1 | 1.00 |
+| Innervate (29166) | 11.1 | 1.00 |
+| Clearcasting (16870) | 7.8 | 6.14 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 5408.8 | 5388.5 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 46.2 | 46.2 |
+| OtherActionDamageTaken | ResourceTypeHealth | -1557.9 | -1557.9 |
+| item 12662 | ResourceTypeMana | 2334.2 | 2334.2 |
+| Innervate (29166) | ResourceTypeMana | -62.2 | -62.2 |
+| Insect Swarm (24977) | ResourceTypeMana | -1356.2 | -1356.2 |
+| Moonfire (9835) | ResourceTypeMana | -3507.0 | -3507.0 |
+| Starfire (9876) | ResourceTypeMana | -9234.6 | -9234.6 |
+| Wrath (9912) | ResourceTypeMana | -792.0 | -792.0 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 2589.6 | 2589.5 |
+### druid-balance bare 60 alliance 
+2026/11/13 10:55:56 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:56 All 16 sims finished successfully.
+druid-balance  DPS 375.97 +/- 0.19
+out of mana: 0.7 s of 180 s
+consumes: []
+buffs: [gift_of_the_wild]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Starfire (9876) | 141.6 | 37.7 | 23.80 | 21.70 | 1175 | 15.3 | 8.8 | 0.0 | 0.0 | 0.0 |
+| Wrath (9912) | 101.8 | 27.1 | 46.81 | 42.18 | 434 | 14.6 | 9.9 | 0.0 | 0.0 | 0.0 |
+| Moonfire (9835) | 72.6 | 19.3 | 12.19 | 65.24 | 200 | 26.2 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Insect Swarm (24977) | 59.9 | 15.9 | 12.16 | 75.87 | 142 | 16.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Innervate (29166) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 20.65 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Poised (1328827) | 100.1 | 1.00 |
+| Moonkin Form (24858) | 100.1 | 1.00 |
+| Omen of Clarity (16864) | 100.1 | 1.00 |
+| Eclipse (408248) | 88.7 | 46.82 |
+| Nature's Grace (16886) | 20.3 | 13.28 |
+| Clearcasting (16870) | 11.7 | 5.83 |
+| Elune's Light (1259799) | 11.6 | 1.50 |
+| Innervate (29166) | 11.1 | 1.00 |
+| item 13968 | 11.1 | 1.00 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 4897.2 | 4876.8 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 76.5 | 76.5 |
+| Improved Wrath (1302521) | ResourceTypeMana | 722.8 | 722.8 |
+| Innervate (29166) | ResourceTypeMana | -62.2 | -62.2 |
+| Insect Swarm (24977) | ResourceTypeMana | -1335.6 | -1335.6 |
+| Moonfire (9835) | ResourceTypeMana | -2966.2 | -2966.2 |
+| Starfire (9876) | ResourceTypeMana | -4929.6 | -4929.6 |
+| Wrath (9912) | ResourceTypeMana | -1404.5 | -1404.5 |
+### druid-balance bare 50 alliance 
+2026/11/13 10:55:56 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:56 All 16 sims finished successfully.
+druid-balance  DPS 247.27 +/- 0.14
+out of mana: 2.9 s of 180 s
+consumes: []
+buffs: [gift_of_the_wild]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Starfire (9875) | 81.0 | 32.8 | 20.08 | 17.86 | 816 | 13.3 | 11.1 | 0.0 | 0.0 | 0.0 |
+| Wrath (8905) | 74.8 | 30.3 | 52.81 | 47.00 | 287 | 12.6 | 11.0 | 0.0 | 0.0 | 0.0 |
+| Moonfire (9833) | 46.5 | 18.8 | 12.46 | 65.11 | 129 | 24.1 | 2.1 | 0.0 | 0.0 | 0.0 |
+| Insect Swarm (24976) | 40.5 | 16.4 | 12.34 | 75.50 | 97 | 14.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 4.2 | 1.7 | 7.49 | 7.49 | 101 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 30.75 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Innervate (29166) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Poised (1328827) | 100.1 | 1.00 |
+| Moonkin Form (24858) | 100.1 | 1.00 |
+| Omen of Clarity (16864) | 100.1 | 1.00 |
+| Eclipse (408248) | 90.3 | 52.81 |
+| Nature's Grace (16886) | 18.4 | 11.95 |
+| Clearcasting (16870) | 12.3 | 5.89 |
+| Elune's Light (1259799) | 11.6 | 1.50 |
+| Innervate (29166) | 11.1 | 1.00 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2620.9 | 2618.2 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 69.4 | 69.4 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 749.3 | 749.3 |
+| Improved Wrath (1302521) | ResourceTypeMana | 813.8 | 813.8 |
+| Innervate (29166) | ResourceTypeMana | -53.2 | -53.2 |
+| Insect Swarm (24976) | ResourceTypeMana | -1183.9 | -1183.9 |
+| Moonfire (9833) | ResourceTypeMana | -2181.5 | -2181.5 |
+| Starfire (9875) | ResourceTypeMana | -3628.3 | -3628.3 |
+| Wrath (8905) | ResourceTypeMana | -1320.4 | -1320.4 |
+### druid-balance raid 60 horde 
+2026/11/13 10:55:56 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:56 All 16 sims finished successfully.
+druid-balance  DPS 722.11 +/- 0.35
+out of mana: 0.1 s of 180 s
+consumes: [major_spellblasting_potion flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil conjured_demonic_rune]
+buffs: [gift_of_the_wild arcane_brilliance power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Starfire (9876) | 407.1 | 56.4 | 43.75 | 41.13 | 1781 | 19.6 | 6.0 | 0.0 | 0.0 | 0.0 |
+| Moonfire (9835) | 116.2 | 16.1 | 13.33 | 68.82 | 304 | 30.6 | 1.1 | 0.0 | 0.0 | 0.0 |
+| Insect Swarm (24977) | 102.6 | 14.2 | 12.34 | 78.69 | 235 | 20.9 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Wrath (9912) | 96.6 | 13.4 | 25.47 | 23.96 | 725 | 19.8 | 5.9 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 1.83 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Innervate (29166) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 56.07 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Second Wind (15604) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250937 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Poised (1328827) | 100.1 | 1.00 |
+| Omen of Clarity (16864) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Moonkin Form (24858) | 100.1 | 1.00 |
+| Eclipse (408248) | 79.2 | 25.47 |
+| item 250937 | 33.1 | 2.00 |
+| Nature's Grace (16886) | 26.0 | 17.37 |
+| Innervate (29166) | 11.0 | 1.00 |
+| Clearcasting (16870) | 7.6 | 6.21 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 5462.6 | 5422.9 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 48.3 | 42.0 |
+| OtherActionDamageTaken | ResourceTypeHealth | -1465.8 | -1465.8 |
+| Second Wind (15604) | ResourceTypeMana | 630.0 | 552.8 |
+| item 12662 | ResourceTypeMana | 2197.0 | 2197.0 |
+| Innervate (29166) | ResourceTypeMana | -62.2 | -62.2 |
+| Insect Swarm (24977) | ResourceTypeMana | -1345.0 | -1345.0 |
+| Moonfire (9835) | ResourceTypeMana | -3508.5 | -3508.5 |
+| Starfire (9876) | ResourceTypeMana | -9356.6 | -9356.6 |
+| Wrath (9912) | ResourceTypeMana | -764.0 | -764.0 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 2609.9 | 2599.0 |
+### druid-balance bare 60 horde 
+2026/11/13 10:55:56 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:56 All 16 sims finished successfully.
+druid-balance  DPS 367.04 +/- 0.19
+out of mana: 0.7 s of 180 s
+consumes: []
+buffs: [gift_of_the_wild]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Starfire (9876) | 131.4 | 35.8 | 22.49 | 20.54 | 1152 | 15.0 | 8.7 | 0.0 | 0.0 | 0.0 |
+| Wrath (9912) | 105.8 | 28.8 | 49.68 | 44.75 | 425 | 14.8 | 9.9 | 0.0 | 0.0 | 0.0 |
+| Moonfire (9835) | 71.4 | 19.4 | 12.16 | 65.13 | 197 | 25.9 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Insect Swarm (24977) | 58.4 | 15.9 | 12.14 | 75.78 | 139 | 16.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 21.96 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Innervate (29166) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Poised (1328827) | 100.1 | 1.00 |
+| Moonkin Form (24858) | 100.1 | 1.00 |
+| Omen of Clarity (16864) | 100.1 | 1.00 |
+| Eclipse (408248) | 89.3 | 49.68 |
+| Nature's Grace (16886) | 20.6 | 13.50 |
+| Clearcasting (16870) | 12.1 | 5.91 |
+| item 13968 | 11.1 | 1.00 |
+| Innervate (29166) | 11.1 | 1.00 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 4684.2 | 4664.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 69.5 | 69.5 |
+| Improved Wrath (1302521) | ResourceTypeMana | 768.6 | 768.6 |
+| Innervate (29166) | ResourceTypeMana | -62.2 | -62.2 |
+| Insect Swarm (24977) | ResourceTypeMana | -1331.1 | -1331.1 |
+| Moonfire (9835) | ResourceTypeMana | -2914.3 | -2914.3 |
+| Starfire (9876) | ResourceTypeMana | -4648.6 | -4648.6 |
+| Wrath (9912) | ResourceTypeMana | -1490.3 | -1490.3 |
+### druid-balance bare 50 horde 
+2026/11/13 10:55:56 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:56 All 16 sims finished successfully.
+druid-balance  DPS 243.72 +/- 0.14
+out of mana: 3.4 s of 180 s
+consumes: []
+buffs: [gift_of_the_wild]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Starfire (9875) | 78.0 | 32.0 | 19.60 | 17.44 | 805 | 11.9 | 11.0 | 0.0 | 0.0 | 0.0 |
+| Wrath (8905) | 75.3 | 30.9 | 53.41 | 47.54 | 285 | 11.9 | 11.0 | 0.0 | 0.0 | 0.0 |
+| Moonfire (9833) | 45.9 | 18.9 | 12.43 | 64.96 | 127 | 22.8 | 2.1 | 0.0 | 0.0 | 0.0 |
+| Insect Swarm (24976) | 40.0 | 16.4 | 12.31 | 75.32 | 96 | 13.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 4.3 | 1.7 | 7.55 | 7.55 | 101 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 31.02 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Innervate (29166) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Moonkin Form (24858) | 100.1 | 1.00 |
+| Omen of Clarity (16864) | 100.1 | 1.00 |
+| Poised (1328827) | 100.1 | 1.00 |
+| Eclipse (408248) | 90.5 | 53.41 |
+| Nature's Grace (16886) | 17.3 | 11.22 |
+| Clearcasting (16870) | 12.5 | 5.92 |
+| Innervate (29166) | 11.1 | 1.00 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2581.6 | 2580.4 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 75.4 | 75.4 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 754.6 | 754.6 |
+| Improved Wrath (1302521) | ResourceTypeMana | 821.5 | 821.5 |
+| Innervate (29166) | ResourceTypeMana | -53.2 | -53.2 |
+| Insect Swarm (24976) | ResourceTypeMana | -1179.0 | -1179.0 |
+| Moonfire (9833) | ResourceTypeMana | -2162.9 | -2162.9 |
+| Starfire (9875) | ResourceTypeMana | -3540.4 | -3540.4 |
+| Wrath (8905) | ResourceTypeMana | -1335.2 | -1335.2 |
+### shaman-elemental raid 60 alliance 
+2026/11/13 10:55:57 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:57 All 16 sims finished successfully.
+shaman-elemental  DPS 747.98 +/- 0.31
+out of mana: 1.6 s of 180 s
+consumes: [major_mana_potion flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (15208) | 619.3 | 82.8 | 84.71 | 109.06 | 1022 | 29.6 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (29228) | 96.3 | 12.9 | 8.68 | 65.30 | 266 | 23.7 | 0.1 | 0.0 | 0.0 | 0.0 |
+| Attack (10436) | 33.0 | 4.4 | 70.59 | 69.88 | 85 | 23.5 | 1.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.55 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 1.99 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.66 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 61.95 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Thrash (21919) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Lightning Mastery (16166) | 11.5 | 1.49 |
+| Clearcasting (16246) | 9.9 | 9.31 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 5226.9 | 5126.2 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 57.2 | 57.0 |
+| OtherActionDamageTaken | ResourceTypeHealth | -1591.4 | -1591.4 |
+| item 13444 | ResourceTypeMana | 2788.6 | 2788.6 |
+| item 12662 | ResourceTypeMana | 2389.2 | 2389.2 |
+| Lightning Bolt (15208) | ResourceTypeMana | -15122.0 | -15122.0 |
+| Flame Shock (29228) | ResourceTypeMana | -2873.8 | -2873.8 |
+| Searing Totem (10438) | ResourceTypeMana | -622.9 | -622.9 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 3446.3 | 3444.9 |
+### shaman-elemental bare 60 alliance 
+2026/11/13 10:55:57 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:57 All 16 sims finished successfully.
+shaman-elemental  DPS 301.05 +/- 0.28
+out of mana: 40.2 s of 180 s
+consumes: []
+buffs: []
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (10392) | 189.3 | 62.9 | 58.56 | 69.22 | 492 | 17.7 | 9.0 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (29228) | 55.7 | 18.5 | 8.14 | 56.77 | 177 | 13.2 | 1.3 | 0.0 | 0.0 | 0.0 |
+| Lightning Bolt (15208) | 27.8 | 9.2 | 6.95 | 8.22 | 610 | 17.6 | 9.0 | 0.0 | 0.0 | 0.0 |
+| Attack (10436) | 21.8 | 7.2 | 67.16 | 61.11 | 64 | 12.3 | 9.0 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 4.4 | 1.5 | 8.49 | 8.49 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 18.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mana Spring Totem (10497) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Second Wind (15604) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Mana Spring Totem (10497) | 100.1 | 1.00 |
+| Lightning Mastery (16166) | 11.6 | 1.50 |
+| Clearcasting (16246) | 7.7 | 7.36 |
+| item 11832 | 5.6 | 1.00 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2646.4 | 2579.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 700.9 | 700.5 |
+| Second Wind (15604) | ResourceTypeMana | 630.0 | 381.9 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 849.2 | 802.5 |
+| Lightning Bolt (10392) | ResourceTypeMana | -7526.0 | -7526.0 |
+| Lightning Bolt (15208) | ResourceTypeMana | -851.4 | -851.4 |
+| Flame Shock (29228) | ResourceTypeMana | -1259.1 | -1259.1 |
+| Searing Totem (10438) | ResourceTypeMana | -435.3 | -435.3 |
+| Mana Spring Totem (10497) | ResourceTypeMana | -100.0 | -100.0 |
+### shaman-elemental bare 50 alliance 
+2026/11/13 10:55:57 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:58 All 16 sims finished successfully.
+shaman-elemental  DPS 186.83 +/- 0.18
+out of mana: 43.9 s of 180 s
+consumes: []
+buffs: []
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (6041) | 136.6 | 73.1 | 64.75 | 75.78 | 325 | 13.1 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (10447) | 26.4 | 14.1 | 6.59 | 46.38 | 102 | 9.4 | 1.4 | 0.0 | 0.0 | 0.0 |
+| Attack (10435) | 16.4 | 8.8 | 64.46 | 57.95 | 51 | 8.5 | 10.1 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 4.2 | 2.3 | 8.11 | 8.11 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12278) | 1.8 | 1.0 | 0.00 | 4.50 | 74 | 8.5 | 10.1 | 0.0 | 0.0 | 0.0 |
+| Lightning Bolt (15207) | 0.2 | 0.1 | 0.07 | 0.09 | 386 | 13.3 | 10.1 | 0.0 | 0.0 | 0.0 |
+| Mana Spring Totem (10496) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10437) | 0.0 | 0.0 | 3.60 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 8.11 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12257) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Stoneskin (10404) | 100.1 | 1.00 |
+| Mana Spring Totem (10496) | 100.1 | 1.00 |
+| Lightning Mastery (16166) | 11.6 | 1.50 |
+| Clearcasting (16246) | 6.7 | 7.19 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2335.0 | 2334.9 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 566.4 | 566.4 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 811.4 | 811.2 |
+| Lightning Bolt (6041) | ResourceTypeMana | -5856.0 | -5856.0 |
+| Lightning Bolt (15207) | ResourceTypeMana | -10.3 | -10.3 |
+| Flame Shock (10447) | ResourceTypeMana | -1132.7 | -1132.7 |
+| Searing Totem (10437) | ResourceTypeMana | -522.4 | -522.4 |
+| Mana Spring Totem (10496) | ResourceTypeMana | -80.0 | -80.0 |
+### shaman-elemental raid 60 horde 
+2026/11/13 10:55:58 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:58 All 16 sims finished successfully.
+shaman-elemental  DPS 749.64 +/- 0.31
+out of mana: 1.4 s of 180 s
+consumes: [major_mana_potion flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (15208) | 621.4 | 82.9 | 84.79 | 109.14 | 1025 | 27.7 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (29228) | 96.1 | 12.8 | 8.69 | 65.35 | 265 | 21.8 | 0.1 | 0.0 | 0.0 | 0.0 |
+| Attack (10436) | 32.7 | 4.4 | 70.60 | 69.89 | 84 | 21.7 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.49 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.55 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 1.99 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.66 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 62.01 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Lightning Mastery (16166) | 11.5 | 1.49 |
+| Clearcasting (16246) | 9.9 | 9.35 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 5157.1 | 5057.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 55.3 | 55.1 |
+| OtherActionDamageTaken | ResourceTypeHealth | -1592.2 | -1592.2 |
+| item 13444 | ResourceTypeMana | 2801.0 | 2801.0 |
+| item 12662 | ResourceTypeMana | 2389.9 | 2389.9 |
+| Lightning Bolt (15208) | ResourceTypeMana | -15131.8 | -15131.8 |
+| Flame Shock (29228) | ResourceTypeMana | -2875.4 | -2875.4 |
+| Searing Totem (10438) | ResourceTypeMana | -622.8 | -622.8 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 3449.4 | 3447.9 |
+### shaman-elemental bare 60 horde 
+2026/11/13 10:55:58 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:58 All 16 sims finished successfully.
+shaman-elemental  DPS 299.61 +/- 0.28
+out of mana: 39.7 s of 180 s
+consumes: []
+buffs: []
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (10392) | 189.0 | 63.1 | 59.43 | 69.48 | 490 | 16.5 | 10.1 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (29228) | 54.7 | 18.2 | 7.39 | 56.86 | 173 | 13.2 | 1.3 | 0.0 | 0.0 | 0.0 |
+| Lightning Bolt (15208) | 28.2 | 9.4 | 6.94 | 8.11 | 626 | 16.4 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Attack (10436) | 21.5 | 7.2 | 66.74 | 60.07 | 64 | 12.0 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 4.4 | 1.5 | 8.40 | 8.40 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10438) | 0.0 | 0.0 | 3.42 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mana Spring Totem (10497) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 18.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Second Wind (15604) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Mana Spring Totem (10497) | 100.1 | 1.00 |
+| Stoneskin (10405) | 100.1 | 1.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Lightning Mastery (16166) | 11.6 | 1.50 |
+| Clearcasting (16246) | 7.7 | 7.40 |
+| item 11832 | 5.6 | 1.00 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2674.5 | 2607.3 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 694.7 | 694.3 |
+| Second Wind (15604) | ResourceTypeMana | 630.0 | 381.0 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 839.6 | 793.4 |
+| Lightning Bolt (10392) | ResourceTypeMana | -7631.3 | -7631.3 |
+| Lightning Bolt (15208) | ResourceTypeMana | -850.5 | -850.5 |
+| Flame Shock (29228) | ResourceTypeMana | -1135.9 | -1135.9 |
+| Searing Totem (10438) | ResourceTypeMana | -431.7 | -431.7 |
+| Mana Spring Totem (10497) | ResourceTypeMana | -100.0 | -100.0 |
+### shaman-elemental bare 50 horde 
+2026/11/13 10:55:59 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 10:55:59 All 16 sims finished successfully.
+shaman-elemental  DPS 186.23 +/- 0.18
+out of mana: 44.0 s of 180 s
+consumes: []
+buffs: []
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lightning Bolt (6041) | 137.5 | 73.8 | 64.71 | 76.41 | 324 | 13.1 | 9.1 | 0.0 | 0.0 | 0.0 |
+| Flame Shock (10447) | 26.4 | 14.2 | 6.54 | 46.53 | 102 | 9.4 | 1.3 | 0.0 | 0.0 | 0.0 |
+| Attack (10435) | 16.8 | 9.0 | 65.09 | 59.16 | 51 | 8.6 | 9.1 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 4.3 | 2.3 | 8.23 | 8.23 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Bolt (15207) | 0.2 | 0.1 | 0.07 | 0.08 | 392 | 12.6 | 9.8 | 0.0 | 0.0 | 0.0 |
+| Searing Totem (10437) | 0.0 | 0.0 | 3.64 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 8.23 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mana Spring Totem (10496) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Mastery (16166) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Stoneskin (10404) | 100.1 | 1.00 |
+| Mana Spring Totem (10496) | 100.1 | 1.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Lightning Mastery (16166) | 11.6 | 1.50 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Clearcasting (16246) | 6.6 | 7.15 |
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2305.9 | 2305.9 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 573.8 | 573.8 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 822.5 | 822.3 |
+| Lightning Bolt (6041) | ResourceTypeMana | -5856.2 | -5856.2 |
+| Lightning Bolt (15207) | ResourceTypeMana | -10.2 | -10.2 |
+| Flame Shock (10447) | ResourceTypeMana | -1119.3 | -1119.3 |
+| Searing Totem (10437) | ResourceTypeMana | -527.6 | -527.6 |
+| Mana Spring Totem (10496) | ResourceTypeMana | -80.0 | -80.0 |
+remote-test: exit 0 in 5s (74c257eeeeefd3225a3924444de91fc955ba1d28)
