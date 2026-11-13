@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70938",
   "engine_version": "5603877e4",
-  "generated_at": "2026-11-13T18:19:45Z",
+  "generated_at": "2026-11-13T21:17:52Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -1149,8 +1149,8 @@
         "main_hand: Evocator's Blade",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 6.342747626,
-      "verify_run_seconds": 10.321681503,
+      "weights_run_seconds": 6.313348889,
+      "verify_run_seconds": 10.481312147999999,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -1869,19 +1869,19 @@
           "by_kind": {
             "dungeon": {
               "item_id": 1929,
-              "rank": 6,
+              "rank": 5,
               "source": "The Deadmines: Defias Evoker",
               "dps_delta": -0.69
             },
             "quest": {
-              "item_id": 15449,
-              "rank": 5,
-              "source": "The Power to Destroy...",
-              "dps_delta": -0.68
+              "item_id": 270011,
+              "rank": 8,
+              "source": "Free From the Hold",
+              "dps_delta": -1
             },
             "world": {
               "item_id": 12987,
-              "rank": 8,
+              "rank": 7,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.99
@@ -2395,8 +2395,8 @@
         "main_hand: Evocator's Blade",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 6.342747626,
-      "verify_run_seconds": 11.506504574,
+      "weights_run_seconds": 6.313348889,
+      "verify_run_seconds": 11.737062131000002,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -2821,13 +2821,13 @@
             },
             "dungeon": {
               "item_id": 6901,
-              "rank": 11,
+              "rank": 10,
               "source": "Blackfathom Deeps: Old Serra'kis",
               "dps_delta": -0.72
             },
             "pvp": {
               "item_id": 16315,
-              "rank": 15,
+              "rank": 14,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -0.74
             },
@@ -2839,7 +2839,7 @@
             },
             "vendor": {
               "item_id": 19533,
-              "rank": 9,
+              "rank": 8,
               "source": "Illiyana Moonblaze",
               "dps_delta": -0.46,
               "standing": "honored"
@@ -3044,13 +3044,13 @@
             },
             "dungeon": {
               "item_id": 5970,
-              "rank": 6,
+              "rank": 5,
               "source": "Wailing Caverns: Lord Serpentis",
               "dps_delta": -0.27
             },
             "world": {
               "item_id": 892,
-              "rank": 9,
+              "rank": 8,
               "source": "Mosshide Mistweaver",
               "dps_delta": -0.53
             }
@@ -3108,9 +3108,9 @@
             },
             "quest": {
               "item_id": 7000,
-              "rank": 13,
+              "rank": 18,
               "source": "Twilight Falls",
-              "dps_delta": -1.63
+              "dps_delta": -2.14
             },
             "rep": {
               "item_id": 20099,
@@ -3128,7 +3128,7 @@
             },
             "world": {
               "item_id": 13011,
-              "rank": 17,
+              "rank": 16,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -2.01
@@ -3711,8 +3711,8 @@
         "main_hand: Swinetusk Shank",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 5.659914127,
-      "verify_run_seconds": 9.826143925,
+      "weights_run_seconds": 5.594639453,
+      "verify_run_seconds": 10.200405995,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -4037,18 +4037,18 @@
               "dps_delta": -0.39744959
             },
             {
-              "item_id": 7750,
-              "item_name": "Mantle of Woe",
-              "source_kind": "quest",
-              "source": "Vorrel's Revenge",
-              "dps_delta": -0.468072906
-            },
-            {
               "item_id": 12998,
               "item_name": "Magician's Mantle",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.024811839
+            },
+            {
+              "item_id": 215365,
+              "item_name": "Invoker's Mantle",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -1.254724497
             }
           ],
           "runners_up": [
@@ -4058,27 +4058,27 @@
               "source": "Razorfen Kraul: Death Speaker Jargba"
             },
             {
-              "item_id": 7750,
-              "source_kind": "quest",
-              "source": "Vorrel's Revenge"
+              "item_id": 12998,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ],
           "by_kind": {
             "crafted": {
               "item_id": 215365,
-              "rank": 5,
+              "rank": 4,
               "source": "Tailoring",
               "dps_delta": -1.25
             },
             "quest": {
               "item_id": 7750,
-              "rank": 3,
+              "rank": 6,
               "source": "Vorrel's Revenge",
-              "dps_delta": -0.47
+              "dps_delta": -1.72
             },
             "world": {
               "item_id": 12998,
-              "rank": 4,
+              "rank": 3,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.02
@@ -5070,8 +5070,8 @@
         "main_hand: Swinetusk Shank",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 5.659914127,
-      "verify_run_seconds": 12.051449047,
+      "weights_run_seconds": 5.594639453,
+      "verify_run_seconds": 12.317285930999999,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5734,7 +5734,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 5970,
-              "rank": 22,
+              "rank": 21,
               "source": "Wailing Caverns: Lord Serpentis",
               "dps_delta": -6.23
             },
@@ -5746,7 +5746,7 @@
             },
             "world": {
               "item_id": 6428,
-              "rank": 24,
+              "rank": 23,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -6.25
@@ -6401,8 +6401,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Staff of Jordan"
       ],
-      "weights_run_seconds": 7.302512932,
-      "verify_run_seconds": 15.851788272,
+      "weights_run_seconds": 7.096052811,
+      "verify_run_seconds": 16.082284464,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -6790,7 +6790,7 @@
             },
             "world": {
               "item_id": 13115,
-              "rank": 7,
+              "rank": 6,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.13
@@ -7747,8 +7747,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Staff of Jordan"
       ],
-      "weights_run_seconds": 7.302512932,
-      "verify_run_seconds": 17.122600565,
+      "weights_run_seconds": 7.096052811,
+      "verify_run_seconds": 17.727297412,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -8450,7 +8450,7 @@
             },
             "pvp": {
               "item_id": 223076,
-              "rank": 56,
+              "rank": 55,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -6.53
             },
@@ -8462,7 +8462,7 @@
             },
             "vendor": {
               "item_id": 223076,
-              "rank": 56,
+              "rank": 55,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -6.53
             },
@@ -8888,7 +8888,7 @@
               ],
               "next": {
                 "item_id": 276202,
-                "rank": 50,
+                "rank": 49,
                 "source": "Friz Frazzlespark",
                 "dps_delta": -6.35,
                 "standing": "friendly"
@@ -9431,8 +9431,8 @@
         "main_hand: Blade of Eternal Darkness",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 6.622447429,
-      "verify_run_seconds": 15.466750759,
+      "weights_run_seconds": 6.547765621,
+      "verify_run_seconds": 15.933204850000001,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11116,8 +11116,8 @@
         "main_hand: Blade of Eternal Darkness",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 6.622447429,
-      "verify_run_seconds": 17.037280575,
+      "weights_run_seconds": 6.547765621,
+      "verify_run_seconds": 17.449415798,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -11831,7 +11831,7 @@
             },
             "pvp": {
               "item_id": 223076,
-              "rank": 91,
+              "rank": 90,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -8.47
             },
@@ -11850,7 +11850,7 @@
             },
             "vendor": {
               "item_id": 223076,
-              "rank": 91,
+              "rank": 90,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -8.47
             },
@@ -12901,8 +12901,8 @@
         "off_hand: Rhombeard Protector",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 6.771262914,
-      "verify_run_seconds": 63.415604464,
+      "weights_run_seconds": 6.656489562,
+      "verify_run_seconds": 65.381337624,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14691,8 +14691,8 @@
         "off_hand: Rhombeard Protector",
         "ranged: Burning Totem"
       ],
-      "weights_run_seconds": 6.771262914,
-      "verify_run_seconds": 65.018483317,
+      "weights_run_seconds": 6.656489562,
+      "verify_run_seconds": 66.47307609799999,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -16419,8 +16419,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 4.942861295,
-      "verify_run_seconds": 49.239506368,
+      "weights_run_seconds": 4.901178565,
+      "verify_run_seconds": 51.599739088999996,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18166,8 +18166,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 4.942861295,
-      "verify_run_seconds": 50.626077807,
+      "weights_run_seconds": 4.901178565,
+      "verify_run_seconds": 51.821799687,
       "coverage": {
         "back": {
           "eligible": 473,

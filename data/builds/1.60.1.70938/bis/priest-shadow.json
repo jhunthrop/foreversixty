@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70938",
   "engine_version": "5603877e4",
-  "generated_at": "2026-11-13T20:15:16Z",
+  "generated_at": "2026-11-13T23:40:16Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -952,7 +952,7 @@
               "item_name": "Emberstone Staff",
               "source_kind": "dungeon",
               "source": "The Deadmines: Captain Greenskin",
-              "dps_delta": -0.553362788
+              "dps_delta": -0.747098529
             }
           ],
           "runners_up": [
@@ -1163,8 +1163,8 @@
         "main_hand: Staff of the Blessed Seer",
         "ranged: Skycaller"
       ],
-      "weights_run_seconds": 2.584754282,
-      "verify_run_seconds": 2.409969635,
+      "weights_run_seconds": 3.330585677,
+      "verify_run_seconds": 3.327005604,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -1911,10 +1911,10 @@
               "dps_delta": -0.98
             },
             "quest": {
-              "item_id": 15449,
-              "rank": 10,
-              "source": "The Power to Destroy...",
-              "dps_delta": -1.03
+              "item_id": 270011,
+              "rank": 11,
+              "source": "Free From the Hold",
+              "dps_delta": -1.25
             },
             "vendor": {
               "item_id": 277078,
@@ -2421,8 +2421,8 @@
         "main_hand: Staff of the Blessed Seer",
         "ranged: Skycaller"
       ],
-      "weights_run_seconds": 2.584754282,
-      "verify_run_seconds": 2.220263988,
+      "weights_run_seconds": 3.330585677,
+      "verify_run_seconds": 2.85579308,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -2824,10 +2824,10 @@
               "dps_delta": -0.095568363
             },
             {
-              "item_id": 7004,
-              "item_name": "Prelacy Cape",
-              "source_kind": "quest",
-              "source": "Researching the Corruption",
+              "item_id": 19533,
+              "item_name": "Caretaker's Cape",
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
               "dps_delta": -0.095568363
             }
           ],
@@ -2852,7 +2852,7 @@
             },
             "dungeon": {
               "item_id": 6901,
-              "rank": 10,
+              "rank": 9,
               "source": "Blackfathom Deeps: Old Serra'kis",
               "dps_delta": -0.19
             },
@@ -2864,21 +2864,21 @@
             },
             "rep": {
               "item_id": 19533,
-              "rank": 5,
+              "rank": 4,
               "source": "Silverwing Sentinels",
               "dps_delta": -0.1,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 19533,
-              "rank": 5,
+              "rank": 4,
               "source": "Illiyana Moonblaze",
               "dps_delta": -0.1,
               "standing": "honored"
             },
             "world": {
               "item_id": 14400,
-              "rank": 12,
+              "rank": 11,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.23
@@ -3043,10 +3043,10 @@
               "dps_delta": -0.359532715
             },
             {
-              "item_id": 9609,
-              "item_name": "Shilly Mitts",
-              "source_kind": "quest",
-              "source": "Gyrodrillmatic Excavationators",
+              "item_id": 5970,
+              "item_name": "Serpent Gloves",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis",
               "dps_delta": -0.485829708
             },
             {
@@ -3065,9 +3065,9 @@
               "source": "Tailoring"
             },
             {
-              "item_id": 9609,
-              "source_kind": "quest",
-              "source": "Gyrodrillmatic Excavationators"
+              "item_id": 5970,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis"
             }
           ],
           "by_kind": {
@@ -3079,15 +3079,15 @@
             },
             "dungeon": {
               "item_id": 5970,
-              "rank": 5,
+              "rank": 4,
               "source": "Wailing Caverns: Lord Serpentis",
               "dps_delta": -0.49
             },
             "quest": {
-              "item_id": 9609,
-              "rank": 4,
-              "source": "Gyrodrillmatic Excavationators",
-              "dps_delta": -0.49
+              "item_id": 270029,
+              "rank": 6,
+              "source": "Crime and Punishment",
+              "dps_delta": -0.57
             }
           }
         },
@@ -3822,8 +3822,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.530291907,
-      "verify_run_seconds": 4.964816679,
+      "weights_run_seconds": 3.257325639,
+      "verify_run_seconds": 5.507688646,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -4168,13 +4168,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7750,
-              "item_name": "Mantle of Woe",
-              "source_kind": "quest",
-              "source": "Vorrel's Revenge",
-              "dps_delta": -0.289228391
-            },
-            {
               "item_id": 6685,
               "item_name": "Death Speaker Mantle",
               "source_kind": "dungeon",
@@ -4188,36 +4181,43 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.539159964
+            },
+            {
+              "item_id": 215365,
+              "item_name": "Invoker's Mantle",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.602822079
             }
           ],
           "runners_up": [
             {
-              "item_id": 7750,
-              "source_kind": "quest",
-              "source": "Vorrel's Revenge"
-            },
-            {
               "item_id": 6685,
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Death Speaker Jargba"
+            },
+            {
+              "item_id": 12998,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ],
           "by_kind": {
             "crafted": {
               "item_id": 215365,
-              "rank": 5,
+              "rank": 4,
               "source": "Tailoring",
               "dps_delta": -0.6
             },
             "quest": {
               "item_id": 7750,
-              "rank": 3,
+              "rank": 8,
               "source": "Vorrel's Revenge",
-              "dps_delta": -0.29
+              "dps_delta": -0.89
             },
             "world": {
               "item_id": 12998,
-              "rank": 4,
+              "rank": 3,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.54
@@ -5111,13 +5111,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 279847,
-              "item_name": "Unstable Power Core",
-              "source_kind": "quest",
-              "source": "Source of Power",
-              "dps_delta": 0
-            },
-            {
               "item_id": 273043,
               "item_name": "Wand of Mana Concentration",
               "source_kind": "world",
@@ -5130,19 +5123,26 @@
               "item_name": "Gravestone Scepter",
               "source_kind": "quest",
               "source": "Blackfathom Villainy",
-              "dps_delta": -0.648115402
+              "dps_delta": -1.295728971
+            },
+            {
+              "item_id": 9489,
+              "item_name": "Gyromatic Icemaker",
+              "source_kind": "dungeon",
+              "source": "Gnomeregan",
+              "dps_delta": -1.702471706
             }
           ],
           "runners_up": [
             {
-              "item_id": 279847,
-              "source_kind": "quest",
-              "source": "Source of Power"
-            },
-            {
               "item_id": 273043,
               "source_kind": "world",
               "source": "Arcanic Enigma"
+            },
+            {
+              "item_id": 7001,
+              "source_kind": "quest",
+              "source": "Blackfathom Villainy"
             }
           ],
           "by_kind": {
@@ -5150,19 +5150,19 @@
               "item_id": 217287,
               "rank": 5,
               "source": "Enchanting",
-              "dps_delta": -1.12
+              "dps_delta": -1.77
             },
             "dungeon": {
               "item_id": 9489,
-              "rank": 6,
+              "rank": 4,
               "source": "Gnomeregan",
-              "dps_delta": -1.28
+              "dps_delta": -1.7
             },
             "quest": {
-              "item_id": 279847,
-              "rank": 2,
-              "source": "Source of Power",
-              "dps_delta": 0
+              "item_id": 7001,
+              "rank": 3,
+              "source": "Blackfathom Villainy",
+              "dps_delta": -1.3
             }
           }
         }
@@ -5245,8 +5245,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.530291907,
-      "verify_run_seconds": 4.54839764,
+      "weights_run_seconds": 3.257325639,
+      "verify_run_seconds": 5.124797545,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5936,15 +5936,15 @@
           "by_kind": {
             "dungeon": {
               "item_id": 9491,
-              "rank": 13,
+              "rank": 12,
               "source": "Gnomeregan",
               "dps_delta": -2.05
             },
             "quest": {
-              "item_id": 9609,
-              "rank": 9,
-              "source": "Gyrodrillmatic Excavationators",
-              "dps_delta": -1.74
+              "item_id": 270029,
+              "rank": 14,
+              "source": "Crime and Punishment",
+              "dps_delta": -2.15
             },
             "world": {
               "item_id": 273034,
@@ -6332,7 +6332,7 @@
               ],
               "next": {
                 "item_id": 271915,
-                "rank": 31,
+                "rank": 30,
                 "source": "Theramore Expeditionary Force",
                 "dps_delta": -1.42,
                 "standing": "honored"
@@ -6349,7 +6349,7 @@
               ],
               "next": {
                 "item_id": 276202,
-                "rank": 33,
+                "rank": 32,
                 "source": "Friz Frazzlespark",
                 "dps_delta": -1.49,
                 "standing": "friendly"
@@ -6686,8 +6686,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Plaguerot Sprig"
       ],
-      "weights_run_seconds": 2.709490115,
-      "verify_run_seconds": 2.983582732,
+      "weights_run_seconds": 3.408470956,
+      "verify_run_seconds": 3.6217003340000002,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7084,7 +7084,7 @@
             },
             "world": {
               "item_id": 12998,
-              "rank": 8,
+              "rank": 7,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.71
@@ -7964,18 +7964,18 @@
               "dps_delta": -0.11549615
             },
             {
-              "item_id": 6806,
-              "item_name": "Dancing Flame",
-              "source_kind": "quest",
-              "source": "Final Passage",
-              "dps_delta": -1.901485589
-            },
-            {
               "item_id": 9381,
               "item_name": "Earthen Rod",
               "source_kind": "dungeon",
               "source": "Uldaman",
               "dps_delta": -2.596498709
+            },
+            {
+              "item_id": 5216,
+              "item_name": "Umbral Wand",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -2.94482057
             }
           ],
           "runners_up": [
@@ -7985,15 +7985,15 @@
               "source": "Razorfen Downs: Plaguemaw the Rotting"
             },
             {
-              "item_id": 6806,
-              "source_kind": "quest",
-              "source": "Final Passage"
+              "item_id": 9381,
+              "source_kind": "dungeon",
+              "source": "Uldaman"
             }
           ],
           "by_kind": {
             "crafted": {
               "item_id": 249144,
-              "rank": 6,
+              "rank": 5,
               "source": "Enchanting",
               "dps_delta": -3.08
             },
@@ -8004,10 +8004,10 @@
               "dps_delta": -0.12
             },
             "quest": {
-              "item_id": 6806,
-              "rank": 3,
-              "source": "Final Passage",
-              "dps_delta": -1.9
+              "item_id": 5253,
+              "rank": 6,
+              "source": "Venture Company Mining",
+              "dps_delta": -3.88
             }
           }
         }
@@ -8089,8 +8089,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.709490115,
-      "verify_run_seconds": 3.254637481,
+      "weights_run_seconds": 3.408470956,
+      "verify_run_seconds": 4.585970109,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9238,7 +9238,7 @@
               ],
               "next": {
                 "item_id": 276202,
-                "rank": 51,
+                "rank": 50,
                 "source": "Friz Frazzlespark",
                 "dps_delta": -5.56,
                 "standing": "friendly"
@@ -9785,8 +9785,8 @@
         "trinket2: Enriched Seal",
         "ranged: Woestave"
       ],
-      "weights_run_seconds": 2.698937873,
-      "verify_run_seconds": 5.090408755,
+      "weights_run_seconds": 3.325207074,
+      "verify_run_seconds": 6.506094702,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -10182,14 +10182,14 @@
               "dps_delta": -2.66
             },
             "quest": {
-              "item_id": 7750,
-              "rank": 9,
-              "source": "Vorrel's Revenge",
-              "dps_delta": -4.4
+              "item_id": 4197,
+              "rank": 12,
+              "source": "A Vengeful Fate",
+              "dps_delta": -4.67
             },
             "world": {
               "item_id": 8250,
-              "rank": 10,
+              "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -4.5
@@ -10646,10 +10646,10 @@
               "dps_delta": -1.78
             },
             "quest": {
-              "item_id": 15449,
-              "rank": 27,
-              "source": "The Power to Destroy...",
-              "dps_delta": -8.33
+              "item_id": 11123,
+              "rank": 33,
+              "source": "Jammal'an the Prophet",
+              "dps_delta": -8.76
             },
             "vendor": {
               "item_id": 220906,
@@ -11516,8 +11516,8 @@
         "off_hand: Truesilver Conduit",
         "ranged: Woestave"
       ],
-      "weights_run_seconds": 2.698937873,
-      "verify_run_seconds": 5.077393052,
+      "weights_run_seconds": 3.325207074,
+      "verify_run_seconds": 6.473423387,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13326,8 +13326,8 @@
         "off_hand: Book of the Dead",
         "ranged: Oblivion's Touch"
       ],
-      "weights_run_seconds": 2.784509114,
-      "verify_run_seconds": 20.540802723,
+      "weights_run_seconds": 3.536544735,
+      "verify_run_seconds": 26.642209057000002,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -15121,8 +15121,8 @@
         "off_hand: Tome of Shadow Force",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 2.784509114,
-      "verify_run_seconds": 19.802510785000003,
+      "weights_run_seconds": 3.536544735,
+      "verify_run_seconds": 25.341455267,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -15610,7 +15610,7 @@
             },
             "pvp": {
               "item_id": 16337,
-              "rank": 45,
+              "rank": 44,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -13.59
             },
@@ -16819,8 +16819,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 2.995727369,
-      "verify_run_seconds": 16.847579315999997,
+      "weights_run_seconds": 3.80514762,
+      "verify_run_seconds": 22.343879865,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18443,7 +18443,7 @@
             },
             "world": {
               "item_id": 13062,
-              "rank": 13,
+              "rank": 12,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -3.03
@@ -18530,8 +18530,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 2.995727369,
-      "verify_run_seconds": 15.648280726,
+      "weights_run_seconds": 3.80514762,
+      "verify_run_seconds": 21.292800291,
       "coverage": {
         "back": {
           "eligible": 472,

@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70938",
   "engine_version": "5603877e4",
-  "generated_at": "2026-11-13T18:29:26Z",
+  "generated_at": "2026-11-13T21:28:07Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -1228,8 +1228,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 5.83569681,
-      "verify_run_seconds": 10.089007653,
+      "weights_run_seconds": 6.683128227,
+      "verify_run_seconds": 11.373502146,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -1271,9 +1271,9 @@
           "rare_spawn_skipped": 6
         },
         "main_hand": {
-          "eligible": 261,
-          "sourced": 172,
-          "rare_spawn_skipped": 25
+          "eligible": 262,
+          "sourced": 173,
+          "rare_spawn_skipped": 26
         },
         "neck": {
           "eligible": 22,
@@ -2558,8 +2558,8 @@
         "off_hand: Edward's Knife",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 5.83569681,
-      "verify_run_seconds": 12.153188741,
+      "weights_run_seconds": 6.683128227,
+      "verify_run_seconds": 13.90162609,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -2601,9 +2601,9 @@
           "rare_spawn_skipped": 6
         },
         "main_hand": {
-          "eligible": 262,
-          "sourced": 182,
-          "rare_spawn_skipped": 25
+          "eligible": 263,
+          "sourced": 183,
+          "rare_spawn_skipped": 26
         },
         "neck": {
           "eligible": 22,
@@ -3448,18 +3448,18 @@
               "dps_delta": -0.350469188
             },
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.368483123
-            },
-            {
               "item_id": 1491,
               "item_name": "Ring of Precision",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
               "dps_delta": -0.486574419
+            },
+            {
+              "item_id": 1156,
+              "item_name": "Lavishly Jeweled Ring",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Gilnid",
+              "dps_delta": -0.58830174
             }
           ],
           "runners_up": [
@@ -3469,9 +3469,9 @@
               "source": "An Audience with the King"
             },
             {
-              "item_id": 6748,
-              "source_kind": "quest",
-              "source": "Willix the Importer"
+              "item_id": 1491,
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps"
             }
           ],
           "kinds": [
@@ -3486,7 +3486,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 1491,
-              "rank": 6,
+              "rank": 5,
               "source": "Blackfathom Deeps",
               "dps_delta": -0.49
             },
@@ -3515,18 +3515,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.176400709
-            },
-            {
               "item_id": 1491,
               "item_name": "Ring of Precision",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
               "dps_delta": -0.294492005
+            },
+            {
+              "item_id": 1156,
+              "item_name": "Lavishly Jeweled Ring",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Gilnid",
+              "dps_delta": -0.396219325
             },
             {
               "item_id": 2933,
@@ -3539,14 +3539,14 @@
           ],
           "runners_up": [
             {
-              "item_id": 6748,
-              "source_kind": "quest",
-              "source": "Willix the Importer"
-            },
-            {
               "item_id": 1491,
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps"
+            },
+            {
+              "item_id": 1156,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Gilnid"
             }
           ],
           "not_with": [
@@ -3555,7 +3555,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 1491,
-              "rank": 6,
+              "rank": 5,
               "source": "Blackfathom Deeps",
               "dps_delta": -0.29,
               "not_with": [
@@ -3563,7 +3563,7 @@
               ],
               "next": {
                 "item_id": 1156,
-                "rank": 7,
+                "rank": 6,
                 "source": "The Deadmines: Gilnid",
                 "dps_delta": -0.4
               }
@@ -3578,9 +3578,9 @@
               ],
               "next": {
                 "item_id": 6748,
-                "rank": 4,
+                "rank": 8,
                 "source": "Willix the Importer",
-                "dps_delta": -0.18
+                "dps_delta": -0.41
               }
             },
             "rep": {
@@ -3594,7 +3594,7 @@
               ],
               "next": {
                 "item_id": 271911,
-                "rank": 8,
+                "rank": 7,
                 "source": "Theramore Expeditionary Force",
                 "dps_delta": -0.4,
                 "standing": "honored"
@@ -3612,7 +3612,7 @@
             },
             "world": {
               "item_id": 1491,
-              "rank": 6,
+              "rank": 5,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.29,
@@ -3980,8 +3980,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.018859397,
-      "verify_run_seconds": 19.383673458999997,
+      "weights_run_seconds": 6.981080445,
+      "verify_run_seconds": 23.117518205,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -4024,9 +4024,9 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 426,
-          "sourced": 296,
-          "rare_spawn_skipped": 37
+          "eligible": 427,
+          "sourced": 297,
+          "rare_spawn_skipped": 38
         },
         "neck": {
           "eligible": 48,
@@ -4340,10 +4340,10 @@
               "dps_delta": -0.82
             },
             "quest": {
-              "item_id": 7750,
-              "rank": 9,
-              "source": "Vorrel's Revenge",
-              "dps_delta": -0.96
+              "item_id": 270023,
+              "rank": 11,
+              "source": "Deathstalkers in Shadowfang",
+              "dps_delta": -1.09
             }
           }
         },
@@ -4859,13 +4859,6 @@
           "dps_delta": 1.500700074833631,
           "alternatives": [
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.368483123
-            },
-            {
               "item_id": 17694,
               "item_name": "Band of the Fist",
               "source_kind": "quest",
@@ -4878,18 +4871,25 @@
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
               "dps_delta": -0.486574419
+            },
+            {
+              "item_id": 1156,
+              "item_name": "Lavishly Jeweled Ring",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Gilnid",
+              "dps_delta": -0.58830174
             }
           ],
           "runners_up": [
             {
-              "item_id": 6748,
-              "source_kind": "quest",
-              "source": "Willix the Importer"
-            },
-            {
               "item_id": 17694,
               "source_kind": "quest",
               "source": "Allegiance to the Old Gods"
+            },
+            {
+              "item_id": 1491,
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps"
             }
           ],
           "kinds": [
@@ -4904,15 +4904,15 @@
           "by_kind": {
             "dungeon": {
               "item_id": 1491,
-              "rank": 6,
+              "rank": 5,
               "source": "Blackfathom Deeps",
               "dps_delta": -0.49
             },
             "quest": {
-              "item_id": 6748,
+              "item_id": 17694,
               "rank": 3,
-              "source": "Willix the Importer",
-              "dps_delta": -0.37
+              "source": "Allegiance to the Old Gods",
+              "dps_delta": -0.4
             },
             "world": {
               "item_id": 13097,
@@ -4947,12 +4947,11 @@
               "dps_delta": -0.294492005
             },
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.513952186,
-              "verified": true
+              "item_id": 1156,
+              "item_name": "Lavishly Jeweled Ring",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Gilnid",
+              "dps_delta": -0.396219325
             }
           ],
           "runners_up": [
@@ -4973,7 +4972,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 1491,
-              "rank": 6,
+              "rank": 5,
               "source": "Blackfathom Deeps",
               "dps_delta": -0.29,
               "not_with": [
@@ -4981,24 +4980,24 @@
               ],
               "next": {
                 "item_id": 1156,
-                "rank": 7,
+                "rank": 6,
                 "source": "The Deadmines: Gilnid",
                 "dps_delta": -0.4
               }
             },
             "quest": {
-              "item_id": 6748,
+              "item_id": 17694,
               "rank": 3,
-              "source": "Willix the Importer",
-              "dps_delta": -0.51,
+              "source": "Allegiance to the Old Gods",
+              "dps_delta": -0.21,
               "not_with": [
-                6748
+                17694
               ],
               "next": {
-                "item_id": 17694,
-                "rank": 4,
-                "source": "Allegiance to the Old Gods",
-                "dps_delta": -0.21
+                "item_id": 6748,
+                "rank": 8,
+                "source": "Willix the Importer",
+                "dps_delta": -0.41
               }
             },
             "rep": {
@@ -5022,7 +5021,7 @@
               ],
               "next": {
                 "item_id": 272067,
-                "rank": 8,
+                "rank": 7,
                 "source": "Creeg Bothunk",
                 "dps_delta": -0.4,
                 "standing": "honored"
@@ -5030,7 +5029,7 @@
             },
             "world": {
               "item_id": 1491,
-              "rank": 6,
+              "rank": 5,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.29,
@@ -5356,7 +5355,7 @@
           "changed_slots": 10
         },
         "leveling_default": {
-          "dps": 102.7,
+          "dps": 103.1,
           "error": 0.1,
           "changed_slots": 2
         }
@@ -5396,8 +5395,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.018859397,
-      "verify_run_seconds": 18.039974396,
+      "weights_run_seconds": 6.981080445,
+      "verify_run_seconds": 20.592335257000002,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5440,9 +5439,9 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 418,
-          "sourced": 298,
-          "rare_spawn_skipped": 37
+          "eligible": 419,
+          "sourced": 299,
+          "rare_spawn_skipped": 38
         },
         "neck": {
           "eligible": 48,
@@ -6454,9 +6453,9 @@
               ],
               "next": {
                 "item_id": 6748,
-                "rank": 9,
+                "rank": 13,
                 "source": "Willix the Importer",
-                "dps_delta": -0.77
+                "dps_delta": -1.17
               }
             },
             "rep": {
@@ -6867,8 +6866,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Swiftwind"
       ],
-      "weights_run_seconds": 5.893456477,
-      "verify_run_seconds": 19.795641818,
+      "weights_run_seconds": 6.93181252,
+      "verify_run_seconds": 23.29725178,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -6911,9 +6910,9 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 577,
-          "sourced": 388,
-          "rare_spawn_skipped": 41
+          "eligible": 578,
+          "sourced": 389,
+          "rare_spawn_skipped": 42
         },
         "neck": {
           "eligible": 72,
@@ -7916,10 +7915,10 @@
                 281634
               ],
               "next": {
-                "item_id": 6748,
-                "rank": 9,
-                "source": "Willix the Importer",
-                "dps_delta": -0.77
+                "item_id": 17694,
+                "rank": 12,
+                "source": "Allegiance to the Old Gods",
+                "dps_delta": -1.02
               }
             },
             "rep": {
@@ -8215,7 +8214,7 @@
             },
             "vendor": {
               "item_id": 11304,
-              "rank": 30,
+              "rank": 29,
               "source": "Naela Trance",
               "dps_delta": -1.11
             }
@@ -8309,8 +8308,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Swiftwind"
       ],
-      "weights_run_seconds": 5.893456477,
-      "verify_run_seconds": 19.664495111999997,
+      "weights_run_seconds": 6.93181252,
+      "verify_run_seconds": 23.422765515,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -8353,9 +8352,9 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 569,
-          "sourced": 390,
-          "rare_spawn_skipped": 41
+          "eligible": 570,
+          "sourced": 391,
+          "rare_spawn_skipped": 42
         },
         "neck": {
           "eligible": 73,
@@ -9372,7 +9371,7 @@
               ],
               "next": {
                 "item_id": 271909,
-                "rank": 17,
+                "rank": 16,
                 "source": "Theramore Expeditionary Force",
                 "dps_delta": -1.95,
                 "standing": "honored"
@@ -9610,15 +9609,15 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 812,
-              "item_name": "Glowing Brightwood Staff",
+              "item_id": 13052,
+              "item_name": "Warmonger",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": 0
             },
             {
-              "item_id": 13052,
-              "item_name": "Warmonger",
+              "item_id": 13059,
+              "item_name": "Stoneraven",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": 0
@@ -9634,12 +9633,12 @@
           ],
           "runners_up": [
             {
-              "item_id": 812,
+              "item_id": 13052,
               "source_kind": "world_drop",
               "source": "World drop"
             },
             {
-              "item_id": 13052,
+              "item_id": 13059,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -9940,8 +9939,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.176985809,
-      "verify_run_seconds": 26.919967221,
+      "weights_run_seconds": 7.18542176,
+      "verify_run_seconds": 32.372686892000004,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -9984,9 +9983,9 @@
           "rare_spawn_skipped": 10
         },
         "main_hand": {
-          "eligible": 720,
-          "sourced": 491,
-          "rare_spawn_skipped": 45
+          "eligible": 721,
+          "sourced": 492,
+          "rare_spawn_skipped": 46
         },
         "neck": {
           "eligible": 99,
@@ -11153,10 +11152,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 812,
-              "item_name": "Glowing Brightwood Staff",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 12769,
+              "item_name": "Bleakwood Hew",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
               "dps_delta": 0
             },
             {
@@ -11176,9 +11175,9 @@
           ],
           "runners_up": [
             {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 12769,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             {
               "item_id": 13052,
@@ -11367,7 +11366,7 @@
             },
             "vendor": {
               "item_id": 11304,
-              "rank": 38,
+              "rank": 37,
               "source": "Naela Trance",
               "dps_delta": -2.59
             }
@@ -11476,8 +11475,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.176985809,
-      "verify_run_seconds": 26.324766103,
+      "weights_run_seconds": 7.18542176,
+      "verify_run_seconds": 31.919720088,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -11520,9 +11519,9 @@
           "rare_spawn_skipped": 10
         },
         "main_hand": {
-          "eligible": 715,
-          "sourced": 496,
-          "rare_spawn_skipped": 45
+          "eligible": 716,
+          "sourced": 497,
+          "rare_spawn_skipped": 46
         },
         "neck": {
           "eligible": 102,
@@ -13219,7 +13218,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 2314,
+      "no_source_count": 2313,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -13255,8 +13254,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Felstriker"
       ],
-      "weights_run_seconds": 4.534952635,
-      "verify_run_seconds": 48.176549285,
+      "weights_run_seconds": 5.332827093,
+      "verify_run_seconds": 57.750255535,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -13294,14 +13293,14 @@
           "rare_spawn_skipped": 10
         },
         "legs": {
-          "eligible": 617,
+          "eligible": 616,
           "sourced": 460,
           "rare_spawn_skipped": 11
         },
         "main_hand": {
-          "eligible": 1087,
-          "sourced": 664,
-          "rare_spawn_skipped": 52
+          "eligible": 1088,
+          "sourced": 665,
+          "rare_spawn_skipped": 53
         },
         "neck": {
           "eligible": 219,
@@ -13314,12 +13313,12 @@
           "rare_spawn_skipped": 25
         },
         "ranged": {
-          "eligible": 252,
+          "eligible": 253,
           "sourced": 138,
           "rare_spawn_skipped": 6
         },
         "shoulder": {
-          "eligible": 456,
+          "eligible": 455,
           "sourced": 340,
           "rare_spawn_skipped": 4
         },
@@ -15007,7 +15006,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 2313,
+      "no_source_count": 2312,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -15043,8 +15042,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Felstriker"
       ],
-      "weights_run_seconds": 4.534952635,
-      "verify_run_seconds": 47.784458719,
+      "weights_run_seconds": 5.332827093,
+      "verify_run_seconds": 58.232900330999996,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -15082,14 +15081,14 @@
           "rare_spawn_skipped": 10
         },
         "legs": {
-          "eligible": 612,
+          "eligible": 611,
           "sourced": 454,
           "rare_spawn_skipped": 11
         },
         "main_hand": {
-          "eligible": 1085,
-          "sourced": 672,
-          "rare_spawn_skipped": 52
+          "eligible": 1086,
+          "sourced": 673,
+          "rare_spawn_skipped": 53
         },
         "neck": {
           "eligible": 223,
@@ -15102,12 +15101,12 @@
           "rare_spawn_skipped": 25
         },
         "ranged": {
-          "eligible": 252,
+          "eligible": 253,
           "sourced": 136,
           "rare_spawn_skipped": 6
         },
         "shoulder": {
-          "eligible": 456,
+          "eligible": 455,
           "sourced": 340,
           "rare_spawn_skipped": 4
         },
@@ -16758,7 +16757,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 2314,
+      "no_source_count": 2313,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -16795,8 +16794,8 @@
         "off_hand: Felstriker",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 4.133658664,
-      "verify_run_seconds": 49.482367559000004,
+      "weights_run_seconds": 4.949231981,
+      "verify_run_seconds": 58.617755609999996,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -16834,14 +16833,14 @@
           "rare_spawn_skipped": 10
         },
         "legs": {
-          "eligible": 617,
+          "eligible": 616,
           "sourced": 460,
           "rare_spawn_skipped": 11
         },
         "main_hand": {
-          "eligible": 1087,
-          "sourced": 664,
-          "rare_spawn_skipped": 52
+          "eligible": 1088,
+          "sourced": 665,
+          "rare_spawn_skipped": 53
         },
         "neck": {
           "eligible": 219,
@@ -16854,12 +16853,12 @@
           "rare_spawn_skipped": 25
         },
         "ranged": {
-          "eligible": 252,
+          "eligible": 253,
           "sourced": 138,
           "rare_spawn_skipped": 6
         },
         "shoulder": {
-          "eligible": 456,
+          "eligible": 455,
           "sourced": 340,
           "rare_spawn_skipped": 4
         },
@@ -18567,7 +18566,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 2313,
+      "no_source_count": 2312,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -18604,8 +18603,8 @@
         "off_hand: Felstriker",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 4.133658664,
-      "verify_run_seconds": 48.870350353,
+      "weights_run_seconds": 4.949231981,
+      "verify_run_seconds": 57.588343155000004,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -18643,14 +18642,14 @@
           "rare_spawn_skipped": 10
         },
         "legs": {
-          "eligible": 612,
+          "eligible": 611,
           "sourced": 454,
           "rare_spawn_skipped": 11
         },
         "main_hand": {
-          "eligible": 1085,
-          "sourced": 672,
-          "rare_spawn_skipped": 52
+          "eligible": 1086,
+          "sourced": 673,
+          "rare_spawn_skipped": 53
         },
         "neck": {
           "eligible": 223,
@@ -18663,12 +18662,12 @@
           "rare_spawn_skipped": 25
         },
         "ranged": {
-          "eligible": 252,
+          "eligible": 253,
           "sourced": 136,
           "rare_spawn_skipped": 6
         },
         "shoulder": {
-          "eligible": 456,
+          "eligible": 455,
           "sourced": 340,
           "rare_spawn_skipped": 4
         },

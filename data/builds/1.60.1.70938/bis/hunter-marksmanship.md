@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 0000000000000000-0050150000000000-000000000000000000)
 
-Set DPS (verified): 95.6. Weights run: 5.0s. Verify run: 11.6s. 298 eligible items had no known source.
+Set DPS (verified): 95.6. Weights run: 5.9s. Verify run: 13.6s. 298 eligible items had no known source.
 
 Race sweep: night-elf 95.6 ± 0.1, high-order-skyborne 94.2 ± 0.1, human 94.2 ± 0.1, dwarf 91.6 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -40,9 +40,9 @@ No-known-source sample (15 of 298, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-0050552001300000-000000000000000000)
 
-Set DPS (verified): 148.0. Weights run: 4.9s. Verify run: 15.7s. 494 eligible items had no known source.
+Set DPS (verified): 147.5. Weights run: 5.7s. Verify run: 19.2s. 494 eligible items had no known source.
 
-Race sweep: night-elf 148.0 ± 0.1, human 146.4 ± 0.1, high-order-skyborne 146.4 ± 0.1, dwarf 143.0 ± 0.1 (dps); the guide race night-elf is best.
+Race sweep: night-elf 147.5 ± 0.1, high-order-skyborne 146.0 ± 0.1, human 145.9 ± 0.1, dwarf 142.5 ± 0.1 (dps); the guide race night-elf is best.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.148 ± 0.012, crit=1.028 ± 0.016 per rating point (14 rating = 1%, 14.396 per %), hit=1.356 ± 0.037 per rating point (10 rating = 1%, 13.562 per %), melee_haste=6.807 ± 0.662, intellect=3.386 ± 0.029, spell_power=not significant (0.000 ± 0.000)
 
@@ -58,21 +58,21 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | waist | Stalker's Leather Belt (252521) | Leatherworking [crafted] | 48.6 ranged_attack_power points (4.15 DPS) | yes | Highlander's Mail Girdle (20120, -0.68 DPS) [vendor]; Green Leather Belt (4257, -0.81 DPS) [crafted]; Highlander's Lizardhide Girdle (20105, -1.91 DPS, sim-verified) [rep] |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 66.6 ranged_attack_power points (5.69 DPS) | yes | Trapper's Leather Legguards (252517, -0.58 DPS, sim-verified) [crafted]; Petrolspill Leggings (9509, -1.93 DPS) [dungeon]; Troll's Bane Leggings (13114, -1.93 DPS) [world_drop] |
 | feet | Trapper's Leather Boots (252440) | Leatherworking [crafted] | 29.3 ranged_attack_power points (2.50 DPS) | yes | Feet of the Lynx (1121, -0.35 DPS) [world_drop]; Insignia Boots (4055, -0.35 DPS) [world_drop]; Acidic Walkers (9454, -0.83 DPS, sim-verified) [dungeon] |
-| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 26.6 ranged_attack_power points (2.27 DPS) | yes | Runemender's Seal (273031, -0.54 DPS) [world]; Ring of Precision (1491, -0.66 DPS) [dungeon]; Seal of Wrynn (2933, -1.90 DPS, sim-verified) [quest] |
-| finger2 | Monkey Ring (6748) | Willix the Importer [quest] | sim-verified (+0.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Runemender's Seal (273031, -0.15 DPS) [world]; Ring of Precision (1491, -0.27 DPS) [dungeon]; Seal of Wrynn (2933, -0.62 DPS, sim-verified) [quest] |
+| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 26.6 ranged_attack_power points (2.27 DPS) | yes | Runemender's Seal (273031, -0.54 DPS) [world]; Ring of Precision (1491, -0.66 DPS) [dungeon]; Protector's Band (19517, -0.66 DPS) [rep] |
+| finger2 | Seal of Wrynn (2933) | An Audience with the King [quest] | 23.0 ranged_attack_power points (1.96 DPS) | yes | Ring of Precision (1491, -0.35 DPS) [dungeon]; Protector's Band (19517, -0.35 DPS) [rep]; Runemender's Seal (273031, -0.57 DPS, sim-verified) [world] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Impaling Harpoon (5200) | The Deadmines: Captain Greenskin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Felbough Arm (273037, -0.02 DPS) [world]; Kam's Walking Stick (2280, -0.31 DPS) [dungeon]; Claw of the Shadowmancer (2912, -1.19 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | Crystalpine Stinger (13037) | World drop [world_drop] | sim-verified (+1.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Ironweaver (13137, -0.54 DPS) [world_drop]; Harpyclaw Short Bow (13019, -0.81 DPS) [world_drop]; Golemsight Long Gun (273029, -1.06 DPS, sim-verified) [dungeon] |
 
-**New at 30:** head: Enduring Cap; neck: Archmagister's Faceted Pendant; shoulder: Forest Tracker Epaulets; back: Sergeant Major's Cape; chest: Garb of Florid Feathers; wrist: Glowing Magical Bracelets; hands: Hotshot Pilot's Gloves; waist: Stalker's Leather Belt; legs: Ferine Leggings; feet: Trapper's Leather Boots; finger2: Monkey Ring; ranged: Crystalpine Stinger
+**New at 30:** head: Enduring Cap; neck: Archmagister's Faceted Pendant; shoulder: Forest Tracker Epaulets; back: Sergeant Major's Cape; chest: Garb of Florid Feathers; wrist: Glowing Magical Bracelets; hands: Hotshot Pilot's Gloves; waist: Stalker's Leather Belt; legs: Ferine Leggings; feet: Trapper's Leather Boots; finger2: Seal of Wrynn; ranged: Crystalpine Stinger
 
 No-known-source sample (15 of 494, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
 
 ### Band 40 (night-elf, 0000000000000000-0050552001521050-000000000000000000)
 
-Set DPS (verified): 231.3. Weights run: 5.0s. Verify run: 15.4s. 827 eligible items had no known source.
+Set DPS (verified): 231.3. Weights run: 5.8s. Verify run: 18.3s. 827 eligible items had no known source.
 
 Race sweep: night-elf 231.3 ± 0.1, human 230.4 ± 0.1, high-order-skyborne 230.2 ± 0.1, dwarf 227.2 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 827, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (night-elf, 5320000000000000-0050552001521050-000000000000000000)
 
-Set DPS (verified): 320.6. Weights run: 5.1s. Verify run: 21.5s. 1065 eligible items had no known source.
+Set DPS (verified): 320.6. Weights run: 5.9s. Verify run: 25.7s. 1065 eligible items had no known source.
 
 Race sweep: night-elf 320.6 ± 0.2, human 319.8 ± 0.2, high-order-skyborne 319.3 ± 0.2, dwarf 315.9 ± 0.2 (dps); the guide race night-elf is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1065, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (night-elf, 5320000500000000-0050552001521050-500000000000000000)
 
-Set DPS (verified): 477.7. Weights run: 5.1s. Verify run: 54.6s. 2314 eligible items had no known source.
+Set DPS (verified): 477.7. Weights run: 5.9s. Verify run: 65.0s. 2313 eligible items had no known source.
 
 Race sweep: night-elf 477.7 ± 0.3, high-order-skyborne 477.2 ± 0.3, human 476.0 ± 0.3, dwarf 467.7 ± 0.3 (dps); the guide race night-elf is best.
 
@@ -164,11 +164,11 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 
 **New at 60:** head: Black Dragonscale Helm; neck: Mark of Fordring; shoulder: Theramore Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Forest Stalker's Bracers; hands: Trueaim Gauntlets; waist: Ranger's Belt; legs: Sentinel's Chain Leggings; feet: Windreaver Greaves; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Burst of Knowledge; trinket2: Devilsaur Eye; main_hand: Legionite Glaive; ranged: Eaglehorn Long Bow
 
-No-known-source sample (15 of 2314, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
+No-known-source sample (15 of 2313, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
 
 ### Band 60, raid preset (night-elf, 5000000000000000-0052550011503051-500050030000000000)
 
-Set DPS (verified): 1093.2. Weights run: 3.5s. Verify run: 44.1s. 2314 eligible items had no known source.
+Set DPS (verified): 1093.2. Weights run: 4.1s. Verify run: 52.0s. 2313 eligible items had no known source.
 
 Race sweep: high-order-skyborne 1096.3 ± 0.8, night-elf 1093.2 ± 0.8, human 1087.7 ± 0.8, dwarf 1083.9 ± 0.8 (dps); high-order-skyborne beats the guide race night-elf by 3.2 (0.29%) ± 1.1, beyond error.
 
@@ -196,13 +196,13 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 
 **New at 60:** head: Black Dragonscale Helm; neck: Mark of Fordring; shoulder: Theramore Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Forest Stalker's Bracers; hands: Theramore Gloves; waist: Ranger's Belt; legs: Sentinel's Chain Leggings; feet: Beaststalker's Boots; finger1: Don Julio's Band; finger2: Innervating Band; trinket1: Blackhand's Breadth; trinket2: Smolderweb's Eye; main_hand: Legionite Glaive; ranged: Eaglehorn Long Bow
 
-No-known-source sample (15 of 2314, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
+No-known-source sample (15 of 2313, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
 
 ## Horde
 
 ### Band 20 (troll, 0000000000000000-0050150000000000-000000000000000000)
 
-Set DPS (verified): 93.0. Weights run: 5.0s. Verify run: 9.4s. 294 eligible items had no known source.
+Set DPS (verified): 93.0. Weights run: 5.9s. Verify run: 10.8s. 294 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 94.5 ± 0.1, orc 93.6 ± 0.1, troll 93.0 ± 0.1, tauren 90.6 ± 0.1 (dps); windshaper-skyborne beats the guide race troll by 1.5 (1.62%) ± 0.1, beyond error.
 
@@ -234,39 +234,39 @@ No-known-source sample (15 of 294, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 0000000000000000-0050552001300000-000000000000000000)
 
-Set DPS (verified): 144.3. Weights run: 4.9s. Verify run: 15.0s. 493 eligible items had no known source.
+Set DPS (verified): 144.3. Weights run: 5.7s. Verify run: 20.2s. 493 eligible items had no known source.
 
-Race sweep: windshaper-skyborne 145.7 ± 0.1, orc 144.9 ± 0.1, troll 144.3 ± 0.1, tauren 141.1 ± 0.1 (dps); windshaper-skyborne beats the guide race troll by 1.4 (0.94%) ± 0.1, beyond error.
+Race sweep: windshaper-skyborne 145.9 ± 0.1, orc 145.2 ± 0.1, troll 144.3 ± 0.1, tauren 141.1 ± 0.1 (dps); windshaper-skyborne beats the guide race troll by 1.6 (1.10%) ± 0.1, beyond error.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.148 ± 0.012, crit=1.028 ± 0.016 per rating point (14 rating = 1%, 14.396 per %), hit=1.356 ± 0.037 per rating point (10 rating = 1%, 13.562 per %), melee_haste=6.807 ± 0.662, intellect=3.386 ± 0.029, spell_power=not significant (0.000 ± 0.000)
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Enduring Cap (3020) | World drop [world_drop] | 54.2 ranged_attack_power points (4.62 DPS) | yes | Resilient Cap (14401, -0.52 DPS, sim-verified) [world_drop]; Nightsky Cowl (4039, -1.16 DPS) [world_drop]; Insignia Cap (4052, -1.44 DPS) [world_drop] |
+| head | Enduring Cap (3020) | World drop [world_drop] | 54.2 ranged_attack_power points (4.62 DPS) | yes | Resilient Cap (14401, -0.39 DPS, sim-verified) [world_drop]; Nightsky Cowl (4039, -1.16 DPS) [world_drop]; Insignia Cap (4052, -1.44 DPS) [world_drop] |
 | neck | Archmagister's Faceted Pendant (273049) | Shade of the Archmage [world] | 32.3 ranged_attack_power points (2.76 DPS) | yes | Kaleidoscope Chain (13084, -0.53 DPS) [world_drop]; Scout's Medallion (19537, -0.61 DPS) [rep] |
-| shoulder | Mantle of Woe (7750) | Vorrel's Revenge [quest] | 40.6 ranged_attack_power points (3.47 DPS) | yes | Death Speaker Mantle (6685, -0.29 DPS) [dungeon]; Forest Tracker Epaulets (2278, -0.51 DPS) [world_drop]; Feline Mantle (3748, -0.62 DPS) [dungeon] |
-| back | Tigerstrike Mantle (13108) | World drop [world_drop] | sim-verified (+0.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Hawkeye's Cloak (14593, -0.27 DPS) [world_drop]; Resilient Cape (14400, -0.42 DPS) [world_drop]; Darkspear Raider's Cloak (272078, -0.84 DPS, sim-verified) [vendor] |
-| chest | Garb of Florid Feathers (273026) | Excavation Site: Wetlands: Shadetooth [dungeon] | 79.1 ranged_attack_power points (6.75 DPS) | yes | Green Leather Armor (4255, -1.87 DPS, sim-verified) [crafted]; Resilient Tunic (14398, -2.50 DPS) [world_drop]; Resilient Robe (14405, -2.50 DPS) [world_drop] |
-| wrist | Glowing Magical Bracelets (13106) | World drop [world_drop] | 27.1 ranged_attack_power points (2.31 DPS) | yes | Nightsky Wristbands (6407, -0.35 DPS, sim-verified) [world_drop]; Insignia Bracers (6410, -0.70 DPS) [world_drop]; Hawkeye's Bracers (14590, -0.70 DPS) [world_drop] |
-| hands | Hotshot Pilot's Gloves (9491) | Gnomeregan [dungeon] | 39.7 ranged_attack_power points (3.39 DPS) | yes | Resilient Handgrips (14403, -0.91 DPS, sim-verified) [world_drop]; Cartilage Shapers (273054, -0.97 DPS) [world]; Shredder Operating Gloves (16740, -1.12 DPS) [quest] |
-| waist | Stalker's Leather Belt (252521) | Leatherworking [crafted] | 48.6 ranged_attack_power points (4.15 DPS) | yes | Defiler's Mail Girdle (20197, -0.68 DPS) [rep]; Green Leather Belt (4257, -0.81 DPS) [crafted]; Defiler's Lizardhide Girdle (20172, -1.91 DPS, sim-verified) [rep] |
-| legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 66.6 ranged_attack_power points (5.69 DPS) | yes | Trapper's Leather Legguards (252517, -0.70 DPS, sim-verified) [crafted]; Petrolspill Leggings (9509, -1.93 DPS) [dungeon]; Troll's Bane Leggings (13114, -1.93 DPS) [world_drop] |
-| feet | Trapper's Leather Boots (252440) | Leatherworking [crafted] | 29.3 ranged_attack_power points (2.50 DPS) | yes | Insignia Boots (4055, -0.35 DPS) [world_drop]; Warsong Boots (16977, -0.35 DPS) [quest]; Acidic Walkers (9454, -0.79 DPS, sim-verified) [dungeon] |
-| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 26.6 ranged_attack_power points (2.27 DPS) | yes | Runemender's Seal (273031, -0.54 DPS) [world]; Ring of Precision (1491, -0.66 DPS) [dungeon]; Legionnaire's Band (19513, -0.66 DPS) [rep] |
-| finger2 | Monkey Ring (6748) | Willix the Importer [quest] | 22.0 ranged_attack_power points (1.88 DPS) | yes | Ring of Precision (1491, -0.27 DPS) [dungeon]; Legionnaire's Band (19513, -0.27 DPS) [rep]; Runemender's Seal (273031, -1.13 DPS, sim-verified) [world] |
+| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | sim-verified (+1.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Feline Mantle (3748, -0.11 DPS) [dungeon]; Mantle of Thieves (2264, -0.27 DPS) [dungeon]; Death Speaker Mantle (6685, -1.48 DPS, sim-verified) [dungeon] |
+| back | Tigerstrike Mantle (13108) | World drop [world_drop] | sim-verified (+1.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Hawkeye's Cloak (14593, -0.27 DPS) [world_drop]; Resilient Cape (14400, -0.42 DPS) [world_drop]; Darkspear Raider's Cloak (272078, -1.08 DPS, sim-verified) [vendor] |
+| chest | Garb of Florid Feathers (273026) | Excavation Site: Wetlands: Shadetooth [dungeon] | 79.1 ranged_attack_power points (6.75 DPS) | yes | Green Leather Armor (4255, -1.69 DPS, sim-verified) [crafted]; Resilient Tunic (14398, -2.50 DPS) [world_drop]; Resilient Robe (14405, -2.50 DPS) [world_drop] |
+| wrist | Glowing Magical Bracelets (13106) | World drop [world_drop] | 27.1 ranged_attack_power points (2.31 DPS) | yes | Nightsky Wristbands (6407, -0.58 DPS) [world_drop]; Insignia Bracers (6410, -0.70 DPS) [world_drop]; Hawkeye's Bracers (14590, -0.70 DPS) [world_drop] |
+| hands | Hotshot Pilot's Gloves (9491) | Gnomeregan [dungeon] | 39.7 ranged_attack_power points (3.39 DPS) | yes | Resilient Handgrips (14403, -0.80 DPS, sim-verified) [world_drop]; Cartilage Shapers (273054, -0.97 DPS) [world]; Shredder Operating Gloves (16740, -1.12 DPS) [quest] |
+| waist | Stalker's Leather Belt (252521) | Leatherworking [crafted] | 48.6 ranged_attack_power points (4.15 DPS) | yes | Defiler's Mail Girdle (20197, -0.68 DPS) [rep]; Green Leather Belt (4257, -0.81 DPS) [crafted]; Defiler's Lizardhide Girdle (20172, -2.00 DPS, sim-verified) [rep] |
+| legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 66.6 ranged_attack_power points (5.69 DPS) | yes | Trapper's Leather Legguards (252517, -0.60 DPS, sim-verified) [crafted]; Petrolspill Leggings (9509, -1.93 DPS) [dungeon]; Troll's Bane Leggings (13114, -1.93 DPS) [world_drop] |
+| feet | Trapper's Leather Boots (252440) | Leatherworking [crafted] | 29.3 ranged_attack_power points (2.50 DPS) | yes | Insignia Boots (4055, -0.35 DPS) [world_drop]; Warsong Boots (16977, -0.35 DPS) [quest]; Acidic Walkers (9454, -0.89 DPS, sim-verified) [dungeon] |
+| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 26.6 ranged_attack_power points (2.27 DPS) | yes | Legionnaire's Band (19513, -0.66 DPS) [rep]; Azora's Will (4999, -0.83 DPS) [world_drop]; Runemender's Seal (273031, -1.85 DPS, sim-verified) [world] |
+| finger2 | Ring of Precision (1491) | Blackfathom Deeps [dungeon] | sim-verified (+0.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Legionnaire's Band (19513, +0.00 DPS) [rep]; Azora's Will (4999, -0.17 DPS) [world_drop]; Runemender's Seal (273031, -0.81 DPS, sim-verified) [world] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Crescent Staff (6505) | Leaders of the Fang [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Impaling Harpoon (5200, -0.04 DPS) [dungeon]; Felbough Arm (273037, -0.06 DPS) [world]; Claw of the Shadowmancer (2912, -0.78 DPS, sim-verified) [world_drop] |
+| main_hand | Crescent Staff (6505) | Leaders of the Fang [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Impaling Harpoon (5200, -0.04 DPS) [dungeon]; Felbough Arm (273037, -0.06 DPS) [world]; Claw of the Shadowmancer (2912, -0.68 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | Crystalpine Stinger (13037) | World drop [world_drop] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Ironweaver (13137, -0.54 DPS) [world_drop]; Golemsight Long Gun (273029, -0.72 DPS, sim-verified) [dungeon]; Harpyclaw Short Bow (13019, -0.81 DPS) [world_drop] |
 
-**New at 30:** head: Enduring Cap; neck: Archmagister's Faceted Pendant; shoulder: Mantle of Woe; back: Tigerstrike Mantle; chest: Garb of Florid Feathers; wrist: Glowing Magical Bracelets; hands: Hotshot Pilot's Gloves; waist: Stalker's Leather Belt; legs: Ferine Leggings; feet: Trapper's Leather Boots; finger2: Monkey Ring; main_hand: Crescent Staff; ranged: Crystalpine Stinger
+**New at 30:** head: Enduring Cap; neck: Archmagister's Faceted Pendant; shoulder: Forest Tracker Epaulets; back: Tigerstrike Mantle; chest: Garb of Florid Feathers; wrist: Glowing Magical Bracelets; hands: Hotshot Pilot's Gloves; waist: Stalker's Leather Belt; legs: Ferine Leggings; feet: Trapper's Leather Boots; finger2: Ring of Precision; main_hand: Crescent Staff; ranged: Crystalpine Stinger
 
 No-known-source sample (15 of 493, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 5000 Coral Band
 
 ### Band 40 (troll, 0000000000000000-0050552001521050-000000000000000000)
 
-Set DPS (verified): 226.9. Weights run: 5.0s. Verify run: 14.7s. 817 eligible items had no known source.
+Set DPS (verified): 226.9. Weights run: 5.8s. Verify run: 18.2s. 817 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 229.3 ± 0.1, orc 227.9 ± 0.1, troll 226.9 ± 0.1, tauren 222.6 ± 0.1 (dps); windshaper-skyborne beats the guide race troll by 2.4 (1.04%) ± 0.2, beyond error.
 
@@ -276,7 +276,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 |---|---|---|---|---|---|
 | head | Corpseshroud (10574) | Razorfen Downs [dungeon] | 101.6 ranged_attack_power points (8.82 DPS) | yes | Thinking Cap (2624, -2.09 DPS, sim-verified) [world]; Miner's Hat of the Deep (9429, -2.16 DPS) [dungeon]; Papal Fez (9431, -2.16 DPS) [dungeon] |
 | neck | Archmagister's Faceted Pendant (273049) | Shade of the Archmage [world] | 39.0 ranged_attack_power points (3.39 DPS) | yes | Scout's Medallion (19536, -0.35 DPS) [rep]; Darkspear Warding Pendant (272074, -0.65 DPS) [vendor]; Glowing Eye of Mordresh (10769, -0.96 DPS, sim-verified) [dungeon] |
-| shoulder | Windchaser Amice (14432) | World drop [world_drop] | sim-verified (+0.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Sheepshear Mantle (13115, -0.44 DPS, sim-verified) [world_drop]; Inquisitor's Shawl (19507, -0.83 DPS) [dungeon]; Mantle of Woe (7750, -1.22 DPS) [quest] |
+| shoulder | Windchaser Amice (14432) | World drop [world_drop] | sim-verified (+0.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Sheepshear Mantle (13115, -0.44 DPS, sim-verified) [world_drop]; Inquisitor's Shawl (19507, -0.83 DPS) [dungeon]; Mistscape Mantle (4734, -1.61 DPS) [dungeon] |
 | back | Darkspear Raider's Cloak (272077) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackforge Cape (6424, -1.17 DPS) [dungeon]; Glyphed Cloak (4732, -1.57 DPS) [world_drop]; Resilient Cape (14400, -1.96 DPS) [world_drop] |
 | chest | Icemail Jerkin (1981) | World drop [world_drop] | sim-verified (+5.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Red Mageweave Vest (10007, -1.26 DPS) [crafted]; Tough Scorpid Breastplate (8203, -1.42 DPS) [crafted]; Garb of Florid Feathers (273026, -5.11 DPS, sim-verified) [dungeon] |
 | wrist | Tough Scorpid Bracers (8205) | Leatherworking [crafted] | 49.3 ranged_attack_power points (4.28 DPS) | yes | Warden's Wristbands (14600, -0.32 DPS) [world_drop]; Green Leather Bracers (4259, -0.67 DPS) [crafted]; Windchaser Cuffs (14429, -1.27 DPS, sim-verified) [world_drop] |
@@ -298,7 +298,7 @@ No-known-source sample (15 of 817, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 5320000000000000-0050552001521050-000000000000000000)
 
-Set DPS (verified): 317.9. Weights run: 5.1s. Verify run: 21.3s. 1056 eligible items had no known source.
+Set DPS (verified): 317.9. Weights run: 5.9s. Verify run: 24.7s. 1056 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 321.3 ± 0.2, orc 320.3 ± 0.2, troll 317.9 ± 0.2, tauren 313.1 ± 0.2 (dps); windshaper-skyborne beats the guide race troll by 3.4 (1.07%) ± 0.3, beyond error.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1056, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (troll, 5320000500000000-0050552001521050-500000000000000000)
 
-Set DPS (verified): 466.2. Weights run: 5.1s. Verify run: 54.7s. 2313 eligible items had no known source.
+Set DPS (verified): 466.2. Weights run: 5.9s. Verify run: 65.6s. 2312 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 469.0 ± 0.3, orc 468.4 ± 0.3, troll 466.2 ± 0.3, tauren 458.7 ± 0.3 (dps); windshaper-skyborne beats the guide race troll by 2.8 (0.60%) ± 0.4, beyond error.
 
@@ -358,11 +358,11 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 
 **New at 60:** head: Black Dragonscale Helm; neck: Mark of Fordring; shoulder: Darkspear Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Forest Stalker's Bracers; hands: Raider Gloves; waist: Ranger's Belt; legs: Outrider's Chain Leggings; feet: Windreaver Greaves; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Burst of Knowledge; trinket2: Devilsaur Eye; main_hand: Legionite Glaive; ranged: Eaglehorn Long Bow
 
-No-known-source sample (15 of 2313, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod
+No-known-source sample (15 of 2312, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod
 
 ### Band 60, raid preset (troll, 5000000000000000-0052550011503051-500050030000000000)
 
-Set DPS (verified): 1073.6. Weights run: 3.5s. Verify run: 44.5s. 2313 eligible items had no known source.
+Set DPS (verified): 1073.6. Weights run: 4.1s. Verify run: 52.7s. 2312 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 1086.3 ± 0.8, orc 1073.8 ± 0.8, troll 1073.6 ± 0.8, tauren 1060.4 ± 0.8 (dps); windshaper-skyborne beats the guide race troll by 12.8 (1.19%) ± 1.1, beyond error.
 
@@ -390,5 +390,5 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 
 **New at 60:** head: Black Dragonscale Helm; neck: Mark of Fordring; shoulder: Darkspear Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Forest Stalker's Bracers; hands: Raider Gloves; waist: Ranger's Belt; legs: Outrider's Chain Leggings; feet: Beaststalker's Boots; finger1: Don Julio's Band; finger2: Innervating Band; trinket1: Blackhand's Breadth; trinket2: Rune of the Guard Captain; main_hand: Legionite Glaive; ranged: Eaglehorn Long Bow
 
-No-known-source sample (15 of 2313, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod
+No-known-source sample (15 of 2312, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod
 

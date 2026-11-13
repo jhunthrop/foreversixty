@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 0000000000000000-50212010000000000000-0000000000000000)
 
-Set DPS (verified): 53.1. Weights run: 5.5s. Verify run: 8.9s. 251 eligible items had no known source.
+Set DPS (verified): 53.1. Weights run: 6.2s. Verify run: 10.0s. 251 eligible items had no known source.
 
 Race sweep: night-elf 53.1 ± 0.0, high-order-skyborne 52.6 ± 0.0 (dps); the guide race night-elf is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 251, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-50212032123000000000-0000000000000000)
 
-Set DPS (verified): 113.3. Weights run: 6.2s. Verify run: 7.3s. 424 eligible items had no known source.
+Set DPS (verified): 113.3. Weights run: 6.9s. Verify run: 8.2s. 424 eligible items had no known source.
 
 Race sweep: night-elf 113.3 ± 0.1, high-order-skyborne 112.1 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -58,8 +58,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Prowler's Leather Belt (252459) | Leatherworking [crafted] | 29.2 attack_power points (3.19 DPS) | yes | Skulker's Leather Belt (252520, -0.04 DPS) [crafted]; Highlander's Chain Girdle (20090, -0.57 DPS) [rep]; Highlander's Leather Girdle (20117, -0.57 DPS) [rep] |
 | legs | Brawler's Leather Legguards (252516) | Leatherworking [crafted] | 30.8 attack_power points (3.36 DPS) | yes | Brawler's Leather Pants (252500, -0.22 DPS) [crafted]; Trapper's Leather Pants (252501, -0.22 DPS) [crafted]; Barbaric Leggings (5963, -0.41 DPS) [crafted] |
 | feet | Feet of the Lynx (1121) | World drop [world_drop] | 20.9 attack_power points (2.29 DPS) | yes | Brawler's Leather Boots (252439, -0.18 DPS) [crafted]; Insignia Boots (4055, -0.65 DPS) [world_drop]; Disjointed Shoes (277226, -0.98 DPS) [quest] |
-| finger1 | Protector's Band (19517) | Silverwing Sentinels [rep] | 23.2 attack_power points (2.53 DPS) | yes | Monkey Ring (6748, -1.11 DPS) [quest]; Seal of Wrynn (2933, -1.27 DPS) [quest]; Ring of Precision (1491, -1.31 DPS) [dungeon] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 21.6 attack_power points (2.36 DPS) | yes | Monkey Ring (6748, -0.95 DPS, sim-verified) [quest]; Seal of Wrynn (2933, -1.09 DPS) [quest]; Ring of Precision (1491, -1.13 DPS) [dungeon] |
+| finger1 | Protector's Band (19517) | Silverwing Sentinels [rep] | 23.2 attack_power points (2.53 DPS) | yes | Seal of Wrynn (2933, -1.27 DPS) [quest]; Ring of Precision (1491, -1.31 DPS) [dungeon]; Tiger Band (6749, -1.44 DPS) [quest] |
+| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 21.6 attack_power points (2.36 DPS) | yes | Ring of Precision (1491, -1.13 DPS) [dungeon]; Seal of Wrynn (2933, -1.14 DPS, sim-verified) [quest]; Tiger Band (6749, -1.27 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Viscous Hammer (13045, -2.34 DPS, sim-verified) [world_drop]; Cobalt Crusher (7730, -4.66 DPS) [dungeon]; Gnarled Ash Staff (791, -9.67 DPS) [world_drop] |
@@ -72,7 +72,7 @@ No-known-source sample (15 of 424, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-50212032123012123001-0000000000000000)
 
-Set DPS (verified): 178.3. Weights run: 7.4s. Verify run: 16.6s. 607 eligible items had no known source.
+Set DPS (verified): 178.3. Weights run: 8.9s. Verify run: 19.4s. 607 eligible items had no known source.
 
 Race sweep: night-elf 178.3 ± 0.1, high-order-skyborne 176.2 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -104,29 +104,29 @@ No-known-source sample (15 of 607, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0500220000000000-50212032123012123001-0100000000000000)
 
-Set DPS (verified): 267.7. Weights run: 7.7s. Verify run: 30.2s. 817 eligible items had no known source.
+Set DPS (verified): 267.7. Weights run: 9.0s. Verify run: 21.9s. 817 eligible items had no known source.
 
 Race sweep: night-elf 267.7 ± 0.2, high-order-skyborne 264.5 ± 0.2 (dps); the guide race night-elf is best.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.040 ± 0.002, agility=2.084 ± 0.029, crit=1.292 ± 0.038 per rating point (14 rating = 1%, 18.095 per %), hit=1.111 ± 0.094 per rating point (10 rating = 1%, 11.111 per %), melee_haste=5.242 ± 1.206
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.040 ± 0.002, agility=2.080 ± 0.029, crit=1.258 ± 0.038 per rating point (14 rating = 1%, 17.606 per %), hit=1.005 ± 0.090 per rating point (10 rating = 1%, 10.052 per %), melee_haste=not significant (4.533 ± 1.221)
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 48.3 attack_power points (6.99 DPS) | yes | White Bandit Mask (10008, -0.43 DPS) [crafted]; Knight-Lieutenant's Leather Headband (220850, -0.45 DPS) [vendor]; Helm of Fire (8348, -1.87 DPS) [crafted] |
-| neck | Skibi's Pendant (13089) | World drop [world_drop] | 37.3 attack_power points (5.39 DPS) | yes | Sentinel's Medallion (19539, -1.45 DPS, sim-verified) [rep] |
-| shoulder | Skulker's Leather Shoulder (252535) | Leatherworking [crafted] | 41.3 attack_power points (5.97 DPS) | yes | Failed Flying Experiment (9647, -0.01 DPS) [quest]; Prowler's Leather Shoulders (252534, -0.01 DPS) [crafted]; Knight-Lieutenant's Leather Shoulders (220852, -0.59 DPS) [vendor] |
-| back | Blackveil Cape (11626) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dark Phantom Cape (13122, -1.31 DPS, sim-verified) [world_drop]; Blisterbane Wrap (12552, -1.47 DPS) [dungeon]; Blackmetal Cape (9512, -2.37 DPS) [dungeon] |
-| chest | Grizzled Pelt (22274) | A Better Ingredient [quest] | 68.0 attack_power points (9.84 DPS) | yes | Warbear Harness (15064, -1.23 DPS, sim-verified) [crafted]; Mixologist's Tunic (12793, -1.51 DPS) [dungeon]; Quillward Harness (10583, -1.75 DPS) [dungeon] |
-| wrist | Deepfury Bracers (13120) | World drop [world_drop] | 39.4 attack_power points (5.70 DPS) | yes | Skulker's Leather Bracers (252540, -0.92 DPS) [crafted]; Prowler's Leather Bracers (252539, -0.94 DPS) [crafted]; Pridelord Bands (14672, -1.21 DPS) [world_drop] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | sim-verified (+2.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Serpentskin Gloves (8260, +0.00 DPS) [world_drop]; Prowler's Leather Gauntlets (252547, +0.00 DPS) [crafted]; Skulker's Leather Gauntlets (252548, -2.30 DPS, sim-verified) [crafted] |
-| waist | Skulker's Leather Waistguard (252474) | Leatherworking [crafted] | 53.7 attack_power points (7.76 DPS) | yes | Prowler's Leather Waistguard (252473, -0.01 DPS) [crafted]; Girdle of Beastial Fury (11686, -1.06 DPS) [dungeon]; Highlander's Leather Girdle (20115, -2.25 DPS) [rep] |
-| legs | Gryphon Rider's Leggings (9652) | Saving Sharpbeak [quest] | 61.9 attack_power points (8.95 DPS) | yes | Serpentskin Leggings (8262, -0.29 DPS) [world_drop]; Knight's Leather Pants (220858, -2.12 DPS) [vendor]; Basilisk Hide Pants (1718, -2.62 DPS) [world_drop] |
-| feet | Skulker's Leather Boots (252469) | Leatherworking [crafted] | 49.5 attack_power points (7.16 DPS) | yes | Prowler's Leather Boots (252468, -0.01 DPS) [crafted]; Shadefiend Boots (11675, -0.90 DPS) [dungeon]; Albino Crocscale Boots (17728, -1.14 DPS) [dungeon] |
-| finger1 | Protector's Band (19516) | Silverwing Sentinels [rep] | 39.2 attack_power points (5.66 DPS) | yes | Masons Fraternity Ring (9533, -1.44 DPS) [quest]; Ring of the Underwood (2951, -2.06 DPS) [world_drop]; Falcon's Hook (7552, -2.07 DPS) [dungeon] |
-| finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 31.1 attack_power points (4.50 DPS) | yes | Masons Fraternity Ring (9533, -0.28 DPS) [quest]; Ring of the Underwood (2951, -0.90 DPS) [world_drop]; Falcon's Hook (7552, -0.90 DPS) [dungeon] |
-| trinket1 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (+2.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Ankh of Life (1713, -1.94 DPS, sim-verified) [world_drop] |
-| main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | sim-verified (+1.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Glowing Brightwood Staff (812, -1.37 DPS, sim-verified) [world_drop]; Taran Icebreaker (2915, -1.39 DPS) [world_drop]; Dark Iron Pulverizer (11608, -6.05 DPS) [crafted] |
+| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 48.3 attack_power points (6.97 DPS) | yes | Knight-Lieutenant's Leather Headband (220850, -0.67 DPS) [vendor]; White Bandit Mask (10008, -1.23 DPS, sim-verified) [crafted]; Helm of Fire (8348, -1.87 DPS) [crafted] |
+| neck | Skibi's Pendant (13089) | World drop [world_drop] | 37.2 attack_power points (5.37 DPS) | yes | Sentinel's Medallion (19540, -2.07 DPS) [rep] |
+| shoulder | Skulker's Leather Shoulder (252535) | Leatherworking [crafted] | 41.2 attack_power points (5.95 DPS) | yes | Failed Flying Experiment (9647, -0.01 DPS) [quest]; Prowler's Leather Shoulders (252534, -0.01 DPS) [crafted]; Knight-Lieutenant's Leather Shoulders (220852, -0.81 DPS) [vendor] |
+| back | Blackveil Cape (11626) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dark Phantom Cape (13122, -1.42 DPS, sim-verified) [world_drop]; Blisterbane Wrap (12552, -1.47 DPS) [dungeon]; Blackmetal Cape (9512, -2.37 DPS) [dungeon] |
+| chest | Grizzled Pelt (22274) | A Better Ingredient [quest] | 68.0 attack_power points (9.81 DPS) | yes | Warbear Harness (15064, -1.10 DPS, sim-verified) [crafted]; Mixologist's Tunic (12793, -1.51 DPS) [dungeon]; Quillward Harness (10583, -1.75 DPS) [dungeon] |
+| wrist | Deepfury Bracers (13120) | World drop [world_drop] | 39.4 attack_power points (5.68 DPS) | yes | Skulker's Leather Bracers (252540, -0.92 DPS) [crafted]; Prowler's Leather Bracers (252539, -0.93 DPS) [crafted]; Pridelord Bands (14672, -1.21 DPS) [world_drop] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | sim-verified (+2.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Serpentskin Gloves (8260, +0.00 DPS) [world_drop]; Prowler's Leather Gauntlets (252547, +0.00 DPS) [crafted]; Skulker's Leather Gauntlets (252548, -2.79 DPS, sim-verified) [crafted] |
+| waist | Skulker's Leather Waistguard (252474) | Leatherworking [crafted] | 53.6 attack_power points (7.73 DPS) | yes | Prowler's Leather Waistguard (252473, -0.01 DPS) [crafted]; Girdle of Beastial Fury (11686, -1.05 DPS) [dungeon]; Highlander's Leather Girdle (20115, -2.31 DPS) [rep] |
+| legs | Gryphon Rider's Leggings (9652) | Saving Sharpbeak [quest] | 61.8 attack_power points (8.92 DPS) | yes | Serpentskin Leggings (8262, -0.29 DPS) [world_drop]; Knight's Leather Pants (220858, -2.33 DPS) [vendor]; Basilisk Hide Pants (1718, -2.61 DPS) [world_drop] |
+| feet | Skulker's Leather Boots (252469) | Leatherworking [crafted] | 49.5 attack_power points (7.14 DPS) | yes | Prowler's Leather Boots (252468, -0.01 DPS) [crafted]; Shadefiend Boots (11675, -0.89 DPS) [dungeon]; Albino Crocscale Boots (17728, -1.14 DPS) [dungeon] |
+| finger1 | Protector's Band (19516) | Silverwing Sentinels [rep] | 39.1 attack_power points (5.64 DPS) | yes | Masons Fraternity Ring (9533, -1.44 DPS) [quest]; Ring of the Underwood (2951, -2.05 DPS) [world_drop]; Falcon's Hook (7552, -2.06 DPS) [dungeon] |
+| finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 30.1 attack_power points (4.34 DPS) | yes | Masons Fraternity Ring (9533, -0.13 DPS) [quest]; Ring of the Underwood (2951, -0.75 DPS) [world_drop]; Falcon's Hook (7552, -0.75 DPS) [dungeon] |
+| trinket1 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Frozen Heart of the Mountain (249469, -2.94 DPS, sim-verified) [crafted] |
+| trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | sim-verified (+1.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Frozen Heart of the Mountain (249469, -1.38 DPS, sim-verified) [crafted] |
+| main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Taran Icebreaker (2915, -3.67 DPS, sim-verified) [world_drop]; Dark Iron Pulverizer (11608, -6.04 DPS) [crafted]; Soulkeeper (1607, -7.76 DPS) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 817, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0500220000000000-50212032123012123001-0550100000000000)
 
-Set DPS (verified): 457.6. Weights run: 7.5s. Verify run: 30.3s. 1988 eligible items had no known source.
+Set DPS (verified): 457.6. Weights run: 9.0s. Verify run: 34.5s. 1988 eligible items had no known source.
 
 Race sweep: night-elf 457.6 ± 0.3, high-order-skyborne 453.9 ± 0.3 (dps); the guide race night-elf is best.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0500220000000000-50230032023012125001-0550000000000000)
 
-Set DPS (verified): 1082.8. Weights run: 7.8s. Verify run: 58.4s. 1988 eligible items had no known source.
+Set DPS (verified): 1082.8. Weights run: 9.3s. Verify run: 68.3s. 1988 eligible items had no known source.
 
 Race sweep: night-elf 1082.8 ± 0.7, high-order-skyborne 1081.6 ± 0.7 (dps); the guide race night-elf is best.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-50212010000000000000-0000000000000000)
 
-Set DPS (verified): 52.2. Weights run: 5.5s. Verify run: 8.9s. 247 eligible items had no known source.
+Set DPS (verified): 52.2. Weights run: 6.2s. Verify run: 10.0s. 247 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 52.5 ± 0.0, tauren 52.2 ± 0.0 (dps); windshaper-skyborne beats the guide race tauren by 0.3 (0.59%) ± 0.0, beyond error.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-50212032123000000000-0000000000000000)
 
-Set DPS (verified): 111.6. Weights run: 6.2s. Verify run: 7.5s. 425 eligible items had no known source.
+Set DPS (verified): 111.6. Weights run: 6.9s. Verify run: 8.0s. 425 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 112.1 ± 0.1, tauren 111.6 ± 0.1 (dps); windshaper-skyborne beats the guide race tauren by 0.5 (0.45%) ± 0.1, beyond error.
 
@@ -252,8 +252,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Prowler's Leather Belt (252459) | Leatherworking [crafted] | 29.2 attack_power points (3.19 DPS) | yes | Skulker's Leather Belt (252520, -0.04 DPS) [crafted]; Defiler's Chain Girdle (20152, -0.57 DPS) [rep]; Defiler's Leather Girdle (20191, -0.57 DPS) [rep] |
 | legs | Brawler's Leather Legguards (252516) | Leatherworking [crafted] | 30.8 attack_power points (3.36 DPS) | yes | Brawler's Leather Pants (252500, -0.22 DPS) [crafted]; Trapper's Leather Pants (252501, -0.22 DPS) [crafted]; Barbaric Leggings (5963, -0.41 DPS) [crafted] |
 | feet | Feet of the Lynx (1121) | World drop [world_drop] | 20.9 attack_power points (2.29 DPS) | yes | Brawler's Leather Boots (252439, -0.18 DPS) [crafted]; Stomping Boots (3741, -0.60 DPS) [quest]; Insignia Boots (4055, -0.65 DPS) [world_drop] |
-| finger1 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 23.2 attack_power points (2.53 DPS) | yes | Band of the Fist (17694, -0.84 DPS) [quest]; Monkey Ring (6748, -1.11 DPS) [quest]; Ring of Precision (1491, -1.31 DPS) [dungeon] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 21.6 attack_power points (2.36 DPS) | yes | Band of the Fist (17694, -0.68 DPS, sim-verified) [quest]; Monkey Ring (6748, -0.93 DPS) [quest]; Ring of Precision (1491, -1.13 DPS) [dungeon] |
+| finger1 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 23.2 attack_power points (2.53 DPS) | yes | Band of the Fist (17694, -0.84 DPS) [quest]; Ring of Precision (1491, -1.31 DPS) [dungeon]; Tiger Band (6749, -1.44 DPS) [quest] |
+| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 21.6 attack_power points (2.36 DPS) | yes | Band of the Fist (17694, -0.68 DPS, sim-verified) [quest]; Ring of Precision (1491, -1.13 DPS) [dungeon]; Tiger Band (6749, -1.27 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Viscous Hammer (13045, -2.08 DPS, sim-verified) [world_drop]; Cobalt Crusher (7730, -4.66 DPS) [dungeon]; Gnarled Ash Staff (791, -9.67 DPS) [world_drop] |
@@ -266,7 +266,7 @@ No-known-source sample (15 of 425, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-50212032123012123001-0000000000000000)
 
-Set DPS (verified): 174.1. Weights run: 7.4s. Verify run: 18.7s. 606 eligible items had no known source.
+Set DPS (verified): 174.1. Weights run: 8.9s. Verify run: 21.7s. 606 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 175.1 ± 0.1, tauren 174.1 ± 0.1 (dps); windshaper-skyborne beats the guide race tauren by 0.9 (0.53%) ± 0.2, beyond error.
 
@@ -298,29 +298,29 @@ No-known-source sample (15 of 606, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0500220000000000-50212032123012123001-0100000000000000)
 
-Set DPS (verified): 263.5. Weights run: 7.7s. Verify run: 30.2s. 816 eligible items had no known source.
+Set DPS (verified): 263.5. Weights run: 9.0s. Verify run: 20.6s. 816 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 264.6 ± 0.2, tauren 263.5 ± 0.2 (dps); windshaper-skyborne beats the guide race tauren by 1.0 (0.40%) ± 0.3, beyond error.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.040 ± 0.002, agility=2.084 ± 0.029, crit=1.292 ± 0.038 per rating point (14 rating = 1%, 18.095 per %), hit=1.111 ± 0.094 per rating point (10 rating = 1%, 11.111 per %), melee_haste=5.242 ± 1.206
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.040 ± 0.002, agility=2.080 ± 0.029, crit=1.258 ± 0.038 per rating point (14 rating = 1%, 17.606 per %), hit=1.005 ± 0.090 per rating point (10 rating = 1%, 10.052 per %), melee_haste=not significant (4.533 ± 1.221)
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 48.3 attack_power points (6.99 DPS) | yes | White Bandit Mask (10008, -0.43 DPS) [crafted]; Blood Guard's Leather Headband (220851, -0.45 DPS) [vendor]; Undercity Reservist's Cap (20643, -0.72 DPS) [quest] |
-| neck | Skibi's Pendant (13089) | World drop [world_drop] | 37.3 attack_power points (5.39 DPS) | yes | Woven Ivy Necklace (19159, -1.49 DPS, sim-verified) [quest]; Scout's Medallion (19535, -1.78 DPS) [rep] |
-| shoulder | Skulker's Leather Shoulder (252535) | Leatherworking [crafted] | 41.3 attack_power points (5.97 DPS) | yes | Failed Flying Experiment (9647, -0.01 DPS) [quest]; Prowler's Leather Shoulders (252534, -0.01 DPS) [crafted]; Blood Guard's Leather Shoulders (220853, -0.59 DPS) [vendor] |
-| back | Blackveil Cape (11626) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dark Phantom Cape (13122, -1.26 DPS, sim-verified) [world_drop]; Blisterbane Wrap (12552, -1.47 DPS) [dungeon]; Blackmetal Cape (9512, -2.37 DPS) [dungeon] |
-| chest | Grizzled Pelt (22274) | A Better Ingredient [quest] | 68.0 attack_power points (9.84 DPS) | yes | Warbear Harness (15064, -1.16 DPS, sim-verified) [crafted]; Mixologist's Tunic (12793, -1.51 DPS) [dungeon]; Quillward Harness (10583, -1.75 DPS) [dungeon] |
-| wrist | Deepfury Bracers (13120) | World drop [world_drop] | 39.4 attack_power points (5.70 DPS) | yes | Skulker's Leather Bracers (252540, -0.92 DPS) [crafted]; Prowler's Leather Bracers (252539, -0.94 DPS) [crafted]; Pridelord Bands (14672, -1.21 DPS) [world_drop] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | sim-verified (+2.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Serpentskin Gloves (8260, +0.00 DPS) [world_drop]; Prowler's Leather Gauntlets (252547, +0.00 DPS) [crafted]; Skulker's Leather Gauntlets (252548, -2.08 DPS, sim-verified) [crafted] |
-| waist | Skulker's Leather Waistguard (252474) | Leatherworking [crafted] | 53.7 attack_power points (7.76 DPS) | yes | Prowler's Leather Waistguard (252473, -0.01 DPS) [crafted]; Girdle of Beastial Fury (11686, -1.06 DPS) [dungeon]; Defiler's Leather Girdle (20193, -2.25 DPS) [rep] |
-| legs | Serpentskin Leggings (8262) | World drop [world_drop] | 59.9 attack_power points (8.66 DPS) | yes | Stone Guard's Leather Pants (220859, -1.84 DPS, sim-verified) [vendor]; Basilisk Hide Pants (1718, -2.33 DPS) [world_drop]; Triprunner Dungarees (9624, -2.35 DPS) [quest] |
-| feet | Skulker's Leather Boots (252469) | Leatherworking [crafted] | 49.5 attack_power points (7.16 DPS) | yes | Prowler's Leather Boots (252468, -0.01 DPS) [crafted]; Shadefiend Boots (11675, -0.90 DPS) [dungeon]; Albino Crocscale Boots (17728, -1.14 DPS) [dungeon] |
-| finger1 | Legionnaire's Band (19511) | Warsong Outriders [rep] | 39.2 attack_power points (5.66 DPS) | yes | Masons Fraternity Ring (9533, -1.44 DPS) [quest]; Ring of the Underwood (2951, -2.06 DPS) [world_drop]; Falcon's Hook (7552, -2.07 DPS) [dungeon] |
-| finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 31.1 attack_power points (4.50 DPS) | yes | Masons Fraternity Ring (9533, -0.28 DPS) [quest]; Ring of the Underwood (2951, -0.90 DPS) [world_drop]; Falcon's Hook (7552, -0.90 DPS) [dungeon] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (+2.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Frozen Heart of the Mountain (249469, -1.70 DPS) [crafted] |
-| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Frozen Heart of the Mountain (249469, -1.32 DPS, sim-verified) [crafted] |
-| main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | sim-verified (+1.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Glowing Brightwood Staff (812, -1.03 DPS, sim-verified) [world_drop]; Taran Icebreaker (2915, -1.39 DPS) [world_drop]; Dark Iron Pulverizer (11608, -6.05 DPS) [crafted] |
+| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 48.3 attack_power points (6.97 DPS) | yes | Blood Guard's Leather Headband (220851, -0.67 DPS) [vendor]; Undercity Reservist's Cap (20643, -0.73 DPS) [quest]; White Bandit Mask (10008, -1.06 DPS, sim-verified) [crafted] |
+| neck | Skibi's Pendant (13089) | World drop [world_drop] | 37.2 attack_power points (5.37 DPS) | yes | Scout's Medallion (19535, -1.77 DPS) [rep]; Woven Ivy Necklace (19159, -1.89 DPS, sim-verified) [quest] |
+| shoulder | Skulker's Leather Shoulder (252535) | Leatherworking [crafted] | 41.2 attack_power points (5.95 DPS) | yes | Failed Flying Experiment (9647, -0.01 DPS) [quest]; Prowler's Leather Shoulders (252534, -0.01 DPS) [crafted]; Blood Guard's Leather Shoulders (220853, -0.81 DPS) [vendor] |
+| back | Blackveil Cape (11626) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blisterbane Wrap (12552, -1.47 DPS) [dungeon]; Dark Phantom Cape (13122, -1.82 DPS, sim-verified) [world_drop]; Blackmetal Cape (9512, -2.37 DPS) [dungeon] |
+| chest | Grizzled Pelt (22274) | A Better Ingredient [quest] | 68.0 attack_power points (9.81 DPS) | yes | Warbear Harness (15064, -1.14 DPS, sim-verified) [crafted]; Mixologist's Tunic (12793, -1.51 DPS) [dungeon]; Quillward Harness (10583, -1.75 DPS) [dungeon] |
+| wrist | Deepfury Bracers (13120) | World drop [world_drop] | 39.4 attack_power points (5.68 DPS) | yes | Prowler's Leather Bracers (252539, -0.93 DPS) [crafted]; Pridelord Bands (14672, -1.21 DPS) [world_drop]; Skulker's Leather Bracers (252540, -1.30 DPS, sim-verified) [crafted] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Serpentskin Gloves (8260, +0.00 DPS) [world_drop]; Prowler's Leather Gauntlets (252547, +0.00 DPS) [crafted]; Skulker's Leather Gauntlets (252548, -2.56 DPS, sim-verified) [crafted] |
+| waist | Skulker's Leather Waistguard (252474) | Leatherworking [crafted] | 53.6 attack_power points (7.73 DPS) | yes | Prowler's Leather Waistguard (252473, -0.01 DPS) [crafted]; Girdle of Beastial Fury (11686, -1.05 DPS) [dungeon]; Defiler's Leather Girdle (20193, -2.31 DPS) [rep] |
+| legs | Serpentskin Leggings (8262) | World drop [world_drop] | 59.8 attack_power points (8.63 DPS) | yes | Stone Guard's Leather Pants (220859, -2.26 DPS, sim-verified) [vendor]; Basilisk Hide Pants (1718, -2.33 DPS) [world_drop]; Triprunner Dungarees (9624, -2.34 DPS) [quest] |
+| feet | Skulker's Leather Boots (252469) | Leatherworking [crafted] | 49.5 attack_power points (7.14 DPS) | yes | Prowler's Leather Boots (252468, -0.01 DPS) [crafted]; Shadefiend Boots (11675, -0.89 DPS) [dungeon]; Albino Crocscale Boots (17728, -1.14 DPS) [dungeon] |
+| finger1 | Legionnaire's Band (19511) | Warsong Outriders [rep] | 39.1 attack_power points (5.64 DPS) | yes | Masons Fraternity Ring (9533, -1.44 DPS) [quest]; Ring of the Underwood (2951, -2.05 DPS) [world_drop]; Falcon's Hook (7552, -2.06 DPS) [dungeon] |
+| finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 30.1 attack_power points (4.34 DPS) | yes | Ring of the Underwood (2951, -0.75 DPS) [world_drop]; Falcon's Hook (7552, -0.75 DPS) [dungeon]; Masons Fraternity Ring (9533, -1.93 DPS, sim-verified) [quest] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (+3.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Frozen Heart of the Mountain (249469, -1.73 DPS) [crafted] |
+| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Mark of the Chosen (17774, -2.83 DPS, sim-verified) [quest] |
+| main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Taran Icebreaker (2915, -3.81 DPS, sim-verified) [world_drop]; Dark Iron Pulverizer (11608, -6.04 DPS) [crafted]; Soulkeeper (1607, -7.76 DPS) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0500220000000000-50212032123012123001-0550100000000000)
 
-Set DPS (verified): 451.9. Weights run: 7.5s. Verify run: 29.9s. 1992 eligible items had no known source.
+Set DPS (verified): 451.9. Weights run: 9.0s. Verify run: 33.6s. 1992 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 454.2 ± 0.3, tauren 451.9 ± 0.3 (dps); windshaper-skyborne beats the guide race tauren by 2.3 (0.51%) ± 0.4, beyond error.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 1992, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 0500220000000000-50230032023012125001-0550000000000000)
 
-Set DPS (verified): 1066.7. Weights run: 7.8s. Verify run: 58.5s. 1992 eligible items had no known source.
+Set DPS (verified): 1066.7. Weights run: 9.3s. Verify run: 68.5s. 1992 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 1077.5 ± 0.6, tauren 1066.7 ± 0.6 (dps); windshaper-skyborne beats the guide race tauren by 10.8 (1.02%) ± 0.9, beyond error.
 

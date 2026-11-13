@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 00000000000000000-0000000000000000000-0050230100000000)
 
-Set DPS (verified): 62.9. Weights run: 5.5s. Verify run: 7.5s. 199 eligible items had no known source.
+Set DPS (verified): 62.9. Weights run: 5.4s. Verify run: 7.3s. 199 eligible items had no known source.
 
 Race sweep: gnome 62.9 ± 0.0, human 62.9 ± 0.0 (dps); gnome beats the guide race human by 0.0 (0.01%) ± 0.1, inside error.
 
@@ -30,7 +30,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | finger2 | Lorekeeper's Ring (20431) | Silverwing Sentinels [rep] | 5.0 spell_power points (1.48 DPS) | yes | Furlfeather Ring (286745, -1.22 DPS, sim-verified) [world]; Band of Purification (12996, -1.23 DPS) [world_drop]; Lavishly Jeweled Ring (1156, -1.29 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Evocator's Blade (2567) | Blackfathom Deeps [dungeon] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Staff of the Blessed Seer (2271, -0.94 DPS, sim-verified) [dungeon]; Emberstone Staff (5201, -1.24 DPS) [dungeon]; Witching Stave (1484, -2.01 DPS) [dungeon] |
+| main_hand | Evocator's Blade (2567) | Blackfathom Deeps [dungeon] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Staff of the Blessed Seer (2271, -0.94 DPS, sim-verified) [dungeon]; Emberstone Staff (5201, -1.46 DPS) [dungeon]; Witching Stave (1484, -2.01 DPS) [dungeon] |
 | off_hand | Dwarven Tome (279898) | Important Heirlooms [quest] | 3.1 spell_power points (0.93 DPS) | yes | Antipodean Rod (2879, -0.57 DPS) [world_drop]; Onu's Patience (281292, -0.72 DPS) [quest]; Grayson's Torch (1172, -0.76 DPS) [quest] |
 | ranged | Sizzle Stick (8071) | Deviate Eradication [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Torchlight Wand (5240, +0.00 DPS) [quest]; Greater Magic Wand (11288, +0.00 DPS) [crafted]; Spark of the People's Militia (12296, -0.30 DPS) [quest] |
 
@@ -40,39 +40,39 @@ No-known-source sample (15 of 199, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 00000000000000000-0000000000000000000-1050235103001000)
 
-Set DPS (verified): 105.2. Weights run: 9.7s. Verify run: 4.6s. 326 eligible items had no known source.
+Set DPS (verified): 104.9. Weights run: 9.7s. Verify run: 8.1s. 326 eligible items had no known source.
 
-Race sweep: human 105.2 ± 0.1, gnome 104.5 ± 0.1 (dps); the guide race human is best.
+Race sweep: human 104.9 ± 0.1, gnome 104.2 ± 0.1 (dps); the guide race human is best.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.171 ± 0.008, crit=0.149 ± 0.004 per rating point (14 rating = 1%, 2.082 per %), hit=0.248 ± 0.011 per rating point (10 rating = 1%, 2.482 per %), spell_haste=not significant (0.030 ± 0.137), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.808 ± 0.001, fire_power=0.192 ± 0.000, spirit=not significant (0.205 ± 0.089)
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.023 ± 0.004, crit=0.071 ± 0.002 per rating point (14 rating = 1%, 0.988 per %), hit=0.110 ± 0.005 per rating point (10 rating = 1%, 1.100 per %), spell_haste=0.250 ± 0.062, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.794 ± 0.001, fire_power=0.206 ± 0.000, spirit=not significant (0.053 ± 0.052)
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 12.2 spell_power points (4.19 DPS) | yes | Filigreed Shadow Circlet (253981, -0.50 DPS, sim-verified) [crafted]; Silk Headband (7050, -1.11 DPS) [crafted]; Shadow Circlet (253955, -1.14 DPS) [crafted] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 1.5 spell_power points (0.52 DPS) | yes | Crystal Starfire Medallion (5003, -0.07 DPS) [world_drop]; Pendant of Myzrael (4614, -0.09 DPS) [dungeon]; Glowing Green Talisman (5002, -0.09 DPS) [world_drop] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 10.5 spell_power points (3.61 DPS) | yes | Invoker's Mantle (215365, -0.92 DPS) [crafted]; Death Speaker Mantle (6685, -1.01 DPS, sim-verified) [dungeon]; Moonlit Amice (11884, -1.21 DPS) [quest] |
-| back | Prelacy Cape (7004) | Researching the Corruption [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hillman's Cloak (3719, -0.08 DPS) [crafted]; Vine Pruner's Cloak (279835, -0.08 DPS) [quest]; Heavy Woolen Cloak (4311, -0.14 DPS) [crafted] |
-| chest | Tree Bark Jacket (1486) | Blackfathom Deeps [dungeon] | 13.0 spell_power points (4.46 DPS) | yes | Shadow Gown (253967, -0.16 DPS) [crafted]; Necrology Robes (2292, -0.28 DPS) [dungeon]; Beguiler Robes (7728, -0.44 DPS, sim-verified) [dungeon] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 spell_power points (3.08 DPS) | yes | Phoenix Bindings (210781, -2.48 DPS, sim-verified) [crafted]; Nightsky Wristbands (6407, -2.52 DPS) [world_drop]; Glowing Magical Bracelets (13106, -2.62 DPS) [world_drop] |
-| hands | Shilly Mitts (9609) | Gyrodrillmatic Excavationators [quest] | 8.8 spell_power points (3.03 DPS) | yes | Hands of Darkness (7047, -0.19 DPS) [crafted]; Ephemeral Grips (273034, -0.50 DPS, sim-verified) [world]; Serpent Gloves (5970, -0.63 DPS) [dungeon] |
-| waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 11.5 spell_power points (3.95 DPS) | yes | Belt of Arugal (6392, -0.47 DPS, sim-verified) [dungeon]; Ghamoo-ra's Bind (6908, -1.20 DPS) [dungeon]; Invoker's Cord (215366, -1.25 DPS) [crafted] |
-| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 13.8 spell_power points (4.75 DPS) | yes | Shadow Leggings (253993, -0.73 DPS, sim-verified) [crafted]; Filigreed Shadow Leggings (253943, -1.07 DPS) [crafted]; Necromancer Leggings (2277, -1.33 DPS) [world_drop] |
-| feet | Black Slippers (254007) | Tailoring [crafted] | 12.5 spell_power points (4.29 DPS) | yes | Gilded Slippers (254001, -1.22 DPS, sim-verified) [crafted]; Glinteye Slippers (273024, -1.47 DPS) [dungeon]; Spidersilk Boots (4320, -1.66 DPS) [crafted] |
-| finger1 | Lorekeeper's Ring (19525) | Silverwing Sentinels [rep] | 7.0 spell_power points (2.40 DPS) | yes | Ring of Power Regulation (273030, -0.34 DPS) [dungeon]; Minor Channeling Ring (1449, -0.57 DPS) [quest]; Runemender's Seal (273031, -0.60 DPS) [world] |
-| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 6.9 spell_power points (2.35 DPS) | yes | Ring of Power Regulation (273030, -0.29 DPS) [dungeon]; Minor Channeling Ring (1449, -0.52 DPS) [quest]; Runemender's Seal (273031, -0.55 DPS) [world] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 11.3 spell_power points (3.64 DPS) | yes | Filigreed Shadow Circlet (253981, -0.44 DPS, sim-verified) [crafted]; Silk Headband (7050, -0.74 DPS) [crafted]; Shadow Circlet (253955, -0.83 DPS) [crafted] |
+| neck | Pendant of Myzrael (4614) (or Glowing Green Talisman (5002)) | Razorfen Downs: Splinterbone Captain [dungeon] | 0.3 spell_power points (0.10 DPS) | yes | Glowing Green Talisman (5002, +0.00 DPS) [world_drop]; Kaleidoscope Chain (13084, -0.00 DPS) [world_drop]; Crystal Starfire Medallion (5003, -0.02 DPS) [world_drop] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 9.2 spell_power points (2.96 DPS) | yes | Invoker's Mantle (215365, -0.64 DPS, sim-verified) [crafted]; Moonlit Amice (11884, -0.71 DPS) [quest]; Death Speaker Mantle (6685, -0.95 DPS) [dungeon] |
+| back | Vine Pruner's Cloak (279835) | A Green Sample [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hillman's Cloak (3719, +0.00 DPS) [crafted]; Heavy Woolen Cloak (4311, -0.25 DPS) [crafted]; Caretaker's Cape (19533, -0.25 DPS) [rep] |
+| chest | Tree Bark Jacket (1486) | Blackfathom Deeps [dungeon] | 13.0 spell_power points (4.18 DPS) | yes | Necrology Robes (2292, -0.19 DPS, sim-verified) [dungeon]; Shadow Gown (253967, -0.74 DPS) [crafted]; Beguiler Robes (7728, -1.06 DPS) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 spell_power points (2.89 DPS) | yes | Phoenix Bindings (210781, -2.05 DPS, sim-verified) [crafted]; Windsong Bangles (263336, -2.57 DPS) [quest]; Nightsky Wristbands (6407, -2.80 DPS) [world_drop] |
+| hands | Ephemeral Grips (273034) | Arcane Anomaly [world] | sim-verified (+0.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Serpent Gloves (5970, -0.10 DPS) [dungeon]; Hands of Darkness (7047, -0.31 DPS, sim-verified) [crafted]; Gnoll Casting Gloves (892, -0.42 DPS) [world] |
+| waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 11.1 spell_power points (3.56 DPS) | yes | Belt of Arugal (6392, -0.56 DPS) [dungeon]; Ghamoo-ra's Bind (6908, -0.99 DPS) [dungeon]; Invoker's Cord (215366, -1.27 DPS) [crafted] |
+| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 12.5 spell_power points (4.01 DPS) | yes | Shadow Leggings (253993, -0.30 DPS) [crafted]; Filigreed Shadow Leggings (253943, -1.09 DPS) [crafted]; Necromancer Leggings (2277, -1.38 DPS) [world_drop] |
+| feet | Black Slippers (254007) | Tailoring [crafted] | 10.7 spell_power points (3.44 DPS) | yes | Glinteye Slippers (273024, -1.09 DPS) [dungeon]; Spidersilk Boots (4320, -1.16 DPS) [crafted]; Gilded Slippers (254001, -1.20 DPS, sim-verified) [crafted] |
+| finger1 | Lorekeeper's Ring (19525) | Silverwing Sentinels [rep] | 7.0 spell_power points (2.25 DPS) | yes | Ring of Power Regulation (273030, -0.32 DPS) [dungeon]; Minor Channeling Ring (1449, -0.63 DPS) [quest]; Runemender's Seal (273031, -1.14 DPS) [world] |
+| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 6.1 spell_power points (1.97 DPS) | yes | Ring of Power Regulation (273030, -0.04 DPS) [dungeon]; Minor Channeling Ring (1449, -0.34 DPS) [quest]; Runemender's Seal (273031, -0.86 DPS) [world] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hydrocane (9452, -1.65 DPS) [dungeon]; Tendonscraper Dagger (273053, -1.65 DPS) [world]; Soulstaff (249393, -4.84 DPS, sim-verified) [crafted] |
-| off_hand | Orb of Soran'ruk (6898) | The Orb of Soran'ruk [quest] | 9.0 spell_power points (3.08 DPS) | yes | Orb of Mystic Insight (249394, -0.57 DPS, sim-verified) [crafted]; Orb of Mistmantle (13031, -1.14 DPS) [world_drop]; Orb of Souls (249395, -1.29 DPS) [crafted] |
-| ranged | Thunderwood (13062) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gravestone Scepter (7001, -0.24 DPS, sim-verified) [quest]; Wand of Eventide (5214, -0.34 DPS) [world_drop]; Greater Mystic Wand (217287, -0.34 DPS) [crafted] |
+| main_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hydrocane (9452, -1.35 DPS) [dungeon]; Spine of the Devourer (273040, -1.35 DPS) [world]; Tendonscraper Dagger (273053, -1.37 DPS, sim-verified) [world] |
+| off_hand | Orb of Soran'ruk (6898) | The Orb of Soran'ruk [quest] | 9.0 spell_power points (2.89 DPS) | yes | Orb of Mystic Insight (249394, -0.60 DPS) [crafted]; Orb of Mistmantle (13031, -1.29 DPS) [world_drop]; Orb of Souls (249395, -1.51 DPS) [crafted] |
+| ranged | Thunderwood (13062) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wand of Eventide (5214, -0.32 DPS) [world_drop]; Greater Mystic Wand (217287, -0.32 DPS) [crafted]; Gravestone Scepter (7001, -0.35 DPS) [quest] |
 
-**New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Bloodmage Mantle; back: Prelacy Cape; chest: Tree Bark Jacket; wrist: Spidertank Oilrag; hands: Shilly Mitts; waist: Highlander's Cloth Girdle; legs: Gaze Dreamer Pants; feet: Black Slippers; finger1: Lorekeeper's Ring; finger2: Snake Hoop; main_hand: Swinetusk Shank; off_hand: Orb of Soran'ruk; ranged: Thunderwood
+**New at 30:** head: Holy Shroud; neck: Pendant of Myzrael; shoulder: Bloodmage Mantle; back: Vine Pruner's Cloak; chest: Tree Bark Jacket; wrist: Spidertank Oilrag; hands: Ephemeral Grips; waist: Highlander's Cloth Girdle; legs: Gaze Dreamer Pants; feet: Black Slippers; finger1: Lorekeeper's Ring; finger2: Snake Hoop; main_hand: Swinetusk Shank; off_hand: Orb of Soran'ruk; ranged: Thunderwood
 
 No-known-source sample (15 of 326, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5971 Feathered Cape; 6478 Rat Stompers
 
 ### Band 40 (human, 00000000000000000-0000000000000000000-2050235103101341)
 
-Set DPS (verified): 183.2. Weights run: 5.6s. Verify run: 11.9s. 455 eligible items had no known source.
+Set DPS (verified): 183.2. Weights run: 5.5s. Verify run: 10.3s. 455 eligible items had no known source.
 
 Race sweep: human 183.2 ± 0.2, gnome 182.1 ± 0.2 (dps); the guide race human is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 455, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 24000000000000000-0000000000000000000-2053235103101351)
 
-Set DPS (verified): 296.6. Weights run: 5.6s. Verify run: 9.8s. 594 eligible items had no known source.
+Set DPS (verified): 296.6. Weights run: 5.6s. Verify run: 9.7s. 594 eligible items had no known source.
 
 Race sweep: human 296.6 ± 0.2, gnome 294.6 ± 0.2 (dps); the guide race human is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 594, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 25522000000000000-0000000000000000000-2053235103101351)
 
-Set DPS (verified): 496.3. Weights run: 5.6s. Verify run: 30.4s. 1460 eligible items had no known source.
+Set DPS (verified): 496.3. Weights run: 5.5s. Verify run: 32.1s. 1460 eligible items had no known source.
 
 Race sweep: human 496.3 ± 0.4, gnome 494.2 ± 0.4 (dps); the guide race human is best.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1460, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 25500000033000000-0000000000000000000-0050355103101351)
 
-Set DPS (verified): 887.3. Weights run: 6.1s. Verify run: 33.0s. 1460 eligible items had no known source.
+Set DPS (verified): 887.3. Weights run: 6.1s. Verify run: 34.2s. 1460 eligible items had no known source.
 
 Race sweep: human 887.3 ± 0.7, gnome 884.2 ± 0.7 (dps); the guide race human is best.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 1460, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 00000000000000000-0000000000000000000-0050230100000000)
 
-Set DPS (verified): 61.9. Weights run: 5.5s. Verify run: 8.2s. 193 eligible items had no known source.
+Set DPS (verified): 61.9. Weights run: 5.4s. Verify run: 8.3s. 193 eligible items had no known source.
 
 Race sweep: undead 62.5 ± 0.0, orc 61.9 ± 0.0, troll 60.9 ± 0.0 (dps); undead beats the guide race orc by 0.6 (1.00%) ± 0.1, beyond error.
 
@@ -234,31 +234,31 @@ No-known-source sample (15 of 193, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 00000000000000000-0000000000000000000-1050235103001000)
 
-Set DPS (verified): 105.4. Weights run: 9.7s. Verify run: 5.0s. 319 eligible items had no known source.
+Set DPS (verified): 105.4. Weights run: 9.7s. Verify run: 5.5s. 319 eligible items had no known source.
 
 Race sweep: undead 105.7 ± 0.1, orc 105.4 ± 0.1, troll 103.9 ± 0.1 (dps); undead beats the guide race orc by 0.2 (0.22%) ± 0.1, beyond error.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.171 ± 0.008, crit=0.149 ± 0.004 per rating point (14 rating = 1%, 2.082 per %), hit=0.248 ± 0.011 per rating point (10 rating = 1%, 2.482 per %), spell_haste=not significant (0.030 ± 0.137), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.808 ± 0.001, fire_power=0.192 ± 0.000, spirit=not significant (0.205 ± 0.089)
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.170 ± 0.008, crit=0.147 ± 0.004 per rating point (14 rating = 1%, 2.052 per %), hit=0.261 ± 0.011 per rating point (10 rating = 1%, 2.612 per %), spell_haste=not significant (0.179 ± 0.131), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.809 ± 0.001, fire_power=0.191 ± 0.000, spirit=not significant (0.163 ± 0.077)
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 12.2 spell_power points (4.19 DPS) | yes | Filigreed Shadow Circlet (253981, -0.61 DPS, sim-verified) [crafted]; Silk Headband (7050, -1.11 DPS) [crafted]; Shadow Circlet (253955, -1.14 DPS) [crafted] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 1.5 spell_power points (0.52 DPS) | yes | Crystal Starfire Medallion (5003, -0.07 DPS) [world_drop]; Pendant of Myzrael (4614, -0.09 DPS) [dungeon]; Glowing Green Talisman (5002, -0.09 DPS) [world_drop] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 10.5 spell_power points (3.61 DPS) | yes | Death Speaker Mantle (6685, -0.92 DPS, sim-verified) [dungeon]; Invoker's Mantle (215365, -0.92 DPS) [crafted]; Mantle of Woe (7750, -1.20 DPS) [quest] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 12.0 spell_power points (4.10 DPS) | yes | Filigreed Shadow Circlet (253981, -0.61 DPS, sim-verified) [crafted]; Silk Headband (7050, -1.02 DPS) [crafted]; Shadow Circlet (253955, -1.06 DPS) [crafted] |
+| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 1.3 spell_power points (0.46 DPS) | yes | Crystal Starfire Medallion (5003, -0.06 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -0.11 DPS) [world]; Pendant of Myzrael (4614, -0.12 DPS) [dungeon] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 10.5 spell_power points (3.60 DPS) | yes | Invoker's Mantle (215365, -0.92 DPS) [crafted]; Death Speaker Mantle (6685, -0.92 DPS, sim-verified) [dungeon]; Magician's Mantle (12998, -1.37 DPS) [world_drop] |
 | back | Windsong Drape (15468) | Free at Last [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Heavy Woolen Cloak (4311, -0.34 DPS) [crafted]; Battle Healer's Cloak (19529, -0.34 DPS) [rep]; Hillman's Cloak (3719, -0.68 DPS, sim-verified) [crafted] |
-| chest | Tree Bark Jacket (1486) | Blackfathom Deeps [dungeon] | 13.0 spell_power points (4.46 DPS) | yes | Beguiler Robes (7728, -0.11 DPS) [dungeon]; Shadow Gown (253967, -0.16 DPS) [crafted]; Necrology Robes (2292, -0.28 DPS) [dungeon] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 spell_power points (3.08 DPS) | yes | Phoenix Bindings (210781, -2.23 DPS) [crafted]; Tabitha's Cuffs (251486, -2.45 DPS, sim-verified) [quest]; Nightsky Wristbands (6407, -2.52 DPS) [world_drop] |
+| chest | Tree Bark Jacket (1486) | Blackfathom Deeps [dungeon] | 13.0 spell_power points (4.45 DPS) | yes | Shadow Gown (253967, -0.22 DPS) [crafted]; Beguiler Robes (7728, -0.22 DPS) [dungeon]; Necrology Robes (2292, -0.28 DPS) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 spell_power points (3.08 DPS) | yes | Phoenix Bindings (210781, -2.23 DPS) [crafted]; Tabitha's Cuffs (251486, -2.45 DPS, sim-verified) [quest]; Nightsky Wristbands (6407, -2.56 DPS) [world_drop] |
 | hands | Ephemeral Grips (273034) | Arcane Anomaly [world] | 8.5 spell_power points (2.90 DPS) | yes | Serpent Gloves (5970, -0.50 DPS) [dungeon]; Hands of Darkness (7047, -0.54 DPS, sim-verified) [crafted]; Jutebraid Gloves (10654, -0.55 DPS) [quest] |
-| waist | Defiler's Cloth Girdle (20164) | The Defilers [rep] | 11.5 spell_power points (3.95 DPS) | yes | Belt of Arugal (6392, -0.33 DPS) [dungeon]; Warsong Sash (16975, -0.42 DPS, sim-verified) [quest]; Ghamoo-ra's Bind (6908, -1.20 DPS) [dungeon] |
-| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 13.8 spell_power points (4.75 DPS) | yes | Shadow Leggings (253993, -0.11 DPS) [crafted]; Filigreed Shadow Leggings (253943, -1.07 DPS) [crafted]; Necromancer Leggings (2277, -1.33 DPS) [world_drop] |
-| feet | Black Slippers (254007) | Tailoring [crafted] | 12.5 spell_power points (4.29 DPS) | yes | Gilded Slippers (254001, -1.22 DPS, sim-verified) [crafted]; Glinteye Slippers (273024, -1.47 DPS) [dungeon]; Spidersilk Boots (4320, -1.66 DPS) [crafted] |
-| finger1 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 spell_power points (2.40 DPS) | yes | Ring of Power Regulation (273030, -0.34 DPS) [dungeon]; Runemender's Seal (273031, -0.60 DPS) [world]; Solid Gold Band (279845, -0.68 DPS) [quest] |
-| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 6.9 spell_power points (2.35 DPS) | yes | Ring of Power Regulation (273030, -0.29 DPS) [dungeon]; Runemender's Seal (273031, -0.55 DPS) [world]; Solid Gold Band (279845, -0.63 DPS) [quest] |
+| waist | Defiler's Cloth Girdle (20164) | The Defilers [rep] | 11.5 spell_power points (3.94 DPS) | yes | Belt of Arugal (6392, -0.40 DPS) [dungeon]; Warsong Sash (16975, -0.42 DPS, sim-verified) [quest]; Ghamoo-ra's Bind (6908, -1.20 DPS) [dungeon] |
+| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 13.5 spell_power points (4.61 DPS) | yes | Shadow Leggings (253993, -0.05 DPS) [crafted]; Filigreed Shadow Leggings (253943, -0.99 DPS) [crafted]; Necromancer Leggings (2277, -1.20 DPS) [world_drop] |
+| feet | Black Slippers (254007) | Tailoring [crafted] | 12.4 spell_power points (4.23 DPS) | yes | Gilded Slippers (254001, -1.22 DPS, sim-verified) [crafted]; Glinteye Slippers (273024, -1.50 DPS) [dungeon]; Spidersilk Boots (4320, -1.60 DPS) [crafted] |
+| finger1 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 spell_power points (2.39 DPS) | yes | Ring of Power Regulation (273030, -0.34 DPS) [dungeon]; Runemender's Seal (273031, -0.68 DPS) [world]; Solid Gold Band (279845, -0.75 DPS) [quest] |
+| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 6.9 spell_power points (2.34 DPS) | yes | Ring of Power Regulation (273030, -0.29 DPS) [dungeon]; Runemender's Seal (273031, -0.63 DPS) [world]; Solid Gold Band (279845, -0.70 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hydrocane (9452, -1.65 DPS) [dungeon]; Tendonscraper Dagger (273053, -1.65 DPS) [world]; Soulstaff (249393, -5.03 DPS, sim-verified) [crafted] |
-| off_hand | Orb of Soran'ruk (6898) | The Orb of Soran'ruk [quest] | 9.0 spell_power points (3.08 DPS) | yes | Orb of Mystic Insight (249394, -0.71 DPS, sim-verified) [crafted]; Orb of Mistmantle (13031, -1.14 DPS) [world_drop]; Orb of Souls (249395, -1.29 DPS) [crafted] |
-| ranged | Thunderwood (13062) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gravestone Scepter (7001, -0.18 DPS) [quest]; Wand of Eventide (5214, -0.34 DPS) [world_drop]; Greater Mystic Wand (217287, -0.34 DPS) [crafted] |
+| main_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hydrocane (9452, -1.59 DPS) [dungeon]; Spine of the Devourer (273040, -1.59 DPS) [world]; Tendonscraper Dagger (273053, -2.04 DPS, sim-verified) [world] |
+| off_hand | Orb of Soran'ruk (6898) | The Orb of Soran'ruk [quest] | 9.0 spell_power points (3.08 DPS) | yes | Orb of Mystic Insight (249394, -0.71 DPS, sim-verified) [crafted]; Orb of Mistmantle (13031, -1.20 DPS) [world_drop]; Orb of Souls (249395, -1.38 DPS) [crafted] |
+| ranged | Thunderwood (13062) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gravestone Scepter (7001, -0.22 DPS) [quest]; Wand of Eventide (5214, -0.34 DPS) [world_drop]; Greater Mystic Wand (217287, -0.34 DPS) [crafted] |
 
 **New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Bloodmage Mantle; back: Windsong Drape; chest: Tree Bark Jacket; wrist: Spidertank Oilrag; hands: Ephemeral Grips; waist: Defiler's Cloth Girdle; legs: Gaze Dreamer Pants; feet: Black Slippers; finger1: Advisor's Ring; finger2: Snake Hoop; main_hand: Swinetusk Shank; off_hand: Orb of Soran'ruk; ranged: Thunderwood
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 319, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 00000000000000000-0000000000000000000-2050235103101341)
 
-Set DPS (verified): 183.1. Weights run: 5.6s. Verify run: 9.6s. 448 eligible items had no known source.
+Set DPS (verified): 183.1. Weights run: 5.5s. Verify run: 9.5s. 448 eligible items had no known source.
 
 Race sweep: orc 183.1 ± 0.2, undead 183.0 ± 0.2, troll 181.2 ± 0.2 (dps); the guide race orc is best.
 
@@ -290,7 +290,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | - | - |  |  |  |
 | main_hand | Staff of Jordan (873) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Illusionary Rod (7713, -8.78 DPS, sim-verified) [dungeon]; Hypnotic Blade (7714, -10.68 DPS) [dungeon]; Swinetusk Shank (6691, -12.80 DPS) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Twisted Nether Wand (249144) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Plaguerot Sprig (10766, +0.00 DPS) [dungeon]; Thunderwood (13062, +0.00 DPS) [world_drop]; Dancing Flame (6806, -0.04 DPS) [quest] |
+| ranged | Twisted Nether Wand (249144) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Plaguerot Sprig (10766, +0.00 DPS) [dungeon]; Thunderwood (13062, +0.00 DPS) [world_drop]; Greater Mystic Wand (217287, -0.40 DPS) [crafted] |
 
 **New at 40:** head: Spellpower Goggles Xtreme; neck: Triune Amulet; back: Icy Cloak; chest: Robe of the Magi; hands: Dreamweave Gloves; waist: Defiler's Cloth Girdle; legs: Red Mageweave Pants; feet: Fiery Slippers; finger1: Philanthropist's Ring; finger2: Advisor's Ring; trinket1: Ankh of Life; main_hand: Staff of Jordan; ranged: Twisted Nether Wand
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 448, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 24000000000000000-0000000000000000000-2053235103101351)
 
-Set DPS (verified): 296.2. Weights run: 5.6s. Verify run: 10.0s. 587 eligible items had no known source.
+Set DPS (verified): 296.2. Weights run: 5.6s. Verify run: 10.5s. 587 eligible items had no known source.
 
 Race sweep: undead 296.2 ± 0.2, orc 296.2 ± 0.2, troll 293.1 ± 0.2 (dps); undead beats the guide race orc by 0.0 (0.00%) ± 0.3, inside error.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 587, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 25522000000000000-0000000000000000000-2053235103101351)
 
-Set DPS (verified): 491.3. Weights run: 5.6s. Verify run: 30.9s. 1454 eligible items had no known source.
+Set DPS (verified): 491.3. Weights run: 5.5s. Verify run: 31.5s. 1454 eligible items had no known source.
 
 Race sweep: orc 491.3 ± 0.4, undead 491.3 ± 0.4, troll 483.7 ± 0.4 (dps); the guide race orc is best.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 1454, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 25500000033000000-0000000000000000000-0050355103101351)
 
-Set DPS (verified): 878.7. Weights run: 6.1s. Verify run: 34.3s. 1454 eligible items had no known source.
+Set DPS (verified): 878.7. Weights run: 6.1s. Verify run: 35.6s. 1454 eligible items had no known source.
 
 Race sweep: orc 878.7 ± 0.7, undead 875.1 ± 0.7, troll 867.6 ± 0.7 (dps); the guide race orc is best.
 

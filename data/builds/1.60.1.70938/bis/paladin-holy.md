@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 50320001000000000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 48.6. Weights run: 7.8s. Verify run: 56.1s. 312 eligible items had no known source.
+Set DPS (verified): 48.6. Weights run: 5.9s. Verify run: 41.3s. 312 eligible items had no known source.
 
 Race sweep: human 48.6 ± 0.0, dwarf 46.8 ± 0.0 (heal_score); the guide race human is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 312, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 50320015000100000-40000000000000000-00000000000000000)
 
-Set DPS (verified): 106.6. Weights run: 8.7s. Verify run: 61.8s. 537 eligible items had no known source.
+Set DPS (verified): 106.6. Weights run: 6.6s. Verify run: 46.4s. 537 eligible items had no known source.
 
 Race sweep: human 106.6 ± 0.0, dwarf 103.9 ± 0.0 (heal_score); the guide race human is best.
 
@@ -51,7 +51,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | head | Holy Shroud (2721) | World drop [world_drop] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Enduring Cap (3020, -0.66 DPS, sim-verified) [world_drop]; Nightsky Cowl (4039, -1.02 DPS) [world_drop]; Dokebi Hat (14584, -1.33 DPS) [world_drop] |
 | neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 15.3 healing_power points (2.09 DPS) | yes | Crystal Starfire Medallion (5003, -0.17 DPS, sim-verified) [world_drop]; Archmagister's Faceted Pendant (273049, -0.23 DPS) [world]; Seal of the Expedition (271920, -0.54 DPS) [rep] |
 | shoulder | Death Speaker Mantle (6685) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 30.9 healing_power points (4.23 DPS) | yes | Bloodmage Mantle (7684, -0.21 DPS) [dungeon]; Mantle of Honor (3560, -0.57 DPS) [quest]; Nightsky Mantle (4718, -0.69 DPS) [world_drop] |
-| back | Expeditionary's Cape (271923) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Repairman's Cape (9605, -0.29 DPS, sim-verified) [quest]; Prelacy Cape (7004, -0.33 DPS) [quest]; Glowing Thresher Cape (6901, -0.46 DPS) [dungeon] |
+| back | Expeditionary's Cape (271923) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Repairman's Cape (9605, -0.29 DPS, sim-verified) [quest]; Glowing Thresher Cape (6901, -0.46 DPS) [dungeon]; Caretaker's Cape (19533, -0.49 DPS) [rep] |
 | chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-verified (+0.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Pristine Gown (253961, -0.39 DPS) [crafted]; Beguiler Robes (7728, -0.42 DPS, sim-verified) [dungeon]; Wisdom's Leather Tunic (252511, -0.55 DPS) [crafted] |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Mindthrust Bracers (1974, -0.07 DPS, sim-verified) [dungeon]; Nightsky Wristbands (6407, -2.23 DPS) [world_drop]; Glowing Magical Bracelets (13106, -2.25 DPS) [world_drop] |
 | hands | Gloves of Old (9395) | World drop [world_drop] | 30.0 healing_power points (4.11 DPS) | yes | Hotshot Pilot's Gloves (9491, -0.17 DPS, sim-verified) [dungeon]; Truefaith Gloves (7049, -1.12 DPS) [crafted]; Acolyte's Gloves (250511, -1.19 DPS) [crafted] |
@@ -72,7 +72,7 @@ No-known-source sample (15 of 537, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 50320115000100000-50000000000000000-05030000000000000)
 
-Set DPS (verified): 193.8. Weights run: 6.6s. Verify run: 34.8s. 808 eligible items had no known source.
+Set DPS (verified): 193.8. Weights run: 5.1s. Verify run: 27.3s. 808 eligible items had no known source.
 
 Race sweep: human 193.8 ± 0.0, dwarf 191.1 ± 0.1 (heal_score); the guide race human is best.
 
@@ -83,7 +83,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | head | Papal Fez (9431) | Uldaman [dungeon] | 58.7 healing_power points (11.64 DPS) | yes | Whitemane's Chapeau (7720, -0.50 DPS, sim-verified) [dungeon]; Miner's Hat of the Deep (9429, -3.72 DPS) [dungeon]; Holy Shroud (2721, -3.94 DPS) [world_drop] |
 | neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 33.2 healing_power points (6.57 DPS) | yes | Triune Amulet (7722, -3.64 DPS) [dungeon]; Necklace of Calisea (1714, -3.88 DPS, sim-verified) [dungeon]; Seal of the Expedition (271919, -4.29 DPS) [rep] |
 | shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 43.4 healing_power points (8.60 DPS) | yes | Green Silken Shoulders (7057, -3.43 DPS) [crafted]; Earthen Silk Shoulders (254033, -3.49 DPS) [crafted]; Sheepshear Mantle (13115, -4.22 DPS, sim-verified) [world_drop] |
-| back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackforge Cape (6424, -1.15 DPS) [dungeon]; Prelacy Cape (7004, -1.19 DPS) [quest]; Expeditionary's Cape (271922, -3.32 DPS, sim-verified) [rep] |
+| back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | sim-verified (+3.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Blackforge Cape (6424, -1.15 DPS) [dungeon]; Expeditionary's Cape (271923, -1.35 DPS) [rep] |
 | chest | Stormcloth Vest (10020) | Tailoring [crafted] | 65.8 healing_power points (13.04 DPS) | yes | Dreamweave Vest (10021, -3.84 DPS) [crafted]; Death's Head Vestment (10581, -4.36 DPS) [dungeon]; Deathchill Armor (10764, -7.25 DPS, sim-verified) [dungeon] |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 23.3 healing_power points (4.61 DPS) | yes | Enchanted Kodo Bracers (13119, -1.38 DPS) [world_drop]; Guardian Leather Bracers (4260, -1.47 DPS) [crafted]; Mindthrust Bracers (1974, -1.67 DPS, sim-verified) [dungeon] |
 | hands | Mender's Leather Gloves (252530) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bonefingers (10765, -0.39 DPS) [dungeon]; Gilded Handwraps (254021, -0.45 DPS) [crafted]; Gloves of Holy Might (867, -3.79 DPS, sim-verified) [world_drop] |
@@ -104,7 +104,7 @@ No-known-source sample (15 of 808, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 50320215012101230-50000000000000000-05030000000000000)
 
-Set DPS (verified): 205.9. Weights run: 16.0s. Verify run: 227.6s. 1050 eligible items had no known source.
+Set DPS (verified): 205.9. Weights run: 12.1s. Verify run: 170.0s. 1050 eligible items had no known source.
 
 Race sweep: human 205.7 ± 0.2, dwarf 199.9 ± 0.2 (heal_score); the guide race human is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1050, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (human, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 276.0. Weights run: 18.2s. Verify run: 1070.4s. 2441 eligible items had no known source.
+Set DPS (verified): 276.0. Weights run: 13.3s. Verify run: 801.4s. 2437 eligible items had no known source.
 
 Race sweep: human 275.8 ± 0.3, dwarf 267.9 ± 0.3 (heal_score); the guide race human is best.
 
@@ -164,11 +164,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; back: Drape of Recovery; chest: Devout Robe; wrist: Devout Bracers; hands: Devout Gloves; waist: Devout Belt; legs: Martyr's Legplates; feet: Devout Sandals; finger1: Rosewine Circle; finger2: Band of Mending; trinket1: Burst of Knowledge; trinket2: Shard of the Splithooves; main_hand: The Hammer of Grace; off_hand: Lei of the Lifegiver
 
-No-known-source sample (15 of 2441, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
+No-known-source sample (15 of 2437, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
 
 ### Band 60, raid preset (human, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 721.0. Weights run: 10.0s. Verify run: 487.4s. 2441 eligible items had no known source.
+Set DPS (verified): 721.0. Weights run: 7.6s. Verify run: 366.6s. 2437 eligible items had no known source.
 
 Race sweep: human 722.1 ± 0.7, dwarf 706.3 ± 0.7 (heal_score); the guide race human is best.
 
@@ -196,13 +196,13 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; back: Drape of Recovery; chest: Devout Robe; wrist: Devout Bracers; hands: Theramore Handwraps; waist: Devout Belt; legs: Martyr's Legplates; feet: Devout Sandals; finger1: Fordring's Seal; finger2: Band of Mending; trinket1: Burst of Knowledge; trinket2: Dormant Heart of the Mountain; main_hand: Hammer of the Grand Crusader
 
-No-known-source sample (15 of 2441, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
+No-known-source sample (15 of 2437, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
 
 ## Horde
 
 ### Band 20 (undead, 50320001000000000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 47.9. Weights run: 7.8s. Verify run: 51.7s. 299 eligible items had no known source.
+Set DPS (verified): 47.9. Weights run: 5.9s. Verify run: 38.0s. 299 eligible items had no known source.
 
 Race sweep: undead 47.9 ± 0.0 (heal_score); the guide race undead is best.
 
@@ -234,39 +234,39 @@ No-known-source sample (15 of 299, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 50320015000100000-40000000000000000-00000000000000000)
 
-Set DPS (verified): 105.3. Weights run: 8.7s. Verify run: 61.2s. 524 eligible items had no known source.
+Set DPS (verified): 105.1. Weights run: 6.6s. Verify run: 45.7s. 524 eligible items had no known source.
 
-Race sweep: undead 105.3 ± 0.0 (heal_score); the guide race undead is best.
+Race sweep: undead 105.1 ± 0.0 (heal_score); the guide race undead is best.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.049, intellect=2.262 ± 0.011, spirit=1.555 ± 0.007, mp5=8.511 ± 0.016, crit=0.412 ± 0.011 per rating point (14 rating = 1%, 5.767 per %), spell_haste=-1.291 ± 0.137
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Enduring Cap (3020, -0.93 DPS, sim-verified) [world_drop]; Nightsky Cowl (4039, -1.02 DPS) [world_drop]; Dokebi Hat (14584, -1.33 DPS) [world_drop] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 15.3 healing_power points (2.09 DPS) | yes | Crystal Starfire Medallion (5003, -0.13 DPS, sim-verified) [world_drop]; Archmagister's Faceted Pendant (273049, -0.23 DPS) [world]; Darkspear Warding Pendant (272075, -0.54 DPS) [vendor] |
-| shoulder | Mantle of Woe (7750) | Vorrel's Revenge [quest] | 32.1 healing_power points (4.40 DPS) | yes | Death Speaker Mantle (6685, -0.13 DPS, sim-verified) [dungeon]; Bloodmage Mantle (7684, -0.38 DPS) [dungeon]; Nightsky Mantle (4718, -0.86 DPS) [world_drop] |
-| back | Darkspear Raider's Cloak (272078) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Battle Healer's Cloak (19529, -0.49 DPS) [rep]; Glowing Thresher Cape (6901, -0.50 DPS, sim-verified) [dungeon]; Resilient Cape (14400, -1.26 DPS) [world_drop] |
-| chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-verified (+0.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Pristine Gown (253961, -0.39 DPS) [crafted]; Wisdom's Leather Tunic (252511, -0.55 DPS) [crafted]; Beguiler Robes (7728, -0.60 DPS, sim-verified) [dungeon] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Mindthrust Bracers (1974, -0.08 DPS, sim-verified) [dungeon]; Nightsky Wristbands (6407, -2.23 DPS) [world_drop]; Glowing Magical Bracelets (13106, -2.25 DPS) [world_drop] |
-| hands | Gloves of Old (9395) | World drop [world_drop] | 30.0 healing_power points (4.11 DPS) | yes | Hotshot Pilot's Gloves (9491, -0.14 DPS, sim-verified) [dungeon]; Truefaith Gloves (7049, -1.12 DPS) [crafted]; Acolyte's Gloves (250511, -1.19 DPS) [crafted] |
+| head | Holy Shroud (2721) | World drop [world_drop] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Enduring Cap (3020, -0.91 DPS, sim-verified) [world_drop]; Nightsky Cowl (4039, -1.02 DPS) [world_drop]; Dokebi Hat (14584, -1.33 DPS) [world_drop] |
+| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 15.3 healing_power points (2.09 DPS) | yes | Crystal Starfire Medallion (5003, -0.15 DPS, sim-verified) [world_drop]; Archmagister's Faceted Pendant (273049, -0.23 DPS) [world]; Darkspear Warding Pendant (272075, -0.54 DPS) [vendor] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Death Speaker Mantle (6685, -0.07 DPS, sim-verified) [dungeon]; Nightsky Mantle (4718, -0.48 DPS) [world_drop]; Slime-encrusted Pads (6461, -0.52 DPS) [dungeon] |
+| back | Darkspear Raider's Cloak (272078) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Thresher Cape (6901, -0.41 DPS, sim-verified) [dungeon]; Battle Healer's Cloak (19529, -0.49 DPS) [rep]; Resilient Cape (14400, -1.26 DPS) [world_drop] |
+| chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Pristine Gown (253961, -0.39 DPS) [crafted]; Beguiler Robes (7728, -0.54 DPS, sim-verified) [dungeon]; Wisdom's Leather Tunic (252511, -0.55 DPS) [crafted] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Mindthrust Bracers (1974, -0.14 DPS, sim-verified) [dungeon]; Nightsky Wristbands (6407, -2.23 DPS) [world_drop]; Glowing Magical Bracelets (13106, -2.25 DPS) [world_drop] |
+| hands | Gloves of Old (9395) | World drop [world_drop] | 30.0 healing_power points (4.11 DPS) | yes | Hotshot Pilot's Gloves (9491, -0.56 DPS) [dungeon]; Truefaith Gloves (7049, -1.12 DPS) [crafted]; Acolyte's Gloves (250511, -1.19 DPS) [crafted] |
 | waist | Mender's Leather Belt (252523) | Leatherworking [crafted] | 41.9 healing_power points (5.74 DPS) | yes | Prefect's Belt (250559, -0.56 DPS) [crafted]; Skycaller's Leather Belt (252522, -1.66 DPS) [crafted]; Defiler's Lizardhide Girdle (20172, -2.02 DPS) [rep] |
-| legs | Wisdom's Leather Leggings (252519) | Leatherworking [crafted] | 47.7 healing_power points (6.54 DPS) | yes | Pristine Leggings (253987, -0.29 DPS) [crafted]; Acolyte's Silvered Chain Leggings (250526, -0.63 DPS) [crafted]; Leech Pants (6910, -0.90 DPS, sim-verified) [dungeon] |
-| feet | Gilded Slippers (254001) | Tailoring [crafted] | 42.1 healing_power points (5.76 DPS) | yes | Acidic Walkers (9454, -2.56 DPS, sim-verified) [dungeon]; Acolyte's Boots (250506, -2.70 DPS) [crafted]; Wisdom's Leather Boots (252444, -2.70 DPS) [crafted] |
+| legs | Wisdom's Leather Leggings (252519) | Leatherworking [crafted] | 47.7 healing_power points (6.54 DPS) | yes | Pristine Leggings (253987, -0.29 DPS) [crafted]; Acolyte's Silvered Chain Leggings (250526, -0.63 DPS) [crafted]; Leech Pants (6910, -0.87 DPS, sim-verified) [dungeon] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | 42.1 healing_power points (5.76 DPS) | yes | Acidic Walkers (9454, -2.55 DPS, sim-verified) [dungeon]; Acolyte's Boots (250506, -2.70 DPS) [crafted]; Wisdom's Leather Boots (252444, -2.70 DPS) [crafted] |
 | finger1 | Darkspear Signet (272071) | Creeg Bothunk [vendor] | 34.0 healing_power points (4.66 DPS) | yes | Ring of Power Regulation (273030, -0.34 DPS) [dungeon]; Advisor's Ring (19521, -1.37 DPS) [rep] |
-| finger2 | Runemender's Seal (273031) | Arcane Anomaly [world] | 31.9 healing_power points (4.37 DPS) | yes | Ring of Power Regulation (273030, -0.12 DPS, sim-verified) [dungeon]; Advisor's Ring (19521, -1.08 DPS) [rep] |
+| finger2 | Runemender's Seal (273031) | Arcane Anomaly [world] | 31.9 healing_power points (4.37 DPS) | yes | Ring of Power Regulation (273030, -0.05 DPS) [dungeon]; Advisor's Ring (19521, -1.08 DPS) [rep] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Death Speaker Scepter (2816) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Crested Scepter (3414, -4.31 DPS) [dungeon]; The Stitcher (279874, -5.21 DPS) [quest]; Taskmaster Axe (5194, -6.03 DPS, sim-verified) [dungeon] |
-| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 22.3 healing_power points (3.06 DPS) | yes | Orb of Mystic Insight (249394, -0.22 DPS, sim-verified) [crafted]; Witch's Finger (16887, -0.58 DPS) [quest]; Worn Turtle Shell Shield (6447, -0.73 DPS) [dungeon] |
+| main_hand | Death Speaker Scepter (2816) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Crested Scepter (3414, -4.31 DPS) [dungeon]; The Stitcher (279874, -5.21 DPS) [quest]; Taskmaster Axe (5194, -6.01 DPS, sim-verified) [dungeon] |
+| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 22.3 healing_power points (3.06 DPS) | yes | Orb of Mystic Insight (249394, -0.26 DPS, sim-verified) [crafted]; Witch's Finger (16887, -0.58 DPS) [quest]; Worn Turtle Shell Shield (6447, -0.73 DPS) [dungeon] |
 | ranged | - | - |  |  |  |
 
-**New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Mantle of Woe; back: Darkspear Raider's Cloak; chest: Death Speaker Robes; wrist: Spidertank Oilrag; hands: Gloves of Old; waist: Mender's Leather Belt; legs: Wisdom's Leather Leggings; feet: Gilded Slippers; finger1: Darkspear Signet; finger2: Runemender's Seal; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
+**New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Bloodmage Mantle; back: Darkspear Raider's Cloak; chest: Death Speaker Robes; wrist: Spidertank Oilrag; hands: Gloves of Old; waist: Mender's Leather Belt; legs: Wisdom's Leather Leggings; feet: Gilded Slippers; finger1: Darkspear Signet; finger2: Runemender's Seal; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
 No-known-source sample (15 of 524, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
 ### Band 40 (undead, 50320115000100000-50000000000000000-05030000000000000)
 
-Set DPS (verified): 191.6. Weights run: 6.6s. Verify run: 35.5s. 792 eligible items had no known source.
+Set DPS (verified): 191.6. Weights run: 5.1s. Verify run: 27.2s. 792 eligible items had no known source.
 
 Race sweep: undead 191.6 ± 0.0 (heal_score); the guide race undead is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 792, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 50320215012101230-50000000000000000-05030000000000000)
 
-Set DPS (verified): 201.2. Weights run: 16.0s. Verify run: 218.9s. 1050 eligible items had no known source.
+Set DPS (verified): 201.2. Weights run: 12.1s. Verify run: 164.0s. 1050 eligible items had no known source.
 
 Race sweep: undead 201.0 ± 0.1 (heal_score); the guide race undead is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1050, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (undead, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 271.6. Weights run: 18.2s. Verify run: 1042.9s. 2466 eligible items had no known source.
+Set DPS (verified): 271.6. Weights run: 13.3s. Verify run: 774.1s. 2462 eligible items had no known source.
 
 Race sweep: undead 271.5 ± 0.3 (heal_score); the guide race undead is best.
 
@@ -358,11 +358,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; back: Gracious Cape; chest: Devout Robe; wrist: Devout Bracers; hands: Devout Gloves; waist: Devout Belt; legs: Martyr's Legplates; feet: Devout Sandals; finger1: Rosewine Circle; finger2: Darkspear Signet; trinket1: Burst of Knowledge; trinket2: Shard of the Splithooves; main_hand: The Hammer of Grace; off_hand: Lei of the Lifegiver
 
-No-known-source sample (15 of 2466, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
+No-known-source sample (15 of 2462, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
 ### Band 60, raid preset (undead, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 705.2. Weights run: 10.0s. Verify run: 474.5s. 2466 eligible items had no known source.
+Set DPS (verified): 705.2. Weights run: 7.6s. Verify run: 355.8s. 2462 eligible items had no known source.
 
 Race sweep: undead 705.9 ± 0.7 (heal_score); the guide race undead is best.
 
@@ -390,5 +390,5 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; back: Drape of Recovery; chest: Devout Robe; wrist: Devout Bracers; hands: Raider Handwraps; waist: Devout Belt; legs: Martyr's Legplates; feet: Devout Sandals; finger1: Fordring's Seal; finger2: Rosewine Circle; trinket1: Dormant Heart of the Mountain; trinket2: Burst of Knowledge; main_hand: Hammer of the Grand Crusader
 
-No-known-source sample (15 of 2466, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
+No-known-source sample (15 of 2462, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 

@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (gnome, 00000000000000000-3113030000000000000-000000000000000000)
 
-Set DPS (verified): 45.7. Weights run: 6.1s. Verify run: 16.2s. 275 eligible items had no known source.
+Set DPS (verified): 45.7. Weights run: 4.8s. Verify run: 13.2s. 275 eligible items had no known source.
 
 Race sweep: night-elf 46.2 ± 0.0, gnome 45.7 ± 0.0, high-order-skyborne 45.7 ± 0.0, human 45.6 ± 0.0, dwarf 45.2 ± 0.0 (dps); night-elf beats the guide race gnome by 0.5 (1.09%) ± 0.1, beyond error.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 275, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 00000000000000000-3153030000012300000-000000000000000000)
 
-Set DPS (verified): 76.1. Weights run: 6.5s. Verify run: 12.5s. 460 eligible items had no known source.
+Set DPS (verified): 76.1. Weights run: 5.2s. Verify run: 9.6s. 460 eligible items had no known source.
 
 Race sweep: night-elf 76.8 ± 0.1, gnome 76.1 ± 0.1, human 76.1 ± 0.1, high-order-skyborne 75.9 ± 0.1, dwarf 75.6 ± 0.1 (dps); night-elf beats the guide race gnome by 0.7 (0.90%) ± 0.1, beyond error.
 
@@ -58,8 +58,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Highlander's Chain Girdle (20090) (or Highlander's Leather Girdle (20117)) | The League of Arathor [rep] | 24.0 attack_power points (2.10 DPS) | yes | Highlander's Leather Girdle (20117, +0.00 DPS) [rep]; Skulker's Leather Belt (252520, -0.28 DPS) [crafted]; Prowler's Leather Belt (252459, -0.45 DPS) [crafted] |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 attack_power points (2.28 DPS) | yes | Petrolspill Leggings (9509, -0.26 DPS) [dungeon]; Troll's Bane Leggings (13114, -0.26 DPS) [world_drop]; Brawler's Leather Legguards (252516, -0.37 DPS) [crafted] |
 | feet | Feet of the Lynx (1121) | World drop [world_drop] | 16.2 attack_power points (1.42 DPS) | yes | Brawler's Leather Boots (252439, -0.26 DPS) [crafted]; Insignia Boots (4055, -0.26 DPS) [world_drop]; Disjointed Shoes (277226, -0.36 DPS) [quest] |
-| finger1 | Protector's Band (19517) | Silverwing Sentinels [rep] | 15.9 attack_power points (1.39 DPS) | yes | Monkey Ring (6748, -0.38 DPS) [quest]; Pyrewood Signet Ring (277210, -0.51 DPS) [quest]; Ring of Precision (1491, -0.53 DPS) [dungeon] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 12.9 attack_power points (1.13 DPS) | yes | Monkey Ring (6748, -0.12 DPS) [quest]; Pyrewood Signet Ring (277210, -0.25 DPS) [quest]; Ring of Precision (1491, -0.27 DPS) [dungeon] |
+| finger1 | Protector's Band (19517) | Silverwing Sentinels [rep] | 15.9 attack_power points (1.39 DPS) | yes | Pyrewood Signet Ring (277210, -0.51 DPS) [quest]; Ring of Precision (1491, -0.53 DPS) [dungeon]; Theramore Signet (271911, -0.60 DPS) [rep] |
+| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 12.9 attack_power points (1.13 DPS) | yes | Pyrewood Signet Ring (277210, -0.25 DPS) [quest]; Ring of Precision (1491, -0.27 DPS) [dungeon]; Theramore Signet (271911, -0.34 DPS) [rep] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Toxic Revenger (9453) | Gnomeregan: Viscous Fallout [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Thornspike (6681, -0.29 DPS, sim-verified) [dungeon]; Vendetta (776, -0.58 DPS) [dungeon]; Torturing Poker (7682, -1.01 DPS) [dungeon] |
@@ -72,7 +72,7 @@ No-known-source sample (15 of 460, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 00000000000000000-3153030000012321511-000000000000000000)
 
-Set DPS (verified): 140.2. Weights run: 7.1s. Verify run: 26.8s. 662 eligible items had no known source.
+Set DPS (verified): 140.2. Weights run: 5.7s. Verify run: 21.8s. 662 eligible items had no known source.
 
 Race sweep: night-elf 141.0 ± 0.1, gnome 140.2 ± 0.1, human 139.8 ± 0.1, high-order-skyborne 139.7 ± 0.1, dwarf 139.0 ± 0.1 (dps); night-elf beats the guide race gnome by 0.8 (0.59%) ± 0.2, beyond error.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 662, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 32200000000000000-3153030000012321541-000000000000000000)
 
-Set DPS (verified): 218.8. Weights run: 6.8s. Verify run: 29.1s. 851 eligible items had no known source.
+Set DPS (verified): 218.8. Weights run: 5.3s. Verify run: 22.3s. 851 eligible items had no known source.
 
 Race sweep: night-elf 219.2 ± 0.2, gnome 218.8 ± 0.2, human 217.6 ± 0.2, high-order-skyborne 217.1 ± 0.1, dwarf 216.7 ± 0.2 (dps); night-elf beats the guide race gnome by 0.5 (0.22%) ± 0.2, beyond error.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 851, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 32530100000000000-3153030000012321541-030000000000000000)
 
-Set DPS (verified): 314.0. Weights run: 7.8s. Verify run: 91.4s. 1921 eligible items had no known source.
+Set DPS (verified): 314.0. Weights run: 6.2s. Verify run: 72.2s. 1922 eligible items had no known source.
 
 Race sweep: gnome 314.0 ± 0.3, night-elf 313.4 ± 0.3, high-order-skyborne 313.2 ± 0.3, human 312.2 ± 0.3, dwarf 312.1 ± 0.3 (dps); the guide race gnome is best.
 
@@ -164,11 +164,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** neck: Mark of Fordring; shoulder: Stormshroud Shoulders; back: Cape of the Black Baron; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Pads of the Dread Wolf; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Hand of Justice; trinket2: Blackhand's Breadth; main_hand: Felstriker; off_hand: Alcor's Sunrazor; ranged: Riphook
 
-No-known-source sample (15 of 1921, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
+No-known-source sample (15 of 1922, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
 
 ### Band 60, raid preset (gnome, 00520300200000000-3043030002012321451-005000000000000000)
 
-Set DPS (verified): 902.4. Weights run: 8.7s. Verify run: 94.9s. 1921 eligible items had no known source.
+Set DPS (verified): 902.4. Weights run: 6.7s. Verify run: 74.2s. 1922 eligible items had no known source.
 
 Race sweep: gnome 902.4 ± 0.7, high-order-skyborne 898.7 ± 0.7, night-elf 894.4 ± 0.7, human 893.7 ± 0.7, dwarf 892.7 ± 0.7 (dps); the guide race gnome is best.
 
@@ -196,13 +196,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Mask of the Unforgiven; neck: Mark of Fordring; shoulder: Stormshroud Shoulders; back: Howler's Furs; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; hands: Theramore Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Shadowcraft Boots; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Blackhand's Breadth; trinket2: Molten Heart of the Mountain; main_hand: Felstriker; off_hand: Alcor's Sunrazor; ranged: Blackcrow
 
-No-known-source sample (15 of 1921, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
+No-known-source sample (15 of 1922, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
 
 ## Horde
 
 ### Band 20 (undead, 00000000000000000-3113030000000000000-000000000000000000)
 
-Set DPS (verified): 47.4. Weights run: 6.1s. Verify run: 15.8s. 273 eligible items had no known source.
+Set DPS (verified): 47.4. Weights run: 4.8s. Verify run: 12.7s. 273 eligible items had no known source.
 
 Race sweep: undead 47.4 ± 0.0, troll 46.7 ± 0.0, windshaper-skyborne 46.6 ± 0.0, orc 46.2 ± 0.0 (dps); the guide race undead is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 273, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-3153030000012300000-000000000000000000)
 
-Set DPS (verified): 76.8. Weights run: 6.5s. Verify run: 13.6s. 460 eligible items had no known source.
+Set DPS (verified): 76.8. Weights run: 5.2s. Verify run: 10.5s. 460 eligible items had no known source.
 
 Race sweep: undead 76.8 ± 0.1, troll 76.1 ± 0.1, windshaper-skyborne 75.9 ± 0.1, orc 75.6 ± 0.1 (dps); the guide race undead is best.
 
@@ -252,8 +252,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Defiler's Chain Girdle (20152) (or Defiler's Leather Girdle (20191)) | The Defilers [rep] | 24.0 attack_power points (2.10 DPS) | yes | Defiler's Leather Girdle (20191, +0.00 DPS) [rep]; Skulker's Leather Belt (252520, -0.28 DPS) [crafted]; Prowler's Leather Belt (252459, -0.45 DPS) [crafted] |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 attack_power points (2.28 DPS) | yes | Petrolspill Leggings (9509, -0.26 DPS) [dungeon]; Troll's Bane Leggings (13114, -0.26 DPS) [world_drop]; Brawler's Leather Legguards (252516, -0.37 DPS) [crafted] |
 | feet | Feet of the Lynx (1121) | World drop [world_drop] | 16.2 attack_power points (1.42 DPS) | yes | Brawler's Leather Boots (252439, -0.26 DPS) [crafted]; Insignia Boots (4055, -0.26 DPS) [world_drop]; Warsong Boots (16977, -0.26 DPS) [quest] |
-| finger1 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 15.9 attack_power points (1.39 DPS) | yes | Monkey Ring (6748, -0.38 DPS) [quest]; Band of the Fist (17694, -0.46 DPS) [quest]; Pyrewood Signet Ring (277210, -0.51 DPS) [quest] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 12.9 attack_power points (1.13 DPS) | yes | Monkey Ring (6748, -0.12 DPS) [quest]; Band of the Fist (17694, -0.21 DPS) [quest]; Pyrewood Signet Ring (277210, -0.25 DPS) [quest] |
+| finger1 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 15.9 attack_power points (1.39 DPS) | yes | Band of the Fist (17694, -0.46 DPS) [quest]; Pyrewood Signet Ring (277210, -0.51 DPS) [quest]; Ring of Precision (1491, -0.53 DPS) [dungeon] |
+| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 12.9 attack_power points (1.13 DPS) | yes | Band of the Fist (17694, -0.21 DPS) [quest]; Pyrewood Signet Ring (277210, -0.25 DPS) [quest]; Ring of Precision (1491, -0.27 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Toxic Revenger (9453) | Gnomeregan: Viscous Fallout [dungeon] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Thornspike (6681, -0.20 DPS, sim-verified) [dungeon]; Vendetta (776, -0.58 DPS) [dungeon]; Torturing Poker (7682, -1.01 DPS) [dungeon] |
@@ -266,7 +266,7 @@ No-known-source sample (15 of 460, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 00000000000000000-3153030000012321511-000000000000000000)
 
-Set DPS (verified): 141.0. Weights run: 7.1s. Verify run: 27.3s. 660 eligible items had no known source.
+Set DPS (verified): 141.0. Weights run: 5.7s. Verify run: 22.2s. 660 eligible items had no known source.
 
 Race sweep: undead 141.0 ± 0.1, windshaper-skyborne 139.4 ± 0.1, troll 139.3 ± 0.1, orc 138.8 ± 0.1 (dps); the guide race undead is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 660, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 32200000000000000-3153030000012321541-000000000000000000)
 
-Set DPS (verified): 222.4. Weights run: 6.8s. Verify run: 21.1s. 849 eligible items had no known source.
+Set DPS (verified): 222.4. Weights run: 5.3s. Verify run: 17.1s. 849 eligible items had no known source.
 
 Race sweep: undead 222.4 ± 0.2, troll 218.4 ± 0.2, windshaper-skyborne 218.3 ± 0.2, orc 217.6 ± 0.2 (dps); the guide race undead is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 849, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 32530100000000000-3153030000012321541-030000000000000000)
 
-Set DPS (verified): 318.0. Weights run: 7.8s. Verify run: 96.1s. 1924 eligible items had no known source.
+Set DPS (verified): 318.0. Weights run: 6.2s. Verify run: 75.3s. 1925 eligible items had no known source.
 
 Race sweep: undead 318.0 ± 0.3, windshaper-skyborne 313.5 ± 0.3, troll 313.5 ± 0.3, orc 312.7 ± 0.3 (dps); the guide race undead is best.
 
@@ -358,11 +358,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** neck: Mark of Fordring; shoulder: Stormshroud Shoulders; back: Cape of the Black Baron; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Pads of the Dread Wolf; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket2: Blackhand's Breadth; main_hand: Felstriker; off_hand: Alcor's Sunrazor; ranged: Riphook
 
-No-known-source sample (15 of 1924, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1925, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
 
 ### Band 60, raid preset (undead, 00520300200000000-3043030002012321451-005000000000000000)
 
-Set DPS (verified): 900.0. Weights run: 8.7s. Verify run: 91.0s. 1924 eligible items had no known source.
+Set DPS (verified): 900.0. Weights run: 6.7s. Verify run: 72.4s. 1925 eligible items had no known source.
 
 Race sweep: undead 900.0 ± 0.7, windshaper-skyborne 898.4 ± 0.7, orc 896.9 ± 0.7, troll 896.7 ± 0.7 (dps); the guide race undead is best.
 
@@ -390,5 +390,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Mask of the Unforgiven; neck: Mark of Fordring; shoulder: Stormshroud Shoulders; back: Howler's Furs; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; hands: Raider Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Shadowcraft Boots; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket2: Blackhand's Breadth; main_hand: Felstriker; off_hand: Alcor's Sunrazor; ranged: Blackcrow
 
-No-known-source sample (15 of 1924, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1925, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
 

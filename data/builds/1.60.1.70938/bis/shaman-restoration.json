@@ -2,7 +2,7 @@
   "spec": "shaman-restoration",
   "build": "1.60.1.70938",
   "engine_version": "5603877e4",
-  "generated_at": "2026-11-13T18:57:41Z",
+  "generated_at": "2026-11-13T21:56:00Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -627,7 +627,7 @@
             },
             "vendor": {
               "item_id": 277072,
-              "rank": 43,
+              "rank": 42,
               "source": "Brother Zendraas",
               "dps_delta": -1.2
             },
@@ -1092,8 +1092,8 @@
         "finger2: Minor Channeling Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 7.181345733,
-      "verify_run_seconds": 41.748953003,
+      "weights_run_seconds": 7.160917225,
+      "verify_run_seconds": 42.866474814,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -1820,20 +1820,20 @@
               "dps_delta": -0.81
             },
             "quest": {
-              "item_id": 15449,
-              "rank": 6,
-              "source": "The Power to Destroy...",
-              "dps_delta": -0.81
+              "item_id": 270011,
+              "rank": 7,
+              "source": "Free From the Hold",
+              "dps_delta": -0.98
             },
             "vendor": {
               "item_id": 277072,
-              "rank": 42,
+              "rank": 41,
               "source": "Brother Zendraas",
               "dps_delta": -1.2
             },
             "world": {
               "item_id": 12987,
-              "rank": 14,
+              "rank": 13,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.1
@@ -2312,8 +2312,8 @@
         "finger2: Furlfeather Ring",
         "main_hand: Taskmaster Axe"
       ],
-      "weights_run_seconds": 7.181345733,
-      "verify_run_seconds": 45.688933936,
+      "weights_run_seconds": 7.160917225,
+      "verify_run_seconds": 46.037872714,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -2703,19 +2703,12 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7004,
-              "item_name": "Prelacy Cape",
-              "source_kind": "quest",
-              "source": "Researching the Corruption",
-              "dps_delta": -0.261066881,
-              "verified": true
-            },
-            {
               "item_id": 6901,
               "item_name": "Glowing Thresher Cape",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Old Serra'kis",
-              "dps_delta": -0.86743911
+              "dps_delta": -0.739804504,
+              "verified": true
             },
             {
               "item_id": 9605,
@@ -2723,18 +2716,25 @@
               "source_kind": "quest",
               "source": "Data Rescue",
               "dps_delta": -0.930729768
+            },
+            {
+              "item_id": 7004,
+              "item_name": "Prelacy Cape",
+              "source_kind": "quest",
+              "source": "Researching the Corruption",
+              "dps_delta": -1.342674857
             }
           ],
           "runners_up": [
             {
-              "item_id": 7004,
-              "source_kind": "quest",
-              "source": "Researching the Corruption"
-            },
-            {
               "item_id": 6901,
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Old Serra'kis"
+            },
+            {
+              "item_id": 9605,
+              "source_kind": "quest",
+              "source": "Data Rescue"
             }
           ],
           "kinds": [
@@ -2755,9 +2755,9 @@
             },
             "dungeon": {
               "item_id": 6901,
-              "rank": 3,
+              "rank": 2,
               "source": "Blackfathom Deeps: Old Serra'kis",
-              "dps_delta": -0.87
+              "dps_delta": -0.74
             },
             "pvp": {
               "item_id": 16315,
@@ -2766,10 +2766,10 @@
               "dps_delta": -2.13
             },
             "quest": {
-              "item_id": 7004,
-              "rank": 2,
-              "source": "Researching the Corruption",
-              "dps_delta": -0.26
+              "item_id": 9605,
+              "rank": 3,
+              "source": "Data Rescue",
+              "dps_delta": -0.93
             },
             "world": {
               "item_id": 14400,
@@ -2978,14 +2978,14 @@
               "dps_delta": -0.95
             },
             "quest": {
-              "item_id": 9609,
-              "rank": 5,
-              "source": "Gyrodrillmatic Excavationators",
-              "dps_delta": -1.24
+              "item_id": 270029,
+              "rank": 7,
+              "source": "Crime and Punishment",
+              "dps_delta": -1.92
             },
             "world": {
               "item_id": 9395,
-              "rank": 6,
+              "rank": 5,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.69
@@ -3045,9 +3045,9 @@
             },
             "quest": {
               "item_id": 7000,
-              "rank": 16,
+              "rank": 19,
               "source": "Twilight Falls",
-              "dps_delta": -3.72
+              "dps_delta": -4.13
             },
             "rep": {
               "item_id": 20099,
@@ -3370,7 +3370,7 @@
               ],
               "next": {
                 "item_id": 271916,
-                "rank": 15,
+                "rank": 14,
                 "source": "Theramore Expeditionary Force",
                 "dps_delta": -1.95,
                 "standing": "honored"
@@ -3627,7 +3627,7 @@
           "changed_slots": 11
         },
         "leveling_default": {
-          "dps": 133.6,
+          "dps": 133.1,
           "error": 0,
           "changed_slots": 1
         }
@@ -3666,8 +3666,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 7.721895791,
-      "verify_run_seconds": 46.021997879999994,
+      "weights_run_seconds": 7.781015632,
+      "verify_run_seconds": 46.326220239,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -3987,55 +3987,56 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7750,
-              "item_name": "Mantle of Woe",
-              "source_kind": "quest",
-              "source": "Vorrel's Revenge",
-              "dps_delta": -0.11963324
-            },
-            {
               "item_id": 6685,
               "item_name": "Death Speaker Mantle",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Death Speaker Jargba",
-              "dps_delta": -0.143676887
+              "dps_delta": -0.102936987,
+              "verified": true
             },
             {
-              "item_id": 270023,
-              "item_name": "Tanned Shoulderpads",
-              "source_kind": "quest",
-              "source": "Deathstalkers in Shadowfang",
-              "dps_delta": -0.647423486
+              "item_id": 12998,
+              "item_name": "Magician's Mantle",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.767056725
+            },
+            {
+              "item_id": 3748,
+              "item_name": "Feline Mantle",
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Wolf Master Nandos",
+              "dps_delta": -1.174628736
             }
           ],
           "runners_up": [
             {
-              "item_id": 7750,
-              "source_kind": "quest",
-              "source": "Vorrel's Revenge"
-            },
-            {
               "item_id": 6685,
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Death Speaker Jargba"
+            },
+            {
+              "item_id": 12998,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ],
           "by_kind": {
             "crafted": {
               "item_id": 215365,
-              "rank": 7,
+              "rank": 5,
               "source": "Tailoring",
               "dps_delta": -1.25
             },
             "quest": {
               "item_id": 7750,
-              "rank": 2,
+              "rank": 7,
               "source": "Vorrel's Revenge",
-              "dps_delta": -0.12
+              "dps_delta": -1.37
             },
             "world": {
               "item_id": 12998,
-              "rank": 5,
+              "rank": 3,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.77
@@ -4473,7 +4474,7 @@
             },
             "vendor": {
               "item_id": 4832,
-              "rank": 44,
+              "rank": 43,
               "source": "Wenna Silkbeard",
               "dps_delta": -5.54
             },
@@ -5022,8 +5023,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 7.721895791,
-      "verify_run_seconds": 47.689567655,
+      "weights_run_seconds": 7.781015632,
+      "verify_run_seconds": 48.061464973,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5440,18 +5441,18 @@
               "verified": true
             },
             {
-              "item_id": 7004,
-              "item_name": "Prelacy Cape",
-              "source_kind": "quest",
-              "source": "Researching the Corruption",
-              "dps_delta": -1.035675538
-            },
-            {
               "item_id": 6901,
               "item_name": "Glowing Thresher Cape",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Old Serra'kis",
               "dps_delta": -1.408601645
+            },
+            {
+              "item_id": 9605,
+              "item_name": "Repairman's Cape",
+              "source_kind": "quest",
+              "source": "Data Rescue",
+              "dps_delta": -1.434010753
             }
           ],
           "runners_up": [
@@ -5461,9 +5462,9 @@
               "source": "Theramore Expeditionary Force"
             },
             {
-              "item_id": 7004,
-              "source_kind": "quest",
-              "source": "Researching the Corruption"
+              "item_id": 6901,
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps: Old Serra'kis"
             }
           ],
           "kinds": [
@@ -5478,31 +5479,31 @@
           "by_kind": {
             "crafted": {
               "item_id": 4327,
-              "rank": 9,
+              "rank": 8,
               "source": "Tailoring",
               "dps_delta": -1.72
             },
             "dungeon": {
               "item_id": 6901,
-              "rank": 5,
+              "rank": 4,
               "source": "Blackfathom Deeps: Old Serra'kis",
               "dps_delta": -1.41
             },
             "pvp": {
               "item_id": 16336,
-              "rank": 8,
+              "rank": 7,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -1.7
             },
             "quest": {
-              "item_id": 7004,
-              "rank": 4,
-              "source": "Researching the Corruption",
-              "dps_delta": -1.04
+              "item_id": 9605,
+              "rank": 5,
+              "source": "Data Rescue",
+              "dps_delta": -1.43
             },
             "world": {
               "item_id": 6424,
-              "rank": 7,
+              "rank": 6,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.6
@@ -6118,7 +6119,7 @@
               ],
               "next": {
                 "item_id": 271915,
-                "rank": 31,
+                "rank": 30,
                 "source": "Theramore Expeditionary Force",
                 "dps_delta": -1.93,
                 "standing": "honored"
@@ -6135,7 +6136,7 @@
               ],
               "next": {
                 "item_id": 276202,
-                "rank": 33,
+                "rank": 32,
                 "source": "Friz Frazzlespark",
                 "dps_delta": -1.98,
                 "standing": "friendly"
@@ -6425,7 +6426,7 @@
           "changed_slots": 11
         },
         "leveling_default": {
-          "dps": 206,
+          "dps": 205.2,
           "error": 0.1,
           "changed_slots": 2
         }
@@ -6464,8 +6465,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 14.944280305,
-      "verify_run_seconds": 168.72382780799998,
+      "weights_run_seconds": 15.33128681,
+      "verify_run_seconds": 169.485398231,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -6812,11 +6813,11 @@
               "dps_delta": -4.531943548
             },
             {
-              "item_id": 7750,
-              "item_name": "Mantle of Woe",
-              "source_kind": "quest",
-              "source": "Vorrel's Revenge",
-              "dps_delta": -4.818413259
+              "item_id": 7712,
+              "item_name": "Mantle of Doan",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Arcanist Doan",
+              "dps_delta": -4.861183528
             }
           ],
           "runners_up": [
@@ -6839,10 +6840,10 @@
               "dps_delta": -4.53
             },
             "quest": {
-              "item_id": 7750,
-              "rank": 4,
-              "source": "Vorrel's Revenge",
-              "dps_delta": -4.82
+              "item_id": 4197,
+              "rank": 9,
+              "source": "A Vengeful Fate",
+              "dps_delta": -5.27
             },
             "vendor": {
               "item_id": 4833,
@@ -7688,7 +7689,7 @@
             },
             "vendor": {
               "item_id": 212584,
-              "rank": 30,
+              "rank": 29,
               "source": "Kelm Hargunth",
               "dps_delta": -19.68,
               "two_hand": true
@@ -7894,8 +7895,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Prophetic Cane"
       ],
-      "weights_run_seconds": 14.944280305,
-      "verify_run_seconds": 172.275549406,
+      "weights_run_seconds": 15.33128681,
+      "verify_run_seconds": 173.444131658,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -8355,10 +8356,10 @@
               "dps_delta": -3.35
             },
             "quest": {
-              "item_id": 7004,
+              "item_id": 9605,
               "rank": 17,
-              "source": "Researching the Corruption",
-              "dps_delta": -3.49
+              "source": "Data Rescue",
+              "dps_delta": -3.51
             },
             "rep": {
               "item_id": 271921,
@@ -9029,7 +9030,7 @@
               ],
               "next": {
                 "item_id": 276202,
-                "rank": 49,
+                "rank": 48,
                 "source": "Friz Frazzlespark",
                 "dps_delta": -5.19,
                 "standing": "friendly"
@@ -9495,8 +9496,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 16.411778343,
-      "verify_run_seconds": 222.240182419,
+      "weights_run_seconds": 16.539214815,
+      "verify_run_seconds": 222.676735596,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11095,8 +11096,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 16.411778343,
-      "verify_run_seconds": 227.577553193,
+      "weights_run_seconds": 16.539214815,
+      "verify_run_seconds": 228.996397425,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12821,8 +12822,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Tidal Totem"
       ],
-      "weights_run_seconds": 19.3003734,
-      "verify_run_seconds": 506.611665376,
+      "weights_run_seconds": 19.678686075999998,
+      "verify_run_seconds": 502.87318616,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14557,8 +14558,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Tidal Totem"
       ],
-      "weights_run_seconds": 19.3003734,
-      "verify_run_seconds": 515.546691327,
+      "weights_run_seconds": 19.678686075999998,
+      "verify_run_seconds": 512.8284824680001,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -16310,8 +16311,8 @@
         "trinket2: Serenity Field",
         "ranged: Tidal Totem"
       ],
-      "weights_run_seconds": 12.022539892,
-      "verify_run_seconds": 403.03726652299997,
+      "weights_run_seconds": 11.896988734,
+      "verify_run_seconds": 399.959067335,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18065,8 +18066,8 @@
         "trinket2: Serenity Field",
         "ranged: Tidal Totem"
       ],
-      "weights_run_seconds": 12.022539892,
-      "verify_run_seconds": 404.815474508,
+      "weights_run_seconds": 11.896988734,
+      "verify_run_seconds": 402.449620923,
       "coverage": {
         "back": {
           "eligible": 473,

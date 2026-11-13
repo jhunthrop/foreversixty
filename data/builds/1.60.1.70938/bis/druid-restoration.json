@@ -2,7 +2,7 @@
   "spec": "druid-restoration",
   "build": "1.60.1.70938",
   "engine_version": "5603877e4",
-  "generated_at": "2026-11-13T18:46:07Z",
+  "generated_at": "2026-11-13T21:49:28Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -621,14 +621,14 @@
               "dps_delta": -1.75
             },
             "quest": {
-              "item_id": 6480,
+              "item_id": 270016,
               "rank": 19,
-              "source": "Deviate Hides",
-              "dps_delta": -2.04
+              "source": "Underground Assault",
+              "dps_delta": -2.13
             },
             "vendor": {
               "item_id": 277072,
-              "rank": 34,
+              "rank": 33,
               "source": "Brother Zendraas",
               "dps_delta": -2.48
             },
@@ -1094,8 +1094,8 @@
         "finger2: Band of Purification",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 6.627465221,
-      "verify_run_seconds": 50.712526008,
+      "weights_run_seconds": 7.872893769,
+      "verify_run_seconds": 60.916736104,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -1823,14 +1823,14 @@
               "dps_delta": -1.75
             },
             "quest": {
-              "item_id": 15449,
-              "rank": 15,
-              "source": "The Power to Destroy...",
-              "dps_delta": -1.87
+              "item_id": 3457,
+              "rank": 19,
+              "source": "Wand to Bethor",
+              "dps_delta": -2.1
             },
             "vendor": {
               "item_id": 277072,
-              "rank": 34,
+              "rank": 32,
               "source": "Brother Zendraas",
               "dps_delta": -2.48
             },
@@ -2302,8 +2302,8 @@
         "finger2: Band of Purification",
         "main_hand: Living Root"
       ],
-      "weights_run_seconds": 6.627465221,
-      "verify_run_seconds": 52.895587535,
+      "weights_run_seconds": 7.872893769,
+      "verify_run_seconds": 62.599919016,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -2697,18 +2697,12 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7004,
-              "item_name": "Prelacy Cape",
-              "source_kind": "quest",
-              "source": "Researching the Corruption",
-              "dps_delta": -0.2370715
-            },
-            {
               "item_id": 19533,
               "item_name": "Caretaker's Cape",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -0.819490118
+              "dps_delta": -0.54853463,
+              "verified": true
             },
             {
               "item_id": 9605,
@@ -2716,18 +2710,25 @@
               "source_kind": "quest",
               "source": "Data Rescue",
               "dps_delta": -0.992221583
+            },
+            {
+              "item_id": 13005,
+              "item_name": "Amy's Blanket",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.672597783
             }
           ],
           "runners_up": [
             {
-              "item_id": 7004,
-              "source_kind": "quest",
-              "source": "Researching the Corruption"
-            },
-            {
               "item_id": 19533,
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
+            },
+            {
+              "item_id": 9605,
+              "source_kind": "quest",
+              "source": "Data Rescue"
             }
           ],
           "by_kind": {
@@ -2739,33 +2740,33 @@
             },
             "pvp": {
               "item_id": 16315,
-              "rank": 9,
+              "rank": 8,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -2.3
             },
             "quest": {
-              "item_id": 7004,
-              "rank": 2,
-              "source": "Researching the Corruption",
-              "dps_delta": -0.24
+              "item_id": 9605,
+              "rank": 3,
+              "source": "Data Rescue",
+              "dps_delta": -0.99
             },
             "rep": {
               "item_id": 19533,
-              "rank": 3,
+              "rank": 2,
               "source": "Silverwing Sentinels",
-              "dps_delta": -0.82,
+              "dps_delta": -0.55,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 19533,
-              "rank": 3,
+              "rank": 2,
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.82,
+              "dps_delta": -0.55,
               "standing": "honored"
             },
             "world": {
               "item_id": 13005,
-              "rank": 5,
+              "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.67
@@ -2924,19 +2925,12 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 9609,
-              "item_name": "Shilly Mitts",
-              "source_kind": "quest",
-              "source": "Gyrodrillmatic Excavationators",
-              "dps_delta": -0.826491851,
-              "verified": true
-            },
-            {
               "item_id": 4318,
               "item_name": "Gloves of Meditation",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.409547515
+              "dps_delta": -1.966647678,
+              "verified": true
             },
             {
               "item_id": 7106,
@@ -2944,38 +2938,45 @@
               "source_kind": "quest",
               "source": "Look To The Stars",
               "dps_delta": -2.510114536
+            },
+            {
+              "item_id": 9491,
+              "item_name": "Hotshot Pilot's Gloves",
+              "source_kind": "dungeon",
+              "source": "Gnomeregan",
+              "dps_delta": -2.675079497
             }
           ],
           "runners_up": [
             {
-              "item_id": 9609,
-              "source_kind": "quest",
-              "source": "Gyrodrillmatic Excavationators"
-            },
-            {
               "item_id": 4318,
               "source_kind": "crafted",
               "source": "Tailoring"
+            },
+            {
+              "item_id": 7106,
+              "source_kind": "quest",
+              "source": "Look To The Stars"
             }
           ],
           "by_kind": {
             "crafted": {
               "item_id": 4318,
-              "rank": 3,
+              "rank": 2,
               "source": "Tailoring",
-              "dps_delta": -2.41
+              "dps_delta": -1.97
             },
             "dungeon": {
               "item_id": 9491,
-              "rank": 5,
+              "rank": 4,
               "source": "Gnomeregan",
               "dps_delta": -2.68
             },
             "quest": {
-              "item_id": 9609,
-              "rank": 2,
-              "source": "Gyrodrillmatic Excavationators",
-              "dps_delta": -0.83
+              "item_id": 7106,
+              "rank": 3,
+              "source": "Look To The Stars",
+              "dps_delta": -2.51
             }
           }
         },
@@ -3222,18 +3223,18 @@
               "dps_delta": -1.389097071
             },
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -2.234380327
-            },
-            {
               "item_id": 6790,
               "item_name": "Ring of Calm",
               "source_kind": "quest",
               "source": "Centaur Bounty",
               "dps_delta": -2.234380327
+            },
+            {
+              "item_id": 273030,
+              "item_name": "Ring of Power Regulation",
+              "source_kind": "dungeon",
+              "source": "Excavation Site: Wetlands: Relic Guardian",
+              "dps_delta": -2.543285933
             }
           ],
           "runners_up": [
@@ -3243,9 +3244,9 @@
               "source": "World drop"
             },
             {
-              "item_id": 6748,
+              "item_id": 6790,
               "source_kind": "quest",
-              "source": "Willix the Importer"
+              "source": "Centaur Bounty"
             }
           ],
           "by_kind": {
@@ -3263,14 +3264,14 @@
             },
             "rep": {
               "item_id": 19525,
-              "rank": 12,
+              "rank": 11,
               "source": "Silverwing Sentinels",
               "dps_delta": -3,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 19525,
-              "rank": 12,
+              "rank": 11,
               "source": "Illiyana Moonblaze",
               "dps_delta": -3,
               "standing": "honored"
@@ -3296,18 +3297,18 @@
               "verified": true
             },
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -1.554062033
-            },
-            {
               "item_id": 6790,
               "item_name": "Ring of Calm",
               "source_kind": "quest",
               "source": "Centaur Bounty",
               "dps_delta": -1.554062033
+            },
+            {
+              "item_id": 273030,
+              "item_name": "Ring of Power Regulation",
+              "source_kind": "dungeon",
+              "source": "Excavation Site: Wetlands: Relic Guardian",
+              "dps_delta": -1.862967639
             }
           ],
           "runners_up": [
@@ -3317,9 +3318,9 @@
               "source": "World drop"
             },
             {
-              "item_id": 6748,
+              "item_id": 6790,
               "source_kind": "quest",
-              "source": "Willix the Importer"
+              "source": "Centaur Bounty"
             }
           ],
           "not_with": [
@@ -3328,7 +3329,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 273030,
-              "rank": 6,
+              "rank": 5,
               "source": "Excavation Site: Wetlands: Relic Guardian",
               "dps_delta": -1.86
             },
@@ -3341,15 +3342,15 @@
                 6790
               ],
               "next": {
-                "item_id": 6748,
-                "rank": 5,
-                "source": "Willix the Importer",
-                "dps_delta": -1.55
+                "item_id": 1116,
+                "rank": 8,
+                "source": "Raene's Cleansing",
+                "dps_delta": -2.02
               }
             },
             "rep": {
               "item_id": 19525,
-              "rank": 12,
+              "rank": 11,
               "source": "Silverwing Sentinels",
               "dps_delta": -2.32,
               "standing": "honored",
@@ -3366,7 +3367,7 @@
             },
             "vendor": {
               "item_id": 19525,
-              "rank": 12,
+              "rank": 11,
               "source": "Illiyana Moonblaze",
               "dps_delta": -2.32,
               "standing": "honored",
@@ -3608,8 +3609,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Staff of the Friar"
       ],
-      "weights_run_seconds": 8.924335481,
-      "verify_run_seconds": 88.547809418,
+      "weights_run_seconds": 11.163108084,
+      "verify_run_seconds": 112.176615032,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -4525,11 +4526,11 @@
               "dps_delta": -1.389097071
             },
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -2.234380327
+              "item_id": 273030,
+              "item_name": "Ring of Power Regulation",
+              "source_kind": "dungeon",
+              "source": "Excavation Site: Wetlands: Relic Guardian",
+              "dps_delta": -2.543285933
             }
           ],
           "runners_up": [
@@ -4559,14 +4560,14 @@
             },
             "rep": {
               "item_id": 19521,
-              "rank": 12,
+              "rank": 11,
               "source": "Warsong Outriders",
               "dps_delta": -3,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 272071,
-              "rank": 11,
+              "rank": 10,
               "source": "Creeg Bothunk",
               "dps_delta": -2.95,
               "standing": "honored"
@@ -4599,11 +4600,11 @@
               "dps_delta": -0.708778777
             },
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -1.554062033
+              "item_id": 273030,
+              "item_name": "Ring of Power Regulation",
+              "source_kind": "dungeon",
+              "source": "Excavation Site: Wetlands: Relic Guardian",
+              "dps_delta": -1.862967639
             }
           ],
           "runners_up": [
@@ -4624,7 +4625,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 273030,
-              "rank": 6,
+              "rank": 5,
               "source": "Excavation Site: Wetlands: Relic Guardian",
               "dps_delta": -1.86
             },
@@ -4637,15 +4638,15 @@
                 279845
               ],
               "next": {
-                "item_id": 6748,
-                "rank": 5,
-                "source": "Willix the Importer",
-                "dps_delta": -1.55
+                "item_id": 281252,
+                "rank": 12,
+                "source": "Bloodfury Trinkets",
+                "dps_delta": -2.48
               }
             },
             "rep": {
               "item_id": 19521,
-              "rank": 12,
+              "rank": 11,
               "source": "Warsong Outriders",
               "dps_delta": -2.32,
               "standing": "honored",
@@ -4655,7 +4656,7 @@
             },
             "vendor": {
               "item_id": 272071,
-              "rank": 11,
+              "rank": 10,
               "source": "Creeg Bothunk",
               "dps_delta": -2.26,
               "standing": "honored",
@@ -4664,7 +4665,7 @@
               ],
               "next": {
                 "item_id": 19521,
-                "rank": 12,
+                "rank": 11,
                 "source": "Kelm Hargunth",
                 "dps_delta": -2.32,
                 "standing": "honored",
@@ -4907,8 +4908,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Staff of the Friar"
       ],
-      "weights_run_seconds": 8.924335481,
-      "verify_run_seconds": 87.42551063200001,
+      "weights_run_seconds": 11.163108084,
+      "verify_run_seconds": 112.54868333799999,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5355,7 +5356,7 @@
           "by_kind": {
             "crafted": {
               "item_id": 4327,
-              "rank": 8,
+              "rank": 7,
               "source": "Tailoring",
               "dps_delta": -1.14
             },
@@ -5367,7 +5368,7 @@
             },
             "pvp": {
               "item_id": 16336,
-              "rank": 7,
+              "rank": 6,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -0.94
             },
@@ -5577,7 +5578,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 9491,
-              "rank": 13,
+              "rank": 12,
               "source": "Gnomeregan",
               "dps_delta": -2.95
             },
@@ -5876,14 +5877,14 @@
             },
             "rep": {
               "item_id": 19524,
-              "rank": 14,
+              "rank": 13,
               "source": "Silverwing Sentinels",
               "dps_delta": -2.71,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 19524,
-              "rank": 14,
+              "rank": 13,
               "source": "Illiyana Moonblaze",
               "dps_delta": -2.71,
               "standing": "honored"
@@ -5940,7 +5941,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 6693,
-              "rank": 10,
+              "rank": 9,
               "source": "Razorfen Kraul: Charlga Razorflank",
               "dps_delta": -1.9
             },
@@ -5961,7 +5962,7 @@
             },
             "rep": {
               "item_id": 19524,
-              "rank": 14,
+              "rank": 13,
               "source": "Silverwing Sentinels",
               "dps_delta": -1.97,
               "standing": "honored",
@@ -5978,7 +5979,7 @@
             },
             "vendor": {
               "item_id": 19524,
-              "rank": 14,
+              "rank": 13,
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.97,
               "standing": "honored",
@@ -5987,7 +5988,7 @@
               ],
               "next": {
                 "item_id": 276202,
-                "rank": 18,
+                "rank": 17,
                 "source": "Friz Frazzlespark",
                 "dps_delta": -2.43,
                 "standing": "friendly"
@@ -6325,8 +6326,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 8.632630487,
-      "verify_run_seconds": 75.99782891599999,
+      "weights_run_seconds": 10.98428187,
+      "verify_run_seconds": 96.781028063,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7278,7 +7279,7 @@
             },
             "rep": {
               "item_id": 19520,
-              "rank": 9,
+              "rank": 8,
               "source": "Warsong Outriders",
               "dps_delta": -2.75,
               "standing": "honored"
@@ -7348,7 +7349,7 @@
               ],
               "next": {
                 "item_id": 6693,
-                "rank": 11,
+                "rank": 10,
                 "source": "Razorfen Kraul: Charlga Razorflank",
                 "dps_delta": -1.8
               }
@@ -7362,15 +7363,15 @@
                 279845
               ],
               "next": {
-                "item_id": 6748,
-                "rank": 8,
-                "source": "Willix the Importer",
-                "dps_delta": -1.22
+                "item_id": 281635,
+                "rank": 16,
+                "source": "Greater Friend of the Library",
+                "dps_delta": -2.18
               }
             },
             "rep": {
               "item_id": 19520,
-              "rank": 9,
+              "rank": 8,
               "source": "Warsong Outriders",
               "dps_delta": -1.41,
               "standing": "honored",
@@ -7389,7 +7390,7 @@
               ],
               "next": {
                 "item_id": 19520,
-                "rank": 9,
+                "rank": 8,
                 "source": "Kelm Hargunth",
                 "dps_delta": -1.41,
                 "standing": "honored",
@@ -7731,8 +7732,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 8.632630487,
-      "verify_run_seconds": 79.693679604,
+      "weights_run_seconds": 10.98428187,
+      "verify_run_seconds": 101.639514301,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -8175,7 +8176,7 @@
           "by_kind": {
             "crafted": {
               "item_id": 4327,
-              "rank": 23,
+              "rank": 22,
               "source": "Tailoring",
               "dps_delta": -6.59
             },
@@ -8742,14 +8743,14 @@
             },
             "rep": {
               "item_id": 19523,
-              "rank": 21,
+              "rank": 20,
               "source": "Silverwing Sentinels",
               "dps_delta": -5.66,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 19523,
-              "rank": 21,
+              "rank": 20,
               "source": "Illiyana Moonblaze",
               "dps_delta": -5.66,
               "standing": "honored"
@@ -8827,7 +8828,7 @@
             },
             "rep": {
               "item_id": 19523,
-              "rank": 21,
+              "rank": 20,
               "source": "Silverwing Sentinels",
               "dps_delta": -5.06,
               "standing": "honored",
@@ -8844,7 +8845,7 @@
             },
             "vendor": {
               "item_id": 19523,
-              "rank": 21,
+              "rank": 20,
               "source": "Illiyana Moonblaze",
               "dps_delta": -5.06,
               "standing": "honored",
@@ -8853,7 +8854,7 @@
               ],
               "next": {
                 "item_id": 276202,
-                "rank": 24,
+                "rank": 23,
                 "source": "Friz Frazzlespark",
                 "dps_delta": -5.72,
                 "standing": "friendly"
@@ -9147,14 +9148,14 @@
             },
             "rep": {
               "item_id": 16769,
-              "rank": 42,
+              "rank": 41,
               "source": "Timbermaw Hold",
               "dps_delta": -20.34,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 212580,
-              "rank": 39,
+              "rank": 38,
               "source": "Illiyana Moonblaze",
               "dps_delta": -20.01,
               "two_hand": true
@@ -9303,8 +9304,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 7.460487406,
-      "verify_run_seconds": 69.883892656,
+      "weights_run_seconds": 9.099187871,
+      "verify_run_seconds": 87.958774562,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -10696,14 +10697,14 @@
             },
             "rep": {
               "item_id": 16769,
-              "rank": 58,
+              "rank": 57,
               "source": "Timbermaw Hold",
               "dps_delta": -39.13,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 212584,
-              "rank": 43,
+              "rank": 42,
               "source": "Kelm Hargunth",
               "dps_delta": -37.43,
               "two_hand": true
@@ -10852,8 +10853,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 7.460487406,
-      "verify_run_seconds": 68.94464489900001,
+      "weights_run_seconds": 9.099187871,
+      "verify_run_seconds": 87.315641867,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -11318,7 +11319,7 @@
           "by_kind": {
             "crafted": {
               "item_id": 4327,
-              "rank": 34,
+              "rank": 33,
               "source": "Tailoring",
               "dps_delta": -7.81
             },
@@ -11921,7 +11922,7 @@
             },
             "rep": {
               "item_id": 19522,
-              "rank": 32,
+              "rank": 31,
               "source": "Silverwing Sentinels",
               "dps_delta": -7.22,
               "standing": "honored"
@@ -12020,7 +12021,7 @@
             },
             "rep": {
               "item_id": 19522,
-              "rank": 32,
+              "rank": 31,
               "source": "Silverwing Sentinels",
               "dps_delta": -7,
               "standing": "honored",
@@ -12577,8 +12578,8 @@
         "main_hand: Staff of Metanoia",
         "ranged: Idol of Synthesis"
       ],
-      "weights_run_seconds": 7.904862359,
-      "verify_run_seconds": 283.68829225300004,
+      "weights_run_seconds": 10.02063676,
+      "verify_run_seconds": 339.84963618,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -14302,8 +14303,8 @@
         "main_hand: Staff of Metanoia",
         "ranged: Idol of Synthesis"
       ],
-      "weights_run_seconds": 7.904862359,
-      "verify_run_seconds": 281.884711376,
+      "weights_run_seconds": 10.02063676,
+      "verify_run_seconds": 336.86476450199996,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -14765,7 +14766,7 @@
           "by_kind": {
             "crafted": {
               "item_id": 13860,
-              "rank": 23,
+              "rank": 22,
               "source": "Tailoring",
               "dps_delta": -13.13
             },
@@ -14777,7 +14778,7 @@
             },
             "pvp": {
               "item_id": 16337,
-              "rank": 20,
+              "rank": 19,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": -11.83
             },
@@ -16048,8 +16049,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Idol of Synthesis"
       ],
-      "weights_run_seconds": 7.496986305,
-      "verify_run_seconds": 243.18574808099999,
+      "weights_run_seconds": 9.292438119,
+      "verify_run_seconds": 311.36122498099996,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -17791,8 +17792,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "ranged: Idol of Synthesis"
       ],
-      "weights_run_seconds": 7.496986305,
-      "verify_run_seconds": 243.28028228,
+      "weights_run_seconds": 9.292438119,
+      "verify_run_seconds": 311.006872683,
       "coverage": {
         "back": {
           "eligible": 473,

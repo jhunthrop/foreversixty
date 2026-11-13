@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (dwarf, 0000000000000000-000000000000000000-2530000010000000)
 
-Set DPS (verified): 73.1. Weights run: 7.2s. Verify run: 41.7s. 286 eligible items had no known source.
+Set DPS (verified): 73.1. Weights run: 7.2s. Verify run: 42.9s. 286 eligible items had no known source.
 
 Race sweep: dwarf 73.1 ± 0.0 (heal_score); the guide race dwarf is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 286, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-000000000000000000-5530001010411000)
 
-Set DPS (verified): 133.8. Weights run: 7.7s. Verify run: 46.0s. 475 eligible items had no known source.
+Set DPS (verified): 133.8. Weights run: 7.8s. Verify run: 46.3s. 475 eligible items had no known source.
 
 Race sweep: dwarf 133.9 ± 0.0 (heal_score); the guide race dwarf is best.
 
@@ -51,7 +51,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | head | Holy Shroud (2721) | World drop [world_drop] | 35.7 healing_power points (7.43 DPS) | yes | Wisdom's Leather Helm (252515, -3.07 DPS) [crafted]; Filigreed Pristine Circlet (253975, -3.51 DPS, sim-verified) [crafted]; Pristine Circlet (253949, -3.69 DPS) [crafted] |
 | neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 4.6 healing_power points (0.95 DPS) | yes | Crystal Starfire Medallion (5003, -0.10 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -0.16 DPS, sim-verified) [world]; Seal of the Expedition (271920, -0.24 DPS) [rep] |
 | shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 15.2 healing_power points (3.16 DPS) | yes | Death Speaker Mantle (6685, -0.24 DPS, sim-verified) [dungeon]; Magician's Mantle (12998, -0.83 DPS) [world_drop]; Invoker's Mantle (215365, -0.99 DPS) [crafted] |
-| back | Caretaker's Cape (19533) | Silverwing Sentinels [rep] | sim-verified (133.8 DPS) | yes | Prelacy Cape (7004, -0.26 DPS, sim-verified) [quest]; Glowing Thresher Cape (6901, -0.87 DPS) [dungeon]; Repairman's Cape (9605, -0.93 DPS) [quest] |
+| back | Caretaker's Cape (19533) | Silverwing Sentinels [rep] | sim-verified (133.8 DPS) | yes | Glowing Thresher Cape (6901, -0.74 DPS, sim-verified) [dungeon]; Repairman's Cape (9605, -0.93 DPS) [quest]; Prelacy Cape (7004, -1.34 DPS) [quest] |
 | chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 27.6 healing_power points (5.73 DPS) | yes | Wisdom's Leather Tunic (252511, -0.56 DPS) [crafted]; Pristine Gown (253961, -0.62 DPS, sim-verified) [crafted]; Beguiler Robes (7728, -1.38 DPS) [dungeon] |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 13.2 healing_power points (2.75 DPS) | yes | Mindthrust Bracers (1974, -0.69 DPS, sim-verified) [dungeon]; Glowing Magical Bracelets (13106, -1.60 DPS) [world_drop]; Nightsky Wristbands (6407, -1.60 DPS) [world_drop] |
 | hands | Truefaith Gloves (7049) | Tailoring [crafted] | 17.1 healing_power points (3.55 DPS) | yes | Pristine Gloves (253913, -0.83 DPS) [crafted]; Wisdom's Leather Gloves (252499, -0.90 DPS) [crafted]; Naga Battle Gloves (888, -0.95 DPS, sim-verified) [dungeon] |
@@ -72,7 +72,7 @@ No-known-source sample (15 of 475, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-000000000000000000-5530001011513051)
 
-Set DPS (verified): 207.7. Weights run: 14.9s. Verify run: 168.7s. 804 eligible items had no known source.
+Set DPS (verified): 207.7. Weights run: 15.3s. Verify run: 169.5s. 804 eligible items had no known source.
 
 Race sweep: dwarf 207.8 ± 0.1 (heal_score); the guide race dwarf is best.
 
@@ -83,7 +83,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | head | Papal Fez (9431) | Uldaman [dungeon] | 50.3 healing_power points (8.54 DPS) | yes | Holy Shroud (2721, -2.01 DPS) [world_drop]; Whitemane's Chapeau (7720, -2.92 DPS, sim-verified) [dungeon]; Miner's Hat of the Deep (9429, -3.08 DPS) [dungeon] |
 | neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 29.5 healing_power points (5.01 DPS) | yes | Triune Amulet (7722, -2.58 DPS) [dungeon]; Amberglow Talisman (10824, -3.48 DPS) [quest]; Necklace of Calisea (1714, -3.94 DPS, sim-verified) [dungeon] |
 | shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 37.4 healing_power points (6.35 DPS) | yes | Sheepshear Mantle (13115, -2.21 DPS) [world_drop]; Mantle of Doan (7712, -2.73 DPS) [dungeon]; Earthen Silk Shoulders (254033, -5.01 DPS, sim-verified) [crafted] |
-| back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Expeditionary's Cape (271922, -0.19 DPS, sim-verified) [rep]; Prelacy Cape (7004, -1.04 DPS) [quest]; Glowing Thresher Cape (6901, -1.41 DPS) [dungeon] |
+| back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Expeditionary's Cape (271922, -0.19 DPS, sim-verified) [rep]; Glowing Thresher Cape (6901, -1.41 DPS) [dungeon]; Repairman's Cape (9605, -1.43 DPS) [quest] |
 | chest | Stormcloth Vest (10020) | Tailoring [crafted] | 65.2 healing_power points (11.08 DPS) | yes | Dreamweave Vest (10021, -4.06 DPS) [crafted]; Death's Head Vestment (10581, -4.42 DPS) [dungeon]; Deathchill Armor (10764, -4.59 DPS, sim-verified) [dungeon] |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 16.2 healing_power points (2.74 DPS) | yes | Enchanted Kodo Bracers (13119, -0.41 DPS) [world_drop]; Guardian Leather Bracers (4260, -0.52 DPS) [crafted]; Earthen Silk Cuffs (254019, -1.12 DPS, sim-verified) [crafted] |
 | hands | Mender's Leather Gloves (252530) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Prefect's Gauntlet (250569, -0.40 DPS) [crafted]; Dreamweave Gloves (10019, -0.44 DPS) [crafted]; Gilded Handwraps (254021, -0.48 DPS, sim-verified) [crafted] |
@@ -104,7 +104,7 @@ No-known-source sample (15 of 804, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 0000000000000000-055000000000000000-5530001011513051)
 
-Set DPS (verified): 280.3. Weights run: 16.4s. Verify run: 222.2s. 1053 eligible items had no known source.
+Set DPS (verified): 280.3. Weights run: 16.5s. Verify run: 222.7s. 1053 eligible items had no known source.
 
 Race sweep: dwarf 280.4 ± 0.1 (heal_score); the guide race dwarf is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1053, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 374.1. Weights run: 19.3s. Verify run: 506.6s. 2377 eligible items had no known source.
+Set DPS (verified): 374.1. Weights run: 19.7s. Verify run: 502.9s. 2377 eligible items had no known source.
 
 Race sweep: dwarf 374.0 ± 0.2 (heal_score); the guide race dwarf is best.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 2377, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 895.5. Weights run: 12.0s. Verify run: 403.0s. 2377 eligible items had no known source.
+Set DPS (verified): 895.5. Weights run: 11.9s. Verify run: 400.0s. 2377 eligible items had no known source.
 
 Race sweep: dwarf 896.0 ± 0.6 (heal_score); the guide race dwarf is best.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 2377, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 0000000000000000-000000000000000000-2530000010000000)
 
-Set DPS (verified): 72.9. Weights run: 7.2s. Verify run: 45.7s. 275 eligible items had no known source.
+Set DPS (verified): 72.9. Weights run: 7.2s. Verify run: 46.0s. 275 eligible items had no known source.
 
 Race sweep: orc 72.9 ± 0.0, windshaper-skyborne 72.8 ± 0.0, troll 72.8 ± 0.0, tauren 72.8 ± 0.0 (heal_score); the guide race orc is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 275, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 0000000000000000-000000000000000000-5530001010411000)
 
-Set DPS (verified): 134.5. Weights run: 7.7s. Verify run: 47.7s. 469 eligible items had no known source.
+Set DPS (verified): 134.5. Weights run: 7.8s. Verify run: 48.1s. 469 eligible items had no known source.
 
 Race sweep: orc 134.5 ± 0.0, windshaper-skyborne 134.4 ± 0.0, troll 133.4 ± 0.0, tauren 133.3 ± 0.0 (heal_score); the guide race orc is best.
 
@@ -244,7 +244,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 |---|---|---|---|---|---|
 | head | Holy Shroud (2721) | World drop [world_drop] | 37.0 healing_power points (7.09 DPS) | yes | Enduring Cap (3020, -2.58 DPS, sim-verified) [world_drop]; Filigreed Pristine Circlet (253975, -2.87 DPS) [crafted]; Wisdom's Leather Helm (252515, -3.06 DPS) [crafted] |
 | neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 7.2 healing_power points (1.37 DPS) | yes | Archmagister's Faceted Pendant (273049, -0.08 DPS) [world]; Crystal Starfire Medallion (5003, -0.13 DPS) [world_drop]; Darkspear Warding Pendant (272075, -0.29 DPS) [vendor] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 19.1 healing_power points (3.67 DPS) | yes | Mantle of Woe (7750, -0.12 DPS) [quest]; Death Speaker Mantle (6685, -0.14 DPS) [dungeon]; Tanned Shoulderpads (270023, -0.65 DPS) [quest] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 19.1 healing_power points (3.67 DPS) | yes | Death Speaker Mantle (6685, -0.10 DPS, sim-verified) [dungeon]; Magician's Mantle (12998, -0.77 DPS) [world_drop]; Feline Mantle (3748, -1.17 DPS) [dungeon] |
 | back | Battle Healer's Cloak (19529) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Thresher Cape (6901, -0.63 DPS, sim-verified) [dungeon]; Darkspear Raider's Cloak (272078, -0.89 DPS) [vendor]; Windsong Drape (15468, -1.53 DPS) [quest] |
 | chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 32.4 healing_power points (6.21 DPS) | yes | Pristine Gown (253961, -0.44 DPS, sim-verified) [crafted]; Wisdom's Leather Tunic (252511, -0.70 DPS) [crafted]; Beguiler Robes (7728, -0.88 DPS) [dungeon] |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 15.7 healing_power points (3.00 DPS) | yes | Mindthrust Bracers (1974, -0.50 DPS, sim-verified) [dungeon]; Glowing Magical Bracelets (13106, -1.28 DPS) [world_drop]; Nightsky Wristbands (6407, -1.33 DPS) [world_drop] |
@@ -266,7 +266,7 @@ No-known-source sample (15 of 469, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 0000000000000000-000000000000000000-5530001011513051)
 
-Set DPS (verified): 208.7. Weights run: 14.9s. Verify run: 172.3s. 787 eligible items had no known source.
+Set DPS (verified): 208.7. Weights run: 15.3s. Verify run: 173.4s. 787 eligible items had no known source.
 
 Race sweep: orc 208.6 ± 0.1, windshaper-skyborne 208.6 ± 0.1, troll 206.2 ± 0.1, tauren 206.2 ± 0.1 (heal_score); the guide race orc is best.
 
@@ -276,7 +276,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 |---|---|---|---|---|---|
 | head | Papal Fez (9431) | Uldaman [dungeon] | 64.2 healing_power points (16.38 DPS) | yes | Whitemane's Chapeau (7720, -3.11 DPS, sim-verified) [dungeon]; Miner's Hat of the Deep (9429, -5.17 DPS) [dungeon]; Corpseshroud (10574, -5.48 DPS) [dungeon] |
 | neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 35.0 healing_power points (8.94 DPS) | yes | Necklace of Calisea (1714, -4.60 DPS, sim-verified) [dungeon]; Triune Amulet (7722, -4.87 DPS) [dungeon]; Darkspear Warding Pendant (272074, -5.58 DPS) [vendor] |
-| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 46.4 healing_power points (11.85 DPS) | yes | Sheepshear Mantle (13115, -3.75 DPS, sim-verified) [world_drop]; Green Silken Shoulders (7057, -4.53 DPS) [crafted]; Mantle of Woe (7750, -4.82 DPS) [quest] |
+| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 46.4 healing_power points (11.85 DPS) | yes | Sheepshear Mantle (13115, -3.75 DPS, sim-verified) [world_drop]; Green Silken Shoulders (7057, -4.53 DPS) [crafted]; Mantle of Doan (7712, -4.86 DPS) [dungeon] |
 | back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Darkspear Raider's Cloak (272077, -0.74 DPS, sim-verified) [vendor]; Blackforge Cape (6424, -1.05 DPS) [dungeon] |
 | chest | Stormcloth Vest (10020) | Tailoring [crafted] | 67.1 healing_power points (17.13 DPS) | yes | Dreamweave Vest (10021, -4.15 DPS) [crafted]; Death's Head Vestment (10581, -4.92 DPS) [dungeon]; Deathchill Armor (10764, -5.44 DPS, sim-verified) [dungeon] |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Radiant Silver Bracers (4545, -0.26 DPS) [quest]; Enchanted Kodo Bracers (13119, -0.30 DPS) [world_drop]; Mindthrust Bracers (1974, -0.49 DPS, sim-verified) [dungeon] |
@@ -298,7 +298,7 @@ No-known-source sample (15 of 787, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 0000000000000000-055000000000000000-5530001011513051)
 
-Set DPS (verified): 282.2. Weights run: 16.4s. Verify run: 227.6s. 1021 eligible items had no known source.
+Set DPS (verified): 282.2. Weights run: 16.5s. Verify run: 229.0s. 1021 eligible items had no known source.
 
 Race sweep: orc 282.1 ± 0.1, windshaper-skyborne 282.0 ± 0.1, troll 279.6 ± 0.1, tauren 279.5 ± 0.1 (heal_score); the guide race orc is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1021, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (orc, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 376.1. Weights run: 19.3s. Verify run: 515.5s. 2334 eligible items had no known source.
+Set DPS (verified): 376.1. Weights run: 19.7s. Verify run: 512.8s. 2334 eligible items had no known source.
 
 Race sweep: orc 376.0 ± 0.2, windshaper-skyborne 375.9 ± 0.2, troll 374.0 ± 0.2, tauren 372.8 ± 0.2 (heal_score); the guide race orc is best.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 2334, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 900.3. Weights run: 12.0s. Verify run: 404.8s. 2334 eligible items had no known source.
+Set DPS (verified): 900.3. Weights run: 11.9s. Verify run: 402.4s. 2334 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 904.8 ± 0.6, orc 900.4 ± 0.6, troll 900.0 ± 0.6, tauren 893.8 ± 0.5 (heal_score); windshaper-skyborne beats the guide race orc by 4.4 (0.48%) ± 0.8, beyond error.
 

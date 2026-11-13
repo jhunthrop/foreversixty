@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70938",
   "engine_version": "5603877e4",
-  "generated_at": "2026-11-13T18:24:04Z",
+  "generated_at": "2026-11-13T21:18:05Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -1174,8 +1174,8 @@
         "off_hand: Blackfang",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 7.378766579,
-      "verify_run_seconds": 33.365297952,
+      "weights_run_seconds": 5.955463305,
+      "verify_run_seconds": 25.106938544000002,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -1217,8 +1217,8 @@
           "rare_spawn_skipped": 6
         },
         "main_hand": {
-          "eligible": 200,
-          "sourced": 133,
+          "eligible": 201,
+          "sourced": 134,
           "rare_spawn_skipped": 6
         },
         "neck": {
@@ -2418,8 +2418,8 @@
         "off_hand: Edward's Knife",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 7.378766579,
-      "verify_run_seconds": 33.082426027000004,
+      "weights_run_seconds": 5.955463305,
+      "verify_run_seconds": 25.509376534,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -2461,8 +2461,8 @@
           "rare_spawn_skipped": 6
         },
         "main_hand": {
-          "eligible": 199,
-          "sourced": 139,
+          "eligible": 200,
+          "sourced": 140,
           "rare_spawn_skipped": 6
         },
         "neck": {
@@ -3281,13 +3281,6 @@
           "dps_delta": 1.485824200641531,
           "alternatives": [
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.409908667
-            },
-            {
               "item_id": 277210,
               "item_name": "Pyrewood Signet Ring",
               "source_kind": "quest",
@@ -3300,18 +3293,25 @@
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
               "dps_delta": -0.559760177
+            },
+            {
+              "item_id": 271911,
+              "item_name": "Theramore Signet",
+              "source_kind": "rep",
+              "source": "Theramore Expeditionary Force",
+              "dps_delta": -0.619228967
             }
           ],
           "runners_up": [
             {
-              "item_id": 6748,
-              "source_kind": "quest",
-              "source": "Willix the Importer"
-            },
-            {
               "item_id": 277210,
               "source_kind": "quest",
               "source": "The Horn of Xelthos"
+            },
+            {
+              "item_id": 1491,
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps"
             }
           ],
           "kinds": [
@@ -3326,15 +3326,15 @@
           "by_kind": {
             "dungeon": {
               "item_id": 1491,
-              "rank": 6,
+              "rank": 5,
               "source": "Blackfathom Deeps",
               "dps_delta": -0.56
             },
             "quest": {
-              "item_id": 6748,
+              "item_id": 277210,
               "rank": 3,
-              "source": "Willix the Importer",
-              "dps_delta": -0.41
+              "source": "The Horn of Xelthos",
+              "dps_delta": -0.48
             },
             "world": {
               "item_id": 13097,
@@ -3355,37 +3355,38 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.146940865
+              "item_id": 1491,
+              "item_name": "Ring of Precision",
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps",
+              "dps_delta": -0.296792375
+            },
+            {
+              "item_id": 271911,
+              "item_name": "Theramore Signet",
+              "source_kind": "rep",
+              "source": "Theramore Expeditionary Force",
+              "dps_delta": -0.356261165
             },
             {
               "item_id": 277210,
               "item_name": "Pyrewood Signet Ring",
               "source_kind": "quest",
               "source": "The Horn of Xelthos",
-              "dps_delta": -0.214154063
-            },
-            {
-              "item_id": 1491,
-              "item_name": "Ring of Precision",
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps",
-              "dps_delta": -0.296792375
+              "dps_delta": -0.55999748,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 6748,
-              "source_kind": "quest",
-              "source": "Willix the Importer"
+              "item_id": 1491,
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps"
             },
             {
-              "item_id": 277210,
-              "source_kind": "quest",
-              "source": "The Horn of Xelthos"
+              "item_id": 271911,
+              "source_kind": "rep",
+              "source": "Theramore Expeditionary Force"
             }
           ],
           "not_with": [
@@ -3394,7 +3395,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 1491,
-              "rank": 6,
+              "rank": 5,
               "source": "Blackfathom Deeps",
               "dps_delta": -0.3,
               "not_with": [
@@ -3408,18 +3409,18 @@
               }
             },
             "quest": {
-              "item_id": 6748,
+              "item_id": 277210,
               "rank": 3,
-              "source": "Willix the Importer",
-              "dps_delta": -0.15,
+              "source": "The Horn of Xelthos",
+              "dps_delta": -0.56,
               "not_with": [
-                6748
+                277210
               ],
               "next": {
-                "item_id": 277210,
-                "rank": 4,
-                "source": "The Horn of Xelthos",
-                "dps_delta": -0.21
+                "item_id": 6748,
+                "rank": 7,
+                "source": "Willix the Importer",
+                "dps_delta": -0.45
               }
             },
             "rep": {
@@ -3433,7 +3434,7 @@
               ],
               "next": {
                 "item_id": 271911,
-                "rank": 7,
+                "rank": 6,
                 "source": "Theramore Expeditionary Force",
                 "dps_delta": -0.36,
                 "standing": "honored"
@@ -3451,7 +3452,7 @@
             },
             "world": {
               "item_id": 1491,
-              "rank": 6,
+              "rank": 5,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.3,
@@ -3776,7 +3777,7 @@
           "changed_slots": 12
         },
         "leveling_default": {
-          "dps": 75.7,
+          "dps": 75.3,
           "error": 0.1,
           "changed_slots": 4
         }
@@ -3816,8 +3817,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 7.511893723,
-      "verify_run_seconds": 17.284062451,
+      "weights_run_seconds": 5.764624464,
+      "verify_run_seconds": 13.735612022,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -3860,8 +3861,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 304,
-          "sourced": 209,
+          "eligible": 305,
+          "sourced": 210,
           "rare_spawn_skipped": 11
         },
         "neck": {
@@ -4172,7 +4173,7 @@
             },
             "quest": {
               "item_id": 270023,
-              "rank": 12,
+              "rank": 11,
               "source": "Deathstalkers in Shadowfang",
               "dps_delta": -1.83
             }
@@ -4680,13 +4681,6 @@
           "dps_delta": 1.5102204385098332,
           "alternatives": [
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.409908667
-            },
-            {
               "item_id": 277210,
               "item_name": "Pyrewood Signet Ring",
               "source_kind": "quest",
@@ -4699,18 +4693,25 @@
               "source_kind": "quest",
               "source": "Allegiance to the Old Gods",
               "dps_delta": -0.486289744
+            },
+            {
+              "item_id": 1491,
+              "item_name": "Ring of Precision",
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps",
+              "dps_delta": -0.559760177
             }
           ],
           "runners_up": [
             {
-              "item_id": 6748,
-              "source_kind": "quest",
-              "source": "Willix the Importer"
-            },
-            {
               "item_id": 277210,
               "source_kind": "quest",
               "source": "The Horn of Xelthos"
+            },
+            {
+              "item_id": 17694,
+              "source_kind": "quest",
+              "source": "Allegiance to the Old Gods"
             }
           ],
           "kinds": [
@@ -4725,15 +4726,15 @@
           "by_kind": {
             "dungeon": {
               "item_id": 1491,
-              "rank": 7,
+              "rank": 6,
               "source": "Blackfathom Deeps",
               "dps_delta": -0.56
             },
             "quest": {
-              "item_id": 6748,
+              "item_id": 277210,
               "rank": 3,
-              "source": "Willix the Importer",
-              "dps_delta": -0.41
+              "source": "The Horn of Xelthos",
+              "dps_delta": -0.48
             },
             "world": {
               "item_id": 13097,
@@ -4754,37 +4755,38 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
+              "item_id": 17694,
+              "item_name": "Band of the Fist",
               "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.146940865
+              "source": "Allegiance to the Old Gods",
+              "dps_delta": -0.223321942
+            },
+            {
+              "item_id": 1491,
+              "item_name": "Ring of Precision",
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps",
+              "dps_delta": -0.296792375
             },
             {
               "item_id": 277210,
               "item_name": "Pyrewood Signet Ring",
               "source_kind": "quest",
               "source": "The Horn of Xelthos",
-              "dps_delta": -0.214154063
-            },
-            {
-              "item_id": 17694,
-              "item_name": "Band of the Fist",
-              "source_kind": "quest",
-              "source": "Allegiance to the Old Gods",
-              "dps_delta": -0.223321942
+              "dps_delta": -0.532828645,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 6748,
+              "item_id": 17694,
               "source_kind": "quest",
-              "source": "Willix the Importer"
+              "source": "Allegiance to the Old Gods"
             },
             {
-              "item_id": 277210,
-              "source_kind": "quest",
-              "source": "The Horn of Xelthos"
+              "item_id": 1491,
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps"
             }
           ],
           "not_with": [
@@ -4793,7 +4795,7 @@
           "by_kind": {
             "dungeon": {
               "item_id": 1491,
-              "rank": 7,
+              "rank": 6,
               "source": "Blackfathom Deeps",
               "dps_delta": -0.3,
               "not_with": [
@@ -4807,18 +4809,18 @@
               }
             },
             "quest": {
-              "item_id": 6748,
+              "item_id": 277210,
               "rank": 3,
-              "source": "Willix the Importer",
-              "dps_delta": -0.15,
+              "source": "The Horn of Xelthos",
+              "dps_delta": -0.53,
               "not_with": [
-                6748
+                277210
               ],
               "next": {
-                "item_id": 277210,
+                "item_id": 17694,
                 "rank": 4,
-                "source": "The Horn of Xelthos",
-                "dps_delta": -0.21
+                "source": "Allegiance to the Old Gods",
+                "dps_delta": -0.22
               }
             },
             "rep": {
@@ -4842,7 +4844,7 @@
               ],
               "next": {
                 "item_id": 272067,
-                "rank": 8,
+                "rank": 7,
                 "source": "Creeg Bothunk",
                 "dps_delta": -0.36,
                 "standing": "honored"
@@ -4850,7 +4852,7 @@
             },
             "world": {
               "item_id": 1491,
-              "rank": 7,
+              "rank": 6,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.3,
@@ -5149,7 +5151,7 @@
           "changed_slots": 12
         },
         "leveling_default": {
-          "dps": 76,
+          "dps": 75.7,
           "error": 0.1,
           "changed_slots": 4
         }
@@ -5189,8 +5191,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 7.511893723,
-      "verify_run_seconds": 17.603083786,
+      "weights_run_seconds": 5.764624464,
+      "verify_run_seconds": 13.608290242,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5233,8 +5235,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 299,
-          "sourced": 213,
+          "eligible": 300,
+          "sourced": 214,
           "rare_spawn_skipped": 11
         },
         "neck": {
@@ -6590,8 +6592,8 @@
         "off_hand: Black Menace",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 7.561241179,
-      "verify_run_seconds": 14.817496157,
+      "weights_run_seconds": 5.813591774,
+      "verify_run_seconds": 11.568732713,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -6634,8 +6636,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 415,
-          "sourced": 275,
+          "eligible": 416,
+          "sourced": 276,
           "rare_spawn_skipped": 12
         },
         "neck": {
@@ -6965,7 +6967,7 @@
             },
             "quest": {
               "item_id": 270023,
-              "rank": 19,
+              "rank": 18,
               "source": "Deathstalkers in Shadowfang",
               "dps_delta": -1.93
             }
@@ -7984,8 +7986,8 @@
         "off_hand: Coldrage Dagger",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 7.561241179,
-      "verify_run_seconds": 15.495367526,
+      "weights_run_seconds": 5.813591774,
+      "verify_run_seconds": 12.000814763000001,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -8028,8 +8030,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 411,
-          "sourced": 280,
+          "eligible": 412,
+          "sourced": 281,
           "rare_spawn_skipped": 12
         },
         "neck": {
@@ -9524,8 +9526,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.646750865,
-      "verify_run_seconds": 34.83550315,
+      "weights_run_seconds": 5.927228641,
+      "verify_run_seconds": 26.760186519,
       "coverage": {
         "back": {
           "eligible": 331,
@@ -9568,8 +9570,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 514,
-          "sourced": 349,
+          "eligible": 515,
+          "sourced": 350,
           "rare_spawn_skipped": 13
         },
         "neck": {
@@ -11110,8 +11112,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.646750865,
-      "verify_run_seconds": 30.014906228,
+      "weights_run_seconds": 5.927228641,
+      "verify_run_seconds": 23.042829748,
       "coverage": {
         "back": {
           "eligible": 336,
@@ -11154,8 +11156,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 510,
-          "sourced": 354,
+          "eligible": 511,
+          "sourced": 355,
           "rare_spawn_skipped": 13
         },
         "neck": {
@@ -12795,7 +12797,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 1921,
+      "no_source_count": 1922,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -12831,8 +12833,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 7.947631388,
-      "verify_run_seconds": 99.145528996,
+      "weights_run_seconds": 6.188491791,
+      "verify_run_seconds": 78.014623438,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -12875,8 +12877,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 782,
-          "sourced": 479,
+          "eligible": 783,
+          "sourced": 480,
           "rare_spawn_skipped": 14
         },
         "neck": {
@@ -12890,7 +12892,7 @@
           "rare_spawn_skipped": 14
         },
         "ranged": {
-          "eligible": 250,
+          "eligible": 251,
           "sourced": 139,
           "rare_spawn_skipped": 6
         },
@@ -14543,7 +14545,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 1924,
+      "no_source_count": 1925,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -14577,8 +14579,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 7.947631388,
-      "verify_run_seconds": 94.639456714,
+      "weights_run_seconds": 6.188491791,
+      "verify_run_seconds": 73.75508992799999,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -14621,8 +14623,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 781,
-          "sourced": 487,
+          "eligible": 782,
+          "sourced": 488,
           "rare_spawn_skipped": 14
         },
         "neck": {
@@ -14636,7 +14638,7 @@
           "rare_spawn_skipped": 14
         },
         "ranged": {
-          "eligible": 250,
+          "eligible": 251,
           "sourced": 137,
           "rare_spawn_skipped": 6
         },
@@ -16271,7 +16273,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 1921,
+      "no_source_count": 1922,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -16308,8 +16310,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 8.869974611,
-      "verify_run_seconds": 89.077154753,
+      "weights_run_seconds": 6.869254271,
+      "verify_run_seconds": 69.63990611599999,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -16352,8 +16354,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 782,
-          "sourced": 479,
+          "eligible": 783,
+          "sourced": 480,
           "rare_spawn_skipped": 14
         },
         "neck": {
@@ -16367,7 +16369,7 @@
           "rare_spawn_skipped": 14
         },
         "ranged": {
-          "eligible": 250,
+          "eligible": 251,
           "sourced": 139,
           "rare_spawn_skipped": 6
         },
@@ -18057,7 +18059,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 1924,
+      "no_source_count": 1925,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -18094,8 +18096,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 8.869974611,
-      "verify_run_seconds": 85.758260745,
+      "weights_run_seconds": 6.869254271,
+      "verify_run_seconds": 67.073153441,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -18138,8 +18140,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 781,
-          "sourced": 487,
+          "eligible": 782,
+          "sourced": 488,
           "rare_spawn_skipped": 14
         },
         "neck": {
@@ -18153,7 +18155,7 @@
           "rare_spawn_skipped": 14
         },
         "ranged": {
-          "eligible": 250,
+          "eligible": 251,
           "sourced": 137,
           "rare_spawn_skipped": 6
         },

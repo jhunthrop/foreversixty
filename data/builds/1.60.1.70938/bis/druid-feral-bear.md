@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 0000000000000000-51100301000000000000-0000000000000000)
 
-Set DPS (verified): 22.9. Weights run: 3.9s. Verify run: 4.8s. 251 eligible items had no known source.
+Set DPS (verified): 22.9. Weights run: 4.5s. Verify run: 5.3s. 251 eligible items had no known source.
 
 Race sweep: night-elf 93.0 ± 0.2, high-order-skyborne 92.5 ± 0.2 (threat_per_second); the guide race night-elf is best.
 
@@ -24,7 +24,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | wrist | Bear Bracers (4795) | Bernard Brubaker [vendor] | 8.4 stamina points (151.55 DPS) | yes | Drakewing Bands (12999, -29.60 DPS, sim-verified) [world_drop]; Wolf Bracers (4794, -42.67 DPS) [vendor]; Sanguine Cuffs (14375, -51.12 DPS) [world_drop] |
 | hands | Forest Leather Gloves (3058) (or Trapper's Leather Gloves (252495)) | World drop [world_drop] | 9.5 stamina points (171.49 DPS) | yes | Trapper's Leather Gloves (252495, +0.00 DPS) [crafted]; Nimble Leather Gloves (7285, -1.65 DPS) [crafted]; Defender's Leather Gloves (252496, -4.54 DPS) [crafted] |
 | waist | Deviate Scale Belt (6468) | Leatherworking [crafted] | 11.8 stamina points (212.55 DPS) | yes | Belt of the Fang (10412, -32.48 DPS) [dungeon]; Dark Leather Belt (4249, -49.32 DPS) [crafted]; Guardsman Belt (3429, -50.97 DPS) [world] |
-| legs | Defender's Leather Pants (252445) | Leatherworking [crafted] | 15.0 stamina points (271.44 DPS) | yes | Smelting Pants (5199, -19.29 DPS) [dungeon]; Brawler's Leather Pants (252500, -26.97 DPS) [crafted]; Slick Deviate Leggings (6480, -82.33 DPS, sim-verified) [quest] |
+| legs | Defender's Leather Pants (252445) | Leatherworking [crafted] | 15.0 stamina points (271.44 DPS) | yes | Brawler's Leather Pants (252500, -26.97 DPS) [crafted]; Leggings of the Fang (10410, -35.34 DPS) [dungeon]; Smelting Pants (5199, -81.28 DPS, sim-verified) [dungeon] |
 | feet | Nat Pagle's Extreme Anglin' Boots (19969) | Rare Fish - Brownell's Blue Striped Racer [quest] | 15.3 stamina points (276.51 DPS) | yes | Surfer Shoes (276274, -48.21 DPS, sim-verified) [vendor]; Footpads of the Fang (10411, -49.83 DPS) [dungeon]; Trapper's Leather Boots (252440, -70.82 DPS) [crafted] |
 | finger1 | Blood Ring (4998) | World drop [world_drop] | 5.0 stamina points (90.44 DPS) | yes | Slain Baron's Signet (279867, -32.15 DPS) [quest]; Ring of the Moon (12052, -34.41 DPS) [world_drop]; Protector's Band (20439, -35.61 DPS) [rep] |
 | finger2 | Sustaining Ring (6743) | Knowledge in the Deeps [quest] | 4.0 stamina points (72.35 DPS) | yes | Slain Baron's Signet (279867, -14.06 DPS) [quest]; Ring of the Moon (12052, -16.32 DPS) [world_drop]; Protector's Band (20439, -17.53 DPS) [rep] |
@@ -40,7 +40,7 @@ No-known-source sample (15 of 251, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-51100332020102100000-0000000000000000)
 
-Set DPS (verified): 66.8. Weights run: 3.9s. Verify run: 6.7s. 424 eligible items had no known source.
+Set DPS (verified): 66.8. Weights run: 3.9s. Verify run: 7.6s. 424 eligible items had no known source.
 
 Race sweep: night-elf 252.4 ± 0.5, high-order-skyborne 249.7 ± 0.4 (threat_per_second); the guide race night-elf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 424, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-51200332023102123010-0000000000000000)
 
-Set DPS (verified): 96.9. Weights run: 3.7s. Verify run: 5.1s. 607 eligible items had no known source.
+Set DPS (verified): 96.9. Weights run: 4.1s. Verify run: 5.3s. 607 eligible items had no known source.
 
 Race sweep: night-elf 368.5 ± 0.8, high-order-skyborne 358.2 ± 0.8 (threat_per_second); the guide race night-elf is best.
 
@@ -104,29 +104,29 @@ No-known-source sample (15 of 607, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0000000000000000-51200332023102125510-0300000000000000)
 
-Set DPS (verified): 152.7. Weights run: 4.0s. Verify run: 7.3s. 817 eligible items had no known source.
+Set DPS (verified): 152.7. Weights run: 4.1s. Verify run: 7.9s. 817 eligible items had no known source.
 
 Race sweep: night-elf 595.3 ± 1.1, high-order-skyborne 585.1 ± 1.1 (threat_per_second); the guide race night-elf is best.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.030, armor=0.142 ± 0.003, defense=0.938 ± 0.159 per rating point (1 rating = 1%, 0.938 per %), dodge=0.342 ± 0.045 per rating point (12 rating = 1%, 4.107 per %), strength=0.092 ± 0.000, agility=0.330 ± 0.028, attack_power=0.046 ± 0.000, feral_attack_power=0.046 ± 0.000, hit=0.138 ± 0.032 per rating point (10 rating = 1%, 1.378 per %), crit=0.076 ± 0.006 per rating point (14 rating = 1%, 1.065 per %), expertise=4.598 ± 0.382
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.022, armor=0.146 ± 0.003, defense=0.918 ± 0.157 per rating point (1 rating = 1%, 0.918 per %), dodge=0.357 ± 0.046 per rating point (12 rating = 1%, 4.280 per %), strength=0.096 ± 0.000, agility=0.340 ± 0.029, attack_power=0.048 ± 0.000, feral_attack_power=0.048 ± 0.000, hit=0.144 ± 0.033 per rating point (10 rating = 1%, 1.438 per %), crit=0.079 ± 0.007 per rating point (14 rating = 1%, 1.110 per %), expertise=4.661 ± 0.393
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 34.9 stamina points (1932.78 DPS) | yes | Knight-Lieutenant's Leather Headband (220850, +0.00 DPS) [vendor]; Sprightring Helm (17776, -8.26 DPS) [quest]; Scorpashi Skullcap (14658, -104.35 DPS) [world_drop] |
-| neck | Lifeblood Amulet (9641) (or Master Sergeant's Insignia (18444)) | Zul'Farrak: Antu'sul [dungeon] | 14.0 stamina points (775.84 DPS) | yes | Master Sergeant's Insignia (18444, +0.00 DPS) [vendor]; Seal of the Expedition (271918, -55.42 DPS) [rep]; Shriveled Heart (9243, -80.95 DPS) [dungeon] |
-| shoulder | Fleshhide Shoulders (10774) | Razorfen Downs: Glutton [dungeon] | 31.0 stamina points (1716.38 DPS) | yes | Knight-Lieutenant's Leather Shoulders (220852, -19.51 DPS) [vendor]; Phytoskin Spaulders (17749, -67.19 DPS) [dungeon]; Warden's Leather Shoulders (252536, -111.92 DPS) [crafted] |
-| back | Graverot Cape (11677) | Blackrock Depths: Anub'shiah [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Nightfall Drape (12465, -63.31 DPS) [dungeon]; Sergeant's Cape (18441, -79.10 DPS) [vendor]; Emberscale Cape (11311, -94.89 DPS) [dungeon] |
-| chest | Knight's Leather Armor (220854) | PvP rank 6 · Knight · Alliance [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Jinxed Hoodoo Skin (9473, +0.00 DPS) [dungeon]; Mixologist's Tunic (12793, +0.00 DPS) [dungeon]; Warbear Harness (15064, +0.00 DPS) [crafted] |
-| wrist | Arena Bracers (18710) | Arena Treasure Chest [world] | 25.1 stamina points (1390.73 DPS) | yes | Sergeant Major's Dragonhide Armsplints (18455, -109.69 DPS) [vendor]; Warden's Leather Bracers (252541, -241.34 DPS) [crafted]; Serpentskin Bracers (8257, -268.46 DPS) [world_drop] |
-| hands | Warden's Leather Gauntlets (252549) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Skulker's Leather Gauntlets (252548, -185.67 DPS) [crafted]; Prowler's Leather Gauntlets (252547, -251.56 DPS) [crafted]; Wicked Leather Gauntlets (15083, -259.97 DPS) [crafted] |
+| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 35.4 stamina points (1902.12 DPS) | yes | Knight-Lieutenant's Leather Headband (220850, +0.00 DPS) [vendor]; Sprightring Helm (17776, -9.25 DPS) [quest]; Scorpashi Skullcap (14658, -100.18 DPS) [world_drop] |
+| neck | Lifeblood Amulet (9641) (or Master Sergeant's Insignia (18444)) | Zul'Farrak: Antu'sul [dungeon] | 14.0 stamina points (751.57 DPS) | yes | Master Sergeant's Insignia (18444, +0.00 DPS) [vendor]; Seal of the Expedition (271918, -53.68 DPS) [rep]; Shriveled Heart (9243, -79.38 DPS) [dungeon] |
+| shoulder | Fleshhide Shoulders (10774) | Razorfen Downs: Glutton [dungeon] | 31.4 stamina points (1687.24 DPS) | yes | Knight-Lieutenant's Leather Shoulders (220852, -11.69 DPS) [vendor]; Phytoskin Spaulders (17749, -57.90 DPS) [dungeon]; Warden's Leather Shoulders (252536, -105.19 DPS) [crafted] |
+| back | Graverot Cape (11677) | Blackrock Depths: Anub'shiah [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Nightfall Drape (12465, -61.55 DPS) [dungeon]; Sergeant's Cape (18441, -77.27 DPS) [vendor]; Emberscale Cape (11311, -92.99 DPS) [dungeon] |
+| chest | Knight's Leather Armor (220854) | PvP rank 6 · Knight · Alliance [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mixologist's Tunic (12793, +0.00 DPS) [dungeon]; Warbear Harness (15064, +0.00 DPS) [crafted]; Grizzled Pelt (22274, +0.00 DPS) [quest] |
+| wrist | Arena Bracers (18710) | Arena Treasure Chest [world] | 25.4 stamina points (1364.14 DPS) | yes | Sergeant Major's Dragonhide Armsplints (18455, -109.41 DPS) [vendor]; Warden's Leather Bracers (252541, -232.44 DPS) [crafted]; Serpentskin Bracers (8257, -262.93 DPS) [world_drop] |
+| hands | Warden's Leather Gauntlets (252549) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Skulker's Leather Gauntlets (252548, -177.25 DPS) [crafted]; Prowler's Leather Gauntlets (252547, -242.72 DPS) [crafted]; Wicked Leather Gauntlets (15083, -254.81 DPS) [crafted] |
 | waist | Warden's Leather Waistguard (252475) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Girdle of Beastial Fury (11686, +0.00 DPS) [dungeon]; Prowler's Leather Waistguard (252473, +0.00 DPS) [crafted]; Skulker's Leather Waistguard (252474, +0.00 DPS) [crafted] |
-| legs | Knight's Leather Pants (220858) | PvP rank 6 · Knight · Alliance [vendor] | 37.4 stamina points (2070.37 DPS) | yes | Knight's Crackling Leather Leggings (220864, -323.04 DPS) [vendor]; Basilisk Hide Pants (1718, -351.11 DPS) [world_drop]; Windscale Sarong (10842, -366.28 DPS) [world] |
+| legs | Knight's Leather Pants (220858) | PvP rank 6 · Knight · Alliance [vendor] | 38.0 stamina points (2041.77 DPS) | yes | Knight's Crackling Leather Leggings (220864, -314.67 DPS) [vendor]; Basilisk Hide Pants (1718, -340.98 DPS) [world_drop]; Windscale Sarong (10842, -358.53 DPS) [world] |
 | feet | Sergeant Major's Leather Boots (220860) | PvP rank 5 · Sergeant Major · Alliance [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Slitherscale Boots (10801, +0.00 DPS) [dungeon]; Shadefiend Boots (11675, +0.00 DPS) [dungeon]; Skulker's Leather Boots (252469, +0.00 DPS) [crafted] |
-| finger1 | Ring of Saviors (1447) | World drop [world_drop] | 15.0 stamina points (831.25 DPS) | yes | Militant's Band (271914, -55.42 DPS) [rep]; Talvash's Gold Ring (9538, -121.10 DPS) [quest]; Underworld Band (1980, -166.25 DPS) [world_drop] |
-| finger2 | Theramore Signet (271909) | Theramore Expeditionary Force [rep] | 14.7 stamina points (814.13 DPS) | yes | Militant's Band (271914, -38.29 DPS) [rep]; Talvash's Gold Ring (9538, -103.98 DPS) [quest]; Underworld Band (1980, -149.13 DPS) [world_drop] |
-| trinket1 | Enriched Seal (271903) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Volunteer's Lucky Seal (271906, +0.00 DPS) [rep]; Guardian Talisman (1490, -55.42 DPS) [quest]; Rune of Perfection (21565, -110.83 DPS) [rep] |
-| trinket2 | Talisman of Arathor (21117) | The League of Arathor [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Guardian Talisman (1490, -55.42 DPS) [quest]; Rune of Perfection (21565, -110.83 DPS) [rep]; Rune of Duty (21567, -110.83 DPS) [rep] |
-| main_hand | Warden Staff (943) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Brightwood Staff (812, -125.57 DPS) [world_drop]; Taran Icebreaker (2915, -236.51 DPS) [world_drop]; Blanchard's Stout (13046, -305.92 DPS) [world_drop] |
+| finger1 | Ring of Saviors (1447) | World drop [world_drop] | 15.0 stamina points (805.26 DPS) | yes | Militant's Band (271914, -53.68 DPS) [rep]; Talvash's Gold Ring (9538, -120.54 DPS) [quest]; Underworld Band (1980, -161.05 DPS) [world_drop] |
+| finger2 | Theramore Signet (271909) | Theramore Expeditionary Force [rep] | 14.7 stamina points (790.12 DPS) | yes | Militant's Band (271914, -38.55 DPS) [rep]; Talvash's Gold Ring (9538, -105.40 DPS) [quest]; Underworld Band (1980, -145.91 DPS) [world_drop] |
+| trinket1 | Enriched Seal (271903) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Volunteer's Lucky Seal (271906, +0.00 DPS) [rep]; Guardian Talisman (1490, -53.68 DPS) [quest]; Rune of Perfection (21565, -107.37 DPS) [rep] |
+| trinket2 | Talisman of Arathor (21117) | The League of Arathor [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Guardian Talisman (1490, -53.68 DPS) [quest]; Rune of Perfection (21565, -107.37 DPS) [rep]; Rune of Duty (21567, -107.37 DPS) [rep] |
+| main_hand | Warden Staff (943) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Taran Icebreaker (2915, -213.94 DPS) [world_drop]; Blanchard's Stout (13046, -285.90 DPS) [world_drop]; Ironshod Bludgeon (9408, -301.75 DPS) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 817, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 237.7. Weights run: 7.0s. Verify run: 37.4s. 1988 eligible items had no known source.
+Set DPS (verified): 237.7. Weights run: 7.9s. Verify run: 42.2s. 1988 eligible items had no known source.
 
 Race sweep: high-order-skyborne 963.8 ± 0.9, night-elf 956.4 ± 0.9 (threat_per_second); high-order-skyborne beats the guide race night-elf by 7.4 (0.78%) ± 1.3, beyond error.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 497.9. Weights run: 8.1s. Verify run: 39.0s. 1988 eligible items had no known source.
+Set DPS (verified): 497.9. Weights run: 9.0s. Verify run: 46.0s. 1988 eligible items had no known source.
 
 Race sweep: high-order-skyborne 1940.3 ± 2.1, night-elf 1938.7 ± 2.2 (threat_per_second); high-order-skyborne beats the guide race night-elf by 1.5 (0.08%) ± 3.0, inside error.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-51100301000000000000-0000000000000000)
 
-Set DPS (verified): 23.0. Weights run: 3.9s. Verify run: 4.8s. 247 eligible items had no known source.
+Set DPS (verified): 23.0. Weights run: 4.5s. Verify run: 5.2s. 247 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 93.5 ± 0.2, tauren 93.5 ± 0.2 (threat_per_second); windshaper-skyborne beats the guide race tauren by 0.0 (0.03%) ± 0.3, inside error.
 
@@ -218,7 +218,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | wrist | Bear Bracers (4795) | Bernard Brubaker [vendor] | 8.4 stamina points (151.55 DPS) | yes | Spare Part Bindings (279875, -27.48 DPS) [quest]; Drakewing Bands (12999, -29.57 DPS) [world_drop]; Wolf Bracers (4794, -42.67 DPS) [vendor] |
 | hands | Forest Leather Gloves (3058) (or Trapper's Leather Gloves (252495)) | World drop [world_drop] | 9.5 stamina points (171.49 DPS) | yes | Trapper's Leather Gloves (252495, +0.00 DPS) [crafted]; Nimble Leather Gloves (7285, -1.65 DPS) [crafted]; Defender's Leather Gloves (252496, -4.54 DPS) [crafted] |
 | waist | Deviate Scale Belt (6468) | Leatherworking [crafted] | 11.8 stamina points (212.55 DPS) | yes | Belt of the Fang (10412, -31.35 DPS, sim-verified) [dungeon]; Dark Leather Belt (4249, -49.32 DPS) [crafted]; Guardsman Belt (3429, -50.97 DPS) [world] |
-| legs | Defender's Leather Pants (252445) | Leatherworking [crafted] | 15.0 stamina points (271.44 DPS) | yes | Smelting Pants (5199, -19.29 DPS) [dungeon]; Brawler's Leather Pants (252500, -26.97 DPS) [crafted]; Slick Deviate Leggings (6480, -84.82 DPS, sim-verified) [quest] |
+| legs | Defender's Leather Pants (252445) | Leatherworking [crafted] | 15.0 stamina points (271.44 DPS) | yes | Brawler's Leather Pants (252500, -26.97 DPS) [crafted]; Leggings of the Fang (10410, -35.34 DPS) [dungeon]; Smelting Pants (5199, -91.48 DPS, sim-verified) [dungeon] |
 | feet | Nat Pagle's Extreme Anglin' Boots (19969) | Rare Fish - Brownell's Blue Striped Racer [quest] | 15.3 stamina points (276.51 DPS) | yes | Surfer Shoes (276274, -49.83 DPS, sim-verified) [vendor]; Footpads of the Fang (10411, -49.83 DPS) [dungeon]; Trapper's Leather Boots (252440, -70.82 DPS) [crafted] |
 | finger1 | Blood Ring (4998) | World drop [world_drop] | 5.0 stamina points (90.44 DPS) | yes | Slain Baron's Signet (279867, -32.15 DPS) [quest]; Ring of the Moon (12052, -34.41 DPS) [world_drop]; Legionnaire's Band (20429, -35.61 DPS) [rep] |
 | finger2 | Ring of Scorn (3235) | A Husband's Revenge [quest] | 4.0 stamina points (72.35 DPS) | yes | Slain Baron's Signet (279867, -14.06 DPS) [quest]; Ring of the Moon (12052, -16.32 DPS) [world_drop]; Legionnaire's Band (20429, -17.53 DPS) [rep] |
@@ -234,7 +234,7 @@ No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-51100332020102100000-0000000000000000)
 
-Set DPS (verified): 65.3. Weights run: 3.9s. Verify run: 6.6s. 425 eligible items had no known source.
+Set DPS (verified): 65.3. Weights run: 3.9s. Verify run: 7.4s. 425 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 248.4 ± 0.4, tauren 245.9 ± 0.5 (threat_per_second); windshaper-skyborne beats the guide race tauren by 2.5 (1.01%) ± 0.6, beyond error.
 
@@ -244,7 +244,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 |---|---|---|---|---|---|
 | head | Brawler's Leather Helm (252512) | Leatherworking [crafted] | 24.4 stamina points (506.33 DPS) | yes | Defender's Leather Helm (252455, -13.37 DPS) [crafted]; Trapper's Leather Helm (252513, -50.79 DPS) [crafted]; Stormrider's Leather Helm (252514, -50.79 DPS) [crafted] |
 | neck | River Pride Choker (13087) | World drop [world_drop] | 9.6 stamina points (199.11 DPS) | yes | Senior Sergeant's Insignia (15200, -12.47 DPS) [vendor]; Darkspear Warding Pendant (272075, -33.21 DPS) [vendor]; Scout's Medallion (19537, -54.79 DPS) [rep] |
-| shoulder | Watchman Pauldrons (7727) | Scarlet Monastery [dungeon] | 20.0 stamina points (414.56 DPS) | yes | Tanned Shoulderpads (270023, -62.76 DPS, sim-verified) [quest]; Cloudy Gustwoven Spaulders (277043, -65.61 DPS) [crafted]; Azure Gustwoven Spaulders (277051, -65.61 DPS) [crafted] |
+| shoulder | Watchman Pauldrons (7727) | Scarlet Monastery [dungeon] | 20.0 stamina points (414.56 DPS) | yes | Azure Gustwoven Spaulders (277051, -65.61 DPS) [crafted]; Barbaric Shoulders (5964, -80.91 DPS) [crafted]; Cloudy Gustwoven Spaulders (277043, -85.73 DPS, sim-verified) [crafted] |
 | back | Sergeant's Cloak (18427) | PvP rank 3 · Sergeant · Horde [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Enduring Cape (14763, -33.93 DPS) [world_drop]; Grimsteel Cape (4643, -37.96 DPS) [quest]; Tigerstrike Mantle (13108, -121.23 DPS, sim-verified) [world_drop] |
 | chest | Spirewind Fetter (9406) | Uldaman [dungeon] | 24.0 stamina points (497.87 DPS) | yes | Raptor Hide Harness (4455, -11.34 DPS) [crafted]; Green Whelp Armor (7375, -43.96 DPS) [crafted]; Blackened Defias Armor (10399, -65.77 DPS) [dungeon] |
 | wrist | Barbaric Bracers (18948) | Leatherworking [crafted] | 12.6 stamina points (261.26 DPS) | yes | Cultist's Armguards (270032, -3.10 DPS) [quest]; Black Wolf Bracers (3230, -14.67 DPS) [dungeon]; Glowing Leather Bracers (2017, -58.86 DPS) [world] |
@@ -266,7 +266,7 @@ No-known-source sample (15 of 425, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-51200332023102123010-0000000000000000)
 
-Set DPS (verified): 93.3. Weights run: 3.7s. Verify run: 4.9s. 606 eligible items had no known source.
+Set DPS (verified): 93.3. Weights run: 4.1s. Verify run: 5.0s. 606 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 353.9 ± 0.8, tauren 353.8 ± 0.8 (threat_per_second); windshaper-skyborne beats the guide race tauren by 0.1 (0.03%) ± 1.1, inside error.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 606, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0000000000000000-51200332023102125510-0300000000000000)
 
-Set DPS (verified): 148.7. Weights run: 4.0s. Verify run: 10.1s. 816 eligible items had no known source.
+Set DPS (verified): 148.7. Weights run: 4.1s. Verify run: 11.0s. 816 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 585.1 ± 1.1, tauren 578.3 ± 1.1 (threat_per_second); windshaper-skyborne beats the guide race tauren by 6.8 (1.18%) ± 1.5, beyond error.
 
@@ -320,7 +320,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Insurgent's Band (272065) | Creeg Bothunk [vendor] | 14.8 stamina points (758.57 DPS) | yes | Darkspear Signet (272069, -42.34 DPS) [vendor]; Nogg's Gold Ring (9588, -115.67 DPS) [quest]; Underworld Band (1980, -144.66 DPS) [world_drop] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Relentless Raider's Seal (272060, +0.00 DPS) [vendor]; Guardian Talisman (1490, -51.16 DPS) [quest]; Rune of Perfection (21565, -102.32 DPS) [rep] |
 | trinket2 | Defiler's Talisman (21115) | The Defilers [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Guardian Talisman (1490, -51.16 DPS) [quest]; Rune of Perfection (21565, -102.32 DPS) [rep]; Rune of Duty (21567, -102.32 DPS) [rep] |
-| main_hand | Warden Staff (943) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Brightwood Staff (812, -42.11 DPS) [world_drop]; Cragwood Maul (11265, -140.81 DPS) [quest]; Taran Icebreaker (2915, -154.66 DPS) [world_drop] |
+| main_hand | Warden Staff (943) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cragwood Maul (11265, -140.81 DPS) [quest]; Taran Icebreaker (2915, -154.66 DPS) [world_drop]; Blanchard's Stout (13046, -241.54 DPS) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 229.7. Weights run: 7.0s. Verify run: 38.8s. 1992 eligible items had no known source.
+Set DPS (verified): 229.7. Weights run: 7.9s. Verify run: 43.8s. 1992 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 921.8 ± 0.9, tauren 917.4 ± 0.9 (threat_per_second); windshaper-skyborne beats the guide race tauren by 4.5 (0.49%) ± 1.2, beyond error.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 1992, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 552.6. Weights run: 8.1s. Verify run: 39.5s. 1992 eligible items had no known source.
+Set DPS (verified): 552.6. Weights run: 9.0s. Verify run: 46.6s. 1992 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 2167.0 ± 2.4, tauren 2149.1 ± 2.4 (threat_per_second); windshaper-skyborne beats the guide race tauren by 17.9 (0.83%) ± 3.4, beyond error.
 

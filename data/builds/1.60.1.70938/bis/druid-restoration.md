@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 0000000000000000-00000000000000000000-2503000100000000)
 
-Set DPS (verified): 78.0. Weights run: 6.6s. Verify run: 50.7s. 251 eligible items had no known source.
+Set DPS (verified): 78.0. Weights run: 7.9s. Verify run: 60.9s. 251 eligible items had no known source.
 
 Race sweep: high-order-skyborne 78.4 ± 0.0, night-elf 78.0 ± 0.0 (heal_score); high-order-skyborne beats the guide race night-elf by 0.3 (0.43%) ± 0.0, beyond error.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 251, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0100000000000000-00000000000000000000-3503004103100000)
 
-Set DPS (verified): 130.0. Weights run: 8.9s. Verify run: 88.5s. 424 eligible items had no known source.
+Set DPS (verified): 130.0. Weights run: 11.2s. Verify run: 112.2s. 424 eligible items had no known source.
 
 Race sweep: high-order-skyborne 132.9 ± 0.1, night-elf 129.9 ± 0.1 (heal_score); high-order-skyborne beats the guide race night-elf by 3.0 (2.27%) ± 0.1, beyond error.
 
@@ -51,15 +51,15 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | head | Holy Shroud (2721) | World drop [world_drop] | 49.1 healing_power points (8.48 DPS) | yes | Enduring Cap (3020, -1.78 DPS, sim-verified) [world_drop]; Stormrider's Leather Helm (252514, -3.84 DPS) [crafted]; Nightsky Cowl (4039, -3.87 DPS) [world_drop] |
 | neck | Pendant of Myzrael (4614) (or Glowing Green Talisman (5002)) | Razorfen Downs: Splinterbone Captain [dungeon] | 16.1 healing_power points (2.78 DPS) | yes | Glowing Green Talisman (5002, +0.00 DPS) [world_drop]; Kaleidoscope Chain (13084, -0.16 DPS) [world_drop]; Crystal Starfire Medallion (5003, -0.63 DPS) [world_drop] |
 | shoulder | Mantle of Honor (3560) | Bride of the Embalmer [quest] | 26.5 healing_power points (4.58 DPS) | yes | Faerie Mantle (5820, -0.67 DPS, sim-verified) [quest]; Nightsky Mantle (4718, -0.74 DPS) [world_drop]; Bloodmage Mantle (7684, -1.31 DPS) [dungeon] |
-| back | Glowing Thresher Cape (6901) | Blackfathom Deeps: Old Serra'kis [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Prelacy Cape (7004, -0.24 DPS) [quest]; Caretaker's Cape (19533, -0.82 DPS) [rep]; Repairman's Cape (9605, -0.99 DPS) [quest] |
+| back | Glowing Thresher Cape (6901) | Blackfathom Deeps: Old Serra'kis [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Caretaker's Cape (19533, -0.55 DPS, sim-verified) [rep]; Repairman's Cape (9605, -0.99 DPS) [quest]; Amy's Blanket (13005, -1.67 DPS) [world_drop] |
 | chest | Beguiler Robes (7728) | Scarlet Monastery [dungeon] | 43.7 healing_power points (7.55 DPS) | yes | Wisdom's Leather Tunic (252511, -0.54 DPS, sim-verified) [crafted]; Pristine Gown (253961, -0.91 DPS) [crafted]; Robe of the Moccasin (6465, -1.36 DPS) [dungeon] |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 20.0 healing_power points (3.46 DPS) | yes | Mindthrust Bracers (1974, -0.35 DPS, sim-verified) [dungeon]; Drakewing Bands (12999, -0.67 DPS) [world_drop]; Nightsky Wristbands (6407, -0.92 DPS) [world_drop] |
-| hands | Gloves of Old (9395) | World drop [world_drop] | 37.8 healing_power points (6.52 DPS) | yes | Shilly Mitts (9609, -0.83 DPS, sim-verified) [quest]; Gloves of Meditation (4318, -2.41 DPS) [crafted]; Zodiac Gloves (7106, -2.51 DPS) [quest] |
+| hands | Gloves of Old (9395) | World drop [world_drop] | 37.8 healing_power points (6.52 DPS) | yes | Gloves of Meditation (4318, -1.97 DPS, sim-verified) [crafted]; Zodiac Gloves (7106, -2.51 DPS) [quest]; Hotshot Pilot's Gloves (9491, -2.68 DPS) [dungeon] |
 | waist | Mender's Leather Belt (252523) | Leatherworking [crafted] | 41.7 healing_power points (7.21 DPS) | yes | Skycaller's Leather Belt (252522, -2.36 DPS, sim-verified) [crafted]; Belt of Arugal (6392, -2.76 DPS) [dungeon]; Silver-lined Belt (13011, -3.64 DPS) [world_drop] |
 | legs | Wisdom's Leather Leggings (252519) | Leatherworking [crafted] | 47.5 healing_power points (8.21 DPS) | yes | Pristine Leggings (253987, -0.76 DPS) [crafted]; Earthen Leggings (253999, -0.93 DPS, sim-verified) [crafted]; Wisdom's Leather Pants (252503, -1.76 DPS) [crafted] |
 | feet | Gilded Slippers (254001) | Tailoring [crafted] | 38.5 healing_power points (6.64 DPS) | yes | Acidic Walkers (9454, -2.40 DPS) [dungeon]; Boots of the Enchanter (4325, -2.48 DPS, sim-verified) [crafted]; Glinteye Slippers (273024, -2.65 DPS) [dungeon] |
-| finger1 | Runemender's Seal (273031) | Arcane Anomaly [world] | 31.7 healing_power points (5.48 DPS) | yes | The Queen's Jewel (13094, -1.39 DPS) [world_drop]; Monkey Ring (6748, -2.23 DPS) [quest]; Ring of Calm (6790, -2.23 DPS) [quest] |
-| finger2 | Electrocutioner Lagnut (9447) | Gnomeregan: Electrocutioner 6000 [dungeon] | 27.8 healing_power points (4.80 DPS) | yes | The Queen's Jewel (13094, -0.68 DPS, sim-verified) [world_drop]; Monkey Ring (6748, -1.55 DPS) [quest]; Ring of Calm (6790, -1.55 DPS) [quest] |
+| finger1 | Runemender's Seal (273031) | Arcane Anomaly [world] | 31.7 healing_power points (5.48 DPS) | yes | The Queen's Jewel (13094, -1.39 DPS) [world_drop]; Ring of Calm (6790, -2.23 DPS) [quest]; Ring of Power Regulation (273030, -2.54 DPS) [dungeon] |
+| finger2 | Electrocutioner Lagnut (9447) | Gnomeregan: Electrocutioner 6000 [dungeon] | 27.8 healing_power points (4.80 DPS) | yes | The Queen's Jewel (13094, -0.68 DPS, sim-verified) [world_drop]; Ring of Calm (6790, -1.55 DPS) [quest]; Ring of Power Regulation (273030, -1.86 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Staff of the Friar (3415) | Blackfathom Deeps [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Odo's Ley Staff (6318, -0.82 DPS, sim-verified) [dungeon]; Staff of Westfall (2042, -3.09 DPS) [quest]; Death Speaker Scepter (2816, -3.38 DPS) [dungeon] |
@@ -72,7 +72,7 @@ No-known-source sample (15 of 424, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0500200000000000-00000000000000000000-3503005103103000)
 
-Set DPS (verified): 241.9. Weights run: 8.6s. Verify run: 76.0s. 607 eligible items had no known source.
+Set DPS (verified): 241.9. Weights run: 11.0s. Verify run: 96.8s. 607 eligible items had no known source.
 
 Race sweep: high-order-skyborne 246.7 ± 0.1, night-elf 241.7 ± 0.2 (heal_score); high-order-skyborne beats the guide race night-elf by 5.0 (2.08%) ± 0.2, beyond error.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 607, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0530200100000000-00000000000000000000-5503005113103210)
 
-Set DPS (verified): 378.6. Weights run: 7.5s. Verify run: 69.9s. 817 eligible items had no known source.
+Set DPS (verified): 378.6. Weights run: 9.1s. Verify run: 88.0s. 817 eligible items had no known source.
 
 Race sweep: high-order-skyborne 384.8 ± 0.2, night-elf 378.4 ± 0.2 (heal_score); high-order-skyborne beats the guide race night-elf by 6.4 (1.69%) ± 0.3, beyond error.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 817, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 497.8. Weights run: 7.9s. Verify run: 283.7s. 1988 eligible items had no known source.
+Set DPS (verified): 497.8. Weights run: 10.0s. Verify run: 339.8s. 1988 eligible items had no known source.
 
 Race sweep: high-order-skyborne 504.1 ± 0.3, night-elf 498.0 ± 0.3 (heal_score); high-order-skyborne beats the guide race night-elf by 6.1 (1.22%) ± 0.4, beyond error.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 1025.6. Weights run: 7.5s. Verify run: 243.2s. 1988 eligible items had no known source.
+Set DPS (verified): 1025.6. Weights run: 9.3s. Verify run: 311.4s. 1988 eligible items had no known source.
 
 Race sweep: high-order-skyborne 1033.2 ± 0.4, night-elf 1025.3 ± 0.5 (heal_score); high-order-skyborne beats the guide race night-elf by 7.9 (0.77%) ± 0.6, beyond error.
 
@@ -204,7 +204,7 @@ No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-00000000000000000000-2503000100000000)
 
-Set DPS (verified): 77.2. Weights run: 6.6s. Verify run: 52.9s. 247 eligible items had no known source.
+Set DPS (verified): 77.2. Weights run: 7.9s. Verify run: 62.6s. 247 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 77.4 ± 0.0, tauren 77.2 ± 0.0 (heal_score); windshaper-skyborne beats the guide race tauren by 0.2 (0.27%) ± 0.0, beyond error.
 
@@ -236,7 +236,7 @@ No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0100000000000000-00000000000000000000-3503004103100000)
 
-Set DPS (verified): 128.8. Weights run: 8.9s. Verify run: 87.4s. 425 eligible items had no known source.
+Set DPS (verified): 128.8. Weights run: 11.2s. Verify run: 112.5s. 425 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 129.4 ± 0.1, tauren 128.8 ± 0.1 (heal_score); windshaper-skyborne beats the guide race tauren by 0.6 (0.47%) ± 0.1, beyond error.
 
@@ -254,8 +254,8 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Mender's Leather Belt (252523) | Leatherworking [crafted] | 41.7 healing_power points (7.21 DPS) | yes | Skycaller's Leather Belt (252522, -2.10 DPS, sim-verified) [crafted]; Belt of Arugal (6392, -2.76 DPS) [dungeon]; Silver-lined Belt (13011, -3.64 DPS) [world_drop] |
 | legs | Wisdom's Leather Leggings (252519) | Leatherworking [crafted] | 47.5 healing_power points (8.21 DPS) | yes | Pristine Leggings (253987, -0.76 DPS) [crafted]; Earthen Leggings (253999, -0.81 DPS, sim-verified) [crafted]; Wisdom's Leather Pants (252503, -1.76 DPS) [crafted] |
 | feet | Gilded Slippers (254001) | Tailoring [crafted] | 38.5 healing_power points (6.64 DPS) | yes | Boots of the Enchanter (4325, -2.38 DPS, sim-verified) [crafted]; Acidic Walkers (9454, -2.40 DPS) [dungeon]; Glinteye Slippers (273024, -2.65 DPS) [dungeon] |
-| finger1 | Runemender's Seal (273031) | Arcane Anomaly [world] | 31.7 healing_power points (5.48 DPS) | yes | Solid Gold Band (279845, -1.26 DPS) [quest]; The Queen's Jewel (13094, -1.39 DPS) [world_drop]; Monkey Ring (6748, -2.23 DPS) [quest] |
-| finger2 | Electrocutioner Lagnut (9447) | Gnomeregan: Electrocutioner 6000 [dungeon] | 27.8 healing_power points (4.80 DPS) | yes | Solid Gold Band (279845, -0.33 DPS, sim-verified) [quest]; The Queen's Jewel (13094, -0.71 DPS) [world_drop]; Monkey Ring (6748, -1.55 DPS) [quest] |
+| finger1 | Runemender's Seal (273031) | Arcane Anomaly [world] | 31.7 healing_power points (5.48 DPS) | yes | Solid Gold Band (279845, -1.26 DPS) [quest]; The Queen's Jewel (13094, -1.39 DPS) [world_drop]; Ring of Power Regulation (273030, -2.54 DPS) [dungeon] |
+| finger2 | Electrocutioner Lagnut (9447) | Gnomeregan: Electrocutioner 6000 [dungeon] | 27.8 healing_power points (4.80 DPS) | yes | Solid Gold Band (279845, -0.33 DPS, sim-verified) [quest]; The Queen's Jewel (13094, -0.71 DPS) [world_drop]; Ring of Power Regulation (273030, -1.86 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Staff of the Friar (3415) | Blackfathom Deeps [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Odo's Ley Staff (6318, -0.50 DPS, sim-verified) [dungeon]; Death Speaker Scepter (2816, -3.38 DPS) [dungeon]; Soulstaff (249393, -4.14 DPS) [crafted] |
@@ -268,7 +268,7 @@ No-known-source sample (15 of 425, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0500200000000000-00000000000000000000-3503005103103000)
 
-Set DPS (verified): 241.3. Weights run: 8.6s. Verify run: 79.7s. 606 eligible items had no known source.
+Set DPS (verified): 241.3. Weights run: 11.0s. Verify run: 101.6s. 606 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 241.8 ± 0.1, tauren 240.9 ± 0.2 (heal_score); windshaper-skyborne beats the guide race tauren by 0.8 (0.35%) ± 0.2, beyond error.
 
@@ -300,7 +300,7 @@ No-known-source sample (15 of 606, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0530200100000000-00000000000000000000-5503005113103210)
 
-Set DPS (verified): 376.0. Weights run: 7.5s. Verify run: 68.9s. 816 eligible items had no known source.
+Set DPS (verified): 376.0. Weights run: 9.1s. Verify run: 87.3s. 816 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 376.9 ± 0.2, tauren 376.0 ± 0.2 (heal_score); windshaper-skyborne beats the guide race tauren by 0.9 (0.24%) ± 0.3, beyond error.
 
@@ -332,7 +332,7 @@ No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 495.4. Weights run: 7.9s. Verify run: 281.9s. 1992 eligible items had no known source.
+Set DPS (verified): 495.4. Weights run: 10.0s. Verify run: 336.9s. 1992 eligible items had no known source.
 
 Race sweep: tauren 495.6 ± 0.3, windshaper-skyborne 495.5 ± 0.3 (heal_score); the guide race tauren is best.
 
@@ -364,7 +364,7 @@ No-known-source sample (15 of 1992, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 1021.4. Weights run: 7.5s. Verify run: 243.3s. 1992 eligible items had no known source.
+Set DPS (verified): 1021.4. Weights run: 9.3s. Verify run: 311.0s. 1992 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 1023.0 ± 0.4, tauren 1021.8 ± 0.6 (heal_score); windshaper-skyborne beats the guide race tauren by 1.2 (0.12%) ± 0.7, beyond error.
 
