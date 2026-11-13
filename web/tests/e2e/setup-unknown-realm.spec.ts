@@ -30,7 +30,9 @@ const envelope = (data: unknown) => ({
 /** /setup for an account whose newest character waits for its realm type; the answer moves it. */
 async function openWaiting(page: Page): Promise<{ answers: unknown[] }> {
   const answers: unknown[] = [];
-  const base = meBnet();
+  const fixture = meBnet();
+  // A neutral BattleTag in the review captures.
+  const base = { ...fixture, user: { ...(fixture.user as Record<string, unknown>), battletag: 'Player#1001' } };
   let account: Record<string, unknown> = { ...base, characters: [WAITING, ...base.characters] };
   await page.route('**/v1/me', (route) => route.fulfill(envelope(account)));
   await page.route(`**${REALM_ANSWER_PATH}`, async (route) => {
