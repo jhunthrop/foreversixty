@@ -164,22 +164,21 @@ def from_site(site='', box_cls='', box_text=None, after=''):
             f'<div class="box {box_cls}">{text}</div>{after}</div>')
 
 
-EXPORT = ('FS1:70938:hunter:42:Thornmaw:Ashen Vigil:Forever:1,2:a1b5c2d7e3f9g1h2i5j0k3l2m8n1p4q7r2s6t9u3v'
-          '8w5x1y4z7:head=10164,neck=12047,shoulder=14775,back=9947,chest=15055,wrist=14762,hands=15060')
+def export(cls='hunter', level=42):
+    """A made-up character's export in the FS1 shape (never a real player's name or guild)."""
+    return (f'FS1:70938:{cls}:{level}:Thornmaw:Ashen Vigil:Forever:1,2:a1b5c2d7e3f9g1h2i5j0k3l2m8n1p4q7r2s6t9u3v'
+            '8w5x1y4z7:head=10164,neck=12047,shoulder=14775,back=9947,chest=15055,wrist=14762,hands=15060')
 
 
-def to_site(state='rest', facts=(), link=None):
-    if state == 'none':
-        body = f'<div class="what" style="margin:0">{esc(L("exportNoSaveYet")) if False else "Log out once and the addon saves your character here."}</div>'
-        return f'<div class="sec"><div class="sh"><span>{T("windowToSite")}</span></div>{body}</div>'
-    cls = {'rest': '', 'selected': 'sel', 'copied': ''}[state]
+def to_site(state='rest', facts=(), cls='hunter', level=42):
+    box_cls = {'rest': '', 'selected': 'sel', 'copied': ''}[state]
     status = {'rest': f'<div class="st m">{esc(T("windowClickToSelect"))}</div>',
               'selected': f'<div class="st">{esc(L("dialogSelectedLead"))}</div>',
               'copied': f'<div class="st ok">{esc(lua_format(L("dialogYouCopied"), "22:30"))}</div>'}[state]
     facts_html = ''.join(f'<div class="m">{esc(f)}</div>' for f in facts)
     return (f'<div class="sec"><div class="sh"><span>{T("windowToSite")}</span></div>'
             f'<div class="what">{esc(T("windowToSiteWhat"))}</div>'
-            f'<div class="box code {cls}"><span>{EXPORT}</span></div>{status}{facts_html}</div>')
+            f'<div class="box code {box_cls}"><span>{export(cls, level)}</span></div>{status}{facts_html}</div>')
 
 
 def facts_hunter(level=42):
@@ -242,7 +241,7 @@ def board_druid_24():
     facts = [L('dialogSeparator').join([lua_format(L('dialogSummaryWho'), 24, 'Druid'),
                                         lua_format(L('dialogSummaryItems'), 11), L('dialogSummarySharedRealm')]),
              L('dialogNotSent')]
-    right = up_next_html('Feral leveling build', rows) + from_site(site_druid()) + to_site('selected', facts)
+    right = up_next_html('Feral leveling build', rows) + from_site(site_druid()) + to_site('selected', facts, 'druid', 24)
     return board('The Builds window · level 24 Druid following Feral, four builds waiting from the site (two rows and '
                  '"and 2 more"), the copy box selected after Tab',
                  window('druid', lua_format(L('dialogOwnBuilds'), 'Druid'), ab.note(24, 15, 15),
@@ -253,7 +252,7 @@ def board_hunter_60_copied():
     blocks = ab.class_blocks('hunter', 60, 'hunter-marksmanship', 'raid', None)
     sim = L('dialogSimDone')
     right = (up_next_html('Marksmanship raid build', [], T('windowUpNextDone')) + from_site()
-             + to_site('copied', facts_hunter(60)[:1] + [lua_format(L('dialogSeen'), '2 min ago'), sim]))
+             + to_site('copied', facts_hunter(60)[:1] + [lua_format(L('dialogSeen'), '2 min ago'), sim], 'hunter', 60))
     return board('The Builds window · level 60 Hunter following the Marksmanship raid build, every point placed; '
                  'the export copied with Ctrl+C, the site\'s ack and the sim line under it',
                  window('hunter', lua_format(L('dialogOwnBuilds'), 'Hunter'), ab.note(60, 51, 51),
@@ -264,7 +263,7 @@ def preview_left():
     gear = [('Head', 'inv_helmet_09', 'Cenarion Helm', 4), ('Chest', 'inv_chest_cloth_06', 'Robe of Volatile Power', 4),
             ('Neck', 'inv_jewelry_necklace_01', 'Choker of Enlightenment', 4),
             ('Hands', 'inv_gauntlets_14', 'Cenarion Gloves', 4)]
-    rows = ''.join(f'<div class="gr"><span class="sl">{s}</span>{ux.img(i, 14) if False else ""}'
+    rows = ''.join(f'<div class="gr"><span class="sl">{s}</span>'
                    f'<span style="color:{ux.QUALITY[q]}">{n}</span></div>' for s, i, n, q in gear)
     replaces = lua_format(L('dialogReplacesDiffers'), 'Feral leveling build', '15 points', 1, 'Improved Wrath')
     return (f'<div class="pv"><div class="ph">{ab.crest("druid", 32)}<div><div>Moonkin for Molten Core'
@@ -280,7 +279,7 @@ def board_paste_preview():
     after = f'<div class="st ok">{esc(lua_format(T("windowRead"), "Moonkin for Molten Core"))}</div>'
     box = '<span class="one" style="display:block">FSB1:70938:druid:1a21a21a21b31b31b3…</span>'
     right = (up_next_html('Feral leveling build', rows) + from_site(box_cls='gold', box_text=box, after=after)
-             + to_site('rest', facts_hunter(24)[1:]))
+             + to_site('rest', facts_hunter(24)[1:], 'druid', 24))
     return board('The Builds window · a pasted Balance code previewing on the left; "Read" under the box; Enter uses it',
                  window('druid', lua_format(L('dialogOwnBuilds'), 'Druid'), ab.note(24, 15, 15),
                         preview_left(), right, T('windowEscBack'), L('dialogEnterHint')))
@@ -290,7 +289,7 @@ def board_bad_code():
     nxt = ab.next_line('hunter', 'Intimidation', 1)
     blocks = ab.class_blocks('hunter', 42, 'hunter-beast-mastery', 'leveling', nxt)
     rows = up_next('hunter-beast-mastery', 'leveling', 'Intimidation', 1, 42)
-    reason = L('codecWrongPrefix') if False else 'That is not a Forever Sixty build code.'
+    reason = L('codecWrongPrefix').split('. ')[0] + '.'
     after = (f'<div class="st warn-t">{esc(reason)}</div>'
              f'<div class="m">{esc(lua_format(L("dialogStillFollowing"), "Beast Mastery leveling build"))}</div>')
     box = '<span>https://www.wowhead.com/classic/talent-calc/hunter/5300052-0505</span>'

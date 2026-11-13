@@ -154,9 +154,10 @@ local function line(parent, hexKey, width)
 	return region
 end
 
+--- A hairline in the border colour, one whole pixel thick (Theme.wholePixels).
 local function rule(parent)
 	local texture = Theme.texture(parent, "ARTWORK", "border")
-	texture:SetHeight(1)
+	texture:SetHeight(Theme.wholePixels(texture, Theme.SIZES.border))
 	return texture
 end
 

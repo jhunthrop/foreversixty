@@ -147,7 +147,7 @@ function BuildsWindow.buildUpNext(parent, width, deps)
 	up.rows = {}
 	for index = 1, BuildsWindow.UP_NEXT_ROWS do
 		local row = {}
-		row.icon = parent:CreateTexture(nil, "ARTWORK")
+		row.icon = Theme.newTexture(parent, "ARTWORK")
 		row.icon:SetSize(G.upNextIcon, G.upNextIcon)
 		row.when = deps.text(parent, "muted", G.upNextLevel)
 		row.name = deps.text(parent, "body", width - G.upNextIcon - G.upNextGap * 2 - G.upNextLevel)

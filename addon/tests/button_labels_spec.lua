@@ -154,17 +154,27 @@ describe("every visible button draws its label", function()
 		end
 	end)
 
-	it("labels every button on the Builds dialog's tabs", function()
+	it("labels every button on the Forever Sixty window's Builds tab", function()
 		local BuildDialog = modules.BuildDialog
 		assert.is_true(BuildDialog.open("paste"))
 		mock.runTimers(state)
 		mock.renderFrame(state)
 		assert.are.same({}, blankLabels(state), "paste")
-		BuildDialog.setMode("copy")
+		BuildDialog.focusBox("copy")
 		mock.renderFrame(state)
 		assert.are.same({}, blankLabels(state), "copy")
-		BuildDialog.setMode("paste")
+		BuildDialog.focusBox("paste")
 		assert.are.same({}, blankLabels(state), "paste again")
+		-- A row followed in place redraws every Follow; a code previewing shows Use this build.
+		local row = BuildDialog.paste.builds.rows[2]
+		BuildDialog.followOwn(row.entry)
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "after Follow")
+		local box = BuildDialog.paste.box
+		box:SetText("FSB1:" .. DATA.build .. ":warrior:111:")
+		box:GetScript("OnTextChanged")(box, true)
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "preview")
 	end)
 
 	it("labels the panel's Change and every other button, drawn twice", function()

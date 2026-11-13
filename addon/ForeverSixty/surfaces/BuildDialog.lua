@@ -2129,7 +2129,7 @@ function BuildDialog.buildInto(body)
 	local S, H = Theme.SIZES, Hub.LAYOUT
 	BuildDialog.body, BuildDialog.frame = body, Hub.frame
 	local divider = Theme.texture(body, "ARTWORK", "border")
-	divider:SetWidth(1)
+	divider:SetWidth(Theme.wholePixels(divider, S.border))
 	local ruleX = S.padding + contentWidth() + S.windowGutter / 2
 	divider:SetPoint("TOPLEFT", body, "TOPLEFT", ruleX, 0)
 	divider:SetPoint("BOTTOMLEFT", body, "BOTTOMLEFT", ruleX, 0)
