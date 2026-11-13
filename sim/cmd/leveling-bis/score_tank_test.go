@@ -160,3 +160,20 @@ func TestAnItemsArmorScoresAtTheArmorWeightAndNowhereElse(t *testing.T) {
 		t.Errorf("score = %v, want armor to add nothing without a weight", got)
 	}
 }
+
+// The published metrics carry the tank's maximum health beside its effective
+// health: effective health already folds in the damage taken, so a page that
+// shows both damage taken and a health pool needs the pool itself.
+func TestTankReportPublishesMaximumHealth(t *testing.T) {
+	f, err := simscore.NewTankFigures(tankRun(10000, 500, 400, 30), 1000)
+	if err != nil {
+		t.Fatal(err)
+	}
+	report := tankReportOf(f)
+	if report.Health != 10000 {
+		t.Errorf("published health = %v, want the character's 10000", report.Health)
+	}
+	if report.EffectiveHealth != 20000 {
+		t.Errorf("published effective health = %v, want 20000", report.EffectiveHealth)
+	}
+}
