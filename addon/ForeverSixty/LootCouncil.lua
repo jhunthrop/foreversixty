@@ -569,22 +569,12 @@ function LootCouncil.answered(drop)
 end
 
 --- "3 of 9 answered": the loot! received and the group's members other than the master looter. The
---- chip's line and /fs diag count the same way.
+--- Officer tab's chip line and /fs diag count the same way.
 function LootCouncil.answeredText(drop)
 	return string.format(L.lootAnswered, LootCouncil.answered(drop), drop.asked or 0)
 end
 
---- The chip's line: "Loot: Sulfuras, Hand of Ragnaros · 3 of 9 answered" for the latest drop; nil with none.
-function LootCouncil.chipText()
-	local drops = LootCouncil.shown()
-	local drop = drops[#drops]
-	if drop == nil then
-		return nil
-	end
-	return string.format(L.lootChip, drop.name or L.tooltipNamePending, LootCouncil.answeredText(drop))
-end
-
---- The region and the chip's line gone.
+--- The session gone.
 function LootCouncil.clear()
 	LootCouncil.drops, LootCouncil.open, LootCouncil.closedAt = {}, false, nil
 	changed()

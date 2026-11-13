@@ -334,6 +334,19 @@ function GuildRaid.waitingOf(raids, ctx)
 	return items
 end
 
+--- Tonight's raid for the chip (spec 6): `starts`, how long until the pull (GuildRaid.countdown, for the
+--- hover), and, once nothing waits on it (you answered and have no job), `line`: "Onyxia's Lair 20:00 ·
+--- In" with the answer in its colour (leadOf's line). That line is no waiting item (no dot), but it leads
+--- the chip on the day. nil with no raid tonight. Pure over `raids` and `ctx`.
+function GuildRaid.tonightLine(raids, ctx)
+	local raid = raids[1]
+	if raid == nil or not GuildRaid.isTonight(raid, ctx.now) then
+		return nil
+	end
+	local quiet = #GuildRaid.waitingOf(raids, ctx) == 0
+	return { line = quiet and GuildRaid.leadOf(raids, ctx).line or nil, starts = GuildRaid.countdown(raid.start, ctx.now) }
+end
+
 --- This character's queued answer for `raidId` in the outbox, or nil.
 function GuildRaid.pendingAnswer(raidId)
 	local character = Export.outboxCharacter()

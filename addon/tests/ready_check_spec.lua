@@ -88,7 +88,7 @@ end
 
 
 describe("ReadyCheck", function()
-	local ReadyCheck, Theme, Comms, Prefs, Chip
+	local ReadyCheck, Theme, Comms, Prefs
 	local state, clock, sent, notified, combat, units, auras, gear, groupList
 
 	--- The group the client answers. `options`: { members, raid, solo, count, auras, instance, leader,
@@ -262,7 +262,6 @@ describe("ReadyCheck", function()
 		helper.load("ItemTooltip")
 		helper.load("PlayerTooltip")
 		helper.load("Inspect")
-		Chip = helper.load("Chip")
 		helper.load("GroupMembers")
 		ReadyCheck = helper.load("ReadyCheck")
 		if options.sharingOff then
@@ -341,14 +340,13 @@ describe("ReadyCheck", function()
 			start({ members = { { unit = "player", name = "Tester", class = "HUNTER", className = "Hunter", level = 59 } },
 				solo = true, auras = { Tester = { aura(19705) } } })
 			assert.are.same({ "Ready check (only you see this): nothing missing." }, ReadyCheck.handleReady())
-			-- The player alone at 24 with nothing on: nothing missing, in chat and on the chip.
+			-- The player alone at 24 with nothing on: nothing missing, in chat.
 			start({ solo = true, members = { { unit = "player", name = "Tester", class = "HUNTER", className = "Hunter",
 				level = 24 } }, auras = { Tester = {} } })
-			-- A.2: the chat line and the chip's toast read the same words, and say what was checked.
+			-- A.2: the chat line says what was checked.
 			local said = "Ready check (only you see this): nothing missing at your level \194\183 "
 				.. "no flask, food or buff is expected below 35"
 			assert.are.same({ said }, ReadyCheck.handleReady())
-			assert.are.equal(said, Chip.raidCheck.text)
 		end)
 
 		-- L3.7 item 46: the columns lead Name, Level, Spec.
@@ -510,15 +508,14 @@ describe("ReadyCheck", function()
 			assert.are.same({ "Tester: missing weapon buff" }, ReadyCheck.missingLines(ReadyCheck.onReadyCheck()))
 		end)
 
-		-- L3.7 item 46: the lines the chip prints for a ready check name the members in their class colour.
-		it("gives the chip's missing lines the members' class colours", function()
+		-- L3.7 item 46: the missing lines name the members in their class colour.
+		it("colours the members' names in the missing lines", function()
 			local warrior = { { unit = "player", name = "Tester", class = "WARRIOR", className = "Warrior", level = 60 },
 				PARTY[3] }
 			start({ members = warrior, auras = { Tester = { aura(17626), aura(19705), aura(11551) },
 				Elwen = { aura(17627), aura(19705), aura(10157) } } })
 			gear.Tester = { [16] = "item:80:0" }
-			ReadyCheck.onReadyCheck()
-			local line = require("Chip").raidCheck.missing[1]
+			local line = ReadyCheck.missingLines(ReadyCheck.onReadyCheck(), true)[1]
 			assert.are.equal(string.format(L.groupMissing, "|cff" .. Theme.panelClassHex("WARRIOR") .. "Tester|r",
 				"weapon buff"), line)
 		end)
@@ -592,29 +589,26 @@ describe("ReadyCheck", function()
 			assert.is_true(#ReadyCheck.coverageLines(result) > 0)
 		end)
 
-		it("gives the chip Ready check: N missing (names) until READY_CHECK_FINISHED and 30 s more", function()
+		-- Spec 2026-11-13-addon-hub 6: the ready check left the chip; its summary goes to chat.
+		it("says Ready check: N missing (names) in chat and stands until READY_CHECK_FINISHED and 30 s more", function()
 			start({ auras = buffed(), instance = { "Molten Core", "raid", 409 } })
-			local refreshes = 0
-			Chip.refresh = function()
-				refreshes = refreshes + 1
+			local said, say = {}, Theme.say
+			Theme.say = function(text)
+				said[#said + 1] = text
 			end
 			ReadyCheck.onReadyCheck()
-			assert.are.equal(1, refreshes)
+			Theme.say = say
 			-- Fix round 4 (E): the player first as "you", at most two names, then "+N".
-			local summary = "Ready check: 3 missing (you, Thorgrim, +1)"
-			local model = Chip.model({ level = 30, build = { name = "Arms leveling", order = { {}, {}, {} } },
-				progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
-				raidCheck = Chip.raidCheck })
-			assert.are.equal("raidcheck", model.chosen.kind)
-			assert.are.equal(summary, model.chosen.text)
-			-- The check stands while it runs, past the old 60 s.
-			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock + 90))
-			clock = clock + 35
+			assert.are.same({ "Ready check: 3 missing (you, Thorgrim, +1)" }, said)
+			-- The check stands while it runs, past a dry run's 60 s.
+			clock = clock + 90
+			assert.is_true(ReadyCheck.stands())
+			clock = clock - 55
 			ReadyCheck.onReadyCheckFinished()
-			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock + 30))
-			assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock + 31))
-			-- A refresh waits for the expiry.
-			assert.are.equal(30, state.timers[#state.timers].seconds)
+			clock = clock + 30
+			assert.is_true(ReadyCheck.stands())
+			clock = clock + 1
+			assert.is_false(ReadyCheck.stands())
 		end)
 
 		it("re-reads the auras on UNIT_AURA while the check stands, throttled: a flask taken leaves the list",
@@ -633,7 +627,7 @@ describe("ReadyCheck", function()
 					"Tester: missing flask",
 					"Elwen: missing Power Word: Fortitude",
 				}, ReadyCheck.missingLines(ReadyCheck.result))
-				assert.are.equal("Ready check: 2 missing (you, Elwen)", Chip.raidCheck.text)
+				assert.are.equal("Ready check: 2 missing (you, Elwen)", ReadyCheck.summary(ReadyCheck.result))
 				-- No check standing: an aura change does nothing.
 				clock = clock + 35
 				ReadyCheck.onReadyCheckFinished()
@@ -646,70 +640,27 @@ describe("ReadyCheck", function()
 		-- Fix round 2, N2: UNIT_AURA reads the Raid tab only at the throttled re-read, and only when it
 		-- changed since the last read (the sentinel hears the tab switches themselves).
 		-- Fix round 3 (low): a tab never read (nil) and a tab read closed (false) are the same tab.
-		it("dry-runs on /fs ready outside a group: the player alone, the lines in chat and the chip", function()
+		it("dry-runs on /fs ready outside a group: the player alone, the lines in chat", function()
 			-- The player is a priest: Fortitude is a buff they can give, so they are asked for it too.
 			start({ solo = true, auras = { Tester = { aura(19705), aura(10938) } } })
 			local lines = ReadyCheck.handleReady()
 			-- Fix round 4 (E): alone, one line in chat.
 			assert.are.same({ "Ready check (only you see this): you are missing flask." }, lines)
-			-- Fix round 2: the player alone, the chip names what they lack, not "1 missing (Tester)".
-			-- Fix round 3, C3: the chip's own short form, "missing ..." (no "you are").
-			assert.are.equal(string.format(L.groupChipSummaryYouTest, "flask"), Chip.raidCheck.text)
-			assert.are.equal("Ready check (only you see this): missing flask", Chip.raidCheck.text)
-			assert.is_nil(Chip.raidCheck.open)
+			-- Fix round 2: the player alone, the summary names what they lack, not "1 missing (Tester)".
+			assert.are.equal("Ready check (only you see this): missing flask", ReadyCheck.summary(ReadyCheck.result))
+			assert.is_nil(ReadyCheck.result.open)
 			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
 			assert.are.same({ "Ready check (only you see this): nothing missing." }, ReadyCheck.handleReady())
-			-- Fix round 4 (E): the chip says so for the dry run's 60 s, then goes.
-			assert.are.same({}, Chip.raidCheck.missing)
-			assert.are.equal("Ready check (only you see this): nothing missing", Chip.raidCheck.text)
-			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock))
-			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock + Chip.RAID_CHECK_SECONDS))
-			assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock + Chip.RAID_CHECK_SECONDS + 1))
-			local model = Chip.model({ level = 30, build = { name = "Arms leveling", order = { {}, {}, {} } },
-				progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
-				raidCheck = Chip.raidCheck })
-			assert.are.equal("raidcheck", model.chosen.kind)
-			assert.are.equal("Ready check (only you see this): nothing missing", model.chosen.text)
-			-- A click on the chip prints that line.
-			local said, say = {}, Theme.say
-			Theme.say = function(text)
-				said[#said + 1] = text
-			end
-			pcall(Chip.printRaidCheck)
-			Theme.say = say
-			assert.are.same({ "Ready check (only you see this): nothing missing" }, said)
-		end)
-
-		-- Fix round 5, D2: the chip's glyph says what the check found: the green tick on a clean dry
-		-- run, the red cross where a need is missing (and back to it when a later aura loss refills the list).
-		it("draws the tick on the chip for a clean dry run and the cross where a need is missing", function()
-			local function chosen()
-				return Chip.model({ level = 30, build = { name = "Arms leveling", order = { {}, {}, {} } },
-					progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
-					raidCheck = Chip.raidCheck }).chosen
-			end
-			start({ solo = true, auras = { Tester = { aura(19705), aura(10938) } } })
-			ReadyCheck.handleReady()
-			assert.are.equal("raidcheck", chosen().kind)
-			assert.are.equal(Theme.MEDIA.gearCross, chosen().icon)
-			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
-			ReadyCheck.handleReady()
-			assert.are.equal("raidcheck", chosen().kind)
-			assert.are.equal("Ready check (only you see this): nothing missing", chosen().text)
-			assert.are.equal(Theme.MEDIA.gearTick, chosen().icon)
-			-- The flask runs out while the dry run stands: the list refills and the cross returns.
-			table.remove(auras.Tester, 2)
-			state.timers = {}
-			ReadyCheck.onAura("player")
-			mock.runTimers(state)
-			assert.are.equal("raidcheck", chosen().kind)
-			assert.are.equal("Ready check (only you see this): missing flask", chosen().text)
-			assert.are.equal(Theme.MEDIA.gearCross, chosen().icon)
+			-- The dry run stands its 60 s, then goes.
+			clock = clock + ReadyCheck.STANDS_DRY
+			assert.is_true(ReadyCheck.stands())
+			clock = clock + 1
+			assert.is_false(ReadyCheck.stands())
 		end)
 
 		-- Fix round 4 (E, B): in a group the dry run's chat names the list it read, then a line a member
-		-- ("Nobody is missing anything." when clean); a clean check in a group puts nothing on the chip.
-		it("dry-runs on /fs ready in a group: the header names the list, a line a member, nothing on a clean chip",
+		-- ("Nobody is missing anything." when clean); a clean real check says nothing in chat.
+		it("dry-runs on /fs ready in a group: the header names the list, a line a member; a clean check is quiet",
 			function()
 				start({ auras = buffed() })
 				assert.are.same({ "Ready check (only you see this), standard buffs:", "Tester: missing flask",
@@ -723,10 +674,14 @@ describe("ReadyCheck", function()
 				} })
 				assert.are.same({ "Ready check (only you see this), standard buffs:", "Nobody is missing anything." },
 					ReadyCheck.handleReady())
-				assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock))
-				-- A real check's clean result shows nothing either.
+				-- A real check's clean result says nothing.
+				local said, say = {}, Theme.say
+				Theme.say = function(text)
+					said[#said + 1] = text
+				end
 				ReadyCheck.onReadyCheck()
-				assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock))
+				Theme.say = say
+				assert.are.same({}, said)
 			end)
 
 		-- Fix round 4 (E): the chip's group line: the player first as "you", two names, then "+N".
@@ -793,8 +748,8 @@ describe("ReadyCheck", function()
 					ReadyCheck.missingLines(result))
 			end)
 
-		-- Fix round 1: a check that first found nobody missing still shows when an aura goes.
-		it("puts the chip line up when a later aura loss adds someone to a check that found nobody", function()
+		-- Fix round 1: a check that first found nobody missing still reads an aura that goes.
+		it("reads a later aura loss into a check that found nobody", function()
 			local full = {
 				Tester = { aura(10938), aura(19705), aura(17627), aura(10157) },
 				Thorgrim = { aura(10938), aura(11551), aura(19705), aura(17626) },
@@ -803,19 +758,13 @@ describe("ReadyCheck", function()
 			start({ auras = full, instance = { "Molten Core", "raid", 409 } })
 			ReadyCheck.onReadyCheck()
 			assert.are.same({}, ReadyCheck.missingLines(ReadyCheck.result))
-			assert.is_not_nil(Chip.raidCheck)
-			assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock))
+			assert.is_true(ReadyCheck.stands())
 			-- Thorgrim's flask runs out while the check stands.
 			table.remove(auras.Thorgrim, 4)
 			state.timers = {}
 			ReadyCheck.onAura("party1")
 			mock.runTimers(state)
-			assert.are.equal(string.format(L.groupChipSummary, 1, "Thorgrim"), Chip.raidCheck.text)
-			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock))
-			local model = Chip.model({ level = 30, build = { name = "Arms leveling", order = { {}, {}, {} } },
-				progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
-				raidCheck = Chip.raidCheck })
-			assert.are.equal("raidcheck", model.chosen.kind)
+			assert.are.equal(string.format(L.groupChipSummary, 1, "Thorgrim"), ReadyCheck.summary(ReadyCheck.result))
 		end)
 	end)
 

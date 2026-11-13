@@ -1285,11 +1285,10 @@ local function simFailed()
 	return type(newest) == "table" and newest.failed ~= nil and newest.failed ~= false
 end
 
---- The chip's own line now, whatever it says (a talent, an item, or its idle line), or nil.
+--- The chip's line now while something waits (the most urgent thing), or nil.
 local function chipLine()
 	local current = Chip.current
-	local chosen = type(current) == "table" and current.chosen or nil
-	local text = type(chosen) == "table" and chosen.text or nil
+	local text = type(current) == "table" and current.opens ~= nil and current.line or nil
 	return type(text) == "string" and text ~= "" and text or nil
 end
 
@@ -2418,7 +2417,9 @@ function BuildDialog.waiting()
 	end
 	local unspent = type(level) == "number" and Progress.unspentPoints(level, ranks) or 0
 	if unspent > 0 then
-		local spend = unspent == 1 and L.hubSpendOne or string.format(L.hubSpendMany, unspent)
+		-- The client gold: something to act on now (spec 3.5).
+		local spend = Theme.inlineColor("clientGold", unspent == 1 and L.hubSpendOne
+			or string.format(L.hubSpendMany, unspent))
 		local named, talent = pcall(BuildDialog.nextTalent, Follow.build, ranks, data, level)
 		local line = named and talent ~= nil and string.format(L.hubSpendOn, spend, talent) or spend
 		items[#items + 1] = { key = "spend", line = line, fact = level .. ":" .. unspent }

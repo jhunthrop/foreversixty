@@ -14,13 +14,18 @@ local Compat = ns.Compat or require("Compat")
 local RaidPrep = ns.RaidPrep or require("RaidPrep")
 local PlayerTooltip = ns.PlayerTooltip or require("PlayerTooltip")
 local GroupMembers = ns.GroupMembers or require("GroupMembers")
-local Chip = ns.Chip or require("Chip")
 
 local ReadyCheck = {}
 
 --- Seconds an aura change waits before the standing ready check is read again: a raid's
 --- buffing fires UNIT_AURA by the hundred, and one read covers them all.
 ReadyCheck.AURA_DELAY = 0.5
+--- How long a check stands (L5.2 ruling 3): a leader's while it runs (at most STANDS_RUNNING seconds,
+--- should READY_CHECK_FINISHED never come) and STANDS_AFTER seconds after it finishes; a dry run
+--- (/fs ready) STANDS_DRY seconds.
+ReadyCheck.STANDS_RUNNING = 120
+ReadyCheck.STANDS_AFTER = 30
+ReadyCheck.STANDS_DRY = 60
 
 --- The raid instances whose bosses Data.encounterNeeds lists, by the instance id GetInstanceInfo
 --- answers eighth (any client language) and by the English name it answers first; each with
@@ -517,26 +522,20 @@ end
 -- The ready check, read ------------------------------------------------------------------------
 
 --- Whether the last check still stands at `now`: running, or within its time after it finished
---- (a dry run: Chip.RAID_CHECK_SECONDS).
+--- (a dry run: ReadyCheck.STANDS_DRY).
 local function checkStands(now)
 	local result = ReadyCheck.result
 	if result == nil then
 		return false
 	end
 	if result.open then
-		return now - result.at <= Chip.RAID_CHECK_OPEN
+		return now - result.at <= ReadyCheck.STANDS_RUNNING
 	end
-	return now <= (result.untilAt or result.at + Chip.RAID_CHECK_SECONDS)
-end
-
---- Whether a check found nothing on a dry run of the player alone: the chip then says so (fix
---- round 4, E); a real check's clean result shows nothing.
-local function cleanAlone(result)
-	return result.alone == true and result.dry == true and #result.missing == 0
+	return now <= (result.untilAt or result.at + ReadyCheck.STANDS_DRY)
 end
 
 --- Reads every unit's auras (the player alone out of a group) and checks them against the
---- instance's needs; the chip gets the summary. `again`: the same
+--- instance's needs. `again`: the same
 --- check read anew (its time kept). Fix round 4 (A): each member's level and shown spec go in;
 --- (B) `where` names the raid whose needs were read (nil: the generic lists). Answers the result.
 local function runCheck(dry, again)
@@ -581,11 +580,9 @@ local function runCheck(dry, again)
 		result.at, result.clock, result.open, result.untilAt, result.dry = previous.at, previous.clock, previous.open,
 			previous.untilAt, previous.dry
 		ReadyCheck.result = result
-		Chip.updateRaidCheck(ReadyCheck.missingLines(result, true), ReadyCheck.summary(result), cleanAlone(result))
 	else
 		result.at, result.clock, result.open, result.dry = Theme.now(), date("%H:%M"), not dry or nil, dry or nil
 		ReadyCheck.result = result
-		Chip.setRaidCheck(ReadyCheck.missingLines(result, true), ReadyCheck.summary(result), not dry, cleanAlone(result))
 	end
 	return result
 end
@@ -596,22 +593,25 @@ local function changed()
 	end
 end
 
---- READY_CHECK: every unit's auras read against the instance's needs; the chip gets its line until
---- READY_CHECK_FINISHED and 30 s more. Answers the result.
+--- READY_CHECK: every unit's auras read against the instance's needs, the summary in chat when anything
+--- is missing ("Ready check: 2 missing (you, Elwen)"; spec 2026-11-13-addon-hub 6: it left the chip), and
+--- the Officer tab's readiness until READY_CHECK_FINISHED and 30 s more. Answers the result.
 function ReadyCheck.onReadyCheck()
 	local result = runCheck(false)
+	if #result.missing > 0 then
+		Theme.say(ReadyCheck.summary(result))
+	end
 	changed()
 	return result
 end
 
---- READY_CHECK_FINISHED: the check stands 30 s more (Chip.finishRaidCheck), then goes from the chip.
+--- READY_CHECK_FINISHED: the check stands STANDS_AFTER seconds more.
 function ReadyCheck.onReadyCheckFinished()
 	local result = ReadyCheck.result
 	if result ~= nil and result.open then
 		result.open = nil
-		result.untilAt = Theme.now() + Chip.RAID_CHECK_AFTER
+		result.untilAt = Theme.now() + ReadyCheck.STANDS_AFTER
 	end
-	Chip.finishRaidCheck()
 	changed()
 end
 
@@ -643,8 +643,8 @@ function ReadyCheck.stands()
 	return checkStands(Theme.now())
 end
 
---- /fs ready: a dry run of the check (the player alone out of a group), told in chat; the chip shows its
---- line for Chip.RAID_CHECK_SECONDS. Alone, one line ("Ready check (only you see this): you are missing
+--- /fs ready: a dry run of the check (the player alone out of a group), told in chat; it stands
+--- STANDS_DRY seconds. Alone, one line ("Ready check (only you see this): you are missing
 --- flask, food." or "...: nothing missing."); in a group a header naming the list read ("Ready check (only
 --- you see this), Molten Core:", "..., standard buffs:"), then a line a member or "Nobody is missing
 --- anything.". The lines to print.

@@ -1,11 +1,9 @@
 -- addon/tests/chip_first_login_spec.lua
--- A.1: the Forever Sixty line is on screen at a first login and says the next step. The fresh-account
--- walk (22 Oct, level 24 High Order Skyborne hunter, the owner's saved variables, no entry for the
--- character) found nothing drawn beside the minimap though the welcome promised a line. These specs
--- run the whole boot with the walk's chip prefs: the line is drawn with the next talent in its words,
--- /fs chip hides and shows it, a saved spot with a y and no point (or a spot off the screen) never
--- leaves it off screen, an idle chip always has words, and the welcome names the line only when it
--- is there.
+-- A.1: the Forever Sixty line is on screen at a first login. The fresh-account walk (22 Oct, level 24
+-- High Order Skyborne hunter, saved variables with no entry for the character) found nothing drawn
+-- beside the minimap. These specs run the whole boot with the walk's chip prefs: the line is drawn with
+-- words (Forever Sixty, muted, with nothing waiting), the Settings switch hides and shows it, a saved
+-- spot with a y and no point (or a spot off the screen) never leaves it off screen.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 
@@ -27,11 +25,11 @@ local function traitRanks(tab, points)
 	return ranks
 end
 
---- The chip prefs of the owner's saved variables the walk loaded (hiddenUntilLevel 0, shown, a saved y,
+--- The chip prefs of the owner's saved variables the walk loaded (shown, a saved y,
 --- four alts in byCharacter and none for the character); `override` replaces fields of it.
 local function walkChipPrefs(override)
 	local chip = {
-		hiddenUntilLevel = 0, hiddenFor = "", shown = true, pathFor = "", pathChosen = "", y = -41.9443359375,
+		shown = true, pathFor = "", pathChosen = "", y = -41.9443359375,
 		combatHide = true,
 		byCharacter = {
 			["/Classic Beta PvE 2/Lightning Bolltz"] = {},
@@ -85,20 +83,19 @@ describe("the line at a first login (the fresh-account walk)", function()
 		mock.uninstall()
 	end)
 
-	it("is visible and drawn, with the next talent in its words, for the walk's prefs", function()
+	it("is visible and drawn, with words, for the walk's prefs", function()
 		bootWalk()
-		local Chip = require("Chip")
+		local Chip, L = require("Chip"), require("Locale")
 		assert.is_nil(Chip.disabled)
 		assert.is_true(Chip.current.visible)
 		assert.is_nil(Chip.current.hiddenBy)
 		assert.is_true(Chip.frame:IsShown())
 		assert.is_true(Chip.isDrawn())
-		assert.are.equal("idle", Chip.current.chosen.kind)
-		assert.is_truthy(Chip.current.chosen.text:find("^Next at %d+: ."))
-		assert.are.equal(Chip.current.chosen.text, Chip.text:GetText())
-		assert.is_true(Chip.text:IsShown())
-		-- The words are not dimmed away with the icon.
-		assert.are.equal(1, Chip.current.iconAlpha)
+		-- Every point spent and nothing else waiting: the addon's name, muted, never an empty crest.
+		assert.are.equal(L.addonName, Chip.current.line)
+		assert.is_true(Chip.current.muted)
+		assert.are.equal(L.addonName, Chip.text:GetText())
+		assert.are.equal(1, Chip.current.alpha)
 	end)
 
 	it("sits beside the minimap, not at the saved y", function()
@@ -123,18 +120,22 @@ describe("the line at a first login (the fresh-account walk)", function()
 		assert.are.equal(Chip.FRAME_LEVEL, raised)
 	end)
 
-	it("hides on /fs chip from a shown chip, saying until level 25, and shows again", function()
+	-- Spec 6: hiding the chip is the Settings switch; /fs chip and right-click hide are gone.
+	it("hides with the Settings switch and shows again, and /fs chip is no command", function()
 		local Options = bootWalk()
-		local Chip, L = require("Chip"), require("Locale")
+		local Chip, Prefs, L = require("Chip"), require("Prefs"), require("Locale")
 		assert.is_true(Chip.frame:IsShown())
-		assert.are.same({ string.format(L.chipHiddenLine, 25) }, Options.handle("chip"))
+		Prefs.set("chip", "shown", false)
+		Chip.refresh()
 		assert.is_true(Chip.isHidden())
 		assert.are.equal("player", Chip.current.hiddenBy)
 		assert.is_false(Chip.frame:IsShown())
-		assert.are.same({ L.chipShownLine }, Options.handle("chip"))
+		Prefs.set("chip", "shown", true)
+		Chip.refresh()
 		assert.is_false(Chip.isHidden())
-		assert.is_true(Chip.frame:IsShown())
 		assert.is_true(Chip.isDrawn())
+		assert.are.same(Options.helpLines(), Options.handle("chip"))
+		assert.is_nil(L.chipShownLine)
 	end)
 
 	it("keeps the line when the prefs hold a y and an x but no point", function()
@@ -207,72 +208,6 @@ describe("Chip.place", function()
 		assert.is_false(Chip.selfCheck())
 		assert.is_true(Chip.disabled)
 		assert.is_false(Chip.isDrawn())
-	end)
-end)
-
-describe("the idle chip's words", function()
-	local Chip, L
-
-	setup(function()
-		Chip, L = require("Chip"), require("Locale")
-	end)
-
-	local function idleInputs(overrides)
-		local base = {
-			level = 24, classIcon = "crest-hunter", now = 100, clock = 0, shown = true, combatHide = true,
-			unspent = 0,
-			build = { name = "Beast Mastery build", order = { {}, {}, {} } },
-			progress = { matched = 1, total = 3, nextLevel = 25, point = { tab = 1, tier = 1, column = 2, index = 2 } },
-			pointName = "Endurance Training", pointRank = { have = 0, want = 5 },
-		}
-		for key, value in pairs(overrides or {}) do
-			-- false takes the field away (a nil cannot be set in a table constructor).
-			base[key] = value or nil
-		end
-		return base
-	end
-
-	it("reads the talent and its rank when a build is followed and the next talent is known", function()
-		local chosen = Chip.model(idleInputs()).chosen
-		assert.are.equal("idle", chosen.kind)
-		assert.are.equal("Endurance Training (1 of 5)", chosen.text)
-		assert.are.equal("talents", chosen.action)
-	end)
-
-	it("reads the talent alone when the plan wants one rank of it", function()
-		local model = Chip.model(idleInputs({ pointRank = { have = 0, want = 1 } }))
-		assert.are.equal("Endurance Training", model.chosen.text)
-	end)
-
-	it("reads Pick a build: /fs, and a click opens the build window, when nothing is followed", function()
-		local chosen = Chip.model(idleInputs({ build = false, progress = { matched = 0, total = 0 },
-			pointName = false, pointRank = false })).chosen
-		assert.are.equal("idle", chosen.kind)
-		assert.are.equal("Pick a build: /fs", chosen.text)
-		assert.are.equal(L.chipIdlePick, chosen.text)
-		assert.are.equal("inbox", chosen.action)
-		assert.are.equal(L.chipHintBuildWindow, chosen.hint)
-	end)
-
-	it("says a build is waiting when none is followed and the site sent one", function()
-		local chosen = Chip.model(idleInputs({ build = false, inboxWaiting = 1, progress = { matched = 0, total = 0 },
-			pointName = false })).chosen
-		assert.are.equal(L.chipIdleInbox, chosen.text)
-	end)
-
-	-- design/specs/2026-11-08-addon-ux.md 3.2: never an icon without words, never dimmed.
-	it("says Forever Sixty at full opacity for a finished build with nothing to say", function()
-		local model = Chip.model(idleInputs({ progress = { matched = 3, total = 3 }, pointName = false }))
-		assert.are.equal(L.addonName, model.chosen.text)
-		assert.are.equal(1, model.iconAlpha)
-	end)
-
-	it("is cut to fit like every other line when the talent's name is long", function()
-		local text = Chip.model(idleInputs({ pointName = ("Improved Mortal Strike "):rep(3) })).chosen.text
-		local fitted = Chip.fit(text, function(value)
-			return #value * 6
-		end, 242)
-		assert.is_true(#fitted * 6 <= 242)
 	end)
 end)
 

@@ -14,20 +14,16 @@ ns = type(ns) == "table" and ns or {}
 local Prefs = {}
 
 Prefs.DEFAULTS = {
-	-- The chip (spec section 4.1). Choices: shown, hidden in combat (else faded),
-	-- hidden until a level, and the spec picked on its "pick a path" card. Placement:
-	-- `point` "" is the default anchor beside the minimap; a shift-drag saves the
-	-- chip's TOPRIGHT against UIParent's. A saved nil would be dropped by normalise,
-	-- so "not hidden" is 0 and "no path" is "". `hiddenFor` and `pathFor` name the
-	-- character (Export.characterKey) the two belong to: this table is account-wide,
-	-- and a main's "hide until 31" must not hide an alt's chip. Those four are the OLD shared
-	-- slot (L3.7): `byCharacter` keeps one entry per character key, { hidden, hiddenUntilLevel,
-	-- pathChosen }, so an alt's choice no longer overwrites a main's; Prefs.current moves
-	-- whatever the old slot holds into it once and empties the slot.
+	-- The chip (design/specs/2026-11-13-addon-hub.md 6). Choices: shown (the Settings switch), hidden in
+	-- combat (else faded). Placement: `point` "" is the default anchor beside the minimap; a shift-drag
+	-- saves the chip's TOPRIGHT against UIParent's. `byCharacter` keeps one entry per character key,
+	-- { pathChosen, pathKind }: the spec picked, so an alt's choice never overwrites a main's.
+	-- `pathChosen` and `pathFor` are the OLD shared slot (L3.7, "" for none: a saved nil would be
+	-- dropped by normalise); Prefs.current moves it into its character's entry once and empties it.
 	chip = {
 		shown = true, combatHide = true,
 		point = "", x = 0, y = 0,
-		hiddenUntilLevel = 0, hiddenFor = "", pathChosen = "", pathFor = "",
+		pathChosen = "", pathFor = "",
 		byCharacter = {},
 	},
 	-- The Forever Sixty window (design/specs/2026-11-13-addon-hub.md 3): `point` "" is the centre of the
@@ -154,17 +150,10 @@ local function normalise(target, defaults)
 	return target
 end
 
---- The old shared hide/path slot into the per-character table, once (L3.7 item 1): what
---- `hiddenFor` / `pathFor` named becomes that character's entry and the slot is emptied.
+--- The old shared path slot into the per-character table, once (L3.7 item 1): what `pathFor`
+--- named becomes that character's entry and the slot is emptied.
 local function migrateChip(chip)
 	local byCharacter = chip.byCharacter
-	if chip.hiddenFor ~= "" then
-		local entry = type(byCharacter[chip.hiddenFor]) == "table" and byCharacter[chip.hiddenFor] or {}
-		byCharacter[chip.hiddenFor] = entry
-		entry.hidden = true
-		entry.hiddenUntilLevel = chip.hiddenUntilLevel
-		chip.hiddenFor, chip.hiddenUntilLevel = "", 0
-	end
 	if chip.pathFor ~= "" then
 		if chip.pathChosen ~= "" then
 			local entry = type(byCharacter[chip.pathFor]) == "table" and byCharacter[chip.pathFor] or {}
@@ -187,7 +176,7 @@ function Prefs.current()
 	return ui
 end
 
---- This character's chip entry ({ hidden, hiddenUntilLevel, pathChosen }), or nil. `same`
+--- This character's chip entry ({ pathChosen, pathKind }), or nil. `same`
 --- (Follow.sameCharacter) lets a key saved before the client said its region still count;
 --- `create` makes the entry under `key` when none matches.
 function Prefs.chipCharacter(key, same, create)

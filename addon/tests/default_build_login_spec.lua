@@ -323,24 +323,6 @@ describe("/fs diag's build line", function()
 	end)
 end)
 
-describe("the chip's hover with a build in force", function()
-	after_each(function()
-		mock.uninstall()
-	end)
-
-	it("says the next talent on the idle chip; the hover is the click and the right-click alone", function()
-		login("hunter", { configID = 7, ranks = traitRanks("hunter", { [2] = 15 }) })
-		local Chip, Theme, L = require("Chip"), require("Theme"), require("Locale")
-		assert.are.equal("idle", Chip.current.chosen.kind)
-		-- A.2: nothing to spend yet, so the level the point arrives at leads: "Next at 25: ...".
-		assert.is_truthy(Chip.current.chosen.text:find("^Next at %d+: "))
-		-- design/specs/2026-11-08-addon-ux.md 3.2: the build's name lives in the panel, not the hover.
-		local lines = Chip.tooltipLines(Chip.current)
-		assert.are.equal("|cff" .. Theme.dimHex("muted", Theme.ALPHA.hint) .. L.chipHintTalents .. "|r", lines[1])
-		assert.are.equal(2, #lines)
-	end)
-end)
-
 -- L3.8 fix round 1 ------------------------------------------------------------------------
 
 -- A code no data build this addon carries can load: made on a newer patch (Codec refuses it).

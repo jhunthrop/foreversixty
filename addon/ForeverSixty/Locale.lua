@@ -16,15 +16,14 @@ local L = {
 	-- adds the testers' two lines after it, muted (fix round 1, item 16; fix round 3, item 5:
 	-- one line read as options of /fs diag; /fs record's arguments are in its own usage,
 	-- recorderHelp). The hub (design/specs/2026-11-13-addon-hub.md 10): /fs opens the window, a tab's
-	-- name opens that tab; /fs build and /fs inspect move to the testers' lines; /fs chip stays until
-	-- the chip lane replaces it; /fs group and /fs floor went with the Officer lane.
+	-- name opens that tab; /fs build and /fs inspect move to the testers' lines; /fs group and /fs floor
+	-- went with the Officer lane, /fs chip with the chip lane (the Settings switch hides the line).
 	settingsCommands = {
 		"/fs: open the Forever Sixty window",
 		"/fs copy: copy my character for the site",
 		"/fs me, builds, gear, rotation, guild, officer: open that tab",
 		"/fs link: copy a player's site page",
 		"/fs tour: see the tour again",
-		"/fs chip: show or hide the Forever Sixty line",
 		"/fs ready: check flasks, food and buffs now",
 		"/fs loot: what an item is worth to you",
 		"/fs options: open the settings page",
@@ -92,8 +91,7 @@ local L = {
 	talentStripDoneNext = "Build complete · next point at level %d",
 	talentStripDone = "Build complete",
 	talentStripOffPlan = "%d off plan",
-	-- L3.2 fix round 4: the strip's leading segment while the open window
-	-- hides the chip, the chip's own label, the talent and its rank: "Improved Heroic Strike (1 of 3)".
+	-- L3.2 fix round 4: the strip's leading segment, the talent and its rank: "Improved Heroic Strike (1 of 3)".
 	talentStripNextTalent = "%s",
 	-- A run of the plan's points at a cell, en dash: a badge names the next
 	-- run ("8–11", then "36"), the node tooltip lists every one.
@@ -294,11 +292,6 @@ local L = {
 	recorderNoApi = "This client has no %s; nothing is recorded.",
 	recorderSchema = "The saved record is schema %s, this addon writes %s. /fs record clear discards it.",
 
-	-- Minimap
-	minimapLeftClick = "Left-click: paste or copy a build",
-	minimapRightClick = "Right-click: settings",
-	minimapNoBuild = "No build loaded",
-
 	-- The Settings page (spec section 4.11, L3.5 and fix rounds 1 and 2): nine switches, each
 	-- hint saying what the switch does; Reset positions; the command list; the addon data and
 	-- the player ratings lines at the foot, which never print a build number (the first that
@@ -316,12 +309,11 @@ local L = {
 	settingsSlotMarks = "Marks on your bags and character pane",
 	settingsSlotMarksHint = "Green arrow: beats what you wear. Gold corner: an upgrade to chase.",
 	settingsCombatHide = "Hide the Forever Sixty line in combat",
-	settingsCombatHideHint = "Off: it fades to 25% instead.",
+	settingsCombatHideHint = "When off, it fades to 25% and reads After combat.",
 	settingsTalentMarks = "Marks on the talent window",
 	settingsTalentMarksHint = "Numbers your build in order and rings the next talent.",
 	settingsMinimap = "Show the minimap button",
-	settingsMinimapHint = "Left-click pastes or copies a build; right-click opens this page. "
-		.. "Off: type /fs options or use Options > AddOns.",
+	settingsMinimapHint = "Adds a button on the minimap's edge that works like the line.",
 	settingsTooltip = "Gear tips on item tooltips",
 	-- L4.4 fix round 2, item 2: the switch also governs the player tooltip's score.
 	settingsTooltipHint = "Hold Shift for the details. Off also hides player scores and the quest and roll marks.",
@@ -423,7 +415,6 @@ local L = {
 	-- overflow hint (FollowView.lua); the Overview's rotation card has its
 	-- own expand-in-place affordance now (overviewRotationMoreCount).
 	overviewRotationMore = "Turn on advanced detail in Settings to see the rest.",
-	minimapProgress = "%d of %d points",
 	bindingHeader = "Forever Sixty",
 	bindingToggle = "Toggle the Forever Sixty panel",
 	bindingHub = "Toggle the Forever Sixty window",
@@ -739,81 +730,42 @@ local L = {
 	inspectPaused = "Inspecting is paused while you are in combat; it carries on afterwards.",
 	inspectTooFar = "Too far away to inspect: %d.",
 
-	-- Lane addon-v2 L3.1 (2026-10-11): the chip (spec section 4.1), one line
-	-- at a time, highest first. "Take Improved Heroic Strike".
+	-- The Builds tab's next talent, "Take Improved Heroic Strike".
 	chipTake = "Take %s",
-	-- L3.2 fix rounds 2 and 4: the talent with the rank to take when the plan
-	-- wants more than one there, "Improved Heroic Strike (1 of 3)": inside
-	-- chipTake on the chip, inside talentStripNextTalent on the talent strip.
+	-- The talent with the rank to take when the plan wants more than one there, "Improved Heroic Strike
+	-- (1 of 3)": inside chipTake, and inside talentStripNextTalent on the talent strip.
 	chipPointRank = "%s (%d of %d)",
-	-- "Equip Chausses of Westfall, +4.2 DPS"; the second %s is one of the
-	-- three gains below, or chipInCombat while the client will not equip.
-	chipEquip = "Equip %s, %s",
-	chipGainDps = "+%.1f DPS",
-	chipGainHealing = "+%.1f healing",
-	chipGainScore = "+%d score",
-	-- "Here for you: Mutant Scale Breastplate (Mutanus), 2 more".
-	chipHere = "Here for you: %s%s",
-	chipHereItem = "%s (%s)",
-	chipHereMore = ", %d more",
-	-- L4.2: the chip's click, until the character panel's targets region (L4.3): a heading,
-	-- then one line per pick in the item tooltip's own source words, "Smite's Mighty Hammer ·
-	-- Mr. Smite · 20% drop" (tooltipSourceDrop).
-	chipHereHeading = "Here for you in %s:",
-	chipRaidCheck = "Missing: %s",
-	chipListSeparator = ", ",
-	-- "Lucifron: 71st percentile, biggest loss: downtime" (Chip.ordinal writes "71st").
-	chipLastNight = "%s: %s percentile, biggest loss: %s",
-	chipLastNightNoLoss = "%s: %s percentile",
-	-- L5.3 fix round 2: the short form Chip.fit falls back to, "Magmadar 38th · standing in fire"; the
-	-- hover's full line, "Magmadar: 38th percentile for Beast Mastery, biggest loss: standing in fire"
-	-- (the spec words left out where the build names no spec), and the raid's date line.
-	chipLastNightShort = "%s %s · %s",
-	chipLastNightShortNoLoss = "%s %s",
-	chipLastNightTip = "%s: %s percentile for %s",
-	chipLastNightTipNoSpec = "%s: %s percentile",
-	chipLastNightTipLoss = "%s, biggest loss: %s",
-	chipLastNightAsOf = "as of %s",
 	-- "71st": the number and its English suffix (Chip.ordinal), 11th to 13th excepted.
 	ordinal = "%d%s",
 	ordinalSuffixes = { "st", "nd", "rd" },
 	ordinalOther = "th",
-	-- The badge when more states wait behind the one shown: "+2".
-	chipWaiting = "+%d",
-	chipComplete = "Build complete",
-	-- A.2: a finished plan below the cap names the next point (the level it arrives at).
-	chipCompleteNext = "Build complete · next point at level %d",
-	chipInCombat = "In combat",
-	-- The hover's last line, dim (design/specs/2026-11-08-addon-ux.md 3.2): how to put the chip away.
-	chipRightHideLevel = "Right-click: hide until level %d",
-	chipRightHideCap = "Right-click: hide until /fs chip",
-	-- The raid-day line: the raid's start on the client's clock, then the raid.
+	-- The tour's picture of the raid-day line: the raid's start on the client's clock, then the raid.
 	chipTonight = "Tonight %s: %s",
-	chipHintRaidJobs = "Click: Show your raid jobs",
-	-- Level 1 to 9 on a default build (spec section 5.1): the class icon and
-	-- this line; a click opens a card with one button per spec.
-	chipPath = "Pick a path",
-	-- A.1: the idle chip says something at a first login. "<talent> (1 of 5)" reuses talentStripNextTalent.
-	chipIdlePick = "Pick a build: /fs",
-	chipIdleInbox = "Build waiting: /fs",
-	chipHintBuildWindow = "Click: Open the build window",
+	-- The chip (design/specs/2026-11-13-addon-hub.md 6): the count of the other things waiting, muted
+	-- after the line ("+2"); the line in combat; the hover's hints after every item waiting.
+	chipMore = "+%d",
+	chipAfterCombat = "After combat",
+	chipHintOpenOn = "Click: open on %s",
+	-- A point to spend: the click opens the talent window too (spec 6).
+	chipHintOpenTalents = "Click: open on %s and the talent window",
+	-- The hover's line under tonight's raid: GuildRaid.countdown's "in 3 h 12 min", "now".
+	chipStarts = "Starts %s",
+	chipHintSettings = "Right-click: settings",
+	chipHintDrag = "Shift-drag: move",
+	-- The minimap button's own move (a drag round the ring, no Shift).
+	chipHintDragRing = "Drag: move",
 	diagChipMoved = "The Forever Sixty line was off screen, so it went back beside the minimap",
 	-- What the chip cut a too-long line with.
 	ellipsis = "…",
 	diagChipOff = "The Forever Sixty line is off: its text did not fit or it was off screen",
-	-- /fs diag's line for the chip's own render check: "Forever Sixty line: anchored, 212 of 280 wide, not truncated".
 	-- /fs diag's line for the chip's own render check, outside "Not working:".
 	diagChipShown = "Forever Sixty line: shown, nothing cut off",
 	diagChipShortened = "Forever Sixty line: shown, the line was shortened",
-	diagChipShortForm = "Forever Sixty line: shown, short form",
 	-- /fs diag with nothing broken.
 	diagAllWorking = "Everything is working.",
 	diagDataAddonMissingInfo = "The Forever Sixty Data addon is not installed; scores show once it is.",
-	diagNoClickOutside = "Clicking outside the path card does not close it on this client; press Escape.",
-	diagChipHidden = "Forever Sixty line: hidden. /fs chip brings it back.",
+	diagChipHidden = "Forever Sixty line: hidden. /fs options > Show the Forever Sixty line.",
 	diagChipCombat = "Forever Sixty line: hidden in combat",
-	-- L3.2 fix round 3: the ring and the strip replace it while the talent window is open.
-	diagChipTalents = "Forever Sixty line: hidden while the talent window is open",
 	diagChipCinematic = "Forever Sixty line: hidden during a cinematic",
 	diagDataAddonOld = "The Forever Sixty Data addon is too old. Update it from the site.",
 	diagDataAddonBroken = "The Forever Sixty Data addon's data is broken or missing. Reinstall it from the site.",
@@ -828,35 +780,8 @@ local L = {
 	diagBuildRefused = "the default build for %s does not load",
 	diagBuildUndecided = "spec undecided: %s Nothing loads until the player picks one.",
 	diagBuildSavedRefused = "the saved build does not load",
-	-- Below 10, and in the hover when the next point is not spendable yet: "Next at 22: Improved Tactical Mastery".
-	chipNextAt = "Next at %d: %s",
-	-- The hover's fuller form of that line, and the chip's line below level 8 (no name).
-	chipNextTalentAt = "Next talent at %d: %s",
-	-- The same for a talent the data cannot name.
-	chipNextTalentAtUnnamed = "Next talent at %d",
-	chipFirstTalent = "First talent at %d",
 	-- A talent the data has no name for, never its cell ("3:2").
 	chipNextTalent = "the next talent",
-	-- The upgrade line with the verb dropped, when the whole line will not fit.
-	chipEquipShort = "%s, %s",
-	-- The hover: the slot, the piece and what it replaces (or the empty slot it fills).
-	chipEquipTip = "%s: %s replaces %s, %s",
-	chipEquipTipEmpty = "%s: %s fills an empty slot, %s",
-	-- The hover's click hint for the state shown.
-	chipHintTalents = "Click: Open talents",
-	chipHintEquip = "Click: Equip",
-	chipHintList = "Click: Show the list",
-	chipHintPath = "Click: Pick a path",
-	chipHintChangePath = "Click: Change your path",
-	-- The upgrade's hint in combat; the chip line itself says "In combat".
-	chipHintInCombat = "Click: nothing until combat ends",
-	chipHintLastRaid = "Click: Show the line",
-	-- Right-click and /fs chip.
-	chipHiddenLine = "Forever Sixty line hidden until level %d. /fs chip brings it back.",
-	chipHiddenMaxLine = "Forever Sixty line hidden. /fs chip brings it back.",
-	chipShownLine = "Forever Sixty line shown.",
-	-- The badge past nine waiting.
-	chipWaitingMany = "9+",
 	-- The card's heading is the spec question (L.pathAsk); its foot the points split (L.pathSplit).
 	-- One line under each spec's button on the "pick a path" card: plain words,
 	-- at most eight, naming the weapons or the signature talents the tree is
@@ -1258,10 +1183,8 @@ L.lootMore = "and %d more"
 -- that answered nothing within the window).
 L.lootNoAddonHint = "No Forever Sixty addon seen on this member."
 L.lootCantScoreHint = "Their addon could not score this item (no weights, an unloaded item, or gear they cannot wear)."
--- The chip's line, "Loot: Sulfuras, Hand of Ragnaros · 3 of 9 answered", and its hover; /fs diag counts the same way.
-L.lootChip = "Loot: %s · %s"
+-- "3 of 9 answered" (LootCouncil.answeredText); /fs diag counts the same way.
 L.lootAnswered = "%d of %d answered"
-L.chipHintLoot = "Click: Show the list"
 -- /fs loot <item link>.
 L.lootUsage = "Type /fs loot, then shift-click an item, to see what it is worth to you."
 L.lootNotInGroup = "You are not in a group."
@@ -1332,8 +1255,6 @@ L.diagInboxKinds = {
 L.siteLoginSelf = "this character"
 L.siteLoginBuild = "a build for %s is waiting: %s. /fs opens it."
 L.siteLoginBuilds = "%d builds for %s are waiting: %s. /fs opens them."
--- The chip's hover when a build waits and none is followed (X.3).
-L.chipInboxWaiting = "A build from the site is waiting. Click to open."
 
 -- X.5: every time the addon prints is in the chat's own clock (Compat.clockText): 24-hour "18:20", or
 -- 12-hour "6:20 pm" ("8 pm" on the hour) where the client's chat timestamps (or its locale) are
@@ -1439,7 +1360,7 @@ L.diagOnboardingFailed = "The first-run tour failed once: %s"
 -- The title band's number: the Forever Score in its tier colour, then this unit in bone-dim.
 L.panelTabOpens = "Opens Gear."
 L.diagPanelState = "Panel: %s"
--- The chip's hover once the panel is wired: its click opens the panel.
+-- The chip's hover with nothing waiting and no tab to name.
 L.chipHintOpen = "Click: open Forever Sixty"
 -- The title band's meta line: "Level 24 Hunter".
 L.panelFact = "Level %d %s"
@@ -1619,7 +1540,7 @@ L.meLogCopied = "You copied your log of %s. Paste it in your browser."
 L.meAppLead = "The companion app on " .. SITE .. ". Press Ctrl+C, then paste it in your browser."
 L.meAppCopied = "You copied the companion app's address. Paste it in your browser."
 -- The chip's line after a raid night (spec 6): "Tuesday: median 74, best Golemagg".
-L.meRaidNight = "%s: median %d, best %s"
+L.meRaidNight = "%s: median %s, best %s"
 L.meRightNow = "Right now"
 L.meSim = "Your sim"
 L.meSimDps = "%.1f DPS"

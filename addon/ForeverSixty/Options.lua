@@ -241,8 +241,6 @@ function Options.handle(input)
 			return {}
 		end
 		return Options.helpLines()
-	elseif command == "chip" then
-		return { Chip.toggle() }
 	elseif command == "hello" then
 		-- The in-client check for contract 2: one hello on GUILD, or why it did not go.
 		local sent, reason = Options.sayHello()
@@ -254,7 +252,7 @@ function Options.handle(input)
 	elseif command == "link" then
 		return Options.link(rest)
 	elseif command == "ready" then
-		-- A dry run of the ready check, in chat and on the chip; the Officer tab's readiness shows it too.
+		-- A dry run of the ready check in chat; the Officer tab's readiness shows it too.
 		ReadyCheck.data = Options.data
 		return ReadyCheck.handleReady()
 	elseif command == "loot" then
@@ -447,8 +445,8 @@ Options.EVENTS = {
 	"PLAYER_TALENT_UPDATE", "TRAIT_CONFIG_UPDATED", "PLAYER_LEVEL_UP",
 	"PLAYER_REGEN_ENABLED", "ADDON_LOADED", "GET_ITEM_INFO_RECEIVED",
 	"CHAT_MSG_ADDON", "INSPECT_READY", "GROUP_ROSTER_UPDATE", "PLAYER_REGEN_DISABLED",
-	-- The chip (L3.1): bags for its upgrade line, the zone for "here for you", the
-	-- ready check for its raid check (L5.2: the group panel reads it and tells the chip).
+	-- The chip and the Gear tab: bags for the bag upgrade; the zone; the ready check (L5.2: the
+	-- group panel reads it).
 	"BAG_UPDATE_DELAYED", "ZONE_CHANGED_NEW_AREA", "READY_CHECK", "READY_CHECK_FINISHED",
 	-- The item tooltip (L3.3): its verdict is against what is worn; only its cache clears,
 	-- and the paper-doll and bag marks (L4.1) redraw.
@@ -546,8 +544,7 @@ function Options.onEvent(_, event, ...)
 		return
 	end
 	if event == "READY_CHECK" then
-		-- Every unit's auras read against the raid's needs; the chip gets its line (Chip.setRaidCheck
-		-- redraws it).
+		-- Every unit's auras read against the raid's needs; the summary goes to chat.
 		ReadyCheck.data = Options.data
 		ReadyCheck.onReadyCheck()
 		return
@@ -569,7 +566,7 @@ function Options.onEvent(_, event, ...)
 		return
 	end
 	if event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_REGEN_ENABLED" then
-		-- Combat: the chip hides (or fades and ignores the mouse) until it ends.
+		-- Combat: the chip hides (or says After combat and ignores the mouse) until it ends.
 		Inspect.onEvent(event, ...)
 		Chip.setCombat(event == "PLAYER_REGEN_DISABLED")
 		if event == "PLAYER_REGEN_DISABLED" then
@@ -597,17 +594,13 @@ function Options.onEvent(_, event, ...)
 		return
 	end
 	if event == "READY_CHECK_FINISHED" then
-		-- The ready check's line stays 30 s more, then goes (L5.2 ruling 3; Chip.finishRaidCheck).
+		-- The ready check stands 30 s more, then goes (L5.2 ruling 3).
 		ReadyCheck.onReadyCheckFinished()
 		return
 	end
 	if event == "GET_ITEM_INFO_RECEIVED" then
 		-- A loot? waiting on this item is scored now (L5.3); no work otherwise.
 		LootCouncil.onItemInfo((...))
-		-- The chip redraws once an item name it was waiting for arrives.
-		if Chip.isPending((...)) then
-			Chip.refresh(Options.data)
-		end
 		-- A target corner waiting on this item redraws (L4.1 fix round 1, M1); no work otherwise.
 		SlotMarks.onItemInfo((...))
 		-- A reward label or a roll line waiting on this item redraws (L4.2); no work otherwise.
@@ -639,14 +632,13 @@ function Options.onEvent(_, event, ...)
 		-- before anything reads one (Export.adoptKey).
 		Export.adoptKey(ForeverSixtyDB, Export.characterKey())
 		Follow.restore(Options.data)
-		-- A character that picked a path on the chip follows that spec's default.
+		-- A character that picked a spec follows that spec's default.
 		Follow.ensureDefault(Options.data, Chip.chosenPath())
 		-- The trait config may not answer yet: the ranks are read again once, below.
 		Options.defaultPending = true
 		Options.readInbox()
 		-- The band's picks, asked for once so the tooltip's next upgrade is ready.
 		ItemTooltip.warmPicks(Options.data)
-		MinimapButton.data = Options.data
 		MinimapButton.refresh()
 		MinimapButton.registerCompartment()
 		-- The Settings canvas: registered empty now, built the first time the client shows it.
@@ -740,10 +732,6 @@ function Options.register()
 	-- The first-run tour: its events now, its window on the first show.
 	Onboarding.data = Options.data
 	Onboarding.register()
-	MinimapButton.openPanel = function()
-		Panel.data = Options.data
-		return Panel.toggle("compartment")
-	end
 	-- The guild tab (L5.1): its button once the guild frame loads, its flyout on the first
 	-- click; it listens for the guild's snapshot! answers. Nothing on the guild frame is hooked.
 	GuildTab.data = Options.data
@@ -759,13 +747,10 @@ function Options.register()
 	-- The loot council helper (L5.3): it answers the master looter's loot? and lists the loot! answers.
 	LootCouncil.data = Options.data
 	LootCouncil.register()
-	-- The minimap button and the compartment entry: left-click opens the build dialog on its
-	-- paste tab, right-click the Settings page (the command list where it cannot open).
-	MinimapButton.open = function()
-		BuildDialog.data = Options.data
-		Hub.toggle()
-	end
-	MinimapButton.openSettings = Options.openSettings
+	-- The chip is the one launcher; the minimap button and the compartment entry are its twins (the same
+	-- click and hover). A right-click opens the Settings page (the command list where it cannot open).
+	Chip.openSettings = Options.openSettings
+	MinimapButton.launcher = Chip
 	-- A Settings switch redraws every surface; turning sharing on says hello at once.
 	SettingsPage.data = Options.data
 	SettingsPage.afterChange = function(key, value)

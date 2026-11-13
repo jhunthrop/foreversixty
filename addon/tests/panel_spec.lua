@@ -336,26 +336,6 @@ describe("Panel, the frame", function()
 		assert.are.same({ "CENTER", again.Change, "CENTER", 0, 0 }, own.points[#own.points])
 	end)
 
-	-- Owner, 2026-11-12: "the X on the window that pops up from the chip does not close it; you have to
-	-- click the chip again." The X hides the frame the chip's toggle reads, and the chip's next click
-	-- opens it again in one click.
-	it("closes through its X after the chip opened it, and the next chip click opens it again", function()
-		local Chip = require("Chip")
-		Panel.refresh = function() end
-		Panel.register()
-		assert.is_true(Chip.openPanel())
-		assert.is_true(Panel.isOpen())
-		local close = Panel.closeButton
-		assert.are.equal("x", close.foreverSixtyLabel.text)
-		assert.is_true(close:GetFrameLevel() > Panel.band:GetFrameLevel())
-		close:GetScript("OnClick")(close)
-		assert.is_false(Panel.isOpen())
-		assert.is_true(Chip.openPanel())
-		assert.is_true(Panel.isOpen())
-		assert.is_false(Chip.openPanel())
-		assert.is_false(Panel.isOpen())
-	end)
-
 	it("never opens in combat, and closes when combat starts", function()
 		require("Theme").inCombat = function() return true end
 		assert.is_false(Panel.open("chip"))

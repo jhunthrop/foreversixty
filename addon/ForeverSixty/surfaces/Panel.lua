@@ -886,9 +886,6 @@ function Panel.register()
 		return
 	end
 	Panel.registered = true
-	Chip.openPanel = function()
-		return Panel.toggle("chip")
-	end
 	local frame = CreateFrame("Frame")
 	Theme.noteFrame("Panel events", "login")
 	Theme.registerEvent(frame, "PLAYER_REGEN_DISABLED")

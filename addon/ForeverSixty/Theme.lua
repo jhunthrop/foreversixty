@@ -164,39 +164,24 @@ Theme.SIZES = {
 	buttonWidth = 150,
 	editBoxHeight = 72,
 	iconSize = 16,
-	--- The chip (spec section 4.1): square when idle, growing leftwards to
-	--- fit a line of 12 px text, up to `chipWide`. The 24 px icon sits
-	--- `chipIconInset` in from the edge; the text starts `chipTextGap` past
-	--- the icon and keeps the same gap on the right, so a line of width W
-	--- makes a chip W + `chipTextInset` wide.
+	--- The chip (design/specs/2026-11-13-addon-hub.md 6): 28 high, growing leftwards to fit a line of
+	--- 12 px text, up to `chipWide`. The 22 px crest sits `chipCrestInset` in from the edge; the text
+	--- starts `chipTextGap` past it and keeps 10 on the right, so a line of width W makes a chip
+	--- W + `chipTextInset` wide.
 	chip = 28,
 	chipWide = 280,
 	chipText = 12,
-	chipIcon = 24,
-	chipIconInset = 2,
-	chipTextGap = 6,
-	chipTextInset = 38,
-	--- The point state's ring, on its own raised frame round the icon: its
-	--- outer edge this far outside the icon, this thick. 4 out from an icon
-	--- inset 2 puts the 2 px ring just outside the chip's own 1 px edge, so
-	--- the chip's border never reads as gold.
+	chipCrest = 22,
+	chipCrestInset = 3,
+	chipTextGap = 8,
+	chipTextInset = 43,
+	--- The gap before the muted "+N" after the line, so it never reads as part of the answer.
+	chipMoreGap = 6,
+	--- The first-run pulse's ring round the chip: its outer edge this far outside the chip, this thick.
 	chipRingInset = 4,
 	chipRingThickness = 2,
 	--- How far left of the minimap's own left edge the chip sits by default.
 	chipMinimapGap = 12,
-	--- The "+2" badge straddling the chip's top-right corner, and its digits.
-	chipBadge = 14,
-	chipBadgeText = 10,
-	--- The gap under the chip before its "pick a path" card, the card's own
-	--- width and inner padding, and the space between one spec and the next.
-	--- The card's playstyle, tag and footer lines are `chipCardNote` px, and
-	--- they and the button labels start `chipCardLabelInset` in from the button's edge.
-	chipCardGap = 4,
-	chipCardWidth = 240,
-	chipCardNote = 11,
-	chipCardLabelInset = 8,
-	chipCardPadding = 12,
-	chipCardRowGap = 8,
 	minimapButton = 32,
 	minimapIcon = 20,
 	minimapRadius = 80,
@@ -227,10 +212,8 @@ Theme.SIZES = {
 	talentStripInset = 8,
 	talentStripPadding = 12,
 	talentStripGap = 8,
-	--- How long "Selected -- press Ctrl+C" stays, and how long "Build
-	--- complete" stays on the chip before it goes idle.
+	--- How long "Selected -- press Ctrl+C" stays.
 	copiedSeconds = 2,
-	completeSeconds = 5,
 	--- The rotation card's own row height: an icon-height line for the
 	--- ability's name and rank, a small-font line under it for the
 	--- condition, and the gap between them.
@@ -1918,7 +1901,11 @@ function Theme.showLines(owner, lines, anchor)
 	GameTooltip:SetOwner(owner, anchor or "ANCHOR_LEFT")
 	GameTooltip:ClearLines()
 	for _, line in ipairs(lines) do
-		if type(line) == "table" then
+		if type(line) == "table" and line.right ~= nil and type(GameTooltip.AddDoubleLine) == "function" then
+			-- A right-hand part in the tooltip's muted grey (the chip's hover: the tab an item opens).
+			local r, g, b = Theme.rgb(Theme.HEX.tooltipMuted)
+			GameTooltip:AddDoubleLine(line.text, line.right, 1, 1, 1, r, g, b)
+		elseif type(line) == "table" then
 			GameTooltip:AddLine(line.text, 1, 1, 1, line.wrap == true)
 		else
 			GameTooltip:AddLine(line)

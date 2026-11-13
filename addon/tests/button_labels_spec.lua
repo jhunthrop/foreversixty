@@ -362,12 +362,14 @@ describe("every visible button draws its label", function()
 		assert.are.same({}, blankLabels(state), "Reset positions again")
 	end)
 
-	it("labels the chip and its card", function()
+	-- Spec 6: the chip is one line and no card, never an empty crest.
+	it("labels the chip", function()
 		local Chip = modules.Chip
 		Chip.ensure()
 		Chip.refresh(DATA)
 		mock.renderFrame(state)
 		Chip.refresh(DATA)
 		assert.are.same({}, blankLabels(state))
+		assert.are_not.equal("", Chip.text:GetText())
 	end)
 end)

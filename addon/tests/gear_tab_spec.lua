@@ -335,7 +335,8 @@ describe("the Gear tab's model (GearTab)", function()
 		local items = GearTab.waitingFrom({ { link = "|Hitem:867|h[Gloves of Holy Might]|h", itemId = 867, delta = 11.24,
 			unit = "dps" }, { link = "item:2", delta = 1, unit = "dps" } })
 		assert.are.equal(1, #items)
-		assert.are.same({ "bag", "Equip Gloves of Holy Might +11.2" }, { items[1].key, items[1].line })
+		assert.are.same({ "bag", "Equip Gloves of Holy Might " .. require("Theme").inlineColor("success", "+11.2 DPS") },
+			{ items[1].key, items[1].line })
 		assert.are.same({}, GearTab.waitingFrom({}))
 		assert.are.same({}, GearTab.waitingFrom(nil))
 	end)

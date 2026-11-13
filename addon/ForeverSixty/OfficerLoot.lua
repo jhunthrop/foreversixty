@@ -17,7 +17,6 @@ local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 local LootCouncil = ns.LootCouncil or require("LootCouncil")
 local RaidDrops = ns.RaidDrops or require("RaidDrops")
 local GroupMembers = ns.GroupMembers or require("GroupMembers")
-local Chip = ns.Chip or require("Chip")
 
 local OfficerLoot = {}
 
@@ -185,15 +184,6 @@ function OfficerLoot.lootNow()
 	local data = OfficerLoot.data or ns.Data
 	return OfficerLoot.lootEntries(drops, GroupMembers.members(data), Theme.now(), OfficerLoot.resolvers(data),
 		Compat.itemName)
-end
-
---- The session as chat lines (the chip's click).
-function OfficerLoot.chatLines()
-	local lines = {}
-	for _, entry in ipairs(OfficerLoot.lootNow()) do
-		lines[#lines + 1] = entry.plain
-	end
-	return lines
 end
 
 -- The session, as the tab draws it ---------------------------------------------------------------------
@@ -397,10 +387,9 @@ function OfficerLoot.give(drop, row, best)
 	return "given"
 end
 
---- Anything the session shows changed (LootCouncil.onChange): the chip's line follows, a new drop for
+--- Anything the session shows changed (LootCouncil.onChange): a new drop for
 --- the master looter opens the window on the session (OfficerLoot.openSession), the tab redraws.
 function OfficerLoot.onLoot()
-	pcall(Chip.setLoot, LootCouncil.chipText())
 	local drops = LootCouncil.shown()
 	local newest = drops[#drops]
 	if newest ~= nil and newest.lootId ~= OfficerLoot.lastOpened and LootCouncil.isMasterLooter() then
@@ -412,14 +401,13 @@ function OfficerLoot.onLoot()
 	changed()
 end
 
---- Wires the session to LootCouncil and the chip, once (Options.register).
+--- Wires the session to LootCouncil, once (Options.register).
 function OfficerLoot.register()
 	LootCouncil.onChange = OfficerLoot.onLoot
 	LootCouncil.encounter = function()
 		local kill = RaidDrops.lastKill
 		return kill ~= nil and kill.name ~= "" and kill.name or nil
 	end
-	Chip.lootLines = OfficerLoot.chatLines
 end
 
 ns.OfficerLoot = OfficerLoot

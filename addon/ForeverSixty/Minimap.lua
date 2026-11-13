@@ -7,16 +7,15 @@
 -- and positioned against.
 --
 -- Where it sits is one angle in the prefs and two pure functions, so the
--- ring arithmetic is tested without a screen. What it does when clicked
--- is two injection points Options fills in, so this file never reaches
--- forward to whatever they open.
+-- ring arithmetic is tested without a screen. It is the chip's optional twin
+-- (design/specs/2026-11-13-addon-hub.md 6), off by default: a click and the
+-- hover are the launcher's own (MinimapButton.launcher, the chip, which Options
+-- injects), so the button, the compartment entry and the chip never disagree.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Theme = ns.Theme or require("Theme")
 local Prefs = ns.Prefs or require("Prefs")
-local Follow = ns.Follow or require("Follow")
-local Talents = ns.Talents or require("Talents")
 
 local MinimapButton = {}
 
@@ -54,37 +53,21 @@ function MinimapButton.angleAt(x, y)
 	return math.deg(atan2(y, x)) % 360
 end
 
---- The two click hints every launcher tooltip ends with, muted like the chip's hints:
---- left opens the build dialog, right the Settings page (L3.5 ruling 5).
-function MinimapButton.hintLines()
-	return {
-		Theme.inlineColor("tooltipMuted", L.minimapLeftClick),
-		Theme.inlineColor("tooltipMuted", L.minimapRightClick),
-	}
+--- Injection point: the launcher, { click(mouseButton), lines(dragHint) } (Options sets the chip).
+MinimapButton.launcher = nil
+
+--- What the launcher's hover lists, with `dragHint` (the button's own move, or none for the
+--- compartment entry); nil before Options has wired it.
+function MinimapButton.tooltipLines(dragHint)
+	local launcher = MinimapButton.launcher
+	return launcher ~= nil and launcher.lines(dragHint) or nil
 end
 
-local function withHints(lines)
-	for _, hint in ipairs(MinimapButton.hintLines()) do
-		lines[#lines + 1] = hint
+local function showTooltip(owner, dragHint)
+	local lines = MinimapButton.tooltipLines(dragHint)
+	if type(owner) == "table" and lines ~= nil then
+		Theme.showLines(owner, lines)
 	end
-	return lines
-end
-
-function MinimapButton.tooltipLines()
-	local build = Follow.build
-	local lines = { L.addonName }
-	if build == nil then
-		lines[#lines + 1] = L.minimapNoBuild
-		return withHints(lines)
-	end
-	lines[#lines + 1] = Follow.buildName(MinimapButton.data, build)
-	if MinimapButton.data ~= nil then
-		local ranks = Talents.readRanks(MinimapButton.data)
-		local progress = Follow.progress(build, ranks)
-		lines[#lines + 1] = string.format(L.minimapProgress, progress.matched, #build.order)
-		lines[#lines + 1] = Follow.line(MinimapButton.data, build, ranks)
-	end
-	return withHints(lines)
 end
 
 function MinimapButton.place(angle)
@@ -108,17 +91,10 @@ function MinimapButton.onUpdate(button)
 	return button
 end
 
---- Left opens the build dialog, right the Settings page: the two injection points Options
---- fills (nothing happens before it has).
+--- A click: the launcher's own (nothing happens before Options has wired it).
 local function launch(mouseButton)
-	if mouseButton == "RightButton" then
-		if MinimapButton.openSettings ~= nil then
-			MinimapButton.openSettings()
-		end
-		return
-	end
-	if MinimapButton.open ~= nil then
-		MinimapButton.open()
+	if MinimapButton.launcher ~= nil then
+		MinimapButton.launcher.click(mouseButton)
 	end
 end
 
@@ -143,25 +119,15 @@ function MinimapButton.clickedButton(...)
 	return "LeftButton"
 end
 
---- Injection point: the addon panel's toggle (Options sets it). The compartment entry opens the
---- panel on a left click (design/specs/2026-11-08-addon-ux.md 1.6), the Settings page on a right.
-MinimapButton.openPanel = nil
-
---- The compartment entry's click: the panel on a left click (the build dialog where no panel is
---- wired), the Settings page on a right.
+--- The compartment entry's click: the launcher's, with the mouse button the client handed over.
 function MinimapButton.onCompartmentClick(...)
-	local mouseButton = MinimapButton.clickedButton(...)
-	if mouseButton ~= "RightButton" and MinimapButton.openPanel ~= nil then
-		MinimapButton.openPanel()
-		return
-	end
-	launch(mouseButton)
+	launch(MinimapButton.clickedButton(...))
 end
 
 local function wire(button)
 	button:SetScript("OnClick", onClick)
 	button:SetScript("OnEnter", function(self)
-		Theme.showLines(self, MinimapButton.tooltipLines())
+		showTooltip(self, L.chipHintDragRing)
 	end)
 	button:SetScript("OnLeave", function()
 		Theme.hideTooltip()
@@ -240,9 +206,8 @@ function MinimapButton.hasCompartment()
 		and type(AddonCompartmentFrame.RegisterAddon) == "function"
 end
 
---- Registers the button's own open/settings behaviour with the
---- compartment. Idempotent, and silent (not an error) when the client has
---- none.
+--- Registers the launcher's click and hover with the compartment. Idempotent, and silent (not an
+--- error) when the client has none.
 function MinimapButton.registerCompartment()
 	if MinimapButton.compartmentRegistered then
 		return true
@@ -258,9 +223,7 @@ function MinimapButton.registerCompartment()
 		registerForAnyClick = true,
 		func = MinimapButton.onCompartmentClick,
 		funcOnEnter = function(owner)
-			if type(owner) == "table" then
-				Theme.showLines(owner, MinimapButton.tooltipLines())
-			end
+			showTooltip(owner, nil)
 		end,
 		funcOnLeave = function()
 			Theme.hideTooltip()

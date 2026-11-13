@@ -40,7 +40,7 @@ local function link(id, name, hex)
 end
 
 describe("LootCouncil", function()
-	local LootCouncil, OfficerLoot, Comms, Chip, Theme, Inspect
+	local LootCouncil, OfficerLoot, Comms, Theme, Inspect
 	local state, clock, sent, slots, units
 
 	--- The client with a hunter in a party of three. `opts`: { solo, raid, method (the loot method
@@ -196,7 +196,6 @@ describe("LootCouncil", function()
 		helper.load("ItemTooltip")
 		helper.load("PlayerTooltip")
 		Inspect = helper.load("Inspect")
-		Chip = helper.load("Chip")
 		LootCouncil = helper.load("LootCouncil")
 		helper.load("GroupMembers")
 		OfficerLoot = helper.load("OfficerLoot")
@@ -687,19 +686,17 @@ describe("LootCouncil", function()
 			assert.are.equal(string.format(L.lootMore, 12 - Theme.SIZES.lootMaxRows), entries[#entries].text)
 		end)
 
-		it("shows while the window is open and for 60 s after it closes, then clears with the chip's line", function()
+		it("shows while the window is open and for 60 s after it closes, then clears", function()
 			askAboutChest()
 			assert.is_true(LootCouncil.active())
 			LootCouncil.onLootClosed()
 			clock = 1059
 			assert.is_true(LootCouncil.active())
-			assert.is_not_nil(Chip.loot)
 			clock = 1061
 			assert.is_false(LootCouncil.active())
 			assert.are.same({}, OfficerLoot.lootNow())
 			mock.runTimers(state)
 			assert.are.same({}, LootCouncil.drops)
-			assert.is_nil(Chip.loot)
 		end)
 
 		it("keeps the region when a new window opens before the 60 s are up", function()
@@ -712,7 +709,7 @@ describe("LootCouncil", function()
 			assert.is_true(LootCouncil.open)
 		end)
 
-		it("opens the session once per new drop for the master looter, and the chip names the drop", function()
+		it("opens the session once per new drop for the master looter", function()
 			start({ slots = window({ 100, "Robes of Might" }) })
 			local opened = 0
 			OfficerLoot.openSession = function()
@@ -721,29 +718,12 @@ describe("LootCouncil", function()
 			LootCouncil.onLootOpened()
 			fromMember("1|loot!|100-1000|8.5|dps|60|0")
 			assert.are.equal(1, opened)
-			assert.are.equal("Loot: Robes of Might · 1 of 2 answered", Chip.loot)
+			assert.are.equal("1 of 2 answered", LootCouncil.answeredText(LootCouncil.shown()[1]))
 		end)
 
 		it("lists no drop before one is asked about and none out of a group", function()
 			start()
 			assert.are.same({}, OfficerLoot.lootNow())
-		end)
-
-		it("has the chip say 'Loot: <item> · N answers' as its state, and print the list on a click", function()
-			askAboutChest()
-			fromMember("1|loot!|100-1000|8.5|dps|60|0")
-			fromMember("1|loot!|100-1000|9.5|dps|60|0", "Elwen")
-			local text = "Loot: Robes of Might · 2 of 2 answered"
-			assert.are.equal(text, LootCouncil.chipText())
-			local model = Chip.model({ level = 60, classIcon = "crest", now = 100, clock = 0, shown = true,
-				combatHide = true, loot = Chip.loot, build = { order = {} }, progress = { matched = 0, total = 0 } })
-			assert.are.equal("loot", model.chosen.kind)
-			assert.are.equal(text, model.chosen.text)
-			assert.are.equal("loot", model.chosen.action)
-			assert.are.equal(L.chipHintLoot, model.chosen.hint)
-			Chip.printLoot()
-			assert.are.equal(Theme.chatLine(string.format(L.lootDrop, "|cffa335eeRobes of Might|r")), state.printed[1])
-			assert.are.equal(4, #state.printed)
 		end)
 
 		it("redraws when an item's name arrives while the region shows", function()
@@ -1104,23 +1084,6 @@ describe("LootCouncil", function()
 			assert.are.equal(2, planned)
 			-- Not another character's.
 			assert.are.same({}, Follow.messages(inbox, "us/Classic Beta PvP/Someone Else", "last_raid"))
-		end)
-
-		it("renders the chip's last-night line on 2026-10-13 and not three weeks on", function()
-			start()
-			local inbox = fixture()
-			local raid = require("Follow").messages(inbox, "us/Classic Beta PvP/Bow Jackzon", "last_raid")[1]
-			local Score = require("Score")
-			local function chosen(day)
-				return Chip.model({ level = 24, classIcon = "crest", now = 100, clock = Score.dateSeconds(day) + 12 * 3600,
-					shown = true, combatHide = true, lastRaid = raid, build = { order = { {} } },
-					progress = { matched = 1, total = 1 } }).chosen
-			end
-			local line = chosen("2026-10-13")
-			assert.are.equal("lastnight", line.kind)
-			assert.are.equal("Magmadar: 38th percentile, biggest loss: standing in fire", line.text)
-			assert.are.equal("Magmadar 38th · standing in fire", line.short)
-			assert.are.equal("idle", chosen("2026-11-12").kind)
 		end)
 
 		-- design/specs/2026-11-13-addon-hub.md 4.1: the window's Me tab draws the last raid boss by boss.

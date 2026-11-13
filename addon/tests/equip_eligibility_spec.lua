@@ -47,7 +47,7 @@ local function item(id, name, slot, extra)
 end
 
 describe("what the character can wear", function()
-	local Gear, Progress, Chip
+	local Gear, Progress
 	local state, tooltipReads
 
 	--- A warrior at `level` with the gauntlets, plain gloves and an unrelated item known to the client.
@@ -92,7 +92,7 @@ describe("what the character can wear", function()
 		helper.load("Follow")
 		Gear = helper.load("Gear")
 		Progress = helper.load("Progress")
-		Chip = helper.load("Chip")
+		helper.load("Chip")
 		helper.load("Locale")
 		return state
 	end
@@ -240,31 +240,6 @@ describe("what the character can wear", function()
 			assert.are.equal(Progress.roundedGain(gain, "dps"), picked)
 			-- Worth 8 score over the worn 8, at 0.4 DPS a point.
 			assert.is_true(math.abs(gain - 3.2) < 1e-9)
-		end)
-	end)
-
-	describe("the line's hover", function()
-		local function model(upgrade)
-			return Chip.model({ level = 21, build = { name = "Arms", order = { {} } },
-				progress = { matched = 1, total = 1 }, unspent = 0, classIcon = "crest-warrior", now = 100,
-				clock = 0, shown = true, combatHide = true, upgrades = { upgrade } })
-		end
-
-		it("names the slot and what the piece replaces", function()
-			start({ tips = {} })
-			local chosen = model({ name = "Plain Gloves", link = PLAIN, slot = "hands", slotLabel = "Hands",
-				replaces = "Gloves of the Fang", delta = 3.5, unit = "dps" }).chosen
-			assert.are.equal("upgrade", chosen.kind)
-			assert.are.equal("Hands: Plain Gloves replaces Gloves of the Fang, +3.5 DPS", chosen.tip)
-			-- The line itself keeps its words.
-			assert.are.equal("Equip Plain Gloves, +3.5 DPS", chosen.text)
-		end)
-
-		it("says an empty slot is filled", function()
-			start({ tips = {} })
-			local chosen = model({ name = "Plain Gloves", link = PLAIN, slot = "hands", slotLabel = "Hands",
-				delta = 3.5, unit = "dps" }).chosen
-			assert.are.equal("Hands: Plain Gloves fills an empty slot, +3.5 DPS", chosen.tip)
 		end)
 	end)
 end)

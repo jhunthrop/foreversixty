@@ -654,24 +654,12 @@ function Progress.pairPartner(hovered, wornMain, bagLinks, weights, dpsPerPoint,
 	}
 end
 
---- Whether a pick's `source` ("The Deadmines: Gilnid", or just "The
---- Deadmines") drops in the instance named `instanceName`.
-local function dropsIn(source, instanceName)
-	if type(source) ~= "string" then
-		return false
-	end
-	local prefix = instanceName .. ": "
-	return source == instanceName or source:sub(1, #prefix) == prefix
-end
-
 --- The band's BiS pick (Gear.pick's decoded table) still to get for each slot,
 --- under the pair rule: a pick worn in any slot is left out (a ring or trinket
 --- has two), and an item two slots share is offered once, on the first slot in
---- the slot order's. `keep(pick)` (optional) narrows the picks counted (the
---- instance's, for picksHere). { [slot] = pick }, empty with no spec, band or faction.
---- The empty paper-doll slot's hover (ItemTooltip.emptySlotSection) and picksHere
---- read this one rule.
-function Progress.slotPicks(data, spec, band, faction, equipped, keep)
+--- the slot order's. { [slot] = pick }, empty with no spec, band or faction. The
+--- empty paper-doll slot's hover (ItemTooltip.emptySlotSection) reads this one rule.
+function Progress.slotPicks(data, spec, band, faction, equipped)
 	local picks = {}
 	if spec == nil or band == nil or faction == nil then
 		return picks, {}
@@ -685,33 +673,13 @@ function Progress.slotPicks(data, spec, band, faction, equipped, keep)
 	local order = {}
 	for _, slot in ipairs(slotOrder(spec)) do
 		local pick = Gear.pick(spec, band, faction, slot, data)
-		if pick ~= nil and (keep == nil or keep(pick)) and not seen[pick.item_id] then
+		if pick ~= nil and not seen[pick.item_id] then
 			seen[pick.item_id] = true
 			picks[slot] = pick
 			order[#order + 1] = slot
 		end
 	end
 	return picks, order
-end
-
---- The band's BiS picks (Gear.pick) that drop in the instance the player is
---- standing in, each { slot, itemId, source, chance }, in slot order
---- (weapons first for a melee spec), under Progress.slotPicks' pair rule. The
---- chip's "here for you" line and the panel's targets region read this.
---- Empty with no band, faction or instance, or nothing that drops here.
-function Progress.picksHere(data, spec, band, faction, instanceName, equipped)
-	local here = {}
-	if type(instanceName) ~= "string" then
-		return here
-	end
-	local picks, order = Progress.slotPicks(data, spec, band, faction, equipped, function(pick)
-		return dropsIn(pick.source, instanceName)
-	end)
-	for _, slot in ipairs(order) do
-		local pick = picks[slot]
-		here[#here + 1] = { slot = slot, itemId = pick.item_id, source = pick.source, chance = pick.chance }
-	end
-	return here
 end
 
 -- One target per slot (L5.1 fix round 3) ------------------------------------------------------

@@ -147,6 +147,19 @@ describe("the addon's windows on the pixel grid", function()
 		_G.ForeverSixtyInbox = nil
 	end)
 
+	-- Spec 6: the chip's ground, edge, crest and ring on whole pixels, raid day and nothing waiting.
+	it("snaps every texture on the chip", function()
+		start(1440, 1)
+		local Chip = require("Chip")
+		Chip.refresh()
+		assert.is_true(Chip.frame:IsShown())
+		assert.are.same({}, unsnapped(state))
+		guildRaidDay(state)
+		Chip.refresh()
+		assert.are.same({}, unsnapped(state))
+		_G.ForeverSixtyInbox, _G.IsInGuild = nil, nil
+	end)
+
 	it("snaps every texture on the Forever Sixty window's Guild tab", function()
 		start(1440, 1)
 		local Hub = guildRaidDay(state)

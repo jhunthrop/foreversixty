@@ -343,15 +343,6 @@ describe("Options", function()
 		assert.is_truthy(lines[2]:find("^/fs copy: "))
 	end)
 
-	it("shows and hides the chip on /fs chip, saying so", function()
-		local Locale = require("Locale")
-		-- The mock's UnitLevel is 60, the cap: hidden until /fs chip.
-		assert.are.same({ Locale.chipHiddenMaxLine }, Options.handle("chip"))
-		assert.are.equal(0, require("Prefs").get("chip", "hiddenUntilLevel"))
-		assert.are.same({ Locale.chipShownLine }, Options.handle("chip"))
-		assert.are.equal("", require("Prefs").get("chip", "hiddenFor"))
-	end)
-
 	-- L3.7 item 21: a click staged in the talent window redraws an open panel too, once per frame.
 	it("redraws the character panel once for a burst of staged talent clicks", function()
 		local PanelTab = require("PanelTab")
@@ -373,8 +364,8 @@ describe("Options", function()
 		assert.are.equal(2, calls)
 	end)
 
-	-- L3.7 item 1: the hide and the chosen path belong to the character that made them.
-	describe("the chip's per-character hide and path (L3.7)", function()
+	-- L3.7 item 1: the chosen path belongs to the character that made it.
+	describe("the per-character path (L3.7)", function()
 		local Export, Chip, Prefs, real
 
 		local function becomes(key)
@@ -392,22 +383,6 @@ describe("Options", function()
 			Export.characterKey = real
 		end)
 
-		it("hides one character's chip without hiding another's, and keeps both hides", function()
-			becomes("us/Ashbringer/Main")
-			Options.handle("chip")
-			assert.is_true(Chip.isHidden())
-			becomes("us/Ashbringer/Alt")
-			assert.is_false(Chip.isHidden())
-			Options.handle("chip")
-			assert.is_true(Chip.isHidden())
-			becomes("us/Ashbringer/Main")
-			assert.is_true(Chip.isHidden())
-			Options.handle("chip")
-			assert.is_false(Chip.isHidden())
-			becomes("us/Ashbringer/Alt")
-			assert.is_true(Chip.isHidden())
-		end)
-
 		it("keeps one character's chosen path away from another's", function()
 			becomes("us/Ashbringer/Main")
 			Chip.choosePath("paladin-holy")
@@ -419,31 +394,14 @@ describe("Options", function()
 			assert.are.same({ spec = "paladin-holy" }, Chip.chosenPath())
 		end)
 
-		it("moves the old shared slot into its character's entry, once", function()
-			Prefs.set("chip", "hiddenUntilLevel", 70)
-			Prefs.set("chip", "hiddenFor", "us/Ashbringer/Main")
+		it("moves the old shared path slot into its character's entry, once", function()
 			Prefs.set("chip", "pathChosen", "paladin-holy")
 			Prefs.set("chip", "pathFor", "us/Ashbringer/Main")
 			becomes("us/Ashbringer/Alt")
-			assert.is_false(Chip.isHidden())
 			assert.is_nil(Chip.chosenPath())
 			becomes("us/Ashbringer/Main")
-			assert.is_true(Chip.isHidden())
 			assert.are.same({ spec = "paladin-holy" }, Chip.chosenPath())
-			assert.are.equal("", Prefs.get("chip", "hiddenFor"))
 			assert.are.equal("", Prefs.get("chip", "pathFor"))
-			assert.are.equal(70, Prefs.get("chip", "byCharacter")["us/Ashbringer/Main"].hiddenUntilLevel)
-		end)
-
-		it("lets the Settings switch bring back this character's chip only", function()
-			becomes("us/Ashbringer/Main")
-			Options.handle("chip")
-			becomes("us/Ashbringer/Alt")
-			Options.handle("chip")
-			require("Settings").apply("chip.shown", true)
-			assert.is_false(Chip.isHidden())
-			becomes("us/Ashbringer/Main")
-			assert.is_true(Chip.isHidden())
 		end)
 	end)
 
@@ -701,7 +659,7 @@ describe("Options", function()
 	-- design/specs/2026-11-08-addon-ux.md 1.6 and 4.2, 2026-11-13-addon-builds-window.md 5: the minimap
 	-- button and the window's binding toggle the window; the compartment entry and the panel's binding
 	-- toggle the addon panel.
-	it("has the minimap button and its binding toggle the window, the compartment and the keybind the panel",
+	it("makes the chip the minimap button's launcher, the window's binding toggle it, the keybind the panel",
 		function()
 		local Hub = require("Hub")
 		local Panel = require("Panel")
@@ -713,14 +671,14 @@ describe("Options", function()
 			calls[#calls + 1] = "panel " .. tostring(from)
 		end
 		Options.register()
-		require("Minimap").open()
-		require("Minimap").openPanel()
 		_G.FOREVERSIXTY_TOGGLE_WINDOW()
 		_G.FOREVERSIXTY_TOGGLE_HUB()
-		assert.are.same({ "window nil", "panel compartment", "panel key", "window nil" }, calls)
+		assert.are.same({ "panel key", "window nil" }, calls)
 		assert.are.equal(require("Locale").bindingHub, _G.BINDING_NAME_FOREVERSIXTY_HUB)
+		-- Spec 2026-11-13-addon-hub 6: the minimap button and the compartment are the chip's twins.
+		assert.are.equal(require("Chip"), require("Minimap").launcher)
 		-- Right-click is the Settings page's (L3.5), or the commands where it cannot open.
-		assert.are.equal(Options.openSettings, require("Minimap").openSettings)
+		assert.are.equal(Options.openSettings, require("Chip").openSettings)
 		-- The window falls back to the command list when it cannot show itself.
 		assert.are.equal(Options.showHint, Hub.fallback)
 		Options.showHint()
@@ -774,8 +732,7 @@ describe("Options", function()
 	-- Fix round 2 (the coordinator's N-keybind question): the binding opens the window through
 	-- the client's own code (TogglePlayerSpellsFrame, then the frame's Show), never through the
 	-- chip. The only signal the addon gets is the window's OnShow, which TalentGlow.watch hooks
-	-- when the window's load-on-demand addon arrives (ADDON_LOADED); the hook runs
-	-- TalentMarks.onShow, which redraws the chip, and Chip.inputs reads TalentGlow.openFrame().
+	-- when the window's load-on-demand addon arrives (ADDON_LOADED); the hook runs TalentMarks.onShow.
 	describe("the talent window opened by the client itself (the N keybind)", function()
 		local window
 
@@ -811,22 +768,13 @@ describe("Options", function()
 			assert.is_nil(window.scripts)
 		end)
 
-		it("hides the chip while the marks are on, and brings it back on close", function()
+		-- Spec 2026-11-13-addon-hub 6: the chip is the launcher; it stays up beside the open window.
+		it("keeps the chip up with the talent window open", function()
 			local Chip = require("Chip")
 			pressN()
-			assert.are.equal("talents", Chip.current.hiddenBy)
-			assert.is_true(Chip.hiddenByWindow())
-			assert.is_false(Chip.frame == nil or Chip.frame:IsShown())
-			closeWindow()
 			assert.is_true(Chip.current.visible)
 			assert.is_true(Chip.frame:IsShown())
-		end)
-
-		it("keeps the chip out while the marks are off", function()
-			local Chip = require("Chip")
-			require("Prefs").setFlag("talentMarks", false)
-			pressN()
-			assert.is_true(Chip.current.visible)
+			closeWindow()
 			assert.is_true(Chip.frame:IsShown())
 		end)
 	end)
@@ -845,14 +793,14 @@ describe("Options", function()
 			calls[#calls + 1] = Chip.combat == true
 		end
 		for _, event in ipairs({ "PLAYER_LEVEL_UP", "TRAIT_CONFIG_UPDATED", "BAG_UPDATE_DELAYED",
-			"ZONE_CHANGED_NEW_AREA", "READY_CHECK" }) do
+			"ZONE_CHANGED_NEW_AREA" }) do
 			Options.onEvent(Options.frame, event)
 		end
-		assert.are.equal(5, #calls)
+		assert.are.equal(4, #calls)
 		Options.onEvent(Options.frame, "PLAYER_REGEN_DISABLED")
-		assert.is_true(calls[6])
+		assert.is_true(calls[5])
 		Options.onEvent(Options.frame, "PLAYER_REGEN_ENABLED")
-		assert.is_false(calls[7])
+		assert.is_false(calls[6])
 		for _, event in ipairs(Options.EVENTS) do
 			if event == "READY_CHECK" or event == "BAG_UPDATE_DELAYED" or event == "ZONE_CHANGED_NEW_AREA" then
 				calls.found = (calls.found or 0) + 1
@@ -1237,17 +1185,6 @@ describe("Options", function()
 		assert.is_true(LootCouncil.registered)
 	end)
 
-	it("redraws the chip once on a ready check, through the ready check's hook", function()
-		local Chip = require("Chip")
-		local calls = 0
-		Chip.refresh = function()
-			calls = calls + 1
-		end
-		Options.onEvent(Options.frame, "READY_CHECK", "Leader", 35)
-		assert.are.equal(1, calls)
-	end)
-
-	-- L4.2 ruling 4: the chip's here line follows the instance entered.
 	it("redraws the chip on entering the world and on a zone change", function()
 		local Chip = require("Chip")
 		local calls = 0

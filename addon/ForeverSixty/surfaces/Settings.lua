@@ -26,7 +26,6 @@ local Prefs = ns.Prefs or require("Prefs")
 local Compat = ns.Compat or require("Compat")
 local Codec = ns.Codec or require("Codec")
 local MinimapButton = ns.Minimap or require("Minimap")
-local Chip = ns.Chip or require("Chip")
 local Score = ns.Score or require("Score")
 
 local SettingsPage = {}
@@ -117,18 +116,12 @@ function SettingsPage.read(key)
 	return Prefs.flag(key)
 end
 
---- What a switch shows: its pref, except that "Show the chip" reads off while a right-click
---- keeps the chip hidden, so the page never says on while the chip is away (fix 1, item 20).
+--- What a switch shows: its pref.
 function SettingsPage.checked(key)
-	local value = SettingsPage.read(key)
-	if key == "chip.shown" then
-		return value == true and not Chip.isHidden()
-	end
-	return value == true
+	return SettingsPage.read(key) == true
 end
 
---- Write a switch. "Show the chip" also clears a right-click hide either way: off is off,
---- and on means the chip shows (as /fs chip does). The minimap button follows at once.
+--- Write a switch. The minimap button follows at once.
 function SettingsPage.apply(key, value)
 	value = value and true or false
 	if key == "minimap.shown" then
@@ -140,9 +133,6 @@ function SettingsPage.apply(key, value)
 		Prefs.set(section, field, value)
 	else
 		Prefs.setFlag(key, value)
-	end
-	if key == "chip.shown" then
-		Chip.clearHidden()
 	end
 	if key == "tooltipsOnly" and value then
 		-- One step to quiet: the chip, the talent marks and the slot marks off; their own switches show
@@ -376,7 +366,7 @@ local function drawReset()
 end
 
 --- Reset positions: Prefs puts the placements back, and its onReset listeners move the
---- chip, the minimap button and the build dialog at once (Chip.place,
+--- chip, the minimap button and the window at once (Chip.place,
 --- MinimapButton.refresh, Hub.place). The button then says so for 2 s; a client
 --- that cannot wait says nothing rather than stick on "Positions reset".
 function SettingsPage.reset()

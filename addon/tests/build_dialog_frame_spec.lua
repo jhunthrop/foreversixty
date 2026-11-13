@@ -838,7 +838,7 @@ describe("BuildDialog, round 6 frame checks", function()
 
 	it("wires the sim's answer and the chip's next step into the copy tab (fix 6, 10)", function()
 		require("ItemTooltip").current = { tag = "sim" }
-		require("Chip").current = { chosen = { text = "Take Deflection (1 of 2)" } }
+		require("Chip").current = { opens = "builds", line = "Take Deflection (1 of 2)" }
 		BuildDialog.open("copy")
 		local copy = BuildDialog.copyBox
 		assert.are.equal(L.dialogSimDone, copy.sim:GetText())

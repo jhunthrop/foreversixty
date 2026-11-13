@@ -230,16 +230,23 @@ describe("SlotMarks", function()
 		end)
 	end)
 
+	--- The chip's line for a bag upgrade (spec 2026-11-13-addon-hub 6): the Gear tab's waiting item over the
+	--- marks' own list (Chip.scoredUpgrades), or nil with none.
+	local function chipLine()
+		SlotMarks.data = DATA
+		SlotMarks.state = nil
+		local marks = SlotMarks.current()
+		local item = require("GearTab").waitingFrom(marks.read.upgrades)[1]
+		return item ~= nil and item.line or nil
+	end
+
 	-- Ruling 1: the chip names the upgrade, the tooltip calls it an Upgrade, and the
 	-- slot and the bag item carry the arrow, all from one fixture.
 	describe("one verdict source", function()
 		it("agrees on a bag chest: the chip's line, the tooltip's verdict, the slot and the bag item", function()
 			start({ chest = WORN_CHEST }, { BAG_CHEST })
-			-- The chip: "Equip Bag Chest, +2.0 DPS" (10 Str x 2 = 20 AP x 0.1).
-			local input = Chip.inputs(DATA)
-			local model = Chip.model(input)
-			assert.are.equal("upgrade", model.chosen.kind)
-			assert.are.equal(string.format(L.chipEquip, "Bag Chest", string.format(L.chipGainDps, 2)), model.chosen.text)
+			-- The chip: "Equip Bag Chest +2.0" (10 Str x 2 = 20 AP x 0.1).
+			assert.are.equal("Equip Bag Chest " .. Theme.inlineColor("success", ItemTooltip.figure(2, "dps")), chipLine())
 			-- The tooltip on the bag item: the arrow, "Upgrade +2.0 DPS" (one chest slot: no "over").
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, BAG_CHEST))
 			assert.are.equal(Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, ItemTooltip.figure(2, "dps")),
@@ -262,8 +269,7 @@ describe("SlotMarks", function()
 		it("marks the main hand alone for a two-hander, net of both hands as the chip and tooltip say", function()
 			start({ main_hand = WORN_MAIN, off_hand = WORN_OFF }, { BAG_AXE })
 			-- 30 Str against 5 + 3: 22 x 2 = 44 AP x 0.1 = 4.4 DPS.
-			local model = Chip.model(Chip.inputs(DATA))
-			assert.are.equal(string.format(L.chipEquip, "Great Axe", string.format(L.chipGainDps, 4.4)), model.chosen.text)
+			assert.are.equal("Equip Great Axe " .. Theme.inlineColor("success", ItemTooltip.figure(4.4, "dps")), chipLine())
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, BAG_AXE))
 			assert.are.equal(Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, ItemTooltip.figure(4.4, "dps")),
 				lines[1].text)
@@ -279,8 +285,7 @@ describe("SlotMarks", function()
 		-- Ruling 4: Rules.canEquip gates the chip's list, so neither mark shows.
 		it("never marks a plate chest at 21: no chip line, a refusal on the tooltip, no slot or bag mark", function()
 			start({ chest = WORN_CHEST }, { PLATE_CHEST })
-			local model = Chip.model(Chip.inputs(DATA))
-			assert.are_not.equal("upgrade", model.chosen.kind)
+			assert.is_nil(chipLine())
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, PLATE_CHEST))
 			assert.are.equal(string.format(L.tooltipNotUntil, "Plate armor", 40), lines[1].text)
 			local marks = SlotMarks.compute(DATA)
@@ -360,11 +365,7 @@ describe("SlotMarks", function()
 			assert.are.same({}, marks.arrows)
 			assert.are.same({}, marks.links)
 			assert.are.same({}, marks.targets)
-			local input = Chip.inputs(DATA)
-			assert.are.equal(20, input.picksStart)
-			local model = Chip.model(input)
-			assert.are_not.equal("upgrade", model.chosen.kind)
-			assert.are_not.equal("here", model.chosen.kind)
+			assert.is_nil(chipLine())
 			local chest, legs = slotButton("CharacterChestSlot"), slotButton("CharacterLegsSlot")
 			SlotMarks.drawPaperDoll()
 			assert.is_false(arrowOn(chest))
@@ -391,7 +392,6 @@ describe("SlotMarks", function()
 		it("serves the same marks from level 20", function()
 			start({ chest = WORN_CHEST }, { BAG_CHEST }, nil, 20)
 			assert.are.same({ chest = true }, SlotMarks.compute(DATA).arrows)
-			assert.is_nil(Chip.inputs(DATA).picksStart)
 		end)
 	end)
 
@@ -1150,9 +1150,7 @@ describe("SlotMarks", function()
 		it("marks a bag item that fills an empty slot: the chip, the tooltip and both arrows", function()
 			start({ chest = WORN_CHEST }, { THIN_LEGS })
 			-- 4 Str x 2 = 8 points x 0.1 = 0.8 DPS, under the 1.0 floor.
-			local model = Chip.model(Chip.inputs(DATA))
-			assert.are.equal(string.format(L.chipEquip, "Thin Leggings", string.format(L.chipGainDps, 0.8)),
-				model.chosen.text)
+			assert.are.equal("Equip Thin Leggings " .. Theme.inlineColor("success", ItemTooltip.figure(0.8, "dps")), chipLine())
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, THIN_LEGS))
 			assert.are.same({ text = Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, ItemTooltip.figure(0.8, "dps")),
 				color = "tooltipGreen" }, { text = lines[1].text, color = lines[1].color })
@@ -1393,7 +1391,6 @@ describe("SlotMarks", function()
 			Prefs.setFlag("slotMarks", true)
 			SlotMarks.disabled = true
 			assert.is_false(SlotMarks.shown())
-			assert.is_nil(Chip.inputs(DATA).marksLegend)
 		end)
 
 		-- 4: the bracket clears the quality border, with a shadow behind the gold.

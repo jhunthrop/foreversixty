@@ -36,7 +36,7 @@ describe("the chip's talent click", function()
 		end
 		Chip = helper.load("Chip")
 		Chip.ensure()
-		Chip.current = { chosen = { action = "talents" }, mouse = true }
+		Chip.current = { talent = true, mouse = true }
 	end
 
 	--- Whether `frame` was told `method`, after its call number `from` when given.
@@ -100,25 +100,25 @@ describe("the chip's talent click", function()
 			assert.are.equal(_G.UIParent, Chip.talentCover.button.parent)
 		end)
 
-		it("covers the chip while it offers the talent window", function()
+		it("covers the chip while its line is a point to spend", function()
 			Chip.syncTalentButton()
 			assert.is_true(Chip.talentCover.button:IsShown())
 			assert.is_true(called(Chip.talentCover.button, "SetAllPoints"))
 		end)
 
-		it("goes away when the chip offers something else, is hidden or ignores the mouse", function()
+		it("goes away when the line is something else, the chip is hidden or ignores the mouse", function()
 			for _, change in ipairs({
 				function()
-					Chip.current = { chosen = { action = "inbox" }, mouse = true }
+					Chip.current = { talent = false, mouse = true }
 				end,
 				function()
 					Chip.frame:Hide()
 				end,
 				function()
-					Chip.current = { chosen = { action = "talents" }, mouse = false }
+					Chip.current = { talent = true, mouse = false }
 				end,
 			}) do
-				Chip.current = { chosen = { action = "talents" }, mouse = true }
+				Chip.current = { talent = true, mouse = true }
 				Chip.frame:Show()
 				Chip.syncTalentButton()
 				assert.is_true(Chip.talentCover.button:IsShown())
@@ -145,7 +145,7 @@ describe("the chip's talent click", function()
 			lockdown(true)
 			local before = #button.calls
 			Chip.syncTalentButton()
-			Chip.current = { chosen = { action = "talents" }, mouse = true }
+			Chip.current = { talent = true, mouse = true }
 			Chip.syncTalentButton()
 			assert.are.equal(before, #button.calls)
 			lockdown(false)
@@ -160,16 +160,17 @@ describe("the chip's talent click", function()
 			assert.is_nil(Chip.talentCover.button)
 		end)
 
-		it("keeps the right click for the chip, and takes no secure action for it", function()
+		-- Spec 6: the click opens the tab the line names. The client's own left click opened the talent
+		-- window; the chip's click follows it (the Builds tab). The right click has no secure action.
+		it("follows the client's left click with the chip's own, and keeps the right click the chip's", function()
 			Chip.syncTalentButton()
 			local clicks = {}
-			Chip.onClick = function(_, mouseButton)
+			Chip.click = function(mouseButton)
 				clicks[#clicks + 1] = mouseButton
 			end
 			Chip.talentCover.button.scripts.PostClick(Chip.talentCover.button, "LeftButton")
-			assert.are.same({}, clicks)
 			Chip.talentCover.button.scripts.PostClick(Chip.talentCover.button, "RightButton")
-			assert.are.same({ "RightButton" }, clicks)
+			assert.are.same({ "LeftButton", "RightButton" }, clicks)
 		end)
 
 		it("hands hover and shift-drag to the chip's own frame", function()
@@ -191,24 +192,6 @@ describe("the chip's talent click", function()
 			assert.are.equal(Chip.frame, seen.enter)
 			assert.are.equal(Chip.frame, seen.drag)
 			assert.are.equal(Chip.frame, seen.stop)
-		end)
-	end)
-
-	describe("with the panel registered", function()
-		before_each(function()
-			start()
-		end)
-
-		it("leaves the chip's click to the panel: no cover over the chip", function()
-			local panels = 0
-			Chip.openPanel = function()
-				panels = panels + 1
-			end
-			Chip.syncTalentButton()
-			assert.is_nil(Chip.talentCover.button)
-			Chip.frame.scripts.OnClick(Chip.frame, "LeftButton")
-			assert.are.equal(1, panels)
-			assert.are.equal(0, opened)
 		end)
 	end)
 
@@ -271,7 +254,7 @@ describe("the chip's talent click", function()
 			start(true)
 		end)
 
-		it("builds no secure button and opens the window as before", function()
+		it("builds no secure button and opens the window from the chip's own click", function()
 			Chip.syncTalentButton()
 			assert.is_nil(Chip.talentCover.button)
 			Chip.frame.scripts.OnClick(Chip.frame, "LeftButton")

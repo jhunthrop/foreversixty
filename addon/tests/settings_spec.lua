@@ -4,7 +4,7 @@
 -- command list (one Locale table; /fs help adds the testers line), /fs options, the two
 -- data lines and the title's warning line, Reset's feedback, the page's layout numbers (rows
 -- measured from their hints), the compartment's click, the settings registration and open,
--- the talent-marks switch (and the chip it leaves out), and the hello and snapshot answers
+-- the talent-marks switch, and the hello and snapshot answers
 -- that "Share my build with my guild" stops. No frames: the canvas itself is
 -- settings_frame_spec's.
 local helper = require("spec_helper")
@@ -85,9 +85,8 @@ describe("SettingsPage, the switches", function()
 			{ "Marks on the talent window", "Numbers your build in order and rings the next talent." },
 			{ "Score badges in chat", "In LFG, Trade, guild chat and whispers." },
 			{ "Show the Forever Sixty line", "Shift-drag moves it." },
-			{ "Hide the Forever Sixty line in combat", "Off: it fades to 25% instead." },
-			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
-				.. "Off: type /fs options or use Options > AddOns." },
+			{ "Hide the Forever Sixty line in combat", "When off, it fades to 25% and reads After combat." },
+			{ "Show the minimap button", "Adds a button on the minimap's edge that works like the line." },
 			{ "Share my build with my guild", "Guildmates see your level, spec, build and gear gap." },
 			{ "Show my Forever Score to others", "Applies after the companion's next upload." },
 			{ "Save my character for the companion app", "Written at logout for the companion app." },
@@ -173,37 +172,14 @@ describe("SettingsPage, the switches", function()
 		assert.is_true(SettingsPage.read("tooltip"))
 	end)
 
-	it("shows Show the Forever Sixty line off while a right-click keeps the chip hidden (fix 1, item 20)", function()
-		local Chip = require("Chip")
-		Chip.isHidden = function()
-			return true
-		end
-		assert.is_true(SettingsPage.read("chip.shown"))
-		assert.is_false(SettingsPage.checked("chip.shown"))
-		Chip.isHidden = function()
-			return false
-		end
-		assert.is_true(SettingsPage.checked("chip.shown"))
-		assert.is_true(SettingsPage.checked("tooltip"))
-	end)
-
-	it("turns the chip off and clears a right-click hide with it", function()
-		Prefs.set("chip", "hiddenUntilLevel", 31)
-		Prefs.set("chip", "hiddenFor", "US/Ashbringer/Bob")
+	-- Spec 2026-11-13-addon-hub 6: the switch is the one way to hide the chip; its value is the pref.
+	it("turns the chip off and on with its pref alone", function()
 		SettingsPage.apply("chip.shown", false)
 		assert.is_false(Prefs.get("chip", "shown"))
-		assert.are.equal(0, Prefs.get("chip", "hiddenUntilLevel"))
-		assert.are.equal("", Prefs.get("chip", "hiddenFor"))
-	end)
-
-	it("turns the chip on and clears a right-click hide, so the switch tells the truth", function()
-		Prefs.set("chip", "shown", false)
-		Prefs.set("chip", "hiddenUntilLevel", 31)
-		Prefs.set("chip", "hiddenFor", "US/Ashbringer/Bob")
+		assert.is_false(SettingsPage.checked("chip.shown"))
 		SettingsPage.apply("chip.shown", true)
 		assert.is_true(Prefs.get("chip", "shown"))
-		assert.are.equal(0, Prefs.get("chip", "hiddenUntilLevel"))
-		assert.are.equal("", Prefs.get("chip", "hiddenFor"))
+		assert.is_true(SettingsPage.checked("chip.shown"))
 	end)
 
 	it("writes the flags and the combat choice as given", function()
@@ -251,8 +227,8 @@ describe("SettingsPage, the command list", function()
 		SettingsPage = helper.load("Settings")
 	end)
 
-	it("is the eleven player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
-		assert.are.equal(11, #L.settingsCommands)
+	it("is the ten player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
+		assert.are.equal(10, #L.settingsCommands)
 		local options = 0
 		for _, line in ipairs(L.settingsCommands) do
 			assert.is_truthy(line:find("^/fs[%a, ]*: "), line)
@@ -264,20 +240,19 @@ describe("SettingsPage, the command list", function()
 		assert.is_truthy(L.settingsCommands[1]:find("^/fs: "))
 		assert.is_truthy(L.settingsCommands[2]:find("^/fs copy: "))
 		assert.is_truthy(L.settingsCommands[5]:find("^/fs tour: "))
-		assert.is_truthy(L.settingsCommands[11]:find("^/fs help: "))
+		assert.is_truthy(L.settingsCommands[10]:find("^/fs help: "))
 	end)
 
 	-- Fix round 2, item 10: the list word for word. The hub (spec 2026-11-13-addon-hub 10): /fs opens the
 	-- window and a tab's name opens that tab; /fs job is gone; /fs build and /fs inspect are the testers';
-	-- /fs chip stays until the chip lane replaces it; /fs group and /fs floor went with the Officer lane.
-	it("words the eleven player commands as ruled", function()
+	-- /fs chip went with the chip lane, /fs group and /fs floor with the Officer lane.
+	it("words the ten player commands as ruled", function()
 		assert.are.same({
 			"/fs: open the Forever Sixty window",
 			"/fs copy: copy my character for the site",
 			"/fs me, builds, gear, rotation, guild, officer: open that tab",
 			"/fs link: copy a player's site page",
 			"/fs tour: see the tour again",
-			"/fs chip: show or hide the Forever Sixty line",
 				"/fs ready: check flasks, food and buffs now",
 			"/fs loot: what an item is worth to you",
 				"/fs options: open the settings page",
@@ -618,7 +593,7 @@ describe("SettingsPage, the layout", function()
 		assert.are.equal(5, SettingsPage.COMMANDS_SHOWN)
 		assert.are.equal("/fs help: all the commands", L.settingsCommandsMore)
 		-- /fs help still lists every one of them.
-		assert.are.equal(11, #L.settingsCommands)
+		assert.are.equal(10, #L.settingsCommands)
 	end)
 
 	it("sits the page on an opaque backdrop 8 px inside the canvas, hints in the body token", function()
@@ -761,20 +736,12 @@ describe("MinimapButton, the compartment's click", function()
 		assert.are.equal("LeftButton", MinimapButton.clickedButton())
 	end)
 
-	it("opens the dialog on a left click and the settings on a right click", function()
+	it("hands a left and a right compartment click to the launcher", function()
 		local calls = {}
-		MinimapButton.open = function() calls[#calls + 1] = "open" end
-		MinimapButton.openSettings = function() calls[#calls + 1] = "settings" end
+		MinimapButton.launcher = { click = function(mouseButton) calls[#calls + 1] = mouseButton end }
 		MinimapButton.onCompartmentClick("ForeverSixty", "LeftButton")
 		MinimapButton.onCompartmentClick("ForeverSixty", "RightButton")
-		assert.are.same({ "open", "settings" }, calls)
-	end)
-
-	it("ends its tooltip with the two click hints, muted", function()
-		local L, Theme = require("Locale"), require("Theme")
-		local lines = MinimapButton.tooltipLines()
-		assert.are.equal(Theme.inlineColor("tooltipMuted", L.minimapLeftClick), lines[#lines - 1])
-		assert.are.equal(Theme.inlineColor("tooltipMuted", L.minimapRightClick), lines[#lines])
+		assert.are.same({ "LeftButton", "RightButton" }, calls)
 	end)
 end)
 
@@ -889,35 +856,6 @@ describe("TalentMarks, the Marks on the talent window switch", function()
 
 	it("is on by default", function()
 		assert.is_true(TalentMarks.enabled())
-	end)
-
-	it("lets the chip stay out while the window carries no marks", function()
-		local Chip = require("Chip")
-		assert.is_true(Chip.windowMarks())
-		Prefs.setFlag("talentMarks", false)
-		assert.is_false(Chip.windowMarks())
-	end)
-
-	-- Fix round 2, item 10: the chip's own inputs, with the talent window open.
-	it("keeps the chip out with the talent window open and the marks off", function()
-		local mock = require("wow_mock")
-		mock.install({ level = 21 })
-		local ok, failure = pcall(function()
-			-- A chip and marks on this spec's TalentGlow, the marks handing the chip windowMarks.
-			local Chip = helper.load("Chip")
-			helper.load("TalentMarks")
-			TalentGlow.openFrame = function()
-				return {}, "PlayerSpellsFrame"
-			end
-			assert.is_true(Chip.inputs({}).talentsOpen)
-			assert.are.equal("talents", Chip.model(Chip.inputs({})).hiddenBy)
-			Prefs.setFlag("talentMarks", false)
-			local input = Chip.inputs({})
-			assert.is_false(input.talentsOpen)
-			assert.is_true(Chip.model(input).visible)
-		end)
-		mock.uninstall()
-		assert(ok, failure)
 	end)
 end)
 

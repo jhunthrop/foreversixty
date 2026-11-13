@@ -468,7 +468,7 @@ describe("Progress.bagUpgrades", function()
 	end)
 end)
 
-describe("Progress.picksHere", function()
+describe("Progress.slotPicks", function()
 	-- Packed picks as Data.lua stores them (contract 1), under the real data's
 	-- numeric band key.
 	local HERE_DATA = {
@@ -489,56 +489,8 @@ describe("Progress.picksHere", function()
 		},
 	}
 
-	it("lists the band's picks that drop here, weapons first for a melee spec", function()
-		local picks = Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Deadmines", {})
-		assert.are.same({
-			{ slot = "main_hand", itemId = 5187, source = "The Deadmines: Rhahk'Zor" },
-			{ slot = "head", itemId = 10399, source = "The Deadmines: Edwin VanCleef" },
-			{ slot = "legs", itemId = 6087, source = "The Deadmines" },
-			{ slot = "finger1", itemId = 1156, source = "The Deadmines: Gilnid" },
-		}, picks)
-	end)
-
-	-- L4.2 ruling 4: the chip's click prints each pick with its boss and its chance.
-	it("carries each pick's drop chance", function()
-		local data = { bis = { ["warrior-arms"] = { [20] = { alliance = {
-			main_hand = "7230|D|The Deadmines: Mr. Smite|0.2",
-			legs = "6087|D|The Deadmines",
-		} } } } }
-		local picks = Progress.picksHere(data, "warrior-arms", 20, "alliance", "The Deadmines", {})
-		assert.are.same({
-			{ slot = "main_hand", itemId = 7230, source = "The Deadmines: Mr. Smite", chance = 0.2 },
-			{ slot = "legs", itemId = 6087, source = "The Deadmines" },
-		}, picks)
-	end)
-
-	it("leaves out a pick worn in the other slot of a pair", function()
-		local picks = Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Deadmines",
-			{ finger2 = { itemId = 1156 } })
-		for _, pick in ipairs(picks) do
-			assert.are_not.equal(1156, pick.itemId)
-		end
-		assert.are.equal(3, #picks)
-	end)
-
-	it("leaves out a slot where the pick is already worn", function()
-		local equipped = { main_hand = { itemId = 5187 }, head = { itemId = 1 } }
-		local picks = Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Deadmines", equipped)
-		assert.are.equal("head", picks[1].slot)
-		assert.are.equal(3, #picks)
-	end)
-
-	it("lists nothing for another instance's name, a missing band, or no instance", function()
-		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Dead", {}))
-		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", 30, "alliance", "The Deadmines", {}))
-		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", 20, "horde", "The Deadmines", {}))
-		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", nil, {}))
-		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", nil, "alliance", "The Deadmines", {}))
-	end)
-
-	-- L4.1 ruling 5: an empty paper-doll slot's pick follows picksHere's pair rule,
-	-- read from the one function both call.
-	describe("Progress.slotPicks", function()
+	-- L4.1 ruling 5: an empty paper-doll slot's pick follows the pair rule.
+	describe("the pair rule", function()
 		it("gives each slot the band's pick, wherever it drops", function()
 			local picks = Progress.slotPicks(HERE_DATA, "warrior-arms", 20, "alliance", {})
 			assert.are.equal(2317, picks.chest.item_id)

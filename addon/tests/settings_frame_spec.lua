@@ -509,17 +509,6 @@ describe("SettingsPage, the canvas", function()
 		assert.is_false(toggleFor("autoSave").checked)
 	end)
 
-	it("reads Show the Forever Sixty line off while a right-click hides the chip (fix 1, item 20)", function()
-		start()
-		SettingsPage.register()
-		show()
-		require("Chip").isHidden = function()
-			return true
-		end
-		SettingsPage.panel:GetScript("OnShow")(SettingsPage.panel)
-		assert.is_false(toggleFor("chip.shown").checked)
-	end)
-
 	it("puts the placements back on Reset positions, says so and waits 2 s (fix 1, item 13)", function()
 		start()
 		SettingsPage.register()

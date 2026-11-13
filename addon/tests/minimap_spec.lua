@@ -2,19 +2,8 @@ local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
 
-local DATA = {
-	build = "1.60.1.69893",
-	classes = { paladin = { tabs = {
-		{ name = "Holy", talents = { { name = "Divine Strength", tier = 1, column = 1, maxRank = 5 } } },
-		{ name = "Protection", talents = {} },
-		{ name = "Retribution", talents = {} },
-	} } },
-	weights = {},
-}
-local CODE = "FSB1:1.60.1.69893:paladin:111:"
-
 describe("Minimap", function()
-	local Theme, Prefs, Follow, Button, state
+	local Theme, Prefs, Button, state
 
 	local function start(install)
 		state = mock.install(install or {})
@@ -22,7 +11,6 @@ describe("Minimap", function()
 		Theme.reset()
 		helper.load("Widgets")
 		Prefs = helper.load("Prefs")
-		Follow = helper.load("Follow")
 		Button = helper.load("Minimap")
 		-- The button is off for a new install (design/specs/2026-11-08-addon-ux.md 1.6); these
 		-- examples are about a player who turned it on.
@@ -120,74 +108,45 @@ describe("Minimap", function()
 		assert.is_true(math.abs(call[5] - Theme.SIZES.minimapRadius) < 1e-9)
 	end)
 
-	it("opens the window on a left click", function()
+	-- Spec 6: the button is the chip's twin; its click and hover are the launcher's own.
+	--- A launcher that records what it was asked.
+	local function launcher()
+		local seen = { clicks = {}, drags = {} }
+		Button.launcher = {
+			click = function(mouseButton)
+				seen.clicks[#seen.clicks + 1] = mouseButton
+			end,
+			lines = function(dragHint)
+				seen.drags[#seen.drags + 1] = dragHint or "none"
+				return { L.addonName, "Equip Gloves of Holy Might +11.2" }
+			end,
+		}
+		return seen
+	end
+
+	it("hands a left and a right click to the launcher", function()
 		start()
-		local opened = 0
-		Button.open = function() opened = opened + 1 end
+		local seen = launcher()
 		Button.refresh()
 		Button.button:GetScript("OnClick")(Button.button, "LeftButton")
-		assert.are.equal(1, opened)
-	end)
-
-	it("opens the settings on a right click", function()
-		start()
-		local settings = 0
-		Button.open = function() end
-		Button.openSettings = function() settings = settings + 1 end
-		Button.refresh()
 		Button.button:GetScript("OnClick")(Button.button, "RightButton")
-		assert.are.equal(1, settings)
+		assert.are.same({ "LeftButton", "RightButton" }, seen.clicks)
 	end)
 
-	it("does not call open on a right click", function()
-		start()
-		local opened = 0
-		Button.open = function() opened = opened + 1 end
-		Button.openSettings = function() end
-		Button.refresh()
-		Button.button:GetScript("OnClick")(Button.button, "RightButton")
-		assert.are.equal(0, opened)
-	end)
-
-	it("does not error on a click before the window has been wired up", function()
+	it("does not error on a click or a hover before the launcher is wired up", function()
 		start()
 		Button.refresh()
 		assert.has_no.errors(function()
 			Button.button:GetScript("OnClick")(Button.button, "LeftButton")
-		end)
-	end)
-
-	it("does not error on a right click before settings has been wired up", function()
-		start()
-		Button.refresh()
-		assert.has_no.errors(function()
 			Button.button:GetScript("OnClick")(Button.button, "RightButton")
+			Button.button:GetScript("OnEnter")(Button.button)
 		end)
+		assert.is_nil(Button.tooltipLines(nil))
 	end)
 
-	it("names the addon and the loaded build in the tooltip", function()
+	it("shows the launcher's hover with its own move on enter, and hides it on leave", function()
 		start()
-		assert(Follow.load(CODE, DATA, "Deep Holy"))
-		local lines = Button.tooltipLines()
-		assert.are.equal(L.addonName, lines[1])
-		assert.are.equal("Deep Holy", lines[2])
-		assert.are.equal(Button.hintLines()[1], lines[3])
-		assert.are.equal(Button.hintLines()[2], lines[4])
-	end)
-
-	it("says no build is loaded rather than leaving the line blank", function()
-		start()
-		assert.are.equal(L.minimapNoBuild, Button.tooltipLines()[2])
-	end)
-
-	it("names an unnamed pasted build after its class", function()
-		start()
-		assert(Follow.load(CODE, DATA, nil))
-		assert.are.equal(string.format(L.followBuildName, "Paladin"), Button.tooltipLines()[2])
-	end)
-
-	it("shows the tooltip lines on enter and hides it on leave", function()
-		start()
+		local seen = launcher()
 		Button.refresh()
 		Theme.showLines = function(owner, lines)
 			state.shownOwner, state.shownLines = owner, lines
@@ -198,9 +157,19 @@ describe("Minimap", function()
 		end
 		Button.button:GetScript("OnEnter")(Button.button)
 		assert.are.equal(Button.button, state.shownOwner)
-		assert.are.equal(Button.tooltipLines()[1], state.shownLines[1])
+		assert.are.same({ L.addonName, "Equip Gloves of Holy Might +11.2" }, state.shownLines)
+		assert.are.same({ L.chipHintDragRing }, seen.drags)
 		Button.button:GetScript("OnLeave")(Button.button)
 		assert.is_true(state.hid)
+	end)
+
+	it("hands a compartment click to the launcher with the mouse button the client named", function()
+		start()
+		local seen = launcher()
+		Button.onCompartmentClick("ForeverSixty", "RightButton")
+		Button.onCompartmentClick(nil, { buttonName = "LeftButton" })
+		Button.onCompartmentClick()
+		assert.are.same({ "RightButton", "LeftButton", "LeftButton" }, seen.clicks)
 	end)
 
 	it("records the angle the player dragged it to", function()
@@ -268,30 +237,6 @@ describe("Minimap", function()
 		assert.are.equal(32, header:byte(17))
 	end)
 
-	it("shows build progress in the tooltip once data is wired up", function()
-		start()
-		Button.data = DATA
-		assert(Follow.load(CODE, DATA))
-		local lines = Button.tooltipLines()
-		assert.are.equal(string.format(require("Locale").minimapProgress, 0, 1), lines[3])
-	end)
-
-	it("says nothing about progress before data is wired up", function()
-		start()
-		assert(Follow.load(CODE, DATA))
-		local lines = Button.tooltipLines()
-		assert.are.equal(Button.hintLines()[1], lines[3])
-	end)
-
-	it("counts no upgrades: the Gear tab owns them", function()
-		start()
-		Button.data = DATA
-		assert(Follow.load(CODE, DATA))
-		local lines = Button.tooltipLines()
-		-- Lines: name, build, progress, the next talent, then the hints.
-		assert.are.equal(Button.hintLines()[1], lines[5])
-	end)
-
 	it("has no addon compartment on a client that lacks one", function()
 		start()
 		assert.is_false(Button.hasCompartment())
@@ -308,7 +253,7 @@ describe("Minimap", function()
 		assert.is_true(Button.hasCompartment())
 		assert.is_true(Button.registerCompartment())
 		assert.are.equal(L.addonName, captured.text)
-		-- Left-click the dialog, right-click the Settings page (L3.5), with the tooltip's hints.
+		-- The launcher's click and hover (spec 6).
 		assert.are.equal(Button.onCompartmentClick, captured.func)
 		assert.is_true(captured.registerForAnyClick)
 		assert.is_function(captured.funcOnEnter)

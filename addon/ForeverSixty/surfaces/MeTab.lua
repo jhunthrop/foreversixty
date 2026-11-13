@@ -352,7 +352,8 @@ function MeTab.waitingItems(lastRaid, clock, seen)
 		return {}
 	end
 	local item = { tab = "me", key = "raid", fact = tostring(lastRaid.report_id or lastRaid.date),
-		line = string.format(L.meRaidNight, section.weekday or section.day, section.summary.median,
+		line = string.format(L.meRaidNight, section.weekday or section.day,
+			string.format("|cff%s%d|r", Theme.parseHex(section.summary.median), section.summary.median),
 			section.summary.best.name) }
 	if seen ~= nil and seen(item) then
 		return {}

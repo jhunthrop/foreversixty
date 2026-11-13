@@ -1,9 +1,9 @@
 -- addon/tests/chip_next_step_spec.lua
--- A.2: the line names the next point when every point the character has is spent ("Next at 25:
--- Focused Fire (1 of 3)", "Build complete · next point at level 25"), keeps one steady class icon in
--- every state, wraps a ready check's words whole instead of cutting them, and sits clear of the
--- client's buff row at its default spot. The strip's words are in talent_marks_spec.lua, the chat
--- line after Use in build_dialog_spec.lua.
+-- The chip as the one launcher, live (design/specs/2026-11-13-addon-hub.md 6): its line is the hub's
+-- most urgent thing, a click opens the tab that line names and again closes it, a right-click opens
+-- Settings, in combat it says After combat and opens nothing, the minimap button and the compartment
+-- entry do exactly what it does, tonight's raid leads once you answered, and it sits clear of the
+-- client's buff row at its default spot.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 
@@ -37,7 +37,7 @@ local function boot(chipPrefs, level)
 	})
 	_G.UIParent.width, _G.UIParent.height = 1920, 1080
 	_G.Minimap.width, _G.Minimap.height = 140, 140
-	chipPrefs = chipPrefs or { shown = true, hiddenUntilLevel = 0, hiddenFor = "", pathFor = "", pathChosen = "",
+	chipPrefs = chipPrefs or { shown = true, pathFor = "", pathChosen = "",
 		combatHide = true, byCharacter = {} }
 	_G.ForeverSixtyDB = { welcomedAt = 1793000000, ui = { chip = chipPrefs } }
 	require("Theme").reset()
@@ -56,237 +56,160 @@ local function lastPoint(frame)
 	return frame.points[#frame.points]
 end
 
-describe("the chip's words once every point is spent (A.2)", function()
-	local Chip, L, Theme
+local EQUIP = "Equip Gloves of Holy Might +11.2"
 
-	setup(function()
-		Chip, L, Theme = require("Chip"), require("Locale"), require("Theme")
-	end)
+--- The Gear tab replaced by one that has `items` waiting (Hub.register by id, as a tab lane does).
+local function gearWaiting(items)
+	local Hub, L = require("Hub"), require("Locale")
+	Hub.register({ id = "gear", label = L.hubTabGear, build = function() end, show = function() end,
+		waiting = function()
+			return items
+		end })
+	return Hub
+end
 
+local function click(frame, button)
+	frame:GetScript("OnClick")(frame, button or "LeftButton")
+end
+
+describe("the chip as the launcher", function()
 	after_each(function()
 		mock.uninstall()
 	end)
 
-	local function inputs(overrides)
-		local base = {
-			level = 24, classIcon = "crest-hunter", now = 100, clock = 0, shown = true, combatHide = true,
-			unspent = 0, nextLevel = 25,
-			build = { name = "Beast Mastery build", order = { {}, {}, {} } },
-			progress = { matched = 1, total = 3, nextLevel = 25, point = { tab = 1, tier = 1, column = 2, index = 2 } },
-			pointName = "Focused Fire", pointRank = { have = 0, want = 3 },
-		}
-		for key, value in pairs(overrides or {}) do
-			-- false takes the field away (a nil cannot be set in a table constructor).
-			base[key] = value or nil
-		end
-		return base
-	end
-
-	it("leads the idle line with the level the next point arrives at when none is to spend", function()
-		local chosen = Chip.model(inputs()).chosen
-		assert.are.equal("idle", chosen.kind)
-		assert.are.equal("Next at 25: Focused Fire (1 of 3)", chosen.text)
-		assert.are.equal(string.format(L.chipNextAt, 25, "Focused Fire (1 of 3)"), chosen.text)
-		-- At the cap no level follows: the old form.
-		assert.are.equal("Focused Fire (1 of 3)", Chip.model(inputs({ nextLevel = false })).chosen.text)
-	end)
-
-	it("says Build complete with the next point's level, and Build complete alone when none follows", function()
-		local done = inputs({ progress = { matched = 3, total = 3 }, pointName = false, completedAt = 98 })
-		local chosen = Chip.model(done).chosen
-		assert.are.equal("complete", chosen.kind)
-		assert.are.equal("Build complete \194\183 next point at level 25", chosen.text)
-		assert.are.equal(string.format(L.chipCompleteNext, 25), chosen.text)
-		-- The short form the line falls back to when it does not fit.
-		assert.are.equal("Build complete", chosen.short)
-		-- The plan finished and every point of the level taken: "Build complete" alone.
-		assert.are.equal("Build complete", Chip.model(inputs({ progress = { matched = 3, total = 3 },
-			pointName = false, completedAt = 98, nextLevel = false })).chosen.text)
-		-- A point still to spend is not news of a later one.
-		assert.are.equal("Build complete", Chip.model(inputs({ progress = { matched = 3, total = 3 },
-			pointName = false, completedAt = 98, unspent = 1 })).chosen.text)
-		assert.are.equal("Build complete", L.chipComplete)
-	end)
-
-	it("hands the live line the level the next point arrives at", function()
+	it("names the most urgent thing and opens the tab it names; again on that tab, it closes", function()
 		boot()
-		Chip = require("Chip")
-		local live = Chip.inputs(require("Data"))
-		-- Level 24 with fifteen spent: the next point is level 25's.
-		assert.are.equal(25, live.nextLevel)
-		assert.are.equal(0, live.unspent)
-	end)
-
-	it("keeps the one class icon on the line in every state", function()
-		boot()
-		Chip = require("Chip")
-		local classIcon = Theme.classIcon("HUNTER")
-		local function iconNow()
-			return mock.lastCall(Chip.icon, "SetTexture")[1]
-		end
-		assert.are.equal(classIcon, iconNow())
-		-- A ready check's tick and cross are the words' business, never the icon's.
-		Chip.setRaidCheck({}, "Ready check (only you see this): nothing missing", false, true)
-		assert.are.equal("raidcheck", Chip.current.chosen.kind)
-		assert.are.equal(Theme.MEDIA.gearTick, Chip.current.chosen.icon)
-		assert.are.equal(classIcon, iconNow())
-		Chip.setRaidCheck({ "flask" }, "Ready check (only you see this): missing flask", false, false)
-		assert.are.equal(classIcon, iconNow())
-		Chip.setRaidCheck(nil)
-		assert.are.equal(classIcon, iconNow())
-	end)
-
-	it("wraps a ready check's words inside the widest line, whole, never cut", function()
-		boot()
-		Chip = require("Chip")
-		local text = "Ready check (only you see this): nothing missing at your level \194\183 "
-			.. "no flask, food or buff is expected below 35"
-		local room = Theme.SIZES.chipWide - Theme.SIZES.chipTextInset
-		-- Six px a letter: far wider than the 280 px line, so it wraps at the room it is given.
-		Chip.text.GetStringWidth = function(region)
-			local width = utf8.len(region:GetText() or "") * 6
-			return region.wrapped and math.min(width, room) or width
-		end
-		Chip.text.GetStringHeight = function(region)
-			return math.ceil(utf8.len(region:GetText() or "") * 6 / room) * 14
-		end
-		Chip.text.SetWordWrap = function(region, on)
-			region.wrapped = on
-		end
-		Chip.setRaidCheck({}, text, false, true)
-		assert.are.equal(text, Chip.text:GetText())
-		assert.is_true(Chip.text.wrapped)
-		assert.are.equal(Theme.SIZES.chipWide, Chip.frame:GetWidth())
-		assert.are.equal(room, mock.lastCall(Chip.text, "SetWidth")[1])
-		assert.is_true(Chip.frame:GetHeight() > Theme.SIZES.chip)
-		assert.is_nil(Chip.text:GetText():find(L.ellipsis, 1, true))
-		-- A line that fits stays on one line at the ordinary height.
-		Chip.setRaidCheck({}, "Ready check: nothing missing", false, true)
-		assert.is_false(Chip.text.wrapped)
-		assert.are.equal(Theme.SIZES.chip, Chip.frame:GetHeight())
-	end)
-end)
-
-describe("the line's words at a login, for the states that had none (A.2)", function()
-	after_each(function()
-		mock.uninstall()
-	end)
-
-	--- A 15-point plan down the hunter's tab 2 in the data's own order: exactly the points traitRanks spends.
-	local function fifteenPointBuild()
-		local order, left = {}, 15
-		for _, talent in ipairs(Data.classes.hunter.tabs[2].talents) do
-			for _ = 1, math.min(left, talent.maxRank) do
-				order[#order + 1] = { tab = 2, tier = talent.tier, column = talent.column }
-			end
-			left = left - math.min(left, talent.maxRank)
-			if left <= 0 then
-				break
-			end
-		end
-		local Codec = require("Codec")
-		return Codec.loadBuild(Codec.encodeFSB1({ dataBuild = Data.build, classSlug = "hunter", order = order,
-			gear = {} }), Data)
-	end
-
-	local function words()
+		local Hub = gearWaiting({ { key = "bag", line = EQUIP } })
 		local Chip = require("Chip")
-		assert.is_true(Chip.text:IsShown())
-		local text = Chip.text:GetText()
-		assert.is_truthy(text)
-		assert.is_true(#text > 0)
-		return text
-	end
-
-	it("says Build complete with the next point's level for a 15-point plan with 15 points spent at level 24",
-		function()
-			boot()
-			local Chip, Follow = require("Chip"), require("Follow")
-			-- The follow state arrives after the first draw, as at a login; the line is redrawn with it.
-			Follow.build = fifteenPointBuild()
-			Chip.refresh()
-			-- Completing it flashes the line first...
-			assert.are.equal("complete", Chip.current.chosen.kind)
-			assert.are.equal("Build complete \194\183 next point at level 25", words())
-			-- ...and once the flash is over the idle line says the same, never an empty font string.
-			Chip.completedAt = -1000
-			Chip.refresh()
-			assert.are.equal("idle", Chip.current.chosen.kind)
-			assert.are.equal("Build complete \194\183 next point at level 25", words())
-			assert.is_true(Chip.frame:GetWidth() >= require("Theme").SIZES.chip)
-			assert.is_true(Chip.frame:IsShown())
-			-- And the same through the model as the client feeds it.
-			assert.are.equal(25, Chip.inputs(Data).nextLevel)
-		end)
-
-	it("keeps words for the first-login state of A.1: a point to spend with the default build, and Next at 25", function()
-		boot(nil, 25)
-		local Chip = require("Chip")
-		-- Level 25 with 15 spent: one point to spend, the chip says which talent to take.
-		assert.are.equal("point", Chip.current.chosen.kind)
-		assert.is_truthy(words():find("^Take "))
-		mock.uninstall()
-		boot(nil, 24)
-		assert.is_truthy(words():find("^Next at 25: ."))
-	end)
-
-	it("is empty only for a plan finished at the level cap", function()
-		boot(nil, 60)
-		local Chip = require("Chip")
-		assert.is_nil(Chip.current.chosen.text:find("next point", 1, true))
-	end)
-end)
-
-describe("the line's text always has a width, so the frame is wider than its icon", function()
-	after_each(function()
-		mock.uninstall()
-	end)
-
-	-- Six px a letter, a font string with no width (or a width of 0) drawing nothing: its string width is 0.
-	local function measured(Chip)
-		local room = require("Theme").SIZES.chipWide - require("Theme").SIZES.chipTextInset
-		Chip.text.GetStringWidth = function(region)
-			local width = utf8.len(region:GetText() or "") * 6
-			local set = mock.lastCall(region, "SetWidth")
-			if set ~= nil and set[1] == 0 then
-				return 0
-			end
-			return region.wrapped and math.min(width, room) or width
-		end
-		Chip.text.GetStringHeight = function(region)
-			return math.ceil(utf8.len(region:GetText() or "") * 6 / room) * 14
-		end
-		Chip.text.SetWordWrap = function(region, on)
-			region.wrapped = on
-		end
-	end
-
-	it("is wider than the 28 px icon for a short Next line", function()
-		boot()
-		local Chip, Theme = require("Chip"), require("Theme")
-		measured(Chip)
 		Chip.refresh()
-		assert.is_truthy(Chip.text:GetText():find("^Next"))
-		assert.is_true(Chip.text:IsShown())
-		assert.is_true(Chip.frame:GetWidth() > Theme.SIZES.chip)
-		for _, call in ipairs(Chip.text.calls) do
-			assert.is_false(call.method == "SetWidth" and call[1] == 0)
-		end
+		assert.are.equal(EQUIP, Chip.text:GetText())
+		assert.are.equal("gear", Chip.current.opens)
+		click(Chip.frame)
+		assert.is_true(Hub.isShown())
+		assert.are.equal("gear", Hub.active)
+		click(Chip.frame)
+		assert.is_false(Hub.isShown())
 	end)
 
-	it("is wider than the icon for the ready-check sentence, wrapped, and again for a short line after it", function()
+	it("opens the tab the line names even while the window shows another", function()
 		boot()
+		local Hub = gearWaiting({ { key = "bag", line = EQUIP } })
+		local Chip = require("Chip")
+		Chip.refresh()
+		Hub.open("builds")
+		click(Chip.frame)
+		assert.is_true(Hub.isShown())
+		assert.are.equal("gear", Hub.active)
+	end)
+
+	it("counts the other things waiting after the line, muted", function()
+		boot()
+		gearWaiting({ { key = "bag", line = EQUIP }, { key = "bag2", line = "Equip Band of Thorns +3.1" } })
 		local Chip, Theme = require("Chip"), require("Theme")
-		measured(Chip)
-		Chip.setRaidCheck({}, "Ready check (only you see this): nothing missing at your level \194\183 "
-			.. "no flask, food or buff is expected below 35", false, true)
+		Chip.refresh()
+		assert.are.equal(EQUIP, Chip.text:GetText())
+		assert.are.equal("+1", Chip.moreCount:GetText())
 		assert.is_true(Chip.frame:GetWidth() > Theme.SIZES.chip)
-		assert.is_true(Chip.text:GetStringWidth() > 0)
-		Chip.setRaidCheck({}, "Ready check: nothing missing", false, true)
-		assert.is_true(Chip.frame:GetWidth() > Theme.SIZES.chip)
-		assert.is_true(Chip.text:GetStringWidth() > 0)
-		for _, call in ipairs(Chip.text.calls) do
-			assert.is_false(call.method == "SetWidth" and call[1] == 0)
+		assert.is_true(Chip.frame:GetWidth() <= Theme.SIZES.chipWide)
+	end)
+
+	it("says Forever Sixty with nothing waiting, and a click opens the last tab", function()
+		boot()
+		local Chip, Hub, Prefs, L = require("Chip"), require("Hub"), require("Prefs"), require("Locale")
+		Prefs.set("hub", "tab", "builds")
+		Chip.refresh()
+		assert.are.equal(L.addonName, Chip.text:GetText())
+		click(Chip.frame)
+		assert.are.equal("builds", Hub.active)
+	end)
+
+	it("opens Settings on a right-click, and opens no window", function()
+		boot()
+		local Chip, Hub = require("Chip"), require("Hub")
+		local asked = 0
+		Chip.openSettings = function()
+			asked = asked + 1
+		end
+		Chip.refresh()
+		click(Chip.frame, "RightButton")
+		assert.are.equal(1, asked)
+		assert.is_false(Hub.isShown())
+	end)
+
+	it("says After combat and opens nothing in combat, with the hide switch off", function()
+		boot({ shown = true, combatHide = false, byCharacter = {} })
+		local Hub = gearWaiting({ { key = "bag", line = EQUIP } })
+		local Chip, L = require("Chip"), require("Locale")
+		Chip.setCombat(true)
+		Chip.refresh()
+		assert.are.equal(L.chipAfterCombat, Chip.text:GetText())
+		assert.are.equal(Chip.COMBAT_ALPHA, Chip.current.alpha)
+		Chip.click("LeftButton")
+		assert.is_false(Hub.isShown())
+		Chip.setCombat(false)
+		Chip.refresh()
+		assert.are.equal(EQUIP, Chip.text:GetText())
+	end)
+
+	it("hovers with every item and what a click opens", function()
+		boot()
+		gearWaiting({ { key = "bag", line = EQUIP } })
+		local Chip, L = require("Chip"), require("Locale")
+		Chip.refresh()
+		local lines = Chip.lines(L.chipHintDrag)
+		assert.are.equal("Forever Sixty", lines[1])
+		assert.are.same({ text = EQUIP, right = "Gear" }, lines[2])
+		assert.is_truthy(lines[3]:find("Click: open on Gear", 1, true))
+	end)
+
+	it("leads with tonight's raid once you answered, opening Guild, with no dot on the strip", function()
+		local Options = boot()
+		local state = { guild = { name = "Thornwake Company", rankName = "Raider", rankIndex = 3 } }
+		_G.IsInGuild = function()
+			return true
+		end
+		_G.GetGuildInfo = function()
+			return state.guild.name, state.guild.rankName, state.guild.rankIndex
+		end
+		_G.ForeverSixtyInbox = { accepts = { "raid_answer" }, messages = { { type = "raid_signup", raid_id = 42,
+			raid = "Onyxia's Lair", title = "Onyxia", starts_at = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time() + 3600),
+			answer = "in", answered_at = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time() - 600) } } }
+		helper.load("GuildRaid")
+		helper.load("GuildHubTab")
+		local Chip, Hub = require("Chip"), require("Hub")
+		Chip.refresh(Options.data)
+		assert.is_truthy(Chip.current.line:find("^Onyxia's Lair "))
+		assert.is_truthy(Chip.current.line:find("In", 1, true))
+		assert.are.equal("guild", Chip.current.opens)
+		assert.are.same({}, Hub.waitingOf(Hub.tab("guild")))
+		-- The hover says how long until the pull, under the raid's line.
+		assert.are.equal("in 1 h 0 min", Chip.current.starts)
+		_G.ForeverSixtyInbox, _G.IsInGuild, _G.GetGuildInfo = nil, nil, nil
+	end)
+end)
+
+describe("the minimap button and the compartment entry, the chip's twins", function()
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("open the same tab and show the same hover as the chip", function()
+		boot()
+		local Hub = gearWaiting({ { key = "bag", line = EQUIP } })
+		local Chip, MinimapButton, Prefs, L = require("Chip"), require("Minimap"), require("Prefs"), require("Locale")
+		Chip.refresh()
+		assert.are.equal(Chip, MinimapButton.launcher)
+		Prefs.set("minimap", "shown", true)
+		local button = MinimapButton.refresh()
+		click(button)
+		assert.are.equal("gear", Hub.active)
+		click(button)
+		assert.is_false(Hub.isShown())
+		MinimapButton.onCompartmentClick("ForeverSixty", "LeftButton")
+		assert.are.equal("gear", Hub.active)
+		local chipLines, buttonLines = Chip.lines(L.chipHintDrag), MinimapButton.tooltipLines(L.chipHintDragRing)
+		for index = 1, #chipLines - 1 do
+			assert.are.same(chipLines[index], buttonLines[index])
 		end
 	end)
 end)
@@ -384,22 +307,6 @@ describe("the line's default spot and the client's buff row (A.2)", function()
 			assert.are.equal(_G.Minimap, lastPoint(Chip.frame)[2])
 			assert.is_true(Chip.frame:IsShown())
 		end)
-
-	it("places the line again on /fs chip show, even one the render check switched off", function()
-		local Options = boot()
-		geometry()
-		local Chip = require("Chip")
-		buffs(1300, 1690, 1060, 1000)
-		Chip.disabled = true
-		Chip.frame:Hide()
-		Options.handle("chip")
-		Options.handle("chip")
-		Chip = require("Chip")
-		assert.is_nil(Chip.disabled)
-		assert.are.equal(_G.Minimap, lastPoint(Chip.frame)[2])
-		assert.is_true(Chip.frame:IsShown())
-		assert.is_true(Chip.isDrawn())
-	end)
 
 	it("stays beside the minimap when the buffs are elsewhere, hidden or cannot be read", function()
 		boot()

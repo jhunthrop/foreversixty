@@ -539,13 +539,11 @@ end
 
 -- What waits ---------------------------------------------------------------------------------------
 
---- The chip's line for a bag upgrade (spec 6): "Equip Gloves of Holy Might +11.2", the gain as the
---- tooltip rounds it. Pure.
+--- The chip's line for a bag upgrade (spec 6): "Equip Gloves of Holy Might +11.2 DPS", the gain as the
+--- tooltip rounds and words it (ItemTooltip.figure), in the success colour (spec 3.5: a gain). Pure.
 function GearTab.equipLine(name, gain, unit)
-	local shown = Progress.roundedGain(gain, unit)
-	local figure = unit == "score" and string.format(L.gearGainScoreBare, shown)
-		or string.format(L.gearGainBare, shown)
-	return string.format(L.gearEquipLine, name, figure)
+	local figure = ItemTooltip.figure(Progress.roundedGain(gain, unit), unit)
+	return string.format(L.gearEquipLine, name, Theme.inlineColor("success", figure))
 end
 
 --- The tab's waiting item (spec 3.6): the bag item that beats what you wear the most, from the list the

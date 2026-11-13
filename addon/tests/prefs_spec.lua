@@ -101,7 +101,7 @@ describe("Prefs", function()
 		Prefs.set("chip", "x", 300)
 		Prefs.set("chip", "y", -40)
 		Prefs.set("chip", "combatHide", false)
-		Prefs.set("chip", "hiddenUntilLevel", 31)
+		Prefs.set("chip", "shown", false)
 		Prefs.set("chip", "pathChosen", "warrior-fury")
 		Prefs.set("minimap", "angle", 12)
 		Prefs.set("minimap", "shown", false)
@@ -117,7 +117,7 @@ describe("Prefs", function()
 		-- combat, bring back a hidden chip, forget a path, or re-show the
 		-- minimap button.
 		assert.is_false(Prefs.get("chip", "combatHide"))
-		assert.are.equal(31, Prefs.get("chip", "hiddenUntilLevel"))
+		assert.is_false(Prefs.get("chip", "shown"))
 		assert.are.equal("warrior-fury", Prefs.get("chip", "pathChosen"))
 		assert.is_false(Prefs.get("minimap", "shown"))
 	end)
@@ -175,11 +175,10 @@ describe("Prefs, the v2 keys", function()
 
 	it("shows the chip and hides it in combat by default", function()
 		local ui = Prefs.withDefaults(nil)
-		-- An empty point is the minimap-relative default anchor; 0 and "" are
-		-- "not hidden" and "no path chosen" (a saved nil would be dropped).
+		-- An empty point is the minimap-relative default anchor; "" is "no path chosen" (a saved nil
+		-- would be dropped).
 		assert.are.same({
-			shown = true, combatHide = true, point = "", x = 0, y = 0,
-			hiddenUntilLevel = 0, hiddenFor = "", pathChosen = "", pathFor = "",
+			shown = true, combatHide = true, point = "", x = 0, y = 0, pathChosen = "", pathFor = "",
 			byCharacter = {},
 		}, ui.chip)
 	end)

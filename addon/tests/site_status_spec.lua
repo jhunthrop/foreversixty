@@ -22,7 +22,7 @@ local NO_GEAR = "FS1:1.60.1.70450:warrior:human:0/0/0:|level=21"
 local HEAD = "|Hitem:12640|h"
 
 describe("what the site has and what the inbox holds", function()
-	local state, Civil, NOW, L, Theme, Options, SiteStatus, Chip, BuildDialog, savedTime
+	local state, Civil, NOW, L, Theme, Options, SiteStatus, BuildDialog, savedTime
 
 	--- RFC 3339 UTC for `seconds` ago.
 	local function ago(seconds)
@@ -93,7 +93,7 @@ describe("what the site has and what the inbox holds", function()
 		helper.load("ItemTooltip")
 		helper.load("Follow")
 		helper.load("TalentGlow")
-		Chip = helper.load("Chip")
+		helper.load("Chip")
 		helper.load("TalentMarks")
 		helper.load("Minimap")
 		helper.load("Comms")
@@ -466,62 +466,6 @@ describe("what the site has and what the inbox holds", function()
 			inbox(acked)
 			assert.are.equal(NOW - 600, SiteStatus.facts().seen)
 			assert.are.equal("Site: has your save from 10 min ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
-		end)
-	end)
-
-	describe("the chip", function()
-		local function idle(extra)
-			local input = {
-				level = 30, build = nil, progress = { matched = 0, total = 0 }, unspent = 0,
-				classIcon = "crest-warrior", now = 100, clock = NOW, shown = true, combatHide = true,
-				inboxWaiting = 1,
-			}
-			for key, value in pairs(extra or {}) do
-				input[key] = value
-			end
-			return input
-		end
-
-		it("says a build is waiting in its hover, and a click opens it, when none is followed", function()
-			local model = Chip.model(idle())
-			assert.are.equal("idle", model.chosen.kind)
-			assert.are.equal("inbox", model.chosen.action)
-			local joined = table.concat(Chip.tooltipLines(model), "\n")
-			assert.is_truthy(joined:find(L.chipHintBuildWindow, 1, true))
-			-- The long form leads the hover when the chip had to shorten its line.
-			assert.is_truthy(table.concat(Chip.tooltipLines(model, true), "\n")
-				:find("A build from the site is waiting. Click to open.", 1, true))
-			assert.are.equal("A build from the site is waiting. Click to open.", L.chipInboxWaiting)
-		end)
-
-		it("says nothing about the inbox with nothing waiting, or with a build followed", function()
-			local none = table.concat(Chip.tooltipLines(Chip.model(idle({ inboxWaiting = 0 }))), "\n")
-			assert.is_nil(none:find("waiting", 1, true))
-			local followed = idle({ build = { name = "Arms leveling", order = { {}, {}, {} } } })
-			assert.is_falsy(Chip.model(followed).inboxWaiting)
-			assert.is_nil(table.concat(Chip.tooltipLines(Chip.model(followed)), "\n"):find("waiting", 1, true))
-		end)
-
-		it("keeps another state's click when the chip has something else to say", function()
-			local model = Chip.model(idle({ lastRaid = { date = "2026-10-18", bosses = {
-				{ name = "Magmadar", percentile = 88, biggest_loss = "downtime" } } } }))
-			assert.are_not.equal("inbox", model.chosen.action)
-			assert.is_falsy(model.inboxWaiting)
-		end)
-
-		it("counts the builds waiting for this character, for the chip's input", function()
-			inbox(build("Arms raid", ARMS), build("Fury", FURY, "US/Ashbringer/Alice"))
-			assert.are.equal(1, Chip.inboxWaiting(DATA))
-			_G.ForeverSixtyInbox = nil
-			assert.are.equal(0, Chip.inboxWaiting(DATA))
-		end)
-
-		it("opens the build dialog on the idle chip's click", function()
-			inbox(build("Arms raid", ARMS))
-			local handler = Chip.handlerFor({ action = "inbox" })
-			assert.is_function(handler)
-			handler()
-			assert.is_true(BuildDialog.frame:IsShown())
 		end)
 	end)
 

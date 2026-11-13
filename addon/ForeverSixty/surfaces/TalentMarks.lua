@@ -755,7 +755,7 @@ function TalentMarks.clear()
 	TalentGlow.clear()
 	hideBadges()
 	hideStrip()
-	-- The chip stood aside while the window was open; it comes back.
+	-- The chip's talent cover comes back over a point to spend once the window is closed.
 	Chip.refresh()
 	return nil
 end
@@ -776,9 +776,6 @@ end
 function TalentMarks.enabled()
 	return Prefs.flag("talentMarks") ~= false
 end
-
--- The chip stands aside for the open talent window only while the marks replace it.
-Chip.windowMarks = TalentMarks.enabled
 
 --- Redraw the marks for `data`: the ring (TalentGlow), then the badges,
 --- then the strip, sharing one lookup per node and one read of the ranks
@@ -860,7 +857,7 @@ end
 function TalentMarks.onShow(data)
 	TalentMarks.generation = TalentMarks.generation + 1
 	TalentMarks.settled = false
-	-- The ring and the strip replace the chip while the window is open.
+	-- The chip's talent cover leaves while the window is open: a click on the chip never closes it.
 	Chip.refresh()
 	return TalentMarks.runPass(data, 0, TalentMarks.generation)
 end

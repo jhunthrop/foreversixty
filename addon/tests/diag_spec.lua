@@ -44,8 +44,7 @@ describe("Theme.diagReport", function()
 			Theme.diagReport(Theme.diagnostics(), nil, Theme.infoNotes()))
 	end)
 
-	-- Fix round 4: the path card registers its click-outside once, and a client
-	-- that refuses it gets one fault line saying to press Escape.
+	-- Fix round 4: a client that refuses an event leaves the wording to the caller.
 	it("tries an event without noting anything, so the caller words the refusal", function()
 		local refusing = { RegisterEvent = function() error("unknown event") end }
 		assert.is_false(Theme.tryRegisterEvent(refusing, "GLOBAL_MOUSE_DOWN"))
@@ -53,8 +52,6 @@ describe("Theme.diagReport", function()
 		assert.is_true(Theme.tryRegisterEvent(taking, "GLOBAL_MOUSE_DOWN"))
 		assert.are.same({}, Theme.diagnostics())
 		assert.are.same({}, Theme.infoNotes())
-		assert.are.equal("Clicking outside the path card does not close it on this client; press Escape.",
-			L.diagNoClickOutside)
 	end)
 
 	it("forgets both lists on reset", function()

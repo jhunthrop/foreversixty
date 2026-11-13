@@ -63,11 +63,6 @@ function SiteStatus.waiting(data)
 	return ok and type(rows) == "table" and rows or {}
 end
 
---- How many builds wait: the chip's reading.
-function SiteStatus.waitingCount(data)
-	return #SiteStatus.waiting(data)
-end
-
 --- The messages (other than builds and acks) addressed to this character or to none, counted by
 --- kind: { guild = 1 }.
 local function messageCounts()
