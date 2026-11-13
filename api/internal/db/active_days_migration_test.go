@@ -42,8 +42,8 @@ func TestMigrationBackfillsTheActiveDays(t *testing.T) {
 		   ('add', 'us/pvp/a', 5, 'addon', 'mage-fire', 'dps', 60, 'bare', '2026-11-06T10:00:00Z')`,
 		`insert into character_syncs (character_key, source, outcome, created_at) values
 		   ('us/pvp/a', 'addon', 'ok', '2026-11-07T10:00:00Z'), ('us/pvp/a', 'blizzard', 'ok', '2026-11-12T10:00:00Z')`,
-		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, seen_at) values
-		   ('us/pvp/a', 5, 'us', 'pvp', 'A', '', '2026-11-08T10:00:00Z')`,
+		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, captured_at, seen_at) values
+		   ('us/pvp/a', 5, 'us', 'pvp', 'A', '', '2026-11-08T10:00:00Z', '2026-11-08T10:00:00Z')`,
 		`insert into devices (id, user_id, token_hash, kind, created_at, last_seen_at) values
 		   ('pc', 5, '\x01', 'companion', '2026-11-09T10:00:00Z', '2026-11-10T10:00:00Z'),
 		   ('ph', 5, '\x02', 'app', '2026-11-11T10:00:00Z', null)`,

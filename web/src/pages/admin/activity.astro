@@ -1,0 +1,19 @@
+---
+// web/src/pages/admin/activity.astro
+// /admin/activity: the owner's daily and weekly active accounts, new against returning, the
+// surface split and retention by signup week (GET /v1/admin/engagement). The PageHeader is static;
+// the body is one island (EngagementAdmin), because every state follows one session read and the
+// API decides who is the owner. Never indexed, never in the sitemap.
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/ui/PageHeader.svelte';
+import EngagementAdmin from '../../components/admin/EngagementAdmin.svelte';
+import { adminActivityCopy as copy } from '../../lib/engagement/admin';
+---
+
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/activity">
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="admin-activity-page">
+    <PageHeader title={copy.pageTitle} lead={copy.job} />
+    <EngagementAdmin client:load />
+  </main>
+</Base>
