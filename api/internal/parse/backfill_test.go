@@ -68,7 +68,7 @@ func TestBackfillCountsThenWritesTheFightsARawStreamHolds(t *testing.T) {
 	d, reportID, objects, completed := seedLiveReport(t, len(engine.FixtureLog())/2)
 	ctx := context.Background()
 
-	dry, err := Backfill(ctx, d, reportID, false)
+	dry, err := Backfill(ctx, d, reportID, BackfillOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -85,7 +85,7 @@ func TestBackfillCountsThenWritesTheFightsARawStreamHolds(t *testing.T) {
 		t.Fatal("the dry run wrote report.json")
 	}
 
-	applied, err := Backfill(ctx, d, reportID, true)
+	applied, err := Backfill(ctx, d, reportID, BackfillOptions{Apply: true})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -120,7 +120,7 @@ func TestBackfillCountsThenWritesTheFightsARawStreamHolds(t *testing.T) {
 	}
 
 	// A second run finds the fights and refuses rather than overwriting them.
-	if _, err := Backfill(ctx, d, reportID, true); err == nil {
+	if _, err := Backfill(ctx, d, reportID, BackfillOptions{Apply: true}); err == nil {
 		t.Fatal("a report that holds fights must be refused")
 	}
 }
@@ -134,7 +134,7 @@ func TestBackfillStopsAtAGapAndSaysWhere(t *testing.T) {
 	if err := d.Reports.DeleteRawChunk(ctx, reportID, 0); err != nil {
 		t.Fatal(err)
 	}
-	res, err := Backfill(ctx, d, reportID, false)
+	res, err := Backfill(ctx, d, reportID, BackfillOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -146,7 +146,20 @@ func TestBackfillStopsAtAGapAndSaysWhere(t *testing.T) {
 // A report with no raw chunks has nothing to backfill from and says so.
 func TestBackfillRefusesAReportWithoutRawChunks(t *testing.T) {
 	d, reportID, _, _ := fixtureUpload(t, false)
-	if _, err := Backfill(context.Background(), d, reportID, false); err == nil {
+	if _, err := Backfill(context.Background(), d, reportID, BackfillOptions{}); err == nil {
 		t.Fatal("a report without raw chunks must be refused")
+	}
+}
+
+// A named layout pins the dialect: the health record then names it rather than one
+// inferred, which is what the operator wants for a report whose companion saw no header.
+func TestBackfillParsesWithTheLayoutItIsGiven(t *testing.T) {
+	d, reportID, _, _ := seedLiveReport(t, len(engine.FixtureLog())/2)
+	res, err := Backfill(context.Background(), d, reportID, BackfillOptions{Layout: "retail-v16"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.Fights != 1 || res.Health.Layout != "retail-v16" || res.Health.LayoutInferred {
+		t.Fatalf("result = %+v, want one fight read as retail-v16", res)
 	}
 }

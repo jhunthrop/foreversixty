@@ -44,3 +44,16 @@ func TestBackfillDepsAreSilent(t *testing.T) {
 		t.Fatal("the backfill must still run the completion hook")
 	}
 }
+
+func TestParseBackfillFlagsValidatesTheLayout(t *testing.T) {
+	if _, err := parseBackfillFlags([]string{"--report", "4q5el2", "--layout", "inferred"}); err == nil || !strings.Contains(err.Error(), "retail-v22") {
+		t.Fatalf("an unknown layout should refuse and name the known ones, got %v", err)
+	}
+	if _, err := parseBackfillFlags([]string{"--report", "4q5el2", "--layout"}); err == nil {
+		t.Fatal("--layout without a value should refuse")
+	}
+	f, err := parseBackfillFlags([]string{"--report", "4q5el2", "--layout", "retail-v22", "--apply"})
+	if err != nil || f.layout != "retail-v22" || !f.apply {
+		t.Fatalf("flags = %+v, %v", f, err)
+	}
+}

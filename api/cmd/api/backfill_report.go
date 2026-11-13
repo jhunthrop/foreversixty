@@ -11,24 +11,28 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/engine"
 	"github.com/jhunthrop/foreversixty/api/internal/parse"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
+	"github.com/jhunthrop/foreversixty/logs/engine/layout"
 )
 
 const backfillReportUsage = `usage:
-  api backfill-report --report <id>            # dry run: stream the raw chunks, count the fights, write nothing
-  api backfill-report --report <id> --apply    # write the fights, complete the report; never announces`
+  api backfill-report --report <id>                       # dry run: stream the raw chunks, count the fights, write nothing
+  api backfill-report --report <id> --apply               # write the fights, complete the report; never announces
+  api backfill-report --report <id> --layout retail-v22   # parse with a named layout instead of the report's (inferred) one`
 
 // backfillFlags is backfill-report's flag set, parsed in grant.go's style.
 type backfillFlags struct {
-	report string
-	apply  bool
+	report, layout string
+	apply          bool
 }
 
 func parseBackfillFlags(args []string) (backfillFlags, error) {
@@ -41,6 +45,12 @@ func parseBackfillFlags(args []string) (backfillFlags, error) {
 				return backfillFlags{}, fmt.Errorf("%s needs a value", arg)
 			}
 			f.report = args[i]
+		case "--layout":
+			i++
+			if i >= len(args) {
+				return backfillFlags{}, fmt.Errorf("%s needs a value", arg)
+			}
+			f.layout = args[i]
 		case "--apply":
 			f.apply = true
 		default:
@@ -50,7 +60,22 @@ func parseBackfillFlags(args []string) (backfillFlags, error) {
 	if f.report == "" {
 		return backfillFlags{}, fmt.Errorf("--report is required: one report id, never a sweep")
 	}
+	if f.layout != "" {
+		if _, ok := engine.LayoutByName(f.layout); !ok {
+			return backfillFlags{}, fmt.Errorf("--layout %q is not a layout the parser knows; one of %s", f.layout, strings.Join(layoutNames(), ", "))
+		}
+	}
 	return f, nil
+}
+
+// layoutNames lists the parser's registered layouts, for the --layout error.
+func layoutNames() []string {
+	rows := layout.Rows()
+	names := make([]string, 0, len(rows))
+	for _, r := range rows {
+		names = append(names, r.Name)
+	}
+	return names
 }
 
 // connect loads the configuration and connects without migrating. Only the deployed API
@@ -89,8 +114,8 @@ func runBackfillReport(ctx context.Context, log *slog.Logger, args []string) err
 	}
 	deps := newBackfillDeps(cfg, pool, client, treeData, log)
 	began := time.Now()
-	log.Info("backfill-report", "report", f.report, "apply", f.apply, "operator", operatorTag())
-	res, err := parse.Backfill(ctx, deps, f.report, f.apply)
+	log.Info("backfill-report", "report", f.report, "apply", f.apply, "layout", f.layout, "operator", operatorTag())
+	res, err := parse.Backfill(ctx, deps, f.report, parse.BackfillOptions{Apply: f.apply, Layout: f.layout})
 	parse.LogBackfill(log, res)
 	if err != nil {
 		return err

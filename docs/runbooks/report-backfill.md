@@ -20,6 +20,10 @@ What it does, per report:
   completion hook (log zone, guild attribution, raid match, site feed line);
 - never announces: no notifier is wired and the guilds hook has no event router, so no
   Discord post, push or in-app notification follows a backfill;
+- `--layout <name>` parses with a named layout (`retail-v22`, `retail-v16`, `classic-wiki`)
+  instead of the one the report's health record names, for a report whose live parse inferred
+  its layout because its companion started mid-file and saw no header; an unknown name is
+  refused with the list;
 - refuses a report that already holds fights, a report with no raw chunks, and a run without
   `--report`. One report per run; there is no sweep.
 
@@ -89,8 +93,9 @@ The one `backfill-report` line carries `chunks`, `bytes`, `fights`, `encounters`
   else.
 - `parse_errors` of more than a few percent of `lines` is a layout problem (a report whose
   companion started mid-file, so no `COMBAT_LOG_VERSION` header reached the engine, infers its
-  layout; companion 0.2.45 reads the header back out of the file for that case). Backfilling
-  it writes what the inferred layout can read, no better than the live parse would have.
+  layout; companion 0.2.45 reads the header back out of the file for that case). Dry-run it
+  again with `--layout retail-v22` (what every Forever log of the week was written in) and
+  apply only if the errors fall to the level of the others.
 - `gap_at` means a raw chunk never arrived. The fights before the gap are whole and are
   written; the night after it is not recoverable from the bucket.
 

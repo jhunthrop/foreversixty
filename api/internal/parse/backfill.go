@@ -14,6 +14,18 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
 
+// BackfillOptions is how one backfill runs.
+type BackfillOptions struct {
+	// Apply writes; false is the dry run.
+	Apply bool
+	// Layout, when set, names the registered layout the raw stream is parsed with, instead
+	// of the one the report's health record names. It is for a report whose live parse
+	// inferred its layout (a companion that started mid-file saw no header): the operator
+	// names the dialect the night was written in and the engine stops guessing. The CLI
+	// validates it against engine.LayoutByName; an unregistered name here infers as before.
+	Layout string
+}
+
 // BackfillResult is what one backfill run saw, dry or applied.
 type BackfillResult struct {
 	ReportID string
@@ -42,7 +54,8 @@ type BackfillResult struct {
 // was told nothing when the night ended, and a notification days later for a night already
 // over would be noise. A report that already holds fights is refused, since the backfill
 // would overwrite fights the live path verified.
-func Backfill(ctx context.Context, d Deps, reportID string, apply bool) (BackfillResult, error) {
+func Backfill(ctx context.Context, d Deps, reportID string, o BackfillOptions) (BackfillResult, error) {
+	apply := o.Apply
 	res := BackfillResult{ReportID: reportID, Applied: apply}
 	rep, err := d.Reports.Get(ctx, reportID)
 	if err != nil {
@@ -66,7 +79,11 @@ func Backfill(ctx context.Context, d Deps, reportID string, apply bool) (Backfil
 	readCtx, cancel := context.WithTimeout(ctx, readTimeout)
 	defer cancel()
 	src := &chunkStream{ctx: readCtx, d: d, reportID: reportID, chunks: chunks, res: &res}
-	s := session.New(engine.SessionOptionsFor(reportID, rep.CreatedAt.UTC(), true, layoutOf(rep)))
+	layoutName := o.Layout
+	if layoutName == "" {
+		layoutName = layoutOf(rep)
+	}
+	s := session.New(engine.SessionOptionsFor(reportID, rep.CreatedAt.UTC(), true, layoutName))
 	pub := store.Publisher{Keys: reports.Keys(reportID), Put: d.Objects}
 	var zone logZone
 	onClosed := func(c session.Closed) error {
