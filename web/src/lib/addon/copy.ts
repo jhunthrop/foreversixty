@@ -168,8 +168,8 @@ export const addonCopy = {
    *  failed with `unresolved`): the visit refresh brings them in once Battle.net names their realm. */
   setupImportMissing: (count: number): string =>
     count === 1
-      ? 'One character is still missing. It comes in on a later visit.'
-      : `${count} characters are still missing. They come in on a later visit.`,
+      ? 'One character is not in yet. It comes in on its own when you next visit.'
+      : `${count} characters are not in yet. They come in on their own when you next visit.`,
   /** Step 1 when the last import keyed nothing (`bnet_import.state` failed, no count): the row's
    *  Refresh runs it again. */
   setupImportFailed: 'The Battle.net import did not finish. Refresh to run it again.',

@@ -218,16 +218,15 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
       retry,
     );
   }
-  const wait = importPending(me, now) ? [line(addonCopy.setupImportWait, 'warn')] : importShortfall(me);
+  // A run that keyed nothing cannot say the account has no characters (ux-designer and
+  // wow-player 2026-11-12): the shortfall line stands alone, the Korea line stays muted.
+  const shortfall = importPending(me, now) ? [] : importShortfall(me);
+  const wait = importPending(me, now) ? [line(addonCopy.setupImportWait, 'warn')] : [];
+  const empty = shortfall.length > 0 ? [] : [line(characterListCopy.emptyLead, 'warn')];
   return row(
     'signin',
     'warn',
-    [
-      line(signed, 'text'),
-      ...wait,
-      line(characterListCopy.emptyLead, 'warn'),
-      line(characterListCopy.emptyKorea),
-    ],
+    [line(signed, 'text'), ...wait, ...shortfall, ...empty, line(characterListCopy.emptyKorea)],
     primary(act('refresh', characterListCopy.refreshFromBattlenet, 'button')),
   );
 }

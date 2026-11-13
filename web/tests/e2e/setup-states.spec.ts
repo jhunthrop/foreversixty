@@ -51,7 +51,7 @@ test('an import that keyed nothing: the failed line leads the no-character lines
 }) => {
   await openSetupState(page, 'import-failed');
   await expect(page.getByTestId('setup-steps-step-1')).toContainText(addonCopy.setupImportFailed);
-  await expect(page.getByTestId('setup-steps-step-1')).toContainText(characterListCopy.emptyLead);
+  await expect(page.getByTestId('setup-steps-step-1')).not.toContainText(characterListCopy.emptyLead);
   await expect(page.getByTestId('setup-action-refresh')).toBeVisible();
   if (!isMobile) await shoot(page, 'import-failed');
 });
